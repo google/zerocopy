@@ -19,6 +19,7 @@ use std::{
 };
 
 use anneal_audit::{Checker, Failure, ImportEdge, Json, ModuleArtifacts};
+use anneal_testkit::{LeanAuditFixture, OleanCachePolicy};
 
 pub const HEADER: &str = "-- anneal-trust-tier: vetted\nprelude\nimport Init.NotationExtra\n";
 
@@ -69,35 +70,39 @@ pub fn copy_cargo_workspace(root: &Path) {
 }
 
 pub struct TempFixture {
-    pub _dir: tempfile::TempDir,
+    pub inner: LeanAuditFixture,
     pub root: PathBuf,
 }
 
 impl TempFixture {
     pub fn new(source: Option<&str>) -> Self {
-        let checkout = repo_root();
-        let dir = tempfile::Builder::new().prefix("anneal-boundary-test-").tempdir().unwrap();
-        let root = dir.path().to_path_buf();
-        fs::create_dir_all(root.join("trusted/audit")).unwrap();
-        fs::create_dir_all(root.join("trusted/lean")).unwrap();
-        fs::copy(
-            checkout.join("trusted/lean/lean-toolchain"),
-            root.join("trusted/lean/lean-toolchain"),
+        Self::with_cache_policy(source, OleanCachePolicy::Shared)
+    }
+
+    pub fn isolated(source: Option<&str>) -> Self {
+        Self::with_cache_policy(source, OleanCachePolicy::Isolated)
+    }
+
+    pub fn with_cache_policy(source: Option<&str>, cache_policy: OleanCachePolicy) -> Self {
+        let inner = LeanAuditFixture::with_cache_policy(
+            &repo_root(),
+            "anneal-boundary-test-",
+            source,
+            false,
+            cache_policy,
         )
         .unwrap();
-        fs::copy(
-            checkout.join("trusted/lean/foundation-lock.json"),
-            root.join("trusted/lean/foundation-lock.json"),
-        )
-        .unwrap();
-        fs::copy(
-            checkout.join("trusted/audit/TrustedBoundary.lean"),
-            root.join("trusted/audit/TrustedBoundary.lean"),
-        )
-        .unwrap();
-        fs::write(root.join("trusted/lean/Trusted.lean"), source.unwrap_or(HEADER).as_bytes())
-            .unwrap();
-        Self { _dir: dir, root }
+        let root = inner.root().to_path_buf();
+        Self { inner, root }
+    }
+
+    pub fn checker(&self) -> Checker {
+        self.checker_with_lean(None)
+    }
+
+    pub fn checker_with_lean(&self, lean: Option<&Path>) -> Checker {
+        let env = self.inner.checker_env().unwrap();
+        Checker::new_with_env(&self.root, lean, env).unwrap()
     }
 
     pub fn check_expected(
@@ -106,7 +111,7 @@ impl TempFixture {
         expected_phase: Option<&str>,
         expected_executed: Option<bool>,
     ) -> Result<Json, Failure> {
-        let mut checker = Checker::new(&self.root, None).unwrap();
+        let mut checker = self.checker();
         checker.set_require_mir_wp(false);
         let outcome = checker.run();
         match &outcome {

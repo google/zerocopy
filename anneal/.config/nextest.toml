@@ -20,7 +20,7 @@ fail-fast = false
 # overlapping tests (such as correspondence checks in `boundary_audit`) keep
 # the 60s slow-timeout period.
 [[profile.default.overrides]]
-filter = 'binary(boundary_audit) | binary(target_audit) | test(/verifies_scalar_spec_corpus/)'
+filter = 'binary(boundary_audit) | binary(target_audit) | binary(profile_v2_e2e) | test(/verifies_scalar_spec_corpus/)'
 threads-required = 2
 slow-timeout = { period = "60s", terminate-after = 4 }
 

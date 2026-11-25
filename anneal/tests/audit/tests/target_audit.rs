@@ -17,34 +17,28 @@ use anneal_audit::{
     Checker, Failure, Json, TargetAuditRequest, TargetBindings, TargetModule, TargetRole,
     sha256_bytes,
 };
+use anneal_testkit::{LeanAuditFixture, OleanCachePolicy};
 
 struct Fixture {
-    _dir: tempfile::TempDir,
+    inner: LeanAuditFixture,
     root: PathBuf,
     request: TargetAuditRequest,
 }
 impl Fixture {
     fn new(proof: &str) -> Self {
-        let dir = tempfile::tempdir().unwrap();
-        let root = dir.path().to_path_buf();
         let repo = Path::new(env!("CARGO_MANIFEST_DIR")).join("../..");
-        for rel in [
-            "trusted/audit/TrustedBoundary.lean",
-            "trusted/audit/library-lock.json",
-            "trusted/lean/foundation-lock.json",
-            "trusted/lean/lean-toolchain",
-        ] {
-            fs::create_dir_all(root.join(rel).parent().unwrap()).unwrap();
-            fs::copy(repo.join(rel), root.join(rel)).unwrap();
-        }
-        fs::write(
-            root.join("trusted/lean/Trusted.lean"),
-            "-- anneal-trust-tier: vetted\nprelude\nimport Init.NotationExtra\n",
+        let inner = LeanAuditFixture::with_cache_policy(
+            &repo,
+            "anneal-target-test-",
+            None,
+            true,
+            OleanCachePolicy::Shared,
         )
         .unwrap();
+        let root = inner.root().to_path_buf();
         let h = sha256_bytes(b"fixture compilation");
         let mut f = Self {
-            _dir: dir,
+            inner,
             root,
             request: TargetAuditRequest {
                 modules: vec![],
@@ -80,21 +74,25 @@ impl Fixture {
         f
     }
     fn set(&mut self, name: &str, role: TargetRole, source: &str) {
-        let path = self.root.join("inputs").join(format!("{name}.lean"));
-        fs::create_dir_all(path.parent().unwrap()).unwrap();
-        fs::write(&path, source).unwrap();
+        let (path, expected_sha256) = self.inner.write_input_lean(name, source).unwrap();
         self.request.modules.retain(|m| m.module != name);
         self.request.modules.push(TargetModule {
             module: name.into(),
             source: path,
-            expected_sha256: sha256_bytes(source.as_bytes()),
+            expected_sha256,
             role,
         });
     }
+    fn checker(&self) -> Checker {
+        let env = self.inner.checker_env().unwrap();
+        Checker::new_with_env(&self.root, None, env).unwrap()
+    }
+    fn cargo_checker(&self) -> cargo_anneal::Checker {
+        let env = self.inner.checker_env().unwrap();
+        cargo_anneal::Checker::new_with_env(&self.root, None, env).unwrap()
+    }
     fn run(&self) -> Result<Json, Failure> {
-        Checker::new(&self.root, None)
-            .unwrap()
-            .run_target(&self.request)
+        self.checker().run_target(&self.request)
     }
     fn reject(&self, text: &str) {
         let e = self.run().unwrap_err();
@@ -111,7 +109,7 @@ impl Fixture {
     /// Compile and accept this fixture's own request. Later inspections of
     /// edited requests reuse the returned checker's compiled artifacts.
     fn accepted_checker(&self) -> Checker {
-        let mut checker = Checker::new(&self.root, None).unwrap();
+        let mut checker = self.checker();
         checker.run_target(&self.request).unwrap();
         checker
     }
@@ -182,7 +180,7 @@ fn reports_subject_only_library_identities_without_proof_dependencies() {
         TargetRole::Capture,
         "prelude\nimport Model\ndef UnusedCapture.value : BitVec 8 := BitVec.ofNat 8 99\n",
     );
-    let mut checker = Checker::new(&fixture.root, None).unwrap();
+    let mut checker = fixture.checker();
     let report = checker.run_target(&fixture.request).unwrap();
     assert_eq!(report["exactType"], true);
     assert_eq!(report["replay"], true);
@@ -586,7 +584,7 @@ fn rejects_compiled_role_violation_and_forged_dependency() {
         TargetRole::Specification,
         "prelude\nimport Model\nimport Helper\ndef Spec.specs := Helper.intent\n",
     );
-    let mut checker = Checker::new(&f.root, None).unwrap();
+    let mut checker = f.checker();
     checker.run_target(&f.request).unwrap();
     let mut changed_roles = f.request.clone();
     changed_roles
@@ -895,7 +893,7 @@ fn target_library_inventory_case(module: &str, mode: &str, rejection: Option<&st
     use serde_json::json;
 
     let f = Fixture::new(PROOF);
-    let mut checker = Checker::new(&f.root, None).unwrap();
+    let mut checker = f.checker();
     checker.run_target(&f.request).unwrap();
     let adm = checker.admitted().unwrap();
     let foundation: Vec<_> = adm
@@ -1152,7 +1150,7 @@ fn accepts_ir_extra_name_for_existing_foundation_declaration() {
 #[test]
 fn reconciles_equal_theorem_bodies_before_discarding_inventory_metadata() {
     let fixture = Fixture::new(PROOF);
-    let mut checker = Checker::new(&fixture.root, None).unwrap();
+    let mut checker = fixture.checker();
     let inspector = checker.tool_admission().unwrap().inspector.clone();
     let mut source = fs::read_to_string(inspector).unwrap();
     source.push_str(
@@ -1224,7 +1222,7 @@ fn pinned_importer_rejects_equal_body_metadata_conflicts() {
 #[test]
 fn kernel_result_channels_preserve_success_mismatch_and_operational_error() {
     let fixture = Fixture::new(PROOF);
-    let mut checker = Checker::new(&fixture.root, None).unwrap();
+    let mut checker = fixture.checker();
     let inspector = checker.tool_admission().unwrap().inspector.clone();
     let mut source = fs::read_to_string(inspector).unwrap();
     source.push_str(
@@ -1297,7 +1295,7 @@ fn headers_rejects_module_system_modifiers_and_lean_lake_and_allows_no_prelude()
     // acceptance of the synthetic `!hasPrelude` Init pair and the bundled
     // `Anneal.*` `Init.Data.Nat.Bitwise.Basic` exception.
     let probe_fixture = Fixture::new(PROOF);
-    let mut probe_checker = Checker::new(&probe_fixture.root, None).unwrap();
+    let mut probe_checker = probe_fixture.checker();
     let empty_proof_export = probe_checker.stage().join("proof_export_empty.json");
     fs::write(
         &empty_proof_export,
@@ -1635,7 +1633,7 @@ fn headers_rejects_module_system_modifiers_and_lean_lake_and_allows_no_prelude()
         "import Model\n\
          def Spec.specs (p : BitVec 8) : Prop := BitVec.and p p = p\n",
     );
-    let mut checker = cargo_anneal::Checker::new(&f.root, None).unwrap();
+    let mut checker = f.cargo_checker();
     checker.set_allow_unpinned_lean(true);
     let report = checker.run_target(&f.request).unwrap();
     assert_eq!(report["replay"], true);
@@ -2122,7 +2120,7 @@ fn spec_preflight_parse_tree_round_trip_and_negative_guards() {
     //    vectors against `TrustedBoundary.parseAndInspectSpecCommands` in one
     //    loaded `Init` + `Std` parser environment (~3 s total).
     let fixture = Fixture::new(PROOF);
-    let mut checker = Checker::new(&fixture.root, None).unwrap();
+    let mut checker = fixture.checker();
     let adm = checker.tool_admission().unwrap().clone();
     let vectors_json_path = checker.stage().join("spec_preflight_vectors.json");
     let vectors_json: Vec<Json> = vectors
@@ -2282,7 +2280,7 @@ fn spec_preflight_parse_tree_round_trip_and_negative_guards() {
             TargetRole::Specification,
             &format!("import Model\n{snippet}{spec_base}"),
         );
-        let mut c = cargo_anneal::Checker::new(&e2e_f.root, None).unwrap();
+        let mut c = e2e_f.cargo_checker();
         c.set_allow_unpinned_lean(true);
         let err = c.run_target(&e2e_f.request).unwrap_err();
         assert_eq!(err.code, 1, "{label}: {err}");
@@ -2294,7 +2292,7 @@ fn spec_preflight_parse_tree_round_trip_and_negative_guards() {
         "import Expected\n\
          theorem Proof.verify : Expected.claim := And.intro rfl BitVec.and_self\n",
     );
-    let mut unpinned = cargo_anneal::Checker::new(&base_fixture.root, None).unwrap();
+    let mut unpinned = base_fixture.cargo_checker();
     unpinned.set_allow_unpinned_lean(true);
     base_fixture.set(
         "Spec",
@@ -2399,7 +2397,7 @@ end SpecRich
 def Spec.specs (p : BitVec 8) : Prop := BitVec.and p p = p
 "#,
     );
-    let mut checker = cargo_anneal::Checker::new(&f.root, None).unwrap();
+    let mut checker = f.cargo_checker();
     checker.set_allow_unpinned_lean(true);
     let report = checker.run_target(&f.request).unwrap();
     assert_eq!(report["replay"], true);
@@ -2432,7 +2430,7 @@ fn target_audit_phase1_enforces_whole_spec_opaque_effects_and_unsafe_rec_invaria
         "import Model\n\
          def Spec.specs (p : BitVec 8) : Prop := BitVec.and p p = p\n",
     );
-    let mut checker = cargo_anneal::Checker::new(&f.root, None).unwrap();
+    let mut checker = f.cargo_checker();
     checker.set_allow_unpinned_lean(true);
     checker.run_target(&f.request).unwrap();
 
@@ -2951,7 +2949,7 @@ fn target_export_and_audit_reject_swapped_companions_and_non_module_bundled_comp
          def Spec.specs (p : BitVec 8) : Prop := BitVec.and p p = p\n",
     );
 
-    let mut checker = cargo_anneal::Checker::new(&f.root, None).unwrap();
+    let mut checker = f.cargo_checker();
     let baseline = checker.run_target(&f.request).unwrap();
     assert_eq!(baseline["replay"], true);
     assert_eq!(baseline["exactType"], true);
@@ -3140,7 +3138,7 @@ fn module_mode_targets_verify_and_enforce_boundary_invariants() {
 
     // 1. Full `module`-mode pipeline compiles and passes `"target-audit"`.
     let mod_f = make_module_fixture(clean_spec, clean_proof);
-    let mut checker = cargo_anneal::Checker::new(&mod_f.root, None).unwrap();
+    let mut checker = mod_f.cargo_checker();
     let report = checker.run_target(&mod_f.request).unwrap();
     assert_eq!(report["replay"], true);
     assert_eq!(report["exactType"], true);
@@ -3231,7 +3229,7 @@ fn module_mode_targets_verify_and_enforce_boundary_invariants() {
     //    `validateTargetArtifactPreImport` either falls through to part-count
     //    rejection or aborts in `CompactedRegion.read` (exit code 2) rather
     //    than matching the post-import message; 6b also checks the 1-part case.
-    let mut forged_checker = cargo_anneal::Checker::new(&mod_f.root, None).unwrap();
+    let mut forged_checker = mod_f.cargo_checker();
     forged_checker.run_target(&mod_f.request).unwrap();
     let nonmod_spec_src = "prelude\nimport Model\n\
         def Spec.specs (p : BitVec 8) : Prop := BitVec.and p p = p\n";
@@ -3454,7 +3452,7 @@ fn spec_preflight_and_target_audit_reject_io_debug_dynlib_and_uv() {
                  def Spec.specs (p : BitVec 8) : Prop := BitVec.and p p = p\n"
             ),
         );
-        let mut checker = cargo_anneal::Checker::new(&f.root, None).unwrap();
+        let mut checker = f.cargo_checker();
         let err = checker.run_target(&f.request).unwrap_err();
         assert_eq!(err.code, 1, "{label}: {err}");
         assert_eq!(err.phase, "spec-preflight", "{label}: {err}");
@@ -3475,7 +3473,7 @@ fn spec_preflight_and_target_audit_reject_io_debug_dynlib_and_uv() {
                  def Spec.specs (p : BitVec 8) : Prop := BitVec.and p p = p\n"
             ),
         );
-        let mut checker = cargo_anneal::Checker::new(&f.root, None).unwrap();
+        let mut checker = f.cargo_checker();
         let err = checker.run_target(&f.request).unwrap_err();
         assert_eq!(err.code, 1, "{label}: {err}");
         assert_eq!(err.phase, "headers", "{label}: {err}");
@@ -3575,7 +3573,7 @@ fn target_export_and_audit_do_not_execute_init_and_catch_source_csimp_overrides(
         "def modelInit : IO Unit := throw (IO.userError \"MODEL_INIT_EXECUTED\")\n\
          @[init modelInit] def modelInitVal : Unit := ()\n",
     );
-    let mut checker = cargo_anneal::Checker::new(&f.root, None).unwrap();
+    let mut checker = f.cargo_checker();
     checker.set_allow_unpinned_lean(true);
     let report = checker.run_target(&f.request).unwrap();
     assert_eq!(report["replay"], true, "{report}");
@@ -3628,7 +3626,7 @@ fn target_audit_replays_alternate_proof_with_unreached_stored_dependencies() {
          theorem SharedAlt.check : (fun x : Nat => x = x) 0 :=\n  \
            (fun _ : Nat => rfl) unreachedStoredOnlyAux\n",
     );
-    let mut checker = cargo_anneal::Checker::new(&f.root, None).unwrap();
+    let mut checker = f.cargo_checker();
     let report = checker.run_target(&f.request).unwrap();
     assert_eq!(report["replay"], true, "{report}");
     assert_eq!(report["exactType"], true, "{report}");

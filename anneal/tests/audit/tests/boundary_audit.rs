@@ -23,6 +23,7 @@ use anneal_audit::{
     ensure_miri_cache_outside_checkout, scan_lean_tree, sha256_bytes, sha256_file,
     verify_sysroot_foundation_dir,
 };
+use anneal_testkit::mir_wp_fixture::MirWpFixtureSpec;
 use serde_json::json;
 
 mod common;
@@ -401,7 +402,7 @@ fn rejects_forbidden_syntax_and_attributes_without_executing_eval() {
         ),
     ];
 
-    let mut checker = Checker::new(&base_fix.root, None).unwrap();
+    let mut checker = base_fix.checker();
     checker.tool_admission().unwrap();
     for (idx, (label, src)) in inspector_negatives.iter().enumerate() {
         let neg_path = checker.stage().join(format!("neg-{idx}.lean"));
@@ -652,7 +653,7 @@ fn rejects_tampered_lean_sysroot_outside_foundation_lock() {
     }
 
     // Control: untampered sysroot copy passes `anneal_audit::Checker::run()`.
-    let mut control = Checker::new(&fix.root, Some(&copied_lean)).unwrap();
+    let mut control = fix.checker_with_lean(Some(&copied_lean));
     control.set_require_mir_wp(false);
     control.run().unwrap();
 
@@ -665,7 +666,7 @@ fn rejects_tampered_lean_sysroot_outside_foundation_lock() {
         fs::remove_file(&artifact).unwrap();
         fs::write(&artifact, b"tampered lean replay\n").unwrap();
 
-        let mut tampered = Checker::new(&fix.root, Some(&copied_lean)).unwrap();
+        let mut tampered = fix.checker_with_lean(Some(&copied_lean));
         tampered.set_require_mir_wp(false);
         let err = tampered.run().unwrap_err();
         assert_eq!((err.code, err.phase.as_str()), (1, "toolchain"), "{err}");
@@ -713,7 +714,7 @@ fn rejects_tampered_lean_sysroot_outside_foundation_lock() {
 #[test]
 fn rejects_unused_compiled_axiom() {
     let fix = TempFixture::new(None);
-    let mut checker = Checker::new(&fix.root, None).unwrap();
+    let mut checker = fix.checker();
     checker.tool_admission().unwrap();
     let imports = vec![ImportEdge {
         module: "Init.Core".to_string(),
@@ -1388,7 +1389,7 @@ fn enforces_module_level_trust_tiers_and_namespace_hygiene() {
     // `InspectorRequest::Preflight` directly rejects declaration-free
     // `vetted -> candidate` and `vetted -> theory` imports inside
     // `TrustedBoundary.lean`'s `checkPreflightTierImports`.
-    let mut checker_lean_pf = Checker::new(&f_decl_free.root, None).unwrap();
+    let mut checker_lean_pf = f_decl_free.checker();
     checker_lean_pf.tool_admission().unwrap();
     let lean_pf_trusted = checker_lean_pf.stage().join("pf-trusted.lean");
     let lean_pf_cand = checker_lean_pf.stage().join("pf-cand.lean");
@@ -1608,7 +1609,7 @@ fn enforces_module_level_trust_tiers_and_namespace_hygiene() {
         b"prelude\nimport Trusted\nimport Trusted.Cand\nnamespace Anneal\ntheorem uses_both : Trusted.candProp := True.intro\nend Anneal\n",
     )
     .unwrap();
-    let mut checker_ok = Checker::new(&f_ok.root, None).unwrap();
+    let mut checker_ok = f_ok.checker();
     checker_ok.set_require_mir_wp(false);
     let rep_ok = checker_ok.run().unwrap();
     assert_eq!(rep_ok.get("replay"), Some(&json!(true)));
@@ -1795,7 +1796,7 @@ fn preflights_pass2_vetted_imports_against_authenticated_pass1_base_sources() {
               end Trusted.CandBase\n",
         )
         .unwrap();
-        let mut checker = Checker::new(&fix.root, None).unwrap();
+        let mut checker = fix.checker();
         checker.set_require_mir_wp(false);
         checker.run().unwrap();
 
@@ -2498,7 +2499,7 @@ fn verifies_source_lock_schema_and_rejects_malformed_records() {
 #[test]
 fn rejects_vendor_constants_in_reserved_namespaces() {
     let fix = TempFixture::new(None);
-    let mut checker = Checker::new(&fix.root, None).unwrap();
+    let mut checker = fix.checker();
     checker.set_require_mir_wp(false);
     checker.run().unwrap();
     let trusted_lib = checker.stage().join("lib");
@@ -2688,7 +2689,7 @@ fn sandboxes_cold_miri_compilation_against_host_and_stage_writes() {
         "Miri/EscapeCheckout.lean".to_string(),
         sha256_bytes(escape_checkout_src.as_bytes()),
     )]);
-    let mut c1 = Checker::new(&fix.root, None).unwrap();
+    let mut c1 = fix.checker();
     c1.set_require_mir_wp(false);
     c1.run().unwrap();
     let err1 = c1
@@ -2704,7 +2705,7 @@ fn sandboxes_cold_miri_compilation_against_host_and_stage_writes() {
     // Case 2: A malicious `run_cmd` attempting to write into the auditor's
     // read-only `/work/lp0` (`miri-lib` mount) or host `stage` fails with
     // `EROFS`/`ENOENT` and leaves both untouched.
-    let mut c2 = Checker::new(&fix.root, None).unwrap();
+    let mut c2 = fix.checker();
     c2.set_require_mir_wp(false);
     c2.run().unwrap();
     let stage_victim = c2.stage().join("sandbox-escape-stage.txt");
@@ -2755,7 +2756,7 @@ fn sandboxes_cold_miri_compilation_against_host_and_stage_writes() {
         end Miri.ExtraOut\n";
     let extra_out_path = vendor_dir.join("Miri/ExtraOut.lean");
     fs::write(&extra_out_path, extra_out_src).unwrap();
-    let mut probe = Checker::new(&fix.root, None).unwrap();
+    let mut probe = fix.checker();
     probe.set_require_mir_wp(false);
     probe.run().unwrap();
     let probe_out_dir = probe.stage().join("out");
@@ -2800,7 +2801,7 @@ fn sandboxes_cold_miri_compilation_against_host_and_stage_writes() {
         "Miri/ExtraOut.lean".to_string(),
         sha256_bytes(extra_out_src.as_bytes()),
     )]);
-    let mut c3 = Checker::new(&fix.root, None).unwrap();
+    let mut c3 = fix.checker();
     c3.set_require_mir_wp(false);
     c3.set_miri_cache_dir(Some(cache_dir.path().to_path_buf()));
     c3.run().unwrap();
@@ -2842,7 +2843,7 @@ fn sandboxes_cold_miri_compilation_against_host_and_stage_writes() {
     let qsort_sources = BTreeMap::from([(qsort_entry.path.clone(), qsort_src_sha)]);
     let qsort_cache =
         tempfile::Builder::new().prefix("anneal-sandbox-qsort-cache-").tempdir().unwrap();
-    let mut c4 = Checker::new(&fix.root, None).unwrap();
+    let mut c4 = fix.checker();
     c4.set_require_mir_wp(false);
     c4.set_miri_cache_dir(Some(qsort_cache.path().to_path_buf()));
     c4.run().unwrap();
@@ -2884,7 +2885,7 @@ fn sandboxes_cold_miri_compilation_against_host_and_stage_writes() {
         let src_path = vendor_dir.join(&src_rel);
         fs::write(&src_path, &src).unwrap();
 
-        let mut ir_probe = Checker::new(&fix.root, None).unwrap();
+        let mut ir_probe = fix.checker();
         ir_probe.set_require_mir_wp(false);
         ir_probe.run().unwrap();
         let ir_probe_out = ir_probe.stage().join("out");
@@ -2926,7 +2927,7 @@ fn sandboxes_cold_miri_compilation_against_host_and_stage_writes() {
             olean_private_sha256: None,
         };
         let ir_sources = BTreeMap::from([(src_rel, sha256_bytes(src.as_bytes()))]);
-        let mut c5 = Checker::new(&fix.root, None).unwrap();
+        let mut c5 = fix.checker();
         c5.set_require_mir_wp(false);
         c5.set_miri_cache_dir(Some(ir_cache.path().to_path_buf()));
         c5.run().unwrap();
@@ -2946,441 +2947,23 @@ fn sandboxes_cold_miri_compilation_against_host_and_stage_writes() {
     }
 }
 
-const SYNTHETIC_CANARIES: &[(&str, &str, &str, &str)] = &[
-    (
-        "CanaryPositiveAddAnnealClaim",
-        "canary_positive_add_anneal",
-        "PositiveCanaryClaim",
-        "True.intro",
-    ),
-    (
-        "CanaryPositiveEmptyUnitFnClaim",
-        "canary_positive_empty_unit_fn",
-        "PositiveCanaryClaim",
-        "True.intro",
-    ),
-    (
-        "CanaryPositiveStmtsAndCfAnnealClaim",
-        "canary_positive_stmts_and_cf_anneal",
-        "PositiveCanaryClaim",
-        "True.intro",
-    ),
-    (
-        "CanaryPositiveUnopAnnealClaim",
-        "canary_positive_unop_anneal",
-        "PositiveCanaryClaim",
-        "True.intro",
-    ),
-    (
-        "CanaryPositiveAllBinopsAnnealClaim",
-        "canary_positive_all_binops_anneal",
-        "PositiveCanaryClaim",
-        "True.intro",
-    ),
-    (
-        "CanaryPositiveAllIntWidthsAnnealClaim",
-        "canary_positive_all_int_widths_anneal",
-        "IntWidthBoundaryCanary",
-        "True.intro",
-    ),
-    (
-        "CanaryNegativeUbDivZeroAnnealClaim",
-        "canary_negative_ub_div_zero_anneal",
-        "NegativeCanaryClaim",
-        "True.intro",
-    ),
-    (
-        "CanaryNegativeUbSignedRemOverflowI8Claim",
-        "canary_negative_ub_signed_rem_overflow_i8",
-        "NegativeCanaryClaim",
-        "True.intro",
-    ),
-    (
-        "CanaryNegativeUnsupportedAnnealClaim",
-        "canary_negative_unsupported_anneal",
-        "NegativeCanaryClaim",
-        "True.intro",
-    ),
-    (
-        "CanaryNegativeUbAddUncheckedOverflowU32Claim",
-        "canary_negative_ub_add_unchecked_overflow_u32",
-        "And NegativeCanaryClaim PositiveCanaryClaim",
-        "And.intro True.intro True.intro",
-    ),
-    (
-        "CanaryNegativeUbShiftUncheckedAtBitwidthAnnealClaim",
-        "canary_negative_ub_shift_unchecked_at_bitwidth_anneal",
-        "NegativeCanaryClaim",
-        "True.intro",
-    ),
-    (
-        "CanaryNegativeUbStorageDeadReadAnnealClaim",
-        "canary_negative_ub_storage_dead_read_anneal",
-        "NegativeCanaryClaim",
-        "True.intro",
-    ),
-    (
-        "CanaryNegativeUbStorageDeadReturnPlaceAnnealClaim",
-        "canary_negative_ub_storage_dead_return_place_anneal",
-        "NegativeCanaryClaim",
-        "True.intro",
-    ),
-    (
-        "CanaryNegativeUbUnreachableAnnealClaim",
-        "canary_negative_ub_unreachable_anneal",
-        "NegativeCanaryClaim",
-        "True.intro",
-    ),
-    (
-        "CanaryNegativeUnsupportedUnsignedNegAnnealClaim",
-        "canary_negative_unsupported_unsigned_neg_anneal",
-        "NegativeCanaryClaim",
-        "True.intro",
-    ),
-    (
-        "CanaryPositiveEnumExplicitReprAnnealClaim",
-        "canary_positive_enum_explicit_repr_anneal",
-        "PositiveCanaryClaim",
-        "True.intro",
-    ),
-    (
-        "CanaryPositiveZstSingleEnumAnnealClaim",
-        "canary_positive_zst_single_enum_anneal",
-        "PositiveCanaryClaim",
-        "True.intro",
-    ),
-    (
-        "CanaryNegativeUbEnumInvalidTagAndUninitAnnealClaim",
-        "canary_negative_ub_enum_invalid_tag_and_uninit_anneal",
-        "NegativeCanaryClaim",
-        "True.intro",
-    ),
-    (
-        "CanaryCrateAndBodyVerifiedAnnealClaim",
-        "canary_crate_and_body_verified_anneal",
-        "And CrateTheorem (And UnitTheorem BodyVerified)",
-        "And.intro True.intro (And.intro True.intro True.intro)",
-    ),
-    (
-        "CanaryMemoryLifecycleAnnealClaim",
-        "canary_memory_lifecycle_anneal",
-        "And PositiveCanaryClaim (And initState (And evalStep (And forceAllocation readBytes)))",
-        "And.intro True.intro (And.intro True.intro (And.intro True.intro \
-         (And.intro True.intro True.intro)))",
-    ),
-    (
-        "CanaryPositiveCharAndCmpAnnealClaim",
-        "canary_positive_char_and_cmp_anneal",
-        "And PositiveCanaryClaim (And mkBinOpProg (And Trusted.MirAst.BinOp.cmp \
-         (And Trusted.MirAst.MirTy.char (And charVal \
-         (And mkCmpDiscriminantProg progCharSwitch)))))",
-        "And.intro True.intro (And.intro True.intro (And.intro True.intro \
-         (And.intro True.intro (And.intro True.intro \
-         (And.intro True.intro True.intro)))))",
-    ),
-    (
-        "CanaryNegativeCharAndCmpAnnealClaim",
-        "canary_negative_char_and_cmp_anneal",
-        "And NegativeCanaryClaim (And progInvalidCharConstUb \
-         (And progInvalidCharSwitchCaseUb (And mkBinOpProg \
-         (And Trusted.MirAst.BinOp.cmp mkUnOpProg))))",
-        "And.intro True.intro (And.intro True.intro (And.intro True.intro \
-         (And.intro True.intro (And.intro True.intro True.intro))))",
-    ),
-    (
-        "CanaryPositiveOverflowOpsAnnealClaim",
-        "canary_positive_overflow_ops_anneal",
-        "And PositiveCanaryClaim (And mkBinOpProg (And overflowPairTy \
-         (And Trusted.MirAst.BinOp.addWithOverflow \
-         (And Trusted.MirAst.BinOp.subWithOverflow \
-         Trusted.MirAst.BinOp.mulWithOverflow))))",
-        "And.intro True.intro (And.intro True.intro (And.intro True.intro \
-         (And.intro True.intro (And.intro True.intro True.intro))))",
-    ),
-    (
-        "CanaryPositiveIntToIntCastAnnealClaim",
-        "canary_positive_int_to_int_cast_anneal",
-        "And PositiveCanaryClaim (And mkIntToIntCastProg \
-         (And Trusted.MirAst.MirTy.char charVal))",
-        "And.intro True.intro (And.intro True.intro (And.intro True.intro True.intro))",
-    ),
-    (
-        "CanaryNegativeIntToIntCastAnnealClaim",
-        "canary_negative_int_to_int_cast_anneal",
-        "And NegativeCanaryClaim (And mkIntToIntCastProg \
-         (And Trusted.MirAst.MirTy.char progCastUninitSourceUb))",
-        "And.intro True.intro (And.intro True.intro (And.intro True.intro True.intro))",
-    ),
-];
-
-/// Configurable synthetic fixture containing minimal `Trusted.MirAst`,
-/// `Trusted.MirSemantics`, `Anneal`, `Anneal.MirWp`, and decoupled
-/// `Anneal.MirWp.Canaries` modules that pass `verifyMirWpCoreTheorems` out of
-/// the box so individual negative tests can mutate a single admission check in
-/// isolation. Neither `Anneal` nor `Anneal.MirWp` imports
-/// `Anneal.MirWp.Canaries`.
-struct MirWpSyntheticSpec {
-    mir_ast_extra: String,
-    wp_soundness_claim: Option<String>,
-    wp_fault_soundness_claim: Option<String>,
-    exec_soundness_claim_v2: Option<String>,
-    canary_claim_overrides: BTreeMap<String, Option<String>>,
-    public_alias_overrides: BTreeMap<String, Option<String>>,
-    anneal_extra: String,
-    wp_soundness_proof: Option<String>,
-    wp_fault_soundness_proof: Option<String>,
-    exec_soundness_proof_v2: Option<String>,
-    canary_proof_overrides: BTreeMap<String, Option<String>>,
-    mir_wp_extra: String,
-    include_canaries_module: bool,
-    canaries_extra: String,
+fn materialize_mir_wp(spec: &MirWpFixtureSpec) -> TempFixture {
+    let fix = TempFixture::new(Some(HEADER));
+    spec.materialize_into(&fix.inner).unwrap();
+    fix
 }
 
-impl MirWpSyntheticSpec {
-    fn valid() -> Self {
-        Self {
-            mir_ast_extra: String::new(),
-            wp_soundness_claim: Some(
-                "def WpSoundnessClaim (_f : Nat) : Prop := And SatisfiesPost (And Diverges Behavior)"
-                    .to_string(),
-            ),
-            wp_fault_soundness_claim: Some(
-                "def WpFaultSoundnessClaim (_f : Nat) : Prop := And ReachesResult (And Diverges WellFormed)"
-                    .to_string(),
-            ),
-            exec_soundness_claim_v2: Some(
-                "def ExecSoundnessClaimV2 (_f : Nat) : Prop := \
-                 And SatisfiesPostV2 (And DivergesV2 BehaviorV2)"
-                    .to_string(),
-            ),
-            canary_claim_overrides: BTreeMap::new(),
-            public_alias_overrides: BTreeMap::new(),
-            anneal_extra: String::new(),
-            wp_soundness_proof: Some(
-                "theorem wellFormed_and_spec_of_wp : \
-                 Trusted.MirSemantics.WpSoundnessClaim Anneal.MirWp.wpProg := \
-                 And.intro True.intro (And.intro True.intro True.intro)"
-                    .to_string(),
-            ),
-            wp_fault_soundness_proof: Some(
-                "theorem reaches_fault_and_exclusive_of_wpFault : \
-                 Trusted.MirSemantics.WpFaultSoundnessClaim Anneal.MirWp.wpFaultProg := \
-                 And.intro True.intro (And.intro True.intro True.intro)"
-                    .to_string(),
-            ),
-            exec_soundness_proof_v2: Some(
-                "theorem wellFormed_and_spec_of_execV2 : \
-                 Trusted.MirSemantics.ExecSoundnessClaimV2 Anneal.MirWp.execProgV2 := \
-                 And.intro True.intro (And.intro True.intro True.intro)"
-                    .to_string(),
-            ),
-            canary_proof_overrides: BTreeMap::new(),
-            mir_wp_extra: String::new(),
-            include_canaries_module: true,
-            canaries_extra: String::new(),
-        }
-    }
-
-    fn materialize(&self) -> TempFixture {
-        let fix = TempFixture::new(Some(HEADER));
-        fs::create_dir_all(fix.root.join("trusted/lean/Trusted")).unwrap();
-        fs::create_dir_all(fix.root.join("theory/Anneal/MirWp")).unwrap();
-
-        let mir_ast = format!(
-            "-- anneal-trust-tier: candidate:mir_ast\n\
-             prelude\n\
-             import Init.NotationExtra\n\
-             namespace Trusted.MirAst\n\
-             def placeholder : Nat := 0\n\
-             def BinOp.cmp : Prop := True\n\
-             def BinOp.addWithOverflow : Prop := True\n\
-             def BinOp.subWithOverflow : Prop := True\n\
-             def BinOp.mulWithOverflow : Prop := True\n\
-             def MirTy.char : Prop := True\n\
-             end Trusted.MirAst\n\
-             {}\n",
-            self.mir_ast_extra
-        );
-        fs::write(fix.root.join("trusted/lean/Trusted/MirAst.lean"), mir_ast).unwrap();
-
-        let mut sem = String::from(
-            "-- anneal-trust-tier: candidate:mir_semantics\n\
-             prelude\n\
-             import Init.NotationExtra\n\
-             import Trusted.MirAst\n\
-             namespace Trusted.MirSemantics\n\
-             def SatisfiesPost : Prop := True\n\
-             def Diverges : Prop := True\n\
-             def Behavior : Prop := True\n\
-             def ReachesResult : Prop := True\n\
-             def WellFormed : Prop := True\n\
-             def SatisfiesPostV2 : Prop := True\n\
-             def DivergesV2 : Prop := True\n\
-             def BehaviorV2 : Prop := True\n\
-             def PositiveCanaryClaim : Prop := True\n\
-             def NegativeCanaryClaim : Prop := True\n\
-             def IntWidthBoundaryCanary : Prop := True\n\
-             def Crate : Prop := True\n\
-             def CrateTheorem : Prop := True\n\
-             def UnitTheorem : Prop := True\n\
-             def CrateV2 : Prop := True\n\
-             def CrateTheoremV2 : Prop := True\n\
-             def UnitTheoremV2 : Prop := True\n\
-             def BodyVerified : Prop := True\n\
-             def initState : Prop := True\n\
-             def evalStep : Prop := True\n\
-             def forceAllocation : Prop := True\n\
-             def readBytes : Prop := True\n\
-             def mkBinOpProg : Prop := True\n\
-             def mkUnOpProg : Prop := True\n\
-             def charVal : Prop := True\n\
-             def mkCmpDiscriminantProg : Prop := True\n\
-             def progCharSwitch : Prop := True\n\
-             def progInvalidCharConstUb : Prop := True\n\
-             def progInvalidCharSwitchCaseUb : Prop := True\n\
-             def overflowPairTy : Prop := True\n\
-             def mkIntToIntCastProg : Prop := True\n\
-             def progCastUninitSourceUb : Prop := True\n",
-        );
-        if let Some(decl) = &self.wp_soundness_claim {
-            sem.push_str(decl);
-            sem.push('\n');
-        }
-        if let Some(decl) = &self.wp_fault_soundness_claim {
-            sem.push_str(decl);
-            sem.push('\n');
-        }
-        if let Some(decl) = &self.exec_soundness_claim_v2 {
-            sem.push_str(decl);
-            sem.push('\n');
-        }
-        for &(claim, _, body, _) in SYNTHETIC_CANARIES {
-            match self.canary_claim_overrides.get(claim) {
-                Some(None) => {}
-                Some(Some(custom)) => {
-                    sem.push_str(custom);
-                    sem.push('\n');
-                }
-                None => {
-                    sem.push_str(&format!("def {claim} : Prop := {body}\n"));
-                }
-            }
-        }
-        sem.push_str("end Trusted.MirSemantics\n");
-        sem.push_str("namespace Trusted\n");
-        for (alias_name, default_decl) in [
-            ("Crate", "abbrev Crate := Trusted.MirSemantics.Crate"),
-            (
-                "CrateTheorem",
-                "noncomputable abbrev CrateTheorem := Trusted.MirSemantics.CrateTheorem",
-            ),
-            ("UnitTheorem", "noncomputable abbrev UnitTheorem := Trusted.MirSemantics.UnitTheorem"),
-            ("CrateV2", "abbrev CrateV2 := Trusted.MirSemantics.CrateV2"),
-            ("CrateTheoremV2", "noncomputable abbrev CrateTheoremV2 := Trusted.MirSemantics.CrateTheoremV2"),
-            ("UnitTheoremV2", "noncomputable abbrev UnitTheoremV2 := Trusted.MirSemantics.UnitTheoremV2"),
-        ] {
-            match self.public_alias_overrides.get(alias_name) {
-                Some(None) => {}
-                Some(Some(custom)) => {
-                    sem.push_str(custom);
-                    sem.push('\n');
-                }
-                None => {
-                    sem.push_str(default_decl);
-                    sem.push('\n');
-                }
-            }
-        }
-        sem.push_str("end Trusted\n");
-        fs::write(fix.root.join("trusted/lean/Trusted/MirSemantics.lean"), sem).unwrap();
-
-        let mut wp = String::from(
-            "prelude\n\
-             import Init.NotationExtra\n\
-             import Trusted\n\
-             import Trusted.MirAst\n\
-             import Trusted.MirSemantics\n\
-             namespace Anneal.MirWp\n\
-             def wpProg : Nat := 0\n\
-             def wpFaultProg : Nat := 0\n\
-             def execProgV2 : Nat := 0\n",
-        );
-        if let Some(decl) = &self.wp_soundness_proof {
-            wp.push_str(decl);
-            wp.push('\n');
-        }
-        if let Some(decl) = &self.wp_fault_soundness_proof {
-            wp.push_str(decl);
-            wp.push('\n');
-        }
-        if let Some(decl) = &self.exec_soundness_proof_v2 {
-            wp.push_str(decl);
-            wp.push('\n');
-        }
-        wp.push_str("end Anneal.MirWp\n");
-        if !self.mir_wp_extra.is_empty() {
-            wp.push_str(&self.mir_wp_extra);
-            wp.push('\n');
-        }
-        fs::write(fix.root.join("theory/Anneal/MirWp.lean"), wp).unwrap();
-
-        if self.include_canaries_module {
-            let mut canaries = String::from(
-                "prelude\n\
-                 import Init.NotationExtra\n\
-                 import Trusted\n\
-                 import Trusted.MirAst\n\
-                 import Trusted.MirSemantics\n\
-                 namespace Anneal.MirWp\n",
-            );
-            for &(claim, proof, _, proof_term) in SYNTHETIC_CANARIES {
-                match self.canary_proof_overrides.get(proof) {
-                    Some(None) => {}
-                    Some(Some(custom)) => {
-                        canaries.push_str(custom);
-                        canaries.push('\n');
-                    }
-                    None => {
-                        canaries.push_str(&format!(
-                            "theorem {proof} : Trusted.MirSemantics.{claim} := {proof_term}\n"
-                        ));
-                    }
-                }
-            }
-            canaries.push_str("end Anneal.MirWp\n");
-            if !self.canaries_extra.is_empty() {
-                canaries.push_str(&self.canaries_extra);
-                canaries.push('\n');
-            }
-            fs::write(fix.root.join("theory/Anneal/MirWp/Canaries.lean"), canaries).unwrap();
-        }
-
-        let anneal = format!(
-            "prelude\n\
-             import Init.NotationExtra\n\
-             import Trusted\n\
-             import Trusted.MirAst\n\
-             import Trusted.MirSemantics\n\
-             import Anneal.MirWp\n\
-             {}\n",
-            self.anneal_extra
-        );
-        fs::write(fix.root.join("theory/Anneal.lean"), anneal).unwrap();
-        fix
-    }
-
-    fn expect_audit_policy_err(&self, expected_substring: &str) {
-        let fix = self.materialize();
-        let mut checker = Checker::new(&fix.root, None).unwrap();
-        let err = checker.run().unwrap_err();
-        assert_eq!(err.code, 1, "expected exit code 1, got: {err}");
-        assert_eq!(err.phase, "audit", "expected audit phase, got: {err}");
-        assert!(checker.execution_began(), "expected Lean execution before audit failure: {err}");
-        assert!(
-            err.message.contains(expected_substring),
-            "expected error containing {expected_substring:?}, got: {err}"
-        );
-    }
+fn expect_mir_wp_audit_policy_err(spec: &MirWpFixtureSpec, expected_substring: &str) {
+    let fix = materialize_mir_wp(spec);
+    let mut checker = fix.checker();
+    let err = checker.run().unwrap_err();
+    assert_eq!(err.code, 1, "expected exit code 1, got: {err}");
+    assert_eq!(err.phase, "audit", "expected audit phase, got: {err}");
+    assert!(checker.execution_began(), "expected Lean execution before audit failure: {err}");
+    assert!(
+        err.message.contains(expected_substring),
+        "expected error containing {expected_substring:?}, got: {err}"
+    );
 }
 
 /// Verifies every trigger and missing-module rejection branch of
@@ -3394,7 +2977,7 @@ fn enforces_mir_wp_non_backsliding() {
     // checkout with NONE of `Trusted.MirAst`, `Trusted.MirSemantics`,
     // `Anneal.MirWp`, or `Anneal.PureLift` is rejected fail-closed.
     let fix_missing_all = TempFixture::new(Some(HEADER));
-    let mut checker_missing_all = Checker::new(&fix_missing_all.root, None).unwrap();
+    let mut checker_missing_all = fix_missing_all.checker();
     let err_missing_all = checker_missing_all.run().unwrap_err();
     assert_eq!(err_missing_all.code, 1);
     assert_eq!(err_missing_all.phase, "audit");
@@ -3413,7 +2996,7 @@ fn enforces_mir_wp_non_backsliding() {
         b"-- anneal-trust-tier: candidate:mir_ast\nprelude\nimport Init.NotationExtra\nnamespace Trusted.MirAst\ndef placeholder : Nat := 0\nend Trusted.MirAst\n",
     )
     .unwrap();
-    let mut checker_missing_both = Checker::new(&fix_missing_both.root, None).unwrap();
+    let mut checker_missing_both = fix_missing_both.checker();
     let err_missing_both = checker_missing_both.run().unwrap_err();
     assert_eq!(err_missing_both.code, 1);
     assert_eq!(err_missing_both.phase, "audit");
@@ -3519,10 +3102,12 @@ fn enforces_mir_wp_non_backsliding() {
 
     // 7. Missing decoupled `Anneal.MirWp.Canaries` is rejected fail-closed even
     // when `Anneal` and `Anneal.MirWp` are present and neither imports it.
-    let mut missing_canaries = MirWpSyntheticSpec::valid();
+    let mut missing_canaries = MirWpFixtureSpec::valid();
     missing_canaries.include_canaries_module = false;
-    missing_canaries
-        .expect_audit_policy_err("missing required theory module Anneal.MirWp.Canaries");
+    expect_mir_wp_audit_policy_err(
+        &missing_canaries,
+        "missing required theory module Anneal.MirWp.Canaries",
+    );
 
     // 8. With `require_mir_wp == false`, presence of `Anneal.MirWp.Canaries`
     // alone triggers `verifyMirWpCoreTheorems` and rejects fail-closed.
@@ -3555,40 +3140,47 @@ fn enforces_mir_wp_non_backsliding() {
 fn enforces_mir_wp_param_claim_proof_rules() {
     // Baseline: the unmutated synthetic fixture passes with default
     // `require_mir_wp == true`.
-    let baseline = MirWpSyntheticSpec::valid().materialize();
-    let mut checker = Checker::new(&baseline.root, None).unwrap();
+    let baseline = materialize_mir_wp(&MirWpFixtureSpec::valid());
+    let mut checker = baseline.checker();
     let report = checker.run().unwrap();
     assert_eq!(report.get("replay"), Some(&json!(true)));
 
     // Missing `WpSoundnessClaim` from `Trusted.MirSemantics`.
-    let mut missing_wp_claim = MirWpSyntheticSpec::valid();
+    let mut missing_wp_claim = MirWpFixtureSpec::valid();
     missing_wp_claim.wp_soundness_claim = None;
     missing_wp_claim.wp_soundness_proof = None;
-    missing_wp_claim
-        .expect_audit_policy_err("missing required claim Trusted.MirSemantics.WpSoundnessClaim");
+    expect_mir_wp_audit_policy_err(
+        &missing_wp_claim,
+        "missing required claim Trusted.MirSemantics.WpSoundnessClaim",
+    );
 
     // Missing `wellFormed_and_spec_of_wp`.
-    let mut missing_wp_thm = MirWpSyntheticSpec::valid();
+    let mut missing_wp_thm = MirWpFixtureSpec::valid();
     missing_wp_thm.wp_soundness_proof = None;
-    missing_wp_thm
-        .expect_audit_policy_err("missing required theorem Anneal.MirWp.wellFormed_and_spec_of_wp");
+    expect_mir_wp_audit_policy_err(
+        &missing_wp_thm,
+        "missing required theorem Anneal.MirWp.wellFormed_and_spec_of_wp",
+    );
 
     // Missing `reaches_fault_and_exclusive_of_wpFault`.
-    let mut missing_fault_thm = MirWpSyntheticSpec::valid();
+    let mut missing_fault_thm = MirWpFixtureSpec::valid();
     missing_fault_thm.wp_fault_soundness_proof = None;
-    missing_fault_thm.expect_audit_policy_err(
+    expect_mir_wp_audit_policy_err(
+        &missing_fault_thm,
         "missing required theorem Anneal.MirWp.reaches_fault_and_exclusive_of_wpFault",
     );
 
     // Non-theorem proof (`def` instead of `theorem`).
-    let mut def_instead_of_thm = MirWpSyntheticSpec::valid();
+    let mut def_instead_of_thm = MirWpFixtureSpec::valid();
     def_instead_of_thm.wp_soundness_proof =
         Some("def wellFormed_and_spec_of_wp : Nat := 0".to_string());
-    def_instead_of_thm
-        .expect_audit_policy_err("expected Anneal.MirWp.wellFormed_and_spec_of_wp to be a theorem");
+    expect_mir_wp_audit_policy_err(
+        &def_instead_of_thm,
+        "expected Anneal.MirWp.wellFormed_and_spec_of_wp to be a theorem",
+    );
 
-    // Proof defined in `Anneal` instead of `Anneal.MirWp`.
-    let mut wrong_proof_mod = MirWpSyntheticSpec::valid();
+    // Proof defined in `Anneal.Wp` instead of `Anneal.MirWp`.
+    let mut wrong_proof_mod = MirWpFixtureSpec::valid();
     wrong_proof_mod.wp_soundness_proof = None;
     wrong_proof_mod.anneal_extra = "\
         namespace Anneal.MirWp\n\
@@ -3597,22 +3189,25 @@ fn enforces_mir_wp_param_claim_proof_rules() {
           And.intro True.intro (And.intro True.intro True.intro)\n\
         end Anneal.MirWp"
         .to_string();
-    wrong_proof_mod.expect_audit_policy_err(
-        "expected Anneal.MirWp.wellFormed_and_spec_of_wp to be defined in Anneal.MirWp, found Anneal",
+    expect_mir_wp_audit_policy_err(
+        &wrong_proof_mod,
+        "expected Anneal.MirWp.wellFormed_and_spec_of_wp to be defined in \
+         Anneal.MirWp, found Anneal.Wp",
     );
 
     // Weakened / wrong-type proof (`True` instead of
     // `WpSoundnessClaim wpProg`).
-    let mut weakened_wp_thm = MirWpSyntheticSpec::valid();
+    let mut weakened_wp_thm = MirWpFixtureSpec::valid();
     weakened_wp_thm.wp_soundness_proof =
         Some("theorem wellFormed_and_spec_of_wp : True := True.intro".to_string());
-    weakened_wp_thm.expect_audit_policy_err(
+    expect_mir_wp_audit_policy_err(
+        &weakened_wp_thm,
         "theorem Anneal.MirWp.wellFormed_and_spec_of_wp must prove \
          Trusted.MirSemantics.WpSoundnessClaim Anneal.MirWp.wpProg directly",
     );
 
     // Non-definition claim (`inductive` instead of `def`).
-    let mut non_def_claim = MirWpSyntheticSpec::valid();
+    let mut non_def_claim = MirWpFixtureSpec::valid();
     non_def_claim.wp_soundness_claim =
         Some("inductive WpSoundnessClaim (_f : Nat) : Prop where\n  | intro".to_string());
     non_def_claim.wp_soundness_proof = Some(
@@ -3621,12 +3216,13 @@ fn enforces_mir_wp_param_claim_proof_rules() {
          Trusted.MirSemantics.WpSoundnessClaim.intro"
             .to_string(),
     );
-    non_def_claim.expect_audit_policy_err(
+    expect_mir_wp_audit_policy_err(
+        &non_def_claim,
         "expected Trusted.MirSemantics.WpSoundnessClaim to be a definition",
     );
 
     // Claim defined in `Trusted.MirAst` instead of `Trusted.MirSemantics`.
-    let mut wrong_claim_mod = MirWpSyntheticSpec::valid();
+    let mut wrong_claim_mod = MirWpFixtureSpec::valid();
     wrong_claim_mod.wp_soundness_claim = None;
     wrong_claim_mod.mir_ast_extra = "\
         namespace Trusted.MirSemantics\n\
@@ -3638,14 +3234,15 @@ fn enforces_mir_wp_param_claim_proof_rules() {
          Trusted.MirSemantics.WpSoundnessClaim Anneal.MirWp.wpProg := True.intro"
             .to_string(),
     );
-    wrong_claim_mod.expect_audit_policy_err(
+    expect_mir_wp_audit_policy_err(
+        &wrong_claim_mod,
         "expected Trusted.MirSemantics.WpSoundnessClaim to be defined in \
          Trusted.MirSemantics, found Trusted.MirAst",
     );
 
     // Claim body missing required `SatisfiesPost` reference
     // (`TrustedBoundary.lean` `requireClaimProof` `reqConsts` check).
-    let mut missing_req_const = MirWpSyntheticSpec::valid();
+    let mut missing_req_const = MirWpFixtureSpec::valid();
     missing_req_const.wp_soundness_claim =
         Some("def WpSoundnessClaim (_f : Nat) : Prop := And Diverges Behavior".to_string());
     missing_req_const.wp_soundness_proof = Some(
@@ -3654,14 +3251,15 @@ fn enforces_mir_wp_param_claim_proof_rules() {
          And.intro True.intro True.intro"
             .to_string(),
     );
-    missing_req_const.expect_audit_policy_err(
+    expect_mir_wp_audit_policy_err(
+        &missing_req_const,
         "claim Trusted.MirSemantics.WpSoundnessClaim body must reference \
          Trusted.MirSemantics.SatisfiesPost",
     );
 
     // Claim body missing required `Diverges` reference (prevents silently
     // weakening the audited WP claim to partial correctness).
-    let mut missing_diverges_const = MirWpSyntheticSpec::valid();
+    let mut missing_diverges_const = MirWpFixtureSpec::valid();
     missing_diverges_const.wp_soundness_claim =
         Some("def WpSoundnessClaim (_f : Nat) : Prop := And SatisfiesPost Behavior".to_string());
     missing_diverges_const.wp_soundness_proof = Some(
@@ -3670,13 +3268,14 @@ fn enforces_mir_wp_param_claim_proof_rules() {
          And.intro True.intro True.intro"
             .to_string(),
     );
-    missing_diverges_const.expect_audit_policy_err(
+    expect_mir_wp_audit_policy_err(
+        &missing_diverges_const,
         "claim Trusted.MirSemantics.WpSoundnessClaim body must reference \
          Trusted.MirSemantics.Diverges",
     );
 
     // Fault claim body missing required `Diverges` reference.
-    let mut missing_fault_diverges_const = MirWpSyntheticSpec::valid();
+    let mut missing_fault_diverges_const = MirWpFixtureSpec::valid();
     missing_fault_diverges_const.wp_fault_soundness_claim = Some(
         "def WpFaultSoundnessClaim (_f : Nat) : Prop := And ReachesResult WellFormed".to_string(),
     );
@@ -3686,13 +3285,14 @@ fn enforces_mir_wp_param_claim_proof_rules() {
          And.intro True.intro True.intro"
             .to_string(),
     );
-    missing_fault_diverges_const.expect_audit_policy_err(
+    expect_mir_wp_audit_policy_err(
+        &missing_fault_diverges_const,
         "claim Trusted.MirSemantics.WpFaultSoundnessClaim body must reference \
          Trusted.MirSemantics.Diverges",
     );
 
     // Fault claim body missing required `WellFormed` reference.
-    let mut missing_fault_req_const = MirWpSyntheticSpec::valid();
+    let mut missing_fault_req_const = MirWpFixtureSpec::valid();
     missing_fault_req_const.wp_fault_soundness_claim = Some(
         "def WpFaultSoundnessClaim (_f : Nat) : Prop := And ReachesResult Diverges".to_string(),
     );
@@ -3702,32 +3302,36 @@ fn enforces_mir_wp_param_claim_proof_rules() {
          And.intro True.intro True.intro"
             .to_string(),
     );
-    missing_fault_req_const.expect_audit_policy_err(
+    expect_mir_wp_audit_policy_err(
+        &missing_fault_req_const,
         "claim Trusted.MirSemantics.WpFaultSoundnessClaim body must reference \
          Trusted.MirSemantics.WellFormed",
     );
 
     // Missing Profile v2 `ExecSoundnessClaimV2` from `Trusted.MirSemantics`.
-    let mut missing_v2_claim = MirWpSyntheticSpec::valid();
+    let mut missing_v2_claim = MirWpFixtureSpec::valid();
     missing_v2_claim.exec_soundness_claim_v2 = None;
     missing_v2_claim.exec_soundness_proof_v2 = None;
-    missing_v2_claim.expect_audit_policy_err(
+    expect_mir_wp_audit_policy_err(
+        &missing_v2_claim,
         "missing required claim Trusted.MirSemantics.ExecSoundnessClaimV2",
     );
 
     // Missing `wellFormed_and_spec_of_execV2`.
-    let mut missing_v2_thm = MirWpSyntheticSpec::valid();
+    let mut missing_v2_thm = MirWpFixtureSpec::valid();
     missing_v2_thm.exec_soundness_proof_v2 = None;
-    missing_v2_thm.expect_audit_policy_err(
+    expect_mir_wp_audit_policy_err(
+        &missing_v2_thm,
         "missing required theorem Anneal.MirWp.wellFormed_and_spec_of_execV2",
     );
 
     // Weakened Profile v2 proof (`True` instead of
     // `ExecSoundnessClaimV2 execProgV2`).
-    let mut weakened_v2_thm = MirWpSyntheticSpec::valid();
+    let mut weakened_v2_thm = MirWpFixtureSpec::valid();
     weakened_v2_thm.exec_soundness_proof_v2 =
         Some("theorem wellFormed_and_spec_of_execV2 : True := True.intro".to_string());
-    weakened_v2_thm.expect_audit_policy_err(
+    expect_mir_wp_audit_policy_err(
+        &weakened_v2_thm,
         "theorem Anneal.MirWp.wellFormed_and_spec_of_execV2 must prove \
          Trusted.MirSemantics.ExecSoundnessClaimV2 Anneal.MirWp.execProgV2 directly",
     );
@@ -3738,7 +3342,7 @@ fn enforces_mir_wp_param_claim_proof_rules() {
         ("And SatisfiesPostV2 BehaviorV2", "DivergesV2"),
         ("And SatisfiesPostV2 DivergesV2", "BehaviorV2"),
     ] {
-        let mut missing_v2_const = MirWpSyntheticSpec::valid();
+        let mut missing_v2_const = MirWpFixtureSpec::valid();
         missing_v2_const.exec_soundness_claim_v2 =
             Some(format!("def ExecSoundnessClaimV2 (_f : Nat) : Prop := {body}"));
         missing_v2_const.exec_soundness_proof_v2 = Some(
@@ -3747,10 +3351,13 @@ fn enforces_mir_wp_param_claim_proof_rules() {
              And.intro True.intro True.intro"
                 .to_string(),
         );
-        missing_v2_const.expect_audit_policy_err(&format!(
-            "claim Trusted.MirSemantics.ExecSoundnessClaimV2 body must reference \
-             Trusted.MirSemantics.{dropped}"
-        ));
+        expect_mir_wp_audit_policy_err(
+            &missing_v2_const,
+            &format!(
+                "claim Trusted.MirSemantics.ExecSoundnessClaimV2 body must reference \
+                 Trusted.MirSemantics.{dropped}"
+            ),
+        );
     }
 }
 
@@ -3762,15 +3369,16 @@ fn enforces_mir_wp_param_claim_proof_rules() {
 #[test]
 fn enforces_mir_wp_canary_claim_proof_rules() {
     // Missing canary claim from `Trusted.MirSemantics`.
-    let mut missing_claim = MirWpSyntheticSpec::valid();
+    let mut missing_claim = MirWpFixtureSpec::valid();
     missing_claim.canary_claim_overrides.insert("CanaryPositiveAddAnnealClaim".to_string(), None);
     missing_claim.canary_proof_overrides.insert("canary_positive_add_anneal".to_string(), None);
-    missing_claim.expect_audit_policy_err(
+    expect_mir_wp_audit_policy_err(
+        &missing_claim,
         "missing required claim Trusted.MirSemantics.CanaryPositiveAddAnnealClaim",
     );
 
     // Non-definition canary claim (`inductive` instead of `def`).
-    let mut non_def_claim = MirWpSyntheticSpec::valid();
+    let mut non_def_claim = MirWpFixtureSpec::valid();
     non_def_claim.canary_claim_overrides.insert(
         "CanaryPositiveAddAnnealClaim".to_string(),
         Some("inductive CanaryPositiveAddAnnealClaim : Prop where\n  | intro".to_string()),
@@ -3784,20 +3392,22 @@ fn enforces_mir_wp_canary_claim_proof_rules() {
                 .to_string(),
         ),
     );
-    non_def_claim.expect_audit_policy_err(
+    expect_mir_wp_audit_policy_err(
+        &non_def_claim,
         "expected Trusted.MirSemantics.CanaryPositiveAddAnnealClaim to be a definition",
     );
 
     // Canary claim defined in `Trusted.MirAst` instead of
     // `Trusted.MirSemantics`.
-    let mut wrong_claim_mod = MirWpSyntheticSpec::valid();
+    let mut wrong_claim_mod = MirWpFixtureSpec::valid();
     wrong_claim_mod.canary_claim_overrides.insert("CanaryPositiveAddAnnealClaim".to_string(), None);
     wrong_claim_mod.mir_ast_extra = "\
         namespace Trusted.MirSemantics\n\
         def CanaryPositiveAddAnnealClaim : Prop := True\n\
         end Trusted.MirSemantics"
         .to_string();
-    wrong_claim_mod.expect_audit_policy_err(
+    expect_mir_wp_audit_policy_err(
+        &wrong_claim_mod,
         "expected Trusted.MirSemantics.CanaryPositiveAddAnnealClaim to be defined in \
          Trusted.MirSemantics, found Trusted.MirAst",
     );
@@ -3805,7 +3415,7 @@ fn enforces_mir_wp_canary_claim_proof_rules() {
     // Canary claim declared inside decoupled `Anneal.MirWp.Canaries`
     // (rejected fail-closed by `Trusted` namespace isolation in
     // `validateRepoConstant`).
-    let mut claim_in_theory = MirWpSyntheticSpec::valid();
+    let mut claim_in_theory = MirWpFixtureSpec::valid();
     claim_in_theory.canary_claim_overrides.insert("CanaryPositiveAddAnnealClaim".to_string(), None);
     claim_in_theory.canary_proof_overrides.insert("canary_positive_add_anneal".to_string(), None);
     claim_in_theory.canaries_extra = "\
@@ -3817,63 +3427,69 @@ fn enforces_mir_wp_canary_claim_proof_rules() {
             Trusted.MirSemantics.CanaryPositiveAddAnnealClaim := True.intro\n\
         end Anneal.MirWp"
         .to_string();
-    claim_in_theory.expect_audit_policy_err(
+    expect_mir_wp_audit_policy_err(
+        &claim_in_theory,
         "non-Trusted module Anneal.MirWp.Canaries cannot declare constant \
          Trusted.MirSemantics.CanaryPositiveAddAnnealClaim in Trusted namespace",
     );
 
     // Non-`Prop` canary claim (`Nat` instead of `Prop`).
-    let mut non_prop_claim = MirWpSyntheticSpec::valid();
+    let mut non_prop_claim = MirWpFixtureSpec::valid();
     non_prop_claim.canary_claim_overrides.insert(
         "CanaryPositiveAddAnnealClaim".to_string(),
         Some("def CanaryPositiveAddAnnealClaim : Nat := 0".to_string()),
     );
     non_prop_claim.canary_proof_overrides.insert("canary_positive_add_anneal".to_string(), None);
-    non_prop_claim.expect_audit_policy_err(
+    expect_mir_wp_audit_policy_err(
+        &non_prop_claim,
         "expected Trusted.MirSemantics.CanaryPositiveAddAnnealClaim to have type Prop",
     );
 
     // Canary claim body missing required `PositiveCanaryClaim` constant
     // (`TrustedBoundary.lean` `requireClaimProof` `reqConsts` check).
-    let mut missing_req_const = MirWpSyntheticSpec::valid();
+    let mut missing_req_const = MirWpFixtureSpec::valid();
     missing_req_const.canary_claim_overrides.insert(
         "CanaryPositiveAddAnnealClaim".to_string(),
         Some("def CanaryPositiveAddAnnealClaim : Prop := True".to_string()),
     );
-    missing_req_const.expect_audit_policy_err(
+    expect_mir_wp_audit_policy_err(
+        &missing_req_const,
         "claim Trusted.MirSemantics.CanaryPositiveAddAnnealClaim body must reference \
          Trusted.MirSemantics.PositiveCanaryClaim",
     );
 
     // Missing canary theorem (first canary and last canary).
-    let mut missing_first_canary = MirWpSyntheticSpec::valid();
+    let mut missing_first_canary = MirWpFixtureSpec::valid();
     missing_first_canary
         .canary_proof_overrides
         .insert("canary_positive_add_anneal".to_string(), None);
-    missing_first_canary.expect_audit_policy_err(
+    expect_mir_wp_audit_policy_err(
+        &missing_first_canary,
         "missing required theorem Anneal.MirWp.canary_positive_add_anneal",
     );
 
-    let mut missing_last_canary = MirWpSyntheticSpec::valid();
+    let mut missing_last_canary = MirWpFixtureSpec::valid();
     missing_last_canary
         .canary_proof_overrides
         .insert("canary_crate_and_body_verified_anneal".to_string(), None);
-    missing_last_canary.expect_audit_policy_err(
+    expect_mir_wp_audit_policy_err(
+        &missing_last_canary,
         "missing required theorem Anneal.MirWp.canary_crate_and_body_verified_anneal",
     );
 
     // Non-theorem canary proof (`def` instead of `theorem`).
-    let mut def_canary = MirWpSyntheticSpec::valid();
+    let mut def_canary = MirWpFixtureSpec::valid();
     def_canary.canary_proof_overrides.insert(
         "canary_positive_add_anneal".to_string(),
         Some("def canary_positive_add_anneal : Nat := 0".to_string()),
     );
-    def_canary.expect_audit_policy_err(
+    expect_mir_wp_audit_policy_err(
+        &def_canary,
         "expected Anneal.MirWp.canary_positive_add_anneal to be a theorem",
     );
 
-    // Canary theorem defined in `Anneal` instead of `Anneal.MirWp.Canaries`.
-    let mut wrong_proof_mod = MirWpSyntheticSpec::valid();
+    // Canary theorem defined in `Anneal.Wp` instead of `Anneal.MirWp.Canaries`.
+    let mut wrong_proof_mod = MirWpFixtureSpec::valid();
     wrong_proof_mod.canary_proof_overrides.insert("canary_positive_add_anneal".to_string(), None);
     wrong_proof_mod.anneal_extra = "\
         namespace Anneal.MirWp\n\
@@ -3881,26 +3497,28 @@ fn enforces_mir_wp_canary_claim_proof_rules() {
             Trusted.MirSemantics.CanaryPositiveAddAnnealClaim := True.intro\n\
         end Anneal.MirWp"
         .to_string();
-    wrong_proof_mod.expect_audit_policy_err(
+    expect_mir_wp_audit_policy_err(
+        &wrong_proof_mod,
         "expected Anneal.MirWp.canary_positive_add_anneal to be defined in \
-         Anneal.MirWp.Canaries, found Anneal",
+         Anneal.MirWp.Canaries, found Anneal.Wp",
     );
 
     // Weakened / wrong-type canary theorem (`True` instead of the pinned
     // `CanaryPositiveAddAnnealClaim`).
-    let mut weakened_canary = MirWpSyntheticSpec::valid();
+    let mut weakened_canary = MirWpFixtureSpec::valid();
     weakened_canary.canary_proof_overrides.insert(
         "canary_positive_add_anneal".to_string(),
         Some("theorem canary_positive_add_anneal : True := True.intro".to_string()),
     );
-    weakened_canary.expect_audit_policy_err(
+    expect_mir_wp_audit_policy_err(
+        &weakened_canary,
         "theorem Anneal.MirWp.canary_positive_add_anneal must prove \
          Trusted.MirSemantics.CanaryPositiveAddAnnealClaim directly",
     );
 
     // Memory-lifecycle canary claim that drops `forceAllocation` (so the
     // `.indirect`-local path is no longer exercised).
-    let mut weak_memory_canary = MirWpSyntheticSpec::valid();
+    let mut weak_memory_canary = MirWpFixtureSpec::valid();
     weak_memory_canary.canary_claim_overrides.insert(
         "CanaryMemoryLifecycleAnnealClaim".to_string(),
         Some(
@@ -3909,7 +3527,8 @@ fn enforces_mir_wp_canary_claim_proof_rules() {
                 .to_string(),
         ),
     );
-    weak_memory_canary.expect_audit_policy_err(
+    expect_mir_wp_audit_policy_err(
+        &weak_memory_canary,
         "claim Trusted.MirSemantics.CanaryMemoryLifecycleAnnealClaim body must reference \
          Trusted.MirSemantics.forceAllocation",
     );
@@ -3970,13 +3589,15 @@ fn enforces_mir_wp_canary_claim_proof_rules() {
             "Trusted.MirSemantics.progCastUninitSourceUb",
         ),
     ] {
-        let mut weak_canary = MirWpSyntheticSpec::valid();
-        weak_canary
-            .canary_claim_overrides
-            .insert(claim.to_string(), Some(format!("def {claim} : Prop := {weakened_body}")));
-        weak_canary.expect_audit_policy_err(&format!(
-            "claim Trusted.MirSemantics.{claim} body must reference {dropped}"
-        ));
+        let mut weak_canary = MirWpFixtureSpec::valid();
+        weak_canary.canary_claim_overrides.insert(
+            claim.to_string(),
+            Some(format!("def {claim} : Prop := {weakened_body}")),
+        );
+        expect_mir_wp_audit_policy_err(
+            &weak_canary,
+            &format!("claim Trusted.MirSemantics.{claim} body must reference {dropped}"),
+        );
     }
 
     // Missing, non-definition, non-abbrev, wrong-module, universe-polymorphic,
@@ -3991,62 +3612,71 @@ fn enforces_mir_wp_canary_claim_proof_rules() {
         "CrateTheoremV2",
         "UnitTheoremV2",
     ] {
-        let mut missing_alias = MirWpSyntheticSpec::valid();
+        let mut missing_alias = MirWpFixtureSpec::valid();
         missing_alias.public_alias_overrides.insert(alias.to_string(), None);
-        missing_alias
-            .expect_audit_policy_err(&format!("missing required MIR public alias Trusted.{alias}"));
+        expect_mir_wp_audit_policy_err(
+            &missing_alias,
+            &format!("missing required MIR public alias Trusted.{alias}"),
+        );
 
-        let mut non_abbrev_alias = MirWpSyntheticSpec::valid();
+        let mut non_abbrev_alias = MirWpFixtureSpec::valid();
         non_abbrev_alias.public_alias_overrides.insert(
             alias.to_string(),
             Some(format!("def {alias} := Trusted.MirSemantics.{alias}")),
         );
-        non_abbrev_alias.expect_audit_policy_err(&format!(
-            "alias Trusted.{alias} must be an abbrev (ReducibilityHints.abbrev)"
-        ));
+        expect_mir_wp_audit_policy_err(
+            &non_abbrev_alias,
+            &format!("alias Trusted.{alias} must be an abbrev (ReducibilityHints.abbrev)"),
+        );
 
-        let mut rewired_alias = MirWpSyntheticSpec::valid();
+        let mut rewired_alias = MirWpFixtureSpec::valid();
         rewired_alias
             .public_alias_overrides
             .insert(alias.to_string(), Some(format!("abbrev {alias} : Prop := True")));
-        rewired_alias.expect_audit_policy_err(&format!(
-            "alias Trusted.{alias} must directly alias Trusted.MirSemantics.{alias}"
-        ));
+        expect_mir_wp_audit_policy_err(
+            &rewired_alias,
+            &format!("alias Trusted.{alias} must directly alias Trusted.MirSemantics.{alias}"),
+        );
 
-        let mut non_def_alias = MirWpSyntheticSpec::valid();
+        let mut non_def_alias = MirWpFixtureSpec::valid();
         non_def_alias
             .public_alias_overrides
             .insert(alias.to_string(), Some(format!("theorem {alias} : True := True.intro")));
-        non_def_alias
-            .expect_audit_policy_err(&format!("expected Trusted.{alias} to be a definition"));
+        expect_mir_wp_audit_policy_err(
+            &non_def_alias,
+            &format!("expected Trusted.{alias} to be a definition"),
+        );
 
-        let mut poly_alias = MirWpSyntheticSpec::valid();
+        let mut poly_alias = MirWpFixtureSpec::valid();
         poly_alias.public_alias_overrides.insert(
             alias.to_string(),
             Some(format!("abbrev {alias}.{{u}} : Type u → Prop := fun _ => True")),
         );
-        poly_alias.expect_audit_policy_err(&format!(
-            "alias Trusted.{alias} must have no universe parameters"
-        ));
+        expect_mir_wp_audit_policy_err(
+            &poly_alias,
+            &format!("alias Trusted.{alias} must have no universe parameters"),
+        );
     }
 
-    let mut wrong_mod_alias = MirWpSyntheticSpec::valid();
+    let mut wrong_mod_alias = MirWpFixtureSpec::valid();
     wrong_mod_alias.public_alias_overrides.insert("UnitTheorem".to_string(), None);
     wrong_mod_alias.mir_ast_extra = "\
         namespace Trusted\n\
         abbrev UnitTheorem : Prop := True\n\
         end Trusted"
         .to_string();
-    wrong_mod_alias.expect_audit_policy_err(
+    expect_mir_wp_audit_policy_err(
+        &wrong_mod_alias,
         "expected Trusted.UnitTheorem to be defined in Trusted.MirSemantics, found Trusted.MirAst",
     );
 
-    let mut cross_wired_alias = MirWpSyntheticSpec::valid();
+    let mut cross_wired_alias = MirWpFixtureSpec::valid();
     cross_wired_alias.public_alias_overrides.insert(
         "UnitTheorem".to_string(),
         Some("noncomputable abbrev UnitTheorem := Trusted.MirSemantics.CrateTheorem".to_string()),
     );
-    cross_wired_alias.expect_audit_policy_err(
+    expect_mir_wp_audit_policy_err(
+        &cross_wired_alias,
         "alias Trusted.UnitTheorem must directly alias Trusted.MirSemantics.UnitTheorem",
     );
 
@@ -4056,16 +3686,17 @@ fn enforces_mir_wp_canary_claim_proof_rules() {
         ("CrateTheoremV2", "CrateTheorem"),
         ("UnitTheoremV2", "UnitTheorem"),
     ] {
-        let mut v1_wired_alias = MirWpSyntheticSpec::valid();
+        let mut v1_wired_alias = MirWpFixtureSpec::valid();
         v1_wired_alias.public_alias_overrides.insert(
             alias.to_string(),
             Some(format!(
                 "noncomputable abbrev {alias} := Trusted.MirSemantics.{v1_target}"
             )),
         );
-        v1_wired_alias.expect_audit_policy_err(&format!(
-            "alias Trusted.{alias} must directly alias Trusted.MirSemantics.{alias}"
-        ));
+        expect_mir_wp_audit_policy_err(
+            &v1_wired_alias,
+            &format!("alias Trusted.{alias} must directly alias Trusted.MirSemantics.{alias}"),
+        );
     }
 }
 
@@ -4087,7 +3718,7 @@ fn enforces_correspondence_non_backsliding() {
     // 1. When `require_correspondence` is enabled and correspondence
     // directories are absent, `Checker::run` rejects in `"correspondence"`.
     let fix_missing_corr = TempFixture::new(None);
-    let mut checker = Checker::new(&fix_missing_corr.root, None).unwrap();
+    let mut checker = fix_missing_corr.checker();
     checker.set_require_mir_wp(false);
     checker.set_require_correspondence(true);
     assert_policy_rejection(
@@ -4635,7 +4266,7 @@ fn verifies_miri_cache_and_rejects_unverified_oleans() {
 
     // Compile once in a probe checker to obtain the deterministic `.olean`
     // companion digests for `Miri.Tiny`.
-    let mut probe = Checker::new(&fix.root, None).unwrap();
+    let mut probe = fix.checker();
     probe.set_require_mir_wp(false);
     probe.run().unwrap();
     let probe_out = probe.stage().join("probe-lib/Miri/Tiny.olean");
@@ -4675,7 +4306,7 @@ fn verifies_miri_cache_and_rejects_unverified_oleans() {
 
     // Case 0: Staged source SHA-256 mismatch fails closed with exit code `1`.
     let wrong_sources = BTreeMap::from([("Miri/Tiny.lean".to_string(), "1".repeat(64))]);
-    let mut c0 = Checker::new(&fix.root, None).unwrap();
+    let mut c0 = fix.checker();
     c0.set_require_mir_wp(false);
     c0.run().unwrap();
     let err_src_sha = c0
@@ -4697,7 +4328,7 @@ fn verifies_miri_cache_and_rejects_unverified_oleans() {
     fs::create_dir_all(&cache_mismatch).unwrap();
     let mut bad_entry = good_entry.clone();
     bad_entry.olean_sha256 = "0".repeat(64);
-    let mut c1 = Checker::new(&fix.root, None).unwrap();
+    let mut c1 = fix.checker();
     c1.set_require_mir_wp(false);
     c1.set_miri_cache_dir(Some(cache_mismatch.clone()));
     c1.run().unwrap();
@@ -4716,7 +4347,7 @@ fn verifies_miri_cache_and_rejects_unverified_oleans() {
     // Case 2: Cold compile verifies digests and populates the cache.
     let cache_dir = cache_root.path().join("cache-live");
     fs::create_dir_all(&cache_dir).unwrap();
-    let mut c2 = Checker::new(&fix.root, None).unwrap();
+    let mut c2 = fix.checker();
     c2.set_require_mir_wp(false);
     c2.set_miri_cache_dir(Some(cache_dir.clone()));
     c2.run().unwrap();
@@ -4740,7 +4371,7 @@ fn verifies_miri_cache_and_rejects_unverified_oleans() {
     let invalid_sources =
         BTreeMap::from([("Miri/Tiny.lean".to_string(), sha256_bytes(invalid_src.as_bytes()))]);
     fs::write(&src_path, invalid_src).unwrap();
-    let mut c3 = Checker::new(&fix.root, None).unwrap();
+    let mut c3 = fix.checker();
     c3.set_require_mir_wp(false);
     c3.set_miri_cache_dir(Some(cache_dir.clone()));
     c3.run().unwrap();
@@ -4756,7 +4387,7 @@ fn verifies_miri_cache_and_rejects_unverified_oleans() {
     let mut bytes = fs::read(&cached_olean).unwrap();
     bytes[0] ^= 0xFF;
     fs::write(&cached_olean, &bytes).unwrap();
-    let mut c4a = Checker::new(&fix.root, None).unwrap();
+    let mut c4a = fix.checker();
     c4a.set_require_mir_wp(false);
     c4a.set_miri_cache_dir(Some(cache_dir.clone()));
     c4a.run().unwrap();
@@ -4775,7 +4406,7 @@ fn verifies_miri_cache_and_rejects_unverified_oleans() {
     // Case 4b: With valid source restored, tampered cache entry is bypassed,
     // recompiled, re-verified, and healed on disk.
     fs::write(&src_path, valid_src).unwrap();
-    let mut c4b = Checker::new(&fix.root, None).unwrap();
+    let mut c4b = fix.checker();
     c4b.set_require_mir_wp(false);
     c4b.set_miri_cache_dir(Some(cache_dir.clone()));
     c4b.run().unwrap();
@@ -4797,7 +4428,7 @@ fn verifies_miri_cache_and_rejects_unverified_oleans() {
     fs::create_dir_all(&cache_sidecar).unwrap();
     let mut bad_sidecar = good_entry;
     bad_sidecar.olean_server_sha256 = Some("f".repeat(64));
-    let mut c5 = Checker::new(&fix.root, None).unwrap();
+    let mut c5 = fix.checker();
     c5.set_require_mir_wp(false);
     c5.set_miri_cache_dir(Some(cache_sidecar.clone()));
     c5.run().unwrap();
@@ -4859,7 +4490,7 @@ fn verifies_miri_cache_and_rejects_unverified_oleans() {
         olean_server_sha256: None,
         olean_private_sha256: mod_private_sha.clone(),
     };
-    let mut c6a = Checker::new(&fix.root, None).unwrap();
+    let mut c6a = fix.checker();
     c6a.set_require_mir_wp(false);
     c6a.run().unwrap();
     let err_unexpected_server = c6a
@@ -4881,7 +4512,7 @@ fn verifies_miri_cache_and_rejects_unverified_oleans() {
         olean_server_sha256: Some("e".repeat(64)),
         olean_private_sha256: mod_private_sha.clone(),
     };
-    let mut c6b = Checker::new(&fix.root, None).unwrap();
+    let mut c6b = fix.checker();
     c6b.set_require_mir_wp(false);
     c6b.run().unwrap();
     let err_mismatched_server = c6b
@@ -4904,7 +4535,7 @@ fn verifies_miri_cache_and_rejects_unverified_oleans() {
             olean_server_sha256: Some(mod_server_sha),
             olean_private_sha256: None,
         };
-        let mut c6c = Checker::new(&fix.root, None).unwrap();
+        let mut c6c = fix.checker();
         c6c.set_require_mir_wp(false);
         c6c.run().unwrap();
         let err_unexpected_private = c6c
@@ -4961,7 +4592,7 @@ fn rejects_miri_cache_dir_inside_checkout() {
         link_out_of_checkout,
     ];
     for bad in &bad_paths {
-        let mut checker = Checker::new(&fix.root, None).unwrap();
+        let mut checker = fix.checker();
         checker.set_require_mir_wp(false);
         checker.set_miri_cache_dir(Some(bad.clone()));
         let err = checker.run().unwrap_err();
@@ -5031,7 +4662,7 @@ fn rejects_correspondence_audit_violations_and_sysroot_mismatch() {
 
     // Prepare compiled synthetic modules for `TrustedBoundary.lean`
     // `"correspondence-audit"` negative cases.
-    let mut checker = Checker::new(&fix.root, None).unwrap();
+    let mut checker = fix.checker();
     checker.set_require_mir_wp(false);
     checker.run().unwrap();
     let trusted_lib = checker.stage().join("lib");
@@ -5612,7 +5243,7 @@ fn rejects_compiled_trusted_header_import_of_theory() {
         b"prelude\nimport Trusted\nnamespace Anneal\ndef helper : Nat := 0\nend Anneal\n",
     )
     .unwrap();
-    let mut checker = Checker::new(&fix.root, None).unwrap();
+    let mut checker = fix.checker();
     checker.set_require_mir_wp(false);
     checker.run().unwrap();
 
@@ -5665,7 +5296,7 @@ fn rejects_forged_trusted_constant_referencing_theory() {
         b"prelude\nimport Trusted\nnamespace Anneal\ndef helper : Nat := 0\nend Anneal\n",
     )
     .unwrap();
-    let mut checker = Checker::new(&fix.root, None).unwrap();
+    let mut checker = fix.checker();
     checker.set_require_mir_wp(false);
     checker.run().unwrap();
 
@@ -5812,7 +5443,7 @@ fn rejects_trusted_correspondence_import_of_theory_in_pass2_preflight() {
     )
     .unwrap();
 
-    let mut checker = Checker::new(&fix.root, None).unwrap();
+    let mut checker = fix.checker();
     // Synthetic fixture overrides `trusted/correspondence/` and
     // `correspondence/` with 3-line stubs, so embedded-bundle parity is
     // disabled while `"audit"` still checks `Trusted.*` / `Anneal.MirWp`.
@@ -5834,7 +5465,7 @@ fn rejects_trusted_correspondence_import_of_theory_in_pass2_preflight() {
 #[test]
 fn rejects_trusted_correspondence_import_of_theory_in_correspondence_audit() {
     let fix = TempFixture::new(None);
-    let mut checker = Checker::new(&fix.root, None).unwrap();
+    let mut checker = fix.checker();
     checker.set_require_mir_wp(false);
     checker.run().unwrap();
 
@@ -5911,7 +5542,7 @@ fn rejects_trusted_correspondence_import_of_theory_in_correspondence_audit() {
 #[test]
 fn rejects_vendor_miri_skip_kernel_tc_during_replay() {
     let fix = TempFixture::new(None);
-    let mut checker = Checker::new(&fix.root, None).unwrap();
+    let mut checker = fix.checker();
     checker.set_require_mir_wp(false);
     checker.run().unwrap();
     checker.ensure_sysroot_foundation().unwrap();
@@ -6134,7 +5765,7 @@ fn rejects_vendor_miri_skip_kernel_tc_during_replay() {
 #[test]
 fn rejects_forged_ill_typed_correspondence_declaration_during_replay() {
     let fix = TempFixture::new(None);
-    let mut checker = Checker::new(&fix.root, None).unwrap();
+    let mut checker = fix.checker();
     checker.set_require_mir_wp(false);
     checker.run().unwrap();
 
@@ -6213,7 +5844,7 @@ fn rejects_forged_ill_typed_correspondence_declaration_during_replay() {
 #[test]
 fn rejects_repository_constant_shadowing_sysroot_declaration() {
     let fix = TempFixture::new(None);
-    let mut checker = Checker::new(&fix.root, None).unwrap();
+    let mut checker = fix.checker();
     checker.set_require_mir_wp(false);
     checker.run().unwrap();
 
@@ -6302,7 +5933,7 @@ fn rejects_repository_constant_shadowing_sysroot_declaration() {
 #[test]
 fn rejects_pass2_lean_syntax_extensions_in_correspondence_preflight() {
     let fix = TempFixture::new(None);
-    let mut checker = Checker::new(&fix.root, None).unwrap();
+    let mut checker = fix.checker();
     checker.set_require_mir_wp(false);
     checker.run().unwrap();
     checker.ensure_sysroot_foundation().unwrap();
@@ -6463,7 +6094,7 @@ fn rejects_scoped_syntax_and_extensions_in_preflight() {
          end Anneal.Lean.PostprocessTraces\n",
     )
     .unwrap();
-    let mut checker = Checker::new(&fix.root, None).unwrap();
+    let mut checker = fix.checker();
     checker.set_require_mir_wp(false);
     checker.run().unwrap();
     checker.ensure_sysroot_foundation().unwrap();
@@ -6750,7 +6381,7 @@ fn rejects_pass2_syntax_and_scoped_extensions_in_run_correspondence_pipeline() {
 
     // Compile `Miri.ImportLean` once in a probe checker to record its
     // deterministic `.olean` companion digests.
-    let mut probe = Checker::new(&fix.root, None).unwrap();
+    let mut probe = fix.checker();
     probe.set_require_mir_wp(false);
     probe.run().unwrap();
     probe.ensure_sysroot_foundation().unwrap();
@@ -6861,7 +6492,7 @@ fn rejects_pass2_syntax_and_scoped_extensions_in_run_correspondence_pipeline() {
         // Run Pass 1 cleanly before placing Pass 2 directories in the checkout.
         let _ = fs::remove_dir_all(fix.root.join("trusted/correspondence"));
         let _ = fs::remove_dir_all(fix.root.join("correspondence"));
-        let mut checker = Checker::new(&fix.root, None).unwrap();
+        let mut checker = fix.checker();
         checker.set_require_mir_wp(false);
         checker.run().unwrap();
 
@@ -6956,7 +6587,7 @@ fn rejects_scoped_namespace_in_pass1_preflight() {
 fn rejects_universe_polymorphic_claims_and_proofs() {
     // 1. Pass 1 (`Audit`): universe-polymorphic claim and theorem rejection.
     let fix = TempFixture::new(None);
-    let mut checker = Checker::new(&fix.root, None).unwrap();
+    let mut checker = fix.checker();
     checker.set_require_mir_wp(false);
     checker.run().unwrap();
     checker.set_require_mir_wp(true);
@@ -7294,7 +6925,7 @@ fn rejects_universe_polymorphic_claims_and_proofs() {
 #[test]
 fn validates_and_rejects_alternate_foundation_theorem_proofs() {
     let fix = TempFixture::new(None);
-    let mut checker = Checker::new(&fix.root, None).unwrap();
+    let mut checker = fix.checker();
     checker.set_require_mir_wp(false);
     checker.run().unwrap();
 
@@ -7446,7 +7077,7 @@ fn rejects_missing_correspondence_entry_modules() {
         b"prelude\nimport Init.NotationExtra\n",
     )
     .unwrap();
-    let mut checker1 = Checker::new(&fix.root, None).unwrap();
+    let mut checker1 = fix.checker();
     checker1.set_require_mir_wp(false);
     let err_missing_corr = checker1.run().unwrap_err();
     assert_eq!(err_missing_corr.code, 1);
@@ -7470,7 +7101,7 @@ fn rejects_missing_correspondence_entry_modules() {
         b"prelude\nimport Init.NotationExtra\n",
     )
     .unwrap();
-    let mut checker2 = Checker::new(&fix.root, None).unwrap();
+    let mut checker2 = fix.checker();
     checker2.set_require_mir_wp(false);
     let err_missing_proof = checker2.run().unwrap_err();
     assert_eq!(err_missing_proof.code, 1);
@@ -7490,7 +7121,7 @@ fn rejects_missing_correspondence_entry_modules() {
 #[test]
 fn rejects_external_origin_header_imports_and_foreign_imports() {
     let fix = TempFixture::new(None);
-    let mut checker = Checker::new(&fix.root, None).unwrap();
+    let mut checker = fix.checker();
     checker.set_require_mir_wp(false);
     checker.run().unwrap();
 
@@ -7791,7 +7422,7 @@ fn rejects_pass2_correspondence_import_cycles() {
     )
     .unwrap();
 
-    let mut checker1 = Checker::new(&fix.root, None).unwrap();
+    let mut checker1 = fix.checker();
     checker1.set_require_mir_wp(false);
     let err_trusted_cycle = checker1.run().unwrap_err();
     assert_eq!(err_trusted_cycle.code, 1);
@@ -7815,7 +7446,7 @@ fn rejects_pass2_correspondence_import_cycles() {
     )
     .unwrap();
 
-    let mut checker2 = Checker::new(&fix.root, None).unwrap();
+    let mut checker2 = fix.checker();
     checker2.set_require_mir_wp(false);
     let err_theory_cycle = checker2.run().unwrap_err();
     assert_eq!(err_theory_cycle.code, 1);
@@ -7890,7 +7521,7 @@ fn sandboxes_pass2_preflight_and_compilation_against_host_and_stage_writes() {
     );
     fs::write(vendor_dir.join("Miri/InitHost.lean"), &init_host_src).unwrap();
 
-    let mut prebuild = Checker::new(&fix.root, None).unwrap();
+    let mut prebuild = fix.checker();
     prebuild.set_require_mir_wp(false);
     prebuild.run().unwrap();
     prebuild.ensure_sysroot_foundation().unwrap();
@@ -8073,10 +7704,10 @@ fn sandboxes_pass2_preflight_and_compilation_against_host_and_stage_writes() {
     // Run Pass 1 on fresh checkers before creating `trusted/correspondence/`
     // and `correspondence/` so `Checker::run()` completes Pass 1 without
     // demanding `vendor/lean-miri/upstream-pin.json`.
-    let mut c3 = Checker::new(&fix.root, None).unwrap();
+    let mut c3 = fix.checker();
     c3.set_require_mir_wp(false);
     c3.run().unwrap();
-    let mut c4 = Checker::new(&fix.root, None).unwrap();
+    let mut c4 = fix.checker();
     c4.set_require_mir_wp(false);
     c4.run().unwrap();
     fs::create_dir_all(fix.root.join("trusted/correspondence/Trusted")).unwrap();
@@ -8195,7 +7826,7 @@ fn sandboxes_pass2_preflight_and_compilation_against_host_and_stage_writes() {
 
 #[test]
 fn precompiled_inspector_cache_keys_on_inspector_source_digest() {
-    let mut fix = TempFixture::new(Some(&format!("{HEADER}def ok : Nat := 1\n")));
+    let mut fix = TempFixture::isolated(Some(&format!("{HEADER}def ok : Nat := 1\n")));
 
     // 1. First run compiles `TrustedBoundary.lean` into `.olean` and populates
     // the in-process cache.
@@ -8244,7 +7875,7 @@ fn precompiled_inspector_cache_keys_on_inspector_source_digest() {
 #[cfg(unix)]
 #[test]
 fn precompiled_inspector_handles_colon_in_tmpdir_and_drops_lean_path() {
-    let fix = TempFixture::new(Some(&format!("{HEADER}def ok : Nat := 1\n")));
+    let fix = TempFixture::isolated(Some(&format!("{HEADER}def ok : Nat := 1\n")));
 
     // Construct a `TMPDIR` containing the Unix `LEAN_PATH` delimiter (`:`) and
     // place a corrupt decoy `TrustedBoundary.olean` at the split prefix so any
@@ -8293,7 +7924,7 @@ fn precompiled_inspector_handles_colon_in_tmpdir_and_drops_lean_path() {
     // bootstrap `LEAN_PATH="control"` from `Lean.searchPathRef` before
     // `importCorrEnv` loads modules, so `control/TrustedBoundary.olean` is
     // never visible as an importable module.
-    let mut checker = Checker::new(&fix.root, Some(&lean)).unwrap();
+    let mut checker = fix.checker_with_lean(Some(&lean));
     checker.set_require_mir_wp(false);
     checker.run().unwrap();
     let sysroot = checker.admitted().unwrap().prefix.clone();
@@ -8412,7 +8043,7 @@ fn rejects_library_lock_imports_in_repository_audit() {
 #[test]
 fn default_checker_rejects_complete_mir_wp_deletion() {
     let fix = TempFixture::new(None);
-    let mut checker = Checker::new(&fix.root, None).unwrap();
+    let mut checker = fix.checker();
     let err = checker.run().unwrap_err();
     assert_eq!(err.code, 1, "unexpected code: {err}");
     assert_eq!(err.phase, "audit", "unexpected phase: {err}");
@@ -8697,7 +8328,7 @@ fn rejects_deleted_build_generator_and_disallowed_build_scripts() {
     let outside_build_rs = outside_dir.path().join("build.rs");
     fs::copy(&build_rs_path, &outside_build_rs).unwrap();
     fs::remove_file(&build_rs_path).unwrap();
-    let mut checker = Checker::new(&fix.root, None).unwrap();
+    let mut checker = fix.checker();
     let err = checker.run().unwrap_err();
     assert_eq!(err.code, 1, "unexpected code: {err}");
     assert_eq!(err.phase, "cargo-boundary", "unexpected phase: {err}");
@@ -8823,7 +8454,7 @@ fn admits_only_theory_bundle_manifest_and_rejects_deleted_theory_bundle() {
     }
     fs::remove_file(fix.root.join(anneal_audit::bundle::THEORY_BUNDLE_DESTINATION)).unwrap();
 
-    let mut checker = Checker::new(&fix.root, None).unwrap();
+    let mut checker = fix.checker();
     let err = checker.run().unwrap_err();
     assert_eq!(err.code, 1, "unexpected code: {err}");
     assert_eq!(err.phase, "bundle-manifest", "unexpected phase: {err}");
@@ -8881,7 +8512,7 @@ fn compiles_cold_miri_closure_dag_in_parallel_and_preserves_failure_order() {
         expected_sources.insert((*rel).to_string(), sha256_bytes(src.as_bytes()));
     }
 
-    let mut probe = Checker::new(&fix.root, None).unwrap();
+    let mut probe = fix.checker();
     probe.set_require_mir_wp(false);
     probe.run().unwrap();
     let probe_lib = probe.stage().join("dag-probe-lib");
@@ -8919,7 +8550,7 @@ fn compiles_cold_miri_closure_dag_in_parallel_and_preserves_failure_order() {
     // 1. Cold parallel DAG compilation succeeds and populates the cache.
     let cache_tmp = tempfile::Builder::new().prefix("anneal-dag-cache-").tempdir().unwrap();
     let cache_dir = cache_tmp.path().join("miri-cache");
-    let mut c1 = Checker::new(&fix.root, None).unwrap();
+    let mut c1 = fix.checker();
     c1.set_require_mir_wp(false);
     c1.set_miri_cache_dir(Some(cache_dir.clone()));
     c1.run().unwrap();
@@ -8937,7 +8568,7 @@ fn compiles_cold_miri_closure_dag_in_parallel_and_preserves_failure_order() {
     // still wait for `Miri.DagRoot` to compile and stage into `miri-lib`.
     fs::remove_file(cache_dir.join("Miri/DagRoot.olean")).unwrap();
     fs::remove_file(cache_dir.join("Miri/DagTop.olean")).unwrap();
-    let mut c1_partial = Checker::new(&fix.root, None).unwrap();
+    let mut c1_partial = fix.checker();
     c1_partial.set_require_mir_wp(false);
     c1_partial.set_miri_cache_dir(Some(cache_dir.clone()));
     c1_partial.run().unwrap();
@@ -8966,7 +8597,7 @@ fn compiles_cold_miri_closure_dag_in_parallel_and_preserves_failure_order() {
     let mut race_sources = expected_sources.clone();
     race_sources.insert("Miri/DagRight.lean".to_string(), sha256_bytes(ind_src.as_bytes()));
     let race_cache = cache_tmp.path().join("race-cache");
-    let mut c2 = Checker::new(&fix.root, None).unwrap();
+    let mut c2 = fix.checker();
     c2.set_require_mir_wp(false);
     c2.set_miri_cache_dir(Some(race_cache.clone()));
     c2.run().unwrap();
@@ -8988,7 +8619,7 @@ fn compiles_cold_miri_closure_dag_in_parallel_and_preserves_failure_order() {
         MiriClosureEntry { olean_sha256: "f".repeat(64), ..entries[2].clone() },
         entries[0].clone(),
     ];
-    let mut c2_nontopo = Checker::new(&fix.root, None).unwrap();
+    let mut c2_nontopo = fix.checker();
     c2_nontopo.set_require_mir_wp(false);
     c2_nontopo.run().unwrap();
     let err_nontopo = c2_nontopo
@@ -9002,7 +8633,7 @@ fn compiles_cold_miri_closure_dag_in_parallel_and_preserves_failure_order() {
 
     // Duplicate module entries fail closed with policy exit code `1`.
     race_entries[2] = race_entries[0].clone();
-    let mut c_dup = Checker::new(&fix.root, None).unwrap();
+    let mut c_dup = fix.checker();
     c_dup.set_require_mir_wp(false);
     c_dup.run().unwrap();
     let err_dup = c_dup
@@ -9038,7 +8669,7 @@ fn compiles_cold_miri_closure_dag_in_parallel_and_preserves_failure_order() {
             olean_private_sha256: None,
         },
     ];
-    let mut c3 = Checker::new(&fix.root, None).unwrap();
+    let mut c3 = fix.checker();
     c3.set_require_mir_wp(false);
     c3.run().unwrap();
     let err_cyc =
@@ -9061,7 +8692,7 @@ fn compiles_cold_miri_closure_dag_in_parallel_and_preserves_failure_order() {
     cyc_cached_sources
         .insert("Miri/DagRoot.lean".to_string(), sha256_bytes(cyc_root_src.as_bytes()));
     fs::remove_file(cache_dir.join("Miri/DagRoot.olean")).unwrap();
-    let mut c3_cached = Checker::new(&fix.root, None).unwrap();
+    let mut c3_cached = fix.checker();
     c3_cached.set_require_mir_wp(false);
     c3_cached.set_miri_cache_dir(Some(cache_dir));
     c3_cached.run().unwrap();
@@ -9105,7 +8736,7 @@ fn compiles_pass1_diamond_dag_in_parallel_and_preserves_failure_order() {
     )
     .unwrap();
 
-    let mut ok_checker = Checker::new(&fix.root, None).unwrap();
+    let mut ok_checker = fix.checker();
     ok_checker.set_require_mir_wp(false);
     let report = ok_checker.run().unwrap();
     assert_eq!(report.get("replay"), Some(&json!(true)));
@@ -9122,7 +8753,7 @@ fn compiles_pass1_diamond_dag_in_parallel_and_preserves_failure_order() {
         "prelude\nimport Init.Core\nimport Anneal.Root\nnamespace Anneal.Right\ndef r : Nat := false\nend Anneal.Right\n",
     )
     .unwrap();
-    let mut err_checker = Checker::new(&fix.root, None).unwrap();
+    let mut err_checker = fix.checker();
     err_checker.set_require_mir_wp(false);
     let err = err_checker.run().unwrap_err();
     assert_eq!(err.code, 2, "expected compile failure: {err}");
@@ -9148,7 +8779,7 @@ fn rejects_unadmitted_pass1_theory_import_in_correspondence_audit() {
     )
     .unwrap();
 
-    let mut checker = Checker::new(&fix.root, None).unwrap();
+    let mut checker = fix.checker();
     checker.set_require_mir_wp(false);
     checker.run().unwrap();
 
@@ -9205,7 +8836,7 @@ fn rejects_overlapping_pass1_and_pass2_module_names() {
         )
         .unwrap();
 
-        let mut checker = Checker::new(&fix.root, None).unwrap();
+        let mut checker = fix.checker();
         checker.set_require_mir_wp(false);
         checker.run().unwrap();
         let pass1_olean = checker.stage().join("theory-lib/Anneal/MirCorrespondenceProof.olean");
@@ -9272,7 +8903,7 @@ fn rejects_overlapping_pass1_and_pass2_module_names() {
         )
         .unwrap();
 
-        let mut checker = Checker::new(&fix.root, None).unwrap();
+        let mut checker = fix.checker();
         checker.set_require_mir_wp(false);
         checker.run().unwrap();
         let pass1_olean = checker.stage().join("lib/Trusted/Correspondence.olean");
@@ -9365,7 +8996,7 @@ fn admits_module_system_pass1_and_restricts_import_all() {
         )
         .unwrap();
 
-        let mut checker = Checker::new(&fix.root, None).unwrap();
+        let mut checker = fix.checker();
         checker.set_require_mir_wp(false);
         let report = checker.run().unwrap();
         assert_eq!(report["replay"], json!(true), "unexpected report: {report}");
@@ -9406,7 +9037,7 @@ fn admits_module_system_pass1_and_restricts_import_all() {
         )
         .unwrap();
 
-        let mut checker = Checker::new(&fix.root, None).unwrap();
+        let mut checker = fix.checker();
         checker.set_require_mir_wp(false);
         let err = checker.run().unwrap_err();
         assert_eq!(err.code, 1, "expected policy exit 1: {err}");
@@ -9717,7 +9348,7 @@ fn audit_admits_diamond_realized_theorems_and_paired_unsafe_rec() {
         "prelude\nimport Init.NotationExtra\nimport Trusted\n",
     )
     .unwrap();
-    let mut checker_ok = Checker::new(&fix_ok.root, None).unwrap();
+    let mut checker_ok = fix_ok.checker();
     checker_ok.set_require_mir_wp(false);
     checker_ok.run().unwrap();
 
@@ -9736,7 +9367,7 @@ fn audit_admits_diamond_realized_theorems_and_paired_unsafe_rec() {
         "prelude\nimport Init.NotationExtra\nimport Trusted\n",
     )
     .unwrap();
-    let mut stub_checker = Checker::new(&fix_stub.root, None).unwrap();
+    let mut stub_checker = fix_stub.checker();
     stub_checker.set_require_mir_wp(false);
     stub_checker.run().unwrap();
     let stub_lib = stub_checker.stage().join("lib");
@@ -9910,14 +9541,14 @@ fn audit_admits_diamond_realized_theorems_and_paired_unsafe_rec() {
 fn rejects_decoupled_unimported_canary_module_violations() {
     // 0. Positive control: a clean standalone unimported canary module is
     // discovered, compiled, audited, and recorded in the audit graph.
-    let fix_ok = MirWpSyntheticSpec::valid().materialize();
+    let fix_ok = materialize_mir_wp(&MirWpFixtureSpec::valid());
     fs::create_dir_all(fix_ok.root.join("theory/Anneal/Subsys")).unwrap();
     fs::write(
         fix_ok.root.join("theory/Anneal/Subsys/Canaries.lean"),
         b"prelude\nimport Init.NotationExtra\ntheorem unimported_ok : True := True.intro\n",
     )
     .unwrap();
-    let mut checker_ok = Checker::new(&fix_ok.root, None).unwrap();
+    let mut checker_ok = fix_ok.checker();
     let report = checker_ok.run().expect("clean decoupled canary must pass");
     assert!(
         report["graph"]
@@ -9929,14 +9560,14 @@ fn rejects_decoupled_unimported_canary_module_violations() {
 
     // 1. Standalone unimported canary with forbidden `sorry` syntax fails
     // preflight before Lean compilation.
-    let fix_sorry = MirWpSyntheticSpec::valid().materialize();
+    let fix_sorry = materialize_mir_wp(&MirWpFixtureSpec::valid());
     fs::create_dir_all(fix_sorry.root.join("theory/Anneal/Subsys")).unwrap();
     fs::write(
         fix_sorry.root.join("theory/Anneal/Subsys/Canaries.lean"),
         b"prelude\nimport Init.NotationExtra\ntheorem unimported_bad : False := by sorry\n",
     )
     .unwrap();
-    let mut checker_sorry = Checker::new(&fix_sorry.root, None).unwrap();
+    let mut checker_sorry = fix_sorry.checker();
     let err_sorry = checker_sorry.run().unwrap_err();
     assert_eq!(err_sorry.code, 1, "expected policy exit 1: {err_sorry}");
     assert_eq!(err_sorry.phase, "preflight", "expected preflight rejection: {err_sorry}");
@@ -9951,7 +9582,7 @@ fn rejects_decoupled_unimported_canary_module_violations() {
 
     // 2. Standalone unimported canary using `sorryAx` passes preflight and
     // fails closed during compilation (`-DwarningAsError=true`).
-    let fix_sorry_ax = MirWpSyntheticSpec::valid().materialize();
+    let fix_sorry_ax = materialize_mir_wp(&MirWpFixtureSpec::valid());
     fs::create_dir_all(fix_sorry_ax.root.join("theory/Anneal/Subsys")).unwrap();
     fs::write(
         fix_sorry_ax.root.join("theory/Anneal/Subsys/Canaries.lean"),
@@ -9959,7 +9590,7 @@ fn rejects_decoupled_unimported_canary_module_violations() {
           theorem unimported_sorry_ax : False := sorryAx False true\n",
     )
     .unwrap();
-    let mut checker_sorry_ax = Checker::new(&fix_sorry_ax.root, None).unwrap();
+    let mut checker_sorry_ax = fix_sorry_ax.checker();
     let err_sorry_ax = checker_sorry_ax.run().unwrap_err();
     assert_eq!(err_sorry_ax.code, 2, "expected compile exit 2: {err_sorry_ax}");
     assert_eq!(
@@ -9995,7 +9626,7 @@ fn rejects_decoupled_unimported_canary_module_violations() {
                 "Trusted.MirSemantics".to_string(),
             ],
             theory: vec![
-                "Anneal".to_string(),
+                "Anneal.Wp".to_string(),
                 "Anneal.MirWp".to_string(),
                 "Anneal.MirWp.Canaries".to_string(),
                 "Anneal.Subsys.Canaries".to_string(),

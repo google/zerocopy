@@ -14,7 +14,10 @@
 //! `boundary_audit` tests can mutate a single admission check in isolation
 //! without duplicating 25+ canary declarations across test files.
 
-use std::{collections::BTreeMap, path::Path};
+use std::{
+    collections::BTreeMap,
+    path::{Path, PathBuf},
+};
 
 use crate::{
     TestResult,
@@ -229,10 +232,10 @@ pub const SYNTHETIC_CANARIES: &[SyntheticCanary] = &[
 ];
 
 /// Configurable synthetic fixture containing minimal `Trusted.MirAst`,
-/// `Trusted.MirSemantics`, `Anneal`, `Anneal.MirWp`, and decoupled
-/// `Anneal.MirWp.Canaries` modules that pass `verifyMirWpCoreTheorems` out of
-/// the box. Individual negative tests can override or omit any single claim,
-/// proof, or alias in isolation.
+/// `Trusted.MirSemantics`, `Anneal.Wp` (or a configured `Anneal.*` umbrella),
+/// `Anneal.MirWp`, and decoupled `Anneal.MirWp.Canaries` modules that pass
+/// `verifyMirWpCoreTheorems` out of the box. Individual negative tests can
+/// override or omit any single claim, proof, or alias in isolation.
 #[derive(Clone, Debug)]
 pub struct MirWpFixtureSpec {
     pub mir_ast_extra: String,
@@ -241,6 +244,10 @@ pub struct MirWpFixtureSpec {
     pub exec_soundness_claim_v2: Option<String>,
     pub canary_claim_overrides: BTreeMap<String, Option<String>>,
     pub public_alias_overrides: BTreeMap<String, Option<String>>,
+    /// Dotted Lean module name of the synthetic theory umbrella file under
+    /// `theory/` (defaults to `"Anneal.Wp"` -> `theory/Anneal/Wp.lean`; e.g.,
+    /// `"Anneal"` -> `theory/Anneal.lean` for synthetic legacy fixtures).
+    pub theory_umbrella_module: String,
     pub anneal_extra: String,
     pub wp_soundness_proof: Option<String>,
     pub wp_fault_soundness_proof: Option<String>,
@@ -249,6 +256,19 @@ pub struct MirWpFixtureSpec {
     pub mir_wp_extra: String,
     pub include_canaries_module: bool,
     pub canaries_extra: String,
+    /// When `true`, render Lean 4 `module` / `public import` /
+    /// `@[expose] public section` headers matching
+    /// `fixtures/audit-positive.lean`.
+    pub module_syntax: bool,
+}
+
+fn is_valid_lean_ident_segment(segment: &str) -> bool {
+    let mut chars = segment.chars();
+    let Some(first) = chars.next() else {
+        return false;
+    };
+    (first.is_ascii_alphabetic() || first == '_')
+        && chars.all(|ch| ch.is_ascii_alphanumeric() || ch == '_')
 }
 
 impl MirWpFixtureSpec {
@@ -273,6 +293,7 @@ impl MirWpFixtureSpec {
             ),
             canary_claim_overrides: BTreeMap::new(),
             public_alias_overrides: BTreeMap::new(),
+            theory_umbrella_module: "Anneal.Wp".to_string(),
             anneal_extra: String::new(),
             wp_soundness_proof: Some(
                 "theorem wellFormed_and_spec_of_wp : \
@@ -298,36 +319,66 @@ impl MirWpFixtureSpec {
             mir_wp_extra: String::new(),
             include_canaries_module: true,
             canaries_extra: String::new(),
+            module_syntax: false,
         }
+    }
+
+    /// Construct a valid baseline spec rendered with Lean 4 `module` /
+    /// `public import` / `@[expose] public section` headers.
+    pub fn valid_module_style() -> Self {
+        let mut spec = Self::valid();
+        spec.module_syntax = true;
+        spec
     }
 
     /// Render `trusted/lean/Trusted/MirAst.lean`.
     pub fn render_mir_ast(&self) -> String {
-        format!(
+        let header = if self.module_syntax {
+            "-- anneal-trust-tier: candidate:mir_ast\n\
+             module\n\
+             prelude\n\
+             public import Init.NotationExtra\n\
+             @[expose] public section\n"
+        } else {
             "-- anneal-trust-tier: candidate:mir_ast\n\
              prelude\n\
-             import Init.NotationExtra\n\
+             import Init.NotationExtra\n"
+        };
+        let placeholder = if self.module_syntax { "" } else { "def placeholder : Nat := 0\n" };
+        let footer = if self.module_syntax { "end\n" } else { "" };
+        format!(
+            "{header}\
              namespace Trusted.MirAst\n\
-             def placeholder : Nat := 0\n\
+             {placeholder}\
              def BinOp.cmp : Prop := True\n\
              def BinOp.addWithOverflow : Prop := True\n\
              def BinOp.subWithOverflow : Prop := True\n\
              def BinOp.mulWithOverflow : Prop := True\n\
              def MirTy.char : Prop := True\n\
              end Trusted.MirAst\n\
-             {}\n",
+             {}\n\
+             {footer}",
             self.mir_ast_extra
         )
     }
 
     /// Render `trusted/lean/Trusted/MirSemantics.lean`.
     pub fn render_mir_semantics(&self) -> String {
-        let mut sem = String::from(
+        let mut sem = String::from(if self.module_syntax {
+            "-- anneal-trust-tier: candidate:mir_semantics\n\
+             module\n\
+             prelude\n\
+             public import Init.NotationExtra\n\
+             public import Trusted.MirAst\n\
+             @[expose] public section\n"
+        } else {
             "-- anneal-trust-tier: candidate:mir_semantics\n\
              prelude\n\
              import Init.NotationExtra\n\
-             import Trusted.MirAst\n\
-             namespace Trusted.MirSemantics\n\
+             import Trusted.MirAst\n"
+        });
+        sem.push_str(
+            "namespace Trusted.MirSemantics\n\
              def SatisfiesPost : Prop := True\n\
              def Diverges : Prop := True\n\
              def Behavior : Prop := True\n\
@@ -424,12 +475,27 @@ impl MirWpFixtureSpec {
             }
         }
         sem.push_str("end Trusted\n");
+        if self.module_syntax {
+            sem.push_str("end\n");
+        }
         sem
     }
 
     /// Render `theory/Anneal/MirWp.lean`.
     pub fn render_mir_wp(&self) -> String {
-        let mut wp = String::from(
+        let mut wp = String::from(if self.module_syntax {
+            "module\n\
+             prelude\n\
+             public import Init.NotationExtra\n\
+             public import Trusted\n\
+             public import Trusted.MirAst\n\
+             public import Trusted.MirSemantics\n\
+             public section\n\
+             namespace Anneal.MirWp\n\
+             @[expose] def wpProg : Nat := 0\n\
+             @[expose] def wpFaultProg : Nat := 0\n\
+             @[expose] def execProgV2 : Nat := 0\n"
+        } else {
             "prelude\n\
              import Init.NotationExtra\n\
              import Trusted\n\
@@ -438,8 +504,8 @@ impl MirWpFixtureSpec {
              namespace Anneal.MirWp\n\
              def wpProg : Nat := 0\n\
              def wpFaultProg : Nat := 0\n\
-             def execProgV2 : Nat := 0\n",
-        );
+             def execProgV2 : Nat := 0\n"
+        });
         if let Some(decl) = &self.wp_soundness_proof {
             wp.push_str(decl);
             wp.push('\n');
@@ -457,6 +523,9 @@ impl MirWpFixtureSpec {
             wp.push_str(&self.mir_wp_extra);
             wp.push('\n');
         }
+        if self.module_syntax {
+            wp.push_str("end\n");
+        }
         wp
     }
 
@@ -466,14 +535,23 @@ impl MirWpFixtureSpec {
         if !self.include_canaries_module {
             return None;
         }
-        let mut canaries = String::from(
+        let mut canaries = String::from(if self.module_syntax {
+            "module\n\
+             prelude\n\
+             public import Init.NotationExtra\n\
+             public import Trusted\n\
+             public import Trusted.MirAst\n\
+             public import Trusted.MirSemantics\n\
+             public section\n\
+             namespace Anneal.MirWp\n"
+        } else {
             "prelude\n\
              import Init.NotationExtra\n\
              import Trusted\n\
              import Trusted.MirAst\n\
              import Trusted.MirSemantics\n\
-             namespace Anneal.MirWp\n",
-        );
+             namespace Anneal.MirWp\n"
+        });
         for canary in SYNTHETIC_CANARIES {
             match self.canary_proof_overrides.get(canary.proof) {
                 Some(None) => {}
@@ -494,26 +572,84 @@ impl MirWpFixtureSpec {
             canaries.push_str(&self.canaries_extra);
             canaries.push('\n');
         }
+        if self.module_syntax {
+            canaries.push_str("end\n");
+        }
         Some(canaries)
     }
 
-    /// Render `theory/Anneal.lean`.
+    /// Validate `self.theory_umbrella_module` as `"Anneal"` or an
+    /// `"Anneal.<Sub>..."` dotted Lean module name and return its relative path
+    /// under an Anneal root (e.g., `"theory/Anneal.lean"` or
+    /// `"theory/Anneal/Wp.lean"`).
+    pub fn theory_umbrella_rel_path(&self) -> TestResult<PathBuf> {
+        let module = self.theory_umbrella_module.as_str();
+        let segments: Vec<&str> = module.split('.').collect();
+        if segments.first().copied() != Some("Anneal")
+            || !segments.iter().copied().all(is_valid_lean_ident_segment)
+        {
+            return Err(format!(
+                "theory_umbrella_module must be `Anneal` or `Anneal.<Sub>...` with valid Lean \
+                 identifier segments, got {module:?}"
+            ));
+        }
+        if matches!(module, "Anneal.MirWp" | "Anneal.MirWp.Canaries") {
+            return Err(format!(
+                "theory_umbrella_module must not collide with reserved generated module {module:?}"
+            ));
+        }
+        Ok(PathBuf::from(format!("theory/{}.lean", segments.join("/"))))
+    }
+
+    /// Render the `import` (or `public import` when `self.module_syntax` is
+    /// `true`) line targeting `self.theory_umbrella_module`.
+    pub fn render_theory_umbrella_import(&self) -> TestResult<String> {
+        self.theory_umbrella_rel_path()?;
+        if self.module_syntax {
+            Ok(format!("public import {}\n", self.theory_umbrella_module))
+        } else {
+            Ok(format!("import {}\n", self.theory_umbrella_module))
+        }
+    }
+
+    /// Render the synthetic theory umbrella module configured by
+    /// `self.theory_umbrella_module` (defaults to `theory/Anneal/Wp.lean`).
     pub fn render_anneal(&self) -> String {
-        format!(
+        let header = if self.module_syntax {
+            if self.theory_umbrella_module == "Anneal" {
+                "module\n\
+                 prelude\n\
+                 public import Init.NotationExtra\n\
+                 public import Trusted\n\
+                 public import Trusted.MirAst\n\
+                 public import Trusted.MirSemantics\n\
+                 public import Anneal.MirWp\n"
+            } else {
+                "module\n\
+                 prelude\n\
+                 public import Init.NotationExtra\n\
+                 public import Trusted\n\
+                 public import Anneal.MirWp\n"
+            }
+        } else {
             "prelude\n\
              import Init.NotationExtra\n\
              import Trusted\n\
              import Trusted.MirAst\n\
              import Trusted.MirSemantics\n\
-             import Anneal.MirWp\n\
-             {}\n",
-            self.anneal_extra
-        )
+             import Anneal.MirWp\n"
+        };
+        if self.anneal_extra.is_empty() {
+            header.to_string()
+        } else {
+            format!("{header}{}\n", self.anneal_extra)
+        }
     }
 
     /// Write all rendered synthetic modules into an existing
     /// [`LeanAuditFixture`].
     pub fn materialize_into(&self, fixture: &LeanAuditFixture) -> TestResult {
+        let umbrella_rel = self.theory_umbrella_rel_path()?;
         fixture.write_rel("trusted/lean/Trusted/MirAst.lean", self.render_mir_ast().as_bytes())?;
         fixture.write_rel(
             "trusted/lean/Trusted/MirSemantics.lean",
@@ -523,7 +659,7 @@ impl MirWpFixtureSpec {
         if let Some(canaries) = self.render_canaries() {
             fixture.write_rel("theory/Anneal/MirWp/Canaries.lean", canaries.as_bytes())?;
         }
-        fixture.write_rel("theory/Anneal.lean", self.render_anneal().as_bytes())?;
+        fixture.write_rel(&umbrella_rel, self.render_anneal().as_bytes())?;
         Ok(())
     }
 
@@ -830,15 +966,98 @@ mod tests {
             "PUBLIC_MIR_ALIASES drifted from TrustedBoundary.lean"
         );
 
-        // 4. Smoke-check rendering and materialization of the baseline spec.
+        // 4. Smoke-check rendering and materialization of both standard and
+        //    `module`-syntax baseline specs.
         assert!(spec.render_mir_semantics().contains("ExecSoundnessClaimV2"));
         assert!(spec.render_mir_semantics().contains("CrateTheoremV2"));
         assert!(spec.render_mir_wp().contains("def execProgV2 : Nat := 0"));
-        let fix = spec.materialize(&repo_root, "test-mir-wp-", OleanCachePolicy::Isolated).unwrap();
-        assert!(fix.root().join("trusted/lean/Trusted/MirAst.lean").is_file());
-        assert!(fix.root().join("trusted/lean/Trusted/MirSemantics.lean").is_file());
-        assert!(fix.root().join("theory/Anneal/MirWp.lean").is_file());
-        assert!(fix.root().join("theory/Anneal/MirWp/Canaries.lean").is_file());
-        assert!(fix.root().join("theory/Anneal.lean").is_file());
+        for candidate in [spec, MirWpFixtureSpec::valid_module_style()] {
+            let fix = candidate
+                .materialize(&repo_root, "test-mir-wp-", OleanCachePolicy::Isolated)
+                .unwrap();
+            assert!(fix.root().join("trusted/lean/Trusted/MirAst.lean").is_file());
+            assert!(fix.root().join("trusted/lean/Trusted/MirSemantics.lean").is_file());
+            assert!(fix.root().join("theory/Anneal/MirWp.lean").is_file());
+            assert!(fix.root().join("theory/Anneal/MirWp/Canaries.lean").is_file());
+            assert!(fix.root().join("theory/Anneal/Wp.lean").is_file());
+            assert!(!fix.root().join("theory/Anneal.lean").exists());
+        }
+        let mod_spec = MirWpFixtureSpec::valid_module_style();
+        assert!(mod_spec.render_mir_ast().contains("\nmodule\n"));
+        assert!(!mod_spec.render_mir_ast().contains("placeholder"));
+        assert!(MirWpFixtureSpec::valid().render_mir_ast().contains("def placeholder : Nat := 0"));
+        assert!(mod_spec.render_mir_semantics().contains("ExecSoundnessClaimV2"));
+        assert!(mod_spec.render_mir_semantics().contains("CrateTheoremV2"));
+        assert!(mod_spec.render_mir_wp().contains("@[expose] def execProgV2"));
+    }
+
+    #[test]
+    fn theory_umbrella_module_supports_domain_umbrella_and_rejects_invalid_names() {
+        let repo_root =
+            ToolchainEnv::repo_root_from_manifest(Path::new(env!("CARGO_MANIFEST_DIR")))
+                .expect("resolve anneal repo root");
+
+        let default_spec = MirWpFixtureSpec::valid();
+        assert_eq!(
+            default_spec.theory_umbrella_rel_path().unwrap(),
+            Path::new("theory/Anneal/Wp.lean")
+        );
+        assert_eq!(default_spec.render_theory_umbrella_import().unwrap(), "import Anneal.Wp\n");
+
+        let wp_mod_spec = MirWpFixtureSpec::valid_module_style();
+        assert_eq!(
+            wp_mod_spec.theory_umbrella_rel_path().unwrap(),
+            Path::new("theory/Anneal/Wp.lean")
+        );
+        assert_eq!(
+            wp_mod_spec.render_theory_umbrella_import().unwrap(),
+            "public import Anneal.Wp\n"
+        );
+        assert_eq!(
+            wp_mod_spec.render_anneal(),
+            "module\n\
+             prelude\n\
+             public import Init.NotationExtra\n\
+             public import Trusted\n\
+             public import Anneal.MirWp\n"
+        );
+        let fix = wp_mod_spec
+            .materialize(&repo_root, "test-mir-wp-domain-", OleanCachePolicy::Isolated)
+            .expect("materialize domain umbrella fixture");
+        assert!(fix.root().join("theory/Anneal/Wp.lean").is_file());
+        assert!(!fix.root().join("theory/Anneal.lean").exists());
+
+        let mut legacy_spec = MirWpFixtureSpec::valid();
+        legacy_spec.theory_umbrella_module = "Anneal".to_string();
+        assert_eq!(
+            legacy_spec.theory_umbrella_rel_path().unwrap(),
+            Path::new("theory/Anneal.lean")
+        );
+        assert_eq!(legacy_spec.render_theory_umbrella_import().unwrap(), "import Anneal\n");
+        let legacy_fix = legacy_spec
+            .materialize(&repo_root, "test-mir-wp-legacy-", OleanCachePolicy::Isolated)
+            .expect("materialize legacy synthetic umbrella fixture");
+        assert!(legacy_fix.root().join("theory/Anneal.lean").is_file());
+        assert!(!legacy_fix.root().join("theory/Anneal/Wp.lean").exists());
+
+        for bad in [
+            "",
+            "Other",
+            "Anneal.",
+            "Anneal..Wp",
+            "Anneal/Wp",
+            "../Escape",
+            "Anneal.1bad",
+            "Anneal.MirWp",
+            "Anneal.MirWp.Canaries",
+        ] {
+            let mut invalid = MirWpFixtureSpec::valid();
+            invalid.theory_umbrella_module = bad.to_string();
+            assert!(
+                invalid.theory_umbrella_rel_path().is_err(),
+                "expected invalid theory_umbrella_module {bad:?} to fail closed"
+            );
+            assert!(invalid.render_theory_umbrella_import().is_err());
+        }
     }
 }

@@ -20,14 +20,20 @@
 //!    read-only write), and capture refusing bodies that mix reference and
 //!    raw-pointer locals, which Profile v2 cannot check without an aliasing
 //!    model (verbatim `<&mut [u8] as SplitByteSlice>::split_at_unchecked`,
-//!    `from_raw_parts`, and a returned reference to a stack local).
+//!    `from_raw_parts`, and a returned reference to a stack local), or cast
+//!    `*const T` to `*mut T`.
 
 use std::{
     fs,
     path::{Path, PathBuf},
     process::{Command, Output},
+    sync::OnceLock,
 };
 
+use anneal_testkit::{
+    SharedOleanCache, ToolchainEnv, ToolchainMode, VerifyReceipt, assert_rejected,
+    assert_verified_untainted,
+};
 use serde_json::{Value, json};
 use tempfile::TempDir;
 
@@ -59,116 +65,60 @@ const ZEROCOPY_SOURCE_FILES: &[&str] = &[
     "wrappers.rs",
 ];
 
-struct Tools {
-    cli: PathBuf,
-    capture: PathBuf,
-    lean: PathBuf,
-    sysroot: PathBuf,
+/// Capture refusal for bodies mixing reference and raw-pointer locals.
+const MIXED_REFS_AND_RAW_PTRS: &str = "body mixes reference and raw-pointer locals";
+
+fn tools() -> &'static ToolchainEnv {
+    static TOOLS: OnceLock<ToolchainEnv> = OnceLock::new();
+    TOOLS.get_or_init(|| {
+        ToolchainEnv::resolve(ToolchainMode::WorkspaceBuild {
+            cli_bin: Some(PathBuf::from(env!("CARGO_BIN_EXE_cargo-anneal-test-bin"))),
+            capture_bin: None,
+            auditor_bin: None,
+        })
+        .expect("resolve Profile v2 e2e toolchain coordinates")
+    })
 }
 
-impl Tools {
-    fn discover() -> Self {
-        let install_root = override_path("ANNEAL_TEST_INSTALL_ROOT");
-        let cli = first_override(&["ANNEAL_CLI"])
-            .unwrap_or_else(|| PathBuf::from(env!("CARGO_BIN_EXE_cargo-anneal-test-bin")));
-        let cli = required_file(cli, "cargo-anneal", "ANNEAL_CLI");
-        let capture = first_override(&["ANNEAL_CAPTURE"])
-            .or_else(|| {
-                ["anneal-rustc-capture", "anneal-rustc-capture-test-bin"]
-                    .into_iter()
-                    .map(|name| cli.with_file_name(name))
-                    .find(|sibling| sibling.is_file())
-            })
-            .or_else(|| install_root.as_ref().map(|root| root.join("bin/anneal-rustc-capture")))
-            .unwrap_or_else(|| cli.with_file_name("anneal-rustc-capture"));
-        let capture = required_file(
-            capture,
-            "anneal-rustc-capture; build it before running this test",
-            "ANNEAL_CAPTURE",
-        );
-        let lean = first_override(&["ANNEAL_LEAN"])
-            .or_else(|| install_root.as_ref().map(|root| root.join("lean/bin/lean")))
-            .unwrap_or_else(cargo_anneal::default_lean_path);
-        let lean = required_file(lean, "the pinned Lean executable", "ANNEAL_LEAN");
-        let sysroot = first_override(&["ANNEAL_SYSROOT", "ANNEAL_TEST_RUST_SYSROOT"])
-            .or_else(|| install_root.as_ref().map(|root| root.join("rust")))
-            .unwrap_or_else(|| {
-                let output = Command::new("rustup")
-                    .args(["run", "nightly-2026-05-31", "rustc", "--print", "sysroot"])
-                    .output()
-                    .expect("install the pinned compiler or set ANNEAL_SYSROOT");
-                assert!(
-                    output.status.success(),
-                    "cannot find the pinned compiler sysroot; set ANNEAL_SYSROOT:\n{}",
-                    String::from_utf8_lossy(&output.stderr)
-                );
-                PathBuf::from(
-                    String::from_utf8(output.stdout).expect("rustc sysroot must be UTF-8").trim(),
-                )
-            });
-        assert!(
-            sysroot.join("lib").is_dir(),
-            "missing compiler sysroot {}; set ANNEAL_SYSROOT",
-            sysroot.display()
-        );
-        let sysroot = fs::canonicalize(sysroot).expect("resolve test sysroot path");
-        Self { cli, capture, lean, sysroot }
-    }
-
-    fn verify_command(&self) -> Command {
-        let mut command = Command::new(&self.cli);
-        command
-            .arg("verify")
-            .arg("--capture")
-            .arg(&self.capture)
-            .arg("--lean")
-            .arg(&self.lean)
-            .arg("--sysroot")
-            .arg(&self.sysroot);
-        command
-    }
+fn shared_cache() -> &'static SharedOleanCache {
+    static CACHE: OnceLock<SharedOleanCache> = OnceLock::new();
+    CACHE.get_or_init(|| {
+        SharedOleanCache::shared().expect("initialize persistent shared OleanCache")
+    })
 }
 
-fn override_path(name: &str) -> Option<PathBuf> {
-    std::env::var_os(name).filter(|value| !value.is_empty()).map(PathBuf::from)
-}
-
-fn first_override(names: &[&str]) -> Option<PathBuf> {
-    names.iter().find_map(|name| override_path(name))
-}
-
-fn required_file(path: PathBuf, what: &str, variable: &str) -> PathBuf {
-    assert!(path.is_file(), "missing {what} at {}; set {variable}", path.display());
-    fs::canonicalize(path).expect("resolve test tool path")
-}
-
-struct Receipt {
+struct VerifyOutcome {
     name: String,
-    value: Value,
+    receipt: VerifyReceipt,
     output: Output,
 }
 
-impl Receipt {
-    fn expect_ok(&self, status: &str) {
+impl VerifyOutcome {
+    fn expect_ok(&self, expected_status: &str) {
         assert_eq!(
             self.output.status.code(),
             Some(0),
-            "{} failed unexpectedly:\n{}\nstderr:\n{}",
+            "{} failed unexpectedly:\nstdout:\n{}\nstderr:\n{}",
             self.name,
-            self.value,
+            String::from_utf8_lossy(&self.output.stdout),
             String::from_utf8_lossy(&self.output.stderr)
         );
-        assert_eq!(self.value["schema_version"], 3, "{}: {}", self.name, self.value);
-        assert!(self.value.get("tainted").is_none(), "{}: {}", self.name, self.value);
-        assert_eq!(self.value["status"], status, "{}: {}", self.name, self.value);
-        assert_eq!(self.value["audit"]["exactType"], true, "{}: {}", self.name, self.value);
-        assert_eq!(self.value["audit"]["replay"], true, "{}: {}", self.name, self.value);
+        let verified = assert_verified_untainted(&self.receipt).unwrap_or_else(|error| {
+            panic!(
+                "{}: {error}\nstdout:\n{}",
+                self.name,
+                String::from_utf8_lossy(&self.output.stdout)
+            )
+        });
+        assert_eq!(verified.status, expected_status, "{}: {:?}", self.name, verified);
+        assert_eq!(verified.audit["exactType"], true, "{}: {}", self.name, verified.audit);
+        assert_eq!(verified.audit["replay"], true, "{}: {}", self.name, verified.audit);
         assert_eq!(
-            self.value["audit"]["axioms"],
+            verified.audit["axioms"],
             json!(["propext"]),
             "{}: {}",
             self.name,
-            self.value
+            verified.audit
         );
     }
 
@@ -176,14 +126,15 @@ impl Receipt {
     /// and the missing aliasing model place on callers, and must not claim
     /// `lean-miri` correspondence.
     fn expect_profile_v2_assumptions(&self) {
-        let semantics = self.value["assumptions"]
-            .as_array()
-            .into_iter()
-            .flatten()
-            .filter_map(Value::as_str)
+        let VerifyReceipt::Verified(verified) = &self.receipt else {
+            panic!("{}: expected verified receipt, got {:?}", self.name, self.receipt);
+        };
+        let semantics = verified
+            .assumptions
+            .iter()
             .find(|a| a.starts_with("experimental Profile v2 MIR semantics"))
             .unwrap_or_else(|| {
-                panic!("{}: missing Profile v2 assumption: {}", self.name, self.value)
+                panic!("{}: missing Profile v2 assumption: {:?}", self.name, verified.assumptions)
             });
         for needle in [
             "no aliasing model",
@@ -194,11 +145,9 @@ impl Receipt {
             assert!(semantics.contains(needle), "{}: {needle:?} not in {semantics:?}", self.name);
         }
         assert_eq!(
-            self.value["correspondence_provenance"]["applicable"],
-            false,
+            verified.correspondence_provenance["applicable"], false,
             "{}: {}",
-            self.name,
-            self.value
+            self.name, verified.correspondence_provenance
         );
     }
 
@@ -206,77 +155,85 @@ impl Receipt {
         assert_eq!(
             self.output.status.code(),
             Some(1),
-            "{} must fail closed:\n{}\nstderr:\n{}",
+            "{} must fail closed:\nstdout:\n{}\nstderr:\n{}",
             self.name,
-            self.value,
+            String::from_utf8_lossy(&self.output.stdout),
             String::from_utf8_lossy(&self.output.stderr)
         );
-        assert_eq!(self.value["schema_version"], 3, "{}: {}", self.name, self.value);
-        assert_eq!(self.value["status"], "proof_failed", "{}: {}", self.name, self.value);
-        assert_eq!(self.value["phase"], "audit", "{}: {}", self.name, self.value);
+        assert_rejected(&self.receipt, "proof_failed", Some("audit"), "").unwrap_or_else(|error| {
+            panic!(
+                "{}: {error}\nstdout:\n{}",
+                self.name,
+                String::from_utf8_lossy(&self.output.stdout)
+            )
+        });
     }
 
     fn expect_capture_refused(&self, needle: &str) {
         assert_eq!(
             self.output.status.code(),
             Some(1),
-            "{} must fail closed:\n{}\nstderr:\n{}",
+            "{} must fail closed:\nstdout:\n{}\nstderr:\n{}",
             self.name,
-            self.value,
+            String::from_utf8_lossy(&self.output.stdout),
             String::from_utf8_lossy(&self.output.stderr)
         );
-        assert_eq!(self.value["status"], "unsupported", "{}: {}", self.name, self.value);
-        assert_eq!(self.value["phase"], "capture", "{}: {}", self.name, self.value);
-        let detail = self.value["detail"].as_str().unwrap_or_default();
-        assert!(detail.contains(needle), "{}: {}", self.name, self.value);
+        assert_rejected(&self.receipt, "unsupported", Some("capture"), needle).unwrap_or_else(
+            |error| {
+                panic!(
+                    "{}: {error}\nstdout:\n{}",
+                    self.name,
+                    String::from_utf8_lossy(&self.output.stdout)
+                )
+            },
+        );
     }
 }
 
-/// Capture refusal for bodies mixing reference and raw-pointer locals.
-const MIXED_REFS_AND_RAW_PTRS: &str = "body mixes reference and raw-pointer locals";
+fn run_request(dir: &Path, name: &str, request: &Value) -> VerifyOutcome {
+    let tools = tools();
+    let cache = shared_cache();
+    let cli = tools.cli.as_deref().expect("resolved cargo-anneal binary");
+    let capture = tools
+        .capture
+        .as_deref()
+        .expect("resolved anneal-rustc-capture binary; build it before running this test");
 
-fn run_request(tools: &Tools, dir: &Path, name: &str, request: &Value) -> Receipt {
     let req_path = dir.join(format!("{name}.json"));
     fs::write(&req_path, serde_json::to_vec_pretty(request).unwrap()).unwrap();
     let artifacts = dir.join(format!("artifacts-{name}"));
-    let output = tools
-        .verify_command()
+    let output = Command::new(cli)
         .current_dir(dir)
+        .env("HOME", cache.home_dir())
+        .env("XDG_CACHE_HOME", cache.xdg_cache_home())
+        .arg("verify")
+        .arg("--capture")
+        .arg(capture)
+        .arg("--lean")
+        .arg(&tools.lean)
+        .arg("--sysroot")
+        .arg(&tools.sysroot)
         .arg("--request")
         .arg(&req_path)
         .arg("--artifacts")
         .arg(&artifacts)
         .output()
         .unwrap_or_else(|e| panic!("failed to run {name}: {e}"));
-    let value = serde_json::from_slice(&output.stdout).unwrap_or_else(|e| {
+    let receipt = VerifyReceipt::from_json_slice(&output.stdout).unwrap_or_else(|e| {
         panic!(
-            "{name} did not emit JSON receipt: {e}\nstdout:\n{}\nstderr:\n{}",
+            "{name} did not emit valid Schema v3 JSON receipt: {e}\nstdout:\n{}\nstderr:\n{}",
             String::from_utf8_lossy(&output.stdout),
             String::from_utf8_lossy(&output.stderr)
         )
     });
-    Receipt { name: name.to_owned(), value, output }
+    VerifyOutcome { name: name.to_owned(), receipt, output }
 }
 
-/// Verifies the unmodified `zerocopy/src/byte_slice.rs` `split_at_unchecked`
-/// implementation for `&[u8]` end-to-end under `UnitTheoremV2` (`["propext"]`,
-/// zero taint), confirms that omitting the `mid <= len` safety precondition is
-/// rejected fail-closed, and confirms that capture refuses the `&mut [u8]`
-/// implementation, which derives references from raw pointers.
-#[test]
-fn verifies_verbatim_zerocopy_split_at_unchecked_and_rejects_missing_bounds() {
-    let tools = Tools::discover();
-    let dir = TempDir::new().unwrap();
-    let lean_dir = dir.path().join("lean");
-    fs::create_dir_all(&lean_dir).unwrap();
-    fs::write(lean_dir.join("Spec.lean"), ZEROCOPY_SPEC).unwrap();
-    fs::write(lean_dir.join("Proof.lean"), ZEROCOPY_PROOF).unwrap();
-
-    let zc_src = fs::canonicalize(
-        Path::new(env!("CARGO_MANIFEST_DIR")).join("../../../zerocopy/src"),
-    )
-    .expect("locate unmodified zerocopy/src");
-    let request = json!({
+fn zerocopy_request(lean_dir: &Path, root: &str) -> Value {
+    let zc_src =
+        fs::canonicalize(Path::new(env!("CARGO_MANIFEST_DIR")).join("../../../zerocopy/src"))
+            .expect("locate unmodified zerocopy/src");
+    json!({
         "schema_version": 1,
         "compilation": {
             "source_root": zc_src.to_str().unwrap(),
@@ -290,9 +247,7 @@ fn verifies_verbatim_zerocopy_split_at_unchecked_and_rejects_missing_bounds() {
         },
         "scope": {
             "kind": "selected_unit",
-            "roots": [
-                "<&[u8] as byte_slice::SplitByteSlice>::split_at_unchecked"
-            ]
+            "roots": [root]
         },
         "proof": {
             "source_root": lean_dir.to_str().unwrap(),
@@ -303,56 +258,28 @@ fn verifies_verbatim_zerocopy_split_at_unchecked_and_rejects_missing_bounds() {
                 {"module": "Proof", "path": "Proof.lean", "role": "proof"}
             ]
         }
-    });
-
-    let ok = run_request(&tools, dir.path(), "zerocopy-split-at-ok", &request);
-    ok.expect_ok("selected_unit_verified");
-    ok.expect_profile_v2_assumptions();
-    let capture_json: Value = serde_json::from_slice(
-        &fs::read(dir.path().join("artifacts-zerocopy-split-at-ok/capture/capture.json")).unwrap(),
-    )
-    .unwrap();
-    assert_eq!(capture_json["program"]["mir_profile_version"], 2, "{capture_json}");
-
-    // Negative 1: weaken splitAtSafety to omit `mid <= len` on verbatim
-    // zerocopy.
-    let bad_spec = ZEROCOPY_SPEC.replace(
-        "mid.bits.toNat ≤ len.toNat",
-        "True",
-    );
-    assert_ne!(bad_spec, ZEROCOPY_SPEC);
-    fs::write(lean_dir.join("Spec.lean"), bad_spec).unwrap();
-    run_request(&tools, dir.path(), "zerocopy-split-at-missing-bounds", &request)
-        .expect_proof_failed();
-
-    // Negative 2: the `&mut [u8]` implementation mixes `&mut [u8]` and
-    // `*mut u8` locals, so capture refuses it until Profile v2 models
-    // aliasing.
-    let mut mut_request = request.clone();
-    mut_request["scope"]["roots"] =
-        json!(["<&mut [u8] as byte_slice::SplitByteSlice>::split_at_unchecked"]);
-    run_request(&tools, dir.path(), "zerocopy-split-at-mut-refused", &mut_request)
-        .expect_capture_refused(MIXED_REFS_AND_RAW_PTRS);
+    })
 }
 
-/// Verifies raw pointer `*const u32` load and `*mut u8` store updating
-/// `out.callerMem` under `CrateTheoremV2`, confirms that proofs are rejected
-/// for missing alignment, null pointers, and read-only stores, and confirms
-/// that capture refuses bodies that turn raw pointers into references or cast
-/// `*const T` to `*mut T`.
-#[test]
-fn verifies_raw_pointer_load_store_and_rejects_unsound_callers() {
-    let tools = Tools::discover();
+fn stage_zerocopy_case(spec: &str, root: &str) -> (TempDir, Value) {
+    let dir = TempDir::new().unwrap();
+    let lean_dir = dir.path().join("lean");
+    fs::create_dir_all(&lean_dir).unwrap();
+    fs::write(lean_dir.join("Spec.lean"), spec).unwrap();
+    fs::write(lean_dir.join("Proof.lean"), ZEROCOPY_PROOF).unwrap();
+    let request = zerocopy_request(&lean_dir, root);
+    (dir, request)
+}
+
+fn stage_raw_ptr_case(lib_src: &str, spec: &str) -> (TempDir, Value) {
     let dir = TempDir::new().unwrap();
     let rust_dir = dir.path().join("rust");
     let lean_dir = dir.path().join("lean");
     fs::create_dir_all(&rust_dir).unwrap();
     fs::create_dir_all(&lean_dir).unwrap();
-
-    fs::write(rust_dir.join("lib.rs"), RAW_PTR_LIB).unwrap();
-    fs::write(lean_dir.join("Spec.lean"), RAW_PTR_SPEC).unwrap();
+    fs::write(rust_dir.join("lib.rs"), lib_src).unwrap();
+    fs::write(lean_dir.join("Spec.lean"), spec).unwrap();
     fs::write(lean_dir.join("Proof.lean"), RAW_PTR_PROOF).unwrap();
-
     let request = json!({
         "schema_version": 1,
         "compilation": {
@@ -375,8 +302,57 @@ fn verifies_raw_pointer_load_store_and_rejects_unsound_callers() {
             ]
         }
     });
+    (dir, request)
+}
 
-    let ok = run_request(&tools, dir.path(), "raw-ptr-ok", &request);
+/// Verifies the unmodified `zerocopy/src/byte_slice.rs` `split_at_unchecked`
+/// implementation for `&[u8]` end-to-end under `UnitTheoremV2` (`["propext"]`,
+/// zero taint).
+#[test]
+fn verifies_verbatim_zerocopy_split_at_unchecked() {
+    let (dir, request) = stage_zerocopy_case(
+        ZEROCOPY_SPEC,
+        "<&[u8] as byte_slice::SplitByteSlice>::split_at_unchecked",
+    );
+    let ok = run_request(dir.path(), "zerocopy-split-at-ok", &request);
+    ok.expect_ok("selected_unit_verified");
+    ok.expect_profile_v2_assumptions();
+    let capture_json: Value = serde_json::from_slice(
+        &fs::read(dir.path().join("artifacts-zerocopy-split-at-ok/capture/capture.json")).unwrap(),
+    )
+    .unwrap();
+    assert_eq!(capture_json["program"]["mir_profile_version"], 2, "{capture_json}");
+}
+
+/// Weakening `splitAtSafety` to omit `mid <= len` on verbatim `zerocopy`
+/// must fail closed during audit.
+#[test]
+fn rejects_verbatim_zerocopy_split_at_unchecked_missing_bounds() {
+    let bad_spec = ZEROCOPY_SPEC.replace("mid.bits.toNat ≤ len.toNat", "True");
+    assert_ne!(bad_spec, ZEROCOPY_SPEC);
+    let (dir, request) =
+        stage_zerocopy_case(&bad_spec, "<&[u8] as byte_slice::SplitByteSlice>::split_at_unchecked");
+    run_request(dir.path(), "zerocopy-split-at-missing-bounds", &request).expect_proof_failed();
+}
+
+/// The `&mut [u8]` `split_at_unchecked` implementation mixes `&mut [u8]` and
+/// `*mut u8` locals, so capture refuses it until Profile v2 models aliasing.
+#[test]
+fn refuses_verbatim_zerocopy_split_at_unchecked_mut_slice() {
+    let (dir, request) = stage_zerocopy_case(
+        ZEROCOPY_SPEC,
+        "<&mut [u8] as byte_slice::SplitByteSlice>::split_at_unchecked",
+    );
+    run_request(dir.path(), "zerocopy-split-at-mut-refused", &request)
+        .expect_capture_refused(MIXED_REFS_AND_RAW_PTRS);
+}
+
+/// Verifies raw pointer `*const u32` load and `*mut u8` store updating
+/// `out.callerMem` under `CrateTheoremV2`.
+#[test]
+fn verifies_raw_pointer_load_and_store() {
+    let (dir, request) = stage_raw_ptr_case(RAW_PTR_LIB, RAW_PTR_SPEC);
+    let ok = run_request(dir.path(), "raw-ptr-ok", &request);
     ok.expect_ok("crate_verified");
     ok.expect_profile_v2_assumptions();
     let capture_json: Value = serde_json::from_slice(
@@ -384,66 +360,78 @@ fn verifies_raw_pointer_load_store_and_rejects_unsound_callers() {
     )
     .unwrap();
     assert_eq!(capture_json["program"]["mir_profile_version"], 2, "{capture_json}");
+}
 
-    // Negative 2: missing alignment precondition on `*const u32`.
-    let no_align = RAW_PTR_SPEC.replace(
-        "isAligned a pv.offsetBytes.toNat 2 = true ∧",
-        "True ∧",
-    );
+/// Missing alignment precondition on `*const u32` must fail closed.
+#[test]
+fn rejects_raw_pointer_load_missing_alignment() {
+    let no_align = RAW_PTR_SPEC.replace("isAligned a pv.offsetBytes.toNat 2 = true ∧", "True ∧");
     assert_ne!(no_align, RAW_PTR_SPEC);
-    fs::write(lean_dir.join("Spec.lean"), no_align).unwrap();
-    run_request(&tools, dir.path(), "raw-ptr-missing-align", &request).expect_proof_failed();
+    let (dir, request) = stage_raw_ptr_case(RAW_PTR_LIB, &no_align);
+    run_request(dir.path(), "raw-ptr-missing-align", &request).expect_proof_failed();
+}
 
-    // Negative 3: missing non-null / live allocation precondition on
-    // `*const u32`.
+/// Missing non-null / live allocation precondition on `*const u32` must fail
+/// closed.
+#[test]
+fn rejects_raw_pointer_load_allowing_null() {
     let allow_null = RAW_PTR_SPEC.replacen("| none => False", "| none => True", 1);
     assert_ne!(allow_null, RAW_PTR_SPEC);
-    fs::write(lean_dir.join("Spec.lean"), allow_null).unwrap();
-    run_request(&tools, dir.path(), "raw-ptr-allow-null", &request).expect_proof_failed();
+    let (dir, request) = stage_raw_ptr_case(RAW_PTR_LIB, &allow_null);
+    run_request(dir.path(), "raw-ptr-allow-null", &request).expect_proof_failed();
+}
 
-    // Negative 4: missing `.mut` precondition on `*mut u8` write.
+/// Missing `.mut` precondition on `*mut u8` write must fail closed.
+#[test]
+fn rejects_raw_pointer_store_without_mutability() {
     let no_mut = RAW_PTR_SPEC.replace("a.mutability = .mut ∧", "True ∧");
     assert_ne!(no_mut, RAW_PTR_SPEC);
-    fs::write(lean_dir.join("Spec.lean"), no_mut).unwrap();
-    run_request(&tools, dir.path(), "raw-ptr-readonly-write", &request).expect_proof_failed();
+    let (dir, request) = stage_raw_ptr_case(RAW_PTR_LIB, &no_mut);
+    run_request(dir.path(), "raw-ptr-readonly-write", &request).expect_proof_failed();
+}
 
-    // Negative 5: `from_raw_parts` turns a `*const u8` into a `&[u8]`, so the
-    // body mixes reference and raw-pointer locals and capture refuses it.
-    fs::write(
-        rust_dir.join("lib.rs"),
+/// `from_raw_parts` turns a `*const u8` into a `&[u8]`, so the body mixes
+/// reference and raw-pointer locals and capture refuses it.
+#[test]
+fn refuses_slice_from_raw_parts_mixing_refs_and_raw_ptrs() {
+    let (dir, request) = stage_raw_ptr_case(
         "pub unsafe fn make_slice<'a>(p: *const u8, len: usize) -> &'a [u8] {\n\
              unsafe { core::slice::from_raw_parts(p, len) }\n\
          }\n",
-    )
-    .unwrap();
-    run_request(&tools, dir.path(), "slice-from-raw-parts-refused", &request)
+        RAW_PTR_SPEC,
+    );
+    run_request(dir.path(), "slice-from-raw-parts-refused", &request)
         .expect_capture_refused(MIXED_REFS_AND_RAW_PTRS);
+}
 
-    // Negative 6: returning a dangling stack reference `&*(&raw const x)` also
-    // mixes reference and raw-pointer locals.
-    fs::write(
-        rust_dir.join("lib.rs"),
+/// Returning a dangling stack reference `&*(&raw const x)` mixes reference
+/// and raw-pointer locals and capture refuses it.
+#[test]
+fn refuses_dangling_stack_ref_mixing_refs_and_raw_ptrs() {
+    let (dir, request) = stage_raw_ptr_case(
         "pub unsafe fn dangling<'a>(x: u8) -> &'a u8 {\n\
              unsafe { &*(&raw const x) }\n\
          }\n",
-    )
-    .unwrap();
-    run_request(&tools, dir.path(), "dangling-stack-ref-refused", &request)
+        RAW_PTR_SPEC,
+    );
+    run_request(dir.path(), "dangling-stack-ref-refused", &request)
         .expect_capture_refused(MIXED_REFS_AND_RAW_PTRS);
+}
 
-    // Negative 7: `&raw const x as *mut u32` would let the body write to the
-    // immutable binding `x`, which Profile v2 cannot detect, so capture
-    // refuses the cast.
-    fs::write(
-        rust_dir.join("lib.rs"),
+/// Casting `&raw const x as *mut u32` would let the body write to the
+/// immutable binding `x`, which Profile v2 cannot detect, so capture refuses
+/// the cast.
+#[test]
+fn refuses_const_to_mut_raw_ptr_cast() {
+    let (dir, request) = stage_raw_ptr_case(
         "pub fn write_via_const() -> u32 {\n\
              let x: u32 = 1;\n\
              let p = &raw const x as *mut u32;\n\
              unsafe { *p = 2 };\n\
              x\n\
          }\n",
-    )
-    .unwrap();
-    run_request(&tools, dir.path(), "write-via-const-refused", &request)
+        RAW_PTR_SPEC,
+    );
+    run_request(dir.path(), "write-via-const-refused", &request)
         .expect_capture_refused("`*const T` to `*mut T`");
 }
