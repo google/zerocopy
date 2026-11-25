@@ -8581,24 +8581,34 @@ fn rejects_deleted_build_generator_and_disallowed_build_scripts() {
     fs::remove_file(fix.root.join("trusted/audit/build.rs")).unwrap();
 }
 
-/// `scan_lean_tree` admits `theory/bundle-manifest.json` (and rejects any other
-/// non-Lean file in `theory/` or `bundle-manifest.json` in `trusted/lean/`),
-/// while `Checker::run` fails closed if `bundled_theory.json` is deleted.
+/// `scan_lean_tree` admits `theory/bundle-manifest.json` without requiring a
+/// monolithic `theory/Anneal.lean` umbrella (while still admitting synthetic
+/// `theory/Anneal.lean` fixtures, rejecting any other non-Lean file in
+/// `theory/` or `bundle-manifest.json` in `trusted/lean/`, and requiring
+/// `Trusted.lean` in `trusted/lean/`), while `Checker::run` fails closed if
+/// `bundled_theory.json` is deleted.
 #[test]
 fn admits_only_theory_bundle_manifest_and_rejects_deleted_theory_bundle() {
     use anneal_audit::scan_lean_tree;
 
     let checkout = repo_root();
     let theory_mods = scan_lean_tree(&checkout.join("theory"), "Anneal").unwrap();
-    assert!(theory_mods.contains_key("Anneal"));
+    assert!(!theory_mods.contains_key("Anneal"));
+    assert!(theory_mods.contains_key("Anneal.Scalar"));
+    assert!(theory_mods.contains_key("Anneal.Wp"));
     assert!(theory_mods.contains_key("Anneal.MirWp"));
 
     let tmp = tempfile::tempdir().unwrap();
     let theory_root = tmp.path().join("theory");
     fs::create_dir_all(theory_root.join("Anneal")).unwrap();
-    fs::write(theory_root.join("Anneal.lean"), b"prelude\n").unwrap();
+    fs::write(theory_root.join("Anneal/Scalar.lean"), b"prelude\n").unwrap();
     fs::write(theory_root.join("bundle-manifest.json"), b"{}\n").unwrap();
-    assert!(scan_lean_tree(&theory_root, "Anneal").is_ok());
+    let no_umbrella_mods = scan_lean_tree(&theory_root, "Anneal").unwrap();
+    assert!(!no_umbrella_mods.contains_key("Anneal"));
+    assert!(no_umbrella_mods.contains_key("Anneal.Scalar"));
+    fs::write(theory_root.join("Anneal.lean"), b"prelude\n").unwrap();
+    let with_umbrella_mods = scan_lean_tree(&theory_root, "Anneal").unwrap();
+    assert!(with_umbrella_mods.contains_key("Anneal"));
 
     fs::write(theory_root.join("other.json"), b"{}\n").unwrap();
     let err = scan_lean_tree(&theory_root, "Anneal").unwrap_err();
@@ -8617,6 +8627,14 @@ fn admits_only_theory_bundle_manifest_and_rejects_deleted_theory_bundle() {
         err.message.contains("unexpected non-Lean file in source tree: bundle-manifest.json"),
         "{err}"
     );
+
+    let no_trusted_umbrella = tmp.path().join("trusted_lean_no_umbrella");
+    fs::create_dir_all(no_trusted_umbrella.join("Trusted")).unwrap();
+    fs::write(no_trusted_umbrella.join("Trusted/MirAst.lean"), HEADER).unwrap();
+    let err = scan_lean_tree(&no_trusted_umbrella, "Trusted").unwrap_err();
+    assert_eq!(err.code, 1, "{err}");
+    assert_eq!(err.phase, "snapshot", "{err}");
+    assert!(err.message.contains("missing Trusted.lean umbrella"), "{err}");
 
     let fix = TempFixture::new(None);
     copy_cargo_workspace(&fix.root);
@@ -9885,14 +9903,21 @@ fn parse_lean_header_imports_for_test(source: &str) -> Vec<String> {
     imports
 }
 
-/// Ensures `theory/Anneal.lean`'s transitive `theory/` closure matches
-/// `theory/bundle-manifest.json` 1-for-1, zero `*Canaries*` modules appear in
-/// the bundle manifest or runtime umbrella closures, and `scan_lean_tree` still
-/// discovers all decoupled `*Canaries*.lean` files for Pass-1 repository
-/// `anneal-audit`.
+/// Ensures `theory/Anneal.lean` is absent, all four domain umbrellas
+/// (`Anneal.{Scalar,Wp,PureLift,Simd}`) exist in `theory/`,
+/// `theory/bundle-manifest.json` includes `Scalar` and `Wp`, excludes
+/// `*Canaries*`, and is transitively closed under `Anneal.*` header imports,
+/// `Anneal.Scalar`'s closure stays free of `Trusted.*`, `MirWp*`, `LoopInv`,
+/// `ClassicalEm`, and `BitTrieLrat`, zero non-canary `theory/` modules import
+/// `*Canaries*`, and `scan_lean_tree` still discovers all decoupled
+/// `*Canaries*.lean` files for Pass-1 repository `anneal-audit`.
 #[test]
 fn theory_umbrella_and_manifest_exclude_canaries_and_match() {
     let checkout = repo_root();
+    assert!(
+        !checkout.join("theory/Anneal.lean").exists(),
+        "monolithic theory/Anneal.lean must stay retired in favor of domain umbrellas"
+    );
     let (_, manifest) = bundle::load_theory_bundle_manifest(&checkout)
         .expect("load theory/bundle-manifest.json");
     let manifest_paths: BTreeSet<String> =
@@ -9901,9 +9926,25 @@ fn theory_umbrella_and_manifest_exclude_canaries_and_match() {
         !manifest_paths.iter().any(|p| p.contains("Canaries")),
         "bundle-manifest.json must exclude *Canaries* modules: {manifest_paths:?}"
     );
+    assert!(
+        manifest_paths.contains("theory/Anneal/Scalar.lean"),
+        "bundle-manifest.json must bundle theory/Anneal/Scalar.lean"
+    );
+    assert!(
+        manifest_paths.contains("theory/Anneal/Wp.lean"),
+        "bundle-manifest.json must bundle theory/Anneal/Wp.lean"
+    );
 
     let theory_modules =
         scan_lean_tree(&checkout.join("theory"), "Anneal").expect("scan_lean_tree on theory/");
+    assert!(!theory_modules.contains_key("Anneal"));
+    for domain_umbrella in ["Anneal.Scalar", "Anneal.Wp", "Anneal.PureLift", "Anneal.Simd"] {
+        assert!(
+            theory_modules.contains_key(domain_umbrella),
+            "expected domain umbrella {domain_umbrella} in theory/"
+        );
+    }
+
     let canary_modules: BTreeSet<String> =
         theory_modules.keys().filter(|m| m.contains("Canaries")).cloned().collect();
     assert!(
@@ -9935,10 +9976,9 @@ fn theory_umbrella_and_manifest_exclude_canaries_and_match() {
         "expected scan_lean_tree to discover all decoupled *Canaries*.lean modules dynamically, got {canary_modules:?}"
     );
 
-    // Every non-canary top-level/submodule umbrella under `theory/` (including
-    // unbundled umbrellas such as PureLift/Core/ByteSubLens/CnfOrd/MirTotal/
-    // F2Simd and any newly added subsystem umbrellas) must not import any
-    // `*Canaries*` module.
+    // Every non-canary module under `theory/` (including bundled and unbundled
+    // domain umbrellas) must not import any `*Canaries*` module or monolithic
+    // `Anneal`.
     for (module, path) in &theory_modules {
         if canary_modules.contains(module) {
             continue;
@@ -9949,12 +9989,36 @@ fn theory_umbrella_and_manifest_exclude_canaries_and_match() {
             !imps.iter().any(|dep| dep.contains("Canaries")),
             "non-canary theory module {module} must not import any *Canaries* module: {imps:?}"
         );
+        assert!(
+            !imps.iter().any(|dep| dep == "Anneal"),
+            "theory module {module} must not import retired Anneal umbrella: {imps:?}"
+        );
     }
 
-    let mut visited = BTreeSet::new();
-    let mut queue = VecDeque::from([String::from("Anneal")]);
+    // `theory/bundle-manifest.json` must be transitively closed under
+    // `Anneal.*` header imports so every bundled module's theory dependencies
+    // are also bundled.
+    for rel_path in &manifest_paths {
+        let src = fs::read_to_string(checkout.join(rel_path)).unwrap();
+        for dep in parse_lean_header_imports_for_test(&src) {
+            if dep == "Anneal" || dep.starts_with("Anneal.") {
+                let dep_rel = format!("theory/{}.lean", dep.replace('.', "/"));
+                assert!(
+                    manifest_paths.contains(&dep_rel),
+                    "bundled module {rel_path} imports unbundled theory module {dep} ({dep_rel})"
+                );
+            }
+        }
+    }
+
+    // Verify `Anneal.Scalar`'s transitive header import closure stays purely
+    // constructive and model-independent (excluding `Trusted.*`, `MirWp*`,
+    // `LoopInv`, `ClassicalEm`, and `BitTrieLrat`).
+    let mut scalar_theory_visited = BTreeSet::new();
+    let mut scalar_all_imports = BTreeSet::new();
+    let mut queue = VecDeque::from([String::from("Anneal.Scalar")]);
     while let Some(module) = queue.pop_front() {
-        if !visited.insert(module.clone()) {
+        if !scalar_theory_visited.insert(module.clone()) {
             continue;
         }
         let path = theory_modules
@@ -9962,26 +10026,23 @@ fn theory_umbrella_and_manifest_exclude_canaries_and_match() {
             .unwrap_or_else(|| panic!("missing theory source for {module}"));
         let src = fs::read_to_string(path).unwrap();
         for dep in parse_lean_header_imports_for_test(&src) {
-            if (dep == "Anneal" || dep.starts_with("Anneal.")) && !visited.contains(&dep) {
+            scalar_all_imports.insert(dep.clone());
+            if dep.starts_with("Anneal.") && !scalar_theory_visited.contains(&dep) {
                 queue.push_back(dep);
             }
         }
     }
-
-    assert!(
-        !visited.iter().any(|m| m.contains("Canaries")),
-        "Anneal umbrella closure must contain zero *Canaries* modules: {visited:?}"
-    );
-    let closure_paths: BTreeSet<String> = visited
-        .iter()
-        .filter(|m| m.as_str() != "Anneal")
-        .map(|m| {
-            let p = &theory_modules[m];
-            p.strip_prefix(&checkout).unwrap().to_str().unwrap().to_string()
-        })
-        .collect();
-    assert_eq!(
-        closure_paths, manifest_paths,
-        "Anneal.lean transitive theory/ closure must match theory/bundle-manifest.json 1-for-1"
-    );
+    for imp in &scalar_all_imports {
+        assert!(
+            imp != "Trusted"
+                && !imp.starts_with("Trusted.")
+                && imp != "Anneal.MirWp"
+                && !imp.starts_with("Anneal.MirWp.")
+                && imp != "Anneal.LoopInv"
+                && imp != "Anneal.ClassicalEm"
+                && imp != "Anneal.BitTrieLrat"
+                && !imp.contains("Canaries"),
+            "Anneal.Scalar transitive closure must exclude {imp} (closure={scalar_all_imports:?})"
+        );
+    }
 }

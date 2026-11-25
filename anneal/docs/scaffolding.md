@@ -211,7 +211,7 @@ Available `CASES` values:
 
 | Case | What it checks |
 | --- | --- |
-| `audit-accepted` | Copies the packaged `lean-toolchain`, `foundation-lock.json`, `TrustedBoundary.lean`, and `library-lock.json`, writes a self-contained synthetic `Trusted` / `Trusted.*` + `Anneal` + `Anneal.MirWp` + `Anneal.MirWp.Canaries` fixture, and runs `anneal-audit --json`, expecting `replay: true` and at least `30` kernel declarations. |
+| `audit-accepted` | Copies the packaged `lean-toolchain`, `foundation-lock.json`, `TrustedBoundary.lean`, and `library-lock.json`, writes a self-contained synthetic `Trusted` / `Trusted.*` + `Anneal.Wp` + `Anneal.MirWp` + `Anneal.MirWp.Canaries` fixture, and runs `anneal-audit --json`, expecting `replay: true` and at least `30` kernel declarations. |
 | `audit-missing-lean` | Invokes `anneal-audit` with a nonexistent `--lean` path and expects exit `2` in phase `toolchain`. |
 | `audit-rejected` | Runs `anneal-audit` on a `sorry` fixture and expects exit `1` in phase `preflight` with `Target execution began: false`. |
 | `bundled-cargo-check` | Runs installed `rust/bin/cargo check --offline` with an owned `CARGO_HOME` and checks nonempty `.rmeta` output. |
@@ -220,7 +220,7 @@ Available `CASES` values:
 | `cargo-setup-invalid-archive` | On Linux, checks that v1 install followed by v2 reinstall replaces the toolchain in `XDG_CACHE_HOME` and corrupt/missing archives fail with exit `1` and empty stdout without harming the installed toolchain. |
 | `cargo-version` | Checks `--version` and `anneal --version` on `cargo-anneal`. |
 | `driver-callback` | Compiles a small crate with `bin/anneal-rustc-capture --sysroot ... --emit=metadata` and checks `.rmeta` output, empty stdout, and the callback stderr note. |
-| `lean-file` | Stages `share/anneal/trusted/lean` and `share/anneal/theory`, parses `share/anneal/theory/bundle-manifest.json` and walks `share/anneal/theory` recursively to verify 1-for-1 `Anneal.*` parity across the installed tree (allowing only `bundle-manifest.json`, `Anneal.lean`, and `Anneal.*` modules with zero `*Canaries*`), `bundle-manifest.json`, and the transitive `Anneal` import closure, compiles the module graph with `ANNEAL_TEST_JOBS` workers, checks `Trusted.olean` and `Anneal.olean`, and elaborates a `Small.lean` module importing `Anneal`. |
+| `lean-file` | Stages `share/anneal/trusted/lean` and `share/anneal/theory`, parses `share/anneal/theory/bundle-manifest.json` and walks `share/anneal/theory` recursively to verify 1-for-1 `Anneal.*` parity across the installed tree (allowing only `bundle-manifest.json` and `Anneal.*` modules with zero `*Canaries*` and no retired `Anneal.lean`), `bundle-manifest.json`, and its transitive `Anneal.*` import closure, compiles the `bundle-manifest.json` and `Trusted` module graph with `ANNEAL_TEST_JOBS` workers, checks `Trusted.olean`, `Anneal/Scalar.olean`, and `Anneal/Wp.olean` (and the absence of `Anneal.olean`), and elaborates separate `SmallScalar.lean` (`import Anneal.Scalar`) and `SmallWp.lean` (`import Anneal.Wp`) smoke modules. |
 | `rustdoc-html` | Runs `rust/bin/rustdoc --sysroot ...` on a small crate and checks `index.html` and `fn.identity.html`. |
 
 For example, to rerun only `driver-callback` sequentially, place

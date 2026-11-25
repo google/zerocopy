@@ -353,8 +353,6 @@
               cp "$rustcCapture/bin/anneal-rustc-capture" "$TMPDIR/dist_staging/bin/"
               cp -r "$leanFoundation" "$TMPDIR/dist_staging/share/anneal/trusted/lean"
               mkdir -p "$TMPDIR/dist_staging/share/anneal/theory"
-              cp "$leanTheory/Anneal.lean" \
-                "$TMPDIR/dist_staging/share/anneal/theory/Anneal.lean"
               cp "$leanTheory/bundle-manifest.json" \
                 "$TMPDIR/dist_staging/share/anneal/theory/bundle-manifest.json"
               jq -e -r '.modules[].path' "$leanTheory/bundle-manifest.json" \
@@ -453,15 +451,18 @@
                 "$TMPDIR/dist_staging/share/anneal/prebuilt/TrustedBoundary.olean" \
                 "$TMPDIR/dist_staging/share/anneal/prebuilt/lib/Trusted/MirAst.olean" \
                 "$TMPDIR/dist_staging/share/anneal/prebuilt/lib/Anneal/MirWp.olean" \
+                "$TMPDIR/dist_staging/share/anneal/prebuilt/lib/Anneal/Scalar.olean" \
+                "$TMPDIR/dist_staging/share/anneal/prebuilt/lib/Anneal/Wp.olean" \
                 "$TMPDIR/dist_staging/share/anneal/trusted/audit/TrustedBoundary.lean" \
                 "$TMPDIR/dist_staging/share/anneal/trusted/audit/library-lock.json" \
                 "$TMPDIR/dist_staging/share/anneal/trusted/lean/foundation-lock.json" \
                 "$TMPDIR/dist_staging/share/anneal/trusted/lean/lean-toolchain" \
                 "$TMPDIR/dist_staging/share/anneal/trusted/lean/Trusted/MirAst.lean" \
                 "$TMPDIR/dist_staging/share/anneal/trusted/lean/Trusted/MirSemantics.lean" \
-                "$TMPDIR/dist_staging/share/anneal/theory/Anneal.lean" \
                 "$TMPDIR/dist_staging/share/anneal/theory/bundle-manifest.json" \
-                "$TMPDIR/dist_staging/share/anneal/theory/Anneal/MirWp.lean"; do
+                "$TMPDIR/dist_staging/share/anneal/theory/Anneal/MirWp.lean" \
+                "$TMPDIR/dist_staging/share/anneal/theory/Anneal/Scalar.lean" \
+                "$TMPDIR/dist_staging/share/anneal/theory/Anneal/Wp.lean"; do
                 if [ ! -f "$full_path" ]; then
                   echo "ERROR: expected archive entry missing: $full_path" >&2
                   exit 1
@@ -665,15 +666,18 @@
                 share/anneal/prebuilt/TrustedBoundary.olean
                 share/anneal/prebuilt/lib/Trusted/MirAst.olean
                 share/anneal/prebuilt/lib/Anneal/MirWp.olean
+                share/anneal/prebuilt/lib/Anneal/Scalar.olean
+                share/anneal/prebuilt/lib/Anneal/Wp.olean
                 share/anneal/trusted/audit/TrustedBoundary.lean
                 share/anneal/trusted/audit/library-lock.json
                 share/anneal/trusted/lean/foundation-lock.json
                 share/anneal/trusted/lean/lean-toolchain
                 share/anneal/trusted/lean/Trusted/MirAst.lean
                 share/anneal/trusted/lean/Trusted/MirSemantics.lean
-                share/anneal/theory/Anneal.lean
                 share/anneal/theory/bundle-manifest.json
                 share/anneal/theory/Anneal/MirWp.lean
+                share/anneal/theory/Anneal/Scalar.lean
+                share/anneal/theory/Anneal/Wp.lean
               )
               ${pkgs.lib.optionalString pkgs.stdenv.isLinux ''
                 expected_entries+=(
@@ -707,13 +711,15 @@
                 echo "ERROR: canary module leaked into share/anneal in $out" >&2
                 exit 1
               fi
+              if grep -Eq '^share/anneal/(theory/Anneal\.lean|prebuilt/lib/Anneal\.olean)$' "$TMPDIR/archive_entries.txt"; then
+                echo "ERROR: retired monolithic Anneal umbrella leaked into share/anneal in $out" >&2
+                exit 1
+              fi
               jq -e -r '"share/anneal/" + .modules[].path' \
                 "$leanTheory/bundle-manifest.json" \
-                > "$TMPDIR/expected_theory_subpaths.txt"
-              {
-                printf '%s\n' "share/anneal/theory/Anneal.lean"
-                cat "$TMPDIR/expected_theory_subpaths.txt"
-              } | LC_ALL=C sort -u > "$TMPDIR/expected_theory_entries.txt"
+                | LC_ALL=C sort -u > "$TMPDIR/expected_theory_subpaths.txt"
+              cp "$TMPDIR/expected_theory_subpaths.txt" \
+                "$TMPDIR/expected_theory_entries.txt"
               grep -E '^share/anneal/theory/.*\.lean$' "$TMPDIR/archive_entries.txt" \
                 | LC_ALL=C sort > "$TMPDIR/actual_theory_entries.txt"
               theory_drift="$(comm -3 \

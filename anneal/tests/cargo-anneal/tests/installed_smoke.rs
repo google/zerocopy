@@ -491,8 +491,8 @@ fn lean_case(case: &mut CaseDirectory, root: &Path, jobs: usize) -> TestResult {
 
     let trusted_root = case.path().join("trusted/lean");
     let theory_root = case.path().join("theory");
-    if !theory_root.join("Anneal.lean").is_file() {
-        return Err("missing installed share/anneal/theory/Anneal.lean".into());
+    if theory_root.join("Anneal.lean").exists() {
+        return Err("installed share/anneal/theory unexpectedly ships retired Anneal.lean".into());
     }
     let manifest_path = theory_root.join("bundle-manifest.json");
     let manifest_raw = fs::read_to_string(&manifest_path)
@@ -512,6 +512,7 @@ fn lean_case(case: &mut CaseDirectory, root: &Path, jobs: usize) -> TestResult {
         return Err("empty modules array in share/anneal/theory/bundle-manifest.json".into());
     }
     let mut manifest_theory_modules = BTreeSet::new();
+    let mut queue = VecDeque::from([String::from("Trusted")]);
     for entry in manifest_entries {
         let rel_path = entry["path"]
             .as_str()
@@ -534,11 +535,11 @@ fn lean_case(case: &mut CaseDirectory, root: &Path, jobs: usize) -> TestResult {
                 "duplicate theory module {module:?} in installed bundle-manifest.json"
             ));
         }
+        queue.push_back(module);
     }
 
     let mut sources: BTreeMap<String, (PathBuf, PathBuf)> = BTreeMap::new();
     let mut imports_map: BTreeMap<String, Vec<ImportEdge>> = BTreeMap::new();
-    let mut queue = VecDeque::from([String::from("Anneal")]);
     while let Some(module) = queue.pop_front() {
         if sources.contains_key(&module) {
             continue;
@@ -551,13 +552,11 @@ fn lean_case(case: &mut CaseDirectory, root: &Path, jobs: usize) -> TestResult {
         let mut edges = Vec::with_capacity(raw_imports.len());
         for dep in raw_imports {
             let is_init = dep == "Init" || dep.starts_with("Init.");
-            let is_packaged = dep == "Trusted"
-                || dep.starts_with("Trusted.")
-                || dep == "Anneal"
-                || dep.starts_with("Anneal.");
+            let is_packaged =
+                dep == "Trusted" || dep.starts_with("Trusted.") || dep.starts_with("Anneal.");
             if !is_init && !is_packaged {
                 return Err(format!(
-                    "unexpected non-Init/Trusted/Anneal import {dep} in {module}"
+                    "unexpected non-Init/Trusted/Anneal.* import {dep} in {module}"
                 ));
             }
             if is_packaged && !sources.contains_key(&dep) {
@@ -574,20 +573,20 @@ fn lean_case(case: &mut CaseDirectory, root: &Path, jobs: usize) -> TestResult {
         imports_map.insert(module, edges);
     }
 
-    // `share/anneal/theory` must ship `bundle-manifest.json`, `Anneal.lean`,
-    // and the exact `Anneal.*` module set in `bundle-manifest.json` (excluding
-    // all `*Canaries*.lean` suites and matching the transitive `Anneal.*`
-    // import closure 1-for-1).
+    // `share/anneal/theory` must ship only `bundle-manifest.json` and the exact
+    // `Anneal.*` module set in `bundle-manifest.json` (excluding retired
+    // `Anneal.lean` and all `*Canaries*.lean` suites, and matching the
+    // transitive `Anneal.*` import closure 1-for-1).
     let bundled_sub_modules: BTreeSet<String> =
         sources.keys().filter(|m| m.starts_with("Anneal.")).cloned().collect();
     if bundled_sub_modules.iter().any(|m| m.contains("Canaries")) {
         return Err(format!(
-            "installed Anneal closure unexpectedly imports canary module: {bundled_sub_modules:?}"
+            "installed theory closure unexpectedly imports canary module: {bundled_sub_modules:?}"
         ));
     }
     if bundled_sub_modules != manifest_theory_modules {
         return Err(format!(
-            "installed Anneal closure diverges from bundle-manifest.json: \
+            "installed bundle-manifest.json is not transitively closed under Anneal.* imports: \
              manifest={manifest_theory_modules:?}, closure={bundled_sub_modules:?}"
         ));
     }
@@ -614,7 +613,7 @@ fn lean_case(case: &mut CaseDirectory, root: &Path, jobs: usize) -> TestResult {
                 let rel = path
                     .strip_prefix(&theory_root)
                     .map_err(|error| format!("strip prefix on {}: {error}", path.display()))?;
-                if rel == Path::new("bundle-manifest.json") || rel == Path::new("Anneal.lean") {
+                if rel == Path::new("bundle-manifest.json") {
                     continue;
                 }
                 if path.extension().and_then(|e| e.to_str()) != Some("lean") {
@@ -720,38 +719,52 @@ fn lean_case(case: &mut CaseDirectory, root: &Path, jobs: usize) -> TestResult {
     )
     .map_err(|error| error.to_string())?;
 
-    for required in ["Trusted.olean", "Anneal.olean"] {
+    for required in ["Trusted.olean", "Anneal/Scalar.olean", "Anneal/Wp.olean"] {
         if !lean_lib.join(required).is_file() {
             return Err(format!("missing compiled packaged module {required}"));
         }
     }
+    if lean_lib.join("Anneal.olean").exists() {
+        return Err("unexpected compiled monolithic Anneal.olean".into());
+    }
 
     case.write(
-        "Small.lean",
-        b"prelude\nimport Anneal\n\n\
+        "SmallScalar.lean",
+        b"prelude\nimport Anneal.Scalar\n\n\
+          example := @Anneal.LinearArith.checkIntCutGoal_sound\n\
+          example := @Anneal.BitVecArith.bswap32_injective\n\
+          example := @Anneal.LeBytes.toLeBytes_injective\n\
+          example := @Anneal.ListChunks.divCeil_pos\n\
+          example := @Anneal.InitLemmas.bool_and_left\n\
+          example := @Anneal.NatBitwise.land_lt_two_pow\n",
+    )?;
+    case.write(
+        "SmallWp.lean",
+        b"prelude\nimport Anneal.Wp\n\n\
           example (c : Trusted.MirSemantics.Crate) : Prop :=\n\
           \x20 Trusted.MirSemantics.CrateTheorem c\n\n\
           example := @Anneal.MirWp.wpProg\n\
           example := @Anneal.MirWp.wellFormed_and_spec_of_wp\n\
-          example := @Anneal.LinearArith.checkIntCutGoal_sound\n\
-          example := @Anneal.LoopInv.wpUntil\n\
-          example := @Anneal.BitVecArith.bswap32_injective\n",
+          example := @Anneal.LoopInv.wpUntil\n",
     )?;
-    let mut small = Invocation::new(
-        &lean,
-        &[
-            "-j1",
-            "-DElab.async=false",
-            "-Ddebug.skipKernelTC=false",
-            "-DwarningAsError=true",
-            "-R",
-            &text_path(case.path())?,
-            "Small.lean",
-        ],
-    );
-    small.environment.insert("LEAN_PATH".into(), lean_path_env);
-    let out = case.run(&small)?;
-    out.expect_code(0)
+    for smoke_file in ["SmallScalar.lean", "SmallWp.lean"] {
+        let mut small = Invocation::new(
+            &lean,
+            &[
+                "-j1",
+                "-DElab.async=false",
+                "-Ddebug.skipKernelTC=false",
+                "-DwarningAsError=true",
+                "-R",
+                &text_path(case.path())?,
+                smoke_file,
+            ],
+        );
+        small.environment.insert("LEAN_PATH".into(), lean_path_env.clone());
+        let out = case.run(&small)?;
+        out.expect_code(0)?;
+    }
+    Ok(())
 }
 
 // The explicit workspace boundary below keeps Cargo from discovering an
@@ -1173,13 +1186,11 @@ fn write_installed_audit_accepted_fixture(case: &mut CaseDirectory) -> TestResul
     canary_src.push_str("end Anneal.MirWp\nend\n");
     case.write("fixture/theory/Anneal/MirWp/Canaries.lean", canary_src.as_bytes())?;
     case.write(
-        "fixture/theory/Anneal.lean",
+        "fixture/theory/Anneal/Wp.lean",
         b"module\n\
           prelude\n\
           public import Init.NotationExtra\n\
           public import Trusted\n\
-          public import Trusted.MirAst\n\
-          public import Trusted.MirSemantics\n\
           public import Anneal.MirWp\n",
     )?;
     Ok(())

@@ -3254,6 +3254,196 @@ mod tests {
         assert!(!retained_thm.contains("Anneal.Helper"));
     }
 
+    fn parse_lean_header_imports_for_test(source: &str) -> Vec<ImportEdge> {
+        let bytes = source.as_bytes();
+        let mut pos = 0usize;
+        let mut edges = Vec::new();
+        let mut expecting_import_target = false;
+        let mut import_all = false;
+        let mut is_exported = false;
+        let mut is_meta = false;
+        while pos < bytes.len() {
+            while pos < bytes.len() && bytes[pos].is_ascii_whitespace() {
+                pos += 1;
+            }
+            if pos >= bytes.len() {
+                break;
+            }
+            if bytes[pos..].starts_with(b"--") {
+                while pos < bytes.len() && bytes[pos] != b'\n' {
+                    pos += 1;
+                }
+                continue;
+            }
+            if bytes[pos..].starts_with(b"/-") {
+                pos += 2;
+                let mut depth = 1usize;
+                while pos < bytes.len() && depth > 0 {
+                    if bytes[pos..].starts_with(b"/-") {
+                        depth += 1;
+                        pos += 2;
+                    } else if bytes[pos..].starts_with(b"-/") {
+                        depth -= 1;
+                        pos += 2;
+                    } else {
+                        pos += 1;
+                    }
+                }
+                continue;
+            }
+            let start = pos;
+            while pos < bytes.len()
+                && !bytes[pos].is_ascii_whitespace()
+                && !bytes[pos..].starts_with(b"--")
+                && !bytes[pos..].starts_with(b"/-")
+            {
+                pos += 1;
+            }
+            let token = &source[start..pos];
+            if expecting_import_target {
+                if token == "all" {
+                    import_all = true;
+                    continue;
+                }
+                edges.push(ImportEdge {
+                    module: token.to_string(),
+                    import_all,
+                    is_exported,
+                    is_meta,
+                });
+                expecting_import_target = false;
+                import_all = false;
+                is_exported = false;
+                is_meta = false;
+            } else {
+                match token {
+                    "module" | "prelude" => {}
+                    "public" => is_exported = true,
+                    "meta" => is_meta = true,
+                    "import" => expecting_import_target = true,
+                    _ => break,
+                }
+            }
+        }
+        edges
+    }
+
+    #[test]
+    fn reachable_target_modules_prunes_domain_umbrellas_on_demand() {
+        let dir = tempfile::tempdir().unwrap();
+        let base = fs::canonicalize(dir.path()).unwrap();
+        let bundle = EmbeddedBundle::materialize(&base.join("bundle"));
+
+        let mut base_imports: BTreeMap<String, Vec<ImportEdge>> = BTreeMap::new();
+        for tm in bundle.model_modules.iter().chain(bundle.theory_modules.iter()) {
+            let src = fs::read_to_string(&tm.source).unwrap();
+            base_imports.insert(tm.module.clone(), parse_lean_header_imports_for_test(&src));
+        }
+
+        let mk_edge = |m: &str| ImportEdge {
+            module: m.to_owned(),
+            import_all: false,
+            is_exported: false,
+            is_meta: false,
+        };
+
+        // 1. `import Anneal.Scalar` retains strictly the 8 constructive scalar/
+        //    bitvector/byte/chunking/linear-arith `Anneal.*` modules and prunes
+        //    all `MirWp*`, `LoopInv`, `Wp`, `ClassicalEm`, `BitTrieLrat`,
+        //    `PTree`, `SpineForce`, and `Firewall` modules.
+        let mut scalar_req = minimal_request(&base.join("scalar-req"), None);
+        bundle.attach(&mut scalar_req, true);
+        let mut scalar_imports = base_imports.clone();
+        scalar_imports.insert("Model".into(), vec![]);
+        scalar_imports.insert("Captured".into(), vec![mk_edge("Model")]);
+        scalar_imports.insert("Spec".into(), vec![mk_edge("Model")]);
+        scalar_imports.insert("Expected".into(), vec![mk_edge("Captured"), mk_edge("Spec")]);
+        scalar_imports.insert("Proof".into(), vec![mk_edge("Expected"), mk_edge("Anneal.Scalar")]);
+
+        let scalar_retained = reachable_target_modules(&scalar_req, &scalar_imports);
+        assert!(!scalar_retained.contains("Anneal"));
+        let scalar_anneal: BTreeSet<&str> = scalar_retained
+            .iter()
+            .filter(|m| m.starts_with("Anneal."))
+            .map(String::as_str)
+            .collect();
+        let expected_scalar_anneal = BTreeSet::from([
+            "Anneal.BitVec",
+            "Anneal.BitVecArith",
+            "Anneal.InitLemmas",
+            "Anneal.LeBytes",
+            "Anneal.LinearArith",
+            "Anneal.ListChunks",
+            "Anneal.NatBitwise",
+            "Anneal.Scalar",
+        ]);
+        assert_eq!(scalar_anneal.len(), 8);
+        assert_eq!(scalar_anneal, expected_scalar_anneal);
+        for pruned in [
+            "Anneal.Wp",
+            "Anneal.MirWp",
+            "Anneal.MirWp.Core",
+            "Anneal.MirWp.Scalars",
+            "Anneal.MirWp.Execution",
+            "Anneal.MirWp.Reflection",
+            "Anneal.LoopInv",
+            "Anneal.ClassicalEm",
+            "Anneal.BitTrieLrat",
+            "Anneal.PTree",
+            "Anneal.SpineForce",
+            "Anneal.Firewall",
+        ] {
+            assert!(!scalar_retained.contains(pruned), "expected {pruned} to be pruned");
+        }
+
+        // 2. `import Anneal.Wp` retains strictly the 8 MIR WP + loop-invariant
+        //    `Anneal.*` modules and prunes unused `Scalar`, `BitVec*`,
+        //    `InitLemmas`, `LeBytes`, `ListChunks`, `LinearArith`,
+        //    `BitTrieLrat`, `PTree`, `SpineForce`, `ClassicalEm`, and
+        //    `Firewall`.
+        let mut wp_req = minimal_request(&base.join("wp-req"), None);
+        bundle.attach(&mut wp_req, true);
+        let mut wp_imports = base_imports;
+        wp_imports.insert("Model".into(), vec![]);
+        wp_imports.insert("Captured".into(), vec![mk_edge("Model")]);
+        wp_imports.insert("Spec".into(), vec![mk_edge("Model")]);
+        wp_imports.insert("Expected".into(), vec![mk_edge("Captured"), mk_edge("Spec")]);
+        wp_imports.insert("Proof".into(), vec![mk_edge("Expected"), mk_edge("Anneal.Wp")]);
+
+        let wp_retained = reachable_target_modules(&wp_req, &wp_imports);
+        assert!(!wp_retained.contains("Anneal"));
+        let wp_anneal: BTreeSet<&str> =
+            wp_retained.iter().filter(|m| m.starts_with("Anneal.")).map(String::as_str).collect();
+        let expected_wp_anneal = BTreeSet::from([
+            "Anneal.LoopInv",
+            "Anneal.MirWp",
+            "Anneal.MirWp.Core",
+            "Anneal.MirWp.Execution",
+            "Anneal.MirWp.Reflection",
+            "Anneal.MirWp.Scalars",
+            "Anneal.NatBitwise",
+            "Anneal.Wp",
+        ]);
+        assert_eq!(wp_anneal.len(), 8);
+        assert_eq!(wp_anneal, expected_wp_anneal);
+        for pruned in [
+            "Anneal.Scalar",
+            "Anneal.BitVec",
+            "Anneal.BitVecArith",
+            "Anneal.InitLemmas",
+            "Anneal.LeBytes",
+            "Anneal.ListChunks",
+            "Anneal.LinearArith",
+            "Anneal.BitTrieLrat",
+            "Anneal.PTree",
+            "Anneal.SpineForce",
+            "Anneal.ClassicalEm",
+            "Anneal.Firewall",
+        ] {
+            assert!(!wp_retained.contains(pruned), "expected {pruned} to be pruned");
+        }
+    }
+
     #[test]
     fn explicit_verified_lean_gates_and_fails_closed() {
         let dir = tempfile::tempdir().unwrap();
@@ -5124,6 +5314,119 @@ mod tests {
             &checker.stage.join("lib"),
             Some(&export_dir),
             &["Anneal.Firewall"],
+            &["Anneal.Unused"],
+        );
+    }
+
+    #[test]
+    fn live_demand_driven_scalar_umbrella_three_axiom_proof() {
+        let Some(lean) = explicit_verified_lean() else {
+            return;
+        };
+        let dir = tempfile::tempdir().unwrap();
+        let base = fs::canonicalize(dir.path()).unwrap();
+        let bundle = EmbeddedBundle::materialize(&base.join("bundle"));
+
+        // Unused bundled theory module with a deliberate elaboration error in
+        // its body (valid header only): proving it is pruned means it is never
+        // compiled.
+        let unused_path = base.join("Anneal_Unused.lean");
+        fs::write(
+            &unused_path,
+            "prelude\nimport Init.Prelude\ndef Anneal.Unused.broken : Nat := \"not_a_nat\"\n",
+        )
+        .unwrap();
+        let unused_sha = sha256_file(&unused_path, "fixture").unwrap();
+
+        let mut req = write_target_request(
+            &base.join("with-scalar-umbrella"),
+            vec![
+                (
+                    "Model",
+                    TargetRole::Model,
+                    "prelude\nimport Init.Data.BitVec.BasicAux\nimport Init.Data.Nat.Div.Basic\n\
+                     namespace Trusted.MirSemantics\n\
+                     structure Crate where\n  program : Nat\n  specs : Nat → Prop\n\
+                     def UnitTheorem (c : Crate) : Prop := c.specs c.program\n",
+                ),
+                (
+                    "Captured",
+                    TargetRole::Capture,
+                    "prelude\nimport Model\ndef Captured.program : Nat := 8\n",
+                ),
+                (
+                    "Spec",
+                    TargetRole::Specification,
+                    "prelude\nimport Model\n\
+                     def Spec.specs (w : Nat) : Prop :=\n  \
+                     0 < Nat.pow 2 w ∧\n  \
+                     (∀ i n : Nat, 2 * i + 1 ≤ 2 * n → i < n) ∧\n  \
+                     (∀ a b : BitVec 32, a.toNat = b.toNat → a = b)\n",
+                ),
+                (
+                    "Expected",
+                    TargetRole::Expected,
+                    "prelude\nimport Captured\nimport Spec\n\
+                     def Expected.claim : Prop := Trusted.MirSemantics.UnitTheorem \
+                     (Trusted.MirSemantics.Crate.mk Captured.program Spec.specs)\n",
+                ),
+                (
+                    "Proof",
+                    TargetRole::Proof,
+                    "prelude\nimport Expected\nimport Anneal.Scalar\n\
+                     theorem Proof.verify : Expected.claim :=\n  \
+                     have _ := @Anneal.BitVecArith.bswap32_injective\n  \
+                     have _ := @Anneal.LeBytes.toLeBytes_injective\n  \
+                     have _ := @Anneal.ListChunks.divCeil_pos\n  \
+                     have _ := @Anneal.NatBitwise.land_lt_two_pow\n  \
+                     ⟨Anneal.InitLemmas.nat_two_pow_pos Captured.program,\n   \
+                      Anneal.LinearArith.parity_stride_lt,\n   \
+                      fun _ _ h => Anneal.BitVec.eq_of_toNat_eq h⟩\n",
+                ),
+            ],
+        );
+        bundle.attach(&mut req, false);
+        req.modules.push(TargetModule {
+            module: "Anneal.Unused".to_owned(),
+            source: unused_path,
+            expected_sha256: unused_sha,
+            role: TargetRole::Proof,
+        });
+
+        let mut checker = Checker::new(&bundle.root, Some(&lean)).unwrap();
+        let report = checker.run_target(&req).unwrap();
+        assert_eq!(report["replay"], Json::Bool(true));
+        assert_eq!(report["exactType"], Json::Bool(true));
+        let sources: BTreeSet<&str> = report["sources"]
+            .as_array()
+            .unwrap()
+            .iter()
+            .map(|s| s["module"].as_str().unwrap())
+            .collect();
+        let used_axioms: BTreeSet<&str> =
+            report["axioms"].as_array().unwrap().iter().map(|a| a.as_str().unwrap()).collect();
+        let constructive_axioms: BTreeSet<&str> = BTreeSet::from(["Quot.sound", "propext"]);
+        assert!(
+            used_axioms.is_subset(&constructive_axioms),
+            "expected constructive axioms subset of [\"Quot.sound\", \"propext\"] (no Classical.choice), got {used_axioms:?}"
+        );
+        assert!(!used_axioms.contains("Classical.choice"));
+        let export_dir = base.join("export-with-scalar-umbrella");
+        assert!(checker.export_target_oleans(&export_dir).unwrap());
+        bundle.assert_exact_theory_retention(
+            &sources,
+            &checker.stage.join("lib"),
+            Some(&export_dir),
+            &[
+                "Anneal.BitVec",
+                "Anneal.BitVecArith",
+                "Anneal.InitLemmas",
+                "Anneal.LeBytes",
+                "Anneal.LinearArith",
+                "Anneal.ListChunks",
+                "Anneal.NatBitwise",
+                "Anneal.Scalar",
+            ],
             &["Anneal.Unused"],
         );
     }
