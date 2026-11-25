@@ -343,6 +343,7 @@ import json, os, pathlib, sys
 args = sys.argv[1:]
 req = json.loads(pathlib.Path(args[args.index("--request") + 1]).read_text())
 roots = req["scope"]["roots"]
+instantiations = req["scope"].get("instantiations", [])
 lean_arg = pathlib.Path(args[args.index("--lean") + 1]) if "--lean" in args else None
 has_prebuilt = False
 if lean_arg is not None:
@@ -366,7 +367,17 @@ receipt = {{
     "taint_reasons": [],
     "elaboration_sandbox": "linux_bwrap",
     "deferred": [],
-    "scope": {{"kind": "selected_unit", "roots": roots}},
+    "scope": {{
+        "kind": "selected_unit",
+        "roots": roots,
+        **({{"instantiations": instantiations}} if instantiations else {{}}),
+    }},
+    "selected": [
+        {{"def_id": i, "path": p, "body_index": i}}
+        for i, p in enumerate(
+            list(roots) + [e["path"] for e in (instantiations or [])]
+        )
+    ] or [{{"def_id": 0, "path": "stub", "body_index": 0}}],
     "request_sha256": "reqsha",
     "capture_sha256": "capsha",
     "specification_manifest_sha256": "specsha",
@@ -501,6 +512,101 @@ print(json.dumps(receipt))
             ]
             self.assertEqual(len(warm_runs), 2)
             self.assertTrue(all(c["has_marker"] for c in warm_runs))
+
+    def test_collect_zerocopy_proofs_forwards_instantiations(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            paths = self._build_synthetic_repo(Path(tmp))
+            mono_dir = paths["repo"] / "zerocopy/proofs/02_mono"
+            mono_dir.mkdir(parents=True)
+            (mono_dir / "Spec.lean").write_text("-- spec\n")
+            (mono_dir / "request.json").write_text(
+                json.dumps(
+                    {
+                        "compilation": {"source_root": "../../src"},
+                        "scope": {
+                            "kind": "selected_unit",
+                            "roots": [],
+                            "instantiations": [
+                                {"path": "core::id", "args": ["u32"]}
+                            ],
+                        },
+                        "proof": {
+                            "source_root": ".",
+                            "sources": [{"path": "Spec.lean"}],
+                        },
+                    }
+                )
+            )
+            tools = {
+                "cli": paths["cli"],
+                "capture": paths["capture"],
+                "sysroot": paths["sysroot"],
+                "lean": paths["lean"],
+                "time_bin": paths["time_bin"],
+            }
+            metrics, rss_methods = perf_tracking.collect_zerocopy_proofs(
+                repo_root=paths["repo"],
+                tools=tools,
+                timeout=30,
+                time_bin=paths["time_bin"],
+            )
+            self.assertEqual(rss_methods, {"usr_bin_time"})
+            self.assertEqual(metrics["zerocopy_proofs.suite.verified_units_count"], 2)
+            self.assertEqual(metrics["zerocopy_proofs.02_mono.total_ms"], 55.0)
+
+            # 1. Fail closed on instantiation-only unit when receipt emits
+            # a different valid instantiation (intrinsically non-empty scope).
+            cli_text = paths["cli"].read_text(encoding="utf-8")
+            paths["cli"].write_text(
+                cli_text.replace(
+                    '"instantiations": instantiations',
+                    '"instantiations": [{"path": "core::id", "args": ["u8"]}]',
+                ),
+                encoding="utf-8",
+            )
+            with self.assertRaisesRegex(RuntimeError, "scope mismatch"):
+                perf_tracking.collect_zerocopy_proofs(
+                    repo_root=paths["repo"],
+                    tools=tools,
+                    timeout=30,
+                    time_bin=paths["time_bin"],
+                )
+
+            # 2. Fail closed on mixed unit (`roots` + `instantiations`)
+            # when receipt omits `instantiations` (sensitive to deleting
+            # `expected_instantiations` forwarding in `perf_tracking.py`).
+            (mono_dir / "request.json").write_text(
+                json.dumps(
+                    {
+                        "compilation": {"source_root": "../../src"},
+                        "scope": {
+                            "kind": "selected_unit",
+                            "roots": ["id"],
+                            "instantiations": [
+                                {"path": "core::id", "args": ["u32"]}
+                            ],
+                        },
+                        "proof": {
+                            "source_root": ".",
+                            "sources": [{"path": "Spec.lean"}],
+                        },
+                    }
+                )
+            )
+            paths["cli"].write_text(
+                cli_text.replace(
+                    '**({"instantiations": instantiations} if instantiations else {})',
+                    "**{}",
+                ),
+                encoding="utf-8",
+            )
+            with self.assertRaisesRegex(RuntimeError, "scope mismatch"):
+                perf_tracking.collect_zerocopy_proofs(
+                    repo_root=paths["repo"],
+                    tools=tools,
+                    timeout=30,
+                    time_bin=paths["time_bin"],
+                )
 
     def test_verify_scalar_skips_cold_prebuilt_when_manifest_absent(self):
         with tempfile.TemporaryDirectory() as tmp:

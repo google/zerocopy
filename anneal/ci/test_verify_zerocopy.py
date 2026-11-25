@@ -35,7 +35,9 @@ def make_receipt(**overrides):
         "capture_sha256": "cap-digest",
         "specification_manifest_sha256": "spec-digest",
         "model_manifest_sha256": "model-digest",
-        "selected": ["util::macros::__unsafe"],
+        "selected": [
+            {"def_id": 0, "path": "util::macros::__unsafe", "body_index": 0}
+        ],
         "timing_ms": {"total": 100},
         "audit": {
             "canonicalRoot": "Trusted.MirSemantics.UnitTheorem",
@@ -331,6 +333,463 @@ class VerifyZerocopyTests(unittest.TestCase):
                         self.assertEqual(defaults["lean"], good_lean)
             finally:
                 os.chdir(old_cwd)
+
+    def test_discover_units_accepts_instantiations_only_and_mixed_scopes(self):
+        valid_scopes = [
+            {
+                "kind": "selected_unit",
+                "roots": [],
+                "instantiations": [
+                    {"path": "foo", "args": ["u8"]},
+                    {"path": "bar", "args": ["'static", "core::num::NonZero<u16>"]},
+                ],
+            },
+            {
+                "kind": "selected_unit",
+                "roots": ["baz"],
+                "instantiations": [{"path": "foo", "args": ["u8"]}],
+            },
+            {
+                "kind": "selected_unit",
+                "roots": [],
+                "instantiations": [{"path": "lifetime_only", "args": []}],
+            },
+            {
+                "kind": "selected_unit",
+                "roots": ["baz"],
+                "instantiations": [],
+            },
+        ]
+        for idx, scope in enumerate(valid_scopes):
+            with self.subTest(idx=idx), tempfile.TemporaryDirectory() as tmp:
+                proofs_dir, src_dir, unit = make_proof_tree(Path(tmp))
+                req = json.loads((unit / "request.json").read_text(encoding="utf-8"))
+                req["scope"] = scope
+                (unit / "request.json").write_text(json.dumps(req), encoding="utf-8")
+                discovered = verify_zerocopy.discover_units(proofs_dir, src_dir)
+                self.assertEqual(len(discovered), 1)
+                self.assertEqual(discovered[0][1]["scope"], scope)
+
+    def test_discover_units_rejects_empty_and_malformed_instantiations(self):
+        invalid_scopes = [
+            ("empty_omitted", {"kind": "selected_unit", "roots": []}),
+            ("empty_both", {"kind": "selected_unit", "roots": [], "instantiations": []}),
+            ("dup_roots", {"kind": "selected_unit", "roots": ["a", "a"]}),
+            (
+                "inst_null",
+                {"kind": "selected_unit", "roots": ["a"], "instantiations": None},
+            ),
+            (
+                "inst_not_dict",
+                {"kind": "selected_unit", "roots": [], "instantiations": ["foo"]},
+            ),
+            (
+                "inst_empty_path",
+                {
+                    "kind": "selected_unit",
+                    "roots": [],
+                    "instantiations": [{"path": "", "args": ["u8"]}],
+                },
+            ),
+            (
+                "inst_missing_args",
+                {"kind": "selected_unit", "roots": [], "instantiations": [{"path": "foo"}]},
+            ),
+            (
+                "inst_empty_arg",
+                {
+                    "kind": "selected_unit",
+                    "roots": [],
+                    "instantiations": [{"path": "foo", "args": [""]}],
+                },
+            ),
+            (
+                "inst_args_not_list",
+                {
+                    "kind": "selected_unit",
+                    "roots": [],
+                    "instantiations": [{"path": "foo", "args": "u8"}],
+                },
+            ),
+            (
+                "inst_arg_non_str",
+                {
+                    "kind": "selected_unit",
+                    "roots": [],
+                    "instantiations": [{"path": "foo", "args": [1]}],
+                },
+            ),
+            (
+                "inst_extra_key",
+                {
+                    "kind": "selected_unit",
+                    "roots": [],
+                    "instantiations": [{"path": "foo", "args": ["u8"], "extra": 1}],
+                },
+            ),
+            (
+                "scope_extra_key",
+                {"kind": "selected_unit", "roots": ["a"], "extra": 1},
+            ),
+            (
+                "dup_inst",
+                {
+                    "kind": "selected_unit",
+                    "roots": [],
+                    "instantiations": [
+                        {"path": "foo", "args": ["u8"]},
+                        {"path": "foo", "args": ["u8"]},
+                    ],
+                },
+            ),
+        ]
+        for label, scope in invalid_scopes:
+            with self.subTest(case=label), tempfile.TemporaryDirectory() as tmp:
+                proofs_dir, src_dir, unit = make_proof_tree(Path(tmp))
+                req = json.loads((unit / "request.json").read_text(encoding="utf-8"))
+                req["scope"] = scope
+                (unit / "request.json").write_text(json.dumps(req), encoding="utf-8")
+                with self.assertRaises(RuntimeError):
+                    verify_zerocopy.discover_units(proofs_dir, src_dir)
+
+    def test_validate_receipt_binds_roots_and_instantiations_and_selected(self):
+        expected_insts = [
+            {"path": "b", "args": ["u8"]},
+            {"path": "a", "args": ["bool"]},
+        ]
+        inst_only_receipt = make_receipt(
+            scope={
+                "kind": "selected_unit",
+                "roots": [],
+                "instantiations": [
+                    {"path": "a", "args": ["bool"]},
+                    {"path": "b", "args": ["u8"]},
+                ],
+            }
+        )
+        parsed = verify_zerocopy.validate_receipt(
+            "01_unit", 0, json.dumps(inst_only_receipt), "", [], expected_insts
+        )
+        self.assertEqual(parsed["status"], "selected_unit_verified")
+
+        mixed_receipt = make_receipt(
+            scope={
+                "kind": "selected_unit",
+                "roots": ["r"],
+                "instantiations": [{"path": "a", "args": ["u16"]}],
+            }
+        )
+        verify_zerocopy.validate_receipt(
+            "01_unit",
+            0,
+            json.dumps(mixed_receipt),
+            "",
+            ["r"],
+            [{"path": "a", "args": ["u16"]}],
+        )
+
+        # Explicitly empty `instantiations: []` in request matches omitted key
+        # from `cargo-anneal`'s `skip_serializing_if = "BTreeSet::is_empty"`.
+        verify_zerocopy.validate_receipt(
+            "01_unit", 0, json.dumps(make_receipt()), "", ["util::macros::__unsafe"], []
+        )
+
+        omitted_selected = make_receipt()
+        del omitted_selected["selected"]
+
+        bad_cases = [
+            (
+                "omitted_selected",
+                ["util::macros::__unsafe"],
+                None,
+                omitted_selected,
+                "selected=None",
+            ),
+            (
+                "dropped_all_insts",
+                ["r"],
+                [{"path": "a", "args": ["u8"]}],
+                make_receipt(scope={"kind": "selected_unit", "roots": ["r"]}),
+                "scope mismatch",
+            ),
+            (
+                "dropped_one_inst",
+                [],
+                expected_insts,
+                make_receipt(
+                    scope={
+                        "kind": "selected_unit",
+                        "roots": [],
+                        "instantiations": [{"path": "a", "args": ["bool"]}],
+                    }
+                ),
+                "scope mismatch",
+            ),
+            (
+                "changed_arg",
+                [],
+                [{"path": "a", "args": ["bool"]}],
+                make_receipt(
+                    scope={
+                        "kind": "selected_unit",
+                        "roots": [],
+                        "instantiations": [{"path": "a", "args": ["u8"]}],
+                    }
+                ),
+                "scope mismatch",
+            ),
+            (
+                "changed_path",
+                [],
+                [{"path": "a", "args": ["bool"]}],
+                make_receipt(
+                    scope={
+                        "kind": "selected_unit",
+                        "roots": [],
+                        "instantiations": [{"path": "c", "args": ["bool"]}],
+                    }
+                ),
+                "scope mismatch",
+            ),
+            (
+                "extra_inst",
+                [],
+                [{"path": "a", "args": ["bool"]}],
+                make_receipt(
+                    scope={
+                        "kind": "selected_unit",
+                        "roots": [],
+                        "instantiations": [
+                            {"path": "a", "args": ["bool"]},
+                            {"path": "b", "args": ["u8"]},
+                        ],
+                    }
+                ),
+                "scope mismatch",
+            ),
+            (
+                "dup_inst_in_receipt",
+                [],
+                [{"path": "a", "args": ["bool"]}],
+                make_receipt(
+                    scope={
+                        "kind": "selected_unit",
+                        "roots": [],
+                        "instantiations": [
+                            {"path": "a", "args": ["bool"]},
+                            {"path": "a", "args": ["bool"]},
+                        ],
+                    }
+                ),
+                "scope mismatch",
+            ),
+            (
+                "unexpected_inst_for_root_only",
+                ["util::macros::__unsafe"],
+                [],
+                make_receipt(
+                    scope={
+                        "kind": "selected_unit",
+                        "roots": ["util::macros::__unsafe"],
+                        "instantiations": [{"path": "a", "args": ["u8"]}],
+                    }
+                ),
+                "scope mismatch",
+            ),
+            (
+                "empty_selected",
+                ["util::macros::__unsafe"],
+                [],
+                make_receipt(selected=[]),
+                "selected=\\[\\]",
+            ),
+            (
+                "null_selected",
+                ["util::macros::__unsafe"],
+                [],
+                make_receipt(selected=None),
+                "selected=None",
+            ),
+            (
+                "non_list_selected",
+                ["util::macros::__unsafe"],
+                None,
+                make_receipt(selected={"path": "util::macros::__unsafe"}),
+                "selected=",
+            ),
+            (
+                "selected_null_entry",
+                ["util::macros::__unsafe"],
+                None,
+                make_receipt(selected=[None]),
+                "selected=",
+            ),
+            (
+                "selected_string_entry",
+                ["util::macros::__unsafe"],
+                None,
+                make_receipt(selected=["util::macros::__unsafe"]),
+                "selected=",
+            ),
+            (
+                "selected_missing_field",
+                ["util::macros::__unsafe"],
+                None,
+                make_receipt(selected=[{"def_id": 0, "path": "x"}]),
+                "selected=",
+            ),
+            (
+                "selected_extra_field",
+                ["util::macros::__unsafe"],
+                None,
+                make_receipt(
+                    selected=[
+                        {"def_id": 0, "path": "x", "body_index": 0, "x": 1}
+                    ]
+                ),
+                "selected=",
+            ),
+            (
+                "selected_bool_def_id",
+                ["util::macros::__unsafe"],
+                None,
+                make_receipt(
+                    selected=[{"def_id": True, "path": "x", "body_index": 0}]
+                ),
+                "selected=",
+            ),
+            (
+                "selected_neg_body_index",
+                ["util::macros::__unsafe"],
+                None,
+                make_receipt(
+                    selected=[{"def_id": 0, "path": "x", "body_index": -1}]
+                ),
+                "selected=",
+            ),
+            (
+                "selected_empty_path",
+                ["util::macros::__unsafe"],
+                None,
+                make_receipt(
+                    selected=[{"def_id": 0, "path": "", "body_index": 0}]
+                ),
+                "selected=",
+            ),
+            (
+                "wrong_scope_kind_with_roots",
+                ["util::macros::__unsafe"],
+                None,
+                make_receipt(
+                    scope={
+                        "kind": "crate",
+                        "roots": ["util::macros::__unsafe"],
+                    }
+                ),
+                "scope mismatch",
+            ),
+            (
+                "changed_root",
+                ["util::macros::__unsafe"],
+                None,
+                make_receipt(
+                    scope={"kind": "selected_unit", "roots": ["other::item"]}
+                ),
+                "scope mismatch",
+            ),
+            (
+                "dropped_root",
+                ["r1", "r2"],
+                None,
+                make_receipt(scope={"kind": "selected_unit", "roots": ["r1"]}),
+                "scope mismatch",
+            ),
+            (
+                "extra_root",
+                ["r1"],
+                None,
+                make_receipt(
+                    scope={"kind": "selected_unit", "roots": ["r1", "r2"]}
+                ),
+                "scope mismatch",
+            ),
+            (
+                "mixed_dropped_root",
+                ["r1", "r2"],
+                [{"path": "a", "args": ["u8"]}],
+                make_receipt(
+                    scope={
+                        "kind": "selected_unit",
+                        "roots": ["r1"],
+                        "instantiations": [{"path": "a", "args": ["u8"]}],
+                    }
+                ),
+                "scope mismatch",
+            ),
+            (
+                "mixed_extra_root",
+                ["r1"],
+                [{"path": "a", "args": ["u8"]}],
+                make_receipt(
+                    scope={
+                        "kind": "selected_unit",
+                        "roots": ["r1", "r2"],
+                        "instantiations": [{"path": "a", "args": ["u8"]}],
+                    }
+                ),
+                "scope mismatch",
+            ),
+        ]
+        for label, exp_roots, exp_insts, payload, needle in bad_cases:
+            with self.subTest(case=label):
+                with self.assertRaisesRegex(RuntimeError, needle):
+                    verify_zerocopy.validate_receipt(
+                        "01_unit", 0, json.dumps(payload), "", exp_roots, exp_insts
+                    )
+
+    def test_main_runs_instantiation_only_unit_and_records_scope(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            proofs_dir, src_dir, unit = make_proof_tree(root)
+            scope = {
+                "kind": "selected_unit",
+                "roots": [],
+                "instantiations": [{"path": "id", "args": ["u8"]}],
+            }
+            req = json.loads((unit / "request.json").read_text(encoding="utf-8"))
+            req["scope"] = scope
+            (unit / "request.json").write_text(json.dumps(req), encoding="utf-8")
+
+            fake_cli = root / "cargo-anneal"
+            fake_cap = root / "anneal-rustc-capture"
+            fake_lean = root / "lean"
+            fake_sys = root / "sysroot"
+            fake_sys.mkdir()
+            for bin_path in (fake_cap, fake_lean):
+                bin_path.write_text("#!/bin/sh\nexit 0\n", encoding="utf-8")
+                bin_path.chmod(0o755)
+            payload_json = json.dumps(make_receipt(scope=scope))
+            fake_cli.write_text(
+                "#!/usr/bin/env python3\n"
+                f"print({payload_json!r})\n",
+                encoding="utf-8",
+            )
+            fake_cli.chmod(0o755)
+            artifacts = root / "out"
+            with contextlib.redirect_stdout(io.StringIO()):
+                rc = verify_zerocopy.main([
+                    "--proofs-dir", str(proofs_dir),
+                    "--src-dir", str(src_dir),
+                    "--cli", str(fake_cli),
+                    "--capture", str(fake_cap),
+                    "--sysroot", str(fake_sys),
+                    "--lean", str(fake_lean),
+                    "--artifacts-dir", str(artifacts),
+                ])
+            self.assertEqual(rc, 0)
+            summary = json.loads((artifacts / "summary.json").read_text(encoding="utf-8"))
+            self.assertEqual(summary["unit_count"], 1)
+            self.assertEqual(summary["units"]["01_unit"]["scope"], scope)
 
 
 if __name__ == "__main__":

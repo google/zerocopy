@@ -77,12 +77,14 @@ declared inputs must be clean relative regular-file paths inside their
 canonicalized `source_root`. Set `scope` to
 `{"kind": "selected_unit", "roots": ["module::function"]}` (with optional
 `"instantiations": [{"path": "module::generic", "args": ["usize"]}]` for
-explicit concrete monomorphizations; `UnitTheorem`, returning
-`selected_unit_verified`) or `{"kind": "crate"}` (`CrateTheorem`, returning
-`crate_verified`), and list the `specification` and `proof` Lean modules under
-`proof.sources`. For a Cargo crate with a single library or binary target and
-no required normal or build dependencies (dev-dependencies and inactive
-optional dependencies are ignored), `--manifest-path <Cargo.toml>
+explicit concrete monomorphizations, or `"roots": []` with a non-empty
+`"instantiations"` list when targeting only generic items; `UnitTheorem`,
+returning `selected_unit_verified`) or `{"kind": "crate"}` (`CrateTheorem`,
+returning `crate_verified`), and list the `specification` and `proof` Lean
+modules under `proof.sources`. For a Cargo crate with a single library or
+binary target and no required normal or build dependencies (dev-dependencies
+and inactive optional dependencies are ignored),
+`--manifest-path <Cargo.toml>
 --proof-dir <dir>` (with optional `--no-default-features`, `--features <list>`,
 `--all-features`, `--panic unwind|abort`, `--select <path>`, and
 `--instantiate <JSON>`) constructs the same request automatically.
