@@ -10,8 +10,6 @@
 //! `{Init,Std,Lean}*` `.olean` manifests, and manages symlink-safe Miri
 //! `.olean` caches for repository Pass 2.
 
-#[cfg(unix)]
-use std::os::unix::fs::OpenOptionsExt as _;
 use std::{
     collections::{BTreeMap, BTreeSet, VecDeque},
     env,
@@ -19,12 +17,10 @@ use std::{
     fs,
     io::{self, Write as _},
     path::{Component, Path, PathBuf},
-    process,
-    sync::atomic::{AtomicU64, Ordering},
 };
 
 use cargo_anneal::{
-    Failure, ImportEdge, TOOLCHAIN, is_clean_relative_path, is_sha256_hex, regular, sha256_bytes,
+    Failure, ImportEdge, SafeFs, TOOLCHAIN, is_clean_relative_path, is_sha256_hex, sha256_bytes,
     sha256_file,
 };
 pub use cargo_anneal::{LOCKED_SYSROOT_FOUNDATION_MANIFEST_SHA256, verify_sysroot_foundation_dir};
@@ -540,84 +536,6 @@ fn ensure_cache_dst_regular_or_absent(dst: &Path, phase: &str) -> Result<CacheEn
     }
 }
 
-/// Removes an unpublished sibling temporary cache file on drop unless disarmed
-/// after atomic publication.
-struct TempFileGuard {
-    path: PathBuf,
-    armed: bool,
-}
-
-impl TempFileGuard {
-    fn new(path: PathBuf) -> Self {
-        Self { path, armed: true }
-    }
-
-    fn path(&self) -> &Path {
-        &self.path
-    }
-
-    fn disarm(mut self) {
-        self.armed = false;
-    }
-}
-
-impl Drop for TempFileGuard {
-    fn drop(&mut self) {
-        if self.armed {
-            let _ = fs::remove_file(&self.path);
-        }
-    }
-}
-
-const MAX_CACHE_TEMP_ATTEMPTS: usize = 128;
-static NEXT_CACHE_TEMP_ID: AtomicU64 = AtomicU64::new(0);
-
-/// Create a unique sibling temporary file in `parent` using `create_new(true)`
-/// (`O_CREAT | O_EXCL`) and private `0o600` permissions on Unix.
-///
-/// POSIX guarantees `O_CREAT | O_EXCL` never follows a trailing symlink,
-/// failing with `EEXIST` instead; retrying across bounded sequence numbers
-/// recovers from stale or external filename collisions without exposing a
-/// writable symlink.
-fn create_unique_cache_temp(
-    parent: &Path,
-    dst_name: &str,
-    phase: &str,
-) -> Result<(TempFileGuard, fs::File), Failure> {
-    let pid = process::id();
-    for _ in 0..MAX_CACHE_TEMP_ATTEMPTS {
-        let seq = NEXT_CACHE_TEMP_ID.fetch_add(1, Ordering::Relaxed);
-        let prefix = format!(".tmp-{pid}-{seq}-");
-        let name = if prefix.len() + dst_name.len() <= 240 {
-            format!("{prefix}{dst_name}")
-        } else {
-            format!(".tmp-{pid}-{seq}")
-        };
-        let tmp_path = parent.join(name);
-        let mut opts = fs::OpenOptions::new();
-        opts.write(true).create_new(true);
-        #[cfg(unix)]
-        opts.mode(0o600);
-        match opts.open(&tmp_path) {
-            Ok(file) => return Ok((TempFileGuard::new(tmp_path), file)),
-            Err(e) if e.kind() == io::ErrorKind::AlreadyExists => continue,
-            Err(e) => {
-                return Err(Failure::operational(
-                    phase,
-                    format!("cannot create temporary cache entry {}: {e}", tmp_path.display()),
-                ));
-            }
-        }
-    }
-    Err(Failure::operational(
-        phase,
-        format!(
-            "exhausted {MAX_CACHE_TEMP_ATTEMPTS} attempts creating temporary cache entry in {}",
-            parent.display()
-        ),
-    ))
-}
-
 /// Atomically write a compiled artifact `src` into `cache_dir/rel_path` after
 /// rejecting symlinks at every path component.
 ///
@@ -630,9 +548,7 @@ pub(crate) fn write_cache_file(
     rel_path: &str,
     phase: &str,
 ) -> Result<(), Failure> {
-    regular(src, phase)?;
-    let bytes = fs::read(src)
-        .map_err(|e| Failure::operational(phase, format!("cannot read {}: {e}", src.display())))?;
+    let (bytes, _) = SafeFs::read_regular_file_strict(src, None, phase)?;
     let dst = prepare_nosymlink_cache_path(cache_dir, rel_path, true, phase)?;
     let Some(parent) = dst.parent() else {
         return Err(Failure::operational(
@@ -649,7 +565,7 @@ pub(crate) fn write_cache_file(
 
     // Declare `guard` before `file` so an early `?` return closes the file
     // descriptor before `TempFileGuard::drop` unlinks the staging file.
-    let (guard, mut file) = create_unique_cache_temp(parent, dst_name, phase)?;
+    let (guard, mut file) = SafeFs::create_unique_temp(parent, dst_name, phase)?;
     file.write_all(&bytes).map_err(|e| {
         Failure::operational(
             phase,
@@ -1470,7 +1386,7 @@ fn verify_source_lock_bytes_against_pins(
 #[cfg(test)]
 mod tests {
     use super::*;
-    use cargo_anneal::Json;
+    use cargo_anneal::{Json, TempFileGuard};
     use serde_json::json;
 
     #[test]

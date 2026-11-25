@@ -20,7 +20,6 @@ use std::os::unix::fs::{MetadataExt, OpenOptionsExt, PermissionsExt};
 use std::os::unix::io::AsRawFd;
 use std::{
     collections::{BTreeMap, BTreeSet},
-    fmt::Write as _,
     fs,
     io::Read,
     path::{Path, PathBuf},
@@ -31,6 +30,9 @@ use std::{
 
 use sha2::{Digest, Sha256};
 
+use crate::core::{digest_to_hex, validate_olean_v2_header};
+pub use crate::core::{MAX_OLEAN_BYTES, OLEAN_V2_MAGIC};
+use crate::sys_util::{SafeFs, SysSanitizer};
 use crate::toolchain::Failure;
 
 /// Default wall-clock timeout for a single sandboxed Lean invocation.
@@ -40,19 +42,6 @@ pub const DEFAULT_CHILD_TIMEOUT: Duration = Duration::from_secs(600);
 /// (16 MiB); excess bytes are still drained and discarded to avoid pipe
 /// deadlocks without allowing a hostile child to OOM the host.
 pub const MAX_CHILD_STREAM_BYTES: usize = 16 * 1024 * 1024;
-
-/// Door 1 size cap for a single compiled `.olean` output (256 MiB).
-pub const MAX_OLEAN_BYTES: u64 = 256 * 1024 * 1024;
-
-/// Required 6-byte magic prefix for standard Lean 4 module `.olean` artifacts
-/// (`v2` compacted region without closure relocation).
-///
-/// Lean 4's extended `v3` format (`b"olean\x03"`) carries relocated function
-/// pointers (`allowClosures := true`) intended only for identical-process
-/// serialization, never for standard `.olean` compilation outputs. Rejecting
-/// non-`v2` headers at Door 1 fails closed before any promoted `.olean` can
-/// reach downstream artifact inspection.
-pub const OLEAN_V2_MAGIC: &[u8; 6] = b"olean\x02";
 
 /// Door 1 size cap for a single inspector `result.json` output (64 MiB).
 pub const MAX_INSPECTOR_RESULT_BYTES: u64 = 64 * 1024 * 1024;
@@ -244,22 +233,10 @@ impl PathMapper {
     }
 }
 
-/// Dynamic-linker environment variable prefixes forbidden inside sandboxed
-/// child `extra_env` maps.
-const FORBIDDEN_LOADER_ENV_PREFIXES: &[&str] = &["LD_", "DYLD_"];
-
 /// Refuse any dynamic-linker environment variable (`LD_*`, `DYLD_*`) in a
 /// [`SandboxPolicy::extra_env`] map before spawning a child process.
 pub fn reject_forbidden_loader_env(extra_env: &BTreeMap<String, String>) -> Result<(), Failure> {
-    for key in extra_env.keys() {
-        if FORBIDDEN_LOADER_ENV_PREFIXES.iter().any(|prefix| key.starts_with(prefix)) {
-            return Err(Failure::operational(
-                "sandbox",
-                format!("refusing dynamic linker environment variable {key} in sandbox extra_env"),
-            ));
-        }
-    }
-    Ok(())
+    SysSanitizer::reject_forbidden_loader_env(extra_env)
 }
 
 /// Optional host system library/loader paths (`ENOENT`-skipped in both tiers).
@@ -1269,65 +1246,25 @@ pub fn find_bwrap_binary() -> Option<PathBuf> {
 
 /// Create a directory (and parents if needed) with an explicit Unix mode.
 pub fn create_dir_mode(path: &Path, mode: u32) -> Result<(), Failure> {
-    fs::create_dir_all(path).map_err(|e| {
-        Failure::operational("stage", format!("cannot create {}: {e}", path.display()))
-    })?;
-    set_mode(path, mode)
+    SafeFs::create_dir_mode(path, mode, "stage")
 }
 
 /// Restore owner write/execute permissions recursively across `root` (without
-/// following symlinks) so `fs::remove_dir_all` can delete read-only `0o500`/
-/// `0o444` staging subtrees cleanly during `reset_stage()` and `Drop`.
+/// following symlinks) so read-only `0o500`/`0o444` staging subtrees can be
+/// deleted cleanly during `reset_stage()` and `Drop`.
 pub fn make_tree_writable(root: &Path) {
-    #[cfg(unix)]
-    {
-        for entry in walkdir::WalkDir::new(root).follow_links(false).into_iter().flatten() {
-            let ft = entry.file_type();
-            if ft.is_symlink() {
-                continue;
-            }
-            let mode = if ft.is_dir() { 0o700 } else { 0o600 };
-            let _ = fs::set_permissions(entry.path(), fs::Permissions::from_mode(mode));
-        }
-    }
-    #[cfg(not(unix))]
-    {
-        let _ = root;
-    }
+    SafeFs::make_tree_writable(root);
 }
 
 /// Set Unix file or directory mode bits; no-op on non-Unix targets.
 pub fn set_mode(path: &Path, mode: u32) -> Result<(), Failure> {
-    #[cfg(unix)]
-    {
-        fs::set_permissions(path, fs::Permissions::from_mode(mode)).map_err(|e| {
-            Failure::operational(
-                "stage",
-                format!("cannot set mode {:o} on {}: {e}", mode, path.display()),
-            )
-        })?;
-    }
-    #[cfg(not(unix))]
-    {
-        let _ = (path, mode);
-    }
-    Ok(())
+    SafeFs::set_mode(path, mode, "stage")
 }
 
 /// Physically copy a regular file (never hardlinking) and mark the copy
 /// read-only (`0o444`).
 pub fn copy_readonly_file(src: &Path, dest: &Path, phase: &str) -> Result<(), Failure> {
-    if let Some(parent) = dest.parent() {
-        fs::create_dir_all(parent).map_err(|e| {
-            Failure::operational(phase, format!("cannot create {}: {e}", parent.display()))
-        })?;
-    }
-    let bytes = fs::read(src)
-        .map_err(|e| Failure::operational(phase, format!("cannot read {}: {e}", src.display())))?;
-    fs::write(dest, bytes).map_err(|e| {
-        Failure::operational(phase, format!("cannot write {}: {e}", dest.display()))
-    })?;
-    set_mode(dest, 0o444)
+    SafeFs::copy_readonly_file(src, dest, phase)
 }
 
 /// Door 1 validator for target module compilation (`"isModule": false`):
@@ -1625,32 +1562,9 @@ fn validate_olean_v2_and_sha256(
         }
         hasher.update(&buf[..n]);
     }
-    if prefix_len < prefix.len() {
-        return Err(Failure::operational(
-            phase,
-            format!(
-                "malformed .olean artifact {}: truncated header ({prefix_len} bytes, expected v2 magic)",
-                path.display()
-            ),
-        ));
-    }
-    if &prefix != OLEAN_V2_MAGIC {
-        return Err(Failure::operational(
-            phase,
-            format!(
-                "unsupported or malformed .olean header in {}: expected v2 magic {:02x?}, got {:02x?}",
-                path.display(),
-                OLEAN_V2_MAGIC,
-                prefix
-            ),
-        ));
-    }
+    validate_olean_v2_header(&prefix[..prefix_len], &path.display().to_string(), phase)?;
     let digest = hasher.finalize();
-    let mut hex = String::with_capacity(64);
-    for b in digest {
-        let _ = write!(&mut hex, "{b:02x}");
-    }
-    Ok(hex)
+    Ok(digest_to_hex(digest.as_ref()))
 }
 
 fn set_file_mode_readonly(file: &fs::File, path: &Path, phase: &str) -> Result<(), Failure> {
@@ -1676,90 +1590,13 @@ fn set_file_mode_readonly(file: &fs::File, path: &Path, phase: &str) -> Result<(
 /// zero external crates. Returns `Ok(None)` for static ELF64 binaries (no
 /// `PT_INTERP` program header) and `Err` for non-ELF or malformed binaries.
 pub fn parse_elf64_pt_interp(path: &Path) -> Result<Option<PathBuf>, String> {
-    let mut file = fs::File::open(path).map_err(|e| format!("open {}: {e}", path.display()))?;
-    let file_len = file.metadata().map_err(|e| format!("stat {}: {e}", path.display()))?.len();
-    if file_len < 64 {
-        return Err(format!("{} is smaller than an ELF64 header", path.display()));
-    }
-    let mut ehdr = [0u8; 64];
-    file.read_exact(&mut ehdr).map_err(|e| format!("read ELF header {}: {e}", path.display()))?;
-    if &ehdr[0..4] != b"\x7fELF" {
-        return Err(format!("{} is not an ELF binary", path.display()));
-    }
-    if ehdr[4] != 2 || ehdr[5] != 1 {
-        return Err(format!(
-            "{} is not little-endian ELF64 (class={}, data={})",
-            path.display(),
-            ehdr[4],
-            ehdr[5]
-        ));
-    }
-    let e_phoff = u64::from_le_bytes(ehdr[32..40].try_into().unwrap());
-    let e_phentsize = u16::from_le_bytes(ehdr[54..56].try_into().unwrap()) as u64;
-    let e_phnum = u16::from_le_bytes(ehdr[56..58].try_into().unwrap()) as u64;
-    if e_phnum == 0 {
-        return Ok(None);
-    }
-    if e_phentsize < 56 {
-        return Err(format!("invalid ELF64 e_phentsize {e_phentsize} in {}", path.display()));
-    }
-    let ph_table_bytes = e_phentsize
-        .checked_mul(e_phnum)
-        .ok_or_else(|| "ELF64 program header table size overflow".to_string())?;
-    let ph_end = e_phoff
-        .checked_add(ph_table_bytes)
-        .ok_or_else(|| "ELF64 program header table end overflow".to_string())?;
-    if ph_end > file_len || ph_table_bytes > 4 * 1024 * 1024 {
-        return Err(format!("ELF64 program header table out of bounds in {}", path.display()));
-    }
-    use std::io::{Seek, SeekFrom};
-    file.seek(SeekFrom::Start(e_phoff)).map_err(|e| format!("seek phdr table: {e}"))?;
-    let mut table = vec![0u8; ph_table_bytes as usize];
-    file.read_exact(&mut table).map_err(|e| format!("read phdr table: {e}"))?;
-    const PT_INTERP: u32 = 3;
-    for i in 0..(e_phnum as usize) {
-        let base = i * (e_phentsize as usize);
-        let p_type = u32::from_le_bytes(table[base..base + 4].try_into().unwrap());
-        if p_type == PT_INTERP {
-            let p_offset = u64::from_le_bytes(table[base + 8..base + 16].try_into().unwrap());
-            let p_filesz = u64::from_le_bytes(table[base + 32..base + 40].try_into().unwrap());
-            if p_filesz == 0 || p_filesz > 4096 {
-                return Err(format!("invalid PT_INTERP size {p_filesz}"));
-            }
-            let end = p_offset
-                .checked_add(p_filesz)
-                .ok_or_else(|| "PT_INTERP offset overflow".to_string())?;
-            if end > file_len {
-                return Err("PT_INTERP extends past EOF".to_string());
-            }
-            file.seek(SeekFrom::Start(p_offset)).map_err(|e| format!("seek PT_INTERP: {e}"))?;
-            let mut raw = vec![0u8; p_filesz as usize];
-            file.read_exact(&mut raw).map_err(|e| format!("read PT_INTERP: {e}"))?;
-            let nul_pos = raw.iter().position(|&b| b == 0).unwrap_or(raw.len());
-            let s = std::str::from_utf8(&raw[..nul_pos])
-                .map_err(|e| format!("non-UTF-8 PT_INTERP: {e}"))?;
-            if s.is_empty() {
-                return Err("empty PT_INTERP".to_string());
-            }
-            return Ok(Some(PathBuf::from(s)));
-        }
-    }
-    Ok(None)
+    SysSanitizer::parse_elf64_pt_interp(path)
 }
 
 /// Resolve both the declared `PT_INTERP` path and its canonicalized target (for
 /// example `/lib64/ld-linux-x86-64.so.2` and `/usr/lib/.../ld-linux-...`).
 pub fn resolve_pt_interp_paths(exec_bin: &Path) -> Result<Vec<PathBuf>, String> {
-    let Some(interp) = parse_elf64_pt_interp(exec_bin)? else {
-        return Ok(Vec::new());
-    };
-    let mut paths = vec![interp.clone()];
-    if let Ok(canon) = fs::canonicalize(&interp)
-        && canon != interp
-    {
-        paths.push(canon);
-    }
-    Ok(paths)
+    SysSanitizer::resolve_pt_interp_paths(exec_bin)
 }
 
 #[cfg(target_os = "linux")]
@@ -1802,6 +1639,7 @@ fn spawn_and_wait_with_timeout(
     let mut child = cmd
         .spawn()
         .map_err(|e| Failure::operational(label, format!("failed to spawn child: {e}")))?;
+    #[cfg(unix)]
     let child_pid = child.id();
     let stdout_pipe = child
         .stdout

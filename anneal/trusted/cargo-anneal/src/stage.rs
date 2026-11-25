@@ -1640,11 +1640,17 @@ impl Checker {
                 Failure::new(2, "snapshot", format!("cannot clean {}: {e}", self.stage.display()))
             })?;
         }
-        let mut stage_builder = fs::DirBuilder::new();
-        // Recreating the stage must preserve its owner-only Unix permissions.
-        // A pre-existing replacement directory must cause creation to fail.
-        #[cfg(unix)]
-        stage_builder.mode(0o700);
+        let stage_builder = {
+            #[cfg(unix)]
+            let mut builder = fs::DirBuilder::new();
+            #[cfg(not(unix))]
+            let builder = fs::DirBuilder::new();
+            // Recreating the stage must keep its owner-only Unix permissions.
+            // Pre-existing replacement directories must fail creation.
+            #[cfg(unix)]
+            builder.mode(0o700);
+            builder
+        };
         stage_builder.create(&self.stage).map_err(|e| {
             Failure::new(2, "snapshot", format!("cannot recreate {}: {e}", self.stage.display()))
         })?;

@@ -10,14 +10,10 @@
 //! digest and path validators, deterministic topological ordering, and bounded
 //! parallel DAG scheduling.
 
-#[cfg(unix)]
-use std::os::unix::fs::OpenOptionsExt as _;
 use std::{
     collections::{BTreeMap, BTreeSet},
     ffi::OsStr,
-    fmt::Write as _,
-    fs::{self, OpenOptions},
-    io::{self, Read as _},
+    fs, io,
     num::NonZero,
     path::{Component, Path, PathBuf},
     sync::{
@@ -26,13 +22,16 @@ use std::{
     },
 };
 
-use serde::{Deserialize, Serialize};
-use sha2::{Digest, Sha256};
+use serde::Deserialize;
+use sha2::{Digest as _, Sha256};
 use walkdir::WalkDir;
 
-pub use crate::trusted_bundle::{
-    LOCKED_SYSROOT_FOUNDATION_MANIFEST_SHA256, is_sha256_hex, sha256_bytes,
+pub use crate::core::{
+    Failure, IR_PARTS, ImportEdge, ModuleArtifacts, OLEAN_PARTS, PARTS, digest_to_hex,
+    is_clean_relative_path, is_lean_ident, is_sha256_hex, sha256_bytes, topo_sort_modules,
 };
+use crate::sys_util::SafeFs;
+pub use crate::trusted_bundle::LOCKED_SYSROOT_FOUNDATION_MANIFEST_SHA256;
 
 /// Represents a JSON value at the `TrustedBoundary.lean` IPC boundary.
 pub type Json = serde_json::Value;
@@ -53,17 +52,7 @@ pub const FOUNDATION_AXIOMS: [(&str, &str); 3] = [
     ("propext", "Init.Core"),
 ];
 
-/// Lists the `.olean` artifact companion suffixes passed in the first array of
-/// `Lean.ImportArtifacts`.
-pub const OLEAN_PARTS: [&str; 3] = ["olean", "olean.server", "olean.private"];
-
-/// Lists the `.ir` artifact companion suffixes passed in the second array of
-/// `Lean.ImportArtifacts`.
-pub const IR_PARTS: [&str; 2] = ["ir.sig", "ir"];
-
-/// Lists all five compiled Lean artifact companion suffixes tracked by
-/// `foundation-lock.json`, `library-lock.json`, and module compilation.
-pub const PARTS: [&str; 5] = ["olean", "olean.server", "olean.private", "ir.sig", "ir"];
+// `OLEAN_PARTS`, `IR_PARTS`, and `PARTS` are re-exported from `crate::core`.
 
 /// Lists the pinned SHA-256 digests of the official Lean 4.34.1 `bin/lean`
 /// binaries from `trusted/lean/foundation-lock.json`.
@@ -79,100 +68,9 @@ pub const LOCKED_LEAN_SHA256: [&str; 4] = [
     LOCKED_LEAN_X86_64_LINUX_SHA256,
 ];
 
-/// Represents a structured audit or verification failure distinguishing
-/// reported frontend/source or policy rejections (`code == 1`) from
-/// operational or environment failures (`code == 2`).
-///
-/// A rejection does not establish that the requested proposition is false.
-#[derive(Debug, Clone, PartialEq, Eq, thiserror::Error)]
-#[error("{message}")]
-pub struct Failure {
-    /// Holds the process exit code (`1` for rejection, `2` for operational
-    /// failure).
-    pub code: i32,
-    /// Names the phase in which the failure occurred.
-    pub phase: String,
-    /// Contains the human-readable diagnostic message.
-    pub message: String,
-}
-
-impl Failure {
-    /// Construct a new [`Failure`].
-    pub fn new(code: i32, phase: impl Into<String>, message: impl Into<String>) -> Self {
-        Self { code, phase: phase.into(), message: message.into() }
-    }
-
-    /// Construct a policy-rejection [`Failure`] (`code == 1`).
-    pub fn policy(phase: impl Into<String>, message: impl Into<String>) -> Self {
-        Self::new(1, phase, message)
-    }
-
-    /// Construct an operational or environment [`Failure`] (`code == 2`).
-    pub fn operational(phase: impl Into<String>, message: impl Into<String>) -> Self {
-        Self::new(2, phase, message)
-    }
-}
-
-/// Holds the validated artifact companion paths for a single compiled Lean
-/// module.
-///
-/// `Lean.ImportArtifacts` expects two path arrays per module:
-///
-/// 1. `olean_parts`: `[.olean, .olean.server?, .olean.private?]` (always
-///    non-empty; `.olean` is mandatory).
-/// 2. `ir_parts`: `[.ir.sig?, .ir?]`.
-///
-/// Representing these two groups as named fields rather than `Vec<Vec<String>>`
-/// makes malformed artifact-group counts unrepresentable.
-#[derive(Debug, Clone, PartialEq, Eq)]
-pub struct ModuleArtifacts {
-    /// Holds the non-empty `.olean` companion group (`OLEAN_PARTS`).
-    pub olean_parts: Vec<String>,
-    /// Holds the optional `.ir` companion group (`IR_PARTS`).
-    pub ir_parts: Vec<String>,
-}
-
-impl ModuleArtifacts {
-    /// Construct [`ModuleArtifacts`] from a map of available part suffixes
-    /// (`"olean"` -> path, etc.), failing if the primary `"olean"` part is
-    /// absent.
-    pub fn from_available(
-        available: &BTreeMap<&str, String>,
-        phase: &str,
-        err_msg: impl FnOnce() -> String,
-    ) -> Result<Self, Failure> {
-        if !available.contains_key("olean") {
-            return Err(Failure::new(2, phase, err_msg()));
-        }
-        let olean_parts = OLEAN_PARTS.iter().filter_map(|p| available.get(*p).cloned()).collect();
-        let ir_parts = IR_PARTS.iter().filter_map(|p| available.get(*p).cloned()).collect();
-        Ok(Self { olean_parts, ir_parts })
-    }
-
-    /// Convert to the two-element array representation expected by
-    /// `Lean.ImportArtifacts` in `--setup` and `TrustedBoundary.lean`.
-    pub fn to_wire(&self) -> [&[String]; 2] {
-        [&self.olean_parts, &self.ir_parts]
-    }
-}
-
-/// Represents a single `import` edge in a Lean module header, matching Lean's
-/// `Import` JSON encoding (`Lean.Import`).
-#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
-#[serde(rename_all = "camelCase", deny_unknown_fields)]
-pub struct ImportEdge {
-    /// Names the imported module (for example `"Init.Core"` or
-    /// `"Trusted.MirAst"`).
-    pub module: String,
-    /// Indicates whether `import all` was used (always `false` in admitted
-    /// modules).
-    pub import_all: bool,
-    /// Indicates whether the import is exported (`true` for standard `import`).
-    pub is_exported: bool,
-    /// Indicates whether `meta import` was used (always `false` in admitted
-    /// modules).
-    pub is_meta: bool,
-}
+// Core error, artifact, and import-edge types live in `crate::core`, and
+// `LOCKED_SYSROOT_FOUNDATION_MANIFEST_SHA256` lives in `crate::trusted_bundle`;
+// all are re-exported at the top of this module.
 
 /// Represents a header response entry returned by `TrustedBoundary.lean`
 /// `"headers"` and `"preflight"` modes.
@@ -303,10 +201,7 @@ impl LibraryLock {
             seen.insert(label, digest.to_ascii_lowercase());
         }
         if seen.len() != LIBRARY_LOCK_TREE_LABELS.len() {
-            return Err(Failure::operational(
-                "library-lock",
-                "invalid checked-library catalog",
-            ));
+            return Err(Failure::operational("library-lock", "invalid checked-library catalog"));
         }
         Ok(Self {
             lib_init_sha256: seen.remove("lean/lib/lean/Init/**").expect("validated key"),
@@ -349,7 +244,9 @@ impl LibraryLock {
             if !actual.eq_ignore_ascii_case(expected) {
                 return Err(Failure::operational(
                     phase,
-                    format!("sysroot tree {label} SHA-256 mismatch: expected {expected}, got {actual}"),
+                    format!(
+                        "sysroot tree {label} SHA-256 mismatch: expected {expected}, got {actual}"
+                    ),
                 ));
             }
         }
@@ -547,7 +444,10 @@ fn validate_sysroot_graph_with(
             if !is_ok(&edge.module) {
                 return Err(Failure::policy(
                     "sysroot",
-                    format!("disallowed sysroot import {} in {module}: {allowed_desc}", edge.module),
+                    format!(
+                        "disallowed sysroot import {} in {module}: {allowed_desc}",
+                        edge.module
+                    ),
                 ));
             }
             if !graph.contains_key(&edge.module) {
@@ -672,58 +572,15 @@ pub(crate) struct UnpinnedSysrootArtifacts {
     pub part_hashes: Vec<(String, String)>,
 }
 
-fn open_regular_nofollow_nonblock(path: &Path, phase: &str) -> Result<fs::File, Failure> {
-    let mut opts = OpenOptions::new();
-    opts.read(true);
-    #[cfg(unix)]
-    opts.custom_flags(libc::O_NOFOLLOW | libc::O_NONBLOCK);
-    let file = opts
-        .open(path)
-        .map_err(|e| Failure::operational(phase, format!("cannot read {}: {e}", path.display())))?;
-    let meta = file.metadata().map_err(|e| {
-        Failure::operational(phase, format!("cannot inspect {}: {e}", path.display()))
-    })?;
-    if !meta.is_file() {
-        return Err(Failure::policy(phase, format!("expected a regular file: {}", path.display())));
-    }
-    Ok(file)
-}
-
 /// Read and SHA-256 hash a regular file, dereferencing symlinks while guarding
 /// against non-regular targets (FIFOs, sockets, devices) and TOCTOU swaps.
 pub fn read_regular_file_deref(path: &Path, phase: &str) -> Result<(Vec<u8>, String), Failure> {
-    let canon = fs::canonicalize(path).map_err(|e| {
-        Failure::operational(phase, format!("cannot inspect {}: {e}", path.display()))
-    })?;
-    let pre_meta = fs::metadata(&canon).map_err(|e| {
-        Failure::operational(phase, format!("cannot inspect {}: {e}", path.display()))
-    })?;
-    if !pre_meta.is_file() {
-        return Err(Failure::policy(phase, format!("expected a regular file: {}", path.display())));
-    }
-    let mut file = open_regular_nofollow_nonblock(&canon, phase)?;
-    let mut bytes = Vec::new();
-    file.read_to_end(&mut bytes)
-        .map_err(|e| Failure::operational(phase, format!("cannot read {}: {e}", path.display())))?;
-    let after = fs::canonicalize(path).map_err(|e| {
-        Failure::operational(phase, format!("cannot inspect {}: {e}", path.display()))
-    })?;
-    if after != canon {
-        return Err(Failure::operational(
-            phase,
-            format!("path changed during read: {}", path.display()),
-        ));
-    }
-    let sha = sha256_bytes(&bytes);
-    Ok((bytes, sha))
+    SafeFs::read_regular_file_deref(path, phase)
 }
 
-fn sha256_hex_of_digest(digest: &[u8; 32]) -> String {
-    let mut hex = String::with_capacity(64);
-    for byte in digest {
-        let _ = write!(&mut hex, "{byte:02x}");
-    }
-    hex
+#[cfg(test)]
+fn open_regular_nofollow_nonblock(path: &Path, phase: &str) -> Result<fs::File, Failure> {
+    SafeFs::open_regular_nofollow_nonblock(path, phase)
 }
 
 fn read_regular_file_strict_raw(
@@ -731,25 +588,7 @@ fn read_regular_file_strict_raw(
     expected_canon: Option<&Path>,
     phase: &str,
 ) -> Result<(Vec<u8>, [u8; 32]), Failure> {
-    regular(path, phase)?;
-    let mut file = open_regular_nofollow_nonblock(path, phase)?;
-    let mut bytes = Vec::new();
-    file.read_to_end(&mut bytes)
-        .map_err(|e| Failure::operational(phase, format!("cannot read {}: {e}", path.display())))?;
-    regular(path, phase)?;
-    if let Some(expected) = expected_canon {
-        let canon = fs::canonicalize(path).map_err(|e| {
-            Failure::operational(phase, format!("cannot inspect {}: {e}", path.display()))
-        })?;
-        if canon != expected {
-            return Err(Failure::policy(
-                phase,
-                format!("expected a regular file: {}", path.display()),
-            ));
-        }
-    }
-    let digest: [u8; 32] = Sha256::digest(&bytes).into();
-    Ok((bytes, digest))
+    SafeFs::read_regular_file_strict_raw(path, expected_canon, phase)
 }
 
 /// Read and SHA-256 hash a regular file while rejecting symlinks and
@@ -759,14 +598,13 @@ pub fn read_regular_file_strict(
     expected_canon: Option<&Path>,
     phase: &str,
 ) -> Result<(Vec<u8>, String), Failure> {
-    let (bytes, digest) = read_regular_file_strict_raw(path, expected_canon, phase)?;
-    Ok((bytes, sha256_hex_of_digest(&digest)))
+    SafeFs::read_regular_file_strict(path, expected_canon, phase)
 }
 
 /// Hash a file, dereferencing symlinks (for sysroot libraries/sources and tool
 /// binaries).
 pub fn sha256_file_deref(path: &Path, phase: &str) -> Result<String, Failure> {
-    read_regular_file_deref(path, phase).map(|(_, sha)| sha)
+    SafeFs::sha256_file_deref(path, phase)
 }
 
 fn hash_optional_file_deref(path: &Path, phase: &str) -> Result<Option<String>, Failure> {
@@ -921,40 +759,19 @@ pub fn default_lean_path() -> PathBuf {
 /// FIFO, or device node) using `symlink_metadata` so symlinks are never
 /// silently followed.
 pub fn regular(path: &Path, phase: &str) -> Result<(), Failure> {
-    let meta = fs::symlink_metadata(path)
-        .map_err(|e| Failure::new(2, phase, format!("cannot inspect {}: {e}", path.display())))?;
-    if meta.file_type().is_symlink() || !meta.file_type().is_file() {
-        return Err(Failure::new(1, phase, format!("expected a regular file: {}", path.display())));
-    }
-    Ok(())
+    SafeFs::regular(path, phase)
 }
 
 /// Verify that `path` is a regular file and return its lowercase hex SHA-256
 /// digest.
 pub fn sha256_file(path: &Path, phase: &str) -> Result<String, Failure> {
-    read_regular_file_strict(path, None, phase).map(|(_, sha)| sha)
+    SafeFs::sha256_file(path, phase)
 }
 
 /// Copy a regular source file `src` to `dst`, creating parent directories as
 /// needed, and return the SHA-256 digest of the copied bytes.
 pub fn stage_regular_file(src: &Path, dst: &Path, phase: &str) -> Result<String, Failure> {
-    let (bytes, sha) = read_regular_file_strict(src, None, phase)?;
-    if let Some(parent) = dst.parent() {
-        fs::create_dir_all(parent).map_err(|e| {
-            Failure::new(2, phase, format!("cannot create {}: {e}", parent.display()))
-        })?;
-    }
-    fs::write(dst, &bytes)
-        .map_err(|e| Failure::new(2, phase, format!("cannot write {}: {e}", dst.display())))?;
-    Ok(sha)
-}
-
-/// Return `true` if `s` is a valid ASCII Lean module identifier component.
-#[doc(hidden)]
-pub fn is_lean_ident(s: &str) -> bool {
-    let mut chars = s.chars();
-    chars.next().is_some_and(|first| first.is_ascii_alphabetic())
-        && chars.all(|c| c.is_ascii_alphanumeric() || c == '_')
+    SafeFs::stage_regular_file(src, dst, phase)
 }
 
 fn walk_and_hash_sysroot_dir(
@@ -1171,7 +988,10 @@ pub fn verify_sysroot_foundation_dir(
 
 /// Compute the canonical SHA-256 manifest digest of `<prefix>/lib/lean/{Init,Std,Lean}*`
 /// `.olean*` artifacts without filtering any module names.
-pub(crate) fn compute_sysroot_manifest_sha256(lib_dir: &Path, phase: &str) -> Result<String, Failure> {
+pub(crate) fn compute_sysroot_manifest_sha256(
+    lib_dir: &Path,
+    phase: &str,
+) -> Result<String, Failure> {
     walk_and_hash_sysroot_dir(lib_dir, &BTreeSet::new(), phase).map(|(sha, _)| sha)
 }
 
@@ -1182,8 +1002,7 @@ pub(crate) fn compute_unpinned_sysroot_manifest_sha256(
     lib_dir: &Path,
     phase: &str,
 ) -> Result<String, Failure> {
-    walk_and_hash_sysroot_dir_with_mode(lib_dir, &BTreeSet::new(), true, phase)
-        .map(|(sha, _)| sha)
+    walk_and_hash_sysroot_dir_with_mode(lib_dir, &BTreeSet::new(), true, phase).map(|(sha, _)| sha)
 }
 
 /// Compute a deterministic SHA-256 digest over every regular file recursively
@@ -1191,7 +1010,10 @@ pub(crate) fn compute_unpinned_sysroot_manifest_sha256(
 /// by POSIX relative path and failing closed on symlinks or non-regular files.
 pub(crate) fn compute_sysroot_tree_digest(root_dir: &Path, phase: &str) -> Result<String, Failure> {
     let root_meta = fs::symlink_metadata(root_dir).map_err(|e| {
-        Failure::operational(phase, format!("cannot inspect sysroot tree {}: {e}", root_dir.display()))
+        Failure::operational(
+            phase,
+            format!("cannot inspect sysroot tree {}: {e}", root_dir.display()),
+        )
     })?;
     if root_meta.file_type().is_symlink() {
         return Err(Failure::policy(
@@ -1249,11 +1071,8 @@ pub(crate) fn compute_sysroot_tree_digest(root_dir: &Path, phase: &str) -> Resul
     }
     files.sort_by(|a, b| a.0.as_bytes().cmp(b.0.as_bytes()));
 
-    let workers = std::thread::available_parallelism()
-        .map(NonZero::get)
-        .unwrap_or(1)
-        .min(4)
-        .min(files.len());
+    let workers =
+        std::thread::available_parallelism().map(NonZero::get).unwrap_or(1).min(4).min(files.len());
     let digests: Vec<[u8; 32]> = if workers <= 1 {
         let mut out = Vec::with_capacity(files.len());
         for (_, path) in &files {
@@ -1302,7 +1121,7 @@ pub(crate) fn compute_sysroot_tree_digest(root_dir: &Path, phase: &str) -> Resul
         outer.update(digest);
     }
     let finalized: [u8; 32] = outer.finalize().into();
-    Ok(sha256_hex_of_digest(&finalized))
+    Ok(digest_to_hex(&finalized))
 }
 
 /// Collect regular binary artifact parts for a pinned `Init.*`/`Std.*`
@@ -1354,56 +1173,13 @@ pub(crate) fn compute_sysroot_manifest_sha256_for_test(lib_dir: &Path) -> String
         .0
 }
 
-/// Return `true` if `rel` consists exclusively of normal path components (no
-/// `/`, `.`, or `..`).
-pub fn is_clean_relative_path(rel: &str) -> bool {
-    let mut comps = Path::new(rel).components();
-    comps.clone().next().is_some() && comps.all(|c| matches!(c, Component::Normal(_)))
-}
-
-/// Topologically sort the module set `pending` according to `imports_map`,
-/// returning a policy rejection (`code == 1`) with `cycle_msg` if `pending`
-/// contains an import cycle.
-///
-/// Emit each ready layer in sorted order. Imports outside `pending` are assumed
-/// to be available. Use iteration so deep import chains do not consume one Rust
-/// stack frame per module.
-pub fn topo_sort_modules(
-    mut pending: BTreeSet<String>,
-    imports_map: &BTreeMap<String, Vec<ImportEdge>>,
-    cycle_msg: &str,
-) -> Result<Vec<String>, Failure> {
-    let mut order = Vec::with_capacity(pending.len());
-    while !pending.is_empty() {
-        // Snapshot the whole ready layer before removing modules so newly
-        // unlocked modules cannot interleave with its sorted order.
-        let ready: Vec<_> = pending
-            .iter()
-            .filter(|module| {
-                imports_map[*module].iter().all(|edge| !pending.contains(&edge.module))
-            })
-            .cloned()
-            .collect();
-        if ready.is_empty() {
-            return Err(Failure::policy("preflight", cycle_msg));
-        }
-        for module in ready {
-            pending.remove(&module);
-            order.push(module);
-        }
-    }
-    Ok(order)
-}
+// `is_clean_relative_path` & `topo_sort_modules` are re-exported from `core`.
 
 /// Return a bounded worker count based on available host parallelism, capped
 /// at `cap` and never below `1`.
 #[doc(hidden)]
 pub fn default_compile_workers(cap: usize) -> usize {
-    std::thread::available_parallelism()
-        .map(NonZero::get)
-        .unwrap_or(1)
-        .min(cap.max(1))
-        .max(1)
+    std::thread::available_parallelism().map(NonZero::get).unwrap_or(1).min(cap.max(1)).max(1)
 }
 
 /// Validated acyclic DAG plan for [`run_parallel_dag`].
@@ -1432,10 +1208,7 @@ impl ParallelDagPlan {
     ) -> Result<Self, Failure> {
         let total_len = active.len();
         if dependents.len() != total_len {
-            return Err(Failure::operational(
-                cycle_phase,
-                "mismatched parallel DAG dimension",
-            ));
+            return Err(Failure::operational(cycle_phase, "mismatched parallel DAG dimension"));
         }
         let mut normalized: Vec<Vec<usize>> = Vec::with_capacity(total_len);
         let mut in_degree = vec![0usize; total_len];
@@ -1468,12 +1241,7 @@ impl ParallelDagPlan {
             }
             min_active_descendant[u] = best;
         }
-        Ok(Self {
-            active,
-            in_degree,
-            dependents: normalized,
-            min_active_descendant,
-        })
+        Ok(Self { active, in_degree, dependents: normalized, min_active_descendant })
     }
 
     /// Build a validated DAG plan over `order` (all nodes active) from the
@@ -1552,11 +1320,7 @@ impl Drop for NotifyOnDrop<'_> {
     }
 }
 
-fn record_earliest_dag_error(
-    slot: &mut Option<(usize, Failure)>,
-    entry_idx: usize,
-    err: Failure,
-) {
+fn record_earliest_dag_error(slot: &mut Option<(usize, Failure)>, entry_idx: usize, err: Failure) {
     // Operational failures (`code != 1`, e.g. sandbox, timeout, Door 1, or I/O
     // errors) strictly outrank ordinary `code == 1` source/proof rejections so
     // parallel compilation never downgrades `tool_failed` into `proof_failed`.
@@ -1564,12 +1328,11 @@ fn record_earliest_dag_error(
     // node index.
     let is_op = |f: &Failure| f.code != 1;
     let outranks =
-        slot.as_ref()
-            .is_none_or(|(best_idx, best_err)| match (is_op(&err), is_op(best_err)) {
-                (true, false) => true,
-                (false, true) => false,
-                _ => entry_idx < *best_idx,
-            });
+        slot.as_ref().is_none_or(|(best_idx, best_err)| match (is_op(&err), is_op(best_err)) {
+            (true, false) => true,
+            (false, true) => false,
+            _ => entry_idx < *best_idx,
+        });
     if outranks {
         *slot = Some((entry_idx, err));
     }
@@ -1670,9 +1433,7 @@ where
     for idx in 0..total_len {
         if init_state.in_degree[idx] == 0 {
             if plan.active[idx] {
-                init_state
-                    .ready
-                    .insert((plan.min_active_descendant[idx], idx));
+                init_state.ready.insert((plan.min_active_descendant[idx], idx));
             } else {
                 inactive_roots.push(idx);
             }
@@ -1759,11 +1520,9 @@ where
                                 &plan.dependents,
                                 state,
                             ),
-                            Err(err) => record_earliest_dag_error(
-                                &mut state.first_error,
-                                entry_idx,
-                                err,
-                            ),
+                            Err(err) => {
+                                record_earliest_dag_error(&mut state.first_error, entry_idx, err)
+                            }
                         },
                         Ok(_) => {}
                         Err(err) => {
@@ -1916,9 +1675,7 @@ fn walk_and_check_runtime_lib_dir(
             walk_and_check_runtime_lib_dir(lib_root, &path, allowed, seen)?;
             continue;
         }
-        if ftype.is_symlink()
-            && fs::metadata(&path).is_ok_and(|meta| meta.is_dir())
-        {
+        if ftype.is_symlink() && fs::metadata(&path).is_ok_and(|meta| meta.is_dir()) {
             if matches!(rel_str.as_str(), "lean/Lake" | "lean/LeanChecker") {
                 walk_and_check_runtime_lib_dir(lib_root, &path, allowed, seen)?;
                 continue;
@@ -2157,20 +1914,12 @@ mod parallel_dag_tests {
         );
         assert_eq!(cycle.err(), Some(Failure::policy("dag", "dag cycle")));
 
-        let self_loop = ParallelDagPlan::from_indexed_edges(
-            vec![true],
-            vec![vec![0]],
-            "dag",
-            "dag cycle",
-        );
+        let self_loop =
+            ParallelDagPlan::from_indexed_edges(vec![true], vec![vec![0]], "dag", "dag cycle");
         assert_eq!(self_loop.err(), Some(Failure::policy("dag", "dag cycle")));
 
-        let bad_edge = ParallelDagPlan::from_indexed_edges(
-            vec![true],
-            vec![vec![5]],
-            "dag",
-            "dag cycle",
-        );
+        let bad_edge =
+            ParallelDagPlan::from_indexed_edges(vec![true], vec![vec![5]], "dag", "dag cycle");
         assert_eq!(
             bad_edge.err(),
             Some(Failure::operational("dag", "out-of-range parallel DAG edge"))
@@ -2842,5 +2591,16 @@ mod unpinned_sysroot_tests {
         let (bytes, sha) = read_regular_file_deref(&regular_link, "test").unwrap();
         assert_eq!(bytes, b"hello");
         assert_eq!(sha, sha256_bytes(b"hello"));
+
+        let unreadable = dir.path().join("unreadable.txt");
+        fs::write(&unreadable, b"secret").unwrap();
+        SafeFs::set_mode(&unreadable, 0o000, "test").unwrap();
+        // Verify unreadable regular files fail as operational (code 2), not
+        // policy rejections (code 1), unless running as root with DAC_OVERRIDE.
+        if fs::File::open(&unreadable).is_err() {
+            let err_unreadable = read_regular_file_strict(&unreadable, None, "test").unwrap_err();
+            assert_eq!(err_unreadable.code, 2);
+        }
+        SafeFs::set_mode(&unreadable, 0o600, "test").unwrap();
     }
 }

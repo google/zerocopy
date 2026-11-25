@@ -30,11 +30,13 @@ use std::{
 use serde::{Deserialize, Serialize};
 use sha2::{Digest, Sha256};
 
+use crate::core::validate_olean_v2_header;
+use crate::sandbox::{MAX_OLEAN_BYTES, copy_readonly_file, set_mode};
+use crate::sys_util::{SafeFs, failure_from_io};
 use crate::{
     Failure, ImportEdge, ModuleArtifacts, is_clean_relative_path, is_sha256_hex, sha256_bytes,
     toolchain::cache_dir_for_platform,
 };
-use crate::sandbox::{MAX_OLEAN_BYTES, OLEAN_V2_MAGIC, copy_readonly_file, create_dir_mode, set_mode};
 
 const CACHE_FORMAT_VERSION: u32 = 2;
 const PREBUILT_MANIFEST_FILE: &str = "manifest.json";
@@ -438,7 +440,7 @@ impl OleanCache {
         }
         let v2_dir = disk_dir.join("v2");
         if !probe_existing_non_symlink_dir(&v2_dir, true)? {
-            create_dir_mode(&v2_dir, 0o700)?;
+            SafeFs::create_dir_mode(&v2_dir, 0o700, "olean-cache")?;
         }
         let key = input.cache_key();
         let entry_dir = v2_dir.join(&key);
@@ -507,10 +509,7 @@ impl OleanCache {
 }
 
 fn is_unwritable_cache_init_err(err: &Failure) -> bool {
-    let lower = err.message.to_ascii_lowercase();
-    lower.contains("permission denied")
-        || lower.contains("read-only file system")
-        || lower.contains("operation not permitted")
+    err.is_unwritable_io_error()
 }
 
 fn lookup_disk_cache_bytes(
@@ -527,9 +526,10 @@ fn lookup_disk_cache_bytes(
             return Ok(None);
         }
         Err(e) => {
-            return Err(Failure::operational(
+            return Err(failure_from_io(
                 "olean-cache",
                 format!("cannot inspect {}: {e}", disk_dir.display()),
+                &e,
             ));
         }
     };
@@ -596,7 +596,7 @@ fn load_validated_parts(
             ));
         }
         let src_path = join_checked_non_symlink(base_dir, Path::new(&part.path), require_owner_uid)?;
-        let bytes = read_regular_nofollow_capped(&src_path, MAX_OLEAN_BYTES, "olean-cache")?;
+        let bytes = SafeFs::read_regular_nofollow_capped(&src_path, MAX_OLEAN_BYTES, "olean-cache")?;
         if require_owner_uid {
             verify_owner_uid(&src_path)?;
         }
@@ -612,13 +612,8 @@ fn load_validated_parts(
                 ),
             ));
         }
-        if part.suffix == "olean"
-            && (bytes.len() < OLEAN_V2_MAGIC.len() || !bytes.starts_with(OLEAN_V2_MAGIC))
-        {
-            return Err(Failure::operational(
-                "olean-cache",
-                format!("cached artifact {} has invalid v2 .olean header", src_path.display()),
-            ));
+        if part.suffix == "olean" {
+            validate_olean_v2_header(&bytes, &src_path.display().to_string(), "olean-cache")?;
         }
         loaded.push((part.suffix.clone(), bytes, actual_sha));
     }
@@ -636,7 +631,7 @@ fn materialize_loaded_parts(
     for (suffix, bytes, actual_sha) in parts {
         let dest_path = dest_dir.join(format!("{dest_leaf}.{suffix}"));
         if let Some(parent) = dest_path.parent() {
-            create_dir_mode(parent, 0o700)?;
+            SafeFs::create_dir_mode(parent, 0o700, "olean-cache")?;
         }
         if probe_symlink_metadata(&dest_path)?.is_some() {
             fs::remove_file(&dest_path).map_err(|e| {
@@ -694,7 +689,7 @@ fn ensure_private_cache_root(disk_dir: &Path) -> Result<(), Failure> {
                         ));
                     }
                 } else {
-                    create_dir_mode(&cur, 0o700)?;
+                    SafeFs::create_dir_mode(&cur, 0o700, "olean-cache")?;
                 }
             }
             _ => {
@@ -713,14 +708,7 @@ fn ensure_private_cache_root(disk_dir: &Path) -> Result<(), Failure> {
 /// other OS metadata errors (`PermissionDenied`, `NotADirectory`, `ELOOP`,
 /// `EIO`).
 fn probe_symlink_metadata(path: &Path) -> Result<Option<fs::Metadata>, Failure> {
-    match fs::symlink_metadata(path) {
-        Ok(meta) => Ok(Some(meta)),
-        Err(e) if e.kind() == io::ErrorKind::NotFound => Ok(None),
-        Err(e) => Err(Failure::operational(
-            "olean-cache",
-            format!("cannot inspect {}: {e}", path.display()),
-        )),
-    }
+    SafeFs::probe_symlink_metadata(path, "olean-cache")
 }
 
 /// Probe `dir` without following symlinks, returning `Ok(false)` only when
@@ -755,7 +743,7 @@ fn probe_existing_regular_file(path: &Path, require_owner_uid: bool) -> Result<b
 
 fn verify_non_symlink_dir(dir: &Path, phase: &str, require_owner_uid: bool) -> Result<(), Failure> {
     let meta = fs::symlink_metadata(dir)
-        .map_err(|e| Failure::operational(phase, format!("cannot inspect {}: {e}", dir.display())))?;
+        .map_err(|e| failure_from_io(phase, format!("cannot inspect {}: {e}", dir.display()), &e))?;
     verify_non_symlink_dir_meta(dir, &meta, phase, require_owner_uid)
 }
 
@@ -849,26 +837,7 @@ fn verify_meta_owner_uid(path: &Path, meta: &fs::Metadata) -> Result<(), Failure
 }
 
 fn read_regular_nofollow_capped(path: &Path, max_bytes: u64, phase: &str) -> Result<Vec<u8>, Failure> {
-    let mut opts = OpenOptions::new();
-    opts.read(true);
-    #[cfg(unix)]
-    opts.custom_flags(libc::O_NOFOLLOW);
-    let mut file = opts
-        .open(path)
-        .map_err(|e| Failure::operational(phase, format!("cannot open {}: {e}", path.display())))?;
-    let meta = file
-        .metadata()
-        .map_err(|e| Failure::operational(phase, format!("cannot stat {}: {e}", path.display())))?;
-    if !meta.is_file() || meta.len() > max_bytes {
-        return Err(Failure::operational(
-            phase,
-            format!("invalid regular cache file or size limit exceeded: {}", path.display()),
-        ));
-    }
-    let mut buf = Vec::with_capacity(meta.len() as usize);
-    io::Read::read_to_end(&mut file, &mut buf)
-        .map_err(|e| Failure::operational(phase, format!("cannot read {}: {e}", path.display())))?;
-    Ok(buf)
+    SafeFs::read_regular_nofollow_capped(path, max_bytes, phase)
 }
 
 struct FlockGuard {
@@ -1104,7 +1073,7 @@ mod tests {
     }
 
     fn fake_olean() -> Vec<u8> {
-        let mut data = OLEAN_V2_MAGIC.to_vec();
+        let mut data = crate::core::OLEAN_V2_MAGIC.to_vec();
         data.extend_from_slice(b"\x014.34.1\0\0payload");
         data
     }
