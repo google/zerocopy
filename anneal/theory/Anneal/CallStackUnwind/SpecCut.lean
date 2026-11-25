@@ -18,6 +18,7 @@ public import Trusted
 public import Trusted.MirAst
 public import Trusted.MirModel
 public import Trusted.MirSemantics
+public import Anneal.Framework.StepWp
 public import Anneal.MirWp
 public import Anneal.ByteSubLens.Lens
 public import Anneal.ByteRun.Copy
@@ -1452,13 +1453,9 @@ theorem wpFrameOutcome_of_mirWpState (callerLens : ByteSubLens)
     exact False.elim hWp
   | succ fuel ih =>
     intro s post onDone hPost hWp
-    change ((∃ c₀ : Choice, ValidChoice (Anneal.MirWp.bodyProg body) s c₀) ∧
-      ∀ c : Choice, ValidChoice (Anneal.MirWp.bodyProg body) s c →
-        match evalStep (Anneal.MirWp.bodyProg body) c s with
-        | .step st' => Anneal.MirWp.wpState (Anneal.MirWp.bodyProg body) fuel
-            st' post
-        | .done out => post out
-        | .fault _ => False) at hWp
+    dsimp only [Anneal.MirWp.wpState, Anneal.MirWp.wpOutcomeState,
+      Anneal.Framework.StepWp.wpStepOutcome] at hWp
+    rw [Anneal.Framework.StepWp.wpStepPred_succ_iff] at hWp
     have h0 := hWp.2 0 rfl
     have hEval :
         match evalStep (Anneal.MirWp.bodyProg body) 0 s with

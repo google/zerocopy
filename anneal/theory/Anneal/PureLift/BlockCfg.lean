@@ -11,6 +11,7 @@ prelude
 public import Init.Core
 public import Init.Data.List.Basic
 public import Init.Data.Nat.Basic
+public import Anneal.Framework.StepWp
 public import Anneal.PureLift.Lens
 public import Anneal.PureLift.PermTree
 public import Anneal.PureLift.LoanGraph
@@ -20,6 +21,8 @@ public import Anneal.PureLift.Plan
 public section
 
 namespace Anneal.PureLift
+
+open Anneal.Framework.StepWp
 
 /-!
 # Constructive Loop Cutpoints and Block-Indexed CFG Certificates (`BlockCfg`)
@@ -69,12 +72,84 @@ theorem runWhileFlowSteps_succ {Val : Type} (alg : ValAlgebra Val)
          | none => .fail
        | none => .fail) := rfl
 
-/-- Constructive loop cutpoint theorem for `runWhileFlowSteps`. If every state
-satisfying `Inv` either exits (the condition is `false`) or takes an iteration
-to a state that satisfies `Inv` and has strictly smaller `rank`, then from any
-`Inv` state whose rank is at most the loop's `fuel`, the loop exits normally
-in a state satisfying `Inv`. The fuel need only bound the number of
-iterations; it need not equal it. -/
+private def whileFlowStep {Val : Type} (alg : ValAlgebra Val)
+    (cond : RvalOp Val)
+    (evalBody : SymState Val → EvalOutcome (ExecFlow Val))
+    (s : SymState Val) :
+    Trusted.MirSemantics.StepResult (SymState Val) (SymState Val) :=
+  match evalRval alg cond s with
+  | some cv =>
+    match alg.asBool cv with
+    | some false => .done s
+    | some true =>
+      match evalBody s with
+      | .ok (.continuing s') => .step s'
+      | _ => .fault .unsupported
+    | none => .fault .unsupported
+  | none => .fault .unsupported
+
+private theorem runWhileFlowSteps_of_execStep {Val : Type}
+    (alg : ValAlgebra Val) (cond : RvalOp Val)
+    (evalBody : SymState Val → EvalOutcome (ExecFlow Val)) :
+    ∀ (fuel : Nat) (s sFinal : SymState Val),
+      execStepPred (whileFlowStep alg cond evalBody)
+        (fun _ out => out = sFinal) (fun _ _ => False) (fuel + 1) s →
+      runWhileFlowSteps alg cond evalBody fuel s = .ok (.continuing sFinal)
+  | 0, s, sFinal, h => by
+    rw [execStepPred_succ_iff] at h
+    unfold whileFlowStep at h
+    rw [runWhileFlowSteps_zero]
+    cases hR : evalRval alg cond s with
+    | none => rw [hR] at h; exact False.elim h
+    | some cv =>
+      rw [hR] at h; dsimp only at h; dsimp only
+      cases hB : alg.asBool cv with
+      | none => rw [hB] at h; exact False.elim h
+      | some b =>
+        rw [hB] at h
+        cases b with
+        | false => dsimp only at h; rw [h]
+        | true =>
+          dsimp only at h
+          cases hEB : evalBody s with
+          | fail => rw [hEB] at h; exact False.elim h
+          | ok flow =>
+            rw [hEB] at h
+            cases flow with
+            | continuing _ | returned _ _ _ | guardedContinuing _ _ _ _ =>
+              exact False.elim h
+  | k + 1, s, sFinal, h => by
+    rw [execStepPred_succ_iff] at h
+    unfold whileFlowStep at h
+    rw [runWhileFlowSteps_succ]
+    cases hR : evalRval alg cond s with
+    | none => rw [hR] at h; exact False.elim h
+    | some cv =>
+      rw [hR] at h; dsimp only at h; dsimp only
+      cases hB : alg.asBool cv with
+      | none => rw [hB] at h; exact False.elim h
+      | some b =>
+        rw [hB] at h
+        cases b with
+        | false => dsimp only at h; rw [h]
+        | true =>
+          dsimp only at h; dsimp only
+          cases hEB : evalBody s with
+          | fail => rw [hEB] at h; exact False.elim h
+          | ok flow =>
+            rw [hEB] at h
+            cases flow with
+            | continuing st' =>
+              exact runWhileFlowSteps_of_execStep alg cond evalBody k st'
+                sFinal h
+            | returned _ _ _ | guardedContinuing _ _ _ _ =>
+              exact False.elim h
+
+/-- Constructive loop cutpoint theorem for `runWhileFlowSteps`, discharged via
+`StepWp.execStep_nat_rank_done`. If every state satisfying `Inv` either exits
+(the condition is `false`) or takes an iteration to a state that satisfies
+`Inv` and has strictly smaller `rank`, then from any `Inv` state whose rank is
+at most `fuel`, the loop exits normally in a state satisfying `Inv`. -/
 theorem runWhileFlowSteps_cutpoint_sound {Val : Type} (alg : ValAlgebra Val)
     (cond : RvalOp Val)
     (evalBody : SymState Val → EvalOutcome (ExecFlow Val))
@@ -92,67 +167,39 @@ theorem runWhileFlowSteps_cutpoint_sound {Val : Type} (alg : ValAlgebra Val)
           .ok (.continuing sFinal) ∧
         Inv sFinal ∧
         (Exists fun cv =>
-          evalRval alg cond sFinal = some cv ∧ alg.asBool cv = some false)
-  | 0, s, hInv, hRank => by
-    cases hStep s hInv with
-    | intro cv hcv =>
-      cases hcv with
-      | intro hEval hBranch =>
-        cases hBranch with
-        | inl hBool =>
-          refine ⟨s, ?_, hInv, ⟨cv, hEval, hBool⟩⟩
-          rw [runWhileFlowSteps_zero]
-          rw [hEval]
-          dsimp
-          rw [hBool]
-        | inr hTrue =>
-          cases hTrue with
-          | intro _ hNext =>
-            cases hNext with
-            | intro s' hs' =>
-              cases hs' with
-              | intro _ hInvAndRank =>
-                cases hInvAndRank with
-                | intro _ hLt =>
-                  exact absurd (Nat.lt_of_lt_of_le hLt hRank)
-                    (Nat.not_lt_zero (rank s'))
-  | k + 1, s, hInv, hRank => by
-    cases hStep s hInv with
-    | intro cv hcv =>
-      cases hcv with
-      | intro hEval hBranch =>
-        cases hBranch with
-        | inl hBool =>
-          refine ⟨s, ?_, hInv, ⟨cv, hEval, hBool⟩⟩
-          rw [runWhileFlowSteps_succ]
-          rw [hEval]
-          dsimp
-          rw [hBool]
-        | inr hTrue =>
-          cases hTrue with
-          | intro hBool hNext =>
-            cases hNext with
-            | intro s' hs' =>
-              cases hs' with
-              | intro hBody hInvAndRank =>
-                cases hInvAndRank with
-                | intro hInv' hLt =>
-                  have ih :=
-                    runWhileFlowSteps_cutpoint_sound alg cond evalBody Inv rank
-                      hStep k s' hInv'
-                      (Nat.le_of_lt_succ (Nat.lt_of_lt_of_le hLt hRank))
-                  cases ih with
-                  | intro sFinal hsFinal =>
-                    cases hsFinal with
-                    | intro hRun hRest =>
-                      refine ⟨sFinal, ?_, hRest⟩
-                      rw [runWhileFlowSteps_succ]
-                      rw [hEval]
-                      dsimp
-                      rw [hBool]
-                      dsimp
-                      rw [hBody]
-                      exact hRun
+          evalRval alg cond sFinal = some cv ∧ alg.asBool cv = some false) := by
+  intro fuel s hInv hRank
+  have hGen : ∀ st, Inv st →
+      ((Exists fun cv =>
+          evalRval alg cond st = some cv ∧ alg.asBool cv = some false) ∧
+        whileFlowStep alg cond evalBody st = .done st) ∨
+      (∃ st', whileFlowStep alg cond evalBody st = .step st' ∧
+        Inv st' ∧ rank st' < rank st) := by
+    intro st hI
+    let ⟨cv, hEv, hBr⟩ := hStep st hI
+    cases hBr with
+    | inl hFalse =>
+      refine Or.inl ⟨⟨cv, hEv, hFalse⟩, ?_⟩
+      unfold whileFlowStep
+      rw [hEv]
+      dsimp only
+      rw [hFalse]
+    | inr hTrue =>
+      let ⟨hB, s', hBody, hI', hLt⟩ := hTrue
+      refine Or.inr ⟨s', ?_, hI', hLt⟩
+      unfold whileFlowStep
+      rw [hEv]
+      dsimp only
+      rw [hB]
+      dsimp only
+      rw [hBody]
+  let ⟨sFinal, hExec, hInvF, hExitF⟩ :=
+    execStep_nat_rank_done (whileFlowStep alg cond evalBody) Inv
+      (fun st => Exists fun cv =>
+        evalRval alg cond st = some cv ∧ alg.asBool cv = some false)
+      rank hGen fuel s hInv hRank
+  exact ⟨sFinal, runWhileFlowSteps_of_execStep alg cond evalBody fuel s sFinal hExec,
+    hInvF, hExitF⟩
 
 /-- Terminator of a `BasicBlock Val`. -/
 inductive BlockTerm (Val : Type) where
@@ -655,6 +702,146 @@ theorem runBlockCfg_succ {State Ret : Type}
          | _, .fault => .fault
          | _, _ => .diverged) := rfl
 
+private def BlockCfgSpec {Ret : Type} (onFault : Prop)
+    (out : BlockCfgOutcome Ret) (PostRet : Ret → Prop) : Prop :=
+  match out with
+  | .ret v => PostRet v
+  | .diverged => True
+  | .fault => onFault
+
+private def LocalBlockSpecVC {State Ret : Type} (onFault : Prop)
+    (stepBb : Nat → State → BlockStepResult State Ret)
+    (BlockInv : Nat → State → Prop) (PostRet : Ret → Prop) : Prop :=
+  ∀ bb st,
+    BlockInv bb st →
+    match stepBb bb st with
+    | .fault => onFault
+    | .ret v => PostRet v
+    | .jump nextBb st' => BlockInv nextBb st'
+    | .jumpWrapped wrapRet nextBb st' =>
+      BlockInv nextBb st' ∧
+      (∀ v, PostRet v →
+        match wrapRet v with
+        | some v' => PostRet v'
+        | none => onFault)
+    | .convergedJump _ wrapRet nextBb st' =>
+      BlockInv nextBb st' ∧
+      (∀ v, PostRet v →
+        match wrapRet v with
+        | some v' => PostRet v'
+        | none => onFault)
+    | .branchJump mergeRet thenBb elseBb st' =>
+      BlockInv thenBb st' ∧ BlockInv elseBb st' ∧
+      (∀ vt vf, PostRet vt → PostRet vf →
+        match mergeRet vt vf with
+        | some v => PostRet v
+        | none => onFault)
+
+private theorem runBlockCfgLoop_spec_sound {State Ret : Type}
+    {onFault : Prop}
+    (stepBb : Nat → State → BlockStepResult State Ret)
+    (BlockInv : Nat → State → Prop) (PostRet : Ret → Prop)
+    (hLocal : LocalBlockSpecVC onFault stepBb BlockInv PostRet) :
+    ∀ (fuel wait : Nat) (bb : Nat) (st : State),
+      BlockInv bb st →
+      BlockCfgSpec onFault (runBlockCfgLoop stepBb fuel wait bb st) PostRet
+  | 0, _, _, _, _ => True.intro
+  | fuel' + 1, wait' + 1, bb, st, hInv => by
+    rw [runBlockCfgLoop_succ_wait]
+    exact runBlockCfgLoop_spec_sound stepBb BlockInv PostRet hLocal
+      fuel' wait' bb st hInv
+  | fuel' + 1, 0, bb, st, hInv => by
+    change BlockCfgSpec onFault (runBlockCfg stepBb bb st (fuel' + 1)) PostRet
+    rw [runBlockCfg_succ]
+    have hVC := hLocal bb st hInv
+    cases hStep : stepBb bb st with
+    | fault =>
+      rw [hStep] at hVC
+      exact hVC
+    | ret v =>
+      rw [hStep] at hVC
+      exact hVC
+    | jump nextBb st' =>
+      rw [hStep] at hVC
+      dsimp at hVC
+      exact runBlockCfgLoop_spec_sound stepBb BlockInv PostRet hLocal
+        fuel' 0 nextBb st' hVC
+    | jumpWrapped wrapRet nextBb st' =>
+      rw [hStep] at hVC
+      dsimp at hVC
+      dsimp [BlockCfgSpec]
+      have ih := runBlockCfgLoop_spec_sound stepBb BlockInv PostRet hLocal
+        fuel' 0 nextBb st' hVC.1
+      cases hRun : runBlockCfg stepBb nextBb st' fuel' with
+      | ret v =>
+        change runBlockCfgLoop stepBb fuel' 0 nextBb st' = .ret v at hRun
+        rw [hRun] at ih
+        dsimp only
+        have hWrap := hVC.2 v ih
+        cases hW : wrapRet v with
+        | none => rw [hW] at hWrap; exact hWrap
+        | some v' => rw [hW] at hWrap; exact hWrap
+      | diverged => exact True.intro
+      | fault =>
+        change runBlockCfgLoop stepBb fuel' 0 nextBb st' = .fault at hRun
+        rw [hRun] at ih
+        exact ih
+    | convergedJump armSteps wrapRet nextBb st' =>
+      rw [hStep] at hVC
+      dsimp at hVC
+      dsimp [BlockCfgSpec]
+      have ih := runBlockCfgLoop_spec_sound stepBb BlockInv PostRet hLocal
+        fuel' armSteps nextBb st' hVC.1
+      cases hRun : runBlockCfgLoop stepBb fuel' armSteps nextBb st' with
+      | ret v =>
+        rw [hRun] at ih
+        dsimp only
+        have hWrap := hVC.2 v ih
+        cases hW : wrapRet v with
+        | none => rw [hW] at hWrap; exact hWrap
+        | some v' => rw [hW] at hWrap; exact hWrap
+      | diverged => exact True.intro
+      | fault =>
+        rw [hRun] at ih
+        exact ih
+    | branchJump mergeRet thenBb elseBb st' =>
+      rw [hStep] at hVC
+      dsimp at hVC
+      dsimp [BlockCfgSpec]
+      have ihT := runBlockCfgLoop_spec_sound stepBb BlockInv PostRet hLocal
+        fuel' 0 thenBb st' hVC.1
+      have ihF := runBlockCfgLoop_spec_sound stepBb BlockInv PostRet hLocal
+        fuel' 0 elseBb st' hVC.2.1
+      cases hRunT : runBlockCfg stepBb thenBb st' fuel' with
+      | fault =>
+        change runBlockCfgLoop stepBb fuel' 0 thenBb st' = .fault at hRunT
+        rw [hRunT] at ihT
+        exact ihT
+      | diverged =>
+        cases hRunF : runBlockCfg stepBb elseBb st' fuel' with
+        | fault =>
+          change runBlockCfgLoop stepBb fuel' 0 elseBb st' = .fault at hRunF
+          rw [hRunF] at ihF
+          exact ihF
+        | diverged | ret _ => exact True.intro
+      | ret vt =>
+        cases hRunF : runBlockCfg stepBb elseBb st' fuel' with
+        | fault =>
+          change runBlockCfgLoop stepBb fuel' 0 elseBb st' = .fault at hRunF
+          rw [hRunF] at ihF
+          exact ihF
+        | diverged => exact True.intro
+        | ret vf =>
+          change runBlockCfgLoop stepBb fuel' 0 thenBb st' = .ret vt at hRunT
+          change runBlockCfgLoop stepBb fuel' 0 elseBb st' = .ret vf at hRunF
+          rw [hRunT] at ihT
+          rw [hRunF] at ihF
+          dsimp only
+          have hMerge := hVC.2.2 vt vf ihT ihF
+          cases hM : mergeRet vt vf with
+          | none => rw [hM] at hMerge; exact hMerge
+          | some v => rw [hM] at hMerge; exact hMerge
+
 theorem modular_block_cfg_loop_sound {State Ret : Type}
     (stepBb : Nat → State → BlockStepResult State Ret)
     (BlockInv : Nat → State → Prop)
@@ -662,121 +849,8 @@ theorem modular_block_cfg_loop_sound {State Ret : Type}
     (hLocal : LocalBlockVC stepBb BlockInv PostRet) :
     ∀ (fuel wait : Nat) (bb : Nat) (st : State),
       BlockInv bb st →
-      BlockCfgPartialSpec (runBlockCfgLoop stepBb fuel wait bb st) PostRet
-  | 0, _, _, _, _ => by
-    exact True.intro
-  | fuel' + 1, wait' + 1, bb, st, hInv => by
-    rw [runBlockCfgLoop_succ_wait]
-    exact modular_block_cfg_loop_sound stepBb BlockInv PostRet hLocal
-      fuel' wait' bb st hInv
-  | fuel' + 1, 0, bb, st, hInv => by
-    change BlockCfgPartialSpec (runBlockCfg stepBb bb st (fuel' + 1)) PostRet
-    rw [runBlockCfg_succ]
-    have hVC := hLocal bb st hInv
-    cases hStep : stepBb bb st with
-    | fault =>
-      rw [hStep] at hVC
-      nomatch hVC
-    | ret v =>
-      rw [hStep] at hVC
-      dsimp [BlockCfgPartialSpec]
-      exact hVC
-    | jump nextBb st' =>
-      rw [hStep] at hVC
-      dsimp at hVC
-      exact modular_block_cfg_loop_sound stepBb BlockInv PostRet hLocal
-        fuel' 0 nextBb st' hVC
-    | jumpWrapped wrapRet nextBb st' =>
-      rw [hStep] at hVC
-      dsimp at hVC
-      dsimp [BlockCfgPartialSpec]
-      have ih :=
-        modular_block_cfg_loop_sound stepBb BlockInv PostRet hLocal
-          fuel' 0 nextBb st' hVC.1
-      cases hRun : runBlockCfg stepBb nextBb st' fuel' with
-      | ret v =>
-        change runBlockCfgLoop stepBb fuel' 0 nextBb st' = .ret v at hRun
-        rw [hRun] at ih
-        dsimp [BlockCfgPartialSpec] at ih
-        have hWrap := hVC.2 v ih
-        dsimp
-        revert hWrap
-        cases wrapRet v with
-        | some v' => exact fun h => h
-        | none => exact fun h => nomatch h
-      | diverged =>
-        exact True.intro
-      | fault =>
-        change runBlockCfgLoop stepBb fuel' 0 nextBb st' = .fault at hRun
-        rw [hRun] at ih
-        nomatch ih
-    | convergedJump armSteps wrapRet nextBb st' =>
-      rw [hStep] at hVC
-      dsimp at hVC
-      dsimp [BlockCfgPartialSpec]
-      have ih :=
-        modular_block_cfg_loop_sound stepBb BlockInv PostRet hLocal
-          fuel' armSteps nextBb st' hVC.1
-      cases hRun : runBlockCfgLoop stepBb fuel' armSteps nextBb st' with
-      | ret v =>
-        rw [hRun] at ih
-        dsimp [BlockCfgPartialSpec] at ih
-        have hWrap := hVC.2 v ih
-        dsimp
-        revert hWrap
-        cases wrapRet v with
-        | some v' => exact fun h => h
-        | none => exact fun h => nomatch h
-      | diverged =>
-        exact True.intro
-      | fault =>
-        rw [hRun] at ih
-        nomatch ih
-    | branchJump mergeRet thenBb elseBb st' =>
-      rw [hStep] at hVC
-      dsimp at hVC
-      dsimp [BlockCfgPartialSpec]
-      have ihT :=
-        modular_block_cfg_loop_sound stepBb BlockInv PostRet hLocal
-          fuel' 0 thenBb st' hVC.1
-      have ihF :=
-        modular_block_cfg_loop_sound stepBb BlockInv PostRet hLocal
-          fuel' 0 elseBb st' hVC.2.1
-      cases hRunT : runBlockCfg stepBb thenBb st' fuel' with
-      | fault =>
-        change runBlockCfgLoop stepBb fuel' 0 thenBb st' = .fault at hRunT
-        rw [hRunT] at ihT
-        nomatch ihT
-      | diverged =>
-        cases hRunF : runBlockCfg stepBb elseBb st' fuel' with
-        | fault =>
-          change runBlockCfgLoop stepBb fuel' 0 elseBb st' = .fault at hRunF
-          rw [hRunF] at ihF
-          nomatch ihF
-        | diverged =>
-          exact True.intro
-        | ret _ =>
-          exact True.intro
-      | ret vt =>
-        cases hRunF : runBlockCfg stepBb elseBb st' fuel' with
-        | fault =>
-          change runBlockCfgLoop stepBb fuel' 0 elseBb st' = .fault at hRunF
-          rw [hRunF] at ihF
-          nomatch ihF
-        | diverged =>
-          exact True.intro
-        | ret vf =>
-          change runBlockCfgLoop stepBb fuel' 0 thenBb st' = .ret vt at hRunT
-          change runBlockCfgLoop stepBb fuel' 0 elseBb st' = .ret vf at hRunF
-          rw [hRunT] at ihT
-          rw [hRunF] at ihF
-          dsimp [BlockCfgPartialSpec] at ihT ihF
-          have hMerge := hVC.2.2 vt vf ihT ihF
-          dsimp
-          revert hMerge
-          cases mergeRet vt vf with
-          | some v => exact fun h => h
-          | none => exact fun h => nomatch h
+      BlockCfgPartialSpec (runBlockCfgLoop stepBb fuel wait bb st) PostRet :=
+  runBlockCfgLoop_spec_sound stepBb BlockInv PostRet hLocal
 
 /-- Compositional CFG soundness: if `LocalBlockVC` holds for every block, then
 any `fuel`-step execution from an invariant-satisfying block state never faults
@@ -1027,113 +1101,43 @@ theorem stepBasicBlock_returnsHandleFree {Val : Type} (alg : ValAlgebra Val)
               | true => exact hFree
 
 theorem runBlockCfgLoop_stepBasicBlock_handleFree {Val : Type}
-    (alg : ValAlgebra Val) (blocks : List (BasicBlock Val)) :
-    ∀ (fuel wait : Nat) (bb : Nat) (st : SymState Val) (out : FuncOut Val),
-      runBlockCfgLoop (stepBasicBlock alg blocks) fuel wait bb st = .ret out →
-      handleFreeOut alg out = true
-  | 0, _, _, _, _, h => nomatch h
-  | fuel' + 1, wait' + 1, bb, st, out, h => by
-    rw [runBlockCfgLoop_succ_wait] at h
-    exact runBlockCfgLoop_stepBasicBlock_handleFree alg blocks fuel' wait' bb st
-      out h
-  | fuel' + 1, 0, bb, st, out, h => by
-    change runBlockCfg (stepBasicBlock alg blocks) bb st (fuel' + 1) = .ret out
-      at h
-    rw [runBlockCfg_succ] at h
-    have hStep := stepBasicBlock_returnsHandleFree alg blocks bb st
-    revert h hStep
-    cases stepBasicBlock alg blocks bb st with
-    | fault =>
-      intro h
-      nomatch h
+    (alg : ValAlgebra Val) (blocks : List (BasicBlock Val))
+    (fuel wait : Nat) (bb : Nat) (st : SymState Val) (out : FuncOut Val)
+    (h : runBlockCfgLoop (stepBasicBlock alg blocks) fuel wait bb st = .ret out) :
+    handleFreeOut alg out = true := by
+  have hLocal : LocalBlockSpecVC True (stepBasicBlock alg blocks)
+      (fun _ _ => True) (fun o => handleFreeOut alg o = true) := by
+    intro b s _
+    have hStep := stepBasicBlock_returnsHandleFree alg blocks b s
+    cases hEq : stepBasicBlock alg blocks b s with
+    | fault => exact True.intro
     | ret v =>
-      intro h hV
-      have hRet : BlockCfgOutcome.ret v = .ret out := h
-      injection hRet with hEq
-      subst hEq
-      exact hV
-    | jump nextBb st' =>
-      intro h _
-      exact runBlockCfgLoop_stepBasicBlock_handleFree alg blocks fuel' 0 nextBb
-        st' out h
-    | jumpWrapped wrapRet nextBb st' =>
-      intro h hWrap
-      dsimp only at h
-      revert h
-      cases runBlockCfg (stepBasicBlock alg blocks) nextBb st' fuel' with
-      | ret v =>
-        dsimp only
-        cases hW : wrapRet v with
-        | some v' =>
-          intro h
-          have hRet : BlockCfgOutcome.ret v' = .ret out := h
-          injection hRet with hEq
-          subst hEq
-          exact hWrap v v' hW
-        | none =>
-          intro h
-          nomatch h
-      | diverged =>
-        intro h
-        nomatch h
-      | fault =>
-        intro h
-        nomatch h
-    | convergedJump armSteps wrapRet nextBb st' =>
-      intro h hWrap
-      dsimp only at h
-      revert h
-      cases runBlockCfgLoop (stepBasicBlock alg blocks) fuel' armSteps nextBb
-          st' with
-      | ret v =>
-        dsimp only
-        cases hW : wrapRet v with
-        | some v' =>
-          intro h
-          have hRet : BlockCfgOutcome.ret v' = .ret out := h
-          injection hRet with hEq
-          subst hEq
-          exact hWrap v v' hW
-        | none =>
-          intro h
-          nomatch h
-      | diverged =>
-        intro h
-        nomatch h
-      | fault =>
-        intro h
-        nomatch h
-    | branchJump mergeRet thenBb elseBb st' =>
-      intro h hMerge
-      dsimp only at h
-      revert h
-      cases runBlockCfg (stepBasicBlock alg blocks) thenBb st' fuel' with
-      | ret vt =>
-        cases runBlockCfg (stepBasicBlock alg blocks) elseBb st' fuel' with
-        | ret vf =>
-          dsimp only
-          cases hM : mergeRet vt vf with
-          | some v =>
-            intro h
-            have hRet : BlockCfgOutcome.ret v = .ret out := h
-            injection hRet with hEq
-            subst hEq
-            exact hMerge vt vf v hM
-          | none =>
-            intro h
-            nomatch h
-        | diverged =>
-          intro h
-          nomatch h
-        | fault =>
-          intro h
-          nomatch h
-      | diverged =>
-        cases runBlockCfg (stepBasicBlock alg blocks) elseBb st' fuel' <;>
-          (intro h; nomatch h)
-      | fault =>
-        intro h
-        nomatch h
+      rw [hEq] at hStep
+      exact hStep
+    | jump _ _ => exact True.intro
+    | jumpWrapped wrapRet _ _ =>
+      rw [hEq] at hStep
+      refine ⟨True.intro, fun v _ => ?_⟩
+      cases hW : wrapRet v with
+      | none => exact True.intro
+      | some out' => exact hStep v out' hW
+    | convergedJump _ wrapRet _ _ =>
+      rw [hEq] at hStep
+      refine ⟨True.intro, fun v _ => ?_⟩
+      cases hW : wrapRet v with
+      | none => exact True.intro
+      | some out' => exact hStep v out' hW
+    | branchJump mergeRet _ _ _ =>
+      rw [hEq] at hStep
+      refine ⟨True.intro, True.intro, fun vt vf _ _ => ?_⟩
+      cases hM : mergeRet vt vf with
+      | none => exact True.intro
+      | some out' => exact hStep vt vf out' hM
+  have hSpec := runBlockCfgLoop_spec_sound (stepBasicBlock alg blocks)
+    (fun _ _ => True) (fun o => handleFreeOut alg o = true) hLocal
+    fuel wait bb st True.intro
+  rw [h] at hSpec
+  exact hSpec
 
 /-- Every value that a CFG of basic blocks returns is free of borrow handles,
 as `evalFnValue` requires of its result: no path through `.jumpWrapped`,

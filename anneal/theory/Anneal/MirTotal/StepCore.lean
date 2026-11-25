@@ -1188,10 +1188,7 @@ theorem execOutcomeState_of_evalMirFuelBy {tyEq : MirTy → MirTy → Bool}
       | .done out => onDone out
       | .fault k => onFault k
       | .step _ => False) at h
-    change (match evalStep p 0 s with
-      | .step st' => Anneal.MirWp.execOutcomeState p onDone onFault fuel st'
-      | .done out => onDone out
-      | .fault k => onFault k)
+    refine Anneal.Framework.StepWp.execStepPred_succ_iff.mpr ?_
     rw [evalMirStepBy_eq tyEq hTyEq p 0 s] at h
     cases hStep : evalStep p 0 s with
     | step st' =>

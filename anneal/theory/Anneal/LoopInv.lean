@@ -8,13 +8,14 @@
 
 module
 prelude
+public import Anneal.Framework.StepWp
 public import Anneal.MirWp
 
 public section
 
 namespace Anneal.LoopInv
 
-open Trusted.MirAst Trusted.MirSemantics Anneal.MirWp
+open Trusted.MirAst Trusted.MirSemantics Anneal.Framework.StepWp Anneal.MirWp
 
 /-!
 # CFG Loop-Invariant and Simulation Combinators (`Anneal.LoopInv`)
@@ -63,17 +64,8 @@ Like `wpOutcomeState`, the definition uses `@Nat.rec` into `Prop` and keeps the
 @[expose] def wpUntil (p : Program) (stop : State → Prop)
     (onDone : TerminalOut → Prop) (onFault : FaultKind → Prop)
     (fuel : Nat) (s : State) : Prop :=
-  @Nat.rec (fun _ => State → Prop)
-    (fun st => stop st)
-    (fun _ ih st =>
-      stop st ∨
-      ((∃ c₀ : Choice, ValidChoice p st c₀) ∧
-        ∀ c : Choice, ValidChoice p st c →
-          match evalStep p c st with
-          | .step st' => ih st'
-          | .done out => onDone out
-          | .fault k => onFault k))
-    fuel s
+  wpUntilPred (ValidChoice p) (evalStep p) stop (fun _ => onDone)
+    (fun _ => onFault) fuel s
 
 /-- Checkpoint weakest precondition that forbids every fault. -/
 abbrev wpUntilOk (p : Program) (stop : State → Prop)
@@ -93,14 +85,7 @@ result into `wpUntil`. -/
 @[expose] def execUntil (p : Program) (stop : State → Prop)
     (onDone : TerminalOut → Prop) (onFault : FaultKind → Prop)
     (fuel : Nat) (s : State) : Prop :=
-  @Nat.rec (fun _ => State → Prop)
-    (fun st => stop st)
-    (fun _ ih st =>
-      stop st ∨
-      (match evalStep p 0 st with
-        | .step st' => ih st'
-        | .done out => onDone out
-        | .fault k => onFault k))
+  execUntilPred (evalStep p 0) stop (fun _ => onDone) (fun _ => onFault)
     fuel s
 
 /-- Deterministic counterpart of `wpUntilOk`. -/
@@ -117,8 +102,9 @@ abbrev execReach (p : Program) (stop : State → Prop) (fuel : Nat)
 theorem wpUntil_zero_iff {p : Program} {stop : State → Prop}
     {onDone : TerminalOut → Prop} {onFault : FaultKind → Prop}
     {s : State} :
-    wpUntil p stop onDone onFault 0 s ↔ stop s :=
-  Iff.rfl
+    wpUntil p stop onDone onFault 0 s ↔ stop s := by
+  dsimp only [wpUntil]
+  exact wpUntilPred_zero_iff
 
 /-- Unfold `wpUntil` at fuel `fuel + 1`: either the current state satisfies
 `stop`, or every admissible step continues, terminates, or faults as allowed. -/
@@ -132,15 +118,32 @@ theorem wpUntil_succ_iff {p : Program} {stop : State → Prop}
             match evalStep p c s with
             | .step s' => wpUntil p stop onDone onFault fuel s'
             | .done out => onDone out
-            | .fault k => onFault k)) :=
-  Iff.rfl
+            | .fault k => onFault k)) := by
+  dsimp only [wpUntil]
+  refine wpUntilPred_succ_iff.trans ?_
+  constructor
+  · intro h
+    cases h with
+    | inl hs => exact Or.inl hs
+    | inr hr =>
+      refine Or.inr ⟨hr.1, fun c hc => ?_⟩
+      have hc' := hr.2 c hc
+      cases hEv : evalStep p c s <;> rw [hEv] at hc' <;> exact hc'
+  · intro h
+    cases h with
+    | inl hs => exact Or.inl hs
+    | inr hr =>
+      refine Or.inr ⟨hr.1, fun c hc => ?_⟩
+      have hc' := hr.2 c hc
+      cases hEv : evalStep p c s <;> rw [hEv] at hc' <;> exact hc'
 
 /-- Unfold `execUntil` at fuel `0`. -/
 theorem execUntil_zero_iff {p : Program} {stop : State → Prop}
     {onDone : TerminalOut → Prop} {onFault : FaultKind → Prop}
     {s : State} :
-    execUntil p stop onDone onFault 0 s ↔ stop s :=
-  Iff.rfl
+    execUntil p stop onDone onFault 0 s ↔ stop s := by
+  dsimp only [execUntil]
+  exact execUntilPred_zero_iff
 
 /-- Unfold `execUntil` at fuel `fuel + 1`. -/
 theorem execUntil_succ_iff {p : Program} {stop : State → Prop}
@@ -151,8 +154,22 @@ theorem execUntil_succ_iff {p : Program} {stop : State → Prop}
         (match evalStep p 0 s with
           | .step s' => execUntil p stop onDone onFault fuel s'
           | .done out => onDone out
-          | .fault k => onFault k)) :=
-  Iff.rfl
+          | .fault k => onFault k)) := by
+  dsimp only [execUntil]
+  refine execUntilPred_succ_iff.trans ?_
+  constructor
+  · intro h
+    cases h with
+    | inl hs => exact Or.inl hs
+    | inr hr =>
+      refine Or.inr ?_
+      cases hEv : evalStep p 0 s <;> rw [hEv] at hr <;> exact hr
+  · intro h
+    cases h with
+    | inl hs => exact Or.inl hs
+    | inr hr =>
+      refine Or.inr ?_
+      cases hEv : evalStep p 0 s <;> rw [hEv] at hr <;> exact hr
 
 /-- Unfold `wpOutcomeState` at fuel `fuel + 1`. -/
 theorem wpOutcomeState_succ_iff {p : Program}
@@ -164,35 +181,35 @@ theorem wpOutcomeState_succ_iff {p : Program}
           match evalStep p c s with
           | .step s' => wpOutcomeState p onDone onFault fuel s'
           | .done out => onDone out
-          | .fault k => onFault k) :=
-  Iff.rfl
+          | .fault k => onFault k) := by
+  dsimp only [wpOutcomeState, wpStepOutcome]
+  refine wpStepPred_succ_iff.trans ?_
+  constructor <;> intro h <;> exact ⟨h.1, fun c hc => by
+    have hc' := h.2 c hc
+    cases hEv : evalStep p c s <;> rw [hEv] at hc' <;> exact hc'⟩
 
 /-- Transport `wpUntil` along an equation between fuel budgets. -/
 theorem wpUntil_fuel_cast {p : Program} {stop : State → Prop}
     {onDone : TerminalOut → Prop} {onFault : FaultKind → Prop}
     {a b : Nat} {s : State} (hEq : a = b)
     (h : wpUntil p stop onDone onFault a s) :
-    wpUntil p stop onDone onFault b s := by
-  subst hEq
-  exact h
+    wpUntil p stop onDone onFault b s :=
+  wpUntilPred_fuel_cast hEq h
 
 /-- Transport `wpOutcomeState` along an equation between fuel budgets. -/
 theorem wpOutcomeState_fuel_cast {p : Program}
     {onDone : TerminalOut → Prop} {onFault : FaultKind → Prop}
     {a b : Nat} {s : State} (hEq : a = b)
     (h : wpOutcomeState p onDone onFault a s) :
-    wpOutcomeState p onDone onFault b s := by
-  subst hEq
-  exact h
+    wpOutcomeState p onDone onFault b s :=
+  wpStepPred_fuel_cast hEq h
 
 /-- A state that already satisfies `stop` satisfies `wpUntil` at every fuel. -/
 theorem wpUntil_stop {p : Program} {stop : State → Prop}
     {onDone : TerminalOut → Prop} {onFault : FaultKind → Prop}
     {fuel : Nat} {s : State} (h : stop s) :
-    wpUntil p stop onDone onFault fuel s := by
-  cases fuel with
-  | zero => exact wpUntil_zero_iff.mpr h
-  | succ fuel => exact wpUntil_succ_iff.mpr (Or.inl h)
+    wpUntil p stop onDone onFault fuel s :=
+  wpUntilPred_stop h
 
 /-- Single-step introduction rule for `wpUntil`. Because `ValidChoice` admits
 only the choice `0`, it suffices to consider the step `evalStep p 0 s`. -/
@@ -204,9 +221,11 @@ theorem wpUntil_step {p : Program} {stop : State → Prop}
       | .done out => onDone out
       | .fault k => onFault k) :
     wpUntil p stop onDone onFault (fuel + 1) s := by
-  refine wpUntil_succ_iff.mpr (Or.inr ⟨⟨0, rfl⟩, fun c hc => ?_⟩)
-  subst hc
-  exact h
+  dsimp only [wpUntil] at h
+  dsimp only [wpUntil]
+  refine wpUntilPred_step (validChoice := ValidChoice p) (c₀ := 0)
+    (fun _ _ => Iff.rfl) ?_
+  cases hEv : evalStep p 0 s <;> rw [hEv] at h <;> exact h
 
 /-- Extend `wpUntil` backwards across one step `evalStep p 0 s = .step s'`. -/
 theorem wpUntil_step_eq {p : Program} {stop : State → Prop}
@@ -248,9 +267,11 @@ theorem wpOutcomeState_step {p : Program}
       | .done out => onDone out
       | .fault k => onFault k) :
     wpOutcomeState p onDone onFault (fuel + 1) s := by
-  refine wpOutcomeState_succ_iff.mpr ⟨⟨0, rfl⟩, fun c hc => ?_⟩
-  subst hc
-  exact h
+  dsimp only [wpOutcomeState, wpStepOutcome] at h
+  dsimp only [wpOutcomeState, wpStepOutcome]
+  refine wpStepPred_step (validChoice := ValidChoice p) (c₀ := 0)
+    (fun _ _ => Iff.rfl) ?_
+  cases hEv : evalStep p 0 s <;> rw [hEv] at h <;> exact h
 
 /-- Extend `wpOutcomeState` backwards across one step
 `evalStep p 0 s = .step s'`. -/
@@ -293,44 +314,9 @@ theorem wpUntil_iff_execUntil {p : Program} {stop : State → Prop}
     {onDone : TerminalOut → Prop} {onFault : FaultKind → Prop} :
     ∀ {fuel : Nat} {s : State},
       wpUntil p stop onDone onFault fuel s ↔
-      execUntil p stop onDone onFault fuel s
-  | 0, _ => Iff.rfl
-  | fuel + 1, s => by
-    constructor
-    · intro h
-      refine execUntil_succ_iff.mpr ?_
-      cases wpUntil_succ_iff.mp h with
-      | inl hs => exact Or.inl hs
-      | inr hr =>
-        refine Or.inr ?_
-        have h0 := hr.2 0 rfl
-        cases hStep : evalStep p 0 s with
-        | step st' =>
-          rw [hStep] at h0
-          exact wpUntil_iff_execUntil.mp h0
-        | done out =>
-          rw [hStep] at h0
-          exact h0
-        | fault k =>
-          rw [hStep] at h0
-          exact h0
-    · intro h
-      refine wpUntil_succ_iff.mpr ?_
-      cases execUntil_succ_iff.mp h with
-      | inl hs => exact Or.inl hs
-      | inr hr =>
-        refine Or.inr ⟨⟨0, rfl⟩, fun c hc => ?_⟩
-        subst hc
-        cases hStep : evalStep p 0 s with
-        | step st' =>
-          rw [hStep] at hr
-          exact wpUntil_iff_execUntil.mpr hr
-        | done out =>
-          rw [hStep] at hr
-          exact hr
-        | fault k =>
-          rw [hStep] at hr
-          exact hr
+      execUntil p stop onDone onFault fuel s :=
+  wpUntilPred_iff_execUntilPred (validChoice := ValidChoice p) (c₀ := 0)
+    (fun _ _ => Iff.rfl)
 
 /-- Lift a deterministic `execUntil` derivation into `wpUntil`. -/
 theorem wpUntil_of_execUntil {p : Program} {stop : State → Prop}
@@ -369,58 +355,20 @@ theorem wpUntil_mono {p : Program} {stop₁ stop₂ : State → Prop}
     {onFault₁ onFault₂ : FaultKind → Prop}
     (hStop : ∀ s, stop₁ s → stop₂ s)
     (hDone : ∀ out, onDone₁ out → onDone₂ out)
-    (hFault : ∀ k, onFault₁ k → onFault₂ k) :
-    ∀ {fuel : Nat} {s : State},
-      wpUntil p stop₁ onDone₁ onFault₁ fuel s →
-      wpUntil p stop₂ onDone₂ onFault₂ fuel s
-  | 0, s, h => wpUntil_zero_iff.mpr (hStop s (wpUntil_zero_iff.mp h))
-  | fuel + 1, s, h => by
-    refine wpUntil_succ_iff.mpr ?_
-    cases wpUntil_succ_iff.mp h with
-    | inl hs => exact Or.inl (hStop s hs)
-    | inr hr =>
-      refine Or.inr ⟨hr.1, fun c hc => ?_⟩
-      have hc' := hr.2 c hc
-      cases hStep : evalStep p c s with
-      | step st' =>
-        rw [hStep] at hc'
-        exact wpUntil_mono hStop hDone hFault hc'
-      | done out =>
-        rw [hStep] at hc'
-        exact hDone out hc'
-      | fault k =>
-        rw [hStep] at hc'
-        exact hFault k hc'
+    (hFault : ∀ k, onFault₁ k → onFault₂ k)
+    {fuel : Nat} {s : State}
+    (h : wpUntil p stop₁ onDone₁ onFault₁ fuel s) :
+    wpUntil p stop₂ onDone₂ onFault₂ fuel s :=
+  wpUntilPred_mono hStop (fun _ => hDone) (fun _ => hFault) h
 
 /-- Fuel weakening: reaching the checkpoint within `fuel₁` steps implies
 reaching it within any larger budget `fuel₂ ≥ fuel₁`. -/
 theorem wpUntil_fuel_mono {p : Program} {stop : State → Prop}
-    {onDone : TerminalOut → Prop} {onFault : FaultKind → Prop} :
-    ∀ {fuel₁ fuel₂ : Nat} {s : State},
-      fuel₁ ≤ fuel₂ →
-      wpUntil p stop onDone onFault fuel₁ s →
-      wpUntil p stop onDone onFault fuel₂ s
-  | 0, _, _, _, h => wpUntil_stop (wpUntil_zero_iff.mp h)
-  | fuel₁ + 1, 0, _, hLe, _ =>
-    False.elim (Nat.not_succ_le_zero fuel₁ hLe)
-  | fuel₁ + 1, fuel₂ + 1, s, hLe, h => by
-    have hLe' : fuel₁ ≤ fuel₂ := Nat.le_of_succ_le_succ hLe
-    refine wpUntil_succ_iff.mpr ?_
-    cases wpUntil_succ_iff.mp h with
-    | inl hs => exact Or.inl hs
-    | inr hr =>
-      refine Or.inr ⟨hr.1, fun c hc => ?_⟩
-      have hc' := hr.2 c hc
-      cases hStep : evalStep p c s with
-      | step st' =>
-        rw [hStep] at hc'
-        exact wpUntil_fuel_mono hLe' hc'
-      | done out =>
-        rw [hStep] at hc'
-        exact hc'
-      | fault k =>
-        rw [hStep] at hc'
-        exact hc'
+    {onDone : TerminalOut → Prop} {onFault : FaultKind → Prop}
+    {fuel₁ fuel₂ : Nat} {s : State} (hLe : fuel₁ ≤ fuel₂)
+    (h : wpUntil p stop onDone onFault fuel₁ s) :
+    wpUntil p stop onDone onFault fuel₂ s :=
+  wpUntilPred_fuel_mono hLe h
 
 /-- Sequential composition of checkpoints with the budget written as
 `f₂ + f₁`, the form in which the fuel of the first segment recurses
@@ -428,31 +376,11 @@ structurally. `wpUntil_bind` states the same rule with budget `f₁ + f₂`. -/
 theorem wpUntil_bind_rev {p : Program} {mid stop : State → Prop}
     {onDone : TerminalOut → Prop} {onFault : FaultKind → Prop}
     {f₂ : Nat}
-    (hK : ∀ s', mid s' → wpUntil p stop onDone onFault f₂ s') :
-    ∀ {f₁ : Nat} {s : State},
-      wpUntil p mid onDone onFault f₁ s →
-      wpUntil p stop onDone onFault (f₂ + f₁) s
-  | 0, s, h =>
-    wpUntil_fuel_cast (Nat.add_zero f₂).symm
-      (hK s (wpUntil_zero_iff.mp h))
-  | f₁ + 1, s, h => by
-    cases wpUntil_succ_iff.mp h with
-    | inl hm =>
-      exact wpUntil_fuel_mono (Nat.le_add_right f₂ (f₁ + 1)) (hK s hm)
-    | inr hr =>
-      refine wpUntil_fuel_cast (Nat.add_assoc f₂ f₁ 1)
-        (wpUntil_succ_iff.mpr (Or.inr ⟨hr.1, fun c hc => ?_⟩))
-      have hc' := hr.2 c hc
-      cases hStep : evalStep p c s with
-      | step st' =>
-        rw [hStep] at hc'
-        exact wpUntil_bind_rev hK hc'
-      | done out =>
-        rw [hStep] at hc'
-        exact hc'
-      | fault k =>
-        rw [hStep] at hc'
-        exact hc'
+    (hK : ∀ s', mid s' → wpUntil p stop onDone onFault f₂ s')
+    {f₁ : Nat} {s : State}
+    (h : wpUntil p mid onDone onFault f₁ s) :
+    wpUntil p stop onDone onFault (f₂ + f₁) s :=
+  wpUntilPred_bind_rev hK h
 
 /-- Sequential composition of checkpoints: if `s` reaches `mid` within `f₁`
 steps and every `mid` state reaches `stop` within `f₂` steps, then `s` reaches
@@ -463,33 +391,7 @@ theorem wpUntil_bind {p : Program} {mid stop : State → Prop}
     (h : wpUntil p mid onDone onFault f₁ s)
     (hK : ∀ s', mid s' → wpUntil p stop onDone onFault f₂ s') :
     wpUntil p stop onDone onFault (f₁ + f₂) s :=
-  wpUntil_fuel_cast (Nat.add_comm f₂ f₁) (wpUntil_bind_rev hK h)
-
-private theorem wpUntil_bind_exists_aux {p : Program}
-    {mid stop : State → Prop} {onDone : TerminalOut → Prop}
-    {onFault : FaultKind → Prop}
-    (hK : ∀ s', mid s' → ∃ f₂, wpUntil p stop onDone onFault f₂ s')
-    {f₁ : Nat} {s : State}
-    (h : wpUntil p mid onDone onFault f₁ s) :
-    ∃ F, wpUntil p stop onDone onFault F s := by
-  induction f₁ generalizing s with
-  | zero => exact hK s (wpUntil_zero_iff.mp h)
-  | succ f ih =>
-    cases wpUntil_succ_iff.mp h with
-    | inl hm => exact hK s hm
-    | inr hr =>
-      have h0 := hr.2 0 rfl
-      cases hStep : evalStep p 0 s with
-      | step st' =>
-        rw [hStep] at h0
-        let ⟨F, hF⟩ := ih h0
-        exact ⟨F + 1, wpUntil_step_eq hStep hF⟩
-      | done out =>
-        rw [hStep] at h0
-        exact ⟨0 + 1, wpUntil_done_eq hStep h0⟩
-      | fault k =>
-        rw [hStep] at h0
-        exact ⟨0 + 1, wpUntil_fault_eq hStep h0⟩
+  wpUntilPred_bind h hK
 
 /-- Sequential composition of checkpoints with existential fuel: the budget of
 the second segment may depend on the intermediate state. The proof follows the
@@ -500,41 +402,20 @@ theorem wpUntil_bind_exists {p : Program} {mid stop : State → Prop}
     {s : State}
     (h : ∃ f₁, wpUntil p mid onDone onFault f₁ s)
     (hK : ∀ s', mid s' → ∃ f₂, wpUntil p stop onDone onFault f₂ s') :
-    ∃ F, wpUntil p stop onDone onFault F s := by
-  let ⟨_, h₁⟩ := h
-  exact wpUntil_bind_exists_aux hK h₁
+    ∃ F, wpUntil p stop onDone onFault F s :=
+  wpUntilPred_bind_exists (validChoice := ValidChoice p) (c₀ := 0)
+    (fun _ _ => Iff.rfl) h hK
 
 /-- Hand a checkpoint proof over to `wpOutcomeState`, with the budget written
 as `f₂ + f₁` (see `wpUntil_bind_rev`). -/
 theorem wpUntil_to_wpOutcomeState_rev {p : Program}
     {stop : State → Prop} {onDone : TerminalOut → Prop}
     {onFault : FaultKind → Prop} {f₂ : Nat}
-    (hK : ∀ s', stop s' → wpOutcomeState p onDone onFault f₂ s') :
-    ∀ {f₁ : Nat} {s : State},
-      wpUntil p stop onDone onFault f₁ s →
-      wpOutcomeState p onDone onFault (f₂ + f₁) s
-  | 0, s, h =>
-    wpOutcomeState_fuel_cast (Nat.add_zero f₂).symm
-      (hK s (wpUntil_zero_iff.mp h))
-  | f₁ + 1, s, h => by
-    cases wpUntil_succ_iff.mp h with
-    | inl hs =>
-      exact wpOutcomeState_fuel_mono (Nat.le_add_right f₂ (f₁ + 1))
-        (hK s hs)
-    | inr hr =>
-      refine wpOutcomeState_fuel_cast (Nat.add_assoc f₂ f₁ 1)
-        (wpOutcomeState_succ_iff.mpr ⟨hr.1, fun c hc => ?_⟩)
-      have hc' := hr.2 c hc
-      cases hStep : evalStep p c s with
-      | step st' =>
-        rw [hStep] at hc'
-        exact wpUntil_to_wpOutcomeState_rev hK hc'
-      | done out =>
-        rw [hStep] at hc'
-        exact hc'
-      | fault k =>
-        rw [hStep] at hc'
-        exact hc'
+    (hK : ∀ s', stop s' → wpOutcomeState p onDone onFault f₂ s')
+    {f₁ : Nat} {s : State}
+    (h : wpUntil p stop onDone onFault f₁ s) :
+    wpOutcomeState p onDone onFault (f₂ + f₁) s :=
+  wpUntilPred_to_wpStepPred_rev hK h
 
 /-- Hand a checkpoint proof over to `wpOutcomeState`: if `s` reaches `stop`
 within `f₁` steps and every `stop` state terminates within `f₂` steps, then
@@ -545,34 +426,7 @@ theorem wpUntil_to_wpOutcomeState {p : Program} {stop : State → Prop}
     (h : wpUntil p stop onDone onFault f₁ s)
     (hK : ∀ s', stop s' → wpOutcomeState p onDone onFault f₂ s') :
     wpOutcomeState p onDone onFault (f₁ + f₂) s :=
-  wpOutcomeState_fuel_cast (Nat.add_comm f₂ f₁)
-    (wpUntil_to_wpOutcomeState_rev hK h)
-
-private theorem wpUntil_to_wpOutcomeState_exists_aux {p : Program}
-    {stop : State → Prop} {onDone : TerminalOut → Prop}
-    {onFault : FaultKind → Prop}
-    (hK : ∀ s', stop s' → ∃ f₂, wpOutcomeState p onDone onFault f₂ s')
-    {f₁ : Nat} {s : State}
-    (h : wpUntil p stop onDone onFault f₁ s) :
-    ∃ F, wpOutcomeState p onDone onFault F s := by
-  induction f₁ generalizing s with
-  | zero => exact hK s (wpUntil_zero_iff.mp h)
-  | succ f ih =>
-    cases wpUntil_succ_iff.mp h with
-    | inl hs => exact hK s hs
-    | inr hr =>
-      have h0 := hr.2 0 rfl
-      cases hStep : evalStep p 0 s with
-      | step st' =>
-        rw [hStep] at h0
-        let ⟨F, hF⟩ := ih h0
-        exact ⟨F + 1, wpOutcomeState_step_eq hStep hF⟩
-      | done out =>
-        rw [hStep] at h0
-        exact ⟨0 + 1, wpOutcomeState_done_eq hStep h0⟩
-      | fault k =>
-        rw [hStep] at h0
-        exact ⟨0 + 1, wpOutcomeState_fault_eq hStep h0⟩
+  wpUntilPred_to_wpStepPred h hK
 
 /-- Hand a checkpoint proof over to `wpOutcomeState` with existential fuel:
 the termination budget may depend on the checkpoint state. -/
@@ -581,9 +435,9 @@ theorem wpUntil_to_wpOutcomeState_exists {p : Program}
     {onFault : FaultKind → Prop} {s : State}
     (h : ∃ f₁, wpUntil p stop onDone onFault f₁ s)
     (hK : ∀ s', stop s' → ∃ f₂, wpOutcomeState p onDone onFault f₂ s') :
-    ∃ F, wpOutcomeState p onDone onFault F s := by
-  let ⟨_, h₁⟩ := h
-  exact wpUntil_to_wpOutcomeState_exists_aux hK h₁
+    ∃ F, wpOutcomeState p onDone onFault F s :=
+  wpUntilPred_to_wpStepPred_exists (validChoice := ValidChoice p) (c₀ := 0)
+    (fun _ _ => Iff.rfl) h hK
 
 /-- Hand a fault-free checkpoint proof over to `wpState` with existential
 fuel. -/
@@ -644,33 +498,8 @@ theorem wpLoop_nat_le {p : Program} {Inv Exit : State → Prop}
         wpUntil p (fun s' => (Inv s' ∧ rank s' < rank s) ∨ Exit s')
           onDone onFault stepFuel s)) :
     ∀ (n : Nat) (s : State), Inv s → rank s ≤ n →
-      wpUntil p Exit onDone onFault (n * stepFuel) s := by
-  intro n
-  induction n with
-  | zero =>
-    intro s hInv hLe
-    cases hStep s hInv with
-    | inl hExit => exact wpUntil_stop hExit
-    | inr hIter =>
-      exact False.elim
-        (Nat.not_lt_zero 0 (Nat.lt_of_lt_of_le hIter.1 hLe))
-  | succ n ih =>
-    intro s hInv hLe
-    cases hStep s hInv with
-    | inl hExit => exact wpUntil_stop hExit
-    | inr hIter =>
-      have hK : ∀ s', ((Inv s' ∧ rank s' < rank s) ∨ Exit s') →
-          wpUntil p Exit onDone onFault (n * stepFuel) s' := by
-        intro s' hMid
-        cases hMid with
-        | inl hCont =>
-          exact ih s' hCont.1
-            (Nat.le_of_lt_succ (Nat.lt_of_lt_of_le hCont.2 hLe))
-        | inr hExit' => exact wpUntil_stop hExit'
-      exact wpUntil_fuel_cast (Nat.succ_mul n stepFuel).symm
-        (wpUntil_bind_rev
-          (mid := fun s' => (Inv s' ∧ rank s' < rank s) ∨ Exit s')
-          hK hIter.2)
+      wpUntil p Exit onDone onFault (n * stepFuel) s :=
+  Anneal.Framework.StepWp.wpLoop_nat_le hStep
 
 /-- Fixed-budget `Nat`-variant loop rule: under the hypotheses of
 `wpLoop_nat_le`, every `Inv` state `s` reaches `Exit` within
@@ -684,40 +513,7 @@ theorem wpLoop_nat {p : Program} {Inv Exit : State → Prop}
           onDone onFault stepFuel s))
     (s : State) (hInv : Inv s) :
     wpUntil p Exit onDone onFault (rank s * stepFuel) s :=
-  wpLoop_nat_le hStep (rank s) s hInv (Nat.le_refl (rank s))
-
-private theorem wpLoop_nat_exists_aux {p : Program}
-    {Inv Exit : State → Prop} {onDone : TerminalOut → Prop}
-    {onFault : FaultKind → Prop} {rank : State → Nat}
-    (hStep : ∀ s, Inv s →
-      Exit s ∨ (0 < rank s ∧ ∃ f,
-        wpUntil p (fun s' => (Inv s' ∧ rank s' < rank s) ∨ Exit s')
-          onDone onFault f s)) :
-    ∀ (n : Nat) (s : State), Inv s → rank s ≤ n →
-      ∃ F, wpUntil p Exit onDone onFault F s := by
-  intro n
-  induction n with
-  | zero =>
-    intro s hInv hLe
-    cases hStep s hInv with
-    | inl hExit => exact ⟨0, wpUntil_stop hExit⟩
-    | inr hIter =>
-      exact False.elim
-        (Nat.not_lt_zero 0 (Nat.lt_of_lt_of_le hIter.1 hLe))
-  | succ n ih =>
-    intro s hInv hLe
-    cases hStep s hInv with
-    | inl hExit => exact ⟨0, wpUntil_stop hExit⟩
-    | inr hIter =>
-      refine wpUntil_bind_exists
-        (mid := fun s' => (Inv s' ∧ rank s' < rank s) ∨ Exit s')
-        hIter.2 ?_
-      intro s' hMid
-      cases hMid with
-      | inl hCont =>
-        exact ih s' hCont.1
-          (Nat.le_of_lt_succ (Nat.lt_of_lt_of_le hCont.2 hLe))
-      | inr hExit' => exact ⟨0, wpUntil_stop hExit'⟩
+  Anneal.Framework.StepWp.wpLoop_nat hStep s hInv
 
 /-- Variable-budget `Nat`-variant loop rule: as `wpLoop_nat`, but each
 iteration may take a different number of steps, so the conclusion provides
@@ -731,7 +527,8 @@ theorem wpLoop_nat_exists {p : Program} {Inv Exit : State → Prop}
           onDone onFault f s))
     (s : State) (hInv : Inv s) :
     ∃ F, wpUntil p Exit onDone onFault F s :=
-  wpLoop_nat_exists_aux hStep (rank s) s hInv (Nat.le_refl (rank s))
+  Anneal.Framework.StepWp.wpLoop_nat_exists
+    (validChoice := ValidChoice p) (c₀ := 0) (fun _ _ => Iff.rfl) hStep s hInv
 
 /-- Exact countdown loop rule with variable budget. The invariant `Inv n`
 records that exactly `n` iterations remain: `Inv 0` implies `Exit`, and one
@@ -743,20 +540,9 @@ theorem wpLoop_countdown {p : Program} {Inv : Nat → State → Prop}
     (hStep : ∀ n s, Inv (n + 1) s →
       ∃ f, wpUntil p (fun s' => Inv n s' ∨ Exit s') onDone onFault f s) :
     ∀ (n : Nat) (s : State), Inv n s →
-      ∃ F, wpUntil p Exit onDone onFault F s := by
-  intro n
-  induction n with
-  | zero =>
-    intro s hInv
-    exact ⟨0, wpUntil_stop (hBase s hInv)⟩
-  | succ n ih =>
-    intro s hInv
-    refine wpUntil_bind_exists
-      (mid := fun s' => Inv n s' ∨ Exit s') (hStep n s hInv) ?_
-    intro s' hMid
-    cases hMid with
-    | inl hCont => exact ih s' hCont
-    | inr hExit => exact ⟨0, wpUntil_stop hExit⟩
+      ∃ F, wpUntil p Exit onDone onFault F s :=
+  Anneal.Framework.StepWp.wpLoop_countdown
+    (validChoice := ValidChoice p) (c₀ := 0) (fun _ _ => Iff.rfl) hBase hStep
 
 /-- Exact countdown loop rule with a fixed budget of `stepFuel` steps per
 iteration: an `Inv n` state reaches `Exit` within `n * stepFuel` steps. -/
@@ -767,23 +553,8 @@ theorem wpLoop_countdown_fuel {p : Program} {Inv : Nat → State → Prop}
     (hStep : ∀ n s, Inv (n + 1) s →
       wpUntil p (fun s' => Inv n s' ∨ Exit s') onDone onFault stepFuel s) :
     ∀ (n : Nat) (s : State), Inv n s →
-      wpUntil p Exit onDone onFault (n * stepFuel) s := by
-  intro n
-  induction n with
-  | zero =>
-    intro s hInv
-    exact wpUntil_stop (hBase s hInv)
-  | succ n ih =>
-    intro s hInv
-    have hK : ∀ s', (Inv n s' ∨ Exit s') →
-        wpUntil p Exit onDone onFault (n * stepFuel) s' := by
-      intro s' hMid
-      cases hMid with
-      | inl hCont => exact ih s' hCont
-      | inr hExit => exact wpUntil_stop hExit
-    exact wpUntil_fuel_cast (Nat.succ_mul n stepFuel).symm
-      (wpUntil_bind_rev (mid := fun s' => Inv n s' ∨ Exit s') hK
-        (hStep n s hInv))
+      wpUntil p Exit onDone onFault (n * stepFuel) s :=
+  Anneal.Framework.StepWp.wpLoop_countdown_fuel hBase hStep
 
 /-- List-traversal loop rule. The invariant `Inv xs` records the elements that
 remain to be processed: `Inv []` implies `Exit`, and one iteration from
@@ -795,72 +566,11 @@ theorem wpLoop_list {α : Type} {p : Program}
     (hStep : ∀ x xs s, Inv (x :: xs) s →
       ∃ f, wpUntil p (fun s' => Inv xs s' ∨ Exit s') onDone onFault f s) :
     ∀ (xs : List α) (s : State), Inv xs s →
-      ∃ F, wpUntil p Exit onDone onFault F s := by
-  intro xs
-  induction xs with
-  | nil =>
-    intro s hInv
-    exact ⟨0, wpUntil_stop (hBase s hInv)⟩
-  | cons x xs ih =>
-    intro s hInv
-    refine wpUntil_bind_exists
-      (mid := fun s' => Inv xs s' ∨ Exit s') (hStep x xs s hInv) ?_
-    intro s' hMid
-    cases hMid with
-    | inl hCont => exact ih s' hCont
-    | inr hExit => exact ⟨0, wpUntil_stop hExit⟩
+      ∃ F, wpUntil p Exit onDone onFault F s :=
+  Anneal.Framework.StepWp.wpLoop_list
+    (validChoice := ValidChoice p) (c₀ := 0) (fun _ _ => Iff.rfl) hBase hStep
 
-/-- A suffix is no longer than the list it ends. -/
-theorem length_le_append {α : Type} (pre rest : List α) :
-    rest.length ≤ (pre ++ rest).length := by
-  induction pre with
-  | nil => exact Nat.le_refl rest.length
-  | cons x pre ih => exact Nat.le_succ_of_le ih
-
-/-- Removing a non-empty prefix strictly shortens a list. -/
-theorem length_lt_append_of_ne_nil {α : Type} (pre rest : List α)
-    (hNe : pre ≠ []) : rest.length < (pre ++ rest).length := by
-  cases pre with
-  | nil => exact False.elim (hNe rfl)
-  | cons x pre => exact Nat.lt_succ_of_le (length_le_append pre rest)
-
-private theorem wpLoop_list_measure_aux {α : Type} {p : Program}
-    {Inv : List α → State → Prop} {Exit : State → Prop}
-    {onDone : TerminalOut → Prop} {onFault : FaultKind → Prop}
-    (hBase : ∀ s, Inv [] s → Exit s)
-    (hStep : ∀ xs s, Inv xs s → xs ≠ [] →
-      ∃ f, wpUntil p
-        (fun s' => (∃ ys, ys.length < xs.length ∧ Inv ys s') ∨ Exit s')
-        onDone onFault f s) :
-    ∀ (n : Nat) (xs : List α) (s : State), Inv xs s → xs.length ≤ n →
-      ∃ F, wpUntil p Exit onDone onFault F s := by
-  intro n
-  induction n with
-  | zero =>
-    intro xs s hInv hLe
-    cases xs with
-    | nil => exact ⟨0, wpUntil_stop (hBase s hInv)⟩
-    | cons x rest =>
-      exact False.elim (Nat.not_succ_le_zero rest.length hLe)
-  | succ n ih =>
-    intro xs s hInv hLe
-    cases xs with
-    | nil => exact ⟨0, wpUntil_stop (hBase s hInv)⟩
-    | cons x rest =>
-      have hNe : x :: rest ≠ [] := by
-        intro hEq
-        cases hEq
-      refine wpUntil_bind_exists
-        (mid := fun s' =>
-          (∃ ys, ys.length < (x :: rest).length ∧ Inv ys s') ∨ Exit s')
-        (hStep (x :: rest) s hInv hNe) ?_
-      intro s' hMid
-      cases hMid with
-      | inl hCont =>
-        let ⟨ys, hLt, hInvYs⟩ := hCont
-        exact ih ys s' hInvYs
-          (Nat.le_of_lt_succ (Nat.lt_of_lt_of_le hLt hLe))
-      | inr hExit => exact ⟨0, wpUntil_stop hExit⟩
+export Anneal.Framework.StepWp (length_le_append length_lt_append_of_ne_nil)
 
 /-- List loop rule by length: each iteration from a non-empty `Inv xs` state
 reaches an `Inv ys` state for some strictly shorter list `ys`, or `Exit`. -/
@@ -874,8 +584,9 @@ theorem wpLoop_list_measure {α : Type} {p : Program}
         onDone onFault f s)
     (xs : List α) (s : State) (hInv : Inv xs s) :
     ∃ F, wpUntil p Exit onDone onFault F s :=
-  wpLoop_list_measure_aux (Inv := Inv) (Exit := Exit) hBase hStep
-    xs.length xs s hInv (Nat.le_refl xs.length)
+  Anneal.Framework.StepWp.wpLoop_list_measure
+    (validChoice := ValidChoice p) (c₀ := 0) (fun _ _ => Iff.rfl)
+    hBase hStep xs s hInv
 
 /-- Chunked list-traversal loop rule: each iteration from a non-empty `Inv xs`
 state consumes some non-empty prefix `pre` of `xs = pre ++ rest` and reaches
@@ -892,25 +603,10 @@ theorem wpLoop_list_split {α : Type} {p : Program}
             Exit s')
         onDone onFault f s)
     (xs : List α) (s : State) (hInv : Inv xs s) :
-    ∃ F, wpUntil p Exit onDone onFault F s := by
-  refine wpLoop_list_measure (Inv := Inv) (Exit := Exit) hBase ?_ xs s hInv
-  intro ys t hInvYs hNe
-  let ⟨f, hf⟩ := hStep ys t hInvYs hNe
-  refine ⟨f, wpUntil_mono ?_ (fun _ h => h) (fun _ h => h) hf⟩
-  intro t' hMid
-  cases hMid with
-  | inl hSplit =>
-    let ⟨pre, rest, hEq, hPre, hInvRest⟩ := hSplit
-    subst hEq
-    have hGoal :
-        (∃ zs, zs.length < (pre ++ rest).length ∧ Inv zs t') ∨ Exit t' :=
-      Or.inl ⟨rest, length_lt_append_of_ne_nil pre rest hPre, hInvRest⟩
-    exact hGoal
-  | inr hExit =>
-    have hGoal :
-        (∃ zs, zs.length < ys.length ∧ Inv zs t') ∨ Exit t' :=
-      Or.inr hExit
-    exact hGoal
+    ∃ F, wpUntil p Exit onDone onFault F s :=
+  Anneal.Framework.StepWp.wpLoop_list_split
+    (validChoice := ValidChoice p) (c₀ := 0) (fun _ _ => Iff.rfl)
+    hBase hStep xs s hInv
 
 /-- Breakable `Nat`-variant loop rule: the loop of `wpLoop_nat_exists`,
 followed by a terminating continuation from every `Exit` state, terminates.
@@ -926,7 +622,9 @@ theorem wpLoop_nat_or_done {p : Program} {Inv Exit : State → Prop}
     (hExit : ∀ s, Exit s → ∃ f, wpOutcomeState p onDone onFault f s)
     (s : State) (hInv : Inv s) :
     ∃ F, wpOutcomeState p onDone onFault F s :=
-  wpUntil_to_wpOutcomeState_exists (wpLoop_nat_exists hStep s hInv) hExit
+  Anneal.Framework.StepWp.wpLoop_nat_or_done
+    (validChoice := ValidChoice p) (c₀ := 0) (fun _ _ => Iff.rfl)
+    hStep hExit s hInv
 
 /-- Fault-free specialization of `wpLoop_nat_or_done` that returns a `wpState`
 proof with postcondition `post`. -/
@@ -943,60 +641,9 @@ theorem wpLoop_state_exists {p : Program} {Inv Exit : State → Prop}
 
 /-! ## Part III: Simulation Combinators -/
 
-/-- Reflexive-transitive closure of an abstract step relation. -/
-inductive ReflTrans {α : Type} (step : α → α → Prop) : α → α → Prop where
-  | refl (a : α) : ReflTrans step a a
-  | head {a b c : α} :
-      step a b → ReflTrans step b c → ReflTrans step a c
-
-private theorem wpSim_rel_aux {α : Type} {p : Program}
-    {StepAbs : α → α → Prop} {DoneAbs : α → Prop}
-    {R : α → State → Prop} {Exit : α → State → Prop}
-    {onDone : TerminalOut → Prop} {onFault : FaultKind → Prop}
-    {rank : α → Nat}
-    (hSim : ∀ a s, R a s →
-      (DoneAbs a ∧ Exit a s) ∨
-      (∃ a', StepAbs a a' ∧ rank a' < rank a ∧
-        ∃ f, wpUntil p (fun s' => R a' s') onDone onFault f s)) :
-    ∀ (n : Nat) (a : α) (s : State), R a s → rank a ≤ n →
-      ∃ F, wpUntil p
-        (fun s' => ∃ a', ReflTrans StepAbs a a' ∧ DoneAbs a' ∧ Exit a' s')
-        onDone onFault F s := by
-  intro n
-  induction n with
-  | zero =>
-    intro a s hR hLe
-    cases hSim a s hR with
-    | inl hDone =>
-      have hStop :
-          ∃ a', ReflTrans StepAbs a a' ∧ DoneAbs a' ∧ Exit a' s :=
-        ⟨a, ReflTrans.refl a, hDone.1, hDone.2⟩
-      exact ⟨0, wpUntil_stop hStop⟩
-    | inr hNext =>
-      let ⟨a', _, hLt, _⟩ := hNext
-      exact False.elim
-        (Nat.not_lt_zero (rank a') (Nat.lt_of_lt_of_le hLt hLe))
-  | succ n ih =>
-    intro a s hR hLe
-    cases hSim a s hR with
-    | inl hDone =>
-      have hStop :
-          ∃ a', ReflTrans StepAbs a a' ∧ DoneAbs a' ∧ Exit a' s :=
-        ⟨a, ReflTrans.refl a, hDone.1, hDone.2⟩
-      exact ⟨0, wpUntil_stop hStop⟩
-    | inr hNext =>
-      let ⟨a', hAbs, hLt, hIter⟩ := hNext
-      refine wpUntil_bind_exists (mid := fun s' => R a' s') hIter ?_
-      intro s' hR'
-      let ⟨F, hF⟩ := ih a' s' hR'
-        (Nat.le_of_lt_succ (Nat.lt_of_lt_of_le hLt hLe))
-      refine ⟨F, wpUntil_mono ?_ (fun _ h => h) (fun _ h => h) hF⟩
-      intro t hStop
-      let ⟨aF, hRT, hD, hE⟩ := hStop
-      have hGoal :
-          ∃ a'', ReflTrans StepAbs a a'' ∧ DoneAbs a'' ∧ Exit a'' t :=
-        ⟨aF, ReflTrans.head hAbs hRT, hD, hE⟩
-      exact hGoal
+export Anneal.Framework.StepWp
+  (ReflTrans ReflTrans.refl ReflTrans.head ReflTrans.rec ReflTrans.recOn
+   ReflTrans.casesOn runAbsFuel runAbsFuel_succ_of_some)
 
 /-- Relational simulation rule. `R` relates abstract states to program states
 and `rank` decreases along abstract steps. If every related pair is either
@@ -1016,111 +663,10 @@ theorem wpSim_rel {α : Type} {p : Program}
     ∃ F, wpUntil p
       (fun s' => ∃ a', ReflTrans StepAbs a a' ∧ DoneAbs a' ∧ Exit a' s')
       onDone onFault F s :=
-  wpSim_rel_aux hSim (rank a) a s hR (Nat.le_refl (rank a))
+  Anneal.Framework.StepWp.wpSim_rel
+    (validChoice := ValidChoice p) (c₀ := 0) (fun _ _ => Iff.rfl) hSim a s hR
 
-/-- Iterate the abstract step function `stepAbs` at most `k` times, stopping
-at the first state where it returns `none`. -/
-@[expose] def runAbsFuel {α : Type} (stepAbs : α → Option α) (k : Nat)
-    (a : α) : α :=
-  @Nat.rec (fun _ => α → α)
-    (fun a => a)
-    (fun _ ih a =>
-      match stepAbs a with
-      | some a' => ih a'
-      | none => a)
-    k a
-
-/-- One more iteration of `runAbsFuel` from a state that can step. -/
-theorem runAbsFuel_succ_of_some {α : Type} {stepAbs : α → Option α}
-    {a a' : α} (h : stepAbs a = some a') (k : Nat) :
-    runAbsFuel stepAbs (k + 1) a = runAbsFuel stepAbs k a' := by
-  change (match stepAbs a with
-    | some b => runAbsFuel stepAbs k b
-    | none => a) = runAbsFuel stepAbs k a'
-  cases hE : stepAbs a with
-  | none =>
-    rw [hE] at h
-    cases h
-  | some b =>
-    rw [hE] at h
-    injection h with hEq
-    subst hEq
-    rfl
-
-private theorem wpSim_det_aux {α : Type} {p : Program}
-    {stepAbs : α → Option α} {R : α → State → Prop}
-    {Exit : α → State → Prop} {onDone : TerminalOut → Prop}
-    {onFault : FaultKind → Prop} {rank : α → Nat}
-    (hSim : ∀ a s, R a s →
-      (stepAbs a = none → Exit a s) ∧
-      (∀ a', stepAbs a = some a' →
-        rank a' < rank a ∧
-        ∃ f, wpUntil p (fun s' => R a' s') onDone onFault f s)) :
-    ∀ (n : Nat) (a : α) (s : State), R a s → rank a ≤ n →
-      ∃ F, wpUntil p
-        (fun s' => ∃ k, k ≤ n ∧
-          stepAbs (runAbsFuel stepAbs k a) = none ∧
-          R (runAbsFuel stepAbs k a) s' ∧
-          Exit (runAbsFuel stepAbs k a) s')
-        onDone onFault F s := by
-  intro n
-  induction n with
-  | zero =>
-    intro a s hR hLe
-    cases hOpt : stepAbs a with
-    | none =>
-      have hStop : ∃ k, k ≤ 0 ∧
-          stepAbs (runAbsFuel stepAbs k a) = none ∧
-          R (runAbsFuel stepAbs k a) s ∧
-          Exit (runAbsFuel stepAbs k a) s :=
-        ⟨0, Nat.le_refl 0, hOpt, hR, (hSim a s hR).1 hOpt⟩
-      exact ⟨0, wpUntil_stop hStop⟩
-    | some a' =>
-      exact False.elim
-        (Nat.not_lt_zero (rank a')
-          (Nat.lt_of_lt_of_le ((hSim a s hR).2 a' hOpt).1 hLe))
-  | succ n ih =>
-    intro a s hR hLe
-    cases hOpt : stepAbs a with
-    | none =>
-      have hStop : ∃ k, k ≤ n + 1 ∧
-          stepAbs (runAbsFuel stepAbs k a) = none ∧
-          R (runAbsFuel stepAbs k a) s ∧
-          Exit (runAbsFuel stepAbs k a) s :=
-        ⟨0, Nat.zero_le (n + 1), hOpt, hR, (hSim a s hR).1 hOpt⟩
-      exact ⟨0, wpUntil_stop hStop⟩
-    | some a' =>
-      have hNext := (hSim a s hR).2 a' hOpt
-      refine wpUntil_bind_exists (mid := fun s' => R a' s') hNext.2 ?_
-      intro s' hR'
-      let ⟨F, hF⟩ := ih a' s' hR'
-        (Nat.le_of_lt_succ (Nat.lt_of_lt_of_le hNext.1 hLe))
-      refine ⟨F, wpUntil_mono ?_ (fun _ h => h) (fun _ h => h) hF⟩
-      intro t hStop
-      let ⟨k, hk, hNone, hRk, hEk⟩ := hStop
-      have hRun :
-          runAbsFuel stepAbs (k + 1) a = runAbsFuel stepAbs k a' :=
-        runAbsFuel_succ_of_some hOpt k
-      have hGoal : ∃ j, j ≤ n + 1 ∧
-          stepAbs (runAbsFuel stepAbs j a) = none ∧
-          R (runAbsFuel stepAbs j a) t ∧
-          Exit (runAbsFuel stepAbs j a) t := by
-        refine ⟨k + 1, Nat.succ_le_succ hk, ?_, ?_, ?_⟩
-        · rw [hRun]
-          exact hNone
-        · rw [hRun]
-          exact hRk
-        · rw [hRun]
-          exact hEk
-      exact hGoal
-
-/-- Deterministic simulation rule with an exact abstract run. `stepAbs` is an
-abstract step function whose result `none` means that the abstract machine has
-halted, `R` relates abstract states to program states, and `rank` decreases
-along abstract steps. If a halted related pair satisfies `Exit` and the
-program follows every abstract step, then from any related pair the program
-reaches a state related to `runAbsFuel stepAbs k a` for some `k ≤ rank a` at
-which the abstract machine has halted. -/
+/-- Deterministic simulation rule with an exact abstract run. -/
 theorem wpSim_det_run {α : Type} {p : Program}
     {stepAbs : α → Option α} {R : α → State → Prop}
     {Exit : α → State → Prop} {onDone : TerminalOut → Prop}
@@ -1137,7 +683,8 @@ theorem wpSim_det_run {α : Type} {p : Program}
         R (runAbsFuel stepAbs k a) s' ∧
         Exit (runAbsFuel stepAbs k a) s')
       onDone onFault F s :=
-  wpSim_det_aux hSim (rank a) a s hR (Nat.le_refl (rank a))
+  Anneal.Framework.StepWp.wpSim_det_run
+    (validChoice := ValidChoice p) (c₀ := 0) (fun _ _ => Iff.rfl) hSim a s hR
 
 /-- Deterministic simulation rule: under the hypotheses of `wpSim_det_run`,
 the program reaches a state related to some halted abstract state. -/
@@ -1154,15 +701,9 @@ theorem wpSim_det {α : Type} {p : Program}
     ∃ F, wpUntil p
       (fun s' => ∃ aFinal,
         stepAbs aFinal = none ∧ R aFinal s' ∧ Exit aFinal s')
-      onDone onFault F s := by
-  let ⟨F, hF⟩ := wpSim_det_run hSim a s hR
-  refine ⟨F, wpUntil_mono ?_ (fun _ h => h) (fun _ h => h) hF⟩
-  intro t hStop
-  let ⟨k, _, hNone, hRk, hEk⟩ := hStop
-  have hGoal :
-      ∃ aFinal, stepAbs aFinal = none ∧ R aFinal t ∧ Exit aFinal t :=
-    ⟨runAbsFuel stepAbs k a, hNone, hRk, hEk⟩
-  exact hGoal
+      onDone onFault F s :=
+  Anneal.Framework.StepWp.wpSim_det
+    (validChoice := ValidChoice p) (c₀ := 0) (fun _ _ => Iff.rfl) hSim a s hR
 
 /-! ## Part IV: Symbolic Statement Steps and a Countdown Self-Test
 

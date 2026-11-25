@@ -14,6 +14,7 @@ public import Init.Data.Nat.Basic
 public import Trusted
 public import Trusted.MirAst
 public import Trusted.MirSemantics
+public import Anneal.Framework.StepWp
 public import Anneal.MirWp
 public import Anneal.PureLift.Lens
 public import Anneal.PureLift.PermTree
@@ -1499,14 +1500,13 @@ theorem mirExecutesTo_of_mirStepsDone (p : Program) :
       Exists fun steps => MirExecutesTo p (.running s0) steps (.returned out)
   | 0, _, _, _, hRun => False.elim hRun
   | fuel + 1, s0, out, hMut, hRun => by
-    change (match evalStep p 0 s0 with
-      | .step st' => MirStepsDone p (.returned ⟨out.ret, ⟨[]⟩⟩) fuel st'
-      | .done out' => out' = .returned ⟨out.ret, ⟨[]⟩⟩
-      | .fault _ => False) at hRun
+    dsimp only [MirStepsDone, Anneal.MirWp.execState,
+      Anneal.MirWp.execOutcomeState,
+      Anneal.Framework.StepWp.execStepOutcome] at hRun
+    rw [Anneal.Framework.StepWp.execStepPred_succ_iff] at hRun
     cases hStep : evalStep p 0 s0 with
     | step s1 =>
       rw [hStep] at hRun
-      dsimp only at hRun
       cases mirExecutesTo_of_mirStepsDone p fuel s1 out hMut hRun with
       | intro steps hRest =>
         exact ⟨1 + steps,

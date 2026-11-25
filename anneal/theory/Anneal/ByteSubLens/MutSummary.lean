@@ -16,6 +16,7 @@ public import Trusted
 public import Trusted.MirAst
 public import Trusted.MirModel
 public import Trusted.MirSemantics
+public import Anneal.Framework.StepWp
 public import Anneal.MirWp
 public import Anneal.MirTotal.Ops
 public import Anneal.ByteSubLens.Lens
@@ -23,7 +24,7 @@ public import Anneal.ByteSubLens.Lens
 public section
 namespace Anneal.ByteSubLens
 
-open Trusted.MirAst Trusted.MirSemantics Anneal.MirTotal
+open Trusted.MirAst Trusted.MirSemantics Anneal.Framework.StepWp Anneal.MirTotal
 
 /-!
 # Interprocedural `&mut Field` Call Summaries & `@[irreducible]` Cutpoints
@@ -109,16 +110,12 @@ temporaries `extraTempTys`. -/
 `cur.mem = memOut` and `out.ret = retVal` and forbidding unwinds and faults. -/
 @[expose] def MirCalleeRunsTo (p : Program) (memOut : MemoryState) (retVal : Val)
     (fuel : Nat) (st : State) : Prop :=
-  @Nat.rec (fun _ => State → Prop)
-    (fun _ => False)
-    (fun _ ih cur =>
-      match evalStep p 0 cur with
-      | .step stNext => ih stNext
-      | .done d =>
-        match d with
-        | .returned out => cur.mem = memOut ∧ out.ret = retVal
-        | .unwound _ => False
-      | .fault _ => False)
+  execStepPred (evalStep p 0)
+    (fun cur d =>
+      match d with
+      | .returned out => cur.mem = memOut ∧ out.ret = retVal
+      | .unwound _ => False)
+    (fun _ _ => False)
     fuel st
 
 /-- Base equation `MirCalleeRunsTo p memOut retVal 0 st = False`. -/
@@ -136,35 +133,24 @@ theorem mirCalleeRunsTo_succ (p : Program) (memOut : MemoryState)
         match d with
         | .returned out => st.mem = memOut ∧ out.ret = retVal
         | .unwound _ => False
-      | .fault _ => False) := rfl
+      | .fault _ => False) := by
+  refine propext (execStepPred_succ_iff.trans ?_)
+  cases evalStep p 0 st with
+  | step _ => exact Iff.rfl
+  | done d => cases d <;> exact Iff.rfl
+  | fault _ => exact Iff.rfl
 
 private theorem mirCalleeRunsTo_implies_execState {p : Program}
-    {memOut : MemoryState} {retVal : Val} :
-    ∀ {fuel : Nat} {st : State},
-      MirCalleeRunsTo p memOut retVal fuel st →
-      Anneal.MirWp.execState p fuel st
-        (fun out => ∃ r, out = .returned r ∧ r.ret = retVal)
-  | 0, _, h => False.elim h
-  | n + 1, st, h => by
-    rw [mirCalleeRunsTo_succ] at h
-    change (match evalStep p 0 st with
-      | .step st' =>
-        Anneal.MirWp.execState p n st'
-          (fun out => ∃ r, out = .returned r ∧ r.ret = retVal)
-      | .done out => ∃ r, out = .returned r ∧ r.ret = retVal
-      | .fault _ => False)
-    cases hStep : evalStep p 0 st with
-    | step stNext =>
-      rw [hStep] at h
-      exact mirCalleeRunsTo_implies_execState h
-    | done d =>
-      rw [hStep] at h
-      cases d with
-      | returned out => exact ⟨out, rfl, h.2⟩
-      | unwound _ => exact False.elim h
-    | fault _ =>
-      rw [hStep] at h
-      exact False.elim h
+    {memOut : MemoryState} {retVal : Val}
+    {fuel : Nat} {st : State}
+    (h : MirCalleeRunsTo p memOut retVal fuel st) :
+    Anneal.MirWp.execState p fuel st
+      (fun out => ∃ r, out = .returned r ∧ r.ret = retVal) := by
+  refine execStepPred_mono ?_ (fun _ _ hf => hf) h
+  intro _ d hd
+  cases d with
+  | returned out => exact ⟨out, rfl, hd.2⟩
+  | unwound _ => exact False.elim hd
 
 /-- Unconditional adequacy lift from `MirCalleeRunsTo` into
 `Anneal.MirWp.wpState` (`ValidChoice`-quantified weakest precondition over
@@ -244,31 +230,16 @@ theorem open_mutSummaryCut {p : Program} {fuel : Nat}
 
 attribute [irreducible] MutSummaryCut
 
-/-- Caller composition rule for `@[irreducible] MutSummaryCut`: whenever
-computable `execMutSummaryCall sum subL mem extraArgs` returns
-`some (memOut, retVal)` (e.g. by `rfl`), the underlying MIR callee `p` steps via
-`Trusted.MirSemantics.evalStep` to `(memOut, retVal)` (`MirCalleeRunsTo` and
-`Anneal.MirWp.wpState`), updates `subL` to `newSlice`, and preserves every
-disjoint slice `otherL` across `MemoryState`. -/
-theorem apply_mutSummaryCut_sound {p : Program} {fuel : Nat}
-    {sum : MutFieldCallSummary} (hCut : MutSummaryCut p fuel sum)
-    {subL : ByteSubLens} {mem memOut : MemoryState}
-    {extraArgs : List Val} {retVal : Val}
-    (hExec : execMutSummaryCall sum subL mem extraArgs =
-      some (memOut, retVal)) :
-    MirCalleeRunsTo p memOut retVal fuel
-      (initSuballocCalleeState sum.retTy subL extraArgs sum.tempTys mem) ∧
-    Anneal.MirWp.wpState p fuel
-      (initSuballocCalleeState sum.retTy subL extraArgs sum.tempTys mem)
-      (fun out => ∃ r, out = .returned r ∧ r.ret = retVal) ∧
-    (∃ oldSlice newSlice : List AllocByte,
+private theorem execMutSummaryCall_ok {sum : MutFieldCallSummary}
+    {subL : ByteSubLens} {mem memOut : MemoryState} {extraArgs : List Val}
+    {retVal : Val}
+    (hExec : execMutSummaryCall sum subL mem extraArgs = some (memOut, retVal)) :
+    subL.size = sum.fieldSize ∧
+    subL.alignLog2 = sum.alignLog2 ∧
+    ∃ oldSlice newSlice : List AllocByte,
       byteSubLensGet subL mem = some oldSlice ∧
       sum.summaryFn oldSlice extraArgs = some (newSlice, retVal) ∧
-      byteSubLensPut subL mem newSlice = some memOut ∧
-      byteSubLensGet subL memOut = some newSlice) ∧
-    (∀ otherL : ByteSubLens,
-      byteLensDisjoint subL otherL = true →
-      byteSubLensGet otherL memOut = byteSubLensGet otherL mem) := by
+      byteSubLensPut subL mem newSlice = some memOut := by
   dsimp only [execMutSummaryCall] at hExec
   cases hGeo : (Nat.beq subL.size sum.fieldSize &&
       Nat.beq subL.alignLog2 sum.alignLog2) with
@@ -298,18 +269,47 @@ theorem apply_mutSummaryCut_sound {p : Program} {fuel : Nat}
             have hM : mPut = memOut := congrArg Prod.fst hOutEq
             have hR : rv = retVal := congrArg Prod.snd hOutEq
             subst hM; subst hR
-            cases open_mutSummaryCut hCut subL mem oldSlice newSlice extraArgs
-                rv hSz hAl hGet hSum with
-            | intro mReal hReal =>
-              rw [hPut] at hReal
-              injection hReal.2 with hRealEq
-              subst hRealEq
-              exact ⟨hReal.1, mirCalleeRunsTo_implies_wpState hReal.1,
-                ⟨oldSlice, newSlice, rfl, hSum, hPut,
-                  byteSubLens_put_get subL mem mPut newSlice hPut⟩,
-                fun otherL hDisj =>
-                  byteSubLens_get_put_disjoint subL otherL mem mPut newSlice
-                    hDisj hPut⟩
+            exact ⟨hSz, hAl, oldSlice, newSlice, rfl, hSum, hPut⟩
+
+/-- Caller composition rule for `@[irreducible] MutSummaryCut`: whenever
+computable `execMutSummaryCall sum subL mem extraArgs` returns
+`some (memOut, retVal)` (e.g. by `rfl`), the underlying MIR callee `p` steps via
+`Trusted.MirSemantics.evalStep` to `(memOut, retVal)` (`MirCalleeRunsTo` and
+`Anneal.MirWp.wpState`), updates `subL` to `newSlice`, and preserves every
+disjoint slice `otherL` across `MemoryState`. -/
+theorem apply_mutSummaryCut_sound {p : Program} {fuel : Nat}
+    {sum : MutFieldCallSummary} (hCut : MutSummaryCut p fuel sum)
+    {subL : ByteSubLens} {mem memOut : MemoryState}
+    {extraArgs : List Val} {retVal : Val}
+    (hExec : execMutSummaryCall sum subL mem extraArgs =
+      some (memOut, retVal)) :
+    MirCalleeRunsTo p memOut retVal fuel
+      (initSuballocCalleeState sum.retTy subL extraArgs sum.tempTys mem) ∧
+    Anneal.MirWp.wpState p fuel
+      (initSuballocCalleeState sum.retTy subL extraArgs sum.tempTys mem)
+      (fun out => ∃ r, out = .returned r ∧ r.ret = retVal) ∧
+    (∃ oldSlice newSlice : List AllocByte,
+      byteSubLensGet subL mem = some oldSlice ∧
+      sum.summaryFn oldSlice extraArgs = some (newSlice, retVal) ∧
+      byteSubLensPut subL mem newSlice = some memOut ∧
+      byteSubLensGet subL memOut = some newSlice) ∧
+    (∀ otherL : ByteSubLens,
+      byteLensDisjoint subL otherL = true →
+      byteSubLensGet otherL memOut = byteSubLensGet otherL mem) := by
+  let ⟨hSz, hAl, oldSlice, newSlice, hGet, hSum, hPut⟩ :=
+    execMutSummaryCall_ok hExec
+  cases open_mutSummaryCut hCut subL mem oldSlice newSlice extraArgs
+      retVal hSz hAl hGet hSum with
+  | intro mReal hReal =>
+    rw [hPut] at hReal
+    injection hReal.2 with hRealEq
+    subst hRealEq
+    exact ⟨hReal.1, mirCalleeRunsTo_implies_wpState hReal.1,
+      ⟨oldSlice, newSlice, hGet, hSum, hPut,
+        byteSubLens_put_get subL mem memOut newSlice hPut⟩,
+      fun otherL hDisj =>
+        byteSubLens_get_put_disjoint subL otherL mem memOut newSlice
+          hDisj hPut⟩
 
 /-! ## 3. Chained Multi-Call Composition & Disjoint-Frame Preservation -/
 
@@ -390,32 +390,9 @@ theorem execMutSummaryChain_frame_disjoint (otherL : ByteSubLens)
             subst hMFin
             have hFrameHd :
                 byteSubLensGet otherL mNext = byteSubLensGet otherL mem := by
-              dsimp only [execMutSummaryCall] at hHd
-              cases hG : (Nat.beq hd.subL.size hd.sum.fieldSize &&
-                  Nat.beq hd.subL.alignLog2 hd.sum.alignLog2) with
-              | false => rw [hG] at hHd; nomatch hHd
-              | true =>
-                rw [hG] at hHd; dsimp only at hHd
-                cases hGet0 : byteSubLensGet hd.subL mem with
-                | none => rw [hGet0] at hHd; nomatch hHd
-                | some s0 =>
-                  rw [hGet0] at hHd; dsimp only at hHd
-                  cases hS0 : hd.sum.summaryFn s0 hd.extraArgs with
-                  | none => rw [hS0] at hHd; nomatch hHd
-                  | some pr =>
-                    rw [hS0] at hHd
-                    cases pr with
-                    | mk sNew rv0 =>
-                      dsimp only at hHd
-                      cases hP0 : byteSubLensPut hd.subL mem sNew with
-                      | none => rw [hP0] at hHd; nomatch hHd
-                      | some mP =>
-                        rw [hP0] at hHd
-                        injection hHd with hEqP
-                        have hMP : mP = mNext := congrArg Prod.fst hEqP
-                        subst hMP
-                        exact byteSubLens_get_put_disjoint hd.subL otherL mem
-                          mP sNew hDisjHd hP0
+              let ⟨_, _, _, sNew, _, _, hP0⟩ := execMutSummaryCall_ok hHd
+              exact byteSubLens_get_put_disjoint hd.subL otherL mem mNext sNew
+                hDisjHd hP0
             exact Eq.trans (ih mNext mFin rvs hDisjTl hTl) hFrameHd
 
 /-- Inductive step-by-step operational trace certificate witnessing that every
