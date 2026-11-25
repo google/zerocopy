@@ -287,9 +287,9 @@ rm -rf trusted/cargo-anneal/packaged
 ```
 
 `cargo publish --dry-run` requires `--allow-dirty` after staging
-`trusted/cargo-anneal/packaged/bundled_resources.rs` (remove the transient
-`packaged/` directory afterward to keep the tree clean). In CI, the packaging
-check also runs
+`trusted/cargo-anneal/packaged/{bundled_resources.rs,bundled_theory.json}`
+(remove the transient `packaged/` directory afterward to keep the tree clean).
+In CI, the packaging check also runs
 `cargo test --locked --manifest-path "$prepared_manifest" --no-run` against the
 unpacked `target/package/cargo-anneal-<version>/Cargo.toml` so missing excluded
 fixtures fail the build. The remaining fast repository checks in CI are:

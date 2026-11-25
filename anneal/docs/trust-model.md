@@ -330,8 +330,8 @@ resides under `trusted/` (production TCB, zone 0) or `tests/` (fenced
 declares `package.build` or non-`crates.io` dependencies, that no workspace
 crate other than `cargo-anneal` includes a `build.rs` script (only
 `trusted/cargo-anneal/build.rs`, which deterministically emits
-`$OUT_DIR/bundled_resources.rs` from canonical sources, is allowed and
-required), and that every `path` dependency
+`$OUT_DIR/bundled_resources.rs` and `$OUT_DIR/bundled_theory.json` from
+canonical sources, is allowed and required), and that every `path` dependency
 targets a registered workspace member satisfying `zone(dst) <= zone(src)`. This
 enforces a two-zone monotonic lattice: `tests/` suites may exercise `trusted/`
 crates and share `tests/` helpers (`tests/testkit`) without inflating

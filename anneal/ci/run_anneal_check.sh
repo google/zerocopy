@@ -928,9 +928,10 @@ case "$MODE" in
       --artifacts-dir "$ZC_OUT/zerocopy-evidence" \
       --jobs "$ANNEAL_TEST_JOBS"
 
-    # `cargo package` archives only the crate directory, so the packaged
-    # build script needs a staged `packaged/bundled_resources.rs`. The
-    # checkout is read-only here, so stage it in a scratch copy.
+    # `cargo package` archives only the crate directory, so the packaged build
+    # script needs staged `packaged/{bundled_resources.rs,bundled_theory.json}`
+    # snapshots. The checkout is read-only here, so stage them in a scratch
+    # copy.
     PKG_SRC="${SCRATCH_ROOT}/package-src"
     rm -rf "$PKG_SRC"
     mkdir -p "$PKG_SRC"
@@ -942,8 +943,9 @@ case "$MODE" in
       cargo run --locked --offline -p cargo-anneal --example regenerate_bundle \
         "${FULL_OPT_ARGS[@]}" \
         -- --root . --stage-package
-      staged="$(cd trusted/cargo-anneal/packaged && find . -mindepth 1)"
-      test "$staged" = "./bundled_resources.rs"
+      staged="$(cd trusted/cargo-anneal/packaged && find . -mindepth 1 | LC_ALL=C sort)"
+      expected_staged="$(printf './bundled_resources.rs\n./bundled_theory.json')"
+      test "$staged" = "$expected_staged"
       cargo metadata --locked --offline --format-version 1 --no-deps \
         > "$DIAG/package-metadata.json"
       cargo package --allow-dirty --no-verify --offline --registry crates-io \

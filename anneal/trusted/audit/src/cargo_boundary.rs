@@ -10,7 +10,7 @@
 //! and `trusted/root-manifest.sha256` verification ([`check_cargo_boundary`]).
 //! A separate check, [`verify_bundled_resources`], verifies canonical-source
 //! bundle invariants (`build.rs` generation inputs, provenance inventory, and
-//! `bundled_theory.json` parity).
+//! embedded `bundled_theory.json` parity).
 
 use std::{
     collections::{BTreeMap, BTreeSet},
@@ -19,10 +19,11 @@ use std::{
 };
 
 use cargo_anneal::{
-    EMBEDDED_BUNDLE_SOURCES, EMBEDDED_CORRESPONDENCE_PROVENANCE_JSON, Failure, SafeFs,
+    EMBEDDED_BUNDLE_SOURCES, EMBEDDED_CORRESPONDENCE_PROVENANCE_JSON, EMBEDDED_THEORY_BUNDLE_JSON,
+    Failure, SafeFs,
     bundle::{
-        BundleError, LEGACY_BUNDLE_DESTINATION, render_bundled_resources_parts,
-        render_bundled_theory, validate_bundle_source, validate_theory_bundle_destination,
+        BundleError, LEGACY_BUNDLE_DESTINATION, LEGACY_THEORY_BUNDLE_DESTINATION,
+        render_bundled_resources_parts, render_bundled_theory, validate_bundle_source,
     },
     is_clean_relative_path, is_sha256_hex, regular, sha256_file,
 };
@@ -298,38 +299,46 @@ fn map_bundle_error(err: BundleError) -> Failure {
 
 /// Verify that `trusted/cargo-anneal/build.rs`,
 /// `trusted/cargo-anneal/src/trusted_bundle.rs`,
-/// `trusted/cargo-anneal/src/bundled_theory.json`, `theory/bundle-manifest.json`,
+/// `trusted/cargo-anneal/src/theory_bundle.rs`, `theory/bundle-manifest.json`,
 /// and every canonical source in [`cargo_anneal::bundle::TRUSTED_BUNDLE_SOURCES`],
 /// [`cargo_anneal::bundle::THEORY_BUNDLE_MANIFEST`], and
 /// [`cargo_anneal::bundle::PROVENANCE_SOURCES`] are regular files under
-/// regular directories, that legacy checked-in `src/bundled_resources.rs` and
-/// transient `packaged/` staging directories are absent, and that canonical
-/// bundle rendering matches `cargo-anneal`'s compiled-in
-/// [`EMBEDDED_BUNDLE_SOURCES`] / [`EMBEDDED_CORRESPONDENCE_PROVENANCE_JSON`]
-/// and `bundled_theory.json` byte-for-byte.
+/// regular directories, that legacy checked-in `src/bundled_resources.rs`,
+/// `src/bundled_theory.json`, and transient `packaged/` staging directories
+/// are absent, and that canonical bundle rendering matches `cargo-anneal`'s
+/// compiled-in [`EMBEDDED_BUNDLE_SOURCES`],
+/// [`EMBEDDED_CORRESPONDENCE_PROVENANCE_JSON`], and
+/// [`EMBEDDED_THEORY_BUNDLE_JSON`] byte-for-byte.
 pub fn verify_bundled_resources(checkout: &Path) -> Result<(), Failure> {
     let phase = "bundle-manifest";
     validate_bundle_source(checkout, "trusted/cargo-anneal/build.rs")
         .map_err(map_bundle_error)?;
     validate_bundle_source(checkout, "trusted/cargo-anneal/src/trusted_bundle.rs")
         .map_err(map_bundle_error)?;
-    let legacy_destination = checkout.join(LEGACY_BUNDLE_DESTINATION);
-    match fs::symlink_metadata(&legacy_destination) {
-        Ok(_) => {
-            return Err(Failure::policy(
-                phase,
-                format!(
-                    "legacy checked-in bundled_resources.rs must be absent: {}",
-                    legacy_destination.display()
-                ),
-            ));
-        }
-        Err(err) if err.kind() == std::io::ErrorKind::NotFound => {}
-        Err(err) => {
-            return Err(Failure::operational(
-                phase,
-                format!("cannot inspect {}: {err}", legacy_destination.display()),
-            ));
+    validate_bundle_source(checkout, "trusted/cargo-anneal/src/theory_bundle.rs")
+        .map_err(map_bundle_error)?;
+    for (label, rel) in [
+        ("bundled_resources.rs", LEGACY_BUNDLE_DESTINATION),
+        ("bundled_theory.json", LEGACY_THEORY_BUNDLE_DESTINATION),
+    ] {
+        let legacy_destination = checkout.join(rel);
+        match fs::symlink_metadata(&legacy_destination) {
+            Ok(_) => {
+                return Err(Failure::policy(
+                    phase,
+                    format!(
+                        "legacy checked-in {label} must be absent: {}",
+                        legacy_destination.display()
+                    ),
+                ));
+            }
+            Err(err) if err.kind() == std::io::ErrorKind::NotFound => {}
+            Err(err) => {
+                return Err(Failure::operational(
+                    phase,
+                    format!("cannot inspect {}: {err}", legacy_destination.display()),
+                ));
+            }
         }
     }
 
@@ -385,25 +394,12 @@ pub fn verify_bundled_resources(checkout: &Path) -> Result<(), Failure> {
         }
     }
 
-    let (theory_destination, theory_permissions) =
-        validate_theory_bundle_destination(checkout).map_err(map_bundle_error)?;
-    if theory_permissions.is_none() {
-        return Err(Failure::policy(
-            phase,
-            format!("missing bundled_theory.json: {}", theory_destination.display()),
-        ));
-    }
     let expected_theory = render_bundled_theory(checkout).map_err(map_bundle_error)?;
-    let actual_theory = fs::read(&theory_destination).map_err(|e| {
-        Failure::operational(phase, format!("cannot read {}: {e}", theory_destination.display()))
-    })?;
-    if actual_theory != expected_theory.as_bytes() {
+    if expected_theory != EMBEDDED_THEORY_BUNDLE_JSON {
         return Err(Failure::policy(
             phase,
-            format!(
-                "{} differs from canonical bundled theory sources; run regenerate_bundle",
-                theory_destination.display()
-            ),
+            "embedded cargo-anneal EMBEDDED_THEORY_BUNDLE_JSON differs from canonical \
+             checkout sources; rebuild cargo-anneal and anneal-audit",
         ));
     }
     Ok(())
@@ -808,8 +804,9 @@ pub fn check_cargo_boundary(checkout: &Path) -> Result<(), Failure> {
 /// SHA-256 digests of the correspondence files: only synthetic unit-test
 /// fixtures disable it when substituting stub sources or bypassing embedded
 /// parity. `anneal-audit` always enables `require_mir_wp`, so missing
-/// `build.rs` or `trusted_bundle.rs`, reintroduced legacy
-/// `src/bundled_resources.rs`, or drifted canonical sources fail closed.
+/// `build.rs`, `trusted_bundle.rs`, or `theory_bundle.rs`, reintroduced legacy
+/// `src/bundled_resources.rs` or `src/bundled_theory.json`, or drifted
+/// canonical sources fail closed.
 pub(crate) fn check_checkout_cargo_hygiene(
     checkout: &Path,
     require_mir_wp: bool,

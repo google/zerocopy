@@ -43,6 +43,7 @@ mod stage;
 #[doc(hidden)]
 pub mod sys_util;
 mod target;
+mod theory_bundle;
 mod toolchain;
 mod trusted_bundle;
 mod verify;
@@ -52,6 +53,8 @@ pub const EMBEDDED_BUNDLE_SOURCES: &[(&str, &str)] = verify::EMBEDDED_BUNDLE_SOU
 #[doc(hidden)]
 pub const EMBEDDED_CORRESPONDENCE_PROVENANCE_JSON: &str =
     verify::EMBEDDED_CORRESPONDENCE_PROVENANCE_JSON;
+#[doc(hidden)]
+pub const EMBEDDED_THEORY_BUNDLE_JSON: &str = bundle::EMBEDDED_THEORY_BUNDLE_JSON;
 
 pub use core::Failure;
 #[doc(hidden)]

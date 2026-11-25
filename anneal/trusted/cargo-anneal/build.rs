@@ -6,15 +6,18 @@
 // This file may not be copied, modified, or distributed except according to
 // those terms.
 
-//! Generates `$OUT_DIR/bundled_resources.rs` deterministically from the
-//! canonical workspace sources (or from `packaged/bundled_resources.rs` inside
-//! an unpacked `.crate` archive).
+//! Generates `$OUT_DIR/bundled_resources.rs` and `$OUT_DIR/bundled_theory.json`
+//! deterministically from canonical workspace sources (or from `packaged/`
+//! snapshots inside an unpacked `.crate` archive).
 
+#[allow(dead_code)]
+#[path = "src/theory_bundle.rs"]
+mod theory_bundle;
 #[allow(dead_code)]
 #[path = "src/trusted_bundle.rs"]
 mod trusted_bundle;
 
-use std::{env, fs, path::Path};
+use std::{collections::BTreeSet, env, fs, path::Path};
 
 fn ensure_safe_directive_path(path: &Path) -> &str {
     let s = path
@@ -48,10 +51,17 @@ fn main() {
     let out_dir =
         env::var_os("OUT_DIR").map(std::path::PathBuf::from).expect("OUT_DIR must be set");
 
-    let plan = trusted_bundle::resolve_build_script_bundle(&manifest_dir)
+    let trusted_plan = trusted_bundle::resolve_build_script_bundle(&manifest_dir)
         .unwrap_or_else(|e| panic!("{e}"));
-    for path in &plan.rerun_if_changed {
-        emit_rerun_if_changed(path);
+    let theory_plan = theory_bundle::resolve_build_script_theory_bundle(&manifest_dir)
+        .unwrap_or_else(|e| panic!("{e}"));
+
+    let mut seen = BTreeSet::new();
+    for path in trusted_plan.rerun_if_changed.iter().chain(&theory_plan.rerun_if_changed) {
+        if seen.insert(path.clone()) {
+            emit_rerun_if_changed(path);
+        }
     }
-    write_if_changed(&out_dir.join("bundled_resources.rs"), &plan.rendered_source);
+    write_if_changed(&out_dir.join("bundled_resources.rs"), &trusted_plan.rendered_source);
+    write_if_changed(&out_dir.join("bundled_theory.json"), &theory_plan.rendered_json);
 }
