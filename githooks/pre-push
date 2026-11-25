@@ -15,6 +15,7 @@ echo "Running pre-push git hook: $0"
 #
 # Background all jobs and wait for them so they can run in parallel.
 ./ci/check_actions.sh                                  & ACTIONS_PID=$!
+python3 -I -B ./ci/test_check_actions.py >/dev/null  & CHECK_ACTIONS_TEST_PID=$!
 ./ci/check_fmt.sh                                      & FMT_PID=$!
 ./ci/check_job_dependencies.sh      >/dev/null         & JOB_DEPS_PID=$!
 python3 -I -B ./ci/check_skills.py  >/dev/null         & SKILLS_PID=$!
@@ -37,6 +38,7 @@ TODO_JOB_DEPS_TEST_PID=$!
 # jobs, it exits with code 0 even if one of the backgrounded jobs does not, so
 # we can't use it here.
 wait $ACTIONS_PID
+wait $CHECK_ACTIONS_TEST_PID
 wait $FMT_PID
 wait $TOOLCHAINS_PID
 wait $JOB_DEPS_PID
