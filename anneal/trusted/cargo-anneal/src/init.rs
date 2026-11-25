@@ -38,96 +38,30 @@ struct ScaffoldFile {
     contents: String,
 }
 
-const STANDALONE_LIB_RS: &str = "\
-pub fn zero() -> u64 {
-    0
+const STANDALONE_LIB_RS: &str = include_str!("../assets/scalar/lib.rs");
+const STANDALONE_REQUEST_JSON: &str = include_str!("../assets/scalar/request.json");
+const STANDALONE_SPEC_LEAN: &str = include_str!("../assets/scalar/Spec.lean");
+const STANDALONE_PROOF_LEAN: &str = include_str!("../assets/scalar/Proof.lean");
+
+/// Strip a leading `<comment_prefix> Copyright ...` license header block and
+/// its immediately following blank line, returning `contents` unchanged when no
+/// matching header is present.
+fn strip_license_header<'a>(contents: &'a str, comment_prefix: &str) -> &'a str {
+    let Some(after_prefix) = contents.strip_prefix(comment_prefix) else {
+        return contents;
+    };
+    if comment_prefix.is_empty() || !after_prefix.starts_with(" Copyright ") {
+        return contents;
+    }
+    let mut rest = contents;
+    while rest.starts_with(comment_prefix) {
+        match rest.find('\n') {
+            Some(idx) => rest = &rest[idx + 1..],
+            None => return "",
+        }
+    }
+    rest.strip_prefix("\r\n").or_else(|| rest.strip_prefix('\n')).unwrap_or(rest)
 }
-";
-
-const STANDALONE_REQUEST_JSON: &str = "\
-{
-  \"schema_version\": 1,
-  \"compilation\": {
-    \"source_root\": \".\",
-    \"crate_root\": \"lib.rs\",
-    \"crate_name\": \"scalar\",
-    \"source_files\": [\"lib.rs\"]
-  },
-  \"scope\": { \"kind\": \"selected_unit\", \"roots\": [\"zero\"] },
-  \"proof\": {
-    \"source_root\": \".\",
-    \"sources\": [
-      { \"module\": \"Spec\", \"path\": \"Spec.lean\", \"role\": \"specification\" },
-      { \"module\": \"Proof\", \"path\": \"Proof.lean\", \"role\": \"proof\" }
-    ]
-  }
-}
-";
-
-const STANDALONE_SPEC_LEAN: &str = "\
-module
-prelude
-public import Trusted.MirSemantics
-
-@[expose] public section
-
-namespace Spec
-
-open Trusted.MirAst Trusted.MirSemantics
-
-def expectedReturn : TerminalOut :=
-  .returned ⟨.scalar ⟨.i64, false, BitVec.ofNat 128 0⟩, ⟨[]⟩⟩
-
-noncomputable def returnsZero (program : Program) : Prop :=
-  let entry := entryProgForBody program 0
-  let call : Query := { args := [] }
-  SatisfiesPost entry call (fun outcome => outcome = expectedReturn) ∧
-    (¬ Diverges entry call) ∧ Behavior entry call expectedReturn
-
-noncomputable def specs : Specs := ⟨fun _ _ => True, returnsZero⟩
-
-end Spec
-
-end
-";
-
-const STANDALONE_PROOF_LEAN: &str = "\
-module
-prelude
-public import Expected
-import Anneal.MirWp
-
-namespace Proof
-
-open Trusted.MirAst Trusted.MirSemantics Anneal.MirWp
-
-theorem execution :
-    execProg (entryProgForBody Captured.program 0) 2 { args := [] }
-      (fun outcome => outcome = Spec.expectedReturn) := rfl
-
-theorem totalCorrectness : Spec.returnsZero Captured.program := by
-  have ⟨post, terminates, out, returned, result⟩ :=
-    wellFormed_and_spec_of_wp (entryProgForBody Captured.program 0)
-      { args := [] } 2 (fun outcome => outcome = Spec.expectedReturn)
-      (wpProg_of_execProg execution)
-  exact ⟨post, terminates, result ▸ returned⟩
-
-public theorem verify : Expected.claim := by
-  refine ⟨rfl, rfl, rfl, rfl, rfl, rfl, ?_, totalCorrectness⟩
-  intro id body found
-  cases id with
-  | zero =>
-      have same : Captured.program.bodies[0] = body := Option.some.inj found
-      subst body
-      refine ⟨found, rfl, ?_⟩
-      intro args valid _
-      cases args with
-      | nil => exact totalCorrectness.1.1
-      | cons _ _ => cases valid
-  | succ id => cases found
-
-end Proof
-";
 
 fn cargo_spec_lean() -> String {
     "\
@@ -218,58 +152,94 @@ fn validate_manifest(manifest: &Path) -> Result<(), String> {
     Ok(())
 }
 
+/// Validate an existing directory component or create a missing one,
+/// returning `Ok(true)` if `create_dir` created this component.
+///
+/// When `allow_symlink_ancestor` is `true`, an existing symlink is resolved
+/// with `fs::metadata` (matching OS resolution of caller-chosen ancestor
+/// directories such as macOS `/tmp -> private/tmp` or symlinked `$TMPDIR`).
+/// Otherwise, symlinks are rejected via `fs::symlink_metadata`.
+fn ensure_dir_component(prefix: &Path, allow_symlink_ancestor: bool) -> Result<bool, String> {
+    match fs::symlink_metadata(prefix) {
+        Ok(lmeta) if allow_symlink_ancestor && lmeta.file_type().is_symlink() => {
+            let meta = fs::metadata(prefix).map_err(|err| {
+                format!("cannot inspect symlink directory ancestor {}: {err}", prefix.display())
+            })?;
+            if !meta.is_dir() {
+                return Err(format!(
+                    "expected directory at {}, found non-directory",
+                    prefix.display()
+                ));
+            }
+            Ok(false)
+        }
+        Ok(lmeta) => {
+            if lmeta.file_type().is_symlink() {
+                return Err(format!("refusing symlink directory {}", prefix.display()));
+            }
+            if !lmeta.is_dir() {
+                return Err(format!(
+                    "expected directory at {}, found non-directory",
+                    prefix.display()
+                ));
+            }
+            Ok(false)
+        }
+        Err(err) if err.kind() == std::io::ErrorKind::NotFound => {
+            fs::create_dir(prefix).map_err(|create_err| {
+                format!("cannot create directory {}: {create_err}", prefix.display())
+            })?;
+            let meta = fs::symlink_metadata(prefix).map_err(|meta_err| {
+                format!("cannot inspect directory {}: {meta_err}", prefix.display())
+            })?;
+            if meta.file_type().is_symlink() || !meta.is_dir() {
+                return Err(format!(
+                    "directory {} changed unexpectedly after creation",
+                    prefix.display()
+                ));
+            }
+            Ok(true)
+        }
+        Err(err) => Err(format!("cannot inspect directory {}: {err}", prefix.display())),
+    }
+}
+
 fn ensure_non_symlink_dir(dir: &Path) -> Result<(), String> {
+    if dir.as_os_str().is_empty() {
+        return Err("directory path cannot be empty".into());
+    }
+    // Rebuild from `components()` to trim trailing separators (and trailing
+    // `/.`) while preserving root `/` and `.`, so `symlink_metadata` inspects
+    // a final symlink entry itself rather than following a trailing slash.
+    let trimmed: PathBuf = dir.components().collect();
+    if trimmed.as_os_str().is_empty() {
+        return Err("directory path cannot be empty".into());
+    }
+    if matches!(trimmed.components().next_back(), Some(Component::ParentDir)) {
+        return Err(format!("refusing directory path ending in '..': {}", dir.display()));
+    }
+
     let mut prefix = PathBuf::new();
-    let mut saw_root = false;
-    for component in dir.components() {
+    let mut created_missing = false;
+    let mut components = trimmed.components().peekable();
+    while let Some(component) = components.next() {
         prefix.push(component.as_os_str());
         if matches!(component, Component::RootDir | Component::Prefix(_)) {
-            saw_root = true;
             continue;
         }
-        match fs::symlink_metadata(&prefix) {
-            Ok(meta) => {
-                if meta.file_type().is_symlink() {
-                    return Err(format!(
-                        "refusing symlink directory component {}",
-                        prefix.display()
-                    ));
-                }
-                if !meta.is_dir() {
-                    return Err(format!(
-                        "expected directory at {}, found non-directory",
-                        prefix.display()
-                    ));
-                }
-            }
-            Err(err) if err.kind() == std::io::ErrorKind::NotFound => {
-                // Only create missing trailing components once an existing prefix
-                // is already verified (or at relative root).
-                if !saw_root && prefix.as_os_str() == "." {
-                    continue;
-                }
-                fs::create_dir(&prefix).map_err(|create_err| {
-                    format!("cannot create directory {}: {create_err}", prefix.display())
-                })?;
-                let meta = fs::symlink_metadata(&prefix).map_err(|meta_err| {
-                    format!("cannot inspect directory {}: {meta_err}", prefix.display())
-                })?;
-                if meta.file_type().is_symlink() || !meta.is_dir() {
-                    return Err(format!(
-                        "directory {} changed unexpectedly after creation",
-                        prefix.display()
-                    ));
-                }
-            }
-            Err(err) => {
-                return Err(format!("cannot inspect directory {}: {err}", prefix.display()));
-            }
+        let is_last = components.peek().is_none();
+        if ensure_dir_component(&prefix, !created_missing && !is_last)? {
+            created_missing = true;
         }
     }
-    let meta = fs::symlink_metadata(dir)
-        .map_err(|err| format!("cannot inspect directory {}: {err}", dir.display()))?;
-    if meta.file_type().is_symlink() || !meta.is_dir() {
-        return Err(format!("destination {} must be a real directory", dir.display()));
+
+    let meta = fs::symlink_metadata(&trimmed)
+        .map_err(|err| format!("cannot inspect directory {}: {err}", trimmed.display()))?;
+    if meta.file_type().is_symlink() {
+        return Err(format!("refusing symlink directory {}", trimmed.display()));
+    }
+    if !meta.is_dir() {
+        return Err(format!("expected directory at {}, found non-directory", trimmed.display()));
     }
     Ok(())
 }
@@ -327,10 +297,19 @@ pub fn run(args: InitArgs) -> Result<String, String> {
     if args.standalone {
         let dir = args.proof_dir.unwrap_or_else(|| PathBuf::from("."));
         let files = [
-            ScaffoldFile { name: "lib.rs", contents: STANDALONE_LIB_RS.to_owned() },
+            ScaffoldFile {
+                name: "lib.rs",
+                contents: strip_license_header(STANDALONE_LIB_RS, "//").to_owned(),
+            },
             ScaffoldFile { name: "request.json", contents: STANDALONE_REQUEST_JSON.to_owned() },
-            ScaffoldFile { name: "Spec.lean", contents: STANDALONE_SPEC_LEAN.to_owned() },
-            ScaffoldFile { name: "Proof.lean", contents: STANDALONE_PROOF_LEAN.to_owned() },
+            ScaffoldFile {
+                name: "Spec.lean",
+                contents: strip_license_header(STANDALONE_SPEC_LEAN, "--").to_owned(),
+            },
+            ScaffoldFile {
+                name: "Proof.lean",
+                contents: strip_license_header(STANDALONE_PROOF_LEAN, "--").to_owned(),
+            },
         ];
         let created = write_create_new_files(&dir, &files)?;
         let req = dir.join("request.json");
@@ -431,16 +410,326 @@ mod tests {
             fs::write(outside.path().join("Spec.lean"), b"-- keep\n").unwrap();
             let link_dir = dir.path().join("link-proof");
             symlink(outside.path(), &link_dir).unwrap();
+            for spelling in [
+                link_dir.clone(),
+                PathBuf::from(format!("{}/", link_dir.display())),
+                link_dir.join("."),
+            ] {
+                let err = run(InitArgs {
+                    manifest_path: None,
+                    proof_dir: Some(spelling),
+                    select: None,
+                    standalone: true,
+                })
+                .unwrap_err();
+                assert!(err.contains("symlink"), "{err}");
+            }
+            assert_eq!(fs::read(outside.path().join("Spec.lean")).unwrap(), b"-- keep\n");
+            assert!(!outside.path().join("Proof.lean").exists());
+        }
+    }
+
+    #[test]
+    fn strip_license_header_handles_comment_blocks_and_preserves_unheaded_text() {
+        assert_eq!(
+            strip_license_header("// Copyright 2026 Author\n//\n// body\n\npub fn f() {}\n", "//"),
+            "pub fn f() {}\n"
+        );
+        assert_eq!(
+            strip_license_header("-- Copyright 2026 Author\n--\n\nmodule\n", "--"),
+            "module\n"
+        );
+        assert_eq!(
+            strip_license_header("// Copyright 2026 Author\n\n\npub fn f() {}\n", "//"),
+            "\npub fn f() {}\n"
+        );
+        assert_eq!(
+            strip_license_header("// Copyright 2026 Author\r\n// line\r\n\r\nbody\r\n", "//"),
+            "body\r\n"
+        );
+        assert_eq!(
+            strip_license_header("// Copyright 2026 Author\npub fn f() {}\n", "//"),
+            "pub fn f() {}\n"
+        );
+        assert_eq!(strip_license_header("// Copyright 2026 Author", "//"), "");
+        assert_eq!(strip_license_header(STANDALONE_REQUEST_JSON, "//"), STANDALONE_REQUEST_JSON);
+        assert_eq!(
+            strip_license_header("// Licensed only\n\ncode\n", "//"),
+            "// Licensed only\n\ncode\n"
+        );
+        assert_eq!(
+            strip_license_header("// Copyrighted\n\ncode\n", "//"),
+            "// Copyrighted\n\ncode\n"
+        );
+        assert_eq!(strip_license_header("// Copyright\n\ncode\n", "//"), "// Copyright\n\ncode\n");
+        assert_eq!(strip_license_header("", "//"), "");
+        assert_eq!(
+            strip_license_header(" Copyright 2026\n\ncode\n", ""),
+            " Copyright 2026\n\ncode\n"
+        );
+    }
+
+    #[test]
+    fn standalone_scaffolds_match_assets_without_license_headers() {
+        let dir = tempfile::tempdir().unwrap();
+        let out_dir = dir.path().join("scalar");
+        run(InitArgs {
+            manifest_path: None,
+            proof_dir: Some(out_dir.clone()),
+            select: None,
+            standalone: true,
+        })
+        .unwrap();
+
+        let lib_rs = fs::read_to_string(out_dir.join("lib.rs")).unwrap();
+        let request_json = fs::read_to_string(out_dir.join("request.json")).unwrap();
+        let spec_lean = fs::read_to_string(out_dir.join("Spec.lean")).unwrap();
+        let proof_lean = fs::read_to_string(out_dir.join("Proof.lean")).unwrap();
+
+        assert!(lib_rs.starts_with("pub fn zero()"), "{lib_rs}");
+        assert!(request_json.starts_with('{'), "{request_json}");
+        assert!(spec_lean.starts_with("module\n"), "{spec_lean}");
+        assert!(proof_lean.starts_with("module\n"), "{proof_lean}");
+
+        for (name, generated) in
+            [("lib.rs", &lib_rs), ("Spec.lean", &spec_lean), ("Proof.lean", &proof_lean)]
+        {
+            assert!(!generated.contains("Copyright"), "{name} retained copyright header");
+            assert!(!generated.contains("Licensed under"), "{name} retained license header");
+        }
+
+        let (lib_header, lib_body) =
+            include_str!("../assets/scalar/lib.rs").split_once("\n\n").unwrap();
+        assert!(lib_header.starts_with("// Copyright "));
+        assert_eq!(lib_rs, lib_body);
+
+        assert_eq!(request_json, include_str!("../assets/scalar/request.json"));
+
+        let (spec_header, spec_body) =
+            include_str!("../assets/scalar/Spec.lean").split_once("\n\n").unwrap();
+        assert!(spec_header.starts_with("-- Copyright "));
+        assert_eq!(spec_lean, spec_body);
+
+        let (proof_header, proof_body) =
+            include_str!("../assets/scalar/Proof.lean").split_once("\n\n").unwrap();
+        assert!(proof_header.starts_with("-- Copyright "));
+        assert_eq!(proof_lean, proof_body);
+    }
+
+    #[test]
+    fn ensure_non_symlink_dir_handles_existing_root_dot_and_empty_paths() {
+        let dir = tempfile::tempdir().unwrap();
+        let existing = dir.path().join("existing");
+        fs::create_dir(&existing).unwrap();
+        ensure_non_symlink_dir(&existing).unwrap();
+        ensure_non_symlink_dir(Path::new(&format!("{}/", existing.display()))).unwrap();
+
+        ensure_non_symlink_dir(Path::new(".")).unwrap();
+        ensure_non_symlink_dir(Path::new("./")).unwrap();
+        ensure_non_symlink_dir(Path::new("/")).unwrap();
+
+        let empty_err = ensure_non_symlink_dir(Path::new("")).unwrap_err();
+        assert!(empty_err.contains("empty"), "{empty_err}");
+
+        for parent_ref in [Path::new(".."), Path::new("../"), Path::new("../.")] {
+            let err = ensure_non_symlink_dir(parent_ref).unwrap_err();
+            assert!(err.contains("'..'"), "{err}");
+        }
+        let missing_parent_ref = dir.path().join("missing-before-parent/..");
+        let missing_parent_err = ensure_non_symlink_dir(&missing_parent_ref).unwrap_err();
+        assert!(missing_parent_err.contains("'..'"), "{missing_parent_err}");
+        assert!(!dir.path().join("missing-before-parent").exists());
+
+        let regular_file = dir.path().join("regular");
+        fs::write(&regular_file, b"file").unwrap();
+        let file_err = ensure_non_symlink_dir(&regular_file).unwrap_err();
+        assert!(file_err.contains("non-directory"), "{file_err}");
+        let under_file_err = ensure_non_symlink_dir(&regular_file.join("proof")).unwrap_err();
+        assert!(under_file_err.contains("non-directory"), "{under_file_err}");
+        assert!(!dir.path().join("regular/proof").exists());
+    }
+
+    #[cfg(unix)]
+    #[test]
+    fn allows_symlinked_ancestors_while_rejecting_symlink_destinations_and_broken_ancestors() {
+        use std::os::unix::fs::symlink;
+
+        let dir = tempfile::tempdir().unwrap();
+        let real_root = dir.path().join("private-tmp");
+        fs::create_dir(&real_root).unwrap();
+        let symlink_parent = dir.path().join("tmp-link");
+        symlink(&real_root, &symlink_parent).unwrap();
+
+        // Pre-existing symlinked ancestor (like macOS `/tmp -> private/tmp`)
+        // succeeds for nested new directories and existing real subdirectories.
+        let nested = symlink_parent.join("nested").join("proof");
+        run(InitArgs {
+            manifest_path: None,
+            proof_dir: Some(nested),
+            select: None,
+            standalone: true,
+        })
+        .unwrap();
+        for name in ["lib.rs", "request.json", "Spec.lean", "Proof.lean"] {
+            assert!(real_root.join("nested/proof").join(name).is_file(), "missing {name}");
+        }
+
+        let existing_sub = real_root.join("existing-dir");
+        fs::create_dir(&existing_sub).unwrap();
+        run(InitArgs {
+            manifest_path: None,
+            proof_dir: Some(symlink_parent.join("existing-dir")),
+            select: None,
+            standalone: true,
+        })
+        .unwrap();
+        assert!(existing_sub.join("Proof.lean").is_file());
+
+        // Cargo mode under a pre-existing symlinked ancestor also succeeds.
+        let crate_real = real_root.join("crate-demo");
+        fs::create_dir(&crate_real).unwrap();
+        fs::write(
+            crate_real.join("Cargo.toml"),
+            "[package]\nname = \"demo\"\nversion = \"0.1.0\"\nedition = \"2024\"\n",
+        )
+        .unwrap();
+        run(InitArgs {
+            manifest_path: Some(symlink_parent.join("crate-demo/Cargo.toml")),
+            proof_dir: None,
+            select: None,
+            standalone: false,
+        })
+        .unwrap();
+        assert!(crate_real.join("proof/Spec.lean").is_file());
+        assert!(crate_real.join("proof/Proof.lean").is_file());
+
+        // Dangling symlink destination (with and without trailing `/`) is
+        // refused.
+        let dangling = dir.path().join("dangling");
+        symlink(dir.path().join("absent-target"), &dangling).unwrap();
+        for spelling in [dangling.clone(), PathBuf::from(format!("{}/", dangling.display()))] {
+            let err = ensure_non_symlink_dir(&spelling).unwrap_err();
+            assert!(err.contains("symlink"), "{err}");
+        }
+
+        // Dangling symlink ancestor is refused cleanly without creating
+        // anything.
+        let dangling_child = dangling.join("proof");
+        let dangling_err = run(InitArgs {
+            manifest_path: None,
+            proof_dir: Some(dangling_child),
+            select: None,
+            standalone: true,
+        })
+        .unwrap_err();
+        assert!(
+            dangling_err.contains("cannot inspect symlink directory ancestor"),
+            "{dangling_err}"
+        );
+        assert!(!dir.path().join("absent-target").exists());
+
+        // Symlinked ancestor targeting a regular file is refused cleanly.
+        let regular_file = dir.path().join("file");
+        fs::write(&regular_file, b"data").unwrap();
+        let file_link = dir.path().join("file-link");
+        symlink(&regular_file, &file_link).unwrap();
+        let file_link_err = ensure_non_symlink_dir(&file_link.join("proof")).unwrap_err();
+        assert!(file_link_err.contains("non-directory"), "{file_link_err}");
+
+        // Symlink loop ancestor is refused cleanly.
+        let loop_a = dir.path().join("loop-a");
+        let loop_b = dir.path().join("loop-b");
+        symlink(&loop_b, &loop_a).unwrap();
+        symlink(&loop_a, &loop_b).unwrap();
+        let loop_err = ensure_non_symlink_dir(&loop_a.join("proof")).unwrap_err();
+        assert!(loop_err.contains("cannot inspect symlink directory ancestor"), "{loop_err}");
+
+        // Paths whose final non-`.` component is `..` are refused, including
+        // through symlinked ancestors or trailing separators.
+        for parent_spelling in [
+            symlink_parent.join(".."),
+            PathBuf::from(format!("{}/../", symlink_parent.display())),
+            symlink_parent.join("../."),
+            real_root.join(".."),
+        ] {
             let err = run(InitArgs {
                 manifest_path: None,
-                proof_dir: Some(link_dir),
+                proof_dir: Some(parent_spelling),
                 select: None,
                 standalone: true,
             })
             .unwrap_err();
-            assert!(err.contains("symlink"), "{err}");
-            assert_eq!(fs::read(outside.path().join("Spec.lean")).unwrap(), b"-- keep\n");
-            assert!(!outside.path().join("Proof.lean").exists());
+            assert!(err.contains("'..'"), "{err}");
+        }
+    }
+
+    #[test]
+    fn relative_paths_subprocess_helper() {
+        let Some(expected_dir) = std::env::var_os("ANNEAL_INIT_SUBPROCESS_DIR") else {
+            return;
+        };
+        assert_eq!(
+            fs::canonicalize(std::env::current_dir().unwrap()).unwrap(),
+            fs::canonicalize(expected_dir).unwrap()
+        );
+
+        let dot_out =
+            run(InitArgs { manifest_path: None, proof_dir: None, select: None, standalone: true })
+                .unwrap();
+        assert!(dot_out.contains("verify --request ./request.json"), "{dot_out}");
+        for name in ["lib.rs", "request.json", "Spec.lean", "Proof.lean"] {
+            assert!(Path::new(name).is_file(), "missing {name} in '.'");
+        }
+
+        let nested_out = run(InitArgs {
+            manifest_path: None,
+            proof_dir: Some(PathBuf::from("a/b/c")),
+            select: None,
+            standalone: true,
+        })
+        .unwrap();
+        assert!(nested_out.contains("verify --request a/b/c/request.json"), "{nested_out}");
+        for name in ["lib.rs", "request.json", "Spec.lean", "Proof.lean"] {
+            assert!(Path::new("a/b/c").join(name).is_file(), "missing {name} in a/b/c");
+        }
+
+        let parent_sibling_out = run(InitArgs {
+            manifest_path: None,
+            proof_dir: Some(PathBuf::from("../proof")),
+            select: None,
+            standalone: true,
+        })
+        .unwrap();
+        assert!(
+            parent_sibling_out.contains("verify --request ../proof/request.json"),
+            "{parent_sibling_out}"
+        );
+        for name in ["lib.rs", "request.json", "Spec.lean", "Proof.lean"] {
+            assert!(Path::new("../proof").join(name).is_file(), "missing {name} in ../proof");
+        }
+    }
+
+    #[test]
+    fn standalone_accepts_dot_and_relative_nested_paths_in_isolated_cwd() {
+        let dir = tempfile::tempdir().unwrap();
+        let subdir = dir.path().join("sub");
+        fs::create_dir(&subdir).unwrap();
+        let output = std::process::Command::new(std::env::current_exe().unwrap())
+            .args(["--exact", "init::tests::relative_paths_subprocess_helper"])
+            .env("ANNEAL_INIT_SUBPROCESS_DIR", &subdir)
+            .current_dir(&subdir)
+            .output()
+            .unwrap();
+        assert!(
+            output.status.success(),
+            "subprocess failed:\nstdout:\n{}\nstderr:\n{}",
+            String::from_utf8_lossy(&output.stdout),
+            String::from_utf8_lossy(&output.stderr)
+        );
+        for name in ["lib.rs", "request.json", "Spec.lean", "Proof.lean"] {
+            assert!(subdir.join(name).is_file(), "missing {name} in '.'");
+            assert!(subdir.join("a/b/c").join(name).is_file(), "missing {name} in a/b/c");
+            assert!(dir.path().join("proof").join(name).is_file(), "missing {name} in ../proof");
         }
     }
 
