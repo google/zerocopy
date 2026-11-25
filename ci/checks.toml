@@ -192,6 +192,10 @@ inputs = [
 mount = "/cargo-home"
 cargo_locked = { workspace = "exocrate/Cargo.toml" }
 
+[caches.anneal-mir-eval-cargo-v1]
+mount = "/cargo-home"
+cargo_locked = { workspace = "tools/anneal-mir-eval/Cargo.toml" }
+
 [caches.anneal-cargo-v1]
 mount = "/cargo-home"
 cargo_locked = { workspace = "anneal/Cargo.toml" }
@@ -798,6 +802,20 @@ env = { CARGO_HOME = "/cargo-home" }
 command = ["./ci/scripts/run_exocrate_test.sh"]
 
 [[checks]]
+id = "tools-anneal-mir-eval"
+image = "zc-stable-msrv"
+runner = "ubuntu-24.04"
+pins = ["rust-toolchains"]
+caches = ["anneal-mir-eval-cargo-v1"]
+writable_dirs = ["tools/anneal-mir-eval/target"]
+inputs = [
+  { kind = "cargo_workspace", manifest_path = "tools/anneal-mir-eval/Cargo.toml" },
+  { kind = "glob", include = ["ci/scripts/run_anneal_mir_eval_check.sh"] },
+]
+env = { CARGO_HOME = "/cargo-home" }
+command = ["./ci/scripts/run_anneal_mir_eval_check.sh"]
+
+[[checks]]
 id = "tools-test"
 image = "zc-stable-msrv"
 runner = "ubuntu-24.04"
@@ -1102,6 +1120,8 @@ inputs = [
     "anneal/.cargo", "anneal/.cargo/**", "anneal/.gitmodules",
     "anneal/rust-toolchain", "anneal/rust-toolchain.toml",
   ] },
+  # `profile_v2_e2e` captures the unmodified Zerocopy crate.
+  { kind = "glob", include = ["zerocopy/src/**"] },
 ]
 command = ["./ci/run_anneal_check.sh", "ws-test"]
 env = { SHARD_SPEC = "${matrix.shard}" }

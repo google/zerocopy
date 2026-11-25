@@ -175,7 +175,7 @@ RUN curl -fsSL --retry 3 -o /tmp/rustup-init \
       s390x-unknown-linux-gnu \
       thumbv6m-none-eabi \
     ) && \
-    rustup target add --toolchain "${PIN_RUST_TOOLCHAINS__STABLE}" "${BASE_CROSS[@]}" && \
+    rustup target add --toolchain "${PIN_RUST_TOOLCHAINS__STABLE}" "${BASE_CROSS[@]}" wasm32-unknown-unknown && \
     rustup target add --toolchain "${PIN_RUST_TOOLCHAINS__MSRV}" "${BASE_CROSS[@]}" wasm32-unknown-unknown && \
     rm -rf /usr/local/cargo/registry /usr/local/cargo/git \
       /usr/local/rustup/downloads /usr/local/rustup/tmp \
