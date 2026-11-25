@@ -8,6 +8,19 @@ those terms. -->
 
 # Developing Anneal
 
+> [!WARNING]
+> **This is alpha software!** Anneal (`0.2.0-alpha`, Stage 0) is an
+> experimental verifier whose TCB audit is incomplete. Today it checks only a
+> small, pointer-free scalar subset of Rust without returning calls
+> (`Profile v1` on `x86_64-unknown-linux-gnu`). Passing results depend on an
+> intact build host (`rustc`—and any `build.rs` or proc-macro run to produce
+> inputs—executes outside the Lean sandbox) and human review of stated
+> specifications (the declared primary specification module, every
+> `specification`-role module, and their transitive meaning dependencies),
+> compilation and scope configuration, and TCB audit logs (complete
+> review-surface reporting remains under active development). See
+> [alpha usage](alpha.md) and the [threat model](../THREAT_MODEL.md).
+
 The MIR-based implementation lives at [`anneal/`](../). See the
 [repository layout](architecture.md#repository-layout) for the workspace
 structure.
@@ -83,6 +96,7 @@ incrementally.
 | [Multi-step MIR architecture](architecture.md) | Current + planned | Three-stage MIR pipeline, repository layout, and compiler integration. |
 | [Trust model and boundary enforcement](trust-model.md) | Current | The `trusted/` boundary, dependency pins, and repository CI audits. |
 | [Elaborator containment and Receipt v3](elaborator-containment-design.md) | Current | Linux `ExecSeal` sandboxing, specification preflight, target replay, and Receipt v3 taint law. |
+| [Performance tracking and dashboard](perf-tracking.md) | Current | Continuous benchmark collection, Tier A budgets, MAD regression checks, and the static `/bench/anneal/` dashboard pipeline. |
 | [MIR correspondence design](mir-correspondence-design.md) | Current | Pass 2 correspondence anchoring `Trusted.MirSemantics` against `vendor/lean-miri/`. |
 | [MIR correspondence strategy](mir-correspondence-strategy.md) | Current | Proof strategy and simulation obligations for MIR correspondence. |
 | [Lean-Miri provenance](lean-miri-provenance.md) | Current | Provenance and patching policy for `vendor/lean-miri/`. |

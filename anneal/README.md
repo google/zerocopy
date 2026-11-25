@@ -2,18 +2,28 @@
 
 <p align="center"><em>logo by <a href="https://www.instagram.com/tinyneonspark">tinyneonspark</a></em></p>
 
-> **Note:** Anneal is in alpha. You're welcome to use it, but many things
-> are broken or unsound, and we will change APIs frequently.
+> [!WARNING]
+> **This is alpha software!** Anneal (`0.2.0-alpha`, Stage 0) is an
+> experimental verifier under active development and has **not** yet
+> completed an independent audit of its Trusted Computing Base (TCB). Today it
+> verifies only a small, pointer-free scalar subset of Rust without returning
+> calls (`x86_64-unknown-linux-gnu` Profile v1) across selected functions or
+> monomorphizations (`UnitTheorem`) or single scalar library or binary crates
+> with no required normal or build dependencies (`CrateTheorem`). Passing
+> results depend on an intact build host (`rustc`—and any `build.rs` or
+> proc-macro run to produce inputs—executes outside the Lean sandbox) as well
+> as human review of stated specifications (the declared primary specification
+> module, every `specification`-role module, and their transitive meaning
+> dependencies), compilation and scope configuration (`request.json` or
+> `verify rustc` flags), and TCB audit logs (complete review-surface reporting
+> remains under active development). Do not rely on alpha runs as a production
+> security or soundness guarantee, and expect frequent breaking changes. See
+> the [alpha guide][alpha-guide] and [threat model][threat-model].
 
-> [!NOTE]
-> The MIR-based alpha installs a toolchain from a published or locally built
-> archive and uses Lean's kernel to check proofs for selected Rust functions or
-> scalar library crates. General crate verification is under development. The
-> design discussion and examples below describe Anneal's goals. Verification
-> guarantees depend on trusted code being correct and the assumptions in the
-> verification receipt being valid.
-
-For safe code, Rust promises that "if it compiles, then it is memory-safe." Anneal promises the same for unsafe code.
+For safe code, Rust promises that "if it compiles, then it is memory-safe."
+Anneal aims to provide the same compile-time guarantee for unsafe code via
+formal specifications and Lean 4 proofs (at Stage 0 alpha today, verification
+covers only a scalar, pointer-free subset).
 
 Rust promises that all safe Rust code is free of memory safety bugs. It does this by encoding the requirements for memory safety in the type system, ensuring that if a program type checks, then it is free of memory safety bugs. The lifetime system prevents use-after-free bugs, the ownership system prevents double-free bugs, and so on. **There do not exist type-checked safe Rust programs with memory safety bugs.**[^1] The same is not true of unsafe Rust code. **There do exist type-checked unsafe Rust programs with memory safety bugs.**
 
@@ -43,163 +53,169 @@ impl usize {
 }
 ```
 
-Rust doesn't have any way to epxress "a pair of `usize`s such `rhs != 0` and `self % rhs == 0`". Thus, the type signature of `unchecked_div_exact` is *too permissive*. While it prevents some illegal values statically (e.g., the type system will not permit you to pass `-1`), some illegal values will compile just fine, and will result in memory safety bugs at runtime:
+Rust doesn't have any way to express "a pair of `usize`s such that `rhs != 0`
+and `self % rhs == 0`". Thus, the type signature of `unchecked_div_exact` is
+*too permissive*. While it prevents some illegal values statically (e.g.,
+the type system will not permit you to pass `-1`), some illegal values will
+compile just fine, and will result in memory safety bugs at runtime:
 
 ```rust
 let res: usize = unsafe { 1usize.unchecked_div_exact(0) };
 ```
 
-In this view, unsafe Rust differs from safe Rust in that **some type-safe values are still illegal**, while in safe Rust, **all type-safe values are legal** (where "illegal" means "will result in a memory safety bug").
+In this view, unsafe Rust differs from safe Rust in that **some type-safe values
+are still illegal**, while in safe Rust, **all type-safe values are legal**
+(where "illegal" means "will result in a memory safety bug").
 
-As we saw before, Rust ensures that **no type-checked safe Rust programs contain memory safety bugs.** Anneal provides the same promise, but for unsafe Rust code. Just as Rust encodes memory safety requirements in its types, Anneal encodes memory safety requirements in its annotations. Unlike Rust types, Anneal annotations are powerful enough to prevent *any* illegal values from compiling, even in unsafe code. In this sense, Anneal annotations are an *extension* to Rust's type system.
+As we saw before, Rust ensures that **no type-checked safe Rust programs contain
+memory safety bugs.** Anneal's goal is to provide the same promise for unsafe
+Rust code by making preconditions, invariants, and postconditions
+machine-checked at verification time via the Lean 4 kernel. Anneal separates
+proof authoring (such as `Proof.lean`, kept outside the trusted review surfaces)
+from the two human-reviewed surfaces: stated specifications (the declared
+primary specification module plus every `specification`-role module and its
+transitive meaning dependencies) and the TCB audit log, which covers the
+[trusted computing base](https://en.wikipedia.org/wiki/Trusted_computing_base)
+(TCB) and compilation/scope configuration (`request.json`).
 
-For example, here's how Anneal would encode the safety precondition of `unchecked_div_exact`, preventing buggy programs from compiling:
+| | Rust | Anneal (target model; Stage 0 scalar subset today) |
+| - | ---- | ------ |
+| **Command** | `cargo check` | `cargo anneal verify` |
+| **Contract surface** | Rust types | Rust types + formal specifications (declared primary and `specification`-role modules plus transitive dependencies today; inline Rust syntax planned) |
+| **Guarantee** | Safe code is free of memory safety bugs | Verified Rust is free of Rust UB under stated specs and TCB log* |
+| **Caveat** | `unsafe` code is unchecked | External code outside the Rust AM is unchecked; Stage 0 refuses constructs outside scalar Profile v1* |
+| **TCB** | Rust toolchain, `unsafe` code | Rust + Anneal toolchains, compilation/scope configuration (`request.json`), code outside the Rust AM* |
 
-```rust
-impl usize {
-    /// # Safety
-    ///
-    /// ```anneal
-    /// requires(nonzero): rhs != 0
-    /// requires(divides): self % rhs == 0
-    /// ```
-    pub unsafe fn unchecked_div_exact(self, rhs: usize) -> usize;
-}
-
-let res: usize = unsafe { 1usize.unchecked_div_exact(0) }; // ERROR: Cannot prove `rhs != 0`
-```
-
-*Support for this example is in development. The annotation syntax may change.*
-
-Anneal removes most `unsafe` code from your [trusted computing base](https://en.wikipedia.org/wiki/Trusted_computing_base) (TCB).*
-
-| | Rust | Anneal |
-|-| ---- | ------ |
-| | `cargo check` | `cargo anneal verify` |
-| **Types** | Rust types | Rust types + Anneal annotations |
-| **Guarantee** | Safe code is free of memory safety bugs | Safe and unsafe code is free of memory safety bugs* |
-| **Caveat** | Unsafe code is unchecked | Code outside of the Rust Abstract Machine (AM) is unchecked* |
-| **TCB** | Rust toolchain, unsafe code | Rust + Anneal toolchains, code outside of the Rust AM* |
-
-\* *Anneal cannot verify the soundness of code constructs which exist outside of the Rust Abstract Machine (AM), such as FFI or inline assembly. The programmer must axiomatically assert the behavior of this code, and it remains in the TCB. Note that Rust code which **calls** these constructs (e.g., code which calls a function implemented in C) **can** be verified – Anneal removes this code from the TCB.*
+\* *Anneal cannot verify code that lives outside the Rust Abstract Machine (AM),
+such as FFI or inline assembly; callers must axiomatically specify its behavior
+in the TCB. At Stage 0 alpha, Anneal supports only the pointer-free scalar MIR
+fragment without returning calls (`Profile v1` on `x86_64-unknown-linux-gnu`)
+and fails closed (`unsupported`) on references, raw pointers, structs, slices,
+returning calls, and unsupported items; see the [alpha guide][alpha-guide] for
+the exact boundary.*
 
 ### Development Philosophy
 
-Anneal is a [formal verification](https://en.wikipedia.org/wiki/Formal_verification) tool. However, it diverges from many formal verification tools in its philosophy for how it should be used by end users.
+Anneal is a [formal verification][formal-verification] tool designed for
+inner-loop developer and CI feedback rather than purely post-hoc verification:
 
-While exceptions exist, the most common form of formal verification has historically been *post-hoc verification*, in which verification is applied to a software artifact which already exists and which was not specifically written with verification in mind. This approach comes with a number of assumptions and limitations which we aim to sidestep:
-1. Assumes that verification requires distinct expertise which developers lack
-2. Verification is applied to a codebase whose structure may not be amenable to verification
-3. Results in long iteration cycles, in which feedback from verification is obtained long after a line of code is written
-4. Without extra infrastructure (e.g. in CI), software codebase and verification artifacts (specifications and proofs) can drift, requiring periodic efforts to update the verification to "catch up" with recent code changes
+1. Developers already hold mental justifications (preconditions and invariants)
+   for why code is valid; Anneal turns those justifications into explicit formal
+   contracts.
+2. Verification shapes code toward modular, cleanly specified boundaries as code
+   is written.
+3. Short `cargo anneal verify` runs can execute locally alongside `cargo check`
+   and continuously in CI so specifications and proofs never drift from code.
 
-We believe that all of these can be addressed by thinking of specifications as merely an extension to the type system rather than a parallel artifact. In particular:
-1. Developers already have justifications – albeit undocumented – for their belief that their code is correct. Type annotations simply ask them to make these justifications explicit
-2. As with any form of static typing, Anneal annotations will shape the codebase and nudge developers towards certain patterns for code organization which are more amenable to verification. This nudging will happen in the developer's inner loop and so will be much more effective than feedback from post-hoc verification
-3. We expect `cargo anneal verify` to be just as frequent as `cargo check`, and so iteration cycles are extremely short
-4. CI can simply run `cargo anneal verify` to ensure that specifications and proofs never drift or bit rot
+At Stage 0 alpha, specifications and proofs live out-of-line in Lean 4 (for
+example, `Spec.lean` and `Proof.lean` via `request.json`, or explicit
+`--spec-file` and `--proof-file` flags on `cargo anneal verify rustc`). Inline
+Rust specification syntax is planned roadmap work.
 
-### Human and Agentic Development
+### Human and agentic workflow
 
-Anneal is designed for use by both human engineers and AI coding agents.
-Machine-checked proofs reduce the amount of code reviewers check by hand.
-Human reviewers assess specifications and trusted assumptions. We have
-[demonstrated](https://drive.google.com/file/d/1areyf438L0izETTHj7PRMnoSHSX4kM29/view?usp=sharing)
-that Antigravity can author `unsafe` Rust code and prove its soundness using
-Anneal.
+Anneal is built for both human engineers and AI coding agents. Lean's kernel
+checks proof scripts automatically, keeping human review focused on the two
+trusted review surfaces rather than reading every line of proof modules (see the
+[threat model][threat-model]):
 
-Without Anneal:
+1. Stated specifications (the declared primary specification module plus every
+   `specification`-role module and its transitive meaning dependencies—such as
+   `Spec.lean` or custom `--spec-file` modules declaring caller preconditions in
+   `safety` and behavior/postconditions in `property`); and
+2. The TCB audit log (covering the pinned toolchains, the compilation and
+   scope configuration in `request.json` or `verify rustc` flags—target triple,
+   `cfg`, `env`, `crate_root`, `source_files`, `scope.roots`—and any host or
+   axiomatic assumptions recorded in the Receipt v3 fields: `taint_reasons`,
+   `elaboration_sandbox`, `assumptions`, `deferred`, and `audit`).
 
-```rust
-struct PositiveUsize {
-    // INVARIANT: x > 0
-    x: usize,
-}
+Automated reporting across the complete review surface (recorded in `deferred`
+as `"complete review-surface reporting"`) remains under active development.
 
-impl PositiveUsize {
-    /// Creates a new `PositiveUsize` if `x > 0`.
-    pub fn new(x: usize) -> Option<Self> {
-        if x > 0 {
-            // SAFETY: We checked that x > 0.
-            Some(Self { x })
-        } else {
-            None
-        }
-    }
-}
-
-impl std::ops::Div<PositiveUsize> for usize {
-    type Output = usize;
-
-    fn div(self, rhs: PositiveUsize) -> Self::Output {
-        // SAFETY: The type invariant of `PositiveUsize` guarantees that
-        // `rhs.x > 0`. This makes division by zero impossible.
-        unsafe { std::intrinsics::unchecked_div(self, rhs.x) }
-    }
-}
-```
-
-With Anneal:
-
-```rust
-/// ```anneal
-/// isValid self := self.val.val > 0
-/// ```
-pub struct PositiveUsize {
-    pub val: usize,
-}
-
-impl PositiveUsize {
-    /// Creates a new `PositiveUsize` if `x > 0`.
-    ///
-    /// ```anneal
-    /// ensures:
-    ///   match ret with
-    ///   | none => x.val = 0
-    ///   | some r => r.val.val = x.val
-    /// ```
-    pub fn new(x: usize) -> Option<PositiveUsize> {
-        if x > 0 {
-            Some(Self { val: x })
-        } else {
-            None
-        }
-    }
-}
-
-/// ```anneal
-/// proof (h_progress):
-///   unfold div_positive
-///   rcases h_req with ⟨h_self_val_is_valid, h_rhs_is_valid⟩
-///   have ho := unchecked_div.spec self_val rhs.val {
-///     h_a_is_valid := h_self_val_is_valid
-///     h_b_is_valid := by verify_is_valid h_b_is_valid _root_.positive_usize.div_positive
-///     h_anon := by simp_all [Anneal.IsValid.isValid]
-///   }
-///   rcases Aeneas.Std.WP.spec_imp_exists ho with ⟨y, h_eq, _⟩
-///   exact ⟨y, h_eq⟩
-/// ```
-fn div_positive(self_val: usize, rhs: PositiveUsize) -> usize {
-    unsafe { self_val.unchecked_div(rhs.val) }
-}
-
-impl std::ops::Div<PositiveUsize> for usize {
-    type Output = usize;
-
-    fn div(self, rhs: PositiveUsize) -> usize {
-        unsafe { unchecked_div(self_val, rhs.val) }
-    }
-}
-```
+[formal-verification]: https://en.wikipedia.org/wiki/Formal_verification
 
 ## Try the alpha
 
-The alpha verifies selected Rust functions or scalar library crates with no
-required normal or build dependencies (dev-dependencies and inactive optional
-dependencies are ignored) on x86-64 Linux with glibc. Follow the
-[alpha guide][alpha-guide] to install it and check a runnable proof.
+The alpha verifies selected Rust functions or scalar library or binary crates
+with no required normal or build dependencies (dev-dependencies and inactive
+optional dependencies are ignored) on x86-64 Linux with glibc.
+
+Install a published prerelease from [GitHub Releases][releases] (replacing
+`<version>` with the version from the latest `anneal-v<version>` tag without the
+`anneal-v` prefix), verify with `setup` / `init` / `verify`, and check
+`cargo anneal skill` for agent guidance:
+
+```sh
+cargo install --locked cargo-anneal@<version>
+cargo anneal setup
+cargo anneal init --standalone --proof-dir hello
+cd hello
+cargo anneal verify --request request.json
+```
+
+When building from a source checkout whose `Cargo.toml` tracks `0.0.0-dev`
+with an all-zero archive digest, or when testing local compiler or Lean edits,
+either build and install a local archive via
+`cargo anneal setup --local-archive target/omnibus-link` or pass `--capture`,
+`--sysroot`, and `--lean` directly to `cargo anneal verify`; see the
+[alpha guide][alpha-guide].
+
+`cargo anneal init --standalone` writes four files into `hello/`:
+
+- `lib.rs` — a minimal scalar library crate (`pub fn zero() -> u64 { 0 }`);
+- `request.json` — binds `lib.rs`, `scope` (`selected_unit` root `zero`), and
+  the Lean modules below;
+- `Spec.lean` — defines `Spec.specs`, requiring `zero()` to terminate without
+  diverging and return `0u64`; and
+- `Proof.lean` — discharges `Expected.claim` against captured MIR using
+  `Anneal.MirWp`.
+
+```rust
+pub fn zero() -> u64 {
+    0
+}
+```
+
+On success (`exit 0`), `cargo anneal verify --request request.json` writes a
+Receipt Schema v3 JSON object to stdout (condensed below from a Linux
+`ExecSeal` run: `audit`, `census`, `configuration`, `correspondence_provenance`,
+`selected`, `sources`, `toolchain_identity`, digests, and `timing_ms` fields
+are omitted for brevity; on Linux, `elaboration_sandbox` is
+`linux_bwrap` or `linux_landlock_seccomp` by default):
+
+```json
+{
+  "schema_version": 3,
+  "status": "selected_unit_verified",
+  "experimental": true,
+  "elaboration_sandbox": "linux_bwrap",
+  "taint_reasons": [],
+  "spec_warnings": [],
+  "scope": { "kind": "selected_unit", "roots": ["zero"] },
+  "assumptions": [
+    "faithful pinned compiler capture",
+    "experimental pointer-free MIR semantics",
+    "Lean kernel and admitted foundation",
+    "intact compiler and verification environment"
+  ],
+  "deferred": [
+    "complete review-surface reporting",
+    "source-to-deployed-binary correspondence"
+  ]
+}
+```
+
+To verify that the check is live, edit `lib.rs` to return `1` and rerun
+`cargo anneal verify --request request.json`: verification fails with exit code
+`1`, `"status": "proof_failed"`, and the failing Lean diagnostic and file/line
+location in `Proof.lean`. To inspect captured MIR (`Captured.lean`) and the
+proof obligation (`Expected.lean`) directly, pass `--artifacts <new-directory>`
+(`verify` rejects a path that already exists, or whose parent is not an existing
+directory, before starting verification work).
 
 [alpha-guide]: https://github.com/google/zerocopy/blob/main/anneal/docs/alpha.md
+[releases]: https://github.com/google/zerocopy/releases
+[threat-model]: https://github.com/google/zerocopy/blob/main/anneal/THREAT_MODEL.md
 
 ## Agent skill
 
@@ -218,14 +234,17 @@ gh skill install google/zerocopy \
 ```
 
 For authoring formal specifications or scaling larger Lean proofs, see the
-companion [spec-authoring](skills/spec-authoring/SKILL.md) and
-[proof-scaling](skills/proof-scaling/SKILL.md) skills in the
-[Anneal skills index](skills/README.md).
+companion [spec-authoring][spec-authoring-skill] and
+[proof-scaling][proof-scaling-skill] skills in the
+[Anneal skills index][skills-index].
 
 Choose the `--agent` value for your host. Commit the installed skill to share
 it with teammates and agents working in fresh checkouts.
 
 [gh-skill]: https://cli.github.com/manual/gh_skill_install
+[spec-authoring-skill]: https://github.com/google/zerocopy/blob/main/anneal/skills/spec-authoring/SKILL.md
+[proof-scaling-skill]: https://github.com/google/zerocopy/blob/main/anneal/skills/proof-scaling/SKILL.md
+[skills-index]: https://github.com/google/zerocopy/blob/main/anneal/skills/README.md
 
 ## Repository checks
 

@@ -9,15 +9,25 @@ those terms. -->
 # MIR verifier alpha
 
 > [!WARNING]
-> **Stage 0 Alpha — Not Yet Audited:** Anneal is an early alpha that can
-> increase confidence on small scalar Rust crates, **not** an audited soundness
-> guarantee. The verifier (`trusted/audit/`, `trusted/rustc-capture/`,
-> `trusted/cargo-anneal/`) and its Receipt v3 TCB audit log have not yet
-> completed independent audit, so a passing run does not guarantee that every
-> remaining assumption is accounted for. Track maturity across
-> [Stage 0 (Alpha usability, `#4095`)](https://github.com/google/zerocopy/issues/4095)
-> -> [Stage 1 (Audited trust boundary and TCB accounting, `#4012`)](https://github.com/google/zerocopy/issues/4012)
-> -> [Stage 2 (Broad systems coverage and TCB reduction, `#4096`)](https://github.com/google/zerocopy/issues/4096).
+> **This is alpha software!** Anneal (`0.2.0-alpha`, Stage 0) is an
+> experimental verifier under active development and has **not** yet completed
+> an independent audit of its Trusted Computing Base (TCB). Today it verifies
+> only a small, pointer-free scalar subset of Rust without returning calls
+> (`x86_64-unknown-linux-gnu` Profile v1) across selected functions or
+> monomorphizations (`UnitTheorem`) or single library or binary crates with no
+> required normal or build dependencies (`CrateTheorem`). Passing results depend
+> on an intact build host (`rustc`—and any `build.rs` or proc-macro run to
+> produce inputs—executes outside the Lean sandbox) as well as human review of
+> stated specifications (the declared primary specification module, every
+> `specification`-role module, and their transitive meaning dependencies),
+> compilation and scope configuration (`request.json` or `verify rustc`
+> flags), and TCB audit logs (complete review-surface reporting remains under
+> active development). Do not rely on alpha runs as a production security or
+> soundness guarantee, and expect frequent breaking changes. Track maturity
+> across
+> [Stage 0 (`#4095`)](https://github.com/google/zerocopy/issues/4095) ->
+> [Stage 1 (`#4012`)](https://github.com/google/zerocopy/issues/4012) ->
+> [Stage 2 (`#4096`)](https://github.com/google/zerocopy/issues/4096).
 
 The developer alpha checks selected Rust functions or scalar crates on x86-64
 Linux with glibc, such as Ubuntu 24.04. It compiles a library or single binary
@@ -52,12 +62,14 @@ cargo run --locked -p cargo-anneal -- verify \
   --request trusted/cargo-anneal/assets/scalar/request.json
 ```
 
-The example proves that `zero()` returns zero. To experiment, make a copy of
-the fixture directory and change its Rust function to return one. The same
-proof then fails. `--artifacts <new-directory>` retains the captured Lean
-program, bound claim, and diagnostic evidence for proof development. `verify`
-rejects a path that already exists, or whose parent is not an existing
-directory, before it starts any verification work.
+The example proves that `zero()` returns zero (`cargo anneal init
+--standalone --proof-dir <new-directory>` scaffolds the same four starter
+files outside the repository). To experiment, make a copy of the fixture
+directory and change its Rust function to return one. The same proof then fails
+(`"status": "proof_failed"`, exit code `1`). `--artifacts <new-directory>`
+retains the captured Lean program, bound claim, and diagnostic evidence for
+proof development; `verify` rejects a path that already exists, or whose parent
+is not an existing directory, before it starts any verification work.
 
 In `request.json`, each `source_root` resolves relative to the directory
 containing the request file or to an existing out-of-tree directory, and
@@ -166,9 +178,12 @@ switches passing status to `tainted_crate_verified` or
 
 ## Install a published alpha
 
-Replace `<version>` with the latest published prerelease tag on GitHub Releases
-(for example, `0.2.0-alpha.11`; `main` stays at `0.0.0-dev` with an all-zero
-archive digest rather than tracking published release metadata):
+Replace `<version>` with the semver version from a published `anneal-v<version>`
+prerelease tag on GitHub Releases (for example, `0.2.0-alpha.11`, without the
+`anneal-v` prefix; `main` stays at `0.0.0-dev` with an all-zero archive digest
+rather than tracking published release metadata, so when running from a source
+checkout use `cargo anneal setup --local-archive target/omnibus-link` as shown
+in [Try a proof](#try-a-proof) above):
 
 ```sh
 cargo install --locked cargo-anneal@<version>
