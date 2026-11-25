@@ -1,0 +1,104 @@
+{
+  "topics": [
+    "pl/semantics",
+    "pl/type-layout",
+    "pl/optics",
+    "verification/refinement",
+    "verification/formalized-results",
+    "ffi/c-abi",
+    "isa/assembly-contracts",
+    "lean/kernel",
+    "compilers/abi"
+  ],
+  "subjects": [
+    {
+      "name": "CompCert verified C compiler",
+      "identity": {
+        "repository": "AbsInt/CompCert",
+        "revision": "71262a2fb1b7e6c586cdb8cb084467d48ebced1d"
+      }
+    },
+    {
+      "name": "CompCertO open simulation conventions",
+      "identity": {
+        "repository": "CertiKOS/compcert",
+        "branch": "compcerto",
+        "revision": "87a62d95cd24a44e3ecd5fefddc70a969a881bcb"
+      }
+    },
+    {
+      "name": "CH2O formalized C11 semantics",
+      "identity": {
+        "repository": "robbertkrebbers/ch2o",
+        "revision": "1afb3f615db053b741341e9bfd1d5c65bddea641"
+      }
+    },
+    {
+      "name": "Cerberus C memory and type semantics",
+      "identity": {
+        "repository": "rems-project/cerberus",
+        "revision": "d6eab7d91994b232e49dc7151f5f867482350352"
+      }
+    },
+    {
+      "name": "RefinedC Caesium C object and bitfield formalization",
+      "identity": {
+        "repository": "gitlab.mpi-sws.org/iris/refinedc",
+        "revision": "d057583986651a28047164581f05fbee3a83ed9d"
+      }
+    },
+    {
+      "name": "MiniRust specification",
+      "identity": {
+        "repository": "minirust/minirust",
+        "revision": "063d784186d3252bee242217f218223205c0b568"
+      }
+    },
+    {
+      "name": "Rust compiler (rustc_abi, rustc_target::callconv, and rustc 1.102.0-nightly)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "source_revision": "96be22caa35b5c36c3a6d00571915255cd32ffa5",
+        "executed_version": "1.102.0-nightly (3ef0c22cd 2026-11-11)"
+      }
+    },
+    {
+      "name": "Vellvm dynamic types and LLVM memory byte model",
+      "identity": {
+        "repository": "vellvm/vellvm",
+        "revision": "7f0610c38d829b79bf6e867edf410c9e6f928f98"
+      }
+    },
+    {
+      "name": "Bedrock2 separation-logic memory and scalars",
+      "identity": {
+        "repository": "mit-plv/bedrock2",
+        "revision": "67b682a504041acd2cd678782ff2505983d7cd6f"
+      }
+    },
+    {
+      "name": "Kraken AArch64 semantics and sub-register framing",
+      "identity": {
+        "repository": "AeneasVerif/kraken",
+        "revision": "c9aa45ee1b273892d7efa7bbf8a8a9391e17b2c0"
+      }
+    },
+    {
+      "name": "Lean 4 proof assistant",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "tag": "v4.34.1",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52"
+      }
+    },
+    {
+      "name": "Debian GNU g++ compiler",
+      "identity": {
+        "artifact": "g++",
+        "package": "Debian 15.2.0-14",
+        "version": "15.2.0"
+      }
+    }
+  ],
+  "observed_at": "2026-11-25"
+}

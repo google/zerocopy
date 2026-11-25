@@ -1,0 +1,73 @@
+{
+  "lean_version": "Lean (version 4.34.1, x86_64-unknown-linux-gnu, commit 5045d0056413266e57c625dcd7c365b10e377c52, Release)",
+  "lean_file": "LayoutCallAbiAlgebra.lean",
+  "lean_check_ms": 962.82,
+  "decl_count": 80,
+  "hygiene_hits": {
+    "sorry": 0,
+    "admit": 0,
+    "omega": 0,
+    "bv_decide": 0,
+    "native_decide": 0,
+    "_unsafe_rec": 0,
+    "noncomputable": 0,
+    "Classical.choice": 0,
+    "Quot.sound": 0
+  },
+  "distinct_axioms": [
+    "propext"
+  ],
+  "bench_unbundled_ms": 294.88,
+  "bench_bundled_ms": 352.61,
+  "cpp_probe": {
+    "compiler": "g++",
+    "version": "g++ (Debian 15.2.0-14) 15.2.0",
+    "measurements": {
+      "UserDtor": [
+        8,
+        4
+      ],
+      "PodEqual": [
+        8,
+        4
+      ],
+      "DerivedNonPod": [
+        8,
+        4,
+        5
+      ],
+      "DerivedPod": [
+        12,
+        4,
+        8
+      ],
+      "MemberNonPod": [
+        12,
+        4,
+        8
+      ],
+      "NoUniqueMember": [
+        8,
+        4,
+        5
+      ]
+    }
+  },
+  "rust_probe": {
+    "version": "rustc 1.102.0-nightly (3ef0c22cd 2026-11-11)",
+    "llvm_sigs": [
+      "define noundef i64 @take_c({ i64, i64 } %0) unnamed_addr #0 !guid !4 {",
+      "define noundef i64 @take_t(i128 noundef %x) unnamed_addr #0 !guid !5 {"
+    ],
+    "type_sizes": [
+      "print-type-size type: `I128C`: 16 bytes, alignment: 16 bytes",
+      "print-type-size type: `I128T`: 16 bytes, alignment: 16 bytes",
+      "print-type-size type: `std::option::Option<WrapCell>`: 2 bytes, alignment: 1 bytes",
+      "print-type-size type: `PlainBool`: 1 bytes, alignment: 1 bytes",
+      "print-type-size type: `WrapCell`: 1 bytes, alignment: 1 bytes",
+      "print-type-size type: `std::cell::UnsafeCell<bool>`: 1 bytes, alignment: 1 bytes",
+      "print-type-size type: `std::option::Option<PlainBool>`: 1 bytes, alignment: 1 bytes",
+      "print-type-size type: `std::option::Option<bool>`: 1 bytes, alignment: 1 bytes"
+    ]
+  }
+}
