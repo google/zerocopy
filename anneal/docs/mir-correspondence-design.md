@@ -87,6 +87,8 @@ theory/                         Core untrusted theory (Pass 1; shipped in
                                 wpFaultProg)
     MirWp/Canaries.lean         Decoupled M_anneal non-vacuity canaries
                                 (Pass-1 audited; excluded from bundles)
+    MirWp/CanariesV2.lean       Profile v2 non-vacuity canaries
+                                (replayed, not pinned; excluded from bundles)
 
 vendor/lean-miri/               Vendored lean-miri reference model
                                 (correspondence TCB; Pass 2)
