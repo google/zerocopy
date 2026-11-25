@@ -1333,7 +1333,7 @@ private theorem evalStep_never_unwound (p : Program) (c : Choice) (s : State)
                   | some sl0 =>
                     rw [hLoc0] at hUnw
                     cases sl0 with
-                    | dead => cases hUnw
+                    | dead | partialTuple _ => cases hUnw
                     | immediate ov =>
                       cases ov with
                       | none => cases hUnw
@@ -2053,7 +2053,7 @@ private theorem evalStep_step_preserves_callerMem (b : Body) (fr : FrameState)
               | some sl0 =>
                 rw [hLoc0] at hStep
                 cases sl0 with
-                | dead => cases hStep
+                | dead | partialTuple _ => cases hStep
                 | immediate ov =>
                   cases ov with
                   | none => cases hStep

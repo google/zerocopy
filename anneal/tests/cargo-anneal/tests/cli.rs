@@ -1593,6 +1593,7 @@ fn verify_passes_env_flags_and_rejects_mismatched_capture_env() {
              \"crate_name\": \"demo\",\n\
              \"crate_type\": \"lib\",\n\
              \"panic\": \"unwind\",\n\
+             \"overflow_checks\": false,\n\
              \"target\": \"x86_64-unknown-linux-gnu\",\n\
              \"edition\": \"2024\",\n\
              \"cfg\": [],\n\
@@ -1661,10 +1662,14 @@ fn verify_passes_env_flags_and_rejects_mismatched_capture_env() {
     );
 
     // Also confirm `cargo-anneal` rejects capture manifests whose reported
-    // `crate_type` or `panic` strategy disagrees with the request.
-    for (bad_crate_type, bad_panic, req_crate_type, req_panic) in
-        [("lib", "unwind", "bin", "unwind"), ("bin", "unwind", "bin", "abort")]
-    {
+    // `crate_type`, `panic` strategy, or `overflow_checks` setting disagrees
+    // with the request.
+    for (bad_crate_type, bad_panic, bad_overflow, req_crate_type, req_panic, req_overflow) in [
+        ("lib", "unwind", false, "bin", "unwind", false),
+        ("bin", "unwind", false, "bin", "abort", false),
+        ("bin", "unwind", true, "bin", "unwind", false),
+        ("bin", "unwind", false, "bin", "unwind", true),
+    ] {
         let mismatch_script = format!(
             "#!/bin/sh\n\
              out_dir=\"\"\n\
@@ -1681,6 +1686,7 @@ fn verify_passes_env_flags_and_rejects_mismatched_capture_env() {
                  \"crate_name\": \"demo\",\n\
                  \"crate_type\": \"{bad_crate_type}\",\n\
                  \"panic\": \"{bad_panic}\",\n\
+                 \"overflow_checks\": {bad_overflow},\n\
                  \"target\": \"x86_64-unknown-linux-gnu\",\n\
                  \"edition\": \"2024\",\n\
                  \"cfg\": [],\n\
@@ -1696,32 +1702,34 @@ fn verify_passes_env_flags_and_rejects_mismatched_capture_env() {
         );
         fs::write(&fake_capture, mismatch_script).unwrap();
         fs::set_permissions(&fake_capture, fs::Permissions::from_mode(0o755)).unwrap();
-        let mismatch_out = command(Route::Direct, project.path())
-            .args([
-                "verify",
-                "--capture",
-                fake_capture.to_str().unwrap(),
-                "--sysroot",
-                sysroot.to_str().unwrap(),
-                "--lean",
-                fake_lean.to_str().unwrap(),
-                "rustc",
-                "lib.rs",
-                "--crate-name",
-                "demo",
-                "--crate-type",
-                req_crate_type,
-                "--panic",
-                req_panic,
-                "--select",
-                "f",
-                "--spec-file",
-                "Spec=Spec.lean",
-                "--proof-file",
-                "Proof=Proof.lean",
-            ])
-            .output()
-            .unwrap();
+        let mut mismatch_args = vec![
+            "verify",
+            "--capture",
+            fake_capture.to_str().unwrap(),
+            "--sysroot",
+            sysroot.to_str().unwrap(),
+            "--lean",
+            fake_lean.to_str().unwrap(),
+            "rustc",
+            "lib.rs",
+            "--crate-name",
+            "demo",
+            "--crate-type",
+            req_crate_type,
+            "--panic",
+            req_panic,
+            "--select",
+            "f",
+            "--spec-file",
+            "Spec=Spec.lean",
+            "--proof-file",
+            "Proof=Proof.lean",
+        ];
+        if req_overflow {
+            mismatch_args.push("--overflow-checks");
+        }
+        let mismatch_out =
+            command(Route::Direct, project.path()).args(&mismatch_args).output().unwrap();
         assert_result(&mismatch_out, 2, "", "");
         let mismatch_receipt: serde_json::Value =
             serde_json::from_slice(&mismatch_out.stdout).unwrap();
@@ -1779,6 +1787,7 @@ fn verify_passes_stdlib_crate_flag_and_rejects_mismatched_capture_capability() {
                  \"crate_name\": \"core\",\\n\
                  \"crate_type\": \"lib\",\\n\
                  \"panic\": \"unwind\",\\n\
+                 \"overflow_checks\": false,\\n\
                  \"target\": \"x86_64-unknown-linux-gnu\",\\n\
                  \"edition\": \"2024\",\\n\
                  \"cfg\": [],\\n\

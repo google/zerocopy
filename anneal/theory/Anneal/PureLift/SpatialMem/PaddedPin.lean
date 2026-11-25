@@ -1292,6 +1292,7 @@ match the authenticated witness bound in `LoanPhase.spatialPinned`. -/
           | .immediate none => false
           | .immediate (some v) => !valFreeOfAllocId 8 aid v
           | .indirect mp => Nat.beq mp.allocId aid
+          | .partialTuple _ => true
       here || k (idx + 1))
     (fun _ => false)
     0)
@@ -1636,7 +1637,8 @@ binds `paddedLoanWitnessCodec` inside `LoanPhase.spatialPinned`. -/
                                st.memBlocks ++ [blk],
                                replacePromotedLocalEntry entry
                                  st.promotedLocals⟩
-                  | some (.immediate none) | some .dead | none => .fail
+                  | some (.immediate none) | some .dead | some (.partialTuple _)
+                  | none => .fail
 
 /-- Structural equality on `List Bool` masks. -/
 @[expose] def boolListBeq (xs ys : List Bool) : Bool :=
@@ -2083,6 +2085,7 @@ for that local. -/
           !hasPromotedLocalEntry idx entries &&
           !anyBlockTargetsLocal idx blocks &&
           symSlotClearedToUnit idx sym
+        | .partialTuple _ => false
       okHere && k (idx + 1))
     (fun _ => true)
     0)
@@ -2101,7 +2104,7 @@ for that local. -/
             Nat.beq e.place.allocId mp.allocId &&
             Nat.beq e.place.offset mp.offset
           | none => false
-        | .dead | .immediate _ => true
+        | .dead | .immediate _ | .partialTuple _ => true
       okHere && k (idx + 1))
     (fun _ => true)
     0)
@@ -2253,7 +2256,7 @@ assignments of `immValCompatWithTargetSpec` values to initialize an unpromoted
         | some sym' =>
           if !Nat.beq sym'.locals.length st.mirLocals.length then .fail
           else syncPromotedLocalsToMem ctx { st with sym := sym' }
-      | some .dead | none => .fail
+      | some .dead | some (.partialTuple _) | none => .fail
     | .localSub reg (_ :: _) =>
       if !mirSlotInitialized st.mirLocals reg then .fail
       else

@@ -674,8 +674,9 @@ semantic seams:
    Refinement (`mir_oracle/`):**
    Each fixture defines boundary input vectors (including
    `#![feature(custom_mir)]` invalid-state probes) and evaluates four runners
-   under the exact capture flags (`-C opt-level=0 -C debug-assertions=no -C
-   overflow-checks=no`):
+   under the exact capture flags
+   (`-C opt-level=0 -C debug-assertions=no -C overflow-checks=no`, or
+   `-C overflow-checks=yes` for fixtures captured with `--overflow-checks`):
    - **Native `rustc` binary** (defined-behavior inputs only),
    - **`cargo miri`** (with explicit Tree Borrows configuration),
    - **Lean `MirTotal` / `MirSemantics` executable evaluator** on

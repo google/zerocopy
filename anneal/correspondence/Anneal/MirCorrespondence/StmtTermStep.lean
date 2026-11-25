@@ -221,6 +221,8 @@ theorem deallocateLocal_eq_ok_of_slotsMatchTys {tys : List MirTy}
     deallocateLocal amem slot = .ok amem := by
   cases slot with
   | indirect _ => exact False.elim (SlotsMatchTys.not_indirect h_inv h_ty h_sl)
+  | partialTuple _ =>
+    exact False.elim (SlotsMatchTys.not_partialTuple h_inv h_ty h_sl)
   | dead => rfl
   | immediate _ => rfl
 
@@ -361,6 +363,10 @@ theorem evalTerminator_step_inv {body : Body} {bb : BasicBlock}
           let ⟨_, h_ty⟩ := getElem?_some_of_length_eq
             (SlotsMatchTys.length_eq h_inv) h_sl
           exact False.elim (SlotsMatchTys.not_indirect h_inv h_ty h_sl)
+        | partialTuple _ =>
+          let ⟨_, h_ty⟩ := getElem?_some_of_length_eq
+            (SlotsMatchTys.length_eq h_inv) h_sl
+          exact False.elim (SlotsMatchTys.not_partialTuple h_inv h_ty h_sl)
     · cases h_step
   | unreachable | unwindResume | assert _ _ _ _ _ | call _ _ _ _ _
   | coreCall _ _ _ _ _ | unsupported =>
@@ -489,7 +495,7 @@ private theorem deallocateLocal_slot_pure (rp : RefProg) (ty : MirTy)
   cases slot with
   | dead => rfl
   | immediate optVal => cases optVal <;> rfl
-  | indirect _ => exact False.elim h_sm
+  | indirect _ | partialTuple _ => exact False.elim h_sm
 
 private theorem storageLiveDyn_ref_eq (rp : RefProg)
     (defId : DefId) (rbody : RefBody) (body : Body)
@@ -577,6 +583,8 @@ private theorem storageLiveDyn_ref_eq (rp : RefProg)
     | dead => rfl
     | immediate optVal => cases optVal <;> rfl
     | indirect _ => exact False.elim (SlotsMatchTys.not_indirect h_inv h_ty h_sl)
+    | partialTuple _ =>
+      exact False.elim (SlotsMatchTys.not_partialTuple h_inv h_ty h_sl)
 
 private theorem storageDead_ref_eq (rp : RefProg)
     (defId : DefId) (rbody : RefBody) (body : Body)
@@ -648,6 +656,8 @@ private theorem storageDead_ref_eq (rp : RefProg)
       | dead => rfl
       | immediate optVal => cases optVal <;> rfl
       | indirect _ => exact False.elim (SlotsMatchTys.not_indirect h_inv h_ty h_sl)
+      | partialTuple _ =>
+        exact False.elim (SlotsMatchTys.not_partialTuple h_inv h_ty h_sl)
 
 private theorem step_evalStatement_ref_eq (rp : RefProg) (c : Choice)
     (defId : DefId) (rbody : RefBody) (body : Body) (f : FrameState)
@@ -1069,6 +1079,8 @@ private theorem returnFromCurrentFrame_ref_eq (rp : RefProg) (c : Choice)
     cases slot₀ with
     | indirect _ =>
       exact False.elim (SlotsMatchTys.not_indirect h_inv h_ret_ty h_sl₀)
+    | partialTuple _ =>
+      exact False.elim (SlotsMatchTys.not_partialTuple h_inv h_ret_ty h_sl₀)
     | dead =>
       have h_ev_t : evalTerminator body bb f amem cm = .fault .undefined := by
         dsimp only [evalTerminator]

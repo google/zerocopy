@@ -402,6 +402,7 @@ noncomputable def writePlace (locals : List LocalSlot) (mem : MemoryState)
       match storeIndirect mem dstTy mplace val with
       | .ok mem' => .ok (locals, mem')
       | .error k => .error k
+    | some (.partialTuple _) => .error .unsupported
 
 /-- Release the storage of the replaced local value `old`, matching
 `deallocate_local` in `compiler/rustc_const_eval/src/interpret/stack.rs`
@@ -706,6 +707,8 @@ noncomputable def evalTerminator (body : Body) (bb : BasicBlock)
       | some (.immediate (some retVal)) =>
         .done (.returned ⟨retVal, callerMem⟩)
       | some (.immediate none) | some .dead => .fault .undefined
+      -- Profile v1 never creates partially moved tuples.
+      | some (.partialTuple _) => .fault .unsupported
       | some (.indirect mplace) =>
         match getElem? body.locals 0 with
         | none => .fault .unsupported
@@ -900,11 +903,34 @@ noncomputable def projectValFieldV2 :
       projectValFieldV2 (.int .isize false) sv rest
   | _, _, _ => .error .unsupported
 
+/-- Per-field initialization of a tuple held directly in a local slot:
+`some (vs.map some)` for an initialized immediate tuple `vs`, `some fs` for a
+partially moved tuple, and `none` otherwise. -/
+noncomputable def tupleSlotFields? : LocalSlot → Option (List (Option Val))
+  | .immediate (some (.tuple vs)) => some (vs.map some)
+  | .partialTuple fs => some fs
+  | _ => none
+
 /-- Read a projected `Place` in Profile v2, supporting unprojected locals,
 immediate tuple/range `.field` projections, and single-step `.deref` on
 sized references and raw pointers (`*p`). `isMove` additionally deinitializes
 unprojected locals (and memory slots for indirect stack moves). A `move` of a
 `.deref` place fails closed with `.unsupported`.
+
+A `move` of a single-level `.field` of a tuple held directly in a local
+deinitializes only that field, leaving the local as a
+`LocalSlot.partialTuple`. Rustc emits this shape under `-Coverflow-checks=yes`:
+`assert(!move (_t.1: bool))` followed by `_r = move (_t.0: T)` on an
+overflow pair `_t`. The moved field takes its `liveUninitSlot` value, as a
+moved unprojected local does, so reading it again faults with `.undefined`
+unless it is zero-sized. Reading a partially moved tuple as a whole also
+faults with `.undefined`. Once every field is uninitialized the slot is
+`.immediate none` again, the state a whole-tuple move leaves. MIR leaves open
+whether a move deinitializes its place (see below), but the tuple is a local
+rather than caller memory, so a body that never reads the moved field again,
+as every verified body must, behaves the same under either reading. Field
+moves out of `.indirect` locals and nested field moves fail closed with
+`.unsupported`.
 
 The deref case follows the Reference
 (`src/behavior-considered-undefined.md:26-28`, `rust-lang/reference`
@@ -964,6 +990,7 @@ noncomputable def readPlaceV2 (bodyLocals : List MirTy) (locals : List LocalSlot
       else
         match slot with
         | .dead => .error .undefined
+        | .partialTuple _ => .error .undefined
         | .immediate optVal =>
           if isMove then
             match setElem? locals place.localId (liveUninitSlot baseTy) with
@@ -995,7 +1022,7 @@ noncomputable def readPlaceV2 (bodyLocals : List MirTy) (locals : List LocalSlot
             | some lay =>
               let ptrRes : Except FaultKind (Option Val) :=
                 match slot with
-                | .dead => .error .undefined
+                | .dead | .partialTuple _ => .error .undefined
                 | .immediate optVal => .ok optVal
                 | .indirect mplace => loadIndirectV2 mem baseTy mplace
               match ptrRes with
@@ -1034,22 +1061,65 @@ noncomputable def readPlaceV2 (bodyLocals : List MirTy) (locals : List LocalSlot
                   | .ok optVal => .ok (pt, optVal, locals, mem)
               | .ok (some _) => .error .unsupported
         | _ => .error .unsupported
-    | .field _ _ :: _ =>
+    | .field idx fTy :: rest =>
       if isMove then
-        .error .unsupported
-      else
-        let baseValRes : Except FaultKind (Option Val) :=
+        if !rest.isEmpty then
+          .error .unsupported
+        else
           match slot with
-          | .dead => .error .undefined
-          | .immediate optVal => .ok optVal
-          | .indirect mplace => loadIndirectV2 mem baseTy mplace
-        match baseValRes with
-        | .error k => .error k
-        | .ok none => .error .undefined
-        | .ok (some v) =>
-          match projectValFieldV2 baseTy v place.projection with
+          | .dead | .immediate none => .error .undefined
+          | _ =>
+            match baseTy, tupleSlotFields? slot with
+            | .tuple ts, some fs =>
+              match getElem? ts idx, getElem? fs idx with
+              | some elemTy, some (some elemVal) =>
+                if !MirTy.beq elemTy fTy then
+                  .error .unsupported
+                else
+                  let movedVal : Option Val :=
+                    match liveUninitSlot elemTy with
+                    | .immediate v => v
+                    | _ => none
+                  match setElem? fs idx movedVal with
+                  | some fs' =>
+                    let slot' : LocalSlot :=
+                      if fs'.all Option.isNone then .immediate none
+                      else .partialTuple fs'
+                    match setElem? locals place.localId slot' with
+                    | some locals1 => .ok (elemTy, some elemVal, locals1, mem)
+                    | none => .error .unsupported
+                  | none => .error .unsupported
+              | some _, some none => .error .undefined
+              | _, _ => .error .unsupported
+            | _, _ => .error .unsupported
+      else
+        match slot with
+        | .dead | .immediate none => .error .undefined
+        | .immediate (some v) =>
+          match projectValFieldV2 baseTy v (.field idx fTy :: rest) with
           | .error k => .error k
           | .ok (fty, fv) => .ok (fty, some fv, locals, mem)
+        | .indirect mplace =>
+          match loadIndirectV2 mem baseTy mplace with
+          | .error k => .error k
+          | .ok none => .error .undefined
+          | .ok (some v) =>
+            match projectValFieldV2 baseTy v (.field idx fTy :: rest) with
+            | .error k => .error k
+            | .ok (fty, fv) => .ok (fty, some fv, locals, mem)
+        | .partialTuple fs =>
+          if !rest.isEmpty then
+            .error .unsupported
+          else
+            match baseTy with
+            | .tuple ts =>
+              match getElem? ts idx, getElem? fs idx with
+              | some elemTy, some (some elemVal) =>
+                if !MirTy.beq elemTy fTy then .error .unsupported
+                else .ok (elemTy, some elemVal, locals, mem)
+              | some _, some none => .error .undefined
+              | _, _ => .error .unsupported
+            | _ => .error .unsupported
     | .unsupported :: _ => .error .unsupported
   | _, _ => .error .unsupported
 
@@ -1211,7 +1281,7 @@ noncomputable def evalRefRvalueV2 (bodyLocals : List MirTy)
         else
           let ptrRes : Except FaultKind (Option Val) :=
             match slot with
-            | .dead => .error .undefined
+            | .dead | .partialTuple _ => .error .undefined
             | .immediate optVal => .ok optVal
             | .indirect mplace => loadIndirectV2 mem baseTy mplace
           match ptrRes with
@@ -1272,7 +1342,7 @@ noncomputable def evalAddressOfRvalueV2 (bodyLocals : List MirTy)
         else
           let ptrRes : Except FaultKind (Option Val) :=
             match slot with
-            | .dead => .error .undefined
+            | .dead | .partialTuple _ => .error .undefined
             | .immediate optVal => .ok optVal
             | .indirect mplace => loadIndirectV2 mem baseTy mplace
           match ptrRes with
@@ -1602,7 +1672,7 @@ noncomputable def resolvePlaceDestV2 (bodyLocals : List MirTy)
           | some lay =>
             let ptrRes : Except FaultKind (Option Val) :=
               match slot with
-              | .dead => .error .undefined
+              | .dead | .partialTuple _ => .error .undefined
               | .immediate optVal => .ok optVal
               | .indirect mplace => loadIndirectV2 mem ptrTy mplace
             match ptrRes with
@@ -1638,7 +1708,7 @@ noncomputable def writePlaceDestV2 (locals : List LocalSlot)
       match getElem? locals localId with
       | none => .error .unsupported
       | some .dead => .error .undefined
-      | some (.immediate _) =>
+      | some (.immediate _) | some (.partialTuple _) =>
         match setElem? locals localId (.immediate (some val)) with
         | some locals1 => .ok (locals1, mem)
         | none => .error .unsupported
@@ -1910,7 +1980,7 @@ noncomputable def evalTerminatorV2 (body : Body) (bb : BasicBlock)
         let retRes : Except FaultKind Val :=
           match getElem? frame.locals 0 with
           | some (.immediate (some v)) => .ok v
-          | some (.immediate none) | some .dead => .error .undefined
+          | some (.immediate none) | some .dead | some (.partialTuple _) => .error .undefined
           | some (.indirect mplace) =>
             match loadIndirectV2 mem retTy mplace with
             | .ok (some v) => .ok v

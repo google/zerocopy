@@ -1630,15 +1630,15 @@ theorem slotToMiriLocalValue_inj {ty : MirTy} {s₁ s₂ : LocalSlot}
     (h_eq : slotToMiriLocalValue ty s₁ = slotToMiriLocalValue ty s₂) :
     s₁ = s₂ := by
   cases s₁ with
-  | indirect _ => exact False.elim h₁
+  | indirect _ | partialTuple _ => exact False.elim h₁
   | dead =>
     cases s₂ with
     | dead => rfl
     | immediate opt₂ => cases opt₂ <;> cases h_eq
-    | indirect _ => exact False.elim h₂
+    | indirect _ | partialTuple _ => exact False.elim h₂
   | immediate opt₁ =>
     cases s₂ with
-    | indirect _ => exact False.elim h₂
+    | indirect _ | partialTuple _ => exact False.elim h₂
     | dead => cases opt₁ <;> cases h_eq
     | immediate opt₂ =>
       cases opt₁ with

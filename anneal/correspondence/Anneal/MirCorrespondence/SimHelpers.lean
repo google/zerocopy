@@ -814,6 +814,17 @@ theorem SlotsMatchTys.not_indirect {tys : List MirTy} {slots : List LocalSlot}
     (h_sl : MirSemantics.getElem? slots i = some (.indirect place)) : False :=
   SlotsMatchTys.getElem? h h_ty h_sl
 
+/-- `SlotsMatchTys` excludes `.partialTuple` slots, which only Profile v2
+creates. -/
+theorem SlotsMatchTys.not_partialTuple {tys : List MirTy}
+    {slots : List LocalSlot} {i : Nat} {ty : MirTy}
+    {fields : List (Option Val)}
+    (h : SlotsMatchTys tys slots)
+    (h_ty : MirSemantics.getElem? tys i = some ty)
+    (h_sl : MirSemantics.getElem? slots i = some (.partialTuple fields)) :
+    False :=
+  SlotsMatchTys.getElem? h h_ty h_sl
+
 theorem evalOperandToSlot_slotsMatchTys {bodyLocals : List MirTy}
     {locals locals' : List LocalSlot} {mem mem' : MemoryState} {op : Operand}
     {tyOk : MirTy → Bool} {ty : MirTy} {optVal : Option Val}
@@ -837,6 +848,8 @@ theorem evalOperandToSlot_slotsMatchTys {bodyLocals : List MirTy}
         | dead => cases h
         | indirect place =>
           exact False.elim (SlotsMatchTys.not_indirect h_inv h_ty h_sl)
+        | partialTuple _ =>
+          exact False.elim (SlotsMatchTys.not_partialTuple h_inv h_ty h_sl)
         | immediate opt =>
           cases h_emp : p.projection.isEmpty with
           | false => rw [h_emp] at h; cases h
@@ -862,6 +875,8 @@ theorem evalOperandToSlot_slotsMatchTys {bodyLocals : List MirTy}
         | dead => cases h
         | indirect place =>
           exact False.elim (SlotsMatchTys.not_indirect h_inv h_ty h_sl)
+        | partialTuple _ =>
+          exact False.elim (SlotsMatchTys.not_partialTuple h_inv h_ty h_sl)
         | immediate opt =>
           cases h_emp : p.projection.isEmpty with
           | false => rw [h_emp] at h; cases h
@@ -1119,6 +1134,8 @@ theorem evalRvalue_slotsMatchTys {bodyLocals : List MirTy}
         | dead => cases h
         | indirect place' =>
           exact False.elim (SlotsMatchTys.not_indirect h_inv h_ty h_sl)
+        | partialTuple _ =>
+          exact False.elim (SlotsMatchTys.not_partialTuple h_inv h_ty h_sl)
         | immediate opt =>
           cases h_emp : place.projection.isEmpty with
           | false => rw [h_emp] at h; cases h
@@ -1159,6 +1176,8 @@ theorem writePlace_slotsMatchTys {bodyLocals : List MirTy}
       | dead => cases h
       | indirect place =>
         exact False.elim (SlotsMatchTys.not_indirect h_inv h_ty h_get)
+      | partialTuple _ =>
+        exact False.elim (SlotsMatchTys.not_partialTuple h_inv h_ty h_get)
       | immediate _ =>
         dsimp only at h
         cases h_set :

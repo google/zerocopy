@@ -554,6 +554,7 @@ theorem evalTerminator_frame_retag (body : Body) (bb : BasicBlock)
       | some slot =>
         cases slot with
         | dead => exact ⟨(fun _ h => by cases h), rfl⟩
+        | partialTuple _ => exact ⟨(fun _ h => by cases h), rfl⟩
         | immediate opt =>
           cases opt <;> exact ⟨(fun _ h => by cases h), rfl⟩
         | indirect place =>
@@ -1048,6 +1049,7 @@ evaluates to `out`. -/
                       localsAfterRval dst.localId with
                   | none => False
                   | some .dead => False
+                  | some (.partialTuple _) => False
                   | some (.immediate _) =>
                     match setElem? localsAfterRval dst.localId
                         (.immediate (some overrideVal)) with
@@ -1172,6 +1174,7 @@ private theorem step_eq_evalAssignWith_of_truncate {body : Body}
                             rw [h_slot] at h_next
                             cases slot with
                             | dead => cases h_next
+                            | partialTuple _ => cases h_next
                             | immediate _ =>
                               dsimp only at h_next
                               dsimp only

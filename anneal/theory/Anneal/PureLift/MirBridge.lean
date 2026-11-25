@@ -3475,7 +3475,7 @@ structure SlotCapState where
        .borrow (mirInitCap numLocals l) .mutBorrow
          (.localSub (mirValSlot argCnt l) []) ],
      ⟨true, true⟩)
-  | .immediate none | .indirect _ => ([], ⟨true, false⟩)
+  | .immediate none | .indirect _ | .partialTuple _ => ([], ⟨true, false⟩)
   | .dead => ([], ⟨false, false⟩)
 
 /-- Initialize storage and initialization capabilities for all MIR locals at

@@ -413,7 +413,7 @@ theorem evalOperandAbs_sound {bodyLocals : List MirTy} {env env' : MirAbsEnv}
                   have hInit := bool_and_true_right hC
                   subst hwEq
                   cases cs with
-                  | dead | indirect _ => exact False.elim hDen.2
+                  | dead | indirect _ | partialTuple _ => exact False.elim hDen.2
                   | immediate opt =>
                     cases opt with
                     | none =>
@@ -461,7 +461,7 @@ theorem evalOperandAbs_sound {bodyLocals : List MirTy} {env env' : MirAbsEnv}
                 have hEnvEq : env' = env := congrArg Prod.snd hPair.symm
                 subst hAvEq; subst hEnvEq
                 cases cs with
-                | dead | indirect _ => exact False.elim hDen.2
+                | dead | indirect _ | partialTuple _ => exact False.elim hDen.2
                 | immediate opt =>
                   cases opt with
                   | none =>
@@ -549,7 +549,7 @@ theorem evalOperandAbs_sound {bodyLocals : List MirTy} {env env' : MirAbsEnv}
                       congrArg Prod.snd hPair.symm
                     subst hAvEq; subst hEnvEq
                     cases cs with
-                    | dead | indirect _ => exact False.elim hDen.2
+                    | dead | indirect _ | partialTuple _ => exact False.elim hDen.2
                     | immediate opt =>
                       cases opt with
                       | none =>
@@ -593,7 +593,7 @@ theorem evalOperandAbs_sound {bodyLocals : List MirTy} {env env' : MirAbsEnv}
                   have hEnvEq : env' = envNew := congrArg Prod.snd hPair.symm
                   subst hEnvEq
                   cases cs with
-                  | dead | indirect _ => exact False.elim hDen.2
+                  | dead | indirect _ | partialTuple _ => exact False.elim hDen.2
                   | immediate opt =>
                     cases opt with
                     | none =>
@@ -726,7 +726,7 @@ private theorem evalOperandAbs_pure_locals_eq {bodyLocals : List MirTy}
         | some cs =>
           rw [hT, hS] at hEval
           cases cs with
-          | dead => dsimp only at hEval; nomatch hEval
+          | dead | partialTuple _ => dsimp only at hEval; nomatch hEval
           | immediate opt =>
             dsimp only at hEval
             rw [ite_bool_false_t (by rw [hProj]; rfl)] at hEval
@@ -2023,7 +2023,7 @@ private theorem deallocateLocal_nonIndirect (mem : MemoryState)
     deallocateLocal mem cs = .ok mem := by
   cases cs with
   | dead => rfl
-  | immediate _ => rfl
+  | immediate _ | partialTuple _ => rfl
   | indirect _ =>
     cases s with
     | dead => nomatch hDen
@@ -2166,7 +2166,7 @@ theorem stepStmtAbs_sound {body : Body} {frame : FrameState}
                     | dead => nomatch hLive
                     | uint _ _ | bool _ => exact False.elim hDstDen.2
                     | unit => nomatch hDstDen.2
-                  | indirect _ =>
+                  | indirect _ | partialTuple _ =>
                     cases dstSlot with
                     | dead => nomatch hLive
                     | uint _ _ | bool _ => exact False.elim hDstDen.2
@@ -2622,7 +2622,7 @@ theorem stepTermAbs_sound {body : Body} {bb : BasicBlock} {frame : FrameState}
           have hDen0 := hEnv.2.2 0 retTy retSlot cs0 hTy0 hS0 hCs0
           have hImmSome : ∃ rv, cs0 = .immediate (some rv) := by
             cases cs0 with
-            | dead | indirect _ =>
+            | dead | indirect _ | partialTuple _ =>
               cases retSlot with
               | dead => nomatch hI
               | uint _ _ | bool _ => exact False.elim hDen0.2

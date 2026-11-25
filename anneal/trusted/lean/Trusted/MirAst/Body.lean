@@ -138,8 +138,9 @@ inductive VerificationScope where
 
 /-- A complete MIR program unit: function bodies indexed by `DefId`, an entry
 function `entryDefId`, the captured target's pointer width `pointerWidthBits`,
-the MIR semantic profile version `mirProfileVersion`, and the capture scope
-`scope`.
+the MIR semantic profile version `mirProfileVersion`, the capture scope
+`scope`, and whether the program was compiled with runtime overflow checks
+`overflowChecks`.
 
 1. **Target pointer width (`pointerWidthBits`):**
    `pointerWidthBits` records the target layout that `rustc` used when it
@@ -168,6 +169,13 @@ the MIR semantic profile version `mirProfileVersion`, and the capture scope
    `initRefState` fail closed with `FaultKind.unsupported` (`.blocked`)
    whenever `p.mirProfileVersion ≠ 1`.
 
+3. **Runtime overflow checks (`overflowChecks`):**
+   `overflowChecks` records whether `rustc` lowered the program with
+   `-Coverflow-checks=yes`, which guards each checked `+`, `-`, `*`, `<<`,
+   `>>`, and unary `-` with an `Assert` terminator. The semantics does not read
+   it, since a failed `Assert` faults either way; it lets a specification state
+   which compilation it describes.
+
 **Producer obligations:** `Program.pointerWidthBits`,
 `Program.mirProfileVersion`, and `Program.scope` carry no defaults so every
 `Program` literal (both hand-written canaries and serialized captures) must
@@ -175,26 +183,28 @@ state the target layout, profile contract, and intended verification scope
 explicitly rather than silently inheriting accepted or `.unit` values.
 The remaining Lean field defaults across `Trusted.MirAst` exist solely for
 concise hand-written canary literals. Two defaults equal unprojected/non-cleanup
-values (`BasicBlock.cleanup := false` and `Place.projection := []`), and
-`Program.entryDefId := 0` selects body `0` as the entry point. The remaining
-two defaults (`Body.isUnsafe := false` and `Body.identity := ""`) fail closed
-(`isUnsafe := false` withholds caller safety preconditions, and `identity := ""`
-is rejected by `BodyStaticAdmitted`). Any serializer or MIR producer (such as
-`anneal-rustc-capture`) MUST explicitly populate all of these fields—
-`pointerWidthBits` (from the compiled target's data layout),
-`mirProfileVersion` (from the capture profile contract), `scope`, `entryDefId`,
-`Body.isUnsafe`, `Body.identity`, `BasicBlock.cleanup` (from
-`BasicBlockData::is_cleanup`), and `Place.projection` (from
-`Place::projection`). Likewise, when `scope = .crate`, completeness of `bodies`
-(ensuring every executable body and reachable callee in the crate is included)
-is an external producer obligation, not checked by `Trusted.MirSemantics`
-alone. -/
+values (`BasicBlock.cleanup := false` and `Place.projection := []`),
+`Program.entryDefId := 0` selects body `0` as the entry point, and
+`Program.overflowChecks := false` matches the default capture configuration.
+The remaining two defaults (`Body.isUnsafe := false` and
+`Body.identity := ""`) fail closed (`isUnsafe := false` withholds caller safety
+preconditions, and `identity := ""` is rejected by `BodyStaticAdmitted`). Any
+serializer or MIR producer (such as `anneal-rustc-capture`) MUST explicitly
+populate all of these fields—`pointerWidthBits` (from the compiled target's
+data layout), `mirProfileVersion` (from the capture profile contract), `scope`,
+`entryDefId`, `overflowChecks` (from the compiler session), `Body.isUnsafe`,
+`Body.identity`, `BasicBlock.cleanup` (from `BasicBlockData::is_cleanup`), and
+`Place.projection` (from `Place::projection`). Likewise, when `scope = .crate`,
+completeness of `bodies` (ensuring every executable body and reachable callee
+in the crate is included) is an external producer obligation, not checked by
+`Trusted.MirSemantics` alone. -/
 structure Program where
   bodies : List Body
   entryDefId : DefId := 0
   pointerWidthBits : Nat
   mirProfileVersion : Nat
   scope : VerificationScope
+  overflowChecks : Bool := false
 
 end Trusted.MirAst
 

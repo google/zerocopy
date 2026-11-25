@@ -2449,6 +2449,24 @@ theorem evalRefRvalueV2_requires_refValidInMem
           | some slot =>
             cases slot with
             | dead => rw [h_sl] at h_ref; dsimp only at h_ref; cases h_ref
+            | partialTuple _ =>
+              rw [h_sl] at h_ref
+              dsimp only at h_ref
+              cases baseTy with
+              | ref srcMut pt =>
+                dsimp only at h_ref
+                cases h_esc :
+                    (Mutability.beq srcMut .shared &&
+                      Mutability.beq reqMut .mut) with
+                | true => rw [h_esc] at h_ref; cases h_ref
+                | false =>
+                  cases h_beq : MirTy.beq dstTy (.ref reqMut pt) with
+                  | false => rw [h_esc, h_beq] at h_ref; cases h_ref
+                  | true => rw [h_esc, h_beq] at h_ref; cases h_ref
+              | bool | int _ _ | unit | never | char | ordering | enum _
+              | tuple _ | rawPtr _ _ | slice _ | rangeTo _ | rangeFrom _
+              | unsupported =>
+                dsimp only at h_ref; cases h_ref
             | immediate optVal =>
               rw [h_sl] at h_ref
               dsimp only at h_ref
@@ -2938,6 +2956,28 @@ theorem resolvePlaceDestV2_deref_requires_mut_ptr
           dsimp only at h_res
           let ⟨h_m, h_us, h_eq, lay, pv, h_lay, h_d⟩ :=
             resolvePlaceDestV2_deref_branch pt dstTy ptrMut _ dest h_res
+          subst h_m
+          exact ⟨.rawPtr .mut pt, pt, lay, pv, rfl, Or.inr rfl, h_us, h_eq,
+            h_lay, h_d⟩
+        | bool | int _ _ | unit | never | char | ordering | enum _
+        | tuple _ | slice _ | rangeTo _ | rangeFrom _ | unsupported =>
+          cases h_res
+      | partialTuple _ =>
+        rw [h_sl] at h_res
+        cases ptrTy with
+        | ref ptrMut pt =>
+          dsimp only at h_res
+          let ⟨h_m, h_us, h_eq, lay, pv, h_lay, h_d⟩ :=
+            resolvePlaceDestV2_deref_branch pt dstTy ptrMut (.error .undefined)
+              dest h_res
+          subst h_m
+          exact ⟨.ref .mut pt, pt, lay, pv, rfl, Or.inl rfl, h_us, h_eq,
+            h_lay, h_d⟩
+        | rawPtr ptrMut pt =>
+          dsimp only at h_res
+          let ⟨h_m, h_us, h_eq, lay, pv, h_lay, h_d⟩ :=
+            resolvePlaceDestV2_deref_branch pt dstTy ptrMut (.error .undefined)
+              dest h_res
           subst h_m
           exact ⟨.rawPtr .mut pt, pt, lay, pv, rfl, Or.inr rfl, h_us, h_eq,
             h_lay, h_d⟩

@@ -3804,17 +3804,22 @@ fn profile_v2_refuses_const_to_mut_pointer_casts() {
 }
 
 #[test]
-fn projected_moves_are_refused_at_capture() {
-    // `t.0` of a non-`Copy` tuple field lowers to `move (_1.0)`. Moving out
-    // of `*p` through a reference or raw pointer is a borrow-check error
-    // (E0507), so the dereference form is covered by the `ir` unit test.
+fn tuple_local_field_moves_are_captured() {
+    // `t.0` of a non-`Copy` tuple field lowers to `move (_1.0)`, which
+    // Profile v2 models by deinitializing just that field. Moving out of
+    // `*p` through a reference or raw pointer is a borrow-check error
+    // (E0507), so the refused dereference form is covered by the `ir` unit
+    // test.
     let fixture = Capture::new(
         b"pub fn selected(t: (core::ops::RangeFrom<usize>, usize)) \
           -> core::ops::RangeFrom<usize> { t.0 }\n",
     );
     let output = fixture.selected_command().output().unwrap();
-    assert_eq!(status(&output)["status"], "unsupported", "{output:?}");
-    assert_refused("tuple-field-move", &fixture, &output, "projected move operands");
+    assert!(output.status.success(), "{output:?}");
+    assert_eq!(fixture.manifest()["program"]["mir_profile_version"], 2);
+    let lean = std::fs::read_to_string(fixture.output.join("Captured.lean")).unwrap();
+    assert!(lean.contains("Trusted.MirAst.Operand.move"), "{lean}");
+    assert!(lean.contains("Trusted.MirAst.ProjectionElem.field 0"), "{lean}");
 }
 
 /// Assert that a fixture captured nothing and failed with `expected` in its
@@ -3949,5 +3954,67 @@ fn unwind_actions_on_asserts_and_core_calls_are_captured_not_normalized() {
             manifest_text.contains(&format!("\"unwind\":\"{unwind_json}\"")),
             "{panic}: manifest lacks unwind {unwind_json}: {manifest_text}"
         );
+    }
+}
+
+#[test]
+fn overflow_checks_capture_every_optional_overflow_assert_under_both_panic_strategies() {
+    // Each of `+`, `-`, `*`, unary `-`, `<<`, and `>>` is an optional
+    // overflow check: rustc emits its `Assert` only under
+    // `-Coverflow-checks=yes`, which `--overflow-checks` selects.
+    let source = b"\
+        pub fn selected(a: u16, b: u16, sh: u32, x: i32) -> i32 {\n\
+            if a > 100 || b > 100 || a < b || sh >= 16 || x == i32::MIN {\n\
+                return 0;\n\
+            }\n\
+            let shifted = ((((a + b) * (a - b)) as u32) << sh) >> sh;\n\
+            -x + (shifted as i32)\n\
+        }\n";
+    let asserts = [
+        "AssertKind.overflow Trusted.MirAst.BinOp.add",
+        "AssertKind.overflow Trusted.MirAst.BinOp.sub",
+        "AssertKind.overflow Trusted.MirAst.BinOp.mul",
+        "AssertKind.overflow Trusted.MirAst.BinOp.shl",
+        "AssertKind.overflow Trusted.MirAst.BinOp.shr",
+        "AssertKind.overflowNeg",
+    ];
+    for panic in ["--panic=abort", "--panic=unwind"] {
+        let fixture = Capture::new(source);
+        let output =
+            fixture.selected_command().args([panic, "--overflow-checks"]).output().unwrap();
+        assert!(
+            output.status.success(),
+            "{panic}: capture should succeed:\n{}\n{}",
+            stdout(&output),
+            stderr(&output)
+        );
+        let manifest = fixture.manifest();
+        assert_eq!(manifest["configuration"]["overflow_checks"], true, "{panic}: {manifest}");
+        assert_eq!(manifest["program"]["overflow_checks"], true, "{panic}: {manifest}");
+        assert_eq!(manifest["program"]["mir_profile_version"], 2, "{panic}: {manifest}");
+        let lean = std::fs::read_to_string(fixture.output.join("Captured.lean")).unwrap();
+        assert!(lean.contains("overflowChecks := true"), "{panic}: {lean}");
+        for expected in asserts.iter().chain(&[
+            "BinOp.addWithOverflow",
+            "BinOp.subWithOverflow",
+            "BinOp.mulWithOverflow",
+        ]) {
+            assert!(lean.contains(expected), "{panic}: no {expected} in\n{lean}");
+        }
+        compile_captured_lean_if_trusted_sources_present(&fixture.output.join("Captured.lean"));
+    }
+
+    // The default keeps `-Coverflow-checks=no`: wrapping arithmetic and no
+    // optional overflow assert.
+    let fixture = Capture::new(source);
+    let output = fixture.selected_command().output().unwrap();
+    assert!(output.status.success(), "{output:?}");
+    let manifest = fixture.manifest();
+    assert_eq!(manifest["configuration"]["overflow_checks"], false, "{manifest}");
+    assert_eq!(manifest["program"]["overflow_checks"], false, "{manifest}");
+    let lean = std::fs::read_to_string(fixture.output.join("Captured.lean")).unwrap();
+    assert!(lean.contains("overflowChecks := false"), "{lean}");
+    for absent in asserts.iter().chain(&["WithOverflow"]) {
+        assert!(!lean.contains(absent), "unexpected {absent} in\n{lean}");
     }
 }

@@ -86,8 +86,9 @@ binary target and no required normal or build dependencies (dev-dependencies
 and inactive optional dependencies are ignored),
 `--manifest-path <Cargo.toml>
 --proof-dir <dir>` (with optional `--no-default-features`, `--features <list>`,
-`--all-features`, `--panic unwind|abort`, `--select <path>`, and
-`--instantiate <JSON>`) constructs the same request automatically.
+`--all-features`, `--panic unwind|abort`, `--overflow-checks`,
+`--select <path>`, and `--instantiate <JSON>`) constructs the same request
+automatically.
 
 ## Stage 0 / MIR Profile v1: supported vs. refused
 
@@ -121,7 +122,7 @@ v1 rules to `vendor/lean-miri/`.
 | :--- | :--- | :--- |
 | **Types** | General tuples; single-level `&T`, `&mut T`, `*const T`, and `*mut T` whose pointee is a Profile v1 scalar, `()`, an admitted enum, or an integer slice `[T]`; `RangeTo<usize>` and `RangeFrom<usize>`; lifetime-only generic signatures. | Nested references or pointers (`&&T`, `*const &T`, `&[&T]`), references and pointers to overflow pairs `(T, bool)` (whose unspecified tuple layout capture does not check, so overflow pairs are never addressable), `str`, structs, arrays, and the remaining Profile v1 refusals. |
 | **Bodies** | Bodies whose locals include references or raw pointers, but not both. | Bodies whose locals mix references and raw pointers, because Profile v2 does not model Rust's pointer aliasing rules (Stacked or Tree Borrows). For example, `<&mut [u8] as SplitByteSlice>::split_at_unchecked`, which uses `as_mut_ptr` and `from_raw_parts_mut`, is refused. |
-| **Statements & rvalues** | `Ref` of locals and of dereferenced references, `RawPtr` (address-of) of locals and of dereferenced raw pointers, assignment through dereferenced places, raw-to-raw `PtrToPtr` casts that do not add mutability, `IntToPtr` casts, `PtrMetadata`, `Offset`, `RangeTo`/`RangeFrom` aggregates, copy reads of tuple, overflow-pair, and range fields, and `Use` with retags. | Reference-to-raw-pointer and raw-pointer-to-reference conversions (refused with the mixed-locals rule), `*const T` to `*mut T` casts (Profile v2 cannot tell whether the pointee is an immutable binding, which the cast would let the body mutate), other pointer casts, index projections, field projections after a dereference, moves out of a projected place (`move (*p)`, `move (t.0)`), and other aggregates. |
+| **Statements & rvalues** | `Ref` of locals and of dereferenced references, `RawPtr` (address-of) of locals and of dereferenced raw pointers, assignment through dereferenced places, raw-to-raw `PtrToPtr` casts that do not add mutability, `IntToPtr` casts, `PtrMetadata`, `Offset`, `RangeTo`/`RangeFrom` aggregates, copy reads of tuple, overflow-pair, and range fields, moves of tuple and overflow-pair fields out of locals (which deinitialize only the moved field), and `Use` with retags. | Reference-to-raw-pointer and raw-pointer-to-reference conversions (refused with the mixed-locals rule), `*const T` to `*mut T` casts (Profile v2 cannot tell whether the pointee is an immutable binding, which the cast would let the body mutate), other pointer casts, index projections, field projections after a dereference, other projected moves (`move (*p)`, nested fields), and other aggregates. |
 | **Terminators** | `Assert` and returning calls to a closed set of `core` functions: `<[T]>::len`, `<[T]>::get_unchecked` (with `..n` or `n..`), `<*const T>::add`, `<*mut T>::add`, and `usize::unchecked_sub`. The captured `UnwindAction` (`Continue`, `Unreachable`, or `Terminate`) is recorded as is. | Every other call (including `<[T]>::{as_ptr, as_mut_ptr}` and `core::slice::from_raw_parts{,_mut}`, which convert between references and raw pointers), calls in crates that shadow `core`, and cleanup unwinds. |
 
 Each query (`Query`) supplies caller memory (`callerMem`) alongside its
@@ -146,7 +147,24 @@ targets whose data layout matches.
 `tests/cargo-anneal/tests/profile_v2_e2e.rs` verifies the unmodified
 `zerocopy/src/byte_slice.rs` `<&[u8] as SplitByteSlice>::split_at_unchecked`
 under `UnitTheoremV2`, plus raw-pointer load and store fixtures under
-`CrateTheoremV2`.
+`CrateTheoremV2` and the runtime overflow check fixtures below.
+
+### Runtime overflow checks
+
+By default capture compiles with `-Coverflow-checks=no`, so `+`, `-`, `*`,
+and unary `-` wrap and `<<` and `>>` mask their shift amount, as in a default
+release build. `--overflow-checks` (request field
+`compilation.overflow_checks: true`) captures with `-Coverflow-checks=yes`
+instead, matching builds that enable overflow checks (such as default debug
+builds). Rustc then guards each of those operations with an `Assert`
+terminator, so such bodies use Profile v2. A failed assert faults, so a
+verified theorem proves that no overflow check fires on any admitted input.
+Capture records the setting as `configuration.overflow_checks` in
+`capture.json` and in the receipt, and as `Program.overflowChecks` in
+`Captured.lean`, which specifications can pin. `--overflow-checks` is refused
+together with `--stdlib-crate`. Verify the setting against the deployed
+build: a proof without `--overflow-checks` says nothing about a build in which
+overflow panics, and vice versa.
 
 ### Bundled proof libraries and specification boundaries
 
