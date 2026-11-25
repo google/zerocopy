@@ -60,11 +60,13 @@ class RustGuardMutationUnitTests(unittest.TestCase):
 
         audit_guards = [g for g in guards if g.suite == "anneal_audit"]
         ca_guards = [g for g in guards if g.suite == "cargo_anneal"]
+        rc_guards = [g for g in guards if g.suite == "rustc_capture"]
         self.assertGreaterEqual(len(audit_guards), 8)
         self.assertGreaterEqual(len(ca_guards), 8)
+        self.assertGreaterEqual(len(rc_guards), 15)
 
-        # Verify distinct target files across both crates and zero overlap with
-        # `stage.rs`, `olean_cache.rs`, or `rustc-capture/`.
+        # Verify distinct target files across all three crates and zero overlap
+        # with excluded `stage.rs` and `olean_cache.rs`.
         touched_files = {g.target_file for g in guards}
         for required_file in (
             "trusted/audit/src/cargo_boundary.rs",
@@ -77,11 +79,20 @@ class RustGuardMutationUnitTests(unittest.TestCase):
             "trusted/cargo-anneal/src/toolchain.rs",
             "trusted/cargo-anneal/src/verify.rs",
             "trusted/cargo-anneal/src/bundle.rs",
+            "trusted/rustc-capture/src/capture.rs",
+            "trusted/rustc-capture/src/driver.rs",
+            "trusted/rustc-capture/src/extract.rs",
+            "trusted/rustc-capture/src/identity.rs",
+            "trusted/rustc-capture/src/ir.rs",
+            "trusted/rustc-capture/src/lean.rs",
+            "trusted/rustc-capture/src/lib.rs",
+            "trusted/rustc-capture/src/mono.rs",
+            "trusted/rustc-capture/src/publication.rs",
         ):
             self.assertIn(required_file, touched_files)
 
         for g in guards:
-            for forbidden in ("stage.rs", "olean_cache.rs", "rustc-capture"):
+            for forbidden in ("stage.rs", "olean_cache.rs"):
                 self.assertNotIn(forbidden, g.target_file)
 
         res = subprocess.run(
@@ -92,6 +103,27 @@ class RustGuardMutationUnitTests(unittest.TestCase):
         self.assertEqual(res.returncode, 0, res.stderr)
         self.assertIn(
             f"Total cataloged Rust guards: {len(guards)}", res.stdout
+        )
+
+        res_ws = subprocess.run(
+            [sys.executable, "-I", "-B", str(SCRIPT), "--list", "--suite", "workspace"],
+            capture_output=True,
+            text=True,
+        )
+        self.assertEqual(res_ws.returncode, 0, res_ws.stderr)
+        self.assertIn(
+            f"Total cataloged Rust guards: {len(audit_guards) + len(ca_guards)}",
+            res_ws.stdout,
+        )
+
+        res_rc = subprocess.run(
+            [sys.executable, "-I", "-B", str(SCRIPT), "--list", "--suite", "rustc_capture"],
+            capture_output=True,
+            text=True,
+        )
+        self.assertEqual(res_rc.returncode, 0, res_rc.stderr)
+        self.assertIn(
+            f"Total cataloged Rust guards: {len(rc_guards)}", res_rc.stdout
         )
 
     def test_apply_single_guard_mutation_requires_exact_unique_match(self):
@@ -217,6 +249,17 @@ class RustGuardMutationUnitTests(unittest.TestCase):
             "trusted/cargo-anneal/src/verify.rs",
             "trusted/cargo-anneal/src/bundle.rs",
             "tests/cargo-anneal/tests/sandbox_escape.rs",
+            "trusted/rustc-capture/src/capture.rs",
+            "trusted/rustc-capture/src/driver.rs",
+            "trusted/rustc-capture/src/extract.rs",
+            "trusted/rustc-capture/src/identity.rs",
+            "trusted/rustc-capture/src/ir.rs",
+            "trusted/rustc-capture/src/lean.rs",
+            "trusted/rustc-capture/src/lib.rs",
+            "trusted/rustc-capture/src/mono.rs",
+            "trusted/rustc-capture/src/publication.rs",
+            "tests/rustc-capture/tests/compiler_session.rs",
+            "tests/rustc-capture/tests/typed_capture.rs",
         ):
             dst = cls.mini_anneal / rel
             dst.parent.mkdir(parents=True, exist_ok=True)
@@ -324,7 +367,29 @@ class RustGuardMutationUnitTests(unittest.TestCase):
                 assert args[args.index("-p") + 1] == "anneal-audit-tests", args
             src = Path("trusted/audit/src/cargo_boundary.rs").read_text(encoding="utf-8")
             is_mutant = ({anchor_norm!r} not in src) or ({anchor_dep!r} not in src)
+            target_debug = Path(os.environ["CARGO_TARGET_DIR"]) / "debug"
+            fp_src = target_debug / ".fingerprint/anneal-audit-abc123"
+            fp_test = target_debug / ".fingerprint/anneal-audit-tests-def456"
+            build_test = target_debug / "build/anneal-audit-tests-ghi789"
+            dep_bin = target_debug / "deps/boundary_audit-jkl012"
+            keep_dep = target_debug / "deps/libthirdparty.rlib"
             if "--no-run" in args:
+                if not is_mutant:
+                    fp_src.mkdir(parents=True, exist_ok=True)
+                    (fp_src / "invoked").write_text("base", encoding="utf-8")
+                    fp_test.mkdir(parents=True, exist_ok=True)
+                    (fp_test / "invoked").write_text("base", encoding="utf-8")
+                    build_test.mkdir(parents=True, exist_ok=True)
+                    (build_test / "out").write_text("base", encoding="utf-8")
+                    dep_bin.parent.mkdir(parents=True, exist_ok=True)
+                    dep_bin.write_text("base-bin", encoding="utf-8")
+                    keep_dep.write_text("shared-dep", encoding="utf-8")
+                elif "worker-1" in str(target_debug):
+                    assert not fp_src.exists(), f"stale worker-0 src fingerprint: {{fp_src}}"
+                    assert not fp_test.exists(), f"stale worker-0 test fingerprint: {{fp_test}}"
+                    assert not build_test.exists(), f"stale worker-0 build dir: {{build_test}}"
+                    assert not dep_bin.exists(), f"stale worker-0 test bin remained: {{dep_bin}}"
+                    assert keep_dep.is_file(), f"shared dependency cache missing: {{keep_dep}}"
                 sys.exit(0)
             test_name = args[args.index("--exact") + 1]
             print("running 1 test")
@@ -436,6 +501,177 @@ class RustGuardMutationUnitTests(unittest.TestCase):
             ):
                 check_rust_guard_mutation.main(["--list", flag, "0"])
             self.assertEqual(ctx.exception.code, 2)
+
+    def test_workspace_suite_excludes_rustc_capture_and_resolves_fake_rustup(self):
+        import contextlib
+        import io
+        import os
+
+        ws_guards = check_rust_guard_mutation._select_guards("workspace", None)
+        rc_guards = check_rust_guard_mutation._select_guards("rustc_capture", None)
+        all_guards = check_rust_guard_mutation._select_guards("all", None)
+        self.assertTrue(ws_guards)
+        self.assertTrue(rc_guards)
+        self.assertEqual(len(ws_guards) + len(rc_guards), len(all_guards))
+        self.assertTrue(all(g.suite in ("anneal_audit", "cargo_anneal") for g in ws_guards))
+        self.assertTrue(all(g.suite == "rustc_capture" for g in rc_guards))
+
+        with tempfile.TemporaryDirectory(prefix="anneal-rgmut-rustup-") as tmp:
+            tmp_path = Path(tmp)
+            sysroot = tmp_path / "nightly-sysroot"
+            (sysroot / "lib").mkdir(parents=True)
+            (sysroot / "bin").mkdir(parents=True)
+            fake_rustc = sysroot / "bin/rustc"
+            fake_cargo = sysroot / "bin/cargo"
+            fake_rustc.write_text("#!/bin/sh\nexit 0\n", encoding="utf-8")
+            fake_cargo.write_text("#!/bin/sh\nexit 0\n", encoding="utf-8")
+            fake_rustc.chmod(0o755)
+            fake_cargo.chmod(0o755)
+
+            bin_dir = tmp_path / "bin"
+            bin_dir.mkdir()
+            fake_rustup = bin_dir / "rustup"
+            fake_rustup.write_text(
+                f"#!{sys.executable}\n"
+                "import sys\n"
+                "args = sys.argv[1:]\n"
+                f"if args == ['run', 'nightly-2026-05-31', 'rustc', '--print', 'sysroot']:\n"
+                f"    print({str(sysroot)!r})\n"
+                "    sys.exit(0)\n"
+                f"if args == ['which', '--toolchain', 'nightly-2026-05-31', 'cargo']:\n"
+                f"    print({str(fake_cargo)!r})\n"
+                "    sys.exit(0)\n"
+                "print('unexpected rustup args:', args, file=sys.stderr)\n"
+                "sys.exit(1)\n",
+                encoding="utf-8",
+            )
+            fake_rustup.chmod(0o755)
+
+            with mock.patch.dict(os.environ, {"PATH": str(bin_dir)}, clear=False):
+                resolved_cargo, env_map = (
+                    check_rust_guard_mutation._resolve_rustc_capture_env(
+                        "nightly-2026-05-31",
+                        use_explicit_cargo=False,
+                    )
+                )
+            self.assertEqual(resolved_cargo, fake_cargo)
+            self.assertEqual(env_map["RUSTUP_TOOLCHAIN"], "nightly-2026-05-31")
+            self.assertEqual(env_map["RUSTC"], str(fake_rustc))
+            self.assertIn(f"-L {sysroot / 'lib'}", env_map["RUSTFLAGS"])
+            self.assertIn(str(sysroot / "lib"), env_map["LD_LIBRARY_PATH"])
+
+            # Missing rustup fails closed loudly when `rustc_capture` is run.
+            empty_bin = tmp_path / "empty-bin"
+            empty_bin.mkdir()
+            dummy_cargo = tmp_path / "dummy-cargo"
+            _write_fake_cargo(dummy_cargo, "sys.exit(0)")
+            stderr_buf = io.StringIO()
+            with (
+                mock.patch.dict(os.environ, {"PATH": str(empty_bin)}, clear=False),
+                contextlib.redirect_stderr(stderr_buf),
+            ):
+                rc = check_rust_guard_mutation.main(
+                    [
+                        "--anneal-root",
+                        str(self.mini_anneal),
+                        "--cargo",
+                        str(dummy_cargo),
+                        "--suite",
+                        "rustc_capture",
+                        "--filter",
+                        "rustc_capture_ir_retag_guard",
+                    ]
+                )
+            self.assertEqual(rc, 1)
+            self.assertIn("rustup not found", stderr_buf.getvalue())
+
+    def test_rustc_capture_suite_passes_package_toolchain_and_linker_env(self):
+        g_lib = next(
+            x
+            for x in check_rust_guard_mutation.RUST_GUARDS
+            if x.guard_id == "rustc_capture_ir_retag_guard"
+        )
+        g_int = next(
+            x
+            for x in check_rust_guard_mutation.RUST_GUARDS
+            if x.guard_id == "rustc_capture_mono_enforce_predicate_bounds"
+        )
+        with tempfile.TemporaryDirectory(prefix="anneal-rgmut-sysroot-") as tmp:
+            sysroot = Path(tmp) / "sysroot"
+            (sysroot / "lib").mkdir(parents=True)
+            (sysroot / "bin").mkdir(parents=True)
+            fake_rustc = sysroot / "bin/rustc"
+            fake_rustc.write_text("#!/bin/sh\nexit 0\n", encoding="utf-8")
+            fake_rustc.chmod(0o755)
+            fake_cargo_body = textwrap.dedent(
+                f"""\
+                args = sys.argv[1:]
+                assert "--manifest-path" not in args, args
+                assert os.environ.get("RUSTUP_TOOLCHAIN") == "nightly-2026-05-31"
+                assert {f"-L {sysroot / 'lib'}"!r} in os.environ.get("RUSTFLAGS", "")
+                assert {str(sysroot / 'lib')!r} in os.environ.get("LD_LIBRARY_PATH", "")
+                assert os.environ.get("CARGO_TARGET_DIR", "").endswith("/rustc-capture")
+                if "--lib" in args:
+                    assert args[args.index("-p") + 1] == "anneal-rustc-capture", args
+                elif "--test" in args:
+                    assert args[args.index("-p") + 1] == "anneal-rustc-capture-tests", args
+                    assert args[args.index("--test") + 1] == "typed_capture", args
+                else:
+                    raise AssertionError(f"unexpected args: {{args}}")
+                ir_src = Path("trusted/rustc-capture/src/ir.rs").read_text(encoding="utf-8")
+                mono_src = Path("trusted/rustc-capture/src/mono.rs").read_text(encoding="utf-8")
+                is_mutant = ({g_lib.anchor!r} not in ir_src) or ({g_int.anchor!r} not in mono_src)
+                if "--no-run" in args:
+                    sys.exit(0)
+                test_name = args[args.index("--exact") + 1]
+                print("running 1 test")
+                if is_mutant:
+                    print(f"test {{test_name}} ... FAILED")
+                    print("test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured;")
+                    sys.exit(101)
+                print(f"test {{test_name}} ... ok")
+                print("test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured;")
+                sys.exit(0)
+                """
+            )
+            fake_env = (
+                None,
+                {
+                    "RUSTUP_TOOLCHAIN": "nightly-2026-05-31",
+                    "RUSTFLAGS": (
+                        f"-L {sysroot / 'lib'} "
+                        f"-C link-arg=-Wl,-rpath,{sysroot / 'lib'}"
+                    ),
+                    "LD_LIBRARY_PATH": str(sysroot / "lib"),
+                    "RUSTC": str(fake_rustc),
+                },
+            )
+            with mock.patch.object(
+                check_rust_guard_mutation,
+                "_resolve_rustc_capture_env",
+                return_value=fake_env,
+            ):
+                rc1, out1, err1, rep1, before1, after1 = self._run_synthetic_suite(
+                    fake_cargo_body,
+                    suite="rustc_capture",
+                    name_filter="rustc_capture_ir_retag_guard",
+                    jobs=1,
+                )
+                rc2, out2, err2, rep2, before2, after2 = self._run_synthetic_suite(
+                    fake_cargo_body,
+                    suite="rustc_capture",
+                    name_filter="rustc_capture_mono_enforce_predicate_bounds",
+                    jobs=1,
+                )
+        self.assertEqual(rc1, 0, out1 + err1)
+        self.assertEqual(rc2, 0, out2 + err2)
+        self.assertEqual(before1, after1)
+        self.assertEqual(before2, after2)
+        assert rep1 is not None and rep2 is not None
+        self.assertEqual(rep1["killed"], 1)
+        self.assertEqual(rep2["killed"], 1)
+        self.assertEqual(rep1["results"][0]["suite"], "rustc_capture")
+        self.assertEqual(rep2["results"][0]["suite"], "rustc_capture")
 
 
 if __name__ == "__main__":

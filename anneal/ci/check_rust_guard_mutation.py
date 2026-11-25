@@ -37,16 +37,16 @@ What this check guarantees — and what it does NOT guarantee
 
 - **Guarantees:** Every security guard listed in `RUST_GUARDS` is active under
   its configured mutation, compiles when weakened, and is exercised by its
-  targeted `anneal-audit` or `cargo-anneal` test.
+  targeted `anneal-audit`, `cargo-anneal`, or `anneal-rustc-capture` test.
 - **Does NOT guarantee:** Coverage of uncataloged branches, Lean-side checks
-  (covered by `ci/check_guard_mutation.py`), or `rustc-capture/` / `stage.rs` /
-  `olean_cache.rs` internals excluded from this standalone harness.
+  (covered by `ci/check_guard_mutation.py`), or `stage.rs` / `olean_cache.rs`
+  internals excluded from this standalone harness.
 
 How to add a new guard
 ----------------------
 
-Whenever adding a new security guard under `trusted/audit/src/` or
-`trusted/cargo-anneal/src/`:
+Whenever adding a new security guard under `trusted/audit/src/`,
+`trusted/cargo-anneal/src/`, or `trusted/rustc-capture/src/`:
 
 1. Add a focused test in the crate's unit or integration test suite that fails
    when that guard is bypassed.
@@ -77,19 +77,30 @@ import time
 ALLOWED_SUITES: dict[str, tuple[str, str]] = {
     "anneal_audit": ("anneal-audit", "trusted/audit/"),
     "cargo_anneal": ("cargo-anneal", "trusted/cargo-anneal/"),
+    "rustc_capture": ("anneal-rustc-capture", "trusted/rustc-capture/"),
 }
+
+WORKSPACE_SUITES: frozenset[str] = frozenset({"anneal_audit", "cargo_anneal"})
+
+SUITE_CHOICES: tuple[str, ...] = (
+    "all",
+    "workspace",
+    *ALLOWED_SUITES,
+)
 
 # Integration tests (`--test <name>`) reside in non-TCB Zone-1 test crates
 # under `anneal/tests/` that depend on the mutated `trusted/` crates.
 INTEGRATION_TEST_PACKAGES: dict[str, tuple[str, str]] = {
     "anneal-audit": ("anneal-audit-tests", "tests/audit"),
     "cargo-anneal": ("cargo-anneal-tests", "tests/cargo-anneal"),
+    "anneal-rustc-capture": ("anneal-rustc-capture-tests", "tests/rustc-capture"),
 }
+
+DEFAULT_NIGHTLY_TOOLCHAIN = "nightly-2026-05-31"
 
 EXCLUDED_TARGET_SUBSTRINGS: tuple[str, ...] = (
     "stage.rs",
     "olean_cache.rs",
-    "rustc-capture",
 )
 
 
@@ -98,12 +109,12 @@ class RustGuard:
     """Single-guard mutation entry targeting a Rust TCB crate."""
 
     guard_id: str
-    suite: str  # "anneal_audit" | "cargo_anneal"
+    suite: str  # "anneal_audit" | "cargo_anneal" | "rustc_capture"
     target_file: str  # path relative to `anneal/`
     description: str
     anchor: str
     replacement: str
-    package: str  # "anneal-audit" | "cargo-anneal"
+    package: str  # "anneal-audit" | "cargo-anneal" | "anneal-rustc-capture"
     test_args: tuple[str, ...]
     test_name: str
 
@@ -780,6 +791,580 @@ RUST_GUARDS: tuple[RustGuard, ...] = (
         test_args=("--lib",),
         test_name="bundle::tests::parse_bundled_theory_rejects_tampered_and_invalid_payloads",
     ),
+    # ------------------------------------------------------------------
+    # anneal-rustc-capture: capture.rs (7 guards)
+    # ------------------------------------------------------------------
+    RustGuard(
+        guard_id="rustc_capture_args_reject_response_file",
+        suite="rustc_capture",
+        target_file="trusted/rustc-capture/src/capture.rs",
+        description="Reject compiler @response-file arguments during capture",
+        anchor=(
+            "        if arg.starts_with('@') {\n"
+            "            return Err(Failure::tool("
+        ),
+        replacement="        if false {\n            return Err(Failure::tool(",
+        package="anneal-rustc-capture",
+        test_args=("--lib",),
+        test_name="capture::tests::compiler_args_gate_rejects_extern_search_paths_response_files_and_proc_macro",
+    ),
+    RustGuard(
+        guard_id="rustc_capture_args_reject_extern_search_paths",
+        suite="rustc_capture",
+        target_file="trusted/rustc-capture/src/capture.rs",
+        description="Reject --extern and -L library search path flags during capture",
+        anchor=(
+            '        if arg == "--extern" || arg.starts_with("--extern=") '
+            '|| arg == "-L" || arg.starts_with("-L")\n'
+            "        {"
+        ),
+        replacement="        if false\n        {",
+        package="anneal-rustc-capture",
+        test_args=("--lib",),
+        test_name="capture::tests::compiler_args_gate_rejects_extern_search_paths_response_files_and_proc_macro",
+    ),
+    RustGuard(
+        guard_id="rustc_capture_options_require_overflow_checks_no",
+        suite="rustc_capture",
+        target_file="trusted/rustc-capture/src/capture.rs",
+        description="Require explicit -Coverflow-checks=no during MIR capture",
+        anchor=(
+            "    if opts.cg.overflow_checks != Some(false) {\n"
+            "        return Err(format!(\n"
+            '            "-Coverflow-checks=no is required during capture (got {:?})",'
+        ),
+        replacement=(
+            "    if false {\n"
+            "        return Err(format!(\n"
+            '            "-Coverflow-checks=no is required during capture (got {:?})",'
+        ),
+        package="anneal-rustc-capture",
+        test_args=("--lib",),
+        test_name="capture::tests::compiler_options_gate_enforces_opt_level_debug_assertions_and_overflow_checks",
+    ),
+    RustGuard(
+        guard_id="rustc_capture_options_require_mir_preserve_ub",
+        suite="rustc_capture",
+        target_file="trusted/rustc-capture/src/capture.rs",
+        description="Require -Zmir-preserve-ub so PlaceMention/SwitchInt UB survives capture",
+        anchor=(
+            "    if !opts.unstable_opts.mir_preserve_ub {\n"
+            '        return Err("-Zmir-preserve-ub must be enabled during capture".into());'
+        ),
+        replacement=(
+            "    if false {\n"
+            '        return Err("-Zmir-preserve-ub must be enabled during capture".into());'
+        ),
+        package="anneal-rustc-capture",
+        test_args=("--lib",),
+        test_name="capture::tests::compiler_options_gate_requires_mir_preserve_ub_and_matching_crate_type_and_panic",
+    ),
+    RustGuard(
+        guard_id="rustc_capture_sysroot_crate_dev_ino",
+        suite="rustc_capture",
+        target_file="trusted/rustc-capture/src/capture.rs",
+        description="Enforce target sysroot (st_dev, st_ino) membership on external crates",
+        anchor=(
+            "        if !allowed_sysroot_ids.contains(&dev_ino) {\n"
+            "            return Err(Failure::unsupported(format!(\n"
+            '                "external crate {} resolved outside target sysroot: {}",'
+        ),
+        replacement=(
+            "        if false && !allowed_sysroot_ids.contains(&dev_ino) {\n"
+            "            return Err(Failure::unsupported(format!(\n"
+            '                "external crate {} resolved outside target sysroot: {}",'
+        ),
+        package="anneal-rustc-capture",
+        test_args=("--lib",),
+        test_name="capture::tests::sysroot_only_crate_admission_enforces_sysroot_dev_ino_and_no_proc_macro",
+    ),
+    RustGuard(
+        guard_id="rustc_capture_session_sysroot_toctou",
+        suite="rustc_capture",
+        target_file="trusted/rustc-capture/src/capture.rs",
+        description="Detect symlink retargeting TOCTOU divergence on session sysroot",
+        anchor=(
+            "    if sysroot != verified_sysroot || session_sysroot_id != verified_sysroot_id {\n"
+            "        return Err(Failure::tool(\n"
+            '            "compiler session sysroot diverged from verified sysroot",'
+        ),
+        replacement=(
+            "    if false && (sysroot != verified_sysroot || session_sysroot_id != verified_sysroot_id) {\n"
+            "        return Err(Failure::tool(\n"
+            '            "compiler session sysroot diverged from verified sysroot",'
+        ),
+        package="anneal-rustc-capture",
+        test_args=("--lib",),
+        test_name="capture::tests::session_sysroot_check_detects_symlink_retargeting_toctou",
+    ),
+    RustGuard(
+        guard_id="rustc_capture_env_depinfo_require_declared",
+        suite="rustc_capture",
+        target_file="trusted/rustc-capture/src/capture.rs",
+        description="Reject undeclared compile-time environment reads in dep-info gate",
+        anchor=(
+            "        let Some(expected) = declared.get(name) else {\n"
+            "            return Err(Failure::unsupported(format!(\n"
+            '                "environment-dependent source inputs are unsupported: undeclared variable {name}"\n'
+            "            )));\n"
+            "        };"
+        ),
+        replacement=(
+            "        let Some(expected) = declared.get(name) else {\n"
+            "            let _ = value;\n"
+            "            continue;\n"
+            "        };"
+        ),
+        package="anneal-rustc-capture",
+        test_args=("--lib",),
+        test_name="capture::tests::env_depinfo_gate_requires_exact_declared_bindings",
+    ),
+    # ------------------------------------------------------------------
+    # anneal-rustc-capture: driver.rs (1 guard)
+    # ------------------------------------------------------------------
+    RustGuard(
+        guard_id="rustc_capture_driver_require_analysis_callback",
+        suite="rustc_capture",
+        target_file="trusted/rustc-capture/src/driver.rs",
+        description="Require clean analysis callback before reporting compiler driver success",
+        anchor=(
+            "        if !callbacks.analysis_reached {\n"
+            '            early_dcx.early_fatal("compiler returned without reaching a clean analysis callback");\n'
+            "        }"
+        ),
+        replacement=(
+            "        if false && !callbacks.analysis_reached {\n"
+            '            early_dcx.early_fatal("compiler returned without reaching a clean analysis callback");\n'
+            "        }"
+        ),
+        package="anneal-rustc-capture",
+        test_args=("--test", "compiler_session"),
+        test_name="compiler_information_is_not_callback_evidence",
+    ),
+    # ------------------------------------------------------------------
+    # anneal-rustc-capture: extract.rs (3 guards)
+    # ------------------------------------------------------------------
+    RustGuard(
+        guard_id="rustc_capture_extract_rodata_immutability",
+        suite="rustc_capture",
+        target_file="trusted/rustc-capture/src/extract.rs",
+        description="Reject mutable global allocations when reading constant scalars",
+        anchor=(
+            "    if alloc.mutability != Mutability::Not {\n"
+            '        return Err("mutable global allocations are unsupported in constants".into());\n'
+            "    }"
+        ),
+        replacement=(
+            "    if false {\n"
+            '        return Err("mutable global allocations are unsupported in constants".into());\n'
+            "    }"
+        ),
+        package="anneal-rustc-capture",
+        test_args=("--lib",),
+        test_name="extract::tests::rodata_global_alloc_reader_enforces_immutability_init_bounds_endian_and_no_provenance",
+    ),
+    RustGuard(
+        guard_id="rustc_capture_extract_rodata_no_provenance",
+        suite="rustc_capture",
+        target_file="trusted/rustc-capture/src/extract.rs",
+        description="Reject pointer provenance in global allocation scalar constants",
+        anchor=(
+            "    if !alloc.provenance().range_empty(range, cx) {\n"
+            '        return Err("provenance-bearing global allocation constants are unsupported".into());\n'
+            "    }"
+        ),
+        replacement=(
+            "    if false {\n"
+            '        return Err("provenance-bearing global allocation constants are unsupported".into());\n'
+            "    }"
+        ),
+        package="anneal-rustc-capture",
+        test_args=("--lib",),
+        test_name="extract::tests::rodata_global_alloc_reader_enforces_immutability_init_bounds_endian_and_no_provenance",
+    ),
+    RustGuard(
+        guard_id="rustc_capture_extract_call_source_use",
+        suite="rustc_capture",
+        target_file="trusted/rustc-capture/src/extract.rs",
+        description="Reject CallSource::Use terminators to prevent post-capture clone rewrite",
+        anchor=(
+            "        mir::CallSource::Use => Err(\n"
+            '            "CallSource::Use call terminators are unsupported: post-capture \\\n'
+            "             optimize_use_clone may rewrite Clone::clone to a bitwise copy \\\n"
+            '             for Copy types, diverging from captured MIR"\n'
+            "                .into(),\n"
+            "        ),"
+        ),
+        replacement="        mir::CallSource::Use => Ok(()),",
+        package="anneal-rustc-capture",
+        test_args=("--lib",),
+        test_name="extract::tests::call_source_use_fails_closed_while_other_call_sources_pass_guard",
+    ),
+    # ------------------------------------------------------------------
+    # anneal-rustc-capture: identity.rs (5 guards)
+    # ------------------------------------------------------------------
+    RustGuard(
+        guard_id="rustc_capture_identity_reject_loader_env",
+        suite="rustc_capture",
+        target_file="trusted/rustc-capture/src/identity.rs",
+        description="Reject LD_*/DYLD_* dynamic linker override env vars by presence",
+        anchor=(
+            "        if FORBIDDEN_LOADER_ENV_VARS.contains(&key_str) {\n"
+            "            return Err(Failure::tool(format!(\n"
+            '                "forbidden dynamic linker environment variable is set: {key_str}"\n'
+            "            )));\n"
+            "        }"
+        ),
+        replacement=(
+            "        if false && FORBIDDEN_LOADER_ENV_VARS.contains(&key_str) {\n"
+            "            return Err(Failure::tool(format!(\n"
+            '                "forbidden dynamic linker environment variable is set: {key_str}"\n'
+            "            )));\n"
+            "        }"
+        ),
+        package="anneal-rustc-capture",
+        test_args=("--lib",),
+        test_name="identity::tests::loader_env_guards_behave_as_specified",
+    ),
+    RustGuard(
+        guard_id="rustc_capture_identity_host_triple_traversal",
+        suite="rustc_capture",
+        target_file="trusted/rustc-capture/src/identity.rs",
+        description="Reject path-traversal or malformed host triples in sysroot driver scan",
+        anchor=(
+            "    loaded_dev_ino: (u64, u64),\n"
+            ") -> Result<String, Failure> {\n"
+            "    if !is_valid_host_triple(host) {\n"
+            "        return Err(Failure::tool(format!(\n"
+            '            "invalid rustc host triple: {host:?}"\n'
+            "        )));\n"
+            "    }"
+        ),
+        replacement=(
+            "    loaded_dev_ino: (u64, u64),\n"
+            ") -> Result<String, Failure> {\n"
+            "    if false {\n"
+            "        return Err(Failure::tool(format!(\n"
+            '            "invalid rustc host triple: {host:?}"\n'
+            "        )));\n"
+            "    }"
+        ),
+        package="anneal-rustc-capture",
+        test_args=("--lib",),
+        test_name="identity::tests::symlinked_sysroot_matches_by_dev_ino_and_rejects_decoy_and_host_traversal",
+    ),
+    RustGuard(
+        guard_id="rustc_capture_identity_runtime_symlink_dev_ino",
+        suite="rustc_capture",
+        target_file="trusted/rustc-capture/src/identity.rs",
+        description="Require runtime DSO mapping (st_dev, st_ino) to match resolved split symlinks",
+        anchor=(
+            "            && !maps_pathname_basename(pathname).is_some_and(is_toolchain_dso_filename)\n"
+            "            && self.symlink_dev_inos.contains(&dev_ino)"
+        ),
+        replacement=(
+            "            && !maps_pathname_basename(pathname).is_some_and(is_toolchain_dso_filename)\n"
+            "            && {\n"
+            "                let _ = dev_ino;\n"
+            "                true\n"
+            "            }"
+        ),
+        package="anneal-rustc-capture",
+        test_args=("--lib",),
+        test_name="identity::tests::runtime_closure_authenticates_split_symlinks_and_transitive_runpath",
+    ),
+    RustGuard(
+        guard_id="rustc_capture_identity_exec_residency",
+        suite="rustc_capture",
+        target_file="trusted/rustc-capture/src/identity.rs",
+        description="Reject rogue executable VMAs outside sysroot and verified runtime closure",
+        anchor=(
+            "        } else if !runtime_closure.is_allowed(dev_ino, pathname) {\n"
+            "            return Err(Failure::tool(format!(\n"
+            '                "loaded executable mapping {} does not belong to verified sysroot {} or standard system libraries",'
+        ),
+        replacement=(
+            "        } else if false && !runtime_closure.is_allowed(dev_ino, pathname) {\n"
+            "            return Err(Failure::tool(format!(\n"
+            '                "loaded executable mapping {} does not belong to verified sysroot {} or standard system libraries",'
+        ),
+        package="anneal-rustc-capture",
+        test_args=("--lib",),
+        test_name="identity::tests::closed_world_maps_residency_verifies_dso_closure_and_static_driver",
+    ),
+    RustGuard(
+        guard_id="rustc_capture_identity_toolchain_dso_in_sysroot",
+        suite="rustc_capture",
+        target_file="trusted/rustc-capture/src/identity.rs",
+        description="Reject spliced toolchain DSOs (e.g. libLLVM) mapped from outside sysroot",
+        anchor=(
+            "        let Some((name, path)) = sysroot_libs.get(&dev_ino) else {\n"
+            "            return Err(Failure::tool(format!(\n"
+            '                "loaded toolchain DSO {} does not match any library in sysroot {}",\n'
+            "                String::from_utf8_lossy(pathname),\n"
+            "                sysroot.display()\n"
+            "            )));\n"
+            "        };"
+        ),
+        replacement=(
+            "        let Some((name, path)) = sysroot_libs.get(&dev_ino) else {\n"
+            "            let _ = pathname;\n"
+            "            continue;\n"
+            "        };"
+        ),
+        package="anneal-rustc-capture",
+        test_args=("--lib",),
+        test_name="identity::tests::closed_world_maps_residency_verifies_dso_closure_and_static_driver",
+    ),
+    # ------------------------------------------------------------------
+    # anneal-rustc-capture: ir.rs (5 guards)
+    # ------------------------------------------------------------------
+    RustGuard(
+        guard_id="rustc_capture_ir_retag_guard",
+        suite="rustc_capture",
+        target_file="trusted/rustc-capture/src/ir.rs",
+        description="Refuse erasing non-noop WithRetag::Yes on reference-bearing types",
+        anchor=(
+            "fn admit_retag(retag_noop: bool, with_retag: bool) -> Result<(), String> {\n"
+            "    if with_retag && !retag_noop {"
+        ),
+        replacement=(
+            "fn admit_retag(retag_noop: bool, with_retag: bool) -> Result<(), String> {\n"
+            "    if false && with_retag && !retag_noop {"
+        ),
+        package="anneal-rustc-capture",
+        test_args=("--lib",),
+        test_name="ir::tests::retag_guard_refuses_erasing_an_effective_retag",
+    ),
+    RustGuard(
+        guard_id="rustc_capture_ir_place_mention_sizedness",
+        suite="rustc_capture",
+        target_file="trusted/rustc-capture/src/ir.rs",
+        description="Refuse admitting PlaceMention on unsized locals as a nop",
+        anchor=(
+            "fn admit_place_mention(is_sized: bool) -> Result<(), String> {\n"
+            "    if !is_sized {"
+        ),
+        replacement=(
+            "fn admit_place_mention(is_sized: bool) -> Result<(), String> {\n"
+            "    if false && !is_sized {"
+        ),
+        package="anneal-rustc-capture",
+        test_args=("--lib",),
+        test_name="ir::tests::place_mention_guard_checks_local_bounds_and_sizedness",
+    ),
+    RustGuard(
+        guard_id="rustc_capture_ir_validate_char_unicode_scalar",
+        suite="rustc_capture",
+        target_file="trusted/rustc-capture/src/ir.rs",
+        description="Enforce Unicode scalar validity for char constant literals",
+        anchor=(
+            "        (Ty::Char, ConstLit::Scalar { bits }) => {\n"
+            "            if is_unicode_scalar(bits) {"
+        ),
+        replacement=(
+            "        (Ty::Char, ConstLit::Scalar { bits }) => {\n"
+            "            if { let _ = bits; true } {"
+        ),
+        package="anneal-rustc-capture",
+        test_args=("--lib",),
+        test_name="ir::tests::validate_constant_checks_all_ty_and_lit_combinations",
+    ),
+    RustGuard(
+        guard_id="rustc_capture_ir_storage_dead_return_place",
+        suite="rustc_capture",
+        target_file="trusted/rustc-capture/src/ir.rs",
+        description="Reject StorageDead on return place _0 before Lean emission",
+        anchor=(
+            "                        if *local == 0 {\n"
+            '                            return Err("StorageDead on return place _0 is unsupported".into());'
+        ),
+        replacement=(
+            "                        if false && *local == 0 {\n"
+            '                            return Err("StorageDead on return place _0 is unsupported".into());'
+        ),
+        package="anneal-rustc-capture",
+        test_args=("--lib",),
+        test_name="extract::tests::body_constructor_rejects_storage_dead_return_place_and_invalid_constants",
+    ),
+    RustGuard(
+        guard_id="rustc_capture_ir_unique_program_identities",
+        suite="rustc_capture",
+        target_file="trusted/rustc-capture/src/ir.rs",
+        description="Reject duplicate captured function identities inside Program::try_new",
+        anchor=(
+            "            if !identities.insert(body.identity.as_str()) {\n"
+            "                return Err(format!(\n"
+            '                    "ambiguous captured function identity: {}",'
+        ),
+        replacement=(
+            "            let _ = identities.insert(body.identity.as_str());\n"
+            "            if false {\n"
+            "                return Err(format!(\n"
+            '                    "ambiguous captured function identity: {}",'
+        ),
+        package="anneal-rustc-capture",
+        test_args=("--lib",),
+        test_name="extract::tests::body_and_program_constructors_enforce_static_admission_and_unique_identities",
+    ),
+    # ------------------------------------------------------------------
+    # anneal-rustc-capture: lean.rs (2 guards)
+    # ------------------------------------------------------------------
+    RustGuard(
+        guard_id="rustc_capture_lean_place_mention_renders_nop",
+        suite="rustc_capture",
+        target_file="trusted/rustc-capture/src/lean.rs",
+        description="Lower validated PlaceMention explicitly to Trusted.MirAst.StatementKind.nop",
+        anchor='        Statement::PlaceMention { .. } | Statement::Nop => "Trusted.MirAst.StatementKind.nop".into(),',
+        replacement=(
+            '        Statement::PlaceMention { .. } => "Trusted.MirAst.StatementKind.placeMention".into(),\n'
+            '        Statement::Nop => "Trusted.MirAst.StatementKind.nop".into(),'
+        ),
+        package="anneal-rustc-capture",
+        test_args=("--lib",),
+        test_name="lean::tests::render_lowers_validated_place_mention_and_nop_to_statement_kind_nop",
+    ),
+    RustGuard(
+        guard_id="rustc_capture_lean_numeric_identity_encoding",
+        suite="rustc_capture",
+        target_file="trusted/rustc-capture/src/lean.rs",
+        description="Encode body identities strictly as numeric Char.ofNat character lists",
+        anchor=(
+            "            let chars_list =\n"
+            '                list_literal(chunk, |ch| format!("(_root_.Char.ofNat {})", u32::from(*ch)));'
+        ),
+        replacement='            let chars_list = list_literal(chunk, |ch| format!("\'{ch}\'"));',
+        package="anneal-rustc-capture",
+        test_args=("--lib",),
+        test_name="lean::tests::identity_names_are_only_numeric_character_data",
+    ),
+    # ------------------------------------------------------------------
+    # anneal-rustc-capture: lib.rs (2 guards)
+    # ------------------------------------------------------------------
+    RustGuard(
+        guard_id="rustc_capture_lib_env_nul_rejection",
+        suite="rustc_capture",
+        target_file="trusted/rustc-capture/src/lib.rs",
+        description="Reject NUL bytes in declared --env KEY=VALUE bindings",
+        anchor=(
+            "    if key.contains('\\0') || value.contains('\\0') {\n"
+            '        return Err("environment binding must not contain NUL bytes".to_owned());'
+        ),
+        replacement=(
+            "    if false {\n"
+            '        return Err("environment binding must not contain NUL bytes".to_owned());'
+        ),
+        package="anneal-rustc-capture",
+        test_args=("--lib",),
+        test_name="tests::parse_env_binding_validates_syntax_and_nul_bytes",
+    ),
+    RustGuard(
+        guard_id="rustc_capture_lib_env_duplicate_rejection",
+        suite="rustc_capture",
+        target_file="trusted/rustc-capture/src/lib.rs",
+        description="Reject duplicate --env binding keys deterministically",
+        anchor=(
+            "            if declared.insert(key.clone(), value.clone()).is_some() {\n"
+            "                return Err(Failure::tool(format!(\n"
+            '                    "duplicate --env binding for {key}"'
+        ),
+        replacement=(
+            "            let _ = declared.insert(key.clone(), value.clone());\n"
+            "            if false {\n"
+            "                return Err(Failure::tool(format!(\n"
+            '                    "duplicate --env binding for {key}"'
+        ),
+        package="anneal-rustc-capture",
+        test_args=("--lib",),
+        test_name="tests::resolved_env_sorts_deterministically_and_rejects_duplicates",
+    ),
+    # ------------------------------------------------------------------
+    # anneal-rustc-capture: mono.rs (3 guards)
+    # ------------------------------------------------------------------
+    RustGuard(
+        guard_id="rustc_capture_mono_reject_trailing_tokens",
+        suite="rustc_capture",
+        target_file="trusted/rustc-capture/src/mono.rs",
+        description="Reject trailing unparsed tokens in monomorphization generic argument syntax",
+        anchor=(
+            "    if !parser.rest().is_empty() {\n"
+            "        return Err(format!(\n"
+            '            "unexpected trailing tokens in generic argument {input:?}: {:?}",'
+        ),
+        replacement=(
+            "    if false {\n"
+            "        return Err(format!(\n"
+            '            "unexpected trailing tokens in generic argument {input:?}: {:?}",'
+        ),
+        package="anneal-rustc-capture",
+        test_args=("--lib",),
+        test_name="mono::tests::rejects_malformed_or_excess_generic_args",
+    ),
+    RustGuard(
+        guard_id="rustc_capture_mono_enforce_predicate_bounds",
+        suite="rustc_capture",
+        target_file="trusted/rustc-capture/src/mono.rs",
+        description="Refuse concrete monomorphizations whose trait/well-formedness bounds fail",
+        anchor=(
+            "    if !pred_errors.is_empty() {\n"
+            "        return Err(format!(\n"
+            '            "{label} trait or well-formedness predicates unsatisfied for `{}`: {:?}",'
+        ),
+        replacement=(
+            "    let _ = &pred_errors;\n"
+            "    if false {\n"
+            "        return Err(format!(\n"
+            '            "{label} trait or well-formedness predicates unsatisfied for `{}`: {:?}",'
+        ),
+        package="anneal-rustc-capture",
+        test_args=("--test", "typed_capture"),
+        test_name="explicit_concrete_monomorphization_refuses_unsatisfied_bounds_and_invalid_requests",
+    ),
+    RustGuard(
+        guard_id="rustc_capture_mono_enforce_region_outlives",
+        suite="rustc_capture",
+        target_file="trusted/rustc-capture/src/mono.rs",
+        description="Refuse concrete monomorphizations whose region/outlives bounds fail",
+        anchor=(
+            "    if !region_errors.is_empty() {\n"
+            "        return Err(format!(\n"
+            '            "{label} region or outlives predicates unsatisfied for `{}`: {:?}",'
+        ),
+        replacement=(
+            "    let _ = &region_errors;\n"
+            "    if false {\n"
+            "        return Err(format!(\n"
+            '            "{label} region or outlives predicates unsatisfied for `{}`: {:?}",'
+        ),
+        package="anneal-rustc-capture",
+        test_args=("--test", "typed_capture"),
+        test_name="explicit_monomorphization_enforces_crate_roots_region_bounds_and_self_const_fn",
+    ),
+    # ------------------------------------------------------------------
+    # anneal-rustc-capture: publication.rs (2 guards)
+    # ------------------------------------------------------------------
+    RustGuard(
+        guard_id="rustc_capture_publication_staging_mode_private",
+        suite="rustc_capture",
+        target_file="trusted/rustc-capture/src/publication.rs",
+        description="Keep capture staging directory private (0o700) against other users",
+        anchor="            staging.permissions(fs::Permissions::from_mode(0o700));",
+        replacement="            staging.permissions(fs::Permissions::from_mode(0o755));",
+        package="anneal-rustc-capture",
+        test_args=("--lib",),
+        test_name="publication::tests::staging_excludes_other_users",
+    ),
+    RustGuard(
+        guard_id="rustc_capture_publication_preserve_foreign_data",
+        suite="rustc_capture",
+        target_file="trusted/rustc-capture/src/publication.rs",
+        description="Remove only empty reservations on drop to preserve caller data",
+        anchor="            let _ = fs::remove_dir(&self.destination);",
+        replacement="            let _ = fs::remove_dir_all(&self.destination);",
+        package="anneal-rustc-capture",
+        test_args=("--lib",),
+        test_name="publication::tests::failed_publication_preserves_data_added_to_the_reservation",
+    ),
 )
 
 
@@ -809,6 +1394,8 @@ def _crate_dir_for_package(anneal_root: Path, package: str) -> Path:
         return anneal_root / "trusted/audit"
     if package == "cargo-anneal":
         return anneal_root / "trusted/cargo-anneal"
+    if package == "anneal-rustc-capture":
+        return anneal_root / "trusted/rustc-capture"
     raise ValueError(f"unknown package {package!r}")
 
 
@@ -1034,14 +1621,108 @@ def _select_guards(
     suite: str,
     name_filter: str | None,
 ) -> list[RustGuard]:
-    guards = [
-        g
-        for g in RUST_GUARDS
-        if suite == "all" or g.suite == suite
-    ]
+    if suite == "all":
+        guards = list(RUST_GUARDS)
+    elif suite == "workspace":
+        guards = [g for g in RUST_GUARDS if g.suite in WORKSPACE_SUITES]
+    else:
+        guards = [g for g in RUST_GUARDS if g.suite == suite]
     if name_filter:
         guards = [g for g in guards if name_filter in g.guard_id]
     return guards
+
+
+def _resolve_rustc_capture_env(
+    nightly_toolchain: str,
+    *,
+    use_explicit_cargo: bool,
+    rustc_capture_sysroot: Path | None = None,
+) -> tuple[Path | None, dict[str, str]]:
+    """Resolve nightly sysroot, linker flags, and optional cargo executable."""
+    nightly_cargo: Path | None = None
+    if rustc_capture_sysroot is not None:
+        sysroot = rustc_capture_sysroot
+    else:
+        rustup_bin = shutil.which("rustup")
+        if not rustup_bin:
+            raise RuntimeError(
+                "rustup not found on PATH; cannot run rustc_capture guards"
+            )
+        proc = subprocess.run(
+            [rustup_bin, "run", nightly_toolchain, "rustc", "--print", "sysroot"],
+            capture_output=True,
+            text=True,
+        )
+        if proc.returncode != 0:
+            detail = (proc.stderr or proc.stdout).strip()
+            raise RuntimeError(
+                f"failed resolving nightly toolchain {nightly_toolchain!r}: {detail}"
+            )
+        sysroot = Path(proc.stdout.strip())
+        if not use_explicit_cargo:
+            which_cargo = subprocess.run(
+                [rustup_bin, "which", "--toolchain", nightly_toolchain, "cargo"],
+                capture_output=True,
+                text=True,
+            )
+            if which_cargo.returncode != 0:
+                detail = (which_cargo.stderr or which_cargo.stdout).strip()
+                raise RuntimeError(
+                    f"failed resolving cargo for {nightly_toolchain!r}: {detail}"
+                )
+            nightly_cargo = Path(which_cargo.stdout.strip())
+            if not nightly_cargo.is_file():
+                raise RuntimeError(
+                    f"resolved nightly cargo does not exist: {nightly_cargo}"
+                )
+
+    lib_dir = sysroot / "lib"
+    if not lib_dir.is_dir():
+        raise RuntimeError(
+            f"nightly rustc sysroot lacks lib directory: {lib_dir}"
+        )
+
+    existing_ld = os.environ.get("LD_LIBRARY_PATH", "")
+    ld_path = f"{lib_dir}:{existing_ld}" if existing_ld else str(lib_dir)
+    existing_rustflags = os.environ.get("RUSTFLAGS", "").strip()
+    link_flags = f"-L {lib_dir} -C link-arg=-Wl,-rpath,{lib_dir}"
+    rustflags = (
+        f"{existing_rustflags} {link_flags}".strip()
+        if existing_rustflags
+        else link_flags
+    )
+    env_overrides: dict[str, str] = {
+        "RUSTUP_TOOLCHAIN": nightly_toolchain,
+        "RUSTFLAGS": rustflags,
+        "LD_LIBRARY_PATH": ld_path,
+    }
+    rustc_bin = sysroot / "bin/rustc"
+    if rustc_bin.is_file():
+        env_overrides["RUSTC"] = str(rustc_bin)
+    return nightly_cargo, env_overrides
+
+
+def _build_cargo_test_args(
+    test_package: str, guard: RustGuard, *tail: str
+) -> list[str]:
+    return ["test", "--locked", "-p", test_package, *guard.test_args, *tail]
+
+
+def _target_dir_for_guard(base_target: Path, guard: RustGuard) -> Path:
+    subdir = "rustc-capture" if guard.suite == "rustc_capture" else "workspace"
+    return base_target / subdir
+
+
+def _effective_cargo_and_env(
+    guard: RustGuard,
+    *,
+    cargo_bin: Path,
+    rustc_capture_cargo: Path | None,
+    rustc_capture_env: dict[str, str] | None,
+) -> tuple[Path, dict[str, str] | None]:
+    if guard.suite == "rustc_capture":
+        return (rustc_capture_cargo or cargo_bin, rustc_capture_env)
+    return (cargo_bin, None)
 
 
 def _run_cargo(
@@ -1051,11 +1732,16 @@ def _run_cargo(
     cwd: Path,
     target_dir: Path,
     timeout_sec: int,
+    extra_env: dict[str, str] | None = None,
 ) -> subprocess.CompletedProcess[str]:
     env = os.environ.copy()
     env["CARGO_TARGET_DIR"] = str(target_dir)
     # Disable color noise for deterministic parsing.
     env["CARGO_TERM_COLOR"] = "never"
+    if extra_env:
+        if "RUSTC" not in extra_env:
+            env.pop("RUSTC", None)
+        env.update(extra_env)
     return subprocess.run(
         [str(cargo_bin), *args],
         cwd=str(cwd),
@@ -1077,6 +1763,8 @@ def _check_one_guard(
     guard: RustGuard,
     *,
     cargo_bin: Path,
+    rustc_capture_cargo: Path | None,
+    rustc_capture_env: dict[str, str] | None,
     worker_pool: queue.Queue[tuple[Path, Path]],
     timeout_sec: int,
 ) -> GuardResult:
@@ -1105,6 +1793,13 @@ def _check_one_guard(
                 detail=str(exc),
             )
 
+        effective_cargo, extra_env = _effective_cargo_and_env(
+            guard,
+            cargo_bin=cargo_bin,
+            rustc_capture_cargo=rustc_capture_cargo,
+            rustc_capture_env=rustc_capture_env,
+        )
+        guard_target = _target_dir_for_guard(worker_target, guard)
         pre_stat = src_path.stat()
         try:
             src_path.write_text(mutated_text, encoding="utf-8")
@@ -1113,21 +1808,15 @@ def _check_one_guard(
             # Gate 1 (Anti-fake-kill): compile target first with `--no-run`.
             # Any compile error must report `ERROR`, never `KILLED`.
             test_package, _ = _test_package_and_dir_for_guard(worker_anneal, guard)
-            compile_args = [
-                "test",
-                "--locked",
-                "-p",
-                test_package,
-                *guard.test_args,
-                "--no-run",
-            ]
+            compile_args = _build_cargo_test_args(test_package, guard, "--no-run")
             try:
                 comp = _run_cargo(
-                    cargo_bin,
+                    effective_cargo,
                     compile_args,
                     cwd=worker_anneal,
-                    target_dir=worker_target,
+                    target_dir=guard_target,
                     timeout_sec=timeout_sec,
+                    extra_env=extra_env,
                 )
             except subprocess.TimeoutExpired:
                 return GuardResult(
@@ -1154,23 +1843,17 @@ def _check_one_guard(
                 )
 
             # Gate 2: execute targeted test with `-- --exact`.
-            test_args = [
-                "test",
-                "--locked",
-                "-p",
-                test_package,
-                *guard.test_args,
-                "--",
-                "--exact",
-                guard.test_name,
-            ]
+            test_args = _build_cargo_test_args(
+                test_package, guard, "--", "--exact", guard.test_name
+            )
             try:
                 test_res = _run_cargo(
-                    cargo_bin,
+                    effective_cargo,
                     test_args,
                     cwd=worker_anneal,
-                    target_dir=worker_target,
+                    target_dir=guard_target,
                     timeout_sec=timeout_sec,
+                    extra_env=extra_env,
                 )
             except subprocess.TimeoutExpired:
                 return GuardResult(
@@ -1210,6 +1893,9 @@ def run_rust_guard_mutation_suite(
     name_filter: str | None = None,
     jobs: int = 4,
     timeout_sec: int = 120,
+    nightly_toolchain: str = DEFAULT_NIGHTLY_TOOLCHAIN,
+    use_explicit_cargo: bool = False,
+    rustc_capture_sysroot: Path | None = None,
 ) -> dict[str, object]:
     """Validate baseline builds/tests and execute all selected Rust guard checks."""
     t_start = time.monotonic()
@@ -1224,6 +1910,15 @@ def run_rust_guard_mutation_suite(
     if not guards:
         raise RuntimeError(
             f"no Rust guards matched suite={suite!r} filter={name_filter!r}"
+        )
+
+    rustc_capture_cargo: Path | None = None
+    rustc_capture_env: dict[str, str] | None = None
+    if any(g.suite == "rustc_capture" for g in guards):
+        rustc_capture_cargo, rustc_capture_env = _resolve_rustc_capture_env(
+            nightly_toolchain,
+            use_explicit_cargo=use_explicit_cargo,
+            rustc_capture_sysroot=rustc_capture_sysroot,
         )
 
     ignore_patterns = shutil.ignore_patterns("target", ".lake", "__pycache__", ".git")
@@ -1242,20 +1937,30 @@ def run_rust_guard_mutation_suite(
         )
 
         t_base = time.monotonic()
-        # 1. Baseline compile per distinct `(test_package, test_args)` target.
-        seen_builds: set[tuple[str, tuple[str, ...]]] = set()
+        # 1. Baseline compile per distinct `(suite, test_package, test_args)`
+        # target.
+        seen_builds: set[tuple[str, str, tuple[str, ...]]] = set()
         for g in guards:
             test_pkg, _ = _test_package_and_dir_for_guard(base_anneal, g)
-            key = (test_pkg, g.test_args)
+            key = (g.suite, test_pkg, g.test_args)
             if key in seen_builds:
                 continue
             seen_builds.add(key)
+            eff_cargo, extra_env = _effective_cargo_and_env(
+                g,
+                cargo_bin=cargo_bin,
+                rustc_capture_cargo=rustc_capture_cargo,
+                rustc_capture_env=rustc_capture_env,
+            )
+            guard_target = _target_dir_for_guard(base_target, g)
+            guard_target.mkdir(parents=True, exist_ok=True)
             comp = _run_cargo(
-                cargo_bin,
-                ["test", "--locked", "-p", test_pkg, *g.test_args, "--no-run"],
+                eff_cargo,
+                _build_cargo_test_args(test_pkg, g, "--no-run"),
                 cwd=base_anneal,
-                target_dir=base_target,
+                target_dir=guard_target,
                 timeout_sec=timeout_sec,
+                extra_env=extra_env,
             )
             if comp.returncode != 0:
                 raise RuntimeError(
@@ -1264,28 +1969,27 @@ def run_rust_guard_mutation_suite(
                 )
 
         # 2. Verify each distinct baseline targeted test passes (>= 1 test).
-        seen_tests: set[tuple[str, tuple[str, ...], str]] = set()
+        seen_tests: set[tuple[str, str, tuple[str, ...], str]] = set()
         for g in guards:
             test_pkg, _ = _test_package_and_dir_for_guard(base_anneal, g)
-            tkey = (test_pkg, g.test_args, g.test_name)
+            tkey = (g.suite, test_pkg, g.test_args, g.test_name)
             if tkey in seen_tests:
                 continue
             seen_tests.add(tkey)
+            eff_cargo, extra_env = _effective_cargo_and_env(
+                g,
+                cargo_bin=cargo_bin,
+                rustc_capture_cargo=rustc_capture_cargo,
+                rustc_capture_env=rustc_capture_env,
+            )
+            guard_target = _target_dir_for_guard(base_target, g)
             base_res = _run_cargo(
-                cargo_bin,
-                [
-                    "test",
-                    "--locked",
-                    "-p",
-                    test_pkg,
-                    *g.test_args,
-                    "--",
-                    "--exact",
-                    g.test_name,
-                ],
+                eff_cargo,
+                _build_cargo_test_args(test_pkg, g, "--", "--exact", g.test_name),
                 cwd=base_anneal,
-                target_dir=base_target,
+                target_dir=guard_target,
                 timeout_sec=timeout_sec,
+                extra_env=extra_env,
             )
             combined = base_res.stdout + "\n" + base_res.stderr
             cls_status, cls_detail = classify_rust_test_outcome(
@@ -1302,6 +2006,16 @@ def run_rust_guard_mutation_suite(
         worker_count = max(1, min(jobs, len(guards)))
         worker_pool: queue.Queue[tuple[Path, Path]] = queue.Queue()
         worker_pool.put((base_anneal, base_target))
+        integ_targets = {
+            (
+                g.suite,
+                g.package,
+                _test_package_and_dir_for_guard(base_anneal, g)[0],
+                g.test_args[1],
+            )
+            for g in guards
+            if len(g.test_args) == 2 and g.test_args[0] == "--test"
+        }
         for idx in range(1, worker_count):
             w_root = root_path / f"worker-{idx}"
             w_anneal = w_root / "anneal"
@@ -1309,6 +2023,31 @@ def run_rust_guard_mutation_suite(
             w_root.mkdir()
             shutil.copytree(base_anneal, w_anneal, symlinks=True)
             shutil.copytree(base_target, w_target, symlinks=True)
+            # Clear local package fingerprints/build dirs and integration test
+            # executables so `env!("CARGO_BIN_EXE_*")` in `--test` binaries
+            # rebinds to this worker's own `w_target` rather than `worker-0`.
+            for suite_name, src_pkg, test_pkg, test_stem_raw in integ_targets:
+                subdir = "rustc-capture" if suite_name == "rustc_capture" else "workspace"
+                sub_debug = w_target / subdir / "debug"
+                for pkg_name in (src_pkg, test_pkg):
+                    for parent_name in (".fingerprint", "build"):
+                        parent_dir = sub_debug / parent_name
+                        if not parent_dir.is_dir():
+                            continue
+                        for pattern in (pkg_name, f"{pkg_name}-*"):
+                            for entry in parent_dir.glob(pattern):
+                                if entry.is_dir():
+                                    shutil.rmtree(entry, ignore_errors=True)
+                                else:
+                                    entry.unlink(missing_ok=True)
+                deps_root = sub_debug / "deps"
+                test_stem = test_stem_raw.replace("-", "_")
+                if deps_root.is_dir():
+                    for entry in deps_root.glob(f"{test_stem}-*"):
+                        if entry.is_dir():
+                            shutil.rmtree(entry, ignore_errors=True)
+                        else:
+                            entry.unlink(missing_ok=True)
             worker_pool.put((w_anneal, w_target))
 
         # 4. Run single-guard mutations concurrently across worker workspaces.
@@ -1319,6 +2058,8 @@ def run_rust_guard_mutation_suite(
                     _check_one_guard,
                     g,
                     cargo_bin=cargo_bin,
+                    rustc_capture_cargo=rustc_capture_cargo,
+                    rustc_capture_env=rustc_capture_env,
                     worker_pool=worker_pool,
                     timeout_sec=timeout_sec,
                 ): g
@@ -1372,8 +2113,8 @@ def _format_summary(report: dict[str, object]) -> str:
     lines: list[str] = []
     for entry in report["results"]:  # type: ignore[index]
         lines.append(
-            f"[{entry['status']:8s}] ({entry['suite']:12s}) "
-            f"{entry['guard_id']:42s} {entry['duration_sec']:5.2f}s  "
+            f"[{entry['status']:8s}] ({entry['suite']:13s}) "
+            f"{entry['guard_id']:48s} {entry['duration_sec']:5.2f}s  "
             f"{entry['detail']}"
         )
     lines.append(
@@ -1388,8 +2129,8 @@ def _format_summary(report: dict[str, object]) -> str:
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(
         description=(
-            "Run single-guard mutation checks against trusted/audit/src/ "
-            "and trusted/cargo-anneal/src/."
+            "Run single-guard mutation checks against trusted/audit/src/, "
+            "trusted/cargo-anneal/src/, and trusted/rustc-capture/src/."
         )
     )
     parser.add_argument(
@@ -1405,8 +2146,16 @@ def main(argv: list[str] | None = None) -> int:
         help="Path to the `cargo` executable (falls back to ANNEAL_CARGO / CARGO / PATH).",
     )
     parser.add_argument(
+        "--nightly-toolchain",
+        default=DEFAULT_NIGHTLY_TOOLCHAIN,
+        help=(
+            "Nightly toolchain for `rustc_capture` guards "
+            f"(default: {DEFAULT_NIGHTLY_TOOLCHAIN})."
+        ),
+    )
+    parser.add_argument(
         "--suite",
-        choices=("all", *ALLOWED_SUITES),
+        choices=SUITE_CHOICES,
         default="all",
         help="Which Rust guard-mutation suite(s) to execute.",
     )
@@ -1454,7 +2203,7 @@ def main(argv: list[str] | None = None) -> int:
             return 1
         selected = _select_guards(args.suite, args.name_filter)
         for g in selected:
-            print(f"{g.suite:14s} {g.guard_id:42s} {g.target_file}")
+            print(f"{g.suite:14s} {g.guard_id:48s} {g.target_file}")
         print(f"Total cataloged Rust guards: {len(selected)}")
         return 0
 
@@ -1467,6 +2216,8 @@ def main(argv: list[str] | None = None) -> int:
             name_filter=args.name_filter,
             jobs=args.jobs,
             timeout_sec=args.timeout_sec,
+            nightly_toolchain=args.nightly_toolchain,
+            use_explicit_cargo=args.cargo is not None,
         )
     except RuntimeError as exc:
         print(f"FAIL: {exc}", file=sys.stderr)
