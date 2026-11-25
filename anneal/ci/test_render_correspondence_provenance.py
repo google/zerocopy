@@ -78,7 +78,7 @@ class RenderCorrespondenceProvenanceTests(unittest.TestCase):
         self.assertEqual(data["schema_version"], 1)
         self.assertEqual(len(data["correspondence_adapters"]), 7)
         self.assertEqual(len(data["correspondence_proofs"]), 19)
-        self.assertEqual(len(data["trusted_lean"]), 21)
+        self.assertEqual(len(data["trusted_lean"]), 24)
         self.assertEqual(len(data["patched_files"]), 13)
         self.assertIn("anneal-audit --require-correspondence", data["note"])
         self.assertNotIn("\\\n", data["note"])
