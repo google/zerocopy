@@ -502,10 +502,10 @@ help: the following other types implement trait `SplitAt`
 ...
 361 | #[derive(SplitAt, KnownLayout)]
     |          ^^^^^^^ `SplitAtSized`
-   --> src/split_at.rs:289:0
+   --> src/split_at.rs:293:0
     |
     = note: `[T]`
-   ::: src/split_at.rs:312:0
+   ::: src/split_at.rs:316:0
     |
     = note: `ManuallyDrop<T>`
     = note: this error originates in the derive macro `SplitAt` (in Nightly builds, run with -Z macro-backtrace for more info)

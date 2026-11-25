@@ -990,10 +990,10 @@ macro_rules! codegen_preamble {
 }
 
 /// Stub for rendering codegen documentation; used to break build dependency
-/// between benches and zerocopy when re-blessing codegen tests and when running
-/// doctests.
+/// between benches and zerocopy when re-blessing codegen tests, when running
+/// doctests, and when `no_zerocopy_codegen_docs` is set.
 #[allow(unused)]
-#[cfg(any(not(doc), doctest))]
+#[cfg(any(not(doc), doctest, no_zerocopy_codegen_docs))]
 macro_rules! codegen_section {
     (
         header = $level:expr,
@@ -1016,11 +1016,23 @@ macro_rules! codegen_section {
     ) => {
         ""
     };
+    (
+        header = $level:expr,
+        name = $name:expr,
+        $(#[doc = $content:expr])*
+    ) => {
+        ""
+    };
+    (
+        $(#[doc = $content:expr])*
+    ) => {
+        ""
+    };
 }
 
 /// Generates the HTML for code generation documentation.
 #[allow(unused)]
-#[cfg(all(doc, not(doctest)))]
+#[cfg(all(doc, not(doctest), not(no_zerocopy_codegen_docs)))]
 macro_rules! codegen_section {
     (
         header = $level:expr,
@@ -1069,5 +1081,21 @@ macro_rules! codegen_section {
                 bench = $bench
             )
         )
-    }
+    };
+    (
+        header = $level:expr,
+        name = $name:expr,
+        $(#[doc = $content:expr])*
+    ) => {
+        concat!(
+            codegen_header!($level, $name),
+            "\n",
+            docstring!($(#[doc = $content])*)
+        )
+    };
+    (
+        $(#[doc = $content:expr])*
+    ) => {
+        docstring!($(#[doc = $content])*)
+    };
 }
