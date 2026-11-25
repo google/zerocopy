@@ -404,8 +404,9 @@ connects the verification layers to Stage 2 by kernel-checked refinement proofs:
   `theory/Anneal/{NatBitwise,BitTrieLrat,PTree,SpineForce,Generic}.lean`,
   `theory/Anneal/{Scalar,Simd,Wp}.lean`,
   `theory/Anneal/{AiPcc,ByteRun,ByteSubLens,CallStackUnwind,CnfOrd,F2Simd}/`,
-  `theory/Anneal/{Framework,MirMemComp,OverflowCastJoin,PureLift,RefFrame}/`,
-  `theory/Anneal/WavefrontReclaim/`, and planned `Theory/Rust/{Wp,Tactics}/`):**
+  `theory/Anneal/{Framework,MirMemComp,MiriTreeBorrows,OverflowCastJoin}/`,
+  `theory/Anneal/{PureLift,RefFrame,WavefrontReclaim}/`, and
+  planned `Theory/Rust/{Wp,Tactics}/`):**
   Weakest-precondition calculi, loop-invariant and simulation combinators,
   Diaconescu classical excluded middle and existential choice, WHNF and
   rewrite firewall combinators, foundation-locked `Bool`/`BEq`/`Nat`/`Int`/
@@ -425,7 +426,8 @@ connects the verification layers to Stage 2 by kernel-checked refinement proofs:
   layouts, assume-guarantee trait contracts, and closed-instantiation erasure to
   Day-1 `BodyVerified` (`Generic`, audited standalone in Pass 1), computable MIR
   memory, layout, and indirect byte-codec re-exports and stack framing laws
-  (`MirMemComp`), `@[irreducible]` stage-cut interval joins for overflowing
+  (`MirMemComp`), Miri-aligned Tree Borrows transitions, retags, and protectors
+  (`MiriTreeBorrows`), `@[irreducible]` stage-cut interval joins for overflowing
   tuple arithmetic and `intToInt` casts (`OverflowCastJoin`), 4-way
   call-continuation `&mut` writeback frames and ranged Tree Borrows protectors
   (`RefFrame`), view-indexed spatial PCM `< ω^ω` wavefront drain and universal
@@ -566,6 +568,7 @@ anneal/
     │   ├── MirSymExec.lean         # Reflective symbolic MIR executor (+ MirSymExec/)
     │   ├── MirTotal.lean           # Computable MIR step mirrors & bridges (+ MirTotal/)
     │   ├── MirWp.lean              # Fuel-bounded MIR WP (+ MirWp/, decoupled Canaries)
+    │   ├── MiriTreeBorrows.lean    # Miri-aligned Tree Borrows model & retag laws (+ MiriTreeBorrows/)
     │   ├── NatBitwise.lean         # Shared Nat.bitwise unfolding & bounds
     │   ├── OverflowCastJoin.lean   # Stage-cut joins for overflowing arithmetic & casts (+ OverflowCastJoin/)
     │   ├── PTree.lean              # Canonical positive radix trie & framing
