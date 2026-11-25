@@ -51,10 +51,20 @@ class GuardMutationUnitTests(unittest.TestCase):
         errors = check_guard_mutation.validate_catalog_invariants(ANNEAL_ROOT)
         self.assertEqual(errors, [], f"catalog invariant errors: {errors}")
         self.assertGreaterEqual(
-            len(check_guard_mutation.MIR_SEMANTICS_GUARDS), 40
+            len(check_guard_mutation.MIR_SEMANTICS_GUARDS), 65
         )
         self.assertGreaterEqual(
-            len(check_guard_mutation.AUDIT_HEADER_GUARDS), 2
+            len(check_guard_mutation.AUDIT_HEADER_GUARDS), 17
+        )
+        self.assertIn(
+            "Trusted/MirSemantics/Layout",
+            check_guard_mutation.SEMANTICS_DOWNSTREAM,
+        )
+        self.assertEqual(
+            check_guard_mutation.SEMANTICS_DOWNSTREAM[
+                "Trusted/MirSemantics/Layout"
+            ][-1],
+            "Trusted/MirSemantics/Boundary",
         )
 
         res = subprocess.run(
@@ -341,6 +351,78 @@ class GuardMutationUnitTests(unittest.TestCase):
         self.assertEqual(report["killed"], 1)
         self.assertEqual(report["survived"], 0)
         self.assertEqual(report["errors"], 0)
+
+    def test_runner_audit_blocks_broken_positive_sanity_anti_masquerading(self):
+        # Fake `lean` policy-rejects negative fixture and accepts positive check
+        # on baseline (`tb_olean` in LEAN_PATH), then breaks positive sanity on
+        # the mutant: must classify as ERROR, never KILLED.
+        broken_pos_body = textwrap.dedent(
+            """\
+            args = sys.argv[1:]
+            if args == ["--print-prefix"]:
+                print("/fake/sysroot")
+                sys.exit(0)
+            if "-o" in args:
+                Path(args[args.index("-o") + 1]).write_bytes(b"fake-olean")
+                sys.exit(0)
+            if args[0] == "--run":
+                req_path = Path(args[2])
+                res_path = Path(args[3])
+                lean_path = os.environ.get("LEAN_PATH", "")
+                is_pos = req_path.name.startswith("pos_")
+                if "tb_olean" in lean_path:
+                    if is_pos:
+                        res_path.write_text(json.dumps({"ok": True, "result": {}}))
+                        sys.exit(0)
+                    res_path.write_text(json.dumps({
+                        "ok": False,
+                        "category": "policy",
+                        "message": "policy: trust tier rejected",
+                    }))
+                    sys.exit(1)
+                if is_pos:
+                    res_path.write_text(json.dumps({
+                        "ok": False,
+                        "category": "operational",
+                        "message": "parser regression on mutant",
+                    }))
+                    sys.exit(2)
+                res_path.write_text(json.dumps({"ok": True, "result": {}}))
+                sys.exit(0)
+            sys.exit(2)
+            """
+        )
+        with tempfile.TemporaryDirectory(prefix="anneal-gmut-pos-") as tmp:
+            tmp_path = Path(tmp)
+            fake_lean = tmp_path / "fake_lean"
+            _write_fake_lean(fake_lean, broken_pos_body)
+            json_out = tmp_path / "report.json"
+            res = subprocess.run(
+                [
+                    sys.executable,
+                    "-I",
+                    "-B",
+                    str(SCRIPT),
+                    "--anneal-root",
+                    str(ANNEAL_ROOT),
+                    "--lean",
+                    str(fake_lean),
+                    "--suite",
+                    "audit_headers",
+                    "--filter",
+                    "audit_preflight_reject_theory_trust_tier",
+                    "--jobs",
+                    "1",
+                    "--json-out",
+                    str(json_out),
+                ],
+                capture_output=True,
+                text=True,
+            )
+            self.assertEqual(res.returncode, 1, res.stdout + res.stderr)
+            report = json.loads(json_out.read_text(encoding="utf-8"))
+            self.assertEqual(report["errors"], 1)
+            self.assertEqual(report["killed"], 0)
 
     def test_workflow_wires_guard_mutation_in_test_and_verify(self):
         workflow = load_workflow_yaml(

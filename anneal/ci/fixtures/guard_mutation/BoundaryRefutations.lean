@@ -178,4 +178,90 @@ theorem refute_boundary_v2_rejects_mixed_refs_and_raw_ptrs :
     ¬ BodyVerifiedV2 mixedRefRawProgV2 0 mixedRefRawBodyV2 (fun _ => False) :=
   fun hVer => Bool.noConfusion hVer.2.1
 
+/-- Valid safe body returning `()` with a non-empty `identity`. -/
+noncomputable def okUnitBody (ident : String := "guard_mutation::ok_unit") :
+    Body := {
+  argumentCount := 0
+  locals := [.unit]
+  basicBlocks := [{ statements := [], terminator := .return_ }]
+  isUnsafe := false
+  identity := ident
+}
+
+/-- Dummy uninhabited-parameter body whose `ValidEntryArgs` is empty while
+passing `BodyStaticAdmitted`. -/
+noncomputable def goodNeverStubBody : Body := {
+  argumentCount := 1
+  locals := [.unit, .never]
+  basicBlocks := [{ statements := [], terminator := .return_ }]
+  isUnsafe := false
+  identity := "guard_mutation::never_stub"
+}
+
+/-- Guard `boundary_body_verified_binds_def_id`: `BodyVerified` binds `body`
+to `p.bodies[defId]` so an unrelated `.never`-parameter stub cannot verify
+`safeUnreachableBody`. -/
+theorem refute_boundary_body_verified_binds_def_id :
+    ¬ BodyVerified safeUnreachableProg 0 goodNeverStubBody (fun _ => True) :=
+  fun hVer =>
+    Nat.noConfusion (congrArg Body.argumentCount (Option.some.inj hVer.1))
+
+/-- Program wrapping `okUnitBody` with an empty `identity := ""`. -/
+noncomputable def emptyIdentProg : Program := {
+  scope := .unit
+  pointerWidthBits := 64
+  mirProfileVersion := 1
+  bodies := [okUnitBody ""]
+}
+
+/-- Guard `boundary_admitted_nonempty_identity`: `BodyStaticAdmitted` rejects
+a body whose `identity` string is empty. -/
+theorem refute_boundary_admitted_nonempty_identity :
+    ¬ BodyVerified emptyIdentProg 0 (okUnitBody "") (fun _ => True) :=
+  fun hVer => Bool.noConfusion hVer.2.1
+
+/-- Program with a non-empty valid body list but out-of-bounds `entryDefId`.
+-/
+noncomputable def badEntryDefProg : Program := {
+  scope := .unit
+  entryDefId := 1
+  pointerWidthBits := 64
+  mirProfileVersion := 1
+  bodies := [okUnitBody "guard_mutation::entry_oob"]
+}
+
+/-- Guard `boundary_program_entry_def_in_bounds`: `ProgramVerified` requires
+`entryDefId < p.bodies.length`. -/
+theorem refute_boundary_program_entry_def_in_bounds :
+    ¬ ProgramVerified badEntryDefProg {} :=
+  fun hVer => Bool.noConfusion hVer.2.2.2.1
+
+/-- Program with two distinct bodies sharing the same `identity`. -/
+noncomputable def dupIdentityProg : Program := {
+  scope := .unit
+  pointerWidthBits := 64
+  mirProfileVersion := 1
+  bodies := [okUnitBody "guard_mutation::dup", okUnitBody "guard_mutation::dup"]
+}
+
+/-- Guard `boundary_unique_body_identities`: `ProgramVerified` enforces
+pairwise-distinct body identities so `Specs.safety` cannot collide. -/
+theorem refute_boundary_unique_body_identities :
+    ¬ ProgramVerified dupIdentityProg {} :=
+  fun hVer => Bool.noConfusion hVer.2.2.2.2.1
+
+/-- Guard `boundary_crate_theorem_scope`: `CrateTheorem` rejects a program
+whose verification scope is `.unit` rather than `.crate`. -/
+theorem refute_boundary_crate_theorem_scope :
+    ¬ CrateTheorem {
+      program := {
+        scope := .unit
+        pointerWidthBits := 64
+        mirProfileVersion := 1
+        bodies := [okUnitBody "guard_mutation::unit_scope"]
+      }
+      specs := {}
+    } :=
+  fun h => VerificationScope.noConfusion h.1
+
 end GuardMutation

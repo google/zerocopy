@@ -296,4 +296,32 @@ theorem positive_zst_alignment_only_canaries :
       .ok (singleAllocMem liveMut4Alloc) :=
   ⟨rfl, rfl, rfl, rfl⟩
 
+/-- Guard `mem_alloc_starts_uninit`: `allocateStack` initializes every byte
+of a fresh allocation to `.uninit` rather than zero-initialized bytes. -/
+theorem refute_mem_alloc_starts_uninit :
+    (let (m1, p) := allocateStack MemoryState.empty ⟨4, 2⟩
+     readBytes m1 p 4 2 = .ok (List.replicate 4 .uninit)) :=
+  rfl
+
+/-- Guard `mem_dealloc_clears_live`: `deallocateStack` marks the freed
+allocation `live := false` so subsequent reads fault `.undefined`. -/
+theorem refute_mem_dealloc_clears_live :
+    (match deallocateStack (singleAllocMem liveMut4Alloc) ⟨1, 0⟩ with
+     | .ok m1 => readBytes m1 ⟨1, 0⟩ 4 2 = .error .undefined
+     | .error _ => False) :=
+  rfl
+
+/-- Guard `mem_alloc_id_fresh`: successive `allocateStack` calls produce
+distinct `AllocId`s so freeing the first cannot invalidate the second. -/
+theorem refute_mem_alloc_id_fresh :
+    (let (m1, p1) := allocateStack MemoryState.empty ⟨4, 2⟩
+     let (m2, p2) := allocateStack m1 ⟨4, 2⟩
+     match deallocateStack m2 p1 with
+     | .ok m3 =>
+       match readBytes m3 p2 4 2 with
+       | .ok _ => True
+       | .error _ => False
+     | .error _ => False) :=
+  trivial
+
 end GuardMutation

@@ -76,4 +76,44 @@ theorem refute_bytes_uninit_memory_read :
      | .error _ => False) :=
   rfl
 
+/-- Guard `bytes_int_scalar_width_check`: `evalConstLit` rejects a `u8`
+scalar literal exceeding 8 bits (`256`) with `.unsupported`. -/
+theorem refute_bytes_int_scalar_width_check :
+    ReachesResult (mkConstRetProg u8Ty 256) queryEmpty (.fault .unsupported) ∧
+    ¬ WellFormed (mkConstRetProg u8Ty 256) queryEmpty :=
+  refutes_wf_of_execFault (fuel := 1) rfl
+
+/-- Guard `bytes_bool_scalar_width_check`: `evalConstLit` rejects a `bool`
+scalar literal `0x100` exceeding 1 byte with `.unsupported` instead of reading
+its zero low byte as `false`. -/
+theorem refute_bytes_bool_scalar_width_check :
+    ReachesResult (mkConstRetProg .bool 0x100) queryEmpty
+      (.fault .unsupported) ∧
+    ¬ WellFormed (mkConstRetProg .bool 0x100) queryEmpty :=
+  refutes_wf_of_execFault (fuel := 1) rfl
+
+/-- Guard `bytes_char_scalar_width_check`: `evalConstLit` rejects a `char`
+scalar literal exceeding 32 bits (`0x100000041`) with `.unsupported` rather than
+reclassifying it as `.undefined`. -/
+theorem refute_bytes_char_scalar_width_check :
+    ReachesResult (mkConstRetProg .char 0x100000041) queryEmpty
+      (.fault .unsupported) :=
+  reachesResult_of_execFault (fuel := 1) rfl
+
+/-- Guard `bytes_enum_tag_width_check`: `evalConstLit` rejects an enum tag
+literal `0x10a` exceeding its 8-bit `tagW` width with `.unsupported` rather
+than truncating it to valid tag `10`. -/
+theorem refute_bytes_enum_tag_width_check :
+    ReachesResult (mkConstRetProg (.enum reprU8EnumTy) 0x10a) queryEmpty
+      (.fault .unsupported) ∧
+    ¬ WellFormed (mkConstRetProg (.enum reprU8EnumTy) 0x10a) queryEmpty :=
+  refutes_wf_of_execFault (fuel := 1) rfl
+
+/-- Guard `bytes_decode_length_mismatch`: `decodeVal` rejects a byte slice
+whose length differs from `layoutOfTy ty` with `.unsupported`. -/
+theorem refute_bytes_decode_length_mismatch :
+    decodeVal .little u32Ty [.init 0 none, .init 0 none] =
+      .error .unsupported :=
+  rfl
+
 end GuardMutation

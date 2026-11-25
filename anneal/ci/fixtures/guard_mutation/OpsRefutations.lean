@@ -74,4 +74,39 @@ theorem refute_ops_arith_unchecked_overflow :
       { args := [u32Val 4294967295, u32Val 1] } :=
   refutes_wf_of_execFault (fuel := 1) rfl
 
+/-- Guard `ops_binop_width_sign_mismatch`: non-shift integer binary operations
+must reject mismatched signedness (`u32 + i32`) or width (`u32 + u8`) with
+`.unsupported`. -/
+theorem refute_ops_binop_width_sign_mismatch :
+    (ReachesResult (mkBinOpProg .add u32Ty u32Ty (.int .i32 true))
+      { args := [u32Val 1, scalarNatVal .i32 true 1] }
+      (.fault .unsupported) ∧
+     ¬ WellFormed (mkBinOpProg .add u32Ty u32Ty (.int .i32 true))
+      { args := [u32Val 1, scalarNatVal .i32 true 1] }) ∧
+    (ReachesResult (mkBinOpProg .add u32Ty u32Ty u8Ty)
+      { args := [u32Val 1, scalarNatVal .i8 false 1] }
+      (.fault .unsupported) ∧
+     ¬ WellFormed (mkBinOpProg .add u32Ty u32Ty u8Ty)
+      { args := [u32Val 1, scalarNatVal .i8 false 1] }) :=
+  ⟨refutes_wf_of_execFault (fuel := 1) rfl,
+   refutes_wf_of_execFault (fuel := 1) rfl⟩
+
+/-- Guard `ops_int_to_char_above_u8_max`: `CastKind::IntToInt` targeting
+`char` rejects integers above `255` (`u8::MAX`) with `.unsupported`. -/
+theorem refute_ops_int_to_char_above_u8_max :
+    let prog := mkSingleBlockProg 1 [.char, u32Ty]
+      [.assign ⟨0, []⟩ (.cast .intToInt (.copy ⟨1, []⟩) .char)]
+    ReachesResult prog { args := [u32Val 256] } (.fault .unsupported) ∧
+    ¬ WellFormed prog { args := [u32Val 256] } :=
+  refutes_wf_of_execFault (fuel := 1) rfl
+
+/-- Guard `ops_unsigned_neg_unsupported`: `UnOp::Neg` on an unsigned scalar
+faults with `.unsupported` instead of wrapping. -/
+theorem refute_ops_unsigned_neg_unsupported :
+    let prog := mkSingleBlockProg 1 [u32Ty, u32Ty]
+      [.assign ⟨0, []⟩ (.unaryOp .neg (.copy ⟨1, []⟩))]
+    ReachesResult prog { args := [u32Val 1] } (.fault .unsupported) ∧
+    ¬ WellFormed prog { args := [u32Val 1] } :=
+  refutes_wf_of_execFault (fuel := 1) rfl
+
 end GuardMutation

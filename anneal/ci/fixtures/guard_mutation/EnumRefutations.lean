@@ -56,4 +56,44 @@ theorem positive_enum_v2_overflow_pair_local :
     isSupportedV2LocalTy (.ref .shared .bool) = true :=
   ⟨rfl, rfl, rfl⟩
 
+/-- Uninhabited zero-variant enum descriptor failing `enumAdmitted`. -/
+noncomputable def emptyDiscrEnumTy : EnumTy := {
+  id := 2
+  discrWidth := .i8
+  discrSigned := false
+  tagRepr := .scalar .i8 false
+  discriminants := []
+}
+
+/-- Duplicate-discriminant enum descriptor `[10, 10]` failing `enumAdmitted`.
+-/
+noncomputable def dupDiscrEnumTy : EnumTy := {
+  id := 3
+  discrWidth := .i8
+  discrSigned := false
+  tagRepr := .scalar .i8 false
+  discriminants := [10, 10]
+}
+
+/-- Guard `enum_admitted_nonempty_discrs`: an enum with an empty discriminant
+list is rejected by `enumAdmitted`. -/
+theorem refute_enum_admitted_nonempty_discrs :
+    enumAdmitted emptyDiscrEnumTy = false :=
+  rfl
+
+/-- Guard `enum_admitted_distinct_discrs`: an enum with duplicate
+discriminants is rejected by `enumAdmitted` and faults `.unsupported`. -/
+theorem refute_enum_admitted_distinct_discrs :
+    ReachesResult (mkConstRetProg (.enum dupDiscrEnumTy) 10) queryEmpty
+      (.fault .unsupported) ∧
+    ¬ WellFormed (mkConstRetProg (.enum dupDiscrEnumTy) 10) queryEmpty :=
+  refutes_wf_of_execFault (fuel := 1) rfl
+
+/-- Guard `enum_val_ty_oob_variant`: `Val.ty?` and `checkVal` reject an
+out-of-bounds variant index on an admitted enum. -/
+theorem refute_enum_val_ty_oob_variant :
+    Val.ty? (.enumVal reprU8EnumTy 99) = none ∧
+    checkVal (.enumVal reprU8EnumTy 99) (.enum reprU8EnumTy) = false :=
+  ⟨rfl, rfl⟩
+
 end GuardMutation
