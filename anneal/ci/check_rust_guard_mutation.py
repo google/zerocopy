@@ -38,9 +38,8 @@ What this check guarantees — and what it does NOT guarantee
 - **Guarantees:** Every security guard listed in `RUST_GUARDS` is active under
   its configured mutation, compiles when weakened, and is exercised by its
   targeted `anneal-audit`, `cargo-anneal`, or `anneal-rustc-capture` test.
-- **Does NOT guarantee:** Coverage of uncataloged branches, Lean-side checks
-  (covered by `ci/check_guard_mutation.py`), or `stage.rs` / `olean_cache.rs`
-  internals excluded from this standalone harness.
+- **Does NOT guarantee:** Coverage of uncataloged branches or Lean-side checks
+  (covered by `ci/check_guard_mutation.py`).
 
 How to add a new guard
 ----------------------
@@ -97,11 +96,6 @@ INTEGRATION_TEST_PACKAGES: dict[str, tuple[str, str]] = {
 }
 
 DEFAULT_NIGHTLY_TOOLCHAIN = "nightly-2026-05-31"
-
-EXCLUDED_TARGET_SUBSTRINGS: tuple[str, ...] = (
-    "stage.rs",
-    "olean_cache.rs",
-)
 
 
 @dataclass(frozen=True)
@@ -792,6 +786,435 @@ RUST_GUARDS: tuple[RustGuard, ...] = (
         test_name="bundle::tests::parse_bundled_theory_rejects_tampered_and_invalid_payloads",
     ),
     # ------------------------------------------------------------------
+    # cargo-anneal: stage.rs (6 guards)
+    # ------------------------------------------------------------------
+    RustGuard(
+        guard_id="stage_compile_args_disable_auto_implicit",
+        suite="cargo_anneal",
+        target_file="trusted/cargo-anneal/src/stage.rs",
+        description="Pass -DautoImplicit=false and -DrelaxedAutoImplicit=false when requested for specs",
+        anchor=(
+            "    if disable_auto_implicit {\n"
+            "        // Prevent undeclared typos in `TargetRole::Specification` signatures\n"
+            "        // from silently binding universally quantified auto-implicit variables.\n"
+            '        compile_args.push("-DautoImplicit=false".to_string());\n'
+            '        compile_args.push("-DrelaxedAutoImplicit=false".to_string());\n'
+            "    }"
+        ),
+        replacement=(
+            "    let _ = disable_auto_implicit;\n"
+            "    if false {\n"
+            '        compile_args.push("-DautoImplicit=false".to_string());\n'
+            '        compile_args.push("-DrelaxedAutoImplicit=false".to_string());\n'
+            "    }"
+        ),
+        package="cargo-anneal",
+        test_args=("--lib",),
+        test_name="stage::process_tests::build_lean_compile_args_disables_auto_implicit_only_when_requested",
+    ),
+    RustGuard(
+        guard_id="stage_launch_lean_env_clear",
+        suite="cargo_anneal",
+        target_file="trusted/cargo-anneal/src/stage.rs",
+        description="Clear ambient host environment variables before launching Lean child processes",
+        anchor="        cmd.args(arguments).current_dir(&self.stage).env_clear().envs(&self.environment);",
+        replacement="        cmd.args(arguments).current_dir(&self.stage).envs(&self.environment);",
+        package="cargo-anneal",
+        test_args=("--lib",),
+        test_name="stage::process_tests::launches_with_only_the_filtered_environment",
+    ),
+    RustGuard(
+        guard_id="stage_export_oleans_gated_rejects_symlink_dest",
+        suite="cargo_anneal",
+        target_file="trusted/cargo-anneal/src/stage.rs",
+        description="Reject symlink or non-directory export destinations before clearing",
+        anchor=(
+            "            Ok(meta) if meta.file_type().is_symlink() || !meta.file_type().is_dir() => {\n"
+            "                return Err(Failure::operational(\n"
+            '                    "export-lean-lib",\n'
+            '                    format!("unexpected non-directory destination {}", dest.display()),\n'
+            "                ));\n"
+            "            }"
+        ),
+        replacement=(
+            "            Ok(meta) if false && meta.file_type().is_symlink() => {\n"
+            "                return Err(Failure::operational(\n"
+            '                    "export-lean-lib",\n'
+            '                    format!("unexpected non-directory destination {}", dest.display()),\n'
+            "                ));\n"
+            "            }"
+        ),
+        package="cargo-anneal",
+        test_args=("--lib",),
+        test_name="stage::process_tests::export_target_oleans_gated_rejects_invalid_and_trailing_slash_symlink_dests",
+    ),
+    RustGuard(
+        guard_id="stage_export_oleans_gated_ledger_hash_check",
+        suite="cargo_anneal",
+        target_file="trusted/cargo-anneal/src/stage.rs",
+        description="Reject promoted .olean artifacts whose SHA-256 changed before gated export",
+        anchor=(
+            "            if !actual_sha.eq_ignore_ascii_case(expected_sha) {\n"
+            "                return Err(Failure::operational(\n"
+            '                    "export-lean-lib",\n'
+            "                    format!(\n"
+            '                        "promoted artifact {} changed before export",\n'
+            "                        entry.path().display()\n"
+            "                    ),\n"
+            "                ));\n"
+            "            }"
+        ),
+        replacement=(
+            "            let _ = (&actual_sha, expected_sha);\n"
+            "            if false {\n"
+            "                return Err(Failure::operational(\n"
+            '                    "export-lean-lib",\n'
+            "                    format!(\n"
+            '                        "promoted artifact {} changed before export",\n'
+            "                        entry.path().display()\n"
+            "                    ),\n"
+            "                ));\n"
+            "            }"
+        ),
+        package="cargo-anneal",
+        test_args=("--lib",),
+        test_name="stage::process_tests::export_target_oleans_gated_is_atomic_on_validation_failure",
+    ),
+    RustGuard(
+        guard_id="stage_export_oleans_gated_missing_artifact_check",
+        suite="cargo_anneal",
+        target_file="trusted/cargo-anneal/src/stage.rs",
+        description="Fail closed when a ledgered .olean artifact is missing before gated export",
+        anchor=(
+            "        for ledger_path in expected_ledger_paths {\n"
+            "            if !validated_ledger.contains(ledger_path) {\n"
+            "                return Err(Failure::operational(\n"
+            '                    "export-lean-lib",\n'
+            "                    format!(\n"
+            '                        "promoted artifact {} missing before export",'
+        ),
+        replacement=(
+            "        for ledger_path in expected_ledger_paths {\n"
+            "            if false {\n"
+            "                return Err(Failure::operational(\n"
+            '                    "export-lean-lib",\n'
+            "                    format!(\n"
+            '                        "promoted artifact {} missing before export",'
+        ),
+        package="cargo-anneal",
+        test_args=("--lib",),
+        test_name="stage::process_tests::export_target_oleans_gated_is_atomic_on_validation_failure",
+    ),
+    RustGuard(
+        guard_id="stage_verify_artifact_ledger_inspector_olean",
+        suite="cargo_anneal",
+        target_file="trusted/cargo-anneal/src/stage.rs",
+        description="Reject tampered precompiled TrustedBoundary.olean in artifact ledger check",
+        anchor=(
+            "        if let Some((olean_path, expected_olean_sha)) = &adm.inspector_olean {\n"
+            '            let actual = sha256_file(olean_path, "artifact-ledger")?;\n'
+            "            if !actual.eq_ignore_ascii_case(expected_olean_sha) {"
+        ),
+        replacement=(
+            "        if let Some((olean_path, expected_olean_sha)) = &adm.inspector_olean {\n"
+            '            let actual = sha256_file(olean_path, "artifact-ledger")?;\n'
+            "            let _ = (&actual, expected_olean_sha);\n"
+            "            if false {"
+        ),
+        package="cargo-anneal",
+        test_args=("--lib",),
+        test_name="stage::process_tests::artifact_ledger_catches_tampered_inspector_olean",
+    ),
+    # ------------------------------------------------------------------
+    # cargo-anneal: target.rs (5 guards)
+    # ------------------------------------------------------------------
+    RustGuard(
+        guard_id="target_audit_report_require_replay_and_exact_type",
+        suite="cargo_anneal",
+        target_file="trusted/cargo-anneal/src/target.rs",
+        description="Require replay == true and exactType == true in target-audit report",
+        anchor=(
+            "    if !report.replay || !report.exact_type {\n"
+            "        return Err(Failure::operational(\n"
+            '            "target-audit",\n'
+            "            format!(\n"
+            '                "target-audit did not certify replay and exactType (replay={}, exactType={})",'
+        ),
+        replacement=(
+            "    if false {\n"
+            "        return Err(Failure::operational(\n"
+            '            "target-audit",\n'
+            "            format!(\n"
+            '                "target-audit did not certify replay and exactType (replay={}, exactType={})",'
+        ),
+        package="cargo-anneal",
+        test_args=("--lib",),
+        test_name="target::tests::target_audit_report_schema_rejects_unknown_fields_mismatches_and_unapproved_axioms",
+    ),
+    RustGuard(
+        guard_id="target_audit_report_reject_unapproved_axiom",
+        suite="cargo_anneal",
+        target_file="trusted/cargo-anneal/src/target.rs",
+        description="Reject target axioms outside ALLOWED_TARGET_FOUNDATION_AXIOMS",
+        anchor="        } else if !ALLOWED_TARGET_FOUNDATION_AXIOMS.contains(&ax.as_str()) {",
+        replacement="        } else if false {",
+        package="cargo-anneal",
+        test_args=("--lib",),
+        test_name="target::tests::target_audit_report_schema_rejects_unknown_fields_mismatches_and_unapproved_axioms",
+    ),
+    RustGuard(
+        guard_id="target_audit_report_reject_sorry_ax_without_flag",
+        suite="cargo_anneal",
+        target_file="trusted/cargo-anneal/src/target.rs",
+        description="Reject sorryAx in target-audit report unless allow_sorry_in_proof is enabled",
+        anchor=(
+            '        if ax == "sorryAx" {\n'
+            "            if !request.allow_sorry_in_proof {\n"
+            "                return Err(Failure::operational("
+        ),
+        replacement=(
+            '        if ax == "sorryAx" {\n'
+            "            if false {\n"
+            "                return Err(Failure::operational("
+        ),
+        package="cargo-anneal",
+        test_args=("--lib",),
+        test_name="target::tests::target_audit_report_schema_rejects_unknown_fields_mismatches_and_unapproved_axioms",
+    ),
+    RustGuard(
+        guard_id="target_audit_report_reject_graph_mismatch",
+        suite="cargo_anneal",
+        target_file="trusted/cargo-anneal/src/target.rs",
+        description="Reject target-audit report whose import graph diverges from admitted DAG",
+        anchor=(
+            "    if &report.graph != expected_graph {\n"
+            "        return Err(Failure::operational(\n"
+            '            "target-audit",\n'
+            '            "target-audit reported import graph differing from admitted DAG",'
+        ),
+        replacement=(
+            "    if false {\n"
+            "        return Err(Failure::operational(\n"
+            '            "target-audit",\n'
+            '            "target-audit reported import graph differing from admitted DAG",'
+        ),
+        package="cargo-anneal",
+        test_args=("--lib",),
+        test_name="target::tests::target_audit_report_schema_rejects_unknown_fields_mismatches_and_unapproved_axioms",
+    ),
+    RustGuard(
+        guard_id="target_run_target_reject_reserved_sysroot_module",
+        suite="cargo_anneal",
+        target_file="trusted/cargo-anneal/src/target.rs",
+        description="Reject target modules whose names collide with locked or reserved sysroot modules",
+        anchor=(
+            "            if !target_name_valid(&module.module)\n"
+            "                || roles.contains_key(&module.module)\n"
+            "                || collides_with_sysroot\n"
+            "            {"
+        ),
+        replacement=(
+            "            let _ = collides_with_sysroot;\n"
+            "            if !target_name_valid(&module.module)\n"
+            "                || roles.contains_key(&module.module)\n"
+            "            {"
+        ),
+        package="cargo-anneal",
+        test_args=("--lib",),
+        test_name="target::admission_tests::run_target_rejects_modules_named_like_locked_modules",
+    ),
+    # ------------------------------------------------------------------
+    # cargo-anneal: olean_cache.rs (5 guards)
+    # ------------------------------------------------------------------
+    RustGuard(
+        guard_id="olean_cache_key_sensitive_to_source_digest",
+        suite="cargo_anneal",
+        target_file="trusted/cargo-anneal/src/olean_cache.rs",
+        description="Bind .olean cache keys to the module source SHA-256 digest",
+        anchor="        feed_len_str(&mut h, &self.source_sha256.to_ascii_lowercase());",
+        replacement='        feed_len_str(&mut h, "fixed-source-sha");',
+        package="cargo-anneal",
+        test_args=("--lib",),
+        test_name="olean_cache::tests::cache_key_is_deterministic_and_sensitive_to_every_field",
+    ),
+    RustGuard(
+        guard_id="olean_cache_key_sensitive_to_compile_flags",
+        suite="cargo_anneal",
+        target_file="trusted/cargo-anneal/src/olean_cache.rs",
+        description="Bind .olean cache keys to canonical compiler flags",
+        anchor=(
+            "        h.update((self.flags.len() as u64).to_le_bytes());\n"
+            "        for flag in &self.flags {\n"
+            "            feed_len_str(&mut h, flag);\n"
+            "        }"
+        ),
+        replacement="        h.update(0u64.to_le_bytes());",
+        package="cargo-anneal",
+        test_args=("--lib",),
+        test_name="olean_cache::tests::cache_key_is_deterministic_and_sensitive_to_every_field",
+    ),
+    RustGuard(
+        guard_id="olean_cache_key_sensitive_to_import_digest",
+        suite="cargo_anneal",
+        target_file="trusted/cargo-anneal/src/olean_cache.rs",
+        description="Bind .olean cache keys to transitive import artifact SHA-256 digests",
+        anchor="                feed_len_str(&mut h, &sha.to_ascii_lowercase());",
+        replacement='                feed_len_str(&mut h, "fixed-import-sha");',
+        package="cargo-anneal",
+        test_args=("--lib",),
+        test_name="olean_cache::tests::cache_key_is_deterministic_and_sensitive_to_every_field",
+    ),
+    RustGuard(
+        guard_id="olean_cache_verify_part_sha256_mismatch",
+        suite="cargo_anneal",
+        target_file="trusted/cargo-anneal/src/olean_cache.rs",
+        description="Reject cached .olean parts whose bytes fail SHA-256 verification",
+        anchor=(
+            "        if !actual_sha.eq_ignore_ascii_case(&part.sha256) {\n"
+            "            return Err(Failure::operational(\n"
+            '                "olean-cache",\n'
+            "                format!(\n"
+            '                    "cached artifact SHA-256 mismatch for {} (expected {}, got {})",'
+        ),
+        replacement=(
+            "        if false {\n"
+            "            return Err(Failure::operational(\n"
+            '                "olean-cache",\n'
+            "                format!(\n"
+            '                    "cached artifact SHA-256 mismatch for {} (expected {}, got {})",'
+        ),
+        package="cargo-anneal",
+        test_args=("--lib",),
+        test_name="olean_cache::tests::disk_cache_roundtrip_tamper_and_no_rebuild_guards",
+    ),
+    RustGuard(
+        guard_id="olean_cache_no_rebuild_bundled_fail_closed",
+        suite="cargo_anneal",
+        target_file="trusted/cargo-anneal/src/olean_cache.rs",
+        description="Fail closed on cache miss when --no-rebuild-bundled is set",
+        anchor=(
+            "        if self.no_rebuild_bundled {\n"
+            "            let reason = if let Some(found_ver) = self.prebuilt_skipped_version {"
+        ),
+        replacement=(
+            "        if false {\n"
+            "            let reason = if let Some(found_ver) = self.prebuilt_skipped_version {"
+        ),
+        package="cargo-anneal",
+        test_args=("--lib",),
+        test_name="olean_cache::tests::disk_cache_roundtrip_tamper_and_no_rebuild_guards",
+    ),
+    RustGuard(
+        guard_id="olean_cache_prebuilt_reject_symlink_parts",
+        suite="cargo_anneal",
+        target_file="trusted/cargo-anneal/src/olean_cache.rs",
+        description="Reject symlinks while resolving cached .olean parts via join_checked_non_symlink",
+        anchor=(
+            "        if meta.file_type().is_symlink() {\n"
+            "            return Err(Failure::operational(\n"
+            '                "olean-cache",\n'
+            '                format!("refusing symlink in cache path {}", cur.display()),\n'
+            "            ));\n"
+            "        }"
+        ),
+        replacement=(
+            "        if false {\n"
+            "            return Err(Failure::operational(\n"
+            '                "olean-cache",\n'
+            '                format!("refusing symlink in cache path {}", cur.display()),\n'
+            "            ));\n"
+            "        }"
+        ),
+        package="cargo-anneal",
+        test_args=("--lib",),
+        test_name="olean_cache::tests::prebuilt_manifest_precedes_disk_cache_and_rejects_symlinks",
+    ),
+    # ------------------------------------------------------------------
+    # cargo-anneal: setup.rs (2 guards)
+    # ------------------------------------------------------------------
+    RustGuard(
+        guard_id="setup_reject_archive_incomplete_marker",
+        suite="cargo_anneal",
+        target_file="trusted/cargo-anneal/src/setup.rs",
+        description="Reject toolchain archives containing a reserved top-level .incomplete marker",
+        anchor=(
+            "    if new_entries\n"
+            "        .iter()\n"
+            "        .any(|name| name == OsStr::new(INCOMPLETE_MARKER))\n"
+            "    {"
+        ),
+        replacement=(
+            "    let _ = &new_entries;\n"
+            "    if false\n"
+            "    {"
+        ),
+        package="cargo-anneal",
+        test_args=("--lib",),
+        test_name="setup::tests::rejects_archive_containing_reserved_incomplete_marker",
+    ),
+    RustGuard(
+        guard_id="setup_reinstall_reject_symlink_install_root",
+        suite="cargo_anneal",
+        target_file="trusted/cargo-anneal/src/setup.rs",
+        description="Reject symlinked toolchain installation paths before replacing entries",
+        anchor=(
+            "        Ok(meta) if meta.file_type().is_symlink() => {\n"
+            "            return Err(io::Error::new(\n"
+            "                io::ErrorKind::AlreadyExists,\n"
+            '                "installation path is a symlink",\n'
+            "            ));\n"
+            "        }"
+        ),
+        replacement=(
+            "        Ok(meta) if false && meta.file_type().is_symlink() => {\n"
+            "            return Err(io::Error::new(\n"
+            "                io::ErrorKind::AlreadyExists,\n"
+            '                "installation path is a symlink",\n'
+            "            ));\n"
+            "        }"
+        ),
+        package="cargo-anneal",
+        test_args=("--lib",),
+        test_name="setup::tests::reinstall_rejects_symlink_and_non_directory_install_paths",
+    ),
+    # ------------------------------------------------------------------
+    # cargo-anneal: init.rs (2 guards)
+    # ------------------------------------------------------------------
+    RustGuard(
+        guard_id="init_ensure_non_symlink_dir_rejects_symlink",
+        suite="cargo_anneal",
+        target_file="trusted/cargo-anneal/src/init.rs",
+        description="Refuse symlink target directory components when scaffolding starter Anneal files",
+        anchor=(
+            "            if lmeta.file_type().is_symlink() {\n"
+            '                return Err(format!("refusing symlink directory {}", prefix.display()));\n'
+            "            }"
+        ),
+        replacement=(
+            "            if false {\n"
+            '                return Err(format!("refusing symlink directory {}", prefix.display()));\n'
+            "            }"
+        ),
+        package="cargo-anneal",
+        test_args=("--lib",),
+        test_name="init::tests::standalone_mode_scaffolds_runnable_example_and_refuses_symlinks",
+    ),
+    RustGuard(
+        guard_id="init_write_create_new_refuses_overwrite",
+        suite="cargo_anneal",
+        target_file="trusted/cargo-anneal/src/init.rs",
+        description="Refuse overwriting pre-existing starter Spec.lean or Proof.lean files",
+        anchor=(
+            "            Ok(_) => {\n"
+            '                return Err(format!("refusing to overwrite existing file {}", dest.display()));\n'
+            "            }"
+        ),
+        replacement="            Ok(_) => {}",
+        package="cargo-anneal",
+        test_args=("--lib",),
+        test_name="init::tests::cargo_mode_requires_package_manifest_and_creates_proof_files_once",
+    ),
+    # ------------------------------------------------------------------
     # anneal-rustc-capture: capture.rs (7 guards)
     # ------------------------------------------------------------------
     RustGuard(
@@ -1475,12 +1898,6 @@ def validate_catalog_invariants(anneal_root: Path) -> list[str]:
                 f"{guard.guard_id}: target_file {guard.target_file!r} must "
                 f"start with {expected_prefix!r}"
             )
-        for excluded in EXCLUDED_TARGET_SUBSTRINGS:
-            if excluded in guard.target_file:
-                errors.append(
-                    f"{guard.guard_id}: target_file touches excluded path "
-                    f"{excluded!r}: {guard.target_file}"
-                )
         if not guard.test_name.strip():
             errors.append(f"{guard.guard_id}: test_name must be non-empty")
         valid_lib = guard.test_args == ("--lib",)

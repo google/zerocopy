@@ -62,23 +62,27 @@ class RustGuardMutationUnitTests(unittest.TestCase):
         ca_guards = [g for g in guards if g.suite == "cargo_anneal"]
         rc_guards = [g for g in guards if g.suite == "rustc_capture"]
         self.assertGreaterEqual(len(audit_guards), 8)
-        self.assertGreaterEqual(len(ca_guards), 8)
+        self.assertGreaterEqual(len(ca_guards), 25)
         self.assertGreaterEqual(len(rc_guards), 15)
 
-        # Verify distinct target files across all three crates and zero overlap
-        # with excluded `stage.rs` and `olean_cache.rs`.
+        # Verify distinct target files across all three crates.
         touched_files = {g.target_file for g in guards}
         for required_file in (
             "trusted/audit/src/cargo_boundary.rs",
             "trusted/audit/src/miri_pin.rs",
             "trusted/audit/src/repo_audit.rs",
+            "trusted/cargo-anneal/src/bundle.rs",
+            "trusted/cargo-anneal/src/init.rs",
+            "trusted/cargo-anneal/src/olean_cache.rs",
             "trusted/cargo-anneal/src/core/elf.rs",
             "trusted/cargo-anneal/src/core/identifiers.rs",
             "trusted/cargo-anneal/src/sandbox.rs",
             "trusted/cargo-anneal/src/sys_util.rs",
+            "trusted/cargo-anneal/src/setup.rs",
+            "trusted/cargo-anneal/src/stage.rs",
+            "trusted/cargo-anneal/src/target.rs",
             "trusted/cargo-anneal/src/toolchain.rs",
             "trusted/cargo-anneal/src/verify.rs",
-            "trusted/cargo-anneal/src/bundle.rs",
             "trusted/rustc-capture/src/capture.rs",
             "trusted/rustc-capture/src/driver.rs",
             "trusted/rustc-capture/src/extract.rs",
@@ -90,10 +94,6 @@ class RustGuardMutationUnitTests(unittest.TestCase):
             "trusted/rustc-capture/src/publication.rs",
         ):
             self.assertIn(required_file, touched_files)
-
-        for g in guards:
-            for forbidden in ("stage.rs", "olean_cache.rs"):
-                self.assertNotIn(forbidden, g.target_file)
 
         res = subprocess.run(
             [sys.executable, "-I", "-B", str(SCRIPT), "--list"],
@@ -146,13 +146,13 @@ class RustGuardMutationUnitTests(unittest.TestCase):
                 src, "beta", "beta", guard_id="g_same"
             )
 
-    def test_validate_catalog_rejects_excluded_paths_and_duplicates(self):
+    def test_validate_catalog_rejects_duplicates_and_bad_prefixes(self):
         fake_guards = check_rust_guard_mutation.RUST_GUARDS + (
             check_rust_guard_mutation.RustGuard(
                 guard_id=check_rust_guard_mutation.RUST_GUARDS[0].guard_id,
                 suite="cargo_anneal",
-                target_file="trusted/cargo-anneal/src/stage.rs",
-                description="bad excluded path",
+                target_file="trusted/audit/src/miri_pin.rs",
+                description="wrong suite prefix",
                 anchor="a",
                 replacement="b",
                 package="cargo-anneal",
@@ -168,7 +168,7 @@ class RustGuardMutationUnitTests(unittest.TestCase):
             )
         joined = "\n".join(errors)
         self.assertIn("duplicate guard_id", joined)
-        self.assertIn("excluded path 'stage.rs'", joined)
+        self.assertIn("must start with 'trusted/cargo-anneal/'", joined)
         self.assertIn("not found", joined)
 
     def test_classify_rust_test_outcome_blocks_fake_kills(self):
@@ -241,13 +241,18 @@ class RustGuardMutationUnitTests(unittest.TestCase):
             "trusted/audit/src/miri_pin.rs",
             "trusted/audit/src/repo_audit.rs",
             "tests/audit/tests/boundary_audit.rs",
+            "trusted/cargo-anneal/src/bundle.rs",
+            "trusted/cargo-anneal/src/init.rs",
+            "trusted/cargo-anneal/src/olean_cache.rs",
             "trusted/cargo-anneal/src/core/elf.rs",
             "trusted/cargo-anneal/src/core/identifiers.rs",
             "trusted/cargo-anneal/src/sandbox.rs",
             "trusted/cargo-anneal/src/sys_util.rs",
+            "trusted/cargo-anneal/src/setup.rs",
+            "trusted/cargo-anneal/src/stage.rs",
+            "trusted/cargo-anneal/src/target.rs",
             "trusted/cargo-anneal/src/toolchain.rs",
             "trusted/cargo-anneal/src/verify.rs",
-            "trusted/cargo-anneal/src/bundle.rs",
             "tests/cargo-anneal/tests/sandbox_escape.rs",
             "trusted/rustc-capture/src/capture.rs",
             "trusted/rustc-capture/src/driver.rs",
