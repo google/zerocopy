@@ -404,8 +404,8 @@ connects the verification layers to Stage 2 by kernel-checked refinement proofs:
   `theory/Anneal/{NatBitwise,BitTrieLrat,PTree,SpineForce,Generic}.lean`,
   `theory/Anneal/{Scalar,Simd,Wp}.lean`,
   `theory/Anneal/{AiPcc,ByteRun,ByteSubLens,CallStackUnwind,CnfOrd,F2Simd}/`,
-  `theory/Anneal/{Framework,MirMemComp,OverflowCastJoin,PureLift}/`,
-  `theory/Anneal/RefFrame/`, and planned `Theory/Rust/{Wp,Tactics}/`):**
+  `theory/Anneal/{Framework,MirMemComp,OverflowCastJoin,PureLift,RefFrame}/`,
+  `theory/Anneal/WavefrontReclaim/`, and planned `Theory/Rust/{Wp,Tactics}/`):**
   Weakest-precondition calculi, loop-invariant and simulation combinators,
   Diaconescu classical excluded middle and existential choice, WHNF and
   rewrite firewall combinators, foundation-locked `Bool`/`BEq`/`Nat`/`Int`/
@@ -417,22 +417,23 @@ connects the verification layers to Stage 2 by kernel-checked refinement proofs:
   checking, run-decomposed mixed-`InitMask` padded-aggregate and `[T; N]`
   `Repeat` byte-copy laws (`ByteRun`), lawful sub-allocation byte lenses and
   `@[irreducible]` `&mut` method call summaries (`ByteSubLens`), modular
-  `@[irreducible]` call-stack framing and multi-level unwind cleanup
-  propagation (`CallStackUnwind`), constructive `< ω^ω` Cantor Normal Form
-  ordinals and multi-rank worklist termination (`CnfOrd`),
-  $\mathbb{F}_2$-linear, $\mathbb{F}_2$-bilinear, and cone-sliced SIMD
-  certificate evaluators (`F2Simd`), standalone, unbundled open-generic MIR
-  syntax, parametric type layouts, assume-guarantee trait contracts, and
-  closed-instantiation erasure to Day-1 `BodyVerified` (`Generic`, audited
-  standalone in Pass 1), computable MIR memory, layout, and indirect
-  byte-codec re-exports and stack framing laws (`MirMemComp`),
-  `@[irreducible]` stage-cut interval joins for overflowing tuple arithmetic
-  and `intToInt` casts (`OverflowCastJoin`), 4-way call-continuation `&mut`
-  writeback frames and ranged Tree Borrows protectors (`RefFrame`), functional
-  borrow lifting, separation-logic frame rules, and proof automation built
-  against $M_{\text{anneal}}$ and `StableAst` / `StableSemantics`
-  (`cargo-anneal` bundles the scalar and MIR proof libraries under
-  `theory/Anneal/`, compiling and auditing only the transitive `Anneal.*`
+  `@[irreducible]` call-stack framing and multi-level unwind cleanup propagation
+  (`CallStackUnwind`), constructive `< ω^ω` Cantor Normal Form ordinals and
+  multi-rank worklist termination (`CnfOrd`), $\mathbb{F}_2$-linear,
+  $\mathbb{F}_2$-bilinear, and cone-sliced SIMD certificate evaluators
+  (`F2Simd`), standalone, unbundled open-generic MIR syntax, parametric type
+  layouts, assume-guarantee trait contracts, and closed-instantiation erasure to
+  Day-1 `BodyVerified` (`Generic`, audited standalone in Pass 1), computable MIR
+  memory, layout, and indirect byte-codec re-exports and stack framing laws
+  (`MirMemComp`), `@[irreducible]` stage-cut interval joins for overflowing
+  tuple arithmetic and `intToInt` casts (`OverflowCastJoin`), 4-way
+  call-continuation `&mut` writeback frames and ranged Tree Borrows protectors
+  (`RefFrame`), view-indexed spatial PCM `< ω^ω` wavefront drain and universal
+  `.activeMut` loan reclamation (`WavefrontReclaim`), functional borrow lifting,
+  separation-logic frame rules, and proof automation built against
+  $M_{\text{anneal}}$ and `StableAst` / `StableSemantics` (`cargo-anneal`
+  bundles the scalar and MIR proof libraries under `theory/Anneal/`, compiling
+  and auditing only the transitive `Anneal.*`
   closure imported by target proof modules).
 
 #### Why $M_{\text{anneal}}$'s step rules and `theory/` do not expand the TCB
@@ -574,6 +575,7 @@ anneal/
     │   ├── Scalar.lean             # Constructive scalar/bitvector umbrella
     │   ├── Simd.lean               # F2-linear & SIMD verification umbrella
     │   ├── SpineForce.lean         # CPS spine-forcing & @Nat.rec combinators
+    │   ├── WavefrontReclaim.lean   # Spatial PCM < ω^ω wavefront drain & loan reclaim (+ WavefrontReclaim/)
     │   └── Wp.lean                 # MIR WP & loop-invariant umbrella
     ├── Framework/                  # [planned] Generic simulation lemmas
     └── Rust/                       # [planned] StableAst/, Passes/, Wp/
