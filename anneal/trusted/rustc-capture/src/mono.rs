@@ -11,10 +11,12 @@
 
 use std::ops::ControlFlow;
 
-use rustc_hir::def::{DefKind, Res};
+use rustc_hir::def::{DefKind, Namespace, Res};
 use rustc_hir::def_id::{CRATE_DEF_ID, CRATE_DEF_INDEX, DefId, LOCAL_CRATE, LocalDefId};
 use rustc_infer::infer::TyCtxtInferExt;
 use rustc_infer::traits::Obligation;
+use rustc_metadata::creader::CStore;
+use rustc_middle::metadata::{AmbigModChild, ModChild};
 use rustc_middle::mir;
 use rustc_middle::traits::ObligationCause;
 use rustc_middle::ty::{
@@ -496,6 +498,191 @@ fn collect_generic_params<'tcx>(
     out
 }
 
+/// Look up child item definitions matching `seg` inside module `mod_did`.
+///
+/// Routes local modules through `TyCtxt::module_children_local`
+/// (`ResolverGlobalCtxt::module_children`) because `TyCtxt::module_children`
+/// provides only external-crate metadata (`separate_provide_extern`) and panics
+/// on `LOCAL_CRATE` `DefId`s.
+///
+/// Upstream `TyCtxt::module_children`:
+/// "separate_provide_extern"
+/// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_middle/src/queries.rs#L2160-L2163
+/// Upstream `TyCtxt::module_children_local`:
+/// "Named module children from all kinds of items, including imports."
+/// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_middle/src/ty/context.rs#L2700-L2711
+///
+/// Neither list holds a name that glob imports make ambiguous. The resolver
+/// records such a name apart from the other children, as two of its
+/// candidates (`finalize_resolutions_in`):
+/// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_resolve/src/imports.rs#L1888-L1899
+/// A crate's metadata carries those records for each of its modules, and
+/// `rustc` reads them back to resolve paths into that crate, so a glob
+/// ambiguity is ambiguous across crates too:
+/// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_metadata/src/rmeta/encoder.rs#L1749-L1755
+/// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_resolve/src/build_reduced_graph.rs#L350-L366
+/// Any type-namespace ambiguity for `seg`, local or external, therefore fails
+/// closed, whichever kinds of definition its two recorded candidates are: they
+/// need not include every candidate. Without this check, a walk would treat the
+/// name as missing and could let another reading of the path resolve.
+///
+/// For the same reason, `seg` counts as absent only when the module binds
+/// nothing of that name in the type namespace. A binding of any other kind
+/// than the walk wants fails closed: a trait, a re-exported primitive type, a
+/// module as the last segment, or a struct or enum before it. There `rustc`
+/// would name that binding or report an error, never fall back to another
+/// definition.
+///
+/// A `_` segment matches no child. Modules list their underscore imports
+/// (`use X as _;`, `extern crate k as _;`) as children named `_`, but no Rust
+/// path can name them. Upstream `BindingKey`: "When a key is constructed for
+/// name lookup (as opposed to name definition), this field is also zero, even
+/// for underscore names, so for underscores the lookup will never succeed."
+/// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_resolve/src/lib.rs#L619-L623
+/// Upstream `try_plant_decl_into_local_module`: "Even if underscore names
+/// cannot be looked up, we still need to add them to modules".
+/// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_resolve/src/imports.rs#L612-L614
+fn lookup_module_child_defs<'tcx>(
+    tcx: TyCtxt<'tcx>,
+    mod_did: DefId,
+    seg: &str,
+    is_last: bool,
+    display_path: &str,
+) -> Result<Vec<(DefKind, DefId)>, String> {
+    if seg == "_" {
+        return Ok(Vec::new());
+    }
+    let names_type =
+        |child: &ModChild| child.ident.as_str() == seg && child.res.ns() == Some(Namespace::TypeNS);
+    let ambiguous = |entry: &AmbigModChild| names_type(&entry.main) || names_type(&entry.second);
+    let (children, is_ambiguous) = if let Some(local_did) = mod_did.as_local() {
+        let ambig = tcx.resolutions(()).ambig_module_children.get(&local_did);
+        (tcx.module_children_local(local_did), ambig.is_some_and(|v| v.iter().any(ambiguous)))
+    } else {
+        // External ambiguity records are reachable only through the metadata
+        // crate store (`CStore::ambig_module_children_untracked`):
+        // https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_metadata/src/rmeta/decoder/cstore_impl.rs#L622-L628
+        let cstore = tcx.cstore_untracked();
+        let Some(cstore) = cstore.as_any().downcast_ref::<CStore>() else {
+            return Err(format!(
+                "cannot read glob ambiguities of external module `{}` while resolving type path \
+                 `{display_path}`: the crate store is not `rustc_metadata`'s",
+                tcx.def_path_str(mod_did)
+            ));
+        };
+        let is_ambiguous =
+            cstore.ambig_module_children_untracked(tcx, mod_did).any(|entry| ambiguous(&entry));
+        (tcx.module_children(mod_did), is_ambiguous)
+    };
+    if is_ambiguous {
+        return Err(format!("type path `{display_path}` resolved ambiguously at segment `{seg}`"));
+    }
+    let (wanted, matches_wanted_kind): (&str, fn(DefKind) -> bool) = if is_last {
+        ("a struct, enum, union, or type alias", |kind| {
+            matches!(kind, DefKind::Struct | DefKind::Enum | DefKind::Union | DefKind::TyAlias)
+        })
+    } else {
+        ("a module", |kind| matches!(kind, DefKind::Mod))
+    };
+    let mut hits = Vec::new();
+    for child in children.iter().filter(|child| names_type(child)) {
+        match child.res {
+            Res::Def(kind, next_did) if matches_wanted_kind(kind) => {
+                if !hits.contains(&(kind, next_did)) {
+                    hits.push((kind, next_did));
+                }
+            }
+            res => {
+                return Err(format!(
+                    "type `{display_path}` could not be resolved: segment `{seg}` names {} {}, \
+                     not {wanted}",
+                    res.article(),
+                    res.descr()
+                ));
+            }
+        }
+    }
+    Ok(hits)
+}
+
+/// Walk `rest` from module `root` through module children to a type.
+///
+/// Returns `Ok(None)` when `rest` is empty or some segment names nothing in the
+/// type namespace of its module, and fails closed when a segment is ambiguous
+/// or names something other than the wanted kind of definition.
+fn walk_module_path<'tcx>(
+    tcx: TyCtxt<'tcx>,
+    root: DefId,
+    rest: &[String],
+    display_path: &str,
+) -> Result<Option<(DefKind, DefId)>, String> {
+    let mut curr_did = root;
+    for (idx, seg) in rest.iter().enumerate() {
+        let is_last = idx + 1 == rest.len();
+        let hits = lookup_module_child_defs(tcx, curr_did, seg, is_last, display_path)?;
+        match hits.as_slice() {
+            [] => return Ok(None),
+            [hit] if is_last => return Ok(Some(*hit)),
+            [(_, next_did)] => curr_did = *next_did,
+            _ => {
+                return Err(format!(
+                    "type path `{display_path}` resolved ambiguously at segment `{seg}`"
+                ));
+            }
+        }
+    }
+    Ok(None)
+}
+
+/// Find the local ADT or type alias that `TyCtxt::def_path_str` prints as
+/// `rest`, failing closed when it prints several definitions that way.
+///
+/// This spelling reaches local definitions that no module path reaches, such
+/// as a type declared inside a function or inside a `const _` item.
+fn local_def_spelled<'tcx>(
+    tcx: TyCtxt<'tcx>,
+    rest: &[String],
+    display_path: &str,
+) -> Result<Option<(DefKind, DefId)>, String> {
+    let target = rest.join("::");
+    let mut matches = tcx.hir_crate_items(()).definitions().filter_map(|local_def| {
+        let did = local_def.to_def_id();
+        let kind = tcx.def_kind(did);
+        let is_type =
+            matches!(kind, DefKind::Struct | DefKind::Enum | DefKind::Union | DefKind::TyAlias);
+        (is_type && tcx.def_path_str(did) == target).then_some((kind, did))
+    });
+    match (matches.next(), matches.next()) {
+        (None, _) => Ok(None),
+        (Some(hit), None) => Ok(Some(hit)),
+        (Some(_), Some(_)) => Err(format!("type path `{display_path}` resolved ambiguously")),
+    }
+}
+
+/// Resolve a type path to the ADT or type alias it names.
+///
+/// `::krate::...` starts at the root of the crate named `krate`, and
+/// `crate::...` at the local crate root. Any other path is relative, and this
+/// language has no enclosing module in which to resolve its leading segment.
+/// Such a path is read both ways its leading segment allows:
+///
+/// - as a crate name (an external crate, or the local crate by its own name),
+///   continuing with the remaining segments from that crate's root; and
+/// - as a name in the local crate root, continuing with every segment from
+///   there.
+///
+/// At the crate root `rustc` would rank these readings, upstream
+/// `visit_scopes`: "Places to search (in order of decreasing priority): (Type
+/// NS) [...] 2. Names in modules [...] 3. Extern prelude".
+/// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_resolve/src/ident.rs#L72-L78
+/// Here the readings are not ranked. Each reading resolves on its own, and the
+/// path resolves only if the readings that resolve all name one definition, so
+/// no request silently means a different type than one of its readings says.
+/// A leading `_` is not an identifier and names no crate.
+///
+/// A reading resolves through module children, or failing that as the
+/// `def_path_str` spelling of a local definition (`local_def_spelled`). A path
+/// that also reads as an external crate's is never taken as such a spelling.
 fn resolve_adt_or_alias_def<'tcx>(
     tcx: TyCtxt<'tcx>,
     leading_colons: bool,
@@ -510,120 +697,77 @@ fn resolve_adt_or_alias_def<'tcx>(
         segments.join("::")
     };
     let first = &segments[0];
-    let local_name = tcx.crate_name(LOCAL_CRATE);
-    let ext_crates: Vec<_> = tcx
-        .crates(())
-        .iter()
-        .copied()
-        .filter(|&cnum| tcx.crate_name(cnum).as_str() == first.as_str())
-        .collect();
-    if ext_crates.len() > 1 {
-        return Err(format!("crate `{first}` in type path `{display_path}` resolved ambiguously"));
-    }
-    let (mut curr_did, rest, is_local_root) = if leading_colons {
-        if first == "crate" {
+    let after_first = &segments[1..];
+    let local_root = CRATE_DEF_ID.to_def_id();
+
+    // Each reading is a root module and the segments that continue from it.
+    let readings: Vec<(DefId, &[String])> = if first == "crate" {
+        if leading_colons {
             return Err(format!("invalid leading `::crate` in type path `{display_path}`"));
         }
-        if ext_crates.len() == 1 && first == local_name.as_str() {
-            return Err(format!(
-                "crate root `{first}` in type path `{display_path}` is ambiguous between local \
-                 and external crates"
-            ));
-        }
-        if let Some(&ext_cnum) = ext_crates.first() {
-            (DefId { krate: ext_cnum, index: CRATE_DEF_INDEX }, &segments[1..], false)
-        } else if first == local_name.as_str() {
-            (CRATE_DEF_ID.to_def_id(), &segments[1..], true)
-        } else {
-            return Err(format!("unknown crate `{first}` in absolute type path `{display_path}`"));
-        }
-    } else if first == "crate" {
-        (CRATE_DEF_ID.to_def_id(), &segments[1..], true)
-    } else if ext_crates.len() == 1 && first == local_name.as_str() {
-        return Err(format!(
-            "crate root `{first}` in type path `{display_path}` is ambiguous between local and \
-             external crates"
-        ));
-    } else if let Some(&ext_cnum) = ext_crates.first() {
-        (DefId { krate: ext_cnum, index: CRATE_DEF_INDEX }, &segments[1..], false)
-    } else if first == local_name.as_str() {
-        (CRATE_DEF_ID.to_def_id(), &segments[1..], true)
+        vec![(local_root, after_first)]
     } else {
-        (CRATE_DEF_ID.to_def_id(), segments, true)
-    };
-
-    if rest.is_empty() {
-        return Err(format!("path `{display_path}` does not name a type"));
-    }
-
-    let mut walked_ok = true;
-    let mut final_hit = None;
-    for (idx, seg) in rest.iter().enumerate() {
-        let is_last = idx + 1 == rest.len();
-        let children = tcx.module_children(curr_did);
-        let mut hits = Vec::new();
-        for child in children {
-            if child.ident.as_str() != seg {
-                continue;
-            }
-            if let Res::Def(kind, next_did) = child.res {
-                let matches_kind = if is_last {
-                    matches!(kind, DefKind::Struct | DefKind::Enum | DefKind::Union | DefKind::TyAlias)
-                } else {
-                    matches!(kind, DefKind::Mod)
-                };
-                if matches_kind && !hits.contains(&(kind, next_did)) {
-                    hits.push((kind, next_did));
-                }
-            }
-        }
-        match hits.len() {
-            0 => {
-                walked_ok = false;
-                break;
-            }
-            1 => {
-                let (kind, next_did) = hits[0];
-                if is_last {
-                    final_hit = Some((kind, next_did));
-                } else {
-                    curr_did = next_did;
-                }
+        let names_crate = |name: &str| first != "_" && name == first.as_str();
+        let ext_crates: Vec<_> = tcx
+            .crates(())
+            .iter()
+            .copied()
+            .filter(|&cnum| names_crate(tcx.crate_name(cnum).as_str()))
+            .collect();
+        let is_local_name = names_crate(tcx.crate_name(LOCAL_CRATE).as_str());
+        let named_crate_root = match (ext_crates.as_slice(), is_local_name) {
+            ([], false) => None,
+            ([], true) => Some(local_root),
+            ([krate], false) => Some(DefId { krate: *krate, index: CRATE_DEF_INDEX }),
+            ([_], true) => {
+                return Err(format!(
+                    "crate root `{first}` in type path `{display_path}` is ambiguous between \
+                     local and external crates"
+                ));
             }
             _ => {
                 return Err(format!(
-                    "type path `{display_path}` resolved ambiguously at segment `{seg}`"
+                    "crate `{first}` in type path `{display_path}` resolved ambiguously"
                 ));
             }
+        };
+        let crate_reading = named_crate_root.map(|root| (root, after_first));
+        if leading_colons {
+            let Some(crate_reading) = crate_reading else {
+                return Err(format!(
+                    "unknown crate `{first}` in absolute type path `{display_path}`"
+                ));
+            };
+            vec![crate_reading]
+        } else {
+            crate_reading.into_iter().chain([(local_root, segments)]).collect()
         }
-    }
-    if walked_ok && let Some(hit) = final_hit {
-        return Ok(hit);
-    }
+    };
 
-    // Fallback for private/function-local ADTs in the local crate whose path
-    // matches `tcx.def_path_str`. Never fall back for external-crate roots.
-    if is_local_root {
-        let target = rest.join("::");
-        let mut local_matches = Vec::new();
-        for local_def in tcx.hir_crate_items(()).definitions() {
-            let did = local_def.to_def_id();
-            let kind = tcx.def_kind(did);
-            if matches!(kind, DefKind::Struct | DefKind::Enum | DefKind::Union | DefKind::TyAlias)
-                && tcx.def_path_str(did) == target
-            {
-                local_matches.push((kind, did));
-            }
-        }
-        if local_matches.len() == 1 {
-            return Ok(local_matches[0]);
-        }
-        if local_matches.len() > 1 {
-            return Err(format!("type path `{display_path}` resolved ambiguously"));
+    let spellable = readings.iter().all(|(root, _)| root.is_local());
+    let mut hits: Vec<(DefKind, DefId)> = Vec::new();
+    for &(root, rest) in &readings {
+        let hit = match walk_module_path(tcx, root, rest, &display_path)? {
+            None if spellable => local_def_spelled(tcx, rest, &display_path)?,
+            walked => walked,
+        };
+        if let Some(hit) = hit
+            && !hits.contains(&hit)
+        {
+            hits.push(hit);
         }
     }
-
-    Err(format!("type `{display_path}` could not be resolved"))
+    match hits.as_slice() {
+        [hit] => Ok(*hit),
+        [] if readings.iter().any(|(_, rest)| rest.is_empty()) => {
+            Err(format!("path `{display_path}` does not name a type"))
+        }
+        [] => Err(format!("type `{display_path}` could not be resolved")),
+        _ => Err(format!(
+            "type path `{display_path}` resolved ambiguously: leading segment `{first}` reads \
+             as a crate name and as a crate-root name, and the readings name different types"
+        )),
+    }
 }
 
 fn lower_const_arg<'tcx>(
@@ -780,9 +924,21 @@ fn lower_ty<'tcx>(
             let (kind, did) = resolve_adt_or_alias_def(tcx, *leading_colons, path)?;
             let g_args = build_generic_args(tcx, typing_env, did, args, depth + 1)?;
             if kind == DefKind::TyAlias {
-                let alias_ty = tcx.type_of(did).instantiate(tcx, g_args);
-                tcx.try_normalize_erasing_regions(typing_env, alias_ty).map_err(|_| {
-                    format!("failed to normalize type alias `{}`", path.join("::"))
+                // Form the type a use of the alias lowers to, as upstream
+                // `lower_path_segment` does: "Type aliases defined in crates
+                // that have the feature `lazy_type_alias` enabled get encoded
+                // as a type alias that normalization will then actually
+                // instantiate the where bounds of." Every other alias use is
+                // its instantiated right-hand side.
+                // https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_hir_analysis/src/hir_ty_lowering/mod.rs#L1205-L1225
+                let lowered = if tcx.type_alias_is_lazy(did) {
+                    let alias = ty::AliasTy::new_from_args(tcx, ty::Free { def_id: did }, g_args);
+                    ty::Unnormalized::new(Ty::new_alias(tcx, alias))
+                } else {
+                    tcx.type_of(did).instantiate(tcx, g_args)
+                };
+                normalize_use_site_ty(tcx, typing_env, lowered, "type alias", || {
+                    tcx.def_path_str_with_args(did, g_args)
                 })?
             } else {
                 Ty::new_adt(tcx, tcx.adt_def(did), g_args)
@@ -876,10 +1032,13 @@ fn build_generic_args<'tcx>(
                     ));
                 }
                 let prefix_args = tcx.mk_args(&built);
-                let const_ty = raw_const_ty.instantiate(tcx, prefix_args);
-                let const_ty = tcx
-                    .try_normalize_erasing_regions(typing_env, const_ty)
-                    .map_err(|_| "failed to normalize const parameter type".to_owned())?;
+                let const_ty = normalize_use_site_ty(
+                    tcx,
+                    typing_env,
+                    raw_const_ty.instantiate(tcx, prefix_args),
+                    "const parameter type",
+                    || format!("{}::{}", tcx.def_path_str(def_id), param.name),
+                )?;
                 let concrete_const = lower_const_arg(tcx, typing_env, const_ty, raw)?;
                 built.push(concrete_const.into());
             }
@@ -934,6 +1093,12 @@ fn has_param_index_at_least<'tcx>(ty: Ty<'tcx>, limit: usize) -> bool {
     ty.visit_with(&mut OutOfRangeParamFinder { limit }).is_break()
 }
 
+/// Lift the regions that `rustc` erased from `value` back to `'static`.
+///
+/// `'static` is the only free region a monomorphization request can name, so
+/// every free region of a requested type is `'static` and an erased region can
+/// stand for no other. Bound regions stay intact. Erased regions must never
+/// enter `InferCtxt`, whose region resolution cannot relate them.
 fn replace_erased_regions_with_static<'tcx, T: TypeFoldable<TyCtxt<'tcx>>>(
     tcx: TyCtxt<'tcx>,
     value: T,
@@ -947,17 +1112,139 @@ fn replace_erased_regions_with_static<'tcx, T: TypeFoldable<TyCtxt<'tcx>>>(
     value.fold_with(&mut folder)
 }
 
-/// Check concrete argument well-formedness, trait/predicate fulfillment, and
-/// region/outlives obligations for `def_id` under `typing_env`.
+/// Refuse `value` unless every region free in it is `'static`, the only free
+/// region a monomorphization request can name. Every obligation check calls
+/// this before it enters `InferCtxt`, whose region resolution cannot relate
+/// erased regions.
+///
+/// `rustc` does not count erased regions as free. Upstream
+/// `TypeVisitableExt::has_free_regions`:
+///
+/// > "Free" regions in this context means that it has any region
+/// > that is not (a) erased or (b) late-bound.
+///
+/// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_type_ir/src/visit.rs#L320-L328
+/// So `TyCtxt::all_free_regions_meet` never sees an erased region nested in a
+/// type: its visitor skips each type without free regions, "We're only
+/// interested in types involving regions".
+/// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_middle/src/ty/visit.rs#L96-L103
+/// Erased regions are therefore checked separately.
+fn require_static_regions<'tcx, T: TypeVisitable<TyCtxt<'tcx>>>(
+    tcx: TyCtxt<'tcx>,
+    value: &T,
+    describe: impl FnOnce() -> String,
+) -> Result<(), String> {
+    if value.has_erased_regions() || !tcx.all_free_regions_meet(value, |r| r.is_static()) {
+        return Err(format!("{} names a region other than `'static`", describe()));
+    }
+    Ok(())
+}
+
+/// Normalize `lowered`, the type that a use of a type alias or of a const
+/// parameter's declared type lowers to, as `rustc` would where a request
+/// writes it. Requested types must be normalized only through this function.
+///
+/// Upstream `TyCtxt::try_normalize_erasing_regions`: "Tries to erase the
+/// regions in `value` and then fully normalize all the types found within.
+/// The result will also have regions erased."
+/// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_middle/src/ty/normalize_erasing_regions.rs#L93-L125
+/// Its provider drops what normalizing incurs: "We don't care about the
+/// `obligations`; they are always only region relations, and we are about to
+/// erase those anyway".
+/// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_traits/src/normalize_erasing_regions.rs#L29-L31
+/// So that query forgets regions twice over. Going in, it does not enforce the
+/// region and higher-ranked obligations that normalizing `lowered` incurs,
+/// nor does it require the terms it normalizes away to be well-formed. Coming
+/// out, its result has no regions for later obligations to relate.
+///
+/// This function therefore first requires, under region-aware trait solving,
+/// that `lowered` is well-formed and normalizes; upstream `FnCtxt::lower_ty`
+/// likewise registers a well-formedness obligation for each type it lowers.
+/// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_hir_typeck/src/fn_ctxt/_impl.rs#L509-L513
+/// Only then does it take the erasing normalization and lift the erased
+/// regions of the result back to `'static`.
+fn normalize_use_site_ty<'tcx>(
+    tcx: TyCtxt<'tcx>,
+    typing_env: ty::TypingEnv<'tcx>,
+    lowered: ty::Unnormalized<'tcx, Ty<'tcx>>,
+    label: &str,
+    subject: impl Fn() -> String,
+) -> Result<Ty<'tcx>, String> {
+    let raw = lowered.skip_normalization();
+    require_static_regions(tcx, &raw, || format!("{label} `{}`", subject()))?;
+    let (infcx, param_env) = tcx.infer_ctxt().build_with_typing_env(typing_env);
+    let ocx = ObligationCtxt::new(&infcx);
+    register_wf_obligations(&ocx, param_env, raw.into(), || {
+        format!("{label} `{}`", subject())
+    })?;
+    // Only the obligations this normalization incurs are needed; the erasing
+    // normalization below supplies the result.
+    let _ = ocx.normalize(&ObligationCause::dummy(), param_env, lowered);
+    check_registered_obligations(ocx, param_env, label, &subject)?;
+    let normalized = tcx
+        .try_normalize_erasing_regions(typing_env, lowered)
+        .map_err(|_| format!("failed to normalize {label} `{}`", subject()))?;
+    Ok(replace_erased_regions_with_static(tcx, normalized))
+}
+
+/// Register the obligations that make `term` well-formed.
 ///
 /// Upstream `wf::obligations` "Returns the set of obligations needed to make
 /// `arg` well-formed", returning `None` if an unresolved inference variable
-/// makes no progress. `ObligationCtxt::resolve_regions` "Resolves regions and
-/// reports errors. Takes ownership of the context as doing trait solving
-/// afterwards will result in region constraints getting ignored."
+/// makes no progress.
 /// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_trait_selection/src/traits/wf.rs#L25-L88
+fn register_wf_obligations<'tcx>(
+    ocx: &ObligationCtxt<'_, 'tcx>,
+    param_env: ty::ParamEnv<'tcx>,
+    term: ty::Term<'tcx>,
+    describe: impl FnOnce() -> String,
+) -> Result<(), String> {
+    let Some(wf_obls) = wf::obligations(ocx.infcx, param_env, CRATE_DEF_ID, 0, term, DUMMY_SP)
+    else {
+        return Err(format!("failed to compute well-formedness obligations for {}", describe()));
+    };
+    ocx.register_obligations(wf_obls);
+    Ok(())
+}
+
+/// Require every obligation registered in `ocx` to hold, then resolve the
+/// region constraints that solving them produced.
+///
+/// Upstream `ObligationCtxt::evaluate_obligations_error_on_ambiguity`
+/// "Returns a list of errors from obligations that evaluated to Ambiguous or
+/// Err." `ObligationCtxt::resolve_regions` "Resolves regions and reports
+/// errors. Takes ownership of the context as doing trait solving afterwards
+/// will result in region constraints getting ignored."
+/// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_trait_selection/src/traits/engine.rs#L225-L229
 /// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_trait_selection/src/traits/engine.rs#L261-L273
 /// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_trait_selection/src/traits/query/evaluate_obligation.rs#L94-L111
+fn check_registered_obligations<'tcx>(
+    ocx: ObligationCtxt<'_, 'tcx>,
+    param_env: ty::ParamEnv<'tcx>,
+    label: &str,
+    subject: impl Fn() -> String,
+) -> Result<(), String> {
+    let pred_errors = ocx.evaluate_obligations_error_on_ambiguity();
+    if !pred_errors.is_empty() {
+        return Err(format!(
+            "{label} trait or well-formedness predicates unsatisfied for `{}`: {:?}",
+            subject(),
+            pred_errors[0]
+        ));
+    }
+    let region_errors = ocx.resolve_regions(CRATE_DEF_ID, param_env, []);
+    if !region_errors.is_empty() {
+        return Err(format!(
+            "{label} region or outlives predicates unsatisfied for `{}`: {:?}",
+            subject(),
+            region_errors[0]
+        ));
+    }
+    Ok(())
+}
+
+/// Check concrete argument well-formedness, trait/predicate fulfillment, and
+/// region/outlives obligations for `def_id` under `typing_env`.
 fn verify_predicates_and_wf<'tcx>(
     tcx: TyCtxt<'tcx>,
     typing_env: ty::TypingEnv<'tcx>,
@@ -965,6 +1252,9 @@ fn verify_predicates_and_wf<'tcx>(
     args: GenericArgsRef<'tcx>,
     label: &str,
 ) -> Result<(), String> {
+    require_static_regions(tcx, &args, || {
+        format!("{label} arguments for `{}`", tcx.def_path_str(def_id))
+    })?;
     let (infcx, param_env) = tcx.infer_ctxt().build_with_typing_env(typing_env);
     let ocx = ObligationCtxt::new(&infcx);
     for arg in args.iter() {
@@ -974,14 +1264,7 @@ fn verify_predicates_and_wf<'tcx>(
             ty::GenericArgKind::Lifetime(_) => None,
         };
         if let Some(term) = term {
-            let Some(wf_obls) =
-                wf::obligations(&infcx, param_env, CRATE_DEF_ID, 0, term, DUMMY_SP)
-            else {
-                return Err(format!(
-                    "failed to compute well-formedness obligations for {label} argument `{arg}`"
-                ));
-            };
-            ocx.register_obligations(wf_obls);
+            register_wf_obligations(&ocx, param_env, term, || format!("{label} argument `{arg}`"))?;
         }
     }
     for (clause, span) in tcx.predicates_of(def_id).instantiate(tcx, args) {
@@ -989,23 +1272,9 @@ fn verify_predicates_and_wf<'tcx>(
         let normalized = ocx.normalize(&cause, param_env, clause);
         ocx.register_obligation(Obligation::new(tcx, cause, param_env, normalized));
     }
-    let pred_errors = ocx.evaluate_obligations_error_on_ambiguity();
-    if !pred_errors.is_empty() {
-        return Err(format!(
-            "{label} trait or well-formedness predicates unsatisfied for `{}`: {:?}",
-            tcx.def_path_str_with_args(def_id, args),
-            pred_errors[0]
-        ));
-    }
-    let region_errors = ocx.resolve_regions(CRATE_DEF_ID, param_env, []);
-    if !region_errors.is_empty() {
-        return Err(format!(
-            "{label} region or outlives predicates unsatisfied for `{}`: {:?}",
-            tcx.def_path_str_with_args(def_id, args),
-            region_errors[0]
-        ));
-    }
-    Ok(())
+    check_registered_obligations(ocx, param_env, label, || {
+        tcx.def_path_str_with_args(def_id, args)
+    })
 }
 
 pub(crate) struct ResolvedMonoBody<'tcx> {
@@ -1231,5 +1500,76 @@ mod tests {
         ] {
             assert!(parse_mono_arg(bad).is_err(), "expected failure for {bad:?}");
         }
+    }
+
+    /// Run `f` on the `TyCtxt` of an empty crate.
+    fn with_tcx(f: impl for<'tcx> FnOnce(TyCtxt<'tcx>) + Send) {
+        static USING_INTERNAL_FEATURES: std::sync::atomic::AtomicBool =
+            std::sync::atomic::AtomicBool::new(false);
+        let config = rustc_interface::Config {
+            opts: rustc_session::config::Options::default(),
+            crate_cfg: Vec::new(),
+            crate_check_cfg: Vec::new(),
+            input: rustc_session::config::Input::Str {
+                name: rustc_span::FileName::Custom("mono_test".into()),
+                input: String::new(),
+            },
+            output_dir: None,
+            output_file: None,
+            ice_file: None,
+            file_loader: None,
+            lint_caps: Default::default(),
+            psess_created: None,
+            track_state: None,
+            register_lints: None,
+            override_queries: None,
+            extra_symbols: Vec::new(),
+            make_codegen_backend: None,
+            using_internal_features: &USING_INTERNAL_FEATURES,
+        };
+        rustc_interface::run_compiler(config, |compiler| {
+            let krate = rustc_interface::passes::parse(&compiler.sess);
+            rustc_interface::passes::create_and_enter_global_ctxt(compiler, krate, f);
+        });
+    }
+
+    #[test]
+    fn requires_static_regions_including_erased_ones_nested_in_types() {
+        with_tcx(|tcx| {
+            let u8_ty = tcx.types.u8;
+            let static_ref = Ty::new_imm_ref(tcx, tcx.lifetimes.re_static, u8_ty);
+            let erased_ref = Ty::new_imm_ref(tcx, tcx.lifetimes.re_erased, u8_ty);
+            let bound = ty::BoundRegion {
+                var: ty::BoundVar::ZERO,
+                kind: ty::BoundRegionKind::Anon,
+            };
+            let bound_ref = Ty::new_imm_ref(
+                tcx,
+                ty::Region::new_bound(tcx, ty::INNERMOST, bound),
+                u8_ty,
+            );
+            let hr_fn = Ty::new_fn_ptr(
+                tcx,
+                ty::Binder::bind_with_vars(
+                    tcx.mk_fn_sig_safe_rust_abi([bound_ref], tcx.types.unit),
+                    tcx.mk_bound_variable_kinds(&[ty::BoundVariableKind::Region(
+                        ty::BoundRegionKind::Anon,
+                    )]),
+                ),
+            );
+            let describe = || "value".to_owned();
+            let erased_args = tcx.mk_args(&[erased_ref.into()]);
+            // `rustc` counts none of these erased regions as free, so the
+            // free-region test alone would accept them.
+            assert!(tcx.all_free_regions_meet(&erased_ref, |r| r.is_static()));
+            assert!(tcx.all_free_regions_meet(&erased_args, |r| r.is_static()));
+            assert!(require_static_regions(tcx, &erased_ref, describe).is_err());
+            assert!(require_static_regions(tcx, &erased_args, describe).is_err());
+            assert!(
+                require_static_regions(tcx, &tcx.lifetimes.re_erased, describe).is_err()
+            );
+            assert!(require_static_regions(tcx, &static_ref, describe).is_ok());
+            assert!(require_static_regions(tcx, &hr_fn, describe).is_ok());
+        });
     }
 }

@@ -14,7 +14,7 @@
 
 use std::{
     fmt::Write as _,
-    path::PathBuf,
+    path::{Path, PathBuf},
     process::{Command, Output},
 };
 
@@ -53,6 +53,10 @@ impl Capture {
     }
 
     fn command_with(&self, crate_name: &str, declare_source: bool) -> Command {
+        self.command_in(&sysroot(), crate_name, declare_source)
+    }
+
+    fn command_in(&self, sysroot: &Path, crate_name: &str, declare_source: bool) -> Command {
         let mut command = Command::new(env!("CARGO_BIN_EXE_anneal-rustc-capture-test-bin"));
         command
             .current_dir(self.directory.path())
@@ -64,7 +68,7 @@ impl Capture {
             .arg("--out-dir")
             .arg(&self.output)
             .arg("--sysroot")
-            .arg(sysroot());
+            .arg(sysroot);
         if declare_source {
             command.arg("--source-file").arg(&self.source);
         }
@@ -3879,6 +3883,711 @@ fn explicit_monomorphization_enforces_crate_roots_region_bounds_and_self_const_f
         stderr(&self_out)
     );
     assert_eq!(self_fixture.manifest()["program"]["bodies"].as_array().unwrap().len(), 2);
+}
+
+/// Capture the explicit instantiations `requests` (`(path, type argument)`
+/// pairs) of `source` and return the captured body identities, or each
+/// refusal as `(request, reason)`.
+///
+/// Panics unless the capture either succeeds or refuses cleanly as
+/// `unsupported`, so a compiler panic (`tool_failed`) fails the calling test.
+fn instantiate(
+    source: &str,
+    extra_args: &[&str],
+    requests: &[(&str, &str)],
+) -> Result<Vec<String>, Vec<(String, String)>> {
+    instantiate_in(&sysroot(), source, extra_args, requests)
+}
+
+/// [`instantiate`] against the compiler sysroot `sysroot`.
+fn instantiate_in(
+    sysroot: &Path,
+    source: &str,
+    extra_args: &[&str],
+    requests: &[(&str, &str)],
+) -> Result<Vec<String>, Vec<(String, String)>> {
+    let fixture = Capture::new(source.as_bytes());
+    let mut command = fixture.command_in(sysroot, "session", true);
+    command.args(extra_args);
+    for (path, arg) in requests {
+        let request = serde_json::json!({ "path": path, "args": [arg] });
+        command.arg("--instantiate").arg(request.to_string());
+    }
+    let output = command.output().unwrap();
+    if output.status.success() {
+        let manifest = fixture.manifest();
+        let bodies = manifest["program"]["bodies"].as_array().unwrap();
+        return Ok(bodies.iter().map(|b| b["identity"].as_str().unwrap().to_owned()).collect());
+    }
+    assert_eq!(output.status.code(), Some(1), "{output:?}");
+    let failure = status(&output);
+    assert_eq!(failure["status"], "unsupported", "{failure}\n{}", stderr(&output));
+    fixture.assert_no_capture_artifacts();
+    let refusals = failure["unsupported"].as_array().unwrap();
+    Err(refusals
+        .iter()
+        .map(|r| (r["path"].as_str().unwrap().to_owned(), r["reason"].as_str().unwrap().to_owned()))
+        .collect())
+}
+
+/// Check that `requests` capture exactly the bodies `expected` (identities
+/// without their `rust-path-v1::` prefix, in any order).
+fn assert_instantiates(
+    source: &str,
+    extra_args: &[&str],
+    requests: &[(&str, &str)],
+    expected: &[&str],
+) {
+    let mut identities = instantiate(source, extra_args, requests)
+        .unwrap_or_else(|refusals| panic!("expected {requests:?} to capture, got {refusals:?}"));
+    identities.sort();
+    let mut expected: Vec<String> = expected.iter().map(|e| format!("rust-path-v1::{e}")).collect();
+    expected.sort();
+    assert_eq!(identities, expected, "{requests:?}");
+}
+
+/// Check that each `(type argument, resolved type)` row resolves as stated.
+///
+/// Each type argument instantiates its own `pin{i}<T>()`, so the captured
+/// identity `pin{i}::<type>` pins the definition that spelling resolved to.
+fn assert_resolves(source: &str, rows: &[(&str, &str)]) {
+    let mut pinned = source.to_owned();
+    for i in 0..rows.len() {
+        writeln!(pinned, "pub fn pin{i}<T>() -> u8 {{ 0 }}").unwrap();
+    }
+    let pins: Vec<String> = (0..rows.len()).map(|i| format!("pin{i}")).collect();
+    let requests: Vec<(&str, &str)> =
+        pins.iter().zip(rows).map(|(pin, (arg, _))| (pin.as_str(), *arg)).collect();
+    let expected: Vec<String> =
+        pins.iter().zip(rows).map(|(pin, (_, ty))| format!("{pin}::<{ty}>")).collect();
+    let expected: Vec<&str> = expected.iter().map(String::as_str).collect();
+    assert_instantiates(&pinned, &[], &requests, &expected);
+}
+
+/// Check that every `(path, type argument, reason)` row is refused with a
+/// reason containing the stated text.
+fn assert_refuses(source: &str, extra_args: &[&str], rows: &[(&str, &str, &str)]) {
+    let requests: Vec<(&str, &str)> = rows.iter().map(|(path, arg, _)| (*path, *arg)).collect();
+    let refusals = instantiate(source, extra_args, &requests)
+        .expect_err("expected every request to be refused");
+    assert_eq!(refusals.len(), rows.len(), "{refusals:?}");
+    for (path, arg, expected) in rows {
+        let request = format!("{path}<{arg}>");
+        let (_, reason) = refusals
+            .iter()
+            .find(|(refused, _)| *refused == request)
+            .unwrap_or_else(|| panic!("no refusal for `{request}`: {refusals:?}"));
+        assert!(reason.contains(expected), "`{request}`: expected {expected:?}, got {reason:?}");
+    }
+}
+
+#[test]
+fn explicit_monomorphization_resolves_local_adts_aliases_and_rejects_ambiguities() {
+    let source = "#![allow(dead_code, non_snake_case)]\n\
+        pub trait Tag { fn tag() -> u8; }\n\
+        pub fn id_local<T>() -> u8 { 0 }\n\
+        pub mod byteorder_like {\n\
+            pub struct BigEndian;\n\
+            pub enum Endian { Big, Little }\n\
+            pub union RawWord { pub bytes: [u8; 2], pub word: u16 }\n\
+            pub struct U16<O>(pub u16, pub core::marker::PhantomData<O>);\n\
+            pub type BigAlias = BigEndian;\n\
+            pub struct Pair<T>(pub T, pub T);\n\
+            pub type PairAlias<T> = Pair<T>;\n\
+        }\n\
+        pub fn byteorder_like() -> u8 { 1 }\n\
+        impl Tag for byteorder_like::U16<byteorder_like::BigEndian> {\n\
+            fn tag() -> u8 { 11 }\n\
+        }\n\
+        impl Tag for byteorder_like::U16<byteorder_like::Endian> {\n\
+            fn tag() -> u8 { 22 }\n\
+        }\n\
+        impl Tag for byteorder_like::U16<byteorder_like::RawWord> {\n\
+            fn tag() -> u8 { 33 }\n\
+        }\n\
+        pub mod reexport {\n\
+            pub use crate::byteorder_like::BigEndian as ReexportedBig;\n\
+            pub use core::num as ext_num;\n\
+            pub use core::num::Wrapping as ExtWrap;\n\
+        }\n\
+        mod priv_mod {\n\
+            pub struct PrivAdt { pub v: u8 }\n\
+            pub fn PrivAdt() {}\n\
+        }\n\
+        mod g1 { pub struct Dup; pub mod sub { pub struct Inner; } }\n\
+        mod g2 { pub struct Dup; pub mod sub { pub struct Inner; } }\n\
+        pub mod amb {\n\
+            #[allow(ambiguous_glob_reexports, unused_imports)]\n\
+            pub use super::g1::*;\n\
+            #[allow(ambiguous_glob_reexports, unused_imports)]\n\
+            pub use super::g2::*;\n\
+        }\n\
+        mod k_struct { pub struct Tri; }\n\
+        mod k_trait { pub trait Tri {} }\n\
+        mod k_mod { pub mod Tri { pub struct Inner; } }\n\
+        pub mod amb3_leaf {\n\
+            #[allow(ambiguous_glob_reexports, unused_imports)]\n\
+            pub use super::{k_trait::*, k_struct::*, k_mod::*};\n\
+        }\n\
+        pub mod amb3_mod {\n\
+            #[allow(ambiguous_glob_reexports, unused_imports)]\n\
+            pub use super::{k_struct::*, k_mod::*, k_trait::*};\n\
+        }\n\
+        pub mod anon_amb {\n\
+            const _: () = { pub struct Same; };\n\
+            const _: () = { pub struct Same; };\n\
+        }\n";
+
+    // All 6 `BigEndian` spellings deduplicate to one `ty::Instance`.
+    assert_instantiates(
+        source,
+        &[],
+        &[
+            ("Tag::tag", "byteorder_like::U16<byteorder_like::BigEndian>"),
+            ("Tag::tag", "crate::byteorder_like::U16<crate::byteorder_like::BigEndian>"),
+            ("Tag::tag", "session::byteorder_like::U16<session::byteorder_like::BigEndian>"),
+            ("Tag::tag", "::session::byteorder_like::U16<::session::byteorder_like::BigEndian>"),
+            ("Tag::tag", "byteorder_like::U16<byteorder_like::BigAlias>"),
+            ("Tag::tag", "byteorder_like::U16<reexport::ReexportedBig>"),
+            ("Tag::tag", "byteorder_like::U16<crate::byteorder_like::Endian>"),
+            ("Tag::tag", "byteorder_like::U16<byteorder_like::RawWord>"),
+            ("id_local", "byteorder_like::PairAlias<u8>"),
+            ("id_local", "reexport::ext_num::Wrapping<u8>"),
+            ("id_local", "crate::reexport::ExtWrap<u16>"),
+            ("id_local", "priv_mod::PrivAdt"),
+        ],
+        &[
+            "<byteorder_like::U16<byteorder_like::BigEndian> as Tag>::tag",
+            "<byteorder_like::U16<byteorder_like::Endian> as Tag>::tag",
+            "<byteorder_like::U16<byteorder_like::RawWord> as Tag>::tag",
+            "id_local::<byteorder_like::Pair<u8>>",
+            "id_local::<core::num::wrapping::Wrapping<u8>>",
+            "id_local::<core::num::wrapping::Wrapping<u16>>",
+            "id_local::<priv_mod::PrivAdt>",
+        ],
+    );
+
+    // Pin the definition each spelling of a path resolves to.
+    assert_resolves(
+        source,
+        &[
+            ("byteorder_like::BigEndian", "byteorder_like::BigEndian"),
+            ("crate::byteorder_like::BigEndian", "byteorder_like::BigEndian"),
+            ("session::byteorder_like::BigEndian", "byteorder_like::BigEndian"),
+            ("::session::byteorder_like::BigEndian", "byteorder_like::BigEndian"),
+            ("byteorder_like::BigAlias", "byteorder_like::BigEndian"),
+            ("reexport::ReexportedBig", "byteorder_like::BigEndian"),
+            ("crate::byteorder_like::Endian", "byteorder_like::Endian"),
+            ("byteorder_like::RawWord", "byteorder_like::RawWord"),
+            ("byteorder_like::U16<u8>", "byteorder_like::U16<u8>"),
+            ("byteorder_like::PairAlias<u8>", "byteorder_like::Pair<u8>"),
+            ("reexport::ext_num::Wrapping<u8>", "core::num::wrapping::Wrapping<u8>"),
+            ("crate::reexport::ExtWrap<u16>", "core::num::wrapping::Wrapping<u16>"),
+            ("priv_mod::PrivAdt", "priv_mod::PrivAdt"),
+        ],
+    );
+
+    assert_refuses(
+        source,
+        &[],
+        &[
+            // Missing local type.
+            ("id_local", "crate::byteorder_like::Missing", "could not be resolved"),
+            // Glob-ambiguous leaf and module segments.
+            ("id_local", "amb::Dup", "resolved ambiguously at segment `Dup`"),
+            ("id_local", "crate::amb::sub::Inner", "resolved ambiguously at segment `sub`"),
+            // A three-way glob ambiguity stays ambiguous whichever two of the
+            // candidates (trait, struct, module) the compiler records.
+            ("id_local", "amb3_leaf::Tri", "resolved ambiguously at segment `Tri`"),
+            ("id_local", "amb3_mod::Tri::Inner", "resolved ambiguously at segment `Tri`"),
+            // Two definitions share one `def_path_str`.
+            ("id_local", "anon_amb::_::Same", "resolved ambiguously"),
+            // A trait or a module alone is no ADT or type alias.
+            ("id_local", "crate::Tag", "could not be resolved"),
+            ("id_local", "crate::byteorder_like", "could not be resolved"),
+            // The local crate root alone names no type.
+            ("id_local", "session", "does not name a type"),
+        ],
+    );
+}
+
+#[test]
+fn explicit_monomorphization_gives_type_aliases_use_site_semantics() {
+    // A type alias use means what `rustc` makes of it where it is written:
+    // its expansion must be well-formed and must normalize under
+    // region-aware trait solving, and the regions that normalization erases
+    // come back as `'static`, the only free region this language can name.
+    let source = r#"#![allow(dead_code, type_alias_bounds)]
+use core::marker::PhantomData;
+pub fn need_static<T: 'static>() -> u8 { 1 }
+pub trait StaticOnly { fn v() -> u64; }
+impl StaticOnly for &'static u8 { fn v() -> u64 { 9 } }
+impl StaticOnly for &'static [u8] { fn v() -> u64 { 10 } }
+pub struct Wrap<'a, T: 'a>(pub &'a T);
+pub struct PairStatic<T: 'static>(pub T, pub T);
+pub struct Pair<T>(pub T, pub T);
+pub struct Inv<'a>(PhantomData<fn(&'a ()) -> &'a ()>);
+pub struct AlwaysHr;
+pub trait Hr<'a> {}
+impl<'a> Hr<'a> for Inv<'a> {}
+impl<'a> Hr<'a> for AlwaysHr {}
+pub fn hrtb_outlives<T>() -> u64 where for<'a> &'a T: 'static { 1 }
+pub fn hrtb_trait<T>() -> u64 where for<'a> T: Hr<'a> { 2 }
+pub trait OnlyHr { type Out; }
+impl<T> OnlyHr for T where for<'a> T: Hr<'a> { type Out = u64; }
+pub trait RefOf { type Out; }
+impl<'a> RefOf for &'a u8 { type Out = &'a [u8]; }
+pub trait StaticOut { type Out; }
+impl StaticOut for &'static u8 { type Out = u64; }
+pub trait Any { type Out; }
+impl<T: ?Sized> Any for T { type Out = u8; }
+pub type StaticRef = &'static u8;
+pub type ByteSlice<'a> = &'a [u8];
+pub type WrapStatic = Wrap<'static, u8>;
+pub type PairOfRefs = PairStatic<&'static u8>;
+pub type InvStatic = Inv<'static>;
+pub type HrFn = for<'a> fn(&'a u8) -> &'a u8;
+pub type OnlyHrOut<T> = <T as OnlyHr>::Out;
+pub type RefOut<'a> = <&'a u8 as RefOf>::Out;
+pub type RefOutUnderBinder = for<'a> fn(<&'a u8 as RefOf>::Out);
+pub type RefOutNoBinder = fn(<&'static u8 as RefOf>::Out);
+pub type UnderBinder = for<'a> fn(<&'a u8 as StaticOut>::Out);
+pub type AnyOut<T> = <T as Any>::Out;
+pub trait AlwaysU8<T: ?Sized> { type Out; }
+impl<T: ?Sized> AlwaysU8<T> for () { type Out = u8; }
+pub type Discard<T: ?Sized> = <() as AlwaysU8<T>>::Out;
+pub type OuterDiscard<T: ?Sized> = Discard<T>;
+pub struct NotCopy;
+pub type OnlyCopy<T: Copy> = T;
+"#;
+
+    // Every request below names a type that `rustc` accepts at a use site.
+    // Region and outlives obligations over an alias expansion must see
+    // `'static`, never an erased region, and a region bound inside the
+    // expansion must stay bound.
+    assert_instantiates(
+        source,
+        &[],
+        &[
+            ("need_static", "StaticRef"),
+            ("StaticOnly::v", "StaticRef"),
+            ("StaticOnly::v", "ByteSlice<'static>"),
+            ("StaticOnly::v", "ByteSlice"),
+            ("StaticOnly::v", "RefOut<'static>"),
+            ("need_static", "WrapStatic"),
+            ("need_static", "PairOfRefs"),
+            ("need_static", "InvStatic"),
+            ("need_static", "HrFn"),
+            ("need_static", "RefOutUnderBinder"),
+            ("need_static", "RefOutNoBinder"),
+            ("need_static", "OnlyHrOut<AlwaysHr>"),
+            ("need_static", "AnyOut<str>"),
+            ("need_static", "Discard<str>"),
+            // As in Rust, the bounds of an eager type alias are not enforced.
+            ("need_static", "OnlyCopy<NotCopy>"),
+        ],
+        &[
+            "need_static::<&u8>",
+            "<&'static u8 as StaticOnly>::v",
+            "<&'static [u8] as StaticOnly>::v",
+            "need_static::<Wrap<'_, u8>>",
+            "need_static::<PairStatic<&u8>>",
+            "need_static::<Inv<'_>>",
+            "need_static::<for<'a> fn(&'a u8) -> &'a u8>",
+            "need_static::<for<'a> fn(&'a [u8])>",
+            "need_static::<fn(&[u8])>",
+            "need_static::<u64>",
+            "need_static::<u8>",
+            "need_static::<NotCopy>",
+        ],
+    );
+
+    // `rustc` rejects every one of these types at a use site.
+    let alias_regions = "type alias region or outlives predicates unsatisfied";
+    let alias_wf = "type alias trait or well-formedness predicates unsatisfied";
+    assert_refuses(
+        source,
+        &[],
+        &[
+            // Higher-ranked bounds of the target over an alias expansion.
+            ("hrtb_outlives", "StaticRef", "target region or outlives predicates unsatisfied"),
+            ("hrtb_trait", "InvStatic", "target region or outlives predicates unsatisfied"),
+            // Normalizing the expansion selects an impl whose higher-ranked
+            // `where` clause the argument cannot meet.
+            ("need_static", "OnlyHrOut<Inv<'static>>", alias_regions),
+            ("need_static", "OnlyHrOut<InvStatic>", alias_regions),
+            // The same failure under a binder of the expansion.
+            ("need_static", "UnderBinder", alias_regions),
+            // Normalization would discard the ill-formed projection input,
+            // whether it is the self type or a trait argument, and however
+            // many aliases deep it sits.
+            ("need_static", "AnyOut<Pair<str>>", alias_wf),
+            ("need_static", "Discard<Pair<str>>", alias_wf),
+            ("need_static", "OuterDiscard<Pair<str>>", alias_wf),
+        ],
+    );
+
+    // A lazy type alias (`#![feature(lazy_type_alias)]`) also enforces its
+    // own bounds wherever it is used.
+    let lazy_source = "#![feature(lazy_type_alias)]\n\
+        #![allow(incomplete_features, dead_code)]\n\
+        pub struct Plain;\n\
+        pub type OnlyCopy<T: Copy> = T;\n\
+        pub fn need_static<T: 'static>() -> u8 { 1 }\n";
+    let allow_lazy = ["--allow-unstable-feature=lazy_type_alias"];
+    assert_instantiates(
+        lazy_source,
+        &allow_lazy,
+        &[("need_static", "OnlyCopy<u8>")],
+        &["need_static::<u8>"],
+    );
+    assert_refuses(
+        lazy_source,
+        &allow_lazy,
+        &[(
+            "need_static",
+            "OnlyCopy<Plain>",
+            "type alias trait or well-formedness predicates unsatisfied",
+        )],
+    );
+}
+
+#[test]
+fn explicit_monomorphization_never_looks_up_underscore_segments() {
+    // No Rust path can name a `_` binding, so `_` segments resolve only as
+    // the `_` that `def_path_str` prints for items inside `const _`.
+    let self_import = "#![allow(dead_code)]\n\
+        extern crate self as _;\n\
+        pub struct Target;\n\
+        const _: () = { pub struct Target; };\n";
+    assert_resolves(
+        self_import,
+        &[("Target", "Target"), ("_::Target", "_::Target"), ("crate::_::Target", "_::Target")],
+    );
+
+    let two_imports = "#![allow(dead_code)]\n\
+        extern crate core as _;\n\
+        extern crate self as _;\n\
+        const _: () = { pub struct Local; };\n";
+    assert_resolves(two_imports, &[("_::Local", "_::Local")]);
+
+    let imports_only = "#![allow(dead_code, unused_imports)]\n\
+        extern crate core as _;\n\
+        mod m { pub struct X; }\n\
+        use m as _;\n\
+        pub mod n { pub use super::m::X as _; }\n\
+        pub fn id_local<T>() -> u8 { 0 }\n";
+    assert_refuses(
+        imports_only,
+        &[],
+        &[
+            ("id_local", "_::num::Wrapping<u8>", "could not be resolved"),
+            ("id_local", "_::X", "could not be resolved"),
+            ("id_local", "n::_", "could not be resolved"),
+            ("id_local", "::_::num::Wrapping<u8>", "unknown crate `_`"),
+        ],
+    );
+}
+
+#[test]
+fn explicit_monomorphization_reconciles_readings_of_a_leading_crate_name() {
+    // The leading segment of a relative path may read as a crate name or as
+    // an item of the crate root. The path resolves only when every reading
+    // that resolves agrees on one definition. All fixtures here are captured
+    // as crate `session`.
+    let ambiguous = "resolved ambiguously: leading segment";
+
+    // A crate-root module shares the local crate's name.
+    let module = "#![allow(dead_code)]\n\
+        pub struct Inner;\n\
+        pub struct OnlyAtRoot;\n\
+        pub mod session { pub struct Inner; pub struct OnlyInMod; }\n\
+        pub fn id_local<T>() -> u8 { 0 }\n";
+    assert_resolves(
+        module,
+        &[
+            ("session::OnlyInMod", "session::OnlyInMod"),
+            ("session::OnlyAtRoot", "OnlyAtRoot"),
+            ("session::session::Inner", "session::Inner"),
+            ("crate::session::Inner", "session::Inner"),
+            ("crate::Inner", "Inner"),
+            ("::session::Inner", "Inner"),
+            ("::session::session::Inner", "session::Inner"),
+        ],
+    );
+    assert_refuses(module, &[], &[("id_local", "session::Inner", ambiguous)]);
+
+    // A crate-root type shares the local crate's name, and so does a function
+    // whose local type `def_path_str` spells `session::Local`. That spelling
+    // passes through the struct, so it does not name the function's type.
+    let type_and_fn = "#![allow(dead_code, non_camel_case_types)]\n\
+        pub struct session {}\n\
+        pub fn session() { pub struct Local; }\n\
+        pub fn id_local<T>() -> u8 { 0 }\n";
+    assert_resolves(type_and_fn, &[("session", "session"), ("crate::session", "session")]);
+    let not_a_module = "segment `session` names a struct, not a module";
+    assert_refuses(
+        type_and_fn,
+        &[],
+        &[
+            ("id_local", "session::Local", not_a_module),
+            ("id_local", "crate::session::Local", not_a_module),
+        ],
+    );
+
+    // The readings also disagree when `def_path_str` spells one of them: the
+    // function `session` declares a second `Local`.
+    let spelled = "#![allow(dead_code)]\n\
+        pub struct Local;\n\
+        pub fn session() { pub struct Local; }\n\
+        pub fn id_local<T>() -> u8 { 0 }\n";
+    assert_resolves(
+        spelled,
+        &[
+            ("Local", "Local"),
+            ("crate::Local", "Local"),
+            ("::session::Local", "Local"),
+            ("crate::session::Local", "session::Local"),
+        ],
+    );
+    assert_refuses(spelled, &[], &[("id_local", "session::Local", ambiguous)]);
+
+    // `extern crate self as session;` and `extern crate alloc;` make the
+    // crate-root reading agree with the crate-name reading. A crate-root
+    // module named `core` does not agree with the external crate `core`.
+    let shadowing = "#![allow(dead_code)]\n\
+        extern crate self as session;\n\
+        extern crate alloc;\n\
+        pub struct Inner;\n\
+        pub mod core {\n\
+            pub struct OnlyLocal;\n\
+            pub mod num { pub struct Wrapping<T>(pub T); }\n\
+            pub fn in_fn() { pub struct InFn; }\n\
+        }\n\
+        pub fn id_local<T>() -> u8 { 0 }\n";
+    assert_resolves(
+        shadowing,
+        &[
+            ("session::Inner", "Inner"),
+            ("session::session::Inner", "Inner"),
+            ("alloc::string::String", "alloc::string::String"),
+            ("core::OnlyLocal", "core::OnlyLocal"),
+            ("core::mem::ManuallyDrop<u8>", "core::mem::manually_drop::ManuallyDrop<u8>"),
+            ("crate::core::num::Wrapping<u8>", "core::num::Wrapping<u8>"),
+            ("::core::num::Wrapping<u8>", "core::num::wrapping::Wrapping<u8>"),
+            ("crate::core::in_fn::InFn", "core::in_fn::InFn"),
+        ],
+    );
+    assert_refuses(
+        shadowing,
+        &[],
+        &[
+            ("id_local", "core::num::Wrapping<u8>", ambiguous),
+            // A path that also reads as an external crate's is never taken
+            // as a `def_path_str` spelling.
+            ("id_local", "core::in_fn::InFn", "could not be resolved"),
+            // The crate-root module `core` is no type either.
+            ("id_local", "core", "segment `core` names a module, not a struct"),
+        ],
+    );
+
+    // A glob import supplies the crate-root reading too.
+    let glob = "#![allow(dead_code, unused_imports)]\n\
+        mod m { pub mod core { pub struct X; } }\n\
+        use m::*;\n";
+    assert_resolves(
+        glob,
+        &[
+            ("core::X", "m::core::X"),
+            ("core::mem::ManuallyDrop<u8>", "core::mem::manually_drop::ManuallyDrop<u8>"),
+        ],
+    );
+}
+
+/// A copy of the compiler sysroot whose target library directory also holds
+/// crate `name`, compiled from `source`, so that a capture can load it with
+/// `extern crate`.
+fn sysroot_with_crate(directory: &Path, name: &str, source: &str) -> PathBuf {
+    let real = sysroot();
+    let target_lib = "lib/rustlib/x86_64-unknown-linux-gnu/lib";
+    let copy = directory.join("sysroot");
+    std::fs::create_dir_all(copy.join("bin")).unwrap();
+    std::fs::create_dir_all(copy.join(target_lib)).unwrap();
+    std::os::unix::fs::symlink(real.join("bin/rustc"), copy.join("bin/rustc")).unwrap();
+    for (from, to) in [(real.join("lib"), copy.join("lib")), (real.join(target_lib), copy.join(target_lib))]
+    {
+        for entry in std::fs::read_dir(from).unwrap() {
+            let entry = entry.unwrap();
+            if entry.file_name() != "rustlib" {
+                std::os::unix::fs::symlink(entry.path(), to.join(entry.file_name())).unwrap();
+            }
+        }
+    }
+    let crate_source = directory.join(format!("{name}.rs"));
+    std::fs::write(&crate_source, source).unwrap();
+    let output = Command::new(real.join("bin/rustc"))
+        .arg("--edition=2021")
+        .arg("--crate-type=rlib")
+        .arg(format!("--crate-name={name}"))
+        .arg("--target=x86_64-unknown-linux-gnu")
+        .arg("-Awarnings")
+        .arg("-o")
+        .arg(copy.join(target_lib).join(format!("lib{name}.rlib")))
+        .arg(&crate_source)
+        .output()
+        .unwrap();
+    assert!(output.status.success(), "compile {name}: {}", stderr(&output));
+    copy
+}
+
+#[test]
+fn explicit_monomorphization_refuses_glob_ambiguity_in_external_crates() {
+    // A name that glob imports make ambiguous in another crate's module is
+    // missing from that module's children. It must still be refused as
+    // ambiguous, rather than read as absent while the crate-root reading of
+    // the same path resolves.
+    let directory = tempfile::tempdir().unwrap();
+    let sysroot = sysroot_with_crate(
+        directory.path(),
+        "dep",
+        "pub mod a { pub struct Ambig; pub mod sub { pub struct Target; } }\n\
+         pub mod b { pub struct Ambig; pub mod sub { pub struct Target; } }\n\
+         pub use a::*;\n\
+         pub use b::*;\n\
+         pub mod clean { pub struct Unique; }\n",
+    );
+    let ambiguous_at = |seg: &str| format!("resolved ambiguously at segment `{seg}`");
+    let refused = |source: &str, rows: &[(&str, String)]| {
+        let requests: Vec<(&str, &str)> = rows.iter().map(|(arg, _)| ("id_local", *arg)).collect();
+        let refusals = instantiate_in(&sysroot, source, &[], &requests)
+            .expect_err("expected every request to be refused");
+        assert_eq!(refusals.len(), rows.len(), "{refusals:?}");
+        for (arg, expected) in rows {
+            let request = format!("id_local<{arg}>");
+            let (_, reason) = refusals
+                .iter()
+                .find(|(refused, _)| *refused == request)
+                .unwrap_or_else(|| panic!("no refusal for `{request}`: {refusals:?}"));
+            assert!(reason.contains(expected.as_str()), "`{request}`: got {reason:?}");
+        }
+    };
+
+    // The external crate alone: its ambiguous names are refused as such, and
+    // its unambiguous ones still resolve.
+    let external_only = "#![allow(dead_code)]\n\
+        extern crate dep as _;\n\
+        pub fn id_local<T>() -> u8 { 0 }\n";
+    refused(
+        external_only,
+        &[("dep::Ambig", ambiguous_at("Ambig")), ("dep::sub::Target", ambiguous_at("sub"))],
+    );
+    assert_eq!(
+        instantiate_in(&sysroot, external_only, &[], &[("id_local", "dep::clean::Unique")]),
+        Ok(vec!["rust-path-v1::id_local::<dep::clean::Unique>".to_owned()]),
+    );
+
+    // A crate-root module named like the crate resolves both paths uniquely,
+    // but the crate-name reading is ambiguous, so the paths are refused.
+    let with_local = "#![allow(dead_code)]\n\
+        extern crate dep as _;\n\
+        pub mod dep { pub struct Ambig; pub mod sub { pub struct Target; } }\n\
+        pub fn id_local<T>() -> u8 { 0 }\n";
+    refused(
+        with_local,
+        &[("dep::Ambig", ambiguous_at("Ambig")), ("dep::sub::Target", ambiguous_at("sub"))],
+    );
+}
+
+#[test]
+fn explicit_monomorphization_refuses_type_namespace_names_of_other_kinds() {
+    // A name that a module binds in the type namespace to anything other than
+    // the kind of definition the walk wants is not absent: `rustc` would name
+    // that binding there or reject the path. So neither a `def_path_str`
+    // spelling nor the other reading of a leading segment may resolve the path
+    // instead.
+    let not_type = |what: &str| format!("names {what}, not a struct, enum, union, or type alias");
+    let not_module = |what: &str| format!("names {what}, not a module");
+
+    // `f::Local` spells the type declared in function `f`, but module `f`
+    // binds `Local` to something else.
+    for (binding, what) in [
+        ("pub use core::primitive::u8 as Local;", "a builtin type"),
+        ("pub trait Local {}", "a trait"),
+        ("pub mod Local {}", "a module"),
+    ] {
+        let source = format!(
+            "#![allow(dead_code, non_snake_case)]\n\
+             pub mod f {{ {binding} }}\n\
+             pub fn f() {{ pub struct Local; }}\n\
+             pub fn id_local<T>() -> u8 {{ 0 }}\n"
+        );
+        let reason = not_type(what);
+        assert_refuses(
+            &source,
+            &[],
+            &[("id_local", "f::Local", &reason), ("id_local", "crate::f::Local", &reason)],
+        );
+    }
+
+    // The crate-root reading of `core::cmp::Ordering` meets a binding of
+    // another kind, so the external type is not taken instead.
+    for (binding, what) in [
+        ("pub use ::core::primitive::u8 as Ordering;", "a builtin type"),
+        ("pub trait Ordering {}", "a trait"),
+    ] {
+        let source = format!(
+            "#![allow(dead_code)]\n\
+             pub mod core {{ pub mod cmp {{ {binding} }} }}\n\
+             pub fn id_local<T>() -> u8 {{ 0 }}\n"
+        );
+        assert_refuses(
+            &source,
+            &[],
+            &[("id_local", "core::cmp::Ordering", &not_type(what))],
+        );
+        assert_resolves(&source, &[("::core::cmp::Ordering", "core::cmp::Ordering")]);
+    }
+
+    // Before the last segment, only a module continues the path.
+    let before_last = "#![allow(dead_code)]\n\
+        pub mod m { pub use core::primitive::u8 as sub; pub enum E { V } }\n\
+        pub fn id_local<T>() -> u8 { 0 }\n";
+    assert_refuses(
+        before_last,
+        &[],
+        &[
+            ("id_local", "m::sub::X", &not_module("a builtin type")),
+            ("id_local", "m::E::V", &not_module("an enum")),
+        ],
+    );
+
+    // The same holds in another crate's module.
+    let directory = tempfile::tempdir().unwrap();
+    let sysroot = sysroot_with_crate(
+        directory.path(),
+        "dep",
+        "pub use core::primitive::u8 as Prim;\npub trait Tr {}\n",
+    );
+    let with_local = "#![allow(dead_code)]\n\
+        extern crate dep as _;\n\
+        pub mod dep { pub struct Prim; pub struct Tr; }\n\
+        pub fn id_local<T>() -> u8 { 0 }\n";
+    let refusals = instantiate_in(
+        &sysroot,
+        with_local,
+        &[],
+        &[("id_local", "dep::Prim"), ("id_local", "dep::Tr")],
+    )
+    .expect_err("expected both requests to be refused");
+    assert_eq!(refusals.len(), 2, "{refusals:?}");
+    for (request, what) in [("id_local<dep::Prim>", "a builtin type"), ("id_local<dep::Tr>", "a trait")]
+    {
+        let (_, reason) = refusals
+            .iter()
+            .find(|(refused, _)| refused == request)
+            .unwrap_or_else(|| panic!("no refusal for `{request}`: {refusals:?}"));
+        assert!(reason.contains(&not_type(what)), "`{request}`: got {reason:?}");
+    }
 }
 
 #[test]

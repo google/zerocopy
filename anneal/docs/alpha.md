@@ -96,6 +96,47 @@ and inactive optional dependencies are ignored),
 `--select <path>`, and `--instantiate <JSON>`) constructs the same request
 automatically.
 
+Each `instantiations` entry, like each `--instantiate` value, names a generic
+function of the crate being verified by its `rustc` path (`path`) and lists
+its generic arguments in Rust syntax (`args`): primitive types, `str`, tuples,
+arrays, slices, references, raw pointers, paths to structs, enums, unions, and
+type aliases, `bool`, `char`, and integer constants, and lifetimes. `'static`
+is the only lifetime a request can name, and `'_` means `'static`. A bare
+primitive name (`u8`, `bool`, `str`, and so on) always means the primitive
+type, even when the root of the crate being verified declares a type of that
+name; `crate::u8` names the latter. Any other type path resolves as follows:
+
+- `crate::a::B` starts at the root of the crate being verified, and
+  `::krate::a::B` at the root of the crate named `krate`.
+- A request has no enclosing module, so the first segment of any other path
+  is read two ways: as a crate name (an external crate, or the crate being
+  verified by its own name), continuing from that crate's root, and as a name
+  at the root of the crate being verified. The path resolves only if the
+  readings that resolve all name one definition; otherwise the request is
+  refused as ambiguous. In `zerocopy`, `byteorder::BigEndian` names the
+  `BigEndian` type of the `byteorder` module. In a crate whose root declares
+  `mod core` with its own `num::Wrapping`, `core::num::Wrapping<u8>` is
+  refused.
+- Each segment before the last must name a module, and the last a struct,
+  enum, union, or type alias. A segment that names anything else in the type
+  namespace, such as a trait, a re-exported primitive type, or a struct or
+  enum before the last segment, refuses the request.
+- A reading that reaches a segment naming nothing in the type namespace may
+  instead spell how `rustc` prints a local definition, such as `f::Local` for
+  a type declared inside function `f`, or `_::Local` for one declared inside
+  `const _: () = { ... };`. No path that also reads as an external crate's
+  path resolves this way.
+- A `_` segment never names an underscore import such as `use m as _;` or
+  `extern crate k as _;`, which no Rust path can name.
+- A name that glob imports make ambiguous in a module, whether of the crate
+  being verified or of another crate, makes every path through it ambiguous.
+
+A type alias in a request means what it would mean where Rust code uses it:
+its expansion must be well-formed and must normalize, including any lifetime
+and higher-ranked obligations that normalizing incurs. A lazy type alias
+(`#![feature(lazy_type_alias)]`) must also satisfy its own bounds; as in Rust,
+the bounds of an ordinary type alias are not enforced.
+
 ## Stage 0 / MIR Profile v1: supported vs. refused
 
 The alpha runs on the x86-64 Linux scalar MIR profile (Profile v1) with
