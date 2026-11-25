@@ -404,9 +404,9 @@ connects the verification layers to Stage 2 by kernel-checked refinement proofs:
   `theory/Anneal/{NatBitwise,BitTrieLrat,PTree,SpineForce,Generic}.lean`,
   `theory/Anneal/{Scalar,Simd,Wp}.lean`,
   `theory/Anneal/{AiPcc,ByteRun,ByteSubLens,CallStackUnwind,CnfOrd}/`,
-  `theory/Anneal/{ConjunctiveWp,F2Simd,Framework,MirMemComp,MiriTreeBorrows}/`,
-  `theory/Anneal/{OverflowCastJoin,PureLift,RefFrame,WavefrontReclaim}/`, and
-  planned `Theory/Rust/{Wp,Tactics}/`):**
+  `theory/Anneal/{ConjunctiveWp,F2Simd,Framework,GaloisCodec,MirMemComp}/`,
+  `theory/Anneal/{MiriTreeBorrows,OverflowCastJoin,PureLift,RefFrame}/`,
+  `theory/Anneal/WavefrontReclaim/`, and planned `Theory/Rust/{Wp,Tactics}/`):**
   Weakest-precondition calculi, loop-invariant and simulation combinators,
   Diaconescu classical excluded middle and existential choice, WHNF and
   rewrite firewall combinators, foundation-locked `Bool`/`BEq`/`Nat`/`Int`/
@@ -427,17 +427,19 @@ connects the verification layers to Stage 2 by kernel-checked refinement proofs:
   certificate evaluators (`F2Simd`), standalone, unbundled open-generic MIR
   syntax, parametric type layouts, assume-guarantee trait contracts, and
   closed-instantiation erasure to Day-1 `BodyVerified` (`Generic`, audited
-  standalone in Pass 1), computable MIR memory, layout, and indirect byte-codec
-  re-exports and stack framing laws (`MirMemComp`), Miri-aligned Tree Borrows
-  transitions, retags, and protectors (`MiriTreeBorrows`), `@[irreducible]`
-  stage-cut interval joins for overflowing tuple arithmetic and `intToInt` casts
-  (`OverflowCastJoin`), 4-way call-continuation `&mut` writeback frames and
-  ranged Tree Borrows protectors (`RefFrame`), view-indexed spatial PCM `< ω^ω`
-  wavefront drain and universal `.activeMut` loan reclamation
-  (`WavefrontReclaim`), functional borrow lifting, separation-logic frame rules,
-  and proof automation built against $M_{\text{anneal}}$ and `StableAst` /
-  `StableSemantics` (`cargo-anneal` bundles the scalar and MIR proof libraries
-  under `theory/Anneal/`, compiling and auditing only the transitive `Anneal.*`
+  standalone in Pass 1), Galois byte-representation, `zerocopy` trait,
+  padded-product, and `MemoryState` transmute laws (`GaloisCodec`), computable
+  MIR memory, layout, and indirect byte-codec re-exports and stack framing laws
+  (`MirMemComp`), Miri-aligned Tree Borrows transitions, retags, and protectors
+  (`MiriTreeBorrows`), `@[irreducible]` stage-cut interval joins for overflowing
+  tuple arithmetic and `intToInt` casts (`OverflowCastJoin`), 4-way
+  call-continuation `&mut` writeback frames and ranged Tree Borrows protectors
+  (`RefFrame`), view-indexed spatial PCM `< ω^ω` wavefront drain and universal
+  `.activeMut` loan reclamation (`WavefrontReclaim`), functional borrow lifting,
+  separation-logic frame rules, and proof automation built against
+  $M_{\text{anneal}}$ and `StableAst` / `StableSemantics` (`cargo-anneal`
+  bundles the scalar and MIR proof libraries under `theory/Anneal/`, compiling
+  and auditing only the transitive `Anneal.*`
   closure imported by target proof modules).
 
 #### Why $M_{\text{anneal}}$'s step rules and `theory/` do not expand the TCB
@@ -561,6 +563,7 @@ anneal/
     │   ├── F2Simd.lean             # F2-linear/bilinear & SIMD certificate evaluators (+ F2Simd/)
     │   ├── Firewall.lean           # WHNF & rewrite firewall combinators
     │   ├── Framework/StepWp.lean   # Generic step/checkpoint WP, cuts & loop rules
+    │   ├── GaloisCodec.lean        # Galois byte-layout, zerocopy & transmute laws (+ GaloisCodec/)
     │   ├── Generic.lean            # Unbundled open-generic MIR, traits & erasure (+ Generic/)
     │   ├── InitLemmas.lean         # Foundation Bool/BEq/Nat/Int/list helpers
     │   ├── LeBytes.lean            # Parametric LE/BE byte serialization lemmas
