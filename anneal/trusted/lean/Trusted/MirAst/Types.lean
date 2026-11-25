@@ -262,8 +262,34 @@ Constructor correspondence:
   (regions are erased at runtime).
 - `.rawPtr mutability pointee` corresponds to
   `TyKind::RawPtr(pointee, mutability)`.
+- `.slice elem` corresponds to `TyKind::Slice(elem)`; it is unsized and
+  appears only behind `.ref` or `.rawPtr` (Profile v2)
+  (`compiler/rustc_type_ir/src/ty_kind.rs:146-147`, `rust-lang/rust`
+  `f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1`):
+
+  > "/// The pointee of an array slice. Written as `[T]`.
+  > Slice(I::Ty),"
+- `.rangeTo elem` and `.rangeFrom elem` correspond to the
+  `core::ops::RangeTo<elem>` and `core::ops::RangeFrom<elem>` `Adt`s used to
+  index slices (Profile v2), each a struct with exactly one public field
+  (`library/core/src/ops/range.rs:197-201,281-285`, `rust-lang/rust`
+  `f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1`):
+
+  > "pub struct RangeFrom<Idx> {
+  >     /// The lower bound of the range (inclusive).
+  >     ...
+  >     pub start: Idx,
+  > }
+  > ...
+  > pub struct RangeTo<Idx> {
+  >     /// The upper bound of the range (exclusive).
+  >     ...
+  >     pub end: Idx,
+  > }"
+
+  Profile v2 admits only `elem = usize` (`isSupportedV2LocalTy`).
 - `.unsupported` represents all other `TyKind` variants (`Float`,
-  non-fieldless-enum `Adt`, `Foreign`, `Str`, `Array`, `Pat`, `Slice`, `FnDef`,
+  other non-fieldless-enum `Adt`, `Foreign`, `Str`, `Array`, `Pat`, `FnDef`,
   `FnPtr`, `Dynamic`, `Closure`, `CoroutineClosure`, `Coroutine`, etc.), causing
   $M_{\text{anneal}}$ to fail closed with `FaultKind.unsupported`. -/
 inductive MirTy where
@@ -277,7 +303,17 @@ inductive MirTy where
   | tuple (fields : List MirTy)
   | ref (mutability : Mutability) (pointee : MirTy)
   | rawPtr (mutability : Mutability) (pointee : MirTy)
+  | slice (elem : MirTy)
+  | rangeTo (elem : MirTy)
+  | rangeFrom (elem : MirTy)
   | unsupported
+
+/-- Return `true` when `ty` is an unsized dynamically-sized MIR type
+(`.slice _`), which may appear behind `.ref` or `.rawPtr` but cannot be stored
+directly in a local slot by value. -/
+noncomputable def isUnsizedTy : MirTy → Bool
+  | .slice _ => true
+  | _ => false
 
 /-- Explicit structural equality on `IntWidth` (avoiding `deriving BEq` inside
 `Trusted.*` so `TrustedBoundary.lean` sees only pure kernel definitions). -/
@@ -329,6 +365,9 @@ mutual
     | .tuple fs₁, .tuple fs₂ => MirTy.beqList fs₁ fs₂
     | .ref m₁ p₁, .ref m₂ p₂ => Mutability.beq m₁ m₂ && MirTy.beq p₁ p₂
     | .rawPtr m₁ p₁, .rawPtr m₂ p₂ => Mutability.beq m₁ m₂ && MirTy.beq p₁ p₂
+    | .slice e₁, .slice e₂ => MirTy.beq e₁ e₂
+    | .rangeTo e₁, .rangeTo e₂ => MirTy.beq e₁ e₂
+    | .rangeFrom e₁, .rangeFrom e₂ => MirTy.beq e₁ e₂
     | .unsupported, .unsupported => true
     | _, _ => false
 

@@ -15,7 +15,8 @@ import GuardRefuteWf
 
 Exercises both clauses of `isUnicodeScalar` (`<= 0x10ffff` and surrogate-range
 exclusion `[0xd800, 0xdfff]`) end-to-end through `evalConstLit` and
-`WellFormed`.
+`WellFormed`, and the Profile v2 rejection of overflow-pair pointee types in
+`isSupportedV2LocalTy`.
 -/
 
 namespace GuardMutation
@@ -37,5 +38,22 @@ theorem refute_enum_char_surrogate_gap :
       (.fault .undefined) ∧
     ¬ WellFormed (mkConstRetProg .char 0xd800) queryEmpty :=
   refutes_wf_of_execFault (fuel := 1) rfl
+
+/-- Guard `enum_v2_overflow_pair_pointee`: no Profile v2 local may be a
+reference or raw pointer to an overflow pair `(T, bool)`, so the pair's
+unchecked byte layout stays unobservable. -/
+theorem refute_enum_v2_overflow_pair_pointee :
+    isSupportedV2LocalTy (.rawPtr .shared (.tuple [.int .i8 false, .bool])) =
+      false ∧
+    isSupportedV2LocalTy (.ref .mut (.tuple [.int .i32 true, .bool])) = false :=
+  ⟨rfl, rfl⟩
+
+/-- Anti-overreach canary: an overflow pair itself, and pointers to its
+integer or `bool` field types, remain admitted local types. -/
+theorem positive_enum_v2_overflow_pair_local :
+    isSupportedV2LocalTy (.tuple [.int .i8 false, .bool]) = true ∧
+    isSupportedV2LocalTy (.rawPtr .shared (.int .i8 false)) = true ∧
+    isSupportedV2LocalTy (.ref .shared .bool) = true :=
+  ⟨rfl, rfl, rfl⟩
 
 end GuardMutation

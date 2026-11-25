@@ -2950,11 +2950,13 @@ struct MirWpSyntheticSpec {
     mir_ast_extra: String,
     wp_soundness_claim: Option<String>,
     wp_fault_soundness_claim: Option<String>,
+    exec_soundness_claim_v2: Option<String>,
     canary_claim_overrides: BTreeMap<String, Option<String>>,
     public_alias_overrides: BTreeMap<String, Option<String>>,
     anneal_extra: String,
     wp_soundness_proof: Option<String>,
     wp_fault_soundness_proof: Option<String>,
+    exec_soundness_proof_v2: Option<String>,
     canary_proof_overrides: BTreeMap<String, Option<String>>,
     mir_wp_extra: String,
     include_canaries_module: bool,
@@ -2973,6 +2975,11 @@ impl MirWpSyntheticSpec {
                 "def WpFaultSoundnessClaim (_f : Nat) : Prop := And ReachesResult (And Diverges WellFormed)"
                     .to_string(),
             ),
+            exec_soundness_claim_v2: Some(
+                "def ExecSoundnessClaimV2 (_f : Nat) : Prop := \
+                 And SatisfiesPostV2 (And DivergesV2 BehaviorV2)"
+                    .to_string(),
+            ),
             canary_claim_overrides: BTreeMap::new(),
             public_alias_overrides: BTreeMap::new(),
             anneal_extra: String::new(),
@@ -2985,6 +2992,12 @@ impl MirWpSyntheticSpec {
             wp_fault_soundness_proof: Some(
                 "theorem reaches_fault_and_exclusive_of_wpFault : \
                  Trusted.MirSemantics.WpFaultSoundnessClaim Anneal.MirWp.wpFaultProg := \
+                 And.intro True.intro (And.intro True.intro True.intro)"
+                    .to_string(),
+            ),
+            exec_soundness_proof_v2: Some(
+                "theorem wellFormed_and_spec_of_execV2 : \
+                 Trusted.MirSemantics.ExecSoundnessClaimV2 Anneal.MirWp.execProgV2 := \
                  And.intro True.intro (And.intro True.intro True.intro)"
                     .to_string(),
             ),
@@ -3028,12 +3041,18 @@ impl MirWpSyntheticSpec {
              def Behavior : Prop := True\n\
              def ReachesResult : Prop := True\n\
              def WellFormed : Prop := True\n\
+             def SatisfiesPostV2 : Prop := True\n\
+             def DivergesV2 : Prop := True\n\
+             def BehaviorV2 : Prop := True\n\
              def PositiveCanaryClaim : Prop := True\n\
              def NegativeCanaryClaim : Prop := True\n\
              def IntWidthBoundaryCanary : Prop := True\n\
              def Crate : Prop := True\n\
              def CrateTheorem : Prop := True\n\
              def UnitTheorem : Prop := True\n\
+             def CrateV2 : Prop := True\n\
+             def CrateTheoremV2 : Prop := True\n\
+             def UnitTheoremV2 : Prop := True\n\
              def BodyVerified : Prop := True\n\
              def initState : Prop := True\n\
              def evalStep : Prop := True\n\
@@ -3058,6 +3077,10 @@ impl MirWpSyntheticSpec {
             sem.push_str(decl);
             sem.push('\n');
         }
+        if let Some(decl) = &self.exec_soundness_claim_v2 {
+            sem.push_str(decl);
+            sem.push('\n');
+        }
         for &(claim, _, body, _) in SYNTHETIC_CANARIES {
             match self.canary_claim_overrides.get(claim) {
                 Some(None) => {}
@@ -3079,6 +3102,9 @@ impl MirWpSyntheticSpec {
                 "noncomputable abbrev CrateTheorem := Trusted.MirSemantics.CrateTheorem",
             ),
             ("UnitTheorem", "noncomputable abbrev UnitTheorem := Trusted.MirSemantics.UnitTheorem"),
+            ("CrateV2", "abbrev CrateV2 := Trusted.MirSemantics.CrateV2"),
+            ("CrateTheoremV2", "noncomputable abbrev CrateTheoremV2 := Trusted.MirSemantics.CrateTheoremV2"),
+            ("UnitTheoremV2", "noncomputable abbrev UnitTheoremV2 := Trusted.MirSemantics.UnitTheoremV2"),
         ] {
             match self.public_alias_overrides.get(alias_name) {
                 Some(None) => {}
@@ -3103,13 +3129,18 @@ impl MirWpSyntheticSpec {
              import Trusted.MirSemantics\n\
              namespace Anneal.MirWp\n\
              def wpProg : Nat := 0\n\
-             def wpFaultProg : Nat := 0\n",
+             def wpFaultProg : Nat := 0\n\
+             def execProgV2 : Nat := 0\n",
         );
         if let Some(decl) = &self.wp_soundness_proof {
             wp.push_str(decl);
             wp.push('\n');
         }
         if let Some(decl) = &self.wp_fault_soundness_proof {
+            wp.push_str(decl);
+            wp.push('\n');
+        }
+        if let Some(decl) = &self.exec_soundness_proof_v2 {
             wp.push_str(decl);
             wp.push('\n');
         }
@@ -3502,6 +3533,52 @@ fn enforces_mir_wp_param_claim_proof_rules() {
         "claim Trusted.MirSemantics.WpFaultSoundnessClaim body must reference \
          Trusted.MirSemantics.WellFormed",
     );
+
+    // Missing Profile v2 `ExecSoundnessClaimV2` from `Trusted.MirSemantics`.
+    let mut missing_v2_claim = MirWpSyntheticSpec::valid();
+    missing_v2_claim.exec_soundness_claim_v2 = None;
+    missing_v2_claim.exec_soundness_proof_v2 = None;
+    missing_v2_claim.expect_audit_policy_err(
+        "missing required claim Trusted.MirSemantics.ExecSoundnessClaimV2",
+    );
+
+    // Missing `wellFormed_and_spec_of_execV2`.
+    let mut missing_v2_thm = MirWpSyntheticSpec::valid();
+    missing_v2_thm.exec_soundness_proof_v2 = None;
+    missing_v2_thm.expect_audit_policy_err(
+        "missing required theorem Anneal.MirWp.wellFormed_and_spec_of_execV2",
+    );
+
+    // Weakened Profile v2 proof (`True` instead of
+    // `ExecSoundnessClaimV2 execProgV2`).
+    let mut weakened_v2_thm = MirWpSyntheticSpec::valid();
+    weakened_v2_thm.exec_soundness_proof_v2 =
+        Some("theorem wellFormed_and_spec_of_execV2 : True := True.intro".to_string());
+    weakened_v2_thm.expect_audit_policy_err(
+        "theorem Anneal.MirWp.wellFormed_and_spec_of_execV2 must prove \
+         Trusted.MirSemantics.ExecSoundnessClaimV2 Anneal.MirWp.execProgV2 directly",
+    );
+
+    // Profile v2 claim bodies each missing one required semantic constant.
+    for (body, dropped) in [
+        ("And DivergesV2 BehaviorV2", "SatisfiesPostV2"),
+        ("And SatisfiesPostV2 BehaviorV2", "DivergesV2"),
+        ("And SatisfiesPostV2 DivergesV2", "BehaviorV2"),
+    ] {
+        let mut missing_v2_const = MirWpSyntheticSpec::valid();
+        missing_v2_const.exec_soundness_claim_v2 =
+            Some(format!("def ExecSoundnessClaimV2 (_f : Nat) : Prop := {body}"));
+        missing_v2_const.exec_soundness_proof_v2 = Some(
+            "theorem wellFormed_and_spec_of_execV2 : \
+             Trusted.MirSemantics.ExecSoundnessClaimV2 Anneal.MirWp.execProgV2 := \
+             And.intro True.intro True.intro"
+                .to_string(),
+        );
+        missing_v2_const.expect_audit_policy_err(&format!(
+            "claim Trusted.MirSemantics.ExecSoundnessClaimV2 body must reference \
+             Trusted.MirSemantics.{dropped}"
+        ));
+    }
 }
 
 /// Verifies every rejection branch of `requireClaimProof` (exact-claim mode,
@@ -3731,8 +3808,16 @@ fn enforces_mir_wp_canary_claim_proof_rules() {
 
     // Missing, non-definition, non-abbrev, wrong-module, universe-polymorphic,
     // or un-wired `Trusted.{Crate, CrateTheorem, UnitTheorem}` public aliases
-    // are rejected fail-closed by `verifyMirWpCoreTheorems`.
-    for alias in ["Crate", "CrateTheorem", "UnitTheorem"] {
+    // and their Profile v2 counterparts are rejected fail-closed by
+    // `verifyMirWpCoreTheorems`.
+    for alias in [
+        "Crate",
+        "CrateTheorem",
+        "UnitTheorem",
+        "CrateV2",
+        "CrateTheoremV2",
+        "UnitTheoremV2",
+    ] {
         let mut missing_alias = MirWpSyntheticSpec::valid();
         missing_alias.public_alias_overrides.insert(alias.to_string(), None);
         missing_alias
@@ -3791,6 +3876,24 @@ fn enforces_mir_wp_canary_claim_proof_rules() {
     cross_wired_alias.expect_audit_policy_err(
         "alias Trusted.UnitTheorem must directly alias Trusted.MirSemantics.UnitTheorem",
     );
+
+    // A Profile v2 alias wired to its Profile v1 counterpart is rejected.
+    for (alias, v1_target) in [
+        ("CrateV2", "Crate"),
+        ("CrateTheoremV2", "CrateTheorem"),
+        ("UnitTheoremV2", "UnitTheorem"),
+    ] {
+        let mut v1_wired_alias = MirWpSyntheticSpec::valid();
+        v1_wired_alias.public_alias_overrides.insert(
+            alias.to_string(),
+            Some(format!(
+                "noncomputable abbrev {alias} := Trusted.MirSemantics.{v1_target}"
+            )),
+        );
+        v1_wired_alias.expect_audit_policy_err(&format!(
+            "alias Trusted.{alias} must directly alias Trusted.MirSemantics.{alias}"
+        ));
+    }
 }
 
 /// Verifies Pass 2 non-backsliding enforcement (`--require-correspondence`):

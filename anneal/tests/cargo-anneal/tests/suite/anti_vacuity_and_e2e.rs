@@ -519,7 +519,8 @@ fn onboarding_init_and_diagnostic_hints_e2e() {
 
     // 2. Cargo `init` + unmodified starter proof emits a concise Lean placeholder hint,
     //    `example` in `Spec.lean` emits a spec-preflight hint, and `take_ref` capture
-    //    emits a Profile v1 reference hint while preserving existing `detail` contracts.
+    //    emits a nested-reference hint while preserving existing `detail`
+    //    contracts.
     let krate = dir.join("crate_demo");
     fs::create_dir_all(krate.join("src")).unwrap();
     fs::create_dir_all(krate.join("empty_proof")).unwrap();
@@ -586,7 +587,7 @@ fn onboarding_init_and_diagnostic_hints_e2e() {
         "{spec_receipt}"
     );
 
-    fs::write(krate.join("src/lib.rs"), "pub fn take_ref(x: &u64) -> u64 { *x }\n").unwrap();
+    fs::write(krate.join("src/lib.rs"), "pub fn take_ref(x: &&u64) -> u64 { **x }\n").unwrap();
     let ref_out = staged.exec(&hole_inv).unwrap().process;
     assert_outcome_exit(&ref_out, 1).unwrap();
     let ref_receipt: Value = serde_json::from_slice(&ref_out.stdout).unwrap();
@@ -809,4 +810,127 @@ end Proof"#,
         let identity = body["identity"].as_str().unwrap();
         assert!(identity.len() > 100, "expected a > 100-char identity, got {identity:?}");
     }
+}
+
+#[test]
+fn anti_vacuity_lint_profile_v2_specs_v2() {
+    let staged = new_workspace("anneal-antivacuity-v2-").stage().unwrap();
+    let work = staged.work_dir();
+    let req = write_scalar_baseline(work);
+    let req_path = write_json_file(&work.join("req.json"), &req);
+
+    fs::write(
+        work.join("rust/lib.rs"),
+        "pub unsafe fn v2_zero() -> *const u8 {\n    0usize as *const u8\n}\n",
+    )
+    .unwrap();
+
+    let false_proof = lean_source(
+        "import Expected",
+        "namespace Proof\n\
+         open Trusted.MirAst Trusted.MirSemantics\n\
+         theorem verify : Expected.claim := by\n  \
+           refine ⟨rfl, rfl, rfl, rfl, rfl, rfl, ?_, trivial⟩\n  \
+           intro id body found\n  \
+           cases id with\n  \
+           | zero =>\n    \
+             have same : Captured.program.bodies[0] = body := Option.some.inj found\n    \
+             subst body\n    \
+             exact ⟨found, rfl, fun _ _ hSafety => False.elim (hSafety rfl)⟩\n  \
+           | succ _ => cases found\n\
+         end Proof",
+    );
+
+    // 1. Global `SpecsV2.safety := fun _ _ => False` and trivial `property`.
+    fs::write(
+        work.join("lean/Spec.lean"),
+        lean_source(
+            "import Trusted.MirSemantics",
+            "namespace Spec\n\
+             open Trusted.MirAst Trusted.MirSemantics\n\
+             noncomputable def specs : SpecsV2 := ⟨fun _ _ => False, fun _ => True⟩\n\
+             end Spec",
+        ),
+    )
+    .unwrap();
+    fs::write(work.join("lean/Proof.lean"), &false_proof).unwrap();
+    let global_res = run_verify_strs(&staged, &["--request", req_path.to_str().unwrap()]);
+    let global_ok = expect_verified(&global_res, "crate_verified", true);
+    assert!(
+        global_ok.spec_warnings.iter().any(
+            |w| w["code"] == "unsatisfiable_safety" && w.get("body").is_none_or(Value::is_null)
+        ),
+        "{global_ok:?}"
+    );
+    assert!(
+        global_ok.spec_warnings.iter().any(|w| w["code"] == "trivial_property"),
+        "{global_ok:?}"
+    );
+
+    // 2. Per-body wrong arity on `SpecsV2` + `Program`-ignoring `property`.
+    fs::write(
+        work.join("lean/Spec.lean"),
+        lean_source(
+            "import Trusted.MirSemantics",
+            "namespace Spec\n\
+             open Trusted.MirAst Trusted.MirSemantics\n\
+             noncomputable def ignoredProp (_ : Program) : Prop := ∃ n : Nat, n = 0\n\
+             noncomputable def specs : SpecsV2 :=\n  \
+               ⟨fun fn q => match q.args with | [_] => fn = \"rust-path-v1::v2_zero\" | _ => False, ignoredProp⟩\n\
+             end Spec",
+        ),
+    )
+    .unwrap();
+    fs::write(
+        work.join("lean/Proof.lean"),
+        lean_source(
+            "import Expected",
+            "namespace Proof\n\
+             open Trusted.MirAst Trusted.MirSemantics\n\
+             theorem verify : Expected.claim := by\n  \
+               refine ⟨rfl, rfl, rfl, rfl, rfl, rfl, ?_, ⟨0, rfl⟩⟩\n  \
+               intro id body found\n  \
+               cases id with\n  \
+               | zero =>\n    \
+                 have same : Captured.program.bodies[0] = body := Option.some.inj found\n    \
+                 subst body\n    \
+                 refine ⟨found, rfl, ?_⟩\n    \
+                 intro q valid safety\n    \
+                 have hS := safety rfl\n    \
+                 dsimp only [Spec.specs] at hS\n    \
+                 cases hArgs : q.args with\n    \
+                 | nil =>\n      \
+                   rw [hArgs] at hS\n      \
+                   exact False.elim hS\n    \
+                 | cons _ _ =>\n      \
+                   have hMatch := valid.2.1\n      \
+                   rw [hArgs] at hMatch\n      \
+                   cases hMatch\n  \
+               | succ _ => cases found\n\
+             end Proof",
+        ),
+    )
+    .unwrap();
+    let arity_res = run_verify_strs(&staged, &["--request", req_path.to_str().unwrap()]);
+    let arity_ok = expect_verified(&arity_res, "crate_verified", true);
+    assert!(
+        arity_ok.spec_warnings.iter().any(|w| {
+            w["code"] == "unsatisfiable_safety" && w["body"] == "rust-path-v1::v2_zero"
+        }),
+        "{arity_ok:?}"
+    );
+    assert!(
+        arity_ok.spec_warnings.iter().any(|w| {
+            w["code"] == "unused_spec_binding"
+                && w["declaration"] == "Spec.specs"
+                && w["message"]
+                    .as_str()
+                    .is_some_and(|m| m.contains("ignores its `Program` argument"))
+        }),
+        "{arity_ok:?}"
+    );
+    assert!(
+        !arity_ok.spec_warnings.iter().any(|w| w["code"] == "trivial_property"),
+        "{arity_ok:?}"
+    );
 }

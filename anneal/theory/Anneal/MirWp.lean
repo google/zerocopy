@@ -38,9 +38,10 @@ machinery over `Trusted.MirAst` and `Trusted.MirSemantics`:
    `c = 0` `rfl`-reducible execution via `wpProg_of_execProg` and
    `wpFaultProg_of_execFaultProg`, together with rule of consequence, fuel
    weakening, non-divergence, and the audited adequacy theorems
-   (`wellFormed_and_spec_of_wp : WpSoundnessClaim wpProg` and
+   (`wellFormed_and_spec_of_wp : WpSoundnessClaim wpProg`,
    `reaches_fault_and_exclusive_of_wpFault : WpFaultSoundnessClaim
-   wpFaultProg`).
+   wpFaultProg`, and the Profile v2
+   `wellFormed_and_spec_of_execV2 : ExecSoundnessClaimV2 execProgV2`).
 2. **Width-Parametric Bitvector, Scalar, and Operator Adequacy:** Exact modular
    characterization and idempotence of `truncateBits`, totality and
    well-formedness of `truncateScalar`, and width/signedness-parametric operator
@@ -75,6 +76,11 @@ theorem wellFormed_and_spec_of_wp : WpSoundnessClaim wpProg :=
 theorem reaches_fault_and_exclusive_of_wpFault :
     WpFaultSoundnessClaim wpFaultProg :=
   reaches_fault_and_exclusive_of_wpFault_base
+
+/-- Audited Profile v2 execution adequacy theorem forwarding to
+`wellFormed_and_spec_of_execV2_base`. -/
+theorem wellFormed_and_spec_of_execV2 : ExecSoundnessClaimV2 execProgV2 :=
+  wellFormed_and_spec_of_execV2_base
 
 end Anneal.MirWp
 

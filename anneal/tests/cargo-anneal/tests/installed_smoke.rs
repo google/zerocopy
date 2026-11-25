@@ -959,7 +959,14 @@ fn write_installed_audit_accepted_fixture(case: &mut CaseDirectory) -> TestResul
          def mkIntToIntCastProg : Prop := True\n\
          def progCastUninitSourceUb : Prop := True\n\
          def WpSoundnessClaim (_f : Nat) : Prop := And SatisfiesPost (And Diverges Behavior)\n\
-         def WpFaultSoundnessClaim (_f : Nat) : Prop := And ReachesResult (And Diverges WellFormed)\n",
+         def WpFaultSoundnessClaim (_f : Nat) : Prop := And ReachesResult (And Diverges WellFormed)\n\
+         def SatisfiesPostV2 : Prop := True\n\
+         def DivergesV2 : Prop := True\n\
+         def BehaviorV2 : Prop := True\n\
+         def CrateV2 : Prop := True\n\
+         def CrateTheoremV2 : Prop := True\n\
+         def UnitTheoremV2 : Prop := True\n\
+         def ExecSoundnessClaimV2 (_f : Nat) : Prop := And SatisfiesPostV2 (And DivergesV2 BehaviorV2)\n",
     );
     let canaries: &[(&str, &str, &str, &str)] = &[
         (
@@ -1122,6 +1129,9 @@ fn write_installed_audit_accepted_fixture(case: &mut CaseDirectory) -> TestResul
          abbrev Crate := Trusted.MirSemantics.Crate\n\
          noncomputable abbrev CrateTheorem := Trusted.MirSemantics.CrateTheorem\n\
          noncomputable abbrev UnitTheorem := Trusted.MirSemantics.UnitTheorem\n\
+         abbrev CrateV2 := Trusted.MirSemantics.CrateV2\n\
+         noncomputable abbrev CrateTheoremV2 := Trusted.MirSemantics.CrateTheoremV2\n\
+         noncomputable abbrev UnitTheoremV2 := Trusted.MirSemantics.UnitTheoremV2\n\
          end Trusted\n\
          end\n",
     );
@@ -1138,8 +1148,10 @@ fn write_installed_audit_accepted_fixture(case: &mut CaseDirectory) -> TestResul
           namespace Anneal.MirWp\n\
           @[expose] def wpProg : Nat := 0\n\
           @[expose] def wpFaultProg : Nat := 0\n\
+          @[expose] def execProgV2 : Nat := 0\n\
           theorem wellFormed_and_spec_of_wp : Trusted.MirSemantics.WpSoundnessClaim Anneal.MirWp.wpProg := And.intro True.intro (And.intro True.intro True.intro)\n\
           theorem reaches_fault_and_exclusive_of_wpFault : Trusted.MirSemantics.WpFaultSoundnessClaim Anneal.MirWp.wpFaultProg := And.intro True.intro (And.intro True.intro True.intro)\n\
+          theorem wellFormed_and_spec_of_execV2 : Trusted.MirSemantics.ExecSoundnessClaimV2 Anneal.MirWp.execProgV2 := And.intro True.intro (And.intro True.intro True.intro)\n\
           end Anneal.MirWp\n\
           end\n",
     )?;

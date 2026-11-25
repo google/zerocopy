@@ -116,10 +116,22 @@ inductive OrderingVal where
 /-- Canonical boundary value used in `Query`, `Out`, and `TerminalOut` of
 $M_{\text{anneal}}$. `.char c` is a value of type `char` (Lean's `Char` holds
 exactly the Unicode scalar values that Rust's `char` admits), and
-`.ordering ord` is a value of `core::cmp::Ordering`. -/
+`.ordering ord` is a value of `core::cmp::Ordering`.
+
+Profile v2 adds three constructors:
+- `.slicePtr p len` is a wide pointer or reference to `[T]`: the data pointer
+  `p` plus the slice-length metadata `len`, matching rustc's `(ptr, meta)`
+  scalar-pair layout for pointers to slices (`layoutOfTyV2`).
+- `.rangeTo endOffset` and `.rangeFrom startOffset` are values of
+  `core::ops::RangeTo<usize>` and `core::ops::RangeFrom<usize>` (the
+  single-field structs `RangeTo { end }` and `RangeFrom { start }`). Profile v2
+  uses them only as `<[T]>::get_unchecked` indices. -/
 inductive Val where
   | scalar (v : ScalarVal)
   | ptr (p : PtrVal)
+  | slicePtr (p : PtrVal) (len : UInt64)
+  | rangeTo (endOffset : UInt64)
+  | rangeFrom (startOffset : UInt64)
   | bool (b : Bool)
   | char (c : Char)
   | ordering (ord : OrderingVal)

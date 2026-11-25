@@ -532,13 +532,13 @@ private theorem writeBytes_ok_inversion (m m' : MemoryState) (place : MemPlace)
             true)
           m.allocations) := by
   dsimp only [writeBytes] at hWrite
-  rw [natBeq_zero_false_of_blt_zero bs.length hPos,
-    ite_bool_false rfl] at hWrite
   cases hFind : findAllocation place.allocId m.allocations with
   | none => rw [hFind] at hWrite; cases hWrite
   | some a =>
     rw [hFind] at hWrite
     dsimp only at hWrite
+    rw [natBeq_zero_false_of_blt_zero bs.length hPos,
+      ite_bool_false rfl] at hWrite
     cases hGuard :
         (!a.live || !isInBounds a place.offset bs.length ||
           !isAligned a place.offset alignLog2) with
@@ -648,9 +648,10 @@ private theorem byteSubLensGet_inversion_mir (L : ByteSubLens)
           hGet
       have hReadSome := hMutCase.2
       dsimp only [readBytes] at hReadSome
-      rw [natBeq_zero_false_of_blt_zero L.size hPos, ite_bool_false rfl,
-        hFind] at hReadSome
+      rw [hFind] at hReadSome
       dsimp only at hReadSome
+      rw [natBeq_zero_false_of_blt_zero L.size hPos,
+        ite_bool_false rfl] at hReadSome
       cases hGuard :
           (!a.live || !isInBounds a L.offset L.size ||
             !isAligned a L.offset L.alignLog2) with
@@ -1169,6 +1170,9 @@ checked on normal-return paths (`canNormal = true`); unwind-only calls
                 | .enumVal _ _ => False
                 | .tuple _ => False
                 | .bytes _ => False
+                | .slicePtr _ _ => False
+                | .rangeTo _ => False
+                | .rangeFrom _ => False
             | .unwindResume =>
               checkCleanupBlock body frame.blockIdx = true ∧
               onDone (.unwound st.mem)
@@ -1197,6 +1201,7 @@ checked on normal-return paths (`canNormal = true`); unwind-only calls
               | .done (.unwound _) => False
               | .fault _ => False
             | .unsupported => False
+            | .coreCall _ _ _ _ _ => False
           else
             match evalStep (Anneal.MirWp.bodyProg body) 0 st with
             | .step st' => ih st'
@@ -1313,6 +1318,7 @@ private theorem evalStep_never_unwound (p : Program) (c : Choice) (s : State)
               | unwindResume => rw [hTerm] at hUnw; cases hUnw
               | assert _ _ _ _ _ => rw [hTerm] at hUnw; cases hUnw
               | call _ _ _ _ _ => rw [hTerm] at hUnw; cases hUnw
+              | coreCall _ _ _ _ _ => rw [hTerm] at hUnw; cases hUnw
               | unsupported => rw [hTerm] at hUnw; cases hUnw
               | return_ =>
                 rw [hTerm] at hUnw
@@ -1406,6 +1412,24 @@ private theorem evalStep_never_unwound (p : Program) (c : Choice) (s : State)
                     | nil =>
                       rw [hBr] at hUnw; unfold jumpToBlock at hUnw; cases hUnw
                   | bytes _ =>
+                    rw [hRes] at hUnw; dsimp only at hUnw
+                    cases hBr : tgts.branches with
+                    | cons _ _ => rw [hBr] at hUnw; cases hUnw
+                    | nil =>
+                      rw [hBr] at hUnw; unfold jumpToBlock at hUnw; cases hUnw
+                  | slicePtr _ _ =>
+                    rw [hRes] at hUnw; dsimp only at hUnw
+                    cases hBr : tgts.branches with
+                    | cons _ _ => rw [hBr] at hUnw; cases hUnw
+                    | nil =>
+                      rw [hBr] at hUnw; unfold jumpToBlock at hUnw; cases hUnw
+                  | rangeTo _ =>
+                    rw [hRes] at hUnw; dsimp only at hUnw
+                    cases hBr : tgts.branches with
+                    | cons _ _ => rw [hBr] at hUnw; cases hUnw
+                    | nil =>
+                      rw [hBr] at hUnw; unfold jumpToBlock at hUnw; cases hUnw
+                  | rangeFrom _ =>
                     rw [hRes] at hUnw; dsimp only at hUnw
                     cases hBr : tgts.branches with
                     | cons _ _ => rw [hBr] at hUnw; cases hUnw
@@ -1552,6 +1576,10 @@ theorem wpFrameOutcome_of_mirWpState (callerLens : ByteSubLens)
                 rw [hTerm] at hEval
                 exact False.elim hEval
               | unwindResume =>
+                unfold evalTerminator at hEval
+                rw [hTerm] at hEval
+                exact False.elim hEval
+              | coreCall _ _ _ _ _ =>
                 unfold evalTerminator at hEval
                 rw [hTerm] at hEval
                 exact False.elim hEval
@@ -2014,6 +2042,7 @@ private theorem evalStep_step_preserves_callerMem (b : Body) (fr : FrameState)
           | unwindResume => rw [hTerm] at hStep; cases hStep
           | assert _ _ _ _ _ => rw [hTerm] at hStep; cases hStep
           | call _ _ _ _ _ => rw [hTerm] at hStep; cases hStep
+          | coreCall _ _ _ _ _ => rw [hTerm] at hStep; cases hStep
           | unsupported => rw [hTerm] at hStep; cases hStep
           | return_ =>
             rw [hTerm] at hStep
@@ -2115,6 +2144,27 @@ private theorem evalStep_step_preserves_callerMem (b : Body) (fr : FrameState)
                   rw [hBr] at hStep; unfold jumpToBlock at hStep
                   cases hStep; rfl
               | bytes _ =>
+                rw [hRes] at hStep; dsimp only at hStep
+                cases hBr : tgts.branches with
+                | cons _ _ => rw [hBr] at hStep; cases hStep
+                | nil =>
+                  rw [hBr] at hStep; unfold jumpToBlock at hStep
+                  cases hStep; rfl
+              | slicePtr _ _ =>
+                rw [hRes] at hStep; dsimp only at hStep
+                cases hBr : tgts.branches with
+                | cons _ _ => rw [hBr] at hStep; cases hStep
+                | nil =>
+                  rw [hBr] at hStep; unfold jumpToBlock at hStep
+                  cases hStep; rfl
+              | rangeTo _ =>
+                rw [hRes] at hStep; dsimp only at hStep
+                cases hBr : tgts.branches with
+                | cons _ _ => rw [hBr] at hStep; cases hStep
+                | nil =>
+                  rw [hBr] at hStep; unfold jumpToBlock at hStep
+                  cases hStep; rfl
+              | rangeFrom _ =>
                 rw [hRes] at hStep; dsimp only at hStep
                 cases hBr : tgts.branches with
                 | cons _ _ => rw [hBr] at hStep; cases hStep
@@ -2394,7 +2444,10 @@ private theorem wpAssert_implies_stackExecutes
         | .unit => False
         | .enumVal _ _ => False
         | .tuple _ => False
-        | .bytes _ => False) :
+        | .bytes _ => False
+        | .slicePtr _ _ => False
+        | .rangeTo _ => False
+        | .rangeFrom _ => False) :
     ∃ out,
       StackReaches implOf
         (.running ⟨callerLens, callees, body, frame⟩ [] mem cm)
@@ -2413,6 +2466,9 @@ private theorem wpAssert_implies_stackExecutes
     | enumVal _ _ => rw [hRes] at hWp; exact False.elim hWp
     | tuple _ => rw [hRes] at hWp; exact False.elim hWp
     | bytes _ => rw [hRes] at hWp; exact False.elim hWp
+    | slicePtr _ _ => rw [hRes] at hWp; exact False.elim hWp
+    | rangeTo _ => rw [hRes] at hWp; exact False.elim hWp
+    | rangeFrom _ => rw [hRes] at hWp; exact False.elim hWp
     | bool b =>
       rw [hRes] at hWp
       dsimp only at hWp
@@ -2513,6 +2569,7 @@ theorem wpFrameOutcome_implies_stackExecutes
           have hIdxEq := natEq_of_beq frame.stmtIdx bb.statements.length hIdx
           cases hTerm : bb.terminator with
           | unsupported => rw [hTerm] at hWp; exact False.elim hWp
+          | coreCall _ _ _ _ _ => rw [hTerm] at hWp; exact False.elim hWp
           | call callee args dst onRet onUnwind =>
             rw [hTerm] at hWp
             dsimp only at hWp
@@ -2571,6 +2628,7 @@ theorem wpFrameOutcome_implies_stackExecutes
           have hIdxEq := natEq_of_beq frame.stmtIdx bb.statements.length hIdx
           cases hTerm : bb.terminator with
           | unsupported => rw [hTerm] at hWp; exact False.elim hWp
+          | coreCall _ _ _ _ _ => rw [hTerm] at hWp; exact False.elim hWp
           | unwindResume =>
             rw [hTerm] at hWp
             exact ⟨.unwound mem,

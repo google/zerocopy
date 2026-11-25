@@ -58,7 +58,9 @@ the repository's trust boundary (`trusted/`, pinned `vendor/`, `theory/`, and
    planned `Trusted/Rust/Ast/`), and Anneal's verification operational semantics
    ($M_{\text{anneal}}$ in `Trusted/MirSemantics.lean`, planned
    `Trusted/Rust/Semantics/`) states the top-level crate and proof-unit
-   obligations (`Trusted.CrateTheorem` and `Trusted.UnitTheorem`) and
+   obligations (`Trusted.CrateTheorem` and `Trusted.UnitTheorem`, plus their
+   MIR Profile v2 counterparts `Trusted.CrateTheoremV2` and
+   `Trusted.UnitTheoremV2` over `Trusted.CrateV2`) and
    weakest-precondition proof-interface checks without pulling the reference
    interpreter into the Pass 1 repository audit (`anneal-audit` over
    `trusted/lean/` and `theory/`) or into per-crate `cargo anneal verify` runs.
@@ -88,7 +90,8 @@ the repository's trust boundary (`trusted/`, pinned `vendor/`, `theory/`, and
    captured MIR into a version-independent `Theory/Rust/StableAst/` via a
    kernel-checked backward simulation `Abstracts`) that reason directly about
    $M_{\text{anneal}}$; per-crate `cargo anneal verify` runs use them to
-   discharge `Trusted.CrateTheorem` or `Trusted.UnitTheorem`.
+   discharge `Trusted.CrateTheorem` or `Trusted.UnitTheorem` (or, for
+   Profile v2 captures, `Trusted.CrateTheoremV2` or `Trusted.UnitTheoremV2`).
 
 Both `theory/` (in the Pass 1 `anneal-audit` repository audit, distinct from
 the syntactic-preflight vs. replay phases within a run) and `correspondence/`
@@ -205,11 +208,13 @@ CI workflows):
    reference (such as `ValidChoice`, `entryProgForBody`, and
    `bodiesHaveUniqueIdentities`).
 
-(`WpSoundnessClaim` and `WpFaultSoundnessClaim` also live in
+(`WpSoundnessClaim`, `WpFaultSoundnessClaim`, and the Profile v2
+`ExecSoundnessClaimV2` also live in
 `Trusted/MirSemantics.lean` as Pass 1 CI proof-interface locks—enforced via
 witness-theorem type checks in `anneal-audit` for `Anneal.MirWp`—not as extra
 trust assumptions for per-crate soundness, because per-crate proofs discharge
-`CrateTheorem` or `UnitTheorem` directly in the Lean kernel.) Once Pass 2
+`CrateTheorem` or `UnitTheorem` (or `CrateTheoremV2` or `UnitTheoremV2`)
+directly in the Lean kernel.) Once Pass 2
 lands and the corresponding review-policy updates are adopted in `AGENTS.md`,
 `.gemini/styleguide.md`, and `skills/trust-review/SKILL.md`, the evolving
 execution rules of $M_{\text{anneal}}$ (`initState` and `evalStep`), the stable
@@ -353,7 +358,12 @@ repository CI by `trusted/correspondence/` and pinned `vendor/lean-miri/` under
   `FaultEquivalenceClaim` (enforced by blocking Pass 2 `anneal-audit
   --require-correspondence`) certify universally that $M_{\text{ref}}$ refines
   $M_{\text{anneal}}$ (i.e., $M_{\text{anneal}}$ soundly abstracts
-  $M_{\text{ref}}$) via $\tau_{\text{prog}}$.
+  $M_{\text{ref}}$) via $\tau_{\text{prog}}$. MIR Profile v2 captures instead
+  state `Trusted.CrateTheoremV2` or `Trusted.UnitTheoremV2` over
+  `Trusted.CrateV2`, which add caller memory to the query and use the
+  Profile v2 rules (`initStateV2`, `evalStepV2`). Pass 2 does not yet relate
+  those rules to $M_{\text{ref}}$, so receipts mark correspondence
+  inapplicable for them.
 
 Stage 2's theorem-stating boundary, $\tau_{\text{prog}}$, and $M_{\text{ref}}$
 are optimized for **clarity and direct correspondence to the Rust Reference and

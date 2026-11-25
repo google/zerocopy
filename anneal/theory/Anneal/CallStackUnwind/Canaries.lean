@@ -202,6 +202,9 @@ private theorem borFalseElimC {a b : Bool} (h : (a || b) = false) :
   | .enumVal _ _ => false
   | .tuple _ => false
   | .bytes _ => false
+  | .slicePtr _ _ => false
+  | .rangeTo _ => false
+  | .rangeFrom _ => false
 
 /-- Canary fixture helper `argsIsOneU32`. -/
 @[expose] def argsIsOneU32 (expected : Nat) (args : List Val) : Bool :=
@@ -324,6 +327,9 @@ private theorem eq_of_valIsU32_true (expected : Nat) (v : Val)
   | enumVal _ _ => cases h
   | tuple _ => cases h
   | bytes _ => cases h
+  | slicePtr _ _ => cases h
+  | rangeTo _ => cases h
+  | rangeFrom _ => cases h
 
 /-- Canary fixture helper `u32Ty`. -/
 abbrev u32Ty : MirTy := .int .i32 false
@@ -647,6 +653,7 @@ private theorem readBytes_sub4_take_of_readBytes_8 (m : MemoryState)
   | some a =>
     rw [hFind] at hRead8
     dsimp only at hRead8
+    rw [ite_bool_falseC (rfl : Nat.beq 8 0 = false)] at hRead8
     cases hCond : (!a.live || !isInBounds a 0 8 || !isAligned a 0 2) with
     | true => rw [ite_bool_trueC hCond] at hRead8; cases hRead8
     | false =>
@@ -674,9 +681,8 @@ private theorem readBytes_sub4_take_of_readBytes_8 (m : MemoryState)
       dsimp only
       rw [hFind]
       dsimp only
-      rw [ite_bool_falseC hCond4, ← hBsEq,
-        list_take_take_4_of_8 (a.bytes.drop 0)]
-      rfl
+      rw [ite_bool_falseC (rfl : Nat.beq 4 0 = false), ite_bool_falseC hCond4,
+        ← hBsEq, list_take_take_4_of_8 (a.bytes.drop 0)]
 
 private theorem readBytes_sub4_drop4_of_readBytes_8 (m : MemoryState)
     (allocId : AllocId) (bs8 : List AllocByte)
@@ -689,6 +695,7 @@ private theorem readBytes_sub4_drop4_of_readBytes_8 (m : MemoryState)
   | some a =>
     rw [hFind] at hRead8
     dsimp only at hRead8
+    rw [ite_bool_falseC (rfl : Nat.beq 8 0 = false)] at hRead8
     cases hCond : (!a.live || !isInBounds a 0 8 || !isAligned a 0 2) with
     | true => rw [ite_bool_trueC hCond] at hRead8; cases hRead8
     | false =>
@@ -722,8 +729,8 @@ private theorem readBytes_sub4_drop4_of_readBytes_8 (m : MemoryState)
       dsimp only
       rw [hFind]
       dsimp only
-      rw [ite_bool_falseC hCondHi, ← hBsEq,
-        list_drop4_take4_of_take8 (a.bytes.drop 0)]
+      rw [ite_bool_falseC (rfl : Nat.beq 4 0 = false), ite_bool_falseC hCondHi,
+        ← hBsEq, list_drop4_take4_of_take8 (a.bytes.drop 0)]
       rfl
 
 private theorem readBytes_8_eq_append_of_4_4 (m : MemoryState)
@@ -739,6 +746,8 @@ private theorem readBytes_8_eq_append_of_4_4 (m : MemoryState)
   | some a =>
     rw [hFind] at hLo hHi h8
     dsimp only at hLo hHi h8
+    rw [ite_bool_falseC (rfl : Nat.beq 4 0 = false)] at hLo hHi
+    rw [ite_bool_falseC (rfl : Nat.beq 8 0 = false)] at h8
     cases hC0 : (!a.live || !isInBounds a 0 4 || !isAligned a 0 2) with
     | true => rw [ite_bool_trueC hC0] at hLo; cases hLo
     | false =>
@@ -796,8 +805,9 @@ private theorem byteSubLensGet_of_valid (L : ByteSubLens) (m : MemoryState)
   have hRead : readBytes m ⟨L.allocId, L.offset⟩ L.size L.alignLog2 =
       .ok ((a.bytes.drop L.offset).take L.size) := by
     dsimp only [readBytes]
-    rw [natBeq_zero_false_of_blt_zeroC L.size hPos, ite_bool_falseC rfl, hFind]
+    rw [hFind]
     dsimp only
+    rw [natBeq_zero_false_of_blt_zeroC L.size hPos, ite_bool_falseC rfl]
     have hGuard : (!a.live || !isInBounds a L.offset L.size ||
         !isAligned a L.offset L.alignLog2) = false := by
       rw [hLive, hBnd, hAl]; rfl

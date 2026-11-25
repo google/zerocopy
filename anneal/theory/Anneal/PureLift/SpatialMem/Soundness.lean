@@ -769,14 +769,13 @@ theorem lawfulCodec_mem_freeze_reabsorb_roundtrip_sound {α : Type}
       ite_bool_false (rfl : hasPromotedLocalEntry 0 [] = false),
       ite_bool_false hFreshIdOk]
     dsimp only [execAllocateStack, execReserveAllocId, execWriteBytes]
-    rw [ite_bool_false hRawZero]
     have hUninitEq :
         ({ allocId := m0.nextAllocId, alignLog2 := c.layout.alignLog2, mutability := .mut,
            bytes := List.replicate c.layout.size .uninit, live := true } : Allocation) =
           allocUninit := rfl
     rw [hUninitEq, hFindUninit]
     dsimp only
-    rw [ite_bool_false hAllocOk, hTakeDrop]
+    rw [ite_bool_false hRawZero, ite_bool_false hAllocOk, hTakeDrop]
     have hPinnedEq :
         ({ allocId := m0.nextAllocId, alignLog2 := c.layout.alignLog2, mutability := .mut,
            bytes := rawBytes, live := true } : Allocation) = allocPinned := rfl
@@ -829,9 +828,9 @@ theorem lawfulCodec_mem_freeze_reabsorb_roundtrip_sound {α : Type}
         rw [hRawLen, natAdd_zero_l, hBleSize, hBleAlign, hModZero]
         rfl
       dsimp only [execReadBytes, stPinned, memPinned, blkPinned, place]
-      rw [ite_bool_false hSzZero, hFindPinned]
+      rw [hFindPinned]
       dsimp only
-      rw [ite_bool_false hRdOk, listDrop_zero]
+      rw [ite_bool_false hSzZero, ite_bool_false hRdOk, listDrop_zero]
       exact congrArg Except.ok (listTake_of_len_eq hRawLen)
     have hWitnessDec :
         witness0.decode [.uninit, .init (.bytes rawBytes)] = some v := by
@@ -1242,13 +1241,12 @@ theorem paddedStruct_mem_freeze_mutate_reabsorb_sound
       ite_bool_false (rfl : hasPromotedLocalEntry 1 [] = false),
       ite_bool_false hFreshIdOk]
     dsimp only [paddedU8U32MemCodec, execAllocateStack, execReserveAllocId, execWriteBytes]
-    rw [ite_bool_false hLenZero]
     have hUninitEq :
         ({ allocId := m0.nextAllocId, alignLog2 := 2, mutability := .mut,
            bytes := List.replicate 8 .uninit, live := true } : Allocation) = allocUninit := rfl
     rw [hUninitEq, hFindUninit]
     dsimp only
-    rw [ite_bool_false hAllocOk]
+    rw [ite_bool_false hLenZero, ite_bool_false hAllocOk]
     rw [hBytesTakeDrop]
     have hAllocEq :
         ({ allocId := m0.nextAllocId, alignLog2 := 2, mutability := .mut,
@@ -1305,12 +1303,10 @@ theorem paddedStruct_mem_freeze_mutate_reabsorb_sound
                   [AllocByte.init initStruct.aByte none, .uninit, .uninit, .uninit] ++
                     bNewMemBytes ++ [] = mutRawBytes
                 rw [listAppend_nil_right]
-    dsimp only [execWriteBytes]
-    rw [ite_bool_false hLenZero]
-    dsimp only [memPinned, place]
+    dsimp only [execWriteBytes, memPinned, place]
     rw [hFindPinned]
     dsimp only
-    rw [ite_bool_false hWrOk]
+    rw [ite_bool_false hLenZero, ite_bool_false hWrOk]
     dsimp only [allocPinned]
     rw [hSpliceBytes]
     have hAllocEq :
@@ -1379,9 +1375,9 @@ theorem paddedStruct_mem_freeze_mutate_reabsorb_sound
         rw [hInitRawLen]
         rfl
       dsimp only [execReadBytes, stPinned, memPinned, blkPinned, place]
-      rw [ite_bool_false (rfl : Nat.beq 8 0 = false), hFindPinned]
+      rw [hFindPinned]
       dsimp only
-      rw [ite_bool_false hRdOk, listDrop_zero]
+      rw [ite_bool_false (rfl : Nat.beq 8 0 = false), ite_bool_false hRdOk, listDrop_zero]
       exact congrArg Except.ok (listTake_of_len_eq hInitRawLen)
     have hProvSubNone :
         ∀ (bs : List UInt8) (allowed : List AllocByte),
@@ -1447,9 +1443,9 @@ theorem paddedStruct_mem_freeze_mutate_reabsorb_sound
       rw [hNewLen]
       rfl
     dsimp only [execReadBytes, stMut, memMut, place]
-    rw [ite_bool_false (rfl : Nat.beq 8 0 = false), hFindMut]
+    rw [hFindMut]
     dsimp only
-    rw [ite_bool_false hRdOk, listDrop_zero]
+    rw [ite_bool_false (rfl : Nat.beq 8 0 = false), ite_bool_false hRdOk, listDrop_zero]
     exact congrArg Except.ok (listTake_of_len_eq hNewLen)
   have hNonPadMut : nonPadBytesInitialized u8PadU32Mask mutRawBytes = true := by
     dsimp only [mutRawBytes, bNewMemBytes]
@@ -1466,9 +1462,9 @@ theorem paddedStruct_mem_freeze_mutate_reabsorb_sound
       rfl
     rw [← execReadBytes_eq]
     dsimp only [execReadBytes, stMut, memMut, place]
-    rw [ite_bool_false (rfl : Nat.beq 3 0 = false), hFindMut]
+    rw [hFindMut]
     dsimp only
-    rw [ite_bool_false hPadOk]
+    rw [ite_bool_false (rfl : Nat.beq 3 0 = false), ite_bool_false hPadOk]
     rfl
   have hLoadA :
       Trusted.MirSemantics.loadIndirect stMut.mem (.int .i8 false) ⟨place.allocId, 0⟩ =
@@ -2433,7 +2429,7 @@ theorem unitCanonicalZstCodec_lawful :
     cases v with
     | unit => rfl
     | scalar _ | ptr _ | bool _ | char _ | ordering _ | enumVal _ _
-    | tuple _ | bytes _ => nomatch hDec
+    | tuple _ | slicePtr _ _ | rangeTo _ | rangeFrom _ | bytes _ => nomatch hDec
   · intro bs _ hLen _ _ _
     cases bs with
     | nil => rfl

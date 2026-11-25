@@ -691,12 +691,11 @@ noncomputable def toMiriOperand (types : List MirTy) :
     .Constant ⟨⟨0⟩, none, .Val cv (canonicalTyId types c.ty)⟩
 
 /-- Map `RefRvalue` to `Miri.MIR.Rvalue`. `.cast .intToInt` maps to
-`.Cast .IntToInt` with the canonicalized target `TyId`. Day-1 unmodeled
-rvalues (`.cast .unsupported`, `.ref`, `.addressOf`, `.aggregateTuple`, and
-`.unsupported`) map to the fail-closed
-sentinel `.CopyForDeref ⟨0, Array.empty⟩` that `evalRvalueIntoPlace` rejects
-immediately with `.invalidProgram` (`.blocked`), without evaluating unmodeled
-operands or forcing stack allocations. -/
+`.Cast .IntToInt` with the canonicalized target `TyId`. Profile v1 unmodeled
+rvalues (including Profile v2-only rvalues and pointer casts) map to the
+fail-closed sentinel `.CopyForDeref ⟨0, Array.empty⟩` that
+`evalRvalueIntoPlace` rejects immediately with `.invalidProgram` (`.blocked`),
+without evaluating unmodeled operands or forcing stack allocations. -/
 noncomputable def toMiriRvalue (types : List MirTy) :
     RefRvalue → Miri.MIR.Rvalue
   | .use op => .Use (toMiriOperand types op) .No
@@ -708,8 +707,9 @@ noncomputable def toMiriRvalue (types : List MirTy) :
   | .cast .intToInt opnd ty =>
     .Cast .IntToInt (toMiriOperand types opnd) (canonicalTyId types ty)
   | .discriminant rp => .Discriminant (toMiriPlace rp)
-  | .cast .unsupported _ _ | .ref _ _ | .addressOf _ _ | .aggregateTuple _
-  | .unsupported =>
+  | .cast .ptrToPtr _ _ | .cast .intToPtr _ _ | .cast .unsupported _ _
+  | .useRetag _ | .ref _ _ | .addressOf _ _ | .aggregateTuple _
+  | .aggregateRangeTo _ _ | .aggregateRangeFrom _ _ | .unsupported =>
     .CopyForDeref ⟨0, Array.empty⟩
 
 /-- Map `RefStatementKind` to `Miri.MIR.Statement`. `.unsupported` lowers to
@@ -730,10 +730,10 @@ noncomputable def toMiriStatement (types : List MirTy) :
     { sourceInfo := ⟨⟨0⟩, 0⟩
       kind := .Assign ⟨0, Array.empty⟩ (.CopyForDeref ⟨0, Array.empty⟩) }
 
-/-- Map `RefTerminatorKind` to `Miri.MIR.Terminator`. Day-1 unmodeled
-terminators (`.unwindResume`, `.assert`, `.call`, and `.unsupported`) map to
-`.CoroutineDrop`, which `ControlFlow.evalTerminator` rejects fail-closed with
-`.invalidProgram` (`.blocked`). -/
+/-- Map `RefTerminatorKind` to `Miri.MIR.Terminator`. Profile v1 unmodeled
+terminators (`.unwindResume`, `.assert`, `.call`, `.coreCall`, and
+`.unsupported`) map to `.CoroutineDrop`, which `ControlFlow.evalTerminator`
+rejects fail-closed with `.invalidProgram` (`.blocked`). -/
 noncomputable def toMiriTerminator (types : List MirTy) :
     RefTerminatorKind → Miri.MIR.Terminator
   | .goto target =>
@@ -748,7 +748,8 @@ noncomputable def toMiriTerminator (types : List MirTy) :
         { cases := Array.mk
             (targets.branches.map (fun b => .Case b.1.toNat b.2))
           otherwise := targets.otherwise } }
-  | .unwindResume | .assert _ _ _ _ _ | .call _ _ _ _ _ | .unsupported =>
+  | .unwindResume | .assert _ _ _ _ _ | .call _ _ _ _ _
+  | .coreCall _ _ _ _ _ | .unsupported =>
     { sourceInfo := ⟨⟨0⟩, 0⟩, kind := .CoroutineDrop }
 
 /-- Lower a `RefBasicBlock` to a `Miri.MIR.BasicBlock`. -/

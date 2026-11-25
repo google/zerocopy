@@ -57,6 +57,18 @@ which matches the data layout that `Trusted.Correspondence` passes to
 observe byte order must take it from the captured target data layout. -/
 noncomputable def profileTargetEndian : TargetEndian := .big
 
+/-- Byte order of the MIR semantic profile version 2
+(`Program.mirProfileVersion = 2`).
+
+Profile version 2 can observe byte order: raw pointers load and store
+multi-byte integers from caller-supplied bytes (`loadIndirectV2`,
+`storeIndirectV2`), and pointer and slice metadata occupy memory. The capture
+adapter admits only 64-bit little-endian targets (`checked_target_profile`
+in `trusted/rustc-capture/src/capture.rs` refuses every other data layout),
+so profile version 2 fixes little-endian order to match the captured
+target. -/
+noncomputable def profileV2TargetEndian : TargetEndian := .little
+
 /-- Size and alignment of a sized type, corresponding to the `size` and
 `align` fields of `rustc_abi::LayoutData` (`compiler/rustc_abi/src/lib.rs`,
 `rust-lang/rust` `8144389c895da997dbdecaa635e41d6a50be6ffd`):
@@ -99,7 +111,12 @@ layouts of 64-bit `x86_64`, `aarch64`, and `powerpc64` targets specify
 alignment, and `Trusted.Correspondence` gives every local layout alignment 1
 (`Align.ONE`). As with byte order, no profile-version-1 operation can observe
 alignment: every place is the start of a stack allocation created with the
-place's own layout. -/
+place's own layout.
+
+Profile v2 does observe alignment (dereferences, `refValidInMem`, and
+`ValidEntryArgsV2`). The capture adapter therefore refuses any target whose
+`i8_align` through `i128_align` differ from these natural alignments
+(`checked_target_alignments` in `trusted/rustc-capture/src/capture.rs`). -/
 noncomputable def intLayout (w : IntWidth) : LayoutData :=
   match w with
   | .i8 => ⟨1, 0⟩
@@ -161,6 +178,56 @@ noncomputable def layoutOfTy : MirTy → Option LayoutData
       | .scalar tagW _ => some (intLayout tagW)
   | .tuple [.int w _, .bool] => some (overflowPairLayout w)
   | _ => none
+
+/-- Layout of a Profile v2 local or pointee type (`layoutOfTy` extended with
+64-bit thin pointers `⟨8, 3⟩`, 64-bit wide slice pointers `⟨16, 3⟩`, and
+`RangeTo<usize>` / `RangeFrom<usize>` `⟨8, 3⟩`). Returns `none` for unsized
+`.slice` directly and unsupported aggregates.
+
+The Rust Reference (`src/type-layout.md:60-70`, `rust-lang/reference`
+`ad35aca481751a06afeb23820a672b0f3b11a476`) guarantees the thin-pointer case
+and only describes the wide-pointer size in a non-binding note:
+
+> "Pointers and references have the same layout. Mutability of the pointer or
+> reference does not change the layout.
+>
+> Pointers to sized types have the same size and alignment as `usize`.
+> ...
+> [!NOTE]
+>
+> Though you should not rely on this, all pointers to <abbr
+> title="Dynamically Sized Types">DSTs</abbr> are currently twice the size of
+> the size of `usize` and have the same alignment."
+
+The capture adapter admits only 64-bit targets, so `usize` is `⟨8, 3⟩`. The
+wide `⟨16, 3⟩` layout is rustc's `(ptr, meta)` scalar pair, with slice
+metadata a pointer-sized integer
+(`compiler/rustc_ty_utils/src/layout.rs:410-412,473,485-486`,
+`rust-lang/rust` `f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1`):
+
+> "// Potentially-wide pointers.
+> ty::Ref(_, pointee, _) | ty::RawPtr(pointee, _) => {
+>     let mut data_ptr = scalar_unit(Pointer(AddressSpace::ZERO));
+> ...
+> ty::Slice(_) | ty::Str => scalar_unit(Int(dl.ptr_sized_integer(), false)),
+> ...
+> // Effectively a (ptr, meta) tuple.
+> tcx.mk_layout(LayoutData::scalar_pair(cx, data_ptr, metadata))"
+
+`RangeTo<usize>` and `RangeFrom<usize>` are `repr(Rust)` structs with one
+`usize` field. The Reference does not guarantee their layout (it requires only
+that the struct alignment be at least that of the field), so `⟨8, 3⟩` is
+rustc's univariant layout of a single-field struct, not a Reference
+guarantee. -/
+noncomputable def layoutOfTyV2 (ty : MirTy) : Option LayoutData :=
+  match layoutOfTy ty with
+  | some l => some l
+  | none =>
+    match ty with
+    | .rawPtr _ pt | .ref _ pt =>
+      if isUnsizedTy pt then some ⟨16, 3⟩ else some ⟨8, 3⟩
+    | .rangeTo (.int .isize false) | .rangeFrom (.int .isize false) => some ⟨8, 3⟩
+    | _ => none
 
 end Trusted.MirSemantics
 

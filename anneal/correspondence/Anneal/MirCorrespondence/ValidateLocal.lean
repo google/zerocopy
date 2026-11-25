@@ -32,7 +32,7 @@ theorem refLayoutDataForTy_isSized (ty : MirTy) :
     (refLayoutDataForTy ty).isSized = true := by
   cases ty with
   | unit | never | bool | int _ _ | char | ordering | ref _ _ | rawPtr _ _
-  | unsupported => rfl
+  | slice _ | rangeTo _ | rangeFrom _ | unsupported => rfl
   | tuple fs =>
     cases refLayoutDataForTy_tuple fs with
     | inl h => rw [h]; rfl
@@ -1957,6 +1957,7 @@ theorem validatePlace_local_uninit_ub (types : List MirTy) (c : Choice)
       h_res h_frames h_dr h_get
     exact ⟨msg, st,
       validatePlace_shallow_local_ub_step types c _ _ st st msg h_toOp h_vis⟩
-  | ref _ _ | rawPtr _ _ | unsupported => cases h_supp
+  | ref _ _ | rawPtr _ _ | slice _ | rangeTo _ | rangeFrom _
+  | unsupported => cases h_supp
 
 end Anneal.MirCorrespondence

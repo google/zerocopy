@@ -216,4 +216,328 @@ theorem refute_step_force_alloc_dead_local :
      | .error _ => False) :=
   trivial
 
+/-- Guard `step_v2_write_readonly`: storing through `*const u8`
+(`ptrMut = .shared`) into a live `.mut` allocation faults with `.undefined`. -/
+theorem refute_step_v2_write_readonly :
+    (match writePlaceV2
+        [.unit, .rawPtr .shared (.int .i8 false)]
+        [.immediate (some .unit), .immediate (some (.ptr ⟨some 1, 0, .isize⟩))]
+        { allocations := [{
+            allocId := 1
+            alignLog2 := 0
+            mutability := .mut
+            bytes := [.init 0 none]
+            live := true
+          }], nextAllocId := 2 }
+        { localId := 1, projection := [.deref] }
+        (.int .i8 false)
+        (.scalar ⟨.i8, false, BitVec.ofNat 128 7⟩) with
+     | .error .undefined => True
+     | _ => False) :=
+  trivial
+
+/-- Profile v2 program taking a shared reference to stack parameter `_1 : u8`
+and attempting to return it. -/
+noncomputable def progDanglingStackRefV2 : Program := {
+  scope := .unit
+  pointerWidthBits := 64
+  mirProfileVersion := 2
+  bodies := [{
+    argumentCount := 1
+    locals := [.ref .shared (.int .i8 false), .int .i8 false]
+    basicBlocks := [{
+      statements := [
+        .assign { localId := 0, projection := [] }
+          (.ref .shared { localId := 1, projection := [] })
+      ]
+      terminator := .return_
+    }]
+    isUnsafe := false
+    identity := "guard_mutation::dangling_stack_ref_v2"
+  }]
+}
+
+/-- Guard `step_v2_return_dangling_stack_ref`: returning a reference to a
+callee-allocated stack local faults with `.undefined`. -/
+theorem refute_step_v2_return_dangling_stack_ref :
+    (match initStateV2 progDanglingStackRefV2
+        { args := [.scalar ⟨.i8, false, BitVec.ofNat 128 42⟩] } with
+     | .ok s₀ =>
+       match evalStepV2 progDanglingStackRefV2 s₀ with
+       | .step s₁ =>
+         match evalStepV2 progDanglingStackRefV2 s₁ with
+         | .fault .undefined => True
+         | _ => False
+       | _ => False
+     | .error _ => False) :=
+  trivial
+
+/-- Anti-overreach canary for zero-size raw-pointer dereference stores and
+reads (`writePlaceV2` / `readPlaceV2`): `*mut ()` into a dead `.shared`
+allocation succeeds consistently with `Memory.lean`. -/
+theorem positive_step_v2_zst_raw_ptr_write_and_read :
+    (match writePlaceV2
+        [.unit, .rawPtr .mut .unit]
+        [.immediate (some .unit), .immediate (some (.ptr ⟨some 1, 0, .isize⟩))]
+        { allocations := [{
+            allocId := 1
+            alignLog2 := 0
+            mutability := .shared
+            bytes := [.init 0 none]
+            live := false
+          }], nextAllocId := 2 }
+        { localId := 1, projection := [.deref] }
+        .unit
+        .unit with
+     | .ok _ => True
+     | .error _ => False) ∧
+    (match readPlaceV2
+        [.unit, .rawPtr .mut .unit]
+        [.immediate (some .unit), .immediate (some (.ptr ⟨some 1, 0, .isize⟩))]
+        { allocations := [{
+            allocId := 1
+            alignLog2 := 0
+            mutability := .shared
+            bytes := [.init 0 none]
+            live := false
+          }], nextAllocId := 2 }
+        false
+        { localId := 1, projection := [.deref] } with
+     | .ok (.unit, some .unit, _, _) => True
+     | _ => False) :=
+  ⟨trivial, trivial⟩
+
+/-- Guard `step_v2_offset_dst_type`: `Offset` on a `*const u8` operand fails
+closed when the destination local has a different raw-pointer type
+(`*mut u64`). -/
+theorem refute_step_v2_offset_dst_type :
+    (match evalRvalueV2
+        [.unit, .rawPtr .shared (.int .i8 false), .rawPtr .mut (.int .i64 false)]
+        [.immediate (some .unit), .immediate (some (.ptr ⟨some 1, 0, .isize⟩)),
+          .immediate none]
+        { allocations := [{
+            allocId := 1
+            alignLog2 := 0
+            mutability := .mut
+            bytes := [.init 0 none, .init 0 none]
+            live := true
+          }], nextAllocId := 2 }
+        (.rawPtr .mut (.int .i64 false))
+        (.binaryOp .offset (.copy { localId := 1, projection := [] })
+          (.constant ⟨.int .isize true, .scalar (BitVec.ofNat 128 1)⟩)) with
+     | .error .unsupported => True
+     | _ => False) :=
+  trivial
+
+/-- Guard `step_v2_ptr_cast_const_to_mut`: `PtrToPtr` casts from `*const u32`
+to `*mut u32` and from `*const [u8]` to `*mut [u8]` fail closed, so
+`&raw const x as *mut u32` cannot write to an immutable binding `x`. -/
+theorem refute_step_v2_ptr_cast_const_to_mut :
+    (match evalRvalueV2
+        [.unit, .rawPtr .shared (.int .i32 false), .rawPtr .mut (.int .i32 false)]
+        [.immediate (some .unit), .immediate (some (.ptr ⟨some 1, 0, .isize⟩)),
+          .immediate none]
+        { allocations := [{
+            allocId := 1
+            alignLog2 := 2
+            mutability := .mut
+            bytes := List.replicate 4 (.init 0 none)
+            live := true
+          }], nextAllocId := 2 }
+        (.rawPtr .mut (.int .i32 false))
+        (.cast .ptrToPtr (.copy { localId := 1, projection := [] })
+          (.rawPtr .mut (.int .i32 false))) with
+     | .error .unsupported => True
+     | _ => False) ∧
+    (match evalPtrToPtrCastV2 (.rawPtr .shared (.slice (.int .i8 false)))
+        (.slicePtr ⟨some 1, 0, .isize⟩ 4) (.rawPtr .mut (.slice (.int .i8 false))) with
+     | .error .unsupported => True
+     | _ => False) :=
+  ⟨trivial, trivial⟩
+
+/-- Anti-overreach canary for `step_v2_ptr_cast_const_to_mut`: `PtrToPtr`
+casts that do not add mutability (`*mut u32` to `*const u32`, `*mut u32` to
+`*mut u8`, `*const u32` to `*const u8`, and `*mut [u8]` to `*const [u8]`)
+still succeed. -/
+theorem positive_step_v2_ptr_cast_keeps_or_drops_mut :
+    (match evalPtrToPtrCastV2 (.rawPtr .mut (.int .i32 false))
+        (.ptr ⟨some 1, 0, .isize⟩) (.rawPtr .shared (.int .i32 false)) with
+     | .ok (.ptr ⟨some 1, 0, .isize⟩) => True
+     | _ => False) ∧
+    (match evalPtrToPtrCastV2 (.rawPtr .mut (.int .i32 false))
+        (.ptr ⟨some 1, 0, .isize⟩) (.rawPtr .mut (.int .i8 false)) with
+     | .ok (.ptr ⟨some 1, 0, .isize⟩) => True
+     | _ => False) ∧
+    (match evalPtrToPtrCastV2 (.rawPtr .shared (.int .i32 false))
+        (.ptr ⟨some 1, 0, .isize⟩) (.rawPtr .shared (.int .i8 false)) with
+     | .ok (.ptr ⟨some 1, 0, .isize⟩) => True
+     | _ => False) ∧
+    (match evalPtrToPtrCastV2 (.rawPtr .mut (.slice (.int .i8 false)))
+        (.slicePtr ⟨some 1, 0, .isize⟩ 4) (.rawPtr .shared (.slice (.int .i8 false))) with
+     | .ok (.slicePtr ⟨some 1, 0, .isize⟩ 4) => True
+     | _ => False) :=
+  ⟨trivial, trivial, trivial, trivial⟩
+
+/-- Admitted zero-sized single-variant fieldless enum (`enum One { A }`). -/
+noncomputable def zstOneEnumTy : EnumTy := {
+  id := 7
+  discrWidth := .isize
+  discrSigned := true
+  tagRepr := .zeroSized
+  discriminants := [0]
+}
+
+/-- Anti-overreach canary for provenance-free zero-size reference
+dereferences: reading and writing `*r` for `r : &mut One` holding an aligned,
+non-null address without provenance succeeds, consistently with
+`refValidInMem` admitting such references at entry. -/
+theorem positive_step_v2_zst_enum_no_provenance_deref :
+    (match readPlaceV2
+        [.unit, .ref .mut (.enum zstOneEnumTy)]
+        [.immediate (some .unit), .immediate (some (.ptr ⟨none, 1, .isize⟩))]
+        MemoryState.empty
+        false
+        { localId := 1, projection := [.deref] } with
+     | .ok (_, some (.enumVal _ 0), _, _) => True
+     | _ => False) ∧
+    (match writePlaceV2
+        [.unit, .ref .mut (.enum zstOneEnumTy)]
+        [.immediate (some .unit), .immediate (some (.ptr ⟨none, 1, .isize⟩))]
+        MemoryState.empty
+        { localId := 1, projection := [.deref] }
+        (.enum zstOneEnumTy)
+        (.enumVal zstOneEnumTy 0) with
+     | .ok _ => True
+     | .error _ => False) :=
+  ⟨trivial, trivial⟩
+
+/-- Read-only 2-byte allocation with id `1` holding initialized bytes, for
+the `get_unchecked` input-mutability refutations. -/
+noncomputable def sharedInit2Mem : MemoryState :=
+  { allocations := [{
+      allocId := 1
+      alignLog2 := 0
+      mutability := .shared
+      bytes := [.init 0 none, .init 0 none]
+      live := true
+    }], nextAllocId := 2 }
+
+/-- Guard `step_v2_get_unchecked_range_to_in_mut`: `get_unchecked(..1)` on a
+`&mut [u8]` input over a `.shared` allocation faults with `.undefined` even
+though the result is `&[u8]`, because the input is validated at its own
+mutability. -/
+theorem refute_step_v2_get_unchecked_range_to_in_mut :
+    (match execCoreCallOp sharedInit2Mem .sliceGetUncheckedRangeTo
+        [(.ref .mut (.slice (.int .i8 false)), .slicePtr ⟨some 1, 0, .isize⟩ 2),
+          (.rangeTo (.int .isize false), .rangeTo 1)]
+        (.ref .shared (.slice (.int .i8 false))) with
+     | .error .undefined => True
+     | _ => False) :=
+  trivial
+
+/-- Guard `step_v2_get_unchecked_range_from_in_mut`: `get_unchecked(1..)` on a
+`&mut [u8]` input over a `.shared` allocation faults with `.undefined` even
+though the result is `&[u8]`. -/
+theorem refute_step_v2_get_unchecked_range_from_in_mut :
+    (match execCoreCallOp sharedInit2Mem .sliceGetUncheckedRangeFrom
+        [(.ref .mut (.slice (.int .i8 false)), .slicePtr ⟨some 1, 0, .isize⟩ 2),
+          (.rangeFrom (.int .isize false), .rangeFrom 1)]
+        (.ref .shared (.slice (.int .i8 false))) with
+     | .error .undefined => True
+     | _ => False) :=
+  trivial
+
+/-- Anti-overreach canary: the same `get_unchecked` calls on a `&[u8]` input
+over the `.shared` allocation succeed. -/
+theorem positive_step_v2_get_unchecked_shared_input :
+    (match execCoreCallOp sharedInit2Mem .sliceGetUncheckedRangeTo
+        [(.ref .shared (.slice (.int .i8 false)),
+            .slicePtr ⟨some 1, 0, .isize⟩ 2),
+          (.rangeTo (.int .isize false), .rangeTo 1)]
+        (.ref .shared (.slice (.int .i8 false))) with
+     | .ok _ => True
+     | .error _ => False) ∧
+    (match execCoreCallOp sharedInit2Mem .sliceGetUncheckedRangeFrom
+        [(.ref .shared (.slice (.int .i8 false)),
+            .slicePtr ⟨some 1, 0, .isize⟩ 2),
+          (.rangeFrom (.int .isize false), .rangeFrom 1)]
+        (.ref .shared (.slice (.int .i8 false))) with
+     | .ok _ => True
+     | .error _ => False) :=
+  ⟨trivial, trivial⟩
+
+/-- Body with locals `_0 : ()` and `_1 : *mut ()`, whose only statement
+`*_1 = PtrMetadata(move _1)` moves out of the pointer it stores through. -/
+noncomputable def bodyStoreThroughMovedPtr : Body := {
+  argumentCount := 1
+  locals := [.unit, .rawPtr .mut .unit]
+  basicBlocks := [{
+    statements := [.assign ⟨1, [.deref]⟩
+      (.unaryOp .ptrMetadata (.move ⟨1, []⟩))]
+    terminator := .return_
+  }]
+}
+
+/-- Guard `step_v2_assign_resolves_destination_first`: an assignment resolves
+its destination before its rvalue runs, so `*_1 = PtrMetadata(move _1)` stores
+through the pointer `_1` held before the move instead of faulting on the
+moved-out slot. -/
+theorem refute_step_v2_assign_resolves_destination_first :
+    (match evalStatementV2 bodyStoreThroughMovedPtr
+        { defId := 0, blockIdx := 0, stmtIdx := 0,
+          locals := [.immediate (some .unit),
+            .immediate (some (.ptr ⟨some 1, 0, .isize⟩))] }
+        { allocations := [{
+            allocId := 1
+            alignLog2 := 0
+            mutability := .mut
+            bytes := []
+            live := true
+          }], nextAllocId := 2 }
+        {}
+        (.assign ⟨1, [.deref]⟩ (.unaryOp .ptrMetadata (.move ⟨1, []⟩))) with
+     | .step _ => True
+     | _ => False) :=
+  trivial
+
+/-- Guard `step_v2_raw_borrow_mut_through_const`: `&raw mut *p` through a
+`*const u8` faults with `.undefined` instead of yielding a `*mut u8`. -/
+theorem refute_step_v2_raw_borrow_mut_through_const :
+    (match evalAddressOfRvalueV2
+        [.unit, .rawPtr .shared (.int .i8 false), .rawPtr .mut (.int .i8 false)]
+        [.immediate (some .unit), .immediate (some (.ptr ⟨some 1, 0, .isize⟩)),
+          .immediate none]
+        { allocations := [{
+            allocId := 1
+            alignLog2 := 0
+            mutability := .mut
+            bytes := [.init 0 none]
+            live := true
+          }], nextAllocId := 2 }
+        (.rawPtr .mut (.int .i8 false)) .mut
+        { localId := 1, projection := [.deref] } with
+     | .error .undefined => True
+     | _ => False) :=
+  trivial
+
+/-- Anti-overreach canary: `&raw const *p` through the same `*const u8`
+still succeeds. -/
+theorem positive_step_v2_raw_borrow_const_through_const :
+    (match evalAddressOfRvalueV2
+        [.unit, .rawPtr .shared (.int .i8 false), .rawPtr .shared (.int .i8 false)]
+        [.immediate (some .unit), .immediate (some (.ptr ⟨some 1, 0, .isize⟩)),
+          .immediate none]
+        { allocations := [{
+            allocId := 1
+            alignLog2 := 0
+            mutability := .mut
+            bytes := [.init 0 none]
+            live := true
+          }], nextAllocId := 2 }
+        (.rawPtr .shared (.int .i8 false)) .shared
+        { localId := 1, projection := [.deref] } with
+     | .ok _ => True
+     | .error _ => False) :=
+  trivial
+
 end GuardMutation

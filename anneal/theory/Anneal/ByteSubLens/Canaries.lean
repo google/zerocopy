@@ -315,7 +315,8 @@ slice, returning `none` if any byte is `.uninit` or length ≠ 4. -/
             else none
           | true => none
         | .i8 | .i16 | .i64 | .i128 | .isize => none
-      | .ptr _ | .bool _ | .char _ | .ordering _ | .unit
+      | .ptr _ | .slicePtr _ _ | .rangeTo _ | .rangeFrom _
+      | .bool _ | .char _ | .ordering _ | .unit
       | .enumVal _ _ | .tuple _ | .bytes _ => none
 
 private theorem extractSingleU32Arg_inv (args : List Val) (dBits : BitVec 128)
@@ -328,7 +329,8 @@ private theorem extractSingleU32Arg_inv (args : List Val) (dBits : BitVec 128)
     | cons _ _ => nomatch h
     | nil =>
       cases a0 with
-      | ptr _ | bool _ | char _ | ordering _ | unit | enumVal _ _
+      | ptr _ | slicePtr _ _ | rangeTo _ | rangeFrom _
+      | bool _ | char _ | ordering _ | unit | enumVal _ _
       | tuple _ | bytes _ => nomatch h
       | scalar sv =>
         cases sv with

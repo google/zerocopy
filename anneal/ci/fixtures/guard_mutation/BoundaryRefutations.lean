@@ -88,4 +88,94 @@ theorem refute_boundary_body_static_admitted :
     ¬ BodyVerified badNeverProg 0 badNeverBody (fun _ => True) :=
   fun hVer => Bool.noConfusion hVer.2.1
 
+/-- Safe zero-argument Profile v2 body that faults with `.unreachable`. -/
+noncomputable def bodyUnreachableV2 : Body := {
+  argumentCount := 0
+  locals := [.unit]
+  basicBlocks := [{ statements := [], terminator := .unreachable }]
+  isUnsafe := false
+  identity := "guard_mutation::unreachable_v2"
+}
+
+/-- Profile v2 program wrapping `bodyUnreachableV2`. -/
+noncomputable def progUnreachableV2 : Program := {
+  scope := .unit
+  pointerWidthBits := 64
+  mirProfileVersion := 2
+  bodies := [bodyUnreachableV2]
+}
+
+/-- Reachability of `.fault .undefined` on `progUnreachableV2`. -/
+theorem reaches_fault_unreachable_v2 :
+    ReachesResultV2 progUnreachableV2 queryEmpty (.fault .undefined) := by
+  unfold ReachesResultV2
+  change ∃ s : State, ReachesV2 progUnreachableV2 _ s ∧
+    StepV2 progUnreachableV2 s (.fault .undefined)
+  exact ⟨_, ReachesV2.refl _, ⟨0, rfl, rfl⟩⟩
+
+/-- Guard `boundary_v2_wellformed_forbids_faults`: `WellFormedV2` must be
+refuted by a reachable `.fault .undefined`. -/
+theorem refute_boundary_v2_wellformed_forbids_faults :
+    ¬ WellFormedV2 progUnreachableV2 queryEmpty :=
+  fun hWf => hWf.2 .undefined reaches_fault_unreachable_v2
+
+/-- Guard `boundary_v2_safe_fn_ignores_safety_pre`: `BodyVerifiedV2` must reject
+a faulting safe function even when `safetyPre := fun _ => False`. -/
+theorem refute_boundary_v2_safe_fn_ignores_safety_pre :
+    ¬ BodyVerifiedV2 progUnreachableV2 0 bodyUnreachableV2 (fun _ => False) :=
+  fun hVer =>
+    refute_boundary_v2_wellformed_forbids_faults
+      (hVer.2.2 queryEmpty ⟨rfl, rfl, rfl, rfl⟩ (fun h => Bool.noConfusion h))
+
+/-- Uninhabited (`MirTy.never`) parameter Profile v2 body with an out-of-bounds
+`StorageLive 9` annotation, failing `BodyStaticAdmittedV2`. -/
+noncomputable def badNeverBodyV2 : Body := {
+  argumentCount := 1
+  locals := [.unit, .never]
+  basicBlocks := [{ statements := [.storageLive 9], terminator := .unreachable }]
+  isUnsafe := false
+  identity := "guard_mutation::bad_never_v2"
+}
+
+/-- Profile v2 program wrapping `badNeverBodyV2`. -/
+noncomputable def badNeverProgV2 : Program := {
+  scope := .unit
+  pointerWidthBits := 64
+  mirProfileVersion := 2
+  bodies := [badNeverBodyV2]
+}
+
+/-- Guard `boundary_v2_body_static_admitted`: a body failing
+`BodyStaticAdmittedV2` must refute `BodyVerifiedV2` even when `ValidEntryArgsV2`
+is empty. -/
+theorem refute_boundary_v2_body_static_admitted :
+    ¬ BodyVerifiedV2 badNeverProgV2 0 badNeverBodyV2 (fun _ => True) :=
+  fun hVer => Bool.noConfusion hVer.2.1
+
+/-- Profile v2 body whose locals mix a shared reference and a raw pointer but
+otherwise pass `BodyStaticAdmittedV2`. -/
+noncomputable def mixedRefRawBodyV2 : Body := {
+  argumentCount := 2
+  locals :=
+    [.unit, .ref .shared (.int .i8 false), .rawPtr .shared (.int .i8 false)]
+  basicBlocks := [{ statements := [], terminator := .return_ }]
+  isUnsafe := true
+  identity := "guard_mutation::mixed_ref_raw_v2"
+}
+
+/-- Profile v2 program wrapping `mixedRefRawBodyV2`. -/
+noncomputable def mixedRefRawProgV2 : Program := {
+  scope := .unit
+  pointerWidthBits := 64
+  mirProfileVersion := 2
+  bodies := [mixedRefRawBodyV2]
+}
+
+/-- Guard `boundary_v2_rejects_mixed_refs_and_raw_ptrs`: Profile v2 has no
+aliasing model, so a body mixing reference and raw-pointer locals must refute
+`BodyVerifiedV2` regardless of its safety precondition. -/
+theorem refute_boundary_v2_rejects_mixed_refs_and_raw_ptrs :
+    ¬ BodyVerifiedV2 mixedRefRawProgV2 0 mixedRefRawBodyV2 (fun _ => False) :=
+  fun hVer => Bool.noConfusion hVer.2.1
+
 end GuardMutation

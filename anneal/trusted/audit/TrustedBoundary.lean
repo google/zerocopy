@@ -3356,11 +3356,13 @@ def requireMirPublicAlias (env : Environment)
 `.repo (.trusted _)` modules and `Anneal.MirWp` and `Anneal.MirWp.Canaries`
 are loaded as `.repo .theory` modules (whenever `requireMirWp` is `true` or any
 MIR/`PureLift` module is loaded), that the core weakest-precondition adequacy
-and fault-characterization theorems in `Anneal.MirWp` and all 25 non-vacuity and
-parameter-boundary canaries in `Anneal.MirWp.Canaries` prove the exact `*Claim`
-propositions defined in `Trusted.MirSemantics`, and that the public
-`Trusted.{Crate, CrateTheorem, UnitTheorem}` aliases in `Trusted.MirSemantics`
-directly reference their canonical `Trusted.MirSemantics.*` declarations. -/
+and fault-characterization theorems and the Profile v2 execution adequacy
+theorem in `Anneal.MirWp` and all 25 non-vacuity and parameter-boundary
+canaries in `Anneal.MirWp.Canaries` prove the exact `*Claim` propositions
+defined in `Trusted.MirSemantics`, and that the public
+`Trusted.{Crate, CrateTheorem, UnitTheorem, CrateV2, CrateTheoremV2,
+UnitTheoremV2}` aliases in `Trusted.MirSemantics` directly reference their
+canonical `Trusted.MirSemantics.*` declarations. -/
 def verifyMirWpCoreTheorems (env : Environment)
     (roles : Std.HashMap Name RepoOrigin)
     (locals : Std.HashMap Name ConstantInfo)
@@ -3393,6 +3395,16 @@ def verifyMirWpCoreTheorems (env : Environment)
       `Anneal.MirWp.reaches_fault_and_exclusive_of_wpFault
       [`Trusted.MirSemantics.ReachesResult, `Trusted.MirSemantics.Diverges,
         `Trusted.MirSemantics.WellFormed]
+    -- Profile v2 counterpart of `WpSoundnessClaim`: ties `BehaviorV2`,
+    -- `DivergesV2`, and `SatisfiesPostV2`, which `SpecsV2.property`
+    -- statements use, to the `initStateV2` / `StepV2` transition system.
+    requireClaimProof env locals semMod wpMod
+      `Trusted.MirSemantics.ExecSoundnessClaimV2
+      (some `Anneal.MirWp.execProgV2)
+      `Anneal.MirWp.wellFormed_and_spec_of_execV2
+      [`Trusted.MirSemantics.SatisfiesPostV2,
+        `Trusted.MirSemantics.DivergesV2,
+        `Trusted.MirSemantics.BehaviorV2]
     let posClaim := `Trusted.MirSemantics.PositiveCanaryClaim
     let negClaim := `Trusted.MirSemantics.NegativeCanaryClaim
     let widthClaim := `Trusted.MirSemantics.IntWidthBoundaryCanary
@@ -3489,7 +3501,10 @@ def verifyMirWpCoreTheorems (env : Environment)
     for (aliasName, targetName) in [
         (`Trusted.Crate, `Trusted.MirSemantics.Crate),
         (`Trusted.CrateTheorem, `Trusted.MirSemantics.CrateTheorem),
-        (`Trusted.UnitTheorem, `Trusted.MirSemantics.UnitTheorem)] do
+        (`Trusted.UnitTheorem, `Trusted.MirSemantics.UnitTheorem),
+        (`Trusted.CrateV2, `Trusted.MirSemantics.CrateV2),
+        (`Trusted.CrateTheoremV2, `Trusted.MirSemantics.CrateTheoremV2),
+        (`Trusted.UnitTheoremV2, `Trusted.MirSemantics.UnitTheoremV2)] do
       requireMirPublicAlias env locals semMod aliasName targetName
 
 /-- Execute Phase 2 (`"audit"`) on the compiled `.olean` environment `env`. -/
@@ -5687,7 +5702,8 @@ def isKnownInhabitedDomain (env : Environment) (lctx : LocalContext)
   | some n =>
     n == ``Nat || n == ``String || n == ``Bool || n == ``Unit ||
       n == ``PUnit || n == ``List || n == `Trusted.MirAst.Program ||
-      n == `Trusted.MirModel.Val
+      n == `Trusted.MirModel.Val || n == `Trusted.MirSemantics.Query ||
+      n == `Trusted.MirSemantics.CallerMemory
   | none => false
 
 mutual
@@ -5924,20 +5940,74 @@ def dedupStrings (xs : Array String) : Array String :=
   xs.foldl (init := #[]) fun acc s =>
     if acc.contains s then acc else acc.push s
 
-/-- Peel `Specs.safety : Specs → String → List Val → Prop` and
-`Specs.property : Specs → Program → Prop` domain types from `env`. -/
-def mirSpecDomainTypes? (env : Environment) :
-    Option (Expr × Expr × Expr × Expr) := do
-  let safetyInfo ← env.checked.get.find? `Trusted.MirSemantics.Specs.safety
-  let .forallE _ _ (.forallE _ idTy (.forallE _ argsTy _ _) _) _ :=
-    safetyInfo.type | none
-  let argsTyWhnf := kernelWhnfSafe env {} argsTy
-  let valTy ← match argsTyWhnf.getAppFn.constName?, argsTyWhnf.getAppArgs with
-    | some ``List, #[elemTy] => some elemTy
-    | _, _ => none
-  let propInfo ← env.checked.get.find? `Trusted.MirSemantics.Specs.property
-  let .forallE _ _ (.forallE _ progTy _ _) _ := propInfo.type | none
-  some (idTy, argsTy, valTy, progTy)
+/-- Extracted field constants and domain types for checking either a
+`Trusted.MirSemantics.Specs` or `Trusted.MirSemantics.SpecsV2` specification.
+-/
+structure MirSpecShape where
+  specLabel : String
+  safetyField : Name
+  propField : Name
+  idTy : Expr
+  safetyArgTy : Expr
+  valTy : Expr
+  callerMemTy? : Option Expr
+  progTy : Expr
+
+/-- Peel `List elemTy` element type from an expression `argsTy`. -/
+def peelListElemTy? (env : Environment) (argsTy : Expr) : Option Expr :=
+  let whnf := kernelWhnfSafe env {} argsTy
+  match whnf.getAppFn.constName?, whnf.getAppArgs with
+  | some ``List, #[elemTy] => some elemTy
+  | _, _ => none
+
+/-- Peel domain types from either `Trusted.MirSemantics.Specs` or
+`Trusted.MirSemantics.SpecsV2` in `env` when `specTy` is definitionally equal
+to one of them. -/
+def mirSpecShape? (env : Environment) (specTy : Expr) :
+    Option MirSpecShape := do
+  let isType (constName : Name) : Bool :=
+    match Kernel.isDefEq env {} specTy (mkConst constName) with
+    | .ok b => b
+    | .error _ => false
+  if isType `Trusted.MirSemantics.Specs then
+    let safetyInfo ← env.checked.get.find? `Trusted.MirSemantics.Specs.safety
+    let .forallE _ _ (.forallE _ idTy (.forallE _ argsTy _ _) _) _ :=
+      safetyInfo.type | none
+    let valTy ← peelListElemTy? env argsTy
+    let propInfo ← env.checked.get.find? `Trusted.MirSemantics.Specs.property
+    let .forallE _ _ (.forallE _ progTy _ _) _ := propInfo.type | none
+    some {
+      specLabel := "Specs"
+      safetyField := `Trusted.MirSemantics.Specs.safety
+      propField := `Trusted.MirSemantics.Specs.property
+      idTy
+      safetyArgTy := argsTy
+      valTy
+      callerMemTy? := none
+      progTy
+    }
+  else if isType `Trusted.MirSemantics.SpecsV2 then
+    let safetyInfo ← env.checked.get.find? `Trusted.MirSemantics.SpecsV2.safety
+    let .forallE _ _ (.forallE _ idTy (.forallE _ queryTy _ _) _) _ :=
+      safetyInfo.type | none
+    let queryMkInfo ← env.checked.get.find? `Trusted.MirSemantics.Query.mk
+    let .forallE _ argsTy (.forallE _ callerMemTy _ _) _ :=
+      queryMkInfo.type | none
+    let valTy ← peelListElemTy? env argsTy
+    let propInfo ← env.checked.get.find? `Trusted.MirSemantics.SpecsV2.property
+    let .forallE _ _ (.forallE _ progTy _ _) _ := propInfo.type | none
+    some {
+      specLabel := "SpecsV2"
+      safetyField := `Trusted.MirSemantics.SpecsV2.safety
+      propField := `Trusted.MirSemantics.SpecsV2.property
+      idTy
+      safetyArgTy := queryTy
+      valTy
+      callerMemTy? := some callerMemTy
+      progTy
+    }
+  else
+    none
 
 /-- Run advisory anti-vacuity specification linting over the replayed target
 environment, returning sorted deduplicated [`SpecLintWarning`]s. -/
@@ -5962,89 +6032,90 @@ def inspectSpecVacuity (env : Environment) (subjectName specName : Name)
                 message :=
                   s!"unused argument binding(s) in `{declStr}`: {listStr}"
               }
-  -- 2. Semantic Trusted.MirSemantics.Specs checks (only when `specName`
-  --    actually has type `Trusted.MirSemantics.Specs`, skipping mock tests).
-  let specsTy := mkConst `Trusted.MirSemantics.Specs
-  let isMirSpecs := match env.checked.get.find? specName with
-    | some specInfo =>
-      match Kernel.isDefEq env {} specInfo.type specsTy with
-      | .ok b => b
-      | .error _ => false
-    | none => false
-  if isMirSpecs then
-    if let some (idTy, argsTy, valTy, progTy) := mirSpecDomainTypes? env then
-      let specDeclStr := (privateToUserName specName).toString
-      let safetyFn := mkApp (mkConst `Trusted.MirSemantics.Specs.safety)
-        (mkConst specName)
-      let propFn := mkApp (mkConst `Trusted.MirSemantics.Specs.property)
-        (mkConst specName)
-      -- 2a. Global `Specs.safety` satisfiability check with opaque
-      --     `(id, args)`.
-      let idFVar : FVarId := { name := `_anneal_lint_safety_id }
-      let argsFVar : FVarId := { name := `_anneal_lint_safety_args }
-      let lctxSafety := ({} : LocalContext)
-        |>.mkLocalDecl idFVar `id idTy .default .default
-        |>.mkLocalDecl argsFVar `args argsTy .default .default
-      let globalSafety := mkApp2 safetyFn (.fvar idFVar) (.fvar argsFVar)
-      if isTrivialFalseProp env lctxSafety 100 16 globalSafety then
-        warnings := warnings.push {
-          code := "unsatisfiable_safety"
-          declaration := specDeclStr
-          message :=
-            "Specs.safety reduces to a trivially unsatisfiable " ++
-            "proposition regardless of function identity or arguments"
-        }
-      else
-        -- 2b. Per-unsafe-body `Specs.safety` satisfiability check (catches
-        --     typos or wrong argument arities on unsafe bodies).
-        let bodies := extractCapturedBodies env subjectName
-        let maxCheckedArgs : Nat := 32
-        for idx in [0:bodies.size] do
-          if let some body := bodies[idx]? then
-            if body.isUnsafe && body.argumentCount <= maxCheckedArgs then
-              let mut lctxBody : LocalContext := {}
-              let mut argExprs : List Expr := []
-              for aIdx in [0:body.argumentCount] do
-                let fv : FVarId := { name := Name.num `_anneal_lint_arg aIdx }
-                lctxBody := lctxBody.mkLocalDecl fv `arg valTy .default .default
-                argExprs := argExprs ++ [.fvar fv]
-              let argsListExpr := mkListExpr valTy argExprs
-              let idArg := match body.identityText with
-                | some s => .lit (.strVal s)
-                | none => body.identityExpr
-              let bodySafety := mkApp2 safetyFn idArg argsListExpr
-              if isTrivialFalseProp env lctxBody 100 16 bodySafety then
-                let bodyLabel := body.identityText.getD s!"body#{idx}"
-                warnings := warnings.push {
-                  code := "unsatisfiable_safety"
-                  declaration := specDeclStr
-                  body := some bodyLabel
-                  message :=
-                    s!"Specs.safety reduces to a trivially unsatisfiable " ++
-                    s!"proposition for unsafe body `{bodyLabel}` " ++
-                    s!"({body.argumentCount} arg(s))"
-                }
-      -- 2c. `Specs.property` triviality & `Program`-ignorance check.
-      let progFVar : FVarId := { name := `_anneal_lint_prog }
-      let lctxProp := ({} : LocalContext)
-        |>.mkLocalDecl progFVar `p progTy .default .default
-      let propApplied := mkApp propFn (.fvar progFVar)
-      let propReduced := kernelWhnfSafe env lctxProp propApplied
-      if isTrivialTrueProp env lctxProp 100 16 propReduced then
-        warnings := warnings.push {
-          code := "trivial_property"
-          declaration := specDeclStr
-          message :=
-            "Specs.property reduces to a trivially true proposition"
-        }
-      else if !propReduced.containsFVar progFVar then
-        warnings := warnings.push {
-          code := "unused_spec_binding"
-          declaration := specDeclStr
-          message :=
-            "Specs.property ignores its `Program` argument (normalized " ++
-            "body does not reference the captured program)"
-        }
+  -- 2. Semantic `Specs` / `SpecsV2` checks (skipping mock test shapes).
+  let specShape? := match env.checked.get.find? specName with
+    | some specInfo => mirSpecShape? env specInfo.type
+    | none => none
+  if let some shape := specShape? then
+    let specDeclStr := (privateToUserName specName).toString
+    let safetyFn := mkApp (mkConst shape.safetyField) (mkConst specName)
+    let propFn := mkApp (mkConst shape.propField) (mkConst specName)
+    -- 2a. Global `safety` satisfiability check with opaque `(id, query)`.
+    let idFVar : FVarId := { name := `_anneal_lint_safety_id }
+    let queryFVar : FVarId := { name := `_anneal_lint_safety_args }
+    let lctxSafety := ({} : LocalContext)
+      |>.mkLocalDecl idFVar `id shape.idTy .default .default
+      |>.mkLocalDecl queryFVar `q shape.safetyArgTy .default .default
+    let globalSafety := mkApp2 safetyFn (.fvar idFVar) (.fvar queryFVar)
+    if isTrivialFalseProp env lctxSafety 100 16 globalSafety then
+      warnings := warnings.push {
+        code := "unsatisfiable_safety"
+        declaration := specDeclStr
+        message :=
+          s!"{shape.specLabel}.safety reduces to a trivially unsatisfiable " ++
+          "proposition regardless of function identity or arguments"
+      }
+    else
+      -- 2b. Per-unsafe-body `safety` satisfiability check (catches typos
+      --     or wrong argument arities on unsafe bodies).
+      let bodies := extractCapturedBodies env subjectName
+      let maxCheckedArgs : Nat := 32
+      for idx in [0:bodies.size] do
+        if let some body := bodies[idx]? then
+          if body.isUnsafe && body.argumentCount <= maxCheckedArgs then
+            let mut lctxBody : LocalContext := {}
+            let mut argExprs : List Expr := []
+            for aIdx in [0:body.argumentCount] do
+              let fv : FVarId := { name := Name.num `_anneal_lint_arg aIdx }
+              lctxBody := lctxBody.mkLocalDecl fv `arg shape.valTy
+                .default .default
+              argExprs := argExprs ++ [.fvar fv]
+            let argsListExpr := mkListExpr shape.valTy argExprs
+            let (lctxQuery, safetyArgExpr) := match shape.callerMemTy? with
+              | none => (lctxBody, argsListExpr)
+              | some memTy =>
+                let memFVar : FVarId := { name := `_anneal_lint_caller_mem }
+                (lctxBody.mkLocalDecl memFVar `callerMem memTy
+                  .default .default,
+                 mkApp2 (mkConst `Trusted.MirSemantics.Query.mk)
+                   argsListExpr (.fvar memFVar))
+            let idArg := match body.identityText with
+              | some s => .lit (.strVal s)
+              | none => body.identityExpr
+            let bodySafety := mkApp2 safetyFn idArg safetyArgExpr
+            if isTrivialFalseProp env lctxQuery 100 16 bodySafety then
+              let bodyLabel := body.identityText.getD s!"body#{idx}"
+              warnings := warnings.push {
+                code := "unsatisfiable_safety"
+                declaration := specDeclStr
+                body := some bodyLabel
+                message :=
+                  s!"{shape.specLabel}.safety reduces to a trivially " ++
+                  s!"unsatisfiable proposition for unsafe body " ++
+                  s!"`{bodyLabel}` ({body.argumentCount} arg(s))"
+              }
+    -- 2c. `property` triviality & `Program`-ignorance check.
+    let progFVar : FVarId := { name := `_anneal_lint_prog }
+    let lctxProp := ({} : LocalContext)
+      |>.mkLocalDecl progFVar `p shape.progTy .default .default
+    let propApplied := mkApp propFn (.fvar progFVar)
+    let propReduced := kernelWhnfSafe env lctxProp propApplied
+    if isTrivialTrueProp env lctxProp 100 16 propReduced then
+      warnings := warnings.push {
+        code := "trivial_property"
+        declaration := specDeclStr
+        message :=
+          s!"{shape.specLabel}.property reduces to a trivially true " ++
+          "proposition"
+      }
+    else if !propReduced.containsFVar progFVar then
+      warnings := warnings.push {
+        code := "unused_spec_binding"
+        declaration := specDeclStr
+        message :=
+          s!"{shape.specLabel}.property ignores its `Program` argument " ++
+          "(normalized body does not reference the captured program)"
+      }
   -- Sort and deduplicate deterministically.
   let sorted := warnings.qsort (fun a b => a.sortKey < b.sortKey)
   sorted.foldl (init := #[]) fun acc w =>
@@ -6323,7 +6394,12 @@ def targetAudit (j : Json) (foundation : Array Name) : IO Json := do
     fail "target and Expected must have no universe parameters"
   unless expectedInfo.type == .sort .zero do fail "Expected must have type Prop"
   let canonicalRoot := (← field (α := String) target "canonicalRoot").toName
-  let crateCtor : Name := `Trusted.MirSemantics.Crate.mk
+  let crateCtor : Name :=
+    if canonicalRoot == `Trusted.MirSemantics.CrateTheoremV2 ||
+        canonicalRoot == `Trusted.MirSemantics.UnitTheoremV2 then
+      `Trusted.MirSemantics.CrateV2.mk
+    else
+      `Trusted.MirSemantics.Crate.mk
   let subjectName := (← field (α := String) target "subjectDeclaration").toName
   let specName :=
     (← field (α := String) target "specificationDeclaration").toName
@@ -6339,6 +6415,11 @@ def targetAudit (j : Json) (foundation : Array Name) : IO Json := do
     | _ => fail s!"incorrect canonical input origin {n}"
     unless (← lookup n).levelParams.isEmpty do
       fail s!"canonical input has universe parameters {n}"
+  unless canonicalRoot == `Trusted.MirSemantics.CrateTheorem ||
+      canonicalRoot == `Trusted.MirSemantics.UnitTheorem ||
+      canonicalRoot == `Trusted.MirSemantics.CrateTheoremV2 ||
+      canonicalRoot == `Trusted.MirSemantics.UnitTheoremV2 do
+    fail s!"unexpected canonical root {canonicalRoot}"
   -- Build the proposition directly from authenticated kernel names. Imported
   -- syntax, namespaces and elaborators may change the compiled Expected body;
   -- that convenience definition is therefore checked against this expression.

@@ -150,6 +150,12 @@ fn stdlib_capability_is_opt_in_and_scoped_to_a_self_contained_named_crate() {
         fixture.capture("core", &["--select=selected", "--stdlib-crate=core", "--cfg=miri"]);
     assert_refused(&output, &dir, "unsupported", "cfg(miri)");
 
+    // Profile v2 bodies (here, a reference parameter) stay refused under the
+    // capability, whose checks cover only Profile v1.
+    let mut by_ref = Fixture::new(&format!("{NO_CORE}pub fn by_ref(x: &u8) -> u8 {{ *x }}\n"));
+    let (output, dir) = by_ref.capture("core", &["--select=by_ref", "--stdlib-crate=core"]);
+    assert_refused(&output, &dir, "unsupported", "admits only Profile v1 bodies");
+
     // A crate named `core` that loads the sysroot's `core` is not
     // self-contained, so the capability does not apply to it.
     let mut linked = Fixture::new("#![no_std]\npub fn selected(x: u8) -> u8 { x }\n");

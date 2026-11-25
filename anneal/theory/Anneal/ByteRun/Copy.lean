@@ -818,13 +818,12 @@ private theorem writeBytes_ok_inversion (m m' : MemoryState) (place : MemPlace)
             true)
           m.allocations)) := by
   dsimp only [writeBytes] at hWrite
-  rw [natBeq_zero_false_of_blt_zero bs.length hPos, ite_bool_false rfl]
-    at hWrite
   cases hFind : findAllocation place.allocId m.allocations with
   | none => rw [hFind] at hWrite; nomatch hWrite
   | some a =>
     rw [hFind] at hWrite
     dsimp only at hWrite
+    rw [natBeq_zero_false_of_blt_zero bs.length hPos, ite_bool_false rfl] at hWrite
     cases hGuard :
         (!a.live || !isInBounds a place.offset bs.length ||
           !isAligned a place.offset alignLog2) with
@@ -876,7 +875,9 @@ private theorem writeBytes_ok_inversion (m m' : MemoryState) (place : MemPlace)
                 m.allocations))
           a.mutability
           (fun hBad => by nomatch hBad)
-          (fun hOk => by injection hOk with hM; exact ⟨rfl, hM.symm⟩)
+          (fun hOk => by
+            injection hOk with hM
+            exact ⟨rfl, hM.symm⟩)
           hWrite
       have hM' : m' = MemoryState.mk m.nextAllocId
           (replaceAllocation
@@ -907,8 +908,9 @@ private theorem writeBytes_ok_of_valid (m : MemoryState) (place : MemPlace)
             true)
           m.allocations)) := by
   dsimp only [writeBytes]
-  rw [natBeq_zero_false_of_blt_zero bs.length hPos, ite_bool_false rfl, hFind]
+  rw [hFind]
   dsimp only
+  rw [natBeq_zero_false_of_blt_zero bs.length hPos, ite_bool_false rfl]
   have hGuard :
       (!a.live || !isInBounds a place.offset bs.length ||
         !isAligned a place.offset alignLog2) = false := by
@@ -938,9 +940,9 @@ theorem readBytes_after_writeBytes_same (m m' : MemoryState) (place : MemPlace)
       exact findAllocation_replaceAllocation_same m.allocations a a'
         (by rw [hAllocId]; exact hFind) rfl
     dsimp only [readBytes]
-    rw [natBeq_zero_false_of_blt_zero bs.length hPos, ite_bool_false rfl,
-      hFind']
+    rw [hFind']
     dsimp only
+    rw [natBeq_zero_false_of_blt_zero bs.length hPos, ite_bool_false rfl]
     have hLv' : a'.live = true := rfl
     have hInB' : isInBounds a' place.offset bs.length = true := by
       dsimp only [isInBounds, a']; rw [hLen']; exact hBounds
@@ -990,9 +992,9 @@ theorem readBytes_after_writeBytes_subslice (m m' : MemoryState)
         (natBle_add_mono_left place.offset (subRelOff + subSz) bs.length hSubIn)
         hBounds
     dsimp only [readBytes]
-    rw [natBeq_zero_false_of_blt_zero subSz hSubPos, ite_bool_false rfl,
-      hFind']
+    rw [hFind']
     dsimp only
+    rw [natBeq_zero_false_of_blt_zero subSz hSubPos, ite_bool_false rfl]
     have hLv' : a'.live = true := rfl
     have hInB' :
         isInBounds a' (place.offset + subRelOff) subSz = true := by
@@ -1070,58 +1072,60 @@ theorem readBytes_after_writeBytes_disjoint (m m' : MemoryState)
     readBytes m' readPlace readSz readAlign =
       readBytes m readPlace readSz readAlign := by
   dsimp only [readBytes]
-  cases Nat.beq readSz 0 with
-  | true => rfl
-  | false =>
-    cases writeBytes_ok_inversion m m' writePlace writeAlign bs hPos hWrite with
-    | intro a hA =>
-      have hFind := hA.1
-      have hLive := hA.2.2.1
-      have hBounds := hA.2.2.2.1
-      have hM' := hA.2.2.2.2.2
-      have hAllocId :=
-        findAllocation_allocId writePlace.allocId m.allocations a hFind
-      let bytes' :=
-        a.bytes.take writePlace.offset ++ bs ++
-          a.bytes.drop (writePlace.offset + bs.length)
-      let a' := Allocation.mk a.allocId a.alignLog2 .mut bytes' true
-      cases hIdEq : Nat.beq writePlace.allocId readPlace.allocId with
-      | false =>
-        have hNe : Nat.beq a'.allocId readPlace.allocId = false := by
-          dsimp only [a']; rw [hAllocId]; exact hIdEq
-        have hFind2 :
-            findAllocation readPlace.allocId m'.allocations =
-              findAllocation readPlace.allocId m.allocations := by
-          rw [hM']; dsimp only
-          exact findAllocation_replaceAllocation_ne readPlace.allocId
-            m.allocations a' hNe
-        rw [hFind2]
+  cases writeBytes_ok_inversion m m' writePlace writeAlign bs hPos hWrite with
+  | intro a hA =>
+    have hFind := hA.1
+    have hLive := hA.2.2.1
+    have hBounds := hA.2.2.2.1
+    have hM' := hA.2.2.2.2.2
+    have hAllocId :=
+      findAllocation_allocId writePlace.allocId m.allocations a hFind
+    let bytes' :=
+      a.bytes.take writePlace.offset ++ bs ++
+        a.bytes.drop (writePlace.offset + bs.length)
+    let a' := Allocation.mk a.allocId a.alignLog2 .mut bytes' true
+    cases hIdEq : Nat.beq writePlace.allocId readPlace.allocId with
+    | false =>
+      have hNe : Nat.beq a'.allocId readPlace.allocId = false := by
+        dsimp only [a']; rw [hAllocId]; exact hIdEq
+      have hFind2 :
+          findAllocation readPlace.allocId m'.allocations =
+            findAllocation readPlace.allocId m.allocations := by
+        rw [hM']; dsimp only
+        exact findAllocation_replaceAllocation_ne readPlace.allocId
+          m.allocations a' hNe
+      rw [hFind2]
+    | true =>
+      have hRangeDisj :
+          rangesDisjoint writePlace.offset bs.length
+            readPlace.offset readSz = true := by
+        rw [hIdEq] at hDisj; exact hDisj
+      have hId12 := natEq_of_beq writePlace.allocId readPlace.allocId hIdEq
+      have hFind' :
+          findAllocation readPlace.allocId m'.allocations = some a' := by
+        rw [← hId12, hM']; dsimp only; rw [← hAllocId]
+        exact findAllocation_replaceAllocation_same m.allocations a a'
+          (by rw [hAllocId]; exact hFind) rfl
+      have hFindOrig :
+          findAllocation readPlace.allocId m.allocations = some a := by
+        rw [← hId12]; exact hFind
+      rw [hFind', hFindOrig]
+      dsimp only
+      have hLen' : bytes'.length = a.bytes.length :=
+        listSplice_length writePlace.offset bs a.bytes hBounds
+      have hLvEq : a'.live = a.live := hLive.symm
+      have hInBEq :
+          isInBounds a' readPlace.offset readSz =
+            isInBounds a readPlace.offset readSz := by
+        dsimp only [isInBounds, a']; rw [hLen']
+      have hAlEq :
+          isAligned a' readPlace.offset readAlign =
+            isAligned a readPlace.offset readAlign := rfl
+      cases Nat.beq readSz 0 with
       | true =>
-        have hRangeDisj :
-            rangesDisjoint writePlace.offset bs.length
-              readPlace.offset readSz = true := by
-          rw [hIdEq] at hDisj; exact hDisj
-        have hId12 := natEq_of_beq writePlace.allocId readPlace.allocId hIdEq
-        have hFind' :
-            findAllocation readPlace.allocId m'.allocations = some a' := by
-          rw [← hId12, hM']; dsimp only; rw [← hAllocId]
-          exact findAllocation_replaceAllocation_same m.allocations a a'
-            (by rw [hAllocId]; exact hFind) rfl
-        have hFindOrig :
-            findAllocation readPlace.allocId m.allocations = some a := by
-          rw [← hId12]; exact hFind
-        rw [hFind', hFindOrig]
-        dsimp only
-        have hLen' : bytes'.length = a.bytes.length :=
-          listSplice_length writePlace.offset bs a.bytes hBounds
-        have hLvEq : a'.live = a.live := hLive.symm
-        have hInBEq :
-            isInBounds a' readPlace.offset readSz =
-              isInBounds a readPlace.offset readSz := by
-          dsimp only [isInBounds, a']; rw [hLen']
-        have hAlEq :
-            isAligned a' readPlace.offset readAlign =
-              isAligned a readPlace.offset readAlign := rfl
+        rw [ite_bool_true rfl, ite_bool_true rfl, hAlEq]
+      | false =>
+        rw [ite_bool_false rfl, ite_bool_false rfl]
         have hGuardEq :
             (!a'.live || !isInBounds a' readPlace.offset readSz ||
               !isAligned a' readPlace.offset readAlign) =
@@ -1417,11 +1421,8 @@ private theorem copyRepeatedly_fold_fused (m : MemoryState) (src dst : MemPlace)
               findAllocation src.allocId m.allocations :=
           findAllocation_replaceAllocation_ne src.allocId m.allocations aJ hNe
         dsimp only [readBytes]
-        rw [natBeq_zero_false_of_blt_zero elemSz hElemPos, ite_bool_false rfl,
-          hFindSrc]
+        rw [hFindSrc]
         dsimp only [readBytes] at hReadSrc
-        rw [natBeq_zero_false_of_blt_zero elemSz hElemPos, ite_bool_false rfl]
-          at hReadSrc
         exact hReadSrc
       | true =>
         have hRangeDisjAll :
@@ -1458,13 +1459,13 @@ private theorem copyRepeatedly_fold_fused (m : MemoryState) (src dst : MemPlace)
             findAllocation src.allocId m.allocations = some aDst := by
           rw [← hId12]; exact hFindDst
         dsimp only [readBytes]
-        rw [natBeq_zero_false_of_blt_zero elemSz hElemPos, ite_bool_false rfl,
-          hFindSrcJ]
+        rw [hFindSrcJ]
         dsimp only [readBytes] at hReadSrc
-        rw [natBeq_zero_false_of_blt_zero elemSz hElemPos, ite_bool_false rfl,
-          hFindSrc0] at hReadSrc
+        rw [hFindSrc0] at hReadSrc
         dsimp only
         dsimp only at hReadSrc
+        rw [natBeq_zero_false_of_blt_zero elemSz hElemPos, ite_bool_false rfl]
+        rw [natBeq_zero_false_of_blt_zero elemSz hElemPos, ite_bool_false rfl] at hReadSrc
         have hLvEq : aJ.live = aDst.live := hLiveDst.symm
         have hInBEq :
             isInBounds aJ src.offset elemSz =

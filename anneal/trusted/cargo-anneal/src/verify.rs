@@ -658,10 +658,12 @@ enum Scope {
 }
 
 impl Scope {
-    const fn root_theorem(&self) -> &'static str {
-        match self {
-            Self::Crate {} => "CrateTheorem",
-            Self::SelectedUnit { .. } => "UnitTheorem",
+    const fn root_theorem(&self, profile_version: u32) -> (&'static str, &'static str) {
+        match (self, profile_version) {
+            (Self::Crate {}, 2) => ("CrateTheoremV2", "CrateV2"),
+            (Self::SelectedUnit { .. }, 2) => ("UnitTheoremV2", "CrateV2"),
+            (Self::Crate {}, _) => ("CrateTheorem", "Crate"),
+            (Self::SelectedUnit { .. }, _) => ("UnitTheorem", "Crate"),
         }
     }
 
@@ -742,9 +744,15 @@ struct CapturedSourceFile {
     sha256: String,
 }
 
+fn default_profile_version() -> u32 {
+    1
+}
+
 #[derive(Deserialize)]
 struct CaptureProgram {
     scope: Scope,
+    #[serde(default = "default_profile_version")]
+    mir_profile_version: u32,
     #[serde(rename = "bodies")]
     _bodies: serde::de::IgnoredAny,
 }
@@ -1966,6 +1974,16 @@ fn run(args: &VerifyArgs, work: &Path) -> Result<Value> {
     // Authenticate configuration and scope before compiling any authored
     // Lean. A valid theorem about another target or a narrower selection
     // cannot satisfy this request.
+    if !matches!(manifest.program.mir_profile_version, 1 | 2) {
+        return Err(error(
+            "tool_failed",
+            "capture",
+            format!(
+                "unsupported captured MIR profile version {}",
+                manifest.program.mir_profile_version
+            ),
+        ));
+    }
     if manifest.program.scope != request.scope
         || manifest.configuration["crate_name"] != request.compilation.crate_name
         || manifest.configuration["crate_type"] != request.compilation.crate_type.as_str()
@@ -2142,18 +2160,19 @@ fn run(args: &VerifyArgs, work: &Path) -> Result<Value> {
     // proof edits. The auditor also checks actual compiled dependencies,
     // so a helper that changes a specification's meaning needs its role.
     let specification_manifest_sha256 = sha256_bytes(&encoded(&spec_identity)?);
-    let root_name = request.scope.root_theorem();
+    let (root_name, crate_ctor_ty) =
+        request.scope.root_theorem(manifest.program.mir_profile_version);
     // Only validated declaration identifiers enter this fixed template. The
     // authored proof package never supplies an expected proposition or model.
     let header = "-- Copyright 2026 The Fuchsia Authors\n--\n-- Licensed under a BSD-style license <LICENSE-BSD>, Apache License, Version 2.0\n-- <LICENSE-APACHE or https://www.apache.org/licenses/LICENSE-2.0>, or the MIT\n-- license <LICENSE-MIT or https://opensource.org/licenses/MIT>, at your option.\n-- This file may not be copied, modified, or distributed except according to\n-- those terms.\n\n";
     let expected = if expected_is_module {
         format!(
-            "{header}module\nprelude\npublic import Trusted.MirSemantics\npublic import Captured\npublic import {spec_module}\n\n@[expose] public section\n\nnamespace Expected\ndef claim : Prop := _root_.Trusted.MirSemantics.{root_name} (_root_.Trusted.MirSemantics.Crate.mk _root_.Captured.program _root_.{})\nend Expected\n\nend\n",
+            "{header}module\nprelude\npublic import Trusted.MirSemantics\npublic import Captured\npublic import {spec_module}\n\n@[expose] public section\n\nnamespace Expected\ndef claim : Prop := _root_.Trusted.MirSemantics.{root_name} (_root_.Trusted.MirSemantics.{crate_ctor_ty}.mk _root_.Captured.program _root_.{})\nend Expected\n\nend\n",
             request.proof.specification
         )
     } else {
         format!(
-            "{header}prelude\nimport Trusted.MirSemantics\nimport Captured\nimport {spec_module}\n\nnamespace Expected\ndef claim : Prop := _root_.Trusted.MirSemantics.{root_name} (_root_.Trusted.MirSemantics.Crate.mk _root_.Captured.program _root_.{})\nend Expected\n",
+            "{header}prelude\nimport Trusted.MirSemantics\nimport Captured\nimport {spec_module}\n\nnamespace Expected\ndef claim : Prop := _root_.Trusted.MirSemantics.{root_name} (_root_.Trusted.MirSemantics.{crate_ctor_ty}.mk _root_.Captured.program _root_.{})\nend Expected\n",
             request.proof.specification
         )
     };
@@ -2264,6 +2283,7 @@ fn run(args: &VerifyArgs, work: &Path) -> Result<Value> {
     let taints = active_taints(args);
     let taint_reasons = taint_reason_strings(&taints);
     let status = request.scope.verified_status(!taints.is_empty());
+    let profile_v2 = manifest.program.mir_profile_version == 2;
     let correspondence_provenance: Value = if args.allow_unpinned_lean {
         json!({
             "applicable": false,
@@ -2271,6 +2291,17 @@ fn run(args: &VerifyArgs, work: &Path) -> Result<Value> {
                 "unpinned Lean toolchain; bundled Pass 2 correspondence provenance \
                  applies only to pinned {TOOLCHAIN}"
             ),
+        })
+    } else if profile_v2 {
+        // Pass 2 relates only the Profile v1 rules (`initState`/`evalStep`)
+        // to `lean-miri`; `Trusted.Correspondence` maps Profile v2-only
+        // constructors to fail-closed sentinels, so it certifies nothing
+        // about `initStateV2`/`evalStepV2`.
+        json!({
+            "applicable": false,
+            "reason": "bundled Pass 2 correspondence covers Profile v1 semantics \
+                       only; Profile v2 execution rules are not certified \
+                       against lean-miri",
         })
     } else {
         serde_json::from_str(CORRESPONDENCE_PROVENANCE_JSON).map_err(|e| {
@@ -2348,9 +2379,35 @@ fn run(args: &VerifyArgs, work: &Path) -> Result<Value> {
     // reports about itself identifies an unhashed component, so its integrity
     // rests on the uncompromised execution environment assumed by
     // THREAT_MODEL.md section 2.1.
+    // `ValidEntryArgsV2` quantifies only over entry queries whose reference
+    // arguments satisfy `refsValidInMemList` (live, in-bounds, aligned, and
+    // initialized pointees that decode to valid values) and are pairwise
+    // disjoint when mutable, for safe and `unsafe` functions alike. Rust's
+    // language validity invariant is weaker for references passed to an
+    // `unsafe fn`, so the receipt states this narrowing explicitly.
+    let semantics_assumption = if profile_v2 {
+        "experimental Profile v2 MIR semantics: caller memory, single-level \
+         references and raw pointers, little-endian byte order, and no \
+         aliasing model (Stacked or Tree Borrows); bodies mixing reference \
+         and raw-pointer locals are refused, reference validity and \
+         mutable-reference disjointness are checked at entry and return, \
+         and raw-pointer arguments are assumed to carry provenance that \
+         permits the accesses made through them; every reference argument, \
+         including those of unsafe functions, is assumed to be non-null and \
+         aligned, to lie in bounds of a live allocation whenever it carries \
+         provenance (even for zero-sized and empty pointees), to point into \
+         a mutable allocation if it is a mutable reference with provenance, \
+         to point to initialized bytes that decode to a valid value of the \
+         pointee type (a Rust validity rule the Rust Reference calls \
+         debated), and to be disjoint from every other mutable reference \
+         argument, so results say nothing about calls that pass references \
+         to uninitialized, invalid, or dangling memory"
+    } else {
+        "experimental pointer-free MIR semantics"
+    };
     let mut assumptions: Vec<&str> = vec![
         "faithful pinned compiler capture",
-        "experimental pointer-free MIR semantics",
+        semantics_assumption,
         lean_assumption,
         "intact compiler and verification environment",
     ];

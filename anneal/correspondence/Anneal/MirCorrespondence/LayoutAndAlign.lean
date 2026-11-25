@@ -46,8 +46,9 @@ Foundational slice-algebra, layout, pointer-alignment, zero-size access, and
      `PointerMachine.symbolicAlignment` and aligned base addresses), alongside
      relative `CtfeProvenance`.
    - Explicit characterization of `MirSemantics.Memory.{readBytes, writeBytes}`
-     on `size = 0` (which short-circuits before checking `isAligned` or
-     liveness) paired with `zst_day1_alignLog2_zero` and
+     on `size = 0` (which resolves the allocation record and checks only
+     `isAligned`, skipping liveness and bounds) paired with
+     `zst_day1_alignLog2_zero` and
      `zst_day1_indirect_and_miri_align_agree` (every zero-sized layout admitted
      by `layoutOfTy` has `alignLog2 = 0`, where both `MirSemantics.isAligned`
      and `checkPtrAlign` at `Align.ONE` succeed unconditionally and
@@ -321,7 +322,9 @@ theorem layoutOfTy_props (ty : MirTy) (lay : MirSemantics.LayoutData)
             | cons _ _ => dsimp only [layoutOfTy] at h; cases h
           | _ => dsimp only [layoutOfTy] at h; cases h
       | _ => dsimp only [layoutOfTy] at h; cases h
-  | ref _ _ | rawPtr _ _ | unsupported => dsimp only [layoutOfTy] at h; cases h
+  | ref _ _ | rawPtr _ _ | slice _ | rangeTo _ | rangeFrom _
+  | unsupported =>
+    dsimp only [layoutOfTy] at h; cases h
 
 /-- Every zero-sized `MirTy` layout admitted by `layoutOfTy` (`.unit`,
 `.never`, and zero-sized enums) has `alignLog2 = 0` (`Align.ONE`). -/
@@ -369,22 +372,51 @@ theorem zst_day1_alignLog2_zero (ty : MirTy) (lay : MirSemantics.LayoutData)
             | cons _ _ => dsimp only [layoutOfTy] at h; cases h
           | _ => dsimp only [layoutOfTy] at h; cases h
       | _ => dsimp only [layoutOfTy] at h; cases h
-  | ref _ _ | rawPtr _ _ | unsupported => dsimp only [layoutOfTy] at h; cases h
+  | ref _ _ | rawPtr _ _ | slice _ | rangeTo _ | rangeFrom _
+  | unsupported =>
+    dsimp only [layoutOfTy] at h; cases h
 
-/-- `Trusted.MirSemantics.readBytes` short-circuits `size = 0` to `.ok []`
-before inspecting `findAllocation`, allocation liveness, bounds, or
-`isAligned`. -/
+/-- `Trusted.MirSemantics.readBytes` at `size = 0` resolves the allocation
+record and checks only `isAligned` (skipping liveness and bounds), returning
+`.ok []` when the allocation exists and the place is aligned. -/
 theorem readBytes_zero_size (m : MirSemantics.MemoryState) (place : MemPlace)
-    (alignLog2 : Nat) :
-    readBytes m place 0 alignLog2 = .ok [] :=
+    (alignLog2 : Nat) (a : MirSemantics.Allocation)
+    (h_fa : findAllocation place.allocId m.allocations = some a)
+    (h_al : isAligned a place.offset alignLog2 = true) :
+    readBytes m place 0 alignLog2 = .ok [] := by
+  dsimp only [readBytes]
+  rw [h_fa]
+  dsimp only
+  rw [h_al]
   rfl
 
-/-- `Trusted.MirSemantics.writeBytes` short-circuits empty writes (`bytes = []`)
-to `.ok m` before inspecting `findAllocation`, allocation liveness, bounds,
-`isAligned`, or mutability. -/
+/-- `Trusted.MirSemantics.readBytes` at `size = 0` faults with `.undefined` on
+a misaligned place, even when the allocation is dead or the offset is out of
+bounds. -/
+theorem readBytes_zero_size_misaligned (m : MirSemantics.MemoryState)
+    (place : MemPlace) (alignLog2 : Nat) (a : MirSemantics.Allocation)
+    (h_fa : findAllocation place.allocId m.allocations = some a)
+    (h_al : isAligned a place.offset alignLog2 = false) :
+    readBytes m place 0 alignLog2 = .error .undefined := by
+  dsimp only [readBytes]
+  rw [h_fa]
+  dsimp only
+  rw [h_al]
+  rfl
+
+/-- `Trusted.MirSemantics.writeBytes` with empty `bytes` resolves the
+allocation record and checks only `isAligned` (skipping liveness, bounds, and
+mutability), returning `.ok m` when the allocation exists and the place is
+aligned. -/
 theorem writeBytes_zero_size (m : MirSemantics.MemoryState) (place : MemPlace)
-    (alignLog2 : Nat) :
-    writeBytes m place alignLog2 [] = .ok m :=
+    (alignLog2 : Nat) (a : MirSemantics.Allocation)
+    (h_fa : findAllocation place.allocId m.allocations = some a)
+    (h_al : isAligned a place.offset alignLog2 = true) :
+    writeBytes m place alignLog2 [] = .ok m := by
+  dsimp only [writeBytes]
+  rw [h_fa]
+  dsimp only
+  rw [h_al]
   rfl
 
 /-- `Miri.ABI.Size.alignTo` on `w.byteSize + 1` rounded to `intLayout w`'s
@@ -562,14 +594,15 @@ theorem checkPtrAlign_alignOne {Prov ProvExtra : Type} [PointerProvenance Prov]
 every `MirTy` with `layoutOfTy ty = some lay` and `lay.size = 0` carries
 `lay.alignLog2 = 0` (`Align.ONE`), so both `MirSemantics.isAligned` and
 `Miri.Memory.checkPtrAlign` succeed unconditionally at `⟨lay.alignLog2⟩`, while
-`loadIndirect`, `storeIndirect`, and `deinitIndirect` reduce without alignment
-divergence. -/
+`loadIndirect`, `storeIndirect`, and `deinitIndirect` on a place whose
+allocation record exists reduce without alignment divergence. -/
 theorem zst_day1_indirect_and_miri_align_agree {Prov ProvExtra : Type}
     [PointerProvenance Prov]
     (ty : MirTy) (lay : MirSemantics.LayoutData)
     (h_lay : layoutOfTy ty = some lay) (h_sz : lay.size = 0)
     (m : MirSemantics.MemoryState) (place : MemPlace)
     (a : MirSemantics.Allocation) (off : Nat)
+    (h_fa : findAllocation place.allocId m.allocations = some a)
     (ptr : Miri.Memory.Pointer (Option Prov)) (enforce : Bool)
     (resolve : PointerResolver Prov ProvExtra)
     (lookup : Miri.Memory.AllocId → Except AllocationLookupError AllocationInfo)
@@ -585,32 +618,37 @@ theorem zst_day1_indirect_and_miri_align_agree {Prov ProvExtra : Type}
       encodeVal profileTargetEndian ty v = .ok [] →
       storeIndirect m ty place v = .ok m) := by
   have h_al : lay.alignLog2 = 0 := zst_day1_alignLog2_zero ty lay h_lay h_sz
-  refine ⟨h_al, ?_, ?_, ?_, ?_, ?_⟩
-  · rw [h_al]
+  have h_isal : ∀ o : Nat, MirSemantics.isAligned a o lay.alignLog2 = true := by
+    intro o
+    rw [h_al]
     dsimp only [MirSemantics.isAligned]
     rw [(nat_ble_true_iff 0 a.alignLog2).2 (Nat.zero_le _), Bool.true_and,
       show Nat.pow 2 0 = 1 from rfl]
-    change Nat.beq (HMod.hMod off 1) 0 = true
+    change Nat.beq (HMod.hMod o 1) 0 = true
     rw [Nat.mod_one]
     rfl
+  have h_rd : readBytes m place 0 lay.alignLog2 = .ok [] :=
+    readBytes_zero_size m place lay.alignLog2 a h_fa (h_isal place.offset)
+  have h_wr : writeBytes m place lay.alignLog2 [] = .ok m :=
+    writeBytes_zero_size m place lay.alignLog2 a h_fa (h_isal place.offset)
+  refine ⟨h_al, h_isal off, ?_, ?_, ?_, ?_⟩
   · rw [h_al]
     exact checkPtrAlign_alignOne ptr enforce resolve lookup hook
   · dsimp only [loadIndirect]
     rw [h_lay]
     dsimp only
-    rw [h_sz]
-    rfl
+    rw [h_sz, h_rd]
   · dsimp only [deinitIndirect, writeUninit]
     rw [h_lay]
     dsimp only
     rw [h_sz]
-    rfl
+    exact h_wr
   · intro v h_enc
     dsimp only [storeIndirect]
     rw [h_lay]
     dsimp only
     rw [h_enc]
-    rfl
+    exact h_wr
 
 /-- With `enforceAlignment = false` (corresponding to
 `Miri.Interpreter.AlignmentCheck.None`), `checkPtrAlign` succeeds for every
@@ -1477,11 +1515,15 @@ theorem allocateStack_spec (m : MirSemantics.MemoryState)
     exact findAllocation_append_some h_old
 
 /-- Helper eliminating a successful `writeBytes` call into either empty `bs`
-(`m' = m`) or a concrete updated allocation in `m.allocations`. -/
+(`m' = m`, with an existing allocation record aligned at `place`) or a
+concrete updated allocation in `m.allocations`. -/
 private theorem writeBytes_ok_elim {m m' : MirSemantics.MemoryState}
     {place : MemPlace} {alignLog2 : Nat} {bs : List AllocByte}
     (h_w : writeBytes m place alignLog2 bs = .ok m') :
-    (bs = [] ∧ m' = m) ∨
+    (bs = [] ∧ m' = m ∧
+      ∃ a : MirSemantics.Allocation,
+        findAllocation place.allocId m.allocations = some a ∧
+        isAligned a place.offset alignLog2 = true) ∨
     ∃ a : MirSemantics.Allocation,
       bs ≠ [] ∧
       findAllocation place.allocId m.allocations = some a ∧
@@ -1496,21 +1538,25 @@ private theorem writeBytes_ok_elim {m m' : MirSemantics.MemoryState}
               a.bytes.drop (place.offset + bs.length) }
           m.allocations } := by
   dsimp only [writeBytes] at h_w
-  cases h_len0 : Nat.beq bs.length 0 with
-  | true =>
-    rw [h_len0] at h_w
-    injection h_w with h_m'
-    exact Or.inl
-      ⟨List.eq_nil_of_length_eq_zero ((nat_beq_true_iff _ _).1 h_len0),
-        h_m'.symm⟩
-  | false =>
-    rw [h_len0] at h_w
-    have h_ne : bs ≠ [] := fun h => by rw [h] at h_len0; cases h_len0
-    cases h_fa : findAllocation place.allocId m.allocations with
-    | none => rw [h_fa] at h_w; dsimp only at h_w; cases h_w
-    | some a =>
-      rw [h_fa] at h_w
-      dsimp only at h_w
+  cases h_fa : findAllocation place.allocId m.allocations with
+  | none => rw [h_fa] at h_w; dsimp only at h_w; cases h_w
+  | some a =>
+    rw [h_fa] at h_w
+    dsimp only at h_w
+    cases h_len0 : Nat.beq bs.length 0 with
+    | true =>
+      rw [h_len0] at h_w
+      cases h_al0 : isAligned a place.offset alignLog2 with
+      | false => rw [h_al0] at h_w; cases h_w
+      | true =>
+        rw [h_al0] at h_w
+        injection h_w with h_m'
+        exact Or.inl
+          ⟨List.eq_nil_of_length_eq_zero ((nat_beq_true_iff _ _).1 h_len0),
+            h_m'.symm, a, rfl, h_al0⟩
+    | false =>
+      rw [h_len0] at h_w
+      have h_ne : bs ≠ [] := fun h => by rw [h] at h_len0; cases h_len0
       cases h_live : a.live with
       | false => rw [h_live] at h_w; cases h_w
       | true =>
@@ -1539,7 +1585,7 @@ theorem memoryAllIdsLt_writeBytes {m m' : MirSemantics.MemoryState}
     MemoryAllIdsLt m' ∧ m'.nextAllocId = m.nextAllocId := by
   cases writeBytes_ok_elim h_w with
   | inl h =>
-    rw [h.2]
+    rw [h.2.1]
     exact ⟨h_fresh, rfl⟩
   | inr h =>
     let ⟨a, _, h_fa, _, _, _, _, h_m'⟩ := h
@@ -1554,16 +1600,18 @@ theorem readBytes_after_writeBytes_self (m m' : MirSemantics.MemoryState)
     (h_w : writeBytes m place alignLog2 bs = .ok m') :
     readBytes m' place bs.length alignLog2 = .ok bs := by
   cases writeBytes_ok_elim h_w with
-  | inl h => rw [h.1]; rfl
+  | inl h =>
+    let ⟨h_nil, h_m', a, h_fa, h_al⟩ := h
+    subst h_nil
+    rw [h_m']
+    exact readBytes_zero_size m place alignLog2 a h_fa h_al
   | inr h =>
     let ⟨a, h_ne, h_fa, h_live, h_ib, h_al, _, h_m'⟩ := h
     subst h_m'
-    dsimp only [readBytes]
     have h_l0 : Nat.beq bs.length 0 = false := by
       cases bs with
       | nil => exact False.elim (h_ne rfl)
       | cons _ _ => rfl
-    rw [h_l0]
     let a' : MirSemantics.Allocation := {
       a with
       bytes := a.bytes.take place.offset ++ bs ++
@@ -1576,7 +1624,10 @@ theorem readBytes_after_writeBytes_self (m m' : MirSemantics.MemoryState)
       rw [← h_aid]
       exact findAllocation_replaceAllocation_eq a' m.allocations a
         (by rw [h_aid]; exact h_fa)
+    dsimp only [readBytes]
     rw [h_fa']
+    dsimp only
+    rw [h_l0]
     have h_in : place.offset + bs.length ≤ a.bytes.length :=
       (nat_ble_true_iff _ _).1 h_ib
     have h_ib' : isInBounds a' place.offset bs.length = true := by
@@ -1607,26 +1658,27 @@ theorem readBytes_after_writeBytes_disjoint_offset
     readBytes m' ⟨allocId, off2⟩ sz2 align2 =
       readBytes m ⟨allocId, off2⟩ sz2 align2 := by
   cases writeBytes_ok_elim h_w with
-  | inl h => rw [h.2]
+  | inl h => rw [h.2.1]
   | inr h =>
     let ⟨a, _, h_fa, _, h_ib, _, _, h_m'⟩ := h
     subst h_m'
+    let a' : MirSemantics.Allocation := {
+      a with
+      bytes := a.bytes.take off1 ++ bs ++ a.bytes.drop (off1 + bs.length)
+    }
+    have h_aid : a'.allocId = allocId := (findAllocation_mem h_fa).2
+    have h_fa' :
+        findAllocation allocId (replaceAllocation a' m.allocations) =
+          some a' := by
+      rw [← h_aid]
+      exact findAllocation_replaceAllocation_eq a' m.allocations a
+        (by rw [h_aid]; exact h_fa)
     dsimp only [readBytes]
+    rw [h_fa', h_fa]
+    dsimp only
     cases Nat.beq sz2 0 with
     | true => rfl
     | false =>
-      let a' : MirSemantics.Allocation := {
-        a with
-        bytes := a.bytes.take off1 ++ bs ++ a.bytes.drop (off1 + bs.length)
-      }
-      have h_aid : a'.allocId = allocId := (findAllocation_mem h_fa).2
-      have h_fa' :
-          findAllocation allocId (replaceAllocation a' m.allocations) =
-            some a' := by
-        rw [← h_aid]
-        exact findAllocation_replaceAllocation_eq a' m.allocations a
-          (by rw [h_aid]; exact h_fa)
-      rw [h_fa', h_fa]
       have h_in1 : off1 + bs.length ≤ a.bytes.length :=
         (nat_ble_true_iff _ _).1 h_ib
       have h_off1_le : off1 ≤ a.bytes.length :=
@@ -1671,7 +1723,7 @@ theorem writeBytes_preserves_other_alloc (m m' : MirSemantics.MemoryState)
   have h_find :
       findAllocation id2 m'.allocations = findAllocation id2 m.allocations := by
     cases writeBytes_ok_elim h_w with
-    | inl h => rw [h.2]
+    | inl h => rw [h.2.1]
     | inr h =>
       let ⟨a, _, h_fa, _, _, _, _, h_m'⟩ := h
       subst h_m'
@@ -1680,9 +1732,7 @@ theorem writeBytes_preserves_other_alloc (m m' : MirSemantics.MemoryState)
         (by rw [h_aid]; exact h_ne) m.allocations
   refine ⟨h_find, fun off2 sz2 align2 => ?_⟩
   dsimp only [readBytes]
-  cases Nat.beq sz2 0 with
-  | true => rfl
-  | false => rw [h_find]
+  rw [h_find]
 
 /-- Non-empty `writeBytes` to a `.shared` allocation faults with `.undefined`.
 -/
@@ -1694,11 +1744,12 @@ theorem writeBytes_shared_fault (m : MirSemantics.MemoryState)
     (h_sh : a.mutability = .shared) :
     writeBytes m place alignLog2 bs = .error .undefined := by
   dsimp only [writeBytes]
+  rw [h_fa]
+  dsimp only
   cases bs with
   | nil => exact False.elim (h_ne rfl)
   | cons b rest =>
     dsimp only [List.length, Nat.beq]
-    rw [h_fa]
     change
       (if (!a.live || !isInBounds a place.offset (rest.length + 1) ||
           !isAligned a place.offset alignLog2) = true then
@@ -1762,15 +1813,14 @@ theorem deallocateStack_spec (m m' : MirSemantics.MemoryState)
             | zero => exact False.elim (Nat.lt_irrefl 0 h_pos)
             | succ k =>
               dsimp only [readBytes]
-              rw [show Nat.beq (k + 1) 0 = false from rfl, ite_false_eq, h_dead]
+              rw [h_dead]
               rfl
           · intro off al bs h_ne
             cases bs with
             | nil => exact False.elim (h_ne rfl)
             | cons b rest =>
               dsimp only [writeBytes]
-              rw [show Nat.beq (b :: rest).length 0 = false from rfl,
-                ite_false_eq, h_dead]
+              rw [h_dead]
               rfl
           · dsimp only [deallocateStack]; rw [h_off0, h_dead]; rfl
           · intro id2 h_ne
