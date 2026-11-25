@@ -1,0 +1,27 @@
+# Copyright 2026 The Fuchsia Authors
+#
+# Licensed under a BSD-style license <LICENSE-BSD>, Apache License, Version 2.0
+# <LICENSE-APACHE or https://www.apache.org/licenses/LICENSE-2.0>, or the MIT
+# license <LICENSE-MIT or https://opensource.org/licenses/MIT>, at your option.
+# This file may not be copied, modified, or distributed except according to
+# those terms.
+
+name: CI (PR)
+
+on:
+  pull_request:
+
+permissions: {}
+
+jobs:
+  ci-core:
+    name: ci-core
+    uses: joshlf/ci-core/.github/workflows/ci-pr.yml@a22bebce337fc26765306fc6232632db1103ea48
+    with:
+      config_path: ci/checks.toml
+      shadow_mode: true
+    permissions:
+      actions: read # Read PR workflow-run and job attempt metadata.
+      contents: read # Bare-fetch target and base commits.
+      packages: read # Pull attested GHCR image and check receipts.
+      pull-requests: read # Read live owner PR reviews.

@@ -1,0 +1,30 @@
+# Copyright 2026 The Fuchsia Authors
+#
+# Licensed under a BSD-style license <LICENSE-BSD>, Apache License, Version 2.0
+# <LICENSE-APACHE or https://www.apache.org/licenses/LICENSE-2.0>, or the MIT
+# license <LICENSE-MIT or https://opensource.org/licenses/MIT>, at your option.
+# This file may not be copied, modified, or distributed except according to
+# those terms.
+
+name: CI (Trusted)
+
+on:
+  merge_group:
+  push:
+    branches:
+      - main
+
+permissions: {}
+
+jobs:
+  ci-core:
+    name: ci-core
+    uses: joshlf/ci-core/.github/workflows/ci.yml@a22bebce337fc26765306fc6232632db1103ea48
+    with:
+      config_path: ci/checks.toml
+    permissions:
+      actions: read # Read workflow-run and job attempt metadata.
+      contents: read # Bare-fetch target and default-branch commits.
+      id-token: write # Mint Fulcio OIDC certificates for batch Sigstore claims.
+      packages: write # Publish verified OCI images, caches, and check receipts.
+      pull-requests: read # Read live owner PR reviews on merge_group slices.

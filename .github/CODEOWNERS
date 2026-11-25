@@ -1,0 +1,35 @@
+# Copyright 2026 The Fuchsia Authors
+#
+# Licensed under a BSD-style license <LICENSE-BSD>, Apache License, Version 2.0
+# <LICENSE-APACHE or https://www.apache.org/licenses/LICENSE-2.0>, or the MIT
+# license <LICENSE-MIT or https://opensource.org/licenses/MIT>, at your option.
+# This file may not be copied, modified, or distributed except according to
+# those terms.
+
+# Consumer-TCB and CI configuration ownership enforced by `ci-core` and GitHub
+# branch rulesets. Keep all rules free of backslashes, negations, and character
+# classes so static last-match-wins verification remains exact.
+
+/.github/** @joshlf @jswrenn @mdittmer
+/ci/** @joshlf @jswrenn @mdittmer
+/githooks/** @joshlf @jswrenn @mdittmer
+/zerocopy/cargo.sh @joshlf @jswrenn @mdittmer
+/zerocopy/ci/** @joshlf @jswrenn @mdittmer
+/anneal/.github/** @joshlf @jswrenn @mdittmer
+/anneal/ci/** @joshlf @jswrenn @mdittmer
+/anneal/flake.nix @joshlf @jswrenn @mdittmer
+/anneal/flake.lock @joshlf @jswrenn @mdittmer
+/anneal/Cargo.toml @joshlf @jswrenn @mdittmer
+/anneal/Cargo.lock @joshlf @jswrenn @mdittmer
+/anneal/trusted/** @joshlf @jswrenn @mdittmer
+/anneal/tests/testkit/Cargo.toml @joshlf @jswrenn @mdittmer
+/anneal/tests/audit/Cargo.toml @joshlf @jswrenn @mdittmer
+/anneal/tests/cargo-anneal/Cargo.toml @joshlf @jswrenn @mdittmer
+/anneal/tests/rustc-capture/Cargo.toml @joshlf @jswrenn @mdittmer
+/anneal/tests/cargo-anneal/tests/fixtures/starnix/source.json @joshlf @jswrenn @mdittmer
+/anneal/vendor/lean-miri/UPSTREAM_PIN.json @joshlf @jswrenn @mdittmer
+/tools/** @joshlf @jswrenn @mdittmer
+.cargo @joshlf @jswrenn @mdittmer
+.cargo/ @joshlf @jswrenn @mdittmer
+rust-toolchain @joshlf @jswrenn @mdittmer
+rust-toolchain.toml @joshlf @jswrenn @mdittmer

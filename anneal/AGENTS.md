@@ -296,7 +296,14 @@ never proves defect absence or substitutes for CI or merge gates.
     `pull_request_review`, `pull_request_review_comment`, `workflow_run`,
     `merge_group`, `issue_comment`), forbid checking out PR heads with secrets
     available, require `persist-credentials: false`, and reserve write/OIDC
-    scopes for release jobs in `.github/workflows/release.yml`. Strip
+    scopes for release jobs in `.github/workflows/release.yml`. Only these
+    Zerocopy workflows may add job scopes beyond that: `ci-core-pr.yml`,
+    `actions`/`packages`/`pull-requests` read; `ci-core-trusted.yml`, on
+    `merge_group` and push to `main`, `packages`/`id-token` write (used only
+    by its reusable `publish` job) and `actions`/`pull-requests` read;
+    `ci-review-signal.yml`, none; and `ci-review-rerun.yml`, on
+    `workflow_run`, `actions` write and `contents`/`pull-requests` read.
+    Reject any other or broader scope. Strip
     `ACTIONS_CACHE_URL`, `ACTIONS_RESULTS_URL`, and `ACTIONS_RUNTIME_TOKEN`
     when running scripts outside `trusted/`. Allow no new in-checkout caches or
     PR-writable trusted substituters, and verify caches cannot bypass
