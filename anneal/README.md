@@ -343,6 +343,10 @@ significant influences are listed here, but this list is far from exhaustive.
   Apache-2.0) inspired Anneal's balanced Braun-tree separation-logic AC
   reflection (`Anneal.Core.SepPCM`) and sparse linear bitvector offset
   normalizer (`Anneal.PureLift.BvLin`).
+- Michael Sammler, Rodolphe Lepigre, Robbert Krebbers, Kayvan Memarian, Derek
+  Dreyer, and Deepak Garg's [RefinedC][refinedc] and its Lithium
+  separation-logic engine inspired `Anneal.SepAC.RangeSpan`'s deterministic
+  non-backtracking `PTree.diffWith` framing rules.
 
 [Aeneas]: https://arxiv.org/abs/2206.07185
 [Charon]: https://link.springer.com/chapter/10.1007/978-3-031-98685-7_18
@@ -384,3 +388,4 @@ significant influences are listed here, but this list is far from exhaustive.
 [Fuchsia]: https://fuchsia.dev/
 [starnix-ebpf]: https://fuchsia.googlesource.com/fuchsia/+/823a15538f191b9dbd9ebafaa6ba23220b87d2e1/src/starnix/lib/ebpf/core/src
 [code-verification]: https://github.com/google-deepmind/code-verification
+[refinedc]: https://doi.org/10.1145/3453483.3454036
