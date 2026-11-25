@@ -17,8 +17,8 @@ verify the `ci-core` check wiring in `ci/checks.toml` and
 """
 
 import hashlib
-import re
 import json
+import os
 from pathlib import Path
 import re
 import stat
@@ -28,6 +28,7 @@ import tempfile
 import textwrap
 import tomllib
 import unittest
+from unittest import mock
 
 import check_guard_mutation
 
@@ -59,6 +60,9 @@ class GuardMutationUnitTests(unittest.TestCase):
         self.assertGreaterEqual(
             len(check_guard_mutation.AUDIT_HEADER_GUARDS), 2
         )
+        self.assertGreaterEqual(
+            len(check_guard_mutation.AUDIT_BOUNDARY_GUARDS), 12
+        )
 
         res = subprocess.run(
             [sys.executable, "-I", "-B", str(SCRIPT), "--list"],
@@ -66,8 +70,10 @@ class GuardMutationUnitTests(unittest.TestCase):
             text=True,
         )
         self.assertEqual(res.returncode, 0, res.stderr)
-        expected_total = len(check_guard_mutation.MIR_SEMANTICS_GUARDS) + len(
-            check_guard_mutation.AUDIT_HEADER_GUARDS
+        expected_total = (
+            len(check_guard_mutation.MIR_SEMANTICS_GUARDS)
+            + len(check_guard_mutation.AUDIT_HEADER_GUARDS)
+            + len(check_guard_mutation.AUDIT_BOUNDARY_GUARDS)
         )
         self.assertIn(f"Total cataloged guards: {expected_total}", res.stdout)
 
@@ -168,7 +174,11 @@ class GuardMutationUnitTests(unittest.TestCase):
         self.assertEqual(status, "ERROR")
 
     def _run_synthetic_suite(
-        self, fake_lean_body: str, *, suite: str = "all"
+        self,
+        fake_lean_body: str,
+        *,
+        suite: str = "all",
+        extra_env: dict[str, str] | None = None,
     ) -> tuple[int, str, str, dict[str, object] | None, dict[str, str], dict[str, str]]:
         """Run `check_guard_mutation.py` with a fake `lean` binary."""
         with tempfile.TemporaryDirectory(prefix="anneal-gmut-unit-") as tmp:
@@ -186,6 +196,19 @@ class GuardMutationUnitTests(unittest.TestCase):
                 for p in tracked_files
             }
 
+            filter_name = (
+                "ops_div_rem_by_zero"
+                if suite == "mir_semantics"
+                else (
+                    "audit_header_reject_lean_import"
+                    if suite == "audit_headers"
+                    else "spec_preflight_reject_auto_implicit"
+                )
+            )
+            env = None
+            if extra_env is not None:
+                env = dict(os.environ)
+                env.update(extra_env)
             res = subprocess.run(
                 [
                     sys.executable,
@@ -199,14 +222,13 @@ class GuardMutationUnitTests(unittest.TestCase):
                     "--suite",
                     suite,
                     "--filter",
-                    "ops_div_rem_by_zero"
-                    if suite == "mir_semantics"
-                    else "audit_header_reject_lean_import",
+                    filter_name,
                     "--jobs",
                     "1",
                     "--json-out",
                     str(json_out),
                 ],
+                env=env,
                 capture_output=True,
                 text=True,
             )
@@ -546,6 +568,159 @@ class GuardMutationUnitTests(unittest.TestCase):
             | name_list(sp_text, "forbiddenPureRootNamespaces")
         )
         self.assertEqual(reserved - covered, set())
+
+    def test_runner_audit_boundary_suite_checks_sanity_and_policy_flip(self):
+        # Baseline `tb_olean` accepts `resolve-imports` and sanity checks
+        # (`spec_sanity` / `target-export`) while rejecting negative fixtures.
+        # Mutant (`anneal-gmut-`) preserves sanity and flips negative to ok
+        # (KILLED) or keeps rejecting (SURVIVED).
+        def make_fake_boundary(
+            fail_mutant_sanity: bool, survive_mutant: bool = False
+        ) -> str:
+            return textwrap.dedent(
+                f"""\
+                args = sys.argv[1:]
+                forbidden_env = [
+                    k for k in os.environ
+                    if k != "LEAN_PATH"
+                    and k.startswith(("LEAN_", "LAKE_", "ELAN_", "LD_", "DYLD_"))
+                ]
+                if forbidden_env:
+                    print(f"unstripped lean env vars: {{forbidden_env}}", file=sys.stderr)
+                    sys.exit(2)
+                if args == ["--print-prefix"]:
+                    if "LEAN_PATH" in os.environ:
+                        print("unexpected LEAN_PATH on --print-prefix", file=sys.stderr)
+                        sys.exit(2)
+                    print("/fake/sysroot")
+                    sys.exit(0)
+                if "-o" in args:
+                    Path(args[args.index("-o") + 1]).write_bytes(b"fake-olean")
+                    sys.exit(0)
+                if "--run" in args:
+                    run_idx = args.index("--run")
+                    run_args = args[run_idx + 1 :]
+                    if len(run_args) == 1:
+                        if "-j1" not in args[:run_idx]:
+                            print("missing -j1 on forge script", file=sys.stderr)
+                            sys.exit(2)
+                        if os.environ.get("LEAN_PATH") != "":
+                            print(
+                                f"expected empty LEAN_PATH on forge, got {{os.environ.get('LEAN_PATH')!r}}",
+                                file=sys.stderr,
+                            )
+                            sys.exit(2)
+                        p = Path(run_args[0])
+                        if p.name == "forge_dup_library.lean":
+                            (p.parent / "DupLib.olean").write_bytes(b"fake-dup-lib")
+                        sys.exit(0)
+                    req = json.loads(Path(run_args[1]).read_text())
+                    res_path = Path(run_args[2])
+                    lean_path = os.environ.get("LEAN_PATH", "")
+                    mode = req["mode"]
+                    if mode in ("resolve-imports", "target-export"):
+                        res_path.write_text(json.dumps({{"ok": True, "result": {{"graph": {{}}}}}}))
+                        sys.exit(0)
+                    tag_name = Path(run_args[1]).name
+                    is_baseline = "tb_olean" in lean_path
+                    if "sanity" in tag_name:
+                        if {fail_mutant_sanity!r} and not is_baseline:
+                            res_path.write_text(json.dumps({{
+                                "ok": False,
+                                "category": "policy",
+                                "message": "broken sanity on mutant",
+                            }}))
+                            sys.exit(1)
+                        res_path.write_text(json.dumps({{"ok": True, "result": {{}}}}))
+                        sys.exit(0)
+                    if is_baseline or {survive_mutant!r}:
+                        res_path.write_text(json.dumps({{
+                            "ok": False,
+                            "category": "policy",
+                            "message": "policy: rejected boundary fixture",
+                        }}))
+                        sys.exit(1)
+                    res_path.write_text(json.dumps({{"ok": True, "result": {{}}}}))
+                    sys.exit(0)
+                sys.exit(2)
+                """
+            )
+
+        rc, out, err, report, before, after = self._run_synthetic_suite(
+            make_fake_boundary(False),
+            suite="audit_boundary",
+            extra_env={
+                "LEAN_SYSROOT": "/tmp/bogus-lean-sysroot",
+                "LEAN_ABORT_ON_PANIC": "1",
+                "LAKE_HOME": "/tmp/bogus-lake",
+                "ELAN_TOOLCHAIN": "bogus-toolchain",
+                "LD_PRELOAD": "/tmp/bogus.so",
+                "LD_LIBRARY_PATH": "/tmp/bogus-lib",
+                "DYLD_INSERT_LIBRARIES": "/tmp/bogus.dylib",
+            },
+        )
+        self.assertEqual(rc, 0, out + err)
+        self.assertEqual(before, after)
+        assert report is not None
+        self.assertEqual(report["killed"], 1)
+        self.assertEqual(report["survived"], 0)
+        self.assertEqual(report["errors"], 0)
+
+        # If positive sanity breaks on mutant, status must be ERROR, not KILLED.
+        rc2, out2, err2, report2, _, _ = self._run_synthetic_suite(
+            make_fake_boundary(True), suite="audit_boundary"
+        )
+        self.assertEqual(rc2, 1, out2 + err2)
+        assert report2 is not None
+        self.assertEqual(report2["errors"], 1)
+        self.assertEqual(report2["killed"], 0)
+
+        # If mutant still rejects negative fixture, status must be SURVIVED.
+        rc3, out3, err3, report3, _, _ = self._run_synthetic_suite(
+            make_fake_boundary(False, survive_mutant=True),
+            suite="audit_boundary",
+        )
+        self.assertEqual(rc3, 1, out3 + err3)
+        assert report3 is not None
+        self.assertEqual(report3["survived"], 1)
+        self.assertEqual(report3["killed"], 0)
+
+    def test_validate_catalog_rejects_unknown_boundary_fixture_id(self):
+        sample = check_guard_mutation.AUDIT_BOUNDARY_GUARDS[0]
+        bad_spec = check_guard_mutation.AuditBoundaryGuard(
+            guard_id="bad_spec_fixture",
+            target_file=sample.target_file,
+            mode="spec-preflight",
+            description="unknown spec fixture_id",
+            anchor=sample.anchor,
+            replacement=sample.replacement,
+            fixture_id="nonexistent_spec_fixture",
+        )
+        bad_target = check_guard_mutation.AuditBoundaryGuard(
+            guard_id="bad_target_fixture",
+            target_file=sample.target_file,
+            mode="target-audit",
+            description="mode-mismatched target fixture_id",
+            anchor=sample.anchor,
+            replacement=sample.replacement,
+            fixture_id="spec_auto_implicit",
+        )
+        with mock.patch.object(
+            check_guard_mutation,
+            "AUDIT_BOUNDARY_GUARDS",
+            (bad_spec, bad_target),
+        ):
+            errors = check_guard_mutation.validate_catalog_invariants(
+                ANNEAL_ROOT
+            )
+        self.assertTrue(
+            any("unknown spec-preflight fixture_id" in e for e in errors),
+            errors,
+        )
+        self.assertTrue(
+            any("unknown target-audit fixture_id" in e for e in errors),
+            errors,
+        )
 
 
 if __name__ == "__main__":

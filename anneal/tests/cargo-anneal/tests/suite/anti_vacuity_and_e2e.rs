@@ -407,6 +407,74 @@ fn anti_vacuity_lint_unused_bindings_and_wrong_arity() {
 }
 
 #[test]
+fn anti_vacuity_lint_reports_truncated_wide_unsafe_body() {
+    let staged = new_workspace("anneal-lint-truncated-").stage().unwrap();
+    let work = staged.work_dir();
+    let req = write_scalar_baseline(work);
+    let req_path = write_json_file(&work.join("req.json"), &req);
+
+    // Unsafe bodies exceeding the 32-arg safety-lint cutoff emit
+    // `vacuity_check_truncated` rather than dropping checks silently.
+    let params = (0..33).map(|i| format!("_a{i}: u64")).collect::<Vec<_>>().join(", ");
+    fs::write(
+        work.join("rust/lib.rs"),
+        format!("pub unsafe fn wide_unsafe({params}) -> u64 {{ 0 }}\n"),
+    )
+    .unwrap();
+    fs::write(
+        work.join("lean/Spec.lean"),
+        lean_source(
+            "import Trusted.MirSemantics",
+            "namespace Spec\n\
+             open Trusted.MirAst Trusted.MirSemantics\n\
+             noncomputable def specs : Specs :=\n  \
+               ⟨fun fn args => match args with\n      \
+                  | [] => fn = \"rust-path-v1::wide_unsafe\"\n      \
+                  | _ => False,\n   \
+                fun p => p.bodies.length = 1⟩\n\
+             end Spec",
+        ),
+    )
+    .unwrap();
+    fs::write(
+        work.join("lean/Proof.lean"),
+        lean_source(
+            "import Expected",
+            "namespace Proof\n\
+             open Trusted.MirAst Trusted.MirSemantics\n\
+             theorem verify : Expected.claim := by\n  \
+               refine ⟨rfl, rfl, rfl, rfl, rfl, rfl, ?_, rfl⟩\n  \
+               intro id body found\n  \
+               cases id with\n  \
+               | zero =>\n    \
+                 have same : Captured.program.bodies[0] = body := Option.some.inj found\n    \
+                 subst body\n    \
+                 refine ⟨found, rfl, ?_⟩\n    \
+                 intro args valid safety\n    \
+                 cases args with\n    \
+                 | nil => cases valid\n    \
+                 | cons _ _ => exact False.elim (safety rfl)\n  \
+               | succ id => cases found\n\
+             end Proof",
+        ),
+    )
+    .unwrap();
+
+    let res = run_verify_strs(&staged, &["--request", req_path.to_str().unwrap()]);
+    let ok = expect_verified(&res, "crate_verified", true);
+    assert!(
+        ok.spec_warnings.iter().any(|w| {
+            w["code"] == "vacuity_check_truncated"
+                && w["declaration"] == "Spec.specs"
+                && w["body"] == "rust-path-v1::wide_unsafe"
+        }),
+        "{ok:?}"
+    );
+    let stderr = String::from_utf8_lossy(&res.process.stderr);
+    assert!(stderr.contains("WARNING [anti-vacuity: vacuity_check_truncated]"), "{stderr}");
+}
+
+#[test]
 fn explicit_instantiation_and_required_consts_verify_end_to_end() {
     let staged = new_workspace("anneal-mono-consts-").stage().unwrap();
     let work = staged.work_dir();

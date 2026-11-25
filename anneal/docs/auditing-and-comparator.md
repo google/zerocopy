@@ -277,9 +277,12 @@ dedicated negative refutation fixtures outside `anneal/trusted/`):
 
 1. **Explicit guard catalog:** Enumerates individual UB guards across
    `Trusted/MirSemantics/` (`Ops.lean`, `Enum.lean`, `Bytes.lean`,
-   `Memory.lean`, `Step.lean`, and `Boundary.lean`) as well as key auditor
-   header-import guards. Each catalog entry pins a unique source anchor and its
-   exact guard-weakening mutation.
+   `Memory.lean`, `Step.lean`, `State.lean`, and `Boundary.lean`, `104` guards)
+   alongside auditor header-import (`audit_headers`, `8` guards across
+   `TrustedBoundary.lean` and `SpecPreflight.lean`) and boundary
+   (`audit_boundary`, `12` `"spec-preflight"` and `"target-audit"` guards in
+   `TrustedBoundary.lean`; `124` total guards). Each catalog entry pins a
+   unique source anchor and its exact guard-weakening mutation.
 2. **Isolated single-guard mutation:** Copies the relevant files into an
    isolated temporary directory (never modifying the working tree), applies one
    guard-removal mutation at a time, and recompiles only the minimal downstream

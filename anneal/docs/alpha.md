@@ -160,9 +160,9 @@ the bounds of an ordinary type alias are not enforced.
 ## Stage 0 / MIR Profile v1: supported vs. refused
 
 The alpha runs on the x86-64 Linux scalar MIR profile (Profile v1) with
-`-Zmir-preserve-ub` enforced during capture (`#4114`). Any construct outside
-this profile returns an explicit fail-closed refusal rather than approximating
-semantics, unless it belongs to the experimental
+`-Zmir-preserve-ub` (`#4114`) and `-Zmir-opt-level=0` enforced during capture.
+Any construct outside this profile returns an explicit fail-closed refusal
+rather than approximating semantics, unless it belongs to the experimental
 [Profile v2](#experimental-mir-profile-v2-borrowed-slices-and-raw-pointers).
 
 | Category | Supported today (Profile v1) | Refused today (fail-closed) |

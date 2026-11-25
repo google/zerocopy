@@ -237,8 +237,8 @@ fn seam_1_place_mention_preserved_by_mir_preserve_ub_and_projected_refused() {
 }
 
 /// Seam 2: `SwitchInt` / trivial-discriminant reads survive
-/// `Runtime(PostCleanup)` under `-Copt-level=0 -Zmir-preserve-ub` rather
-/// than being simplified away.
+/// `Runtime(PostCleanup)` under `-Copt-level=0 -Zmir-preserve-ub` and
+/// `-Zmir-opt-level=0` rather than being simplified away.
 #[test]
 fn seam_2_switch_int_trivial_discriminant_reads_preserved() {
     let bool_fixture = Capture::new(
