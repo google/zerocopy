@@ -648,6 +648,595 @@ theorem verifyMirCutpoints_sound {body : Body} {entryEnv : MirAbsEnv}
         retInv.valDenote retTy retVal) :=
   checkMirCert_sound (bool_and_true_right hVer) hStartFrames hEntry
 
+/-! ## 4. Zero-Manual-WP Auto-Proof Front-End (`AutoProve`) -/
+
+namespace AutoProve
+
+/-- Computable Pass-1 mirror of `Trusted.MirSemantics.stmtHasStorageMarker`. -/
+@[expose] def stmtHasStorageMarkerComp (localId : LocalId) :
+    StatementKind → Bool
+  | .storageLive id | .storageDead id => Nat.beq id localId
+  | _ => false
+
+/-- Computable Pass-1 mirror of `Trusted.MirSemantics.hasStorageAnnotation`. -/
+@[expose] def hasStorageAnnotationComp (body : Body) (localId : LocalId) :
+    Bool :=
+  body.basicBlocks.any (fun bb =>
+    bb.statements.any (stmtHasStorageMarkerComp localId))
+
+private theorem list_any_eq {α : Type} {f g : α → Bool}
+    (h : ∀ x, f x = g x) : ∀ xs : List α, xs.any f = xs.any g
+  | [] => rfl
+  | x :: xs => by
+    change (f x || xs.any f) = (g x || xs.any g)
+    rw [h x, list_any_eq h xs]
+
+private theorem stmtHasStorageMarkerComp_eq (localId : LocalId)
+    (stmt : StatementKind) :
+    stmtHasStorageMarkerComp localId stmt =
+      stmtHasStorageMarker localId stmt := by
+  cases stmt <;> rfl
+
+theorem hasStorageAnnotationComp_eq (body : Body) (localId : LocalId) :
+    hasStorageAnnotationComp body localId =
+      hasStorageAnnotation body localId := by
+  dsimp only [hasStorageAnnotationComp, hasStorageAnnotation]
+  apply list_any_eq
+  intro bb
+  exact list_any_eq (stmtHasStorageMarkerComp_eq localId) bb.statements
+
+/-- Top initialized abstract slot for a supported function argument or return
+type (`.int w false`, `.int w true`, `.bool`, `.unit`). -/
+@[expose] def argTopAbsSlot? : MirTy → Option MirAbsSlot
+  | .int w false => some (.uint w (AbsVal.topInit (bitWidthComp w)))
+  | .int w true => some (.sint w (AbsVal.topInit (bitWidthComp w)))
+  | .bool => some (.bool (.top .none))
+  | .unit => some .unit
+  | _ => none
+
+private theorem argTopAbsSlot?_noRelGuard {ty : MirTy} {slot : MirAbsSlot}
+    (h : argTopAbsSlot? ty = some slot) : slot.noRelGuard = true := by
+  cases ty with
+  | int w s =>
+    cases s <;> (injection h with hEq; subst hEq; rfl)
+  | bool => injection h with hEq; subst hEq; rfl
+  | unit => injection h with hEq; subst hEq; rfl
+  | char | rawPtr _ _ | ref _ _ | tuple _ | enum _ | ordering
+  | slice _ | rangeTo _ | rangeFrom _ | never | unsupported => nomatch h
+
+private theorem intWidth_eq_of_beq {w1 w2 : IntWidth}
+    (h : IntWidth.beq w1 w2 = true) : w1 = w2 := by
+  cases w1 <;> cases w2 <;> first | rfl | nomatch h
+
+private theorem argTopAbsSlot?_sound {ty : MirTy} {slot : MirAbsSlot}
+    {locals : List LocalSlot} {v : Val}
+    (hSlot : argTopAbsSlot? ty = some slot)
+    (hChk : checkVal v ty = true) :
+    slot.denote ty locals (.immediate (some v)) := by
+  dsimp only [checkVal] at hChk
+  cases ty with
+  | int w s =>
+    cases v with
+    | scalar sv =>
+      dsimp only [Val.ty?] at hChk
+      cases hWf : sv.wf with
+      | false => rw [hWf] at hChk; nomatch hChk
+      | true =>
+        rw [hWf] at hChk
+        have hwEq := intWidth_eq_of_beq (bool_and_true_left hChk)
+        have hsEq : sv.signed = s := eq_of_beq (bool_and_true_right hChk)
+        have hTrEq : truncateBits sv.width sv.bits = sv.bits := eq_of_beq hWf
+        have hLt : sv.bits.toNat < modPow2 (bitWidthComp w) := by
+          rw [← hTrEq, hwEq, truncateBits_toNat]
+          exact nat_mod_lt _ (modPow2_pos (bitWidthComp w))
+        cases s with
+        | false =>
+          injection hSlot with hEq; subst hEq
+          exact ⟨rfl, hwEq, hsEq, hLt, absVal_topInit_sound hLt⟩
+        | true =>
+          injection hSlot with hEq; subst hEq
+          exact ⟨rfl, hwEq, hsEq, hLt, absVal_topInit_sound hLt⟩
+    | bool _ => dsimp only [Val.ty?, MirTy.beq] at hChk; nomatch hChk
+    | char _ => dsimp only [Val.ty?, MirTy.beq] at hChk; nomatch hChk
+    | ordering _ => dsimp only [Val.ty?, MirTy.beq] at hChk; nomatch hChk
+    | unit => dsimp only [Val.ty?, MirTy.beq] at hChk; nomatch hChk
+    | enumVal ety vi =>
+      dsimp only [Val.ty?] at hChk
+      cases hE : enumAdmitted ety && Nat.blt vi ety.discriminants.length <;>
+        rw [hE] at hChk <;> nomatch hChk
+    | tuple fs =>
+      cases fs with
+      | nil => nomatch hChk
+      | cons x xs =>
+        cases x with
+        | scalar sv =>
+          cases xs with
+          | nil => nomatch hChk
+          | cons y ys =>
+            cases y with
+            | bool _ =>
+              cases ys with
+              | cons _ _ => nomatch hChk
+              | nil =>
+                dsimp only [Val.ty?] at hChk
+                cases hW : sv.wf <;> rw [hW] at hChk <;> nomatch hChk
+            | scalar _ | ptr _ | slicePtr _ _ | rangeTo _ | rangeFrom _
+            | char _ | ordering _ | unit | enumVal _ _ | tuple _ | bytes _ =>
+              nomatch hChk
+        | ptr _ | slicePtr _ _ | rangeTo _ | rangeFrom _ | bool _
+        | char _ | ordering _ | unit | enumVal _ _ | tuple _ | bytes _ =>
+          nomatch hChk
+    | ptr _ | slicePtr _ _ | rangeTo _ | rangeFrom _ | bytes _ => nomatch hChk
+  | bool =>
+    injection hSlot with hEq; subst hEq
+    cases v with
+    | bool _ => exact ⟨rfl, True.intro⟩
+    | scalar sv =>
+      dsimp only [Val.ty?] at hChk
+      cases hWf : sv.wf <;> rw [hWf] at hChk <;> nomatch hChk
+    | char _ | ordering _ | unit => nomatch hChk
+    | enumVal ety vi =>
+      dsimp only [Val.ty?] at hChk
+      cases hE : enumAdmitted ety && Nat.blt vi ety.discriminants.length <;>
+        rw [hE] at hChk <;> nomatch hChk
+    | tuple fs =>
+      cases fs with
+      | nil => nomatch hChk
+      | cons x xs =>
+        cases x with
+        | scalar sv =>
+          cases xs with
+          | nil => nomatch hChk
+          | cons y ys =>
+            cases y with
+            | bool _ =>
+              cases ys with
+              | cons _ _ => nomatch hChk
+              | nil =>
+                dsimp only [Val.ty?] at hChk
+                cases hW : sv.wf <;> rw [hW] at hChk <;> nomatch hChk
+            | scalar _ | ptr _ | slicePtr _ _ | rangeTo _ | rangeFrom _
+            | char _ | ordering _ | unit | enumVal _ _ | tuple _ | bytes _ =>
+              nomatch hChk
+        | ptr _ | slicePtr _ _ | rangeTo _ | rangeFrom _ | bool _
+        | char _ | ordering _ | unit | enumVal _ _ | tuple _ | bytes _ =>
+          nomatch hChk
+    | ptr _ | slicePtr _ _ | rangeTo _ | rangeFrom _ | bytes _ => nomatch hChk
+  | unit =>
+    injection hSlot with hEq; subst hEq
+    cases v with
+    | unit => exact ⟨rfl, rfl⟩
+    | scalar sv =>
+      dsimp only [Val.ty?] at hChk
+      cases hWf : sv.wf <;> rw [hWf] at hChk <;> nomatch hChk
+    | bool _ | char _ | ordering _ => nomatch hChk
+    | enumVal ety vi =>
+      dsimp only [Val.ty?] at hChk
+      cases hE : enumAdmitted ety && Nat.blt vi ety.discriminants.length <;>
+        rw [hE] at hChk <;> nomatch hChk
+    | tuple fs =>
+      cases fs with
+      | nil => nomatch hChk
+      | cons x xs =>
+        cases x with
+        | scalar sv =>
+          cases xs with
+          | nil => nomatch hChk
+          | cons y ys =>
+            cases y with
+            | bool _ =>
+              cases ys with
+              | cons _ _ => nomatch hChk
+              | nil =>
+                dsimp only [Val.ty?] at hChk
+                cases hW : sv.wf <;> rw [hW] at hChk <;> nomatch hChk
+            | scalar _ | ptr _ | slicePtr _ _ | rangeTo _ | rangeFrom _
+            | char _ | ordering _ | unit | enumVal _ _ | tuple _ | bytes _ =>
+              nomatch hChk
+        | ptr _ | slicePtr _ _ | rangeTo _ | rangeFrom _ | bool _
+        | char _ | ordering _ | unit | enumVal _ _ | tuple _ | bytes _ =>
+          nomatch hChk
+    | ptr _ | slicePtr _ _ | rangeTo _ | rangeFrom _ | bytes _ => nomatch hChk
+  | char | rawPtr _ _ | ref _ _ | tuple _ | enum _ | ordering
+  | slice _ | rangeTo _ | rangeFrom _ | never | unsupported => nomatch hSlot
+
+/-- Builds the abstract entry environment matching `initLocalsLoop` from index
+`idx` over suffix `tys`. -/
+@[expose] def buildEntryEnvLoop? (body : Body) :
+    Nat → List MirTy → Option MirAbsEnv
+  | _, [] => some []
+  | idx, ty :: rest =>
+    let slotOpt : Option MirAbsSlot :=
+      if Nat.beq idx 0 then
+        liveUninitAbsSlot? ty
+      else if Nat.ble idx body.argumentCount then
+        argTopAbsSlot? ty
+      else if hasStorageAnnotationComp body idx then
+        some .dead
+      else
+        liveUninitAbsSlot? ty
+    match slotOpt, buildEntryEnvLoop? body (idx + 1) rest with
+    | some s, some restEnv => some (s :: restEnv)
+    | _, _ => none
+
+/-- Builds the abstract entry environment for `body` matching `initLocalsLoop`
+at function entry. Fails closed (`none`) if
+`body.argumentCount ≥ body.locals.length` or any local has an unsupported
+type. -/
+@[expose] def buildEntryEnv? (body : Body) : Option MirAbsEnv :=
+  if Nat.blt body.argumentCount body.locals.length then
+    buildEntryEnvLoop? body 0 body.locals
+  else
+    none
+
+private theorem liveUninitAbsSlot?_sound {ty : MirTy} {slot : MirAbsSlot}
+    {locals : List LocalSlot} (h : liveUninitAbsSlot? ty = some slot) :
+    slot.denote ty locals (liveUninitSlot ty) := by
+  cases ty with
+  | int w s =>
+    cases s with
+    | false =>
+      injection h with hEq; subst hEq
+      exact ⟨rfl, absVal_uninit_sound_none⟩
+    | true =>
+      injection h with hEq; subst hEq
+      exact ⟨rfl, absVal_uninit_sound_none⟩
+  | bool =>
+    injection h with hEq; subst hEq
+    exact ⟨rfl, True.intro⟩
+  | unit =>
+    injection h with hEq; subst hEq
+    exact ⟨rfl, rfl⟩
+  | char | rawPtr _ _ | ref _ _ | tuple _ | enum _ | ordering
+  | slice _ | rangeTo _ | rangeFrom _ | never | unsupported => nomatch h
+
+private theorem checkArgsMatch_get {args : List Val} {paramTys : List MirTy} :
+    ∀ {k : Nat} {ty : MirTy},
+      checkArgsMatch args paramTys = true →
+      compGetElem? paramTys k = some ty →
+      ∃ v, Trusted.MirSemantics.getElem? args k = some v ∧ checkVal v ty = true := by
+  induction args generalizing paramTys with
+  | nil =>
+    intro k ty hChk hGet
+    cases paramTys with
+    | nil => nomatch hGet
+    | cons _ _ => nomatch hChk
+  | cons a rest ih =>
+    intro k ty hChk hGet
+    cases paramTys with
+    | nil => nomatch hChk
+    | cons pt pts =>
+      dsimp only [checkArgsMatch] at hChk
+      cases k with
+      | zero =>
+        injection hGet with hEq; subst hEq
+        exact ⟨a, rfl, bool_and_true_left hChk⟩
+      | succ k' =>
+        exact ih (bool_and_true_right hChk) hGet
+
+private theorem compGetElem?_drop {α : Type} :
+    ∀ (xs : List α) (n i : Nat),
+      compGetElem? (xs.drop n) i = compGetElem? xs (n + i)
+  | [], 0, _ => rfl
+  | [], _ + 1, _ => rfl
+  | _ :: _, 0, i => by rw [Nat.zero_add]; rfl
+  | _ :: xs, n + 1, i => by
+    rw [Nat.succ_add]
+    exact compGetElem?_drop xs n i
+
+private theorem compGetElem?_take_of_lt {α : Type} :
+    ∀ (xs : List α) (n i : Nat),
+      i < n → compGetElem? (xs.take n) i = compGetElem? xs i
+  | [], 0, _, h => nomatch h
+  | [], _ + 1, _, _ => rfl
+  | _ :: _, 0, _, h => nomatch h
+  | _ :: _, _ + 1, 0, _ => rfl
+  | _ :: xs, n + 1, i + 1, h =>
+    compGetElem?_take_of_lt xs n i (Nat.lt_of_succ_lt_succ h)
+
+private theorem initLocalsLoop_length (body : Body) (args : List Val) :
+    ∀ (idx : Nat) (tys : List MirTy),
+      (initLocalsLoop body args idx tys).length = tys.length
+  | _, [] => rfl
+  | idx, _ :: rest => congrArg Nat.succ (initLocalsLoop_length body args (idx + 1) rest)
+
+private theorem buildEntryEnvLoop?_length (body : Body) :
+    ∀ {idx : Nat} {tys : List MirTy} {env : MirAbsEnv},
+      buildEntryEnvLoop? body idx tys = some env → env.length = tys.length
+  | _, [], _, h => by injection h with hEq; subst hEq; rfl
+  | idx, ty :: rest, env, h => by
+    dsimp only [buildEntryEnvLoop?] at h
+    cases hS : (if Nat.beq idx 0 then liveUninitAbsSlot? ty
+      else if Nat.ble idx body.argumentCount then argTopAbsSlot? ty
+      else if hasStorageAnnotationComp body idx then some .dead
+      else liveUninitAbsSlot? ty) with
+    | none => rw [hS] at h; nomatch h
+    | some s =>
+      cases hR : buildEntryEnvLoop? body (idx + 1) rest with
+      | none => rw [hS, hR] at h; nomatch h
+      | some restEnv =>
+        rw [hS, hR] at h
+        injection h with hEq; subst hEq
+        exact congrArg Nat.succ (buildEntryEnvLoop?_length body hR)
+
+private theorem buildEntryEnvLoop?_slot_sound {body : Body} {args : List Val}
+    {fullLocals : List LocalSlot}
+    (hArgs : ValidEntryArgs body args) :
+    ∀ {idx : Nat} {tys : List MirTy} {env : MirAbsEnv},
+      (∀ k ty, compGetElem? tys k = some ty →
+        compGetElem? body.locals (idx + k) = some ty) →
+      buildEntryEnvLoop? body idx tys = some env →
+      ∀ (k : Nat) (ty : MirTy) (s : MirAbsSlot) (cs : LocalSlot),
+        compGetElem? tys k = some ty →
+        compGetElem? env k = some s →
+        compGetElem? (initLocalsLoop body args idx tys) k = some cs →
+        s.denote ty fullLocals cs := by
+  intro idx tys
+  induction tys generalizing idx with
+  | nil =>
+    intro env _ _ k _ _ _ hTy _ _
+    nomatch hTy
+  | cons ty rest ih =>
+    intro env hSuffix hBuild k tyK s cs hTy hEnvK hCs
+    dsimp only [buildEntryEnvLoop?] at hBuild
+    cases hS : (if Nat.beq idx 0 then liveUninitAbsSlot? ty
+      else if Nat.ble idx body.argumentCount then argTopAbsSlot? ty
+      else if hasStorageAnnotationComp body idx then some .dead
+      else liveUninitAbsSlot? ty) with
+    | none => rw [hS] at hBuild; nomatch hBuild
+    | some s0 =>
+      cases hR : buildEntryEnvLoop? body (idx + 1) rest with
+      | none => rw [hS, hR] at hBuild; nomatch hBuild
+      | some restEnv =>
+        rw [hS, hR] at hBuild
+        injection hBuild with hEnvEq; subst hEnvEq
+        cases k with
+        | zero =>
+          injection hTy with hTyEq; subst hTyEq
+          injection hEnvK with hSEq; subst hSEq
+          dsimp only [initLocalsLoop, compGetElem?] at hCs
+          injection hCs with hCsEq; subst hCsEq
+          cases hZ : Nat.beq idx 0 with
+          | true =>
+            rw [hZ] at hS
+            exact liveUninitAbsSlot?_sound hS
+          | false =>
+            rw [hZ] at hS
+            cases hArg : Nat.ble idx body.argumentCount with
+            | true =>
+              rw [hArg] at hS
+              have hIdxPos : 0 < idx := by
+                cases idx with
+                | zero => nomatch hZ
+                | succ _ => exact Nat.zero_lt_succ _
+              have hSubLt : idx - 1 < body.argumentCount := by
+                have hLe := Nat.le_of_ble_eq_true hArg
+                have h1 : (idx - 1) + 1 ≤ body.argumentCount := by
+                  rw [Nat.sub_add_cancel hIdxPos]; exact hLe
+                exact h1
+              have hInBody : compGetElem? body.locals idx = some ty := by
+                have h0 := hSuffix 0 ty rfl
+                rw [Nat.add_zero] at h0; exact h0
+              have hParamGet :
+                  compGetElem? ((body.locals.drop 1).take body.argumentCount) (idx - 1) =
+                    some ty := by
+                rw [compGetElem?_take_of_lt _ _ _ hSubLt, compGetElem?_drop]
+                have hAdd1 : 1 + (idx - 1) = idx := by
+                  rw [Nat.add_comm, Nat.sub_add_cancel hIdxPos]
+                rw [hAdd1]; exact hInBody
+              cases checkArgsMatch_get hArgs hParamGet with
+              | intro v hv =>
+                rw [hv.1]
+                exact argTopAbsSlot?_sound hS hv.2
+            | false =>
+              rw [hArg] at hS
+              rw [← hasStorageAnnotationComp_eq body idx]
+              cases hAnn : hasStorageAnnotationComp body idx with
+              | true =>
+                rw [hAnn] at hS
+                injection hS with hSEq; subst hSEq
+                rfl
+              | false =>
+                rw [hAnn] at hS
+                exact liveUninitAbsSlot?_sound hS
+        | succ k' =>
+          have hSuffix' : ∀ m ty', compGetElem? rest m = some ty' →
+              compGetElem? body.locals ((idx + 1) + m) = some ty' := by
+            intro m ty' hm
+            have hAdd : (idx + 1) + m = idx + (m + 1) := by
+              rw [Nat.add_assoc, Nat.add_comm 1 m]
+            rw [hAdd]
+            exact hSuffix (m + 1) ty' hm
+          exact ih hSuffix' hR k' tyK s cs hTy hEnvK hCs
+
+/-- Soundness of `buildEntryEnv?`: the generated abstract entry environment
+soundly abstracts `initLocalsLoop body args 0 body.locals` for every valid
+entry argument list `args`. -/
+theorem buildEntryEnv?_sound {body : Body} {env : MirAbsEnv} {args : List Val}
+    (hBuild : buildEntryEnv? body = some env)
+    (hArgs : ValidEntryArgs body args) :
+    mirAbsEnvDenote body.locals env (initLocalsLoop body args 0 body.locals) := by
+  dsimp only [buildEntryEnv?] at hBuild
+  cases hLt : Nat.blt body.argumentCount body.locals.length with
+  | false => rw [hLt] at hBuild; nomatch hBuild
+  | true =>
+    rw [hLt] at hBuild
+    refine ⟨buildEntryEnvLoop?_length body hBuild,
+            initLocalsLoop_length body args 0 body.locals, ?_⟩
+    intro i ty s cs hTy hEnvI hCs
+    exact buildEntryEnvLoop?_slot_sound hArgs
+      (fun k ty' hk => by rw [Nat.zero_add]; exact hk) hBuild i ty s cs hTy hEnvI hCs
+
+/-- Fuel-bounded DFS postorder helper prepending finished blocks onto `st.2`
+(reverse postorder) while skipping edges into `cutpoints`. -/
+@[expose] def rpoDfsVisit (body : Body)
+    (cutpoints : List (BasicBlockId × MirAbsEnv)) (fuel : Nat) :
+    BasicBlockId → List BasicBlockId × List BasicBlockId →
+      List BasicBlockId × List BasicBlockId :=
+  Nat.rec
+    (motive := fun _ =>
+      BasicBlockId → List BasicBlockId × List BasicBlockId →
+        List BasicBlockId × List BasicBlockId)
+    (fun _ st => st)
+    (fun _ ih u st =>
+      if !Nat.blt u body.basicBlocks.length || natListContains u st.1 then
+        st
+      else
+        let st1 := (u :: st.1, st.2)
+        let succs :=
+          match compGetElem? body.basicBlocks u with
+          | some bb => syntacticTermTargets bb.terminator
+          | none => []
+        let st2 :=
+          succs.foldl
+            (fun acc v =>
+              if isCutpoint v cutpoints then acc
+              else ih v acc)
+            st1
+        (st2.1, u :: st2.2))
+    fuel
+
+/-- Computes a reverse-postorder schedule of `body.basicBlocks` modulo
+`cutpoints` using fuel-bounded DFS (`0` is visited last so it sits at the head
+whenever no non-cutpoint edge enters `0`). -/
+@[expose] def defaultRpoOrder (body : Body)
+    (cutpoints : List (BasicBlockId × MirAbsEnv) := []) : List BasicBlockId :=
+  match body.basicBlocks.length with
+  | 0 => []
+  | m + 1 =>
+    let n := m + 1
+    let stRest :=
+      Nat.rec
+        (motive := fun _ =>
+          Nat → List BasicBlockId × List BasicBlockId →
+            List BasicBlockId × List BasicBlockId)
+        (fun _ st => st)
+        (fun _ ih idx st =>
+          ih (idx + 1) (rpoDfsVisit body cutpoints n idx st))
+        m 1 ([], [])
+    (rpoDfsVisit body cutpoints n 0 stRest).2
+
+/-- Default top return invariant slot derived from `body.locals[0]`. -/
+@[expose] def autoRetSlot? (body : Body) : Option MirAbsSlot :=
+  match compGetElem? body.locals 0 with
+  | some ty => argTopAbsSlot? ty
+  | none => none
+
+/-- Automatic cutpoint certificate verifier: builds `entryEnv` from `body` and
+runs `verifyMirCutpoints`. -/
+@[expose] def autoVerifyCutpoints (body : Body) (retInv : MirAbsSlot)
+    (cutpoints : List (BasicBlockId × MirAbsEnv))
+    (rpoOrder : List BasicBlockId := defaultRpoOrder body cutpoints) :
+    Bool :=
+  match buildEntryEnv? body with
+  | none => false
+  | some entryEnv => verifyMirCutpoints body entryEnv retInv cutpoints rpoOrder
+
+/-- Automatic acyclic verifier with an explicit return-value postcondition
+`retInv`. -/
+@[expose] def autoVerifyAcyclicWithRet (body : Body) (retInv : MirAbsSlot)
+    (rpoOrder : List BasicBlockId := defaultRpoOrder body []) :
+    Bool :=
+  autoVerifyCutpoints body retInv [] rpoOrder
+
+/-- Automatic acyclic safety verifier: synthesizes both `entryEnv` and the top
+return invariant from `body.locals` and verifies the body in one pass. -/
+@[expose] def autoVerifyAcyclic (body : Body)
+    (rpoOrder : List BasicBlockId := defaultRpoOrder body []) :
+    Bool :=
+  match autoRetSlot? body with
+  | none => false
+  | some retInv => autoVerifyAcyclicWithRet body retInv rpoOrder
+
+/-- Soundness of `autoVerifyCutpoints`: proves both `Safe body args` and the
+frame-independent return-value invariant `retInv.valDenote`. -/
+theorem autoVerifyCutpoints_sound {body : Body} {retInv : MirAbsSlot}
+    {cutpoints : List (BasicBlockId × MirAbsEnv)}
+    {rpoOrder : List BasicBlockId} {args : List Val}
+    (hVer : autoVerifyCutpoints body retInv cutpoints rpoOrder = true)
+    (hArgs : ValidEntryArgs body args) :
+    Safe body args ∧
+    (∀ retVal, Returns body args retVal →
+      ∃ retTy,
+        compGetElem? body.locals 0 = some retTy ∧
+        retInv.valDenote retTy retVal) := by
+  dsimp only [autoVerifyCutpoints] at hVer
+  cases hB : buildEntryEnv? body with
+  | none => rw [hB] at hVer; nomatch hVer
+  | some entryEnv =>
+    rw [hB] at hVer
+    exact verifyMirCutpoints_sound hVer rfl (buildEntryEnv?_sound hB hArgs)
+
+/-- Soundness of `autoVerifyAcyclicWithRet`. -/
+theorem autoVerifyAcyclicWithRet_sound {body : Body} {retInv : MirAbsSlot}
+    {rpoOrder : List BasicBlockId} {args : List Val}
+    (hVer : autoVerifyAcyclicWithRet body retInv rpoOrder = true)
+    (hArgs : ValidEntryArgs body args) :
+    Safe body args ∧
+    (∀ retVal, Returns body args retVal →
+      ∃ retTy,
+        compGetElem? body.locals 0 = some retTy ∧
+        retInv.valDenote retTy retVal) :=
+  autoVerifyCutpoints_sound hVer hArgs
+
+/-- Soundness of `autoVerifyAcyclic` for an arbitrary explicit `rpoOrder`. -/
+theorem autoVerifyAcyclicOrder_sound {body : Body}
+    {rpoOrder : List BasicBlockId} {args : List Val}
+    (hVer : autoVerifyAcyclic body rpoOrder = true)
+    (hArgs : ValidEntryArgs body args) :
+    Safe body args := by
+  dsimp only [autoVerifyAcyclic] at hVer
+  cases hRet : autoRetSlot? body with
+  | none => rw [hRet] at hVer; nomatch hVer
+  | some retInv =>
+    rw [hRet] at hVer
+    exact (autoVerifyAcyclicWithRet_sound hVer hArgs).1
+
+/-- Soundness of `autoVerifyAcyclic` using `defaultRpoOrder`: a single `rfl`
+proof of `autoVerifyAcyclic body = true` establishes `Safe body args` for all
+valid entry arguments `args`. -/
+theorem autoVerifyAcyclic_sound {body : Body} {args : List Val}
+    (hVer : autoVerifyAcyclic body (defaultRpoOrder body []) = true)
+    (hArgs : ValidEntryArgs body args) :
+    Safe body args :=
+  autoVerifyAcyclicOrder_sound hVer hArgs
+
+/-- One-liner `BodyVerified` discharge for any acyclic scalar/signed/unsigned/
+bool/unit function verified by `autoVerifyAcyclic`. -/
+theorem bodyVerified_of_autoVerifyAcyclic {p : Program} {defId : DefId}
+    {body : Body} {safetyPre : List Val → Prop}
+    (h_body : Trusted.MirSemantics.getElem? p.bodies defId = some body)
+    (h_adm : BodyStaticAdmitted p body = true)
+    (hVer : autoVerifyAcyclic body (defaultRpoOrder body []) = true) :
+    BodyVerified p defId body safetyPre :=
+  bodyVerified_of_safe h_body h_adm (fun _ hArgs _ => autoVerifyAcyclic_sound hVer hArgs)
+
+/-- One-liner `BodyVerified` discharge for any acyclic function with an
+explicit `rpoOrder`. -/
+theorem bodyVerified_of_autoVerifyAcyclicOrder {p : Program} {defId : DefId}
+    {body : Body} {safetyPre : List Val → Prop}
+    {rpoOrder : List BasicBlockId}
+    (h_body : Trusted.MirSemantics.getElem? p.bodies defId = some body)
+    (h_adm : BodyStaticAdmitted p body = true)
+    (hVer : autoVerifyAcyclic body rpoOrder = true) :
+    BodyVerified p defId body safetyPre :=
+  bodyVerified_of_safe h_body h_adm (fun _ hArgs _ => autoVerifyAcyclicOrder_sound hVer hArgs)
+
+/-- One-liner `BodyVerified` discharge for a function verified by
+`autoVerifyCutpoints` (supporting loops with Bourdoncle cutpoints). -/
+theorem bodyVerified_of_autoVerifyCutpoints {p : Program} {defId : DefId}
+    {body : Body} {safetyPre : List Val → Prop}
+    {retInv : MirAbsSlot} {cutpoints : List (BasicBlockId × MirAbsEnv)}
+    {rpoOrder : List BasicBlockId}
+    (h_body : Trusted.MirSemantics.getElem? p.bodies defId = some body)
+    (h_adm : BodyStaticAdmitted p body = true)
+    (hVer : autoVerifyCutpoints body retInv cutpoints rpoOrder = true) :
+    BodyVerified p defId body safetyPre :=
+  bodyVerified_of_safe h_body h_adm
+    (fun _ hArgs _ => (autoVerifyCutpoints_sound hVer hArgs).1)
+
+end AutoProve
+
 end Anneal.AiPcc
 
 end

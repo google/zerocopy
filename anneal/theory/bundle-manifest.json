@@ -2,6 +2,38 @@
   "schema_version": 1,
   "modules": [
     {
+      "path": "theory/Anneal/AiPcc.lean",
+      "sha256": "dfe347fc8cc7d5b11051325d8b2f5b49c71946e1a068751b0ba6354352bec50b"
+    },
+    {
+      "path": "theory/Anneal/AiPcc/BitArith.lean",
+      "sha256": "02aaf81d58f1efe6b2feb91ff62d97d578a5ef14bdea0db26126110de06a2c0b"
+    },
+    {
+      "path": "theory/Anneal/AiPcc/MirBridge.lean",
+      "sha256": "18ab58f9845663432f6374b1af8560f363dafba2f63c30ffbd95a08a423ad00e"
+    },
+    {
+      "path": "theory/Anneal/AiPcc/MirPcc.lean",
+      "sha256": "00c1698b4c6039e38ac0cabee855a658ae5e852bb9360b201588492ceadcf42e"
+    },
+    {
+      "path": "theory/Anneal/AiPcc/MirTransfer.lean",
+      "sha256": "86e96970b250318db19bb03007cc97768d7e6c95e3545cfa25abc4c085a95155"
+    },
+    {
+      "path": "theory/Anneal/AiPcc/ReducedProduct.lean",
+      "sha256": "5d10b558bc61594f82713c904680285d5929c34f9c88c933c33beeb398b09c14"
+    },
+    {
+      "path": "theory/Anneal/AiPcc/Tnum.lean",
+      "sha256": "67ebfd926558a326317848ca7aadffa06240465248bb6adea878d51e0d726ced"
+    },
+    {
+      "path": "theory/Anneal/AiPcc/WrappedInterval.lean",
+      "sha256": "101e10211324ef455c79722c9901717945ba373770d01aa4c095ef413de7856d"
+    },
+    {
       "path": "theory/Anneal/BitTrieLrat.lean",
       "sha256": "1eb35e47d6ffde41c969f2c52f48467f73fb48755a50e8be26a678d0d36da98a"
     },
@@ -27,7 +59,7 @@
     },
     {
       "path": "theory/Anneal/InitLemmas.lean",
-      "sha256": "eac13dec9c37e35be98c5bca6e43a9e788f2986ba7365e2246d7c63967346a34"
+      "sha256": "f62333cca4ec7d63ccd7908434761ef369cf647c1623cd484232189cec59b11d"
     },
     {
       "path": "theory/Anneal/LeBytes.lean",
@@ -71,7 +103,7 @@
     },
     {
       "path": "theory/Anneal/MirWp/Execution.lean",
-      "sha256": "da6509c45e1742d4f9b97ad4a6097c18b44d588e6b6487406adea4876a452b1b"
+      "sha256": "97899fc00f0fa87928cc92f3340f1f7b946a5fd01a83c0a918f3dbcd3d4dee34"
     },
     {
       "path": "theory/Anneal/MirWp/Reflection.lean",
@@ -79,7 +111,7 @@
     },
     {
       "path": "theory/Anneal/MirWp/Scalars.lean",
-      "sha256": "77e0b411e7d9bbd487b9e6ab49d200729e5f7655ce7a5d26202dc73d031415e1"
+      "sha256": "566c519fe1cfa2d42487f98047d0b9f148292b3ebe27ba422996dc1fc3e15fb1"
     },
     {
       "path": "theory/Anneal/NatBitwise.lean",

@@ -24,6 +24,13 @@ filter = 'binary(boundary_audit) | binary(target_audit) | binary(profile_v2_e2e)
 threads-required = 2
 slow-timeout = { period = "60s", terminate-after = 4 }
 
+# End-to-end bundled `Anneal.AiPcc` tests compile `AiPcc` plus capture
+# `zerocopy/src/` inside `cargo-anneal verify`.
+[[profile.default.overrides]]
+filter = 'binary(aipcc_e2e)'
+threads-required = 2
+slow-timeout = { period = "60s", terminate-after = 4 }
+
 [[profile.default.overrides]]
 filter = 'test(/ndjson_quorum|correspondence|scale_|real_crates/)'
 threads-required = 2

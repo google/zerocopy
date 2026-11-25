@@ -651,6 +651,10 @@ sys.exit(1)
         self.assertIn("Trusted", trusted)
         self.assertIn("Trusted.MirSemantics", trusted)
         self.assertIn("Anneal.MirWp", theory)
+        self.assertIn("Anneal.AiPcc", theory)
+        self.assertIn("Anneal.AiPcc.MirPcc", theory)
+        self.assertIn("Anneal.MirTotal.Ops", theory)
+        self.assertNotIn("Anneal.AiPcc.Canaries", theory)
 
     def test_standalone_single_file_execution_without_anneal_ci_lib(self) -> None:
         source_script = Path(__file__).resolve().parent / "prebuild_bundled_oleans.py"

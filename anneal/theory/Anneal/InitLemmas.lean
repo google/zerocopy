@@ -38,6 +38,8 @@ helper clusters across `anneal/theory/` and `anneal/correspondence/`:
 
 namespace Anneal.InitLemmas
 
+universe u v
+
 /-! ## 1. `Bool` Connectives and `ite` / `dite` Eliminators -/
 
 theorem bool_and_left {a b : Bool} (h : (a && b) = true) : a = true := by
@@ -73,6 +75,59 @@ theorem bool_not_true_eq_false {b : Bool} (h : (!b) = true) : b = false := by
 theorem bool_not_false_eq_true {b : Bool} (h : (!b) = false) : b = true := by
   cases b with
   | false => nomatch h
+  | true => rfl
+
+theorem bool_and_eq_false_iff (a b : Bool) :
+    (a && b) = false ↔ (a = false ∨ b = false) := by
+  cases a <;> cases b <;> constructor <;> intro h
+  · exact Or.inl rfl
+  · rfl
+  · exact Or.inl rfl
+  · rfl
+  · exact Or.inr rfl
+  · rfl
+  · nomatch h
+  · cases h with
+    | inl h1 => nomatch h1
+    | inr h2 => nomatch h2
+
+theorem bool_or_eq_true_iff (a b : Bool) :
+    (a || b) = true ↔ (a = true ∨ b = true) := by
+  cases a <;> cases b <;> constructor <;> intro h
+  · nomatch h
+  · cases h with
+    | inl h1 => nomatch h1
+    | inr h2 => nomatch h2
+  · exact Or.inr rfl
+  · rfl
+  · exact Or.inl rfl
+  · rfl
+  · exact Or.inl rfl
+  · rfl
+
+theorem bool_or_eq_false_iff (a b : Bool) :
+    (a || b) = false ↔ (a = false ∧ b = false) := by
+  cases a <;> cases b <;> constructor <;> intro h
+  · exact ⟨rfl, rfl⟩
+  · rfl
+  · nomatch h
+  · nomatch h.2
+  · nomatch h
+  · nomatch h.1
+  · nomatch h
+  · nomatch h.1
+
+theorem bool_not_not (b : Bool) : (!!b) = b := by
+  cases b <;> rfl
+
+theorem bool_eq_false_of_ne_true {b : Bool} (h : b ≠ true) : b = false := by
+  cases b with
+  | false => rfl
+  | true => exact False.elim (h rfl)
+
+theorem bool_eq_true_of_ne_false {b : Bool} (h : b ≠ false) : b = true := by
+  cases b with
+  | false => exact False.elim (h rfl)
   | true => rfl
 
 theorem ite_true_of {α : Type u} {c : Prop} [d : Decidable c] {a b : α}
@@ -206,6 +261,145 @@ theorem nat_div_add_mod (m k : Nat) :
 theorem nat_mod_eq_of_lt {a b : Nat} (h : a < b) : Nat.mod a b = a :=
   Nat.mod_eq_of_lt h
 
+theorem nat_add_lt_add_of_le_of_lt {a b c d : Nat}
+    (h1 : a ≤ b) (h2 : c < d) : a + c < b + d :=
+  Nat.lt_of_le_of_lt (Nat.add_le_add_right h1 c) (Nat.add_lt_add_left h2 b)
+
+theorem nat_add_lt_add_of_lt_of_le {a b c d : Nat}
+    (h1 : a < b) (h2 : c ≤ d) : a + c < b + d :=
+  Nat.lt_of_lt_of_le (Nat.add_lt_add_right h1 c) (Nat.add_le_add_left h2 b)
+
+theorem nat_sub_add_cancel {a b : Nat} (h : b ≤ a) : (a - b) + b = a :=
+  Nat.sub_add_cancel h
+
+theorem nat_add_sub_cancel_left (a b : Nat) : (a + b) - a = b := by
+  rw [Nat.add_comm a b]
+  exact Nat.add_sub_cancel b a
+
+theorem nat_sub_sub_self {a b : Nat} (h : b ≤ a) : a - (a - b) = b := by
+  have hAdd : (a - b) + b = a := Nat.sub_add_cancel h
+  have h1 := congrArg (fun z => z - (a - b)) hAdd.symm
+  rw [nat_add_sub_cancel_left (a - b) b] at h1
+  exact h1
+
+theorem nat_le_of_add_le_add_right {a b c : Nat} (h : a + c ≤ b + c) : a ≤ b :=
+  Nat.le_of_add_le_add_right h
+
+theorem nat_lt_of_add_lt_add_right {a b c : Nat} (h : a + c < b + c) : a < b := by
+  induction c with
+  | zero => rw [Nat.add_zero, Nat.add_zero] at h; exact h
+  | succ c ih =>
+    rw [Nat.add_succ, Nat.add_succ] at h
+    exact ih (Nat.lt_of_succ_lt_succ h)
+
+theorem nat_lt_of_add_lt_add_left {a b c : Nat} (h : c + a < c + b) : a < b := by
+  rw [Nat.add_comm c a, Nat.add_comm c b] at h
+  exact nat_lt_of_add_lt_add_right h
+
+theorem nat_ble_iff (a b : Nat) : Nat.ble a b = true ↔ a ≤ b :=
+  ⟨Nat.le_of_ble_eq_true, Nat.ble_eq_true_of_le⟩
+
+theorem nat_blt_iff (a b : Nat) : Nat.blt a b = true ↔ a < b :=
+  ⟨Nat.le_of_ble_eq_true, Nat.ble_eq_true_of_le⟩
+
+theorem nat_ble_false_iff (a b : Nat) : Nat.ble a b = false ↔ b < a := by
+  constructor
+  · intro h
+    cases Nat.lt_or_ge b a with
+    | inl hLt => exact hLt
+    | inr hGe => rw [Nat.ble_eq_true_of_le hGe] at h; nomatch h
+  · intro hLt
+    cases h : Nat.ble a b with
+    | false => rfl
+    | true => exact False.elim (Nat.not_le_of_gt hLt (Nat.le_of_ble_eq_true h))
+
+theorem nat_blt_false_iff (a b : Nat) : Nat.blt a b = false ↔ b ≤ a := by
+  constructor
+  · intro h
+    cases Nat.lt_or_ge a b with
+    | inr hGe => exact hGe
+    | inl hLt =>
+      dsimp only [Nat.blt] at h
+      rw [Nat.ble_eq_true_of_le hLt] at h; nomatch h
+  · intro hGe
+    cases h : Nat.blt a b with
+    | false => rfl
+    | true => exact False.elim (Nat.not_le_of_gt (Nat.le_of_ble_eq_true h) hGe)
+
+theorem nat_mod_lt (a : Nat) {b : Nat} (h : 0 < b) : Nat.mod a b < b :=
+  Nat.mod_lt a h
+
+theorem nat_mod_le (a b : Nat) : Nat.mod a b ≤ a :=
+  Nat.mod_le a b
+
+theorem nat_mod_zero (a : Nat) : Nat.mod a 0 = a :=
+  Nat.mod_zero a
+
+theorem nat_zero_mod (b : Nat) : Nat.mod 0 b = 0 :=
+  Nat.zero_mod b
+
+theorem nat_mod_self (a : Nat) : Nat.mod a a = 0 :=
+  Nat.mod_self a
+
+theorem nat_mod_mod (a b : Nat) : Nat.mod (Nat.mod a b) b = Nat.mod a b := by
+  cases b with
+  | zero => rw [nat_mod_zero, nat_mod_zero]
+  | succ b' => exact Nat.mod_eq_of_lt (Nat.mod_lt a (Nat.zero_lt_succ b'))
+
+theorem nat_add_mod_self_left (a b : Nat) : Nat.mod (a + b) a = Nat.mod b a :=
+  Nat.add_mod_left a b
+
+theorem nat_add_mod_self_right (a b : Nat) : Nat.mod (a + b) b = Nat.mod a b :=
+  Nat.add_mod_right a b
+
+theorem nat_add_mul_mod_self_left (a b c : Nat) :
+    Nat.mod (a + b * c) b = Nat.mod a b :=
+  Nat.add_mul_mod_self_left a b c
+
+theorem nat_mul_mod_right (a b : Nat) : Nat.mod (a * b) a = 0 :=
+  Nat.mul_mod_right a b
+
+theorem nat_mul_mod_left (a b : Nat) : Nat.mod (a * b) b = 0 :=
+  Nat.mul_mod_left a b
+
+theorem nat_mod_mod_of_dvd {a b c : Nat} (h : Nat.mod b c = 0) :
+    Nat.mod (Nat.mod a b) c = Nat.mod a c := by
+  have hb : b = c * Nat.div b c := by
+    have h1 : c * Nat.div b c + Nat.mod b c = b := Nat.div_add_mod b c
+    rw [h, Nat.add_zero] at h1
+    exact h1.symm
+  have ha : Nat.mod a b + c * (Nat.div b c * Nat.div a b) = a := by
+    rw [← Nat.mul_assoc, ← hb]
+    exact Nat.mod_add_div a b
+  exact (Nat.add_mul_mod_self_left (Nat.mod a b) c
+    (Nat.div b c * Nat.div a b)).symm.trans (congrArg (fun k => Nat.mod k c) ha)
+
+theorem nat_div_le_self (a b : Nat) : Nat.div a b ≤ a :=
+  Nat.div_le_self a b
+
+theorem nat_div_eq_of_lt {a b : Nat} (h : a < b) : Nat.div a b = 0 :=
+  Nat.div_eq_of_lt h
+
+theorem nat_zero_div (b : Nat) : Nat.div 0 b = 0 :=
+  Nat.zero_div b
+
+theorem nat_div_one (a : Nat) : Nat.div a 1 = a :=
+  Nat.div_one a
+
+theorem nat_mul_div_cancel_left {a : Nat} (b : Nat) (h : 0 < a) :
+    Nat.div (a * b) a = b :=
+  Nat.mul_div_right b h
+
+theorem nat_div_lt_of_lt_mul {a b c : Nat} (h : a < b * c) : Nat.div a b < c := by
+  cases Nat.lt_or_ge (Nat.div a b) c with
+  | inl hLt => exact hLt
+  | inr hGe =>
+    have h1 : b * c ≤ b * Nat.div a b := Nat.mul_le_mul_left b hGe
+    have h2 : b * Nat.div a b ≤ a :=
+      Nat.le_trans (Nat.le_add_right (b * Nat.div a b) (Nat.mod a b))
+        (Nat.le_of_eq (Nat.div_add_mod a b))
+    exact False.elim (Nat.not_le_of_gt h (Nat.le_trans h1 h2))
+
 theorem div2_mod2_inj (m n : Nat)
     (hDiv : Nat.div n 2 = Nat.div m 2)
     (hMod : Nat.mod n 2 = Nat.mod m 2) : n = m := by
@@ -254,6 +448,124 @@ theorem intBalance_subNatNat (p n : Nat) :
     dsimp only [IntBalance, intPos, intNeg]
     rw [Nat.zero_add, Nat.add_comm (k + 1) p]
     exact hAdd.symm
+
+/-! ### Abstract-Modulus-Safe `Int` Order, Subtraction, and Negation Helpers -/
+
+theorem int_ofNat_add (a b : Nat) :
+    Int.ofNat a + Int.ofNat b = Int.ofNat (a + b) := rfl
+
+theorem int_ofNat_mul (a b : Nat) :
+    Int.ofNat a * Int.ofNat b = Int.ofNat (a * b) := rfl
+
+theorem int_subNatNat_of_le {a b : Nat} (h : b ≤ a) :
+    Int.subNatNat a b = Int.ofNat (a - b) := by
+  unfold Int.subNatNat
+  rw [Nat.sub_eq_zero_of_le h]
+
+theorem int_subNatNat_of_lt {a b : Nat} (h : a < b) :
+    Int.subNatNat a b = Int.negSucc (b - a - 1) := by
+  unfold Int.subNatNat
+  have hPos : 0 < b - a := Nat.sub_pos_of_lt h
+  cases hSub : b - a with
+  | zero => rw [hSub] at hPos; nomatch hPos
+  | succ k => rfl
+
+theorem int_ofNat_sub_eq_subNatNat (a b : Nat) :
+    Int.ofNat a - Int.ofNat b = Int.subNatNat a b := by
+  cases b with
+  | zero =>
+    unfold Int.subNatNat
+    rw [Nat.zero_sub a, Nat.sub_zero]
+    change Int.ofNat (a + 0) = Int.ofNat a
+    rw [Nat.add_zero]
+  | succ _ => rfl
+
+theorem int_ofNat_sub_of_le {a b : Nat} (h : b ≤ a) :
+    Int.ofNat a - Int.ofNat b = Int.ofNat (a - b) :=
+  (int_ofNat_sub_eq_subNatNat a b).trans (int_subNatNat_of_le h)
+
+theorem int_ofNat_sub_of_lt {a b : Nat} (h : a < b) :
+    Int.ofNat a - Int.ofNat b = Int.negSucc (b - a - 1) :=
+  (int_ofNat_sub_eq_subNatNat a b).trans (int_subNatNat_of_lt h)
+
+theorem int_ofNat_le_iff (a b : Nat) :
+    (Int.ofNat a ≤ Int.ofNat b) ↔ a ≤ b := by
+  constructor
+  · intro hLe
+    have hNonNeg : Int.NonNeg (Int.ofNat b - Int.ofNat a) := hLe
+    cases Nat.lt_or_ge b a with
+    | inr hGe => exact hGe
+    | inl hLt =>
+      rw [int_ofNat_sub_of_lt hLt] at hNonNeg
+      nomatch hNonNeg
+  · intro hLe
+    change Int.NonNeg (Int.ofNat b - Int.ofNat a)
+    rw [int_ofNat_sub_of_le hLe]
+    exact Int.NonNeg.mk (b - a)
+
+theorem int_ofNat_lt_iff (a b : Nat) :
+    (Int.ofNat a < Int.ofNat b) ↔ a < b := by
+  change (Int.ofNat a + 1 ≤ Int.ofNat b) ↔ Nat.succ a ≤ b
+  exact int_ofNat_le_iff (Nat.succ a) b
+
+theorem int_negSucc_le_ofNat (m n : Nat) : Int.negSucc m ≤ Int.ofNat n := by
+  change Int.NonNeg (Int.ofNat n - Int.negSucc m)
+  exact Int.NonNeg.mk (n + Nat.succ m)
+
+theorem int_negSucc_lt_ofNat (m n : Nat) : Int.negSucc m < Int.ofNat n := by
+  change Int.NonNeg (Int.ofNat n - (Int.negSucc m + 1))
+  cases m with
+  | zero => exact Int.NonNeg.mk (n + 0)
+  | succ m' => exact Int.NonNeg.mk (n + Nat.succ m')
+
+theorem int_not_ofNat_le_negSucc (n m : Nat) : ¬ (Int.ofNat n ≤ Int.negSucc m) := by
+  intro h
+  change Int.NonNeg (Int.negSucc m - Int.ofNat n) at h
+  cases n with
+  | zero => nomatch h
+  | succ _ => nomatch h
+
+theorem int_not_ofNat_lt_negSucc (n m : Nat) : ¬ (Int.ofNat n < Int.negSucc m) := by
+  intro h
+  change Int.NonNeg (Int.negSucc m - Int.ofNat (n + 1)) at h
+  nomatch h
+
+theorem int_negSucc_le_negSucc_iff (m n : Nat) :
+    (Int.negSucc m ≤ Int.negSucc n) ↔ n ≤ m := by
+  constructor
+  · intro h
+    change Int.NonNeg (Int.subNatNat (Nat.succ m) (Nat.succ n)) at h
+    cases Nat.lt_or_ge m n with
+    | inr hGe => exact hGe
+    | inl hLt =>
+      rw [int_subNatNat_of_lt (Nat.succ_lt_succ hLt)] at h
+      nomatch h
+  · intro h
+    change Int.NonNeg (Int.subNatNat (Nat.succ m) (Nat.succ n))
+    rw [int_subNatNat_of_le (Nat.succ_le_succ h)]
+    exact Int.NonNeg.mk (Nat.succ m - Nat.succ n)
+
+theorem int_negSucc_lt_negSucc_iff (m n : Nat) :
+    (Int.negSucc m < Int.negSucc n) ↔ n < m := by
+  cases m with
+  | zero =>
+    constructor
+    · intro h
+      change Int.NonNeg (Int.negSucc n - Int.ofNat 0) at h
+      nomatch h
+    · intro h; nomatch h
+  | succ m' =>
+    have hAdd : Int.negSucc (m' + 1) + 1 = Int.negSucc m' := rfl
+    change (Int.negSucc (m' + 1) + 1 ≤ Int.negSucc n) ↔ n < m' + 1
+    rw [hAdd]
+    exact (int_negSucc_le_negSucc_iff m' n).trans
+      ⟨Nat.lt_succ_of_le, Nat.le_of_lt_succ⟩
+
+theorem int_neg_ofNat_succ (n : Nat) :
+    Neg.neg (Int.ofNat (n + 1)) = Int.negSucc n := rfl
+
+theorem int_neg_negSucc (n : Nat) :
+    Neg.neg (Int.negSucc n) = Int.ofNat (n + 1) := rfl
 
 /-! ## 5. Total `@Nat.rec` List Indexing and Slice Helpers -/
 
@@ -432,6 +744,20 @@ theorem canary_list_ops_edge :
     (replaceSlice [1, 2, 3, 4] 1 [8, 9]).length = 4 :=
   ⟨rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl,
     replaceSlice_length [1, 2, 3, 4] 1 [8, 9] (by decide)⟩
+
+/-- Canary exercising Section 1-4 expanded `Bool`, `Nat`, `Nat.mod`/`Nat.div`,
+and abstract-`N` `Int` helpers. -/
+theorem canary_expanded_init_lemmas_edge (a b : Nat) :
+    ((false && true) = false ↔ (false = false ∨ true = false)) ∧
+    (Nat.mod (Nat.mod a 16) 4 = Nat.mod a 4) ∧
+    (Int.subNatNat (a + b) a = Int.ofNat b) ∧
+    (Int.negSucc 3 < Int.ofNat 0) ∧
+    (Int.negSucc 5 < Int.negSucc 2) :=
+  ⟨bool_and_eq_false_iff false true,
+   nat_mod_mod_of_dvd (by decide),
+   by rw [int_subNatNat_of_le (Nat.le_add_right a b), nat_add_sub_cancel_left],
+   int_negSucc_lt_ofNat 3 0,
+   (int_negSucc_lt_negSucc_iff 5 2).mpr (by decide)⟩
 
 end Anneal.InitLemmas
 

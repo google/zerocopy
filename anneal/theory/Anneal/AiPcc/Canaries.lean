@@ -663,6 +663,281 @@ theorem canary_validRpoSchedule_tests :
       [0, 1, 2, 5, 3, 4] = false :=
   ⟨rfl, rfl, rfl, rfl, rfl, rfl⟩
 
+/-! ## Signed Integer (`i8`..`i128`, `isize`) & `AutoProve` Canaries -/
+
+/-- Constant signed `i8` MIR `Operand` (raw two's-complement bits). -/
+@[expose] def mkI8Const (rawBits : Nat) : Operand :=
+  .constant ⟨.int .i8 true, .scalar (BitVec.ofNat 128 rawBits)⟩
+
+/-- Constant signed `i32` MIR `Operand` (raw two's-complement bits). -/
+@[expose] def mkI32Const (rawBits : Nat) : Operand :=
+  .constant ⟨.int .i32 true, .scalar (BitVec.ofNat 128 rawBits)⟩
+
+/-- Constant signed `isize` MIR `Operand` (raw two's-complement bits). -/
+@[expose] def mkIsizeConst (rawBits : Nat) : Operand :=
+  .constant ⟨.int .isize true, .scalar (BitVec.ofNat 128 rawBits)⟩
+
+/-- Helper building a 1-block signed `i8` function `_1 : i8 -> _0 : i8`. -/
+@[expose] def mkOneBlockI8Body (stmts : List StatementKind)
+    (term : TerminatorKind) : Body :=
+  { identity := "ai_pcc_signed_i8_unit"
+    argumentCount := 1
+    locals := [.int .i8 true, .int .i8 true]
+    basicBlocks := [{ statements := stmts, terminator := term, cleanup := false }] }
+
+/-- Guarded signed `i8` body exercising `sleConst`/`sgtConst` branch
+refinement, `addUnchecked`, `subUnchecked`, `div`, `rem`, `shlUnchecked`,
+`shrUnchecked`, unary `.neg`/`.not`, bitwise ops, `mul`, and `intToInt` casts:
+- `bb0`: checks `_1 >= -100` (raw `156`) -> false goes to `bb3` (returns `-1`);
+- `bb1`: checks `_1 <= 100` (raw `100`) -> false goes to `bb4` (returns `1`);
+- `bb2`: `_1 ∈ [-100, 100]`, so both `_1.unchecked_add(10)` (result overwritten
+  by the next store; both checked for no-UB) and `_1.unchecked_sub(-10)` cannot
+  overflow, `_5 = (_1 & 3)` is in `[0, 3]` so `shlUnchecked`/`shrUnchecked` are
+  in bounds, and `_4 / _5` and `_4 % _5` with `_5 ∈ [1, 4]` cannot divide by
+  zero or overflow `INT_MIN / -1`. -/
+@[expose] def signedGuardedOpsBody : Body :=
+  { identity := "ai_pcc_signed_guarded_ops"
+    argumentCount := 1
+    locals := [
+      .int .i8 true,   -- _0: ret
+      .int .i8 true,   -- _1: arg x
+      .bool,           -- _2: x >= -100
+      .bool,           -- _3: x <= 100
+      .int .i8 true,   -- _4: tmp signed
+      .int .i8 true,   -- _5: shift amount / divisor
+      .int .i32 true   -- _6: widened i32
+    ]
+    basicBlocks := [
+      -- bb0: check _1 >= -100 (raw 156 = 256 - 100)
+      { statements := [
+          .storageLive 2,
+          .assign (mkPlace 2) (.binaryOp .ge (mkCopy 1) (mkI8Const 156))
+        ]
+        terminator := .switchInt (mkCopy 2) ⟨[(BitVec.ofNat 128 0, 3)], 1⟩
+        cleanup := false },
+      -- bb1: check _1 <= 100
+      { statements := [
+          .storageLive 3,
+          .assign (mkPlace 3) (.binaryOp .le (mkCopy 1) (mkI8Const 100))
+        ]
+        terminator := .switchInt (mkCopy 3) ⟨[(BitVec.ofNat 128 0, 4)], 2⟩
+        cleanup := false },
+      -- bb2: safe guarded signed ops
+      { statements := [
+          .storageLive 4,
+          .storageLive 5,
+          .storageLive 6,
+          -- _4 = unchecked_add(_1, 10): [-100, 100] + 10 ⊆ [-128, 127]
+          .assign (mkPlace 4) (.binaryOp .addUnchecked (mkCopy 1) (mkI8Const 10)),
+          -- _4 = unchecked_sub(_1, -10): [-100, 100] - (-10) = [-90, 110]
+          .assign (mkPlace 4) (.binaryOp .subUnchecked (mkCopy 1) (mkI8Const 246)),
+          -- unary neg, unary not, wrapping mul, bitwise or/xor
+          .assign (mkPlace 4) (.unaryOp .neg (mkCopy 4)),
+          .assign (mkPlace 4) (.unaryOp .not (mkCopy 4)),
+          .assign (mkPlace 4) (.binaryOp .mul (mkCopy 4) (mkI8Const 3)),
+          -- _5 = _1 & 3 (in [0, 3], safe shift amount for i8!)
+          .assign (mkPlace 5) (.binaryOp .bitAnd (mkCopy 1) (mkI8Const 3)),
+          .assign (mkPlace 4) (.binaryOp .shlUnchecked (mkCopy 4) (mkCopy 5)),
+          .assign (mkPlace 4) (.binaryOp .shrUnchecked (mkCopy 4) (mkCopy 5)),
+          -- _5 = _5 + 1 (in [1, 4], nonzero and ≠ -1!)
+          .assign (mkPlace 5) (.binaryOp .addUnchecked (mkCopy 5) (mkI8Const 1)),
+          .assign (mkPlace 4) (.binaryOp .div (mkCopy 4) (mkCopy 5)),
+          .assign (mkPlace 4) (.binaryOp .rem (mkCopy 4) (mkCopy 5)),
+          -- widening cast i8 -> i32 and narrowing cast i32 -> i8
+          .assign (mkPlace 6) (.cast .intToInt (mkCopy 4) (.int .i32 true)),
+          .assign (mkPlace 0) (.cast .intToInt (mkCopy 6) (.int .i8 true))
+        ]
+        terminator := .return_
+        cleanup := false },
+      -- bb3: fallback from bb0 (x < -100) returns -1 (raw 255)
+      { statements := [
+          .assign (mkPlace 0) (.use (mkI8Const 255))
+        ]
+        terminator := .return_
+        cleanup := false },
+      -- bb4: fallback from bb1 (x > 100) closes _3 storage and returns 1
+      { statements := [
+          .storageDead 3,
+          .assign (mkPlace 0) (.use (mkI8Const 1))
+        ]
+        terminator := .return_
+        cleanup := false }
+    ] }
+
+/-- Positive signed canary: `AutoProve.autoVerifyAcyclic` proves
+`signedGuardedOpsBody` safe for ALL valid `i8` arguments via a single `rfl`! -/
+theorem canary_signed_guarded_ops_auto_safe {args : List Val}
+    (hArgs : ValidEntryArgs signedGuardedOpsBody args) :
+    Safe signedGuardedOpsBody args :=
+  AutoProve.autoVerifyAcyclic_sound rfl hArgs
+
+/-- Positive `isize` negative-cast + wrapping arithmetic canary (models
+real `isize` arithmetic and `isize as usize` cast with zero manual WP steps). -/
+@[expose] def signedIsizeToUsizeBody : Body :=
+  { identity := "ai_pcc_isize_to_usize"
+    argumentCount := 1
+    locals := [.int .isize false, .int .isize true, .int .isize true]
+    basicBlocks := [
+      { statements := [
+          .storageLive 2,
+          .assign (mkPlace 2) (.binaryOp .add (mkCopy 1) (mkIsizeConst 1)),
+          .assign (mkPlace 2) (.unaryOp .neg (mkCopy 2)),
+          .assign (mkPlace 0) (.cast .intToInt (mkCopy 2) (.int .isize false))
+        ]
+        terminator := .return_
+        cleanup := false }
+    ] }
+
+/-- `AutoProve.autoVerifyAcyclic` proves `signedIsizeToUsizeBody` safe for all
+valid `isize` arguments (including negative values and `isize::MIN`). -/
+theorem canary_signed_isize_to_usize_auto_safe {args : List Val}
+    (hArgs : ValidEntryArgs signedIsizeToUsizeBody args) :
+    Safe signedIsizeToUsizeBody args :=
+  AutoProve.autoVerifyAcyclic_sound rfl hArgs
+
+/-- Same-skeleton (`mkOneBlockI8Body`) near-miss positive controls proving that
+the negative signed UB rejections in `canary_negative_signed_rejections` are
+non-vacuous (the skeleton itself is accepted when the UB condition is absent):
+1. `addUnchecked 1i8 1i8` (in-range signed addition),
+2. `div _1 2i8` (nonzero divisor ≠ `-1`),
+3. `rem _1 2i8` (nonzero divisor ≠ `-1`),
+4. `shlUnchecked _1 7i8` (largest valid shift amount `< 8`),
+5. `shrUnchecked _1 0i8` (smallest valid shift amount `0`),
+6. `.neg _1` on `i8` (signed negation wraps `-INT_MIN == INT_MIN`). -/
+theorem canary_positive_signed_near_miss_same_skeleton :
+    AutoProve.autoVerifyAcyclic
+      (mkOneBlockI8Body
+        [.assign (mkPlace 0) (.binaryOp .addUnchecked (mkI8Const 1) (mkI8Const 1))]
+        .return_) = true ∧
+    AutoProve.autoVerifyAcyclic
+      (mkOneBlockI8Body
+        [.assign (mkPlace 0) (.binaryOp .div (mkCopy 1) (mkI8Const 2))]
+        .return_) = true ∧
+    AutoProve.autoVerifyAcyclic
+      (mkOneBlockI8Body
+        [.assign (mkPlace 0) (.binaryOp .rem (mkCopy 1) (mkI8Const 2))]
+        .return_) = true ∧
+    AutoProve.autoVerifyAcyclic
+      (mkOneBlockI8Body
+        [.assign (mkPlace 0) (.binaryOp .shlUnchecked (mkCopy 1) (mkI8Const 7))]
+        .return_) = true ∧
+    AutoProve.autoVerifyAcyclic
+      (mkOneBlockI8Body
+        [.assign (mkPlace 0) (.binaryOp .shrUnchecked (mkCopy 1) (mkI8Const 0))]
+        .return_) = true ∧
+    AutoProve.autoVerifyAcyclic
+      (mkOneBlockI8Body
+        [.assign (mkPlace 0) (.unaryOp .neg (mkCopy 1))]
+        .return_) = true :=
+  ⟨rfl, rfl, rfl, rfl, rfl, rfl⟩
+
+/-- Negative fail-closed signed regression suite: verifies that
+`AutoProve.autoVerifyAcyclic` and `verifyMirCutpoints` REJECT every signed UB
+class:
+1. Unchecked signed addition overflow (`i8` `topInit + 1` may exceed `127`),
+2. Unchecked signed subtraction overflow (`i8` `topInit - 1` may underflow),
+3. Signed division by zero (`10i8 / x` with `x : i8`),
+4. Signed remainder by zero (`10i8 % x` with `x : i8`),
+5. Signed division `INT_MIN / -1` (`x / -1i8` when `x` may be `-128`),
+6. Signed remainder `INT_MIN % -1` (`x % -1i8` when `x` may be `-128`),
+7. Negative signed shift amount UB (`x.unchecked_shl(-1i8)`),
+8. Out-of-range positive signed shift amount UB (`x.unchecked_shr(8i8)`),
+9. Unary negation on unsigned integer (`UnOp.neg` on `u8`). -/
+theorem canary_negative_signed_rejections :
+    -- 1. Signed `addUnchecked` overflow:
+    AutoProve.autoVerifyAcyclic
+      (mkOneBlockI8Body
+        [.assign (mkPlace 0) (.binaryOp .addUnchecked (mkCopy 1) (mkI8Const 1))]
+        .return_) = false ∧
+    -- 2. Signed `subUnchecked` overflow:
+    AutoProve.autoVerifyAcyclic
+      (mkOneBlockI8Body
+        [.assign (mkPlace 0) (.binaryOp .subUnchecked (mkCopy 1) (mkI8Const 1))]
+        .return_) = false ∧
+    -- 3. Signed `div` by possible zero:
+    AutoProve.autoVerifyAcyclic
+      (mkOneBlockI8Body
+        [.assign (mkPlace 0) (.binaryOp .div (mkI8Const 10) (mkCopy 1))]
+        .return_) = false ∧
+    -- 4. Signed `rem` by possible zero:
+    AutoProve.autoVerifyAcyclic
+      (mkOneBlockI8Body
+        [.assign (mkPlace 0) (.binaryOp .rem (mkI8Const 10) (mkCopy 1))]
+        .return_) = false ∧
+    -- 5. Signed `div` `INT_MIN / -1` (raw `255 = -1i8`, `_1` can be `-128`):
+    AutoProve.autoVerifyAcyclic
+      (mkOneBlockI8Body
+        [.assign (mkPlace 0) (.binaryOp .div (mkCopy 1) (mkI8Const 255))]
+        .return_) = false ∧
+    -- 6. Signed `rem` `INT_MIN % -1`:
+    AutoProve.autoVerifyAcyclic
+      (mkOneBlockI8Body
+        [.assign (mkPlace 0) (.binaryOp .rem (mkCopy 1) (mkI8Const 255))]
+        .return_) = false ∧
+    -- 7. Negative signed shift amount UB (`shlUnchecked` with `-1i8`):
+    AutoProve.autoVerifyAcyclic
+      (mkOneBlockI8Body
+        [.assign (mkPlace 0) (.binaryOp .shlUnchecked (mkCopy 1) (mkI8Const 255))]
+        .return_) = false ∧
+    -- 8. Out-of-range positive shift amount UB (`shrUnchecked` with `8i8`):
+    AutoProve.autoVerifyAcyclic
+      (mkOneBlockI8Body
+        [.assign (mkPlace 0) (.binaryOp .shrUnchecked (mkCopy 1) (mkI8Const 8))]
+        .return_) = false ∧
+    -- 9. Unary `.neg` on unsigned `u8` (rejected fail-closed):
+    AutoProve.autoVerifyAcyclic
+      (mkOneBlockU8Body
+        [.assign (mkPlace 0) (.unaryOp .neg (mkCopy 1))]
+        .return_) = false :=
+  ⟨rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl⟩
+
+/-- Acyclic CFG with non-monotonic block numbering (`0 → 2 → 1` and `0 → 1`):
+`bb0` checks `_1 <= 100i8` and branches to `bb2` (which performs unchecked
+`addUnchecked _1 1i8` and jumps to `bb1`) or directly to `bb1` (return). Naive
+index order `[0, 1, 2]` fails `validRpoSchedule` because `2 → 1` goes backward,
+while `AutoProve.defaultRpoOrder` computes `[0, 2, 1]`. -/
+@[expose] def nonMonotonicRpoBody : Body :=
+  { identity := "ai_pcc_non_monotonic_rpo"
+    argumentCount := 1
+    locals := [.int .i8 true, .int .i8 true, .bool]
+    basicBlocks := [
+      -- bb0: `_0 := _1; _2 := (_1 <= 100i8); if _2 then bb2 else bb1`
+      { statements := [
+          .assign (mkPlace 0) (.use (mkCopy 1)),
+          .assign (mkPlace 2) (.binaryOp .le (mkCopy 1) (mkI8Const 100))
+        ]
+        terminator := .switchInt (mkCopy 2)
+          { branches := [(1, 2)], otherwise := 1 }
+        cleanup := false },
+      -- bb1: exit block numbered before predecessor `bb2`
+      { statements := []
+        terminator := .return_
+        cleanup := false },
+      -- bb2: guarded `addUnchecked _1 1i8`, then `goto bb1`
+      { statements := [
+          .assign (mkPlace 0)
+            (.binaryOp .addUnchecked (mkCopy 1) (mkI8Const 1))
+        ]
+        terminator := .goto 1
+        cleanup := false }
+    ] }
+
+/-- `AutoProve.defaultRpoOrder` computes `[0, 2, 1]` on `nonMonotonicRpoBody`
+(whereas naive `[0, 1, 2]` is rejected), and
+`AutoProve.bodyVerified_of_autoVerifyAcyclic` proves `BodyVerified` in one
+`rfl`. -/
+theorem canary_non_monotonic_rpo_schedule :
+    AutoProve.defaultRpoOrder nonMonotonicRpoBody [] = [0, 2, 1] ∧
+    AutoProve.autoVerifyAcyclic nonMonotonicRpoBody [0, 1, 2] = false :=
+  ⟨rfl, rfl⟩
+
+/-- End-to-end `BodyVerified` canary on the non-monotonic `0 → 2 → 1` CFG using
+the default computed RPO schedule. -/
+theorem canary_non_monotonic_rpo_auto_verified :
+    BodyVerified (bodyProg nonMonotonicRpoBody) 0 nonMonotonicRpoBody
+      (fun _ => True) :=
+  AutoProve.bodyVerified_of_autoVerifyAcyclic rfl rfl rfl
+
 end Anneal.AiPcc
 
 end
