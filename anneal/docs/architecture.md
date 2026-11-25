@@ -400,7 +400,7 @@ connects the verification layers to Stage 2 by kernel-checked refinement proofs:
 - **Program logics, 3-axiom proof libraries, and tactics
   (`theory/Anneal/{MirWp,LoopInv,LinearArith,BitVec,BitVecArith}.lean`,
   `theory/Anneal/{InitLemmas,ClassicalEm,Firewall,LeBytes,ListChunks}.lean`,
-  `theory/Anneal/{NatBitwise,BitTrieLrat,PTree,SpineForce}.lean`,
+  `theory/Anneal/{NatBitwise,BitTrieLrat,PTree,SpineForce,Generic}.lean`,
   `theory/Anneal/{ByteRun,ByteSubLens,CallStackUnwind,CnfOrd,F2Simd}/`,
   `theory/Anneal/{AiPcc,OverflowCastJoin,PureLift,RefFrame}/`, and planned
   `Theory/Rust/{Wp,Tactics}/`):**
@@ -419,7 +419,10 @@ connects the verification layers to Stage 2 by kernel-checked refinement proofs:
   propagation (`CallStackUnwind`), constructive `< ω^ω` Cantor Normal Form
   ordinals and multi-rank worklist termination (`CnfOrd`),
   $\mathbb{F}_2$-linear, $\mathbb{F}_2$-bilinear, and cone-sliced SIMD
-  certificate evaluators (`F2Simd`), `@[irreducible]` stage-cut interval joins
+  certificate evaluators (`F2Simd`), standalone, unbundled open-generic MIR
+  syntax, parametric type layouts, assume-guarantee trait contracts, and
+  closed-instantiation erasure to Day-1 `BodyVerified` (`Generic`, audited
+  standalone in Pass 1), `@[irreducible]` stage-cut interval joins
   for overflowing tuple arithmetic and `intToInt` casts (`OverflowCastJoin`),
   4-way call-continuation `&mut` writeback frames and ranged Tree Borrows
   protectors (`RefFrame`), functional borrow lifting, separation-logic frame
@@ -547,6 +550,7 @@ anneal/
     │   ├── Core.lean               # BlockTree, SepPCM & StepStageCut (+ Core/)
     │   ├── F2Simd.lean             # F2-linear/bilinear & SIMD certificate evaluators (+ F2Simd/)
     │   ├── Firewall.lean           # WHNF & rewrite firewall combinators
+    │   ├── Generic.lean            # Unbundled open-generic MIR, traits & erasure (+ Generic/)
     │   ├── InitLemmas.lean         # Foundation Bool/BEq/Nat/Int/list helpers
     │   ├── LeBytes.lean            # Parametric LE/BE byte serialization lemmas
     │   ├── LinearArith.lean        # Sparse Farkas & Chvatal-Gomory checker
