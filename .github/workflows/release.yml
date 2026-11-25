@@ -1039,7 +1039,6 @@ jobs:
           ARCHIVE_SHA256: ${{ needs.anneal-qualify-package.outputs.archive_sha256 }}
           QUALIFIED_SOURCE_SHA256: >-
             ${{ needs.anneal-qualify-package.outputs.crate_source_sha256 }}
-          CARGO_TARGET_DIR: ${{ runner.temp }}/anneal-package
           ACTIONS_CACHE_URL: ''
           ACTIONS_RESULTS_URL: ''
           ACTIONS_RUNTIME_TOKEN: ''
@@ -1049,7 +1048,6 @@ jobs:
         run: |
           set -euo pipefail
           python3 -I -B "$GITHUB_WORKSPACE/anneal/ci/alpha_release.py" verify-published-crate \
-            --crate "$CARGO_TARGET_DIR/package/cargo-anneal-$VERSION.crate" \
             --version "$VERSION" \
             --commit "$COMMIT" \
             --sha256 "$ARCHIVE_SHA256" \
