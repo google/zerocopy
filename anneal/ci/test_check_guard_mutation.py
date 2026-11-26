@@ -724,6 +724,117 @@ class GuardMutationUnitTests(unittest.TestCase):
             errors,
         )
 
+    def test_semantics_downstream_covers_transitive_importers(self):
+        # Verify that for every `target_module` in `SEMANTICS_DOWNSTREAM` whose
+        # guards compile against `Boundary`-importing fixtures (i.e. anything
+        # outside the isolated `Memory` fast path), `SEMANTICS_DOWNSTREAM`
+        # includes every transitive importer in `Trusted/MirSemantics/*.lean`
+        # in topological order so no stale `.olean` survives a mutant rebuild.
+        sem_dir = ANNEAL_ROOT / "trusted/lean/Trusted/MirSemantics"
+        sem_index = {
+            mod: idx
+            for idx, mod in enumerate(check_guard_mutation.SEMANTICS_MODULES)
+        }
+        direct_importers: dict[str, set[str]] = {}
+        for lean_file in sorted(sem_dir.glob("*.lean")):
+            mod = f"Trusted/MirSemantics/{lean_file.stem}"
+            if mod not in sem_index:
+                continue
+            for line in lean_file.read_text(encoding="utf-8").splitlines():
+                stripped = line.strip()
+                if stripped.startswith(("import ", "public import ")):
+                    imp = stripped.split()[-1].replace(".", "/")
+                    if imp in sem_index:
+                        direct_importers.setdefault(imp, set()).add(mod)
+
+        def transitive_importers(root: str) -> set[str]:
+            seen = {root}
+            stack = [root]
+            while stack:
+                cur = stack.pop()
+                for nxt in direct_importers.get(cur, ()):
+                    if nxt not in seen:
+                        seen.add(nxt)
+                        stack.append(nxt)
+            return seen
+
+        fixture_dir = ANNEAL_ROOT / "ci/fixtures/guard_mutation"
+
+        def fixture_semantics_imports(root_mod: str) -> set[str]:
+            """Return all `Trusted/MirSemantics/*` modules reachable from a
+            fixture module, following helper imports in `fixture_dir`."""
+            sem_imports: set[str] = set()
+            visited: set[str] = set()
+            stack = [root_mod]
+            while stack:
+                cur = stack.pop()
+                if cur in visited:
+                    continue
+                visited.add(cur)
+                lean_path = fixture_dir / f"{cur}.lean"
+                self.assertTrue(
+                    lean_path.is_file(),
+                    f"missing fixture module {cur!r} at {lean_path}",
+                )
+                for line in lean_path.read_text(encoding="utf-8").splitlines():
+                    stripped = line.strip()
+                    if not stripped.startswith(("import ", "public import ")):
+                        continue
+                    imp = stripped.split()[-1].replace(".", "/")
+                    if imp in sem_index:
+                        sem_imports.add(imp)
+                    elif (fixture_dir / f"{imp}.lean").is_file():
+                        stack.append(imp)
+            return sem_imports
+
+        for mod, rebuild_list in check_guard_mutation.SEMANTICS_DOWNSTREAM.items():
+            # `Memory` intentionally uses isolated `Memory`-only fixtures and
+            # `MemorySanity` without rebuilding downstream modules; verify that
+            # every `Memory` guard obeys that contract transitively.
+            if mod == "Trusted/MirSemantics/Memory":
+                allowed = set(rebuild_list)
+                self.assertEqual(allowed, {"Trusted/MirSemantics/Memory"})
+                mem_guards = [
+                    g
+                    for g in check_guard_mutation.MIR_SEMANTICS_GUARDS
+                    if g.target_module == mod
+                ]
+                self.assertTrue(mem_guards, "expected at least one Memory guard")
+                for g in mem_guards:
+                    self.assertFalse(
+                        g.needs_wf_helper,
+                        f"{g.guard_id} sets needs_wf_helper=True on isolated "
+                        f"Memory fast path",
+                    )
+                    for role, mod_name in (
+                        ("fixture_module", g.fixture_module),
+                        ("sanity_module", g.sanity_module),
+                    ):
+                        reached = fixture_semantics_imports(mod_name)
+                        self.assertTrue(
+                            reached <= allowed,
+                            f"{g.guard_id} {role} {mod_name!r} imports "
+                            f"non-Memory semantics modules "
+                            f"{sorted(reached - allowed)} while "
+                            f"SEMANTICS_DOWNSTREAM[{mod!r}] only rebuilds "
+                            f"{sorted(allowed)}",
+                        )
+                continue
+            expected = transitive_importers(mod)
+            actual = set(rebuild_list)
+            self.assertEqual(
+                actual,
+                expected,
+                f"SEMANTICS_DOWNSTREAM[{mod!r}] missing or extra modules: "
+                f"missing={sorted(expected - actual)}, "
+                f"extra={sorted(actual - expected)}",
+            )
+            self.assertEqual(
+                list(rebuild_list),
+                sorted(rebuild_list, key=sem_index.__getitem__),
+                f"SEMANTICS_DOWNSTREAM[{mod!r}] is not in topological order",
+            )
+
 
 if __name__ == "__main__":
     unittest.main()

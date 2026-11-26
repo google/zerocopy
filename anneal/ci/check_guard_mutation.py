@@ -135,6 +135,7 @@ SEMANTICS_DOWNSTREAM: dict[str, tuple[str, ...]] = {
     ),
     "Trusted/MirSemantics/Bytes": (
         "Trusted/MirSemantics/Bytes",
+        "Trusted/MirSemantics/State",
         "Trusted/MirSemantics/Step",
         "Trusted/MirSemantics/Boundary",
     ),
@@ -2321,6 +2322,530 @@ MIR_SEMANTICS_GUARDS: tuple[MirSemanticsGuard, ...] = (
         ),
         fixture_module="BoundaryRefutations",
         theorem_name="refute_boundary_v2_safe_contract_post_abort_default",
+        needs_wf_helper=False,
+    ),
+    # ------------------------------------------------------------------
+    # Additional Profile v2 silent-saturation, aliasing, negative-offset,
+    # slice/thin-ref validity, and provenance-free deref guards (24 guards)
+    # ------------------------------------------------------------------
+    MirSemanticsGuard(
+        guard_id="mem_v2_slice_get_unchecked_inverted",
+        target_file="trusted/lean/Trusted/MirSemantics/Memory.lean",
+        target_module="Trusted/MirSemantics/Memory",
+        description=(
+            "sliceGetUncheckedCheck rejects inverted range startOff > endOff "
+            "as UB rather than saturating subtraction"
+        ),
+        anchor=(
+            "    (len startOff endOff : Nat) : Except FaultKind Val :=\n"
+            "  if !Nat.ble startOff endOff || !Nat.ble endOff len then\n"
+            "    .error .undefined"
+        ),
+        replacement=(
+            "    (len startOff endOff : Nat) : Except FaultKind Val :=\n"
+            "  if false || !Nat.ble endOff len then\n"
+            "    .error .undefined"
+        ),
+        fixture_module="ProfileV2MemoryRefutations",
+        theorem_name="refute_mem_v2_slice_get_unchecked_inverted",
+        sanity_module="MemorySanity",
+        needs_wf_helper=False,
+    ),
+    MirSemanticsGuard(
+        guard_id="mem_v2_ptr_add_dead_alloc",
+        target_file="trusted/lean/Trusted/MirSemantics/Memory.lean",
+        target_module="Trusted/MirSemantics/Memory",
+        description="ptrAddInMem rejects offset on a deallocated allocation as UB",
+        anchor=(
+            "      | some a =>\n"
+            "        if !a.live || !Nat.ble (p.offsetBytes.toNat + delta) a.bytes.length then\n"
+            "          .error .undefined"
+        ),
+        replacement=(
+            "      | some a =>\n"
+            "        if false || !Nat.ble (p.offsetBytes.toNat + delta) a.bytes.length then\n"
+            "          .error .undefined"
+        ),
+        fixture_module="ProfileV2MemoryRefutations",
+        theorem_name="refute_mem_v2_ptr_add_dead_alloc",
+        sanity_module="MemorySanity",
+        needs_wf_helper=False,
+    ),
+    MirSemanticsGuard(
+        guard_id="mem_v2_slice_no_prov_nonempty",
+        target_file="trusted/lean/Trusted/MirSemantics/Memory.lean",
+        target_module="Trusted/MirSemantics/Memory",
+        description=(
+            "sliceFromRawPartsCheck rejects non-empty slice backed by a "
+            "provenance-free pointer as UB"
+        ),
+        anchor=(
+            "    | none =>\n"
+            "      if Nat.beq p.offsetBytes.toNat 0 || Nat.blt 0 totalBytes then\n"
+            "        .error .undefined"
+        ),
+        replacement=(
+            "    | none =>\n"
+            "      if Nat.beq p.offsetBytes.toNat 0 || false then\n"
+            "        .error .undefined"
+        ),
+        fixture_module="ProfileV2MemoryRefutations",
+        theorem_name="refute_mem_v2_slice_no_prov_nonempty",
+        sanity_module="MemorySanity",
+        needs_wf_helper=False,
+    ),
+    MirSemanticsGuard(
+        guard_id="mem_v2_slice_no_prov_misaligned",
+        target_file="trusted/lean/Trusted/MirSemantics/Memory.lean",
+        target_module="Trusted/MirSemantics/Memory",
+        description=(
+            "sliceFromRawPartsCheck rejects misaligned zero-length slice "
+            "backed by a provenance-free pointer as UB"
+        ),
+        anchor=(
+            "      else if !Nat.beq (Nat.mod p.offsetBytes.toNat (Nat.pow 2 elemAlignLog2)) 0 then\n"
+            "        .error .undefined\n"
+            "      else\n"
+            "        .ok (.slicePtr p len)"
+        ),
+        replacement=(
+            "      else if false then\n"
+            "        .error .undefined\n"
+            "      else\n"
+            "        .ok (.slicePtr p len)"
+        ),
+        fixture_module="ProfileV2MemoryRefutations",
+        theorem_name="refute_mem_v2_slice_no_prov_misaligned",
+        sanity_module="MemorySanity",
+        needs_wf_helper=False,
+    ),
+    MirSemanticsGuard(
+        guard_id="mem_v2_slice_dead_alloc",
+        target_file="trusted/lean/Trusted/MirSemantics/Memory.lean",
+        target_module="Trusted/MirSemantics/Memory",
+        description=(
+            "sliceFromRawPartsCheck rejects a slice into a deallocated "
+            "allocation as UB"
+        ),
+        anchor=(
+            "        if !a.live || !isInBounds a p.offsetBytes.toNat totalBytes ||\n"
+            "            !isAligned a p.offsetBytes.toNat elemAlignLog2 then\n"
+            "          .error .undefined"
+        ),
+        replacement=(
+            "        if false || !isInBounds a p.offsetBytes.toNat totalBytes ||\n"
+            "            !isAligned a p.offsetBytes.toNat elemAlignLog2 then\n"
+            "          .error .undefined"
+        ),
+        fixture_module="ProfileV2MemoryRefutations",
+        theorem_name="refute_mem_v2_slice_dead_alloc",
+        sanity_module="MemorySanity",
+        needs_wf_helper=False,
+    ),
+    MirSemanticsGuard(
+        guard_id="mem_v2_slice_oob",
+        target_file="trusted/lean/Trusted/MirSemantics/Memory.lean",
+        target_module="Trusted/MirSemantics/Memory",
+        description=(
+            "sliceFromRawPartsCheck rejects out-of-bounds slice length as UB "
+            "instead of allowing List.take truncation"
+        ),
+        anchor=(
+            "        if !a.live || !isInBounds a p.offsetBytes.toNat totalBytes ||\n"
+            "            !isAligned a p.offsetBytes.toNat elemAlignLog2 then\n"
+            "          .error .undefined"
+        ),
+        replacement=(
+            "        if !a.live || false ||\n"
+            "            !isAligned a p.offsetBytes.toNat elemAlignLog2 then\n"
+            "          .error .undefined"
+        ),
+        fixture_module="ProfileV2MemoryRefutations",
+        theorem_name="refute_mem_v2_slice_oob",
+        sanity_module="MemorySanity",
+        needs_wf_helper=False,
+    ),
+    MirSemanticsGuard(
+        guard_id="mem_v2_slice_misaligned",
+        target_file="trusted/lean/Trusted/MirSemantics/Memory.lean",
+        target_module="Trusted/MirSemantics/Memory",
+        description=(
+            "sliceFromRawPartsCheck rejects misaligned provenance-bearing "
+            "slice as UB"
+        ),
+        anchor=(
+            "        if !a.live || !isInBounds a p.offsetBytes.toNat totalBytes ||\n"
+            "            !isAligned a p.offsetBytes.toNat elemAlignLog2 then\n"
+            "          .error .undefined"
+        ),
+        replacement=(
+            "        if !a.live || !isInBounds a p.offsetBytes.toNat totalBytes ||\n"
+            "            false then\n"
+            "          .error .undefined"
+        ),
+        fixture_module="ProfileV2MemoryRefutations",
+        theorem_name="refute_mem_v2_slice_misaligned",
+        sanity_module="MemorySanity",
+        needs_wf_helper=False,
+    ),
+    MirSemanticsGuard(
+        guard_id="bytes_v2_span_disjoint_overlap",
+        target_file="trusted/lean/Trusted/MirSemantics/Bytes.lean",
+        target_module="Trusted/MirSemantics/Bytes",
+        description="spanDisjoint rejects overlapping mutable byte spans",
+        anchor=(
+            "  if !(m1 || m2) || Nat.beq n1 0 || Nat.beq n2 0 || !Nat.beq id1 id2 then\n"
+            "    true\n"
+            "  else\n"
+            "    Nat.ble (s1 + n1) s2 || Nat.ble (s2 + n2) s1"
+        ),
+        replacement=(
+            "  if !(m1 || m2) || Nat.beq n1 0 || Nat.beq n2 0 || !Nat.beq id1 id2 then\n"
+            "    true\n"
+            "  else\n"
+            "    true"
+        ),
+        fixture_module="ProfileV2Refutations",
+        theorem_name="refute_bytes_v2_span_disjoint_overlap",
+        needs_wf_helper=False,
+    ),
+    MirSemanticsGuard(
+        guard_id="bytes_v2_span_disjoint_mut_vs_shared",
+        target_file="trusted/lean/Trusted/MirSemantics/Bytes.lean",
+        target_module="Trusted/MirSemantics/Bytes",
+        description="spanDisjoint rejects &mut overlapping & (not only &mut vs &mut)",
+        anchor=(
+            "  if !(m1 || m2) || Nat.beq n1 0 || Nat.beq n2 0 || !Nat.beq id1 id2 then\n"
+            "    true\n"
+            "  else\n"
+            "    Nat.ble (s1 + n1) s2 || Nat.ble (s2 + n2) s1"
+        ),
+        replacement=(
+            "  if !(m1 && m2) || Nat.beq n1 0 || Nat.beq n2 0 || !Nat.beq id1 id2 then\n"
+            "    true\n"
+            "  else\n"
+            "    Nat.ble (s1 + n1) s2 || Nat.ble (s2 + n2) s1"
+        ),
+        fixture_module="ProfileV2Refutations",
+        theorem_name="refute_bytes_v2_span_disjoint_mut_vs_shared",
+        needs_wf_helper=False,
+    ),
+    MirSemanticsGuard(
+        guard_id="bytes_v2_ref_valid_null_zst",
+        target_file="trusted/lean/Trusted/MirSemantics/Bytes.lean",
+        target_module="Trusted/MirSemantics/Bytes",
+        description="refValidInMem rejects null thin reference even for ZST pointee",
+        anchor=(
+            "      | none =>\n"
+            "        if Nat.beq p.offsetBytes.toNat 0 || Nat.blt 0 lay.size then\n"
+            "          .error .undefined"
+        ),
+        replacement=(
+            "      | none =>\n"
+            "        if false || Nat.blt 0 lay.size then\n"
+            "          .error .undefined"
+        ),
+        fixture_module="ProfileV2Refutations",
+        theorem_name="refute_bytes_v2_ref_valid_null_zst",
+        needs_wf_helper=False,
+    ),
+    MirSemanticsGuard(
+        guard_id="bytes_v2_ref_valid_readonly_mut",
+        target_file="trusted/lean/Trusted/MirSemantics/Bytes.lean",
+        target_module="Trusted/MirSemantics/Bytes",
+        description="refValidInMem rejects thin &mut T into a .shared allocation as UB",
+        anchor=(
+            "          else if Mutability.beq reqMut .mut && !Mutability.beq a.mutability .mut then\n"
+            "            .error .undefined"
+        ),
+        replacement=(
+            "          else if false then\n"
+            "            .error .undefined"
+        ),
+        fixture_module="ProfileV2Refutations",
+        theorem_name="refute_bytes_v2_ref_valid_readonly_mut",
+        needs_wf_helper=False,
+    ),
+    MirSemanticsGuard(
+        guard_id="bytes_v2_ref_valid_uninit_pointee",
+        target_file="trusted/lean/Trusted/MirSemantics/Bytes.lean",
+        target_module="Trusted/MirSemantics/Bytes",
+        description="refValidInMem rejects thin reference to uninitialized pointee as UB",
+        anchor=(
+            "            match decodeValV2 profileV2TargetEndian pointee sliceBytes with\n"
+            "            | .ok (some _) => .ok ()\n"
+            "            | .ok none => .error .undefined\n"
+            "            | .error k => .error k"
+        ),
+        replacement=(
+            "            match decodeValV2 profileV2TargetEndian pointee sliceBytes with\n"
+            "            | .ok (some _) => .ok ()\n"
+            "            | .ok none => .ok ()\n"
+            "            | .error k => .error k"
+        ),
+        fixture_module="ProfileV2Refutations",
+        theorem_name="refute_bytes_v2_ref_valid_uninit_pointee",
+        needs_wf_helper=False,
+    ),
+    MirSemanticsGuard(
+        guard_id="state_v2_init_invalid_entry_ref",
+        target_file="trusted/lean/Trusted/MirSemantics/State.lean",
+        target_module="Trusted/MirSemantics/State",
+        description="initStateV2 rejects invalid entry reference arguments as UB",
+        anchor=(
+            "          if !refsValidInMemList entryMem paramTys q.args ||\n"
+            "              !spansPairwiseDisjoint (refAccessSpansList paramTys q.args) then\n"
+            "            .error .undefined"
+        ),
+        replacement=(
+            "          if false ||\n"
+            "              !spansPairwiseDisjoint (refAccessSpansList paramTys q.args) then\n"
+            "            .error .undefined"
+        ),
+        fixture_module="ProfileV2Refutations",
+        theorem_name="refute_state_v2_init_invalid_entry_ref",
+        needs_wf_helper=False,
+    ),
+    MirSemanticsGuard(
+        guard_id="state_v2_init_aliased_entry_refs",
+        target_file="trusted/lean/Trusted/MirSemantics/State.lean",
+        target_module="Trusted/MirSemantics/State",
+        description="initStateV2 rejects overlapping mutable entry references as UB",
+        anchor=(
+            "          if !refsValidInMemList entryMem paramTys q.args ||\n"
+            "              !spansPairwiseDisjoint (refAccessSpansList paramTys q.args) then\n"
+            "            .error .undefined"
+        ),
+        replacement=(
+            "          if !refsValidInMemList entryMem paramTys q.args ||\n"
+            "              false then\n"
+            "            .error .undefined"
+        ),
+        fixture_module="ProfileV2Refutations",
+        theorem_name="refute_state_v2_init_aliased_entry_refs",
+        needs_wf_helper=False,
+    ),
+    MirSemanticsGuard(
+        guard_id="step_v2_usize_unchecked_sub_underflow",
+        target_file="trusted/lean/Trusted/MirSemantics/Step.lean",
+        target_module="Trusted/MirSemantics/Step",
+        description=(
+            "execCoreCallOp .usizeUncheckedSub rejects rhs > lhs as UB rather "
+            "than saturating Nat subtraction to 0"
+        ),
+        anchor=(
+            "    else if !Nat.ble rSv.bits.toNat lSv.bits.toNat then\n"
+            "      .error .undefined"
+        ),
+        replacement=(
+            "    else if false then\n"
+            "      .error .undefined"
+        ),
+        fixture_module="ProfileV2Refutations",
+        theorem_name="refute_step_v2_usize_unchecked_sub_underflow",
+        needs_wf_helper=False,
+    ),
+    MirSemanticsGuard(
+        guard_id="step_v2_ptr_offset_neg_underflow",
+        target_file="trusted/lean/Trusted/MirSemantics/Step.lean",
+        target_module="Trusted/MirSemantics/Step",
+        description=(
+            "evalPtrOffsetV2 rejects negative offset before byte 0 as UB "
+            "rather than saturating Nat subtraction to 0"
+        ),
+        anchor=(
+            "              if !a.live || !Nat.ble p.offsetBytes.toNat a.bytes.length ||\n"
+            "                  !Nat.ble delta p.offsetBytes.toNat then\n"
+            "                .error .undefined"
+        ),
+        replacement=(
+            "              if !a.live || !Nat.ble p.offsetBytes.toNat a.bytes.length ||\n"
+            "                  false then\n"
+            "                .error .undefined"
+        ),
+        fixture_module="ProfileV2Refutations",
+        theorem_name="refute_step_v2_ptr_offset_neg_underflow",
+        needs_wf_helper=False,
+    ),
+    MirSemanticsGuard(
+        guard_id="step_v2_ptr_offset_neg_start_oob",
+        target_file="trusted/lean/Trusted/MirSemantics/Step.lean",
+        target_module="Trusted/MirSemantics/Step",
+        description=(
+            "evalPtrOffsetV2 rejects negative offset starting past end of "
+            "allocation as UB"
+        ),
+        anchor=(
+            "              if !a.live || !Nat.ble p.offsetBytes.toNat a.bytes.length ||\n"
+            "                  !Nat.ble delta p.offsetBytes.toNat then\n"
+            "                .error .undefined"
+        ),
+        replacement=(
+            "              if !a.live || false ||\n"
+            "                  !Nat.ble delta p.offsetBytes.toNat then\n"
+            "                .error .undefined"
+        ),
+        fixture_module="ProfileV2Refutations",
+        theorem_name="refute_step_v2_ptr_offset_neg_start_oob",
+        needs_wf_helper=False,
+    ),
+    MirSemanticsGuard(
+        guard_id="step_v2_ptr_offset_neg_null",
+        target_file="trusted/lean/Trusted/MirSemantics/Step.lean",
+        target_module="Trusted/MirSemantics/Step",
+        description="evalPtrOffsetV2 rejects negative offset on provenance-free pointer as UB",
+        anchor=(
+            "          match p.allocId with\n"
+            "          | none => .error .undefined\n"
+            "          | some aid =>"
+        ),
+        replacement=(
+            "          match p.allocId with\n"
+            "          | none => .ok (.ptr p)\n"
+            "          | some aid =>"
+        ),
+        fixture_module="ProfileV2Refutations",
+        theorem_name="refute_step_v2_ptr_offset_neg_null",
+        needs_wf_helper=False,
+    ),
+    MirSemanticsGuard(
+        guard_id="step_v2_ptr_offset_neg_dead_alloc",
+        target_file="trusted/lean/Trusted/MirSemantics/Step.lean",
+        target_module="Trusted/MirSemantics/Step",
+        description="evalPtrOffsetV2 rejects negative offset on dead allocation as UB",
+        anchor=(
+            "              if !a.live || !Nat.ble p.offsetBytes.toNat a.bytes.length ||\n"
+            "                  !Nat.ble delta p.offsetBytes.toNat then\n"
+            "                .error .undefined"
+        ),
+        replacement=(
+            "              if false || !Nat.ble p.offsetBytes.toNat a.bytes.length ||\n"
+            "                  !Nat.ble delta p.offsetBytes.toNat then\n"
+            "                .error .undefined"
+        ),
+        fixture_module="ProfileV2Refutations",
+        theorem_name="refute_step_v2_ptr_offset_neg_dead_alloc",
+        needs_wf_helper=False,
+    ),
+    MirSemanticsGuard(
+        guard_id="step_v2_return_aliased_mut_refs",
+        target_file="trusted/lean/Trusted/MirSemantics/Step.lean",
+        target_module="Trusted/MirSemantics/Step",
+        description=(
+            "evalTerminatorV2 .return_ rejects returning overlapping mutable "
+            "reference spans as UB"
+        ),
+        anchor=(
+            "          else if !refsStayInCallerMem callerMem retTy retVal ||\n"
+            "              !refsValidInMem mem retTy retVal ||\n"
+            "              !spansPairwiseDisjoint (refAccessSpans retTy retVal) then\n"
+            "            .fault .undefined"
+        ),
+        replacement=(
+            "          else if !refsStayInCallerMem callerMem retTy retVal ||\n"
+            "              !refsValidInMem mem retTy retVal ||\n"
+            "              false then\n"
+            "            .fault .undefined"
+        ),
+        fixture_module="ProfileV2Refutations",
+        theorem_name="refute_step_v2_return_aliased_mut_refs",
+        needs_wf_helper=False,
+    ),
+    MirSemanticsGuard(
+        guard_id="step_v2_return_invalid_ref",
+        target_file="trusted/lean/Trusted/MirSemantics/Step.lean",
+        target_module="Trusted/MirSemantics/Step",
+        description=(
+            "evalTerminatorV2 .return_ rejects returning a reference to an "
+            "invalid pointee in caller memory as UB"
+        ),
+        anchor=(
+            "          else if !refsStayInCallerMem callerMem retTy retVal ||\n"
+            "              !refsValidInMem mem retTy retVal ||\n"
+            "              !spansPairwiseDisjoint (refAccessSpans retTy retVal) then\n"
+            "            .fault .undefined"
+        ),
+        replacement=(
+            "          else if !refsStayInCallerMem callerMem retTy retVal ||\n"
+            "              false ||\n"
+            "              !spansPairwiseDisjoint (refAccessSpans retTy retVal) then\n"
+            "            .fault .undefined"
+        ),
+        fixture_module="ProfileV2Refutations",
+        theorem_name="refute_step_v2_return_invalid_ref",
+        needs_wf_helper=False,
+    ),
+    MirSemanticsGuard(
+        guard_id="step_v2_use_retag_invalid_ref",
+        target_file="trusted/lean/Trusted/MirSemantics/Step.lean",
+        target_module="Trusted/MirSemantics/Step",
+        description="evalRvalueV2 .useRetag rejects invalid reference operands as UB",
+        anchor=(
+            "          if !refsValidInMem mem1 srcTy v then\n"
+            "            .error .undefined"
+        ),
+        replacement=(
+            "          if false then\n"
+            "            .error .undefined"
+        ),
+        fixture_module="ProfileV2Refutations",
+        theorem_name="refute_step_v2_use_retag_invalid_ref",
+        needs_wf_helper=False,
+    ),
+    MirSemanticsGuard(
+        guard_id="step_v2_read_no_prov_non_zst",
+        target_file="trusted/lean/Trusted/MirSemantics/Step.lean",
+        target_module="Trusted/MirSemantics/Step",
+        description=(
+            "readPlaceV2 rejects dereference read of non-ZST through a "
+            "provenance-free pointer as UB"
+        ),
+        anchor=(
+            "                | none =>\n"
+            "                  if Nat.beq pv.offsetBytes.toNat 0 || Nat.blt 0 lay.size ||\n"
+            "                      !Nat.beq (Nat.mod pv.offsetBytes.toNat (Nat.pow 2 lay.alignLog2)) 0 then\n"
+            "                    .error .undefined\n"
+            "                  else\n"
+            "                    match decodeValV2 profileV2TargetEndian pt [] with"
+        ),
+        replacement=(
+            "                | none =>\n"
+            "                  if Nat.beq pv.offsetBytes.toNat 0 || false ||\n"
+            "                      !Nat.beq (Nat.mod pv.offsetBytes.toNat (Nat.pow 2 lay.alignLog2)) 0 then\n"
+            "                    .error .undefined\n"
+            "                  else\n"
+            "                    match decodeValV2 profileV2TargetEndian pt [] with"
+        ),
+        fixture_module="ProfileV2Refutations",
+        theorem_name="refute_step_v2_read_no_prov_non_zst",
+        needs_wf_helper=False,
+    ),
+    MirSemanticsGuard(
+        guard_id="step_v2_write_no_prov_non_zst",
+        target_file="trusted/lean/Trusted/MirSemantics/Step.lean",
+        target_module="Trusted/MirSemantics/Step",
+        description=(
+            "writePlaceDestV2 rejects dereference store of non-ZST through a "
+            "provenance-free pointer as UB"
+        ),
+        anchor=(
+            "      | none =>\n"
+            "        if Nat.beq pv.offsetBytes.toNat 0 || Nat.blt 0 lay.size ||\n"
+            "            !Nat.beq (Nat.mod pv.offsetBytes.toNat (Nat.pow 2 lay.alignLog2)) 0 then\n"
+            "          .error .undefined\n"
+            "        else\n"
+            "          match encodeValV2 profileV2TargetEndian pt val with"
+        ),
+        replacement=(
+            "      | none =>\n"
+            "        if Nat.beq pv.offsetBytes.toNat 0 || false ||\n"
+            "            !Nat.beq (Nat.mod pv.offsetBytes.toNat (Nat.pow 2 lay.alignLog2)) 0 then\n"
+            "          .error .undefined\n"
+            "        else\n"
+            "          match encodeValV2 profileV2TargetEndian pt val with"
+        ),
+        fixture_module="ProfileV2Refutations",
+        theorem_name="refute_step_v2_write_no_prov_non_zst",
         needs_wf_helper=False,
     ),
 )
