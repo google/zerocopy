@@ -5259,4 +5259,160 @@ mod tests {
         req.target_compiler_overrides = &unreached;
         run_compare_with(&init_s, &expected_s, &proof_s, &req).unwrap();
     }
+
+    #[test]
+    fn structural_dag_tamper_mutator_rejects_every_attack_vector() {
+        let (init_s, expected_s, proof_s) = synthetic_ndjson_fixture();
+        let sysroot = default_sysroot_map();
+        let origins = default_origins();
+        let req = default_req(false, &sysroot, &origins);
+
+        // Baseline must pass cleanly before mutating.
+        run_compare_with(&init_s, &expected_s, &proof_s, &req).unwrap();
+
+        // 1. Deleted transitive dependency (`Trusted.MirSemantics.Crate.mk`
+        // removed).
+        let dep_line = concat!(
+            r#"{"def":{"all":[104],"hints":"abbrev","levelParams":[],"name":104,"safety":"safe","type":100,"value":100}}"#,
+            "\n",
+        );
+        let deleted_dep_proof = proof_s.replace(dep_line, "");
+        assert_ne!(deleted_dep_proof, proof_s);
+        let err = run_compare_with(&init_s, &expected_s, &deleted_dep_proof, &req).unwrap_err();
+        assert!(
+            err.message.contains("proof_full is not closed")
+                && err.message.contains("Trusted.MirSemantics.Crate.mk"),
+            "unexpected error for deleted dep: {err}"
+        );
+
+        // 2. Altered constant value in `Proof`'s `Expected.claim` vs
+        // `Expected`.
+        let altered_val_proof = proof_s.replace(
+            r#"{"def":{"all":[110],"hints":"abbrev","levelParams":[],"name":110,"safety":"safe","type":100,"value":107}}"#,
+            r#"{"def":{"all":[110],"hints":"abbrev","levelParams":[],"name":110,"safety":"safe","type":100,"value":100}}"#,
+        );
+        assert_ne!(altered_val_proof, proof_s);
+        let err = run_compare_with(&init_s, &expected_s, &altered_val_proof, &req).unwrap_err();
+        assert!(
+            err.message.contains(
+                "declaration `Expected.claim` differs between trusted expected export and proof export"
+            ),
+            "unexpected error for altered body: {err}"
+        );
+
+        // 3. Altered constant type in `Proof`'s `Spec.specs` (changing `type`
+        // from `Sort 0` (`100`) to already-declared `UnitTheorem` (`101`) keeps
+        // topological order intact so Step 3's DAG-identity check fires).
+        let altered_type_proof = proof_s.replace(
+            r#"{"def":{"all":[108],"hints":"abbrev","levelParams":[],"name":108,"safety":"safe","type":100,"value":100}}"#,
+            r#"{"def":{"all":[108],"hints":"abbrev","levelParams":[],"name":108,"safety":"safe","type":101,"value":100}}"#,
+        );
+        assert_ne!(altered_type_proof, proof_s);
+        let err = run_compare_with(&init_s, &expected_s, &altered_type_proof, &req).unwrap_err();
+        assert!(
+            err.message.contains(
+                "declaration `Spec.specs` differs between trusted expected export and proof export"
+            ),
+            "unexpected error for altered type: {err}"
+        );
+
+        // 4. Altered universe level parameter list (`[100]` vs `[]`).
+        let altered_univ_proof = proof_s.replace(
+            r#"{"def":{"all":[110],"hints":"abbrev","levelParams":[],"name":110,"safety":"safe","type":100,"value":107}}"#,
+            r#"{"def":{"all":[110],"hints":"abbrev","levelParams":[100],"name":110,"safety":"safe","type":100,"value":107}}"#,
+        );
+        assert_ne!(altered_univ_proof, proof_s);
+        let err = run_compare_with(&init_s, &expected_s, &altered_univ_proof, &req).unwrap_err();
+        assert!(
+            err.message.contains(
+                "declaration `Expected.claim` differs between trusted expected export and proof export"
+            ),
+            "unexpected error for altered levelParams: {err}"
+        );
+
+        // 5. Foreign axiom injected and referenced inside `Proof.verify`.
+        let verify_line =
+            r#"{"thm":{"all":[112],"levelParams":[],"name":112,"type":108,"value":100}}"#;
+        let foreign_axiom_proof = proof_s.replace(
+            verify_line,
+            r#"{"in":150,"str":{"pre":0,"str":"evilAxiom"}}
+{"ie":150,"const":{"name":150,"us":[]}}
+{"axiom":{"isUnsafe":false,"levelParams":[],"name":150,"type":100}}
+{"thm":{"all":[112],"levelParams":[],"name":112,"type":108,"value":150}}"#,
+        );
+        assert_ne!(foreign_axiom_proof, proof_s);
+        let err = run_compare_with(&init_s, &expected_s, &foreign_axiom_proof, &req).unwrap_err();
+        assert!(
+            err.message.contains("unpermitted axiom") && err.message.contains("evilAxiom"),
+            "unexpected error for foreign axiom: {err}"
+        );
+
+        // 6. Foreign opaque declaration injected into `Proof` cone.
+        let foreign_opaque_proof = proof_s.replace(
+            verify_line,
+            r#"{"in":151,"str":{"pre":0,"str":"evilOpaque"}}
+{"ie":151,"const":{"name":151,"us":[]}}
+{"opaque":{"all":[151],"isUnsafe":false,"levelParams":[],"name":151,"type":100,"value":100}}
+{"thm":{"all":[112],"levelParams":[],"name":112,"type":108,"value":151}}"#,
+        );
+        assert_ne!(foreign_opaque_proof, proof_s);
+        let err = run_compare_with(&init_s, &expected_s, &foreign_opaque_proof, &req).unwrap_err();
+        assert!(
+            err.message.contains("opaque declaration") && err.message.contains("evilOpaque"),
+            "unexpected error for foreign opaque: {err}"
+        );
+
+        // 7. Foreign quotient declaration injected outside pinned quot
+        // primitives.
+        let foreign_quot_proof = proof_s.replace(
+            verify_line,
+            r#"{"in":152,"str":{"pre":0,"str":"evilQuot"}}
+{"ie":152,"const":{"name":152,"us":[]}}
+{"quot":{"kind":"type","levelParams":[],"name":152,"type":100}}
+{"thm":{"all":[112],"levelParams":[],"name":112,"type":108,"value":152}}"#,
+        );
+        assert_ne!(foreign_quot_proof, proof_s);
+        let err = run_compare_with(&init_s, &expected_s, &foreign_quot_proof, &req).unwrap_err();
+        assert!(
+            err.message.contains("unexpected quotient declaration")
+                && err.message.contains("evilQuot"),
+            "unexpected error for foreign quot: {err}"
+        );
+
+        // 8. `Trusted.*` leakage outside `model_modules` (e.g. `Spec` origin).
+        let mut bad_origins = origins.clone();
+        bad_origins.insert(
+            "Trusted.MirSemantics.UnitTheorem".to_owned(),
+            origin("Spec", TargetOriginRole::Specification),
+        );
+        let bad_origin_req = default_req(false, &sysroot, &bad_origins);
+        let err = run_compare_with(&init_s, &expected_s, &proof_s, &bad_origin_req).unwrap_err();
+        assert!(
+            err.message.contains("outside model modules")
+                && err.message.contains("Trusted.MirSemantics.UnitTheorem"),
+            "unexpected error for Trusted.* origin leak: {err}"
+        );
+
+        // 9. Swapped subject/specification declarations (`Captured.program` vs
+        // `Spec.specs`).
+        let mut swapped_req = default_req(false, &sysroot, &origins);
+        swapped_req.subject_declaration = "Spec.specs";
+        swapped_req.specification_declaration = "Captured.program";
+        let err = run_compare_with(&init_s, &expected_s, &proof_s, &swapped_req).unwrap_err();
+        assert!(
+            err.message.contains("incorrect canonical input origin")
+                && err.message.contains("Spec.specs"),
+            "unexpected error for swapped declarations: {err}"
+        );
+
+        // 10. Export metadata toolchain version mismatch
+        // (`4.99.0` vs `4.35.0`).
+        let bad_meta_proof = proof_s.replacen(r#""version":"4.35.0""#, r#""version":"4.99.0""#, 1);
+        assert_ne!(bad_meta_proof, proof_s);
+        let err = run_compare_with(&init_s, &expected_s, &bad_meta_proof, &req).unwrap_err();
+        assert!(
+            err.message.contains("proof_full NDJSON metadata differs"),
+            "unexpected error for metadata mismatch: {err}"
+        );
+    }
 }
