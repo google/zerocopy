@@ -115,7 +115,9 @@ and a zero return for a safe no-argument function in the captured MIR model.
    modules (`~4` imports, `~152 MiB` peak RSS). Monolithic `import Init`
    (`~473 MiB`) fails closed in pinned `verify` unless `--allow-unpinned-lean`
    is passed. Pass `--lean-memory-mb <MB>` (or run inside a host cgroup memory
-   cap such as `systemd-run --user --scope -p MemoryMax=...`).
+   cap such as `systemd-run --user --scope -p MemoryMax=...`), and pass
+   `--max-inspector-output-bytes <BYTES>` (up to `1 GiB`) if a whole-crate
+   inspector `result.json` exceeds the default `64 MiB` cap.
 
 When adapting the example, pass `--artifacts <new-dir>`. Inspect `selected` and
 `program` in `capture/capture.json` plus the goal in `generated/Expected.lean`.

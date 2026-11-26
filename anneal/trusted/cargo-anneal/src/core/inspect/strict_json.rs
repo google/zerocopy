@@ -18,11 +18,36 @@ use std::{
 use serde::de::{self, DeserializeSeed, Deserializer, MapAccess, SeqAccess, Visitor};
 use serde_json::{Map, Number, Value};
 
-/// Maximum permitted raw receipt JSON size (64 MiB).
-pub const MAX_RECEIPT_JSON_BYTES: usize = 64 * 1024 * 1024;
+/// Default maximum permitted raw receipt JSON size (64 MiB).
+pub const DEFAULT_MAX_RECEIPT_JSON_BYTES: usize = 64 * 1024 * 1024;
+
+/// Maximum permitted raw receipt JSON size under default settings (64 MiB).
+pub const MAX_RECEIPT_JSON_BYTES: usize = DEFAULT_MAX_RECEIPT_JSON_BYTES;
+
+/// Hard upper ceiling for configurable receipt JSON size limits (1 GiB).
+pub const MAX_CONFIGURABLE_RECEIPT_JSON_BYTES: usize = 1024 * 1024 * 1024;
 
 /// Maximum permitted recursive nesting depth when parsing receipt JSON.
 pub const MAX_JSON_DEPTH: usize = 64;
+
+/// Validate a caller-supplied maximum receipt JSON size in bytes.
+///
+/// Rejects `0` and values exceeding [`MAX_CONFIGURABLE_RECEIPT_JSON_BYTES`]
+/// (`1 GiB`) so untrusted inputs cannot trigger unbounded allocations.
+pub fn validate_max_receipt_json_bytes(max_bytes: u64) -> Result<usize, String> {
+    if max_bytes == 0 {
+        return Err("max receipt byte cap must be at least 1".to_owned());
+    }
+    if max_bytes > MAX_CONFIGURABLE_RECEIPT_JSON_BYTES as u64 {
+        return Err(format!(
+            "max receipt byte cap ({max_bytes} bytes) exceeds hard ceiling of \
+             {MAX_CONFIGURABLE_RECEIPT_JSON_BYTES} bytes (1 GiB)"
+        ));
+    }
+    usize::try_from(max_bytes).map_err(|_| {
+        format!("max receipt byte cap ({max_bytes} bytes) exceeds platform addressable limit")
+    })
+}
 
 /// Parses untrusted JSON bytes strictly according to RFC 8259 uniqueness and
 /// bounding rules.
@@ -30,13 +55,20 @@ pub struct StrictJsonDom;
 
 impl StrictJsonDom {
     /// Parse `bytes` into a [`serde_json::Value`], rejecting non-UTF-8 input,
-    /// inputs larger than [`MAX_RECEIPT_JSON_BYTES`], nesting deeper than
-    /// [`MAX_JSON_DEPTH`], duplicate object keys at any nesting level, and
+    /// inputs larger than [`DEFAULT_MAX_RECEIPT_JSON_BYTES`], nesting deeper
+    /// than [`MAX_JSON_DEPTH`], duplicate object keys at any nesting level, and
     /// trailing non-whitespace tokens.
     pub fn parse(bytes: &[u8]) -> Result<Value, String> {
-        if bytes.len() > MAX_RECEIPT_JSON_BYTES {
+        Self::parse_with_max_bytes(bytes, DEFAULT_MAX_RECEIPT_JSON_BYTES)
+    }
+
+    /// Parse `bytes` into a [`serde_json::Value`] enforcing an explicit
+    /// `max_bytes` upper bound (`1..=`[`MAX_CONFIGURABLE_RECEIPT_JSON_BYTES`]).
+    pub fn parse_with_max_bytes(bytes: &[u8], max_bytes: usize) -> Result<Value, String> {
+        let max_bytes = validate_max_receipt_json_bytes(max_bytes as u64)?;
+        if bytes.len() > max_bytes {
             return Err(format!(
-                "receipt JSON exceeds {MAX_RECEIPT_JSON_BYTES}-byte cap ({} bytes)",
+                "receipt JSON exceeds {max_bytes}-byte cap ({} bytes)",
                 bytes.len()
             ));
         }
@@ -320,6 +352,53 @@ mod tests {
         assert!(StrictJsonDom::parse(br#"{"a":1} trailing"#).unwrap_err().contains("trailing"));
         let deep = format!("{}{}", "[".repeat(66), "]".repeat(66));
         assert!(StrictJsonDom::parse(deep.as_bytes()).unwrap_err().contains("depth"));
+
+        // Default 64 MiB cap still rejects 64 MiB + 1 payloads.
+        let over_default = vec![b' '; DEFAULT_MAX_RECEIPT_JSON_BYTES + 1];
+        let err = StrictJsonDom::parse(&over_default).unwrap_err();
+        assert!(
+            err.contains(&format!("{DEFAULT_MAX_RECEIPT_JSON_BYTES}-byte cap")),
+            "unexpected error: {err}"
+        );
+
+        // Raising the cap admits valid JSON payloads larger than 64 MiB.
+        let mut over_64_mib_valid = vec![b' '; DEFAULT_MAX_RECEIPT_JSON_BYTES];
+        over_64_mib_valid.extend_from_slice(br#"{"ok":true}"#);
+        assert!(StrictJsonDom::parse(&over_64_mib_valid).unwrap_err().contains("cap"));
+        let parsed =
+            StrictJsonDom::parse_with_max_bytes(&over_64_mib_valid, 256 * 1024 * 1024).unwrap();
+        assert_eq!(parsed["ok"], Value::Bool(true));
+
+        // Zero and above-ceiling bounds fail closed even on valid small JSON.
+        assert!(
+            StrictJsonDom::parse_with_max_bytes(br#"{}"#, 0).unwrap_err().contains("at least 1")
+        );
+        assert!(
+            StrictJsonDom::parse_with_max_bytes(br#"{}"#, MAX_CONFIGURABLE_RECEIPT_JSON_BYTES + 1)
+                .unwrap_err()
+                .contains("hard ceiling")
+        );
+    }
+
+    #[test]
+    fn validates_receipt_byte_cap_bounds() {
+        assert!(validate_max_receipt_json_bytes(0).unwrap_err().contains("at least 1"));
+        assert!(
+            validate_max_receipt_json_bytes(MAX_CONFIGURABLE_RECEIPT_JSON_BYTES as u64 + 1)
+                .unwrap_err()
+                .contains("hard ceiling")
+        );
+        assert!(validate_max_receipt_json_bytes(u64::MAX).unwrap_err().contains("hard ceiling"));
+        assert_eq!(validate_max_receipt_json_bytes(1).unwrap(), 1);
+        assert_eq!(
+            validate_max_receipt_json_bytes(DEFAULT_MAX_RECEIPT_JSON_BYTES as u64).unwrap(),
+            DEFAULT_MAX_RECEIPT_JSON_BYTES
+        );
+        assert_eq!(validate_max_receipt_json_bytes(256 * 1024 * 1024).unwrap(), 256 * 1024 * 1024);
+        assert_eq!(
+            validate_max_receipt_json_bytes(MAX_CONFIGURABLE_RECEIPT_JSON_BYTES as u64).unwrap(),
+            MAX_CONFIGURABLE_RECEIPT_JSON_BYTES
+        );
     }
 
     #[test]

@@ -375,6 +375,9 @@ mod tests {
                 &["verify", "-h"],
                 &["verify", "--help"],
                 &["help", "verify"],
+                &["inspect", "-h"],
+                &["inspect", "--help"],
+                &["help", "inspect"],
                 &["shard-plan", "-h"],
                 &["shard-plan", "--help"],
                 &["help", "shard-plan"],
@@ -384,12 +387,19 @@ mod tests {
                         .expect("help must succeed"),
                 );
                 assert!(output.contains("Usage:"), "{output}");
+                if suffix == ["verify", "--help"] {
+                    assert!(output.contains("--max-inspector-output-bytes"), "{output}");
+                }
+                if suffix == ["inspect", "--help"] {
+                    assert!(output.contains("--max-receipt-bytes"), "{output}");
+                }
                 if suffix.is_empty() {
                     #[cfg(feature = "setup")]
                     assert!(output.contains("setup"), "{output}");
                     #[cfg(not(feature = "setup"))]
                     assert!(!output.contains("setup"), "{output}");
                     assert!(output.contains("verify"), "{output}");
+                    assert!(output.contains("inspect"), "{output}");
                     assert!(output.contains("shard-plan"), "{output}");
                 }
             }
@@ -484,6 +494,14 @@ mod tests {
             &["verify", "--request", "request.json", "--sysroot", "sys"],
             &["verify", "--request", "request.json", "--allow-unpinned-lean"],
             &["verify", "--request", "request.json", "--lean-memory-mb", "0"],
+            &["verify", "--request", "request.json", "--max-inspector-output-bytes", "0"],
+            &["verify", "--request", "request.json", "--max-inspector-output-bytes", "1073741825"],
+            &["verify", "--request", "request.json", "--max-inspector-output-bytes", "-1"],
+            &["verify", "--request", "request.json", "--max-inspector-output-bytes", "abc"],
+            &["inspect", "receipt.json", "--max-receipt-bytes", "0"],
+            &["inspect", "receipt.json", "--max-receipt-bytes", "1073741825"],
+            &["inspect", "receipt.json", "--max-receipt-bytes", "-1"],
+            &["inspect", "receipt.json", "--max-receipt-bytes", "abc"],
             &[
                 "verify",
                 "rustc",
@@ -614,6 +632,8 @@ mod tests {
                     "--overwrite-artifacts",
                     "--lean-memory-mb",
                     "4096",
+                    "--max-inspector-output-bytes",
+                    "268435456",
                 ],
             ];
             #[cfg(not(feature = "setup"))]
@@ -811,8 +831,34 @@ mod tests {
                 action,
                 Action::Inspect { ref args, .. }
                     if args.receipt.as_deref() == Some(std::path::Path::new("receipt.json"))
+                        && args.max_receipt_bytes
+                            == crate::core::inspect::DEFAULT_MAX_RECEIPT_JSON_BYTES as u64
             ));
         }
+
+        assert!(matches!(
+            run_without_install(args(&[
+                "cargo-anneal",
+                "inspect",
+                "receipt.json",
+                "--max-receipt-bytes",
+                "268435456",
+            ])),
+            Ok(Action::Inspect { ref args, .. }) if args.max_receipt_bytes == 268_435_456
+        ));
+
+        assert!(matches!(
+            run_without_install(args(&[
+                "cargo-anneal",
+                "inspect",
+                "--diff",
+                "a.json",
+                "b.json",
+                "--max-receipt-bytes",
+                "1073741824",
+            ])),
+            Ok(Action::Inspect { ref args, .. }) if args.max_receipt_bytes == 1_073_741_824
+        ));
 
         assert!(matches!(
             run_without_install(args(&[

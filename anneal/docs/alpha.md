@@ -283,6 +283,10 @@ toolchain integration:
   on `tool_failed` (exit `2`).
 - `--lean-memory-mb <MB>`: sets Lean's `-M<MB>` memory limit (`resolve-imports`
   enforces a `4096` MiB floor).
+- `--max-inspector-output-bytes <BYTES>`: sets the maximum Lean inspector
+  `result.json` output size in bytes (`67108864` / `64 MiB` by default, up to
+  `1073741824` / `1 GiB`; also raises child `RLIMIT_FSIZE` when set above
+  `256 MiB`).
 
 When building `cargo-anneal` itself with Cargo's `--no-default-features` flag
 (for example, `cargo install --locked --no-default-features cargo-anneal`), the
@@ -335,9 +339,11 @@ and default warn-mode extension fields also fail closed (`exit 1`, or `exit 2`
 with `--unknown-fields deny`), while `--no-regressions` gates on Tier A
 assurance downgrades. Pass `--passive` to inspect receipts without status,
 taint, or warn-mode extension gating (invariant, artifact, and
-`--compare-ledger` failures still exit `1`). Note that `inspect` checks
-internal consistency and local digests offline and does not cryptographically
-authenticate external receipts.
+`--compare-ledger` failures still exit `1`). Pass
+`--max-receipt-bytes <BYTES>` (`67108864` / `64 MiB` by default, up to
+`1073741824` / `1 GiB`) to inspect or diff larger receipts. Note that `inspect`
+checks internal consistency and local digests offline and does not
+cryptographically authenticate external receipts.
 
 ## Install a published alpha
 

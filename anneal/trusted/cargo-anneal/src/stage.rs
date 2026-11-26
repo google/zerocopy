@@ -38,10 +38,11 @@ use crate::olean_cache::{
     canonical_inspector_flags, is_cacheable_bundled_module, is_cacheable_target_shard_module,
 };
 use crate::sandbox::{
-    ActiveSandbox, DEFAULT_CHILD_TIMEOUT, MountSpec, PathMapper, SandboxMode, SandboxPolicy,
-    SandboxRuntime, copy_readonly_file, create_dir_mode, make_tree_writable, set_mode,
-    validate_and_promote_olean, validate_and_promote_olean_set,
-    validate_and_promote_olean_set_with_digests, validate_inspector_result,
+    ActiveSandbox, DEFAULT_CHILD_TIMEOUT, DEFAULT_MAX_INSPECTOR_RESULT_BYTES, MountSpec,
+    PathMapper, RLIMIT_FSIZE_BYTES, SandboxMode, SandboxPolicy, SandboxRuntime, copy_readonly_file,
+    create_dir_mode, make_tree_writable, set_mode, validate_and_promote_olean,
+    validate_and_promote_olean_set, validate_and_promote_olean_set_with_digests,
+    validate_inspector_result_with_cap, validate_max_inspector_result_bytes,
 };
 use crate::target::{TargetRole, is_bundled_theory_module};
 use crate::toolchain::{
@@ -1114,6 +1115,7 @@ pub struct Checker {
     sandbox_runtime: Option<SandboxRuntime>,
     probed_backend: Option<ActiveSandbox>,
     child_timeout: Duration,
+    max_inspector_result_bytes: u64,
     olean_cache: OleanCache,
     prebuilt_olean_dir: Option<PathBuf>,
     pub(crate) olean_ledger: BTreeMap<PathBuf, String>,
@@ -1210,6 +1212,7 @@ impl Checker {
             sandbox_runtime: None,
             probed_backend: None,
             child_timeout: DEFAULT_CHILD_TIMEOUT,
+            max_inspector_result_bytes: DEFAULT_MAX_INSPECTOR_RESULT_BYTES,
             olean_cache,
             prebuilt_olean_dir: None,
             olean_ledger: BTreeMap::new(),
@@ -1282,6 +1285,27 @@ impl Checker {
     #[doc(hidden)]
     pub fn child_timeout(&self) -> Duration {
         self.child_timeout
+    }
+
+    /// Configure the maximum Door 1 inspector `result.json` output size in
+    /// bytes (`None` resets to [`DEFAULT_MAX_INSPECTOR_RESULT_BYTES`], 64 MiB).
+    ///
+    /// Rejects `0` and values above
+    /// [`crate::sandbox::MAX_CONFIGURABLE_INSPECTOR_RESULT_BYTES`] (`1 GiB`).
+    pub fn set_max_inspector_result_bytes(&mut self, bytes: Option<u64>) -> Result<(), Failure> {
+        let cap = match bytes {
+            Some(raw) => validate_max_inspector_result_bytes(raw)
+                .map_err(|msg| Failure::operational("door1", msg))?,
+            None => DEFAULT_MAX_INSPECTOR_RESULT_BYTES,
+        };
+        self.max_inspector_result_bytes = cap;
+        Ok(())
+    }
+
+    /// Return the active Door 1 inspector `result.json` output size cap in
+    /// bytes.
+    pub fn max_inspector_result_bytes(&self) -> u64 {
+        self.max_inspector_result_bytes
     }
 
     /// Configure an explicit Lean `-M` memory limit in MiB.
@@ -3857,13 +3881,23 @@ impl Checker {
             extra_env,
             timeout: self.child_timeout,
         };
-        let output = runtime.execute(&policy);
+        // Leave 1 byte of headroom above `max_inspector_result_bytes` when it
+        // reaches or exceeds `RLIMIT_FSIZE_BYTES` so an over-cap `result.json`
+        // leaves `meta.len() == cap + 1 > cap` before Linux raises `SIGXFSZ`,
+        // ensuring Door 1 rejects it on `fstat` with the size-cap diagnostic.
+        let rlimit_fsize =
+            RLIMIT_FSIZE_BYTES.max(self.max_inspector_result_bytes.saturating_add(1));
+        let output = runtime.execute_with_rlimit_fsize(&policy, rlimit_fsize);
         let _ = fs::remove_dir_all(&tmp_dir);
         let output = output?;
 
         check_lean_stderr_panic(mode, &output)?;
         // Door 1 validates `runs/<n>/out` on BOTH exit 0 and exit 1.
-        let door1_bytes = validate_inspector_result(&out_dir, "result.json")?;
+        let door1_bytes = validate_inspector_result_with_cap(
+            &out_dir,
+            "result.json",
+            self.max_inspector_result_bytes,
+        )?;
         if !output.status.success() {
             if output.status.code() == Some(1)
                 && let Some(bytes) = door1_bytes
@@ -3933,7 +3967,11 @@ impl Checker {
         if !output.status.success() {
             if output.status.code() == Some(1)
                 && result_path.is_file()
-                && let Ok(text) = fs::read_to_string(&result_path)
+                && let Ok(text) = crate::sys_util::SafeFs::read_regular_string_capped(
+                    &result_path,
+                    self.max_inspector_result_bytes,
+                    mode,
+                )
                 && let Ok(resp) = serde_json::from_str::<InspectorErrResponse>(&text)
                 && !resp.ok
                 && resp.category == "policy"
@@ -3949,8 +3987,11 @@ impl Checker {
             ));
         }
 
-        fs::read_to_string(&result_path)
-            .map_err(|e| Failure::new(2, mode, format!("missing/malformed inspector result: {e}")))
+        crate::sys_util::SafeFs::read_regular_string_capped(
+            &result_path,
+            self.max_inspector_result_bytes,
+            mode,
+        )
     }
 
     /// Execute `leanexport` inside `ExecSeal` (`5-init`, `5a`, or `5b`),
@@ -7251,5 +7292,89 @@ exit 1
         .unwrap_err();
         assert_eq!(calls, 1);
         assert_eq!(not_found.kind(), io::ErrorKind::NotFound);
+    }
+
+    #[test]
+    fn checker_inspector_result_cap_defaults_to_64_mib_and_validates_updates() {
+        let dir = tempfile::tempdir().unwrap();
+        let root = fs::canonicalize(dir.path()).unwrap();
+        let mut checker = shell_checker(&root);
+        assert_eq!(checker.max_inspector_result_bytes(), DEFAULT_MAX_INSPECTOR_RESULT_BYTES);
+
+        for bad in [0, crate::sandbox::MAX_CONFIGURABLE_INSPECTOR_RESULT_BYTES + 1] {
+            let err = checker
+                .set_max_inspector_result_bytes(Some(bad))
+                .expect_err("out-of-range inspector cap must fail closed");
+            assert_eq!(err.code, 2, "{err}");
+            assert_eq!(checker.max_inspector_result_bytes(), DEFAULT_MAX_INSPECTOR_RESULT_BYTES);
+        }
+
+        checker.set_max_inspector_result_bytes(Some(256 * 1024 * 1024)).unwrap();
+        assert_eq!(checker.max_inspector_result_bytes(), 256 * 1024 * 1024);
+
+        checker
+            .set_max_inspector_result_bytes(Some(
+                crate::sandbox::MAX_CONFIGURABLE_INSPECTOR_RESULT_BYTES,
+            ))
+            .unwrap();
+        assert_eq!(
+            checker.max_inspector_result_bytes(),
+            crate::sandbox::MAX_CONFIGURABLE_INSPECTOR_RESULT_BYTES
+        );
+
+        checker.set_max_inspector_result_bytes(None).unwrap();
+        assert_eq!(checker.max_inspector_result_bytes(), DEFAULT_MAX_INSPECTOR_RESULT_BYTES);
+
+        // Repository-audit unsandboxed `"audit"` / `"preflight"` direct-text
+        // invocation (`invoke_inspector_direct_text`) also honors the cap.
+        let prefix = root.join("sysroot");
+        fs::create_dir_all(prefix.join("bin")).unwrap();
+        fs::create_dir_all(prefix.join("lib/lean")).unwrap();
+        fs::write(prefix.join("lib/lean/Init.olean"), b"olean\x02init").unwrap();
+        let lean = prefix.join("bin/lean");
+        write_executable_script(
+            &lean,
+            format!(
+                "#!/bin/sh\n\
+                 set -eu\n\
+                 if [ \"${{1:-}}\" = '--version' ]; then printf 'Lean 4.35\\n'; exit 0; fi\n\
+                 if [ \"${{1:-}}\" = '--print-prefix' ]; then printf '%s\\n' '{}'; exit 0; fi\n\
+                 out_olean=''\n\
+                 run_mode=0\n\
+                 last=''\n\
+                 while [ \"$#\" -gt 0 ]; do\n\
+                   case \"$1\" in\n\
+                     -o) shift; out_olean=\"$1\" ;;\n\
+                     --run) run_mode=1 ;;\n\
+                   esac\n\
+                   last=\"$1\"\n\
+                   shift\n\
+                 done\n\
+                 if [ -n \"$out_olean\" ]; then printf 'olean\\002insp' > \"$out_olean\"; exit 0; fi\n\
+                 if [ \"$run_mode\" -eq 1 ]; then\n\
+                   printf '{{\"ok\":true,\"result\":{{\"pad\":\"%0200d\"}}}}' 0 > \"$last\"\n\
+                 fi\n",
+                prefix.display()
+            ),
+        );
+        let inspector = root.join("trusted/audit/TrustedBoundary.lean");
+        fs::create_dir_all(inspector.parent().unwrap()).unwrap();
+        fs::write(&inspector, "-- stub\n").unwrap();
+
+        let mut direct_checker = Checker::new_with_env(&root, Some(&lean), []).unwrap();
+        direct_checker.set_allow_unpinned_lean(true);
+        direct_checker.set_sandbox_mode(SandboxMode::Unsandboxed);
+        direct_checker.set_use_olean_cache(false);
+        direct_checker.tool_admission().unwrap();
+
+        direct_checker.set_max_inspector_result_bytes(Some(64)).unwrap();
+        let small_err =
+            direct_checker.invoke_inspector("audit", &serde_json::json!({})).unwrap_err();
+        assert_eq!(small_err.code, 2, "{small_err}");
+        assert!(small_err.message.contains("regular file exceeds 64-byte limit"), "{small_err}");
+
+        direct_checker.set_max_inspector_result_bytes(Some(4096)).unwrap();
+        let ok_json = direct_checker.invoke_inspector("audit", &serde_json::json!({})).unwrap();
+        assert!(ok_json["pad"].as_str().unwrap().len() >= 200);
     }
 }
