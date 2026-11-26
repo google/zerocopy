@@ -2053,4 +2053,440 @@ mod tests {
             v1_to_v3_weak.changes
         );
     }
+
+    #[test]
+    fn model_system_relation_transitions_classify_regressions_and_upgrades() {
+        use crate::core::inspect::schema::ModelSystemRelation;
+
+        let parse_with_rel = |rel: Option<serde_json::Value>| {
+            let mut raw = sample_success_json();
+            if let Some(val) = rel {
+                raw["model_system_relation"] = val;
+            }
+            let env = parse_and_validate_receipt(&serde_json::to_vec(&raw).unwrap()).unwrap();
+            assert!(
+                env.invariant_violations.is_empty(),
+                "fixture must be valid Receipt v3: {:?}",
+                env.invariant_violations
+            );
+            env
+        };
+
+        let assert_rel_tier = |label: &str,
+                               base_rel: Option<serde_json::Value>,
+                               head_rel: Option<serde_json::Value>,
+                               expect_tier: DiffTier| {
+            let b = parse_with_rel(base_rel);
+            let h = parse_with_rel(head_rel);
+            let diff = diff_receipts(&b, &h, false);
+            assert_eq!(
+                diff.has_regressions,
+                expect_tier == DiffTier::TierA,
+                "{label}: unexpected has_regressions for changes {:?}",
+                diff.changes
+            );
+            let change = diff
+                .changes
+                .iter()
+                .find(|c| c.field == "model_system_relation")
+                .unwrap_or_else(|| panic!("{label}: missing model_system_relation diff"));
+            assert_eq!(
+                change.tier, expect_tier,
+                "{label}: expected {expect_tier:?}, got {:?}",
+                change
+            );
+        };
+
+        let make_rel = |kind: &str,
+                        qualifier: Option<&str>,
+                        direction: &str,
+                        anchored_at: Option<&str>,
+                        claims: &[&str],
+                        unmodeled: &[&str]| {
+            let mut obj = serde_json::Map::new();
+            obj.insert("kind".into(), json!(kind));
+            if let Some(q) = qualifier {
+                obj.insert("qualifier".into(), json!(q));
+            }
+            obj.insert("direction".into(), json!(direction));
+            if let Some(a) = anchored_at {
+                obj.insert("anchored_at".into(), json!(a));
+            }
+            obj.insert("licensed_claim_shapes".into(), json!(claims));
+            if !unmodeled.is_empty() {
+                obj.insert("unmodeled_downstream".into(), json!(unmodeled));
+            }
+            serde_json::Value::Object(obj)
+        };
+
+        let sim_lock = make_rel(
+            "simulation",
+            Some("lock_step"),
+            "bidirectional",
+            None,
+            &["forall_safety"],
+            &[],
+        );
+        let hom_lock = make_rel(
+            "homomorphism",
+            Some("lock_step"),
+            "bidirectional",
+            None,
+            &["forall_safety"],
+            &[],
+        );
+        let abs_lock = make_rel(
+            "abstraction",
+            Some("lock_step"),
+            "bidirectional",
+            None,
+            &["forall_safety"],
+            &[],
+        );
+        let emb_lock = make_rel(
+            "embedding",
+            Some("lock_step"),
+            "bidirectional",
+            None,
+            &["forall_safety"],
+            &[],
+        );
+        let emb_none_q =
+            make_rel("embedding", None, "bidirectional", None, &["forall_safety"], &[]);
+        let none_rel = make_rel("none", None, "bidirectional", None, &[], &[]);
+
+        // Presence transitions: `Some -> None` and `None -> Some(none)` are
+        // Tier A regressions; `None -> Some(non-none)` is a Tier B improvement.
+        assert_rel_tier("drop_relation", Some(sim_lock.clone()), None, DiffTier::TierA);
+        assert_rel_tier("add_vacuous_none_relation", None, Some(none_rel.clone()), DiffTier::TierA);
+        assert_rel_tier("add_substantive_relation", None, Some(sim_lock.clone()), DiffTier::TierB);
+
+        // Relation kind downgrades (Tier A) vs upgrades (Tier B) across
+        // `none < embedding < abstraction < homomorphism < simulation`.
+        assert_rel_tier(
+            "kind_sim_to_hom",
+            Some(sim_lock.clone()),
+            Some(hom_lock.clone()),
+            DiffTier::TierA,
+        );
+        assert_rel_tier(
+            "kind_hom_to_abs",
+            Some(hom_lock.clone()),
+            Some(abs_lock.clone()),
+            DiffTier::TierA,
+        );
+        assert_rel_tier(
+            "kind_abs_to_emb",
+            Some(abs_lock.clone()),
+            Some(emb_lock.clone()),
+            DiffTier::TierA,
+        );
+        assert_rel_tier(
+            "kind_emb_to_none",
+            Some(emb_none_q.clone()),
+            Some(none_rel.clone()),
+            DiffTier::TierA,
+        );
+        assert_rel_tier(
+            "kind_none_to_emb",
+            Some(none_rel.clone()),
+            Some(emb_none_q.clone()),
+            DiffTier::TierB,
+        );
+        assert_rel_tier(
+            "kind_emb_to_abs",
+            Some(emb_lock.clone()),
+            Some(abs_lock.clone()),
+            DiffTier::TierB,
+        );
+        assert_rel_tier(
+            "kind_abs_to_hom",
+            Some(abs_lock.clone()),
+            Some(hom_lock.clone()),
+            DiffTier::TierB,
+        );
+        assert_rel_tier(
+            "kind_hom_to_sim",
+            Some(hom_lock.clone()),
+            Some(sim_lock.clone()),
+            DiffTier::TierB,
+        );
+
+        // Qualifier downgrades (Tier A) vs upgrades (Tier B) across
+        // `None < stutter < wf_stutter < lock_step`.
+        let sim_wf = make_rel(
+            "simulation",
+            Some("wf_stutter"),
+            "bidirectional",
+            None,
+            &["forall_safety"],
+            &[],
+        );
+        let sim_stutter =
+            make_rel("simulation", Some("stutter"), "bidirectional", None, &["forall_safety"], &[]);
+        assert_rel_tier(
+            "qual_lock_to_wf",
+            Some(sim_lock.clone()),
+            Some(sim_wf.clone()),
+            DiffTier::TierA,
+        );
+        assert_rel_tier(
+            "qual_wf_to_stutter",
+            Some(sim_wf.clone()),
+            Some(sim_stutter.clone()),
+            DiffTier::TierA,
+        );
+        assert_rel_tier(
+            "qual_emb_lock_to_none",
+            Some(emb_lock.clone()),
+            Some(emb_none_q.clone()),
+            DiffTier::TierA,
+        );
+        assert_rel_tier(
+            "qual_stutter_to_wf",
+            Some(sim_stutter.clone()),
+            Some(sim_wf.clone()),
+            DiffTier::TierB,
+        );
+        assert_rel_tier(
+            "qual_wf_to_lock",
+            Some(sim_wf.clone()),
+            Some(sim_lock.clone()),
+            DiffTier::TierB,
+        );
+        assert_rel_tier(
+            "qual_emb_none_to_lock",
+            Some(emb_none_q.clone()),
+            Some(emb_lock.clone()),
+            DiffTier::TierB,
+        );
+
+        // Direction downgrades/flips (Tier A) vs upgrades to `bidirectional`
+        // (Tier B).
+        let sim_fwd =
+            make_rel("simulation", Some("wf_stutter"), "forward", None, &["forall_safety"], &[]);
+        let sim_bwd =
+            make_rel("simulation", Some("wf_stutter"), "backward", None, &["forall_safety"], &[]);
+        assert_rel_tier(
+            "dir_bi_to_fwd",
+            Some(sim_wf.clone()),
+            Some(sim_fwd.clone()),
+            DiffTier::TierA,
+        );
+        assert_rel_tier(
+            "dir_bi_to_bwd",
+            Some(sim_wf.clone()),
+            Some(sim_bwd.clone()),
+            DiffTier::TierA,
+        );
+        assert_rel_tier(
+            "dir_fwd_to_bwd",
+            Some(sim_fwd.clone()),
+            Some(sim_bwd.clone()),
+            DiffTier::TierA,
+        );
+        assert_rel_tier(
+            "dir_bwd_to_fwd",
+            Some(sim_bwd.clone()),
+            Some(sim_fwd.clone()),
+            DiffTier::TierA,
+        );
+        assert_rel_tier(
+            "dir_fwd_to_bi",
+            Some(sim_fwd.clone()),
+            Some(sim_wf.clone()),
+            DiffTier::TierB,
+        );
+        assert_rel_tier(
+            "dir_bwd_to_bi",
+            Some(sim_bwd.clone()),
+            Some(sim_wf.clone()),
+            DiffTier::TierB,
+        );
+
+        // Anchor transitions: adding an anchor (`None -> Some`) is Tier B,
+        // while dropping or shifting an existing anchor is Tier A; retaining
+        // the same anchor across an unrelated Tier B improvement stays Tier B.
+        let sim_anchored_hir = make_rel(
+            "simulation",
+            Some("wf_stutter"),
+            "bidirectional",
+            Some("source_hir"),
+            &["forall_safety"],
+            &[],
+        );
+        let sim_anchored_mir = make_rel(
+            "simulation",
+            Some("wf_stutter"),
+            "bidirectional",
+            Some("mir_post_cleanup"),
+            &["forall_safety"],
+            &[],
+        );
+        let sim_anchored_hir_more_claims = make_rel(
+            "simulation",
+            Some("wf_stutter"),
+            "bidirectional",
+            Some("source_hir"),
+            &["forall_safety", "termination"],
+            &[],
+        );
+        assert_rel_tier(
+            "anchor_added",
+            Some(sim_wf.clone()),
+            Some(sim_anchored_hir.clone()),
+            DiffTier::TierB,
+        );
+        assert_rel_tier(
+            "anchor_removed",
+            Some(sim_anchored_hir.clone()),
+            Some(sim_wf.clone()),
+            DiffTier::TierA,
+        );
+        assert_rel_tier(
+            "anchor_shifted",
+            Some(sim_anchored_hir.clone()),
+            Some(sim_anchored_mir),
+            DiffTier::TierA,
+        );
+        assert_rel_tier(
+            "anchor_preserved_on_claim_expansion",
+            Some(sim_anchored_hir.clone()),
+            Some(sim_anchored_hir_more_claims),
+            DiffTier::TierB,
+        );
+
+        // Licensed claim shape transitions: dropping any shape (even while
+        // keeping another) or swapping disjoint shapes is Tier A; adding a
+        // shape while retaining all existing shapes is Tier B.
+        let sim_both_claims = make_rel(
+            "simulation",
+            Some("wf_stutter"),
+            "bidirectional",
+            None,
+            &["forall_safety", "termination"],
+            &[],
+        );
+        let sim_term_only = make_rel(
+            "simulation",
+            Some("wf_stutter"),
+            "bidirectional",
+            None,
+            &["termination"],
+            &[],
+        );
+        assert_rel_tier(
+            "claims_drop_one_keep_one",
+            Some(sim_both_claims.clone()),
+            Some(sim_wf.clone()),
+            DiffTier::TierA,
+        );
+        assert_rel_tier(
+            "claims_disjoint_swap",
+            Some(sim_wf.clone()),
+            Some(sim_term_only),
+            DiffTier::TierA,
+        );
+        assert_rel_tier(
+            "claims_expand",
+            Some(sim_wf.clone()),
+            Some(sim_both_claims),
+            DiffTier::TierB,
+        );
+
+        // Unmodeled downstream assumptions: adding any new entry (including
+        // from empty `[]`) is Tier A; retiring entries (partial or full) is
+        // Tier B.
+        let sim_unmodeled_one = make_rel(
+            "simulation",
+            Some("wf_stutter"),
+            "bidirectional",
+            None,
+            &["forall_safety"],
+            &["llvm"],
+        );
+        let sim_unmodeled_two = make_rel(
+            "simulation",
+            Some("wf_stutter"),
+            "bidirectional",
+            None,
+            &["forall_safety"],
+            &["llvm", "linker"],
+        );
+        let sim_unmodeled_linker = make_rel(
+            "simulation",
+            Some("wf_stutter"),
+            "bidirectional",
+            None,
+            &["forall_safety"],
+            &["linker"],
+        );
+        assert_rel_tier(
+            "unmodeled_add_from_empty",
+            Some(sim_wf.clone()),
+            Some(sim_unmodeled_one.clone()),
+            DiffTier::TierA,
+        );
+        assert_rel_tier(
+            "unmodeled_add_second",
+            Some(sim_unmodeled_one.clone()),
+            Some(sim_unmodeled_two.clone()),
+            DiffTier::TierA,
+        );
+        assert_rel_tier(
+            "unmodeled_disjoint_swap",
+            Some(sim_unmodeled_one.clone()),
+            Some(sim_unmodeled_linker),
+            DiffTier::TierA,
+        );
+        assert_rel_tier(
+            "unmodeled_retire_one_keep_one",
+            Some(sim_unmodeled_two),
+            Some(sim_unmodeled_one.clone()),
+            DiffTier::TierB,
+        );
+        assert_rel_tier(
+            "unmodeled_retire_all",
+            Some(sim_unmodeled_one),
+            Some(sim_wf.clone()),
+            DiffTier::TierB,
+        );
+
+        // Mixed-axis transition: upgrading `kind` (`homomorphism` to
+        // `simulation`) while regressing `qualifier` (`lock_step` to
+        // `wf_stutter`) must still classify as Tier A.
+        assert_rel_tier(
+            "mixed_kind_upgrade_qual_downgrade",
+            Some(hom_lock),
+            Some(sim_wf),
+            DiffTier::TierA,
+        );
+
+        // Direct boundary assertions on `is_relation_regression` for isolated
+        // single-field transitions and `(None, None)` / `stutter -> None`
+        // cases not independently reachable through receipt schema invariants.
+        let rel = |kind: &str, qual: Option<&str>| ModelSystemRelation {
+            kind: kind.to_owned(),
+            qualifier: qual.map(str::to_owned),
+            direction: "bidirectional".to_owned(),
+            anchored_at: None,
+            licensed_claim_shapes: vec!["forall_safety".to_owned()],
+            unmodeled_downstream: Vec::new(),
+        };
+        assert!(!is_relation_regression(None, None));
+        assert!(is_relation_regression(Some(&rel("embedding", None)), Some(&rel("none", None))));
+        assert!(!is_relation_regression(Some(&rel("none", None)), Some(&rel("embedding", None))));
+        assert!(is_relation_regression(
+            Some(&rel("simulation", Some("stutter"))),
+            Some(&rel("simulation", None))
+        ));
+        assert!(!is_relation_regression(
+            Some(&rel("simulation", None)),
+            Some(&rel("simulation", Some("stutter")))
+        ));
+        assert!(!is_relation_regression(
+            Some(&rel("simulation", Some("wf_stutter"))),
+            Some(&rel("simulation", Some("wf_stutter")))
+        ));
+    }
 }

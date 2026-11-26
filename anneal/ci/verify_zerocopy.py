@@ -103,6 +103,103 @@ VALID_PROOF_SOURCE_KEYS = frozenset({"module", "path", "role"})
 VALID_CRATE_TYPES = frozenset({"lib", "bin"})
 VALID_PANIC_STRATEGIES = frozenset({"unwind", "abort"})
 SPEC_FILE_PATTERN = re.compile(r"^Spec[A-Za-z0-9_]*\.lean$")
+_SHA256_HEX_RE = re.compile(r"\A[0-9a-f]{64}\Z")
+PROVENANCE_V1_KEYS = frozenset({
+    "schema_version",
+    "upstream_repository",
+    "upstream_commit",
+    "upstream_lean_toolchain",
+    "build_lean_toolchain",
+    "upstream_pin_sha256",
+    "sysroot_foundation_manifest_sha256",
+    "patched_files",
+    "correspondence_adapters",
+    "correspondence_proofs",
+    "trusted_lean",
+    "note",
+})
+PROVENANCE_V3_EXTRA_KEYS = frozenset({
+    "claim_kind",
+    "permitted_axioms",
+    "model_system_relation",
+    "tcb_shims",
+    "taint_reasons",
+    "qualifiers",
+})
+PROVENANCE_V3_KEYS = PROVENANCE_V1_KEYS | PROVENANCE_V3_EXTRA_KEYS
+PATCHED_FILE_KEYS = frozenset({"path", "upstream_sha256", "patched_sha256"})
+ALLOWED_FOUNDATION_AXIOMS = frozenset({
+    "Classical.choice",
+    "Quot.sound",
+    "propext",
+})
+ALLOWED_CLAIM_KINDS = frozenset({
+    "exact_refines",
+    "sound_refines",
+    "pure_spec_agreement",
+})
+ALLOWED_RELATION_KINDS = frozenset({
+    "none",
+    "embedding",
+    "homomorphism",
+    "abstraction",
+    "simulation",
+})
+ALLOWED_RELATION_QUALIFIERS = frozenset({
+    "lock_step",
+    "wf_stutter",
+    "stutter",
+})
+ALLOWED_RELATION_DIRECTIONS = frozenset({
+    "forward",
+    "backward",
+    "bidirectional",
+})
+ALLOWED_CLAIM_SHAPES = frozenset({
+    "exists_witness",
+    "forall_safety",
+    "general_hyper",
+    "subset_hyper",
+    "termination",
+})
+ALLOWED_SHIM_KINDS = frozenset({
+    "capture_driver",
+    "unpinned_lean",
+    "upstream_bugfix_patch",
+    "append_only_spec_lemma",
+    "approved_opaque",
+    "assumed_seam",
+    "extern_ffi_axiom",
+    "rustc_pass_shim",
+})
+ALLOWED_SHIM_STATUSES = frozenset({"proved", "tested", "assumed"})
+ALLOWED_PROVENANCE_TAINTS = frozenset({
+    "assumed_seams_present",
+    "choice_total_false",
+    "vendor_upstream_patches_present",
+})
+ALLOWED_PROVENANCE_SCOPES = frozenset({"full_gate", "partial_gate"})
+VALID_MODEL_SYSTEM_RELATION_KEYS = frozenset({
+    "kind",
+    "qualifier",
+    "direction",
+    "anchored_at",
+    "licensed_claim_shapes",
+    "unmodeled_downstream",
+})
+VALID_TCB_SHIM_KEYS = frozenset({
+    "id",
+    "kind",
+    "commit",
+    "sha256",
+    "status",
+    "guards",
+})
+VALID_PROVENANCE_QUALIFIER_KEYS = frozenset({
+    "choice_total",
+    "assumed_seams",
+    "scope_kind",
+})
 
 
 def _strip_lean_comments_and_strings(text):
@@ -1735,11 +1832,537 @@ def resolve_instantiation_candidates_via_capture(
     return resolved
 
 
+def _is_sha256_hex(value):
+    return isinstance(value, str) and bool(_SHA256_HEX_RE.fullmatch(value))
+
+
+def _is_trimmed_nonempty_str(value):
+    return isinstance(value, str) and bool(value.strip()) and (
+        value.strip() == value
+    )
+
+
+def _validate_sorted_subset(items, allowed, label, failures):
+    if not isinstance(items, list) or not all(
+        isinstance(item, str) for item in items
+    ):
+        failures.append(f"invalid {label}={items!r}")
+        return False
+    prev = None
+    ok = True
+    for item in items:
+        if item not in allowed:
+            failures.append(f"unexpected entry {item!r} in {label}")
+            ok = False
+        if prev is not None and prev >= item:
+            failures.append(
+                f"{label} must be strictly sorted and duplicate-free "
+                f"({prev!r} before {item!r})"
+            )
+            ok = False
+        prev = item
+    return ok
+
+
+def _validate_unique_trimmed_nonempty(items, label, failures):
+    if not isinstance(items, list) or not all(
+        isinstance(v, str) for v in items
+    ):
+        failures.append(f"invalid {label}={items!r}")
+        return False
+    seen = set()
+    ok = True
+    for v in items:
+        if not _is_trimmed_nonempty_str(v):
+            failures.append(f"{label} entries must be trimmed and non-empty")
+            ok = False
+        elif v in seen:
+            failures.append(f"duplicate entry {v!r} in {label}")
+            ok = False
+        else:
+            seen.add(v)
+    return ok
+
+
+def _validate_digest_map(mapping, label, failures):
+    if not isinstance(mapping, dict) or not mapping:
+        failures.append(f"missing or empty {label}={mapping!r}")
+        return
+    for key, val in mapping.items():
+        if not _is_trimmed_nonempty_str(key) or not _is_sha256_hex(val):
+            failures.append(
+                f"invalid entry in {label}: {key!r}={val!r}"
+            )
+
+
+def _validate_patched_files(raw_patched, failures):
+    if not isinstance(raw_patched, list):
+        failures.append(
+            f"invalid correspondence_provenance.patched_files={raw_patched!r}"
+        )
+        return None
+    patched_by_id = {}
+    for idx, entry in enumerate(raw_patched):
+        ptr = f"correspondence_provenance.patched_files[{idx}]"
+        if not isinstance(entry, dict):
+            failures.append(f"{ptr} must be a JSON object")
+            continue
+        if set(entry.keys()) != PATCHED_FILE_KEYS:
+            failures.append(
+                f"{ptr} keys mismatch: {sorted(entry.keys())!r}"
+            )
+            continue
+        path = entry["path"]
+        up_sha = entry["upstream_sha256"]
+        pa_sha = entry["patched_sha256"]
+        if not _is_trimmed_nonempty_str(path):
+            failures.append(f"{ptr}.path must be trimmed and non-empty")
+            continue
+        if not _is_sha256_hex(up_sha):
+            failures.append(f"{ptr}.upstream_sha256 invalid: {up_sha!r}")
+        if not _is_sha256_hex(pa_sha):
+            failures.append(f"{ptr}.patched_sha256 invalid: {pa_sha!r}")
+        shim_id = f"lean-miri:{path}"
+        if shim_id in patched_by_id:
+            failures.append(
+                f"duplicate correspondence_provenance.patched_files "
+                f"path {path!r}"
+            )
+        else:
+            patched_by_id[shim_id] = pa_sha
+    return patched_by_id
+
+
+def _validate_model_system_relation(rel, label, failures):
+    if not isinstance(rel, dict):
+        failures.append(f"missing or invalid {label}={rel!r}")
+        return None
+    extra = sorted(set(rel.keys()) - VALID_MODEL_SYSTEM_RELATION_KEYS)
+    if extra:
+        failures.append(f"unexpected {label} keys={extra!r}")
+    kind = rel.get("kind")
+    if not isinstance(kind, str) or kind not in ALLOWED_RELATION_KINDS:
+        failures.append(f"invalid {label}.kind={kind!r}")
+    qualifier = rel.get("qualifier")
+    if qualifier is not None and (
+        not isinstance(qualifier, str)
+        or qualifier not in ALLOWED_RELATION_QUALIFIERS
+    ):
+        failures.append(f"invalid {label}.qualifier={qualifier!r}")
+    if (
+        kind in ("homomorphism", "abstraction", "simulation")
+        and qualifier is None
+    ):
+        failures.append(f"{label}.kind {kind!r} requires qualifier")
+    if kind == "none" and qualifier is not None:
+        failures.append(f"{label}.kind 'none' must omit qualifier")
+    if kind == "embedding" and qualifier in ("wf_stutter", "stutter"):
+        failures.append(
+            f"{label}.kind 'embedding' does not admit {qualifier!r}"
+        )
+    direction = rel.get("direction")
+    if (
+        not isinstance(direction, str)
+        or direction not in ALLOWED_RELATION_DIRECTIONS
+    ):
+        failures.append(f"invalid {label}.direction={direction!r}")
+    anchored_at = rel.get("anchored_at")
+    if anchored_at is not None and not _is_trimmed_nonempty_str(anchored_at):
+        failures.append(f"{label}.anchored_at must be trimmed and non-empty")
+    claims = rel.get("licensed_claim_shapes")
+    claims_ok = _validate_sorted_subset(
+        claims, ALLOWED_CLAIM_SHAPES, f"{label}.licensed_claim_shapes", failures
+    )
+    if claims_ok:
+        if (kind == "none") != (len(claims) == 0):
+            failures.append(
+                f"{label}.licensed_claim_shapes must be empty iff "
+                f"{label}.kind == 'none'"
+            )
+        if "general_hyper" in claims and not (
+            kind in ("simulation", "homomorphism")
+            and qualifier == "lock_step"
+            and direction == "bidirectional"
+        ):
+            failures.append(
+                f"{label}: 'general_hyper' requires bidirectional lock_step "
+                "simulation or homomorphism"
+            )
+        if "termination" in claims and qualifier == "stutter":
+            failures.append(
+                f"{label}: 'termination' cannot be licensed under 'stutter'"
+            )
+    unmodeled = rel.get("unmodeled_downstream")
+    if unmodeled is not None:
+        _validate_unique_trimmed_nonempty(
+            unmodeled, f"{label}.unmodeled_downstream", failures
+        )
+    return {
+        "kind": kind,
+        "qualifier": qualifier,
+        "direction": direction,
+        "licensed_claim_shapes": claims if claims_ok else None,
+    }
+
+
+def _validate_claim_kind_relation(claim_kind, rel, failures):
+    if (
+        not isinstance(claim_kind, str)
+        or claim_kind not in ALLOWED_CLAIM_KINDS
+        or rel is None
+    ):
+        return
+    kind = rel["kind"]
+    qualifier = rel["qualifier"]
+    direction = rel["direction"]
+    claims = rel["licensed_claim_shapes"]
+    if claim_kind == "exact_refines":
+        ok = (
+            kind == "simulation"
+            and direction == "bidirectional"
+            and qualifier in ("wf_stutter", "lock_step")
+            and claims == ["forall_safety"]
+        )
+    elif claim_kind == "sound_refines":
+        ok = (
+            kind == "simulation"
+            and direction == "forward"
+            and qualifier in ("wf_stutter", "lock_step")
+            and claims == ["forall_safety"]
+        )
+    elif claim_kind == "pure_spec_agreement":
+        ok = (
+            kind == "embedding"
+            and direction == "bidirectional"
+            and qualifier not in ("wf_stutter", "stutter")
+            and claims == ["forall_safety"]
+        )
+    else:
+        ok = True
+    if not ok:
+        failures.append(
+            f"correspondence_provenance.claim_kind {claim_kind!r} is "
+            "incompatible with model_system_relation "
+            f"({kind}/{qualifier!r}/{direction})"
+        )
+
+
+def _validate_tcb_shims(raw_shims, label, failures):
+    if not isinstance(raw_shims, list):
+        failures.append(f"invalid {label}={raw_shims!r}")
+        return None
+    shims_by_id = {}
+    shims_list = []
+    for idx, entry in enumerate(raw_shims):
+        ptr = f"{label}[{idx}]"
+        if not isinstance(entry, dict):
+            failures.append(f"{ptr} must be a JSON object")
+            continue
+        extra = sorted(set(entry.keys()) - VALID_TCB_SHIM_KEYS)
+        if extra:
+            failures.append(f"unexpected {ptr} keys={extra!r}")
+        shim_id = entry.get("id")
+        if not _is_trimmed_nonempty_str(shim_id):
+            failures.append(f"{ptr}.id must be trimmed and non-empty")
+            continue
+        if shim_id in shims_by_id:
+            failures.append(f"duplicate tcb_shims id {shim_id!r} in {label}")
+        kind = entry.get("kind")
+        if not isinstance(kind, str) or kind not in ALLOWED_SHIM_KINDS:
+            failures.append(f"invalid {ptr}.kind={kind!r}")
+        commit = entry.get("commit")
+        if commit is not None and not _is_trimmed_nonempty_str(commit):
+            failures.append(f"{ptr}.commit must be trimmed and non-empty")
+        sha256 = entry.get("sha256")
+        if sha256 is not None and not _is_sha256_hex(sha256):
+            failures.append(f"{ptr}.sha256 invalid: {sha256!r}")
+        if commit is None and sha256 is None:
+            failures.append(
+                f"{ptr} must specify at least one of commit or sha256"
+            )
+        status = entry.get("status")
+        if not isinstance(status, str) or status not in ALLOWED_SHIM_STATUSES:
+            failures.append(f"invalid {ptr}.status={status!r}")
+        guards = entry.get("guards")
+        if guards is not None:
+            if not isinstance(guards, list) or not all(
+                isinstance(g, str) for g in guards
+            ):
+                failures.append(f"invalid {ptr}.guards={guards!r}")
+            else:
+                seen_guards = set()
+                for g in guards:
+                    if not g:
+                        failures.append(
+                            f"{ptr}.guards must not contain empty strings"
+                        )
+                    elif g in seen_guards:
+                        failures.append(
+                            f"duplicate guard {g!r} in {ptr}.guards"
+                        )
+                    else:
+                        seen_guards.add(g)
+        rec = {
+            "id": shim_id,
+            "kind": kind,
+            "sha256": sha256,
+            "status": status,
+        }
+        shims_by_id[shim_id] = rec
+        shims_list.append(rec)
+    return shims_by_id, shims_list
+
+
+def _validate_provenance_qualifiers(qual, failures):
+    label = "correspondence_provenance.qualifiers"
+    if not isinstance(qual, dict):
+        failures.append(f"missing or invalid {label}={qual!r}")
+        return None
+    extra = sorted(set(qual.keys()) - VALID_PROVENANCE_QUALIFIER_KEYS)
+    if extra:
+        failures.append(f"unexpected {label} keys={extra!r}")
+    choice_total = qual.get("choice_total")
+    if not isinstance(choice_total, bool):
+        failures.append(f"invalid {label}.choice_total={choice_total!r}")
+    assumed_seams = qual.get("assumed_seams")
+    seams_ok = _validate_unique_trimmed_nonempty(
+        assumed_seams, f"{label}.assumed_seams", failures
+    )
+    scope_kind = qual.get("scope_kind")
+    if (
+        not isinstance(scope_kind, str)
+        or scope_kind not in ALLOWED_PROVENANCE_SCOPES
+    ):
+        failures.append(f"invalid {label}.scope_kind={scope_kind!r}")
+    if not isinstance(choice_total, bool) or not seams_ok:
+        return None
+    return {"choice_total": choice_total, "assumed_seams": assumed_seams}
+
+
+def _validate_provenance_v3_fields(provenance, patched_by_id, failures):
+    claim_kind = provenance.get("claim_kind")
+    if (
+        not isinstance(claim_kind, str)
+        or claim_kind not in ALLOWED_CLAIM_KINDS
+    ):
+        failures.append(
+            f"invalid correspondence_provenance.claim_kind={claim_kind!r}"
+        )
+
+    permitted_axioms = provenance.get("permitted_axioms")
+    if _validate_sorted_subset(
+        permitted_axioms,
+        ALLOWED_FOUNDATION_AXIOMS,
+        "correspondence_provenance.permitted_axioms",
+        failures,
+    ):
+        if not permitted_axioms:
+            failures.append(
+                "correspondence_provenance.permitted_axioms must not be empty"
+            )
+
+    rel = _validate_model_system_relation(
+        provenance.get("model_system_relation"),
+        "correspondence_provenance.model_system_relation",
+        failures,
+    )
+    _validate_claim_kind_relation(claim_kind, rel, failures)
+
+    shims_res = _validate_tcb_shims(
+        provenance.get("tcb_shims"),
+        "correspondence_provenance.tcb_shims",
+        failures,
+    )
+    taint_reasons = provenance.get("taint_reasons")
+    taints_ok = _validate_sorted_subset(
+        taint_reasons,
+        ALLOWED_PROVENANCE_TAINTS,
+        "correspondence_provenance.taint_reasons",
+        failures,
+    )
+    qual = _validate_provenance_qualifiers(
+        provenance.get("qualifiers"), failures
+    )
+
+    if patched_by_id is None or shims_res is None or qual is None:
+        return
+    shims_by_id, shims_list = shims_res
+
+    for shim_id, patched_sha in patched_by_id.items():
+        shim = shims_by_id.get(shim_id)
+        if shim is None:
+            failures.append(
+                "correspondence_provenance.patched_files entry "
+                f"{shim_id!r} is missing from tcb_shims"
+            )
+        else:
+            if (
+                shim["kind"] != "upstream_bugfix_patch"
+                or shim["status"] != "assumed"
+            ):
+                failures.append(
+                    f"correspondence_provenance.tcb_shims entry {shim_id!r} "
+                    "must have kind 'upstream_bugfix_patch' and status "
+                    "'assumed'"
+                )
+            if shim["sha256"] != patched_sha:
+                failures.append(
+                    f"correspondence_provenance.tcb_shims {shim_id!r} sha256 "
+                    "disagrees with patched_files.patched_sha256"
+                )
+
+    for shim in shims_list:
+        if (
+            shim["kind"] == "upstream_bugfix_patch"
+            and shim["id"] not in patched_by_id
+        ):
+            failures.append(
+                "correspondence_provenance.tcb_shims upstream_bugfix_patch "
+                f"{shim['id']!r} has no matching patched_files entry"
+            )
+        if (
+            shim["kind"] == "assumed_seam"
+            and shim["id"] not in qual["assumed_seams"]
+        ):
+            failures.append(
+                "correspondence_provenance.tcb_shims assumed_seam "
+                f"{shim['id']!r} is absent from qualifiers.assumed_seams"
+            )
+
+    for seam in qual["assumed_seams"]:
+        shim = shims_by_id.get(seam)
+        if shim is None:
+            failures.append(
+                "correspondence_provenance.qualifiers.assumed_seams entry "
+                f"{seam!r} is missing from tcb_shims"
+            )
+        elif shim["kind"] != "assumed_seam" or shim["status"] != "assumed":
+            failures.append(
+                f"correspondence_provenance.tcb_shims {seam!r} must have "
+                "kind 'assumed_seam' and status 'assumed'"
+            )
+
+    if taints_ok:
+        expected_taints = []
+        if qual["assumed_seams"]:
+            expected_taints.append("assumed_seams_present")
+        if not qual["choice_total"]:
+            expected_taints.append("choice_total_false")
+        if any(s["kind"] == "upstream_bugfix_patch" for s in shims_list):
+            expected_taints.append("vendor_upstream_patches_present")
+        if taint_reasons != expected_taints:
+            failures.append(
+                "correspondence_provenance.taint_reasons "
+                f"{taint_reasons!r} disagrees with expected "
+                f"{expected_taints!r}"
+            )
+
+
+def _validate_profile_v1_provenance(provenance, failures):
+    if not isinstance(provenance, dict) or not provenance:
+        failures.append(
+            "Profile v1 receipt missing correspondence_provenance "
+            f"object: {provenance!r}"
+        )
+        return
+    if "applicable" in provenance or "reason" in provenance:
+        failures.append(
+            "Profile v1 receipt correspondence_provenance must omit "
+            f"applicable and reason: {provenance!r}"
+        )
+        return
+    sv = provenance.get("schema_version")
+    if not (_is_exact_int(sv, 1) or _is_exact_int(sv, 3)):
+        failures.append(
+            "Profile v1 receipt invalid "
+            f"correspondence_provenance.schema_version={sv!r}"
+        )
+        return
+
+    allowed_keys = PROVENANCE_V1_KEYS if sv == 1 else PROVENANCE_V3_KEYS
+    extra_keys = sorted(set(provenance.keys()) - allowed_keys)
+    if extra_keys:
+        failures.append(
+            "Profile v1 receipt unexpected correspondence_provenance "
+            f"keys={extra_keys!r}"
+        )
+
+    for field in (
+        "upstream_repository",
+        "upstream_commit",
+        "upstream_lean_toolchain",
+        "build_lean_toolchain",
+        "note",
+    ):
+        val = provenance.get(field)
+        if not isinstance(val, str) or not val.strip():
+            failures.append(
+                "Profile v1 receipt missing or blank "
+                f"correspondence_provenance.{field}={val!r}"
+            )
+
+    for field in (
+        "upstream_pin_sha256",
+        "sysroot_foundation_manifest_sha256",
+    ):
+        val = provenance.get(field)
+        if not _is_sha256_hex(val):
+            failures.append(
+                "Profile v1 receipt invalid "
+                f"correspondence_provenance.{field}={val!r}"
+            )
+
+    patched_by_id = _validate_patched_files(
+        provenance.get("patched_files"), failures
+    )
+    for field in (
+        "correspondence_adapters",
+        "correspondence_proofs",
+        "trusted_lean",
+    ):
+        _validate_digest_map(
+            provenance.get(field),
+            f"correspondence_provenance.{field}",
+            failures,
+        )
+
+    if sv == 3:
+        _validate_provenance_v3_fields(provenance, patched_by_id, failures)
+
+
+def _validate_profile_v1_disclosures(receipt, failures):
+    _validate_profile_v1_provenance(
+        receipt.get("correspondence_provenance"), failures
+    )
+
+    assumptions = receipt.get("assumptions")
+    if (
+        not isinstance(assumptions, list)
+        or not assumptions
+        or not all(
+            isinstance(item, str) and item.strip() for item in assumptions
+        )
+    ):
+        failures.append(
+            "Profile v1 receipt missing or invalid assumptions: "
+            f"{assumptions!r}"
+        )
+    elif any(
+        item.startswith(PROFILE_V2_ASSUMPTION_PREFIX) for item in assumptions
+    ):
+        failures.append(
+            "Profile v1 receipt carries Profile v2 semantics assumption"
+        )
+
+
 def _validate_profile_v2_disclosures(receipt, failures):
     provenance = receipt.get("correspondence_provenance")
     if (
         not isinstance(provenance, dict)
+        or set(provenance.keys()) != {"applicable", "reason"}
         or provenance.get("applicable") is not False
+        or not isinstance(provenance.get("reason"), str)
+        or not provenance["reason"].strip()
     ):
         failures.append(
             "Profile v2 receipt without inapplicable "
@@ -1747,8 +2370,12 @@ def _validate_profile_v2_disclosures(receipt, failures):
         )
 
     assumptions = receipt.get("assumptions")
-    if not isinstance(assumptions, list) or not all(
-        isinstance(item, str) for item in assumptions
+    if (
+        not isinstance(assumptions, list)
+        or not assumptions
+        or not all(
+            isinstance(item, str) and item.strip() for item in assumptions
+        )
     ):
         failures.append(
             f"Profile v2 receipt missing assumptions list: {assumptions!r}"
@@ -1822,6 +2449,15 @@ def validate_parsed_receipt(
         expected_returncode=0,
         check_deferred=True,
     )
+
+    if "deferred" not in receipt:
+        failures.append("missing deferred list")
+    else:
+        deferred = receipt["deferred"]
+        if isinstance(deferred, list) and any(
+            isinstance(d, str) and not d.strip() for d in deferred
+        ):
+            failures.append(f"blank entry in deferred={deferred!r}")
 
     spec_warnings = receipt.get("spec_warnings")
     if spec_warnings != []:
@@ -2024,19 +2660,8 @@ def validate_parsed_receipt(
 
         if root == UNIT_THEOREM_V2:
             _validate_profile_v2_disclosures(receipt, failures)
-        elif root == UNIT_THEOREM_V1 and "assumptions" in receipt:
-            assumptions = receipt.get("assumptions")
-            if not isinstance(assumptions, list) or not all(
-                isinstance(item, str) for item in assumptions
-            ):
-                failures.append(f"invalid assumptions={assumptions!r}")
-            elif any(
-                item.startswith(PROFILE_V2_ASSUMPTION_PREFIX)
-                for item in assumptions
-            ):
-                failures.append(
-                    "Profile v1 receipt carries Profile v2 semantics assumption"
-                )
+        elif root == UNIT_THEOREM_V1:
+            _validate_profile_v1_disclosures(receipt, failures)
         if audit.get("subject") != "Captured.program":
             failures.append(f"audit.subject={audit.get('subject')!r}")
         if audit.get("expected") != "Expected.claim":
@@ -2231,8 +2856,14 @@ def verify_unit(arguments, unit_dir, request, artifacts_root):
     return unit_dir.name, {
         "status": receipt["status"],
         "profile": unit_expected["profile"],
+        "canonical_root": receipt["audit"]["canonicalRoot"],
         "scope": receipt["scope"],
         "axioms": receipt["audit"]["axioms"],
+        "taint_reasons": receipt["taint_reasons"],
+        "assumptions": receipt["assumptions"],
+        "deferred": receipt["deferred"],
+        "spec_warnings": receipt["spec_warnings"],
+        "correspondence_provenance": receipt["correspondence_provenance"],
         "elaboration_sandbox": receipt["elaboration_sandbox"],
         "selected": receipt["selected"],
         "request_sha256": receipt["request_sha256"],
