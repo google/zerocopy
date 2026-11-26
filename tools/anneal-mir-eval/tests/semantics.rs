@@ -18,9 +18,9 @@ use anneal_mir_eval::{
     CallerMemory, CaptureInput, CastKind, ConstLit, CoreCallOp, EnumTagRepr, EnumTy, EvalConfig,
     FaultDetail, FaultKind, FrameState, IntTy, IntWidth, LayoutData, LocalSlot, MachineState,
     Mutability, Operand, OrderingVal, Outcome, Place, ProbeConfig, Program, ProjectionElem, PtrVal,
-    Rvalue, ScalarVal, Scope, Statement, StdlibCrate, StepOutcome, StepTrace, SysrootNumKind,
-    SysrootNumOp, TargetEndian, TerminalOut, Terminator, Ty, UbClass, UnOp, UnwindAction, Val,
-    WitnessClass, check_val, decode_val, encode_val, eval_body, eval_body_auto,
+    RodataByte, Rvalue, ScalarVal, Scope, Statement, StdlibCrate, StepOutcome, StepTrace,
+    SysrootNumKind, SysrootNumOp, TargetEndian, TerminalOut, Terminator, Ty, UbClass, UnOp,
+    UnwindAction, Val, WitnessClass, check_val, decode_val, encode_val, eval_body, eval_body_auto,
     eval_body_by_identity, eval_body_with_caller_mem, eval_body_with_config, layout_of_ty,
     load_indirect, memory, probe_body, probe_body_with_policy, store_indirect, validate_body_entry,
     validate_program_config,
@@ -437,7 +437,7 @@ fn canary_unop_casts_cmp_and_chars() {
                 Statement::Assign {
                     local: 0,
                     projection: Vec::new(),
-                    value: Rvalue::Discriminant { local: 3, projection: Vec::new() },
+                    value: Rvalue::Discriminant { place: Place::local(3) },
                 },
             ],
             terminator: Terminator::Ret,
@@ -498,7 +498,7 @@ fn canary_enums_storage_unreachable_and_unsupported() {
                 Statement::Assign {
                     local: 0,
                     projection: Vec::new(),
-                    value: Rvalue::Discriminant { local: 1, projection: Vec::new() },
+                    value: Rvalue::Discriminant { place: Place::local(1) },
                 },
                 Statement::StorageDead { local: 1 },
             ],
@@ -531,7 +531,7 @@ fn canary_enums_storage_unreachable_and_unsupported() {
                 Statement::Assign {
                     local: 0,
                     projection: Vec::new(),
-                    value: Rvalue::Discriminant { local: 1, projection: Vec::new() },
+                    value: Rvalue::Discriminant { place: Place::local(1) },
                 },
                 Statement::StorageDead { local: 1 },
             ],
@@ -588,7 +588,7 @@ fn canary_enums_storage_unreachable_and_unsupported() {
                 Statement::Assign {
                     local: 0,
                     projection: Vec::new(),
-                    value: Rvalue::Discriminant { local: 1, projection: Vec::new() },
+                    value: Rvalue::Discriminant { place: Place::local(1) },
                 },
             ],
             terminator: Terminator::Ret,
@@ -1505,8 +1505,7 @@ fn strict_profile_v1_rejections_and_semantic_edge_precedence() {
                     local: 0,
                     projection: Vec::new(),
                     value: Rvalue::Discriminant {
-                        local: 1,
-                        projection: vec![ProjectionElem::Unsupported],
+                        place: Place { local: 1, projection: vec![ProjectionElem::Unsupported] },
                     },
                 },
             ],
@@ -2860,7 +2859,7 @@ fn profile_v2_deref_cast_and_discriminant_dst_ty_validation() {
             statements: vec![Statement::Assign {
                 local: 0,
                 projection: vec![],
-                value: Rvalue::Discriminant { local: 1, projection: vec![] },
+                value: Rvalue::Discriminant { place: Place::local(1) },
             }],
             terminator: Terminator::Ret,
             cleanup: false,
@@ -2878,7 +2877,7 @@ fn profile_v2_deref_cast_and_discriminant_dst_ty_validation() {
         blocks: vec![Block {
             statements: vec![Statement::AssignPlace {
                 place: Place { local: 1, projection: vec![ProjectionElem::Deref] },
-                value: Rvalue::Discriminant { local: 2, projection: vec![] },
+                value: Rvalue::Discriminant { place: Place::local(2) },
             }],
             terminator: Terminator::Ret,
             cleanup: false,
@@ -2894,7 +2893,7 @@ fn profile_v2_deref_cast_and_discriminant_dst_ty_validation() {
                 Statement::StorageLive { local: 2 },
                 Statement::AssignPlace {
                     place: Place { local: 1, projection: vec![ProjectionElem::Deref] },
-                    value: Rvalue::Discriminant { local: 2, projection: vec![] },
+                    value: Rvalue::Discriminant { place: Place::local(2) },
                 },
             ],
             terminator: Terminator::Ret,
@@ -4993,4 +4992,376 @@ fn fail_closed_witness_classification_and_profile_v2_aggregate_unit_endian_parit
         &eval_body_with_config(&agg_unit_prog, 0, &[], 16, &big_v2),
         FaultKind::Unsupported,
     );
+}
+
+/// Returns whether any statement or terminator of `body` satisfies `pred`.
+fn body_has(
+    body: &Body,
+    mut pred: impl FnMut(Option<&Statement>, Option<&Terminator>) -> bool,
+) -> bool {
+    body.blocks.iter().any(|bb| {
+        bb.statements.iter().any(|stmt| pred(Some(stmt), None)) || pred(None, Some(&bb.terminator))
+    })
+}
+
+fn assign_rvalue(stmt: Option<&Statement>) -> Option<&Rvalue> {
+    stmt.and_then(Statement::as_assign).map(|(_, _, rvalue)| rvalue)
+}
+
+#[test]
+fn real_capture_schema5_rvalue_drift_fixture_parses_and_evaluates() {
+    // Captured by `anneal-rustc-capture` (schema version 5, Profile v2,
+    // `--scope crate`) from this crate, with unselected census rows elided
+    // and host paths normalized:
+    //
+    //   #[repr(u8)]
+    //   pub enum Step { First = 1, Second = 2, Third = 3 }
+    //   pub fn step_value(s: Step) -> i32 {
+    //       match s { Step::First => 10, Step::Second => 20, Step::Third => 30 }
+    //   }
+    //   pub fn array_literal(a: u8, b: u8) -> [u8; 2] { [a, b] }
+    //   pub fn array_repeat(a: u8) -> [u8; 4] { [a; 4] }
+    //   pub fn array_first(arr: [u8; 4]) -> u8 { let [first, ..] = arr; first }
+    //   pub fn unsize(arr: &[u8; 4]) -> &[u8] { arr }
+    //   pub fn le_bytes(x: u32) -> [u8; 4] { x.to_le_bytes() }
+    //   pub fn array_eq(a: [u8; 2], b: [u8; 2]) -> bool { a == b }
+    //   pub fn rodata() -> &'static [u8] { b"abc" }
+    //
+    // Before the evaluator's IR followed the capture serializer, this
+    // manifest failed to load (`missing field 'local'` for the place-wrapped
+    // `discriminant` rvalue, and unknown variants for the rest).
+    const CAPTURE_JSON: &str = include_str!("fixtures/capture_schema5_rvalue_drift_capture.json");
+    let CaptureInput::Manifest(manifest) = CaptureInput::from_json_str(CAPTURE_JSON).unwrap()
+    else {
+        panic!("expected schema-v5 capture manifest");
+    };
+    let program = &manifest.program;
+    let identities: Vec<&str> = program.bodies.iter().map(|b| b.identity.as_str()).collect();
+    assert_eq!(
+        identities,
+        [
+            "rust-path-v1::step_value",
+            "rust-path-v1::array_literal",
+            "rust-path-v1::array_repeat",
+            "rust-path-v1::array_first",
+            "rust-path-v1::unsize",
+            "rust-path-v1::le_bytes",
+            "rust-path-v1::array_eq",
+            "rust-path-v1::rodata",
+        ]
+    );
+
+    // Every newly mirrored capture shape is present in the parsed program.
+    let bodies = &program.bodies;
+    assert!(body_has(&bodies[0], |s, _| matches!(
+        assign_rvalue(s),
+        Some(Rvalue::Discriminant { place }) if place.projection.is_empty()
+    )));
+    assert!(body_has(&bodies[1], |s, _| matches!(
+        assign_rvalue(s),
+        Some(Rvalue::AggregateArray { elems, .. }) if elems.len() == 2
+    )));
+    assert!(body_has(&bodies[2], |s, _| matches!(
+        assign_rvalue(s),
+        Some(Rvalue::Repeat { count: 4, .. })
+    )));
+    assert!(body_has(&bodies[3], |s, _| {
+        let Some(Rvalue::Use { operand, .. }) = assign_rvalue(s) else { return false };
+        operand.as_place().is_some_and(|(_, proj, _)| {
+            matches!(
+                proj,
+                [ProjectionElem::ConstantIndex { offset: 0, min_length: 4, from_end: false }]
+            )
+        })
+    }));
+    assert!(body_has(&bodies[4], |s, _| matches!(
+        assign_rvalue(s),
+        Some(Rvalue::Cast { cast_kind: CastKind::Unsize, .. })
+    )));
+    assert!(body_has(&bodies[5], |_, t| matches!(
+        t,
+        Some(Terminator::CoreCall { op: CoreCallOp::IntToLeBytes { .. }, .. })
+    )));
+    assert!(body_has(&bodies[6], |_, t| matches!(
+        t,
+        Some(Terminator::CoreCall { op: CoreCallOp::ArrayEq { len: 2, .. }, .. })
+    )));
+    assert!(body_has(&bodies[7], |s, _| {
+        let Some(Rvalue::UseRetag { operand: Operand::Constant { lit, .. } }) = assign_rvalue(s)
+        else {
+            return false;
+        };
+        matches!(lit, ConstLit::RodataRef { bytes, slice_len: None, .. } if bytes.len() == 3)
+    }));
+
+    // The captured enum `match` evaluates end to end.
+    let endian = TargetEndian::from_manifest_str(&manifest.configuration.endian);
+    let cfg = EvalConfig::for_program(program, endian).unwrap();
+    let Some(Ty::Enum(step_ty)) = bodies[0].local_tys.get(1) else {
+        panic!("expected enum parameter");
+    };
+    for (variant, expected) in [(0usize, 10u128), (1, 20), (2, 30)] {
+        let arg = Val::EnumVal { ty: step_ty.clone(), variant };
+        let trace = eval_body_with_config(program, 0, &[arg], 64, &cfg);
+        assert_returned(&trace, Val::Scalar(ScalarVal::new(IntWidth::I32, true, expected)));
+    }
+
+    // The other bodies have array or array-reference locals, which are
+    // outside the Profile v2 local fragment, so they fail closed at entry
+    // validation before any step runs; the new shapes in them are never
+    // evaluated here. `unmodeled_schema5_shapes_fail_closed_during_evaluation`
+    // reaches each new arm directly.
+    for (body_id, body) in bodies.iter().enumerate().skip(1) {
+        let err = validate_body_entry(body, &cfg).unwrap_err();
+        assert_eq!(err.kind, FaultKind::Unsupported, "body {body_id}");
+        assert_eq!(err.reason, "body contains unsupported local variable type", "body {body_id}");
+    }
+    let trace = eval_body_with_config(program, 2, &[Val::u8(7)], 64, &cfg);
+    assert_eq!(trace.steps_executed, 0);
+    assert_fault(&trace, FaultKind::Unsupported);
+}
+
+/// One-block body `fn(u8) -> ret_ty` (local 1 is the `u8` argument) running
+/// `statements` and then `terminator`; `Terminator::Ret` is block 1.
+fn unmodeled_shape_program(
+    profile: u32,
+    ret_ty: Ty,
+    statements: Vec<Statement>,
+    terminator: Terminator,
+) -> Program {
+    let mut program = single_unit_program(vec![Body {
+        arg_count: 1,
+        is_unsafe: false,
+        local_tys: vec![ret_ty, U8_TY],
+        blocks: vec![
+            Block { statements, terminator, cleanup: false },
+            Block { statements: Vec::new(), terminator: Terminator::Ret, cleanup: false },
+        ],
+        identity: "test::entry".into(),
+    }]);
+    program.mir_profile_version = profile;
+    program
+}
+
+#[test]
+fn unmodeled_schema5_shapes_fail_closed_during_evaluation() {
+    // Every local is in the Profile v2 local fragment (and, except for the
+    // `RodataRef` case's `&[u8]`, the v1 fragment), so entry validation
+    // passes and each fault below comes from evaluating the shape, not from
+    // `validate_body_entry`.
+    const ENTRY_REASON: &str = "body contains unsupported local variable type";
+    const V2_RVALUE: &str = "unmodeled Profile v2 MIR rvalue";
+    const V1_RVALUE: &str = "unmodeled Profile v1 MIR rvalue";
+    const PROJECTION: &str = "unsupported place projection element";
+    const CORE_CALL: &str = "invalid CoreCallOp arguments or signature";
+    const CONST_LIT: &str = "unsupported constant type/literal combination";
+    const V1_PROJECTION: &str = "projected operand unsupported in Profile v1";
+    const V1_TERMINATOR: &str = "unmodeled Profile v1 MIR terminator";
+
+    let arg = || Operand::Copy { local: 1, projection: Vec::new() };
+    let u8_slice_ref = Ty::Ref {
+        mutability: Mutability::Shared,
+        pointee: Box::new(Ty::Slice { elem: Box::new(U8_TY) }),
+    };
+    let rodata = vec![
+        RodataByte::Init { byte: b'a' },
+        RodataByte::Init { byte: b'b' },
+        RodataByte::Init { byte: b'c' },
+    ];
+    let assign = |ret_ty: Ty, value: Rvalue| {
+        (
+            ret_ty,
+            vec![Statement::Assign { local: 0, projection: Vec::new(), value }],
+            Terminator::Goto { block: 1 },
+        )
+    };
+    let core_call = |op: CoreCallOp| {
+        (
+            Ty::Bool,
+            Vec::new(),
+            Terminator::CoreCall {
+                op,
+                args: vec![arg()],
+                dst: Place::local(0),
+                target: Some(1),
+                unwind: UnwindAction::Continue,
+            },
+        )
+    };
+    let use_const = |ret_ty: Ty, ty: Ty, lit: ConstLit| {
+        assign(ret_ty, Rvalue::Use { operand: Operand::Constant { ty, lit }, with_retag: false })
+    };
+
+    let cases = vec![
+        (
+            "ProjectionElem::ConstantIndex",
+            assign(
+                U8_TY,
+                Rvalue::Use {
+                    operand: Operand::Copy {
+                        local: 1,
+                        projection: vec![ProjectionElem::ConstantIndex {
+                            offset: 0,
+                            min_length: 1,
+                            from_end: false,
+                        }],
+                    },
+                    with_retag: false,
+                },
+            ),
+            PROJECTION,
+            Some(V1_PROJECTION),
+        ),
+        (
+            "CastKind::Unsize",
+            assign(
+                Ty::Unit,
+                Rvalue::Cast {
+                    cast_kind: CastKind::Unsize,
+                    operand: arg(),
+                    ty: u8_slice_ref.clone(),
+                },
+            ),
+            V2_RVALUE,
+            Some(V1_RVALUE),
+        ),
+        (
+            "Rvalue::AggregateArray",
+            assign(Ty::Unit, Rvalue::AggregateArray { elem_ty: U8_TY, elems: vec![arg()] }),
+            V2_RVALUE,
+            Some(V1_RVALUE),
+        ),
+        (
+            "Rvalue::Repeat",
+            assign(Ty::Unit, Rvalue::Repeat { operand: arg(), elem_ty: U8_TY, count: 4 }),
+            V2_RVALUE,
+            Some(V1_RVALUE),
+        ),
+        (
+            "CoreCallOp::IntToLeBytes",
+            core_call(CoreCallOp::IntToLeBytes {
+                int_ty: IntTy { width: IntWidth::I8, signed: false },
+            }),
+            CORE_CALL,
+            Some(V1_TERMINATOR),
+        ),
+        (
+            "CoreCallOp::ArrayEq",
+            core_call(CoreCallOp::ArrayEq { elem: U8_TY, len: 1 }),
+            CORE_CALL,
+            Some(V1_TERMINATOR),
+        ),
+        (
+            "ConstLit::RodataBytes",
+            use_const(
+                Ty::Unit,
+                Ty::Array { elem: Box::new(U8_TY), len: 3 },
+                ConstLit::RodataBytes { bytes: rodata.clone() },
+            ),
+            CONST_LIT,
+            Some(CONST_LIT),
+        ),
+        (
+            "ConstLit::RodataRef",
+            use_const(
+                u8_slice_ref.clone(),
+                u8_slice_ref.clone(),
+                ConstLit::RodataRef {
+                    bytes: rodata,
+                    align_log2: 0,
+                    offset_bytes: 0,
+                    slice_len: Some(3),
+                },
+            ),
+            CONST_LIT,
+            None,
+        ),
+    ];
+
+    for (name, (ret_ty, statements, terminator), v2_reason, v1_reason) in cases {
+        let v2 = unmodeled_shape_program(2, ret_ty.clone(), statements.clone(), terminator.clone());
+        let v2_cfg = EvalConfig::profile_v2(TargetEndian::Little);
+        assert_eq!(
+            validate_body_entry(&v2.bodies[0], &v2_cfg).map_err(|e| e.reason),
+            Ok(()),
+            "{name}: v2 entry"
+        );
+        let trace = eval_body_with_config(&v2, 0, &[Val::u8(7)], 16, &v2_cfg);
+        let Outcome::Fault(detail) = &trace.outcome else {
+            panic!("{name}: expected a v2 fault, got {:?}", trace.outcome);
+        };
+        assert_eq!(detail.kind, FaultKind::Unsupported, "{name}: v2 {detail:?}");
+        assert_ne!(detail.reason, ENTRY_REASON, "{name}: v2");
+        assert_eq!(detail.reason, v2_reason, "{name}: v2");
+
+        // Profile v1 rejects projected operands and core calls before
+        // reaching these arms, and reference locals are outside its local
+        // fragment, so `RodataRef` is v2-only.
+        let Some(v1_reason) = v1_reason else { continue };
+        let v1 = unmodeled_shape_program(1, ret_ty, statements, terminator);
+        let v1_cfg = EvalConfig::for_program(&v1, Some(TargetEndian::Little)).unwrap();
+        assert!(!v1_cfg.enable_profile_v2(), "{name}");
+        assert_eq!(
+            validate_body_entry(&v1.bodies[0], &v1_cfg).map_err(|e| e.reason),
+            Ok(()),
+            "{name}: v1 entry"
+        );
+        let trace = eval_body_with_config(&v1, 0, &[Val::u8(7)], 16, &v1_cfg);
+        let Outcome::Fault(detail) = &trace.outcome else {
+            panic!("{name}: expected a v1 fault, got {:?}", trace.outcome);
+        };
+        assert_eq!(detail.kind, FaultKind::Unsupported, "{name}: v1 {detail:?}");
+        assert_ne!(detail.reason, ENTRY_REASON, "{name}: v1");
+        assert_eq!(detail.reason, v1_reason, "{name}: v1");
+    }
+}
+
+#[test]
+fn capture_json_shapes_round_trip_and_legacy_discriminant_is_rejected() {
+    let discr: Rvalue =
+        serde_json::from_str(r#"{"kind":"discriminant","place":{"local":1,"projection":[]}}"#)
+            .unwrap();
+    assert_eq!(discr, Rvalue::Discriminant { place: Place::local(1) });
+    // The pre-place flat shape is no longer emitted by the capture tool and
+    // must not be accepted silently.
+    assert!(serde_json::from_str::<Rvalue>(r#"{"kind":"discriminant","local":1}"#).is_err());
+
+    for json in [
+        r#"{"kind":"aggregate_array","elem_ty":{"kind":"bool"},"elems":[]}"#,
+        r#"{"kind":"repeat","operand":{"kind":"copy","local":1},"elem_ty":{"kind":"bool"},"count":3}"#,
+        r#"{"kind":"cast","cast_kind":"unsize","operand":{"kind":"copy","local":1},"ty":{"kind":"unit"}}"#,
+    ] {
+        let rvalue: Rvalue = serde_json::from_str(json).unwrap();
+        let encoded = serde_json::to_string(&rvalue).unwrap();
+        assert_eq!(serde_json::from_str::<Rvalue>(&encoded).unwrap(), rvalue);
+    }
+    for json in [
+        r#"{"kind":"rodata_bytes","bytes":[{"kind":"init","byte":1},{"kind":"uninit"}]}"#,
+        r#"{"kind":"rodata_ref","bytes":[],"align_log2":0,"offset_bytes":0,"slice_len":null}"#,
+    ] {
+        let lit: ConstLit = serde_json::from_str(json).unwrap();
+        let encoded = serde_json::to_string(&lit).unwrap();
+        assert_eq!(serde_json::from_str::<ConstLit>(&encoded).unwrap(), lit);
+    }
+    let lit: ConstLit = serde_json::from_str(
+        r#"{"kind":"rodata_bytes","bytes":[{"kind":"init","byte":1},{"kind":"uninit"}]}"#,
+    )
+    .unwrap();
+    assert_eq!(
+        lit,
+        ConstLit::RodataBytes { bytes: vec![RodataByte::Init { byte: 1 }, RodataByte::Uninit] }
+    );
+    for json in [
+        r#"{"kind":"int_to_le_bytes","int_ty":{"width":"i32","signed":false}}"#,
+        r#"{"kind":"array_eq","elem":{"kind":"bool"},"len":2}"#,
+    ] {
+        let op: CoreCallOp = serde_json::from_str(json).unwrap();
+        let encoded = serde_json::to_string(&op).unwrap();
+        assert_eq!(serde_json::from_str::<CoreCallOp>(&encoded).unwrap(), op);
+    }
+    let elem: ProjectionElem = serde_json::from_str(
+        r#"{"kind":"constant_index","offset":1,"min_length":2,"from_end":true}"#,
+    )
+    .unwrap();
+    assert_eq!(elem, ProjectionElem::ConstantIndex { offset: 1, min_length: 2, from_end: true });
 }

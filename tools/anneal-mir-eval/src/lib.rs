@@ -46,8 +46,8 @@ pub use eval::{
 pub use ir::{
     AggregateKind, AssertKind, BinOp, Block, Body, CAPTURE_SCHEMA_VERSION, CaptureInput, CastKind,
     ConstLit, CoreCallOp, EnumTagRepr, EnumTy, Instantiation, IntTy, IntWidth, Manifest,
-    Mutability, Operand, Place, Program, ProjectionElem, Rvalue, Scope, Statement, StdlibCrate,
-    SysrootNumKind, SysrootNumOp, Terminator, Ty, UnOp, UnwindAction,
+    Mutability, Operand, Place, Program, ProjectionElem, RodataByte, Rvalue, Scope, Statement,
+    StdlibCrate, SysrootNumKind, SysrootNumOp, Terminator, Ty, UnOp, UnwindAction,
 };
 pub use memory::{
     Allocation, CallerMemory, ISIZE_MAX_BYTES, LayoutData, MemPlace, MemoryState, RefAccessSpan,

@@ -1840,7 +1840,7 @@ fn discriminant_types_valid(body: &Body) -> bool {
             let Some((
                 dst_local,
                 dst_proj,
-                Rvalue::Discriminant { local: src_local, projection: src_proj },
+                Rvalue::Discriminant { place: Place { local: src_local, projection: src_proj } },
             )) = stmt.as_assign()
             else {
                 return true;
@@ -2436,13 +2436,13 @@ fn eval_rvalue_v1(
             };
             eval_int_to_int_cast(CastKind::IntToInt, &v, ty)
         }
-        Rvalue::Discriminant { local, projection } => eval_discriminant_rvalue(
+        Rvalue::Discriminant { place } => eval_discriminant_rvalue(
             body_locals,
             locals,
             moved.as_view(),
             mem,
-            *local,
-            projection,
+            place.local,
+            &place.projection,
             dst_ty,
             endian,
             false,
@@ -3136,7 +3136,7 @@ fn read_place_v2(
                 }
             }
         }
-        [ProjectionElem::Unsupported, ..] => {
+        [ProjectionElem::ConstantIndex { .. } | ProjectionElem::Unsupported, ..] => {
             Err(FaultDetail::unsupported("unsupported place projection element"))
         }
     }
@@ -3606,13 +3606,13 @@ fn eval_rvalue_v2(
                 _ => Err(FaultDetail::unsupported("IntToPtr requires usize operand")),
             }
         }
-        Rvalue::Discriminant { local, projection } => eval_discriminant_rvalue(
+        Rvalue::Discriminant { place } => eval_discriminant_rvalue(
             body_locals,
             locals,
             moved.as_view(),
             mem,
-            *local,
-            projection,
+            place.local,
+            &place.projection,
             dst_ty,
             endian,
             true,
@@ -3707,8 +3707,10 @@ fn eval_rvalue_v2(
                 _ => Err(FaultDetail::unsupported("AggregateRangeFrom start must be usize")),
             }
         }
-        Rvalue::Cast { cast_kind: CastKind::Unsupported, .. }
+        Rvalue::Cast { cast_kind: CastKind::Unsize | CastKind::Unsupported, .. }
         | Rvalue::Aggregate { .. }
+        | Rvalue::AggregateArray { .. }
+        | Rvalue::Repeat { .. }
         | Rvalue::Unsupported => Err(FaultDetail::unsupported("unmodeled Profile v2 MIR rvalue")),
     }
 }

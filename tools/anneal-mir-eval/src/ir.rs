@@ -407,6 +407,12 @@ pub enum ProjectionElem {
         field_idx: u32,
         ty: Ty,
     },
+    /// `ProjectionElem::ConstantIndex`; captured, but not yet evaluated.
+    ConstantIndex {
+        offset: u64,
+        min_length: u64,
+        from_end: bool,
+    },
     Unsupported,
 }
 
@@ -426,8 +432,16 @@ impl Place {
     }
 }
 
-/// Constant literal payload matching `Trusted.MirAst.ConstLit`.
+/// One byte of a read-only data constant, matching `Trusted.MirAst.RodataByte`.
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, Serialize, Deserialize)]
+#[serde(tag = "kind", rename_all = "snake_case")]
+pub enum RodataByte {
+    Uninit,
+    Init { byte: u8 },
+}
+
+/// Constant literal payload matching `Trusted.MirAst.ConstLit`.
+#[derive(Clone, Debug, PartialEq, Eq, Hash, Serialize, Deserialize)]
 #[serde(tag = "kind", rename_all = "snake_case")]
 pub enum ConstLit {
     ZeroSized,
@@ -437,6 +451,17 @@ pub enum ConstLit {
             deserialize_with = "deserialize_u128_decimal"
         )]
         bits: u128,
+    },
+    /// By-value read-only data constant; captured, but not yet evaluated.
+    RodataBytes {
+        bytes: Vec<RodataByte>,
+    },
+    /// Reference to read-only data; captured, but not yet evaluated.
+    RodataRef {
+        bytes: Vec<RodataByte>,
+        align_log2: u32,
+        offset_bytes: u64,
+        slice_len: Option<u64>,
     },
 }
 
@@ -496,6 +521,8 @@ pub enum CastKind {
     IntToInt,
     PtrToPtr,
     IntToPtr,
+    /// `PointerCoercion::Unsize`; captured, but not yet evaluated.
+    Unsize,
     Unsupported,
 }
 
@@ -588,12 +615,21 @@ pub enum Rvalue {
         ty: Ty,
     },
     Discriminant {
-        local: u32,
-        #[serde(default, skip_serializing_if = "Vec::is_empty")]
-        projection: Vec<ProjectionElem>,
+        place: Place,
     },
     AggregateTuple {
         fields: Vec<Operand>,
+    },
+    /// `AggregateKind::Array`; captured, but not yet evaluated.
+    AggregateArray {
+        elem_ty: Ty,
+        elems: Vec<Operand>,
+    },
+    /// `Rvalue::Repeat`; captured, but not yet evaluated.
+    Repeat {
+        operand: Operand,
+        elem_ty: Ty,
+        count: u64,
     },
     AggregateRangeTo {
         elem_ty: Ty,
@@ -804,8 +840,20 @@ pub enum CoreCallOp {
     SliceLen,
     SliceGetUncheckedRangeTo,
     SliceGetUncheckedRangeFrom,
-    PtrAdd { mutability: Mutability, pointee: Ty },
+    PtrAdd {
+        mutability: Mutability,
+        pointee: Ty,
+    },
     UsizeUncheckedSub,
+    /// `{integer}::to_le_bytes`; captured, but not yet evaluated.
+    IntToLeBytes {
+        int_ty: IntTy,
+    },
+    /// `<[T; N] as PartialEq>::eq`; captured, but not yet evaluated.
+    ArrayEq {
+        elem: Ty,
+        len: u64,
+    },
 }
 
 /// Pinned `core::num` arithmetic operation executed in Profile v1,

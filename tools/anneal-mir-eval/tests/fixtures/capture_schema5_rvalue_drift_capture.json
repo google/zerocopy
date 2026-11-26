@@ -1,0 +1,1162 @@
+{
+  "schema_version": 5,
+  "compiler": {
+    "commit": "f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1",
+    "version": "1.98.0-nightly (f8a08b688 2026-05-30)",
+    "sysroot": "/sysroot/nightly-2026-05-31",
+    "rustc_sha256": "34dfb2ba46cb0a87e7059f484cdfc1d2928df449144acdbc57c8811be9aa41d1",
+    "driver": {
+      "linkage": "dynamic_dso",
+      "driver_sha256": "1f3ac5968782c12fbf9df6701ed5915242abb8455044e5dac8ab2a68fd155547",
+      "dso_digests": {
+        "libLLVM.so.22.1-rust-1.98.0-nightly": "10b13617cc45091d9707991b67fda2993cbaece5c55165a9d055d0403233d481",
+        "librustc_driver-5d5a3c5207375ffc.so": "1f3ac5968782c12fbf9df6701ed5915242abb8455044e5dac8ab2a68fd155547"
+      }
+    }
+  },
+  "configuration": {
+    "crate_root": "src/lib.rs",
+    "crate_name": "drift",
+    "crate_type": "lib",
+    "panic": "unwind",
+    "edition": "2021",
+    "target": "x86_64-unknown-linux-gnu",
+    "cfg": [],
+    "env": {},
+    "opt_level": 0,
+    "debug_assertions": false,
+    "overflow_checks": false,
+    "mir_preserve_ub": true,
+    "pointer_bits": 64,
+    "endian": "little",
+    "declared_source_files": [
+      "src/lib.rs"
+    ]
+  },
+  "source_files": [
+    {
+      "path": "src/lib.rs",
+      "sha256": "a0e8ebcbd48ed106b66d05955c483cb5e7613c457a98dfdb7b7b74c11601ee05",
+      "read_kind": "text"
+    }
+  ],
+  "census": [
+    {
+      "def_id": 3,
+      "path": "Step",
+      "kind": "Enum",
+      "has_body": false,
+      "selected": true,
+      "required": true
+    },
+    {
+      "def_id": 6,
+      "path": "Step::First::{constant#0}",
+      "kind": "AnonConst",
+      "has_body": true,
+      "selected": true,
+      "required": true
+    },
+    {
+      "def_id": 9,
+      "path": "Step::Second::{constant#0}",
+      "kind": "AnonConst",
+      "has_body": true,
+      "selected": true,
+      "required": true
+    },
+    {
+      "def_id": 12,
+      "path": "Step::Third::{constant#0}",
+      "kind": "AnonConst",
+      "has_body": true,
+      "selected": true,
+      "required": true
+    },
+    {
+      "def_id": 13,
+      "path": "step_value",
+      "kind": "Fn",
+      "has_body": true,
+      "selected": true,
+      "required": true
+    },
+    {
+      "def_id": 14,
+      "path": "array_literal",
+      "kind": "Fn",
+      "has_body": true,
+      "selected": true,
+      "required": true
+    },
+    {
+      "def_id": 15,
+      "path": "array_literal::{constant#0}",
+      "kind": "AnonConst",
+      "has_body": true,
+      "selected": true,
+      "required": true
+    },
+    {
+      "def_id": 16,
+      "path": "array_repeat",
+      "kind": "Fn",
+      "has_body": true,
+      "selected": true,
+      "required": true
+    },
+    {
+      "def_id": 17,
+      "path": "array_repeat::{constant#0}",
+      "kind": "AnonConst",
+      "has_body": true,
+      "selected": true,
+      "required": true
+    },
+    {
+      "def_id": 18,
+      "path": "array_repeat::{constant#1}",
+      "kind": "AnonConst",
+      "has_body": true,
+      "selected": true,
+      "required": true
+    },
+    {
+      "def_id": 19,
+      "path": "array_first",
+      "kind": "Fn",
+      "has_body": true,
+      "selected": true,
+      "required": true
+    },
+    {
+      "def_id": 20,
+      "path": "array_first::{constant#0}",
+      "kind": "AnonConst",
+      "has_body": true,
+      "selected": true,
+      "required": true
+    },
+    {
+      "def_id": 21,
+      "path": "unsize",
+      "kind": "Fn",
+      "has_body": true,
+      "selected": true,
+      "required": true
+    },
+    {
+      "def_id": 22,
+      "path": "unsize::{constant#0}",
+      "kind": "AnonConst",
+      "has_body": true,
+      "selected": true,
+      "required": true
+    },
+    {
+      "def_id": 23,
+      "path": "le_bytes",
+      "kind": "Fn",
+      "has_body": true,
+      "selected": true,
+      "required": true
+    },
+    {
+      "def_id": 24,
+      "path": "le_bytes::{constant#0}",
+      "kind": "AnonConst",
+      "has_body": true,
+      "selected": true,
+      "required": true
+    },
+    {
+      "def_id": 25,
+      "path": "array_eq",
+      "kind": "Fn",
+      "has_body": true,
+      "selected": true,
+      "required": true
+    },
+    {
+      "def_id": 26,
+      "path": "array_eq::{constant#0}",
+      "kind": "AnonConst",
+      "has_body": true,
+      "selected": true,
+      "required": true
+    },
+    {
+      "def_id": 27,
+      "path": "array_eq::{constant#1}",
+      "kind": "AnonConst",
+      "has_body": true,
+      "selected": true,
+      "required": true
+    },
+    {
+      "def_id": 28,
+      "path": "rodata",
+      "kind": "Fn",
+      "has_body": true,
+      "selected": true,
+      "required": true
+    }
+  ],
+  "selected": [
+    {
+      "def_id": 13,
+      "path": "step_value",
+      "body_index": 0
+    },
+    {
+      "def_id": 14,
+      "path": "array_literal",
+      "body_index": 1
+    },
+    {
+      "def_id": 16,
+      "path": "array_repeat",
+      "body_index": 2
+    },
+    {
+      "def_id": 19,
+      "path": "array_first",
+      "body_index": 3
+    },
+    {
+      "def_id": 21,
+      "path": "unsize",
+      "body_index": 4
+    },
+    {
+      "def_id": 23,
+      "path": "le_bytes",
+      "body_index": 5
+    },
+    {
+      "def_id": 25,
+      "path": "array_eq",
+      "body_index": 6
+    },
+    {
+      "def_id": 28,
+      "path": "rodata",
+      "body_index": 7
+    }
+  ],
+  "unsupported": [],
+  "program": {
+    "scope": {
+      "kind": "crate"
+    },
+    "overflow_checks": false,
+    "panic": "unwind",
+    "has_local_panic_handler": false,
+    "mir_profile_version": 2,
+    "bodies": [
+      {
+        "arg_count": 1,
+        "is_unsafe": false,
+        "local_tys": [
+          {
+            "kind": "int",
+            "width": "i32",
+            "signed": true
+          },
+          {
+            "kind": "enum",
+            "id": 3253004775,
+            "discr_width": "i8",
+            "discr_signed": false,
+            "tag_repr": {
+              "kind": "scalar",
+              "width": "i8",
+              "signed": false
+            },
+            "discriminants": [
+              "1",
+              "2",
+              "3"
+            ]
+          },
+          {
+            "kind": "int",
+            "width": "i8",
+            "signed": false
+          }
+        ],
+        "blocks": [
+          {
+            "statements": [
+              {
+                "kind": "place_mention",
+                "local": 1
+              },
+              {
+                "kind": "assign",
+                "local": 2,
+                "value": {
+                  "kind": "discriminant",
+                  "place": {
+                    "local": 1,
+                    "projection": []
+                  }
+                }
+              }
+            ],
+            "terminator": {
+              "kind": "switch_int",
+              "operand": {
+                "kind": "move",
+                "local": 2
+              },
+              "targets": [
+                [
+                  "1",
+                  4
+                ],
+                [
+                  "2",
+                  3
+                ],
+                [
+                  "3",
+                  2
+                ]
+              ],
+              "otherwise": 1
+            }
+          },
+          {
+            "statements": [],
+            "terminator": {
+              "kind": "unreachable"
+            }
+          },
+          {
+            "statements": [
+              {
+                "kind": "assign",
+                "local": 0,
+                "value": {
+                  "kind": "use",
+                  "operand": {
+                    "kind": "constant",
+                    "ty": {
+                      "kind": "int",
+                      "width": "i32",
+                      "signed": true
+                    },
+                    "lit": {
+                      "kind": "scalar",
+                      "bits": "30"
+                    }
+                  },
+                  "with_retag": true
+                }
+              }
+            ],
+            "terminator": {
+              "kind": "goto",
+              "block": 5
+            }
+          },
+          {
+            "statements": [
+              {
+                "kind": "assign",
+                "local": 0,
+                "value": {
+                  "kind": "use",
+                  "operand": {
+                    "kind": "constant",
+                    "ty": {
+                      "kind": "int",
+                      "width": "i32",
+                      "signed": true
+                    },
+                    "lit": {
+                      "kind": "scalar",
+                      "bits": "20"
+                    }
+                  },
+                  "with_retag": true
+                }
+              }
+            ],
+            "terminator": {
+              "kind": "goto",
+              "block": 5
+            }
+          },
+          {
+            "statements": [
+              {
+                "kind": "assign",
+                "local": 0,
+                "value": {
+                  "kind": "use",
+                  "operand": {
+                    "kind": "constant",
+                    "ty": {
+                      "kind": "int",
+                      "width": "i32",
+                      "signed": true
+                    },
+                    "lit": {
+                      "kind": "scalar",
+                      "bits": "10"
+                    }
+                  },
+                  "with_retag": true
+                }
+              }
+            ],
+            "terminator": {
+              "kind": "goto",
+              "block": 5
+            }
+          },
+          {
+            "statements": [],
+            "terminator": {
+              "kind": "ret"
+            }
+          }
+        ],
+        "identity": "rust-path-v1::step_value"
+      },
+      {
+        "arg_count": 2,
+        "is_unsafe": false,
+        "local_tys": [
+          {
+            "kind": "array",
+            "elem": {
+              "kind": "int",
+              "signed": false,
+              "width": "i8"
+            },
+            "len": 2
+          },
+          {
+            "kind": "int",
+            "width": "i8",
+            "signed": false
+          },
+          {
+            "kind": "int",
+            "width": "i8",
+            "signed": false
+          },
+          {
+            "kind": "int",
+            "width": "i8",
+            "signed": false
+          },
+          {
+            "kind": "int",
+            "width": "i8",
+            "signed": false
+          }
+        ],
+        "blocks": [
+          {
+            "statements": [
+              {
+                "kind": "storage_live",
+                "local": 3
+              },
+              {
+                "kind": "assign",
+                "local": 3,
+                "value": {
+                  "kind": "use",
+                  "operand": {
+                    "kind": "copy",
+                    "local": 1
+                  },
+                  "with_retag": true
+                }
+              },
+              {
+                "kind": "storage_live",
+                "local": 4
+              },
+              {
+                "kind": "assign",
+                "local": 4,
+                "value": {
+                  "kind": "use",
+                  "operand": {
+                    "kind": "copy",
+                    "local": 2
+                  },
+                  "with_retag": true
+                }
+              },
+              {
+                "kind": "assign",
+                "local": 0,
+                "value": {
+                  "kind": "aggregate_array",
+                  "elem_ty": {
+                    "kind": "int",
+                    "width": "i8",
+                    "signed": false
+                  },
+                  "elems": [
+                    {
+                      "kind": "move",
+                      "local": 3
+                    },
+                    {
+                      "kind": "move",
+                      "local": 4
+                    }
+                  ]
+                }
+              },
+              {
+                "kind": "storage_dead",
+                "local": 4
+              },
+              {
+                "kind": "storage_dead",
+                "local": 3
+              }
+            ],
+            "terminator": {
+              "kind": "ret"
+            }
+          }
+        ],
+        "identity": "rust-path-v1::array_literal"
+      },
+      {
+        "arg_count": 1,
+        "is_unsafe": false,
+        "local_tys": [
+          {
+            "kind": "array",
+            "elem": {
+              "kind": "int",
+              "signed": false,
+              "width": "i8"
+            },
+            "len": 4
+          },
+          {
+            "kind": "int",
+            "width": "i8",
+            "signed": false
+          },
+          {
+            "kind": "int",
+            "width": "i8",
+            "signed": false
+          }
+        ],
+        "blocks": [
+          {
+            "statements": [
+              {
+                "kind": "storage_live",
+                "local": 2
+              },
+              {
+                "kind": "assign",
+                "local": 2,
+                "value": {
+                  "kind": "use",
+                  "operand": {
+                    "kind": "copy",
+                    "local": 1
+                  },
+                  "with_retag": true
+                }
+              },
+              {
+                "kind": "assign",
+                "local": 0,
+                "value": {
+                  "kind": "repeat",
+                  "operand": {
+                    "kind": "move",
+                    "local": 2
+                  },
+                  "elem_ty": {
+                    "kind": "int",
+                    "width": "i8",
+                    "signed": false
+                  },
+                  "count": 4
+                }
+              },
+              {
+                "kind": "storage_dead",
+                "local": 2
+              }
+            ],
+            "terminator": {
+              "kind": "ret"
+            }
+          }
+        ],
+        "identity": "rust-path-v1::array_repeat"
+      },
+      {
+        "arg_count": 1,
+        "is_unsafe": false,
+        "local_tys": [
+          {
+            "kind": "int",
+            "width": "i8",
+            "signed": false
+          },
+          {
+            "kind": "array",
+            "elem": {
+              "kind": "int",
+              "signed": false,
+              "width": "i8"
+            },
+            "len": 4
+          },
+          {
+            "kind": "int",
+            "width": "i8",
+            "signed": false
+          }
+        ],
+        "blocks": [
+          {
+            "statements": [
+              {
+                "kind": "place_mention",
+                "local": 1
+              },
+              {
+                "kind": "storage_live",
+                "local": 2
+              },
+              {
+                "kind": "assign",
+                "local": 2,
+                "value": {
+                  "kind": "use",
+                  "operand": {
+                    "kind": "copy_place",
+                    "place": {
+                      "local": 1,
+                      "projection": [
+                        {
+                          "kind": "constant_index",
+                          "offset": 0,
+                          "min_length": 4,
+                          "from_end": false
+                        }
+                      ]
+                    }
+                  },
+                  "with_retag": true
+                }
+              },
+              {
+                "kind": "assign",
+                "local": 0,
+                "value": {
+                  "kind": "use",
+                  "operand": {
+                    "kind": "copy",
+                    "local": 2
+                  },
+                  "with_retag": true
+                }
+              },
+              {
+                "kind": "storage_dead",
+                "local": 2
+              }
+            ],
+            "terminator": {
+              "kind": "ret"
+            }
+          }
+        ],
+        "identity": "rust-path-v1::array_first"
+      },
+      {
+        "arg_count": 1,
+        "is_unsafe": false,
+        "local_tys": [
+          {
+            "kind": "ref",
+            "mutability": "shared",
+            "pointee": {
+              "elem": {
+                "kind": "int",
+                "signed": false,
+                "width": "i8"
+              },
+              "kind": "slice"
+            }
+          },
+          {
+            "kind": "ref",
+            "mutability": "shared",
+            "pointee": {
+              "elem": {
+                "kind": "int",
+                "signed": false,
+                "width": "i8"
+              },
+              "kind": "array",
+              "len": 4
+            }
+          },
+          {
+            "kind": "ref",
+            "mutability": "shared",
+            "pointee": {
+              "elem": {
+                "kind": "int",
+                "signed": false,
+                "width": "i8"
+              },
+              "kind": "array",
+              "len": 4
+            }
+          }
+        ],
+        "blocks": [
+          {
+            "statements": [
+              {
+                "kind": "storage_live",
+                "local": 2
+              },
+              {
+                "kind": "assign",
+                "local": 2,
+                "value": {
+                  "kind": "ref",
+                  "mutability": "shared",
+                  "place": {
+                    "local": 1,
+                    "projection": [
+                      {
+                        "kind": "deref"
+                      }
+                    ]
+                  }
+                }
+              },
+              {
+                "kind": "assign",
+                "local": 0,
+                "value": {
+                  "kind": "cast",
+                  "cast_kind": "unsize",
+                  "operand": {
+                    "kind": "move",
+                    "local": 2
+                  },
+                  "ty": {
+                    "kind": "ref",
+                    "mutability": "shared",
+                    "pointee": {
+                      "elem": {
+                        "kind": "int",
+                        "signed": false,
+                        "width": "i8"
+                      },
+                      "kind": "slice"
+                    }
+                  }
+                }
+              },
+              {
+                "kind": "storage_dead",
+                "local": 2
+              }
+            ],
+            "terminator": {
+              "kind": "ret"
+            }
+          }
+        ],
+        "identity": "rust-path-v1::unsize"
+      },
+      {
+        "arg_count": 1,
+        "is_unsafe": false,
+        "local_tys": [
+          {
+            "kind": "array",
+            "elem": {
+              "kind": "int",
+              "signed": false,
+              "width": "i8"
+            },
+            "len": 4
+          },
+          {
+            "kind": "int",
+            "width": "i32",
+            "signed": false
+          },
+          {
+            "kind": "int",
+            "width": "i32",
+            "signed": false
+          }
+        ],
+        "blocks": [
+          {
+            "statements": [
+              {
+                "kind": "storage_live",
+                "local": 2
+              },
+              {
+                "kind": "assign",
+                "local": 2,
+                "value": {
+                  "kind": "use",
+                  "operand": {
+                    "kind": "copy",
+                    "local": 1
+                  },
+                  "with_retag": true
+                }
+              }
+            ],
+            "terminator": {
+              "kind": "core_call",
+              "op": {
+                "kind": "int_to_le_bytes",
+                "int_ty": {
+                  "width": "i32",
+                  "signed": false
+                }
+              },
+              "args": [
+                {
+                  "kind": "move",
+                  "local": 2
+                }
+              ],
+              "dst": {
+                "local": 0,
+                "projection": []
+              },
+              "target": 1,
+              "unwind": "continue"
+            }
+          },
+          {
+            "statements": [
+              {
+                "kind": "storage_dead",
+                "local": 2
+              }
+            ],
+            "terminator": {
+              "kind": "ret"
+            }
+          }
+        ],
+        "identity": "rust-path-v1::le_bytes"
+      },
+      {
+        "arg_count": 2,
+        "is_unsafe": false,
+        "local_tys": [
+          {
+            "kind": "bool"
+          },
+          {
+            "kind": "array",
+            "elem": {
+              "kind": "int",
+              "signed": false,
+              "width": "i8"
+            },
+            "len": 2
+          },
+          {
+            "kind": "array",
+            "elem": {
+              "kind": "int",
+              "signed": false,
+              "width": "i8"
+            },
+            "len": 2
+          },
+          {
+            "kind": "ref",
+            "mutability": "shared",
+            "pointee": {
+              "elem": {
+                "kind": "int",
+                "signed": false,
+                "width": "i8"
+              },
+              "kind": "array",
+              "len": 2
+            }
+          },
+          {
+            "kind": "ref",
+            "mutability": "shared",
+            "pointee": {
+              "elem": {
+                "kind": "int",
+                "signed": false,
+                "width": "i8"
+              },
+              "kind": "array",
+              "len": 2
+            }
+          }
+        ],
+        "blocks": [
+          {
+            "statements": [
+              {
+                "kind": "storage_live",
+                "local": 3
+              },
+              {
+                "kind": "assign",
+                "local": 3,
+                "value": {
+                  "kind": "ref",
+                  "mutability": "shared",
+                  "place": {
+                    "local": 1,
+                    "projection": []
+                  }
+                }
+              },
+              {
+                "kind": "storage_live",
+                "local": 4
+              },
+              {
+                "kind": "assign",
+                "local": 4,
+                "value": {
+                  "kind": "ref",
+                  "mutability": "shared",
+                  "place": {
+                    "local": 2,
+                    "projection": []
+                  }
+                }
+              }
+            ],
+            "terminator": {
+              "kind": "core_call",
+              "op": {
+                "kind": "array_eq",
+                "elem": {
+                  "kind": "int",
+                  "width": "i8",
+                  "signed": false
+                },
+                "len": 2
+              },
+              "args": [
+                {
+                  "kind": "move",
+                  "local": 3
+                },
+                {
+                  "kind": "move",
+                  "local": 4
+                }
+              ],
+              "dst": {
+                "local": 0,
+                "projection": []
+              },
+              "target": 1,
+              "unwind": "continue"
+            }
+          },
+          {
+            "statements": [
+              {
+                "kind": "storage_dead",
+                "local": 4
+              },
+              {
+                "kind": "storage_dead",
+                "local": 3
+              }
+            ],
+            "terminator": {
+              "kind": "ret"
+            }
+          }
+        ],
+        "identity": "rust-path-v1::array_eq"
+      },
+      {
+        "arg_count": 0,
+        "is_unsafe": false,
+        "local_tys": [
+          {
+            "kind": "ref",
+            "mutability": "shared",
+            "pointee": {
+              "elem": {
+                "kind": "int",
+                "signed": false,
+                "width": "i8"
+              },
+              "kind": "slice"
+            }
+          },
+          {
+            "kind": "ref",
+            "mutability": "shared",
+            "pointee": {
+              "elem": {
+                "kind": "int",
+                "signed": false,
+                "width": "i8"
+              },
+              "kind": "array",
+              "len": 3
+            }
+          },
+          {
+            "kind": "ref",
+            "mutability": "shared",
+            "pointee": {
+              "elem": {
+                "kind": "int",
+                "signed": false,
+                "width": "i8"
+              },
+              "kind": "array",
+              "len": 3
+            }
+          }
+        ],
+        "blocks": [
+          {
+            "statements": [
+              {
+                "kind": "storage_live",
+                "local": 1
+              },
+              {
+                "kind": "storage_live",
+                "local": 2
+              },
+              {
+                "kind": "assign",
+                "local": 2,
+                "value": {
+                  "kind": "use_retag",
+                  "operand": {
+                    "kind": "constant",
+                    "ty": {
+                      "kind": "ref",
+                      "mutability": "shared",
+                      "pointee": {
+                        "elem": {
+                          "kind": "int",
+                          "signed": false,
+                          "width": "i8"
+                        },
+                        "kind": "array",
+                        "len": 3
+                      }
+                    },
+                    "lit": {
+                      "kind": "rodata_ref",
+                      "bytes": [
+                        {
+                          "kind": "init",
+                          "byte": 97
+                        },
+                        {
+                          "kind": "init",
+                          "byte": 98
+                        },
+                        {
+                          "kind": "init",
+                          "byte": 99
+                        }
+                      ],
+                      "align_log2": 0,
+                      "offset_bytes": 0,
+                      "slice_len": null
+                    }
+                  }
+                }
+              },
+              {
+                "kind": "assign",
+                "local": 1,
+                "value": {
+                  "kind": "ref",
+                  "mutability": "shared",
+                  "place": {
+                    "local": 2,
+                    "projection": [
+                      {
+                        "kind": "deref"
+                      }
+                    ]
+                  }
+                }
+              },
+              {
+                "kind": "assign",
+                "local": 0,
+                "value": {
+                  "kind": "cast",
+                  "cast_kind": "unsize",
+                  "operand": {
+                    "kind": "move",
+                    "local": 1
+                  },
+                  "ty": {
+                    "kind": "ref",
+                    "mutability": "shared",
+                    "pointee": {
+                      "elem": {
+                        "kind": "int",
+                        "signed": false,
+                        "width": "i8"
+                      },
+                      "kind": "slice"
+                    }
+                  }
+                }
+              },
+              {
+                "kind": "storage_dead",
+                "local": 1
+              },
+              {
+                "kind": "storage_dead",
+                "local": 2
+              }
+            ],
+            "terminator": {
+              "kind": "ret"
+            }
+          }
+        ],
+        "identity": "rust-path-v1::rodata"
+      }
+    ]
+  }
+}
