@@ -12,8 +12,8 @@
 #[automatically_derived]
 const _: () = {
     #[repr(C)]
-    #[allow(dead_code, clippy::derive_partial_eq_without_eq)]
-    #[derive(Copy, Clone, PartialEq)]
+    #[allow(dead_code)]
+    #[derive(Copy, Clone, PartialEq, Eq)]
     pub enum ___ZerocopyTag {
         UnitLike,
         StructLike,
