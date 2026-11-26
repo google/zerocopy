@@ -2397,7 +2397,14 @@ impl Checker {
         if let Some(lp) = lean_path {
             cmd.env("LEAN_PATH", lp);
         }
-        cmd.output()
+        #[cfg(not(test))]
+        {
+            cmd.output()
+        }
+        #[cfg(test)]
+        {
+            run_with_etxtbsy_retry(|| cmd.output())
+        }
     }
 
     /// Execute `self.lean` with `arguments` in the sanitized `self.environment`
@@ -2823,15 +2830,18 @@ impl Checker {
                     } => {
                         let module = &order[idx];
                         let label = format!("compile-{module}");
-                        let output = Command::new(&exec_lean)
-                            .args(&compile_args)
+                        let mut cmd = Command::new(&exec_lean);
+                        cmd.args(&compile_args)
                             .current_dir(stage)
                             .env_clear()
-                            .envs(environment)
-                            .output()
-                            .map_err(|e| {
-                                Failure::new(2, &label, format!("could not execute Lean: {e}"))
-                            })?;
+                            .envs(environment);
+                        #[cfg(not(test))]
+                        let output = cmd.output();
+                        #[cfg(test)]
+                        let output = run_with_etxtbsy_retry(|| cmd.output());
+                        let output = output.map_err(|e| {
+                            Failure::new(2, &label, format!("could not execute Lean: {e}"))
+                        })?;
                         check_lean_output(&label, output, false)?;
                         let mod_arts = collect_compiled_artifacts(module, &output_path)?;
                         let mut parts_with_sha = Vec::with_capacity(mod_arts.olean_parts.len());
@@ -4762,9 +4772,62 @@ fn promote_inspector_olean(
     promoted.and_then(|pair| relock.map(|()| pair))
 }
 
+#[cfg(test)]
+const ETXTBSY_RETRY_DELAYS_MS: [u64; 8] = [1, 2, 4, 8, 16, 16, 16, 16];
+
+#[cfg(test)]
+fn is_etxtbsy(err: &io::Error) -> bool {
+    err.kind() == io::ErrorKind::ExecutableFileBusy || err.raw_os_error() == Some(26)
+}
+
+/// Retry `op` across transient `ETXTBSY` (`ExecutableFileBusy` / `errno 26`)
+/// failures caused under multi-threaded `cargo test` when a sibling test
+/// thread `fork()`s while a stub executable's write descriptor is briefly open
+/// before `execve` closes `CLOEXEC` descriptors.
+#[cfg(test)]
+fn retry_on_etxtbsy<T>(
+    delays_ms: &[u64],
+    mut op: impl FnMut() -> io::Result<T>,
+) -> io::Result<T> {
+    let mut delays = delays_ms.iter().copied();
+    loop {
+        match op() {
+            Ok(val) => return Ok(val),
+            Err(err) if is_etxtbsy(&err) => match delays.next() {
+                Some(delay_ms) => std::thread::sleep(Duration::from_millis(delay_ms)),
+                None => return Err(err),
+            },
+            Err(err) => return Err(err),
+        }
+    }
+}
+
+#[cfg(test)]
+fn run_with_etxtbsy_retry<T>(op: impl FnMut() -> io::Result<T>) -> io::Result<T> {
+    retry_on_etxtbsy(&ETXTBSY_RETRY_DELAYS_MS, op)
+}
+
 #[cfg(all(test, unix))]
 mod process_tests {
     use super::*;
+
+    /// Write an executable test script, explicitly syncing and closing the
+    /// writable file descriptor before setting mode `0o755`.
+    fn write_executable_script(path: &Path, contents: impl AsRef<[u8]>) {
+        use std::io::Write;
+        use std::os::unix::fs::PermissionsExt;
+
+        let mut file = fs::OpenOptions::new()
+            .write(true)
+            .create(true)
+            .truncate(true)
+            .open(path)
+            .unwrap();
+        file.write_all(contents.as_ref()).unwrap();
+        file.sync_all().unwrap();
+        drop(file);
+        fs::set_permissions(path, fs::Permissions::from_mode(0o755)).unwrap();
+    }
 
     fn shell_checker(checkout: &Path) -> Checker {
         let mut checker = Checker::new_with_env(checkout, Some(Path::new("/bin/sh")), []).unwrap();
@@ -5102,17 +5165,14 @@ mod process_tests {
             fs::write(prefix.join("lib/lean").join(format!("{name}.olean")), name).unwrap();
         }
         let lean = root.join("lean");
-        fs::write(
+        write_executable_script(
             &lean,
             format!(
                 "#!/bin/sh\ncase \"$1\" in\n--version) printf 'Lean 4.35\\n' ;;\n\
                  --print-prefix) printf '%s\\n' '{}' ;;\n*) exit 0 ;;\nesac\n",
                 prefix.display()
             ),
-        )
-        .unwrap();
-        use std::os::unix::fs::PermissionsExt;
-        fs::set_permissions(&lean, fs::Permissions::from_mode(0o755)).unwrap();
+        );
         let inspector = root.join("trusted/audit/TrustedBoundary.lean");
         fs::create_dir_all(inspector.parent().unwrap()).unwrap();
         fs::write(&inspector, "-- stub\n").unwrap();
@@ -5858,8 +5918,6 @@ mod process_tests {
 
     #[test]
     fn bundled_olean_cache_reuses_disk_artifacts_and_enforces_no_rebuild() {
-        use std::os::unix::fs::PermissionsExt;
-
         let dir = tempfile::tempdir().unwrap();
         let base = fs::canonicalize(dir.path()).unwrap();
         let root = base.join("bundle");
@@ -5873,7 +5931,7 @@ mod process_tests {
         fs::write(&inspector_src, "-- synthetic inspector\n").unwrap();
 
         let lean = base.join("lean");
-        fs::write(
+        write_executable_script(
             &lean,
             format!(
                 r#"#!/bin/sh
@@ -5898,9 +5956,7 @@ exit 1
                 prefix.display(),
                 log_file.display()
             ),
-        )
-        .unwrap();
-        fs::set_permissions(&lean, fs::Permissions::from_mode(0o755)).unwrap();
+        );
 
         let mod_src = base.join("MirAst.lean");
         fs::write(&mod_src, "prelude\n").unwrap();
@@ -6062,8 +6118,6 @@ exit 1
 
     #[test]
     fn bundled_olean_cache_invalidates_downstream_through_unchanged_barrel() {
-        use std::os::unix::fs::PermissionsExt;
-
         let dir = tempfile::tempdir().unwrap();
         let base = fs::canonicalize(dir.path()).unwrap();
         let root = base.join("bundle");
@@ -6077,7 +6131,7 @@ exit 1
         fs::write(&inspector_src, "-- synthetic inspector\n").unwrap();
 
         let lean = base.join("lean");
-        fs::write(
+        write_executable_script(
             &lean,
             format!(
                 r#"#!/bin/sh
@@ -6111,9 +6165,7 @@ exit 1
                 prefix.display(),
                 log_file.display()
             ),
-        )
-        .unwrap();
-        fs::set_permissions(&lean, fs::Permissions::from_mode(0o755)).unwrap();
+        );
 
         let leaf_src = base.join("Leaf.lean");
         let barrel_src = base.join("Barrel.lean");
@@ -6378,12 +6430,9 @@ exit 1
     }
 
     fn create_synthetic_sysroot(prefix: &Path) {
-        use std::os::unix::fs::PermissionsExt;
-
         fs::create_dir_all(prefix.join("bin")).unwrap();
         let lean = prefix.join("bin/lean");
-        fs::write(&lean, b"#!/bin/sh\nexit 0\n").unwrap();
-        fs::set_permissions(&lean, fs::Permissions::from_mode(0o755)).unwrap();
+        write_executable_script(&lean, b"#!/bin/sh\nexit 0\n");
 
         fs::create_dir_all(prefix.join("lib/lean/Init")).unwrap();
         fs::write(prefix.join("lib/libInit_shared.so"), b"so").unwrap();
@@ -6818,8 +6867,6 @@ exit 1
     }
     #[test]
     fn spec_preflight_uses_distinct_inspector_cache_key_and_supports_no_rebuild() {
-        use std::os::unix::fs::PermissionsExt;
-
         let dir = tempfile::tempdir().unwrap();
         let base = fs::canonicalize(dir.path()).unwrap();
         let root = base.join("bundle");
@@ -6834,7 +6881,7 @@ exit 1
         fs::write(root.join("trusted/audit/SpecPreflight.lean"), "-- spec preflight\n").unwrap();
 
         let lean = base.join("lean");
-        fs::write(
+        write_executable_script(
             &lean,
             format!(
                 r#"#!/bin/sh
@@ -6859,9 +6906,7 @@ exit 1
                 prefix.display(),
                 log_file.display()
             ),
-        )
-        .unwrap();
-        fs::set_permissions(&lean, fs::Permissions::from_mode(0o755)).unwrap();
+        );
 
         // Populate TrustedBoundary first, then ensure SpecPreflight still
         // misses TrustedBoundary's cache key and compiles into its own slot.
@@ -6960,8 +7005,6 @@ exit 1
 
     #[test]
     fn target_shard_disk_cache_skips_reads_and_writes_when_unsandboxed() {
-        use std::os::unix::fs::PermissionsExt;
-
         assert!(!is_cacheable_module("Proof.IdTree", false));
         assert!(!is_cacheable_module("Captured.Shard_000", false));
         assert!(!is_cacheable_module("Proof.Shard_000", false));
@@ -6980,7 +7023,7 @@ exit 1
         fs::write(&inspector_src, "-- synthetic inspector\n").unwrap();
 
         let lean = base.join("lean");
-        fs::write(
+        write_executable_script(
             &lean,
             format!(
                 r#"#!/bin/sh
@@ -7005,9 +7048,7 @@ exit 1
                 prefix.display(),
                 log_file.display()
             ),
-        )
-        .unwrap();
-        fs::set_permissions(&lean, fs::Permissions::from_mode(0o755)).unwrap();
+        );
 
         let bundled_src = base.join("BinChunkTree.lean");
         let id_src = base.join("IdTree.lean");
@@ -7159,5 +7200,56 @@ exit 1
             2,
             "unsandboxed run must not write Proof.IdTree or Proof.Shard_000 entries"
         );
+    }
+
+    #[test]
+    fn etxtbsy_retry_handles_ok_transient_exhausted_and_other_errors() {
+        assert!(!ETXTBSY_RETRY_DELAYS_MS.is_empty());
+
+        // (a) Immediate `Ok` returns after 1 call without sleeping.
+        let mut calls = 0usize;
+        let ok_res = retry_on_etxtbsy(&[1, 2, 4], || {
+            calls += 1;
+            Ok("immediate")
+        });
+        assert_eq!(ok_res.unwrap(), "immediate");
+        assert_eq!(calls, 1);
+
+        // (b) Transient `ETXTBSY` (`os error 26` / `ExecutableFileBusy`)
+        // succeeds on a subsequent retry attempt.
+        let mut calls = 0usize;
+        let recovered = retry_on_etxtbsy(&[0, 0, 0], || {
+            calls += 1;
+            if calls < 3 {
+                Err(io::Error::from_raw_os_error(26))
+            } else {
+                Ok(calls)
+            }
+        });
+        assert_eq!(recovered.unwrap(), 3);
+        assert_eq!(calls, 3);
+
+        // (c) Persistent `ETXTBSY` exhausts the bounded retry schedule and
+        // surfaces `ExecutableFileBusy`.
+        let mut calls = 0usize;
+        let exhausted = retry_on_etxtbsy(&[0, 0, 0], || -> io::Result<()> {
+            calls += 1;
+            Err(io::Error::from_raw_os_error(26))
+        })
+        .unwrap_err();
+        assert_eq!(calls, 4);
+        assert_eq!(exhausted.kind(), io::ErrorKind::ExecutableFileBusy);
+        assert_eq!(exhausted.raw_os_error(), Some(26));
+
+        // (d) Non-`ETXTBSY` errors (`ErrorKind::NotFound`) return immediately
+        // after 1 call without retrying.
+        let mut calls = 0usize;
+        let not_found = retry_on_etxtbsy(&[1, 2, 4], || -> io::Result<()> {
+            calls += 1;
+            Err(io::Error::new(io::ErrorKind::NotFound, "missing binary"))
+        })
+        .unwrap_err();
+        assert_eq!(calls, 1);
+        assert_eq!(not_found.kind(), io::ErrorKind::NotFound);
     }
 }
