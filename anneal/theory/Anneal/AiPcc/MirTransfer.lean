@@ -1964,7 +1964,7 @@ private theorem evalRvalueAbs_binaryOp_sint_sound {bodyLocals : List MirTy}
                         ⟨rfl, rfl, rfl, hRes.2, absVal_topInit_sound hRes.2⟩, hR2.2.2⟩
                       dsimp only [evalRvalue]
                       rw [hR1.1]; dsimp only; rw [hR2.1]; dsimp only; rw [hRes.1]
-                  first | exact hGo .shl (Or.inl rfl) | exact hGo .shr (Or.inr rfl)
+                  exact hGo _ (by first | exact Or.inl rfl | exact Or.inr rfl)
               | shlUnchecked | shrUnchecked =>
                 dsimp only at hAbs
                 cases hC : mirTySupportedBeq (.int w1 true) dstTy &&
@@ -1997,9 +1997,10 @@ private theorem evalRvalueAbs_binaryOp_sint_sound {bodyLocals : List MirTy}
                         ⟨rfl, rfl, rfl, hRes.2, absVal_topInit_sound hRes.2⟩, hR2.2.2⟩
                       dsimp only [evalRvalue]
                       rw [hR1.1]; dsimp only; rw [hR2.1]; dsimp only; rw [hRes.1]
-                  first
-                  | exact hGo .shlUnchecked (Or.inl rfl)
-                  | exact hGo .shrUnchecked (Or.inr rfl)
+                  exact hGo _ (by
+                    first
+                    | exact Or.inl rfl
+                    | exact Or.inr rfl)
               | _ => nomatch hAbs
             | ptr _ | bool _ | char _ | ordering _ | unit
             | slicePtr _ _ | rangeTo _ | rangeFrom _ | array _
@@ -2254,7 +2255,7 @@ private theorem evalRvalueAbs_binaryOp_sint_sound {bodyLocals : List MirTy}
                         ⟨rfl, rfl, rfl, hRes.2, absVal_topInit_sound hRes.2⟩, hR2.2.2⟩
                       dsimp only [evalRvalue]
                       rw [hR1.1]; dsimp only; rw [hR2.1]; dsimp only; rw [hRes.1]
-                  first | exact hGo .shl (Or.inl rfl) | exact hGo .shr (Or.inr rfl)
+                  exact hGo _ (by first | exact Or.inl rfl | exact Or.inr rfl)
               | shlUnchecked | shrUnchecked =>
                 dsimp only at hAbs
                 cases hC : mirTySupportedBeq (.int w1 true) dstTy &&
@@ -2287,9 +2288,10 @@ private theorem evalRvalueAbs_binaryOp_sint_sound {bodyLocals : List MirTy}
                         ⟨rfl, rfl, rfl, hRes.2, absVal_topInit_sound hRes.2⟩, hR2.2.2⟩
                       dsimp only [evalRvalue]
                       rw [hR1.1]; dsimp only; rw [hR2.1]; dsimp only; rw [hRes.1]
-                  first
-                  | exact hGo .shlUnchecked (Or.inl rfl)
-                  | exact hGo .shrUnchecked (Or.inr rfl)
+                  exact hGo _ (by
+                    first
+                    | exact Or.inl rfl
+                    | exact Or.inr rfl)
               | div | rem =>
                 dsimp only at hAbs
                 cases hC : intWidthBeqComp w1 w2 &&
@@ -2325,7 +2327,7 @@ private theorem evalRvalueAbs_binaryOp_sint_sound {bodyLocals : List MirTy}
                         ⟨rfl, rfl, rfl, hRes.2, absVal_topInit_sound hRes.2⟩, hR2.2.2⟩
                       dsimp only [evalRvalue]
                       rw [hR1.1]; dsimp only; rw [hR2.1]; dsimp only; rw [hRes.1]
-                  first | exact hGo .div (Or.inl rfl) | exact hGo .rem (Or.inr rfl)
+                  exact hGo _ (by first | exact Or.inl rfl | exact Or.inr rfl)
               | eq | ne | lt | le | gt | ge =>
                 dsimp only at hAbs
                 cases hC : intWidthBeqComp w1 w2 &&
@@ -2378,13 +2380,14 @@ private theorem evalRvalueAbs_binaryOp_sint_sound {bodyLocals : List MirTy}
                         · dsimp only [evalRvalue]
                           rw [hR1.1]; dsimp only; rw [hR2.1]; dsimp only; rw [hB.1]
                         · rw [ite_bool_false_t (c := false) rfl]; exact hB.2.2
-                  first
-                  | exact hCmpGo .eq (Or.inl rfl)
-                  | exact hCmpGo .ne (Or.inr (Or.inl rfl))
-                  | exact hCmpGo .lt (Or.inr (Or.inr (Or.inl rfl)))
-                  | exact hCmpGo .le (Or.inr (Or.inr (Or.inr (Or.inl rfl))))
-                  | exact hCmpGo .gt (Or.inr (Or.inr (Or.inr (Or.inr (Or.inl rfl)))))
-                  | exact hCmpGo .ge (Or.inr (Or.inr (Or.inr (Or.inr (Or.inr rfl)))))
+                  exact hCmpGo _ (by
+                    first
+                    | exact Or.inl rfl
+                    | exact Or.inr (Or.inl rfl)
+                    | exact Or.inr (Or.inr (Or.inl rfl))
+                    | exact Or.inr (Or.inr (Or.inr (Or.inl rfl)))
+                    | exact Or.inr (Or.inr (Or.inr (Or.inr (Or.inl rfl))))
+                    | exact Or.inr (Or.inr (Or.inr (Or.inr (Or.inr rfl)))))
               | mulUnchecked | addWithOverflow | subWithOverflow
               | mulWithOverflow | cmp | offset => nomatch hAbs
             | ptr _ | bool _ | char _ | ordering _ | unit
@@ -3380,13 +3383,14 @@ theorem evalRvalueAbs_sound {bodyLocals : List MirTy} {env env' : MirAbsEnv}
                               · dsimp only [evalRvalue]
                                 rw [hR1.1]; dsimp only; rw [hR2.1]; dsimp only; rw [hB.1]
                               · rw [ite_bool_false_t (c := false) rfl]; exact hB.2.2
-                        first
-                        | exact hCmpGo .eq (Or.inl rfl)
-                        | exact hCmpGo .ne (Or.inr (Or.inl rfl))
-                        | exact hCmpGo .lt (Or.inr (Or.inr (Or.inl rfl)))
-                        | exact hCmpGo .le (Or.inr (Or.inr (Or.inr (Or.inl rfl))))
-                        | exact hCmpGo .gt (Or.inr (Or.inr (Or.inr (Or.inr (Or.inl rfl)))))
-                        | exact hCmpGo .ge (Or.inr (Or.inr (Or.inr (Or.inr (Or.inr rfl)))))
+                        exact hCmpGo _ (by
+                          first
+                          | exact Or.inl rfl
+                          | exact Or.inr (Or.inl rfl)
+                          | exact Or.inr (Or.inr (Or.inl rfl))
+                          | exact Or.inr (Or.inr (Or.inr (Or.inl rfl)))
+                          | exact Or.inr (Or.inr (Or.inr (Or.inr (Or.inl rfl))))
+                          | exact Or.inr (Or.inr (Or.inr (Or.inr (Or.inr rfl)))))
                     | mul =>
                       dsimp only at hAbs
                       cases hC : intWidthBeqComp w1 w2 &&
@@ -3470,7 +3474,7 @@ theorem evalRvalueAbs_sound {bodyLocals : List MirTy} {env env' : MirAbsEnv}
                               ⟨rfl, rfl, rfl, hRes.2, absVal_topInit_sound hRes.2⟩, hR2.2.2⟩
                             dsimp only [evalRvalue]
                             rw [hR1.1]; dsimp only; rw [hR2.1]; dsimp only; rw [hRes.1]
-                        first | exact hGo .shl (Or.inl rfl) | exact hGo .shr (Or.inr rfl)
+                        exact hGo _ (by first | exact Or.inl rfl | exact Or.inr rfl)
                     | shlUnchecked | shrUnchecked =>
                       dsimp only at hAbs
                       cases hC : mirTySupportedBeq (.int w1 false) dstTy &&
@@ -3503,9 +3507,10 @@ theorem evalRvalueAbs_sound {bodyLocals : List MirTy} {env env' : MirAbsEnv}
                               ⟨rfl, rfl, rfl, hRes.2, absVal_topInit_sound hRes.2⟩, hR2.2.2⟩
                             dsimp only [evalRvalue]
                             rw [hR1.1]; dsimp only; rw [hR2.1]; dsimp only; rw [hRes.1]
-                        first
-                        | exact hGo .shlUnchecked (Or.inl rfl)
-                        | exact hGo .shrUnchecked (Or.inr rfl)
+                        exact hGo _ (by
+                          first
+                          | exact Or.inl rfl
+                          | exact Or.inr rfl)
                     | _ => nomatch hAbs
                   | ptr _ | bool _ | char _ | ordering _ | unit
                   | slicePtr _ _ | rangeTo _ | rangeFrom _ | array _
