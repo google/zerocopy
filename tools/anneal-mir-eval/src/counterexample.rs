@@ -8,6 +8,11 @@
 
 //! Deterministic pre-proof concrete counterexample probing over captured MIR
 //! bodies using boundary enumeration and SplitMix64 sampling.
+//!
+//! Supports both Profile v1 value arguments and Profile v2 pointer/reference/
+//! slice queries with caller-supplied memory, and tags every Undefined Behavior
+//! witness with [`WitnessClass`] (`replayable_miri_ub` vs
+//! `model_only_unreplayed`).
 
 use alloc::{string::String, vec, vec::Vec};
 
@@ -15,11 +20,15 @@ use serde::{Deserialize, Serialize};
 
 use crate::{
     eval::{
-        EvalConfig, Outcome, StepTrace, TerminalOut, eval_body_with_config, validate_body_entry,
-        validate_program_config,
+        EvalConfig, Outcome, StepTrace, TerminalOut, eval_body_with_caller_mem,
+        validate_body_in_program, validate_program_config,
     },
-    ir::{IntTy, Program, Ty},
-    value::{FaultDetail, FaultKind, OrderingVal, ScalarVal, Val, enum_admitted},
+    ir::{IntTy, IntWidth, Mutability, Program, Ty},
+    memory::{Allocation, CallerMemory, TargetEndian, encode_val, int_layout, layout_of_ty},
+    value::{
+        AllocByte, FaultDetail, FaultKind, OrderingVal, PtrVal, ScalarVal, Val, WitnessClass,
+        enum_admitted, is_supported_v2_local_ty,
+    },
 };
 
 /// Configuration for deterministic bounded pre-proof probing.
@@ -36,11 +45,32 @@ impl Default for ProbeConfig {
     }
 }
 
-/// Concrete failing or bounded input tuple and its execution trace.
+/// Concrete failing or bounded input query and its execution trace.
 #[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize)]
 pub struct Counterexample {
     pub args: Vec<Val>,
+    #[serde(default, skip_serializing_if = "CallerMemory::is_empty")]
+    pub caller_mem: CallerMemory,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub witness_class: Option<WitnessClass>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub witness_note: Option<String>,
     pub trace: StepTrace,
+}
+
+impl Counterexample {
+    /// Construct a counterexample from `(args, caller_mem, trace)`, populating
+    /// [`Self::witness_class`] and [`Self::witness_note`] fail-closed from the
+    /// trace outcome when it is an `Undefined` fault.
+    pub fn from_trace(args: Vec<Val>, caller_mem: CallerMemory, trace: StepTrace) -> Self {
+        let (witness_class, witness_note) = match &trace.outcome {
+            Outcome::Fault(fault) if fault.kind == FaultKind::Undefined => {
+                (fault.witness_class(), fault.model_only_note().map(String::from))
+            }
+            _ => (None, None),
+        };
+        Self { args, caller_mem, witness_class, witness_note, trace }
+    }
 }
 
 /// Summary report across all tested concrete inputs for one body.
@@ -58,6 +88,10 @@ pub struct ProbeReport {
     pub unwound_count: usize,
     pub aborted_count: usize,
     pub undefined_count: usize,
+    #[serde(default)]
+    pub replayable_ub_count: usize,
+    #[serde(default)]
+    pub model_only_unreplayed_ub_count: usize,
     pub unsupported_count: usize,
     pub out_of_fuel_count: usize,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -66,6 +100,10 @@ pub struct ProbeReport {
     pub first_aborted: Option<Counterexample>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub first_undefined: Option<Counterexample>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub first_replayable_undefined: Option<Counterexample>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub first_model_only_undefined: Option<Counterexample>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub first_unsupported: Option<Counterexample>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -88,11 +126,15 @@ impl ProbeReport {
             unwound_count: 0,
             aborted_count: 0,
             undefined_count: 0,
+            replayable_ub_count: 0,
+            model_only_unreplayed_ub_count: 0,
             unsupported_count: 0,
             out_of_fuel_count: 0,
             first_unwound: None,
             first_aborted: None,
             first_undefined: None,
+            first_replayable_undefined: None,
+            first_model_only_undefined: None,
             first_unsupported: None,
             first_out_of_fuel: None,
         }
@@ -125,6 +167,57 @@ impl SplitMix64 {
     fn choose_index(&mut self, len: usize) -> usize {
         if len <= 1 { 0 } else { (self.next_u64() % (len as u64)) as usize }
     }
+}
+
+/// Template for one candidate argument together with any caller allocations it
+/// needs. Allocation ids inside `allocs` are local placeholders (`1..=k`) that
+/// [`materialize_case`] remaps to pairwise-disjoint ids across all parameters
+/// of a single query.
+#[derive(Clone, Debug, PartialEq, Eq)]
+struct ArgCandidate {
+    val: Val,
+    allocs: Vec<Allocation>,
+}
+
+impl ArgCandidate {
+    fn pure(val: Val) -> Self {
+        Self { val, allocs: Vec::new() }
+    }
+}
+
+fn remap_val_allocs(val: &Val, delta: u64) -> Val {
+    match val {
+        Val::Ptr(p) => Val::Ptr(PtrVal { alloc_id: p.alloc_id.map(|id| id + delta), ..*p }),
+        Val::SlicePtr { ptr, len } => Val::SlicePtr {
+            ptr: PtrVal { alloc_id: ptr.alloc_id.map(|id| id + delta), ..*ptr },
+            len: *len,
+        },
+        Val::Tuple(vs) => Val::Tuple(vs.iter().map(|v| remap_val_allocs(v, delta)).collect()),
+        other => other.clone(),
+    }
+}
+
+fn materialize_case(candidates: &[ArgCandidate]) -> (Vec<Val>, CallerMemory) {
+    let mut args = Vec::with_capacity(candidates.len());
+    let mut allocations = Vec::new();
+    let mut next_alloc_id: u64 = 2;
+    for cand in candidates {
+        if cand.allocs.is_empty() {
+            args.push(cand.val.clone());
+        } else {
+            let base_offset = next_alloc_id - 1;
+            let mut max_local = 0u64;
+            for alloc in &cand.allocs {
+                max_local = max_local.max(alloc.alloc_id);
+                let mut cloned = alloc.clone();
+                cloned.alloc_id += base_offset;
+                allocations.push(cloned);
+            }
+            args.push(remap_val_allocs(&cand.val, base_offset));
+            next_alloc_id += max_local;
+        }
+    }
+    (args, CallerMemory { allocations })
 }
 
 fn boundary_values_for_int(ity: IntTy) -> Vec<Val> {
@@ -172,47 +265,361 @@ fn boundary_values_for_int(ity: IntTy) -> Vec<Val> {
         .collect()
 }
 
-fn boundary_values_for_ty(ty: &Ty, enable_profile_v2: bool) -> Option<Vec<Val>> {
+fn sample_slice_bytes(elem_size: usize, elem_count: usize) -> Vec<AllocByte> {
+    let total = elem_size * elem_count;
+    (0..total)
+        .map(|i| AllocByte::Init { byte: ((i * 37 + 0x11) & 0xff) as u8, prov: None })
+        .collect()
+}
+
+fn boundary_candidates_for_ref(
+    mutability: Mutability,
+    pointee: &Ty,
+    endian: TargetEndian,
+) -> Option<Vec<ArgCandidate>> {
+    match pointee {
+        Ty::Slice { elem } => {
+            let Ty::Int(ity) = elem.as_ref() else {
+                return None;
+            };
+            let lay = int_layout(ity.width);
+            let elem_size = lay.size as usize;
+            let align_addr = 1u64 << lay.align_log2;
+            let mut out = Vec::new();
+            // 1. Empty dangling slice (`NonNull::dangling()`, `len = 0`).
+            out.push(ArgCandidate::pure(Val::SlicePtr {
+                ptr: PtrVal { alloc_id: None, offset_bytes: align_addr, width: IntWidth::Isize },
+                len: 0,
+            }));
+            // 2. Empty live allocation slice (`len = 0`).
+            out.push(ArgCandidate {
+                val: Val::SlicePtr {
+                    ptr: PtrVal { alloc_id: Some(1), offset_bytes: 0, width: IntWidth::Isize },
+                    len: 0,
+                },
+                allocs: vec![Allocation {
+                    alloc_id: 1,
+                    align_log2: lay.align_log2,
+                    mutability,
+                    bytes: Vec::new(),
+                    live: true,
+                }],
+            });
+            // 3. Single-element and 4-element initialized slices.
+            for count in [1usize, 4usize] {
+                out.push(ArgCandidate {
+                    val: Val::SlicePtr {
+                        ptr: PtrVal { alloc_id: Some(1), offset_bytes: 0, width: IntWidth::Isize },
+                        len: count as u64,
+                    },
+                    allocs: vec![Allocation {
+                        alloc_id: 1,
+                        align_log2: lay.align_log2,
+                        mutability,
+                        bytes: sample_slice_bytes(elem_size, count),
+                        live: true,
+                    }],
+                });
+            }
+            // 4. Non-zero offset subslice (offset = elem_size, len = 2 of 4).
+            out.push(ArgCandidate {
+                val: Val::SlicePtr {
+                    ptr: PtrVal {
+                        alloc_id: Some(1),
+                        offset_bytes: lay.size,
+                        width: IntWidth::Isize,
+                    },
+                    len: 2,
+                },
+                allocs: vec![Allocation {
+                    alloc_id: 1,
+                    align_log2: lay.align_log2,
+                    mutability,
+                    bytes: sample_slice_bytes(elem_size, 4),
+                    live: true,
+                }],
+            });
+            Some(out)
+        }
+        other => {
+            let lay = layout_of_ty(other, true)?;
+            let pointee_vals = boundary_candidates_for_ty(other, true, endian)?;
+            if pointee_vals.is_empty() {
+                // `&!` / `&mut !` is uninhabited because `refValidInMem`
+                // requires a valid pointee value.
+                return Some(Vec::new());
+            }
+            let mut out = Vec::new();
+            if lay.size == 0 {
+                // Valid dangling ZST reference (`NonNull::dangling()`).
+                out.push(ArgCandidate::pure(Val::Ptr(PtrVal {
+                    alloc_id: None,
+                    offset_bytes: 1u64 << lay.align_log2,
+                    width: IntWidth::Isize,
+                })));
+            }
+            for cand in pointee_vals.into_iter().take(4) {
+                let bytes = encode_val(endian, other, &cand.val, true).ok()?;
+                out.push(ArgCandidate {
+                    val: Val::Ptr(PtrVal {
+                        alloc_id: Some(1),
+                        offset_bytes: 0,
+                        width: IntWidth::Isize,
+                    }),
+                    allocs: vec![Allocation {
+                        alloc_id: 1,
+                        align_log2: lay.align_log2,
+                        mutability,
+                        bytes,
+                        live: true,
+                    }],
+                });
+            }
+            Some(out)
+        }
+    }
+}
+
+fn boundary_candidates_for_raw_ptr(
+    mutability: Mutability,
+    pointee: &Ty,
+    endian: TargetEndian,
+) -> Option<Vec<ArgCandidate>> {
+    match pointee {
+        Ty::Slice { elem } => {
+            let Ty::Int(ity) = elem.as_ref() else {
+                return None;
+            };
+            let lay = int_layout(ity.width);
+            let elem_size = lay.size as usize;
+            let mut out = Vec::new();
+            // Valid live 4-element raw slice pointer.
+            out.push(ArgCandidate {
+                val: Val::SlicePtr {
+                    ptr: PtrVal { alloc_id: Some(1), offset_bytes: 0, width: IntWidth::Isize },
+                    len: 4,
+                },
+                allocs: vec![Allocation {
+                    alloc_id: 1,
+                    align_log2: lay.align_log2,
+                    mutability: Mutability::Mut,
+                    bytes: sample_slice_bytes(elem_size, 4),
+                    live: true,
+                }],
+            });
+            // Null raw slice pointers (empty and non-empty).
+            for len in [0u64, 4u64] {
+                out.push(ArgCandidate::pure(Val::SlicePtr {
+                    ptr: PtrVal { alloc_id: None, offset_bytes: 0, width: IntWidth::Isize },
+                    len,
+                }));
+            }
+            // Dangling provenance-free raw slice pointer.
+            out.push(ArgCandidate::pure(Val::SlicePtr {
+                ptr: PtrVal {
+                    alloc_id: None,
+                    offset_bytes: 1u64 << lay.align_log2,
+                    width: IntWidth::Isize,
+                },
+                len: 0,
+            }));
+            Some(out)
+        }
+        other => {
+            let lay = layout_of_ty(other, true)?;
+            let mut out = Vec::new();
+            // 1. Valid live mutable aligned allocation (for inhabited pointee).
+            if let Some(pointee_cands) = boundary_candidates_for_ty(other, true, endian)
+                && let Some(first) = pointee_cands.first()
+                && let Ok(bytes) = encode_val(endian, other, &first.val, true)
+            {
+                let mut padded = bytes.clone();
+                if lay.size > 0 {
+                    padded.extend_from_slice(&bytes);
+                }
+                out.push(ArgCandidate {
+                    val: Val::Ptr(PtrVal {
+                        alloc_id: Some(1),
+                        offset_bytes: 0,
+                        width: IntWidth::Isize,
+                    }),
+                    allocs: vec![Allocation {
+                        alloc_id: 1,
+                        align_log2: lay.align_log2,
+                        mutability: Mutability::Mut,
+                        bytes: padded,
+                        live: true,
+                    }],
+                });
+            }
+            // 2. Null raw pointer.
+            out.push(ArgCandidate::pure(Val::Ptr(PtrVal {
+                alloc_id: None,
+                offset_bytes: 0,
+                width: IntWidth::Isize,
+            })));
+            // 3. Non-null dangling aligned provenance-free pointer.
+            out.push(ArgCandidate::pure(Val::Ptr(PtrVal {
+                alloc_id: None,
+                offset_bytes: 1u64 << lay.align_log2,
+                width: IntWidth::Isize,
+            })));
+            // 4. Dead (deallocated) allocation.
+            out.push(ArgCandidate {
+                val: Val::Ptr(PtrVal {
+                    alloc_id: Some(1),
+                    offset_bytes: 0,
+                    width: IntWidth::Isize,
+                }),
+                allocs: vec![Allocation {
+                    alloc_id: 1,
+                    align_log2: lay.align_log2,
+                    mutability: Mutability::Mut,
+                    bytes: vec![AllocByte::Init { byte: 0, prov: None }; lay.size as usize],
+                    live: false,
+                }],
+            });
+            // 5. Out-of-bounds offset inside live allocation.
+            out.push(ArgCandidate {
+                val: Val::Ptr(PtrVal {
+                    alloc_id: Some(1),
+                    offset_bytes: lay.size.max(1),
+                    width: IntWidth::Isize,
+                }),
+                allocs: vec![Allocation {
+                    alloc_id: 1,
+                    align_log2: lay.align_log2,
+                    mutability: Mutability::Mut,
+                    bytes: vec![AllocByte::Init { byte: 0, prov: None }; lay.size as usize],
+                    live: true,
+                }],
+            });
+            // 6. Misaligned pointer when ABI alignment > 1.
+            if lay.align_log2 > 0 {
+                out.push(ArgCandidate {
+                    val: Val::Ptr(PtrVal {
+                        alloc_id: Some(1),
+                        offset_bytes: 1,
+                        width: IntWidth::Isize,
+                    }),
+                    allocs: vec![Allocation {
+                        alloc_id: 1,
+                        align_log2: lay.align_log2,
+                        mutability: Mutability::Mut,
+                        bytes: vec![
+                            AllocByte::Init { byte: 0, prov: None };
+                            (lay.size as usize) + 4
+                        ],
+                        live: true,
+                    }],
+                });
+            }
+            // 7. Immutable allocation for `*mut T` (catches WriteToReadOnly).
+            if mutability == Mutability::Mut && lay.size > 0 {
+                out.push(ArgCandidate {
+                    val: Val::Ptr(PtrVal {
+                        alloc_id: Some(1),
+                        offset_bytes: 0,
+                        width: IntWidth::Isize,
+                    }),
+                    allocs: vec![Allocation {
+                        alloc_id: 1,
+                        align_log2: lay.align_log2,
+                        mutability: Mutability::Shared,
+                        bytes: vec![AllocByte::Init { byte: 0, prov: None }; lay.size as usize],
+                        live: true,
+                    }],
+                });
+            }
+            // 8. Uninitialized allocation for non-ZST pointee.
+            if lay.size > 0 {
+                out.push(ArgCandidate {
+                    val: Val::Ptr(PtrVal {
+                        alloc_id: Some(1),
+                        offset_bytes: 0,
+                        width: IntWidth::Isize,
+                    }),
+                    allocs: vec![Allocation {
+                        alloc_id: 1,
+                        align_log2: lay.align_log2,
+                        mutability: Mutability::Mut,
+                        bytes: vec![AllocByte::Uninit; lay.size as usize],
+                        live: true,
+                    }],
+                });
+            }
+            Some(out)
+        }
+    }
+}
+
+fn boundary_candidates_for_ty(
+    ty: &Ty,
+    enable_profile_v2: bool,
+    endian: TargetEndian,
+) -> Option<Vec<ArgCandidate>> {
     if let Some(ity) = ty.as_overflow_pair() {
         let mut out = Vec::new();
         for int_val in boundary_values_for_int(ity) {
             if let Val::Scalar(sv) = int_val {
-                out.push(Val::overflow_pair(sv, false));
-                out.push(Val::overflow_pair(sv, true));
+                out.push(ArgCandidate::pure(Val::overflow_pair(sv, false)));
+                out.push(ArgCandidate::pure(Val::overflow_pair(sv, true)));
             }
         }
         return Some(out);
     }
     match ty {
         Ty::Never => Some(Vec::new()),
-        Ty::Unit => Some(vec![Val::Unit]),
-        Ty::Bool => Some(vec![Val::Bool(false), Val::Bool(true)]),
+        Ty::Unit => Some(vec![ArgCandidate::pure(Val::Unit)]),
+        Ty::Bool => {
+            Some(vec![ArgCandidate::pure(Val::Bool(false)), ArgCandidate::pure(Val::Bool(true))])
+        }
         Ty::Ordering => Some(vec![
-            Val::Ordering(OrderingVal::Less),
-            Val::Ordering(OrderingVal::Equal),
-            Val::Ordering(OrderingVal::Greater),
+            ArgCandidate::pure(Val::Ordering(OrderingVal::Less)),
+            ArgCandidate::pure(Val::Ordering(OrderingVal::Equal)),
+            ArgCandidate::pure(Val::Ordering(OrderingVal::Greater)),
         ]),
-        Ty::Char => Some(vec![
-            Val::Char('\0'),
-            Val::Char('a'),
-            Val::Char('A'),
-            Val::Char('\u{7f}'),
-            Val::Char('\u{80}'),
-            Val::Char('\u{d7ff}'),
-            Val::Char('\u{e000}'),
-            Val::Char('\u{10ffff}'),
-        ]),
-        Ty::Int(ity) => Some(boundary_values_for_int(*ity)),
+        Ty::Char => Some(
+            ['\0', 'a', 'A', '\u{7f}', '\u{80}', '\u{d7ff}', '\u{e000}', '\u{10ffff}']
+                .into_iter()
+                .map(|c| ArgCandidate::pure(Val::Char(c)))
+                .collect(),
+        ),
+        Ty::Int(ity) => {
+            Some(boundary_values_for_int(*ity).into_iter().map(ArgCandidate::pure).collect())
+        }
         Ty::Enum(ety) => {
             if !enum_admitted(ety) {
                 return None;
             }
             let cap = ety.discriminants.len().min(16);
-            Some((0..cap).map(|variant| Val::EnumVal { ty: ety.clone(), variant }).collect())
+            Some(
+                (0..cap)
+                    .map(|variant| ArgCandidate::pure(Val::EnumVal { ty: ety.clone(), variant }))
+                    .collect(),
+            )
+        }
+        Ty::RangeTo { elem } if enable_profile_v2 && elem.is_usize() => Some(
+            [0u64, 1, 2, 4, u64::MAX / 2, u64::MAX]
+                .into_iter()
+                .map(|end| ArgCandidate::pure(Val::RangeTo(end)))
+                .collect(),
+        ),
+        Ty::RangeFrom { elem } if enable_profile_v2 && elem.is_usize() => Some(
+            [0u64, 1, 2, 4, u64::MAX / 2, u64::MAX]
+                .into_iter()
+                .map(|start| ArgCandidate::pure(Val::RangeFrom(start)))
+                .collect(),
+        ),
+        Ty::Ref { mutability, pointee } if enable_profile_v2 && is_supported_v2_local_ty(ty) => {
+            boundary_candidates_for_ref(*mutability, pointee, endian)
+        }
+        Ty::RawPtr { mutability, pointee } if enable_profile_v2 && is_supported_v2_local_ty(ty) => {
+            boundary_candidates_for_raw_ptr(*mutability, pointee, endian)
         }
         Ty::Tuple { fields } if enable_profile_v2 => {
             if fields.is_empty() {
-                return Some(vec![Val::Tuple(Vec::new())]);
+                return Some(vec![ArgCandidate::pure(Val::Tuple(Vec::new()))]);
             }
             let mut per_field = Vec::with_capacity(fields.len());
             let mut uninhabited = false;
@@ -220,7 +627,7 @@ fn boundary_values_for_ty(ty: &Ty, enable_profile_v2: bool) -> Option<Vec<Val>> 
                 // Validate every field shape before short-circuiting on an
                 // uninhabited field (so `(Never, Unsupported)` returns `None`,
                 // not `Some([])`).
-                let vals = boundary_values_for_ty(f, true)?;
+                let vals = boundary_candidates_for_ty(f, true, endian)?;
                 if vals.is_empty() {
                     uninhabited = true;
                 }
@@ -232,8 +639,24 @@ fn boundary_values_for_ty(ty: &Ty, enable_profile_v2: bool) -> Option<Vec<Val>> 
             let max_len = per_field.iter().map(Vec::len).max().unwrap_or(1);
             let mut tuples = Vec::with_capacity(max_len);
             for i in 0..max_len {
-                let elem = per_field.iter().map(|vs| vs[i % vs.len()].clone()).collect();
-                tuples.push(Val::Tuple(elem));
+                let mut field_cands = Vec::with_capacity(per_field.len());
+                for vs in &per_field {
+                    field_cands.push(vs[i % vs.len()].clone());
+                }
+                let (vals, cm) = materialize_case(&field_cands);
+                // Re-base allocation ids back to `1..=k` for template storage.
+                let base_shift = 1u64;
+                let norm_vals: Vec<Val> =
+                    vals.into_iter().map(|v| shift_val_allocs_down(&v, base_shift)).collect();
+                let norm_allocs: Vec<Allocation> = cm
+                    .allocations
+                    .into_iter()
+                    .map(|mut a| {
+                        a.alloc_id -= base_shift;
+                        a
+                    })
+                    .collect();
+                tuples.push(ArgCandidate { val: Val::Tuple(norm_vals), allocs: norm_allocs });
             }
             Some(tuples)
         }
@@ -241,85 +664,141 @@ fn boundary_values_for_ty(ty: &Ty, enable_profile_v2: bool) -> Option<Vec<Val>> 
     }
 }
 
-fn random_val_for_ty(
+fn shift_val_allocs_down(val: &Val, delta: u64) -> Val {
+    match val {
+        Val::Ptr(p) => Val::Ptr(PtrVal { alloc_id: p.alloc_id.map(|id| id - delta), ..*p }),
+        Val::SlicePtr { ptr, len } => Val::SlicePtr {
+            ptr: PtrVal { alloc_id: ptr.alloc_id.map(|id| id - delta), ..*ptr },
+            len: *len,
+        },
+        Val::Tuple(vs) => Val::Tuple(vs.iter().map(|v| shift_val_allocs_down(v, delta)).collect()),
+        other => other.clone(),
+    }
+}
+
+fn random_candidate_for_ty(
     ty: &Ty,
-    boundary_pool: &[Val],
+    boundary_pool: &[ArgCandidate],
     rng: &mut SplitMix64,
     enable_profile_v2: bool,
-) -> Option<Val> {
+    endian: TargetEndian,
+) -> Option<ArgCandidate> {
     if !boundary_pool.is_empty() && (rng.next_u64() & 1) == 0 {
         return Some(boundary_pool[rng.choose_index(boundary_pool.len())].clone());
     }
     if let Some(ity) = ty.as_overflow_pair() {
         let bits = rng.next_u128() & ity.width.mask();
         let sv = ScalarVal::new(ity.width, ity.signed, bits);
-        return Some(Val::overflow_pair(sv, (rng.next_u64() & 1) == 1));
+        return Some(ArgCandidate::pure(Val::overflow_pair(sv, (rng.next_u64() & 1) == 1)));
     }
     match ty {
         Ty::Never => None,
-        Ty::Unit => Some(Val::Unit),
-        Ty::Bool => Some(Val::Bool((rng.next_u64() & 1) == 1)),
-        Ty::Ordering => Some(match rng.next_u64() % 3 {
+        Ty::Unit => Some(ArgCandidate::pure(Val::Unit)),
+        Ty::Bool => Some(ArgCandidate::pure(Val::Bool((rng.next_u64() & 1) == 1))),
+        Ty::Ordering => Some(ArgCandidate::pure(match rng.next_u64() % 3 {
             0 => Val::Ordering(OrderingVal::Less),
             1 => Val::Ordering(OrderingVal::Equal),
             _ => Val::Ordering(OrderingVal::Greater),
-        }),
+        })),
         Ty::Char => {
             let candidate = rng.next_u64() % 0x11_0000;
             let val = char::from_u32(candidate as u32).unwrap_or('a');
-            Some(Val::Char(val))
+            Some(ArgCandidate::pure(Val::Char(val)))
         }
-        Ty::Int(ity) => Some(Val::Scalar(ScalarVal::new(ity.width, ity.signed, rng.next_u128()))),
+        Ty::Int(ity) => Some(ArgCandidate::pure(Val::Scalar(ScalarVal::new(
+            ity.width,
+            ity.signed,
+            rng.next_u128(),
+        )))),
         Ty::Enum(ety) if enum_admitted(ety) => {
             let idx = rng.choose_index(ety.discriminants.len());
-            Some(Val::EnumVal { ty: ety.clone(), variant: idx })
+            Some(ArgCandidate::pure(Val::EnumVal { ty: ety.clone(), variant: idx }))
         }
-        Ty::Tuple { fields } if enable_profile_v2 => {
-            let mut out = Vec::with_capacity(fields.len());
-            for f in fields {
-                let pool = boundary_values_for_ty(f, true)?;
-                out.push(random_val_for_ty(f, &pool, rng, true)?);
+        Ty::RangeTo { elem } if enable_profile_v2 && elem.is_usize() => {
+            Some(ArgCandidate::pure(Val::RangeTo(rng.next_u64() % 16)))
+        }
+        Ty::RangeFrom { elem } if enable_profile_v2 && elem.is_usize() => {
+            Some(ArgCandidate::pure(Val::RangeFrom(rng.next_u64() % 16)))
+        }
+        Ty::Ref { mutability, pointee } if enable_profile_v2 && is_supported_v2_local_ty(ty) => {
+            if let Ty::Slice { elem } = pointee.as_ref()
+                && let Ty::Int(ity) = elem.as_ref()
+            {
+                let lay = int_layout(ity.width);
+                let count = (rng.next_u64() % 9) as usize;
+                let total = (lay.size as usize) * count;
+                let bytes: Vec<AllocByte> = (0..total)
+                    .map(|_| AllocByte::Init { byte: (rng.next_u64() & 0xff) as u8, prov: None })
+                    .collect();
+                return Some(ArgCandidate {
+                    val: Val::SlicePtr {
+                        ptr: PtrVal { alloc_id: Some(1), offset_bytes: 0, width: IntWidth::Isize },
+                        len: count as u64,
+                    },
+                    allocs: vec![Allocation {
+                        alloc_id: 1,
+                        align_log2: lay.align_log2,
+                        mutability: *mutability,
+                        bytes,
+                        live: true,
+                    }],
+                });
             }
-            Some(Val::Tuple(out))
+            (!boundary_pool.is_empty())
+                .then(|| boundary_pool[rng.choose_index(boundary_pool.len())].clone())
+        }
+        Ty::RawPtr { .. } if enable_profile_v2 && is_supported_v2_local_ty(ty) => (!boundary_pool
+            .is_empty())
+        .then(|| boundary_pool[rng.choose_index(boundary_pool.len())].clone()),
+        Ty::Tuple { fields } if enable_profile_v2 => {
+            let mut field_cands = Vec::with_capacity(fields.len());
+            for f in fields {
+                let pool = boundary_candidates_for_ty(f, true, endian)?;
+                field_cands.push(random_candidate_for_ty(f, &pool, rng, true, endian)?);
+            }
+            let (vals, cm) = materialize_case(&field_cands);
+            let norm_vals: Vec<Val> =
+                vals.into_iter().map(|v| shift_val_allocs_down(&v, 1)).collect();
+            let norm_allocs: Vec<Allocation> = cm
+                .allocations
+                .into_iter()
+                .map(|mut a| {
+                    a.alloc_id -= 1;
+                    a
+                })
+                .collect();
+            Some(ArgCandidate { val: Val::Tuple(norm_vals), allocs: norm_allocs })
         }
         _ => None,
     }
 }
 
 fn push_cartesian_prefix(
-    pools: &[Vec<Val>],
+    pools: &[Vec<ArgCandidate>],
     budget: usize,
     idx: usize,
-    cur: &mut Vec<Val>,
-    out: &mut Vec<Vec<Val>>,
+    cur: &mut Vec<ArgCandidate>,
+    out: &mut Vec<(Vec<Val>, CallerMemory)>,
 ) {
     if out.len() >= budget {
         return;
     }
     if idx == pools.len() {
-        out.push(cur.clone());
+        out.push(materialize_case(cur));
         return;
     }
-    for v in &pools[idx] {
+    for cand in &pools[idx] {
         if out.len() >= budget {
             break;
         }
-        cur.push(v.clone());
+        cur.push(cand.clone());
         push_cartesian_prefix(pools, budget, idx + 1, cur, out);
         cur.pop();
     }
 }
 
-/// Probe body `body_id` across boundary and deterministic pseudorandom inputs.
-///
-/// Probe `body_id` in `program` across boundary and random inputs without
-/// skipping `unsafe fn` bodies.
-///
-/// Note: `probe_body` explores unconstrained boundary/random inputs without
-/// knowledge of caller safety preconditions; callers probing `body.is_unsafe`
-/// functions must interpret reported `undefined_count` values against those
-/// preconditions (the CLI skips statically valid `is_unsafe` bodies unless
-/// `--include-unsafe` is passed).
+/// Probe body `body_id` in `program` across boundary and deterministic
+/// pseudorandom inputs without skipping `unsafe fn` bodies.
 pub fn probe_body(
     program: &Program,
     body_id: usize,
@@ -330,7 +809,7 @@ pub fn probe_body(
 }
 
 /// Probe `body_id` in `program` after validating program and static body-entry
-/// invariants (`validate_program_config` and `validate_body_entry`).
+/// invariants (`validate_program_config` and `validate_body_in_program`).
 ///
 /// When `skip_unsafe` is `true`, statically admitted `body.is_unsafe` entries
 /// return [`ProbeReport::skipped_unsafe_body`] before input generation; invalid
@@ -357,20 +836,25 @@ pub fn probe_body_with_policy(
         unwound_count: 0,
         aborted_count: 0,
         undefined_count: 0,
+        replayable_ub_count: 0,
+        model_only_unreplayed_ub_count: 0,
         unsupported_count: 0,
         out_of_fuel_count: 0,
         first_unwound: None,
         first_aborted: None,
         first_undefined: None,
+        first_replayable_undefined: None,
+        first_model_only_undefined: None,
         first_unsupported: None,
         first_out_of_fuel: None,
     };
     let record_unsupported = |report: &mut ProbeReport, fault: FaultDetail| {
         report.unsupported_count += 1;
         if report.first_unsupported.is_none() {
-            report.first_unsupported = Some(Counterexample {
-                args: Vec::new(),
-                trace: StepTrace {
+            report.first_unsupported = Some(Counterexample::from_trace(
+                Vec::new(),
+                CallerMemory::default(),
+                StepTrace {
                     body_id,
                     identity: report.identity.clone(),
                     steps_executed: 0,
@@ -379,7 +863,7 @@ pub fn probe_body_with_policy(
                     events: Vec::new(),
                     final_state: None,
                 },
-            });
+            ));
         }
     };
     if let Err(fault) = validate_program_config(program, config) {
@@ -391,7 +875,7 @@ pub fn probe_body_with_policy(
         record_unsupported(&mut report, FaultDetail::unsupported("entry body id out of bounds"));
         return report;
     };
-    if let Err(fault) = validate_body_entry(body, config) {
+    if let Err(fault) = validate_body_in_program(program, body, config) {
         record_unsupported(&mut report, fault);
         return report;
     }
@@ -413,7 +897,8 @@ pub fn probe_body_with_policy(
     let mut pools = Vec::with_capacity(param_tys.len());
     let mut has_uninhabited = false;
     for ty in param_tys {
-        let Some(pool) = boundary_values_for_ty(ty, config.enable_profile_v2()) else {
+        let Some(pool) = boundary_candidates_for_ty(ty, config.enable_profile_v2(), config.endian)
+        else {
             report.unsupported_param_shape = true;
             return report;
         };
@@ -427,7 +912,7 @@ pub fn probe_body_with_policy(
         return report;
     }
 
-    let mut cases: Vec<Vec<Val>> = Vec::new();
+    let mut cases: Vec<(Vec<Val>, CallerMemory)> = Vec::new();
     let cartesian_budget = if param_tys.is_empty() { 1 } else { probe.max_cases / 2 + 1 };
     let mut cur = Vec::with_capacity(param_tys.len());
     push_cartesian_prefix(&pools, cartesian_budget.min(probe.max_cases), 0, &mut cur, &mut cases);
@@ -437,11 +922,17 @@ pub fn probe_body_with_policy(
     let max_attempts = probe.max_cases.saturating_mul(4).max(16);
     while !param_tys.is_empty() && cases.len() < probe.max_cases && attempts < max_attempts {
         attempts += 1;
-        let mut tuple = Vec::with_capacity(param_tys.len());
+        let mut cands = Vec::with_capacity(param_tys.len());
         let mut ok = true;
         for (ty, pool) in param_tys.iter().zip(pools.iter()) {
-            match random_val_for_ty(ty, pool, &mut rng, config.enable_profile_v2()) {
-                Some(v) => tuple.push(v),
+            match random_candidate_for_ty(
+                ty,
+                pool,
+                &mut rng,
+                config.enable_profile_v2(),
+                config.endian,
+            ) {
+                Some(c) => cands.push(c),
                 None => {
                     ok = false;
                     break;
@@ -451,46 +942,74 @@ pub fn probe_body_with_policy(
         if !ok {
             break;
         }
-        if !cases.contains(&tuple) {
-            cases.push(tuple);
+        let materialized = materialize_case(&cands);
+        if !cases.contains(&materialized) {
+            cases.push(materialized);
         }
     }
 
-    for args in cases {
-        let trace = eval_body_with_config(program, body_id, &args, probe.fuel, config);
+    for (args, caller_mem) in cases {
+        let trace = eval_body_with_caller_mem(
+            program,
+            body_id,
+            &args,
+            caller_mem.clone(),
+            probe.fuel,
+            config,
+        );
         report.cases_run += 1;
         match &trace.outcome {
             Outcome::Returned(TerminalOut::Returned { .. }) => report.returned_count += 1,
             Outcome::Returned(TerminalOut::Unwound { .. }) => {
                 report.unwound_count += 1;
                 if report.first_unwound.is_none() {
-                    report.first_unwound = Some(Counterexample { args, trace });
+                    report.first_unwound =
+                        Some(Counterexample::from_trace(args, caller_mem, trace));
                 }
             }
             Outcome::Aborted { .. } => {
                 report.aborted_count += 1;
                 if report.first_aborted.is_none() {
-                    report.first_aborted = Some(Counterexample { args, trace });
+                    report.first_aborted =
+                        Some(Counterexample::from_trace(args, caller_mem, trace));
                 }
             }
             Outcome::Fault(fault) => match fault.kind {
                 FaultKind::Undefined => {
                     report.undefined_count += 1;
+                    let class = fault.witness_class().unwrap_or(WitnessClass::ModelOnlyUnreplayed);
+                    let ce = Counterexample::from_trace(args, caller_mem, trace);
+                    match class {
+                        WitnessClass::ReplayableMiriUb => {
+                            report.replayable_ub_count += 1;
+                            if report.first_replayable_undefined.is_none() {
+                                report.first_replayable_undefined = Some(ce.clone());
+                            }
+                        }
+                        WitnessClass::ModelOnlyUnreplayed => {
+                            report.model_only_unreplayed_ub_count += 1;
+                            if report.first_model_only_undefined.is_none() {
+                                report.first_model_only_undefined = Some(ce.clone());
+                            }
+                        }
+                    }
                     if report.first_undefined.is_none() {
-                        report.first_undefined = Some(Counterexample { args, trace });
+                        report.first_undefined = Some(ce);
                     }
                 }
                 FaultKind::Unsupported => {
                     report.unsupported_count += 1;
                     if report.first_unsupported.is_none() {
-                        report.first_unsupported = Some(Counterexample { args, trace });
+                        report.first_unsupported =
+                            Some(Counterexample::from_trace(args, caller_mem, trace));
                     }
                 }
             },
             Outcome::OutOfFuel => {
                 report.out_of_fuel_count += 1;
                 if report.first_out_of_fuel.is_none() {
-                    report.first_out_of_fuel = Some(Counterexample { args, trace });
+                    report.first_out_of_fuel =
+                        Some(Counterexample::from_trace(args, caller_mem, trace));
                 }
             }
         }

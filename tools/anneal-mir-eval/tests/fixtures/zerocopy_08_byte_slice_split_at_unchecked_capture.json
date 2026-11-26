@@ -1,0 +1,614 @@
+{
+  "schema_version": 5,
+  "compiler": {
+    "commit": "f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1",
+    "version": "1.98.0-nightly (f8a08b688 2026-05-30)",
+    "sysroot": "/sysroot/nightly-2026-05-31",
+    "rustc_sha256": "34dfb2ba46cb0a87e7059f484cdfc1d2928df449144acdbc57c8811be9aa41d1",
+    "driver": {
+      "linkage": "dynamic_dso",
+      "driver_sha256": "1f3ac5968782c12fbf9df6701ed5915242abb8455044e5dac8ab2a68fd155547",
+      "dso_digests": {
+        "libLLVM.so.22.1-rust-1.98.0-nightly": "10b13617cc45091d9707991b67fda2993cbaece5c55165a9d055d0403233d481",
+        "librustc_driver-5d5a3c5207375ffc.so": "1f3ac5968782c12fbf9df6701ed5915242abb8455044e5dac8ab2a68fd155547"
+      }
+    }
+  },
+  "configuration": {
+    "crate_root": "zerocopy/src/lib.rs",
+    "crate_name": "zerocopy",
+    "crate_type": "lib",
+    "panic": "unwind",
+    "edition": "2021",
+    "target": "x86_64-unknown-linux-gnu",
+    "cfg": [
+      "no_zerocopy_allocator_api_1_100_0"
+    ],
+    "env": {
+      "CARGO_PKG_VERSION": "0.8.64"
+    },
+    "opt_level": 0,
+    "debug_assertions": false,
+    "overflow_checks": false,
+    "mir_preserve_ub": true,
+    "pointer_bits": 64,
+    "endian": "little",
+    "declared_source_files": [
+      "zerocopy/src/byte_slice.rs",
+      "zerocopy/src/byteorder.rs",
+      "zerocopy/src/deprecated.rs",
+      "zerocopy/src/error.rs",
+      "zerocopy/src/impls.rs",
+      "zerocopy/src/layout.rs",
+      "zerocopy/src/lib.rs",
+      "zerocopy/src/macros.rs",
+      "zerocopy/src/pointer/inner.rs",
+      "zerocopy/src/pointer/invariant.rs",
+      "zerocopy/src/pointer/mod.rs",
+      "zerocopy/src/pointer/ptr.rs",
+      "zerocopy/src/pointer/transmute.rs",
+      "zerocopy/src/ref.rs",
+      "zerocopy/src/split_at.rs",
+      "zerocopy/src/util/macro_util.rs",
+      "zerocopy/src/util/macros.rs",
+      "zerocopy/src/util/mod.rs",
+      "zerocopy/src/wrappers.rs"
+    ]
+  },
+  "source_files": [
+    {
+      "path": "zerocopy/src/byte_slice.rs",
+      "sha256": "d7192aa0c5845d7a1f01d36235ecee93ab05ea6fdc42f4666fefe3d1d12bd829",
+      "read_kind": "text"
+    },
+    {
+      "path": "zerocopy/src/byteorder.rs",
+      "sha256": "15ebfc7da4b9586a7eb5f7e849aca1a70e231f1f5cfb5d0a3a22236339de7b96",
+      "read_kind": "text"
+    },
+    {
+      "path": "zerocopy/src/deprecated.rs",
+      "sha256": "0762789a318b47fefd1d852160472d1ef91d994f2914304bd7c4544cc8368664",
+      "read_kind": "text"
+    },
+    {
+      "path": "zerocopy/src/error.rs",
+      "sha256": "d327bba55f092763a2e64454c0db39f898b4890908eb41558cc25a4cd1a64f5f",
+      "read_kind": "text"
+    },
+    {
+      "path": "zerocopy/src/impls.rs",
+      "sha256": "0ba67c0b85dc1bf820a33c6ffa0c161432aa6307984568af88e55aaece9a5504",
+      "read_kind": "text"
+    },
+    {
+      "path": "zerocopy/src/layout.rs",
+      "sha256": "93010820f21849169bdb95a60fe7d9616dc675585436439cea827babf1fcff6b",
+      "read_kind": "text"
+    },
+    {
+      "path": "zerocopy/src/lib.rs",
+      "sha256": "99e8958e888a4af9230eab9e6c0db4ed3d1c21ed7e43ce76b3a6e08befdb277b",
+      "read_kind": "text"
+    },
+    {
+      "path": "zerocopy/src/macros.rs",
+      "sha256": "cea752d30deeae44e8e6715e844b361c3e7e42626f712b6d9f9dc56dcf0b8aba",
+      "read_kind": "text"
+    },
+    {
+      "path": "zerocopy/src/pointer/inner.rs",
+      "sha256": "16c2b3d12065a762da0963b15cbe3c062c4ca79ee13c03625a2fc9e7410d2e63",
+      "read_kind": "text"
+    },
+    {
+      "path": "zerocopy/src/pointer/invariant.rs",
+      "sha256": "a5ed83dad776e25101d4a7af3f041a9583444658b0f8cc21810dfc672069525e",
+      "read_kind": "text"
+    },
+    {
+      "path": "zerocopy/src/pointer/mod.rs",
+      "sha256": "e08183e7a52c65ae1ba80b7a89fe2109de47134955b191fa9ad567d371696f55",
+      "read_kind": "text"
+    },
+    {
+      "path": "zerocopy/src/pointer/ptr.rs",
+      "sha256": "eca76e67328cd86b6dd2eba35b5f4b3a83a6c7751c8c295852cf83c468e4205a",
+      "read_kind": "text"
+    },
+    {
+      "path": "zerocopy/src/pointer/transmute.rs",
+      "sha256": "98c0839a2b9a8ff264f540578dd39bf21c1d07d5666b6d2d501ee6c9c80a69bf",
+      "read_kind": "text"
+    },
+    {
+      "path": "zerocopy/src/ref.rs",
+      "sha256": "ce5400f00548fce3f8791f1acdafd5ef804ff4f7b69b4f95c36020601e3ccaa0",
+      "read_kind": "text"
+    },
+    {
+      "path": "zerocopy/src/split_at.rs",
+      "sha256": "7aff74c3acbba9795baa4ca7d70ea689c192bff95a387bf7cd08799bd8f9ec69",
+      "read_kind": "text"
+    },
+    {
+      "path": "zerocopy/src/util/macro_util.rs",
+      "sha256": "eca22752ac26166fb92b20a69f44457e88625a9a665a3b054cdc46ec08131591",
+      "read_kind": "text"
+    },
+    {
+      "path": "zerocopy/src/util/macros.rs",
+      "sha256": "b45569f15b75ad5db6c297d3b46769df9789d8c7375dda00ddbef592f1b967b2",
+      "read_kind": "text"
+    },
+    {
+      "path": "zerocopy/src/util/mod.rs",
+      "sha256": "230ffec123bd996450d5d591581b30bcb633deaf2f544092f64370a06e9e8e29",
+      "read_kind": "text"
+    },
+    {
+      "path": "zerocopy/src/wrappers.rs",
+      "sha256": "9a28262b93ab55879ee979ffa4b22c606e043adbeadf3a832fafc367b79e66c2",
+      "read_kind": "text"
+    }
+  ],
+  "census": [
+    {
+      "def_id": 345,
+      "path": "<&[u8] as byte_slice::SplitByteSlice>::split_at_unchecked",
+      "kind": "AssocFn",
+      "has_body": true,
+      "selected": true,
+      "required": true
+    }
+  ],
+  "selected": [
+    {
+      "def_id": 345,
+      "path": "<&[u8] as byte_slice::SplitByteSlice>::split_at_unchecked",
+      "body_index": 0
+    }
+  ],
+  "unsupported": [],
+  "program": {
+    "scope": {
+      "kind": "selected_unit",
+      "roots": [
+        "<&[u8] as byte_slice::SplitByteSlice>::split_at_unchecked"
+      ]
+    },
+    "overflow_checks": false,
+    "mir_profile_version": 2,
+    "bodies": [
+      {
+        "arg_count": 2,
+        "is_unsafe": true,
+        "local_tys": [
+          {
+            "kind": "tuple",
+            "fields": [
+              {
+                "kind": "ref",
+                "mutability": "shared",
+                "pointee": {
+                  "elem": {
+                    "kind": "int",
+                    "signed": false,
+                    "width": "i8"
+                  },
+                  "kind": "slice"
+                }
+              },
+              {
+                "kind": "ref",
+                "mutability": "shared",
+                "pointee": {
+                  "elem": {
+                    "kind": "int",
+                    "signed": false,
+                    "width": "i8"
+                  },
+                  "kind": "slice"
+                }
+              }
+            ]
+          },
+          {
+            "kind": "ref",
+            "mutability": "shared",
+            "pointee": {
+              "elem": {
+                "kind": "int",
+                "signed": false,
+                "width": "i8"
+              },
+              "kind": "slice"
+            }
+          },
+          {
+            "kind": "int",
+            "width": "isize",
+            "signed": false
+          },
+          {
+            "kind": "ref",
+            "mutability": "shared",
+            "pointee": {
+              "elem": {
+                "kind": "int",
+                "signed": false,
+                "width": "i8"
+              },
+              "kind": "slice"
+            }
+          },
+          {
+            "kind": "ref",
+            "mutability": "shared",
+            "pointee": {
+              "elem": {
+                "kind": "int",
+                "signed": false,
+                "width": "i8"
+              },
+              "kind": "slice"
+            }
+          },
+          {
+            "kind": "ref",
+            "mutability": "shared",
+            "pointee": {
+              "elem": {
+                "kind": "int",
+                "signed": false,
+                "width": "i8"
+              },
+              "kind": "slice"
+            }
+          },
+          {
+            "kind": "range_to",
+            "elem": {
+              "kind": "int",
+              "signed": false,
+              "width": "isize"
+            }
+          },
+          {
+            "kind": "int",
+            "width": "isize",
+            "signed": false
+          },
+          {
+            "kind": "ref",
+            "mutability": "shared",
+            "pointee": {
+              "elem": {
+                "kind": "int",
+                "signed": false,
+                "width": "i8"
+              },
+              "kind": "slice"
+            }
+          },
+          {
+            "kind": "ref",
+            "mutability": "shared",
+            "pointee": {
+              "elem": {
+                "kind": "int",
+                "signed": false,
+                "width": "i8"
+              },
+              "kind": "slice"
+            }
+          },
+          {
+            "kind": "ref",
+            "mutability": "shared",
+            "pointee": {
+              "elem": {
+                "kind": "int",
+                "signed": false,
+                "width": "i8"
+              },
+              "kind": "slice"
+            }
+          },
+          {
+            "kind": "range_from",
+            "elem": {
+              "kind": "int",
+              "signed": false,
+              "width": "isize"
+            }
+          },
+          {
+            "kind": "int",
+            "width": "isize",
+            "signed": false
+          }
+        ],
+        "blocks": [
+          {
+            "statements": [
+              {
+                "kind": "storage_live",
+                "local": 3
+              },
+              {
+                "kind": "storage_live",
+                "local": 4
+              },
+              {
+                "kind": "storage_live",
+                "local": 5
+              },
+              {
+                "kind": "assign",
+                "local": 5,
+                "value": {
+                  "kind": "ref",
+                  "mutability": "shared",
+                  "place": {
+                    "local": 1,
+                    "projection": [
+                      {
+                        "kind": "deref"
+                      }
+                    ]
+                  }
+                }
+              },
+              {
+                "kind": "storage_live",
+                "local": 6
+              },
+              {
+                "kind": "storage_live",
+                "local": 7
+              },
+              {
+                "kind": "assign",
+                "local": 7,
+                "value": {
+                  "kind": "use",
+                  "operand": {
+                    "kind": "copy",
+                    "local": 2
+                  },
+                  "with_retag": true
+                }
+              },
+              {
+                "kind": "assign",
+                "local": 6,
+                "value": {
+                  "kind": "aggregate_range_to",
+                  "elem_ty": {
+                    "kind": "int",
+                    "width": "isize",
+                    "signed": false
+                  },
+                  "end": {
+                    "kind": "move",
+                    "local": 7
+                  }
+                }
+              },
+              {
+                "kind": "storage_dead",
+                "local": 7
+              }
+            ],
+            "terminator": {
+              "kind": "core_call",
+              "op": {
+                "kind": "slice_get_unchecked_range_to"
+              },
+              "args": [
+                {
+                  "kind": "move",
+                  "local": 5
+                },
+                {
+                  "kind": "move",
+                  "local": 6
+                }
+              ],
+              "dst": {
+                "local": 4,
+                "projection": []
+              },
+              "target": 1,
+              "unwind": "continue"
+            }
+          },
+          {
+            "statements": [
+              {
+                "kind": "assign",
+                "local": 3,
+                "value": {
+                  "kind": "ref",
+                  "mutability": "shared",
+                  "place": {
+                    "local": 4,
+                    "projection": [
+                      {
+                        "kind": "deref"
+                      }
+                    ]
+                  }
+                }
+              },
+              {
+                "kind": "storage_dead",
+                "local": 6
+              },
+              {
+                "kind": "storage_dead",
+                "local": 5
+              },
+              {
+                "kind": "storage_live",
+                "local": 8
+              },
+              {
+                "kind": "storage_live",
+                "local": 9
+              },
+              {
+                "kind": "storage_live",
+                "local": 10
+              },
+              {
+                "kind": "assign",
+                "local": 10,
+                "value": {
+                  "kind": "ref",
+                  "mutability": "shared",
+                  "place": {
+                    "local": 1,
+                    "projection": [
+                      {
+                        "kind": "deref"
+                      }
+                    ]
+                  }
+                }
+              },
+              {
+                "kind": "storage_live",
+                "local": 11
+              },
+              {
+                "kind": "storage_live",
+                "local": 12
+              },
+              {
+                "kind": "assign",
+                "local": 12,
+                "value": {
+                  "kind": "use",
+                  "operand": {
+                    "kind": "copy",
+                    "local": 2
+                  },
+                  "with_retag": true
+                }
+              },
+              {
+                "kind": "assign",
+                "local": 11,
+                "value": {
+                  "kind": "aggregate_range_from",
+                  "elem_ty": {
+                    "kind": "int",
+                    "width": "isize",
+                    "signed": false
+                  },
+                  "start": {
+                    "kind": "move",
+                    "local": 12
+                  }
+                }
+              },
+              {
+                "kind": "storage_dead",
+                "local": 12
+              }
+            ],
+            "terminator": {
+              "kind": "core_call",
+              "op": {
+                "kind": "slice_get_unchecked_range_from"
+              },
+              "args": [
+                {
+                  "kind": "move",
+                  "local": 10
+                },
+                {
+                  "kind": "move",
+                  "local": 11
+                }
+              ],
+              "dst": {
+                "local": 9,
+                "projection": []
+              },
+              "target": 2,
+              "unwind": "continue"
+            }
+          },
+          {
+            "statements": [
+              {
+                "kind": "assign",
+                "local": 8,
+                "value": {
+                  "kind": "ref",
+                  "mutability": "shared",
+                  "place": {
+                    "local": 9,
+                    "projection": [
+                      {
+                        "kind": "deref"
+                      }
+                    ]
+                  }
+                }
+              },
+              {
+                "kind": "storage_dead",
+                "local": 11
+              },
+              {
+                "kind": "storage_dead",
+                "local": 10
+              },
+              {
+                "kind": "assign",
+                "local": 0,
+                "value": {
+                  "kind": "aggregate_tuple",
+                  "fields": [
+                    {
+                      "kind": "move",
+                      "local": 3
+                    },
+                    {
+                      "kind": "move",
+                      "local": 8
+                    }
+                  ]
+                }
+              },
+              {
+                "kind": "storage_dead",
+                "local": 8
+              },
+              {
+                "kind": "storage_dead",
+                "local": 3
+              },
+              {
+                "kind": "storage_dead",
+                "local": 9
+              },
+              {
+                "kind": "storage_dead",
+                "local": 4
+              }
+            ],
+            "terminator": {
+              "kind": "ret"
+            }
+          }
+        ],
+        "identity": "rust-path-v1::<&[u8] as byte_slice::SplitByteSlice>::split_at_unchecked"
+      }
+    ]
+  }
+}

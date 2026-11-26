@@ -7,8 +7,7 @@
 // those terms.
 
 //! Capture JSON IR schema types and decoders mirroring
-//! `anneal-rustc-capture` schema version 4 (Profile v1) with explicit
-//! extensibility for Profile v2 constructs.
+//! `anneal-rustc-capture` schema version 5 (Profile v1 and Profile v2).
 
 use alloc::{
     boxed::Box,
@@ -21,12 +20,12 @@ use core::fmt;
 
 use serde::{
     Deserialize, Deserializer, Serialize, Serializer,
-    de::{self, SeqAccess, Visitor},
-    ser::SerializeSeq,
+    de::{self, MapAccess, SeqAccess, Visitor},
+    ser::{SerializeMap, SerializeSeq},
 };
 
 /// Capture JSON schema version produced by `anneal-rustc-capture`.
-pub const CAPTURE_SCHEMA_VERSION: u32 = 4;
+pub const CAPTURE_SCHEMA_VERSION: u32 = 5;
 
 const fn default_pointer_width_bits() -> u64 {
     64
@@ -248,7 +247,7 @@ impl EnumTy {
     }
 }
 
-/// MIR local and constant types matching schema v4 plus Profile v2 extensions.
+/// MIR local and constant types matching schema v5 (Profile v1 and v2).
 #[derive(Clone, Debug, PartialEq, Eq, Hash, Serialize, Deserialize)]
 #[serde(tag = "kind", rename_all = "snake_case")]
 pub enum Ty {
@@ -263,14 +262,17 @@ pub enum Ty {
     Tuple { fields: Vec<Ty> },
     Ref { mutability: Mutability, pointee: Box<Ty> },
     RawPtr { mutability: Mutability, pointee: Box<Ty> },
+    Slice { elem: Box<Ty> },
+    RangeTo { elem: Box<Ty> },
+    RangeFrom { elem: Box<Ty> },
     Array { elem: Box<Ty>, len: u64 },
     Unsupported,
 }
 
 impl Ty {
     /// Returns the inner integer type when `self` represents an `(T, bool)`
-    /// overflow pair (either schema v4 `OverflowPair(ity)` or normalized
-    /// Profile v2 `Tuple { fields: [Int(ity), Bool] }`).
+    /// overflow pair (either `OverflowPair(ity)` or normalized
+    /// `Tuple { fields: [Int(ity), Bool] }`).
     pub fn as_overflow_pair(&self) -> Option<IntTy> {
         match self {
             Self::OverflowPair(ity) => Some(*ity),
@@ -282,6 +284,17 @@ impl Ty {
             }
             _ => None,
         }
+    }
+
+    /// Whether `self` is the target `usize` integer type.
+    pub const fn is_usize(&self) -> bool {
+        matches!(self, Self::Int(IntTy { width: IntWidth::Isize, signed: false }))
+    }
+
+    /// Whether `self` is an unsized dynamically-sized type (`[T]`), matching
+    /// `Trusted.MirAst.isUnsizedTy`.
+    pub const fn is_unsized(&self) -> bool {
+        matches!(self, Self::Slice { .. })
     }
 
     /// Structural equality normalizing `OverflowPair(ity)` and
@@ -303,6 +316,11 @@ impl Ty {
                 Self::RawPtr { mutability: m_a, pointee: p_a },
                 Self::RawPtr { mutability: m_b, pointee: p_b },
             ) => m_a == m_b && p_a.structural_eq(p_b),
+            (Self::Slice { elem: e_a }, Self::Slice { elem: e_b })
+            | (Self::RangeTo { elem: e_a }, Self::RangeTo { elem: e_b })
+            | (Self::RangeFrom { elem: e_a }, Self::RangeFrom { elem: e_b }) => {
+                e_a.structural_eq(e_b)
+            }
             (Self::Array { elem: e_a, len: l_a }, Self::Array { elem: e_b, len: l_b }) => {
                 l_a == l_b && e_a.structural_eq(e_b)
             }
@@ -312,49 +330,100 @@ impl Ty {
 
     /// Whether `WithRetag::Yes` on `Rvalue::Use` is an operational no-op.
     pub fn is_retag_noop(&self) -> bool {
-        self.as_overflow_pair().is_some()
-            || matches!(
-                self,
-                Self::Bool
-                    | Self::Char
-                    | Self::Ordering
-                    | Self::Unit
-                    | Self::Never
-                    | Self::Int(_)
-                    | Self::Enum(_)
-                    | Self::OverflowPair(_)
-            )
+        match self {
+            Self::Bool
+            | Self::Char
+            | Self::Ordering
+            | Self::Unit
+            | Self::Never
+            | Self::Int(_)
+            | Self::Enum(_)
+            | Self::OverflowPair(_)
+            | Self::RawPtr { .. }
+            | Self::Slice { .. }
+            | Self::RangeTo { .. }
+            | Self::RangeFrom { .. } => true,
+            Self::Ref { .. } | Self::Unsupported => false,
+            Self::Tuple { fields } => fields.iter().all(Self::is_retag_noop),
+            Self::Array { elem, .. } => elem.is_retag_noop(),
+        }
     }
 
     /// Whether locals of `self` are statically `Sized`.
-    pub const fn is_sized(&self) -> bool {
-        matches!(
-            self,
+    pub fn is_sized(&self) -> bool {
+        match self {
+            Self::Slice { .. } | Self::Unsupported => false,
+            Self::Tuple { fields } => fields.iter().all(Self::is_sized),
+            Self::Array { elem, .. } => elem.is_sized(),
             Self::Bool
-                | Self::Char
-                | Self::Ordering
-                | Self::Unit
-                | Self::Never
-                | Self::Int(_)
-                | Self::Enum(_)
-                | Self::OverflowPair(_)
-                | Self::Tuple { .. }
-                | Self::Ref { .. }
-                | Self::RawPtr { .. }
-                | Self::Array { .. }
-        )
+            | Self::Char
+            | Self::Ordering
+            | Self::Unit
+            | Self::Never
+            | Self::Int(_)
+            | Self::Enum(_)
+            | Self::OverflowPair(_)
+            | Self::Ref { .. }
+            | Self::RawPtr { .. }
+            | Self::RangeTo { .. }
+            | Self::RangeFrom { .. } => true,
+        }
+    }
+
+    /// Whether `self` is a reference or a tuple containing one, matching
+    /// `Trusted.MirSemantics.tyHasRefV2`.
+    pub fn has_ref_v2(&self) -> bool {
+        match self {
+            Self::Ref { .. } => true,
+            Self::Tuple { fields } => fields.iter().any(Self::has_ref_v2),
+            _ => false,
+        }
+    }
+
+    /// Whether `self` is a raw pointer or a tuple containing one, matching
+    /// `Trusted.MirSemantics.tyHasRawPtrV2`.
+    pub fn has_raw_ptr_v2(&self) -> bool {
+        match self {
+            Self::RawPtr { .. } => true,
+            Self::Tuple { fields } => fields.iter().any(Self::has_raw_ptr_v2),
+            _ => false,
+        }
+    }
+
+    /// Whether `self` is a `*const T` raw pointer type, matching
+    /// `Trusted.MirSemantics.isConstRawPtrTy`.
+    pub const fn is_const_raw_ptr(&self) -> bool {
+        matches!(self, Self::RawPtr { mutability: Mutability::Shared, .. })
     }
 }
 
-/// Place projection element (Profile v1 rejects non-empty projections;
-/// opt-in preview Profile v2 executes `.field`, while `.deref` fails closed
-/// as `Unsupported`).
+/// Place projection element matching `Trusted.MirAst.ProjectionElem`.
 #[derive(Clone, Debug, PartialEq, Eq, Hash, Serialize, Deserialize)]
 #[serde(tag = "kind", rename_all = "snake_case")]
 pub enum ProjectionElem {
     Deref,
-    Field { field_idx: u32, ty: Ty },
+    Field {
+        #[serde(rename = "index", alias = "field_idx")]
+        field_idx: u32,
+        ty: Ty,
+    },
     Unsupported,
+}
+
+/// MIR place `(local, projection)` matching `Trusted.MirAst.Place` and
+/// schema v5 JSON.
+#[derive(Clone, Debug, PartialEq, Eq, Hash, Serialize, Deserialize)]
+pub struct Place {
+    pub local: u32,
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub projection: Vec<ProjectionElem>,
+}
+
+impl Place {
+    /// Construct an unprojected local place.
+    pub const fn local(local: u32) -> Self {
+        Self { local, projection: Vec::new() }
+    }
 }
 
 /// Constant literal payload matching `Trusted.MirAst.ConstLit`.
@@ -385,10 +454,30 @@ pub enum Operand {
         #[serde(default, skip_serializing_if = "Vec::is_empty")]
         projection: Vec<ProjectionElem>,
     },
+    CopyPlace {
+        place: Place,
+    },
+    MovePlace {
+        place: Place,
+    },
     Constant {
         ty: Ty,
         lit: ConstLit,
     },
+}
+
+impl Operand {
+    /// View a place operand (`Copy`, `Move`, `CopyPlace`, or `MovePlace`) as
+    /// `(local, projection, is_move)`.
+    pub fn as_place(&self) -> Option<(u32, &[ProjectionElem], bool)> {
+        match self {
+            Self::Copy { local, projection } => Some((*local, projection.as_slice(), false)),
+            Self::Move { local, projection } => Some((*local, projection.as_slice(), true)),
+            Self::CopyPlace { place } => Some((place.local, place.projection.as_slice(), false)),
+            Self::MovePlace { place } => Some((place.local, place.projection.as_slice(), true)),
+            Self::Constant { .. } => None,
+        }
+    }
 }
 
 /// Unary MIR operator.
@@ -405,6 +494,8 @@ pub enum UnOp {
 #[serde(rename_all = "snake_case")]
 pub enum CastKind {
     IntToInt,
+    PtrToPtr,
+    IntToPtr,
     Unsupported,
 }
 
@@ -479,6 +570,9 @@ pub enum Rvalue {
         #[serde(default)]
         with_retag: bool,
     },
+    UseRetag {
+        operand: Operand,
+    },
     Binary {
         op: BinOp,
         left: Operand,
@@ -501,21 +595,25 @@ pub enum Rvalue {
     AggregateTuple {
         fields: Vec<Operand>,
     },
+    AggregateRangeTo {
+        elem_ty: Ty,
+        end: Operand,
+    },
+    AggregateRangeFrom {
+        elem_ty: Ty,
+        start: Operand,
+    },
     Aggregate {
         aggregate_kind: AggregateKind,
         fields: Vec<Operand>,
     },
     Ref {
         mutability: Mutability,
-        local: u32,
-        #[serde(default, skip_serializing_if = "Vec::is_empty")]
-        projection: Vec<ProjectionElem>,
+        place: Place,
     },
     AddressOf {
         mutability: Mutability,
-        local: u32,
-        #[serde(default, skip_serializing_if = "Vec::is_empty")]
-        projection: Vec<ProjectionElem>,
+        place: Place,
     },
     Unsupported,
 }
@@ -528,6 +626,10 @@ pub enum Statement {
         local: u32,
         #[serde(default, skip_serializing_if = "Vec::is_empty")]
         projection: Vec<ProjectionElem>,
+        value: Rvalue,
+    },
+    AssignPlace {
+        place: Place,
         value: Rvalue,
     },
     StorageLive {
@@ -545,14 +647,139 @@ pub enum Statement {
     Unsupported,
 }
 
-/// Unwind action on panicking terminators.
-#[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, Serialize, Deserialize)]
-#[serde(tag = "kind", rename_all = "snake_case")]
+impl Statement {
+    /// If `self` is an assignment (`Assign` or `AssignPlace`), returns
+    /// `(local, projection, value)`.
+    pub fn as_assign(&self) -> Option<(u32, &[ProjectionElem], &Rvalue)> {
+        match self {
+            Self::Assign { local, projection, value } => {
+                Some((*local, projection.as_slice(), value))
+            }
+            Self::AssignPlace { place, value } => {
+                Some((place.local, place.projection.as_slice(), value))
+            }
+            _ => None,
+        }
+    }
+}
+
+/// Unwind action on panicking or calling terminators.
+///
+/// Schema v5 encodes non-cleanup actions as bare snake_case strings
+/// (`"continue"`, `"unreachable"`, `"terminate"`). Deserialization also
+/// accepts tagged object encodings (`{"kind": "..."}`) including
+/// `{"kind": "cleanup", "block": n}` for fail-closed refusal testing.
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
 pub enum UnwindAction {
     Continue,
     Unreachable,
     Terminate,
     Cleanup { block: u32 },
+}
+
+impl Serialize for UnwindAction {
+    fn serialize<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
+        match self {
+            Self::Continue => serializer.serialize_str("continue"),
+            Self::Unreachable => serializer.serialize_str("unreachable"),
+            Self::Terminate => serializer.serialize_str("terminate"),
+            Self::Cleanup { block } => {
+                let mut map = serializer.serialize_map(Some(2))?;
+                map.serialize_entry("kind", "cleanup")?;
+                map.serialize_entry("block", block)?;
+                map.end()
+            }
+        }
+    }
+}
+
+impl<'de> Deserialize<'de> for UnwindAction {
+    fn deserialize<D: Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        struct UnwindActionVisitor;
+
+        impl<'de> Visitor<'de> for UnwindActionVisitor {
+            type Value = UnwindAction;
+
+            fn expecting(&self, formatter: &mut fmt::Formatter<'_>) -> fmt::Result {
+                formatter.write_str(
+                    "an unwind action string (\"continue\", \"unreachable\", \"terminate\") \
+                     or tagged object {\"kind\": ...}",
+                )
+            }
+
+            fn visit_str<E: de::Error>(self, value: &str) -> Result<UnwindAction, E> {
+                match value {
+                    "continue" => Ok(UnwindAction::Continue),
+                    "unreachable" => Ok(UnwindAction::Unreachable),
+                    "terminate" => Ok(UnwindAction::Terminate),
+                    other => {
+                        Err(E::unknown_variant(other, &["continue", "unreachable", "terminate"]))
+                    }
+                }
+            }
+
+            fn visit_map<A: MapAccess<'de>>(self, mut map: A) -> Result<UnwindAction, A::Error> {
+                let mut kind: Option<String> = None;
+                let mut block: Option<u32> = None;
+                while let Some(key) = map.next_key::<String>()? {
+                    match key.as_str() {
+                        "kind" => {
+                            if kind.is_some() {
+                                return Err(de::Error::duplicate_field("kind"));
+                            }
+                            kind = Some(map.next_value()?);
+                        }
+                        "block" => {
+                            if block.is_some() {
+                                return Err(de::Error::duplicate_field("block"));
+                            }
+                            block = Some(map.next_value()?);
+                        }
+                        other => {
+                            return Err(de::Error::unknown_field(other, &["kind", "block"]));
+                        }
+                    }
+                }
+                let kind = kind.ok_or_else(|| de::Error::missing_field("kind"))?;
+                match kind.as_str() {
+                    "continue" => {
+                        if block.is_some() {
+                            return Err(de::Error::custom(
+                                "unexpected field \"block\" for continue unwind action",
+                            ));
+                        }
+                        Ok(UnwindAction::Continue)
+                    }
+                    "unreachable" => {
+                        if block.is_some() {
+                            return Err(de::Error::custom(
+                                "unexpected field \"block\" for unreachable unwind action",
+                            ));
+                        }
+                        Ok(UnwindAction::Unreachable)
+                    }
+                    "terminate" => {
+                        if block.is_some() {
+                            return Err(de::Error::custom(
+                                "unexpected field \"block\" for terminate unwind action",
+                            ));
+                        }
+                        Ok(UnwindAction::Terminate)
+                    }
+                    "cleanup" => {
+                        let block = block.ok_or_else(|| de::Error::missing_field("block"))?;
+                        Ok(UnwindAction::Cleanup { block })
+                    }
+                    other => Err(de::Error::unknown_variant(
+                        other,
+                        &["continue", "unreachable", "terminate", "cleanup"],
+                    )),
+                }
+            }
+        }
+
+        deserializer.deserialize_any(UnwindActionVisitor)
+    }
 }
 
 /// Assertion failure kind for Profile v2 `Terminator::Assert`.
@@ -567,6 +794,39 @@ pub enum AssertKind {
     MisalignedPtrDeref,
     NullPtrDeref,
     Unsupported,
+}
+
+/// Closed table of `core` primitive calls executed in Profile v2,
+/// matching `Trusted.MirAst.CoreCallOp`.
+#[derive(Clone, Debug, PartialEq, Eq, Hash, Serialize, Deserialize)]
+#[serde(tag = "kind", rename_all = "snake_case")]
+pub enum CoreCallOp {
+    SliceLen,
+    SliceGetUncheckedRangeTo,
+    SliceGetUncheckedRangeFrom,
+    PtrAdd { mutability: Mutability, pointee: Ty },
+    UsizeUncheckedSub,
+}
+
+/// Pinned `core::num` arithmetic operation executed in Profile v1,
+/// matching `Trusted.MirAst.SysrootNumKind`.
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, Serialize, Deserialize)]
+#[serde(rename_all = "snake_case")]
+pub enum SysrootNumKind {
+    UncheckedAdd,
+    UncheckedSub,
+    UncheckedMul,
+    WrappingAdd,
+    WrappingSub,
+    WrappingMul,
+}
+
+/// Pinned `core::num` sysroot call descriptor matching
+/// `Trusted.MirAst.SysrootNumOp`.
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, Serialize, Deserialize)]
+pub struct SysrootNumOp {
+    pub kind: SysrootNumKind,
+    pub ty: IntTy,
 }
 
 /// MIR basic-block terminator.
@@ -595,9 +855,28 @@ pub enum Terminator {
         target: u32,
         unwind: UnwindAction,
     },
+    CoreCall {
+        op: CoreCallOp,
+        args: Vec<Operand>,
+        dst: Place,
+        #[serde(default)]
+        target: Option<u32>,
+        unwind: UnwindAction,
+    },
     Call {
         callee: u32,
         args: Vec<Operand>,
+        #[serde(rename = "dst", alias = "dst_local")]
+        dst_local: u32,
+        #[serde(default, skip_serializing_if = "Vec::is_empty")]
+        dst_projection: Vec<ProjectionElem>,
+        target: Option<u32>,
+        unwind: UnwindAction,
+    },
+    SysrootCall {
+        op: SysrootNumOp,
+        args: Vec<Operand>,
+        #[serde(rename = "dst", alias = "dst_local")]
         dst_local: u32,
         #[serde(default, skip_serializing_if = "Vec::is_empty")]
         dst_projection: Vec<ProjectionElem>,
@@ -669,6 +948,8 @@ pub struct Program {
     pub entry_def_id: u32,
     #[serde(default = "default_pointer_width_bits")]
     pub pointer_width_bits: u64,
+    #[serde(default)]
+    pub overflow_checks: bool,
     #[serde(default = "default_mir_profile_version")]
     pub mir_profile_version: u32,
 }
@@ -707,7 +988,7 @@ pub struct DriverIdentity {
     pub dso_digests: BTreeMap<String, String>,
 }
 
-/// Compiler metadata in a schema v4 capture manifest.
+/// Compiler metadata in a schema v5 capture manifest.
 #[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize)]
 pub struct Compiler {
     pub commit: String,
@@ -717,7 +998,14 @@ pub struct Compiler {
     pub driver: DriverIdentity,
 }
 
-/// Compilation configuration recorded in a schema v4 capture manifest.
+/// Standard-library crate capability recorded in capture manifests.
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, Serialize, Deserialize)]
+#[serde(rename_all = "snake_case")]
+pub enum StdlibCrate {
+    Core,
+}
+
+/// Compilation configuration recorded in a schema v5 capture manifest.
 #[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize)]
 pub struct Configuration {
     pub crate_root: String,
@@ -735,6 +1023,8 @@ pub struct Configuration {
     pub pointer_bits: u64,
     pub endian: String,
     pub declared_source_files: Vec<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub stdlib_crate: Option<StdlibCrate>,
 }
 
 /// Captured source file digest metadata.
@@ -787,23 +1077,25 @@ pub struct Manifest {
 
 impl Manifest {
     /// Extract an evaluation-ready `Program` carrying the manifest's configured
-    /// target `pointer_bits`.
+    /// target `pointer_bits` and `overflow_checks`.
     pub fn into_program(mut self) -> Program {
         self.program.pointer_width_bits = self.configuration.pointer_bits;
+        self.program.overflow_checks = self.configuration.overflow_checks;
         self.program
     }
 
     /// Borrow a cloned evaluation-ready `Program` with `pointer_width_bits`
-    /// synchronized from `configuration.pointer_bits`.
+    /// and `overflow_checks` synchronized from `configuration`.
     pub fn to_program(&self) -> Program {
         let mut program = self.program.clone();
         program.pointer_width_bits = self.configuration.pointer_bits;
+        program.overflow_checks = self.configuration.overflow_checks;
         program
     }
 }
 
-/// Decoded capture payload, either a full schema v4 [`Manifest`] or a standalone
-/// [`Program`].
+/// Decoded capture payload, either a full schema v5 [`Manifest`] or a
+/// standalone [`Program`].
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub enum CaptureInput {
     Manifest(Box<Manifest>),
@@ -812,7 +1104,7 @@ pub enum CaptureInput {
 
 impl CaptureInput {
     /// Parse a JSON document as either a capture [`Manifest`] (validating
-    /// `schema_version == 4`) or a standalone [`Program`].
+    /// `schema_version == 5`) or a standalone [`Program`].
     pub fn from_json_str(json: &str) -> Result<Self, String> {
         let raw: serde_json::Value =
             serde_json::from_str(json).map_err(|err| format!("invalid JSON: {err}"))?;
@@ -832,6 +1124,10 @@ impl CaptureInput {
                 .get("program")
                 .and_then(|p| p.get("pointer_width_bits"))
                 .and_then(serde_json::Value::as_u64);
+            let explicit_prog_overflow_checks = raw
+                .get("program")
+                .and_then(|p| p.get("overflow_checks"))
+                .and_then(serde_json::Value::as_bool);
             let mut manifest: Manifest = serde_json::from_value(raw)
                 .map_err(|err| format!("invalid capture manifest: {err}"))?;
             if let Some(explicit) = explicit_prog_ptr_bits
@@ -842,7 +1138,16 @@ impl CaptureInput {
                     manifest.configuration.pointer_bits
                 ));
             }
+            if let Some(explicit) = explicit_prog_overflow_checks
+                && explicit != manifest.configuration.overflow_checks
+            {
+                return Err(format!(
+                    "manifest overflow_checks mismatch: configuration.overflow_checks={} != program.overflow_checks={explicit}",
+                    manifest.configuration.overflow_checks
+                ));
+            }
             manifest.program.pointer_width_bits = manifest.configuration.pointer_bits;
+            manifest.program.overflow_checks = manifest.configuration.overflow_checks;
             Ok(Self::Manifest(Box::new(manifest)))
         } else {
             if !obj.contains_key("pointer_width_bits") || !obj.contains_key("mir_profile_version") {
@@ -858,7 +1163,8 @@ impl CaptureInput {
     }
 
     /// Return the evaluation-ready [`Program`] (propagating manifest
-    /// `configuration.pointer_bits` when loaded from a manifest).
+    /// `configuration.pointer_bits` and `configuration.overflow_checks` when
+    /// loaded from a manifest).
     pub fn into_program(self) -> Program {
         match self {
             Self::Manifest(m) => m.into_program(),
