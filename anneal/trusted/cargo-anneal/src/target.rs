@@ -5520,6 +5520,7 @@ mod tests {
                     "Model",
                     TargetRole::Model,
                     "prelude\nimport Init.Data.Nat.Div.Basic\n\
+                     import Init.Data.Int.Basic\n\
                      namespace Trusted.MirSemantics\n\
                      structure Crate where\n  program : Nat\n  specs : Nat → Prop\n\
                      def UnitTheorem (c : Crate) : Prop := c.specs c.program\n",
@@ -5536,7 +5537,10 @@ mod tests {
                      def Spec.specs (_ : Nat) : Prop :=\n  \
                      (∀ (a b : Bool), (a && b) = true → a = true ∧ b = true) ∧\n  \
                      (∀ n : Nat, 0 < Nat.pow 2 n) ∧\n  \
-                     (∀ m n : Nat, Nat.div n 2 = Nat.div m 2 → Nat.mod n 2 = Nat.mod m 2 → n = m)\n",
+                     (∀ m n : Nat, Nat.div n 2 = Nat.div m 2 → Nat.mod n 2 = Nat.mod m 2 → n = m) ∧\n  \
+                     (∀ n a b : Nat, Nat.mod (Nat.mod n (a * b)) a = Nat.mod n a) ∧\n  \
+                     (∀ x y z : Int, x ≤ y → y ≤ z → x ≤ z) ∧\n  \
+                     (∀ a b : Nat, b ≤ a → Int.ofNat a - Int.ofNat b = Int.ofNat (a - b))\n",
                 ),
                 (
                     "Expected",
@@ -5551,10 +5555,15 @@ mod tests {
                     "prelude\nimport Expected\nimport Anneal.InitLemmas\n\
                      theorem Proof.verify : Expected.claim := by\n  \
                      have _ := Anneal.InitLemmas.canary_list_ops_edge\n  \
+                     have _ := Anneal.InitLemmas.canary_nat_mod_edge\n  \
+                     have _ := Anneal.InitLemmas.canary_int_order_sub_edge\n  \
                      exact ⟨fun _ _ h => ⟨Anneal.InitLemmas.bool_and_left h,\n    \
                        Anneal.InitLemmas.bool_and_right h⟩,\n    \
                        Anneal.InitLemmas.nat_two_pow_pos,\n    \
-                       fun m n hd hm => Anneal.InitLemmas.div2_mod2_inj m n hd hm⟩\n",
+                       fun m n hd hm => Anneal.InitLemmas.div2_mod2_inj m n hd hm,\n    \
+                       Anneal.InitLemmas.nat_mod_mod_mul_left,\n    \
+                       fun _ _ _ hxy hyz => Anneal.InitLemmas.int_le_trans hxy hyz,\n    \
+                       fun _ _ hba => Anneal.InitLemmas.int_ofNat_sub_of_le hba⟩\n",
                 ),
             ],
         );

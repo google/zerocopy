@@ -30,9 +30,9 @@ helper clusters across `anneal/theory/` and `anneal/correspondence/`:
    hypotheses.
 2. Generic `BEq` reflection bridges (`beq_refl` / `eq_of_beq` <-> `beq_iff`)
    plus `natListBeq`.
-3. `Nat` power-of-two, division, and modulo identities.
-4. Constructive `IntBalance` sign-magnitude `Nat` bridge for `Int` reasoning
-   without `omega`.
+3. `Nat` power-of-two monotonicity, division, and modulo identities.
+4. Constructive `IntBalance` sign-magnitude bridge, `Int` order, and
+   `Int.ofNat` subtraction lemmas over `Init.Data.Int.Basic` without `omega`.
 5. Total `@Nat.rec` list indexing, slicing, and range-replacement lemmas.
 -/
 
@@ -408,6 +408,60 @@ theorem div2_mod2_inj (m n : Nat)
   rw [hDiv, hMod] at hn
   rw [← hn, hm]
 
+theorem nat_two_pow_lt_succ (n : Nat) : Nat.pow 2 n < Nat.pow 2 (n + 1) := by
+  rw [nat_pow_succ, Nat.mul_two]
+  exact Nat.lt_add_of_pos_right (nat_two_pow_pos n)
+
+theorem nat_two_pow_lt_of_lt {i j : Nat} (h : i < j) :
+    Nat.pow 2 i < Nat.pow 2 j :=
+  Nat.lt_of_lt_of_le (nat_two_pow_lt_succ i)
+    (Nat.pow_le_pow_right (by decide : 0 < 2) h)
+
+theorem nat_two_pow_le_of_le {i j : Nat} (h : i ≤ j) :
+    Nat.pow 2 i ≤ Nat.pow 2 j :=
+  Nat.pow_le_pow_right (by decide : 0 < 2) h
+
+theorem nat_add_mul_div_left (x z : Nat) {y : Nat} (hy : 0 < y) :
+    Nat.div (x + y * z) y = Nat.div x y + z :=
+  Nat.add_mul_div_left x z hy
+
+theorem nat_mul_add_mod_self_left (a b c : Nat) :
+    Nat.mod (a * b + c) a = Nat.mod c a :=
+  Nat.mul_add_mod_self_left a b c
+
+theorem nat_add_mod_mod (a b m : Nat) :
+    Nat.mod (a + Nat.mod b m) m = Nat.mod (a + b) m := by
+  have hDiv : Nat.mod b m + m * Nat.div b m = b := by
+    rw [Nat.add_comm]
+    exact Nat.div_add_mod b m
+  have hStep :
+      Nat.mod (a + Nat.mod b m) m =
+        Nat.mod (a + Nat.mod b m + m * Nat.div b m) m :=
+    Eq.symm (nat_add_mul_mod_self_left (a + Nat.mod b m) m (Nat.div b m))
+  rw [Nat.add_assoc a (Nat.mod b m) (m * Nat.div b m), hDiv] at hStep
+  exact hStep
+
+theorem nat_mod_add_mod (a b m : Nat) :
+    Nat.mod (Nat.mod a m + b) m = Nat.mod (a + b) m := by
+  rw [Nat.add_comm (Nat.mod a m) b, nat_add_mod_mod, Nat.add_comm b a]
+
+theorem nat_mod_mod_mul_left (n a b : Nat) :
+    Nat.mod (Nat.mod n (a * b)) a = Nat.mod n a :=
+  nat_mod_mod_of_dvd (nat_mul_mod_right a b)
+
+theorem nat_mod_sq_sub_succ (p k : Nat) (hk : k < p) :
+    Nat.mod (p * p - (k + 1)) p = p - (k + 1) := by
+  have hPos : 0 < p := Nat.lt_of_lt_of_le (Nat.zero_lt_succ k) hk
+  have hFactor : p * p = p * (p - 1) + p := by
+    have hMul : p = (p - 1) + 1 := Eq.symm (Nat.sub_add_cancel hPos)
+    have hDist : p * ((p - 1) + 1) = p * (p - 1) + p := by
+      rw [Nat.mul_add, Nat.mul_one]
+    rw [← hMul] at hDist
+    exact hDist
+  rw [hFactor, Nat.add_sub_assoc hk, Nat.add_comm (p * (p - 1)) (p - (k + 1)),
+      nat_add_mul_mod_self_left]
+  exact Nat.mod_eq_of_lt (Nat.sub_lt hPos (Nat.zero_lt_succ k))
+
 /-! ## 4. Constructive `IntBalance` Sign-Magnitude `Nat` Bridge -/
 
 /-- Nonnegative magnitude component of an `Int`. -/
@@ -566,6 +620,141 @@ theorem int_neg_ofNat_succ (n : Nat) :
 
 theorem int_neg_negSucc (n : Nat) :
     Neg.neg (Int.negSucc n) = Int.ofNat (n + 1) := rfl
+
+theorem nonNeg_subNatNat_le {a b : Nat}
+    (h : Int.NonNeg (Int.subNatNat a b)) : b ≤ a := by
+  cases Nat.lt_or_ge a b with
+  | inl hLt =>
+    rw [int_subNatNat_of_lt hLt] at h
+    nomatch h
+  | inr hGe => exact hGe
+
+theorem le_nonNeg_subNatNat {a b : Nat} (h : b ≤ a) :
+    Int.NonNeg (Int.subNatNat a b) := by
+  rw [int_subNatNat_of_le h]
+  exact Int.NonNeg.mk (a - b)
+
+theorem int_ofNat_zero_le (n : Nat) : (0 : Int) ≤ Int.ofNat n :=
+  (int_ofNat_le_iff 0 n).mpr (Nat.zero_le n)
+
+theorem int_le_refl (a : Int) : a ≤ a := by
+  cases a with
+  | ofNat x => exact (int_ofNat_le_iff x x).mpr (Nat.le_refl x)
+  | negSucc x => exact (int_negSucc_le_negSucc_iff x x).mpr (Nat.le_refl x)
+
+theorem int_le_trans {a b c : Int} (hab : a ≤ b) (hbc : b ≤ c) : a ≤ c := by
+  cases a with
+  | ofNat x =>
+    cases b with
+    | ofNat y =>
+      cases c with
+      | ofNat z =>
+        exact (int_ofNat_le_iff x z).mpr (Nat.le_trans
+          ((int_ofNat_le_iff x y).mp hab) ((int_ofNat_le_iff y z).mp hbc))
+      | negSucc z => exact False.elim (int_not_ofNat_le_negSucc y z hbc)
+    | negSucc y => exact False.elim (int_not_ofNat_le_negSucc x y hab)
+  | negSucc x =>
+    cases b with
+    | ofNat y =>
+      cases c with
+      | ofNat z => exact int_negSucc_le_ofNat x z
+      | negSucc z => exact False.elim (int_not_ofNat_le_negSucc y z hbc)
+    | negSucc y =>
+      cases c with
+      | ofNat z => exact int_negSucc_le_ofNat x z
+      | negSucc z =>
+        exact (int_negSucc_le_negSucc_iff x z).mpr (Nat.le_trans
+          ((int_negSucc_le_negSucc_iff y z).mp hbc)
+          ((int_negSucc_le_negSucc_iff x y).mp hab))
+
+theorem int_lt_of_lt_of_le {a b c : Int} (hab : a < b) (hbc : b ≤ c) : a < c :=
+  int_le_trans hab hbc
+
+theorem int_add_one_le_add_one {a b : Int} (h : a ≤ b) : a + 1 ≤ b + 1 := by
+  cases a with
+  | ofNat x =>
+    cases b with
+    | ofNat y =>
+      exact (int_ofNat_le_iff (x + 1) (y + 1)).mpr
+        (Nat.succ_le_succ ((int_ofNat_le_iff x y).mp h))
+    | negSucc y => exact False.elim (int_not_ofNat_le_negSucc x y h)
+  | negSucc x =>
+    cases b with
+    | ofNat y =>
+      cases x with
+      | zero => exact (int_ofNat_le_iff 0 (y + 1)).mpr (Nat.zero_le (y + 1))
+      | succ x' => exact int_negSucc_le_ofNat x' (y + 1)
+    | negSucc y =>
+      have hyx : y ≤ x := (int_negSucc_le_negSucc_iff x y).mp h
+      cases x with
+      | zero =>
+        cases y with
+        | zero => exact (int_ofNat_le_iff 0 0).mpr (Nat.le_refl 0)
+        | succ y' =>
+          exact False.elim (Nat.not_lt_of_le hyx (Nat.zero_lt_succ y'))
+      | succ x' =>
+        cases y with
+        | zero => exact int_negSucc_le_ofNat x' 0
+        | succ y' =>
+          exact (int_negSucc_le_negSucc_iff x' y').mpr
+            (Nat.le_of_succ_le_succ hyx)
+
+theorem int_lt_of_le_of_lt {a b c : Int} (hab : a ≤ b) (hbc : b < c) : a < c :=
+  int_le_trans (int_add_one_le_add_one hab) hbc
+
+theorem int_le_antisymm {a b : Int} (hab : a ≤ b) (hba : b ≤ a) : a = b := by
+  cases a with
+  | ofNat x =>
+    cases b with
+    | ofNat y =>
+      exact congrArg Int.ofNat (Nat.le_antisymm
+        ((int_ofNat_le_iff x y).mp hab) ((int_ofNat_le_iff y x).mp hba))
+    | negSucc y => exact False.elim (int_not_ofNat_le_negSucc x y hab)
+  | negSucc x =>
+    cases b with
+    | ofNat y => exact False.elim (int_not_ofNat_le_negSucc y x hba)
+    | negSucc y =>
+      exact congrArg Int.negSucc (Nat.le_antisymm
+        ((int_negSucc_le_negSucc_iff y x).mp hba)
+        ((int_negSucc_le_negSucc_iff x y).mp hab))
+
+theorem int_not_add_one_le (a : Int) (h : a + 1 ≤ a) : False := by
+  cases a with
+  | ofNat n =>
+    exact Nat.not_lt_of_le ((int_ofNat_le_iff (n + 1) n).mp h)
+      (Nat.lt_succ_self n)
+  | negSucc m =>
+    cases m with
+    | zero => exact int_not_ofNat_le_negSucc 0 0 h
+    | succ k =>
+      exact Nat.not_lt_of_le ((int_negSucc_le_negSucc_iff k (k + 1)).mp h)
+        (Nat.lt_succ_self k)
+
+theorem int_not_lt_of_ge {a b : Int} (h : b ≤ a) : ¬ (a < b) :=
+  fun hlt => int_not_add_one_le a (int_le_trans hlt h)
+
+theorem int_not_le_of_gt {a b : Int} (h : b < a) : ¬ (a ≤ b) :=
+  fun hle => int_not_add_one_le b (int_le_trans h hle)
+
+theorem int_sub_ofNat_neg_swap (a b : Nat) :
+    Int.ofNat b - Int.ofNat a = Int.neg (Int.ofNat a - Int.ofNat b) := by
+  rw [int_ofNat_sub_eq_subNatNat b a, int_ofNat_sub_eq_subNatNat a b]
+  unfold Int.subNatNat
+  cases Nat.lt_or_ge a b with
+  | inl hab =>
+    rw [Nat.sub_eq_zero_of_le (Nat.le_of_lt hab)]
+    cases hS : b - a with
+    | zero =>
+      exact False.elim (Nat.not_lt_of_le (Nat.le_of_sub_eq_zero hS) hab)
+    | succ _ => rfl
+  | inr hba =>
+    rw [Nat.sub_eq_zero_of_le hba]
+    cases hS : a - b with
+    | zero =>
+      have hEq : a = b := Nat.le_antisymm (Nat.le_of_sub_eq_zero hS) hba
+      subst hEq
+      rfl
+    | succ _ => rfl
 
 /-! ## 5. Total `@Nat.rec` List Indexing and Slice Helpers -/
 
@@ -758,6 +947,31 @@ theorem canary_expanded_init_lemmas_edge (a b : Nat) :
    by rw [int_subNatNat_of_le (Nat.le_add_right a b), nat_add_sub_cancel_left],
    int_negSucc_lt_ofNat 3 0,
    (int_negSucc_lt_negSucc_iff 5 2).mpr (by decide)⟩
+
+/-- Canary exercising Section 3 power-of-two monotonicity and modular
+identities (power-of-two strict monotonicity, nested product modulus, squared
+prime-stride tail wraparound). -/
+theorem canary_nat_mod_edge (n : Nat) :
+    Nat.pow 2 0 < Nat.pow 2 3 ∧
+    Nat.mod (Nat.mod n (4 * 3)) 4 = Nat.mod n 4 ∧
+    Nat.mod (3 * 3 - (0 + 1)) 3 = 3 - (0 + 1) :=
+  ⟨nat_two_pow_lt_of_lt (by decide), nat_mod_mod_mul_left n 4 3,
+    nat_mod_sq_sub_succ 3 0 (by decide)⟩
+
+/-- Canary exercising Section 4 constructive `Int` order and `Int.ofNat`
+subtraction across negative, zero, and nonnegative boundaries. -/
+theorem canary_int_order_sub_edge :
+    Int.negSucc 2 ≤ Int.ofNat 1 ∧
+    Int.negSucc 2 ≤ Int.negSucc 0 ∧
+    ¬ (Int.ofNat 2 < Int.negSucc 0) ∧
+    Int.ofNat 5 - Int.ofNat 2 = Int.ofNat 3 ∧
+    Int.ofNat 2 - Int.ofNat 5 = Int.neg (Int.ofNat 5 - Int.ofNat 2) :=
+  ⟨int_le_trans (int_negSucc_le_ofNat 2 0) ((int_ofNat_le_iff 0 1).mpr
+      (by decide)),
+    (int_negSucc_le_negSucc_iff 2 0).mpr (by decide),
+    int_not_lt_of_ge (int_negSucc_le_ofNat 0 2),
+    int_ofNat_sub_of_le (by decide : 2 ≤ 5),
+    int_sub_ofNat_neg_swap 5 2⟩
 
 end Anneal.InitLemmas
 
