@@ -19,7 +19,7 @@
     },
     {
       "path": "theory/Anneal/AiPcc/MirTransfer.lean",
-      "sha256": "d60a1f8496606cfb44552f0e0a6e9d6bcf4a2ae576183b3f396ef3848d561d5b"
+      "sha256": "552f051727969bcc30e72ce01fd2b1389832ec6c2ede4b486ea04f3966622dc7"
     },
     {
       "path": "theory/Anneal/AiPcc/ReducedProduct.lean",
