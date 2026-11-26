@@ -48,6 +48,12 @@ preserve [`META_PRINCIPLES.md`](META_PRINCIPLES.md),
   exempted `TODO` in source or docs must cite an issue (`TODO(#123):`); commit
   messages must contain none.
 <!-- TODO-check-enable -->
+- **`rustc` workarounds:** When working around a limitation of the upstream Rust
+  toolchain (`rustc`, `rustdoc`, `cargo`, or the standard library) that upstream
+  could address, follow
+  [`docs/rustc-workarounds.md`](docs/rustc-workarounds.md): track it under the
+  umbrella issue (unless under private security disclosure), anchor the code
+  with `RUSTC-WORKAROUND(#NNNN): ...`, and record the five-minute evaluation.
 - **Prose and wrapping:** Follow the writing skills. Wrap Markdown/comments
   at 80 cols (incl. prefixes) where practical, keeping tables/URLs/code
   readable. Indent continuations 2 spaces; separate paragraphs and headings.
@@ -110,14 +116,15 @@ never proves defect absence or substitutes for CI or merge gates.
   archives, governing docs (`META_PRINCIPLES.md`, `PRINCIPLES.md`,
   `THREAT_MODEL.md`, `docs/trust-model.md`), policy files (`AGENTS.md`,
   `CLAUDE.md`, `.gemini/styleguide.md`, `skills/`, `docs/codex-review.md`,
-  `docs/review-policy-design.md`), and editor or agent configs. Every PR's
-  Review Receipt comment (or branch-only handoff) must include a `Human review
-  surface` block listing every changed surface and intentional policy relaxation
-  (or `none`), completed before marking ready for review; PR descriptions reuse
-  the commit (or squash) message verbatim (unwrapped for Markdown). Relevant
-  commit bodies (or squash message) must explain what changed, why, and any
-  rule relaxation or tightening; any omission, mischaracterization, or unsound
-  relaxation blocks merge or ready-for-review.
+  `docs/review-policy-design.md`, `docs/rustc-workarounds.md`), and editor or
+  agent configs. Every PR's Review Receipt comment (or branch-only handoff) must
+  include a `Human review surface` block listing every changed surface and
+  intentional policy relaxation (or `none`), completed before marking ready for
+  review; PR descriptions reuse the commit (or squash) message verbatim
+  (unwrapped for Markdown). Relevant commit bodies (or squash message) must
+  explain what changed, why, and any rule relaxation or tightening; any
+  omission, mischaracterization, or unsound relaxation blocks merge or
+  ready-for-review.
 - **Comparison, diff integrity, and coverage:** Record
   `(target_base, merge_base, head)` (plus dirty or untracked files if
   unpublished). Enumerate every path, mode, dotfile, and companion artifact
@@ -244,7 +251,13 @@ never proves defect absence or substitutes for CI or merge gates.
     two-surface completeness (no hidden preconditions or unlogged assumptions),
     pinned `rust-lang/rust` and `rust-lang/reference` quotes/citations, and
     deterministic, injection-safe emission whenever `base` or `head` emits
-    generated Lean modules (`Mir.lean`, `Proof.lean`).
+    generated Lean modules (`Mir.lean`, `Proof.lean`). Require every new or
+    altered workaround for an upstream Rust toolchain (`rustc`, `rustdoc`,
+    `cargo`, or standard-library) limitation to carry a
+    `RUSTC-WORKAROUND(#NNNN)` anchor naming an evaluated public tracking issue
+    (never `#PENDING`); a guard for an embargoed upstream defect instead names
+    only its neutral fail-closed invariant, keeping the usual rationale and
+    pinned citations.
   - *`trusted/audit/` and `trusted/cargo-anneal/`:*
     - Preserve `TrustedBoundary.lean` allowlists/checks (non-exhaustively:
       `allowedCommandKinds`, `allowedDeclarationKinds`,
@@ -283,8 +296,13 @@ never proves defect absence or substitutes for CI or merge gates.
     elaborator, or prelude changes); hash lockstep alone never suffices. Keep
     tracked manifests, lockfiles, negative tests, and packaged bundles present
     in `base` or `head` synchronized (workspace-independent relative paths,
-    verified against downstream fixtures, never deleted to evade checks).
-    Absent future artifacts are not findings.
+    verified against downstream fixtures, never deleted to evade checks). Absent
+    future artifacts are not findings. On `COMPILER_COMMIT`,
+    `PINNED_RUSTC_COMMIT`, or `rustDate` bumps, require the Review Receipt's
+    workaround audit table, re-verification of private compiler or library
+    internals that open `RUSTC-WORKAROUND` anchors rely on (the Gate 5 approver
+    confirms embargoed guards privately), and deletion of workarounds whose
+    upstream fix the new pin contains.
   - *`ci/` and `.github/`:* Verify that Zerocopy's `ci/checks.toml`, run by
     `.github/workflows/ci-core-{pr,trusted}.yml`, runs
     `sha256sum --check --strict trusted/root-manifest.sha256`, rejects root
@@ -314,8 +332,9 @@ never proves defect absence or substitutes for CI or merge gates.
   contracts, test adequacy, maintainability, and unmechanized conventions
   (Fuchsia headers `Copyright <year> The Fuchsia Authors` matching
   `PRINCIPLES.md` on new code and non-`SKILL.md` Markdown, 80-col prose
-  wrapping, relative links and anchors). For policy edits, check for
-  contradictory duties, missing routing, and authority creep.
+  wrapping, relative links and anchors, and `RUSTC-WORKAROUND(#NNNN)` anchors on
+  upstream toolchain workarounds). For policy edits, check for contradictory
+  duties, missing routing, and authority creep.
 - **Documentation review:**
   <!-- docs-reviewer -->
   Check affected docs, examples, and links against each PR's diff. Flag stale

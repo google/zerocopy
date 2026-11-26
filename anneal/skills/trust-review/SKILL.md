@@ -179,23 +179,22 @@ or audit them is permitted).
 - **100% mechanical TCB reachability and parsimony:** Every declaration in
   `trusted/lean/` (`vetted` and `candidate`, including existing declarations
   whose callers were removed or altered by the diff) must remain **100%
-  mechanically transitively reachable** from the exported claim and auditor
-  root set: `Trusted.Crate`, `Trusted.CrateTheorem`,
-  `Trusted.VerificationResult`, and any `Trusted.*` constant directly emitted
-  by `trusted/rustc-capture/` templates or named by `trusted/audit/`. Compute
-  transitive reachability over `anneal-audit`'s inventory `dependencies` graph
-  starting from those root constants—never treating `theory/` proofs as roots
-  (hosts unable to run `anneal-audit` or inspect the dependency graph mark
-  mechanical reachability `blocked` rather than claiming it passed). Check full
-  closure at stack top or on standalone root-wiring PRs; during a lower PR in a
-  multi-PR stack or staged `candidate:<feature>` bring-up before
-  `trusted/rustc-capture/` emits `Mir.lean`/`Proof.lean`, every declaration
-  must still trace to the declared `Trusted.Crate` / `Trusted.CrateTheorem`
-  interface (or the planned top-of-stack claim root listed in the Review
-  Receipt's `Human review surface` block or commit body) with zero dead or
-  speculative helpers. Evict proof-only helpers out
-  to `theory/` and check `trusted/`-to-`theory/` seams for vacuous or
-  mismatched assumptions (`THREAT_MODEL.md` §2.2).
+  mechanically transitively reachable** from the exported claim and auditor root
+  set: `Trusted.Crate`, `Trusted.CrateTheorem`, `Trusted.VerificationResult`,
+  and any `Trusted.*` constant directly emitted by `trusted/rustc-capture/`
+  templates or named by `trusted/audit/`. Compute transitive reachability over
+  `anneal-audit`'s inventory `dependencies` graph starting from those root
+  constants—never treating `theory/` proofs as roots (hosts unable to run
+  `anneal-audit` or inspect the dependency graph mark mechanical reachability
+  `blocked` rather than claiming it passed). Check full closure at stack top or
+  on standalone root-wiring PRs; during a lower PR in a multi-PR stack or staged
+  `candidate:<feature>` bring-up before `trusted/rustc-capture/` emits
+  `Mir.lean`/`Proof.lean`, every declaration must still trace to the declared
+  `Trusted.Crate` / `Trusted.CrateTheorem` interface (or the planned
+  top-of-stack claim root listed in the Review Receipt's `Human review surface`
+  block or commit body) with zero dead or speculative helpers. Evict proof-only
+  helpers out to `theory/` and check `trusted/`-to-`theory/` seams for vacuous
+  or mismatched assumptions (`THREAT_MODEL.md` §2.2).
 - **Human-auditable comments:** Verify design rationale and invariants, and for
   code modeling Rust semantics or `rustc` structures verify verbatim upstream
   quotes with resolved pinned commit SHAs.
@@ -218,7 +217,8 @@ or audit them is permitted).
   identifiers, or annotation strings cannot inject Lean commands or alter the
   `Proof.verify_crate : Trusted.CrateTheorem Mir.crate` theorem statement.
 - **Upstream citations:** Verify pinned `rust-lang/rust` and
-  `rust-lang/reference` quotes and citations match the pinned commit hash.
+  `rust-lang/reference` quotes and citations match the pinned commit hash; new
+  or altered toolchain workarounds need anchors per `docs/rustc-workarounds.md`.
 
 ### 3. Auditor and orchestrator (`trusted/audit/`, `trusted/cargo-anneal/`)
 
@@ -272,7 +272,8 @@ or audit them is permitted).
   manifests), audit what it now resolves to: source and owner, version,
   provenance, conservative transitive dependencies, pinned checksums, and
   upstream Rust or Lean kernel, elaborator, or prelude changes. Lockstep hash
-  agreement alone is circular and never suffices.
+  agreement alone is circular and never suffices. Compiler-pin bumps also run
+  the `docs/rustc-workarounds.md` retirement audit.
 - **Lockstep artifact closure:** Every tracked derived lockfile, manifest,
   negative test, or packaged bundle present in either `base` or `head` (such as
   `trusted/root-manifest.sha256`, `trusted/lean/foundation-lock.json`,
@@ -280,11 +281,10 @@ or audit them is permitted).
   `trusted/audit/src/lib.rs`—`LOCKED_SYSROOT_FOUNDATION_MANIFEST_SHA256`,
   `LOCKED_UPSTREAM_PIN_SHA256`, `LOCKED_MIRI_COMMIT`,
   `LOCKED_PATCHED_MIRI_FILES`—or packaged toolchain archives) must stay
-  synchronized, use
-  workspace-independent relative paths (never embedding local machine or
-  worktree paths), and pass against downstream consumer fixtures. Never delete
-  a lockfile, test, or bundle to evade a check. Absent future artifacts are not
-  findings.
+  synchronized, use workspace-independent relative paths (never embedding local
+  machine or worktree paths), and pass against downstream consumer fixtures.
+  Never delete a lockfile, test, or bundle to evade a check. Absent future
+  artifacts are not findings.
 
 ### 5. CI workflows and scripts (`ci/` and `.github/`)
 

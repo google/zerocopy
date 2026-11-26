@@ -215,7 +215,7 @@ forbid_names = {
 }
 forbid_paths = {
     "docs/codex-review.md", "docs/review-policy-design.md",
-    "docs/trust-model.md",
+    "docs/rustc-workarounds.md", "docs/trust-model.md",
 }
 forbid_top_dirs = {"ci", "skills", "trusted"}
 forbid_build_exts = (
@@ -251,18 +251,18 @@ while i < len(toks):
     raw_segs = path.split("/")
     if not path or path.startswith("/") or any(s in ("", ".", "..") for s in raw_segs):
         sys.exit(f"invalid path segment: {path!r}")
-    segs = pathlib.PurePosixPath(path).parts
+    rel = path.removeprefix("anneal/")
     if not in_scope(path):
         sys.exit(f"out of allowed scope: {path!r}")
-    path_l = path.lower()
-    segs_l = [s.lower() for s in segs]
+    path_l = path.lower().removeprefix("anneal/")
+    segs_l = path_l.split("/")
     base_l = segs_l[-1]
     if (base_l == "agents.override.md"
             or any(s in (".git", ".cargo", ".lake", "target") for s in segs_l)
             or segs_l[0].startswith("result")
             or base_l.startswith((".git", "rust-toolchain"))
             or base_l == ".envrc"
-            or (base_l == "lean-toolchain" and path != "trusted/lean/lean-toolchain")
+            or (base_l == "lean-toolchain" and rel != "trusted/lean/lean-toolchain")
             or base_l.endswith(forbid_build_exts)):
         sys.exit(f"unconditionally forbidden path: {path!r}")
     if path in allow_pol:
@@ -273,7 +273,7 @@ while i < len(toks):
             or base_l.startswith("lakefile")
             or segs_l[0] in forbid_top_dirs
             or base_l.endswith(forbid_exts)
-            or (base_l.endswith(".lean") and segs[0] != "theory")):
+            or (base_l.endswith(".lean") and rel.split("/")[0] != "theory")):
         sys.exit(f"forbidden path: {path!r}")
 ' || fail "per-commit path/mode audit failed"
 

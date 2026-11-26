@@ -188,7 +188,8 @@ HRS_ANNEAL_FILES = {
     "Cargo.toml", "Cargo.lock", "flake.nix", "flake.lock",
     "META_PRINCIPLES.md", "PRINCIPLES.md", "THREAT_MODEL.md",
     "docs/trust-model.md", "docs/codex-review.md",
-    "docs/review-policy-design.md", "theory/bundle-manifest.json",
+    "docs/review-policy-design.md", "docs/rustc-workarounds.md",
+    "theory/bundle-manifest.json",
 }
 # Zerocopy root paths that Anneal audits as part of its boundary, including
 # the root `ci/` that holds trusted CI configuration such as
