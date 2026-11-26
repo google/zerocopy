@@ -51,7 +51,7 @@
     },
     {
       "path": "theory/Anneal/Firewall.lean",
-      "sha256": "2a3c80c5c56109d99edd372778664281958f4e358b88be259f84146a64a49435"
+      "sha256": "57e7f5b9ff25fe9a28045643da947c761e8ba55a32d67004f4e62a831dc4bd58"
     },
     {
       "path": "theory/Anneal/Framework.lean",

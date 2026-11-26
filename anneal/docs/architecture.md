@@ -406,8 +406,9 @@ connects the verification layers to Stage 2 by kernel-checked refinement proofs:
   `theory/Anneal/{RefFrame,SafeTwin,SepAC,SpatialPinV2,WavefrontReclaim}/`, and
   planned `Theory/Rust/{Wp,Tactics}/`):**
   Weakest-precondition calculi, loop-invariant and simulation combinators,
-  Diaconescu classical excluded middle and existential choice, WHNF and
-  rewrite firewall combinators, foundation-locked helper lemmas (`Bool` and
+  Diaconescu classical excluded middle and existential choice, WHNF, rewrite,
+  and goal-directed `ite` firewall combinators, foundation-locked helper lemmas
+  (`Bool` and
   `BEq` reflection including polymorphic `List.beq`, `Nat` modular and
   power-of-two arithmetic, `Nat.bitwise`/`Nat.testBit`/shift/extensionality
   laws, constructive `Int` order and subtraction, list
@@ -576,7 +577,7 @@ anneal/
     │   ├── ConjunctiveWp.lean      # Anti-monotonic WLP, conjunctive WP & pow2 fuel (+ ConjunctiveWp/)
     │   ├── Core.lean               # BlockTree, SepPCM & StepStageCut (+ Core/)
     │   ├── F2Simd.lean             # F2-linear/bilinear & SIMD certificate evaluators (+ F2Simd/)
-    │   ├── Firewall.lean           # WHNF & rewrite firewall combinators
+    │   ├── Firewall.lean           # WHNF, rewrite & goal-directed ite firewall combinators
     │   ├── Framework.lean          # Envelope laws & legacy bridges (+ Framework/)
     │   ├── Framework/StepWp.lean   # Generic step/checkpoint WP, cuts & loop rules
     │   ├── GaloisCodec.lean        # Galois byte-layout, zerocopy & transmute laws (+ GaloisCodec/)
