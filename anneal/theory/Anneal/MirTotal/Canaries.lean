@@ -370,6 +370,150 @@ theorem canary_calls_verified :
         .returned ⟨.scalar ⟨.i16, false, BitVec.ofNat 128 42⟩, ⟨[]⟩⟩,
         rfl, rfl⟩
 
+/-- Safe unsigned division program exercising `TerminatorKind.assert`:
+`if b == 0 { 0 } else { assert(!(b == 0)); a / b }`. -/
+@[expose] def progSafeDivAssert : Program :=
+  { bodies :=
+      [{ identity := "mir_total::safe_div_assert"
+         argumentCount := 2
+         locals := [.int .i32 false, .int .i32 false, .int .i32 false, .bool]
+         basicBlocks :=
+           [{ statements :=
+                [.assign ⟨3, []⟩
+                  (.binaryOp .eq (.copy ⟨2, []⟩)
+                    (.constant ⟨.int .i32 false, .scalar (BitVec.ofNat 128 0)⟩))]
+              terminator := .switchInt (.copy ⟨3, []⟩) ⟨[(BitVec.ofNat 128 0, 2)], 1⟩
+              cleanup := false },
+            { statements :=
+                [.assign ⟨0, []⟩
+                  (.use (.constant ⟨.int .i32 false, .scalar (BitVec.ofNat 128 0)⟩))]
+              terminator := .return_
+              cleanup := false },
+            { statements := []
+              terminator := .assert (.copy ⟨3, []⟩) false .divByZero 3 .continue_
+              cleanup := false },
+            { statements :=
+                [.assign ⟨0, []⟩ (.binaryOp .div (.copy ⟨1, []⟩) (.copy ⟨2, []⟩))]
+              terminator := .return_
+              cleanup := false }] }]
+    entryDefId := 0
+    scope := .unit
+    pointerWidthBits := 64
+    mirProfileVersion := 1 }
+
+/-- Verifies Profile v1 passing `Assert` (`20 / 4 = 5`), zero-guard bypass
+(`20 / 0 = 0`), failing `.divByZero` under `.unwind` (`.fault .unsupported`),
+non-`.bool` condition rejection (`i8` and `i32` scalars ->
+`.fault .unsupported`), failing `.nullPtrDeref` and `.misalignedPtrDeref` under
+`.abort` (`.fault .undefined`), and failing optional `.overflow .add` under
+`.abort` (`.fault .unsupported`) through `evalMirFuelTotal`,
+`evalTerminatorComp`, and `evalStep`, together with a Profile v2
+(`mirProfileVersion := 2`, `panicStrategy := .abort`,
+`hasLocalPanicHandler := false`) failing `.divByZero` transition reaching
+`.done (.aborted ⟨[]⟩)` via `evalStepV2` and `Anneal.MirWp.execProgV2`. -/
+theorem assert_terminator_positive_and_negative_canaries :
+    evalMirFuelTotal progSafeDivAssert 8
+      { frames := [{ defId := 0, blockIdx := 0, stmtIdx := 0,
+                     locals := [.immediate none,
+                       .immediate (some (.scalar ⟨.i32, false, BitVec.ofNat 128 20⟩)),
+                       .immediate (some (.scalar ⟨.i32, false, BitVec.ofNat 128 4⟩)),
+                       .immediate none] }]
+        callerMem := ⟨[]⟩
+        mem := entryMemoryComp } =
+      .done (.returned ⟨.scalar ⟨.i32, false, BitVec.ofNat 128 5⟩, ⟨[]⟩⟩) ∧
+    evalMirFuelTotal progSafeDivAssert 8
+      { frames := [{ defId := 0, blockIdx := 0, stmtIdx := 0,
+                     locals := [.immediate none,
+                       .immediate (some (.scalar ⟨.i32, false, BitVec.ofNat 128 20⟩)),
+                       .immediate (some (.scalar ⟨.i32, false, BitVec.ofNat 128 0⟩)),
+                       .immediate none] }]
+        callerMem := ⟨[]⟩
+        mem := entryMemoryComp } =
+      .done (.returned ⟨.scalar ⟨.i32, false, BitVec.ofNat 128 0⟩, ⟨[]⟩⟩) ∧
+    evalTerminatorComp
+      { identity := "a", argumentCount := 0, locals := [.unit, .bool], basicBlocks := [] }
+      { statements := [], terminator := .assert (.copy ⟨1, []⟩) false .divByZero 0 .continue_,
+        cleanup := false }
+      { defId := 0, blockIdx := 0, stmtIdx := 0,
+        locals := [.immediate (some .unit), .immediate (some (.bool true))] }
+      entryMemoryComp ⟨[]⟩ = .fault .unsupported ∧
+    evalTerminatorComp
+      { identity := "a", argumentCount := 0, locals := [.unit, .int .i8 false],
+        basicBlocks := [] }
+      { statements := [], terminator := .assert (.copy ⟨1, []⟩) false .divByZero 0 .continue_,
+        cleanup := false }
+      { defId := 0, blockIdx := 0, stmtIdx := 0,
+        locals := [.immediate (some .unit),
+          .immediate (some (.scalar ⟨.i8, false, BitVec.ofNat 128 2⟩))] }
+      entryMemoryComp ⟨[]⟩ = .fault .unsupported ∧
+    evalTerminatorComp
+      { identity := "a", argumentCount := 0, locals := [.unit, .int .i32 false],
+        basicBlocks := [] }
+      { statements := [], terminator := .assert (.copy ⟨1, []⟩) false .divByZero 0 .continue_,
+        cleanup := false }
+      { defId := 0, blockIdx := 0, stmtIdx := 0,
+        locals := [.immediate (some .unit),
+          .immediate (some (.scalar ⟨.i32, false, BitVec.ofNat 128 0⟩))] }
+      entryMemoryComp ⟨[]⟩ = .fault .unsupported ∧
+    evalTerminatorComp
+      { identity := "a", argumentCount := 0, locals := [.unit, .bool], basicBlocks := [] }
+      { statements := [], terminator := .assert (.copy ⟨1, []⟩) true .nullPtrDeref 0 .unreachable,
+        cleanup := false }
+      { defId := 0, blockIdx := 0, stmtIdx := 0,
+        locals := [.immediate (some .unit), .immediate (some (.bool false))] }
+      entryMemoryComp ⟨[]⟩ .abort false = .fault .undefined ∧
+    evalTerminatorComp
+      { identity := "a", argumentCount := 0, locals := [.unit, .bool], basicBlocks := [] }
+      { statements := [],
+        terminator := .assert (.copy ⟨1, []⟩) true .misalignedPtrDeref 0 .unreachable,
+        cleanup := false }
+      { defId := 0, blockIdx := 0, stmtIdx := 0,
+        locals := [.immediate (some .unit), .immediate (some (.bool false))] }
+      entryMemoryComp ⟨[]⟩ .abort false = .fault .undefined ∧
+    evalTerminatorComp
+      { identity := "a", argumentCount := 0, locals := [.unit, .bool], basicBlocks := [] }
+      { statements := [],
+        terminator := .assert (.copy ⟨1, []⟩) true (.overflow .add) 0 .unreachable,
+        cleanup := false }
+      { defId := 0, blockIdx := 0, stmtIdx := 0,
+        locals := [.immediate (some .unit), .immediate (some (.bool false))] }
+      entryMemoryComp ⟨[]⟩ .abort false = .fault .unsupported ∧
+    evalStep
+      { bodies :=
+          [{ identity := "a", argumentCount := 0, locals := [.unit, .bool],
+             basicBlocks :=
+               [{ statements := [],
+                  terminator := .assert (.copy ⟨1, []⟩) false .divByZero 0 .continue_,
+                  cleanup := false }] }]
+        entryDefId := 0, scope := .unit, pointerWidthBits := 64, mirProfileVersion := 1 }
+      0
+      { frames := [{ defId := 0, blockIdx := 0, stmtIdx := 0,
+                     locals := [.immediate (some .unit), .immediate (some (.bool true))] }]
+        callerMem := ⟨[]⟩, mem := entryMemoryComp } = .fault .unsupported ∧
+    evalStepV2
+      { bodies :=
+          [{ identity := "a", argumentCount := 1, locals := [.unit, .bool],
+             basicBlocks :=
+               [{ statements := [],
+                  terminator := .assert (.copy ⟨1, []⟩) false .divByZero 0 .unreachable,
+                  cleanup := false }] }]
+        entryDefId := 0, scope := .unit, pointerWidthBits := 64, mirProfileVersion := 2,
+        panicStrategy := .abort, hasLocalPanicHandler := false }
+      { frames := [{ defId := 0, blockIdx := 0, stmtIdx := 0,
+                     locals := [.immediate none, .immediate (some (.bool true))] }]
+        callerMem := ⟨[]⟩, mem := entryMemoryComp } = .done (.aborted ⟨[]⟩) ∧
+    Anneal.MirWp.execProgV2
+      { bodies :=
+          [{ identity := "a", argumentCount := 1, locals := [.unit, .bool],
+             basicBlocks :=
+               [{ statements := [],
+                  terminator := .assert (.copy ⟨1, []⟩) false .divByZero 0 .unreachable,
+                  cleanup := false }] }]
+        entryDefId := 0, scope := .unit, pointerWidthBits := 64, mirProfileVersion := 2,
+        panicStrategy := .abort, hasLocalPanicHandler := false }
+      1 { args := [.bool true] } (fun out => out = .aborted ⟨[]⟩) :=
+  ⟨rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl⟩
+
 end Anneal.MirTotal
 
 end
