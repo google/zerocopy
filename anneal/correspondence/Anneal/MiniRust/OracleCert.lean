@@ -1395,7 +1395,8 @@ private theorem evalRvalue_mrWF (bodyLocals : List MirTy) (dstTy : MirTy)
           | _ => cases hadm
   | useRetag _ | ref _ _ | addressOf _ _ | fakeAddressOf _
   | aggregateTuple _ | aggregateArray _ _ | repeat_ _ _ _
-  | aggregateRangeTo _ _ | aggregateRangeFrom _ _ | unsupported => cases hadm
+  | aggregateRange _ _ _ | aggregateRangeTo _ _ | aggregateRangeFrom _ _
+  | aggregateOption _ _ _ | unsupported => cases hadm
 
 private theorem storageDeadFrame_mrWF (frame : StackFrame) (mem : MrMemory)
     (id : LocalName) (hid : id < frame.func.locals.length)

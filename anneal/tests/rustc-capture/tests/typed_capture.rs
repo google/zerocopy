@@ -2440,6 +2440,10 @@ fn unmodeled_projections_tuples_casts_and_operators_fail_closed() {
             "checked_div_assert_terminator",
             b"pub fn selected(a: u32, b: u32) -> u32 { a / b }\n",
         ),
+        (
+            "checked_add_option_call",
+            b"pub fn selected(a: u32, b: u32) -> Option<u32> { a.checked_add(b) }\n",
+        ),
     ];
     for (name, source) in v2_admitted_cases {
         let fixture = Capture::new(source);
@@ -2455,9 +2459,9 @@ fn unmodeled_projections_tuples_casts_and_operators_fail_closed() {
             "unsupported place projection",
         ),
         (
-            "checked_add_option_call",
-            b"pub fn selected(a: u32, b: u32) -> Option<u32> { a.checked_add(b) }\n",
-            "unsupported type",
+            "checked_div_option_call",
+            b"pub fn selected(a: u32, b: u32) -> Option<u32> { a.checked_div(b) }\n",
+            "unsupported",
         ),
         (
             "transmute_cast_kind",
@@ -2673,7 +2677,7 @@ fn unsupported_calls_fail_closed() {
         ),
         (
             "external_non_whitelisted_core_call",
-            b"pub fn selected(x: u16) -> u16 { x.saturating_add(1) }\n",
+            b"pub fn selected(x: u16) -> u16 { x.swap_bytes() }\n",
             "unsupported core call",
         ),
         (
@@ -3459,7 +3463,7 @@ pub fn id(x: u64) -> u64 { x }
     assert!(call_out.status.success(), "{call_out:?}");
 
     let unsupported_call =
-        b"pub fn caller(x: u64) -> u64 { x.saturating_add(1) }\nfn main() {}\n";
+        b"pub fn caller(x: u64) -> u64 { x.swap_bytes() }\nfn main() {}\n";
     let unsup_bin = Capture::new(unsupported_call);
     let unsup_out =
         unsup_bin.command().args(["--crate-type=bin", "--select=caller"]).output().unwrap();
@@ -4908,6 +4912,12 @@ fn profile_v2_refuses_unsupported_pointer_casts_and_unsized_types() {
                  unsafe { *p = x; }\n\
              }\n",
         ),
+        (
+            "nested-option",
+            "pub fn selected(x: Option<Option<u64>>) -> bool {\n\
+                 match x { Some(_) => true, None => false }\n\
+             }\n",
+        ),
     ] {
         let fixture = Capture::new(source.as_bytes());
         let output = fixture.selected_command().output().unwrap();
@@ -5103,18 +5113,126 @@ fn crate_named_core_cannot_spoof_trusted_core_items() {
         }\n\
         use crate::core::ops::range::RangeTo;\n\
         pub fn selected(x: usize) -> RangeTo<usize> { RangeTo::B(x) }\n";
+    let range_spoof = b"\
+        pub mod core {\n\
+            pub mod ops {\n\
+                pub mod range {\n\
+                    #[derive(Clone, Copy)]\n\
+                    pub struct Range<T> { pub start: T, pub end: T }\n\
+                }\n\
+            }\n\
+        }\n\
+        use crate::core::ops::range::Range;\n\
+        pub fn selected(a: usize, b: usize) -> Range<usize> {\n\
+            Range { start: a, end: b }\n\
+        }\n";
+    let option_enum_spoof = b"\
+        pub mod core {\n\
+            pub mod option {\n\
+                pub enum Option<T> { None, Some(T) }\n\
+            }\n\
+        }\n\
+        use crate::core::option::Option;\n\
+        pub fn selected(x: u64) -> Option<u64> { Option::Some(x) }\n";
+    let option_struct_spoof = b"\
+        pub mod core {\n\
+            pub mod option {\n\
+                #[derive(Clone, Copy)]\n\
+                pub struct Option<T>(pub T);\n\
+            }\n\
+        }\n\
+        use crate::core::option::Option;\n\
+        pub fn selected(x: u64) -> Option<u64> { Option(x) }\n";
+    // Local free functions under `pub mod core` compile without E0034 under
+    // `--crate-name=core` and print as `core::cmp::min` / `core::mem::replace`.
+    // They resolve to crate-local callees, so capture routes them as
+    // intra-crate calls (refused as generic) and never consults the trusted
+    // `core_def_path` tables.
+    let free_fn_spoof = b"\
+        pub mod core {\n\
+            pub mod cmp {\n\
+                pub fn min<T>(_a: T, b: T) -> T { b }\n\
+            }\n\
+            pub mod mem {\n\
+                pub fn replace<T>(_dst: &mut T, src: T) -> T { src }\n\
+            }\n\
+        }\n\
+        pub fn selected(a: u64, b: u64) -> u64 { crate::core::cmp::min(a, b) }\n";
+    let mem_replace_spoof = b"\
+        pub mod core {\n\
+            pub mod mem {\n\
+                pub fn replace<T>(_dst: &mut T, src: T) -> T { src }\n\
+            }\n\
+        }\n\
+        pub fn selected(dst: &mut u64, src: u64) -> u64 {\n\
+            crate::core::mem::replace(dst, src)\n\
+        }\n";
     for (name, source, expected) in [
         ("two-field struct RangeTo", &struct_spoof[..], "unsupported type"),
         ("payload enum RangeTo", &enum_spoof[..], "unsupported type"),
+        ("local struct Range", &range_spoof[..], "unsupported type"),
+        ("local enum Option", &option_enum_spoof[..], "unsupported type"),
+        ("local struct Option", &option_struct_spoof[..], "unsupported type"),
+        ("local core::cmp::min call", &free_fn_spoof[..], "calls to generic or monomorphized"),
+        (
+            "local core::mem::replace call",
+            &mem_replace_spoof[..],
+            "calls to generic or monomorphized",
+        ),
     ] {
         let fixture = Capture::new(source);
         let output = fixture.command_with("core", true).arg("--select=selected").output().unwrap();
         assert_refused(name, &fixture, &output, expected);
     }
 
-    // Look-alike `core::slice::<impl [T]>::len` and
-    // `core::ptr::const_ptr::<impl *const T>::add` cannot reach the call
-    // table. Defining inherent impls on primitive types requires
+    // Sysroot near-misses inside the authenticated `core` crate isolate the
+    // `LangItem::{RangeTo, RangeFrom, Range}` and `LangItem::Option` checks in
+    // `core_range` and `is_core_option` (whose companion
+    // `!def.is_local() && sysroot_core_crate` pins are defense-in-depth
+    // unkillable by construction, as a local `#[lang = "Range" | "Option"]`
+    // fails with E0152 when sysroot `core` is linked and hits the crate-local
+    // lang-item refusal under `#![no_core]`).
+    let sysroot_range_inclusive = b"\
+        pub fn selected(r: ::core::ops::RangeInclusive<usize>) -> bool {\n\
+            let _ = r;\n\
+            true\n\
+        }\n";
+    let sysroot_new_range = b"\
+        #![feature(new_range_api)]\n\
+        pub fn selected(a: usize, b: usize) -> ::core::range::Range<usize> {\n\
+            ::core::range::Range { start: a, end: b }\n\
+        }\n";
+    let sysroot_poll_enum = b"\
+        pub fn selected(x: u64) -> ::core::task::Poll<u64> {\n\
+            ::core::task::Poll::Ready(x)\n\
+        }\n";
+    for (name, source, extra_args, expected) in [
+        ("sysroot RangeInclusive<usize>", &sysroot_range_inclusive[..], &[][..], "unsupported type"),
+        (
+            "sysroot core::range::Range<usize> feature gated",
+            &sysroot_new_range[..],
+            &[][..],
+            "#![feature(new_range_api)] is unsupported",
+        ),
+        (
+            "sysroot core::range::Range<usize>",
+            &sysroot_new_range[..],
+            &["--allow-unstable-feature=new_range_api"][..],
+            "unsupported type",
+        ),
+        ("sysroot core::task::Poll<u64>", &sysroot_poll_enum[..], &[][..], "unsupported type"),
+    ] {
+        let fixture = Capture::new(source);
+        let mut cmd = fixture.selected_command();
+        cmd.args(extra_args);
+        let output = cmd.output().unwrap();
+        assert_refused(name, &fixture, &output, expected);
+    }
+
+    // Look-alike `core::slice::<impl [T]>::len`,
+    // `core::ptr::const_ptr::<impl *const T>::add`, and
+    // `core::num::<impl u64>::checked_add` cannot reach the call table.
+    // Defining inherent impls on primitive types requires
     // `#![feature(rustc_attrs)]` + `#![rustc_coherence_is_core]`, which the
     // closed positive feature allowlist now rejects before macro expansion.
     let method_spoof = b"\
@@ -5131,18 +5249,31 @@ fn crate_named_core_cannot_spoof_trusted_core_items() {
                     }\n\
                 }\n\
             }\n\
+            pub mod num {\n\
+                impl u64 {\n\
+                    pub fn checked_add(self, _rhs: Self) -> Option<Self> { Some(7) }\n\
+                }\n\
+            }\n\
         }\n\
         pub fn selected(s: &[u8]) -> usize { s.len() }\n\
+        pub fn checked(x: u64) -> Option<u64> { x.checked_add(1) }\n\
         pub unsafe fn add(p: *const u8) -> *const u8 { unsafe { p.add(1) } }\n";
-    let fixture = Capture::new(method_spoof);
-    let output = fixture.command_with("core", true).arg("--select=selected").output().unwrap();
-    assert_refused("method spoof", &fixture, &output, "#![feature(rustc_attrs)] is unsupported");
+    for sel in ["--select=selected", "--select=checked"] {
+        let fixture = Capture::new(method_spoof);
+        let output = fixture.command_with("core", true).arg(sel).output().unwrap();
+        assert_refused(
+            &format!("method spoof ({sel})"),
+            &fixture,
+            &output,
+            "#![feature(rustc_attrs)] is unsupported",
+        );
+    }
 
     // Without the sysroot `core` (`#![no_core]`), the closed positive feature
     // allowlist refuses `#![feature(no_core, lang_items, rustc_attrs)]` on
     // normal crates, and even under `--stdlib-crate=core` (where those
-    // features are pinned), `s.len()` cannot spoof `CoreCallOp::SliceLen` and
-    // falls through to the local generic call refusal.
+    // features are pinned), `s.len()` and `x.checked_add(1)` cannot spoof core
+    // contracts and fall through to unsupported type/call refusals.
     let no_core_spoof = b"\
         #![feature(no_core, lang_items, rustc_attrs)]\n\
         #![no_core]\n\
@@ -5152,17 +5283,36 @@ fn crate_named_core_cannot_spoof_trusted_core_items() {
         #[lang = \"sized\"] pub trait Sized: MetaSized {}\n\
         #[lang = \"copy\"] pub trait Copy {}\n\
         impl Copy for usize {}\n\
+        impl Copy for u64 {}\n\
         #[lang = \"legacy_receiver\"] pub trait LegacyReceiver: PointeeSized {}\n\
         impl<T: PointeeSized> LegacyReceiver for &T {}\n\
         pub mod core {\n\
+            pub mod option {\n\
+                pub enum Option<T> { None, Some(T) }\n\
+            }\n\
             pub mod slice {\n\
                 impl<T> [T] { pub fn len(&self) -> usize { 7 } }\n\
             }\n\
+            pub mod num {\n\
+                impl u64 {\n\
+                    pub fn checked_add(self, _rhs: Self) -> super::option::Option<Self> {\n\
+                        super::option::Option::Some(self)\n\
+                    }\n\
+                }\n\
+            }\n\
         }\n\
-        pub fn selected(s: &[u8]) -> usize { s.len() }\n";
-    let fixture = Capture::new(no_core_spoof);
-    let output = fixture.command_with("core", true).arg("--select=selected").output().unwrap();
-    assert_refused("no_core spoof", &fixture, &output, "lang_items, no_core, rustc_attrs");
+        pub fn selected(s: &[u8]) -> usize { s.len() }\n\
+        pub fn checked(x: u64) -> crate::core::option::Option<u64> { x.checked_add(1) }\n";
+    for sel in ["--select=selected", "--select=checked"] {
+        let fixture = Capture::new(no_core_spoof);
+        let output = fixture.command_with("core", true).arg(sel).output().unwrap();
+        assert_refused(
+            &format!("no_core spoof ({sel})"),
+            &fixture,
+            &output,
+            "lang_items, no_core, rustc_attrs",
+        );
+    }
 
     let stdlib_fixture = Capture::new(no_core_spoof);
     let stdlib_output = stdlib_fixture
@@ -5175,6 +5325,18 @@ fn crate_named_core_cannot_spoof_trusted_core_items() {
         &stdlib_fixture,
         &stdlib_output,
         "calls to generic or monomorphized functions (`core::slice::<impl [T]>::len`) are unsupported",
+    );
+    let stdlib_checked_fixture = Capture::new(no_core_spoof);
+    let stdlib_checked_output = stdlib_checked_fixture
+        .command_with("core", true)
+        .args(["--stdlib-crate=core", "--select=checked"])
+        .output()
+        .unwrap();
+    assert_refused(
+        "no_core stdlib spoof checked",
+        &stdlib_checked_fixture,
+        &stdlib_checked_output,
+        "unsupported type",
     );
 }
 
@@ -5961,4 +6123,104 @@ pub fn two_mut_slice_pats(a: &mut [u8], b: &mut [u32], v: u32) -> u32 {
         "set_first should reach Index projection refusal: {idx_msg}"
     );
     idx_fix.assert_no_capture_artifacts();
+}
+
+#[test]
+fn captures_core_contracts_range_scalar_slice_mem_and_option() {
+    let src = b"\
+        pub fn slice_ranges<'a>(s: &'a [u8], a: usize, b: usize) -> (&'a [u8], &'a [u8]) {\n\
+            (&s[a..b], &s[a..])\n\
+        }\n\
+        pub fn slice_range_mut<'a>(s: &'a mut [u8], a: usize, b: usize) -> &'a mut [u8] {\n\
+            &mut s[a..b]\n\
+        }\n\
+        pub fn scalar_contracts(a: u64, b: u64, s: u32, x: usize, y: usize) -> (bool, usize, u64, u32, (u64, bool)) {\n\
+            let m = a.is_multiple_of(b) && x.is_multiple_of(8) && (s.is_multiple_of(2));\n\
+            let sat = x.saturating_add(y);\n\
+            let mn = core::cmp::min(x, y);\n\
+            let w = a.wrapping_shl(s) ^ a.wrapping_shr(s);\n\
+            let lz = a.leading_zeros();\n\
+            let (_, ov) = a.overflowing_sub(b);\n\
+            let (sum, c) = a.overflowing_add(b);\n\
+            (m, sat ^ mn, w ^ sum, lz, (sum, ov ^ c))\n\
+        }\n\
+        pub fn checked_and_option(a: usize, b: usize, mut opt: Option<u64>, p: &mut u64) -> (bool, usize, u64) {\n\
+            let c1 = a.checked_add(b);\n\
+            let c2 = a.checked_mul(2);\n\
+            let c3 = a.checked_sub(1);\n\
+            let v1 = match c1 { Some(x) => x, None => 0 };\n\
+            let v2 = match c2 { Some(y) => y, None => 0 };\n\
+            let v3 = match c3 { Some(z) => z, None => 0 };\n\
+            let v = v1 ^ v2 ^ v3;\n\
+            let was_some = opt.is_some();\n\
+            let not_some = opt.is_none();\n\
+            let taken = opt.take();\n\
+            let old = core::mem::replace(p, 99);\n\
+            let made = if was_some && !not_some { Some(old) } else { None };\n\
+            let out = match made {\n\
+                Some(x) => taken.unwrap() ^ x,\n\
+                None => old,\n\
+            };\n\
+            (was_some, v, out)\n\
+        }\n\
+        pub fn slice_helpers<'a>(s: &'a [u8], mid: usize) -> (bool, (&'a [u8], &'a [u8])) {\n\
+            (s.is_empty(), s.split_at(mid))\n\
+        }\n";
+    let cap = Capture::new(src);
+    let out = cap.command().arg("--scope=crate").output().unwrap();
+    assert!(
+        out.status.success(),
+        "Core contracts capture failed:\n{}\n{}",
+        stdout(&out),
+        stderr(&out)
+    );
+    let manifest = cap.manifest();
+    assert_eq!(manifest["program"]["mir_profile_version"], 2, "{manifest}");
+    let lean = std::fs::read_to_string(cap.output.join("Captured.lean")).unwrap();
+    for needle in [
+        "MirTy.range",
+        "MirTy.option",
+        "ProjectionElem.downcast",
+        "Rvalue.aggregateRange",
+        "Rvalue.aggregateOption",
+        "CoreCallOp.sliceIndexRange",
+        "CoreCallOp.sliceIndexRangeFrom",
+        "CoreCallOp.sliceIsEmpty",
+        "CoreCallOp.sliceSplitAt",
+        "CoreCallOp.numIsMultipleOf",
+        "CoreCallOp.numCheckedAdd",
+        "CoreCallOp.numCheckedMul",
+        "CoreCallOp.numCheckedSub",
+        "CoreCallOp.numSaturatingAdd",
+        "CoreCallOp.numWrappingShl",
+        "CoreCallOp.numWrappingShr",
+        "CoreCallOp.numLeadingZeros",
+        "CoreCallOp.numOverflowingAdd",
+        "CoreCallOp.numOverflowingSub",
+        "CoreCallOp.cmpMin",
+        "CoreCallOp.memReplace",
+        "CoreCallOp.optionIsSome",
+        "CoreCallOp.optionIsNone",
+        "CoreCallOp.optionTake",
+        "CoreCallOp.optionUnwrap",
+    ] {
+        assert!(lean.contains(needle), "missing {needle} in:\n{lean}");
+    }
+}
+
+#[test]
+fn rejects_non_zst_integer_pointer_constant_in_profile_v2() {
+    let src = b"\
+        const BAD_PTR: *const u64 = 2 as *const u64;\n\
+        pub fn read_bad_const_ptr() -> *const u64 {\n\
+            BAD_PTR\n\
+        }\n";
+    let cap = Capture::new(src);
+    let out = cap.command().arg("--scope=crate").output().unwrap();
+    assert!(
+        !out.status.success(),
+        "expected non-ZST integer pointer constant to fail closed:\nstdout={}\nstderr={}",
+        stdout(&out),
+        stderr(&out)
+    );
 }

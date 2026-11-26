@@ -1497,7 +1497,7 @@ theorem framework_canary : FrameworkCanaryClaim := by
             have hEq : r = .ptr ⟨none, 0, .isize⟩ := hAnd.2
             have hValid := hAnd.1.2.2.2.1
             rw [hEq] at hValid
-            unfold refsValidInMem refValidInMem layoutOfTyV2 u8Ty intLayout
+            unfold refsValidInMem refValidInMem layoutOfTyV2 u8Ty
               at hValid
             exact Bool.noConfusion hValid
       | inr hRest2 =>
@@ -1523,7 +1523,7 @@ theorem framework_canary : FrameworkCanaryClaim := by
             have hMemEq : m = ⟨[]⟩ := hAnd.2.2
             have hValid := hAnd.1.2.2.2.1
             rw [hEq, hMemEq] at hValid
-            unfold refsValidInMem refValidInMem layoutOfTyV2 u8Ty intLayout
+            unfold refsValidInMem refValidInMem layoutOfTyV2 u8Ty
               entryMemoryWithCaller findAllocation at hValid
             exact Bool.noConfusion hValid
       | inr hRest2 =>

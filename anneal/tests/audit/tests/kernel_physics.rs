@@ -64,7 +64,7 @@ const ALLOWED_QUOT_SOUND_ENTRIES: &[(&str, &str)] = &[
 /// Exact number of compiler-generated `_sparseCasesOn` helpers in the bundled
 /// theory. Each one is a `casesOn` over a large inductive that the kernel
 /// unfolds whenever it reduces the enclosing match.
-const MAX_SPARSE_CASES_ON: usize = 273;
+const MAX_SPARSE_CASES_ON: usize = 270;
 
 fn repo_root() -> PathBuf {
     Path::new(env!("CARGO_MANIFEST_DIR")).parent().unwrap().parent().unwrap().to_path_buf()

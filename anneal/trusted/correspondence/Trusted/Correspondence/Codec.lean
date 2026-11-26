@@ -35,6 +35,7 @@ inductive RefProjectionElem where
   | deref
   | field (fieldIdx : FieldIdx) (ty : TyId)
   | constantIndex (offset : Nat) (minLength : Nat) (fromEnd : Bool)
+  | downcast (variantIdx : Nat)
   | unsupported
 
 /-- Reference MIR place (`Miri.MIR.Place`). -/
@@ -69,6 +70,9 @@ inductive RefRvalue where
   | useRetag (op : RefOperand)
   | aggregateRangeTo (elemTy : TyId) (endOp : RefOperand)
   | aggregateRangeFrom (elemTy : TyId) (startOp : RefOperand)
+  | aggregateRange (elemTy : TyId) (startOp endOp : RefOperand)
+  | aggregateOption (variantIdx : Nat) (innerTy : TyId)
+      (payload : Option RefOperand)
   | unsupported
 
 /-- Reference MIR statement (`Miri.MIR.StatementKind`). -/
@@ -196,6 +200,8 @@ mutual
     | .array elem len => insertTy (.array elem len) (collectTy acc elem)
     | .rangeTo elem => insertTy (.rangeTo elem) (collectTy acc elem)
     | .rangeFrom elem => insertTy (.rangeFrom elem) (collectTy acc elem)
+    | .range elem => insertTy (.range elem) (collectTy acc elem)
+    | .option elem => insertTy (.option elem) (collectTy acc elem)
     | .tuple fs => insertTy (.tuple fs) (collectTyList acc fs)
 
   /-- Intern a list of `MirTy` descriptors left-to-right. -/
@@ -229,7 +235,7 @@ noncomputable def mapOption {α β : Type} (f : α → Option β) :
 noncomputable def collectProjElem (acc : List MirTy) :
     ProjectionElem → List MirTy
   | .field _ ty => collectTy acc ty
-  | .deref | .constantIndex _ _ _ | .unsupported => acc
+  | .deref | .constantIndex _ _ _ | .downcast _ | .unsupported => acc
 
 /-- Intern all `MirTy` descriptors carried in `p.projection`. -/
 noncomputable def collectPlace (acc : List MirTy) (p : Place) : List MirTy :=
@@ -255,6 +261,12 @@ noncomputable def collectRvalue (acc : List MirTy) : Rvalue → List MirTy
   | .aggregateRangeTo elemTy endOp => collectTy (collectOperand acc endOp) elemTy
   | .aggregateRangeFrom elemTy startOp =>
     collectTy (collectOperand acc startOp) elemTy
+  | .aggregateRange elemTy startOp endOp =>
+    collectTy (collectOperand (collectOperand acc startOp) endOp) elemTy
+  | .aggregateOption _ innerTy payload =>
+    let acc1 :=
+      match payload with | some op => collectOperand acc op | none => acc
+    collectTy acc1 innerTy
   | .unsupported => acc
 
 /-- Intern all `MirTy` descriptors carried in a `StatementKind`. -/
@@ -295,6 +307,7 @@ noncomputable def encodeProjElem (ts : List MirTy) :
   | .deref => .deref
   | .field idx ty => .field idx (lookupTyId ts ty)
   | .constantIndex off minLen fromEnd => .constantIndex off minLen fromEnd
+  | .downcast v => .downcast v
   | .unsupported => .unsupported
 
 /-- Encode a `Place` against type table `ts`. -/
@@ -327,6 +340,12 @@ noncomputable def encodeRvalue (ts : List MirTy) : Rvalue → RefRvalue
     .aggregateRangeTo (lookupTyId ts elemTy) (encodeOperand ts endOp)
   | .aggregateRangeFrom elemTy startOp =>
     .aggregateRangeFrom (lookupTyId ts elemTy) (encodeOperand ts startOp)
+  | .aggregateRange elemTy startOp endOp =>
+    .aggregateRange (lookupTyId ts elemTy) (encodeOperand ts startOp)
+      (encodeOperand ts endOp)
+  | .aggregateOption v innerTy payload =>
+    .aggregateOption v (lookupTyId ts innerTy)
+      (optMap (encodeOperand ts) payload)
   | .unsupported => .unsupported
 
 /-- Encode a `StatementKind` against type table `ts`. -/
@@ -385,6 +404,7 @@ noncomputable def decodeProjElem (ts : List MirTy) :
     optMap (ProjectionElem.field idx) (MirSemantics.getElem? ts tyId)
   | .constantIndex off minLen fromEnd =>
     some (.constantIndex off minLen fromEnd)
+  | .downcast v => some (.downcast v)
   | .unsupported => some .unsupported
 
 /-- Decode a `RefPlace` against type table `ts`. -/
@@ -426,6 +446,18 @@ noncomputable def decodeRvalue (ts : List MirTy) : RefRvalue → Option Rvalue
   | .aggregateRangeFrom tyId startOp =>
     optMap2 Rvalue.aggregateRangeFrom
       (MirSemantics.getElem? ts tyId) (decodeOperand ts startOp)
+  | .aggregateRange tyId startOp endOp =>
+    match MirSemantics.getElem? ts tyId, decodeOperand ts startOp,
+        decodeOperand ts endOp with
+    | some ty, some sOp, some eOp => some (.aggregateRange ty sOp eOp)
+    | _, _, _ => none
+  | .aggregateOption v tyId payload =>
+    match MirSemantics.getElem? ts tyId, payload with
+    | some ty, none => some (.aggregateOption v ty none)
+    | some ty, some pOp =>
+      optMap (fun op => Rvalue.aggregateOption v ty (some op))
+        (decodeOperand ts pOp)
+    | none, _ => none
   | .unsupported => some .unsupported
 
 /-- Decode a `RefStatementKind` against type table `ts`. -/

@@ -510,10 +510,10 @@ private theorem sliceScan_bb1_sliceLen (acc rem : Nat) (curPtr : PtrVal)
       (entryMemoryWithCaller cm) [.copy ⟨1, []⟩] with
     | .error k => StepResult.fault k
     | .ok (typedArgs, locals1, mem1) =>
-      match execCoreCallOp mem1 .sliceLen typedArgs usizeTy with
+      match execCoreCallWithMem mem1 .sliceLen typedArgs usizeTy with
       | .error k => StepResult.fault k
-      | .ok resVal =>
-        match writePlaceV2 bodyV2SliceScan.locals locals1 mem1
+      | .ok (resVal, mem1') =>
+        match writePlaceV2 bodyV2SliceScan.locals locals1 mem1'
             ⟨2, []⟩ usizeTy resVal with
         | .error k => StepResult.fault k
         | .ok (locals2, mem2) =>
@@ -544,6 +544,7 @@ private theorem sliceScan_bb1_sliceLen (acc rem : Nat) (curPtr : PtrVal)
     dsimp only
     rw [hRemNat]
     rfl
+  unfold execCoreCallWithMem
   rw [hCore]
   dsimp only
   have hCheckUsize : checkValV2 (usizeVal rem) usizeTy = true :=
@@ -815,11 +816,11 @@ private theorem sliceScan_bb3_term (acc k : Nat) (curPtr : PtrVal)
         (entryMemoryWithCaller cm) [.copy ⟨1, []⟩, .copy ⟨3, []⟩] with
       | .error k => StepResult.fault k
       | .ok (typedArgs, locals1, mem1) =>
-        match execCoreCallOp mem1 .sliceGetUncheckedRangeFrom typedArgs
+        match execCoreCallWithMem mem1 .sliceGetUncheckedRangeFrom typedArgs
             sliceU8Ty with
         | .error k => StepResult.fault k
-        | .ok resVal =>
-          match writePlaceV2 bodyV2SliceScan.locals locals1 mem1
+        | .ok (resVal, mem1') =>
+          match writePlaceV2 bodyV2SliceScan.locals locals1 mem1'
               ⟨1, []⟩ sliceU8Ty resVal with
           | .error k => StepResult.fault k
           | .ok (locals2, mem2) =>
@@ -840,6 +841,7 @@ private theorem sliceScan_bb3_term (acc k : Nat) (curPtr : PtrVal)
           entryMemoryWithCaller cm) := rfl
     rw [hArgsOk]
     dsimp only [sliceU8Ty, rangeFromUsizeTy, usizeTy]
+    unfold execCoreCallWithMem
     rw [hCore]
     dsimp only
     have hCheckOut :
@@ -2157,8 +2159,8 @@ theorem canary_v2_slice_scan_1byte_tight_bound :
       sliceFromRawPartsCheck (entryMemoryWithCaller callerMemSlice1) false
         1 0 ptr0 (UInt64.ofNat 1) =
       .ok (.slicePtr ptr0 (UInt64.ofNat 1)) := by
-    unfold sliceFromRawPartsCheck entryMemoryWithCaller callerMemSlice1 ptr0
-      findAllocation isInBounds isAligned isSliceAllInit
+    unfold sliceFromRawPartsCheck sliceRefRawCheck entryMemoryWithCaller
+      callerMemSlice1 ptr0 findAllocation isInBounds isAligned isSliceAllInit
     rfl
   have hRef1 :
       refValidInMem (entryMemoryWithCaller callerMemSlice1) .shared

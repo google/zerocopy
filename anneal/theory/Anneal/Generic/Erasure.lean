@@ -4021,7 +4021,7 @@ theorem evalStep_single_preserves_defId (p : Program) (df : FrameState)
                               cases h; exact ⟨_, rfl, rfl, rfl⟩
                       | unit | enumVal _ _ | ordering _ | tuple _
                       | bytes _ | ptr _ | slicePtr _ _ | rangeTo _
-                      | rangeFrom _ | array _ =>
+                      | rangeFrom _ | array _ | optionVal _ | range _ _ =>
                           rw [hDv] at h; dsimp only at h
                           cases hBr : tgts.branches with
                           | nil =>
@@ -4102,7 +4102,8 @@ theorem evalStep_single_preserves_defId (p : Program) (df : FrameState)
                                       exact False.elim (hNe _ _ _ _ _ _ h)
                               | scalar _ | char _ | unit | enumVal _ _ | tuple _ | ptr _
                               | slicePtr _ _ | rangeTo _ | rangeFrom _ | bytes _
-                              | array _ | ordering _ => cases h
+                              | array _ | ordering _ | range _ _ => cases h
+                              | optionVal optV => cases optV <;> (cases h)
               | unreachable | unwindResume
               | coreCall _ _ _ _ _ | unsupported =>
                   rw [hTerm] at h; dsimp only [attachCallers] at h; cases h
@@ -4772,7 +4773,8 @@ theorem openEvalDetStep_preserves_framesNoParam (prog : OpenProgram)
                                           exact hFrames.1
                                   | unit | enumVal _ _ | ordering _ | tuple _
                                   | bytes _ | ptr _ | slicePtr _ _ | rangeTo _
-                                  | rangeFrom _ | array _ =>
+                                  | rangeFrom _ | array _ | optionVal _
+                                  | range _ _ =>
                                       rw [hV] at hStep; dsimp only at hStep
                                       cases hBr : tgts.branches with
                                       | nil =>
@@ -6575,7 +6577,7 @@ private theorem evalConstLit_checkVal (mty : MirTy) (lit : ConstLit) (v : Val)
                       rw [hAdm, Nat.blt_eq.mpr hLt]
                       exact enumTy_beq_self ety
   | never | tuple _ | ref _ _ | rawPtr _ _ | slice _ | rangeTo _ | rangeFrom _
-  | array _ _ | unsupported =>
+  | array _ _ | unsupported | option _ | range _ =>
       cases lit <;> cases h
 
 private theorem evalIntToIntCast_checkVal (v : Val) (castTy : MirTy) (res : Val)
@@ -6601,7 +6603,7 @@ private theorem evalIntToIntCast_checkVal (v : Val) (castTy : MirTy) (res : Val)
           | true => rw [ite_cond_true hBle] at h; cases h; rfl
       | bool | unit | never | ordering | enum _ | tuple _
       | ref _ _ | rawPtr _ _ | slice _ | rangeTo _ | rangeFrom _
-      | array _ _ | unsupported => cases h
+      | array _ _ | unsupported | option _ | range _ => cases h
 
 mutual
 theorem toClosedMirTy?_isClosed :
@@ -7508,7 +7510,8 @@ private theorem checkVal_shape {v : Val} {mty : MirTy}
       cases mty with
       | ordering => exact .inr (.inr (.inr (.inl ⟨ord, rfl, rfl⟩)))
       | _ => cases hChk
-  | ptr _ | slicePtr _ _ | rangeTo _ | rangeFrom _ | bytes _ | array _ =>
+  | ptr _ | slicePtr _ _ | rangeTo _ | rangeFrom _ | bytes _ | array _
+  | optionVal _ | range _ _ =>
       dsimp only [checkVal, Val.ty?] at hChk
       cases hChk
   | scalar sv =>
@@ -7547,7 +7550,7 @@ private theorem checkVal_shape {v : Val} {mty : MirTy}
           cases v1 with
           | bool _ | unit | char _ | ordering _ | enumVal _ _ | ptr _
           | slicePtr _ _ | rangeTo _ | rangeFrom _ | tuple _ | bytes _
-          | array _ =>
+          | array _ | optionVal _ | range _ _ =>
               dsimp only [checkVal, Val.ty?] at hChk; cases hChk
           | scalar sv =>
               cases vs1 with
@@ -7556,7 +7559,7 @@ private theorem checkVal_shape {v : Val} {mty : MirTy}
                   cases v2 with
                   | scalar _ | unit | char _ | ordering _ | enumVal _ _ | ptr _
                   | slicePtr _ _ | rangeTo _ | rangeFrom _ | tuple _
-                  | bytes _ | array _ =>
+                  | bytes _ | array _ | optionVal _ | range _ _ =>
                       dsimp only [checkVal, Val.ty?] at hChk; cases hChk
                   | bool b =>
                       cases vs2 with
@@ -7849,14 +7852,14 @@ theorem checkVal_implies_checkValAgainstSpec :
                           | bool | unit | never | char | ordering | enum _
                           | tuple _ | ref _ _ | rawPtr _ _ | slice _
                           | rangeTo _ | rangeFrom _ | array _ _
-                          | unsupported =>
+                          | unsupported | option _ | range _ =>
                               cases hSupp
                           | int w s =>
                               cases cb with
                               | int _ _ | unit | never | char | ordering
                               | enum _ | tuple _ | ref _ _ | rawPtr _ _
                               | slice _ | rangeTo _ | rangeFrom _
-                              | array _ _ | unsupported =>
+                              | array _ _ | unsupported | option _ | range _ =>
                                   cases hSupp
                               | bool =>
                                   have haEq := toClosedMirTy?_eq_int ha
@@ -7936,7 +7939,7 @@ private theorem argsSatisfyParamInvs_replicate_true (prog : OpenProgram)
                   exact True.intro
           | bool _ | scalar _ | unit | char _ | ordering _
           | enumVal _ _ | ptr _ | slicePtr _ _ | rangeTo _ | rangeFrom _
-          | tuple _ | array _ => exact True.intro
+          | tuple _ | array _ | optionVal _ | range _ _ => exact True.intro
       | bool | int _ _ | unit | never | char | ordering | enum _ | tuple _
       | slice _ | array _ _ | adt _ _ | ref _ _ | rawPtr _ _
       | assocProj _ _ _ _ | unsupported =>
@@ -8657,7 +8660,7 @@ private theorem openLiveUninitSlot_slotRel (prog : OpenProgram)
                 ⟨hChk, .inl rfl⟩⟩))
       | bool | int _ _ | never | char | ordering | tuple _ | ref _ _
       | rawPtr _ _ | slice _ | rangeTo _ | rangeFrom _ | array _ _
-      | unsupported =>
+      | unsupported | option _ | range _ =>
           exact .inr (.inl ⟨rfl, rfl⟩)
   | none =>
       cases hM : eraseOpenTy
@@ -8674,7 +8677,7 @@ private theorem openLiveUninitSlot_slotRel (prog : OpenProgram)
               dsimp only [liveUninitSlot]; rw [ite_cond_false hZ]
       | bool | int _ _ | never | char | ordering | tuple _ | ref _ _
       | rawPtr _ _ | slice _ | rangeTo _ | rangeFrom _ | array _ _
-      | unsupported =>
+      | unsupported | option _ | range _ =>
           exact .inr (.inl ⟨rfl, rfl⟩)
 
 private theorem localsRel_getElem? (prog : OpenProgram) (σ : List OpenMirTy) :
@@ -10147,7 +10150,8 @@ mutual
         dsimp only [MirTy.beq]
         rw [mutability_beq_self m, mirTy_beq_self p]
         rfl
-    | .slice e | .rangeTo e | .rangeFrom e => mirTy_beq_self e
+    | .slice e | .rangeTo e | .rangeFrom e | .range e | .option e =>
+        mirTy_beq_self e
     | .array e n => by
         dsimp only [MirTy.beq]
         rw [nat_beq_self n, mirTy_beq_self e]

@@ -1162,8 +1162,9 @@ private theorem validEntryBool_eq_singleton {isU : Bool} {args : List Val}
       · cases h
       · cases a with
         | bool b => exact ⟨b, rfl⟩
-        | char _ | ordering _ | unit | ptr _ | bytes _ | slicePtr _ _ | rangeTo _
-          | rangeFrom _ | array _ => cases hChk
+        | char _ | ordering _ | unit | ptr _ | bytes _ | slicePtr _ _
+          | rangeTo _ | rangeFrom _ | array _ | range _ _ | optionVal _ =>
+          cases hChk
         | scalar sv =>
           dsimp [checkVal, Val.ty?] at hChk
           cases hWf : sv.wf <;> rw [hWf] at hChk <;> cases hChk

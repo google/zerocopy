@@ -668,7 +668,7 @@ theorem evalRefConstLit_eq (ty : MirTy) (lit : ConstLit) :
     evalRefConstLit ty lit = evalConstLit ty lit := by
   cases ty with
   | unit | never | tuple _ | ref _ _ | rawPtr _ _ | slice _ | array _ _
-  | rangeTo _ | rangeFrom _ | unsupported =>
+  | rangeTo _ | rangeFrom _ | range _ | option _ | unsupported =>
     cases lit <;> rfl
   | char =>
     cases lit with
@@ -857,7 +857,8 @@ theorem checkRefVal_tuple_eq (fs : List Val) (ty : MirTy) :
 theorem checkRefVal_eq (v : Val) (ty : MirTy) :
     checkRefVal v ty = checkVal v ty := by
   cases v with
-  | unit | ptr _ | slicePtr _ _ | rangeTo _ | rangeFrom _ | bytes _
+  | unit | ptr _ | slicePtr _ _ | rangeTo _ | rangeFrom _ | range _ _ | optionVal _
+  | bytes _
   | array _ | ordering _ =>
     cases ty <;> rfl
   | bool b => cases ty <;> cases b <;> rfl
@@ -884,6 +885,7 @@ theorem checkRefVal_eq (v : Val) (ty : MirTy) :
       cases ty with
       | bool | unit | never | char | ordering | enum _ | tuple _ | ref _ _
       | rawPtr _ _ | slice _ | array _ _ | rangeTo _ | rangeFrom _
+      | range _ | option _
       | unsupported =>
         dsimp only [checkRefVal, checkVal, Val.ty?]
         cases (ScalarVal.wf ⟨vw, vs, vbits⟩) <;> rfl
@@ -1315,6 +1317,7 @@ theorem checkVal_eq_true_inv {v : Val} {ty : MirTy}
     exact Or.inr (Or.inr (Or.inr (Or.inr (Or.inr (Or.inr
       ⟨w, s, bits, b, h_ty, rfl, h_tr⟩)))))
   | ptr _ | slicePtr _ _ | rangeTo _ | rangeFrom _ | array _
+  | range _ _ | optionVal _
   | bytes _ => cases h
 
 theorem checkVal_int_inv {v : Val} {w : IntWidth} {s : Bool}
@@ -2021,6 +2024,33 @@ private theorem refDiscrStmtOk_eq {ts : List MirTy} {localTys : List MirTy}
             | none => rw [h_t, h_o] at h_rv; cases h_rv
             | some _ =>
               rw [h_t, h_o] at h_rv; injection h_rv with h; subst h; rfl
+        | aggregateRange rty rso reo =>
+          dsimp only [decodeRvalue] at h_rv
+          cases h_t : MirSemantics.getElem? ts rty with
+          | none => rw [h_t] at h_rv; cases h_rv
+          | some _ =>
+            cases h_so : decodeOperand ts rso with
+            | none => rw [h_t, h_so] at h_rv; cases h_rv
+            | some _ =>
+              cases h_eo : decodeOperand ts reo with
+              | none => rw [h_t, h_so, h_eo] at h_rv; cases h_rv
+              | some _ =>
+                rw [h_t, h_so, h_eo] at h_rv
+                injection h_rv with h; subst h; rfl
+        | aggregateOption _ rty rpay =>
+          dsimp only [decodeRvalue] at h_rv
+          cases h_t : MirSemantics.getElem? ts rty with
+          | none => rw [h_t] at h_rv; cases h_rv
+          | some _ =>
+            cases rpay with
+            | none => rw [h_t] at h_rv; injection h_rv with h; subst h; rfl
+            | some ro =>
+              rw [h_t] at h_rv
+              dsimp only [optMap] at h_rv
+              cases h_o : decodeOperand ts ro with
+              | none => rw [h_o] at h_rv; cases h_rv
+              | some _ =>
+                rw [h_o] at h_rv; injection h_rv with h; subst h; rfl
         | unsupported => injection h_rv with h; subst h; rfl
 
 private theorem refCastStmtOk_eq {ts : List MirTy} {localTys : List MirTy}
@@ -2149,6 +2179,33 @@ private theorem refCastStmtOk_eq {ts : List MirTy} {localTys : List MirTy}
             | none => rw [h_t, h_o] at h_rv; cases h_rv
             | some _ =>
               rw [h_t, h_o] at h_rv; injection h_rv with h; subst h; rfl
+        | aggregateRange rty rso reo =>
+          dsimp only [decodeRvalue] at h_rv
+          cases h_t : MirSemantics.getElem? ts rty with
+          | none => rw [h_t] at h_rv; cases h_rv
+          | some _ =>
+            cases h_so : decodeOperand ts rso with
+            | none => rw [h_t, h_so] at h_rv; cases h_rv
+            | some _ =>
+              cases h_eo : decodeOperand ts reo with
+              | none => rw [h_t, h_so, h_eo] at h_rv; cases h_rv
+              | some _ =>
+                rw [h_t, h_so, h_eo] at h_rv
+                injection h_rv with h; subst h; rfl
+        | aggregateOption _ rty rpay =>
+          dsimp only [decodeRvalue] at h_rv
+          cases h_t : MirSemantics.getElem? ts rty with
+          | none => rw [h_t] at h_rv; cases h_rv
+          | some _ =>
+            cases rpay with
+            | none => rw [h_t] at h_rv; injection h_rv with h; subst h; rfl
+            | some ro =>
+              rw [h_t] at h_rv
+              dsimp only [optMap] at h_rv
+              cases h_o : decodeOperand ts ro with
+              | none => rw [h_o] at h_rv; cases h_rv
+              | some _ =>
+                rw [h_o] at h_rv; injection h_rv with h; subst h; rfl
         | unsupported => injection h_rv with h; subst h; rfl
 
 theorem refDiscriminantTypesValid_eq {ts : List MirTy} {rbody : RefBody}
@@ -2424,6 +2481,38 @@ private theorem refAssignStmtOk_eq {ts localTys : List MirTy}
             | some _ =>
               rw [h_t] at h_rv; injection h_rv with h; subst h
               dsimp only [refAssignStmtOk, assignStmtOk]; rw [h_demp, h_did]
+        | aggregateRange rty rs re =>
+          dsimp only [decodeRvalue] at h_rv
+          cases h_t : MirSemantics.getElem? ts rty with
+          | none => rw [h_t] at h_rv; cases h_rv
+          | some _ =>
+            rw [h_t] at h_rv
+            cases h_s1 : decodeOperand ts rs with
+            | none => rw [h_s1] at h_rv; cases h_rv
+            | some _ =>
+              rw [h_s1] at h_rv
+              cases h_e1 : decodeOperand ts re with
+              | none => rw [h_e1] at h_rv; cases h_rv
+              | some _ =>
+                rw [h_e1] at h_rv; injection h_rv with h; subst h
+                dsimp only [refAssignStmtOk, assignStmtOk]; rw [h_demp, h_did]
+        | aggregateOption v rty payload =>
+          dsimp only [decodeRvalue] at h_rv
+          cases h_t : MirSemantics.getElem? ts rty with
+          | none => rw [h_t] at h_rv; cases h_rv
+          | some _ =>
+            rw [h_t] at h_rv
+            cases payload with
+            | none =>
+              injection h_rv with h; subst h
+              dsimp only [refAssignStmtOk, assignStmtOk]; rw [h_demp, h_did]
+            | some pOp =>
+              dsimp only at h_rv
+              cases h_p1 : decodeOperand ts pOp with
+              | none => rw [h_p1] at h_rv; cases h_rv
+              | some _ =>
+                rw [h_p1] at h_rv; injection h_rv with h; subst h
+                dsimp only [refAssignStmtOk, assignStmtOk]; rw [h_demp, h_did]
         | unsupported =>
           injection h_rv with h; subst h
           dsimp only [refAssignStmtOk, assignStmtOk]; rw [h_demp, h_did]

@@ -211,18 +211,23 @@ theorem refute_mem_v2_ptr_add_oob :
   rfl
 
 /-- Guard `mem_v2_slice_null`: constructing even a zero-length slice from a
-null (`⟨none, 0, .isize⟩`) pointer faults with `.undefined`. -/
+null (`⟨none, 0, .isize⟩`) pointer faults with `.undefined` in both
+`sliceFromRawPartsCheck` and `sliceRefRawCheck`. -/
 theorem refute_mem_v2_slice_null :
     sliceFromRawPartsCheck MemoryState.empty false 1 0 ⟨none, 0, .isize⟩ 0 =
+      .error .undefined ∧
+    sliceRefRawCheck MemoryState.empty false 0 0 ⟨none, 0, .isize⟩ 0 =
       .error .undefined :=
-  rfl
+  ⟨rfl, rfl⟩
 
-/-- Guard `mem_v2_slice_readonly`: constructing a mutable slice (`&mut [u8]`)
-over a `.shared` allocation faults with `.undefined`. -/
+/-- Guard `mem_v2_slice_readonly`: constructing a mutable slice (`&mut [u8]` or
+non-integer `&mut [T]`) over a `.shared` allocation faults with `.undefined`. -/
 theorem refute_mem_v2_slice_readonly :
     sliceFromRawPartsCheck (singleAllocMem shared4Alloc) true 1 0 ⟨some 1, 0, .isize⟩ 4 =
+      .error .undefined ∧
+    sliceRefRawCheck (singleAllocMem shared4Alloc) true 1 0 ⟨some 1, 0, .isize⟩ 1 =
       .error .undefined :=
-  rfl
+  ⟨rfl, rfl⟩
 
 /-- Guard `mem_v2_slice_uninit`: constructing a byte slice over uninitialized
 bytes faults with `.undefined`. -/
@@ -326,6 +331,34 @@ theorem refute_mem_v2_entry_raw_ptr_arg_fresh :
     (entryMemoryForArgsV2 emptyCm [.int .i32 false]
       [.scalar ⟨.i32, false, 0⟩]).nextAllocId = 2 :=
   ⟨rfl, rfl⟩
+
+/-- Guard `mem_v2_entry_option_raw_ptr_ty`: `tyHasRawPtrV2` recurses through
+`Option`, so an `Option<*const i8>` parameter (bare or inside a tuple) makes
+`entryMemoryForArgsV2` advance `nextAllocId` past the dangling `some 5` it
+carries, and the first stack allocation gets `AllocId` `6`. -/
+theorem refute_mem_v2_entry_option_raw_ptr_ty :
+    let emptyCm : CallerMemory := { allocations := [] }
+    (allocateStack
+      (entryMemoryForArgsV2 emptyCm
+        [.option (.rawPtr .shared (.int .i8 false))]
+        [.optionVal (some (.ptr ⟨some 5, 0, .isize⟩))]) ⟨1, 0⟩).2.allocId = 6 ∧
+    (allocateStack
+      (entryMemoryForArgsV2 emptyCm
+        [.tuple [.int .i8 false, .option (.rawPtr .shared (.int .i8 false))]]
+        [.tuple [.scalar ⟨.i8, false, 0⟩,
+          .optionVal (some (.ptr ⟨some 5, 0, .isize⟩))]])
+      ⟨1, 0⟩).2.allocId = 6 :=
+  ⟨rfl, rfl⟩
+
+/-- Guard `mem_v2_entry_option_raw_ptr_val`: `maxValPtrAllocId` looks inside
+`Some` payloads, so a dangling `some 5` pointer inside an `Option` argument
+is counted, while `None` contributes nothing. -/
+theorem refute_mem_v2_entry_option_raw_ptr_val :
+    maxValPtrAllocId (.optionVal (some (.ptr ⟨some 5, 0, .isize⟩))) = 5 ∧
+    maxValPtrAllocId (.tuple [.scalar ⟨.i8, false, 0⟩,
+      .optionVal (some (.ptr ⟨some 5, 0, .isize⟩))]) = 5 ∧
+    maxValPtrAllocId (.optionVal none) = 0 :=
+  ⟨rfl, rfl, rfl⟩
 
 /-- Guard `mem_v2_slice_get_unchecked_elem_size`: `sliceGetUncheckedCheck`
 scales `startOff` by `elemSize` in `ptrAddInMem` (`2 * 4 = 8 > 4` on a 4-byte

@@ -323,7 +323,7 @@ theorem layoutOfTy_props (ty : MirTy) (lay : MirSemantics.LayoutData)
           | _ => dsimp only [layoutOfTy] at h; cases h
       | _ => dsimp only [layoutOfTy] at h; cases h
   | ref _ _ | rawPtr _ _ | slice _ | array _ _ | rangeTo _ | rangeFrom _
-  | unsupported =>
+  | range _ | option _ | unsupported =>
     dsimp only [layoutOfTy] at h; cases h
 
 /-- Every zero-sized `MirTy` layout admitted by `layoutOfTy` (`.unit`,
@@ -373,7 +373,7 @@ theorem zst_day1_alignLog2_zero (ty : MirTy) (lay : MirSemantics.LayoutData)
           | _ => dsimp only [layoutOfTy] at h; cases h
       | _ => dsimp only [layoutOfTy] at h; cases h
   | ref _ _ | rawPtr _ _ | slice _ | array _ _ | rangeTo _ | rangeFrom _
-  | unsupported =>
+  | range _ | option _ | unsupported =>
     dsimp only [layoutOfTy] at h; cases h
 
 /-- `Trusted.MirSemantics.readBytes` at `size = 0` resolves the allocation
@@ -2170,6 +2170,94 @@ theorem storeIndirectV2_requires_alloc_and_alignment
         writeBytes_requires_alloc_and_alignment m m' place lay.alignLog2 bs h_st
       exact ⟨lay, bs, rfl, rfl, h_st, a, h_fa, h_al⟩
 
+/-- Any successful `sliceRefRawCheck` enforces the `isize::MAX` byte-size bound,
+non-nullness and alignment on provenance-free pointers (returning `none` only
+when `len * es = 0`), and live, in-bounds, aligned, mutable-when-`isMut`
+allocation invariants on provenance-bearing pointers (without requiring
+whole-span `isSliceAllInit`, so padded or tagged elements can validate active
+fields individually). -/
+theorem sliceRefRawCheck_requires_nonnull_bounds_and_alignment
+    (m : MirSemantics.MemoryState) (isMut : Bool) (es eal : Nat)
+    (p : PtrVal) (len : UInt64) (optAlloc : Option MirSemantics.Allocation)
+    (h_s : sliceRefRawCheck m isMut es eal p len = .ok optAlloc) :
+    len.toNat * es < isizeMaxBytes ∧
+    (p.allocId = none →
+      optAlloc = none ∧
+      p.offsetBytes.toNat ≠ 0 ∧
+      len.toNat * es = 0 ∧
+      Nat.mod p.offsetBytes.toNat (Nat.pow 2 eal) = 0) ∧
+    (∀ aid, p.allocId = some aid →
+      ∃ a : MirSemantics.Allocation,
+        optAlloc = some a ∧
+        findAllocation aid m.allocations = some a ∧
+        a.live = true ∧
+        isInBounds a p.offsetBytes.toNat (len.toNat * es) = true ∧
+        isAligned a p.offsetBytes.toNat eal = true ∧
+        (isMut = true → a.mutability = .mut)) := by
+  dsimp only [sliceRefRawCheck] at h_s
+  cases h_tb : Nat.blt (len.toNat * es) isizeMaxBytes with
+  | false => rw [h_tb] at h_s; cases h_s
+  | true =>
+    rw [h_tb] at h_s
+    have h_lt : len.toNat * es < isizeMaxBytes := nat_blt_true_lt h_tb
+    cases h_aid : p.allocId with
+    | none =>
+      rw [h_aid] at h_s
+      dsimp only at h_s
+      cases h_off0 : Nat.beq p.offsetBytes.toNat 0 with
+      | true => rw [h_off0] at h_s; cases h_s
+      | false =>
+        cases h_pos : Nat.blt 0 (len.toNat * es) with
+        | true => rw [h_off0, h_pos] at h_s; cases h_s
+        | false =>
+          rw [h_off0, h_pos] at h_s
+          cases h_mod :
+              Nat.beq (Nat.mod p.offsetBytes.toNat (Nat.pow 2 eal)) 0 with
+          | false => rw [h_mod] at h_s; cases h_s
+          | true =>
+            rw [h_mod] at h_s
+            injection h_s with h_opt
+            refine ⟨h_lt, ?_, fun aid h_eq => by cases h_eq⟩
+            intro _
+            exact ⟨h_opt.symm, nat_beq_false_ne h_off0,
+              nat_blt_zero_false_eq_zero h_pos,
+              (nat_beq_true_iff _ 0).1 h_mod⟩
+    | some aid =>
+      rw [h_aid] at h_s
+      dsimp only at h_s
+      cases h_fa : findAllocation aid m.allocations with
+      | none => rw [h_fa] at h_s; dsimp only at h_s; cases h_s
+      | some a =>
+        rw [h_fa] at h_s
+        dsimp only at h_s
+        cases h_live : a.live with
+        | false => rw [h_live] at h_s; cases h_s
+        | true =>
+          cases h_ib :
+              isInBounds a p.offsetBytes.toNat (len.toNat * es) with
+          | false => rw [h_live, h_ib] at h_s; cases h_s
+          | true =>
+            cases h_al : isAligned a p.offsetBytes.toNat eal with
+            | false => rw [h_live, h_ib, h_al] at h_s; cases h_s
+            | true =>
+              rw [h_live, h_ib, h_al] at h_s
+              cases h_mut_ok :
+                  (isMut && !Mutability.beq a.mutability .mut) with
+              | true => rw [h_mut_ok] at h_s; cases h_s
+              | false =>
+                rw [h_mut_ok] at h_s
+                injection h_s with h_opt
+                refine ⟨h_lt, (fun h_none => by cases h_none), ?_⟩
+                intro aid' h_eq
+                injection h_eq with h_aid_eq
+                subst h_aid_eq
+                refine ⟨a, h_opt.symm, h_fa, h_live, h_ib, h_al, ?_⟩
+                intro h_ismut
+                rw [h_ismut, Bool.true_and] at h_mut_ok
+                cases h_mb : Mutability.beq a.mutability .mut with
+                | false => rw [h_mb] at h_mut_ok; cases h_mut_ok
+                | true => exact Mutability.eq_of_beq h_mb
+
 /-- Any successful `sliceFromRawPartsCheck` enforces the `isize::MAX` byte-size
 bound, non-nullness and alignment on provenance-free pointers (only when
 `len * es = 0`), and live, in-bounds, aligned, initialized (plus mutable when
@@ -2195,75 +2283,42 @@ theorem sliceFromRawPartsCheck_requires_nonnull_bounds_and_alignment
           ((a.bytes.drop p.offsetBytes.toNat).take
             (len.toNat * es)) = true) := by
   dsimp only [sliceFromRawPartsCheck] at h_s
-  cases h_tb : Nat.blt (len.toNat * es) isizeMaxBytes with
-  | false => rw [h_tb] at h_s; cases h_s
-  | true =>
-    rw [h_tb] at h_s
-    have h_lt : len.toNat * es < isizeMaxBytes := nat_blt_true_lt h_tb
-    cases h_aid : p.allocId with
+  cases h_raw : sliceRefRawCheck m isMut es eal p len with
+  | error k => rw [h_raw] at h_s; dsimp only at h_s; cases h_s
+  | ok optAlloc =>
+    rw [h_raw] at h_s
+    have ⟨h_lt, h_none, h_some⟩ :=
+      sliceRefRawCheck_requires_nonnull_bounds_and_alignment
+        m isMut es eal p len optAlloc h_raw
+    cases optAlloc with
     | none =>
-      rw [h_aid] at h_s
       dsimp only at h_s
-      cases h_off0 : Nat.beq p.offsetBytes.toNat 0 with
-      | true => rw [h_off0] at h_s; cases h_s
-      | false =>
-        cases h_pos : Nat.blt 0 (len.toNat * es) with
-        | true => rw [h_off0, h_pos] at h_s; cases h_s
-        | false =>
-          rw [h_off0, h_pos] at h_s
-          cases h_mod :
-              Nat.beq (Nat.mod p.offsetBytes.toNat (Nat.pow 2 eal)) 0 with
-          | false => rw [h_mod] at h_s; cases h_s
-          | true =>
-            rw [h_mod] at h_s
-            injection h_s with h_v
-            refine ⟨h_v.symm, h_lt, ?_, fun aid h_eq => by cases h_eq⟩
-            intro _
-            exact ⟨nat_beq_false_ne h_off0,
-              nat_blt_zero_false_eq_zero h_pos,
-              (nat_beq_true_iff _ 0).1 h_mod⟩
-    | some aid =>
-      rw [h_aid] at h_s
+      injection h_s with h_v
+      refine ⟨h_v.symm, h_lt, ?_, ?_⟩
+      · intro h_aid
+        let ⟨_, h1, h2, h3⟩ := h_none h_aid
+        exact ⟨h1, h2, h3⟩
+      · intro aid h_aid
+        let ⟨_, h_opt, _⟩ := h_some aid h_aid
+        cases h_opt
+    | some a =>
       dsimp only at h_s
-      cases h_fa : findAllocation aid m.allocations with
-      | none => rw [h_fa] at h_s; dsimp only at h_s; cases h_s
-      | some a =>
-        rw [h_fa] at h_s
-        dsimp only at h_s
-        cases h_live : a.live with
-        | false => rw [h_live] at h_s; cases h_s
-        | true =>
-          cases h_ib :
-              isInBounds a p.offsetBytes.toNat (len.toNat * es) with
-          | false => rw [h_live, h_ib] at h_s; cases h_s
-          | true =>
-            cases h_al : isAligned a p.offsetBytes.toNat eal with
-            | false => rw [h_live, h_ib, h_al] at h_s; cases h_s
-            | true =>
-              rw [h_live, h_ib, h_al] at h_s
-              cases h_mut_ok : (isMut && !Mutability.beq a.mutability .mut) with
-              | true => rw [h_mut_ok] at h_s; cases h_s
-              | false =>
-                rw [h_mut_ok] at h_s
-                cases h_init :
-                    isSliceAllInit
-                      ((a.bytes.drop p.offsetBytes.toNat).take
-                        (len.toNat * es)) with
-                | false => rw [h_init] at h_s; cases h_s
-                | true =>
-                  rw [h_init] at h_s
-                  injection h_s with h_v
-                  refine ⟨h_v.symm, h_lt,
-                    (fun h_none => by cases h_none), ?_⟩
-                  intro aid' h_eq
-                  injection h_eq with h_aid_eq
-                  subst h_aid_eq
-                  refine ⟨a, h_fa, h_live, h_ib, h_al, ?_, h_init⟩
-                  intro h_ismut
-                  rw [h_ismut, Bool.true_and] at h_mut_ok
-                  cases h_mb : Mutability.beq a.mutability .mut with
-                  | false => rw [h_mb] at h_mut_ok; cases h_mut_ok
-                  | true => exact Mutability.eq_of_beq h_mb
+      cases h_init :
+          isSliceAllInit
+            ((a.bytes.drop p.offsetBytes.toNat).take (len.toNat * es)) with
+      | false => rw [h_init] at h_s; cases h_s
+      | true =>
+        rw [h_init] at h_s
+        injection h_s with h_v
+        refine ⟨h_v.symm, h_lt, ?_, ?_⟩
+        · intro h_aid
+          let ⟨h_opt, _⟩ := h_none h_aid
+          cases h_opt
+        · intro aid h_aid
+          let ⟨a', h_opt, h_fa, h_live, h_ib, h_al, h_mut⟩ := h_some aid h_aid
+          injection h_opt with h_aeq
+          subst h_aeq
+          exact ⟨a, h_fa, h_live, h_ib, h_al, h_mut, h_init⟩
 
 /-- Any successful `ptrAddInMem` enforces `count * elemSize < isizeMaxBytes`,
 zero-delta invariance for provenance-free pointers, and live in-bounds
@@ -2333,10 +2388,138 @@ theorem refValidInMem_slice_requires_sliceFromRawParts
     ∃ v, sliceFromRawPartsCheck m (Mutability.beq reqMut .mut)
       (intLayout w).size (intLayout w).alignLog2 p len = .ok v := by
   dsimp only [refValidInMem] at h_rv
+  have h_sz : (!isSizedNoRefV2Ty (.int w s)) = false := rfl
+  have h_lay : layoutOfTyV2 (.int w s) = some (intLayout w) := rfl
+  rw [h_sz, ite_eq_right Bool.false_ne_true, h_lay] at h_rv
+  dsimp only at h_rv
   cases h_sc : sliceFromRawPartsCheck m (Mutability.beq reqMut .mut)
       (intLayout w).size (intLayout w).alignLog2 p len with
   | error k => rw [h_sc] at h_rv; dsimp only at h_rv; cases h_rv
   | ok v => exact ⟨v, rfl⟩
+
+/-- General slice-reference validity specification across all admitted element
+types `elem`: any `refValidInMem` success on `.slice elem` enforces
+`isSizedNoRefV2Ty elem = true`, element inhabitance whenever `0 < len.toNat`,
+and raw non-null, alignment, bounds, and mutability invariants at the element's
+`layoutOfTyV2` layout. -/
+theorem refValidInMem_slice_general_spec
+    (m : MirSemantics.MemoryState) (reqMut : MirAst.Mutability) (elem : MirTy)
+    (p : PtrVal) (len : UInt64)
+    (h_rv : refValidInMem m reqMut (.slice elem) (.slicePtr p len) = .ok ()) :
+    isSizedNoRefV2Ty elem = true ∧
+    (0 < len.toNat → isInhabitedV2Ty elem = true) ∧
+    ∃ lay,
+      layoutOfTyV2 elem = some lay ∧
+      len.toNat * lay.size < isizeMaxBytes ∧
+      (p.allocId = none →
+        p.offsetBytes.toNat ≠ 0 ∧
+        len.toNat * lay.size = 0 ∧
+        Nat.mod p.offsetBytes.toNat (Nat.pow 2 lay.alignLog2) = 0) ∧
+      (∀ aid, p.allocId = some aid →
+        ∃ a : MirSemantics.Allocation,
+          findAllocation aid m.allocations = some a ∧
+          a.live = true ∧
+          isInBounds a p.offsetBytes.toNat (len.toNat * lay.size) = true ∧
+          isAligned a p.offsetBytes.toNat lay.alignLog2 = true ∧
+          (Mutability.beq reqMut .mut = true → a.mutability = .mut)) := by
+  dsimp only [refValidInMem] at h_rv
+  cases h_sz : (!isSizedNoRefV2Ty elem) with
+  | true => rw [h_sz] at h_rv; cases h_rv
+  | false =>
+    rw [h_sz, ite_eq_right Bool.false_ne_true] at h_rv
+    have h_sz_true : isSizedNoRefV2Ty elem = true := by
+      cases h_s : isSizedNoRefV2Ty elem with
+      | true => rfl
+      | false => rw [h_s] at h_sz; cases h_sz
+    cases h_lay : layoutOfTyV2 elem with
+    | none => rw [h_lay] at h_rv; dsimp only at h_rv; cases h_rv
+    | some lay =>
+      rw [h_lay] at h_rv
+      dsimp only at h_rv
+      have h_other :
+          ∀ {elem' : MirTy},
+            (if (Nat.blt 0 len.toNat && !isInhabitedV2Ty elem') = true then
+              Except.error FaultKind.undefined
+            else
+              match sliceRefRawCheck m (Mutability.beq reqMut .mut)
+                  lay.size lay.alignLog2 p len with
+              | .error k => .error k
+              | .ok optAlloc =>
+                if (Nat.beq len.toNat 0 || Nat.beq lay.size 0) = true then
+                  .ok ()
+                else
+                  match optAlloc with
+                  | none => .error .undefined
+                  | some a =>
+                    validateSliceElemsV2 elem' a.bytes lay.size
+                      p.offsetBytes.toNat len.toNat) = .ok () →
+            (0 < len.toNat → isInhabitedV2Ty elem' = true) ∧
+            len.toNat * lay.size < isizeMaxBytes ∧
+            (p.allocId = none →
+              p.offsetBytes.toNat ≠ 0 ∧
+              len.toNat * lay.size = 0 ∧
+              Nat.mod p.offsetBytes.toNat (Nat.pow 2 lay.alignLog2) = 0) ∧
+            (∀ aid, p.allocId = some aid →
+              ∃ a : MirSemantics.Allocation,
+                findAllocation aid m.allocations = some a ∧
+                a.live = true ∧
+                isInBounds a p.offsetBytes.toNat
+                  (len.toNat * lay.size) = true ∧
+                isAligned a p.offsetBytes.toNat lay.alignLog2 = true ∧
+                (Mutability.beq reqMut .mut = true →
+                  a.mutability = .mut)) := by
+        intro elem' h_branch_rv
+        cases h_inh_guard :
+            (Nat.blt 0 len.toNat && !isInhabitedV2Ty elem') with
+        | true => rw [h_inh_guard] at h_branch_rv; cases h_branch_rv
+        | false =>
+          rw [h_inh_guard, ite_eq_right Bool.false_ne_true] at h_branch_rv
+          have h_inh : 0 < len.toNat → isInhabitedV2Ty elem' = true := by
+            intro h_pos
+            have h_blt : Nat.blt 0 len.toNat = true :=
+              Nat.ble_eq_true_of_le h_pos
+            rw [h_blt, Bool.true_and] at h_inh_guard
+            cases h_i : isInhabitedV2Ty elem' with
+            | true => rfl
+            | false => rw [h_i] at h_inh_guard; cases h_inh_guard
+          cases h_raw : sliceRefRawCheck m (Mutability.beq reqMut .mut)
+              lay.size lay.alignLog2 p len with
+          | error k =>
+            rw [h_raw] at h_branch_rv; dsimp only at h_branch_rv
+            cases h_branch_rv
+          | ok optAlloc =>
+            have ⟨h_lt, h_none, h_some⟩ :=
+              sliceRefRawCheck_requires_nonnull_bounds_and_alignment
+                m (Mutability.beq reqMut .mut) lay.size lay.alignLog2 p len
+                optAlloc h_raw
+            refine ⟨h_inh, h_lt, ?_, ?_⟩
+            · intro h_aid
+              let ⟨_, h1, h2, h3⟩ := h_none h_aid
+              exact ⟨h1, h2, h3⟩
+            · intro aid h_aid
+              let ⟨a, _, h_fa, h_live, h_ib, h_al, h_mut⟩ := h_some aid h_aid
+              exact ⟨a, h_fa, h_live, h_ib, h_al, h_mut⟩
+      cases elem with
+      | int w s =>
+        dsimp only at h_rv
+        cases h_sc : sliceFromRawPartsCheck m (Mutability.beq reqMut .mut)
+            lay.size lay.alignLog2 p len with
+        | error k => rw [h_sc] at h_rv; dsimp only at h_rv; cases h_rv
+        | ok sv =>
+          have ⟨_, h_lt, h_none, h_some⟩ :=
+            sliceFromRawPartsCheck_requires_nonnull_bounds_and_alignment
+              m (Mutability.beq reqMut .mut) lay.size lay.alignLog2 p len sv
+              h_sc
+          refine ⟨h_sz_true, fun _ => rfl, lay, rfl, h_lt, h_none, ?_⟩
+          intro aid h_aid
+          let ⟨a, h_fa, h_live, h_ib, h_al, h_mut, _⟩ := h_some aid h_aid
+          exact ⟨a, h_fa, h_live, h_ib, h_al, h_mut⟩
+      | bool | unit | never | char | ordering | enum _ | tuple _ | ref _ _
+      | rawPtr _ _ | slice _ | array _ _ | rangeTo _ | rangeFrom _
+      | option _ | range _ | unsupported =>
+        dsimp only at h_rv
+        let ⟨h_inh, h_lt, h_none, h_some⟩ := h_other h_rv
+        exact ⟨h_sz_true, h_inh, lay, rfl, h_lt, h_none, h_some⟩
 
 /-- `sliceGetUncheckedCheck` always checks `startOff ≤ endOff ≤ len` and
 advances `p` via `ptrAddInMem` with the new length `endOff - startOff`. -/
@@ -2465,7 +2648,7 @@ theorem evalRefRvalueV2_requires_refValidInMem
                   | true => rw [h_esc, h_beq] at h_ref; cases h_ref
               | bool | int _ _ | unit | never | char | ordering | enum _
               | tuple _ | rawPtr _ _ | slice _ | array _ _ | rangeTo _
-              | rangeFrom _ | unsupported =>
+              | rangeFrom _ | unsupported | option _ | range _ =>
                 dsimp only at h_ref; cases h_ref
             | immediate optVal =>
               rw [h_sl] at h_ref
@@ -2502,7 +2685,7 @@ theorem evalRefRvalueV2_requires_refValidInMem
                         exact ⟨pt, MirTy.eq_of_beq h_beq, h_rv⟩
               | bool | int _ _ | unit | never | char | ordering | enum _
               | tuple _ | rawPtr _ _ | slice _ | array _ _ | rangeTo _
-              | rangeFrom _ | unsupported =>
+              | rangeFrom _ | unsupported | option _ | range _ =>
                 dsimp only at h_ref; cases h_ref
             | indirect mplace =>
               rw [h_sl] at h_ref
@@ -2544,9 +2727,9 @@ theorem evalRefRvalueV2_requires_refValidInMem
                           exact ⟨pt, MirTy.eq_of_beq h_beq, h_rv⟩
               | bool | int _ _ | unit | never | char | ordering | enum _
               | tuple _ | rawPtr _ _ | slice _ | array _ _ | rangeTo _
-              | rangeFrom _ | unsupported =>
+              | rangeFrom _ | unsupported | option _ | range _ =>
                 dsimp only at h_ref; cases h_ref
-    | field _ _ | constantIndex _ _ _ | unsupported =>
+    | field _ _ | constantIndex _ _ _ | unsupported | downcast _ =>
       rw [h_proj] at h_ref; cases h_ref
 
 /-- `execCoreCallOp .sliceGetUncheckedRangeTo` rejects `.shared -> .mut`
@@ -2598,15 +2781,15 @@ theorem execCoreCallOp_sliceGetUncheckedRangeTo_spec
         | i16 | i32 | i64 | i128 | isize => dsimp only at h_op; cases h_op
       | bool | unit | never | char | ordering | enum _ | tuple _ | ref _ _
       | rawPtr _ _ | slice _ | array _ _ | rangeTo _ | rangeFrom _
-      | unsupported =>
+      | unsupported | option _ | range _ =>
         dsimp only at h_op; cases h_op
     | bool | int _ _ | unit | never | char | ordering | enum _ | tuple _
     | ref _ _ | rawPtr _ _ | array _ _ | rangeTo _ | rangeFrom _
-    | unsupported =>
+    | unsupported | option _ | range _ =>
       dsimp only at h_op; cases h_op
   | bool | int _ _ | unit | never | char | ordering | enum _ | tuple _
   | rawPtr _ _ | slice _ | array _ _ | rangeTo _ | rangeFrom _
-  | unsupported =>
+  | unsupported | option _ | range _ =>
     dsimp only at h_op; cases h_op
 
 /-- `execCoreCallOp .sliceGetUncheckedRangeFrom` rejects `.shared -> .mut`
@@ -2659,15 +2842,15 @@ theorem execCoreCallOp_sliceGetUncheckedRangeFrom_spec
         | i16 | i32 | i64 | i128 | isize => dsimp only at h_op; cases h_op
       | bool | unit | never | char | ordering | enum _ | tuple _ | ref _ _
       | rawPtr _ _ | slice _ | array _ _ | rangeTo _ | rangeFrom _
-      | unsupported =>
+      | unsupported | option _ | range _ =>
         dsimp only at h_op; cases h_op
     | bool | int _ _ | unit | never | char | ordering | enum _ | tuple _
     | ref _ _ | rawPtr _ _ | array _ _ | rangeTo _ | rangeFrom _
-    | unsupported =>
+    | unsupported | option _ | range _ =>
       dsimp only at h_op; cases h_op
   | bool | int _ _ | unit | never | char | ordering | enum _ | tuple _
   | rawPtr _ _ | slice _ | array _ _ | rangeTo _ | rangeFrom _
-  | unsupported =>
+  | unsupported | option _ | range _ =>
     dsimp only at h_op; cases h_op
 
 /-- `execCoreCallOp .sliceLen` validates the slice reference via
@@ -2838,7 +3021,7 @@ theorem aggregateTuple_evalRvalueV2_preserves_checkValV2
         exact ⟨fieldTys, argValues typedVals, rfl, rfl, h_cv⟩
   | bool | int _ _ | unit | never | char | ordering | enum _ | ref _ _
   | rawPtr _ _ | slice _ | array _ _ | rangeTo _ | rangeFrom _
-  | unsupported =>
+  | unsupported | option _ | range _ =>
     dsimp only at h_ev; cases h_ev
 
 /-- Every successful `writePlaceDestV2` (used by both `evalStatementV2 .assign`
@@ -2917,7 +3100,7 @@ private theorem resolvePlaceDestV2_deref_branch (pt dstTy : MirTy)
                   ⟨lay, pv, rfl, h_d.symm⟩⟩
               | scalar _ | slicePtr _ _ | rangeTo _ | rangeFrom _ | bool _
               | char _ | ordering _ | unit | enumVal _ _ | tuple _ | array _
-              | bytes _ =>
+              | bytes _ | optionVal _ | range _ _ =>
                 cases h_match
 
 /-- Any `.deref` destination resolved by `resolvePlaceDestV2` (used by both
@@ -2970,7 +3153,7 @@ theorem resolvePlaceDestV2_deref_requires_mut_ptr
             h_lay, h_d⟩
         | bool | int _ _ | unit | never | char | ordering | enum _
         | tuple _ | slice _ | array _ _ | rangeTo _ | rangeFrom _
-        | unsupported =>
+        | unsupported | option _ | range _ =>
           cases h_res
       | partialTuple _ =>
         rw [h_sl] at h_res
@@ -2993,7 +3176,7 @@ theorem resolvePlaceDestV2_deref_requires_mut_ptr
             h_lay, h_d⟩
         | bool | int _ _ | unit | never | char | ordering | enum _
         | tuple _ | slice _ | array _ _ | rangeTo _ | rangeFrom _
-        | unsupported =>
+        | unsupported | option _ | range _ =>
           cases h_res
 
 /-- Any `.deref` store accepted by `writePlaceV2` must originate from a
@@ -3204,7 +3387,7 @@ theorem evalTerminatorV2_return_enforces_callerMem_validity_and_disjoint_spans
           | _ => cases h_t
       | scalar _ | char _ | ordering _ | unit | enumVal _ _ | ptr _
       | slicePtr _ _ | rangeTo _ | rangeFrom _ | tuple _ | array _
-      | bytes _ =>
+      | bytes _ | optionVal _ | range _ _ =>
         dsimp only at h_t; cases h_t
   | coreCall op args dst cont _ =>
     rw [h_term] at h_t
@@ -3228,13 +3411,14 @@ theorem evalTerminatorV2_return_enforces_callerMem_validity_and_disjoint_spans
             cases res with | mk locals1 mem1 =>
             rw [h_args] at h_t
             dsimp only at h_t
-            cases h_op : execCoreCallOp mem1 op typedArgs dstTy with
+            cases h_op : execCoreCallWithMem mem1 op typedArgs dstTy with
             | error k => rw [h_op] at h_t; dsimp only at h_t; cases h_t
-            | ok resVal =>
+            | ok resPair =>
+              cases resPair with | mk resVal mem1' =>
               rw [h_op] at h_t
               dsimp only at h_t
               cases h_wp :
-                  writePlaceV2 body.locals locals1 mem1 dst dstTy resVal with
+                  writePlaceV2 body.locals locals1 mem1' dst dstTy resVal with
               | error k => rw [h_wp] at h_t; dsimp only at h_t; cases h_t
               | ok res2 =>
                 cases res2 with | mk locals2 mem2 =>

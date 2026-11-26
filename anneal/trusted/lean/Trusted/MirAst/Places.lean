@@ -47,13 +47,15 @@ Constructor correspondence:
 - `.field fieldIdx ty` corresponds to `ProjectionElem::Field(fieldIdx, ty)`.
 - `.constantIndex offset minLength fromEnd` corresponds to
   `ProjectionElem::ConstantIndex { offset, min_length, from_end }` (Profile v2).
+- `.downcast variantIdx` corresponds to
+  `ProjectionElem::Downcast(_, variantIdx)`.
 - `.unsupported` represents all other `ProjectionElem` variants (`Index`,
-  `Subslice`, `Downcast`, `OpaqueCast`, `UnwrapUnsafeBinder`, and
-  `PhantomDeref`). -/
+  `Subslice`, `OpaqueCast`, `UnwrapUnsafeBinder`, and `PhantomDeref`). -/
 inductive ProjectionElem where
   | deref
   | field (fieldIdx : FieldIdx) (ty : MirTy)
   | constantIndex (offset : Nat) (minLength : Nat) (fromEnd : Bool)
+  | downcast (variantIdx : Nat)
   | unsupported
 
 /-- A MIR place (`rustc_middle::mir::Place` in

@@ -615,8 +615,8 @@ theorem noProvBytes_encodeVal (endian : TargetEndian) (ty : MirTy) (v : Val)
         rw [← hBs]
         exact noProvBytes_map_init_none _ _
       | ptr _ | bool _ | char _ | ordering _ | unit | enumVal _ _ | tuple _
-      | slicePtr _ _ | rangeTo _ | rangeFrom _ | array _
-      | bytes _ => nomatch hEnc
+      | slicePtr _ _ | rangeTo _ | rangeFrom _ | range _ _ | optionVal _
+      | array _ | bytes _ => nomatch hEnc
     | bool =>
       cases v with
       | bool b =>
@@ -624,8 +624,8 @@ theorem noProvBytes_encodeVal (endian : TargetEndian) (ty : MirTy) (v : Val)
         rw [← hBs]
         rfl
       | scalar _ | ptr _ | char _ | ordering _ | unit | enumVal _ _ | tuple _
-      | slicePtr _ _ | rangeTo _ | rangeFrom _ | array _
-      | bytes _ => nomatch hEnc
+      | slicePtr _ _ | rangeTo _ | rangeFrom _ | range _ _ | optionVal _
+      | array _ | bytes _ => nomatch hEnc
     | char =>
       cases v with
       | char c =>
@@ -633,8 +633,8 @@ theorem noProvBytes_encodeVal (endian : TargetEndian) (ty : MirTy) (v : Val)
         rw [← hBs]
         exact noProvBytes_map_init_none _ _
       | scalar _ | ptr _ | bool _ | ordering _ | unit | enumVal _ _ | tuple _
-      | slicePtr _ _ | rangeTo _ | rangeFrom _ | array _
-      | bytes _ => nomatch hEnc
+      | slicePtr _ _ | rangeTo _ | rangeFrom _ | range _ _ | optionVal _
+      | array _ | bytes _ => nomatch hEnc
     | ordering =>
       cases v with
       | ordering ord =>
@@ -642,8 +642,8 @@ theorem noProvBytes_encodeVal (endian : TargetEndian) (ty : MirTy) (v : Val)
         rw [← hBs]
         exact noProvBytes_map_init_none _ _
       | scalar _ | ptr _ | bool _ | char _ | unit | enumVal _ _ | tuple _
-      | slicePtr _ _ | rangeTo _ | rangeFrom _ | array _
-      | bytes _ => nomatch hEnc
+      | slicePtr _ _ | rangeTo _ | rangeFrom _ | range _ _ | optionVal _
+      | array _ | bytes _ => nomatch hEnc
     | unit =>
       cases v with
       | unit =>
@@ -651,8 +651,8 @@ theorem noProvBytes_encodeVal (endian : TargetEndian) (ty : MirTy) (v : Val)
         rw [← hBs]
         rfl
       | scalar _ | ptr _ | bool _ | char _ | ordering _ | enumVal _ _ | tuple _
-      | slicePtr _ _ | rangeTo _ | rangeFrom _ | array _
-      | bytes _ => nomatch hEnc
+      | slicePtr _ _ | rangeTo _ | rangeFrom _ | range _ _ | optionVal _
+      | array _ | bytes _ => nomatch hEnc
     | enum ety =>
       cases v with
       | enumVal _ variant =>
@@ -676,8 +676,8 @@ theorem noProvBytes_encodeVal (endian : TargetEndian) (ty : MirTy) (v : Val)
             rw [← hBs]
             exact noProvBytes_map_init_none _ _
       | scalar _ | ptr _ | bool _ | char _ | ordering _ | unit | tuple _
-      | slicePtr _ _ | rangeTo _ | rangeFrom _ | array _
-      | bytes _ => nomatch hEnc
+      | slicePtr _ _ | rangeTo _ | rangeFrom _ | range _ _ | optionVal _
+      | array _ | bytes _ => nomatch hEnc
     | tuple fs =>
       cases fs with
       | nil => nomatch hEnc
@@ -713,22 +713,25 @@ theorem noProvBytes_encodeVal (endian : TargetEndian) (ty : MirTy) (v : Val)
                             · exact noProvBytes_replicate_uninit _
                           | cons _ _ => nomatch hEnc
                         | scalar _ | ptr _ | char _ | ordering _ | unit
-                        | slicePtr _ _ | rangeTo _ | rangeFrom _ | array _
-                        | enumVal _ _ | tuple _ | bytes _ => nomatch hEnc
+                        | slicePtr _ _ | rangeTo _ | rangeFrom _ | range _ _
+                        | optionVal _ | array _ | enumVal _ _ | tuple _
+                        | bytes _ => nomatch hEnc
                     | ptr _ | bool _ | char _ | ordering _ | unit | enumVal _ _
-                    | slicePtr _ _ | rangeTo _ | rangeFrom _ | array _
-                    | tuple _ | bytes _ => nomatch hEnc
+                    | slicePtr _ _ | rangeTo _ | rangeFrom _ | range _ _
+                    | optionVal _ | array _ | tuple _
+                    | bytes _ => nomatch hEnc
                 | scalar _ | ptr _ | bool _ | char _ | ordering _ | unit
-                | slicePtr _ _ | rangeTo _ | rangeFrom _ | array _
-                | enumVal _ _ | bytes _ => nomatch hEnc
+                | slicePtr _ _ | rangeTo _ | rangeFrom _ | range _ _
+                | optionVal _ | array _ | enumVal _ _
+                | bytes _ => nomatch hEnc
               | cons _ _ => nomatch hEnc
             | int _ _ | unit | never | char | ordering | enum _ | tuple _
-            | slice _ | array _ _ | rangeTo _ | rangeFrom _
-            | ref _ _ | rawPtr _ _ | unsupported => nomatch hEnc
+            | slice _ | array _ _ | rangeTo _ | rangeFrom _ | range _
+            | option _ | ref _ _ | rawPtr _ _ | unsupported => nomatch hEnc
         | bool | unit | never | char | ordering | enum _ | tuple _ | ref _ _
-        | slice _ | array _ _ | rangeTo _ | rangeFrom _
+        | slice _ | array _ _ | rangeTo _ | rangeFrom _ | range _ | option _
         | rawPtr _ _ | unsupported => nomatch hEnc
-    | slice _ | array _ _ | rangeTo _ | rangeFrom _
+    | slice _ | array _ _ | rangeTo _ | rangeFrom _ | range _ | option _
     | never | ref _ _ | rawPtr _ _ | unsupported => nomatch hEnc
 
 /-- Byte position `i` of a `size`-byte sequence of type `ty` whose first `i`
@@ -1329,8 +1332,8 @@ theorem int_isIntoBytes (endian : TargetEndian) (w : IntWidth) (s : Bool) :
       have hWSize : (intLayout w).size = w.byteSize := by cases w <;> rfl
       exact ⟨hWSize.symm, allBytesInit_map_init_none _ _⟩
     | ptr _ | bool _ | char _ | ordering _ | unit | enumVal _ _ | tuple _
-    | slicePtr _ _ | rangeTo _ | rangeFrom _ | array _
-    | bytes _ => nomatch hEnc
+    | slicePtr _ _ | rangeTo _ | rangeFrom _ | range _ _ | optionVal _
+    | array _ | bytes _ => nomatch hEnc
 
 theorem int_decodeTyped (endian : TargetEndian) (w : IntWidth)
     (s : Bool) :
@@ -1447,8 +1450,8 @@ theorem unit_isIntoBytes (endian : TargetEndian) : IsIntoBytes endian .unit := b
       rw [← hBs]
       exact ⟨rfl, rfl⟩
     | scalar _ | ptr _ | bool _ | char _ | ordering _ | enumVal _ _ | tuple _
-    | slicePtr _ _ | rangeTo _ | rangeFrom _ | array _
-    | bytes _ => nomatch hEnc
+    | slicePtr _ _ | rangeTo _ | rangeFrom _ | range _ _ | optionVal _
+    | array _ | bytes _ => nomatch hEnc
 
 theorem unit_isUnaligned : IsUnaligned .unit :=
   ⟨⟨0, 0⟩, rfl, rfl⟩
@@ -1503,8 +1506,8 @@ theorem bool_isIntoBytes (endian : TargetEndian) : IsIntoBytes endian .bool := b
       rw [← hBs]
       exact ⟨rfl, rfl⟩
     | scalar _ | ptr _ | char _ | ordering _ | unit | enumVal _ _ | tuple _
-    | slicePtr _ _ | rangeTo _ | rangeFrom _ | array _
-    | bytes _ => nomatch hEnc
+    | slicePtr _ _ | rangeTo _ | rangeFrom _ | range _ _ | optionVal _
+    | array _ | bytes _ => nomatch hEnc
 
 theorem bool_isFromZeros (endian : TargetEndian) : IsFromZeros endian .bool := by
   cases endian with
@@ -1594,8 +1597,8 @@ theorem char_isIntoBytes (endian : TargetEndian) : IsIntoBytes endian .char := b
       rw [← hBs, length_map_eq, length_encodeUInt]
       exact ⟨rfl, allBytesInit_map_init_none _ _⟩
     | scalar _ | ptr _ | bool _ | ordering _ | unit | enumVal _ _ | tuple _
-    | slicePtr _ _ | rangeTo _ | rangeFrom _ | array _
-    | bytes _ => nomatch hEnc
+    | slicePtr _ _ | rangeTo _ | rangeFrom _ | range _ _ | optionVal _
+    | array _ | bytes _ => nomatch hEnc
 
 theorem char_isFromZeros (endian : TargetEndian) : IsFromZeros endian .char := by
   cases endian with
@@ -1687,8 +1690,8 @@ theorem ordering_isIntoBytes (endian : TargetEndian) :
       rw [← hBs, length_map_eq, length_encodeUInt]
       exact ⟨rfl, allBytesInit_map_init_none _ _⟩
     | scalar _ | ptr _ | bool _ | char _ | unit | enumVal _ _ | tuple _
-    | slicePtr _ _ | rangeTo _ | rangeFrom _ | array _
-    | bytes _ => nomatch hEnc
+    | slicePtr _ _ | rangeTo _ | rangeFrom _ | range _ _ | optionVal _
+    | array _ | bytes _ => nomatch hEnc
 
 theorem ordering_isFromZeros (endian : TargetEndian) :
     IsFromZeros endian .ordering := by
@@ -1995,14 +1998,14 @@ private theorem overflowPair_i8_encodeVal_allBytesInit (endian : TargetEndian)
                 exact hInit
               | cons _ _ => nomatch hEnc
             | scalar _ | ptr _ | char _ | ordering _ | unit | enumVal _ _
-            | slicePtr _ _ | rangeTo _ | rangeFrom _ | array _
-            | tuple _ | bytes _ => nomatch hEnc
+            | slicePtr _ _ | rangeTo _ | rangeFrom _ | range _ _ | optionVal _
+            | array _ | tuple _ | bytes _ => nomatch hEnc
         | ptr _ | bool _ | char _ | ordering _ | unit | enumVal _ _ | tuple _
-        | slicePtr _ _ | rangeTo _ | rangeFrom _ | array _
-        | bytes _ => nomatch hEnc
+        | slicePtr _ _ | rangeTo _ | rangeFrom _ | range _ _ | optionVal _
+        | array _ | bytes _ => nomatch hEnc
     | scalar _ | ptr _ | bool _ | char _ | ordering _ | unit | enumVal _ _
-    | slicePtr _ _ | rangeTo _ | rangeFrom _ | array _
-    | bytes _ => nomatch hEnc
+    | slicePtr _ _ | rangeTo _ | rangeFrom _ | range _ _ | optionVal _
+    | array _ | bytes _ => nomatch hEnc
 
 private theorem overflowPair_encodeVal_uninit_of_ne_i8 (endian : TargetEndian)
     {w : IntWidth} (hw : w ≠ .i8) (s : Bool) :
@@ -2191,8 +2194,8 @@ theorem zstEnum_isIntoBytes (endian : TargetEndian) (ety : EnumTy)
       rw [← hEnc]
       exact ⟨rfl, rfl⟩
     | scalar _ | ptr _ | bool _ | char _ | ordering _ | unit | tuple _
-    | slicePtr _ _ | rangeTo _ | rangeFrom _ | array _
-    | bytes _ => nomatch hEnc
+    | slicePtr _ _ | rangeTo _ | rangeFrom _ | range _ _ | optionVal _
+    | array _ | bytes _ => nomatch hEnc
 
 theorem zstEnum_isUnaligned (ety : EnumTy)
     (hAdm : enumAdmitted ety = true) (hRepr : ety.tagRepr = .zeroSized) :
@@ -2259,8 +2262,8 @@ theorem scalarEnum_isIntoBytes (endian : TargetEndian) (ety : EnumTy)
           cases tagW <;> rfl
         exact ⟨hWSize.symm, allBytesInit_map_init_none _ _⟩
     | scalar _ | ptr _ | bool _ | char _ | ordering _ | unit | tuple _
-    | slicePtr _ _ | rangeTo _ | rangeFrom _ | array _
-    | bytes _ => nomatch hEnc
+    | slicePtr _ _ | rangeTo _ | rangeFrom _ | range _ _ | optionVal _
+    | array _ | bytes _ => nomatch hEnc
 
 theorem scalarEnum_isUnaligned_iff (ety : EnumTy) (tagW : IntWidth)
     (tagS : Bool) (hAdm : enumAdmitted ety = true)

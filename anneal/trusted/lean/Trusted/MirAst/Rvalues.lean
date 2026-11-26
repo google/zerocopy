@@ -247,6 +247,14 @@ Constructor correspondence:
   correspond to `Rvalue::Aggregate(AggregateKind::Adt, ..)` constructing
   `core::ops::RangeTo { end }` and `core::ops::RangeFrom { start }`
   (Profile v2).
+- `.aggregateRange elemTy startOp endOp` corresponds to
+  `Rvalue::Aggregate(AggregateKind::Adt, ..)` constructing
+  `core::ops::Range { start, end }` (Profile v2).
+- `.aggregateOption variantIdx innerTy payload` corresponds to
+  `Rvalue::Aggregate(AggregateKind::Adt, ..)` constructing
+  `core::option::Option::<innerTy>::None` (`variantIdx = 0`, `payload = none`)
+  or `core::option::Option::<innerTy>::Some(x)` (`variantIdx = 1`,
+  `payload = some x`) (Profile v2).
 - `.useRetag op` corresponds to a retagging `Use(op, WithRetag::Yes)` of a
   type that is not retag-free.
 - `.unsupported` represents all other `Rvalue` variants (`ThreadLocalRef`,
@@ -271,6 +279,9 @@ inductive Rvalue where
   | repeat_ (op : Operand) (elemTy : MirTy) (count : Nat)
   | aggregateRangeTo (elemTy : MirTy) (endOp : Operand)
   | aggregateRangeFrom (elemTy : MirTy) (startOp : Operand)
+  | aggregateRange (elemTy : MirTy) (startOp endOp : Operand)
+  | aggregateOption (variantIdx : Nat) (innerTy : MirTy)
+      (payload : Option Operand)
   | unsupported
 
 end Trusted.MirAst

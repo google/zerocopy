@@ -213,6 +213,19 @@ const MIR_TOTAL_DAG: &[LeanDagSpec] = &[
         ],
     },
     LeanDagSpec {
+        module: "Trusted.MirSemantics.CoreContracts",
+        rel_tree: "trusted/lean",
+        deps: &[
+            "Trusted.MirAst",
+            "Trusted.MirModel",
+            "Trusted.MirSemantics.Ops",
+            "Trusted.MirSemantics.Enum",
+            "Trusted.MirSemantics.Layout",
+            "Trusted.MirSemantics.Memory",
+            "Trusted.MirSemantics.Bytes",
+        ],
+    },
+    LeanDagSpec {
         module: "Trusted.MirSemantics.Step",
         rel_tree: "trusted/lean",
         deps: &[
@@ -223,6 +236,7 @@ const MIR_TOTAL_DAG: &[LeanDagSpec] = &[
             "Trusted.MirSemantics.Layout",
             "Trusted.MirSemantics.Memory",
             "Trusted.MirSemantics.Bytes",
+            "Trusted.MirSemantics.CoreContracts",
             "Trusted.MirSemantics.State",
         ],
     },
@@ -266,6 +280,7 @@ const MIR_TOTAL_DAG: &[LeanDagSpec] = &[
             "Trusted.MirSemantics.Layout",
             "Trusted.MirSemantics.Memory",
             "Trusted.MirSemantics.Bytes",
+            "Trusted.MirSemantics.CoreContracts",
             "Trusted.MirSemantics.State",
             "Trusted.MirSemantics.Step",
             "Trusted.MirSemantics.Boundary",
@@ -1699,6 +1714,10 @@ partial def encodeBoundaryValBytes : Val → List (Option Nat)
     ((encodeLeBytes 8 p.offsetBytes.toNat) ++ (encodeLeBytes 8 len.toNat)).map some
   | .rangeTo endVal => (encodeLeBytes 8 endVal.toNat).map some
   | .rangeFrom startVal => (encodeLeBytes 8 startVal.toNat).map some
+  | .range startVal endVal =>
+    ((encodeLeBytes 8 startVal.toNat) ++ (encodeLeBytes 8 endVal.toNat)).map some
+  | .optionVal none => [some 0]
+  | .optionVal (some inner) => some 1 :: encodeBoundaryValBytes inner
   | .bytes bs =>
     bs.map (fun ab => match ab with | .init b _ => some b.toNat | .uninit => none)
 
@@ -1743,6 +1762,10 @@ partial def valRepr : Val → String
     | none => "enum#" ++ toString v
   | .tuple fs => "(" ++ String.intercalate "," (fs.map valRepr) ++ ")"
   | .array elems => "[" ++ String.intercalate "," (elems.map valRepr) ++ "]"
+  | .range startVal endVal =>
+    "range(" ++ toString startVal.toNat ++ ".." ++ toString endVal.toNat ++ ")"
+  | .optionVal none => "None"
+  | .optionVal (some inner) => "Some(" ++ valRepr inner ++ ")"
   | _ => "<other>"
 
 partial def valToJson : Val → String
@@ -1768,7 +1791,7 @@ partial def valToJson : Val → String
       ++ ",\"tag_bytes\":" ++ toString tb ++ "}"
   | .tuple fs =>
     "{\"kind\":\"tuple\",\"fields\":[" ++ String.intercalate "," (fs.map valToJson) ++ "]}"
-  | .array _ => "{\"kind\":\"other\"}"
+  | .array _ | .range _ _ | .optionVal _ => "{\"kind\":\"other\"}"
   | _ => "{\"kind\":\"other\"}"
 
 def resolveTuplePath : MirTy → List Nat → Option MirTy
@@ -1851,6 +1874,9 @@ partial def valEq : Val → Val → Bool
       && intWidthEq a.width b.width && (la == lb)
   | .rangeTo a, .rangeTo b => a == b
   | .rangeFrom a, .rangeFrom b => a == b
+  | .range s1 e1, .range s2 e2 => (s1 == s2) && (e1 == e2)
+  | .optionVal none, .optionVal none => true
+  | .optionVal (some a), .optionVal (some b) => valEq a b
   | .bool a, .bool b => a == b
   | .char a, .char b => Nat.beq a.toNat b.toNat
   | .ordering a, .ordering b => ordEq a b
@@ -2102,6 +2128,9 @@ def rvalueHasDeref : Rvalue → Bool
   | .use op | .unaryOp _ op | .cast _ op _ | .useRetag op
   | .aggregateRangeTo _ op | .aggregateRangeFrom _ op
   | .repeat_ op _ _ => operandHasDeref op
+  | .aggregateRange _ startOp endOp => operandHasDeref startOp || operandHasDeref endOp
+  | .aggregateOption _ _ (some op) => operandHasDeref op
+  | .aggregateOption _ _ none => false
   | .binaryOp _ l r => operandHasDeref l || operandHasDeref r
   | .discriminant p | .ref _ p | .addressOf _ p | .fakeAddressOf p => placeHasDeref p
   | .aggregateTuple ops | .aggregateArray _ ops => ops.any operandHasDeref
@@ -2174,9 +2203,16 @@ def describeUndefinedStepFault (prog : Program) (frame : FrameState) (mem : Memo
               | .usizeUncheckedSub =>
                 "unchecked arithmetic overflow: Trusted.MirSemantics.FaultKind.undefined"
               | .sliceGetUncheckedRangeTo | .sliceGetUncheckedRangeFrom
-              | .ptrAdd _ _ | .sliceLen | .arrayEq _ _ =>
+              | .sliceIndexRange _ _ | .sliceIndexRangeFrom _ _
+              | .sliceIsEmpty _ | .sliceSplitAt _ _ | .memReplace _
+              | .optionTake _ | .ptrAdd _ _ | .sliceLen | .arrayEq _ _ =>
                 "pointer or memory access undefined: Trusted.MirSemantics.FaultKind.undefined"
-              | .intToLeBytes _ _ =>
+              | .numIsMultipleOf _ _ | .numCheckedAdd _ _ | .numCheckedMul _ _
+              | .numCheckedSub _ _ | .numSaturatingAdd _ _ | .numWrappingShl _ _
+              | .numWrappingShr _ _ | .numLeadingZeros _ _
+              | .numOverflowingAdd _ _ | .numOverflowingSub _ _
+              | .cmpMin _ _ | .cmpMax _ _ | .optionIsSome _
+              | .optionIsNone _ | .optionUnwrap _ | .intToLeBytes _ _ =>
                 "uninitialized or invalid value undefined: Trusted.MirSemantics.FaultKind.undefined"
             | .error _ =>
               "uninitialized or invalid value undefined: Trusted.MirSemantics.FaultKind.undefined"

@@ -276,7 +276,9 @@ theorem symScalar_asConst?_sound (env : SymEnv) :
         cases v with
         | scalar sv => cases h; rfl
         | ptr _ | slicePtr _ _ | bool _ | char _ | ordering _ | unit | enumVal _ _
-        | tuple _ | array _ | bytes _ | rangeTo _ | rangeFrom _ => cases h
+        | tuple _ | array _ | bytes _ | rangeTo _ | rangeFrom _ | range _ _ =>
+          cases h
+        | optionVal optV => cases optV <;> (cases h)
   | .binOp op l r, out, h => by
     dsimp only [SymScalar.asConst?, SymScalar.eval] at h
     dsimp only [SymScalar.asConst?, SymScalar.eval]
@@ -297,7 +299,9 @@ theorem symScalar_asConst?_sound (env : SymEnv) :
           cases v with
           | scalar sv => cases h; rfl
           | ptr _ | slicePtr _ _ | bool _ | char _ | ordering _ | unit | enumVal _ _
-          | tuple _ | array _ | bytes _ | rangeTo _ | rangeFrom _ => cases h
+          | tuple _ | array _ | bytes _ | rangeTo _ | rangeFrom _ | range _ _ =>
+            cases h
+          | optionVal optV => cases optV <;> (cases h)
   | .shift op l r, out, h => by
     dsimp only [SymScalar.asConst?, SymScalar.eval] at h
     dsimp only [SymScalar.asConst?, SymScalar.eval]
@@ -318,7 +322,9 @@ theorem symScalar_asConst?_sound (env : SymEnv) :
           cases v with
           | scalar sv => cases h; rfl
           | ptr _ | slicePtr _ _ | bool _ | char _ | ordering _ | unit | enumVal _ _
-          | tuple _ | array _ | bytes _ | rangeTo _ | rangeFrom _ => cases h
+          | tuple _ | array _ | bytes _ | rangeTo _ | rangeFrom _ | range _ _ =>
+            cases h
+          | optionVal optV => cases optV <;> (cases h)
   | .cast dstW dstS src, out, h => by
     dsimp only [SymScalar.asConst?, SymScalar.eval] at h
     dsimp only [SymScalar.asConst?, SymScalar.eval]
@@ -335,7 +341,8 @@ theorem symScalar_asConst?_sound (env : SymEnv) :
         cases v with
         | scalar sv' => cases h; rfl
         | ptr _ | slicePtr _ _ | bool _ | char _ | ordering _ | unit | enumVal _ _
-        | tuple _ | array _ | bytes _ | rangeTo _ | rangeFrom _ => cases h
+        | tuple _ | array _ | bytes _ | rangeTo _ | rangeFrom _ | optionVal _
+        | range _ _ => cases h
 
 /-- Compute the symbolic source of bit `i` of `s` (when `0 ≤ i < 128`). -/
 @[expose] noncomputable def SymScalar.bitLsb (s : SymScalar) (i : Nat) : Option BitSrc :=
@@ -468,7 +475,8 @@ theorem symScalar_bitLsb_sound (env : SymEnv) :
       | scalar sv =>
         rw [getLsbD_truncateBitsComp, decide_eq_true hi, hLt, Bool.false_and, Bool.true_and]
       | ptr _ | slicePtr _ _ | bool _ | char _ | ordering _ | unit | enumVal _ _
-      | tuple _ | array _ | bytes _ | rangeTo _ | rangeFrom _ =>
+      | tuple _ | array _ | bytes _ | rangeTo _ | rangeFrom _ | optionVal _
+      | range _ _ =>
         exact Anneal.BitVec.getLsbD_zero 128 i
     | true =>
       rw [hLt] at h; cases h
@@ -477,7 +485,8 @@ theorem symScalar_bitLsb_sound (env : SymEnv) :
       | scalar sv =>
         rw [getLsbD_truncateBitsComp, decide_eq_true hi, hLt, Bool.true_and, Bool.true_and]
       | ptr _ | slicePtr _ _ | bool _ | char _ | ordering _ | unit | enumVal _ _
-      | tuple _ | array _ | bytes _ | rangeTo _ | rangeFrom _ =>
+      | tuple _ | array _ | bytes _ | rangeTo _ | rangeFrom _ | optionVal _
+      | range _ _ =>
         exact Anneal.BitVec.getLsbD_zero 128 i
   | .unOp _ _, _, _, _, _, h => by cases h
   | .binOp op l r, i, src, hi, hWf, h => by

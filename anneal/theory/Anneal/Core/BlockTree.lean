@@ -977,7 +977,8 @@ private theorem attachCallersComp_nil_evalTerminatorComp (body : Body)
             cases Anneal.MirTotal.evalCharSwitchBranchesComp c targets.otherwise
                 targets.branches <;> rfl
           | ptr _ | ordering _ | unit | tuple _ | bytes _ | enumVal _ _
-          | slicePtr _ _ | rangeTo _ | rangeFrom _ | array _ =>
+          | slicePtr _ _ | rangeTo _ | rangeFrom _ | array _
+          | range _ _ | optionVal _ =>
             dsimp only
             cases targets.branches <;> rfl
 

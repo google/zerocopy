@@ -99,7 +99,7 @@ class RenderCorrespondenceProvenanceTests(unittest.TestCase):
         self.assertEqual(data["schema_version"], 1)
         self.assertEqual(len(data["correspondence_adapters"]), 7)
         self.assertEqual(len(data["correspondence_proofs"]), 29)
-        self.assertEqual(len(data["trusted_lean"]), 25)
+        self.assertEqual(len(data["trusted_lean"]), 26)
         self.assertEqual(len(data["patched_files"]), 13)
         mr = data["minirust_upstream"]
         self.assertEqual(

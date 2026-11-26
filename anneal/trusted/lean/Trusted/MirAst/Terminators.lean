@@ -148,6 +148,13 @@ Every other external `Call` remains `.unsupported`.
   > "Arrays are compared element-wise, and don't add any padding between
   > elements, so when the elements are `BytewiseEq`, we can compare the entire
   > array at once."
+- `.sliceIndexRange`, `.sliceIndexRangeFrom`, `.sliceIsEmpty`, `.sliceSplitAt`,
+  `.numIsMultipleOf`, `.numCheckedAdd`, `.numCheckedMul`, `.numCheckedSub`,
+  `.numSaturatingAdd`, `.numWrappingShl`, `.numWrappingShr`, `.numLeadingZeros`,
+  `.numOverflowingAdd`, `.numOverflowingSub`, `.cmpMin`, `.cmpMax`,
+  `.memReplace`, `.optionIsSome`, `.optionIsNone`, `.optionTake`, and
+  `.optionUnwrap` model the corresponding `core` slice, scalar, `cmp`, `mem`,
+  and `Option` operations (`Trusted.MirSemantics.CoreContracts`).
 
 Each semantic definition cited above quotes the corresponding `core` safety
 contract at `rust-lang/rust` `f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1`. -/
@@ -155,6 +162,27 @@ inductive CoreCallOp where
   | sliceLen
   | sliceGetUncheckedRangeTo
   | sliceGetUncheckedRangeFrom
+  | sliceIndexRange (mutability : Mutability) (elem : MirTy)
+  | sliceIndexRangeFrom (mutability : Mutability) (elem : MirTy)
+  | sliceIsEmpty (elem : MirTy)
+  | sliceSplitAt (mutability : Mutability) (elem : MirTy)
+  | numIsMultipleOf (width : IntWidth) (signed : Bool)
+  | numCheckedAdd (width : IntWidth) (signed : Bool)
+  | numCheckedMul (width : IntWidth) (signed : Bool)
+  | numCheckedSub (width : IntWidth) (signed : Bool)
+  | numSaturatingAdd (width : IntWidth) (signed : Bool)
+  | numWrappingShl (width : IntWidth) (signed : Bool)
+  | numWrappingShr (width : IntWidth) (signed : Bool)
+  | numLeadingZeros (width : IntWidth) (signed : Bool)
+  | numOverflowingAdd (width : IntWidth) (signed : Bool)
+  | numOverflowingSub (width : IntWidth) (signed : Bool)
+  | cmpMin (width : IntWidth) (signed : Bool)
+  | cmpMax (width : IntWidth) (signed : Bool)
+  | memReplace (ty : MirTy)
+  | optionIsSome (inner : MirTy)
+  | optionIsNone (inner : MirTy)
+  | optionTake (inner : MirTy)
+  | optionUnwrap (inner : MirTy)
   | ptrAdd (mutability : Mutability) (pointee : MirTy)
   | usizeUncheckedSub
   | intToLeBytes (width : IntWidth) (signed : Bool)

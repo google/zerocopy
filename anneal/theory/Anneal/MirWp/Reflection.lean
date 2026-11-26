@@ -156,7 +156,8 @@ mutual
           rw [hw] at h
           rw [IntWidth.beq_iff.mp hw, eq_of_beq h]
       | bool | unit | never | char | ordering | enum _ | tuple _ | ref _ _
-      | rawPtr _ _ | slice _ | array _ _ | rangeTo _ | rangeFrom _ | unsupported => cases h
+      | rawPtr _ _ | slice _ | array _ _ | rangeTo _ | rangeFrom _ | range _ | option _
+      | unsupported => cases h
     | .unit => fun t₂ h => by
       cases t₂ <;> first | rfl | cases h
     | .never => fun t₂ h => by
@@ -171,14 +172,16 @@ mutual
         change EnumTy.beq ety₁ ety₂ = true at h
         rw [EnumTy.beq_iff.mp h]
       | bool | int _ _ | unit | never | char | ordering | tuple _ | ref _ _
-      | rawPtr _ _ | slice _ | array _ _ | rangeTo _ | rangeFrom _ | unsupported => cases h
+      | rawPtr _ _ | slice _ | array _ _ | rangeTo _ | rangeFrom _ | range _ | option _
+      | unsupported => cases h
     | .tuple fs₁ => fun t₂ h => by
       cases t₂ with
       | tuple fs₂ =>
         change MirTy.beqList fs₁ fs₂ = true at h
         rw [mirTy_beqList_sound fs₁ fs₂ h]
       | bool | int _ _ | unit | never | char | ordering | enum _ | ref _ _
-      | rawPtr _ _ | slice _ | array _ _ | rangeTo _ | rangeFrom _ | unsupported => cases h
+      | rawPtr _ _ | slice _ | array _ _ | rangeTo _ | rangeFrom _ | range _ | option _
+      | unsupported => cases h
     | .ref m₁ p₁ => fun t₂ h => by
       cases t₂ with
       | ref m₂ p₂ =>
@@ -189,7 +192,8 @@ mutual
           rw [hm] at h
           rw [Mutability.beq_iff.mp hm, mirTy_beq_sound p₁ p₂ h]
       | bool | int _ _ | unit | never | char | ordering | enum _ | tuple _
-      | rawPtr _ _ | slice _ | array _ _ | rangeTo _ | rangeFrom _ | unsupported => cases h
+      | rawPtr _ _ | slice _ | array _ _ | rangeTo _ | rangeFrom _ | range _ | option _
+      | unsupported => cases h
     | .rawPtr m₁ p₁ => fun t₂ h => by
       cases t₂ with
       | rawPtr m₂ p₂ =>
@@ -200,14 +204,16 @@ mutual
           rw [hm] at h
           rw [Mutability.beq_iff.mp hm, mirTy_beq_sound p₁ p₂ h]
       | bool | int _ _ | unit | never | char | ordering | enum _ | tuple _
-      | ref _ _ | slice _ | array _ _ | rangeTo _ | rangeFrom _ | unsupported => cases h
+      | ref _ _ | slice _ | array _ _ | rangeTo _ | rangeFrom _ | range _ | option _
+      | unsupported => cases h
     | .slice e₁ => fun t₂ h => by
       cases t₂ with
       | slice e₂ =>
         change MirTy.beq e₁ e₂ = true at h
         rw [mirTy_beq_sound e₁ e₂ h]
       | bool | int _ _ | unit | never | char | ordering | enum _ | tuple _
-      | ref _ _ | rawPtr _ _ | array _ _ | rangeTo _ | rangeFrom _ | unsupported => cases h
+      | ref _ _ | rawPtr _ _ | array _ _ | rangeTo _ | rangeFrom _ | range _ | option _
+      | unsupported => cases h
     | .array e₁ n₁ => fun t₂ h => by
       cases t₂ with
       | array e₂ n₂ =>
@@ -218,21 +224,39 @@ mutual
           rw [hn] at h
           rw [Nat.eq_of_beq_eq_true hn, mirTy_beq_sound e₁ e₂ h]
       | bool | int _ _ | unit | never | char | ordering | enum _ | tuple _
-      | ref _ _ | rawPtr _ _ | slice _ | rangeTo _ | rangeFrom _ | unsupported => cases h
+      | ref _ _ | rawPtr _ _ | slice _ | rangeTo _ | rangeFrom _ | unsupported | option _ | range _ => cases h
     | .rangeTo e₁ => fun t₂ h => by
       cases t₂ with
       | rangeTo e₂ =>
         change MirTy.beq e₁ e₂ = true at h
         rw [mirTy_beq_sound e₁ e₂ h]
       | bool | int _ _ | unit | never | char | ordering | enum _ | tuple _
-      | ref _ _ | rawPtr _ _ | slice _ | array _ _ | rangeFrom _ | unsupported => cases h
+      | ref _ _ | rawPtr _ _ | slice _ | array _ _ | rangeFrom _ | range _ | option _
+      | unsupported => cases h
     | .rangeFrom e₁ => fun t₂ h => by
       cases t₂ with
       | rangeFrom e₂ =>
         change MirTy.beq e₁ e₂ = true at h
         rw [mirTy_beq_sound e₁ e₂ h]
       | bool | int _ _ | unit | never | char | ordering | enum _ | tuple _
-      | ref _ _ | rawPtr _ _ | slice _ | array _ _ | rangeTo _ | unsupported => cases h
+      | ref _ _ | rawPtr _ _ | slice _ | array _ _ | rangeTo _ | range _ | option _
+      | unsupported => cases h
+    | .range e₁ => fun t₂ h => by
+      cases t₂ with
+      | range e₂ =>
+        change MirTy.beq e₁ e₂ = true at h
+        rw [mirTy_beq_sound e₁ e₂ h]
+      | bool | int _ _ | unit | never | char | ordering | enum _ | tuple _
+      | ref _ _ | rawPtr _ _ | slice _ | rangeTo _ | rangeFrom _ | option _
+      | unsupported | array _ _ => cases h
+    | .option e₁ => fun t₂ h => by
+      cases t₂ with
+      | option e₂ =>
+        change MirTy.beq e₁ e₂ = true at h
+        rw [mirTy_beq_sound e₁ e₂ h]
+      | bool | int _ _ | unit | never | char | ordering | enum _ | tuple _
+      | ref _ _ | rawPtr _ _ | slice _ | rangeTo _ | rangeFrom _ | range _
+      | unsupported | array _ _ => cases h
     | .unsupported => fun t₂ h => by
       cases t₂ <;> first | rfl | cases h
 
@@ -285,6 +309,8 @@ mutual
       rfl
     | .rangeTo e => mirTy_beq_refl e
     | .rangeFrom e => mirTy_beq_refl e
+    | .range e => mirTy_beq_refl e
+    | .option e => mirTy_beq_refl e
     | .unsupported => rfl
 
   /-- Reflexivity of `MirTy.beqList`. -/
@@ -393,7 +419,8 @@ theorem checkVal_int_iff {v : Val} {w : IntWidth} {s : Bool} :
       dsimp only [Val.ty?] at h
       cases hAdm : (enumAdmitted ety && Nat.blt idx ety.discriminants.length)
         <;> rw [hAdm] at h <;> cases h
-    | ptr _ | slicePtr _ _ | rangeTo _ | rangeFrom _ | bool _ | char _ | ordering _ | unit | array _ | bytes _ => cases h
+    | ptr _ | slicePtr _ _ | rangeTo _ | rangeFrom _ | range _ _ | optionVal _
+    | bool _ | char _ | ordering _ | unit | array _ | bytes _ => cases h
     | tuple _ =>
       let ⟨_, hTs⟩ := Val.ty?_tuple_some h
       cases hTs
@@ -423,7 +450,8 @@ theorem checkVal_bool_iff {v : Val} :
       dsimp only [Val.ty?] at h
       cases hAdm : (enumAdmitted ety && Nat.blt idx ety.discriminants.length)
         <;> rw [hAdm] at h <;> cases h
-    | ptr _ | slicePtr _ _ | rangeTo _ | rangeFrom _ | char _ | ordering _ | unit | array _ | bytes _ => cases h
+    | ptr _ | slicePtr _ _ | rangeTo _ | rangeFrom _ | range _ _ | optionVal _
+    | char _ | ordering _ | unit | array _ | bytes _ => cases h
     | tuple _ =>
       let ⟨_, hTs⟩ := Val.ty?_tuple_some h
       cases hTs
@@ -447,7 +475,8 @@ theorem checkVal_unit_iff {v : Val} :
       dsimp only [Val.ty?] at h
       cases hAdm : (enumAdmitted ety && Nat.blt idx ety.discriminants.length)
         <;> rw [hAdm] at h <;> cases h
-    | ptr _ | slicePtr _ _ | rangeTo _ | rangeFrom _ | bool _ | char _ | ordering _ | array _ | bytes _ => cases h
+    | ptr _ | slicePtr _ _ | rangeTo _ | rangeFrom _ | range _ _ | optionVal _
+    | bool _ | char _ | ordering _ | array _ | bytes _ => cases h
     | tuple _ =>
       let ⟨_, hTs⟩ := Val.ty?_tuple_some h
       cases hTs
@@ -469,7 +498,8 @@ theorem checkVal_never_false (v : Val) : checkVal v .never = false := by
       dsimp only [Val.ty?] at hTy
       cases hAdm : (enumAdmitted ety && Nat.blt idx ety.discriminants.length)
         <;> rw [hAdm] at hTy <;> cases hTy
-    | ptr _ | slicePtr _ _ | rangeTo _ | rangeFrom _ | bool _ | char _ | ordering _ | unit | array _ | bytes _ => cases hTy
+    | ptr _ | slicePtr _ _ | rangeTo _ | rangeFrom _ | range _ _ | optionVal _
+    | bool _ | char _ | ordering _ | unit | array _ | bytes _ => cases hTy
     | tuple _ =>
       let ⟨_, hTs⟩ := Val.ty?_tuple_some hTy
       cases hTs
@@ -503,7 +533,8 @@ theorem checkVal_enum_iff {v : Val} {ety : EnumTy} :
     | scalar sv =>
       dsimp only [Val.ty?] at h
       cases hWf : sv.wf <;> rw [hWf] at h <;> cases h
-    | ptr _ | slicePtr _ _ | rangeTo _ | rangeFrom _ | bool _ | char _ | ordering _ | unit | array _ | bytes _ => cases h
+    | ptr _ | slicePtr _ _ | rangeTo _ | rangeFrom _ | range _ _ | optionVal _
+    | bool _ | char _ | ordering _ | unit | array _ | bytes _ => cases h
     | tuple _ =>
       let ⟨_, hTs⟩ := Val.ty?_tuple_some h
       cases hTs

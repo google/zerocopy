@@ -35,7 +35,8 @@ private theorem loadU32_ok (cm : CallerMemory) (pv : PtrVal) (aid : AllocId)
         ⟨aid, pv.offsetBytes.toNat⟩ = .ok (some (.scalar sv)) ∧
       checkValV2 (.scalar sv) (.int .i32 false) = true := by
   unfold loadIndirectV2
-  dsimp only [layoutOfTyV2, layoutOfTy, intLayout]
+  rw [show layoutOfTyV2 (.int .i32 false) = some ⟨4, 2⟩ from rfl]
+  dsimp only
   have hRead : readBytes (entryMemoryWithCaller cm) ⟨aid, pv.offsetBytes.toNat⟩ 4 2 =
       .ok ((a.bytes.drop pv.offsetBytes.toNat).take 4) :=
     readBytes_ok_of_alloc (m := entryMemoryWithCaller cm) hFind hLive hBounds hAlign
@@ -98,11 +99,14 @@ private theorem storeU8_ok (cm : CallerMemory) (pv : PtrVal) (aid : AllocId)
       storeIndirectV2 (entryMemoryWithCaller cm) (.int .i8 false)
         ⟨aid, pv.offsetBytes.toNat⟩ (.scalar sv) = .ok mem' := by
   unfold storeIndirectV2
-  dsimp only [layoutOfTyV2, layoutOfTy, intLayout]
+  rw [show layoutOfTyV2 (.int .i8 false) = some ⟨1, 0⟩ from rfl]
+  dsimp only
   have hEnc : encodeValV2 profileV2TargetEndian (.int .i8 false) (.scalar sv) =
       .ok ((encodeUInt profileV2TargetEndian 1 sv.bits.toNat).map
         (fun b => AllocByte.init b none)) := by
-    unfold encodeValV2
+    change (if !checkValV2 (.scalar sv) (.int .i8 false) then
+        Except.error FaultKind.unsupported
+      else encodeVal profileV2TargetEndian (.int .i8 false) (.scalar sv)) = _
     rw [ite_bool_false (by rw [hSvWf]; rfl)]
     unfold encodeVal
     rw [ite_bool_false (by
@@ -152,7 +156,8 @@ private theorem loadU32_correct (q : Query)
       | cons _ _ => cases a0 <;> (change False at hSafe; exact False.elim hSafe)
       | nil =>
         cases a0 with
-        | scalar _ | slicePtr _ _ | rangeTo _ | rangeFrom _ | bool _ | char _
+        | scalar _ | slicePtr _ _ | rangeTo _ | rangeFrom _ | range _ _
+        | optionVal _ | bool _ | char _
         | ordering _ | unit | enumVal _ _ | tuple _ | array _ | bytes _ => exact False.elim hSafe
         | ptr pv =>
           dsimp only at hSafe
@@ -328,11 +333,13 @@ private theorem storeU8_correct (q : Query)
           cases a1 <;> exact False.elim hSafe
         | nil =>
           cases a0 with
-          | scalar _ | slicePtr _ _ | rangeTo _ | rangeFrom _ | bool _ | char _
+          | scalar _ | slicePtr _ _ | rangeTo _ | rangeFrom _ | range _ _
+          | optionVal _ | bool _ | char _
           | ordering _ | unit | enumVal _ _ | tuple _ | array _ | bytes _ => exact False.elim hSafe
           | ptr pv =>
             cases a1 with
-            | ptr _ | slicePtr _ _ | rangeTo _ | rangeFrom _ | bool _ | char _
+            | ptr _ | slicePtr _ _ | rangeTo _ | rangeFrom _ | range _ _
+            | optionVal _ | bool _ | char _
             | ordering _ | unit | enumVal _ _ | tuple _ | array _ | bytes _ => exact False.elim hSafe
             | scalar sv =>
               dsimp only at hSafe

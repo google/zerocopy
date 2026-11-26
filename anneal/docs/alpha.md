@@ -203,34 +203,51 @@ v1 rules to `vendor/lean-miri/`.
 
 | Category | Added by Profile v2 | Refused (fail-closed) |
 | :--- | :--- | :--- |
-| **Types** | General tuples; fixed arrays `[T; N]` whose element type is a Profile v1 scalar, `()`, an admitted enum, or a nested fixed array thereof; single-level `&T`, `&mut T`, `*const T`, and `*mut T` whose pointee is a Profile v1 scalar, `()`, an admitted enum, an integer slice `[T]`, or an admitted fixed array `[T; N]`; `RangeTo<usize>` and `RangeFrom<usize>`; lifetime-only generic signatures. | Nested references or pointers (`&&T`, `*const &T`, `&[&T]`, `[&T; N]`), fixed arrays of tuples, overflow pairs, references, or raw pointers, references and pointers to overflow pairs `(T, bool)` (whose unspecified tuple layout capture does not check, so overflow pairs are never addressable), `str`, structs, and the remaining Profile v1 refusals. |
+| **Types** | General tuples and `Range<usize>`, `RangeTo<usize>`, and `RangeFrom<usize>` locals; supported `Option<T>` (`bool`, `()`, `&T`/`&mut T`/`&[T]`, integers, raw pointers); fixed arrays `[T; N]` whose element type is a Profile v1 scalar, `()`, an admitted enum, or a nested fixed array thereof; single-level `&T`, `&mut T`, `*const T`, and `*mut T` (whose pointee is a sized ref-free non-tuple/non-range type, including an admitted fixed array `[T; N]`, or a slice `[T]` of sized ref-free elements); lifetime-only generic signatures. | Nested references or pointers (`&&T`, `*const &T`, `&[&T]`, `[&T; N]`, `&Option<&T>`), fixed arrays of tuples, overflow pairs, references, or raw pointers, tuples/overflow pairs/ranges behind `&`/`*const`/`[]`/`Option` (whose unspecified `#[repr(Rust)]` layout capture does not check, so they stay non-addressable), nested `Option<Option<T>>`, `Option<char>`, `Option<Ordering>`, `Option<Enum>` (including over-aligned enums whose layout differs from their tag), `str`, structs, and the remaining Profile v1 refusals. |
 | **Bodies** | Bodies whose locals include references or raw pointers, but not both (exempting compiler-synthesized `*const` temporaries written solely by `RawPtrKind::FakeForPtrMetadata` and read solely by `PtrMetadata`). | Bodies whose locals mix references and non-`FakeForPtrMetadata` raw pointers, because Profile v2 does not model Rust's pointer aliasing rules (Stacked or Tree Borrows). For example, `<&mut [u8] as SplitByteSlice>::split_at_unchecked`, which uses `as_mut_ptr` and `from_raw_parts_mut`, is refused. |
-| **Statements & rvalues** | `Ref` of locals and of dereferenced references, `RawPtr` (address-of) of locals and of dereferenced raw pointers, `RawPtr(FakeForPtrMetadata)` of dereferenced references or raw pointers into metadata-only `PtrMetadata` temporaries, assignment through projected and dereferenced places (field and `ConstantIndex`), raw-to-raw `PtrToPtr` casts that do not add mutability, `IntToPtr` casts, array-to-slice `Unsize` casts (`&[T; N]`, `&mut [T; N]`, `*const [T; N]`, `*mut [T; N]` without adding mutability), `PtrMetadata`, `Offset`, `RangeTo`/`RangeFrom` aggregates, array aggregates and `Repeat`, `ConstantIndex` projections, copy reads of tuple, overflow-pair, array, and range fields (including field and `ConstantIndex` projections after a dereference), moves of tuple and overflow-pair fields out of locals (which deinitialize only the moved field), projected `Discriminant` reads (including through references and nested projections), read-only provenance-free rodata array and reference constants (returning them fails closed), and `Use` with retags. | General reference-to-raw-pointer and raw-pointer-to-reference conversions (refused with the mixed-locals rule), non-`PtrMetadata` uses of `FakeForPtrMetadata` temporaries, `*const T` to `*mut T` casts and mutability-upgrading `Unsize` casts (Profile v2 cannot tell whether the pointee is an immutable binding, which the cast would let the body mutate), other unsupported casts, index projections, unsupported projections after a dereference, other projected moves (`move (*p)`, nested fields, `ConstantIndex` moves), piecemeal projected initialization of an uninitialized immediate local (fails closed with `.unsupported` at runtime), returning references or pointers to callee rodata allocations, and unsupported aggregates. |
-| **Terminators** | `Assert` and returning calls to a closed set of `core` functions: `<[T]>::len`, `<[T]>::get_unchecked` (with `..n` or `n..`), `<*const T>::add`, `<*mut T>::add`, `usize::unchecked_sub`, `int::to_le_bytes`, and `<[T; N] as PartialEq>::eq` (for integer, `bool`, `char`, `()`, `Ordering`, and nested-array elements; enums are refused). The captured `UnwindAction` (`Continue`, `Unreachable`, or `Terminate`) is recorded as is. Under opt-in `--panic abort` (when the crate defines no crate-local `#[panic_handler]`), failing non-optional safe `Assert`s terminate as `.aborted` carrying post-mutation `CallerMemory`; this satisfies `BodyVerifiedV2` without a termination claim and leaves panic hooks and handlers (including downstream `#![no_std]` binary `#[panic_handler]`s) unverified (recorded in receipt assumptions), so proving panic-freedom requires an explicit `EffectMaskV2.noAbort` `SafeContractV2` obligation in `SpecsV2.property`. Failing optional overflow checks abort the same way under `--overflow-checks`; under default `-Coverflow-checks=no`, where codegen elides them, they stay `.fault .unsupported`. Crates with a crate-local `#[panic_handler]`, cleanup unwinds, and `--panic unwind` keep failing safe `Assert`s fail-closed as `.fault .unsupported`. | Every other call (including `<[T]>::{as_ptr, as_mut_ptr}` and `core::slice::from_raw_parts{,_mut}`, which convert between references and raw pointers, and Profile v1 intra-crate and `core::num` sysroot calls), calls in crates that shadow `core`, and cleanup unwinds. |
+| **Statements & rvalues** | `Ref` of locals and of dereferenced references, `RawPtr` (address-of) of locals and of dereferenced raw pointers, `RawPtr(FakeForPtrMetadata)` of dereferenced references or raw pointers into metadata-only `PtrMetadata` temporaries, assignment through projected and dereferenced places (field and `ConstantIndex`), raw-to-raw `PtrToPtr` casts that do not add mutability, `IntToPtr` casts, array-to-slice `Unsize` casts (`&[T; N]`, `&mut [T; N]`, `*const [T; N]`, `*mut [T; N]` without adding mutability), `PtrMetadata`, `Offset`, `Range`/`RangeTo`/`RangeFrom`/`Option` aggregates, `Option` `Discriminant`/`Downcast`, array aggregates and `Repeat`, `ConstantIndex` projections, copy reads of tuple, overflow-pair, array, range, and option fields (including field and `ConstantIndex` projections after a dereference), moves of tuple and overflow-pair fields out of locals (which deinitialize only the moved field), projected `Discriminant` reads (including through references and nested projections), read-only provenance-free rodata array and reference constants (returning them fails closed), and `Use` with retags. | General reference-to-raw-pointer and raw-pointer-to-reference conversions (refused with the mixed-locals rule), non-`PtrMetadata` uses of `FakeForPtrMetadata` temporaries, `*const T` to `*mut T` casts and mutability-upgrading `Unsize` casts (Profile v2 cannot tell whether the pointee is an immutable binding, which the cast would let the body mutate), other unsupported casts, index projections, unsupported projections after a dereference, other projected moves (`move (*p)`, nested fields, `Option` downcast moves, `ConstantIndex` moves), piecemeal projected initialization of an uninitialized immediate local (fails closed with `.unsupported` at runtime), returning references or pointers to callee rodata allocations, and unsupported aggregates. |
+| **Terminators** | `Assert` and returning calls to the closed-set `CoreCallOp`s (`<[T]>::{len, is_empty, split_at, split_at_mut, get_unchecked, Index/IndexMut<Range<usize>>, Index/IndexMut<RangeFrom<usize>>}`, `<*const/*mut T>::add`, `usize::unchecked_sub`, integer `is_multiple_of`, `checked_{add,mul,sub}`, `saturating_add`, `wrapping_{shl,shr}`, `leading_zeros`, `overflowing_{add,sub}`, and `to_le_bytes`, `cmp::{min,max}`, `mem::replace`, `Option::{is_some,is_none,take,unwrap}`, and `<[T; N] as PartialEq>::eq` for integer, `bool`, `char`, `()`, `Ordering`, and nested-array elements; enums are refused). The captured `UnwindAction` (`Continue`, `Unreachable`, or `Terminate`) is recorded as is. Under opt-in `--panic abort` (when the crate defines no crate-local `#[panic_handler]`), failing non-optional safe `Assert`s terminate as `.aborted` carrying post-mutation `CallerMemory`; this satisfies `BodyVerifiedV2` without a termination claim and leaves panic hooks and handlers (including downstream `#![no_std]` binary `#[panic_handler]`s) unverified (recorded in receipt assumptions), so proving panic-freedom requires an explicit `EffectMaskV2.noAbort` `SafeContractV2` obligation in `SpecsV2.property`. Failing optional overflow checks abort the same way under `--overflow-checks`; under default `-Coverflow-checks=no`, where codegen elides them, they stay `.fault .unsupported`. Crates with a crate-local `#[panic_handler]`, cleanup unwinds, and `--panic unwind` keep failing safe `Assert`s fail-closed as `.fault .unsupported`. | Every other call (including `<[T]>::{as_ptr, as_mut_ptr}` and `core::slice::from_raw_parts{,_mut}`, which convert between references and raw pointers, and Profile v1 intra-crate and `core::num` sysroot calls), calls in crates that shadow `core`, and cleanup unwinds. |
 
-Each query (`Query`) supplies caller memory (`callerMem`) alongside its
-arguments. `SpecsV2` pairs per-function safety preconditions (`safety`,
-required only of `unsafe` functions) with a whole-program `property`.
-`ValidEntryArgsV2` requires live, in-bounds, aligned, initialized reference
-arguments in caller allocations whose bytes decode to valid pointee values,
-and disjoint mutable references. This applies to `unsafe` functions too, so a
-receipt says nothing about callers that pass an `unsafe` function a reference
-to uninitialized or invalid memory; receipts state this assumption.
-Raw pointer arguments are unconstrained, so an `unsafe` function's `safety`
-precondition must state their liveness, bounds, alignment, initialization, and
-mutability. Mutability here means the allocation's mutability: Profile v2
-does not track pointer aliasing permissions, so callers must also pass raw
-pointers whose provenance permits the accesses the function makes (for
-example, not a pointer derived from a live `&T` that the function writes
-through). Profile v2 encodes memory little-endian and assumes natural ABI
-alignment (1, 2, 4, 8, and 16 bytes for `i8` through `i128`, 8 bytes for
-`isize` and pointers, and no added aggregate alignment). Capture admits only
-targets whose data layout matches.
+Notes on Profile v2 coverage and traps:
+
+- **Local-only types:** General tuples, overflow pairs `(T, bool)`, and
+  `Range<usize>` / `RangeTo<usize>` / `RangeFrom<usize>` are `#[repr(Rust)]`
+  and subject to `rustc` field reordering, so Profile v2 restricts them to
+  locals and refuses references, raw pointers, slices, or `Option` wrappers
+  over them.
+- **21 `core` contract ops (`CoreContracts`):** Beyond the 7 base pointer and
+  slice ops, Profile v2 adds checked, overflowing, saturating, and wrapping
+  scalar arithmetic, `is_multiple_of`, `leading_zeros`,
+  `core::cmp::{min, max}`, `core::mem::replace`,
+  `Option::{is_some, is_none, take, unwrap}`, and slice `is_empty`, `split_at`,
+  `split_at_mut`, `Index<Range<usize>>`, and `Index<RangeFrom<usize>>` (where
+  out-of-bounds slicing or `Option::unwrap` on `None` fail closed via
+  `corePanicTrap`).
+- Each query (`Query`) supplies caller memory (`callerMem`) alongside its
+  arguments. `SpecsV2` pairs per-function safety preconditions (`safety`,
+  required only of `unsafe` functions) with a whole-program `property`.
+  `ValidEntryArgsV2` requires live, in-bounds, aligned, initialized reference
+  arguments in caller allocations whose bytes decode to valid pointee values,
+  and disjoint mutable references. This applies to `unsafe` functions too, so a
+  receipt says nothing about callers that pass an `unsafe` function a reference
+  to uninitialized or invalid memory; receipts state this assumption.
+- Raw pointer arguments are unconstrained, so an `unsafe` function's `safety`
+  precondition must state their liveness, bounds, alignment, initialization, and
+  mutability. Mutability here means the allocation's mutability: Profile v2
+  does not track pointer aliasing permissions, so callers must also pass raw
+  pointers whose provenance permits the accesses the function makes (for
+  example, not a pointer derived from a live `&T` that the function writes
+  through). Profile v2 encodes memory little-endian and assumes natural ABI
+  alignment (1, 2, 4, 8, and 16 bytes for `i8` through `i128`, 8 bytes for
+  `isize` and pointers, and no added aggregate alignment). Capture admits only
+  targets whose data layout matches.
 
 `tests/cargo-anneal/tests/profile_v2_e2e.rs` verifies the unmodified
 `zerocopy/src/byte_slice.rs` `<&[u8] as SplitByteSlice>::split_at_unchecked`
-under `UnitTheoremV2`, plus raw-pointer load and store fixtures under
-`CrateTheoremV2` and the runtime overflow check fixtures below.
+under `UnitTheoremV2`, raw-pointer load and store fixtures under
+`CrateTheoremV2`, `core` range/slice/`Option`/`mem::replace`/scalar contract
+fixtures in `tests/cargo-anneal/tests/fixtures/profile_v2_core_contracts/`,
+and the runtime overflow check fixtures below.
 
 ### Runtime overflow checks
 

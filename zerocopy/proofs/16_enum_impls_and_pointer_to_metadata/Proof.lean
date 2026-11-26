@@ -179,6 +179,16 @@ private theorem enum_ref_load {m : MemoryState} {ety : EnumTy} {v : Val}
     cases p with
     | mk pAid off w =>
       unfold refValidInMem at hRef
+      dsimp only at hRef
+      have hSupT : isSupportedV2PointeeTy (.enum ety) = true := by
+        cases hSup : isSupportedV2PointeeTy (.enum ety) with
+        | true => rfl
+        | false =>
+          rw [ite_bool_true (b := !isSupportedV2PointeeTy (.enum ety))
+            (by rw [hSup]; rfl)] at hRef
+          nomatch hRef
+      rw [ite_bool_false (b := !isSupportedV2PointeeTy (.enum ety))
+        (by rw [hSupT]; rfl)] at hRef
       rw [hLay] at hRef
       cases pAid with
       | none =>
@@ -276,7 +286,11 @@ private theorem enum_load_shape {m : MemoryState} {place : MemPlace}
   | ok bytes =>
     rw [hRB] at hLoad
     dsimp only at hLoad
-    unfold decodeValV2 at hLoad
+    -- `decodeValV2` defers `.enum` to `decodeVal` definitionally; going through
+    -- `rfl` rather than `unfold` keeps its equation lemma (and the
+    -- `Quot.sound` that proof uses) out of this proof.
+    rw [show decodeValV2 profileV2TargetEndian (.enum ety) bytes =
+      decodeVal profileV2TargetEndian (.enum ety) bytes from rfl] at hLoad
     unfold decodeVal at hLoad
     rw [hLay1] at hLoad
     dsimp only at hLoad

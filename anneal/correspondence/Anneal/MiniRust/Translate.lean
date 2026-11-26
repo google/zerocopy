@@ -774,8 +774,8 @@ theorem constAdmitted_of_exact (c : ConstOperand)
     | char =>
       cases lit <;> cases h
     | bool | int _ _ | unit | never | ordering | enum _ | ref _ _
-    | rawPtr _ _ | slice _ | array _ _ | rangeTo _ | rangeFrom _ | tuple _
-    | unsupported =>
+    | rawPtr _ _ | slice _ | array _ _ | range _ | rangeTo _ | rangeFrom _
+    | option _ | tuple _ | unsupported =>
       cases lit <;> exact h
 
 /-- Every exact-admitted operand is forward-admitted. -/
@@ -854,7 +854,8 @@ theorem rvalueAdmitted_of_exact (bodyLocals : List MirTy) (dstTy : MirTy)
   | discriminant _ => exact h
   | useRetag _ | ref _ _ | addressOf _ _ | fakeAddressOf _
   | aggregateTuple _ | aggregateArray _ _ | repeat_ _ _ _
-  | aggregateRangeTo _ _ | aggregateRangeFrom _ _ | unsupported =>
+  | aggregateRange _ _ _ | aggregateRangeTo _ _ | aggregateRangeFrom _ _
+  | aggregateOption _ _ _ | unsupported =>
     cases h
 
 /-- Every exact-admitted statement is forward-admitted. -/
@@ -1469,8 +1470,8 @@ theorem translateConst_variantWF (c : ConstOperand)
                   rw [hvar]
                   dsimp only [Bool.true_and]
                   exact mrType_beq_emptySizedTy_self tagW.byteSize tagW.byteSize
-    | never | ref _ _ | rawPtr _ _ | slice _ | array _ _ | rangeTo _
-    | rangeFrom _ | tuple _ | unsupported =>
+    | never | ref _ _ | rawPtr _ _ | slice _ | array _ _ | range _ | rangeTo _
+    | rangeFrom _ | option _ | tuple _ | unsupported =>
       cases lit <;> cases hadm
 
 theorem translateOperand_variantWF (bodyLocals : List MirTy) (opnd : Operand)
@@ -1509,8 +1510,8 @@ theorem translateRvalue_variantWF (bodyLocals : List MirTy) (dstTy : MirTy)
             rw [hw]
             rfl
           | int _ _ | unit | never | char | ordering | enum _ | ref _ _
-          | rawPtr _ _ | slice _ | array _ _ | rangeTo _ | rangeFrom _
-          | tuple _ | unsupported => exact hw
+          | rawPtr _ _ | slice _ | array _ _ | range _ | rangeTo _ | rangeFrom _
+          | option _ | tuple _ | unsupported => exact hw
       | neg =>
         cases operandTy? bodyLocals opnd with
         | none => exact hw
@@ -1518,8 +1519,8 @@ theorem translateRvalue_variantWF (bodyLocals : List MirTy) (dstTy : MirTy)
           cases srcTy with
           | int _ s => cases s <;> exact hw
           | bool | unit | never | char | ordering | enum _ | ref _ _
-          | rawPtr _ _ | slice _ | array _ _ | rangeTo _ | rangeFrom _
-          | tuple _ | unsupported => exact hw
+          | rawPtr _ _ | slice _ | array _ _ | range _ | rangeTo _ | rangeFrom _
+          | option _ | tuple _ | unsupported => exact hw
   | binaryOp op lhs rhs =>
     dsimp only [rvalueAdmitted] at hadm
     cases hl : operandAdmitted false bodyLocals lhs with
@@ -1542,8 +1543,8 @@ theorem translateRvalue_variantWF (bodyLocals : List MirTy) (dstTy : MirTy)
           | bool => cases op <;> first | exact hboth | exact hlw
           | char => cases op <;> first | exact hboth | exact hlw
           | unit | never | ordering | enum _ | ref _ _ | rawPtr _ _
-          | slice _ | array _ _ | rangeTo _ | rangeFrom _ | tuple _
-          | unsupported =>
+          | slice _ | array _ _ | range _ | rangeTo _ | rangeFrom _ | option _
+          | tuple _ | unsupported =>
             exact hlw
   | cast kind opnd castTy =>
     cases kind with
@@ -1568,7 +1569,8 @@ theorem translateRvalue_variantWF (bodyLocals : List MirTy) (dstTy : MirTy)
   | discriminant _ => rfl
   | useRetag _ | ref _ _ | addressOf _ _ | fakeAddressOf _
   | aggregateTuple _ | aggregateArray _ _ | repeat_ _ _ _
-  | aggregateRangeTo _ _ | aggregateRangeFrom _ _ | unsupported =>
+  | aggregateRange _ _ _ | aggregateRangeTo _ _ | aggregateRangeFrom _ _
+  | aggregateOption _ _ _ | unsupported =>
     cases hadm
 
 theorem translateStmt_wf (body : Body) (stmt : StatementKind)
@@ -1917,8 +1919,8 @@ theorem minirust_admitted_prog_wellFormed {p : Program} {q : Query}
                                         exact hbb
                                     | unit | never | ordering | enum _ | ref _ _
                                     | rawPtr _ _ | slice _ | array _ _
-                                    | rangeTo _ | rangeFrom _ | tuple _
-                                    | unsupported =>
+                                    | range _ | rangeTo _ | rangeFrom _
+                                    | option _ | tuple _ | unsupported =>
                                       cases hbb
                             | unwindResume => rw [htm] at hbb; cases hbb
                             | assert _ _ _ _ _ => rw [htm] at hbb; cases hbb

@@ -270,13 +270,22 @@ Constructor correspondence:
   > "/// The pointee of an array slice. Written as `[T]`.
   > Slice(I::Ty),"
 - `.array elem len` corresponds to `TyKind::Array(elem, len)` (Profile v2).
-- `.rangeTo elem` and `.rangeFrom elem` correspond to the
-  `core::ops::RangeTo<elem>` and `core::ops::RangeFrom<elem>` `Adt`s used to
-  index slices (Profile v2), each a struct with exactly one public field
-  (`library/core/src/ops/range.rs:197-201,281-285`, `rust-lang/rust`
+- `.rangeTo elem`, `.rangeFrom elem`, and `.range elem` correspond to the
+  `core::ops::RangeTo<elem>`, `core::ops::RangeFrom<elem>`, and
+  `core::ops::Range<elem>` `Adt` structs used to index slices (Profile v2)
+  (`library/core/src/ops/range.rs:82-89,197-201,281-285`, `rust-lang/rust`
   `f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1`):
 
-  > "pub struct RangeFrom<Idx> {
+  > "pub struct Range<Idx> {
+  >     /// The lower bound of the range (inclusive).
+  >     ...
+  >     pub start: Idx,
+  >     /// The upper bound of the range (exclusive).
+  >     ...
+  >     pub end: Idx,
+  > }
+  > ...
+  > pub struct RangeFrom<Idx> {
   >     /// The lower bound of the range (inclusive).
   >     ...
   >     pub start: Idx,
@@ -289,6 +298,18 @@ Constructor correspondence:
   > }"
 
   Profile v2 admits only `elem = usize` (`isSupportedV2LocalTy`).
+- `.option elem` corresponds to `core::option::Option<elem>` (Profile v2)
+  (`library/core/src/option.rs:597-606`, `rust-lang/rust`
+  `f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1`):
+
+  > "pub enum Option<T> {
+  >     /// No value.
+  >     ...
+  >     None,
+  >     /// Some value of type `T`.
+  >     ...
+  >     Some(... T),
+  > }"
 - `.unsupported` represents all other `TyKind` variants (`Float`,
   other non-fieldless-enum `Adt`, `Foreign`, `Str`, `Pat`, `FnDef`,
   `FnPtr`, `Dynamic`, `Closure`, `CoroutineClosure`, `Coroutine`, etc.), causing
@@ -308,6 +329,8 @@ inductive MirTy where
   | array (elem : MirTy) (len : Nat)
   | rangeTo (elem : MirTy)
   | rangeFrom (elem : MirTy)
+  | range (elem : MirTy)
+  | option (elem : MirTy)
   | unsupported
 
 /-- Return `true` when `ty` is an unsized dynamically-sized MIR type
@@ -371,6 +394,8 @@ mutual
     | .array e₁ n₁, .array e₂ n₂ => Nat.beq n₁ n₂ && MirTy.beq e₁ e₂
     | .rangeTo e₁, .rangeTo e₂ => MirTy.beq e₁ e₂
     | .rangeFrom e₁, .rangeFrom e₂ => MirTy.beq e₁ e₂
+    | .range e₁, .range e₂ => MirTy.beq e₁ e₂
+    | .option e₁, .option e₂ => MirTy.beq e₁ e₂
     | .unsupported, .unsupported => true
     | _, _ => false
 

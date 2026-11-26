@@ -3243,7 +3243,7 @@ theorem boolAbs_le_sound {locals : List LocalSlot} {a b : BoolAbs}
           | sleConst _ _ _ | sgtConst _ _ _ | seqConst _ _ _ | sneConst _ _ _ =>
             rw [← relGuard_eq_of_beq hg]; exact ha.2
     | scalar _ | ptr _ | char _ | ordering _ | unit
-    | slicePtr _ _ | rangeTo _ | rangeFrom _ | array _
+    | slicePtr _ _ | rangeTo _ | rangeFrom _ | array _ | range _ _ | optionVal _
     | enumVal _ _ | tuple _ | bytes _ => exact False.elim ha
 
 /-- Lattice join on `BoolAbs`. -/
@@ -3305,7 +3305,7 @@ theorem boolAbs_join_sound_left {locals : List LocalSlot} {a b : BoolAbs}
             | true => exact ha.2
             | false => exact True.intro
     | scalar _ | ptr _ | char _ | ordering _ | unit
-    | slicePtr _ _ | rangeTo _ | rangeFrom _ | array _
+    | slicePtr _ _ | rangeTo _ | rangeFrom _ | array _ | range _ _ | optionVal _
     | enumVal _ _ | tuple _ | bytes _ => exact False.elim ha
 
 /-- Right join soundness for `BoolAbs`. -/
@@ -3357,7 +3357,7 @@ theorem boolAbs_join_sound_right {locals : List LocalSlot} {a b : BoolAbs}
             | true => rw [relGuard_eq_of_beq hG]; exact hb.2
             | false => exact True.intro
     | scalar _ | ptr _ | char _ | ordering _ | unit
-    | slicePtr _ _ | rangeTo _ | rangeFrom _ | array _
+    | slicePtr _ _ | rangeTo _ | rangeFrom _ | array _ | range _ _ | optionVal _
     | enumVal _ _ | tuple _ | bytes _ => exact False.elim hb
 
 /-- Drop any `RelGuard` mentioning `id`. -/
@@ -3458,7 +3458,7 @@ theorem mirAbsSlot_valDenote_of_denote {ty : MirTy} {locals : List LocalSlot}
         rw [relGuard_eq_of_beq hNoG]
         exact ⟨hDen.2.1, True.intro⟩
     | scalar _ | ptr _ | char _ | ordering _ | unit
-    | slicePtr _ _ | rangeTo _ | rangeFrom _ | array _
+    | slicePtr _ _ | rangeTo _ | rangeFrom _ | array _ | range _ _ | optionVal _
     | enumVal _ _ | tuple _ | bytes _ => exact False.elim hDen.2
 
 /-- Concrete denotation of `MirAbsEnv` on a concrete MIR local frame. -/
@@ -3521,7 +3521,7 @@ theorem mirAbsSlot_le_sound {ty : MirTy} {locals : List LocalSlot}
             exact ⟨ha.2.1, ha.2.2.1, ha.2.2.2.1,
               absVal_le_sound hAle ha.2.2.2.2⟩
           | ptr _ | bool _ | char _ | ordering _ | unit
-          | slicePtr _ _ | rangeTo _ | rangeFrom _ | array _
+          | slicePtr _ _ | rangeTo _ | rangeFrom _ | array _ | range _ _ | optionVal _
           | enumVal _ _ | tuple _ | bytes _ => exact False.elim ha.2
     | dead | sint _ _ | bool _ | unit => nomatch hLe
   | sint w1 a1 =>
@@ -3544,7 +3544,8 @@ theorem mirAbsSlot_le_sound {ty : MirTy} {locals : List LocalSlot}
               absVal_le_sound hAle ha.2.2.2.2⟩
           | ptr _ | bool _ | char _ | ordering _ | unit
           | slicePtr _ _ | rangeTo _ | rangeFrom _ | array _
-          | enumVal _ _ | tuple _ | bytes _ => exact False.elim ha.2
+          | enumVal _ _ | tuple _ | bytes _ | range _ _ => exact False.elim ha.2
+          | optionVal optV => cases optV <;> (exact False.elim ha.2)
     | dead | uint _ _ | bool _ | unit => nomatch hLe
 
 /-- Pointwise inclusion on `MirAbsEnv`. -/
@@ -3752,7 +3753,7 @@ theorem mirAbsSlot_join_sound_left {ty : MirTy} {locals : List LocalSlot}
               exact ⟨ha.2.1, ha.2.2.1, ha.2.2.2.1,
                 absVal_join_sound_left (bitWidthComp_valid w1) a1 a2 ha.2.2.2.2⟩
             | ptr _ | bool _ | char _ | ordering _ | unit
-            | slicePtr _ _ | rangeTo _ | rangeFrom _ | array _
+            | slicePtr _ _ | rangeTo _ | rangeFrom _ | array _ | range _ _ | optionVal _
             | enumVal _ _ | tuple _ | bytes _ => exact False.elim ha.2
     | dead | sint _ _ | bool _ | unit => nomatch hJ
   | sint w1 a1 =>
@@ -3777,7 +3778,9 @@ theorem mirAbsSlot_join_sound_left {ty : MirTy} {locals : List LocalSlot}
                 absVal_join_sound_left (bitWidthComp_valid w1) a1 a2 ha.2.2.2.2⟩
             | ptr _ | bool _ | char _ | ordering _ | unit
             | slicePtr _ _ | rangeTo _ | rangeFrom _ | array _
-            | enumVal _ _ | tuple _ | bytes _ => exact False.elim ha.2
+            | enumVal _ _ | tuple _ | bytes _ | range _ _ =>
+              exact False.elim ha.2
+            | optionVal optV => cases optV <;> (exact False.elim ha.2)
     | dead | uint _ _ | bool _ | unit => nomatch hJ
 
 /-- Right join soundness on `MirAbsSlot`. -/
@@ -3825,7 +3828,7 @@ theorem mirAbsSlot_join_sound_right {ty : MirTy} {locals : List LocalSlot}
               exact ⟨hb.2.1, hb.2.2.1, hb.2.2.2.1,
                 absVal_join_sound_right (bitWidthComp_valid w1) a1 a2 hb.2.2.2.2⟩
             | ptr _ | bool _ | char _ | ordering _ | unit
-            | slicePtr _ _ | rangeTo _ | rangeFrom _ | array _
+            | slicePtr _ _ | rangeTo _ | rangeFrom _ | array _ | range _ _ | optionVal _
             | enumVal _ _ | tuple _ | bytes _ => exact False.elim hb.2
     | dead | sint _ _ | bool _ | unit => nomatch hJ
   | sint w1 a1 =>
@@ -3851,7 +3854,9 @@ theorem mirAbsSlot_join_sound_right {ty : MirTy} {locals : List LocalSlot}
                 absVal_join_sound_right (bitWidthComp_valid w1) a1 a2 hb.2.2.2.2⟩
             | ptr _ | bool _ | char _ | ordering _ | unit
             | slicePtr _ _ | rangeTo _ | rangeFrom _ | array _
-            | enumVal _ _ | tuple _ | bytes _ => exact False.elim hb.2
+            | enumVal _ _ | tuple _ | bytes _ | range _ _ =>
+              exact False.elim hb.2
+            | optionVal optV => cases optV <;> (exact False.elim hb.2)
     | dead | uint _ _ | bool _ | unit => nomatch hJ
 
 private theorem compGetElem?_exists_of_len {α β : Type} :
@@ -4176,7 +4181,7 @@ theorem setMirAbsSlot_sound {tys : List MirTy} {env env' : MirAbsEnv}
                     exact ⟨hOldDen.2.1,
                       relGuard_preserved_on_update hSetConc hM hOldDen.2.2⟩
               | scalar _ | ptr _ | char _ | ordering _ | unit
-              | slicePtr _ _ | rangeTo _ | rangeFrom _ | array _
+              | slicePtr _ _ | rangeTo _ | rangeFrom _ | array _ | range _ _ | optionVal _
               | enumVal _ _ | tuple _ | bytes _ => exact False.elim hOldDen.2
 
 /-- Refines `env` using `RelGuard` `g` assuming boolean value `branchVal`. -/
@@ -4354,7 +4359,7 @@ theorem refineEnvByGuard_sound {tys : List MirTy} {env : MirAbsEnv}
                     absVal_refineUleConst_sound (bitWidthComp_valid w)
                       hDen.2.2.2.2 hInit hLe⟩
                 | ptr _ | bool _ | char _ | ordering _ | unit
-                | slicePtr _ _ | rangeTo _ | rangeFrom _ | array _
+                | slicePtr _ _ | rangeTo _ | rangeFrom _ | array _ | range _ _ | optionVal _
                 | enumVal _ _ | tuple _ | bytes _ => exact False.elim hDen.2
   | ugtConst r w bound =>
     rw [hG] at hEff
@@ -4402,7 +4407,7 @@ theorem refineEnvByGuard_sound {tys : List MirTy} {env : MirAbsEnv}
                     absVal_refineUgtConst_sound (bitWidthComp_valid w)
                       hDen.2.2.2.2 hInit hGt⟩
                 | ptr _ | bool _ | char _ | ordering _ | unit
-                | slicePtr _ _ | rangeTo _ | rangeFrom _ | array _
+                | slicePtr _ _ | rangeTo _ | rangeFrom _ | array _ | range _ _ | optionVal _
                 | enumVal _ _ | tuple _ | bytes _ => exact False.elim hDen.2
   | ultReg l r w =>
     rw [hG] at hEff
@@ -4479,10 +4484,10 @@ theorem refineEnvByGuard_sound {tys : List MirTy} {env : MirAbsEnv}
                               absVal_refineBltReg_sound (bitWidthComp_valid w)
                                 hDenL.2.2.2.2 hDenR.2.2.2.2 hInitL hInitR hLt⟩
                           | ptr _ | bool _ | char _ | ordering _ | unit
-                          | slicePtr _ _ | rangeTo _ | rangeFrom _ | array _
+                          | slicePtr _ _ | rangeTo _ | rangeFrom _ | array _ | range _ _ | optionVal _
                           | enumVal _ _ | tuple _ | bytes _ => exact False.elim hDenR.2
                     | ptr _ | bool _ | char _ | ordering _ | unit
-                    | slicePtr _ _ | rangeTo _ | rangeFrom _ | array _
+                    | slicePtr _ _ | rangeTo _ | rangeFrom _ | array _ | range _ _ | optionVal _
                     | enumVal _ _ | tuple _ | bytes _ => exact False.elim hDenL.2
   | ugeReg l r w =>
     rw [hG] at hEff
@@ -4559,10 +4564,10 @@ theorem refineEnvByGuard_sound {tys : List MirTy} {env : MirAbsEnv}
                               absVal_refineBgeReg_sound (bitWidthComp_valid w)
                                 hDenL.2.2.2.2 hDenR.2.2.2.2 hInitL hInitR hGe⟩
                           | ptr _ | bool _ | char _ | ordering _ | unit
-                          | slicePtr _ _ | rangeTo _ | rangeFrom _ | array _
+                          | slicePtr _ _ | rangeTo _ | rangeFrom _ | array _ | range _ _ | optionVal _
                           | enumVal _ _ | tuple _ | bytes _ => exact False.elim hDenR.2
                     | ptr _ | bool _ | char _ | ordering _ | unit
-                    | slicePtr _ _ | rangeTo _ | rangeFrom _ | array _
+                    | slicePtr _ _ | rangeTo _ | rangeFrom _ | array _ | range _ _ | optionVal _
                     | enumVal _ _ | tuple _ | bytes _ => exact False.elim hDenL.2
   | ueqConst r w val =>
     rw [hG] at hEff
@@ -4608,7 +4613,7 @@ theorem refineEnvByGuard_sound {tys : List MirTy} {env : MirAbsEnv}
                     absVal_refineEqConst_sound (bitWidthComp_valid w)
                       hDen.2.2.2.2 hInit hEq⟩
                 | ptr _ | bool _ | char _ | ordering _ | unit
-                | slicePtr _ _ | rangeTo _ | rangeFrom _ | array _
+                | slicePtr _ _ | rangeTo _ | rangeFrom _ | array _ | range _ _ | optionVal _
                 | enumVal _ _ | tuple _ | bytes _ => exact False.elim hDen.2
   | sleConst r w boundBits =>
     rw [hG] at hEff
@@ -4658,7 +4663,9 @@ theorem refineEnvByGuard_sound {tys : List MirTy} {env : MirAbsEnv}
                       hDen.2.2.2.2 hInit hBLt hSle⟩
                 | ptr _ | bool _ | char _ | ordering _ | unit
                 | slicePtr _ _ | rangeTo _ | rangeFrom _ | array _
-                | enumVal _ _ | tuple _ | bytes _ => exact False.elim hDen.2
+                | enumVal _ _ | tuple _ | bytes _ | range _ _ =>
+                  exact False.elim hDen.2
+                | optionVal optV => cases optV <;> (exact False.elim hDen.2)
   | sgtConst r w boundBits =>
     rw [hG] at hEff
     dsimp only
@@ -4707,7 +4714,9 @@ theorem refineEnvByGuard_sound {tys : List MirTy} {env : MirAbsEnv}
                       hDen.2.2.2.2 hInit hBLt hSgt⟩
                 | ptr _ | bool _ | char _ | ordering _ | unit
                 | slicePtr _ _ | rangeTo _ | rangeFrom _ | array _
-                | enumVal _ _ | tuple _ | bytes _ => exact False.elim hDen.2
+                | enumVal _ _ | tuple _ | bytes _ | range _ _ =>
+                  exact False.elim hDen.2
+                | optionVal optV => cases optV <;> (exact False.elim hDen.2)
   | seqConst r w val =>
     rw [hG] at hEff
     dsimp only
@@ -4753,7 +4762,8 @@ theorem refineEnvByGuard_sound {tys : List MirTy} {env : MirAbsEnv}
                       hDen.2.2.2.2 hInit hEq⟩
                 | ptr _ | bool _ | char _ | ordering _ | unit
                 | slicePtr _ _ | rangeTo _ | rangeFrom _ | array _
-                | enumVal _ _ | tuple _ | bytes _ => exact False.elim hDen.2
+                | enumVal _ _ | tuple _ | bytes _ | optionVal _ | range _ _ =>
+                  exact False.elim hDen.2
 
 end Anneal.AiPcc
 

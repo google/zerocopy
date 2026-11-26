@@ -20,6 +20,7 @@ public import Trusted.MirSemantics.State
 public import Trusted.MirSemantics.Layout
 public import Trusted.MirSemantics.Memory
 public import Trusted.MirSemantics.Bytes
+public import Trusted.MirSemantics.CoreContracts
 
 @[expose] public section
 
@@ -268,6 +269,18 @@ noncomputable def evalOrderingDiscriminantOfVal (optVal : Option Val)
   | some (.ordering ord) =>
     .ok (.scalar ⟨.i8, true, BitVec.ofNat 128 (orderingTagBits ord)⟩, locals,
       mem)
+  | some _ => .error .unsupported
+
+/-- Evaluate `Rvalue.discriminant` on an `Option<T>` value slot, returning
+`0isize` for `None` and `1isize` for `Some(_)`. -/
+noncomputable def evalOptionDiscriminantOfVal (optVal : Option Val)
+    (locals : List LocalSlot) (mem : MemoryState) :
+    Except FaultKind (Val × List LocalSlot × MemoryState) :=
+  match optVal with
+  | none => .error .undefined
+  | some (.optionVal optV) =>
+    let idx := match optV with | none => 0 | some _ => 1
+    .ok (.scalar ⟨.isize, true, BitVec.ofNat 128 idx⟩, locals, mem)
   | some _ => .error .unsupported
 
 /-- Evaluate an `Rvalue` for a destination of type `dstTy`, following the RHS
@@ -1050,7 +1063,8 @@ noncomputable def projectOneElemV2 (ty : MirTy) (v : Val)
           .error .unsupported
         else
           .ok (.int .isize false,
-            .scalar ⟨.isize, false, truncateBits .isize (BitVec.ofNat 128 e.toNat)⟩)
+            .scalar ⟨.isize, false,
+              truncateBits .isize (BitVec.ofNat 128 e.toNat)⟩)
       | _ => .error .unsupported
     | .rangeFrom (.int .isize false) =>
       match v with
@@ -1059,7 +1073,24 @@ noncomputable def projectOneElemV2 (ty : MirTy) (v : Val)
           .error .unsupported
         else
           .ok (.int .isize false,
-            .scalar ⟨.isize, false, truncateBits .isize (BitVec.ofNat 128 s.toNat)⟩)
+            .scalar ⟨.isize, false,
+              truncateBits .isize (BitVec.ofNat 128 s.toNat)⟩)
+      | _ => .error .unsupported
+    | .range (.int .isize false) =>
+      match v with
+      | .range s e =>
+        if !MirTy.beq fTy (.int .isize false) then
+          .error .unsupported
+        else if Nat.beq idx 0 then
+          .ok (.int .isize false,
+            .scalar ⟨.isize, false,
+              truncateBits .isize (BitVec.ofNat 128 s.toNat)⟩)
+        else if Nat.beq idx 1 then
+          .ok (.int .isize false,
+            .scalar ⟨.isize, false,
+              truncateBits .isize (BitVec.ofNat 128 e.toNat)⟩)
+        else
+          .error .unsupported
       | _ => .error .unsupported
     | _ => .error .unsupported
   | .constantIndex off minLen fromEnd =>
@@ -1079,13 +1110,24 @@ noncomputable def projectOneElemV2 (ty : MirTy) (v : Val)
       | _ => .error .unsupported
     | _ => .error .unsupported
   | .deref => .error .unsupported
+  | .downcast _ => .error .unsupported
   | .unsupported => .error .unsupported
 
-/-- Project tuple, range, or fixed-size array elements through an immediate
-`Val` in Profile v2. -/
+/-- Project tuple, range, `Option` payload (`.downcast 1` then `.field 0`), or
+fixed-size array elements through an immediate `Val` in Profile v2. -/
 noncomputable def projectValFieldV2 (ty : MirTy) (v : Val) :
     List ProjectionElem → Except FaultKind (MirTy × Val)
   | [] => .ok (ty, v)
+  | .downcast 1 :: .field 0 fTy :: rest =>
+    match ty, v with
+    | .option inner, .optionVal optV =>
+      if !MirTy.beq inner fTy then
+        .error .unsupported
+      else
+        match optV with
+        | some innerVal => projectValFieldV2 inner innerVal rest
+        | none => .error .undefined
+    | _, _ => .error .unsupported
   | proj :: rest =>
     match projectOneElemV2 ty v proj with
     | .error k => .error k
@@ -1138,6 +1180,12 @@ noncomputable def stepProjectedTyV2 : MirTy → List ProjectionElem → Option M
   | .rangeTo (.int .isize false), .field 0 fTy :: rest
   | .rangeFrom (.int .isize false), .field 0 fTy :: rest =>
     if MirTy.beq (.int .isize false) fTy then stepProjectedTyV2 fTy rest else none
+  | .range (.int .isize false), .field idx fTy :: rest =>
+    if (Nat.beq idx 0 || Nat.beq idx 1) &&
+        MirTy.beq (.int .isize false) fTy then
+      stepProjectedTyV2 fTy rest
+    else
+      none
   | .array elem _, .constantIndex _ _ _ :: rest => stepProjectedTyV2 elem rest
   | _, _ => none
 
@@ -1443,7 +1491,7 @@ noncomputable def readPlaceV2 (bodyLocals : List MirTy) (locals : List LocalSlot
               | some _, some none => .error .undefined
               | _, _ => .error .unsupported
             | _ => .error .unsupported
-    | .constantIndex _ _ _ :: _ =>
+    | .constantIndex _ _ _ :: _ | .downcast _ :: _ =>
       if isMove then
         .error .unsupported
       else
@@ -2076,6 +2124,11 @@ noncomputable def evalRvalueV2 (bodyLocals : List MirTy) (locals : List LocalSlo
             .error .unsupported
           else
             evalOrderingDiscriminantOfVal optVal locals1 mem1
+        | .option _ =>
+          if !MirTy.beq dstTy (.int .isize true) then
+            .error .unsupported
+          else
+            evalOptionDiscriminantOfVal optVal locals1 mem1
         | _ => .error .unsupported
     else
       match getElem? bodyLocals place.localId, getElem? locals place.localId with
@@ -2092,6 +2145,11 @@ noncomputable def evalRvalueV2 (bodyLocals : List MirTy) (locals : List LocalSlo
             .error .unsupported
           else
             evalOrderingDiscriminantOfVal optVal locals mem
+        | .option _ =>
+          if !MirTy.beq dstTy (.int .isize true) then
+            .error .unsupported
+          else
+            evalOptionDiscriminantOfVal optVal locals mem
         | _ => .error .unsupported
       | some srcTy, some (.indirect mplace) =>
         match srcTy with
@@ -2109,6 +2167,13 @@ noncomputable def evalRvalueV2 (bodyLocals : List MirTy) (locals : List LocalSlo
             match loadIndirectV2 mem srcTy mplace with
             | .error k => .error k
             | .ok optVal => evalOrderingDiscriminantOfVal optVal locals mem
+        | .option _ =>
+          if !MirTy.beq dstTy (.int .isize true) then
+            .error .unsupported
+          else
+            match loadIndirectV2 mem srcTy mplace with
+            | .error k => .error k
+            | .ok optVal => evalOptionDiscriminantOfVal optVal locals mem
         | _ => .error .unsupported
       | _, _ => .error .unsupported
   | .ref reqMut place => evalRefRvalueV2 bodyLocals locals mem dstTy reqMut place
@@ -2188,6 +2253,42 @@ noncomputable def evalRvalueV2 (bodyLocals : List MirTy) (locals : List LocalSlo
         | .ok (_, none, _, _) => .error .undefined
         | .ok (_, _, _, _) => .error .unsupported
     | _ => .error .unsupported
+  | .aggregateRange elemTy startOp endOp =>
+    match elemTy with
+    | .int .isize false =>
+      if !MirTy.beq dstTy (.range (.int .isize false)) then
+        .error .unsupported
+      else
+        match evalOperandToSlotV2 bodyLocals locals mem startOp with
+        | .error k => .error k
+        | .ok (.int .isize false, some (.scalar sSv), locals1, mem1) =>
+          match evalOperandToSlotV2 bodyLocals locals1 mem1 endOp with
+          | .error k => .error k
+          | .ok (.int .isize false, some (.scalar eSv), locals2, mem2) =>
+            let s := UInt64.ofNat sSv.bits.toNat
+            let e := UInt64.ofNat eSv.bits.toNat
+            .ok (.range s e, locals2, mem2)
+          | .ok (_, none, _, _) => .error .undefined
+          | .ok (_, _, _, _) => .error .unsupported
+        | .ok (_, none, _, _) => .error .undefined
+        | .ok (_, _, _, _) => .error .unsupported
+    | _ => .error .unsupported
+  | .aggregateOption variantIdx innerTy payload =>
+    if !MirTy.beq dstTy (.option innerTy) then
+      .error .unsupported
+    else
+      match variantIdx, payload with
+      | 0, none => .ok (.optionVal none, locals, mem)
+      | 1, some pOp =>
+        match evalOperandToSlotV2 bodyLocals locals mem pOp with
+        | .error k => .error k
+        | .ok (pTy, some pVal, locals1, mem1) =>
+          if !MirTy.beq pTy innerTy || !checkValV2 pVal innerTy then
+            .error .unsupported
+          else
+            .ok (.optionVal (some pVal), locals1, mem1)
+        | .ok (_, none, _, _) => .error .undefined
+      | _, _ => .error .unsupported
   | .cast .unsupported _ _ | .unsupported => .error .unsupported
 
 /-- Update an immediate `Val` along a non-empty `.field` / `.constantIndex`
@@ -2247,6 +2348,26 @@ noncomputable def updateValAtProjV2 :
       | .error k => .error k
       | .ok (.scalar sv) => .ok (.rangeFrom (UInt64.ofNat sv.bits.toNat))
       | .ok _ => .error .unsupported
+  | .range (.int .isize false), .range oldStart oldEnd, .field idx fTy :: rest,
+    newVal =>
+    if !MirTy.beq (.int .isize false) fTy then
+      .error .unsupported
+    else if Nat.beq idx 0 then
+      match updateValAtProjV2 (.int .isize false)
+          (.scalar ⟨.isize, false, BitVec.ofNat 128 oldStart.toNat⟩)
+          rest newVal with
+      | .error k => .error k
+      | .ok (.scalar sv) => .ok (.range (UInt64.ofNat sv.bits.toNat) oldEnd)
+      | .ok _ => .error .unsupported
+    else if Nat.beq idx 1 then
+      match updateValAtProjV2 (.int .isize false)
+          (.scalar ⟨.isize, false, BitVec.ofNat 128 oldEnd.toNat⟩)
+          rest newVal with
+      | .error k => .error k
+      | .ok (.scalar sv) => .ok (.range oldStart (UInt64.ofNat sv.bits.toNat))
+      | .ok _ => .error .unsupported
+    else
+      .error .unsupported
   | _, _, _, _ => .error .unsupported
 
 /-- Validate a non-deref `.field` / `.constantIndex` projection tail against
@@ -2270,6 +2391,11 @@ noncomputable def validatePlaceProjV2 :
   | .rangeTo (.int .isize false), .field 0 fTy :: rest
   | .rangeFrom (.int .isize false), .field 0 fTy :: rest =>
     if MirTy.beq (.int .isize false) fTy then
+      validatePlaceProjV2 (.int .isize false) rest
+    else .error .unsupported
+  | .range (.int .isize false), .field idx fTy :: rest =>
+    if (Nat.beq idx 0 || Nat.beq idx 1) &&
+        MirTy.beq (.int .isize false) fTy then
       validatePlaceProjV2 (.int .isize false) rest
     else .error .unsupported
   | _, _ => .error .unsupported
@@ -2595,6 +2721,7 @@ mutual
         | .zeroSized => .zst 0
         | .scalar tagW _ => .scalar (intLayout tagW).alignLog2
     | .rangeTo (.int .isize false) | .rangeFrom (.int .isize false) => .scalar 3
+    | .range (.int .isize false) => .scalarPair 3
     | .ref _ pt | .rawPtr _ pt =>
       if isUnsizedTy pt then .scalarPair 3 else .scalar 3
     | .array elem len =>
@@ -2616,7 +2743,11 @@ mutual
       | .oneScalar a => if Nat.ble maxA a then .scalar a else .memoryCopy
       | .twoScalars a => if Nat.ble maxA a then .scalarPair a else .memoryCopy
       | .memory => .memoryCopy
-    | .slice _ | .rangeTo _ | .rangeFrom _ | .unsupported => .memoryCopy
+    -- `Option<T>` stays `.memoryCopy` (the strictest class) even where `rustc`
+    -- picks `Scalar`/`ScalarPair`: a `None` payload is uninit, so we do not
+    -- claim the immediate-copy path.
+    | .option _ | .slice _ | .rangeTo _ | .rangeFrom _ | .range _
+    | .unsupported => .memoryCopy
 
   noncomputable def copyReprOfTupleFieldsV2 :
       List MirTy → Nat × TupleCopyPayloadV2
@@ -2693,6 +2824,15 @@ noncomputable def normalizeImmProjPathV2 :
   | .rangeFrom (.int .isize false), .field 0 fTy :: rest =>
     if !MirTy.beq (.int .isize false) fTy then none
     else (normalizeImmProjPathV2 (.int .isize false) rest).map (.field 0 :: ·)
+  | .range (.int .isize false), .field idx fTy :: rest =>
+    if !Nat.blt idx 2 || !MirTy.beq (.int .isize false) fTy then none
+    else
+      (normalizeImmProjPathV2 (.int .isize false) rest).map (.field idx :: ·)
+  -- The `Some` payload is the only sub-place of an immediate `Option`, so it
+  -- is normalized as field `0`; a write to the whole `Option` overlaps it.
+  | .option inner, .downcast 1 :: .field 0 fTy :: rest =>
+    if !MirTy.beq inner fTy then none
+    else (normalizeImmProjPathV2 inner rest).map (.field 0 :: ·)
   | .array elem len, .constantIndex off minLen fromEnd :: rest =>
     match constantIndexOffset len off minLen fromEnd with
     | .ok idx => (normalizeImmProjPathV2 elem rest).map (.index idx :: ·)
@@ -2853,7 +2993,10 @@ If an earlier field write `writtenSpans` overlaps either a later operand's
 source span or the pointer local read by a later `.deref` operand, fail closed
 with `.error .unsupported`; if operand `idx` overlaps its own destination field
 span and `isMemoryCopyReprTyV2 fieldTy`, fault `.error .undefined`
-(`copy_nonoverlapping` UB). -/
+(`copy_nonoverlapping` UB). A non-constant operand whose source span cannot be
+resolved also fails closed with `.error .unsupported` whenever either check
+could apply (an earlier field was written, or `fieldTy` copies through
+memory). -/
 noncomputable def checkAggregateCopyHazardLoopV2 (bodyLocals : List MirTy)
     (locals : List LocalSlot) (mem : MemoryState) (baseSpan : CopyPlaceSpanV2)
     (aggTy : MirTy) (isArray : Bool) (idx : Nat)
@@ -2862,6 +3005,11 @@ noncomputable def checkAggregateCopyHazardLoopV2 (bodyLocals : List MirTy)
   | [], [] => .ok ()
   | fieldTy :: restTys, op :: restOps =>
     let opSpanOpt := operandCopySpanV2 bodyLocals locals mem op
+    let unresolved :=
+      match op, opSpanOpt with
+      | .constant _, _ => false
+      | _, none => true
+      | _, some _ => false
     let clobberedByEarlier :=
       match opSpanOpt with
       | none => false
@@ -2873,6 +3021,9 @@ noncomputable def checkAggregateCopyHazardLoopV2 (bodyLocals : List MirTy)
       | some (some ptrSpan) =>
         writtenSpans.any (fun w => copySpansOverlapV2 w ptrSpan)
     if clobberedByEarlier then
+      .error .unsupported
+    else if unresolved &&
+        (!writtenSpans.isEmpty || isMemoryCopyReprTyV2 fieldTy) then
       .error .unsupported
     else if ptrClobberedByEarlier then
       .error .unsupported
@@ -2992,6 +3143,18 @@ noncomputable def checkAssignCopyHazardV2 (bodyLocals : List MirTy)
   | .binaryOp _ _ _ | .unaryOp _ _ | .cast _ _ _ | .discriminant _
   | .ref _ _ | .addressOf _ _ | .fakeAddressOf _ | .aggregateRangeTo _ _
   | .aggregateRangeFrom _ _ | .unsupported => .ok ()
+  | .aggregateRange elemTy startOp endOp =>
+    match copyReprOfTyV2 dstTy with
+    | .zst _ => .ok ()
+    | _ =>
+      match destCopySpanV2 locals dest dstTy with
+      | some baseSpan =>
+        checkAggregateCopyHazardLoopV2 bodyLocals locals mem baseSpan dstTy
+          false 0 [] [elemTy, elemTy] [startOp, endOp]
+      | none => .error .unsupported
+  -- A single payload field: no earlier field write can clobber it.
+  | .aggregateOption _ elemTy _ =>
+    if isMemoryCopyReprTyV2 elemTy then .error .unsupported else .ok ()
 
 /-- Evaluate one `StatementKind` in Profile v2.
 
@@ -3238,6 +3401,27 @@ noncomputable def execCoreCallOp (m : MemoryState) (op : CoreCallOp)
           | .error k => .error k
   | _, _ => .error .unsupported
 
+/-- Execute any `CoreCallOp` in Profile v2, threading updated `MemoryState`
+for memory-mutating core contracts (`CoreContracts`) while delegating
+existing slice/raw-pointer primitives to `execCoreCallOp`. -/
+noncomputable def execCoreCallWithMem (m : MemoryState) (op : CoreCallOp)
+    (args : List (MirTy × Val)) (dstTy : MirTy) :
+    Except FaultKind (Val × MemoryState) :=
+  match op with
+  | .sliceLen | .sliceGetUncheckedRangeTo | .sliceGetUncheckedRangeFrom
+  | .ptrAdd _ _ | .usizeUncheckedSub | .intToLeBytes _ _ | .arrayEq _ _ =>
+    match execCoreCallOp m op args dstTy with
+    | .ok v => .ok (v, m)
+    | .error k => .error k
+  | .sliceIndexRange _ _ | .sliceIndexRangeFrom _ _ | .sliceIsEmpty _
+  | .sliceSplitAt _ _ | .numIsMultipleOf _ _ | .numCheckedAdd _ _
+  | .numCheckedMul _ _ | .numCheckedSub _ _ | .numSaturatingAdd _ _
+  | .numWrappingShl _ _ | .numWrappingShr _ _ | .numLeadingZeros _ _
+  | .numOverflowingAdd _ _ | .numOverflowingSub _ _ | .cmpMin _ _
+  | .cmpMax _ _ | .memReplace _ | .optionIsSome _ | .optionIsNone _
+  | .optionTake _ | .optionUnwrap _ =>
+    execCoreContractOp m op args dstTy
+
 /-- Evaluate a basic block's `TerminatorKind` in Profile v2.
 
 `.return_` faults with `.undefined` unless every returned reference is
@@ -3356,10 +3540,10 @@ noncomputable def evalTerminatorV2 (body : Body) (bb : BasicBlock)
         match evalArgOperandsV2 body.locals frame.locals mem args with
         | .error k => .fault k
         | .ok (typedArgs, locals1, mem1) =>
-          match execCoreCallOp mem1 op typedArgs dstTy with
+          match execCoreCallWithMem mem1 op typedArgs dstTy with
           | .error k => .fault k
-          | .ok resVal =>
-            match writePlaceV2 body.locals locals1 mem1 dst dstTy resVal with
+          | .ok (resVal, mem1') =>
+            match writePlaceV2 body.locals locals1 mem1' dst dstTy resVal with
             | .error k => .fault k
             | .ok (locals2, mem2) =>
               jumpToBlock { frame with locals := locals2 } mem2 callerMem target

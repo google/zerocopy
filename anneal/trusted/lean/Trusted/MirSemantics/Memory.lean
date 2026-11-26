@@ -364,15 +364,17 @@ noncomputable def maxAllocAndProvId (allocs : List Allocation) : AllocId :=
   Nat.max (maxAllocId allocs) (maxAllocBytesProvId allocs)
 
 mutual
-  /-- Return `true` when `ty` is a raw pointer or a tuple/array containing
-  one. Kept exhaustive over `MirTy` so adding new aggregate/container
-  constructors forces updating raw-pointer freshness tracking. -/
+  /-- Return `true` when `ty` is a raw pointer or an option, range, tuple, or
+  fixed-size array containing one. Kept exhaustive over `MirTy` so adding new
+  aggregate/container constructors forces updating raw-pointer freshness
+  tracking. -/
   noncomputable def tyHasRawPtrV2 : MirTy → Bool
     | .rawPtr _ _ => true
     | .array elem _ => tyHasRawPtrV2 elem
+    | .option e | .rangeTo e | .rangeFrom e | .range e => tyHasRawPtrV2 e
     | .tuple fs => tyListHasRawPtrV2 fs
     | .bool | .int _ _ | .unit | .never | .char | .ordering | .enum _
-    | .ref _ _ | .slice _ | .rangeTo _ | .rangeFrom _ | .unsupported => false
+    | .ref _ _ | .slice _ | .unsupported => false
 
   noncomputable def tyListHasRawPtrV2 : List MirTy → Bool
     | [] => false
@@ -390,7 +392,9 @@ mutual
     | .tuple vs => maxValPtrAllocIdList vs
     | .array vs => maxValPtrAllocIdList vs
     | .bytes bs => maxByteProvAllocId bs
-    | .scalar _ | .rangeTo _ | .rangeFrom _ | .bool _ | .char _
+    | .optionVal (some v) => maxValPtrAllocId v
+    | .optionVal none => 0
+    | .scalar _ | .rangeTo _ | .rangeFrom _ | .range _ _ | .bool _ | .char _
     | .ordering _ | .unit | .enumVal _ _ => 0
 
   noncomputable def maxValPtrAllocIdList : List Val → AllocId
@@ -491,8 +495,43 @@ noncomputable def ptrAddInMem (m : MemoryState) (elemSize : Nat) (p : PtrVal)
         else
           .ok { p with offsetBytes := UInt64.ofNat (p.offsetBytes.toNat + delta) }
 
+/-- Validate the raw pointer, bounds, alignment, `isize::MAX` byte-size limit,
+and mutability invariants for `&[T]` / `&mut [T]` in `m`, without requiring
+every byte in `[offset, offset + len * elemSize)` to be initialized (so
+non-integer slice elements with padding or inactive enum payloads such as
+`Option<u64>::None` can validate initialization per active field via
+`validateSliceElemsV2`). -/
+noncomputable def sliceRefRawCheck (m : MemoryState) (isMut : Bool)
+    (elemSize elemAlignLog2 : Nat) (p : PtrVal) (len : UInt64) :
+    Except FaultKind (Option Allocation) :=
+  let totalBytes := len.toNat * elemSize
+  if !Nat.blt totalBytes isizeMaxBytes then
+    .error .undefined
+  else
+    match p.allocId with
+    | none =>
+      if Nat.beq p.offsetBytes.toNat 0 || Nat.blt 0 totalBytes then
+        .error .undefined
+      else if !Nat.beq
+          (Nat.mod p.offsetBytes.toNat (Nat.pow 2 elemAlignLog2)) 0 then
+        .error .undefined
+      else
+        .ok none
+    | some aid =>
+      match findAllocation aid m.allocations with
+      | none => .error .undefined
+      | some a =>
+        if !a.live || !isInBounds a p.offsetBytes.toNat totalBytes ||
+            !isAligned a p.offsetBytes.toNat elemAlignLog2 then
+          .error .undefined
+        else if isMut && !Mutability.beq a.mutability .mut then
+          .error .undefined
+        else
+          .ok (some a)
+
 /-- Validate the slice-reference invariants for `&[uN]` / `&mut [uN]` in `m`.
-`refValidInMem` uses this as its slice case, and it is the only caller:
+`refValidInMem` uses this for integer slice elements, while non-integer slice
+elements use `sliceRefRawCheck` plus `validateSliceElemsV2`:
 - `len * elemSize < 2^63` (`isize::MAX` bound);
 - non-null and aligned even when `len == 0`. A pointer with no provenance is
   accepted only when `len * elemSize == 0`;
@@ -536,30 +575,14 @@ noncomputable def sliceFromRawPartsCheck (m : MemoryState) (isMut : Bool)
     (elemSize elemAlignLog2 : Nat) (p : PtrVal) (len : UInt64) :
     Except FaultKind Val :=
   let totalBytes := len.toNat * elemSize
-  if !Nat.blt totalBytes isizeMaxBytes then
-    .error .undefined
-  else
-    match p.allocId with
-    | none =>
-      if Nat.beq p.offsetBytes.toNat 0 || Nat.blt 0 totalBytes then
-        .error .undefined
-      else if !Nat.beq (Nat.mod p.offsetBytes.toNat (Nat.pow 2 elemAlignLog2)) 0 then
-        .error .undefined
-      else
-        .ok (.slicePtr p len)
-    | some aid =>
-      match findAllocation aid m.allocations with
-      | none => .error .undefined
-      | some a =>
-        if !a.live || !isInBounds a p.offsetBytes.toNat totalBytes ||
-            !isAligned a p.offsetBytes.toNat elemAlignLog2 then
-          .error .undefined
-        else if isMut && !Mutability.beq a.mutability .mut then
-          .error .undefined
-        else if !isSliceAllInit ((a.bytes.drop p.offsetBytes.toNat).take totalBytes) then
-          .error .undefined
-        else
-          .ok (.slicePtr p len)
+  match sliceRefRawCheck m isMut elemSize elemAlignLog2 p len with
+  | .error k => .error k
+  | .ok none => .ok (.slicePtr p len)
+  | .ok (some a) =>
+    if !isSliceAllInit ((a.bytes.drop p.offsetBytes.toNat).take totalBytes) then
+      .error .undefined
+    else
+      .ok (.slicePtr p len)
 
 /-- Checked `slice::get_unchecked` subslice (`[startOff..endOff]` of slice
 `(p, len)` with element byte size `elemSize`, defaulting to `1` for `[u8]`):

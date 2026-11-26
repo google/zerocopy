@@ -615,7 +615,8 @@ private theorem evalTerminator_any_ps (body : Body) (bb : BasicBlock)
             | false => exact Or.inr ⟨msg, unwind, rfl, rfl⟩
           | scalar _ | char _ | ptr _ | slicePtr _ _ | rangeTo _
           | rangeFrom _ | ordering _ | unit | enumVal _ _ | tuple _
-          | array _ | bytes _ => exact Or.inl rfl
+          | array _ | bytes _ | range _ _ => exact Or.inl rfl
+          | optionVal optV => cases optV <;> (exact Or.inl rfl)
   | goto _ | return_ | unreachable | switchInt _ _ | unwindResume
   | call _ _ _ _ _ | coreCall _ _ _ _ _ | sysrootCall _ _ _ _ _
   | unsupported => exact Or.inl rfl
@@ -704,7 +705,8 @@ theorem evalTerminator_frame_retag (body : Body) (bb : BasicBlock)
               intro s' hStep
               injection hStep with hEq; subst hEq
               exact ⟨_, rfl, h_id⟩
-          | ptr _ | slicePtr _ _ | rangeTo _ | rangeFrom _ | ordering _ | unit | tuple _ | array _ | bytes _ | enumVal _ _ =>
+          | ptr _ | slicePtr _ _ | rangeTo _ | rangeFrom _ | range _ _ | optionVal _
+          | ordering _ | unit | tuple _ | array _ | bytes _ | enumVal _ _ =>
             dsimp only
             cases targets.branches with
             | nil =>
@@ -742,7 +744,7 @@ theorem evalTerminator_frame_retag (body : Body) (bb : BasicBlock)
               | done _ | fault _ => rfl
           | scalar _ | char _ | ptr _ | slicePtr _ _ | rangeTo _
           | rangeFrom _ | ordering _ | unit | enumVal _ _ | tuple _
-          | array _ | bytes _ =>
+          | array _ | bytes _ | optionVal _ | range _ _ =>
             exact ⟨(fun _ h => by cases h), rfl⟩
   | unwindResume | call _ _ _ _ _ | coreCall _ _ _ _ _
   | sysrootCall _ _ _ _ _ | unsupported =>
