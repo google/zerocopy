@@ -269,6 +269,8 @@ pub(crate) struct OleanCache {
     disk_dir: Option<PathBuf>,
     prebuilt_entries: Option<PrebuiltEntryMap>,
     prebuilt_skipped_version: Option<u32>,
+    hits: usize,
+    misses: usize,
 }
 
 impl OleanCache {
@@ -280,6 +282,8 @@ impl OleanCache {
             disk_dir: cache_dir_from_env_vars(home, xdg_cache_home),
             prebuilt_entries: None,
             prebuilt_skipped_version: None,
+            hits: 0,
+            misses: 0,
         }
     }
 
@@ -292,6 +296,8 @@ impl OleanCache {
             disk_dir: default_olean_cache_dir(),
             prebuilt_entries: None,
             prebuilt_skipped_version: None,
+            hits: 0,
+            misses: 0,
         }
     }
 
@@ -320,9 +326,16 @@ impl OleanCache {
         }
     }
 
-    #[cfg(test)]
+    /// Replace the disk cache root. Collecting the components drops `.`
+    /// segments and any trailing `/`, so a trailing-slash path to a symlink
+    /// cannot slip past the non-symlink root check in `lstat`.
     pub(crate) fn set_disk_dir(&mut self, dir: Option<PathBuf>) {
-        self.disk_dir = dir;
+        self.disk_dir = dir.map(|dir| dir.components().collect());
+    }
+
+    /// Return the `(hits, misses)` counted by [`Self::lookup_bytes`].
+    pub(crate) fn stats(&self) -> (usize, usize) {
+        (self.hits, self.misses)
     }
 
     fn load_prebuilt(&mut self) -> Result<Option<&PrebuiltEntryMap>, Failure> {
@@ -391,14 +404,17 @@ impl OleanCache {
                 &entry.parts,
                 /*require_owner_uid=*/ false,
             )?;
+            self.hits += 1;
             return Ok(Some(parts));
         }
 
         if let Some(ref disk_dir) = self.disk_dir
             && let Some(parts) = lookup_disk_cache_bytes(disk_dir, input)?
         {
+            self.hits += 1;
             return Ok(Some(parts));
         }
+        self.misses += 1;
 
         if self.no_rebuild_bundled
             && (input.kind == CacheKind::Inspector || is_cacheable_bundled_module(&input.module))
@@ -532,6 +548,16 @@ fn lookup_disk_cache_bytes(
     disk_dir: &Path,
     input: &OleanCacheKeyInput,
 ) -> Result<Option<LoadedCacheParts>, Failure> {
+    // `lstat` would follow a symlink before a `..` (and resolve a relative
+    // root against the working directory), while the store path walks the
+    // components, so refuse such roots here as `ensure_private_cache_root`
+    // does.
+    if !disk_dir.is_absolute() || disk_dir.components().any(|c| matches!(c, Component::ParentDir)) {
+        return Err(Failure::operational(
+            "olean-cache",
+            format!("cache path must be absolute without `..`: {}", disk_dir.display()),
+        ));
+    }
     // Allow an absent or unsearchable ambient `$HOME`/`$XDG_CACHE_HOME` root
     // (`NotFound` or `PermissionDenied` on `lstat(disk_dir)`) to fall back to
     // a clean cache miss, while failing closed on any other root error or any
@@ -1094,6 +1120,31 @@ mod tests {
         data
     }
 
+    /// `set_disk_dir` must drop a trailing `/` (and `.` segments): `lstat` on
+    /// `link/` follows the symlink, so a kept trailing slash would let a
+    /// symlinked root pass the non-symlink root check.
+    #[test]
+    fn set_disk_dir_drops_trailing_slash_and_cur_dir() {
+        let mut cache = OleanCache::new_default();
+        cache.set_disk_dir(Some(PathBuf::from("/shared/./olean-cache/")));
+        assert_eq!(
+            cache.disk_dir.as_deref().map(Path::as_os_str),
+            Some(std::ffi::OsStr::new("/shared/olean-cache"))
+        );
+        cache.set_disk_dir(None);
+        assert_eq!(cache.disk_dir, None);
+    }
+
+    /// Lookup refuses the roots that the store path's ancestor walk refuses,
+    /// rather than letting `lstat` follow a symlink before `..`.
+    #[test]
+    fn lookup_disk_cache_bytes_refuses_relative_or_dotdot_roots() {
+        let input = sample_input(&"c".repeat(64));
+        for root in ["relative/cache", "/tmp/link/sub/.."] {
+            let err = lookup_disk_cache_bytes(Path::new(root), &input).unwrap_err();
+            assert!(err.message.contains("must be absolute without `..`"), "{root}: {err:?}");
+        }
+    }
     #[test]
     fn cache_key_is_deterministic_and_sensitive_to_every_field() {
         let base = sample_input(&"1".repeat(64));

@@ -42,6 +42,22 @@ same user and `XDG_CACHE_HOME` across `setup` and `verify`. Builds compiled with
 `--no-default-features` omit `setup` and require `--capture`, `--sysroot`, and
 `--lean`.
 
+To reuse compiled `.olean` files across crates and invocations (for example,
+in a hermetic build system or CI), point `verify` at one shared cache with
+`--olean-cache-dir <DIR>` or `ANNEAL_OLEAN_CACHE_DIR=<DIR>`. The flag overrides
+the variable, an empty variable counts as unset, and either one replaces the
+per-user default under `XDG_CACHE_HOME` (or `HOME`). Entries are keyed by
+content (`<DIR>/v2/<merkle_key>/`) and published atomically, so concurrent runs
+can share a directory. A cache hit is trusted on the strength of the entry's
+own recorded digests, which detect corruption but not a malicious writer, so
+everything that can write `<DIR>` must be trusted as much as the runs that read
+it: keep it outside any checkout (`verify` refuses a root inside or containing
+the working directory or any input directory: manifest, proof, request, or
+`rustc` source directories), and give runs on
+untrusted Rust inputs or with `--allow-unsandboxed-elaboration` their own
+directory. `--olean-cache-dir` cannot be combined with `--no-cache`, and
+`--receipt-out` must not point inside the cache directory in use.
+
 Run verification (defaults to `--format human` on stdout), atomically write a
 Receipt Schema v3 JSON file via `--receipt-out` (or pass `--format json` to
 stream JSON on stdout), and treat the process exit code (`0` verified, `1`

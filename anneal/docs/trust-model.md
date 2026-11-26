@@ -146,6 +146,19 @@ flowchart TD
      and Pass 2 preflight, standalone kernel replay, and cone-purity
      enforcement, while `ci/` and `.github/` are human-audited CI configuration.
 
+On the user's machine, `cargo anneal verify` reuses compiled `.olean` artifacts
+(for `Trusted.*`, the auditor's `TrustedBoundary`, `Anneal.*`, and target
+shards) from a disk cache whose entries are validated only against digests
+recorded in the entry itself (plus file ownership). The cache root (the
+per-user default or an explicit `--olean-cache-dir`/`ANNEAL_OLEAN_CACHE_DIR`) is
+therefore trusted state of the execution environment
+([`THREAT_MODEL.md`](../THREAT_MODEL.md) Section 2.1): every writer to it must
+be as trusted as the runs that read it.
+`cargo anneal verify` refuses an explicit root inside or containing the
+working directory or any input directory (manifest, proof, request, or `rustc`
+source directories, comparing lexical and symlink-resolved paths);
+write-isolating roots across trust tiers remains an operator obligation.
+
 ### Statement-Origin Separation (`ConstantInfo.type` vs. `ConstantInfo.value?`)
 
 Within the Lean 4 kernel environment, every compiled theorem
