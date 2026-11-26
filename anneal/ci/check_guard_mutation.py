@@ -1300,7 +1300,7 @@ MIR_SEMANTICS_GUARDS: tuple[MirSemanticsGuard, ...] = (
         needs_wf_helper=False,
     ),
     # ------------------------------------------------------------------
-    # Profile v2 memory, step, type-admission, and boundary guards (23 guards)
+    # Profile v2 memory, step, type-admission, and boundary guards (40 guards)
     # ------------------------------------------------------------------
     MirSemanticsGuard(
         guard_id="mem_v2_ptr_add_null_nonzero",
@@ -1455,13 +1455,13 @@ MIR_SEMANTICS_GUARDS: tuple[MirSemanticsGuard, ...] = (
         target_module="Trusted/MirSemantics/Step",
         description="evalTerminatorV2 .return_ rejects returning a reference to a callee stack local as UB",
         anchor=(
-            "          if !refsStayInCallerMem callerMem retTy retVal ||\n"
+            "          else if !refsStayInCallerMem callerMem retTy retVal ||\n"
             "              !refsValidInMem mem retTy retVal ||\n"
             "              !spansPairwiseDisjoint (refAccessSpans retTy retVal) then\n"
             "            .fault .undefined"
         ),
         replacement=(
-            "          if false ||\n"
+            "          else if false ||\n"
             "              !refsValidInMem mem retTy retVal ||\n"
             "              !spansPairwiseDisjoint (refAccessSpans retTy retVal) then\n"
             "            .fault .undefined"
@@ -1534,14 +1534,16 @@ MIR_SEMANTICS_GUARDS: tuple[MirSemanticsGuard, ...] = (
         guard_id="enum_v2_overflow_pair_pointee",
         target_file="trusted/lean/Trusted/MirSemantics/Enum.lean",
         target_module="Trusted/MirSemantics/Enum",
-        description="isSupportedV2LocalTy rejects pointers to overflow pairs",
+        description="isSupportedV2DataTy rejects overflow pairs as pointees or array elements",
         anchor=(
-            "    | .ref _ pt | .rawPtr _ pt =>\n"
-            "      !isOverflowPairTy pt && isSupportedScalarOrUnitTy pt"
+            "noncomputable def isSupportedV2DataTy : MirTy → Bool\n"
+            "  | .array elem _ => isSupportedV2DataTy elem\n"
+            "  | ty => !isOverflowPairTy ty && isSupportedScalarOrUnitTy ty"
         ),
         replacement=(
-            "    | .ref _ pt | .rawPtr _ pt =>\n"
-            "      true && isSupportedScalarOrUnitTy pt"
+            "noncomputable def isSupportedV2DataTy : MirTy → Bool\n"
+            "  | .array elem _ => isSupportedV2DataTy elem\n"
+            "  | ty => true && isSupportedScalarOrUnitTy ty"
         ),
         fixture_module="EnumRefutations",
         theorem_name="refute_enum_v2_overflow_pair_pointee",
@@ -1663,6 +1665,369 @@ MIR_SEMANTICS_GUARDS: tuple[MirSemanticsGuard, ...] = (
         ),
         fixture_module="StepRefutations",
         theorem_name="refute_step_v2_assert_failure_faults",
+    ),
+    MirSemanticsGuard(
+        guard_id="step_v2_constant_index_min_len",
+        target_file="trusted/lean/Trusted/MirSemantics/Step.lean",
+        target_module="Trusted/MirSemantics/Step",
+        description="constantIndexOffset rejects arrays shorter than minLen as UB",
+        anchor=(
+            "noncomputable def constantIndexOffset (len off minLen : Nat)\n"
+            "    (fromEnd : Bool) : Except FaultKind Nat :=\n"
+            "  if !Nat.ble minLen len then\n"
+            "    .error .undefined"
+        ),
+        replacement=(
+            "noncomputable def constantIndexOffset (len off minLen : Nat)\n"
+            "    (fromEnd : Bool) : Except FaultKind Nat :=\n"
+            "  if false then\n"
+            "    .error .undefined"
+        ),
+        fixture_module="StepRefutations",
+        theorem_name="refute_step_v2_constant_index_min_len",
+        needs_wf_helper=False,
+    ),
+    MirSemanticsGuard(
+        guard_id="step_v2_constant_index_oob",
+        target_file="trusted/lean/Trusted/MirSemantics/Step.lean",
+        target_module="Trusted/MirSemantics/Step",
+        description="constantIndexOffset rejects out-of-bounds offset >= len as UB",
+        anchor=(
+            "  else\n"
+            "    if !Nat.blt off len then\n"
+            "      .error .undefined"
+        ),
+        replacement=(
+            "  else\n"
+            "    if false then\n"
+            "      .error .undefined"
+        ),
+        fixture_module="StepRefutations",
+        theorem_name="refute_step_v2_constant_index_oob",
+        needs_wf_helper=False,
+    ),
+    MirSemanticsGuard(
+        guard_id="step_v2_read_deref_proj_raw_misaligned",
+        target_file="trusted/lean/Trusted/MirSemantics/Step.lean",
+        target_module="Trusted/MirSemantics/Step",
+        description="readDerefProjectedV2 enforces base-pointer alignment for raw sub-place reads",
+        anchor=(
+            "                if !isAligned a pv.offsetBytes.toNat ptLay.alignLog2 ||\n"
+            "                    (isRef && (!a.live || !isInBounds a pv.offsetBytes.toNat ptLay.size)) ||"
+        ),
+        replacement=(
+            "                if false ||\n"
+            "                    (isRef && (!a.live || !isInBounds a pv.offsetBytes.toNat ptLay.size)) ||"
+        ),
+        fixture_module="StepRefutations",
+        theorem_name="refute_step_v2_read_deref_proj_raw_misaligned",
+        needs_wf_helper=False,
+    ),
+    MirSemanticsGuard(
+        guard_id="step_v2_read_deref_proj_no_prov_misaligned",
+        target_file="trusted/lean/Trusted/MirSemantics/Step.lean",
+        target_module="Trusted/MirSemantics/Step",
+        description=(
+            "readDerefProjectedV2 enforces base-pointer alignment for "
+            "provenance-free zero-size projected reads"
+        ),
+        anchor=(
+            "              let badBaseAlign :=\n"
+            "                !Nat.beq (Nat.mod pv.offsetBytes.toNat (Nat.pow 2 ptLay.alignLog2)) 0\n"
+            "              let badRefBase :="
+        ),
+        replacement=(
+            "              let badBaseAlign :=\n"
+            "                false\n"
+            "              let badRefBase :="
+        ),
+        fixture_module="StepRefutations",
+        theorem_name="refute_step_v2_read_deref_proj_no_prov_misaligned",
+        needs_wf_helper=False,
+    ),
+    MirSemanticsGuard(
+        guard_id="step_v2_unsize_shared_to_mut",
+        target_file="trusted/lean/Trusted/MirSemantics/Step.lean",
+        target_module="Trusted/MirSemantics/Step",
+        description="CastKind.unsize rejects coercing & [T; N] to &mut [T] as UB",
+        anchor=(
+            "        | .ref srcMut (.array srcElem len), .ref dstMut (.slice dstElem), .ptr p =>\n"
+            "          if !MirTy.beq srcElem dstElem || !Nat.blt len (Nat.pow 2 64) then\n"
+            "            .error .unsupported\n"
+            "          else if Mutability.beq srcMut .shared &&\n"
+            "              Mutability.beq dstMut .mut then\n"
+            "            .error .undefined"
+        ),
+        replacement=(
+            "        | .ref srcMut (.array srcElem len), .ref dstMut (.slice dstElem), .ptr p =>\n"
+            "          if !MirTy.beq srcElem dstElem || !Nat.blt len (Nat.pow 2 64) then\n"
+            "            .error .unsupported\n"
+            "          else if false then\n"
+            "            .error .undefined"
+        ),
+        fixture_module="StepRefutations",
+        theorem_name="refute_step_v2_unsize_shared_to_mut",
+        needs_wf_helper=False,
+    ),
+    MirSemanticsGuard(
+        guard_id="step_v2_unsize_src_mut_valid",
+        target_file="trusted/lean/Trusted/MirSemantics/Step.lean",
+        target_module="Trusted/MirSemantics/Step",
+        description=(
+            "CastKind.unsize validates source &mut [T; N] at srcMut before "
+            "reborrowing as &[T]"
+        ),
+        anchor=(
+            "            match refValidInMem mem1 srcMut (.array srcElem len) (.ptr p) with"
+        ),
+        replacement=(
+            "            match refValidInMem mem1 dstMut (.array srcElem len) (.ptr p) with"
+        ),
+        fixture_module="StepRefutations",
+        theorem_name="refute_step_v2_unsize_src_mut_valid",
+        needs_wf_helper=False,
+    ),
+    MirSemanticsGuard(
+        guard_id="step_v2_unsize_raw_shared_to_mut",
+        target_file="trusted/lean/Trusted/MirSemantics/Step.lean",
+        target_module="Trusted/MirSemantics/Step",
+        description="CastKind.unsize rejects coercing *const [T; N] to *mut [T] as UB",
+        anchor=(
+            "        | .rawPtr srcMut (.array srcElem len),\n"
+            "          .rawPtr dstMut (.slice dstElem), .ptr p =>\n"
+            "          if !MirTy.beq srcElem dstElem || !Nat.blt len (Nat.pow 2 64) then\n"
+            "            .error .unsupported\n"
+            "          else if Mutability.beq srcMut .shared &&\n"
+            "              Mutability.beq dstMut .mut then\n"
+            "            .error .undefined"
+        ),
+        replacement=(
+            "        | .rawPtr srcMut (.array srcElem len),\n"
+            "          .rawPtr dstMut (.slice dstElem), .ptr p =>\n"
+            "          if !MirTy.beq srcElem dstElem || !Nat.blt len (Nat.pow 2 64) then\n"
+            "            .error .unsupported\n"
+            "          else if false then\n"
+            "            .error .undefined"
+        ),
+        fixture_module="StepRefutations",
+        theorem_name="refute_step_v2_unsize_raw_shared_to_mut",
+        needs_wf_helper=False,
+    ),
+    MirSemanticsGuard(
+        guard_id="step_v2_resolve_deref_proj_propagates_ub",
+        target_file="trusted/lean/Trusted/MirSemantics/Step.lean",
+        target_module="Trusted/MirSemantics/Step",
+        description=(
+            "resolvePlaceDestV2 propagates projectMemoryLayoutV2 .error .undefined "
+            "faults on dereferenced projected stores"
+        ),
+        anchor=(
+            "          match layoutOfTyV2 pt, projectMemoryLayoutV2 pt rest with\n"
+            "          | none, _ => .error .unsupported\n"
+            "          | _, .error k => .error k"
+        ),
+        replacement=(
+            "          match layoutOfTyV2 pt, projectMemoryLayoutV2 pt rest with\n"
+            "          | none, _ => .error .unsupported\n"
+            "          | _, .error _ => .error .unsupported"
+        ),
+        fixture_module="StepRefutations",
+        theorem_name="refute_step_v2_resolve_deref_proj_propagates_ub",
+        needs_wf_helper=False,
+    ),
+    MirSemanticsGuard(
+        guard_id="step_v2_read_indirect_proj_propagates_error",
+        target_file="trusted/lean/Trusted/MirSemantics/Step.lean",
+        target_module="Trusted/MirSemantics/Step",
+        description=(
+            "readPlaceV2 propagates projectMemoryLayoutV2 errors on indirect "
+            "locals instead of falling back to a whole-local load"
+        ),
+        anchor=(
+            "        | .indirect mplace =>\n"
+            "          match projectMemoryLayoutV2 baseTy (.field idx fTy :: rest) with\n"
+            "          | .error k => .error k"
+        ),
+        replacement=(
+            "        | .indirect mplace =>\n"
+            "          match projectMemoryLayoutV2 baseTy (.field idx fTy :: rest) with\n"
+            "          | .error _ => .error .undefined"
+        ),
+        fixture_module="StepRefutations",
+        theorem_name="refute_step_v2_read_indirect_proj_propagates_error",
+        needs_wf_helper=False,
+    ),
+    MirSemanticsGuard(
+        guard_id="step_v2_resolve_local_proj_validates_first",
+        target_file="trusted/lean/Trusted/MirSemantics/Step.lean",
+        target_module="Trusted/MirSemantics/Step",
+        description=(
+            "resolvePlaceDestV2 validates projected immediate-local "
+            "destinations before rvalue evaluation"
+        ),
+        anchor=(
+            "    | some baseTy, some (.immediate _) =>\n"
+            "      match validatePlaceProjV2 baseTy projs with\n"
+            "      | .error k => .error k"
+        ),
+        replacement=(
+            "    | some baseTy, some (.immediate _) =>\n"
+            "      match validatePlaceProjV2 baseTy projs with\n"
+            "      | .error _ => .ok (.localProj dst.localId baseTy projs)"
+        ),
+        fixture_module="StepRefutations",
+        theorem_name="refute_step_v2_resolve_local_proj_validates_first",
+        needs_wf_helper=False,
+    ),
+    MirSemanticsGuard(
+        guard_id="step_v2_rodata_bytes_data_ty_only",
+        target_file="trusted/lean/Trusted/MirSemantics/Step.lean",
+        target_module="Trusted/MirSemantics/Step",
+        description=(
+            "evalOperandToSlotV2 restricts ConstLit.rodataBytes to "
+            "isSupportedV2DataTy and fails closed on references"
+        ),
+        anchor=(
+            "    | .rodataBytes bytes =>\n"
+            "      if !isSupportedV2DataTy c.ty then\n"
+            "        .error .unsupported"
+        ),
+        replacement=(
+            "    | .rodataBytes bytes =>\n"
+            "      if false then\n"
+            "        .error .unsupported"
+        ),
+        fixture_module="StepRefutations",
+        theorem_name="refute_step_v2_rodata_bytes_data_ty_only",
+        needs_wf_helper=False,
+    ),
+    MirSemanticsGuard(
+        guard_id="step_v2_rodata_ref_mut",
+        target_file="trusted/lean/Trusted/MirSemantics/Step.lean",
+        target_module="Trusted/MirSemantics/Step",
+        description="evalRodataRefConstV2 rejects mutable &mut T reference over .rodata as unsupported",
+        anchor=(
+            "    | .ref reqMut pt, none =>\n"
+            "      if isUnsizedTy pt then\n"
+            "        .error .unsupported\n"
+            "      else if Mutability.beq reqMut .mut then\n"
+            "        .error .unsupported"
+        ),
+        replacement=(
+            "    | .ref reqMut pt, none =>\n"
+            "      if isUnsizedTy pt then\n"
+            "        .error .unsupported\n"
+            "      else if false then\n"
+            "        .error .unsupported"
+        ),
+        fixture_module="StepRefutations",
+        theorem_name="refute_step_v2_rodata_ref_mut",
+        needs_wf_helper=False,
+    ),
+    MirSemanticsGuard(
+        guard_id="step_v2_rodata_slice_ref_mut",
+        target_file="trusted/lean/Trusted/MirSemantics/Step.lean",
+        target_module="Trusted/MirSemantics/Step",
+        description="evalRodataRefConstV2 rejects mutable &mut [T] slice reference over .rodata as unsupported",
+        anchor=(
+            "    | .ref reqMut (.slice elem), some len =>\n"
+            "      if !Nat.blt len (Nat.pow 2 64) then\n"
+            "        .error .unsupported\n"
+            "      else if Mutability.beq reqMut .mut then\n"
+            "        .error .unsupported"
+        ),
+        replacement=(
+            "    | .ref reqMut (.slice elem), some len =>\n"
+            "      if !Nat.blt len (Nat.pow 2 64) then\n"
+            "        .error .unsupported\n"
+            "      else if false then\n"
+            "        .error .unsupported"
+        ),
+        fixture_module="StepRefutations",
+        theorem_name="refute_step_v2_rodata_slice_ref_mut",
+        needs_wf_helper=False,
+    ),
+    MirSemanticsGuard(
+        guard_id="step_v2_rodata_raw_ptr_mut",
+        target_file="trusted/lean/Trusted/MirSemantics/Step.lean",
+        target_module="Trusted/MirSemantics/Step",
+        description="evalRodataRefConstV2 rejects mutable *mut T raw pointer over .rodata as unsupported",
+        anchor=(
+            "    | .rawPtr reqMut pt, none =>\n"
+            "      if isUnsizedTy pt then\n"
+            "        .error .unsupported\n"
+            "      else if Mutability.beq reqMut .mut then\n"
+            "        .error .unsupported"
+        ),
+        replacement=(
+            "    | .rawPtr reqMut pt, none =>\n"
+            "      if isUnsizedTy pt then\n"
+            "        .error .unsupported\n"
+            "      else if false then\n"
+            "        .error .unsupported"
+        ),
+        fixture_module="StepRefutations",
+        theorem_name="refute_step_v2_rodata_raw_ptr_mut",
+        needs_wf_helper=False,
+    ),
+    MirSemanticsGuard(
+        guard_id="step_v2_rodata_raw_slice_mut",
+        target_file="trusted/lean/Trusted/MirSemantics/Step.lean",
+        target_module="Trusted/MirSemantics/Step",
+        description="evalRodataRefConstV2 rejects mutable *mut [T] raw slice over .rodata as unsupported",
+        anchor=(
+            "    | .rawPtr reqMut (.slice _), some len =>\n"
+            "      if !Nat.blt len (Nat.pow 2 64) then\n"
+            "        .error .unsupported\n"
+            "      else if Mutability.beq reqMut .mut then\n"
+            "        .error .unsupported"
+        ),
+        replacement=(
+            "    | .rawPtr reqMut (.slice _), some len =>\n"
+            "      if !Nat.blt len (Nat.pow 2 64) then\n"
+            "        .error .unsupported\n"
+            "      else if false then\n"
+            "        .error .unsupported"
+        ),
+        fixture_module="StepRefutations",
+        theorem_name="refute_step_v2_rodata_raw_slice_mut",
+        needs_wf_helper=False,
+    ),
+    MirSemanticsGuard(
+        guard_id="step_v2_array_eq_dangling_ref",
+        target_file="trusted/lean/Trusted/MirSemantics/Step.lean",
+        target_module="Trusted/MirSemantics/Step",
+        description="CoreCallOp.arrayEq validates reference operands via refValidInMem",
+        anchor=(
+            "      match refValidInMem m m1 (.array elem len) (.ptr p1),\n"
+            "          refValidInMem m m2 (.array elem len) (.ptr p2) with\n"
+            "      | .error k, _ => .error k"
+        ),
+        replacement=(
+            "      match (Except.ok () : Except FaultKind Unit),\n"
+            "          refValidInMem m m2 (.array elem len) (.ptr p2) with\n"
+            "      | .error k, _ => .error k"
+        ),
+        fixture_module="StepRefutations",
+        theorem_name="refute_step_v2_array_eq_dangling_ref",
+        needs_wf_helper=False,
+    ),
+    MirSemanticsGuard(
+        guard_id="step_v2_return_rodata_unsupported",
+        target_file="trusted/lean/Trusted/MirSemantics/Step.lean",
+        target_module="Trusted/MirSemantics/Step",
+        description="evalTerminatorV2 .return_ faults .unsupported when returning a callee .rodata ref or raw pointer",
+        anchor=(
+            "          if hasEscapingRodataPtr callerMem mem retTy retVal then\n"
+            "            .fault .unsupported"
+        ),
+        replacement=(
+            "          if false then\n"
+            "            .fault .unsupported"
+        ),
+        fixture_module="StepRefutations",
+        theorem_name="refute_step_v2_return_rodata_unsupported",
+        needs_wf_helper=False,
     ),
     MirSemanticsGuard(
         guard_id="boundary_v2_wellformed_forbids_faults",

@@ -34,6 +34,7 @@ abbrev TyId := Nat
 inductive RefProjectionElem where
   | deref
   | field (fieldIdx : FieldIdx) (ty : TyId)
+  | constantIndex (offset : Nat) (minLength : Nat) (fromEnd : Bool)
   | unsupported
 
 /-- Reference MIR place (`Miri.MIR.Place`). -/
@@ -62,6 +63,8 @@ inductive RefRvalue where
   | ref (mutability : Mutability) (place : RefPlace)
   | addressOf (mutability : Mutability) (place : RefPlace)
   | aggregateTuple (fields : List RefOperand)
+  | aggregateArray (elemTy : TyId) (elems : List RefOperand)
+  | repeat_ (op : RefOperand) (elemTy : TyId) (count : Nat)
   | useRetag (op : RefOperand)
   | aggregateRangeTo (elemTy : TyId) (endOp : RefOperand)
   | aggregateRangeFrom (elemTy : TyId) (startOp : RefOperand)
@@ -187,6 +190,7 @@ mutual
     | .ref m p => insertTy (.ref m p) (collectTy acc p)
     | .rawPtr m p => insertTy (.rawPtr m p) (collectTy acc p)
     | .slice elem => insertTy (.slice elem) (collectTy acc elem)
+    | .array elem len => insertTy (.array elem len) (collectTy acc elem)
     | .rangeTo elem => insertTy (.rangeTo elem) (collectTy acc elem)
     | .rangeFrom elem => insertTy (.rangeFrom elem) (collectTy acc elem)
     | .tuple fs => insertTy (.tuple fs) (collectTyList acc fs)
@@ -222,7 +226,7 @@ noncomputable def mapOption {α β : Type} (f : α → Option β) :
 noncomputable def collectProjElem (acc : List MirTy) :
     ProjectionElem → List MirTy
   | .field _ ty => collectTy acc ty
-  | .deref | .unsupported => acc
+  | .deref | .constantIndex _ _ _ | .unsupported => acc
 
 /-- Intern all `MirTy` descriptors carried in `p.projection`. -/
 noncomputable def collectPlace (acc : List MirTy) (p : Place) : List MirTy :=
@@ -242,6 +246,8 @@ noncomputable def collectRvalue (acc : List MirTy) : Rvalue → List MirTy
   | .discriminant p | .ref _ p | .addressOf _ p => collectPlace acc p
   | .useRetag op => collectOperand acc op
   | .aggregateTuple ops => ops.foldl collectOperand acc
+  | .aggregateArray elemTy ops => collectTy (ops.foldl collectOperand acc) elemTy
+  | .repeat_ op elemTy _ => collectTy (collectOperand acc op) elemTy
   | .aggregateRangeTo elemTy endOp => collectTy (collectOperand acc endOp) elemTy
   | .aggregateRangeFrom elemTy startOp =>
     collectTy (collectOperand acc startOp) elemTy
@@ -284,6 +290,7 @@ noncomputable def encodeProjElem (ts : List MirTy) :
     ProjectionElem → RefProjectionElem
   | .deref => .deref
   | .field idx ty => .field idx (lookupTyId ts ty)
+  | .constantIndex off minLen fromEnd => .constantIndex off minLen fromEnd
   | .unsupported => .unsupported
 
 /-- Encode a `Place` against type table `ts`. -/
@@ -307,6 +314,10 @@ noncomputable def encodeRvalue (ts : List MirTy) : Rvalue → RefRvalue
   | .ref m p => .ref m (encodePlace ts p)
   | .addressOf m p => .addressOf m (encodePlace ts p)
   | .aggregateTuple ops => .aggregateTuple (ops.map (encodeOperand ts))
+  | .aggregateArray elemTy ops =>
+    .aggregateArray (lookupTyId ts elemTy) (ops.map (encodeOperand ts))
+  | .repeat_ op elemTy count =>
+    .repeat_ (encodeOperand ts op) (lookupTyId ts elemTy) count
   | .aggregateRangeTo elemTy endOp =>
     .aggregateRangeTo (lookupTyId ts elemTy) (encodeOperand ts endOp)
   | .aggregateRangeFrom elemTy startOp =>
@@ -366,6 +377,8 @@ noncomputable def decodeProjElem (ts : List MirTy) :
   | .deref => some .deref
   | .field idx tyId =>
     optMap (ProjectionElem.field idx) (MirSemantics.getElem? ts tyId)
+  | .constantIndex off minLen fromEnd =>
+    some (.constantIndex off minLen fromEnd)
   | .unsupported => some .unsupported
 
 /-- Decode a `RefPlace` against type table `ts`. -/
@@ -394,6 +407,12 @@ noncomputable def decodeRvalue (ts : List MirTy) : RefRvalue → Option Rvalue
   | .addressOf m p => optMap (Rvalue.addressOf m) (decodePlace ts p)
   | .aggregateTuple ops =>
     optMap Rvalue.aggregateTuple (mapOption (decodeOperand ts) ops)
+  | .aggregateArray tyId ops =>
+    optMap2 Rvalue.aggregateArray
+      (MirSemantics.getElem? ts tyId) (mapOption (decodeOperand ts) ops)
+  | .repeat_ op tyId count =>
+    optMap2 (fun op' ty' => .repeat_ op' ty' count)
+      (decodeOperand ts op) (MirSemantics.getElem? ts tyId)
   | .aggregateRangeTo tyId endOp =>
     optMap2 Rvalue.aggregateRangeTo
       (MirSemantics.getElem? ts tyId) (decodeOperand ts endOp)

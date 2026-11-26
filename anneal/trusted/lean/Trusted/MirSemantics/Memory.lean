@@ -86,6 +86,21 @@ noncomputable def replaceAllocation (a' : Allocation) :
     if Nat.beq a.allocId a'.allocId then a' :: rest
     else a :: replaceAllocation a' rest
 
+/-- Allocate an immutable (`.shared`) `.rodata` memory block in `m` preserving
+per-byte initialization (including `.uninit` holes), returning the updated
+memory and fresh `AllocId`. -/
+noncomputable def allocRodataMemory (m : MemoryState) (bytes : List AllocByte)
+    (alignLog2 : Nat) : MemoryState × AllocId :=
+  let (m', id) := m.reserveAllocId
+  let alloc : Allocation := {
+    allocId := id
+    bytes := bytes
+    alignLog2 := alignLog2
+    mutability := .shared
+    live := true
+  }
+  ({ m' with allocations := alloc :: m'.allocations }, id)
+
 /-- Allocate a fresh, mutable, uninitialized stack allocation of
 `layout.size` bytes and alignment `layout.alignLog2`, returning the place of
 its first byte. Matches `allocate` and `allocate_dyn` in

@@ -141,12 +141,20 @@ end BinOp
 
   Profile v2 executes it only from `usize`, and the result has no provenance
   (see the `.cast .intToPtr` arm of `evalRvalueV2`).
+- `.unsize` corresponds to
+  `CastKind::PointerCoercion(PointerCoercion::Unsize, _)` (Profile v2;
+  `compiler/rustc_middle/src/ty/adjustment.rs`, `rust-lang/rust`
+  `f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1`):
+
+  > "Unsize a pointer/reference value, e.g., `&[T; n]` to `&[T]`. Note that
+  > the source could be a thin or wide pointer."
 - `.unsupported` represents every other `CastKind` variant, causing
   $M_{\text{anneal}}$ to fail closed with `FaultKind.unsupported`. -/
 inductive CastKind where
   | intToInt
   | ptrToPtr
   | intToPtr
+  | unsize
   | unsupported
 
 /-- MIR unary operators (`rustc_middle::mir::UnOp` in
@@ -216,14 +224,18 @@ Constructor correspondence:
 - `.addressOf mutability place` corresponds to `Rvalue::RawPtr(kind, place)`.
 - `.aggregateTuple fields` corresponds to
   `Rvalue::Aggregate(AggregateKind::Tuple, fields)`.
+- `.aggregateArray elemTy elems` corresponds to
+  `Rvalue::Aggregate(AggregateKind::Array(elemTy), elems)` (Profile v2).
+- `.repeat_ op elemTy count` corresponds to `Rvalue::Repeat(op, count)`
+  (Profile v2).
 - `.aggregateRangeTo elemTy endOp` and `.aggregateRangeFrom elemTy startOp`
   correspond to `Rvalue::Aggregate(AggregateKind::Adt, ..)` constructing
   `core::ops::RangeTo { end }` and `core::ops::RangeFrom { start }`
   (Profile v2).
 - `.useRetag op` corresponds to a retagging `Use(op, WithRetag::Yes)` of a
   type that is not retag-free.
-- `.unsupported` represents all other `Rvalue` variants (`Repeat`,
-  `ThreadLocalRef`, other `Aggregate`s (including direct fieldless
+- `.unsupported` represents all other `Rvalue` variants (`ThreadLocalRef`,
+  other `Aggregate`s (including direct fieldless
   enum construction `Rvalue::Aggregate(AggregateKind::Adt, [])`, which is
   intentionally out of scope and lowers fail-closed to `.unsupported` in favor
   of constant and discriminant operations), `CopyForDeref`,
@@ -239,6 +251,8 @@ inductive Rvalue where
   | ref (mutability : Mutability) (place : Place)
   | addressOf (mutability : Mutability) (place : Place)
   | aggregateTuple (fields : List Operand)
+  | aggregateArray (elemTy : MirTy) (elems : List Operand)
+  | repeat_ (op : Operand) (elemTy : MirTy) (count : Nat)
   | aggregateRangeTo (elemTy : MirTy) (endOp : Operand)
   | aggregateRangeFrom (elemTy : MirTy) (startOp : Operand)
   | unsupported

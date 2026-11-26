@@ -77,7 +77,8 @@ open Anneal.MirWp Anneal.Core
     match r.ret with
     | .scalar s => Nat.beq s.bits.toNat n
     | .ptr _ | .slicePtr _ _ | .rangeTo _ | .rangeFrom _ | .bool _ | .char _
-    | .ordering _ | .unit | .enumVal _ _ | .tuple _ | .bytes _ => false
+    | .ordering _ | .unit | .enumVal _ _ | .tuple _ | .array _
+    | .bytes _ => false
   | .unwound _ => false
 
 /-- Four-block `u32` countdown-sum loop `fn sum_to(n: u32) -> u32`:

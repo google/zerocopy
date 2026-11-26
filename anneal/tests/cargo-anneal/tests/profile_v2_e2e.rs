@@ -53,6 +53,9 @@ const GUARDED_SPEC: &str = include_str!("fixtures/profile_v2_overflow/GuardedSpe
 const GUARDED_PROOF: &str = include_str!("fixtures/profile_v2_overflow/GuardedProof.lean");
 const WRAPPING_SPEC: &str = include_str!("fixtures/profile_v2_overflow/WrappingSpec.lean");
 const WRAPPING_PROOF: &str = include_str!("fixtures/profile_v2_overflow/WrappingProof.lean");
+const ARRAYS_LIB: &str = include_str!("fixtures/profile_v2_arrays/lib.rs");
+const ARRAYS_SPEC: &str = include_str!("fixtures/profile_v2_arrays/Spec.lean");
+const ARRAYS_PROOF: &str = include_str!("fixtures/profile_v2_arrays/Proof.lean");
 
 const ZEROCOPY_SOURCE_FILES: &[&str] = &[
     "byte_slice.rs",
@@ -601,4 +604,135 @@ fn rejects_wrapping_add_proof_with_overflow_checks() {
     let (capture_json, lean) = captured_overflow_case(dir.path(), name);
     assert_eq!(capture_json["configuration"]["overflow_checks"], true, "{capture_json}");
     assert!(lean.contains(OVERFLOW_ADD_ASSERT), "{lean}");
+}
+
+/// Verifies fixed-size arrays `[T; N]`, `Repeat`, `ConstantIndex`, `Unsize`
+/// (`&[u8; 3] -> &[u8]`), `.rodata` array constants, projected
+/// `Rvalue::Discriminant` (`discriminant(*a)`), `int::to_le_bytes`, and
+/// `<[u8; 4] as PartialEq>::eq` under `UnitTheoremV2` (`["propext"]`, zero
+/// taint), plus four functional spec mismatch rejections and a capture-level
+/// rejection for dynamic array indexing.
+#[test]
+fn verifies_profile_v2_arrays_and_rejects_unsound_specs() {
+    let dir = TempDir::new().unwrap();
+    let rust_dir = dir.path().join("rust");
+    let lean_dir = dir.path().join("lean");
+    fs::create_dir_all(&rust_dir).unwrap();
+    fs::create_dir_all(&lean_dir).unwrap();
+
+    fs::write(rust_dir.join("lib.rs"), ARRAYS_LIB).unwrap();
+    fs::write(lean_dir.join("Spec.lean"), ARRAYS_SPEC).unwrap();
+    fs::write(lean_dir.join("Proof.lean"), ARRAYS_PROOF).unwrap();
+
+    let request = json!({
+        "schema_version": 1,
+        "compilation": {
+            "source_root": rust_dir.to_str().unwrap(),
+            "crate_root": "lib.rs",
+            "crate_name": "profile_v2_arrays",
+            "edition": "2021",
+            "target": "x86_64-unknown-linux-gnu",
+            "cfg": [],
+            "source_files": ["lib.rs"]
+        },
+        "scope": {
+            "kind": "selected_unit",
+            "roots": [
+                "pack_le_rev",
+                "repeat_unsize_len",
+                "tag_eq",
+                "matches_pattern"
+            ]
+        },
+        "proof": {
+            "source_root": lean_dir.to_str().unwrap(),
+            "specification": "Spec.specs",
+            "theorem": "Proof.verify",
+            "sources": [
+                {"module": "Spec", "path": "Spec.lean", "role": "specification"},
+                {"module": "Proof", "path": "Proof.lean", "role": "proof"}
+            ]
+        }
+    });
+
+    let ok = run_request(dir.path(), "arrays-ok", &request);
+    ok.expect_ok("selected_unit_verified");
+    ok.expect_profile_v2_assumptions();
+    let capture_json: Value = serde_json::from_slice(
+        &fs::read(dir.path().join("artifacts-arrays-ok/capture/capture.json")).unwrap(),
+    )
+    .unwrap();
+    assert_eq!(capture_json["program"]["mir_profile_version"], 2, "{capture_json}");
+
+    // Negative 1: wrong byte order in `pack_le_rev` spec.
+    let bad_pack = ARRAYS_SPEC.replace(
+        "⟨.array [.scalar ⟨.i8, false, hi⟩, .scalar ⟨.i8, false, lo⟩], q.callerMem⟩",
+        "⟨.array [.scalar ⟨.i8, false, lo⟩, .scalar ⟨.i8, false, hi⟩], q.callerMem⟩",
+    );
+    assert_ne!(bad_pack, ARRAYS_SPEC);
+    fs::write(lean_dir.join("Spec.lean"), bad_pack).unwrap();
+    run_request(dir.path(), "arrays-wrong-le-order", &request).expect_proof_failed();
+
+    // Negative 2: wrong slice length in `repeat_unsize_len` spec.
+    let bad_len = ARRAYS_SPEC.replace(
+        "⟨.scalar ⟨.isize, false, BitVec.ofNat 128 3⟩, q.callerMem⟩",
+        "⟨.scalar ⟨.isize, false, BitVec.ofNat 128 4⟩, q.callerMem⟩",
+    );
+    assert_ne!(bad_len, ARRAYS_SPEC);
+    fs::write(lean_dir.join("Spec.lean"), bad_len).unwrap();
+    run_request(dir.path(), "arrays-wrong-repeat-len", &request).expect_proof_failed();
+
+    // Negative 3: inverted boolean result in `tag_eq` spec.
+    let bad_tag = ARRAYS_SPEC.replace(
+        "⟨.bool (Nat.beq ba.toNat bb.toNat), q.callerMem⟩",
+        "⟨.bool (!(Nat.beq ba.toNat bb.toNat)), q.callerMem⟩",
+    );
+    assert_ne!(bad_tag, ARRAYS_SPEC);
+    fs::write(lean_dir.join("Spec.lean"), bad_tag).unwrap();
+    run_request(dir.path(), "arrays-wrong-tag-eq", &request).expect_proof_failed();
+
+    // Negative 4: wrong `.rodata` pattern byte in `matches_pattern` spec.
+    let bad_pat = ARRAYS_SPEC.replace(
+        "Nat.beq b3.toNat 4",
+        "Nat.beq b3.toNat 5",
+    );
+    assert_ne!(bad_pat, ARRAYS_SPEC);
+    fs::write(lean_dir.join("Spec.lean"), bad_pat).unwrap();
+    run_request(dir.path(), "arrays-wrong-rodata-pattern", &request)
+        .expect_proof_failed();
+
+    // Negative 5 (capture): dynamic array indexing (`PlaceElem::Index`) is
+    // refused fail-closed at capture time.
+    fs::write(
+        rust_dir.join("lib.rs"),
+        "pub fn dyn_idx(a: &[u8; 4], i: usize) -> u8 { a[i] }\n",
+    )
+    .unwrap();
+    let bad_req = json!({
+        "schema_version": 1,
+        "compilation": {
+            "source_root": rust_dir.to_str().unwrap(),
+            "crate_root": "lib.rs",
+            "crate_name": "profile_v2_arrays",
+            "edition": "2021",
+            "target": "x86_64-unknown-linux-gnu",
+            "cfg": [],
+            "source_files": ["lib.rs"]
+        },
+        "scope": {
+            "kind": "selected_unit",
+            "roots": ["dyn_idx"]
+        },
+        "proof": {
+            "source_root": lean_dir.to_str().unwrap(),
+            "specification": "Spec.specs",
+            "theorem": "Proof.verify",
+            "sources": [
+                {"module": "Spec", "path": "Spec.lean", "role": "specification"},
+                {"module": "Proof", "path": "Proof.lean", "role": "proof"}
+            ]
+        }
+    });
+    run_request(dir.path(), "arrays-dyn-index-refused", &bad_req)
+        .expect_capture_refused("unsupported place projection `Index(");
 }

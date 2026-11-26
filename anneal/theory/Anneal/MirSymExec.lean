@@ -131,6 +131,7 @@ private theorem mirTyListEqExact_eq
       | .ref _ _, .ref _ _ => none
       | .rawPtr _ _, .rawPtr _ _ => none
       | .slice _, .slice _ => none
+      | .array _ _, .array _ _ => none
       | .rangeTo _, .rangeTo _ => none
       | .rangeFrom _, .rangeFrom _ => none
       | _, _ => some false)
@@ -150,6 +151,7 @@ private theorem mirTyListEqExact_eq
       | .rawPtr m1 p1, .rawPtr m2 p2 =>
         if mutabilityBeqComp m1 m2 then ih p1 p2 else some false
       | .slice e1, .slice e2 => ih e1 e2
+      | .array _ _, .array _ _ => none
       | .rangeTo e1, .rangeTo e2 => ih e1 e2
       | .rangeFrom e1, .rangeFrom e2 => ih e1 e2
       | .unsupported, .unsupported => some true
@@ -262,6 +264,8 @@ theorem mirTyEqExact_eq :
       cases b with
       | slice e2 => exact mirTyEqExact_eq fuel e1 e2 r h
       | _ => cases h; rfl
+    | array _ _ =>
+      cases b <;> first | (cases h; rfl) | (change none = some r at h; cases h)
     | rangeTo e1 =>
       cases b with
       | rangeTo e2 => exact mirTyEqExact_eq fuel e1 e2 r h
@@ -557,7 +561,7 @@ theorem symScalar_eval_meta (env : SymEnv) :
     cases env id with
     | scalar sv => exact ⟨rfl, rfl, scalarWf_of_truncateBitsComp w sg sv.bits⟩
     | ptr _ | slicePtr _ _ | bool _ | char _ | ordering _ | unit | enumVal _ _
-    | tuple _ | bytes _ | rangeTo _ | rangeFrom _ =>
+    | tuple _ | array _ | bytes _ | rangeTo _ | rangeFrom _ =>
       exact ⟨rfl, rfl, by cases w <;> rfl⟩
   | .unOp op arg, hWf => by
     cases op with
@@ -1179,7 +1183,7 @@ theorem symScalar_toBvLin?_sound (w : IntWidth) (env : SymEnv) :
         rw [hW, truncateBitsComp_eq, toNat_truncateBits, intWidthModulus_eq_pow,
           bv_ofNat_mod]
       | ptr _ | slicePtr _ _ | bool _ | char _ | ordering _ | unit | enumVal _ _
-      | tuple _ | bytes _ | rangeTo _ | rangeFrom _ =>
+      | tuple _ | array _ | bytes _ | rangeTo _ | rangeFrom _ =>
         cases w <;> rfl
   | .unOp .neg a, e, hWf, h => by
     have h1 := (Bool.and_eq_true _ _).mp hWf
@@ -1916,7 +1920,7 @@ private theorem symBoolOfBinOpResult_eval (env : SymEnv) (op : BinOp)
       rw [eval_symBool_bin_lits, hR]
       rfl
     | ptr _ | slicePtr _ _ | scalar _ | char _ | ordering _ | unit | enumVal _ _
-    | tuple _ | bytes _ | rangeTo _ | rangeFrom _ =>
+    | tuple _ | array _ | bytes _ | rangeTo _ | rangeFrom _ =>
       rfl
 
 private theorem symBool_simplify_bin_eval (env : SymEnv) (op : BinOp)
@@ -2277,7 +2281,7 @@ theorem symVal_asScalar?_sound {v : SymVal} {s : SymScalar}
   | conc c =>
     cases c with
     | ptr _ | slicePtr _ _ | bool _ | char _ | ordering _ | unit | enumVal _ _
-    | tuple _ | bytes _ | rangeTo _ | rangeFrom _ =>
+    | tuple _ | array _ | bytes _ | rangeTo _ | rangeFrom _ =>
       cases h
     | scalar sv =>
       dsimp only [SymVal.asScalar?] at h
@@ -2309,7 +2313,7 @@ theorem symVal_asBool?_sound {v : SymVal} {b : SymBool}
   | conc c =>
     cases c with
     | ptr _ | slicePtr _ _ | scalar _ | char _ | ordering _ | unit | enumVal _ _
-    | tuple _ | bytes _ | rangeTo _ | rangeFrom _ =>
+    | tuple _ | array _ | bytes _ | rangeTo _ | rangeFrom _ =>
       cases h
     | bool b0 =>
       dsimp only [SymVal.asBool?] at h
@@ -2792,7 +2796,7 @@ theorem symCastIntToInt_sound {v res : SymVal} {castTy : MirTy}
         dsimp only [evalIntToIntCast, intLikeBits]
         cases (s.eval env).signed <;> rfl
       | bool | unit | never | char | ordering | enum _ | tuple _
-      | ref _ _ | rawPtr _ _ | slice _ | rangeTo _ | rangeFrom _
+      | ref _ _ | rawPtr _ _ | slice _ | array _ _ | rangeTo _ | rangeFrom _
       | unsupported => cases h
 
 /-- Symbolic local slot (uninitialized/initialized immediate or dead; indirect
@@ -2823,7 +2827,8 @@ theorem liveSymUninitSlot_eval (env : SymEnv) (ty : MirTy) :
     rw [isZstEnumTyComp_eq]
     cases isZstEnumTy ety <;> rfl
   | bool | int _ _ | char | ordering | unit | never | tuple _ | ref _ _
-  | rawPtr _ _ | slice _ | rangeTo _ | rangeFrom _ | unsupported => rfl
+  | rawPtr _ _ | slice _ | array _ _ | rangeTo _ | rangeFrom _
+  | unsupported => rfl
 
 /-- Symbolic single-frame MIR execution state (always at `defId = 0`, `mem =
 entryMemory`, `callerMem = ⟨[]⟩`). -/
@@ -3043,11 +3048,12 @@ theorem symRvalue_sound {tys : List MirTy} {ls ls' : List SymSlot}
     evalRvalue tys (ls.map (SymSlot.eval env)) entryMemory dst rv =
       .ok (v.eval env, ls'.map (SymSlot.eval env), entryMemory) := by
   cases rv with
-  | ref _ _ | addressOf _ _ | aggregateTuple _ | useRetag _
-  | aggregateRangeTo _ _ | aggregateRangeFrom _ _ | unsupported => cases h
+  | ref _ _ | addressOf _ _ | aggregateTuple _ | aggregateArray _ _
+  | repeat_ _ _ _ | useRetag _ | aggregateRangeTo _ _ | aggregateRangeFrom _ _
+  | unsupported => cases h
   | cast ck a castTy =>
     cases ck with
-    | ptrToPtr | intToPtr | unsupported => cases h
+    | ptrToPtr | intToPtr | unsize | unsupported => cases h
     | intToInt =>
       dsimp only [symRvalue] at h
       cases ho : symOperand tys ls a with
@@ -3219,7 +3225,8 @@ theorem symRvalue_sound {tys : List MirTy} {ls ls' : List SymSlot}
                                   | none => rw [hDisc] at hE; cases hE
                                   | some _ => rw [hDisc] at hE; cases hE; rfl
                               | ptr _ | slicePtr _ _ | scalar _ | bool _ | char _ | ordering _
-                              | unit | tuple _ | bytes _ | rangeTo _ | rangeFrom _ =>
+                              | unit | tuple _ | array _ | bytes _
+                              | rangeTo _ | rangeFrom _ =>
                                 intro hE; dsimp only at hE; cases hE
                             | scalar _ _ =>
                               cases v0 with
@@ -3236,7 +3243,8 @@ theorem symRvalue_sound {tys : List MirTy} {ls ls' : List SymSlot}
                                   | none => rw [hDisc] at hE; cases hE
                                   | some _ => rw [hDisc] at hE; cases hE; rfl
                               | ptr _ | slicePtr _ _ | scalar _ | bool _ | char _ | ordering _
-                              | unit | tuple _ | bytes _ | rangeTo _ | rangeFrom _ =>
+                              | unit | tuple _ | array _ | bytes _
+                              | rangeTo _ | rangeFrom _ =>
                                 intro hE; dsimp only at hE; cases hE
                 | ordering =>
                   rw [ht, hs] at h
@@ -3258,9 +3266,11 @@ theorem symRvalue_sound {tys : List MirTy} {ls ls' : List SymSlot}
                         cases v0 with
                         | ordering ord => cases hEv; rfl
                         | ptr _ | slicePtr _ _ | scalar _ | bool _ | char _ | unit | enumVal _ _
-                        | tuple _ | bytes _ | rangeTo _ | rangeFrom _ => cases hEv
+                        | tuple _ | array _ | bytes _ | rangeTo _
+                        | rangeFrom _ => cases hEv
                 | bool | int _ _ | char | unit | never | tuple _ | ref _ _
-                | rawPtr _ _ | slice _ | rangeTo _ | rangeFrom _ | unsupported =>
+                | rawPtr _ _ | slice _ | array _ _ | rangeTo _ | rangeFrom _
+                | unsupported =>
                   rw [ht, hs] at h; cases h
 
 /-- Symbolic `evalStatement`. -/
@@ -3555,7 +3565,7 @@ theorem symTerminator_step {body : Body} {bb : BasicBlock}
               rw [hSw]
               rfl
           | ptr _ | slicePtr _ _ | ordering _ | unit | enumVal _ _ | tuple _
-          | bytes _ | rangeTo _ | rangeFrom _ =>
+          | array _ | bytes _ | rangeTo _ | rangeFrom _ =>
             dsimp only at h
             cases hB : targets.branches.isEmpty with
             | false => rw [hB] at h; cases h
@@ -3632,7 +3642,7 @@ theorem symTerminator_ret {body : Body} {bb : BasicBlock} {s : SymState}
             cases hSw : evalCharSwitchBranchesComp c targets.otherwise
                 targets.branches <;> (rw [hSw] at h; cases h)
           | ptr _ | slicePtr _ _ | ordering _ | unit | enumVal _ _ | tuple _
-          | bytes _ | rangeTo _ | rangeFrom _ =>
+          | array _ | bytes _ | rangeTo _ | rangeFrom _ =>
             dsimp only at h
             cases hbE : targets.branches.isEmpty with
             | true => rw [hbE, ite_prop_true (rfl : true = true)] at h; cases h
@@ -4120,7 +4130,7 @@ private theorem symBoolBranches_wf {b : SymBool} (hb : b.wf = true)
     | ok v =>
       cases v with
       | ptr _ | slicePtr _ _ | scalar _ | char _ | ordering _ | unit
-      | enumVal _ _ | tuple _ | bytes _ | rangeTo _ | rangeFrom _ =>
+      | enumVal _ _ | tuple _ | array _ | bytes _ | rangeTo _ | rangeFrom _ =>
         rw [hLit] at h; cases h
       | bool caseBool =>
         rw [hLit] at h
@@ -4177,7 +4187,7 @@ private theorem symBoolBranches_sound {b : SymBool} (hb : b.wf = true)
     | ok v =>
       cases v with
       | ptr _ | slicePtr _ _ | scalar _ | char _ | ordering _ | unit
-      | enumVal _ _ | tuple _ | bytes _ | rangeTo _ | rangeFrom _ =>
+      | enumVal _ _ | tuple _ | array _ | bytes _ | rangeTo _ | rangeFrom _ =>
         rw [hLit] at h; cases h
       | bool caseBool =>
         rw [hLit] at h

@@ -928,12 +928,13 @@ theorem refValid_shared_of_mut {m : MemoryState} {pointee : MirTy} {v : Val}
             | Except.error k => Except.error k) = Except.ok ()
           rw [sliceCheck_shared_of_mut hS]
       | scalar _ | bool _ | char _ | ordering _ | unit | enumVal _ _
-      | ptr _ | rangeTo _ | rangeFrom _ | bytes _ | tuple _ => cases h
+      | ptr _ | rangeTo _ | rangeFrom _ | bytes _ | tuple _
+      | array _ => cases h
     | bool | char | ordering | unit | tuple _ | slice _ | enum _ | unsupported
-    | ref _ _ | rawPtr _ _ | rangeTo _ | rangeFrom _ | never =>
+    | ref _ _ | rawPtr _ _ | rangeTo _ | rangeFrom _ | array _ _ | never =>
       cases v <;> cases h
   | int _ _ | bool | char | ordering | unit | tuple _ | enum _ | unsupported
-  | ref _ _ | rawPtr _ _ | rangeTo _ | rangeFrom _ | never =>
+  | ref _ _ | rawPtr _ _ | rangeTo _ | rangeFrom _ | array _ _ | never =>
     cases v with
     | ptr p =>
       dsimp only at h
@@ -964,7 +965,8 @@ theorem refValid_shared_of_mut {m : MemoryState} {pointee : MirTy} {v : Val}
                   !Mutability.beq a.mutability .mut) = false)]
             exact h4
     | scalar _ | bool _ | char _ | ordering _ | unit | enumVal _ _
-    | slicePtr _ _ | rangeTo _ | rangeFrom _ | bytes _ | tuple _ => cases h
+    | slicePtr _ _ | rangeTo _ | rangeFrom _ | bytes _ | tuple _
+    | array _ => cases h
 
 /-- Lift `refValidInMem` into boolean `refsValidInMem`. -/
 theorem refsValidInMem_of_refValid {m : MemoryState} {reqMut : Mutability}
@@ -1010,13 +1012,13 @@ theorem refsStayInCallerMem_of_refValid {cm : CallerMemory}
                 rw [hFind]
                 rfl
       | scalar _ | bool _ | char _ | ordering _ | unit | enumVal _ _
-      | ptr _ | rangeTo _ | rangeFrom _ | bytes _ | tuple _ =>
+      | ptr _ | rangeTo _ | rangeFrom _ | bytes _ | tuple _ | array _ =>
         unfold refValidInMem at h; cases h
     | bool | char | ordering | unit | tuple _ | slice _ | enum _ | unsupported
-    | ref _ _ | rawPtr _ _ | rangeTo _ | rangeFrom _ | never =>
+    | ref _ _ | rawPtr _ _ | rangeTo _ | rangeFrom _ | array _ _ | never =>
       cases v <;> (unfold refValidInMem at h; cases h)
   | int _ _ | bool | char | ordering | unit | tuple _ | enum _ | unsupported
-  | ref _ _ | rawPtr _ _ | rangeTo _ | rangeFrom _ | never =>
+  | ref _ _ | rawPtr _ _ | rangeTo _ | rangeFrom _ | array _ _ | never =>
     cases v with
     | ptr p =>
       cases p with
@@ -1039,7 +1041,7 @@ theorem refsStayInCallerMem_of_refValid {cm : CallerMemory}
               rw [hFind]
               rfl
     | scalar _ | bool _ | char _ | ordering _ | unit | enumVal _ _
-    | slicePtr _ _ | rangeTo _ | rangeFrom _ | bytes _ | tuple _ =>
+    | slicePtr _ _ | rangeTo _ | rangeFrom _ | bytes _ | tuple _ | array _ =>
       unfold refValidInMem at h; cases h
 
 /-- A single reference's access spans are trivially pairwise disjoint. -/
@@ -1070,13 +1072,13 @@ theorem spansDisjoint_single {reqMut : Mutability} {pt : MirTy} {v : Val} :
           | none => exact Nat.zero_le 1
           | some _ => exact Nat.le_refl 1
       | scalar _ | bool _ | char _ | ordering _ | unit | enumVal _ _
-      | ptr _ | rangeTo _ | rangeFrom _ | bytes _ | tuple _ =>
+      | ptr _ | rangeTo _ | rangeFrom _ | bytes _ | tuple _ | array _ =>
         exact Nat.zero_le 1
     | bool | char | ordering | unit | tuple _ | slice _ | enum _ | unsupported
-    | ref _ _ | rawPtr _ _ | rangeTo _ | rangeFrom _ | never =>
+    | ref _ _ | rawPtr _ _ | rangeTo _ | rangeFrom _ | array _ _ | never =>
       cases v <;> exact Nat.zero_le 1
   | int _ _ | bool | char | ordering | unit | tuple _ | enum _ | unsupported
-  | ref _ _ | rawPtr _ _ | rangeTo _ | rangeFrom _ | never =>
+  | ref _ _ | rawPtr _ _ | rangeTo _ | rangeFrom _ | array _ _ | never =>
     cases v with
     | ptr p =>
       dsimp only
@@ -1089,7 +1091,7 @@ theorem spansDisjoint_single {reqMut : Mutability} {pt : MirTy} {v : Val} :
           | none => exact Nat.zero_le 1
           | some _ => exact Nat.le_refl 1
     | scalar _ | bool _ | char _ | ordering _ | unit | enumVal _ _
-    | slicePtr _ _ | rangeTo _ | rangeFrom _ | bytes _ | tuple _ =>
+    | slicePtr _ _ | rangeTo _ | rangeFrom _ | bytes _ | tuple _ | array _ =>
       exact Nat.zero_le 1
 
 /-- Pairwise disjointness for two `&[u8]`/`&mut [u8]` subslice pointers from
@@ -1231,7 +1233,7 @@ theorem checkValV2_slice_u8_inv {reqMut : Mutability} {v : Val}
     | i8 | i16 | i32 | i64 | i128 => rw [hW] at h; cases h
     | isize => exact ⟨ptr, len, rfl, hW⟩
   | scalar _ | bool _ | char _ | ordering _ | unit | enumVal _ _ | ptr _
-  | rangeTo _ | rangeFrom _ | tuple _ | bytes _ => cases h
+  | rangeTo _ | rangeFrom _ | tuple _ | array _ | bytes _ => cases h
 
 /-- Field-level inversion for unsigned `.isize` `checkValV2 (.scalar s)`. -/
 theorem checkValV2_isize_fields {s : ScalarVal}
@@ -1259,7 +1261,8 @@ theorem checkValV2_isize_scalar {v : Val}
   cases v with
   | scalar s => exact ⟨s, rfl, checkValV2_isize_fields h⟩
   | bool _ | char _ | ordering _ | unit | enumVal _ _ | ptr _
-  | slicePtr _ _ | rangeTo _ | rangeFrom _ | bytes _ | tuple _ => cases h
+  | slicePtr _ _ | rangeTo _ | rangeFrom _ | bytes _ | tuple _
+  | array _ => cases h
 
 /-- Bitvector inversion for unsigned `.isize` `checkValV2 v`. -/
 theorem checkValV2_isize_inv {v : Val}
@@ -1699,8 +1702,96 @@ theorem evalRefRvalueV2_deref_ok {bodyLocals : List MirTy}
   rw [ite_bool_false (by rw [mirTy_beq_refl (.ref reqMut pt)]; rfl)]
   rw [hRef]
 
-/-- Evaluate `TerminatorKind.return_` on an initialized immediate `_0`. -/
-theorem evalTerminatorV2_return_ok {body : Body} {bb : BasicBlock}
+/-- If every allocation id in `ids` belongs to `cm`, none is a callee
+`.rodata` allocation. -/
+theorem anyRodataAllocId_false_of_all_in_caller {cm : CallerMemory}
+    {mem : MemoryState} :
+    ∀ (ids : List AllocId),
+      ids.all (fun aid => (findAllocation aid cm.allocations).isSome) = true →
+      anyRodataAllocId cm mem ids = false
+  | [], _ => rfl
+  | aid :: rest, hAll => by
+    change ((findAllocation aid cm.allocations).isSome &&
+      rest.all (fun a => (findAllocation a cm.allocations).isSome)) = true
+      at hAll
+    cases hFind : findAllocation aid cm.allocations with
+    | none => rw [hFind] at hAll; cases hAll
+    | some _ =>
+      rw [hFind] at hAll
+      have hRest :
+          rest.all (fun a => (findAllocation a cm.allocations).isSome) =
+            true := hAll
+      unfold anyRodataAllocId isRodataAllocId
+      rw [hFind]
+      exact anyRodataAllocId_false_of_all_in_caller rest hRest
+
+mutual
+  /-- On types containing no raw pointers, `ptrOrRefAllocIds` agrees with
+  `refAllocIds`. -/
+  theorem ptrOrRefAllocIds_eq_refAllocIds_of_noRawPtr :
+      ∀ (ty : MirTy) (v : Val),
+        tyHasRawPtrV2 ty = false →
+        ptrOrRefAllocIds ty v = refAllocIds ty v
+    | .rawPtr _ _, _, hNoRaw => by cases hNoRaw
+    | .tuple ts, v, hNoRaw => by
+      cases v with
+      | tuple vs => exact ptrOrRefAllocIdsList_eq_refAllocIdsList ts vs hNoRaw
+      | scalar _ | bool _ | char _ | ordering _ | unit | enumVal _ _ | ptr _
+      | slicePtr _ _ | rangeTo _ | rangeFrom _ | array _ | bytes _ => rfl
+    | .array elem _, v, hNoRaw => by
+      cases v with
+      | array vs =>
+        exact ptrOrRefAllocIdsArray_eq_refAllocIdsArray elem vs hNoRaw
+      | scalar _ | bool _ | char _ | ordering _ | unit | enumVal _ _ | ptr _
+      | slicePtr _ _ | rangeTo _ | rangeFrom _ | tuple _ | bytes _ => rfl
+    | .ref _ pt, v, _ => by cases pt <;> cases v <;> rfl
+    | .int _ _, v, _ | .bool, v, _ | .char, v, _ | .ordering, v, _
+    | .unit, v, _ | .slice _, v, _ | .enum _, v, _ | .rangeTo _, v, _
+    | .rangeFrom _, v, _ | .unsupported, v, _ | .never, v, _ => by
+      cases v <;> rfl
+
+  theorem ptrOrRefAllocIdsList_eq_refAllocIdsList :
+      ∀ (ts : List MirTy) (vs : List Val),
+        tyListHasRawPtrV2 ts = false →
+        ptrOrRefAllocIdsList ts vs = refAllocIdsList ts vs
+    | [], [], _ => rfl
+    | [], _ :: _, _ => rfl
+    | _ :: _, [], _ => rfl
+    | t :: ts, v :: vs, hNoRaw => by
+      change (tyHasRawPtrV2 t || tyListHasRawPtrV2 ts) = false at hNoRaw
+      cases ht : tyHasRawPtrV2 t with
+      | true => rw [ht] at hNoRaw; cases hNoRaw
+      | false =>
+        rw [ht] at hNoRaw
+        unfold ptrOrRefAllocIdsList refAllocIdsList
+        rw [ptrOrRefAllocIds_eq_refAllocIds_of_noRawPtr t v ht,
+          ptrOrRefAllocIdsList_eq_refAllocIdsList ts vs hNoRaw]
+
+  theorem ptrOrRefAllocIdsArray_eq_refAllocIdsArray (elem : MirTy) :
+      ∀ (vs : List Val),
+        tyHasRawPtrV2 elem = false →
+        ptrOrRefAllocIdsArray elem vs = refAllocIdsArray elem vs
+    | [], _ => rfl
+    | v :: vs, hNoRaw => by
+      unfold ptrOrRefAllocIdsArray refAllocIdsArray
+      rw [ptrOrRefAllocIds_eq_refAllocIds_of_noRawPtr elem v hNoRaw,
+        ptrOrRefAllocIdsArray_eq_refAllocIdsArray elem vs hNoRaw]
+end
+
+/-- A raw-pointer-free return value whose references stay in `cm` cannot carry
+an escaping callee `.rodata` pointer. -/
+theorem hasEscapingRodataPtr_false_of_refsStay {cm : CallerMemory}
+    {mem : MemoryState} {ty : MirTy} {v : Val}
+    (hStay : refsStayInCallerMem cm ty v = true)
+    (hNoRaw : tyHasRawPtrV2 ty = false) :
+    hasEscapingRodataPtr cm mem ty v = false := by
+  unfold hasEscapingRodataPtr
+  rw [ptrOrRefAllocIds_eq_refAllocIds_of_noRawPtr ty v hNoRaw]
+  exact anyRodataAllocId_false_of_all_in_caller _ hStay
+
+/-- Evaluate `TerminatorKind.return_` on an initialized immediate `_0` given an
+explicit non-escaping `.rodata` witness. -/
+theorem evalTerminatorV2_return_ok_of_noRodata {body : Body} {bb : BasicBlock}
     {frame : FrameState} {mem : MemoryState} {callerMem : CallerMemory}
     {retTy : MirTy} {retVal : Val}
     (hTerm : bb.terminator = .return_)
@@ -1708,6 +1799,7 @@ theorem evalTerminatorV2_return_ok {body : Body} {bb : BasicBlock}
     (hRetTy : Trusted.MirSemantics.getElem? body.locals 0 = some retTy)
     (hRetSlot : Trusted.MirSemantics.getElem? frame.locals 0 =
       some (.immediate (some retVal)))
+    (hNoRodata : hasEscapingRodataPtr callerMem mem retTy retVal = false)
     (hStay : refsStayInCallerMem callerMem retTy retVal = true)
     (hValid : refsValidInMem mem retTy retVal = true)
     (hDisj : spansPairwiseDisjoint (refAccessSpans retTy retVal) = true) :
@@ -1718,7 +1810,28 @@ theorem evalTerminatorV2_return_ok {body : Body} {bb : BasicBlock}
   dsimp only
   rw [ite_bool_false hCleanup, hRetTy, hRetSlot]
   dsimp only
-  rw [ite_bool_false (by rw [hStay, hValid, hDisj]; rfl)]
+  rw [ite_bool_false hNoRodata,
+    ite_bool_false (by rw [hStay, hValid, hDisj]; rfl)]
+
+/-- Evaluate `TerminatorKind.return_` on an initialized immediate `_0` whose
+return type contains no raw pointers (`tyHasRawPtrV2 retTy = false`, discharged
+by `rfl` for concrete types). -/
+theorem evalTerminatorV2_return_ok {body : Body} {bb : BasicBlock}
+    {frame : FrameState} {mem : MemoryState} {callerMem : CallerMemory}
+    {retTy : MirTy} {retVal : Val}
+    (hTerm : bb.terminator = .return_)
+    (hCleanup : bb.cleanup = false)
+    (hRetTy : Trusted.MirSemantics.getElem? body.locals 0 = some retTy)
+    (hRetSlot : Trusted.MirSemantics.getElem? frame.locals 0 =
+      some (.immediate (some retVal)))
+    (hStay : refsStayInCallerMem callerMem retTy retVal = true)
+    (hValid : refsValidInMem mem retTy retVal = true)
+    (hDisj : spansPairwiseDisjoint (refAccessSpans retTy retVal) = true)
+    (hNoRaw : tyHasRawPtrV2 retTy = false := by rfl) :
+    evalTerminatorV2 body bb frame mem callerMem =
+      .done (.returned ⟨retVal, extractCallerMemory callerMem mem⟩) :=
+  evalTerminatorV2_return_ok_of_noRodata hTerm hCleanup hRetTy hRetSlot
+    (hasEscapingRodataPtr_false_of_refsStay hStay hNoRaw) hStay hValid hDisj
 
 end Anneal.MirWp
 

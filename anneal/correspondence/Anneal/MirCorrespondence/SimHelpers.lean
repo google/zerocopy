@@ -226,7 +226,7 @@ theorem auxTyOfCode_auxTyCode {ty : MirTy} {code : Nat}
   | int w s =>
     cases w <;> cases s <;> (injection h with hc; subst hc; rfl)
   | never | char | ordering | enum _ | tuple _ | ref _ _ | rawPtr _ _
-  | slice _ | rangeTo _ | rangeFrom _ | unsupported => cases h
+  | slice _ | array _ _ | rangeTo _ | rangeFrom _ | unsupported => cases h
 
 theorem indexOfTy_some_getElem? {ts : List MirTy} {ty : MirTy} {idx : TyId}
     (h : indexOfTy ts ty = some idx) :
@@ -406,7 +406,7 @@ theorem refHasPadding_ok (types : List MirTy) (ty : MirTy) :
   cases ty with
   | int w s => cases w <;> cases s <;> exact ⟨_, rfl⟩
   | bool | unit | never | char | ordering | ref _ _ | rawPtr _ _
-  | slice _ | rangeTo _ | rangeFrom _ | unsupported => exact ⟨_, rfl⟩
+  | slice _ | array _ _ | rangeTo _ | rangeFrom _ | unsupported => exact ⟨_, rfl⟩
   | enum ety =>
     dsimp only [refHasPadding, refLocalLayoutForTy, refLayoutDataForTy,
       refAsEnumTy?, refEnumLayoutData]
@@ -490,7 +490,7 @@ theorem slotMatchesTy_liveUninitSlot (ty : MirTy) :
   cases ty with
   | unit => rfl
   | bool | int _ _ | never | char | ordering | tuple _ | ref _ _ | rawPtr _ _
-  | slice _ | rangeTo _ | rangeFrom _ | unsupported =>
+  | slice _ | array _ _ | rangeTo _ | rangeFrom _ | unsupported =>
     exact ⟨fun h => (by cases h), fun _ h => (by cases h)⟩
   | enum ety =>
     dsimp only [liveUninitSlot]
@@ -785,13 +785,13 @@ theorem evalConstLit_checkVal {ty : MirTy} {lit : ConstLit} {v : Val}
     cases lit with
     | zeroSized =>
       injection h with hv; subst hv; rfl
-    | scalar _ => cases h
-  | never | tuple _ | ref _ _ | rawPtr _ _ | slice _ | rangeTo _ | rangeFrom _
-  | unsupported =>
+    | scalar _ | rodataBytes _ | rodataRef _ _ _ _ => cases h
+  | never | tuple _ | ref _ _ | rawPtr _ _ | slice _ | array _ _
+  | rangeTo _ | rangeFrom _ | unsupported =>
     cases lit <;> cases h
   | int w s =>
     cases lit with
-    | zeroSized => cases h
+    | zeroSized | rodataBytes _ | rodataRef _ _ _ _ => cases h
     | scalar bits =>
       dsimp only [evalConstLit] at h
       cases h_tr : (truncateBits w bits != bits) with
@@ -825,7 +825,7 @@ theorem evalConstLit_checkVal {ty : MirTy} {lit : ConstLit} {v : Val}
           cases h_tr
   | bool =>
     cases lit with
-    | zeroSized => cases h
+    | zeroSized | rodataBytes _ | rodataRef _ _ _ _ => cases h
     | scalar bits =>
       dsimp only [evalConstLit] at h
       cases h_tr : (truncateBits .i8 bits != bits) with
@@ -843,7 +843,7 @@ theorem evalConstLit_checkVal {ty : MirTy} {lit : ConstLit} {v : Val}
           | false => rw [h1] at h; cases h
   | char =>
     cases lit with
-    | zeroSized => cases h
+    | zeroSized | rodataBytes _ | rodataRef _ _ _ _ => cases h
     | scalar bits =>
       dsimp only [evalConstLit] at h
       cases h_tr : (truncateBits .i32 bits != bits) with
@@ -855,7 +855,7 @@ theorem evalConstLit_checkVal {ty : MirTy} {lit : ConstLit} {v : Val}
         | true => rw [h_u] at h; injection h with hv; subst hv; rfl
   | ordering =>
     cases lit with
-    | zeroSized => cases h
+    | zeroSized | rodataBytes _ | rodataRef _ _ _ _ => cases h
     | scalar bits =>
       dsimp only [evalConstLit] at h
       cases h_tr : (truncateBits .i8 bits != bits) with
@@ -867,6 +867,7 @@ theorem evalConstLit_checkVal {ty : MirTy} {lit : ConstLit} {v : Val}
         | some o => rw [h_o] at h; injection h with hv; subst hv; rfl
   | enum ety =>
     cases lit with
+    | rodataBytes _ | rodataRef _ _ _ _ => cases h
     | zeroSized =>
       dsimp only [evalConstLit] at h
       cases h_zst : isZstEnumTy ety with
@@ -1240,7 +1241,7 @@ theorem evalRvalue_slotsMatchTys {bodyLocals : List MirTy}
         exact evalPrimitiveOperand_slotsMatchTys h_inv h_op
   | cast k opnd castTy =>
     cases k with
-    | unsupported | ptrToPtr | intToPtr => cases h
+    | unsupported | ptrToPtr | intToPtr | unsize => cases h
     | intToInt =>
       dsimp only [evalRvalue] at h
       cases h_op : evalOperandToSlot bodyLocals locals mem isIntLikeTy opnd with
@@ -1301,6 +1302,7 @@ theorem evalRvalue_slotsMatchTys {bodyLocals : List MirTy}
               exact ⟨h_inv, rfl⟩
             | _ => cases h
   | useRetag _ | ref _ _ | addressOf _ _ | aggregateTuple _
+  | aggregateArray _ _ | repeat_ _ _ _
   | aggregateRangeTo _ _ | aggregateRangeFrom _ _ | unsupported => cases h
 
 theorem writePlace_slotsMatchTys {bodyLocals : List MirTy}

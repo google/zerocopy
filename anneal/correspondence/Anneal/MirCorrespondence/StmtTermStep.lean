@@ -417,7 +417,7 @@ theorem evalTerminator_step_inv {body : Body} {bb : BasicBlock}
         · cases h_step
         · injection h_step with h_eq
           refine ⟨_, h_eq.symm, rfl, h_inv₁, h_pc0 _ localsAfterDiscr⟩
-      | unit | enumVal _ _ | tuple _ | ptr _ | slicePtr _ _ | rangeTo _
+      | unit | enumVal _ _ | tuple _ | array _ | ptr _ | slicePtr _ _ | rangeTo _
       | rangeFrom _ | bytes _ | ordering _ =>
         dsimp only at h_step
         cases h_br : targets.branches with
@@ -700,7 +700,7 @@ theorem updateCacheLoop_rvalueCacheTouch (dstId : LocalId) (rv : Rvalue)
       dsimp only [rvalueCacheTouch]
       rw [h_f]
       exact updateCacheLoop_operandCacheTouch (cacheTouch cache dstId) op
-    | unsupported | ptrToPtr | intToPtr =>
+    | unsupported | ptrToPtr | intToPtr | unsize =>
       change updateCacheLoop (fun _ => false) 0 (cacheTouch cache dstId) =
         cacheTouch cache dstId
       exact updateCacheLoop_false _ 0 _ (fun _ _ => rfl)
@@ -717,7 +717,8 @@ theorem updateCacheLoop_rvalueCacheTouch (dstId : LocalId) (rv : Rvalue)
     change updateCacheLoop (fun _ => false) 0 (cacheTouch cache dstId) =
       cacheTouch cache dstId
     exact updateCacheLoop_false _ 0 _ (fun _ _ => rfl)
-  | aggregateTuple _ | useRetag _ | aggregateRangeTo _ _ | aggregateRangeFrom _ _ =>
+  | aggregateTuple _ | useRetag _ | aggregateRangeTo _ _
+  | aggregateRangeFrom _ _ | aggregateArray _ _ | repeat_ _ _ _ =>
     change updateCacheLoop (fun _ => false) 0 (cacheTouch cache dstId) =
       cacheTouch cache dstId
     exact updateCacheLoop_false _ 0 _ (fun _ _ => rfl)
@@ -2775,7 +2776,7 @@ private theorem switchInt_forIn_char (rp : RefProg) (c : Choice)
           · exact ih
           · rfl
         | scalar _ | ptr _ | slicePtr _ _ | rangeTo _ | rangeFrom _ | bool _
-        | ordering _ | unit | enumVal _ _ | tuple _ | bytes _ =>
+        | ordering _ | unit | enumVal _ _ | tuple _ | array _ | bytes _ =>
           exact False.elim h_cmp
 
 private theorem switchInt_forIn_pair (rp : RefProg) (c : Choice)
@@ -9664,6 +9665,10 @@ private theorem evalTerminator_ne_done_of_ne_return {body : Body} {bb : BasicBlo
       | slicePtr _ _ => rw [h_v] at h_ev; dsimp only at h_ev; cases h_brs : targets.branches <;> rw [h_brs] at h_ev <;> dsimp only at h_ev <;> cases h_ev
       | rangeTo _ => rw [h_v] at h_ev; dsimp only at h_ev; cases h_brs : targets.branches <;> rw [h_brs] at h_ev <;> dsimp only at h_ev <;> cases h_ev
       | rangeFrom _ => rw [h_v] at h_ev; dsimp only at h_ev; cases h_brs : targets.branches <;> rw [h_brs] at h_ev <;> dsimp only at h_ev <;> cases h_ev
+      | array _ =>
+        rw [h_v] at h_ev; dsimp only at h_ev
+        cases h_brs : targets.branches <;> rw [h_brs] at h_ev <;>
+          dsimp only at h_ev <;> cases h_ev
 
 private theorem array_push_size_sub_one {α : Type} (arr : Array α) (x : α) :
     (arr.push x).size - 1 = arr.size := by

@@ -1679,6 +1679,7 @@ partial def encodeBoundaryValBytes : Val → List (Option Nat)
       | some d => (encodeLeBytes (intByteSizeComp tagW) d).map some
       | none => []
   | .tuple fs => (fs.map encodeBoundaryValBytes).foldl List.append []
+  | .array elems => (elems.map encodeBoundaryValBytes).foldl List.append []
   | .ptr p => (encodeLeBytes 8 p.offsetBytes.toNat).map some
   | .slicePtr p len =>
     ((encodeLeBytes 8 p.offsetBytes.toNat) ++ (encodeLeBytes 8 len.toNat)).map some
@@ -1727,6 +1728,7 @@ partial def valRepr : Val → String
     | some d => "enum(" ++ scalarRepr ⟨ety.discrWidth, ety.discrSigned, BitVec.ofNat 128 d⟩ ++ ")"
     | none => "enum#" ++ toString v
   | .tuple fs => "(" ++ String.intercalate "," (fs.map valRepr) ++ ")"
+  | .array elems => "[" ++ String.intercalate "," (elems.map valRepr) ++ "]"
   | _ => "<other>"
 
 partial def valToJson : Val → String
@@ -1752,6 +1754,7 @@ partial def valToJson : Val → String
       ++ ",\"tag_bytes\":" ++ toString tb ++ "}"
   | .tuple fs =>
     "{\"kind\":\"tuple\",\"fields\":[" ++ String.intercalate "," (fs.map valToJson) ++ "]}"
+  | .array _ => "{\"kind\":\"other\"}"
   | _ => "{\"kind\":\"other\"}"
 
 def resolveTuplePath : MirTy → List Nat → Option MirTy
@@ -1840,6 +1843,7 @@ partial def valEq : Val → Val → Bool
   | .unit, .unit => true
   | .enumVal e1 v1, .enumVal e2 v2 => enumTyBeqComp e1 e2 && Nat.beq v1 v2
   | .tuple f1, .tuple f2 => listAllEq valEq f1 f2
+  | .array a1, .array a2 => listAllEq valEq a1 a2
   | .bytes b1, .bytes b2 => listAllEq allocByteEq b1 b2
   | _, _ => false
 
@@ -2082,10 +2086,11 @@ def operandHasDeref : Operand → Bool
 
 def rvalueHasDeref : Rvalue → Bool
   | .use op | .unaryOp _ op | .cast _ op _ | .useRetag op
-  | .aggregateRangeTo _ op | .aggregateRangeFrom _ op => operandHasDeref op
+  | .aggregateRangeTo _ op | .aggregateRangeFrom _ op
+  | .repeat_ op _ _ => operandHasDeref op
   | .binaryOp _ l r => operandHasDeref l || operandHasDeref r
   | .discriminant p | .ref _ p | .addressOf _ p => placeHasDeref p
-  | .aggregateTuple ops => ops.any operandHasDeref
+  | .aggregateTuple ops | .aggregateArray _ ops => ops.any operandHasDeref
   | .unsupported => false
 
 def operandReadyInFrame (bodyLocals : List MirTy) (locals : List LocalSlot)
@@ -2154,8 +2159,11 @@ def describeUndefinedStepFault (prog : Program) (frame : FrameState) (mem : Memo
               match coreOp with
               | .usizeUncheckedSub =>
                 "unchecked arithmetic overflow: Trusted.MirSemantics.FaultKind.undefined"
-              | .sliceGetUncheckedRangeTo | .sliceGetUncheckedRangeFrom | .ptrAdd _ _ | .sliceLen =>
+              | .sliceGetUncheckedRangeTo | .sliceGetUncheckedRangeFrom
+              | .ptrAdd _ _ | .sliceLen | .arrayEq _ _ =>
                 "pointer or memory access undefined: Trusted.MirSemantics.FaultKind.undefined"
+              | .intToLeBytes _ _ =>
+                "uninitialized or invalid value undefined: Trusted.MirSemantics.FaultKind.undefined"
             | .error _ =>
               "uninitialized or invalid value undefined: Trusted.MirSemantics.FaultKind.undefined"
         | .call _ argOps dstPlace _ _ | .sysrootCall _ argOps dstPlace _ _ =>

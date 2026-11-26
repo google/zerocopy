@@ -384,11 +384,13 @@ noncomputable def ValidEntryArgsV2 (body : Body) (q : Query) : Prop :=
   spansPairwiseDisjoint (refAccessSpansList paramTys q.args) = true
 
 mutual
-  /-- Return `true` when `ty` is a reference or a tuple containing one. Profile
-  v2 pointees never contain references or pointers (`isSupportedV2LocalTy`),
-  so only tuple nesting needs inspection. -/
+  /-- Return `true` when `ty` is a reference or a tuple/array containing one.
+  Profile v2 pointees never contain references or pointers
+  (`isSupportedV2LocalTy`), so only tuple and fixed-array nesting need
+  inspection. -/
   noncomputable def tyHasRefV2 : MirTy → Bool
     | .ref _ _ => true
+    | .array elem _ => tyHasRefV2 elem
     | .tuple fs => tyListHasRefV2 fs
     | _ => false
 
@@ -398,9 +400,11 @@ mutual
 end
 
 mutual
-  /-- Return `true` when `ty` is a raw pointer or a tuple containing one. -/
+  /-- Return `true` when `ty` is a raw pointer or a tuple/array containing
+  one. -/
   noncomputable def tyHasRawPtrV2 : MirTy → Bool
     | .rawPtr _ _ => true
+    | .array elem _ => tyHasRawPtrV2 elem
     | .tuple fs => tyListHasRawPtrV2 fs
     | _ => false
 

@@ -322,7 +322,7 @@ theorem layoutOfTy_props (ty : MirTy) (lay : MirSemantics.LayoutData)
             | cons _ _ => dsimp only [layoutOfTy] at h; cases h
           | _ => dsimp only [layoutOfTy] at h; cases h
       | _ => dsimp only [layoutOfTy] at h; cases h
-  | ref _ _ | rawPtr _ _ | slice _ | rangeTo _ | rangeFrom _
+  | ref _ _ | rawPtr _ _ | slice _ | array _ _ | rangeTo _ | rangeFrom _
   | unsupported =>
     dsimp only [layoutOfTy] at h; cases h
 
@@ -372,7 +372,7 @@ theorem zst_day1_alignLog2_zero (ty : MirTy) (lay : MirSemantics.LayoutData)
             | cons _ _ => dsimp only [layoutOfTy] at h; cases h
           | _ => dsimp only [layoutOfTy] at h; cases h
       | _ => dsimp only [layoutOfTy] at h; cases h
-  | ref _ _ | rawPtr _ _ | slice _ | rangeTo _ | rangeFrom _
+  | ref _ _ | rawPtr _ _ | slice _ | array _ _ | rangeTo _ | rangeFrom _
   | unsupported =>
     dsimp only [layoutOfTy] at h; cases h
 
@@ -2464,8 +2464,8 @@ theorem evalRefRvalueV2_requires_refValidInMem
                   | false => rw [h_esc, h_beq] at h_ref; cases h_ref
                   | true => rw [h_esc, h_beq] at h_ref; cases h_ref
               | bool | int _ _ | unit | never | char | ordering | enum _
-              | tuple _ | rawPtr _ _ | slice _ | rangeTo _ | rangeFrom _
-              | unsupported =>
+              | tuple _ | rawPtr _ _ | slice _ | array _ _ | rangeTo _
+              | rangeFrom _ | unsupported =>
                 dsimp only at h_ref; cases h_ref
             | immediate optVal =>
               rw [h_sl] at h_ref
@@ -2501,8 +2501,8 @@ theorem evalRefRvalueV2_requires_refValidInMem
                         rw [h_rv_eq, h_m_eq]
                         exact ⟨pt, MirTy.eq_of_beq h_beq, h_rv⟩
               | bool | int _ _ | unit | never | char | ordering | enum _
-              | tuple _ | rawPtr _ _ | slice _ | rangeTo _ | rangeFrom _
-              | unsupported =>
+              | tuple _ | rawPtr _ _ | slice _ | array _ _ | rangeTo _
+              | rangeFrom _ | unsupported =>
                 dsimp only at h_ref; cases h_ref
             | indirect mplace =>
               rw [h_sl] at h_ref
@@ -2543,10 +2543,11 @@ theorem evalRefRvalueV2_requires_refValidInMem
                           rw [h_rv_eq, h_m_eq]
                           exact ⟨pt, MirTy.eq_of_beq h_beq, h_rv⟩
               | bool | int _ _ | unit | never | char | ordering | enum _
-              | tuple _ | rawPtr _ _ | slice _ | rangeTo _ | rangeFrom _
-              | unsupported =>
+              | tuple _ | rawPtr _ _ | slice _ | array _ _ | rangeTo _
+              | rangeFrom _ | unsupported =>
                 dsimp only at h_ref; cases h_ref
-    | field _ _ | unsupported => rw [h_proj] at h_ref; cases h_ref
+    | field _ _ | constantIndex _ _ _ | unsupported =>
+      rw [h_proj] at h_ref; cases h_ref
 
 /-- `execCoreCallOp .sliceGetUncheckedRangeTo` rejects `.shared -> .mut`
 escalation, validates the input slice against `inMut`, and checks `[0..endOff]`
@@ -2596,13 +2597,16 @@ theorem execCoreCallOp_sliceGetUncheckedRangeTo_spec
           | true => dsimp only at h_op; cases h_op
         | i16 | i32 | i64 | i128 | isize => dsimp only at h_op; cases h_op
       | bool | unit | never | char | ordering | enum _ | tuple _ | ref _ _
-      | rawPtr _ _ | slice _ | rangeTo _ | rangeFrom _ | unsupported =>
+      | rawPtr _ _ | slice _ | array _ _ | rangeTo _ | rangeFrom _
+      | unsupported =>
         dsimp only at h_op; cases h_op
     | bool | int _ _ | unit | never | char | ordering | enum _ | tuple _
-    | ref _ _ | rawPtr _ _ | rangeTo _ | rangeFrom _ | unsupported =>
+    | ref _ _ | rawPtr _ _ | array _ _ | rangeTo _ | rangeFrom _
+    | unsupported =>
       dsimp only at h_op; cases h_op
   | bool | int _ _ | unit | never | char | ordering | enum _ | tuple _
-  | rawPtr _ _ | slice _ | rangeTo _ | rangeFrom _ | unsupported =>
+  | rawPtr _ _ | slice _ | array _ _ | rangeTo _ | rangeFrom _
+  | unsupported =>
     dsimp only at h_op; cases h_op
 
 /-- `execCoreCallOp .sliceGetUncheckedRangeFrom` rejects `.shared -> .mut`
@@ -2654,13 +2658,16 @@ theorem execCoreCallOp_sliceGetUncheckedRangeFrom_spec
           | true => dsimp only at h_op; cases h_op
         | i16 | i32 | i64 | i128 | isize => dsimp only at h_op; cases h_op
       | bool | unit | never | char | ordering | enum _ | tuple _ | ref _ _
-      | rawPtr _ _ | slice _ | rangeTo _ | rangeFrom _ | unsupported =>
+      | rawPtr _ _ | slice _ | array _ _ | rangeTo _ | rangeFrom _
+      | unsupported =>
         dsimp only at h_op; cases h_op
     | bool | int _ _ | unit | never | char | ordering | enum _ | tuple _
-    | ref _ _ | rawPtr _ _ | rangeTo _ | rangeFrom _ | unsupported =>
+    | ref _ _ | rawPtr _ _ | array _ _ | rangeTo _ | rangeFrom _
+    | unsupported =>
       dsimp only at h_op; cases h_op
   | bool | int _ _ | unit | never | char | ordering | enum _ | tuple _
-  | rawPtr _ _ | slice _ | rangeTo _ | rangeFrom _ | unsupported =>
+  | rawPtr _ _ | slice _ | array _ _ | rangeTo _ | rangeFrom _
+  | unsupported =>
     dsimp only at h_op; cases h_op
 
 /-- `execCoreCallOp .sliceLen` validates the slice reference via
@@ -2830,7 +2837,8 @@ theorem aggregateTuple_evalRvalueV2_preserves_checkValV2
         rw [h_veq]
         exact ⟨fieldTys, argValues typedVals, rfl, rfl, h_cv⟩
   | bool | int _ _ | unit | never | char | ordering | enum _ | ref _ _
-  | rawPtr _ _ | slice _ | rangeTo _ | rangeFrom _ | unsupported =>
+  | rawPtr _ _ | slice _ | array _ _ | rangeTo _ | rangeFrom _
+  | unsupported =>
     dsimp only at h_ev; cases h_ev
 
 /-- Every successful `writePlaceDestV2` (used by both `evalStatementV2 .assign`
@@ -2908,7 +2916,8 @@ private theorem resolvePlaceDestV2_deref_branch (pt dstTy : MirTy)
                 exact ⟨rfl, rfl, MirTy.eq_of_beq h_beq,
                   ⟨lay, pv, rfl, h_d.symm⟩⟩
               | scalar _ | slicePtr _ _ | rangeTo _ | rangeFrom _ | bool _
-              | char _ | ordering _ | unit | enumVal _ _ | tuple _ | bytes _ =>
+              | char _ | ordering _ | unit | enumVal _ _ | tuple _ | array _
+              | bytes _ =>
                 cases h_match
 
 /-- Any `.deref` destination resolved by `resolvePlaceDestV2` (used by both
@@ -2960,7 +2969,8 @@ theorem resolvePlaceDestV2_deref_requires_mut_ptr
           exact ⟨.rawPtr .mut pt, pt, lay, pv, rfl, Or.inr rfl, h_us, h_eq,
             h_lay, h_d⟩
         | bool | int _ _ | unit | never | char | ordering | enum _
-        | tuple _ | slice _ | rangeTo _ | rangeFrom _ | unsupported =>
+        | tuple _ | slice _ | array _ _ | rangeTo _ | rangeFrom _
+        | unsupported =>
           cases h_res
       | partialTuple _ =>
         rw [h_sl] at h_res
@@ -2982,7 +2992,8 @@ theorem resolvePlaceDestV2_deref_requires_mut_ptr
           exact ⟨.rawPtr .mut pt, pt, lay, pv, rfl, Or.inr rfl, h_us, h_eq,
             h_lay, h_d⟩
         | bool | int _ _ | unit | never | char | ordering | enum _
-        | tuple _ | slice _ | rangeTo _ | rangeFrom _ | unsupported =>
+        | tuple _ | slice _ | array _ _ | rangeTo _ | rangeFrom _
+        | unsupported =>
           cases h_res
 
 /-- Any `.deref` store accepted by `writePlaceV2` must originate from a
@@ -3140,7 +3151,8 @@ theorem evalTerminatorV2_return_enforces_callerMem_validity_and_disjoint_spans
           rw [h_eq] at h_t
           cases msg <;> cases h_t
       | scalar _ | char _ | ordering _ | unit | enumVal _ _ | ptr _
-      | slicePtr _ _ | rangeTo _ | rangeFrom _ | tuple _ | bytes _ =>
+      | slicePtr _ _ | rangeTo _ | rangeFrom _ | tuple _ | array _
+      | bytes _ =>
         dsimp only at h_t; cases h_t
   | coreCall op args dst cont _ =>
     rw [h_term] at h_t
@@ -3195,7 +3207,9 @@ theorem evalTerminatorV2_return_enforces_callerMem_validity_and_disjoint_spans
               (match retRes with
                | .error k => MirSemantics.StepResult.fault k
                | .ok retVal =>
-                 if !refsStayInCallerMem callerMem retTy retVal ||
+                 if hasEscapingRodataPtr callerMem m retTy retVal then
+                   .fault .unsupported
+                 else if !refsStayInCallerMem callerMem retTy retVal ||
                      !refsValidInMem m retTy retVal ||
                      !spansPairwiseDisjoint
                        (refAccessSpans retTy retVal) then
@@ -3215,21 +3229,26 @@ theorem evalTerminatorV2_return_enforces_callerMem_validity_and_disjoint_spans
           | error k => cases h_match
           | ok retVal =>
             dsimp only at h_match
-            cases h1 : refsStayInCallerMem callerMem retTy retVal with
-            | false => rw [h1] at h_match; cases h_match
+            cases h0 : hasEscapingRodataPtr callerMem m retTy retVal with
             | true =>
-              cases h2 : refsValidInMem m retTy retVal with
-              | false => rw [h1, h2] at h_match; cases h_match
+              rw [h0, ite_eq_left rfl] at h_match; cases h_match
+            | false =>
+              rw [h0, ite_eq_right (fun h => by cases h)] at h_match
+              cases h1 : refsStayInCallerMem callerMem retTy retVal with
+              | false => rw [h1] at h_match; cases h_match
               | true =>
-                cases h3 :
-                    spansPairwiseDisjoint (refAccessSpans retTy retVal) with
-                | false => rw [h1, h2, h3] at h_match; cases h_match
+                cases h2 : refsValidInMem m retTy retVal with
+                | false => rw [h1, h2] at h_match; cases h_match
                 | true =>
-                  rw [h1, h2, h3] at h_match
-                  injection h_match with h_out
-                  injection h_out with h_rv
-                  subst h_rv
-                  exact ⟨h1, h2, h3, rfl⟩
+                  cases h3 :
+                      spansPairwiseDisjoint (refAccessSpans retTy retVal) with
+                  | false => rw [h1, h2, h3] at h_match; cases h_match
+                  | true =>
+                    rw [h1, h2, h3] at h_match
+                    injection h_match with h_out
+                    injection h_out with h_rv
+                    subst h_rv
+                    exact ⟨h1, h2, h3, rfl⟩
         let ⟨h1, h2, h3, h4⟩ := h_ret_ok _ h_t
         exact ⟨rfl, rfl, retTy, rfl, h1, h2, h3, h4⟩
 
