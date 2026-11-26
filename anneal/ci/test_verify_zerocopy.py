@@ -3712,6 +3712,194 @@ class VerifyZerocopyTests(unittest.TestCase):
                         "--lean", str(fake_lean),
                     ])
 
+    def test_selected_entries_account_for_lowered_instantiations(self):
+        # An instantiation of an impl item prints with the impl's parameters
+        # substituted, which no textual spelling of the request predicts.
+        impl = "m::_::<impl Tr for m::W<O>>::f"
+        keys = [(impl, ("m::Big",)), (impl, ("m::Little",)), ("id", ("u8",))]
+        big = "m::_::<impl Tr for m::W<m::Big>>::f"
+        little = "m::_::<impl Tr for m::W<m::Little>>::f"
+        # The lowering covers every instantiation, predicted or not.
+        lowered = frozenset({big, little, "id::<u8>"})
+
+        def sel(*paths):
+            return [
+                {"def_id": i, "path": p, "body_index": i}
+                for i, p in enumerate(paths)
+            ]
+
+        check = verify_zerocopy._validate_selected_entries
+        self.assertFalse(check(sel(big, little, "id::<u8>"), [], keys))
+        self.assertTrue(
+            check(
+                sel(big, little, "id::<u8>"), [], keys,
+                lowered_inst_paths=lowered,
+            )
+        )
+        # Every lowered body must be reported, and nothing else may be.
+        for bad in (
+            sel(big, "id::<u8>"),
+            sel(big, little),
+            sel(big, big.replace("Big", "Native"), "id::<u8>"),
+            sel(big, little, "id::<u16>"),
+        ):
+            self.assertFalse(
+                check(bad, [], keys, lowered_inst_paths=lowered), bad
+            )
+        # An empty lowering accounts for nothing.
+        self.assertFalse(
+            check(
+                sel(big, little, "id::<u8>"), [], keys,
+                lowered_inst_paths=frozenset(),
+            )
+        )
+        # Two requests that lower to one instance leave room under the length
+        # bound, which must not admit an unrelated body.
+        alias_keys = [("id", ("u8",)), ("id", ("Alias",))]
+        one = frozenset({"id::<u8>"})
+        self.assertTrue(
+            check(sel("id::<u8>"), [], alias_keys, lowered_inst_paths=one)
+        )
+        self.assertFalse(
+            check(
+                sel("id::<u8>", "bogus"), [], alias_keys,
+                lowered_inst_paths=one,
+            )
+        )
+
+    def test_unit_receipt_lowers_every_instantiation_when_one_is_unmatched(
+        self,
+    ):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = real_tmp_root(tmp)
+            proofs_dir, src_dir, unit = make_proof_tree(root)
+            impl = "m::_::<impl Tr for m::W<O>>::f"
+            insts = [
+                {"path": "id", "args": ["u8"]},
+                {"path": impl, "args": ["m::Big"]},
+            ]
+            scope = {
+                "kind": "selected_unit",
+                "roots": [],
+                "instantiations": insts,
+            }
+            req = json.loads((unit / "request.json").read_text(encoding="utf-8"))
+            req["scope"] = scope
+            (unit / "request.json").write_text(json.dumps(req), encoding="utf-8")
+            ((_, request),) = verify_zerocopy.discover_units(proofs_dir, src_dir)
+            lib_sha = verify_zerocopy.anneal_ci_lib.sha256_file(src_dir / "lib.rs")
+            fake_cap = root / "anneal-rustc-capture"
+            calls = root / "calls.jsonl"
+            fake_cap.write_text(
+                "#!/usr/bin/env python3\n"
+                "import json, sys\n"
+                "from pathlib import Path\n"
+                "args = sys.argv[1:]\n"
+                "insts = [json.loads(args[i + 1])\n"
+                "         for i, a in enumerate(args) if a == '--instantiate']\n"
+                f"with open({str(calls)!r}, 'a') as f:\n"
+                "    f.write(json.dumps(insts) + '\\n')\n"
+                "out = Path(args[args.index('--out-dir') + 1])\n"
+                "out.mkdir(parents=True)\n"
+                "paths = [i['path'].replace('<O>', '<' + i['args'][0] + '>')\n"
+                "         if '<O>' in i['path']\n"
+                "         else i['path'] + '::<' + i['args'][0] + '>'\n"
+                "         for i in insts]\n"
+                "sel = [{'def_id': n, 'path': p, 'body_index': n}\n"
+                "       for n, p in enumerate(paths)]\n"
+                "(out / 'capture.json').write_text(json.dumps({'selected': sel}))\n",
+                encoding="utf-8",
+            )
+            fake_cap.chmod(0o755)
+            big = "m::_::<impl Tr for m::W<m::Big>>::f"
+
+            def receipt(*paths):
+                return make_receipt(
+                    scope=scope,
+                    selected=[
+                        {"def_id": i, "path": p, "body_index": i}
+                        for i, p in enumerate(paths)
+                    ],
+                    sources=[{"relative_path": "lib.rs", "sha256": lib_sha}],
+                )
+
+            verify_zerocopy.validate_unit_receipt(
+                unit, 0, receipt("id::<u8>", big), request, capture=fake_cap
+            )
+            # The predicted `id` request is lowered along with the impl one.
+            self.assertEqual(
+                [json.loads(line) for line in calls.read_text().splitlines()],
+                [insts],
+            )
+            for bad in (
+                receipt(big),
+                receipt("id::<u8>", big.replace("Big", "Little")),
+                receipt("id::<u16>", big),
+            ):
+                with self.assertRaisesRegex(RuntimeError, "selected mismatch"):
+                    verify_zerocopy.validate_unit_receipt(
+                        unit, 0, bad, request, capture=fake_cap
+                    )
+
+    def test_instantiation_fallback_runs_one_capture_for_all(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = real_tmp_root(tmp)
+            _, _, unit = make_proof_tree(root)
+            fake_cap = root / "anneal-rustc-capture"
+            calls = root / "calls.jsonl"
+            fake_cap.write_text(
+                "#!/usr/bin/env python3\n"
+                "import json, sys\n"
+                "from pathlib import Path\n"
+                "args = sys.argv[1:]\n"
+                "insts = [json.loads(args[i + 1])\n"
+                "         for i, a in enumerate(args) if a == '--instantiate']\n"
+                f"with open({str(calls)!r}, 'a') as f:\n"
+                "    f.write(json.dumps(insts) + '\\n')\n"
+                "out = Path(args[args.index('--out-dir') + 1])\n"
+                "out.mkdir(parents=True)\n"
+                "paths = sorted({i['path'].replace('<O>', '<' + i['args'][0] + '>')\n"
+                "                for i in insts})\n"
+                "sel = [{'def_id': n, 'path': p, 'body_index': n}\n"
+                "       for n, p in enumerate(paths)]\n"
+                "(out / 'capture.json').write_text(json.dumps({'selected': sel}))\n",
+                encoding="utf-8",
+            )
+            fake_cap.chmod(0o755)
+            impl = "m::_::<impl Tr for m::W<O>>::f"
+            keys = [(impl, (f"m::T{i}",)) for i in range(40)]
+            lowered = verify_zerocopy.resolve_instantiation_candidates_via_capture(
+                unit, DEFAULT_CONFIG, keys, capture=fake_cap
+            )
+            self.assertEqual(
+                lowered,
+                frozenset(
+                    f"m::_::<impl Tr for m::W<m::T{i}>>::f" for i in range(40)
+                ),
+            )
+            runs = calls.read_text(encoding="utf-8").splitlines()
+            self.assertEqual(len(runs), 1)
+            self.assertEqual(
+                [(i["path"], tuple(i["args"])) for i in json.loads(runs[0])],
+                keys,
+            )
+
+            # A capture that selects nothing cannot account for any request.
+            fake_cap.write_text(
+                "#!/usr/bin/env python3\n"
+                "import json, sys\n"
+                "from pathlib import Path\n"
+                "args = sys.argv[1:]\n"
+                "out = Path(args[args.index('--out-dir') + 1])\n"
+                "out.mkdir(parents=True)\n"
+                "(out / 'capture.json').write_text(json.dumps({'selected': []}))\n",
+                encoding="utf-8",
+            )
+            with self.assertRaisesRegex(RuntimeError, "invalid capture.json"):
+                verify_zerocopy.resolve_instantiation_candidates_via_capture(
+                    unit, DEFAULT_CONFIG, keys, capture=fake_cap
+                )
+
     def test_main_resolves_type_aliased_instantiation_via_capture(self):
         with tempfile.TemporaryDirectory() as tmp:
             root = real_tmp_root(tmp)

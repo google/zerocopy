@@ -1683,9 +1683,17 @@ def _canonical_instantiation_candidates(inst_path, inst_args):
 
 
 def _validate_selected_entries(
-    selected, exp_roots, exp_inst_keys, *, extra_inst_candidates=None
+    selected, exp_roots, exp_inst_keys, *, lowered_inst_paths=None
 ):
-    """Return True iff `selected` matches `SelectedBody` shape and scope."""
+    """Return True iff `selected` matches `SelectedBody` shape and scope.
+
+    Each instantiation must match one of its textual spellings
+    (`_canonical_instantiation_candidates`). Alternatively,
+    `lowered_inst_paths` gives the `SelectedBody.path`s that
+    `anneal-rustc-capture` selects for all of `exp_inst_keys`
+    (`resolve_instantiation_candidates_via_capture`), and `selected` must then
+    be exactly those paths and the roots.
+    """
     if not isinstance(selected, list) or not selected:
         return False
     paths = []
@@ -1712,12 +1720,16 @@ def _validate_selected_entries(
             return False
         if not (1 <= len(paths) <= len(exp_roots) + len(exp_inst_keys)):
             return False
-        inst_cands = []
-        for p, a in exp_inst_keys:
-            cands = _canonical_instantiation_candidates(p, a)
-            if extra_inst_candidates and (p, a) in extra_inst_candidates:
-                cands = cands | extra_inst_candidates[(p, a)]
-            inst_cands.append(cands)
+        if lowered_inst_paths is not None:
+            lowered = set(lowered_inst_paths)
+            return (
+                bool(lowered)
+                and lowered.issubset(path_set)
+                and path_set.issubset(root_set | lowered)
+            )
+        inst_cands = [
+            _canonical_instantiation_candidates(p, a) for p, a in exp_inst_keys
+        ]
         if any(not (path_set & cands) for cands in inst_cands):
             return False
         allowed_paths = set(root_set).union(*inst_cands)
@@ -1734,10 +1746,16 @@ def resolve_instantiation_candidates_via_capture(
     sysroot=None,
     timeout=120.0,
 ):
-    """Ask `anneal-rustc-capture` for `rustc`-lowered `SelectedBody.path`s."""
-    resolved = {}
+    """Return the `SelectedBody.path`s that `rustc` lowers `inst_keys` to.
+
+    One `anneal-rustc-capture` run requests every instantiation in
+    `inst_keys`, so the cost does not grow with their number. The result is a
+    set for all of them together: a capture selects one body for requests that
+    resolve to the same instance, and does not record which request selected
+    which body.
+    """
     if not inst_keys or capture is None or expected_compilation is None:
-        return resolved
+        return frozenset()
     resolved_src = (
         unit_dir / expected_compilation["source_root"]
     ).resolve(strict=True)
@@ -1788,58 +1806,57 @@ def resolve_instantiation_candidates_via_capture(
         base_cmd.append(f"--env={k}={v}")
     for rel in expected_compilation["source_files"]:
         base_cmd.extend(["--source-file", str(resolved_src / rel)])
+    instantiate_args = []
+    for inst_path, inst_args in inst_keys:
+        instantiate_args.extend([
+            "--instantiate",
+            json.dumps({"path": inst_path, "args": list(inst_args)}),
+        ])
+    described = ", ".join(repr(inst_path) for inst_path, _ in inst_keys)
     with tempfile.TemporaryDirectory(prefix="anneal-zc-alias-") as tmp_str:
-        tmp_dir = Path(tmp_str)
-        for idx, (inst_path, inst_args) in enumerate(inst_keys):
-            out_dir = tmp_dir / f"cap_{idx}" / "out"
-            out_dir.parent.mkdir(parents=True, exist_ok=True)
-            cmd = [
-                *base_cmd,
-                "--out-dir",
-                str(out_dir),
-                "--instantiate",
-                json.dumps({"path": inst_path, "args": list(inst_args)}),
-            ]
-            try:
-                proc = subprocess.run(
-                    cmd,
-                    cwd=unit_dir,
-                    env=child_env,
-                    capture_output=True,
-                    text=True,
-                    timeout=timeout,
-                    check=False,
-                )
-            except subprocess.TimeoutExpired as exc:
-                raise RuntimeError(
-                    f"{unit_dir.name}: rustc-capture timed out resolving "
-                    f"instantiation {inst_path!r}"
-                ) from exc
-            capture_path = out_dir / "capture.json"
-            if proc.returncode != 0 or not capture_path.is_file():
-                raise RuntimeError(
-                    f"{unit_dir.name}: rustc-capture failed resolving "
-                    f"instantiation {inst_path!r} (exit {proc.returncode}): "
-                    f"stderr={proc.stderr[:400]!r} stdout={proc.stdout[:400]!r}"
-                )
-            cap_data = anneal_ci_lib.load_strict_json_object(
-                capture_path, f"{unit_dir.name} instantiation capture"
+        out_dir = Path(tmp_str) / "out"
+        cmd = [*base_cmd, "--out-dir", str(out_dir), *instantiate_args]
+        try:
+            proc = subprocess.run(
+                cmd,
+                cwd=unit_dir,
+                env=child_env,
+                capture_output=True,
+                text=True,
+                timeout=timeout,
+                check=False,
             )
-            cap_sel = cap_data.get("selected")
-            if not isinstance(cap_sel, list) or not all(
+        except subprocess.TimeoutExpired as exc:
+            raise RuntimeError(
+                f"{unit_dir.name}: rustc-capture timed out resolving "
+                f"instantiations {described}"
+            ) from exc
+        capture_path = out_dir / "capture.json"
+        if proc.returncode != 0 or not capture_path.is_file():
+            raise RuntimeError(
+                f"{unit_dir.name}: rustc-capture failed resolving "
+                f"instantiations {described} (exit {proc.returncode}): "
+                f"stderr={proc.stderr[:400]!r} stdout={proc.stdout[:400]!r}"
+            )
+        cap_data = anneal_ci_lib.load_strict_json_object(
+            capture_path, f"{unit_dir.name} instantiation capture"
+        )
+        cap_sel = cap_data.get("selected")
+        if (
+            not isinstance(cap_sel, list)
+            or not cap_sel
+            or not all(
                 isinstance(e, dict)
                 and isinstance(e.get("path"), str)
                 and e["path"]
                 for e in cap_sel
-            ):
-                raise RuntimeError(
-                    f"{unit_dir.name}: invalid capture.json selected entries "
-                    f"resolving instantiation {inst_path!r}: {cap_sel!r}"
-                )
-            resolved[(inst_path, inst_args)] = frozenset(
-                e["path"] for e in cap_sel
             )
-    return resolved
+        ):
+            raise RuntimeError(
+                f"{unit_dir.name}: invalid capture.json selected entries "
+                f"resolving instantiations {described}: {cap_sel!r}"
+            )
+        return frozenset(e["path"] for e in cap_sel)
 
 
 def _is_sha256_hex(value):
@@ -2477,7 +2494,7 @@ def validate_parsed_receipt(
     expected_proof_thm=None,
     expected_axioms=None,
     expected_source_hashes=None,
-    extra_inst_candidates=None,
+    lowered_inst_paths=None,
 ):
     """Fail closed unless a parsed `cargo-anneal verify` receipt is clean."""
     try:
@@ -2541,7 +2558,7 @@ def validate_parsed_receipt(
         selected,
         exp_roots,
         exp_inst_keys,
-        extra_inst_candidates=extra_inst_candidates,
+        lowered_inst_paths=lowered_inst_paths,
     ):
         failures.append(f"selected mismatch: selected={selected!r}")
 
@@ -2771,7 +2788,7 @@ def validate_receipt(
     expected_proof_thm=None,
     expected_axioms=None,
     expected_source_hashes=None,
-    extra_inst_candidates=None,
+    lowered_inst_paths=None,
 ):
     """Fail closed unless `cargo-anneal verify` emitted a clean receipt."""
     try:
@@ -2798,7 +2815,7 @@ def validate_receipt(
         expected_proof_thm=expected_proof_thm,
         expected_axioms=expected_axioms,
         expected_source_hashes=expected_source_hashes,
-        extra_inst_candidates=extra_inst_candidates,
+        lowered_inst_paths=lowered_inst_paths,
     )
 
 
@@ -2817,7 +2834,7 @@ def validate_unit_receipt(
     expected_scope = unit_expected["scope"]
     expected_proof = unit_expected["proof"]
     raw_insts = expected_scope.get("instantiations", [])
-    extra_inst = None
+    lowered = None
     if (
         returncode == 0
         and receipt.get("status") == "selected_unit_verified"
@@ -2848,16 +2865,17 @@ def validate_unit_receipt(
             )
         ):
             sel_paths = {e["path"] for e in selected}
-            unmatched = [
-                (p, a)
+            # Some instantiation has no predicted spelling in the receipt, so
+            # learn how `rustc` lowers all of them; one capture costs the
+            # same either way.
+            if any(
+                not (sel_paths & _canonical_instantiation_candidates(p, a))
                 for p, a in exp_inst_keys
-                if not (sel_paths & _canonical_instantiation_candidates(p, a))
-            ]
-            if unmatched:
-                extra_inst = resolve_instantiation_candidates_via_capture(
+            ):
+                lowered = resolve_instantiation_candidates_via_capture(
                     unit_dir,
                     unit_expected["compilation"],
-                    unmatched,
+                    exp_inst_keys,
                     capture=capture,
                     sysroot=sysroot,
                     timeout=timeout,
@@ -2874,7 +2892,7 @@ def validate_unit_receipt(
         expected_proof_thm=expected_proof["theorem"],
         expected_axioms=unit_expected["allowed_axioms"],
         expected_source_hashes=unit_expected.get("source_hashes"),
-        extra_inst_candidates=extra_inst,
+        lowered_inst_paths=lowered,
     )
 
 
