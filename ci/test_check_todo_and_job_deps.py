@@ -570,8 +570,8 @@ class CheckJobDependenciesTests(unittest.TestCase):
     def test_mikefarah_yq_v4_simulated_tags(self):
         """Exercise `!!*` tag branching via a shim over host `yq`.
 
-        Real `mikefarah/yq v4.44.1` coverage runs in CI `run-git-hooks` after
-        `.github/actions/install-yq`.
+        Real `mikefarah/yq v4.44.1` coverage runs in `ci-core` checks, whose
+        images install that release in `ci/docker/*.Dockerfile`.
         """
         real_yq = shutil.which("yq")
         self.assertIsNotNone(real_yq)

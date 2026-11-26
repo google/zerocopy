@@ -1,0 +1,86 @@
+# Copyright 2026 The Fuchsia Authors
+#
+# Licensed under a BSD-style license <LICENSE-BSD>, Apache License, Version 2.0
+# <LICENSE-APACHE or https://www.apache.org/licenses/LICENSE-2.0>, or the MIT
+# license <LICENSE-MIT or https://opensource.org/licenses/MIT>, at your option.
+# This file may not be copied, modified, or distributed except according to
+# those terms.
+
+# `ci-core` checks run on a materialized tree without `.git` or pull request
+# event metadata, so `anneal/ci/check_pr_hygiene.py`, which reads commits and
+# history, runs here instead. The branch ruleset requires this job, but its
+# diff and commit-message checks are soft-blocking: the PR's tip commit can
+# waive named checks with a `Skip-pr-hygiene:` trailer, which the script
+# reports as warnings and in the step summary.
+
+name: Anneal PR Hygiene
+
+on:
+  pull_request:
+    # `edited` re-checks the title and catches base-branch changes. Every
+    # pull request event runs the full check, so editing the description
+    # cannot replace a failing result with a passing one.
+    types: [opened, synchronize, reopened, edited]
+  # A merge group has no pull request range to check; its PRs were checked
+  # on `pull_request`, and `ci-core` enforces the commit-message policy on
+  # the merge group itself.
+  merge_group:
+
+permissions: {}
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  # A merge group run is quick and must report for its exact commit.
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  pr-hygiene:
+    runs-on: ubuntu-latest
+    name: PR hygiene
+    permissions:
+      # Read the repository to diff the PR; nothing else.
+      contents: read
+    # Strip GitHub Actions cache and artifact service credentials so scripts in
+    # `ci/` (outside `trusted/`) cannot poison workflow caches or artifacts.
+    # This is defense in depth alongside `contents: read`.
+    env:
+      ACTIONS_CACHE_URL: ''
+      ACTIONS_RESULTS_URL: ''
+      ACTIONS_RUNTIME_TOKEN: ''
+      ACTIONS_RUNTIME_URL: ''
+    steps:
+      - if: github.event_name == 'pull_request'
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          # `check_pr_hygiene.py` needs history for `merge_base(base, head)`.
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Run PR hygiene check
+        if: github.event_name == 'pull_request'
+        # Set here rather than in `defaults` because merge group runs have no
+        # checkout, so `anneal/` does not exist there.
+        working-directory: anneal
+        # PR descriptions and Review Receipts are checked by publishing and
+        # Gate 2 tooling with `--pr-body-file` and `--receipt-file`. A
+        # multi-commit PR's title becomes its squash commit subject, so the
+        # title must pass the `[commit_policy]` regex in `ci/checks.toml`.
+        # Bots such as Dependabot write their own commit messages, so PRs
+        # whose GitHub-authenticated author is a bot skip those checks.
+        env:
+          PR_BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          PR_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+          PR_AUTHOR_TYPE: ${{ github.event.pull_request.user.type }}
+          PR_TITLE: ${{ github.event.pull_request.title }}
+        run: |
+          set -euo pipefail
+          args=(--base "$PR_BASE_SHA" --head "$PR_HEAD_SHA"
+                --forbid-pr-title-regex '\b[T]ODO\b')
+          if [ "$PR_AUTHOR_TYPE" = Bot ]; then
+            args+=(--skip-commit-messages)
+          fi
+          python3 -I -B ci/check_pr_hygiene.py "${args[@]}"
+      - name: Skip PR hygiene on merge groups
+        if: github.event_name == 'merge_group'
+        run: |
+          echo "::notice::PR hygiene runs on pull_request events only."
+          exit 0

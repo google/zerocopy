@@ -79,6 +79,12 @@ GRANDFATHERED_SKILL_LINE_CAPS: Dict[str, int] = {
 # global instructions (see `anneal/docs/review-policy-design.md`).
 CODEX_AGENTS_MD_BUDGET_BYTES = 31744
 AGENTS_SCAN_PRUNE_DIRS = frozenset({".git", ".lake", "target"})
+# The `Code Review Rules` block is mirrored byte-for-byte from
+# `anneal/AGENTS.md` into the reviewer styleguide. `anneal/ci/check_pr_hygiene.py`
+# keeps an identical check for local pre-push runs; keep the two in sync.
+CRR_BEGIN = "<!-- code-review-rules:begin -->"
+CRR_END = "<!-- code-review-rules:end -->"
+CRR_FILES = ("anneal/AGENTS.md", "anneal/.gemini/styleguide.md")
 THEORY_TACTIC_KIND_TO_TOKEN: Dict[str, Optional[str]] = {
     "Parser.Term.byTactic": None,
     "Parser.Term.binderTactic": None,
@@ -1364,6 +1370,7 @@ def check_repository(repo_root: Path) -> None:
 
     validate_anneal_skills_json(resolved_root)
     validate_agents_docs(resolved_root, slug_cache)
+    validate_code_review_rules_parity(resolved_root)
     validate_proof_scaling_sync(
         resolved_root, anneal_skill_names, cargo_anneal_skill_names
     )
@@ -1588,6 +1595,49 @@ def validate_agents_docs(repo_root: Path, slug_cache: Dict[Path, Set[str]]) -> N
         raise fail(
             f"combined AGENTS.md size {total_bytes} B reaches or exceeds "
             f"Codex budget of {CODEX_AGENTS_MD_BUDGET_BYTES} B"
+        )
+
+
+def _code_review_rules_block(text: str, repo_rel: str) -> str:
+    lines = text.split("\n")
+    begins = [i for i, line in enumerate(lines) if CRR_BEGIN in line]
+    ends = [i for i, line in enumerate(lines) if CRR_END in line]
+    if len(begins) != 1 or len(ends) != 1 or ends[0] <= begins[0]:
+        raise fail(
+            f"{repo_rel}: code-review-rules-parity: expected one "
+            f"`{CRR_BEGIN}` followed by one `{CRR_END}`"
+        )
+    return "\n".join(lines[begins[0] : ends[0] + 1])
+
+
+def validate_code_review_rules_parity(repo_root: Path) -> None:
+    """Require the `Code Review Rules` block to match across `CRR_FILES`.
+
+    Reads the working tree rather than Git so it also runs in hermetic
+    `ci-core` checks, which have no `.git`. Applies whenever `anneal/` exists so
+    deleting either mirror fails closed.
+    """
+    anneal_dir = repo_root / "anneal"
+    if not (anneal_dir.exists() or anneal_dir.is_symlink()):
+        return
+    blocks: List[str] = []
+    for repo_rel in CRR_FILES:
+        path = repo_root / repo_rel
+        assert_symlink_free_within_repo(repo_root, path, repo_rel)
+        if not path.is_file():
+            raise fail(f"{repo_rel}: code-review-rules-parity: not a file")
+        text = decode_clean_utf8(path.read_bytes(), repo_rel)
+        blocks.append(_code_review_rules_block(text, repo_rel))
+    if blocks[0] != blocks[1]:
+        a, b = blocks[0].split("\n"), blocks[1].split("\n")
+        first = next(
+            (i for i in range(min(len(a), len(b))) if a[i] != b[i]),
+            min(len(a), len(b)),
+        )
+        raise fail(
+            f"{CRR_FILES[1]}: code-review-rules-parity: `Code Review Rules` "
+            f"block differs from `{CRR_FILES[0]}` at block line {first + 1}; "
+            "keep the mirrors byte-identical"
         )
 
 

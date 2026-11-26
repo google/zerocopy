@@ -6,78 +6,94 @@
 # This file may not be copied, modified, or distributed except according to
 # those terms.
 
-"""Exercise Anneal and repository CI manifest, cache, and path-filter guards."""
+"""Exercise Anneal ci-core workflow, manifest, sandbox, and cache invariants."""
 
-import json
+import hashlib
 import os
 from pathlib import Path
 import re
+import subprocess
+import tempfile
+import tomllib
 import unittest
 
-from anneal_ci_lib import (
-    WorkflowRepoFixture,
-    find_workflow_step,
-    load_workflow,
-    sha256_bytes,
-)
+from anneal_ci_lib import WorkflowRepoFixture, find_workflow_step, load_workflow
+from workflow_yaml import load_workflow_yaml
 
 
 SOURCE = Path(__file__).resolve().parent
+ANNEAL_ROOT = SOURCE.parent
+REPO_ROOT = ANNEAL_ROOT.parent
+
+
+def extract_bash_function(script_text: str, func_name: str) -> str:
+    """Extract a top-level `func_name() { ... }` definition from bash text."""
+    pattern = re.compile(
+        rf"(?m)^{re.escape(func_name)}\(\)\s*\{{\n.*?\n\}}$",
+        flags=re.DOTALL,
+    )
+    match = pattern.search(script_text)
+    if match is None:
+        raise AssertionError(f"missing bash function {func_name}()")
+    return match.group(0)
 
 
 class CiWorkflowManifestGuardTests(unittest.TestCase):
-    def setUp(self):
-        self.workflow = load_workflow(
-            SOURCE.parent.parent / ".github/workflows/anneal-current.yml"
+    @classmethod
+    def setUpClass(cls):
+        cls.runner_script = (SOURCE / "run_anneal_check.sh").read_text()
+        cls.manifest_fn = extract_bash_function(
+            cls.runner_script, "verify_root_tcb_manifest"
         )
-        workflow = self.workflow
-        self.manifest_steps = {}
-        for job_name in (
-            "static-checks",
-            "build-exocrate",
-            "test-and-verify",
-            "installed-smoke",
-            "workspace-tests",
-            "sandbox-aarch64",
-        ):
-            self.manifest_steps[job_name] = find_workflow_step(
-                workflow, job_name, step_name="Verify root TCB manifest"
-            )["run"]
+        cls.bundle_env_fn = extract_bash_function(
+            cls.runner_script, "apply_bundle_env"
+        )
+        cls.checks_cfg = tomllib.loads(
+            (REPO_ROOT / "ci/checks.toml").read_text()
+        )
+        cls.pr_wf = load_workflow_yaml(
+            (REPO_ROOT / ".github/workflows/ci-core-pr.yml").read_text()
+        )
+        cls.trusted_wf = load_workflow_yaml(
+            (REPO_ROOT / ".github/workflows/ci-core-trusted.yml").read_text()
+        )
+        cls.codeowners = (REPO_ROOT / ".github/CODEOWNERS").read_text()
 
-    def run_manifest_step(self, job_name, mutate=None, *, parent_override=False):
-        with WorkflowRepoFixture(prefix="anneal-ci-guard-") as fx:
-            root = fx.init_repo("repo")
-            project = fx.mkdir("repo/anneal")
-            diag = fx.mkdir("diag")
-            github_env = fx.write_file("github_env", "")
-
-            cargo_toml = fx.write_bytes("repo/anneal/Cargo.toml", b"[workspace]\n")
-            digest = sha256_bytes(cargo_toml.read_bytes())
-            fx.write_file(
-                "repo/anneal/trusted/root-manifest.sha256",
-                f"{digest}  Cargo.toml\n",
-            )
-            fx.commit_all(
-                root,
-                "init",
-                paths=("anneal/Cargo.toml", "anneal/trusted/root-manifest.sha256"),
+    def run_manifest_guard(self, mutate=None, *, parent_override=False):
+        with tempfile.TemporaryDirectory(prefix="anneal-ci-guard-") as tmp:
+            root = Path(tmp) / "repo"
+            project = root / "anneal"
+            (project / "trusted").mkdir(parents=True)
+            cargo_toml = project / "Cargo.toml"
+            cargo_toml.write_bytes(b"[workspace]\n")
+            digest = hashlib.sha256(cargo_toml.read_bytes()).hexdigest()
+            (project / "trusted/root-manifest.sha256").write_text(
+                f"{digest}  Cargo.toml\n"
             )
 
             if mutate is not None:
                 mutate(root if parent_override else project)
 
-            env = os.environ.copy()
-            env["ANNEAL_BUILD_DIAGNOSTICS"] = str(diag)
-            env["ANNEAL_TEST_DIAGNOSTICS"] = str(diag)
-            env["GITHUB_WORKSPACE"] = str(root)
-            env["GITHUB_ENV"] = str(github_env)
-            return fx.run_bash(self.manifest_steps[job_name], cwd=project, env=env)
+            snippet = (
+                "set -euo pipefail\n"
+                f"{self.manifest_fn}\n"
+                "verify_root_tcb_manifest\n"
+            )
+            return subprocess.run(
+                ["bash", "--noprofile", "--norc", "-c", snippet],
+                cwd=project,
+                capture_output=True,
+                text=True,
+            )
+
+    def test_manifest_guard_runs_unconditionally_before_mode_dispatch(self):
+        call_idx = self.runner_script.index("\nverify_root_tcb_manifest\n")
+        case_idx = self.runner_script.index('\ncase "$MODE" in\n')
+        self.assertLess(call_idx, case_idx)
 
     def test_clean_tree_passes_manifest_guard(self):
-        for job_name in self.manifest_steps:
-            with self.subTest(job=job_name):
-                res = self.run_manifest_step(job_name)
-                self.assertEqual(res.returncode, 0, res.stdout + res.stderr)
+        res = self.run_manifest_guard()
+        self.assertEqual(res.returncode, 0, res.stdout + res.stderr)
 
     def test_root_override_paths_and_symlinks_fail_closed(self):
         cases = [
@@ -85,38 +101,544 @@ class CiWorkflowManifestGuardTests(unittest.TestCase):
             ("cargo_file", lambda r: (r / ".cargo").write_text("")),
             ("rust_toolchain", lambda r: (r / "rust-toolchain").write_text("nightly\n")),
             ("rust_toolchain_toml", lambda r: (r / "rust-toolchain.toml").write_text("")),
+            ("gitmodules", lambda r: (r / ".gitmodules").write_text("")),
             ("valid_symlink_cargo", lambda r: (r / ".cargo").symlink_to("Cargo.toml")),
-            ("valid_symlink_toolchain", lambda r: (r / "rust-toolchain.toml").symlink_to("Cargo.toml")),
+            (
+                "valid_symlink_toolchain",
+                lambda r: (r / "rust-toolchain.toml").symlink_to("Cargo.toml"),
+            ),
             ("dangling_symlink_cargo", lambda r: (r / ".cargo").symlink_to("missing")),
-            ("dangling_symlink_toolchain", lambda r: (r / "rust-toolchain").symlink_to("missing")),
+            (
+                "dangling_symlink_toolchain",
+                lambda r: (r / "rust-toolchain").symlink_to("missing"),
+            ),
+            (
+                "dangling_symlink_gitmodules",
+                lambda r: (r / ".gitmodules").symlink_to("missing"),
+            ),
         ]
-        for job_name in self.manifest_steps:
-            for parent_override in (False, True):
-                for label, mutate in cases:
-                    with self.subTest(job=job_name, case=label, parent=parent_override):
-                        res = self.run_manifest_step(
-                            job_name, mutate=mutate, parent_override=parent_override
-                        )
-                        self.assertNotEqual(res.returncode, 0)
-                        self.assertIn(
-                            "forbidden root config override:", res.stdout + res.stderr
-                        )
+        for parent_override in (False, True):
+            for label, mutate in cases:
+                with self.subTest(case=label, parent=parent_override):
+                    res = self.run_manifest_guard(
+                        mutate=mutate, parent_override=parent_override
+                    )
+                    self.assertNotEqual(res.returncode, 0)
+                    self.assertIn(
+                        "forbidden root config override:",
+                        res.stdout + res.stderr,
+                    )
 
-    def test_pr_hygiene_step_lints_pull_requests_and_tree_elsewhere(self):
-        step = find_workflow_step(
-            self.workflow, "static-checks", step_name="Run PR hygiene check"
+    def test_trusted_tree_symlink_and_manifest_tamper_fail_closed(self):
+        res_link = self.run_manifest_guard(
+            mutate=lambda p: (p / "trusted/evil_link").symlink_to("../Cargo.toml")
         )
+        self.assertNotEqual(res_link.returncode, 0)
+        self.assertIn(
+            "symlink in Anneal trusted tree:",
+            res_link.stdout + res_link.stderr,
+        )
+
+        res_tamper = self.run_manifest_guard(
+            mutate=lambda p: (p / "Cargo.toml").write_bytes(b"[workspace]\n# x\n")
+        )
+        self.assertNotEqual(res_tamper.returncode, 0)
+
+    def test_apply_bundle_env_rejects_malformed_lines_and_preserves_spaces(self):
+        with tempfile.TemporaryDirectory(prefix="anneal-bundle-env-") as tmp:
+            root = Path(tmp)
+            (root / "ci").mkdir()
+            script = root / "ci/check_bundle_tree.py"
+
+            def run_case(py_body: str):
+                script.write_text(py_body)
+                snippet = (
+                    "set -euo pipefail\n"
+                    f"{self.bundle_env_fn}\n"
+                    "apply_bundle_env --demo\n"
+                    'printf "%s" "${RUSTFLAGS:-}"\n'
+                )
+                return subprocess.run(
+                    ["bash", "--noprofile", "--norc", "-c", snippet],
+                    cwd=root,
+                    capture_output=True,
+                    text=True,
+                )
+
+            ok = run_case(
+                'print("ANNEAL_SYSROOT=/opt/sysroot")\n'
+                'print("RUSTFLAGS=-Lnative=/opt/path with spaces/lib")\n'
+            )
+            self.assertEqual(ok.returncode, 0, ok.stderr)
+            self.assertEqual(ok.stdout, "-Lnative=/opt/path with spaces/lib")
+
+            no_eq = run_case('print("MALFORMED_LINE")\n')
+            self.assertNotEqual(no_eq.returncode, 0)
+            self.assertIn("malformed check_bundle_tree.py line", no_eq.stderr)
+
+            bad_key = run_case('print("bad-key=1")\n')
+            self.assertNotEqual(bad_key.returncode, 0)
+            self.assertIn("invalid check_bundle_tree.py env key", bad_key.stderr)
+
+            exit_fail = run_case("import sys\nsys.exit(3)\n")
+            self.assertNotEqual(exit_fail.returncode, 0)
+
+    def test_active_ci_core_workflows_and_tcb_dominance(self):
+        for retired in ("anneal.yml", "anneal-current.yml", "ci.yml"):
+            self.assertFalse(
+                (REPO_ROOT / ".github/workflows" / retired).exists(),
+                f"legacy workflow {retired} must be retired after cutover",
+            )
+
+        repo_cfg = self.checks_cfg["repo"]
+        trusted_shas = set(repo_cfg["trusted_engine_shas"])
+        self.assertTrue(trusted_shas)
+        for sha in trusted_shas:
+            self.assertRegex(sha, r"^[0-9a-f]{40}$")
+
+        trusted_engine_wf = repo_cfg["trusted_engine_workflow"]
+        self.assertTrue(trusted_engine_wf.endswith("/.github/workflows/ci.yml"))
+        pr_engine_wf = trusted_engine_wf[: -len("ci.yml")] + "ci-pr.yml"
+
+        for wf, expected_workflow in (
+            (self.pr_wf, pr_engine_wf),
+            (self.trusted_wf, trusted_engine_wf),
+        ):
+            self.assertEqual(wf.get("permissions"), {})
+            job = wf["jobs"]["ci-core"]
+            self.assertEqual(job["with"]["config_path"], "ci/checks.toml")
+            uses_wf, sep, uses_sha = job["uses"].partition("@")
+            self.assertEqual(sep, "@")
+            self.assertEqual(uses_wf, expected_workflow)
+            self.assertIn(uses_sha, trusted_shas)
+
+        self.assertEqual(
+            self.pr_wf["jobs"]["ci-core"]["with"].get("shadow_mode", "false"),
+            "false",
+        )
+        self.assertNotIn("shadow_mode", self.trusted_wf["jobs"]["ci-core"]["with"])
+
+        self.assertEqual(
+            self.pr_wf["jobs"]["ci-core"]["permissions"],
+            {
+                "actions": "read",
+                "contents": "read",
+                "packages": "read",
+                "pull-requests": "read",
+            },
+        )
+        self.assertEqual(
+            self.trusted_wf["jobs"]["ci-core"]["permissions"],
+            {
+                "actions": "read",
+                "contents": "read",
+                "id-token": "write",
+                "packages": "write",
+                "pull-requests": "read",
+            },
+        )
+
+        tcb_cfg = self.checks_cfg["tcb"]
+        self.assertIs(tcb_cfg["allow_owner_self_approval"], True)
+        # Every root workflow stays in the TCB: the engine's non-TCB
+        # permission scan cannot see `secrets.*` use or job names that spoof
+        # required checks.
+        self.assertEqual(tcb_cfg.get("non_tcb_workflows", []), [])
+        for exec_glob in (
+            "anneal/ci/**",
+            "ci/scripts/**",
+            "zerocopy/cargo.sh",
+            "zerocopy/ci/**",
+        ):
+            self.assertIn(exec_glob, tcb_cfg["extra_executable_paths"])
+        self.assertEqual(
+            tcb_cfg["caller"]["caller_workflows"],
+            [
+                ".github/workflows/ci-core-pr.yml",
+                ".github/workflows/ci-core-trusted.yml",
+            ],
+        )
+        self.assertEqual(tcb_cfg["caller"]["gate_check_name"], "ci-core / gate")
+
+        for owner_rule in (
+            "/.github/**",
+            "/ci/**",
+            "/zerocopy/cargo.sh",
+            "/tools/**",
+            "/anneal/ci/**",
+            "/anneal/flake.nix",
+            "/anneal/flake.lock",
+            "/anneal/Cargo.toml",
+            "/anneal/Cargo.lock",
+            "/anneal/trusted/**",
+            "/anneal/vendor/lean-miri/UPSTREAM_PIN.json",
+        ):
+            self.assertIn(owner_rule, self.codeowners)
+
+    def test_anneal_checks_nested_bwrap_and_miri_cache_isolation(self):
+        checks_by_id = {c["id"]: c for c in self.checks_cfg["checks"]}
+        self.assertEqual(
+            checks_by_id["meta-githooks"]["command"],
+            ["./ci/scripts/check_shell_and_hooks.sh", "--require-shellcheck"],
+        )
+
+        expected_anneal = (
+            "anneal-flake-eval",
+            "anneal-ci-tests",
+            "anneal-clippy",
+            "anneal-sandbox-aarch64",
+            "anneal-audit",
+            "anneal-guard-mutation",
+            "anneal-ws-test",
+            "anneal-installed-smoke",
+        )
+        for cid in expected_anneal:
+            self.assertIn(cid, checks_by_id)
+            self.assertNotIn(
+                "events",
+                checks_by_id[cid],
+                f"{cid} must run across PR, merge_group, and push",
+            )
+
+        for bwrap_cid in (
+            "anneal-flake-eval",
+            "anneal-ci-tests",
+            "anneal-audit",
+            "anneal-guard-mutation",
+            "anneal-ws-test",
+            "anneal-installed-smoke",
+        ):
+            chk = checks_by_id[bwrap_cid]
+            self.assertEqual(chk.get("sandbox"), "nested_bwrap", bwrap_cid)
+            self.assertEqual(chk.get("image"), "anneal-tc", bwrap_cid)
+
+        arm_chk = checks_by_id["anneal-sandbox-aarch64"]
+        self.assertEqual(arm_chk.get("sandbox"), "nested_bwrap")
+        self.assertEqual(arm_chk.get("runner"), "ubuntu-24.04-arm")
+        self.assertEqual(arm_chk.get("image"), "anneal-arm64")
+        self.assertEqual(arm_chk.get("command"), ["./ci/run_anneal_check.sh", "sandbox"])
+        self.assertEqual(
+            self.checks_cfg["images"]["anneal-arm64"].get("platform"),
+            "linux/arm64",
+        )
+
+        miri_cache = self.checks_cfg["caches"]["miri-v1"]
+        self.assertEqual(miri_cache["tier"], "public_cas")
+        self.assertEqual(miri_cache["mount"], "/ci-cache/miri")
+        self.assertFalse(miri_cache["mount"].startswith("/work"))
+        miri_inputs = set()
+        for entry in miri_cache["inputs"]:
+            miri_inputs.update(entry.get("include", ()))
+        for key_file in (
+            "anneal/flake.nix",
+            "anneal/flake.lock",
+            "anneal/trusted/lean/lean-toolchain",
+            "anneal/trusted/lean/foundation-lock.json",
+            "anneal/vendor/lean-miri/UPSTREAM_PIN.json",
+        ):
+            self.assertIn(key_file, miri_inputs)
+
+        audit_match = re.search(
+            r"(?ms)^\s*audit\)\n(.*?)\n\s*;;$", self.runner_script
+        )
+        self.assertIsNotNone(audit_match)
+        audit_body = audit_match.group(1)
+
+        with tempfile.TemporaryDirectory(prefix="anneal-miri-cache-") as tmp:
+            tmp_path = Path(tmp)
+            bin_dir = tmp_path / "bin"
+            bin_dir.mkdir()
+            recorded = tmp_path / "cargo_args.txt"
+            seen_env = tmp_path / "ambient_env.txt"
+            stub_cargo = bin_dir / "cargo"
+            stub_cargo.write_text(
+                "#!/usr/bin/env bash\n"
+                f"printf '%s\\n' \"$@\" > '{recorded}'\n"
+                f"printf '%s' \"${{ANNEAL_MIRI_CACHE_DIR-UNSET}}\" > '{seen_env}'\n"
+            )
+            stub_cargo.chmod(0o755)
+            scratch_root = tmp_path / "scratch"
+            scratch_miri = scratch_root / "miri-cache"
+
+            # Execute the real `audit)` cache-selection logic with
+            # `SCRATCH_ROOT` bound directly and stubbed
+            # `verify_bwrap_sandbox`/`apply_bundle_env`.
+            adapted_body = audit_body.replace(
+                "cp -rL /opt/anneal-nix/lean-toolchain",
+                "mkdir -p",
+            )
+            harness = (
+                "set -euo pipefail\n"
+                "unset ANNEAL_MIRI_CACHE_DIR ANNEAL_TEST_ARCHIVE ANNEAL_TEST_CASE\n"
+                f"export SCRATCH_ROOT='{scratch_root}'\n"
+                "HASH_OPT_ARGS=(--config 'profile.dev.package.sha2.opt-level=3')\n"
+                "verify_bwrap_sandbox() { :; }\n"
+                "apply_bundle_env() { export ANNEAL_TEST_INSTALL_ROOT=/fake/install; }\n"
+                f"{adapted_body}\n"
+            )
+
+            def run_audit_probe(cache_path: Path):
+                recorded.unlink(missing_ok=True)
+                seen_env.unlink(missing_ok=True)
+                env = os.environ.copy()
+                env["PATH"] = f"{bin_dir}:{env.get('PATH', '')}"
+                env["ANNEAL_MIRI_CACHE_DIR"] = "/ambient/poison"
+                env["ANNEAL_CI_MIRI_CACHE_DIR"] = str(cache_path)
+                res = subprocess.run(
+                    ["bash", "--noprofile", "--norc", "-c", harness],
+                    cwd=tmp_path,
+                    env=env,
+                    capture_output=True,
+                    text=True,
+                )
+                self.assertEqual(res.returncode, 0, res.stdout + res.stderr)
+                self.assertEqual(seen_env.read_text(), "UNSET")
+                return recorded.read_text().splitlines()
+
+            # 1. Absent cache -> cold build without --miri-cache-dir.
+            cold_args = run_audit_probe(tmp_path / "missing-cache")
+            self.assertNotIn("--miri-cache-dir", cold_args)
+
+            # 2. Writable cache -> passes --miri-cache-dir directly.
+            rw_cache = tmp_path / "rw-cache"
+            rw_cache.mkdir()
+            rw_args = run_audit_probe(rw_cache)
+            self.assertIn("--miri-cache-dir", rw_args)
+            self.assertIn(str(rw_cache), rw_args)
+
+            # 3. Read-only cache -> copies to scratch and passes scratch dir.
+            ro_cache = tmp_path / "ro-cache"
+            ro_cache.mkdir()
+            (ro_cache / "marker.olean").write_text("olean")
+            ro_cache.chmod(0o555)
+            try:
+                ro_args = run_audit_probe(ro_cache)
+            finally:
+                ro_cache.chmod(0o755)
+            if os.geteuid() != 0:
+                self.assertIn("--miri-cache-dir", ro_args)
+                self.assertIn(str(scratch_miri), ro_args)
+                self.assertTrue((scratch_miri / "marker.olean").is_file())
+
+    def test_runner_optimization_sandbox_and_python_isolation_invariants(self):
+        self.assertIn('CARGO_BUILD_JOBS="${CARGO_BUILD_JOBS:-4}"', self.runner_script)
+        self.assertIn('RUST_TEST_THREADS="${RUST_TEST_THREADS:-4}"', self.runner_script)
+        self.assertIn("CARGO_NET_OFFLINE=true", self.runner_script)
+        self.assertIn('ANNEAL_TEST_JOBS="4"', self.runner_script)
+
+        for pkg in ("cpufeatures", "digest", "sha2", "zstd-sys"):
+            self.assertIn(
+                f"--config 'profile.dev.package.{pkg}.opt-level=3'",
+                self.runner_script,
+            )
+
+        for mode_header in ("sandbox)", "audit)", "ws-test)", "installed-smoke)"):
+            idx = self.runner_script.index(f"  {mode_header}\n")
+            end = self.runner_script.index("\n    ;;", idx)
+            window = self.runner_script[idx:end]
+            self.assertIn("verify_bwrap_sandbox", window, mode_header)
+
+        for sandbox_test in (
+            "sandbox_escape_vectors_blocked_in_tier1_and_tier2",
+            "wall_clock_timeout_kills_process_group_in_tier1_and_tier2",
+            "tier1_as_pid1_prevents_post_exit_out_writes",
+        ):
+            self.assertIn(sandbox_test, self.runner_script)
+
+        self.assertIn(
+            "cargo package --allow-dirty --no-verify --offline --registry crates-io",
+            self.runner_script,
+        )
+        self.assertIn(
+            'cargo build --locked --offline --manifest-path "$PREPARED_MANIFEST"',
+            self.runner_script,
+        )
+        self.assertIn(
+            'cargo test --locked --offline --manifest-path "$PREPARED_MANIFEST" --no-run',
+            self.runner_script,
+        )
+        self.assertIn("ci/probe_alpha.py --cli /cargo-anneal", self.runner_script)
+        self.assertIn("ci/verify_starnix_e2e.py", self.runner_script)
+        self.assertIn("ci/verify_zerocopy.py", self.runner_script)
+
+        # Every inline python3 heredoc in run_anneal_check.sh must run with
+        # `-I -B` so repository files cannot shadow stdlib modules.
+        heredocs = list(re.finditer(r"python3\b[^;\n]*<<", self.runner_script))
+        self.assertGreaterEqual(len(heredocs), 1)
+        for match in heredocs:
+            self.assertIn("python3 -I -B -", match.group(0))
+
+    def _runner_mode(self, mode):
+        idx = self.runner_script.index(f"  {mode})\n")
+        end = self.runner_script.index("\n    ;;", idx)
+        return self.runner_script[idx:end]
+
+    def test_static_checks_enforce_wasm32_core_and_offline_inspect(self):
+        # `#4220`: the pure `cargo_anneal::core` must keep building for
+        # `wasm32-unknown-unknown` with `-D warnings`, and the offline
+        # `inspect` CLI must be linted and tested without default features.
+        clippy = self._runner_mode("clippy")
+        self.assertIn(
+            'RUSTFLAGS="-D warnings" cargo check --locked --offline', clippy
+        )
+        self.assertIn("--lib --target wasm32-unknown-unknown", clippy)
+        self.assertIn("--test cli --test inspect", clippy)
+        ws_test = self._runner_mode("ws-test")
+        self.assertIn("--test cli --test inspect", ws_test)
+
+    def test_installed_smoke_package_stages_generated_bundle_in_scratch(self):
+        # `#4244` and `#4341` generate `bundled_resources.rs` and
+        # `bundled_theory.json` in `build.rs`, so `cargo package` needs both
+        # staged under `packaged/`. The read-only checkout must stay
+        # untouched: staging happens only in a scratch copy, must stage
+        # exactly those two files, and must use the same optimization flags
+        # as the other Cargo invocations.
+        idx = self.runner_script.index("  installed-smoke)\n")
+        end = self.runner_script.index("\n    ;;", idx)
+        window = self.runner_script[idx:end]
+        stage_start = window.index('PKG_SRC="${SCRATCH_ROOT}/package-src"')
+        stage_end = window.index('rm -rf "$PKG_SRC"\n    PREPARED_MANIFEST=')
+        stage = window[stage_start:stage_end]
+        self.assertIn('cp -a . "$PKG_SRC/anneal"', stage)
+        self.assertIn('cd "$PKG_SRC/anneal"', stage)
+        self.assertIn("test ! -e trusted/cargo-anneal/packaged", stage)
+        self.assertIn("-- --root . --stage-package", stage)
+        self.assertIn(
+            'staged="$(cd trusted/cargo-anneal/packaged && '
+            'find . -mindepth 1 | LC_ALL=C sort)"',
+            stage,
+        )
+        self.assertIn(
+            "expected_staged=\"$(printf './bundled_resources.rs\\n"
+            "./bundled_theory.json')\"",
+            stage,
+        )
+        self.assertIn('test "$staged" = "$expected_staged"', stage)
+        self.assertLess(
+            stage.index("--stage-package"),
+            stage.index("cargo package --allow-dirty"),
+        )
+        self.assertEqual(stage.count('"${FULL_OPT_ARGS[@]}"'), 2)
+        # The checked-in generated file is gone; provenance comes from the
+        # shared renderer instead of scraping Rust source.
+        self.assertNotIn("src/bundled_resources.rs", self.runner_script)
+        self.assertIn("ci/render_correspondence_provenance.py", self.runner_script)
+
+
+class PrHygieneWorkflowTests(unittest.TestCase):
+    """`check_pr_hygiene.py` reads Git history and PR event metadata, which
+    `ci-core` sandboxes do not provide, so it runs in its own workflow. The
+    job is required, but its diff and commit-message checks are waivable
+    with a `Skip-pr-hygiene:` trailer on the PR's tip commit."""
+
+    PATH = REPO_ROOT / ".github/workflows/anneal-pr-hygiene.yml"
+    ON_PR = "github.event_name == 'pull_request'"
+    ON_MERGE_GROUP = "github.event_name == 'merge_group'"
+
+    def setUp(self):
+        self.workflow = load_workflow(self.PATH)
+        self.job = self.workflow["jobs"]["pr-hygiene"]
+        self.step = find_workflow_step(
+            self.workflow, "pr-hygiene", step_name="Run PR hygiene check"
+        )
+
+    def test_pr_hygiene_workflow_is_read_only(self):
+        wf = self.workflow
+        self.assertEqual(wf["name"], "Anneal PR Hygiene")
+        self.assertEqual(wf["permissions"], {})
+        # Merge group runs have no checkout, so no `anneal/` directory
+        # exists for a workflow-level default to enter.
+        self.assertNotIn("defaults", wf)
+        self.assertEqual(list(wf["jobs"]), ["pr-hygiene"])
+        job = self.job
+        self.assertEqual(job["name"], "PR hygiene")
+        self.assertEqual(job["runs-on"], "ubuntu-latest")
+        self.assertEqual(job["permissions"], {"contents": "read"})
+        self.assertNotIn("defaults", job)
+        self.assertEqual(job["env"], {
+            "ACTIONS_CACHE_URL": "",
+            "ACTIONS_RESULTS_URL": "",
+            "ACTIONS_RUNTIME_TOKEN": "",
+            "ACTIONS_RUNTIME_URL": "",
+        })
+
+    def test_triggers_and_concurrency(self):
+        wf = self.workflow
+        self.assertEqual(set(wf["on"]), {"pull_request", "merge_group"})
+        # `edited` re-checks retitled and retargeted PRs.
+        self.assertEqual(
+            wf["on"]["pull_request"],
+            {"types": ["opened", "synchronize", "reopened", "edited"]},
+        )
+        self.assertIn(wf["on"]["merge_group"], (None, "", {}))
+        # A merge group run must report for its exact commit.
+        self.assertEqual(wf["concurrency"], {
+            "group": "${{ github.workflow }}-${{ github.ref }}",
+            "cancel-in-progress": "${{ " + self.ON_PR + " }}",
+        })
+
+    def test_every_pull_request_event_runs_the_full_check(self):
+        # A fast path for description-only edits would let an edit replace
+        # a failing result for the same head with a passing one.
+        self.assertNotIn("github.event.changes", self.PATH.read_text())
+        steps = self.job["steps"]
+        self.assertEqual(
+            [s.get("if") for s in steps],
+            [self.ON_PR, self.ON_PR, self.ON_MERGE_GROUP],
+        )
+        checkout = steps[0]
+        self.assertEqual(
+            checkout["uses"],
+            "actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1",
+        )
+        # `merge_base(base, head)` needs history; no token may persist.
+        self.assertEqual(
+            checkout["with"],
+            {"fetch-depth": "0", "persist-credentials": "false"},
+        )
+        self.assertIs(steps[1], self.step)
+        self.assertEqual(self.step["working-directory"], "anneal")
+
+    def test_merge_group_step_needs_no_checkout(self):
+        step = self.job["steps"][2]
+        self.assertEqual(step["name"], "Skip PR hygiene on merge groups")
+        self.assertNotIn("uses", step)
+        self.assertNotIn("working-directory", step)
+        self.assertNotIn("${{", step["run"])
+        with WorkflowRepoFixture(prefix="anneal-pr-hygiene-mq-") as fx:
+            empty = fx.mkdir("workspace")
+            res = fx.run_bash(step["run"], cwd=empty)
+        self.assertEqual(res.returncode, 0, res.stdout + res.stderr)
+        self.assertIn("::notice::", res.stdout)
+
+    def test_title_regex_matches_commit_policy(self):
+        checks_cfg = tomllib.loads((REPO_ROOT / "ci/checks.toml").read_text())
+        policy = checks_cfg["commit_policy"]["forbid_message_regex"]
+        self.assertEqual(policy, r"\b[T]ODO\b")
+        flags = re.findall(r"--forbid-pr-title-regex '([^']*)'",
+                           self.step["run"])
+        self.assertEqual(flags, [policy])
+        # Title equality applies only to single-commit PRs and is checked
+        # by publishing tooling, not here.
+        self.assertNotIn("--pr-title ", self.step["run"])
+
+    def test_pr_hygiene_step_reads_event_data_from_env(self):
+        step = self.step
         # Event data reaches the script only through `env`, never by
         # template expansion inside `run`.
         self.assertNotIn("${{", step["run"])
         self.assertEqual(step["env"], {
-            "EVENT_NAME": "${{ github.event_name }}",
             "PR_BASE_SHA": "${{ github.event.pull_request.base.sha }}",
             "PR_HEAD_SHA": "${{ github.event.pull_request.head.sha }}",
             "PR_AUTHOR_TYPE": "${{ github.event.pull_request.user.type }}",
+            "PR_TITLE": "${{ github.event.pull_request.title }}",
         })
         self.assertIn("set -euo pipefail", step["run"])
 
+    def test_pr_hygiene_step_behavior(self):
+        step = self.step
+        marker = "TO" + "DO"
+        trailer = "Agent-authored-by: AI agent acting on joshlf's behalf"
         with WorkflowRepoFixture(prefix="anneal-pr-hygiene-step-") as fx:
             root = fx.init_repo("repo")
             project = fx.mkdir("repo/anneal")
@@ -133,1345 +655,48 @@ class CiWorkflowManifestGuardTests(unittest.TestCase):
             base = fx.commit_all(root, "init")
             fx.write_file("repo/anneal/ci/new.py", "X = 1\n")
             head = fx.commit_all(root, "[ci] Add a file without a header")
+            summary = fx.root / "summary.md"
 
-            def run(event, author_type="User"):
+            def run(author_type="User", title="[ci] Add a file", sha=None):
                 env = os.environ.copy()
+                env.pop("GITHUB_STEP_SUMMARY", None)
                 env.update(
-                    EVENT_NAME=event,
                     PR_BASE_SHA=base,
-                    PR_HEAD_SHA=head,
+                    PR_HEAD_SHA=sha or head,
                     PR_AUTHOR_TYPE=author_type,
+                    PR_TITLE=title,
+                    GITHUB_STEP_SUMMARY=str(summary),
                 )
                 return fx.run_bash(step["run"], cwd=project, env=env)
 
-            res = run("pull_request")
+            res = run()
             self.assertEqual(res.returncode, 1, res.stdout + res.stderr)
             self.assertIn("[header] anneal/ci/new.py", res.stderr)
-            # The commit subject is fine, so only bot PRs differ in the
-            # skipped-commit warning.
             self.assertNotIn("--skip-commit-messages", res.stderr)
-            res = run("pull_request", author_type="Bot")
+            res = run(author_type="Bot")
             self.assertEqual(res.returncode, 1, res.stdout + res.stderr)
             self.assertIn("skipped: --skip-commit-messages", res.stderr)
-            for event in ("merge_group", "push"):
-                res = run(event)
-                self.assertEqual(res.returncode, 0, res.stdout + res.stderr)
-
-            fx.write_file("repo/anneal/.gemini/styleguide.md", "drifted\n")
-            fx.commit_all(root, "[ci] Drift")
-            res = run("merge_group")
+            res = run(title=f"[ci] Add a file ({marker})")
             self.assertEqual(res.returncode, 1, res.stdout + res.stderr)
-            self.assertIn("code-review-rules-parity", res.stderr)
+            self.assertIn("[pr-title-policy]", res.stderr)
+            self.assertFalse(summary.exists())
 
-    def test_nix_cache_restricts_trusted_substituter_to_main_push(self):
-        build_steps = {
-            step["id"]: step
-            for step in self.workflow["jobs"]["build-exocrate"]["steps"]
-            if "id" in step
-        }
-        restore = build_steps["restore_nix_cache"]
-        expected_restore_if = (
-            "github.event_name == 'push' "
-            "&& github.repository == 'google/zerocopy' "
-            "&& github.ref == 'refs/heads/main'"
-        )
-        self.assertEqual(restore["if"], expected_restore_if)
-        self.assertTrue(
-            restore["uses"].startswith("actions/cache/restore@")
-        )
-        self.assertNotIn("pull_request", restore["if"])
-        self.assertNotIn("merge_group", restore["if"])
-        self.assertNotIn("restore-keys", restore["with"])
-        self.assertTrue(restore["with"]["path"].startswith("${{ runner.temp }}/"))
-        self.assertNotIn("anneal/trusted/audit/**", restore["with"]["key"])
-        self.assertNotIn("anneal/theory/**", restore["with"]["key"])
-        self.assertNotIn(
-            "anneal/trusted/cargo-anneal/src/bundled_resources.rs",
-            restore["with"]["key"],
-        )
-        self.assertNotIn(
-            "anneal/trusted/cargo-anneal/src/trusted_bundle.rs",
-            restore["with"]["key"],
-        )
-        self.assertNotIn(
-            "anneal/trusted/cargo-anneal/src/theory_bundle.rs",
-            restore["with"]["key"],
-        )
-        self.assertNotIn(
-            "anneal/trusted/rustc-capture/**", restore["with"]["key"]
-        )
-        self.assertNotIn("anneal/Cargo.lock", restore["with"]["key"])
-        for expected_input in (
-            "anneal/flake.nix",
-            "anneal/flake.lock",
-            "anneal/trusted/lean/lean-toolchain",
-            "anneal/trusted/lean/foundation-lock.json",
-        ):
-            self.assertIn(expected_input, restore["with"]["key"])
-
-        expected_writer_if = (
-            "github.event_name == 'push' "
-            "&& github.repository == 'google/zerocopy' "
-            "&& github.ref == 'refs/heads/main' "
-            "&& steps.restore_nix_cache.outputs.cache-hit != 'true'"
-        )
-        for writer_id in ("populate_nix_cache", "save_nix_cache"):
-            self.assertEqual(build_steps[writer_id]["if"], expected_writer_if)
-        populate_run = build_steps["populate_nix_cache"]["run"]
-        wipe_idx = populate_run.index('rm -rf "$RUNNER_TEMP/anneal-nix-cache"')
-        mkdir_idx = populate_run.index('mkdir -p "$RUNNER_TEMP/anneal-nix-cache"')
-        self.assertLess(wipe_idx, mkdir_idx)
-        self.assertIn("nix copy .#rust-toolchain .#lean-toolchain", populate_run)
-        self.assertNotIn("omnibus-archive", populate_run)
-        save_nix = build_steps["save_nix_cache"]
-        self.assertTrue(save_nix["uses"].startswith("actions/cache/save@"))
-        self.assertEqual(save_nix["with"]["path"], restore["with"]["path"])
-        self.assertEqual(
-            save_nix["with"]["key"],
-            "${{ steps.restore_nix_cache.outputs.cache-primary-key }}",
-        )
-
-    def test_miri_olean_cache_restores_verified_on_merge_group_and_compiles_cold_on_main(self):
-        ordered_steps = self.workflow["jobs"]["test-and-verify"]["steps"]
-        step_indices = {
-            step["id"]: idx
-            for idx, step in enumerate(ordered_steps)
-            if "id" in step
-        }
-        test_steps = {
-            step["id"]: step for step in ordered_steps if "id" in step
-        }
-        self.assertLess(
-            step_indices["miri_olean_cache"], step_indices["audit"]
-        )
-        self.assertLess(
-            step_indices["audit"], step_indices["save_miri_olean_cache"]
-        )
-
-        restore = test_steps["miri_olean_cache"]
-        self.assertTrue(
-            restore["uses"].startswith("actions/cache/restore@")
-        )
-        self.assertEqual(
-            restore["if"],
-            "${{ github.event_name == 'pull_request' "
-            "|| github.event_name == 'merge_group' || "
-            "(github.event_name == 'push' "
-            "&& github.repository == 'google/zerocopy' "
-            "&& github.ref == 'refs/heads/main') }}",
-        )
-        self.assertNotIn("restore-keys", restore["with"])
-        self.assertTrue(restore["with"]["path"].startswith("${{ runner.temp }}/"))
-        self.assertEqual(
-            restore["with"]["lookup-only"],
-            "${{ github.event_name == 'push' }}",
-        )
-
-        save = test_steps["save_miri_olean_cache"]
-        self.assertTrue(save["uses"].startswith("actions/cache/save@"))
-        self.assertNotIn("merge_group", save["if"])
-        self.assertEqual(
-            save["if"],
-            "${{ steps.miri_olean_cache.outputs.cache-hit != 'true' && "
-            "(github.event_name == 'pull_request' || "
-            "(github.event_name == 'push' "
-            "&& github.repository == 'google/zerocopy' "
-            "&& github.ref == 'refs/heads/main')) }}",
-        )
-        self.assertEqual(save["with"]["path"], restore["with"]["path"])
-        self.assertEqual(
-            save["with"]["key"],
-            "${{ steps.miri_olean_cache.outputs.cache-primary-key }}",
-        )
-
-        # Execute the `audit` step's argument-selection shell logic against a
-        # stub `cargo` command to verify cold compilation on `push`,
-        # `merge_group` misses, `workflow_dispatch`, and unknown events,
-        # read-only cache hits on `merge_group`, and seeding only on a missing
-        # `main` cache entry.
-        audit_script = test_steps["audit"]["run"]
-        with WorkflowRepoFixture(prefix="anneal-ci-miri-cache-") as fx:
-            bin_dir = fx.mkdir("bin")
-            recorded = fx.path("cargo_args.txt")
-            seen_cache = fx.path("cache_seen_by_cargo.txt")
-            seen_env = fx.path("ambient_env_seen.txt")
-            fx.write_executable(
-                "bin/cargo",
-                "#!/usr/bin/env bash\n"
-                f"printf '%s\\n' \"$@\" > '{recorded}'\n"
-                "if [ -e \"$MIRI_OLEAN_CACHE_DIR\" ]; then\n"
-                f"  echo exists > '{seen_cache}'\n"
-                "else\n"
-                f"  echo absent > '{seen_cache}'\n"
-                "fi\n"
-                f"printf '%s' \"${{ANNEAL_MIRI_CACHE_DIR-UNSET}}\" > '{seen_env}'\n",
-            )
-            diag = fx.mkdir("diag")
-
-            def run_audit_case(event_name, repo, ref, cache_hit, preseed=False):
-                cache_dir = fx.path("miri-cache")
-                if cache_dir.exists():
-                    for p in sorted(cache_dir.rglob("*"), reverse=True):
-                        p.unlink() if p.is_file() else p.rmdir()
-                    cache_dir.rmdir()
-                if preseed:
-                    cache_dir.mkdir(parents=True, exist_ok=True)
-                    (cache_dir / "stale.olean").write_text("stale")
-                recorded.unlink(missing_ok=True)
-                seen_cache.unlink(missing_ok=True)
-                seen_env.unlink(missing_ok=True)
-                env = os.environ.copy()
-                env.update({
-                    "PATH": f"{bin_dir}:{env.get('PATH', '')}",
-                    "ANNEAL_MIRI_CACHE_DIR": "/ambient/poison",
-                    "ANNEAL_TEST_DIAGNOSTICS": str(diag),
-                    "ANNEAL_TEST_INSTALL_ROOT": "/fake/install",
-                    "CI_EVENT_NAME": event_name,
-                    "CI_REPOSITORY": repo,
-                    "CI_REF": ref,
-                    "MIRI_CACHE_HIT": cache_hit,
-                    "MIRI_OLEAN_CACHE_DIR": str(cache_dir),
-                })
-                res = fx.run_bash(audit_script, env=env)
-                self.assertEqual(res.returncode, 0, res.stdout + res.stderr)
-                self.assertEqual(seen_env.read_text(), "UNSET")
-                return (
-                    recorded.read_text().splitlines(),
-                    seen_cache.read_text().strip(),
-                )
-
-            # 1. workflow_dispatch and unknown non-PR/non-MG events never
-            # pass --miri-cache-dir.
-            for ev in ("workflow_dispatch", "schedule"):
-                args, _ = run_audit_case(
-                    ev, "google/zerocopy", "refs/heads/main", ""
-                )
-                self.assertNotIn("--miri-cache-dir", args)
-
-            # 1b. merge_group uses read-only restored cache on cache-hit ==
-            # "true" (SHA-256 verified inside anneal-audit) and compiles cold
-            # on miss (wiping stale directory and omitting --miri-cache-dir).
-            args, seen = run_audit_case(
-                "merge_group",
-                "google/zerocopy",
-                "refs/heads/gh-readonly-queue/main/pr-1",
-                "true",
-                preseed=True,
-            )
-            self.assertEqual(seen, "exists")
-            self.assertIn("--miri-cache-dir", args)
-            for miss_val in ("false", ""):
-                args, seen = run_audit_case(
-                    "merge_group",
-                    "google/zerocopy",
-                    "refs/heads/gh-readonly-queue/main/pr-1",
-                    miss_val,
-                    preseed=True,
-                )
-                self.assertEqual(seen, "absent")
-                self.assertNotIn("--miri-cache-dir", args)
-
-            # 2. push on main with cache hit wipes any pre-existing cache dir
-            # before cargo runs and omits --miri-cache-dir.
-            args, seen = run_audit_case(
-                "push", "google/zerocopy", "refs/heads/main", "true",
-                preseed=True,
-            )
-            self.assertEqual(seen, "absent")
-            self.assertNotIn("--miri-cache-dir", args)
-
-            # 3. push on main with cache miss (false or empty) wipes any
-            # pre-existing cache dir before cargo runs (cold compile) and
-            # passes --miri-cache-dir to seed main.
-            for miss_val in ("false", ""):
-                args, seen = run_audit_case(
-                    "push", "google/zerocopy", "refs/heads/main", miss_val,
-                    preseed=True,
-                )
-                self.assertEqual(seen, "absent")
-                self.assertIn("--miri-cache-dir", args)
-
-            # 4. push on a fork or non-main branch wipes any pre-existing cache
-            # dir before cargo runs and omits --miri-cache-dir.
-            for repo, ref in (
-                ("someone/zerocopy", "refs/heads/main"),
-                ("google/zerocopy", "refs/heads/dev"),
-            ):
-                args, seen = run_audit_case(
-                    "push", repo, ref, "false", preseed=True
-                )
-                self.assertEqual(seen, "absent")
-                self.assertNotIn("--miri-cache-dir", args)
-
-            # 5. pull_request preserves the restored cache dir and passes
-            # --miri-cache-dir to consume main's cache.
-            args, seen = run_audit_case(
-                "pull_request", "google/zerocopy", "refs/pull/1/merge", "true",
-                preseed=True,
-            )
-            self.assertEqual(seen, "exists")
-            self.assertIn("--miri-cache-dir", args)
-
-    def test_ci_performance_and_sandbox_probe_invariants(self):
-        top_env = self.workflow["env"]
-        self.assertEqual(top_env.get("CARGO_BUILD_JOBS"), "4")
-        self.assertEqual(top_env.get("RUST_TEST_THREADS"), "4")
-
-        jobs = self.workflow["jobs"]
-        self.assertEqual(
-            jobs["installed-smoke"]["env"].get("ANNEAL_TEST_JOBS"), "4"
-        )
-        hash_opt_flags = tuple(
-            f"--config 'profile.dev.package.{pkg}.opt-level=3'"
-            for pkg in ("cpufeatures", "digest", "sha2")
-        )
-        full_opt_flags = hash_opt_flags + (
-            "--config 'profile.dev.package.zstd-sys.opt-level=3'",
-        )
-        for job_name, step_ids, required_flags in (
-            ("test-and-verify", ("audit",), hash_opt_flags),
-            (
-                "installed-smoke",
-                ("installed_cli", "installed_auditor", "package", "smoke"),
-                full_opt_flags,
-            ),
-            ("workspace-tests", ("workspace",), full_opt_flags),
-        ):
-            by_id = {
-                s["id"]: s for s in jobs[job_name]["steps"] if "id" in s
-            }
-            for step_id in step_ids:
-                for flag in required_flags:
-                    self.assertIn(
-                        flag,
-                        by_id[step_id]["run"],
-                        f"{job_name}.{step_id} missing {flag}",
-                    )
-        # Verify `regenerate_bundle --stage-package`, `cargo publish --dry-run`,
-        # and `cargo test --no-run` in `installed-smoke.package` each receive
-        # all four optimization `--config` flags so Cargo does not recompile
-        # deps at opt-level=0, and pin the clean-tree/two-file/cleanup guards
-        # required for `--allow-dirty`.
-        pkg_run = next(
-            s["run"]
-            for s in jobs["installed-smoke"]["steps"]
-            if s.get("id") == "package"
-        )
-        pre_test_block, test_block = pkg_run.split("prepared_manifest=", 1)
-        stage_block, publish_block = pre_test_block.split("cargo publish --dry-run", 1)
-        self.assertIn(
-            'clean_status="$(git status --porcelain --untracked-files=all)"',
-            stage_block,
-        )
-        self.assertIn('test -z "$clean_status"', stage_block)
-        self.assertIn("trap 'rm -rf trusted/cargo-anneal/packaged' EXIT", stage_block)
-        self.assertIn("--stage-package", stage_block)
-        self.assertIn(
-            'staged_status="$(git status --porcelain --untracked-files=all | '
-            'LC_ALL=C sort)"',
-            stage_block,
-        )
-        self.assertIn(
-            "expected_status=\"$(printf '?? anneal/trusted/cargo-anneal/"
-            "packaged/bundled_resources.rs\\n"
-            "?? anneal/trusted/cargo-anneal/packaged/bundled_theory.json')\"",
-            stage_block,
-        )
-        self.assertIn('test "$staged_status" = "$expected_status"', stage_block)
-        for flag in full_opt_flags:
-            self.assertIn(flag, stage_block, f"regenerate_bundle missing {flag}")
-            self.assertIn(flag, publish_block, f"cargo publish missing {flag}")
-            self.assertIn(flag, test_block, f"packaged cargo test missing {flag}")
-
-        rg_step = next(
-            s for s in jobs["static-checks"]["steps"]
-            if s.get("name") == "Install ripgrep"
-        )
-        self.assertIn("set -euo pipefail", rg_step["run"])
-        self.assertIn("rg --version", rg_step["run"])
-
-        for job_name in ("test-and-verify", "installed-smoke", "workspace-tests"):
-            sandbox_step = next(
-                s for s in jobs[job_name]["steps"] if s.get("id") == "sandbox"
-            )
-            self.assertIn("set -euo pipefail", sandbox_step["run"])
-            self.assertIn("bwrap --unshare-all", sandbox_step["run"])
-            self.assertIn("-- /true", sandbox_step["run"])
-
-        build_step = next(
-            s for s in jobs["build-exocrate"]["steps"] if s.get("id") == "build"
-        )
-        self.assertIn("nix build --max-jobs 4 --cores 4", build_step["run"])
-
-        extract_step = next(
-            s for s in jobs["test-and-verify"]["steps"]
-            if s.get("id") == "extract_lean"
-        )
-        self.assertIn("bwrap --unshare-all", extract_step["run"])
-        self.assertIn("tar --no-same-owner --zstd -xf /archive.tar.zst -C /out lean", extract_step["run"])
-        self.assertIn("/usr/bin/python3 -I -B ci/check_bundle_tree.py", extract_step["run"])
-        self.assertIn("--lean-only", extract_step["run"])
-
-        setup_step = next(
-            s for s in jobs["installed-smoke"]["steps"]
-            if s.get("id") == "setup"
-        )
-        self.assertIn("/usr/bin/python3 -I -B ci/check_bundle_tree.py", setup_step["run"])
-        self.assertIn("--discover-single", setup_step["run"])
-
-        ws_extract = next(
-            s for s in jobs["workspace-tests"]["steps"]
-            if s.get("id") == "extract_toolchain"
-        )
-        self.assertIn("bwrap --unshare-all", ws_extract["run"])
-        self.assertIn("tar --no-same-owner --zstd -xf /archive.tar.zst -C /out", ws_extract["run"])
-        self.assertIn("/usr/bin/python3 -I -B ci/check_bundle_tree.py", ws_extract["run"])
-        for ws_step in jobs["workspace-tests"]["steps"]:
-            self.assertNotIn("cargo install", ws_step.get("run", ""))
-
-        alpha_step = next(
-            s for s in jobs["installed-smoke"]["steps"]
-            if s.get("name") == "Check the scalar alpha with the installed toolchain"
-        )
-        self.assertIn('"$ANNEAL_TEST_CARGO_ANNEAL" /cargo-anneal', alpha_step["run"])
-        self.assertNotIn("cargo build", alpha_step["run"])
-
-        starnix_step = next(
-            s for s in jobs["installed-smoke"]["steps"]
-            if s.get("id") == "starnix"
-        )
-        self.assertIn("ci/verify_starnix_e2e.py", starnix_step["run"])
-        self.assertIn("--fetch-only", starnix_step["run"])
-        self.assertIn("bwrap --unshare-all", starnix_step["run"])
-        self.assertIn('--cli "$ANNEAL_TEST_CARGO_ANNEAL"', starnix_step["run"])
-
-        zc_step = next(
-            s for s in jobs["installed-smoke"]["steps"]
-            if s.get("id") == "verify_zerocopy"
-        )
-        self.assertIn("ci/verify_zerocopy.py", zc_step["run"])
-        self.assertIn("bwrap --unshare-all", zc_step["run"])
-        self.assertIn('--cli "$ANNEAL_TEST_CARGO_ANNEAL"', zc_step["run"])
-        self.assertIn('--jobs "$ANNEAL_TEST_JOBS"', zc_step["run"])
-        for token in (
-            "ACTIONS_CACHE_URL",
-            "ACTIONS_RESULTS_URL",
-            "ACTIONS_RUNTIME_TOKEN",
-            "ACTIONS_RUNTIME_URL",
-        ):
-            self.assertEqual(zc_step.get("env", {}).get(token), "")
-
-    def test_parallel_workspace_tests_job_wired_into_gate_and_isolated(self):
-        jobs = self.workflow["jobs"]
-        for parallel_job in ("installed-smoke", "workspace-tests"):
-            self.assertIn(parallel_job, jobs["all-jobs-succeed"]["needs"])
-            self.assertEqual(jobs[parallel_job]["needs"], ["build-exocrate"])
-        self.assertIn("sandbox-aarch64", jobs["all-jobs-succeed"]["needs"])
-        arm_job = jobs["sandbox-aarch64"]
-        arm_checkout = next(
-            step for step in arm_job["steps"]
-            if step.get("uses", "").startswith("actions/checkout@")
-        )
-        self.assertEqual(
-            arm_checkout["with"]["persist-credentials"], "false"
-        )
-        for token in (
-            "ACTIONS_CACHE_URL",
-            "ACTIONS_RESULTS_URL",
-            "ACTIONS_RUNTIME_TOKEN",
-        ):
-            self.assertEqual(arm_job.get("env", {}).get(token), "")
-        ws_steps_list = jobs["workspace-tests"]["steps"]
-        ws_steps = {
-            step["id"]: step
-            for step in ws_steps_list
-            if "id" in step
-        }
-        self.assertEqual(
-            ws_steps["checkout"]["with"]["persist-credentials"], "false"
-        )
-        self.assertIn("cargo test --workspace --locked", ws_steps["workspace"]["run"])
-        tokens = (
-            "ACTIONS_CACHE_URL",
-            "ACTIONS_RESULTS_URL",
-            "ACTIONS_RUNTIME_TOKEN",
-        )
-        # Every run step after checkout in test-and-verify, installed-smoke,
-        # and workspace-tests must strip Actions tokens.
-        for job_name, min_run_steps in (
-            ("test-and-verify", 6),
-            ("installed-smoke", 12),
-            ("workspace-tests", 6),
-        ):
-            steps_list = jobs[job_name]["steps"]
-            checkout_idx = next(
-                i for i, step in enumerate(steps_list)
-                if step.get("id") == "checkout"
-            )
-            self.assertEqual(
-                steps_list[checkout_idx]["with"]["persist-credentials"], "false"
-            )
-            post_checkout_run_steps = [
-                step for step in steps_list[checkout_idx + 1:] if "run" in step
-            ]
-            self.assertGreaterEqual(len(post_checkout_run_steps), min_run_steps)
-            for step in post_checkout_run_steps:
-                step_env = step.get("env", {})
-                for token in tokens:
-                    self.assertEqual(
-                        step_env.get(token),
-                        "",
-                        f"{job_name} step {step.get('name')!r} must strip {token}",
-                    )
-        # Every inline python3 heredoc in anneal-current.yml must run isolated
-        # (-I -B) so untrusted repo root files cannot shadow stdlib modules.
-        inline_py_count = 0
-        for job_name, job in jobs.items():
-            for step in job.get("steps", []):
-                run_src = step.get("run", "")
-                for match in re.finditer(r"python3\b[^;\n]*<<", run_src):
-                    inline_py_count += 1
-                    self.assertTrue(
-                        match.group(0).startswith("python3 -I -B -"),
-                        f"{job_name}/{step.get('name')!r} must use python3 -I -B -: "
-                        f"{match.group(0)!r}",
-                    )
-        self.assertGreaterEqual(inline_py_count, 5)
-        # Verify clean_tree in test-and-verify, installed-smoke, and
-        # workspace-tests fails closed when git status errors (e.g., outside a
-        # git repository).
-        with WorkflowRepoFixture() as fx:
-            for job_name in ("test-and-verify", "installed-smoke", "workspace-tests"):
-                clean_step = find_workflow_step(
-                    self.workflow, job_name, step_id="clean_tree"
-                )
-                self.assertIn("set -euo pipefail", clean_step["run"])
-                res = fx.run_bash(clean_step["run"], strict=False)
-                self.assertNotEqual(
-                    res.returncode,
-                    0,
-                    f"{job_name}.clean_tree masked git status failure",
-                )
-        # Diagnostic artifact names must stay distinct across all parallel jobs
-        # so concurrent failures never collide during upload.
-        upload_names = []
-        for job_name, step_name in (
-            ("test-and-verify", "Upload failed test diagnostics"),
-            ("installed-smoke", "Upload failed installed smoke diagnostics"),
-            ("workspace-tests", "Upload failed workspace test diagnostics"),
-        ):
-            upload = next(
-                s for s in jobs[job_name]["steps"]
-                if s.get("name") == step_name
-            )
-            upload_names.append(upload["with"]["name"])
-        self.assertEqual(len(upload_names), len(set(upload_names)), upload_names)
-
-    def test_static_checks_enforces_wasm32_core_and_offline_inspect(self):
-        jobs = self.workflow["jobs"]
-        static_steps = jobs["static-checks"]["steps"]
-        wasm_step = next(
-            (
-                s
-                for s in static_steps
-                if s.get("name") == "Check pure core (wasm32-unknown-unknown)"
-            ),
-            None,
-        )
-        self.assertIsNotNone(wasm_step, "static-checks must check wasm32 core")
-        self.assertIn("rustup target add wasm32-unknown-unknown", wasm_step["run"])
-        self.assertIn(
-            'RUSTFLAGS="-D warnings" cargo check --locked -p cargo-anneal',
-            wasm_step["run"],
-        )
-        self.assertIn("--no-default-features --lib --target wasm32-unknown-unknown", wasm_step["run"])
-
-        offline_clippy = next(
-            s
-            for s in static_steps
-            if s.get("name") == "Check offline cargo-anneal (--no-default-features) with Clippy"
-        )
-        self.assertIn("--test cli --test inspect", offline_clippy["run"])
-
-        self.assertTrue(
-            any(
-                "--test cli --test inspect" in s.get("run", "")
-                for s in jobs["workspace-tests"]["steps"]
-            ),
-            "workspace-tests must run --test inspect under --no-default-features",
-        )
-
-        # Mirror coverage in `ci-core` adapter (`anneal/ci/run_anneal_check.sh`)
-        # so the pure-core wasm32 and offline inspect gates survive cutover.
-        adapter = (
-            Path(__file__).resolve().parent / "run_anneal_check.sh"
-        ).read_text(encoding="utf-8")
-        self.assertIn("--lib --target wasm32-unknown-unknown", adapter)
-        self.assertGreaterEqual(
-            adapter.count("--test cli --test inspect"),
-            2,
-            "run_anneal_check.sh must include --test inspect in both clippy and ws-test",
-        )
-
-    def test_all_jobs_succeed_run_heavy_gating(self):
-        jobs = self.workflow["jobs"]
-        self.assertNotIn("release-lock", jobs)
-        run_heavy_input = self.workflow["on"]["workflow_call"]["inputs"]["run_heavy"]
-        self.assertEqual(run_heavy_input["type"], "boolean")
-        self.assertEqual(run_heavy_input["default"], "true")
-        for heavy_job in (
-            "build-exocrate",
-            "test-and-verify",
-            "installed-smoke",
-            "workspace-tests",
-            "sandbox-aarch64",
-        ):
-            self.assertEqual(
-                jobs[heavy_job]["if"],
-                "${{ github.event_name != 'pull_request' || inputs.run_heavy }}",
-                heavy_job,
-            )
-
-        gate = jobs["all-jobs-succeed"]
-        self.assertNotIn("release-lock", gate["needs"])
-        gate_step = next(
-            s for s in gate["steps"]
-            if s.get("name") == "Require every dependency to succeed"
-        )
-        self.assertEqual(
-            gate_step["env"]["EVENT_NAME"], "${{ github.event_name }}"
-        )
-        self.assertEqual(
-            gate_step["env"]["RUN_HEAVY"],
-            "${{ github.event_name != 'pull_request' || inputs.run_heavy }}",
-        )
-        self.assertNotIn("ANNEAL_RELEASE_LOCK", gate_step["env"])
-        self.assertEqual(gate_step["env"]["NEEDS_JSON"], "${{ toJSON(needs) }}")
-        self.assertNotIn("${{", gate_step["run"])
-
-        script = gate_step["run"]
-        all_jobs = list(gate["needs"])
-
-        with WorkflowRepoFixture(prefix="anneal-gate-") as fx:
-            def run_gate(
-                event_name,
-                overrides=None,
-                *,
-                run_heavy="true",
-            ):
-                needs = {j: {"result": "success"} for j in all_jobs}
-                if overrides:
-                    for k, v in overrides.items():
-                        needs[k] = {"result": v}
-                env = os.environ.copy()
-                env["EVENT_NAME"] = event_name
-                env["RUN_HEAVY"] = run_heavy
-                env["NEEDS_JSON"] = json.dumps(needs)
-                return fx.run_bash(script, env=env, strict=False)
-
-            for event in ("pull_request", "push", "merge_group", "workflow_dispatch"):
-                with self.subTest(event=event):
-                    self.assertEqual(run_gate(event).returncode, 0)
-                    for bad_result in ("skipped", "failure", "cancelled"):
-                        self.assertNotEqual(
-                            run_gate(
-                                event, {"workspace-tests": bad_result}
-                            ).returncode,
-                            0,
-                        )
-
-            # pull_request with run_heavy == "false" passes only when
-            # static-checks succeeded and all heavy jobs were skipped.
-            pr_light_overrides = {
-                j: "skipped" for j in all_jobs if j != "static-checks"
-            }
-            self.assertEqual(
-                run_gate(
-                    "pull_request",
-                    pr_light_overrides,
-                    run_heavy="false",
-                ).returncode,
-                0,
-            )
-            # Non-PR events ignore run_heavy == "false" and require heavy jobs.
-            for non_pr in ("merge_group", "push", "workflow_dispatch"):
-                self.assertNotEqual(
-                    run_gate(
-                        non_pr,
-                        pr_light_overrides,
-                        run_heavy="false",
-                    ).returncode,
-                    0,
-                    non_pr,
-                )
-            # Skipping static-checks or failing a heavy job on light PR fails
-            # closed.
-            self.assertNotEqual(
-                run_gate(
-                    "pull_request",
-                    {**pr_light_overrides, "static-checks": "skipped"},
-                    run_heavy="false",
-                ).returncode,
-                0,
-            )
-            self.assertNotEqual(
-                run_gate(
-                    "pull_request",
-                    {**pr_light_overrides, "workspace-tests": "failure"},
-                    run_heavy="false",
-                ).returncode,
-                0,
-            )
-            for bad_heavy in ("", "unexpected"):
-                self.assertNotEqual(
-                    run_gate(
-                        "pull_request",
-                        pr_light_overrides,
-                        run_heavy=bad_heavy,
-                    ).returncode,
-                    0,
-                )
-
-            for bad_result in ("skipped", "failure", "cancelled"):
-                res = run_gate("pull_request", {"static-checks": bad_result})
-                self.assertNotEqual(res.returncode, 0)
-
-
-class PathFilterWorkflowTests(unittest.TestCase):
-    def setUp(self):
-        root = SOURCE.parent.parent
-        self.ci_wf = load_workflow(root / ".github/workflows/ci.yml")
-        self.anneal_wf = load_workflow(root / ".github/workflows/anneal.yml")
-
-    def _run_detect_changes(
-        self,
-        workflow,
-        event_name,
-        commit_batches,
-        *,
-        setup_extra=None,
-        synthetic_merge=False,
-        pr_base_sha_override=None,
-        pr_head_sha_override=None,
-        drop_origin_main=False,
-        pr_draft=None,
-        pr_has_run_ci=None,
-    ):
-        script = next(
-            step["run"]
-            for step in workflow["jobs"]["detect_changes"]["steps"]
-            if step.get("id") == "filter"
-        )
-        with WorkflowRepoFixture(prefix="anneal-ci-filter-") as fx:
-            repo = fx.init_repo("repo", initial_branch="main")
-            gh_out = fx.write_file("gh_out.txt", "")
-
-            def git(*args):
-                return fx.git(repo, *args)
-
-            fx.write_file("repo/README.md", "base\n")
-            git("add", "README.md")
-            git("commit", "-qm", "base")
-            if setup_extra is not None:
-                setup_extra(repo, git)
-            main_sha = git("rev-parse", "HEAD").stdout.strip()
-            if not drop_origin_main:
-                git("update-ref", "refs/remotes/origin/main", main_sha)
-
-            base_sha = main_sha
-            pr_tip = main_sha
-            if synthetic_merge:
-                # Create a diverged base commit on `main`, branch the PR from
-                # `main_sha`, commit `commit_batches`, and merge PR into base
-                # (mirroring GitHub's synthetic `refs/pull/N/merge` HEAD).
-                git("checkout", "-qb", "pr-branch", main_sha)
-                for idx, ops in enumerate(commit_batches):
-                    self._apply_ops(repo, git, ops)
-                    git("commit", "-qm", f"pr-{idx}")
-                pr_tip = git("rev-parse", "HEAD").stdout.strip()
-                git("checkout", "-q", "main")
-                (repo / "zerocopy").mkdir(exist_ok=True)
-                (repo / "zerocopy/unrelated_main.txt").write_text("main\n")
-                git("add", "zerocopy/unrelated_main.txt")
-                git("commit", "-qm", "advance-main")
-                base_sha = git("rev-parse", "HEAD").stdout.strip()
-                if not drop_origin_main:
-                    git("update-ref", "refs/remotes/origin/main", base_sha)
-                git("merge", "--no-ff", "-qm", "synthetic-pr-merge", pr_tip)
-            else:
-                for idx, ops in enumerate(commit_batches):
-                    self._apply_ops(repo, git, ops)
-                    git("commit", "-qm", f"batch-{idx}")
-                    if idx + 1 < len(commit_batches):
-                        base_sha = git("rev-parse", "HEAD").stdout.strip()
-                pr_tip = git("rev-parse", "HEAD").stdout.strip()
-
-            env = os.environ.copy()
-            env.update({
-                "GITHUB_OUTPUT": str(gh_out),
-                "EVENT_NAME": event_name,
-                "PR_DRAFT": (
-                    pr_draft
-                    if pr_draft is not None
-                    else ("false" if event_name == "pull_request" else "")
-                ),
-                "PR_HAS_RUN_CI": (
-                    pr_has_run_ci
-                    if pr_has_run_ci is not None
-                    else ("false" if event_name == "pull_request" else "")
-                ),
-                "PR_BASE_SHA": (
-                    pr_base_sha_override
-                    if pr_base_sha_override is not None
-                    else (base_sha if event_name == "pull_request" else "")
-                ),
-                "PR_HEAD_SHA": (
-                    pr_head_sha_override
-                    if pr_head_sha_override is not None
-                    else (pr_tip if event_name == "pull_request" else "")
-                ),
-            })
-            res = fx.run_bash(script, cwd=repo, env=env)
+            # The tip commit waives the header finding loudly.
+            fx.git(root, "commit", "-q", "--amend", "-m",
+                   "[ci] Add a file without a header\n\n"
+                   "Skip-pr-hygiene: header -- Fixture without a header.\n"
+                   f"{trailer}\n")
+            waived = fx.git(root, "rev-parse", "HEAD").stdout.strip()
+            res = run(sha=waived)
             self.assertEqual(res.returncode, 0, res.stdout + res.stderr)
-            return fx.parse_kv_file(gh_out)
+            self.assertIn("::warning file=anneal/ci/new.py,line=1,",
+                          res.stdout)
+            self.assertIn("Fixture without a header.", summary.read_text())
+            # A waiver cannot cover the title policy.
+            res = run(sha=waived, title=f"{marker}: header")
+            self.assertEqual(res.returncode, 1, res.stdout + res.stderr)
+            self.assertIn("[pr-title-policy]", res.stderr)
 
-    @staticmethod
-    def _apply_ops(repo, git, ops):
-        if callable(ops):
-            ops(repo, git)
-            return
-        for rel, content in ops.items():
-            p = repo / rel
-            if content is None:
-                git("rm", "-q", rel)
-            else:
-                p.parent.mkdir(parents=True, exist_ok=True)
-                p.write_text(content)
-                git("add", rel)
-
-    def test_detect_changes_classification_and_fail_closed_invariants(self):
-        # Verify least-privilege, token-stripping, and PR event triggers.
-        for wf_name, wf in (("ci.yml", self.ci_wf), ("anneal.yml", self.anneal_wf)):
-            self.assertEqual(
-                wf["on"]["pull_request"]["types"],
-                [
-                    "opened",
-                    "synchronize",
-                    "reopened",
-                    "ready_for_review",
-                    "converted_to_draft",
-                    "labeled",
-                    "unlabeled",
-                ],
-                wf_name,
-            )
-            job = wf["jobs"]["detect_changes"]
-            self.assertEqual(job["permissions"], {"contents": "read"}, wf_name)
-            for token in (
-                "ACTIONS_CACHE_URL",
-                "ACTIONS_RESULTS_URL",
-                "ACTIONS_RUNTIME_TOKEN",
-            ):
-                self.assertEqual(job["env"][token], "", f"{wf_name}:{token}")
-            checkout = next(
-                s for s in job["steps"] if s.get("uses", "").startswith("actions/checkout@")
-            )
-            self.assertEqual(
-                checkout["with"]["persist-credentials"], "false", wf_name
-            )
-            self.assertEqual(
-                checkout["if"],
-                "github.event_name == 'pull_request' && "
-                "!contains(github.event.pull_request.labels.*.name, 'run-ci') "
-                "&& !github.event.pull_request.draft",
-                wf_name,
-            )
-            filter_step = next(
-                s for s in job["steps"] if s.get("id") == "filter"
-            )
-            self.assertEqual(
-                filter_step["env"]["EVENT_NAME"],
-                "${{ github.event_name }}",
-                wf_name,
-            )
-            self.assertEqual(
-                filter_step["env"]["PR_DRAFT"],
-                "${{ github.event.pull_request.draft }}",
-                wf_name,
-            )
-            self.assertEqual(
-                filter_step["env"]["PR_HAS_RUN_CI"],
-                "${{ contains(github.event.pull_request.labels.*.name, 'run-ci') }}",
-                wf_name,
-            )
-        self.assertEqual(
-            self.ci_wf["jobs"]["detect_changes"]["outputs"]["run_zerocopy"],
-            "${{ steps.filter.outputs.run_zerocopy }}",
-        )
-        self.assertEqual(
-            self.anneal_wf["jobs"]["detect_changes"]["outputs"]["run_anneal"],
-            "${{ steps.filter.outputs.run_anneal }}",
-        )
-        self.assertEqual(
-            self.anneal_wf["jobs"]["detect_changes"]["outputs"]["run_heavy"],
-            "${{ steps.filter.outputs.run_heavy }}",
-        )
-        self.assertEqual(
-            self.anneal_wf["jobs"]["current_anneal"]["with"]["run_heavy"],
-            "${{ needs.detect_changes.outputs.run_heavy != 'false' }}",
-        )
-        anneal_gate_step = next(
-            s
-            for s in self.anneal_wf["jobs"]["all-jobs-succeed"]["steps"]
-            if s.get("name") == "Require every dependency to succeed"
-        )
-        self.assertEqual(
-            anneal_gate_step["env"]["EVENT_NAME"],
-            "${{ github.event_name }}",
-        )
-        self.assertEqual(
-            anneal_gate_step["env"]["RUN_ANNEAL"],
-            "${{ needs.detect_changes.outputs.run_anneal }}",
-        )
-        self.assertEqual(
-            anneal_gate_step["env"]["RUN_HEAVY"],
-            "${{ needs.detect_changes.outputs.run_heavy }}",
-        )
-        self.assertEqual(
-            anneal_gate_step["env"]["NEEDS_JSON"],
-            "${{ toJSON(needs) }}",
-        )
-
-        cases = [
-            # (label, event, commit_batches, exp_run_zerocopy,
-            #  exp_run_anneal, exp_run_heavy)
-            ("anneal_only_pr", "pull_request", [{"anneal/README.md": "a"}], "false", "true", "false"),
-            ("anneal_only_2_commits", "pull_request", [{"anneal/a.md": "a"}, {"anneal/b.md": "b"}], "false", "true", "false"),
-            (
-                "zerocopy_proofs_only_pr",
-                "pull_request",
-                [{"zerocopy/proofs/01_usize_pointer_metadata/Proof.lean": "p"}],
-                "false",
-                "true",
-                "false",
-            ),
-            (
-                "anneal_plus_zerocopy_proofs_pr",
-                "pull_request",
-                [{"anneal/README.md": "a", "zerocopy/proofs/05/Spec.lean": "s"}],
-                "false",
-                "true",
-                "false",
-            ),
-            ("zerocopy_only_pr", "pull_request", [{"zerocopy/src/lib.rs": "z"}], "true", "false", "false"),
-            ("zerocopy_only_2_commits", "pull_request", [{"zerocopy/a.rs": "a"}, {"zerocopy/b.rs": "b"}], "true", "false", "false"),
-            (
-                "zerocopy_proofs_plus_src_pr",
-                "pull_request",
-                [{"zerocopy/proofs/01/Proof.lean": "p", "zerocopy/src/lib.rs": "z"}],
-                "true",
-                "true",
-                "false",
-            ),
-            (
-                "non_anneal_prefixes",
-                "pull_request",
-                [{"evals/a.txt": "e", "tools/b.txt": "t", "maintainers/c.txt": "m"}],
-                "true",
-                "false",
-                "false",
-            ),
-            (
-                "allowed_root_non_anneal",
-                "pull_request",
-                [{
-                    "CONTRIBUTING.md": "c",
-                    "LICENSE-APACHE": "la",
-                    "LICENSE-BSD": "lb",
-                    "LICENSE-MIT": "lm",
-                    "rustfmt.toml": "r",
-                    ".dockerignore": "d",
-                }],
-                "true",
-                "false",
-                "false",
-            ),
-            ("exocrate_touches_both", "pull_request", [{"exocrate/src/lib.rs": "e"}], "true", "true", "false"),
-            ("workflow_touches_both", "pull_request", [{".github/workflows/ci.yml": "w"}], "true", "true", "false"),
-            ("ci_dir_touches_both", "pull_request", [{"ci/check_fmt.sh": "s"}], "true", "true", "false"),
-            ("githooks_touches_both", "pull_request", [{"githooks/pre-push": "h"}], "true", "true", "false"),
-            ("skills_dir_touches_both", "pull_request", [{"skills/commit-message/SKILL.md": "s"}], "true", "true", "false"),
-            ("root_cargo_override", "pull_request", [{".cargo/config.toml": "x"}], "true", "true", "false"),
-            ("root_rust_toolchain_override", "pull_request", [{"rust-toolchain.toml": "n"}], "true", "true", "false"),
-            ("root_gitignore_touches_both", "pull_request", [{".gitignore": "g"}], "true", "true", "false"),
-            ("root_rgignore_touches_both", "pull_request", [{".rgignore": "r"}], "true", "true", "false"),
-            ("root_gemini_touches_both", "pull_request", [{".gemini/styleguide.md": "s"}], "true", "true", "false"),
-            ("root_vscode_touches_both", "pull_request", [{".vscode/settings.json": "{}"}], "true", "true", "false"),
-            ("mixed_pr", "pull_request", [{"anneal/a.txt": "a", "zerocopy/z.txt": "z"}], "true", "true", "false"),
-            (
-                "stacked_pr_lower_zerocopy_upper_anneal",
-                "pull_request",
-                [{"zerocopy/src/lib.rs": "z"}, {"anneal/README.md": "a"}],
-                "true",
-                "true",
-                "false",
-            ),
-            (
-                "stacked_pr_lower_anneal_upper_zerocopy",
-                "pull_request",
-                [{"anneal/README.md": "a"}, {"zerocopy/src/lib.rs": "z"}],
-                "true",
-                "true",
-                "false",
-            ),
-            ("push_always_runs_both", "push", [{"anneal/README.md": "a"}], "true", "true", "true"),
-            ("merge_group_always_runs_both", "merge_group", [{"zerocopy/src/lib.rs": "z"}], "true", "true", "true"),
-            ("workflow_dispatch_always_runs_both", "workflow_dispatch", [{"anneal/README.md": "a"}], "true", "true", "true"),
-        ]
-        for label, event, batches, exp_zc, exp_an, exp_heavy in cases:
-            with self.subTest(case=label):
-                zc_out = self._run_detect_changes(self.ci_wf, event, batches)
-                an_out = self._run_detect_changes(self.anneal_wf, event, batches)
-                self.assertEqual(zc_out["run_zerocopy"], exp_zc)
-                self.assertEqual(an_out["run_anneal"], exp_an)
-                self.assertEqual(an_out["run_heavy"], exp_heavy)
-
-        # Draft PRs without `run-ci` skip heavy jobs; explicit `run-ci` opts
-        # even Draft PRs into full CI.
-        for label, batch, run_ci, exp_zc, exp_an, exp_heavy in (
-            ("draft_zerocopy", [{"zerocopy/src/lib.rs": "z"}], "false", "false", "false", "false"),
-            ("draft_anneal", [{"anneal/README.md": "a"}], "false", "false", "false", "false"),
-            ("draft_with_run_ci", [{"zerocopy/src/lib.rs": "z"}], "true", "true", "true", "true"),
-        ):
-            with self.subTest(case=label):
-                zc_out = self._run_detect_changes(
-                    self.ci_wf, "pull_request", batch, pr_draft="true", pr_has_run_ci=run_ci
-                )
-                an_out = self._run_detect_changes(
-                    self.anneal_wf, "pull_request", batch, pr_draft="true", pr_has_run_ci=run_ci
-                )
-                self.assertEqual(zc_out["run_zerocopy"], exp_zc)
-                self.assertEqual(an_out["run_anneal"], exp_an)
-                self.assertEqual(an_out["run_heavy"], exp_heavy)
-
-        # Ready PRs with `run-ci` label run full PR CI in both workflows.
-        for label, batch in (
-            ("run_ci_anneal_only", [{"anneal/README.md": "a"}]),
-            ("run_ci_proofs_only", [{"zerocopy/proofs/01/Proof.lean": "p"}]),
-            ("run_ci_zerocopy_only", [{"zerocopy/src/lib.rs": "z"}]),
-        ):
-            with self.subTest(case=label):
-                zc_out = self._run_detect_changes(
-                    self.ci_wf, "pull_request", batch, pr_draft="false", pr_has_run_ci="true"
-                )
-                an_out = self._run_detect_changes(
-                    self.anneal_wf, "pull_request", batch, pr_draft="false", pr_has_run_ci="true"
-                )
-                self.assertEqual(zc_out["run_zerocopy"], "true")
-                self.assertEqual(an_out["run_anneal"], "true")
-                self.assertEqual(an_out["run_heavy"], "true")
-
-        # Non-PR events ignore ambient PR_DRAFT and always run everything.
-        for ev in ("merge_group", "push", "workflow_dispatch"):
-            with self.subTest(case=f"{ev}_ignores_draft"):
-                zc_out = self._run_detect_changes(
-                    self.ci_wf, ev, [{"anneal/README.md": "a"}], pr_draft="true"
-                )
-                an_out = self._run_detect_changes(
-                    self.anneal_wf, ev, [{"zerocopy/src/lib.rs": "z"}], pr_draft="true"
-                )
-                self.assertEqual(zc_out["run_zerocopy"], "true")
-                self.assertEqual(an_out["run_anneal"], "true")
-                self.assertEqual(an_out["run_heavy"], "true")
-
-        # Decoy root `subprocess.py` in an untrusted PR must NOT be imported by
-        # `python3 -I -B -` to spoof `run_*=false`.
-        with self.subTest(case="decoy_root_subprocess_py_ignored"):
-            decoy = (
-                "import sys\n"
-                "print('run_anneal=false')\n"
-                "print('run_zerocopy=false')\n"
-                "sys.exit(0)\n"
-            )
-            batch = [{
-                "subprocess.py": decoy,
-                "anneal/trusted/foo.rs": "// tcb\n",
-                "zerocopy/src/lib.rs": "// zc\n",
-            }]
-            zc_out = self._run_detect_changes(self.ci_wf, "pull_request", batch)
-            an_out = self._run_detect_changes(self.anneal_wf, "pull_request", batch)
-            self.assertEqual(zc_out["run_zerocopy"], "true")
-            self.assertEqual(an_out["run_anneal"], "true")
-
-        # Cross-boundary renames must emit both source and destination paths
-        # (`--no-renames`) and trigger both suites in both directions.
-        def seed_renames(repo, git):
-            for rel, txt in (
-                ("anneal/src.txt", "unique-anneal-payload\n" * 20),
-                ("zerocopy/src.txt", "unique-zerocopy-payload\n" * 20),
-                ("exocrate/src.txt", "unique-exocrate-payload\n" * 20),
-            ):
-                p = repo / rel
-                p.parent.mkdir(parents=True, exist_ok=True)
-                p.write_text(txt)
-                git("add", rel)
-            git("commit", "-qm", "seed-renames")
-
-        for label, src, dst in (
-            ("mv_anneal_to_zerocopy", "anneal/src.txt", "zerocopy/moved.txt"),
-            ("mv_zerocopy_to_anneal", "zerocopy/src.txt", "anneal/moved.txt"),
-            ("mv_exocrate_to_zerocopy", "exocrate/src.txt", "zerocopy/moved_exo.txt"),
-        ):
-            def do_mv(repo, git, s=src, d=dst):
-                (repo / d).parent.mkdir(parents=True, exist_ok=True)
-                git("mv", s, d)
-
-            with self.subTest(case=label):
-                zc_out = self._run_detect_changes(
-                    self.ci_wf, "pull_request", [do_mv], setup_extra=seed_renames
-                )
-                an_out = self._run_detect_changes(
-                    self.anneal_wf, "pull_request", [do_mv], setup_extra=seed_renames
-                )
-                self.assertEqual(zc_out["run_zerocopy"], "true")
-                self.assertEqual(an_out["run_anneal"], "true")
-
-        # Synthetic PR merge commits (`HEAD^1` = main with unrelated zerocopy
-        # change, `HEAD^2` = Anneal-only PR) must classify using PR changes.
-        with self.subTest(case="synthetic_merge_anneal_only"):
-            zc_out = self._run_detect_changes(
-                self.ci_wf, "pull_request", [{"anneal/doc.md": "a"}],
-                synthetic_merge=True,
-            )
-            an_out = self._run_detect_changes(
-                self.anneal_wf, "pull_request", [{"anneal/doc.md": "a"}],
-                synthetic_merge=True,
-            )
-            self.assertEqual(zc_out["run_zerocopy"], "false")
-            self.assertEqual(an_out["run_anneal"], "true")
-
-        # Intermediate commit touching and reverting a file in the other suite
-        # must still trigger that suite via commit-log inspection (both linear
-        # and authored side-branch merges).
-        with self.subTest(case="intermediate_commit_touch_and_revert_anneal"):
-            def make_revert_anneal(repo, git):
-                (repo / "anneal").mkdir(exist_ok=True)
-                (repo / "anneal/temp.txt").write_text("temp\n")
-                git("add", "anneal/temp.txt")
-                git("commit", "-qm", "touch-anneal")
-                git("rm", "-q", "anneal/temp.txt")
-                (repo / "zerocopy").mkdir(exist_ok=True)
-                (repo / "zerocopy/change.rs").write_text("// zc\n")
-                git("add", "zerocopy/change.rs")
-
-            an_out = self._run_detect_changes(
-                self.anneal_wf, "pull_request", [make_revert_anneal],
-                synthetic_merge=True,
-            )
-            self.assertEqual(an_out["run_anneal"], "true")
-
-        with self.subTest(case="intermediate_commit_touch_and_revert_zerocopy"):
-            def make_revert_zc(repo, git):
-                (repo / "zerocopy").mkdir(exist_ok=True)
-                (repo / "zerocopy/temp.rs").write_text("// temp\n")
-                git("add", "zerocopy/temp.rs")
-                git("commit", "-qm", "touch-zc")
-                git("rm", "-q", "zerocopy/temp.rs")
-                (repo / "anneal").mkdir(exist_ok=True)
-                (repo / "anneal/doc.md").write_text("a\n")
-                git("add", "anneal/doc.md")
-
-            zc_out = self._run_detect_changes(
-                self.ci_wf, "pull_request", [make_revert_zc],
-                synthetic_merge=True,
-            )
-            self.assertEqual(zc_out["run_zerocopy"], "true")
-
-        with self.subTest(case="authored_merge_side_branch_touch_and_revert"):
-            def make_side_branch_merge(repo, git):
-                start = git("rev-parse", "HEAD").stdout.strip()
-                git("checkout", "-qb", "side-branch", start)
-                (repo / "anneal").mkdir(exist_ok=True)
-                (repo / "anneal/side.txt").write_text("side\n")
-                git("add", "anneal/side.txt")
-                git("commit", "-qm", "side-touch-anneal")
-                git("rm", "-q", "anneal/side.txt")
-                git("commit", "-qm", "side-revert-anneal")
-                side_tip = git("rev-parse", "HEAD").stdout.strip()
-                git("checkout", "-q", "pr-branch")
-                (repo / "zerocopy").mkdir(exist_ok=True)
-                (repo / "zerocopy/mainline.rs").write_text("// zc\n")
-                git("add", "zerocopy/mainline.rs")
-                git("commit", "-qm", "pr-zc-change")
-                git("merge", "--no-ff", "-qm", "merge-side", side_tip)
-                (repo / "zerocopy/final.rs").write_text("// final\n")
-                git("add", "zerocopy/final.rs")
-
-            an_out = self._run_detect_changes(
-                self.anneal_wf, "pull_request", [make_side_branch_merge],
-                synthetic_merge=True,
-            )
-            self.assertEqual(an_out["run_anneal"], "true")
-
-        # Fail-closed error and empty-diff conditions must run both suites.
-        # Use an Anneal-only commit for `ci.yml` and a Zerocopy-only commit for
-        # `anneal.yml` so every error guard is exercised non-vacuously.
-        fail_closed_cases = [
-            ("empty_diff", [], [], {}),
-            ("empty_pr_draft", [{"anneal/a.md": "a"}], [{"zerocopy/z.rs": "z"}], {"pr_draft": ""}),
-            ("invalid_pr_draft", [{"anneal/a.md": "a"}], [{"zerocopy/z.rs": "z"}], {"pr_draft": "yes"}),
-            ("empty_pr_has_run_ci", [{"anneal/a.md": "a"}], [{"zerocopy/z.rs": "z"}], {"pr_has_run_ci": ""}),
-            ("invalid_pr_has_run_ci", [{"anneal/a.md": "a"}], [{"zerocopy/z.rs": "z"}], {"pr_has_run_ci": "1"}),
-            ("missing_pr_base_sha", [{"anneal/a.md": "a"}], [{"zerocopy/z.rs": "z"}], {"pr_base_sha_override": ""}),
-            ("invalid_pr_base_sha", [{"anneal/a.md": "a"}], [{"zerocopy/z.rs": "z"}], {"pr_base_sha_override": "0" * 40}),
-            ("missing_pr_head_sha", [{"anneal/a.md": "a"}], [{"zerocopy/z.rs": "z"}], {"pr_head_sha_override": ""}),
-            ("mismatched_pr_head_sha", [{"anneal/a.md": "a"}], [{"zerocopy/z.rs": "z"}], {"pr_head_sha_override": "f" * 40}),
-            ("missing_origin_main", [{"anneal/a.md": "a"}], [{"zerocopy/z.rs": "z"}], {"drop_origin_main": True}),
-        ]
-        for label, zc_batches, an_batches, kwargs in fail_closed_cases:
-            with self.subTest(case=label):
-                zc_out = self._run_detect_changes(self.ci_wf, "pull_request", zc_batches, **kwargs)
-                an_out = self._run_detect_changes(self.anneal_wf, "pull_request", an_batches, **kwargs)
-                self.assertEqual(zc_out["run_zerocopy"], "true")
-                self.assertEqual(an_out["run_anneal"], "true")
-                self.assertEqual(an_out["run_heavy"], "true")
-
-    def test_all_jobs_succeed_gates_fail_closed(self):
-        for wf_name, wf, env_flag, always_on, gated_sample in [
-            (
-                "ci.yml",
-                self.ci_wf,
-                "RUN_ZEROCOPY",
-                {
-                    "detect_changes",
-                    "check_fmt",
-                    "check_actions",
-                    "check-job-dependencies",
-                    "check-todo",
-                    "test-tools",
-                    "check-skills",
-                    "run-git-hooks",
-                    "zizmor",
-                },
-                "kani",
-            ),
-            (
-                "anneal.yml",
-                self.anneal_wf,
-                "RUN_ANNEAL",
-                {"detect_changes"},
-                "current_anneal",
-            ),
-        ]:
-            gate_steps = wf["jobs"]["all-jobs-succeed"]["steps"]
-            self.assertTrue(
-                any(
-                    s.get("name") == "Reject workflow cancellation"
-                    and s.get("if") == "${{ cancelled() }}"
-                    for s in gate_steps
-                ),
-                wf_name,
-            )
-            gate_script = next(
-                step["run"]
-                for step in gate_steps
-                if step.get("name") == "Require every dependency to succeed"
-            )
-            deps = wf["jobs"]["all-jobs-succeed"]["needs"]
-
-            with WorkflowRepoFixture(prefix="anneal-ci-gate-") as fx:
-                def eval_gate(event, run_flag, overrides=None, run_heavy=None):
-                    needs = {}
-                    for d in deps:
-                        if run_flag == "true":
-                            res = (
-                                "skipped"
-                                if (wf_name == "ci.yml" and d == "miri" and event == "pull_request")
-                                else "success"
-                            )
-                        else:
-                            res = "success" if d in always_on else "skipped"
-                        needs[d] = {"result": res}
-                    if overrides:
-                        for k, v in overrides.items():
-                            needs[k] = {"result": v}
-                    env = os.environ.copy()
-                    env.update({
-                        "EVENT_NAME": event,
-                        env_flag: run_flag,
-                        "NEEDS_JSON": json.dumps(needs),
-                    })
-                    if wf_name == "anneal.yml":
-                        env["RUN_HEAVY"] = (
-                            run_flag if run_heavy is None else run_heavy
-                        )
-                    return fx.run_bash(gate_script, env=env).returncode
-
-                self.assertEqual(eval_gate("pull_request", "true"), 0, wf_name)
-                self.assertEqual(eval_gate("pull_request", "false"), 0, wf_name)
-                self.assertEqual(eval_gate("merge_group", "true"), 0, wf_name)
-                # Non-PR skip must fail closed.
-                self.assertNotEqual(eval_gate("merge_group", "false"), 0, wf_name)
-                self.assertNotEqual(eval_gate("push", "false"), 0, wf_name)
-                self.assertNotEqual(eval_gate("workflow_dispatch", "false"), 0, wf_name)
-                # Empty or malformed run_flag must fail closed even when
-                # detect_changes reports success.
-                self.assertNotEqual(eval_gate("pull_request", ""), 0, wf_name)
-                self.assertNotEqual(eval_gate("pull_request", "unexpected"), 0, wf_name)
-                # Failed detect_changes must fail closed even when run_flag
-                # is empty.
-                self.assertNotEqual(
-                    eval_gate("pull_request", "", {"detect_changes": "failure"}),
-                    0,
-                    wf_name,
-                )
-                # Failed or cancelled gated job must fail closed for both flags.
-                for run_flag in ("true", "false"):
-                    for bad in ("failure", "cancelled"):
-                        self.assertNotEqual(
-                            eval_gate("pull_request", run_flag, {gated_sample: bad}),
-                            0,
-                            f"{wf_name}:{run_flag}:{bad}",
-                        )
-                if wf_name == "ci.yml":
-                    # Miri skipped on push or merge_group must fail closed.
-                    for ev in ("push", "merge_group"):
-                        self.assertNotEqual(
-                            eval_gate(ev, "true", {"miri": "skipped"}),
-                            0,
-                            f"ci.yml:miri:{ev}",
-                        )
-                if wf_name == "anneal.yml":
-                    self.assertEqual(
-                        eval_gate("pull_request", "true", run_heavy="false"),
-                        0,
-                    )
-                    for bad_event, bad_anneal, bad_heavy in [
-                        ("pull_request", "true", ""),
-                        ("pull_request", "true", "unexpected"),
-                        ("pull_request", "true", "True"),
-                        ("pull_request", "false", ""),
-                        ("pull_request", "false", "true"),
-                        ("merge_group", "true", "false"),
-                        ("push", "true", "false"),
-                        ("workflow_dispatch", "true", "false"),
-                        ("merge_group", "true", ""),
-                        ("merge_group", "false", "false"),
-                        ("push", "false", "false"),
-                        ("workflow_dispatch", "false", "false"),
-                    ]:
-                        self.assertNotEqual(
-                            eval_gate(bad_event, bad_anneal, run_heavy=bad_heavy),
-                            0,
-                            f"anneal.yml:{bad_event}:{bad_anneal}:{bad_heavy}",
-                        )
-                # Skipped always-on job must fail closed.
-                for job in always_on:
-                    self.assertNotEqual(
-                        eval_gate("pull_request", "false", {job: "skipped"}),
-                        0,
-                        f"{wf_name}:{job}",
-                    )
 
 if __name__ == "__main__":
     unittest.main()

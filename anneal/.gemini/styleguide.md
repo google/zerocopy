@@ -210,12 +210,12 @@ never proves defect absence or substitutes for CI or merge gates.
     in `base` or `head` synchronized (workspace-independent relative paths,
     verified against downstream fixtures, never deleted to evade checks).
     Absent future artifacts are not findings.
-  - *`ci/` and `.github/`:* Verify the Zerocopy workflow
-    `.github/workflows/anneal-current.yml` runs
+  - *`ci/` and `.github/`:* Verify that Zerocopy's `ci/checks.toml`, run by
+    `.github/workflows/ci-core-{pr,trusted}.yml`, runs
     `sha256sum --check --strict trusted/root-manifest.sha256`, rejects root
     `.cargo` and `rust-toolchain*` with fail-closed checks, runs
-    `cargo run --locked -p anneal-audit`, and requires every job in fail-closed
-    `all-jobs-succeed` (`ci/check_job_dependencies.sh`). Pin Actions to full
+    `cargo run --locked --offline -p anneal-audit`, all gated by fail-closed
+    `ci-core / gate`. Pin Actions to full
     40-char commit SHAs. Keep `permissions: contents: read` on PR- or
     comment-triggered jobs (`pull_request`, `pull_request_target`,
     `pull_request_review`, `pull_request_review_comment`, `workflow_run`,

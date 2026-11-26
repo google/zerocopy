@@ -57,9 +57,7 @@ First-party verifier code on which those assertions rely without checked
 evidence belongs in `trusted/`. The build manifests and external toolchain
 inputs are pinned. The repository audit also relies on reviewed enforcement
 code in `ci/` and the
-[Zerocopy Anneal workflow](../../.github/workflows/anneal-current.yml).
-Pre-cutover `ci-core` (repository-root `ci/checks.toml`) runs alongside that
-workflow and does not replace it.
+[`ci-core` check graph](../../ci/checks.toml).
 The vendored reference model and its replay support the correspondence audit.
 
 The current workspace divides verification, test, and audit code into four zones.
@@ -610,32 +608,17 @@ or `vendor/lean-miri/` are present), `anneal-audit` executes Pass 2
    cache hit skips only re-elaborating the pinned `.lean` source; it does
    **not** skip kernel typechecking, because step 4 below unconditionally runs
    full standalone kernel replay over all 160 vendored closure modules on every
-   run (cold build and warm cache hit alike). In CI, the cache lives in
-   `${{ runner.temp }}/anneal-miri-olean-cache` keyed on
-   `trusted/lean/lean-toolchain` and `vendor/lean-miri/UPSTREAM_PIN.json`
-   (so pin or toolchain updates automatically miss and compile cold inside
-   `bwrap`); `pull_request` consumes and seeds the branch-scoped cache (reading
-   from the default branch or PR branch), `merge_group` performs strictly
-   read-only cache restoration (skipping `save_miri_olean_cache`, verifying
-   every restored file's SHA-256 against `UPSTREAM_PIN.json`, with the workflow
-   audit step wiping the cache directory on a miss, and running full standalone
-   kernel replay unconditionally), any `workflow_dispatch` caller and
-   non-`main`/fork `push` runs skip the cache action and omit
-   `--miri-cache-dir`, and canonical `main`-branch `push` runs use
-   `lookup-only: true` plus `rm -rf` before invoking `anneal-audit` so every
-   landed revision performs a cold, OS-sandboxed from-source build as well as
-   standalone kernel replay while canonical `main` still seeds a missing
-   default-branch cache entry for pull requests and merge-group runs.
-   On `merge_group` and `main`-branch `push`, pre-cutover `ci-core` also runs
-   `anneal-audit` with its own `miri-v1` cache slot outside the checkout, keyed
+   run (cold build and warm cache hit alike). In CI, `ci-core` runs
+   `anneal-audit` with a `miri-v1` cache slot outside the checkout, keyed
    on the `anneal-tc` image manifest digest, `flake.nix`, `flake.lock`,
    `trusted/lean/lean-toolchain`, `trusted/lean/foundation-lock.json`, and
-   `UPSTREAM_PIN.json`. Only the checkout-free `publish` job of those runs can
+   `UPSTREAM_PIN.json` (so pin or toolchain updates automatically miss and
+   compile cold inside `bwrap`). Only the checkout-free `publish` job of
+   `merge_group` and `main`-branch `push` runs can
    push and keyless-sign (Sigstore) `miri-v1` entries; pull-request runs cannot
-   write them. These runs may restore an entry instead of compiling cold, but
+   write them. Runs may restore an entry instead of compiling cold, but
    `anneal-audit` still verifies every restored file against
-   `UPSTREAM_PIN.json` and runs full standalone kernel replay, and
-   `anneal-current.yml` still performs the cold `main`-branch build.
+   `UPSTREAM_PIN.json` and runs full standalone kernel replay.
 3. **Dual Pass 2 preflight, OS-sandboxed Pass 2 elaboration, and `LEAN_PATH`
    isolation:** Pass 2 first runs foundation `"preflight"` to validate imports,
    cycles, trust tiers, and syntax—admitting imports in
@@ -746,11 +729,9 @@ whose re-hashing remains planned:
    sandboxing (active):** Pin authentication, sysroot locking, external
    `.olean` caching, OS-level `bwrap` process sandboxing of cold vendor
    elaboration, `"correspondence-preflight"`, and Pass 2 module compilation
-   (with fail-closed isolation on platforms without bubblewrap), read-only
-   SHA-256-verified `.olean` restoration on `merge_group` (with the workflow
-   audit step wiping the cache on a miss alongside unconditional standalone
-   kernel replay), and cold builds on `push` to `main`, any
-   `workflow_dispatch` caller, and `UPSTREAM_PIN.json`/`lean-toolchain`
+   (with fail-closed isolation on platforms without bubblewrap),
+   SHA-256-verified `.olean` restoration (alongside unconditional standalone
+   kernel replay), and cold builds on `UPSTREAM_PIN.json`/`lean-toolchain`
    changes are active in Pass 2 above.
    Every future `vendor/lean-miri/` pin update must expose and receive human
    semantic review of the resolved old-to-new reference-model diff—not only
@@ -866,6 +847,42 @@ Because CI and `anneal-audit` reject any mismatch against these files, changing
 a root manifest or toolchain artifact requires a corresponding diff inside
 `trusted/`, ensuring an auditor inspecting `trusted/` sees every change to the
 effective TCB.
+
+### Merge governance
+
+Merging to `main` requires two checks, `ci-core / gate` and `PR hygiene`, as
+[`ci/README.md`](../../ci/README.md) describes. `ci-core / gate`
+requires owner approval, bound to the PR's head SHA, for changes to
+`ci/checks.toml`, check scripts, images, and pins. GitHub reads the caller
+workflows `ci-core-pr.yml` and `ci-core-trusted.yml` from the PR's own tree,
+so `ci-core / gate` cannot stop a PR from replacing them with a job that
+always passes. A second ruleset contains that: it requires `CODEOWNERS`
+review and dismisses stale approvals on push, so an approval of one commit
+never carries over to a later commit that swaps a caller workflow.
+
+`anneal-pr-hygiene.yml` clears `ACTIONS_CACHE_URL`, `ACTIONS_RESULTS_URL`,
+`ACTIONS_RUNTIME_TOKEN`, and `ACTIONS_RUNTIME_URL` before running
+`check_pr_hygiene.py`. That is defense in depth, not an isolation boundary:
+the primary controls are the job's `contents: read` token and GitHub's
+scoping of pull-request caches to the pull request's ref.
+
+Repository administrators are exempt from the review ruleset, and GitHub logs
+no ruleset-bypass entry when an exempt actor enqueues a PR; only the PR
+timeline and review history record it. Autonomous agents may act under a
+repository administrator's credentials. Until agents use a dedicated
+identity, nothing but policy (Gate 5 in
+[`docs/codex-review.md`](codex-review.md)) and that audit trail stops such
+an agent from using these surfaces:
+
+| # | Surface | Effect under an administrator's credentials |
+| :--- | :--- | :--- |
+| 1 | `/ci-core approve <sha>` comments | Satisfies `ci-core / gate` owner approval on TCB PRs, including the account's own |
+| 2 | Edits to `.github/workflows/**` | Swaps a caller workflow on a PR that the administrator enqueues, bypassing `CODEOWNERS` review |
+| 3 | Enqueuing another author's PR | Satisfies the review ruleset without any human `APPROVE`, including on non-TCB PRs |
+| 4 | Dismissing a `CHANGES_REQUESTED` review | Clears a co-owner's veto, which otherwise blocks `/ci-core approve` |
+| 5 | `Skip-pr-hygiene:` trailers | Waives `PR hygiene` findings (loudly, in the commit and step summary) |
+| 6 | `release` and `anneal-release` deployments | Approves a crates.io publication that the same account dispatched |
+| 7 | Rulesets, settings, environments, and Actions secrets | Changes any of the controls above |
 
 ## 3. External dependencies and commenting in `trusted/`
 

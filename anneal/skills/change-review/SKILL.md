@@ -379,8 +379,8 @@ than serializing independent work, while keeping coordinator compute lean:
   - If `main..<head>` touches **no CI-executed surfaces**, when authorized,
     publish a draft PR per
     [`source-control`](../source-control/SKILL.md#publish-branches-and-stacked-pull-requests)
-    (add `run-ci` for full PR CI; drafts skip `current_anneal`) and overlap
-    Gate 2, CI, local `trust-review`/`change-review`, and probes in parallel.
+    and overlap Gate 2 review, CI, local `trust-review`, local `change-review`,
+    and probes in parallel.
   - If `main..<head>` touches any **Pass 2 trigger**, converge local **Pass 2
     `trust-review`** across all affected commits in `main..<head>` **before**
     pushing that branch (or any branch stacked above it).

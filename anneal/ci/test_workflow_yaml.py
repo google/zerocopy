@@ -15,6 +15,7 @@ import re
 import tempfile
 import tomllib
 import unittest
+from unittest import mock
 
 import yaml
 
@@ -41,15 +42,6 @@ DOWNLOAD_TOOL_RE = re.compile(r"\b(?:curl|wget)\b", re.IGNORECASE)
 # audited and re-pinned here (other fetch tools, external actions, and
 # Dockerfiles are outside this lint).
 PINNED_DOWNLOAD_STEPS = {
-    (
-        ".github/actions/install-yq/action.yml",
-        "root.runs.steps",
-        "name:Install pinned yq binary",
-    ): (
-        "5279508731dd6b02640802e3920a27bfe9015a1a346b9f320201ef9d5bae484b",
-        "Binary download: curl -o ${tmp_bin} verified by "
-        "sha256sum --check --strict against ${YQ_SHA256} before install.",
-    ),
     (
         ".github/workflows/release.yml",
         "root.jobs.anneal-build-archive.steps",
@@ -91,7 +83,7 @@ PINNED_DOWNLOAD_STEPS = {
         "root.jobs.roll_semver_baseline.steps",
         "id:advance",
     ): (
-        "29623169c8d787a6f5b9fb5882a149e002a7a6b4d5c902336d3e4d3effc53f4d",
+        "5c890feccac8eec866a2f2ab74e5eae2b80bfb5595136efdcea1aad1cbd6ab73",
         "crates.io sparse index JSON query: parses semver and cksum via jq.",
     ),
     (
@@ -104,6 +96,75 @@ PINNED_DOWNLOAD_STEPS = {
         "write ci/pins/kani-pin.toml and removes it without unpacking.",
     ),
 }
+
+# The ci-core cutover retired `.github/actions/install-yq`. Its last audited
+# text stays here, pinned to its audited digest, so the action-level mutation
+# cases below (`env:`, `shell:`, `working-directory:`, and action `inputs:`)
+# keep exercising the pin lint.
+YQ_ACTION_FIXTURE_REL = ".github/actions/install-yq/action.yml"
+YQ_ACTION_FIXTURE_PIN = {
+    (
+        YQ_ACTION_FIXTURE_REL,
+        "root.runs.steps",
+        "name:Install pinned yq binary",
+    ): (
+        "5279508731dd6b02640802e3920a27bfe9015a1a346b9f320201ef9d5bae484b",
+        "Binary download: curl -o ${tmp_bin} verified by "
+        "sha256sum --check --strict against ${YQ_SHA256} before install.",
+    ),
+}
+YQ_ACTION_FIXTURE = r'''# Copyright 2026 The Fuchsia Authors
+#
+# Licensed under a BSD-style license <LICENSE-BSD>, Apache License, Version 2.0
+# <LICENSE-APACHE or https://www.apache.org/licenses/LICENSE-2.0>, or the MIT
+# license <LICENSE-MIT or https://opensource.org/licenses/MIT>, at your option.
+# This file may not be copied, modified, or distributed except according to
+# those terms.
+
+name: Install yq
+description: Install a pinned, SHA-256-verified mikefarah/yq binary without Go module/sumdb network calls
+
+runs:
+  using: composite
+  steps:
+    - name: Install pinned yq binary
+      shell: bash
+      env:
+        YQ_VERSION: v4.44.1
+        YQ_SHA256: 6dc2d0cd4e0caca5aeffd0d784a48263591080e4a0895abe69f3a76eb50d1ba3
+      run: |
+        set -euo pipefail
+
+        if [ "$(uname -s)" != "Linux" ] || [ "$(uname -m)" != "x86_64" ]; then
+          echo "Unsupported platform for pinned yq binary: $(uname -s)/$(uname -m)" >&2
+          exit 1
+        fi
+
+        # Reuse an already-installed binary only if its SHA-256 matches the
+        # pinned release digest verbatim.
+        if existing_yq="$(command -v yq 2>/dev/null || true)" && [ -n "${existing_yq}" ]; then
+          if printf '%s  %s\n' "${YQ_SHA256}" "${existing_yq}" | sha256sum --check --status; then
+            "${existing_yq}" --version
+            exit 0
+          fi
+        fi
+
+        url="https://github.com/mikefarah/yq/releases/download/${YQ_VERSION}/yq_linux_amd64"
+        tmp_bin="$(mktemp "${RUNNER_TEMP}/yq.download.XXXXXX")"
+        trap 'rm -f -- "${tmp_bin}"' EXIT
+
+        curl --proto '=https' --tlsv1.2 -fsSL \
+          --retry 5 --retry-all-errors --retry-delay 2 \
+          -o "${tmp_bin}" "${url}"
+        printf '%s  %s\n' "${YQ_SHA256}" "${tmp_bin}" | sha256sum --check --strict
+
+        if [ -w /usr/local/bin ]; then
+          install -m 0755 "${tmp_bin}" /usr/local/bin/yq
+        else
+          sudo install -m 0755 "${tmp_bin}" /usr/local/bin/yq
+        fi
+        /usr/local/bin/yq --version
+'''
 
 
 class WorkflowYamlTests(unittest.TestCase):
@@ -612,11 +673,6 @@ class WorkflowPolicyLintTests(unittest.TestCase):
             )
 
         # Spot-check safety invariants on every pinned live step.
-        yq_doc = docs_by_rel[".github/actions/install-yq/action.yml"]
-        yq_run = yq_doc["runs"]["steps"][0]["run"]
-        self.assertIn("--proto '=https' --tlsv1.2", yq_run)
-        self.assertIn("sha256sum --check --strict", yq_run)
-
         rel_doc = docs_by_rel[".github/workflows/release.yml"]
         rel_exists_run = rel_doc["jobs"]["anneal-build-archive"]["steps"][2][
             "run"
@@ -649,9 +705,18 @@ class WorkflowPolicyLintTests(unittest.TestCase):
         self.assertIn('rm -f "$KANI_BUNDLE_TMP"', kani_run)
         self.assertNotIn("tar ", kani_run)
 
-        yq_text = (ACTIONS_DIR / "install-yq" / "action.yml").read_text(
-            encoding="utf-8"
+        # The cases below pin the retired `install-yq` action as a fixture.
+        self.enterContext(
+            mock.patch.dict(PINNED_DOWNLOAD_STEPS, YQ_ACTION_FIXTURE_PIN)
         )
+        yq_text = YQ_ACTION_FIXTURE
+        yq_doc = load_workflow_yaml(yq_text)
+        self.assertEqual(
+            _find_unpinned_download_steps(yq_doc, YQ_ACTION_FIXTURE_REL), []
+        )
+        yq_run = yq_doc["runs"]["steps"][0]["run"]
+        self.assertIn("--proto '=https' --tlsv1.2", yq_run)
+        self.assertIn("sha256sum --check --strict", yq_run)
         dup_yq_text = (
             yq_text
             + "\n    - name: Install pinned yq binary\n"
@@ -699,7 +764,7 @@ class WorkflowPolicyLintTests(unittest.TestCase):
             ),
             (
                 "duplicate_pinned_step_key",
-                ".github/actions/install-yq/action.yml",
+                YQ_ACTION_FIXTURE_REL,
                 dup_yq_text,
                 "duplicate curl/wget step key",
             ),
@@ -728,19 +793,19 @@ class WorkflowPolicyLintTests(unittest.TestCase):
                     "| sha256sum --check --strict",
                     "# sha256 check removed",
                 ),
-                ".github/actions/install-yq/action.yml",
+                YQ_ACTION_FIXTURE_REL,
             ),
             (
                 "yq_env_swapped",
                 yq_text,
                 yq_text.replace("YQ_VERSION: v4.44.1", "YQ_VERSION: v9.9.9"),
-                ".github/actions/install-yq/action.yml",
+                YQ_ACTION_FIXTURE_REL,
             ),
             (
                 "yq_shell_changed",
                 yq_text,
                 yq_text.replace("shell: bash", "shell: sh"),
-                ".github/actions/install-yq/action.yml",
+                YQ_ACTION_FIXTURE_REL,
             ),
             (
                 "yq_step_working_dir_added",
@@ -748,7 +813,7 @@ class WorkflowPolicyLintTests(unittest.TestCase):
                 yq_text.replace(
                     "shell: bash", "shell: bash\n      working-directory: /tmp"
                 ),
-                ".github/actions/install-yq/action.yml",
+                YQ_ACTION_FIXTURE_REL,
             ),
             (
                 "yq_action_inputs_added",
@@ -756,7 +821,7 @@ class WorkflowPolicyLintTests(unittest.TestCase):
                 yq_text.replace(
                     "runs:", "inputs:\n  ver:\n    default: bad\nruns:"
                 ),
-                ".github/actions/install-yq/action.yml",
+                YQ_ACTION_FIXTURE_REL,
             ),
             (
                 "roller_kani_unpack",

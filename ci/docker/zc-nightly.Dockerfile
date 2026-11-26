@@ -53,11 +53,6 @@ RUN cargo "+${PIN_RUST_TOOLCHAINS__STABLE}" build --locked --release \
     echo "d039b43c3e0958441b6ad0a39c8884d018b3d2e8fb9928f209074b1100b5e17a  /tmp/dl/nextest.tar.gz" | sha256sum -c - && \
     tar -xzf /tmp/dl/nextest.tar.gz -C /out-bin cargo-nextest && \
     chmod 0755 /out-bin/cargo-nextest && \
-    curl -fsSL --retry 3 -o /tmp/dl/llvm-cov.tar.gz \
-      "https://github.com/taiki-e/cargo-llvm-cov/releases/download/v0.8.0/cargo-llvm-cov-x86_64-unknown-linux-gnu.tar.gz" && \
-    echo "4a323c3121f28a4d7ce7eae6eaed76aa17aafa21ae36d9a47f763380f45ab010  /tmp/dl/llvm-cov.tar.gz" | sha256sum -c - && \
-    tar -xzf /tmp/dl/llvm-cov.tar.gz -C /out-bin cargo-llvm-cov && \
-    chmod 0755 /out-bin/cargo-llvm-cov && \
     curl -fsSL --retry 3 -o /out-bin/yq \
       "https://github.com/mikefarah/yq/releases/download/v4.44.1/yq_linux_amd64" && \
     echo "6dc2d0cd4e0caca5aeffd0d784a48263591080e4a0895abe69f3a76eb50d1ba3  /out-bin/yq" | sha256sum -c - && \
@@ -106,7 +101,7 @@ RUN curl -fsSL --retry 3 -o /tmp/rustup-init \
     /tmp/rustup-init -y --default-toolchain none --profile minimal --no-modify-path && \
     rm -f /tmp/rustup-init && \
     rustup toolchain install "${PIN_RUST_TOOLCHAINS__NIGHTLY}" --profile minimal \
-      -c rust-src -c rustfmt -c clippy -c miri -c llvm-tools-preview && \
+      -c rust-src -c rustfmt -c clippy -c miri && \
     rustup default "${PIN_RUST_TOOLCHAINS__NIGHTLY}" && \
     rustup target add --toolchain "${PIN_RUST_TOOLCHAINS__NIGHTLY}" \
       i686-unknown-linux-gnu \

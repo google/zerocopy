@@ -41,6 +41,7 @@ The repository's version-gating convention is:
 3. For public items, add
    `#[cfg_attr(doc_cfg, doc(cfg(rust = "<version>")))]` where appropriate.
 
-Keep compiler versions represented in `.github/workflows/ci.yml` and
-`Cargo.toml`'s `[package.metadata.build-rs]` synchronized when adding a new
-version gate.
+Keep compiler versions represented in `ci/pins/rust-toolchains.toml`,
+`ci/docker/zc-*.Dockerfile`, `ci/checks.toml`, and `Cargo.toml`'s
+`[package.metadata.build-rs]` synchronized when adding a new version gate
+(enforced by `ci/scripts/check_toolchains_sync.py`).

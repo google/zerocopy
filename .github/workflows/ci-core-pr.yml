@@ -19,7 +19,7 @@ jobs:
     uses: joshlf/ci-core/.github/workflows/ci-pr.yml@629e371f0c7c4ad4e3a3c98f09b12104f314150e
     with:
       config_path: ci/checks.toml
-      shadow_mode: true
+      shadow_mode: false
     permissions:
       actions: read # Read PR workflow-run and job attempt metadata.
       contents: read # Bare-fetch target and base commits.

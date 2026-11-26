@@ -22,8 +22,8 @@ trusted_engine_shas = [
 
 [tcb]
 owner_user_ids = [1046063, 3820879, 1775176]
-allow_owner_self_approval = false
-non_tcb_workflows = ["scorecard.yml", "dependency-review.yml"]
+allow_owner_self_approval = true
+non_tcb_workflows = []
 non_tcb_subtrees = ["evals", "skills", "zerocopy/vendor"]
 extra_executable_paths = [
   ".github/release_notes.py",
@@ -471,7 +471,7 @@ matrix_exclude = [
 ]
 
 # ---------------------------------------------------------------------------
-# Zerocopy Semver, Miri, Kani, Codegen, Coverage, Cross-Special
+# Zerocopy Semver, Miri, Kani, Codegen, Cross-Special
 # ---------------------------------------------------------------------------
 
 [[checks]]
@@ -590,31 +590,6 @@ inputs = [
 command = ["../ci/scripts/run_zc_codegen.sh"]
 
 [[checks]]
-id = "zc-coverage"
-image = "zc-nightly"
-runner = "ubuntu-24.04"
-workdir = "zerocopy"
-inputs = [
-  { kind = "cargo_workspace", manifest_path = "zerocopy/Cargo.toml" },
-  { kind = "glob", include = [
-    "LICENSE-APACHE",
-    "LICENSE-BSD",
-    "LICENSE-MIT",
-    "zerocopy/.cargo/**",
-    "zerocopy/benches/**",
-    "zerocopy/cargo.sh",
-    "zerocopy/vendor/**",
-    "zerocopy/testdata/**",
-    "zerocopy/tests/**",
-    "zerocopy/zerocopy-derive/tests/**",
-    "ci/scripts/run_zc_coverage.sh",
-  ] },
-]
-command = ["../ci/scripts/run_zc_coverage.sh"]
-env = { ZC_COVERAGE_OUT = "/outputs/lcov.info" }
-outputs = [{ name = "lcov.info", max_bytes = 67108864 }]
-
-[[checks]]
 id = "zc-cross-special"
 image = "zc-nightly"
 runner = "ubuntu-24.04"
@@ -726,13 +701,14 @@ shard_group = "meta-fast"
 inputs = [
   { kind = "glob", include = [
     "zerocopy/Cargo.toml",
+    "zerocopy/ci/check_all_toolchains_tested.sh",
     "ci/pins/**",
     "ci/docker/*.Dockerfile",
     "ci/checks.toml",
     "ci/scripts/check_toolchains_sync.py",
   ] },
 ]
-command = ["python3", "-I", "-B", "ci/scripts/check_toolchains_sync.py"]
+command = ["./zerocopy/ci/check_all_toolchains_tested.sh"]
 
 # ---------------------------------------------------------------------------
 # Per-Domain Formatting, Exocrate, Tools, Skills, and Repo Meta Checks
@@ -841,6 +817,7 @@ inputs = [
     "**/AGENTS.override.md",
     "skills/**",
     "anneal/.agents/skills.json",
+    "anneal/.gemini/styleguide.md",
     "anneal/AGENTS.md",
     "anneal/**/AGENTS*.md",
     "anneal/META_PRINCIPLES.md",

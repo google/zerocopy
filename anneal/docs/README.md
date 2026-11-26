@@ -59,13 +59,11 @@ cargo run --locked -p anneal-audit -- \
 
 ## CI, releases, and review
 
-- Zerocopy's [Anneal Tests workflow](../../.github/workflows/anneal.yml)
-  calls the [current verifier checks](../../.github/workflows/anneal-current.yml).
-  On `pull_request`, draft PRs skip `current_anneal` (and heavy Zerocopy jobs)
-  unless labeled `run-ci`, ready Anneal-relevant PRs run `static-checks`
-  unless `run-ci` opts into the full suite, and `merge_group` / `push` to
-  `main` always build and install the archive, audit the trust boundary, and
-  test the Rust workspace in full.
+- Zerocopy's [`CI (PR)`](../../.github/workflows/ci-core-pr.yml) and
+  [`CI (Trusted)`](../../.github/workflows/ci-core-trusted.yml) workflows call
+  the [current verifier checks](../../ci/checks.toml).
+  The current checks build and install the archive, audit the trust boundary,
+  and test the Rust workspace.
 - The [release workflows](alpha.md#cut-the-release) prepare and publish
   the [Anneal alpha](alpha.md).
 - The [Gate 2 review guide](codex-review.md) describes review gates and the

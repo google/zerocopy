@@ -8,26 +8,28 @@
 
 """Unit tests for the TCB guard-mutation CI check (`check_guard_mutation.py`).
 
-These tests run in `static-checks` without requiring a Lean toolchain: they
+These tests run in `anneal-ci-tests` without requiring a Lean toolchain: they
 validate static catalog invariants against the live repository sources, test
 mutation/classification edge cases (including anti-crash-masquerading guards),
 exercise the full runner loop against a deterministic fake `lean` binary, and
-verify the GitHub Actions workflow wiring in `anneal-current.yml`.
+verify the `ci-core` check wiring in `ci/checks.toml` and
+`anneal/ci/run_anneal_check.sh`.
 """
 
 import hashlib
 import re
 import json
 from pathlib import Path
+import re
 import stat
 import subprocess
 import sys
 import tempfile
 import textwrap
+import tomllib
 import unittest
 
 import check_guard_mutation
-from workflow_yaml import load_workflow_yaml
 
 
 CI_DIR = Path(__file__).resolve().parent
@@ -343,28 +345,43 @@ class GuardMutationUnitTests(unittest.TestCase):
         self.assertEqual(report["survived"], 0)
         self.assertEqual(report["errors"], 0)
 
-    def test_workflow_wires_guard_mutation_in_test_and_verify(self):
-        workflow = load_workflow_yaml(
-            (
-                ANNEAL_ROOT.parent / ".github/workflows/anneal-current.yml"
-            ).read_text(encoding="utf-8")
+    def test_checks_toml_wires_guard_mutation(self):
+        checks_cfg = tomllib.loads(
+            (ANNEAL_ROOT.parent / "ci/checks.toml").read_text(encoding="utf-8")
         )
-        steps = workflow["jobs"]["test-and-verify"]["steps"]
-        by_id = {s["id"]: (i, s) for i, s in enumerate(steps) if "id" in s}
-        self.assertIn("guard_mutation", by_id)
-        gm_idx, gm_step = by_id["guard_mutation"]
-        self.assertGreater(gm_idx, by_id["save_miri_olean_cache"][0])
-        self.assertLess(gm_idx, by_id["clean_tree"][0])
-        for token in (
-            "ACTIONS_CACHE_URL",
-            "ACTIONS_RESULTS_URL",
-            "ACTIONS_RUNTIME_TOKEN",
+        checks_by_id = {c["id"]: c for c in checks_cfg["checks"]}
+        self.assertIn("anneal-guard-mutation", checks_by_id)
+        gm_chk = checks_by_id["anneal-guard-mutation"]
+        self.assertEqual(gm_chk.get("image"), "anneal-tc")
+        self.assertEqual(gm_chk.get("sandbox"), "nested_bwrap")
+        self.assertEqual(gm_chk.get("workdir"), "anneal")
+        self.assertNotIn("events", gm_chk)
+        self.assertEqual(
+            gm_chk.get("command"),
+            ["./ci/run_anneal_check.sh", "guard-mutation"],
+        )
+        gm_includes = {
+            pat
+            for sel in gm_chk.get("inputs", [])
+            for pat in sel.get("include", [])
+        }
+        for required_pat in (
+            "anneal/ci/check_guard_mutation.py",
+            "anneal/ci/fixtures/guard_mutation/**",
+            "anneal/trusted/lean/**",
+            "anneal/trusted/audit/TrustedBoundary.lean",
         ):
-            self.assertEqual(gm_step.get("env", {}).get(token), "")
-        run_src = gm_step["run"]
-        self.assertIn("/usr/bin/python3 -I -B ci/check_guard_mutation.py", run_src)
-        self.assertIn('--lean "$ANNEAL_TEST_INSTALL_ROOT/lean/bin/lean"', run_src)
-        self.assertIn("guard-mutation.log", run_src)
+            self.assertIn(required_pat, gm_includes)
+
+        runner_src = (CI_DIR / "run_anneal_check.sh").read_text(encoding="utf-8")
+        gm_match = re.search(
+            r"(?ms)^\s*guard-mutation\)\n(.*?)\n\s*;;$", runner_src
+        )
+        self.assertIsNotNone(gm_match)
+        gm_body = gm_match.group(1)
+        self.assertIn("/usr/bin/python3 -I -B ci/check_guard_mutation.py", gm_body)
+        self.assertIn("--lean /opt/anneal-nix/lean-toolchain/bin/lean", gm_body)
+        self.assertIn("guard-mutation.json", gm_body)
 
     def test_runner_preserves_module_olean_companion_parts(self):
         # Fake `lean` emits `.olean`, `.olean.server`, and `.olean.private`

@@ -6,23 +6,20 @@
 # This file may not be copied, modified, or distributed except according to
 # those terms.
 
-# Publish commits from `main` which pass both CI workflows to
+# Publish commits from `main` which pass `CI (Trusted)` to
 # google.github.io/zerocopy.
 
 name: Publish Rustdoc on GitHub Pages
 on:
-  # These workflow names are coupled to `.github/workflows/ci.yml`,
-  # `.github/workflows/anneal.yml`, and `.github/workflows/anneal-perf.yml`.
-  # Triggering on `ci.yml` and `anneal.yml` lets either CI workflow be the last
-  # to finish and lets a successful rerun repair a previously failed pair while
-  # `coordinate` deduplicates the pair to one deploy per SHA. Triggering on
-  # `anneal-perf.yml` refreshes Pages if performance telemetry finishes
-  # publishing to `benchmark-data` after the CI pair has completed (or on
-  # scheduled/manual perf runs on `main` HEAD).
+  # These workflow names are coupled to `.github/workflows/ci-core-trusted.yml`
+  # and `.github/workflows/anneal-perf.yml`. Triggering on `ci-core-trusted.yml`
+  # publishes Pages once main-branch CI succeeds; triggering on `anneal-perf.yml`
+  # refreshes Pages if performance telemetry finishes publishing to
+  # `benchmark-data` after `CI (Trusted)` has completed (or on scheduled/manual
+  # perf runs on `main` HEAD).
   workflow_run: # zizmor: ignore[dangerous-triggers]
     workflows:
-      - "Build & Tests"
-      - "Anneal Tests"
+      - "CI (Trusted)"
       - "Anneal Performance Tracking"
     types: [completed]
     branches: [main]
@@ -41,8 +38,8 @@ jobs:
     name: Verify CI workflows and deploy readiness
     runs-on: ubuntu-latest
     timeout-minutes: 5
-    # Only main-branch runs in google/zerocopy publish documentation. Core CI
-    # and Anneal Tests must be main-branch `push` runs that succeeded; Anneal
+    # Only main-branch runs in google/zerocopy publish documentation. CI
+    # (Trusted) must be a main-branch `push` run that succeeded; Anneal
     # Performance Tracking may run via `push`, `schedule`, or
     # `workflow_dispatch` on `main` and may conclude `failure` when its final
     # budget gate fails *after* publishing telemetry to `benchmark-data`.
@@ -69,12 +66,11 @@ jobs:
         )
       )
     permissions:
-      actions: read # Query CI workflow runs and perf publish step status
+      actions: read # Query canonical ci-core-trusted.yml push runs and perf publish step status
       contents: read # Resolve refs/heads/main tip SHA
     outputs:
       deploy: ${{ steps.coordinate.outputs.deploy }}
       sha: ${{ steps.coordinate.outputs.sha }}
-      anneal_run_id: ${{ steps.coordinate.outputs.anneal_run_id }}
     steps:
       - name: Select the deployment-ready main SHA
         id: coordinate
@@ -159,62 +155,50 @@ jobs:
             fi
           fi
 
-          RUNS='[]'
-          for WORKFLOW in ci.yml anneal.yml; do
-            # These filenames are coupled to the workflow names in
-            # `on.workflow_run.workflows` above. Query by filename so a future
-            # run-name collision cannot satisfy this deployment gate.
-            RESPONSE="$(
-              gh api --method GET \
-                -H 'X-GitHub-Api-Version: 2022-11-28' \
-                "repos/$REPOSITORY/actions/workflows/$WORKFLOW/runs" \
-                -f branch=main \
-                -f event=push \
-                -f head_sha="$SOURCE_SHA" \
-                -F per_page=100
-            )"
-            RUN="$(
-              jq -c --arg SHA "$SOURCE_SHA" '
-                [.workflow_runs[]
-                  | select(
-                      .head_sha == $SHA
-                      and .head_branch == "main"
-                      and .event == "push"
-                    )]
-                | sort_by([.updated_at, .id])
-                | last // empty
-              ' <<< "$RESPONSE"
-            )"
+          # Coupled to `on.workflow_run.workflows` above. Query by filename so
+          # a future run-name collision cannot satisfy this deployment gate.
+          RESPONSE="$(
+            gh api --method GET \
+              -H 'X-GitHub-Api-Version: 2022-11-28' \
+              "repos/$REPOSITORY/actions/workflows/ci-core-trusted.yml/runs" \
+              -f branch=main \
+              -f event=push \
+              -f head_sha="$SOURCE_SHA" \
+              -F per_page=100
+          )"
+          RUN="$(
+            jq -c --arg SHA "$SOURCE_SHA" '
+              [.workflow_runs[]
+                | select(
+                    .head_sha == $SHA
+                    and .head_branch == "main"
+                    and .event == "push"
+                  )]
+              | sort_by([.updated_at, .id])
+              | last // empty
+            ' <<< "$RESPONSE"
+          )"
 
-            if [ -z "$RUN" ]; then
-              echo "No $WORKFLOW push run exists for $SOURCE_SHA" \
-                >> "$GITHUB_STEP_SUMMARY"
-              exit 0
-            fi
-            RUNS="$(jq -c --argjson RUN "$RUN" '. + [$RUN]' <<< "$RUNS")"
-          done
+          if [ -z "$RUN" ]; then
+            echo "No ci-core-trusted.yml push run exists for $SOURCE_SHA" \
+              >> "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
 
           jq -r '
-            .[]
-            | "- \(.name): \(.status) / \(.conclusion // "pending") (\(.html_url))"
-          ' <<< "$RUNS" >> "$GITHUB_STEP_SUMMARY"
+            "- \(.name): \(.status) / \(.conclusion // "pending") (\(.html_url))"
+          ' <<< "$RUN" >> "$GITHUB_STEP_SUMMARY"
 
           if ! jq -e '
-            all(.[]; .status == "completed" and .conclusion == "success")
-          ' <<< "$RUNS" >/dev/null; then
-            echo "Both CI workflows have not succeeded for $SOURCE_SHA" \
+            .status == "completed" and .conclusion == "success"
+          ' <<< "$RUN" >/dev/null; then
+            echo "CI (Trusted) has not succeeded for $SOURCE_SHA" \
               >> "$GITHUB_STEP_SUMMARY"
             exit 0
           fi
 
           if [ "$TRIGGER_IS_PERF" != "true" ]; then
-            # Both CI completions trigger this workflow. Only the completion with
-            # the latest `(updated_at, id)` pair proceeds, which makes the choice
-            # deterministic even when GitHub records both updates in the same
-            # second. A later successful rerun naturally becomes the new winner.
-            WINNER_RUN_ID="$(
-              jq -r 'sort_by([.updated_at, .id]) | last | .id' <<< "$RUNS"
-            )"
+            WINNER_RUN_ID="$(jq -r '.id' <<< "$RUN")"
             if [ "$WINNER_RUN_ID" != "$TRIGGER_RUN_ID" ]; then
               echo "Run $WINNER_RUN_ID owns deployment for $SOURCE_SHA" \
                 >> "$GITHUB_STEP_SUMMARY"
@@ -239,9 +223,6 @@ jobs:
 
           echo "deploy=true" >> "$GITHUB_OUTPUT"
           echo "sha=$SOURCE_SHA" >> "$GITHUB_OUTPUT"
-          jq -r '
-            .[] | select(.name == "Anneal Tests") | "anneal_run_id=\(.id)"
-          ' <<< "$RUNS" >> "$GITHUB_OUTPUT"
 
   build:
     name: Build
@@ -252,7 +233,7 @@ jobs:
       run:
         working-directory: zerocopy
     permissions:
-      contents: read
+      contents: read # Check out verified main SHA and benchmark-data branch.
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -326,7 +307,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: [coordinate, build]
     permissions:
-      contents: read
+      contents: read # Revalidate current refs/heads/main SHA before deploy.
       pages: write # Required for Pages deployment
       id-token: write # Required for OIDC-based Pages deployment
     steps:
