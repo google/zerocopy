@@ -23,12 +23,18 @@ enum Route {
 fn command(route: Route, workdir: &Path) -> Command {
     let binary = Path::new(env!("CARGO_BIN_EXE_cargo-anneal-test-bin"));
     assert!(binary.is_file(), "missing test binary: {}", binary.display());
+    let cargo_home = workdir.join("cargo-home");
     let mut command = match route {
-        Route::Direct => Command::new(binary),
+        Route::Direct => {
+            let mut command = Command::new(binary);
+            // Isolate `CARGO_HOME` so ambient `~/.cargo/config.toml` cannot
+            // affect `--manifest-path` tests; tests may still override it.
+            command.env("CARGO_HOME", &cargo_home);
+            command
+        }
         Route::Cargo => {
             let mut command = Command::new(env!("CARGO"));
             command.arg("anneal");
-            let cargo_home = workdir.join("cargo-home");
             command.env("CARGO_HOME", &cargo_home);
             // Cargo dispatches `cargo anneal` to an executable literally named
             // `cargo-anneal` on `PATH`. Stage a link inside `cargo-home/bin` so
@@ -2074,6 +2080,7 @@ fn verify_passes_env_flags_and_rejects_mismatched_capture_env() {
            \"schema_version\": 5,\n\
            \"compiler\": {{\"commit\": \"f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1\"}},\n\
            \"configuration\": {{\n\
+             \"crate_root\": \"lib.rs\",\n\
              \"crate_name\": \"demo\",\n\
              \"crate_type\": \"lib\",\n\
              \"panic\": \"unwind\",\n\
@@ -2169,6 +2176,7 @@ fn verify_passes_env_flags_and_rejects_mismatched_capture_env() {
                \"schema_version\": 5,\n\
                \"compiler\": {{\"commit\": \"f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1\"}},\n\
                \"configuration\": {{\n\
+                 \"crate_root\": \"lib.rs\",\n\
                  \"crate_name\": \"demo\",\n\
                  \"crate_type\": \"{bad_crate_type}\",\n\
                  \"panic\": \"{bad_panic}\",\n\
@@ -2235,6 +2243,396 @@ fn verify_passes_env_flags_and_rejects_mismatched_capture_env() {
 
 #[cfg(unix)]
 #[test]
+fn verify_rejects_mismatched_capture_crate_root() {
+    use std::{fs, os::unix::fs::PermissionsExt};
+
+    let project = tempfile::tempdir().unwrap();
+    fs::write(project.path().join("lib.rs"), b"pub fn f() -> u64 { 0 }\n").unwrap();
+    fs::write(project.path().join("Spec.lean"), b"").unwrap();
+    fs::write(project.path().join("Proof.lean"), b"").unwrap();
+    let sysroot = project.path().join("sysroot");
+    fs::create_dir_all(&sysroot).unwrap();
+    let fake_lean = project.path().join("lean");
+    fs::write(&fake_lean, b"#!/bin/sh\nexit 0\n").unwrap();
+    fs::set_permissions(&fake_lean, fs::Permissions::from_mode(0o755)).unwrap();
+    let fake_capture = project.path().join("fake-capture");
+    let script = "#!/bin/sh\n\
+         out_dir=\"\"\n\
+         while [ \"$#\" -gt 0 ]; do\n\
+           if [ \"$1\" = \"--out-dir\" ]; then shift; out_dir=\"$1\"; fi\n\
+           shift\n\
+         done\n\
+         mkdir -p \"$out_dir\"\n\
+         cat > \"$out_dir/capture.json\" <<'JSON'\n\
+         {\n\
+           \"schema_version\": 5,\n\
+           \"compiler\": {\"commit\": \"f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1\"},\n\
+           \"configuration\": {\n\
+             \"crate_root\": \"other.rs\",\n\
+             \"crate_name\": \"demo\",\n\
+             \"crate_type\": \"lib\",\n\
+             \"panic\": \"unwind\",\n\
+             \"overflow_checks\": false,\n\
+             \"target\": \"x86_64-unknown-linux-gnu\",\n\
+             \"edition\": \"2024\",\n\
+             \"cfg\": [],\n\
+             \"env\": {}\n\
+           },\n\
+           \"source_files\": [],\n\
+           \"census\": [],\n\
+           \"selected\": [],\n\
+           \"program\": {\"scope\": {\"kind\": \"selected_unit\", \"roots\": [\"f\"]}, \"bodies\": []}\n\
+         }\n\
+         JSON\n\
+         printf '{\"status\":\"captured\"}\\n'\n";
+    fs::write(&fake_capture, script).unwrap();
+    fs::set_permissions(&fake_capture, fs::Permissions::from_mode(0o755)).unwrap();
+
+    let output = command(Route::Direct, project.path())
+        .args([
+            "verify",
+            "--format",
+            "json",
+            "--capture",
+            fake_capture.to_str().unwrap(),
+            "--sysroot",
+            sysroot.to_str().unwrap(),
+            "--lean",
+            fake_lean.to_str().unwrap(),
+            "rustc",
+            "lib.rs",
+            "--crate-name",
+            "demo",
+            "--select",
+            "f",
+            "--spec-file",
+            "Spec=Spec.lean",
+            "--proof-file",
+            "Proof=Proof.lean",
+        ])
+        .output()
+        .unwrap();
+    assert_result(&output, 2, "", "");
+    let receipt: serde_json::Value = serde_json::from_slice(&output.stdout).unwrap();
+    assert_eq!(receipt["status"], "tool_failed", "{receipt}");
+    assert_eq!(receipt["phase"], "capture", "{receipt}");
+    assert!(
+        receipt["detail"]
+            .as_str()
+            .unwrap_or("")
+            .contains("capture differs from the requested compilation or scope"),
+        "{receipt}"
+    );
+}
+
+#[cfg(unix)]
+#[test]
+fn verify_accepts_equivalent_request_crate_root_spellings() {
+    use std::{fs, os::unix::fs::PermissionsExt};
+
+    let project = tempfile::tempdir().unwrap();
+    fs::create_dir_all(project.path().join("src")).unwrap();
+    fs::write(project.path().join("src/lib.rs"), b"pub fn f() -> u64 { 0 }\n").unwrap();
+    fs::write(project.path().join("Spec.lean"), b"").unwrap();
+    fs::write(project.path().join("Proof.lean"), b"").unwrap();
+    let sysroot = project.path().join("sysroot");
+    fs::create_dir_all(&sysroot).unwrap();
+    let fake_lean = project.path().join("lean");
+    fs::write(&fake_lean, b"#!/bin/sh\nexit 0\n").unwrap();
+    fs::set_permissions(&fake_lean, fs::Permissions::from_mode(0o755)).unwrap();
+
+    let write_fake_capture = |name: &str, crate_root_field: &str| {
+        let path = project.path().join(name);
+        let script = format!(
+            "#!/bin/sh\n\
+             out_dir=\"\"\n\
+             while [ \"$#\" -gt 0 ]; do\n\
+               if [ \"$1\" = \"--out-dir\" ]; then shift; out_dir=\"$1\"; fi\n\
+               shift\n\
+             done\n\
+             mkdir -p \"$out_dir\"\n\
+             cat > \"$out_dir/capture.json\" <<'JSON'\n\
+             {{\n\
+               \"schema_version\": 5,\n\
+               \"compiler\": {{\"commit\": \"f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1\"}},\n\
+               \"configuration\": {{\n\
+                 {crate_root_field}\
+                 \"crate_name\": \"demo\",\n\
+                 \"crate_type\": \"lib\",\n\
+                 \"panic\": \"unwind\",\n\
+                 \"overflow_checks\": false,\n\
+                 \"target\": \"x86_64-unknown-linux-gnu\",\n\
+                 \"edition\": \"2024\",\n\
+                 \"cfg\": [],\n\
+                 \"env\": {{}}\n\
+               }},\n\
+               \"source_files\": [],\n\
+               \"census\": [],\n\
+               \"selected\": [],\n\
+               \"program\": {{\"scope\": {{\"kind\": \"selected_unit\", \"roots\": [\"f\"]}}, \"bodies\": []}}\n\
+             }}\n\
+             JSON\n\
+             printf -- '-- captured\\n' > \"$out_dir/Captured.lean\"\n\
+             printf '{{\"status\":\"captured\"}}\\n'\n"
+        );
+        fs::write(&path, script).unwrap();
+        fs::set_permissions(&path, fs::Permissions::from_mode(0o755)).unwrap();
+        path
+    };
+
+    let run_req = |capture_bin: &std::path::Path, crate_root: &str| -> serde_json::Value {
+        let req_path = project.path().join("request.json");
+        let req = serde_json::json!({
+            "schema_version": 1,
+            "compilation": {
+                "source_root": ".",
+                "crate_root": crate_root,
+                "crate_name": "demo",
+                "crate_type": "lib",
+                "panic": "unwind",
+                "overflow_checks": false,
+                "target": "x86_64-unknown-linux-gnu",
+                "edition": "2024",
+                "cfg": [],
+                "env": {},
+                "source_files": [crate_root]
+            },
+            "scope": { "kind": "selected_unit", "roots": ["f"] },
+            "proof": {
+                "source_root": ".",
+                "sources": [
+                    { "module": "Spec", "path": "Spec.lean", "role": "specification" },
+                    { "module": "Proof", "path": "Proof.lean", "role": "proof" }
+                ],
+                "specification": "Spec.specs",
+                "theorem": "Proof.verify"
+            }
+        });
+        fs::write(&req_path, serde_json::to_vec(&req).unwrap()).unwrap();
+        let output = command(Route::Direct, project.path())
+            .args([
+                "verify",
+                "--format",
+                "json",
+                "--capture",
+                capture_bin.to_str().unwrap(),
+                "--sysroot",
+                sysroot.to_str().unwrap(),
+                "--lean",
+                fake_lean.to_str().unwrap(),
+                "--request",
+                req_path.to_str().unwrap(),
+            ])
+            .output()
+            .unwrap();
+        assert_result(&output, 2, "", "");
+        serde_json::from_slice(&output.stdout).unwrap()
+    };
+
+    // Component-equivalent spellings admitted by `declared_file` must pass
+    // capture authentication against normalized `src/lib.rs` and reach audit.
+    let norm_cap = write_fake_capture("fake-capture-norm", "\"crate_root\": \"src/lib.rs\",\n");
+    for spelling in ["src//lib.rs", "src/./lib.rs"] {
+        let receipt = run_req(&norm_cap, spelling);
+        assert_eq!(receipt["phase"], "audit", "spelling={spelling}: {receipt}");
+    }
+
+    // Missing or non-string `crate_root` in `capture.json` still fails closed.
+    let missing_cap = write_fake_capture("fake-capture-missing", "");
+    let nonstr_cap = write_fake_capture("fake-capture-nonstr", "\"crate_root\": 123,\n");
+    for bad_cap in [&missing_cap, &nonstr_cap] {
+        let receipt = run_req(bad_cap, "src/lib.rs");
+        assert_eq!(receipt["phase"], "capture", "{receipt}");
+        assert!(
+            receipt["detail"]
+                .as_str()
+                .unwrap_or("")
+                .contains("capture differs from the requested compilation or scope"),
+            "{receipt}"
+        );
+    }
+}
+
+#[cfg(unix)]
+#[test]
+fn cargo_shortcut_pins_resolved_cargo_home_for_metadata() {
+    use std::{fs, os::unix::fs::PermissionsExt};
+
+    let project = tempfile::tempdir().unwrap();
+    let package = project.path().join("package");
+    fs::create_dir_all(package.join("src")).unwrap();
+    fs::create_dir(package.join("proof")).unwrap();
+    fs::write(
+        package.join("Cargo.toml"),
+        "[package]\nname = \"homepin\"\nversion = \"0.1.0\"\nedition = \"2024\"\n",
+    )
+    .unwrap();
+    fs::write(package.join("src/lib.rs"), b"pub fn zero() -> u64 { 0 }\n").unwrap();
+    fs::write(package.join("proof/Spec.lean"), b"-- not compiled by this check\n").unwrap();
+
+    let base_path = || {
+        let mut paths = vec![Path::new(env!("CARGO")).parent().unwrap().to_path_buf()];
+        if let Some(path) = env::var_os("PATH") {
+            paths.extend(env::split_paths(&path));
+        }
+        paths
+    };
+
+    // (a) Empty `CARGO_HOME` with a `HOME` whose `.cargo/config.toml` has
+    //     `[build]` fails closed before spawning `cargo metadata`.
+    let bad_home = project.path().join("bad-home");
+    fs::create_dir_all(bad_home.join(".cargo")).unwrap();
+    fs::write(bad_home.join(".cargo/config.toml"), "[build]\nrustflags = []\n").unwrap();
+    let mut home_cmd = command(Route::Direct, project.path());
+    home_cmd
+        .env("PATH", env::join_paths(base_path()).unwrap())
+        .env("CARGO_HOME", "")
+        .env("HOME", &bad_home)
+        .args(["verify", "--format", "json", "--manifest-path"])
+        .arg(package.join("Cargo.toml"))
+        .arg("--proof-dir")
+        .arg(package.join("proof"))
+        .arg("--capture")
+        .arg(project.path().join("missing-capture"))
+        .arg("--sysroot")
+        .arg(project.path());
+    #[cfg(not(feature = "setup"))]
+    home_cmd.arg("--lean").arg(project.path().join("missing-lean"));
+    let home_out = home_cmd.output().unwrap();
+    assert_result(&home_out, 1, "", "");
+    let home_rec: serde_json::Value = serde_json::from_slice(&home_out.stdout).unwrap();
+    assert_eq!(home_rec["status"], "unsupported", "{home_rec}");
+    assert_eq!(home_rec["phase"], "cargo", "{home_rec}");
+    assert!(home_rec["detail"].as_str().unwrap_or("").contains("table [build]"), "{home_rec}");
+
+    // (b) Relative `CARGO_HOME` containing `[build]` is refused regardless of
+    //     `cargo metadata`'s isolated probe cwd.
+    let rel_bad = project.path().join("rel-bad-cargo");
+    fs::create_dir_all(&rel_bad).unwrap();
+    fs::write(rel_bad.join("config.toml"), "[build]\nrustc-wrapper = \"/bin/false\"\n").unwrap();
+    let mut rel_bad_cmd = command(Route::Direct, project.path());
+    rel_bad_cmd
+        .env("PATH", env::join_paths(base_path()).unwrap())
+        .env("CARGO_HOME", "rel-bad-cargo")
+        .args(["verify", "--format", "json", "--manifest-path"])
+        .arg(package.join("Cargo.toml"))
+        .arg("--proof-dir")
+        .arg(package.join("proof"))
+        .arg("--capture")
+        .arg(project.path().join("missing-capture"))
+        .arg("--sysroot")
+        .arg(project.path());
+    #[cfg(not(feature = "setup"))]
+    rel_bad_cmd.arg("--lean").arg(project.path().join("missing-lean"));
+    let rel_bad_out = rel_bad_cmd.output().unwrap();
+    assert_result(&rel_bad_out, 1, "", "");
+    let rel_bad_rec: serde_json::Value = serde_json::from_slice(&rel_bad_out.stdout).unwrap();
+    assert_eq!(rel_bad_rec["status"], "unsupported", "{rel_bad_rec}");
+    assert_eq!(rel_bad_rec["phase"], "cargo", "{rel_bad_rec}");
+    assert!(
+        rel_bad_rec["detail"].as_str().unwrap_or("").contains("table [build]"),
+        "{rel_bad_rec}"
+    );
+
+    // (c) `cargo metadata` receives the exact absolutized `CARGO_HOME` that
+    //     was inspected (for both relative `CARGO_HOME` and `HOME` fallback).
+    let bin_dir = project.path().join("wrap-bin");
+    fs::create_dir_all(&bin_dir).unwrap();
+    let seen_file = project.path().join("cargo_home_seen.txt");
+    let cargo_wrap = bin_dir.join("cargo");
+    let wrap_script = format!(
+        "#!/bin/sh\nprintf '%s' \"$CARGO_HOME\" > \"{}\"\nexec \"{}\" \"$@\"\n",
+        seen_file.display(),
+        env!("CARGO")
+    );
+    fs::write(&cargo_wrap, wrap_script).unwrap();
+    fs::set_permissions(&cargo_wrap, fs::Permissions::from_mode(0o755)).unwrap();
+
+    let mut wrap_paths = vec![bin_dir];
+    wrap_paths.extend(base_path());
+    let wrap_path_env = env::join_paths(wrap_paths).unwrap();
+
+    let rel_ok = project.path().join("rel-ok-cargo");
+    fs::create_dir_all(&rel_ok).unwrap();
+    fs::write(rel_ok.join("config.toml"), "[net]\nretry = 1\n").unwrap();
+    let mut rel_ok_cmd = command(Route::Direct, project.path());
+    rel_ok_cmd
+        .env("PATH", &wrap_path_env)
+        .env("CARGO_HOME", "rel-ok-cargo")
+        .args(["verify", "--format", "json", "--manifest-path"])
+        .arg(package.join("Cargo.toml"))
+        .arg("--proof-dir")
+        .arg(package.join("proof"))
+        .arg("--capture")
+        .arg(project.path().join("missing-capture"))
+        .arg("--sysroot")
+        .arg(project.path());
+    #[cfg(not(feature = "setup"))]
+    rel_ok_cmd.arg("--lean").arg(project.path().join("missing-lean"));
+    let rel_ok_out = rel_ok_cmd.output().unwrap();
+    assert_result(&rel_ok_out, 2, "", "");
+    let rel_ok_rec: serde_json::Value = serde_json::from_slice(&rel_ok_out.stdout).unwrap();
+    assert_eq!(rel_ok_rec["phase"], "capture-tool", "{rel_ok_rec}");
+    let expected_rel = fs::canonicalize(&rel_ok).unwrap();
+    let observed_rel = fs::canonicalize(fs::read_to_string(&seen_file).unwrap()).unwrap();
+    assert_eq!(observed_rel, expected_rel);
+
+    let ok_home = project.path().join("ok-home");
+    fs::create_dir_all(ok_home.join(".cargo")).unwrap();
+    fs::write(ok_home.join(".cargo/config.toml"), "[net]\nretry = 2\n").unwrap();
+    let mut ok_home_cmd = command(Route::Direct, project.path());
+    ok_home_cmd
+        .env("PATH", &wrap_path_env)
+        .env("CARGO_HOME", "")
+        .env("HOME", &ok_home)
+        .args(["verify", "--format", "json", "--manifest-path"])
+        .arg(package.join("Cargo.toml"))
+        .arg("--proof-dir")
+        .arg(package.join("proof"))
+        .arg("--capture")
+        .arg(project.path().join("missing-capture"))
+        .arg("--sysroot")
+        .arg(project.path());
+    #[cfg(not(feature = "setup"))]
+    ok_home_cmd.arg("--lean").arg(project.path().join("missing-lean"));
+    let ok_home_out = ok_home_cmd.output().unwrap();
+    assert_result(&ok_home_out, 2, "", "");
+    let ok_home_rec: serde_json::Value = serde_json::from_slice(&ok_home_out.stdout).unwrap();
+    assert_eq!(ok_home_rec["phase"], "capture-tool", "{ok_home_rec}");
+    let expected_home = fs::canonicalize(ok_home.join(".cargo")).unwrap();
+    let observed_home = fs::canonicalize(fs::read_to_string(&seen_file).unwrap()).unwrap();
+    assert_eq!(observed_home, expected_home);
+
+    // (d) A symlinked `CARGO_HOME` directory fails closed like `.cargo`.
+    let sym_cargo_home = project.path().join("sym-cargo-home");
+    std::os::unix::fs::symlink(&rel_ok, &sym_cargo_home).unwrap();
+    let mut sym_cmd = command(Route::Direct, project.path());
+    sym_cmd
+        .env("PATH", &wrap_path_env)
+        .env("CARGO_HOME", &sym_cargo_home)
+        .args(["verify", "--format", "json", "--manifest-path"])
+        .arg(package.join("Cargo.toml"))
+        .arg("--proof-dir")
+        .arg(package.join("proof"))
+        .arg("--capture")
+        .arg(project.path().join("missing-capture"))
+        .arg("--sysroot")
+        .arg(project.path());
+    #[cfg(not(feature = "setup"))]
+    sym_cmd.arg("--lean").arg(project.path().join("missing-lean"));
+    let sym_out = sym_cmd.output().unwrap();
+    assert_result(&sym_out, 1, "", "");
+    let sym_rec: serde_json::Value = serde_json::from_slice(&sym_out.stdout).unwrap();
+    assert_eq!(sym_rec["status"], "unsupported", "{sym_rec}");
+    assert_eq!(sym_rec["phase"], "cargo", "{sym_rec}");
+    assert!(
+        sym_rec["detail"].as_str().unwrap_or("").contains("not a regular directory"),
+        "{sym_rec}"
+    );
+}
+
+#[cfg(unix)]
+#[test]
 fn verify_passes_stdlib_crate_flag_and_rejects_mismatched_capture_capability() {
     use std::{fs, os::unix::fs::PermissionsExt};
 
@@ -2272,6 +2670,7 @@ fn verify_passes_stdlib_crate_flag_and_rejects_mismatched_capture_capability() {
                \"schema_version\": 5,\\n\
                \"compiler\": {{\"commit\": \"f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1\"}},\\n\
                \"configuration\": {{\\n\
+                 \"crate_root\": \"lib.rs\",\\n\
                  \"crate_name\": \"core\",\\n\
                  \"crate_type\": \"lib\",\\n\
                  \"panic\": \"unwind\",\\n\
@@ -2495,6 +2894,7 @@ fn verify_passes_instantiate_flags_and_rejects_mismatched_capture_scope() {
            \"schema_version\": 5,\n\
            \"compiler\": {{\"commit\": \"f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1\"}},\n\
            \"configuration\": {{\n\
+             \"crate_root\": \"lib.rs\",\n\
              \"crate_name\": \"demo\",\n\
              \"target\": \"x86_64-unknown-linux-gnu\",\n\
              \"edition\": \"2024\",\n\
@@ -3664,6 +4064,7 @@ fn sharding_cli_guards_reserved_modules_missing_shards_and_shard_plan() {
           \"schema_version\": 5,\n\
           \"compiler\": {\"commit\": \"f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1\"},\n\
           \"configuration\": {\n\
+            \"crate_root\": \"lib.rs\",\n\
             \"crate_name\": \"demo\",\n\
             \"crate_type\": \"lib\",\n\
             \"panic\": \"unwind\",\n\
@@ -4008,6 +4409,7 @@ fn verify_with_fake_capture(
            \"schema_version\": 5,\n\
            \"compiler\": {{\"commit\": \"f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1\"}},\n\
            \"configuration\": {{\n\
+             \"crate_root\": \"lib.rs\",\n\
              \"crate_name\": \"demo\",\n\
              \"crate_type\": \"lib\",\n\
              \"panic\": \"unwind\",\n\
@@ -4266,6 +4668,7 @@ fn max_inspector_output_bytes_validates_bounds_and_propagates_to_verify() {
               \"schema_version\": 5,\n\
               \"compiler\": {\"commit\": \"f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1\"},\n\
               \"configuration\": {\n\
+                \"crate_root\": \"lib.rs\",\n\
                 \"crate_name\": \"demo\",\n\
                 \"crate_type\": \"lib\",\n\
                 \"panic\": \"unwind\",\n\
@@ -4337,5 +4740,155 @@ fn max_inspector_output_bytes_validates_bounds_and_propagates_to_verify() {
             "{raised_receipt}"
         );
         assert!(raised_receipt["hint"].is_null(), "{raised_receipt}");
+    }
+}
+
+#[cfg(unix)]
+#[test]
+fn verify_emits_structured_reason_on_authored_proof_heartbeat_limit() {
+    use std::{fs, os::unix::fs::PermissionsExt};
+
+    let project = tempfile::tempdir().unwrap();
+    let root = project.path();
+    fs::write(root.join("lib.rs"), b"pub fn id(x: u8) -> u8 { x }\n").unwrap();
+    fs::write(root.join("Spec.lean"), b"-- spec\n").unwrap();
+    fs::write(root.join("Proof.lean"), b"-- proof\n").unwrap();
+    let sysroot = root.join("rust-sysroot");
+    fs::create_dir_all(&sysroot).unwrap();
+
+    let lean_prefix = root.join("lean-prefix");
+    fs::create_dir_all(lean_prefix.join("bin")).unwrap();
+    fs::create_dir_all(lean_prefix.join("lib/lean/Init")).unwrap();
+    fs::write(lean_prefix.join("lib/lean/Init.olean"), b"olean\x02init").unwrap();
+    for m in ["Coe", "Core", "Notation", "Prelude", "SizeOf", "Tactics"] {
+        fs::write(lean_prefix.join(format!("lib/lean/Init/{m}.olean")), b"olean\x02fnd").unwrap();
+    }
+    let fake_lean = lean_prefix.join("bin/lean");
+    let lean_script = format!(
+        "#!/bin/sh\n\
+         set -eu\n\
+         if [ \"${{1:-}}\" = '--version' ]; then\n\
+           printf 'Lean (version 4.35.0)\\n'\n\
+           exit 0\n\
+         fi\n\
+         if [ \"${{1:-}}\" = '--print-prefix' ]; then\n\
+           printf '%s\\n' {prefix:?}\n\
+           exit 0\n\
+         fi\n\
+         out_olean=''\n\
+         run_mode=0\n\
+         prev=''\n\
+         last=''\n\
+         while [ \"$#\" -gt 0 ]; do\n\
+           case \"$1\" in\n\
+             -o)\n\
+               shift\n\
+               out_olean=\"$1\"\n\
+               ;;\n\
+             --run)\n\
+               run_mode=1\n\
+               ;;\n\
+           esac\n\
+           prev=\"$last\"\n\
+           last=\"$1\"\n\
+           shift\n\
+         done\n\
+         if [ \"$run_mode\" -eq 1 ]; then\n\
+           /usr/bin/python3 -c 'import json, sys; req = json.load(open(sys.argv[1])); m = req[\"mode\"]; fnd = [\"Init.Coe\", \"Init.Core\", \"Init.Notation\", \"Init.Prelude\", \"Init.SizeOf\", \"Init.Tactics\"]; res = {{\"headers\": [{{\"module\": n, \"imports\": [], \"isModule\": False}} for n, _ in req[\"sources\"]]}} if m == \"headers\" else ({{\"checked\": [n for n, _ in req[\"sources\"]]}} if m == \"spec-preflight\" else ({{\"graph\": {{k: ([{{\"module\": d, \"importAll\": False, \"isExported\": True, \"isMeta\": False}} for d in fnd if d != k] if k == \"Init.Core\" else []) for k in fnd}}}} if m == \"resolve-imports\" else {{}})); json.dump({{\"ok\": True, \"result\": res}}, open(sys.argv[2], \"w\"))' \"$prev\" \"$last\"\n\
+           exit 0\n\
+         fi\n\
+         case \"$out_olean\" in\n\
+           */Proof.olean|Proof.olean)\n\
+             printf '{{\"severity\":\"error\",\"kind\":\"runtime.maxHeartbeats\",\"data\":\"(deterministic) timeout\"}}\\n'\n\
+             exit 1\n\
+             ;;\n\
+         esac\n\
+         if [ -n \"$out_olean\" ]; then\n\
+           printf 'olean\\002stub' > \"$out_olean\"\n\
+           exit 0\n\
+         fi\n\
+         exit 0\n",
+        prefix = lean_prefix.display(),
+    );
+    fs::write(&fake_lean, lean_script).unwrap();
+    fs::set_permissions(&fake_lean, fs::Permissions::from_mode(0o755)).unwrap();
+
+    let fake_capture = root.join("fake-capture");
+    let cap_script = "#!/bin/sh\n\
+        set -eu\n\
+        out_dir=''\n\
+        while [ \"$#\" -gt 0 ]; do\n\
+          if [ \"$1\" = '--out-dir' ]; then\n\
+            shift\n\
+            out_dir=\"$1\"\n\
+          fi\n\
+          shift\n\
+        done\n\
+        mkdir -p \"$out_dir\"\n\
+        cat > \"$out_dir/capture.json\" <<'JSON'\n\
+        {\n\
+          \"schema_version\": 5,\n\
+          \"compiler\": {\"commit\": \"f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1\"},\n\
+          \"configuration\": {\n\
+            \"crate_root\": \"lib.rs\",\n\
+            \"crate_name\": \"demo\",\n\
+            \"crate_type\": \"lib\",\n\
+            \"panic\": \"unwind\",\n\
+            \"overflow_checks\": false,\n\
+            \"target\": \"x86_64-unknown-linux-gnu\",\n\
+            \"edition\": \"2024\",\n\
+            \"cfg\": [],\n\
+            \"env\": {}\n\
+          },\n\
+          \"source_files\": [],\n\
+          \"census\": [],\n\
+          \"selected\": [],\n\
+          \"program\": {\"scope\": {\"kind\": \"selected_unit\", \"roots\": [\"id\"]}, \"bodies\": []}\n\
+        }\n\
+        JSON\n\
+        printf -- '-- captured\\n' > \"$out_dir/Captured.lean\"\n\
+        printf '{\"status\":\"captured\"}\\n'\n";
+    fs::write(&fake_capture, cap_script).unwrap();
+    fs::set_permissions(&fake_capture, fs::Permissions::from_mode(0o755)).unwrap();
+
+    let receipt_out = root.join("emitted-receipt.json");
+    let output = command(Route::Direct, root)
+        .args([
+            "verify",
+            "--format",
+            "json",
+            "--no-cache",
+            "--allow-unpinned-lean",
+            "--allow-unsandboxed-elaboration",
+            "--receipt-out",
+            receipt_out.to_str().unwrap(),
+            "--capture",
+            fake_capture.to_str().unwrap(),
+            "--sysroot",
+            sysroot.to_str().unwrap(),
+            "--lean",
+            fake_lean.to_str().unwrap(),
+            "rustc",
+            "lib.rs",
+            "--crate-name",
+            "demo",
+            "--select",
+            "id",
+            "--spec-file",
+            "Spec=Spec.lean",
+            "--proof-file",
+            "Proof=Proof.lean",
+        ])
+        .output()
+        .unwrap();
+    assert_eq!(output.status.code(), Some(1), "{output:?}");
+
+    let stdout_receipt: serde_json::Value = serde_json::from_slice(&output.stdout).unwrap();
+    let file_receipt: serde_json::Value =
+        serde_json::from_slice(&fs::read(&receipt_out).unwrap()).unwrap();
+    for (label, receipt) in [("stdout", &stdout_receipt), ("receipt-out", &file_receipt)] {
+        assert_eq!(receipt["status"], "proof_failed", "{label}: {receipt}");
+        assert_eq!(receipt["phase"], "audit", "{label}: {receipt}");
+        assert_eq!(receipt["reason"], "heartbeat_limit_exceeded", "{label}: {receipt}");
     }
 }

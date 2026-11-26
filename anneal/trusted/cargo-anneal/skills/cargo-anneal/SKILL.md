@@ -180,12 +180,17 @@ stderr if stdout is empty.
 - `compiler_failed`: Fix the reported Rust diagnostics first.
 - `tool_failed`: Diagnose the named setup, capture, sandbox, or artifact phase.
 - `proof_failed`: **Step 0 — Day-2 Rust bug triage before proof hacking.**
-  Compare `generated/Expected.lean` and `capture/Captured.lean` (or
-  `capture/Captured/Shard_*.lean` when sharded) against the Rust
-  implementation to check whether the Rust code actually violates its
-  specification (missing bounds/overflow guard, off-by-one, or unintended panic
-  path). Never silently weaken `Specs.safety` or `Specs.property` to make a
-  proof pass; escalate any implementation-vs-intent mismatch to the user.
+  First check whether the receipt carries a structured `"reason"`
+  (`"heartbeat_limit_exceeded"` or `"recursion_depth_exceeded"`): a
+  `proof_failed` carrying `"reason"` is a deterministic Lean resource limit in
+  an authored `Proof` module, not a proof or specification rejection, and must
+  never be credited as a mutant kill. Otherwise, compare
+  `generated/Expected.lean` and `capture/Captured.lean` (or
+  `capture/Captured/Shard_*.lean` when sharded) against the Rust implementation
+  to check whether the Rust code actually violates its specification (missing
+  bounds/overflow guard, off-by-one, or unintended panic path). Never silently
+  weaken `Specs.safety` or `Specs.property` to make a proof pass; escalate any
+  implementation-vs-intent mismatch to the user.
 
 For diagnostics, rerun with `--artifacts <dir>` (add `--export-lean-lib` to
 copy Door-1-verified `.olean` files to `<dir>/lean-lib/`, omitting `proof`

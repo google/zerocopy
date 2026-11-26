@@ -289,6 +289,7 @@ fn sharded_cyclic_crate_verifies_cross_shard_dag_id_tree_and_incremental_cache()
 
     // 1. Generate static-DAG `anneal-shards.json` plan with max_bodies=2.
     let plan_inv = with_host_cargo_env(
+        &staged,
         Invocation::new(
             cli,
             &["shard-plan", "--shard-min-bodies", "2", "--shard-max-bodies", "2", "--write"],
@@ -445,33 +446,39 @@ fn sharded_cyclic_crate_verifies_cross_shard_dag_id_tree_and_incremental_cache()
     //    artifacts, then verify the live sharded receipt and retained tree
     //    via `cargo anneal inspect --verify-artifacts --unknown-fields=deny`.
     let artifacts_dir = work.join("retained-artifacts");
-    let first_verify = with_host_cargo_env(verify_invocation(&[
-        OsStr::new("--manifest-path"),
-        manifest_path.as_os_str(),
-        OsStr::new("--proof-dir"),
-        proof_dir.as_os_str(),
-        OsStr::new("--shard-min-bodies"),
-        OsStr::new("2"),
-        OsStr::new("--shard-max-bodies"),
-        OsStr::new("2"),
-        OsStr::new("--verify-shard-plan"),
-        plan_path.as_os_str(),
-        OsStr::new("--artifacts"),
-        artifacts_dir.as_os_str(),
-    ]))
+    let first_verify = with_host_cargo_env(
+        &staged,
+        verify_invocation(&[
+            OsStr::new("--manifest-path"),
+            manifest_path.as_os_str(),
+            OsStr::new("--proof-dir"),
+            proof_dir.as_os_str(),
+            OsStr::new("--shard-min-bodies"),
+            OsStr::new("2"),
+            OsStr::new("--shard-max-bodies"),
+            OsStr::new("2"),
+            OsStr::new("--verify-shard-plan"),
+            plan_path.as_os_str(),
+            OsStr::new("--artifacts"),
+            artifacts_dir.as_os_str(),
+        ]),
+    )
     .env("XDG_CACHE_HOME", &cache_dir);
-    let base_verify = with_host_cargo_env(verify_invocation(&[
-        OsStr::new("--manifest-path"),
-        manifest_path.as_os_str(),
-        OsStr::new("--proof-dir"),
-        proof_dir.as_os_str(),
-        OsStr::new("--shard-min-bodies"),
-        OsStr::new("2"),
-        OsStr::new("--shard-max-bodies"),
-        OsStr::new("2"),
-        OsStr::new("--verify-shard-plan"),
-        plan_path.as_os_str(),
-    ]))
+    let base_verify = with_host_cargo_env(
+        &staged,
+        verify_invocation(&[
+            OsStr::new("--manifest-path"),
+            manifest_path.as_os_str(),
+            OsStr::new("--proof-dir"),
+            proof_dir.as_os_str(),
+            OsStr::new("--shard-min-bodies"),
+            OsStr::new("2"),
+            OsStr::new("--shard-max-bodies"),
+            OsStr::new("2"),
+            OsStr::new("--verify-shard-plan"),
+            plan_path.as_os_str(),
+        ]),
+    )
     .env("XDG_CACHE_HOME", &cache_dir);
     let verify_run = run_verify_inv(&staged, &first_verify);
     let ok = expect_verified(&verify_run, "crate_verified", true);
@@ -550,16 +557,19 @@ fn sharded_cyclic_crate_verifies_cross_shard_dag_id_tree_and_incremental_cache()
     // 4. Reject authored `Proof.IdTree` shadow when sharding is active.
     let authored_id_tree = proof_dir.join("Proof/IdTree.lean");
     fs::write(&authored_id_tree, "-- shadow\n").unwrap();
-    let shadow_inv = with_host_cargo_env(verify_invocation(&[
-        OsStr::new("--manifest-path"),
-        manifest_path.as_os_str(),
-        OsStr::new("--proof-dir"),
-        proof_dir.as_os_str(),
-        OsStr::new("--shard-min-bodies"),
-        OsStr::new("2"),
-        OsStr::new("--shard-max-bodies"),
-        OsStr::new("2"),
-    ]))
+    let shadow_inv = with_host_cargo_env(
+        &staged,
+        verify_invocation(&[
+            OsStr::new("--manifest-path"),
+            manifest_path.as_os_str(),
+            OsStr::new("--proof-dir"),
+            proof_dir.as_os_str(),
+            OsStr::new("--shard-min-bodies"),
+            OsStr::new("2"),
+            OsStr::new("--shard-max-bodies"),
+            OsStr::new("2"),
+        ]),
+    )
     .env("XDG_CACHE_HOME", &cache_dir);
     let shadow_run = run_verify_inv(&staged, &shadow_inv);
     expect_failed(&shadow_run, 1, "unsupported", Some("proof"), "reserved proof module");
@@ -718,18 +728,21 @@ fn sharding_is_transparent_to_unsharded_module_mode_proofs() {
     .unwrap();
 
     let artifacts_dir = work.join("transparent-artifacts");
-    let inv = with_host_cargo_env(verify_invocation(&[
-        OsStr::new("--manifest-path"),
-        manifest_path.as_os_str(),
-        OsStr::new("--proof-dir"),
-        proof_dir.as_os_str(),
-        OsStr::new("--shard-min-bodies"),
-        OsStr::new("2"),
-        OsStr::new("--shard-max-bodies"),
-        OsStr::new("2"),
-        OsStr::new("--artifacts"),
-        artifacts_dir.as_os_str(),
-    ]));
+    let inv = with_host_cargo_env(
+        &staged,
+        verify_invocation(&[
+            OsStr::new("--manifest-path"),
+            manifest_path.as_os_str(),
+            OsStr::new("--proof-dir"),
+            proof_dir.as_os_str(),
+            OsStr::new("--shard-min-bodies"),
+            OsStr::new("2"),
+            OsStr::new("--shard-max-bodies"),
+            OsStr::new("2"),
+            OsStr::new("--artifacts"),
+            artifacts_dir.as_os_str(),
+        ]),
+    );
     let run = run_verify_inv(&staged, &inv);
     let ok = expect_verified(&run, "crate_verified", true);
     let shards_val = ok.shards.as_ref().expect("sharding must be active");

@@ -1415,11 +1415,154 @@ pub(crate) fn compute_sysroot_manifest_sha256_for_test(lib_dir: &Path) -> String
 
 // `topo_sort_modules` is re-exported from `core`.
 
-/// Return a bounded worker count based on available host parallelism, capped
-/// at `cap` and never below `1`.
+/// Default conservative per-worker RAM budget (MiB) used to clamp parallel Lean
+/// compilation concurrency against `ANNEAL_LEAN_RUN_MEM_MB` or Linux cgroup v2
+/// `memory.max`.
+pub const DEFAULT_PER_WORKER_MEM_MB: usize = 4096;
+
+fn parse_positive_env_usize(raw: Option<&str>) -> Option<usize> {
+    let trimmed = raw?.trim();
+    if trimmed.is_empty() {
+        return None;
+    }
+    trimmed.parse::<usize>().ok().filter(|&n| n >= 1)
+}
+
+// Only Linux reads cgroup v2 limits; tests exercise the parsers everywhere.
+#[cfg(any(test, target_os = "linux"))]
+fn parse_cgroup_v2_path(proc_self_cgroup: &str) -> Option<&str> {
+    for line in proc_self_cgroup.lines() {
+        if let Some(path) = line.strip_prefix("0::") {
+            return Some(path.trim());
+        }
+    }
+    None
+}
+
+#[cfg(any(test, target_os = "linux"))]
+fn parse_cgroup_v2_memory_max_mb(raw: &str) -> Option<usize> {
+    let trimmed = raw.trim();
+    if trimmed.is_empty() || trimmed == "max" {
+        return None;
+    }
+    let bytes = trimmed.parse::<u64>().ok().filter(|&b| b > 0)?;
+    let mib = (bytes / (1024 * 1024)).max(1);
+    usize::try_from(mib).ok()
+}
+
+#[cfg(any(test, target_os = "linux"))]
+fn read_cgroup_v2_memory_max_mb_under(cgroup_root: &Path, cgroup_rel: &str) -> Option<usize> {
+    if cgroup_rel.contains('\0') {
+        return None;
+    }
+    let rel = cgroup_rel.trim_start_matches('/');
+    let mut cur = cgroup_root.to_path_buf();
+    if !rel.is_empty() {
+        for comp in Path::new(rel).components() {
+            match comp {
+                std::path::Component::Normal(seg) => cur.push(seg),
+                _ => return None,
+            }
+        }
+    }
+    let mut min_mib: Option<usize> = None;
+    loop {
+        if let Ok(raw) = fs::read_to_string(cur.join("memory.max"))
+            && let Some(mib) = parse_cgroup_v2_memory_max_mb(&raw)
+        {
+            min_mib = Some(min_mib.map_or(mib, |prev| prev.min(mib)));
+        }
+        if cur == cgroup_root {
+            break;
+        }
+        let Some(parent) = cur.parent() else {
+            break;
+        };
+        if !parent.starts_with(cgroup_root) {
+            break;
+        }
+        cur = parent.to_path_buf();
+    }
+    min_mib
+}
+
+fn detect_cgroup_v2_memory_max_mb() -> Option<usize> {
+    #[cfg(target_os = "linux")]
+    {
+        let proc_cgroup = fs::read_to_string("/proc/self/cgroup").ok()?;
+        let rel = parse_cgroup_v2_path(&proc_cgroup)?;
+        read_cgroup_v2_memory_max_mb_under(Path::new("/sys/fs/cgroup"), rel)
+    }
+    #[cfg(not(target_os = "linux"))]
+    {
+        None
+    }
+}
+
+fn resolve_compile_workers(
+    cap: usize,
+    available: usize,
+    per_worker_mem_mb: usize,
+    compile_workers_env: Option<&str>,
+    lean_run_mem_mb_env: Option<&str>,
+    cgroup_mem_mb: Option<usize>,
+    hard_cap: Option<usize>,
+) -> usize {
+    let avail = available.max(1);
+    let mut workers = match parse_positive_env_usize(compile_workers_env) {
+        Some(requested) => requested.min(avail),
+        None => avail.min(cap.max(1)),
+    };
+    let effective_mem_mb = match (parse_positive_env_usize(lean_run_mem_mb_env), cgroup_mem_mb) {
+        (Some(env_mb), Some(cg_mb)) => Some(env_mb.min(cg_mb)),
+        (env_mb, cg_mb) => env_mb.or(cg_mb),
+    };
+    if let Some(mem_mb) = effective_mem_mb {
+        let mem_cap = (mem_mb / per_worker_mem_mb.max(1)).max(1);
+        workers = workers.min(mem_cap);
+    }
+    if let Some(limit) = hard_cap {
+        workers = workers.min(limit.max(1));
+    }
+    workers.max(1)
+}
+
+/// Return a bounded worker count for parallel Lean compilation, honoring:
+/// - `ANNEAL_COMPILE_WORKERS`: positive integer override bounded by host
+///   `available_parallelism` and the effective memory ceiling (invalid or
+///   non-positive values are safely ignored, falling back to `cap`);
+/// - `ANNEAL_LEAN_RUN_MEM_MB` and Linux cgroup v2 `memory.max` (taking the
+///   tighter finite bound when both are present), clamping concurrency to
+///   `max(1, floor(mem_mb / 4096))` so concurrent Lean workers do not
+///   OOM-spike a container or `anneal-lean-run` cgroup;
+/// - `cap`: default automatic upper bound when `ANNEAL_COMPILE_WORKERS` is
+///   unset.
 #[doc(hidden)]
 pub fn default_compile_workers(cap: usize) -> usize {
-    std::thread::available_parallelism().map(NonZero::get).unwrap_or(1).min(cap.max(1)).max(1)
+    compile_workers_with_limits(cap, None)
+}
+
+/// Like [`default_compile_workers`], but also enforces an upper `hard_cap`
+/// that `ANNEAL_COMPILE_WORKERS` cannot exceed (used for arena-backed
+/// standalone NDJSON kernels with fixed address-space budgets).
+pub(crate) fn bounded_compile_workers(cap: usize, hard_cap: usize) -> usize {
+    compile_workers_with_limits(cap, Some(hard_cap))
+}
+
+fn compile_workers_with_limits(cap: usize, hard_cap: Option<usize>) -> usize {
+    let available = std::thread::available_parallelism().map(NonZero::get).unwrap_or(1);
+    let compile_workers = std::env::var("ANNEAL_COMPILE_WORKERS").ok();
+    let lean_run_mem_mb = std::env::var("ANNEAL_LEAN_RUN_MEM_MB").ok();
+    let cgroup_mem_mb = detect_cgroup_v2_memory_max_mb();
+    resolve_compile_workers(
+        cap,
+        available,
+        DEFAULT_PER_WORKER_MEM_MB,
+        compile_workers.as_deref(),
+        lean_run_mem_mb.as_deref(),
+        cgroup_mem_mb,
+        hard_cap,
+    )
 }
 
 /// Validated acyclic DAG plan for [`run_parallel_dag`].
@@ -2630,6 +2773,129 @@ mod default_lean_path_tests {
             sha256_bytes(b""),
             "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
         );
+    }
+
+    #[test]
+    fn resolve_compile_workers_honors_default_cap_override_and_mem_budget() {
+        // Default auto cap when env vars and cgroup limits are unset.
+        assert_eq!(resolve_compile_workers(4, 16, 4096, None, None, None, None), 4);
+        assert_eq!(resolve_compile_workers(4, 2, 4096, None, None, None, None), 2);
+        assert_eq!(resolve_compile_workers(3, 128, 4096, None, None, None, None), 3);
+        assert_eq!(resolve_compile_workers(0, 0, 4096, None, None, None, None), 1);
+
+        // Explicit `ANNEAL_COMPILE_WORKERS` lifts the default auto cap up to
+        // available host parallelism (e.g., 8 on a 128-core fleet host).
+        assert_eq!(resolve_compile_workers(3, 128, 4096, Some("8"), None, None, None), 8);
+        assert_eq!(resolve_compile_workers(3, 128, 4096, Some(" 12 "), None, None, None), 12);
+        assert_eq!(resolve_compile_workers(3, 6, 4096, Some("16"), None, None, None), 6);
+
+        // A hard cap bounds `ANNEAL_COMPILE_WORKERS` (for example, `con-ron`
+        // and `con-leche` stay at most 2 jobs even with `=3`).
+        assert_eq!(resolve_compile_workers(2, 16, 4096, Some("3"), None, None, Some(2)), 2);
+        assert_eq!(resolve_compile_workers(2, 128, 4096, Some("8"), None, None, Some(2)), 2);
+        assert_eq!(resolve_compile_workers(2, 16, 4096, Some("1"), None, None, Some(2)), 1);
+        assert_eq!(resolve_compile_workers(2, 16, 4096, Some("3"), Some("4096"), None, Some(2)), 1);
+
+        // `ANNEAL_LEAN_RUN_MEM_MB` clamps both default and explicit worker
+        // counts by `max(1, floor(mem_mb / per_worker_mem_mb))`.
+        assert_eq!(resolve_compile_workers(4, 16, 4096, None, Some("8192"), None, None), 2);
+        assert_eq!(resolve_compile_workers(4, 16, 4096, None, Some("2048"), None, None), 1);
+        assert_eq!(resolve_compile_workers(3, 128, 4096, Some("8"), Some("12288"), None, None), 3);
+        assert_eq!(resolve_compile_workers(3, 128, 4096, Some("8"), Some("65536"), None, None), 8);
+        assert_eq!(resolve_compile_workers(3, 128, 4096, Some("8"), Some("3000"), None, None), 1);
+
+        // Cgroup v2 `memory.max` clamps `ANNEAL_COMPILE_WORKERS` even when
+        // `ANNEAL_LEAN_RUN_MEM_MB` is unset, and takes the tighter bound when
+        // both are present.
+        assert_eq!(resolve_compile_workers(3, 128, 4096, Some("8"), None, Some(12288), None), 3);
+        assert_eq!(
+            resolve_compile_workers(3, 128, 4096, Some("8"), Some("65536"), Some(16384), None),
+            4
+        );
+        assert_eq!(
+            resolve_compile_workers(3, 128, 4096, Some("8"), Some("8192"), Some(16384), None),
+            2
+        );
+
+        // Invalid or non-positive env values are safely ignored.
+        for bad in ["", "   ", "0", "-4", "abc", "999999999999999999999999999"] {
+            assert_eq!(
+                resolve_compile_workers(4, 16, 4096, Some(bad), None, None, None),
+                4,
+                "invalid ANNEAL_COMPILE_WORKERS={bad:?} should fall back to default cap"
+            );
+            assert_eq!(
+                resolve_compile_workers(4, 16, 4096, None, Some(bad), None, None),
+                4,
+                "invalid ANNEAL_LEAN_RUN_MEM_MB={bad:?} should be ignored"
+            );
+            assert_eq!(
+                resolve_compile_workers(3, 128, 4096, Some("8"), Some(bad), None, None),
+                8,
+                "invalid ANNEAL_LEAN_RUN_MEM_MB={bad:?} should not clobber explicit workers"
+            );
+        }
+    }
+
+    #[test]
+    fn cgroup_v2_memory_max_parser_and_hierarchy_clamp() {
+        assert_eq!(
+            parse_cgroup_v2_path("0::/user.slice/anneal.scope\n"),
+            Some("/user.slice/anneal.scope")
+        );
+        assert_eq!(parse_cgroup_v2_path("1:name=systemd:/foo\n0::/\n"), Some("/"));
+        assert_eq!(parse_cgroup_v2_path("1:memory:/legacy\n"), None);
+
+        assert_eq!(parse_cgroup_v2_memory_max_mb("max\n"), None);
+        assert_eq!(parse_cgroup_v2_memory_max_mb(""), None);
+        assert_eq!(parse_cgroup_v2_memory_max_mb("0\n"), None);
+        assert_eq!(parse_cgroup_v2_memory_max_mb("not-a-number\n"), None);
+        assert_eq!(parse_cgroup_v2_memory_max_mb("512\n"), Some(1));
+        assert_eq!(parse_cgroup_v2_memory_max_mb("17179869184\n"), Some(16384));
+
+        // Walk child -> parent slices and take the tightest finite limit.
+        let tmp = tempfile::tempdir().unwrap();
+        let root = tmp.path();
+        let leaf = root.join("user.slice/anneal.slice/job.scope");
+        fs::create_dir_all(&leaf).unwrap();
+        fs::write(root.join("memory.max"), "max\n").unwrap();
+        fs::write(root.join("user.slice/memory.max"), "34359738368\n").unwrap();
+        fs::write(root.join("user.slice/anneal.slice/memory.max"), "12884901888\n").unwrap();
+        fs::write(leaf.join("memory.max"), "max\n").unwrap();
+        assert_eq!(
+            read_cgroup_v2_memory_max_mb_under(root, "/user.slice/anneal.slice/job.scope"),
+            Some(12288)
+        );
+
+        // Tighter leaf limit overrides parent slice.
+        fs::write(leaf.join("memory.max"), "8589934592\n").unwrap();
+        assert_eq!(
+            read_cgroup_v2_memory_max_mb_under(root, "/user.slice/anneal.slice/job.scope"),
+            Some(8192)
+        );
+
+        // All `max` returns `None`.
+        fs::write(root.join("user.slice/memory.max"), "max\n").unwrap();
+        fs::write(root.join("user.slice/anneal.slice/memory.max"), "max\n").unwrap();
+        fs::write(leaf.join("memory.max"), "max\n").unwrap();
+        assert_eq!(
+            read_cgroup_v2_memory_max_mb_under(root, "/user.slice/anneal.slice/job.scope"),
+            None
+        );
+
+        // Traversal (`..`) or non-`Normal` components in `cgroup_rel` fail
+        // closed (`None`) instead of escaping `cgroup_root`.
+        let sub_root = tmp.path().join("nested-cgroup");
+        fs::create_dir_all(sub_root.join("user.slice")).unwrap();
+        fs::write(tmp.path().join("memory.max"), "4294967296\n").unwrap();
+        fs::write(sub_root.join("user.slice/memory.max"), "8589934592\n").unwrap();
+        for bad in ["/..", "/user.slice/../../escape", "/./user.slice", "a/../user.slice"] {
+            assert_eq!(
+                read_cgroup_v2_memory_max_mb_under(&sub_root, bad),
+                None,
+                "non-normal cgroup_rel {bad:?} must be rejected"
+            );
+        }
     }
 }
 

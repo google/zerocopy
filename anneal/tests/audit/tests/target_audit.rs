@@ -1009,17 +1009,53 @@ fn classifies_ordinary_elaboration_rejection_as_proof_failure() {
     assert_eq!(failure.phase, "compile-Proof");
 }
 
-/// Exercise actual pinned compiler failure reporting through target
-/// compilation. These authored sources deliberately use target elaboration's
-/// intact-host assumption; repository preflight would refuse them before
-/// compilation.
+/// Exercise actual pinned compiler failure reporting for deterministic Lean
+/// proof resource limits (`runtime.maxHeartbeats`, `runtime.maxRecDepth`)
+/// inside `compile-Proof`: both classify as exit-1 `proof_failed` with explicit
+/// sub-reasons (`heartbeat_limit_exceeded` / `recursion_depth_exceeded`).
 #[test]
-fn classifies_native_failures_and_resource_limits_as_operational() {
+fn classifies_proof_resource_limits_as_proof_failure() {
+    for (body, expected_kind, expected_reason) in [
+        (
+            "set_option maxHeartbeats 1 in\nexample : (List.range 10000).foldl Nat.add 0 = 49995000 := by decide",
+            "runtime.maxHeartbeats",
+            "heartbeat_limit_exceeded",
+        ),
+        (
+            "def wrong : Nat := \"bad\"\nset_option maxHeartbeats 1 in\nexample : (List.range 10000).foldl Nat.add 0 = 49995000 := by decide",
+            "runtime.maxHeartbeats",
+            "heartbeat_limit_exceeded",
+        ),
+        (
+            "set_option maxRecDepth 2 in\nexample : Nat := Nat.succ (Nat.succ (Nat.succ (Nat.succ (Nat.succ (Nat.succ 0)))))",
+            "runtime.maxRecDepth",
+            "recursion_depth_exceeded",
+        ),
+    ] {
+        let failure = Fixture::new(&format!("prelude\nimport Expected\n{body}\n"))
+            .run()
+            .unwrap_err();
+        assert_eq!(failure.code, 1, "{failure}");
+        assert_eq!(failure.phase, "compile-Proof", "{failure}");
+        assert_eq!(failure.reason.as_deref(), Some(expected_reason), "{failure:?}");
+        assert!(failure.message.contains("stdout:"), "{failure}");
+        assert!(failure.message.contains("stderr:"), "{failure}");
+        assert!(failure.message.contains(expected_kind), "{failure}");
+        assert!(failure.message.contains(expected_reason), "{failure}");
+        if body.starts_with("def wrong") {
+            assert!(failure.message.contains("Type mismatch"), "{failure}");
+        }
+    }
+}
+
+/// Exercise actual pinned compiler failure reporting for true operational
+/// failures: native OOM panics inside `compile-Proof` and `runtime.*` resource
+/// limits inside non-`Proof` modules must stay exit-2 `tool_failed`.
+#[test]
+fn classifies_native_failures_and_non_proof_resource_limits_as_operational() {
     for body in [
         "#eval (Array.replicate (2^128) (0 : UInt8)).size",
         "def wrong : Nat := \"bad\"\n#eval (Array.replicate (2^128) (0 : UInt8)).size",
-        "set_option maxHeartbeats 1 in\nexample : (List.range 10000).foldl Nat.add 0 = 49995000 := by decide",
-        "def wrong : Nat := \"bad\"\nset_option maxHeartbeats 1 in\nexample : (List.range 10000).foldl Nat.add 0 = 49995000 := by decide",
     ] {
         // lean_mk_array rejects a Nat that does not fit size_t before
         // allocating the array, so this probes native OOM without exhausting
@@ -1031,28 +1067,38 @@ fn classifies_native_failures_and_resource_limits_as_operational() {
         assert_eq!(failure.phase, "compile-Proof", "{failure}");
         assert!(failure.message.contains("stdout:"), "{failure}");
         assert!(failure.message.contains("stderr:"), "{failure}");
-        if body.contains("Array.replicate") {
-            assert!(
-                failure.message.contains("INTERNAL PANIC: out of memory"),
-                "{failure}"
-            );
-            // Lean 4.34.1 elaborates commands on a worker task while the main
-            // thread drains JSON diagnostics in `SnapshotTree.runAndReport`.
-            // Under CPU contention, the native OOM's `std::exit(1)` can
-            // terminate the process before the main thread buffers the earlier
-            // `Type mismatch` JSON on stdout; classification remains code 2
-            // either way, and `stage::process_tests` deterministically covers
-            // combined stdout JSON + stderr `INTERNAL PANIC`.
-        } else {
-            assert!(
-                failure.message.contains("runtime.maxHeartbeats"),
-                "{failure}"
-            );
-            if body.starts_with("def wrong") {
-                assert!(failure.message.contains("Type mismatch"), "{failure}");
-            }
-        }
+        assert!(
+            failure.message.contains("INTERNAL PANIC: out of memory"),
+            "{failure}"
+        );
+        // Lean 4.34.1 elaborates commands on a worker task while the main
+        // thread drains JSON diagnostics in `SnapshotTree.runAndReport`.
+        // Under CPU contention, the native OOM's `std::exit(1)` can
+        // terminate the process before the main thread buffers the earlier
+        // `Type mismatch` JSON on stdout; classification remains code 2
+        // either way, and `stage::process_tests` deterministically covers
+        // combined stdout JSON + stderr `INTERNAL PANIC`.
     }
+
+    // A `runtime.maxHeartbeats` failure inside a non-`Proof` module (such as
+    // `Captured`) must remain operational (exit 2), never downgraded to
+    // `proof_failed`.
+    let mut non_proof = Fixture::new(
+        "prelude\nimport Expected\ntheorem Proof.verify : Expected.claim := by exact ⟨rfl, rfl⟩\n",
+    );
+    non_proof.set(
+        "Captured",
+        TargetRole::Capture,
+        "prelude\nimport Model\n\
+         set_option maxHeartbeats 1 in\n\
+         example : (List.range 10000).foldl Nat.add 0 = 49995000 := by decide\n\
+         def Captured.program : BitVec 8 := BitVec.ofNat 8 7\n",
+    );
+    let failure = non_proof.run().unwrap_err();
+    assert_eq!(failure.code, 2, "{failure}");
+    assert_eq!(failure.phase, "compile-Captured", "{failure}");
+    assert!(failure.reason.is_none(), "{failure:?}");
+    assert!(failure.message.contains("runtime.maxHeartbeats"), "{failure}");
 }
 
 /// Exercise the inspector's final gate with serialized library artifacts.

@@ -6,19 +6,32 @@
 // This file may not be copied, modified, or distributed except according to
 // those terms.
 
-//! Fail-closed admission of benign `.cargo/config{,.toml}` files for the
-//! `cargo anneal verify --manifest-path` shortcut.
+//! Fail-closed admission of benign `.cargo/config{,.toml}` and
+//! `$CARGO_HOME/config{,.toml}` files for Cargo-based shortcuts.
 //!
-//! The shortcut builds its own `rustc` invocation instead of running Cargo, so
-//! any Cargo configuration that would change compilation (flags, wrappers,
-//! targets, environment, patches, sources, profiles, ...) cannot be honored and
-//! must be refused. Many published crates nevertheless ship a config file that
-//! only defines command aliases or terminal settings. This module admits such
-//! files by checking them against a deliberately small TOML subset:
+//! Cargo shortcuts (`verify --manifest-path`, `shard-plan --manifest-path`)
+//! build their own `rustc` invocation instead of running Cargo, so any Cargo
+//! configuration that would change compilation (flags, wrappers, targets,
+//! environment, patches, profiles, ...) cannot be honored and must be refused.
+//! Two fail-closed policies share one deliberately small TOML subset parser:
+//!
+//! - [`CargoConfigPolicy::InWorkspace`] (`source_root..=workspace_root`) admits
+//!   only [`ALLOWED_TABLES`]: command aliases, terminal output, `cargo doc`
+//!   browser settings, `cargo new` templates, and future-incompatibility
+//!   reporting.
+//! - [`CargoConfigPolicy::AmbientHost`] (ancestors strictly above
+//!   `workspace_root` and `$CARGO_HOME/config{,.toml}`) additionally admits
+//!   `net`, `registries`, `registry`, and `source` (`[source.crates-io]`,
+//!   `[source.vendored-sources]`, ...) needed by offline or vendored developer
+//!   and CI Cargo homes while still rejecting `[build]`, `[target]`,
+//!   `[profile]`, `[unstable]`, `[env]`, `[patch]`, `[http]`, `[install]`, and
+//!   all other tables.
+//!
+//! Both policies check files against the same restricted TOML grammar:
 //!
 //! - blank lines and `#` comments;
 //! - single-line `[table]` or `[table.sub.key]` headers with bare-key
-//!   segments, whose top-level table is in [`ALLOWED_TABLES`];
+//!   segments, whose top-level table is allowed by the active policy;
 //! - `key = value` entries (bare or dotted bare keys) inside such a table,
 //!   whose value is a single-line basic or literal string, a boolean, a
 //!   decimal integer, or an array of those (which may span lines).
@@ -38,21 +51,57 @@ use std::{
 };
 
 /// Lists the top-level Cargo configuration tables that never affect how
-/// `rustc` compiles the crate: command aliases, terminal output, `cargo doc`
-/// browser settings, `cargo new` templates, and future-incompatibility
-/// reporting.
+/// `rustc` compiles the crate inside `source_root..=workspace_root`: command
+/// aliases, terminal output, `cargo doc` browser settings, `cargo new`
+/// templates, and future-incompatibility reporting.
 pub const ALLOWED_TABLES: &[&str] =
     &["alias", "term", "doc", "cargo-new", "future-incompat-report"];
+
+/// Lists the top-level Cargo configuration tables admitted in ambient host
+/// configuration (ancestors strictly above `workspace_root` and `$CARGO_HOME`):
+/// [`ALLOWED_TABLES`] plus `net`, `registries`, `registry`, and `source` for
+/// offline or vendored host setups (dependency-free shortcut crates never
+/// resolve external crates or sources during `rustc` capture).
+pub const ALLOWED_AMBIENT_HOST_TABLES: &[&str] = &[
+    "alias",
+    "term",
+    "doc",
+    "cargo-new",
+    "future-incompat-report",
+    "net",
+    "registries",
+    "registry",
+    "source",
+];
+
+/// Selects which non-compilation Cargo configuration tables are admitted.
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub enum CargoConfigPolicy {
+    /// Package and workspace directories (`source_root..=workspace_root`).
+    InWorkspace,
+    /// Ancestor directories strictly above `workspace_root` and `$CARGO_HOME`.
+    AmbientHost,
+}
+
+impl CargoConfigPolicy {
+    /// Return the top-level Cargo tables admitted under this policy.
+    pub const fn allowed_tables(self) -> &'static [&'static str] {
+        match self {
+            Self::InWorkspace => ALLOWED_TABLES,
+            Self::AmbientHost => ALLOWED_AMBIENT_HOST_TABLES,
+        }
+    }
+}
 
 /// Bounds the size of an admitted config file.
 pub const MAX_CONFIG_BYTES: u64 = 64 * 1024;
 
-/// Check the Cargo configuration file at `path`.
+/// Check the Cargo configuration file at `path` under `policy`.
 ///
 /// Returns `Ok(())` only for a regular, non-symlink, UTF-8 file of at most
-/// [`MAX_CONFIG_BYTES`] that lies entirely within the admitted subset.
+/// [`MAX_CONFIG_BYTES`] that lies entirely within `policy`'s admitted subset.
 /// Otherwise returns a short reason suitable for a failure detail.
-pub fn check_benign_config_file(path: &Path) -> Result<(), String> {
+pub fn check_config_file(path: &Path, policy: CargoConfigPolicy) -> Result<(), String> {
     let meta = fs::symlink_metadata(path).map_err(|e| format!("cannot inspect: {e}"))?;
     if meta.file_type().is_symlink() {
         return Err("symlink".to_owned());
@@ -68,7 +117,7 @@ pub fn check_benign_config_file(path: &Path) -> Result<(), String> {
         return Err(format!("larger than {MAX_CONFIG_BYTES} bytes"));
     }
     let text = std::str::from_utf8(&bytes).map_err(|_| "not UTF-8".to_owned())?;
-    check_benign_config_text(text)
+    check_config_text(text, policy)
 }
 
 /// Read at most `MAX_CONFIG_BYTES + 1` bytes, refusing to follow a symlink
@@ -90,8 +139,9 @@ fn read_bounded_no_follow(path: &Path) -> io::Result<Vec<u8>> {
     Ok(bytes)
 }
 
-/// Check Cargo configuration `text` against the admitted subset.
-pub fn check_benign_config_text(text: &str) -> Result<(), String> {
+/// Check Cargo configuration `text` against the subset admitted by `policy`.
+pub fn check_config_text(text: &str, policy: CargoConfigPolicy) -> Result<(), String> {
+    let allowed_tables = policy.allowed_tables();
     if text.starts_with('\u{feff}') {
         return Err("byte-order mark".to_owned());
     }
@@ -117,13 +167,13 @@ pub fn check_benign_config_text(text: &str) -> Result<(), String> {
             // Name a forbidden bare top-level table (such as `target` in
             // `[target.'cfg(..)']`) before judging the rest of the header.
             let first = rest.split(['.', ']']).next().unwrap_or("").trim_matches([' ', '\t']);
-            if parse_key_path(first).is_some() && !ALLOWED_TABLES.contains(&first) {
+            if parse_key_path(first).is_some() && !allowed_tables.contains(&first) {
                 return Err(format!("table [{first}]"));
             }
             let (header, after) = rest.split_once(']').ok_or_else(|| at("malformed header"))?;
             expect_line_end(after).map_err(|r| at(&r))?;
             let segments = parse_key_path(header).ok_or_else(|| at("malformed header"))?;
-            if !ALLOWED_TABLES.contains(&segments[0]) {
+            if !allowed_tables.contains(&segments[0]) {
                 return Err(format!("table [{}]", segments[0]));
             }
             let name = segments.join(".");
@@ -296,6 +346,16 @@ fn scan_array<'a>(mut s: &'a str, expect_element: &mut bool) -> Result<ArrayScan
 mod tests {
     use super::*;
 
+    #[cfg(test)]
+    fn check_benign_config_text(text: &str) -> Result<(), String> {
+        check_config_text(text, CargoConfigPolicy::InWorkspace)
+    }
+
+    #[cfg(test)]
+    fn check_benign_config_file(path: &Path) -> Result<(), String> {
+        check_config_file(path, CargoConfigPolicy::InWorkspace)
+    }
+
     #[test]
     fn admits_non_compilation_tables() {
         for text in [
@@ -404,6 +464,72 @@ mod tests {
             let link = dir.path().join("link.toml");
             std::os::unix::fs::symlink(&ok, &link).unwrap();
             assert_eq!(check_benign_config_file(&link).unwrap_err(), "symlink");
+            assert_eq!(
+                check_config_file(&link, CargoConfigPolicy::AmbientHost).unwrap_err(),
+                "symlink"
+            );
+        }
+    }
+
+    #[test]
+    fn ambient_host_policy_admits_net_registries_and_source_while_rejecting_overrides() {
+        for text in [
+            "",
+            "# offline/vendored developer Cargo home\n",
+            "[net]\noffline = true\ngit-fetch-with-cli = true\nretry = 3\n",
+            "[registries.corp]\nindex = \"sparse+https://corp.invalid/index/\"\n",
+            "[registry]\ndefault = \"corp\"\nglobal-credential-providers = [\"cargo:token\"]\n",
+            "[source.crates-io]\nreplace-with = \"vendored-sources\"\n\
+             [source.vendored-sources]\ndirectory = '/opt/vendor'\n",
+            "[alias]\nb = \"build\"\n[term]\ncolor = \"auto\"\n[net]\nretry = 1\n",
+        ] {
+            assert_eq!(check_config_text(text, CargoConfigPolicy::AmbientHost), Ok(()), "{text:?}");
+        }
+
+        // `InWorkspace` still rejects `[net]`, `[registries]`, `[registry]`,
+        // and `[source]`.
+        for (text, reason) in [
+            ("[net]\noffline = true\n", "table [net]"),
+            ("[registries.corp]\nindex = \"sparse+https://x/\"\n", "table [registries]"),
+            ("[registry]\ndefault = \"x\"\n", "table [registry]"),
+            ("[source.crates-io]\nreplace-with = \"v\"\n", "table [source]"),
+        ] {
+            assert_eq!(
+                check_config_text(text, CargoConfigPolicy::InWorkspace).unwrap_err(),
+                reason
+            );
+        }
+
+        // `AmbientHost` still fails closed on compilation tables, `[http]`,
+        // top-level keys, inline tables, multi-line strings, arrays of tables,
+        // and malformed TOML (including non-ASCII UTF-8 boundaries).
+        for (text, reason) in [
+            ("[build]\nrustc = \"/tmp/rustc\"\n", "table [build]"),
+            ("[build]\nrustc-wrapper = \"sccache\"\n", "table [build]"),
+            ("[build]\njobs = 8\n", "table [build]"),
+            ("[target.'cfg(all())']\nrustflags = []\n", "table [target]"),
+            ("[target.x86_64-unknown-linux-gnu]\nlinker = \"clang\"\n", "table [target]"),
+            ("[profile.dev]\noverflow-checks = true\n", "table [profile]"),
+            ("[unstable]\nbuild-std = [\"core\"]\n", "table [unstable]"),
+            ("[env]\nRUSTFLAGS = \"--cfg=x\"\n", "table [env]"),
+            ("[patch.crates-io]\nfoo = { path = \"x\" }\n", "table [patch]"),
+            ("[http]\nproxy = \"x\"\n", "table [http]"),
+            ("[install]\nroot = \"x\"\n", "table [install]"),
+            ("[resolver]\nincompatible-rust-versions = \"allow\"\n", "table [resolver]"),
+            ("build.rustc-wrapper = \"wrap\"\n", "top-level key build.rustc-wrapper"),
+            (
+                "env.CARGO_ENCODED_RUSTFLAGS = \"--cfg=x\"\n",
+                "top-level key env.CARGO_ENCODED_RUSTFLAGS",
+            ),
+            ("[[registries.extra.items]]\nname = \"a\"\n", "array of tables"),
+            ("[source.vendored]\ndirectory = \"\"\"\n/opt/vendor\n\"\"\"\n", "multi-line string"),
+            ("[net]\nextra = { retry = 1 }\n", "inline table"),
+            ("[net]\nx = \"\\u000é\"\n", "invalid string escape"),
+            ("[net]\nx = \"\\U0000000é\"\n", "invalid string escape"),
+            ("[net]\nx = 123456789é00\n", "unsupported value"),
+        ] {
+            let err = check_config_text(text, CargoConfigPolicy::AmbientHost).expect_err(text);
+            assert!(err.contains(reason), "{text:?}: {err}");
         }
     }
 }

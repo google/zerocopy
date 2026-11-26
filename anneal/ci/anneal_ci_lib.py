@@ -543,6 +543,8 @@ def validate_receipt_v3_envelope(
         failures.append(f"schema_version={receipt.get('schema_version')!r}")
     if receipt.get("status") != expected_status:
         failures.append(f"status={receipt.get('status')!r}")
+    if expected_status == "proof_failed" and receipt.get("reason") is not None:
+        failures.append(f"resource-limit proof_failed reason={receipt.get('reason')!r}")
     if receipt.get("taint_reasons") != []:
         failures.append(f"taint_reasons={receipt.get('taint_reasons')!r}")
     if "tainted" in receipt:

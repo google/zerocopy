@@ -50,8 +50,9 @@ const CARGO_RULES: &[DetailRule] = &[
         hint: "The `--manifest-path` Cargo shortcut rejects build scripts, proc-macros, \
                `rust-toolchain` files, and `.cargo/config` files that set anything beyond the \
                `[alias]`, `[term]`, `[doc]`, `[cargo-new]`, and `[future-incompat-report]` \
-               tables. Use `cargo anneal verify --request <file>` (see `cargo anneal skill \
-               --example`) or `verify rustc`.",
+               tables (plus `[net]`, `[registries]`, `[registry]`, and `[source]` strictly above \
+               the workspace root or in `$CARGO_HOME`). Use `cargo anneal verify --request <file>` \
+               (see `cargo anneal skill --example`) or `verify rustc`.",
     },
 ];
 

@@ -119,14 +119,18 @@ pub fn verify_invocation(args: &[&OsStr]) -> Invocation {
     inv
 }
 
-/// Forwards host env vars needed by `cargo metadata` in shortcut runs.
-pub fn with_host_cargo_env(mut inv: Invocation) -> Invocation {
-    for key in ["PATH", "HOME", "CARGO_HOME", "RUSTUP_HOME", "TMPDIR"] {
+/// Forwards host env vars needed by `cargo metadata` in shortcut runs while
+/// isolating `CARGO_HOME` to a clean directory under the test's staged
+/// workspace so ambient developer `~/.cargo/config.toml` cannot pollute tests.
+pub fn with_host_cargo_env(staged: &StagedWorkspace, mut inv: Invocation) -> Invocation {
+    for key in ["PATH", "HOME", "RUSTUP_HOME", "TMPDIR"] {
         if let Some(val) = env::var_os(key) {
             inv = inv.env(key, val);
         }
     }
-    inv
+    let cargo_home = staged.root_dir().join("cargo-home");
+    fs::create_dir_all(&cargo_home).expect("create isolated CARGO_HOME");
+    inv.env("CARGO_HOME", cargo_home)
 }
 
 /// Executes a pre-built `verify` command and parses its Schema v3 receipt.

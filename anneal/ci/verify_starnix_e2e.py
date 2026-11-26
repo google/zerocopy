@@ -96,6 +96,17 @@ def verification(arguments, request, artifacts, log_prefix, expected):
     return output
 
 
+def validate_mutation_rejection(rejected, kind):
+    """Require a clean audit-phase proof rejection, never a resource-limit blowup."""
+    if rejected.get("phase") != "audit":
+        raise RuntimeError(f"fixed property did not reach proof checking for {kind}")
+    if rejected.get("reason") is not None:
+        raise RuntimeError(
+            f"refusing to credit resource-limit proof_failed "
+            f"({rejected['reason']}) for {kind}"
+        )
+
+
 def sources(arguments, fixture, destination):
     pin = json.loads((fixture / "source.json").read_text())
     destination.mkdir(parents=True, exist_ok=True)
@@ -214,8 +225,7 @@ def run(arguments, work):
         if any((candidate / "proof" / name).read_bytes() != contents
                for name, contents in fixed_sources.items()):
             raise RuntimeError(f"fixed proof sources changed for {kind}")
-        if rejected.get("phase") != "audit":
-            raise RuntimeError(f"fixed property did not reach proof checking for {kind}")
+        validate_mutation_rejection(rejected, kind)
         results[kind] = {"status": rejected["status"],
                          "phase": rejected["phase"],
                          "execution_status": checked_execution["status"],

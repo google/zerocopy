@@ -2796,6 +2796,15 @@ fn collect(
         }
     }
     check_current_inputs(&reads)?;
+    let source_root = args.source_root.as_deref();
+    let crate_root = crate::manifest_path(&args.crate_root, source_root)?;
+    let mut declared_source_files: Vec<PathBuf> = args
+        .source_file
+        .iter()
+        .map(|path| crate::manifest_path(path, source_root))
+        .collect::<Result<_, _>>()?;
+    declared_source_files.sort();
+    let source_files = manifest_source_files(&reads, source_root)?;
     let program = ir::Program::try_new_with_options(
         scope.clone(),
         profile.overflow_checks,
@@ -2824,7 +2833,7 @@ fn collect(
             driver: verified_compiler.driver.clone(),
         },
         configuration: ir::Configuration {
-            crate_root: args.crate_root.clone(),
+            crate_root,
             crate_name: args.crate_name.clone(),
             crate_type: requested_crate_type,
             panic: requested_panic,
@@ -2838,19 +2847,38 @@ fn collect(
             mir_preserve_ub: profile.mir_preserve_ub,
             pointer_bits: profile.pointer_bits,
             endian: profile.endian,
-            declared_source_files: args.source_file.clone(),
+            declared_source_files,
             stdlib_crate,
             allowed_unstable_features: args.allow_unstable_feature.clone(),
             observed_unstable_features: observed_features.unstable,
             incomplete_observed_unstable_features: observed_features.incomplete,
             stabilized_features_present: observed_features.stabilized,
         },
-        source_files: reads.files.values().cloned().collect(),
+        source_files,
         census,
         selected,
         unsupported,
         program,
     })
+}
+
+fn manifest_source_files(
+    reads: &Reads,
+    source_root: Option<&Path>,
+) -> Result<Vec<ir::SourceFile>, Failure> {
+    let mut files: Vec<ir::SourceFile> = reads
+        .files
+        .values()
+        .map(|file| {
+            Ok(ir::SourceFile {
+                path: crate::manifest_path(&file.path, source_root)?,
+                sha256: file.sha256.clone(),
+                read_kind: file.read_kind,
+            })
+        })
+        .collect::<Result<_, Failure>>()?;
+    files.sort_by(|a, b| a.path.cmp(&b.path));
+    Ok(files)
 }
 
 // The compiler continues through object emission after analysis. Recheck the
@@ -3003,8 +3031,9 @@ pub(crate) fn run(
     // Continuing after analysis must not leave later compiler reads out of
     // the source binding. Reject a changed read set rather than completing
     // an earlier snapshot with inputs that its compiler census never checked.
-    if manifest.source_files.len() != reads.files.len()
-        || !manifest.source_files.iter().zip(reads.files.values()).all(|(captured, final_read)| {
+    let final_source_files = manifest_source_files(&reads, args.source_root.as_deref())?;
+    if manifest.source_files.len() != final_source_files.len()
+        || !manifest.source_files.iter().zip(&final_source_files).all(|(captured, final_read)| {
             captured.path == final_read.path
                 && captured.sha256 == final_read.sha256
                 && captured.read_kind == final_read.read_kind

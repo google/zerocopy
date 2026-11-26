@@ -1096,6 +1096,8 @@ struct FailureReceipt<'a> {
     elaboration_sandbox: Option<&'a str>,
     status: &'a str,
     phase: &'a str,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    reason: Option<&'a str>,
     detail: &'a str,
     #[serde(skip_serializing_if = "Option::is_none")]
     hint: Option<&'a str>,
@@ -1109,6 +1111,7 @@ struct FailureReceipt<'a> {
 struct Error {
     status: &'static str,
     phase: &'static str,
+    reason: Option<String>,
     detail: String,
     elaboration_sandbox: Option<&'static str>,
     suppress_retention: bool,
@@ -1118,6 +1121,11 @@ struct Error {
 impl Error {
     const fn with_sandbox(mut self, sandbox: Option<&'static str>) -> Self {
         self.elaboration_sandbox = sandbox;
+        self
+    }
+
+    fn with_reason(mut self, reason: Option<String>) -> Self {
+        self.reason = reason;
         self
     }
 
@@ -1138,6 +1146,7 @@ fn error(status: &'static str, phase: &'static str, detail: impl ToString) -> Er
     Error {
         status,
         phase,
+        reason: None,
         detail: detail.to_string(),
         elaboration_sandbox: None,
         suppress_retention: false,
@@ -1292,16 +1301,22 @@ fn encoded<T: Serialize>(value: &T) -> Result<Vec<u8>> {
     serde_json::to_vec_pretty(value).map_err(|e| error("tool_failed", "json", e))
 }
 
-/// Reject Cargo or toolchain override files under `dir`.
+/// Reject Cargo or toolchain override files under `dir` according to `policy`.
 ///
 /// Uses `symlink_metadata` (without following links) so dangling symlinks are
 /// rejected; a plain `.cargo` directory is allowed when it contains no config
 /// file, whereas a `.cargo` symlink, non-directory entry (`!meta.is_dir()`),
 /// or any non-`NotFound` metadata error fails closed. Toolchain files are
 /// always rejected. A `.cargo/config` or `.cargo/config.toml` file is admitted
-/// only when [`cargo_config::check_benign_config_file`] proves that it
-/// configures nothing but non-compilation tables such as `[alias]`.
-fn reject_compiler_overrides(dir: &Path) -> Result<()> {
+/// only when [`cargo_config::check_config_file`] accepts it under `policy`
+/// ([`cargo_config::CargoConfigPolicy::InWorkspace`] inside
+/// `source_root..=workspace_root`, or
+/// [`cargo_config::CargoConfigPolicy::AmbientHost`] strictly above
+/// `workspace_root` and in `$CARGO_HOME`).
+fn reject_compiler_overrides_with_policy(
+    dir: &Path,
+    policy: cargo_config::CargoConfigPolicy,
+) -> Result<()> {
     let reject = |rel: &str, reason: &str| {
         error(
             "unsupported",
@@ -1324,10 +1339,122 @@ fn reject_compiler_overrides(dir: &Path) -> Result<()> {
                 }
             }
             Ok(_) if forbidden.starts_with(".cargo/") => {
-                cargo_config::check_benign_config_file(&path)
+                cargo_config::check_config_file(&path, policy)
                     .map_err(|reason| reject(forbidden, &reason))?;
             }
             Ok(_) => return Err(reject(forbidden, "toolchain override")),
+            Err(err) if err.kind() == std::io::ErrorKind::NotFound => {}
+            Err(err) => return Err(io("cargo", err)),
+        }
+    }
+    Ok(())
+}
+
+/// Reject compiler overrides inside `source_root..=workspace_root` under
+/// [`cargo_config::CargoConfigPolicy::InWorkspace`].
+fn reject_compiler_overrides(dir: &Path) -> Result<()> {
+    reject_compiler_overrides_with_policy(dir, cargo_config::CargoConfigPolicy::InWorkspace)
+}
+
+/// Reject compiler overrides in ancestor directories strictly above
+/// `workspace_root` under [`cargo_config::CargoConfigPolicy::AmbientHost`]:
+///
+/// - `rust-toolchain` and `rust-toolchain.toml` are always rejected (including
+///   ambient home-directory toolchain files);
+/// - `.cargo` must be absent or a real non-symlink directory;
+/// - `.cargo/config` and `.cargo/config.toml`, when present, must be regular
+///   non-symlink UTF-8 TOML files within the `AmbientHost` subset (admitting
+///   benign tables plus `[net]`, `[registries]`, `[registry]`, and `[source]`,
+///   and failing closed on `[build]`, `[target]`, `[profile]`, `[unstable]`,
+///   `[env]`, `[patch]`, `[http]`, `[install]`, and unparseable syntax).
+fn reject_ancestor_compiler_overrides(dir: &Path) -> Result<()> {
+    reject_compiler_overrides_with_policy(dir, cargo_config::CargoConfigPolicy::AmbientHost)
+}
+
+/// Resolve the absolute Cargo home directory that `cargo metadata` will use:
+/// a non-empty `CARGO_HOME` (absolutized against `cwd`), else a non-empty
+/// `HOME` joined with `.cargo` (absolutized against `cwd`), else `home_dir`
+/// (from `std::env::home_dir()`) joined with `.cargo`. Fails closed when none
+/// resolves so Cargo cannot fall back to an uninspected directory.
+fn resolve_cargo_home_dir_from(
+    cargo_home_env: Option<OsString>,
+    home_env: Option<OsString>,
+    home_dir: Option<PathBuf>,
+    cwd: impl FnOnce() -> std::io::Result<PathBuf>,
+) -> Result<PathBuf> {
+    let raw = match cargo_home_env {
+        Some(val) if !val.is_empty() => PathBuf::from(val),
+        _ => match home_env {
+            Some(home) if !home.is_empty() => PathBuf::from(home).join(".cargo"),
+            _ => match home_dir {
+                Some(home) if !home.as_os_str().is_empty() => home.join(".cargo"),
+                _ => {
+                    return Err(error(
+                        "unsupported",
+                        "cargo",
+                        "compiler overrides need an explicit configured compilation \
+                         (cannot resolve CARGO_HOME or home directory to inspect Cargo config)",
+                    ));
+                }
+            },
+        },
+    };
+    if raw.is_absolute() { Ok(raw) } else { Ok(cwd().map_err(|e| io("cargo", e))?.join(raw)) }
+}
+
+/// Resolve the active Cargo home directory and check `config` and `config.toml`
+/// against [`cargo_config::CargoConfigPolicy::AmbientHost`], admitting offline
+/// or vendored `[net]`, `[registries]`, `[registry]`, and `[source]` tables
+/// while failing closed on compilation or download overrides, symlinks,
+/// non-regular files, unparseable TOML, or an unresolvable home directory.
+///
+/// Returns the exact absolute path that was checked so callers can pin
+/// `CARGO_HOME` in child `cargo` processes.
+fn reject_cargo_home_compiler_overrides() -> Result<PathBuf> {
+    let cargo_home = resolve_cargo_home_dir_from(
+        std::env::var_os("CARGO_HOME"),
+        std::env::var_os("HOME"),
+        std::env::home_dir(),
+        std::env::current_dir,
+    )?;
+    check_cargo_home_config_dir(&cargo_home)?;
+    Ok(cargo_home)
+}
+
+fn check_cargo_home_config_dir(cargo_home: &Path) -> Result<()> {
+    let reject = |rel: &str, reason: &str| {
+        error(
+            "unsupported",
+            "cargo",
+            format!(
+                "compiler overrides need an explicit configured compilation \
+                 ({rel}: {reason}; in {})",
+                cargo_home.display()
+            ),
+        )
+    };
+    // Strip trailing separators so POSIX `lstat` inspects the `CARGO_HOME`
+    // entry itself instead of following a symlinked directory.
+    let cargo_home_entry: PathBuf = cargo_home.components().collect();
+    match fs::symlink_metadata(&cargo_home_entry) {
+        Ok(meta) => {
+            if meta.file_type().is_symlink() || !meta.is_dir() {
+                return Err(reject("CARGO_HOME", "not a regular directory"));
+            }
+        }
+        Err(err) if err.kind() == std::io::ErrorKind::NotFound => return Ok(()),
+        Err(err) => return Err(io("cargo", err)),
+    }
+    for rel in ["config", "config.toml"] {
+        let path = cargo_home_entry.join(rel);
+        match fs::symlink_metadata(&path) {
+            Ok(_) => {
+                cargo_config::check_config_file(
+                    &path,
+                    cargo_config::CargoConfigPolicy::AmbientHost,
+                )
+                .map_err(|reason| reject(rel, &reason))?;
+            }
             Err(err) if err.kind() == std::io::ErrorKind::NotFound => {}
             Err(err) => return Err(io("cargo", err)),
         }
@@ -1537,10 +1664,10 @@ fn resolve_cargo_package_cfg(
     Ok(active_features.into_iter().map(|feat| format!("feature=\"{feat}\"")).collect())
 }
 
-/// Run `cargo metadata --no-deps --offline` for the package whose manifest
-/// is `manifest_path`, after refusing compiler overrides in its directory.
-/// Returns the canonical package root, the metadata, and the package's index
-/// in `metadata["packages"]`.
+/// Run `cargo metadata --no-deps --offline` for the package whose manifest is
+/// `manifest_path`, after refusing compiler overrides in its directory,
+/// ancestors, and `$CARGO_HOME`. Returns the canonical package root, the
+/// metadata, and the package's index in `metadata["packages"]`.
 fn cargo_package_metadata(manifest_path: &Path) -> Result<(PathBuf, Value, usize)> {
     let manifest = fs::canonicalize(manifest_path)
         .map_err(|e| io_with_path("cargo", "Cargo manifest", manifest_path, e))?;
@@ -1549,14 +1676,19 @@ fn cargo_package_metadata(manifest_path: &Path) -> Result<(PathBuf, Value, usize
         .ok_or_else(|| error("unsupported", "cargo", "manifest path has no parent directory"))?
         .to_path_buf();
     reject_compiler_overrides(&source_root)?;
+    for ancestor in source_root.ancestors().skip(1) {
+        reject_ancestor_compiler_overrides(ancestor)?;
+    }
+    let cargo_home = reject_cargo_home_compiler_overrides()?;
     let probe_cwd = tempfile::tempdir().map_err(|e| io("cargo", e))?;
     let mut cargo = Command::new("cargo");
     cargo.current_dir(probe_cwd.path()).env_clear();
-    for key in ["PATH", "HOME", "CARGO_HOME", "RUSTUP_HOME", "TMPDIR"] {
+    for key in ["PATH", "HOME", "RUSTUP_HOME", "TMPDIR"] {
         if let Some(value) = std::env::var_os(key) {
             cargo.env(key, value);
         }
     }
+    cargo.env("CARGO_HOME", &cargo_home);
     let output = cargo
         .args(["metadata", "--format-version=1", "--no-deps", "--offline", "--manifest-path"])
         .arg(&manifest)
@@ -1578,16 +1710,58 @@ fn cargo_package_metadata(manifest_path: &Path) -> Result<(PathBuf, Value, usize
     Ok((source_root, metadata, package_index))
 }
 
-/// Refuse compiler overrides in every directory from `source_root` up to the
-/// workspace root that `metadata` reports.
+/// Return the deepest common ancestor shared by two canonical paths, if any.
+fn deepest_common_ancestor(a: &Path, b: &Path) -> Option<PathBuf> {
+    let mut lca = PathBuf::new();
+    for (ca, cb) in a.components().zip(b.components()) {
+        if ca != cb {
+            break;
+        }
+        lca.push(ca.as_os_str());
+    }
+    (!lca.as_os_str().is_empty()).then_some(lca)
+}
+
+/// Refuse compiler overrides across the workspace envelope and its ancestors.
+///
+/// Let `lca` be the deepest common ancestor of `source_root` and
+/// `workspace_root` (equal to `workspace_root` in nested layouts, and the
+/// shared parent in sibling workspace layouts such as `top/ws` + `top/member`).
+/// Every directory on the `source_root -> lca` and `workspace_root -> lca`
+/// chains (inclusive of `lca`) is checked under `InWorkspace`; every ancestor
+/// strictly above `lca` is checked under `AmbientHost`.
 fn reject_workspace_compiler_overrides(source_root: &Path, metadata: &Value) -> Result<()> {
     let workspace_root =
         metadata["workspace_root"].as_str().and_then(|root| fs::canonicalize(root).ok());
+    let Some(workspace_root) = workspace_root else {
+        for ancestor in source_root.ancestors() {
+            reject_compiler_overrides(ancestor)?;
+        }
+        return Ok(());
+    };
+    let Some(lca) = deepest_common_ancestor(source_root, &workspace_root) else {
+        for ancestor in source_root.ancestors() {
+            reject_compiler_overrides(ancestor)?;
+        }
+        for ancestor in workspace_root.ancestors() {
+            reject_compiler_overrides(ancestor)?;
+        }
+        return Ok(());
+    };
     for ancestor in source_root.ancestors() {
         reject_compiler_overrides(ancestor)?;
-        if workspace_root.as_deref() == Some(ancestor) {
+        if ancestor == lca {
             break;
         }
+    }
+    for ancestor in workspace_root.ancestors() {
+        if ancestor == lca {
+            break;
+        }
+        reject_compiler_overrides(ancestor)?;
+    }
+    for ancestor in lca.ancestors().skip(1) {
+        reject_ancestor_compiler_overrides(ancestor)?;
     }
     Ok(())
 }
@@ -2804,7 +2978,9 @@ fn run_capture_process(
     command
         .env_clear()
         .env("PATH", "/usr/bin:/bin")
-        .args(["capture", "--crate-root"])
+        .args(["capture", "--source-root"])
+        .arg(rust_stage)
+        .arg("--crate-root")
         .arg(rust_stage.join(&compilation.crate_root))
         .args([
             "--crate-name",
@@ -2927,6 +3103,9 @@ fn run_capture_process(
         ));
     }
     if manifest.program.scope != *scope
+        || manifest.configuration["crate_root"]
+            .as_str()
+            .is_none_or(|root| Path::new(root) != compilation.crate_root)
         || manifest.configuration["crate_name"] != compilation.crate_name
         || manifest.configuration["crate_type"] != compilation.crate_type.as_str()
         || manifest.configuration["panic"] != compilation.panic.as_str()
@@ -2954,7 +3133,7 @@ fn run_capture_process(
     // Unused declared files remain in the receipt identity; they need not
     // become compiler reads merely because the request staged them.
     let source_by_path: BTreeMap<_, _> =
-        sources.iter().map(|s| (rust_stage.join(&s.relative_path), &s.sha256)).collect();
+        sources.iter().map(|s| (&s.relative_path, &s.sha256)).collect();
     for source in &manifest.source_files {
         let Some(expected) = source_by_path.get(&source.path) else {
             return Err(error("tool_failed", "capture", "compiler read an undeclared source"));
@@ -3345,9 +3524,11 @@ fn run<Out: std::io::Write + Send, ErrOut: std::io::Write + Send>(
         source: captured_lean,
         role: TargetRole::Capture,
     });
+    let mut generated_modules = BTreeSet::new();
     if let Some(ref shards) = shards_outcome {
         let id_tree_path = work.join("generated/Proof/IdTree.lean");
         write(&id_tree_path, shards.id_tree_source.as_bytes())?;
+        generated_modules.insert("Proof.IdTree".to_owned());
         modules.push(TargetModule {
             module: "Proof.IdTree".to_owned(),
             expected_sha256: shards.manifest.id_tree_sha256.clone(),
@@ -3470,6 +3651,7 @@ fn run<Out: std::io::Write + Send, ErrOut: std::io::Write + Send>(
     };
     let expected_path = work.join("generated/Expected.lean");
     write(&expected_path, expected.as_bytes())?;
+    generated_modules.insert("Expected".to_owned());
     modules.push(TargetModule {
         module: "Expected".to_owned(),
         source: expected_path,
@@ -3514,6 +3696,7 @@ fn run<Out: std::io::Write + Send, ErrOut: std::io::Write + Send>(
     checker.set_no_rebuild_bundled(args.no_rebuild_bundled);
     checker.set_prebuilt_olean_dir(tools.prebuilt_dir);
     checker.set_paranoid_quorum(args.paranoid_quorum);
+    checker.set_generated_modules(generated_modules);
     let audit_result = checker.run_target_with_progress(&audit_request, |ev| {
         let phase = match ev {
             TargetProgress::Toolchain => VerifyPhase::Toolchain,
@@ -4225,8 +4408,10 @@ fn handle_failed_target_audit(
         return error("tool_failed", "export-lean-lib", export_err.message)
             .with_sandbox(sandbox_label);
     }
+    let reason = if err.code == 1 { err.reason.clone() } else { None };
     error(if err.code == 1 { "proof_failed" } else { "tool_failed" }, "audit", err.to_string())
         .with_sandbox(sandbox_label)
+        .with_reason(reason)
 }
 
 fn failure_exit_code(status: &str) -> u8 {
@@ -4242,6 +4427,7 @@ fn emit_failure<Out: std::io::Write, ErrOut: std::io::Write>(
     elaboration_sandbox: Option<&str>,
     status: &str,
     phase: &str,
+    reason: Option<&str>,
     detail: &str,
     artifacts: Option<Option<&str>>,
     code: u8,
@@ -4252,6 +4438,8 @@ fn emit_failure<Out: std::io::Write, ErrOut: std::io::Write>(
     let mut final_code = code;
     let mut receipt_display: Option<&str> = None;
     let mut hint = diagnostics::hint_for_failure(final_status, final_phase, &final_detail);
+    let effective_reason =
+        if final_status == "proof_failed" && final_phase == "audit" { reason } else { None };
 
     let mut serialized = serde_json::to_string(&FailureReceipt {
         schema_version: RECEIPT_SCHEMA_VERSION,
@@ -4259,6 +4447,7 @@ fn emit_failure<Out: std::io::Write, ErrOut: std::io::Write>(
         elaboration_sandbox,
         status: final_status,
         phase: final_phase,
+        reason: effective_reason,
         detail: &final_detail,
         hint: hint.as_deref(),
         artifacts,
@@ -4283,6 +4472,7 @@ fn emit_failure<Out: std::io::Write, ErrOut: std::io::Write>(
                     elaboration_sandbox,
                     status: final_status,
                     phase: final_phase,
+                    reason: None,
                     detail: &final_detail,
                     hint: hint.as_deref(),
                     artifacts,
@@ -4340,6 +4530,7 @@ pub fn main(args: VerifyArgs, color: ColorChoice, quiet: bool, verbose: bool) ->
                     None,
                     "tool_failed",
                     "retention",
+                    None,
                     "artifact destination path must be UTF-8",
                     None,
                     2,
@@ -4359,6 +4550,7 @@ pub fn main(args: VerifyArgs, color: ColorChoice, quiet: bool, verbose: bool) ->
                 None,
                 "tool_failed",
                 "receipt-out",
+                None,
                 &detail,
                 None,
                 2,
@@ -4389,6 +4581,7 @@ pub fn main(args: VerifyArgs, color: ColorChoice, quiet: bool, verbose: bool) ->
                     None,
                     "tool_failed",
                     "retention",
+                    None,
                     &format!(
                         "artifact destination {destination} cannot be overwritten: cannot list \
                          the Cargo targets it might contain: {}",
@@ -4418,6 +4611,7 @@ pub fn main(args: VerifyArgs, color: ColorChoice, quiet: bool, verbose: bool) ->
                 None,
                 failure.status,
                 failure.phase,
+                None,
                 &failure.detail,
                 None,
                 2,
@@ -4438,6 +4632,7 @@ pub fn main(args: VerifyArgs, color: ColorChoice, quiet: bool, verbose: bool) ->
             None,
             "tool_failed",
             "retention",
+            None,
             &detail,
             None,
             2,
@@ -4454,6 +4649,7 @@ pub fn main(args: VerifyArgs, color: ColorChoice, quiet: bool, verbose: bool) ->
                 None,
                 "tool_failed",
                 "staging",
+                None,
                 &failure.to_string(),
                 None,
                 2,
@@ -4479,6 +4675,7 @@ pub fn main(args: VerifyArgs, color: ColorChoice, quiet: bool, verbose: bool) ->
             failure.elaboration_sandbox,
             failure.status,
             failure.phase,
+            failure.reason.as_deref(),
             &failure.detail,
             if artifacts.is_some() { None } else { Some(None) },
             code,
@@ -4511,6 +4708,7 @@ pub fn main(args: VerifyArgs, color: ColorChoice, quiet: bool, verbose: bool) ->
                             sandbox,
                             "tool_failed",
                             "receipt-out",
+                            None,
                             &ro_err,
                             unretained_artifacts,
                             2,
@@ -4543,6 +4741,7 @@ pub fn main(args: VerifyArgs, color: ColorChoice, quiet: bool, verbose: bool) ->
                             sandbox,
                             "tool_failed",
                             failure.phase,
+                            None,
                             &failure.detail,
                             None,
                             2,
@@ -4569,6 +4768,7 @@ pub fn main(args: VerifyArgs, color: ColorChoice, quiet: bool, verbose: bool) ->
                     sandbox,
                     "tool_failed",
                     "receipt-out",
+                    None,
                     &detail,
                     unretained_artifacts,
                     2,
@@ -4628,6 +4828,7 @@ pub fn main(args: VerifyArgs, color: ColorChoice, quiet: bool, verbose: bool) ->
                 elaboration_sandbox: failure.elaboration_sandbox,
                 status: failure.status,
                 phase: failure.phase,
+                reason: failure.reason.as_deref(),
                 detail: &failure.detail,
                 hint: hint.as_deref(),
                 artifacts: Some(artifacts),
@@ -4647,6 +4848,7 @@ pub fn main(args: VerifyArgs, color: ColorChoice, quiet: bool, verbose: bool) ->
                             failure.elaboration_sandbox,
                             "tool_failed",
                             "receipt-out",
+                            None,
                             &detail,
                             unretained_artifacts,
                             2,
@@ -4679,6 +4881,7 @@ pub fn main(args: VerifyArgs, color: ColorChoice, quiet: bool, verbose: bool) ->
                             failure.elaboration_sandbox,
                             "tool_failed",
                             ret_failure.phase,
+                            None,
                             &ret_failure.detail,
                             None,
                             2,
@@ -4705,6 +4908,7 @@ pub fn main(args: VerifyArgs, color: ColorChoice, quiet: bool, verbose: bool) ->
                     failure.elaboration_sandbox,
                     "tool_failed",
                     "receipt-out",
+                    None,
                     &detail,
                     unretained_artifacts,
                     2,
@@ -6506,6 +6710,7 @@ mod tests {
             elaboration_sandbox: None,
             status: "tool_failed",
             phase: "retention",
+            reason: None,
             detail: "bad path",
             hint: None,
             artifacts: None,
@@ -6514,6 +6719,7 @@ mod tests {
         assert_eq!(omitted["schema_version"], 3);
         assert_eq!(omitted["taint_reasons"], json!([]));
         assert!(omitted.get("tainted").is_none(), "{omitted}");
+        assert!(omitted.get("reason").is_none(), "{omitted}");
         assert!(omitted.get("hint").is_none(), "{omitted}");
         assert!(omitted.get("artifacts").is_none(), "{omitted}");
         assert!(omitted.get("elaboration_sandbox").is_none(), "{omitted}");
@@ -6524,6 +6730,7 @@ mod tests {
             elaboration_sandbox: None,
             status: "unsupported",
             phase: "capture",
+            reason: None,
             detail: "bad item",
             hint: Some("try --select"),
             artifacts: Some(None),
@@ -6532,6 +6739,7 @@ mod tests {
         assert_eq!(explicit_null["taint_reasons"], json!(["unpinned_lean"]));
         assert!(explicit_null.get("unpinned_lean").is_none());
         assert!(explicit_null.get("elaboration_sandbox").is_none());
+        assert!(explicit_null.get("reason").is_none());
         assert_eq!(explicit_null["hint"], "try --select");
         assert_eq!(explicit_null.get("artifacts"), Some(&Value::Null), "{explicit_null}");
 
@@ -6541,6 +6749,7 @@ mod tests {
             elaboration_sandbox: Some("linux_bwrap"),
             status: "proof_failed",
             phase: "audit",
+            reason: None,
             detail: "mismatch",
             hint: None,
             artifacts: Some(Some("/tmp/evidence")),
@@ -6548,6 +6757,52 @@ mod tests {
         .unwrap();
         assert_eq!(retained["artifacts"], "/tmp/evidence");
         assert_eq!(retained["elaboration_sandbox"], "linux_bwrap");
+        assert!(retained.get("reason").is_none(), "{retained}");
+
+        let limit_failed: Value = serde_json::to_value(FailureReceipt {
+            schema_version: RECEIPT_SCHEMA_VERSION,
+            taint_reasons: &[],
+            elaboration_sandbox: Some("linux_bwrap"),
+            status: "proof_failed",
+            phase: "audit",
+            reason: Some("heartbeat_limit_exceeded"),
+            detail: "Lean exited Some(1) (heartbeat_limit_exceeded): ...",
+            hint: None,
+            artifacts: Some(None),
+        })
+        .unwrap();
+        assert_eq!(limit_failed["reason"], "heartbeat_limit_exceeded");
+        let parsed = crate::core::inspect::parse_and_validate_receipt(
+            &serde_json::to_vec(&limit_failed).unwrap(),
+        )
+        .unwrap();
+        assert!(parsed.unrecognized_fields.is_empty(), "{:?}", parsed.unrecognized_fields);
+        assert!(parsed.invariant_violations.is_empty(), "{:?}", parsed.invariant_violations);
+
+        let work = tempfile::tempdir().unwrap();
+        let checker = Checker::new(work.path(), Some(Path::new("/nonexistent/lean"))).unwrap();
+        let propagated = handle_failed_target_audit(
+            &checker,
+            work.path(),
+            false,
+            Some("linux_bwrap"),
+            crate::Failure::policy("compile-Proof", "limit")
+                .with_reason("recursion_depth_exceeded"),
+        );
+        assert_eq!(propagated.status, "proof_failed");
+        assert_eq!(propagated.phase, "audit");
+        assert_eq!(propagated.reason.as_deref(), Some("recursion_depth_exceeded"));
+
+        let op_stripped = handle_failed_target_audit(
+            &checker,
+            work.path(),
+            false,
+            Some("linux_bwrap"),
+            crate::Failure::operational("compile-Proof.IdTree", "limit")
+                .with_reason("heartbeat_limit_exceeded"),
+        );
+        assert_eq!(op_stripped.status, "tool_failed");
+        assert!(op_stripped.reason.is_none());
     }
 
     #[test]
@@ -8042,5 +8297,225 @@ mod tests {
         assert_eq!(existing_err.phase, "receipt-out");
         assert!(existing_err.suppress_receipt_out);
         assert!(existing_err.suppress_retention);
+    }
+
+    #[test]
+    fn two_tier_cargo_config_override_checks_enforce_workspace_and_host_policies() {
+        let tmp = tempfile::tempdir().unwrap();
+
+        // `[net]`, `[registries]`, and `[source]` are rejected inside
+        // `InWorkspace` (`reject_compiler_overrides`) and admitted in
+        // `AmbientHost` (`reject_ancestor_compiler_overrides` and
+        // `check_cargo_home_config_dir`).
+        let host_dir = tmp.path().join("host-cfg");
+        fs::create_dir_all(host_dir.join(".cargo")).unwrap();
+        let host_toml = "[net]\ngit-fetch-with-cli = true\nretry = 2\n\
+                         [registries.corp]\nindex = \"sparse+https://corp.invalid/\"\n\
+                         [source.crates-io]\nreplace-with = \"vendored\"\n";
+        fs::write(host_dir.join(".cargo/config.toml"), host_toml).unwrap();
+
+        let in_ws_err = reject_compiler_overrides(&host_dir).unwrap_err();
+        assert_eq!(in_ws_err.status, "unsupported");
+        assert_eq!(in_ws_err.phase, "cargo");
+        assert!(in_ws_err.detail.contains("table [net]"), "{}", in_ws_err.detail);
+        assert!(reject_ancestor_compiler_overrides(&host_dir).is_ok());
+
+        let cargo_home = tmp.path().join("cargo-home");
+        fs::create_dir_all(&cargo_home).unwrap();
+        fs::write(cargo_home.join("config.toml"), host_toml).unwrap();
+        assert!(check_cargo_home_config_dir(&cargo_home).is_ok());
+
+        // Malformed TOML and compilation tables fail closed in both policies.
+        let bad_home = tmp.path().join("cargo-home-bad");
+        fs::create_dir_all(&bad_home).unwrap();
+        fs::write(bad_home.join("config.toml"), "[build]\nrustflags = []\n").unwrap();
+        let build_err = check_cargo_home_config_dir(&bad_home).unwrap_err();
+        assert_eq!(build_err.status, "unsupported");
+        assert_eq!(build_err.phase, "cargo");
+        assert!(build_err.detail.contains("table [build]"), "{}", build_err.detail);
+
+        fs::write(bad_home.join("config.toml"), "[net\n").unwrap();
+        let bad_err = check_cargo_home_config_dir(&bad_home).unwrap_err();
+        assert_eq!(bad_err.status, "unsupported");
+        assert_eq!(bad_err.phase, "cargo");
+        assert!(bad_err.detail.contains("malformed header"), "{}", bad_err.detail);
+
+        #[cfg(unix)]
+        {
+            use std::os::unix::fs::symlink;
+            let sym_home = tmp.path().join("cargo-home-sym");
+            fs::create_dir_all(&sym_home).unwrap();
+            symlink(cargo_home.join("config.toml"), sym_home.join("config.toml")).unwrap();
+            let sym_err = check_cargo_home_config_dir(&sym_home).unwrap_err();
+            assert_eq!(sym_err.status, "unsupported");
+            assert_eq!(sym_err.phase, "cargo");
+            assert!(sym_err.detail.contains("symlink"), "{}", sym_err.detail);
+
+            // Symlinked `CARGO_HOME` directories (even with a trailing `/`) and
+            // regular-file `CARGO_HOME` paths fail closed like `.cargo`.
+            let sym_dir = tmp.path().join("cargo-home-dir-link");
+            symlink(&cargo_home, &sym_dir).unwrap();
+            let sym_dir_slash = PathBuf::from(format!("{}/", sym_dir.display()));
+            for bad_dir in [&sym_dir, &sym_dir_slash] {
+                let err = check_cargo_home_config_dir(bad_dir).unwrap_err();
+                assert_eq!(err.status, "unsupported");
+                assert_eq!(err.phase, "cargo");
+                assert!(err.detail.contains("not a regular directory"), "{}", err.detail);
+            }
+
+            let file_home = tmp.path().join("cargo-home-file");
+            fs::write(&file_home, b"not a directory\n").unwrap();
+            let file_err = check_cargo_home_config_dir(&file_home).unwrap_err();
+            assert_eq!(file_err.status, "unsupported");
+            assert_eq!(file_err.phase, "cargo");
+            assert!(file_err.detail.contains("not a regular directory"), "{}", file_err.detail);
+        }
+    }
+
+    #[test]
+    fn resolve_cargo_home_dir_from_pins_fallback_and_relative_paths() {
+        let tmp = tempfile::tempdir().unwrap();
+        let cwd = tmp.path().join("cwd");
+        let passwd_home = tmp.path().join("passwd-home");
+        fs::create_dir_all(cwd.join("rel-cargo")).unwrap();
+        fs::create_dir_all(passwd_home.join(".cargo")).unwrap();
+        fs::write(passwd_home.join(".cargo/config.toml"), "[build]\nrustflags = []\n").unwrap();
+        fs::write(cwd.join("rel-cargo/config.toml"), "[build]\nrustflags = []\n").unwrap();
+
+        // Empty `CARGO_HOME` and `HOME` fall back to `home_dir` (`passwd`)
+        // instead of skipping `$CARGO_HOME` inspection.
+        let resolved_passwd = resolve_cargo_home_dir_from(
+            Some(OsString::new()),
+            Some(OsString::new()),
+            Some(passwd_home.clone()),
+            || Ok(cwd.clone()),
+        )
+        .unwrap();
+        assert_eq!(resolved_passwd, passwd_home.join(".cargo"));
+        let passwd_err = check_cargo_home_config_dir(&resolved_passwd).unwrap_err();
+        assert_eq!(passwd_err.status, "unsupported");
+        assert_eq!(passwd_err.phase, "cargo");
+        assert!(passwd_err.detail.contains("table [build]"), "{}", passwd_err.detail);
+
+        // If `CARGO_HOME`, `HOME`, and `home_dir` are all unavailable, fail
+        // closed rather than letting `cargo metadata` pick an uninspected dir.
+        let unresolved =
+            resolve_cargo_home_dir_from(None, None, None, || Ok(cwd.clone())).unwrap_err();
+        assert_eq!(unresolved.status, "unsupported");
+        assert_eq!(unresolved.phase, "cargo");
+        assert!(unresolved.detail.contains("cannot resolve CARGO_HOME"), "{}", unresolved.detail);
+
+        // Relative `CARGO_HOME` and relative `HOME` resolve against `cwd`.
+        let resolved_rel =
+            resolve_cargo_home_dir_from(Some(OsString::from("rel-cargo")), None, None, || {
+                Ok(cwd.clone())
+            })
+            .unwrap();
+        assert_eq!(resolved_rel, cwd.join("rel-cargo"));
+        assert!(resolved_rel.is_absolute());
+        let rel_err = check_cargo_home_config_dir(&resolved_rel).unwrap_err();
+        assert!(rel_err.detail.contains("table [build]"), "{}", rel_err.detail);
+
+        let resolved_rel_home =
+            resolve_cargo_home_dir_from(None, Some(OsString::from("rel-home")), None, || {
+                Ok(cwd.clone())
+            })
+            .unwrap();
+        assert_eq!(resolved_rel_home, cwd.join("rel-home").join(".cargo"));
+    }
+
+    #[test]
+    fn sibling_workspace_compiler_override_policy_uses_lca() {
+        let tmp = tempfile::tempdir().unwrap();
+        let root = fs::canonicalize(tmp.path()).unwrap();
+        let above = root.join("above");
+        let lca = above.join("top");
+        let ws = lca.join("ws");
+        let member = lca.join("member");
+        fs::create_dir_all(&ws).unwrap();
+        fs::create_dir_all(&member).unwrap();
+        let metadata = json!({ "workspace_root": ws.to_str().unwrap() });
+
+        // (a) `[net]` strictly above LCA is accepted under `AmbientHost`.
+        fs::create_dir_all(above.join(".cargo")).unwrap();
+        fs::write(above.join(".cargo/config.toml"), "[net]\noffline = true\n").unwrap();
+        reject_workspace_compiler_overrides(&member, &metadata)
+            .expect("[net] above sibling-workspace LCA must be accepted");
+
+        // `[build]` strictly above LCA is still rejected under `AmbientHost`.
+        fs::write(above.join(".cargo/config.toml"), "[build]\nrustflags = []\n").unwrap();
+        let above_build = reject_workspace_compiler_overrides(&member, &metadata).unwrap_err();
+        assert_eq!(above_build.status, "unsupported");
+        assert!(above_build.detail.contains("table [build]"), "{}", above_build.detail);
+        fs::write(above.join(".cargo/config.toml"), "[net]\noffline = true\n").unwrap();
+
+        // (b) `ws/.cargo/config.toml` `[build]` is rejected (and `[net]` at
+        //     `ws` or `lca` is also rejected under `InWorkspace`).
+        fs::create_dir_all(ws.join(".cargo")).unwrap();
+        fs::write(ws.join(".cargo/config.toml"), "[build]\nrustflags = []\n").unwrap();
+        let ws_build = reject_workspace_compiler_overrides(&member, &metadata).unwrap_err();
+        assert_eq!(ws_build.status, "unsupported");
+        assert_eq!(ws_build.phase, "cargo");
+        assert!(ws_build.detail.contains("table [build]"), "{}", ws_build.detail);
+        fs::remove_dir_all(ws.join(".cargo")).unwrap();
+
+        // (c) `ws/rust-toolchain.toml` is rejected.
+        fs::write(ws.join("rust-toolchain.toml"), "[toolchain]\nchannel = \"nightly\"\n").unwrap();
+        let ws_tc = reject_workspace_compiler_overrides(&member, &metadata).unwrap_err();
+        assert_eq!(ws_tc.status, "unsupported");
+        assert_eq!(ws_tc.phase, "cargo");
+        assert!(ws_tc.detail.contains("toolchain override"), "{}", ws_tc.detail);
+        fs::remove_file(ws.join("rust-toolchain.toml")).unwrap();
+
+        // Clean sibling workspace with `[net]` above LCA passes.
+        reject_workspace_compiler_overrides(&member, &metadata)
+            .expect("clean sibling workspace must pass");
+    }
+
+    #[test]
+    fn emit_failure_threads_reason_only_for_proof_failed_audit() {
+        use crate::output::{ProgressMode, StreamStyle};
+
+        let plain = StreamStyle { is_tty: false, ansi_color: false, width: 80 };
+        let run_emit = |status: &str, phase: &str, reason: Option<&str>, code: u8| -> Value {
+            let mut out = Vec::new();
+            let mut err = Vec::new();
+            let mut session = OutputSession::with_writers(
+                &mut out,
+                &mut err,
+                plain,
+                plain,
+                true,
+                false,
+                ProgressMode::Silent,
+                false,
+            );
+            let exit = emit_failure(
+                &mut session,
+                ResolvedVerifyFormat::Json,
+                None,
+                &[],
+                Some("linux_bwrap"),
+                status,
+                phase,
+                reason,
+                "limit exceeded",
+                Some(None),
+                code,
+            );
+            assert_eq!(exit, ExitCode::from(code));
+            serde_json::from_slice(&out).unwrap()
+        };
+
+        let pf = run_emit("proof_failed", "audit", Some("heartbeat_limit_exceeded"), 1);
+        assert_eq!(pf["status"], "proof_failed");
+        assert_eq!(pf["reason"], "heartbeat_limit_exceeded");
+
+        let tf = run_emit("tool_failed", "audit", Some("heartbeat_limit_exceeded"), 2);
+        assert_eq!(tf["status"], "tool_failed");
+        assert!(tf.get("reason").is_none(), "{tf}");
+
+        let wrong_phase = run_emit("proof_failed", "capture", Some("heartbeat_limit_exceeded"), 1);
+        assert!(wrong_phase.get("reason").is_none(), "{wrong_phase}");
     }
 }

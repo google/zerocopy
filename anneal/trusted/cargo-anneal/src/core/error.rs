@@ -25,13 +25,20 @@ pub struct Failure {
     pub phase: String,
     /// Contains the human-readable diagnostic message.
     pub message: String,
+    /// Optional structured sub-reason for classified proof failures (such as
+    /// `"heartbeat_limit_exceeded"` or `"recursion_depth_exceeded"`), omitted
+    /// for ordinary elaboration and operational failures.
+    pub reason: Option<String>,
     io_kind: Option<io::ErrorKind>,
     read_only_fs: bool,
 }
 
 impl PartialEq for Failure {
     fn eq(&self, other: &Self) -> bool {
-        self.code == other.code && self.phase == other.phase && self.message == other.message
+        self.code == other.code
+            && self.phase == other.phase
+            && self.message == other.message
+            && self.reason == other.reason
     }
 }
 
@@ -42,9 +49,17 @@ impl Failure {
             code,
             phase: phase.into(),
             message: message.into(),
+            reason: None,
             io_kind: None,
             read_only_fs: false,
         }
+    }
+
+    /// Attach a structured sub-reason (for example `"heartbeat_limit_exceeded"`
+    /// or `"recursion_depth_exceeded"`).
+    pub fn with_reason(mut self, reason: impl Into<String>) -> Self {
+        self.reason = Some(reason.into());
+        self
     }
 
     /// Construct a policy-rejection [`Failure`] (`code == 1`).
@@ -68,6 +83,7 @@ impl Failure {
             code: 2,
             phase: phase.into(),
             message: message.into(),
+            reason: None,
             io_kind: Some(io_kind),
             read_only_fs,
         }
@@ -91,6 +107,11 @@ mod tests {
     #[test]
     fn error_kinds_preserve_exit_codes_and_io_metadata() {
         assert_eq!(Failure::policy("audit", "bad").code, 1);
+        assert!(Failure::policy("audit", "bad").reason.is_none());
+        let limited =
+            Failure::policy("compile-Proof", "limit").with_reason("heartbeat_limit_exceeded");
+        assert_eq!(limited.reason.as_deref(), Some("heartbeat_limit_exceeded"));
+        assert_ne!(limited, Failure::policy("compile-Proof", "limit"));
         assert_eq!(Failure::operational("io", "boom").code, 2);
 
         let rofs = Failure::operational_io_kind(

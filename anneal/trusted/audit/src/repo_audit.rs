@@ -1047,12 +1047,14 @@ impl Checker {
 
         // Importing the 160-module `Miri.Interpreter.ExecutionMachine`
         // closure consumes ~1.7 GiB of Lean's `-M` allocator at startup,
-        // so Pass 2 uses `-M4096` rather than Pass 1's `-M2048`. Cap Pass 2
-        // concurrency at 3 workers (`3 * 4 GiB = 12 GiB` ceiling) to leave
-        // headroom on 16 GiB CI runners. Compile `Trusted.Correspondence*`
-        // first (without mounting `theory-lib`), then
-        // `Anneal.MirCorrespondence*`, each concurrently along its verified
-        // import DAG inside isolated per-module `bwrap` sandboxes.
+        // so Pass 2 uses `-M4096` rather than Pass 1's `-M2048`. Default Pass 2
+        // concurrency to at most 3 workers (`3 * 4 GiB = 12 GiB` ceiling) to
+        // leave headroom on 16 GiB CI runners while honoring
+        // `ANNEAL_COMPILE_WORKERS` and `ANNEAL_LEAN_RUN_MEM_MB` governance.
+        // Compile `Trusted.Correspondence*` first (without mounting
+        // `theory-lib`), then `Anneal.MirCorrespondence*`, each concurrently
+        // along its verified import DAG inside isolated per-module `bwrap`
+        // sandboxes.
         let pass2_workers = default_compile_workers(3);
         let corr_trusted_src_root = stage.join("src/corr-trusted");
         self.compile_pass2_dag_with_root(

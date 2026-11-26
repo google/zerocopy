@@ -575,6 +575,51 @@ class AnnealCiLibTests(unittest.TestCase):
                 {"ok": 1},
             )
 
+    def test_negative_consumers_refuse_resource_limit_proof_failed(self) -> None:
+        import probe_alpha
+        import verify_starnix_e2e
+
+        ordinary = {
+            "schema_version": 3,
+            "status": "proof_failed",
+            "phase": "audit",
+            "taint_reasons": [],
+            "elaboration_sandbox": "linux_bwrap",
+            "detail": "type mismatch",
+            "artifacts": None,
+        }
+        self.assertEqual(
+            anneal_ci_lib.validate_receipt_v3_envelope(
+                ordinary,
+                returncode=1,
+                expected_status="proof_failed",
+                expected_returncode=1,
+                check_deferred=False,
+            ),
+            [],
+        )
+        verify_starnix_e2e.validate_mutation_rejection(ordinary, "zero")
+        probe_alpha.validate_proof_failed_receipt(ordinary)
+
+        for reason in ("heartbeat_limit_exceeded", "recursion_depth_exceeded"):
+            with self.subTest(reason=reason):
+                limited = dict(ordinary, reason=reason)
+                failures = anneal_ci_lib.validate_receipt_v3_envelope(
+                    limited,
+                    returncode=1,
+                    expected_status="proof_failed",
+                    expected_returncode=1,
+                    check_deferred=False,
+                )
+                self.assertTrue(
+                    any("resource-limit proof_failed" in f for f in failures),
+                    failures,
+                )
+                with self.assertRaisesRegex(RuntimeError, "resource-limit proof_failed"):
+                    verify_starnix_e2e.validate_mutation_rejection(limited, "zero")
+                with self.assertRaisesRegex(RuntimeError, "resource-limit proof_failed"):
+                    probe_alpha.validate_proof_failed_receipt(limited)
+
     def test_find_workflow_step_unique_missing_and_duplicate(self) -> None:
         wf = {
             "jobs": {

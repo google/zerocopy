@@ -116,6 +116,22 @@ and inactive optional dependencies are ignored),
 `--select <path>`, and `--instantiate <JSON>`) constructs the same request
 automatically.
 
+The `--manifest-path` shortcut fails closed on Cargo configuration that could
+change how the crate is compiled. Inside the package and its workspace (from
+the package directory up to the workspace root), a `.cargo/config` or
+`.cargo/config.toml` may contain only the `[alias]`, `[term]`, `[doc]`,
+`[cargo-new]`, and `[future-incompat-report]` tables. The shortcut also
+inspects ancestor directories strictly above the workspace root and the active
+`$CARGO_HOME/config{,.toml}` (failing closed on compilation, toolchain, and
+download overrides while admitting `[net]`, `[registries]`, `[registry]`, and
+`[source]` so offline and vendored host setups keep working), and pins child
+`cargo metadata` processes to that exact inspected `$CARGO_HOME`. Any other
+table (for example `[build]`, `[target]`, `[profile]`, `[env]`, `[patch]`,
+`[http]`, or `[install]`), unparseable TOML, a symlinked or non-regular config
+file, `.cargo` directory, or `$CARGO_HOME` directory, or a `rust-toolchain` or
+`rust-toolchain.toml` in the package directory or any ancestor is refused as
+`unsupported`. In that case, write an explicit `request.json` instead.
+
 Each `instantiations` entry, like each `--instantiate` value, names a generic
 function of the crate being verified by its `rustc` path (`path`) and lists
 its generic arguments in Rust syntax (`args`): primitive types, `str`, tuples,
@@ -282,14 +298,31 @@ toolchain integration:
 - `--export-lean-lib` (requires `--artifacts <directory>`): atomically stages
   Door-1-verified target `.olean` files inside the private work directory and
   retains them under `<artifacts>/lean-lib/` after target audit passes; omits
-  authored `proof` `.olean`s on `proof_failed` (exit `1`), and exports nothing
-  on `tool_failed` (exit `2`).
+  authored `proof` `.olean`s on `proof_failed` (exit `1`)—including authored
+  `Proof`-module deterministic heartbeat or recursion-depth limit failures,
+  which classify as `proof_failed` with structured `"reason"`
+  (`"heartbeat_limit_exceeded"` or `"recursion_depth_exceeded"`) so non-proof
+  `.olean`s remain exported for debugging while negative and mutation checks
+  refuse to credit them as kills—and exports nothing on `tool_failed`
+  (exit `2`).
 - `--lean-memory-mb <MB>`: sets Lean's `-M<MB>` memory limit (`resolve-imports`
   enforces a `4096` MiB floor).
 - `--max-inspector-output-bytes <BYTES>`: sets the maximum Lean inspector
   `result.json` output size in bytes (`67108864` / `64 MiB` by default, up to
   `1073741824` / `1 GiB`; also raises child `RLIMIT_FSIZE` when set above
   `256 MiB`).
+
+Parallel Lean compilation uses a bounded number of workers. By default it uses
+the smaller of the host's available parallelism and a built-in cap. Setting
+`ANNEAL_COMPILE_WORKERS=<n>` (a positive integer) requests `n` workers, still
+bounded by available parallelism (standalone NDJSON kernel verification with
+`con-ron` and `con-leche` remains hard-capped at `2` jobs); invalid or
+non-positive values are ignored. The worker count is then limited to one worker
+per `4096` MiB of memory (never fewer than one worker), using the tighter of
+`ANNEAL_LEAN_RUN_MEM_MB=<MB>` and, on Linux, the cgroup v2 `memory.max` of the
+current cgroup and its ancestors, so concurrent Lean workers stay within a
+container or job memory budget. An invalid or non-positive
+`ANNEAL_LEAN_RUN_MEM_MB` is ignored.
 
 When building `cargo-anneal` itself with Cargo's `--no-default-features` flag
 (for example, `cargo install --locked --no-default-features cargo-anneal`), the
