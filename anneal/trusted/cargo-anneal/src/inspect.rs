@@ -823,6 +823,48 @@ fn verify_retained_artifacts(
                 &mut failures,
                 &mut checked_files,
             );
+            if let Some(ref shards_sha) = s.capture_shards_sha256 {
+                match read_artifact_under_dir(dir, "capture/capture_shards.json") {
+                    Ok(bytes) => {
+                        checked_files += 1;
+                        let actual = sha256_bytes(&bytes);
+                        if !actual.eq_ignore_ascii_case(shards_sha) {
+                            failures.push(format!(
+                                "artifact `capture/capture_shards.json` SHA-256 mismatch: \
+                                 expected {shards_sha}, got {actual}"
+                            ));
+                        }
+                        if let Some(ref expected_shards) = s.shards {
+                            match StrictJsonDom::parse(&bytes) {
+                                Ok(disk_val) => match serde_json::to_value(expected_shards) {
+                                    Ok(expected_val) => {
+                                        if disk_val != expected_val {
+                                            failures.push(
+                                                "retained `capture/capture_shards.json` contents \
+                                                 differ from receipt `shards` manifest"
+                                                    .into(),
+                                            );
+                                        }
+                                    }
+                                    Err(err) => failures.push(format!(
+                                        "failed to serialize receipt `shards` manifest for \
+                                         artifact parity check: {err}"
+                                    )),
+                                },
+                                Err(err) => failures.push(format!(
+                                    "retained `capture/capture_shards.json` is not valid strict \
+                                     JSON: {err}"
+                                )),
+                            }
+                        }
+                    }
+                    Err(msg) => failures.push(msg),
+                }
+            } else if s.shards.is_some() {
+                failures.push(
+                    "receipt carries `shards` manifest without `capture_shards_sha256`".into(),
+                );
+            }
             for src in &s.sources {
                 let rel = format!("rust/{}", src.relative_path);
                 check_hash(&rel, &src.sha256, &mut failures, &mut checked_files);
@@ -836,6 +878,8 @@ fn verify_retained_artifacts(
                 let mut has_spec = false;
                 let mut has_capture = false;
                 let mut has_expected = false;
+                let mut checked_id_tree = false;
+                let mut seen_capture_modules = BTreeSet::new();
                 let mut spec_count = 0usize;
                 let mut on_disk_specs: Vec<(String, String)> = Vec::new();
                 for entry in &s.audit_sources {
@@ -864,6 +908,7 @@ fn verify_retained_artifacts(
                         }
                         "capture" => {
                             has_capture = true;
+                            seen_capture_modules.insert(entry.module.as_str());
                             format!("capture/{mod_path}.lean")
                         }
                         "expected" => {
@@ -873,6 +918,9 @@ fn verify_retained_artifacts(
                         "proof" => {
                             if entry.module == "Anneal" || entry.module.starts_with("Anneal.") {
                                 format!("anneal/theory/{mod_path}.lean")
+                            } else if entry.module == "Proof.IdTree" && s.shards.is_some() {
+                                checked_id_tree = true;
+                                format!("generated/{mod_path}.lean")
                             } else {
                                 format!("authored/{mod_path}.lean")
                             }
@@ -919,6 +967,42 @@ fn verify_retained_artifacts(
                              got {actual_spec_manifest}",
                             s.specification_manifest_sha256
                         ));
+                    }
+                }
+                if let Some(ref sh) = s.shards {
+                    if !checked_id_tree {
+                        check_hash(
+                            "generated/Proof/IdTree.lean",
+                            &sh.id_tree_sha256,
+                            &mut failures,
+                            &mut checked_files,
+                        );
+                    }
+                    for shard_entry in &sh.shards {
+                        if !seen_capture_modules.contains(shard_entry.capture_module.as_str()) {
+                            let valid_ident = !shard_entry.capture_module.is_empty()
+                                && shard_entry.capture_module.split('.').all(|seg| {
+                                    !seg.is_empty()
+                                        && seg
+                                            .bytes()
+                                            .all(|b| b.is_ascii_alphanumeric() || b == b'_')
+                                });
+                            if !valid_ident {
+                                failures.push(format!(
+                                    "shards capture_module `{}` is not a valid Lean module name",
+                                    shard_entry.capture_module
+                                ));
+                                continue;
+                            }
+                            let mod_path = shard_entry.capture_module.replace('.', "/");
+                            let rel = format!("capture/{mod_path}.lean");
+                            check_hash(
+                                &rel,
+                                &shard_entry.capture_sha256,
+                                &mut failures,
+                                &mut checked_files,
+                            );
+                        }
                     }
                 }
             }

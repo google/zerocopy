@@ -508,6 +508,19 @@ impl Ty {
             | Self::OverflowPair(_) => {}
         }
     }
+
+    pub fn ast_nodes(&self) -> usize {
+        match self {
+            Self::Bool | Self::Char | Self::Ordering | Self::Unit | Self::Never | Self::Int(_) => 1,
+            Self::OverflowPair(_) => 3,
+            Self::Enum(ety) => 1 + ety.discriminants.len(),
+            Self::Tuple { fields } => 1 + fields.iter().map(Self::ast_nodes).sum::<usize>(),
+            Self::Ref { pointee, .. } | Self::RawPtr { pointee, .. } => 1 + pointee.ast_nodes(),
+            Self::Slice { elem } | Self::RangeTo { elem } | Self::RangeFrom { elem } => {
+                1 + elem.ast_nodes()
+            }
+        }
+    }
 }
 
 /// Constant literal payload matching `Trusted.MirAst.ConstLit` 1-to-1.
@@ -680,6 +693,17 @@ impl Place {
             }
         }
     }
+
+    fn ast_nodes(&self) -> usize {
+        1 + self
+            .projection
+            .iter()
+            .map(|elem| match elem {
+                PlaceElem::Deref => 1,
+                PlaceElem::Field { ty, .. } => 1 + ty.ast_nodes(),
+            })
+            .sum::<usize>()
+    }
 }
 
 #[derive(Clone, Debug, PartialEq, Eq, Serialize)]
@@ -706,6 +730,14 @@ impl Operand {
             Self::CopyPlace { .. } | Self::MovePlace { .. } => true,
             Self::Copy { .. } | Self::Move { .. } => false,
             Self::Constant { ty, .. } => ty.is_profile_v2(),
+        }
+    }
+
+    fn ast_nodes(&self) -> usize {
+        match self {
+            Self::Copy { .. } | Self::Move { .. } => 1,
+            Self::CopyPlace { place } | Self::MovePlace { place } => 1 + place.ast_nodes(),
+            Self::Constant { ty, .. } => 1 + ty.ast_nodes(),
         }
     }
 }
@@ -815,6 +847,27 @@ pub enum Rvalue {
     },
 }
 
+impl Rvalue {
+    fn ast_nodes(&self) -> usize {
+        match self {
+            Self::Use { operand, .. }
+            | Self::UseRetag { operand }
+            | Self::Unary { operand, .. } => 1 + operand.ast_nodes(),
+            Self::Binary { left, right, .. } => 1 + left.ast_nodes() + right.ast_nodes(),
+            Self::Cast { operand, ty, .. } => 1 + operand.ast_nodes() + ty.ast_nodes(),
+            Self::Discriminant { .. } => 1,
+            Self::Ref { place, .. } | Self::AddressOf { place, .. } => 1 + place.ast_nodes(),
+            Self::AggregateTuple { fields } => {
+                1 + fields.iter().map(Operand::ast_nodes).sum::<usize>()
+            }
+            Self::AggregateRangeTo { elem_ty, end } => 1 + elem_ty.ast_nodes() + end.ast_nodes(),
+            Self::AggregateRangeFrom { elem_ty, start } => {
+                1 + elem_ty.ast_nodes() + start.ast_nodes()
+            }
+        }
+    }
+}
+
 #[derive(Clone, Debug, PartialEq, Eq, Serialize)]
 #[serde(tag = "kind", rename_all = "snake_case")]
 pub enum Statement {
@@ -824,6 +877,19 @@ pub enum Statement {
     StorageDead { local: u32 },
     PlaceMention { local: u32 },
     Nop,
+}
+
+impl Statement {
+    fn ast_nodes(&self) -> usize {
+        match self {
+            Self::Assign { value, .. } => 1 + value.ast_nodes(),
+            Self::AssignPlace { place, value } => 1 + place.ast_nodes() + value.ast_nodes(),
+            Self::StorageLive { .. }
+            | Self::StorageDead { .. }
+            | Self::PlaceMention { .. }
+            | Self::Nop => 1,
+        }
+    }
 }
 
 /// Compilation crate type explicitly authorized for capture.
@@ -1005,10 +1071,39 @@ fn check_move_disjoint(args: &[Operand], dst: u32) -> Result<(), String> {
     Ok(())
 }
 
+impl Terminator {
+    fn ast_nodes(&self) -> usize {
+        match self {
+            Self::Goto { .. } | Self::Ret | Self::Unreachable | Self::Unsupported => 1,
+            Self::SwitchInt { operand, targets, .. } => 2 + operand.ast_nodes() + targets.len(),
+            Self::Assert { cond, .. } => 2 + cond.ast_nodes(),
+            Self::CoreCall { op, args, dst, .. } => {
+                let op_nodes = match op {
+                    CoreCallOp::PtrAdd { pointee, .. } => 1 + pointee.ast_nodes(),
+                    CoreCallOp::SliceLen
+                    | CoreCallOp::SliceGetUncheckedRangeTo
+                    | CoreCallOp::SliceGetUncheckedRangeFrom
+                    | CoreCallOp::UsizeUncheckedSub => 1,
+                };
+                1 + op_nodes + args.iter().map(Operand::ast_nodes).sum::<usize>() + dst.ast_nodes()
+            }
+            Self::Call { args, .. } | Self::SysrootCall { args, .. } => {
+                2 + args.iter().map(Operand::ast_nodes).sum::<usize>()
+            }
+        }
+    }
+}
 #[derive(Clone, Debug, PartialEq, Eq, Serialize)]
 pub struct Block {
     pub statements: Vec<Statement>,
     pub terminator: Terminator,
+}
+
+impl Block {
+    fn ast_nodes(&self) -> usize {
+        1 + self.statements.iter().map(Statement::ast_nodes).sum::<usize>()
+            + self.terminator.ast_nodes()
+    }
 }
 
 /// Check static operand and destination typing for [`Rvalue::Binary`], matching
@@ -1336,15 +1431,40 @@ pub struct Body {
     /// Inventory indices remain navigation metadata; this value enters the
     /// theorem subject and selects the reviewed unsafe caller requirements.
     identity: String,
+    /// Intra-crate static `ty::FnDef` callee identities extracted from MIR
+    /// assign-rvalue operands and call/branch/assert terminators for Tarjan SCC
+    /// `.olean` sharding. Omitted from `capture.json` and projected into
+    /// `capture_shards.json`.
+    #[serde(skip)]
+    callees: BTreeSet<String>,
 }
 
 impl Body {
+    #[cfg(test)]
     pub fn try_new(
         arg_count: usize,
         is_unsafe: bool,
         local_tys: Vec<Ty>,
         blocks: Vec<Block>,
         identity: String,
+    ) -> Result<Self, String> {
+        Self::try_new_with_callees(
+            arg_count,
+            is_unsafe,
+            local_tys,
+            blocks,
+            identity,
+            BTreeSet::new(),
+        )
+    }
+
+    pub fn try_new_with_callees(
+        arg_count: usize,
+        is_unsafe: bool,
+        local_tys: Vec<Ty>,
+        blocks: Vec<Block>,
+        identity: String,
+        callees: BTreeSet<String>,
     ) -> Result<Self, String> {
         if identity.is_empty() {
             return Err("captured function identity must not be empty".into());
@@ -1898,6 +2018,7 @@ impl Body {
             local_tys,
             blocks,
             identity,
+            callees,
         })
     }
 
@@ -1993,6 +2114,31 @@ impl Body {
             }
         }
         false
+    }
+
+    pub fn callees(&self) -> &BTreeSet<String> {
+        &self.callees
+    }
+
+    /// Deterministic AST-node weight used for sharding budgets, counting local
+    /// types, basic blocks, and exact `_root_.String.ofList` and
+    /// `_root_.Char.ofNat` identity chunk nodes matching `lean.rs`.
+    pub fn ast_nodes(&self) -> usize {
+        self.identity_ast_nodes()
+            + self.local_tys.iter().map(Ty::ast_nodes).sum::<usize>()
+            + self.blocks.iter().map(Block::ast_nodes).sum::<usize>()
+    }
+
+    fn identity_ast_nodes(&self) -> usize {
+        let id_chars = self.identity.chars().count();
+        if id_chars == 0 {
+            return 1;
+        }
+        // Matches `lean::identity_at`: 16-char `_root_.String.ofList` chunks
+        // joined by `Trusted.MirAst.stringAppend`, with one
+        // `(_root_.Char.ofNat n)` term per Unicode scalar character.
+        let chunks = id_chars.div_ceil(16);
+        1 + (2 * chunks - 1) + 2 * id_chars
     }
 
     /// Record every nominal [`EnumTy::id`] referenced anywhere in this body.
@@ -2364,6 +2510,63 @@ pub struct Manifest {
     pub selected: Vec<SelectedBody>,
     pub unsupported: Vec<Unsupported>,
     pub program: Program,
+}
+
+impl Manifest {
+    /// Permute `program.bodies` into canonical callee-first shard order
+    /// (`new_bodies[new_idx] = old_bodies[permutation[new_idx]]`) while
+    /// remapping every `selected[i].body_index` to its new `DefId`.
+    pub fn reorder_bodies(&mut self, permutation: &[usize]) -> Result<(), String> {
+        let n = self.program.bodies.len();
+        if permutation.len() != n {
+            return Err(format!(
+                "body permutation length {} disagrees with body count {n}",
+                permutation.len()
+            ));
+        }
+        let mut old_to_new = vec![None; n];
+        for (new_idx, &old_idx) in permutation.iter().enumerate() {
+            let Some(slot) = old_to_new.get_mut(old_idx) else {
+                return Err(format!("body permutation index {old_idx} out of bounds for {n}"));
+            };
+            if slot.is_some() {
+                return Err(format!("duplicate body index {old_idx} in permutation"));
+            }
+            *slot = Some(new_idx);
+        }
+        let mut old_opts: Vec<Option<Body>> =
+            std::mem::take(&mut self.program.bodies).into_iter().map(Some).collect();
+        let mut new_bodies = Vec::with_capacity(n);
+        for &old_idx in permutation {
+            let mut body = old_opts[old_idx]
+                .take()
+                .ok_or_else(|| format!("missing body at {old_idx}"))?;
+            // Remap intra-crate `Terminator::Call` callee body indices into
+            // the new canonical callee-first body numbering so call targets
+            // stay bound to the exact same `Body` after sharding.
+            for block in &mut body.blocks {
+                if let Terminator::Call { callee, .. } = &mut block.terminator {
+                    *callee = old_to_new
+                        .get(*callee)
+                        .and_then(|opt| *opt)
+                        .ok_or_else(|| format!("call callee index {} out of bounds", *callee))?;
+                }
+            }
+            new_bodies.push(body);
+        }
+        self.program = Program::try_new_with_overflow_checks(
+            self.program.scope.clone(),
+            self.program.overflow_checks,
+            new_bodies,
+        )?;
+        for sel in &mut self.selected {
+            sel.body_index = old_to_new
+                .get(sel.body_index)
+                .and_then(|opt| *opt)
+                .ok_or_else(|| format!("selected body_index {} out of bounds", sel.body_index))?;
+        }
+        Ok(())
+    }
 }
 
 #[cfg(test)]

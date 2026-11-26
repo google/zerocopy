@@ -14,7 +14,6 @@
 //! simplification.
 
 use std::collections::{BTreeMap, BTreeSet};
-
 use rustc_abi::{
     BackendRepr, Endian, ExternAbi, HasDataLayout, Integer, Primitive, Scalar, Size, TagEncoding,
     Variants,
@@ -1136,6 +1135,7 @@ pub(crate) struct ExtractedBody {
     blocks: Vec<(Vec<ir::Statement>, RawTerminator)>,
     identity: String,
     local_callees: Vec<LocalDefId>,
+    callees: BTreeSet<String>,
 }
 
 impl ExtractedBody {
@@ -1176,12 +1176,13 @@ impl ExtractedBody {
                 })
             })
             .collect::<Result<Vec<_>>>()?;
-        ir::Body::try_new(
+        ir::Body::try_new_with_callees(
             self.arg_count,
             self.is_unsafe,
             self.local_tys,
             blocks,
             self.identity,
+            self.callees,
         )
     }
 }
@@ -1723,6 +1724,176 @@ fn instance_identity<'tcx>(tcx: TyCtxt<'tcx>, instance: ty::Instance<'tcx>) -> S
     format!("rust-path-v1::{}", instance_path(tcx, instance))
 }
 
+/// Collect intra-crate static callable identities from a `ty::FnDef` operand
+/// type for Tarjan SCC condensation. External (`!is_local()`) or non-`FnDef`
+/// types insert nothing.
+///
+/// Matches the pinned `rustc` representation:
+/// - `TyKind::FnDef(I::FunctionId, I::GenericArgs)` holds "the anonymous type
+///   of a function declaration/definition" where "each function has a unique
+///   type" paired with its generic arguments:
+///   https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_type_ir/src/ty_kind.rs#L156-L168
+/// - `Instance::try_resolve` "resolves a `(def_id, args)` pair to an
+///   (optional) instance" ("returns `Ok(None)` if we cannot resolve `Instance`
+///   to a specific instance"):
+///   https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_middle/src/ty/instance.rs#L471-L502
+/// - The resolved `Instance` pairs `def: InstanceKind<'tcx>` and
+///   `args: GenericArgsRef<'tcx>`, with `Instance::def_id` delegating to
+///   `InstanceKind::def_id`:
+///   https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_middle/src/ty/instance.rs#L33-L36
+///   https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_middle/src/ty/instance.rs#L239-L262
+///   https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_middle/src/ty/instance.rs#L466-L469
+/// - Monomorphized callee identities use `tcx.def_path_str_with_args` with
+///   trimming and visible-path shortcuts disabled, matching
+///   `instance_path`/`item_identity`:
+///   https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_middle/src/ty/print/pretty.rs#L2195-L2209
+fn collect_local_callee_identities<'tcx>(
+    tcx: TyCtxt<'tcx>,
+    typing_env: TypingEnv<'tcx>,
+    raw_ty: ty::Ty<'tcx>,
+    out: &mut BTreeSet<String>,
+) {
+    let ty::FnDef(def_id, args) = *raw_ty.kind() else {
+        return;
+    };
+    if !args.has_non_region_param()
+        && !args.has_non_region_infer()
+        && !args.references_error()
+        && let Ok(Some(inst)) = ty::Instance::try_resolve(tcx, typing_env, def_id, args)
+    {
+        if !inst.def_id().is_local() {
+            return;
+        }
+        let lifetime_only = inst
+            .args
+            .iter()
+            .all(|arg| matches!(arg.kind(), ty::GenericArgKind::Lifetime(_)));
+        if lifetime_only {
+            // Uninstantiated capture (`body_inner` with `instance: None`)
+            // admits local defs whose generics are purely lifetimes under
+            // `item_identity` (named `'a`), whereas explicit `--instantiate`
+            // captures record `instance_identity` (erased `'_`). Emit the
+            // item identity unconditionally and also the instance identity
+            // when lifetime args are present so either form matches.
+            out.insert(item_identity(tcx, inst.def_id()));
+            if !inst.args.is_empty() {
+                out.insert(instance_identity(tcx, inst));
+            }
+        } else {
+            out.insert(instance_identity(tcx, inst));
+        }
+        return;
+    }
+    if def_id.is_local()
+        && args.iter().all(|arg| matches!(arg.kind(), ty::GenericArgKind::Lifetime(_)))
+    {
+        out.insert(item_identity(tcx, def_id));
+    }
+}
+
+fn collect_operand_callee<'tcx>(
+    tcx: TyCtxt<'tcx>,
+    typing_env: TypingEnv<'tcx>,
+    body: &mir::Body<'tcx>,
+    op: &mir::Operand<'tcx>,
+    out: &mut BTreeSet<String>,
+) {
+    collect_local_callee_identities(tcx, typing_env, op.ty(body, tcx), out);
+}
+
+/// Sharded captures permute `Captured.program.bodies` into canonical
+/// callee-first Tarjan-SCC order while keeping `Program.entryDefId = 0`, so
+/// sharded crates must identify verified items by `Body.identity`.
+///
+/// Exhaustive MIR call-site matching follows pinned `rust-lang/rust`
+/// (`f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1`):
+/// - `StatementKind::Assign`: "Assign statements roughly correspond to an
+///   assignment in Rust proper (`x = ...`)":
+///   https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_middle/src/mir/syntax.rs#L305-L335
+/// - `Rvalue::{Use, Repeat, Cast, BinaryOp, UnaryOp, Aggregate,
+///   WrapUnsafeBinder}` cover operand-bearing right-hand sides;
+///   reference/discriminant/layout rvalues hold `Place`/`DefId` values rather
+///   than `Operand` function items:
+///   https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_middle/src/mir/syntax.rs#L1363-L1488
+/// - `TerminatorKind::Call { func, args, .. }`: "evaluates the `func` operand
+///   and the arguments, and starts execution of the referred to function";
+///   `SwitchInt { discr, .. }`, `TailCall { func, args, .. }`,
+///   `Assert { cond, .. }`, and `Yield { value, .. }` carry direct operands,
+///   while `Drop`, `InlineAsm` (rejected by `extract::terminator`; any
+///   `InlineAsmOperand::SymFn` symbol is not a direct MIR `Call` edge), and
+///   control-flow-only terminators are skipped:
+///   https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_middle/src/mir/syntax.rs#L692-L981
+///
+/// Callee edges are purely SCC-partitioning and topological-ordering hints;
+/// indirect `fn()` calls or unmodeled aggregates cannot alter
+/// `ProgramVerified` theorem meaning because every captured body is verified.
+fn collect_block_callees<'tcx>(
+    tcx: TyCtxt<'tcx>,
+    typing_env: TypingEnv<'tcx>,
+    body: &mir::Body<'tcx>,
+    block: &mir::BasicBlockData<'tcx>,
+    out: &mut BTreeSet<String>,
+) {
+    for stmt in &block.statements {
+        if let mir::StatementKind::Assign(assign) = &stmt.kind {
+            match &assign.1 {
+                mir::Rvalue::Use(op, _)
+                | mir::Rvalue::Repeat(op, _)
+                | mir::Rvalue::UnaryOp(_, op)
+                | mir::Rvalue::Cast(_, op, _)
+                | mir::Rvalue::WrapUnsafeBinder(op, _) => {
+                    collect_operand_callee(tcx, typing_env, body, op, out);
+                }
+                mir::Rvalue::BinaryOp(_, pair) => {
+                    collect_operand_callee(tcx, typing_env, body, &pair.0, out);
+                    collect_operand_callee(tcx, typing_env, body, &pair.1, out);
+                }
+                mir::Rvalue::Aggregate(_, ops) => {
+                    for op in ops {
+                        collect_operand_callee(tcx, typing_env, body, op, out);
+                    }
+                }
+                mir::Rvalue::Ref(..)
+                | mir::Rvalue::ThreadLocalRef(..)
+                | mir::Rvalue::RawPtr(..)
+                | mir::Rvalue::Discriminant(..)
+                | mir::Rvalue::CopyForDeref(..)
+                | mir::Rvalue::Reborrow(..) => {}
+            }
+        }
+    }
+    if let Some(term) = &block.terminator {
+        match &term.kind {
+            mir::TerminatorKind::Call { func, args, .. }
+            | mir::TerminatorKind::TailCall { func, args, .. } => {
+                collect_operand_callee(tcx, typing_env, body, func, out);
+                for arg in args {
+                    collect_operand_callee(tcx, typing_env, body, &arg.node, out);
+                }
+            }
+            mir::TerminatorKind::SwitchInt { discr, .. } => {
+                collect_operand_callee(tcx, typing_env, body, discr, out);
+            }
+            mir::TerminatorKind::Assert { cond, .. } => {
+                collect_operand_callee(tcx, typing_env, body, cond, out);
+            }
+            mir::TerminatorKind::Yield { value, .. } => {
+                collect_operand_callee(tcx, typing_env, body, value, out);
+            }
+            mir::TerminatorKind::Goto { .. }
+            | mir::TerminatorKind::UnwindResume
+            | mir::TerminatorKind::UnwindTerminate(..)
+            | mir::TerminatorKind::Return
+            | mir::TerminatorKind::Unreachable
+            | mir::TerminatorKind::Drop { .. }
+            | mir::TerminatorKind::CoroutineDrop
+            | mir::TerminatorKind::FalseEdge { .. }
+            | mir::TerminatorKind::FalseUnwind { .. }
+            | mir::TerminatorKind::InlineAsm { .. } => {}
+        }
+    }
+}
+
 /// Key a crate-local enum for `Trusted.MirAst.EnumTy.id`.
 ///
 /// Lean compares this key when deciding enum type equality, and a reviewed
@@ -2171,10 +2342,12 @@ fn body_inner<'tcx>(
     ir::validate_local_tys(&local_tys)?;
     let mut local_callees = Vec::new();
     let mut seen_callees = BTreeSet::new();
+    let mut callees = BTreeSet::new();
     let blocks = body
         .basic_blocks
         .iter_enumerated()
         .map(|(id, block)| {
+            collect_block_callees(tcx, typing_env, body, block, &mut callees);
             let statements = block
                 .statements
                 .iter()
@@ -2222,6 +2395,7 @@ fn body_inner<'tcx>(
         blocks,
         identity,
         local_callees,
+        callees,
     };
     // Run single-body structural and type validation immediately so an
     // unsupported body reports its diagnostic even before cross-body

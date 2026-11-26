@@ -58,7 +58,7 @@ def _make_record(sha_idx: int, unix_ts: int, subject: str = "Test") -> dict:
             "verify.scalar.cold_prebuilt_total_ms": 10000.0 + sha_idx,
             "memory_rss.verify_scalar.cold_prebuilt_maxrss_kib": 500000,
             "artifact_size.bundled_olean.total_bytes": 12000000,
-            "zerocopy_proofs.suite.verified_units_count": 4,
+            "zerocopy_proofs.suite.verified_units_count": 5,
         },
     }
 

@@ -31,7 +31,7 @@ use serde_json::json;
 
 use crate::olean_cache::{
     CacheKind, OleanCache, OleanCacheKeyInput, build_import_bindings, canonical_compile_flags,
-    canonical_inspector_flags, is_cacheable_bundled_module,
+    canonical_inspector_flags, is_cacheable_bundled_module, is_cacheable_target_shard_module,
 };
 use crate::sandbox::{
     ActiveSandbox, DEFAULT_CHILD_TIMEOUT, MountSpec, PathMapper, SandboxMode, SandboxPolicy,
@@ -460,6 +460,11 @@ fn olean_part_suffix(path: &str) -> Result<&'static str, Failure> {
     }
 }
 
+fn is_cacheable_module(module: &str, allow_target_shard_cache: bool) -> bool {
+    is_cacheable_bundled_module(module)
+        || (allow_target_shard_cache && is_cacheable_target_shard_module(module))
+}
+
 #[allow(clippy::too_many_arguments)]
 fn prepare_module_cache(
     olean_cache: &mut OleanCache,
@@ -471,6 +476,7 @@ fn prepare_module_cache(
     lib_dir: &Path,
     warn_as_err: bool,
     disable_auto_implicit: bool,
+    allow_target_shard_cache: bool,
     cache_ctx: Option<&(String, String)>,
     path_sha_cache: &mut BTreeMap<String, String>,
     transitive_memo: &mut BTreeMap<String, String>,
@@ -478,7 +484,7 @@ fn prepare_module_cache(
     let Some((lean_sha, sysroot_sha)) = cache_ctx else {
         return Ok(ModuleCachePrep::CompileNeeded(None));
     };
-    if disable_auto_implicit || !is_cacheable_bundled_module(module) {
+    if disable_auto_implicit || !is_cacheable_module(module, allow_target_shard_cache) {
         return Ok(ModuleCachePrep::CompileNeeded(None));
     }
     let src_bytes =
@@ -2547,7 +2553,11 @@ impl Checker {
             ParallelDagPlan::from_module_order(order, imports, "preflight", "module import cycle")?;
         self.execution_began = true;
 
-        let has_cacheable = order.iter().any(|m| is_cacheable_bundled_module(m));
+        let allow_target_cache_context =
+            target_rejection && self.sandbox_mode != SandboxMode::Unsandboxed;
+        let has_cacheable = order
+            .iter()
+            .any(|m| is_cacheable_module(m, allow_target_cache_context));
         let cache_ctx = if self.olean_cache.is_enabled() && has_cacheable {
             let sysroot_sha = self.ensure_sysroot_manifest_sha256()?;
             let (lean_sha, prefix) = {
@@ -2621,6 +2631,7 @@ impl Checker {
                         &lib_dir,
                         warn_as_err,
                         disable_auto_implicit,
+                        target_rejection,
                         cache_ctx.as_ref(),
                         path_sha_cache,
                         transitive_memo,
@@ -2738,6 +2749,11 @@ impl Checker {
         }
 
         let runtime = self.ensure_sandbox_ready()?;
+        // Never share disk-cached target shard artifacts across unsandboxed and
+        // sandboxed elaboration modes (`THREAT_MODEL.md` taint separation).
+        let allow_target_shard_cache = target_rejection
+            && self.sandbox_mode != SandboxMode::Unsandboxed
+            && runtime.backend != ActiveSandbox::None;
         let mem_limit_mb = self.effective_lean_memory_limit_mb(None);
         let runs_dir = self.stage.join("runs");
         create_dir_mode(&runs_dir, 0o700)?;
@@ -2794,6 +2810,7 @@ impl Checker {
                     &lib_dir,
                     warn_as_err,
                     disable_auto_implicit,
+                    allow_target_shard_cache,
                     cache_ctx.as_ref(),
                     path_sha_cache,
                     transitive_memo,
@@ -5886,5 +5903,208 @@ exit 1
             "{zero_loop_err}"
         );
         assert!(!zero_loop_checker.execution_began());
+    }
+
+    #[test]
+    fn target_shard_disk_cache_skips_reads_and_writes_when_unsandboxed() {
+        use std::os::unix::fs::PermissionsExt;
+
+        assert!(!is_cacheable_module("Proof.IdTree", false));
+        assert!(!is_cacheable_module("Captured.Shard_000", false));
+        assert!(!is_cacheable_module("Proof.Shard_000", false));
+        assert!(is_cacheable_module("Trusted", false));
+
+        let dir = tempfile::tempdir().unwrap();
+        let base = fs::canonicalize(dir.path()).unwrap();
+        let root = base.join("bundle");
+        let prefix = base.join("sysroot");
+        let disk_cache = base.join("disk-cache");
+        let log_file = base.join("lean-compile.log");
+        fs::create_dir_all(prefix.join("lib/lean/Init")).unwrap();
+
+        let inspector_src = root.join("trusted/audit/TrustedBoundary.lean");
+        fs::create_dir_all(inspector_src.parent().unwrap()).unwrap();
+        fs::write(&inspector_src, "-- synthetic inspector\n").unwrap();
+
+        let lean = base.join("lean");
+        fs::write(
+            &lean,
+            format!(
+                r#"#!/bin/sh
+case "$1" in
+    --version) printf 'Lean 4.34.1\n'; exit ;;
+    --print-prefix) printf '%s\n' '{}'; exit ;;
+esac
+out=""
+while [ "$#" -gt 0 ]; do
+    case "$1" in
+        -o) out="$2"; shift 2 ;;
+        *) shift ;;
+    esac
+done
+if [ -n "$out" ]; then
+    printf '%s\n' "$out" >> '{}'
+    printf 'olean\0024.34.1\000shard-payload' > "$out"
+    exit 0
+fi
+exit 1
+"#,
+                prefix.display(),
+                log_file.display()
+            ),
+        )
+        .unwrap();
+        fs::set_permissions(&lean, fs::Permissions::from_mode(0o755)).unwrap();
+
+        let bundled_src = base.join("BinChunkTree.lean");
+        let id_src = base.join("IdTree.lean");
+        let cap_src = base.join("CapturedShard0.lean");
+        let proof_src = base.join("ProofShard0.lean");
+        fs::write(&bundled_src, "prelude\n").unwrap();
+        fs::write(&id_src, "prelude\nimport Anneal.SccSharding.BinChunkTree\n").unwrap();
+        fs::write(&cap_src, "prelude\n").unwrap();
+        fs::write(&proof_src, "prelude\nimport Proof.IdTree\nimport Captured.Shard_000\n")
+            .unwrap();
+
+        let edge = |m: &str| ImportEdge {
+            module: m.to_owned(),
+            import_all: false,
+            is_exported: true,
+            is_meta: false,
+        };
+        let order = vec![
+            "Anneal.SccSharding.BinChunkTree".to_owned(),
+            "Proof.IdTree".to_owned(),
+            "Captured.Shard_000".to_owned(),
+            "Proof.Shard_000".to_owned(),
+        ];
+        let sources = BTreeMap::from([
+            ("Anneal.SccSharding.BinChunkTree".to_owned(), bundled_src),
+            ("Proof.IdTree".to_owned(), id_src),
+            ("Captured.Shard_000".to_owned(), cap_src.clone()),
+            ("Proof.Shard_000".to_owned(), proof_src),
+        ]);
+        let imports = BTreeMap::from([
+            ("Anneal.SccSharding.BinChunkTree".to_owned(), Vec::new()),
+            ("Proof.IdTree".to_owned(), vec![edge("Anneal.SccSharding.BinChunkTree")]),
+            ("Captured.Shard_000".to_owned(), Vec::new()),
+            (
+                "Proof.Shard_000".to_owned(),
+                vec![edge("Proof.IdTree"), edge("Captured.Shard_000")],
+            ),
+        ]);
+        let is_module = BTreeMap::from([
+            ("Anneal.SccSharding.BinChunkTree".to_owned(), false),
+            ("Proof.IdTree".to_owned(), false),
+            ("Captured.Shard_000".to_owned(), false),
+            ("Proof.Shard_000".to_owned(), false),
+        ]);
+        let count_v2_entries = |cache_root: &Path| -> usize {
+            let v2 = cache_root.join("v2");
+            if !v2.exists() {
+                return 0;
+            }
+            fs::read_dir(&v2)
+                .unwrap()
+                .filter_map(Result::ok)
+                .filter(|e| e.file_type().map(|ft| ft.is_dir()).unwrap_or(false))
+                .count()
+        };
+
+        // Include a bundled module (`Anneal.SccSharding.BinChunkTree`) so
+        // `cache_ctx` is created just like production sharded verification.
+        // Run 0 populates only the bundled entry; Run 1 hits the bundled entry
+        // while recompiling all 3 target shards without writing them.
+        let mut lean_sha = String::new();
+        let mut sysroot_sha = String::new();
+        for run in 0..2 {
+            fs::write(&log_file, b"").unwrap();
+            let mut c = Checker::new_with_env(&root, Some(&lean), []).unwrap();
+            c.set_allow_unpinned_lean(true);
+            c.set_sandbox_mode(SandboxMode::Unsandboxed);
+            c.set_olean_disk_cache_dir_for_test(Some(disk_cache.clone()));
+            c.tool_admission().unwrap();
+            c.compile_lean_modules_parallel(
+                &order, &sources, &imports, &is_module, "lib", false, true, 1,
+            )
+            .unwrap();
+            if run == 0 {
+                lean_sha = c.admitted().unwrap().lean_sha256.clone();
+                sysroot_sha = c.ensure_sysroot_manifest_sha256().unwrap();
+            }
+            let compiled = fs::read_to_string(&log_file).unwrap();
+            let expected_compiles = if run == 0 { 4 } else { 3 };
+            assert_eq!(
+                compiled.lines().count(),
+                expected_compiles,
+                "run {run} compile count mismatch: {compiled}"
+            );
+            if run == 1 {
+                assert!(
+                    !compiled.lines().any(|l| l.ends_with("BinChunkTree.olean")),
+                    "run 1 should reuse bundled BinChunkTree from disk cache: {compiled}"
+                );
+            }
+            assert_eq!(
+                count_v2_entries(&disk_cache),
+                1,
+                "unsandboxed run {run} must cache only the bundled module, never target shards"
+            );
+        }
+
+        // Pre-seed a valid disk-cache entry for `Captured.Shard_000` (as a
+        // prior sandboxed run would) and verify unsandboxed elaboration refuses
+        // to read it.
+        let seeded_olean = base.join("seeded-shard0.olean");
+        let seeded_bytes = b"olean\x024.34.1\0seeded-sandboxed-payload";
+        fs::write(&seeded_olean, seeded_bytes).unwrap();
+        let seeded_sha = sha256_bytes(seeded_bytes);
+        let shard_key = OleanCacheKeyInput {
+            kind: CacheKind::Module,
+            module: "Captured.Shard_000".to_owned(),
+            lean_sha256: lean_sha,
+            sysroot_manifest_sha256: sysroot_sha,
+            source_sha256: sha256_bytes(&fs::read(&cap_src).unwrap()),
+            is_module: false,
+            flags: canonical_compile_flags(false),
+            imports: Vec::new(),
+        };
+        let mut seed_cache = OleanCache::with_env_vars(None, None);
+        seed_cache.set_disk_dir(Some(disk_cache.clone()));
+        seed_cache
+            .store_compiled(&shard_key, &[("olean", seeded_olean.as_path(), &seeded_sha)])
+            .unwrap();
+        assert!(
+            seed_cache.lookup_bytes(&shard_key).unwrap().is_some(),
+            "pre-seeded Captured.Shard_000 entry must be readable by OleanCache"
+        );
+        assert_eq!(count_v2_entries(&disk_cache), 2);
+
+        fs::write(&log_file, b"").unwrap();
+        let mut c = Checker::new_with_env(&root, Some(&lean), []).unwrap();
+        c.set_allow_unpinned_lean(true);
+        c.set_sandbox_mode(SandboxMode::Unsandboxed);
+        c.set_olean_disk_cache_dir_for_test(Some(disk_cache.clone()));
+        c.tool_admission().unwrap();
+        c.compile_lean_modules_parallel(
+            &order, &sources, &imports, &is_module, "lib", false, true, 1,
+        )
+        .unwrap();
+        let compiled = fs::read_to_string(&log_file).unwrap();
+        assert_eq!(
+            compiled.lines().count(),
+            3,
+            "unsandboxed run must still recompile all 3 target shards even when pre-seeded: {compiled}"
+        );
+        assert_eq!(
+            compiled.lines().filter(|l| l.ends_with("/Shard_000.olean")).count(),
+            2,
+            "unsandboxed run must not read pre-seeded Captured.Shard_000 cache entry: {compiled}"
+        );
+        assert_eq!(
+            count_v2_entries(&disk_cache),
+            2,
+            "unsandboxed run must not write Proof.IdTree or Proof.Shard_000 entries"
+        );
     }
 }

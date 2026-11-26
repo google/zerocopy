@@ -91,16 +91,42 @@ impl Publication {
         self.staging.path().join("capture")
     }
 
-    pub(crate) fn publish(mut self, json: &[u8], lean: &[u8]) -> io::Result<PathBuf> {
-        fs::write(self.artifact_dir().join("capture.json"), json)?;
-        fs::write(self.artifact_dir().join("Captured.lean"), lean)?;
+    pub(crate) fn publish(self, json: &[u8], lean: &[u8]) -> io::Result<PathBuf> {
+        self.publish_with_shards(json, lean, None)
+    }
+
+    pub(crate) fn publish_with_shards(
+        mut self,
+        json: &[u8],
+        lean: &[u8],
+        sharded: Option<ShardedPublication<'_>>,
+    ) -> io::Result<PathBuf> {
+        let art = self.artifact_dir();
+        fs::write(art.join("capture.json"), json)?;
+        fs::write(art.join("Captured.lean"), lean)?;
+        if let Some(sharded) = sharded {
+            fs::write(art.join("capture_shards.json"), sharded.shards_json)?;
+            let captured_subdir = art.join("Captured");
+            fs::create_dir(&captured_subdir)?;
+            for (shard_idx, shard_lean) in sharded.shard_sources {
+                fs::write(
+                    captured_subdir.join(format!("Shard_{shard_idx:03}.lean")),
+                    shard_lean.as_bytes(),
+                )?;
+            }
+        }
         // Both paths are on one filesystem. On the supported Unix hosts,
         // rename replaces our empty reservation in one operation; a nonempty
         // destination makes it fail. Never remove a destination to retry.
-        fs::rename(self.artifact_dir(), &self.destination)?;
+        fs::rename(art, &self.destination)?;
         self.published = true;
         Ok(self.destination.clone())
     }
+}
+
+pub(crate) struct ShardedPublication<'a> {
+    pub(crate) shards_json: &'a [u8],
+    pub(crate) shard_sources: &'a [(usize, String)],
 }
 
 impl Drop for Publication {

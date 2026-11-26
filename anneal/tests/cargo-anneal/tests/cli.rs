@@ -2436,7 +2436,6 @@ fn failure_receipts_emit_actionable_hints_while_preserving_detail() {
         assert!(hint.contains("`take_ref`") && hint.contains("references"), "{cap_receipt}");
     }
 }
-
 #[test]
 fn default_verify_format_is_human_and_format_json_never_emits_ansi() {
     use std::fs;
@@ -3181,4 +3180,280 @@ fn quiet_suppresses_non_tty_setup_note_while_keeping_taint_caveats() {
         .output()
         .unwrap();
     assert_result(&quiet_taint, 1, "! TAINT    : unsandboxed_elaboration", "TAINTED");
+}
+
+#[cfg(unix)]
+#[test]
+fn sharding_cli_guards_reserved_modules_missing_shards_and_shard_plan() {
+    use std::fs;
+    use std::os::unix::fs::PermissionsExt;
+
+    let project = tempfile::tempdir().unwrap();
+    fs::write(project.path().join("lib.rs"), b"pub fn f() -> u64 { 0 }\n").unwrap();
+    fs::write(project.path().join("Spec.lean"), b"").unwrap();
+    fs::write(project.path().join("Proof.lean"), b"").unwrap();
+    fs::write(project.path().join("Bad.lean"), b"").unwrap();
+    let sysroot = project.path().join("sysroot");
+    fs::create_dir_all(&sysroot).unwrap();
+    let fake_lean = project.path().join("lean");
+    fs::write(&fake_lean, b"#!/bin/sh\nexit 0\n").unwrap();
+    fs::set_permissions(&fake_lean, fs::Permissions::from_mode(0o755)).unwrap();
+
+    let fake_capture = project.path().join("fake-capture");
+    let script = "#!/bin/sh\n\
+        set -eu\n\
+        out_dir=''\n\
+        while [ \"$#\" -gt 0 ]; do\n\
+          if [ \"$1\" = '--out-dir' ]; then shift; out_dir=\"$1\"; fi\n\
+          shift\n\
+        done\n\
+        mkdir -p \"$out_dir\"\n\
+        cat > \"$out_dir/capture.json\" <<'JSON'\n\
+        {\n\
+          \"schema_version\": 5,\n\
+          \"compiler\": {\"commit\": \"f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1\"},\n\
+          \"configuration\": {\n\
+            \"crate_name\": \"demo\",\n\
+            \"crate_type\": \"lib\",\n\
+            \"panic\": \"unwind\",\n\
+            \"overflow_checks\": false,\n\
+            \"target\": \"x86_64-unknown-linux-gnu\",\n\
+            \"edition\": \"2024\",\n\
+            \"cfg\": [],\n\
+            \"env\": {}\n\
+          },\n\
+          \"source_files\": [],\n\
+          \"census\": [],\n\
+          \"selected\": [],\n\
+          \"program\": {\"scope\": {\"kind\": \"crate\"}, \"bodies\": [{}, {}]}\n\
+        }\n\
+        JSON\n\
+        printf '{\"status\":\"captured\"}\\n'\n";
+    fs::write(&fake_capture, script).unwrap();
+    fs::set_permissions(&fake_capture, fs::Permissions::from_mode(0o755)).unwrap();
+
+    // 1. `--shard-max-bodies 0` fails argument parsing with exit code 2.
+    let zero_max = command(Route::Direct, project.path())
+        .args([
+            "verify",
+            "--shard-max-bodies",
+            "0",
+            "--request",
+            "request.json",
+        ])
+        .output()
+        .unwrap();
+    assert_result(&zero_max, 2, "", "value must be at least 1");
+
+    // 2. Authored `Captured.*` and `Expected.*` submodules are reserved.
+    for (flag, arg) in [
+        ("--proof-file", "Captured.Shard_000=Bad.lean"),
+        ("--proof-file", "Expected.Claim=Bad.lean"),
+        ("--spec-file", "Captured.Spec=Bad.lean"),
+    ] {
+        let out = command(Route::Direct, project.path())
+            .args([
+                "verify",
+                "--format",
+                "json",
+                "--capture",
+                fake_capture.to_str().unwrap(),
+                "--sysroot",
+                sysroot.to_str().unwrap(),
+                "--lean",
+                fake_lean.to_str().unwrap(),
+                "rustc",
+                "lib.rs",
+                "--crate-name",
+                "demo",
+                "--spec-file",
+                "Spec=Spec.lean",
+                "--proof-file",
+                "Proof=Proof.lean",
+                flag,
+                arg,
+            ])
+            .output()
+            .unwrap();
+        assert_result(&out, 1, "", "");
+        let receipt: serde_json::Value = serde_json::from_slice(&out.stdout).unwrap();
+        assert_eq!(receipt["status"], "unsupported", "{receipt}");
+        assert_eq!(receipt["phase"], "proof", "{receipt}");
+        assert!(
+            receipt["detail"].as_str().unwrap_or("").contains("reserved proof module"),
+            "{receipt}"
+        );
+    }
+
+    // 3. Emitting > `--shard-min-bodies` bodies without shards fails closed.
+    let missing_shards = command(Route::Direct, project.path())
+        .args([
+            "verify",
+            "--format",
+            "json",
+            "--shard-min-bodies",
+            "1",
+            "--capture",
+            fake_capture.to_str().unwrap(),
+            "--sysroot",
+            sysroot.to_str().unwrap(),
+            "--lean",
+            fake_lean.to_str().unwrap(),
+            "rustc",
+            "lib.rs",
+            "--crate-name",
+            "demo",
+            "--spec-file",
+            "Spec=Spec.lean",
+            "--proof-file",
+            "Proof=Proof.lean",
+        ])
+        .output()
+        .unwrap();
+    assert_result(&missing_shards, 2, "", "");
+    let receipt: serde_json::Value = serde_json::from_slice(&missing_shards.stdout).unwrap();
+    assert_eq!(receipt["status"], "tool_failed", "{receipt}");
+    assert_eq!(receipt["phase"], "capture", "{receipt}");
+    assert!(
+        receipt["detail"].as_str().unwrap_or("").contains("without capture_shards.json"),
+        "{receipt}"
+    );
+
+    // 4. `shard-plan --write` / `--check` and `--verify-shard-plan` checks.
+    let req_path = project.path().join("request.json");
+    fs::write(
+        &req_path,
+        serde_json::to_vec(&serde_json::json!({
+            "schema_version": 1,
+            "compilation": {
+                "source_root": ".",
+                "crate_root": "lib.rs",
+                "crate_name": "demo",
+                "source_files": ["lib.rs"]
+            },
+            "scope": { "kind": "crate" },
+            "proof": {
+                "source_root": ".",
+                "sources": [
+                    { "module": "Spec", "path": "Spec.lean", "role": "specification" },
+                    { "module": "Proof", "path": "Proof.lean", "role": "proof" }
+                ]
+            }
+        }))
+        .unwrap(),
+    )
+    .unwrap();
+    let plan_path = project.path().join("anneal-shards.json");
+    let write_plan = command(Route::Direct, project.path())
+        .args([
+            "shard-plan",
+            "--request",
+            req_path.to_str().unwrap(),
+            "--capture",
+            fake_capture.to_str().unwrap(),
+            "--sysroot",
+            sysroot.to_str().unwrap(),
+            "--shard-min-bodies",
+            "10",
+            "--write",
+            plan_path.to_str().unwrap(),
+        ])
+        .output()
+        .unwrap();
+    assert_result(&write_plan, 0, "\"sharded\": false", "wrote shard plan");
+
+    let check_ok = command(Route::Cargo, project.path())
+        .args([
+            "shard-plan",
+            "--request",
+            req_path.to_str().unwrap(),
+            "--capture",
+            fake_capture.to_str().unwrap(),
+            "--sysroot",
+            sysroot.to_str().unwrap(),
+            "--shard-min-bodies",
+            "10",
+            "--check",
+            plan_path.to_str().unwrap(),
+        ])
+        .output()
+        .unwrap();
+    assert_result(&check_ok, 0, "\"total_bodies\": 2", "");
+
+    let check_drift = command(Route::Direct, project.path())
+        .args([
+            "shard-plan",
+            "--request",
+            req_path.to_str().unwrap(),
+            "--capture",
+            fake_capture.to_str().unwrap(),
+            "--sysroot",
+            sysroot.to_str().unwrap(),
+            "--shard-min-bodies",
+            "5",
+            "--check",
+            plan_path.to_str().unwrap(),
+        ])
+        .output()
+        .unwrap();
+    assert_result(&check_drift, 1, "", "shard-plan mismatch");
+
+    let verify_drift = command(Route::Direct, project.path())
+        .args([
+            "verify",
+            "--format",
+            "json",
+            "--request",
+            req_path.to_str().unwrap(),
+            "--capture",
+            fake_capture.to_str().unwrap(),
+            "--sysroot",
+            sysroot.to_str().unwrap(),
+            "--lean",
+            fake_lean.to_str().unwrap(),
+            "--shard-min-bodies",
+            "5",
+            "--verify-shard-plan",
+            plan_path.to_str().unwrap(),
+        ])
+        .output()
+        .unwrap();
+    assert_result(&verify_drift, 2, "", "");
+    let drift_receipt: serde_json::Value = serde_json::from_slice(&verify_drift.stdout).unwrap();
+    assert!(
+        drift_receipt["detail"].as_str().unwrap_or("").contains("shard-plan mismatch"),
+        "{drift_receipt}"
+    );
+
+    // 5. `--receipt-out` aliasing `--verify-shard-plan` fails closed (exit 2)
+    //    without modifying the shard plan on disk.
+    let plan_before = fs::read(&plan_path).unwrap();
+    let alias_out = command(Route::Direct, project.path())
+        .args([
+            "verify",
+            "--format",
+            "json",
+            "--request",
+            req_path.to_str().unwrap(),
+            "--capture",
+            fake_capture.to_str().unwrap(),
+            "--sysroot",
+            sysroot.to_str().unwrap(),
+            "--lean",
+            fake_lean.to_str().unwrap(),
+            "--verify-shard-plan",
+            plan_path.to_str().unwrap(),
+            "--receipt-out",
+            plan_path.to_str().unwrap(),
+        ])
+        .output()
+        .unwrap();
+    assert_result(&alias_out, 2, "", "");
+    let alias_receipt: serde_json::Value = serde_json::from_slice(&alias_out.stdout).unwrap();
+    assert_eq!(alias_receipt["phase"], "receipt-out", "{alias_receipt}");
+    assert!(
+        alias_receipt["detail"].as_str().unwrap_or("").contains("aliases verification input"),
+        "{alias_receipt}"
+    );
+    assert_eq!(fs::read(&plan_path).unwrap(), plan_before);
 }

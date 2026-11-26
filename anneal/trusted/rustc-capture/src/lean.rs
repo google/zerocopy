@@ -17,6 +17,13 @@ use crate::ir::{
     Statement, SysrootNumKind, Terminator, Ty, UnOp,
 };
 
+const LICENSE_PREAMBLE: &str = "-- Copyright 2026 The Fuchsia Authors\n--\n\
+-- Licensed under a BSD-style license <LICENSE-BSD>, Apache License, Version 2.0\n\
+-- <LICENSE-APACHE or https://www.apache.org/licenses/LICENSE-2.0>, or the MIT\n\
+-- license <LICENSE-MIT or https://opensource.org/licenses/MIT>, at your option.\n\
+-- This file may not be copied, modified, or distributed except according to\n\
+-- those terms.\n\n";
+
 const HEADER: &str = "-- Copyright 2026 The Fuchsia Authors\n--\n\
 -- Licensed under a BSD-style license <LICENSE-BSD>, Apache License, Version 2.0\n\
 -- <LICENSE-APACHE or https://www.apache.org/licenses/LICENSE-2.0>, or the MIT\n\
@@ -615,8 +622,13 @@ const POINTER_WIDTH_BITS: u32 = 64;
 /// `ir::Program::try_new` refuses empty programs, so the
 /// `p.entryDefId < p.bodies.length` check in `ProgramVerified` holds. That
 /// judgment verifies each body through `entryProgForBody`, which replaces
-/// this field; a specification that reads the program's own entry sees the
-/// first captured body.
+/// this field. In unsharded captures `entryDefId := 0` selects the first
+/// captured body; when sharding is active, `program.bodies` is canonicalized
+/// into callee-first Tarjan/Kahn order so body order and `entryDefId := 0`
+/// depend on the `--shard-*` CLI flags (not recorded in `request_sha256`).
+/// Per-body obligations, identity uniqueness, and `entryProgForBody` checks
+/// are order-independent, so specifications must identify bodies by
+/// `Body.identity`.
 const ENTRY_DEF_ID: u32 = 0;
 
 /// Render data constructors under one fixed module/definition skeleton.
@@ -670,6 +682,89 @@ pub fn render(program: &ir::Program) -> String {
          \x20   pointerWidthBits := {POINTER_WIDTH_BITS},\n\
          \x20   mirProfileVersion := {profile_version},\n\
          \x20   scope := Trusted.MirAst.VerificationScope.{scope},\n\
+         \x20   entryDefId := {ENTRY_DEF_ID},\n\
+         \x20   bodies := {bodies_expr},\n\
+         \x20   overflowChecks := {overflow_checks}\n\
+         \x20 }}\n\nend Captured\n\nend\n"
+    );
+    out
+}
+
+/// Render a standalone `Captured/Shard_<k>.lean` module (`TargetRole::Capture`)
+/// in Lean 4 `module` mode importing only `Trusted.MirAst` (`D = 1` parallel
+/// shard compilation).
+///
+/// `shard_bodies` uses the exact midpoint split (`mid = len / 2`) over
+/// singleton `[body_i]` leaves (`shard_bodies = BinChunkTree.toList` by `rfl`)
+/// inside `Proof/Shard_<k>.lean` with list literals `<= MAX_LIST_CHUNK_LEN`.
+pub(crate) fn render_shard_module(shard_idx: usize, bodies: &[ir::Body]) -> String {
+    let shard_ns = format!("Captured.Shard_{shard_idx:03}");
+    let mut out = String::from(LICENSE_PREAMBLE);
+    let _ = writeln!(
+        out,
+        "module\nprelude\npublic import Trusted.MirAst\n\n@[expose] public section\n\nnamespace {shard_ns}\n"
+    );
+    let mut leaf_lists = Vec::with_capacity(bodies.len());
+    for (local_idx, item) in bodies.iter().enumerate() {
+        let name = format!("body_{local_idx}");
+        let _ = writeln!(out, "def {name} : Trusted.MirAst.Body :=\n  {}\n", body_record(item, 2));
+        leaf_lists.push(format!("[{name}]"));
+    }
+    let bodies_expr = join_balanced_slice(&leaf_lists, Some(2), &|leaf, _| leaf.clone());
+    let _ = write!(
+        out,
+        "def shard_bodies : _root_.List Trusted.MirAst.Body :=\n\
+         \x20 {bodies_expr}\n\n\
+         end {shard_ns}\n\nend\n"
+    );
+    out
+}
+
+/// Render the sharded root `Captured.lean` module in Lean 4 `module` mode
+/// importing `Captured.Shard_000 .. Captured.Shard_{K-1}`, re-exporting `N`
+/// `Captured.body_<idx>` aliases for shard-transparent compatibility, and
+/// concatenating `shard_bodies` along the balanced midpoint binary tree
+/// (`mid = K / 2`) matching `BinChunkTree.toList_branch`. Body order follows
+/// canonical callee-first Tarjan/Kahn sharding, with `entryDefId := 0` naming
+/// body `0` of that canonical order.
+pub(crate) fn render_sharded_root(
+    scope: &ir::Scope,
+    profile_version: u32,
+    overflow_checks: bool,
+    shards: &[crate::shard::CaptureShardEntry],
+) -> String {
+    let scope_name = match scope {
+        ir::Scope::SelectedUnit { .. } => "unit",
+        ir::Scope::Crate => "crate",
+    };
+    let mut out = String::from(LICENSE_PREAMBLE);
+    out.push_str("module\nprelude\npublic import Trusted.MirAst\n");
+    let mut shard_refs = Vec::with_capacity(shards.len());
+    for shard in shards {
+        let _ = writeln!(out, "public import {}", shard.capture_module);
+        shard_refs.push(format!("{}.shard_bodies", shard.capture_module));
+    }
+    out.push_str("\n@[expose] public section\n\nnamespace Captured\n\n");
+    for shard in shards {
+        let base = shard.global_def_id_range[0];
+        for local_idx in 0..shard.num_bodies {
+            let global_idx = base + local_idx;
+            let _ = writeln!(
+                out,
+                "def body_{global_idx} : Trusted.MirAst.Body :=\n  \
+                 {}.body_{local_idx}\n",
+                shard.capture_module
+            );
+        }
+    }
+    let bodies_expr = join_balanced_slice(&shard_refs, Some(4), &|s, _| s.clone());
+    let _ = write!(
+        out,
+        "def program : Trusted.MirAst.Program :=\n\
+         \x20 {{\n\
+         \x20   pointerWidthBits := {POINTER_WIDTH_BITS},\n\
+         \x20   mirProfileVersion := {profile_version},\n\
+         \x20   scope := Trusted.MirAst.VerificationScope.{scope_name},\n\
          \x20   entryDefId := {ENTRY_DEF_ID},\n\
          \x20   bodies := {bodies_expr},\n\
          \x20   overflowChecks := {overflow_checks}\n\

@@ -325,6 +325,11 @@ and dynamic build systems under four modes:
    `expected_manifest.json` for build systems with native dynamic build-graph
    expansion (Buck2 `dynamic_output_new` and Cargo's parallel DAG planner).
 
+*(Note: `cargo anneal shard-plan` currently writes `anneal-shards.json` using
+`ShardPlan` v1, a generated numeric Tarjan-SCC topology lockfile paired with
+`Proof.IdTree` and `BinChunkTree` assembly; the `nominal` `DefPath`-map mode
+above remains planned `gen-expected` design.)*
+
 For crates with multiple user-authored `Spec/*.lean` or `Proof/*.lean` files,
 static build systems consume a checked-in generated dependency graph emitted via
 `lean --deps-json` (zero `lake`, zero elaboration) and validated in CI, while

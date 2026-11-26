@@ -16,7 +16,7 @@ use std::{
     collections::{BTreeMap, BTreeSet, VecDeque},
     ffi::{OsStr, OsString},
     fs,
-    io::Write as _,
+    io::{ErrorKind as IoErrorKind, Write as _},
     path::{Component, Path, PathBuf},
     process::{Command, ExitCode},
     time::Instant,
@@ -41,6 +41,10 @@ use crate::{
         render_success_card,
     },
     parse_trusted_tier_directive, read_regular_file_deref, read_regular_file_strict, sha256_bytes,
+    shard::{
+        CaptureShardsManifest, SHARD_PLAN_SCHEMA_VERSION, ShardArgs, ShardConfig, ShardPlan,
+        compare_shard_plan, parse_and_validate_capture_shards, render_id_tree_module,
+    },
     source_starts_with_module_keyword,
 };
 
@@ -325,6 +329,13 @@ pub struct VerifyArgs {
     /// `TrustedBoundary` when absent from prebuilt or local `.olean` caches.
     #[arg(long, global = true, conflicts_with = "no_cache")]
     no_rebuild_bundled: bool,
+    /// Sharding budget configuration for Tarjan SCC `.olean` partitioning.
+    #[command(flatten)]
+    shard: ShardArgs,
+    /// Verify that the captured shard topology matches a checked-in
+    /// `anneal-shards.json` plan before Lean verification.
+    #[arg(long, global = true, value_name = "PATH")]
+    verify_shard_plan: Option<PathBuf>,
     /// Direct rustc-style verification subcommand.
     #[command(subcommand)]
     command: Option<VerifySubcommand>,
@@ -416,6 +427,122 @@ struct RustcArgs {
     /// (`{"path":"...","args":[...]}`).
     #[arg(long, value_name = "JSON", value_parser = parse_instantiation_arg)]
     instantiate: Vec<Instantiation>,
+}
+
+/// CLI arguments for `cargo anneal shard-plan`.
+#[derive(Args)]
+pub struct ShardPlanArgs {
+    /// Explicit configured verification request JSON.
+    #[arg(
+        long,
+        conflicts_with_all = [
+            "manifest_path",
+            "panic",
+            "overflow_checks",
+            "select",
+            "instantiate",
+            "features",
+            "all_features",
+            "no_default_features",
+        ]
+    )]
+    request: Option<PathBuf>,
+    /// Package manifest for Cargo discovery (without needing proof modules).
+    #[arg(long, conflicts_with = "request")]
+    manifest_path: Option<PathBuf>,
+    /// Panic strategy for Cargo discovery (`unwind` or `abort`).
+    #[arg(long, value_enum, requires = "manifest_path")]
+    panic: Option<PanicStrategy>,
+    /// Enable runtime integer overflow checks (`-Coverflow-checks=yes`) for
+    /// Cargo discovery.
+    #[arg(long, requires = "manifest_path")]
+    overflow_checks: bool,
+    /// Select a function path; omit to plan the whole crate.
+    #[arg(long, requires = "manifest_path")]
+    select: Vec<String>,
+    /// Instantiate a generic item with concrete arguments as JSON
+    /// (`{"path":"...","args":[...]}`).
+    #[arg(
+        long,
+        requires = "manifest_path",
+        value_name = "JSON",
+        value_parser = parse_instantiation_arg
+    )]
+    instantiate: Vec<Instantiation>,
+    /// Space or comma separated list of Cargo features to activate.
+    #[arg(
+        long,
+        short = 'F',
+        value_name = "FEATURES",
+        requires = "manifest_path",
+        conflicts_with = "request"
+    )]
+    features: Vec<String>,
+    /// Activate all available Cargo features of the selected package.
+    #[arg(long, requires = "manifest_path", conflicts_with = "request")]
+    all_features: bool,
+    /// Do not activate the `default` Cargo feature.
+    #[arg(long, requires = "manifest_path", conflicts_with = "request")]
+    no_default_features: bool,
+    /// Write the deterministic `anneal-shards.json` plan to `PATH`.
+    #[arg(long, value_name = "PATH", conflicts_with = "check")]
+    write: Option<PathBuf>,
+    /// Verify that the computed shard plan matches `PATH`.
+    #[arg(long, value_name = "PATH", conflicts_with = "write")]
+    check: Option<PathBuf>,
+    /// Capture driver; defaults to the installed bundle, then a sibling.
+    #[cfg_attr(
+        not(feature = "setup"),
+        arg(long, help = "Capture driver; required when built without the `setup` feature.")
+    )]
+    #[cfg_attr(feature = "setup", arg(long))]
+    capture: Option<PathBuf>,
+    /// Compiler sysroot; defaults to the installed bundle when present.
+    #[cfg_attr(
+        not(feature = "setup"),
+        arg(long, help = "Compiler sysroot; required when built without the `setup` feature.")
+    )]
+    #[cfg_attr(feature = "setup", arg(long))]
+    sysroot: Option<PathBuf>,
+    /// Sharding budget configuration for Tarjan SCC partitioning.
+    #[command(flatten)]
+    shard: ShardArgs,
+}
+
+impl ShardPlanArgs {
+    pub fn validate(&self, mut cmd: clap::Command) -> std::result::Result<(), clap::Error> {
+        if self.request.is_none() && self.manifest_path.is_none() {
+            return Err(cmd.error(
+                ErrorKind::MissingRequiredArgument,
+                "specify one of `--request <JSON>` or `--manifest-path <Cargo.toml>`",
+            ));
+        }
+        if self.capture.is_some() != self.sysroot.is_some() {
+            return Err(cmd.error(
+                ErrorKind::ArgumentConflict,
+                "`--capture` and `--sysroot` are ABI-paired and must be passed together",
+            ));
+        }
+        #[cfg(not(feature = "setup"))]
+        if self.capture.is_none() || self.sysroot.is_none() {
+            let mut missing = Vec::new();
+            if self.capture.is_none() {
+                missing.push("--capture");
+            }
+            if self.sysroot.is_none() {
+                missing.push("--sysroot");
+            }
+            return Err(cmd.error(
+                ErrorKind::MissingRequiredArgument,
+                format!(
+                    "missing {}; explicit --capture and --sysroot tool paths are required \
+                     when built without the `setup` feature",
+                    missing.join(", ")
+                ),
+            ));
+        }
+        Ok(())
+    }
 }
 
 #[derive(Clone, Debug)]
@@ -713,6 +840,13 @@ impl Scope {
             (Self::SelectedUnit { .. }, true) => "tainted_selected_unit_verified",
         }
     }
+
+    const fn shard_label(&self) -> &'static str {
+        match self {
+            Self::Crate {} => "crate",
+            Self::SelectedUnit { .. } => "unit",
+        }
+    }
 }
 
 #[derive(Clone, Debug, Serialize, Deserialize)]
@@ -791,8 +925,7 @@ struct CaptureProgram {
     scope: Scope,
     #[serde(default = "default_profile_version")]
     mir_profile_version: u32,
-    #[serde(rename = "bodies")]
-    _bodies: serde::de::IgnoredAny,
+    bodies: Vec<serde::de::IgnoredAny>,
 }
 
 #[derive(Deserialize)]
@@ -908,11 +1041,20 @@ fn module_of(name: &str) -> Result<String> {
 /// Lean toolchain and inspector in both pinned and unpinned modes so exported
 /// `LEAN_PATH` directories cannot shadow sysroot or inspector modules.
 fn reserved_proof_module(module: &str) -> bool {
-    matches!(module, "Expected" | "Captured")
-        || matches!(
-            module.split('.').next(),
-            Some("Trusted" | "Anneal" | "Init" | "Std" | "Lean" | "Lake" | "TrustedBoundary")
+    matches!(
+        module.split('.').next(),
+        Some(
+            "Captured"
+                | "Expected"
+                | "Trusted"
+                | "Anneal"
+                | "Init"
+                | "Std"
+                | "Lean"
+                | "Lake"
+                | "TrustedBoundary"
         )
+    )
 }
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
@@ -1247,7 +1389,17 @@ fn resolve_cargo_package_cfg(
 // Cargo is an input-discovery shortcut, not a second verification profile.
 // Reject configurations this adapter cannot reproduce before building the
 // same explicit request consumed by the build-neutral path.
-fn cargo_request(args: &VerifyArgs, manifest_path: &Path) -> Result<(Request, PathBuf)> {
+#[allow(clippy::too_many_arguments)]
+fn cargo_compilation(
+    manifest_path: &Path,
+    panic: Option<PanicStrategy>,
+    overflow_checks: bool,
+    select: &[String],
+    instantiate: &[Instantiation],
+    features: &[String],
+    all_features: bool,
+    no_default_features: bool,
+) -> Result<(Compilation, Scope, PathBuf)> {
     let manifest = fs::canonicalize(manifest_path)
         .map_err(|e| io_with_path("cargo", "Cargo manifest", manifest_path, e))?;
     let source_root = manifest
@@ -1295,12 +1447,7 @@ fn cargo_request(args: &VerifyArgs, manifest_path: &Path) -> Result<(Request, Pa
             "build scripts and procedural macros need an explicit configured compilation",
         ));
     }
-    let cfg = resolve_cargo_package_cfg(
-        package,
-        &args.features,
-        args.all_features,
-        args.no_default_features,
-    )?;
+    let cfg = resolve_cargo_package_cfg(package, features, all_features, no_default_features)?;
     let mut primary_targets = targets.iter().filter_map(|t| {
         let kinds = t["kind"].as_array()?;
         if kinds.iter().any(|k| k == "bin") {
@@ -1407,6 +1554,46 @@ fn cargo_request(args: &VerifyArgs, manifest_path: &Path) -> Result<(Request, Pa
         }
     }
     source_files.sort();
+    let scope = if select.is_empty() && instantiate.is_empty() {
+        Scope::Crate {}
+    } else {
+        Scope::SelectedUnit {
+            roots: select.iter().cloned().collect(),
+            instantiations: instantiate.iter().cloned().collect(),
+        }
+    };
+    let pkg_dir = source_root.clone();
+    Ok((
+        Compilation {
+            source_root,
+            crate_root,
+            crate_name: target_meta["name"].as_str().unwrap_or_default().replace('-', "_"),
+            crate_type,
+            panic: panic.unwrap_or_default(),
+            overflow_checks,
+            edition: target_meta["edition"].as_str().unwrap_or("2024").to_owned(),
+            target: target(),
+            cfg,
+            env: BTreeMap::new(),
+            source_files,
+            stdlib_crate: None,
+        },
+        scope,
+        pkg_dir,
+    ))
+}
+
+fn cargo_request(args: &VerifyArgs, manifest: &Path) -> Result<(Request, PathBuf)> {
+    let (compilation, scope, base) = cargo_compilation(
+        manifest,
+        args.panic,
+        args.overflow_checks,
+        &args.select,
+        &args.instantiate,
+        &args.features,
+        args.all_features,
+        args.no_default_features,
+    )?;
     let proof_dir = args.proof_dir.as_ref().ok_or_else(|| {
         error("unsupported", "request", "--proof-dir is required with --manifest-path")
     })?;
@@ -1435,31 +1622,10 @@ fn cargo_request(args: &VerifyArgs, manifest_path: &Path) -> Result<(Request, Pa
         }
     }
     sources.sort_by(|a, b| a.module.cmp(&b.module));
-    let scope = if args.select.is_empty() && args.instantiate.is_empty() {
-        Scope::Crate {}
-    } else {
-        Scope::SelectedUnit {
-            roots: args.select.iter().cloned().collect(),
-            instantiations: args.instantiate.iter().cloned().collect(),
-        }
-    };
     Ok((
         Request {
             schema_version: 1,
-            compilation: Compilation {
-                source_root,
-                crate_root,
-                crate_name: target_meta["name"].as_str().unwrap_or_default().replace('-', "_"),
-                crate_type,
-                panic: args.panic.unwrap_or_default(),
-                overflow_checks: args.overflow_checks,
-                edition: target_meta["edition"].as_str().unwrap_or("2024").to_owned(),
-                target: target(),
-                cfg,
-                env: BTreeMap::new(),
-                source_files,
-                stdlib_crate: None,
-            },
+            compilation,
             scope,
             proof: Proof {
                 source_root: proof_root,
@@ -1470,7 +1636,7 @@ fn cargo_request(args: &VerifyArgs, manifest_path: &Path) -> Result<(Request, Pa
                 sources,
             },
         },
-        manifest.parent().unwrap().to_path_buf(),
+        base,
     ))
 }
 
@@ -1721,10 +1887,19 @@ struct SelectedTools {
 }
 
 fn select_tools(args: &VerifyArgs) -> Result<SelectedTools> {
+    select_tools_with(args.capture.as_deref(), args.sysroot.as_deref(), args.lean.as_deref(), true)
+}
+
+fn select_tools_with(
+    capture: Option<&Path>,
+    sysroot: Option<&Path>,
+    lean: Option<&Path>,
+    require_lean: bool,
+) -> Result<SelectedTools> {
     #[cfg(feature = "setup")]
     {
         let needs_discovery =
-            args.capture.is_none() || args.sysroot.is_none() || args.lean.is_none();
+            capture.is_none() || sysroot.is_none() || (require_lean && lean.is_none());
         let installed = if needs_discovery {
             installed_bundle().map_err(|detail| error("tool_failed", "capture-tool", detail))?
         } else {
@@ -1732,15 +1907,15 @@ fn select_tools(args: &VerifyArgs) -> Result<SelectedTools> {
         };
         let tools = resolve_tools(
             ToolOverrides {
-                capture: args.capture.clone(),
-                sysroot: args.sysroot.clone(),
-                lean: args.lean.clone(),
+                capture: capture.map(Path::to_path_buf),
+                sysroot: sysroot.map(Path::to_path_buf),
+                lean: lean.map(Path::to_path_buf),
             },
             installed.as_ref(),
             std::env::current_exe(),
         )
         .map_err(|detail| error("tool_failed", "capture-tool", detail))?;
-        let prebuilt_dir = if args.lean.is_none() {
+        let prebuilt_dir = if require_lean && lean.is_none() {
             installed.as_ref().map(crate::setup::Bundle::prebuilt_dir)
         } else {
             None
@@ -1755,32 +1930,37 @@ fn select_tools(args: &VerifyArgs) -> Result<SelectedTools> {
     }
     #[cfg(not(feature = "setup"))]
     {
-        match (&args.capture, &args.sysroot, &args.lean) {
-            (Some(capture), Some(sysroot), Some(lean)) => Ok(SelectedTools {
-                capture: capture.clone(),
-                sysroot: Some(sysroot.clone()),
-                lean: Some(lean.clone()),
-                prebuilt_dir: None,
-            }),
+        match (capture, sysroot, lean) {
+            (Some(capture), Some(sysroot), lean_opt) if !require_lean || lean_opt.is_some() => {
+                Ok(SelectedTools {
+                    capture: capture.to_path_buf(),
+                    sysroot: Some(sysroot.to_path_buf()),
+                    lean: lean_opt.map(Path::to_path_buf),
+                    prebuilt_dir: None,
+                })
+            }
             _ => {
                 let mut missing = Vec::new();
-                if args.capture.is_none() {
+                if capture.is_none() {
                     missing.push("--capture");
                 }
-                if args.sysroot.is_none() {
+                if sysroot.is_none() {
                     missing.push("--sysroot");
                 }
-                if args.lean.is_none() {
+                if require_lean && lean.is_none() {
                     missing.push("--lean");
                 }
+                let requirement = if require_lean {
+                    "explicit --capture, --sysroot, and --lean tool paths are required \
+                     when built without the `setup` feature"
+                } else {
+                    "explicit --capture and --sysroot tool paths are required when built \
+                     without the `setup` feature"
+                };
                 Err(error(
                     "tool_failed",
                     "capture-tool",
-                    format!(
-                        "missing {}; explicit --capture, --sysroot, and --lean tool paths are \
-                         required when built without the `setup` feature",
-                        missing.join(", ")
-                    ),
+                    format!("missing {}; {requirement}", missing.join(", ")),
                 ))
             }
         }
@@ -2109,6 +2289,9 @@ fn validate_receipt_out_pre_stage(
     if let Some(pd) = args.proof_dir.as_deref() {
         direct_inputs.push(pd.to_path_buf());
     }
+    if let Some(plan) = args.verify_shard_plan.as_deref() {
+        direct_inputs.push(plan.to_path_buf());
+    }
     if let Some(VerifySubcommand::Rustc(rustc)) = &args.command {
         direct_inputs.push(rustc.crate_root.clone());
         for src in &rustc.source_file {
@@ -2336,6 +2519,351 @@ fn rollback_retained_artifacts(retained: Option<&str>, mut detail: String) -> St
     detail
 }
 
+struct CaptureShardsOutcome {
+    manifest: CaptureShardsManifest,
+    sha256: String,
+    shard_modules: Vec<(String, PathBuf, String)>,
+    id_tree_source: String,
+}
+
+struct CaptureOutcome {
+    capture_sha256: String,
+    capture_binary_sha256: String,
+    capture_canon: PathBuf,
+    capture_tool_path: PathBuf,
+    capture_ms: u128,
+    manifest: CaptureReceipt,
+    shards: Option<CaptureShardsOutcome>,
+}
+
+fn stage_request_rust_inputs(
+    compilation: &Compilation,
+    base: &Path,
+    rust_stage: &Path,
+    symlink_policy: SymlinkPolicy,
+    originals: &mut Vec<(PathBuf, String)>,
+) -> Result<Vec<SourceIdentity>> {
+    let source_root = root(base, &compilation.source_root)?;
+    fs::create_dir_all(rust_stage).map_err(|e| io("staging", e))?;
+    let mut sources = Vec::new();
+    let mut paths = BTreeSet::new();
+    for relative in &compilation.source_files {
+        if !paths.insert(relative.clone()) {
+            return Err(error("unsupported", "inputs", "duplicate source input"));
+        }
+        let original = declared_file(&source_root, relative)?;
+        let (bytes, sha256) =
+            read_input_file(&original, Some(&original), symlink_policy, "inputs")?;
+        write(&rust_stage.join(relative), &bytes)?;
+        originals.push((original, sha256.clone()));
+        sources.push(SourceIdentity { relative_path: relative.clone(), sha256 });
+    }
+    if !paths.contains(&compilation.crate_root) {
+        return Err(error("unsupported", "inputs", "crate_root is not a declared source"));
+    }
+    Ok(sources)
+}
+
+#[allow(clippy::too_many_arguments)]
+fn run_capture_process(
+    tools: &SelectedTools,
+    compilation: &Compilation,
+    scope: &Scope,
+    sources: &[SourceIdentity],
+    rust_stage: &Path,
+    capture_dir: &Path,
+    work: &Path,
+    shard_config: ShardConfig,
+    verify_shard_plan_staged: Option<&Path>,
+    mut write_compiler_stderr: impl FnMut(&[u8]),
+) -> Result<CaptureOutcome> {
+    let capture_tool_path = tools.capture.clone();
+    let capture_canon = fs::canonicalize(&capture_tool_path).map_err(|e| {
+        error(
+            "tool_failed",
+            "capture-tool",
+            format!("cannot inspect {}: {e}", capture_tool_path.display()),
+        )
+    })?;
+    let (_, capture_binary_sha256) =
+        read_regular_file_strict(&capture_canon, Some(&capture_canon), "capture-tool")
+            .map_err(|e| error("tool_failed", "capture-tool", e.message))?;
+    // Capture reserves and publishes a new output directory itself; precreating
+    // it here would violate its create-only publication contract.
+    // Do not let a target crate's ambient compiler wrappers or search paths
+    // enter the capture process. The only added library path below comes
+    // from the operator-selected compiler installation.
+    let mut command = Command::new(&capture_canon);
+    command
+        .env_clear()
+        .env("PATH", "/usr/bin:/bin")
+        .args(["capture", "--crate-root"])
+        .arg(rust_stage.join(&compilation.crate_root))
+        .args([
+            "--crate-name",
+            &compilation.crate_name,
+            "--crate-type",
+            compilation.crate_type.as_str(),
+            "--panic",
+            compilation.panic.as_str(),
+            "--edition",
+            &compilation.edition,
+            "--target",
+            &compilation.target,
+            "--out-dir",
+        ])
+        .arg(capture_dir)
+        .current_dir(rust_stage);
+    if let Some(sysroot) = &tools.sysroot {
+        let sysroot = normalize_lexical_absolute(sysroot).map_err(|e| io("sysroot", e))?;
+        if !fs::metadata(&sysroot).map_err(|e| io("sysroot", e))?.is_dir() {
+            return Err(error(
+                "tool_failed",
+                "sysroot",
+                format!("sysroot path is not a directory: {}", sysroot.display()),
+            ));
+        }
+        // The library search path belongs to the explicitly selected compiler
+        // installation, never to a target crate's ambient environment.
+        command.env("LD_LIBRARY_PATH", sysroot.join("lib"));
+        command.arg("--sysroot").arg(sysroot);
+    }
+    match scope {
+        Scope::Crate {} => {
+            command.args(["--scope", "crate"]);
+        }
+        Scope::SelectedUnit { roots, instantiations } => {
+            if roots.is_empty() && instantiations.is_empty() {
+                return Err(error("unsupported", "request", "empty selected scope"));
+            }
+            for name in roots {
+                command.arg("--select").arg(name);
+            }
+            for inst in instantiations {
+                let encoded =
+                    serde_json::to_string(inst).map_err(|e| error("unsupported", "request", e))?;
+                command.arg("--instantiate").arg(encoded);
+            }
+        }
+    }
+    // Preserve each cfg as option data through capture's parser. Capture must
+    // use the joined form again when rebuilding compiler argv: the pinned
+    // response-file expansion gate is "arg.strip_prefix('@')", before --cfg
+    // parsing. Extracting the String must not restore a standalone @file arg.
+    // https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_driver_impl/src/args.rs#L14-L32
+    for cfg in &compilation.cfg {
+        command.arg(format!("--cfg={cfg}"));
+    }
+    // Pass each explicit compile-time environment binding in joined `--env=...`
+    // form so keys starting with `-` stay option data and capture populates
+    // `rustc`'s logical environment without inheriting ambient process env.
+    for (key, value) in &compilation.env {
+        command.arg(format!("--env={key}={value}"));
+    }
+    for source in sources {
+        command.arg("--source-file").arg(rust_stage.join(&source.relative_path));
+    }
+    if compilation.overflow_checks {
+        command.arg("--overflow-checks");
+    }
+    if let Some(stdlib_crate) = compilation.stdlib_crate {
+        command.args(["--stdlib-crate", stdlib_crate.as_str()]);
+    }
+    command
+        .arg("--shard-min-bodies")
+        .arg(shard_config.shard_min_bodies.to_string())
+        .arg("--shard-max-bodies")
+        .arg(shard_config.shard_max_bodies.to_string())
+        .arg("--shard-max-ast-nodes")
+        .arg(shard_config.shard_max_ast_nodes.to_string());
+    if let Some(plan_path) = verify_shard_plan_staged {
+        command.arg("--verify-shard-plan").arg(plan_path);
+    }
+    let capture_start = Instant::now();
+    let output = command.output().map_err(|e| io("capture", e))?;
+    write(&work.join("capture.stdout"), &output.stdout)?;
+    write(&work.join("capture.stderr"), &output.stderr)?;
+    if !output.status.success() {
+        let envelope: Value = serde_json::from_slice(&output.stdout).unwrap_or(Value::Null);
+        let status = match envelope["status"].as_str() {
+            Some("unsupported") => "unsupported",
+            Some("compiler_failed") => "compiler_failed",
+            _ => "tool_failed",
+        };
+        let detail = if envelope.is_object() {
+            if !output.stderr.is_empty() {
+                write_compiler_stderr(&output.stderr);
+            }
+            envelope.to_string()
+        } else {
+            String::from_utf8_lossy(&output.stderr).into_owned()
+        };
+        return Err(error(status, "capture", detail));
+    }
+    let capture_ms = capture_start.elapsed().as_millis();
+    let capture_bytes = fs::read(capture_dir.join("capture.json")).map_err(|e| io("capture", e))?;
+    let manifest = parse_capture_receipt(&capture_bytes)?;
+    // Authenticate configuration and scope before compiling any authored
+    // Lean. A valid theorem about another target or a narrower selection
+    // cannot satisfy this request.
+    if !matches!(manifest.program.mir_profile_version, 1 | 2) {
+        return Err(error(
+            "tool_failed",
+            "capture",
+            format!(
+                "unsupported captured MIR profile version {}",
+                manifest.program.mir_profile_version
+            ),
+        ));
+    }
+    if manifest.program.scope != *scope
+        || manifest.configuration["crate_name"] != compilation.crate_name
+        || manifest.configuration["crate_type"] != compilation.crate_type.as_str()
+        || manifest.configuration["panic"] != compilation.panic.as_str()
+        || manifest.configuration["overflow_checks"] != json!(compilation.overflow_checks)
+        || manifest.configuration["target"] != compilation.target
+        || manifest.configuration["edition"] != compilation.edition
+        || manifest.configuration["cfg"] != json!(compilation.cfg)
+        || manifest.configuration["env"] != json!(compilation.env)
+        // Capture records `stdlib_crate` only when its capability is active,
+        // so a capture with relaxed language-item admission never satisfies
+        // a request that did not ask for it (or vice versa).
+        || manifest.configuration.get("stdlib_crate").cloned()
+            != compilation.stdlib_crate.map(|krate| json!(krate.as_str()))
+    {
+        return Err(error(
+            "tool_failed",
+            "capture",
+            "capture differs from the requested compilation or scope",
+        ));
+    }
+    // Every observed compiler read must match a staged, declared input.
+    // Unused declared files remain in the receipt identity; they need not
+    // become compiler reads merely because the request staged them.
+    let source_by_path: BTreeMap<_, _> =
+        sources.iter().map(|s| (rust_stage.join(&s.relative_path), &s.sha256)).collect();
+    for source in &manifest.source_files {
+        let Some(expected) = source_by_path.get(&source.path) else {
+            return Err(error("tool_failed", "capture", "compiler read an undeclared source"));
+        };
+        if &source.sha256 != *expected {
+            return Err(error("tool_failed", "capture", "compiler read different source bytes"));
+        }
+    }
+    let capture_sha256 = sha256_bytes(&capture_bytes);
+
+    let shards_path = capture_dir.join("capture_shards.json");
+    let shards = match fs::symlink_metadata(&shards_path) {
+        Err(e) if e.kind() == IoErrorKind::NotFound => {
+            if manifest.program.bodies.len() > shard_config.shard_min_bodies {
+                return Err(error(
+                    "tool_failed",
+                    "capture",
+                    format!(
+                        "capture produced {} bodies (> --shard-min-bodies={}) without \
+                         capture_shards.json",
+                        manifest.program.bodies.len(),
+                        shard_config.shard_min_bodies
+                    ),
+                ));
+            }
+            None
+        }
+        Err(e) => return Err(io("capture", e)),
+        Ok(meta) => {
+            if !meta.file_type().is_file() {
+                return Err(error(
+                    "tool_failed",
+                    "capture",
+                    "capture_shards.json must be a regular file",
+                ));
+            }
+            let (shards_bytes, shards_sha256) =
+                read_regular_file_strict(&shards_path, Some(&shards_path), "capture")
+                    .map_err(|e| error("tool_failed", "capture", e.message))?;
+            let shards_manifest = parse_and_validate_capture_shards(
+                &shards_bytes,
+                scope.shard_label(),
+                manifest.program.bodies.len(),
+            )
+            .map_err(|msg| error("tool_failed", "capture", msg))?;
+            if shards_manifest.total_bodies <= shard_config.shard_min_bodies {
+                return Err(error(
+                    "tool_failed",
+                    "capture",
+                    format!(
+                        "capture_shards.json emitted for {} bodies (<= --shard-min-bodies={})",
+                        shards_manifest.total_bodies, shard_config.shard_min_bodies
+                    ),
+                ));
+            }
+            let mut shard_modules = Vec::with_capacity(shards_manifest.shards.len());
+            let mut all_identities = Vec::with_capacity(shards_manifest.total_bodies);
+            for entry in &shards_manifest.shards {
+                let shard_path =
+                    capture_dir.join("Captured").join(format!("Shard_{:03}.lean", entry.shard_idx));
+                let shard_meta = fs::symlink_metadata(&shard_path).map_err(|e| io("capture", e))?;
+                if !shard_meta.file_type().is_file() {
+                    return Err(error(
+                        "tool_failed",
+                        "capture",
+                        format!("{} must be a regular file", shard_path.display()),
+                    ));
+                }
+                let (_, actual_sha) =
+                    read_regular_file_strict(&shard_path, Some(&shard_path), "capture")
+                        .map_err(|e| error("tool_failed", "capture", e.message))?;
+                if !actual_sha.eq_ignore_ascii_case(&entry.capture_sha256) {
+                    return Err(error(
+                        "tool_failed",
+                        "capture",
+                        format!(
+                            "capture shard {} digest mismatch: expected {}, got {actual_sha}",
+                            entry.capture_module, entry.capture_sha256
+                        ),
+                    ));
+                }
+                shard_modules.push((
+                    entry.capture_module.clone(),
+                    shard_path,
+                    entry.capture_sha256.clone(),
+                ));
+                all_identities.extend(entry.identities.iter().cloned());
+            }
+            let id_tree_source = render_id_tree_module(&all_identities)
+                .map_err(|msg| error("tool_failed", "capture", msg))?;
+            let id_tree_actual_sha = sha256_bytes(id_tree_source.as_bytes());
+            if !id_tree_actual_sha.eq_ignore_ascii_case(&shards_manifest.id_tree_sha256) {
+                return Err(error(
+                    "tool_failed",
+                    "capture",
+                    format!(
+                        "generated Proof.IdTree digest {id_tree_actual_sha} disagrees with \
+                         capture_shards.json id_tree_sha256 {}",
+                        shards_manifest.id_tree_sha256
+                    ),
+                ));
+            }
+            Some(CaptureShardsOutcome {
+                manifest: shards_manifest,
+                sha256: shards_sha256,
+                shard_modules,
+                id_tree_source,
+            })
+        }
+    };
+
+    Ok(CaptureOutcome {
+        capture_sha256,
+        capture_binary_sha256,
+        capture_canon,
+        capture_tool_path,
+        capture_ms,
+        manifest,
+        shards,
+    })
+}
+
 fn run<Out: std::io::Write + Send, ErrOut: std::io::Write + Send>(
     args: &VerifyArgs,
     work: &Path,
@@ -2402,6 +2930,30 @@ fn run<Out: std::io::Write + Send, ErrOut: std::io::Write + Send>(
         }
         None => module_of(&request.proof.theorem)?,
     };
+    let shard_config = ShardConfig::from(&args.shard);
+    let expected_shard_plan = if let Some(plan_path) = &args.verify_shard_plan {
+        let canon_plan = fs::canonicalize(plan_path).map_err(|e| io("shard-plan", e))?;
+        let (plan_bytes, plan_sha) = read_regular_file_deref(&canon_plan, "shard-plan")
+            .map_err(|e| error("tool_failed", "shard-plan", e.message))?;
+        let plan: ShardPlan = serde_json::from_slice(&plan_bytes)
+            .map_err(|e| error("unsupported", "shard-plan", format!("invalid shard plan: {e}")))?;
+        if plan.schema_version != SHARD_PLAN_SCHEMA_VERSION {
+            return Err(error(
+                "unsupported",
+                "shard-plan",
+                format!(
+                    "unsupported shard-plan schema_version {} (expected {})",
+                    plan.schema_version, SHARD_PLAN_SCHEMA_VERSION
+                ),
+            ));
+        }
+        let staged_plan = work.join("expected-shard-plan.json");
+        write(&staged_plan, &plan_bytes)?;
+        originals.push((canon_plan, plan_sha));
+        Some((plan, staged_plan))
+    } else {
+        None
+    };
     // Selection roots, cfg entries, and env bindings use BTreeSet/BTreeMap so
     // spelling order and duplicates normalize automatically in the hashed
     // request identity.
@@ -2416,25 +2968,13 @@ fn run<Out: std::io::Write + Send, ErrOut: std::io::Write + Send>(
     let sources = if let Some(sources) = pre_staged_rust {
         sources
     } else {
-        let source_root = root(&base, &request.compilation.source_root)?;
-        fs::create_dir_all(&rust_stage).map_err(|e| io("staging", e))?;
-        let mut sources = Vec::new();
-        let mut paths = BTreeSet::new();
-        for relative in &request.compilation.source_files {
-            if !paths.insert(relative.clone()) {
-                return Err(error("unsupported", "inputs", "duplicate source input"));
-            }
-            let original = declared_file(&source_root, relative)?;
-            let (bytes, sha256) =
-                read_input_file(&original, Some(&original), symlink_policy, "inputs")?;
-            write(&rust_stage.join(relative), &bytes)?;
-            originals.push((original, sha256.clone()));
-            sources.push(SourceIdentity { relative_path: relative.clone(), sha256 });
-        }
-        if !paths.contains(&request.compilation.crate_root) {
-            return Err(error("unsupported", "inputs", "crate_root is not a declared source"));
-        }
-        sources
+        stage_request_rust_inputs(
+            &request.compilation,
+            &base,
+            &rust_stage,
+            symlink_policy,
+            &mut originals,
+        )?
     };
     // The invocation owns tool selection; target requests cannot name a
     // compiler executable. Adapter correctness is a stated TCB assumption.
@@ -2457,175 +2997,42 @@ fn run<Out: std::io::Write + Send, ErrOut: std::io::Write + Send>(
             check_receipt_out_candidate(target, lean)?;
         }
     }
-    let capture_tool_path = tools.capture.clone();
-    let capture = fs::canonicalize(&capture_tool_path).map_err(|e| {
-        error(
-            "tool_failed",
-            "capture-tool",
-            format!("cannot inspect {}: {e}", capture_tool_path.display()),
-        )
-    })?;
-    let (_, capture_binary_sha256) =
-        read_regular_file_strict(&capture, Some(&capture), "capture-tool")
-            .map_err(|e| error("tool_failed", "capture-tool", e.message))?;
-    let capture_dir = work.join("capture");
-    // Capture reserves and publishes a new output directory itself; precreating
-    // it here would violate its create-only publication contract.
-    // Do not let a target crate's ambient compiler wrappers or search paths
-    // enter the capture process. The only added library path below comes
-    // from the operator-selected compiler installation.
-    let mut command = Command::new(&capture);
-    command
-        .env_clear()
-        .env("PATH", "/usr/bin:/bin")
-        .args(["capture", "--crate-root"])
-        .arg(rust_stage.join(&request.compilation.crate_root))
-        .args([
-            "--crate-name",
-            &request.compilation.crate_name,
-            "--crate-type",
-            request.compilation.crate_type.as_str(),
-            "--panic",
-            request.compilation.panic.as_str(),
-            "--edition",
-            &request.compilation.edition,
-            "--target",
-            &request.compilation.target,
-            "--out-dir",
-        ])
-        .arg(&capture_dir)
-        .current_dir(&rust_stage);
-    if let Some(sysroot) = &tools.sysroot {
-        let sysroot = normalize_lexical_absolute(sysroot).map_err(|e| io("sysroot", e))?;
-        if !fs::metadata(&sysroot).map_err(|e| io("sysroot", e))?.is_dir() {
-            return Err(error(
-                "tool_failed",
-                "sysroot",
-                format!("sysroot path is not a directory: {}", sysroot.display()),
-            ));
-        }
-        // The library search path belongs to the explicitly selected compiler
-        // installation, never to a target crate's ambient environment.
-        command.env("LD_LIBRARY_PATH", sysroot.join("lib"));
-        command.arg("--sysroot").arg(sysroot);
-    }
-    match &request.scope {
-        Scope::Crate {} => {
-            command.args(["--scope", "crate"]);
-        }
-        Scope::SelectedUnit { roots, instantiations } => {
-            if roots.is_empty() && instantiations.is_empty() {
-                return Err(error("unsupported", "request", "empty selected scope"));
-            }
-            for name in roots {
-                command.arg("--select").arg(name);
-            }
-            for inst in instantiations {
-                let encoded =
-                    serde_json::to_string(inst).map_err(|e| error("unsupported", "request", e))?;
-                command.arg("--instantiate").arg(encoded);
-            }
-        }
-    }
-    // Preserve each cfg as option data through capture's parser. Capture must
-    // use the joined form again when rebuilding compiler argv: the pinned
-    // response-file expansion gate is "arg.strip_prefix('@')", before --cfg
-    // parsing. Extracting the String must not restore a standalone @file arg.
-    // https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_driver_impl/src/args.rs#L14-L32
-    for cfg in &request.compilation.cfg {
-        command.arg(format!("--cfg={cfg}"));
-    }
-    // Pass each explicit compile-time environment binding in joined `--env=...`
-    // form so keys starting with `-` stay option data and capture populates
-    // `rustc`'s logical environment without inheriting ambient process env.
-    for (key, value) in &request.compilation.env {
-        command.arg(format!("--env={key}={value}"));
-    }
-    for source in &sources {
-        command.arg("--source-file").arg(rust_stage.join(&source.relative_path));
-    }
-    if request.compilation.overflow_checks {
-        command.arg("--overflow-checks");
-    }
-    if let Some(stdlib_crate) = request.compilation.stdlib_crate {
-        command.args(["--stdlib-crate", stdlib_crate.as_str()]);
-    }
     reject_receipt_out_originals_aliasing(receipt_out, &originals)?;
     session.report_phase(VerifyPhase::Capture {
         crate_name: SanitizedInline::new(&request.compilation.crate_name),
     });
-    let capture_start = Instant::now();
-    let output = command.output().map_err(|e| io("capture", e))?;
-    write(&work.join("capture.stdout"), &output.stdout)?;
-    write(&work.join("capture.stderr"), &output.stderr)?;
-    if !output.status.success() {
-        let envelope: Value = serde_json::from_slice(&output.stdout).unwrap_or(Value::Null);
-        let status = match envelope["status"].as_str() {
-            Some("unsupported") => "unsupported",
-            Some("compiler_failed") => "compiler_failed",
-            _ => "tool_failed",
-        };
-        let detail = if envelope.is_object() {
-            if !output.stderr.is_empty() {
-                session.write_compiler_stderr(&output.stderr);
-            }
-            envelope.to_string()
-        } else {
-            String::from_utf8_lossy(&output.stderr).into_owned()
-        };
-        return Err(error(status, "capture", detail));
-    }
-    let capture_ms = capture_start.elapsed().as_millis();
-    let capture_bytes = fs::read(capture_dir.join("capture.json")).map_err(|e| io("capture", e))?;
-    let manifest = parse_capture_receipt(&capture_bytes)?;
-    // Authenticate configuration and scope before compiling any authored
-    // Lean. A valid theorem about another target or a narrower selection
-    // cannot satisfy this request.
-    if !matches!(manifest.program.mir_profile_version, 1 | 2) {
-        return Err(error(
-            "tool_failed",
-            "capture",
-            format!(
-                "unsupported captured MIR profile version {}",
-                manifest.program.mir_profile_version
+    let capture_dir = work.join("capture");
+    let capture_outcome = run_capture_process(
+        &tools,
+        &request.compilation,
+        &request.scope,
+        &sources,
+        &rust_stage,
+        &capture_dir,
+        work,
+        shard_config,
+        expected_shard_plan.as_ref().map(|(_, path)| path.as_path()),
+        |stderr| session.write_compiler_stderr(stderr),
+    )?;
+    if let Some((ref expected_plan, _)) = expected_shard_plan {
+        let actual_plan = match &capture_outcome.shards {
+            Some(shards) => ShardPlan::from_sharded(&shards.manifest, shard_config),
+            None => ShardPlan::from_unsharded(
+                request.scope.shard_label(),
+                capture_outcome.manifest.program.bodies.len(),
+                shard_config,
             ),
-        ));
-    }
-    if manifest.program.scope != request.scope
-        || manifest.configuration["crate_name"] != request.compilation.crate_name
-        || manifest.configuration["crate_type"] != request.compilation.crate_type.as_str()
-        || manifest.configuration["panic"] != request.compilation.panic.as_str()
-        || manifest.configuration["overflow_checks"] != json!(request.compilation.overflow_checks)
-        || manifest.configuration["target"] != request.compilation.target
-        || manifest.configuration["edition"] != request.compilation.edition
-        || manifest.configuration["cfg"] != json!(request.compilation.cfg)
-        || manifest.configuration["env"] != json!(request.compilation.env)
-        // Capture records `stdlib_crate` only when its capability is active,
-        // so a capture with relaxed language-item admission never satisfies
-        // a request that did not ask for it (or vice versa).
-        || manifest.configuration.get("stdlib_crate").cloned()
-            != request.compilation.stdlib_crate.map(|krate| json!(krate.as_str()))
-    {
-        return Err(error(
-            "tool_failed",
-            "capture",
-            "capture differs from the requested compilation or scope",
-        ));
-    }
-    // Every observed compiler read must match a staged, declared input.
-    // Unused declared files remain in the receipt identity; they need not
-    // become compiler reads merely because the request staged them.
-    let source_by_path: BTreeMap<_, _> =
-        sources.iter().map(|s| (rust_stage.join(&s.relative_path), &s.sha256)).collect();
-    for source in &manifest.source_files {
-        let Some(expected) = source_by_path.get(&source.path) else {
-            return Err(error("tool_failed", "capture", "compiler read an undeclared source"));
         };
-        if &source.sha256 != *expected {
-            return Err(error("tool_failed", "capture", "compiler read different source bytes"));
-        }
+        compare_shard_plan(expected_plan, &actual_plan)
+            .map_err(|msg| error("tool_failed", "capture", msg))?;
     }
-    let capture_sha256 = sha256_bytes(&capture_bytes);
+    let capture_sha256 = capture_outcome.capture_sha256;
+    let capture_binary_sha256 = capture_outcome.capture_binary_sha256;
+    let capture = capture_outcome.capture_canon;
+    let capture_tool_path = capture_outcome.capture_tool_path;
+    let capture_ms = capture_outcome.capture_ms;
+    let manifest = capture_outcome.manifest;
+    let shards_outcome = capture_outcome.shards;
 
     let bundle = work.join("anneal");
     let mut modules = Vec::new();
@@ -2676,6 +3083,16 @@ fn run<Out: std::io::Write + Send, ErrOut: std::io::Write + Send>(
         });
     }
     let model_manifest_sha256 = sha256_bytes(&encoded(&model_identity)?);
+    if let Some(ref shards) = shards_outcome {
+        for (module, path, sha256) in &shards.shard_modules {
+            modules.push(TargetModule {
+                module: module.clone(),
+                expected_sha256: sha256.clone(),
+                source: path.clone(),
+                role: TargetRole::Capture,
+            });
+        }
+    }
     let captured_lean = capture_dir.join("Captured.lean");
     let captured_bytes = fs::read(&captured_lean).map_err(|e| io("capture", e))?;
     modules.push(TargetModule {
@@ -2684,6 +3101,16 @@ fn run<Out: std::io::Write + Send, ErrOut: std::io::Write + Send>(
         source: captured_lean,
         role: TargetRole::Capture,
     });
+    if let Some(ref shards) = shards_outcome {
+        let id_tree_path = work.join("generated/Proof/IdTree.lean");
+        write(&id_tree_path, shards.id_tree_source.as_bytes())?;
+        modules.push(TargetModule {
+            module: "Proof.IdTree".to_owned(),
+            expected_sha256: shards.manifest.id_tree_sha256.clone(),
+            source: id_tree_path,
+            role: TargetRole::Proof,
+        });
+    }
 
     // Module names choose destinations in the private stage. Reserve the
     // runner-owned names before writing anything so authored files cannot
@@ -3123,6 +3550,11 @@ fn run<Out: std::io::Write + Send, ErrOut: std::io::Write + Send>(
     let spec_warnings =
         extract_spec_warnings(&audit).map_err(|e| e.with_sandbox(Some(active_sandbox.as_str())))?;
     result.as_object_mut().unwrap().insert("spec_warnings".into(), Value::Array(spec_warnings));
+    if let Some(ref shards) = shards_outcome {
+        let obj = result.as_object_mut().unwrap();
+        obj.insert("capture_shards_sha256".into(), json!(shards.sha256));
+        obj.insert("shards".into(), json!(shards.manifest));
+    }
     let result_bytes =
         encoded(&result).map_err(|e| e.with_sandbox(Some(active_sandbox.as_str())))?;
     finalize_passing_artifacts(work, &result_bytes, args.export_lean_lib, |dest| {
@@ -3952,6 +4384,153 @@ fn preflight_artifact_destination(destination: &str) -> Result<()> {
     }
 }
 
+fn run_shard_plan(args: &ShardPlanArgs, work: &Path) -> Result<ShardPlan> {
+    let (compilation, scope, base, symlink_policy) = if let Some(path) = &args.request {
+        let canon = fs::canonicalize(path).map_err(|e| io("request", e))?;
+        let (bytes, _) = read_regular_file_deref(&canon, "request")
+            .map_err(|e| error("tool_failed", "request", e.message))?;
+        let request: Request =
+            serde_json::from_slice(&bytes).map_err(|e| error("unsupported", "request", e))?;
+        if request.schema_version != 1 {
+            return Err(error("unsupported", "request", "unsupported compilation request version"));
+        }
+        (
+            request.compilation,
+            request.scope,
+            canon.parent().unwrap().to_path_buf(),
+            SymlinkPolicy::Reject,
+        )
+    } else {
+        let (compilation, scope, base) = cargo_compilation(
+            args.manifest_path.as_ref().unwrap(),
+            args.panic,
+            args.overflow_checks,
+            &args.select,
+            &args.instantiate,
+            &args.features,
+            args.all_features,
+            args.no_default_features,
+        )?;
+        (compilation, scope, base, SymlinkPolicy::Reject)
+    };
+    if compilation.source_files.is_empty() {
+        return Err(error("unsupported", "request", "empty compilation source list"));
+    }
+    if compilation.stdlib_crate.is_some() && !matches!(scope, Scope::SelectedUnit { .. }) {
+        return Err(error(
+            "unsupported",
+            "request",
+            "--stdlib-crate requires selected scope (`--select` or `--instantiate`)",
+        ));
+    }
+    for (key, value) in &compilation.env {
+        validate_env_binding(key, value).map_err(|msg| error("unsupported", "request", msg))?;
+    }
+    let mut originals = Vec::new();
+    let rust_stage = work.join("rust");
+    let sources = stage_request_rust_inputs(
+        &compilation,
+        &base,
+        &rust_stage,
+        symlink_policy,
+        &mut originals,
+    )?;
+    let tools = select_tools_with(args.capture.as_deref(), args.sysroot.as_deref(), None, false)?;
+    let shard_config = ShardConfig::from(&args.shard);
+    let capture_dir = work.join("capture");
+    let outcome = run_capture_process(
+        &tools,
+        &compilation,
+        &scope,
+        &sources,
+        &rust_stage,
+        &capture_dir,
+        work,
+        shard_config,
+        None,
+        |stderr| eprint!("{}", String::from_utf8_lossy(stderr)),
+    )?;
+    for (path, expected) in &originals {
+        let (_, actual_sha) = read_input_file(path, Some(path), symlink_policy, "binding")?;
+        if actual_sha != *expected {
+            return Err(error("tool_failed", "binding", "an input changed during verification"));
+        }
+    }
+    let plan = match outcome.shards {
+        Some(shards) => ShardPlan::from_sharded(&shards.manifest, shard_config),
+        None => ShardPlan::from_unsharded(
+            scope.shard_label(),
+            outcome.manifest.program.bodies.len(),
+            shard_config,
+        ),
+    };
+    if let Some(check_path) = &args.check {
+        let canon = fs::canonicalize(check_path).map_err(|e| io("shard-plan", e))?;
+        let (expected_bytes, _) = read_regular_file_deref(&canon, "shard-plan")
+            .map_err(|e| error("tool_failed", "shard-plan", e.message))?;
+        let expected: ShardPlan = serde_json::from_slice(&expected_bytes)
+            .map_err(|e| error("unsupported", "shard-plan", format!("invalid shard plan: {e}")))?;
+        compare_shard_plan(&expected, &plan)
+            .map_err(|msg| error("unsupported", "shard-plan", msg))?;
+    }
+    if let Some(write_path) = &args.write {
+        match fs::symlink_metadata(write_path) {
+            Err(e) if e.kind() == IoErrorKind::NotFound => {}
+            Err(e) => return Err(io("shard-plan", e)),
+            Ok(meta) => {
+                if !meta.file_type().is_file() {
+                    return Err(error(
+                        "tool_failed",
+                        "shard-plan",
+                        format!("{} exists and is not a regular file", write_path.display()),
+                    ));
+                }
+            }
+        }
+        if let Some(parent) = write_path.parent()
+            && !parent.as_os_str().is_empty()
+        {
+            fs::create_dir_all(parent).map_err(|e| io("shard-plan", e))?;
+        }
+        let encoded_plan =
+            plan.to_pretty_json().map_err(|msg| error("tool_failed", "shard-plan", msg))?;
+        let parent = match write_path.parent() {
+            Some(p) if !p.as_os_str().is_empty() => p,
+            _ => Path::new("."),
+        };
+        let mut tmp = tempfile::NamedTempFile::new_in(parent).map_err(|e| io("shard-plan", e))?;
+        std::io::Write::write_all(&mut tmp, &encoded_plan).map_err(|e| io("shard-plan", e))?;
+        tmp.persist(write_path).map_err(|e| io("shard-plan", e.error))?;
+        eprintln!(
+            "wrote shard plan ({} shards, {} bodies) to {}",
+            plan.total_shards,
+            plan.total_bodies,
+            write_path.display()
+        );
+    }
+    Ok(plan)
+}
+
+pub fn main_shard_plan(args: ShardPlanArgs) -> ExitCode {
+    let stage = match verification_stage() {
+        Ok(stage) => stage,
+        Err(failure) => {
+            eprintln!("shard-plan staging failed: {failure}");
+            return ExitCode::from(2);
+        }
+    };
+    match run_shard_plan(&args, stage.path()) {
+        Ok(plan) => {
+            println!("{}", serde_json::to_string_pretty(&plan).expect("serializable shard plan"));
+            ExitCode::SUCCESS
+        }
+        Err(failure) => {
+            eprintln!("shard-plan failed ({}): {}", failure.phase, failure.detail);
+            ExitCode::from(failure_exit_code(failure.status))
+        }
+    }
+}
+
 /// Copy diagnostics into a destination owned by this export.
 ///
 /// Existing destinations are never changed. A failed copy removes the newly
@@ -4107,7 +4686,9 @@ mod tests {
             "Trusted.Foo",
             "Trusted.MirSemantics",
             "Captured",
+            "Captured.Shard_000",
             "Expected",
+            "Expected.Claim",
             "Anneal",
             "Anneal.Shadow",
             "Init",
@@ -4548,6 +5129,8 @@ mod tests {
             lean_memory_mb: None,
             no_cache: false,
             no_rebuild_bundled: false,
+            shard: ShardArgs::default(),
+            verify_shard_plan: None,
             command: None,
         };
         let crate_scope = Scope::Crate {};
@@ -4583,6 +5166,8 @@ mod tests {
                         lean_memory_mb: None,
                         no_cache: false,
                         no_rebuild_bundled: false,
+                        shard: ShardArgs::default(),
+                        verify_shard_plan: None,
                         command: None,
                     };
                     let taints = active_taints(&args);
@@ -4997,6 +5582,8 @@ mod tests {
             lean_memory_mb: None,
             no_cache: false,
             no_rebuild_bundled: false,
+            shard: ShardArgs::default(),
+            verify_shard_plan: None,
             command: None,
         };
 
@@ -5042,6 +5629,8 @@ mod tests {
                 lean_memory_mb: None,
                 no_cache: false,
                 no_rebuild_bundled: false,
+                shard: ShardArgs::default(),
+                verify_shard_plan: None,
                 command: None,
             };
             let err = select_tools(&args).err().expect("missing tools must fail");
@@ -5827,6 +6416,8 @@ mod tests {
             allow_unsandboxed_elaboration: false,
             allow_sorry_in_proof: false,
             allow_unpinned_lean: false,
+            shard: ShardArgs::default(),
+            verify_shard_plan: None,
         };
         let validated = validate_receipt_out_pre_stage(&args, None).unwrap().unwrap();
 

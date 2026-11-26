@@ -66,7 +66,7 @@ def _make_record(
             "verify.scalar.cold_prebuilt_total_ms": 10000.0,
             "memory_rss.verify_scalar.cold_prebuilt_maxrss_kib": 512000,
             "artifact_size.bundled_olean.total_bytes": 10000000,
-            "zerocopy_proofs.suite.verified_units_count": 4,
+            "zerocopy_proofs.suite.verified_units_count": 5,
         },
     }
 
@@ -938,7 +938,7 @@ class AppendBudgetsAndAnalysisTests(unittest.TestCase):
                 "memory_rss.theory_anneal_mirwp.cold_j1_maxrss_kib": 400000,
                 "artifact_size.module.anneal_mirwp.olean_bytes": 100000,
                 "artifact_size.bundled_olean.total_bytes": 20000000,
-                "zerocopy_proofs.suite.verified_units_count": 4,
+                "zerocopy_proofs.suite.verified_units_count": 5,
             }
         )
         self.assertEqual(perf_tracking.evaluate_budgets(ok_rec, cfg), [])
