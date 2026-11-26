@@ -10,7 +10,7 @@ prelude
 import Init.SimpLemmas
 import Init.Data.List.Basic
 import Expected
-import Anneal.MirWp.V2Memory
+import Anneal.MirWp.V2StepShield
 
 namespace Proof
 
@@ -205,21 +205,21 @@ theorem split_at_shared_correct (q : Query)
     have hInit :
         initStateV2 (entryProgForBody Captured.program 0)
           ⟨[.slicePtr ptr len, .scalar ⟨.isize, false, midBits⟩], q.callerMem⟩ =
-        .ok (State.mk [FrameState.mk 0 0 0
+        .ok (stateV2 (frameV2 0 0 0
           [.immediate none,
            .immediate (some (.slicePtr ptr len)),
            .immediate (some (.scalar ⟨.isize, false, midBits⟩)),
-           .dead, .dead, .dead, .dead, .dead, .dead, .dead, .dead, .dead, .dead]
-          none none none]
+           .dead, .dead, .dead, .dead, .dead, .dead, .dead, .dead, .dead, .dead])
           q.callerMem m) := by
-      have h0 := ctx.initStateV2_ok_of h_body (by decide) hValid'
-      change initStateV2 ctx.entryProg _ = _
-      rw [h0]
-      change Except.ok (State.mk [FrameState.mk 0 0 0
-        (initLocalsLoop Captured.body_0
-          [.slicePtr ⟨ptrAid, ptrOff, .isize⟩ len, .scalar ⟨.isize, false, midBits⟩]
-          0 Captured.body_0.locals) none none none] q.callerMem m) = _
-      rw [initLocalsLoop_body0]
+      have h0 :
+          initStateV2 (entryProgForBody Captured.program 0)
+            ⟨[.slicePtr ptr len, .scalar ⟨.isize, false, midBits⟩], q.callerMem⟩ =
+          .ok (stateV2 (frameV2 0 0 0 (initLocalsLoop Captured.body_0
+            [.slicePtr ⟨ptrAid, ptrOff, .isize⟩ len, .scalar ⟨.isize, false, midBits⟩]
+            0 Captured.body_0.locals)) q.callerMem m) :=
+        ctx.initStateV2_ok_frameV2 h_body (by decide) hValid'
+      rw [initLocalsLoop_body0] at h0
+      exact h0
     have hExec :
         execProgV2 (entryProgForBody Captured.program 0) 32
           ⟨[.slicePtr ptr len, .scalar ⟨.isize, false, midBits⟩], q.callerMem⟩
@@ -231,26 +231,18 @@ theorem split_at_shared_correct (q : Query)
       apply execOutcomeStateV2_step (by rfl)
       apply execOutcomeStateV2_step (by rfl)
       -- bb0 stmt 3: assign 5 (.ref .shared [1, .deref])
-      apply execOutcomeStateV2_step (by
-        dsimp only [evalStepV2, entryProgForBody, Captured.program, Captured.body_0,
-          evalStatementV2, resolvePlaceDestV2, placeStaticTyV2, evalRvalueV2,
-          evalRefRvalueV2, writePlaceDestV2, checkValV2,
-          Trusted.MirSemantics.getElem?, Trusted.MirSemantics.setElem?]
-        rw [hRefValid0]
-        rfl)
+      apply execOutcomeStateV2_step (evalStepV2_assign_local (by rfl) (by rfl)
+        (by rfl) (by rfl) (evalRvalueV2_ref_deref_ok (by rfl) (by rfl) (by rfl) hRefValid0)
+        (writePlaceDestV2_immediate_ok (by rfl) (by rfl) (by rfl)))
       -- bb0 stmts 4,5: storageLive 6,7
       apply execOutcomeStateV2_step (by rfl)
       apply execOutcomeStateV2_step (by rfl)
       -- bb0 stmt 6: assign 7 (.use (.copy 2))
-      apply execOutcomeStateV2_step (by
-        dsimp only [evalStepV2, entryProgForBody, Captured.program, Captured.body_0,
-          evalStatementV2, resolvePlaceDestV2, placeStaticTyV2,
-          Trusted.MirSemantics.getElem?]
-        rw [evalRvalueV2_use_copy_ok (by rfl) (by rfl) (by rfl)]
-        dsimp only
-        rw [writePlaceDestV2_immediate_ok
+      apply execOutcomeStateV2_step (evalStepV2_assign_local (by rfl) (by rfl)
+        (by rfl) (by rfl) (evalRvalueV2_use_copy_ok (by rfl) (by rfl) (by rfl))
+        (writePlaceDestV2_immediate_ok
           (by dsimp only [checkValV2, checkVal, Val.ty?]; rw [hMidWf]; rfl)
-          (by rfl) (by rfl)])
+          (by rfl) (by rfl)))
       -- bb0 stmts 7,8: aggregateRangeTo -> 6, storageDead 7
       apply execOutcomeStateV2_step (by
         dsimp only [evalStepV2, entryProgForBody, Captured.program, Captured.body_0,
@@ -273,13 +265,9 @@ theorem split_at_shared_correct (q : Query)
         rw [writePlaceV2_immediate_ok (by rfl) (by rfl) (by rfl)]
         rfl)
       -- bb1 stmt 0: assign 3 (.ref .shared [4, .deref])
-      apply execOutcomeStateV2_step (by
-        dsimp only [evalStepV2, entryProgForBody, Captured.program, Captured.body_0,
-          evalStatementV2, resolvePlaceDestV2, placeStaticTyV2, evalRvalueV2,
-          evalRefRvalueV2, writePlaceDestV2, checkValV2,
-          Trusted.MirSemantics.getElem?, Trusted.MirSemantics.setElem?]
-        rw [hRefValidL]
-        rfl)
+      apply execOutcomeStateV2_step (evalStepV2_assign_local (by rfl) (by rfl)
+        (by rfl) (by rfl) (evalRvalueV2_ref_deref_ok (by rfl) (by rfl) (by rfl) hRefValidL)
+        (writePlaceDestV2_immediate_ok (by rfl) (by rfl) (by rfl)))
       -- bb1 stmts 1..5: storageDead 6,5; storageLive 8,9,10
       apply execOutcomeStateV2_step (by rfl)
       apply execOutcomeStateV2_step (by rfl)
@@ -287,26 +275,18 @@ theorem split_at_shared_correct (q : Query)
       apply execOutcomeStateV2_step (by rfl)
       apply execOutcomeStateV2_step (by rfl)
       -- bb1 stmt 6: assign 10 (.ref .shared [1, .deref])
-      apply execOutcomeStateV2_step (by
-        dsimp only [evalStepV2, entryProgForBody, Captured.program, Captured.body_0,
-          evalStatementV2, resolvePlaceDestV2, placeStaticTyV2, evalRvalueV2,
-          evalRefRvalueV2, writePlaceDestV2, checkValV2,
-          Trusted.MirSemantics.getElem?, Trusted.MirSemantics.setElem?]
-        rw [hRefValid0]
-        rfl)
+      apply execOutcomeStateV2_step (evalStepV2_assign_local (by rfl) (by rfl)
+        (by rfl) (by rfl) (evalRvalueV2_ref_deref_ok (by rfl) (by rfl) (by rfl) hRefValid0)
+        (writePlaceDestV2_immediate_ok (by rfl) (by rfl) (by rfl)))
       -- bb1 stmts 7,8: storageLive 11,12
       apply execOutcomeStateV2_step (by rfl)
       apply execOutcomeStateV2_step (by rfl)
       -- bb1 stmt 9: assign 12 (.use (.copy 2))
-      apply execOutcomeStateV2_step (by
-        dsimp only [evalStepV2, entryProgForBody, Captured.program, Captured.body_0,
-          evalStatementV2, resolvePlaceDestV2, placeStaticTyV2,
-          Trusted.MirSemantics.getElem?]
-        rw [evalRvalueV2_use_copy_ok (by rfl) (by rfl) (by rfl)]
-        dsimp only
-        rw [writePlaceDestV2_immediate_ok
+      apply execOutcomeStateV2_step (evalStepV2_assign_local (by rfl) (by rfl)
+        (by rfl) (by rfl) (evalRvalueV2_use_copy_ok (by rfl) (by rfl) (by rfl))
+        (writePlaceDestV2_immediate_ok
           (by dsimp only [checkValV2, checkVal, Val.ty?]; rw [hMidWf]; rfl)
-          (by rfl) (by rfl)])
+          (by rfl) (by rfl)))
       -- bb1 stmts 10,11: aggregateRangeFrom -> 11, storageDead 12
       apply execOutcomeStateV2_step (by
         dsimp only [evalStepV2, entryProgForBody, Captured.program, Captured.body_0,
@@ -331,15 +311,11 @@ theorem split_at_shared_correct (q : Query)
           (by rfl) (by rfl)]
         rfl)
       -- bb2 stmt 0: assign 8 (.ref .shared [9, .deref])
-      apply execOutcomeStateV2_step (by
-        dsimp only [evalStepV2, entryProgForBody, Captured.program, Captured.body_0,
-          evalStatementV2, resolvePlaceDestV2, placeStaticTyV2, evalRvalueV2,
-          Trusted.MirSemantics.getElem?]
-        rw [evalRefRvalueV2_deref_ok (by rfl) (by rfl) (by rfl) hRefValidR]
-        dsimp only
-        rw [writePlaceDestV2_immediate_ok
+      apply execOutcomeStateV2_step (evalStepV2_assign_local (by rfl) (by rfl)
+        (by rfl) (by rfl) (evalRvalueV2_ref_deref_ok (by rfl) (by rfl) (by rfl) hRefValidR)
+        (writePlaceDestV2_immediate_ok
           (by dsimp only [checkValV2]; rw [hPRW]; rfl)
-          (by rfl) (by rfl)])
+          (by rfl) (by rfl)))
       -- bb2 stmts 1..7: storageDead 11,10; aggregateTuple -> 0;
       -- storageDead 8,3,9,4.
       apply execOutcomeStateV2_step (by rfl)
@@ -367,14 +343,10 @@ theorem split_at_shared_correct (q : Query)
       apply execOutcomeStateV2_step (by rfl)
       apply execOutcomeStateV2_step (by rfl)
       -- bb2 term: return_
-      apply execOutcomeStateV2_done (by
-        dsimp only [evalStepV2, entryProgForBody, Captured.program, Captured.body_0,
-          Trusted.MirSemantics.getElem?]
-        rw [evalTerminatorV2_return_ok (by rfl) (by rfl) (by rfl) (by rfl) hStay
-          (by dsimp only [refsValidInMem, refsValidInMemList]; rw [hRefValidL, hRefValidR]; rfl)
-          hDisjOut, hExt]
-        rfl)
-      rfl
+      exact execOutcomeStateV2_done (evalStepV2_return_ok (by rfl) (by rfl)
+        (by rfl) (by rfl) (by rfl) (by rfl) (by rfl) (by rfl) hStay
+        (by dsimp only [refsValidInMem, refsValidInMemList]; rw [hRefValidL, hRefValidR]; rfl)
+        hDisjOut) (by rw [hExt])
     have hRes := spec_and_behaviorV2_of_exec_eq hExec
     rw [← hQ] at hRes
     rw [hArgs]
