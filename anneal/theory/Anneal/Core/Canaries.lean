@@ -32,6 +32,7 @@ public import Anneal.Core.StageCut
 public import Anneal.Core.SpecRealizability
 public import Anneal.Core.AlignMath
 public import Anneal.Core.BitValidity
+public import Anneal.Core.FixedByteCodec
 
 public section
 
@@ -79,6 +80,12 @@ Exercises `Core.BlockTree`, `Core.SepPCM`, and `Core.StageCut` (`0`
    of all-`.uninit` pairs, exact `TryFromBytes` validators and the unsound
    accept-all `bool` validator, ZST/2-variant/`256`-variant fieldless enums,
    trait hierarchy separations, and equal-size `transmute_sound` corollaries.
+8. **Zerocopy `FixedByteCodec` & Padding Canaries:** Exercises
+   `Core.FixedByteCodec` exact-width enforcement (including `n = 0`), endian
+   serialization (`LeBytes` and `MirSemantics.Bytes`), `[u16; 4]` array
+   chunking and element slicing, `MirBytesCodec` (`FromZeros`, `FromBytes`,
+   `IntoBytes`), and equal-size `8`-byte transmutation contrast between
+   unpadded `(u32, u16, u16)` and padded `(u32, u8, 3-byte pad)`.
 -/
 
 /-! ## Computable Scalar / Tuple Helpers (`0` `noncomputable`) -/
@@ -3582,6 +3589,270 @@ theorem canary_bitValidity_transmutes (endian : TargetEndian) :
    fun bs h =>
      transmute_unit_to_zstEnum_sound endian canarySingleZstEnum (by rfl) rfl
        .unit bs h⟩
+
+/-! ## Zerocopy `FixedByteCodec` & Padding Canaries (`Core.FixedByteCodec`) -/
+
+/-- Unpadded 8-byte struct model `(u32, u16, u16)` under `endian`: satisfies
+`IsInitCodec`, `NoProvCodec`, `IsSurjectiveInitDecoder`, and `HasZeroValid`.
+-/
+@[expose] def unpaddedTripleCodec (endian : TargetEndian) :
+    FixedByteCodec (BitVec 32 × (BitVec 16 × BitVec 16)) 8 :=
+  FixedByteCodec.prod (u32Codec endian)
+    (FixedByteCodec.prod (u16Codec endian) (u16Codec endian))
+
+/-- Padded 8-byte struct model `(u32, u8, 3-byte .uninit pad)` under `endian`:
+satisfies `HasZeroValid` and `IsSurjectiveInitDecoder`, yet refutes
+`IsInitCodec`. -/
+@[expose] def paddedPairCodec (endian : TargetEndian) :
+    FixedByteCodec (BitVec 32 × BitVec 8) 8 :=
+  FixedByteCodec.padRight
+    (FixedByteCodec.prod (u32Codec endian) (u8Codec endian)) 3
+
+/-- Exact-width (`n = 0` and `n > 0`), endian `LeBytes` / `MirSemantics.Bytes`
+agreement, and prefix-free `sliceBytes` framing canaries. -/
+theorem canary_fixedByteCodec_width_and_endian (endian : TargetEndian) :
+    ((∀ bs : List AllocByte, bs ≠ [] → FixedByteCodec.zst.decode bs = none) ∧
+      FixedByteCodec.zst.decode [] = some () ∧
+      FixedByteCodec.zst.decode [.init 0 none] = none ∧
+      FixedByteCodec.zst.decode [.uninit] = none) ∧
+    ((∀ (bs : List AllocByte) (x : BitVec 32),
+        (u32Codec endian).decode bs = some x → bs.length = 4) ∧
+      (u32Codec endian).decode [.init 1 none, .init 2 none, .init 3 none] =
+        none ∧
+      (u32Codec endian).decode
+          [.init 1 none, .init 2 none, .init 3 none, .init 4 none,
+           .init 5 none] = none ∧
+      (u32Codec endian).decode
+          [.init 1 none, .init 2 none, .init 3 none, .uninit] = none) ∧
+    ((u32Codec .little).encode (BitVec.ofNat 32 0x12345678) =
+        [.init 0x78 none, .init 0x56 none, .init 0x34 none, .init 0x12 none] ∧
+      (u32Codec .big).encode (BitVec.ofNat 32 0x12345678) =
+        [.init 0x12 none, .init 0x34 none, .init 0x56 none, .init 0x78 none]) ∧
+    (∀ pre post x,
+      (sliceBytes (pre ++ (u32Codec endian).encode x ++ post)
+        pre.length 4).bind (u32Codec endian).decode = some x) := by
+  have hZst :
+      (∀ bs : List AllocByte, bs ≠ [] → FixedByteCodec.zst.decode bs = none) ∧
+        FixedByteCodec.zst.decode [] = some () ∧
+        FixedByteCodec.zst.decode [.init 0 none] = none ∧
+        FixedByteCodec.zst.decode [.uninit] = none :=
+    ⟨fun _ h => FixedByteCodec.zst.rejects_nonempty_of_zero h, rfl, rfl, rfl⟩
+  have hU32Exact :
+      ∀ (bs : List AllocByte) (x : BitVec 32),
+        (u32Codec endian).decode bs = some x → bs.length = 4 :=
+    fun _ _ h => (u32Codec endian).decode_length h
+  have hU32Bad :
+      (u32Codec endian).decode [.init 1 none, .init 2 none, .init 3 none] =
+          none ∧
+        (u32Codec endian).decode
+            [.init 1 none, .init 2 none, .init 3 none, .init 4 none,
+             .init 5 none] = none ∧
+        (u32Codec endian).decode
+            [.init 1 none, .init 2 none, .init 3 none, .uninit] = none := by
+    refine ⟨(u32Codec endian).rejects_short (by decide),
+      (u32Codec endian).rejects_long (by decide), ?_⟩
+    cases endian <;> rfl
+  have hEnd :
+      (u32Codec .little).encode (BitVec.ofNat 32 0x12345678) =
+          [.init 0x78 none, .init 0x56 none, .init 0x34 none, .init 0x12 none] ∧
+        (u32Codec .big).encode (BitVec.ofNat 32 0x12345678) =
+          [.init 0x12 none, .init 0x34 none, .init 0x56 none,
+           .init 0x78 none] := by
+    constructor <;> rfl
+  refine ⟨hZst, ⟨hU32Exact, hU32Bad⟩, hEnd, fun pre post x => ?_⟩
+  exact (u32Codec endian).decode_sliceBytes_append pre post x
+
+/-- Homogeneous `[u16; 4]` (`8`-byte) array codec canaries: exact width, total
+init encoding/decoding, `ListChunks.chunksOf 2` indexing, per-element slice
+recovery, and `.uninit` element rejection. -/
+theorem canary_fixedByteCodec_array_u16_4 (endian : TargetEndian) :
+    (∀ bs : List AllocByte, bs.length ≠ 8 →
+      (FixedByteCodec.array 4 (u16Codec endian)).decode bs = none) ∧
+    (FixedByteCodec.array 4 (u16Codec endian)).IsInitCodec ∧
+    (FixedByteCodec.array 4 (u16Codec endian)).NoProvCodec ∧
+    (FixedByteCodec.array 4 (u16Codec endian)).IsSurjectiveInitDecoder ∧
+    (FixedByteCodec.array 4 (u16Codec endian)).HasZeroValid ∧
+    (∀ (xs : Subtype (fun xs : List (BitVec 16) => xs.length = 4)) (i : Nat)
+        (x : BitVec 16),
+      xs.val[i]? = some x →
+      (((FixedByteCodec.array 4 (u16Codec endian)).encode xs).drop (i * 2)).take
+          2 = (u16Codec endian).encode x ∧
+        (Anneal.ListChunks.chunksOf 2
+          ((FixedByteCodec.array 4 (u16Codec endian)).encode xs))[i]? =
+          some ((u16Codec endian).encode x)) ∧
+    ((FixedByteCodec.array 4 (u16Codec endian)).decode
+        [.init 0 none, .init 1 none, .init 2 none, .init 3 none,
+         .init 4 none, .uninit, .init 6 none, .init 7 none] = none) := by
+  have hExact :
+      ∀ bs : List AllocByte, bs.length ≠ 8 →
+        (FixedByteCodec.array 4 (u16Codec endian)).decode bs = none :=
+    fun _ h => (FixedByteCodec.array 4 (u16Codec endian)).rejects_ne h
+  have hInit : (FixedByteCodec.array 4 (u16Codec endian)).IsInitCodec :=
+    FixedByteCodec.array_isInitCodec 4
+      (uintBvCodec_isInitCodec endian 2 (by decide))
+  have hNoProv : (FixedByteCodec.array 4 (u16Codec endian)).NoProvCodec :=
+    FixedByteCodec.array_noProvCodec 4
+      (uintBvCodec_noProvCodec endian 2 (by decide))
+  have hSurj :
+      (FixedByteCodec.array 4 (u16Codec endian)).IsSurjectiveInitDecoder :=
+    FixedByteCodec.array_isSurjectiveInitDecoder
+      (uintBvCodec_isSurjectiveInitDecoder endian 2 (by decide)) 4
+  have hZero : (FixedByteCodec.array 4 (u16Codec endian)).HasZeroValid :=
+    hSurj.hasZeroValid
+  refine ⟨hExact, hInit, hNoProv, hSurj, hZero, ?_, ?_⟩
+  · intro xs i x hGet
+    refine ⟨FixedByteCodec.encodeElems_drop_take_of_getElem?
+        (u16Codec endian) hGet, ?_⟩
+    rw [FixedByteCodec.chunksOf_array_encode_getElem? (by decide : 0 < 2)
+        4 (u16Codec endian) xs i, hGet]
+    rfl
+  · cases endian <;> rfl
+
+/-- Equal-size `8`-byte struct transmutation and padding canaries:
+- `MirBytesCodec` instances realize `unit`, `bool` (`¬ FromBytes`), and `u64`
+  traits across both byte orders.
+- Unpadded `(u32, u16, u16)` satisfies `IsInitCodec` and
+  `IsSurjectiveInitDecoder`, transmuting soundly both ways with `u64`
+  (`MirTy.int .i64 false`) and into `[u16; 4]` and `(u32, u8, 3-byte pad)`.
+- Padded `(u32, u8, 3-byte pad)` preserves `HasZeroValid` (`FromZeros`) and
+  `IsSurjectiveInitDecoder` (`FromBytes`), accepts `.uninit` in its 3 padding
+  bytes on `decode`, yet refutes `IsInitCodec` (`IntoBytes`) and fails
+  transmutation to `unpaddedTripleCodec`, `[u16; 4]`, and `u64`
+  (`decodeVal = .ok none`). This mirrors the padding contrast between the
+  Profile v1 local-slot encodings of `(u8, bool)` and `(u32, bool)`, although
+  overflow pairs have no addressable layout and are never `IntoBytes` or
+  transmutable. -/
+theorem canary_fixedByteCodec_padding_and_transmute (endian : TargetEndian) :
+    (IsIntoBytes endian .unit ∧ IsFromBytes endian .unit) ∧
+    (IsIntoBytes endian .bool ∧ IsFromZeros endian .bool ∧
+      ¬ IsFromBytes endian .bool) ∧
+    (IsIntoBytes endian (.int .i64 false) ∧
+      IsFromBytes endian (.int .i64 false)) ∧
+    ((unpaddedTripleCodec endian).IsInitCodec ∧
+      (unpaddedTripleCodec endian).IsSurjectiveInitDecoder ∧
+      CodecTransmuteSound (unpaddedTripleCodec endian)
+        (FixedByteCodec.array 4 (u16Codec endian)) ∧
+      CodecTransmuteSound (unpaddedTripleCodec endian)
+        (paddedPairCodec endian) ∧
+      (∀ x, NoProvBytes ((unpaddedTripleCodec endian).encode x) ∧
+        ∃ v', decodeVal endian (.int .i64 false)
+          ((unpaddedTripleCodec endian).encode x) = .ok (some v')) ∧
+      (∀ v bs, encodeVal endian (.int .i64 false) v = .ok bs →
+        NoProvBytes bs ∧
+          ∃ p, (unpaddedTripleCodec endian).decode bs = some p)) ∧
+    ((∀ bs : List AllocByte, bs.length < 8 →
+        (paddedPairCodec endian).decode bs = none) ∧
+      (paddedPairCodec endian).HasZeroValid ∧
+      (paddedPairCodec endian).IsSurjectiveInitDecoder ∧
+      (paddedPairCodec endian).decode
+        ((u32Codec endian).encode (BitVec.ofNat 32 7) ++
+          (u8Codec endian).encode (BitVec.ofNat 8 9) ++
+          [.uninit, .uninit, .uninit]) =
+        some (BitVec.ofNat 32 7, BitVec.ofNat 8 9) ∧
+      (∀ v bs, encodeVal endian (.int .i64 false) v = .ok bs →
+        NoProvBytes bs ∧
+          ∃ p, (paddedPairCodec endian).decode bs = some p) ∧
+      ¬ (paddedPairCodec endian).IsInitCodec ∧
+      (unpaddedTripleCodec endian).decode
+        ((paddedPairCodec endian).encode
+          (BitVec.ofNat 32 0x11223344, BitVec.ofNat 8 0x55)) = none ∧
+      (FixedByteCodec.array 4 (u16Codec endian)).decode
+        ((paddedPairCodec endian).encode
+          (BitVec.ofNat 32 0x11223344, BitVec.ofNat 8 0x55)) = none ∧
+      (∀ a b s,
+        decodeVal endian (.int .i64 s)
+          ((paddedPairCodec endian).encode (a, b)) = .ok none)) ∧
+    ((overflowPairCodec endian .i8).IsInitCodec ∧
+      ¬ (overflowPairCodec endian .i32).IsInitCodec) := by
+  have hUnitInto := (MirBytesCodec.unit endian).isIntoBytes
+    FixedByteCodec.zst_isInitCodec
+  have hUnitFrom := (MirBytesCodec.unit endian).isFromBytes
+    FixedByteCodec.zst_isSurjectiveInitDecoder
+  have hBoolInto := (MirBytesCodec.bool endian).isIntoBytes boolCodec_isInitCodec
+  have hBoolFz := (MirBytesCodec.bool endian).isFromZeros boolCodec_hasZeroValid
+  have hBoolNotFrom := (MirBytesCodec.bool endian).not_isFromBytes_of_rejected_init
+    (bs := [.init 2 none]) rfl rfl (by rfl)
+  let hU64M := MirBytesCodec.int endian .i64 false
+  have hU64Into := hU64M.isIntoBytes
+    (uintBvCodec_isInitCodec endian (fbcByteSize .i64) (fbcByteSize_pos .i64))
+  have hU64From := hU64M.isFromBytes
+    (uintBvCodec_isSurjectiveInitDecoder endian (fbcByteSize .i64)
+      (fbcByteSize_pos .i64))
+  have hUnpInit : (unpaddedTripleCodec endian).IsInitCodec :=
+    FixedByteCodec.prod_isInitCodec
+      (uintBvCodec_isInitCodec endian 4 (by decide))
+      (FixedByteCodec.prod_isInitCodec
+        (uintBvCodec_isInitCodec endian 2 (by decide))
+        (uintBvCodec_isInitCodec endian 2 (by decide)))
+  have hUnpNoProv : (unpaddedTripleCodec endian).NoProvCodec :=
+    FixedByteCodec.prod_noProvCodec
+      (uintBvCodec_noProvCodec endian 4 (by decide))
+      (FixedByteCodec.prod_noProvCodec
+        (uintBvCodec_noProvCodec endian 2 (by decide))
+        (uintBvCodec_noProvCodec endian 2 (by decide)))
+  have hUnpSurj : (unpaddedTripleCodec endian).IsSurjectiveInitDecoder :=
+    FixedByteCodec.prod_isSurjectiveInitDecoder
+      (uintBvCodec_isSurjectiveInitDecoder endian 4 (by decide))
+      (FixedByteCodec.prod_isSurjectiveInitDecoder
+        (uintBvCodec_isSurjectiveInitDecoder endian 2 (by decide))
+        (uintBvCodec_isSurjectiveInitDecoder endian 2 (by decide)))
+  have hArrSurj := FixedByteCodec.array_isSurjectiveInitDecoder
+    (uintBvCodec_isSurjectiveInitDecoder endian 2 (by decide)) 4
+  have hPadCoreSurj :
+      (FixedByteCodec.prod (u32Codec endian) (u8Codec endian)).IsSurjectiveInitDecoder :=
+    FixedByteCodec.prod_isSurjectiveInitDecoder
+      (uintBvCodec_isSurjectiveInitDecoder endian 4 (by decide))
+      (uintBvCodec_isSurjectiveInitDecoder endian 1 (by decide))
+  have hPadCoreNoProv :
+      (FixedByteCodec.prod (u32Codec endian) (u8Codec endian)).NoProvCodec :=
+    FixedByteCodec.prod_noProvCodec
+      (uintBvCodec_noProvCodec endian 4 (by decide))
+      (uintBvCodec_noProvCodec endian 1 (by decide))
+  have hPadDich :=
+    padRight_preserves_fromBytes_not_intoBytes
+      (FixedByteCodec.prod (u32Codec endian) (u8Codec endian))
+      (by decide : 0 < 3) hPadCoreNoProv hPadCoreSurj
+      (BitVec.ofNat 32 0, BitVec.ofNat 8 0)
+  have hPadExact :
+      ∀ bs : List AllocByte, bs.length < 8 →
+        (paddedPairCodec endian).decode bs = none :=
+    fun _ h => (paddedPairCodec endian).rejects_short h
+  have hPadZero := hPadDich.2.1
+  have hPadSurj := hPadDich.2.2.1
+  have hPadNotInit := hPadDich.2.2.2
+  refine ⟨⟨hUnitInto, hUnitFrom⟩, ⟨hBoolInto, hBoolFz, hBoolNotFrom⟩,
+    ⟨hU64Into, hU64From⟩, ?_, ?_, ?_⟩
+  · refine ⟨hUnpInit, hUnpSurj,
+      codecTransmute_sound _ _ hUnpInit hUnpNoProv hArrSurj,
+      codecTransmute_sound _ _ hUnpInit hUnpNoProv hPadSurj, ?_, ?_⟩
+    · intro x
+      exact transmute_codec_to_mirTy_sound endian (unpaddedTripleCodec endian)
+        (.int .i64 false) (intLayout .i64) hUnpInit hUnpNoProv hU64From rfl rfl x
+    · intro v bs hEnc
+      exact transmute_mirTy_to_codec_sound endian (.int .i64 false)
+        (intLayout .i64) (unpaddedTripleCodec endian) hU64Into hUnpSurj rfl rfl
+        v bs hEnc
+  · refine ⟨hPadExact, hPadZero, hPadSurj, ?_, ?_, hPadNotInit, ?_, ?_, ?_⟩
+    · exact (paddedPairCodec endian).decode_encode
+        (BitVec.ofNat 32 7, BitVec.ofNat 8 9)
+    · intro v bs hEnc
+      exact transmute_mirTy_to_codec_sound endian (.int .i64 false)
+        (intLayout .i64) (paddedPairCodec endian) hU64Into hPadSurj rfl rfl
+        v bs hEnc
+    · cases endian <;> rfl
+    · cases endian <;> rfl
+    · intro a b s
+      exact decodeVal_int_padRight_eq_none endian .i64 s
+        (FixedByteCodec.prod (u32Codec endian) (u8Codec endian))
+        (by decide : 0 < 3) rfl (a, b)
+  · constructor
+    · exact FixedByteCodec.padRight_zero_isInitCodec
+        (FixedByteCodec.prod_isInitCodec
+          (uintBvCodec_isInitCodec endian 1 (by decide))
+          boolCodec_isInitCodec)
+    · exact FixedByteCodec.padRight_not_isInitCodec
+        (FixedByteCodec.prod (intBvCodec endian .i32) boolCodec)
+        (by decide : 0 < 3) (BitVec.ofNat 32 0, false)
 
 end Anneal.Core
 
