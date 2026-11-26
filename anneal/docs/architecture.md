@@ -406,7 +406,7 @@ connects the verification layers to Stage 2 by kernel-checked refinement proofs:
   `theory/Anneal/{AiPcc,ByteRun,ByteSubLens,CallStackUnwind,CnfOrd}/`,
   `theory/Anneal/{ConjunctiveWp,F2Simd,Framework,GaloisCodec,MirMemComp}/`,
   `theory/Anneal/{MiriTreeBorrows,OverflowCastJoin,PureLift,RefFrame}/`,
-  `theory/Anneal/{SafeTwin,SepAC,WavefrontReclaim}/`, and
+  `theory/Anneal/{SafeTwin,SepAC,SpatialPinV2,WavefrontReclaim}/`, and
   planned `Theory/Rust/{Wp,Tactics}/`):**
   Weakest-precondition calculi, loop-invariant and simulation combinators,
   Diaconescu classical excluded middle and existential choice, WHNF and
@@ -438,7 +438,9 @@ connects the verification layers to Stage 2 by kernel-checked refinement proofs:
   (`RefFrame`), relational `SafeTwin` equivalence, `BiAlign` stride-tiled
   simulation, and constant-time leak-trace 2-safety (`SafeTwin`), reflective ACU
   separating-conjunction normalization, Lithium `PTree` framing, and $O(1)$
-  `ByteRange` `split_at_mut` spans (`SepAC`), view-indexed spatial PCM `< ω^ω`
+  `ByteRange` `split_at_mut` spans (`SepAC`), closure-free `CodecMeta`
+  registries, signed-stride 2D tiles, MBAFF field bounds, and four-zone stencil
+  framing (`SpatialPinV2`), view-indexed spatial PCM `< ω^ω`
   wavefront drain and universal `.activeMut` loan reclamation
   (`WavefrontReclaim`), functional borrow lifting, separation-logic frame rules,
   and proof automation built against $M_{\text{anneal}}$ and `StableAst` /
@@ -591,6 +593,7 @@ anneal/
     │   ├── Scalar.lean             # Constructive scalar/bitvector umbrella
     │   ├── SepAC.lean              # Reflective ACU sep-conj, Lithium PTree framing & ByteRange (+ SepAC/)
     │   ├── Simd.lean               # F2-linear & SIMD verification umbrella
+    │   ├── SpatialPinV2.lean       # CodecMeta registries, signed-stride 2D tiles, MBAFF & stencils (+ SpatialPinV2/)
     │   ├── SpineForce.lean         # CPS spine-forcing & @Nat.rec combinators
     │   ├── WavefrontReclaim.lean   # Spatial PCM < ω^ω wavefront drain & loan reclaim (+ WavefrontReclaim/)
     │   └── Wp.lean                 # MIR WP & loop-invariant umbrella
