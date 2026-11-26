@@ -1,0 +1,609 @@
+{
+  "schema_version": 1,
+  "compilation": {
+    "source_root": "../../src",
+    "crate_root": "lib.rs",
+    "crate_name": "zerocopy",
+    "edition": "2021",
+    "target": "x86_64-unknown-linux-gnu",
+    "cfg": [
+      "no_zerocopy_allocator_api_1_100_0"
+    ],
+    "env": {
+      "CARGO_PKG_VERSION": "0.8.64"
+    },
+    "source_files": [
+      "byte_slice.rs",
+      "byteorder.rs",
+      "deprecated.rs",
+      "error.rs",
+      "impls.rs",
+      "layout.rs",
+      "lib.rs",
+      "macros.rs",
+      "pointer/inner.rs",
+      "pointer/invariant.rs",
+      "pointer/mod.rs",
+      "pointer/ptr.rs",
+      "pointer/transmute.rs",
+      "ref.rs",
+      "split_at.rs",
+      "util/macro_util.rs",
+      "util/macros.rs",
+      "util/mod.rs",
+      "wrappers.rs"
+    ]
+  },
+  "scope": {
+    "kind": "selected_unit",
+    "roots": [
+      "util::macros::__unsafe"
+    ],
+    "instantiations": [
+      {
+        "path": "util::macro_util::must_use",
+        "args": [
+          "u8"
+        ]
+      },
+      {
+        "path": "util::macro_util::must_use",
+        "args": [
+          "u32"
+        ]
+      },
+      {
+        "path": "util::macro_util::must_use",
+        "args": [
+          "usize"
+        ]
+      },
+      {
+        "path": "util::macro_util::must_use",
+        "args": [
+          "bool"
+        ]
+      },
+      {
+        "path": "wrappers::_::<impl KnownLayout for wrappers::Unalign<T>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u32"
+        ]
+      },
+      {
+        "path": "wrappers::_::<impl Unaligned for wrappers::Unalign<T>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u32"
+        ]
+      },
+      {
+        "path": "wrappers::_::<impl Immutable for wrappers::Unalign<T>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u32"
+        ]
+      },
+      {
+        "path": "wrappers::_::<impl TryFromBytes for wrappers::Unalign<T>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u32"
+        ]
+      },
+      {
+        "path": "wrappers::_::<impl FromZeros for wrappers::Unalign<T>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u32"
+        ]
+      },
+      {
+        "path": "wrappers::_::<impl FromBytes for wrappers::Unalign<T>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u32"
+        ]
+      },
+      {
+        "path": "wrappers::_::<impl IntoBytes for wrappers::Unalign<T>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u32"
+        ]
+      },
+      {
+        "path": "wrappers::_::<impl KnownLayout for wrappers::read_only_def::ReadOnly<T>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u32"
+        ]
+      },
+      {
+        "path": "wrappers::_::<impl Immutable for wrappers::read_only_def::ReadOnly<T>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u32"
+        ]
+      },
+      {
+        "path": "wrappers::_::<impl TryFromBytes for wrappers::read_only_def::ReadOnly<T>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u32"
+        ]
+      },
+      {
+        "path": "wrappers::_::<impl FromZeros for wrappers::read_only_def::ReadOnly<T>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u32"
+        ]
+      },
+      {
+        "path": "wrappers::_::<impl FromBytes for wrappers::read_only_def::ReadOnly<T>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u32"
+        ]
+      },
+      {
+        "path": "wrappers::_::<impl IntoBytes for wrappers::read_only_def::ReadOnly<T>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u32"
+        ]
+      },
+      {
+        "path": "wrappers::_::<impl Unaligned for wrappers::read_only_def::ReadOnly<T>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u8"
+        ]
+      },
+      {
+        "path": "wrappers::_::<impl Immutable for wrappers::read_only_def::ReadOnly<T>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "core::cell::UnsafeCell<u32>"
+        ]
+      },
+      {
+        "path": "_::<impl KnownLayout for core::num::Wrapping<T>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u32"
+        ]
+      },
+      {
+        "path": "impls::_::<impl Immutable for core::num::Wrapping<T>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u32"
+        ]
+      },
+      {
+        "path": "impls::_::<impl TryFromBytes for core::num::Wrapping<T>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u32"
+        ]
+      },
+      {
+        "path": "impls::_::<impl FromZeros for core::num::Wrapping<T>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u32"
+        ]
+      },
+      {
+        "path": "impls::_::<impl FromBytes for core::num::Wrapping<T>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u32"
+        ]
+      },
+      {
+        "path": "impls::_::<impl IntoBytes for core::num::Wrapping<T>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u32"
+        ]
+      },
+      {
+        "path": "impls::_::<impl Unaligned for core::num::Wrapping<T>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u8"
+        ]
+      },
+      {
+        "path": "_::<impl KnownLayout for core::mem::ManuallyDrop<T>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u32"
+        ]
+      },
+      {
+        "path": "impls::_::<impl Immutable for core::mem::ManuallyDrop<T>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u32"
+        ]
+      },
+      {
+        "path": "impls::_::<impl TryFromBytes for core::mem::ManuallyDrop<T>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u32"
+        ]
+      },
+      {
+        "path": "impls::_::<impl FromZeros for core::mem::ManuallyDrop<T>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u32"
+        ]
+      },
+      {
+        "path": "impls::_::<impl FromBytes for core::mem::ManuallyDrop<T>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u32"
+        ]
+      },
+      {
+        "path": "impls::_::<impl IntoBytes for core::mem::ManuallyDrop<T>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u32"
+        ]
+      },
+      {
+        "path": "impls::_::<impl Unaligned for core::mem::ManuallyDrop<T>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u8"
+        ]
+      },
+      {
+        "path": "_::<impl KnownLayout for core::mem::MaybeUninit<T>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u32"
+        ]
+      },
+      {
+        "path": "impls::_::<impl Immutable for core::mem::MaybeUninit<T>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u32"
+        ]
+      },
+      {
+        "path": "impls::_::<impl TryFromBytes for core::mem::MaybeUninit<T>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u32"
+        ]
+      },
+      {
+        "path": "impls::_::<impl FromZeros for core::mem::MaybeUninit<T>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u32"
+        ]
+      },
+      {
+        "path": "impls::_::<impl FromBytes for core::mem::MaybeUninit<T>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u32"
+        ]
+      },
+      {
+        "path": "impls::_::<impl Unaligned for core::mem::MaybeUninit<T>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u8"
+        ]
+      },
+      {
+        "path": "_::<impl KnownLayout for wrappers::MaybeUninit<T>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u32"
+        ]
+      },
+      {
+        "path": "_::<impl KnownLayout for [T; N]>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u8",
+          "4usize"
+        ]
+      },
+      {
+        "path": "impls::_::<impl Immutable for [T; N]>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u8",
+          "4usize"
+        ]
+      },
+      {
+        "path": "impls::_::<impl TryFromBytes for [T; N]>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u8",
+          "4usize"
+        ]
+      },
+      {
+        "path": "impls::_::<impl FromZeros for [T; N]>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u8",
+          "4usize"
+        ]
+      },
+      {
+        "path": "impls::_::<impl FromBytes for [T; N]>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u8",
+          "4usize"
+        ]
+      },
+      {
+        "path": "impls::_::<impl IntoBytes for [T; N]>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u8",
+          "4usize"
+        ]
+      },
+      {
+        "path": "impls::_::<impl Unaligned for [T; N]>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u8",
+          "4usize"
+        ]
+      },
+      {
+        "path": "_::<impl KnownLayout for [T; N]>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u32",
+          "4usize"
+        ]
+      },
+      {
+        "path": "impls::_::<impl Immutable for [T; N]>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u32",
+          "4usize"
+        ]
+      },
+      {
+        "path": "impls::_::<impl TryFromBytes for [T; N]>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u32",
+          "4usize"
+        ]
+      },
+      {
+        "path": "impls::_::<impl FromZeros for [T; N]>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u32",
+          "4usize"
+        ]
+      },
+      {
+        "path": "impls::_::<impl FromBytes for [T; N]>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u32",
+          "4usize"
+        ]
+      },
+      {
+        "path": "impls::_::<impl IntoBytes for [T; N]>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u32",
+          "4usize"
+        ]
+      },
+      {
+        "path": "_::<impl KnownLayout for core::marker::PhantomData<T>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "*const u8"
+        ]
+      },
+      {
+        "path": "impls::_::<impl Immutable for core::marker::PhantomData<T>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "*const u8"
+        ]
+      },
+      {
+        "path": "impls::_::<impl TryFromBytes for core::marker::PhantomData<T>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "*const u8"
+        ]
+      },
+      {
+        "path": "impls::_::<impl FromZeros for core::marker::PhantomData<T>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "*const u8"
+        ]
+      },
+      {
+        "path": "impls::_::<impl FromBytes for core::marker::PhantomData<T>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "*const u8"
+        ]
+      },
+      {
+        "path": "impls::_::<impl IntoBytes for core::marker::PhantomData<T>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "*const u8"
+        ]
+      },
+      {
+        "path": "impls::_::<impl Unaligned for core::marker::PhantomData<T>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "*const u8"
+        ]
+      },
+      {
+        "path": "_::<impl KnownLayout for *const T>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u8"
+        ]
+      },
+      {
+        "path": "impls::_::<impl Immutable for *const T>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u8"
+        ]
+      },
+      {
+        "path": "impls::_::<impl TryFromBytes for *const T>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u8"
+        ]
+      },
+      {
+        "path": "impls::_::<impl FromZeros for *const T>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u8"
+        ]
+      },
+      {
+        "path": "_::<impl KnownLayout for *mut T>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u8"
+        ]
+      },
+      {
+        "path": "impls::_::<impl Immutable for *mut T>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u8"
+        ]
+      },
+      {
+        "path": "impls::_::<impl TryFromBytes for *mut T>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u8"
+        ]
+      },
+      {
+        "path": "impls::_::<impl FromZeros for *mut T>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u8"
+        ]
+      },
+      {
+        "path": "impls::atomics::atomic_ptr::_::<impl KnownLayout for core::sync::atomic::Atomic<*mut T>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u8"
+        ]
+      },
+      {
+        "path": "impls::atomics::atomic_ptr::_::<impl TryFromBytes for core::sync::atomic::Atomic<*mut T>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u8"
+        ]
+      },
+      {
+        "path": "impls::atomics::atomic_ptr::_::<impl FromZeros for core::sync::atomic::Atomic<*mut T>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u8"
+        ]
+      },
+      {
+        "path": "_::<impl KnownLayout for core::cell::UnsafeCell<T>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u8"
+        ]
+      },
+      {
+        "path": "impls::<impl TryFromBytes for core::cell::UnsafeCell<T>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u8"
+        ]
+      },
+      {
+        "path": "impls::_::<impl FromZeros for core::cell::UnsafeCell<T>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u8"
+        ]
+      },
+      {
+        "path": "impls::_::<impl FromBytes for core::cell::UnsafeCell<T>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u8"
+        ]
+      },
+      {
+        "path": "impls::_::<impl IntoBytes for core::cell::UnsafeCell<T>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u8"
+        ]
+      },
+      {
+        "path": "impls::_::<impl Unaligned for core::cell::UnsafeCell<T>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u8"
+        ]
+      },
+      {
+        "path": "_::<impl KnownLayout for core::cell::Cell<T>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u8"
+        ]
+      },
+      {
+        "path": "impls::_::<impl TryFromBytes for core::cell::Cell<T>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u8"
+        ]
+      },
+      {
+        "path": "impls::_::<impl FromZeros for core::cell::Cell<T>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u8"
+        ]
+      },
+      {
+        "path": "impls::_::<impl FromBytes for core::cell::Cell<T>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u8"
+        ]
+      },
+      {
+        "path": "impls::_::<impl IntoBytes for core::cell::Cell<T>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u8"
+        ]
+      },
+      {
+        "path": "impls::_::<impl Unaligned for core::cell::Cell<T>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u8"
+        ]
+      },
+      {
+        "path": "_::<impl KnownLayout for core::option::Option<T>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "core::num::NonZero<u32>"
+        ]
+      },
+      {
+        "path": "impls::_::<impl Immutable for core::option::Option<T>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "core::num::NonZero<u32>"
+        ]
+      },
+      {
+        "path": "impls::_::<impl TryFromBytes for core::option::Option<&T>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u8"
+        ]
+      },
+      {
+        "path": "impls::_::<impl FromZeros for core::option::Option<&T>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u8"
+        ]
+      },
+      {
+        "path": "impls::_::<impl TryFromBytes for core::option::Option<core::ptr::NonNull<T>>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u8"
+        ]
+      },
+      {
+        "path": "impls::_::<impl FromZeros for core::option::Option<core::ptr::NonNull<T>>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u8"
+        ]
+      }
+    ]
+  },
+  "proof": {
+    "source_root": ".",
+    "specification": "Spec.specs",
+    "theorem": "Proof.verify",
+    "sources": [
+      {
+        "module": "Spec",
+        "path": "Spec.lean",
+        "role": "specification"
+      },
+      {
+        "module": "Proof",
+        "path": "Proof.lean",
+        "role": "proof"
+      }
+    ]
+  }
+}
