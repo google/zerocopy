@@ -28,7 +28,8 @@ Rust signature:
 
 Only after writing the initial `Specs.safety` (caller preconditions) and
 `Spec.specs` / `Specs.property` (postconditions) from those channels, inspect
-the Rust body to check edge behavior (integer width, error variants, truncation).
+the Rust body to check edge behavior (integer width, error variants,
+truncation).
 
 **Discrepancy rule:** If the Rust body contradicts `>= 2` non-body channels,
 stop and raise an **Intent Decision** with the user (bug in Rust vs stale docs).
@@ -51,7 +52,8 @@ pinned `cargo anneal verify` unless `--allow-unpinned-lean` is passed.
 - **Zero unguarded partial traps:** Never rely on saturating `Nat.sub` (`a - b`
   clamping to `0`), totalized `Nat` `/` or `%` (`x / 0 = 0`), or unguarded
   `BitVec.toNat` / `Int.toNat` casts. Either prove domain preconditions exclude
-  underflow/division-by-zero in `Specs.safety`, or represent truncation explicitly.
+  underflow/division-by-zero in `Specs.safety`, or represent truncation
+  explicitly.
 - **Explicit non-vacuous `Specs.safety`:** State exact input bounds and domain
   invariants callers must establish (note: current scalar Profile v1 rejects
   pointers/references and enforces empty caller memory). Writing `False` in
@@ -70,7 +72,8 @@ Check **client sufficiency** before freezing the spec:
 - Write a temporary scratch `theorem` (note: `spec-preflight` permits `theorem`
   and excludes `example` in `Spec` modules) proving the caller's needed
   post-state property using **only** `Specs.safety` + `Specs.property`
-  (never peeking into `Proof.*` or `Captured.lean`), then remove it before commit.
+  (never peeking into `Proof.*` or `Captured.lean`), then remove it before
+  commit.
 - Record a clause coverage tally in your review note or commit context:
   `clauses: N, client-exercised: M`. Justify any unexercised clause (`M < N`)
   or prune dead spec obligations.
@@ -78,7 +81,8 @@ Check **client sufficiency** before freezing the spec:
 ## Step 4: `[A4]` pre-proof sanity and dual-polar mutation checks
 
 Run these lightweight checks *before* writing `Proof.*`, and label results
-explicitly as assumptions-only `[A4]` sanity (never as a replacement for proofs):
+explicitly as assumptions-only `[A4]` sanity (never as a replacement for
+proofs):
 
 1. **Vacuity & consistency (`cargo anneal verify`):** Check a temporary scratch
    `theorem` witnessing concrete valid arguments satisfying `Specs.safety`, and
@@ -87,8 +91,8 @@ explicitly as assumptions-only `[A4]` sanity (never as a replacement for proofs)
    then delete the temporary `theorem`.
 2. **Dual-polar mutation check (temporary, revert before committing):**
    - **Negative polarity (wrong body):** Temporarily perturb a return value or
-     comparison in Rust (e.g., `+ 1` or `<` -> `<=`) and verify either `cargo test`
-     fails or `Expected.lean` rejects the unguarded spec.
+     comparison in Rust (e.g., `+ 1` or `<` -> `<=`) and verify either
+     `cargo test` fails or `Expected.lean` rejects the unguarded spec.
    - **Positive polarity (forbidden input):** Verify a caller violating one
      conjunct of `Specs.safety` cannot satisfy the precondition witness.
 

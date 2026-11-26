@@ -24,6 +24,7 @@ use std::{
     io::Read,
     path::{Path, PathBuf},
     process::{Command, Output, Stdio},
+    sync::{Arc, Mutex, MutexGuard, PoisonError},
     thread,
     time::{Duration, Instant},
 };
@@ -42,6 +43,21 @@ pub const DEFAULT_CHILD_TIMEOUT: Duration = Duration::from_secs(600);
 /// (16 MiB); excess bytes are still drained and discarded to avoid pipe
 /// deadlocks without allowing a hostile child to OOM the host.
 pub const MAX_CHILD_STREAM_BYTES: usize = 16 * 1024 * 1024;
+
+/// Maximum characters of sanitized partial child output attached to a
+/// `sandbox-timeout` failure, including the elision marker.
+const MAX_TIMEOUT_EXCERPT_CHARS: usize = 6_000;
+
+/// How long a timed-out run waits for reader threads to observe EOF after
+/// the child's process group is killed, so bytes still buffered in the pipes
+/// reach the excerpt. Bounded because escaped descendants may hold the pipes
+/// open indefinitely.
+const TIMEOUT_OUTPUT_GRACE: Duration = Duration::from_millis(100);
+
+/// Bytes of each stream's most recent output kept in a rolling buffer once
+/// [`MAX_CHILD_STREAM_BYTES`] is reached, so a timeout excerpt still shows
+/// the child's final lines.
+const MAX_CHILD_STREAM_TAIL_BYTES: usize = 64 * 1024;
 
 /// Door 1 size cap for a single inspector `result.json` output (64 MiB).
 pub const MAX_INSPECTOR_RESULT_BYTES: u64 = 64 * 1024 * 1024;
@@ -1680,44 +1696,59 @@ fn spawn_and_wait_with_timeout(
         .take()
         .ok_or_else(|| Failure::operational(label, "missing child stderr pipe"))?;
 
-    let (stdout_tx, stdout_rx) = std::sync::mpsc::sync_channel(1);
-    let (stderr_tx, stderr_rx) = std::sync::mpsc::sync_channel(1);
-    let label_owned = label.to_owned();
-    thread::spawn(move || {
-        let res = match stdout_file {
+    // Readers append to shared buffers incrementally rather than handing
+    // back a `Vec` at EOF, so a timeout can snapshot whatever has been
+    // captured without waiting on pipes an escaped descendant still holds.
+    // Each reader reports its drain result once; only a file-backed stdout
+    // sink can fail.
+    let stdout_buf = Arc::new(Mutex::new(StreamCapture::default()));
+    let stderr_buf = Arc::new(Mutex::new(StreamCapture::default()));
+    let spawn_reader = |drain: Box<dyn FnOnce() -> Result<(), Failure> + Send>| {
+        let (tx, rx) = std::sync::mpsc::sync_channel(1);
+        thread::spawn(move || {
+            let _ = tx.send(drain());
+        });
+        rx
+    };
+    let stdout_rx = {
+        let buf = Arc::clone(&stdout_buf);
+        let label_owned = label.to_owned();
+        spawn_reader(Box::new(move || match stdout_file {
             Some((path, max_bytes)) => {
                 drain_to_bounded_file(stdout_pipe, &path, max_bytes, &label_owned)
-                    .map(|()| Vec::new())
             }
-            None => Ok(drain_bounded(stdout_pipe, MAX_CHILD_STREAM_BYTES)),
-        };
-        let _ = stdout_tx.send(res);
-    });
-    thread::spawn(move || {
-        let _ = stderr_tx.send(drain_bounded(stderr_pipe, MAX_CHILD_STREAM_BYTES));
-    });
-
-    let timeout_failure = || {
-        Failure::operational(
-            "sandbox-timeout",
-            format!("sandboxed child exceeded wall-clock timeout of {}s", timeout.as_secs()),
-        )
+            None => {
+                drain_bounded_into(
+                    stdout_pipe,
+                    MAX_CHILD_STREAM_BYTES,
+                    MAX_CHILD_STREAM_TAIL_BYTES,
+                    &buf,
+                );
+                Ok(())
+            }
+        }))
     };
+    let stderr_rx = {
+        let buf = Arc::clone(&stderr_buf);
+        spawn_reader(Box::new(move || {
+            drain_bounded_into(
+                stderr_pipe,
+                MAX_CHILD_STREAM_BYTES,
+                MAX_CHILD_STREAM_TAIL_BYTES,
+                &buf,
+            );
+            Ok(())
+        }))
+    };
+
+    let on_timeout = || timeout_failure(timeout, &stdout_buf, &stderr_buf);
     let deadline = Instant::now() + timeout;
-    let mut stdout_done: Option<Result<Vec<u8>, Failure>> = None;
-    let mut stderr_done: Option<Vec<u8>> = None;
+    let mut stdout_done: Option<Result<(), Failure>> = None;
+    let mut stderr_done: Option<Result<(), Failure>> = None;
     let mut poll_ms = 1u64;
     let status = loop {
-        if stdout_done.is_none()
-            && let Ok(res) = stdout_rx.try_recv()
-        {
-            stdout_done = Some(res);
-        }
-        if stderr_done.is_none()
-            && let Ok(bytes) = stderr_rx.try_recv()
-        {
-            stderr_done = Some(bytes);
-        }
+        poll_reader(&mut stdout_done, &stdout_rx);
+        poll_reader(&mut stderr_done, &stderr_rx);
         #[cfg(target_os = "linux")]
         {
             match child_exited_unreaped(child_pid) {
@@ -1765,35 +1796,55 @@ fn spawn_and_wait_with_timeout(
             }
             let _ = child.kill();
             let _ = child.wait();
-            break Err(timeout_failure());
+            // Give the readers a bounded moment to drain bytes still in the
+            // pipes, without waiting on pipes an escaped descendant holds.
+            let grace_deadline = Instant::now() + TIMEOUT_OUTPUT_GRACE;
+            for (done, rx) in [(&stdout_done, &stdout_rx), (&stderr_done, &stderr_rx)] {
+                if done.is_none() {
+                    let remaining = grace_deadline.saturating_duration_since(Instant::now());
+                    let _ = rx.recv_timeout(remaining);
+                }
+            }
+            break Err(on_timeout());
         }
         thread::sleep(Duration::from_millis(poll_ms));
         poll_ms = (poll_ms * 2).min(25);
     };
     let status = status?;
-    let stdout = match stdout_done {
-        Some(res) => res?,
-        None => {
-            let remaining = deadline.saturating_duration_since(Instant::now());
-            match stdout_rx.recv_timeout(remaining) {
-                Ok(res) => res?,
-                Err(std::sync::mpsc::RecvTimeoutError::Disconnected) => Vec::new(),
-                Err(std::sync::mpsc::RecvTimeoutError::Timeout) => return Err(timeout_failure()),
+    let wait_until_deadline =
+        |done: Option<Result<(), Failure>>, rx: &std::sync::mpsc::Receiver<Result<(), Failure>>| {
+            if let Some(res) = done {
+                return res;
             }
-        }
-    };
-    let stderr = match stderr_done {
-        Some(bytes) => bytes,
-        None => {
             let remaining = deadline.saturating_duration_since(Instant::now());
-            match stderr_rx.recv_timeout(remaining) {
-                Ok(bytes) => bytes,
-                Err(std::sync::mpsc::RecvTimeoutError::Disconnected) => Vec::new(),
-                Err(std::sync::mpsc::RecvTimeoutError::Timeout) => return Err(timeout_failure()),
+            match rx.recv_timeout(remaining) {
+                Ok(res) => res,
+                Err(std::sync::mpsc::RecvTimeoutError::Disconnected) => Ok(()),
+                Err(std::sync::mpsc::RecvTimeoutError::Timeout) => Err(on_timeout()),
             }
-        }
-    };
+        };
+    wait_until_deadline(stdout_done, &stdout_rx)?;
+    wait_until_deadline(stderr_done, &stderr_rx)?;
+    // A completed run reports only the bounded head, as before; the rolling
+    // tail exists for timeout diagnostics.
+    let stdout = std::mem::take(&mut lock_capture(&stdout_buf).head);
+    let stderr = std::mem::take(&mut lock_capture(&stderr_buf).head);
     Ok(Output { status, stdout, stderr })
+}
+
+/// Record a reader's drain result once it arrives; a reader that exited
+/// without reporting counts as a clean finish.
+fn poll_reader(
+    slot: &mut Option<Result<(), Failure>>,
+    rx: &std::sync::mpsc::Receiver<Result<(), Failure>>,
+) {
+    if slot.is_none() {
+        match rx.try_recv() {
+            Ok(res) => *slot = Some(res),
+            Err(std::sync::mpsc::TryRecvError::Disconnected) => *slot = Some(Ok(())),
+            Err(std::sync::mpsc::TryRecvError::Empty) => {}
+        }
+    }
 }
 
 fn drain_to_bounded_file(
@@ -1857,21 +1908,181 @@ fn drain_to_bounded_file(
     })
 }
 
-fn drain_bounded(mut reader: impl Read, limit: usize) -> Vec<u8> {
-    let mut out = Vec::new();
+/// Holds one child stream: the first `limit` bytes, then a rolling window of
+/// the most recent bytes once `limit` is reached.
+#[derive(Default)]
+struct StreamCapture {
+    head: Vec<u8>,
+    tail: std::collections::VecDeque<u8>,
+    /// Counts bytes read past `head` that are no longer in `tail`.
+    dropped: usize,
+}
+
+impl StreamCapture {
+    fn push(&mut self, bytes: &[u8], limit: usize, tail_limit: usize) {
+        let take = limit.saturating_sub(self.head.len()).min(bytes.len());
+        self.head.extend_from_slice(&bytes[..take]);
+        let rest = &bytes[take..];
+        let keep = &rest[rest.len().saturating_sub(tail_limit)..];
+        self.dropped = self.dropped.saturating_add(rest.len() - keep.len());
+        let overflow = (self.tail.len() + keep.len()).saturating_sub(tail_limit);
+        self.tail.drain(..overflow);
+        self.dropped = self.dropped.saturating_add(overflow);
+        self.tail.extend(keep);
+    }
+
+    /// Render the stream for a diagnostic: sanitized head, then the
+    /// sanitized rolling tail, separated by a gap marker only when bytes
+    /// between them were discarded.
+    fn render(&self) -> String {
+        let mut text = sanitize_child_output(&String::from_utf8_lossy(&self.head));
+        if self.dropped > 0 {
+            text.push_str(&format!("\n… [{} bytes not captured] …\n", self.dropped));
+        }
+        if !self.tail.is_empty() {
+            let tail: Vec<u8> = self.tail.iter().copied().collect();
+            text.push_str(&sanitize_child_output(&String::from_utf8_lossy(&tail)));
+        }
+        text
+    }
+}
+
+fn lock_capture<T>(buf: &Mutex<T>) -> MutexGuard<'_, T> {
+    // Readers only append bytes, so a poisoned buffer is still coherent.
+    buf.lock().unwrap_or_else(PoisonError::into_inner)
+}
+
+/// Build the `sandbox-timeout` failure, appending a sanitized, middle-elided
+/// excerpt of the output captured so far. The tail is kept because a stuck
+/// elaboration's last lines (e.g. the goal it was working on) are usually
+/// the most useful clue.
+fn timeout_failure(
+    timeout: Duration,
+    stdout: &Mutex<StreamCapture>,
+    stderr: &Mutex<StreamCapture>,
+) -> Failure {
+    let mut detail =
+        format!("sandboxed child exceeded wall-clock timeout of {}s", timeout.as_secs());
+    // Sanitize each stream before deciding whether it has anything to show,
+    // so escape-only output neither adds an empty `[stderr]` header nor
+    // hides the "no partial output" note.
+    let mut combined = lock_capture(stdout).render();
+    let stderr = lock_capture(stderr).render();
+    if !stderr.trim().is_empty() {
+        if !combined.trim().is_empty() {
+            combined.push('\n');
+        }
+        combined.push_str("[stderr]\n");
+        combined.push_str(&stderr);
+    }
+    let excerpt = elide_middle(&combined, MAX_TIMEOUT_EXCERPT_CHARS);
+    if excerpt.trim().is_empty() {
+        detail.push_str("; no partial output captured");
+    } else {
+        detail.push_str("; partial output (stdout+stderr, middle-elided):\n");
+        detail.push_str(&excerpt);
+    }
+    Failure::operational("sandbox-timeout", detail)
+}
+
+/// Strip terminal escape sequences and control characters (keeping `\n` and
+/// `\t`) so untrusted child output cannot restyle or rewrite the terminal
+/// when a diagnostic is printed. Bidirectional-override characters are also
+/// dropped so they cannot visually reorder the excerpt.
+fn sanitize_child_output(text: &str) -> String {
+    let mut out = String::with_capacity(text.len());
+    let mut chars = text.chars().peekable();
+    while let Some(c) = chars.next() {
+        match c {
+            '\n' | '\t' => out.push(c),
+            '\u{1b}' => match chars.peek() {
+                Some('[') => {
+                    chars.next();
+                    skip_csi(&mut chars);
+                }
+                Some(']' | 'P' | 'X' | '^' | '_') => {
+                    chars.next();
+                    skip_control_string(&mut chars);
+                }
+                _ => {
+                    // Two-byte or `nF` escapes: intermediates, then a final.
+                    while chars.next_if(|c| ('\u{20}'..='\u{2f}').contains(c)).is_some() {}
+                    let _ = chars.next_if(|c| ('\u{30}'..='\u{7e}').contains(c));
+                }
+            },
+            '\u{9b}' => skip_csi(&mut chars),
+            '\u{90}' | '\u{9d}' | '\u{98}' | '\u{9e}' | '\u{9f}' => skip_control_string(&mut chars),
+            // Every Unicode `Bidi_Control` code point.
+            '\u{061c}'
+            | '\u{200e}'
+            | '\u{200f}'
+            | '\u{202a}'..='\u{202e}'
+            | '\u{2066}'..='\u{2069}' => {}
+            c if c.is_control() => {}
+            c => out.push(c),
+        }
+    }
+    out
+}
+
+/// Skip CSI parameter/intermediate bytes and the final byte, stopping early
+/// (without consuming) at anything that cannot belong to the sequence.
+fn skip_csi(chars: &mut std::iter::Peekable<std::str::Chars<'_>>) {
+    while chars.next_if(|c| ('\u{20}'..='\u{3f}').contains(c)).is_some() {}
+    let _ = chars.next_if(|c| ('\u{40}'..='\u{7e}').contains(c));
+}
+
+/// Skip an OSC/DCS-style string through its BEL or ST terminator. A newline
+/// also ends it (unconsumed) so an unterminated string cannot swallow the
+/// rest of the output.
+fn skip_control_string(chars: &mut std::iter::Peekable<std::str::Chars<'_>>) {
+    while let Some(c) = chars.next_if(|c| *c != '\n') {
+        match c {
+            '\u{07}' | '\u{9c}' => return,
+            '\u{1b}' if chars.next_if_eq(&'\\').is_some() => return,
+            _ => {}
+        }
+    }
+}
+
+/// Keep at most `max_chars` characters of `text`: if it is longer, keep the
+/// first two thirds and last third of the budget left after an explicit
+/// elision marker. Splits only on `char` boundaries.
+fn elide_middle(text: &str, max_chars: usize) -> String {
+    let marker = |elided: usize| format!("\n… [{elided} chars elided] …\n");
+    let total = text.chars().count();
+    if total <= max_chars {
+        return text.to_owned();
+    }
+    // Size the marker for the largest possible elided count so the final
+    // (possibly shorter) marker can never push the result past `max_chars`.
+    let budget = max_chars.saturating_sub(marker(total).chars().count());
+    if budget == 0 {
+        return text.chars().take(max_chars).collect();
+    }
+    let head = budget * 2 / 3;
+    let tail = budget - head;
+    let byte_at = |idx: usize| text.char_indices().nth(idx).map_or(text.len(), |(i, _)| i);
+    let head_end = byte_at(head);
+    let tail_start = byte_at(total - tail);
+    format!("{}{}{}", &text[..head_end], marker(total - head - tail), &text[tail_start..])
+}
+
+/// Drain `reader` to EOF, appending at most `limit` bytes to `sink` as each
+/// chunk arrives and discarding the excess so the writer never blocks.
+fn drain_bounded_into(
+    mut reader: impl Read,
+    limit: usize,
+    tail_limit: usize,
+    sink: &Mutex<StreamCapture>,
+) {
     let mut chunk = [0u8; 8192];
     loop {
         match reader.read(&mut chunk) {
             Ok(0) | Err(_) => break,
-            Ok(n) => {
-                if out.len() < limit {
-                    let take = (limit - out.len()).min(n);
-                    out.extend_from_slice(&chunk[..take]);
-                }
-            }
+            Ok(n) => lock_capture(sink).push(&chunk[..n], limit, tail_limit),
         }
     }
-    out
 }
 
 fn run_unsandboxed(
@@ -3382,9 +3593,175 @@ mod tests {
     fn drain_bounded_caps_retained_bytes_and_drains_reader() {
         let payload = vec![b'x'; 20_000];
         let mut cursor = std::io::Cursor::new(payload);
-        let retained = drain_bounded(&mut cursor, 4096);
-        assert_eq!(retained.len(), 4096);
+        let sink = Mutex::new(StreamCapture::default());
+        drain_bounded_into(&mut cursor, 4096, 100, &sink);
+        let capture = sink.into_inner().unwrap();
+        assert_eq!(capture.head.len(), 4096);
+        assert_eq!(capture.tail.len(), 100);
+        assert_eq!(capture.dropped, 20_000 - 4096 - 100);
         assert_eq!(cursor.position(), 20_000);
+    }
+
+    #[test]
+    fn stream_capture_keeps_true_tail_after_overflow() {
+        // Feed in odd-sized pieces so the rolling window crosses chunks.
+        let mut text = String::from("head_marker\n");
+        for i in 0..2_000 {
+            text.push_str(&format!("noise-{i:05}\n"));
+        }
+        text.push_str("\u{22a2} final_goal\n");
+        let mut capture = StreamCapture::default();
+        for piece in text.as_bytes().chunks(37) {
+            capture.push(piece, 64, 32);
+        }
+        assert_eq!(capture.head.len(), 64);
+        assert_eq!(capture.tail.len(), 32);
+        assert_eq!(capture.head.len() + capture.dropped + capture.tail.len(), text.len());
+        let rendered = capture.render();
+        assert!(rendered.starts_with("head_marker\n"), "{rendered}");
+        assert!(rendered.ends_with("\u{22a2} final_goal\n"), "{rendered}");
+        assert!(rendered.contains(" bytes not captured] "), "{rendered}");
+
+        // The timeout diagnostic keeps that final tail.
+        let msg = timeout_failure(
+            Duration::from_secs(1),
+            &Mutex::new(capture),
+            &Mutex::new(StreamCapture::default()),
+        )
+        .message;
+        assert!(msg.contains("head_marker") && msg.ends_with("\u{22a2} final_goal\n"), "{msg}");
+
+        // Overflow that discards nothing joins head and tail without a gap
+        // marker.
+        let mut contiguous = StreamCapture::default();
+        contiguous.push(b"0123456789", 6, 32);
+        assert_eq!((contiguous.dropped, contiguous.tail.len()), (0, 4));
+        assert_eq!(contiguous.render(), "0123456789");
+
+        // Without overflow, rendering is just the sanitized head.
+        let mut small = StreamCapture::default();
+        small.push(b"ok\x1b[0m\n", 64, 32);
+        assert_eq!(small.render(), "ok\n");
+    }
+
+    #[test]
+    fn elide_middle_bounds_length_and_keeps_head_and_tail() {
+        // At or under the cap the text is returned unchanged.
+        let exact = "x".repeat(60);
+        assert_eq!(elide_middle(&exact, 60), exact);
+        assert_eq!(elide_middle("", 60), "");
+
+        // One char over the cap elides, staying within the cap.
+        let text: String = (0..1000).map(|i| char::from(b'a' + (i % 26) as u8)).collect();
+        for max in [61, 100, 999] {
+            let out = elide_middle(&text[..max + 1], max);
+            assert!(out.chars().count() <= max, "{max}: {out:?}");
+            assert!(out.contains(" chars elided] "), "{out:?}");
+        }
+
+        // Head is two thirds and tail one third of the post-marker budget,
+        // and the reported elided count accounts for every dropped char.
+        let out = elide_middle(&text, 100);
+        let (head, rest) = out.split_once("\n… [").unwrap();
+        let (count, tail) = rest.split_once(" chars elided] …\n").unwrap();
+        let elided: usize = count.parse().unwrap();
+        assert_eq!(head.len() + elided + tail.len(), text.len());
+        assert!(text.starts_with(head) && text.ends_with(tail));
+        let budget = head.len() + tail.len();
+        assert_eq!(head.len(), budget * 2 / 3);
+        assert!(out.chars().count() <= 100);
+
+        // Multibyte characters are never split.
+        let multi: String = "⊢é漢🦀".repeat(500);
+        let out = elide_middle(&multi, 77);
+        assert!(out.chars().count() <= 77);
+        assert!(out.starts_with('⊢') && out.ends_with('🦀'), "{out:?}");
+
+        // A cap smaller than the marker degrades to a plain prefix.
+        assert_eq!(elide_middle(&multi, 3), "⊢é漢");
+    }
+
+    #[test]
+    fn sanitize_child_output_strips_escapes_and_controls() {
+        let raw = "a\u{1b}[31mb\u{1b}[0m\tc\r\nd\u{7}e\u{1b}]0;title\u{7}f\u{202e}g\
+                   \u{9b}1mh\u{1b}(Bi\u{1b}]8;;x\u{1b}\\j\u{0}⊢ k";
+        assert_eq!(sanitize_child_output(raw), "ab\tc\ndefghij⊢ k");
+        // An unterminated OSC string ends at the next newline.
+        assert_eq!(sanitize_child_output("x\u{1b}]bad\ny"), "x\ny");
+        // A lone trailing ESC or truncated CSI is dropped without panicking.
+        assert_eq!(sanitize_child_output("z\u{1b}"), "z");
+        assert_eq!(sanitize_child_output("z\u{1b}[12"), "z");
+        // Implicit directional marks (LRM, RLM, ALM) are dropped too.
+        assert_eq!(sanitize_child_output("a\u{200e}b\u{200f}c\u{061c}d\u{2067}e"), "abcde");
+    }
+
+    #[test]
+    fn timeout_failure_omits_streams_with_nothing_visible() {
+        let capture = |bytes: &[u8]| {
+            let mut capture = StreamCapture::default();
+            capture.push(bytes, usize::MAX, 0);
+            Mutex::new(capture)
+        };
+        let detail = |stdout: &[u8], stderr: &[u8]| {
+            timeout_failure(Duration::from_secs(1), &capture(stdout), &capture(stderr)).message
+        };
+        let none = "sandboxed child exceeded wall-clock timeout of 1s; no partial output captured";
+        assert_eq!(detail(b"", b""), none);
+        assert_eq!(detail(b"", b"\x1b[31m\x1b[0m \r\n"), none);
+        assert_eq!(detail(b"\x1b[2J", b"\x07"), none);
+
+        let stderr_only = detail(b"\x1b[0m", b"oops\n");
+        assert!(stderr_only.ends_with("middle-elided):\n[stderr]\noops\n"), "{stderr_only}");
+        let stdout_only = detail(b"out\n", b"\x1b[31m");
+        assert!(stdout_only.ends_with("middle-elided):\nout\n"), "{stdout_only}");
+        assert!(!stdout_only.contains("[stderr]"), "{stdout_only}");
+        let both = detail(b"out", b"err");
+        assert!(both.ends_with("middle-elided):\nout\n[stderr]\nerr"), "{both}");
+    }
+
+    #[cfg(unix)]
+    #[test]
+    fn spawn_and_wait_with_timeout_attaches_sanitized_partial_output() {
+        use std::os::unix::process::CommandExt;
+
+        let mut cmd = Command::new("/bin/sh");
+        cmd.arg("-c").arg(concat!(
+            "printf 'head_marker\\n'; ",
+            "printf '\\033[31mred_text\\033[0m\\n'; ",
+            "printf 'stderr_marker\\n' >&2; ",
+            "i=0; while [ $i -lt 400 ]; do ",
+            "printf 'middle-noise-line-%04d\\n' $i; i=$((i+1)); done; ",
+            // U+22A2 (`⊢`) as UTF-8 octal escapes.
+            "printf '\\342\\212\\242 goal_marker\\n'; ",
+            "exec sleep 30",
+        ));
+        // SAFETY: `setpgid(0, 0)` is async-signal-safe.
+        unsafe {
+            cmd.pre_exec(|| {
+                if libc::setpgid(0, 0) < 0 {
+                    return Err(std::io::Error::last_os_error());
+                }
+                Ok(())
+            });
+        }
+
+        // The child prints everything within milliseconds and then sleeps,
+        // so a 2s limit leaves ample margin on a loaded machine while still
+        // proving that the timeout fires long before the 30s sleep ends.
+        let start = Instant::now();
+        let err = spawn_and_wait_with_timeout(cmd, Duration::from_secs(2), "test", None)
+            .expect_err("sleeping child must time out");
+        let elapsed = start.elapsed();
+        assert!(elapsed < Duration::from_secs(20), "timeout not prompt: {elapsed:?}");
+        assert_eq!(err.phase, "sandbox-timeout");
+        let msg = &err.message;
+        assert!(msg.starts_with("sandboxed child exceeded wall-clock timeout of 2s"), "{msg}");
+        for needle in ["head_marker", "red_text", "stderr_marker", "⊢ goal_marker", "chars elided"]
+        {
+            assert!(msg.contains(needle), "missing {needle:?} in {msg}");
+        }
+        assert!(!msg.contains('\u{1b}') && !msg.contains("[31m"), "{msg}");
+        assert!(msg.chars().count() <= MAX_TIMEOUT_EXCERPT_CHARS + 200, "{}", msg.len());
     }
 
     #[cfg(unix)]

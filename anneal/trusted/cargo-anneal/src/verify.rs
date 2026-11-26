@@ -34,7 +34,7 @@ use serde_json::{Value, json};
 use crate::setup::{ToolOverrides, installed_bundle, resolve_tools};
 use crate::{
     ActiveSandbox, Checker, SandboxMode, TOOLCHAIN, TargetAuditRequest, TargetBindings,
-    TargetModule, TargetProgress, TargetRole, TrustTier, diagnostics,
+    TargetModule, TargetProgress, TargetRole, TrustTier, cargo_config, diagnostics,
     output::{
         CardRenderOptions, ColorChoice, FailureCardInput, OutputSession, ResolvedVerifyFormat,
         SanitizedInline, VerifyFormat, VerifyPhase, finish_with_writers, render_failure_card,
@@ -311,6 +311,10 @@ pub struct VerifyArgs {
     /// Export compiled `.olean*` files to `<artifacts>/lean-lib/`.
     #[arg(long, global = true)]
     export_lean_lib: bool,
+    /// Replace an existing `--artifacts` directory that holds only earlier
+    /// `cargo-anneal` artifacts, after the new artifacts are fully copied.
+    #[arg(long, global = true)]
+    overwrite_artifacts: bool,
     /// Allow unpinned Lean with explicit `--lean` (taints receipt).
     #[arg(long, global = true)]
     allow_unpinned_lean: bool,
@@ -805,6 +809,12 @@ impl VerifyArgs {
                 "`--export-lean-lib` requires `--artifacts <DIR>`",
             ));
         }
+        if self.overwrite_artifacts && self.artifacts.is_none() {
+            return Err(cmd.error(
+                ErrorKind::MissingRequiredArgument,
+                "`--overwrite-artifacts` requires `--artifacts <DIR>`",
+            ));
+        }
         if self.capture.is_some() != self.sysroot.is_some() {
             return Err(cmd.error(
                 ErrorKind::ArgumentConflict,
@@ -1268,20 +1278,37 @@ fn encoded<T: Serialize>(value: &T) -> Result<Vec<u8>> {
 /// Uses `symlink_metadata` (without following links) so dangling symlinks are
 /// rejected; a plain `.cargo` directory is allowed when it contains no config
 /// file, whereas a `.cargo` symlink, non-directory entry (`!meta.is_dir()`),
-/// or any non-`NotFound` metadata error fails closed.
+/// or any non-`NotFound` metadata error fails closed. Toolchain files are
+/// always rejected. A `.cargo/config` or `.cargo/config.toml` file is admitted
+/// only when [`cargo_config::check_benign_config_file`] proves that it
+/// configures nothing but non-compilation tables such as `[alias]`.
 fn reject_compiler_overrides(dir: &Path) -> Result<()> {
+    let reject = |rel: &str, reason: &str| {
+        error(
+            "unsupported",
+            "cargo",
+            format!(
+                "compiler overrides need an explicit configured compilation \
+                 ({rel}: {reason}; in {})",
+                dir.display()
+            ),
+        )
+    };
     for forbidden in
         [".cargo", ".cargo/config", ".cargo/config.toml", "rust-toolchain", "rust-toolchain.toml"]
     {
-        match fs::symlink_metadata(dir.join(forbidden)) {
-            Ok(meta) if forbidden != ".cargo" || !meta.is_dir() => {
-                return Err(error(
-                    "unsupported",
-                    "cargo",
-                    "compiler overrides need an explicit configured compilation",
-                ));
+        let path = dir.join(forbidden);
+        match fs::symlink_metadata(&path) {
+            Ok(meta) if forbidden == ".cargo" => {
+                if meta.file_type().is_symlink() || !meta.is_dir() {
+                    return Err(reject(forbidden, "not a regular directory"));
+                }
             }
-            Ok(_) => {}
+            Ok(_) if forbidden.starts_with(".cargo/") => {
+                cargo_config::check_benign_config_file(&path)
+                    .map_err(|reason| reject(forbidden, &reason))?;
+            }
+            Ok(_) => return Err(reject(forbidden, "toolchain override")),
             Err(err) if err.kind() == std::io::ErrorKind::NotFound => {}
             Err(err) => return Err(io("cargo", err)),
         }
@@ -1491,20 +1518,11 @@ fn resolve_cargo_package_cfg(
     Ok(active_features.into_iter().map(|feat| format!("feature=\"{feat}\"")).collect())
 }
 
-// Cargo is an input-discovery shortcut, not a second verification profile.
-// Reject configurations this adapter cannot reproduce before building the
-// same explicit request consumed by the build-neutral path.
-#[allow(clippy::too_many_arguments)]
-fn cargo_compilation(
-    manifest_path: &Path,
-    panic: Option<PanicStrategy>,
-    overflow_checks: bool,
-    select: &[String],
-    instantiate: &[Instantiation],
-    features: &[String],
-    all_features: bool,
-    no_default_features: bool,
-) -> Result<(Compilation, Scope, PathBuf)> {
+/// Run `cargo metadata --no-deps --offline` for the package whose manifest
+/// is `manifest_path`, after refusing compiler overrides in its directory.
+/// Returns the canonical package root, the metadata, and the package's index
+/// in `metadata["packages"]`.
+fn cargo_package_metadata(manifest_path: &Path) -> Result<(PathBuf, Value, usize)> {
     let manifest = fs::canonicalize(manifest_path)
         .map_err(|e| io_with_path("cargo", "Cargo manifest", manifest_path, e))?;
     let source_root = manifest
@@ -1530,14 +1548,69 @@ fn cargo_compilation(
     }
     let metadata: Value =
         serde_json::from_slice(&output.stdout).map_err(|e| error("tool_failed", "cargo", e))?;
-    let package = metadata["packages"]
+    let package_index = metadata["packages"]
         .as_array()
         .and_then(|packages| {
-            packages.iter().find(|p| p["manifest_path"].as_str() == manifest.to_str())
+            packages.iter().position(|p| p["manifest_path"].as_str() == manifest.to_str())
         })
         .ok_or_else(|| {
             error("unsupported", "cargo", "choose a package Cargo.toml, not a virtual workspace")
         })?;
+    Ok((source_root, metadata, package_index))
+}
+
+/// Refuse compiler overrides in every directory from `source_root` up to the
+/// workspace root that `metadata` reports.
+fn reject_workspace_compiler_overrides(source_root: &Path, metadata: &Value) -> Result<()> {
+    let workspace_root =
+        metadata["workspace_root"].as_str().and_then(|root| fs::canonicalize(root).ok());
+    for ancestor in source_root.ancestors() {
+        reject_compiler_overrides(ancestor)?;
+        if workspace_root.as_deref() == Some(ancestor) {
+            break;
+        }
+    }
+    Ok(())
+}
+
+/// List the manifest and the root file of every target in the Cargo package
+/// at `manifest_path`, without the shortcut's other restrictions, so that
+/// `--overwrite-artifacts` can refuse a destination that holds any of them
+/// before it modifies that destination.
+fn cargo_target_paths(manifest_path: &Path) -> Result<Vec<PathBuf>> {
+    let (source_root, metadata, package_index) = cargo_package_metadata(manifest_path)?;
+    reject_workspace_compiler_overrides(&source_root, &metadata)?;
+    let package = &metadata["packages"][package_index];
+    let mut paths = vec![manifest_path.to_path_buf()];
+    for target in package["targets"]
+        .as_array()
+        .ok_or_else(|| error("tool_failed", "cargo", "missing Cargo targets"))?
+    {
+        let src_path = target["src_path"]
+            .as_str()
+            .ok_or_else(|| error("tool_failed", "cargo", "missing Cargo target path"))?;
+        paths.push(PathBuf::from(src_path));
+    }
+    Ok(paths)
+}
+
+// Cargo is an input-discovery shortcut, not a second verification profile.
+// Reject configurations this adapter cannot reproduce before building the
+// same explicit request consumed by the build-neutral path.
+#[allow(clippy::too_many_arguments)]
+fn cargo_compilation(
+    manifest_path: &Path,
+    panic: Option<PanicStrategy>,
+    overflow_checks: bool,
+    select: &[String],
+    instantiate: &[Instantiation],
+    features: &[String],
+    all_features: bool,
+    no_default_features: bool,
+    skip_dir: Option<&Path>,
+) -> Result<(Compilation, Scope, PathBuf)> {
+    let (source_root, metadata, package_index) = cargo_package_metadata(manifest_path)?;
+    let package = &metadata["packages"][package_index];
     let targets = package["targets"]
         .as_array()
         .ok_or_else(|| error("tool_failed", "cargo", "missing Cargo targets"))?;
@@ -1600,14 +1673,7 @@ fn cargo_compilation(
             }
         }
     }
-    let workspace_root =
-        metadata["workspace_root"].as_str().and_then(|root| fs::canonicalize(root).ok());
-    for ancestor in source_root.ancestors() {
-        reject_compiler_overrides(ancestor)?;
-        if workspace_root.as_deref() == Some(ancestor) {
-            break;
-        }
-    }
+    reject_workspace_compiler_overrides(&source_root, &metadata)?;
     let crate_root = Path::new(target_meta["src_path"].as_str().unwrap_or_default())
         .strip_prefix(&source_root)
         .map_err(|_| error("unsupported", "cargo", "target root escapes package"))?
@@ -1629,12 +1695,17 @@ fn cargo_compilation(
     // multi-target trees (and explicit non-primary target entrypoints) unless
     // `crate_root` itself lives inside one. Other compiler inputs require an
     // explicit request: importing every package file would stage unrelated
-    // data, proof packages, and build outputs.
+    // data, proof packages, and build outputs. `skip_dir` is an existing
+    // artifact directory that `--overwrite-artifacts` will replace: its
+    // staged copies of earlier inputs are outputs, not sources.
     let mut source_files = Vec::new();
     for entry in
         walkdir::WalkDir::new(&source_root).follow_links(false).into_iter().filter_entry(|e| {
             if e.depth() == 0 {
                 return true;
+            }
+            if skip_dir == Some(e.path()) {
+                return false;
             }
             let name = e.file_name();
             if name.to_string_lossy().starts_with('.') || name == "target" {
@@ -1689,6 +1760,13 @@ fn cargo_compilation(
 }
 
 fn cargo_request(args: &VerifyArgs, manifest: &Path) -> Result<(Request, PathBuf)> {
+    // Main has already admitted an existing `--overwrite-artifacts`
+    // destination; skip it so a rerun does not discover its own artifacts.
+    let skip_dir = args
+        .artifacts
+        .as_deref()
+        .filter(|_| args.overwrite_artifacts)
+        .and_then(|destination| fs::canonicalize(destination).ok());
     let (compilation, scope, base) = cargo_compilation(
         manifest,
         args.panic,
@@ -1698,6 +1776,7 @@ fn cargo_request(args: &VerifyArgs, manifest: &Path) -> Result<(Request, PathBuf
         &args.features,
         args.all_features,
         args.no_default_features,
+        skip_dir.as_deref(),
     )?;
     let proof_dir = args.proof_dir.as_ref().ok_or_else(|| {
         error("unsupported", "request", "--proof-dir is required with --manifest-path")
@@ -1705,10 +1784,12 @@ fn cargo_request(args: &VerifyArgs, manifest: &Path) -> Result<(Request, PathBuf
     let proof_root = fs::canonicalize(proof_dir)
         .map_err(|e| io_with_path("proof", "proof directory", proof_dir, e))?;
     let mut sources = Vec::new();
-    for entry in walkdir::WalkDir::new(&proof_root)
-        .follow_links(false)
-        .into_iter()
-        .filter_entry(|e| e.depth() == 0 || !e.file_name().to_string_lossy().starts_with('.'))
+    for entry in
+        walkdir::WalkDir::new(&proof_root).follow_links(false).into_iter().filter_entry(|e| {
+            e.depth() == 0
+                || (!e.file_name().to_string_lossy().starts_with('.')
+                    && skip_dir.as_deref() != Some(e.path()))
+        })
     {
         let entry = entry.map_err(|e| error("tool_failed", "proof", e))?;
         if entry.file_type().is_file() && entry.path().extension().is_some_and(|e| e == "lean") {
@@ -2983,6 +3064,7 @@ fn run<Out: std::io::Write + Send, ErrOut: std::io::Write + Send>(
     work: &Path,
     receipt_out: Option<&ValidatedReceiptOut>,
     session: &mut OutputSession<Out, ErrOut>,
+    overwrite_inputs: &mut Vec<PathBuf>,
 ) -> Result<Value> {
     let start = Instant::now();
     session.report_phase(VerifyPhase::Stage);
@@ -2991,6 +3073,11 @@ fn run<Out: std::io::Write + Send, ErrOut: std::io::Write + Send>(
         if let Some(VerifySubcommand::Rustc(rustc)) = &args.command {
             let prepared = prepare_rustc_request(rustc, work, &mut originals)?;
             reject_receipt_out_originals_aliasing(receipt_out, &originals)?;
+            reject_overwrite_input_aliasing(
+                args,
+                overwrite_inputs,
+                originals.iter().map(|(path, _)| path.clone()),
+            )?;
             (
                 prepared.request,
                 work.to_path_buf(),
@@ -3001,6 +3088,11 @@ fn run<Out: std::io::Write + Send, ErrOut: std::io::Write + Send>(
         } else {
             let (request, base) = load_request(args)?;
             check_request_inputs_receipt_out_aliasing(receipt_out, &base, &request)?;
+            reject_overwrite_input_aliasing(
+                args,
+                overwrite_inputs,
+                request_input_paths(&base, &request),
+            )?;
             (request, base, None, None, SymlinkPolicy::Reject)
         };
     // All Rust and Lean verification inputs have passed aliasing checks above.
@@ -3119,6 +3211,21 @@ fn run<Out: std::io::Write + Send, ErrOut: std::io::Write + Send>(
         }
     }
     reject_receipt_out_originals_aliasing(receipt_out, &originals)?;
+    reject_overwrite_input_aliasing(
+        args,
+        overwrite_inputs,
+        originals.iter().map(|(path, _)| path.clone()).chain(
+            [
+                Some(&tools.capture),
+                tools.sysroot.as_ref(),
+                tools.lean.as_ref(),
+                tools.prebuilt_dir.as_ref(),
+            ]
+            .into_iter()
+            .flatten()
+            .cloned(),
+        ),
+    )?;
     session.report_phase(VerifyPhase::Capture {
         crate_name: SanitizedInline::new(&request.compilation.crate_name),
     });
@@ -3297,6 +3404,11 @@ fn run<Out: std::io::Write + Send, ErrOut: std::io::Write + Send>(
         }
     }
     reject_receipt_out_originals_aliasing(receipt_out, &originals)?;
+    reject_overwrite_input_aliasing(
+        args,
+        overwrite_inputs,
+        originals.iter().map(|(path, _)| path.clone()),
+    )?;
     let spec_entry = modules
         .iter()
         .find(|m| m.module == spec_module && matches!(m.role, TargetRole::Specification))
@@ -4221,8 +4333,70 @@ pub fn main(args: VerifyArgs, color: ColorChoice, quiet: bool, verbose: bool) ->
             );
         }
     };
-    if let Some(destination) = artifacts
-        && let Err(failure) = preflight_artifact_destination(destination)
+    let mut overwrite_inputs =
+        if args.overwrite_artifacts { overwrite_protected_inputs(&args) } else { Vec::new() };
+    // In Cargo mode, any target root (not only the selected one) could sit
+    // inside an existing destination. List them before preflight so it
+    // refuses such a destination before anything modifies it, and refuse to
+    // overwrite at all when the targets cannot be listed.
+    if args.overwrite_artifacts
+        && args.request.is_none()
+        && !matches!(args.command, Some(VerifySubcommand::Rustc(_)))
+        && let Some(destination) = artifacts
+        && fs::symlink_metadata(destination).is_ok()
+    {
+        let manifest = args.manifest_path.as_deref().unwrap_or(Path::new("Cargo.toml"));
+        match cargo_target_paths(manifest) {
+            Ok(paths) => overwrite_inputs.extend(paths),
+            Err(failure) => {
+                return emit_failure(
+                    &mut session,
+                    resolved_format,
+                    receipt_out.as_ref(),
+                    taint_reasons,
+                    None,
+                    "tool_failed",
+                    "retention",
+                    &format!(
+                        "artifact destination {destination} cannot be overwritten: cannot list \
+                         the Cargo targets it might contain: {}",
+                        failure.detail
+                    ),
+                    None,
+                    2,
+                );
+            }
+        }
+    }
+    let existing = match artifacts.map(|destination| {
+        preflight_artifact_destination_mode(
+            destination,
+            args.overwrite_artifacts,
+            &overwrite_inputs,
+        )
+    }) {
+        None | Some(Ok(None)) => None,
+        Some(Ok(Some(existing))) => Some(existing),
+        Some(Err(failure)) => {
+            return emit_failure(
+                &mut session,
+                resolved_format,
+                receipt_out.as_ref(),
+                taint_reasons,
+                None,
+                failure.status,
+                failure.phase,
+                &failure.detail,
+                None,
+                2,
+            );
+        }
+    };
+    // Every preflight check passed. Before running, drop success evidence from
+    // the existing directory that `--overwrite-artifacts` may replace, so no
+    // outcome of this run can leave an earlier passing receipt in place.
+    if let Some(existing) = existing
+        && let Err(detail) = existing.invalidate(&overwrite_inputs)
     {
         return emit_failure(
             &mut session,
@@ -4230,9 +4404,9 @@ pub fn main(args: VerifyArgs, color: ColorChoice, quiet: bool, verbose: bool) ->
             receipt_out.as_ref(),
             taint_reasons,
             None,
-            failure.status,
-            failure.phase,
-            &failure.detail,
+            "tool_failed",
+            "retention",
+            &detail,
             None,
             2,
         );
@@ -4257,7 +4431,8 @@ pub fn main(args: VerifyArgs, color: ColorChoice, quiet: bool, verbose: bool) ->
     // Preserve diagnostic evidence for rejected requests as well as proved
     // ones. Export failure takes precedence over the verification result:
     // the requested evidence operation has not completed successfully.
-    let outcome = run(&args, stage.path(), receipt_out.as_ref(), &mut session);
+    let outcome =
+        run(&args, stage.path(), receipt_out.as_ref(), &mut session, &mut overwrite_inputs);
     session.finish_phases(outcome.is_ok());
     if let Err(failure) = &outcome
         && failure.suppress_retention
@@ -4313,12 +4488,18 @@ pub fn main(args: VerifyArgs, color: ColorChoice, quiet: bool, verbose: bool) ->
             } else {
                 None
             };
-            // Retention is create-only. A caller cannot accidentally overwrite
-            // a proof package or an earlier verification receipt by choosing an
-            // existing path.
+            // Retention is create-only unless `--overwrite-artifacts` opts in,
+            // and even then it replaces only a directory that retention wrote
+            // earlier, keeping it aside until the receipt is committed.
             let retained = if let Some(destination) = artifacts {
-                match retain_stage(stage.path(), Path::new(destination), true) {
-                    Ok(()) => Some(destination),
+                match retain_artifacts(
+                    args.overwrite_artifacts,
+                    stage.path(),
+                    Path::new(destination),
+                    true,
+                    &overwrite_inputs,
+                ) {
+                    Ok(guard) => Some(guard),
                     Err(failure) => {
                         drop(staged_receipt);
                         let sandbox = result.get("elaboration_sandbox").and_then(Value::as_str);
@@ -4344,7 +4525,10 @@ pub fn main(args: VerifyArgs, color: ColorChoice, quiet: bool, verbose: bool) ->
             {
                 let _ = invalidate_stale_receipt_out(ro);
                 let sandbox = result.get("elaboration_sandbox").and_then(Value::as_str);
-                let detail = rollback_retained_artifacts(retained, ro_err);
+                let detail = match retained {
+                    Some(guard) => guard.rollback(ro_err),
+                    None => ro_err,
+                };
                 return emit_failure(
                     &mut session,
                     resolved_format,
@@ -4357,6 +4541,9 @@ pub fn main(args: VerifyArgs, color: ColorChoice, quiet: bool, verbose: bool) ->
                     unretained_artifacts,
                     2,
                 );
+            }
+            if let Some(guard) = retained {
+                guard.commit();
             }
             if let Some(incomplete) =
                 result.pointer("/unstable_features/incomplete_observed").and_then(Value::as_array)
@@ -4437,9 +4624,19 @@ pub fn main(args: VerifyArgs, color: ColorChoice, quiet: bool, verbose: bool) ->
             } else {
                 None
             };
+            let mut retained_guard = None;
             let retained = if let Some(destination) = artifacts {
-                match retain_stage(stage.path(), Path::new(destination), false) {
-                    Ok(()) => Some(destination),
+                match retain_artifacts(
+                    args.overwrite_artifacts,
+                    stage.path(),
+                    Path::new(destination),
+                    false,
+                    &overwrite_inputs,
+                ) {
+                    Ok(guard) => {
+                        retained_guard = Some(guard);
+                        Some(destination)
+                    }
                     Err(ret_failure) => {
                         drop(staged_receipt);
                         return emit_failure(
@@ -4463,8 +4660,11 @@ pub fn main(args: VerifyArgs, color: ColorChoice, quiet: bool, verbose: bool) ->
                 && let Err(ro_err) = commit_receipt_out_temp(tmp, ro)
             {
                 let _ = invalidate_stale_receipt_out(ro);
-                let detail =
-                    rollback_retained_artifacts(retained, format!("{}; {ro_err}", failure.detail));
+                let detail = format!("{}; {ro_err}", failure.detail);
+                let detail = match retained_guard {
+                    Some(guard) => guard.rollback(detail),
+                    None => detail,
+                };
                 return emit_failure(
                     &mut session,
                     resolved_format,
@@ -4477,6 +4677,9 @@ pub fn main(args: VerifyArgs, color: ColorChoice, quiet: bool, verbose: bool) ->
                     unretained_artifacts,
                     2,
                 );
+            }
+            if let Some(guard) = retained_guard {
+                guard.commit();
             }
             let primary = match resolved_format {
                 ResolvedVerifyFormat::Json => format!("{serialized}\n"),
@@ -4558,7 +4761,83 @@ fn split_artifact_destination_with_prefix_len(
 /// refuses to write into any path that exists by then.
 ///
 /// `destination` is the UTF-8 spelling already checked by `main`.
+#[cfg(test)]
 fn preflight_artifact_destination(destination: &str) -> Result<()> {
+    preflight_artifact_destination_mode(destination, false, &[]).map(|_| ())
+}
+
+/// An existing artifact directory that preflight admitted for
+/// `--overwrite-artifacts`, identified so that a later step can tell whether
+/// the path still names the same directory.
+#[derive(Debug)]
+struct ExistingArtifactDir {
+    /// The destination with trailing separators stripped, so no use of it
+    /// follows a final symlink.
+    entry: PathBuf,
+    canonical: PathBuf,
+    #[cfg(unix)]
+    id: (u64, u64),
+}
+
+impl ExistingArtifactDir {
+    fn new(entry: &str) -> std::result::Result<Self, String> {
+        let entry = PathBuf::from(entry);
+        let canonical = fs::canonicalize(&entry).map_err(|e| e.to_string())?;
+        #[cfg(unix)]
+        let id = {
+            use std::os::unix::fs::MetadataExt as _;
+            let meta = fs::symlink_metadata(&entry).map_err(|e| e.to_string())?;
+            (meta.dev(), meta.ino())
+        };
+        Ok(Self {
+            entry,
+            canonical,
+            #[cfg(unix)]
+            id,
+        })
+    }
+
+    /// Re-check that `entry` is still the directory preflight admitted, then
+    /// remove its success evidence with [`invalidate_success_evidence`].
+    fn invalidate(&self, inputs: &[PathBuf]) -> std::result::Result<(), String> {
+        let changed = || {
+            format!(
+                "artifact destination {} changed after it was checked; refusing to \
+                 modify it",
+                self.entry.display()
+            )
+        };
+        let meta = fs::symlink_metadata(&self.entry).map_err(|_| changed())?;
+        if meta.file_type().is_symlink() || !meta.is_dir() {
+            return Err(changed());
+        }
+        #[cfg(unix)]
+        {
+            use std::os::unix::fs::MetadataExt as _;
+            if (meta.dev(), meta.ino()) != self.id {
+                return Err(changed());
+            }
+        }
+        if fs::canonicalize(&self.entry).ok().as_deref() != Some(self.canonical.as_path()) {
+            return Err(changed());
+        }
+        let cwd = std::env::current_dir()
+            .map_err(|e| format!("cannot determine the working directory: {e}"))?;
+        check_replaceable_artifacts_protecting(&self.entry, &cwd, inputs).map_err(|reason| {
+            format!("artifact destination {} cannot be overwritten: {reason}", self.entry.display())
+        })?;
+        invalidate_success_evidence(&self.entry)
+    }
+}
+
+/// Run [`preflight_artifact_destination`]'s checks, but when `overwrite` is
+/// set, also admit an existing destination that [`check_replaceable_artifacts`]
+/// accepts, and return it.
+fn preflight_artifact_destination_mode(
+    destination: &str,
+    overwrite: bool,
+    inputs: &[PathBuf],
+) -> Result<Option<ExistingArtifactDir>> {
     use std::path::Component;
 
     let reject = |detail: String| Err(error("tool_failed", "retention", detail));
@@ -4575,10 +4854,30 @@ fn preflight_artifact_destination(destination: &str) -> Result<()> {
         std::path::is_separator,
     );
     match fs::symlink_metadata(entry) {
+        Ok(_) if overwrite => {
+            if name.is_empty() || matches!(name, "." | "..") {
+                return reject(format!(
+                    "artifact destination {destination} must end in a directory name"
+                ));
+            }
+            let checked = std::env::current_dir()
+                .map_err(|e| format!("cannot determine the working directory: {e}"))
+                .and_then(|cwd| {
+                    check_replaceable_artifacts_protecting(Path::new(entry), &cwd, inputs)
+                });
+            return checked.and_then(|()| ExistingArtifactDir::new(entry)).map(Some).or_else(
+                |reason| {
+                    reject(format!(
+                        "artifact destination {destination} cannot be overwritten: {reason}"
+                    ))
+                },
+            );
+        }
         Ok(_) => {
             return reject(format!(
                 "artifact destination {destination} already exists; retention never \
-                 writes into an existing path, so pass a new path"
+                 writes into an existing path, so pass a new path (or pass \
+                 --overwrite-artifacts to replace earlier artifacts)"
             ));
         }
         // `ENOTDIR` means some ancestor is not a directory; the parent check
@@ -4600,7 +4899,7 @@ fn preflight_artifact_destination(destination: &str) -> Result<()> {
     // last: the invoker chooses the parent, and symlinked ancestors such as a
     // symlinked temporary directory are ordinary and already accepted.
     match fs::metadata(&parent) {
-        Ok(metadata) if metadata.is_dir() => Ok(()),
+        Ok(metadata) if metadata.is_dir() => Ok(None),
         Ok(_) => reject(format!("artifact destination parent {parent} is not a directory")),
         Err(e) => reject(format!("artifact destination parent {parent}: {e}")),
     }
@@ -4632,6 +4931,7 @@ fn run_shard_plan(args: &ShardPlanArgs, work: &Path) -> Result<ShardPlan> {
             &args.features,
             args.all_features,
             args.no_default_features,
+            None,
         )?;
         (compilation, scope, base, SymlinkPolicy::Reject)
     };
@@ -4800,6 +5100,454 @@ fn retain_stage(source: &Path, destination: &Path, allow_success_receipt: bool) 
     Ok(())
 }
 
+/// Names the marker file that retention writes into every artifact
+/// directory it creates, so `--overwrite-artifacts` can recognize one.
+const ARTIFACT_MARKER: &str = ".cargo-anneal-artifacts";
+
+/// Holds the exact contents of [`ARTIFACT_MARKER`].
+const ARTIFACT_MARKER_TEXT: &str = "cargo-anneal verification artifacts\n";
+
+/// Names every top-level entry that an artifact directory can contain, and
+/// whether that entry is a directory (`true`) or a regular file (`false`).
+///
+/// `--overwrite-artifacts` replaces an existing directory only when each of
+/// its entries matches one of these names and kinds, so a mistyped path
+/// cannot delete unrelated data. Extend this list whenever `run` stages a new
+/// top-level entry.
+const ARTIFACT_ENTRIES: &[(&str, bool)] = &[
+    (ARTIFACT_MARKER, false),
+    ("anneal", true),
+    ("audit-request.json", false),
+    ("authored", true),
+    ("capture", true),
+    ("capture.stderr", false),
+    ("capture.stdout", false),
+    ("expected-shard-plan.json", false),
+    ("generated", true),
+    ("lean-lib", true),
+    ("request.json", false),
+    ("result.json", false),
+    ("rust", true),
+];
+
+/// Check that `path` is an artifact directory that retention may replace.
+///
+/// `path` must be a real directory (not a symlink) that does not contain
+/// `cwd`. Each top-level entry must be a non-symlink regular file or
+/// directory whose name and kind appear in [`ARTIFACT_ENTRIES`], and a
+/// non-empty directory must carry the exact [`ARTIFACT_MARKER`] file. The
+/// names alone are too generic (`rust`, `anneal`) to prove that retention
+/// created the directory.
+#[cfg(test)]
+fn check_replaceable_artifacts(path: &Path, cwd: &Path) -> std::result::Result<(), String> {
+    check_replaceable_artifacts_protecting(path, cwd, &[])
+}
+
+/// Resolve `path` against `cwd` and canonicalize it, or, when it does not
+/// exist, its nearest existing ancestor.
+fn canonical_or_existing_ancestor(path: &Path, cwd: &Path) -> Option<PathBuf> {
+    let absolute = if path.is_absolute() { path.to_path_buf() } else { cwd.join(path) };
+    absolute.ancestors().find_map(|candidate| fs::canonicalize(candidate).ok())
+}
+
+/// Run [`check_replaceable_artifacts`], and also refuse a directory that
+/// contains (or is) any verification input in `inputs`, so replacing it can
+/// never delete the caller's own request, sources, proofs, or tools.
+fn check_replaceable_artifacts_protecting(
+    path: &Path,
+    cwd: &Path,
+    inputs: &[PathBuf],
+) -> std::result::Result<(), String> {
+    let meta = fs::symlink_metadata(path).map_err(|e| e.to_string())?;
+    if meta.file_type().is_symlink() {
+        return Err("it is a symlink".to_owned());
+    }
+    if !meta.is_dir() {
+        return Err("it is not a directory".to_owned());
+    }
+    // Replacing a directory that contains the working directory (such as
+    // `.` spelled another way, or an ancestor) would delete the caller's
+    // own tree. Fail closed when containment cannot be decided.
+    let unverifiable = |e: std::io::Error| {
+        format!("cannot verify that it does not contain the working directory: {e}")
+    };
+    let canonical = fs::canonicalize(path).map_err(unverifiable)?;
+    let canonical_cwd = fs::canonicalize(cwd).map_err(unverifiable)?;
+    if canonical_cwd.starts_with(&canonical) {
+        return Err("it contains the working directory".to_owned());
+    }
+    for input in inputs {
+        if canonical_or_existing_ancestor(input, &canonical_cwd)
+            .is_some_and(|canonical_input| canonical_input.starts_with(&canonical))
+        {
+            return Err(format!("it contains verification input {}", input.display()));
+        }
+    }
+    let mut empty = true;
+    for entry in fs::read_dir(path).map_err(|e| e.to_string())? {
+        let entry = entry.map_err(|e| e.to_string())?;
+        empty = false;
+        let name = entry.file_name();
+        let shown = Path::new(&name).display().to_string();
+        // `DirEntry::file_type` does not follow symlinks.
+        let kind = entry.file_type().map_err(|e| e.to_string())?;
+        let expected_dir = name
+            .to_str()
+            .and_then(|name| ARTIFACT_ENTRIES.iter().find(|(known, _)| *known == name))
+            .map(|(_, is_dir)| *is_dir)
+            .ok_or_else(|| format!("it contains {shown}, which cargo-anneal does not produce"))?;
+        let matches = if expected_dir { kind.is_dir() } else { kind.is_file() };
+        if kind.is_symlink() || !matches {
+            return Err(format!(
+                "it contains {shown} as a {}, which cargo-anneal does not produce",
+                if kind.is_symlink() { "symlink" } else { "different file type" }
+            ));
+        }
+    }
+    if !empty {
+        match read_marker_no_follow(&path.join(ARTIFACT_MARKER)) {
+            Ok(text) if text == ARTIFACT_MARKER_TEXT.as_bytes() => {}
+            _ => {
+                return Err(format!(
+                    "it lacks the {ARTIFACT_MARKER} marker that cargo-anneal writes"
+                ));
+            }
+        }
+    }
+    Ok(())
+}
+
+/// Read at most one byte more than [`ARTIFACT_MARKER_TEXT`] from a regular
+/// marker file, refusing to follow a symlink.
+fn read_marker_no_follow(path: &Path) -> std::io::Result<Vec<u8>> {
+    use std::io::Read as _;
+    let mut opts = fs::OpenOptions::new();
+    opts.read(true);
+    #[cfg(unix)]
+    {
+        use std::os::unix::fs::OpenOptionsExt;
+        opts.custom_flags(libc::O_NOFOLLOW | libc::O_NONBLOCK);
+    }
+    let file = opts.open(path)?;
+    if !file.metadata()?.is_file() {
+        return Err(std::io::Error::other("marker is not a regular file"));
+    }
+    let mut text = Vec::new();
+    file.take(ARTIFACT_MARKER_TEXT.len() as u64 + 1).read_to_end(&mut text)?;
+    Ok(text)
+}
+
+/// Remove success evidence (`result.json` and `lean-lib/`) from an existing
+/// artifact directory, so a failed `--overwrite-artifacts` run can never
+/// leave or restore an earlier passing receipt beside new failure evidence.
+/// The marker stays, so the directory remains replaceable.
+fn invalidate_success_evidence(dir: &Path) -> std::result::Result<(), String> {
+    let result = dir.join("result.json");
+    match fs::symlink_metadata(&result) {
+        Ok(meta) if meta.is_file() => fs::remove_file(&result)
+            .map_err(|e| format!("cannot remove earlier {}: {e}", result.display()))?,
+        Ok(_) => return Err(format!("{} is not a regular file", result.display())),
+        Err(e) if e.kind() == std::io::ErrorKind::NotFound => {}
+        Err(e) => return Err(format!("cannot inspect {}: {e}", result.display())),
+    }
+    let lean_lib = dir.join("lean-lib");
+    match fs::symlink_metadata(&lean_lib) {
+        Ok(meta) if meta.is_dir() => fs::remove_dir_all(&lean_lib)
+            .map_err(|e| format!("cannot remove earlier {}: {e}", lean_lib.display()))?,
+        Ok(_) => return Err(format!("{} is not a directory", lean_lib.display())),
+        Err(e) if e.kind() == std::io::ErrorKind::NotFound => {}
+        Err(e) => return Err(format!("cannot inspect {}: {e}", lean_lib.display())),
+    }
+    Ok(())
+}
+
+/// Collect the verification inputs named on the command line (and, best
+/// effort, those a readable `--request` declares) that
+/// `--overwrite-artifacts` must never delete.
+fn overwrite_protected_inputs(args: &VerifyArgs) -> Vec<PathBuf> {
+    let mut inputs: Vec<PathBuf> = [
+        args.request.as_deref(),
+        args.proof_dir.as_deref(),
+        args.manifest_path.as_deref(),
+        args.verify_shard_plan.as_deref(),
+        args.capture.as_deref(),
+        args.sysroot.as_deref(),
+        args.lean.as_deref(),
+    ]
+    .into_iter()
+    .flatten()
+    .map(Path::to_path_buf)
+    .collect();
+    // Also protect the tools that `run` will discover rather than receive,
+    // and the running executable.
+    if let Ok(tools) = select_tools(args) {
+        inputs.push(tools.capture);
+        inputs.extend(tools.sysroot);
+        inputs.extend(tools.lean);
+        inputs.extend(tools.prebuilt_dir);
+    }
+    inputs.extend(std::env::current_exe().ok());
+    if args.request.is_none()
+        && args.manifest_path.is_none()
+        && !matches!(args.command, Some(VerifySubcommand::Rustc(_)))
+    {
+        inputs.push(PathBuf::from("Cargo.toml"));
+    }
+    if let Some(VerifySubcommand::Rustc(rustc)) = &args.command {
+        inputs.push(rustc.crate_root.clone());
+        inputs.extend(rustc.source_file.iter().cloned());
+        inputs.extend(rustc.spec_file.iter().map(|spec| spec.path.clone()));
+        inputs.extend(rustc.proof_file.iter().map(|proof| proof.path.clone()));
+    }
+    // Read the request as `load_request` does: one that cannot be read or
+    // parsed here fails there too, before it can name any input.
+    if let Some(req) = args.request.as_deref()
+        && let Ok(canon_req) = fs::canonicalize(req)
+        && let Ok((bytes, _)) = read_regular_file_deref(&canon_req, "request")
+        && let Ok(request) = serde_json::from_slice::<Request>(&bytes)
+    {
+        inputs.extend(request_input_paths(receipt_parent(&canon_req), &request));
+    }
+    inputs
+}
+
+/// List the source roots and declared files that `request` reads, resolved
+/// against `base` the way [`load_request`] resolves them.
+fn request_input_paths(base: &Path, request: &Request) -> Vec<PathBuf> {
+    let resolve_dir = |raw_dir: &Path| -> PathBuf {
+        root(base, raw_dir).unwrap_or_else(|_| {
+            if raw_dir.is_absolute() { raw_dir.to_path_buf() } else { base.join(raw_dir) }
+        })
+    };
+    let source_root = resolve_dir(&request.compilation.source_root);
+    let proof_root = resolve_dir(&request.proof.source_root);
+    let crate_root = &request.compilation.crate_root;
+    let mut inputs = vec![
+        source_root.clone(),
+        proof_root.clone(),
+        declared_file(&source_root, crate_root).unwrap_or_else(|_| source_root.join(crate_root)),
+    ];
+    for relative in &request.compilation.source_files {
+        inputs.push(
+            declared_file(&source_root, relative).unwrap_or_else(|_| source_root.join(relative)),
+        );
+    }
+    for input in &request.proof.sources {
+        inputs.push(
+            declared_file(&proof_root, &input.path)
+                .unwrap_or_else(|_| proof_root.join(&input.path)),
+        );
+    }
+    inputs
+}
+
+/// Refuse, before any evidence is retained, an `--overwrite-artifacts`
+/// destination that contains a verification input discovered while staging,
+/// and add those inputs to `protected` so retention checks them again.
+fn reject_overwrite_input_aliasing(
+    args: &VerifyArgs,
+    protected: &mut Vec<PathBuf>,
+    inputs: impl IntoIterator<Item = PathBuf>,
+) -> Result<()> {
+    let Some(destination) = args.artifacts.as_deref().filter(|_| args.overwrite_artifacts) else {
+        return Ok(());
+    };
+    let start = protected.len();
+    protected.extend(inputs);
+    let Ok(canonical) = fs::canonicalize(destination) else {
+        // A destination that does not exist yet holds nothing to delete.
+        return Ok(());
+    };
+    let cwd = std::env::current_dir().map_err(|e| io("retention", e))?;
+    for input in &protected[start..] {
+        if canonical_or_existing_ancestor(input, &cwd)
+            .is_some_and(|canonical_input| canonical_input.starts_with(&canonical))
+        {
+            return Err(error(
+                "tool_failed",
+                "retention",
+                format!(
+                    "artifact destination {} cannot be overwritten: it contains verification \
+                     input {}",
+                    destination.display(),
+                    input.display()
+                ),
+            )
+            .without_retention());
+        }
+    }
+    Ok(())
+}
+
+/// Replace an existing artifact directory at `destination` with a copy of
+/// `source`, or create it as [`retain_stage`] does when it is absent.
+///
+/// The new artifacts are first copied into a private sibling directory. Only
+/// after that copy succeeds, and `destination` is re-checked with
+/// [`check_replaceable_artifacts`], is the old directory renamed aside. The
+/// moved directory is checked again before the new one is renamed into place
+/// and the old one removed, so a destination swapped in after the first check
+/// is restored rather than deleted. Any failure before the swap leaves
+/// `destination` untouched.
+fn replace_stage(
+    source: &Path,
+    destination: &Path,
+    allow_success_receipt: bool,
+    inputs: &[PathBuf],
+) -> Result<RetainedArtifacts> {
+    use std::path::Component;
+
+    let fail = |detail: String| error("tool_failed", "retention", detail);
+    let spelled = destination
+        .to_str()
+        .ok_or_else(|| fail("artifact destination path must be UTF-8".to_owned()))?;
+    let prefix_len = match destination.components().next() {
+        Some(Component::Prefix(prefix)) => prefix.as_os_str().as_encoded_bytes().len(),
+        _ => 0,
+    };
+    // Strip trailing separators first, so no check or rename below follows a
+    // final symlink (including a dangling `link/`).
+    let (entry, name, parent) =
+        split_artifact_destination_with_prefix_len(spelled, prefix_len, std::path::is_separator);
+    match fs::symlink_metadata(entry) {
+        Err(e) if e.kind() == std::io::ErrorKind::NotFound => {
+            retain_stage(source, destination, allow_success_receipt)?;
+            return Ok(RetainedArtifacts {
+                destination: destination.to_path_buf(),
+                previous: None,
+            });
+        }
+        Err(e) => return Err(io("retention", e)),
+        Ok(_) => {}
+    }
+    if name.is_empty() || matches!(name, "." | "..") {
+        return Err(fail(format!("artifact destination {spelled} must end in a directory name")));
+    }
+    let destination = Path::new(entry);
+    let parent = Path::new(&parent);
+    let cannot_overwrite = |reason: String| {
+        fail(format!("artifact destination {spelled} cannot be overwritten: {reason}"))
+    };
+    let cwd = std::env::current_dir()
+        .map_err(|e| cannot_overwrite(format!("cannot determine the working directory: {e}")))?;
+    let mut builder = tempfile::Builder::new();
+    let new_prefix = format!(".{name}.anneal-new-");
+    builder.prefix(&new_prefix);
+    #[cfg(unix)]
+    {
+        use std::os::unix::fs::PermissionsExt;
+        builder.permissions(fs::Permissions::from_mode(0o700));
+    }
+    // Dropping `staged` on any early return removes the partial copy.
+    let staged = builder.tempdir_in(parent).map_err(|e| io("retention", e))?;
+    copy_artifacts(source, staged.path(), allow_success_receipt)?;
+    // The destination may have changed since preflight.
+    check_replaceable_artifacts_protecting(destination, &cwd, inputs).map_err(cannot_overwrite)?;
+    let suffix = staged
+        .path()
+        .file_name()
+        .and_then(OsStr::to_str)
+        .and_then(|staged_name| staged_name.strip_prefix(&new_prefix))
+        .ok_or_else(|| fail("unexpected staging directory name".to_owned()))?;
+    let old = parent.join(format!(".{name}.anneal-old-{suffix}"));
+    match fs::symlink_metadata(&old) {
+        Err(e) if e.kind() == std::io::ErrorKind::NotFound => {}
+        Ok(_) => return Err(fail(format!("{} already exists", old.display()))),
+        Err(e) => return Err(io("retention", e)),
+    }
+    fs::rename(destination, &old).map_err(|e| io("retention", e))?;
+    // Re-check what was actually moved aside before deleting anything, in
+    // case the destination was swapped after the check above.
+    if let Err(reason) = check_replaceable_artifacts_protecting(&old, &cwd, inputs) {
+        return Err(match fs::rename(&old, destination) {
+            Ok(()) => cannot_overwrite(reason),
+            Err(restore) => fail(format!(
+                "artifact destination {spelled} cannot be overwritten: {reason}; it \
+                 remains at {} (restore failed: {restore})",
+                old.display()
+            )),
+        });
+    }
+    let staged = staged.keep();
+    if let Err(e) = fs::rename(&staged, destination) {
+        let restored = restore_invalidated(&old, destination);
+        let _ = fs::remove_dir_all(&staged);
+        return Err(fail(match restored {
+            Ok(()) => format!("cannot replace {spelled}: {e}"),
+            Err(why) => format!(
+                "cannot replace {spelled}: {e}; earlier artifacts remain at {} ({why})",
+                old.display()
+            ),
+        }));
+    }
+    Ok(RetainedArtifacts { destination: destination.to_path_buf(), previous: Some(old) })
+}
+
+/// Records an artifact directory that retention just wrote.
+///
+/// When it replaced an earlier artifact directory, that directory waits aside
+/// at `previous` until the run either commits (removing it) or rolls back
+/// (restoring it), so a later failure such as a `--receipt-out` error never
+/// loses the earlier artifacts.
+#[derive(Debug)]
+#[must_use]
+struct RetainedArtifacts {
+    destination: PathBuf,
+    previous: Option<PathBuf>,
+}
+
+impl RetainedArtifacts {
+    /// Keep the new artifacts and remove any earlier directory set aside.
+    fn commit(self) {
+        if let Some(old) = self.previous
+            && let Err(e) = fs::remove_dir_all(&old)
+        {
+            eprintln!("warning: cannot remove earlier artifacts at {}: {e}", old.display());
+        }
+    }
+
+    /// Remove the new artifacts and restore any earlier directory, appending
+    /// any cleanup failure to `detail`.
+    fn rollback(self, detail: String) -> String {
+        let mut detail = rollback_retained_artifacts(self.destination.to_str(), detail);
+        if let Some(old) = self.previous {
+            let restored = if fs::symlink_metadata(&self.destination).is_ok() {
+                Err("restore failed: new artifacts could not be removed".to_owned())
+            } else {
+                restore_invalidated(&old, &self.destination)
+            };
+            if let Err(why) = restored {
+                detail = format!("{detail}; earlier artifacts remain at {} ({why})", old.display());
+            }
+        }
+        detail
+    }
+}
+
+/// Move an earlier artifact directory set aside at `old` back to
+/// `destination`, but only after removing its success evidence: the run
+/// failed, so it must never bring back an earlier passing receipt.
+fn restore_invalidated(old: &Path, destination: &Path) -> std::result::Result<(), String> {
+    invalidate_success_evidence(old).map_err(|reason| format!("invalidation failed: {reason}"))?;
+    fs::rename(old, destination).map_err(|e| format!("restore failed: {e}"))
+}
+
+/// Retain `source` at `destination`: create-only by default, or through
+/// [`replace_stage`] when `overwrite` is set.
+fn retain_artifacts(
+    overwrite: bool,
+    source: &Path,
+    destination: &Path,
+    allow_success_receipt: bool,
+    inputs: &[PathBuf],
+) -> Result<RetainedArtifacts> {
+    if overwrite {
+        return replace_stage(source, destination, allow_success_receipt, inputs);
+    }
+    retain_stage(source, destination, allow_success_receipt)?;
+    Ok(RetainedArtifacts { destination: destination.to_path_buf(), previous: None })
+}
+
 fn copy_artifacts(source: &Path, destination: &Path, allow_success_receipt: bool) -> Result<()> {
     for entry in walkdir::WalkDir::new(source).min_depth(1).follow_links(false) {
         let entry = entry.map_err(|e| error("tool_failed", "retention", e))?;
@@ -4821,7 +5569,17 @@ fn copy_artifacts(source: &Path, destination: &Path, allow_success_receipt: bool
             fs::copy(entry.path(), target).map_err(|e| io("retention", e))?;
         }
     }
-    Ok(())
+    // Mark the directory as retention's own, so a later
+    // `--overwrite-artifacts` run can tell it from unrelated data.
+    fs::OpenOptions::new()
+        .write(true)
+        .create_new(true)
+        .open(destination.join(ARTIFACT_MARKER))
+        .and_then(|mut marker| {
+            use std::io::Write as _;
+            marker.write_all(ARTIFACT_MARKER_TEXT.as_bytes())
+        })
+        .map_err(|e| io("retention", e))
 }
 
 #[cfg(test)]
@@ -4994,7 +5752,8 @@ mod tests {
         assert!(reject_compiler_overrides(dir.path()).is_ok());
 
         symlink("missing-config", dir.path().join(".cargo/config.toml")).unwrap();
-        assert!(reject_compiler_overrides(dir.path()).is_err());
+        let err = reject_compiler_overrides(dir.path()).unwrap_err();
+        assert!(err.detail.contains("(.cargo/config.toml: symlink;"), "{}", err.detail);
         fs::remove_file(dir.path().join(".cargo/config.toml")).unwrap();
 
         symlink("missing-toolchain", dir.path().join("rust-toolchain.toml")).unwrap();
@@ -5014,6 +5773,58 @@ mod tests {
         };
         assert_eq!(err.status, "tool_failed");
         assert_eq!(err.phase, "cargo");
+    }
+
+    #[test]
+    fn compiler_override_check_admits_only_benign_cargo_configs() {
+        let dir = tempfile::tempdir().unwrap();
+        fs::create_dir(dir.path().join(".cargo")).unwrap();
+        let config = dir.path().join(".cargo/config.toml");
+        let legacy = dir.path().join(".cargo/config");
+        for benign in [
+            "[alias]\nnightly_docs = \"doc --no-deps -Zunstable-options\"\n",
+            "[alias]\nb = \"build\"\n[term]\ncolor = \"never\"\n\
+             [doc]\nbrowser = \"true\"\n",
+        ] {
+            for path in [&config, &legacy] {
+                fs::write(path, benign).unwrap();
+                assert!(reject_compiler_overrides(dir.path()).is_ok(), "{benign}");
+                fs::remove_file(path).unwrap();
+            }
+        }
+        for (rel, contents, reason) in [
+            (".cargo/config.toml", "[build]\nrustflags = [\"-Cdebuginfo=0\"]\n", "table [build]"),
+            (".cargo/config", "[build]\nrustflags = []\n", "table [build]"),
+            (".cargo/config.toml", "[target.'cfg(all())']\nrustflags = []\n", "table [target]"),
+            (
+                ".cargo/config.toml",
+                "[target.x86_64-unknown-linux-gnu]\nlinker = \"x\"\n",
+                "table [target]",
+            ),
+            (".cargo/config.toml", "[env]\nX = \"1\"\n", "table [env]"),
+            (".cargo/config.toml", "[patch.crates-io]\nx = { path = \"y\" }\n", "table [patch]"),
+            (".cargo/config.toml", "[net]\noffline = true\n", "table [net]"),
+            (".cargo/config.toml", "build.rustc-wrapper = \"evil\"\n", "top-level key"),
+            (".cargo/config.toml", "[alias\nb = \"build\"\n", "malformed header"),
+            ("rust-toolchain.toml", "[toolchain]\nchannel = \"nightly\"\n", "toolchain override"),
+            ("rust-toolchain", "nightly\n", "toolchain override"),
+        ] {
+            let path = dir.path().join(rel);
+            fs::write(&path, contents).unwrap();
+            let err = reject_compiler_overrides(dir.path()).unwrap_err();
+            assert_eq!(err.status, "unsupported");
+            assert_eq!(err.phase, "cargo");
+            assert!(
+                err.detail
+                    .starts_with("compiler overrides need an explicit configured compilation"),
+                "{}",
+                err.detail
+            );
+            assert!(err.detail.contains(&format!("({rel}: ")), "{}", err.detail);
+            assert!(err.detail.contains(reason), "{}", err.detail);
+            fs::remove_file(&path).unwrap();
+        }
+        assert!(reject_compiler_overrides(dir.path()).is_ok());
     }
 
     #[cfg(unix)]
@@ -5080,6 +5891,394 @@ mod tests {
         fs::write(target.path().join("keep"), b"valuable").unwrap();
         assert!(retain(source.path(), target.path()).is_err());
         assert_eq!(fs::read(target.path().join("keep")).unwrap(), b"valuable");
+    }
+
+    /// List the entries of `dir` other than `except`, so tests can assert
+    /// that replacement leaves no staging directories behind.
+    fn siblings(dir: &Path, except: &str) -> Vec<String> {
+        let mut names: Vec<String> = fs::read_dir(dir)
+            .unwrap()
+            .map(|e| e.unwrap().file_name().into_string().unwrap())
+            .filter(|name| name != except)
+            .collect();
+        names.sort();
+        names
+    }
+
+    #[test]
+    fn overwrite_artifacts_replaces_only_earlier_artifact_directories() {
+        let parent = tempfile::tempdir().unwrap();
+        let destination = parent.path().join("artifacts");
+
+        // Absent destination: behaves like create-only retention.
+        let first = tempfile::tempdir().unwrap();
+        fs::write(first.path().join("request.json"), b"first").unwrap();
+        fs::write(first.path().join("result.json"), b"{}").unwrap();
+        replace_stage(first.path(), &destination, true, &[]).unwrap().commit();
+        assert_eq!(fs::read(destination.join("request.json")).unwrap(), b"first");
+
+        // Repeated runs replace the earlier artifacts wholesale, including
+        // with a trailing separator, and leave no staging siblings behind.
+        let second = tempfile::tempdir().unwrap();
+        fs::create_dir(second.path().join("capture")).unwrap();
+        fs::write(second.path().join("capture/capture.json"), b"second").unwrap();
+        let spelled = PathBuf::from(format!("{}/", destination.display()));
+        replace_stage(second.path(), &spelled, false, &[]).unwrap().commit();
+        assert_eq!(fs::read(destination.join("capture/capture.json")).unwrap(), b"second");
+        assert!(!destination.join("result.json").exists());
+        assert!(siblings(parent.path(), "artifacts").is_empty());
+        #[cfg(unix)]
+        {
+            use std::os::unix::fs::PermissionsExt;
+            let mode = fs::metadata(&destination).unwrap().permissions().mode();
+            assert_eq!(mode & 0o777, 0o700);
+        }
+
+        // A failed copy (here: a success receipt on a failed run) leaves the
+        // existing artifacts intact.
+        let failed = tempfile::tempdir().unwrap();
+        fs::write(failed.path().join("result.json"), b"{}").unwrap();
+        let err = replace_stage(failed.path(), &destination, false, &[]).unwrap_err();
+        assert!(err.detail.contains("success receipt"), "{}", err.detail);
+        assert_eq!(fs::read(destination.join("capture/capture.json")).unwrap(), b"second");
+        assert!(siblings(parent.path(), "artifacts").is_empty());
+
+        // A directory with any foreign entry is never replaced.
+        fs::write(destination.join("notes.txt"), b"mine").unwrap();
+        let err = replace_stage(second.path(), &destination, true, &[]).unwrap_err();
+        assert!(err.detail.contains("notes.txt"), "{}", err.detail);
+        assert_eq!(fs::read(destination.join("notes.txt")).unwrap(), b"mine");
+        assert!(siblings(parent.path(), "artifacts").is_empty());
+
+        // A later failure (such as a `--receipt-out` error) rolls back to the
+        // earlier artifacts, which stay aside until the run commits.
+        fs::remove_file(destination.join("notes.txt")).unwrap();
+        fs::write(destination.join("result.json"), b"{}").unwrap();
+        fs::create_dir(destination.join("lean-lib")).unwrap();
+        let third = tempfile::tempdir().unwrap();
+        fs::write(third.path().join("request.json"), b"third").unwrap();
+        let guard = replace_stage(third.path(), &destination, true, &[]).unwrap();
+        assert_eq!(fs::read(destination.join("request.json")).unwrap(), b"third");
+        assert_eq!(siblings(parent.path(), "artifacts").len(), 1);
+        let detail = guard.rollback("receipt failed".to_owned());
+        assert_eq!(detail, "receipt failed");
+        assert_eq!(fs::read(destination.join("capture/capture.json")).unwrap(), b"second");
+        assert!(!destination.join("request.json").exists());
+        // The failed run never restores earlier success evidence.
+        assert!(!destination.join("result.json").exists());
+        assert!(!destination.join("lean-lib").exists());
+        assert!(destination.join(ARTIFACT_MARKER).is_file());
+        assert!(siblings(parent.path(), "artifacts").is_empty());
+    }
+
+    /// Rollback restores an earlier directory only once its success evidence
+    /// is gone; if that fails, the directory stays aside.
+    #[cfg(unix)]
+    #[test]
+    fn rollback_keeps_earlier_artifacts_aside_when_invalidation_fails() {
+        let parent = tempfile::tempdir().unwrap();
+        let destination = parent.path().join("artifacts");
+        fs::create_dir(&destination).unwrap();
+        fs::write(destination.join("request.json"), b"new").unwrap();
+        let old = parent.path().join(".artifacts.anneal-old-test");
+        fs::create_dir(&old).unwrap();
+        fs::write(old.join(ARTIFACT_MARKER), ARTIFACT_MARKER_TEXT).unwrap();
+        let elsewhere = parent.path().join("elsewhere.json");
+        fs::write(&elsewhere, b"{}").unwrap();
+        std::os::unix::fs::symlink(&elsewhere, old.join("result.json")).unwrap();
+
+        let guard =
+            RetainedArtifacts { destination: destination.clone(), previous: Some(old.clone()) };
+        let detail = guard.rollback("receipt failed".to_owned());
+        assert!(detail.starts_with("receipt failed; earlier artifacts remain at"), "{detail}");
+        assert!(detail.contains("invalidation failed"), "{detail}");
+        let missing = fs::symlink_metadata(&destination).unwrap_err();
+        assert_eq!(missing.kind(), std::io::ErrorKind::NotFound);
+        assert!(fs::symlink_metadata(old.join("result.json")).unwrap().is_symlink());
+        assert_eq!(fs::read(&elsewhere).unwrap(), b"{}");
+    }
+
+    #[test]
+    fn overwrite_artifacts_refuses_directories_holding_verification_inputs() {
+        let parent = tempfile::tempdir().unwrap();
+        let cwd = parent.path().join("cwd");
+        fs::create_dir(&cwd).unwrap();
+        let destination = parent.path().join("evidence");
+        fs::create_dir_all(destination.join("rust")).unwrap();
+        fs::write(destination.join(ARTIFACT_MARKER), ARTIFACT_MARKER_TEXT).unwrap();
+        fs::write(destination.join("request.json"), b"{}").unwrap();
+        fs::write(destination.join("rust/Cargo.toml"), b"[package]").unwrap();
+        let outside = parent.path().join("outside.json");
+        fs::write(&outside, b"{}").unwrap();
+
+        let check =
+            |inputs: &[PathBuf]| check_replaceable_artifacts_protecting(&destination, &cwd, inputs);
+        assert_eq!(check(std::slice::from_ref(&outside)), Ok(()));
+        for input in [
+            destination.join("request.json"),
+            destination.join("rust"),
+            destination.join("rust/Cargo.toml"),
+            destination.clone(),
+            // Not yet existing, but its nearest existing ancestor is inside.
+            destination.join("rust/src/lib.rs"),
+            // Relative inputs resolve against the working directory.
+            PathBuf::from("../evidence/request.json"),
+        ] {
+            let reason = check(&[outside.clone(), input.clone()]).unwrap_err();
+            assert!(reason.contains("verification input"), "{input:?}: {reason}");
+        }
+
+        // `replace_stage` refuses the same inputs and leaves them in place.
+        let source = tempfile::tempdir().unwrap();
+        fs::write(source.path().join("request.json"), b"new").unwrap();
+        let err = replace_stage(source.path(), &destination, true, &[destination.join("rust")])
+            .unwrap_err();
+        assert!(err.detail.contains("verification input"), "{}", err.detail);
+        assert_eq!(fs::read(destination.join("rust/Cargo.toml")).unwrap(), b"[package]");
+    }
+
+    #[test]
+    fn invalidate_success_evidence_drops_only_receipt_and_lean_lib() {
+        let dir = tempfile::tempdir().unwrap();
+        fs::write(dir.path().join(ARTIFACT_MARKER), ARTIFACT_MARKER_TEXT).unwrap();
+        fs::write(dir.path().join("result.json"), b"{}").unwrap();
+        fs::create_dir_all(dir.path().join("lean-lib/Proof")).unwrap();
+        fs::write(dir.path().join("lean-lib/Proof/A.olean"), b"x").unwrap();
+        fs::write(dir.path().join("request.json"), b"{}").unwrap();
+        invalidate_success_evidence(dir.path()).unwrap();
+        assert!(!dir.path().join("result.json").exists());
+        assert!(!dir.path().join("lean-lib").exists());
+        assert!(dir.path().join("request.json").is_file());
+        assert!(dir.path().join(ARTIFACT_MARKER).is_file());
+        // Absent evidence is fine; an unexpected kind fails closed.
+        invalidate_success_evidence(dir.path()).unwrap();
+        fs::create_dir(dir.path().join("result.json")).unwrap();
+        assert!(invalidate_success_evidence(dir.path()).is_err());
+        assert!(dir.path().join("result.json").is_dir());
+    }
+
+    #[cfg(unix)]
+    #[test]
+    fn overwrite_invalidation_rechecks_the_preflighted_directory() {
+        let parent = tempfile::tempdir().unwrap();
+        let seed = |dir: &Path| {
+            fs::create_dir_all(dir.join("lean-lib")).unwrap();
+            fs::write(dir.join(ARTIFACT_MARKER), ARTIFACT_MARKER_TEXT).unwrap();
+            fs::write(dir.join("result.json"), b"{}").unwrap();
+        };
+        // A destination absent at preflight has nothing to invalidate.
+        let ev = parent.path().join("ev");
+        let spelled = format!("{}/", ev.display());
+        assert!(preflight_artifact_destination_mode(&spelled, true, &[]).unwrap().is_none());
+
+        // The trailing separator is stripped, and the admitted directory
+        // loses only its success evidence.
+        seed(&ev);
+        let existing = preflight_artifact_destination_mode(&spelled, true, &[]).unwrap().unwrap();
+        assert_eq!(existing.entry, ev);
+        existing.invalidate(&[]).unwrap();
+        assert!(!ev.join("result.json").exists());
+        assert!(!ev.join("lean-lib").exists());
+        assert!(ev.join(ARTIFACT_MARKER).is_file());
+
+        // Entries added after preflight are re-checked.
+        seed(&ev);
+        let existing = preflight_artifact_destination_mode(&spelled, true, &[]).unwrap().unwrap();
+        fs::write(ev.join("notes.txt"), b"caller notes").unwrap();
+        let reason = existing.invalidate(&[]).unwrap_err();
+        assert!(reason.contains("notes.txt"), "{reason}");
+        assert!(ev.join("result.json").is_file());
+        fs::remove_file(ev.join("notes.txt")).unwrap();
+
+        // A symlink or a different directory swapped in after preflight is
+        // refused, and neither it nor the original is modified.
+        let moved = parent.path().join("moved");
+        fs::rename(&ev, &moved).unwrap();
+        let other = parent.path().join("other");
+        seed(&other);
+        std::os::unix::fs::symlink(&other, &ev).unwrap();
+        let reason = existing.invalidate(&[]).unwrap_err();
+        assert!(reason.contains("changed after it was checked"), "{reason}");
+        fs::remove_file(&ev).unwrap();
+        seed(&ev);
+        let reason = existing.invalidate(&[]).unwrap_err();
+        assert!(reason.contains("changed after it was checked"), "{reason}");
+        for dir in [&ev, &moved, &other] {
+            assert!(dir.join("result.json").is_file(), "{}", dir.display());
+            assert!(dir.join("lean-lib").is_dir(), "{}", dir.display());
+        }
+    }
+
+    #[cfg(unix)]
+    #[test]
+    fn overwrite_artifacts_refuses_symlinks_files_and_cwd_ancestors() {
+        use std::os::unix::fs::symlink;
+
+        let source = tempfile::tempdir().unwrap();
+        fs::write(source.path().join("request.json"), b"new").unwrap();
+        let parent = tempfile::tempdir().unwrap();
+        let outside = tempfile::tempdir().unwrap();
+        fs::write(outside.path().join("request.json"), b"outside").unwrap();
+
+        // A symlink to an artifact-looking directory is refused at preflight
+        // and at retention, without touching its target.
+        let link = parent.path().join("link");
+        symlink(outside.path(), &link).unwrap();
+        for spelling in [link.display().to_string(), format!("{}/", link.display())] {
+            let Err(failure) = preflight_artifact_destination_mode(&spelling, true, &[]) else {
+                panic!("symlink destination {spelling} must be rejected");
+            };
+            assert!(failure.detail.contains("symlink"), "{}", failure.detail);
+            let err = replace_stage(source.path(), Path::new(&spelling), true, &[]).unwrap_err();
+            assert!(err.detail.contains("symlink"), "{}", err.detail);
+        }
+        assert_eq!(fs::read(outside.path().join("request.json")).unwrap(), b"outside");
+        assert!(fs::symlink_metadata(&link).unwrap().is_symlink());
+
+        let file = parent.path().join("file");
+        fs::write(&file, b"caller file").unwrap();
+        let Err(failure) = preflight_artifact_destination_mode(file.to_str().unwrap(), true, &[])
+        else {
+            panic!("regular-file destination must be rejected");
+        };
+        assert!(failure.detail.contains("not a directory"), "{}", failure.detail);
+        assert!(replace_stage(source.path(), &file, true, &[]).is_err());
+        assert_eq!(fs::read(&file).unwrap(), b"caller file");
+
+        for root_like in ["/", ".", "..", &format!("{}/.", parent.path().display())] {
+            let Err(failure) = preflight_artifact_destination_mode(root_like, true, &[]) else {
+                panic!("{root_like} must be rejected");
+            };
+            assert!(failure.detail.contains("must end in a"), "{}", failure.detail);
+        }
+
+        let empty = parent.path().join("empty");
+        fs::create_dir(&empty).unwrap();
+        assert!(preflight_artifact_destination_mode(empty.to_str().unwrap(), true, &[]).is_ok());
+        assert!(preflight_artifact_destination_mode(empty.to_str().unwrap(), false, &[]).is_err());
+        let nested = empty.join("authored");
+        fs::create_dir(&nested).unwrap();
+        let reason = check_replaceable_artifacts(&empty, &nested).unwrap_err();
+        assert!(reason.contains("working directory"), "{reason}");
+        let reason = check_replaceable_artifacts(&empty, parent.path()).unwrap_err();
+        assert!(reason.contains("marker"), "{reason}");
+        fs::write(empty.join(ARTIFACT_MARKER), ARTIFACT_MARKER_TEXT).unwrap();
+        assert!(check_replaceable_artifacts(&empty, parent.path()).is_ok());
+        let missing_cwd = parent.path().join("missing-cwd");
+        let reason = check_replaceable_artifacts(&empty, &missing_cwd).unwrap_err();
+        assert!(reason.contains("cannot verify"), "{reason}");
+
+        // A dangling symlink spelled with a trailing separator is still
+        // inspected as the link itself.
+        let dangling = parent.path().join("dangling");
+        symlink(parent.path().join("absent"), &dangling).unwrap();
+        let spelled = PathBuf::from(format!("{}/", dangling.display()));
+        let err = replace_stage(source.path(), &spelled, true, &[]).unwrap_err();
+        assert!(err.detail.contains("symlink"), "{}", err.detail);
+        assert!(!parent.path().join("absent").exists());
+    }
+
+    /// Every top-level entry that production code stages into the work
+    /// directory must be replaceable, or `--overwrite-artifacts` would refuse
+    /// directories that retention itself wrote.
+    #[test]
+    fn artifact_entries_cover_every_staged_top_level_entry() {
+        let source = include_str!("verify.rs");
+        let production = &source[..source.find("#[cfg(test)]\nmod tests").unwrap()];
+        let mut staged = BTreeSet::new();
+        for piece in production.split("work.join(\"").skip(1) {
+            let path = &piece[..piece.find('"').unwrap()];
+            staged.insert(path.split('/').next().unwrap());
+        }
+        assert!(staged.contains("expected-shard-plan.json"), "{staged:?}");
+        for name in &staged {
+            assert!(
+                ARTIFACT_ENTRIES.iter().any(|(known, _)| known == name),
+                "{name} is staged but missing from ARTIFACT_ENTRIES"
+            );
+        }
+
+        // A retained directory holding the shard-plan snapshot is replaceable.
+        let parent = tempfile::tempdir().unwrap();
+        let destination = parent.path().join("artifacts");
+        let first = tempfile::tempdir().unwrap();
+        fs::write(first.path().join("expected-shard-plan.json"), b"first").unwrap();
+        replace_stage(first.path(), &destination, false, &[]).unwrap().commit();
+        let second = tempfile::tempdir().unwrap();
+        fs::write(second.path().join("expected-shard-plan.json"), b"second").unwrap();
+        replace_stage(second.path(), &destination, false, &[]).unwrap().commit();
+        assert_eq!(fs::read(destination.join("expected-shard-plan.json")).unwrap(), b"second");
+    }
+
+    /// Directories whose entries merely reuse generic stage names (such as a
+    /// checkout named `anneal` or `rust`) are never replaced; only a
+    /// directory carrying the exact marker, with each entry of the expected
+    /// kind, is.
+    #[cfg(unix)]
+    #[test]
+    fn overwrite_artifacts_requires_marker_and_entry_kinds() {
+        use std::os::unix::fs::symlink;
+
+        let parent = tempfile::tempdir().unwrap();
+        let cwd = parent.path();
+        let check = |dir: &Path| check_replaceable_artifacts(dir, cwd);
+        let make = |name: &str| {
+            let dir = parent.path().join(name);
+            fs::create_dir(&dir).unwrap();
+            dir
+        };
+
+        let checkout = make("checkout");
+        fs::create_dir(checkout.join("anneal")).unwrap();
+        fs::write(checkout.join("anneal/lib.rs"), b"user source").unwrap();
+        assert!(check(&checkout).unwrap_err().contains("marker"));
+
+        let with_git = make("with-git");
+        fs::create_dir(with_git.join("rust")).unwrap();
+        fs::create_dir(with_git.join(".git")).unwrap();
+        fs::write(with_git.join(ARTIFACT_MARKER), ARTIFACT_MARKER_TEXT).unwrap();
+        assert!(check(&with_git).unwrap_err().contains(".git"));
+
+        let wrong_marker = make("wrong-marker");
+        fs::create_dir(wrong_marker.join("rust")).unwrap();
+        fs::write(wrong_marker.join(ARTIFACT_MARKER), b"something else\n").unwrap();
+        assert!(check(&wrong_marker).unwrap_err().contains("marker"));
+
+        let linked = make("linked");
+        fs::write(linked.join(ARTIFACT_MARKER), ARTIFACT_MARKER_TEXT).unwrap();
+        symlink(parent.path().join("checkout"), linked.join("anneal")).unwrap();
+        assert!(check(&linked).unwrap_err().contains("symlink"));
+
+        let wrong_kind = make("wrong-kind");
+        fs::write(wrong_kind.join(ARTIFACT_MARKER), ARTIFACT_MARKER_TEXT).unwrap();
+        fs::create_dir(wrong_kind.join("request.json")).unwrap();
+        assert!(check(&wrong_kind).unwrap_err().contains("different file type"));
+
+        let marker_dir = make("marker-dir");
+        fs::create_dir(marker_dir.join(ARTIFACT_MARKER)).unwrap();
+        assert!(check(&marker_dir).is_err());
+
+        let owned = make("owned");
+        fs::write(owned.join(ARTIFACT_MARKER), ARTIFACT_MARKER_TEXT).unwrap();
+        fs::create_dir(owned.join("rust")).unwrap();
+        fs::write(owned.join("request.json"), b"{}").unwrap();
+        assert_eq!(check(&owned), Ok(()));
+        assert_eq!(check(&make("empty")), Ok(()));
+
+        // None of the refused directories lost anything.
+        assert_eq!(fs::read(checkout.join("anneal/lib.rs")).unwrap(), b"user source");
+        assert!(with_git.join(".git").is_dir());
+
+        // Retention writes the marker, so its own output is replaceable.
+        let source = tempfile::tempdir().unwrap();
+        fs::write(source.path().join("request.json"), b"{}").unwrap();
+        let retained = parent.path().join("retained");
+        retain(source.path(), &retained).unwrap();
+        assert_eq!(
+            fs::read(retained.join(ARTIFACT_MARKER)).unwrap(),
+            ARTIFACT_MARKER_TEXT.as_bytes()
+        );
+        assert_eq!(check(&retained), Ok(()));
     }
 
     /// Run the preflight on `path`, which must be UTF-8 as `main` ensures.
@@ -5349,6 +6548,7 @@ mod tests {
             sysroot: None,
             artifacts: None,
             export_lean_lib: false,
+            overwrite_artifacts: false,
             allow_unpinned_lean: false,
             allow_unsandboxed_elaboration: false,
             allow_sorry_in_proof: false,
@@ -5397,6 +6597,7 @@ mod tests {
                         artifacts: None,
                         export_lean_lib: false,
                         paranoid_quorum: false,
+                        overwrite_artifacts: false,
                         lean_memory_mb: None,
                         no_cache: false,
                         no_rebuild_bundled: false,
@@ -5894,6 +7095,7 @@ mod tests {
             sysroot: None,
             artifacts: None,
             export_lean_lib: false,
+            overwrite_artifacts: false,
             allow_unpinned_lean: false,
             allow_unsandboxed_elaboration: false,
             allow_sorry_in_proof: false,
@@ -5943,6 +7145,7 @@ mod tests {
                 no_default_features: false,
                 artifacts: None,
                 export_lean_lib: false,
+                overwrite_artifacts: false,
                 allow_unpinned_lean: false,
                 allow_unsandboxed_elaboration: false,
                 allow_sorry_in_proof: false,
@@ -6734,6 +7937,7 @@ mod tests {
             no_cache: false,
             no_rebuild_bundled: false,
             export_lean_lib: false,
+            overwrite_artifacts: false,
             lean_memory_mb: None,
             allow_unsandboxed_elaboration: false,
             allow_sorry_in_proof: false,

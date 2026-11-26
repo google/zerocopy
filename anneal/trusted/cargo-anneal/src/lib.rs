@@ -27,6 +27,7 @@
 
 #[doc(hidden)]
 pub mod bundle;
+mod cargo_config;
 #[doc(hidden)]
 pub mod cli;
 #[doc(hidden)]

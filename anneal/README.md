@@ -215,7 +215,9 @@ failing Lean diagnostic and file/line location in `Proof.lean`. To inspect
 captured MIR (`Captured.lean`) and the proof obligation (`Expected.lean`)
 directly, pass `--artifacts <new-directory>` (`verify` rejects a path that
 already exists, or whose parent is not an existing directory, before starting
-verification work).
+verification work). To rerun into the same path, add `--overwrite-artifacts`:
+it replaces only an earlier artifact directory that `verify` wrote, or an empty
+directory (see the [alpha guide][alpha-guide]).
 
 [alpha-guide]: https://github.com/google/zerocopy/blob/main/anneal/docs/alpha.md
 [releases]: https://github.com/google/zerocopy/releases
@@ -240,7 +242,10 @@ gh skill install google/zerocopy \
 For authoring formal specifications or scaling larger Lean proofs, see the
 companion [spec-authoring][spec-authoring-skill] and
 [proof-scaling][proof-scaling-skill] skills in the
-[Anneal skills index][skills-index].
+[Anneal skills index][skills-index]. `cargo-anneal` bundles both: run
+`cargo anneal skill list` to list the bundled skills, and
+`cargo anneal skill spec-authoring` or `cargo anneal skill proof-scaling` to
+print one.
 
 Choose the `--agent` value for your host. Commit the installed skill to share
 it with teammates and agents working in fresh checkouts.

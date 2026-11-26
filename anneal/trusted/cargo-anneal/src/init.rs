@@ -14,7 +14,17 @@ use std::{
     path::{Component, Path, PathBuf},
 };
 
-use clap::Args;
+use clap::{Args, ValueEnum};
+
+/// MIR profile whose specification bundle the Cargo-mode starter uses.
+#[derive(Clone, Copy, Debug, Default, PartialEq, Eq, ValueEnum)]
+pub enum InitProfile {
+    /// Profile v1 scalar MIR (`Trusted.MirSemantics.Specs`)
+    #[default]
+    V1,
+    /// Profile v2 references, raw pointers, and slices (`SpecsV2`)
+    V2,
+}
 
 /// Arguments for `cargo anneal init`.
 #[derive(Args)]
@@ -31,6 +41,9 @@ pub struct InitArgs {
     /// Create a self-contained runnable example (lib.rs, request.json, Spec.lean, Proof.lean)
     #[arg(long)]
     pub standalone: bool,
+    /// Starter Spec.lean MIR profile (v2: references, raw pointers, slices)
+    #[arg(long, value_enum, default_value_t = InitProfile::V1, conflicts_with = "standalone")]
+    pub profile: InitProfile,
 }
 
 struct ScaffoldFile {
@@ -104,6 +117,58 @@ open Trusted.MirAst Trusted.MirSemantics Anneal.MirWp
 -- proofs for each captured body in `Captured.program.bodies`.
 -- Run `cargo anneal skill --example` or `cargo anneal init --standalone`
 -- to inspect a complete worked proof.
+public theorem verify : Expected.claim := by
+  refine ⟨rfl, rfl, rfl, rfl, rfl, rfl, ?_, True.intro⟩
+  exact ?_
+
+end Proof
+"
+    .into()
+}
+
+fn cargo_spec_lean_v2() -> String {
+    "\
+module
+prelude
+public import Trusted.MirSemantics
+
+@[expose] public section
+
+namespace Spec
+
+open Trusted.MirAst Trusted.MirSemantics
+
+/-- Crate-level MIR Profile v2 safety and functional specification.
+`safety identity q` constrains each `Query` (arguments and `callerMem`)
+passed to the `unsafe` function with canonical path `identity`. Replace
+`property` (and any `unsafe` caller preconditions in `safety`) with the
+behavior your crate must satisfy. -/
+def specs : SpecsV2 where
+  safety := fun _ _ => True
+  property := fun _ => True
+
+end Spec
+
+end
+"
+    .into()
+}
+
+fn cargo_proof_lean_v2() -> String {
+    "\
+module
+prelude
+public import Expected
+import Anneal.MirWp
+
+namespace Proof
+
+open Trusted.MirAst Trusted.MirSemantics Anneal.MirWp
+
+-- `Expected.claim` is `UnitTheoremV2` or `CrateTheoremV2`. Replace the
+-- placeholder hole below with a `BodyVerifiedV2` proof (static admission
+-- and `WellFormedV2` for every valid `Query`) for each captured body in
+-- `Captured.program.bodies`, for example by evaluating `execProgV2`.
 public theorem verify : Expected.claim := by
   refine ⟨rfl, rfl, rfl, rfl, rfl, rfl, ?_, True.intro⟩
   exact ?_
@@ -330,15 +395,23 @@ pub fn run(args: InitArgs) -> Result<String, String> {
             .map(|parent| parent.join("proof"))
             .unwrap_or_else(|| PathBuf::from("proof"))
     });
+    let (spec, proof, profile_note) = match args.profile {
+        InitProfile::V1 => (cargo_spec_lean(), cargo_proof_lean(), ""),
+        InitProfile::V2 => (
+            cargo_spec_lean_v2(),
+            cargo_proof_lean_v2(),
+            "\nThe v2 starter checks only if capture emits MIR Profile v2\n(`program.mir_profile_version = 2`); scalar-only crates need the default\n`--profile v1` starter.\n",
+        ),
+    };
     let files = [
-        ScaffoldFile { name: "Spec.lean", contents: cargo_spec_lean() },
-        ScaffoldFile { name: "Proof.lean", contents: cargo_proof_lean() },
+        ScaffoldFile { name: "Spec.lean", contents: spec },
+        ScaffoldFile { name: "Proof.lean", contents: proof },
     ];
     let created = write_create_new_files(&proof_dir, &files)?;
     let select_flag = args.select.as_deref().map(|s| format!(" --select {s}")).unwrap_or_default();
     let list = created.iter().map(|p| format!("  {}", p.display())).collect::<Vec<_>>().join("\n");
     Ok(format!(
-        "Initialized Anneal proof files:\n{list}\n\nNext step:\n  Edit Spec.lean and Proof.lean, then run:\n  cargo anneal verify --manifest-path {} --proof-dir {}{select_flag}\n",
+        "Initialized Anneal proof files:\n{list}\n\nNext step:\n  Edit Spec.lean and Proof.lean, then run:\n  cargo anneal verify --manifest-path {} --proof-dir {}{select_flag}\n{profile_note}",
         manifest.display(),
         proof_dir.display()
     ))
@@ -356,6 +429,7 @@ mod tests {
             proof_dir: Some(dir.path().join("proof")),
             select: None,
             standalone: false,
+            profile: InitProfile::V1,
         })
         .unwrap_err();
         assert!(err.contains("no Cargo.toml found"), "{err}");
@@ -371,6 +445,7 @@ mod tests {
             proof_dir: Some(proof_dir.clone()),
             select: Some("zero".into()),
             standalone: false,
+            profile: InitProfile::V1,
         })
         .unwrap();
         assert!(ok.contains("--select zero"), "{ok}");
@@ -382,6 +457,7 @@ mod tests {
             proof_dir: Some(proof_dir),
             select: None,
             standalone: false,
+            profile: InitProfile::V1,
         })
         .unwrap_err();
         assert!(second.contains("refusing to overwrite existing file"), "{second}");
@@ -396,6 +472,7 @@ mod tests {
             proof_dir: Some(out_dir.clone()),
             select: None,
             standalone: true,
+            profile: InitProfile::V1,
         })
         .unwrap();
         assert!(summary.contains("verify --request"), "{summary}");
@@ -420,6 +497,7 @@ mod tests {
                     proof_dir: Some(spelling),
                     select: None,
                     standalone: true,
+                    profile: InitProfile::V1,
                 })
                 .unwrap_err();
                 assert!(err.contains("symlink"), "{err}");
@@ -478,6 +556,7 @@ mod tests {
             proof_dir: Some(out_dir.clone()),
             select: None,
             standalone: true,
+            profile: InitProfile::V1,
         })
         .unwrap();
 
@@ -568,6 +647,7 @@ mod tests {
             proof_dir: Some(nested),
             select: None,
             standalone: true,
+            profile: InitProfile::V1,
         })
         .unwrap();
         for name in ["lib.rs", "request.json", "Spec.lean", "Proof.lean"] {
@@ -581,6 +661,7 @@ mod tests {
             proof_dir: Some(symlink_parent.join("existing-dir")),
             select: None,
             standalone: true,
+            profile: InitProfile::V1,
         })
         .unwrap();
         assert!(existing_sub.join("Proof.lean").is_file());
@@ -598,6 +679,7 @@ mod tests {
             proof_dir: None,
             select: None,
             standalone: false,
+            profile: InitProfile::V1,
         })
         .unwrap();
         assert!(crate_real.join("proof/Spec.lean").is_file());
@@ -620,6 +702,7 @@ mod tests {
             proof_dir: Some(dangling_child),
             select: None,
             standalone: true,
+            profile: InitProfile::V1,
         })
         .unwrap_err();
         assert!(
@@ -657,6 +740,7 @@ mod tests {
                 proof_dir: Some(parent_spelling),
                 select: None,
                 standalone: true,
+                profile: InitProfile::V1,
             })
             .unwrap_err();
             assert!(err.contains("'..'"), "{err}");
@@ -673,9 +757,14 @@ mod tests {
             fs::canonicalize(expected_dir).unwrap()
         );
 
-        let dot_out =
-            run(InitArgs { manifest_path: None, proof_dir: None, select: None, standalone: true })
-                .unwrap();
+        let dot_out = run(InitArgs {
+            manifest_path: None,
+            proof_dir: None,
+            select: None,
+            standalone: true,
+            profile: InitProfile::V1,
+        })
+        .unwrap();
         assert!(dot_out.contains("verify --request ./request.json"), "{dot_out}");
         for name in ["lib.rs", "request.json", "Spec.lean", "Proof.lean"] {
             assert!(Path::new(name).is_file(), "missing {name} in '.'");
@@ -686,6 +775,7 @@ mod tests {
             proof_dir: Some(PathBuf::from("a/b/c")),
             select: None,
             standalone: true,
+            profile: InitProfile::V1,
         })
         .unwrap();
         assert!(nested_out.contains("verify --request a/b/c/request.json"), "{nested_out}");
@@ -698,6 +788,7 @@ mod tests {
             proof_dir: Some(PathBuf::from("../proof")),
             select: None,
             standalone: true,
+            profile: InitProfile::V1,
         })
         .unwrap();
         assert!(
@@ -743,8 +834,110 @@ mod tests {
             proof_dir: Some(dir.path().join("proof")),
             select: None,
             standalone: false,
+            profile: InitProfile::V1,
         })
         .unwrap_err();
         assert!(err.contains("virtual workspace"), "{err}");
+    }
+
+    fn write_demo_manifest(dir: &Path) -> PathBuf {
+        let manifest = dir.join("Cargo.toml");
+        fs::write(
+            &manifest,
+            "[package]\nname = \"demo\"\nversion = \"0.1.0\"\nedition = \"2024\"\n",
+        )
+        .unwrap();
+        manifest
+    }
+
+    #[derive(clap::Parser)]
+    struct InitCli {
+        #[command(flatten)]
+        args: InitArgs,
+    }
+
+    fn parse_init(argv: &[&str]) -> Result<InitArgs, clap::Error> {
+        use clap::Parser;
+        InitCli::try_parse_from(std::iter::once("init").chain(argv.iter().copied()))
+            .map(|cli| cli.args)
+    }
+
+    #[test]
+    fn default_profile_is_v1_and_output_is_unchanged() {
+        let parsed = parse_init(&[]).unwrap();
+        assert_eq!(parsed.profile, InitProfile::V1);
+        assert_eq!(parse_init(&["--profile", "v1"]).unwrap().profile, InitProfile::V1);
+
+        let dir = tempfile::tempdir().unwrap();
+        let manifest = write_demo_manifest(dir.path());
+        let proof_dir = dir.path().join("proof");
+        let summary = run(InitArgs {
+            manifest_path: Some(manifest.clone()),
+            proof_dir: Some(proof_dir.clone()),
+            select: None,
+            standalone: false,
+            profile: parsed.profile,
+        })
+        .unwrap();
+        assert_eq!(
+            summary,
+            format!(
+                "Initialized Anneal proof files:\n  {}\n  {}\n\nNext step:\n  Edit Spec.lean and \
+                 Proof.lean, then run:\n  cargo anneal verify --manifest-path {} --proof-dir {}\n",
+                proof_dir.join("Spec.lean").display(),
+                proof_dir.join("Proof.lean").display(),
+                manifest.display(),
+                proof_dir.display()
+            )
+        );
+        let spec = fs::read_to_string(proof_dir.join("Spec.lean")).unwrap();
+        let proof = fs::read_to_string(proof_dir.join("Proof.lean")).unwrap();
+        assert_eq!(spec, cargo_spec_lean());
+        assert_eq!(proof, cargo_proof_lean());
+        assert!(spec.contains("def specs : Specs where\n"), "{spec}");
+        assert!(!spec.contains("SpecsV2"), "{spec}");
+    }
+
+    #[test]
+    fn profile_v2_scaffolds_specs_v2_starter() {
+        let parsed = parse_init(&["--profile", "v2"]).unwrap();
+        assert_eq!(parsed.profile, InitProfile::V2);
+
+        let dir = tempfile::tempdir().unwrap();
+        let manifest = write_demo_manifest(dir.path());
+        let proof_dir = dir.path().join("proof");
+        let summary = run(InitArgs {
+            manifest_path: Some(manifest),
+            proof_dir: Some(proof_dir.clone()),
+            select: Some("load".into()),
+            standalone: false,
+            profile: parsed.profile,
+        })
+        .unwrap();
+        assert!(summary.contains("--select load\n"), "{summary}");
+        assert!(summary.contains("mir_profile_version = 2"), "{summary}");
+
+        let spec = fs::read_to_string(proof_dir.join("Spec.lean")).unwrap();
+        let proof = fs::read_to_string(proof_dir.join("Proof.lean")).unwrap();
+        assert_eq!(spec, cargo_spec_lean_v2());
+        assert_eq!(proof, cargo_proof_lean_v2());
+        assert!(spec.starts_with("module\nprelude\npublic import Trusted.MirSemantics\n"));
+        assert!(spec.contains("def specs : SpecsV2 where\n"), "{spec}");
+        assert!(spec.contains("  safety := fun _ _ => True\n"), "{spec}");
+        assert!(spec.contains("  property := fun _ => True\n"), "{spec}");
+        assert!(!spec.contains("sorry") && !spec.contains("import Anneal"), "{spec}");
+        assert!(proof.starts_with("module\nprelude\npublic import Expected\n"));
+        assert!(proof.contains("public theorem verify : Expected.claim := by\n"), "{proof}");
+        assert!(proof.contains("UnitTheoremV2") && proof.contains("BodyVerifiedV2"), "{proof}");
+    }
+
+    #[test]
+    fn profile_conflicts_with_standalone_and_rejects_unknown_values() {
+        let err = parse_init(&["--standalone", "--profile", "v2"]).err().unwrap();
+        assert_eq!(err.kind(), clap::error::ErrorKind::ArgumentConflict, "{err}");
+        let err = parse_init(&["--profile", "v3"]).err().unwrap();
+        assert_eq!(err.kind(), clap::error::ErrorKind::InvalidValue, "{err}");
+        // The default value alone does not trigger the conflict.
+        assert!(parse_init(&["--standalone"]).unwrap().standalone);
     }
 }

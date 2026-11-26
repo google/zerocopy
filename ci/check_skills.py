@@ -85,6 +85,11 @@ AGENTS_SCAN_PRUNE_DIRS = frozenset({".git", ".lake", "target"})
 CRR_BEGIN = "<!-- code-review-rules:begin -->"
 CRR_END = "<!-- code-review-rules:end -->"
 CRR_FILES = ("anneal/AGENTS.md", "anneal/.gemini/styleguide.md")
+# `cargo anneal skill <topic>` embeds byte copies of these `anneal/skills/`
+# skills so that a packaged crate needs no repository checkout.
+CARGO_ANNEAL_CRATE_REL = "anneal/trusted/cargo-anneal"
+CARGO_ANNEAL_ASSETS_REL = f"{CARGO_ANNEAL_CRATE_REL}/assets/skills"
+CARGO_ANNEAL_COMPANION_SKILLS = ("spec-authoring", "proof-scaling")
 THEORY_TACTIC_KIND_TO_TOKEN: Dict[str, Optional[str]] = {
     "Parser.Term.byTactic": None,
     "Parser.Term.binderTactic": None,
@@ -1371,6 +1376,7 @@ def check_repository(repo_root: Path) -> None:
     validate_anneal_skills_json(resolved_root)
     validate_agents_docs(resolved_root, slug_cache)
     validate_code_review_rules_parity(resolved_root)
+    validate_cargo_anneal_companion_assets(resolved_root)
     validate_proof_scaling_sync(
         resolved_root, anneal_skill_names, cargo_anneal_skill_names
     )
@@ -1639,6 +1645,42 @@ def validate_code_review_rules_parity(repo_root: Path) -> None:
             f"block differs from `{CRR_FILES[0]}` at block line {first + 1}; "
             "keep the mirrors byte-identical"
         )
+
+
+
+def validate_cargo_anneal_companion_assets(repo_root: Path) -> None:
+    """Require packaged companion skills to match `anneal/skills/` byte-for-byte.
+
+    Applies whenever the `cargo-anneal` crate manifest exists, so deleting
+    either copy, adding an unlisted asset, or letting a copy drift fails
+    closed. Reads the working tree so it also runs without `.git`.
+    """
+    manifest_rel = f"{CARGO_ANNEAL_CRATE_REL}/Cargo.toml"
+    manifest = repo_root / manifest_rel
+    if not (manifest.exists() or manifest.is_symlink()):
+        return
+    assert_symlink_free_within_repo(repo_root, manifest, manifest_rel)
+    files, empty_dirs = scan_tree(repo_root, repo_root / CARGO_ANNEAL_ASSETS_REL)
+    expected = {f"{name}/SKILL.md" for name in CARGO_ANNEAL_COMPANION_SKILLS}
+    unexpected = sorted(set(files) - expected) + sorted(empty_dirs)
+    if unexpected:
+        raise fail(
+            f"{CARGO_ANNEAL_ASSETS_REL}: unexpected entries {unexpected}; only "
+            f"{sorted(expected)} are packaged"
+        )
+    for name in CARGO_ANNEAL_COMPANION_SKILLS:
+        asset_rel = f"{CARGO_ANNEAL_ASSETS_REL}/{name}/SKILL.md"
+        canonical_rel = f"anneal/skills/{name}/SKILL.md"
+        if f"{name}/SKILL.md" not in files:
+            raise fail(f"{asset_rel}: missing packaged copy of {canonical_rel}")
+        canonical = repo_root / canonical_rel
+        assert_symlink_free_within_repo(repo_root, canonical, canonical_rel)
+        if not stat.S_ISREG(canonical.lstat().st_mode):
+            raise fail(f"{canonical_rel}: expected a regular file")
+        if files[f"{name}/SKILL.md"][0].read_bytes() != canonical.read_bytes():
+            raise fail(
+                f"{asset_rel}: stale packaged copy; copy {canonical_rel} over it"
+            )
 
 
 def validate_proof_scaling_sync(
