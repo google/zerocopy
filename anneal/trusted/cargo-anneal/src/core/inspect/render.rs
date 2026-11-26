@@ -1142,6 +1142,11 @@ fn render_markdown(
         }
         let _ = writeln!(
             out,
+            "| Model Digest | {} |",
+            format_gfm_code_cell(&opts.fmt_digest(&s.model_manifest_sha256))
+        );
+        let _ = writeln!(
+            out,
             "| Specification Digest | {} |",
             format_gfm_code_cell(&opts.fmt_digest(&s.specification_manifest_sha256))
         );
@@ -1405,6 +1410,44 @@ mod tests {
         let parsed: serde_json::Value = serde_json::from_str(&json_out).unwrap();
         assert_eq!(parsed["head_unrecognized_fields"], json!(["/future_extension"]));
         assert!(parsed.get("base_unrecognized_fields").is_none());
+    }
+
+    #[test]
+    fn markdown_reports_model_digest_alongside_human_and_ledger() {
+        let mut r = sample_success_json();
+        let model = "c".repeat(64);
+        r["model_manifest_sha256"] = json!(model);
+        r["audit"]["bindings"]["modelManifestSha256"] = json!(model);
+        let env = parse_and_validate_receipt(&serde_json::to_vec(&r).unwrap()).unwrap();
+        assert!(env.invariant_violations.is_empty(), "{:?}", env.invariant_violations);
+
+        let human = render_inspection(&env, None, &[], &RenderOptions::default());
+        assert!(human.contains("model:         cccccccccccc"), "{human}");
+        let ledger = render_inspection(
+            &env,
+            None,
+            &[],
+            &RenderOptions { format: InspectFormat::Ledger, ..RenderOptions::default() },
+        );
+        assert!(ledger.contains(&format!("digest.model_manifest_sha256={model}\n")), "{ledger}");
+        let md = render_inspection(
+            &env,
+            None,
+            &[],
+            &RenderOptions { format: InspectFormat::Markdown, ..RenderOptions::default() },
+        );
+        assert!(md.contains("| Model Digest | `cccccccccccc` |\n"), "{md}");
+        let full_md = render_inspection(
+            &env,
+            None,
+            &[],
+            &RenderOptions {
+                format: InspectFormat::Markdown,
+                full_digests: true,
+                ..RenderOptions::default()
+            },
+        );
+        assert!(full_md.contains(&format!("| Model Digest | `{model}` |\n")), "{full_md}");
     }
 
     #[test]
