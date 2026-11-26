@@ -2119,6 +2119,104 @@ MIR_SEMANTICS_GUARDS: tuple[MirSemanticsGuard, ...] = (
         theorem_name="refute_step_assert_local_panic_handler_unsupported",
     ),
     MirSemanticsGuard(
+        guard_id="step_assert_ptr_deref_undefined",
+        target_file="trusted/lean/Trusted/MirSemantics/Step.lean",
+        target_module="Trusted/MirSemantics/Step",
+        description=(
+            "evalAssertFailure maps .misalignedPtrDeref and .nullPtrDeref "
+            "to .fault .undefined even under --panic abort"
+        ),
+        anchor=(
+            "  | .misalignedPtrDeref | .nullPtrDeref => .fault .undefined\n"
+            "  | .boundsCheck | .overflow .div | .overflow .rem\n"
+            "  | .divByZero | .remByZero =>"
+        ),
+        replacement=(
+            "  | .misalignedPtrDeref | .nullPtrDeref => .fault .unsupported\n"
+            "  | .boundsCheck | .overflow .div | .overflow .rem\n"
+            "  | .divByZero | .remByZero =>"
+        ),
+        fixture_module="StepRefutations",
+        theorem_name="refute_step_assert_ptr_deref_undefined",
+    ),
+    MirSemanticsGuard(
+        guard_id="step_assert_v1_failure_faults",
+        target_file="trusted/lean/Trusted/MirSemantics/Step.lean",
+        target_module="Trusted/MirSemantics/Step",
+        description=(
+            "evalTerminator .assert routes failing conditions (b != expected) "
+            "through evalAssertFailure rather than jumping to target"
+        ),
+        anchor=(
+            "      | .bool b =>\n"
+            "        if b == expected then\n"
+            "          jumpToBlock { frame with locals := locals1 } mem1 callerMem target\n"
+            "        else\n"
+            "          evalAssertFailure msg panicStrategy unwind callerMem\n"
+            "            hasLocalPanicHandler"
+        ),
+        replacement=(
+            "      | .bool b =>\n"
+            "        if true then\n"
+            "          jumpToBlock { frame with locals := locals1 } mem1 callerMem target\n"
+            "        else\n"
+            "          evalAssertFailure msg panicStrategy unwind callerMem\n"
+            "            hasLocalPanicHandler"
+        ),
+        fixture_module="StepRefutations",
+        theorem_name="refute_step_assert_v1_failure_faults",
+    ),
+    MirSemanticsGuard(
+        guard_id="step_assert_v1_non_bool_unsupported",
+        target_file="trusted/lean/Trusted/MirSemantics/Step.lean",
+        target_module="Trusted/MirSemantics/Step",
+        description=(
+            "evalTerminator .assert refuses non-bool condition operands "
+            "with .fault .unsupported"
+        ),
+        anchor=(
+            "        else\n"
+            "          evalAssertFailure msg panicStrategy unwind callerMem\n"
+            "            hasLocalPanicHandler\n"
+            "      | _ => .fault .unsupported"
+        ),
+        replacement=(
+            "        else\n"
+            "          evalAssertFailure msg panicStrategy unwind callerMem\n"
+            "            hasLocalPanicHandler\n"
+            "      | _ =>\n"
+            "        jumpToBlock { frame with locals := locals1 } mem1 callerMem target"
+        ),
+        fixture_module="StepRefutations",
+        theorem_name="refute_step_assert_v1_non_bool_unsupported",
+    ),
+    MirSemanticsGuard(
+        guard_id="step_v2_assert_non_bool_unsupported",
+        target_file="trusted/lean/Trusted/MirSemantics/Step.lean",
+        target_module="Trusted/MirSemantics/Step",
+        description=(
+            "evalTerminatorV2 .assert refuses non-bool condition operands "
+            "with .fault .unsupported"
+        ),
+        anchor=(
+            "        else\n"
+            "          evalAssertFailure msg panicStrategy unwind\n"
+            "            (extractCallerMemory callerMem mem1) hasLocalPanicHandler\n"
+            "            overflowChecks\n"
+            "      | _ => .fault .unsupported"
+        ),
+        replacement=(
+            "        else\n"
+            "          evalAssertFailure msg panicStrategy unwind\n"
+            "            (extractCallerMemory callerMem mem1) hasLocalPanicHandler\n"
+            "            overflowChecks\n"
+            "      | _ =>\n"
+            "        jumpToBlock { frame with locals := locals1 } mem1 callerMem target"
+        ),
+        fixture_module="StepRefutations",
+        theorem_name="refute_step_v2_assert_non_bool_unsupported",
+    ),
+    MirSemanticsGuard(
         guard_id="boundary_v2_wellformed_forbids_faults",
         target_file="trusted/lean/Trusted/MirSemantics/Boundary.lean",
         target_module="Trusted/MirSemantics/Boundary",

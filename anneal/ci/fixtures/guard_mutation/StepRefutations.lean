@@ -16,7 +16,8 @@ import GuardRefuteWf
 Covers every `.undefined` branch and move-deinitialization guard in
 `Trusted/MirSemantics/Step.lean`: dead-local copy/move/discriminant/write/
 forceAllocation, use-after-move on immediate and indirect locals, uninitialized
-primitive/use/cast/discriminant/return reads, and `TerminatorKind.unreachable`.
+primitive/use/cast/discriminant/return reads, `TerminatorKind.unreachable`,
+and `TerminatorKind.assert` guards.
 -/
 
 namespace GuardMutation
@@ -1431,5 +1432,119 @@ theorem refute_step_assert_local_panic_handler_unsupported :
       evalAssertFailure .boundsCheck .abort .continue_
         queryEmpty.callerMem true = .fault .unsupported :=
   ⟨rfl, rfl⟩
+
+/-- Profile v2 program under `--panic abort` whose `.nullPtrDeref` assertion
+fails despite no local panic handler. -/
+noncomputable def progAssertNullDerefV2 : Program := {
+  scope := .unit
+  pointerWidthBits := 64
+  mirProfileVersion := 2
+  panicStrategy := .abort
+  hasLocalPanicHandler := false
+  bodies := [{
+    argumentCount := 0
+    locals := [.unit]
+    basicBlocks := [{
+      statements := []
+      terminator :=
+        .assert (.constant ⟨.bool, .scalar (BitVec.ofNat 128 0)⟩) true
+          .nullPtrDeref 0 .unreachable
+    }]
+    isUnsafe := false
+    identity := "guard_mutation::assert_null_deref_v2"
+  }]
+}
+
+/-- Guard `step_assert_ptr_deref_undefined`: `.nullPtrDeref` and
+`.misalignedPtrDeref` assertions always fault with `.undefined`, even under
+`--panic abort` with no crate-local panic handler. -/
+theorem refute_step_assert_ptr_deref_undefined :
+    evalAssertFailure .nullPtrDeref .abort .unreachable
+        queryEmpty.callerMem false = .fault .undefined ∧
+      evalAssertFailure .misalignedPtrDeref .abort .unreachable
+          queryEmpty.callerMem false = .fault .undefined ∧
+      ReachesResultV2 progAssertNullDerefV2 queryEmpty (.fault .undefined) ∧
+      ¬ WellFormedV2 progAssertNullDerefV2 queryEmpty := by
+  have hReach :
+      ReachesResultV2 progAssertNullDerefV2 queryEmpty (.fault .undefined) :=
+    ⟨_, ReachesV2.refl _, ⟨0, rfl, rfl⟩⟩
+  exact ⟨rfl, rfl, hReach, fun hWf => hWf.2 .undefined hReach⟩
+
+/-- Two-block Profile v1 program executing `TerminatorKind.assert`
+on `_1 : bool` with `expected = true`, `msg = .divByZero`, and target
+block `1` (which returns `_0 : ()`). -/
+noncomputable def progAssertFailedV1 : Program := {
+  scope := .unit
+  pointerWidthBits := 64
+  mirProfileVersion := 1
+  bodies := [{
+    argumentCount := 1
+    locals := [.unit, .bool]
+    basicBlocks := [
+      { statements := []
+        terminator :=
+          .assert (.copy ⟨1, []⟩) true .divByZero 1 .continue_ },
+      { statements := []
+        terminator := .return_ }
+    ]
+  }]
+}
+
+/-- Guard `step_assert_v1_failure_faults`: a failing Profile v1
+`TerminatorKind.assert` (`b != expected`) faults rather than jumping to
+`target`. -/
+theorem refute_step_assert_v1_failure_faults :
+    ReachesResult progAssertFailedV1 { args := [.bool false] }
+        (.fault .unsupported) ∧
+    ¬ WellFormed progAssertFailedV1 { args := [.bool false] } :=
+  refutes_wf_of_execFault (fuel := 1) rfl
+
+/-- Guard `step_assert_v1_non_bool_unsupported`: Profile v1 `evalTerminator`
+refuses non-`.bool` `.assert` condition operands as `.fault .unsupported`. -/
+theorem refute_step_assert_v1_non_bool_unsupported :
+    let body : Body := {
+      argumentCount := 1
+      locals := [.unit, u8Ty]
+      basicBlocks := []
+    }
+    let bb : BasicBlock := {
+      statements := []
+      terminator := .assert (.copy ⟨1, []⟩) true .divByZero 1 .continue_
+    }
+    let frame : FrameState := {
+      defId := 0
+      blockIdx := 0
+      stmtIdx := 0
+      locals := [.immediate (some .unit),
+        .immediate (some (scalarNatVal .i8 false 2))]
+    }
+    (match evalTerminator body bb frame emptyMemory { allocations := [] } with
+     | .fault .unsupported => True
+     | _ => False) :=
+  trivial
+
+/-- Guard `step_v2_assert_non_bool_unsupported`: Profile v2 `evalTerminatorV2`
+refuses non-`.bool` `.assert` condition operands as `.fault .unsupported`. -/
+theorem refute_step_v2_assert_non_bool_unsupported :
+    let body : Body := {
+      argumentCount := 1
+      locals := [.unit, u8Ty]
+      basicBlocks := []
+    }
+    let bb : BasicBlock := {
+      statements := []
+      terminator := .assert (.copy ⟨1, []⟩) true .divByZero 1 .continue_
+    }
+    let frame : FrameState := {
+      defId := 0
+      blockIdx := 0
+      stmtIdx := 0
+      locals := [.immediate (some .unit),
+        .immediate (some (scalarNatVal .i8 false 2))]
+    }
+    (match evalTerminatorV2 body bb frame emptyMemory { allocations := [] } with
+     | .fault .unsupported => True
+     | _ => False) :=
+  trivial
 
 end GuardMutation

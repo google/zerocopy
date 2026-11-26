@@ -6295,4 +6295,394 @@ mod tests {
             assert_eq!(err.code, 2, "{bad}: {err}");
         }
     }
+
+    #[test]
+    fn live_assert_terminator_div_panic_free_proof() {
+        let Some(lean) = explicit_verified_lean() else {
+            return;
+        };
+        let dir = tempfile::tempdir().unwrap();
+        let base = fs::canonicalize(dir.path()).unwrap();
+        let bundle = EmbeddedBundle::materialize(&base.join("bundle"));
+
+        // 1. Positive E2E proof: a hand-written MIR body modeled on rustc's
+        //    zero-guarded `u32` division, including its `TerminatorKind.assert`
+        //    (`AssertKind.divByZero`, `UnwindAction.continue_`), discharges
+        //    `UnitTheorem` for every valid `(a : u32, b : u32)` pair via
+        //    `Anneal.MirWp`.
+        let safe_proof = "\
+prelude
+import Expected
+import Anneal.MirWp
+open Trusted.MirAst Trusted.MirSemantics in
+private theorem evalArithOp_div_u32 (x y : Nat)
+    (hz : (Int.ofNat y == 0) = false) :
+    evalArithOp .div .i32 false (Int.ofNat x) (Int.ofNat y) =
+    .ok (.scalar ⟨.i32, false,
+      truncateBits .i32 (bvOfInt 128 (Int.ofNat (Nat.div x y)))⟩) := by
+  have hu : BinOp.div.isUnchecked = false := rfl
+  unfold evalArithOp
+  dsimp only [intTdiv, truncateScalar]
+  rw [hz, hu, Bool.true_and, Bool.false_and, Bool.false_and]
+  rw [Anneal.MirWp.ite_bool_false rfl, Anneal.MirWp.ite_bool_false rfl,
+    Anneal.MirWp.ite_bool_false rfl]
+  dsimp only
+  rw [Bool.and_false]
+  rfl
+open Trusted.MirAst Trusted.MirSemantics in
+private theorem checkVal_truncate_u32 (x : BitVec 128) :
+    checkVal (.scalar ⟨.i32, false, truncateBits .i32 x⟩)
+      (.int .i32 false) = true := by
+  dsimp only [checkVal, Val.ty?]
+  rw [Anneal.MirWp.scalarWf_truncateBits .i32 false x]
+  rfl
+open Trusted.MirAst Trusted.MirSemantics in
+private theorem checkVal_u32_inv (v : Val)
+    (h : checkVal v (.int .i32 false) = true) :
+    ∃ b : BitVec 128, v = .scalar ⟨.i32, false, b⟩ := by
+  cases v with
+  | scalar sv =>
+    cases sv with
+    | mk w s b =>
+      dsimp only [checkVal, Val.ty?] at h
+      cases hw : ScalarVal.wf ⟨w, s, b⟩ with
+      | false => rw [hw] at h; cases h
+      | true =>
+        rw [hw] at h
+        cases w <;> cases s <;> try cases h
+        exact ⟨b, rfl⟩
+  | enumVal ety idx =>
+    dsimp only [checkVal, Val.ty?] at h
+    cases he : (enumAdmitted ety && Nat.blt idx ety.discriminants.length) with
+    | false => rw [he] at h; cases h
+    | true => rw [he] at h; cases h
+  | tuple xs =>
+    cases xs with
+    | nil => cases h
+    | cons x rest =>
+      cases x with
+      | scalar sv =>
+        cases rest with
+        | nil => cases h
+        | cons y tail =>
+          cases y with
+          | bool _ =>
+            cases tail with
+            | cons _ _ => cases h
+            | nil =>
+              dsimp only [checkVal, Val.ty?] at h
+              cases hw : sv.wf with
+              | false => rw [hw] at h; cases h
+              | true => rw [hw] at h; cases h
+          | _ => cases h
+      | _ => cases h
+  | _ => cases h
+open Trusted.MirAst Trusted.MirSemantics in
+private theorem safe_div_assert_body_safe (args : List Val)
+    (hv : ValidEntryArgs Captured.body0 args) :
+    Anneal.MirWp.Safe Captured.body0 args := by
+  cases args with
+  | nil => cases hv
+  | cons v1 rest =>
+    cases rest with
+    | nil =>
+      have h := ((Bool.and_eq_true _ _).mp hv).2
+      cases h
+    | cons v2 tail =>
+      cases tail with
+      | cons _ _ =>
+        have h := ((Bool.and_eq_true _ _).mp
+          ((Bool.and_eq_true _ _).mp hv).2).2
+        cases h
+      | nil =>
+        have h1 : checkVal v1 (.int .i32 false) = true :=
+          (Bool.and_eq_true _ _).mp hv |>.1
+        have h2 : checkVal v2 (.int .i32 false) = true :=
+          ((Bool.and_eq_true _ _).mp
+            ((Bool.and_eq_true _ _).mp hv).2).1
+        let ⟨b1, hb1⟩ := checkVal_u32_inv v1 h1
+        let ⟨b2, hb2⟩ := checkVal_u32_inv v2 h2
+        subst hb1 hb2
+        have h_s1_raw :
+            evalStep (Anneal.MirWp.bodyProg Captured.body0) 0
+              (Anneal.MirWp.mkState 0 0
+                (initLocalsLoop Captured.body0
+                  [.scalar ⟨.i32, false, b1⟩,
+                   .scalar ⟨.i32, false, b2⟩]
+                  0 Captured.body0.locals)) =
+            .step (Anneal.MirWp.mkState 0 1
+              [.immediate none,
+               .immediate (some (.scalar ⟨.i32, false, b1⟩)),
+               .immediate (some (.scalar ⟨.i32, false, b2⟩)),
+               .immediate (some (.bool
+                 (Int.ofNat (truncateBits .i32 b2).toNat == 0)))]) := rfl
+        cases h_z :
+          (Int.ofNat (truncateBits .i32 b2).toNat == 0) with
+        | true =>
+          rw [h_z] at h_s1_raw
+          exact Anneal.MirWp.safeFrom_next h_s1_raw
+            (Anneal.MirWp.safeFrom_next rfl
+              (Anneal.MirWp.safeFrom_next rfl
+                (Anneal.MirWp.safeFrom_return rfl)))
+        | false =>
+          rw [h_z] at h_s1_raw
+          let q := truncateBits .i32
+            (bvOfInt 128 (Int.ofNat
+              (Nat.div (truncateBits .i32 b1).toNat
+                (truncateBits .i32 b2).toNat)))
+          let locals3 : List LocalSlot :=
+            [.immediate none,
+             .immediate (some (.scalar ⟨.i32, false, b1⟩)),
+             .immediate (some (.scalar ⟨.i32, false, b2⟩)),
+             .immediate (some (.bool false))]
+          let locals3' : List LocalSlot :=
+            [.immediate (some (.scalar ⟨.i32, false, q⟩)),
+             .immediate (some (.scalar ⟨.i32, false, b1⟩)),
+             .immediate (some (.scalar ⟨.i32, false, b2⟩)),
+             .immediate (some (.bool false))]
+          have h_ev :
+              evalBinOp .div (.scalar ⟨.i32, false, b1⟩)
+                (.scalar ⟨.i32, false, b2⟩) =
+              .ok (.scalar ⟨.i32, false, q⟩) := by
+            change evalArithOp .div .i32 false
+              (Int.ofNat (truncateBits .i32 b1).toNat)
+              (Int.ofNat (truncateBits .i32 b2).toNat) = _
+            exact evalArithOp_div_u32 _ _ h_z
+          have h_op1 :
+              evalPrimitiveOperand Captured.body0.locals locals3
+                entryMemory (.copy ⟨1, []⟩) =
+              .ok (.scalar ⟨.i32, false, b1⟩, locals3, entryMemory) := rfl
+          have h_op2 :
+              evalPrimitiveOperand Captured.body0.locals locals3
+                entryMemory (.copy ⟨2, []⟩) =
+              .ok (.scalar ⟨.i32, false, b2⟩, locals3, entryMemory) := rfl
+          have h_rval :
+              evalRvalue Captured.body0.locals locals3 entryMemory
+                (.int .i32 false)
+                (.binaryOp .div (.copy ⟨1, []⟩) (.copy ⟨2, []⟩)) =
+              .ok (.scalar ⟨.i32, false, q⟩, locals3, entryMemory) := by
+            unfold evalRvalue
+            dsimp only
+            rw [h_op1]
+            dsimp only
+            rw [h_op2]
+            dsimp only
+            rw [h_ev]
+          have h_write :
+              writePlace locals3 entryMemory 0 (.int .i32 false)
+                (.scalar ⟨.i32, false, q⟩) =
+              .ok (locals3', entryMemory) := by
+            dsimp only [writePlace, Trusted.MirSemantics.getElem?, setElem?, q]
+            rw [checkVal_truncate_u32]
+            rfl
+          have h_s4 :
+              evalStep (Anneal.MirWp.bodyProg Captured.body0) 0
+                (Anneal.MirWp.mkState 3 0 locals3) =
+              .step (Anneal.MirWp.mkState 3 1 locals3') := by
+            have h_eq_stmt :
+                evalStep (Anneal.MirWp.bodyProg Captured.body0) 0
+                  (Anneal.MirWp.mkState 3 0 locals3) =
+                evalStatement Captured.body0
+                  { defId := 0, blockIdx := 3, stmtIdx := 0, locals := locals3 }
+                  entryMemory ⟨[]⟩
+                  (.assign ⟨0, []⟩
+                    (.binaryOp .div (.copy ⟨1, []⟩) (.copy ⟨2, []⟩))) := rfl
+            rw [h_eq_stmt]
+            unfold evalStatement
+            dsimp only [Captured.body0, Trusted.MirSemantics.getElem?,
+              List.isEmpty, Bool.not]
+            dsimp only [Captured.body0] at h_rval
+            rw [h_rval]
+            dsimp only
+            rw [h_write]
+            rfl
+          exact Anneal.MirWp.safeFrom_next h_s1_raw
+            (Anneal.MirWp.safeFrom_next rfl
+              (Anneal.MirWp.safeFrom_next rfl
+                (Anneal.MirWp.safeFrom_next h_s4
+                  (Anneal.MirWp.safeFrom_return rfl))))
+theorem Proof.verify : Expected.claim := by
+  refine ⟨rfl, rfl, rfl, rfl, rfl, rfl, ?_, trivial⟩
+  intro id selected h
+  cases id with
+  | zero =>
+    cases h
+    exact Anneal.MirWp.bodyVerified_of_safe rfl rfl
+      (fun args hv _ => safe_div_assert_body_safe args hv)
+  | succ n => cases n <;> cases h
+";
+        let mut req_safe = write_target_request(
+            &base.join("safe-div-assert"),
+            vec![
+                (
+                    "Captured",
+                    TargetRole::Capture,
+                    "prelude\nimport Trusted.MirSemantics\n\
+                     def Captured.body0 : Trusted.MirAst.Body :=\n  \
+                     { argumentCount := 2, isUnsafe := false,\n    \
+                       locals := [.int .i32 false, .int .i32 false,\n               \
+                                  .int .i32 false, .bool],\n    \
+                       basicBlocks :=\n      \
+                       [{ statements :=\n           \
+                            [.assign ⟨3, []⟩\n              \
+                              (.binaryOp .eq (.copy ⟨2, []⟩)\n                \
+                                (.constant ⟨.int .i32 false,\n                  \
+                                  .scalar (BitVec.ofNat 128 0)⟩))]\n         \
+                          terminator :=\n           \
+                            .switchInt (.copy ⟨3, []⟩)\n             \
+                              ⟨[(BitVec.ofNat 128 0, 2)], 1⟩\n         \
+                          cleanup := false },\n       \
+                        { statements :=\n           \
+                            [.assign ⟨0, []⟩\n              \
+                              (.use (.constant ⟨.int .i32 false,\n                \
+                                .scalar (BitVec.ofNat 128 0)⟩))]\n         \
+                          terminator := .return_\n         \
+                          cleanup := false },\n       \
+                        { statements := []\n         \
+                          terminator :=\n           \
+                            .assert (.copy ⟨3, []⟩) false .divByZero 3 .continue_\n         \
+                          cleanup := false },\n       \
+                        { statements :=\n           \
+                            [.assign ⟨0, []⟩\n              \
+                              (.binaryOp .div (.copy ⟨1, []⟩) (.copy ⟨2, []⟩))]\n         \
+                          terminator := .return_\n         \
+                          cleanup := false }],\n    \
+                       identity := _root_.String.ofList [(_root_.Char.ofNat 97)] }\n\
+                     def Captured.program : Trusted.MirAst.Program :=\n  \
+                     { pointerWidthBits := 64, mirProfileVersion := 1,\n    \
+                       bodies := [Captured.body0], scope := .unit }\n",
+                ),
+                (
+                    "Spec",
+                    TargetRole::Specification,
+                    "prelude\nimport Trusted.MirSemantics\n\
+                     def Spec.specs : Trusted.MirSemantics.Specs where\n  \
+                     safety := fun _ _ => True\n  \
+                     property := fun _ => True\n",
+                ),
+                (
+                    "Expected",
+                    TargetRole::Expected,
+                    "prelude\nimport Captured\nimport Spec\n\
+                     def Expected.claim : Prop := Trusted.MirSemantics.UnitTheorem \
+                     (Trusted.MirSemantics.Crate.mk Captured.program Spec.specs)\n",
+                ),
+                ("Proof", TargetRole::Proof, safe_proof),
+            ],
+        );
+        bundle.attach(&mut req_safe, true);
+        let mut checker = Checker::new(&bundle.root, Some(&lean)).unwrap();
+        let report_safe = checker.run_target(&req_safe).unwrap();
+        assert_eq!(report_safe["replay"], Json::Bool(true));
+        assert_eq!(report_safe["exactType"], Json::Bool(true));
+        let allowed_axioms: BTreeSet<&str> =
+            BTreeSet::from(["Classical.choice", "Quot.sound", "propext"]);
+        let used_axioms: BTreeSet<&str> =
+            report_safe["axioms"].as_array().unwrap().iter().map(|a| a.as_str().unwrap()).collect();
+        assert!(used_axioms.is_subset(&allowed_axioms), "unexpected axioms: {used_axioms:?}");
+
+        // 2. Negative E2E check: an unguarded `u32` division whose
+        //    `TerminatorKind.assert` fails on `(20, 0)` reaches
+        //    `.fault .unsupported`, never `.fault .undefined`, and is not
+        //    `WellFormed`. The target audit admits only the canonical
+        //    `UnitTheorem` root, so the faulting program lives in `Spec` and
+        //    its `NegativeCanaryClaim` is the `property` that `Proof`
+        //    discharges through `Checker::run_target`.
+        let mut req_panic = write_target_request(
+            &base.join("unguarded-div-assert-refuted"),
+            vec![
+                (
+                    "Captured",
+                    TargetRole::Capture,
+                    "prelude\nimport Trusted.MirSemantics\n\
+                     def Captured.body0 : Trusted.MirAst.Body :=\n  \
+                     { argumentCount := 0, isUnsafe := false,\n    \
+                       locals := [.unit],\n    \
+                       basicBlocks :=\n      \
+                       [{ statements := [], terminator := .return_,\n         \
+                          cleanup := false }],\n    \
+                       identity := _root_.String.ofList [(_root_.Char.ofNat 98)] }\n\
+                     def Captured.program : Trusted.MirAst.Program :=\n  \
+                     { pointerWidthBits := 64, mirProfileVersion := 1,\n    \
+                       bodies := [Captured.body0], scope := .unit }\n",
+                ),
+                (
+                    "Spec",
+                    TargetRole::Specification,
+                    "prelude\nimport Trusted.MirSemantics\n\
+                     def Spec.unguardedBody : Trusted.MirAst.Body :=\n  \
+                     { argumentCount := 2, isUnsafe := false,\n    \
+                       locals := [.int .i32 false, .int .i32 false,\n               \
+                                  .int .i32 false, .bool],\n    \
+                       basicBlocks :=\n      \
+                       [{ statements :=\n           \
+                            [.assign ⟨3, []⟩\n              \
+                              (.binaryOp .eq (.copy ⟨2, []⟩)\n                \
+                                (.constant ⟨.int .i32 false,\n                  \
+                                  .scalar (BitVec.ofNat 128 0)⟩))]\n         \
+                          terminator :=\n           \
+                            .assert (.copy ⟨3, []⟩) false .divByZero 1 .continue_\n         \
+                          cleanup := false },\n       \
+                        { statements :=\n           \
+                            [.assign ⟨0, []⟩\n              \
+                              (.binaryOp .div (.copy ⟨1, []⟩) (.copy ⟨2, []⟩))]\n         \
+                          terminator := .return_\n         \
+                          cleanup := false }],\n    \
+                       identity := \"c\" }\n\
+                     def Spec.unguardedProg : Trusted.MirAst.Program :=\n  \
+                     { pointerWidthBits := 64, mirProfileVersion := 1,\n    \
+                       bodies := [Spec.unguardedBody], scope := .unit }\n\
+                     def Spec.specs : Trusted.MirSemantics.Specs where\n  \
+                     safety := fun _ _ => True\n  \
+                     property := fun _ =>\n    \
+                       Trusted.MirSemantics.NegativeCanaryClaim\n      \
+                         (Trusted.MirSemantics.entryProgForBody Spec.unguardedProg 0)\n      \
+                         { args :=\n          \
+                             [.scalar ⟨.i32, false, BitVec.ofNat 128 20⟩,\n           \
+                              .scalar ⟨.i32, false, BitVec.ofNat 128 0⟩] }\n      \
+                         .unsupported .undefined\n",
+                ),
+                (
+                    "Expected",
+                    TargetRole::Expected,
+                    "prelude\nimport Captured\nimport Spec\n\
+                     def Expected.claim : Prop := Trusted.MirSemantics.UnitTheorem \
+                     (Trusted.MirSemantics.Crate.mk Captured.program Spec.specs)\n",
+                ),
+                (
+                    "Proof",
+                    TargetRole::Proof,
+                    "prelude\nimport Expected\nimport Anneal.MirWp\n\
+                     theorem Proof.verify : Expected.claim := by\n  \
+                       refine ⟨rfl, rfl, rfl, rfl, rfl, rfl, ?_, ?_⟩\n  \
+                       · intro id selected h\n    \
+                         cases id with\n    \
+                         | zero =>\n      \
+                           cases h\n      \
+                           refine Anneal.MirWp.bodyVerified_of_safe rfl rfl\n        \
+                             (fun args hv _ => ?_)\n      \
+                           cases args with\n      \
+                           | nil =>\n        \
+                             exact (Anneal.MirWp.run_initial_success\n          \
+                               (body := Captured.body0) (fuel := 4) (args := [])\n          \
+                               (value := .unit) rfl).1\n      \
+                           | cons _ _ => cases hv\n    \
+                         | succ n => cases n <;> cases h\n  \
+                       · exact Anneal.MirWp.negativeCanary_of_execFault (fuel := 4)\n      \
+                           (fun h => Trusted.MirSemantics.FaultKind.noConfusion h) rfl\n",
+                ),
+            ],
+        );
+        bundle.attach(&mut req_panic, true);
+        let report_panic = checker.run_target(&req_panic).unwrap();
+        assert_eq!(report_panic["replay"], Json::Bool(true));
+        assert_eq!(report_panic["exactType"], Json::Bool(true));
+        let panic_axioms: BTreeSet<&str> = report_panic["axioms"]
+            .as_array()
+            .unwrap()
+            .iter()
+            .map(|a| a.as_str().unwrap())
+            .collect();
+        assert!(panic_axioms.is_subset(&allowed_axioms), "unexpected axioms: {panic_axioms:?}");
+    }
 }

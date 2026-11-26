@@ -5800,3 +5800,57 @@ pub fn div_u64(a: u64, b: u64) -> u64 {
     );
     compile_captured_lean_if_trusted_sources_present(&nostd_lean_path);
 }
+
+#[test]
+fn assert_terminators_for_checked_div_and_rem_capture_and_typecheck_in_lean() {
+    let source = br#"
+pub fn safe_div_u32(a: u32, b: u32) -> u32 {
+    if b == 0 { 0 } else { a / b }
+}
+
+pub fn safe_rem_u32(a: u32, b: u32) -> u32 {
+    if b == 0 { 0 } else { a % b }
+}
+
+pub fn checked_div_i32(a: i32, b: i32) -> i32 {
+    a / b
+}
+
+pub fn checked_rem_i32(a: i32, b: i32) -> i32 {
+    a % b
+}
+"#;
+    let fixture = Capture::new(source);
+    let output =
+        fixture.command().args(["--scope=crate", "--panic=unwind"]).output().unwrap();
+    assert!(
+        output.status.success(),
+        "expected assert capture to succeed:\n{}\n{}",
+        stdout(&output),
+        stderr(&output)
+    );
+    let manifest = fixture.manifest();
+    assert_eq!(manifest["schema_version"], 5);
+    assert_eq!(manifest["program"]["mir_profile_version"], 2);
+    assert_eq!(manifest["program"]["panic"], "unwind");
+    assert_eq!(manifest["program"]["bodies"].as_array().unwrap().len(), 4);
+
+    let captured_lean = fixture.output.join("Captured.lean");
+    let lean_text = std::fs::read_to_string(&captured_lean).unwrap();
+    for expected in [
+        "panicStrategy := Trusted.MirAst.PanicStrategy.unwind",
+        "Trusted.MirAst.TerminatorKind.assert",
+        "Trusted.MirAst.AssertKind.divByZero",
+        "Trusted.MirAst.AssertKind.remByZero",
+        "(Trusted.MirAst.AssertKind.overflow Trusted.MirAst.BinOp.div)",
+        "(Trusted.MirAst.AssertKind.overflow Trusted.MirAst.BinOp.rem)",
+        "Trusted.MirAst.UnwindAction.continue_",
+    ] {
+        assert!(
+            lean_text.contains(expected),
+            "missing {expected} in emitted Captured.lean:\n{lean_text}"
+        );
+    }
+
+    compile_captured_lean_if_trusted_sources_present(&captured_lean);
+}
