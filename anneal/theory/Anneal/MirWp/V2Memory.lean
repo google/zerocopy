@@ -948,7 +948,7 @@ theorem refValid_shared_of_mut {m : MemoryState} {pointee : MirTy} {v : Val}
             rw [hS] at h1
             rw [show Mutability.beq .shared .mut = false from rfl,
               sliceCheck_shared_of_mut hS]
-        | bool | unit | never | char | ordering | enum _ | tuple _ | ref _ _
+        | bool | unit | never | char | ordering | str | enum _ | tuple _ | ref _ _
         | rawPtr _ _ | slice _ | array _ _ | rangeTo _ | rangeFrom _
         | option _ | range _ | unsupported =>
           dsimp only at h1
@@ -966,6 +966,8 @@ theorem refValid_shared_of_mut {m : MemoryState} {pointee : MirTy} {v : Val}
     | scalar _ | bool _ | char _ | ordering _ | unit | enumVal _ _
     | ptr _ | rangeTo _ | rangeFrom _ | bytes _ | tuple _
     | array _ | optionVal _ | range _ _ => cases h
+  | str =>
+    cases v <;> cases h
   | int _ _ | bool | char | ordering | unit | tuple _ | enum _ | unsupported
   | ref _ _ | rawPtr _ _ | rangeTo _ | rangeFrom _ | array _ _ | never
   | option _ | range _ =>
@@ -1060,7 +1062,7 @@ theorem refsStayInCallerMem_of_refValid {cm : CallerMemory}
                     | none => rw [hFind] at h2; dsimp only at h2; cases h2
                     | some a => exact ⟨a, rfl⟩
               | bool | unit | never | char | ordering | enum _ | tuple _
-              | ref _ _ | rawPtr _ _ | slice _ | array _ _ | rangeTo _
+              | ref _ _ | rawPtr _ _ | slice _ | str | array _ _ | rangeTo _
               | rangeFrom _ | option _ | range _ | unsupported =>
                 dsimp only at h1
                 let ⟨_, h1b⟩ := ite_err_eq_ok h1
@@ -1081,6 +1083,44 @@ theorem refsStayInCallerMem_of_refValid {cm : CallerMemory}
             change (findAllocation aid cm.allocations).isSome && true = true
             rw [hFind]
             rfl
+    | scalar _ | bool _ | char _ | ordering _ | unit | enumVal _ _
+    | ptr _ | rangeTo _ | rangeFrom _ | bytes _ | tuple _ | array _
+    | optionVal _ | range _ _ =>
+      unfold refValidInMem at h; cases h
+  | str =>
+    cases v with
+    | slicePtr p len =>
+      cases reqMut with
+      | «mut» =>
+        unfold refValidInMem at h
+        cases h
+      | shared =>
+        cases p with
+        | mk pAid pOff pW =>
+          cases pAid with
+          | none => rfl
+          | some aid =>
+            unfold refValidInMem at h
+            dsimp only [Mutability.beq] at h
+            cases hRes : sliceFromRawPartsCheck (entryMemoryWithCaller cm)
+                false 1 0 ⟨some aid, pOff, pW⟩ len with
+            | error k => rw [hRes] at h; cases h
+            | ok _ =>
+              unfold sliceFromRawPartsCheck at hRes
+              cases hRaw : sliceRefRawCheck (entryMemoryWithCaller cm)
+                  false 1 0 ⟨some aid, pOff, pW⟩ len with
+              | error k => rw [hRaw] at hRes; cases hRes
+              | ok _ =>
+                unfold sliceRefRawCheck entryMemoryWithCaller at hRaw
+                let ⟨_, h1⟩ := ite_err_eq_ok hRaw
+                dsimp only at h1
+                cases hFind : findAllocation aid cm.allocations with
+                | none => rw [hFind] at h1; dsimp only at h1; cases h1
+                | some _ =>
+                  unfold refAllocIds
+                  change (findAllocation aid cm.allocations).isSome && true = true
+                  rw [hFind]
+                  rfl
     | scalar _ | bool _ | char _ | ordering _ | unit | enumVal _ _
     | ptr _ | rangeTo _ | rangeFrom _ | bytes _ | tuple _ | array _
     | optionVal _ | range _ _ =>
@@ -1145,6 +1185,18 @@ theorem spansDisjoint_single {reqMut : Mutability} {pt : MirTy} {v : Val} :
           cases pAid with
           | none => exact Nat.zero_le 1
           | some _ => exact Nat.le_refl 1
+    | scalar _ | bool _ | char _ | ordering _ | unit | enumVal _ _
+    | ptr _ | rangeTo _ | rangeFrom _ | bytes _ | tuple _ | array _
+    | optionVal _ | range _ _ =>
+      exact Nat.zero_le 1
+  | str =>
+    cases v with
+    | slicePtr p len =>
+      cases p with
+      | mk pAid _ _ =>
+        cases pAid with
+        | none => exact Nat.zero_le 1
+        | some _ => exact Nat.le_refl 1
     | scalar _ | bool _ | char _ | ordering _ | unit | enumVal _ _
     | ptr _ | rangeTo _ | rangeFrom _ | bytes _ | tuple _ | array _
     | optionVal _ | range _ _ =>
@@ -1480,6 +1532,12 @@ private theorem refValidInMem_allocations_eq {m1 m2 : MemoryState}
         | slice elem =>
           unfold sliceFromRawPartsCheck
           rfl
+        | str =>
+          cases Mutability.beq reqMut .mut with
+          | true => rfl
+          | false =>
+            unfold sliceFromRawPartsCheck
+            rfl
         | _ => rfl
       | _ => rfl
 
@@ -1518,7 +1576,7 @@ mutual
     | .option _, .ptr _ | .option _, .slicePtr _ _ | .option _, .rangeTo _
     | .option _, .rangeFrom _ | .option _, .range _ _ | .option _, .tuple _
     | .option _, .array _ | .option _, .bytes _ => rfl
-    | .bool, v | .int _ _, v | .unit, v | .never, v | .char, v
+    | .bool, v | .int _ _, v | .unit, v | .never, v | .char, v | .str, v
     | .ordering, v | .enum _, v | .rawPtr _ _, v | .slice _, v
     | .rangeTo _, v | .rangeFrom _, v | .range _, v | .unsupported, v => by
       unfold refsValidInMem
@@ -1950,7 +2008,7 @@ mutual
       | range _ _ => rfl
     | .ref _ pt, v, _ => by cases pt <;> cases v <;> rfl
     | .int _ _, v, _ | .bool, v, _ | .char, v, _ | .ordering, v, _
-    | .unit, v, _ | .slice _, v, _ | .enum _, v, _ | .rangeTo _, v, _
+    | .unit, v, _ | .slice _, v, _ | .str, v, _ | .enum _, v, _ | .rangeTo _, v, _
     | .rangeFrom _, v, _ | .unsupported, v, _ | .never, v, _
     | .range _, v, _ => by
       cases v <;> rfl

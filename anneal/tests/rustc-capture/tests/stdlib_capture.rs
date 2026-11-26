@@ -183,12 +183,25 @@ fn stdlib_capability_is_opt_in_and_scoped_to_a_self_contained_named_crate() {
     let (output, dir) = by_ref.capture("core", &["--select=by_ref", "--stdlib-crate=core"]);
     assert_refused(&output, &dir, "unsupported", "admits only Profile v1 bodies");
 
-    // Runtime overflow checks are refused under the capability even for an
-    // otherwise admitted Profile v1 body: their `Assert` terminators panic
-    // through language items that the captured crate itself defines.
+    // Runtime overflow checks and primitive Profile v1 `Assert` terminators
+    // are refused under the capability: their `Assert` terminators panic
+    // through language items (`panic_const_*`) that the captured crate itself
+    // defines.
     let (output, dir) =
         fixture.capture("core", &["--select=selected", "--stdlib-crate=core", "--overflow-checks"]);
-    assert_refused(&output, &dir, "unsupported", "without overflow checks");
+    assert_refused(&output, &dir, "unsupported", "without overflow checks or Assert terminators");
+    let mut div_assert = Fixture::new(&format!(
+        "{NO_CORE}\
+#[lang = \"div\"]\n\
+pub trait Div<Rhs = Self> {{ type Output; fn div(self, rhs: Rhs) -> Self::Output; }}\n\
+impl Div for u8 {{ type Output = u8; fn div(self, rhs: u8) -> u8 {{ self / rhs }} }}\n\
+#[lang = \"panic_const_div_by_zero\"]\n\
+pub const fn panic_const_div_by_zero() -> ! {{ loop {{}} }}\n\
+pub fn div_u8(x: u8) -> u8 {{ x / 16u8 }}\n"
+    ));
+    let (output, dir) =
+        div_assert.capture("core", &["--select=div_u8", "--stdlib-crate=core"]);
+    assert_refused(&output, &dir, "unsupported", "without overflow checks or Assert terminators");
 
     // A crate named `core` that loads the sysroot's `core` is not
     // self-contained, so the capability does not apply to it.

@@ -148,6 +148,7 @@ mutual
     | slice e =>
       change MirTy.beq e e = true
       exact MirTy.beq_refl e
+    | str => rfl
     | array e n =>
       change (Nat.beq n n && MirTy.beq e e) = true
       rw [Nat.beq_refl, MirTy.beq_refl e]
@@ -193,6 +194,7 @@ mutual
     | never => cases b <;> first | rfl | cases h
     | char => cases b <;> first | rfl | cases h
     | ordering => cases b <;> first | rfl | cases h
+    | str => cases b <;> first | rfl | cases h
     | enum ety₁ =>
       cases b with
       | enum ety₂ =>
@@ -620,6 +622,10 @@ mutual
     | enum ety =>
       dsimp only [collectTy]
       exact ⟨subTable_insertTy (.enum ety) acc,
+        fun _ h_sub => getElem?_lookupTyId_of_subTable h_sub⟩
+    | str =>
+      dsimp only [collectTy]
+      exact ⟨subTable_insertTy .str acc,
         fun _ h_sub => getElem?_lookupTyId_of_subTable h_sub⟩
     | unsupported =>
       dsimp only [collectTy]
@@ -1154,6 +1160,9 @@ mutual
     | enum ety =>
       dsimp only [collectTy]
       exact typesAreCanonical_insertTy (.enum ety) acc h
+    | str =>
+      dsimp only [collectTy]
+      exact typesAreCanonical_insertTy .str acc h
     | unsupported =>
       dsimp only [collectTy]
       exact typesAreCanonical_insertTy .unsupported acc h

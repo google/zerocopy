@@ -1487,12 +1487,9 @@ pub fn curated_corpus() -> Vec<TraceTestCase> {
         env_schedule: EnvSchedule::default(),
         fuel: 128,
         spine_mode: SpineCompareMode::OutcomeOnly,
-        expected_class: ExpectedCaseClass::ConservativeOverApprox,
+        expected_class: ExpectedCaseClass::Unwind,
         expected_ub: None,
-        expected_conservative: Some(ExpectedConservativeSpec::new(
-            ConservativeRefKind::Unwound,
-            "initStateBy unsupported",
-        )),
+        expected_conservative: None,
         disclosed_gap: None,
     });
     cases.push(TraceTestCase {

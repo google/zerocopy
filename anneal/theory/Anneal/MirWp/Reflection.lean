@@ -156,7 +156,7 @@ mutual
           rw [hw] at h
           rw [IntWidth.beq_iff.mp hw, eq_of_beq h]
       | bool | unit | never | char | ordering | enum _ | tuple _ | ref _ _
-      | rawPtr _ _ | slice _ | array _ _ | rangeTo _ | rangeFrom _ | range _ | option _
+      | rawPtr _ _ | slice _ | str | array _ _ | rangeTo _ | rangeFrom _ | range _ | option _
       | unsupported => cases h
     | .unit => fun t₂ h => by
       cases t₂ <;> first | rfl | cases h
@@ -172,7 +172,7 @@ mutual
         change EnumTy.beq ety₁ ety₂ = true at h
         rw [EnumTy.beq_iff.mp h]
       | bool | int _ _ | unit | never | char | ordering | tuple _ | ref _ _
-      | rawPtr _ _ | slice _ | array _ _ | rangeTo _ | rangeFrom _ | range _ | option _
+      | rawPtr _ _ | slice _ | str | array _ _ | rangeTo _ | rangeFrom _ | range _ | option _
       | unsupported => cases h
     | .tuple fs₁ => fun t₂ h => by
       cases t₂ with
@@ -180,7 +180,7 @@ mutual
         change MirTy.beqList fs₁ fs₂ = true at h
         rw [mirTy_beqList_sound fs₁ fs₂ h]
       | bool | int _ _ | unit | never | char | ordering | enum _ | ref _ _
-      | rawPtr _ _ | slice _ | array _ _ | rangeTo _ | rangeFrom _ | range _ | option _
+      | rawPtr _ _ | slice _ | str | array _ _ | rangeTo _ | rangeFrom _ | range _ | option _
       | unsupported => cases h
     | .ref m₁ p₁ => fun t₂ h => by
       cases t₂ with
@@ -192,7 +192,7 @@ mutual
           rw [hm] at h
           rw [Mutability.beq_iff.mp hm, mirTy_beq_sound p₁ p₂ h]
       | bool | int _ _ | unit | never | char | ordering | enum _ | tuple _
-      | rawPtr _ _ | slice _ | array _ _ | rangeTo _ | rangeFrom _ | range _ | option _
+      | rawPtr _ _ | slice _ | str | array _ _ | rangeTo _ | rangeFrom _ | range _ | option _
       | unsupported => cases h
     | .rawPtr m₁ p₁ => fun t₂ h => by
       cases t₂ with
@@ -204,7 +204,7 @@ mutual
           rw [hm] at h
           rw [Mutability.beq_iff.mp hm, mirTy_beq_sound p₁ p₂ h]
       | bool | int _ _ | unit | never | char | ordering | enum _ | tuple _
-      | ref _ _ | slice _ | array _ _ | rangeTo _ | rangeFrom _ | range _ | option _
+      | ref _ _ | slice _ | str | array _ _ | rangeTo _ | rangeFrom _ | range _ | option _
       | unsupported => cases h
     | .slice e₁ => fun t₂ h => by
       cases t₂ with
@@ -212,8 +212,10 @@ mutual
         change MirTy.beq e₁ e₂ = true at h
         rw [mirTy_beq_sound e₁ e₂ h]
       | bool | int _ _ | unit | never | char | ordering | enum _ | tuple _
-      | ref _ _ | rawPtr _ _ | array _ _ | rangeTo _ | rangeFrom _ | range _ | option _
+      | ref _ _ | rawPtr _ _ | str | array _ _ | rangeTo _ | rangeFrom _ | range _ | option _
       | unsupported => cases h
+    | .str => fun t₂ h => by
+      cases t₂ <;> first | rfl | cases h
     | .array e₁ n₁ => fun t₂ h => by
       cases t₂ with
       | array e₂ n₂ =>
@@ -224,14 +226,14 @@ mutual
           rw [hn] at h
           rw [Nat.eq_of_beq_eq_true hn, mirTy_beq_sound e₁ e₂ h]
       | bool | int _ _ | unit | never | char | ordering | enum _ | tuple _
-      | ref _ _ | rawPtr _ _ | slice _ | rangeTo _ | rangeFrom _ | unsupported | option _ | range _ => cases h
+      | ref _ _ | rawPtr _ _ | slice _ | str | rangeTo _ | rangeFrom _ | unsupported | option _ | range _ => cases h
     | .rangeTo e₁ => fun t₂ h => by
       cases t₂ with
       | rangeTo e₂ =>
         change MirTy.beq e₁ e₂ = true at h
         rw [mirTy_beq_sound e₁ e₂ h]
       | bool | int _ _ | unit | never | char | ordering | enum _ | tuple _
-      | ref _ _ | rawPtr _ _ | slice _ | array _ _ | rangeFrom _ | range _ | option _
+      | ref _ _ | rawPtr _ _ | slice _ | str | array _ _ | rangeFrom _ | range _ | option _
       | unsupported => cases h
     | .rangeFrom e₁ => fun t₂ h => by
       cases t₂ with
@@ -239,7 +241,7 @@ mutual
         change MirTy.beq e₁ e₂ = true at h
         rw [mirTy_beq_sound e₁ e₂ h]
       | bool | int _ _ | unit | never | char | ordering | enum _ | tuple _
-      | ref _ _ | rawPtr _ _ | slice _ | array _ _ | rangeTo _ | range _ | option _
+      | ref _ _ | rawPtr _ _ | slice _ | str | array _ _ | rangeTo _ | range _ | option _
       | unsupported => cases h
     | .range e₁ => fun t₂ h => by
       cases t₂ with
@@ -248,7 +250,7 @@ mutual
         rw [mirTy_beq_sound e₁ e₂ h]
       | bool | int _ _ | unit | never | char | ordering | enum _ | tuple _
       | ref _ _ | rawPtr _ _ | slice _ | rangeTo _ | rangeFrom _ | option _
-      | unsupported | array _ _ => cases h
+      | str | unsupported | array _ _ => cases h
     | .option e₁ => fun t₂ h => by
       cases t₂ with
       | option e₂ =>
@@ -256,7 +258,7 @@ mutual
         rw [mirTy_beq_sound e₁ e₂ h]
       | bool | int _ _ | unit | never | char | ordering | enum _ | tuple _
       | ref _ _ | rawPtr _ _ | slice _ | rangeTo _ | rangeFrom _ | range _
-      | unsupported | array _ _ => cases h
+      | str | unsupported | array _ _ => cases h
     | .unsupported => fun t₂ h => by
       cases t₂ <;> first | rfl | cases h
 
@@ -303,6 +305,7 @@ mutual
       rw [Mutability.beq_iff.mpr rfl, mirTy_beq_refl p]
       rfl
     | .slice e => mirTy_beq_refl e
+    | .str => rfl
     | .array e n => by
       change (Nat.beq n n && MirTy.beq e e) = true
       rw [Nat.beq_refl, mirTy_beq_refl e]

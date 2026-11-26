@@ -526,10 +526,12 @@ private theorem scalarVal_wf_i8 {bits : BitVec 128}
 
 private theorem checkValV2_ref_ptr_inv {reqMut : Mutability} {pt : MirTy}
     {hNonSlice : ∀ elem, pt ≠ .slice elem} {v : Val}
-    (h : checkValV2 v (.ref reqMut pt) = true) :
+    (h : checkValV2 v (.ref reqMut pt) = true)
+    (hNonStr : pt ≠ .str := by intro hC; cases hC) :
     ∃ p : PtrVal, v = .ptr p ∧ p.width = .isize := by
   cases pt with
   | slice elem => exact absurd rfl (hNonSlice elem)
+  | str => exact absurd rfl hNonStr
   | _ =>
     cases v with
     | ptr p =>

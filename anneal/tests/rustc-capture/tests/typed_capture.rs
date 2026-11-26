@@ -1003,7 +1003,7 @@ fn retag_flags_are_recorded_on_scalar_use_and_reference_assignments_are_refused(
     let ref_lean = std::fs::read_to_string(ref_fixture.output.join("Captured.lean")).unwrap();
     assert!(ref_lean.contains("Trusted.MirAst.Rvalue.useRetag"), "{ref_lean}");
 
-    let unsupported_ref = Capture::new(b"pub fn selected(x: &str) -> &str { x }\n");
+    let unsupported_ref = Capture::new(b"pub fn selected(x: &mut str) -> &mut str { x }\n");
     let output = unsupported_ref.selected_command().output().unwrap();
     assert_eq!(output.status.code(), Some(1), "{output:?}");
     assert_eq!(status(&output)["status"], "unsupported", "{output:?}");
@@ -2558,8 +2558,8 @@ fn unmodeled_projections_tuples_casts_and_operators_fail_closed() {
             b"pub fn selected(p: (u32, bool, bool)) -> (u32, bool, bool) { p }\n",
         ),
         (
-            "checked_div_assert_terminator",
-            b"pub fn selected(a: u32, b: u32) -> u32 { a / b }\n",
+            "checked_div_with_ref_param",
+            b"pub fn selected(a: &u32, b: u32) -> u32 { *a / b }\n",
         ),
         (
             "checked_add_option_call",
@@ -2572,6 +2572,14 @@ fn unmodeled_projections_tuples_casts_and_operators_fail_closed() {
         assert!(output.status.success(), "{name}: {output:?}");
         assert_eq!(fixture.manifest()["program"]["mir_profile_version"], 2, "{name}");
     }
+
+    // Primitive checked division without Profile v2 locals stays on Profile v1
+    // with its `TerminatorKind.assert` preserved verbatim.
+    let v1_div = Capture::new(b"pub fn selected(a: u32, b: u32) -> u32 { a / b }\n");
+    let v1_div_out = v1_div.selected_command().output().unwrap();
+    assert!(v1_div_out.status.success(), "{v1_div_out:?}");
+    assert_eq!(v1_div.manifest()["program"]["mir_profile_version"], 1);
+    assert!(v1_div.lean_source().contains("TerminatorKind.assert"));
 
     let refused_cases: &[(&str, &[u8], &str)] = &[
         (
@@ -2888,13 +2896,23 @@ fn profile_v1_calls_and_profile_v2_core_calls_stay_disjoint() {
         "{subject}"
     );
 
-    // The runtime division-by-zero `Assert` makes `helper` a Profile v2 body,
-    // and Profile v2 refuses Profile v1 intra-crate calls.
-    let mixed = Capture::new(
+    // Primitive division-by-zero `Assert` stays on Profile v1, so intra-crate
+    // calls to `helper` remain admitted in Profile v1.
+    let v1_div_call = Capture::new(
         b"fn helper(a: u32, b: u32) -> u32 { a / b }\n\
           pub fn selected(a: u32, b: u32) -> u32 { helper(a, b) }\n",
     );
-    let output = mixed.selected_command().output().unwrap();
+    let v1_div_call_out = v1_div_call.selected_command().output().unwrap();
+    assert!(v1_div_call_out.status.success(), "{v1_div_call_out:?}");
+    assert_eq!(v1_div_call.manifest()["program"]["mir_profile_version"], 1);
+
+    // Lowering `assert!` to `CoreCallOp.panicAbort` under `--panic=abort` makes
+    // `helper` a Profile v2 body, and Profile v2 refuses intra-crate calls.
+    let mixed = Capture::new(
+        b"fn helper(a: u32, b: u32) -> u32 { assert!(b != 0); a / b }\n\
+          pub fn selected(a: u32, b: u32) -> u32 { helper(a, b) }\n",
+    );
+    let output = mixed.selected_command().arg("--panic=abort").output().unwrap();
     assert_eq!(output.status.code(), Some(1), "{output:?}");
     let failure = status(&output);
     assert!(
@@ -5993,7 +6011,7 @@ fn captures_panic_strategy_and_assert_unwind_action() {
     let unwind_out = unwind_fix.selected_command().output().unwrap();
     assert!(unwind_out.status.success(), "{unwind_out:?}");
     let unwind_manifest = unwind_fix.manifest();
-    assert_eq!(unwind_manifest["program"]["mir_profile_version"], 2);
+    assert_eq!(unwind_manifest["program"]["mir_profile_version"], 1);
     assert_eq!(unwind_manifest["program"]["panic"], "unwind");
     assert_eq!(unwind_manifest["program"]["has_local_panic_handler"], false);
     let unwind_lean_path = unwind_fix.output.join("Captured.lean");
@@ -6020,7 +6038,7 @@ fn captures_panic_strategy_and_assert_unwind_action() {
     let abort_out = abort_fix.selected_command().arg("--panic=abort").output().unwrap();
     assert!(abort_out.status.success(), "{abort_out:?}");
     let abort_manifest = abort_fix.manifest();
-    assert_eq!(abort_manifest["program"]["mir_profile_version"], 2);
+    assert_eq!(abort_manifest["program"]["mir_profile_version"], 1);
     assert_eq!(abort_manifest["program"]["panic"], "abort");
     assert_eq!(abort_manifest["program"]["has_local_panic_handler"], false);
     let abort_lean_path = abort_fix.output.join("Captured.lean");
@@ -6068,7 +6086,7 @@ pub fn div_u64(a: u64, b: u64) -> u64 {
         .unwrap();
     assert!(nostd_out.status.success(), "{nostd_out:?}");
     let nostd_manifest = nostd_fix.manifest();
-    assert_eq!(nostd_manifest["program"]["mir_profile_version"], 2);
+    assert_eq!(nostd_manifest["program"]["mir_profile_version"], 1);
     assert_eq!(nostd_manifest["program"]["panic"], "abort");
     assert_eq!(nostd_manifest["program"]["has_local_panic_handler"], true);
     let nostd_lean_path = nostd_fix.output.join("Captured.lean");
@@ -6114,7 +6132,7 @@ pub fn checked_rem_i32(a: i32, b: i32) -> i32 {
     );
     let manifest = fixture.manifest();
     assert_eq!(manifest["schema_version"], 5);
-    assert_eq!(manifest["program"]["mir_profile_version"], 2);
+    assert_eq!(manifest["program"]["mir_profile_version"], 1);
     assert_eq!(manifest["program"]["panic"], "unwind");
     assert_eq!(manifest["program"]["bodies"].as_array().unwrap().len(), 4);
 
@@ -6344,4 +6362,367 @@ fn rejects_non_zst_integer_pointer_constant_in_profile_v2() {
         stdout(&out),
         stderr(&out)
     );
+}
+
+#[test]
+fn captures_static_str_core_panicking_calls_and_refuses_panic_fmt() {
+    let positive = br#"#![no_std]
+pub fn assert_plain(c: bool) {
+    assert!(c);
+}
+pub fn panic_plain() -> u32 {
+    panic!();
+}
+pub fn unreachable_branch(c: bool) -> u32 {
+    if c { 1 } else { unreachable!() }
+}
+pub fn ebpf_insn_new(code: u8, dst: u8, src: u8, offset: i16, imm: i32) -> u64 {
+    assert!(dst < 16);
+    assert!(src < 16);
+    (code as u64)
+        | ((dst as u64) << 8)
+        | ((src as u64) << 12)
+        | ((offset as u16 as u64) << 16)
+        | ((imm as u32 as u64) << 32)
+}
+"#;
+    let fix = Capture::new(positive);
+    let out = fix
+        .command()
+        .args(["--panic=abort", "--scope=crate"])
+        .output()
+        .unwrap();
+    assert!(out.status.success(), "{out:?}");
+    let manifest = fix.manifest();
+    assert_eq!(manifest["program"]["mir_profile_version"], 2);
+    assert_eq!(manifest["program"]["panic"], "abort");
+    let lean_path = fix.output.join("Captured.lean");
+    let lean = std::fs::read_to_string(&lean_path).unwrap();
+    let panic_count = lean
+        .matches("Trusted.MirAst.CoreCallOp.panicAbort [")
+        .count();
+    assert_eq!(
+        panic_count, 5,
+        "expected all 5 static-&str panic/assert calls to lower to CoreCallOp.panicAbort:\n{lean}"
+    );
+    assert!(
+        lean.contains("Trusted.MirAst.MirTy.str")
+            && lean.contains("Trusted.MirAst.ConstLit.rodataRef")
+            && !lean.contains("TerminatorKind.unsupported"),
+        "static-&str core::panicking calls must preserve their &str rodataRef operand:\n{lean}"
+    );
+    compile_captured_lean_if_trusted_sources_present(&lean_path);
+
+    // Rust 2015 `panic!("boom")` expands directly to
+    // `core::panicking::panic("boom")` with a non-default `&'static str`
+    // literal, exercising UTF-8 byte capture on arbitrary static messages.
+    let panic_2015 = br#"#![no_std]
+pub fn panic_2015_boom() -> u32 {
+    panic!("boom");
+}
+"#;
+    let fix_2015 = Capture::new(panic_2015);
+    let out_2015 = fix_2015
+        .command()
+        .args(["--edition=2015", "--panic=abort", "--scope=crate"])
+        .output()
+        .unwrap();
+    assert!(out_2015.status.success(), "{out_2015:?}");
+    let lean_2015_path = fix_2015.output.join("Captured.lean");
+    let lean_2015 = std::fs::read_to_string(&lean_2015_path).unwrap();
+    assert!(
+        lean_2015.contains("Trusted.MirAst.CoreCallOp.panicAbort [")
+            && lean_2015.contains("RodataByte.init 98")
+            && lean_2015.contains("RodataByte.init 109")
+            && lean_2015.contains("(some 4)"),
+        "expected 4-byte \"boom\" rodataRef &str operand:\n{lean_2015}"
+    );
+    compile_captured_lean_if_trusted_sources_present(&lean_2015_path);
+
+    // Shared `&str` is also admitted as a Profile v2 parameter/local type,
+    // while `&mut str`, `*const str`, and `*mut str` fail closed at capture.
+    let str_local_src = br#"#![no_std]
+pub fn str_id<'a>(s: &'a str) -> &'a str {
+    s
+}
+"#;
+    let str_local_fix = Capture::new(str_local_src);
+    let str_local_out = str_local_fix
+        .command()
+        .args(["--panic=abort", "--scope=crate"])
+        .output()
+        .unwrap();
+    assert!(
+        str_local_out.status.success(),
+        "shared &str parameter/local must capture cleanly:\n{}\n{}",
+        stdout(&str_local_out),
+        stderr(&str_local_out)
+    );
+    let str_local_lean_path = str_local_fix.output.join("Captured.lean");
+    let str_local_lean = std::fs::read_to_string(&str_local_lean_path).unwrap();
+    assert!(
+        str_local_lean.contains(
+            "Trusted.MirAst.MirTy.ref \
+             Trusted.MirAst.Mutability.shared Trusted.MirAst.MirTy.str"
+        ),
+        "{str_local_lean}"
+    );
+    compile_captured_lean_if_trusted_sources_present(&str_local_lean_path);
+
+    for (label, bad_str_src) in [
+        ("mut_str_ref", &b"#![no_std]\npub fn f<'a>(s: &'a mut str) -> &'a mut str { s }\n"[..]),
+        ("const_str_ptr", &b"#![no_std]\npub fn f(s: *const str) -> *const str { s }\n"[..]),
+        ("mut_str_ptr", &b"#![no_std]\npub fn f(s: *mut str) -> *mut str { s }\n"[..]),
+    ] {
+        let bad_fix = Capture::new(bad_str_src);
+        let bad_out = bad_fix
+            .command()
+            .args(["--panic=abort", "--scope=crate"])
+            .output()
+            .unwrap();
+        assert!(
+            !bad_out.status.success(),
+            "{label} must fail closed at capture: {bad_out:?}"
+        );
+    }
+
+    // All `panic_fmt` / `core::fmt::Arguments` forms — custom
+    // `assert!(c, "msg")`, Rust 2021 `panic!("boom")`, and runtime formatted
+    // `assert!(c, "x={}", x)` — must fail closed at capture without retyping
+    // locals or erasing calls.
+    for (label, src) in [
+        ("assert_custom_msg", &b"pub fn f(c: bool) { assert!(c, \"bad cond\"); }\n"[..]),
+        ("panic_2021_msg", &b"pub fn f() -> u32 { panic!(\"boom\") }\n"[..]),
+        ("assert_runtime_fmt", &b"pub fn f(c: bool, x: u32) { assert!(c, \"x={}\", x); }\n"[..]),
+    ] {
+        let fmt_fix = Capture::new(src);
+        let fmt_out = fmt_fix
+            .command()
+            .args(["--panic=abort", "--scope=crate"])
+            .output()
+            .unwrap();
+        assert!(
+            !fmt_out.status.success(),
+            "{label} must fail closed at capture: {fmt_out:?}"
+        );
+        assert!(
+            status(&fmt_out).to_string().contains("Arguments"),
+            "{label} must refuse core::fmt::Arguments local: {:?}",
+            status(&fmt_out)
+        );
+    }
+
+    // Local spoof of `core::panicking::panic` must never lower to
+    // `CoreCallOp.panicAbort`. The spoof takes the same `&'static str`
+    // operand as the real function, so only the sysroot-`core` callee pinning
+    // (not the operand-type check) can reject it.
+    let spoof = br#"#![no_std]
+mod core {
+    pub mod panicking {
+        pub fn panic(_msg: &'static str) -> ! {
+            loop {}
+        }
+    }
+}
+pub fn call_spoof(c: bool) {
+    if !c {
+        self::core::panicking::panic("spoof");
+    }
+}
+"#;
+    let spoof_fix = Capture::new(spoof);
+    let spoof_out = spoof_fix
+        .command()
+        .args(["--panic=abort", "--select=call_spoof"])
+        .output()
+        .unwrap();
+    assert!(spoof_out.status.success(), "{spoof_out:?}");
+    let spoof_lean = spoof_fix.lean_source();
+    assert!(
+        !spoof_lean.contains("CoreCallOp.panicAbort")
+            && spoof_lean.contains("TerminatorKind.unsupported"),
+        "local core::panicking spoof must stay TerminatorKind.unsupported:\n{spoof_lean}"
+    );
+
+    // Under default `--panic=unwind`, `core::panicking::panic` and
+    // `panic_nounwind` calls stay `TerminatorKind.unsupported` instead of
+    // lowering to Profile v2 `CoreCall`, so Profile v1 programs with
+    // intra-crate calls remain Profile v1; `assert!(c, "bad cond")` still
+    // fails closed at capture.
+    let v1_unwind = br#"#![no_std]
+fn helper(x: u32) -> u32 {
+    x.wrapping_add(1)
+}
+pub fn assert_plain_v1(c: bool, x: u32) -> u32 {
+    assert!(c);
+    helper(x)
+}
+pub fn unreachable_v1(c: bool, x: u32) -> u32 {
+    if c { helper(x) } else { unreachable!() }
+}
+pub fn panic_plain_v1() -> u32 {
+    panic!();
+}
+"#;
+    let unwind_fix = Capture::new(v1_unwind);
+    let unwind_out = unwind_fix
+        .command()
+        .args(["--scope=crate"])
+        .output()
+        .unwrap();
+    assert!(
+        unwind_out.status.success(),
+        "Profile v1 crate with intra-crate calls + panic/unreachable \
+         must stay Profile v1 under --panic=unwind:\n{}\n{}",
+        stdout(&unwind_out),
+        stderr(&unwind_out)
+    );
+    let unwind_manifest = unwind_fix.manifest();
+    assert_eq!(unwind_manifest["program"]["mir_profile_version"], 1, "{unwind_manifest}");
+    assert_eq!(unwind_manifest["program"]["panic"], "unwind", "{unwind_manifest}");
+    let unwind_lean_path = unwind_fix.output.join("Captured.lean");
+    let unwind_lean = std::fs::read_to_string(&unwind_lean_path).unwrap();
+    assert!(
+        !unwind_lean.contains("CoreCallOp.panicAbort")
+            && unwind_lean.contains("TerminatorKind.unsupported"),
+        "unwind capture must keep core::panicking calls as \
+         TerminatorKind.unsupported:\n{unwind_lean}"
+    );
+    compile_captured_lean_if_trusted_sources_present(&unwind_lean_path);
+
+    let unwind_fmt = br#"#![no_std]
+pub fn assert_msg(c: bool) {
+    assert!(c, "bad cond");
+}
+"#;
+    let unwind_fmt_fix = Capture::new(unwind_fmt);
+    let unwind_fmt_out = unwind_fmt_fix
+        .command()
+        .args(["--scope=crate"])
+        .output()
+        .unwrap();
+    assert!(
+        !unwind_fmt_out.status.success(),
+        "assert!(c, \"msg\") under --panic=unwind must stay refused at capture: {unwind_fmt_out:?}"
+    );
+
+    // A `#![no_std]` binary with a crate-local `#[panic_handler]` also keeps
+    // `core::panicking::*` calls unlowered under `--panic=abort`, preserving
+    // Profile v1 for intra-crate calls and refusing `core::fmt::Arguments`.
+    let lh_v1 = br#"#![no_std]
+#![no_main]
+use core::panic::PanicInfo;
+#[panic_handler]
+fn panic(_info: &PanicInfo<'_>) -> ! {
+    loop {}
+}
+fn helper(x: u32) -> u32 {
+    x.wrapping_add(1)
+}
+pub fn assert_plain_lh(c: bool, x: u32) -> u32 {
+    assert!(c);
+    helper(x)
+}
+"#;
+    let lh_v1_fix = Capture::new(lh_v1);
+    let lh_v1_out = lh_v1_fix
+        .command()
+        .args(["--crate-type=bin", "--panic=abort", "--select=assert_plain_lh"])
+        .output()
+        .unwrap();
+    assert!(
+        lh_v1_out.status.success(),
+        "local #[panic_handler] crate with intra-crate call + assert!(c) \
+         must stay Profile v1:\n{}\n{}",
+        stdout(&lh_v1_out),
+        stderr(&lh_v1_out)
+    );
+    let lh_v1_manifest = lh_v1_fix.manifest();
+    assert_eq!(lh_v1_manifest["program"]["mir_profile_version"], 1, "{lh_v1_manifest}");
+    assert_eq!(lh_v1_manifest["program"]["has_local_panic_handler"], true, "{lh_v1_manifest}");
+    let lh_v1_lean_path = lh_v1_fix.output.join("Captured.lean");
+    let lh_v1_lean = std::fs::read_to_string(&lh_v1_lean_path).unwrap();
+    assert!(
+        !lh_v1_lean.contains("CoreCallOp.panicAbort")
+            && lh_v1_lean.contains("TerminatorKind.unsupported"),
+        "local #[panic_handler] capture must keep core::panicking calls unlowered:\n{lh_v1_lean}"
+    );
+    compile_captured_lean_if_trusted_sources_present(&lh_v1_lean_path);
+
+    let lh_fmt = br#"#![no_std]
+#![no_main]
+use core::panic::PanicInfo;
+#[panic_handler]
+fn panic(_info: &PanicInfo<'_>) -> ! {
+    loop {}
+}
+pub fn assert_msg_lh(c: bool) {
+    assert!(c, "bad cond");
+}
+"#;
+    let lh_fmt_fix = Capture::new(lh_fmt);
+    let lh_fmt_out = lh_fmt_fix
+        .command()
+        .args(["--crate-type=bin", "--panic=abort", "--select=assert_msg_lh"])
+        .output()
+        .unwrap();
+    assert!(
+        !lh_fmt_out.status.success(),
+        "assert!(c, \"msg\") with local #[panic_handler] must stay \
+         refused at capture: {lh_fmt_out:?}"
+    );
+}
+
+#[test]
+fn preserves_primitive_divisor_asserts_verbatim_in_profile_v1() {
+    let div_src = br#"#![no_std]
+pub fn udiv16(x: u64) -> u64 {
+    x / 16
+}
+pub fn urem16(x: u64) -> u64 {
+    x % 16
+}
+pub fn idiv16(x: i64) -> i64 {
+    x / 16
+}
+pub fn irem16(x: i64) -> i64 {
+    x % 16
+}
+pub fn const_div(x: u64) -> u64 {
+    const D: u64 = 16;
+    x / D
+}
+#[allow(unconditional_panic)]
+pub fn div_zero(x: u64) -> u64 {
+    x / 0
+}
+pub fn div_neg_one(x: i64) -> i64 {
+    x / -1
+}
+pub fn div_var(x: u64, d: u64) -> u64 {
+    x / d
+}
+"#;
+    let div_fix = Capture::new(div_src);
+    let div_out = div_fix
+        .command()
+        .args(["--panic=abort", "--scope=crate"])
+        .output()
+        .unwrap();
+    assert!(div_out.status.success(), "{div_out:?}");
+    let div_manifest = div_fix.manifest();
+    assert_eq!(
+        div_manifest["program"]["mir_profile_version"], 1,
+        "primitive divisor Asserts stay on Profile v1 without CFG folding: {div_manifest}"
+    );
+    let div_lean_path = div_fix.output.join("Captured.lean");
+    let div_lean = std::fs::read_to_string(&div_lean_path).unwrap();
+    assert!(
+        div_lean.contains("AssertKind.divByZero")
+            && div_lean.contains("AssertKind.remByZero")
+            && div_lean.contains("AssertKind.overflow Trusted.MirAst.BinOp.div")
+            && div_lean.contains("AssertKind.overflow Trusted.MirAst.BinOp.rem"),
+        "all primitive divisor Asserts must be captured verbatim:\n{div_lean}"
+    );
+    compile_captured_lean_if_trusted_sources_present(&div_lean_path);
 }

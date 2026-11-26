@@ -10,7 +10,7 @@ pub fn zero() -> u64 {
     0
 }
 
-pub fn unsupported(value: &str) -> usize {
+pub fn unsupported(value: f64) -> usize {
     let _ = value;
     0
 }

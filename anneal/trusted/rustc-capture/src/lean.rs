@@ -179,6 +179,7 @@ fn ty_at(t: &Ty, indent: usize) -> String {
             ty_at(pointee, indent)
         ),
         Ty::Slice { elem } => format!("(Trusted.MirAst.MirTy.slice {})", ty_at(elem, indent)),
+        Ty::Str => "Trusted.MirAst.MirTy.str".into(),
         Ty::Array { elem, len } => {
             format!("(Trusted.MirAst.MirTy.array {} {len})", ty_at(elem, indent))
         }
@@ -610,6 +611,7 @@ fn core_call_op(op: &CoreCallOp, indent: usize) -> String {
             "(Trusted.MirAst.CoreCallOp.arrayEq {} {len})",
             ty_at(elem, indent)
         ),
+        CoreCallOp::PanicAbort => "Trusted.MirAst.CoreCallOp.panicAbort".into(),
     }
 }
 
@@ -658,13 +660,20 @@ fn terminator_at(term: &Terminator, indent: usize) -> String {
             dst,
             target,
             unwind,
-        } => format!(
-            "(Trusted.MirAst.TerminatorKind.coreCall {} {} {} (some {target}) Trusted.MirAst.UnwindAction.{})",
-            core_call_op(op, indent + 2),
-            list_pretty(args, indent + 2, operand_at),
-            place_at(dst, indent + 2),
-            unwind.lean_name(),
-        ),
+        } => {
+            let target_str = match target {
+                Some(block) => format!("(some {block})"),
+                None => "none".into(),
+            };
+            format!(
+                "(Trusted.MirAst.TerminatorKind.coreCall {} {} {} \
+                 {target_str} Trusted.MirAst.UnwindAction.{})",
+                core_call_op(op, indent + 2),
+                list_pretty(args, indent + 2, operand_at),
+                place_at(dst, indent + 2),
+                unwind.lean_name(),
+            )
+        }
         Terminator::Ret => "Trusted.MirAst.TerminatorKind.return_".into(),
         Terminator::Unreachable => "Trusted.MirAst.TerminatorKind.unreachable".into(),
         Terminator::Unsupported => "Trusted.MirAst.TerminatorKind.unsupported".into(),

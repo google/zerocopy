@@ -512,7 +512,8 @@ noncomputable def encodeValV2 (endian : TargetEndian) (ty : MirTy) (v : Val) :
         .ok ((encodeUInt endian 8 p.offsetBytes.toNat).map
           (fun b => AllocByte.init b p.allocId))
     | .rawPtr _ (.slice _), .slicePtr p len
-    | .ref _ (.slice _), .slicePtr p len =>
+    | .ref _ (.slice _), .slicePtr p len
+    | .ref .shared .str, .slicePtr p len =>
       .ok ((encodeUInt endian 8 p.offsetBytes.toNat).map
           (fun b => AllocByte.init b p.allocId) ++
         (encodeUInt endian 8 len.toNat).map
@@ -566,7 +567,7 @@ noncomputable def decodePtrLikeV2 (endian : TargetEndian) (pt : MirTy)
     (bytes : List AllocByte) : Except FaultKind (Option Val) :=
   if isUnsizedTy pt then
     match pt with
-    | .slice _ =>
+    | .slice _ | .str =>
       if !Nat.beq bytes.length 16 then
         .error .unsupported
       else
@@ -613,6 +614,7 @@ accepts `0`, `1`, and niche tag `2`
 `f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1`). -/
 noncomputable def decodeValV2 (endian : TargetEndian) :
     MirTy → List AllocByte → Except FaultKind (Option Val)
+  | .rawPtr _ .str, _ | .ref .mut .str, _ => .error .unsupported
   | .rawPtr _ pt, bytes => decodePtrLikeV2 endian pt bytes
   | .ref _ pt, bytes => decodePtrLikeV2 endian pt bytes
   | .rangeTo (.int .isize false), bytes =>
@@ -735,14 +737,68 @@ noncomputable def validateSliceElemsV2 (elem : MirTy)
     | .ok none => .error .undefined
     | .error k => .error k
 
-/-- Validate Rust language validity invariants for a `&T`, `&mut T`, `&[T]`,
-or `&mut [T]` value `v` in `m`: non-null, provenance-backed (except valid
-aligned non-null `len = 0` slices / ZSTs), live allocation, bounds, alignment,
-mutability for `.mut`, and initialized valid pointee value.
+/-- UTF-8 validation state machine over `bs`, structurally recursive on the
+byte list. `need` counts the continuation bytes still expected for the current
+code point, and `lo`/`hi` bound the next continuation byte (the second byte of
+`E0`, `ED`, `F0`, and `F4` sequences is narrowed to exclude overlong
+encodings, UTF-16 surrogates, and code points above `U+10FFFF`; every other
+continuation byte is `0x80..=0xBF`). -/
+noncomputable def validUtf8Go : Nat → Nat → Nat → List UInt8 → Bool
+  | 0, _, _, [] => true
+  | _ + 1, _, _, [] => false
+  | k + 1, lo, hi, b :: rest =>
+    Nat.ble lo b.toNat && Nat.ble b.toNat hi && validUtf8Go k 0x80 0xBF rest
+  | 0, _, _, b :: rest =>
+    let n := b.toNat
+    if Nat.blt n 0x80 then validUtf8Go 0 0x80 0xBF rest
+    else if Nat.ble 0xC2 n && Nat.ble n 0xDF then validUtf8Go 1 0x80 0xBF rest
+    else if Nat.beq n 0xE0 then validUtf8Go 2 0xA0 0xBF rest
+    else if Nat.beq n 0xED then validUtf8Go 2 0x80 0x9F rest
+    else if Nat.ble 0xE1 n && Nat.ble n 0xEF then validUtf8Go 2 0x80 0xBF rest
+    else if Nat.beq n 0xF0 then validUtf8Go 3 0x90 0xBF rest
+    else if Nat.ble 0xF1 n && Nat.ble n 0xF3 then validUtf8Go 3 0x80 0xBF rest
+    else if Nat.beq n 0xF4 then validUtf8Go 3 0x80 0x8F rest
+    else false
 
-This implements the Reference's validity invariant for references
-(`src/behavior-considered-undefined.md:195-199,136-143`,
+/-- Return `true` iff `bs` is a valid UTF-8 byte sequence per RFC 3629 and
+`core::str::validations::run_utf8_validation`
+(`library/core/src/str/validations.rs`, `rust-lang/rust`
+`f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1`), rejecting overlong encodings,
+UTF-16 surrogates (`U+D800..=U+DFFF`), and code points above `U+10FFFF`. -/
+noncomputable def validUtf8Bytes (bs : List UInt8) : Bool :=
+  validUtf8Go 0 0x80 0xBF bs
+
+/-- Check whether an already-validated `&str` slice `(p, len)` in `m` contains
+valid UTF-8 bytes. -/
+noncomputable def strSliceUtf8InMem (m : MemoryState) (p : PtrVal)
+    (len : UInt64) : Bool :=
+  if Nat.beq len.toNat 0 then
+    true
+  else
+    match p.allocId with
+    | none => false
+    | some aid =>
+      match findAllocation aid m.allocations with
+      | none => false
+      | some a =>
+        let slice := (a.bytes.drop p.offsetBytes.toNat).take len.toNat
+        if !Nat.beq slice.length len.toNat then
+          false
+        else
+          match initBytes? slice with
+          | none => false
+          | some raw => validUtf8Bytes raw
+
+/-- Validate Rust language validity invariants for a `&T`, `&mut T`, `&[T]`,
+`&mut [T]`, or `&str` value `v` in `m`: non-null, provenance-backed (except
+valid aligned non-null `len = 0` slices / ZSTs), live allocation, bounds,
+alignment, mutability for `.mut`, and initialized valid pointee value.
+
+This implements the Reference's validity invariant for references and `str`
+(`src/behavior-considered-undefined.md:180-181,195-199,136-143`,
 `rust-lang/reference` `ad35aca481751a06afeb23820a672b0f3b11a476`):
+
+> "* A `str` value is treated like `[u8]`, i.e. it must be initialized."
 
 > "* A reference or [`Box<T>`] must be aligned and non-null, it cannot be
 >   [dangling], and it must point to a valid value (in case of dynamically
@@ -757,12 +813,13 @@ This implements the Reference's validity invariant for references
 > If the [size is 0][zero-sized], then the pointer is trivially never
 > "dangling" (even if it is a null pointer)."
 
-Integer slices delegate to `sliceFromRawPartsCheck`; non-integer slices reject
-positive-length uninhabited elements via `isInhabitedV2Ty`, validate raw bounds,
-alignment, and mutability via `sliceRefRawCheck`, and enforce active-field
-initialization per element via `validateSliceElemsV2`. A pointer with no
-provenance is accepted only for a zero-sized pointee or zero-byte slice span at
-a non-null aligned address, such as `NonNull::dangling()`.
+Integer slices and `str` delegate to `sliceFromRawPartsCheck`; non-integer
+slices reject positive-length uninhabited elements via `isInhabitedV2Ty`,
+validate raw bounds, alignment, and mutability via `sliceRefRawCheck`, and
+enforce active-field initialization per element via `validateSliceElemsV2`.
+A pointer with no provenance is accepted only for a zero-sized pointee or
+zero-byte slice span at a non-null aligned address, such as
+`NonNull::dangling()`.
 The following approximations are intentional and conservative (`.undefined`
 where Rust is defined):
 - A pointer with provenance into a dead or out-of-bounds allocation is
@@ -776,6 +833,13 @@ where Rust is defined):
 noncomputable def refValidInMem (m : MemoryState) (reqMut : Mutability)
     (pointee : MirTy) (v : Val) : Except FaultKind Unit :=
   match pointee, v with
+  | .str, .slicePtr p len =>
+    if Mutability.beq reqMut .mut then
+      .error .unsupported
+    else
+      match sliceFromRawPartsCheck m false 1 0 p len with
+      | .ok _ => .ok ()
+      | .error k => .error k
   | .slice elem, .slicePtr p len =>
     if !isSizedNoRefV2Ty elem then
       .error .unsupported
@@ -805,7 +869,7 @@ noncomputable def refValidInMem (m : MemoryState) (reqMut : Mutability)
                 | some a =>
                   validateSliceElemsV2 elem a.bytes lay.size
                     p.offsetBytes.toNat len.toNat
-  | .slice _, _ => .error .unsupported
+  | .slice _, _ | .str, _ => .error .unsupported
   | _, .ptr p =>
     if !isSupportedV2PointeeTy pointee then
       .error .unsupported
@@ -897,6 +961,11 @@ mutual
         [(Mutability.beq reqMut .mut, aid, p.offsetBytes.toNat,
           len.toNat * lay.size)]
       | _, _ => []
+    | .ref reqMut .str, .slicePtr p len =>
+      match p.allocId with
+      | some aid =>
+        [(Mutability.beq reqMut .mut, aid, p.offsetBytes.toNat, len.toNat)]
+      | none => []
     | .ref reqMut pt, .ptr p =>
       match layoutOfTyV2 pt, p.allocId with
       | some lay, some aid => [(Mutability.beq reqMut .mut, aid, p.offsetBytes.toNat, lay.size)]
@@ -922,7 +991,8 @@ end
 mutual
   /-- Extract all allocation ids referenced by any `.ref` inside `(ty, v)`. -/
   noncomputable def refAllocIds : MirTy → Val → List AllocId
-    | .ref _ (.slice _), .slicePtr p _ =>
+    | .ref _ (.slice _), .slicePtr p _
+    | .ref _ .str, .slicePtr p _ =>
       match p.allocId with
       | some aid => [aid]
       | none => []
@@ -951,7 +1021,8 @@ mutual
   `(ty, v)`. -/
   noncomputable def ptrOrRefAllocIds : MirTy → Val → List AllocId
     | .ref _ (.slice _), .slicePtr p _
-    | .rawPtr _ (.slice _), .slicePtr p _ =>
+    | .rawPtr _ (.slice _), .slicePtr p _
+    | .ref _ .str, .slicePtr p _ =>
       match p.allocId with
       | some aid => [aid]
       | none => []

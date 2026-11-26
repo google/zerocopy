@@ -322,7 +322,7 @@ theorem layoutOfTy_props (ty : MirTy) (lay : MirSemantics.LayoutData)
             | cons _ _ => dsimp only [layoutOfTy] at h; cases h
           | _ => dsimp only [layoutOfTy] at h; cases h
       | _ => dsimp only [layoutOfTy] at h; cases h
-  | ref _ _ | rawPtr _ _ | slice _ | array _ _ | rangeTo _ | rangeFrom _
+  | ref _ _ | rawPtr _ _ | slice _ | str | array _ _ | rangeTo _ | rangeFrom _
   | range _ | option _ | unsupported =>
     dsimp only [layoutOfTy] at h; cases h
 
@@ -372,7 +372,7 @@ theorem zst_day1_alignLog2_zero (ty : MirTy) (lay : MirSemantics.LayoutData)
             | cons _ _ => dsimp only [layoutOfTy] at h; cases h
           | _ => dsimp only [layoutOfTy] at h; cases h
       | _ => dsimp only [layoutOfTy] at h; cases h
-  | ref _ _ | rawPtr _ _ | slice _ | array _ _ | rangeTo _ | rangeFrom _
+  | ref _ _ | rawPtr _ _ | slice _ | str | array _ _ | rangeTo _ | rangeFrom _
   | range _ | option _ | unsupported =>
     dsimp only [layoutOfTy] at h; cases h
 
@@ -2515,7 +2515,7 @@ theorem refValidInMem_slice_general_spec
           let ⟨a, h_fa, h_live, h_ib, h_al, h_mut, _⟩ := h_some aid h_aid
           exact ⟨a, h_fa, h_live, h_ib, h_al, h_mut⟩
       | bool | unit | never | char | ordering | enum _ | tuple _ | ref _ _
-      | rawPtr _ _ | slice _ | array _ _ | rangeTo _ | rangeFrom _
+      | rawPtr _ _ | slice _ | str | array _ _ | rangeTo _ | rangeFrom _
       | option _ | range _ | unsupported =>
         dsimp only at h_rv
         let ⟨h_inh, h_lt, h_none, h_some⟩ := h_other h_rv
@@ -2647,7 +2647,7 @@ theorem evalRefRvalueV2_requires_refValidInMem
                   | false => rw [h_esc, h_beq] at h_ref; cases h_ref
                   | true => rw [h_esc, h_beq] at h_ref; cases h_ref
               | bool | int _ _ | unit | never | char | ordering | enum _
-              | tuple _ | rawPtr _ _ | slice _ | array _ _ | rangeTo _
+              | tuple _ | rawPtr _ _ | slice _ | str | array _ _ | rangeTo _
               | rangeFrom _ | unsupported | option _ | range _ =>
                 dsimp only at h_ref; cases h_ref
             | immediate optVal =>
@@ -2684,7 +2684,7 @@ theorem evalRefRvalueV2_requires_refValidInMem
                         rw [h_rv_eq, h_m_eq]
                         exact ⟨pt, MirTy.eq_of_beq h_beq, h_rv⟩
               | bool | int _ _ | unit | never | char | ordering | enum _
-              | tuple _ | rawPtr _ _ | slice _ | array _ _ | rangeTo _
+              | tuple _ | rawPtr _ _ | slice _ | str | array _ _ | rangeTo _
               | rangeFrom _ | unsupported | option _ | range _ =>
                 dsimp only at h_ref; cases h_ref
             | indirect mplace =>
@@ -2726,7 +2726,7 @@ theorem evalRefRvalueV2_requires_refValidInMem
                           rw [h_rv_eq, h_m_eq]
                           exact ⟨pt, MirTy.eq_of_beq h_beq, h_rv⟩
               | bool | int _ _ | unit | never | char | ordering | enum _
-              | tuple _ | rawPtr _ _ | slice _ | array _ _ | rangeTo _
+              | tuple _ | rawPtr _ _ | slice _ | str | array _ _ | rangeTo _
               | rangeFrom _ | unsupported | option _ | range _ =>
                 dsimp only at h_ref; cases h_ref
     | field _ _ | constantIndex _ _ _ | unsupported | downcast _ =>
@@ -2780,15 +2780,15 @@ theorem execCoreCallOp_sliceGetUncheckedRangeTo_spec
           | true => dsimp only at h_op; cases h_op
         | i16 | i32 | i64 | i128 | isize => dsimp only at h_op; cases h_op
       | bool | unit | never | char | ordering | enum _ | tuple _ | ref _ _
-      | rawPtr _ _ | slice _ | array _ _ | rangeTo _ | rangeFrom _
+      | rawPtr _ _ | slice _ | str | array _ _ | rangeTo _ | rangeFrom _
       | unsupported | option _ | range _ =>
         dsimp only at h_op; cases h_op
     | bool | int _ _ | unit | never | char | ordering | enum _ | tuple _
-    | ref _ _ | rawPtr _ _ | array _ _ | rangeTo _ | rangeFrom _
+    | ref _ _ | rawPtr _ _ | str | array _ _ | rangeTo _ | rangeFrom _
     | unsupported | option _ | range _ =>
       dsimp only at h_op; cases h_op
   | bool | int _ _ | unit | never | char | ordering | enum _ | tuple _
-  | rawPtr _ _ | slice _ | array _ _ | rangeTo _ | rangeFrom _
+  | rawPtr _ _ | slice _ | str | array _ _ | rangeTo _ | rangeFrom _
   | unsupported | option _ | range _ =>
     dsimp only at h_op; cases h_op
 
@@ -2841,15 +2841,15 @@ theorem execCoreCallOp_sliceGetUncheckedRangeFrom_spec
           | true => dsimp only at h_op; cases h_op
         | i16 | i32 | i64 | i128 | isize => dsimp only at h_op; cases h_op
       | bool | unit | never | char | ordering | enum _ | tuple _ | ref _ _
-      | rawPtr _ _ | slice _ | array _ _ | rangeTo _ | rangeFrom _
+      | rawPtr _ _ | slice _ | str | array _ _ | rangeTo _ | rangeFrom _
       | unsupported | option _ | range _ =>
         dsimp only at h_op; cases h_op
     | bool | int _ _ | unit | never | char | ordering | enum _ | tuple _
-    | ref _ _ | rawPtr _ _ | array _ _ | rangeTo _ | rangeFrom _
+    | ref _ _ | rawPtr _ _ | str | array _ _ | rangeTo _ | rangeFrom _
     | unsupported | option _ | range _ =>
       dsimp only at h_op; cases h_op
   | bool | int _ _ | unit | never | char | ordering | enum _ | tuple _
-  | rawPtr _ _ | slice _ | array _ _ | rangeTo _ | rangeFrom _
+  | rawPtr _ _ | slice _ | str | array _ _ | rangeTo _ | rangeFrom _
   | unsupported | option _ | range _ =>
     dsimp only at h_op; cases h_op
 
@@ -3020,7 +3020,7 @@ theorem aggregateTuple_evalRvalueV2_preserves_checkValV2
         rw [h_veq]
         exact ⟨fieldTys, argValues typedVals, rfl, rfl, h_cv⟩
   | bool | int _ _ | unit | never | char | ordering | enum _ | ref _ _
-  | rawPtr _ _ | slice _ | array _ _ | rangeTo _ | rangeFrom _
+  | rawPtr _ _ | slice _ | str | array _ _ | rangeTo _ | rangeFrom _
   | unsupported | option _ | range _ =>
     dsimp only at h_ev; cases h_ev
 
@@ -3152,7 +3152,7 @@ theorem resolvePlaceDestV2_deref_requires_mut_ptr
           exact ⟨.rawPtr .mut pt, pt, lay, pv, rfl, Or.inr rfl, h_us, h_eq,
             h_lay, h_d⟩
         | bool | int _ _ | unit | never | char | ordering | enum _
-        | tuple _ | slice _ | array _ _ | rangeTo _ | rangeFrom _
+        | tuple _ | slice _ | str | array _ _ | rangeTo _ | rangeFrom _
         | unsupported | option _ | range _ =>
           cases h_res
       | partialTuple _ =>
@@ -3175,7 +3175,7 @@ theorem resolvePlaceDestV2_deref_requires_mut_ptr
           exact ⟨.rawPtr .mut pt, pt, lay, pv, rfl, Or.inr rfl, h_us, h_eq,
             h_lay, h_d⟩
         | bool | int _ _ | unit | never | char | ordering | enum _
-        | tuple _ | slice _ | array _ _ | rangeTo _ | rangeFrom _
+        | tuple _ | slice _ | str | array _ _ | rangeTo _ | rangeFrom _
         | unsupported | option _ | range _ =>
           cases h_res
 
@@ -3389,10 +3389,54 @@ theorem evalTerminatorV2_return_enforces_callerMem_validity_and_disjoint_spans
       | slicePtr _ _ | rangeTo _ | rangeFrom _ | tuple _ | array _
       | bytes _ | optionVal _ | range _ _ =>
         dsimp only at h_t; cases h_t
-  | coreCall op args dst cont _ =>
+  | coreCall op args dst cont unwind =>
     rw [h_term] at h_t
     cases cont with
-    | none => cases h_t
+    | none =>
+      cases op with
+      | panicAbort =>
+        dsimp only at h_t
+        cases h_emp : dst.projection.isEmpty with
+        | false => rw [h_emp] at h_t; cases h_t
+        | true =>
+          rw [h_emp] at h_t
+          cases h_dt : MirSemantics.getElem? body.locals dst.localId with
+          | none =>
+            rw [h_dt] at h_t
+            cases h_sl : MirSemantics.getElem? frame.locals dst.localId <;>
+              (rw [h_sl] at h_t; cases h_t)
+          | some dt =>
+            rw [h_dt] at h_t
+            cases dt with
+            | never =>
+              cases h_sl : MirSemantics.getElem? frame.locals dst.localId with
+              | none => rw [h_sl] at h_t; cases h_t
+              | some slot =>
+                rw [h_sl] at h_t
+                cases slot with
+                | dead | partialTuple _ => cases h_t
+                | immediate _ | indirect _ =>
+                  cases h_args :
+                      evalArgOperandsV2 body.locals frame.locals m args with
+                  | error k => rw [h_args] at h_t; cases h_t
+                  | ok res =>
+                    cases res with | mk typedArgs res =>
+                    cases res with | mk locals1 mem1 =>
+                    rw [h_args] at h_t
+                    dsimp only at h_t
+                    cases h_va : validatePanicAbortArgs mem1 typedArgs with
+                    | error k => rw [h_va] at h_t; cases h_t
+                    | ok u =>
+                      cases u
+                      rw [h_va] at h_t
+                      cases h_t
+            | int _ _ | bool | char | ordering | unit | enum _
+            | ref _ _ | rawPtr _ _ | slice _ | str | array _ _
+            | rangeTo _ | rangeFrom _ | tuple _ | option _ | range _
+            | unsupported =>
+              cases h_sl : MirSemantics.getElem? frame.locals dst.localId <;>
+                (rw [h_sl] at h_t; cases h_t)
+      | _ => cases h_t
     | some target =>
       dsimp only at h_t
       cases h_emp : dst.projection.isEmpty with

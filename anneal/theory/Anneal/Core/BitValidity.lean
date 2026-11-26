@@ -726,12 +726,12 @@ theorem noProvBytes_encodeVal (endian : TargetEndian) (ty : MirTy) (v : Val)
                 | bytes _ => nomatch hEnc
               | cons _ _ => nomatch hEnc
             | int _ _ | unit | never | char | ordering | enum _ | tuple _
-            | slice _ | array _ _ | rangeTo _ | rangeFrom _ | range _
+            | slice _ | str | array _ _ | rangeTo _ | rangeFrom _ | range _
             | option _ | ref _ _ | rawPtr _ _ | unsupported => nomatch hEnc
         | bool | unit | never | char | ordering | enum _ | tuple _ | ref _ _
-        | slice _ | array _ _ | rangeTo _ | rangeFrom _ | range _ | option _
+        | slice _ | str | array _ _ | rangeTo _ | rangeFrom _ | range _ | option _
         | rawPtr _ _ | unsupported => nomatch hEnc
-    | slice _ | array _ _ | rangeTo _ | rangeFrom _ | range _ | option _
+    | slice _ | str | array _ _ | rangeTo _ | rangeFrom _ | range _ | option _
     | never | ref _ _ | rawPtr _ _ | unsupported => nomatch hEnc
 
 /-- Byte position `i` of a `size`-byte sequence of type `ty` whose first `i`

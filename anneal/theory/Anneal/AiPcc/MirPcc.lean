@@ -708,7 +708,7 @@ private theorem argTopAbsSlot?_noRelGuard {ty : MirTy} {slot : MirAbsSlot}
   | bool => injection h with hEq; subst hEq; rfl
   | unit => injection h with hEq; subst hEq; rfl
   | char | rawPtr _ _ | ref _ _ | tuple _ | enum _ | ordering
-  | slice _ | rangeTo _ | rangeFrom _ | array _ _ | never | unsupported
+  | slice _ | str | rangeTo _ | rangeFrom _ | array _ _ | never | unsupported
   | option _ | range _ =>
     nomatch h
 
@@ -858,7 +858,7 @@ private theorem argTopAbsSlot?_sound {ty : MirTy} {slot : MirAbsSlot}
     | optionVal _ | range _ _ =>
       nomatch hChk
   | char | rawPtr _ _ | ref _ _ | tuple _ | enum _ | ordering
-  | slice _ | rangeTo _ | rangeFrom _ | array _ _ | never | unsupported
+  | slice _ | str | rangeTo _ | rangeFrom _ | array _ _ | never | unsupported
   | option _ | range _ =>
     nomatch hSlot
 
@@ -910,7 +910,7 @@ private theorem liveUninitAbsSlot?_sound {ty : MirTy} {slot : MirAbsSlot}
     injection h with hEq; subst hEq
     exact ⟨rfl, rfl⟩
   | char | rawPtr _ _ | ref _ _ | tuple _ | enum _ | ordering
-  | slice _ | rangeTo _ | rangeFrom _ | array _ _ | never | unsupported
+  | slice _ | str | rangeTo _ | rangeFrom _ | array _ _ | never | unsupported
   | option _ | range _ =>
     nomatch h
 

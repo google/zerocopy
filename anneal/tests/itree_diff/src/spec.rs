@@ -257,7 +257,9 @@ impl TraceTestCase {
     /// (`CaptureRefused`) under `StrictVerbatim`, either due to unmodeled
     /// boundaries in `lean_program_spec` or non-empty `env_schedule` actions.
     pub fn requires_strict_refusal(&self) -> bool {
-        !self.env_schedule.is_empty() || self.lean_program_spec.requires_strict_refusal()
+        !self.env_schedule.is_empty()
+            || self.expected_class == ExpectedCaseClass::Unwind
+            || self.lean_program_spec.requires_strict_refusal()
     }
 }
 

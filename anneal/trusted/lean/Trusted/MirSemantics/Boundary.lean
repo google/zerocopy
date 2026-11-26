@@ -410,7 +410,7 @@ mutual
     | .option e | .rangeTo e | .rangeFrom e | .range e => tyHasRefV2 e
     | .tuple fs => tyListHasRefV2 fs
     | .bool | .int _ _ | .unit | .never | .char | .ordering | .enum _
-    | .rawPtr _ _ | .slice _ | .unsupported => false
+    | .rawPtr _ _ | .slice _ | .str | .unsupported => false
 
   noncomputable def tyListHasRefV2 : List MirTy → Bool
     | [] => false
@@ -632,15 +632,18 @@ raw-pointer-only bodies omit intra-body aliasing checks (`Stacked` or
 `Tree Borrows`, recorded in receipt assumptions).
 
 Under opt-in `--panic abort` (`p.panicStrategy = .abort`,
-`p.hasLocalPanicHandler = false`), failed safe `Assert`s terminate cleanly as
-`.aborted` carrying post-mutation `CallerMemory`, so `BodyVerifiedV2` alone
-permits safe-panic aborts; panic-freedom under `--panic abort` requires an
-explicit `EffectMaskV2.noAbort` `SafeContractV2` obligation in
-`SpecsV2.property`. Crates defining a crate-local `#[panic_handler]`
-(`p.hasLocalPanicHandler = true`) keep failing safe `Assert`s fail-closed as
-`.fault .unsupported`. Note that Profile v2 `.assert` / `.aborted` paths with
-non-empty `callerMem` do not yet have a `lean-miri` simulation proof (unlike
-Profile v1's empty-`callerMem` `CanaryD17AssertPanicAbortClaim`). -/
+`p.hasLocalPanicHandler = false`), failed safe `Assert`s and admitted
+`core::panicking::{panic, panic_nounwind}` calls (`CoreCallOp.panicAbort`)
+terminate cleanly as `.aborted` carrying post-mutation `CallerMemory`, so
+`BodyVerifiedV2` alone permits safe-panic aborts; panic-freedom under
+`--panic abort` requires an explicit `EffectMaskV2.noAbort` `SafeContractV2`
+obligation in `SpecsV2.property`. Crates defining a crate-local
+`#[panic_handler]` (`p.hasLocalPanicHandler = true`) keep failing safe
+`Assert`s and `CoreCallOp.panicAbort` calls fail-closed as
+`.fault .unsupported`. Note that Profile v2 `.assert` / `.panicAbort` /
+`.aborted` paths with non-empty `callerMem` do not yet have a `lean-miri`
+simulation proof (unlike Profile v1's empty-`callerMem`
+`CanaryD17AssertPanicAbortClaim`). -/
 noncomputable def BodyVerifiedV2 (p : Program) (defId : DefId) (body : Body)
     (safetyPre : Query → Prop) : Prop :=
   getElem? p.bodies defId = some body ∧

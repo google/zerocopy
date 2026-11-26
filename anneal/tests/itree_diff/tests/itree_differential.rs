@@ -2037,6 +2037,7 @@ fn live_four_way_curated_corpus_end_to_end() {
         for id in [
             "cat6_mir_unreachable_ub",
             "cat6_shift_overflow_ub",
+            "cat6_div_by_zero_probe",
             "cat4_scheduled_abort_no_drop",
             "cat4_scheduled_return_bytes_override",
             "cat4_scheduled_invalid_bool_return_ub",
@@ -2045,14 +2046,6 @@ fn live_four_way_curated_corpus_end_to_end() {
             assert_agree_or_mir_eval_refused(rep, engine.mir_eval.is_some(), spec.spine_mode, id);
         }
     }
-    assert!(matches!(
-        find("cat6_div_by_zero_probe").verdict,
-        TraceVerdict::ConservativeOverApprox {
-            ub_refutation_disallowed: true,
-            undeclared_ub_fault: false,
-            ..
-        }
-    ));
     assert!(matches!(
         find("cat6_oob_index_probe").verdict,
         TraceVerdict::ConservativeOverApprox {
@@ -8190,7 +8183,7 @@ fn strict_verbatim_direct_mode_requires_refusal_on_multicall_specs() {
         );
         assert_eq!(
             case.requires_strict_refusal(),
-            should_refuse,
+            should_refuse || case.id == "cat6_div_by_zero_probe",
             "unexpected case strict refusal classification for {}",
             case.id
         );

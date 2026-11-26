@@ -2813,14 +2813,23 @@ fn collect(
         bodies,
     )
     .map_err(Failure::unsupported)?;
-    // Profile v2 admits `Assert` and returning `CoreCall` terminators. Under
-    // `--stdlib-crate` the captured crate defines the language items (the
-    // `panic_*` family among them) that give those terminators their
-    // behavior, so `check_stdlib_capability` only covers Profile v1 bodies
+    // Profile v2 admits `Assert` and `CoreCall` terminators, and Profile v1
+    // admits primitive `Assert` terminators. Under `--stdlib-crate` the
+    // captured crate defines the language items (the `panic_*` family among
+    // them) that give `Assert` and `CoreCall` their behavior, so
+    // `check_stdlib_capability` only covers `Assert`-free Profile v1 bodies
     // without runtime overflow checks.
-    if stdlib_crate.is_some() && (program.mir_profile_version() != 1 || profile.overflow_checks) {
+    let has_assert = program.bodies().iter().any(|body| {
+        body.blocks()
+            .iter()
+            .any(|block| matches!(block.terminator, ir::Terminator::Assert { .. }))
+    });
+    if stdlib_crate.is_some()
+        && (program.mir_profile_version() != 1 || profile.overflow_checks || has_assert)
+    {
         return Err(Failure::unsupported(
-            "--stdlib-crate admits only Profile v1 bodies without overflow checks",
+            "--stdlib-crate admits only Profile v1 bodies without \
+             overflow checks or Assert terminators",
         ));
     }
     Ok(ir::Manifest {

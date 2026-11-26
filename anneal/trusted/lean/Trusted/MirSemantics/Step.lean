@@ -780,6 +780,109 @@ noncomputable def evalAssertFailure (msg : AssertKind)
       | _, _ => .fault .unsupported
   | .overflow _ | .unsupported => .fault .unsupported
 
+/-- Shared abort-termination rule for diverging
+`core::panicking::{panic, panic_nounwind}` calls (`CoreCallOp.panicAbort`):
+terminates cleanly with `.aborted callerMem` iff `hasLocalPanicHandler = false`,
+`panicStrategy = .abort`, and `unwind ≠ .cleanup _`; otherwise fails closed as
+`.fault .unsupported`.
+
+At pinned `rust-lang/rust` `f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1`:
+- `core::panicking::panic` (`library/core/src/panicking.rs:138-151`) and
+  `core::panicking::panic_nounwind` (`library/core/src/panicking.rs:224-226`)
+  wrap their `&'static str` message via `fmt::Arguments::from_str(expr)` and
+  delegate to `panic_fmt` (`:60-81`) and `panic_nounwind_fmt` (`:95-124`),
+  which invoke the `#[lang = "panic_impl"]` handler (`:67-80` and `:108-122`):
+
+  > pub const fn panic(expr: &'static str) -> ! {
+  >     ...
+  >     panic_fmt(fmt::Arguments::from_str(expr));
+  > }
+
+  > unsafe extern "Rust" {
+  >     #[lang = "panic_impl"]
+  >     fn panic_impl(pi: &PanicInfo<'_>) -> !;
+  > }
+  >
+  > let pi = PanicInfo::new(
+  >     &fmt,
+  >     Location::caller(),
+  >     /* can_unwind */ true,
+  >     /* force_no_backtrace */ false,
+  > );
+  > ...
+  > unsafe { panic_impl(&pi) }
+
+  > unsafe extern "Rust" {
+  >     #[lang = "panic_impl"]
+  >     fn panic_impl(pi: &PanicInfo<'_>) -> !;
+  > }
+  >
+  > // PanicInfo with the `can_unwind` flag set to false forces an abort.
+  > let pi = PanicInfo::new(
+  >     &fmt,
+  >     Location::caller(),
+  >     /* can_unwind */ false,
+  >     force_no_backtrace,
+  > );
+  > ...
+  > unsafe { panic_impl(&pi) }
+
+- Without a crate-local `#[panic_handler]` (`hasLocalPanicHandler = false`),
+  `std`'s default handler
+  (`library/std/src/panicking.rs:680-694,776-840,874-877`)
+  runs `panic_with_hook` (aborting directly via `crate::process::abort()` when
+  `!can_unwind` at `:831-837`) and otherwise calls `rust_panic` ->
+  `__rust_start_panic`:
+
+  > if !can_unwind {
+  >     ...
+  >     crate::process::abort();
+  > }
+  >
+  > rust_panic(payload)
+
+  > fn rust_panic(msg: &mut dyn PanicPayload) -> ! {
+  >     let code = unsafe { __rust_start_panic(msg) };
+  >     rtabort!("failed to initiate panic, error {code}")
+  > }
+
+- Under `-C panic=abort` (`panicStrategy = .abort`), the linked `panic_abort`
+  runtime (`library/panic_abort/src/lib.rs:33-51` and
+  `library/std/src/rt.rs:32-34`) aborts the process without unwinding across
+  any caller `UnwindAction` (`continue_`, `unreachable`, or `terminate`;
+  `cleanup` blocks are absent under `-C panic=abort` and fail closed):
+
+  > pub unsafe fn __rust_start_panic(_payload: &mut dyn PanicPayload) -> u32 {
+  >     ...
+  >     unsafe extern "Rust" {
+  >         // This is defined in std::rt.
+  >         #[rustc_std_internal_symbol]
+  >         safe fn __rust_abort() -> !;
+  >     }
+  >
+  >     __rust_abort()
+  > }
+
+  > fn __rust_abort() {
+  >     crate::process::abort();
+  > }
+
+Panic hooks and `#[panic_handler]` execution are outside the MIR machine
+(recorded explicitly in the `--panic abort` verification receipt assumption);
+when `hasLocalPanicHandler = true`, `panicStrategy = .unwind`, or
+`unwind = .cleanup _`, this rule fails closed as `.fault .unsupported`. -/
+noncomputable def evalCorePanicAbort (panicStrategy : PanicStrategy)
+    (unwind : UnwindAction) (callerMem : CallerMemory)
+    (hasLocalPanicHandler : Bool := true) :
+    StepResult State TerminalOut :=
+  if hasLocalPanicHandler then
+    .fault .unsupported
+  else
+    match panicStrategy, unwind with
+    | .abort, .continue_ | .abort, .unreachable | .abort, .terminate =>
+      .done (.aborted callerMem)
+    | _, _ => .fault .unsupported
+
 /-- Evaluate a basic block's `TerminatorKind` when
 `frame.stmtIdx == bb.statements.length`, matching `eval_terminator` in
 `compiler/rustc_const_eval/src/interpret/step.rs` (`rust-lang/rust`
@@ -1540,6 +1643,20 @@ noncomputable def evalRodataRefConstV2 (ty : MirTy) (bytes : List RodataByte)
         match refValidInMem mem1 .shared (.slice elem) v with
         | .error k => .error k
         | .ok () => .ok (ty, some v, locals, mem1)
+    | .ref reqMut .str, some len =>
+      if !Nat.blt len (Nat.pow 2 64) then
+        .error .unsupported
+      else if Mutability.beq reqMut .mut then
+        .error .unsupported
+      else
+        let v : Val := .slicePtr ptr (UInt64.ofNat len)
+        match refValidInMem mem1 .shared .str v with
+        | .error k => .error k
+        | .ok () =>
+          if !strSliceUtf8InMem mem1 ptr (UInt64.ofNat len) then
+            .error .unsupported
+          else
+            .ok (ty, some v, locals, mem1)
     | .rawPtr reqMut (.slice _), some len =>
       if !Nat.blt len (Nat.pow 2 64) then
         .error .unsupported
@@ -2007,7 +2124,18 @@ noncomputable def evalRvalueV2 (bodyLocals : List MirTy) (locals : List LocalSlo
           match refValidInMem mem1 srcMut (.slice elem) (.slicePtr p len) with
           | .error k => .error k
           | .ok () =>
-            .ok (.scalar ⟨.isize, false, truncateBits .isize (BitVec.ofNat 128 len.toNat)⟩,
+            .ok (.scalar ⟨.isize, false,
+              truncateBits .isize (BitVec.ofNat 128 len.toNat)⟩,
+              locals1, mem1)
+      | .ref .shared .str, .slicePtr p len =>
+        if !MirTy.beq dstTy (.int .isize false) then
+          .error .unsupported
+        else
+          match refValidInMem mem1 .shared .str (.slicePtr p len) with
+          | .error k => .error k
+          | .ok () =>
+            .ok (.scalar ⟨.isize, false,
+              truncateBits .isize (BitVec.ofNat 128 len.toNat)⟩,
               locals1, mem1)
       | .rawPtr _ (.slice _), .slicePtr _ len =>
         if !MirTy.beq dstTy (.int .isize false) then
@@ -2746,7 +2874,7 @@ mutual
     -- `Option<T>` stays `.memoryCopy` (the strictest class) even where `rustc`
     -- picks `Scalar`/`ScalarPair`: a `None` payload is uninit, so we do not
     -- claim the immediate-copy path.
-    | .option _ | .slice _ | .rangeTo _ | .rangeFrom _ | .range _
+    | .option _ | .slice _ | .str | .rangeTo _ | .rangeFrom _ | .range _
     | .unsupported => .memoryCopy
 
   noncomputable def copyReprOfTupleFieldsV2 :
@@ -3403,7 +3531,9 @@ noncomputable def execCoreCallOp (m : MemoryState) (op : CoreCallOp)
 
 /-- Execute any `CoreCallOp` in Profile v2, threading updated `MemoryState`
 for memory-mutating core contracts (`CoreContracts`) while delegating
-existing slice/raw-pointer primitives to `execCoreCallOp`. -/
+existing slice/raw-pointer primitives to `execCoreCallOp`. The diverging
+`.panicAbort` never returns, so a returning call fails closed with
+`.unsupported` (`evalTerminatorV2` handles its `target = none` form). -/
 noncomputable def execCoreCallWithMem (m : MemoryState) (op : CoreCallOp)
     (args : List (MirTy × Val)) (dstTy : MirTy) :
     Except FaultKind (Val × MemoryState) :=
@@ -3421,6 +3551,64 @@ noncomputable def execCoreCallWithMem (m : MemoryState) (op : CoreCallOp)
   | .cmpMax _ _ | .memReplace _ | .optionIsSome _ | .optionIsNone _
   | .optionTake _ | .optionUnwrap _ =>
     execCoreContractOp m op args dstTy
+  | .panicAbort => .error .unsupported
+
+/-- Validate the evaluated `&str` argument of `CoreCallOp.panicAbort`
+(`core::panicking::{panic, panic_nounwind}`) against `m`, requiring a single
+shared `&str` wide pointer (`Val.slicePtr` with `isize` pointer width) that
+satisfies `refValidInMem m .shared .str` (live, aligned, non-null, initialized
+bytes per `src/behavior-considered-undefined.md:44-45,69-73,180-181`,
+`rust-lang/reference` `ad35aca481751a06afeb23820a672b0f3b11a476`) and contains
+valid UTF-8 bytes (`strSliceUtf8InMem`).
+
+At `rust-lang/rust` `f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1`,
+`core::panicking::{panic, panic_nounwind}` wraps `expr: &'static str` via
+`fmt::Arguments::from_str(expr)` (`library/core/src/panicking.rs:150,225`), and
+`Arguments::as_str()` (`library/core/src/fmt/mod.rs:871-889`) reconstructs
+`&'static str` with `str::from_utf8_unchecked`
+(`library/core/src/str/converts.rs:178-182`):
+
+> "pub const fn as_str(&self) -> Option<&'static str> {
+>     ...
+>     if bits & 1 == 1 {
+>         // SAFETY: This fmt::Arguments stores a &'static str. See encoding
+>         // documentation above.
+>         Some(unsafe {
+>             str::from_utf8_unchecked(crate::slice::from_raw_parts(
+>                 self.template.as_ptr(),
+>                 bits >> 1,
+>             ))
+>         })
+>     } else {
+>         None
+>     }
+> }"
+
+> "pub const unsafe fn from_utf8_unchecked(v: &[u8]) -> &str {
+>     // SAFETY: the caller must guarantee that the bytes `v` are valid UTF-8.
+>     // Also relies on `&str` and `&[u8]` having the same layout.
+>     unsafe { mem::transmute(v) }
+> }"
+
+If `refValidInMem` succeeds (`[undefined.validity.str]`) but `strSliceUtf8InMem`
+is `false`, `validatePanicAbortArgs` fails closed with `.error .unsupported`
+(conservative when a custom panic hook or absent stderr output avoids calling
+`Arguments::as_str()`, while rejecting `WellFormedV2` on non-UTF-8
+`&'static str` inputs without an explicit UTF-8 `safetyPre`). -/
+noncomputable def validatePanicAbortArgs (m : MemoryState) :
+    List (MirTy × Val) → Except FaultKind Unit
+  | [(.ref .shared .str, .slicePtr p len)] =>
+    if !IntWidth.beq p.width .isize then
+      .error .unsupported
+    else
+      match refValidInMem m .shared .str (.slicePtr p len) with
+      | .error k => .error k
+      | .ok () =>
+        if !strSliceUtf8InMem m p len then
+          .error .unsupported
+        else
+          .ok ()
+  | _ => .error .unsupported
 
 /-- Evaluate a basic block's `TerminatorKind` in Profile v2.
 
@@ -3458,7 +3646,19 @@ delegates to `evalAssertFailure`: under `--panic abort` without a crate-local
 panics return `.done (.aborted (extractCallerMemory callerMem mem1))`, and so
 do optional overflow checks when `overflowChecks = true`; optional overflow
 checks without `overflowChecks`, crates with a crate-local `#[panic_handler]`,
-cleanup unwinds, and `--panic unwind` stay `.fault .unsupported`. -/
+cleanup unwinds, and `--panic unwind` stay `.fault .unsupported`.
+
+Diverging `.coreCall .panicAbort args dst none unwind` validates `dst`
+(`MirTy.never` with a live local slot in `frame.locals`), evaluates `args` via
+`evalArgOperandsV2` (`validatePanicAbortArgs`), and delegates to
+`evalCorePanicAbort` carrying `extractCallerMemory callerMem mem1`. In
+`vendor/lean-miri/Miri/Interpreter/Call.lean:670` and `Place.lean:80-86`,
+`evalCallTerminator` evaluates `dest` via `localToPlace`, which does not check
+slot liveness on sized locals (`MirTy.never` is sized `⟨0, 0⟩`), and a
+diverging call never writes `destPlace`, so Miri aborts rather than raising UB
+on a `.dead` destination. Rejecting `none` or `some .dead` on `dst` as
+`.fault .unsupported` here is stricter than Miri and fail-closed (`rustc` never
+emits a dead destination on a call). -/
 noncomputable def evalTerminatorV2 (body : Body) (bb : BasicBlock)
     (frame : FrameState) (mem : MemoryState) (callerMem : CallerMemory)
     (panicStrategy : PanicStrategy := .unwind)
@@ -3547,6 +3747,23 @@ noncomputable def evalTerminatorV2 (body : Body) (bb : BasicBlock)
             | .error k => .fault k
             | .ok (locals2, mem2) =>
               jumpToBlock { frame with locals := locals2 } mem2 callerMem target
+  | .coreCall .panicAbort args dst none unwind =>
+    if !dst.projection.isEmpty then
+      .fault .unsupported
+    else
+      match getElem? body.locals dst.localId,
+          getElem? frame.locals dst.localId with
+      | some .never, some (.immediate _)
+      | some .never, some (.indirect _) =>
+        match evalArgOperandsV2 body.locals frame.locals mem args with
+        | .error k => .fault k
+        | .ok (typedArgs, _, mem1) =>
+          match validatePanicAbortArgs mem1 typedArgs with
+          | .error k => .fault k
+          | .ok () =>
+            evalCorePanicAbort panicStrategy unwind
+              (extractCallerMemory callerMem mem1) hasLocalPanicHandler
+      | _, _ => .fault .unsupported
   | .coreCall _ _ _ none _ | .unwindResume | .call _ _ _ _ _
   | .sysrootCall _ _ _ _ _ | .unsupported =>
     .fault .unsupported

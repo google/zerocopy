@@ -66,10 +66,12 @@ Constructor correspondence: `.continue_`, `.unreachable`, and `.terminate`
 correspond 1:1 to `Continue`, `Unreachable`, and `Terminate(_)`. Capture drops
 the `UnwindTerminateReason`, which only selects the panic message. Capture
 refuses `Cleanup(_)` on `Assert` and `Call` terminators, so `.cleanup` never
-reaches $M_{\text{anneal}}$ from capture. The unwind action has no operational
-effect in Profile v1 or v2: neither profile ever unwinds, because every panic
-path (a failed `Assert`, or a `coreCall` precondition violation) faults with
-`.unsupported` or `.undefined` instead of starting an unwind. -/
+reaches $M_{\text{anneal}}$ from capture. Neither profile ever unwinds:
+non-optional failed `Assert`s, failed optional overflow `Assert`s when
+`overflowChecks = true`, and diverging `core::panicking::*` calls step to
+`.done (.aborted _)` only under `--panic abort` without a crate-local
+`#[panic_handler]` and with a non-cleanup unwind action; every other panic path
+faults with `.unsupported` or `.undefined`. -/
 inductive UnwindAction where
   | continue_
   | unreachable
@@ -120,7 +122,8 @@ inductive AssertKind where
   | unsupported
 
 /-- Closed set of modeled `core` library calls in Profile v2
-(`TerminatorKind.coreCall`). Capture (`core_call_op` in
+(`TerminatorKind.coreCall`). Capture (`core_call_op` for returning calls and
+`terminator` for diverging `.panicAbort` in
 `trusted/rustc-capture/src/extract.rs`) maps a direct `FnDef` call to one of
 these constructors only when the callee is the sysroot `core` function below.
 Every other external `Call` remains `.unsupported`.
@@ -155,6 +158,14 @@ Every other external `Call` remains `.unsupported`.
   `.memReplace`, `.optionIsSome`, `.optionIsNone`, `.optionTake`, and
   `.optionUnwrap` model the corresponding `core` slice, scalar, `cmp`, `mem`,
   and `Option` operations (`Trusted.MirSemantics.CoreContracts`).
+- `.panicAbort` is a diverging call (`target = none`) to
+  `core::panicking::{panic, panic_nounwind}` taking its evaluated shared
+  `&'static str` operand (`args = [expr]`,
+  `library/core/src/panicking.rs:138,224`, same pin; see `evalCorePanicAbort`
+  and `validatePanicAbortArgs`):
+
+  > "pub const fn panic(expr: &'static str) -> !"
+  > "pub const fn panic_nounwind(expr: &'static str) -> !"
 
 Each semantic definition cited above quotes the corresponding `core` safety
 contract at `rust-lang/rust` `f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1`. -/
@@ -187,6 +198,7 @@ inductive CoreCallOp where
   | usizeUncheckedSub
   | intToLeBytes (width : IntWidth) (signed : Bool)
   | arrayEq (elem : MirTy) (len : Nat)
+  | panicAbort
 
 /-- Closed set of `core::num` primitive arithmetic operations supported via
 pinned sysroot-body lowering (verified at capture time against `core`'s

@@ -6576,7 +6576,7 @@ private theorem evalConstLit_checkVal (mty : MirTy) (lit : ConstLit) (v : Val)
                       dsimp only [checkVal, Val.ty?]
                       rw [hAdm, Nat.blt_eq.mpr hLt]
                       exact enumTy_beq_self ety
-  | never | tuple _ | ref _ _ | rawPtr _ _ | slice _ | rangeTo _ | rangeFrom _
+  | never | tuple _ | ref _ _ | rawPtr _ _ | slice _ | str | rangeTo _ | rangeFrom _
   | array _ _ | unsupported | option _ | range _ =>
       cases lit <;> cases h
 
@@ -6602,7 +6602,7 @@ private theorem evalIntToIntCast_checkVal (v : Val) (castTy : MirTy) (res : Val)
           | false => rw [ite_cond_false hBle] at h; cases h
           | true => rw [ite_cond_true hBle] at h; cases h; rfl
       | bool | unit | never | ordering | enum _ | tuple _
-      | ref _ _ | rawPtr _ _ | slice _ | rangeTo _ | rangeFrom _
+      | ref _ _ | rawPtr _ _ | slice _ | str | rangeTo _ | rangeFrom _
       | array _ _ | unsupported | option _ | range _ => cases h
 
 mutual
@@ -7850,7 +7850,7 @@ theorem checkVal_implies_checkValAgainstSpec :
                           cases hCl
                           cases ca with
                           | bool | unit | never | char | ordering | enum _
-                          | tuple _ | ref _ _ | rawPtr _ _ | slice _
+                          | tuple _ | ref _ _ | rawPtr _ _ | slice _ | str
                           | rangeTo _ | rangeFrom _ | array _ _
                           | unsupported | option _ | range _ =>
                               cases hSupp
@@ -7858,7 +7858,7 @@ theorem checkVal_implies_checkValAgainstSpec :
                               cases cb with
                               | int _ _ | unit | never | char | ordering
                               | enum _ | tuple _ | ref _ _ | rawPtr _ _
-                              | slice _ | rangeTo _ | rangeFrom _
+                              | slice _ | str | rangeTo _ | rangeFrom _
                               | array _ _ | unsupported | option _ | range _ =>
                                   cases hSupp
                               | bool =>
@@ -8659,7 +8659,7 @@ private theorem openLiveUninitSlot_slotRel (prog : OpenProgram)
               exact .inr (.inr (.inl ⟨.enumVal ety 0, .enumVal ety 0, rfl, rfl,
                 ⟨hChk, .inl rfl⟩⟩))
       | bool | int _ _ | never | char | ordering | tuple _ | ref _ _
-      | rawPtr _ _ | slice _ | rangeTo _ | rangeFrom _ | array _ _
+      | rawPtr _ _ | slice _ | str | rangeTo _ | rangeFrom _ | array _ _
       | unsupported | option _ | range _ =>
           exact .inr (.inl ⟨rfl, rfl⟩)
   | none =>
@@ -8676,7 +8676,7 @@ private theorem openLiveUninitSlot_slotRel (prog : OpenProgram)
               refine .inr (.inl ⟨?_, rfl⟩)
               dsimp only [liveUninitSlot]; rw [ite_cond_false hZ]
       | bool | int _ _ | never | char | ordering | tuple _ | ref _ _
-      | rawPtr _ _ | slice _ | rangeTo _ | rangeFrom _ | array _ _
+      | rawPtr _ _ | slice _ | str | rangeTo _ | rangeFrom _ | array _ _
       | unsupported | option _ | range _ =>
           exact .inr (.inl ⟨rfl, rfl⟩)
 
@@ -10139,7 +10139,7 @@ private theorem mutability_beq_self :
 
 mutual
   private theorem mirTy_beq_self : ∀ m : MirTy, MirTy.beq m m = true
-    | .bool | .unit | .never | .char | .ordering | .unsupported => rfl
+    | .bool | .unit | .never | .char | .ordering | .str | .unsupported => rfl
     | .int w s => by
         dsimp only [MirTy.beq]
         rw [intWidth_beq_self w, beq_self_eq_true s]

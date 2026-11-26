@@ -1291,8 +1291,8 @@ fn check_case_expectation_inner(
         None
     };
 
-    let strict_multicall_refusal_required =
-        lean_mode == LeanTraceMode::StrictVerbatim && spec_or_case_requires_strict_refusal;
+    let strict_multicall_refusal_required = lean_mode == LeanTraceMode::StrictVerbatim
+        && (spec_or_case_requires_strict_refusal || expected == ExpectedCaseClass::Unwind);
     let mir_eval_conservative = mir_eval.is_some_and(|me| {
         matches!(
             me.outcome,

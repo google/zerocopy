@@ -1343,7 +1343,7 @@ MIR_SEMANTICS_GUARDS: tuple[MirSemanticsGuard, ...] = (
         needs_wf_helper=False,
     ),
     # ------------------------------------------------------------------
-    # Profile v2 memory, step, type-admission, and boundary guards (71 guards)
+    # Profile v2 memory, step, type-admission, and boundary guards (80 guards)
     # ------------------------------------------------------------------
     MirSemanticsGuard(
         guard_id="mem_v2_ptr_add_null_nonzero",
@@ -2648,6 +2648,209 @@ MIR_SEMANTICS_GUARDS: tuple[MirSemanticsGuard, ...] = (
         fixture_module="StepRefutations",
         theorem_name="refute_step_v2_assign_repeat_overlap_ub",
         needs_wf_helper=False,
+    ),
+    MirSemanticsGuard(
+        guard_id="step_v2_core_panic_local_handler_unsupported",
+        target_file="trusted/lean/Trusted/MirSemantics/Step.lean",
+        target_module="Trusted/MirSemantics/Step",
+        description=(
+            "evalCorePanicAbort keeps diverging core::panicking calls as "
+            ".fault .unsupported when the crate defines a crate-local #[panic_handler]"
+        ),
+        anchor=(
+            "  if hasLocalPanicHandler then\n"
+            "    .fault .unsupported\n"
+            "  else"
+        ),
+        replacement=(
+            "  if false then\n"
+            "    .fault .unsupported\n"
+            "  else"
+        ),
+        fixture_module="StepRefutations",
+        theorem_name="refute_step_v2_core_panic_local_handler_unsupported",
+    ),
+    MirSemanticsGuard(
+        guard_id="step_v2_core_panic_unwind_unsupported",
+        target_file="trusted/lean/Trusted/MirSemantics/Step.lean",
+        target_module="Trusted/MirSemantics/Step",
+        description=(
+            "evalCorePanicAbort keeps diverging core::panicking calls as "
+            ".fault .unsupported under --panic unwind"
+        ),
+        anchor=(
+            "    match panicStrategy, unwind with\n"
+            "    | .abort, .continue_ | .abort, .unreachable | .abort, .terminate =>\n"
+            "      .done (.aborted callerMem)\n"
+            "    | _, _ => .fault .unsupported"
+        ),
+        replacement=(
+            "    match panicStrategy, unwind with\n"
+            "    | .abort, .continue_ | .abort, .unreachable | .abort, .terminate\n"
+            "    | .unwind, .continue_ =>\n"
+            "      .done (.aborted callerMem)\n"
+            "    | _, _ => .fault .unsupported"
+        ),
+        fixture_module="StepRefutations",
+        theorem_name="refute_step_v2_core_panic_unwind_unsupported",
+    ),
+    MirSemanticsGuard(
+        guard_id="step_v2_core_panic_abort_extract_caller_mem",
+        target_file="trusted/lean/Trusted/MirSemantics/Step.lean",
+        target_module="Trusted/MirSemantics/Step",
+        description=(
+            "evalTerminatorV2 .coreCall .panicAbort preserves pre-abort caller "
+            "memory mutations"
+        ),
+        anchor=(
+            "          match validatePanicAbortArgs mem1 typedArgs with\n"
+            "          | .error k => .fault k\n"
+            "          | .ok () =>\n"
+            "            evalCorePanicAbort panicStrategy unwind\n"
+            "              (extractCallerMemory callerMem mem1) hasLocalPanicHandler"
+        ),
+        replacement=(
+            "          match validatePanicAbortArgs mem1 typedArgs with\n"
+            "          | .error k => .fault k\n"
+            "          | .ok () =>\n"
+            "            evalCorePanicAbort panicStrategy unwind callerMem hasLocalPanicHandler"
+        ),
+        fixture_module="StepRefutations",
+        theorem_name="refute_step_v2_core_panic_abort_extract_caller_mem",
+    ),
+    MirSemanticsGuard(
+        guard_id="step_v2_core_panic_abort_ref_valid",
+        target_file="trusted/lean/Trusted/MirSemantics/Step.lean",
+        target_module="Trusted/MirSemantics/Step",
+        description=(
+            "validatePanicAbortArgs re-validates refValidInMem on local &str "
+            "operands passed to CoreCallOp.panicAbort"
+        ),
+        anchor=(
+            "  | [(.ref .shared .str, .slicePtr p len)] =>\n"
+            "    if !IntWidth.beq p.width .isize then\n"
+            "      .error .unsupported\n"
+            "    else\n"
+            "      match refValidInMem m .shared .str (.slicePtr p len) with"
+        ),
+        replacement=(
+            "  | [(.ref .shared .str, .slicePtr p len)] =>\n"
+            "    if !IntWidth.beq p.width .isize then\n"
+            "      .error .unsupported\n"
+            "    else\n"
+            "      match Except.ok () with"
+        ),
+        fixture_module="StepRefutations",
+        theorem_name="refute_step_v2_core_panic_abort_ref_valid",
+    ),
+    MirSemanticsGuard(
+        guard_id="step_v2_core_panic_abort_non_utf8_unsupported",
+        target_file="trusted/lean/Trusted/MirSemantics/Step.lean",
+        target_module="Trusted/MirSemantics/Step",
+        description=(
+            "validatePanicAbortArgs rejects non-UTF-8 &str operands passed to "
+            "CoreCallOp.panicAbort as .error .unsupported"
+        ),
+        anchor=(
+            "        if !strSliceUtf8InMem m p len then\n"
+            "          .error .unsupported\n"
+            "        else\n"
+            "          .ok ()"
+        ),
+        replacement=(
+            "        if false then\n"
+            "          .error .unsupported\n"
+            "        else\n"
+            "          .ok ()"
+        ),
+        fixture_module="StepRefutations",
+        theorem_name="refute_step_v2_core_panic_abort_non_utf8_unsupported",
+    ),
+    MirSemanticsGuard(
+        guard_id="step_v2_ptr_metadata_str_dst_ty",
+        target_file="trusted/lean/Trusted/MirSemantics/Step.lean",
+        target_module="Trusted/MirSemantics/Step",
+        description=(
+            "evalRvalueV2 UnOp.ptrMetadata on &str requires usize destination "
+            "type"
+        ),
+        anchor=(
+            "      | .ref .shared .str, .slicePtr p len =>\n"
+            "        if !MirTy.beq dstTy (.int .isize false) then\n"
+            "          .error .unsupported"
+        ),
+        replacement=(
+            "      | .ref .shared .str, .slicePtr p len =>\n"
+            "        if false then\n"
+            "          .error .unsupported"
+        ),
+        fixture_module="StepRefutations",
+        theorem_name="refute_step_v2_ptr_metadata_str_dst_ty",
+    ),
+    MirSemanticsGuard(
+        guard_id="step_v2_ptr_metadata_str_ref_valid",
+        target_file="trusted/lean/Trusted/MirSemantics/Step.lean",
+        target_module="Trusted/MirSemantics/Step",
+        description=(
+            "evalRvalueV2 UnOp.ptrMetadata on &str validates refValidInMem on "
+            "the source string slice"
+        ),
+        anchor=(
+            "          match refValidInMem mem1 .shared .str (.slicePtr p len) with\n"
+            "          | .error k => .error k\n"
+            "          | .ok () =>"
+        ),
+        replacement=(
+            "          match Except.ok () with\n"
+            "          | .error k => .error k\n"
+            "          | .ok () =>"
+        ),
+        fixture_module="StepRefutations",
+        theorem_name="refute_step_v2_ptr_metadata_str_ref_valid",
+    ),
+    MirSemanticsGuard(
+        guard_id="step_v2_core_panic_abort_eval_args",
+        target_file="trusted/lean/Trusted/MirSemantics/Step.lean",
+        target_module="Trusted/MirSemantics/Step",
+        description=(
+            "evalTerminatorV2 .coreCall .panicAbort evaluates its &str "
+            "argument before aborting so uninitialized local or rodata "
+            "operands fault .undefined"
+        ),
+        anchor=(
+            "        match evalArgOperandsV2 body.locals frame.locals mem args with\n"
+            "        | .error k => .fault k\n"
+            "        | .ok (typedArgs, _, mem1) =>"
+        ),
+        replacement=(
+            "        match evalArgOperandsV2 body.locals frame.locals mem args with\n"
+            "        | .error _ =>\n"
+            "          evalCorePanicAbort panicStrategy unwind\n"
+            "            (extractCallerMemory callerMem mem) hasLocalPanicHandler\n"
+            "        | .ok (typedArgs, _, mem1) =>"
+        ),
+        fixture_module="StepRefutations",
+        theorem_name="refute_step_v2_core_panic_abort_eval_args",
+    ),
+    MirSemanticsGuard(
+        guard_id="step_v2_core_panic_abort_dead_dst_unsupported",
+        target_file="trusted/lean/Trusted/MirSemantics/Step.lean",
+        target_module="Trusted/MirSemantics/Step",
+        description=(
+            "evalTerminatorV2 .coreCall .panicAbort rejects dead ! destination "
+            "locals as .fault .unsupported before aborting"
+        ),
+        anchor=(
+            "      | some .never, some (.immediate _)\n"
+            "      | some .never, some (.indirect _) =>"
+        ),
+        replacement=(
+            "      | some .never, some (.immediate _)\n"
+            "      | some .never, some (.indirect _)\n"
+            "      | some .never, some .dead =>"
+        ),
+        fixture_module="StepRefutations",
+        theorem_name="refute_step_v2_core_panic_abort_dead_dst_unsupported",
     ),
     MirSemanticsGuard(
         guard_id="boundary_v2_wellformed_forbids_faults",

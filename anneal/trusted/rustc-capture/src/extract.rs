@@ -281,6 +281,7 @@ pub fn ty<'tcx>(tcx: TyCtxt<'tcx>, t: ty::Ty<'tcx>) -> Result<ir::Ty> {
     match *t.kind() {
         ty::Bool => Ok(ir::Ty::Bool),
         ty::Char => Ok(ir::Ty::Char),
+        ty::Str => Ok(ir::Ty::Str),
         ty::Never => Ok(ir::Ty::Never),
         ty::Tuple(elements) if elements.is_empty() => Ok(ir::Ty::Unit),
         // `BinOp::{Add,Sub,Mul}WithOverflow` "returns `(T, bool)` of both the
@@ -736,6 +737,7 @@ fn operand<'tcx>(
                 ir::Ty::OverflowPair(_)
                 | ir::Ty::Tuple { .. }
                 | ir::Ty::Slice { .. }
+                | ir::Ty::Str
                 | ir::Ty::RangeTo { .. }
                 | ir::Ty::RangeFrom { .. }
                 | ir::Ty::Range { .. }
@@ -915,6 +917,7 @@ fn decode_rodata_ref_lit<'tcx>(
             let (pt_size, pt_align) = match ty_ir {
                 ir::Ty::Ref { pointee, .. } | ir::Ty::RawPtr { pointee, .. } => match &**pointee {
                     ir::Ty::Slice { elem } => elem.v2_layout().map(|(_, a)| (0, a)),
+                    ir::Ty::Str => Some((0, 0)),
                     pt => pt.v2_layout(),
                 },
                 _ => None,
@@ -925,7 +928,7 @@ fn decode_rodata_ref_lit<'tcx>(
             if pt_size == 0 && addr != 0 && addr % align_bytes == 0 {
                 let slice_len = match ty_ir {
                     ir::Ty::Ref { pointee, .. } | ir::Ty::RawPtr { pointee, .. }
-                        if matches!(&**pointee, ir::Ty::Slice { .. }) =>
+                        if matches!(&**pointee, ir::Ty::Slice { .. } | ir::Ty::Str) =>
                     {
                         Some(0)
                     }
@@ -2390,6 +2393,42 @@ fn verify_sysroot_num_call<'tcx>(
     Ok(ir::SysrootNumOp { kind, ty: ity })
 }
 
+/// Whether capture should lower admitted diverging `core::panicking::*` calls
+/// (`panic` and `panic_nounwind` with a shared `&str` operand) into Profile v2
+/// [`ir::CoreCallOp::PanicAbort`] terminators. Enabled only under
+/// `-Cpanic=abort` without a crate-local `#[panic_handler]`; otherwise
+/// `evalCorePanicAbort` would always fault `.unsupported`, so keeping
+/// `Terminator::Unsupported` avoids forcing Profile v2 on Profile v1 programs
+/// (including those with intra-crate calls).
+fn admit_core_panicking_abort(tcx: TyCtxt<'_>) -> bool {
+    tcx.sess.panic_strategy() == rustc_target::spec::PanicStrategy::Abort
+        && !tcx.lang_items().iter().any(|(lang_item, def)| {
+            def.is_local() && matches!(lang_item, rustc_hir::LangItem::PanicImpl)
+        })
+}
+
+/// Extract a direct zero-sized sysroot `core` `FnDef` callee and its generic
+/// args from a MIR `Call` `func` operand.
+fn direct_core_call_callee<'tcx>(
+    tcx: TyCtxt<'tcx>,
+    func: &mir::Operand<'tcx>,
+) -> Option<(DefId, ty::GenericArgsRef<'tcx>, String)> {
+    let mir::Operand::Constant(const_op) = func else {
+        return None;
+    };
+    if !matches!(
+        const_op.const_,
+        mir::Const::Val(mir::ConstValue::ZeroSized, _)
+    ) {
+        return None;
+    }
+    let ty::FnDef(callee_did, generic_args) = *const_op.const_.ty().kind() else {
+        return None;
+    };
+    let path = core_def_path(tcx, callee_did)?;
+    Some((callee_did, generic_args, path))
+}
+
 /// `SwitchInt` evaluates its operand and selects an explicit or otherwise edge.
 /// `Assert` "Evaluates the operand, which must have type `bool`. If it is not
 /// equal to `expected`, initiates a panic." Its condition, expected value,
@@ -2400,8 +2439,12 @@ fn verify_sysroot_num_call<'tcx>(
 /// Diverging calls (`TerminatorKind::Call { target: None, .. }`, e.g.
 /// `zx_process_exit -> !` or `_start -> !`) never return to a continuation
 /// block (`target` is "Where to go after this call returns. If none, the
-/// call necessarily diverges."); after checking [`check_call_source`], they
-/// lower to `ir::Terminator::Unsupported`
+/// call necessarily diverges."). Under `-Cpanic=abort` without a crate-local
+/// `#[panic_handler]`, calls to `core::panicking::{panic, panic_nounwind}`
+/// carrying a shared `&str` operand lower 1:1 to `ir::Terminator::CoreCall`
+/// (`CoreCallOp::PanicAbort`) with that operand; every other diverging call
+/// (after [`check_call_source`], including `core::panicking::panic_fmt`)
+/// lowers to `ir::Terminator::Unsupported`
 /// (`Trusted.MirAst.TerminatorKind.unsupported`), which steps fail-closed to
 /// `.fault .unsupported` in `Trusted.MirSemantics` if reachable while
 /// permitting verified functions whose diverging guard branches are proved
@@ -2416,18 +2459,20 @@ fn verify_sysroot_num_call<'tcx>(
 /// `TerminatorKind::Call` runs [`check_call_source`] first so
 /// `CallSource::Use` fails closed even for diverging calls.
 ///
-/// `Assert` and returning `CoreCall`s make a body Profile v2, which
-/// `capture::collect` refuses under `--stdlib-crate`: language items such as
-/// the `panic_*` family would otherwise shape captured behavior. Admitting
-/// `Drop` or other returning calls also widens what `capture.rs` must check
-/// under `--stdlib-crate` and what metadata-only emission must evaluate
-/// (callee `required_consts`); update `check_stdlib_capability` and the
-/// emission note in `capture::run` first.
+/// Profile v2-only `Assert`s and all `CoreCall`s (both returning ops and
+/// diverging `PanicAbort`) select Profile v2; `capture::collect` refuses both
+/// Profile v2 and `Assert`-bearing Profile v1 bodies under `--stdlib-crate`,
+/// where language items such as the `panic_*` family would otherwise shape
+/// captured behavior. Admitting `Drop` or other returning calls also widens
+/// what `capture.rs` must check under `--stdlib-crate` and what metadata-only
+/// emission must evaluate (callee `required_consts`); update
+/// `check_stdlib_capability` and the emission note in `capture::run` first.
 /// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_middle/src/mir/syntax.rs#L692-L740
 /// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_middle/src/mir/syntax.rs#L800-L821
 fn terminator<'tcx>(
     tcx: TyCtxt<'tcx>,
     typing_env: TypingEnv<'tcx>,
+    body: &mir::Body<'tcx>,
     term: &mir::TerminatorKind<'tcx>,
 ) -> Result<RawTerminator> {
     Ok(match term {
@@ -2487,6 +2532,34 @@ fn terminator<'tcx>(
         } => {
             check_call_source(*call_source)?;
             let Some(target_bb) = target else {
+                if admit_core_panicking_abort(tcx)
+                    && destination.projection.is_empty()
+                    && body.local_decls[destination.local].ty.is_never()
+                    && args.len() == 1
+                    && let Ok(uw) = unwind_action(*unwind, "call")
+                    && let Some((_, generic_args, path)) = direct_core_call_callee(tcx, func)
+                    && generic_args.is_empty()
+                    && matches!(
+                        path.as_str(),
+                        "core::panicking::panic" | "core::panicking::panic_nounwind"
+                    )
+                    && matches!(
+                        ty(tcx, args[0].node.ty(body, tcx)),
+                        Ok(ir::Ty::Ref {
+                            mutability: ir::Mutability::Shared,
+                            pointee,
+                        }) if *pointee == ir::Ty::Str
+                    )
+                    && let Ok(msg_arg) = operand(tcx, typing_env, &args[0].node)
+                {
+                    return Ok(RawTerminator::Resolved(ir::Terminator::CoreCall {
+                        op: ir::CoreCallOp::PanicAbort,
+                        args: vec![msg_arg],
+                        dst: place(tcx, destination)?,
+                        target: None,
+                        unwind: uw,
+                    }));
+                }
                 return Ok(RawTerminator::Resolved(ir::Terminator::Unsupported));
             };
             let mir::Operand::Constant(const_op) = func else {
@@ -2523,7 +2596,7 @@ fn terminator<'tcx>(
                             op,
                             args,
                             dst: place(tcx, destination)?,
-                            target: target_bb.as_u32(),
+                            target: Some(target_bb.as_u32()),
                             unwind,
                         })
                     }
@@ -3275,7 +3348,7 @@ fn body_inner<'tcx>(
             // construction"; a provided body without one is malformed.
             // https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_middle/src/mir/mod.rs#L1327-L1335
             let term = block.terminator.as_ref().ok_or("missing terminator")?;
-            let terminator = terminator(tcx, typing_env, &term.kind)
+            let terminator = terminator(tcx, typing_env, body, &term.kind)
                 .map_err(|error| format!("{id:?} terminator: {error}"))?;
             if let RawTerminator::LocalCall { callee, .. } = &terminator
                 && seen_callees.insert(callee.local_def_index.as_u32())

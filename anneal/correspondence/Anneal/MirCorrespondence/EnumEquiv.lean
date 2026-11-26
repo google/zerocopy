@@ -667,7 +667,7 @@ theorem integerCast_u128_to_char (bits : BitVec 128) :
 theorem evalRefConstLit_eq (ty : MirTy) (lit : ConstLit) :
     evalRefConstLit ty lit = evalConstLit ty lit := by
   cases ty with
-  | unit | never | tuple _ | ref _ _ | rawPtr _ _ | slice _ | array _ _
+  | unit | never | tuple _ | ref _ _ | rawPtr _ _ | slice _ | str | array _ _
   | rangeTo _ | rangeFrom _ | range _ | option _ | unsupported =>
     cases lit <;> rfl
   | char =>
@@ -884,7 +884,7 @@ theorem checkRefVal_eq (v : Val) (ty : MirTy) :
     | mk vw vs vbits =>
       cases ty with
       | bool | unit | never | char | ordering | enum _ | tuple _ | ref _ _
-      | rawPtr _ _ | slice _ | array _ _ | rangeTo _ | rangeFrom _
+      | rawPtr _ _ | slice _ | str | array _ _ | rangeTo _ | rangeFrom _
       | range _ | option _
       | unsupported =>
         dsimp only [checkRefVal, checkVal, Val.ty?]
