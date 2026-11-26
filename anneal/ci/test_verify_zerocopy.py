@@ -12,6 +12,7 @@ import contextlib
 import io
 import json
 import os
+import re
 from pathlib import Path
 import sys
 import tempfile
@@ -2218,6 +2219,62 @@ class VerifyZerocopyTests(unittest.TestCase):
         self.assertEqual(
             parsed_live["correspondence_provenance"], live_provenance
         )
+
+    def test_validate_receipt_profile_v1_accepts_only_exact_decoupled_sentinel(
+        self,
+    ):
+        reason = verify_zerocopy.DECOUPLED_CORRESPONDENCE_PROVENANCE_REASON
+        # The Python mirror must match the Rust constant that `cargo-anneal`
+        # emits (Rust `\<newline>` continuations elide the indentation).
+        schema_rs = (
+            Path(__file__).resolve().parents[1]
+            / "trusted/cargo-anneal/src/core/inspect/schema.rs"
+        ).read_text(encoding="utf-8")
+        match = re.search(
+            r'pub const DECOUPLED_CORRESPONDENCE_PROVENANCE_REASON: &str = '
+            r'"((?:[^"\\]|\\.)*)";',
+            schema_rs,
+            re.DOTALL,
+        )
+        self.assertIsNotNone(match)
+        self.assertEqual(re.sub(r"\\\n\s*", "", match.group(1)), reason)
+
+        decoupled = {"applicable": False, "reason": reason}
+        parsed = verify_zerocopy.validate_receipt(
+            "01_unit",
+            0,
+            json.dumps(make_receipt(correspondence_provenance=decoupled)),
+            "",
+            ["util::macros::__unsafe"],
+            expected_profile=1,
+        )
+        self.assertEqual(parsed["correspondence_provenance"], decoupled)
+
+        bad_cases = [
+            ("altered_reason", {"applicable": False, "reason": reason + " "}),
+            ("applicable_zero", {"applicable": 0, "reason": reason}),
+            ("applicable_true", {"applicable": True, "reason": reason}),
+            (
+                "extra_key",
+                {"applicable": False, "reason": reason, "extra": 1},
+            ),
+            ("missing_applicable", {"reason": reason}),
+        ]
+        for label, provenance in bad_cases:
+            with self.subTest(case=label):
+                with self.assertRaisesRegex(
+                    RuntimeError, "must omit applicable and reason"
+                ):
+                    verify_zerocopy.validate_receipt(
+                        "01_unit",
+                        0,
+                        json.dumps(
+                            make_receipt(correspondence_provenance=provenance)
+                        ),
+                        "",
+                        ["util::macros::__unsafe"],
+                        expected_profile=1,
+                    )
 
     def test_summary_json_propagates_v1_and_v2_receipt_caveats_verbatim(self):
         v1_assumptions = [

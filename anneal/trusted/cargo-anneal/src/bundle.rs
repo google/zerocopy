@@ -10,20 +10,25 @@
 //! audited resources and bundled `theory/` libraries embedded into
 //! `cargo-anneal`.
 
-pub use crate::theory_bundle::{
-    BundledTheory, BundledTheoryModule, LEGACY_THEORY_BUNDLE_DESTINATION,
-    PACKAGED_THEORY_BUNDLE_CRATE_REL, PACKAGED_THEORY_BUNDLE_DESTINATION, THEORY_BUNDLE_MANIFEST,
-    TheoryBundleEntry, TheoryBundleManifest, load_theory_bundle_manifest, parse_bundled_theory,
-    prepare_packaged_theory_destination, render_bundled_theory,
-};
-pub use crate::trusted_bundle::{
-    BUNDLE_HEADER, BundleError, CORRESPONDENCE_ADAPTER_DIR, CORRESPONDENCE_ADAPTER_PATHS,
-    CORRESPONDENCE_PROOF_DIR, CORRESPONDENCE_PROOF_PATHS, CORRESPONDENCE_PROVENANCE_NOTE,
-    LEGACY_BUNDLE_DESTINATION, MINIRUST_UPSTREAM_PIN_PATH, PACKAGED_BUNDLE_CRATE_REL,
-    PACKAGED_BUNDLE_DESTINATION, PROVENANCE_SOURCES, RenderedBundleParts, TRUSTED_BUNDLE_SOURCES,
-    UPSTREAM_PIN_PATH, prepare_packaged_bundle_destination, render_bundled_resources,
-    render_bundled_resources_parts, render_correspondence_provenance, validate_bundle_source,
-    validate_destination_path, validate_parent_directories,
+pub use crate::{
+    core::inspect::schema::DECOUPLED_CORRESPONDENCE_PROVENANCE_REASON,
+    theory_bundle::{
+        BundledTheory, BundledTheoryModule, LEGACY_THEORY_BUNDLE_DESTINATION,
+        PACKAGED_THEORY_BUNDLE_CRATE_REL, PACKAGED_THEORY_BUNDLE_DESTINATION,
+        THEORY_BUNDLE_MANIFEST, TheoryBundleEntry, TheoryBundleManifest,
+        load_theory_bundle_manifest, parse_bundled_theory, prepare_packaged_theory_destination,
+        render_bundled_theory,
+    },
+    trusted_bundle::{
+        BUNDLE_HEADER, BundleError, CORRESPONDENCE_ADAPTER_DIR, CORRESPONDENCE_ADAPTER_PATHS,
+        CORRESPONDENCE_PROOF_DIR, CORRESPONDENCE_PROOF_PATHS, CORRESPONDENCE_PROVENANCE_NOTE,
+        LEGACY_BUNDLE_DESTINATION, MINIRUST_UPSTREAM_PIN_PATH, PACKAGED_BUNDLE_CRATE_REL,
+        PACKAGED_BUNDLE_DESTINATION, PROVENANCE_SOURCES, RenderedBundleParts,
+        TRUSTED_BUNDLE_SOURCES, UPSTREAM_PIN_PATH, prepare_packaged_bundle_destination,
+        render_bundled_resources, render_bundled_resources_parts, render_correspondence_provenance,
+        render_correspondence_provenance_from_checkout, validate_bundle_source,
+        validate_destination_path, validate_parent_directories,
+    },
 };
 
 // Generated deterministically by `build.rs` into `$OUT_DIR` from canonical

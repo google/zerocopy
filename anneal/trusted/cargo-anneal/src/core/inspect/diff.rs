@@ -730,6 +730,33 @@ pub fn diff_receipts(
             );
         }
 
+        if b.correspondence_applicable != h.correspondence_applicable
+            || b.correspondence_inapplicable_reason != h.correspondence_inapplicable_reason
+        {
+            // Losing an applicable Pass 2 record qualifies the head's assurance
+            // (`correspondence=inapplicable`), so it regresses like the other
+            // qualification sources.
+            let lost = b.correspondence_applicable && !h.correspondence_applicable;
+            let fmt = |s: &crate::core::inspect::schema::SuccessReceipt| {
+                let applicable = s.correspondence_applicable;
+                match &s.correspondence_inapplicable_reason {
+                    None => applicable.to_string(),
+                    Some(reason) => format!("{applicable} ({reason})"),
+                }
+            };
+            push(
+                &mut changes,
+                if lost { DiffTier::TierA } else { DiffTier::TierB },
+                "correspondence_provenance.applicable",
+                fmt(b),
+                fmt(h),
+                if lost {
+                    "head no longer carries an applicable Pass 2 correspondence record"
+                } else {
+                    "correspondence provenance applicability or reason changed"
+                },
+            );
+        }
         if b.upstream_pin_sha256 != h.upstream_pin_sha256 {
             push(
                 &mut changes,
@@ -1417,6 +1444,42 @@ mod tests {
         let diff = diff_receipts(&clean, &parse(&stabilized), false);
         assert!(!diff.has_regressions, "{:?}", diff.changes);
         assert_eq!(tier(&diff, "configuration.stabilized_features_present"), Some(DiffTier::TierB));
+    }
+
+    #[test]
+    fn losing_applicable_correspondence_provenance_is_tier_a() {
+        use crate::core::inspect::schema::DECOUPLED_CORRESPONDENCE_PROVENANCE_REASON;
+        let parse = |receipt: &serde_json::Value| {
+            parse_and_validate_receipt(&serde_json::to_vec(receipt).unwrap()).unwrap()
+        };
+        let record = parse(&sample_success_json());
+        let mut sentinel_json = sample_success_json();
+        sentinel_json["correspondence_provenance"] = json!({
+            "applicable": false,
+            "reason": DECOUPLED_CORRESPONDENCE_PROVENANCE_REASON,
+        });
+        let sentinel = parse(&sentinel_json);
+        assert!(sentinel.invariant_violations.is_empty(), "{:?}", sentinel.invariant_violations);
+        let change = |diff: &ReceiptDiff| {
+            diff.changes
+                .iter()
+                .find(|c| c.field == "correspondence_provenance.applicable")
+                .cloned()
+                .unwrap_or_else(|| panic!("{:?}", diff.changes))
+        };
+
+        // Record -> sentinel qualifies the head, so it regresses.
+        let diff = diff_receipts(&record, &sentinel, false);
+        assert!(diff.has_regressions);
+        let c = change(&diff);
+        assert_eq!(c.tier, DiffTier::TierA);
+        assert_eq!(c.base, "true");
+        assert_eq!(c.head, format!("false ({DECOUPLED_CORRESPONDENCE_PROVENANCE_REASON})"));
+
+        // Gaining a record does not.
+        let diff = diff_receipts(&sentinel, &record, false);
+        assert!(!diff.has_regressions, "{:?}", diff.changes);
+        assert_eq!(change(&diff).tier, DiffTier::TierB);
     }
 
     #[test]

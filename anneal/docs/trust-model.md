@@ -758,9 +758,10 @@ without expanding the user-machine TCB or weakening Pass 1's pure `theory/`
 gate, Anneal's Pass 2 correspondence audit (detailed in
 [`docs/architecture.md`](architecture.md) and
 [`docs/mir-correspondence-design.md`](mir-correspondence-design.md)) governs
-five controls: four active in Pass 2 above, and a fifth whose record embedding
-is active (enforced by bundle CI and `cargo anneal verify`, not Pass 2) and
-whose re-hashing remains planned:
+five controls: four active in Pass 2 above, and a fifth whose archive record is
+active (rendered and checked by `omnibus-archive`, bundle CI, and
+`anneal-audit`'s bundled-resources check, not Pass 2) and whose re-hashing
+remains planned:
 
 1. **Content-addressed vendor pinning, semantic diff review, and OS-level
    sandboxing (active):** Pin authentication, sysroot locking, external
@@ -793,35 +794,39 @@ whose re-hashing remains planned:
    [`THREAT_MODEL.md`](../THREAT_MODEL.md)'s bounded human-review guarantee
    without shipping `vendor/lean-miri/`, `vendor/minirust/`, or
    `correspondence/` in user toolchain
-   archives, every packaged user toolchain archive and `cargo-anneal` bundle
-   embeds a CI-checked, digest-bound **correspondence provenance record**
-   (`CORRESPONDENCE_PROVENANCE_JSON` and
-   `share/anneal/correspondence-provenance.json`, recording pinned toolchain
+   archives, every packaged user toolchain archive embeds a CI-checked,
+   digest-bound **correspondence provenance record**
+   (`share/anneal/correspondence-provenance.json`, recording pinned toolchain
    metadata, `trusted/lean/` and `trusted/correspondence/` source digests,
    `vendor/lean-miri/` upstream commit and `UPSTREAM_PIN.json` SHA-256, the
    13-file `patched_files` digests, `vendor/minirust/UPSTREAM_PIN.json`
    provenance and 30-file digests (`minirust_upstream`), and `correspondence/`
    proof digests).
-   - *Active:* `trusted/cargo-anneal/build.rs` renders the record into
-     `$OUT_DIR/bundled_resources.rs` from the same canonical `trusted/` bytes
-     that it embeds there, and the `anneal-audit` bundled-resources parity
-     check fails closed if the compiled-in record or bundle drifts from the
-     canonical sources. `omnibus-archive` renders the record from the same
-     canonical inputs with `ci/render_correspondence_provenance.py` (which CI
-     checks byte-for-byte against the compiled-in record) and checks only
-     that it parses as a `schema_version` 1 object. `cargo anneal verify`
-     fails closed if the embedded record does not parse, and copies it into
-     every verification receipt as `correspondence_provenance` (replaced by an
-     explicit non-applicability disclaimer when `--allow-unpinned-lean` is
-     used or the capture uses Profile v2, which Pass 2 does not certify)
-     alongside `model_manifest_sha256` over the bundled model bytes it
-     actually stages, so an auditor inspecting only stated specifications and
-     the receipt can identify every certifying Pass 2 artifact.
-   - *Planned:* Neither archive construction nor `cargo anneal verify` yet
-     recomputes the digests of the packaged or staged `trusted/lean/`
-     artifacts and fails closed unless they exactly match the record. Until
-     that comparison lands, the binding between the record and the shipped
-     model rests on the CI parity checks above.
+   - *Active:* `cargo-anneal` does not embed or watch the record, so Pass 2
+     edits never rebuild it. The `anneal-audit` bundled-resources check
+     renders the record from the canonical checkout and fails closed on any
+     malformed or untracked Pass 2 input. `omnibus-archive` renders the record
+     from the same canonical inputs with
+     `ci/render_correspondence_provenance.py` (which CI checks byte-for-byte
+     against the Rust renderer) and checks only that it parses as a
+     `schema_version` 1 object. Because `cargo anneal verify` can no longer
+     authenticate the record, it never copies one into a receipt: pinned
+     Profile v1 receipts record `applicable: false` with exactly the reason
+     "Pass 2 correspondence provenance is decoupled from cargo-anneal; verify
+     repository correspondence via anneal-audit --require-correspondence"
+     alongside `model_manifest_sha256` over the bundled model bytes actually
+     staged. `cargo anneal inspect` and `ci/verify_zerocopy.py` accept that
+     sentinel in place of the record, and every `inspect` renderer prints
+     its reason and marks the success `correspondence=inapplicable`, so an
+     auditor learns to check the certifying Pass 2 artifacts against the
+     archive's record and `anneal-audit --require-correspondence`.
+     `--allow-unpinned-lean` and Profile v2 captures record their own
+     non-applicability disclaimers, because Pass 2 does not certify them.
+   - *Planned:* Archive construction does not yet recompute the digests of
+     the packaged `trusted/lean/` artifacts and fail closed unless they
+     exactly match the record. Until that comparison lands, the binding
+     between the archive's record and its shipped model rests on the CI
+     parity checks above.
 
 Introducing `vendor/lean-miri/` and (later) `correspondence/` into the
 repository—and later treating Pass 2 correspondence certification as a
