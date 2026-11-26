@@ -12,6 +12,8 @@ import Lean.Replay
 import Lean.Util.PtrSet
 import Lean.Compiler.ImplementedByAttr
 import Lean.Compiler.ExternAttr
+import Lean.Compiler.ExportAttr
+import Lean.Compiler.InitAttr
 import Lean.Compiler.CSimpAttr
 import Lean.Meta.Match.MatcherInfo
 import Lean.Meta.Match.MatchEqs
@@ -22,6 +24,9 @@ import Lean.Meta.CongrTheorems
 import Lean.Meta.Injective
 import Lean.Meta.MethodSpecs
 import Lean.Compiler.Old
+import Lean.Compiler.LCNF.Main
+import Lean.Compiler.LCNF.Passes
+import Lean.Compiler.LCNF.Simp.ConstantFold
 
 /-!
 # Offline Repository Audit & Legacy Target Inspector (`TrustedBoundary.lean`)
@@ -192,10 +197,15 @@ across ten JSON IPC modes (`run` and `main`):
   definitional equality of both `Expected` and the submitted proof theorem
   against the canonical `CrateTheorem`/`UnitTheorem` kernel application, and
   rejects `@[implemented_by]`, `@[extern]`, and `@[csimp]` metadata on logically
-  reached declarations authored by target source modules (`Proof` overrides via
-  `proofExport.overrides` and non-proof `.source` modules via
-  `finalizeImport`-populated `getModuleEntries` on `env`, with `loadExts := false`
-  and no separate metadata environment import).
+  reached declarations authored by target modules (`Proof` modules via
+  `proofExport.overrides` and other non-foundation/non-library modules via
+  `collectModuleCompilerOverrides`), plus any authored `@[export]`,
+  `@[init]`/`@[builtin_init]`, `@[cpass]`, `ConstantFold`, or
+  `postponedCompileDeclsExt` entry in those modules. These checks read the
+  serialized entries of every `.olean*` and `.ir*` part that the importer loads
+  for a module, with `loadExts := false` and without `ofOLeanEntry`. The
+  repository `"audit"` and `"correspondence-audit"` passes apply all nine checks
+  to `.repo` modules.
 
 ## Module origin partitions and authority relations
 
@@ -2949,6 +2959,196 @@ def collectRepoModuleConstants (env : Environment) (allMatchers : NameSet)
       extraNames := extraNames.insert n
   return (locals, pairedUnsafeRecs, extraNames, alternateProofs, altRoots)
 
+/-! ## Compiler override and code-generator hook scan
+
+These checks read compiler overrides and code-generator hooks from every
+`.olean*` and `.ir*` part that the pinned importer loads for an audited module,
+not from an imported `Environment`. At `level := .private`, `finalizeImport`
+keeps only `.olean.private` (or a non-`module` `.olean`) as a module's
+`moduleData` and server data, so both `getModuleEntries` levels return that
+part's entries and say nothing about `.olean` or `.olean.server`.
+https://github.com/leanprover/lean4/blob/5045d0056413266e57c625dcd7c365b10e377c52/src/Lean/Environment.lean#L2023-L2040
+https://github.com/leanprover/lean4/blob/5045d0056413266e57c625dcd7c365b10e377c52/src/Lean/Environment.lean#L2376-L2388
+-/
+
+/-- Compiler overrides and code-generator hooks read from serialized extension
+entries, without `loadExts := true`, `addImportedFn`, or `ofOLeanEntry`. -/
+structure ProofCompilerOverrides where
+  implementedBy : NameSet := {}
+  externDecls : NameSet := {}
+  csimp : NameSet := {}
+  exportDecls : NameSet := {}
+  initDecls : NameSet := {}
+  builtinInitDecls : NameSet := {}
+  cpassDecls : NameSet := {}
+  constantFoldDecls : NameSet := {}
+  postponedDecls : NameSet := {}
+
+/-- Entries of `ext` serialized in one module part `data`.
+
+The pinned `setImportedEntries` reads module entries the same way: it matches
+each `(extName, entries)` pair of `ModuleData.entries` against registered
+extension names and stores `entries` unchanged as that extension's `Array α`.
+Where `setImportedEntries` keeps only the last pair for a repeated name, this
+returns the entries of every pair named `ext.name`.
+https://github.com/leanprover/lean4/blob/5045d0056413266e57c625dcd7c365b10e377c52/src/Lean/Environment.lean#L1931-L1949 -/
+private def partExtEntries {α β σ : Type} [Inhabited σ]
+    (ext : PersistentEnvExtension α β σ) (data : ModuleData) : Array α :=
+  data.entries.foldl (init := #[]) fun acc (extName, entries) =>
+    if extName == ext.name then
+      acc ++ unsafe (unsafeCast entries : Array α)
+    else
+      acc
+
+private def collectPartNames {α β σ : Type} [Inhabited σ]
+    (ext : PersistentEnvExtension α β σ) (data : ModuleData)
+    (extract : α → Name) (acc : NameSet) : NameSet :=
+  (partExtEntries ext data).foldl (fun s entry => s.insert (extract entry)) acc
+
+private def csimpEntryFromDecl :
+    ScopedEnvExtension.Entry Compiler.CSimp.Entry → Name
+  | .global e | .scoped _ e => e.fromDeclName
+
+/-- Collect the compiler overrides and code-generator/initializer hooks
+serialized in part `data` of module `modName` into `init`. A
+`postponedCompileDeclsExt` entry without declaration names is reported as
+`modName`. -/
+def collectPartCompilerOverrides (data : ModuleData) (modName : Name)
+    (init : ProofCompilerOverrides := {}) : ProofCompilerOverrides :=
+  let foldPostponed (s : NameSet)
+      (entry : Compiler.LCNF.PostponedCompileDecls) : NameSet :=
+    if entry.declNames.isEmpty then s.insert modName
+    else entry.declNames.foldl (fun acc dn => acc.insert dn) s
+  { implementedBy :=
+      collectPartNames Compiler.implementedByAttr.ext data Prod.fst
+        init.implementedBy
+    externDecls :=
+      collectPartNames externAttr.ext data Prod.fst init.externDecls
+    csimp :=
+      collectPartNames Compiler.CSimp.ext.ext data csimpEntryFromDecl
+        init.csimp
+    exportDecls :=
+      collectPartNames exportAttr.ext data Prod.fst init.exportDecls
+    initDecls :=
+      collectPartNames regularInitAttr.ext data Prod.fst init.initDecls
+    builtinInitDecls :=
+      collectPartNames builtinInitAttr.ext data Prod.fst
+        init.builtinInitDecls
+    cpassDecls :=
+      collectPartNames Compiler.LCNF.passManagerExt data id init.cpassDecls
+    constantFoldDecls :=
+      collectPartNames Compiler.LCNF.Simp.ConstantFold.folderExt data
+        (·.declName) init.constantFoldDecls
+    postponedDecls :=
+      (partExtEntries Compiler.LCNF.postponedCompileDeclsExt data).foldl
+        foldPostponed init.postponedDecls }
+
+/-- Read every `.olean*` and `.ir*` part of module `m` that the pinned
+`importModulesCore` loads at `level := .private`, returning the `.olean*`
+parts and the `.ir*` parts, each in load order and paired with its region.
+
+- For a module with an entry in `arts`, `loadData` reads
+  `oleanParts (inServer := true)` and `loadIR` reads `irParts`, both through
+  `readModuleDataParts`.
+- Otherwise this repeats the private `readModuleDataPartsOfMod` and
+  `readIRPartsOfMod`: it reads `.olean`, then `.olean.server` and
+  `.olean.private` when the primary part sets `isModule`, and reads `.ir.sig`
+  and `.ir` when `.ir.sig` exists.
+
+https://github.com/leanprover/lean4/blob/5045d0056413266e57c625dcd7c365b10e377c52/src/Lean/Environment.lean#L2078-L2105
+https://github.com/leanprover/lean4/blob/5045d0056413266e57c625dcd7c365b10e377c52/src/Lean/Environment.lean#L2230-L2246
+
+Callers pass only modules that `importModules` has already loaded from the
+same files. Names collected from these parts point into the new regions, which
+stay mapped until the process exits: a `CompactedRegion` is a plain structure
+holding a pointer into the mapped buffer, not a finalized external object, so
+dropping it does not unmap anything. Only `CompactedRegion.free` unmaps a
+region, and the inspector never calls it on these regions, just as
+`importModules` keeps its own regions in `env.header.regions`.
+https://github.com/leanprover/lean4/blob/5045d0056413266e57c625dcd7c365b10e377c52/src/Lean/CompactedRegion.lean#L19-L26
+https://github.com/leanprover/lean4/blob/5045d0056413266e57c625dcd7c365b10e377c52/src/Lean/CompactedRegion.lean#L64-L70 -/
+def readImportedModuleParts (arts : NameMap ImportArtifacts) (m : Name) :
+    IO (Array (ModuleData × CompactedRegion) ×
+      Array (ModuleData × CompactedRegion)) := do
+  match arts.find? m with
+  | some art =>
+    return (← readModuleDataParts (art.oleanParts true),
+      ← readModuleDataParts art.irParts)
+  | none =>
+    let mFile ← findOLean m
+    unless (← mFile.pathExists) do
+      throw <| IO.userError
+        s!"object file '{mFile}' of module {m} does not exist"
+    let main ← unsafe CompactedRegion.read (α := ModuleData) mFile #[]
+    let olean ← if !main.1.isModule then pure #[main] else do
+      let sFile := OLeanLevel.server.adjustFileName mFile
+      let server ← unsafe CompactedRegion.read (α := ModuleData) sFile #[main.2]
+      let pFile := OLeanLevel.private.adjustFileName mFile
+      let priv ← unsafe CompactedRegion.read (α := ModuleData) pFile
+        #[main.2, server.2]
+      pure #[main, server, priv]
+    let irSigFile := mFile.withExtension "ir.sig"
+    let ir ← if !(← irSigFile.pathExists) then pure #[] else do
+      let irSig ← unsafe CompactedRegion.read (α := ModuleData) irSigFile #[]
+      let irFile := mFile.withExtension "ir"
+      let irData ← unsafe CompactedRegion.read (α := ModuleData) irFile
+        #[irSig.2]
+      pure #[irSig, irData]
+    return (olean, ir)
+
+/-- Collect the compiler overrides and hooks serialized in every part of module
+`m` (see `readImportedModuleParts`) into `init`, after rejecting any `.olean*`
+part whose `isModule` flag differs from the primary `.olean`'s.
+
+`writeModule` copies one `env.header.isModule` into all three `.olean*` parts,
+and the importer chooses a module's parts from the primary flag alone, so a
+companion with another flag was not written with its primary. `.ir.sig` is
+written as `default` and filled in later by `leanir`, so the check skips
+`.ir*` parts.
+https://github.com/leanprover/lean4/blob/5045d0056413266e57c625dcd7c365b10e377c52/src/Lean/Environment.lean#L1901-L1917 -/
+def collectModuleCompilerOverrides (arts : NameMap ImportArtifacts) (m : Name)
+    (init : ProofCompilerOverrides := {}) : IO ProofCompilerOverrides := do
+  let (olean, ir) ← readImportedModuleParts arts m
+  let some (primary, _) := olean[0]?
+    | throw <| IO.userError s!"missing primary olean artifact for {m}"
+  for (part, _) in olean do
+    unless part.isModule == primary.isModule do
+      fail s!"mismatched olean companion isModule flag in {m}"
+  return (olean ++ ir).foldl
+    (fun acc (data, _) => collectPartCompilerOverrides data m acc) init
+
+/-- Reject forbidden compiler override and codegen-hook entries in `ov`. When
+`includeDeclAttrs` is `true` (repository Pass 1/Pass 2 audits),
+declaration-level `@[implemented_by]`, `@[extern]`, and `@[csimp]` entries
+fail unconditionally; `"target-audit"` passes `false` and checks those three on
+logically reached dependencies authored by target source modules. -/
+def rejectForbiddenCompilerOverrides (ov : ProofCompilerOverrides)
+    (ctxSuffix : String) (includeDeclAttrs : Bool) : IO Unit := do
+  let declAttrChecks : List (NameSet × String) :=
+    if includeDeclAttrs then
+      [ (ov.implementedBy, "unchecked compiler implemented_by override on "),
+        (ov.externDecls, "unchecked compiler extern override on "),
+        (ov.csimp, "authored compiler csimp replacement on ") ]
+    else
+      []
+  let moduleHookChecks : List (NameSet × String) :=
+    [ (ov.exportDecls, "unchecked compiler export override on "),
+      (ov.initDecls, "unchecked compiler init override on "),
+      (ov.builtinInitDecls, "unchecked compiler builtin_init override on "),
+      (ov.cpassDecls, "unchecked compiler cpass override "),
+      (ov.constantFoldDecls, "unchecked compiler constant_fold override on "),
+      (ov.postponedDecls, "unchecked postponed compilation entry for ") ]
+  for (namesSet, msgPrefix) in declAttrChecks ++ moduleHookChecks do
+    for n in namesSet do
+      fail s!"{msgPrefix}{n}{ctxSuffix}"
+
+/-- Reject every forbidden compiler override and hook serialized in any part of
+module `m`. -/
+def checkModuleCompilerOverrides (arts : NameMap ImportArtifacts) (m : Name)
+    (includeDeclAttrs : Bool) : IO Unit := do
+  rejectForbiddenCompilerOverrides (← collectModuleCompilerOverrides arts m)
+    s!" in {m}" includeDeclAttrs
+
 /-! ## Explicit raw-`UInt64` cached-metadata validation -/
 
 /-- Pointer-identity memoization sets used while validating cached `Name.hash`,
@@ -3594,6 +3794,10 @@ def audit (j : Json) (env : Environment) (foundation : Array Name)
   let (locals, pairedUnsafeRecs, extraNames, alternateProofs, altRoots) ←
     verifyAndCollectLocals env roles
   checkDeclarationEdges env roles locals RepoOrigin.edgeViolation?
+  let arts ← artifacts j
+  for m in env.header.modules do
+    if roles.get? m.module matches some (.repo _) then
+      checkModuleCompilerOverrides arts m.module true
   let requireMirWp := (j.getObjValAs? Bool "requireMirWp").toOption.getD true
   verifyMirWpCoreTheorems env roles locals requireMirWp
   let inventory ← locals.foldM (init := #[]) fun acc cName ci => do
@@ -4478,6 +4682,9 @@ def collectCorrEnv (j : Json)
   for dep in repoAltRoots do
     if pairedUnsafeRecs.contains dep then
       fail s!"paired _unsafe_rec helper {dep} cannot be referenced logically"
+  for m in env.header.modules do
+    if roles.get? m.module matches some (.repo _) then
+      checkModuleCompilerOverrides {} m.module true
   let sysrootBaseMods := env.header.modules.filterMap fun m =>
     match roles.get? m.module with
     | some .foundation | some .sysrootFoundation => some m.module
@@ -5041,12 +5248,9 @@ private unsafe def encodeExportConstantInfo (ref : IO.Ref ProofExportPool)
       toJson v.k, toJson v.isUnsafe]
 
 private unsafe def exportProofModulesImpl (env : Environment)
-    (proofMods : NameSet) : IO Json := do
+    (proofMods : NameSet) (overrides : ProofCompilerOverrides) : IO Json := do
   let poolRef ← IO.mkRef ({} : ProofExportPool)
   let mut modObjs : Array Json := #[]
-  let mut implByIds : Array Nat := #[]
-  let mut externIds : Array Nat := #[]
-  let mut csimpIds : Array Nat := #[]
   for modIdx in Array.range env.header.modules.size do
     let m := env.header.modules[modIdx]!
     let data := env.header.moduleData[modIdx]!
@@ -5060,15 +5264,21 @@ private unsafe def exportProofModulesImpl (env : Environment)
         ("imports", toJson data.imports),
         ("constNames", toJson constNameIds),
         ("constants", .arr constantsJson)]
-      for (declName, _) in
-          Compiler.implementedByAttr.ext.getModuleEntries env modIdx do
-        implByIds := implByIds.push (← internExportName poolRef declName)
-      for (declName, _) in externAttr.ext.getModuleEntries env modIdx do
-        externIds := externIds.push (← internExportName poolRef declName)
-      for entry in Compiler.CSimp.ext.ext.getModuleEntries env modIdx do
-        let e := match entry with
-          | .global e | .scoped _ e => e
-        csimpIds := csimpIds.push (← internExportName poolRef e.fromDeclName)
+  let encodeNameSet (s : NameSet) : IO Json := do
+    let mut ids : Array Nat := #[]
+    for n in s do
+      ids := ids.push (← internExportName poolRef n)
+    return toJson ids
+  let compilerOverridesJson := Json.mkObj [
+    ("implementedBy", ← encodeNameSet overrides.implementedBy),
+    ("extern", ← encodeNameSet overrides.externDecls),
+    ("csimp", ← encodeNameSet overrides.csimp),
+    ("export", ← encodeNameSet overrides.exportDecls),
+    ("init", ← encodeNameSet overrides.initDecls),
+    ("builtinInit", ← encodeNameSet overrides.builtinInitDecls),
+    ("cpass", ← encodeNameSet overrides.cpassDecls),
+    ("constantFold", ← encodeNameSet overrides.constantFoldDecls),
+    ("postponedCompile", ← encodeNameSet overrides.postponedDecls)]
   let pool ← poolRef.get
   return Json.mkObj [
     ("schemaVersion", toJson (1 : Nat)),
@@ -5076,14 +5286,11 @@ private unsafe def exportProofModulesImpl (env : Environment)
     ("levels", .arr pool.levels),
     ("exprs", .arr pool.exprs),
     ("modules", .arr modObjs),
-    ("compilerOverrides", Json.mkObj [
-      ("implementedBy", toJson implByIds),
-      ("extern", toJson externIds),
-      ("csimp", toJson csimpIds)])]
+    ("compilerOverrides", compilerOverridesJson)]
 
 @[implemented_by exportProofModulesImpl]
 private def exportProofModules (_env : Environment)
-    (_proofMods : NameSet) : IO Json :=
+    (_proofMods : NameSet) (_overrides : ProofCompilerOverrides) : IO Json :=
   throw <| IO.userError "proof exporter requires runtime implementation"
 
 /-- Fail closed when module `m`'s compiled `isModule` header flag `actual`
@@ -5261,7 +5468,12 @@ def targetExport (j : Json) (foundation : Array Name) : IO Json := do
           for imp in data.imports do
             if roles.get? imp.module == some (.source .proof) then
               fail s!"target authority violation {m.module} imports {imp.module}"
-  exportProofModules env proofMods
+  let mut proofOverrides : ProofCompilerOverrides := {}
+  for m in env.header.modules do
+    if proofMods.contains m.module then
+      proofOverrides ←
+        collectModuleCompilerOverrides arts m.module proofOverrides
+  exportProofModules env proofMods proofOverrides
 
 private structure ExportedProofModule where
   moduleName : Name
@@ -5269,11 +5481,6 @@ private structure ExportedProofModule where
   imports : Array Import
   constNames : Array Name
   constants : Array ConstantInfo
-
-private structure ProofCompilerOverrides where
-  implementedBy : NameSet := {}
-  externDecls : NameSet := {}
-  csimp : NameSet := {}
 
 private structure DecodedProofExport where
   modules : Array ExportedProofModule
@@ -5591,7 +5798,13 @@ private def decodeProofExport (raw : Json) : IO DecodedProofExport := do
   let overrides : ProofCompilerOverrides := {
     implementedBy := ← decodeNameSet "implementedBy"
     externDecls := ← decodeNameSet "extern"
-    csimp := ← decodeNameSet "csimp" }
+    csimp := ← decodeNameSet "csimp"
+    exportDecls := ← decodeNameSet "export"
+    initDecls := ← decodeNameSet "init"
+    builtinInitDecls := ← decodeNameSet "builtinInit"
+    cpassDecls := ← decodeNameSet "cpass"
+    constantFoldDecls := ← decodeNameSet "constantFold"
+    postponedDecls := ← decodeNameSet "postponedCompile" }
   return { modules := decodedMods, overrides }
 
 /-! ## Anti-Vacuity Specification Linting (Advisory Quality Warnings)
@@ -6304,25 +6517,6 @@ def targetAudit (j : Json) (foundation : Array Name) : IO Json := do
             fail s!"target authority violation {modName} imports {imp.module}"
   let env ← importEnv j nonProofRoots
   let allMatchers := collectAllMatchers env
-  -- Collect all compiler overrides authored by non-proof `.source` modules
-  -- directly from `finalizeImport`-populated module entries (no `loadExts`
-  -- and no duplicate `foundation ++ libraries` metadata environment) together
-  -- with the `Proof` overrides exported by `"target-export"`.
-  let mut sourceImplementedBy := proofExport.overrides.implementedBy
-  let mut sourceExternDecls := proofExport.overrides.externDecls
-  let mut sourceCsimp := proofExport.overrides.csimp
-  for modIdx in Array.range env.header.modules.size do
-    let m := env.header.modules[modIdx]!
-    if roles.get? m.module matches some (.source _) then
-      for (declName, _) in
-          Compiler.implementedByAttr.ext.getModuleEntries env modIdx do
-        sourceImplementedBy := sourceImplementedBy.insert declName
-      for (declName, _) in externAttr.ext.getModuleEntries env modIdx do
-        sourceExternDecls := sourceExternDecls.insert declName
-      for entry in Compiler.CSimp.ext.ext.getModuleEntries env modIdx do
-        let e := match entry with
-          | .global e | .scoped _ e => e
-        sourceCsimp := sourceCsimp.insert e.fromDeclName
   -- Reconstruct the combined module import graph (`nonProofEnv` + exported
   -- `Proof` modules) and verify exact equality against the admitted DAG.
   let mut seenExportedProofMods : NameSet := {}
@@ -6694,15 +6888,37 @@ def targetAudit (j : Json) (foundation : Array Name) : IO Json := do
     "target theorem type differs from Expected"
     (Kernel.isDefEq checkedEnv {} theoremInfo.type canonical)
   -- Compiler replacement attributes do not affect logical reduction. Reject
-  -- authored changes nevertheless, including any override on a logically
-  -- reached declaration authored by a non-proof `.source` module (via
-  -- `finalizeImport`-populated `getModuleEntries` on `env`) or by a `Proof`
-  -- module (via `proofExport.overrides`), without importing a duplicate
-  -- `foundation ++ libraries` metadata environment.
+  -- authored changes nevertheless: any override on a logically reached
+  -- declaration authored by a non-foundation/non-library module (read by
+  -- `collectModuleCompilerOverrides` from every part the importer loads) or
+  -- by a `Proof` module (via `proofExport.overrides`), plus any authored
+  -- `@[export]`, `@[init]`/`@[builtin_init]`, `@[cpass]`, `ConstantFold`, or
+  -- `postponedCompileDeclsExt` entry in those modules.
+  --
+  -- Keep `env` at `loadExts := false`. With `loadExts`, the pinned importer
+  -- runs every imported `[init]` declaration after checking initializers are
+  -- enabled, and `KeyedDeclsAttribute.ofOLeanEntry` calls `evalConstCheck`.
+  -- `collectModuleCompilerOverrides` reads serialized entries directly
+  -- without invoking `ofOLeanEntry`.
+  -- https://github.com/leanprover/lean4/blob/5045d0056413266e57c625dcd7c365b10e377c52/src/Lean/Compiler/InitAttr.lean#L198-L203
+  -- https://github.com/leanprover/lean4/blob/5045d0056413266e57c625dcd7c365b10e377c52/src/Lean/KeyedDeclsAttribute.lean#L118-L127
+  -- https://github.com/leanprover/lean4/blob/5045d0056413266e57c625dcd7c365b10e377c52/src/Lean/Attributes.lean#L263-L281
+  -- https://github.com/leanprover/lean4/blob/5045d0056413266e57c625dcd7c365b10e377c52/src/Lean/Attributes.lean#L306-L321
+  let mut sourceOverrides := proofExport.overrides
+  for m in env.header.modules do
+    unless roles.get? m.module matches some .foundation | some .library do
+      let ov ← collectModuleCompilerOverrides arts m.module
+      rejectForbiddenCompilerOverrides ov s!" in {m.module}" false
+      sourceOverrides := { sourceOverrides with
+        implementedBy := sourceOverrides.implementedBy ++ ov.implementedBy
+        externDecls := sourceOverrides.externDecls ++ ov.externDecls
+        csimp := sourceOverrides.csimp ++ ov.csimp }
+  rejectForbiddenCompilerOverrides proofExport.overrides "" false
   for n in reached do
-    if sourceImplementedBy.contains n || sourceExternDecls.contains n then
+    if sourceOverrides.implementedBy.contains n ||
+        sourceOverrides.externDecls.contains n then
       fail s!"unchecked compiler override on logical dependency {n}"
-    if sourceCsimp.contains n then
+    if sourceOverrides.csimp.contains n then
       fail s!"authored compiler replacement on logical dependency {n}"
   -- Subject helpers can determine captured program data without appearing in
   -- the model or specification. Report their own logical closure as well, so
