@@ -31,6 +31,7 @@ public import Anneal.Core.SepPCM
 public import Anneal.Core.StageCut
 public import Anneal.Core.SpecRealizability
 public import Anneal.Core.AlignMath
+public import Anneal.Core.BitValidity
 
 public section
 
@@ -71,6 +72,13 @@ Exercises `Core.BlockTree`, `Core.SepPCM`, and `Core.StageCut` (`0`
    counterexamples (verbatim `zerocopy/src/util/mod.rs` capture remains gated
    on `NonZeroUsize` struct parameters, `TerminatorKind::Call`, and
    `debug_assert!`).
+7. **Zerocopy Bit-Validity & Transmutation Canaries:** Exercises
+   `Core.BitValidity` across Profile v1 primitives, overflow pairs
+   (no modeled trait, with and without `.uninit` local-slot padding),
+   `AsInitialized` acceptance of padded and invalid-`bool` pairs and rejection
+   of all-`.uninit` pairs, exact `TryFromBytes` validators and the unsound
+   accept-all `bool` validator, ZST/2-variant/`256`-variant fieldless enums,
+   trait hierarchy separations, and equal-size `transmute_sound` corollaries.
 -/
 
 /-! ## Computable Scalar / Tuple Helpers (`0` `noncomputable`) -/
@@ -3293,6 +3301,287 @@ theorem zerocopy_align_negative_counterexamples :
     rw [bitVec64_toNat_of_lt (by decide : 2 < Nat.pow 2 64)] at hrMod
     exact False.elim ((by decide : Nat.mod 2 6 ≠ 0) hrMod)
   exact ⟨hNotPow6, hNegPad, hNegRound⟩
+
+/-! ## Zerocopy Bit-Validity & Trait Canaries (`Core.BitValidity`) -/
+
+/-- Two-variant `#[repr(u8)]` enum `{ A = 0, B = 1 }`: `FromZeros`,
+`IntoBytes`, `Unaligned`, `TryFromBytes`, and `¬ FromBytes`. -/
+@[expose] def canaryTwoVarU8Enum : EnumTy where
+  id := 9001
+  discrWidth := .i8
+  discrSigned := false
+  tagRepr := .scalar .i8 false
+  discriminants := [0, 1]
+
+/-- Non-zero-discriminant `#[repr(u8)]` enum `{ A = 1, B = 2 }`:
+`IntoBytes`, `Unaligned`, `TryFromBytes`, `¬ FromZeros`, and `¬ FromBytes`. -/
+@[expose] def canaryNonZeroU8Enum : EnumTy where
+  id := 9002
+  discrWidth := .i8
+  discrSigned := false
+  tagRepr := .scalar .i8 false
+  discriminants := [1, 2]
+
+/-- Exhaustive `256`-variant `#[repr(u8)]` enum (`0..255`): satisfies all five
+traits (`FromBytes`, `FromZeros`, `IntoBytes`, `TryFromBytes`, `Unaligned`). -/
+@[expose] def canaryExhaustiveU8Enum : EnumTy where
+  id := 9003
+  discrWidth := .i8
+  discrSigned := false
+  tagRepr := .scalar .i8 false
+  discriminants := natRangeFrom 0 256
+
+/-- Single-variant zero-sized enum `enum SingleZst { Only }`: satisfies all
+five traits. -/
+@[expose] def canarySingleZstEnum : EnumTy where
+  id := 9004
+  discrWidth := .isize
+  discrSigned := true
+  tagRepr := .zeroSized
+  discriminants := [0]
+
+/-- Primitive trait classification canaries: `bool`, `char`, `Ordering`,
+integers, `()`, and `!` across both byte orders. -/
+theorem canary_bitValidity_primitives (endian : TargetEndian) :
+    (IsIntoBytes endian .bool ∧ IsFromZeros endian .bool ∧ IsUnaligned .bool ∧
+      IsExactTryFromBytes endian .bool (scalarCheck endian boolValid) ∧
+      ¬ IsFromBytes endian .bool) ∧
+    (IsIntoBytes endian .char ∧ IsFromZeros endian .char ∧ ¬ IsUnaligned .char ∧
+      IsExactTryFromBytes endian .char (scalarCheck endian isUnicodeScalar) ∧
+      ¬ IsFromBytes endian .char) ∧
+    (IsIntoBytes endian .ordering ∧ IsFromZeros endian .ordering ∧
+      IsUnaligned .ordering ∧
+      IsExactTryFromBytes endian .ordering (scalarCheck endian orderingValid) ∧
+      ¬ IsFromBytes endian .ordering) ∧
+    (IsFromBytes endian (.int .i32 false) ∧
+      IsFromZeros endian (.int .i32 false) ∧
+      IsIntoBytes endian (.int .i32 false) ∧
+      ¬ IsUnaligned (.int .i32 false)) ∧
+    (IsFromBytes endian .unit ∧ IsIntoBytes endian .unit ∧ IsUnaligned .unit) ∧
+    (IsIntoBytes endian .never ∧
+      IsExactTryFromBytes endian .never (fun _ => false) ∧
+      IsUnaligned .never ∧ ¬ IsFromZeros endian .never ∧
+      ¬ IsFromBytes endian .never) :=
+  ⟨⟨bool_isIntoBytes endian, bool_isFromZeros endian, bool_isUnaligned,
+    bool_isExactTryFromBytes endian, bool_not_isFromBytes endian⟩,
+   ⟨char_isIntoBytes endian, char_isFromZeros endian, char_not_isUnaligned,
+    char_isExactTryFromBytes endian, char_not_isFromBytes endian⟩,
+   ⟨ordering_isIntoBytes endian, ordering_isFromZeros endian,
+    ordering_isUnaligned, ordering_isExactTryFromBytes endian,
+    ordering_not_isFromBytes endian⟩,
+   ⟨int_isFromBytes endian .i32 false, int_isFromZeros endian .i32 false,
+    int_isIntoBytes endian .i32 false,
+    int_not_isUnaligned_of_ne_i8 (fun h => by nomatch h) false⟩,
+   ⟨unit_isFromBytes endian, unit_isIntoBytes endian, unit_isUnaligned⟩,
+   ⟨never_isIntoBytes endian, never_isExactTryFromBytes endian, never_isUnaligned,
+    never_not_isFromZeros endian, never_not_isFromBytes endian⟩⟩
+
+/-- Overflow-pair canaries. Overflow pairs have no addressable layout, so even
+padding-free `(u8, bool)` satisfies none of the modeled `zerocopy` traits
+(blocking, for example, a `(u8, bool)` to `u16` transmutation). Profile v1's
+local-slot representation still has the analogous internal facts: all-zero bytes
+decode, not every initialized byte sequence decodes, `overflowPairCheck`
+recognizes exactly the bit-valid initialized bytes, the `(u8, bool)` encoding
+is fully initialized, and the `(u32, bool)` encoding embeds `3` `.uninit`
+padding bytes, so it is `.bitValid` without being `.initialized`. -/
+theorem canary_bitValidity_overflowPairs (endian : TargetEndian) :
+    (∀ tr : ZerocopyTrait,
+      ¬ ValidForTrait tr endian (.tuple [.int .i8 false, .bool]) ∧
+        ¬ ValidForTrait tr endian (.tuple [.int .i32 false, .bool])) ∧
+    (∃ v, decodeVal endian (.tuple [.int .i32 false, .bool])
+      (zeroInitBytes (overflowPairLayout .i32).size) = .ok (some v)) ∧
+    (¬ ∀ bs,
+        bs.length = (overflowPairLayout .i8).size →
+        AllBytesInit bs →
+        ∃ v, decodeVal endian (.tuple [.int .i8 false, .bool]) bs =
+          .ok (some v)) ∧
+    (∀ bs,
+      ByteSeqValid endian (.tuple [.int .i32 false, .bool]) .initialized bs →
+      (overflowPairCheck endian .i32 bs = true ↔
+        ByteSeqValid endian (.tuple [.int .i32 false, .bool]) .bitValid bs)) ∧
+    ((∀ v bs,
+        encodeVal endian (.tuple [.int .i8 false, .bool]) v = .ok bs →
+        AllBytesInit bs) ∧
+      ¬ ∀ v bs,
+        encodeVal endian (.tuple [.int .i32 false, .bool]) v = .ok bs →
+        AllBytesInit bs) ∧
+    (∃ bs : List AllocByte,
+      encodeVal endian (.tuple [.int .i32 false, .bool])
+          (.tuple [.scalar ⟨.i32, false, 0⟩, .bool false]) = .ok bs ∧
+        ByteSeqValid endian (.tuple [.int .i32 false, .bool]) .bitValid bs ∧
+        ¬ ByteSeqValid endian (.tuple [.int .i32 false, .bool])
+            .initialized bs) :=
+  ⟨fun tr => ⟨overflowPair_not_validForTrait tr endian .i8 false,
+    overflowPair_not_validForTrait tr endian .i32 false⟩,
+   overflowPair_localSlot_zero_decodes endian .i32 false,
+   overflowPair_localSlot_not_allInitDecode endian .i8 false,
+   overflowPair_localSlotCheck_exact endian .i32 false,
+   ⟨(overflowPair_encodeVal_allBytesInit_iff endian .i8 false).2 rfl,
+    fun h => nomatch (overflowPair_encodeVal_allBytesInit_iff endian .i32 false).1 h⟩,
+   byteSeqValid_bitValid_not_implies_initialized_overflowPair endian⟩
+
+/-- `AsInitialized` canaries (`ByteSeqValid … .asInitialized`): the encoded
+`(0 : u32, false)` pair with `3` `.uninit` padding bytes is accepted; `8`
+`.uninit` bytes at `(u32, bool)` are rejected because every valid pair
+initializes its `u32` bytes; a pair with invalid `bool` byte `0x02` and
+`.uninit` padding is accepted without being `.bitValid`; and initialized `bool`
+byte `0x02` is accepted without being `.bitValid`. -/
+theorem canary_bitValidity_asInitialized (endian : TargetEndian) :
+    ByteSeqValid endian (.tuple [.int .i32 false, .bool]) .asInitialized
+        [.init 0 none, .init 0 none, .init 0 none, .init 0 none, .init 0 none,
+          .uninit, .uninit, .uninit] ∧
+      ¬ ByteSeqValid endian (.tuple [.int .i32 false, .bool]) .asInitialized
+        (List.replicate 8 AllocByte.uninit) ∧
+      ByteSeqValid endian (.tuple [.int .i32 false, .bool]) .asInitialized
+        [.init 0 none, .init 0 none, .init 0 none, .init 0 none,
+          .init (UInt8.ofNat 2) none, .uninit, .uninit, .uninit] ∧
+      ¬ ByteSeqValid endian (.tuple [.int .i32 false, .bool]) .bitValid
+        [.init 0 none, .init 0 none, .init 0 none, .init 0 none,
+          .init (UInt8.ofNat 2) none, .uninit, .uninit, .uninit] ∧
+      ByteSeqValid endian .bool .asInitialized [.init (UInt8.ofNat 2) none] ∧
+      ¬ ByteSeqValid endian .bool .bitValid [.init (UInt8.ofNat 2) none] :=
+  ⟨byteSeqValid_asInitialized_overflowPair_padded endian,
+   byteSeqValid_asInitialized_overflowPair_uninit_false endian,
+   (byteSeqValid_asInitialized_overflowPair_invalidBool endian).1,
+   (byteSeqValid_asInitialized_overflowPair_invalidBool endian).2,
+   (byteSeqValid_asInitialized_not_implies_bitValid_bool endian).1,
+   (byteSeqValid_asInitialized_not_implies_bitValid_bool endian).2⟩
+
+/-- `TryFromBytes` validator canaries: accepting every candidate is unsound for
+`bool` and rejecting every candidate is sound but inexact; the exact `bool`
+validator accepts byte `0x01`, rejects byte `0x02`, and its acceptance yields
+bit-validity (`try_from_bytes_sound`). -/
+theorem canary_bitValidity_tryFromBytes (endian : TargetEndian) :
+    ¬ IsTryFromBytes endian .bool (fun _ => true) ∧
+      IsTryFromBytes endian .bool (fun _ => false) ∧
+      ¬ IsExactTryFromBytes endian .bool (fun _ => false) ∧
+      scalarCheck endian boolValid [.init 1 none] = true ∧
+      scalarCheck endian boolValid [.init (UInt8.ofNat 2) none] = false ∧
+      ByteSeqValid endian .bool .bitValid [.init 1 none] := by
+  have hT : scalarCheck endian boolValid [.init 1 none] = true := by
+    cases endian <;> rfl
+  refine ⟨bool_not_isTryFromBytes_true endian,
+    isTryFromBytes_false endian (layout := ⟨1, 0⟩) rfl,
+    bool_not_isExactTryFromBytes_false endian, hT,
+    by cases endian <;> rfl, ?_⟩
+  exact try_from_bytes_sound
+    (isExactTryFromBytes_implies_isTryFromBytes (bool_isExactTryFromBytes endian))
+    ⟨⟨1, 0⟩, rfl, rfl, rfl⟩ hT
+
+/-- Enum bit-validity canaries: `2`-variant `u8` (`FromZeros`, `¬ FromBytes`),
+non-zero `2`-variant `u8` (`¬ FromZeros`), `256`-variant exhaustive `u8`
+(`FromBytes`), and `1`-variant ZST enum (all 5 traits). -/
+theorem canary_bitValidity_enums (endian : TargetEndian) :
+    (IsFromZeros endian (.enum canaryTwoVarU8Enum) ∧
+      IsIntoBytes endian (.enum canaryTwoVarU8Enum) ∧
+      IsUnaligned (.enum canaryTwoVarU8Enum) ∧
+      IsExactTryFromBytes endian (.enum canaryTwoVarU8Enum)
+        (scalarCheck endian (enumTagValid canaryTwoVarU8Enum .i8 false)) ∧
+      ¬ IsFromBytes endian (.enum canaryTwoVarU8Enum)) ∧
+    (¬ IsFromZeros endian (.enum canaryNonZeroU8Enum) ∧
+      IsIntoBytes endian (.enum canaryNonZeroU8Enum) ∧
+      ¬ IsFromBytes endian (.enum canaryNonZeroU8Enum)) ∧
+    (IsFromBytes endian (.enum canaryExhaustiveU8Enum) ∧
+      IsFromZeros endian (.enum canaryExhaustiveU8Enum) ∧
+      IsIntoBytes endian (.enum canaryExhaustiveU8Enum) ∧
+      IsUnaligned (.enum canaryExhaustiveU8Enum) ∧
+      IsExactTryFromBytes endian (.enum canaryExhaustiveU8Enum)
+        (fun _ => true)) ∧
+    (IsFromBytes endian (.enum canarySingleZstEnum) ∧
+      IsFromZeros endian (.enum canarySingleZstEnum) ∧
+      IsIntoBytes endian (.enum canarySingleZstEnum) ∧
+      IsUnaligned (.enum canarySingleZstEnum) ∧
+      IsExactTryFromBytes endian (.enum canarySingleZstEnum)
+        (fun _ => true)) := by
+  have h2Adm : enumAdmitted canaryTwoVarU8Enum = true := by rfl
+  have h2FzBool : isFromZerosEnum canaryTwoVarU8Enum = true := by rfl
+  have h2Fz : IsFromZeros endian (.enum canaryTwoVarU8Enum) :=
+    (enum_isFromZeros_iff endian canaryTwoVarU8Enum).mpr h2FzBool
+  have h2NotFb : ¬ IsFromBytes endian (.enum canaryTwoVarU8Enum) :=
+    scalarEnum_not_isFromBytes_of_invalid_tag endian canaryTwoVarU8Enum
+      .i8 false h2Adm rfl 2 (by decide) (by rfl)
+  have hNzAdm : enumAdmitted canaryNonZeroU8Enum = true := by rfl
+  have hNzFzBool : isFromZerosEnum canaryNonZeroU8Enum = false := by rfl
+  have hNzNotFz : ¬ IsFromZeros endian (.enum canaryNonZeroU8Enum) := by
+    intro hFz
+    have hEq := (enum_isFromZeros_iff endian canaryNonZeroU8Enum).mp hFz
+    rw [hNzFzBool] at hEq
+    nomatch hEq
+  have hNzNotFb : ¬ IsFromBytes endian (.enum canaryNonZeroU8Enum) :=
+    scalarEnum_not_isFromBytes_of_invalid_tag endian canaryNonZeroU8Enum
+      .i8 false hNzAdm rfl 0 (by decide) (by rfl)
+  have h256Adm : enumAdmitted canaryExhaustiveU8Enum = true :=
+    u8ExhaustiveEnum_enumAdmitted canaryExhaustiveU8Enum rfl rfl
+  have h256Bool : isFromBytesEnum canaryExhaustiveU8Enum = true :=
+    u8ExhaustiveEnum_isFromBytesEnum canaryExhaustiveU8Enum rfl rfl
+  have h256Fb : IsFromBytes endian (.enum canaryExhaustiveU8Enum) :=
+    isFromBytesEnum_sound endian canaryExhaustiveU8Enum h256Bool
+  have hZstAdm : enumAdmitted canarySingleZstEnum = true := by rfl
+  exact ⟨⟨h2Fz,
+          scalarEnum_isIntoBytes endian canaryTwoVarU8Enum .i8 false h2Adm rfl,
+          (scalarEnum_isUnaligned_iff canaryTwoVarU8Enum .i8 false
+            h2Adm rfl).mpr rfl,
+          scalarEnum_isExactTryFromBytes endian canaryTwoVarU8Enum .i8 false
+            h2Adm rfl,
+          h2NotFb⟩,
+         ⟨hNzNotFz,
+          scalarEnum_isIntoBytes endian canaryNonZeroU8Enum .i8 false
+            hNzAdm rfl,
+          hNzNotFb⟩,
+         ⟨h256Fb, isFromBytes_implies_isFromZeros endian _ h256Fb,
+          scalarEnum_isIntoBytes endian canaryExhaustiveU8Enum .i8 false
+            h256Adm rfl,
+          (scalarEnum_isUnaligned_iff canaryExhaustiveU8Enum .i8 false
+            h256Adm rfl).mpr rfl,
+          isFromBytes_implies_isExactTryFromBytes endian _ h256Fb⟩,
+         ⟨zstEnum_isFromBytes endian canarySingleZstEnum hZstAdm rfl,
+          zstEnum_isFromZeros endian canarySingleZstEnum hZstAdm rfl,
+          zstEnum_isIntoBytes endian canarySingleZstEnum hZstAdm rfl,
+          zstEnum_isUnaligned canarySingleZstEnum hZstAdm rfl,
+          zstEnum_isExactTryFromBytes endian canarySingleZstEnum hZstAdm rfl⟩⟩
+
+/-- Equal-size transmutation canaries: `bool -> u8`, `Ordering -> i8`,
+`TwoVarU8 -> u8`, `char -> u32`, `u32 -> i32`, and `SingleZst <-> ()`. -/
+theorem canary_bitValidity_transmutes (endian : TargetEndian) :
+    (∀ b bs, encodeVal endian .bool (.bool b) = .ok bs →
+      NoProvBytes bs ∧
+        ∃ v', decodeVal endian (.int .i8 false) bs = .ok (some v')) ∧
+    (∀ ord bs, encodeVal endian .ordering (.ordering ord) = .ok bs →
+      NoProvBytes bs ∧
+        ∃ v', decodeVal endian (.int .i8 true) bs = .ok (some v')) ∧
+    (∀ idx bs, encodeVal endian (.enum canaryTwoVarU8Enum)
+        (.enumVal canaryTwoVarU8Enum idx) = .ok bs →
+      NoProvBytes bs ∧
+        ∃ v', decodeVal endian (.int .i8 false) bs = .ok (some v')) ∧
+    (∀ c bs, encodeVal endian .char (.char c) = .ok bs →
+      NoProvBytes bs ∧
+        ∃ v', decodeVal endian (.int .i32 false) bs = .ok (some v')) ∧
+    (∀ sv bs, encodeVal endian (.int .i32 false) (.scalar sv) = .ok bs →
+      NoProvBytes bs ∧
+        ∃ v', decodeVal endian (.int .i32 true) bs = .ok (some v')) ∧
+    (∀ bs, encodeVal endian (.enum canarySingleZstEnum)
+        (.enumVal canarySingleZstEnum 0) = .ok bs →
+      NoProvBytes bs ∧ ∃ v', decodeVal endian .unit bs = .ok (some v')) ∧
+    (∀ bs, encodeVal endian .unit .unit = .ok bs →
+      NoProvBytes bs ∧
+        ∃ v',
+          decodeVal endian (.enum canarySingleZstEnum) bs = .ok (some v')) :=
+  ⟨fun b bs h => transmute_bool_to_i8_sound endian false (.bool b) bs h,
+   fun ord bs h =>
+     transmute_ordering_to_i8_sound endian true (.ordering ord) bs h,
+   fun idx bs h =>
+     transmute_scalarEnum_i8_to_i8_sound endian canaryTwoVarU8Enum false false
+       (by rfl) rfl (.enumVal canaryTwoVarU8Enum idx) bs h,
+   fun c bs h => transmute_char_to_i32_sound endian false (.char c) bs h,
+   fun sv bs h =>
+     transmute_int_to_int_sound endian .i32 .i32 false true rfl
+       (.scalar sv) bs h,
+   fun bs h =>
+     transmute_zstEnum_to_unit_sound endian canarySingleZstEnum (by rfl) rfl
+       (.enumVal canarySingleZstEnum 0) bs h,
+   fun bs h =>
+     transmute_unit_to_zstEnum_sound endian canarySingleZstEnum (by rfl) rfl
+       .unit bs h⟩
 
 end Anneal.Core
 
