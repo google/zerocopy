@@ -10,6 +10,7 @@ module
 prelude
 public import Anneal.WavefrontReclaim.SpatialPcm
 public import Anneal.WavefrontReclaim.Wavefront
+public import Anneal.WavefrontReclaim.ScoreboardDag
 
 -- `Anneal.WavefrontReclaim.Canaries` is decoupled from this runtime umbrella
 -- and audited standalone by Pass-1 `anneal-audit`.

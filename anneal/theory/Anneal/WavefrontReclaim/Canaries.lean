@@ -20,6 +20,7 @@ public import Anneal.CnfOrd.Worklist
 public import Anneal.ByteSubLens.Lens
 public import Anneal.WavefrontReclaim.SpatialPcm
 public import Anneal.WavefrontReclaim.Wavefront
+public import Anneal.WavefrontReclaim.ScoreboardDag
 
 public section
 
@@ -47,6 +48,11 @@ exercising `Anneal.WavefrontReclaim`:
    fail-closed negative regressions (15 conjuncts) across leaf writeback, spawn
    admissibility, pure-lifted access phases, checkout, burst submission, cell
    updates, and `byteSubLensPut` memory-write failures.
+7. `canary_scoreboardDag_witnesses`: edge-clamped `neededRowEdge` bounds
+   (Row-0 and bottom-edge cases), `unpack_packSlotWord` round-trips,
+   `RowPrefixReady` persistence across waiter-bit toggles, constructive
+   `findMinRankBelow` / `scoreboard_progress_witness` execution on a diamond
+   DAG, WPP (`wppRank`), and multi-stage Moore-halo (`vvcCtuRank`) descent.
 
 All definitions are computable (`0` `noncomputable`, `0` `._unsafe_rec`,
 `0` `omega`, `0` `decide`). Pure evaluation canaries use `[]` zero axioms;
@@ -884,6 +890,136 @@ theorem canary_wavefrontReclaim_negative_fail_closed_tests :
         [WorkerTask.mk 0 0 0 path0 77 5]) =
         .faultLoanViolation :=
   ⟨rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl⟩
+
+/-- Sample diamond scoreboard DAG (`0 -> {1, 2} -> 3`) demonstrating
+constructive minimal-rank unfinished selection and `TaskReady` progress. -/
+@[expose] def sampleScoreboardDag : ScoreboardDag :=
+  { numTasks := 4
+    rank := fun u =>
+      match u with
+      | 0 => 0
+      | 1 => 1
+      | 2 => 2
+      | _ => 3
+    deps := fun u =>
+      match u with
+      | 0 => []
+      | 1 => [0]
+      | 2 => [0]
+      | 3 => [1, 2]
+      | _ => [] }
+
+private theorem sampleScoreboardDag_valid : ValidDagRank sampleScoreboardDag := by
+  intro u v hu hv
+  cases u with
+  | zero => nomatch hv
+  | succ u1 =>
+    cases u1 with
+    | zero =>
+      cases hv with
+      | head _ => exact ⟨Nat.zero_lt_succ 3, Nat.zero_lt_succ 0⟩
+      | tail _ h2 => nomatch h2
+    | succ u2 =>
+      cases u2 with
+      | zero =>
+        cases hv with
+        | head _ => exact ⟨Nat.zero_lt_succ 3, Nat.zero_lt_succ 1⟩
+        | tail _ h2 => nomatch h2
+      | succ u3 =>
+        cases u3 with
+        | zero =>
+          cases hv with
+          | head _ =>
+            exact ⟨Nat.succ_lt_succ (Nat.zero_lt_succ 2),
+              Nat.succ_lt_succ (Nat.zero_lt_succ 1)⟩
+          | tail _ h2 =>
+            cases h2 with
+            | head _ =>
+              exact ⟨Nat.succ_lt_succ (Nat.succ_lt_succ (Nat.zero_lt_succ 1)),
+                Nat.succ_lt_succ (Nat.succ_lt_succ (Nat.zero_lt_succ 0))⟩
+            | tail _ h3 => nomatch h3
+        | succ _ => nomatch hv
+
+private theorem canaryRow5LtCap : 5 < slotRowCap :=
+  Nat.le_of_ble_eq_true (rfl : Nat.ble 6 slotRowCap = true)
+
+/-- Validated sample `SlotState` (`publishedRow = 42 < 2^30`) for canary checks.
+-/
+@[expose] def sampleSlot42 : SlotState :=
+  ⟨true, true, 42,
+    Nat.le_of_ble_eq_true (rfl : Nat.ble 43 slotRowCap = true)⟩
+
+/-- Validated sample `SlotState` (`publishedRow = 6 < 2^30`) for readiness
+monotonicity checks. -/
+@[expose] def sampleSlot6 : SlotState :=
+  ⟨false, false, 6,
+    Nat.le_of_ble_eq_true (rfl : Nat.ble 7 slotRowCap = true)⟩
+
+/-- Positive, negative out-of-range rejection, and edge-clamp witnesses for
+`Anneal.WavefrontReclaim.ScoreboardDag` (`[propext]` only, `0`
+`Classical.choice`, `0` `decide`). -/
+theorem canary_scoreboardDag_witnesses :
+    neededRowEdge (.negSucc 4) 1 0 8 = 1 ∧
+    neededRowEdge (.ofNat 10) 2 1 8 = 8 ∧
+    neededRowEdge (.ofNat 2) 1 1 8 = 5 ∧
+    unpackSlotWord (packSlotWord sampleSlot42) = sampleSlot42 ∧
+    packSlotWord sampleSlot42 < slotWordCap ∧
+    mkSlotState? false false slotRowCap = none ∧
+    packSlotWord? false false slotRowCap = none ∧
+    RowPrefixReady 5 sampleSlot6 ∧
+    findMinRankBelow sampleScoreboardDag.rank
+      (fun u => Nat.beq u 0) sampleScoreboardDag.numTasks = some 1 ∧
+    TaskReady sampleScoreboardDag (fun u => Nat.beq u 0) 1 ∧
+    (∃ u : Nat,
+      findMinRankBelow sampleScoreboardDag.rank
+        (fun x => Nat.beq x 0) sampleScoreboardDag.numTasks = some u ∧
+      TaskReady sampleScoreboardDag (fun x => Nat.beq x 0) u) ∧
+    wppRank 1 0 < wppRank 2 0 ∧
+    wppRank 3 0 < wppRank 2 1 ∧
+    vvcCtuRank 2 2 0 < vvcCtuRank 1 1 1 := by
+  have hBound :
+      neededRowEdge (.negSucc 4) 1 0 8 = 1 ∧
+      neededRowEdge (.ofNat 10) 2 1 8 = 8 ∧
+      neededRowEdge (.ofNat 2) 1 1 8 = 5 :=
+    ⟨rfl, rfl, rfl⟩
+  have hPack :
+      unpackSlotWord (packSlotWord sampleSlot42) = sampleSlot42 :=
+    unpack_packSlotWord sampleSlot42
+  have hWordLt : packSlotWord sampleSlot42 < slotWordCap :=
+    packSlotWord_lt_wordCap sampleSlot42
+  have hRejectState : mkSlotState? false false slotRowCap = none := rfl
+  have hRejectWord : packSlotWord? false false slotRowCap = none := rfl
+  have hReady : RowPrefixReady 5 sampleSlot6 :=
+    rowPrefixReady_mono
+      (⟨Nat.le_succ 5, fun h => Bool.noConfusion h⟩ :
+        SlotStateLe ⟨false, true, 5, canaryRow5LtCap⟩ sampleSlot6)
+      (Or.inr (Nat.le_refl 5))
+  have hFind :
+      findMinRankBelow sampleScoreboardDag.rank
+        (fun u => Nat.beq u 0) sampleScoreboardDag.numTasks = some 1 := rfl
+  have hTask : TaskReady sampleScoreboardDag (fun u => Nat.beq u 0) 1 := by
+    refine ⟨Nat.succ_lt_succ (Nat.zero_lt_succ 2), rfl, ?_⟩
+    intro v hv
+    cases hv with
+    | head _ => rfl
+    | tail _ h2 => nomatch h2
+  have hProg :
+      ∃ u : Nat,
+        findMinRankBelow sampleScoreboardDag.rank
+          (fun x => Nat.beq x 0) sampleScoreboardDag.numTasks = some u ∧
+        TaskReady sampleScoreboardDag (fun x => Nat.beq x 0) u :=
+    scoreboard_progress_witness sampleScoreboardDag (fun x => Nat.beq x 0)
+      sampleScoreboardDag_valid (k := 1)
+      (Nat.succ_lt_succ (Nat.zero_lt_succ 2)) rfl
+  have hWppL : wppRank 1 0 < wppRank 2 0 :=
+    wppRank_left_lt (Nat.zero_lt_succ 1)
+  have hWppTR : wppRank 3 0 < wppRank 2 1 :=
+    wppRank_topRight_lt (Nat.zero_lt_succ 0)
+  have hVvc : vvcCtuRank 2 2 0 < vvcCtuRank 1 1 1 :=
+    vvcCtuRank_prevStage_mooreHalo_lt
+      (Nat.zero_lt_succ 0) (Nat.le_refl 2) (Nat.le_refl 2)
+  exact ⟨hBound.1, hBound.2.1, hBound.2.2, hPack, hWordLt, hRejectState,
+    hRejectWord, hReady, hFind, hTask, hProg, hWppL, hWppTR, hVvc⟩
 
 end Anneal.WavefrontReclaim
 
