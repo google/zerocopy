@@ -15,6 +15,7 @@ use serde_json::{Map, Value};
 
 use crate::core::{
     digest::{is_sha256_hex, sha256_bytes},
+    identifiers::is_feature_name,
     inspect::{
         profile::{
             ArtifactAxis, AssuranceProfile, AxiomAxis, ContainmentAxis, ReplayAxis, ScopeAxis,
@@ -27,7 +28,15 @@ use crate::core::{
 const EXPECTED_RECEIPT_SCHEMA_VERSION: u64 = 3;
 const EXPECTED_CAPTURE_SHARDS_SCHEMA_VERSION: u64 = 1;
 const ALLOWED_TAINT_ATOMS: &[&str] =
-    &["sorry_in_proof", "unpinned_lean", "unsandboxed_elaboration"];
+    &["sorry_in_proof", "unmodeled_unstable_features", "unpinned_lean", "unsandboxed_elaboration"];
+/// Taint atom inserted by `cargo anneal verify --allow-unstable-feature`.
+pub const UNSTABLE_FEATURES_TAINT: &str = "unmodeled_unstable_features";
+/// Static assumption `cargo anneal verify` records under
+/// [`UNSTABLE_FEATURES_TAINT`]. The feature sets live in `unstable_features`,
+/// so changes to them diff there rather than in this sentence.
+pub const UNSTABLE_FEATURES_ASSUMPTION: &str = "unmodeled unstable rustc features allowed by \
+    operator (see unstable_features); non-interference with captured MIR semantics is \
+    unverified";
 const ALLOWED_SANDBOXES: &[&str] = &["linux_bwrap", "linux_landlock_seccomp", "none"];
 const ALLOWED_FOUNDATION_AXIOMS: &[&str] = &["Classical.choice", "Quot.sound", "propext"];
 const ALLOWED_ASSURANCE_STAGES: &[&str] = &["stage0_alpha", "stage1_audited", "stage2_hardened"];
@@ -89,6 +98,11 @@ pub struct PolicyRequirements {
     pub require_kernel_replay: Option<u64>,
     /// Optional allowlist restricting permitted entries in `audit.axioms`.
     pub allowed_axioms: Option<BTreeSet<String>>,
+    /// Admit the `unmodeled_unstable_features` taint (and no other) when
+    /// every allowed and observed unstable feature belongs to this set.
+    pub allowed_unstable_features: Option<BTreeSet<String>>,
+    /// Fail when the receipt reports any incomplete unstable feature.
+    pub forbid_incomplete_unstable_features: bool,
     /// Handling policy for unrecognized RFC 6901 JSON fields.
     pub unknown_fields: UnknownFieldsPolicy,
 }
@@ -102,6 +116,8 @@ impl Default for PolicyRequirements {
             require_containment: false,
             require_kernel_replay: None,
             allowed_axioms: None,
+            allowed_unstable_features: None,
+            forbid_incomplete_unstable_features: false,
             unknown_fields: UnknownFieldsPolicy::Warn,
         }
     }
@@ -118,6 +134,8 @@ impl PolicyRequirements {
             require_containment: false,
             require_kernel_replay: None,
             allowed_axioms: None,
+            allowed_unstable_features: None,
+            forbid_incomplete_unstable_features: false,
             unknown_fields: UnknownFieldsPolicy::Warn,
         }
     }
@@ -393,6 +411,18 @@ pub struct SuccessReceipt {
     pub unpinned_lean: Option<UnpinnedLeanRecord>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub shards: Option<ReceiptShardsManifest>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub unstable_features: Option<UnstableFeaturesRecord>,
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub stabilized_features_present: Vec<String>,
+}
+
+/// Parsed operator-allowed unstable feature record (`unstable_features`).
+#[derive(Clone, Debug, PartialEq, Eq, Serialize)]
+pub struct UnstableFeaturesRecord {
+    pub allowed: Vec<String>,
+    pub observed: Vec<String>,
+    pub incomplete_observed: Vec<String>,
 }
 
 impl SuccessReceipt {
@@ -511,6 +541,8 @@ impl ReceiptEnvelope {
                     || policy.require_containment
                     || policy.require_kernel_replay.is_some()
                     || policy.allowed_axioms.is_some()
+                    || policy.allowed_unstable_features.is_some()
+                    || policy.forbid_incomplete_unstable_features
                 {
                     failures.push(format!(
                         "receipt status `{}` in phase `{}` did not succeed",
@@ -519,8 +551,42 @@ impl ReceiptEnvelope {
                 }
             }
             ParsedReceipt::Success(s) => {
-                if (policy.check || policy.require_untainted) && !s.taint_reasons.is_empty() {
-                    failures.push(format!("receipt is tainted ({})", s.taint_reasons.join(", ")));
+                // `--allowed-unstable-features` admits exactly the unstable
+                // feature taint; every other taint still fails.
+                let residual_taints: Vec<&str> = s
+                    .taint_reasons
+                    .iter()
+                    .map(String::as_str)
+                    .filter(|&t| {
+                        !(policy.allowed_unstable_features.is_some()
+                            && t == UNSTABLE_FEATURES_TAINT)
+                    })
+                    .collect();
+                if (policy.check || policy.require_untainted) && !residual_taints.is_empty() {
+                    failures.push(format!("receipt is tainted ({})", residual_taints.join(", ")));
+                }
+                if let Some(permitted) = &policy.allowed_unstable_features
+                    && let Some(record) = &s.unstable_features
+                {
+                    for (field, names) in
+                        [("allowed", &record.allowed), ("observed", &record.observed)]
+                    {
+                        for name in names.iter().filter(|name| !permitted.contains(*name)) {
+                            failures.push(format!(
+                                "unstable feature `{name}` in unstable_features.{field} is \
+                                 outside --allowed-unstable-features"
+                            ));
+                        }
+                    }
+                }
+                if policy.forbid_incomplete_unstable_features
+                    && let Some(record) = &s.unstable_features
+                    && !record.incomplete_observed.is_empty()
+                {
+                    failures.push(format!(
+                        "receipt enables incomplete unstable feature(s) ({})",
+                        record.incomplete_observed.join(", ")
+                    ));
                 }
                 if policy.require_crate_scope && s.scope_kind != "crate" {
                     failures.push(format!(
@@ -870,6 +936,22 @@ fn parse_success_receipt(
     if let Some(ref sc) = stdlib_crate {
         check_trimmed_nonempty("/configuration", "stdlib_crate", sc, violations);
     }
+    let mut cfg_feature_list = |key: &'static str| -> Result<Vec<String>, String> {
+        let ptr = format!("/configuration/{key}");
+        let Some(arr) = cfg.opt_array(key)? else {
+            return Ok(Vec::new());
+        };
+        let list = parse_str_list(arr, &ptr)?;
+        if list.is_empty() {
+            violations.push(format!("`{ptr}` must be omitted rather than empty"));
+        }
+        validate_feature_names(&ptr, &list, violations);
+        Ok(list)
+    };
+    let cfg_allowed_unstable = cfg_feature_list("allowed_unstable_features")?;
+    let cfg_observed_unstable = cfg_feature_list("observed_unstable_features")?;
+    let cfg_incomplete_unstable = cfg_feature_list("incomplete_observed_unstable_features")?;
+    let stabilized_features_present = cfg_feature_list("stabilized_features_present")?;
     for known_cfg_key in [
         "crate_root",
         "cfg",
@@ -927,6 +1009,29 @@ fn parse_success_receipt(
         Some(obj) => Some(parse_unpinned_obj("/unpinned_lean", obj, false, unknown, violations)?),
         None => None,
     };
+
+    let unstable_features = match root.opt_obj("unstable_features")? {
+        Some(obj) => Some(parse_unstable_features(obj, unknown, violations)?),
+        None => None,
+    };
+    check_unstable_features_envelope(
+        &taint_reasons,
+        unstable_features.as_ref(),
+        [&cfg_allowed_unstable, &cfg_observed_unstable, &cfg_incomplete_unstable],
+        &assumptions,
+        violations,
+    );
+    // `--stdlib-crate` conflicts with `--allow-unstable-feature` and keeps its
+    // pinned feature list, so it records neither feature disclosure.
+    if stdlib_crate.is_some()
+        && (unstable_features.is_some() || !stabilized_features_present.is_empty())
+    {
+        violations.push(
+            "configuration.stdlib_crate excludes unstable_features and \
+             stabilized_features_present"
+                .into(),
+        );
+    }
     if has_unpinned_taint != unpinned_lean.is_some() {
         violations
             .push("`unpinned_lean` taint must match presence of top-level `unpinned_lean`".into());
@@ -1327,6 +1432,8 @@ fn parse_success_receipt(
         artifacts,
         unpinned_lean,
         shards,
+        unstable_features,
+        stabilized_features_present,
     })
 }
 
@@ -1822,6 +1929,87 @@ fn parse_spec_warnings(
             Ok(SpecWarningEntry { code, declaration, message, body })
         })
         .collect()
+}
+
+/// Record a violation unless `names` are strictly sorted `#![feature(...)]`
+/// identifiers of the form `[a-z][a-z0-9_]*`.
+fn validate_feature_names(ptr: &str, names: &[String], violations: &mut Vec<String>) {
+    for name in names {
+        if !is_feature_name(name) {
+            violations.push(format!("invalid feature name `{name}` in `{ptr}`"));
+        }
+    }
+    if names.windows(2).any(|pair| pair[0] >= pair[1]) {
+        violations.push(format!("`{ptr}` must be strictly sorted and duplicate-free"));
+    }
+}
+
+fn parse_unstable_features(
+    obj: &Map<String, Value>,
+    unknown: &mut Vec<String>,
+    violations: &mut Vec<String>,
+) -> Result<UnstableFeaturesRecord, String> {
+    let mut c = ObjectCursor::nested("/unstable_features", obj);
+    let allowed = c.req_str_array("allowed")?;
+    let observed = c.req_str_array("observed")?;
+    let incomplete_observed = c.req_str_array("incomplete_observed")?;
+    c.collect_unrecognized(unknown);
+    validate_feature_names("/unstable_features/allowed", &allowed, violations);
+    validate_feature_names("/unstable_features/observed", &observed, violations);
+    validate_feature_names(
+        "/unstable_features/incomplete_observed",
+        &incomplete_observed,
+        violations,
+    );
+    if allowed.is_empty() {
+        violations.push("`/unstable_features/allowed` must be non-empty".into());
+    }
+    for name in observed.iter().filter(|name| !allowed.contains(name)) {
+        violations.push(format!("unstable_features.observed `{name}` is not allowed"));
+    }
+    for name in incomplete_observed.iter().filter(|name| !observed.contains(name)) {
+        violations.push(format!("unstable_features.incomplete_observed `{name}` is not observed"));
+    }
+    Ok(UnstableFeaturesRecord { allowed, observed, incomplete_observed })
+}
+
+/// Cross-check the `unmodeled_unstable_features` taint against the top-level
+/// `unstable_features` record, the capture `configuration` feature lists
+/// (`allowed`, `observed`, `incomplete_observed`, each omitted when empty),
+/// and the static assumption.
+fn check_unstable_features_envelope(
+    taint_reasons: &[String],
+    record: Option<&UnstableFeaturesRecord>,
+    configuration: [&Vec<String>; 3],
+    assumptions: &[String],
+    violations: &mut Vec<String>,
+) {
+    let tainted = taint_reasons.iter().any(|t| t == UNSTABLE_FEATURES_TAINT);
+    if tainted != record.is_some() {
+        violations.push(
+            "`unmodeled_unstable_features` taint must match presence of top-level \
+             `unstable_features`"
+                .into(),
+        );
+    }
+    let empty = Vec::new();
+    let top = record
+        .map_or([&empty, &empty, &empty], |r| [&r.allowed, &r.observed, &r.incomplete_observed]);
+    for ((field, top), cfg) in
+        ["allowed", "observed", "incomplete_observed"].into_iter().zip(top).zip(configuration)
+    {
+        if top != cfg {
+            violations.push(format!(
+                "unstable_features.{field} disagrees with the capture configuration"
+            ));
+        }
+    }
+    if tainted != assumptions.iter().any(|a| a == UNSTABLE_FEATURES_ASSUMPTION) {
+        violations.push(
+            "`unmodeled_unstable_features` taint must match the unstable-features assumption"
+                .into(),
+        );
+    }
 }
 
 fn parse_str_list(arr: &[Value], ptr: &str) -> Result<Vec<String>, String> {
@@ -2516,6 +2704,260 @@ pub(crate) mod tests {
             "deferred": ["complete review-surface reporting"],
             "spec_warnings": []
         })
+    }
+
+    /// `sample_success_json` tainted by `--allow-unstable-feature`, with the
+    /// matching top-level record, capture configuration, and assumption.
+    pub fn unstable_feature_receipt_json(
+        allowed: &[&str],
+        observed: &[&str],
+        incomplete: &[&str],
+    ) -> Value {
+        let mut receipt = sample_success_json();
+        receipt["status"] = json!("tainted_crate_verified");
+        receipt["taint_reasons"] = json!([UNSTABLE_FEATURES_TAINT]);
+        receipt["unstable_features"] =
+            json!({"allowed": allowed, "observed": observed, "incomplete_observed": incomplete});
+        for (key, list) in [
+            ("allowed_unstable_features", allowed),
+            ("observed_unstable_features", observed),
+            ("incomplete_observed_unstable_features", incomplete),
+        ] {
+            if !list.is_empty() {
+                receipt["configuration"][key] = json!(list);
+            }
+        }
+        receipt["assumptions"] =
+            json!(["faithful pinned compiler capture", UNSTABLE_FEATURES_ASSUMPTION]);
+        receipt
+    }
+
+    fn parse_json(receipt: &Value) -> ReceiptEnvelope {
+        parse_and_validate_receipt(&serde_json::to_vec(receipt).unwrap()).unwrap()
+    }
+
+    fn unstable_policy(features: &[&str]) -> PolicyRequirements {
+        PolicyRequirements {
+            allowed_unstable_features: Some(features.iter().map(|f| (*f).to_owned()).collect()),
+            ..PolicyRequirements::default()
+        }
+    }
+
+    #[test]
+    fn validates_unstable_feature_receipts_and_gates_exact_feature_sets() {
+        let receipt = unstable_feature_receipt_json(
+            &["doc_cfg", "specialization"],
+            &["specialization"],
+            &["specialization"],
+        );
+        let env = parse_json(&receipt);
+        assert!(env.invariant_violations.is_empty(), "{:?}", env.invariant_violations);
+        assert!(env.unrecognized_fields.is_empty(), "{:?}", env.unrecognized_fields);
+        let ParsedReceipt::Success(s) = &env.receipt else { panic!("expected success") };
+        assert_eq!(
+            s.unstable_features,
+            Some(UnstableFeaturesRecord {
+                allowed: vec!["doc_cfg".into(), "specialization".into()],
+                observed: vec!["specialization".into()],
+                incomplete_observed: vec!["specialization".into()],
+            })
+        );
+
+        // Bare validation still rejects every tainted receipt.
+        let fails = env.evaluate_policy(&PolicyRequirements::default());
+        assert!(fails.iter().any(|f| f.contains("tainted")), "{fails:?}");
+        // The exact (or a wider) feature set admits the unstable taint.
+        assert!(env.evaluate_policy(&unstable_policy(&["doc_cfg", "specialization"])).is_empty());
+        assert!(
+            env.evaluate_policy(&unstable_policy(&["allocator_api", "doc_cfg", "specialization"]))
+                .is_empty()
+        );
+        // Allowed or observed features outside the gate fail.
+        let fails = env.evaluate_policy(&unstable_policy(&["specialization"]));
+        assert_eq!(fails.len(), 1, "{fails:?}");
+        assert!(fails[0].contains("`doc_cfg` in unstable_features.allowed"), "{fails:?}");
+        let fails = env.evaluate_policy(&unstable_policy(&["doc_cfg"]));
+        assert_eq!(fails.len(), 2, "{fails:?}");
+        // Incomplete features can be forbidden outright.
+        let forbid = PolicyRequirements {
+            forbid_incomplete_unstable_features: true,
+            ..unstable_policy(&["doc_cfg", "specialization"])
+        };
+        let fails = env.evaluate_policy(&forbid);
+        assert_eq!(fails.len(), 1, "{fails:?}");
+        assert!(fails[0].contains("incomplete unstable feature(s) (specialization)"), "{fails:?}");
+
+        // The gate admits only the unstable-feature taint, never another.
+        let mut co_tainted = receipt.clone();
+        co_tainted["taint_reasons"] = json!([UNSTABLE_FEATURES_TAINT, "unsandboxed_elaboration"]);
+        co_tainted["elaboration_sandbox"] = json!("none");
+        co_tainted["deferred"] = json!(["hostile Lean elaborator effects"]);
+        let env = parse_json(&co_tainted);
+        assert!(env.invariant_violations.is_empty(), "{:?}", env.invariant_violations);
+        let fails = env.evaluate_policy(&unstable_policy(&["doc_cfg", "specialization"]));
+        assert_eq!(fails, ["receipt is tainted (unsandboxed_elaboration)"]);
+
+        // Failure receipts never satisfy a feature gate.
+        let failure = parse_json(&json!({
+            "schema_version": 3,
+            "status": "unsupported",
+            "taint_reasons": [UNSTABLE_FEATURES_TAINT],
+            "phase": "capture",
+            "detail": "#![feature(f16)] is unsupported during capture",
+        }));
+        assert!(failure.invariant_violations.is_empty(), "{:?}", failure.invariant_violations);
+        for policy in [
+            PolicyRequirements {
+                check: false,
+                require_untainted: false,
+                ..unstable_policy(&["f16"])
+            },
+            PolicyRequirements {
+                check: false,
+                require_untainted: false,
+                forbid_incomplete_unstable_features: true,
+                ..PolicyRequirements::passive()
+            },
+        ] {
+            assert!(!failure.evaluate_policy(&policy).is_empty(), "{policy:?}");
+        }
+
+        // Flag present, no feature enabled: still tainted, still gateable.
+        let unused = parse_json(&unstable_feature_receipt_json(&["doc_cfg"], &[], &[]));
+        assert!(unused.invariant_violations.is_empty(), "{:?}", unused.invariant_violations);
+        assert!(!unused.evaluate_policy(&PolicyRequirements::default()).is_empty());
+        assert!(unused.evaluate_policy(&unstable_policy(&["doc_cfg"])).is_empty());
+
+        // Untainted receipts pass the gate unchanged, and stabilized features
+        // are recognized without tainting.
+        let mut stabilized = sample_success_json();
+        stabilized["configuration"]["stabilized_features_present"] = json!(["doc_alias"]);
+        let env = parse_json(&stabilized);
+        assert!(env.invariant_violations.is_empty(), "{:?}", env.invariant_violations);
+        assert!(env.unrecognized_fields.is_empty(), "{:?}", env.unrecognized_fields);
+        assert!(env.evaluate_policy(&PolicyRequirements::default()).is_empty());
+        assert!(env.evaluate_policy(&unstable_policy(&["doc_cfg"])).is_empty());
+    }
+
+    #[test]
+    fn rejects_inconsistent_unstable_feature_envelopes() {
+        let valid = unstable_feature_receipt_json(&["doc_cfg", "f16"], &["f16"], &[]);
+        let mutations: Vec<(&str, Box<dyn Fn(&mut Value)>)> = vec![
+            (
+                "taint without record",
+                Box::new(|r| {
+                    r.as_object_mut().unwrap().remove("unstable_features");
+                }),
+            ),
+            (
+                "record without taint",
+                Box::new(|r| {
+                    r["status"] = json!("crate_verified");
+                    r["taint_reasons"] = json!([]);
+                }),
+            ),
+            (
+                "observed not allowed",
+                Box::new(|r| {
+                    r["unstable_features"]["observed"] = json!(["allocator_api"]);
+                    r["configuration"]["observed_unstable_features"] = json!(["allocator_api"]);
+                }),
+            ),
+            (
+                "incomplete not observed",
+                Box::new(|r| {
+                    r["unstable_features"]["incomplete_observed"] = json!(["doc_cfg"]);
+                    r["configuration"]["incomplete_observed_unstable_features"] =
+                        json!(["doc_cfg"]);
+                }),
+            ),
+            (
+                "unsorted allowed",
+                Box::new(|r| {
+                    r["unstable_features"]["allowed"] = json!(["f16", "doc_cfg"]);
+                    r["configuration"]["allowed_unstable_features"] = json!(["f16", "doc_cfg"]);
+                }),
+            ),
+            (
+                "invalid name",
+                Box::new(|r| {
+                    r["unstable_features"]["allowed"] = json!(["*", "f16"]);
+                    r["configuration"]["allowed_unstable_features"] = json!(["*", "f16"]);
+                }),
+            ),
+            (
+                "empty allowed",
+                Box::new(|r| {
+                    r["unstable_features"] =
+                        json!({"allowed": [], "observed": [], "incomplete_observed": []});
+                    r["configuration"].as_object_mut().unwrap().remove("allowed_unstable_features");
+                    r["configuration"]
+                        .as_object_mut()
+                        .unwrap()
+                        .remove("observed_unstable_features");
+                }),
+            ),
+            (
+                "stdlib crate with unstable features",
+                Box::new(|r| {
+                    r["configuration"]["stdlib_crate"] = json!("core");
+                }),
+            ),
+            (
+                "configuration allowed differs",
+                Box::new(|r| {
+                    r["configuration"]["allowed_unstable_features"] = json!(["f16"]);
+                }),
+            ),
+            (
+                "configuration observed missing",
+                Box::new(|r| {
+                    r["configuration"]
+                        .as_object_mut()
+                        .unwrap()
+                        .remove("observed_unstable_features");
+                }),
+            ),
+            (
+                "configuration list empty",
+                Box::new(|r| {
+                    r["configuration"]["incomplete_observed_unstable_features"] = json!([]);
+                }),
+            ),
+            (
+                "missing assumption",
+                Box::new(|r| {
+                    r["assumptions"] = json!(["faithful pinned compiler capture"]);
+                }),
+            ),
+            (
+                "invalid stabilized name",
+                Box::new(|r| {
+                    r["configuration"]["stabilized_features_present"] = json!(["Doc_alias"]);
+                }),
+            ),
+        ];
+        for (label, mutate) in mutations {
+            let mut receipt = valid.clone();
+            mutate(&mut receipt);
+            let env = parse_json(&receipt);
+            assert!(!env.invariant_violations.is_empty(), "{label}: accepted {receipt}");
+        }
+
+        // An untainted receipt may not carry the assumption or capture lists.
+        for key in ["allowed_unstable_features", "observed_unstable_features"] {
+            let mut receipt = sample_success_json();
+            receipt["configuration"][key] = json!(["doc_cfg"]);
+            assert!(!parse_json(&receipt).invariant_violations.is_empty(), "{key}");
+        }
+        let mut receipt = sample_success_json();
+        receipt["assumptions"] =
+            json!(["faithful pinned compiler capture", UNSTABLE_FEATURES_ASSUMPTION]);
+        assert!(!parse_json(&receipt).invariant_violations.is_empty());
+        let mut receipt = sample_success_json();
+        receipt["configuration"]["stdlib_crate"] = json!("core");
+        receipt["configuration"]["stabilized_features_present"] = json!(["doc_alias"]);
+        assert!(!parse_json(&receipt).invariant_violations.is_empty());
     }
 
     #[test]

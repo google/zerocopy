@@ -17,6 +17,7 @@ extern crate rustc_ast;
 extern crate rustc_data_structures;
 extern crate rustc_driver;
 extern crate rustc_expand;
+extern crate rustc_feature;
 extern crate rustc_hir;
 extern crate rustc_infer;
 extern crate rustc_interface;
@@ -184,6 +185,19 @@ pub struct Args {
     /// `anneal-shards.json` plan before publishing any artifacts.
     #[arg(long)]
     verify_shard_plan: Option<PathBuf>,
+    /// Admit an unstable `#![feature(...)]` gate on a normal crate; repeat
+    /// or comma-separate for several. Compiler-internal features (and
+    /// `ergonomic_clones` and `rustc_private`) stay refused. Each admitted
+    /// and enabled feature is recorded in `capture.json`.
+    #[arg(
+        long,
+        action = clap::ArgAction::Append,
+        value_delimiter = ',',
+        value_name = "FEATURE",
+        value_parser = parse_feature_name,
+        conflicts_with = "stdlib_crate"
+    )]
+    allow_unstable_feature: Vec<String>,
 }
 
 fn parse_nonzero_usize(raw: &str) -> Result<usize, String> {
@@ -193,6 +207,18 @@ fn parse_nonzero_usize(raw: &str) -> Result<usize, String> {
         return Err("value must be at least 1".to_owned());
     }
     Ok(n)
+}
+
+/// Accept a `#![feature(...)]` gate name of the form `[a-z][a-z0-9_]*`, which
+/// also keeps `-Zallow-features=` free of comma and wildcard injection.
+fn parse_feature_name(raw: &str) -> Result<String, String> {
+    let mut chars = raw.chars();
+    let valid = chars.next().is_some_and(|c| c.is_ascii_lowercase())
+        && chars.all(|c| c.is_ascii_lowercase() || c.is_ascii_digit() || c == '_');
+    if !valid {
+        return Err(format!("invalid feature name {raw:?}: expected [a-z][a-z0-9_]*"));
+    }
+    Ok(raw.to_owned())
 }
 
 fn parse_instantiation(raw: &str) -> Result<ir::Instantiation, String> {
@@ -303,6 +329,8 @@ fn run(mut args: Args) -> Result<serde_json::Value, Failure> {
     args.source_file.dedup();
     args.cfg.sort();
     args.cfg.dedup();
+    args.allow_unstable_feature.sort();
+    args.allow_unstable_feature.dedup();
     let declared_env = args.resolved_env()?;
     // Resolve explicit or packaged sysroot lexically (preserving virtual
     // symlink-forest layouts such as `<sysroot>/bin/rustc` beside

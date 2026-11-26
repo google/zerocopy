@@ -300,8 +300,15 @@ in which debug assertions are on, or in which overflow checks are on without
   `-Zallow-features=...` at compiler invocation/validation, and post-analysis
   `tcx.features()` inspection covering unstable language features, unstable
   library features, and already-stabilized `ACCEPTED_LANG_FEATURES`. Normal
-  crates admit the empty allowlist (`[]`, zero active features);
-  `--stdlib-crate core` admits only `core`'s version-pinned feature set.
+  crates admit the empty allowlist (`[]`, zero active unstable features)
+  unless the operator names features with `--allow-unstable-feature`, which
+  taints the receipt (`unmodeled_unstable_features`) because `rustc` cannot
+  attribute a crate-level feature's effects to a selected unit;
+  compiler-internal features, `ergonomic_clones`, and `rustc_private` stay
+  refused regardless. Already-stabilized language features activate nothing
+  unstable and are admitted untainted (recorded in
+  `stabilized_features_present`). `--stdlib-crate core` admits only `core`'s
+  version-pinned feature set.
 
 The capture manifest's `configuration` records this profile, and
 `Program.overflowChecks` in `Captured.lean` records the overflow-check

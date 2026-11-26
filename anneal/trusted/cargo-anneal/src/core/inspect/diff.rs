@@ -13,7 +13,7 @@ use std::collections::{BTreeMap, BTreeSet};
 use serde::Serialize;
 
 use crate::core::inspect::schema::{
-    ParsedReceipt, ReceiptEnvelope, ScopeInstantiation, SpecWarningEntry,
+    ParsedReceipt, ReceiptEnvelope, ScopeInstantiation, SpecWarningEntry, UnstableFeaturesRecord,
 };
 
 /// Classifies the severity of a difference between `base` and `head` receipts.
@@ -960,6 +960,53 @@ pub fn diff_receipts(
                 "verified Rust source digests changed",
             );
         }
+        // Added allowed, observed, or incomplete unstable features widen
+        // what verification leaves unmodeled; removals ratchet it down.
+        let no_features = Vec::new();
+        fn lists(r: &UnstableFeaturesRecord) -> [&Vec<String>; 3] {
+            [&r.allowed, &r.observed, &r.incomplete_observed]
+        }
+        let b_lists = b.unstable_features.as_ref().map_or([&no_features; 3], lists);
+        let h_lists = h.unstable_features.as_ref().map_or([&no_features; 3], lists);
+        for ((field, b_list), h_list) in [
+            "unstable_features.allowed",
+            "unstable_features.observed",
+            "unstable_features.incomplete_observed",
+        ]
+        .into_iter()
+        .zip(b_lists)
+        .zip(h_lists)
+        {
+            let b_set: BTreeSet<&str> = b_list.iter().map(String::as_str).collect();
+            let h_set: BTreeSet<&str> = h_list.iter().map(String::as_str).collect();
+            if b_set != h_set {
+                let added = h_set.difference(&b_set).next().is_some();
+                push(
+                    &mut changes,
+                    if added { DiffTier::TierA } else { DiffTier::TierB },
+                    field,
+                    b_list.join(","),
+                    h_list.join(","),
+                    if added {
+                        "head admits or enables additional unmodeled unstable feature(s)"
+                    } else {
+                        "head retired unmodeled unstable feature(s)"
+                    },
+                );
+            }
+        }
+        // Stabilized features activate nothing unstable; semantic changes from
+        // a stabilization belong to the compiler identity, not this list.
+        if b.stabilized_features_present != h.stabilized_features_present {
+            push(
+                &mut changes,
+                DiffTier::TierB,
+                "configuration.stabilized_features_present",
+                b.stabilized_features_present.join(","),
+                h.stabilized_features_present.join(","),
+                "already-stabilized #![feature] attributes changed",
+            );
+        }
         if b.stdlib_crate != h.stdlib_crate {
             push(
                 &mut changes,
@@ -1311,6 +1358,63 @@ mod tests {
 
     use super::*;
     use crate::core::inspect::schema::{parse_and_validate_receipt, tests::sample_success_json};
+
+    #[test]
+    fn classifies_unstable_feature_additions_as_tier_a_and_removals_as_tier_b() {
+        use crate::core::inspect::schema::tests::unstable_feature_receipt_json;
+        let parse = |receipt: &serde_json::Value| {
+            parse_and_validate_receipt(&serde_json::to_vec(receipt).unwrap()).unwrap()
+        };
+        let tier = |diff: &ReceiptDiff, field: &str| {
+            diff.changes.iter().find(|c| c.field == field).map(|c| c.tier)
+        };
+        let clean = parse(&sample_success_json());
+        let one = parse(&unstable_feature_receipt_json(&["doc_cfg"], &["doc_cfg"], &[]));
+        let wider = parse(&unstable_feature_receipt_json(
+            &["doc_cfg", "specialization"],
+            &["doc_cfg", "specialization"],
+            &["specialization"],
+        ));
+        let unused = parse(&unstable_feature_receipt_json(&["doc_cfg"], &[], &[]));
+
+        // Untainted -> tainted: the taint and every new feature regress.
+        let diff = diff_receipts(&clean, &one, false);
+        assert!(diff.has_regressions);
+        assert_eq!(tier(&diff, "taint_reasons"), Some(DiffTier::TierA));
+        assert_eq!(tier(&diff, "unstable_features.allowed"), Some(DiffTier::TierA));
+        assert_eq!(tier(&diff, "unstable_features.observed"), Some(DiffTier::TierA));
+        assert_eq!(tier(&diff, "unstable_features.incomplete_observed"), None);
+
+        // Widening the allowed, observed, or incomplete sets regresses.
+        let diff = diff_receipts(&one, &wider, false);
+        assert!(diff.has_regressions);
+        for field in [
+            "unstable_features.allowed",
+            "unstable_features.observed",
+            "unstable_features.incomplete_observed",
+        ] {
+            assert_eq!(tier(&diff, field), Some(DiffTier::TierA), "{field}");
+        }
+
+        // Ratcheting down (e.g. a feature stabilized upstream) does not.
+        let diff = diff_receipts(&wider, &unused, false);
+        assert!(!diff.has_regressions, "{:?}", diff.changes);
+        for field in [
+            "unstable_features.allowed",
+            "unstable_features.observed",
+            "unstable_features.incomplete_observed",
+        ] {
+            assert_eq!(tier(&diff, field), Some(DiffTier::TierB), "{field}");
+        }
+
+        // Stabilized-feature changes are informational only.
+        let mut stabilized = sample_success_json();
+        stabilized["configuration"]["stabilized_features_present"] =
+            serde_json::json!(["doc_alias"]);
+        let diff = diff_receipts(&clean, &parse(&stabilized), false);
+        assert!(!diff.has_regressions, "{:?}", diff.changes);
+        assert_eq!(tier(&diff, "configuration.stabilized_features_present"), Some(DiffTier::TierB));
+    }
 
     #[test]
     fn classifies_tier_a_regressions_and_tier_b_spec_edits() {

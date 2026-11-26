@@ -965,6 +965,7 @@ fn format_containment_label(sandbox: &str, ansi_color: bool) -> String {
 fn taint_flag_hint(reason: &str) -> &'static str {
     match reason {
         "sorry_in_proof" => "--allow-sorry-in-proof",
+        "unmodeled_unstable_features" => "--allow-unstable-feature",
         "unpinned_lean" => "--allow-unpinned-lean",
         "unsandboxed_elaboration" => "--allow-unsandboxed-elaboration",
         _ => "--allow-*",
@@ -1114,6 +1115,28 @@ pub fn render_success_card(receipt: &Value, opts: CardRenderOptions<'_>) -> Stri
             }
             "unsandboxed_elaboration" => {
                 let _ = writeln!(out, "  ! TAINT    : {taint} ({flag}) -- active sandbox `none`");
+            }
+            "unmodeled_unstable_features" => {
+                let list = |key: &str| -> Vec<SanitizedInline> {
+                    receipt["unstable_features"][key]
+                        .as_array()
+                        .map(|arr| {
+                            arr.iter().filter_map(Value::as_str).map(SanitizedInline::new).collect()
+                        })
+                        .unwrap_or_default()
+                };
+                let (allowed, observed, incomplete) =
+                    (list("allowed"), list("observed"), list("incomplete_observed"));
+                let _ = writeln!(
+                    out,
+                    "  ! TAINT    : {taint} ({flag}) -- allowed: {}, observed: {}, incomplete: {}",
+                    allowed.len(),
+                    observed.len(),
+                    incomplete.len()
+                );
+                for feature in &incomplete {
+                    let _ = writeln!(out, "               - incomplete: `{feature}`");
+                }
             }
             "unpinned_lean" => {
                 let observed =
@@ -1913,6 +1936,29 @@ mod tests {
                 "{taint_card}"
             );
         }
+
+        // `--allow-unstable-feature` taint lists feature counts and names
+        // every incomplete feature.
+        let mut unstable_rec = sample_success_receipt(
+            json!({"kind": "crate"}),
+            json!(["unmodeled_unstable_features"]),
+            json!([]),
+        );
+        unstable_rec["unstable_features"] = json!({
+            "allowed": ["doc_cfg", "specialization"],
+            "observed": ["specialization"],
+            "incomplete_observed": ["specialization"],
+        });
+        let unstable_card = render_success_card(&unstable_rec, color_opts);
+        assert!(unstable_card.contains("[TAINTED]"), "{unstable_card}");
+        assert!(
+            unstable_card.contains(
+                "! TAINT    : unmodeled_unstable_features (--allow-unstable-feature) -- \
+                 allowed: 2, observed: 1, incomplete: 1"
+            ),
+            "{unstable_card}"
+        );
+        assert!(unstable_card.contains("- incomplete: `specialization`"), "{unstable_card}");
 
         // Tier 1: [FAIL] (Parses structured capture envelope, Lean JSON, hints)
         let fail_detail = r#"{"status":"unsupported","unsupported":[{"def_id":1,"path":"take_ref","reason":"unsupported type: &'{erased} u64"}]}"#;

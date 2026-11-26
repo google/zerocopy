@@ -686,6 +686,17 @@ fn render_human(
             }
         };
         let _ = writeln!(out, "  1. taint:       {taint_str}");
+        if let ParsedReceipt::Success(s) = &env.receipt
+            && let Some(features) = &s.unstable_features
+        {
+            let _ = writeln!(
+                out,
+                "     unstable features: allowed=[{}], observed=[{}], incomplete=[{}]",
+                sanitize_inline_string(&features.allowed.join(", ")),
+                sanitize_inline_string(&features.observed.join(", ")),
+                sanitize_inline_string(&features.incomplete_observed.join(", "))
+            );
+        }
         let _ = writeln!(out, "  2. scope:       {scope_str}");
         let _ = writeln!(out, "  3. containment: {sandbox_str}");
         let _ = writeln!(out, "  4. replay:      {replay_str}");

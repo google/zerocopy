@@ -136,6 +136,15 @@ pub fn is_lean_ident(s: &str) -> bool {
         && chars.all(|c| c.is_ascii_alphanumeric() || c == '_')
 }
 
+/// Return `true` if `s` is a `#![feature(...)]` gate name of the form
+/// `[a-z][a-z0-9_]*` (no wildcards, separators, or `-Zallow-features`
+/// delimiters).
+pub fn is_feature_name(s: &str) -> bool {
+    let mut chars = s.chars();
+    chars.next().is_some_and(|c| c.is_ascii_lowercase())
+        && chars.all(|c| c.is_ascii_lowercase() || c.is_ascii_digit() || c == '_')
+}
+
 /// Return `true` if `rel` consists exclusively of normal path components (no
 /// `/`, `.`, or `..`).
 pub fn is_clean_relative_path(rel: &str) -> bool {

@@ -63,15 +63,6 @@ pub fn id(x: usize) -> usize {
     x
 }
 
-// === case: disallowed_accepted_feature_doc_alias ===
-//@ fail(capture): "#![feature(doc_alias)] is unsupported during capture"
-
-#![feature(doc_alias)]
-
-pub fn id(x: usize) -> usize {
-    x
-}
-
 // === case: primitive_shadowing_struct_u8 ===
 //@ fail(capture): "u8: whole-crate obligation is unsupported: Struct"
 

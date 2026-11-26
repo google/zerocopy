@@ -179,10 +179,12 @@ copy Door-1-verified `.olean` files to `<dir>/lean-lib/`, omitting `proof`
 `.olean`s on `proof_failed` exit `1` and exporting nothing on `tool_failed` exit
 `2`). Receipt Schema v3 (`"schema_version": 3`) enforces a Uniform Flag-Driven
 Taint Law across `--allow-unpinned-lean` (records `unpinned_lean`),
-`--allow-unsandboxed-elaboration` (`"elaboration_sandbox": "none"`), and
+`--allow-unsandboxed-elaboration` (`"elaboration_sandbox": "none"`),
 `--allow-sorry-in-proof` (records `sorry_declarations` in `proof` modules
-only): each flag prints `TAINTED` on stderr and appends `"unpinned_lean"`,
-`"unsandboxed_elaboration"`, or `"sorry_in_proof"` to `taint_reasons`.
+only), and `--allow-unstable-feature <NAME>` (records `unstable_features`):
+each flag prints `TAINTED` on stderr and appends `"unpinned_lean"`,
+`"unsandboxed_elaboration"`, `"sorry_in_proof"`, or
+`"unmodeled_unstable_features"` to `taint_reasons`.
 
 On exit `0` (`selected_unit_verified` / `crate_verified`, or `tainted_*` when
 `taint_reasons` is non-empty), inspect `status`, `taint_reasons`,

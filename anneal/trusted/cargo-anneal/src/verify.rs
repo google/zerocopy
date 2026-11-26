@@ -62,12 +62,13 @@ const PINNED_CAPTURE_SCHEMA_VERSION: u32 = 5;
 const PINNED_RUSTC_COMMIT: &str = "f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1";
 const RECEIPT_SCHEMA_VERSION: u32 = 3;
 
-/// Closed 3-element set of verification taint atoms projected onto Receipt
+/// Closed 4-element set of verification taint atoms projected onto Receipt
 /// Schema v3 (`taint_reasons`), sorted lexicographically by wire spelling.
 /// Variant declaration order must match lexicographical `as_str()` order.
 #[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord)]
 enum VerificationTaint {
     SorryInProof,
+    UnmodeledUnstableFeatures,
     UnpinnedLean,
     UnsandboxedElaboration,
 }
@@ -76,6 +77,7 @@ impl VerificationTaint {
     const fn as_str(self) -> &'static str {
         match self {
             Self::SorryInProof => "sorry_in_proof",
+            Self::UnmodeledUnstableFeatures => "unmodeled_unstable_features",
             Self::UnpinnedLean => "unpinned_lean",
             Self::UnsandboxedElaboration => "unsandboxed_elaboration",
         }
@@ -86,6 +88,11 @@ impl VerificationTaint {
             Self::SorryInProof => {
                 "WARNING: allowing `sorry` in proof modules (--allow-sorry-in-proof); \
                  verification result is TAINTED"
+            }
+            Self::UnmodeledUnstableFeatures => {
+                "WARNING: allowing unstable rustc features whose semantics Anneal \
+                 does not model (--allow-unstable-feature); verification result is \
+                 TAINTED"
             }
             Self::UnpinnedLean => {
                 "WARNING: running with unpinned Lean (--allow-unpinned-lean); \
@@ -106,6 +113,9 @@ fn active_taints(args: &VerifyArgs) -> BTreeSet<VerificationTaint> {
     let mut taints = BTreeSet::new();
     if args.allow_sorry_in_proof {
         taints.insert(VerificationTaint::SorryInProof);
+    }
+    if !args.allow_unstable_feature.is_empty() {
+        taints.insert(VerificationTaint::UnmodeledUnstableFeatures);
     }
     if args.allow_unpinned_lean {
         taints.insert(VerificationTaint::UnpinnedLean);
@@ -312,6 +322,18 @@ pub struct VerifyArgs {
     /// (never specifications, model, capture, or expected; taints receipt).
     #[arg(long, global = true)]
     allow_sorry_in_proof: bool,
+    /// Admit an unstable `#![feature(...)]` gate on the target crate; repeat
+    /// or comma-separate for several (never wildcards). Taints the receipt
+    /// even when the crate enables none of them. Compiler-internal features,
+    /// `ergonomic_clones`, and `rustc_private` stay refused.
+    #[arg(
+        long,
+        global = true,
+        value_name = "FEATURE",
+        value_delimiter = ',',
+        value_parser = parse_unstable_feature_arg
+    )]
+    allow_unstable_feature: Vec<String>,
     /// Explicit Lean memory limit in MiB (`-M<MB>`; `resolve-imports` enforces
     /// a 4096 MiB floor).
     #[arg(
@@ -587,6 +609,74 @@ fn parse_module_file_arg(raw: &OsStr) -> std::result::Result<ModuleFileArg, Stri
     Ok(ModuleFileArg { module: module.to_owned(), path })
 }
 
+/// Accept a `#![feature(...)]` gate name of the form `[a-z][a-z0-9_]*`.
+fn parse_unstable_feature_arg(raw: &str) -> std::result::Result<String, String> {
+    if !crate::core::identifiers::is_feature_name(raw) {
+        return Err(format!("invalid feature name {raw:?}: expected [a-z][a-z0-9_]*"));
+    }
+    Ok(raw.to_owned())
+}
+
+/// The operator's `--allow-unstable-feature` names, sorted and deduplicated.
+fn allowed_unstable_features(args: &VerifyArgs) -> Vec<&str> {
+    let names: BTreeSet<&str> = args.allow_unstable_feature.iter().map(String::as_str).collect();
+    names.into_iter().collect()
+}
+
+/// Unstable-feature evidence that capture recorded for a normal crate.
+#[derive(Debug, Default, PartialEq, Eq)]
+struct CapturedUnstableFeatures {
+    observed: Vec<String>,
+    incomplete_observed: Vec<String>,
+}
+
+/// Authenticate the feature lists in capture's `configuration` against the
+/// operator's sorted `--allow-unstable-feature` list: capture must record
+/// exactly that list, report only allowed features as enabled, and report
+/// only enabled features as incomplete. Capture omits each list when empty.
+fn check_captured_unstable_features(
+    configuration: &Value,
+    allowed: &[&str],
+) -> std::result::Result<CapturedUnstableFeatures, String> {
+    let list = |key: &str| -> std::result::Result<Vec<String>, String> {
+        let Some(value) = configuration.get(key) else {
+            return Ok(Vec::new());
+        };
+        let names: Option<Vec<String>> = value
+            .as_array()
+            .filter(|items| !items.is_empty())
+            .and_then(|items| items.iter().map(|item| item.as_str().map(str::to_owned)).collect());
+        match names {
+            Some(names)
+                if names.windows(2).all(|pair| pair[0] < pair[1])
+                    && names.iter().all(|name| crate::core::identifiers::is_feature_name(name)) =>
+            {
+                Ok(names)
+            }
+            _ => Err(format!(
+                "capture configuration.{key} must be a non-empty, strictly sorted array of \
+                 feature names"
+            )),
+        }
+    };
+    let recorded = list("allowed_unstable_features")?;
+    if !recorded.iter().map(String::as_str).eq(allowed.iter().copied()) {
+        return Err(
+            "capture allowed_unstable_features differs from --allow-unstable-feature".into()
+        );
+    }
+    let observed = list("observed_unstable_features")?;
+    if let Some(feature) = observed.iter().find(|feature| !allowed.contains(&feature.as_str())) {
+        return Err(format!("capture observed unstable feature `{feature}` that was not allowed"));
+    }
+    let incomplete_observed = list("incomplete_observed_unstable_features")?;
+    if let Some(feature) = incomplete_observed.iter().find(|feature| !observed.contains(feature)) {
+        return Err(format!("capture reported incomplete feature `{feature}` it did not observe"));
+    }
+    list("stabilized_features_present")?;
+    Ok(CapturedUnstableFeatures { observed, incomplete_observed })
+}
+
 fn parse_env_arg(raw: &str) -> std::result::Result<(String, String), String> {
     let Some((key, value)) = raw.split_once('=') else {
         return Err(format!("expected KEY=VALUE environment binding, got {raw:?}"));
@@ -656,6 +746,12 @@ impl VerifyArgs {
                      --overflow-checks, parent --select, parent --instantiate, --features, \
                      --all-features, and --no-default-features cannot be used with the `rustc` \
                      subcommand",
+                ));
+            }
+            if rustc.stdlib_crate.is_some() && !self.allow_unstable_feature.is_empty() {
+                return Err(cmd.error(
+                    ErrorKind::ArgumentConflict,
+                    "--allow-unstable-feature cannot be used with --stdlib-crate",
                 ));
             }
             if rustc.crate_name.is_empty() {
@@ -2534,6 +2630,7 @@ struct CaptureOutcome {
     capture_ms: u128,
     manifest: CaptureReceipt,
     shards: Option<CaptureShardsOutcome>,
+    unstable_features: CapturedUnstableFeatures,
 }
 
 fn stage_request_rust_inputs(
@@ -2575,6 +2672,7 @@ fn run_capture_process(
     work: &Path,
     shard_config: ShardConfig,
     verify_shard_plan_staged: Option<&Path>,
+    allowed_unstable_features: &[&str],
     mut write_compiler_stderr: impl FnMut(&[u8]),
 ) -> Result<CaptureOutcome> {
     let capture_tool_path = tools.capture.clone();
@@ -2669,6 +2767,9 @@ fn run_capture_process(
     if let Some(stdlib_crate) = compilation.stdlib_crate {
         command.args(["--stdlib-crate", stdlib_crate.as_str()]);
     }
+    for feature in allowed_unstable_features {
+        command.arg(format!("--allow-unstable-feature={feature}"));
+    }
     command
         .arg("--shard-min-bodies")
         .arg(shard_config.shard_min_bodies.to_string())
@@ -2737,6 +2838,9 @@ fn run_capture_process(
             "capture differs from the requested compilation or scope",
         ));
     }
+    let unstable_features =
+        check_captured_unstable_features(&manifest.configuration, allowed_unstable_features)
+            .map_err(|detail| error("tool_failed", "capture", detail))?;
     // Every observed compiler read must match a staged, declared input.
     // Unused declared files remain in the receipt identity; they need not
     // become compiler reads merely because the request staged them.
@@ -2861,6 +2965,7 @@ fn run_capture_process(
         capture_ms,
         manifest,
         shards,
+        unstable_features,
     })
 }
 
@@ -2900,6 +3005,13 @@ fn run<Out: std::io::Write + Send, ErrOut: std::io::Write + Send>(
     }
     if request.schema_version != 1 || request.compilation.source_files.is_empty() {
         return Err(error("unsupported", "request", "unsupported or empty compilation request"));
+    }
+    if request.compilation.stdlib_crate.is_some() && !args.allow_unstable_feature.is_empty() {
+        return Err(error(
+            "tool_failed",
+            "request",
+            "--allow-unstable-feature cannot be used with a stdlib_crate request",
+        ));
     }
     if request.compilation.stdlib_crate.is_some()
         && !matches!(request.scope, Scope::SelectedUnit { .. })
@@ -3002,6 +3114,7 @@ fn run<Out: std::io::Write + Send, ErrOut: std::io::Write + Send>(
         crate_name: SanitizedInline::new(&request.compilation.crate_name),
     });
     let capture_dir = work.join("capture");
+    let allowed_features = allowed_unstable_features(args);
     let capture_outcome = run_capture_process(
         &tools,
         &request.compilation,
@@ -3012,6 +3125,7 @@ fn run<Out: std::io::Write + Send, ErrOut: std::io::Write + Send>(
         work,
         shard_config,
         expected_shard_plan.as_ref().map(|(_, path)| path.as_path()),
+        &allowed_features,
         |stderr| session.write_compiler_stderr(stderr),
     )?;
     if let Some((ref expected_plan, _)) = expected_shard_plan {
@@ -3028,6 +3142,7 @@ fn run<Out: std::io::Write + Send, ErrOut: std::io::Write + Send>(
     }
     let capture_sha256 = capture_outcome.capture_sha256;
     let capture_binary_sha256 = capture_outcome.capture_binary_sha256;
+    let unstable_features = capture_outcome.unstable_features;
     let capture = capture_outcome.capture_canon;
     let capture_tool_path = capture_outcome.capture_tool_path;
     let capture_ms = capture_outcome.capture_ms;
@@ -3471,6 +3586,9 @@ fn run<Out: std::io::Write + Send, ErrOut: std::io::Write + Send>(
     }
     assumptions.push(lean_assumption);
     assumptions.push("intact compiler and verification environment");
+    if !allowed_features.is_empty() {
+        assumptions.push(crate::core::inspect::schema::UNSTABLE_FEATURES_ASSUMPTION);
+    }
     if active_sandbox == ActiveSandbox::LinuxLandlockSeccomp {
         assumptions.push(
             "Tier 2 Landlock + seccomp containment shares host mount and PID namespaces \
@@ -3536,6 +3654,16 @@ fn run<Out: std::io::Write + Send, ErrOut: std::io::Write + Send>(
                 "foundation_modules": required_field("foundationModules")?,
                 "sysroot_modules_sha256": required_field("sysrootModulesSha256")?,
                 "admitted_sysroot_module_count": required_field("admittedSysrootModuleCount")?,
+            }),
+        );
+    }
+    if !allowed_features.is_empty() {
+        result.as_object_mut().unwrap().insert(
+            "unstable_features".into(),
+            json!({
+                "allowed": allowed_features,
+                "observed": unstable_features.observed,
+                "incomplete_observed": unstable_features.incomplete_observed,
             }),
         );
     }
@@ -4146,6 +4274,16 @@ pub fn main(args: VerifyArgs, color: ColorChoice, quiet: bool, verbose: bool) ->
                     2,
                 );
             }
+            if let Some(incomplete) =
+                result.pointer("/unstable_features/incomplete_observed").and_then(Value::as_array)
+            {
+                for feature in incomplete.iter().filter_map(Value::as_str) {
+                    session.write_taint_banner(&format!(
+                        "WARNING: the crate enables `{feature}`, which rustc marks incomplete \
+                         (likely unsound or crash-prone)"
+                    ));
+                }
+            }
             if let Some(warnings) = result.get("spec_warnings").and_then(Value::as_array) {
                 for warning in warnings {
                     let code = SanitizedInline::new(
@@ -4448,6 +4586,7 @@ fn run_shard_plan(args: &ShardPlanArgs, work: &Path) -> Result<ShardPlan> {
         work,
         shard_config,
         None,
+        &[],
         |stderr| eprint!("{}", String::from_utf8_lossy(stderr)),
     )?;
     for (path, expected) in &originals {
@@ -5095,9 +5234,10 @@ mod tests {
     }
 
     #[test]
-    fn taint_monoid_projects_all_eight_flag_subsets_canonically() {
+    fn taint_monoid_projects_all_sixteen_flag_subsets_canonically() {
         let all = [
             VerificationTaint::SorryInProof,
+            VerificationTaint::UnmodeledUnstableFeatures,
             VerificationTaint::UnpinnedLean,
             VerificationTaint::UnsandboxedElaboration,
         ];
@@ -5126,6 +5266,7 @@ mod tests {
             allow_unpinned_lean: false,
             allow_unsandboxed_elaboration: false,
             allow_sorry_in_proof: false,
+            allow_unstable_feature: Vec::new(),
             lean_memory_mb: None,
             no_cache: false,
             no_rebuild_bundled: false,
@@ -5139,13 +5280,18 @@ mod tests {
             instantiations: BTreeSet::new(),
         };
 
-        for sorry in [false, true] {
+        for (sorry, unstable) in [(false, false), (false, true), (true, false), (true, true)] {
             for unpinned in [false, true] {
                 for unsandboxed in [false, true] {
                     let args = VerifyArgs {
                         format: VerifyFormat::Human,
                         receipt_out: None,
                         allow_sorry_in_proof: sorry,
+                        allow_unstable_feature: if unstable {
+                            vec!["doc_cfg".to_owned()]
+                        } else {
+                            Vec::new()
+                        },
                         allow_unpinned_lean: unpinned,
                         allow_unsandboxed_elaboration: unsandboxed,
                         request: base.request.clone(),
@@ -5176,6 +5322,9 @@ mod tests {
                     if sorry {
                         expected.push("sorry_in_proof");
                     }
+                    if unstable {
+                        expected.push("unmodeled_unstable_features");
+                    }
                     if unpinned {
                         expected.push("unpinned_lean");
                     }
@@ -5198,6 +5347,87 @@ mod tests {
                     );
                 }
             }
+        }
+    }
+
+    #[test]
+    fn unstable_feature_args_are_strict_identifiers() {
+        for valid in ["doc_cfg", "f16", "a", "allocator_api"] {
+            assert_eq!(parse_unstable_feature_arg(valid).unwrap(), valid);
+        }
+        for invalid in ["", "*", "Doc_cfg", "_doc", "1abc", "doc-cfg", "doc cfg", "a,b", "a=b"] {
+            assert!(parse_unstable_feature_arg(invalid).is_err(), "{invalid:?}");
+        }
+    }
+
+    #[test]
+    fn captured_unstable_features_must_match_operator_allowlist() {
+        // Default captures omit every feature list.
+        assert_eq!(
+            check_captured_unstable_features(&json!({"crate_name": "x"}), &[]).unwrap(),
+            CapturedUnstableFeatures::default()
+        );
+        // A stabilized-only crate stays untainted and needs no allowlist.
+        assert!(
+            check_captured_unstable_features(
+                &json!({"stabilized_features_present": ["doc_alias"]}),
+                &[]
+            )
+            .is_ok()
+        );
+        let allowed = ["allocator_api", "generic_const_exprs"];
+        let full = json!({
+            "allowed_unstable_features": allowed,
+            "observed_unstable_features": ["generic_const_exprs"],
+            "incomplete_observed_unstable_features": ["generic_const_exprs"],
+        });
+        assert_eq!(
+            check_captured_unstable_features(&full, &allowed).unwrap(),
+            CapturedUnstableFeatures {
+                observed: vec!["generic_const_exprs".to_owned()],
+                incomplete_observed: vec!["generic_const_exprs".to_owned()],
+            }
+        );
+        // Flag present but no feature enabled by the crate.
+        let unused = json!({"allowed_unstable_features": ["doc_cfg"]});
+        assert_eq!(
+            check_captured_unstable_features(&unused, &["doc_cfg"]).unwrap(),
+            CapturedUnstableFeatures::default()
+        );
+
+        for (configuration, allowed) in [
+            // Capture ignored or widened the operator's allowlist.
+            (json!({}), &["doc_cfg"][..]),
+            (json!({"allowed_unstable_features": ["doc_cfg"]}), &[][..]),
+            (json!({"allowed_unstable_features": ["doc_cfg", "f16"]}), &["doc_cfg"][..]),
+            // Observed outside allowed; incomplete outside observed.
+            (
+                json!({
+                    "allowed_unstable_features": ["doc_cfg"],
+                    "observed_unstable_features": ["f16"],
+                }),
+                &["doc_cfg"][..],
+            ),
+            (
+                json!({
+                    "allowed_unstable_features": ["doc_cfg"],
+                    "incomplete_observed_unstable_features": ["doc_cfg"],
+                }),
+                &["doc_cfg"][..],
+            ),
+            // Malformed lists: empty, unsorted, duplicated, or non-strings.
+            (json!({"allowed_unstable_features": []}), &[][..]),
+            (json!({"allowed_unstable_features": ["f16", "doc_cfg"]}), &["doc_cfg", "f16"][..]),
+            (json!({"allowed_unstable_features": ["f16", "f16"]}), &["f16"][..]),
+            (json!({"allowed_unstable_features": [1]}), &[][..]),
+            (json!({"stabilized_features_present": "doc_alias"}), &[][..]),
+            (json!({"stabilized_features_present": ["Doc_alias"]}), &[][..]),
+            (json!({"stabilized_features_present": [""]}), &[][..]),
+        ] {
+            assert!(
+                check_captured_unstable_features(&configuration, allowed).is_err(),
+                "{configuration} with {allowed:?}"
+            );
         }
     }
 
@@ -5579,6 +5809,7 @@ mod tests {
             allow_unpinned_lean: false,
             allow_unsandboxed_elaboration: false,
             allow_sorry_in_proof: false,
+            allow_unstable_feature: Vec::new(),
             lean_memory_mb: None,
             no_cache: false,
             no_rebuild_bundled: false,
@@ -5626,6 +5857,7 @@ mod tests {
                 allow_unpinned_lean: false,
                 allow_unsandboxed_elaboration: false,
                 allow_sorry_in_proof: false,
+                allow_unstable_feature: Vec::new(),
                 lean_memory_mb: None,
                 no_cache: false,
                 no_rebuild_bundled: false,
@@ -6415,6 +6647,7 @@ mod tests {
             lean_memory_mb: None,
             allow_unsandboxed_elaboration: false,
             allow_sorry_in_proof: false,
+            allow_unstable_feature: Vec::new(),
             allow_unpinned_lean: false,
             shard: ShardArgs::default(),
             verify_shard_plan: None,
