@@ -100,6 +100,21 @@ Note: `Anneal.MirTotal.Ops`, `Anneal.MirTotal.StepCore`, and
 governs which `Anneal.*` modules `cargo anneal verify` bundles into standalone
 target proofs.
 
+**When and how to use `Anneal.LinearArith` (and `ci/farkas_cert_gen.py`):**
+Reach for `Anneal.LinearArith` (bundled in both `cargo-anneal` and
+`google/zerocopy`) when proving multi-variable linear `Nat`/`Int` inequalities
+or parity/alignment floor cuts inside Pass-1 (`prelude` + `Init.*`-only)
+proofs where `omega` is unavailable or kernel reduction stalls (use
+`Anneal.BitVec`/`Anneal.BitTrieLrat` for bitwise/SAT problems, or `rfl` for
+closed constants). Directly write a `NatCutGoal`/`IntCutGoal` + `List CutStep`
+proof checked by `checkNatCutGoal_sound`/`checkIntCutGoal_sound` with `rfl`.
+In a `google/zerocopy` checkout (not installed with standalone `cargo-anneal`),
+run `python3 anneal/ci/farkas_cert_gen.py` with `--domain <nat|int>`,
+`--hyp "..."`, and `--goal "..."` (see `anneal/docs/farkas-cert-gen.md`, or
+fetch the script from `https://github.com/google/zerocopy`) to emit a
+balanced certificate bounded within Lean's default `maxRecDepth=512` and
+`--max-nodes` search budget.
+
 **Kernel-recursion & `whnf` guardrails (avoid `#4292` / `#4295` traps):**
 - **Use `Anneal.AiPcc.MirPcc` (`AutoProve`) first for acyclic scalar/signed
   safety:** `AutoProve.bodyVerified_of_autoVerifyAcyclic rfl rfl rfl` discharges
