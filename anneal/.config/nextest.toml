@@ -39,6 +39,13 @@ filter = 'binary(aipcc_e2e)'
 threads-required = 2
 slow-timeout = { period = "60s", terminate-after = 4 }
 
+# `kernel_physics` compiles `trusted/lean` and the bundled theory with four
+# single-threaded Lean workers before running its census.
+[[profile.default.overrides]]
+filter = 'binary(kernel_physics)'
+threads-required = 4
+slow-timeout = { period = "60s", terminate-after = 4 }
+
 [[profile.default.overrides]]
 filter = 'binary(itree_differential)'
 threads-required = 2
