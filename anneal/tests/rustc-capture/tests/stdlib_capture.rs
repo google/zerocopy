@@ -111,12 +111,25 @@ fn assert_refused(output: &Output, output_dir: &Path, status_kind: &str, needle:
 fn stdlib_capability_is_opt_in_and_scoped_to_a_self_contained_named_crate() {
     let mut fixture = Fixture::new(NO_CORE);
 
-    // Without the capability, crate-local language items stay refused, even
+    // Without the capability, `#![feature(no_core, lang_items)]` is refused
+    // before macro expansion by the closed positive feature allowlist, even
     // for a crate named `core`.
     for name in ["core", "session"] {
         let (output, dir) = fixture.capture(name, &["--select=selected"]);
-        assert_refused(&output, &dir, "unsupported", "crate-local language item");
+        assert_refused(&output, &dir, "unsupported", "lang_items, no_core");
     }
+
+    // Even without any `#![feature(...)]` attributes, a normal library crate
+    // defining a stable crate-local language item (`#[panic_handler]`) still
+    // hits the post-analysis crate-local language item guard.
+    let mut panic_lib = Fixture::new(
+        "#![no_std]\n\
+         #[panic_handler]\n\
+         fn panic(_: &core::panic::PanicInfo) -> ! { loop {} }\n\
+         pub fn selected(x: u8) -> u8 { x }\n",
+    );
+    let (output, dir) = panic_lib.capture("session", &["--select=selected"]);
+    assert_refused(&output, &dir, "unsupported", "crate-local language item");
 
     // The capability admits them for the exact crate it names and records
     // itself in the manifest.
@@ -125,6 +138,19 @@ fn stdlib_capability_is_opt_in_and_scoped_to_a_self_contained_named_crate() {
     let captured = manifest(&dir);
     assert_eq!(captured["configuration"]["stdlib_crate"], "core");
     assert_eq!(captured["selected"][0]["path"], "selected");
+
+    // Even under `--stdlib-crate=core`, features outside the version-pinned
+    // `core` allowlist (such as `ergonomic_clones` and `custom_mir`) stay
+    // refused fail-closed.
+    for disallowed in ["ergonomic_clones", "custom_mir"] {
+        let mut bad_core = Fixture::new(&format!("#![feature({disallowed})]\n{NO_CORE}"));
+        let (output, dir) = bad_core.capture("core", &["--select=selected", "--stdlib-crate=core"]);
+        assert_refused(&output, &dir, "unsupported", disallowed);
+        assert!(
+            String::from_utf8_lossy(&output.stdout).contains("--stdlib-crate core"),
+            "{output:?}"
+        );
+    }
 
     // Default captures keep their manifest shape: no `stdlib_crate` key.
     let mut plain = Fixture::new("pub fn selected(x: u8) -> u8 { x }\n");
@@ -185,16 +211,23 @@ fn stdlib_capability_validates_a_local_ordering_lang_item_shape() {
 #[test]
 fn stdlib_capability_keeps_the_declared_source_namespace_closed() {
     // An undeclared `..` module outside the declared tree stays a hard
-    // refusal under the capability, as it is without it.
+    // refusal under both normal captures and `--stdlib-crate=core`.
+    let mut plain = Fixture::new(
+        "#[path = \"../outside/m.rs\"]\npub mod outside;\npub fn selected(x: u8) -> u8 { x }\n",
+    );
+    let plain_outside = plain.directory.path().canonicalize().unwrap().join("outside/m.rs");
+    std::fs::create_dir_all(plain_outside.parent().unwrap()).unwrap();
+    std::fs::write(&plain_outside, "pub fn other() {}\n").unwrap();
+    let (output, dir) = plain.capture("core", &["--select=selected"]);
+    assert_refused(&output, &dir, "unsupported", "undeclared compiler read");
+
     let mut fixture =
         Fixture::new(&format!("{NO_CORE}#[path = \"../outside/m.rs\"]\npub mod outside;\n"));
     let outside = fixture.directory.path().canonicalize().unwrap().join("outside/m.rs");
     std::fs::create_dir_all(outside.parent().unwrap()).unwrap();
     std::fs::write(&outside, "pub fn other() {}\n").unwrap();
-    for extra in [&["--select=selected"][..], &["--select=selected", "--stdlib-crate=core"]] {
-        let (output, dir) = fixture.capture("core", extra);
-        assert_refused(&output, &dir, "unsupported", "undeclared compiler read");
-    }
+    let (output, dir) = fixture.capture("core", &["--select=selected", "--stdlib-crate=core"]);
+    assert_refused(&output, &dir, "unsupported", "undeclared compiler read");
     // Declaring the file admits the same `..` path (the loader resolves it
     // through declared ancestors), and the read is bound in the manifest.
     fixture.sources.push(outside.clone());

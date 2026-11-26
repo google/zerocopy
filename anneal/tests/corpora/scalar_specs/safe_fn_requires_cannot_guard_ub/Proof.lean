@@ -22,7 +22,7 @@ theorem verify : Expected.claim := by
   | zero =>
     injection found with hEq
     subst hEq
-    refine bodyVerified_of_safe rfl rfl (fun _ _ hUnsafe => ?_)
+    refine ⟨rfl, rfl, fun _ _ hUnsafe => ?_⟩
     have _ : Captured.body_0.isUnsafe = true := by rfl
     exact absurd (hUnsafe this) (fun _ => True.intro)
   | succ id => cases found

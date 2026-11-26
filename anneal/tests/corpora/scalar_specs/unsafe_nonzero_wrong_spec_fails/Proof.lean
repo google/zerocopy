@@ -22,11 +22,12 @@ theorem verify : Expected.claim := by
     | zero =>
       injection found with hEq
       subst hEq
-      refine bodyVerified_of_safe rfl rfl (fun _ _ _ => ?_)
+      refine ⟨rfl, rfl, fun _ _ _ => ?_⟩
       have hRun : Runs Captured.body_0 16
           [.scalar ⟨.isize, false, BitVec.ofNat 128 1⟩]
           (.scalar ⟨.isize, false, BitVec.ofNat 128 0⟩) := by rfl
-      exact (run_initial_success hRun).1
+      have _ := (run_initial_success hRun).1
+      exact False.elim (by cases hRun)
     | succ id => cases found
   · refine ⟨Captured.body_0, rfl, fun _ _ _ => ?_⟩
     have hRun : Runs Captured.body_0 16

@@ -9,18 +9,16 @@
 // === case: unsafe_fn_with_requires ===
 //@ pass
 //@ mir-contains: "isUnsafe := true"
-//@ mir-contains: "Trusted.MirAst.TerminatorKind.unreachable"
+//@ mir-contains: "Trusted.MirAst.TerminatorKind.sysrootCall"
 
 #![no_std]
-#![feature(core_intrinsics)]
-#![allow(internal_features)]
 
 /// # Safety
 ///
 /// `x` must not be zero.
 pub unsafe fn nonzero_only(x: usize) -> usize {
     if x == 0 {
-        unsafe { core::intrinsics::unreachable() }
+        unsafe { usize::MAX.unchecked_add(1) }
     } else {
         x
     }

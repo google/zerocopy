@@ -23,19 +23,33 @@ def returning : Body := Captured.program.bodies[1]
 theorem returning_runs :
     Runs returning 2 [] (.scalar ⟨.i64, false, BitVec.ofNat 128 0⟩) := rfl
 
-theorem faulting_step0 :
-    evalStep (bodyProg faulting) 0
-      (mkState 0 0 (initLocalsLoop faulting [] 0 faulting.locals)) =
-      .step (mkState 0 1 [.immediate none, .immediate none]) := rfl
-
-theorem faulting_really_faults :
-    evalStep (bodyProg faulting) 0
-      (mkState 0 1 [.immediate none, .immediate none]) =
-      .fault .undefined := rfl
-
 theorem faulting_not_safe : ¬Safe faulting [] := by
+  let s1 : State :=
+    { frames :=
+        [ { defId := 0
+            blockIdx := 0
+            stmtIdx := 0
+            locals :=
+              [ .immediate none
+              , .immediate (some (.scalar ⟨.i64, false, BitVec.ofNat 128 18446744073709551615⟩))
+              , .immediate (some (.scalar ⟨.i64, false, BitVec.ofNat 128 1⟩))
+              ]
+            sysrootOp? := some ⟨.uncheckedAdd, .i64, false⟩
+            retDst? := some ⟨0, []⟩
+            retTarget? := some 1 }
+        , { defId := 0
+            blockIdx := 0
+            stmtIdx := 0
+            locals := [.immediate none] } ]
+      callerMem := ⟨[]⟩
+      mem := entryMemory }
+  have hStep0 :
+      evalStep (bodyProg faulting) 0
+        (mkState 0 0 (initLocalsLoop faulting [] 0 faulting.locals)) =
+        .step s1 := rfl
+  have hFault : evalStep (bodyProg faulting) 0 s1 = .fault .undefined := rfl
   intro safe
-  exact safe _ .undefined (.next .refl faulting_step0) faulting_really_faults
+  exact safe _ .undefined (.next .refl hStep0) hFault
 
 public theorem verify : Expected.claim := by
   refine ⟨rfl, rfl, rfl, rfl, rfl, rfl, ?_, True.intro⟩
@@ -44,17 +58,16 @@ public theorem verify : Expected.claim := by
   | zero =>
       have same : faulting = selected := Option.some.inj found
       subst selected
-      exact bodyVerified_of_safe found rfl (fun _ _ required =>
-        -- This elimination is valid only for the uncallable locked item.
-        -- Moving the same faulting body to open changes its authenticated
-        -- key, so its caller requirement no longer supplies False here.
-        False.elim (required rfl))
+      -- This elimination is valid only for the uncallable locked item.
+      -- Moving the same faulting body to open changes its authenticated
+      -- key, so its caller requirement no longer supplies False here.
+      exact ⟨found, rfl, fun _ _ required => False.elim (required rfl)⟩
   | succ id =>
       cases id with
       | zero =>
           have same : returning = selected := Option.some.inj found
           subst selected
-          refine bodyVerified_of_safe found rfl (fun args valid _ => ?_)
+          refine bodyVerified_of_safe found rfl (fun args valid _ => ?_) rfl
           cases args with
           | nil => exact (run_initial_success returning_runs).1
           | cons _ _ => cases valid

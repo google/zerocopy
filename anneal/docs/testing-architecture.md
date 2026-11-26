@@ -161,7 +161,7 @@ anneal/
     ├── rustc-capture/                 # package = "anneal-rustc-capture-tests" (publish = false)
     │   ├── Cargo.toml
     │   ├── src/bin/anneal-rustc-capture-test-bin.rs
-    │   └── tests/{typed_capture.rs, stdlib_capture.rs, compiler_session.rs}
+    │   └── tests/{typed_capture.rs, stdlib_capture.rs, compiler_session.rs, pass_order_sentinel.rs}
     │       # (Wave 2B target: decompose typed_capture.rs into suite/main.rs)
     └── corpora/                       # Declarative data-driven corpora consumed by test crates
         ├── adversarial/               # Landed: capture/; Target Wave 3: + guards.toml, spec_and_preflight/, mir_ub_refutations/, audit_and_ndjson/
