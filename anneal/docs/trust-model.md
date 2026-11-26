@@ -224,12 +224,12 @@ verification claim boundary without wrapping inner small-step execution rules:
   against the patched `deinitMovedPlace := true` reference) and `MirProfileV2`
   (`.unbridged "mir_profile_v2"`, requiring `defaultMirDownstreamGaps` and
   `.callerMemoryThreadIsolation` on every Profile v2 result plus
-  `.callerRawPtrAliasing` on bodies with raw-pointer locals) over existing
-  `WellFormed` / `WellFormedV2`, `Behavior` / `BehaviorV2`, and `Diverges` /
-  `DivergesV2` (with `bodyIsExternal := fun _ => false` so every captured local
-  MIR body in Profile v1 and Profile v2 must be verified or refuted rather than
-  stubbed), exposes MIR entry aliases (`MirVerifiedEntry`, `MirAssumedStub`,
-  `MirRefutationEntry`) used by `MirEnvelopeTheoremV1` and
+  `.callerRawPtrAliasing` on bodies with non-fake raw-pointer locals) over
+  existing `WellFormed` / `WellFormedV2`, `Behavior` / `BehaviorV2`, and
+  `Diverges` / `DivergesV2` (with `bodyIsExternal := fun _ => false` so every
+  captured local MIR body in Profile v1 and Profile v2 must be verified or
+  refuted rather than stubbed), exposes MIR entry aliases (`MirVerifiedEntry`,
+  `MirAssumedStub`, `MirRefutationEntry`) used by `MirEnvelopeTheoremV1` and
   `MirEnvelopeTheoremV2`, defines `OracleCertificate` for offline Pass-2
   correspondence, and exposes model-pinned Pass-1 roots
   (`Trusted.MirEnvelopeTheoremV1`, `Trusted.MirEnvelopeTheoremV2`, and

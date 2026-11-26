@@ -1898,4 +1898,26 @@ theorem refute_state_v2_init_uses_entry_memory_for_args :
      | .error _ => False) :=
   rfl
 
+/-- Guard `step_v2_fake_address_of_ref_validity`: `evalFakeAddressOfRvalueV2`
+must validate `refValidInMem` when dereferencing a reference base local,
+faulting `.undefined` on a null `&mut [u8]`. -/
+theorem refute_step_v2_fake_address_of_ref_validity :
+    (match evalFakeAddressOfRvalueV2
+        [
+          .unit,
+          .ref .mut (.slice (.int .i8 false)),
+          .rawPtr .shared (.slice (.int .i8 false))
+        ]
+        [
+          .immediate (some .unit),
+          .immediate (some (.slicePtr ⟨none, 0, .isize⟩ 0)),
+          .immediate none
+        ]
+        { allocations := [], nextAllocId := 1 }
+        (.rawPtr .shared (.slice (.int .i8 false)))
+        { localId := 1, projection := [.deref] } with
+     | .error .undefined => True
+     | _ => False) :=
+  trivial
+
 end GuardMutation

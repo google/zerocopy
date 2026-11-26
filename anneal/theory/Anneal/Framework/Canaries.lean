@@ -70,6 +70,24 @@ locals, admitted without `DisclosedGap.callerRawPtrAliasing`. -/
   identity := "canary::v2_raw_ptr"
 }
 
+/-- Profile v2 body taking `&mut [u8]` with a metadata-only
+`Rvalue.fakeAddressOf` `*const [u8]` temporary, admitted without
+`DisclosedGap.callerRawPtrAliasing "mir_profile_v2"`. -/
+@[expose] noncomputable def canaryV2FakePtrMetaBody : Body := {
+  argumentCount := 1
+  locals := [.int .isize false, .ref .mut (.slice u8Ty),
+             .rawPtr .shared (.slice u8Ty)]
+  basicBlocks := [{
+    statements := [
+      .assign ⟨2, []⟩ (.fakeAddressOf ⟨1, [.deref]⟩),
+      .assign ⟨0, []⟩ (.unaryOp .ptrMetadata (.move ⟨2, []⟩))
+    ]
+    terminator := .return_
+  }]
+  isUnsafe := false
+  identity := "canary::v2_fake_ptr_meta"
+}
+
 /-- Profile v2 body mixing reference (`&u8`) and raw-pointer (`*const u8`)
 locals, which `BodyStaticAdmittedV2` must reject fail-closed. -/
 @[expose] noncomputable def canaryV2MixedBody : Body := {
@@ -141,6 +159,13 @@ under `ValidMirReturnValV2`) / unlicensed refutations & forward-sim termination
   effectMaskLe canaryPartialEffects canaryTotalEffects ∧
   ¬ effectMaskLe canaryTotalEffects canaryPartialEffects ∧
   AbiKind.beq .rust .rust = true ∧
+  BodyStaticAdmittedV2 {
+    scope := .crate
+    pointerWidthBits := 64
+    mirProfileVersion := 2
+    bodies := [canaryV2FakePtrMetaBody] } canaryV2FakePtrMetaBody = true ∧
+  mirProfileV2RequiredGaps canaryV2FakePtrMetaBody =
+    [.callerMemoryThreadIsolation "mir_profile_v2"] ∧
   (∀ (r : Val) (m : CallerMemory),
     TerminalOutcome.returned r m ≠ TerminalOutcome.unwound m ∧
     TerminalOutcome.returned r m ≠ TerminalOutcome.aborted m ∧
@@ -821,7 +846,7 @@ theorem framework_canary : FrameworkCanaryClaim := by
            fun h => Bool.noConfusion h,
            fun h => Bool.noConfusion h⟩,
           fun h => Bool.noConfusion (h.1 rfl),
-          rfl,
+          rfl, rfl, rfl,
           fun r m => ⟨(fun h => by cases h),
                       (fun h => by cases h),
                       (fun h => by cases h)⟩,

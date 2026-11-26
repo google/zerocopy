@@ -831,7 +831,8 @@ noncomputable def toMiriRvalue (types : List MirTy) :
   | .discriminant rp => .Discriminant (toMiriPlace rp)
   | .cast .ptrToPtr _ _ | .cast .intToPtr _ _ | .cast .unsize _ _
   | .cast .unsupported _ _
-  | .useRetag _ | .ref _ _ | .addressOf _ _ | .aggregateTuple _
+  | .useRetag _ | .ref _ _ | .addressOf _ _ | .fakeAddressOf _
+  | .aggregateTuple _
   | .aggregateArray _ _ | .repeat_ _ _ _
   | .aggregateRangeTo _ _ | .aggregateRangeFrom _ _ | .unsupported =>
     .CopyForDeref ⟨0, Array.empty⟩

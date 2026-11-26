@@ -5854,3 +5854,111 @@ pub fn checked_rem_i32(a: i32, b: i32) -> i32 {
 
     compile_captured_lean_if_trusted_sources_present(&captured_lean);
 }
+
+#[test]
+fn fake_for_ptr_metadata_admits_safe_mut_slice_patterns_and_refuses_real_raw_ptr_mixing() {
+    let safe_mut_slice_source = br#"#![no_std]
+#![forbid(unsafe_code)]
+
+pub fn is_empty_mut_slice(s: &mut [u8]) -> bool {
+    matches!(s, [])
+}
+
+pub fn classify_mut_slice(s: &mut [u16], out: &mut u8) -> usize {
+    match s {
+        [] => {
+            *out = 0;
+            0
+        }
+        [_] => {
+            *out = 1;
+            1
+        }
+        [_, _, ..] => {
+            *out = 2;
+            s.len()
+        }
+    }
+}
+
+pub fn two_mut_slice_pats(a: &mut [u8], b: &mut [u32], v: u32) -> u32 {
+    if matches!(a, []) && matches!(b, [_]) { v } else { 0 }
+}
+"#;
+    let ok_fix = Capture::new(safe_mut_slice_source);
+    let ok_out = ok_fix.command().arg("--scope=crate").output().unwrap();
+    assert!(
+        ok_out.status.success(),
+        "expected safe &mut [T] slice pattern functions to capture cleanly:\n{}\n{}",
+        stdout(&ok_out),
+        stderr(&ok_out)
+    );
+    let manifest = ok_fix.manifest();
+    assert_eq!(manifest["program"]["mir_profile_version"], 2);
+    assert_eq!(manifest["program"]["bodies"].as_array().unwrap().len(), 3);
+    let manifest_str = manifest.to_string();
+    assert!(
+        manifest_str.contains("\"fake_address_of\""),
+        "expected FakeAddressOf in capture.json, got {manifest_str}"
+    );
+    let lean_path = ok_fix.output.join("Captured.lean");
+    let lean_src = std::fs::read_to_string(&lean_path).unwrap();
+    assert!(
+        lean_src.contains("Trusted.MirAst.Rvalue.fakeAddressOf"),
+        "{lean_src}"
+    );
+    compile_captured_lean_if_trusted_sources_present(&lean_path);
+
+    // Real raw-pointer locals mixed with `&mut [u8]` (even alongside a valid
+    // `FakeForPtrMetadata` slice pattern) must still fail closed with the
+    // mixed-locals refusal.
+    for (name, bad_src) in [
+        (
+            "mut_slice_to_raw_cast",
+            &b"#![no_std]\npub fn f(s: &mut [u8]) -> *const [u8] { s as *const [u8] }\n"[..],
+        ),
+        (
+            "mut_slice_pat_plus_raw_borrow",
+            &b"#![no_std]\npub fn f(s: &mut [u8], x: u8) -> bool {\n    let p = &raw const x;\n    let _ = p;\n    matches!(s, [])\n}\n"[..],
+        ),
+        (
+            "mut_slice_pat_plus_raw_param",
+            &b"#![no_std]\npub unsafe fn f(s: &mut [u8], p: *const u8) -> u8 {\n    if matches!(s, []) { 0 } else { unsafe { *p } }\n}\n"[..],
+        ),
+    ] {
+        let bad_fix = Capture::new(bad_src);
+        let bad_out = bad_fix.command().arg("--scope=crate").output().unwrap();
+        assert_eq!(bad_out.status.code(), Some(1), "{name}: {bad_out:?}");
+        let failure = status(&bad_out);
+        assert_eq!(failure["status"], "unsupported", "{name}: {failure}");
+        assert!(
+            failure
+                .to_string()
+                .contains("body mixes reference and raw-pointer locals"),
+            "{name}: expected mixed-locals refusal, got {failure}"
+        );
+        bad_fix.assert_no_capture_artifacts();
+    }
+
+    // Safe `&mut [u8]` indexing (`buf[0] = v`, issue #4426) synthesizes a
+    // `FakeForPtrMetadata` temporary for its bounds check. It must no longer
+    // fail with the misleading mixed-locals error; it now advances past
+    // `FakeForPtrMetadata` to the remaining `Index` projection refusal.
+    let idx_fix = Capture::new(
+        b"#![no_std]\n#![forbid(unsafe_code)]\npub fn set_first(buf: &mut [u8], v: u8) {\n    buf[0] = v;\n}\n",
+    );
+    let idx_out = idx_fix.command().arg("--scope=crate").output().unwrap();
+    assert_eq!(idx_out.status.code(), Some(1), "set_first: {idx_out:?}");
+    let idx_failure = status(&idx_out);
+    assert_eq!(idx_failure["status"], "unsupported", "set_first: {idx_failure}");
+    let idx_msg = idx_failure.to_string();
+    assert!(
+        !idx_msg.contains("body mixes reference and raw-pointer locals"),
+        "set_first must not hit mixed-locals refusal: {idx_msg}"
+    );
+    assert!(
+        idx_msg.contains("unsupported place projection") && idx_msg.contains("Index"),
+        "set_first should reach Index projection refusal: {idx_msg}"
+    );
+    idx_fix.assert_no_capture_artifacts();
+}

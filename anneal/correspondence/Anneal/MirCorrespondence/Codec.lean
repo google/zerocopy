@@ -373,7 +373,8 @@ theorem encodeRvalue_binaryOp_iff_base : EncodeRvalueBinaryOpIffClaim := by
       dsimp only [encodeRvalue]
       rw [h_l, h_r]
   | use _ | unaryOp _ _ | cast _ _ _ | discriminant _ | useRetag _
-  | ref _ _ | addressOf _ _ | aggregateTuple _ | aggregateArray _ _
+  | ref _ _ | addressOf _ _ | fakeAddressOf _
+  | aggregateTuple _ | aggregateArray _ _
   | repeat_ _ _ _ | aggregateRangeTo _ _
   | aggregateRangeFrom _ _ | unsupported =>
     constructor
@@ -400,7 +401,8 @@ theorem encodeRvalue_unaryOp_iff_base : EncodeRvalueUnaryOpIffClaim := by
       dsimp only [encodeRvalue]
       rw [h_o]
   | use _ | binaryOp _ _ _ | cast _ _ _ | discriminant _ | useRetag _
-  | ref _ _ | addressOf _ _ | aggregateTuple _ | aggregateArray _ _
+  | ref _ _ | addressOf _ _ | fakeAddressOf _
+  | aggregateTuple _ | aggregateArray _ _
   | repeat_ _ _ _ | aggregateRangeTo _ _
   | aggregateRangeFrom _ _ | unsupported =>
     constructor
@@ -910,6 +912,12 @@ theorem collectRvalue_spec (acc : List MirTy) (rv : Rvalue) :
     dsimp only [encodeRvalue, decodeRvalue]
     rw [h_dec ts h_s]
     rfl
+  | fakeAddressOf p =>
+    let ⟨h_sub, h_dec⟩ := collectPlace_spec acc p
+    refine ⟨h_sub, fun ts h_s => ?_⟩
+    dsimp only [encodeRvalue, decodeRvalue]
+    rw [h_dec ts h_s]
+    rfl
   | aggregateTuple ops =>
     let ⟨h_sub, h_dec⟩ := foldl_collect_mapOption_spec collectOperand
       encodeOperand decodeOperand collectOperand_spec acc ops
@@ -1165,7 +1173,7 @@ theorem collectRvalue_canonical (acc : List MirTy) (rv : Rvalue)
       (collectOperand_canonical acc op h)
   | useRetag op =>
     exact collectOperand_canonical acc op h
-  | discriminant p | ref _ p | addressOf _ p =>
+  | discriminant p | ref _ p | addressOf _ p | fakeAddressOf p =>
     exact collectPlace_canonical acc p h
   | aggregateTuple ops =>
     exact foldl_preserve (fun ts => typesAreCanonical ts = true) collectOperand

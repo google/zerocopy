@@ -3429,8 +3429,8 @@ theorem evalRvalue_sim (exact : Bool) (bodyLocals : List MirTy)
                                 rw [hrepr]; dsimp only; rw [if_not_true]
                                 rw [hevalEnum]; rfl
                   | _ => cases hadm
-  | useRetag _ | ref _ _ | addressOf _ _ | aggregateTuple _
-  | aggregateArray _ _ | repeat_ _ _ _
+  | useRetag _ | ref _ _ | addressOf _ _ | fakeAddressOf _
+  | aggregateTuple _ | aggregateArray _ _ | repeat_ _ _ _
   | aggregateRangeTo _ _ | aggregateRangeFrom _ _ | unsupported => cases hadm
 
 end Anneal.MiniRust

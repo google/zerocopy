@@ -2103,7 +2103,7 @@ def rvalueHasDeref : Rvalue → Bool
   | .aggregateRangeTo _ op | .aggregateRangeFrom _ op
   | .repeat_ op _ _ => operandHasDeref op
   | .binaryOp _ l r => operandHasDeref l || operandHasDeref r
-  | .discriminant p | .ref _ p | .addressOf _ p => placeHasDeref p
+  | .discriminant p | .ref _ p | .addressOf _ p | .fakeAddressOf p => placeHasDeref p
   | .aggregateTuple ops | .aggregateArray _ ops => ops.any operandHasDeref
   | .unsupported => false
 

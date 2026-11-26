@@ -275,11 +275,164 @@ fn active_frame_body<'a>(program: &'a Program, frame: &FrameState) -> Option<Cow
     }
 }
 
-/// Return `true` when `body` contains both reference-typed and
+fn place_mentions_local_v2(place: &Place, lid: u32) -> bool {
+    place.local == lid
+}
+
+fn operand_mentions_local_v2(op: &Operand, lid: u32) -> bool {
+    op.as_place().is_some_and(|(local, _, _)| local == lid)
+}
+
+fn rvalue_mentions_local_v2(rv: &Rvalue, lid: u32) -> bool {
+    match rv {
+        Rvalue::Use { operand, .. }
+        | Rvalue::UseRetag { operand }
+        | Rvalue::Unary { operand, .. }
+        | Rvalue::Cast { operand, .. }
+        | Rvalue::Repeat { operand, .. }
+        | Rvalue::AggregateRangeTo { end: operand, .. }
+        | Rvalue::AggregateRangeFrom { start: operand, .. } => {
+            operand_mentions_local_v2(operand, lid)
+        }
+        Rvalue::Binary { left, right, .. } => {
+            operand_mentions_local_v2(left, lid) || operand_mentions_local_v2(right, lid)
+        }
+        Rvalue::Discriminant { place }
+        | Rvalue::Ref { place, .. }
+        | Rvalue::AddressOf { place, .. }
+        | Rvalue::FakeAddressOf { place } => place_mentions_local_v2(place, lid),
+        Rvalue::AggregateTuple { fields } | Rvalue::Aggregate { fields, .. } => {
+            fields.iter().any(|op| operand_mentions_local_v2(op, lid))
+        }
+        Rvalue::AggregateArray { elems, .. } => {
+            elems.iter().any(|op| operand_mentions_local_v2(op, lid))
+        }
+        Rvalue::Unsupported => false,
+    }
+}
+
+fn terminator_mentions_local_v2(term: &Terminator, lid: u32) -> bool {
+    match term {
+        Terminator::Goto { .. }
+        | Terminator::Ret
+        | Terminator::Unreachable
+        | Terminator::UnwindResume
+        | Terminator::Unsupported => false,
+        Terminator::SwitchInt { operand, .. } => operand_mentions_local_v2(operand, lid),
+        Terminator::Assert { cond, .. } => operand_mentions_local_v2(cond, lid),
+        Terminator::CoreCall { args, dst, .. } => {
+            args.iter().any(|op| operand_mentions_local_v2(op, lid))
+                || place_mentions_local_v2(dst, lid)
+        }
+        Terminator::Call { args, dst_local, .. }
+        | Terminator::SysrootCall { args, dst_local, .. } => {
+            args.iter().any(|op| operand_mentions_local_v2(op, lid)) || *dst_local == lid
+        }
+    }
+}
+
+fn fake_address_of_types_match_v2(local_tys: &[Ty], dst_id: u32, src: &Place) -> bool {
+    if src.local == dst_id || src.projection.as_slice() != [ProjectionElem::Deref] {
+        return false;
+    }
+    let (Some(base_ty), Some(dst_ty)) =
+        (local_tys.get(src.local as usize), local_tys.get(dst_id as usize))
+    else {
+        return false;
+    };
+    let (Ty::Ref { pointee, .. } | Ty::RawPtr { pointee, .. }) = base_ty else {
+        return false;
+    };
+    pointee.as_overflow_pair().is_none()
+        && dst_ty
+            .structural_eq(&Ty::RawPtr { mutability: Mutability::Shared, pointee: pointee.clone() })
+}
+
+/// Return `true` when local `lid` of `body` is a metadata-only
+/// `FakeForPtrMetadata` temporary, matching
+/// `Trusted.MirSemantics.isFakePtrMetadataLocalV2`.
+pub fn is_fake_ptr_metadata_local_v2(body: &Body, lid: usize) -> bool {
+    if lid <= body.arg_count {
+        return false;
+    }
+    let Ok(lid_u32) = u32::try_from(lid) else {
+        return false;
+    };
+    if !matches!(body.local_tys.get(lid), Some(Ty::RawPtr { mutability: Mutability::Shared, .. })) {
+        return false;
+    }
+    let mut saw_fake_assign = false;
+    for bb in &body.blocks {
+        for stmt in &bb.statements {
+            if let Some((dst_local, dst_proj, rv)) = stmt.as_assign() {
+                if dst_local == lid_u32 {
+                    if !dst_proj.is_empty() {
+                        return false;
+                    }
+                    let Rvalue::FakeAddressOf { place } = rv else {
+                        return false;
+                    };
+                    if !fake_address_of_types_match_v2(&body.local_tys, lid_u32, place) {
+                        return false;
+                    }
+                    saw_fake_assign = true;
+                } else if rvalue_mentions_local_v2(rv, lid_u32) {
+                    let ok = match rv {
+                        Rvalue::Unary { op: UnOp::PtrMetadata, operand } => operand
+                            .as_place()
+                            .is_some_and(|(loc, proj, _)| loc == lid_u32 && proj.is_empty()),
+                        _ => false,
+                    };
+                    if !ok {
+                        return false;
+                    }
+                }
+            } else {
+                match stmt {
+                    Statement::StorageLive { .. }
+                    | Statement::StorageDead { .. }
+                    | Statement::Nop
+                    | Statement::PlaceMention { .. }
+                    | Statement::Unsupported => {}
+                    Statement::Assign { .. } | Statement::AssignPlace { .. } => unreachable!(),
+                }
+            }
+        }
+        if terminator_mentions_local_v2(&bb.terminator, lid_u32) {
+            return false;
+        }
+    }
+    saw_fake_assign
+}
+
+/// Return `true` when every `Rvalue::FakeAddressOf` in `body` writes to an
+/// unprojected local satisfying [`is_fake_ptr_metadata_local_v2`], matching
+/// `Trusted.MirSemantics.bodyFakeAddressOfValidV2`.
+pub fn body_fake_address_of_valid_v2(body: &Body) -> bool {
+    body.blocks.iter().all(|bb| {
+        bb.statements.iter().all(|stmt| match stmt.as_assign() {
+            Some((dst_local, dst_proj, Rvalue::FakeAddressOf { .. })) => {
+                dst_proj.is_empty() && is_fake_ptr_metadata_local_v2(body, dst_local as usize)
+            }
+            _ => true,
+        })
+    })
+}
+
+/// Return `true` when `body` declares any non-`FakeForPtrMetadata` raw-pointer
+/// local, matching `Trusted.MirSemantics.bodyHasRawPtrLocalV2`.
+pub fn body_has_raw_ptr_local_v2(body: &Body) -> bool {
+    body.local_tys
+        .iter()
+        .enumerate()
+        .any(|(idx, ty)| ty.has_raw_ptr_v2() && !is_fake_ptr_metadata_local_v2(body, idx))
+}
+
+/// Return `true` when `body` contains both reference-typed and non-fake
 /// raw-pointer-typed locals, matching
 /// `Trusted.MirSemantics.bodyMixesRefsAndRawPtrsV2`.
 pub fn body_mixes_refs_and_raw_ptrs_v2(body: &Body) -> bool {
-    body.local_tys.iter().any(Ty::has_ref_v2) && body.local_tys.iter().any(Ty::has_raw_ptr_v2)
+    body.local_tys.iter().any(Ty::has_ref_v2) && body_has_raw_ptr_local_v2(body)
 }
 
 /// Validate program-level target, MIR profile, and body-table invariants
@@ -2164,6 +2317,11 @@ pub fn validate_body_entry(body: &Body, config: &EvalConfig) -> Result<(), Fault
             "Profile v2 refuses bodies mixing reference and raw-pointer locals",
         ));
     }
+    if config.enable_profile_v2() && !body_fake_address_of_valid_v2(body) {
+        return Err(FaultDetail::unsupported(
+            "Profile v2 refuses Rvalue::FakeAddressOf outside metadata-only temporaries",
+        ));
+    }
     if !body.local_tys.iter().all(|ty| is_supported_local_ty(ty, config.enable_profile_v2())) {
         return Err(FaultDetail::unsupported("body contains unsupported local variable type"));
     }
@@ -3391,6 +3549,7 @@ fn check_assign_copy_hazard_v2(
         | Rvalue::Aggregate { .. }
         | Rvalue::Ref { .. }
         | Rvalue::AddressOf { .. }
+        | Rvalue::FakeAddressOf { .. }
         | Rvalue::Unsupported => Ok(()),
     }
 }
@@ -4098,6 +4257,90 @@ fn eval_address_of_rvalue_v2(
     }
 }
 
+fn eval_fake_address_of_rvalue_v2(
+    body_locals: &[Ty],
+    locals: &[LocalSlot],
+    moved: &MoveTracker<'_>,
+    mem: &MemoryState,
+    dst_ty: &Ty,
+    place: &Place,
+    endian: TargetEndian,
+) -> Result<Val, FaultDetail> {
+    match place.projection.as_slice() {
+        [ProjectionElem::Deref] => {
+            let idx = place.local as usize;
+            let (Some(base_ty), Some(slot)) = (body_locals.get(idx), locals.get(idx)) else {
+                return Err(FaultDetail::unsupported("FakeAddressOf local out of bounds"));
+            };
+            if matches!(slot, LocalSlot::Dead) {
+                return Err(FaultDetail::undefined_classified(
+                    UbClass::DeadLocalAccess,
+                    "FakeAddressOf on dead local",
+                ));
+            }
+            let read_slot = || -> Result<Val, FaultDetail> {
+                match slot {
+                    LocalSlot::Dead => unreachable!("checked above"),
+                    LocalSlot::PartialTuple { .. } => Err(FaultDetail::undefined_classified(
+                        UbClass::MoveDeinitLocalRead,
+                        "FakeAddressOf on partially moved slot",
+                    )),
+                    LocalSlot::Immediate { val } => val.clone().ok_or_else(|| {
+                        FaultDetail::undefined_classified(
+                            moved.as_view().uninit_local(place.local),
+                            "FakeAddressOf on uninitialized local",
+                        )
+                    }),
+                    LocalSlot::Indirect { place: mp } => {
+                        load_indirect(mem, endian, base_ty, *mp, true)?.ok_or_else(|| {
+                            FaultDetail::undefined_classified(
+                                moved.as_view().uninit_indirect_local(
+                                    place.local,
+                                    *mp,
+                                    base_ty,
+                                    true,
+                                ),
+                                "FakeAddressOf on uninitialized local",
+                            )
+                        })
+                    }
+                }
+            };
+            match base_ty {
+                Ty::Ref { mutability: src_mut, pointee } => {
+                    let expected =
+                        Ty::RawPtr { mutability: Mutability::Shared, pointee: pointee.clone() };
+                    if pointee.as_overflow_pair().is_some() || !dst_ty.structural_eq(&expected) {
+                        return Err(FaultDetail::unsupported(
+                            "FakeAddressOf destination type disagrees with reference pointee",
+                        ));
+                    }
+                    let val = read_slot()?;
+                    ref_valid_in_mem(mem, endian, *src_mut, pointee, &val)
+                        .map_err(downgrade_conservative_ref_check)?;
+                    Ok(val)
+                }
+                Ty::RawPtr { pointee, .. } => {
+                    let expected =
+                        Ty::RawPtr { mutability: Mutability::Shared, pointee: pointee.clone() };
+                    if pointee.as_overflow_pair().is_some() || !dst_ty.structural_eq(&expected) {
+                        return Err(FaultDetail::unsupported(
+                            "FakeAddressOf destination type disagrees with raw pointer pointee",
+                        ));
+                    }
+                    read_slot()
+                }
+                _ => Err(FaultDetail::unsupported(
+                    "Profile v2 FakeAddressOf(&raw const (fake) *p) requires reference or raw pointer local",
+                )),
+            }
+        }
+        _ => Err(FaultDetail::unsupported(
+            "unsupported FakeAddressOf place projection in Profile v2",
+        )),
+    }
+}
+
 fn eval_rvalue_v2(
     body_locals: &[Ty],
     locals: &mut [LocalSlot],
@@ -4325,6 +4568,9 @@ fn eval_rvalue_v2(
             place,
             endian,
         ),
+        Rvalue::FakeAddressOf { place } => {
+            eval_fake_address_of_rvalue_v2(body_locals, locals, moved, mem, dst_ty, place, endian)
+        }
         Rvalue::AggregateTuple { fields } => {
             let Some(field_tys) = tuple_field_tys(dst_ty) else {
                 return Err(FaultDetail::unsupported(

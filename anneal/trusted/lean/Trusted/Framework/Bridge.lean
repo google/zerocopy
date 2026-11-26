@@ -108,10 +108,11 @@ structure OracleCertificate {Prog Body Sig Query Ret Mem : Type}
 /-- Program-level semantic, thread-isolation, and raw-pointer aliasing gap
 disclosures for Profile v2 (`unbridgedSemantics` and
 `callerMemoryThreadIsolation` unconditionally, plus `callerRawPtrAliasing`
-whenever any body contains a raw-pointer local). -/
+whenever any body contains a non-fake raw-pointer local, checked via
+`bodyHasRawPtrLocalV2`). -/
 @[reducible] noncomputable def profileV2ProgramGaps (p : Program) :
     List DisclosedGap :=
-  if p.bodies.any (fun b => tyListHasRawPtrV2 b.locals) then
+  if p.bodies.any bodyHasRawPtrLocalV2 then
     [.unbridgedSemantics "mir_profile_v2",
      .callerMemoryThreadIsolation "mir_profile_v2",
      .callerRawPtrAliasing "mir_profile_v2"]

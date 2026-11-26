@@ -1033,6 +1033,9 @@ pub enum Rvalue {
         mutability: Mutability,
         place: Place,
     },
+    FakeAddressOf {
+        place: Place,
+    },
     AggregateTuple {
         fields: Vec<Operand>,
     },
@@ -1064,7 +1067,9 @@ impl Rvalue {
             Self::Binary { left, right, .. } => 1 + left.ast_nodes() + right.ast_nodes(),
             Self::Cast { operand, ty, .. } => 1 + operand.ast_nodes() + ty.ast_nodes(),
             Self::Discriminant { place } => 1 + place.ast_nodes(),
-            Self::Ref { place, .. } | Self::AddressOf { place, .. } => 1 + place.ast_nodes(),
+            Self::Ref { place, .. }
+            | Self::AddressOf { place, .. }
+            | Self::FakeAddressOf { place } => 1 + place.ast_nodes(),
             Self::AggregateTuple { fields } => {
                 1 + fields.iter().map(Operand::ast_nodes).sum::<usize>()
             }
@@ -1477,10 +1482,11 @@ fn refuse_overflow_pair_pointee(pointee: &Ty, what: &str) -> Result<(), String> 
 /// write to an immutable binding. Reference sources stay
 /// refused: upstream says "reference-to-raw-ptr casts are translated into
 /// `&raw mut/const *r`, i.e., they are not actually casts", and such a body
-/// would mix reference and raw-pointer locals, which [`validate_local_tys`]
-/// refuses. `IntToPtr` (`PointerWithExposedProvenance`) admits only a
-/// `usize` source and a sized raw-pointer target, matching
-/// `pointer_with_exposed_provenance_cast` ("First cast to usize.").
+/// would mix reference and non-fake raw-pointer locals, which
+/// [`validate_local_tys_with_exemptions`] refuses. `IntToPtr`
+/// (`PointerWithExposedProvenance`) admits only a `usize` source and a sized
+/// raw-pointer target, matching `pointer_with_exposed_provenance_cast`
+/// ("First cast to usize.").
 /// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_const_eval/src/interpret/cast.rs#L189-L218
 /// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_const_eval/src/interpret/cast.rs#L240-L256
 /// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_middle/src/mir/syntax.rs#L1499-L1500
@@ -1639,10 +1645,206 @@ fn check_switch_targets(discr_ty: &Ty, targets: &[(u128, u32)]) -> Result<(), St
     }
 }
 
+fn place_mentions_local_v2(place: &Place, lid: u32) -> bool {
+    place.local == lid
+}
+
+fn operand_mentions_local_v2(op: &Operand, lid: u32) -> bool {
+    match op {
+        Operand::Copy { local } | Operand::Move { local } => *local == lid,
+        Operand::CopyPlace { place } | Operand::MovePlace { place } => {
+            place_mentions_local_v2(place, lid)
+        }
+        Operand::Constant { .. } => false,
+    }
+}
+
+fn rvalue_mentions_local_v2(rv: &Rvalue, lid: u32) -> bool {
+    match rv {
+        Rvalue::Use { operand, .. }
+        | Rvalue::UseRetag { operand }
+        | Rvalue::Unary { operand, .. }
+        | Rvalue::Cast { operand, .. }
+        | Rvalue::Repeat { operand, .. }
+        | Rvalue::AggregateRangeTo { end: operand, .. }
+        | Rvalue::AggregateRangeFrom { start: operand, .. } => {
+            operand_mentions_local_v2(operand, lid)
+        }
+        Rvalue::Binary { left, right, .. } => {
+            operand_mentions_local_v2(left, lid) || operand_mentions_local_v2(right, lid)
+        }
+        Rvalue::Discriminant { place }
+        | Rvalue::Ref { place, .. }
+        | Rvalue::AddressOf { place, .. }
+        | Rvalue::FakeAddressOf { place } => place_mentions_local_v2(place, lid),
+        Rvalue::AggregateTuple { fields: ops } | Rvalue::AggregateArray { elems: ops, .. } => {
+            ops.iter().any(|op| operand_mentions_local_v2(op, lid))
+        }
+    }
+}
+
+fn terminator_mentions_local_v2(term: &Terminator, lid: u32) -> bool {
+    match term {
+        Terminator::Goto { .. }
+        | Terminator::Ret
+        | Terminator::Unreachable
+        | Terminator::Unsupported => false,
+        Terminator::SwitchInt { operand, .. } => operand_mentions_local_v2(operand, lid),
+        Terminator::Assert { cond, .. } => operand_mentions_local_v2(cond, lid),
+        Terminator::CoreCall { args, dst, .. } => {
+            args.iter().any(|op| operand_mentions_local_v2(op, lid))
+                || place_mentions_local_v2(dst, lid)
+        }
+        Terminator::Call { args, dst, .. } | Terminator::SysrootCall { args, dst, .. } => {
+            args.iter().any(|op| operand_mentions_local_v2(op, lid)) || *dst == lid
+        }
+    }
+}
+
+fn fake_address_of_types_match_v2(local_tys: &[Ty], dst_id: u32, src: &Place) -> bool {
+    if src.local == dst_id || src.projection.as_slice() != [PlaceElem::Deref] {
+        return false;
+    }
+    let (Some(base_ty), Some(dst_ty)) = (
+        local_tys.get(src.local as usize),
+        local_tys.get(dst_id as usize),
+    ) else {
+        return false;
+    };
+    let (Ty::Ref { pointee, .. } | Ty::RawPtr { pointee, .. }) = base_ty else {
+        return false;
+    };
+    !matches!(&**pointee, Ty::OverflowPair(_))
+        && *dst_ty
+            == Ty::RawPtr {
+                mutability: Mutability::Shared,
+                pointee: pointee.clone(),
+            }
+}
+
+/// Mirror `Trusted.MirSemantics.isFakePtrMetadataLocalV2`: `lid > arg_count`,
+/// `local_tys[lid]` is a top-level `*const` raw pointer, at least one
+/// unprojected `FakeAddressOf` writes to `lid`, and every statement/terminator
+/// in `blocks` uses `lid` strictly as an unprojected `FakeAddressOf (*base)`
+/// destination (`base != lid`) or an unprojected `UnOp::PtrMetadata` operand.
+fn is_fake_ptr_metadata_local_v2(
+    arg_count: usize,
+    local_tys: &[Ty],
+    blocks: &[Block],
+    lid: usize,
+) -> bool {
+    if lid <= arg_count {
+        return false;
+    }
+    let Ok(lid_u32) = u32::try_from(lid) else {
+        return false;
+    };
+    if !matches!(
+        local_tys.get(lid),
+        Some(Ty::RawPtr {
+            mutability: Mutability::Shared,
+            ..
+        })
+    ) {
+        return false;
+    }
+    let mut saw_fake_assign = false;
+    for bb in blocks {
+        for stmt in &bb.statements {
+            match stmt {
+                Statement::Assign { local, value } => {
+                    if *local == lid_u32 {
+                        let Rvalue::FakeAddressOf { place } = value else {
+                            return false;
+                        };
+                        if !fake_address_of_types_match_v2(local_tys, lid_u32, place) {
+                            return false;
+                        }
+                        saw_fake_assign = true;
+                    } else if rvalue_mentions_local_v2(value, lid_u32) {
+                        let ok = match value {
+                            Rvalue::Unary {
+                                op: UnOp::PtrMetadata,
+                                operand,
+                            } => match operand {
+                                Operand::Copy { local } | Operand::Move { local } => {
+                                    *local == lid_u32
+                                }
+                                Operand::CopyPlace { place } | Operand::MovePlace { place } => {
+                                    place.local == lid_u32 && place.projection.is_empty()
+                                }
+                                Operand::Constant { .. } => false,
+                            },
+                            _ => false,
+                        };
+                        if !ok {
+                            return false;
+                        }
+                    }
+                }
+                Statement::AssignPlace { place, value } => {
+                    if place_mentions_local_v2(place, lid_u32) {
+                        return false;
+                    }
+                    if rvalue_mentions_local_v2(value, lid_u32) {
+                        let ok = match value {
+                            Rvalue::Unary {
+                                op: UnOp::PtrMetadata,
+                                operand,
+                            } => match operand {
+                                Operand::Copy { local } | Operand::Move { local } => {
+                                    *local == lid_u32
+                                }
+                                Operand::CopyPlace { place } | Operand::MovePlace { place } => {
+                                    place.local == lid_u32 && place.projection.is_empty()
+                                }
+                                Operand::Constant { .. } => false,
+                            },
+                            _ => false,
+                        };
+                        if !ok {
+                            return false;
+                        }
+                    }
+                }
+                Statement::StorageLive { .. } | Statement::StorageDead { .. } | Statement::Nop => {
+                }
+                // Intentionally stricter (fail-closed) than Lean/eval, which
+                // lower `PlaceMention` to `.nop` (`lean.rs`): rustc does not
+                // emit `PlaceMention` on synthetic `FakeForPtrMetadata` temps.
+                Statement::PlaceMention { local } => {
+                    if *local == lid_u32 {
+                        return false;
+                    }
+                }
+            }
+        }
+        if terminator_mentions_local_v2(&bb.terminator, lid_u32) {
+            return false;
+        }
+    }
+    saw_fake_assign
+}
+
+fn collect_fake_ptr_metadata_locals_v2(
+    arg_count: usize,
+    local_tys: &[Ty],
+    blocks: &[Block],
+) -> BTreeSet<usize> {
+    (0..local_tys.len())
+        .filter(|&idx| is_fake_ptr_metadata_local_v2(arg_count, local_tys, blocks, idx))
+        .collect()
+}
+
 /// Validates that every local in a MIR body is `Sized` and belongs to the
 /// Profile v2 local type fragment
-/// (`Trusted.MirSemantics.isSupportedV2LocalTy`).
-pub(crate) fn validate_local_tys(local_tys: &[Ty]) -> Result<(), String> {
+/// (`Trusted.MirSemantics.isSupportedV2LocalTy`), exempting `fake_meta_locals`
+/// from the reference / raw-pointer mixing check
+/// (`Trusted.MirSemantics.bodyMixesRefsAndRawPtrsV2`).
+pub(crate) fn validate_local_tys_with_exemptions(
+    local_tys: &[Ty],
+    fake_meta_locals: &BTreeSet<usize>,
+) -> Result<(), String> {
     for (idx, lty) in local_tys.iter().enumerate() {
         if !lty.is_sized() {
             return Err(format!("unsized local _{idx} of type {lty:?} is unsupported"));
@@ -1655,13 +1857,24 @@ pub(crate) fn validate_local_tys(local_tys: &[Ty]) -> Result<(), String> {
     }
     // Mirrors `Trusted.MirSemantics.bodyMixesRefsAndRawPtrsV2`: Profile v2 has
     // no aliasing model, so it admits no body that could derive references
-    // from raw pointers or access referenced memory through them.
-    if local_tys.iter().any(Ty::has_ref_v2) && local_tys.iter().any(Ty::has_raw_ptr_v2) {
+    // from raw pointers or access referenced memory through them; metadata-only
+    // `FakeForPtrMetadata` temporaries (`isFakePtrMetadataLocalV2`) never incur
+    // a retag and are read solely by `UnOp::PtrMetadata`.
+    let has_non_fake_raw_ptr = local_tys
+        .iter()
+        .enumerate()
+        .any(|(idx, ty)| ty.has_raw_ptr_v2() && !fake_meta_locals.contains(&idx));
+    if local_tys.iter().any(Ty::has_ref_v2) && has_non_fake_raw_ptr {
         return Err("body mixes reference and raw-pointer locals, which Profile v2 \
              refuses because it does not model Rust's pointer aliasing rules"
             .to_string());
     }
     Ok(())
+}
+
+#[cfg(test)]
+pub(crate) fn validate_local_tys(local_tys: &[Ty]) -> Result<(), String> {
+    validate_local_tys_with_exemptions(local_tys, &BTreeSet::new())
 }
 
 /// Validated MIR function body enforcing
@@ -1736,7 +1949,9 @@ impl Body {
                 local_tys.len()
             ));
         }
-        validate_local_tys(&local_tys)?;
+        let fake_meta_locals =
+            collect_fake_ptr_metadata_locals_v2(arg_count, &local_tys, &blocks);
+        validate_local_tys_with_exemptions(&local_tys, &fake_meta_locals)?;
         fn check_local<'a>(local_tys: &'a [Ty], local: u32, role: &str) -> Result<&'a Ty, String> {
             local_tys
                 .get(local as usize)
@@ -1948,9 +2163,10 @@ impl Body {
                         // `&(*p)` for a raw pointer `p` would derive a
                         // reference from a raw pointer, which needs the
                         // aliasing model that Profile v2 lacks. Such a body
-                        // mixes reference and raw-pointer locals and is
-                        // already refused by `validate_local_tys`; refuse it
-                        // here too rather than keep an unreachable rule.
+                        // mixes reference and non-fake raw-pointer locals and
+                        // is already refused by
+                        // `validate_local_tys_with_exemptions`; refuse it here
+                        // too rather than keep an unreachable rule.
                         if matches!(base, Ty::RawPtr { .. }) {
                             return Err(
                                 "Rvalue::Ref through a raw pointer is unsupported: \
@@ -1993,9 +2209,10 @@ impl Body {
                         let base = check_local(local_tys, place.local, "addressOf")?;
                         // `&raw (*r)` for a reference `r` is how runtime MIR
                         // converts a reference to a raw pointer. Such a body
-                        // mixes reference and raw-pointer locals and is
-                        // already refused by `validate_local_tys`; refuse it
-                        // here too rather than keep an unreachable rule.
+                        // mixes reference and non-fake raw-pointer locals and
+                        // is already refused by
+                        // `validate_local_tys_with_exemptions`; refuse it here
+                        // too rather than keep an unreachable rule.
                         if matches!(base, Ty::Ref { .. }) {
                             return Err(
                                 "Rvalue::AddressOf through a reference is unsupported: \
@@ -2030,6 +2247,31 @@ impl Body {
                     if *dst_ty != expected {
                         return Err(format!(
                             "Rvalue::AddressOf type {expected:?} disagrees with destination {dst_ty:?}"
+                        ));
+                    }
+                }
+                Rvalue::FakeAddressOf { place } => {
+                    if place.projection.as_slice() != [PlaceElem::Deref] {
+                        return Err(
+                            "Rvalue::FakeAddressOf requires a single Deref projection".into(),
+                        );
+                    }
+                    let base = check_local(local_tys, place.local, "fakeAddressOf")?;
+                    if !matches!(base, Ty::Ref { .. } | Ty::RawPtr { .. }) {
+                        return Err(
+                            "Rvalue::FakeAddressOf base local must be a reference or raw pointer"
+                                .into(),
+                        );
+                    }
+                    let pointee = check_place(local_tys, place, "fakeAddressOf", true, false)?;
+                    refuse_overflow_pair_pointee(&pointee, "Rvalue::FakeAddressOf")?;
+                    let expected = Ty::RawPtr {
+                        mutability: Mutability::Shared,
+                        pointee: Box::new(pointee),
+                    };
+                    if *dst_ty != expected {
+                        return Err(format!(
+                            "Rvalue::FakeAddressOf type {expected:?} disagrees with destination {dst_ty:?}"
                         ));
                     }
                 }
@@ -2151,8 +2393,22 @@ impl Body {
                     Statement::Assign { local, value } => {
                         let dst_ty = check_local(&local_tys, *local, "assignment")?.clone();
                         check_rvalue(&local_tys, &dst_ty, value)?;
+                        if matches!(value, Rvalue::FakeAddressOf { .. })
+                            && !fake_meta_locals.contains(&(*local as usize))
+                        {
+                            return Err(format!(
+                                "Rvalue::FakeAddressOf destination _{local} must be a non-argument \
+                                 *const temporary read exclusively by UnOp::PtrMetadata"
+                            ));
+                        }
                     }
                     Statement::AssignPlace { place, value } => {
+                        if matches!(value, Rvalue::FakeAddressOf { .. }) {
+                            return Err(
+                                "Rvalue::FakeAddressOf destination must be an unprojected local"
+                                    .into(),
+                            );
+                        }
                         let require_mut_deref =
                             matches!(place.projection.first(), Some(PlaceElem::Deref));
                         let dst_ty = check_place(
@@ -2449,6 +2705,7 @@ impl Body {
                         Rvalue::UseRetag { .. }
                         | Rvalue::Ref { .. }
                         | Rvalue::AddressOf { .. }
+                        | Rvalue::FakeAddressOf { .. }
                         | Rvalue::AggregateTuple { .. }
                         | Rvalue::AggregateArray { .. }
                         | Rvalue::Repeat { .. }
@@ -2544,7 +2801,9 @@ impl Body {
                             operand.collect_enum_ids(out);
                             ty.collect_enum_ids(out);
                         }
-                        Rvalue::Ref { place, .. } | Rvalue::AddressOf { place, .. } => {
+                        Rvalue::Ref { place, .. }
+                        | Rvalue::AddressOf { place, .. }
+                        | Rvalue::FakeAddressOf { place } => {
                             place.collect_enum_ids(out);
                         }
                         Rvalue::AggregateTuple { fields } => {
@@ -4123,5 +4382,1291 @@ mod tests {
                 }
             }
         }
+    }
+
+    #[test]
+    fn fake_address_of_enforces_metadata_only_temporary_invariants() {
+        let u8_ty = Ty::Int(IntTy {
+            width: IntWidth::I8,
+            signed: false,
+        });
+        let usize_ty = Ty::Int(IntTy {
+            width: IntWidth::Isize,
+            signed: false,
+        });
+        let slice_u8 = Ty::Slice {
+            elem: Box::new(u8_ty.clone()),
+        };
+        let mut_slice_ref = Ty::Ref {
+            mutability: Mutability::Mut,
+            pointee: Box::new(slice_u8.clone()),
+        };
+        let const_slice_ptr = Ty::RawPtr {
+            mutability: Mutability::Shared,
+            pointee: Box::new(slice_u8.clone()),
+        };
+        let mut_slice_ptr = Ty::RawPtr {
+            mutability: Mutability::Mut,
+            pointee: Box::new(slice_u8),
+        };
+        let const_u8_ptr = Ty::RawPtr {
+            mutability: Mutability::Shared,
+            pointee: Box::new(u8_ty.clone()),
+        };
+        let mut_u8_ref = Ty::Ref {
+            mutability: Mutability::Mut,
+            pointee: Box::new(u8_ty.clone()),
+        };
+
+        // 1. Valid metadata-only temporary on `&mut [u8]` succeeds and selects
+        //    Profile v2.
+        let valid = Body::try_new(
+            1,
+            false,
+            vec![
+                usize_ty.clone(),
+                mut_slice_ref.clone(),
+                const_slice_ptr.clone(),
+            ],
+            vec![Block {
+                statements: vec![
+                    Statement::Assign {
+                        local: 2,
+                        value: Rvalue::FakeAddressOf {
+                            place: Place {
+                                local: 1,
+                                projection: vec![PlaceElem::Deref],
+                            },
+                        },
+                    },
+                    Statement::Assign {
+                        local: 0,
+                        value: Rvalue::Unary {
+                            op: UnOp::PtrMetadata,
+                            operand: Operand::Move { local: 2 },
+                        },
+                    },
+                ],
+                terminator: Terminator::Ret,
+            }],
+            "rust-path-v1::valid_fake_ptr_metadata".into(),
+        )
+        .expect("valid FakeAddressOf + PtrMetadata body must pass");
+        assert!(valid.uses_profile_v2());
+
+        // 2. Adding an unrelated real `*const u8` local alongside `&mut [u8]`
+        //    is still rejected by `validate_local_tys_with_exemptions`.
+        let mixed_err = Body::try_new(
+            1,
+            false,
+            vec![
+                usize_ty.clone(),
+                mut_slice_ref.clone(),
+                const_slice_ptr.clone(),
+                const_u8_ptr.clone(),
+            ],
+            vec![Block {
+                statements: vec![
+                    Statement::Assign {
+                        local: 2,
+                        value: Rvalue::FakeAddressOf {
+                            place: Place {
+                                local: 1,
+                                projection: vec![PlaceElem::Deref],
+                            },
+                        },
+                    },
+                    Statement::Assign {
+                        local: 0,
+                        value: Rvalue::Unary {
+                            op: UnOp::PtrMetadata,
+                            operand: Operand::Move { local: 2 },
+                        },
+                    },
+                ],
+                terminator: Terminator::Ret,
+            }],
+            "rust-path-v1::mixed_fake_and_real_raw".into(),
+        )
+        .unwrap_err();
+        assert!(
+            mixed_err.contains("body mixes reference and raw-pointer locals"),
+            "{mixed_err}"
+        );
+
+        // 3. Parameter local (`lid <= arg_count`) cannot be exempted as a fake
+        //    metadata temporary.
+        let arg_err = Body::try_new(
+            2,
+            false,
+            vec![
+                usize_ty.clone(),
+                mut_slice_ref.clone(),
+                const_slice_ptr.clone(),
+            ],
+            vec![Block {
+                statements: vec![
+                    Statement::Assign {
+                        local: 2,
+                        value: Rvalue::FakeAddressOf {
+                            place: Place {
+                                local: 1,
+                                projection: vec![PlaceElem::Deref],
+                            },
+                        },
+                    },
+                    Statement::Assign {
+                        local: 0,
+                        value: Rvalue::Unary {
+                            op: UnOp::PtrMetadata,
+                            operand: Operand::Move { local: 2 },
+                        },
+                    },
+                ],
+                terminator: Terminator::Ret,
+            }],
+            "rust-path-v1::fake_meta_param".into(),
+        )
+        .unwrap_err();
+        assert!(
+            arg_err.contains("body mixes reference and raw-pointer locals"),
+            "{arg_err}"
+        );
+
+        // Return place (`_0`, `lid < arg_count`) cannot be exempted either
+        // (kills `lid <= arg_count -> lid == arg_count`).
+        let ret_err = Body::try_new(
+            1,
+            false,
+            vec![const_slice_ptr.clone(), mut_slice_ref.clone()],
+            vec![Block {
+                statements: vec![Statement::Assign {
+                    local: 0,
+                    value: Rvalue::FakeAddressOf {
+                        place: Place {
+                            local: 1,
+                            projection: vec![PlaceElem::Deref],
+                        },
+                    },
+                }],
+                terminator: Terminator::Ret,
+            }],
+            "rust-path-v1::fake_meta_return_place".into(),
+        )
+        .unwrap_err();
+        assert!(
+            ret_err.contains("body mixes reference and raw-pointer locals"),
+            "{ret_err}"
+        );
+
+        // 4. `*mut [u8]` destination is rejected.
+        let mut_dst_err = Body::try_new(
+            1,
+            false,
+            vec![usize_ty, mut_slice_ref, mut_slice_ptr],
+            vec![Block {
+                statements: vec![
+                    Statement::Assign {
+                        local: 2,
+                        value: Rvalue::FakeAddressOf {
+                            place: Place {
+                                local: 1,
+                                projection: vec![PlaceElem::Deref],
+                            },
+                        },
+                    },
+                ],
+                terminator: Terminator::Ret,
+            }],
+            "rust-path-v1::fake_meta_mut_dst".into(),
+        )
+        .unwrap_err();
+        assert!(
+            mut_dst_err.contains("body mixes reference and raw-pointer locals"),
+            "{mut_dst_err}"
+        );
+
+        // 5. Dereferencing the fake temporary (`*_2`) in a ref body fails the
+        //    mixed-locals guard, and copying `_2` in a raw-pointer-only body
+        //    fails the unconditional `FakeAddressOf` discipline check.
+        let deref_err = Body::try_new(
+            1,
+            false,
+            vec![u8_ty, mut_u8_ref, const_u8_ptr.clone()],
+            vec![Block {
+                statements: vec![
+                    Statement::Assign {
+                        local: 2,
+                        value: Rvalue::FakeAddressOf {
+                            place: Place {
+                                local: 1,
+                                projection: vec![PlaceElem::Deref],
+                            },
+                        },
+                    },
+                    Statement::Assign {
+                        local: 0,
+                        value: Rvalue::Use {
+                            operand: Operand::CopyPlace {
+                                place: Place {
+                                    local: 2,
+                                    projection: vec![PlaceElem::Deref],
+                                },
+                            },
+                            with_retag: false,
+                        },
+                    },
+                ],
+                terminator: Terminator::Ret,
+            }],
+            "rust-path-v1::deref_fake_meta".into(),
+        )
+        .unwrap_err();
+        assert!(
+            deref_err.contains("body mixes reference and raw-pointer locals"),
+            "{deref_err}"
+        );
+
+        let raw_escape_err = Body::try_new(
+            1,
+            true,
+            vec![
+                const_u8_ptr.clone(),
+                const_u8_ptr.clone(),
+                const_u8_ptr.clone(),
+            ],
+            vec![Block {
+                statements: vec![
+                    Statement::Assign {
+                        local: 2,
+                        value: Rvalue::FakeAddressOf {
+                            place: Place {
+                                local: 1,
+                                projection: vec![PlaceElem::Deref],
+                            },
+                        },
+                    },
+                    Statement::Assign {
+                        local: 0,
+                        value: Rvalue::Use {
+                            operand: Operand::Copy { local: 2 },
+                            with_retag: false,
+                        },
+                    },
+                ],
+                terminator: Terminator::Ret,
+            }],
+            "rust-path-v1::raw_only_escape_fake_meta".into(),
+        )
+        .unwrap_err();
+        assert!(
+            raw_escape_err.contains("read exclusively by UnOp::PtrMetadata"),
+            "{raw_escape_err}"
+        );
+
+        // 6. Passing a fake-metadata local as a `Terminator::CoreCall` argument
+        //    (without mentioning it in `dst`) or overwriting it as a `CoreCall`
+        //    destination (without mentioning it in `args`) must both fail
+        //    closed (kills `|| -> &&` in `terminator_mentions_local_v2`).
+        let core_call_arg_escape_err = Body::try_new(
+            1,
+            true,
+            vec![
+                const_u8_ptr.clone(),
+                const_u8_ptr.clone(),
+                const_u8_ptr.clone(),
+            ],
+            vec![
+                Block {
+                    statements: vec![Statement::Assign {
+                        local: 2,
+                        value: Rvalue::FakeAddressOf {
+                            place: Place {
+                                local: 1,
+                                projection: vec![PlaceElem::Deref],
+                            },
+                        },
+                    }],
+                    terminator: Terminator::CoreCall {
+                        op: CoreCallOp::PtrAdd {
+                            mutability: Mutability::Shared,
+                            pointee: Ty::Int(IntTy {
+                                width: IntWidth::I8,
+                                signed: false,
+                            }),
+                        },
+                        args: vec![
+                            Operand::Copy { local: 2 },
+                            Operand::Constant {
+                                ty: Ty::Int(IntTy {
+                                    width: IntWidth::Isize,
+                                    signed: false,
+                                }),
+                                lit: ConstLit::Scalar { bits: 0 },
+                            },
+                        ],
+                        dst: Place {
+                            local: 0,
+                            projection: vec![],
+                        },
+                        target: 1,
+                        unwind: UnwindAction::Unreachable,
+                    },
+                },
+                Block {
+                    statements: vec![],
+                    terminator: Terminator::Ret,
+                },
+            ],
+            "rust-path-v1::core_call_arg_escape_fake_meta".into(),
+        )
+        .unwrap_err();
+        assert!(
+            core_call_arg_escape_err.contains("read exclusively by UnOp::PtrMetadata"),
+            "{core_call_arg_escape_err}"
+        );
+
+        let core_call_dst_escape_err = Body::try_new(
+            1,
+            true,
+            vec![
+                const_u8_ptr.clone(),
+                const_u8_ptr.clone(),
+                const_u8_ptr.clone(),
+            ],
+            vec![
+                Block {
+                    statements: vec![Statement::Assign {
+                        local: 2,
+                        value: Rvalue::FakeAddressOf {
+                            place: Place {
+                                local: 1,
+                                projection: vec![PlaceElem::Deref],
+                            },
+                        },
+                    }],
+                    terminator: Terminator::CoreCall {
+                        op: CoreCallOp::PtrAdd {
+                            mutability: Mutability::Shared,
+                            pointee: Ty::Int(IntTy {
+                                width: IntWidth::I8,
+                                signed: false,
+                            }),
+                        },
+                        args: vec![
+                            Operand::Copy { local: 1 },
+                            Operand::Constant {
+                                ty: Ty::Int(IntTy {
+                                    width: IntWidth::Isize,
+                                    signed: false,
+                                }),
+                                lit: ConstLit::Scalar { bits: 0 },
+                            },
+                        ],
+                        dst: Place {
+                            local: 2,
+                            projection: vec![],
+                        },
+                        target: 1,
+                        unwind: UnwindAction::Unreachable,
+                    },
+                },
+                Block {
+                    statements: vec![],
+                    terminator: Terminator::Ret,
+                },
+            ],
+            "rust-path-v1::core_call_dst_escape_fake_meta".into(),
+        )
+        .unwrap_err();
+        assert!(
+            core_call_dst_escape_err.contains("read exclusively by UnOp::PtrMetadata"),
+            "{core_call_dst_escape_err}"
+        );
+
+        // 7. Self-referential `_2 = FakeAddressOf(*_2)` must fail closed
+        //    (kills `fake_address_of_types_match_v2 -> true`).
+        let self_assign_err = Body::try_new(
+            1,
+            true,
+            vec![
+                Ty::Unit,
+                const_u8_ptr.clone(),
+                const_u8_ptr.clone(),
+            ],
+            vec![Block {
+                statements: vec![Statement::Assign {
+                    local: 2,
+                    value: Rvalue::FakeAddressOf {
+                        place: Place {
+                            local: 2,
+                            projection: vec![PlaceElem::Deref],
+                        },
+                    },
+                }],
+                terminator: Terminator::Ret,
+            }],
+            "rust-path-v1::self_assign_fake_meta".into(),
+        )
+        .unwrap_err();
+        assert!(
+            self_assign_err.contains("read exclusively by UnOp::PtrMetadata"),
+            "{self_assign_err}"
+        );
+
+        // 8. `Statement::AssignPlace` reading `PtrMetadata(move _3)` into a
+        //    projected destination (`*_2`) is admitted, while copying `_3` into
+        //    a projected destination is rejected.
+        let usize_ty = Ty::Int(IntTy {
+            width: IntWidth::Isize,
+            signed: false,
+        });
+        let mut_usize_ref = Ty::Ref {
+            mutability: Mutability::Mut,
+            pointee: Box::new(usize_ty.clone()),
+        };
+        let mut_slice_ref = Ty::Ref {
+            mutability: Mutability::Mut,
+            pointee: Box::new(Ty::Slice {
+                elem: Box::new(Ty::Int(IntTy {
+                    width: IntWidth::I8,
+                    signed: false,
+                })),
+            }),
+        };
+        let assign_place_ok = Body::try_new(
+            2,
+            false,
+            vec![
+                Ty::Unit,
+                mut_slice_ref.clone(),
+                mut_usize_ref.clone(),
+                const_slice_ptr.clone(),
+            ],
+            vec![Block {
+                statements: vec![
+                    Statement::Assign {
+                        local: 3,
+                        value: Rvalue::FakeAddressOf {
+                            place: Place {
+                                local: 1,
+                                projection: vec![PlaceElem::Deref],
+                            },
+                        },
+                    },
+                    Statement::AssignPlace {
+                        place: Place {
+                            local: 2,
+                            projection: vec![PlaceElem::Deref],
+                        },
+                        value: Rvalue::Unary {
+                            op: UnOp::PtrMetadata,
+                            operand: Operand::Move { local: 3 },
+                        },
+                    },
+                ],
+                terminator: Terminator::Ret,
+            }],
+            "rust-path-v1::assign_place_ptr_metadata_ok".into(),
+        )
+        .expect("AssignPlace reading PtrMetadata of fake temp must pass");
+        assert!(assign_place_ok.uses_profile_v2());
+
+        let assign_place_bad_err = Body::try_new(
+            2,
+            false,
+            vec![
+                Ty::Unit,
+                mut_slice_ref,
+                mut_usize_ref,
+                const_slice_ptr,
+            ],
+            vec![Block {
+                statements: vec![
+                    Statement::Assign {
+                        local: 3,
+                        value: Rvalue::FakeAddressOf {
+                            place: Place {
+                                local: 1,
+                                projection: vec![PlaceElem::Deref],
+                            },
+                        },
+                    },
+                    Statement::AssignPlace {
+                        place: Place {
+                            local: 2,
+                            projection: vec![PlaceElem::Deref],
+                        },
+                        value: Rvalue::Use {
+                            operand: Operand::Copy { local: 3 },
+                            with_retag: false,
+                        },
+                    },
+                ],
+                terminator: Terminator::Ret,
+            }],
+            "rust-path-v1::assign_place_copy_fake_meta_bad".into(),
+        )
+        .unwrap_err();
+        assert!(
+            assign_place_bad_err.contains("body mixes reference and raw-pointer locals"),
+            "{assign_place_bad_err}"
+        );
+
+        // 9. Escaping a fake-metadata temporary through `Rvalue::Binary`
+        //    (`BinOp::Offset`) in a raw-pointer-only body must fail closed
+        //    (kills `|| -> &&` in `rvalue_mentions_local_v2`).
+        let isize_ty = Ty::Int(IntTy {
+            width: IntWidth::Isize,
+            signed: true,
+        });
+        let binary_offset_escape_err = Body::try_new(
+            1,
+            true,
+            vec![
+                const_u8_ptr.clone(),
+                const_u8_ptr.clone(),
+                const_u8_ptr.clone(),
+            ],
+            vec![Block {
+                statements: vec![
+                    Statement::Assign {
+                        local: 2,
+                        value: Rvalue::FakeAddressOf {
+                            place: Place {
+                                local: 1,
+                                projection: vec![PlaceElem::Deref],
+                            },
+                        },
+                    },
+                    Statement::Assign {
+                        local: 0,
+                        value: Rvalue::Binary {
+                            op: BinOp::Offset,
+                            left: Operand::Move { local: 2 },
+                            right: Operand::Constant {
+                                ty: isize_ty.clone(),
+                                lit: ConstLit::Scalar { bits: 0 },
+                            },
+                        },
+                    },
+                ],
+                terminator: Terminator::Ret,
+            }],
+            "rust-path-v1::binary_offset_escape_fake_meta".into(),
+        )
+        .unwrap_err();
+        assert!(
+            binary_offset_escape_err.contains("read exclusively by UnOp::PtrMetadata"),
+            "{binary_offset_escape_err}"
+        );
+
+        // 10. Passing a fake-metadata local as a `Terminator::Call` argument
+        //     or overwriting it as a `Terminator::Call` destination must both
+        //     fail closed (kills `|| -> &&` and each disjunct in
+        //     `terminator_mentions_local_v2` for `Terminator::Call`).
+        let call_arg_escape_err = Body::try_new(
+            1,
+            true,
+            vec![
+                const_u8_ptr.clone(),
+                const_u8_ptr.clone(),
+                const_u8_ptr.clone(),
+            ],
+            vec![
+                Block {
+                    statements: vec![Statement::Assign {
+                        local: 2,
+                        value: Rvalue::FakeAddressOf {
+                            place: Place {
+                                local: 1,
+                                projection: vec![PlaceElem::Deref],
+                            },
+                        },
+                    }],
+                    terminator: Terminator::Call {
+                        callee: 0,
+                        args: vec![Operand::Copy { local: 2 }],
+                        dst: 0,
+                        target: Some(1),
+                        unwind: UnwindAction::Continue,
+                    },
+                },
+                Block {
+                    statements: vec![],
+                    terminator: Terminator::Ret,
+                },
+            ],
+            "rust-path-v1::call_arg_escape_fake_meta".into(),
+        )
+        .unwrap_err();
+        assert!(
+            call_arg_escape_err.contains("read exclusively by UnOp::PtrMetadata"),
+            "{call_arg_escape_err}"
+        );
+
+        let call_dst_escape_err = Body::try_new(
+            1,
+            true,
+            vec![
+                const_u8_ptr.clone(),
+                const_u8_ptr.clone(),
+                const_u8_ptr.clone(),
+            ],
+            vec![
+                Block {
+                    statements: vec![Statement::Assign {
+                        local: 2,
+                        value: Rvalue::FakeAddressOf {
+                            place: Place {
+                                local: 1,
+                                projection: vec![PlaceElem::Deref],
+                            },
+                        },
+                    }],
+                    terminator: Terminator::Call {
+                        callee: 0,
+                        args: vec![Operand::Copy { local: 1 }],
+                        dst: 2,
+                        target: Some(1),
+                        unwind: UnwindAction::Continue,
+                    },
+                },
+                Block {
+                    statements: vec![],
+                    terminator: Terminator::Ret,
+                },
+            ],
+            "rust-path-v1::call_dst_escape_fake_meta".into(),
+        )
+        .unwrap_err();
+        assert!(
+            call_dst_escape_err.contains("read exclusively by UnOp::PtrMetadata"),
+            "{call_dst_escape_err}"
+        );
+
+        // 11. Other well-typed escapes (`Cast`, `AggregateTuple`, `AddressOf`,
+        //     distinct-dst `FakeAddressOf`, non-`FakeAddressOf` second
+        //     assignment, and `PlaceMention`) must all fail closed. (`Repeat`
+        //     and `AggregateArray` cannot hold raw-pointer elements in the
+        //     Profile v2 type fragment and are covered directly in
+        //     `fake_ptr_metadata_predicates_cover_every_arm`.)
+        let fake_assign_2 = Statement::Assign {
+            local: 2,
+            value: Rvalue::FakeAddressOf {
+                place: Place {
+                    local: 1,
+                    projection: vec![PlaceElem::Deref],
+                },
+            },
+        };
+        let ptr_pair_ty = Ty::Tuple {
+            fields: vec![const_u8_ptr.clone(), const_u8_ptr.clone()],
+        };
+        let escape_cases: Vec<(&str, Vec<Ty>, Statement)> = vec![
+            (
+                "cast_escape",
+                vec![
+                    const_u8_ptr.clone(),
+                    const_u8_ptr.clone(),
+                    const_u8_ptr.clone(),
+                ],
+                Statement::Assign {
+                    local: 0,
+                    value: Rvalue::Cast {
+                        cast_kind: CastKind::PtrToPtr,
+                        operand: Operand::Move { local: 2 },
+                        ty: const_u8_ptr.clone(),
+                    },
+                },
+            ),
+            (
+                "tuple_escape",
+                vec![ptr_pair_ty, const_u8_ptr.clone(), const_u8_ptr.clone()],
+                Statement::Assign {
+                    local: 0,
+                    value: Rvalue::AggregateTuple {
+                        fields: vec![Operand::Copy { local: 1 }, Operand::Copy { local: 2 }],
+                    },
+                },
+            ),
+            (
+                "address_of_escape",
+                vec![
+                    const_u8_ptr.clone(),
+                    const_u8_ptr.clone(),
+                    const_u8_ptr.clone(),
+                ],
+                Statement::Assign {
+                    local: 0,
+                    value: Rvalue::AddressOf {
+                        mutability: Mutability::Shared,
+                        place: Place {
+                            local: 2,
+                            projection: vec![PlaceElem::Deref],
+                        },
+                    },
+                },
+            ),
+            (
+                "chained_fake_address_of_escape",
+                vec![
+                    Ty::Unit,
+                    const_u8_ptr.clone(),
+                    const_u8_ptr.clone(),
+                    const_u8_ptr.clone(),
+                ],
+                Statement::Assign {
+                    local: 3,
+                    value: Rvalue::FakeAddressOf {
+                        place: Place {
+                            local: 2,
+                            projection: vec![PlaceElem::Deref],
+                        },
+                    },
+                },
+            ),
+            (
+                "second_non_fake_assign",
+                vec![Ty::Unit, const_u8_ptr.clone(), const_u8_ptr.clone()],
+                Statement::Assign {
+                    local: 2,
+                    value: Rvalue::Use {
+                        operand: Operand::Copy { local: 1 },
+                        with_retag: false,
+                    },
+                },
+            ),
+            (
+                "place_mention_escape",
+                vec![Ty::Unit, const_u8_ptr.clone(), const_u8_ptr.clone()],
+                Statement::PlaceMention { local: 2 },
+            ),
+        ];
+        for (name, locals, stmt) in escape_cases {
+            let err = Body::try_new(
+                1,
+                true,
+                locals,
+                vec![Block {
+                    statements: vec![fake_assign_2.clone(), stmt],
+                    terminator: Terminator::Ret,
+                }],
+                format!("rust-path-v1::{name}"),
+            )
+            .unwrap_err();
+            assert!(
+                err.contains("read exclusively by UnOp::PtrMetadata"),
+                "{name}: {err}"
+            );
+        }
+
+        // 12. Unprojected `CopyPlace` read by `UnOp::PtrMetadata` is admitted.
+        let slice_u8 = Ty::Slice {
+            elem: Box::new(Ty::Int(IntTy {
+                width: IntWidth::I8,
+                signed: false,
+            })),
+        };
+        let mut_slice_ref = Ty::Ref {
+            mutability: Mutability::Mut,
+            pointee: Box::new(slice_u8.clone()),
+        };
+        let const_slice_ptr = Ty::RawPtr {
+            mutability: Mutability::Shared,
+            pointee: Box::new(slice_u8),
+        };
+        let ok = Body::try_new(
+            1,
+            false,
+            vec![usize_ty, mut_slice_ref, const_slice_ptr],
+            vec![Block {
+                statements: vec![
+                    fake_assign_2,
+                    Statement::Assign {
+                        local: 0,
+                        value: Rvalue::Unary {
+                            op: UnOp::PtrMetadata,
+                            operand: Operand::CopyPlace {
+                                place: Place {
+                                    local: 2,
+                                    projection: vec![],
+                                },
+                            },
+                        },
+                    },
+                ],
+                terminator: Terminator::Ret,
+            }],
+            "rust-path-v1::ptr_metadata_unprojected_copy_place_ok".into(),
+        )
+        .expect("unprojected CopyPlace PtrMetadata must pass");
+        assert!(ok.uses_profile_v2());
+    }
+
+    #[test]
+    fn fake_ptr_metadata_predicates_cover_every_arm() {
+        let u8_ty = Ty::Int(IntTy {
+            width: IntWidth::I8,
+            signed: false,
+        });
+        let usize_ty = Ty::Int(IntTy {
+            width: IntWidth::Isize,
+            signed: false,
+        });
+        let const_u8_ptr = Ty::RawPtr {
+            mutability: Mutability::Shared,
+            pointee: Box::new(u8_ty.clone()),
+        };
+        let mut_u8_ptr = Ty::RawPtr {
+            mutability: Mutability::Mut,
+            pointee: Box::new(u8_ty.clone()),
+        };
+        let const_usize_ptr = Ty::RawPtr {
+            mutability: Mutability::Shared,
+            pointee: Box::new(usize_ty.clone()),
+        };
+        let overflow_ref = Ty::Ref {
+            mutability: Mutability::Shared,
+            pointee: Box::new(Ty::OverflowPair(IntTy {
+                width: IntWidth::I8,
+                signed: false,
+            })),
+        };
+        let overflow_ptr = Ty::RawPtr {
+            mutability: Mutability::Shared,
+            pointee: Box::new(Ty::OverflowPair(IntTy {
+                width: IntWidth::I8,
+                signed: false,
+            })),
+        };
+        let p2 = Place {
+            local: 2,
+            projection: vec![],
+        };
+        let p2_deref = Place {
+            local: 2,
+            projection: vec![PlaceElem::Deref],
+        };
+        let p1 = Place {
+            local: 1,
+            projection: vec![],
+        };
+        let c0 = Operand::Constant {
+            ty: usize_ty.clone(),
+            lit: ConstLit::Scalar { bits: 0 },
+        };
+
+        // `operand_mentions_local_v2`
+        assert!(operand_mentions_local_v2(&Operand::Copy { local: 2 }, 2));
+        assert!(!operand_mentions_local_v2(&Operand::Copy { local: 1 }, 2));
+        assert!(operand_mentions_local_v2(&Operand::Move { local: 2 }, 2));
+        assert!(!operand_mentions_local_v2(&Operand::Move { local: 1 }, 2));
+        assert!(operand_mentions_local_v2(
+            &Operand::CopyPlace { place: p2.clone() },
+            2
+        ));
+        assert!(!operand_mentions_local_v2(
+            &Operand::CopyPlace { place: p1.clone() },
+            2
+        ));
+        assert!(operand_mentions_local_v2(
+            &Operand::MovePlace { place: p2.clone() },
+            2
+        ));
+        assert!(!operand_mentions_local_v2(
+            &Operand::MovePlace { place: p1.clone() },
+            2
+        ));
+        assert!(!operand_mentions_local_v2(&c0, 2));
+
+        // `rvalue_mentions_local_v2` across every Rvalue arm (including both
+        // sides of Binary).
+        let rv_true = [
+            Rvalue::Use {
+                operand: Operand::Copy { local: 2 },
+                with_retag: false,
+            },
+            Rvalue::UseRetag {
+                operand: Operand::Move { local: 2 },
+            },
+            Rvalue::Unary {
+                op: UnOp::PtrMetadata,
+                operand: Operand::Copy { local: 2 },
+            },
+            Rvalue::Cast {
+                cast_kind: CastKind::PtrToPtr,
+                operand: Operand::Copy { local: 2 },
+                ty: const_u8_ptr.clone(),
+            },
+            Rvalue::Repeat {
+                operand: Operand::Copy { local: 2 },
+                elem_ty: const_u8_ptr.clone(),
+                count: 2,
+            },
+            Rvalue::AggregateRangeTo {
+                elem_ty: usize_ty.clone(),
+                end: Operand::Copy { local: 2 },
+            },
+            Rvalue::AggregateRangeFrom {
+                elem_ty: usize_ty.clone(),
+                start: Operand::Copy { local: 2 },
+            },
+            Rvalue::Binary {
+                op: BinOp::Offset,
+                left: Operand::Copy { local: 2 },
+                right: c0.clone(),
+            },
+            Rvalue::Binary {
+                op: BinOp::Add,
+                left: c0.clone(),
+                right: Operand::Copy { local: 2 },
+            },
+            Rvalue::Discriminant { place: p2.clone() },
+            Rvalue::Ref {
+                mutability: Mutability::Shared,
+                place: p2.clone(),
+            },
+            Rvalue::AddressOf {
+                mutability: Mutability::Shared,
+                place: p2_deref.clone(),
+            },
+            Rvalue::FakeAddressOf {
+                place: p2_deref.clone(),
+            },
+            Rvalue::AggregateTuple {
+                fields: vec![c0.clone(), Operand::Copy { local: 2 }],
+            },
+            Rvalue::AggregateArray {
+                elem_ty: const_u8_ptr.clone(),
+                elems: vec![c0.clone(), Operand::Copy { local: 2 }],
+            },
+        ];
+        for rv in &rv_true {
+            assert!(rvalue_mentions_local_v2(rv, 2), "expected mention: {rv:?}");
+            assert!(
+                !rvalue_mentions_local_v2(rv, 3),
+                "unexpected mention of 3: {rv:?}"
+            );
+        }
+
+        // `terminator_mentions_local_v2` across every Terminator arm
+        let sys_op = SysrootNumOp {
+            kind: SysrootNumKind::WrappingAdd,
+            ty: IntTy {
+                width: IntWidth::Isize,
+                signed: false,
+            },
+        };
+        let term_false = [
+            Terminator::Goto { block: 0 },
+            Terminator::Ret,
+            Terminator::Unreachable,
+            Terminator::Unsupported,
+            Terminator::SwitchInt {
+                operand: Operand::Copy { local: 1 },
+                targets: vec![],
+                otherwise: 0,
+            },
+            Terminator::Assert {
+                cond: Operand::Copy { local: 1 },
+                expected: true,
+                msg: AssertKind::BoundsCheck,
+                target: 0,
+                unwind: UnwindAction::Continue,
+            },
+            Terminator::SysrootCall {
+                op: sys_op,
+                args: vec![Operand::Copy { local: 1 }, c0.clone()],
+                dst: 0,
+                target: Some(0),
+                unwind: UnwindAction::Continue,
+            },
+        ];
+        for term in &term_false {
+            assert!(
+                !terminator_mentions_local_v2(term, 2),
+                "unexpected mention: {term:?}"
+            );
+        }
+        let term_true = [
+            Terminator::SwitchInt {
+                operand: Operand::Copy { local: 2 },
+                targets: vec![],
+                otherwise: 0,
+            },
+            Terminator::Assert {
+                cond: Operand::Copy { local: 2 },
+                expected: true,
+                msg: AssertKind::BoundsCheck,
+                target: 0,
+                unwind: UnwindAction::Continue,
+            },
+            Terminator::CoreCall {
+                op: CoreCallOp::SliceLen,
+                args: vec![Operand::Copy { local: 2 }],
+                dst: Place {
+                    local: 0,
+                    projection: vec![],
+                },
+                target: 0,
+                unwind: UnwindAction::Continue,
+            },
+            Terminator::CoreCall {
+                op: CoreCallOp::SliceLen,
+                args: vec![Operand::Copy { local: 1 }],
+                dst: p2.clone(),
+                target: 0,
+                unwind: UnwindAction::Continue,
+            },
+            Terminator::Call {
+                callee: 0,
+                args: vec![Operand::Copy { local: 2 }],
+                dst: 0,
+                target: Some(0),
+                unwind: UnwindAction::Continue,
+            },
+            Terminator::Call {
+                callee: 0,
+                args: vec![Operand::Copy { local: 1 }],
+                dst: 2,
+                target: Some(0),
+                unwind: UnwindAction::Continue,
+            },
+            Terminator::SysrootCall {
+                op: sys_op,
+                args: vec![Operand::Copy { local: 2 }, c0.clone()],
+                dst: 0,
+                target: Some(0),
+                unwind: UnwindAction::Continue,
+            },
+            Terminator::SysrootCall {
+                op: sys_op,
+                args: vec![Operand::Copy { local: 1 }, c0.clone()],
+                dst: 2,
+                target: Some(0),
+                unwind: UnwindAction::Continue,
+            },
+        ];
+        for term in &term_true {
+            assert!(
+                terminator_mentions_local_v2(term, 2),
+                "expected mention: {term:?}"
+            );
+        }
+
+        // `fake_address_of_types_match_v2` rejection branches
+        let base_locals = vec![Ty::Unit, const_u8_ptr.clone(), const_u8_ptr.clone()];
+        assert!(fake_address_of_types_match_v2(
+            &base_locals,
+            2,
+            &Place {
+                local: 1,
+                projection: vec![PlaceElem::Deref],
+            }
+        ));
+        assert!(!fake_address_of_types_match_v2(&base_locals, 2, &p2_deref));
+        assert!(!fake_address_of_types_match_v2(&base_locals, 2, &p1));
+        assert!(!fake_address_of_types_match_v2(
+            &base_locals,
+            2,
+            &Place {
+                local: 1,
+                projection: vec![PlaceElem::Deref, PlaceElem::Deref],
+            }
+        ));
+        assert!(!fake_address_of_types_match_v2(
+            &[Ty::Unit, u8_ty.clone(), const_u8_ptr.clone()],
+            2,
+            &Place {
+                local: 1,
+                projection: vec![PlaceElem::Deref],
+            }
+        ));
+        assert!(!fake_address_of_types_match_v2(
+            &[Ty::Unit, overflow_ref, overflow_ptr],
+            2,
+            &Place {
+                local: 1,
+                projection: vec![PlaceElem::Deref],
+            }
+        ));
+        assert!(!fake_address_of_types_match_v2(
+            &[Ty::Unit, const_u8_ptr.clone(), mut_u8_ptr],
+            2,
+            &Place {
+                local: 1,
+                projection: vec![PlaceElem::Deref],
+            }
+        ));
+        assert!(!fake_address_of_types_match_v2(
+            &[Ty::Unit, const_u8_ptr.clone(), const_usize_ptr],
+            2,
+            &Place {
+                local: 1,
+                projection: vec![PlaceElem::Deref],
+            }
+        ));
+
+        // `is_fake_ptr_metadata_local_v2` structural rejections unreachable via
+        // MIR typing rules alone (projected `PtrMetadata` operand,
+        // `AssignPlace` writing through `*_2`, and `SysrootCall` mention).
+        let fake_assign = Statement::Assign {
+            local: 2,
+            value: Rvalue::FakeAddressOf {
+                place: Place {
+                    local: 1,
+                    projection: vec![PlaceElem::Deref],
+                },
+            },
+        };
+        let proj_ptr_meta = Rvalue::Unary {
+            op: UnOp::PtrMetadata,
+            operand: Operand::CopyPlace {
+                place: p2_deref.clone(),
+            },
+        };
+        assert!(is_fake_ptr_metadata_local_v2(
+            1,
+            &base_locals,
+            &[Block {
+                statements: vec![
+                    fake_assign.clone(),
+                    Statement::Assign {
+                        local: 0,
+                        value: Rvalue::Unary {
+                            op: UnOp::PtrMetadata,
+                            operand: Operand::MovePlace { place: p2.clone() },
+                        },
+                    },
+                ],
+                terminator: Terminator::Ret,
+            }],
+            2,
+        ));
+        assert!(is_fake_ptr_metadata_local_v2(
+            1,
+            &base_locals,
+            &[Block {
+                statements: vec![
+                    fake_assign.clone(),
+                    Statement::AssignPlace {
+                        place: Place {
+                            local: 0,
+                            projection: vec![PlaceElem::Deref],
+                        },
+                        value: Rvalue::Unary {
+                            op: UnOp::PtrMetadata,
+                            operand: Operand::MovePlace { place: p2 },
+                        },
+                    },
+                ],
+                terminator: Terminator::Ret,
+            }],
+            2,
+        ));
+        assert!(!is_fake_ptr_metadata_local_v2(
+            1,
+            &base_locals,
+            &[Block {
+                statements: vec![
+                    fake_assign.clone(),
+                    Statement::Assign {
+                        local: 0,
+                        value: proj_ptr_meta.clone(),
+                    },
+                ],
+                terminator: Terminator::Ret,
+            }],
+            2,
+        ));
+        assert!(!is_fake_ptr_metadata_local_v2(
+            1,
+            &base_locals,
+            &[Block {
+                statements: vec![
+                    fake_assign.clone(),
+                    Statement::AssignPlace {
+                        place: Place {
+                            local: 0,
+                            projection: vec![PlaceElem::Deref],
+                        },
+                        value: proj_ptr_meta,
+                    },
+                ],
+                terminator: Terminator::Ret,
+            }],
+            2,
+        ));
+        assert!(!is_fake_ptr_metadata_local_v2(
+            1,
+            &base_locals,
+            &[Block {
+                statements: vec![
+                    fake_assign.clone(),
+                    Statement::AssignPlace {
+                        place: p2_deref,
+                        value: Rvalue::Use {
+                            operand: c0.clone(),
+                            with_retag: false,
+                        },
+                    },
+                ],
+                terminator: Terminator::Ret,
+            }],
+            2,
+        ));
+        assert!(!is_fake_ptr_metadata_local_v2(
+            1,
+            &base_locals,
+            &[Block {
+                statements: vec![
+                    fake_assign.clone(),
+                    Statement::Assign {
+                        local: 0,
+                        value: Rvalue::Repeat {
+                            operand: Operand::Copy { local: 2 },
+                            elem_ty: const_u8_ptr.clone(),
+                            count: 2,
+                        },
+                    },
+                ],
+                terminator: Terminator::Ret,
+            }],
+            2,
+        ));
+        assert!(!is_fake_ptr_metadata_local_v2(
+            1,
+            &base_locals,
+            &[Block {
+                statements: vec![
+                    fake_assign.clone(),
+                    Statement::Assign {
+                        local: 0,
+                        value: Rvalue::AggregateArray {
+                            elem_ty: const_u8_ptr,
+                            elems: vec![c0.clone(), Operand::Copy { local: 2 }],
+                        },
+                    },
+                ],
+                terminator: Terminator::Ret,
+            }],
+            2,
+        ));
+        assert!(!is_fake_ptr_metadata_local_v2(
+            1,
+            &base_locals,
+            &[Block {
+                statements: vec![fake_assign],
+                terminator: Terminator::SysrootCall {
+                    op: sys_op,
+                    args: vec![Operand::Copy { local: 2 }, c0],
+                    dst: 0,
+                    target: Some(0),
+                    unwind: UnwindAction::Continue,
+                },
+            }],
+            2,
+        ));
     }
 }

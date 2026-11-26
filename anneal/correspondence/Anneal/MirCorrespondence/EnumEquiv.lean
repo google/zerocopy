@@ -1970,6 +1970,11 @@ private theorem refDiscrStmtOk_eq {ts : List MirTy} {localTys : List MirTy}
           cases h_p : decodePlace ts rp with
           | none => rw [h_p] at h_rv; cases h_rv
           | some _ => rw [h_p] at h_rv; injection h_rv with h; subst h; rfl
+        | fakeAddressOf rp =>
+          dsimp only [decodeRvalue] at h_rv
+          cases h_p : decodePlace ts rp with
+          | none => rw [h_p] at h_rv; cases h_rv
+          | some _ => rw [h_p] at h_rv; injection h_rv with h; subst h; rfl
         | useRetag ro =>
           dsimp only [decodeRvalue] at h_rv
           cases h_o : decodeOperand ts ro with
@@ -2094,6 +2099,11 @@ private theorem refCastStmtOk_eq {ts : List MirTy} {localTys : List MirTy}
           | none => rw [h_p] at h_rv; cases h_rv
           | some _ => rw [h_p] at h_rv; injection h_rv with h; subst h; rfl
         | addressOf _ rp =>
+          dsimp only [decodeRvalue] at h_rv
+          cases h_p : decodePlace ts rp with
+          | none => rw [h_p] at h_rv; cases h_rv
+          | some _ => rw [h_p] at h_rv; injection h_rv with h; subst h; rfl
+        | fakeAddressOf rp =>
           dsimp only [decodeRvalue] at h_rv
           cases h_p : decodePlace ts rp with
           | none => rw [h_p] at h_rv; cases h_rv
@@ -2354,6 +2364,13 @@ private theorem refAssignStmtOk_eq {ts localTys : List MirTy}
             rw [h_p] at h_rv; injection h_rv with h; subst h
             dsimp only [refAssignStmtOk, assignStmtOk]; rw [h_demp, h_did]
         | addressOf _ rp =>
+          dsimp only [decodeRvalue] at h_rv
+          cases h_p : decodePlace ts rp with
+          | none => rw [h_p] at h_rv; cases h_rv
+          | some _ =>
+            rw [h_p] at h_rv; injection h_rv with h; subst h
+            dsimp only [refAssignStmtOk, assignStmtOk]; rw [h_demp, h_did]
+        | fakeAddressOf rp =>
           dsimp only [decodeRvalue] at h_rv
           cases h_p : decodePlace ts rp with
           | none => rw [h_p] at h_rv; cases h_rv

@@ -386,6 +386,10 @@ fn rvalue_at(value: &Rvalue, indent: usize) -> String {
             mutability.lean_name(),
             place_at(place, indent)
         ),
+        Rvalue::FakeAddressOf { place } => format!(
+            "(Trusted.MirAst.Rvalue.fakeAddressOf {})",
+            place_at(place, indent)
+        ),
         Rvalue::AggregateTuple { fields } => format!(
             "(Trusted.MirAst.Rvalue.aggregateTuple {})",
             list_pretty(fields, indent, operand_at)

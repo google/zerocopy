@@ -692,7 +692,7 @@ theorem profileV2_unbridged_mem (p : Program) :
     DisclosedGap.unbridgedSemantics "mir_profile_v2" ∈
       profileV2ProgramGaps p := by
   unfold profileV2ProgramGaps
-  cases p.bodies.any (fun b => tyListHasRawPtrV2 b.locals) <;>
+  cases p.bodies.any bodyHasRawPtrLocalV2 <;>
     exact List.Mem.head _
 
 theorem profileV2_bodyGaps_mem (p : Program) (defId : Nat) (body : Body)
@@ -700,26 +700,26 @@ theorem profileV2_bodyGaps_mem (p : Program) (defId : Nat) (body : Body)
     ∀ g, g ∈ mirProfileV2RequiredGaps body → g ∈ profileV2ProgramGaps p := by
   intro g hg
   unfold mirProfileV2RequiredGaps at hg
-  cases hRaw : tyListHasRawPtrV2 body.locals with
+  cases hRaw : bodyHasRawPtrLocalV2 body with
   | false =>
     rw [hRaw] at hg
     have hEq := eq_of_mem_singleton hg
     subst hEq
     unfold profileV2ProgramGaps
-    cases p.bodies.any (fun b => tyListHasRawPtrV2 b.locals) <;>
+    cases p.bodies.any bodyHasRawPtrLocalV2 <;>
       exact List.Mem.tail _ (List.Mem.head _)
   | true =>
     rw [hRaw] at hg
     cases hg with
     | head =>
       unfold profileV2ProgramGaps
-      cases p.bodies.any (fun b => tyListHasRawPtrV2 b.locals) <;>
+      cases p.bodies.any bodyHasRawPtrLocalV2 <;>
         exact List.Mem.tail _ (List.Mem.head _)
     | tail _ hTail =>
       have hEq := eq_of_mem_singleton hTail
       subst hEq
-      have hAny : p.bodies.any (fun b => tyListHasRawPtrV2 b.locals) = true :=
-        any_eq_true_of_mem (fun b => tyListHasRawPtrV2 b.locals)
+      have hAny : p.bodies.any bodyHasRawPtrLocalV2 = true :=
+        any_eq_true_of_mem bodyHasRawPtrLocalV2
           (getElem?_mem hGet) hRaw
       unfold profileV2ProgramGaps
       rw [hAny]

@@ -4149,7 +4149,7 @@ fn run<Out: std::io::Write + Send, ErrOut: std::io::Write + Send>(
         "experimental Profile v2 MIR semantics: caller memory, single-level \
          references and raw pointers, little-endian byte order, and no \
          aliasing model (Stacked or Tree Borrows); bodies mixing reference \
-         and raw-pointer locals are refused, reference validity and \
+         and non-fake raw-pointer locals are refused, reference validity and \
          mutable-reference disjointness are checked at entry and return, \
          and raw-pointer arguments are assumed to carry provenance that \
          permits the accesses made through them; every reference argument, \
