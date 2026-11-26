@@ -118,6 +118,14 @@ pub const CORRESPONDENCE_PROOF_PATHS: &[&str] = &[
     "correspondence/Anneal/MirCorrespondence/MemAlloc.lean",
     "correspondence/Anneal/MirCorrespondence/MemRoundTrip.lean",
     "correspondence/Anneal/MirCorrespondence/MiriMemoryBridge.lean",
+    "correspondence/Anneal/MirCorrespondence/ProfileV2C3AndBundles.lean",
+    "correspondence/Anneal/MirCorrespondence/ProfileV2Canaries.lean",
+    "correspondence/Anneal/MirCorrespondence/ProfileV2Correspondence.lean",
+    "correspondence/Anneal/MirCorrespondence/ProfileV2EdgeWitnesses.lean",
+    "correspondence/Anneal/MirCorrespondence/ProfileV2PosCanaries.lean",
+    "correspondence/Anneal/MirCorrespondence/ProfileV2PosCanariesC1.lean",
+    "correspondence/Anneal/MirCorrespondence/ProfileV2RefMachine.lean",
+    "correspondence/Anneal/MirCorrespondence/ProfileV2Witnesses.lean",
     "correspondence/Anneal/MirCorrespondence/RefinementBundles.lean",
     "correspondence/Anneal/MirCorrespondence/RetPlace.lean",
     "correspondence/Anneal/MirCorrespondence/RvalueStep.lean",
@@ -171,6 +179,14 @@ pub const PROVENANCE_SOURCES: &[&str] = &[
     "correspondence/Anneal/MirCorrespondence/MemAlloc.lean",
     "correspondence/Anneal/MirCorrespondence/MemRoundTrip.lean",
     "correspondence/Anneal/MirCorrespondence/MiriMemoryBridge.lean",
+    "correspondence/Anneal/MirCorrespondence/ProfileV2C3AndBundles.lean",
+    "correspondence/Anneal/MirCorrespondence/ProfileV2Canaries.lean",
+    "correspondence/Anneal/MirCorrespondence/ProfileV2Correspondence.lean",
+    "correspondence/Anneal/MirCorrespondence/ProfileV2EdgeWitnesses.lean",
+    "correspondence/Anneal/MirCorrespondence/ProfileV2PosCanaries.lean",
+    "correspondence/Anneal/MirCorrespondence/ProfileV2PosCanariesC1.lean",
+    "correspondence/Anneal/MirCorrespondence/ProfileV2RefMachine.lean",
+    "correspondence/Anneal/MirCorrespondence/ProfileV2Witnesses.lean",
     "correspondence/Anneal/MirCorrespondence/RefinementBundles.lean",
     "correspondence/Anneal/MirCorrespondence/RetPlace.lean",
     "correspondence/Anneal/MirCorrespondence/RvalueStep.lean",
@@ -182,23 +198,30 @@ pub const PROVENANCE_SOURCES: &[&str] = &[
 ];
 
 /// Describes what the Pass 2 provenance does and does not certify, matching
-/// `docs/mir-correspondence-design.md`: the kernel checks only the operational
-/// execution rules of `Trusted/MirSemantics*`, while its theorem-stating
-/// surface, shared model types, correspondence adapter, and unlocked MiniRust
-/// specification claims remain human-audited.
+/// `docs/mir-correspondence-design.md`: the kernel checks only the Profile v1
+/// operational execution rules of `Trusted/MirSemantics*` against a locked
+/// claim, while its theorem-stating surface, shared model types,
+/// correspondence adapter, unlocked MiniRust claims, and unlocked
+/// domain-relativized Profile v2 machine/claim definitions remain
+/// human-audited.
 pub const CORRESPONDENCE_PROVENANCE_NOTE: &str = "Pass 2 (anneal-audit --require-correspondence) \
-    kernel-certifies the initState/evalStep execution rules of \
+    kernel-certifies the Profile v1 initState/evalStep execution rules of \
     Trusted/MirSemantics* against pinned vendor/lean-miri/ via \
-    Trusted/Correspondence* (CorrespondenceClaim, FaultEquivalenceClaim) and \
+    Trusted/Correspondence* (CorrespondenceClaim, FaultEquivalenceClaim), \
     kernel-replays correspondence/Anneal/MiniRust* (whose claim statements and \
     transcribed machine reside in unlocked correspondence/, with \
-    vendor/minirust/UPSTREAM_PIN.json verified by Tier-0 CI and recorded here) \
-    in blocking repository CI. \
+    vendor/minirust/UPSTREAM_PIN.json verified by Tier-0 CI and recorded here), \
+    and kernel-replays correspondence/Anneal/MirCorrespondence/ProfileV2* \
+    (unlocked domain-relativized Profile v2 correspondence over \
+    initStateV2/evalStepV2 and CallerMemory without a universal locked claim, \
+    so per-crate Profile v2 receipts still mark correspondence_provenance \
+    inapplicable) in blocking repository CI. \
     The theorem-stating surface of Trusted/MirSemantics* (Behavior, \
-    BodyVerified, ProgramVerified, CrateTheorem, UnitTheorem, and the helpers \
-    they reference), Trusted/MirModel.lean, vendor/lean-miri/, \
-    vendor/minirust/, Trusted/Correspondence*, and unlocked MiniRust claims \
-    remain human-audited.";
+    BodyVerified, ProgramVerified, CrateTheorem, UnitTheorem, their Profile v2 \
+    *V2 counterparts, and the helpers they reference), Trusted/MirModel.lean, \
+    vendor/lean-miri/, vendor/minirust/, Trusted/Correspondence*, unlocked \
+    MiniRust claims, and unlocked Profile v2 claim definitions, domain \
+    predicates, reference machine, and theorem types remain human-audited.";
 
 fn deserialize_unique_btreemap<'de, D>(
     deserializer: D,

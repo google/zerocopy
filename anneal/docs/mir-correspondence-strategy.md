@@ -740,11 +740,13 @@ four outcome cases:
    in both Profile v1 and Profile v2 (`evalTerminatorV2` carries
    `extractCallerMemory callerMem mem1`, preserving pre-abort caller-memory
    mutations); Pass 2 `lean-miri` correspondence
-   (`CanaryD17AssertPanicAbortClaim`) currently covers only Profile v1 with
-   empty `callerMem`, while a Profile v2 / non-empty-`callerMem` simulation
-   proof is not yet implemented. In Profile v2, failed optional overflow
-   checks retained under `--overflow-checks` (`Program.overflowChecks`) abort
-   the same way; Pass 2 does not yet cover them. Crates with a crate-local
+   (`CanaryD17AssertPanicAbortClaim`) covers Profile v1 with empty
+   `callerMem`, and `ProfileV2RefMachine` likewise models non-optional safe
+   panics (via `refPanicLangItem`) and `--overflow-checks` optional overflow
+   panics under `--panic abort` without a crate-local `#[panic_handler]`
+   (extracting post-mutation `CallerMemory` into `TerminalOut.aborted`); a
+   universal Profile v2 simulation theorem over arbitrary `Assert` programs is
+   not yet implemented. Crates with a crate-local
    `#[panic_handler]`, `UnwindAction::Terminate` in general, optional overflow
    checks elided under `-Coverflow-checks=no`, and abort intrinsics remain
    unmodeled or fail closed as `FaultKind.unsupported` (covered by Case 1).

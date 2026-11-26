@@ -98,7 +98,7 @@ class RenderCorrespondenceProvenanceTests(unittest.TestCase):
         )
         self.assertEqual(data["schema_version"], 1)
         self.assertEqual(len(data["correspondence_adapters"]), 7)
-        self.assertEqual(len(data["correspondence_proofs"]), 29)
+        self.assertEqual(len(data["correspondence_proofs"]), 37)
         self.assertEqual(len(data["trusted_lean"]), 27)
         self.assertEqual(len(data["patched_files"]), 13)
         mr = data["minirust_upstream"]
@@ -125,6 +125,7 @@ class RenderCorrespondenceProvenanceTests(unittest.TestCase):
         self.assertIn("anneal-audit --require-correspondence", data["note"])
         self.assertIn("vendor/minirust/UPSTREAM_PIN.json", data["note"])
         self.assertIn("verified by Tier-0 CI and recorded here", data["note"])
+        self.assertIn("unlocked Profile v2 claim definitions", data["note"])
         self.assertNotIn("against vendor/minirust/UPSTREAM_PIN.json", data["note"])
         self.assertNotIn("\\\n", data["note"])
 

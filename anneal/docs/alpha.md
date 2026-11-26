@@ -200,8 +200,11 @@ program when any captured body uses one of its additions; a program without
 them stays on Profile v1. Every body of a Profile v2 program, including
 scalar-only ones, is checked against `UnitTheoremV2` or `CrateTheoremV2`. Its
 receipt lists an "experimental Profile v2 MIR semantics" assumption and marks
-`correspondence_provenance` inapplicable, because Pass 2 relates only Profile
-v1 rules to `vendor/lean-miri/`.
+`correspondence_provenance` inapplicable: Pass 2 kernel-replays unlocked
+domain-relativized Profile v2 correspondence over curated canary and
+conservative-edge domains, but no universal locked claim yet certifies
+`initStateV2`/`evalStepV2` across arbitrary captures against
+`vendor/lean-miri/`.
 
 | Category | Added by Profile v2 | Refused (fail-closed) |
 | :--- | :--- | :--- |
