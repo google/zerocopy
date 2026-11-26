@@ -639,6 +639,17 @@ fn resolve_runtime_pt_interp_dirs(
     self_addr: usize,
     self_exe: &Path,
 ) -> Vec<PathBuf> {
+    resolve_runtime_pt_interp_dirs_with(maps_bytes, self_addr, self_exe, &LiveProcess::default())
+}
+
+/// [`resolve_runtime_pt_interp_dirs`] against an explicit [`ProcessView`].
+#[cfg(all(any(target_os = "linux", test), unix))]
+fn resolve_runtime_pt_interp_dirs_with(
+    maps_bytes: &[u8],
+    self_addr: usize,
+    self_exe: &Path,
+    process: &dyn ProcessView,
+) -> Vec<PathBuf> {
     use std::os::unix::ffi::OsStrExt;
 
     let mut dirs = BTreeSet::new();
@@ -647,7 +658,16 @@ fn resolve_runtime_pt_interp_dirs(
     else {
         return Vec::new();
     };
-    let self_exe_is_capture = regular_file_dev_ino(self_exe).ok() == Some(self_dev_ino);
+    // Classify the launch by either identity under which `/proc/self/maps`
+    // may report `/proc/self/exe` (see `regular_file_maps_ids`), so a direct
+    // launch on Btrfs is not mistaken for an explicit dynamic-loader launch.
+    // A superblock-only match may name a different file, but the direct-launch
+    // branch then reads `PT_INTERP` only on an exact `fstat(2)` match, so a
+    // misclassification can only drop directories, never add them.
+    let self_exe_is_capture = regular_file_maps_ids(self_exe, process)
+        .is_ok_and(|(stat_id, superblock_id)| {
+            stat_id == self_dev_ino || superblock_id == Some(self_dev_ino)
+        });
     if self_exe_is_capture {
         if let Some(info) = inspect_elf64_pt_interp(self_exe, Some(self_dev_ino)) {
             dirs.extend(info.dirs);
@@ -698,17 +718,20 @@ struct MapsEntry<'a> {
     start: usize,
     end: usize,
     perms: &'a [u8],
+    offset: u64,
     dev: u64,
     inode: u64,
     pathname: Option<&'a [u8]>,
 }
 
 /// Parse one raw `/proc/self/maps` line without requiring UTF-8 or trimming
-/// trailing spaces from file paths.
+/// trailing bytes from file paths.
+///
+/// The kernel escapes only newlines in printed pathnames, so trailing spaces
+/// and carriage returns are part of the file's name and must be kept.
 #[cfg(any(target_os = "linux", test))]
 fn parse_maps_line(raw_line: &[u8]) -> Option<MapsEntry<'_>> {
-    let line = raw_line.strip_suffix(b"\r").unwrap_or(raw_line);
-    let mut rest = strip_leading_ascii_ws(line);
+    let mut rest = strip_leading_ascii_ws(raw_line);
     let mut fields: [&[u8]; 5] = [b""; 5];
     for (idx, slot) in fields.iter_mut().enumerate() {
         let end = rest
@@ -730,6 +753,7 @@ fn parse_maps_line(raw_line: &[u8]) -> Option<MapsEntry<'_>> {
     if start >= end {
         return None;
     }
+    let offset = parse_hex_u64(fields[2])?;
     let (maj_hex, min_hex) = split_once_byte(fields[3], b':')?;
     let major = parse_hex_u64(maj_hex)?;
     let minor = parse_hex_u64(min_hex)?;
@@ -739,6 +763,7 @@ fn parse_maps_line(raw_line: &[u8]) -> Option<MapsEntry<'_>> {
         start,
         end,
         perms: fields[1],
+        offset,
         dev: linux_makedev(major, minor),
         inode,
         pathname,
@@ -847,16 +872,41 @@ fn resolve_driver_mapping_dev_ino(
     resolve_mapping_dev_ino(maps_bytes, driver_addr, "rustc driver").map(|(dev_ino, _)| dev_ino)
 }
 
-/// Map from sysroot library `(st_dev, st_ino)` to `(filename, path)`.
+/// Map from a `/proc/self/maps` identity to every sysroot library that may
+/// back it. A superblock identity can be shared by several files on Btrfs and
+/// multi-filesystem OverlayFS, so every candidate is kept and confirmed
+/// individually.
 #[cfg(all(any(target_os = "linux", test), unix))]
-type SysrootLibMap = BTreeMap<DevIno, (String, PathBuf)>;
+type SysrootLibMap = BTreeMap<DevIno, Vec<SysrootCandidate>>;
+
+/// A sysroot library file indexed under some identity in [`SysrootLibMap`].
+#[cfg(all(any(target_os = "linux", test), unix))]
+struct SysrootCandidate {
+    name: String,
+    path: PathBuf,
+    /// Whether the identity is the file's own `fstat(2)` identity, which no
+    /// other file shares, rather than its superblock identity.
+    exact: bool,
+}
+
+/// Every distinct `(identity, pathname)` pair of the file-backed executable
+/// mappings in `/proc/self/maps`. Pathnames are kept per identity, not just
+/// the first, because on Btrfs and multi-filesystem OverlayFS one identity
+/// can name several files, and admission by pathname must hold for each.
+#[cfg(all(any(target_os = "linux", test), unix))]
+type ExecMappings = BTreeSet<(DevIno, Vec<u8>)>;
 
 /// Collect all regular library files under `<sysroot>/lib` and
-/// `<sysroot>/lib/rustlib/<host>/lib`, indexed by kernel `(st_dev, st_ino)`.
-/// Symlinks (such as virtual CAS symlink forests) are followed so their
-/// backing inode matches `/proc/self/maps`.
+/// `<sysroot>/lib/rustlib/<host>/lib`, indexed by every `(st_dev, st_ino)`
+/// under which `/proc/self/maps` may report a mapping of them (see
+/// [`regular_file_maps_ids`]). Symlinks (such as virtual CAS symlink forests)
+/// are followed so their backing inode matches `/proc/self/maps`.
 #[cfg(all(any(target_os = "linux", test), unix))]
-fn collect_sysroot_library_entries(sysroot: &Path, host: &str) -> Result<SysrootLibMap, Failure> {
+fn collect_sysroot_library_entries(
+    sysroot: &Path,
+    host: &str,
+    process: &dyn ProcessView,
+) -> Result<SysrootLibMap, Failure> {
     if !is_valid_host_triple(host) {
         return Err(Failure::tool(format!(
             "invalid rustc host triple: {host:?}"
@@ -880,24 +930,78 @@ fn collect_sysroot_library_entries(sysroot: &Path, host: &str) -> Result<Sysroot
             let Some(name) = path.file_name().and_then(|n| n.to_str()).map(str::to_owned) else {
                 continue;
             };
-            let Ok(dev_ino) = regular_file_dev_ino(&path) else {
+            let Ok((stat_id, superblock_id)) = regular_file_maps_ids(&path, process) else {
                 continue;
             };
-            entries_by_id.entry(dev_ino).or_insert_with(|| (name, path));
+            let ids = std::iter::once((stat_id, true)).chain(superblock_id.map(|id| (id, false)));
+            for (id, exact) in ids {
+                entries_by_id.entry(id).or_insert_with(Vec::new).push(SysrootCandidate {
+                    name: name.clone(),
+                    path: path.clone(),
+                    exact,
+                });
+            }
         }
     }
     Ok(entries_by_id)
 }
 
+/// Return the `(st_dev, st_ino)` that `fstat(2)` reports for the regular file
+/// at `path`, plus the distinct superblock identity `(s_dev, st_ino)` when the
+/// two differ.
+///
+/// `/proc/self/maps` prints the device of the inode's superblock. `fstat(2)`
+/// instead reports a per-subvolume anonymous device on Btrfs, and a per-layer
+/// device on an OverlayFS whose layers span several filesystems without
+/// `xino` (where `/proc/self/maps` reports the overlay's device since Linux
+/// 6.8). A mapping of the file may therefore appear in `/proc/self/maps`
+/// under either identity. Only the `fstat(2)` identity is unique; a match on
+/// the superblock identity must be confirmed by
+/// [`open_and_hash_if_dev_ino_matches`].
+#[cfg(all(any(target_os = "linux", test), unix))]
+fn regular_file_maps_ids(
+    path: &Path,
+    process: &dyn ProcessView,
+) -> io::Result<(DevIno, Option<DevIno>)> {
+    use std::os::unix::fs::MetadataExt;
+
+    // Check the type before opening so a FIFO or device node in a library
+    // directory is skipped instead of blocking or being opened.
+    if !fs::metadata(path)?.is_file() {
+        return Err(io::Error::new(
+            io::ErrorKind::InvalidInput,
+            "path is not a regular file",
+        ));
+    }
+    let file = fs::File::open(path)?;
+    let meta = file.metadata()?;
+    if !meta.is_file() {
+        return Err(io::Error::new(
+            io::ErrorKind::InvalidInput,
+            "path is not a regular file",
+        ));
+    }
+    let stat_id = (meta.dev(), meta.ino());
+    let superblock_id = process
+        .superblock_dev(&file)
+        .ok()
+        .map(|dev| (dev, meta.ino()))
+        .filter(|id| *id != stat_id);
+    Ok((stat_id, superblock_id))
+}
+
 /// Open each `librustc_driver-*.so` under `<sysroot>/lib` or
-/// `<sysroot>/lib/rustlib/<host>/lib` once, match `(st_dev, st_ino)` on the
-/// open descriptor against `loaded_dev_ino`, and hash from that same handle.
+/// `<sysroot>/lib/rustlib/<host>/lib` once, match it against the loaded
+/// driver's `/proc/self/maps` identity `loaded_dev_ino` via
+/// [`open_and_hash_if_dev_ino_matches`], and return the matching file's name
+/// and the digest hashed from that same handle.
 #[cfg(any(target_os = "linux", test))]
 fn match_and_hash_sysroot_driver(
     sysroot: &Path,
     host: &str,
     loaded_dev_ino: (u64, u64),
-) -> Result<String, Failure> {
+    maps: MapsView<'_>,
+) -> Result<(String, String), Failure> {
     if !is_valid_host_triple(host) {
         return Err(Failure::tool(format!(
             "invalid rustc host triple: {host:?}"
@@ -924,12 +1028,13 @@ fn match_and_hash_sysroot_driver(
             if !is_rustc_driver_filename(name) {
                 continue;
             }
-            let Ok(matched_digest) = open_and_hash_if_dev_ino_matches(&path, loaded_dev_ino) else {
+            let Ok(matched_digest) = open_and_hash_if_dev_ino_matches(&path, loaded_dev_ino, maps)
+            else {
                 continue;
             };
             saw_candidate = true;
             if let Some(digest) = matched_digest {
-                return Ok(digest);
+                return Ok((name.to_owned(), digest));
             }
         }
     }
@@ -1053,7 +1158,7 @@ impl RuntimeClosure {
     /// of already-authenticated mapped ELF binaries.
     fn resolve(
         pt_interp_dirs: &[PathBuf],
-        exec_mappings: &BTreeMap<DevIno, Vec<u8>>,
+        exec_mappings: &ExecMappings,
         sysroot_libs: &SysrootLibMap,
         self_dev_ino: DevIno,
         driver_dev_ino: DevIno,
@@ -1070,7 +1175,8 @@ impl RuntimeClosure {
 
         let has_unmatched_mapping =
             |dirs_vec: &[PathBuf], symlink_targets: &BTreeMap<DevIno, PathBuf>| {
-                exec_mappings.iter().any(|(&dev_ino, pathname)| {
+                exec_mappings.iter().any(|(dev_ino, pathname)| {
+                    let dev_ino = *dev_ino;
                     if dev_ino == self_dev_ino
                         || dev_ino == driver_dev_ino
                         || sysroot_libs.contains_key(&dev_ino)
@@ -1111,7 +1217,8 @@ impl RuntimeClosure {
             }
 
             if inspected_dev_inos.len() < MAX_INSPECTED_ELFS && dirs.len() < MAX_DIRS {
-                for (&dev_ino, pathname) in exec_mappings {
+                for (dev_ino, pathname) in exec_mappings {
+                    let dev_ino = *dev_ino;
                     if inspected_dev_inos.len() >= MAX_INSPECTED_ELFS || dirs.len() >= MAX_DIRS {
                         break;
                     }
@@ -1119,8 +1226,10 @@ impl RuntimeClosure {
                         continue;
                     }
                     let elf_path: Option<&Path> =
-                        if let Some((_, sys_path)) = sysroot_libs.get(&dev_ino) {
-                            Some(sys_path.as_path())
+                        if let Some(candidate) =
+                            sysroot_libs.get(&dev_ino).and_then(|candidates| candidates.first())
+                        {
+                            Some(candidate.path.as_path())
                         } else if let Some(sym_path) = symlink_targets.get(&dev_ino) {
                             Some(sym_path.as_path())
                         } else if !pathname.ends_with(b" (deleted)")
@@ -1175,35 +1284,51 @@ impl RuntimeClosure {
 }
 
 /// Authenticate non-self, non-driver executable mappings in `/proc/self/maps`
-/// against `sysroot_libs` and `runtime_closure`, hashing any mapped sysroot
-/// libraries by open-FD `(st_dev, st_ino)`.
+/// against `sysroot_libs` and `runtime_closure`, hashing via
+/// [`open_and_hash_if_dev_ino_matches`] every mapped sysroot library whose
+/// identity is not already in `verified_ids`.
 #[cfg(all(any(target_os = "linux", test), unix))]
+#[allow(clippy::too_many_arguments)]
 fn verify_exec_mappings_residency(
-    exec_mappings: &BTreeMap<DevIno, Vec<u8>>,
+    maps: MapsView<'_>,
+    exec_mappings: &ExecMappings,
     sysroot_libs: &SysrootLibMap,
     runtime_closure: &RuntimeClosure,
     self_dev_ino: DevIno,
     driver_dev_ino: DevIno,
     sysroot: &Path,
+    verified_ids: &mut BTreeSet<DevIno>,
     dso_digests: &mut BTreeMap<String, String>,
 ) -> Result<(), Failure> {
-    for (&dev_ino, pathname) in exec_mappings {
+    for (dev_ino, pathname) in exec_mappings {
+        let dev_ino = *dev_ino;
         if dev_ino == self_dev_ino || dev_ino == driver_dev_ino {
             continue;
         }
-        if let Some((name, path)) = sysroot_libs.get(&dev_ino) {
-            if !dso_digests.contains_key(name) {
-                let digest = open_and_hash_if_dev_ino_matches(path, dev_ino)
-                    .map_err(Failure::io)?
-                    .ok_or_else(|| {
-                        Failure::tool(format!(
-                            "sysroot library {} changed inode during residency verification",
-                            path.display()
-                        ))
-                    })?;
-                dso_digests.insert(name.clone(), digest);
-            }
-        } else if !runtime_closure.is_allowed(dev_ino, pathname) {
+        // Skip by identity, not by name: a same-named library digested under
+        // another identity does not vouch for this mapping, which may have
+        // matched only by superblock and inode number.
+        if verified_ids.contains(&dev_ino) {
+            continue;
+        }
+        let candidates = sysroot_libs.get(&dev_ino).map_or(&[][..], Vec::as_slice);
+        if let Some((name, digest)) = hash_matching_sysroot_candidate(candidates, dev_ino, maps)? {
+            verified_ids.insert(dev_ino);
+            record_dso_digest(dso_digests, name, digest)?;
+            continue;
+        }
+        // An exact identity names that sysroot file alone, so failing to
+        // confirm it means the file changed during verification. A sysroot
+        // file sharing only a superblock identity may be an unrelated file in
+        // another Btrfs subvolume or OverlayFS layer, so a mapping that no such
+        // candidate backs is judged like any other non-sysroot mapping.
+        if candidates.iter().any(|candidate| candidate.exact) {
+            return Err(Failure::tool(format!(
+                "sysroot library mapping {} changed during residency verification",
+                String::from_utf8_lossy(pathname)
+            )));
+        }
+        if !runtime_closure.is_allowed(dev_ino, pathname) {
             return Err(Failure::tool(format!(
                 "loaded executable mapping {} does not belong to verified sysroot {} or standard system libraries",
                 String::from_utf8_lossy(pathname),
@@ -1212,6 +1337,68 @@ fn verify_exec_mappings_residency(
         }
     }
     Ok(())
+}
+
+/// Return the name and digest of the first of `candidates` that backs the
+/// mappings of `dev_ino` per [`open_and_hash_if_dev_ino_matches`], or `None`
+/// if none does.
+#[cfg(all(any(target_os = "linux", test), unix))]
+fn hash_matching_sysroot_candidate<'a>(
+    candidates: &'a [SysrootCandidate],
+    dev_ino: DevIno,
+    maps: MapsView<'_>,
+) -> Result<Option<(&'a str, String)>, Failure> {
+    for candidate in candidates {
+        if let Some(digest) =
+            open_and_hash_if_dev_ino_matches(&candidate.path, dev_ino, maps).map_err(Failure::io)?
+        {
+            return Ok(Some((&candidate.name, digest)));
+        }
+    }
+    Ok(None)
+}
+
+/// Hash the capture executable mapped as `self_dev_ino`, opening it through
+/// `self_exe_path` and, failing that, through the mapping's own pathname.
+#[cfg(all(any(target_os = "linux", test), unix))]
+fn hash_capture_executable(
+    self_exe_path: &Path,
+    self_vma_path: &[u8],
+    self_dev_ino: DevIno,
+    maps: MapsView<'_>,
+) -> Result<String, Failure> {
+    use std::os::unix::ffi::OsStrExt;
+
+    if let Ok(Some(digest)) = open_and_hash_if_dev_ino_matches(self_exe_path, self_dev_ino, maps) {
+        return Ok(digest);
+    }
+    let vma_path = Path::new(OsStr::from_bytes(self_vma_path));
+    open_and_hash_if_dev_ino_matches(vma_path, self_dev_ino, maps)
+        .map_err(Failure::io)?
+        .ok_or_else(|| {
+            Failure::tool("capture executable failed open-FD (st_dev, st_ino) verification")
+        })
+}
+
+/// Record `digest` for the sysroot library `name`, failing if a different
+/// library with the same name was already recorded with another digest, since
+/// the manifest could then describe only one of them.
+#[cfg(all(any(target_os = "linux", test), unix))]
+fn record_dso_digest(
+    dso_digests: &mut BTreeMap<String, String>,
+    name: &str,
+    digest: String,
+) -> Result<(), Failure> {
+    match dso_digests.get(name) {
+        Some(previous) if *previous != digest => Err(Failure::tool(format!(
+            "loaded sysroot libraries named {name} have different contents"
+        ))),
+        Some(_) => Ok(()),
+        None => {
+            dso_digests.insert(name.to_owned(), digest);
+            Ok(())
+        }
+    }
 }
 
 /// Verify closed-world executable DSO residency across `/proc/self/maps` for
@@ -1233,14 +1420,41 @@ fn verify_maps_residency(
     self_exe_path: &Path,
     pt_interp_dirs: &[PathBuf],
 ) -> Result<DriverIdentity, Failure> {
+    let process = LiveProcess::default();
+    verify_maps_residency_with(
+        MapsView {
+            bytes: maps_bytes,
+            process: &process,
+        },
+        sysroot,
+        host,
+        self_addr,
+        driver_addr,
+        self_exe_path,
+        pt_interp_dirs,
+    )
+}
+
+/// [`verify_maps_residency`] against an explicit [`MapsView`].
+#[cfg(all(any(target_os = "linux", test), unix))]
+fn verify_maps_residency_with(
+    maps: MapsView<'_>,
+    sysroot: &Path,
+    host: &str,
+    self_addr: usize,
+    driver_addr: usize,
+    self_exe_path: &Path,
+    pt_interp_dirs: &[PathBuf],
+) -> Result<DriverIdentity, Failure> {
+    let maps_bytes = maps.bytes;
     let (self_dev_ino, self_vma_path) =
         resolve_mapping_dev_ino(maps_bytes, self_addr, "capture executable")?;
     let (driver_dev_ino, _) = resolve_mapping_dev_ino(maps_bytes, driver_addr, "rustc driver")?;
-    let sysroot_libs = collect_sysroot_library_entries(sysroot, host)?;
+    let sysroot_libs = collect_sysroot_library_entries(sysroot, host, maps.process)?;
 
     // Collect every file-backed executable mapping and any file-backed
     // toolchain-DSO mapping across `/proc/self/maps`.
-    let mut exec_mappings: BTreeMap<(u64, u64), Vec<u8>> = BTreeMap::new();
+    let mut exec_mappings = ExecMappings::new();
     let mut toolchain_mappings: BTreeMap<(u64, u64), Vec<u8>> = BTreeMap::new();
     for raw_line in maps_bytes.split(|&b| b == b'\n') {
         let Some(entry) = parse_maps_line(raw_line) else {
@@ -1267,9 +1481,7 @@ fn verify_maps_residency(
                     String::from_utf8_lossy(pathname)
                 )));
             }
-            exec_mappings
-                .entry(dev_ino)
-                .or_insert_with(|| pathname.to_vec());
+            exec_mappings.insert((dev_ino, pathname.to_vec()));
         }
         if is_toolchain_named {
             let pathname = entry.pathname.unwrap_or_default();
@@ -1308,28 +1520,17 @@ fn verify_maps_residency(
             )));
         }
         verify_exec_mappings_residency(
+            maps,
             &exec_mappings,
             &sysroot_libs,
             &runtime_closure,
             self_dev_ino,
             driver_dev_ino,
             sysroot,
+            &mut BTreeSet::new(),
             &mut dso_digests,
         )?;
-        let exe_sha256 = match open_and_hash_if_dev_ino_matches(self_exe_path, self_dev_ino) {
-            Ok(Some(digest)) => digest,
-            _ => {
-                use std::os::unix::ffi::OsStrExt;
-                let vma_path = Path::new(OsStr::from_bytes(self_vma_path));
-                open_and_hash_if_dev_ino_matches(vma_path, self_dev_ino)
-                    .map_err(Failure::io)?
-                    .ok_or_else(|| {
-                        Failure::tool(
-                            "capture executable failed open-FD (st_dev, st_ino) verification",
-                        )
-                    })?
-            }
-        };
+        let exe_sha256 = hash_capture_executable(self_exe_path, self_vma_path, self_dev_ino, maps)?;
         return Ok(DriverIdentity {
             linkage: DriverLinkage::StaticExe,
             driver_sha256: exe_sha256,
@@ -1340,40 +1541,50 @@ fn verify_maps_residency(
     // Dynamic `librustc_driver-*.so` mode: authenticate `driver_dev_ino`
     // against `<sysroot>` and verify the closed-world set of every executable
     // and toolchain-named mapping in `/proc/self/maps`.
-    let driver_sha256 = match_and_hash_sysroot_driver(sysroot, host, driver_dev_ino)?;
-    if let Some((driver_name, _)) = sysroot_libs.get(&driver_dev_ino) {
-        dso_digests.insert(driver_name.clone(), driver_sha256.clone());
+    let (driver_name, driver_sha256) =
+        match_and_hash_sysroot_driver(sysroot, host, driver_dev_ino, maps)?;
+    record_dso_digest(&mut dso_digests, &driver_name, driver_sha256.clone())?;
+
+    // Mappings that share the capture executable's identity are exempt from
+    // the closed-world checks below. That identity is unique only if it is the
+    // executable's own `fstat(2)` identity; otherwise confirm that every such
+    // mapping is the capture executable.
+    if regular_file_dev_ino(self_exe_path).ok() != Some(self_dev_ino) {
+        hash_capture_executable(self_exe_path, self_vma_path, self_dev_ino, maps)?;
     }
 
+    let mut verified_ids = BTreeSet::new();
     for (&dev_ino, pathname) in &toolchain_mappings {
         if dev_ino == self_dev_ino || dev_ino == driver_dev_ino {
             continue;
         }
-        let Some((name, path)) = sysroot_libs.get(&dev_ino) else {
+        let Some(candidates) = sysroot_libs.get(&dev_ino) else {
             return Err(Failure::tool(format!(
                 "loaded toolchain DSO {} does not match any library in sysroot {}",
                 String::from_utf8_lossy(pathname),
                 sysroot.display()
             )));
         };
-        let digest = open_and_hash_if_dev_ino_matches(path, dev_ino)
-            .map_err(Failure::io)?
-            .ok_or_else(|| {
+        let (name, digest) =
+            hash_matching_sysroot_candidate(candidates, dev_ino, maps)?.ok_or_else(|| {
                 Failure::tool(format!(
-                    "sysroot toolchain DSO {} changed inode during residency verification",
-                    path.display()
+                    "sysroot toolchain DSO mapping {} does not match its sysroot file",
+                    String::from_utf8_lossy(pathname)
                 ))
             })?;
-        dso_digests.insert(name.clone(), digest);
+        record_dso_digest(&mut dso_digests, name, digest)?;
+        verified_ids.insert(dev_ino);
     }
 
     verify_exec_mappings_residency(
+        maps,
         &exec_mappings,
         &sysroot_libs,
         &runtime_closure,
         self_dev_ino,
         driver_dev_ino,
         sysroot,
+        &mut verified_ids,
         &mut dso_digests,
     )?;
 
@@ -1384,10 +1595,43 @@ fn verify_maps_residency(
     })
 }
 
+/// Open the regular file at `path` and, if a mapping reported by
+/// `/proc/self/maps` as `expected` is backed by it, return the SHA-256 of its
+/// contents read from that same handle; return `Ok(None)` otherwise.
+///
+/// A file whose `fstat(2)` `(st_dev, st_ino)` equals `expected` matches
+/// outright, because the kernel guarantees that identity is unique.
+///
+/// On Btrfs, `fstat(2)` reports a per-subvolume anonymous device while
+/// `/proc/self/maps` reports the filesystem's superblock device, and inode
+/// numbers repeat across subvolumes; OverlayFS over several filesystems
+/// without `xino` behaves likewise across layers. There, `expected` names the
+/// superblock and inode number but not which of possibly several inodes was
+/// mapped, so an `(st_ino, superblock)` match alone would accept a different
+/// file that happens to share both. Such a match is accepted only if every
+/// page of every accessible mapping of `expected` that still shares the kernel
+/// page cache equals the bytes hashed from this handle at the same file
+/// offset, and at least one executable page was compared. Comparing in the
+/// same pass that hashes makes the digest describe exactly the bytes found to
+/// be mapped. Non-executable pages that the process has privately modified
+/// (relocated `PT_GNU_RELRO` data, written `.data`) are skipped, since their
+/// mapped contents no longer come from the file; executable pages are never
+/// expected to be modified, so any such page fails the match.
+///
+/// Because skipped pages leave a substitute's initialized data unchecked,
+/// every such mapping's pathname must also open, at the time of the check, to
+/// this same inode by full `fstat(2)` identity, which is unique. The kernel
+/// prints a mapping's current pathname, so a substitute that stays put fails
+/// this check. Defeating it requires replacing the substitute's path (for
+/// example, moving the substitute aside and putting a symlink to the candidate
+/// in its place) between reading `/proc/self/maps` and opening the pathname,
+/// and the substitute must still match the candidate's code and read-only
+/// data.
 #[cfg(all(any(target_os = "linux", test), unix))]
 fn open_and_hash_if_dev_ino_matches(
     path: &Path,
     expected: (u64, u64),
+    maps: MapsView<'_>,
 ) -> io::Result<Option<String>> {
     use std::os::unix::fs::MetadataExt;
 
@@ -1399,22 +1643,440 @@ fn open_and_hash_if_dev_ino_matches(
             "path is not a regular file",
         ));
     }
-    if (meta.dev(), meta.ino()) != expected {
+    if (meta.dev(), meta.ino()) == expected {
+        let digest = sha256_reader(&mut file)?;
+        return Ok(Some(digest));
+    }
+    if meta.ino() != expected.1 || maps.process.superblock_dev(&file).ok() != Some(expected.0) {
         return Ok(None);
     }
-    let digest = sha256_reader(&mut file)?;
-    Ok(Some(digest))
+    let page_size = maps.process.page_size()?;
+    let segments = collect_mapped_segments(maps, expected, page_size)?;
+    if !segments
+        .iter()
+        .all(|segment| maps_pathname_opens_to(segment.pathname.as_deref(), &meta))
+    {
+        return Ok(None);
+    }
+    hash_and_compare_mapped_pages(&mut file, meta.len(), &segments, page_size, maps.process)
+}
+
+/// Return whether a `/proc/self/maps` pathname currently opens to a regular
+/// file with the same `fstat(2)` `(st_dev, st_ino)` as `meta`.
+///
+/// The kernel prints a newline in a mapped file's name as the four bytes
+/// `\012` without escaping backslashes, so a printed pathname containing a
+/// backslash may name a different file than the one mapped; such pathnames
+/// are rejected rather than unescaped.
+#[cfg(all(any(target_os = "linux", test), unix))]
+fn maps_pathname_opens_to(pathname: Option<&[u8]>, meta: &fs::Metadata) -> bool {
+    use std::os::unix::ffi::OsStrExt;
+    use std::os::unix::fs::MetadataExt;
+
+    let Some(pathname) = pathname else {
+        return false;
+    };
+    if !pathname.starts_with(b"/")
+        || pathname.ends_with(b" (deleted)")
+        || pathname.contains(&b'\\')
+    {
+        return false;
+    }
+    fs::File::open(Path::new(OsStr::from_bytes(pathname)))
+        .and_then(|file| file.metadata())
+        .is_ok_and(|opened| {
+            opened.is_file() && (opened.dev(), opened.ino()) == (meta.dev(), meta.ino())
+        })
 }
 
 #[cfg(all(test, not(unix)))]
 fn open_and_hash_if_dev_ino_matches(
     _path: &Path,
     _expected: (u64, u64),
+    _maps: MapsView<'_>,
 ) -> io::Result<Option<String>> {
     Err(io::Error::new(
         io::ErrorKind::Unsupported,
         "residency hashing requires unix metadata",
     ))
+}
+
+/// Process state consulted to confirm the file behind a `/proc/self/maps`
+/// entry when the entry's `(st_dev, st_ino)` does not identify it uniquely.
+#[cfg(any(target_os = "linux", test))]
+trait ProcessView {
+    /// Return the device number of the superblock of the mount through which
+    /// `file` was opened. This is the device `/proc/self/maps` prints for
+    /// mappings of `file`.
+    fn superblock_dev(&self, file: &fs::File) -> io::Result<u64>;
+
+    /// Return the base page size in which `/proc/self/maps` ranges and
+    /// `/proc/self/pagemap` entries are expressed.
+    fn page_size(&self) -> io::Result<usize>;
+
+    /// Return the `/proc/self/pagemap` entries of the `count` pages starting
+    /// at the page-aligned address `addr`.
+    fn pagemap(&self, addr: usize, count: usize) -> io::Result<Vec<u64>>;
+
+    /// Fill `buf` with this process's memory starting at `addr`.
+    fn read_memory(&self, addr: usize, buf: &mut [u8]) -> io::Result<()>;
+}
+
+/// Raw `/proc/self/maps` contents paired with the [`ProcessView`] that
+/// confirms ambiguous entries.
+#[cfg(any(target_os = "linux", test))]
+#[derive(Clone, Copy)]
+struct MapsView<'a> {
+    bytes: &'a [u8],
+    process: &'a dyn ProcessView,
+}
+
+/// [`ProcessView`] of the running process, backed by `/proc/self`.
+#[cfg(any(target_os = "linux", test))]
+#[derive(Default)]
+struct LiveProcess {
+    /// `/proc/self/mountinfo`, read once per verification; `None` if it was
+    /// unreadable.
+    mountinfo: std::cell::OnceCell<Option<Vec<u8>>>,
+    /// `AT_PAGESZ` from `/proc/self/auxv`; `None` if it was unavailable.
+    page_size: std::cell::OnceCell<Option<usize>>,
+    /// Open `/proc/self/mem`; `None` if it could not be opened.
+    mem: std::cell::OnceCell<Option<fs::File>>,
+}
+
+#[cfg(any(target_os = "linux", test))]
+impl ProcessView for LiveProcess {
+    // Linux prints the inode's superblock device `i_sb->s_dev` both in
+    // `/proc/<pid>/maps` (`show_map_vma`) and in the third field of
+    // `/proc/<pid>/mountinfo` (`show_mountinfo`), and `/proc/<pid>/fdinfo/<fd>`
+    // names the mount of an open file in its `mnt_id` field. Resolving through
+    // the open descriptor rather than a path keeps the answer tied to the
+    // inode that was opened and hashed.
+    #[cfg(unix)]
+    fn superblock_dev(&self, file: &fs::File) -> io::Result<u64> {
+        use std::os::fd::AsRawFd;
+
+        let fdinfo = fs::read(format!("/proc/self/fdinfo/{}", file.as_raw_fd()))?;
+        let mnt_id = parse_fdinfo_mnt_id(&fdinfo).ok_or_else(|| {
+            io::Error::new(io::ErrorKind::InvalidData, "fdinfo has no mnt_id")
+        })?;
+        let mountinfo = self
+            .mountinfo
+            .get_or_init(|| fs::read("/proc/self/mountinfo").ok())
+            .as_deref()
+            .ok_or_else(|| io::Error::other("cannot read /proc/self/mountinfo"))?;
+        parse_mountinfo_dev(mountinfo, mnt_id).ok_or_else(|| {
+            io::Error::new(
+                io::ErrorKind::NotFound,
+                format!("mount {mnt_id} not found in /proc/self/mountinfo"),
+            )
+        })
+    }
+
+    fn page_size(&self) -> io::Result<usize> {
+        self.page_size
+            .get_or_init(|| parse_auxv_page_size(&fs::read("/proc/self/auxv").ok()?))
+            .ok_or_else(|| {
+                io::Error::new(io::ErrorKind::InvalidData, "auxv has no valid AT_PAGESZ")
+            })
+    }
+
+    #[cfg(unix)]
+    fn pagemap(&self, addr: usize, count: usize) -> io::Result<Vec<u64>> {
+        use std::os::unix::fs::FileExt;
+
+        const ENTRY_BYTES: usize = 8;
+        let page_size = self.page_size()?;
+        let overflow = || io::Error::new(io::ErrorKind::InvalidInput, "pagemap range overflows");
+        let len = count.checked_mul(ENTRY_BYTES).ok_or_else(overflow)?;
+        let offset = u64::try_from(addr / page_size)
+            .ok()
+            .and_then(|page| page.checked_mul(ENTRY_BYTES as u64))
+            .ok_or_else(overflow)?;
+        let mut raw = vec![0u8; len];
+        fs::File::open("/proc/self/pagemap")?.read_exact_at(&mut raw, offset)?;
+        Ok(raw
+            .chunks_exact(ENTRY_BYTES)
+            .map(|entry| u64::from_ne_bytes(entry.try_into().unwrap()))
+            .collect())
+    }
+
+    #[cfg(unix)]
+    fn read_memory(&self, addr: usize, buf: &mut [u8]) -> io::Result<()> {
+        use std::os::unix::fs::FileExt;
+
+        let offset = u64::try_from(addr)
+            .map_err(|_| io::Error::new(io::ErrorKind::InvalidInput, "address overflows"))?;
+        self.mem
+            .get_or_init(|| fs::File::open("/proc/self/mem").ok())
+            .as_ref()
+            .ok_or_else(|| io::Error::other("cannot open /proc/self/mem"))?
+            .read_exact_at(buf, offset)
+    }
+
+    #[cfg(not(unix))]
+    fn superblock_dev(&self, _file: &fs::File) -> io::Result<u64> {
+        Err(io::Error::from(io::ErrorKind::Unsupported))
+    }
+
+    #[cfg(not(unix))]
+    fn pagemap(&self, _addr: usize, _count: usize) -> io::Result<Vec<u64>> {
+        Err(io::Error::from(io::ErrorKind::Unsupported))
+    }
+
+    #[cfg(not(unix))]
+    fn read_memory(&self, _addr: usize, _buf: &mut [u8]) -> io::Result<()> {
+        Err(io::Error::from(io::ErrorKind::Unsupported))
+    }
+}
+
+/// Return the `mnt_id` field of a `/proc/<pid>/fdinfo/<fd>` file.
+#[cfg(any(target_os = "linux", test))]
+fn parse_fdinfo_mnt_id(fdinfo: &[u8]) -> Option<u64> {
+    fdinfo.split(|&b| b == b'\n').find_map(|line| {
+        let value = line.strip_prefix(b"mnt_id:")?;
+        parse_dec_u64(value.trim_ascii())
+    })
+}
+
+/// Return the superblock device of mount `mnt_id` in a
+/// `/proc/<pid>/mountinfo` file, encoded like `MetadataExt::dev()`.
+///
+/// The third field is the superblock's `major:minor` in decimal, unlike the
+/// hexadecimal device numbers in `/proc/<pid>/maps`.
+#[cfg(any(target_os = "linux", test))]
+fn parse_mountinfo_dev(mountinfo: &[u8], mnt_id: u64) -> Option<u64> {
+    let mut found = None;
+    for line in mountinfo.split(|&b| b == b'\n') {
+        let mut fields = line.split(|&b| b == b' ');
+        if fields.next().and_then(parse_dec_u64) != Some(mnt_id) {
+            continue;
+        }
+        let (major, minor) = split_once_byte(fields.nth(1)?, b':')?;
+        let dev = linux_makedev(parse_dec_u64(major)?, parse_dec_u64(minor)?);
+        if found.replace(dev).is_some() {
+            return None;
+        }
+    }
+    found
+}
+
+/// Return the `AT_PAGESZ` value from a native-endian `/proc/<pid>/auxv`.
+#[cfg(any(target_os = "linux", test))]
+fn parse_auxv_page_size(auxv: &[u8]) -> Option<usize> {
+    const AT_NULL: usize = 0;
+    const AT_PAGESZ: usize = 6;
+    const WORD: usize = size_of::<usize>();
+    for pair in auxv.chunks_exact(2 * WORD) {
+        let key = usize::from_ne_bytes(pair[..WORD].try_into().ok()?);
+        let value = usize::from_ne_bytes(pair[WORD..].try_into().ok()?);
+        match key {
+            AT_NULL => break,
+            AT_PAGESZ => return value.is_power_of_two().then_some(value),
+            _ => {}
+        }
+    }
+    None
+}
+
+/// Return whether a `/proc/self/pagemap` entry describes a page whose mapped
+/// contents still come from the kernel page cache of the backing file.
+///
+/// A private file mapping's page is either not yet faulted in (reads fault in
+/// the page-cache page), present as the page-cache page itself (the
+/// "file-page" bit), or a private anonymous copy made by a write (present
+/// without the file-page bit, or swapped out). Only the last kind can differ
+/// from the file. Bit assignments follow
+/// <https://docs.kernel.org/admin-guide/mm/pagemap.html>.
+#[cfg(any(target_os = "linux", test))]
+fn pagemap_entry_reflects_file(entry: u64) -> bool {
+    const PRESENT: u64 = 1 << 63;
+    const SWAPPED: u64 = 1 << 62;
+    const FILE_PAGE: u64 = 1 << 61;
+    if entry & SWAPPED != 0 {
+        return false;
+    }
+    entry & PRESENT == 0 || entry & FILE_PAGE != 0
+}
+
+/// One accessible `/proc/self/maps` range of a file, with the pagemap entry
+/// of each of its pages.
+#[cfg(any(target_os = "linux", test))]
+struct MappedSegment {
+    start: usize,
+    file_offset: u64,
+    /// File offset one past the last byte the range maps.
+    file_end: u64,
+    executable: bool,
+    pagemap: Vec<u64>,
+    /// Pathname `/proc/self/maps` printed for the range, if any.
+    pathname: Option<Vec<u8>>,
+}
+
+/// Collect every range of `maps` whose identity is `maps_id` and that grants
+/// any access. Only `---` guard ranges, which the process cannot touch, are
+/// omitted; a range that grants access but cannot be read through
+/// `/proc/self/mem` fails the comparison with an error.
+///
+/// The pagemap is sampled before any memory is compared, so a page that the
+/// process privately modifies after sampling is compared as file-backed and
+/// fails rather than being skipped.
+#[cfg(any(target_os = "linux", test))]
+fn collect_mapped_segments(
+    maps: MapsView<'_>,
+    maps_id: (u64, u64),
+    page_size: usize,
+) -> io::Result<Vec<MappedSegment>> {
+    let misaligned = || io::Error::new(io::ErrorKind::InvalidData, "misaligned maps range");
+    let mut segments = Vec::new();
+    for raw_line in maps.bytes.split(|&b| b == b'\n') {
+        let Some(entry) = parse_maps_line(raw_line) else {
+            continue;
+        };
+        if (entry.dev, entry.inode) != maps_id || entry.perms.starts_with(b"---") {
+            continue;
+        }
+        if entry.start % page_size != 0
+            || entry.end % page_size != 0
+            || entry.offset % (page_size as u64) != 0
+        {
+            return Err(misaligned());
+        }
+        let count = (entry.end - entry.start) / page_size;
+        let file_end = u64::try_from(entry.end - entry.start)
+            .ok()
+            .and_then(|len| entry.offset.checked_add(len))
+            .ok_or_else(|| io::Error::new(io::ErrorKind::InvalidData, "maps range overflows"))?;
+        let pagemap = maps.process.pagemap(entry.start, count)?;
+        if pagemap.len() != count {
+            return Err(io::Error::new(
+                io::ErrorKind::InvalidData,
+                "short pagemap read",
+            ));
+        }
+        segments.push(MappedSegment {
+            start: entry.start,
+            file_offset: entry.offset,
+            file_end,
+            executable: entry.perms.contains(&b'x'),
+            pagemap,
+            pathname: entry.pathname.map(<[u8]>::to_vec),
+        });
+    }
+    Ok(segments)
+}
+
+/// Hash `file` from offset zero and compare `segments` against the hashed
+/// bytes as described on [`open_and_hash_if_dev_ino_matches`]. Return the
+/// digest, or `Ok(None)` on any mismatch.
+#[cfg(any(target_os = "linux", test))]
+fn hash_and_compare_mapped_pages(
+    file: &mut fs::File,
+    file_len: u64,
+    segments: &[MappedSegment],
+    page_size: usize,
+    process: &dyn ProcessView,
+) -> io::Result<Option<String>> {
+    use std::io::Read;
+
+    let mut hasher = Sha256::new();
+    let mut buffer = vec![0u8; 1 << 20];
+    let mut memory = Vec::new();
+    let mut compared_executable = false;
+    let mut pos = 0u64;
+    loop {
+        let read = file.read(&mut buffer)?;
+        if read == 0 {
+            break;
+        }
+        let chunk = &buffer[..read];
+        hasher.update(chunk);
+        for segment in segments {
+            if !compare_mapped_range(
+                segment,
+                pos,
+                chunk,
+                page_size,
+                process,
+                &mut memory,
+                &mut compared_executable,
+            )? {
+                return Ok(None);
+            }
+        }
+        pos += read as u64;
+    }
+    if pos != file_len {
+        return Err(io::Error::other("file length changed while hashing"));
+    }
+    // The kernel zero-fills the part of a mapping's final page that lies past
+    // end-of-file; pages wholly past end-of-file cannot be accessed at all.
+    for segment in segments {
+        let tail_start = pos.max(segment.file_offset);
+        let tail_len = segment.file_end.saturating_sub(tail_start);
+        if tail_len >= page_size as u64 {
+            return Ok(None);
+        }
+        let zeros = vec![0u8; tail_len as usize];
+        if !compare_mapped_range(
+            segment,
+            tail_start,
+            &zeros,
+            page_size,
+            process,
+            &mut memory,
+            &mut compared_executable,
+        )? {
+            return Ok(None);
+        }
+    }
+    if !compared_executable {
+        return Ok(None);
+    }
+    Ok(Some(digest_to_hex(hasher.finalize().as_ref())))
+}
+
+/// Compare the part of `segment` that maps file bytes
+/// `[chunk_offset, chunk_offset + chunk.len())` against `chunk`, page by page.
+/// Return `Ok(false)` if a file-backed page differs or an executable page has
+/// been privately modified.
+#[cfg(any(target_os = "linux", test))]
+fn compare_mapped_range(
+    segment: &MappedSegment,
+    chunk_offset: u64,
+    chunk: &[u8],
+    page_size: usize,
+    process: &dyn ProcessView,
+    memory: &mut Vec<u8>,
+    compared_executable: &mut bool,
+) -> io::Result<bool> {
+    let lo = segment.file_offset.max(chunk_offset);
+    let hi = segment
+        .file_end
+        .min(chunk_offset.saturating_add(chunk.len() as u64));
+    if lo >= hi {
+        return Ok(true);
+    }
+    memory.resize((hi - lo) as usize, 0);
+    process.read_memory(segment.start + (lo - segment.file_offset) as usize, memory)?;
+    let mut cursor = lo;
+    while cursor < hi {
+        let page_index = ((cursor - segment.file_offset) / page_size as u64) as usize;
+        let page_end = (segment.file_offset + (page_index as u64 + 1) * page_size as u64).min(hi);
+        if pagemap_entry_reflects_file(segment.pagemap[page_index]) {
+            let expected =
+                &chunk[(cursor - chunk_offset) as usize..(page_end - chunk_offset) as usize];
+            let actual = &memory[(cursor - lo) as usize..(page_end - lo) as usize];
+            if expected != actual {
+                return Ok(false);
+            }
+            *compared_executable |= segment.executable;
+        } else if segment.executable {
+            return Ok(false);
+        }
+        cursor = page_end;
+    }
+    Ok(true)
 }
 
 #[cfg(target_os = "linux")]
@@ -1591,6 +2253,15 @@ mod tests {
             Some(b"/opt/my rust dir/librustc_driver-a.so ".as_slice())
         );
 
+        let trailing_cr = parse_maps_line(
+            b"7f1234560000-7f1234570000 r-xp 00000000 08:01 12345   /opt/librustc_driver-a.so\r",
+        )
+        .unwrap();
+        assert_eq!(
+            trailing_cr.pathname,
+            Some(b"/opt/librustc_driver-a.so\r".as_slice())
+        );
+
         let non_utf8 =
             parse_maps_line(b"7f1234560000-7f1234570000 r-xp 00000000 08:01 99   /tmp/\xff/blob")
                 .unwrap();
@@ -1663,19 +2334,30 @@ mod tests {
         )
         .unwrap();
 
+        let process = LiveProcess::default();
+        let maps = MapsView {
+            bytes: b"",
+            process: &process,
+        };
         let digest =
-            match_and_hash_sysroot_driver(&sysroot, "x86_64-unknown-linux-gnu", real_dev_ino)
-                .unwrap();
+            match_and_hash_sysroot_driver(&sysroot, "x86_64-unknown-linux-gnu", real_dev_ino, maps)
+                .unwrap()
+                .1;
         assert_eq!(digest, sha256_bytes(b"driver-elf-bytes"));
 
-        let err =
-            match_and_hash_sysroot_driver(&decoy_sysroot, "x86_64-unknown-linux-gnu", real_dev_ino)
-                .unwrap_err();
+        let err = match_and_hash_sysroot_driver(
+            &decoy_sysroot,
+            "x86_64-unknown-linux-gnu",
+            real_dev_ino,
+            maps,
+        )
+        .unwrap_err();
         assert!(err.diagnostics[0].contains("does not match"), "{err:?}");
 
         // Host path traversal must be rejected before joining paths.
         for bad_host in ["", ".", "..", "/tmp/evil", "../../tmp/evil", "a/b"] {
-            let err = match_and_hash_sysroot_driver(&sysroot, bad_host, real_dev_ino).unwrap_err();
+            let err =
+                match_and_hash_sysroot_driver(&sysroot, bad_host, real_dev_ino, maps).unwrap_err();
             assert!(
                 err.diagnostics[0].contains("invalid rustc host triple"),
                 "{bad_host:?}: {err:?}"
@@ -1940,6 +2622,34 @@ LLVM version: 22.1.6\n";
             vma_dirs.contains(&canon_custom_lib),
             "expected capture VMA PT_INTERP dir in {vma_dirs:?}"
         );
+
+        // 4. A direct launch whose `/proc/self/maps` device is the superblock
+        //    device (as on Btrfs) is still classified as a direct launch, so a
+        //    capture binary without `PT_INTERP` does not get its own directory
+        //    admitted as a dynamic-loader directory.
+        let static_dir = dir.path().join("static-capture");
+        fs::create_dir_all(&static_dir).unwrap();
+        let static_capture = static_dir.join("capture-static");
+        fs::write(&static_capture, make_elf64(None)).unwrap();
+        let (static_dev, static_ino) = regular_file_dev_ino(&static_capture).unwrap();
+        let superblock_minor = if static_dev == linux_makedev(0, 0x57) { 0x58 } else { 0x57 };
+        let process = FakeProcess {
+            superblock_dev: linux_makedev(0, superblock_minor),
+            memory: Vec::new(),
+            modified_pages: BTreeSet::new(),
+        };
+        let superblock_maps = format!(
+            "555555554000-555555558000 r-xp 00000000 00:{superblock_minor:02x} {static_ino}   {}\n",
+            static_capture.display(),
+        );
+        assert!(is_allowed_pt_interp_dir(&fs::canonicalize(&static_dir).unwrap()));
+        let static_dirs = resolve_runtime_pt_interp_dirs_with(
+            superblock_maps.as_bytes(),
+            0x5555_5555_5000,
+            &static_capture,
+            &process,
+        );
+        assert!(static_dirs.is_empty(), "{static_dirs:?}");
     }
 
     #[cfg(unix)]
@@ -2304,5 +3014,770 @@ LLVM version: 22.1.6\n";
             )
             .is_err()
         );
+    }
+
+    #[test]
+    fn parses_fdinfo_mount_ids_mountinfo_devices_and_auxv_page_size() {
+        assert_eq!(
+            parse_fdinfo_mnt_id(b"pos:\t0\nflags:\t02100000\nmnt_id:\t965\nino:\t151003\n"),
+            Some(965)
+        );
+        assert_eq!(parse_fdinfo_mnt_id(b"pos:\t0\nflags:\t02100000\n"), None);
+
+        // Recorded from a host whose home directory is a Btrfs subvolume.
+        // `/proc/self/maps` printed `00:57` for a file under `/home/user`,
+        // while `fstat(2)` reported `0:59`. `mountinfo` prints `major:minor`
+        // in decimal, so `0:87` is the `0x57` device that maps reports.
+        let mountinfo = b"\
+919 391 0:49 / / rw,relatime shared:755 - overlay overlay rw,lowerdir=/l1:/l2,upperdir=/u,workdir=/w,uuid=on\n\
+943 919 7:0 /tmp /tmp rw,relatime shared:780 - ext4 /dev/loop0 rw\n\
+964 919 0:87 / /var/lib/pool rw,nosuid,nodev,noatime shared:800 - btrfs /dev/loop1 rw,subvolid=5,subvol=/\n\
+965 919 0:87 /@home /home/user rw,nosuid,nodev,noatime shared:801 - btrfs /dev/loop1 rw,subvolid=256,subvol=/@home\n";
+        let maps_dev = parse_maps_line(
+            b"7f0000100000-7f0000101000 r--p 00000000 00:57 151003   /home/user/f",
+        )
+        .unwrap()
+        .dev;
+        assert_eq!(parse_mountinfo_dev(mountinfo, 965), Some(maps_dev));
+        assert_eq!(parse_mountinfo_dev(mountinfo, 964), Some(maps_dev));
+        assert_eq!(parse_mountinfo_dev(mountinfo, 943), Some(linux_makedev(7, 0)));
+        assert_eq!(parse_mountinfo_dev(mountinfo, 1), None);
+        // A duplicated mount ID is ambiguous and must not resolve.
+        let duplicated = b"5 1 0:40 / /a rw - ext4 a rw\n5 1 0:41 / /b rw - ext4 b rw\n";
+        assert_eq!(parse_mountinfo_dev(duplicated, 5), None);
+
+        let word = size_of::<usize>();
+        let mut auxv = Vec::new();
+        for (key, value) in [(33usize, 0x7fffusize), (6, 16384), (0, 0)] {
+            auxv.extend_from_slice(&key.to_ne_bytes());
+            auxv.extend_from_slice(&value.to_ne_bytes());
+        }
+        assert_eq!(parse_auxv_page_size(&auxv), Some(16384));
+        assert_eq!(parse_auxv_page_size(&auxv[2 * word..][..2 * word]), Some(16384));
+        assert_eq!(parse_auxv_page_size(&auxv[..2 * word]), None);
+        let mut bad_page = Vec::new();
+        for (key, value) in [(6usize, 4095usize), (0, 0)] {
+            bad_page.extend_from_slice(&key.to_ne_bytes());
+            bad_page.extend_from_slice(&value.to_ne_bytes());
+        }
+        assert_eq!(parse_auxv_page_size(&bad_page), None);
+
+        let present = 1u64 << 63;
+        let swapped = 1u64 << 62;
+        let file_page = 1u64 << 61;
+        assert!(pagemap_entry_reflects_file(0));
+        assert!(pagemap_entry_reflects_file(present | file_page));
+        assert!(!pagemap_entry_reflects_file(present));
+        assert!(!pagemap_entry_reflects_file(swapped));
+        assert!(!pagemap_entry_reflects_file(swapped | file_page));
+    }
+
+    /// Page size of [`FakeProcess`].
+    const FAKE_PAGE: usize = 4096;
+
+    /// [`ProcessView`] in which every file appears to live on one superblock,
+    /// as all subvolumes of a Btrfs filesystem do.
+    struct FakeProcess {
+        superblock_dev: u64,
+        /// Mapped address ranges and their contents.
+        memory: Vec<(usize, Vec<u8>)>,
+        /// Start addresses of pages that hold private anonymous copies.
+        modified_pages: BTreeSet<usize>,
+    }
+
+    impl ProcessView for FakeProcess {
+        fn superblock_dev(&self, _file: &fs::File) -> io::Result<u64> {
+            Ok(self.superblock_dev)
+        }
+
+        fn page_size(&self) -> io::Result<usize> {
+            Ok(FAKE_PAGE)
+        }
+
+        fn pagemap(&self, addr: usize, count: usize) -> io::Result<Vec<u64>> {
+            Ok((0..count)
+                .map(|i| {
+                    if self.modified_pages.contains(&(addr + i * FAKE_PAGE)) {
+                        1 << 63
+                    } else {
+                        (1 << 63) | (1 << 61)
+                    }
+                })
+                .collect())
+        }
+
+        fn read_memory(&self, addr: usize, buf: &mut [u8]) -> io::Result<()> {
+            for (start, bytes) in &self.memory {
+                if addr >= *start && addr + buf.len() <= start + bytes.len() {
+                    buf.copy_from_slice(&bytes[addr - start..][..buf.len()]);
+                    return Ok(());
+                }
+            }
+            Err(io::Error::new(io::ErrorKind::InvalidInput, "unmapped address"))
+        }
+    }
+
+    /// Return `bytes` zero-padded to a whole number of [`FAKE_PAGE`] pages, as
+    /// the kernel maps a file's final partial page.
+    fn page_padded(bytes: &[u8]) -> Vec<u8> {
+        let mut padded = bytes.to_vec();
+        padded.resize(bytes.len().div_ceil(FAKE_PAGE) * FAKE_PAGE, 0);
+        padded
+    }
+
+    #[cfg(unix)]
+    #[test]
+    fn superblock_device_matches_require_mapped_contents_to_equal_hashed_file() {
+        use std::os::unix::fs::MetadataExt;
+
+        const DRIVER_ADDR: usize = 0x7f00_0010_0000;
+        const DRIVER_RODATA_ADDR: usize = 0x7f00_0011_0000;
+        const DRIVER_DATA_ADDR: usize = 0x7f00_0012_0000;
+        const LLVM_ADDR: usize = 0x7f00_0020_0000;
+        const SELF_ADDR: usize = 0x5555_5555_4000;
+
+        let dir = tempfile::tempdir().unwrap();
+        let sysroot = dir.path().join("sysroot");
+        fs::create_dir_all(sysroot.join("lib/rustlib/x86_64-unknown-linux-gnu/lib")).unwrap();
+        let self_bin = dir.path().join("anneal-rustc-capture");
+        let driver_so = sysroot.join("lib/librustc_driver-abc.so");
+        let llvm_so = sysroot.join("lib/libLLVM.so.22.1-rust-1.98.0-nightly");
+
+        // Three pages: text, read-only data, and writable data.
+        let driver_bytes: Vec<u8> = (0..3 * FAKE_PAGE - 100).map(|i| (i % 251) as u8).collect();
+        let llvm_bytes: Vec<u8> = (0..FAKE_PAGE + 7).map(|i| (i % 241) as u8).collect();
+        let self_bytes: Vec<u8> = (0..FAKE_PAGE / 2).map(|i| (i % 239) as u8).collect();
+        fs::write(&driver_so, &driver_bytes).unwrap();
+        fs::write(&llvm_so, &llvm_bytes).unwrap();
+        fs::write(&self_bin, &self_bytes).unwrap();
+
+        // Report every file under a superblock device that differs from what
+        // `fstat(2)` returns, as on a Btrfs subvolume.
+        let stat_dev = fs::metadata(&driver_so).unwrap().dev();
+        let superblock_dev = if stat_dev == linux_makedev(0, 0x57) {
+            linux_makedev(0, 0x58)
+        } else {
+            linux_makedev(0, 0x57)
+        };
+        let fmt_id = |p: &Path| {
+            let ino = fs::metadata(p).unwrap().ino();
+            let major = ((superblock_dev >> 8) & 0xfff) | ((superblock_dev >> 32) & !0xfff);
+            let minor = (superblock_dev & 0xff) | ((superblock_dev >> 12) & !0xff);
+            format!("{major:02x}:{minor:02x} {ino}")
+        };
+        let maps_for = |driver_id: &str, llvm_id: &str, self_id: &str| {
+            format!(
+                "555555554000-555555555000 r-xp 00000000 {self_id}   {self}\n\
+                 7f0000100000-7f0000101000 r-xp 00000000 {driver_id}   {driver}\n\
+                 7f0000110000-7f0000111000 r--p 00001000 {driver_id}   {driver}\n\
+                 7f0000120000-7f0000121000 rw-p 00002000 {driver_id}   {driver}\n\
+                 7f0000200000-7f0000202000 r-xp 00000000 {llvm_id}   {llvm}\n\
+                 7f0000300000-7f0000400000 r-xp 00000000 08:01 777   /usr/lib/x86_64-linux-gnu/libc.so.6\n",
+                self = self_bin.display(),
+                driver = driver_so.display(),
+                llvm = llvm_so.display(),
+            )
+        };
+        let driver_id = fmt_id(&driver_so);
+        let llvm_id = fmt_id(&llvm_so);
+        let self_id = fmt_id(&self_bin);
+        let maps = maps_for(&driver_id, &llvm_id, &self_id);
+
+        let padded_driver = page_padded(&driver_bytes);
+        let genuine_memory = |driver_text: &[u8], driver_rodata: &[u8]| {
+            // The writable page holds relocated data that differs from the
+            // file and is marked as a private copy below.
+            let relocated = vec![0xa5u8; FAKE_PAGE];
+            vec![
+                (SELF_ADDR, page_padded(&self_bytes)),
+                (DRIVER_ADDR, driver_text.to_vec()),
+                (DRIVER_RODATA_ADDR, driver_rodata.to_vec()),
+                (DRIVER_DATA_ADDR, relocated),
+                (LLVM_ADDR, page_padded(&llvm_bytes)),
+            ]
+        };
+        let process = |memory: Vec<(usize, Vec<u8>)>, modified: &[usize]| FakeProcess {
+            superblock_dev,
+            memory,
+            modified_pages: modified.iter().copied().collect(),
+        };
+        let verify = |maps: &str, process: &FakeProcess| {
+            verify_maps_residency_with(
+                MapsView {
+                    bytes: maps.as_bytes(),
+                    process,
+                },
+                &sysroot,
+                "x86_64-unknown-linux-gnu",
+                SELF_ADDR,
+                DRIVER_ADDR + 0x10,
+                &self_bin,
+                &[],
+            )
+        };
+        let text = &padded_driver[..FAKE_PAGE];
+        let rodata = &padded_driver[FAKE_PAGE..2 * FAKE_PAGE];
+
+        // 1. The genuine sysroot files pass even though no `fstat(2)` device
+        //    equals the device printed in `/proc/self/maps`.
+        let genuine = process(genuine_memory(text, rodata), &[DRIVER_DATA_ADDR]);
+        let id = verify(&maps, &genuine).unwrap();
+        assert_eq!(id.linkage, DriverLinkage::DynamicDso);
+        assert_eq!(id.driver_sha256, sha256_bytes(&driver_bytes));
+        assert_eq!(
+            id.dso_digests
+                .get("libLLVM.so.22.1-rust-1.98.0-nightly")
+                .map(String::as_str),
+            Some(sha256_bytes(&llvm_bytes).as_str())
+        );
+
+        // 2. A writable page that still shares the page cache must match too.
+        let unmodified_data = process(genuine_memory(text, rodata), &[]);
+        let err = verify(&maps, &unmodified_data).unwrap_err();
+        assert!(err.diagnostics[0].contains("does not match"), "{err:?}");
+
+        // 3. A different inode with the same superblock and inode number (a
+        //    file in another Btrfs subvolume) mapped in place of the driver
+        //    fails, whether it differs in code or only in read-only data.
+        let mut evil_text = text.to_vec();
+        evil_text[17] ^= 0xff;
+        let swapped_text = process(genuine_memory(&evil_text, rodata), &[DRIVER_DATA_ADDR]);
+        let err = verify(&maps, &swapped_text).unwrap_err();
+        assert!(err.diagnostics[0].contains("does not match"), "{err:?}");
+        let mut evil_rodata = rodata.to_vec();
+        evil_rodata[FAKE_PAGE - 1] ^= 0x01;
+        let swapped_rodata = process(genuine_memory(text, &evil_rodata), &[DRIVER_DATA_ADDR]);
+        let err = verify(&maps, &swapped_rodata).unwrap_err();
+        assert!(err.diagnostics[0].contains("does not match"), "{err:?}");
+
+        // 4. A privately modified executable page fails even if its contents
+        //    happen to equal the file.
+        let patched_text = process(
+            genuine_memory(text, rodata),
+            &[DRIVER_ADDR, DRIVER_DATA_ADDR],
+        );
+        let err = verify(&maps, &patched_text).unwrap_err();
+        assert!(err.diagnostics[0].contains("does not match"), "{err:?}");
+
+        // 5. A swapped toolchain DSO fails.
+        let mut memory = genuine_memory(text, rodata);
+        memory[4].1[3] ^= 0xff;
+        let swapped_llvm = process(memory, &[DRIVER_DATA_ADDR]);
+        let err = verify(&maps, &swapped_llvm).unwrap_err();
+        assert!(err.diagnostics[0].contains("sysroot toolchain DSO"), "{err:?}");
+
+        // 6. A file on a different superblock fails without comparing memory.
+        let other_superblock = FakeProcess {
+            superblock_dev: superblock_dev + 1,
+            ..process(genuine_memory(text, rodata), &[DRIVER_DATA_ADDR])
+        };
+        let err = verify(&maps, &other_superblock).unwrap_err();
+        assert!(
+            err.diagnostics[0].contains("loaded rustc driver does not match"),
+            "{err:?}"
+        );
+
+        // 7. A different file at the sysroot path fails even with identical
+        //    contents. The displaced file stays alive so its inode number is
+        //    not reused.
+        let displaced = dir.path().join("displaced-driver");
+        fs::rename(&driver_so, &displaced).unwrap();
+        fs::write(&driver_so, &driver_bytes).unwrap();
+        let err = verify(&maps, &genuine).unwrap_err();
+        assert!(err.diagnostics[0].contains("does not match"), "{err:?}");
+        fs::rename(&displaced, &driver_so).unwrap();
+        verify(&maps, &genuine).unwrap();
+
+        // 8. Two same-named non-toolchain sysroot libraries are each confirmed
+        //    by their own contents; digesting one never vouches for the other,
+        //    and the manifest cannot record both if their contents differ.
+        const HELPER_ADDR: usize = 0x7f00_0050_0000;
+        const HOST_HELPER_ADDR: usize = 0x7f00_0060_0000;
+        let helper = sysroot.join("lib/libhelper.so.1");
+        let host_helper = sysroot.join("lib/rustlib/x86_64-unknown-linux-gnu/lib/libhelper.so.1");
+        let helper_bytes = vec![0x11u8; 64];
+        let evil_bytes = vec![0x22u8; 64];
+        fs::write(&helper, &helper_bytes).unwrap();
+        fs::write(&host_helper, &helper_bytes).unwrap();
+        let helper_maps = format!(
+            "{maps}\
+             7f0000500000-7f0000501000 r-xp 00000000 {}   {}\n\
+             7f0000600000-7f0000601000 r-xp 00000000 {}   {}\n",
+            fmt_id(&helper),
+            helper.display(),
+            fmt_id(&host_helper),
+            host_helper.display(),
+        );
+        let with_helpers = |host_helper_memory: &[u8]| {
+            let mut memory = genuine_memory(text, rodata);
+            memory.push((HELPER_ADDR, page_padded(&helper_bytes)));
+            memory.push((HOST_HELPER_ADDR, page_padded(host_helper_memory)));
+            process(memory, &[DRIVER_DATA_ADDR])
+        };
+        let id = verify(&helper_maps, &with_helpers(&helper_bytes)).unwrap();
+        assert_eq!(
+            id.dso_digests.get("libhelper.so.1").map(String::as_str),
+            Some(sha256_bytes(&helper_bytes).as_str())
+        );
+        // A mapping that no candidate backs is then judged as a non-sysroot
+        // mapping, which this path is not allowed to be.
+        let err = verify(&helper_maps, &with_helpers(&evil_bytes)).unwrap_err();
+        assert!(
+            err.diagnostics[0].contains("does not belong to verified sysroot"),
+            "{err:?}"
+        );
+        fs::write(&host_helper, &evil_bytes).unwrap();
+        let err = verify(&helper_maps, &with_helpers(&evil_bytes)).unwrap_err();
+        assert!(err.diagnostics[0].contains("different contents"), "{err:?}");
+        fs::remove_file(&helper).unwrap();
+        fs::remove_file(&host_helper).unwrap();
+
+        // 9. A mapping whose pathname opens to a different inode fails even if
+        //    its contents match, so a substitute that stays at its own path is
+        //    rejected regardless of what its skipped pages hold.
+        let driver_copy = dir.path().join("driver-copy");
+        fs::write(&driver_copy, &driver_bytes).unwrap();
+        let moved_rodata_maps = maps.replacen(
+            &format!("00001000 {driver_id}   {}", driver_so.display()),
+            &format!("00001000 {driver_id}   {}", driver_copy.display()),
+            1,
+        );
+        assert_ne!(moved_rodata_maps, maps);
+        let err = verify(&moved_rodata_maps, &genuine).unwrap_err();
+        assert!(
+            err.diagnostics[0].contains("loaded rustc driver does not match"),
+            "{err:?}"
+        );
+        // The same holds for the writable range, whose modified page is never
+        // compared.
+        let moved_data_maps = maps.replacen(
+            &format!("00002000 {driver_id}   {}", driver_so.display()),
+            &format!("00002000 {driver_id}   {}", driver_copy.display()),
+            1,
+        );
+        assert_ne!(moved_data_maps, maps);
+        let err = verify(&moved_data_maps, &genuine).unwrap_err();
+        assert!(
+            err.diagnostics[0].contains("loaded rustc driver does not match"),
+            "{err:?}"
+        );
+        let driver_meta = fs::metadata(&driver_so).unwrap();
+        let driver_path = driver_so.as_os_str().as_encoded_bytes().to_vec();
+        assert!(maps_pathname_opens_to(Some(&driver_path), &driver_meta));
+        let mut deleted = driver_path.clone();
+        deleted.extend_from_slice(b" (deleted)");
+        let copy_path = driver_copy.as_os_str().as_encoded_bytes().to_vec();
+        let dir_path = dir.path().as_os_str().as_encoded_bytes().to_vec();
+        // A printed `\012` may stand for a newline in the mapped file's name,
+        // so a pathname with a backslash is rejected even when the literal
+        // name (here a symlink) opens to the candidate.
+        let escaped = dir.path().join("lib\\012x.so");
+        std::os::unix::fs::symlink(&driver_so, &escaped).unwrap();
+        let escaped_path = escaped.as_os_str().as_encoded_bytes().to_vec();
+        for rejected in [
+            None,
+            Some(b"sysroot/lib/librustc_driver-abc.so".as_slice()),
+            Some(deleted.as_slice()),
+            Some(copy_path.as_slice()),
+            Some(dir_path.as_slice()),
+            Some(escaped_path.as_slice()),
+        ] {
+            assert!(!maps_pathname_opens_to(rejected, &driver_meta), "{rejected:?}");
+        }
+        fs::remove_file(&escaped).unwrap();
+        // A trailing carriage return is likewise part of the printed name, so
+        // a mapping of `evil\r` is not confused with a sibling `evil` that
+        // links to the candidate.
+        let evil = dir.path().join("evil");
+        std::os::unix::fs::symlink(&driver_so, &evil).unwrap();
+        let cr_maps = maps.replacen(
+            &format!("00001000 {driver_id}   {}\n", driver_so.display()),
+            &format!("00001000 {driver_id}   {}\r\n", evil.display()),
+            1,
+        );
+        assert_ne!(cr_maps, maps);
+        let err = verify(&cr_maps, &genuine).unwrap_err();
+        assert!(
+            err.diagnostics[0].contains("loaded rustc driver does not match"),
+            "{err:?}"
+        );
+        fs::remove_file(&evil).unwrap();
+
+        // 10a. A rogue executable sharing an admitted system library's
+        //      identity is checked under its own pathname rather than hidden
+        //      behind the library's.
+        let rogue_maps = format!(
+            "{maps}7f0000800000-7f0000801000 r-xp 00000000 08:01 777   {}\n",
+            driver_copy.display()
+        );
+        let err = verify(&rogue_maps, &genuine).unwrap_err();
+        assert!(
+            err.diagnostics[0].contains("does not belong to verified sysroot"),
+            "{err:?}"
+        );
+
+        let maps_id = |p: &Path| (superblock_dev, fs::metadata(p).unwrap().ino());
+        let genuine_view = MapsView {
+            bytes: maps.as_bytes(),
+            process: &genuine,
+        };
+
+        // 10b. A system library whose identity collides with an unmapped
+        //      sysroot file is not mistaken for that file; it is admitted by
+        //      the ordinary system-library rule.
+        let unmapped = sysroot.join("lib/rustlib/x86_64-unknown-linux-gnu/lib/libunmapped.rlib");
+        fs::write(&unmapped, b"unmapped rlib").unwrap();
+        let colliding_maps = format!(
+            "{maps}7f0000900000-7f0000901000 r-xp 00000000 {}   /usr/lib/x86_64-linux-gnu/libz.so.1\n",
+            fmt_id(&unmapped)
+        );
+        let id = verify(&colliding_maps, &genuine).unwrap();
+        assert!(!id.dso_digests.contains_key("libunmapped.rlib"), "{:?}", id.dso_digests);
+        // A colliding mapping outside the system library directories is
+        // still rejected, wherever its pathname sorts.
+        let colliding_rogue_maps = format!(
+            "{colliding_maps}7f0000a00000-7f0000a01000 r-xp 00000000 {}   /var/evil.so\n",
+            fmt_id(&unmapped)
+        );
+        let err = verify(&colliding_rogue_maps, &genuine).unwrap_err();
+        assert!(
+            err.diagnostics[0].contains("does not belong to verified sysroot"),
+            "{err:?}"
+        );
+        // An exact identity that no longer confirms is a sysroot file that
+        // changed during verification, never a system library.
+        let exact_libs: SysrootLibMap = [(
+            maps_id(&unmapped),
+            vec![SysrootCandidate {
+                name: "libunmapped.rlib".to_owned(),
+                path: driver_copy.clone(),
+                exact: true,
+            }],
+        )]
+        .into_iter()
+        .collect();
+        let exact_exec: ExecMappings =
+            [(maps_id(&unmapped), b"/usr/lib/x86_64-linux-gnu/libz.so.1".to_vec())]
+                .into_iter()
+                .collect();
+        let err = verify_exec_mappings_residency(
+            genuine_view,
+            &exact_exec,
+            &exact_libs,
+            &RuntimeClosure {
+                dirs: Vec::new(),
+                symlink_dev_inos: BTreeSet::new(),
+            },
+            (0, 0),
+            (0, 1),
+            &sysroot,
+            &mut BTreeSet::new(),
+            &mut BTreeMap::new(),
+        )
+        .unwrap_err();
+        assert!(err.diagnostics[0].contains("changed during residency"), "{err:?}");
+        fs::remove_file(&unmapped).unwrap();
+
+        // 10. Mappings sharing the capture executable's identity are exempt
+        //     from the closed-world checks, so each must be confirmed as the
+        //     capture executable by path and contents.
+        const SHADOW_ADDR: usize = 0x7f00_0070_0000;
+        let shadow_maps = |path: &Path| {
+            format!(
+                "{maps}7f0000700000-7f0000701000 r-xp 00000000 {self_id}   {}\n",
+                path.display()
+            )
+        };
+        let with_shadow = |bytes: &[u8]| {
+            let mut memory = genuine_memory(text, rodata);
+            memory.push((SHADOW_ADDR, page_padded(bytes)));
+            process(memory, &[DRIVER_DATA_ADDR])
+        };
+        verify(&shadow_maps(&self_bin), &with_shadow(&self_bytes)).unwrap();
+        let err = verify(&shadow_maps(&driver_copy), &with_shadow(&self_bytes)).unwrap_err();
+        assert!(err.diagnostics[0].contains("capture executable failed"), "{err:?}");
+        let mut evil_self = self_bytes.clone();
+        evil_self[0] ^= 0xff;
+        let err = verify(&shadow_maps(&self_bin), &with_shadow(&evil_self)).unwrap_err();
+        assert!(err.diagnostics[0].contains("capture executable failed"), "{err:?}");
+
+        // 11. Every sysroot candidate sharing an identity is tried, and the
+        //     driver's digest is recorded under the driver's own name even
+        //     when another name for the same inode exists.
+        let candidates = vec![
+            SysrootCandidate {
+                name: "libother.so".to_owned(),
+                path: driver_copy.clone(),
+                exact: false,
+            },
+            SysrootCandidate {
+                name: "librustc_driver-abc.so".to_owned(),
+                path: driver_so.clone(),
+                exact: false,
+            },
+        ];
+        let (name, digest) =
+            hash_matching_sysroot_candidate(&candidates, maps_id(&driver_so), genuine_view)
+                .unwrap()
+                .unwrap();
+        assert_eq!(name, "librustc_driver-abc.so");
+        assert_eq!(digest, sha256_bytes(&driver_bytes));
+        let alias = sysroot.join("lib/libother.so");
+        fs::hard_link(&driver_so, &alias).unwrap();
+        let id = verify(&maps, &genuine).unwrap();
+        assert_eq!(
+            id.dso_digests.get("librustc_driver-abc.so").map(String::as_str),
+            Some(sha256_bytes(&driver_bytes).as_str())
+        );
+        assert!(!id.dso_digests.contains_key("libother.so"), "{:?}", id.dso_digests);
+        fs::remove_file(&alias).unwrap();
+
+        // 12. A statically linked driver hashes the capture executable under
+        //     the same rule.
+        let static_sysroot = dir.path().join("static-sysroot");
+        fs::create_dir_all(static_sysroot.join("lib/rustlib/x86_64-unknown-linux-gnu/lib"))
+            .unwrap();
+        let static_maps = format!(
+            "555555554000-555555555000 r-xp 00000000 {self_id}   {}\n",
+            self_bin.display()
+        );
+        let verify_static = |process: &FakeProcess| {
+            verify_maps_residency_with(
+                MapsView {
+                    bytes: static_maps.as_bytes(),
+                    process,
+                },
+                &static_sysroot,
+                "x86_64-unknown-linux-gnu",
+                SELF_ADDR,
+                SELF_ADDR + 0x10,
+                &self_bin,
+                &[],
+            )
+        };
+        let id = verify_static(&genuine).unwrap();
+        assert_eq!(id.linkage, DriverLinkage::StaticExe);
+        assert_eq!(id.driver_sha256, sha256_bytes(&self_bytes));
+        let mut memory = genuine_memory(text, rodata);
+        memory[0].1[0] ^= 0xff;
+        let err = verify_static(&process(memory, &[])).unwrap_err();
+        assert!(err.diagnostics[0].contains("capture executable failed"), "{err:?}");
+    }
+
+    #[cfg(unix)]
+    #[test]
+    fn mapped_page_comparison_rejects_vacuous_and_out_of_bounds_mappings() {
+        let dir = tempfile::tempdir().unwrap();
+        let path = dir.path().join("lib.so");
+        let bytes: Vec<u8> = (0..FAKE_PAGE + 1).map(|i| (i % 253) as u8).collect();
+        fs::write(&path, &bytes).unwrap();
+        let process = FakeProcess {
+            superblock_dev: 0,
+            memory: vec![(0x10000, page_padded(&bytes))],
+            modified_pages: BTreeSet::new(),
+        };
+        let compare = |maps: &str| {
+            let segments = collect_mapped_segments(
+                MapsView {
+                    bytes: maps.as_bytes(),
+                    process: &process,
+                },
+                (linux_makedev(0, 0x57), 42),
+                FAKE_PAGE,
+            )
+            .unwrap();
+            let mut file = fs::File::open(&path).unwrap();
+            hash_and_compare_mapped_pages(
+                &mut file,
+                bytes.len() as u64,
+                &segments,
+                FAKE_PAGE,
+                &process,
+            )
+            .unwrap()
+        };
+
+        let process_memory_with = |text: &[u8], extra: &[(usize, Vec<u8>)]| FakeProcess {
+            superblock_dev: 0,
+            memory: std::iter::once((0x10000, text.to_vec()))
+                .chain(extra.iter().cloned())
+                .collect(),
+            modified_pages: BTreeSet::new(),
+        };
+        let compare_with = |process: &FakeProcess, maps: &str| {
+            let segments = collect_mapped_segments(
+                MapsView {
+                    bytes: maps.as_bytes(),
+                    process,
+                },
+                (linux_makedev(0, 0x57), 42),
+                FAKE_PAGE,
+            )
+            .unwrap();
+            hash_and_compare_mapped_pages(
+                &mut fs::File::open(&path).unwrap(),
+                bytes.len() as u64,
+                &segments,
+                FAKE_PAGE,
+                process,
+            )
+            .unwrap()
+        };
+
+        assert_eq!(
+            compare("10000-12000 r-xp 00000000 00:57 42   /lib.so\n"),
+            Some(sha256_bytes(&bytes))
+        );
+        // Without an executable mapping nothing ties the code to the file.
+        assert_eq!(compare("10000-12000 r--p 00000000 00:57 42   /lib.so\n"), None);
+        assert_eq!(compare(""), None);
+        // A mapping extending a whole page past end-of-file cannot be
+        // accessed by the process and is rejected.
+        assert_eq!(compare("10000-13000 r-xp 00000000 00:57 42   /lib.so\n"), None);
+        // A privately modified executable page fails even when another
+        // executable page of the same mapping matches.
+        let partly_patched = FakeProcess {
+            superblock_dev: 0,
+            memory: vec![(0x10000, page_padded(&bytes))],
+            modified_pages: [0x11000].into_iter().collect(),
+        };
+        let segments = collect_mapped_segments(
+            MapsView {
+                bytes: b"10000-12000 r-xp 00000000 00:57 42   /lib.so\n",
+                process: &partly_patched,
+            },
+            (linux_makedev(0, 0x57), 42),
+            FAKE_PAGE,
+        )
+        .unwrap();
+        let digest = hash_and_compare_mapped_pages(
+            &mut fs::File::open(&path).unwrap(),
+            bytes.len() as u64,
+            &segments,
+            FAKE_PAGE,
+            &partly_patched,
+        )
+        .unwrap();
+        assert_eq!(digest, None);
+        // An execute-only range of the same identity is compared too.
+        let exec_only_memory = [(0x20000, vec![0xccu8; FAKE_PAGE])];
+        let with_exec_only = process_memory_with(&page_padded(&bytes), &exec_only_memory);
+        assert_eq!(
+            compare_with(
+                &with_exec_only,
+                "10000-12000 r-xp 00000000 00:57 42   /lib.so\n\
+                 20000-21000 --xp 00000000 00:57 42   /lib.so\n"
+            ),
+            None
+        );
+        // Bytes past end-of-file in the final partial page must be zero.
+        let mut dirty_tail = page_padded(&bytes);
+        dirty_tail[bytes.len()] = 1;
+        let with_dirty_tail = process_memory_with(&dirty_tail, &[]);
+        assert_eq!(
+            compare_with(
+                &with_dirty_tail,
+                "10000-12000 r-xp 00000000 00:57 42   /lib.so\n"
+            ),
+            None
+        );
+        // A range whose file offsets overflow is malformed.
+        let overflowing = collect_mapped_segments(
+            MapsView {
+                bytes: b"10000-12000 r-xp fffffffffffff000 00:57 42   /lib.so\n",
+                process: &process,
+            },
+            (linux_makedev(0, 0x57), 42),
+            FAKE_PAGE,
+        );
+        assert!(overflowing.is_err());
+        // Inaccessible guard mappings are ignored.
+        assert_eq!(
+            compare(
+                "10000-12000 r-xp 00000000 00:57 42   /lib.so\n\
+                 20000-30000 ---p 00002000 00:57 42   /lib.so\n"
+            ),
+            Some(sha256_bytes(&bytes))
+        );
+        // Misaligned ranges are malformed.
+        let misaligned = collect_mapped_segments(
+            MapsView {
+                bytes: b"10000-12000 r-xp 00000010 00:57 42   /lib.so\n",
+                process: &process,
+            },
+            (linux_makedev(0, 0x57), 42),
+            FAKE_PAGE,
+        );
+        assert!(misaligned.is_err());
+    }
+
+    /// Check the live `/proc/self` view against the kernel's own mapping of
+    /// this test executable. On any filesystem, including Btrfs subvolumes
+    /// where `fstat(2)` reports a different device, the superblock device of
+    /// the opened executable must equal the device `/proc/self/maps` prints.
+    #[cfg(target_os = "linux")]
+    #[test]
+    fn live_process_view_agrees_with_kernel_maps_for_test_executable() {
+        use std::os::unix::ffi::OsStrExt;
+
+        let maps = fs::read("/proc/self/maps").unwrap();
+        let addr = live_process_view_agrees_with_kernel_maps_for_test_executable as *const ()
+            as usize;
+        let (maps_id, pathname) = resolve_mapping_dev_ino(&maps, addr, "test executable").unwrap();
+        let exe = Path::new(OsStr::from_bytes(pathname)).to_path_buf();
+        let process = LiveProcess::default();
+        let file = fs::File::open(&exe).unwrap();
+        assert_eq!(process.superblock_dev(&file).unwrap(), maps_id.0);
+
+        let page_size = process.page_size().unwrap();
+        // Compare only non-writable ranges: other test threads may write this
+        // executable's data pages between sampling the pagemap and reading
+        // memory, which the production check rightly treats as a mismatch.
+        let read_only_maps: Vec<u8> = maps
+            .split(|&b| b == b'\n')
+            .filter(|line| {
+                parse_maps_line(line).is_some_and(|entry| !entry.perms.contains(&b'w'))
+            })
+            .flat_map(|line| line.iter().copied().chain(std::iter::once(b'\n')))
+            .collect();
+        let view = MapsView {
+            bytes: &read_only_maps,
+            process: &process,
+        };
+        let segments = collect_mapped_segments(view, maps_id, page_size).unwrap();
+        let file_len = file.metadata().unwrap().len();
+        let expected = sha256_reader(fs::File::open(&exe).unwrap()).unwrap();
+        let digest = hash_and_compare_mapped_pages(
+            &mut fs::File::open(&exe).unwrap(),
+            file_len,
+            &segments,
+            page_size,
+            &process,
+        )
+        .unwrap();
+        assert_eq!(digest, Some(expected));
+
+        // A copy differing in one byte of a page-cache-backed executable page
+        // is rejected.
+        let text = segments.iter().find(|s| s.executable).unwrap();
+        let page = text
+            .pagemap
+            .iter()
+            .position(|&entry| pagemap_entry_reflects_file(entry))
+            .unwrap();
+        let mut tampered = fs::read(&exe).unwrap();
+        tampered[text.file_offset as usize + page * page_size] ^= 0xff;
+        let dir = tempfile::tempdir().unwrap();
+        let tampered_path = dir.path().join("tampered");
+        fs::write(&tampered_path, &tampered).unwrap();
+        let digest = hash_and_compare_mapped_pages(
+            &mut fs::File::open(&tampered_path).unwrap(),
+            file_len,
+            &segments,
+            page_size,
+            &process,
+        )
+        .unwrap();
+        assert_eq!(digest, None);
     }
 }
