@@ -18,6 +18,8 @@ tree at `--head`:
   block), and no `gherrit-pr-id` lines or review-round IDs. Only commits
   touching Anneal paths are checked, unless `--skip-commit-messages` (for
   PRs whose authenticated author is a bot) skips them.
+- `commit-author` (`--expected-author`): each in-scope commit's author and
+  committer.
 - `diff-check`: `git diff --check` on Anneal paths.
 - `wrap`: added Markdown and comment lines that exceed 80 columns even though
   wrapping could fix them. Inline code spans split across a line wrap are
@@ -37,11 +39,29 @@ tree at `--head`:
   block and one `anneal-receipt:v1` JSON footer that binds the checked
   comparison tuple and tree and lists every changed review-surface path
   (`--emit-receipt-footer` prints it).
+- `pr-title-policy` (`--forbid-pr-title-regex`): the PR title, which becomes
+  the squash commit subject of a multi-commit PR, does not match a regex
+  that the merge queue would reject anyway.
+- `skip-pr-hygiene`: waiver trailers are well formed and used.
+
+The PR's tip commit may waive every finding of some checks with one or more
+single-line trailers in its final trailer block:
+
+    Skip-pr-hygiene: <check>[,<check>...] -- <reason>
+
+Only `commit-message`, `diff-check`, `wrap`, `header`, `review-round-id`,
+and `trusted-citation` are waivable; there is no wildcard. The reason needs
+at least five non-whitespace characters, every named check must waive at
+least one finding, and no other commit in the range may carry the trailer,
+because squash merges keep every commit message. Waived findings are
+reported as `::warning::` annotations and, when `GITHUB_STEP_SUMMARY` is
+set, in a step summary table.
 
 The script only reads Git objects; it never checks out, builds, or executes
 candidate content. Reviewers can therefore run a trusted base copy of this
 script against an untrusted candidate head. Without `--base`, only the tree
-checks run. Exits 0 when clean, 1 on findings, and 2 on usage or Git errors.
+checks run. Exits 0 when no unwaived findings remain, 1 otherwise, and 2 on
+usage or Git errors.
 """
 
 from __future__ import annotations
@@ -50,6 +70,7 @@ import argparse
 import codecs
 from dataclasses import dataclass, field
 import datetime
+import html
 import io
 import json
 import os
@@ -87,6 +108,17 @@ AGENT_TRAILER_RE = re.compile(
     r"(?: \((content only|commit message only)\))?$"
 )
 TRAILER_RE = re.compile(r"^[A-Za-z][A-Za-z0-9-]*:[ \t]+\S")
+WAIVER_KEY = "Skip-pr-hygiene"
+# Any spelling, so a miscased or indented waiver fails instead of being
+# ignored.
+WAIVER_KEY_RE = re.compile(r"^\s*skip-pr-hygiene\s*:", re.IGNORECASE)
+# Checks a waiver may name. Tree invariants, commit identities, PR metadata,
+# receipts, and the waiver check itself are never waivable.
+WAIVABLE_CHECKS = (
+    "commit-message", "diff-check", "wrap", "header", "review-round-id",
+    "trusted-citation",
+)
+WAIVER_MIN_REASON = 5
 FENCE_RE = re.compile(r"^([ \t]*)(`{3,}|~{3,})(.*)$")
 def _fence(line: str) -> re.Match[str] | None:
     """Match a code fence line; a backtick fence's info has no backticks.
@@ -203,10 +235,39 @@ class Finding:
         }
 
 
+@dataclass(frozen=True)
+class OptOut:
+    """One `Skip-pr-hygiene:` trailer on the PR's tip commit."""
+
+    checks: tuple[str, ...]
+    reason: str
+    commit: str
+    line: int
+
+    def to_json(self) -> dict[str, object]:
+        return {
+            "checks": list(self.checks),
+            "reason": self.reason,
+            "commit": self.commit,
+            "line": self.line,
+        }
+
+
+@dataclass(frozen=True)
+class Waived:
+    finding: Finding
+    reason: str
+
+    def to_json(self) -> dict[str, object]:
+        return {**self.finding.to_json(), "reason": self.reason}
+
+
 @dataclass
 class Report:
     findings: list[Finding] = field(default_factory=list)
     warnings: list[Finding] = field(default_factory=list)
+    waived: list[Waived] = field(default_factory=list)
+    opt_outs: list[OptOut] = field(default_factory=list)
 
 
 EMPTY_TREE = "4b825dc642cb6eb9a060e54bf8d69288fbee4904"
@@ -779,45 +840,40 @@ def wrap_findings(
 # Commit messages and PR descriptions.
 
 
-def commit_message_findings(sha: str, message: str) -> list[Finding]:
-    short = sha[:12]
-    where = f"commit {short}"
-    out: list[Finding] = []
+def _message_lines(message: str) -> list[str]:
+    return [ln.expandtabs(8) for ln in
+            message.replace("\r\n", "\n").rstrip("\n").split("\n")]
 
-    def add(msg: str, line: int | None = None) -> None:
-        out.append(Finding("commit-message", msg, where, line))
 
-    lines = [ln.expandtabs(8) for ln in
-             message.replace("\r\n", "\n").rstrip("\n").split("\n")]
-    subject = GITHUB_SQUASH_SUFFIX_RE.sub("", lines[0])
-    if not subject.strip():
-        add("empty subject line", 1)
-    if len(subject) > SUBJECT_LIMIT:
-        add(f"subject is {len(subject)} columns (limit {SUBJECT_LIMIT})", 1)
-    if subject.rstrip().endswith("."):
-        add("subject ends with a period", 1)
-    if len(lines) > 1 and lines[1].strip():
-        add("separate the subject from the body with one blank line", 2)
+@dataclass(frozen=True)
+class MessageLayout:
+    """Where a commit message's final trailer block and code lines are.
 
-    # Locate the final paragraph so trailers are exempt from wrapping.
+    Indices are 0-based into `_message_lines(message)`.
+    """
+
+    trailer_start: int
+    final_is_trailers: bool
+    code_lines: frozenset[int]
+
+
+def message_layout(lines: list[str]) -> MessageLayout:
+    """Locate the final trailer block and the fenced or indented code lines.
+
+    Trailer checks share this so that a commit documenting a trailer's
+    syntax in a code block does not trigger them.
+    """
     end = len(lines)
     trailer_start = end
     while trailer_start > 1 and lines[trailer_start - 1].strip():
         trailer_start -= 1
     final_is_trailers = trailer_start > 1 and _is_trailer_block(
         lines[trailer_start:end])
-
     fence: tuple[str, int] | None = None
     prev_blank = True
     code_lines: set[int] = set()
     for idx in range(2, end):
         line = lines[idx]
-        lineno = idx + 1
-        if GHERRIT_RE.match(line):
-            add("remove the `gherrit-pr-id` line", lineno)
-        if REVIEW_ROUND_RE.search(line):
-            add("remove the review-round ID; commit messages must not "
-                "reference ephemeral reviews", lineno)
         m = _fence(line)
         if fence is not None:
             if m and m.group(2)[0] == fence[0] and len(m.group(2)) >= fence[1]:
@@ -831,12 +887,50 @@ def commit_message_findings(sha: str, message: str) -> list[Finding]:
             prev_blank = False
             continue
         is_code = prev_blank and line.startswith("    ")
-        is_table = line.lstrip().startswith("|")
-        is_trailer = final_is_trailers and idx >= trailer_start
-        prev_blank = not line.strip() or (is_code and prev_blank)
+        prev_blank = not line.strip() or is_code
         if is_code:
             code_lines.add(idx)
-        if is_code or is_table or is_trailer:
+    return MessageLayout(trailer_start, final_is_trailers,
+                         frozenset(code_lines))
+
+
+def commit_message_findings(sha: str, message: str) -> list[Finding]:
+    short = sha[:12]
+    where = f"commit {short}"
+    out: list[Finding] = []
+
+    def add(msg: str, line: int | None = None) -> None:
+        out.append(Finding("commit-message", msg, where, line))
+
+    lines = _message_lines(message)
+    subject = GITHUB_SQUASH_SUFFIX_RE.sub("", lines[0])
+    if not subject.strip():
+        add("empty subject line", 1)
+    if len(subject) > SUBJECT_LIMIT:
+        add(f"subject is {len(subject)} columns (limit {SUBJECT_LIMIT})", 1)
+    if subject.rstrip().endswith("."):
+        add("subject ends with a period", 1)
+    if len(lines) > 1 and lines[1].strip():
+        add("separate the subject from the body with one blank line", 2)
+
+    # Trailers in the final paragraph are exempt from wrapping.
+    layout = message_layout(lines)
+    trailer_start = layout.trailer_start
+    final_is_trailers = layout.final_is_trailers
+    code_lines = layout.code_lines
+    for idx in range(2, len(lines)):
+        line = lines[idx]
+        lineno = idx + 1
+        if GHERRIT_RE.match(line):
+            add("remove the `gherrit-pr-id` line", lineno)
+        if REVIEW_ROUND_RE.search(line):
+            add("remove the review-round ID; commit messages must not "
+                "reference ephemeral reviews", lineno)
+        if idx in code_lines:
+            continue
+        is_table = line.lstrip().startswith("|")
+        is_trailer = final_is_trailers and idx >= trailer_start
+        if is_table or is_trailer:
             continue
         if wrap_violation(line, prose_prefix_len(line), BODY_LIMIT):
             add(f"body line is {len(line.rstrip())} columns; wrap at "
@@ -863,6 +957,117 @@ def commit_message_findings(sha: str, message: str) -> list[Finding]:
         if not final_is_trailers or i < trailer_start:
             add("put `Agent-authored-by:` in the final trailer block", i + 1)
     return out
+
+
+def parse_waivers(
+    commits: list[Commit], head: str
+) -> tuple[list[OptOut], list[Finding]]:
+    """Parse `Skip-pr-hygiene:` trailers across every commit in the range.
+
+    Only the tip commit may waive: a squash merge keeps every commit
+    message, so a trailer left on an earlier commit would reach `main`
+    without waiving anything. Mentions inside code blocks are ignored, as
+    for `Agent-authored-by:`. Problems are `skip-pr-hygiene` findings,
+    which no trailer can waive.
+    """
+    opt_outs: list[OptOut] = []
+    errors: list[Finding] = []
+    waivable = ", ".join(f"`{c}`" for c in WAIVABLE_CHECKS)
+    for c in commits:
+        lines = _message_lines(c.message)
+        layout = message_layout(lines)
+        where = f"commit {c.sha[:12]}"
+        for i, ln in enumerate(lines):
+            if i in layout.code_lines or not WAIVER_KEY_RE.match(ln):
+                continue
+
+            def err(msg: str) -> None:
+                errors.append(Finding("skip-pr-hygiene", msg, where, i + 1))
+
+            if c.sha != head:
+                err(f"only the PR's tip commit may carry `{WAIVER_KEY}:`; "
+                    "remove it here (rebase rather than merging the base "
+                    "branch)")
+                continue
+            if not layout.final_is_trailers or i < layout.trailer_start:
+                err(f"put `{WAIVER_KEY}:` in the final trailer block")
+                continue
+            prefix = f"{WAIVER_KEY}: "
+            if not ln.startswith(prefix):
+                err(f"spell the trailer exactly `{prefix}<check>[,<check>...]"
+                    " -- <reason>`")
+                continue
+            if i + 1 < len(lines) and lines[i + 1][:1] in (" ", "\t"):
+                err(f"keep `{WAIVER_KEY}:` on one line; folded trailers are "
+                    "not accepted")
+                continue
+            names_text, sep, reason = ln[len(prefix):].partition(" -- ")
+            if not sep:
+                err("separate the checks from the reason with ` -- `")
+                continue
+            names = [n.strip() for n in names_text.split(",")]
+            if any(not n or re.search(r"\s", n) for n in names):
+                err("list checks as `<check>[,<check>...]`")
+                continue
+            bad = [n for n in dict.fromkeys(names) if n not in WAIVABLE_CHECKS]
+            if bad:
+                err(f"cannot waive {', '.join(f'`{n}`' for n in bad)}; "
+                    f"name only {waivable} (there is no wildcard)")
+                continue
+            if len(re.sub(r"\s", "", reason)) < WAIVER_MIN_REASON:
+                err(f"give a reason of at least {WAIVER_MIN_REASON} "
+                    "non-whitespace characters")
+                continue
+            opt_outs.append(OptOut(tuple(dict.fromkeys(names)),
+                                   reason.strip(), c.sha, i + 1))
+    return opt_outs, errors
+
+
+def apply_waivers(report: Report, opt_outs: list[OptOut],
+                  errors: list[Finding]) -> None:
+    """Move waived findings aside and reject waivers that waive nothing."""
+    reasons: dict[str, list[str]] = {}
+    for o in opt_outs:
+        for name in o.checks:
+            reasons.setdefault(name, [])
+            if o.reason not in reasons[name]:
+                reasons[name].append(o.reason)
+    kept: list[Finding] = []
+    for f in report.findings:
+        if f.check in reasons:
+            report.waived.append(Waived(f, "; ".join(reasons[f.check])))
+        else:
+            kept.append(f)
+    used = {w.finding.check for w in report.waived}
+    unused: list[Finding] = []
+    for o in opt_outs:
+        for name in o.checks:
+            if name not in used:
+                unused.append(Finding(
+                    "skip-pr-hygiene",
+                    f"`{name}` has no findings to waive; remove it from the "
+                    "trailer",
+                    f"commit {o.commit[:12]}", o.line,
+                ))
+    report.findings = kept + errors + unused
+    report.opt_outs = list(opt_outs)
+
+
+def pr_title_policy_findings(pattern: re.Pattern[str],
+                             title: str) -> list[Finding]:
+    """Reject a PR title that the merge queue's message policy would reject.
+
+    A multi-commit PR's title becomes its squash commit subject, so this
+    fails on the PR instead of later in the merge queue.
+    """
+    m = pattern.search(title)
+    if m is None:
+        return []
+    return [Finding(
+        "pr-title-policy",
+        f"PR title {title.strip()!r} matches the forbidden pattern "
+        f"`{pattern.pattern}` at {m.group(0)!r}",
+    )]
 
 
 ISSUE_LINE_RE = re.compile(
@@ -1504,13 +1709,17 @@ def check(
     pr_body: str | None = None, pr_title: str | None = None,
     receipt: str | None = None, expected_author: str | None = None,
     skip_commit_messages: bool = False,
+    forbid_pr_title: tuple[re.Pattern[str], str] | None = None,
 ) -> tuple[Report, dict[str, object]]:
+    """Run every check; `forbid_pr_title` is a (pattern, title) pair."""
     report = Report()
     head = git.commit(head_ref)
     tree = git.tree(head)
     meta: dict[str, object] = {"head": head, "tree": tree}
     report.findings += agents_budget_findings(git, head)
     report.findings += crr_parity_findings(git, head)
+    if forbid_pr_title is not None:
+        report.findings += pr_title_policy_findings(*forbid_pr_title)
     if base is None:
         if (pr_body is not None or receipt is not None
                 or pr_title is not None or expected_author is not None):
@@ -1541,7 +1750,7 @@ def check(
                                 ("committer", c.committer)):
                 if ident != expected_author:
                     report.findings.append(Finding(
-                        "commit-message",
+                        "commit-author",
                         f"{role} is `{ident}`, expected `{expected_author}`",
                         f"commit {c.sha[:12]}",
                     ))
@@ -1642,6 +1851,7 @@ def check(
     if receipt is not None:
         report.findings += receipt_findings(
             receipt, target_base, merge_base, head, tree, hrs, changed)
+    apply_waivers(report, *parse_waivers(commits, head))
     return report, meta
 
 
@@ -1649,6 +1859,58 @@ def _read(path: str) -> str:
     if path == "-":
         return sys.stdin.read()
     return Path(path).read_text(encoding="utf-8")
+
+
+def _escape_command_data(text: str) -> str:
+    """Escape a GitHub Actions workflow command's message."""
+    return (text.replace("%", "%25").replace("\r", "%0D")
+            .replace("\n", "%0A"))
+
+
+def _escape_command_property(text: str) -> str:
+    return (_escape_command_data(text).replace(":", "%3A")
+            .replace(",", "%2C"))
+
+
+def waiver_annotation(w: Waived) -> str:
+    """Render a waived finding as a `::warning::` workflow command.
+
+    Commit-message findings name a commit rather than a file, so they carry
+    no `file` property.
+    """
+    f = w.finding
+    props = ["title=" + _escape_command_property(
+        f"PR hygiene waived: {f.check}")]
+    if f.path is not None and f.check != "commit-message":
+        props.insert(0, "file=" + _escape_command_property(f.path))
+        if f.line is not None:
+            props.insert(1, f"line={f.line}")
+    msg = f"{f.render()} (waived by {WAIVER_KEY}: {w.reason})"
+    return f"::warning {','.join(props)}::{_escape_command_data(msg)}"
+
+
+def _summary_cell(text: str) -> str:
+    text = html.escape(" ".join(text.split()), quote=False)
+    return text.replace("|", "&#124;")
+
+
+def waiver_summary(waived: list[Waived]) -> str:
+    """Render waived findings as a Markdown step summary table."""
+    rows = [
+        "",
+        f"### PR hygiene: {len(waived)} waived finding(s)",
+        "",
+        "| Check | Location | Finding | Reason |",
+        "| --- | --- | --- | --- |",
+    ]
+    for w in waived:
+        f = w.finding
+        where = f.path or ""
+        if f.path is not None and f.line is not None:
+            where = f"{f.path}:{f.line}"
+        rows.append("| " + " | ".join(_summary_cell(t) for t in (
+            f.check, where, f.message, w.reason)) + " |")
+    return "\n".join(rows) + "\n"
 
 
 def main(argv: list[str]) -> int:
@@ -1663,6 +1925,9 @@ def main(argv: list[str]) -> int:
     parser.add_argument("--pr-body-file",
                         help="PR description to compare ('-' for stdin)")
     parser.add_argument("--pr-title", help="PR title to compare")
+    parser.add_argument("--forbid-pr-title-regex", metavar="REGEX",
+                        help="fail if the PR title (--pr-title, else the "
+                        "PR_TITLE environment variable) matches REGEX")
     parser.add_argument("--receipt-file",
                         help="Review Receipt comment to check ('-' for stdin)")
     parser.add_argument("--expected-author", metavar="'NAME <EMAIL>'",
@@ -1699,11 +1964,27 @@ def main(argv: list[str]) -> int:
                    if args.pr_body_file is not None else None)
         receipt = (_read(args.receipt_file)
                    if args.receipt_file is not None else None)
+        forbid_pr_title = None
+        if args.forbid_pr_title_regex is not None:
+            if not args.forbid_pr_title_regex:
+                raise GitError("--forbid-pr-title-regex must not be empty")
+            try:
+                pattern = re.compile(args.forbid_pr_title_regex)
+            except re.error as e:
+                raise GitError(
+                    f"invalid --forbid-pr-title-regex: {e}") from e
+            title = (args.pr_title if args.pr_title is not None
+                     else os.environ.get("PR_TITLE"))
+            if title is None or not title.strip():
+                raise GitError("--forbid-pr-title-regex needs a non-empty "
+                               "PR title in --pr-title or PR_TITLE")
+            forbid_pr_title = (pattern, title)
         report, meta = check(
             git, args.base, args.head, pr_body=pr_body,
             pr_title=args.pr_title, receipt=receipt,
             expected_author=args.expected_author,
             skip_commit_messages=args.skip_commit_messages,
+            forbid_pr_title=forbid_pr_title,
         )
         if args.emit_receipt_footer:
             if args.base is None:
@@ -1720,6 +2001,20 @@ def main(argv: list[str]) -> int:
         return 2
 
     ok = not report.findings
+    # Waivers are loud: one annotation per waived finding, plus a step
+    # summary table in GitHub Actions. With --json, stdout is the report.
+    annotations = sys.stderr if args.json else sys.stdout
+    for w in report.waived:
+        print(waiver_annotation(w), file=annotations)
+    summary_path = os.environ.get("GITHUB_STEP_SUMMARY")
+    if summary_path and report.waived:
+        try:
+            with open(summary_path, "a", encoding="utf-8") as f:
+                f.write(waiver_summary(report.waived))
+        except OSError as e:
+            print(f"check_pr_hygiene: error: cannot write step summary: {e}",
+                  file=sys.stderr)
+            return 2
     if args.json:
         print(json.dumps({
             "schema": SCHEMA,
@@ -1727,16 +2022,20 @@ def main(argv: list[str]) -> int:
             **meta,
             "findings": [f.to_json() for f in report.findings],
             "warnings": [w.to_json() for w in report.warnings],
+            "waived_findings": [w.to_json() for w in report.waived],
+            "opt_outs": [o.to_json() for o in report.opt_outs],
         }, indent=2))
     else:
         for w in report.warnings:
             print(f"warning: {w.render()}", file=sys.stderr)
         for f in report.findings:
             print(f.render(), file=sys.stderr)
+        waived = (f" ({len(report.waived)} waived)" if report.waived
+                  else "")
         if ok:
-            print("PR hygiene checks passed.")
+            print(f"PR hygiene checks passed{waived}.")
         else:
-            print(f"{len(report.findings)} PR hygiene finding(s).",
+            print(f"{len(report.findings)} PR hygiene finding(s){waived}.",
                   file=sys.stderr)
     return 0 if ok else 1
 

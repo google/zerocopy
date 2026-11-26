@@ -288,12 +288,12 @@ or audit them is permitted).
 
 ### 5. CI workflows and scripts (`ci/` and `.github/`)
 
-- **Mandatory CI gates:** Verify the Zerocopy workflow
-  `.github/workflows/anneal-current.yml` runs
+- **Mandatory CI gates:** Verify that Zerocopy's `ci/checks.toml`, run by
+  `.github/workflows/ci-core-{pr,trusted}.yml`, runs
   `sha256sum --check --strict trusted/root-manifest.sha256`, rejects forbidden
   root `.cargo` and `rust-toolchain*` paths with fail-closed checks, runs
-  `cargo run --locked -p anneal-audit`, and requires every job in the
-  fail-closed `all-jobs-succeed` gate (`ci/check_job_dependencies.sh`).
+  `cargo run --locked --offline -p anneal-audit`, all gated by the required
+  fail-closed `ci-core / gate`.
 - **Pinning, least privilege, tokens, and caches:** Pin third-party Actions to
   full 40-character commit SHAs; keep `permissions: contents: read` on all PR-
   or comment-triggered workflows and jobs (`pull_request`,

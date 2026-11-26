@@ -911,21 +911,40 @@ Test suites validate two distinct runtime audit paths without silent fallback:
 
 ### 6. CI Tiering and Sequenced Rollout Roadmap
 
-#### 6.1 Four-Tier CI Execution Matrix (`ci-core` & `anneal-current.yml`)
+#### 6.1 Four-Tier CI Execution Matrix (`ci-core` & `anneal-perf.yml`)
 
-Anneal's target check graph aligns `.github/workflows/anneal.yml`,
-`anneal-current.yml`, and `anneal-perf.yml` (including `#3993` `detect_changes`
-path filters) with
-`ci-core`'s offline container/sandbox onboarding (`#4077`, `#4079`,
-`#4140`–`#4141`, using the `6.73 GiB` single-user Nix `anneal-tc` OCI image
+Anneal's target check graph aligns `anneal-perf.yml` with `ci-core`'s offline
+container/sandbox onboarding (`#4077`, `#4079`, `#4140`–`#4141`, which retires
+`anneal.yml`, `anneal-current.yml`, and `#3993`'s `detect_changes` path filters,
+using the `6.73 GiB` single-user Nix `anneal-tc` OCI image
 under `NestedBwrap` with `--network=none` and read-only `/nix` `overlayfs`):
 
 | CI Tier | Trigger & Isolation | Executed Suites & Gates | Wall-Clock Target | Caching Policy |
 | :--- | :--- | :--- | ---: | :--- |
-| **Tier 0: Static & Boundary Preflight** | Ready Anneal-relevant or `run-ci` PRs, `merge_group`, & `push` (draft or non-Anneal PRs without `run-ci` skip `current_anneal` including `static-checks`; target `ci-core`: every PR; `Container --network=none`) | `root-manifest.sha256`, zero-symlink `trusted/`/`tests/` scan, `check_cargo_boundary` (2-zone lattice), `regenerate_bundle --check`, `check_todo.sh`, `check_pr_hygiene.py`, `check_skills.py`, Python `ci/test_*.py`, `--no-default-features` `cargo clippy` + `cli` offline tests | `< 90 s` | Content-addressed `cargo_locked` + `anneal-tc` image |
-| **Tier 1: PR Verification & Regression Gate** | PRs touching `anneal/**`, CI TCB, or `zerocopy/proofs/**` (`anneal.yml` runs `static-checks` on ready PRs and full suites on `run-ci` PRs or `merge_group`/`push`; target `ci-core`: `NestedBwrap` + `ubuntu-24.04-arm` `sandbox-aarch64`) | Workspace unit + single-binary integration suites (`anneal-testkit`, `anneal-audit-tests`, `cargo-anneal-tests`, `anneal-itree-diff` in `DegradedNoMiri` parity mode when `bin/miri` is trimmed from the omnibus archive, `anneal-rustc-capture-tests`) run via `cargo nextest run --profile ci --workspace --locked` (`D3-A`, keeping `cargo test --workspace --locked` supported), `adversarial/` `must-reject` corpus, Lean TCB `check_guard_mutation.py` (`84` guards, `~35 s`), path-filtered Rust TCB guard ablation on PR-modified `trusted/**/*.rs` files (`D4-A`), `anneal-audit --require-correspondence` (with verified `lean-miri` `.olean` cache), `perf_tracking.py check-budgets` against `anneal/ci/perf_budgets.json` (plus target Wave-3 `theory/axiom-footprint.json`), `installed_smoke` + `verify_zerocopy.py` (`zerocopy/proofs/` + target `ratchet.json`) + `starnix` | `< 12 min` critical path | `ci-core` attested `Claim::Cache` (`lean-miri` `.olean` + Cargo target) |
-| **Tier 2: Merge-Queue Assurance Gate** | `merge_group` (`NestedBwrap`) | **Pass-1 & Pass-2 `anneal-audit --require-correspondence`** (target `ci-core`: cold build; in `anneal-current.yml`, `merge_group` restores SHA-256-verified `lean-miri` `.olean` read-only with workflow miss fallback to cold, while `push` to `main` compiles cold), full Rust + Lean TCB guard-ablation matrix (`D4-A`), **4-kernel `--paranoid-quorum`** (`nanoda_bin` + `con-ron` + `con-leche` + `lean4lean --import` once `v4.35.0` lands), full `zerocopy/proofs/` (`real_crates/zerocopy`) verification | `< 18 min` | Cold on `main` `push` & pin edits; read-only SHA-256-verified `lean-miri` `.olean` on `merge_group` (zero unverified `.olean` cache hits) |
+| **Tier 0: Static & Boundary Preflight** | Every PR, `merge_group`, & `push` (`Container --network=none`) | `root-manifest.sha256`, zero-symlink `trusted/`/`tests/` scan, `check_cargo_boundary` (2-zone lattice), `regenerate_bundle --check`, `check_todo.sh`, `check_pr_hygiene.py` (required, soft-blocking `PR hygiene` check in `anneal-pr-hygiene.yml`, outside `ci-core`), `check_skills.py`, Python `ci/test_*.py`, `--no-default-features` `cargo clippy` + `cli` offline tests | `< 90 s` | Content-addressed `cargo_locked` + `anneal-tc` image |
+| **Tier 1: PR Verification & Regression Gate** | PRs touching `anneal/**`, CI TCB, or `zerocopy/proofs/**` (`ci-core`: `NestedBwrap` + `ubuntu-24.04-arm` `sandbox-aarch64`) | Workspace unit + single-binary integration suites (`anneal-testkit`, `anneal-audit-tests`, `cargo-anneal-tests`, `anneal-itree-diff` in `DegradedNoMiri` parity mode when `bin/miri` is trimmed from the omnibus archive, `anneal-rustc-capture-tests`) run via `cargo nextest run --profile ci --workspace --locked` (`D3-A`, keeping `cargo test --workspace --locked` supported), `adversarial/` `must-reject` corpus, Lean TCB `check_guard_mutation.py` (`84` guards, `~35 s`), path-filtered Rust TCB guard ablation on PR-modified `trusted/**/*.rs` files (`D4-A`), `anneal-audit --require-correspondence` (with verified `lean-miri` `.olean` cache), `perf_tracking.py check-budgets` against `anneal/ci/perf_budgets.json` (plus target Wave-3 `theory/axiom-footprint.json`), `installed_smoke` + `verify_zerocopy.py` (`zerocopy/proofs/` + target `ratchet.json`) + `starnix` | `< 12 min` critical path | `ci-core` attested `Claim::Cache` (`lean-miri` `.olean` + Cargo target) |
+| **Tier 2: Merge-Queue Assurance Gate** | `merge_group` (`NestedBwrap`) | **Pass-1 & Pass-2 `anneal-audit --require-correspondence`** (`miri-v1` restored only from an attested entry, rebuilt cold on key changes, verified against `UPSTREAM_PIN.json`, and kernel-replayed on every run), full Rust + Lean TCB guard-ablation matrix (`D4-A`), **4-kernel `--paranoid-quorum`** (`nanoda_bin` + `con-ron` + `con-leche` + `lean4lean --import` once `v4.35.0` lands), full `zerocopy/proofs/` (`real_crates/zerocopy`) verification | `< 18 min` | Cold on pin edits; attested `miri-v1`, SHA-256-verified against `UPSTREAM_PIN.json` (zero unverified `.olean` cache hits) |
 | **Tier 3: Continuous `main` Telemetry & Scheduled Deep Sweep** | `push` to `main` (`.github/workflows/anneal-perf.yml`), nightly cron, & pre-release qualification (`0.2.0-alpha.11+`) | Continuous `perf_tracking.py collect`/`analyze`/`check-budgets` + static dashboard publication on `benchmark-data` (`anneal-perf.yml`), full **all-guards Rust + Lean TCB ablation matrix** (recompiling all `rustc-capture`/`audit`/`cargo-anneal` single-guard mutants per `D4-A`), full 4-way **`differential/` Miri $\leftrightarrow$ `MirSemantics` boundary/fuzz sweep**, multi-version Lean (`v4.33.1`/`v4.34.1`/`v4.35.0`) matrix, and extended external crate smoke suite | `< 45 min` | Isolated ephemeral runners |
+
+The `ci-core` cutover changes where some former pre-merge Anneal checks run.
+Before merge, `anneal/ci/run_anneal_check.sh` packs the omnibus archive with
+`.#omnibus-archive`'s excludes, deterministic tar flags, leak bans, required
+entries, and in-archive `library-lock.json` sysroot-tree verification
+(`anneal/ci/test_run_anneal_check.py` fails if it drifts from `flake.nix`),
+but from the `anneal-tc` image rather than through `nix build`.
+`nix build .#omnibus-archive` itself, and the omnibus budget in
+`anneal/ci/perf_budgets.json`, now run only after merge, on every `main` push
+in `anneal-perf.yml`, and during release in `release.yml`. Cold `main`-branch
+`lean-miri` builds are no longer exercised. `run_anneal_check.sh` restores the
+legacy job deadlines with `timeout`: 90 minutes for `ws-test`, `audit`,
+`installed-smoke`, and `guard-mutation`, and 30 minutes for `clippy`,
+`flake-eval`, `ci-tests`, and `sandbox`; the `ci/scripts/run_*.sh` entrypoints
+are capped the same way. `ci-core` checks cannot read Git history, so
+`check_pr_hygiene.py` runs in `.github/workflows/anneal-pr-hygiene.yml` as the
+`PR hygiene` check, which the `main` ruleset requires alongside
+`ci-core / gate`. Its findings can be waived only by a `Skip-pr-hygiene:`
+trailer on the PR's `HEAD` commit, as
+[`docs/scaffolding.md`](scaffolding.md) describes.
 
 #### 6.2 Phased Rollout Roadmap (Landed Baseline vs. Remaining Stages)
 
@@ -936,7 +955,7 @@ completes the declarative corpora.
 
 | Wave | Status on `main` | Scope & Concrete Deliverables | Sequencing & Acceptance Invariants |
 | :--- | :--- | :--- | :--- |
-| **Wave 0 (Foundation, Perf Pipeline, & `D1-A`)** | **Core & `D1-A` Landed; `#4016`/`#4109` & `ci-core` In Progress** | **Landed on `main`:** `#4078` (balanced Lean list literals), `#4131` (`enum_id` scoping & `--env`), `#4137` (`ci/check_skills.py`), `#4138` (`ANNEAL_RELEASE_LOCK`, superseded by commit-bound dispatch), `#4139` (`6a0932de51`, Lean 4 `module` 3-part `.olean*` + `4.33`–`4.35` compat), `#4142` (`7c7f821539`, cross-family Gate 2), `#4148` (`d3362d9a65`, `zerocopy/proofs/` + `verify_zerocopy.py`), `#4171`–`#4173`/`#4212` (`perf_tracking.py`, `perf_budgets.json`, static dashboard, and `anneal-perf.yml`), and **`D1-A`** (`*Canaries*.lean` decoupled from runtime umbrellas; monolithic `theory/Anneal.lean` retired in favor of demand-driven domain umbrellas `Anneal.Scalar`, `Anneal.Wp`, `Anneal.Simd`, and `Anneal.PureLift`, keeping `share/anneal/theory` matched 1-for-1 to `bundle-manifest.json`'s `20` modules).<br>**Remaining queue:** Land `#4016`/`#4109` (`SpecPreflight.lean` + `ndjson_comparator` `5a`/`5b`/`5c` + multi-kernel `ExecSeal`), and complete `ci-core` onboarding (`#4077`, `#4079`, `#4140`, `#4141`; `#4125` relocates `docs/` if merged). | Zero `module` $\times$ `ndjson_comparator` regressions; `*Canaries*.lean` excluded from domain umbrellas and user bundles (`0` `*Canaries*` in `20` bundled modules) while `scan_lean_tree` discovers and audits every `.lean` module under `theory/` in repository Pass-1 `anneal-audit`. |
+| **Wave 0 (Foundation, Perf Pipeline, & `D1-A`)** | **Core & `D1-A` Landed; `#4016`/`#4109` & `ci-core` In Progress** | **Landed on `main`:** `#4078` (balanced Lean list literals), `#4131` (`enum_id` scoping & `--env`), `#4137` (`ci/check_skills.py`), `#4138` (`ANNEAL_RELEASE_LOCK`, superseded by commit-bound dispatch), `#4139` (`6a0932de51`, Lean 4 `module` 3-part `.olean*` + `4.33`–`4.35` compat), `#4142` (`7c7f821539`, cross-family Gate 2), `#4148` (`d3362d9a65`, `zerocopy/proofs/` + `verify_zerocopy.py`), `#4171`–`#4173`/`#4212` (`perf_tracking.py`, `perf_budgets.json`, static dashboard, and `anneal-perf.yml`), and **`D1-A`** (`*Canaries*.lean` decoupled from runtime umbrellas; monolithic `theory/Anneal.lean` retired in favor of demand-driven domain umbrellas `Anneal.Scalar`, `Anneal.Wp`, `Anneal.Simd`, and `Anneal.PureLift`, keeping `share/anneal/theory` matched 1-for-1 to `bundle-manifest.json`'s `20` modules).<br>**Remaining queue:** Land `#4016`/`#4109` (`SpecPreflight.lean` + `ndjson_comparator` `5a`/`5b`/`5c` + multi-kernel `ExecSeal`), and cutover cleanup (`#4125` relocates `docs/` if merged). | Zero `module` $\times$ `ndjson_comparator` regressions; `*Canaries*.lean` excluded from domain umbrellas and user bundles (`0` `*Canaries*` in `20` bundled modules) while `scan_lean_tree` discovers and audits every `.lean` module under `theory/` in repository Pass-1 `anneal-audit`. |
 | **Wave 1 (`#4015` Two-Zone Split & `anneal-testkit`)** | **Landed (`#4154`, `#4159`); Optional Active-Member & CI `nextest` Follow-Up** | **Landed on `main`:** `#4154` (`348147c22d`, closing `#4015`) moved `trusted/{audit,cargo-anneal,rustc-capture}/tests/` into fenced `tests/{audit,cargo-anneal,rustc-capture}/` crates (`publish = false`, `*-test-bin` shims, `trusted/cargo-anneal/assets/scalar/`, lockstep policy updates keeping `anneal/AGENTS.md` at `30,654 B` below `check_skills.py`'s `31,744 B` cap); `#4159` (`aa8d82c9bb`) added the `WorkspaceZone::Trusted(0) < WorkspaceZone::Tests(1)` monotonic lattice and `proc-macro` ban in `cargo_boundary.rs`, `tests/testkit` (`anneal-testkit`: `toolchain`, `workspace`, `process`, `store_sim`, `corpora`, `assertions`), and `anneal/.config/nextest.toml`.<br>**Remaining follow-up:** Optionally tighten `cargo_boundary.rs` active-member checks for all three `trusted/*` crates in `workspace.members` (rejecting `workspace.exclude`), and switch CI test steps to `cargo nextest run --profile ci` (`D3-A`) once `anneal-tc` / `flake.nix` bundles `cargo-nextest`. | `anneal/trusted/` reduced by `31,016` LOC at `#4154`; 2-zone boundary + `proc-macro` negative/positive tests active; `cargo test --workspace --locked` preserved alongside `nextest`. |
 | **Wave 2A (`cargo-anneal` Split & `D2-A`)** | **Landed (`#4187`, `a508ef1ba6`)** | Executed **`D2-A`**: retired and deleted `integration.rs`, `mvp_e2e.rs`, and the `1,388`-line `/// anneal:*` doc-comment synthesizer; migrated `19` scalar spec/proof suites into `tests/corpora/scalar_specs/`, `27` capture-refusal cases into `tests/corpora/adversarial/capture/`, and `scalar`/`spin`/`unsafe_identity` into `tests/corpora/`; split `cargo-anneal-tests` into `<800`L submodules under `tests/cargo-anneal/tests/suite/` (`main.rs` + 7 submodules, including `split_store_bwrap.rs` exercising `run_in_simulated_nix_store` alongside `#4159`'s 5-cell `ElfStoreBuilder`). | Doc-comment synthesizer deleted; `cargo-anneal` `suite/*` submodules modularized atop `anneal-testkit`; simulated `/nix/store` `symlinkJoin` tests passing without host Nix. |
 | **Wave 2B (Testkit Consolidation & Remaining Monolith Decomposition)** | **In Progress (Testkit Migration & Shim Retirement Landed; Submodule Split Remaining)** | **Landed:** expanded `anneal-testkit` (`digest`, `case_runner`, `audit_fixture`, `mir_wp_fixture`); migrated `harness.rs`, `sandbox_escape.rs`, `installed_smoke.rs`, `profile_v2_e2e.rs` (split into `10` parallel tests), `support_{paths,regressions,signals}.rs`, `compiler_session.rs`, `stdlib_capture.rs`, `typed_capture.rs`, `audit/tests/common/{mod,correspondence_dsl}.rs`, `boundary_audit.rs`, and `target_audit.rs` directly onto `anneal-testkit`; deleted `tests/cargo-anneal/tests/support/mod.rs` and `tests/rustc-capture/tests/common/mod.rs` shims.<br>**Remaining:** decompose `tests/audit/tests/boundary_audit.rs`, `tests/audit/tests/target_audit.rs`, and `tests/rustc-capture/tests/typed_capture.rs` into `<800`L domain submodules under single-binary `tests/suite/main.rs` targets. | Pure `anneal/tests/` refactoring (`0` `anneal/trusted/` edits); zero test files `> 1,000` lines; zero duplicated `Tools::discover`, `MirWpSyntheticSpec`, or `TempFixture` helpers. |
@@ -1111,9 +1130,11 @@ blast radii remain documented below for durable architectural rationale.
 #### Decision D3: `cargo-nextest` as Workspace Test Runner (`D3-A`)
 
 - **Context:** `ci-core`'s `zc-nightly` and `zc-stable-msrv` images already
-  bundle `cargo-nextest` (`0.9.152`), whereas `anneal-current.yml` and
-  `anneal-tc` currently invoke `cargo test` (`libtest` multi-threaded in-process
-  runner; `anneal/.config/nextest.toml` landed in `#4159`).
+  bundle `cargo-nextest` (`0.9.152`), as does `anneal-tc`, whose
+  `anneal-ws-test` check (`anneal/ci/run_anneal_check.sh`) runs
+  `cargo nextest run --workspace --locked --offline` without `--profile ci`
+  and keeps `cargo test` only for doctests and the `cargo-anneal` lib/CLI
+  suites (`anneal/.config/nextest.toml` landed in `#4159`).
 - **Options Considered:**
   - **Option D3-A (Confirmed):** Pre-install pinned `cargo-nextest` inside
     `anneal-tc` (and `anneal/flake.nix` devShell) and run `cargo nextest run
@@ -1129,10 +1150,11 @@ blast radii remain documented below for durable architectural rationale.
   isolation, built-in JUnit/JSON slow-test telemetry, and declarative
   `threads-required` slot scheduling for heavy Lean tests while preserving
   `cargo test` compatibility (`anneal/.config/nextest.toml` landed in `#4159`;
-  CI step cutover lands with `anneal-tc` / `flake.nix` bundling).
+  `anneal-ws-test` runs `nextest` from `anneal-tc`, while `--profile ci` and
+  `flake.nix` bundling remain).
 - **Blast Radius:** `anneal/.config/nextest.toml` (landed), plus one pinned
   binary in `anneal-tc` / `flake.nix` and the test step command in
-  `.github/workflows/anneal-current.yml` / `checks.toml`.
+  `ci/checks.toml` / `anneal/ci/run_anneal_check.sh`.
 
 #### Decision D4: CI Tiering for Rust TCB Guard Ablation (`D4-A`)
 
@@ -1162,7 +1184,7 @@ blast radii remain documented below for durable architectural rationale.
 - **Confirmed Decision (`D4-A`):** Catches weakened Rust TCB guards pre-review
   on the exact PRs that edit `trusted/**/*.rs` at `<60 s` incremental cost
   while imposing zero latency tax on `theory/` or `zerocopy/proofs/` PRs.
-- **Blast Radius:** Configures `ci-core` / `anneal-current.yml` check filter
+- **Blast Radius:** Configures `ci-core` (`ci/checks.toml`) check filter
   flags (`--changed-files` on PRs vs. `--all` on `merge_group`/nightly);
   identical `guards.toml` manifest across all options.
 

@@ -8,19 +8,10 @@
 # This file may not be copied, modified, or distributed except according to
 # those terms.
 
-set -eo pipefail
+set -euo pipefail
 cd "$(dirname "$0")/.."
 
-# Check whether the set of toolchains tested in this file (other than
-# 'msrv', 'stable', and 'nightly') is equal to the set of toolchains
-# listed in the 'package.metadata.build-rs' section of Cargo.toml.
-#
-# If the inputs to `diff` are not identical, `diff` exits with a
-# non-zero error code, which causes this script to fail (thanks to
-# `set -e`).
-diff \
-  <(yq -r '.jobs.build_test.strategy.matrix.toolchain | .[]' ../.github/workflows/ci.yml | \
-    sort -u | grep -v '^\(msrv\|stable\|nightly\)$') \
-  <(cargo metadata -q --format-version 1 | \
-    jq -r ".packages[] | select(.name == \"zerocopy\").metadata.\"build-rs\" | keys | .[]" | \
-    sort -u) >&2
+# Verify bijective toolchain alignment across `zerocopy/Cargo.toml`,
+# `ci/pins/rust-toolchains.toml`, `ci/docker/zc-*.Dockerfile`, and
+# `ci/checks.toml`.
+exec python3 -I -B ../ci/scripts/check_toolchains_sync.py

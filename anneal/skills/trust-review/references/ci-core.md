@@ -6,14 +6,15 @@ license <LICENSE-MIT or https://opensource.org/licenses/MIT>, at your option.
 This file may not be copied, modified, or distributed except according to
 those terms. -->
 
-# Pre-cutover `ci-core` review rules
+# `ci-core` review rules
 
-Before cutover, Zerocopy runs its declarative `ci-core` check graph alongside
-legacy CI. These surfaces trigger Pass 2:
+Zerocopy runs its declarative `ci-core` check graph as its required CI. These
+surfaces trigger Pass 2:
 
 - the caller workflows `ci-core-pr.yml`, `ci-core-trusted.yml`,
   `ci-review-signal.yml`, and `ci-review-rerun.yml` in Zerocopy's root
   `.github/workflows/`;
+- `anneal-pr-hygiene.yml`, which reports the other required check;
 - repository-root `ci/checks.toml`, which those workflows load as trusted
   config; and
 - repository-root `.github/CODEOWNERS`, which `ci-core` enforces.
@@ -24,18 +25,29 @@ Apply the rules below in addition to the
 except the per-workflow `permissions:` scopes listed under
 [Least privilege](#least-privilege), which apply only to these four callers.
 
-## Keep `anneal-current.yml` required
+## Keep `ci-core / gate` and `PR hygiene` required
 
-- Pre-cutover `ci-core` does not replace `anneal.yml` -> `anneal-current.yml`.
-  Keep requiring it and every base CI gate it runs.
-- `ci-core-pr.yml` passes `shadow_mode: true`, so pull-request runs verify
-  the plan and reuse receipts without executing check shards.
-  `ci-core-trusted.yml` omits it, so `merge_group` and `main` `push` runs
-  execute the affected checks and evaluate the gate for real. Never accept
-  `ci-core` coverage as grounds to drop or weaken an `anneal-current.yml` gate.
-- `ci-core / gate` (`[tcb.caller] gate_check_name`) is the `ci-core` gate
-  check. Until cutover it is not a required status check; it supplements
-  `all-jobs-succeed` and never replaces it.
+- The `main` ruleset requires exactly two checks: `ci-core / gate`
+  (`[tcb.caller] gate_check_name`), which replaces `all-jobs-succeed`, and
+  `PR hygiene` from `anneal-pr-hygiene.yml`. Reject dropping either.
+- `ci-core` replaces the retired `anneal.yml` -> `anneal-current.yml`.
+  Keep requiring every base CI gate that workflow ran. `check_pr_hygiene.py`
+  reads Git history, which `ci-core` checks lack, so `PR hygiene` runs it.
+- `ci-core-pr.yml` passes `shadow_mode: false`, so pull-request runs execute
+  check shards. Reject re-enabling shadow mode, and never accept a `ci-core`
+  change as grounds to drop or weaken a base CI gate.
+- `PR hygiene` is soft-blocking: a `Skip-pr-hygiene:` trailer on the PR's
+  `HEAD` commit may waive named checks, as
+  [`docs/scaffolding.md`](../../../docs/scaffolding.md) describes. Report
+  each waiver so the Gate 5 approver can accept it, and reject one that hides
+  a trust or soundness defect. The tree invariants `agents-budget` and
+  `code-review-rules-parity` run in `ci-core`'s `skills-check` and are never
+  waivable.
+- `anneal-pr-hygiene.yml` holds only `contents: read` and runs
+  `check_pr_hygiene.py` on every `opened`, `synchronize`, `reopened`, and
+  `edited` pull-request event; only `merge_group` runs skip checkout and exit
+  0. Reject any fast path that reports success for a pull-request event
+  without running the check.
 
 ## SHA pinning
 
@@ -83,8 +95,10 @@ scopes to its single job:
   paths under last-match-wins. Keep `.github/CODEOWNERS` rules free of
   backslashes, negations, and character classes, and never narrow owner
   coverage of Anneal-trusted paths.
-- Reject additions to `[tcb] non_tcb_workflows` or `non_tcb_subtrees` that
-  would cover an Anneal-trusted surface.
+- `[tcb] non_tcb_workflows` is empty, so `ci-core` treats every workflow as
+  TCB. Reject any entry: `ci-core` cannot prove that a workflow reads no
+  secrets, uses no OIDC token, and spoofs no required check name. Reject
+  additions to `non_tcb_subtrees` that would cover an Anneal-trusted surface.
 
 ## Sandboxing and environment
 

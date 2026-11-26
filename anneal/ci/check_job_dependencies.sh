@@ -23,13 +23,15 @@ report_failure() {
   failed=1
 }
 
-# Verify that every PR or reusable workflow defines an `all-jobs-succeed` gate
-# whose `needs` lists every other job in that workflow, so branch protection
-# cannot miss a job result.
+# Verify that every local PR or reusable workflow under `.github/workflows/`
+# defines an `all-jobs-succeed` gate whose `needs` lists every other job, and
+# that any `../.github/workflows/` workflow defining `all-jobs-succeed` lists
+# every other job in `needs` (thin `ci-core` caller workflows in
+# `../.github/workflows/` are statically validated by `ci-core verify-repo`).
 shopt -s nullglob
 workflows=(
-  ../.github/workflows/anneal.yml
-  ../.github/workflows/anneal-current.yml
+  ../.github/workflows/*.yml
+  ../.github/workflows/*.yaml
   .github/workflows/*.yml
   .github/workflows/*.yaml
 )
@@ -83,7 +85,9 @@ for i in "${workflows[@]}"; do
 
   all_jobs=$(yq -r '.jobs | keys | .[]' "$i")
   if [ -z "$all_jobs" ] || ! grep -Fxq 'all-jobs-succeed' <<< "$all_jobs"; then
-    report_failure "$i: missing required all-jobs-succeed job"
+    if [[ "$i" == .github/workflows/* ]]; then
+      report_failure "$i: missing required all-jobs-succeed job"
+    fi
     continue
   fi
 

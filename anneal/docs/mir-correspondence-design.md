@@ -293,19 +293,14 @@ Placing `Trusted.Correspondence*`, `Anneal.MirCorrespondence.*`, and
      digests before writing it back to the cache (write-after-verify via
      `prepare_nosymlink_cache_path` / `write_cache_file`), and rejects any
      cache directory located inside (or resolving via symlinks inside) the
-     repository checkout. In CI, the cache lives in
-     `${{ runner.temp }}/anneal-miri-olean-cache` keyed on OS, architecture,
-     `trusted/lean/lean-toolchain`, and `vendor/lean-miri/UPSTREAM_PIN.json`
-     (so any pin or toolchain change misses and compiles cold), `merge_group`
-     restores the cache read-only (skipping `save_miri_olean_cache`,
-     SHA-256-verifying every restored entry against `UPSTREAM_PIN.json`, while
-     the workflow audit step wipes the cache dir on a miss), any
-     `workflow_dispatch` caller and non-`main`/fork `push` runs skip the cache
-     action and omit `--miri-cache-dir`, and canonical `main`-branch (`push`)
-     runs use `lookup-only: true` plus `rm -rf` before invoking `anneal-audit`
-     so every landed revision performs a cold from-source build as well as
-     standalone kernel replay while canonical `main` still seeds a missing
-     default-branch cache entry for pull requests and merge-group runs. Per
+     repository checkout. In CI, the cache is the `miri-v1` slot in
+     repository-root [`ci/checks.toml`](../../ci/checks.toml), keyed on the
+     `anneal-tc` image manifest digest, `flake.nix`, `flake.lock`,
+     `trusted/lean/lean-toolchain`, `trusted/lean/foundation-lock.json`, and
+     `vendor/lean-miri/UPSTREAM_PIN.json`
+     (so any pin or toolchain change misses and compiles cold); only
+     checkout-free `merge_group` and `main`-branch `push` `publish` runs write
+     and keyless-sign entries. Per
      [`docs/trust-model.md`](trust-model.md), cold compilation and any
      metaprogram-executing Pass 2 step over unmerged candidate
      `vendor/lean-miri/` code must be confined to an OS-level isolated sandbox

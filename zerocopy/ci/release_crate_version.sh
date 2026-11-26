@@ -22,7 +22,7 @@ PREV_VERSION="$(sed -n 's/^version = "\([0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*\)"
 sed -i -e "s/^zerocopy-derive = { version = \"=[0-9a-zA-Z\.-]*\"/zerocopy-derive = { version = \"=$VERSION\"/" Cargo.toml
 sed -i -e "s/^version = \"[0-9a-zA-Z\.-]*\"/version = \"$VERSION\"/" Cargo.toml zerocopy-derive/Cargo.toml
 
-if [ -n "$PREV_VERSION" ] && [ -f ../ci/pins/semver-baseline.toml ]; then
+if [ -n "$PREV_VERSION" ]; then
     # Pin the semver baseline to the version this release supersedes: the new
     # version is not on crates.io until after this PR merges and publishes.
     # The `roll_semver_baseline` job in `roll-pinned-toolchain-versions.yml`

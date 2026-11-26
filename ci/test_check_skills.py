@@ -27,6 +27,12 @@ import check_skills  # noqa: E402
 
 
 COMMIT_SHA = "b563468a8148df117283494915cee5b6561cc47f"
+CRR_BLOCK = (
+    "<!-- code-review-rules:begin -->\n"
+    "## Code Review Rules\n\n"
+    "Rule one.\n"
+    "<!-- code-review-rules:end -->\n"
+)
 
 
 def write_skill_md(
@@ -146,6 +152,14 @@ class CheckSkillsTests(unittest.TestCase):
         lock_path = skills_dir / "vendor-lock.json"
         lock_path.write_text(
             json.dumps(lock_data, indent=2) + "\n", encoding="utf-8"
+        )
+
+        (root / "anneal" / "AGENTS.md").write_text(
+            "# Anneal\n\n" + CRR_BLOCK, encoding="utf-8"
+        )
+        (root / "anneal" / ".gemini").mkdir()
+        (root / "anneal" / ".gemini" / "styleguide.md").write_text(
+            "# Styleguide\n\n" + CRR_BLOCK, encoding="utf-8"
         )
 
         (agents_dir / "skills.json").write_text(
@@ -711,11 +725,61 @@ class CheckSkillsTests(unittest.TestCase):
             # Budget `< 31744`: exact `31743` passes, `31744` fails.
             root_len = root_agents.lstat().st_size
             budget = check_skills.CODEX_AGENTS_MD_BUDGET_BYTES
-            anneal_agents.write_bytes(b"a" * (budget - 1 - root_len))
+            block = CRR_BLOCK.encode("utf-8")
+            pad = budget - 1 - root_len - len(block)
+            anneal_agents.write_bytes(block + b"a" * pad)
             check_skills.check_repository(repo)
 
-            anneal_agents.write_bytes(b"a" * (budget - root_len))
+            anneal_agents.write_bytes(block + b"a" * (pad + 1))
             self.assert_fails_with(repo, f"Codex budget of {budget} B")
+
+    def test_code_review_rules_parity(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            repo = self.build_fixture(Path(tmp))
+            agents = repo / "anneal" / "AGENTS.md"
+            style = repo / "anneal" / ".gemini" / "styleguide.md"
+
+            # Matching blocks pass even when surrounding text differs.
+            style.write_text(
+                "# Other preamble\n\n" + CRR_BLOCK + "\nTrailer.\n",
+                encoding="utf-8",
+            )
+            check_skills.check_repository(repo)
+
+            # Drift inside the block fails and names the first bad line.
+            style.write_text(
+                CRR_BLOCK.replace("Rule one.", "Rule one!"), encoding="utf-8"
+            )
+            self.assert_fails_with(repo, "differs from `anneal/AGENTS.md`")
+            self.assert_fails_with(repo, "at block line 4")
+
+            # Missing, duplicated, or reordered markers fail closed.
+            style.write_text("# Styleguide\n", encoding="utf-8")
+            self.assert_fails_with(repo, "code-review-rules-parity: expected one")
+            style.write_text(CRR_BLOCK + CRR_BLOCK, encoding="utf-8")
+            self.assert_fails_with(repo, "code-review-rules-parity: expected one")
+            style.write_text(
+                "<!-- code-review-rules:end -->\n"
+                "<!-- code-review-rules:begin -->\n",
+                encoding="utf-8",
+            )
+            self.assert_fails_with(repo, "code-review-rules-parity: expected one")
+
+            # Deleting either mirror, or replacing it with a symlink, fails.
+            style.unlink()
+            self.assert_fails_with(
+                repo, "target does not exist: anneal/.gemini/styleguide.md"
+            )
+            style.symlink_to("../AGENTS.md")
+            self.assert_fails_with(
+                repo, "symlink forbidden: anneal/.gemini/styleguide.md"
+            )
+            style.unlink()
+            style.write_text(CRR_BLOCK, encoding="utf-8")
+            agents.unlink()
+            self.assert_fails_with(
+                repo, "target does not exist: anneal/AGENTS.md"
+            )
 
     def test_proof_scaling_and_cargo_anneal_boundary_sync(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:

@@ -121,7 +121,7 @@ for tok in \
   'lakefile.*' lean-toolchain '#[anneal::trusted]' '-- anneal-trust-tier:' \
   .cargo 'rust-toolchain*' Trusted.CrateTheorem Trusted.Crate \
   Trusted.VerificationResult foundation-lock.json root-manifest.sha256 \
-  all-jobs-succeed 'persist-credentials: false' ACTIONS_RUNTIME_TOKEN; do
+  'ci-core / gate' 'persist-credentials: false' ACTIONS_RUNTIME_TOKEN; do
   if ! grep -Fq -- "$tok" <<< "$rules"; then
     fail "token missing in rules: $tok"
   fi
@@ -316,10 +316,9 @@ against its canonical owner and required outcome:
    and
    [`source-control`](../skills/source-control/SKILL.md#lock-and-rebase-a-stack)
    — evaluates the CI-executed-surface gate across cumulative `main..<head>`
-   before push, overlaps non-CI draft-PR CI (drafts skip `current_anneal` and
-   heavy `ci.yml` jobs unless `run-ci` is set) and Gate 2 review with local
-   review, coalesces repairs into focused commits, locks converged prefixes,
-   and checks `range-diff`.
+   before push, overlaps non-CI draft-PR CI and Gate 2 review with local review,
+   coalesces repairs into focused commits, locks converged prefixes, and checks
+   `range-diff`.
 9. **Trivial edit zero-ceremony path and scoped evidence reuse:**
    [`change-review`](../skills/change-review/SKILL.md#key-every-result-to-its-inputs)
    and

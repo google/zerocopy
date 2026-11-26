@@ -388,7 +388,7 @@ class DocsWorkflowStaticTests(unittest.TestCase):
         wr = self.workflow["on"]["workflow_run"]
         self.assertEqual(
             wr["workflows"],
-            ["Build & Tests", "Anneal Tests", "Anneal Performance Tracking"],
+            ["CI (Trusted)", "Anneal Performance Tracking"],
         )
         self.assertEqual(wr["types"], ["completed"])
         self.assertEqual(wr["branches"], ["main"])
@@ -409,7 +409,7 @@ class DocsWorkflowStaticTests(unittest.TestCase):
         self.assertIn("workflows/anneal-perf.yml/runs", script)
         self.assertIn("Publish telemetry and dashboard", script)
         self.assertIn('PUBLISH_CONCLUSION" != "success"', script)
-        self.assertIn("for WORKFLOW in ci.yml anneal.yml", script)
+        self.assertIn("workflows/ci-core-trusted.yml/runs", script)
         self.assertIn("repos/$REPOSITORY/git/ref/heads/main", script)
         self.assertNotIn("${{", script)
 
@@ -517,38 +517,25 @@ else:
                 gh_summary.read_text(encoding="utf-8"),
             )
 
-    def _ci_fixtures(self, sha: str, *, anneal_status: str = "completed", anneal_conclusion: str = "success"):
-        ci_run = {
-            "id": 101,
-            "name": "Build & Tests",
-            "path": ".github/workflows/ci.yml",
-            "event": "push",
-            "head_branch": "main",
-            "head_sha": sha,
-            "head_repository": {"full_name": "google/zerocopy"},
-            "status": "completed",
-            "conclusion": "success",
-            "updated_at": "2026-11-23T17:10:00Z",
-            "html_url": "https://github.com/google/zerocopy/actions/runs/101",
-        }
-        anneal_run = {
+    def _ci_fixtures(self, sha: str, *, status: str = "completed", conclusion: str = "success"):
+        trusted_run = {
             "id": 102,
-            "name": "Anneal Tests",
-            "path": ".github/workflows/anneal.yml",
+            "name": "CI (Trusted)",
+            "path": ".github/workflows/ci-core-trusted.yml",
             "event": "push",
             "head_branch": "main",
             "head_sha": sha,
             "head_repository": {"full_name": "google/zerocopy"},
-            "status": anneal_status,
-            "conclusion": anneal_conclusion,
+            "status": status,
+            "conclusion": conclusion,
             "updated_at": "2026-11-23T17:15:00Z",
             "html_url": "https://github.com/google/zerocopy/actions/runs/102",
         }
-        return ci_run, anneal_run
+        return trusted_run
 
     def test_perf_run_deploys_even_when_budget_check_fails_after_publish(self):
         sha = "a" * 40
-        ci_run, anneal_run = self._ci_fixtures(sha)
+        trusted_run = self._ci_fixtures(sha)
         perf_run = {
             "id": 103,
             "name": "Anneal Performance Tracking",
@@ -566,10 +553,9 @@ else:
             source_sha=sha,
             main_sha=sha,
             trigger_run_id=103,
-            runs_by_id={101: ci_run, 102: anneal_run, 103: perf_run},
+            runs_by_id={102: trusted_run, 103: perf_run},
             workflow_runs={
-                "ci.yml": [ci_run],
-                "anneal.yml": [anneal_run],
+                "ci-core-trusted.yml": [trusted_run],
                 "anneal-perf.yml": [perf_run],
             },
             jobs_by_run_id={
@@ -587,13 +573,13 @@ else:
         self.assertEqual(res.returncode, 0, res.stdout + res.stderr)
         self.assertEqual(
             outputs,
-            {"deploy": "true", "sha": sha, "anneal_run_id": "102"},
+            {"deploy": "true", "sha": sha},
         )
         self.assertIn("publish=success", summary)
 
     def test_perf_run_skips_deploy_when_publish_did_not_succeed(self):
         sha = "b" * 40
-        ci_run, anneal_run = self._ci_fixtures(sha)
+        trusted_run = self._ci_fixtures(sha)
         perf_run = {
             "id": 203,
             "name": "Anneal Performance Tracking",
@@ -611,10 +597,9 @@ else:
             source_sha=sha,
             main_sha=sha,
             trigger_run_id=203,
-            runs_by_id={101: ci_run, 102: anneal_run, 203: perf_run},
+            runs_by_id={102: trusted_run, 203: perf_run},
             workflow_runs={
-                "ci.yml": [ci_run],
-                "anneal.yml": [anneal_run],
+                "ci-core-trusted.yml": [trusted_run],
                 "anneal-perf.yml": [perf_run],
             },
             jobs_by_run_id={
@@ -635,8 +620,8 @@ else:
 
     def test_perf_run_waits_for_ci_and_blocks_stale_main(self):
         sha = "c" * 40
-        ci_run, anneal_run = self._ci_fixtures(
-            sha, anneal_status="in_progress", anneal_conclusion=None
+        trusted_pending = self._ci_fixtures(
+            sha, status="in_progress", conclusion=None
         )
         perf_run = {
             "id": 303,
@@ -665,28 +650,27 @@ else:
             source_sha=sha,
             main_sha=sha,
             trigger_run_id=303,
-            runs_by_id={101: ci_run, 102: anneal_run, 303: perf_run},
+            runs_by_id={102: trusted_pending, 303: perf_run},
             workflow_runs={
-                "ci.yml": [ci_run],
-                "anneal.yml": [anneal_run],
+                "ci-core-trusted.yml": [trusted_pending],
                 "anneal-perf.yml": [perf_run],
             },
             jobs_by_run_id=jobs,
         )
         self.assertEqual(res_wait.returncode, 0, res_wait.stdout + res_wait.stderr)
         self.assertEqual(outputs_wait, {})
-        self.assertIn("Both CI workflows have not succeeded", summary_wait)
+        self.assertIn("CI (Trusted) has not succeeded", summary_wait)
 
-        # Once both CI workflows succeed on MAIN_SHA, schedule/workflow_dispatch perf deploys.
-        _, anneal_ok = self._ci_fixtures(sha)
+        # Once CI (Trusted) succeeds on MAIN_SHA, schedule/workflow_dispatch
+        # perf deploys.
+        trusted_ok = self._ci_fixtures(sha)
         res_ok, outputs_ok, _ = self._run_coordinate(
             source_sha=sha,
             main_sha=sha,
             trigger_run_id=303,
-            runs_by_id={101: ci_run, 102: anneal_ok, 303: perf_run},
+            runs_by_id={102: trusted_ok, 303: perf_run},
             workflow_runs={
-                "ci.yml": [ci_run],
-                "anneal.yml": [anneal_ok],
+                "ci-core-trusted.yml": [trusted_ok],
                 "anneal-perf.yml": [perf_run],
             },
             jobs_by_run_id=jobs,
@@ -699,10 +683,9 @@ else:
             source_sha=sha,
             main_sha="d" * 40,
             trigger_run_id=303,
-            runs_by_id={101: ci_run, 102: anneal_ok, 303: perf_run},
+            runs_by_id={102: trusted_ok, 303: perf_run},
             workflow_runs={
-                "ci.yml": [ci_run],
-                "anneal.yml": [anneal_ok],
+                "ci-core-trusted.yml": [trusted_ok],
                 "anneal-perf.yml": [perf_run],
             },
             jobs_by_run_id=jobs,
@@ -711,9 +694,12 @@ else:
         self.assertEqual(outputs_stale, {})
         self.assertIn("Refusing to replace", summary_stale)
 
-    def test_spoofed_name_and_ci_pair_winner_deduplication(self):
+    def test_spoofed_name_and_latest_run_winner_deduplication(self):
         sha = "e" * 40
-        ci_run, anneal_run = self._ci_fixtures(sha)
+        older_trusted = self._ci_fixtures(sha)
+        older_trusted["id"] = 101
+        older_trusted["updated_at"] = "2026-11-23T17:10:00Z"
+        newer_trusted = self._ci_fixtures(sha)
         spoofed_run = {
             "id": 999,
             "name": "Anneal Performance Tracking",
@@ -732,43 +718,43 @@ else:
             source_sha=sha,
             main_sha=sha,
             trigger_run_id=999,
-            runs_by_id={101: ci_run, 102: anneal_run, 999: spoofed_run},
-            workflow_runs={"ci.yml": [ci_run], "anneal.yml": [anneal_run]},
+            runs_by_id={101: older_trusted, 102: newer_trusted, 999: spoofed_run},
+            workflow_runs={"ci-core-trusted.yml": [older_trusted, newer_trusted]},
             jobs_by_run_id={},
         )
         self.assertEqual(res_spoof.returncode, 0, res_spoof.stdout + res_spoof.stderr)
         self.assertEqual(out_spoof, {})
 
-        # Earlier CI run (101) defers to later Anneal run (102).
-        res_ci, out_ci, _ = self._run_coordinate(
+        # Superseded CI (Trusted) run (101) defers to latest run (102).
+        res_old, out_old, _ = self._run_coordinate(
             source_sha=sha,
             main_sha=sha,
             trigger_run_id=101,
-            runs_by_id={101: ci_run, 102: anneal_run},
-            workflow_runs={"ci.yml": [ci_run], "anneal.yml": [anneal_run]},
+            runs_by_id={101: older_trusted, 102: newer_trusted},
+            workflow_runs={"ci-core-trusted.yml": [older_trusted, newer_trusted]},
             jobs_by_run_id={},
         )
-        self.assertEqual(res_ci.returncode, 0, res_ci.stdout + res_ci.stderr)
-        self.assertEqual(out_ci, {})
+        self.assertEqual(res_old.returncode, 0, res_old.stdout + res_old.stderr)
+        self.assertEqual(out_old, {})
 
-        # Winning Anneal run (102) deploys.
-        res_anneal, out_anneal, _ = self._run_coordinate(
+        # Winning CI (Trusted) run (102) deploys.
+        res_new, out_new, _ = self._run_coordinate(
             source_sha=sha,
             main_sha=sha,
             trigger_run_id=102,
-            runs_by_id={101: ci_run, 102: anneal_run},
-            workflow_runs={"ci.yml": [ci_run], "anneal.yml": [anneal_run]},
+            runs_by_id={101: older_trusted, 102: newer_trusted},
+            workflow_runs={"ci-core-trusted.yml": [older_trusted, newer_trusted]},
             jobs_by_run_id={},
         )
-        self.assertEqual(res_anneal.returncode, 0, res_anneal.stdout + res_anneal.stderr)
+        self.assertEqual(res_new.returncode, 0, res_new.stdout + res_new.stderr)
         self.assertEqual(
-            out_anneal,
-            {"deploy": "true", "sha": sha, "anneal_run_id": "102"},
+            out_new,
+            {"deploy": "true", "sha": sha},
         )
 
     def test_perf_run_rejects_mismatched_repository_or_event(self):
         sha = "f" * 40
-        ci_run, anneal_run = self._ci_fixtures(sha)
+        trusted_run = self._ci_fixtures(sha)
         jobs = {
             403: [
                 {
@@ -802,10 +788,9 @@ else:
                     source_sha=sha,
                     main_sha=sha,
                     trigger_run_id=403,
-                    runs_by_id={101: ci_run, 102: anneal_run, 403: bad_perf},
+                    runs_by_id={102: trusted_run, 403: bad_perf},
                     workflow_runs={
-                        "ci.yml": [ci_run],
-                        "anneal.yml": [anneal_run],
+                        "ci-core-trusted.yml": [trusted_run],
                         "anneal-perf.yml": [bad_perf],
                     },
                     jobs_by_run_id=jobs,

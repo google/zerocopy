@@ -9,13 +9,7 @@ those terms. -->
 # CI Architecture (`ci-core`)
 
 `google/zerocopy` runs its CI check graph through the externalized, SHA-pinned
-`ci-core` engine configured by [`checks.toml`](checks.toml). Pull-request runs
-(`ci-core-pr.yml`) use shadow mode (`shadow_mode: true`): they verify the plan
-and reuse receipts without executing check shards. Trusted runs
-(`ci-core-trusted.yml`, on `merge_group` and pushes to `main`) execute the
-affected checks and evaluate `ci-core / gate` for real. Until cutover,
-`ci-core / gate` is not a required status check; the legacy `ci.yml` and
-`anneal.yml` workflows remain the required checks.
+`ci-core` engine configured by [`checks.toml`](checks.toml).
 
 ## Layout
 
@@ -33,9 +27,49 @@ affected checks and evaluate `ci-core / gate` for real. Until cutover,
   execute over read-only `/work` mounts with writable `/scratch` and `/outputs`.
 - `.github/workflows/ci-core-pr.yml` and
   `.github/workflows/ci-core-trusted.yml`: Thin, SHA-pinned caller workflows
-  whose gate check is `ci-core / gate` (not required until cutover), paired
-  with `.github/workflows/ci-review-signal.yml`,
+  that report the required `ci-core / gate` check, paired with
+  `.github/workflows/ci-review-signal.yml`,
   `.github/workflows/ci-review-rerun.yml`, and `.github/CODEOWNERS`.
+- `.github/workflows/anneal-pr-hygiene.yml`: Reports the other required
+  check, `PR hygiene`, which runs `anneal/ci/check_pr_hygiene.py` over a pull
+  request's commits and diff. Its findings are soft-blocking: a
+  `Skip-pr-hygiene:` trailer on the PR's `HEAD` commit can waive named checks
+  (see [`anneal/docs/scaffolding.md`](../anneal/docs/scaffolding.md)).
+
+`[tcb] non_tcb_workflows` is empty, so `ci-core` treats every workflow as
+trusted configuration. `run_anneal_check.sh` and the `ci/scripts/run_*.sh`
+entrypoints cap their checks with `timeout`.
+
+## Rulesets
+
+After the cutover below, two rulesets protect `main`:
+
+- **Required checks** (no bypass actors): requires `ci-core / gate` and
+  `PR hygiene` from GitHub Actions, linear history, resolved review threads,
+  and squash merges through the merge queue, which allows checks 240 minutes.
+- **Human review** (repository administrators exempt): requires one
+  approval, including `CODEOWNERS` review, and dismisses stale approvals on
+  push, so an approval never carries over to a later commit, such as one
+  that replaces a caller workflow.
+
+The tag ruleset (`26220859`) protects `refs/tags/v*` from deletion and
+force-pushes; the cutover extends it to `refs/tags/anneal-*`. The maintenance
+ruleset (`26220870`) covers `v*.*.x` branches, which still run the legacy
+`ci.yml` and its `All checks succeeded` check. A `v0.9.x` or later
+maintenance branch cut from a `main` without the legacy `ci.yml` needs its
+own ruleset requiring `ci-core / gate` and `PR hygiene` instead.
+
+The cutover from ruleset `26220845` to the two `main` rulesets runs in this
+order, so that no queued PR waits on a check that `main` cannot yet produce:
+
+1. Get a co-owner's GitHub approval on the cutover PR's final head SHA, so
+   that both of its checks pass. `ci-core` reads `allow_owner_self_approval`
+   from `main`, so the PR that enables it cannot rely on it.
+2. Replace `26220845` with both rulesets, requiring only `ci-core / gate`,
+   expand the tag ruleset, and enqueue the cutover PR.
+3. Once it lands, add `PR hygiene` to the required checks.
+4. Use the next owner-authored TCB PR to confirm that `/ci-core approve`
+   reruns the gate and the PR merges.
 
 ## Local verification and reproduction
 

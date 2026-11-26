@@ -10,6 +10,21 @@
 
 set -euo pipefail
 
+# Bound this check's wall-clock time: on first entry, re-execute under
+# coreutils `timeout`, which at the limit sends SIGTERM to the process group
+# and exits 124, then sends SIGKILL (exit status 137) 120 seconds later.
+# Other exit statuses and signals pass through unchanged.
+# One small crate's clippy, check and tests, in the same tier as the
+# other short checks.
+TIMEOUT_SECS=1800
+if [[ -z "${CI_SCRIPT_TIMEOUT_ACTIVE:-}" ]]; then
+  echo "$0: limit ${TIMEOUT_SECS}s; exit 124 or 137 means it timed out" >&2
+  export CI_SCRIPT_TIMEOUT_ACTIVE=1
+  exec /usr/bin/timeout --verbose --kill-after=120s "${TIMEOUT_SECS}s" \
+    "$BASH" "$0" "$@"
+fi
+unset CI_SCRIPT_TIMEOUT_ACTIVE
+
 : "${PIN_RUST_TOOLCHAINS__STABLE:?}"
 
 # Mirrors the Cargo cache guards in `ci/scripts/run_exocrate_test.sh`.

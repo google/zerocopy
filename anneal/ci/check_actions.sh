@@ -17,12 +17,11 @@ if ! command -v action-validator >/dev/null 2>&1; then
 fi
 
 shopt -s nullglob
-files=(
-  ../.github/workflows/anneal.yml
-  ../.github/workflows/anneal-current.yml
-  .github/workflows/*.yml
-  .github/workflows/*.yaml
-)
+files=(../.github/workflows/ci-*.yml .github/workflows/*.yml .github/workflows/*.yaml)
+if [ "${#files[@]}" -eq 0 ]; then
+  echo "anneal/ci/check_actions.sh: expected at least one workflow file" >&2
+  exit 1
+fi
 action-validator "${files[@]}"
 # Validate `release.yml` from the repository root so `action-validator`
 # resolves its `on.push.paths` globs (`zerocopy/Cargo.toml`) accurately.

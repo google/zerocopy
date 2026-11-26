@@ -136,16 +136,13 @@ auditor checks digests and runs standalone replay in a separate
 against the reproducible `.olean` digests pinned in `UPSTREAM_PIN.json`.
 External `.olean` caching is disabled by default (`anneal-audit` uses no cache
 unless `--miri-cache-dir` or `ANNEAL_MIRI_CACHE_DIR` is set), and cached
-`.olean` files are never read on cold verification runs (`push` to `main` and
-any `workflow_dispatch` caller) or whenever `UPSTREAM_PIN.json` or
-`trusted/lean/lean-toolchain` changes—so every pin update and landed commit
-verifies reproducible source-to-`.olean` compilation cold from source
-(canonical `main` pushes use `lookup-only: true` plus `rm -rf` before invoking
-`anneal-audit` so they compile cold while still seeding a missing
-default-branch cache entry for pull requests and merge-group runs)—while opt-in
-external cache restoration on unchanged pins (`pull_request` consuming/seeding
-and `merge_group` strictly read-only, with the workflow audit step wiping the
-cache directory on a miss before cold compilation) lives outside the checkout,
+`.olean` files are never read whenever `UPSTREAM_PIN.json` or
+`trusted/lean/lean-toolchain` changes—so every pin update
+verifies reproducible source-to-`.olean` compilation cold from source—while
+opt-in external cache restoration on unchanged pins (the `miri-v1` slot in
+repository-root [`ci/checks.toml`](../../ci/checks.toml), written and
+keyless-signed only by checkout-free `merge_group` and `main`-branch `push`
+`publish` runs) lives outside the checkout,
 rejects symlinks, and admits a cached `.olean` only when its SHA-256 matches
 that source-verified pin. Although vendored
 `vendor/lean-miri/` sources are not
@@ -176,7 +173,7 @@ kernel-replays `trusted/correspondence/` and `correspondence/` (so
 theorems whose exact types (`ConstantInfo.type`) match
 `Trusted.Correspondence.CorrespondenceClaim` and
 `Trusted.Correspondence.FaultEquivalenceClaim` (Statement-Origin Separation).
-Blocking repository CI (`merge_group` / `all-jobs-succeed`) gates PR merges on
+Blocking repository CI (`merge_group` / `ci-core / gate`) gates PR merges on
 both Pass 1 and Pass 2 passing on the exact same commit.
 
 Within the Lean operational semantics (Stages 2–3), only three semantic

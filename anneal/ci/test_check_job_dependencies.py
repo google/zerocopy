@@ -48,8 +48,7 @@ class CheckJobDependenciesTests(unittest.TestCase):
     def run_synthetic(
         self,
         *,
-        anneal_yml: str = VALID_GATE_WORKFLOW,
-        anneal_current_yml: str = VALID_GATE_WORKFLOW,
+        root_workflows: dict[str, str] | None = None,
         extra_workflows: dict[str, str] | None = None,
         extra_env: dict[str, str] | None = None,
     ) -> subprocess.CompletedProcess[str]:
@@ -60,8 +59,17 @@ class CheckJobDependenciesTests(unittest.TestCase):
                 "repo/anneal/ci/check_job_dependencies.sh",
                 SCRIPT.read_text(encoding="utf-8"),
             )
-            fx.write_file("repo/.github/workflows/anneal.yml", anneal_yml)
-            fx.write_file("repo/.github/workflows/anneal-current.yml", anneal_current_yml)
+            default_root = {
+                "ci-core-pr.yml": (
+                    "on:\n"
+                    "  pull_request:\n"
+                    "jobs:\n"
+                    "  ci-core:\n"
+                    "    uses: joshlf/ci-core/.github/workflows/ci-pr.yml@629e371f0c7c4ad4e3a3c98f09b12104f314150e\n"
+                ),
+            }
+            for name, content in (root_workflows if root_workflows is not None else default_root).items():
+                fx.write_file(f"repo/.github/workflows/{name}", content)
             for name, content in (extra_workflows or {}).items():
                 fx.write_file(f"repo/anneal/.github/workflows/{name}", content)
 
@@ -89,10 +97,11 @@ class CheckJobDependenciesTests(unittest.TestCase):
         )
         self.assertEqual(res.returncode, 0, res.stdout + res.stderr)
 
-    def test_check_actions_includes_anneal_yml(self):
+    def test_check_actions_includes_ci_core_workflows(self):
         text = CHECK_ACTIONS.read_text(encoding="utf-8")
-        self.assertIn("../.github/workflows/anneal.yml", text)
-        self.assertIn("../.github/workflows/anneal-current.yml", text)
+        self.assertIn("../.github/workflows/ci-*.yml", text)
+        self.assertIn(".github/workflows/*.yml", text)
+        self.assertIn(".github/workflows/*.yaml", text)
 
     def test_valid_workflows_pass_for_map_sequence_and_scalar_on(self):
         cases = {
@@ -179,8 +188,8 @@ class CheckJobDependenciesTests(unittest.TestCase):
                 self.assertNotEqual(res.returncode, 0, res.stdout)
                 self.assertIn("missing required all-jobs-succeed job", res.stderr)
 
-    def test_anneal_yml_is_checked(self):
-        bad_anneal = (
+    def test_root_workflow_with_all_jobs_succeed_is_checked(self):
+        bad_root_gate = (
             "on:\n"
             "  pull_request:\n"
             "jobs:\n"
@@ -189,9 +198,9 @@ class CheckJobDependenciesTests(unittest.TestCase):
             "  all-jobs-succeed:\n"
             "    needs: [current_anneal]\n"
         )
-        res = self.run_synthetic(anneal_yml=bad_anneal)
+        res = self.run_synthetic(root_workflows={"root-gate.yml": bad_root_gate})
         self.assertNotEqual(res.returncode, 0, res.stdout)
-        self.assertIn("anneal.yml", res.stderr)
+        self.assertIn("root-gate.yml", res.stderr)
         self.assertIn("extra_job", res.stderr)
 
     def test_scalar_needs_fails_closed(self):

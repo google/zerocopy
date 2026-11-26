@@ -130,7 +130,7 @@ namespaces all persisted artifacts strictly under two disjoint paths:
 - `dashboard/anneal/{index.html,data.json}`: self-contained static dashboard
   mounted at `/bench/anneal/` on GitHub Pages. `.github/workflows/docs.yml`
   copies `dashboard/*` into `target/doc/bench/` and triggers on
-  `workflow_run` completions of `Build & Tests`, `Anneal Tests`, and
+  `workflow_run` completions of `CI (Trusted)` and
   `Anneal Performance Tracking` (`main`).
 
 ---
@@ -430,13 +430,13 @@ zero npm build steps and zero external runtime URLs:
   Tier A budget is violated.
 - **GitHub Pages Redeployment (`.github/workflows/docs.yml`):** `docs.yml`
   listens on `workflow_run` (`completed`, `branches: [main]`) for
-  `Anneal Performance Tracking` in addition to `Build & Tests` and
-  `Anneal Tests`. When triggered by `anneal-perf.yml`, `coordinate` verifies by
-  workflow path/filename that the run belongs to `google/zerocopy` (`main`,
+  `Anneal Performance Tracking` in addition to `CI (Trusted)`. When triggered
+  by `anneal-perf.yml`, `coordinate` verifies by workflow path/filename that
+  the run belongs to `google/zerocopy` (`main`,
   `push`/`schedule`/`workflow_dispatch`) and that its
   `Publish telemetry and dashboard` step concluded `success` (even if the final
-  `Check performance budgets` step failed), confirms both `ci.yml` and
-  `anneal.yml` succeeded on `push` for the same commit, and verifies that
-  commit still matches `refs/heads/main` before building rustdoc and copying
+  `Check performance budgets` step failed), confirms `ci-core-trusted.yml`
+  succeeded on `push` for the same commit, and verifies that commit still
+  matches `refs/heads/main` before building rustdoc and copying
   `benchmark-data/dashboard/*` read-only (`persist-credentials: false`) to
   GitHub Pages.

@@ -14,8 +14,8 @@ suites, selecting individual smoke cases, checking crate packaging, and
 reproducing retained failure evidence. See the [alpha guide](alpha.md) for
 `cargo anneal verify` usage and proof development.
 
-The runtime workflow below runs in CI on `x86_64-linux` (`ubuntu-latest` in
-[the current workflow](../../.github/workflows/anneal-current.yml), and
+The runtime workflow below runs in CI on `x86_64-linux` (`ubuntu-24.04` in
+[the current checks](../../ci/checks.toml), and
 `ubuntu-24.04` in [the release workflow](../../.github/workflows/release.yml)).
 [`flake.nix`](../flake.nix) declares package outputs for `x86_64-linux`,
 `aarch64-linux`, `x86_64-darwin`, and `aarch64-darwin`, and
@@ -232,9 +232,11 @@ the valid catalog.
 
 `ANNEAL_TEST_TIMEOUT_SECS` kills and reaps only the direct child process; it
 does not terminate grandchildren or bound arbitrary Rust helper code, so CI uses
-an outer job deadline (`timeout-minutes: 90` in
-[the current workflow](../../.github/workflows/anneal-current.yml)). That
-workflow also checks `ci/probe_alpha.py` and `ci/verify_starnix_e2e.py` inside
+an outer deadline: `ci/run_anneal_check.sh` re-runs itself under `timeout`
+(90 minutes for `ws-test`, the mode that runs these tests). The
+`anneal-installed-smoke` check in
+[the current checks](../../ci/checks.toml) also checks `ci/probe_alpha.py` and
+`ci/verify_starnix_e2e.py` inside
 bubblewrap, and [the release workflow](../../.github/workflows/release.yml)
 runs `ci/probe_alpha.py` during release qualification.
 
@@ -289,7 +291,8 @@ rm -rf trusted/cargo-anneal/packaged
 `cargo publish --dry-run` requires `--allow-dirty` after staging
 `trusted/cargo-anneal/packaged/{bundled_resources.rs,bundled_theory.json}`
 (remove the transient `packaged/` directory afterward to keep the tree clean).
-In CI, the packaging check also runs
+In CI, `anneal-installed-smoke` stages them in a scratch copy of the read-only
+checkout instead. The packaging check also runs
 `cargo test --locked --manifest-path "$prepared_manifest" --no-run` against the
 unpacked `target/package/cargo-anneal-<version>/Cargo.toml` so missing excluded
 fixtures fail the build. The remaining fast repository checks in CI are:
@@ -309,13 +312,35 @@ otherwise report: commit-message layout and `Agent-authored-by:` trailers,
 `git diff --check`, Markdown and comment lines that exceed 80 columns, missing
 license headers on new files, review-round IDs, unpinned upstream citations in
 `trusted/lean/` and `trusted/rustc-capture/`, the cumulative `AGENTS.md` byte
-budget, and the `Code Review Rules` mirror. On pull requests, CI runs it
-against the PR's base and head; other events check only the tree. It reads Git
-objects without checking out or running candidate code, so reviewers can run a
-trusted base copy against a candidate head. Before publishing, also pass
-`--pr-body-file` and `--pr-title` to compare a single-commit PR's description
-and title with its commit (`--emit-pr-body` prints the expected description),
-and `--receipt-file` to check a Review Receipt. Besides its prose
+budget, and the `Code Review Rules` mirror. `ci-core` checks cannot read Git
+history, so `.github/workflows/anneal-pr-hygiene.yml` runs it as the required
+`PR hygiene` check on every `opened`, `synchronize`, `reopened`, and `edited`
+pull-request event, against the PR's base and head and with
+`--forbid-pr-title-regex '\b[T]ODO\b'` to reject PR titles containing that
+marker. In the merge queue it exits 0 without checking out: `ci-core`'s
+`skills-check` enforces the `AGENTS.md` budget and the rules mirror on every
+tree, and `ci-core` rejects the marker in landed commit messages. The script
+reads Git objects without checking out or running candidate code, so
+reviewers can run a trusted base copy against a candidate head.
+
+`PR hygiene` is soft-blocking. A trailer in the final trailer block of the
+PR's `HEAD` commit waives every finding of the named checks:
+
+```text
+Skip-pr-hygiene: <check[,check...]> -- <reason>
+```
+
+The checks are `commit-message`, `diff-check`, `wrap`, `header`,
+`review-round-id`, and `trusted-citation`. There is no `all`, and the
+`AGENTS.md` budget and rules mirror are never waivable. The reason needs at
+least five non-whitespace characters, and a named check without findings is
+an error, as is the trailer on any other commit in the PR. Each waived
+finding still emits a `::warning::` annotation and a step-summary entry.
+
+Before publishing, also pass `--pr-body-file` and `--pr-title` to compare a
+single-commit PR's description and title with its commit (`--emit-pr-body`
+prints the expected description), and `--receipt-file` to check a Review
+Receipt. Besides its prose
 `Human review surface` block, a receipt carries one machine-checked footer,
 `<!-- anneal-receipt:v1 {...} -->`, which binds `target_base`, `merge_base`,
 `head`, and `tree` to full SHAs and lists every changed Human review surface

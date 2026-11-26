@@ -201,12 +201,14 @@ gate whenever the identity changes:
 3. **Gate 3 — Green required CI:** All required GitHub Actions checks pass on
    GitHub's current pull-request test-merge commit for the exact final
    `(target_base, head)` (reported on `head` by `pull_request`-triggered
-   workflows), and—for any Anneal-relevant merge—either on the merge queue's
-   `merge_group` commit (always full-strength) or on a `pull_request` run with
-   the `run-ci` label attached (without `run-ci`, draft PRs skip
-   `current_anneal` including `static-checks` and skip heavy `ci.yml` jobs,
-   while ready Anneal-relevant `pull_request` runs execute only
-   `static-checks`). GitHub reports checks per commit SHA, so a rewrite that
+   workflows), or on the merge queue's `merge_group` commit when merging via
+   GitHub's merge queue. The required checks are `ci-core / gate` and
+   `PR hygiene`. Every `pull_request` run of `ci-core / gate`, draft or ready
+   and with no opt-in label, evaluates the input-scoped PR checks in
+   `ci/checks.toml`. `PR hygiene` passes with findings waived by a
+   `Skip-pr-hygiene:` trailer on `head` (see
+   [`docs/scaffolding.md`](scaffolding.md)); the Gate 5 approver must accept
+   each waiver. GitHub reports checks per commit SHA, so a rewrite that
    preserves the identity still needs green checks on the new `head`.
 4. **Gate 4 — Bottom-of-stack ordering:** For stacked PRs, every lower PR in
    the stack has merged and this PR is rebased onto `main` so
@@ -232,7 +234,14 @@ gate whenever the identity changes:
    and edit history); any later change requires fresh human maintainer
    approval. Because agents may act under credentials matching a human account,
    agents must never self-approve pull requests or author, edit, or simulate
-   maintainer dispositions or acceptance.
+   maintainer dispositions or acceptance. In particular, an acting agent never
+   posts `/ci-core approve`, never dismisses a `CHANGES_REQUESTED` review
+   (including through the administrator review-dismissal API), and never
+   enqueues a PR that the account it acts as did not author (for example, any
+   non-`joshlf` PR when acting as `joshlf`) unless a human maintainer has
+   approved that PR's exact head SHA on GitHub. GitHub enforces none of these
+   for an administrator's credentials; see
+   [`docs/trust-model.md`](trust-model.md#merge-governance).
 
 ## Automated Gate 2 reviewers and skill boundaries
 
@@ -270,8 +279,11 @@ While [#4013](https://github.com/google/zerocopy/issues/4013) remains open:
   GitHub Actions App binding for future work).
 - Keep GitHub ruleset **Main — Codex review** (ID `26810364`) set to
   `disabled`.
-- Leave rulesets `26220506` and `26637514`—and all CI and human-review branch
-  protections—enabled and unchanged.
+- Leave the CI and human-review rulesets enabled: `26220845` (`main`),
+  `26220870` (maintenance branches), and `26220859` (tags). Change them only
+  as the `ci-core` cutover in [`ci/README.md`](../../ci/README.md) describes,
+  which replaces `26220845` with a required-checks ruleset and a
+  human-review ruleset.
 
 Changing Git files does not change GitHub's live rulesets. Disabling ruleset
 `26810364` never waives the five merge gates above.

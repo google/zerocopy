@@ -104,19 +104,17 @@ jobs:
             grep -Fx "pinned-$VERSION_NAME = \"$VERSION\"" \
               zerocopy/Cargo.toml >/dev/null
 
-            if [ -f ci/pins/rust-toolchains.toml ]; then
-              PIN_REGEX="^$VERSION_NAME = \"[a-z0-9\.-]*\"$"
-              PIN_MATCH="$(grep -Ec "$PIN_REGEX" ci/pins/rust-toolchains.toml || true)"
-              if [ "$PIN_MATCH" -ne 1 ]; then
-                echo "Expected one '$PIN_REGEX' in ci/pins/rust-toolchains.toml; found $PIN_MATCH" >&2
-                exit 1
-              fi
-              sed -i -e \
-                "s/$PIN_REGEX/$VERSION_NAME = \"$VERSION\"/" \
-                ci/pins/rust-toolchains.toml
-              grep -Fx "$VERSION_NAME = \"$VERSION\"" \
-                ci/pins/rust-toolchains.toml >/dev/null
+            PIN_REGEX="^$VERSION_NAME = \"[a-z0-9\.-]*\"$"
+            PIN_MATCH="$(grep -Ec "$PIN_REGEX" ci/pins/rust-toolchains.toml || true)"
+            if [ "$PIN_MATCH" -ne 1 ]; then
+              echo "Expected one '$PIN_REGEX' in ci/pins/rust-toolchains.toml; found $PIN_MATCH" >&2
+              exit 1
             fi
+            sed -i -e \
+              "s/$PIN_REGEX/$VERSION_NAME = \"$VERSION\"/" \
+              ci/pins/rust-toolchains.toml
+            grep -Fx "$VERSION_NAME = \"$VERSION\"" \
+              ci/pins/rust-toolchains.toml >/dev/null
 
             # Run `cargo fix` in case there are any warnings or errors
             # introduced on this new toolchain that we can fix automatically.
@@ -193,9 +191,8 @@ jobs:
 
           PIN_FILE=ci/pins/semver-baseline.toml
           if [ ! -f "$PIN_FILE" ]; then
-            echo "No $PIN_FILE; nothing to roll."
-            echo "updated=false" >> "$GITHUB_OUTPUT"
-            exit 0
+            echo "Missing $PIN_FILE on main" >&2
+            exit 1
           fi
 
           # Require exactly one line of each edited form so a reorganized

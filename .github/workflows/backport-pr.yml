@@ -27,8 +27,9 @@ concurrency:
 jobs:
   release:
     permissions:
-      contents: write # Need to write to repo to cherry-pick
-      pull-requests: write # Required to create pull requests
+      # `create-pull-request` pushes to a fork and opens the PR with
+      # `GOOGLE_PR_CREATION_BOT_TOKEN`, so `GITHUB_TOKEN` only reads.
+      contents: read
     runs-on: ubuntu-latest
     name: Backport PR
     steps:
@@ -62,7 +63,7 @@ jobs:
           echo "AUTHOR=$AUTHOR" >> $GITHUB_ENV
 
       - name: Submit PR
-        uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1  # v8.1.0 # zizmor: ignore[superfluous-actions]
+        uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1  # v8.1.1 # zizmor: ignore[superfluous-actions]
         with:
           author: "${{ env.AUTHOR }}"
           committer: "${{ env.AUTHOR }}"

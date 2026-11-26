@@ -14,6 +14,63 @@ if [[ $# -lt 1 ]]; then
   echo "usage: $0 <flake-eval|ci-tests|clippy|sandbox|audit|guard-mutation|ws-test|installed-smoke>" >&2
   exit 2
 fi
+
+# Wall-clock limit in seconds for each mode. The two tiers mirror the legacy
+# `anneal-current.yml` job timeouts (90 and 30 minutes). An unlisted mode gets
+# the shorter tier so that a new mode added without an entry here fails fast
+# and visibly, prompting an explicit entry, rather than running unbounded.
+check_timeout_secs() {
+  case "$1" in
+    ws-test|audit|installed-smoke|guard-mutation) echo 5400 ;;
+    clippy|flake-eval|ci-tests|sandbox) echo 1800 ;;
+    *) echo 1800 ;;
+  esac
+}
+
+# Name the likely cause when the re-executed script receives SIGTERM, then
+# re-raise it with the default action so `timeout` sees the termination.
+report_sigterm() {
+  echo "error: run_anneal_check.sh $TIMEOUT_MODE got SIGTERM: its" \
+    "${TIMEOUT_LIMIT}s limit expired or the run was cancelled" >&2
+  trap - TERM
+  kill -TERM "$$"
+}
+
+# Re-execute this script once under coreutils `timeout`, so every mode is
+# bounded without wrapping individual commands. At the limit, `timeout` sends
+# SIGTERM to the script's whole process group and exits 124; if anything
+# survives another 120 seconds, it sends SIGKILL and exits 137. Any other exit
+# status or terminating signal of the script passes through unchanged. The
+# re-executed copy sees `ANNEAL_CHECK_TIMEOUT_ACTIVE` and clears it, so the
+# sentinel never leaks into the commands the mode runs.
+# `ANNEAL_CHECK_TIMEOUT_SECS` can only tighten the limit; tests use it.
+reexec_under_timeout() {
+  local mode="$1" limit override
+  if [[ -n "${ANNEAL_CHECK_TIMEOUT_ACTIVE:-}" ]]; then
+    TIMEOUT_MODE="$mode"
+    TIMEOUT_LIMIT="$ANNEAL_CHECK_TIMEOUT_ACTIVE"
+    unset ANNEAL_CHECK_TIMEOUT_ACTIVE
+    trap report_sigterm TERM
+    return 0
+  fi
+  limit="$(check_timeout_secs "$mode")"
+  override="${ANNEAL_CHECK_TIMEOUT_SECS:-}"
+  if [[ -n "$override" ]]; then
+    if [[ ! "$override" =~ ^[1-9][0-9]{0,5}$ ]] || ((override > limit)); then
+      echo "error: ANNEAL_CHECK_TIMEOUT_SECS must be in 1..$limit: $override" >&2
+      exit 2
+    fi
+    limit="$override"
+  fi
+  echo "run_anneal_check.sh $mode: limit ${limit}s; exit 124 or 137 means it" \
+    "timed out" >&2
+  export ANNEAL_CHECK_TIMEOUT_ACTIVE="$limit"
+  exec /usr/bin/timeout --verbose --kill-after=120s "${limit}s" \
+    "$BASH" "$0" "$@"
+}
+
+reexec_under_timeout "$@"
+
 MODE="$1"
 shift
 
