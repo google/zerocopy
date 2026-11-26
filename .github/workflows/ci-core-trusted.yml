@@ -19,7 +19,7 @@ permissions: {}
 jobs:
   ci-core:
     name: ci-core
-    uses: joshlf/ci-core/.github/workflows/ci.yml@629e371f0c7c4ad4e3a3c98f09b12104f314150e
+    uses: joshlf/ci-core/.github/workflows/ci.yml@3bf5441e62bc4b8ec113020e87a6a4b139dca150
     with:
       config_path: ci/checks.toml
     permissions:
