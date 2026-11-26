@@ -10,7 +10,7 @@ those terms. -->
 
 > [!WARNING]
 > **This is alpha software!** Anneal (`0.2.0-alpha`, Stage 0) has not yet
-> completed an independent TCB audit. The units below verify **340 distinct
+> completed an independent TCB audit. The units below verify **401 distinct
 > currently capturable scalar, unit, layout, and empty sentinel
 > functions/monomorphizations** in `../src/` under
 > Profile v1 and **4 byte-slice functions** under the experimental Profile v2
@@ -31,7 +31,7 @@ those terms. -->
 [threat-doc]: ../../anneal/THREAT_MODEL.md
 
 This directory contains out-of-line Anneal formal specifications and
-kernel-checked Lean 4 proofs covering those 340 distinct Profile v1 items
+kernel-checked Lean 4 proofs covering those 401 distinct Profile v1 items
 (scalar, unit, layout, and marker-sentinel functions and
 monomorphizations) and 4 verbatim Profile v2 byte-slice items in `../src/`.
 
@@ -69,6 +69,7 @@ attributes across compiled sources) and every proof unit in
 | `10_byteorder_endian_wrappers` | 7 foundational `u8` trait markers (`impls.rs`, `lib.rs`) plus 168 concrete `--instantiate` monomorphizations across all 12 `byteorder` types (`U16`–`Usize`, `I16`–`Isize`, `F32`, `F64`) × `{BigEndian, LittleEndian}` × `{KnownLayout, Immutable, TryFromBytes, FromZeros, FromBytes, IntoBytes, Unaligned}` | Selected 175-body MIR sealing-marker contracts (`ReturnsTotal` and arbitrary-`MemoryState` stepping); `Trusted.MirSemantics.{Bytes,Layout}` `u8` `⟨1, 0⟩` layout & endian invariance, `encodeUInt`/`decodeUInt` & 4-/8-byte raw bit-pattern round-trips, `IntWidth` `FromBytes`/`IntoBytes`, native `0 < alignLog2` (`w ≠ .i8`), `.unsupported` float lowering, and `Spec`-local `swapEndian` duality (`[u8; N]`/`#[repr(transparent)]` wrapper layout not lowered in Profile v1) | `["propext"]` |
 | `11_primitive_bit_validity` | 77 trait sealing markers for the 15 non-float primitive types in `impls.rs` (`()`, `bool`, `char`, `u8`–`u128`, `i8`–`i128`, `usize`, `isize` across `Immutable`, `TryFromBytes`, `FromZeros`, `FromBytes`, `IntoBytes`, `Unaligned`) | Selected 77-body MIR sealing-marker contracts (`ReturnsTotal`); endian-parametric model-side `Trusted.MirSemantics.Bytes` bit-validity theorems (`IsFromZeros`, `IsFromBytes`, `IsIntoBytes`, `IsUnaligned`, `bool`/`char` `TryFromBytes` conditions; `is_safe` MIR bodies not captured) plus negative `FromBytes` (`bool` `0x02`, `char` `0xD800`) and `Unaligned` model refutations | `["propext"]` |
 | `12_nonzero_niche_bit_validity` | 88 selected trait sealing markers for the 12 `NonZero<*>` and 12 `Option<NonZero<*>>` integer types in `impls.rs:226-295` (`u8`–`u128`, `i8`–`i128`, `usize`, `isize` across `Immutable`, `TryFromBytes`, `FromZeros`, `FromBytes`, `IntoBytes`, `Unaligned`) | Selected 88-body MIR sealing-marker contracts (`ReturnsTotal` and arbitrary-`MemoryState` stepping); endian- and signedness-parametric model-side `Trusted.MirSemantics.Bytes` non-zero characterization (`is_safe` MIR bodies not captured), `NonZero<*>` `FromZeros`/`FromBytes` model refutations and `IntoBytes` no-padding law, `Option<NonZero<*>>` Niche Partition Theorem, and `.i8` vs. multi-byte alignment model refutations | `["propext"]` |
+| `13_float_str_and_atomic_bit_validity` | 61 selected trait sealing markers for `f32`, `f64` (`impls.rs:81-82`), `str` (`impls.rs:165-180`), and `AtomicBool` plus `Atomic{U,I}{8,16,32,64,size}` (`impls.rs:454-609`, excluding `KnownLayout`, `AtomicPtr<T>`, and feature-gated `f16`/`f128`/`simd`) | Selected 61-body MIR sealing-marker contracts (`ReturnsTotal` and arbitrary-`MemoryState` stepping); Spec-local IEEE `f32`/`f64` `AllocByte` bit-validity/layout definitions (`MirTy` lowers `Float`, `Str`, and ADTs to `.unsupported`; `is_safe` MIR bodies not captured), Spec-local RFC 3629 UTF-8 DFA/grammar equivalence (`StrFromZerosSound`, `StrIntoBytesSound`, and `[0xFF]`/`[0x80]`/`[0xC0, 0x80]`/`U+D800` `FromBytes` refutations), `Trusted.MirSemantics` bit-validity proofs for `Atomic*` backing scalars (linked via the `Spec`-local same-size/bit-validity correspondence `atomicBackingMirTy`, incl. `0x02` `FromBytes` refutation), the 1-byte-atomic `Unaligned` argument (a 1-byte layout whose size is a multiple of its alignment has alignment 1), primitive `w ≠ .i8` alignment above 1, and Spec-local `ContainsUnsafeCell` `ImmutableSound` classification | `["propext"]` |
 
 ## Reproducing Locally
 
