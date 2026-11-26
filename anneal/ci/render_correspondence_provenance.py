@@ -172,6 +172,7 @@ def render_provenance_json(
     *,
     trusted_bundle_rs: Path,
     upstream_pin: Path,
+    minirust_upstream_pin: Path,
     correspondence_adapters_dir: Path,
     correspondence_proofs_dir: Path,
     trusted_lean_dir: Path,
@@ -235,6 +236,50 @@ def render_provenance_json(
             }
         )
 
+    mr_pin_bytes = _require_regular_file(
+        minirust_upstream_pin, "MiniRust UPSTREAM_PIN.json", root=anneal_root
+    )
+    mr_pin_sha256 = hashlib.sha256(mr_pin_bytes).hexdigest()
+    mr_pin = json.loads(mr_pin_bytes.decode("utf-8"), object_pairs_hook=_no_duplicate_keys)
+    if not isinstance(mr_pin, dict):
+        raise ValueError(f"expected JSON object in {minirust_upstream_pin}")
+    for field in ("upstream_repo", "commit"):
+        if not isinstance(mr_pin.get(field), str) or not mr_pin[field]:
+            raise ValueError(
+                f"empty or missing provenance metadata field {field} in {minirust_upstream_pin}"
+            )
+    for sha_field in ("tarball_sha256", "manifest_sha256"):
+        val = mr_pin.get(sha_field)
+        if not isinstance(val, str) or not _is_sha256_hex(val):
+            raise ValueError(
+                f"invalid SHA-256 metadata field {sha_field} in {minirust_upstream_pin}"
+            )
+    mr_file_count = mr_pin.get("file_count")
+    if isinstance(mr_file_count, bool) or not isinstance(mr_file_count, int) or mr_file_count <= 0:
+        raise ValueError(f"invalid file_count in {minirust_upstream_pin}: {mr_file_count!r}")
+    raw_mr_files = mr_pin.get("files")
+    if not isinstance(raw_mr_files, dict) or len(raw_mr_files) != mr_file_count:
+        raise ValueError(f"invalid files map or count mismatch in {minirust_upstream_pin}")
+    mr_files: dict[str, str] = {}
+    for path, sha in sorted(raw_mr_files.items()):
+        if (
+            not isinstance(path, str)
+            or not path
+            or not isinstance(sha, str)
+            or not _is_sha256_hex(sha)
+        ):
+            raise ValueError(f"invalid files entry in {minirust_upstream_pin}: {path!r}")
+        mr_files[path] = sha
+    minirust_upstream = {
+        "upstream_repository": mr_pin["upstream_repo"],
+        "upstream_commit": mr_pin["commit"],
+        "upstream_pin_sha256": mr_pin_sha256,
+        "tarball_sha256": mr_pin["tarball_sha256"],
+        "manifest_sha256": mr_pin["manifest_sha256"],
+        "file_count": mr_file_count,
+        "files": mr_files,
+    }
+
     adapters = _walk_regular_tree(
         correspondence_adapters_dir, "trusted/correspondence", suffix=".lean"
     )
@@ -267,6 +312,7 @@ def render_provenance_json(
         "upstream_pin_sha256": upstream_pin_sha256,
         "sysroot_foundation_manifest_sha256": sysroot_sha,
         "patched_files": patched_files,
+        "minirust_upstream": minirust_upstream,
         "correspondence_adapters": adapters,
         "correspondence_proofs": proofs,
         "trusted_lean": trusted_lean,
@@ -280,6 +326,7 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--anneal-root", type=Path)
     parser.add_argument("--trusted-bundle-rs", type=Path)
     parser.add_argument("--upstream-pin", type=Path)
+    parser.add_argument("--minirust-upstream-pin", type=Path)
     parser.add_argument("--correspondence-adapters-dir", type=Path)
     parser.add_argument("--correspondence-proofs-dir", type=Path)
     parser.add_argument("--trusted-lean-dir", type=Path)
@@ -299,6 +346,9 @@ def main(argv: list[str] | None = None) -> int:
             args.trusted_bundle_rs, "trusted/cargo-anneal/src/trusted_bundle.rs"
         ),
         upstream_pin=resolve(args.upstream_pin, "vendor/lean-miri/UPSTREAM_PIN.json"),
+        minirust_upstream_pin=resolve(
+            args.minirust_upstream_pin, "vendor/minirust/UPSTREAM_PIN.json"
+        ),
         correspondence_adapters_dir=resolve(
             args.correspondence_adapters_dir, "trusted/correspondence"
         ),
@@ -311,6 +361,7 @@ def main(argv: list[str] | None = None) -> int:
                 for x in (
                     args.trusted_bundle_rs,
                     args.upstream_pin,
+                    args.minirust_upstream_pin,
                     args.correspondence_adapters_dir,
                     args.correspondence_proofs_dir,
                     args.trusted_lean_dir,

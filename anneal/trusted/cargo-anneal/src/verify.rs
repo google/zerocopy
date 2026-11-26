@@ -7068,9 +7068,23 @@ mod tests {
             crate::LOCKED_SYSROOT_FOUNDATION_MANIFEST_SHA256
         );
         assert_eq!(provenance["upstream_pin_sha256"].as_str().unwrap().len(), 64);
+        let minirust = &provenance["minirust_upstream"];
+        assert_eq!(minirust["upstream_repository"], "https://github.com/minirust/minirust");
+        assert_eq!(minirust["upstream_commit"], "d821c6e3a3d358fa8a556774dc12b4aa5d0d65ed");
+        assert_eq!(minirust["file_count"], 30);
+        for sha_field in ["upstream_pin_sha256", "tarball_sha256", "manifest_sha256"] {
+            let digest = minirust[sha_field].as_str().unwrap();
+            assert_eq!(digest.len(), 64, "{sha_field}");
+            assert!(digest.bytes().all(|b| b.is_ascii_hexdigit()), "{sha_field}");
+        }
+        let mr_files = minirust["files"].as_object().unwrap();
+        assert_eq!(mr_files.len(), 30);
+        assert!(mr_files.values().all(|v| {
+            v.as_str().is_some_and(|s| s.len() == 64 && s.bytes().all(|b| b.is_ascii_hexdigit()))
+        }));
         assert_eq!(provenance["correspondence_adapters"].as_object().unwrap().len(), 7);
         assert_eq!(provenance["patched_files"].as_array().unwrap().len(), 13);
-        assert_eq!(provenance["correspondence_proofs"].as_object().unwrap().len(), 19);
+        assert_eq!(provenance["correspondence_proofs"].as_object().unwrap().len(), 29);
         assert_eq!(provenance["trusted_lean"].as_object().unwrap().len(), 25);
     }
 

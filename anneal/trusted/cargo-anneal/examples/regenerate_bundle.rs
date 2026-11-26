@@ -197,6 +197,19 @@ mod tests {
   ]
 }"#;
                 fs::write(path, sample_pin).unwrap();
+            } else if *source == "vendor/minirust/UPSTREAM_PIN.json" {
+                let sample_minirust_pin = r#"{
+  "schema_version": 1,
+  "upstream_repo": "https://github.com/minirust/minirust",
+  "commit": "d821c6e3a3d358fa8a556774dc12b4aa5d0d65ed",
+  "tarball_sha256": "0b808e620296bde607ed6cf74642f39a023c2dbf9fe842d458fdfb69392913c0",
+  "file_count": 1,
+  "manifest_sha256": "1d32e2b77d4d4fdd34f49b4f987f8e34b62eb691d6b04bb17f8d3d652cd60a18",
+  "files": {
+    "spec/lang/machine.md": "121c624125adf8d8d988b6d088d8e85687e8a275ee703a80e486dcb05dfbd91c"
+  }
+}"#;
+                fs::write(path, sample_minirust_pin).unwrap();
             } else {
                 fs::write(path, format!("canonical bytes for {source}\n")).unwrap();
             }

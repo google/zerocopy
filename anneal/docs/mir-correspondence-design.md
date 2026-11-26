@@ -116,6 +116,12 @@ vendor/lean-miri/               Vendored lean-miri reference model
                                 `stepHooks`), `Config` flag, and
                                 `CopyNonOverlapping` move sequencing
 
+vendor/minirust/                Vendored MiniRust operational specification
+  UPSTREAM_PIN.json             Pinned commit (`d821c6e3a3d3`) and 30 upstream
+                                SHA-256 digests (`27` `spec/**/*.md` files +
+                                `LICENSE-APACHE` + `LICENSE-MIT` + `README.md`;
+                                locked in `ci/check_minirust_pin.py`)
+
 trusted/correspondence/Trusted/ Correspondence TCB specification (Pass 2)
   Correspondence.lean           Hub + locked *Claim constants (38 claims:
   Correspondence/               Codec, State, Config, Eval, Simulation,
@@ -123,6 +129,12 @@ trusted/correspondence/Trusted/ Correspondence TCB specification (Pass 2)
                                 -- anneal-trust-tier: candidate:mir_semantics)
 
 correspondence/Anneal/          Untrusted correspondence proof (Pass 2)
+  MiniRust/                     MiniRust (`minirust_v1`, 9 modules): syntax,
+                                memory, machine, 58 spec anchors, translation,
+                                relation, operator/step simulation, and oracle
+                                witnesses
+  MiniRustProof.lean            Constructive MiniRust correspondence hub (10th
+                                MiniRust module)
   MirCorrespondence/            Modular proofs (Codec, SimHelpers, ScalarEquiv,
                                 EnumEquiv, MemAlloc, ValidateLocal, ByteCodec,
                                 LayoutAndAlign, MiriMemoryBridge, RetPlace,
@@ -660,6 +672,90 @@ together with every later change to those definitions:
   patch) requires the same human audit as a change to `trusted/`, and
   `verifyAndCollectCorrLocals` keeps vendored declarations out of the `Trusted`
   and `Anneal` namespaces.
+
+### 1.4 Secondary Operational Witness: MiniRust (`minirust_v1`)
+
+Alongside `vendor/lean-miri/`, Anneal maintains a second, independent
+operational correspondence witness against the upstream MiniRust specification
+(`vendor/minirust/UPSTREAM_PIN.json` at `minirust/minirust` commit
+`d821c6e3a3d358fa8a556774dc12b4aa5d0d65ed`, pinning `30` upstream files: `27`
+`spec/**/*.md` specification files plus `LICENSE-APACHE`, `LICENSE-MIT`, and
+`README.md`) without expanding `trusted/lean/`:
+
+- **Direct `Trusted.MirSemantics` target, `lean-miri` independence, and unlocked
+  `correspondence/` placement:** The `10` Lean modules (`9` under
+  `correspondence/Anneal/MiniRust/` plus
+  `correspondence/Anneal/MiniRustProof.lean`) formalize the scalar,
+  overflow-tuple, and fieldless-enum MiniRust operational machine
+  (`BasicMemory`, little-endian `AbstractByte` representation relations, lazy
+  tag-only `GetDiscriminant` reads, `StepOutcome.illFormed` vs. `StepOutcome.ub`
+  separation, a structural `0`-arg `1`-ZST `start` `MrFunction`
+  (`harnessCallerFunc`, which satisfies structural `start` well-formedness and
+  is not stepped from block `0` / `Machine::new`; instead, `initMrMachine`
+  directly constructs the post-`Call` two-frame state with `checkArgsMatch`
+  discharging `Call` ABI checks and `exitWith` observing the return slot), and
+  `58` verbatim `SpecAnchor` excerpts in `Anchors.lean`) directly against
+  `Trusted.MirAst` and `Trusted.MirSemantics`, with zero imports of `Miri.*`,
+  `Trusted.Correspondence*`, `Anneal.MirCorrespondence*`, or `Anneal.MirWp`.
+  Unlike the locked `*Claim` constants in `Trusted.Correspondence`, these claim
+  statements (`MiniRustForwardSimClaim`, `MiniRustBiFaultEquivClaim`), admission
+  predicates (`MiniRustAdmitted`, `MiniRustExactAdmitted`), and transcribed
+  MiniRust machine reside in unlocked `correspondence/` (outside
+  `TrustedBoundary.lean`'s locked claim registry), have theorem-name, hygiene,
+  and `SpecAnchor` checks in `ci/check_minirust_pin.py`, and rely on
+  `CODEOWNERS`-gated per-PR human review of statement bodies.
+- **Two-regime correspondence factoring and modeled scope (`"minirust_v1"`):**
+  `MiniRustAdmitted` and `MiniRustExactAdmitted` validate and execute the
+  call-free entry body `p.bodies[p.entryDefId]` (`call`, `sysrootCall`, and
+  `coreCall` terminators are excluded, so any additional unreferenced bodies in
+  `p.bodies` are uninvoked).
+  Every `MiniRustAdmitted` input is proved structurally well-formed
+  (`minirust_admitted_prog_wellFormed`, rejecting `StorageDead` on return and
+  argument locals and duplicate `Switch` keys), free of Anneal `.unsupported`
+  faults, and free of reachable MiniRust `StepOutcome.illFormed` states
+  (`minirust_admitted_never_illFormed`). Because Anneal's `evalOperandToSlot`
+  deinitializes non-ZST `Operand.move` sources and enforces `char`'s Unicode
+  scalar niche whereas upstream MiniRust at `d821c6e3a3d3` evaluates
+  `ValueExpr::Load` non-destructively and has no native `Type::Char` (so
+  `Translate.lean` lowers `MirTy.char` to `Type::Int(u32)`), `OracleCert.lean`
+  separates:
+  1. `MiniRustForwardSimClaim` (`minirust_forward_sim_holds` over
+     `MiniRustAdmitted`, admitting scalar `Operand.move` and `MirTy.char`
+     lowered to `u32`): forward simulation of normal returns and divergence plus
+     contrapositive UB soundness
+     (`MrFaultsUB m₀ → ReachesResult p q (.fault .undefined)` and
+     `WellFormed p q → ¬ MrFaultsUB m₀`), with strictness gaps exhibited
+     constructively by `witness_move_semantic_strictness_holds` and
+     `witness_char_niche_strictness_holds`.
+  2. `MiniRustBiFaultEquivClaim` (`minirust_bi_fault_equiv_holds` over
+     `MiniRustExactAdmitted`): exact bidirectional equivalence of normal
+     returns, Undefined Behavior, and divergence over call-free entry-body
+     copy-only (allowing `Operand.move` only on inhabited ZSTs), `char`-free,
+     `Assert`-free, projection-free scalar, overflow-pair, and fieldless-enum
+     MIR, backed by independent `annealRunFuel` and `mrRunFuel` kernel-reduction
+     witnesses. `MrMemory.allocate` allocates monotonically without reusing
+     freed addresses or bounding `addr + size` by `2^64` (benign in this
+     pointer-cast-free fragment, where `StorageLive` loops still preserve
+     `MrDiverges`).
+- **Tier-0 CI checks, `anneal-audit` correspondence stage, and manual axiom
+  verification (`ci/check_minirust_pin.py`):** Tier-0 CI
+  (`run_anneal_check.sh ci-tests` via
+  `./ci/check_minirust_pin.py --repo-root . --check-lean --check-anchors` and
+  `ci/test_check_minirust_pin.py`) enforces `UPSTREAM_PIN.json` SHA-256 parity
+  against `LOCKED_MINIRUST_COMMIT`, `LOCKED_MINIRUST_TARBALL_SHA256`, and
+  `LOCKED_MINIRUST_MANIFEST_SHA256`, Lean module hygiene (`<= 3,500` lines,
+  forbidden imports/tokens, and `REQUIRED_EXPORTED_THEOREMS`), and all `58`
+  `SpecAnchor` `leanSymbol` and verbatim excerpt checks. The `anneal-audit`
+  correspondence stage (`anneal-audit --require-correspondence`)
+  source-preflights, compiles inside
+  isolated `bwrap` sandboxes, and standalone-kernel-replays all declarations of
+  the `10` `Anneal.MiniRust*` modules (hashing them and binding
+  `vendor/minirust/UPSTREAM_PIN.json` into `CORRESPONDENCE_PROVENANCE_JSON`,
+  where `correspondence/` permits `Classical.choice` because `vendor/lean-miri`
+  uses it). Constructive `{propext, Quot.sound}` purity (zero
+  `Classical.choice`, zero `sorryAx`) is verified via the local/manual
+  `ci/check_minirust_pin.py --check-axioms` mode over prebuilt `.olean`
+  artifacts.
 
 ---
 

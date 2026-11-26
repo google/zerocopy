@@ -55,6 +55,7 @@ target_inspector=""
 target_library_lock=""
 trusted_bundle_source=""
 upstream_pin=""
+minirust_upstream_pin=""
 correspondence_adapters=""
 correspondence_proofs=""
 render_provenance_script=""
@@ -140,6 +141,11 @@ while [[ $# -gt 0 ]]; do
       upstream_pin="$2"
       shift 2
       ;;
+    --minirust-upstream-pin)
+      [[ $# -ge 2 ]] || usage
+      minirust_upstream_pin="$2"
+      shift 2
+      ;;
     --correspondence-adapters)
       [[ $# -ge 2 ]] || usage
       correspondence_adapters="$2"
@@ -215,6 +221,7 @@ if [[ -n "$anneal_root" ]]; then
   : "${target_library_lock:=$anneal_root/trusted/audit/library-lock.json}"
   : "${trusted_bundle_source:=$anneal_root/trusted/cargo-anneal/src/trusted_bundle.rs}"
   : "${upstream_pin:=$anneal_root/vendor/lean-miri/UPSTREAM_PIN.json}"
+  : "${minirust_upstream_pin:=$anneal_root/vendor/minirust/UPSTREAM_PIN.json}"
   : "${correspondence_adapters:=$anneal_root/trusted/correspondence}"
   : "${correspondence_proofs:=$anneal_root/correspondence}"
   : "${render_provenance_script:=$anneal_root/ci/render_correspondence_provenance.py}"
@@ -229,7 +236,7 @@ fi
 for req_var in \
   rust_tc lean_tc lean_exec rustc_capture_bin work_dir \
   lean_foundation lean_theory target_spec_preflight target_inspector target_library_lock \
-  trusted_bundle_source upstream_pin correspondence_adapters \
+  trusted_bundle_source upstream_pin minirust_upstream_pin correspondence_adapters \
   correspondence_proofs render_provenance_script prebuild_oleans_script; do
   if [[ -z "${!req_var}" ]]; then
     echo "ERROR: missing required parameter: $req_var" >&2
@@ -346,6 +353,7 @@ cp "$target_library_lock" "$dist_staging/share/anneal/trusted/audit/library-lock
 "$python_bin" -I -B "$render_provenance_script" \
   --trusted-bundle-rs "$trusted_bundle_source" \
   --upstream-pin "$upstream_pin" \
+  --minirust-upstream-pin "$minirust_upstream_pin" \
   --correspondence-adapters-dir "$correspondence_adapters" \
   --correspondence-proofs-dir "$correspondence_proofs" \
   --trusted-lean-dir "$lean_foundation" \

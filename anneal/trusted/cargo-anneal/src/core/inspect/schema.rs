@@ -21,7 +21,7 @@ use crate::core::{
             ArtifactAxis, AssuranceProfile, AxiomAxis, ContainmentAxis, ReplayAxis, ScopeAxis,
             TaintAxis,
         },
-        strict_json::{ObjectCursor, StrictJsonDom},
+        strict_json::{ObjectCursor, StrictJsonDom, escape_json_pointer_token},
     },
 };
 
@@ -1695,6 +1695,8 @@ fn parse_provenance(
         } else {
             (None, None, None, None, Vec::new(), None)
         };
+        let mr_obj = prov.req_obj("minirust_upstream")?;
+        parse_minirust_upstream(mr_obj, unknown, violations)?;
         for known in [
             "patched_files",
             "correspondence_adapters",
@@ -1724,6 +1726,48 @@ fn parse_provenance(
             residual_digest,
         })
     }
+}
+
+fn parse_minirust_upstream(
+    mr_obj: &Map<String, Value>,
+    unknown: &mut Vec<String>,
+    violations: &mut Vec<String>,
+) -> Result<(), String> {
+    const PREFIX: &str = "/correspondence_provenance/minirust_upstream";
+    let mut c = ObjectCursor::nested(PREFIX, mr_obj);
+    let upstream_repository = c.req_str("upstream_repository")?;
+    check_trimmed_nonempty(PREFIX, "upstream_repository", upstream_repository, violations);
+    let upstream_commit = c.req_str("upstream_commit")?;
+    check_trimmed_nonempty(PREFIX, "upstream_commit", upstream_commit, violations);
+    let _upstream_pin_sha256 = req_sha256(&mut c, "upstream_pin_sha256", violations)?;
+    let _tarball_sha256 = req_sha256(&mut c, "tarball_sha256", violations)?;
+    let _manifest_sha256 = req_sha256(&mut c, "manifest_sha256", violations)?;
+    let file_count = c.req_u64("file_count")?;
+    let files_obj = c.req_obj("files")?;
+    if file_count == 0 || files_obj.len() as u64 != file_count {
+        violations.push(format!(
+            "correspondence_provenance.minirust_upstream.file_count ({file_count}) disagrees with files length ({})",
+            files_obj.len()
+        ));
+    }
+    for (rel, val) in files_obj {
+        let escaped = escape_json_pointer_token(rel);
+        if rel.trim().is_empty() || rel.trim() != rel {
+            violations.push(format!(
+                "correspondence_provenance.minirust_upstream.files key `{rel}` must be trimmed and non-empty"
+            ));
+        }
+        let hex = val
+            .as_str()
+            .ok_or_else(|| format!("field `{PREFIX}/files/{escaped}` must be a string"))?;
+        if !is_sha256_hex(hex) {
+            violations.push(format!(
+                "field `{PREFIX}/files/{escaped}` must be a 64-character SHA-256 hex digest, got `{hex}`"
+            ));
+        }
+    }
+    c.collect_unrecognized(unknown);
+    Ok(())
 }
 
 fn parse_instantiations(
@@ -2812,6 +2856,18 @@ pub(crate) mod tests {
                 "upstream_pin_sha256": h,
                 "sysroot_foundation_manifest_sha256": h,
                 "patched_files": [],
+                "minirust_upstream": {
+                    "upstream_repository": "https://github.com/minirust/minirust",
+                    "upstream_commit": "d821c6e3a3d358fa8a556774dc12b4aa5d0d65ed",
+                    "upstream_pin_sha256": h,
+                    "tarball_sha256": h,
+                    "manifest_sha256": h,
+                    "file_count": 2,
+                    "files": {
+                        "README.md": h,
+                        "spec/mem/basic.md": h
+                    }
+                },
                 "correspondence_adapters": [],
                 "correspondence_proofs": [],
                 "trusted_lean": {},
@@ -4053,5 +4109,193 @@ pub(crate) mod tests {
             "{:?}",
             env.invariant_violations
         );
+    }
+
+    #[test]
+    fn minirust_upstream_provenance_validation_and_unknown_field_tracking() {
+        let h2 = "b".repeat(64);
+        let base = sample_success_json();
+        let base_env = parse_and_validate_receipt(&serde_json::to_vec(&base).unwrap()).unwrap();
+        assert!(base_env.unrecognized_fields.is_empty(), "{:?}", base_env.unrecognized_fields);
+        assert!(base_env.invariant_violations.is_empty(), "{:?}", base_env.invariant_violations);
+        assert!(base_env.evaluate_policy(&PolicyRequirements::default()).is_empty());
+
+        // Omitting `minirust_upstream` on applicable provenance fails closed.
+        let mut missing_mr = base.clone();
+        missing_mr["correspondence_provenance"]
+            .as_object_mut()
+            .unwrap()
+            .remove("minirust_upstream");
+        let missing_err =
+            parse_and_validate_receipt(&serde_json::to_vec(&missing_mr).unwrap()).unwrap_err();
+        assert!(
+            missing_err.message().contains("/correspondence_provenance/minirust_upstream"),
+            "{}",
+            missing_err.message()
+        );
+
+        // Null, non-object, or any missing subfield inside `minirust_upstream`
+        // fails closed operationally.
+        for bad_mr in [json!(null), json!(["bad"])] {
+            let mut non_obj = base.clone();
+            non_obj["correspondence_provenance"]["minirust_upstream"] = bad_mr;
+            let err =
+                parse_and_validate_receipt(&serde_json::to_vec(&non_obj).unwrap()).unwrap_err();
+            assert!(
+                err.message().contains("/correspondence_provenance/minirust_upstream"),
+                "{}",
+                err.message()
+            );
+        }
+        for omitted_field in [
+            "upstream_repository",
+            "upstream_commit",
+            "upstream_pin_sha256",
+            "tarball_sha256",
+            "manifest_sha256",
+            "file_count",
+            "files",
+        ] {
+            let mut omitted = base.clone();
+            omitted["correspondence_provenance"]["minirust_upstream"]
+                .as_object_mut()
+                .unwrap()
+                .remove(omitted_field);
+            let err =
+                parse_and_validate_receipt(&serde_json::to_vec(&omitted).unwrap()).unwrap_err();
+            assert!(
+                err.message().contains(&format!(
+                    "/correspondence_provenance/minirust_upstream/{omitted_field}"
+                )),
+                "expected missing {omitted_field} error, got {}",
+                err.message()
+            );
+        }
+
+        // Changing `minirust_upstream` updates
+        // `correspondence_provenance_residual_sha256`.
+        let mut mr = base.clone();
+        mr["correspondence_provenance"]["minirust_upstream"]["files"]["spec/mem/basic.md"] =
+            json!(h2);
+        let ok_env = parse_and_validate_receipt(&serde_json::to_vec(&mr).unwrap()).unwrap();
+        assert!(ok_env.unrecognized_fields.is_empty(), "{:?}", ok_env.unrecognized_fields);
+        assert!(ok_env.invariant_violations.is_empty(), "{:?}", ok_env.invariant_violations);
+        assert!(ok_env.evaluate_policy(&PolicyRequirements::default()).is_empty());
+        match (&base_env.receipt, &ok_env.receipt) {
+            (ParsedReceipt::Success(b), ParsedReceipt::Success(n)) => {
+                assert_ne!(
+                    b.correspondence_provenance_residual_sha256,
+                    n.correspondence_provenance_residual_sha256
+                );
+            }
+            _ => panic!("expected success receipts"),
+        }
+
+        // Extra unrecognized field inside `minirust_upstream` is surfaced.
+        let mut extra = mr.clone();
+        extra["correspondence_provenance"]["minirust_upstream"]["extra_mr"] = json!(1);
+        let extra_env = parse_and_validate_receipt(&serde_json::to_vec(&extra).unwrap()).unwrap();
+        assert_eq!(
+            extra_env.unrecognized_fields,
+            vec!["/correspondence_provenance/minirust_upstream/extra_mr"]
+        );
+
+        // `file_count` mismatch and invalid file digest produce invariant
+        // violations.
+        let mut bad_count = mr.clone();
+        bad_count["correspondence_provenance"]["minirust_upstream"]["file_count"] = json!(1);
+        bad_count["correspondence_provenance"]["minirust_upstream"]["files"]["spec/mem/basic.md"] =
+            json!("not-sha");
+        let bad_env = parse_and_validate_receipt(&serde_json::to_vec(&bad_count).unwrap()).unwrap();
+        assert!(
+            bad_env.invariant_violations.iter().any(|v| v.contains("file_count")),
+            "{:?}",
+            bad_env.invariant_violations
+        );
+        assert!(
+            bad_env.invariant_violations.iter().any(|v| v.contains(
+                "/correspondence_provenance/minirust_upstream/files/spec~1mem~1basic.md"
+            )),
+            "{:?}",
+            bad_env.invariant_violations
+        );
+
+        // Non-string digest inside `files` is rejected operationally.
+        let mut non_str = mr.clone();
+        non_str["correspondence_provenance"]["minirust_upstream"]["files"]["spec/mem/basic.md"] =
+            json!(123);
+        let err = parse_and_validate_receipt(&serde_json::to_vec(&non_str).unwrap()).unwrap_err();
+        assert!(
+            err.message()
+                .contains("/correspondence_provenance/minirust_upstream/files/spec~1mem~1basic.md"),
+            "{}",
+            err.message()
+        );
+
+        // Empty and non-empty untrimmed `files` keys must both fail
+        // independently (`is_empty()` vs `trim() != rel`), as must empty
+        // `files` (`file_count == 0`), untrimmed metadata, and bad SHAs.
+        for bad_key in ["", "   ", " README.md "] {
+            let mut bad_keys = mr.clone();
+            bad_keys["correspondence_provenance"]["minirust_upstream"]["file_count"] = json!(1);
+            bad_keys["correspondence_provenance"]["minirust_upstream"]["files"] =
+                json!({ bad_key: h2 });
+            let bad_key_env =
+                parse_and_validate_receipt(&serde_json::to_vec(&bad_keys).unwrap()).unwrap();
+            assert!(
+                bad_key_env
+                    .invariant_violations
+                    .iter()
+                    .any(|v| v.contains("files key") && v.contains("trimmed and non-empty")),
+                "expected trimmed/non-empty files key violation for {bad_key:?}, got {:?}",
+                bad_key_env.invariant_violations
+            );
+        }
+
+        let mut zero_files = mr.clone();
+        zero_files["correspondence_provenance"]["minirust_upstream"]["file_count"] = json!(0);
+        zero_files["correspondence_provenance"]["minirust_upstream"]["files"] = json!({});
+        let zero_env =
+            parse_and_validate_receipt(&serde_json::to_vec(&zero_files).unwrap()).unwrap();
+        assert!(
+            zero_env.invariant_violations.iter().any(|v| v.contains("file_count (0)")),
+            "{:?}",
+            zero_env.invariant_violations
+        );
+
+        for (field, bad_val) in [
+            ("upstream_repository", ""),
+            ("upstream_repository", " https://example.invalid "),
+            ("upstream_commit", ""),
+            ("upstream_commit", " deadbeef "),
+        ] {
+            let mut bad_meta = mr.clone();
+            bad_meta["correspondence_provenance"]["minirust_upstream"][field] = json!(bad_val);
+            let meta_env =
+                parse_and_validate_receipt(&serde_json::to_vec(&bad_meta).unwrap()).unwrap();
+            assert!(
+                meta_env
+                    .invariant_violations
+                    .iter()
+                    .any(|v| v.contains(field) && v.contains("trimmed and non-empty")),
+                "expected metadata violation for {field}={bad_val:?}, got {:?}",
+                meta_env.invariant_violations
+            );
+        }
+
+        for sha_field in ["upstream_pin_sha256", "tarball_sha256", "manifest_sha256"] {
+            let mut bad_sha = mr.clone();
+            bad_sha["correspondence_provenance"]["minirust_upstream"][sha_field] = json!("bad-sha");
+            let sha_env =
+                parse_and_validate_receipt(&serde_json::to_vec(&bad_sha).unwrap()).unwrap();
+            assert!(
+                sha_env
+                    .invariant_violations
+                    .iter()
+                    .any(|v| v.contains(sha_field) && v.contains("64-character SHA-256")),
+                "expected SHA-256 violation for {sha_field}, got {:?}",
+                sha_env.invariant_violations
+            );
+        }
     }
 }

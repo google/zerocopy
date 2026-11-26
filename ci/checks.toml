@@ -926,6 +926,7 @@ inputs = [
     "anneal/theory/**",
     "anneal/correspondence/**",
     "anneal/vendor/lean-miri/UPSTREAM_PIN.json",
+    "anneal/vendor/minirust/UPSTREAM_PIN.json",
     "anneal/ci/pack_omnibus_archive.sh",
     "anneal/ci/prebuild_bundled_oleans.py",
     "anneal/ci/render_correspondence_provenance.py",
@@ -961,7 +962,10 @@ inputs = [
     "zerocopy/proofs/**",
     "zerocopy/zerocopy-derive/Cargo.toml",
   ], exclude = ["anneal/vendor/**", "anneal/target/**"] },
-  { kind = "glob", include = ["anneal/vendor/lean-miri/UPSTREAM_PIN.json"] },
+  { kind = "glob", include = [
+    "anneal/vendor/lean-miri/UPSTREAM_PIN.json",
+    "anneal/vendor/minirust/**",
+  ] },
   # Root config overrides that `run_anneal_check.sh` rejects.
   { kind = "glob", include = [
     ".cargo", ".cargo/**", ".gitmodules", "rust-toolchain", "rust-toolchain.toml",
@@ -989,6 +993,7 @@ inputs = [
     "anneal/theory/**",
     "anneal/correspondence/**",
     "anneal/vendor/lean-miri/UPSTREAM_PIN.json",
+    "anneal/vendor/minirust/UPSTREAM_PIN.json",
     "anneal/ci/run_anneal_check.sh",
   ] },
   # Root config overrides that `run_anneal_check.sh` rejects.
@@ -1020,6 +1025,7 @@ inputs = [
     "anneal/theory/**",
     "anneal/correspondence/**",
     "anneal/vendor/lean-miri/UPSTREAM_PIN.json",
+    "anneal/vendor/minirust/UPSTREAM_PIN.json",
     "anneal/ci/run_anneal_check.sh",
   ] },
   # Root config overrides that `run_anneal_check.sh` rejects.
@@ -1160,6 +1166,7 @@ inputs = [
   ] },
   { kind = "glob", include = [
     "anneal/vendor/lean-miri/UPSTREAM_PIN.json",
+    "anneal/vendor/minirust/UPSTREAM_PIN.json",
     "zerocopy/Cargo.toml",
     "zerocopy/src/**",
     "zerocopy/proofs/**",

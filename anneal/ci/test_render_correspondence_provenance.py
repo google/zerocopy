@@ -19,6 +19,7 @@ import unittest
 
 from render_correspondence_provenance import (
     _decode_rust_string_escapes,
+    main as render_main,
     render_provenance_json,
 )
 
@@ -38,10 +39,11 @@ def _make_tree_writable(root: Path) -> None:
 
 
 def _stage_writable_anneal_fixture(src_root: Path, dst_root: Path) -> None:
-    """Copy minimal provenance inputs into `dst_root` with writable permissions."""
+    """Copy minimal provenance inputs into `dst_root` with writable perms."""
     for rel in (
         "trusted/cargo-anneal/src/trusted_bundle.rs",
         "vendor/lean-miri/UPSTREAM_PIN.json",
+        "vendor/minirust/UPSTREAM_PIN.json",
     ):
         dst = dst_root / rel
         dst.parent.mkdir(parents=True, exist_ok=True)
@@ -70,23 +72,100 @@ class RenderCorrespondenceProvenanceTests(unittest.TestCase):
         rendered = render_provenance_json(
             trusted_bundle_rs=ANNEAL_ROOT / "trusted/cargo-anneal/src/trusted_bundle.rs",
             upstream_pin=ANNEAL_ROOT / "vendor/lean-miri/UPSTREAM_PIN.json",
+            minirust_upstream_pin=ANNEAL_ROOT / "vendor/minirust/UPSTREAM_PIN.json",
             correspondence_adapters_dir=ANNEAL_ROOT / "trusted/correspondence",
             correspondence_proofs_dir=ANNEAL_ROOT / "correspondence",
             trusted_lean_dir=ANNEAL_ROOT / "trusted/lean",
         )
         data = json.loads(rendered)
+        self.assertEqual(
+            list(data.keys()),
+            [
+                "schema_version",
+                "upstream_repository",
+                "upstream_commit",
+                "upstream_lean_toolchain",
+                "build_lean_toolchain",
+                "upstream_pin_sha256",
+                "sysroot_foundation_manifest_sha256",
+                "patched_files",
+                "minirust_upstream",
+                "correspondence_adapters",
+                "correspondence_proofs",
+                "trusted_lean",
+                "note",
+            ],
+        )
         self.assertEqual(data["schema_version"], 1)
         self.assertEqual(len(data["correspondence_adapters"]), 7)
-        self.assertEqual(len(data["correspondence_proofs"]), 19)
+        self.assertEqual(len(data["correspondence_proofs"]), 29)
         self.assertEqual(len(data["trusted_lean"]), 25)
         self.assertEqual(len(data["patched_files"]), 13)
+        mr = data["minirust_upstream"]
+        self.assertEqual(
+            list(mr.keys()),
+            [
+                "upstream_repository",
+                "upstream_commit",
+                "upstream_pin_sha256",
+                "tarball_sha256",
+                "manifest_sha256",
+                "file_count",
+                "files",
+            ],
+        )
+        self.assertEqual(mr["upstream_repository"], "https://github.com/minirust/minirust")
+        self.assertEqual(
+            mr["upstream_commit"], "d821c6e3a3d358fa8a556774dc12b4aa5d0d65ed"
+        )
+        self.assertEqual(mr["file_count"], 30)
+        self.assertEqual(len(mr["files"]), 30)
+        for sha_field in ("upstream_pin_sha256", "tarball_sha256", "manifest_sha256"):
+            self.assertEqual(len(mr[sha_field]), 64)
         self.assertIn("anneal-audit --require-correspondence", data["note"])
+        self.assertIn("vendor/minirust/UPSTREAM_PIN.json", data["note"])
+        self.assertIn("verified by Tier-0 CI and recorded here", data["note"])
+        self.assertNotIn("against vendor/minirust/UPSTREAM_PIN.json", data["note"])
         self.assertNotIn("\\\n", data["note"])
+
+        # CLI `--anneal-root` mode and explicit-flag mode must emit identical
+        # bytes.
+        with tempfile.TemporaryDirectory() as tmp:
+            out_root = Path(tmp) / "root.json"
+            out_explicit = Path(tmp) / "explicit.json"
+            self.assertEqual(
+                render_main(["--anneal-root", str(ANNEAL_ROOT), "--output", str(out_root)]),
+                0,
+            )
+            self.assertEqual(
+                render_main(
+                    [
+                        "--trusted-bundle-rs",
+                        str(ANNEAL_ROOT / "trusted/cargo-anneal/src/trusted_bundle.rs"),
+                        "--upstream-pin",
+                        str(ANNEAL_ROOT / "vendor/lean-miri/UPSTREAM_PIN.json"),
+                        "--minirust-upstream-pin",
+                        str(ANNEAL_ROOT / "vendor/minirust/UPSTREAM_PIN.json"),
+                        "--correspondence-adapters-dir",
+                        str(ANNEAL_ROOT / "trusted/correspondence"),
+                        "--correspondence-proofs-dir",
+                        str(ANNEAL_ROOT / "correspondence"),
+                        "--trusted-lean-dir",
+                        str(ANNEAL_ROOT / "trusted/lean"),
+                        "--output",
+                        str(out_explicit),
+                    ]
+                ),
+                0,
+            )
+            self.assertEqual(out_root.read_bytes(), rendered.encode("utf-8"))
+            self.assertEqual(out_explicit.read_bytes(), rendered.encode("utf-8"))
 
     def test_rejects_untracked_lean_file_and_symlink(self):
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp) / "anneal"
             _stage_writable_anneal_fixture(ANNEAL_ROOT, root)
+            mr_pin_path = root / "vendor/minirust/UPSTREAM_PIN.json"
 
             extra = root / "correspondence/Anneal/Extra.lean"
             extra.write_text("prelude\n")
@@ -94,6 +173,7 @@ class RenderCorrespondenceProvenanceTests(unittest.TestCase):
                 render_provenance_json(
                     trusted_bundle_rs=root / "trusted/cargo-anneal/src/trusted_bundle.rs",
                     upstream_pin=root / "vendor/lean-miri/UPSTREAM_PIN.json",
+                    minirust_upstream_pin=mr_pin_path,
                     correspondence_adapters_dir=root / "trusted/correspondence",
                     correspondence_proofs_dir=root / "correspondence",
                     trusted_lean_dir=root / "trusted/lean",
@@ -109,6 +189,7 @@ class RenderCorrespondenceProvenanceTests(unittest.TestCase):
                 render_provenance_json(
                     trusted_bundle_rs=root / "trusted/cargo-anneal/src/trusted_bundle.rs",
                     upstream_pin=root / "vendor/lean-miri/UPSTREAM_PIN.json",
+                    minirust_upstream_pin=mr_pin_path,
                     correspondence_adapters_dir=root / "trusted/correspondence",
                     correspondence_proofs_dir=root / "correspondence",
                     trusted_lean_dir=root / "trusted/lean",
@@ -125,6 +206,7 @@ class RenderCorrespondenceProvenanceTests(unittest.TestCase):
                 render_provenance_json(
                     trusted_bundle_rs=root / "trusted/cargo-anneal/src/trusted_bundle.rs",
                     upstream_pin=pin_path,
+                    minirust_upstream_pin=mr_pin_path,
                     correspondence_adapters_dir=root / "trusted/correspondence",
                     correspondence_proofs_dir=root / "correspondence",
                     trusted_lean_dir=root / "trusted/lean",
@@ -137,6 +219,7 @@ class RenderCorrespondenceProvenanceTests(unittest.TestCase):
                 render_provenance_json(
                     trusted_bundle_rs=root / "trusted/cargo-anneal/src/trusted_bundle.rs",
                     upstream_pin=pin_path,
+                    minirust_upstream_pin=mr_pin_path,
                     correspondence_adapters_dir=root / "trusted/correspondence",
                     correspondence_proofs_dir=root / "correspondence",
                     trusted_lean_dir=root / "trusted/lean",
@@ -153,11 +236,59 @@ class RenderCorrespondenceProvenanceTests(unittest.TestCase):
                 render_provenance_json(
                     trusted_bundle_rs=root / "trusted/cargo-anneal/src/trusted_bundle.rs",
                     upstream_pin=pin_path,
+                    minirust_upstream_pin=mr_pin_path,
                     correspondence_adapters_dir=root / "trusted/correspondence",
                     correspondence_proofs_dir=root / "correspondence",
                     trusted_lean_dir=root / "trusted/lean",
                     anneal_root=root,
                 )
+
+    def test_rejects_malformed_or_tampered_minirust_upstream_pin(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp) / "anneal"
+            _stage_writable_anneal_fixture(ANNEAL_ROOT, root)
+            pin_path = root / "vendor/lean-miri/UPSTREAM_PIN.json"
+            mr_pin_path = root / "vendor/minirust/UPSTREAM_PIN.json"
+            orig_mr_pin = mr_pin_path.read_text(encoding="utf-8")
+
+            def call_render() -> str:
+                return render_provenance_json(
+                    trusted_bundle_rs=root / "trusted/cargo-anneal/src/trusted_bundle.rs",
+                    upstream_pin=pin_path,
+                    minirust_upstream_pin=mr_pin_path,
+                    correspondence_adapters_dir=root / "trusted/correspondence",
+                    correspondence_proofs_dir=root / "correspondence",
+                    trusted_lean_dir=root / "trusted/lean",
+                    anneal_root=root,
+                )
+
+            mr_pin_path.write_text('{"commit":"a","commit":"b"}', encoding="utf-8")
+            with self.assertRaisesRegex(ValueError, "duplicate JSON key"):
+                call_render()
+
+            for mutate, pattern in (
+                (lambda d: d.update(upstream_repo=""), "upstream_repo"),
+                (lambda d: d.update(commit=""), "commit"),
+                (lambda d: d.update(tarball_sha256="xyz"), "tarball_sha256"),
+                (lambda d: d.update(manifest_sha256="0" * 63), "manifest_sha256"),
+                (lambda d: d.update(file_count=True), "file_count"),
+                (lambda d: d.update(file_count=29), "count mismatch"),
+                (lambda d: d["files"].update({"README.md": "not-hex"}), "invalid files entry"),
+            ):
+                bad = json.loads(orig_mr_pin)
+                mutate(bad)
+                mr_pin_path.write_text(json.dumps(bad), encoding="utf-8")
+                with self.assertRaisesRegex(ValueError, pattern):
+                    call_render()
+
+            mr_pin_path.write_text(orig_mr_pin, encoding="utf-8")
+            outside_mr = Path(tmp) / "outside_minirust"
+            outside_mr.mkdir()
+            shutil.copyfile(mr_pin_path, outside_mr / "UPSTREAM_PIN.json")
+            shutil.rmtree(root / "vendor/minirust")
+            (root / "vendor/minirust").symlink_to(outside_mr)
+            with self.assertRaisesRegex(ValueError, "regular directory"):
+                call_render()
 
     def test_rejects_unreadable_subdirectory_on_walk(self):
         if os.geteuid() == 0:
@@ -174,6 +305,7 @@ class RenderCorrespondenceProvenanceTests(unittest.TestCase):
                     render_provenance_json(
                         trusted_bundle_rs=root / "trusted/cargo-anneal/src/trusted_bundle.rs",
                         upstream_pin=root / "vendor/lean-miri/UPSTREAM_PIN.json",
+                        minirust_upstream_pin=root / "vendor/minirust/UPSTREAM_PIN.json",
                         correspondence_adapters_dir=root / "trusted/correspondence",
                         correspondence_proofs_dir=root / "correspondence",
                         trusted_lean_dir=root / "trusted/lean",

@@ -318,9 +318,11 @@ significant influences are listed here, but this list is far from exhaustive.
   interpreter and the work of the [Miri developers and contributors][Miri].
   Ralf Jung's [MiniRust] and the Rust Unsafe Code
   Guidelines contributors' [discussion of moved values][ucg-moves] helped
-  inform Anneal's treatment of moves. Xavier Leroy and the [CompCert]
-  contributors' work on simulation proofs provided a comparison for how
-  Anneal relates its model to its reference semantics.
+  inform Anneal's treatment of moves, and a pinned snapshot of the [MiniRust]
+  specification (`vendor/minirust/`) anchors Anneal's secondary operational
+  correspondence proofs (`Anneal.MiniRustProof`). Xavier Leroy and
+  the [CompCert] contributors' work on simulation proofs provided a comparison
+  for how Anneal relates its model to its reference semantics.
 - [Lean 4], by Leonardo de Moura, Sebastian Ullrich, and the Lean
   contributors, checks Anneal's proofs. Lean's
   [declaration replay][lean-replay], [environment importer][lean-env],

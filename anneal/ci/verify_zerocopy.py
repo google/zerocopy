@@ -113,10 +113,20 @@ PROVENANCE_V1_KEYS = frozenset({
     "upstream_pin_sha256",
     "sysroot_foundation_manifest_sha256",
     "patched_files",
+    "minirust_upstream",
     "correspondence_adapters",
     "correspondence_proofs",
     "trusted_lean",
     "note",
+})
+MINIRUST_UPSTREAM_KEYS = frozenset({
+    "upstream_repository",
+    "upstream_commit",
+    "upstream_pin_sha256",
+    "tarball_sha256",
+    "manifest_sha256",
+    "file_count",
+    "files",
 })
 PROVENANCE_V3_EXTRA_KEYS = frozenset({
     "claim_kind",
@@ -2258,6 +2268,43 @@ def _validate_provenance_v3_fields(provenance, patched_by_id, failures):
             )
 
 
+def _validate_minirust_upstream(mr_obj, failures):
+    label = "correspondence_provenance.minirust_upstream"
+    if not isinstance(mr_obj, dict):
+        failures.append(f"invalid {label}={mr_obj!r}")
+        return
+    extra = sorted(set(mr_obj.keys()) - MINIRUST_UPSTREAM_KEYS)
+    if extra:
+        failures.append(f"unexpected {label} keys={extra!r}")
+    for field in ("upstream_repository", "upstream_commit"):
+        val = mr_obj.get(field)
+        if not _is_trimmed_nonempty_str(val):
+            failures.append(
+                f"{label}.{field} must be trimmed and non-empty: {val!r}"
+            )
+    for sha_field in (
+        "upstream_pin_sha256",
+        "tarball_sha256",
+        "manifest_sha256",
+    ):
+        val = mr_obj.get(sha_field)
+        if not _is_sha256_hex(val):
+            failures.append(f"{label}.{sha_field} invalid: {val!r}")
+    file_count = mr_obj.get("file_count")
+    count_ok = _is_nonneg_int(file_count) and file_count > 0
+    if not count_ok:
+        failures.append(
+            f"{label}.file_count must be a positive integer: {file_count!r}"
+        )
+    files = mr_obj.get("files")
+    _validate_digest_map(files, f"{label}.files", failures)
+    if count_ok and isinstance(files, dict) and len(files) != file_count:
+        failures.append(
+            f"{label}.file_count ({file_count}) disagrees with "
+            f"files length ({len(files)})"
+        )
+
+
 def _validate_profile_v1_provenance(provenance, failures):
     if not isinstance(provenance, dict) or not provenance:
         failures.append(
@@ -2315,6 +2362,13 @@ def _validate_profile_v1_provenance(provenance, failures):
     patched_by_id = _validate_patched_files(
         provenance.get("patched_files"), failures
     )
+    if "minirust_upstream" not in provenance:
+        failures.append(
+            "Profile v1 receipt missing "
+            "correspondence_provenance.minirust_upstream"
+        )
+    else:
+        _validate_minirust_upstream(provenance["minirust_upstream"], failures)
     for field in (
         "correspondence_adapters",
         "correspondence_proofs",

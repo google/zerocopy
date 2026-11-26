@@ -82,6 +82,7 @@ RUN mkdir -p /opt/nix-cache /opt/anneal-nix/runtime-libs /opt/anneal-cargo-vendo
       /tmp/anneal-seed/anneal/trusted/correspondence \
       /tmp/anneal-seed/anneal/trusted/rustc-capture/src \
       /tmp/anneal-seed/anneal/vendor/lean-miri \
+      /tmp/anneal-seed/anneal/vendor/minirust \
       /tmp/anneal-seed/anneal/tests/testkit/src \
       /tmp/anneal-seed/anneal/tests/audit/src/bin \
       /tmp/anneal-seed/anneal/tests/cargo-anneal/src/bin \
@@ -107,7 +108,8 @@ RUN mkdir -p /opt/nix-cache /opt/anneal-nix/runtime-libs /opt/anneal-cargo-vendo
       /tmp/anneal-seed/anneal/tests/rustc-capture/src/bin/anneal-rustc-capture-test-bin.rs \
       /tmp/anneal-seed/anneal/tests/itree_diff/src/lib.rs \
       /tmp/anneal-seed/anneal/tests/itree_diff/src/bin/itree_diff.rs \
-      /tmp/anneal-seed/anneal/vendor/lean-miri/UPSTREAM_PIN.json && \
+      /tmp/anneal-seed/anneal/vendor/lean-miri/UPSTREAM_PIN.json \
+      /tmp/anneal-seed/anneal/vendor/minirust/UPSTREAM_PIN.json && \
     export XDG_CACHE_HOME=/opt/nix-cache HOME=/root && \
     nix build --no-link --print-out-paths \
       "path:/tmp/anneal-seed/anneal#lean-toolchain" \

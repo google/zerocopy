@@ -647,7 +647,18 @@ fn sample_receipt_bundle(dir: &Path) -> (Value, String, String, String, String) 
             "upstream_lean_toolchain": "leanprover/lean4:v4.34.1",
             "build_lean_toolchain": "leanprover/lean4:v4.34.1",
             "upstream_pin_sha256": "f".repeat(64),
-            "sysroot_foundation_manifest_sha256": "f".repeat(64)
+            "sysroot_foundation_manifest_sha256": "f".repeat(64),
+            "minirust_upstream": {
+                "upstream_repository": "https://github.com/minirust/minirust",
+                "upstream_commit": "d821c6e3a3d358fa8a556774dc12b4aa5d0d65ed",
+                "upstream_pin_sha256": "f".repeat(64),
+                "tarball_sha256": "f".repeat(64),
+                "manifest_sha256": "f".repeat(64),
+                "file_count": 1,
+                "files": {
+                    "README.md": "f".repeat(64)
+                }
+            }
         },
         "scope": { "kind": "crate" },
         "selected": [{ "def_id": 1, "path": "demo::zero", "body_index": 0 }],
@@ -1711,6 +1722,24 @@ fn verify_artifacts_and_three_tier_diff_enforced() {
     assert_eq!(
         run_inspect(&[orphan_seam_path.to_str().unwrap(), "--passive"], None).status.code(),
         Some(1)
+    );
+
+    // Omitting `minirust_upstream` on an applicable Profile v1 receipt fails
+    // closed operationally (exit 2).
+    let mut missing_minirust = clean.clone();
+    missing_minirust["correspondence_provenance"]
+        .as_object_mut()
+        .unwrap()
+        .remove("minirust_upstream");
+    let missing_minirust_path = tmp.path().join("missing_minirust.json");
+    fs::write(&missing_minirust_path, serde_json::to_vec(&missing_minirust).unwrap()).unwrap();
+    let missing_minirust_out = run_inspect(&[missing_minirust_path.to_str().unwrap()], None);
+    assert_eq!(missing_minirust_out.status.code(), Some(2));
+    assert!(
+        String::from_utf8_lossy(&missing_minirust_out.stderr)
+            .contains("/correspondence_provenance/minirust_upstream"),
+        "{}",
+        String::from_utf8_lossy(&missing_minirust_out.stderr)
     );
 
     // Profile v2 receipts (`*TheoremV2`, Profile v2 MIR assumption, and
