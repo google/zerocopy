@@ -322,6 +322,11 @@ pub struct VerifyArgs {
     /// (never specifications, model, capture, or expected; taints receipt).
     #[arg(long, global = true)]
     allow_sorry_in_proof: bool,
+    /// Cross-check the NDJSON proof export across a four-independent-kernel
+    /// quorum (`nanoda_bin`, `con-ron`, `con-leche`, and `lean4lean --import`)
+    /// directly inside `ExecSeal` on Lean `v4.35.0+`.
+    #[arg(long, global = true)]
+    paranoid_quorum: bool,
     /// Admit an unstable `#![feature(...)]` gate on the target crate; repeat
     /// or comma-separate for several (never wildcards). Taints the receipt
     /// even when the crate enables none of them. Compiler-internal features,
@@ -1133,9 +1138,10 @@ fn module_of(name: &str) -> Result<String> {
 ///
 /// The `Trusted` and `Anneal` namespaces hold the installed model and theory,
 /// `Captured` and `Expected` are the captured subject and generated claim, and
-/// `Init`, `Std`, `Lean`, `Lake`, and `TrustedBoundary` are reserved for the
-/// Lean toolchain and inspector in both pinned and unpinned modes so exported
-/// `LEAN_PATH` directories cannot shadow sysroot or inspector modules.
+/// `Init`, `Std`, `Lean`, `Lake`, `TrustedBoundary`, and `SpecPreflight` are
+/// reserved for the Lean toolchain and inspector in both pinned and unpinned
+/// modes so exported `LEAN_PATH` directories cannot shadow sysroot or
+/// inspector modules.
 fn reserved_proof_module(module: &str) -> bool {
     matches!(
         module.split('.').next(),
@@ -1149,6 +1155,7 @@ fn reserved_proof_module(module: &str) -> bool {
                 | "Lean"
                 | "Lake"
                 | "TrustedBoundary"
+                | "SpecPreflight"
         )
     )
 }
@@ -3162,13 +3169,7 @@ fn run<Out: std::io::Write + Send, ErrOut: std::io::Write + Send>(
         write(&path, text.as_bytes())?;
         let file_sha256 = sha256_bytes(text.as_bytes());
         model_identity.push(((*relative).to_owned(), file_sha256.clone()));
-        if relative.ends_with(".lean") && relative.starts_with("trusted/lean/") {
-            let module = relative
-                .trim_start_matches("trusted/lean/")
-                .trim_end_matches(".lean")
-                .replace('/', ".");
-            let tier = parse_trusted_tier_directive(&module, text, "bundle")
-                .map_err(|e| error("tool_failed", "bundle", e.message))?;
+        if let Some((module, tier)) = bundled_model_tier(relative, text)? {
             model_tiers.insert(module.clone(), tier);
             model_modules.insert(module.clone());
             modules.push(TargetModule {
@@ -3376,6 +3377,7 @@ fn run<Out: std::io::Write + Send, ErrOut: std::io::Write + Send>(
     checker.set_use_olean_cache(!args.no_cache);
     checker.set_no_rebuild_bundled(args.no_rebuild_bundled);
     checker.set_prebuilt_olean_dir(tools.prebuilt_dir);
+    checker.set_paranoid_quorum(args.paranoid_quorum);
     let audit_result = checker.run_target_with_progress(&audit_request, |ev| {
         let phase = match ev {
             TargetProgress::Toolchain => VerifyPhase::Toolchain,
@@ -3487,19 +3489,24 @@ fn run<Out: std::io::Write + Send, ErrOut: std::io::Write + Send>(
             .with_sandbox(Some(active_sandbox.as_str()))
         })?
     };
-    let runtime_libs_verified = checker
-        .admitted()
-        .map_err(|e| {
-            error("tool_failed", "toolchain", e.message).with_sandbox(Some(active_sandbox.as_str()))
-        })?
-        .runtime_libs_verified;
+    let adm = checker.admitted().map_err(|e| {
+        error("tool_failed", "toolchain", e.message).with_sandbox(Some(active_sandbox.as_str()))
+    })?;
+    let runtime_libs_verified = adm.runtime_libs_verified;
+    let has_ndjson_comparator = adm.ndjson_tools.is_some();
     let toolchain_identity = if args.allow_unpinned_lean {
+        let mut recorded = vec![
+            "capture executable as capture_binary_sha256",
+            "unpinned Lean executable and admitted Init/Std sysroot modules in unpinned_lean and audit.unpinnedLean",
+        ];
+        if has_ndjson_comparator {
+            recorded.push(
+                "NDJSON comparator and kernel binaries (leanexportSha256, nanodaBinSha256, conRonSha256, and quorum digests when enabled) in audit",
+            );
+        }
         json!({
             "sha256_locked": [],
-            "sha256_recorded": [
-                "capture executable as capture_binary_sha256",
-                "unpinned Lean executable and admitted Init/Std sysroot modules in unpinned_lean and audit.unpinnedLean",
-            ],
+            "sha256_recorded": recorded,
             "unhashed": [
                 "Lean shared libraries, identified by lean --version",
                 "Lean sysroot modules outside the admitted Init/Std closure",
@@ -3535,10 +3542,23 @@ fn run<Out: std::io::Write + Send, ErrOut: std::io::Write + Send>(
             ],
         })
     };
-    let lean_assumption = if args.allow_unpinned_lean {
-        "unpinned Lean kernel and dynamically discovered Init/Std foundation"
+    let lean_assumption = if has_ndjson_comparator {
+        // Name the kernels that actually accepted the export: `con-ron` is
+        // skipped for `sorryAx` proofs, and `--paranoid-quorum` adds two.
+        let kernels: Vec<&str> = audit
+            .get("kernelsPassed")
+            .and_then(Value::as_array)
+            .map(|a| a.iter().filter_map(Value::as_str).collect())
+            .unwrap_or_default();
+        format!(
+            "unpinned Lean exporter, Rust NDJSON comparator, and independent external \
+             kernels ({})",
+            kernels.join(" / ")
+        )
+    } else if args.allow_unpinned_lean {
+        "unpinned Lean kernel and dynamically discovered Init/Std foundation".to_owned()
     } else {
-        "Lean kernel and admitted foundation"
+        "Lean kernel and admitted foundation".to_owned()
     };
     // These assumptions delimit the result, including development builds
     // selected by the operator. Identity hashes make the subject and tool
@@ -3584,7 +3604,7 @@ fn run<Out: std::io::Write + Send, ErrOut: std::io::Write + Send>(
     if profile_v2 || experimental {
         assumptions.push(semantics_assumption);
     }
-    assumptions.push(lean_assumption);
+    assumptions.push(&lean_assumption);
     assumptions.push("intact compiler and verification environment");
     if !allowed_features.is_empty() {
         assumptions.push(crate::core::inspect::schema::UNSTABLE_FEATURES_ASSUMPTION);
@@ -3601,6 +3621,19 @@ fn run<Out: std::io::Write + Send, ErrOut: std::io::Write + Send>(
     }
     deferred.push("complete review-surface reporting");
     deferred.push("source-to-deployed-binary correspondence");
+    // The NDJSON comparator route does not run `TrustedBoundary.lean`'s
+    // anti-vacuity specification lint, so the receipt omits `spec_warnings`
+    // and defers the lint instead of reporting an empty (clean-looking) list.
+    let ndjson_route = audit.get("auditMode").and_then(Value::as_str) == Some("ndjson_comparator");
+    if ndjson_route {
+        deferred.push("anti-vacuity specification lint (not run by the NDJSON comparator)");
+        // Proof `.olean`s never load outside the sandboxed exporter on this
+        // route, so compiler-override attributes on Proof declarations (which
+        // cannot change kernel reduction) go uninspected.
+        deferred.push(
+            "compiler-override attributes on Proof-module declarations (not inspected by the NDJSON comparator)",
+        );
+    }
     let mut result = json!({
         "schema_version": RECEIPT_SCHEMA_VERSION,
         "status": status,
@@ -3675,9 +3708,11 @@ fn run<Out: std::io::Write + Send, ErrOut: std::io::Write + Send>(
             .unwrap()
             .insert("sorry_declarations".into(), Value::Array(sorry_decls));
     }
-    let spec_warnings =
-        extract_spec_warnings(&audit).map_err(|e| e.with_sandbox(Some(active_sandbox.as_str())))?;
-    result.as_object_mut().unwrap().insert("spec_warnings".into(), Value::Array(spec_warnings));
+    if !ndjson_route {
+        let spec_warnings = extract_spec_warnings(&audit)
+            .map_err(|e| e.with_sandbox(Some(active_sandbox.as_str())))?;
+        result.as_object_mut().unwrap().insert("spec_warnings".into(), Value::Array(spec_warnings));
+    }
     if let Some(ref shards) = shards_outcome {
         let obj = result.as_object_mut().unwrap();
         obj.insert("capture_shards_sha256".into(), json!(shards.sha256));
@@ -3736,6 +3771,42 @@ fn finalize_passing_artifacts(
         }
     }
     Ok(())
+}
+
+/// Return the bundled `trusted/lean/` model module that `relative` names,
+/// with its declared trust tier, or `None` for any other bundle file.
+fn bundled_model_tier(relative: &str, text: &str) -> Result<Option<(String, TrustTier)>> {
+    if !(relative.ends_with(".lean") && relative.starts_with("trusted/lean/")) {
+        return Ok(None);
+    }
+    let module =
+        relative.trim_start_matches("trusted/lean/").trim_end_matches(".lean").replace('/', ".");
+    let tier = parse_trusted_tier_directive(&module, text, "bundle")
+        .map_err(|e| error("tool_failed", "bundle", e.message))?;
+    Ok(Some((module, tier)))
+}
+
+/// Apply `verify`'s audit-metadata acceptance checks to a
+/// `Checker::run_target` report over the bundled model, as `run` does after
+/// the proof phase: `audit.graph` trust tiers (`vetted -/-> candidate:*`),
+/// `candidate:*` extraction from `audit.modelClosure`, and the
+/// `replay`/`exactType`, axiom, `sorryDeclarations`, and closure checks
+/// without `--allow-sorry-in-proof`. Returns the reached `candidate:*`
+/// features, or the `status/phase: detail` of the rejection.
+#[doc(hidden)]
+pub fn check_bundled_model_audit(audit: &Value) -> std::result::Result<Vec<&'static str>, String> {
+    let describe = |e: Error| format!("{}/{}: {}", e.status, e.phase, e.detail);
+    let mut model_tiers: BTreeMap<String, TrustTier> = BTreeMap::new();
+    for (relative, text) in BUNDLE {
+        if let Some((module, tier)) = bundled_model_tier(relative, text).map_err(describe)? {
+            model_tiers.insert(module, tier);
+        }
+    }
+    let model_modules: BTreeSet<String> = model_tiers.keys().cloned().collect();
+    let features = validate_and_extract_candidate_features(audit, &model_tiers, &model_modules)
+        .map_err(describe)?;
+    validate_sorry_declarations(audit, false).map_err(describe)?;
+    Ok(features)
 }
 
 /// Validate that bundled `Model` modules respect `vetted -/-> candidate:*`
@@ -4840,6 +4911,8 @@ mod tests {
             "Lake.DSL",
             "TrustedBoundary",
             "TrustedBoundary.Helper",
+            "SpecPreflight",
+            "SpecPreflight.Helper",
         ] {
             assert!(reserved_proof_module(reserved), "{reserved}");
         }
@@ -5266,6 +5339,7 @@ mod tests {
             allow_unpinned_lean: false,
             allow_unsandboxed_elaboration: false,
             allow_sorry_in_proof: false,
+            paranoid_quorum: false,
             allow_unstable_feature: Vec::new(),
             lean_memory_mb: None,
             no_cache: false,
@@ -5309,6 +5383,7 @@ mod tests {
                         sysroot: None,
                         artifacts: None,
                         export_lean_lib: false,
+                        paranoid_quorum: false,
                         lean_memory_mb: None,
                         no_cache: false,
                         no_rebuild_bundled: false,
@@ -5809,6 +5884,7 @@ mod tests {
             allow_unpinned_lean: false,
             allow_unsandboxed_elaboration: false,
             allow_sorry_in_proof: false,
+            paranoid_quorum: false,
             allow_unstable_feature: Vec::new(),
             lean_memory_mb: None,
             no_cache: false,
@@ -5857,6 +5933,7 @@ mod tests {
                 allow_unpinned_lean: false,
                 allow_unsandboxed_elaboration: false,
                 allow_sorry_in_proof: false,
+                paranoid_quorum: false,
                 allow_unstable_feature: Vec::new(),
                 lean_memory_mb: None,
                 no_cache: false,
@@ -6649,6 +6726,7 @@ mod tests {
             allow_sorry_in_proof: false,
             allow_unstable_feature: Vec::new(),
             allow_unpinned_lean: false,
+            paranoid_quorum: false,
             shard: ShardArgs::default(),
             verify_shard_plan: None,
         };

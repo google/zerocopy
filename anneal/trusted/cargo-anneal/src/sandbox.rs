@@ -1034,12 +1034,41 @@ impl SandboxRuntime {
 
     /// Execute a single invocation under this runtime's confinement policy.
     pub fn execute(&self, policy: &SandboxPolicy) -> Result<Output, Failure> {
+        self.execute_with_stdout_sink(policy, None)
+    }
+
+    /// Execute a single invocation under this runtime's confinement policy,
+    /// streaming child stdout directly to a host-owned file bounded by
+    /// `max_stdout_bytes`.
+    ///
+    /// Used by Actions `5a`/`5b` (`leanexport`) so large NDJSON exports never
+    /// truncate at [`MAX_CHILD_STREAM_BYTES`] while keeping the child's
+    /// writable output mount completely empty.
+    pub fn execute_stdout_to_file(
+        &self,
+        policy: &SandboxPolicy,
+        stdout_path: &Path,
+        max_stdout_bytes: u64,
+    ) -> Result<Output, Failure> {
+        self.execute_with_stdout_sink(
+            policy,
+            Some((stdout_path.to_path_buf(), max_stdout_bytes)),
+        )
+    }
+
+    fn execute_with_stdout_sink(
+        &self,
+        policy: &SandboxPolicy,
+        stdout_file: Option<(PathBuf, u64)>,
+    ) -> Result<Output, Failure> {
         match self.backend {
-            ActiveSandbox::None => run_unsandboxed(policy),
+            ActiveSandbox::None => run_unsandboxed(policy, stdout_file),
             #[cfg(target_os = "linux")]
-            ActiveSandbox::LinuxBwrap => linux::run_bwrap(self, policy),
+            ActiveSandbox::LinuxBwrap => linux::run_bwrap(self, policy, stdout_file),
             #[cfg(target_os = "linux")]
-            ActiveSandbox::LinuxLandlockSeccomp => linux::run_landlock_seccomp(self, policy),
+            ActiveSandbox::LinuxLandlockSeccomp => {
+                linux::run_landlock_seccomp(self, policy, stdout_file)
+            }
             #[cfg(not(target_os = "linux"))]
             ActiveSandbox::LinuxBwrap | ActiveSandbox::LinuxLandlockSeccomp => Err(
                 Failure::operational("sandbox", "Linux sandbox backend unavailable on this host"),
@@ -1634,6 +1663,7 @@ fn spawn_and_wait_with_timeout(
     mut cmd: Command,
     timeout: Duration,
     label: &str,
+    stdout_file: Option<(PathBuf, u64)>,
 ) -> Result<Output, Failure> {
     cmd.stdin(Stdio::null()).stdout(Stdio::piped()).stderr(Stdio::piped());
     let mut child = cmd
@@ -1652,8 +1682,16 @@ fn spawn_and_wait_with_timeout(
 
     let (stdout_tx, stdout_rx) = std::sync::mpsc::sync_channel(1);
     let (stderr_tx, stderr_rx) = std::sync::mpsc::sync_channel(1);
+    let label_owned = label.to_owned();
     thread::spawn(move || {
-        let _ = stdout_tx.send(drain_bounded(stdout_pipe, MAX_CHILD_STREAM_BYTES));
+        let res = match stdout_file {
+            Some((path, max_bytes)) => {
+                drain_to_bounded_file(stdout_pipe, &path, max_bytes, &label_owned)
+                    .map(|()| Vec::new())
+            }
+            None => Ok(drain_bounded(stdout_pipe, MAX_CHILD_STREAM_BYTES)),
+        };
+        let _ = stdout_tx.send(res);
     });
     thread::spawn(move || {
         let _ = stderr_tx.send(drain_bounded(stderr_pipe, MAX_CHILD_STREAM_BYTES));
@@ -1666,14 +1704,14 @@ fn spawn_and_wait_with_timeout(
         )
     };
     let deadline = Instant::now() + timeout;
-    let mut stdout_done: Option<Vec<u8>> = None;
+    let mut stdout_done: Option<Result<Vec<u8>, Failure>> = None;
     let mut stderr_done: Option<Vec<u8>> = None;
     let mut poll_ms = 1u64;
     let status = loop {
         if stdout_done.is_none()
-            && let Ok(bytes) = stdout_rx.try_recv()
+            && let Ok(res) = stdout_rx.try_recv()
         {
-            stdout_done = Some(bytes);
+            stdout_done = Some(res);
         }
         if stderr_done.is_none()
             && let Ok(bytes) = stderr_rx.try_recv()
@@ -1733,23 +1771,90 @@ fn spawn_and_wait_with_timeout(
         poll_ms = (poll_ms * 2).min(25);
     };
     let status = status?;
-    let recv_until_deadline = |rx: std::sync::mpsc::Receiver<Vec<u8>>| -> Result<Vec<u8>, Failure> {
-        let remaining = deadline.saturating_duration_since(Instant::now());
-        match rx.recv_timeout(remaining) {
-            Ok(bytes) => Ok(bytes),
-            Err(std::sync::mpsc::RecvTimeoutError::Disconnected) => Ok(Vec::new()),
-            Err(std::sync::mpsc::RecvTimeoutError::Timeout) => Err(timeout_failure()),
-        }
-    };
     let stdout = match stdout_done {
-        Some(bytes) => bytes,
-        None => recv_until_deadline(stdout_rx)?,
+        Some(res) => res?,
+        None => {
+            let remaining = deadline.saturating_duration_since(Instant::now());
+            match stdout_rx.recv_timeout(remaining) {
+                Ok(res) => res?,
+                Err(std::sync::mpsc::RecvTimeoutError::Disconnected) => Vec::new(),
+                Err(std::sync::mpsc::RecvTimeoutError::Timeout) => return Err(timeout_failure()),
+            }
+        }
     };
     let stderr = match stderr_done {
         Some(bytes) => bytes,
-        None => recv_until_deadline(stderr_rx)?,
+        None => {
+            let remaining = deadline.saturating_duration_since(Instant::now());
+            match stderr_rx.recv_timeout(remaining) {
+                Ok(bytes) => bytes,
+                Err(std::sync::mpsc::RecvTimeoutError::Disconnected) => Vec::new(),
+                Err(std::sync::mpsc::RecvTimeoutError::Timeout) => return Err(timeout_failure()),
+            }
+        }
     };
     Ok(Output { status, stdout, stderr })
+}
+
+fn drain_to_bounded_file(
+    mut reader: impl Read,
+    path: &Path,
+    max_bytes: u64,
+    label: &str,
+) -> Result<(), Failure> {
+    use std::io::Write as _;
+    let mut opts = fs::OpenOptions::new();
+    opts.write(true).create(true).truncate(true);
+    #[cfg(unix)]
+    {
+        use std::os::unix::fs::OpenOptionsExt as _;
+        opts.mode(0o600).custom_flags(libc::O_NOFOLLOW);
+    }
+    let mut file = opts.open(path).map_err(|e| {
+        Failure::operational(label, format!("cannot create stdout sink {}: {e}", path.display()))
+    })?;
+    let mut chunk = [0u8; 64 * 1024];
+    let mut total = 0u64;
+    let mut overflowed = false;
+    let mut write_err: Option<std::io::Error> = None;
+    loop {
+        match reader.read(&mut chunk) {
+            Ok(0) => break,
+            Ok(n) => {
+                if !overflowed && write_err.is_none() {
+                    let next = total.saturating_add(n as u64);
+                    if next > max_bytes {
+                        overflowed = true;
+                    } else if let Err(e) = file.write_all(&chunk[..n]) {
+                        write_err = Some(e);
+                    } else {
+                        total = next;
+                    }
+                }
+            }
+            Err(e) => {
+                write_err.get_or_insert(e);
+                break;
+            }
+        }
+    }
+    if overflowed {
+        let _ = fs::remove_file(path);
+        return Err(Failure::operational(
+            label,
+            format!("sandboxed stdout exceeded cap of {max_bytes} bytes"),
+        ));
+    }
+    if let Some(e) = write_err {
+        let _ = fs::remove_file(path);
+        return Err(Failure::operational(
+            label,
+            format!("error writing stdout sink {}: {e}", path.display()),
+        ));
+    }
+    file.flush().map_err(|e| {
+        Failure::operational(label, format!("cannot flush stdout sink {}: {e}", path.display()))
+    })
 }
 
 fn drain_bounded(mut reader: impl Read, limit: usize) -> Vec<u8> {
@@ -1769,7 +1874,10 @@ fn drain_bounded(mut reader: impl Read, limit: usize) -> Vec<u8> {
     out
 }
 
-fn run_unsandboxed(policy: &SandboxPolicy) -> Result<Output, Failure> {
+fn run_unsandboxed(
+    policy: &SandboxPolicy,
+    stdout_file: Option<(PathBuf, u64)>,
+) -> Result<Output, Failure> {
     reject_forbidden_loader_env(&policy.extra_env)?;
     let cwd = policy.child_cwd.as_ref().map_or(policy.rw_tmp.host.as_path(), |m| m.host.as_path());
     let mut cmd = Command::new(&policy.exec_bin);
@@ -1805,7 +1913,7 @@ fn run_unsandboxed(policy: &SandboxPolicy) -> Result<Output, Failure> {
             });
         }
     }
-    spawn_and_wait_with_timeout(cmd, policy.timeout, "unsandboxed-lean")
+    spawn_and_wait_with_timeout(cmd, policy.timeout, "unsandboxed-lean", stdout_file)
 }
 
 #[cfg(target_os = "linux")]
@@ -2702,6 +2810,7 @@ mod linux {
     pub(super) fn run_bwrap(
         runtime: &SandboxRuntime,
         policy: &SandboxPolicy,
+        stdout_file: Option<(PathBuf, u64)>,
     ) -> Result<Output, Failure> {
         reject_forbidden_loader_env(&policy.extra_env)?;
         let bwrap = runtime.bwrap_path.as_ref().ok_or_else(|| {
@@ -2825,7 +2934,7 @@ mod linux {
                 Ok(())
             });
         }
-        let result = spawn_and_wait_with_timeout(cmd, policy.timeout, "sandbox-bwrap");
+        let result = spawn_and_wait_with_timeout(cmd, policy.timeout, "sandbox-bwrap", stdout_file);
         drop(seccomp_read_fd);
         result
     }
@@ -2835,6 +2944,7 @@ mod linux {
     pub(super) fn run_landlock_seccomp(
         runtime: &SandboxRuntime,
         policy: &SandboxPolicy,
+        stdout_file: Option<(PathBuf, u64)>,
     ) -> Result<Output, Failure> {
         reject_forbidden_loader_env(&policy.extra_env)?;
         let ruleset = build_landlock_ruleset(runtime, policy)?;
@@ -2914,7 +3024,12 @@ mod linux {
                 Ok(())
             });
         }
-        let res = spawn_and_wait_with_timeout(cmd, policy.timeout, "sandbox-landlock-seccomp");
+        let res = spawn_and_wait_with_timeout(
+            cmd,
+            policy.timeout,
+            "sandbox-landlock-seccomp",
+            stdout_file,
+        );
         drop(ruleset);
         res
     }
@@ -2923,6 +3038,7 @@ mod linux {
     pub(super) fn run_landlock_seccomp(
         _runtime: &SandboxRuntime,
         _policy: &SandboxPolicy,
+        _stdout_file: Option<(PathBuf, u64)>,
     ) -> Result<Output, Failure> {
         Err(Failure::operational(
             "sandbox",
@@ -3341,7 +3457,7 @@ mod tests {
         //    returns without blocking for 60s.
         let start = Instant::now();
         let out =
-            spawn_and_wait_with_timeout(make_cmd("same_pgid"), Duration::from_secs(3), "test")
+            spawn_and_wait_with_timeout(make_cmd("same_pgid"), Duration::from_secs(3), "test", None)
                 .expect("same-pgid descendant should be reaped cleanly");
         assert!(out.status.success());
         assert!(
@@ -3359,8 +3475,9 @@ mod tests {
         //    holding stdout/stderr open: deadline-bounded pipe draining returns
         //    `sandbox-timeout` rather than hanging indefinitely.
         let start_esc = Instant::now();
-        let err = spawn_and_wait_with_timeout(make_cmd("setsid"), Duration::from_secs(1), "test")
-            .expect_err("setsid pipe-holding descendant must time out");
+        let err =
+            spawn_and_wait_with_timeout(make_cmd("setsid"), Duration::from_secs(1), "test", None)
+                .expect_err("setsid pipe-holding descendant must time out");
         assert_eq!(err.phase, "sandbox-timeout");
         assert!(
             start_esc.elapsed() < Duration::from_secs(10),

@@ -9,6 +9,7 @@
 //! Exact target-root, source binding and authority separation regressions.
 
 use std::{
+    collections::{BTreeMap, BTreeSet},
     fs,
     path::{Path, PathBuf},
 };
@@ -423,7 +424,8 @@ fn rejects_canonical_inputs_from_other_origins_or_with_universes() {
 }
 
 /// The inspector fixes the crate constructor instead of reading it from the
-/// request, and a reviewed specification cannot supply it.
+/// request, and neither a specification nor another non-model module can
+/// supply it.
 #[test]
 fn rejects_crate_constructor_outside_model() {
     let mut f = Fixture::new(
@@ -445,11 +447,36 @@ fn rejects_crate_constructor_outside_model() {
         TargetRole::Expected,
         "prelude\nimport Captured\nimport Spec\ndef Expected.claim : Prop := Trusted.MirSemantics.UnitTheorem 7\n",
     );
-    // Non-model modules cannot declare constants in the `Trusted` namespace at
-    // all, so defining `Trusted.MirSemantics.Crate` in `Spec` is refused by
-    // the namespace-isolation guard before canonical-input origin validation.
-    f.reject_audit(
-        "non-model target module Spec cannot declare constant Trusted.MirSemantics.Crate",
+    // Specification preflight refuses declarations in reserved `Trusted`
+    // before the run reaches `"target-audit"`.
+    let e = f.run().unwrap_err();
+    assert_eq!(e.code, 1, "{e}");
+    assert_eq!(e.phase, "spec-preflight", "{e}");
+    assert!(
+        e.message
+            .contains("cannot declare in reserved namespace Trusted in specification"),
+        "{e}",
+    );
+
+    // Non-model modules outside `Specification` (such as `Expected`) still hit
+    // the inspector's namespace-isolation guard in `"target-audit"` before
+    // canonical-input origin validation.
+    let mut f_expected = Fixture::new(
+        "prelude\nimport Expected\ntheorem Proof.verify : Expected.claim := True.intro\n",
+    );
+    f_expected.set(
+        "Model",
+        TargetRole::Model,
+        "prelude\nimport Init.Data.BitVec.Basic\ndef Trusted.MirSemantics.UnitTheorem (_ : Nat) : Prop := True\n",
+    );
+    f_expected.set(
+        "Expected",
+        TargetRole::Expected,
+        "prelude\nimport Captured\nimport Spec\nstructure Trusted.MirSemantics.Crate where\n  program : BitVec 8\n\
+         def Expected.claim : Prop := Trusted.MirSemantics.UnitTheorem 7\n",
+    );
+    f_expected.reject_audit(
+        "non-model target module Expected cannot declare constant Trusted.MirSemantics.Crate",
     );
 }
 
@@ -1647,7 +1674,7 @@ fn headers_rejects_module_system_modifiers_and_lean_lake_and_allows_no_prelude()
 /// term/quotation guards.
 #[test]
 fn spec_preflight_parse_tree_round_trip_and_negative_guards() {
-    // 1. Live parse-tree round-trip probe + exhaustive 62-vector negative
+    // 1. Live parse-tree round-trip probe + exhaustive negative-vector
     //    check against the real `TrustedBoundary.parseAndInspectSpecCommands`
     //    on one loaded `Init` + `Std` parser environment (fast in CI).
     let spec_base = "def Spec.specs (p : BitVec 8) : Prop := BitVec.and p p = p\n";
@@ -2114,6 +2141,71 @@ fn spec_preflight_parse_tree_round_trip_and_negative_guards() {
             "def x := repeatM\n",
             "disallowed identifier repeatM",
         ),
+        // Declaration-namespace guards: entering or declaring under the
+        // `Trusted`/`Anneal`/`Proof` roots, every `reservedKernelRoots` root
+        // (including `Init` and `Std`), and the `forbiddenSysUvPrefixes`
+        // sub-scopes (which an earlier reference guard may reject first),
+        // with `_root_` stripped.
+        (
+            "ns-trusted",
+            "namespace Trusted\nend Trusted\n",
+            "cannot enter reserved namespace Trusted",
+        ),
+        (
+            "ns-anneal",
+            "namespace Anneal\nend Anneal\n",
+            "cannot enter reserved namespace Anneal",
+        ),
+        (
+            "ns-proof",
+            "namespace Proof\nend Proof\n",
+            "cannot enter reserved namespace Proof",
+        ),
+        (
+            "ns-nat",
+            "namespace Nat\nend Nat\n",
+            "cannot enter reserved namespace Nat",
+        ),
+        (
+            "ns-init",
+            "namespace Init\nend Init\n",
+            "cannot enter reserved namespace Init",
+        ),
+        (
+            "ns-std",
+            "namespace Std\nend Std\n",
+            "cannot enter reserved namespace Std",
+        ),
+        (
+            "ns-internal-uv",
+            "namespace Internal.UV\nend Internal.UV\n",
+            "Internal.UV",
+        ),
+        (
+            "ns-dynlib",
+            "namespace Dynlib\nend Dynlib\n",
+            "Dynlib",
+        ),
+        (
+            "ns-root-trusted",
+            "namespace _root_.Trusted\nend _root_.Trusted\n",
+            "_root_.Trusted",
+        ),
+        (
+            "decl-bare-nat",
+            "def Nat : Nat := 0\n",
+            "cannot declare reserved namespace Nat",
+        ),
+        (
+            "decl-in-std",
+            "def Std.evil : Nat := 0\n",
+            "cannot declare in reserved namespace Std",
+        ),
+        (
+            "decl-in-internal-uv",
+            "def Internal.UV.evil : Nat := 0\n",
+            "Internal.UV",
+        ),
     ];
 
     // 1. Live parse-tree round-trip probe + exhaustive check of all negative
@@ -2302,6 +2394,9 @@ fn spec_preflight_parse_tree_round_trip_and_negative_guards() {
     unpinned.run_target(&base_fixture.request).unwrap();
 
     let wire_samples = [
+        "ns-init",
+        "ns-internal-uv",
+        "decl-bare-nat",
         "axiom-decl",
         "partial-def",
         "unsafe-rec-ident",
@@ -2333,6 +2428,33 @@ fn spec_preflight_parse_tree_round_trip_and_negative_guards() {
         assert!(
             err.message.contains(expected),
             "{label}: expected {expected:?} in {err}"
+        );
+    }
+
+    // 3. `SpecPreflight.lean`'s `"spec-preflight"`, which serves the NDJSON
+    //    comparator route, admits the base specification during `run_target`
+    //    and rejects every wire sample with the same reason on the pinned
+    //    toolchain.
+    with_spec_preflight(&base_fixture);
+    let mut via_sp = base_fixture.cargo_checker();
+    via_sp.set_allow_unpinned_lean(true);
+    via_sp.set_spec_preflight_mode_via_spec_preflight(true);
+    via_sp.run_target(&base_fixture.request).unwrap();
+    assert!(
+        via_sp.stage().join("control/SpecPreflight.olean").is_file(),
+        "`\"spec-preflight\"` did not run SpecPreflight.lean"
+    );
+    for (idx, (label, snippet, expected)) in
+        vectors.iter().filter(|(label, _, _)| wire_samples.contains(label)).enumerate()
+    {
+        let path = base_fixture.root.join(format!("neg_spec_sp_{idx:03}.lean"));
+        fs::write(&path, format!("import Model\n{snippet}{spec_base}")).unwrap();
+        let err = via_sp.inspect_spec_preflight(&[("Spec".to_owned(), path)]).unwrap_err();
+        assert_eq!(err.code, 1, "SpecPreflight {label}: {err}");
+        assert_eq!(err.phase, "spec-preflight", "SpecPreflight {label}: {err}");
+        assert!(
+            err.message.contains(expected),
+            "SpecPreflight {label}: expected {expected:?} in {err}"
         );
     }
 }
@@ -3731,4 +3853,175 @@ theorem Proof.verify : Expected.claim := And.intro rfl BitVec.and_self
          (Trusted.MirSemantics.Crate.mk Captured.program Spec.specs)\n",
     );
     f_bogus.reject_audit("unexpected canonical root Trusted.MirSemantics.BogusTheorem");
+}
+
+/// Stage `trusted/audit/SpecPreflight.lean` into `f` so its `"sysroot-consts"`
+/// and `"target-consts"` modes (which only it implements) run on the pinned
+/// Lean binary (with unpinned `Init` admission, as the non-`prelude` fixture
+/// proof needs), and return the roles and staged-header `isModule` flags of the
+/// fixture's modules.
+fn with_spec_preflight(f: &Fixture) -> (BTreeMap<String, TargetRole>, BTreeMap<String, bool>) {
+    let repo = Path::new(env!("CARGO_MANIFEST_DIR")).join("../..");
+    let rel = "trusted/audit/SpecPreflight.lean";
+    fs::copy(repo.join(rel), f.root.join(rel)).unwrap();
+    let roles = f.request.modules.iter().map(|m| (m.module.clone(), m.role)).collect();
+    let is_module = f.request.modules.iter().map(|m| (m.module.clone(), false)).collect();
+    (roles, is_module)
+}
+
+/// `SpecPreflight`'s module index runs over real compiled target artifacts on
+/// the pinned toolchain: it attributes compiler-generated constants (structure
+/// constructors/projections and anonymous instances) to their defining
+/// module, never lists `Proof` constants, reports no compiler overrides for
+/// override-free modules, and refuses a mismatched `isModule` expectation
+/// before importing. The sysroot index attributes `Init` constants to their
+/// modules.
+#[test]
+fn spec_preflight_module_index_attributes_generated_target_constants() {
+    let mut f = Fixture::new(
+        "import Expected\ntheorem Proof.verify : Expected.claim := And.intro rfl BitVec.and_self\n",
+    );
+    f.set(
+        "Spec",
+        TargetRole::Specification,
+        "prelude\nimport Model\nnamespace Contract\nstructure Box where\n  n : Nat\n\
+         instance : Inhabited Box := ⟨⟨0⟩⟩\nend Contract\n\
+         def Spec.specs (p : BitVec 8) : Prop := BitVec.and p p = p\n",
+    );
+    let (roles, is_module) = with_spec_preflight(&f);
+    let mut checker = cargo_anneal::Checker::new(&f.root, None).unwrap();
+    checker.set_allow_unpinned_lean(true);
+    checker.run_target(&f.request).unwrap();
+
+    let (origins, overrides) = checker.inspect_target_consts(&roles, &is_module).unwrap();
+    for (name, module) in [
+        ("Spec.specs", "Spec"),
+        ("Contract.Box", "Spec"),
+        ("Contract.Box.mk", "Spec"),
+        ("Contract.Box.n", "Spec"),
+        ("Contract.instInhabitedBox", "Spec"),
+        ("Captured.program", "Captured"),
+        ("Expected.claim", "Expected"),
+        ("Trusted.MirSemantics.UnitTheorem", "Model"),
+        ("Trusted.MirSemantics.Crate.mk", "Model"),
+    ] {
+        assert_eq!(origins.get(name).map(|(m, _)| m.as_str()), Some(module), "{name}: {origins:?}");
+    }
+    assert!(!origins.keys().any(|n| n.starts_with("Proof")), "{origins:?}");
+    assert!(overrides.is_empty(), "{overrides:?}");
+
+    let sysroot = checker.inspect_sysroot_consts().unwrap();
+    assert_eq!(sysroot.get("Nat.add").map(String::as_str), Some("Init.Prelude"));
+    assert!(!sysroot.contains_key("Spec.specs"));
+
+    let mut wrong = is_module.clone();
+    wrong.insert("Spec".to_owned(), true);
+    let err = checker.inspect_target_consts(&roles, &wrong).unwrap_err();
+    assert_eq!(err.code, 1, "{err}");
+    assert!(err.message.contains("non-module artifact mismatch in Spec"), "{err}");
+}
+
+/// The module index fails closed on an `unsafe` constant in a non-`Proof`
+/// target module and on a non-realized constant that two target modules
+/// both declare (Lean's import keeps one module's proof under the other
+/// module's index for equal theorem headers).
+#[test]
+fn spec_preflight_module_index_rejects_unsafe_and_colliding_target_constants() {
+    let proof =
+        "import Expected\ntheorem Proof.verify : Expected.claim := And.intro rfl BitVec.and_self\n";
+
+    let mut unsafe_f = Fixture::new(proof);
+    unsafe_f.set(
+        "Captured",
+        TargetRole::Capture,
+        "prelude\nimport Model\nunsafe def Captured.evil : Nat := 0\n\
+         def Captured.program : BitVec 8 := BitVec.ofNat 8 7\n",
+    );
+    let (roles, is_module) = with_spec_preflight(&unsafe_f);
+    let mut checker = cargo_anneal::Checker::new(&unsafe_f.root, None).unwrap();
+    checker.set_allow_unpinned_lean(true);
+    let _ = checker.run_target(&unsafe_f.request);
+    let err = checker.inspect_target_consts(&roles, &is_module).unwrap_err();
+    assert_eq!(err.code, 1, "{err}");
+    assert!(err.message.contains("declares unsafe constant Captured.evil"), "{err}");
+
+    let mut dup_f = Fixture::new(proof);
+    for name in ["SpecA", "SpecB"] {
+        dup_f.set(
+            name,
+            TargetRole::Specification,
+            "prelude\nimport Model\ntheorem Contract.t : True := True.intro\n",
+        );
+    }
+    dup_f.set(
+        "Spec",
+        TargetRole::Specification,
+        "prelude\nimport Model\nimport SpecA\nimport SpecB\n\
+         def Spec.specs (p : BitVec 8) : Prop := BitVec.and p p = p\n",
+    );
+    let (roles, is_module) = with_spec_preflight(&dup_f);
+    let mut checker = cargo_anneal::Checker::new(&dup_f.root, None).unwrap();
+    checker.set_allow_unpinned_lean(true);
+    let _ = checker.run_target(&dup_f.request);
+    let err = checker.inspect_target_consts(&roles, &is_module).unwrap_err();
+    assert_eq!(err.code, 1, "{err}");
+    assert!(err.message.contains("constant Contract.t declared by"), "{err}");
+
+    // Lean's import keeps the later of two equal-header theorems under the
+    // earlier module's index, even for an equation-style name; differing
+    // proofs fail closed instead of erasing one module's dependencies.
+    let mut realized_f = Fixture::new(proof);
+    for (name, value) in [("SpecA", "True.intro"), ("SpecB", "(fun _ : Nat => True.intro) 0")] {
+        realized_f.set(
+            name,
+            TargetRole::Specification,
+            &format!("prelude\nimport Model\ntheorem Contract.foo.eq_1 : True := {value}\n"),
+        );
+    }
+    realized_f.set(
+        "Spec",
+        TargetRole::Specification,
+        "prelude\nimport Model\nimport SpecA\nimport SpecB\n\
+         def Spec.specs (p : BitVec 8) : Prop := BitVec.and p p = p\n",
+    );
+    let (roles, is_module) = with_spec_preflight(&realized_f);
+    let mut checker = cargo_anneal::Checker::new(&realized_f.root, None).unwrap();
+    checker.set_allow_unpinned_lean(true);
+    let _ = checker.run_target(&realized_f.request);
+    let err = checker.inspect_target_consts(&roles, &is_module).unwrap_err();
+    assert_eq!(err.code, 1, "{err}");
+    assert!(err.message.contains("Contract.foo.eq_1"), "{err}");
+}
+
+/// The module index reports a non-`Proof` target module's
+/// `@[implemented_by]`, `@[extern]`, `@[csimp]`, and scoped `@[csimp]`
+/// subjects, which the comparator rejects whenever a verified cone reaches
+/// them.
+#[test]
+fn spec_preflight_module_index_reports_target_compiler_overrides() {
+    let mut f = Fixture::new(
+        "import Expected\ntheorem Proof.verify : Expected.claim := And.intro rfl BitVec.and_self\n",
+    );
+    f.set(
+        "Captured",
+        TargetRole::Capture,
+        "prelude\nimport Model\nnamespace Captured\n\
+         def fImpl (n : Nat) : Nat := n\n\
+         @[implemented_by fImpl] def f (n : Nat) : Nat := n\n\
+         @[extern \"anneal_g\"] def g (n : Nat) : Nat := n\n\
+         def h (n : Nat) : Nat := n\ndef hFast (n : Nat) : Nat := n\n\
+         @[csimp] theorem h_eq : @h = @hFast := rfl\n\
+         def k (n : Nat) : Nat := n\ndef kFast (n : Nat) : Nat := n\n\
+         @[scoped csimp] theorem k_eq : @k = @kFast := rfl\n\
+         def program : BitVec 8 := BitVec.ofNat 8 7\nend Captured\n",
+    );
+    let (roles, is_module) = with_spec_preflight(&f);
+    let mut checker = cargo_anneal::Checker::new(&f.root, None).unwrap();
+    checker.set_allow_unpinned_lean(true);
+    let _ = checker.run_target(&f.request);
+    let (origins, overrides) = checker.inspect_target_consts(&roles, &is_module).unwrap();
+    assert_eq!(origins.get("Captured.f").map(|(m, _)| m.as_str()), Some("Captured"));
+    let expected: BTreeSet<String> =
+        ["Captured.f", "Captured.g", "Captured.h", "Captured.k"].map(str::to_owned).into();
+    assert_eq!(overrides, expected);
 }

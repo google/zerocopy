@@ -18,12 +18,20 @@ use std::{
     collections::{BTreeMap, BTreeSet, VecDeque},
     fs, io,
     path::{Path, PathBuf},
+    time::Instant,
 };
 
 use serde::{Deserialize, Serialize};
 use serde_json::json;
 
 use crate::{
+    ndjson_comparator::{
+        CanonicalArena, NdjsonAuditVerdict, NdjsonTimingMs, PINNED_INIT_PRIMITIVES, SkippedKernel,
+        StructuralCompareRequest, TargetConstIndex, TargetConstOrigin, TargetOriginRole,
+        parse_ndjson_file,
+        parse_ndjson_reader, plan_expected_export, plan_sysroot_pin_export,
+        validate_ndjson_verdict, verify_ndjson_structure,
+    },
     sandbox::set_mode,
     stage::Checker,
     toolchain::{
@@ -36,14 +44,22 @@ use crate::{
     },
 };
 
+/// `Checker::inspect_target_consts` result: each target constant's
+/// `(module, paired_unsafe_rec)`, and the compiler-override subjects.
+pub type InspectedTargetConsts = (BTreeMap<String, (String, bool)>, BTreeSet<String>);
+
+/// `Checker::run_ndjson_kernels` result: each kernel's name and verdict.
+pub type KernelVerdicts = Vec<(&'static str, Result<(), Failure>)>;
+
 /// Module root namespaces reserved for the Lean toolchain and inspector in both
 /// pinned and unpinned modes.
 ///
 /// Reserving these roots prevents authored target modules from claiming names
-/// such as `Init.System.IO`, `Lean.Elab`, or `TrustedBoundary` that would
-/// shadow sysroot or inspector modules in exported `LEAN_PATH` directories.
+/// such as `Init.System.IO`, `Lean.Elab`, `TrustedBoundary`, or `SpecPreflight`
+/// that would shadow sysroot or inspector modules in exported `LEAN_PATH`
+/// directories.
 const RESERVED_TOOLCHAIN_MODULE_ROOTS: &[&str] =
-    &["Init", "Std", "Lean", "Lake", "TrustedBoundary"];
+    &["Init", "Std", "Lean", "Lake", "TrustedBoundary", "SpecPreflight"];
 
 /// Return whether `module` belongs to a reserved toolchain or inspector root.
 fn is_reserved_toolchain_module(module: &str) -> bool {
@@ -1255,7 +1271,27 @@ impl Checker {
         // Compilation success alone does not establish the exact theorem
         // type, permitted assumptions, or compiled source roles. Acceptance
         // is a separate inspection of the produced kernel declarations.
-        let mut report = self.inspect_target_with_modes(&filtered_request, &is_module)?;
+        //
+        // When toolchain admission adopted the NDJSON comparator tools (only
+        // under `--allow-unpinned-lean`, with Lean `v4.35.0+` bundling
+        // `<sysroot>/bin/{leanexport,nanoda_bin,con-ron}`), run the Universal
+        // NDJSON Comparator so no Lean process produces the verdict. Pinned
+        // admission sets `ndjson_tools: None` until comparator tool digests
+        // are pinned, so it always uses `TrustedBoundary.lean`
+        // `"target-audit"`.
+        let use_ndjson_comparator = self.admitted()?.ndjson_tools.is_some();
+        let mut report = if use_ndjson_comparator {
+            self.audit_target_ndjson(&filtered_request, &roles, &is_module)?
+        } else {
+            if self.paranoid_quorum() {
+                return Err(Failure::operational(
+                    "ndjson-paranoid-quorum",
+                    "--paranoid-quorum requires Lean v4.35.0+ with bundled leanexport, \
+                     nanoda_bin, con-ron, con-leche, and lean4lean",
+                ));
+            }
+            self.inspect_target_with_modes(&filtered_request, &is_module)?
+        };
         let mut provenance = Vec::new();
         for module in &filtered_request.modules {
             let artifacts = &self.admitted()?.artifacts[&module.module];
@@ -1374,6 +1410,523 @@ impl Checker {
         }
         Ok(report)
     }
+
+    /// Execute the Universal NDJSON Comparator (active only when toolchain
+    /// admission adopted the comparator tools under `--allow-unpinned-lean`
+    /// on Lean `v4.35.0+`), so no Lean process produces the verdict:
+    ///
+    /// - `5-init`: clean sysroot export of all 39 [`PINNED_INIT_PRIMITIVES`]
+    ///   (cached per `(sysroot, leanexport_sha256)`).
+    /// - `target-consts`: exact constant inventory of every retained `Model`,
+    ///   `Capture`, `Specification`, and `Expected` module (`SpecPreflight`,
+    ///   `loadExts := false`, zero `Proof` `.olean`s mounted).
+    /// - `5b` (`AnnealExportProof`): sandboxed `leanexport` of
+    ///   `<expected_module>` + `<theorem_module>` to `proof_full.ndjson` with
+    ///   read-only inputs and empty `rw_out`.
+    /// - `5a` (`AnnealExportExpected`): isolated mount containing strictly
+    ///   `{Model, Capture, Specification, Expected}` `.olean`s (zero `Proof.*`
+    ///   or `Anneal.*`) exporting the expected declaration, every
+    ///   `Specification` constant (except paired well-founded `_unsafe_rec`
+    ///   auxiliaries, which are `partial`), and every target-module constant
+    ///   that `proof_full` contains to `expected_cone.ndjson`.
+    /// - `5-pin`: clean-sysroot re-export (zero target `.olean`s) of every
+    ///   sysroot-named constant that `expected_cone` or `proof_full` uses.
+    /// - `5c` (`AnnealVerifyNdjson`): pure safe Rust structural verification
+    ///   ([`verify_ndjson_structure`]) followed by dual independent kernels
+    ///   (`nanoda_bin` with `"unpermitted_axiom_hard_error": true` AND
+    ///   `con-ron --verified`), plus optional `--paranoid-quorum`
+    ///   (`con-leche` + `lean4lean --import`, all inside `ExecSeal`).
+    fn audit_target_ndjson(
+        &mut self,
+        request: &TargetAuditRequest,
+        roles: &BTreeMap<String, TargetRole>,
+        is_module: &BTreeMap<String, bool>,
+    ) -> Result<Json, Failure> {
+        let mut trusted_modules = Vec::new();
+        let mut module_roles: BTreeMap<String, TargetOriginRole> = BTreeMap::new();
+        let forbidden_expected_roots = BTreeSet::from(["Anneal".to_owned(), "Proof".to_owned()]);
+        let mut forbidden_expected_modules = BTreeSet::new();
+        for (module, &role) in roles {
+            let origin_role = match role {
+                TargetRole::Model => TargetOriginRole::Model,
+                TargetRole::Capture => TargetOriginRole::Capture,
+                TargetRole::Specification => TargetOriginRole::Specification,
+                TargetRole::Expected => TargetOriginRole::Expected,
+                TargetRole::Proof => {
+                    forbidden_expected_modules.insert(module.clone());
+                    continue;
+                }
+            };
+            trusted_modules.push(module.clone());
+            module_roles.insert(module.clone(), origin_role);
+        }
+
+        let total_start = Instant::now();
+
+        // Collect authenticated sysroot `encodeCanonName -> module` inventory
+        // with zero target `.olean`s loaded.
+        let sysroot_const_to_module = self.collect_sysroot_consts_cached()?;
+
+        // Action 5-init: clean sysroot primitive cone.
+        let t_init = Instant::now();
+        let init_cached = self.export_ndjson_init_primitives()?;
+        let init_primitives_ms = t_init.elapsed().as_millis() as u64;
+
+        // Exact module index of every retained non-`Proof` target module.
+        let t_targets = Instant::now();
+        let TargetConstIndex { origins: target_const_origins, compiler_overrides } =
+            self.collect_target_consts(&module_roles, is_module)?;
+        let target_consts_ms = t_targets.elapsed().as_millis() as u64;
+
+        // Action 5b: sandboxed proof export.
+        let t_proof = Instant::now();
+        let (proof_path, proof_ndjson_sha256) = self.export_ndjson_proof(
+            &request.expected_module,
+            &request.theorem_module,
+            &request.expected_declaration,
+            &request.theorem_name,
+            "proof_full.ndjson",
+        )?;
+        let export_proof_ms = t_proof.elapsed().as_millis() as u64;
+
+        let mut arena = CanonicalArena::new();
+        let init_env = parse_ndjson_reader(
+            io::BufReader::new(init_cached.bytes.as_slice()),
+            &mut arena,
+            "init_primitives_cone",
+        )?;
+        verify_export_meta_matches_toolchain(&init_env.meta, &self.admitted()?.version)?;
+        let (proof_env, parsed_proof_sha) =
+            parse_ndjson_file(&proof_path, &mut arena, "proof_full")?;
+        if parsed_proof_sha != proof_ndjson_sha256 {
+            return Err(Failure::operational(
+                "ndjson-comparator",
+                "proof_full.ndjson changed before verification",
+            ));
+        }
+
+        // Action 5a: disjoint trusted-only expected export.
+        let t_exp = Instant::now();
+        let expected_plan = plan_expected_export(
+            &mut arena,
+            &proof_env,
+            &target_const_origins,
+            &trusted_modules,
+            &request.expected_declaration,
+        )?;
+        let (expected_path, expected_cone_sha256) =
+            self.export_ndjson_expected(&trusted_modules, &expected_plan, "expected_cone.ndjson")?;
+        let (expected_env, parsed_expected_sha) =
+            parse_ndjson_file(&expected_path, &mut arena, "expected_cone")?;
+        if parsed_expected_sha != expected_cone_sha256 {
+            return Err(Failure::operational(
+                "ndjson-comparator",
+                "expected_cone.ndjson changed before verification",
+            ));
+        }
+        let export_expected_ms = t_exp.elapsed().as_millis() as u64;
+
+        // Action 5-pin: clean-sysroot re-export of every sysroot-named
+        // constant either export uses. With no such constant, importing
+        // `Init` alone still yields a metadata-only export to compare against.
+        let t_pins = Instant::now();
+        let mut pin_plan = plan_sysroot_pin_export(
+            &arena,
+            &[&expected_env, &proof_env],
+            &sysroot_const_to_module,
+        )?;
+        if pin_plan.modules.is_empty() {
+            pin_plan.modules.push("Init".to_owned());
+        }
+        let (pins_path, sysroot_pins_sha256) =
+            self.export_ndjson_sysroot_pins(&pin_plan, "sysroot_pins.ndjson")?;
+        let (pins_env, parsed_pins_sha) =
+            parse_ndjson_file(&pins_path, &mut arena, "sysroot_pins")?;
+        if parsed_pins_sha != sysroot_pins_sha256 {
+            return Err(Failure::operational(
+                "ndjson-comparator",
+                "sysroot_pins.ndjson changed before verification",
+            ));
+        }
+        let sysroot_pins_ms = t_pins.elapsed().as_millis() as u64;
+
+        // Action 5c (Part 1): pure memory-safe Rust structural verification.
+        let t_cmp = Instant::now();
+        let compare_req = StructuralCompareRequest {
+            theorem_name: &request.theorem_name,
+            expected_module: &request.expected_module,
+            expected_declaration: &request.expected_declaration,
+            canonical_root: &request.canonical_root,
+            subject_declaration: &request.subject_declaration,
+            specification_declaration: &request.specification_declaration,
+            allow_sorry_in_proof: request.allow_sorry_in_proof,
+            forbidden_expected_roots,
+            forbidden_expected_modules,
+            sysroot_const_to_module: &sysroot_const_to_module,
+            target_const_origins: &target_const_origins,
+            target_compiler_overrides: &compiler_overrides,
+        };
+        let summary = verify_ndjson_structure(
+            &mut arena,
+            &init_env,
+            &pins_env,
+            &expected_env,
+            &proof_env,
+            &compare_req,
+        )?;
+        let rust_compare_ms = t_cmp.elapsed().as_millis() as u64;
+
+        // Action 5c (Part 2): execute dual independent kernels by default:
+        // 1. `nanoda_bin` (Rust, `"unpermitted_axiom_hard_error": true`)
+        // 2. `con-ron` (formally verified Rust arena kernel, `--verified`)
+        // Each kernel re-hashes its private copy against
+        // `proof_ndjson_sha256`, the digest verified above.
+        let t_nanoda = Instant::now();
+        self.run_ndjson_nanoda(&proof_path, &proof_ndjson_sha256, request.allow_sorry_in_proof)?;
+        let nanoda_ms = t_nanoda.elapsed().as_millis() as u64;
+        let mut kernels_passed = vec!["nanoda_bin".to_owned()];
+        let mut kernels_skipped = Vec::new();
+        let con_ron_ms = if summary.sorry_used {
+            // `con-ron --verified` enforces `no_False_declaration` over the
+            // three standard axioms only and declines `sorryAx`. When
+            // `--allow-sorry-in-proof` is explicitly set (which unconditionally
+            // taints Receipt v3) and `sorryAx` is present, record the skip
+            // explicitly rather than misrepresenting kernel coverage.
+            kernels_skipped.push(SkippedKernel {
+                kernel: "con-ron".to_owned(),
+                reason: "sorryAx_present_under_allow_sorry_in_proof".to_owned(),
+            });
+            0
+        } else {
+            let t_con = Instant::now();
+            self.run_ndjson_con_ron(&proof_path, &proof_ndjson_sha256)?;
+            kernels_passed.push("con-ron".to_owned());
+            t_con.elapsed().as_millis() as u64
+        };
+
+        // Optional `--paranoid-quorum`: cross-check `proof_full.ndjson` across
+        // two additional independent bundled Lean `v4.35.0+` kernels
+        // (`con-leche` and `lean4lean --import`) directly inside `ExecSeal`
+        // for a four-independent-kernel quorum.
+        let paranoid_quorum = self.paranoid_quorum();
+        let paranoid_quorum_ms = if paranoid_quorum {
+            let t_pq = Instant::now();
+            if summary.sorry_used {
+                kernels_skipped.push(SkippedKernel {
+                    kernel: "con-leche".to_owned(),
+                    reason: "sorryAx_present_under_allow_sorry_in_proof".to_owned(),
+                });
+            } else {
+                self.run_ndjson_con_leche(&proof_path, &proof_ndjson_sha256)?;
+                kernels_passed.push("con-leche".to_owned());
+            }
+            self.run_ndjson_lean4lean(&proof_path, &proof_ndjson_sha256)?;
+            kernels_passed.push("lean4lean".to_owned());
+            t_pq.elapsed().as_millis() as u64
+        } else {
+            0
+        };
+
+        let (
+            leanexport_sha256,
+            nanoda_bin_sha256,
+            con_ron_sha256,
+            con_leche_sha256,
+            lean4lean_sha256,
+        ) = {
+            let tools = self.admitted()?.ndjson_tools.as_ref().ok_or_else(|| {
+                Failure::operational("ndjson-comparator", "NDJSON comparator binaries unavailable")
+            })?;
+            (
+                tools.leanexport_sha256.clone(),
+                tools.nanoda_bin_sha256.clone(),
+                tools.con_ron_sha256.clone(),
+                if paranoid_quorum && !summary.sorry_used {
+                    tools.con_leche_sha256.clone()
+                } else {
+                    None
+                },
+                if paranoid_quorum { tools.lean4lean_sha256.clone() } else { None },
+            )
+        };
+
+        let verdict = NdjsonAuditVerdict {
+            audit_mode: "ndjson_comparator".to_owned(),
+            theorem: request.theorem_name.clone(),
+            canonical_root: request.canonical_root.clone(),
+            subject: request.subject_declaration.clone(),
+            specification: request.specification_declaration.clone(),
+            graph: self.admitted()?.graph.clone(),
+            expected: request.expected_declaration.clone(),
+            axioms: summary.axioms,
+            sorry_declarations: summary.sorry_declarations,
+            replay: true,
+            exact_type: true,
+            replayed_declarations: summary.checked_declarations,
+            expected_cone_declarations: summary.expected_cone_declarations,
+            pinned_primitives_count: PINNED_INIT_PRIMITIVES.len(),
+            sysroot_pinned_declarations: summary.sysroot_pinned_declarations,
+            expected_cone_sha256,
+            proof_ndjson_sha256,
+            init_primitives_sha256: init_cached.sha256.clone(),
+            sysroot_pins_sha256,
+            leanexport_sha256,
+            nanoda_bin_sha256,
+            con_ron_sha256,
+            con_leche_sha256,
+            lean4lean_sha256,
+            kernels_passed,
+            kernels_skipped,
+            paranoid_quorum,
+            timing_ms: NdjsonTimingMs {
+                init_primitives: init_primitives_ms,
+                target_consts: target_consts_ms,
+                sysroot_pins: sysroot_pins_ms,
+                export_expected: export_expected_ms,
+                export_proof: export_proof_ms,
+                rust_compare: rust_compare_ms,
+                nanoda: nanoda_ms,
+                con_ron: con_ron_ms,
+                paranoid_quorum: paranoid_quorum_ms,
+                total: total_start.elapsed().as_millis() as u64,
+            },
+            subject_closure: summary.subject_closure,
+            model_closure: summary.model_closure,
+            specification_closure: summary.specification_closure,
+        };
+        validate_ndjson_verdict(
+            &verdict,
+            &request.theorem_name,
+            &request.canonical_root,
+            &request.subject_declaration,
+            &request.specification_declaration,
+            &request.expected_declaration,
+            request.allow_sorry_in_proof,
+        )?;
+        serde_json::to_value(&verdict)
+            .map_err(|e| Failure::operational("ndjson-comparator", e.to_string()))
+    }
+
+    /// Collect the exact constant inventory of every retained non-`Proof`
+    /// target module, plus the constants those modules mark with compiler
+    /// overrides (`@[implemented_by]`, `@[extern]`, `@[csimp]`), via
+    /// `SpecPreflight` `"target-consts"`, failing closed unless the response
+    /// covers exactly the requested modules.
+    ///
+    /// The request lists only the admitted foundation/library artifacts and
+    /// the compiled `Model`, `Capture`, `Specification`, and `Expected`
+    /// artifacts with each module's staged-header `isModule` expectation;
+    /// `invoke_inspector` copies those target `.olean`s into the sandbox
+    /// input directory, so `Proof` `.olean`s are never mounted.
+    pub(crate) fn collect_target_consts(
+        &mut self,
+        module_roles: &BTreeMap<String, TargetOriginRole>,
+        is_module: &BTreeMap<String, bool>,
+    ) -> Result<TargetConstIndex, Failure> {
+        let phase = "target-consts";
+        let req = {
+            let adm = self.admitted()?;
+            let in_scope = |m: &String| {
+                adm.foundation_graph.contains_key(m)
+                    || adm.library_modules.contains(m)
+                    || module_roles.contains_key(m)
+            };
+            let arts_arr: Vec<Json> = adm
+                .artifacts
+                .iter()
+                .filter(|(k, _)| in_scope(k))
+                .map(|(k, parts)| json!([k, parts.to_wire()]))
+                .collect();
+            let graph: BTreeMap<&str, &[ImportEdge]> = adm
+                .graph
+                .iter()
+                .filter(|(k, _)| in_scope(k))
+                .map(|(k, v)| (k.as_str(), v.as_slice()))
+                .collect();
+            let mut foundation: Vec<&str> =
+                adm.foundation_graph.keys().map(String::as_str).collect();
+            foundation.sort_unstable();
+            let libraries: Vec<&str> = adm.library_modules.iter().map(String::as_str).collect();
+            let mut targets = Vec::with_capacity(module_roles.len());
+            for m in module_roles.keys() {
+                let flag = is_module.get(m).copied().ok_or_else(|| {
+                    Failure::operational(phase, format!("missing isModule expectation for {m}"))
+                })?;
+                targets.push(json!([m, flag]));
+            }
+            json!({
+                "mode": phase,
+                "sysroot": adm.prefix.to_string_lossy(),
+                "artifacts": arts_arr,
+                "foundation": foundation,
+                "libraries": libraries,
+                "graph": graph,
+                "targets": targets,
+            })
+        };
+        let resp = self.invoke_inspector(phase, &req)?;
+        let entries = resp
+            .get("targetConsts")
+            .and_then(Json::as_array)
+            .ok_or_else(|| Failure::operational(phase, "missing targetConsts inventory"))?;
+        let mut seen_modules = BTreeSet::new();
+        let mut index = TargetConstIndex::default();
+        for entry in entries {
+            let malformed = || Failure::operational(phase, "malformed targetConsts entry");
+            let parts = entry.as_array().ok_or_else(malformed)?;
+            let [module, consts, paired_consts, override_consts] = parts.as_slice() else {
+                return Err(malformed());
+            };
+            let module = module.as_str().ok_or_else(malformed)?;
+            let &role = module_roles.get(module).ok_or_else(|| {
+                Failure::operational(phase, format!("unexpected targetConsts module {module}"))
+            })?;
+            if !seen_modules.insert(module.to_owned()) {
+                return Err(Failure::operational(
+                    phase,
+                    format!("duplicate targetConsts module {module}"),
+                ));
+            }
+            let str_set = |v: &Json| -> Result<BTreeSet<String>, Failure> {
+                v.as_array()
+                    .ok_or_else(malformed)?
+                    .iter()
+                    .map(|c| c.as_str().map(str::to_owned).ok_or_else(malformed))
+                    .collect()
+            };
+            let paired_set = str_set(paired_consts)?;
+            let listed = str_set(consts)?;
+            for encoded in &listed {
+                let origin = TargetConstOrigin {
+                    module: module.to_owned(),
+                    role,
+                    paired_unsafe_rec: paired_set.contains(encoded),
+                };
+                if index.origins.insert(encoded.clone(), origin).is_some() {
+                    return Err(Failure::operational(
+                        phase,
+                        format!("constant {encoded} listed by more than one target module"),
+                    ));
+                }
+            }
+            if !paired_set.is_subset(&listed) {
+                return Err(malformed());
+            }
+            index.compiler_overrides.extend(str_set(override_consts)?);
+        }
+        if seen_modules.len() != module_roles.len() {
+            return Err(Failure::operational(phase, "incomplete targetConsts inventory"));
+        }
+        Ok(index)
+    }
+
+    /// Test hook: run `"target-consts"` over this checker's compiled
+    /// artifacts for `roles` (non-`Proof` entries only) with explicit
+    /// `isModule` expectations.
+    #[doc(hidden)]
+    pub fn inspect_target_consts(
+        &mut self,
+        roles: &BTreeMap<String, TargetRole>,
+        is_module: &BTreeMap<String, bool>,
+    ) -> Result<InspectedTargetConsts, Failure> {
+        let module_roles: BTreeMap<String, TargetOriginRole> = roles
+            .iter()
+            .filter_map(|(m, role)| {
+                let origin = match role {
+                    TargetRole::Model => TargetOriginRole::Model,
+                    TargetRole::Capture => TargetOriginRole::Capture,
+                    TargetRole::Specification => TargetOriginRole::Specification,
+                    TargetRole::Expected => TargetOriginRole::Expected,
+                    TargetRole::Proof => return None,
+                };
+                Some((m.clone(), origin))
+            })
+            .collect();
+        let index = self.collect_target_consts(&module_roles, is_module)?;
+        let origins = index
+            .origins
+            .into_iter()
+            .map(|(name, o)| (name, (o.module, o.paired_unsafe_rec)))
+            .collect();
+        Ok((origins, index.compiler_overrides.into_iter().collect()))
+    }
+
+    /// Test hook: run every kernel the comparator route invokes on
+    /// `proof_ndjson` (`nanoda_bin` and `con-ron`, plus `con-leche` and
+    /// `lean4lean` under `--paranoid-quorum`), exactly as `"target-audit"`
+    /// invokes them after the Rust comparator, and return each kernel's
+    /// verdict.
+    #[doc(hidden)]
+    pub fn run_ndjson_kernels(
+        &mut self,
+        proof_ndjson: &Path,
+    ) -> Result<KernelVerdicts, Failure> {
+        let sha = sha256_file(proof_ndjson, "ndjson-kernels")?;
+        let mut verdicts = vec![
+            ("nanoda_bin", self.run_ndjson_nanoda(proof_ndjson, &sha, false)),
+            ("con-ron", self.run_ndjson_con_ron(proof_ndjson, &sha)),
+        ];
+        if self.paranoid_quorum() {
+            verdicts.push(("con-leche", self.run_ndjson_con_leche(proof_ndjson, &sha)));
+            verdicts.push(("lean4lean", self.run_ndjson_lean4lean(proof_ndjson, &sha)));
+        }
+        Ok(verdicts)
+    }
+
+    /// Test hook: run `"sysroot-consts"` (cached) over the admitted sysroot.
+    #[doc(hidden)]
+    pub fn inspect_sysroot_consts(&mut self) -> Result<BTreeMap<String, String>, Failure> {
+        Ok(self
+            .collect_sysroot_consts_cached()?
+            .iter()
+            .map(|(k, v)| (k.clone(), v.clone()))
+            .collect())
+    }
+}
+
+/// Fail closed unless the NDJSON export metadata names exactly the admitted
+/// toolchain's Lean version and 40-hex commit (`Lean (version <v>, ...,
+/// commit <hash>, ...)`).
+fn verify_export_meta_matches_toolchain(
+    meta: &crate::ndjson_comparator::ExportMeta,
+    toolchain_version: &str,
+) -> Result<(), Failure> {
+    let phase = "ndjson-comparator";
+    let unrecognized = || {
+        Failure::operational(
+            phase,
+            format!("unrecognized admitted toolchain version string `{toolchain_version}`"),
+        )
+    };
+    let after = toolchain_version.strip_prefix("Lean (version ").ok_or_else(unrecognized)?;
+    let reported_ver = after.split([',', ')']).next().unwrap_or("").trim();
+    if reported_ver.is_empty() {
+        return Err(unrecognized());
+    }
+    if reported_ver != meta.lean_version {
+        return Err(Failure::operational(
+            phase,
+            format!(
+                "NDJSON export Lean version `{}` differs from admitted toolchain `{reported_ver}`",
+                meta.lean_version
+            ),
+        ));
+    }
+    let commit_rest = after.split("commit ").nth(1).ok_or_else(unrecognized)?;
+    let reported_git = commit_rest.split([',', ')']).next().unwrap_or("").trim();
+    if reported_git.len() != 40 || !reported_git.bytes().all(|b| b.is_ascii_hexdigit()) {
+        return Err(unrecognized());
+    }
+    if !meta.lean_githash.eq_ignore_ascii_case(reported_git) {
+        return Err(Failure::operational(
+            phase,
+            format!(
+                "NDJSON export Lean commit `{}` differs from admitted toolchain `{reported_git}`",
+                meta.lean_githash
+            ),
+        ));
+    }
+    Ok(())
 }
 
 fn unpinned_sysroot_modules_sha256(adm: &AdmittedToolchain) -> Result<String, Failure> {
@@ -1751,6 +2304,8 @@ exit 4
             "Lake.DSL",
             "TrustedBoundary",
             "TrustedBoundary.Extra",
+            "SpecPreflight",
+            "SpecPreflight.Extra",
         ] {
             let mut shadowing = request.clone();
             shadowing.modules.push(TargetModule {
@@ -5681,5 +6236,34 @@ mod tests {
             ],
             &["Anneal.Unused", "Anneal.MirWp.Execution"],
         );
+    }
+
+    #[test]
+    fn export_meta_cross_check_fails_closed_on_unrecognized_versions() {
+        let commit = "eb6cafb7290e8bd5f2937522d8d804f58f02bafc";
+        let meta = crate::ndjson_comparator::ExportMeta {
+            exporter_name: "lean4export".to_owned(),
+            exporter_version: "3.1.0".to_owned(),
+            format_version: "3.1.0".to_owned(),
+            lean_version: "4.35.0".to_owned(),
+            lean_githash: commit.to_owned(),
+        };
+        let good = format!("Lean (version 4.35.0, x86_64-unknown-linux-gnu, commit {commit}, Release)");
+        verify_export_meta_matches_toolchain(&meta, &good).unwrap();
+        for bad in [
+            String::new(),
+            "4.35.0".to_owned(),
+            "Lean (version , commit eb6c)".to_owned(),
+            "Lean (version 4.35.0, x86_64-unknown-linux-gnu, Release)".to_owned(),
+            "Lean (version 4.35.0, x86_64-unknown-linux-gnu, commit eb6caf, Release)".to_owned(),
+            format!("Lean (version 4.35.1, x86_64-unknown-linux-gnu, commit {commit}, Release)"),
+            format!(
+                "Lean (version 4.35.0, x86_64-unknown-linux-gnu, commit {}, Release)",
+                "0".repeat(40)
+            ),
+        ] {
+            let err = verify_export_meta_matches_toolchain(&meta, &bad).unwrap_err();
+            assert_eq!(err.code, 2, "{bad}: {err}");
+        }
     }
 }

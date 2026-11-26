@@ -24,12 +24,33 @@ import Lean.Meta.MethodSpecs
 import Lean.Compiler.Old
 
 /-!
-# Trusted Boundary and Kernel Environment Inspector (`TrustedBoundary.lean`)
+# Offline Repository Audit & Legacy Target Inspector (`TrustedBoundary.lean`)
+
+Provides offline repository Pass 1 (`"preflight"`, `"audit"`), Pass 2
+`lean-miri` correspondence (`"vendor-headers"`, `"correspondence-preflight"`,
+`"correspondence-audit"`), and transitional legacy `v4.34.1` `"target-export"` /
+`"target-audit"`.
+
+When `cargo-anneal verify` runs on Lean `v4.35.0+` with
+`--allow-unpinned-lean` and the bundled comparator binaries, it does NOT
+compile or execute `TrustedBoundary.lean`. It uses
+`trusted/audit/SpecPreflight.lean` instead: the parser-only `"headers"`
+mode; `"spec-preflight"`, which parses specifications with the sysroot's
+parser tables and loads no target `.olean`; `"resolve-imports"`, which
+imports sysroot `.olean`s to emit their import graph; and `"sysroot-consts"`
+and `"target-consts"`, which import the admitted sysroot and the compiled
+`Model`, `Capture`, `Specification`, and `Expected` `.olean`s (never a
+`Proof` `.olean`) to build constant-to-module indices. These pair with the
+pure-Rust Universal NDJSON Comparator
+(`trusted/cargo-anneal/src/ndjson_comparator.rs`) backed by `nanoda_bin` and
+`con-ron`, so no Lean process produces the verdict. Every other run,
+including every pinned Lean `v4.34.1` run, uses the `"target-export"` /
+`"target-audit"` blocks below.
 
 Pinned to Lean 4.34.1, commit
 `leanprover/lean4@5045d0056413266e57c625dcd7c365b10e377c52`. `anneal-audit`
-(`trusted/audit/`) and `cargo-anneal verify` (`trusted/cargo-anneal/`) invoke
-this file across ten JSON IPC modes (`run` and `main`):
+(`trusted/audit/`) and legacy `v4.34.1` `cargo-anneal verify` invoke this file
+across ten JSON IPC modes (`run` and `main`):
 
 - **`"headers"` (target import discovery before elaboration):**
   Parses only module headers via `Parser.parseHeader`, reporting each module's
@@ -1523,6 +1544,22 @@ def forbiddenSpecModifierKinds : List Name := [
 def forbiddenSpecRootNamespaces : List Name :=
   `Lean :: forbiddenPureRootNamespaces
 
+/-- Top-level namespaces reserved for the Lean kernel, standard library,
+bundled model, and proof modules (`forbiddenSpecRootNamespaces` plus `Trusted`,
+`Anneal`, `Proof`, and every `reservedKernelRoots` root, including `Init` and
+`Std`). Target specifications may reference standard types (`Nat`, `String`,
+etc.) in terms, but may never open `namespace <Root>` or declare constants
+beneath them. -/
+def forbiddenSpecDeclRootNamespaces : List Name :=
+  forbiddenSpecRootNamespaces ++ [
+    `Trusted, `Anneal, `Proof, `Init, `Std,
+    `Nat, `String, `Char, `Bool, `Int, `Int8, `Int16, `Int32, `Int64, `ISize,
+    `UInt8, `UInt16, `UInt32, `UInt64, `USize, `BitVec, `Float, `Float32,
+    `ByteArray, `Subarray, `Array, `List, `Option, `Sum, `Prod, `Fin, `Subtype,
+    `Eq, `HEq, `Quot, `Classical, `LeanExport, `LeanIR, `Thunk, `Unit, `PUnit,
+    `Empty, `PEmpty, `True, `False, `And, `Or, `Not, `Iff, `Exists, `Sigma,
+    `PSigma, `Decidable, `Nonempty, `Ordering, `Rat, `Except, `EStateM, `StateM]
+
 /-- Identifier components forbidden anywhere in specification references,
 dot-projections, `open`, and `export` declarations (`autoParam` evaluates a
 stored `Lean.Syntax` tactic script during elaboration, bypassing syntactic
@@ -1865,6 +1902,16 @@ def rejectForbiddenSpecNamespace (how : String) (ns : Name) : IO Unit := do
   if isForbiddenPureNamespace ns (banLeanRoot := true) then
     fail s!"cannot {how} forbidden namespace {ns} in specification"
 
+/-- Reject `ns` whenever `rejectForbiddenSpecNamespace` rejects it (forbidden
+pure roots, `Lean`, and `forbiddenSysUvPrefixes` sub-scopes such as
+`Init.System` or `Internal.UV`), or when its root belongs to
+`forbiddenSpecDeclRootNamespaces`. Both checks strip a leading `_root_`. -/
+def rejectForbiddenSpecDeclNamespace (how : String) (ns : Name) : IO Unit := do
+  rejectForbiddenSpecNamespace how ns
+  let u := ns.replacePrefix rootNamespace .anonymous
+  if forbiddenSpecDeclRootNamespaces.contains u.getRoot then
+    fail s!"cannot {how} reserved namespace {ns} in specification"
+
 /-- Validate an `open` declaration node (`openSimple`, `openOnly`, `openHiding`,
 `openRenaming`, `openScoped`) against `forbiddenSpecRootNamespaces`, allowing
 `open System.Platform (numBits ...)` strictly for `allowedSystemPlatformDecls`,
@@ -2004,9 +2051,9 @@ def validateSpecExport (currNs : Name) (openDecls : List OpenDecl)
     else
       rejectForbiddenSpecNamespace "export" ns
 
-/-- Push `namespace`/`section` scopes for `"spec-preflight"`, rejecting any
-forbidden root namespace and activating scoped parser extensions when entering
-an existing `Init`/`Std` namespace. -/
+/-- Push `namespace`/`section` scopes for `"spec-preflight"`, rejecting every
+namespace refused by `rejectForbiddenSpecDeclNamespace` and activating scoped
+parser extensions when entering an existing (non-reserved) namespace. -/
 def pushSpecScopes (isNewNamespace : Bool) (header : Name)
     (parserEnv : Environment) (scopes : List ParseScope) :
     IO (Environment × List ParseScope) := do
@@ -2019,7 +2066,7 @@ def pushSpecScopes (isNewNamespace : Bool) (header : Name)
     let newNs := if isNewNamespace then Name.mkStr top.currNamespace seg
       else top.currNamespace
     if isNewNamespace then
-      rejectForbiddenSpecNamespace "enter" newNs
+      rejectForbiddenSpecDeclNamespace "enter" newNs
     let mut env := parserEnv.registerNamespace newNs
     env := Parser.parserExtension.pushScope env
     if isNewNamespace && parserEnv.isNamespace newNs then
@@ -2029,8 +2076,9 @@ def pushSpecScopes (isNewNamespace : Bool) (header : Name)
     return (env, newScope :: scopes)
   | _ => fail s!"invalid scope name {header}"
 
-/-- Check that every namespace prefix of declaration identifier `id` avoids
-`forbiddenSpecRootNamespaces` and register each prefix in `parserEnv`. -/
+/-- Check that declaration identifier `id` and every namespace prefix of `id`
+pass `rejectForbiddenSpecDeclNamespace`, and register each prefix in
+`parserEnv`. -/
 def checkSpecDeclNamespace (currNs : Name) (id : Name)
     (parserEnv : Environment) : IO Environment := do
   if (`_root_).isPrefixOf id then
@@ -2042,11 +2090,13 @@ def checkSpecDeclNamespace (currNs : Name) (id : Name)
     | .str p seg =>
       let (base, env) ← walkPrefix p env
       let full := Name.mkStr base seg
-      rejectForbiddenSpecNamespace "declare in" full
+      rejectForbiddenSpecDeclNamespace "declare in" full
       return (full, env.registerNamespace full)
     | _ => fail s!"invalid declaration namespace {id} in specification"
   match id with
-  | .str .anonymous _ => return parserEnv
+  | .str .anonymous seg =>
+    rejectForbiddenSpecDeclNamespace "declare" (Name.mkStr currNs seg)
+    return parserEnv
   | .str pre _ =>
     let (_, env) ← walkPrefix pre parserEnv
     return env

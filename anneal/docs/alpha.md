@@ -184,6 +184,12 @@ overflow panics, and vice versa.
 - **Specification modules:** Stay restricted to `Trusted.*`, `Init.*`/`Std.*`,
   and declared `specification` helpers.
 
+On Lean `v4.35.0+` toolchains bundling `leanexport`, `nanoda_bin`, and
+`con-ron` (with `--allow-unpinned-lean`), `cargo-anneal` verifies proofs via
+the out-of-process Universal NDJSON Comparator rather than in-process
+`.olean` replay; pass `--paranoid-quorum` to also cross-check with `con-leche`
+and `lean4lean`.
+
 Verify the stated compilation configuration in the receipt when comparing a
 result with a deployed binary. See the [threat model](../THREAT_MODEL.md) for
 the verification assumptions.

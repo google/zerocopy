@@ -126,7 +126,7 @@ anneal/
 │   ├── audit/                         # package = "anneal-audit"
 │   │   ├── Cargo.toml
 │   │   ├── TrustedBoundary.lean       # Offline Pass-1/Pass-2 audit & v4.34.1 fallback
-│   │   ├── SpecPreflight.lean         # Target (#4109): parser-only runtime preflight (v4.35.0+)
+│   │   ├── SpecPreflight.lean         # Target (#4109): runtime preflight + module index (v4.35.0+)
 │   │   ├── library-lock.json
 │   │   └── src/{lib,main,cli,cargo_boundary,miri_pin,repo_audit}.rs
 │   ├── cargo-anneal/                  # package = "cargo-anneal" (published CLI/lib)

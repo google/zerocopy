@@ -1069,6 +1069,10 @@ fn parse_success_receipt(
 
     let audit_obj = root.req_obj("audit")?;
     let mut audit = ObjectCursor::nested("/audit", audit_obj);
+    // The NDJSON comparator route (`auditMode == "ndjson_comparator"`) has no
+    // alternate-proof pass and records its export and kernel digests.
+    let ndjson_comparator =
+        audit_obj.get("auditMode").and_then(Value::as_str) == Some("ndjson_comparator");
     let theorem = audit.req_str("theorem")?.to_owned();
     let canonical_root = audit.req_str("canonicalRoot")?.to_owned();
     let subject = audit.req_str("subject")?.to_owned();
@@ -1080,7 +1084,11 @@ fn parse_success_receipt(
     let replay = audit.req_bool("replay")?;
     let exact_type = audit.req_bool("exactType")?;
     let replayed_declarations = audit.req_u64("replayedDeclarations")?;
-    let checked_alternate_proofs = audit.req_u64("checkedAlternateProofs")?;
+    let checked_alternate_proofs = if ndjson_comparator {
+        audit.opt_u64("checkedAlternateProofs")?.unwrap_or(0)
+    } else {
+        audit.req_u64("checkedAlternateProofs")?
+    };
     let subject_closure =
         parse_closure(audit.req_array("subjectClosure")?, "subjectClosure", unknown)?;
     let model_closure = parse_closure(audit.req_array("modelClosure")?, "modelClosure", unknown)?;
@@ -1212,7 +1220,7 @@ fn parse_success_receipt(
         }
     }
     let (has_kernels_skipped, kernels_skipped) = match audit.opt_array("kernelsSkipped")? {
-        Some(arr) => (true, parse_str_list(arr, "/audit/kernelsSkipped")?),
+        Some(arr) => (true, parse_skipped_kernels(arr, unknown, violations)?),
         None => (false, Vec::new()),
     };
     for (i, k) in kernels_skipped.iter().enumerate() {
@@ -1261,6 +1269,15 @@ fn parse_success_receipt(
                 ));
             }
         }
+    }
+    if ndjson_comparator {
+        let kernels = NdjsonKernelFacts {
+            passed: &kernels_passed,
+            skipped: &kernels_skipped,
+            paranoid_quorum,
+            sorry_used: uses_sorry_ax,
+        };
+        parse_ndjson_comparator_audit(&mut audit, &kernels, unknown, violations)?;
     }
     for extra in ["moduleIdentities", "toolchain"] {
         audit.mark_visited(extra);
@@ -2010,6 +2027,161 @@ fn check_unstable_features_envelope(
                 .into(),
         );
     }
+}
+
+/// Parse `audit.kernelsSkipped`: each entry names a skipped kernel, either as
+/// a string or, as the NDJSON comparator records it, as `{kernel, reason}`
+/// with a non-empty reason.
+fn parse_skipped_kernels(
+    arr: &[Value],
+    unknown: &mut Vec<String>,
+    violations: &mut Vec<String>,
+) -> Result<Vec<String>, String> {
+    let mut kernels = Vec::with_capacity(arr.len());
+    for (i, val) in arr.iter().enumerate() {
+        let ptr = format!("/audit/kernelsSkipped/{i}");
+        match val {
+            Value::String(kernel) => kernels.push(kernel.clone()),
+            Value::Object(obj) => {
+                let mut entry = ObjectCursor::nested(&ptr, obj);
+                let kernel = entry.req_str("kernel")?.to_owned();
+                let reason = entry.req_str("reason")?;
+                if reason.trim().is_empty() {
+                    violations.push(format!("field `{ptr}/reason` must be a non-empty string"));
+                }
+                entry.collect_unrecognized(unknown);
+                kernels.push(kernel);
+            }
+            _ => return Err(format!("element `{ptr}` must be a string or an object")),
+        }
+    }
+    Ok(kernels)
+}
+
+/// Number of pinned `Init` primitives the NDJSON comparator exports and
+/// checks (`ndjson_comparator::PINNED_INIT_PRIMITIVES`).
+pub(crate) const NDJSON_PINNED_PRIMITIVE_COUNT: u64 = 39;
+
+/// Phase timings, in milliseconds, of an NDJSON comparator run.
+const NDJSON_TIMING_FIELDS: &[&str] = &[
+    "initPrimitives",
+    "targetConsts",
+    "sysrootPins",
+    "exportExpected",
+    "exportProof",
+    "rustCompare",
+    "nanoda",
+    "conRon",
+    "paranoidQuorum",
+    "total",
+];
+
+/// The kernels an NDJSON comparator receipt records, as already parsed.
+struct NdjsonKernelFacts<'a> {
+    passed: &'a [String],
+    skipped: &'a [String],
+    paranoid_quorum: Option<bool>,
+    sorry_used: bool,
+}
+
+/// Validate the fields only the NDJSON comparator route records (its export
+/// and declaration counts, the SHA-256 digests of its exports and of the
+/// comparator and kernel binaries, and its phase timings) and the invariants
+/// `validate_ndjson_verdict` enforces when emitting them: all pinned
+/// primitives checked; `nanoda_bin` passed, and `con-ron` too unless the
+/// proof uses `sorryAx`; under `paranoidQuorum`, `lean4lean` (and, without
+/// `sorryAx`, `con-leche`) passed with their digests, and neither otherwise;
+/// and no kernel both passed and skipped.
+fn parse_ndjson_comparator_audit(
+    audit: &mut ObjectCursor<'_>,
+    kernels: &NdjsonKernelFacts<'_>,
+    unknown: &mut Vec<String>,
+    violations: &mut Vec<String>,
+) -> Result<(), String> {
+    let expected_cone_declarations = audit.req_u64("expectedConeDeclarations")?;
+    let pinned_primitives_count = audit.req_u64("pinnedPrimitivesCount")?;
+    audit.req_u64("sysrootPinnedDeclarations")?;
+    if expected_cone_declarations == 0 {
+        violations.push("audit.expectedConeDeclarations must be >= 1".into());
+    }
+    if pinned_primitives_count != NDJSON_PINNED_PRIMITIVE_COUNT {
+        violations.push(format!(
+            "audit.pinnedPrimitivesCount must be {NDJSON_PINNED_PRIMITIVE_COUNT}, got \
+             {pinned_primitives_count}"
+        ));
+    }
+    for key in [
+        "expectedConeSha256",
+        "proofNdjsonSha256",
+        "initPrimitivesSha256",
+        "sysrootPinsSha256",
+        "leanexportSha256",
+        "nanodaBinSha256",
+        "conRonSha256",
+    ] {
+        req_sha256(audit, key, violations)?;
+    }
+    let mut quorum_digests = [false; 2];
+    for (present, key) in quorum_digests.iter_mut().zip(["conLecheSha256", "lean4leanSha256"]) {
+        let ptr = audit.child_pointer(key);
+        if let Some(hex) = audit.opt_str(key)? {
+            *present = true;
+            if !is_sha256_hex(hex) {
+                violations.push(format!(
+                    "field `{ptr}` must be a 64-character SHA-256 hex digest, got `{hex}`"
+                ));
+            }
+        }
+    }
+    let [con_leche_digest, lean4lean_digest] = quorum_digests;
+
+    let timing_obj = audit.req_obj("timingMs")?;
+    let mut timing = ObjectCursor::nested("/audit/timingMs", timing_obj);
+    for &key in NDJSON_TIMING_FIELDS {
+        timing.req_u64(key)?;
+    }
+    timing.collect_unrecognized(unknown);
+
+    let passed = |k: &str| kernels.passed.iter().any(|p| p == k);
+    for (i, k) in kernels.passed.iter().chain(kernels.skipped).enumerate() {
+        if !["nanoda_bin", "con-ron", "con-leche", "lean4lean"].contains(&k.as_str()) {
+            violations.push(format!("unknown NDJSON comparator kernel `{k}`"));
+        }
+        if kernels.passed.iter().chain(kernels.skipped).take(i).any(|p| p == k) {
+            violations.push(format!("kernel `{k}` is recorded more than once"));
+        }
+    }
+    if !passed("nanoda_bin") {
+        violations.push("NDJSON comparator receipt lacks a passing `nanoda_bin`".into());
+    }
+    if !kernels.sorry_used && !passed("con-ron") {
+        violations.push("NDJSON comparator receipt lacks a passing `con-ron`".into());
+    }
+    match kernels.paranoid_quorum {
+        None => violations.push("NDJSON comparator receipt lacks `audit.paranoidQuorum`".into()),
+        Some(true) => {
+            if !passed("lean4lean") || !lean4lean_digest {
+                violations
+                    .push("`paranoidQuorum` requires a passing `lean4lean` and its digest".into());
+            }
+            if !kernels.sorry_used && (!passed("con-leche") || !con_leche_digest) {
+                violations
+                    .push("`paranoidQuorum` requires a passing `con-leche` and its digest".into());
+            }
+        }
+        Some(false) => {
+            let recorded = |k: &str| passed(k) || kernels.skipped.iter().any(|s| s == k);
+            if recorded("con-leche")
+                || recorded("lean4lean")
+                || con_leche_digest
+                || lean4lean_digest
+            {
+                violations
+                    .push("quorum kernels or digests are recorded without `paranoidQuorum`".into());
+            }
+        }
+    }
+    Ok(())
 }
 
 fn parse_str_list(arr: &[Value], ptr: &str) -> Result<Vec<String>, String> {
@@ -3410,6 +3582,187 @@ pub(crate) mod tests {
             "{:?}",
             env.invariant_violations
         );
+    }
+
+    /// A passing receipt as the NDJSON comparator route emits it.
+    pub fn sample_ndjson_success_json() -> Value {
+        let mut r = sample_success_json();
+        let audit = r["audit"].as_object_mut().unwrap();
+        audit.remove("checkedAlternateProofs");
+        let h = "b".repeat(64);
+        for (key, val) in [
+            ("auditMode", json!("ndjson_comparator")),
+            ("kernelsPassed", json!(["nanoda_bin", "con-ron"])),
+            ("paranoidQuorum", json!(false)),
+            ("expectedConeDeclarations", json!(5)),
+            ("pinnedPrimitivesCount", json!(39)),
+            ("sysrootPinnedDeclarations", json!(7)),
+            ("expectedConeSha256", json!(h)),
+            ("proofNdjsonSha256", json!(h)),
+            ("initPrimitivesSha256", json!(h)),
+            ("sysrootPinsSha256", json!(h)),
+            ("leanexportSha256", json!(h)),
+            ("nanodaBinSha256", json!(h)),
+            ("conRonSha256", json!(h)),
+            (
+                "timingMs",
+                json!({
+                    "initPrimitives": 1, "targetConsts": 1, "sysrootPins": 1,
+                    "exportExpected": 1, "exportProof": 1, "rustCompare": 1,
+                    "nanoda": 1, "conRon": 1, "paranoidQuorum": 0, "total": 9
+                }),
+            ),
+        ] {
+            audit.insert(key.to_owned(), val);
+        }
+        r
+    }
+
+    #[test]
+    fn accepts_ndjson_comparator_receipts_and_validates_their_fields() {
+        let deny =
+            PolicyRequirements { unknown_fields: UnknownFieldsPolicy::Deny, ..Default::default() };
+        let parse =
+            |v: &Value| parse_and_validate_receipt(&serde_json::to_vec(v).unwrap()).unwrap();
+
+        let good = sample_ndjson_success_json();
+        let env = parse(&good);
+        assert!(env.invariant_violations.is_empty(), "{:?}", env.invariant_violations);
+        assert!(env.unrecognized_fields.is_empty(), "{:?}", env.unrecognized_fields);
+        assert!(env.evaluate_policy(&deny).is_empty(), "{:?}", env.evaluate_policy(&deny));
+        let ParsedReceipt::Success(s) = &env.receipt else { panic!("expected success") };
+        assert_eq!(s.checked_alternate_proofs, 0);
+
+        // A `--paranoid-quorum` receipt records all four kernels and both
+        // quorum digests.
+        let mut quorum = good.clone();
+        quorum["audit"]["paranoidQuorum"] = json!(true);
+        quorum["audit"]["kernelsPassed"] =
+            json!(["nanoda_bin", "con-ron", "con-leche", "lean4lean"]);
+        quorum["audit"]["conLecheSha256"] = json!("c".repeat(64));
+        quorum["audit"]["lean4leanSha256"] = json!("d".repeat(64));
+        let env = parse(&quorum);
+        assert!(env.invariant_violations.is_empty(), "{:?}", env.invariant_violations);
+        assert!(env.evaluate_policy(&deny).is_empty(), "{:?}", env.evaluate_policy(&deny));
+
+        // A `sorryAx` receipt skips `con-ron`, recorded as `{kernel, reason}`.
+        let mut sorry = good.clone();
+        sorry["status"] = json!("tainted_crate_verified");
+        sorry["taint_reasons"] = json!(["sorry_in_proof"]);
+        sorry["sorry_declarations"] = json!(["Proof.hole"]);
+        sorry["audit"]["axioms"] = json!(["propext", "sorryAx"]);
+        sorry["audit"]["sorryDeclarations"] = json!(["Proof.hole"]);
+        sorry["audit"]["kernelsPassed"] = json!(["nanoda_bin"]);
+        sorry["audit"]["kernelsSkipped"] =
+            json!([{"kernel": "con-ron", "reason": "sorryAx is not admitted"}]);
+        let env = parse(&sorry);
+        assert!(env.invariant_violations.is_empty(), "{:?}", env.invariant_violations);
+        assert!(env.unrecognized_fields.is_empty(), "{:?}", env.unrecognized_fields);
+        let ParsedReceipt::Success(s) = &env.receipt else { panic!("expected success") };
+        assert_eq!(s.kernels_skipped, ["con-ron"]);
+
+        // A `--paranoid-quorum` `sorryAx` receipt skips `con-ron` and
+        // `con-leche` and records only `lean4lean`'s quorum digest.
+        let mut quorum_sorry = sorry.clone();
+        quorum_sorry["audit"]["paranoidQuorum"] = json!(true);
+        quorum_sorry["audit"]["kernelsPassed"] = json!(["nanoda_bin", "lean4lean"]);
+        quorum_sorry["audit"]["kernelsSkipped"] = json!([
+            {"kernel": "con-ron", "reason": "sorryAx is not admitted"},
+            {"kernel": "con-leche", "reason": "sorryAx is not admitted"}
+        ]);
+        quorum_sorry["audit"]["lean4leanSha256"] = json!("d".repeat(64));
+        let env = parse(&quorum_sorry);
+        assert!(env.invariant_violations.is_empty(), "{:?}", env.invariant_violations);
+
+        // Receipts `validate_ndjson_verdict` never emits are violations.
+        let edit = |f: &dyn Fn(&mut Value)| {
+            let mut r = good.clone();
+            f(&mut r["audit"]);
+            parse(&r).invariant_violations
+        };
+        for (needle, violations) in [
+            ("pinnedPrimitivesCount must be 39", edit(&|a| a["pinnedPrimitivesCount"] = json!(0))),
+            (
+                "expectedConeDeclarations must be >= 1",
+                edit(&|a| a["expectedConeDeclarations"] = json!(0)),
+            ),
+            ("lacks a passing `con-ron`", edit(&|a| a["kernelsPassed"] = json!(["nanoda_bin"]))),
+            ("lacks a passing `nanoda_bin`", edit(&|a| a["kernelsPassed"] = json!(["con-ron"]))),
+            (
+                "recorded more than once",
+                edit(&|a| a["kernelsSkipped"] = json!([{"kernel": "con-ron", "reason": "r"}])),
+            ),
+            (
+                "unknown NDJSON comparator kernel",
+                edit(&|a| a["kernelsPassed"] = json!(["nanoda_bin", "con-ron", "x"])),
+            ),
+            ("requires a passing `lean4lean`", edit(&|a| a["paranoidQuorum"] = json!(true))),
+            ("without `paranoidQuorum`", edit(&|a| a["conLecheSha256"] = json!("c".repeat(64)))),
+            (
+                "without `paranoidQuorum`",
+                edit(&|a| a["kernelsSkipped"] = json!([{"kernel": "lean4lean", "reason": "r"}])),
+            ),
+            (
+                "lacks `audit.paranoidQuorum`",
+                edit(&|a| {
+                    a.as_object_mut().unwrap().remove("paranoidQuorum");
+                }),
+            ),
+        ] {
+            assert!(violations.iter().any(|v| v.contains(needle)), "{needle}: {violations:?}");
+        }
+
+        // `timingMs` is a fixed schema: an extra key is unrecognized and a
+        // missing or non-integer timing is an error.
+        let mut extra_timing = good.clone();
+        extra_timing["audit"]["timingMs"]["extra"] = json!(1);
+        let env = parse(&extra_timing);
+        assert_eq!(env.unrecognized_fields, ["/audit/timingMs/extra"]);
+        assert!(!env.evaluate_policy(&deny).is_empty());
+        for bad_timing in [json!({"total": 1}), json!(null)] {
+            let mut r = good.clone();
+            r["audit"]["timingMs"] = bad_timing;
+            assert!(parse_and_validate_receipt(&serde_json::to_vec(&r).unwrap()).is_err());
+        }
+
+        // Malformed digests and skipped-kernel entries are violations, and
+        // unknown skipped-kernel keys are unrecognized.
+        let mut bad = sorry.clone();
+        bad["audit"]["proofNdjsonSha256"] = json!("xyz");
+        bad["audit"]["kernelsSkipped"] = json!([{"kernel": "con-ron", "reason": " ", "x": 1}]);
+        let env = parse(&bad);
+        for needle in ["/audit/proofNdjsonSha256", "/reason"] {
+            assert!(
+                env.invariant_violations.iter().any(|v| v.contains(needle)),
+                "{needle}: {:?}",
+                env.invariant_violations
+            );
+        }
+        assert_eq!(env.unrecognized_fields, ["/audit/kernelsSkipped/0/x"]);
+        let mut bad_quorum = quorum.clone();
+        bad_quorum["audit"]["lean4leanSha256"] = json!("");
+        let env = parse(&bad_quorum);
+        assert!(
+            env.invariant_violations.iter().any(|v| v.contains("/audit/lean4leanSha256")),
+            "{:?}",
+            env.invariant_violations
+        );
+        let mut missing = good.clone();
+        missing["audit"].as_object_mut().unwrap().remove("conRonSha256");
+        assert!(parse_and_validate_receipt(&serde_json::to_vec(&missing).unwrap()).is_err());
+        let mut non_string = good.clone();
+        non_string["audit"]["kernelsSkipped"] = json!([1]);
+        assert!(parse_and_validate_receipt(&serde_json::to_vec(&non_string).unwrap()).is_err());
+
+        // Without `auditMode == "ndjson_comparator"`, `checkedAlternateProofs`
+        // stays required and the comparator fields are unrecognized.
+        let mut other_mode = good.clone();
+        other_mode["audit"]["auditMode"] = json!("strict");
+        assert!(parse_and_validate_receipt(&serde_json::to_vec(&other_mode).unwrap()).is_err());
+        other_mode["audit"]["checkedAlternateProofs"] = json!(0);
+        let env = parse(&other_mode);
+        assert!(env.unrecognized_fields.contains(&"/audit/proofNdjsonSha256".to_owned()));
+        assert!(!env.evaluate_policy(&deny).is_empty());
     }
 
     #[test]

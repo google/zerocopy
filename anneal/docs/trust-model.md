@@ -385,10 +385,13 @@ opted in with `--allow-unpinned-lean`), enforces pre-elaboration declarative
 `trusted/lean/` module trust tiers (`vetted -/-> candidate:*`) and records
 reached `"candidate_features"` from `modelClosure` in Receipt v3, promotes
 single-file `.olean` outputs through Door 1 with pre-audit `ArtifactLedger`
-hashing, and runs two-phase standalone `"target-audit"` kernel replay against
-the bound obligation. On Linux, target Lean preflight, compilation, and audit
-run inside `ExecSeal` (`linux_bwrap` or `linux_landlock_seccomp`, failing closed
-unless `--allow-unsandboxed-elaboration` is explicitly passed with Receipt v3
+hashing, and checks the bound obligation with two-phase standalone
+`"target-audit"` kernel replay or, on `--allow-unpinned-lean` runs whose
+sysroot bundles the comparator binaries, with the NDJSON comparator and its
+external kernels ([auditing-and-comparator.md](auditing-and-comparator.md)).
+On Linux, target Lean preflight, compilation, and audit run inside `ExecSeal`
+(`linux_bwrap` or `linux_landlock_seccomp`, failing closed unless
+`--allow-unsandboxed-elaboration` is explicitly passed with Receipt v3
 taint), while Repository Pass 2 requires `linux_bwrap` and CI release validation
 executes on `x86_64-unknown-linux-gnu` (non-Linux platforms such as Darwin are
 cross-evaluated in `flake.nix` and lack physical macOS runner execution); Rust
