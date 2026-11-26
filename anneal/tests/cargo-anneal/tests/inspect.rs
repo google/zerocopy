@@ -2183,3 +2183,87 @@ fn verify_artifacts_supports_sharded_proof_id_tree_and_capture_shards_json() {
         String::from_utf8_lossy(&split_out.stdout)
     );
 }
+
+#[test]
+fn allowed_unstable_features_gate_admits_only_the_exact_feature_taint() {
+    let tmp = tempfile::tempdir().unwrap();
+    let (clean, ..) = sample_receipt_bundle(&tmp.path().join("artifacts"));
+    let clean_path = tmp.path().join("clean.json");
+    fs::write(&clean_path, serde_json::to_vec(&clean).unwrap()).unwrap();
+
+    let mut tainted = clean.clone();
+    tainted["status"] = json!("tainted_crate_verified");
+    tainted["taint_reasons"] = json!(["unmodeled_unstable_features"]);
+    tainted["unstable_features"] = json!({
+        "allowed": ["doc_cfg", "specialization"],
+        "observed": ["specialization"],
+        "incomplete_observed": ["specialization"],
+    });
+    tainted["configuration"]["allowed_unstable_features"] = json!(["doc_cfg", "specialization"]);
+    tainted["configuration"]["observed_unstable_features"] = json!(["specialization"]);
+    tainted["configuration"]["incomplete_observed_unstable_features"] = json!(["specialization"]);
+    tainted["assumptions"].as_array_mut().unwrap().push(json!(
+        "unmodeled unstable rustc features allowed by operator (see unstable_features); \
+         non-interference with captured MIR semantics is unverified"
+    ));
+    let path = tmp.path().join("tainted.json");
+    fs::write(&path, serde_json::to_vec(&tainted).unwrap()).unwrap();
+    let p = path.to_str().unwrap();
+
+    let code = |args: &[&str]| run_inspect(args, None).status.code();
+    // Bare validation rejects every tainted receipt.
+    assert_eq!(code(&[p]), Some(1));
+    // The exact feature set (or a superset) admits it, alongside other gates.
+    assert_eq!(
+        code(&[
+            p,
+            "--allowed-unstable-features",
+            "doc_cfg,specialization",
+            "--require-containment"
+        ]),
+        Some(0)
+    );
+    assert_eq!(
+        code(&[
+            p,
+            "--allowed-unstable-features",
+            "allocator_api",
+            "--allowed-unstable-features",
+            "doc_cfg,specialization",
+        ]),
+        Some(0)
+    );
+    // Drift outside the locked set, or any incomplete feature under
+    // `--forbid-incomplete-unstable-features`, fails.
+    assert_eq!(code(&[p, "--allowed-unstable-features", "specialization"]), Some(1));
+    assert_eq!(
+        code(&[
+            p,
+            "--allowed-unstable-features",
+            "doc_cfg,specialization",
+            "--forbid-incomplete-unstable-features",
+        ]),
+        Some(1)
+    );
+    // Clean receipts pass the gate unchanged.
+    assert_eq!(
+        code(&[clean_path.to_str().unwrap(), "--allowed-unstable-features", "doc_cfg"]),
+        Some(0)
+    );
+
+    // Malformed names and contradictory gates are usage errors.
+    for bad in [
+        vec![p, "--allowed-unstable-features", "*"],
+        vec![p, "--allowed-unstable-features", "doc_cfg", "--require-untainted"],
+        vec![p, "--allowed-unstable-features", "doc_cfg", "--passive"],
+        vec![p, "--forbid-incomplete-unstable-features", "--passive"],
+    ] {
+        assert_eq!(code(&bad), Some(2), "{bad:?}");
+    }
+
+    // A clean-to-tainted diff is a Tier A regression.
+    let diff = run_inspect(&["--diff", clean_path.to_str().unwrap(), p, "--no-regressions"], None);
+    assert_eq!(diff.status.code(), Some(1), "{diff:?}");
+    let stdout = String::from_utf8_lossy(&diff.stdout);
+    assert!(stdout.contains("unstable_features.allowed"), "{stdout}");
+}

@@ -164,6 +164,8 @@ pub struct InspectArgs {
             "require_containment",
             "require_kernel_replay",
             "allowed_axioms",
+            "allowed_unstable_features",
+            "forbid_incomplete_unstable_features",
             "require_exact_artifacts",
             "no_regressions",
             "require_unchanged_specs",
@@ -189,6 +191,20 @@ pub struct InspectArgs {
     /// Comma-separated axiom names permitted in `audit.axioms`.
     #[arg(long, value_delimiter = ',', value_name = "AXIOM", conflicts_with = "diff")]
     pub allowed_axioms: Option<Vec<String>>,
+    /// Comma-separated unstable features a tainted receipt may allow and
+    /// observe. Admits the `unmodeled_unstable_features` taint and no other.
+    #[arg(
+        long,
+        value_delimiter = ',',
+        value_name = "FEATURE",
+        value_parser = parse_feature_name_arg,
+        conflicts_with_all = ["diff", "require_untainted"]
+    )]
+    pub allowed_unstable_features: Option<Vec<String>>,
+    /// Exit `1` if the receipt enables any unstable feature that `rustc`
+    /// marks incomplete.
+    #[arg(long, conflicts_with = "diff")]
+    pub forbid_incomplete_unstable_features: bool,
     /// Exit `1` on any Tier A assurance regression between `--diff` receipts.
     #[arg(long, requires = "diff")]
     pub no_regressions: bool,
@@ -196,6 +212,14 @@ pub struct InspectArgs {
     /// `1` when any Tier A regression is detected.
     #[arg(long, requires = "diff")]
     pub require_unchanged_specs: bool,
+}
+
+fn parse_feature_name_arg(raw: &str) -> Result<String, String> {
+    if crate::core::identifiers::is_feature_name(raw) {
+        Ok(raw.to_owned())
+    } else {
+        Err(format!("invalid feature name {raw:?}: expected [a-z][a-z0-9_]*"))
+    }
 }
 
 impl InspectArgs {
@@ -343,6 +367,11 @@ fn run(
         require_containment: args.require_containment,
         require_kernel_replay: args.require_kernel_replay,
         allowed_axioms: args.allowed_axioms.as_ref().map(|list| list.iter().cloned().collect()),
+        allowed_unstable_features: args
+            .allowed_unstable_features
+            .as_ref()
+            .map(|list| list.iter().cloned().collect()),
+        forbid_incomplete_unstable_features: args.forbid_incomplete_unstable_features,
         unknown_fields: unknown_policy,
     };
     let mut policy_violations = env.evaluate_policy(&policy);

@@ -22,9 +22,11 @@
 //! 3. `CallSource::Use` / `#![feature(ergonomic_clones)]` fail-closed refusal
 //!    (generalizing `#4083`).
 //! 4. Closed positive `#![feature(...)]` allowlist (empty `[]` for normal
-//!    crates across lang, lib, and `ACCEPTED_LANG_FEATURES`, while preserving
-//!    inactive `#![cfg_attr(..., feature(...))]` lines other than
-//!    `rustc_private`, such as `zerocopy`'s).
+//!    crates across unstable lang and lib features unless named by
+//!    `--allow-unstable-feature`, with a non-overridable hard-ban floor;
+//!    already-stabilized `ACCEPTED_LANG_FEATURES` are admitted and recorded,
+//!    and inactive `#![cfg_attr(..., feature(...))]` lines other than
+//!    `rustc_private`, such as `zerocopy`'s, are preserved).
 //! 5. `debug_assert!` erasure under `-Cdebug-assertions=no` (even when
 //!    `--overflow-checks` is enabled) and general `cfg(miri)` refusal across
 //!    all crates.
@@ -44,7 +46,7 @@ use std::{
     process::{Command, Output},
 };
 
-use serde_json::Value;
+use serde_json::{Value, json};
 
 const NO_CORE_STUB: &str = r#"#![feature(no_core, lang_items)]
 #![no_core]
@@ -359,14 +361,14 @@ fn seam_3_ergonomic_clones_and_call_source_use_refused() {
 }
 
 /// Seam 4: Closed positive `#![feature(...)]` allowlist (empty `[]` for normal
-/// crates) rejects unstable lang features, unstable lib features, and
-/// `ACCEPTED_LANG_FEATURES` (`doc_alias`), while preserving `zerocopy`-style
+/// crates) rejects unstable lang and lib features, admits and records
+/// `ACCEPTED_LANG_FEATURES` (`doc_alias`), and preserves `zerocopy`-style
 /// inactive `#![cfg_attr(..., feature(...))]` lines until activated.
 #[test]
 fn seam_4_positive_feature_allowlist_and_accepted_features() {
     // Disallowed unstable lang features (including `f16`), unstable lib
-    // features (`core_intrinsics`, `ptr_metadata`, `const_eval_select`),
-    // `doc_cfg`, and `ACCEPTED_LANG_FEATURES` (`doc_alias`).
+    // features (`core_intrinsics`, `ptr_metadata`, `const_eval_select`), and
+    // `doc_cfg`.
     let rejected_features: &[(&str, &str)] = &[
         (
             "rustc_attrs",
@@ -395,14 +397,6 @@ fn seam_4_positive_feature_allowlist_and_accepted_features() {
             "const_eval_select",
             "#![feature(const_eval_select)]\npub fn selected(x: u64) -> u64 { x }\n",
         ),
-        // Already-stabilized `ACCEPTED_LANG_FEATURES` (skipped by
-        // `-Zallow-features=`, closed by Anneal's pre-expansion and
-        // `tcx.features()` gates).
-        ("doc_alias", "#![feature(doc_alias)]\npub fn selected(x: u64) -> u64 { x }\n"),
-        (
-            "doc_alias",
-            "#![cfg_attr(all(), feature(doc_alias))]\npub fn selected(x: u64) -> u64 { x }\n",
-        ),
     ];
 
     for (feature, src) in rejected_features {
@@ -425,6 +419,27 @@ fn seam_4_positive_feature_allowlist_and_accepted_features() {
         "unsupported",
         "must list feature identifiers",
     );
+
+    // Already-stabilized `ACCEPTED_LANG_FEATURES` (which `-Zallow-features=`
+    // skips) activate nothing unstable: capture admits them untainted and
+    // records them, directly or through an active `cfg_attr`.
+    for src in [
+        "#![feature(doc_alias)]\npub fn selected(x: u64) -> u64 { x }\n",
+        "#![cfg_attr(all(), feature(doc_alias))]\npub fn selected(x: u64) -> u64 { x }\n",
+    ] {
+        let fixture = Capture::new(src.as_bytes());
+        let out = fixture.selected_command().output().expect("capture accepted feature");
+        assert!(out.status.success(), "{src}: {out:?}");
+        let configuration = &fixture.manifest()["configuration"];
+        assert_eq!(configuration["stabilized_features_present"], json!(["doc_alias"]), "{src}");
+        for key in [
+            "allowed_unstable_features",
+            "observed_unstable_features",
+            "incomplete_observed_unstable_features",
+        ] {
+            assert!(configuration.get(key).is_none(), "{src}: unexpected {key}");
+        }
+    }
 
     // Positive control mirroring `zerocopy/src/lib.rs:318-325`: inactive
     // `#![cfg_attr(..., feature(...))]` declarations stay admitted under
@@ -470,6 +485,118 @@ fn seam_4_positive_feature_allowlist_and_accepted_features() {
         "unsupported",
         "f128, f16",
     );
+}
+
+/// Seam 4b: `--allow-unstable-feature` admits exactly the named unstable
+/// features (recording what the operator allowed, what the crate enabled, and
+/// which enabled features `rustc` marks incomplete), never the hard-ban floor,
+/// and keeps `-Zallow-features` enforcing the allowlist under active
+/// `cfg_attr`.
+#[test]
+fn seam_4b_operator_allowed_unstable_features() {
+    let selected = "pub fn selected(x: u64) -> u64 { x }\n";
+
+    // Allowed and enabled: recorded as allowed and observed.
+    let doc_cfg = Capture::new(format!("#![feature(doc_cfg)]\n{selected}").as_bytes());
+    let out = doc_cfg
+        .selected_command()
+        .arg("--allow-unstable-feature=doc_cfg")
+        .output()
+        .expect("capture allowed doc_cfg");
+    assert!(out.status.success(), "{out:?}");
+    let configuration = &doc_cfg.manifest()["configuration"];
+    assert_eq!(configuration["allowed_unstable_features"], json!(["doc_cfg"]));
+    assert_eq!(configuration["observed_unstable_features"], json!(["doc_cfg"]));
+    assert!(configuration.get("incomplete_observed_unstable_features").is_none());
+    assert!(configuration.get("stabilized_features_present").is_none());
+
+    // Allowed but unused: recorded as allowed only. Repeated and
+    // comma-separated flags normalize to one sorted list.
+    let unused = Capture::new(selected.as_bytes());
+    let out = unused
+        .selected_command()
+        .arg("--allow-unstable-feature=doc_cfg,allocator_api")
+        .arg("--allow-unstable-feature")
+        .arg("doc_cfg")
+        .output()
+        .expect("capture unused allowlist");
+    assert!(out.status.success(), "{out:?}");
+    let configuration = &unused.manifest()["configuration"];
+    assert_eq!(configuration["allowed_unstable_features"], json!(["allocator_api", "doc_cfg"]));
+    assert!(configuration.get("observed_unstable_features").is_none());
+
+    // Incomplete features stay admissible but are flagged.
+    let incomplete = Capture::new(format!("#![feature(specialization)]\n{selected}").as_bytes());
+    let out = incomplete
+        .selected_command()
+        .arg("--allow-unstable-feature=specialization")
+        .output()
+        .expect("capture allowed specialization");
+    assert!(out.status.success(), "{out:?}");
+    let configuration = &incomplete.manifest()["configuration"];
+    assert_eq!(configuration["observed_unstable_features"], json!(["specialization"]));
+    assert_eq!(configuration["incomplete_observed_unstable_features"], json!(["specialization"]));
+
+    // Naming an already-stabilized feature is harmless: it is allowed but
+    // never observed, and the attribute is recorded as stabilized.
+    let stabilized = Capture::new(format!("#![feature(doc_alias)]\n{selected}").as_bytes());
+    let out = stabilized
+        .selected_command()
+        .arg("--allow-unstable-feature=doc_alias")
+        .output()
+        .expect("capture allowed stabilized feature");
+    assert!(out.status.success(), "{out:?}");
+    let configuration = &stabilized.manifest()["configuration"];
+    assert_eq!(configuration["allowed_unstable_features"], json!(["doc_alias"]));
+    assert!(configuration.get("observed_unstable_features").is_none());
+    assert_eq!(configuration["stabilized_features_present"], json!(["doc_alias"]));
+
+    // Features outside the operator's list still fail closed, including under
+    // an active `cfg_attr` and for library features.
+    for (label, src) in [
+        ("cfg_attr allocator_api", "#![cfg_attr(all(), feature(allocator_api))]\n"),
+        ("lib ptr_metadata", "#![feature(doc_cfg, ptr_metadata)]\n"),
+    ] {
+        let fixture = Capture::new(format!("{src}{selected}").as_bytes());
+        let out = fixture
+            .selected_command()
+            .arg("--allow-unstable-feature=doc_cfg")
+            .output()
+            .expect("capture feature outside allowlist");
+        let needle = if label.starts_with("lib") { "ptr_metadata" } else { "allocator_api" };
+        assert_refused(label, &fixture, &out, "unsupported", needle);
+    }
+
+    // The hard-ban floor cannot be allowed, whether or not the crate enables
+    // the feature.
+    for banned in
+        ["rustc_attrs", "rustc_private", "ergonomic_clones", "custom_mir", "core_intrinsics"]
+    {
+        for src in [selected.to_owned(), format!("#![feature({banned})]\n{selected}")] {
+            let fixture = Capture::new(src.as_bytes());
+            let out = fixture
+                .selected_command()
+                .arg(format!("--allow-unstable-feature=doc_cfg,{banned}"))
+                .output()
+                .expect("capture hard-banned feature");
+            assert_refused(banned, &fixture, &out, "unsupported", "cannot be allowed");
+        }
+    }
+
+    // Malformed names and `--stdlib-crate` conflicts are usage errors.
+    for args in [
+        vec!["--allow-unstable-feature=*"],
+        vec!["--allow-unstable-feature=Doc_cfg"],
+        vec!["--allow-unstable-feature=doc_cfg,"],
+        vec!["--allow-unstable-feature=doc-cfg"],
+        vec!["--allow-unstable-feature=doc_cfg", "--stdlib-crate=core"],
+    ] {
+        let fixture = Capture::new(selected.as_bytes());
+        let out = fixture.selected_command().args(&args).output().expect("capture bad usage");
+        assert_eq!(out.status.code(), Some(2), "{args:?}: {out:?}");
+        assert_eq!(status(&out)["status"], "tool_failed", "{args:?}");
+        fixture.assert_no_capture_artifacts();
+    }
 }
 
 /// Seam 5: `debug_assert!` expands to a disabled `cfg!(debug_assertions)`

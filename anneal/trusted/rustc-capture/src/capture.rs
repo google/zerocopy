@@ -23,6 +23,9 @@ use rustc_abi::{Endian, ExternAbi, Size};
 use rustc_ast::{Attribute, Crate, MetaItem, MetaItemInner, Mutability};
 use rustc_data_structures::steal::Steal;
 use rustc_driver::Compilation;
+use rustc_feature::{
+    ACCEPTED_LANG_FEATURES, EnabledLangFeature, EnabledLibFeature, Features, UNSTABLE_LANG_FEATURES,
+};
 use rustc_hir as hir;
 use rustc_hir::LangItem;
 use rustc_hir::attrs::{AttributeKind, InlineAttr};
@@ -38,7 +41,7 @@ use rustc_session::EarlyDiagCtxt;
 use rustc_session::config::{CrateType, OptLevel, Options};
 use rustc_span::def_id::{LOCAL_CRATE, LocalDefId};
 use rustc_span::source_map::{FileLoader, RealFileLoader};
-use rustc_span::{FileName, kw, sym};
+use rustc_span::{DUMMY_SP, FileName, Symbol, kw, sym};
 use rustc_target::spec::PanicStrategy as RustcPanicStrategy;
 
 use crate::{Args, Failure, extract, identity, ir, mono};
@@ -1011,7 +1014,7 @@ impl rustc_driver::Callbacks for Callbacks<'_> {
             self.args.crate_type.into(),
             self.args.panic.into(),
             self.args.overflow_checks,
-            self.args.stdlib_crate.map(ir::StdlibCrate::from),
+            FeaturePolicy::of(self.args),
         ) {
             if let Ok(mut reads) = self.reads.lock() {
                 reads.tool_errors.push(reason.clone());
@@ -1048,6 +1051,18 @@ impl rustc_driver::Callbacks for Callbacks<'_> {
         compiler: &interface::Compiler,
         krate: &mut Crate,
     ) -> Compilation {
+        // Refuse operator-allowed features in the hard-ban floor first, so a
+        // misconfigured allowlist is reported as such whatever the crate
+        // enables.
+        let policy = FeaturePolicy::of(self.args);
+        if let FeaturePolicy::Normal(operator) = policy
+            && let Err(reason) = check_operator_features(operator)
+        {
+            if let Ok(mut reads) = self.reads.lock() {
+                reads.refusals.push(reason);
+            }
+            return Compilation::Stop;
+        }
         // Reject `#![crate_type]` (other than a top-level restatement of
         // `--crate-type=lib`; see `crate_type_attr_matches`) and
         // `#![feature(rustc_private)]` (including under `#![cfg_attr]`) before
@@ -1074,11 +1089,7 @@ impl rustc_driver::Callbacks for Callbacks<'_> {
         // allowlist before macro expansion, while leaving inactive
         // `#![cfg_attr(..., feature(...))]` lines (such as
         // `zerocopy/src/lib.rs` under default cfgs) untouched.
-        if let Err(reason) = validate_active_crate_features(
-            &compiler.sess,
-            &krate.attrs,
-            self.args.stdlib_crate.map(ir::StdlibCrate::from),
-        ) {
+        if let Err(reason) = validate_active_crate_features(&compiler.sess, &krate.attrs, policy) {
             if let Ok(mut reads) = self.reads.lock() {
                 reads.refusals.push(reason);
             }
@@ -1194,26 +1205,6 @@ fn validate_crate_root_attrs(attrs: &[Attribute], expected: ir::CrateType) -> Re
     Ok(())
 }
 
-/// Closed positive allowlist of crate-level `#![feature(...)]` gates permitted
-/// on normal (non-`--stdlib-crate`) captures.
-///
-/// Empty by default: normal crates must compile without activating any
-/// `#![feature(...)]` attribute. Inactive `#![cfg_attr(..., feature(...))]`
-/// attributes (for example `zerocopy/src/lib.rs` under default cfgs) remain
-/// admitted when their configuration predicate evaluates to false, whereas any
-/// active feature—unstable language feature, unstable library feature, or
-/// already-accepted language feature (`ACCEPTED_LANG_FEATURES`)—fails closed.
-///
-/// Enforcing a closed positive allowlist (backed by expansion-time
-/// `-Zallow-features=` and post-analysis `tcx.features()` inspection) prevents
-/// unmodeled nightly features such as `ergonomic_clones`, `custom_mir`,
-/// `specialization`, `const_eval_select`, `rustc_attrs`, `intrinsics`,
-/// `core_intrinsics`, `generic_const_exprs`, and `adt_const_params` from
-/// altering lowering, trait resolution, or post-capture codegen.
-/// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_expand/src/config.rs#L50-L128
-/// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_feature/src/unstable.rs#L46-L121
-const NORMAL_CRATE_ALLOWED_FEATURES: &[&str] = &[];
-
 /// Version-pinned positive allowlist of crate-level `#![feature(...)]` gates
 /// permitted under `--stdlib-crate core`.
 ///
@@ -1313,31 +1304,117 @@ const STDLIB_CORE_ALLOWED_FEATURES: &[&str] = &[
     "x86_amx_intrinsics",
 ];
 
-fn allowed_features(stdlib_crate: Option<ir::StdlibCrate>) -> &'static [&'static str] {
-    match stdlib_crate {
-        None => NORMAL_CRATE_ALLOWED_FEATURES,
-        Some(ir::StdlibCrate::Core) => STDLIB_CORE_ALLOWED_FEATURES,
+/// Feature gates that stay refused on normal crates even when the operator
+/// names them via `--allow-unstable-feature`, in addition to every enabled
+/// feature that `rustc_feature` itself classifies as internal
+/// (`Features::internal`: internal language features, `core_intrinsics`, and
+/// library features ending in `_internal` or `_internals`).
+///
+/// `rustc_private` is an unstable language feature that `Features::internal`
+/// does not classify as internal, yet it loads compiler dylibs into the
+/// capture process. `ergonomic_clones` lets post-capture `optimize_use_clone`
+/// diverge from captured MIR (see `collect`).
+/// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_feature/src/unstable.rs#L187-L207
+// RUSTC-WORKAROUND(#4361): `rustc` exposes no internal-feature table, and
+// its `Features::internal` misses `rustc_private`, so this list supplements
+// it explicitly.
+const HARD_BANNED_FEATURES: &[&str] = &["ergonomic_clones", "rustc_private"];
+
+/// The `#![feature(...)]` gates one capture may activate.
+///
+/// Normal crates admit no unstable feature by default. Enforcing a closed
+/// positive allowlist (backed by expansion-time `-Zallow-features=` and
+/// post-analysis `tcx.features()` inspection) prevents unmodeled nightly
+/// features such as `ergonomic_clones`, `custom_mir`, `specialization`,
+/// `const_eval_select`, `rustc_attrs`, `intrinsics`, `core_intrinsics`,
+/// `generic_const_exprs`, and `adt_const_params` from altering lowering,
+/// trait resolution, or post-capture codegen unless the operator names them.
+/// Inactive `#![cfg_attr(..., feature(...))]` attributes (for example
+/// `zerocopy/src/lib.rs` under default cfgs) remain admitted when their
+/// configuration predicate evaluates to false.
+/// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_expand/src/config.rs#L50-L128
+#[derive(Clone, Copy, Debug)]
+pub(crate) enum FeaturePolicy<'a> {
+    /// A normal crate admits exactly the unstable features named by
+    /// `--allow-unstable-feature` (sorted and duplicate-free; empty by
+    /// default). `cargo anneal verify` taints every receipt produced under a
+    /// non-empty list, whether or not the crate enables those features.
+    Normal(&'a [String]),
+    /// `--stdlib-crate` admits its version-pinned feature set.
+    Stdlib(ir::StdlibCrate),
+}
+
+impl<'a> FeaturePolicy<'a> {
+    pub(crate) fn of(args: &'a Args) -> Self {
+        match args.stdlib_crate {
+            Some(krate) => Self::Stdlib(krate.into()),
+            None => Self::Normal(&args.allow_unstable_feature),
+        }
+    }
+
+    /// The exact `-Zallow-features` list, sorted as `rustc` stores it.
+    fn allowlist(self) -> Vec<&'a str> {
+        match self {
+            Self::Normal(operator) => operator.iter().map(String::as_str).collect(),
+            Self::Stdlib(ir::StdlibCrate::Core) => STDLIB_CORE_ALLOWED_FEATURES.to_vec(),
+        }
+    }
+
+    fn allows(self, feature: &str) -> bool {
+        match self {
+            Self::Normal(operator) => {
+                operator.binary_search_by(|allowed| allowed.as_str().cmp(feature)).is_ok()
+            }
+            Self::Stdlib(ir::StdlibCrate::Core) => {
+                STDLIB_CORE_ALLOWED_FEATURES.binary_search(&feature).is_ok()
+            }
+        }
+    }
+
+    /// Whether this policy admits `#![feature(...)]` attributes naming
+    /// language features that the pinned compiler has already stabilized
+    /// (`ACCEPTED_LANG_FEATURES`, recorded with `stable_since: Some(_)`).
+    ///
+    /// Such an attribute activates no unstable behavior:
+    /// `rustc_expand::config::features` records it before consulting
+    /// `-Zallow-features`, and `check_unused_or_stable_features` only warns
+    /// (`stable_features`). Normal crates admit it without taint (`collect`
+    /// records it in `configuration.stabilized_features_present`), so a crate
+    /// that keeps the attribute for older compilers still verifies here.
+    /// `--stdlib-crate` keeps its exact pinned list. Stabilized library
+    /// features get no such exemption from `rustc`, so they stay subject to
+    /// the allowlist.
+    /// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_expand/src/config.rs#L77-L98
+    /// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_passes/src/stability.rs#L958-L975
+    // RUSTC-WORKAROUND(#4360): `-Zallow-features` exempts stabilized language
+    // features but not stabilized library features; the lang-only exemption
+    // here mirrors that asymmetry.
+    fn admits_stabilized_lang_features(self) -> bool {
+        matches!(self, Self::Normal(_))
     }
 }
 
-/// Check every enabled crate feature against the closed positive allowlist for
-/// `stdlib_crate`.
+/// Check every enabled crate feature against the closed positive allowlist of
+/// `policy`.
 ///
 /// Disallowed features are collected into a `BTreeSet` so diagnostics remain
 /// deterministic across source order and repeated attributes.
 fn check_feature_allowlist<'a>(
     enabled: impl IntoIterator<Item = &'a str>,
-    stdlib_crate: Option<ir::StdlibCrate>,
+    policy: FeaturePolicy<'_>,
 ) -> Result<(), String> {
-    let allowlist = allowed_features(stdlib_crate);
     let disallowed: BTreeSet<&str> =
-        enabled.into_iter().filter(|feat| allowlist.binary_search(feat).is_err()).collect();
+        enabled.into_iter().filter(|feat| !policy.allows(feat)).collect();
     if disallowed.is_empty() {
         return Ok(());
     }
-    let scope_note = match stdlib_crate {
-        None => "feature is not in the positive allowlist",
-        Some(ir::StdlibCrate::Core) => "feature is not in the pinned --stdlib-crate core allowlist",
+    let scope_note = match policy {
+        FeaturePolicy::Normal(_) => {
+            "feature is not in the positive allowlist (see --allow-unstable-feature)"
+        }
+        FeaturePolicy::Stdlib(ir::StdlibCrate::Core) => {
+            "feature is not in the pinned --stdlib-crate core allowlist"
+        }
     };
     let extra = if disallowed.contains("ergonomic_clones") {
         " (post-capture optimize_use_clone can diverge from captured MIR)"
@@ -1355,34 +1432,136 @@ fn check_feature_allowlist<'a>(
     }
 }
 
-/// Verify that every feature recorded in `tcx.features()` belongs to the closed
-/// positive allowlist for `stdlib_crate`.
+/// Whether `name` belongs to the non-overridable hard-ban floor. `features`
+/// must enable `name`: `Features::internal` panics on a name that is neither
+/// enabled nor declared as a language feature.
+// RUSTC-WORKAROUND(#4361): `Features::internal` panics on undeclared,
+// unenabled names, so callers classify only enabled names (see
+// `enabled_probe`).
+fn is_hard_banned(features: &Features, name: Symbol) -> bool {
+    HARD_BANNED_FEATURES.contains(&name.as_str()) || features.internal(name)
+}
+
+fn hard_ban_error(names: BTreeSet<&str>) -> Result<(), String> {
+    if names.is_empty() {
+        return Ok(());
+    }
+    let names: Vec<&str> = names.into_iter().collect();
+    Err(format!(
+        "#![feature({})] cannot be allowed during capture: compiler-internal and \
+         capture-divergent features stay refused even under --allow-unstable-feature",
+        names.join(", ")
+    ))
+}
+
+/// Build a `Features` table enabling each of `names` the way
+/// `rustc_expand::config::features` would if a crate enabled it: as an
+/// unstable language feature when declared as one, and otherwise as a library
+/// feature. Classifying with `rustc`'s own `Features::{internal, incomplete}`
+/// keeps the hard-ban floor in step with the pinned compiler.
+fn enabled_probe(names: &[String]) -> (Features, Vec<Symbol>) {
+    let mut probe = Features::default();
+    let names: Vec<Symbol> = names.iter().map(|name| Symbol::intern(name)).collect();
+    for &name in &names {
+        if UNSTABLE_LANG_FEATURES.iter().any(|feat| feat.name == name) {
+            probe.set_enabled_lang_feature(EnabledLangFeature {
+                gate_name: name,
+                attr_sp: DUMMY_SP,
+                stable_since: None,
+            });
+        } else {
+            probe.set_enabled_lib_feature(EnabledLibFeature { gate_name: name, attr_sp: DUMMY_SP });
+        }
+    }
+    (probe, names)
+}
+
+/// Refuse operator-named features in the hard-ban floor before compilation
+/// proceeds.
+fn check_operator_features(operator: &[String]) -> Result<(), String> {
+    let (probe, names) = enabled_probe(operator);
+    hard_ban_error(
+        operator
+            .iter()
+            .zip(&names)
+            .filter(|&(_, &name)| is_hard_banned(&probe, name))
+            .map(|(name, _)| name.as_str())
+            .collect(),
+    )
+}
+
+/// `#![feature(...)]` gates that `tcx.features()` reports for a normal crate.
+#[derive(Debug, Default, PartialEq, Eq)]
+pub(crate) struct ObservedFeatures {
+    /// Enabled unstable language and library features (sorted).
+    pub(crate) unstable: Vec<String>,
+    /// The subset of `unstable` that `rustc_feature` marks incomplete.
+    pub(crate) incomplete: Vec<String>,
+    /// Enabled language features that the pinned compiler has stabilized.
+    pub(crate) stabilized: Vec<String>,
+}
+
+/// Verify that every feature recorded in `tcx.features()` is admitted by
+/// `policy`, and report what a normal crate enabled.
 ///
 /// `rustc_expand::config::features` populates `enabled_lang_features` (both
 /// unstable features and already-accepted `ACCEPTED_LANG_FEATURES` with
 /// `stable_since: Some(_)`) and `enabled_lib_features`, and mirrors their union
 /// in `enabled_features`. Because `-Zallow-features` skips
-/// `ACCEPTED_LANG_FEATURES` before checking
-/// `sess.opts.unstable_opts.allow_features`, inspecting
-/// `enabled_lang_features`, `enabled_lib_features`, and `enabled_features`
-/// here enforces the same closed allowlist uniformly across unstable language
-/// features, unstable library features, and accepted language features.
+/// `ACCEPTED_LANG_FEATURES`, this check classifies them explicitly (see
+/// `FeaturePolicy::admits_stabilized_lang_features`) and holds every other
+/// feature to the allowlist and, on normal crates, to the hard-ban floor.
 /// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_expand/src/config.rs#L77-L115
 /// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_feature/src/unstable.rs#L46-L111
 pub(crate) fn check_allowed_features(
     tcx: TyCtxt<'_>,
-    stdlib_crate: Option<ir::StdlibCrate>,
-) -> Result<(), String> {
+    policy: FeaturePolicy<'_>,
+) -> Result<ObservedFeatures, String> {
+    // RUSTC-WORKAROUND(#4362): `tcx.features()` is crate-global with no record
+    // of which items a feature affected, so observations (and the receipt
+    // taint they back) are crate-level rather than per selected unit.
     let features = tcx.features();
-    check_feature_allowlist(
-        features
-            .enabled_lang_features()
-            .iter()
-            .map(|feat| feat.gate_name.as_str())
-            .chain(features.enabled_lib_features().iter().map(|feat| feat.gate_name.as_str()))
-            .chain(features.enabled_features().iter().map(|sym| sym.as_str())),
-        stdlib_crate,
-    )
+    let mut gated: BTreeSet<Symbol> = BTreeSet::new();
+    let mut stabilized: BTreeSet<String> = BTreeSet::new();
+    for feat in features.enabled_lang_features() {
+        if feat.stable_since.is_some() && policy.admits_stabilized_lang_features() {
+            stabilized.insert(feat.gate_name.as_str().to_owned());
+        } else {
+            gated.insert(feat.gate_name);
+        }
+    }
+    gated.extend(features.enabled_lib_features().iter().map(|feat| feat.gate_name));
+    // `enabled_features` should be exactly the union classified above; a
+    // member outside it would otherwise escape both checks.
+    for name in features.enabled_features() {
+        if !gated.contains(name) && !stabilized.contains(name.as_str()) {
+            return Err(format!("#![feature({name})] escaped feature classification"));
+        }
+    }
+    if matches!(policy, FeaturePolicy::Normal(_)) {
+        hard_ban_error(
+            gated
+                .iter()
+                .filter(|&&name| is_hard_banned(features, name))
+                .map(|name| name.as_str())
+                .collect(),
+        )?;
+    }
+    check_feature_allowlist(gated.iter().map(|name| name.as_str()), policy)?;
+    if !matches!(policy, FeaturePolicy::Normal(_)) {
+        return Ok(ObservedFeatures::default());
+    }
+    let unstable: BTreeSet<String> = gated.iter().map(|name| name.as_str().to_owned()).collect();
+    let incomplete: BTreeSet<String> = gated
+        .iter()
+        .filter(|&&name| features.incomplete(name))
+        .map(|name| name.as_str().to_owned())
+        .collect();
+    Ok(ObservedFeatures {
+        unstable: unstable.into_iter().collect(),
+        incomplete: incomplete.into_iter().collect(),
+        stabilized: stabilized.into_iter().collect(),
+    })
 }
 
 fn meta_mentions_feature(meta: &MetaItem) -> bool {
@@ -1427,7 +1606,7 @@ fn meta_mentions_feature(meta: &MetaItem) -> bool {
 fn validate_active_crate_features(
     sess: &rustc_session::Session,
     attrs: &[Attribute],
-    stdlib_crate: Option<ir::StdlibCrate>,
+    policy: FeaturePolicy<'_>,
 ) -> Result<(), String> {
     if sess.dcx().has_errors().is_some() {
         return Ok(());
@@ -1476,11 +1655,20 @@ fn validate_active_crate_features(
             active_names.push(ident.name);
         }
     }
-    check_feature_allowlist(active_names.iter().map(|sym| sym.as_str()), stdlib_crate)
+    let admits_stabilized = policy.admits_stabilized_lang_features();
+    check_feature_allowlist(
+        active_names
+            .iter()
+            .filter(|&&name| {
+                !(admits_stabilized && ACCEPTED_LANG_FEATURES.iter().any(|feat| feat.name == name))
+            })
+            .map(|name| name.as_str()),
+        policy,
+    )
 }
 
 /// Verify that `-Zallow-features` matches the exact closed positive allowlist
-/// for `stdlib_crate`.
+/// of `policy`.
 ///
 /// `rustc`'s `parse_opt_comma_list` parses `Some(s)` via
 /// `s.split(',').map(|s| s.to_string()).collect()` and sorts the result, so an
@@ -1490,18 +1678,18 @@ fn validate_active_crate_features(
 /// element-for-element match for non-empty allowlists.
 /// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_session/src/options.rs#L1059-L1069
 /// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_expand/src/config.rs#L87-L98
-fn validate_allow_features_option(
-    opts: &Options,
-    stdlib_crate: Option<ir::StdlibCrate>,
-) -> Result<(), String> {
-    let expected = allowed_features(stdlib_crate);
+fn validate_allow_features_option(opts: &Options, policy: FeaturePolicy<'_>) -> Result<(), String> {
+    let expected = policy.allowlist();
+    // RUSTC-WORKAROUND(#4360): `rustc` parses `-Zallow-features=` as
+    // `Some([""])` rather than `Some([])`, so both spell the empty allowlist.
     let Some(actual) = opts.unstable_opts.allow_features.as_deref() else {
         return Err("-Zallow-features must be explicitly configured during capture".into());
     };
     let matches = if expected.is_empty() {
         actual.is_empty() || (actual.len() == 1 && actual[0].is_empty())
     } else {
-        actual.len() == expected.len() && actual.iter().zip(expected).all(|(got, want)| got == want)
+        actual.len() == expected.len()
+            && actual.iter().zip(&expected).all(|(got, want)| got == want)
     };
     if !matches {
         return Err(format!(
@@ -1627,7 +1815,7 @@ fn validate_compiler_options(
     expected_crate_type: ir::CrateType,
     expected_panic: ir::PanicStrategy,
     expected_overflow_checks: bool,
-    stdlib_crate: Option<ir::StdlibCrate>,
+    features: FeaturePolicy<'_>,
 ) -> Result<(), String> {
     if opts.sysroot.explicit.is_none() {
         return Err("explicit --sysroot is required during capture".into());
@@ -1659,7 +1847,7 @@ fn validate_compiler_options(
         ));
     }
     let _ = validate_profile_options(opts, expected_overflow_checks)?;
-    validate_allow_features_option(opts, stdlib_crate)?;
+    validate_allow_features_option(opts, features)?;
     if !opts.logical_env.is_empty() {
         return Err("raw compiler --env-set flags are forbidden during capture".into());
     }
@@ -2199,7 +2387,8 @@ fn collect(
     }
     verify_sysroot_only_crates(tcx, verified_sysroot, &args.target, requested_crate_type)?;
     let stdlib_crate = args.stdlib_crate.map(ir::StdlibCrate::from);
-    validate_allow_features_option(&tcx.sess.opts, stdlib_crate).map_err(Failure::tool)?;
+    let feature_policy = FeaturePolicy::of(args);
+    validate_allow_features_option(&tcx.sess.opts, feature_policy).map_err(Failure::tool)?;
     check_no_cfg_miri(tcx.sess.config.iter().map(|(name, _)| name.as_str()))
         .map_err(Failure::unsupported)?;
     if let Some(stdlib_crate) = stdlib_crate {
@@ -2228,7 +2417,8 @@ fn collect(
     // Enforce the closed positive `#![feature(...)]` allowlist over
     // `tcx.features()` (both language and library features, including
     // `ACCEPTED_LANG_FEATURES` that `-Zallow-features` skips). Normal crates
-    // admit no active `#![feature(...)]` attributes; `--stdlib-crate core`
+    // admit only operator-allowed unstable features outside the hard-ban floor
+    // (plus already-stabilized language features); `--stdlib-crate core`
     // admits only its version-pinned set (excluding `ergonomic_clones`, where
     // post-capture `optimize_use_clone` in `rustc_codegen_ssa` can diverge from
     // captured MIR, `rustc_private`, and `custom_mir`). Enforcing this at crate
@@ -2236,7 +2426,8 @@ fn collect(
     // per-body extraction.
     // https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_codegen_ssa/src/mir/mod.rs#L217-L224
     // https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_codegen_ssa/src/mir/mod.rs#L350-L407
-    check_allowed_features(tcx, stdlib_crate).map_err(Failure::unsupported)?;
+    let observed_features =
+        check_allowed_features(tcx, feature_policy).map_err(Failure::unsupported)?;
 
     // `iter_local_def_id` finishes analysis and visits all definitions,
     // including definitions created during enumeration: "Recompute the number
@@ -2355,7 +2546,7 @@ fn collect(
             target: LocalDefId,
             path: String,
             is_root: bool,
-            stdlib_crate: Option<ir::StdlibCrate>,
+            features: FeaturePolicy<'_>,
         ) -> Result<(), Failure> {
             let key = target.local_def_index.as_u32();
             let steal = tcx.mir_drops_elaborated_and_const_checked(target);
@@ -2368,7 +2559,7 @@ fn collect(
             } else if steal.is_stolen() {
                 Err("Runtime(PostCleanup) MIR was already stolen before capture".into())
             } else {
-                extract::extract_body(tcx, target, &steal.borrow(), stdlib_crate)
+                extract::extract_body(tcx, target, &steal.borrow(), features)
             };
             match result {
                 Ok(extracted) => {
@@ -2404,7 +2595,7 @@ fn collect(
     let mut visited_callees: BTreeSet<u32> = BTreeSet::new();
     for def in selected_defs {
         visited_callees.insert(def.local_def_index.as_u32());
-        state.record_local_body(tcx, def, tcx.def_path_str(def), true, stdlib_crate)?;
+        state.record_local_body(tcx, def, tcx.def_path_str(def), true, feature_policy)?;
     }
     if let ir::Scope::SelectedUnit { instantiations, .. } = scope {
         for inst in instantiations {
@@ -2422,7 +2613,7 @@ fn collect(
                     let extracted = if !observed {
                         Err("compiler did not provide Runtime(PostCleanup) MIR".into())
                     } else {
-                        extract::extract_instantiated_body(tcx, &resolved, stdlib_crate)
+                        extract::extract_instantiated_body(tcx, &resolved, feature_policy)
                     };
                     match extracted {
                         Ok(extracted) => {
@@ -2479,7 +2670,7 @@ fn collect(
             });
             continue;
         }
-        state.record_local_body(tcx, callee, path, false, stdlib_crate)?;
+        state.record_local_body(tcx, callee, path, false, feature_policy)?;
     }
     if tcx.dcx().has_errors().is_some() {
         return Err(Failure::compiler("late compiler diagnostics prohibit capture"));
@@ -2631,6 +2822,10 @@ fn collect(
             endian: profile.endian,
             declared_source_files: args.source_file.clone(),
             stdlib_crate,
+            allowed_unstable_features: args.allow_unstable_feature.clone(),
+            observed_unstable_features: observed_features.unstable,
+            incomplete_observed_unstable_features: observed_features.incomplete,
+            stabilized_features_present: observed_features.stabilized,
         },
         source_files: reads.files.values().cloned().collect(),
         census,
@@ -2733,15 +2928,13 @@ pub(crate) fn run(
         // Enforce the closed positive feature allowlist inside `rustc`'s own
         // expansion-time feature collector as defense in depth alongside
         // `validate_active_crate_features` and `check_allowed_features`. For
-        // normal crates (`NORMAL_CRATE_ALLOWED_FEATURES == &[]`), this passes
-        // `-Zallow-features=` (parsed by `parse_opt_comma_list` to
+        // normal crates this passes the operator's validated, sorted
+        // `--allow-unstable-feature` identifiers (which contain no comma), or
+        // `-Zallow-features=` by default (parsed by `parse_opt_comma_list` to
         // `Some(vec![""])`, matching no unstable feature).
         // https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_expand/src/config.rs#L87-L98
         // https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_session/src/options.rs#L1059-L1069
-        format!(
-            "-Zallow-features={}",
-            allowed_features(args.stdlib_crate.map(ir::StdlibCrate::from)).join(",")
-        ),
+        format!("-Zallow-features={}", FeaturePolicy::of(args).allowlist().join(",")),
         format!("--out-dir={}", compiler_path(&args.out_dir)?),
     ];
     compiler_args.push(format!("--sysroot={}", compiler_path(verified_sysroot)?));
@@ -2865,7 +3058,7 @@ mod tests {
             ir::CrateType::Lib,
             ir::PanicStrategy::Unwind,
             false,
-            None,
+            FeaturePolicy::Normal(&[]),
         )
         .unwrap_err();
         assert!(err.contains("-Zmir-preserve-ub"), "{err}");
@@ -2877,7 +3070,7 @@ mod tests {
                 ir::CrateType::Lib,
                 ir::PanicStrategy::Unwind,
                 false,
-                None,
+                FeaturePolicy::Normal(&[]),
             )
             .is_ok()
         );
@@ -2887,7 +3080,7 @@ mod tests {
                 ir::CrateType::Bin,
                 ir::PanicStrategy::Unwind,
                 false,
-                None,
+                FeaturePolicy::Normal(&[]),
             )
             .is_err()
         );
@@ -2900,7 +3093,7 @@ mod tests {
                 ir::CrateType::Bin,
                 ir::PanicStrategy::Abort,
                 false,
-                None,
+                FeaturePolicy::Normal(&[]),
             )
             .is_ok()
         );
@@ -2910,7 +3103,7 @@ mod tests {
                 ir::CrateType::Bin,
                 ir::PanicStrategy::Unwind,
                 false,
-                None,
+                FeaturePolicy::Normal(&[]),
             )
             .is_err()
         );
@@ -2921,7 +3114,7 @@ mod tests {
             ir::CrateType::Lib,
             ir::PanicStrategy::Unwind,
             false,
-            None,
+            FeaturePolicy::Normal(&[]),
         )
         .unwrap_err();
         assert!(err.contains("--env-set"), "{err}");
@@ -2937,7 +3130,7 @@ mod tests {
                 ir::CrateType::Lib,
                 ir::PanicStrategy::Unwind,
                 false,
-                None,
+                FeaturePolicy::Normal(&[]),
             )
             .is_ok()
         );
@@ -2956,7 +3149,7 @@ mod tests {
                 ir::CrateType::Lib,
                 ir::PanicStrategy::Unwind,
                 false,
-                None,
+                FeaturePolicy::Normal(&[]),
             )
             .unwrap_err();
             assert!(err.contains("-Copt-level=0"), "{level:?}: {err}");
@@ -2969,7 +3162,7 @@ mod tests {
             ir::CrateType::Lib,
             ir::PanicStrategy::Unwind,
             false,
-            None,
+            FeaturePolicy::Normal(&[]),
         )
         .unwrap_err();
         assert!(err.contains("-Cdebug-assertions=no"), "{err}");
@@ -2982,7 +3175,7 @@ mod tests {
                 ir::CrateType::Lib,
                 ir::PanicStrategy::Unwind,
                 false,
-                None,
+                FeaturePolicy::Normal(&[]),
             )
             .unwrap_err();
             assert!(err.contains("-Coverflow-checks=no"), "{overflow:?}: {err}");
@@ -2996,7 +3189,7 @@ mod tests {
                 ir::CrateType::Lib,
                 ir::PanicStrategy::Unwind,
                 true,
-                None,
+                FeaturePolicy::Normal(&[]),
             )
             .is_ok()
         );
@@ -3008,7 +3201,7 @@ mod tests {
                 ir::CrateType::Lib,
                 ir::PanicStrategy::Unwind,
                 true,
-                None,
+                FeaturePolicy::Normal(&[]),
             )
             .unwrap_err();
             assert!(err.contains("-Coverflow-checks=yes"), "{overflow:?}: {err}");
@@ -3504,11 +3697,14 @@ mod tests {
         assert!(!inline_mode_admitted(&forced));
     }
 
+    fn owned(names: &[&str]) -> Vec<String> {
+        names.iter().map(|name| (*name).to_owned()).collect()
+    }
+
     #[test]
-    fn feature_allowlist_is_empty_for_normal_crates_and_pinned_for_stdlib_core() {
-        // Both allowlists must be strictly sorted and free of duplicates so
+    fn feature_allowlist_admits_operator_features_and_pinned_stdlib_core() {
+        // The pinned list must be strictly sorted and free of duplicates so
         // binary search and `-Zallow-features` comparisons stay sound.
-        assert!(NORMAL_CRATE_ALLOWED_FEATURES.is_empty());
         assert!(!STDLIB_CORE_ALLOWED_FEATURES.is_empty());
         for pair in STDLIB_CORE_ALLOWED_FEATURES.windows(2) {
             assert!(
@@ -3534,13 +3730,15 @@ mod tests {
             );
         }
 
-        // Normal crates admit zero active features (including unstable lang
-        // features, unstable lib features, `doc_cfg`, and already-accepted
-        // `ACCEPTED_LANG_FEATURES` such as `doc_alias`).
-        assert!(check_feature_allowlist(std::iter::empty::<&str>(), None).is_ok());
+        // By default, normal crates admit zero features through the
+        // allowlist itself (already-stabilized language features are
+        // filtered out before this check; see
+        // `stabilized_language_features_are_admitted_only_on_normal_crates`).
+        let default = FeaturePolicy::Normal(&[]);
+        assert!(default.allowlist().is_empty());
+        assert!(check_feature_allowlist(std::iter::empty::<&str>(), default).is_ok());
         for rejected in [
             "doc_cfg",
-            "doc_alias",
             "ergonomic_clones",
             "rustc_private",
             "core_intrinsics",
@@ -3553,68 +3751,167 @@ mod tests {
             "intrinsics",
             "custom_mir",
         ] {
-            let err = check_feature_allowlist([rejected], None).unwrap_err();
+            let err = check_feature_allowlist([rejected], default).unwrap_err();
             assert!(err.contains(rejected), "{rejected}: {err}");
             assert!(err.contains("positive allowlist"), "{rejected}: {err}");
+            assert!(err.contains("--allow-unstable-feature"), "{rejected}: {err}");
         }
-        let ergonomic_err = check_feature_allowlist(["ergonomic_clones"], None).unwrap_err();
+        let ergonomic_err = check_feature_allowlist(["ergonomic_clones"], default).unwrap_err();
         assert!(ergonomic_err.contains("optimize_use_clone"), "{ergonomic_err}");
 
         // Multiple disallowed features are reported deterministically sorted.
         let multi_err =
-            check_feature_allowlist(["specialization", "core_intrinsics", "doc_cfg"], None)
+            check_feature_allowlist(["specialization", "core_intrinsics", "doc_cfg"], default)
                 .unwrap_err();
         assert!(
             multi_err.contains("#![feature(core_intrinsics, doc_cfg, specialization)]"),
             "{multi_err}"
         );
 
+        // Operator-allowed features are admitted exactly; nothing else is.
+        let operator = owned(&["allocator_api", "doc_cfg"]);
+        let allowed = FeaturePolicy::Normal(&operator);
+        assert_eq!(allowed.allowlist(), ["allocator_api", "doc_cfg"]);
+        assert!(check_feature_allowlist(["doc_cfg", "allocator_api", "doc_cfg"], allowed).is_ok());
+        let err = check_feature_allowlist(["doc_cfg", "specialization"], allowed).unwrap_err();
+        assert!(err.contains("#![feature(specialization)] is unsupported"), "{err}");
+
         // `--stdlib-crate core` admits its exact pinned set and refuses all
         // others (including `ergonomic_clones` and `custom_mir`).
+        let core = FeaturePolicy::Stdlib(ir::StdlibCrate::Core);
+        assert_eq!(core.allowlist(), STDLIB_CORE_ALLOWED_FEATURES);
         assert!(
-            check_feature_allowlist(
-                STDLIB_CORE_ALLOWED_FEATURES.iter().copied(),
-                Some(ir::StdlibCrate::Core),
-            )
-            .is_ok()
+            check_feature_allowlist(STDLIB_CORE_ALLOWED_FEATURES.iter().copied(), core).is_ok()
         );
         for rejected in ["ergonomic_clones", "rustc_private", "custom_mir", "doc_alias"] {
-            let err = check_feature_allowlist([rejected], Some(ir::StdlibCrate::Core)).unwrap_err();
+            let err = check_feature_allowlist([rejected], core).unwrap_err();
             assert!(err.contains(rejected), "{rejected}: {err}");
             assert!(err.contains("--stdlib-crate core"), "{rejected}: {err}");
         }
     }
 
     #[test]
+    fn stabilized_language_features_are_admitted_only_on_normal_crates() {
+        let operator = owned(&["doc_cfg"]);
+        assert!(FeaturePolicy::Normal(&[]).admits_stabilized_lang_features());
+        assert!(FeaturePolicy::Normal(&operator).admits_stabilized_lang_features());
+        assert!(!FeaturePolicy::Stdlib(ir::StdlibCrate::Core).admits_stabilized_lang_features());
+    }
+
+    #[test]
+    fn hard_ban_floor_tracks_rustc_internal_features() {
+        rustc_span::create_default_session_globals_then(|| {
+            for banned in [
+                // Not classified as internal by `rustc`; banned explicitly.
+                "rustc_private",
+                "ergonomic_clones",
+                // Internal language features.
+                "abi_unadjusted",
+                "allow_internal_unsafe",
+                "allow_internal_unstable",
+                "custom_mir",
+                "intrinsics",
+                "lang_items",
+                "link_llvm_intrinsics",
+                "prelude_import",
+                "rustc_attrs",
+                "staged_api",
+                "unsized_fn_params",
+                // Internal library features (`core_intrinsics` and the
+                // `_internal`/`_internals` suffixes).
+                "core_intrinsics",
+                "fmt_internals",
+                "panic_internals",
+            ] {
+                let err = check_operator_features(&owned(&["doc_cfg", banned])).unwrap_err();
+                assert!(err.contains(&format!("#![feature({banned})]")), "{banned}: {err}");
+                assert!(err.contains("--allow-unstable-feature"), "{banned}: {err}");
+            }
+            let err =
+                check_operator_features(&owned(&["rustc_attrs", "rustc_private"])).unwrap_err();
+            assert!(err.contains("#![feature(rustc_attrs, rustc_private)]"), "{err}");
+
+            // Ordinary, incomplete, already-stabilized, and unknown names stay
+            // available to the operator; `rustc` rejects unknown ones later.
+            let admitted = owned(&[
+                "allocator_api",
+                "arbitrary_self_types",
+                "doc_alias",
+                "doc_cfg",
+                "generic_const_exprs",
+                "min_specialization",
+                "not_a_real_feature",
+                "specialization",
+            ]);
+            assert!(check_operator_features(&admitted).is_ok());
+
+            // `incomplete_observed` relies on `rustc`'s own classification.
+            let (probe, names) = enabled_probe(&admitted);
+            let incomplete: Vec<&str> = names
+                .iter()
+                .filter(|&&name| probe.incomplete(name))
+                .map(|name| name.as_str())
+                .collect();
+            assert_eq!(incomplete, ["generic_const_exprs", "specialization"]);
+        });
+    }
+
+    #[test]
+    fn operator_feature_names_are_strict_identifiers() {
+        for valid in ["doc_cfg", "f16", "a", "x86_amx_intrinsics"] {
+            assert_eq!(crate::parse_feature_name(valid).unwrap(), valid);
+        }
+        for invalid in
+            ["", "*", "all*", "Doc_cfg", "_doc", "1abc", "doc-cfg", "doc cfg", "a,b", "a=b", "a\0"]
+        {
+            assert!(crate::parse_feature_name(invalid).is_err(), "{invalid:?}");
+        }
+    }
+
+    #[test]
     fn allow_features_option_gate_enforces_exact_allowlist() {
+        let default = FeaturePolicy::Normal(&[]);
+        let core = FeaturePolicy::Stdlib(ir::StdlibCrate::Core);
         let mut opts = valid_capture_options(CrateType::Rlib);
         opts.unstable_opts.allow_features = None;
-        let err = validate_allow_features_option(&opts, None).unwrap_err();
+        let err = validate_allow_features_option(&opts, default).unwrap_err();
         assert!(err.contains("-Zallow-features"), "{err}");
 
         // `-Zallow-features=` parses to `Some(vec![""])`; `Some(vec![])` is
         // also an empty allowlist. Any non-empty feature entry is rejected.
         opts.unstable_opts.allow_features = Some(vec![String::new()]);
-        assert!(validate_allow_features_option(&opts, None).is_ok());
-        assert!(validate_allow_features_option(&opts, Some(ir::StdlibCrate::Core)).is_err());
+        assert!(validate_allow_features_option(&opts, default).is_ok());
+        assert!(validate_allow_features_option(&opts, core).is_err());
 
         opts.unstable_opts.allow_features = Some(Vec::new());
-        assert!(validate_allow_features_option(&opts, None).is_ok());
+        assert!(validate_allow_features_option(&opts, default).is_ok());
 
         opts.unstable_opts.allow_features = Some(vec!["doc_cfg".to_owned()]);
-        assert!(validate_allow_features_option(&opts, None).is_err());
+        assert!(validate_allow_features_option(&opts, default).is_err());
+
+        // Operator allowlists must match element for element.
+        let operator = owned(&["allocator_api", "doc_cfg"]);
+        let allowed = FeaturePolicy::Normal(&operator);
+        assert!(validate_allow_features_option(&opts, allowed).is_err());
+        opts.unstable_opts.allow_features = Some(operator.clone());
+        assert!(validate_allow_features_option(&opts, allowed).is_ok());
+        assert!(validate_allow_features_option(&opts, default).is_err());
+        opts.unstable_opts.allow_features = Some(owned(&["allocator_api", "doc_cfg", "f16"]));
+        assert!(validate_allow_features_option(&opts, allowed).is_err());
+        opts.unstable_opts.allow_features = Some(vec![String::new()]);
+        assert!(validate_allow_features_option(&opts, allowed).is_err());
 
         let core_list: Vec<String> =
             STDLIB_CORE_ALLOWED_FEATURES.iter().map(|s| (*s).to_owned()).collect();
         opts.unstable_opts.allow_features = Some(core_list.clone());
-        assert!(validate_allow_features_option(&opts, Some(ir::StdlibCrate::Core)).is_ok());
-        assert!(validate_allow_features_option(&opts, None).is_err());
+        assert!(validate_allow_features_option(&opts, core).is_ok());
+        assert!(validate_allow_features_option(&opts, default).is_err());
 
         let mut widened = core_list;
         widened.push("ergonomic_clones".to_owned());
         widened.sort_unstable();
         opts.unstable_opts.allow_features = Some(widened);
-        assert!(validate_allow_features_option(&opts, Some(ir::StdlibCrate::Core)).is_err());
+        assert!(validate_allow_features_option(&opts, core).is_err());
     }
 
     #[test]

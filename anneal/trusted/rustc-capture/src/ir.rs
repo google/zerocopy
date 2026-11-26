@@ -2459,6 +2459,25 @@ pub struct Configuration {
     /// that embeds this configuration discloses every relaxation in effect.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub stdlib_crate: Option<StdlibCrate>,
+    /// Unstable features the operator admitted on a normal crate with
+    /// `--allow-unstable-feature` (sorted). This and the following feature
+    /// lists are omitted when empty, so default captures keep their exact
+    /// manifest bytes.
+    #[serde(skip_serializing_if = "Vec::is_empty")]
+    pub allowed_unstable_features: Vec<String>,
+    /// Unstable features that `tcx.features()` reports the crate enabled
+    /// (sorted), each a member of `allowed_unstable_features`.
+    #[serde(skip_serializing_if = "Vec::is_empty")]
+    pub observed_unstable_features: Vec<String>,
+    /// The subset of `observed_unstable_features` that `rustc` marks
+    /// incomplete (sorted).
+    #[serde(skip_serializing_if = "Vec::is_empty")]
+    pub incomplete_observed_unstable_features: Vec<String>,
+    /// Language features the crate enables with `#![feature(...)]` that the
+    /// pinned compiler has already stabilized (sorted). They activate no
+    /// unstable behavior and do not taint.
+    #[serde(skip_serializing_if = "Vec::is_empty")]
+    pub stabilized_features_present: Vec<String>,
 }
 
 #[derive(Clone, Debug, Serialize)]
