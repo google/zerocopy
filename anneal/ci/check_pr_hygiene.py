@@ -33,6 +33,10 @@ tree at `--head`:
 - `agents-budget` and `code-review-rules-parity`: the cumulative `AGENTS.md`
   byte budget and the verbatim `Code Review Rules` mirror in
   `.gemini/styleguide.md`.
+- `rustc-workaround`: malformed or unresolved (`#PENDING`) upstream `rustc`
+  workaround anchors in Anneal source files at `--head` (see
+  `docs/rustc-workarounds.md`; `ci/audit_rustc_workarounds.py` prints the
+  anchor inventory).
 - `pr-body`, `pr-title` (`--pr-body-file`, `--pr-title`): a single-commit PR's
   description and title match its commit message.
 - `receipt` (`--receipt-file`): a Review Receipt has a `Human review surface`
@@ -304,10 +308,11 @@ class Git:
         self.env["GIT_CONFIG_GLOBAL"] = os.devnull
         self.env["LC_ALL"] = "C"
 
-    def run(self, *args: str, ok_codes: tuple[int, ...] = (0,)) -> bytes:
+    def run(self, *args: str, ok_codes: tuple[int, ...] = (0,),
+            stdin: bytes | None = None) -> bytes:
         res = subprocess.run(
             ["git", *GIT_OPTIONS, *args], cwd=self.repo, env=self.env,
-            capture_output=True, check=False,
+            input=stdin, capture_output=True, check=False,
         )
         if res.returncode not in ok_codes:
             stderr = res.stderr.decode("utf-8", "replace").strip()
@@ -1677,6 +1682,138 @@ def crr_parity_findings(git: Git, head: str) -> list[Finding]:
 
 
 # ---------------------------------------------------------------------------
+# Upstream `rustc` workaround anchors (`docs/rustc-workarounds.md`).
+
+# Split so this file never contains a literal tag for the scan to flag.
+WORKAROUND_TAG = "RUSTC-" "WORKAROUND"
+WORKAROUND_PENDING = "#PENDING"
+# Markdown is out of scope so prose and examples may name the tag freely.
+WORKAROUND_MARKERS = {
+    ".rs": ("//", "///", "//!"),
+    **{e: ("#",) for e in (".py", ".sh", ".nix", ".toml", ".yml", ".yaml")},
+    ".lean": ("--",),
+}
+# Any spelling a typo might produce (`_` or no separator) counts as an
+# attempted tag, so a misspelled anchor fails instead of silently vanishing.
+WORKAROUND_LIKE_RE = re.compile(r"RUSTC[-_]?WORKAROUND")
+WORKAROUND_ANCHOR_RE = re.compile(
+    r"^[ \t]*(?P<marker>//[/!]?|#|--)[ \t]" + re.escape(WORKAROUND_TAG)
+    + r"\((?P<ref>[^()\s]*)\)(?P<rest>.*)$"
+)
+WORKAROUND_ISSUE_RE = re.compile(r"#([1-9][0-9]{0,8})")
+
+
+@dataclass(frozen=True)
+class WorkaroundAnchor:
+    path: str
+    line: int
+    issue: int
+    summary: str
+
+    def to_json(self) -> dict[str, object]:
+        return {"path": self.path, "line": self.line, "issue": self.issue,
+                "summary": self.summary}
+
+
+def workaround_in_scope(path: str) -> bool:
+    """Whether the anchor scan covers `path` (relative to the repo root)."""
+    return (path.startswith(ANNEAL)
+            and not path.startswith(EXCLUDED_PREFIXES)
+            and Path(path).suffix in WORKAROUND_MARKERS)
+
+
+def scan_workarounds(
+    path: str, text: str,
+) -> tuple[list[WorkaroundAnchor], list[Finding]]:
+    """Return one file's well-formed anchors and its malformed tags.
+
+    An anchor is a comment line, in the file's comment syntax, holding the
+    tag, a parenthesized positive `#NNNN` issue number, `: `, and a
+    non-empty summary. Every other tag-like spelling is a finding,
+    including the `#PENDING` placeholder.
+    """
+    markers = WORKAROUND_MARKERS[Path(path).suffix]
+    anchors: list[WorkaroundAnchor] = []
+    out: list[Finding] = []
+    tag = WORKAROUND_TAG
+    for lineno, line in enumerate(text.split("\n"), start=1):
+        hits = WORKAROUND_LIKE_RE.findall(line)
+        if not hits:
+            continue
+
+        def bad(message: str) -> None:
+            out.append(Finding("rustc-workaround", message, path, lineno))
+
+        if len(hits) > 1:
+            bad(f"more than one `{tag}` tag on one line")
+            continue
+        m = WORKAROUND_ANCHOR_RE.match(line)
+        if m is None:
+            bad(f"malformed anchor; expected a comment line `<marker> {tag}"
+                "(#NNNN): <summary>` (see `docs/rustc-workarounds.md`)")
+            continue
+        if m.group("marker") not in markers:
+            bad(f"`{m.group('marker')}` is not a comment marker for "
+                f"`{Path(path).suffix}` files (use "
+                + " or ".join(f"`{c}`" for c in markers) + ")")
+            continue
+        ref = m.group("ref")
+        if ref == WORKAROUND_PENDING:
+            bad(f"unresolved `{tag}({WORKAROUND_PENDING})`; file the "
+                "tracking issue and cite its number before Gate 1 converges")
+            continue
+        issue = WORKAROUND_ISSUE_RE.fullmatch(ref)
+        if issue is None:
+            bad(f"`{ref}` is not an issue reference; cite `#NNNN`")
+            continue
+        rest = m.group("rest")
+        summary = rest[2:].strip() if rest.startswith(": ") else ""
+        if not summary:
+            bad("anchor needs `: <summary>` after the issue reference")
+            continue
+        anchors.append(
+            WorkaroundAnchor(path, lineno, int(issue.group(1)), summary))
+    return anchors, out
+
+
+def tree_workarounds(
+    git: Git, head: str,
+) -> tuple[list[WorkaroundAnchor], list[Finding]]:
+    """Scan every in-scope regular file in the tree at `head`."""
+    listing = git.run("ls-tree", "-r", "-z", "--full-tree", head, "--")
+    entries: list[tuple[str, str]] = []
+    for entry in listing.decode("utf-8", "surrogateescape").split("\0"):
+        if not entry:
+            continue
+        meta, path = entry.split("\t", 1)
+        mode, kind, sha = meta.split()
+        # Symlinks and gitlinks hold no source text to scan.
+        if (kind == "blob" and mode in ("100644", "100755")
+                and workaround_in_scope(path)):
+            entries.append((path, sha))
+    anchors: list[WorkaroundAnchor] = []
+    out: list[Finding] = []
+    if not entries:
+        return anchors, out
+    batch = git.run("cat-file", "--batch", stdin="".join(
+        f"{sha}\n" for _, sha in entries).encode())
+    pos = 0
+    for path, sha in entries:
+        nl = batch.find(b"\n", pos)
+        header = batch[pos:nl].decode("ascii", "replace").split()
+        if (nl < 0 or len(header) != 3 or header[0] != sha
+                or header[1] != "blob" or not header[2].isdigit()):
+            raise GitError(f"unexpected `git cat-file` output for {path!r}")
+        size = int(header[2])
+        data = batch[nl + 1:nl + 1 + size]
+        pos = nl + 1 + size + 1
+        a, f = scan_workarounds(path, data.decode("utf-8", "replace"))
+        anchors += a
+        out += f
+    return anchors, out
+
+
+# ---------------------------------------------------------------------------
 # Driver.
 
 
@@ -1719,6 +1856,7 @@ def check(
     meta: dict[str, object] = {"head": head, "tree": tree}
     report.findings += agents_budget_findings(git, head)
     report.findings += crr_parity_findings(git, head)
+    report.findings += tree_workarounds(git, head)[1]
     if forbid_pr_title is not None:
         report.findings += pr_title_policy_findings(*forbid_pr_title)
     if base is None:

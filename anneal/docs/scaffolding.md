@@ -312,16 +312,17 @@ otherwise report: commit-message layout and `Agent-authored-by:` trailers,
 `git diff --check`, Markdown and comment lines that exceed 80 columns, missing
 license headers on new files, review-round IDs, unpinned upstream citations in
 `trusted/lean/` and `trusted/rustc-capture/`, the cumulative `AGENTS.md` byte
-budget, and the `Code Review Rules` mirror. `ci-core` checks cannot read Git
-history, so `.github/workflows/anneal-pr-hygiene.yml` runs it as the required
-`PR hygiene` check on every `opened`, `synchronize`, `reopened`, and `edited`
-pull-request event, against the PR's base and head and with
-`--forbid-pr-title-regex '\b[T]ODO\b'` to reject PR titles containing that
+budget, the `Code Review Rules` mirror, and malformed or `#PENDING`
+[`rustc` workaround anchors](rustc-workarounds.md#code-anchors). `ci-core`
+checks cannot read Git history, so `.github/workflows/anneal-pr-hygiene.yml`
+runs it as the required `PR hygiene` check on every `opened`, `synchronize`,
+`reopened`, and `edited` pull-request event, against the PR's base and head and
+with `--forbid-pr-title-regex '\b[T]ODO\b'` to reject PR titles containing that
 marker. In the merge queue it exits 0 without checking out: `ci-core`'s
 `skills-check` enforces the `AGENTS.md` budget and the rules mirror on every
 tree, and `ci-core` rejects the marker in landed commit messages. The script
-reads Git objects without checking out or running candidate code, so
-reviewers can run a trusted base copy against a candidate head.
+reads Git objects without checking out or running candidate code, so reviewers
+can run a trusted base copy against a candidate head.
 
 `PR hygiene` is soft-blocking. A trailer in the final trailer block of the
 PR's `HEAD` commit waives every finding of the named checks:
@@ -332,10 +333,10 @@ Skip-pr-hygiene: <check[,check...]> -- <reason>
 
 The checks are `commit-message`, `diff-check`, `wrap`, `header`,
 `review-round-id`, and `trusted-citation`. There is no `all`, and the
-`AGENTS.md` budget and rules mirror are never waivable. The reason needs at
-least five non-whitespace characters, and a named check without findings is
-an error, as is the trailer on any other commit in the PR. Each waived
-finding still emits a `::warning::` annotation and a step-summary entry.
+`AGENTS.md` budget, rules mirror, and workaround anchors are never waivable. The
+reason needs at least five non-whitespace characters, and a named check without
+findings is an error, as is the trailer on any other commit in the PR. Each
+waived finding still emits a `::warning::` annotation and a step-summary entry.
 
 Before publishing, also pass `--pr-body-file` and `--pr-title` to compare a
 single-commit PR's description and title with its commit (`--emit-pr-body`

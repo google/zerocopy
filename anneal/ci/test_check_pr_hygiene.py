@@ -627,6 +627,23 @@ class TreeCheckTests(RepoTestCase):
         self.assert_finding("code-review-rules-parity", "byte-identical",
                             base=None)
 
+    def test_rustc_workaround_anchors(self):
+        tag = cph.WORKAROUND_TAG
+        self.write("anneal/trusted/x.rs",
+                   HEADER_RS + f"// {tag}(#4364): summary\nfn f() {{}}\n")
+        self.write("anneal/docs/x.md", f"Example `// {tag}(#PENDING): s`\n")
+        self.write("anneal/vendor/x.rs", f"// {tag}(#PENDING): s\n")
+        self.commit()
+        self.assert_clean(base=None)
+        self.write("anneal/ci/y.py", HEADER_PY + f"# {tag}(#PENDING): s\n")
+        self.commit()
+        found = self.assert_finding("rustc-workaround", "#PENDING", base=None)
+        self.assertEqual((found["path"], found["line"]), ("anneal/ci/y.py", 8))
+        self.assert_finding("rustc-workaround", "#PENDING")
+        self.write("anneal/ci/y.py", HEADER_PY + f"x = 1  # {tag}(#1): s\n")
+        self.commit()
+        self.assert_finding("rustc-workaround", "malformed anchor", base=None)
+
     def test_crr_missing_marker(self):
         self.write("anneal/.gemini/styleguide.md", "# Style\n\nNo markers.\n")
         self.commit()
@@ -1187,7 +1204,7 @@ class WaiverTests(RepoTestCase):
         for name in ("all", "agents-budget", "code-review-rules-parity",
                      "commit-author",
                      "pr-body", "pr-title", "pr-title-policy", "receipt",
-                     "skip-pr-hygiene", "Wrap", "bogus"):
+                     "rustc-workaround", "skip-pr-hygiene", "Wrap", "bogus"):
             with self.subTest(name=name):
                 self.amend(waiver_message(
                     f"Skip-pr-hygiene: wrap,{name} -- Generated text."))

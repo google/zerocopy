@@ -386,6 +386,7 @@ fn local(place: &mir::Place<'_>) -> Result<u32> {
     Ok(place.local.as_u32())
 }
 
+// RUSTC-WORKAROUND(#4369): `Const::eval` ICEs on non-value `Const::Ty`.
 /// Evaluate an operand or `required_consts` constant under `typing_env`.
 ///
 /// Upstream `Const::eval` resolves `Const::Unevaluated` via
@@ -1153,6 +1154,7 @@ fn statement<'tcx>(
     })
 }
 
+// RUSTC-WORKAROUND(#4364): codegen rewrites `Use` calls after capture.
 /// Fail closed on `TerminatorKind::Call` with `CallSource::Use` before any
 /// future `Call` lowering can run.
 ///
@@ -2539,6 +2541,7 @@ fn body_inner<'tcx>(
             intrinsic.name
         ));
     }
+    // RUSTC-WORKAROUND(#4365): MIR UB checks survive only under this flag.
     // Defense in depth: `-Zmir-preserve-ub` disables `RemovePlaceMention` and
     // trivial `SwitchInt` read erasure before `Runtime(PostCleanup)`.
     if !tcx.sess.opts.unstable_opts.mir_preserve_ub {
@@ -2548,6 +2551,7 @@ fn body_inner<'tcx>(
                 .into(),
         );
     }
+    // RUSTC-WORKAROUND(#4364): codegen rewrites `Use` calls after capture.
     // Defense in depth: re-enforce the closed positive `#![feature(...)]`
     // allowlist and explicitly refuse `#![feature(ergonomic_clones)]` before
     // per-body translation. Post-capture `optimize_use_clone` in

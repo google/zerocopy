@@ -56,26 +56,30 @@ Do not track:
 ## Code anchors
 
 Anchor each open workaround at its primary site, and at each helper that
-lives elsewhere, with one tag in the file's comment syntax:
+lives elsewhere, with one tag opening its own comment line:
 
 ```rust
 // RUSTC-WORKAROUND(#4364): codegen rewrites `Use` calls after capture.
 ```
 
-Use `#` in Python, shell, TOML, YAML, and Nix, and `--` in Lean. The tag is
-`RUSTC-WORKAROUND(#NNNN): ` followed by a short summary, which may continue
-on the next comment lines, where `#NNNN` names a sub-issue of the umbrella.
-Keep mutable state, such as status and upstream links, in the issue rather
-than in comments, so triage never edits `trusted/`. Anchors supplement the
-pinned upstream quotes and citations that `trusted/` code already requires;
-they never replace them.
+Use `//`, `///`, or `//!` in Rust, `#` in Python, shell, TOML, YAML, and
+Nix, and `--` in Lean. The tag is `RUSTC-WORKAROUND(#NNNN): ` followed by a
+short summary, which may continue on the next comment lines, where `#NNNN`
+names a sub-issue of the umbrella. Make the tag line read on its own, since
+`ci/audit_rustc_workarounds.py` reports only that line. Keep mutable state,
+such as status and upstream links, in the issue rather than in comments, so
+triage never edits `trusted/`. Anchors supplement the pinned upstream quotes
+and citations that `trusted/` code already requires; they never replace them.
 
 Contributors and delegated workers who cannot file issues write
 `RUSTC-WORKAROUND(#PENDING): <summary>` and hand off the completed
 [evaluation](#five-minute-evaluation). Whoever publishes the change files the
 sub-issue, attaches it to the umbrella, and replaces every `#PENDING` before
-Gate 1 converges or the PR is marked ready for review. Review rejects any
-remaining `#PENDING`.
+Gate 1 converges or the PR is marked ready for review.
+[`ci/check_pr_hygiene.py`](../ci/check_pr_hygiene.py) scans every Anneal
+source file outside `vendor/` (Markdown is exempt, so prose and examples may
+name the tag) and fails on any remaining `#PENDING` or malformed anchor;
+review checks that each workaround has an anchor at all.
 
 ## Public and private boundary
 
@@ -189,9 +193,10 @@ Every PR that changes `COMPILER_COMMIT` (`trusted/rustc-capture/src/ir.rs`),
 (`flake.nix`) runs these steps, and reviewers check them under
 [`trust-review`](../skills/trust-review/SKILL.md#4-provenance-locks-manifests-and-packaged-bundles):
 
-1. **Inventory:** List every in-repo anchor (from `anneal/`, run
-   `git grep -nE 'RUSTC-WORKAROUND\(#[0-9]+\)' -- . ':!*.md'`, which skips
-   the policy text and examples) and every open sub-issue of the umbrella.
+1. **Inventory:** From `anneal/`, run
+   `python3 -B ci/audit_rustc_workarounds.py --bump`, which prints every
+   in-repo anchor grouped by issue as the step 4 table, and list every open
+   sub-issue of the umbrella.
 2. **Audit each item against the old and new pins:**
    - `upstream-landed`: Confirm the new pin contains the fix, then delete the
      workaround and its anchor in the bump PR.
@@ -210,8 +215,8 @@ Every PR that changes `COMPILER_COMMIT` (`trusted/rustc-capture/src/ir.rs`),
      `Embargoed guards: confirmation routed to the Gate 5 approver.`
 3. **Close retired issues:** Set the status to `workaround-retired`, cite the
    retiring PR, and close the sub-issue.
-4. **Report:** Add an audit table
-   (`Anchor | Issue | Status at old -> new pin | Action`) to the bump PR's
-   Review Receipt.
+4. **Report:** Fill in the status and action columns of the step 1 table
+   (adding rows for open sub-issues without an anchor) and paste it, with the
+   fixed embargoed-guard line from step 2, into the bump PR's Review Receipt.
 
 [umbrella]: https://github.com/google/zerocopy/issues/4358

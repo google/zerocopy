@@ -46,6 +46,7 @@ use rustc_target::spec::PanicStrategy as RustcPanicStrategy;
 
 use crate::{Args, Failure, extract, identity, ir, mono};
 
+// RUSTC-WORKAROUND(#4365): fn-pointer query providers force a OnceLock hook.
 // rustc query providers are function pointers, so the hook cannot borrow a
 // callback instance. These cells hold one process's session authority and owned
 // snapshots. They are initialized once before queries and never reused for a
@@ -127,6 +128,7 @@ impl RecordingLoader {
         }
     }
 
+    // RUSTC-WORKAROUND(#4368): diagnostic snippet probes share the FileLoader.
     /// Classify an undeclared text read as a diagnostic snippet probe.
     ///
     /// To render a span in an imported crate, rustc's `SourceMap` re-reads
@@ -1315,6 +1317,7 @@ const STDLIB_CORE_ALLOWED_FEATURES: &[&str] = &[
 /// capture process. `ergonomic_clones` lets post-capture `optimize_use_clone`
 /// diverge from captured MIR (see `collect`).
 /// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_feature/src/unstable.rs#L187-L207
+// RUSTC-WORKAROUND(#4364): codegen rewrites `Use` calls after capture.
 // RUSTC-WORKAROUND(#4361): `rustc` exposes no internal-feature table, and
 // its `Features::internal` misses `rustc_private`, so this list supplements
 // it explicitly.
@@ -1804,6 +1807,7 @@ fn validate_profile_options(opts: &Options, expected_overflow_checks: bool) -> R
             opts.cg.overflow_checks
         ));
     }
+    // RUSTC-WORKAROUND(#4365): MIR UB checks survive only under this flag.
     if !opts.unstable_opts.mir_preserve_ub {
         return Err("-Zmir-preserve-ub must be enabled during capture".into());
     }
@@ -2418,6 +2422,7 @@ fn collect(
         .lang_items()
         .iter()
         .any(|(lang_item, def)| def.is_local() && matches!(lang_item, LangItem::PanicImpl));
+    // RUSTC-WORKAROUND(#4364): codegen rewrites `Use` calls after capture.
     // Enforce the closed positive `#![feature(...)]` allowlist over
     // `tcx.features()` (both language and library features, including
     // `ACCEPTED_LANG_FEATURES` that `-Zallow-features` skips). Normal crates
@@ -2881,6 +2886,7 @@ pub(crate) fn run(
         format!("--edition={}", args.edition),
         format!("--target={}", args.target),
         format!("-Cpanic={}", requested_panic.as_str()),
+        // RUSTC-WORKAROUND(#4365): only `obj` output monomorphizes generics.
         // Metadata alone skips monomorphization and can miss a failing generic
         // inline constant. rustc skips crate items when `should_codegen` is
         // false: "Skip crate items and just output metadata in -Z no-codegen
@@ -2917,6 +2923,7 @@ pub(crate) fn run(
             "-Coverflow-checks={}",
             if args.overflow_checks { "yes" } else { "no" }
         ),
+        // RUSTC-WORKAROUND(#4365): MIR UB checks survive only under this flag.
         // Preserve `StatementKind::PlaceMention` (`RemovePlaceMention` checks
         // `!sess.opts.unstable_opts.mir_preserve_ub`) and `SwitchInt` reads
         // (`SimplifyCfg` checks
