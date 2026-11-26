@@ -257,6 +257,33 @@ archive and audit the trust boundary, the [scaffold guide][scaffold-guide] to
 run installed smoke cases and reproduce retained failures, and the
 [Gate 2 review guide][codex-review] for required merge checks.
 
+### Split packaging: external `--theory-dir` and shared `.olean` caching
+
+`cargo-anneal` separates Ring-0 operational semantics (`Trusted.*`, locked inside
+the verifier's trusted boundary as `trusted_model_manifest_sha256`) from
+`0`-TCB proof automation (`anneal/theory/`, recorded as build-reproducibility
+provenance in `theory_manifest_sha256`):
+
+- **Fast-rolling `0`-TCB `theory/` (`--theory-dir` / `--theory-archive`):**
+  Build systems such as Fuchsia and Bazel compile `cargo-anneal` with
+  `--no-default-features` (omitting `bundled_theory.json` and Pass-2
+  correspondence digests from the binary) and supply `anneal/theory/` at runtime
+  via `--theory-dir <dir>`, `--theory-archive <archive.tar.zst>`, or
+  `ANNEAL_THEORY_DIR`. `theory/bundle-manifest.json` (`schema_version = 2`)
+  declares `lean_toolchain`, `compatible_trusted_merkle_roots`,
+  `min_mir_ast_wire_version`, and `theory_merkle_root` so version skew or file
+  tampering fails closed in milliseconds before Lean runs. Because every module
+  in `theory/` is staged strictly as `TargetRole::Proof` inside `ExecSeal` and
+  kernel-replayed against the 3-axiom ceiling, rolling `theory/` cannot weaken
+  the verified theorem statement (`Expected.claim`).
+- **Shared Merkle `.olean` cache (`--olean-cache-dir` / `ANNEAL_OLEAN_CACHE_DIR`):**
+  Pass `--olean-cache-dir <dir>` (and optionally `--no-rebuild-bundled` after
+  prewarming) to share content-addressed `anneal-olean-cache-v2` `.olean`
+  artifacts across multiple crates and invocations. Because `Trusted.*` and
+  `TrustedBoundary` have zero import edges into `Anneal.*`, updating `theory/`
+  preserves 100% of `Trusted.*` `.olean` cache hits and recompiles only the
+  modified `Anneal.*` sub-DAG.
+
 [developing-anneal]: https://github.com/google/zerocopy/blob/main/anneal/docs/README.md
 [scaffold-guide]: https://github.com/google/zerocopy/blob/main/anneal/docs/scaffolding.md
 [codex-review]: https://github.com/google/zerocopy/blob/main/anneal/docs/codex-review.md

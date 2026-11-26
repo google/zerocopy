@@ -165,7 +165,16 @@ fn build_scalar_target_request(
         }
     }
 
-    let bundled_theory = cargo_anneal::bundle::embedded_theory_bundle().unwrap();
+    let theory_root = root.join("theory");
+    let bundled_theory = cargo_anneal::bundle::load_external_theory_dir(
+        &theory_root,
+        cargo_anneal::TOOLCHAIN,
+        cargo_anneal::EMBEDDED_TRUSTED_MERKLE_ROOT,
+        cargo_anneal::bundle::CURRENT_MIR_AST_WIRE_VERSION,
+        cargo_anneal::bundle::ExternalTheorySource::ExternalDir,
+    )
+    .unwrap()
+    .bundle;
     let theory_dir = stage_dir.join("theory");
     for entry in bundled_theory.modules {
         let dest = theory_dir.join(&entry.path);

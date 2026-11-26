@@ -1,5 +1,11 @@
 {
-  "schema_version": 1,
+  "schema_version": 2,
+  "lean_toolchain": "leanprover/lean4:v4.34.1",
+  "compatible_trusted_merkle_roots": [
+    "c94c7f51c15f4b0411664d5f8a25f62d5063d14221a0e8071d2dbda5b7452bfa"
+  ],
+  "min_mir_ast_wire_version": 5,
+  "theory_merkle_root": "0a0cdc7d2f346eed416784624f6521932514082c5ea6b3083685d384792a5a19",
   "modules": [
     {
       "path": "theory/Anneal/AiPcc.lean",

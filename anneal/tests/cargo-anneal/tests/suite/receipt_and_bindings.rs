@@ -8,7 +8,7 @@
 
 //! Schema v3 receipts, boundary mutation rejection, `rustc` mode, and taint.
 
-use std::{env, ffi::OsStr, fs, os::unix::fs::symlink, path::PathBuf};
+use std::{ffi::OsStr, fs, os::unix::fs::symlink, path::PathBuf};
 
 use anneal_testkit::{Invocation, assertions::assert_outcome_exit};
 use serde_json::{Value, json};
@@ -150,51 +150,20 @@ fn check_provenance_and_toolchain(ok: &anneal_testkit::VerifySuccessReceipt) {
         })
     };
     assert_eq!(ok.toolchain_identity, expected_identity);
+    assert_eq!(
+        ok.trusted_model_manifest_sha256.as_deref(),
+        Some(cargo_anneal::EMBEDDED_TRUSTED_MERKLE_ROOT)
+    );
+    assert_eq!(ok.model_manifest_sha256, cargo_anneal::EMBEDDED_TRUSTED_MERKLE_ROOT);
+    assert_eq!(ok.theory_manifest_sha256.as_deref().map(str::len), Some(64));
 
     let prov = &ok.correspondence_provenance;
-    assert_eq!(prov["schema_version"], 1);
-    assert_eq!(prov["upstream_repository"], "https://github.com/proofs-rs/lean-miri.git");
-    assert_eq!(prov["upstream_commit"], "c92d1d9754c9dd585b6b9d6949ae67e5e4665d6a");
-    assert_eq!(prov["build_lean_toolchain"], "leanprover/lean4:v4.34.1");
-    assert_eq!(
-        prov["sysroot_foundation_manifest_sha256"],
-        cargo_anneal::LOCKED_SYSROOT_FOUNDATION_MANIFEST_SHA256
-    );
-    assert_eq!(prov["upstream_pin_sha256"].as_str().unwrap().len(), 64);
-    assert_eq!(prov["correspondence_adapters"].as_object().unwrap().len(), 7);
-    assert_eq!(
-        prov["correspondence_adapters"]["trusted/correspondence/Trusted/Correspondence.lean"]
-            .as_str()
-            .unwrap()
-            .len(),
-        64
-    );
-    assert_eq!(prov["patched_files"].as_array().unwrap().len(), 13);
-    assert_eq!(prov["correspondence_proofs"].as_object().unwrap().len(), 19);
-    for proof_key in [
-        "correspondence/Anneal/MirCorrespondence/InitAndSim.lean",
-        "correspondence/Anneal/MirCorrespondence/LayoutAndAlign.lean",
-        "correspondence/Anneal/MirCorrespondence/MiriMemoryBridge.lean",
-        "correspondence/Anneal/MirCorrespondence/RefinementBundles.lean",
-        "correspondence/Anneal/MirCorrespondenceProof.lean",
-    ] {
-        assert_eq!(prov["correspondence_proofs"][proof_key].as_str().unwrap().len(), 64);
-    }
-    for lean_key in [
-        "trusted/lean/Trusted.lean",
-        "trusted/lean/Trusted/MirAst.lean",
-        "trusted/lean/Trusted/MirSemantics.lean",
-        "trusted/lean/foundation-lock.json",
-        "trusted/lean/lean-toolchain",
-    ] {
-        assert_eq!(prov["trusted_lean"][lean_key].as_str().unwrap().len(), 64);
-    }
-    assert!(prov["note"].as_str().unwrap().contains("anneal-audit --require-correspondence"));
+    assert_eq!(prov["applicable"], json!(false));
+    assert_eq!(prov["reason"], cargo_anneal::bundle::DECOUPLED_CORRESPONDENCE_PROVENANCE_REASON);
 
-    let bundled_prov: Value =
-        serde_json::from_str(cargo_anneal::EMBEDDED_CORRESPONDENCE_PROVENANCE_JSON).unwrap();
-    assert_eq!(prov, &bundled_prov);
-
+    let checkout_prov =
+        cargo_anneal::bundle::render_correspondence_provenance_from_checkout(&anneal_root())
+            .expect("Pass-2 correspondence provenance renders directly from checkout");
     let rendered_py = std::process::Command::new("python3")
         .arg("-B")
         .arg(anneal_root().join("ci/render_correspondence_provenance.py"))
@@ -207,20 +176,7 @@ fn check_provenance_and_toolchain(ok: &anneal_testkit::VerifySuccessReceipt) {
         "render_correspondence_provenance.py failed: {}",
         String::from_utf8_lossy(&rendered_py.stderr)
     );
-    assert_eq!(
-        String::from_utf8(rendered_py.stdout).unwrap(),
-        cargo_anneal::EMBEDDED_CORRESPONDENCE_PROVENANCE_JSON
-    );
-
-    if let Ok(install_root) = env::var("ANNEAL_TEST_INSTALL_ROOT")
-        && !install_root.is_empty()
-    {
-        let archive_path =
-            PathBuf::from(install_root).join("share/anneal/correspondence-provenance.json");
-        let archive_prov: Value =
-            serde_json::from_slice(&fs::read(&archive_path).unwrap()).unwrap();
-        assert_eq!(&archive_prov, prov);
-    }
+    assert_eq!(String::from_utf8(rendered_py.stdout).unwrap(), checkout_prov);
 }
 
 #[test]

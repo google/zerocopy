@@ -63,6 +63,12 @@ const ALLOWED_CLAIM_KINDS: &[&str] = &["exact_refines", "sound_refines", "pure_s
 const ALLOWED_PROVENANCE_TAINTS: &[&str] =
     &["assumed_seams_present", "choice_total_false", "vendor_upstream_patches_present"];
 const ALLOWED_PROVENANCE_SCOPES: &[&str] = &["full_gate", "partial_gate"];
+/// Canonical reason recorded when Pass-2 correspondence provenance is
+/// decoupled from `cargo-anneal` and no explicit `--correspondence-provenance`
+/// JSON was passed.
+pub const DECOUPLED_CORRESPONDENCE_PROVENANCE_REASON: &str = "Pass 2 correspondence \
+    provenance is decoupled from cargo-anneal; verify repository correspondence \
+    via anneal-audit --require-correspondence";
 
 /// Controls how unrecognized RFC 6901 JSON pointers in a receipt are handled.
 #[derive(Clone, Copy, Debug, Default, PartialEq, Eq)]
@@ -337,6 +343,12 @@ pub struct SuccessReceipt {
     pub capture_shards_sha256: Option<String>,
     pub capture_binary_sha256: String,
     pub model_manifest_sha256: String,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub trusted_model_manifest_sha256: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub theory_manifest_sha256: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub theory_source: Option<String>,
     pub specification_manifest_sha256: String,
     pub sha256_locked: Vec<String>,
     pub sha256_recorded: Vec<String>,
@@ -866,6 +878,44 @@ fn parse_success_receipt(
     };
     let capture_binary_sha256 = req_sha256(root, "capture_binary_sha256", violations)?;
     let model_manifest_sha256 = req_sha256(root, "model_manifest_sha256", violations)?;
+    let trusted_model_manifest_sha256 = match root.opt_str("trusted_model_manifest_sha256")? {
+        Some(hex) => {
+            if !is_sha256_hex(hex) {
+                violations.push(format!(
+                    "field `/trusted_model_manifest_sha256` must be a 64-character SHA-256 hex digest, got `{hex}`"
+                ));
+            } else if hex != model_manifest_sha256 {
+                violations.push(format!(
+                    "field `/trusted_model_manifest_sha256` (`{hex}`) disagrees with `model_manifest_sha256` (`{model_manifest_sha256}`)"
+                ));
+            }
+            Some(hex.to_owned())
+        }
+        None => None,
+    };
+    let theory_manifest_sha256 = match root.opt_str("theory_manifest_sha256")? {
+        Some(hex) => {
+            if !is_sha256_hex(hex) {
+                violations.push(format!(
+                    "field `/theory_manifest_sha256` must be a 64-character SHA-256 hex digest, got `{hex}`"
+                ));
+            }
+            Some(hex.to_owned())
+        }
+        None => None,
+    };
+    let theory_source = match root.opt_str("theory_source")? {
+        Some(src) => {
+            if !matches!(src, "external_dir" | "external_archive" | "toolchain_share" | "embedded")
+            {
+                violations.push(format!(
+                    "field `/theory_source` must be one of external_dir, external_archive, toolchain_share, embedded (got `{src}`)"
+                ));
+            }
+            Some(src.to_owned())
+        }
+        None => None,
+    };
     let specification_manifest_sha256 =
         req_sha256(root, "specification_manifest_sha256", violations)?;
 
@@ -1152,7 +1202,11 @@ fn parse_success_receipt(
              pointer-free `assumptions`"
         ));
     }
-    if !has_unpinned_taint && canonical_root == expected_v1_root && !prov_summary.applicable {
+    if !has_unpinned_taint
+        && canonical_root == expected_v1_root
+        && !prov_summary.applicable
+        && !prov_summary.decoupled
+    {
         violations.push(
             "pinned Profile v1 verification correspondence_provenance must omit `applicable: false`"
                 .into(),
@@ -1388,6 +1442,9 @@ fn parse_success_receipt(
         capture_shards_sha256,
         capture_binary_sha256,
         model_manifest_sha256,
+        trusted_model_manifest_sha256,
+        theory_manifest_sha256,
+        theory_source,
         specification_manifest_sha256,
         sha256_locked,
         sha256_recorded,
@@ -1456,6 +1513,7 @@ fn parse_success_receipt(
 
 struct ProvenanceSummary {
     applicable: bool,
+    decoupled: bool,
     schema_version: Option<u64>,
     claim_kind: Option<String>,
     permitted_axioms: Option<Vec<String>>,
@@ -1527,9 +1585,11 @@ fn parse_provenance(
         }
         let reason = prov.req_str("reason")?;
         check_trimmed_nonempty("/correspondence_provenance", "reason", reason, violations);
+        let decoupled = reason == DECOUPLED_CORRESPONDENCE_PROVENANCE_REASON;
         prov.collect_unrecognized(unknown);
         Ok(ProvenanceSummary {
             applicable,
+            decoupled,
             schema_version: None,
             claim_kind: None,
             permitted_axioms: None,
@@ -1707,6 +1767,7 @@ fn parse_provenance(
         prov.collect_unrecognized(unknown);
         Ok(ProvenanceSummary {
             applicable: true,
+            decoupled: false,
             schema_version: Some(sv),
             claim_kind,
             permitted_axioms,
@@ -1724,6 +1785,150 @@ fn parse_provenance(
             residual_digest,
         })
     }
+}
+
+/// Strictly parse and cross-check a detached `--correspondence-provenance` JSON
+/// payload against the embedded Ring-0 `Trusted/` toolchain, sysroot manifest,
+/// and `trusted/lean/*` source digests.
+pub fn validate_detached_correspondence_provenance(
+    bytes: &[u8],
+    expected_build_lean_toolchain: &str,
+    expected_sysroot_foundation_manifest_sha256: &str,
+    expected_trusted_lean: &std::collections::BTreeMap<&str, String>,
+) -> Result<Value, String> {
+    let val = StrictJsonDom::parse(bytes)?;
+    let obj = val.as_object().ok_or_else(|| {
+        "detached correspondence provenance root must be a JSON object".to_owned()
+    })?;
+    if obj.contains_key("applicable") || obj.contains_key("reason") {
+        return Err("detached correspondence provenance must carry an applicable Pass 2 record \
+             (omit `applicable` and `reason`)"
+            .to_owned());
+    }
+    let mut unknown = Vec::new();
+    let mut violations = Vec::new();
+    let summary = parse_provenance(obj, false, &mut unknown, &mut violations)?;
+    if !unknown.is_empty() {
+        unknown.sort();
+        unknown.dedup();
+        return Err(format!(
+            "unrecognized field(s) in detached correspondence provenance: {}",
+            unknown.join(", ")
+        ));
+    }
+    for key in [
+        "upstream_repository",
+        "upstream_commit",
+        "upstream_lean_toolchain",
+        "build_lean_toolchain",
+        "note",
+    ] {
+        match obj.get(key).and_then(Value::as_str) {
+            Some(s) if !s.trim().is_empty() => {}
+            _ => violations.push(format!(
+                "field `/correspondence_provenance/{key}` must be a non-empty string"
+            )),
+        }
+    }
+    // Validate `patched_files` structure in v1 too (v3 already checked above).
+    if summary.schema_version == Some(1) {
+        match obj.get("patched_files").and_then(Value::as_array) {
+            None => violations.push(
+                "field `/correspondence_provenance/patched_files` must be a JSON array".to_owned(),
+            ),
+            Some(arr) => {
+                let mut seen = BTreeSet::new();
+                for (i, item) in arr.iter().enumerate() {
+                    let Some(pobj) = item.as_object() else {
+                        violations.push(format!(
+                            "correspondence_provenance.patched_files[{i}] must be a JSON object"
+                        ));
+                        continue;
+                    };
+                    let ptr = format!("/correspondence_provenance/patched_files/{i}");
+                    let mut pc = ObjectCursor::nested(&ptr, pobj);
+                    let path = pc.req_str("path")?.to_owned();
+                    check_trimmed_nonempty(&ptr, "path", &path, &mut violations);
+                    let _ = req_sha256(&mut pc, "upstream_sha256", &mut violations)?;
+                    let _ = req_sha256(&mut pc, "patched_sha256", &mut violations)?;
+                    let mut extra = Vec::new();
+                    pc.collect_unrecognized(&mut extra);
+                    if !extra.is_empty() {
+                        violations.push(format!(
+                            "unrecognized field(s) in patched_files[{i}]: {}",
+                            extra.join(", ")
+                        ));
+                    }
+                    if !seen.insert(path.clone()) {
+                        violations.push(format!(
+                            "duplicate correspondence_provenance.patched_files path `{path}`"
+                        ));
+                    }
+                }
+            }
+        }
+    }
+    for map_key in ["correspondence_adapters", "correspondence_proofs", "trusted_lean"] {
+        match obj.get(map_key).and_then(Value::as_object) {
+            Some(map) if !map.is_empty() => {
+                for (k, v) in map {
+                    if k.trim().is_empty() {
+                        violations.push(format!(
+                            "correspondence_provenance.{map_key} contains an empty path key"
+                        ));
+                    }
+                    match v.as_str() {
+                        Some(hex) if is_sha256_hex(hex) => {}
+                        _ => violations.push(format!(
+                            "correspondence_provenance.{map_key}[{k:?}] must be a 64-character \
+                             SHA-256 hex digest"
+                        )),
+                    }
+                }
+            }
+            _ => violations.push(format!(
+                "correspondence_provenance.{map_key} must be a non-empty digest map"
+            )),
+        }
+    }
+    if !violations.is_empty() {
+        return Err(format!(
+            "invalid detached correspondence provenance: {}",
+            violations.join("; ")
+        ));
+    }
+    if summary.build_lean_toolchain.as_deref() != Some(expected_build_lean_toolchain) {
+        return Err(format!(
+            "detached correspondence provenance build_lean_toolchain {:?} disagrees with \
+             pinned {expected_build_lean_toolchain:?}",
+            summary.build_lean_toolchain
+        ));
+    }
+    if summary.sysroot_foundation_manifest_sha256.as_deref()
+        != Some(expected_sysroot_foundation_manifest_sha256)
+    {
+        return Err(format!(
+            "detached correspondence provenance sysroot_foundation_manifest_sha256 {:?} \
+             disagrees with embedded {expected_sysroot_foundation_manifest_sha256:?}",
+            summary.sysroot_foundation_manifest_sha256
+        ));
+    }
+    let actual_trusted: std::collections::BTreeMap<&str, &str> = obj["trusted_lean"]
+        .as_object()
+        .expect("validated object above")
+        .iter()
+        .filter_map(|(k, v)| v.as_str().map(|s| (k.as_str(), s)))
+        .collect();
+    let expected_borrowed: std::collections::BTreeMap<&str, &str> =
+        expected_trusted_lean.iter().map(|(k, v)| (*k, v.as_str())).collect();
+    if actual_trusted != expected_borrowed {
+        return Err(
+            "detached correspondence provenance trusted_lean digests do not match embedded \
+             Trusted/lean sources"
+                .to_owned(),
+        );
+    }
+    Ok(val)
 }
 
 fn parse_instantiations(
@@ -2199,7 +2404,8 @@ fn parse_u64_list(arr: &[Value], ptr: &str) -> Result<Vec<u64>, String> {
     arr.iter()
         .enumerate()
         .map(|(i, val)| {
-            val.as_u64().ok_or_else(|| format!("element `{ptr}/{i}` must be a non-negative integer"))
+            val.as_u64()
+                .ok_or_else(|| format!("element `{ptr}/{i}` must be a non-negative integer"))
         })
         .collect()
 }
@@ -2258,9 +2464,8 @@ fn parse_shards(
     let mut cyclic_shard_sccs = 0u64;
     let mut cursor = 0u64;
     for (i, val) in shards_arr.iter().enumerate() {
-        let entry_obj = val
-            .as_object()
-            .ok_or_else(|| format!("shards.shards[{i}] must be a JSON object"))?;
+        let entry_obj =
+            val.as_object().ok_or_else(|| format!("shards.shards[{i}] must be a JSON object"))?;
         let ptr = format!("/shards/shards/{i}");
         let mut sc = ObjectCursor::nested(&ptr, entry_obj);
         let shard_idx = sc.req_u64("shard_idx")?;
@@ -2393,9 +2598,8 @@ fn parse_shards(
         ));
     }
     if cursor != total_bodies {
-        violations.push(format!(
-            "shards cover {cursor} bodies != shards.total_bodies ({total_bodies})"
-        ));
+        violations
+            .push(format!("shards cover {cursor} bodies != shards.total_bodies ({total_bodies})"));
     }
     c.collect_unrecognized(unknown);
     Ok(ReceiptShardsManifest {
@@ -3999,7 +4203,8 @@ pub(crate) mod tests {
         // Unpaired `capture_shards_sha256` / `shards` fail closed.
         let mut missing_shards = valid.clone();
         missing_shards.as_object_mut().unwrap().remove("shards");
-        let env = parse_and_validate_receipt(&serde_json::to_vec(&missing_shards).unwrap()).unwrap();
+        let env =
+            parse_and_validate_receipt(&serde_json::to_vec(&missing_shards).unwrap()).unwrap();
         assert!(env.invariant_violations.iter().any(|v| v.contains("capture_shards_sha256")));
 
         let mut missing_hash = valid.clone();

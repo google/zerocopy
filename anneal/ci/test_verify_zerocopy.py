@@ -1923,6 +1923,90 @@ class VerifyZerocopyTests(unittest.TestCase):
             parsed_live["correspondence_provenance"], live_provenance
         )
 
+        # 3. Decoupled Pass-2 provenance sentinel and split-packaging metadata:
+        #    exact canonical reason + valid `trusted_model_manifest_sha256` /
+        #    `theory_manifest_sha256` / `theory_source` pass, whereas altered
+        #    decoupled reasons, extra keys, or malformed split digests fail.
+        decoupled_v1 = make_receipt(
+            correspondence_provenance={
+                "applicable": False,
+                "reason": (
+                    verify_zerocopy.DECOUPLED_CORRESPONDENCE_PROVENANCE_REASON
+                ),
+            }
+        )
+        decoupled_v1["model_manifest_sha256"] = SHA_A
+        decoupled_v1["audit"]["bindings"]["modelManifestSha256"] = SHA_A
+        decoupled_v1["trusted_model_manifest_sha256"] = SHA_A
+        decoupled_v1["theory_manifest_sha256"] = SHA_B
+        decoupled_v1["theory_source"] = "external_archive"
+        parsed_decoupled = verify_zerocopy.validate_receipt(
+            "01_unit",
+            0,
+            json.dumps(decoupled_v1),
+            "",
+            ["util::macros::__unsafe"],
+            expected_profile=1,
+        )
+        self.assertEqual(parsed_decoupled["theory_source"], "external_archive")
+
+        split_bad_cases = [
+            (
+                "altered_decoupled_reason",
+                {
+                    **decoupled_v1,
+                    "correspondence_provenance": {
+                        "applicable": False,
+                        "reason": (
+                            verify_zerocopy.DECOUPLED_CORRESPONDENCE_PROVENANCE_REASON
+                            + " (altered)"
+                        ),
+                    },
+                },
+                "must omit applicable and reason",
+            ),
+            (
+                "decoupled_extra_key",
+                {
+                    **decoupled_v1,
+                    "correspondence_provenance": {
+                        "applicable": False,
+                        "reason": (
+                            verify_zerocopy.DECOUPLED_CORRESPONDENCE_PROVENANCE_REASON
+                        ),
+                        "extra": 1,
+                    },
+                },
+                "unexpected keys=\\['extra'\\]",
+            ),
+            (
+                "mismatched_trusted_model_digest",
+                {**decoupled_v1, "trusted_model_manifest_sha256": SHA_E},
+                "trusted_model_manifest_sha256=",
+            ),
+            (
+                "bad_theory_digest",
+                {**decoupled_v1, "theory_manifest_sha256": "not-hex"},
+                "theory_manifest_sha256='not-hex'",
+            ),
+            (
+                "bad_theory_source",
+                {**decoupled_v1, "theory_source": "remote_url"},
+                "theory_source='remote_url'",
+            ),
+        ]
+        for label, bad_payload, needle in split_bad_cases:
+            with self.subTest(case=label):
+                with self.assertRaisesRegex(RuntimeError, needle):
+                    verify_zerocopy.validate_receipt(
+                        "01_unit",
+                        0,
+                        json.dumps(bad_payload),
+                        "",
+                        ["util::macros::__unsafe"],
+                        expected_profile=1,
+                    )
+
     def test_summary_json_propagates_v1_and_v2_receipt_caveats_verbatim(self):
         v1_assumptions = [
             "faithful pinned compiler capture",

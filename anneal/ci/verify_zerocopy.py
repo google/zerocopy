@@ -179,6 +179,16 @@ ALLOWED_PROVENANCE_TAINTS = frozenset({
     "vendor_upstream_patches_present",
 })
 ALLOWED_PROVENANCE_SCOPES = frozenset({"full_gate", "partial_gate"})
+DECOUPLED_CORRESPONDENCE_PROVENANCE_REASON = (
+    "Pass 2 correspondence provenance is decoupled from cargo-anneal; "
+    "verify repository correspondence via anneal-audit --require-correspondence"
+)
+VALID_THEORY_SOURCES = frozenset({
+    "external_dir",
+    "external_archive",
+    "toolchain_share",
+    "embedded",
+})
 VALID_MODEL_SYSTEM_RELATION_KEYS = frozenset({
     "kind",
     "qualifier",
@@ -2265,6 +2275,18 @@ def _validate_profile_v1_provenance(provenance, failures):
             f"object: {provenance!r}"
         )
         return
+    if (
+        provenance.get("applicable") is False
+        and provenance.get("reason")
+        == DECOUPLED_CORRESPONDENCE_PROVENANCE_REASON
+    ):
+        extra = sorted(set(provenance.keys()) - {"applicable", "reason"})
+        if extra:
+            failures.append(
+                "Profile v1 decoupled correspondence_provenance unexpected "
+                f"keys={extra!r}"
+            )
+        return
     if "applicable" in provenance or "reason" in provenance:
         failures.append(
             "Profile v1 receipt correspondence_provenance must omit "
@@ -2462,6 +2484,26 @@ def validate_parsed_receipt(
     spec_warnings = receipt.get("spec_warnings")
     if spec_warnings != []:
         failures.append(f"spec_warnings={spec_warnings!r}")
+
+    if "trusted_model_manifest_sha256" in receipt:
+        trusted_mod = receipt.get("trusted_model_manifest_sha256")
+        if not _is_sha256_hex(trusted_mod):
+            failures.append(
+                f"trusted_model_manifest_sha256={trusted_mod!r}"
+            )
+        elif trusted_mod != receipt.get("model_manifest_sha256"):
+            failures.append(
+                f"trusted_model_manifest_sha256={trusted_mod!r} "
+                f"!= model_manifest_sha256={receipt.get('model_manifest_sha256')!r}"
+            )
+    if "theory_manifest_sha256" in receipt:
+        theory_mod = receipt.get("theory_manifest_sha256")
+        if not _is_sha256_hex(theory_mod):
+            failures.append(f"theory_manifest_sha256={theory_mod!r}")
+    if "theory_source" in receipt:
+        theory_src = receipt.get("theory_source")
+        if theory_src not in VALID_THEORY_SOURCES:
+            failures.append(f"theory_source={theory_src!r}")
 
     if expected_profile is not None and (
         isinstance(expected_profile, bool)

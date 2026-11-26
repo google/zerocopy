@@ -1152,8 +1152,14 @@ impl Checker {
         let mut checker = Self::new_with_env(root, lean, environment)?;
         let home = checker.environment.get("HOME").cloned();
         let xdg = env::var_os("XDG_CACHE_HOME");
+        let env_cache = env::var_os("ANNEAL_OLEAN_CACHE_DIR");
         checker.olean_cache =
-            OleanCache::with_env_vars(home.as_deref().map(OsStr::new), xdg.as_deref());
+            OleanCache::with_resolved_dir(crate::olean_cache::resolve_olean_cache_dir(
+                None,
+                env_cache.as_deref(),
+                home.as_deref().map(OsStr::new),
+                xdg.as_deref(),
+            ));
         Ok(checker)
     }
 
@@ -1329,9 +1335,22 @@ impl Checker {
         self.prebuilt_olean_dir = dir;
     }
 
+    /// Override the shared content-addressed Merkle `.olean` disk cache
+    /// directory (`v2/<merkle_key>/`). Must be an absolute non-symlink path
+    /// owned by the current UID.
+    pub fn set_olean_disk_cache_dir(&mut self, dir: Option<PathBuf>) {
+        self.olean_cache.set_disk_dir(dir);
+    }
+
+    /// Return `(hits, misses)` observed by `OleanCache` across inspector,
+    /// `Trusted.*`, `Anneal.*`, and target shard lookups on this [`Checker`].
+    pub fn olean_cache_stats(&self) -> (usize, usize) {
+        self.olean_cache.stats()
+    }
+
     #[cfg(test)]
     pub(crate) fn set_olean_disk_cache_dir_for_test(&mut self, dir: Option<PathBuf>) {
-        self.olean_cache.set_disk_dir(dir);
+        self.set_olean_disk_cache_dir(dir);
     }
 
     fn effective_prebuilt_dir(&self, prefix: &Path) -> Option<PathBuf> {

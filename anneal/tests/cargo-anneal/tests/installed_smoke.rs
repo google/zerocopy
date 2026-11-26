@@ -105,33 +105,21 @@ fn run_smoke(run: &RunDirectory) -> TestResult {
             "workers": jobs,
         }),
     )?;
-    let checkout = Path::new(env!("CARGO_MANIFEST_DIR"))
-        .ancestors()
-        .nth(2)
-        .unwrap();
+    let checkout = Path::new(env!("CARGO_MANIFEST_DIR")).ancestors().nth(2).unwrap();
     // Installed tools must work without checkout-relative configuration or
     // build outputs. Keep every case below an unrelated working directory
     // so a missing installed input cannot be supplied by this source tree.
-    if fs::canonicalize(run.path())
-        .map_err(|error| error.to_string())?
-        .starts_with(checkout)
-    {
+    if fs::canonicalize(run.path()).map_err(|error| error.to_string())?.starts_with(checkout) {
         return Err("installed smoke working directories must be outside the checkout".into());
     }
 
     let needs_installation = selected.iter().any(|name| !name.starts_with("cargo-"));
-    let installation = if needs_installation {
-        Some(installation(run)?)
-    } else {
-        None
-    };
+    let installation = if needs_installation { Some(installation(run)?) } else { None };
     run.run_cases(&selected, jobs, |name, case| {
         if name.starts_with("cargo-") {
             cargo_case(name, case)
         } else {
-            let root = installation
-                .as_deref()
-                .expect("installation selected above");
+            let root = installation.as_deref().expect("installation selected above");
             match name {
                 "bundled-cargo-check" => bundled_cargo_case(case, root),
                 "lean-file" => lean_case(case, root, jobs),
@@ -147,10 +135,7 @@ fn run_smoke(run: &RunDirectory) -> TestResult {
 }
 
 fn installation(run: &RunDirectory) -> TestResult<PathBuf> {
-    match (
-        env::var_os("ANNEAL_TEST_ARCHIVE"),
-        env::var_os("ANNEAL_TEST_INSTALL_ROOT"),
-    ) {
+    match (env::var_os("ANNEAL_TEST_ARCHIVE"), env::var_os("ANNEAL_TEST_INSTALL_ROOT")) {
         (Some(_), Some(_)) => {
             Err("supply only ANNEAL_TEST_ARCHIVE or ANNEAL_TEST_INSTALL_ROOT".into())
         }
@@ -173,16 +158,9 @@ fn installation(run: &RunDirectory) -> TestResult<PathBuf> {
             let mut startup = run.case("installation")?;
             let mut command = Invocation::new(
                 env::current_exe().map_err(|error| error.to_string())?,
-                &[
-                    "--exact",
-                    "install_archive_worker",
-                    "--ignored",
-                    "--nocapture",
-                ],
+                &["--exact", "install_archive_worker", "--ignored", "--nocapture"],
             );
-            command
-                .environment
-                .insert("ANNEAL_TEST_ARCHIVE".into(), text_path(&archive)?.into());
+            command.environment.insert("ANNEAL_TEST_ARCHIVE".into(), text_path(&archive)?.into());
             command.environment.insert(
                 "ANNEAL_TEST_INSTALL_DEST".into(),
                 text_path(&run.path().join("installation"))?.into(),
@@ -308,16 +286,9 @@ fn cargo_setup_failure(case: &mut CaseDirectory, cargo: &Path) -> TestResult {
     fs::create_dir(&fresh_cache).map_err(|error| format!("create fresh setup cache: {error}"))?;
     let fresh_fail = run_local_setup(case, cargo, &fresh_cache, "invalid.tar.zst")?;
     fresh_fail.expect_code(1)?;
-    require_text(
-        &fresh_fail.stderr,
-        "error: failed to install Anneal toolchain:",
-        &fresh_fail,
-    )?;
+    require_text(&fresh_fail.stderr, "error: failed to install Anneal toolchain:", &fresh_fail)?;
     if !fresh_fail.stdout.is_empty() {
-        return Err(format!(
-            "failed setup unexpectedly wrote stdout: {}",
-            fresh_fail.describe()
-        ));
+        return Err(format!("failed setup unexpectedly wrote stdout: {}", fresh_fail.describe()));
     }
 
     let cache = case.path().join("reinstall-cache");
@@ -333,10 +304,7 @@ fn cargo_setup_failure(case: &mut CaseDirectory, cargo: &Path) -> TestResult {
             .ok_or_else(|| format!("unexpected setup output: {}", v1_out.describe()))?,
     );
     if !installed_root.starts_with(&cache) {
-        return Err(format!(
-            "setup installed outside cache root: {}",
-            installed_root.display()
-        ));
+        return Err(format!("setup installed outside cache root: {}", installed_root.display()));
     }
     if fs::read(installed_root.join("marker.txt")).ok().as_deref() != Some(b"installed smoke v1") {
         return Err("v1 archive marker missing after initial setup".into());
@@ -352,11 +320,7 @@ fn cargo_setup_failure(case: &mut CaseDirectory, cargo: &Path) -> TestResult {
     for bad_arg in ["invalid.tar.zst", "missing.tar.zst"] {
         let out = run_local_setup(case, cargo, &cache, bad_arg)?;
         out.expect_code(1)?;
-        require_text(
-            &out.stderr,
-            "error: failed to install Anneal toolchain:",
-            &out,
-        )?;
+        require_text(&out.stderr, "error: failed to install Anneal toolchain:", &out)?;
         if !out.stdout.is_empty() {
             return Err(format!(
                 "failed reinstall ({bad_arg}) unexpectedly wrote stdout: {}",
@@ -366,9 +330,7 @@ fn cargo_setup_failure(case: &mut CaseDirectory, cargo: &Path) -> TestResult {
         if fs::read(installed_root.join("marker.txt")).ok().as_deref()
             != Some(b"installed smoke v2")
         {
-            return Err(format!(
-                "failed reinstall ({bad_arg}) damaged existing installation"
-            ));
+            return Err(format!("failed reinstall ({bad_arg}) damaged existing installation"));
         }
     }
     Ok(())
@@ -438,9 +400,7 @@ fn lean_header_imports(source: &str, module: &str) -> TestResult<Vec<String>> {
                 continue;
             }
             if token.split('.').any(|seg| !is_lean_ident(seg)) {
-                return Err(format!(
-                    "unexpected import module name {token:?} in {module}"
-                ));
+                return Err(format!("unexpected import module name {token:?} in {module}"));
             }
             imports.push(token);
             expecting_import_target = false;
@@ -470,15 +430,14 @@ fn resolve_packaged_lean_source(
     let trusted_path = trusted_root.join(&rel);
     let theory_path = theory_root.join(&rel);
     match (trusted_path.is_file(), theory_path.is_file()) {
-        (true, true) => Err(format!(
-            "ambiguous packaged Lean module {module} in both trusted/lean and theory"
-        )),
+        (true, true) => {
+            Err(format!("ambiguous packaged Lean module {module} in both trusted/lean and theory"))
+        }
         (true, false) => Ok((trusted_root.to_path_buf(), trusted_path)),
         (false, true) => Ok((theory_root.to_path_buf(), theory_path)),
-        (false, false) => Err(format!(
-            "missing packaged Lean module source for {module} ({})",
-            rel.display()
-        )),
+        (false, false) => {
+            Err(format!("missing packaged Lean module source for {module} ({})", rel.display()))
+        }
     }
 }
 
@@ -498,11 +457,50 @@ fn lean_case(case: &mut CaseDirectory, root: &Path, jobs: usize) -> TestResult {
         .map_err(|error| format!("read {}: {error}", manifest_path.display()))?;
     let manifest_json: Value = serde_json::from_str(&manifest_raw)
         .map_err(|error| format!("parse {}: {error}", manifest_path.display()))?;
-    if manifest_json["schema_version"] != 1 {
-        return Err(format!(
-            "unexpected bundle-manifest.json schema_version in {}",
-            manifest_path.display()
-        ));
+    match manifest_json["schema_version"].as_u64() {
+        Some(1) => {}
+        Some(2) => {
+            if manifest_json["lean_toolchain"].as_str() != Some("leanprover/lean4:v4.34.1") {
+                return Err(format!(
+                    "unexpected bundle-manifest.json lean_toolchain in {}",
+                    manifest_path.display()
+                ));
+            }
+            if manifest_json["min_mir_ast_wire_version"].as_u64() != Some(5) {
+                return Err(format!(
+                    "unexpected bundle-manifest.json min_mir_ast_wire_version in {}",
+                    manifest_path.display()
+                ));
+            }
+            let is_hex64 = |v: Option<&str>| {
+                v.is_some_and(|s| s.len() == 64 && s.bytes().all(|b| b.is_ascii_hexdigit()))
+            };
+            if !is_hex64(manifest_json["theory_merkle_root"].as_str()) {
+                return Err(format!(
+                    "invalid bundle-manifest.json theory_merkle_root in {}",
+                    manifest_path.display()
+                ));
+            }
+            let compat =
+                manifest_json["compatible_trusted_merkle_roots"].as_array().ok_or_else(|| {
+                    format!(
+                        "missing compatible_trusted_merkle_roots in {}",
+                        manifest_path.display()
+                    )
+                })?;
+            if compat.is_empty() || !compat.iter().all(|v| is_hex64(v.as_str())) {
+                return Err(format!(
+                    "invalid compatible_trusted_merkle_roots in {}",
+                    manifest_path.display()
+                ));
+            }
+        }
+        _ => {
+            return Err(format!(
+                "unexpected bundle-manifest.json schema_version in {}",
+                manifest_path.display()
+            ));
+        }
     }
     let manifest_entries = manifest_json["modules"]
         .as_array()
@@ -654,12 +652,9 @@ fn lean_case(case: &mut CaseDirectory, root: &Path, jobs: usize) -> TestResult {
     }
 
     let pending: BTreeSet<String> = sources.keys().cloned().collect();
-    let order = topo_sort_modules(
-        pending,
-        &imports_map,
-        "import cycle in packaged Anneal Lean sources",
-    )
-    .map_err(|error| error.to_string())?;
+    let order =
+        topo_sort_modules(pending, &imports_map, "import cycle in packaged Anneal Lean sources")
+            .map_err(|error| error.to_string())?;
     let plan = ParallelDagPlan::from_module_order(
         &order,
         &imports_map,
@@ -705,14 +700,11 @@ fn lean_case(case: &mut CaseDirectory, root: &Path, jobs: usize) -> TestResult {
                     &text_path(src_path).map_err(|e| Failure::operational("lean-file", e))?,
                 ],
             );
-            command
-                .environment
-                .insert("LEAN_PATH".into(), lean_path_env.clone().into());
+            command.environment.insert("LEAN_PATH".into(), lean_path_env.clone().into());
             let out = shared_case
                 .run_shared(&command)
                 .map_err(|e| Failure::operational("lean-file", e))?;
-            out.expect_code(0)
-                .map_err(|e| Failure::operational("lean-file", e))
+            out.expect_code(0).map_err(|e| Failure::operational("lean-file", e))
         },
         |_, _, ()| Ok(()),
     )
@@ -759,9 +751,7 @@ fn lean_case(case: &mut CaseDirectory, root: &Path, jobs: usize) -> TestResult {
                 smoke_file,
             ],
         );
-        small
-            .environment
-            .insert("LEAN_PATH".into(), lean_path_env.clone().into());
+        small.environment.insert("LEAN_PATH".into(), lean_path_env.clone().into());
         let out = case.run(&small)?;
         out.expect_code(0)?;
     }
@@ -777,10 +767,7 @@ fn bundled_cargo_case(case: &mut CaseDirectory, root: &Path) -> TestResult {
         "fixture/Cargo.toml",
         b"[package]\nname = \"installed_probe\"\nversion = \"0.0.0\"\nedition = \"2024\"\n\n[workspace]\n",
     )?;
-    case.write(
-        "fixture/src/lib.rs",
-        b"pub fn identity(n: u32) -> u32 { n }\n",
-    )?;
+    case.write("fixture/src/lib.rs", b"pub fn identity(n: u32) -> u32 { n }\n")?;
     let cargo_home = case.path().join("cargo-home");
     fs::create_dir(&cargo_home).map_err(|error| format!("create owned Cargo home: {error}"))?;
     let target = case.path().join("target");
@@ -809,17 +796,9 @@ fn bundled_cargo_case(case: &mut CaseDirectory, root: &Path) -> TestResult {
     let dependencies = fs::read_dir(target.join("debug/deps"))
         .map_err(|error| format!("read checked crate outputs: {error}"))?;
     for entry in dependencies {
-        let path = entry
-            .map_err(|error| format!("read checked crate output: {error}"))?
-            .path();
-        if path
-            .extension()
-            .is_some_and(|extension| extension == "rmeta")
-            && path
-                .file_name()
-                .unwrap()
-                .to_string_lossy()
-                .starts_with("libinstalled_probe-")
+        let path = entry.map_err(|error| format!("read checked crate output: {error}"))?.path();
+        if path.extension().is_some_and(|extension| extension == "rmeta")
+            && path.file_name().unwrap().to_string_lossy().starts_with("libinstalled_probe-")
             && fs::metadata(&path)
                 .map_err(|error| format!("inspect checked metadata: {error}"))?
                 .len()
@@ -859,10 +838,7 @@ fn rustdoc_case(case: &mut CaseDirectory, root: &Path) -> TestResult {
         .map_err(|error| format!("read generated documentation: {error}"))?;
     require_text(&index, "Installed documentation probe.", &out)?;
     require_text(&index, "fn.identity.html", &out)?;
-    if !documentation
-        .join("installed_probe/fn.identity.html")
-        .is_file()
-    {
+    if !documentation.join("installed_probe/fn.identity.html").is_file() {
         return Err("rustdoc did not create the function documentation".into());
     }
     Ok(())
@@ -872,10 +848,7 @@ fn driver_case(case: &mut CaseDirectory, root: &Path) -> TestResult {
     let driver = root.join("bin/anneal-rustc-capture");
     version(case, &root.join("rust/bin/rustc"), "rustc ")?;
     version(case, &driver, "anneal-rustc-capture")?;
-    case.write(
-        "small.rs",
-        b"pub fn increment(n: u32) -> u32 { n.wrapping_add(1) }\n",
-    )?;
+    case.write("small.rs", b"pub fn increment(n: u32) -> u32 { n.wrapping_add(1) }\n")?;
     let sysroot = text_path(&root.join("rust"))?;
     let out = case.run(&Invocation::new(
         &driver,
@@ -897,10 +870,7 @@ fn driver_case(case: &mut CaseDirectory, root: &Path) -> TestResult {
         &out,
     )?;
     if !out.stdout.is_empty() {
-        return Err(format!(
-            "metadata compilation unexpectedly wrote stdout: {}",
-            out.describe()
-        ));
+        return Err(format!("metadata compilation unexpectedly wrote stdout: {}", out.describe()));
     }
     if !case.path().join("small.rmeta").is_file() {
         return Err("driver callback case did not create Rust metadata".into());
@@ -924,10 +894,7 @@ fn write_installed_audit_accepted_fixture(case: &mut CaseDirectory) -> TestResul
     // `fixtures/audit-positive.lean`.
     let spec = anneal_testkit::mir_wp_fixture::MirWpFixtureSpec::valid_module_style();
     let umbrella_rel = format!("fixture/{}", spec.theory_umbrella_rel_path()?.display());
-    case.write(
-        "fixture/trusted/lean/Trusted/MirAst.lean",
-        spec.render_mir_ast().as_bytes(),
-    )?;
+    case.write("fixture/trusted/lean/Trusted/MirAst.lean", spec.render_mir_ast().as_bytes())?;
     case.write(
         "fixture/trusted/lean/Trusted/MirSemantics.lean",
         spec.render_mir_semantics().as_bytes(),
@@ -972,11 +939,8 @@ fn audit_case(name: &str, case: &mut CaseDirectory, root: &Path) -> TestResult {
     if name == "audit-accepted" {
         write_installed_audit_accepted_fixture(case)?;
     }
-    let requested_lean = if name == "audit-missing-lean" {
-        case.path().join("absent-lean")
-    } else {
-        lean
-    };
+    let requested_lean =
+        if name == "audit-missing-lean" { case.path().join("absent-lean") } else { lean };
     let lean_arg = text_path(&requested_lean)?;
     let fixture_arg = text_path(&case.path().join("fixture"))?;
     let out = case.run(&Invocation::new(
@@ -990,9 +954,7 @@ fn audit_case(name: &str, case: &mut CaseDirectory, root: &Path) -> TestResult {
                 format!("read accepted audit report: {error}; {}", out.describe())
             })?;
             if report["replay"] != true || report["kernelDeclarations"].as_u64().unwrap_or(0) < 30 {
-                return Err(format!(
-                    "positive fixture did not reach kernel replay: {report}"
-                ));
+                return Err(format!("positive fixture did not reach kernel replay: {report}"));
             }
             Ok(())
         }
@@ -1020,10 +982,7 @@ fn require_text(bytes: &[u8], expected: &str, outcome: &ProcessOutcome) -> TestR
     if String::from_utf8_lossy(bytes).contains(expected) {
         Ok(())
     } else {
-        Err(format!(
-            "expected output {expected:?}: {}",
-            outcome.describe()
-        ))
+        Err(format!("expected output {expected:?}: {}", outcome.describe()))
     }
 }
 
@@ -1037,10 +996,7 @@ fn required_path(name: &str) -> TestResult<PathBuf> {
     let value = env::var_os(name).ok_or_else(|| format!("selected case requires {name}"))?;
     let path = PathBuf::from(value);
     if !path.is_absolute() {
-        return Err(format!(
-            "{name} must be an absolute path: {}",
-            path.display()
-        ));
+        return Err(format!("{name} must be an absolute path: {}", path.display()));
     }
     if !path.exists() {
         return Err(format!("{name} does not exist: {}", path.display()));

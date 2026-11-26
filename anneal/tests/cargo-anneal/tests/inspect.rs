@@ -2267,3 +2267,133 @@ fn allowed_unstable_features_gate_admits_only_the_exact_feature_taint() {
     let stdout = String::from_utf8_lossy(&diff.stdout);
     assert!(stdout.contains("unstable_features.allowed"), "{stdout}");
 }
+
+#[test]
+fn split_packaging_fields_render_diff_and_decoupled_provenance_enforced() {
+    let tmp = tempfile::tempdir().unwrap();
+    let (mut base, _, _, mod_sha, _) = sample_receipt_bundle(&tmp.path().join("artifacts"));
+    let theory_sha_a = "7".repeat(64);
+    let theory_sha_b = "8".repeat(64);
+    let decoupled_reason = "Pass 2 correspondence provenance is decoupled from cargo-anneal; \
+        verify repository correspondence via anneal-audit --require-correspondence";
+
+    base["trusted_model_manifest_sha256"] = json!(mod_sha);
+    base["theory_manifest_sha256"] = json!(theory_sha_a);
+    base["theory_source"] = json!("external_dir");
+    base["correspondence_provenance"] = json!({
+        "applicable": false,
+        "reason": decoupled_reason,
+    });
+    let base_path = tmp.path().join("base_split.json");
+    fs::write(&base_path, serde_json::to_vec(&base).unwrap()).unwrap();
+
+    // 1. Human, ledger, markdown, and JSON render split-packaging metadata
+    //    cleanly under `--unknown-fields deny`.
+    let human = run_inspect(
+        &[base_path.to_str().unwrap(), "--unknown-fields", "deny", "--color", "never"],
+        None,
+    );
+    assert_eq!(human.status.code(), Some(0), "{}", String::from_utf8_lossy(&human.stderr));
+    let human_str = String::from_utf8(human.stdout).unwrap();
+    assert!(human_str.contains("trusted_model: cccccccccccc"), "{human_str}");
+    assert!(human_str.contains("theory:        777777777777 (external_dir)"), "{human_str}");
+
+    let ledger = run_inspect(
+        &[base_path.to_str().unwrap(), "--unknown-fields", "deny", "--format", "ledger"],
+        None,
+    );
+    assert_eq!(ledger.status.code(), Some(0));
+    let ledger_str = String::from_utf8(ledger.stdout).unwrap();
+    assert!(
+        ledger_str.contains(&format!("digest.trusted_model_manifest_sha256={mod_sha}\n")),
+        "{ledger_str}"
+    );
+    assert!(
+        ledger_str.contains(&format!("digest.theory_manifest_sha256={theory_sha_a}\n")),
+        "{ledger_str}"
+    );
+    assert!(ledger_str.contains("theory_source=external_dir\n"), "{ledger_str}");
+
+    let md = run_inspect(
+        &[base_path.to_str().unwrap(), "--unknown-fields", "deny", "--format", "markdown"],
+        None,
+    );
+    assert_eq!(md.status.code(), Some(0));
+    let md_str = String::from_utf8(md.stdout).unwrap();
+    assert!(md_str.contains("| Model Digest | `cccccccccccc` |"), "{md_str}");
+    assert!(md_str.contains("| Trusted Model Digest | `cccccccccccc` |"), "{md_str}");
+    assert!(md_str.contains("| Theory Digest | `777777777777` |"), "{md_str}");
+    assert!(md_str.contains("| Theory Source | `external_dir` |"), "{md_str}");
+
+    // 2. Altered `reason` on pinned Profile v1 `applicable: false` fails
+    //    envelope validation.
+    let mut bad_reason = base.clone();
+    bad_reason["correspondence_provenance"]["reason"] = json!(format!("{decoupled_reason} extra"));
+    let bad_reason_path = tmp.path().join("bad_reason.json");
+    fs::write(&bad_reason_path, serde_json::to_vec(&bad_reason).unwrap()).unwrap();
+    let bad_out = run_inspect(&[bad_reason_path.to_str().unwrap(), "--passive"], None);
+    assert_eq!(bad_out.status.code(), Some(1));
+    assert!(
+        String::from_utf8_lossy(&bad_out.stdout)
+            .contains("correspondence_provenance must omit `applicable: false`")
+    );
+
+    // 3. `inspect --diff` surfaces `theory_manifest_sha256` and `theory_source`
+    //    as Tier C (non-regression) and `trusted_model_manifest_sha256` as
+    //    Tier B.
+    let mut head_theory = base.clone();
+    head_theory["theory_manifest_sha256"] = json!(theory_sha_b);
+    head_theory["theory_source"] = json!("external_archive");
+    let head_theory_path = tmp.path().join("head_theory.json");
+    fs::write(&head_theory_path, serde_json::to_vec(&head_theory).unwrap()).unwrap();
+    let theory_diff = run_inspect(
+        &[
+            "--diff",
+            base_path.to_str().unwrap(),
+            head_theory_path.to_str().unwrap(),
+            "--no-regressions",
+            "--format",
+            "json",
+        ],
+        None,
+    );
+    assert_eq!(theory_diff.status.code(), Some(0), "{theory_diff:?}");
+    let theory_diff_json: Value = serde_json::from_slice(&theory_diff.stdout).unwrap();
+    let changes = theory_diff_json["changes"].as_array().unwrap();
+    assert!(
+        changes.iter().any(|c| c["field"] == "theory_manifest_sha256" && c["tier"] == "tier_c"),
+        "{theory_diff_json}"
+    );
+    assert!(
+        changes.iter().any(|c| c["field"] == "theory_source" && c["tier"] == "tier_c"),
+        "{theory_diff_json}"
+    );
+
+    let mut head_model = head_theory;
+    let alt_mod = "9".repeat(64);
+    head_model["model_manifest_sha256"] = json!(alt_mod);
+    head_model["trusted_model_manifest_sha256"] = json!(alt_mod);
+    head_model["audit"]["bindings"]["modelManifestSha256"] = json!(alt_mod);
+    let head_model_path = tmp.path().join("head_model.json");
+    fs::write(&head_model_path, serde_json::to_vec(&head_model).unwrap()).unwrap();
+    let model_diff = run_inspect(
+        &[
+            "--diff",
+            base_path.to_str().unwrap(),
+            head_model_path.to_str().unwrap(),
+            "--format",
+            "json",
+        ],
+        None,
+    );
+    assert_eq!(model_diff.status.code(), Some(0));
+    let model_diff_json: Value = serde_json::from_slice(&model_diff.stdout).unwrap();
+    assert!(
+        model_diff_json["changes"]
+            .as_array()
+            .unwrap()
+            .iter()
+            .any(|c| c["field"] == "trusted_model_manifest_sha256" && c["tier"] == "tier_b"),
+        "{model_diff_json}"
+    );
+}

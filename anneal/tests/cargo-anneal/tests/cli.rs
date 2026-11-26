@@ -3189,8 +3189,7 @@ fn quiet_suppresses_non_tty_setup_note_while_keeping_taint_caveats() {
 #[cfg(unix)]
 #[test]
 fn sharding_cli_guards_reserved_modules_missing_shards_and_shard_plan() {
-    use std::fs;
-    use std::os::unix::fs::PermissionsExt;
+    use std::{fs, os::unix::fs::PermissionsExt};
 
     let project = tempfile::tempdir().unwrap();
     fs::write(project.path().join("lib.rs"), b"pub fn f() -> u64 { 0 }\n").unwrap();
@@ -3238,13 +3237,7 @@ fn sharding_cli_guards_reserved_modules_missing_shards_and_shard_plan() {
 
     // 1. `--shard-max-bodies 0` fails argument parsing with exit code 2.
     let zero_max = command(Route::Direct, project.path())
-        .args([
-            "verify",
-            "--shard-max-bodies",
-            "0",
-            "--request",
-            "request.json",
-        ])
+        .args(["verify", "--shard-max-bodies", "0", "--request", "request.json"])
         .output()
         .unwrap();
     assert_result(&zero_max, 2, "", "value must be at least 1");
@@ -3714,4 +3707,331 @@ fn allow_unstable_feature_conflicts_with_stdlib_crate_request() {
     assert_eq!(receipt["status"], "tool_failed", "{receipt}");
     assert_eq!(receipt["phase"], "request", "{receipt}");
     assert!(receipt["detail"].as_str().unwrap().contains("stdlib_crate"), "{receipt}");
+}
+
+#[cfg(unix)]
+#[test]
+fn split_packaging_cli_flags_validate_pre_capture_and_protect_receipt_out() {
+    use std::{fs, os::unix::fs::PermissionsExt};
+
+    let anneal_root = Path::new(env!("CARGO_MANIFEST_DIR")).join("../..").canonicalize().unwrap();
+    let real_theory_dir = anneal_root.join("theory");
+
+    let project = tempfile::tempdir().unwrap();
+    fs::write(project.path().join("lib.rs"), b"pub fn id(x: u64) -> u64 { x }\n").unwrap();
+    fs::write(project.path().join("Spec.lean"), b"-- spec\n").unwrap();
+    fs::write(project.path().join("Proof.lean"), b"-- proof\n").unwrap();
+    let request_path = project.path().join("request.json");
+    fs::write(
+        &request_path,
+        r#"{
+  "schema_version": 1,
+  "compilation": {
+    "source_root": ".",
+    "crate_root": "lib.rs",
+    "crate_name": "demo",
+    "source_files": ["lib.rs"]
+  },
+  "scope": {"kind": "selected_unit", "roots": ["id"]},
+  "proof": {
+    "source_root": ".",
+    "specification": "Spec.specs",
+    "theorem": "Proof.verify",
+    "sources": [
+      {"module": "Spec", "path": "Spec.lean", "role": "specification"},
+      {"module": "Proof", "path": "Proof.lean", "role": "proof"}
+    ]
+  }
+}
+"#,
+    )
+    .unwrap();
+
+    let sysroot = project.path().join("sysroot");
+    fs::create_dir(&sysroot).unwrap();
+    let fake_lean = project.path().join("fake-lean");
+    fs::write(&fake_lean, b"#!/bin/sh\nexit 1\n").unwrap();
+    fs::set_permissions(&fake_lean, fs::Permissions::from_mode(0o755)).unwrap();
+
+    let capture_invoked = project.path().join("capture_invoked");
+    let fake_capture = project.path().join("fake-capture");
+    let write_fake_capture = |profile_version: u32| {
+        let script = format!(
+            "#!/bin/sh\n\
+             set -eu\n\
+             : > {invoked:?}\n\
+             out_dir=''\n\
+             while [ \"$#\" -gt 0 ]; do\n\
+               if [ \"$1\" = '--out-dir' ]; then\n\
+                 shift\n\
+                 out_dir=\"$1\"\n\
+               fi\n\
+               shift\n\
+             done\n\
+             mkdir -p \"$out_dir\"\n\
+             cat > \"$out_dir/capture.json\" <<'JSON'\n\
+             {{\n\
+               \"schema_version\": 5,\n\
+               \"compiler\": {{\"commit\": \"f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1\"}},\n\
+               \"configuration\": {{\n\
+                 \"crate_name\": \"demo\",\n\
+                 \"crate_type\": \"lib\",\n\
+                 \"panic\": \"unwind\",\n\
+                 \"overflow_checks\": false,\n\
+                 \"target\": \"x86_64-unknown-linux-gnu\",\n\
+                 \"edition\": \"2024\",\n\
+                 \"cfg\": [],\n\
+                 \"env\": {{}}\n\
+               }},\n\
+               \"source_files\": [{{\"relative_path\": \"lib.rs\", \"sha256\": \"{lib_sha}\"}}],\n\
+               \"census\": [],\n\
+               \"selected\": [{{\"def_id\": 0, \"path\": \"id\", \"body_index\": 0}}],\n\
+               \"program\": {{\n\
+                 \"mir_profile_version\": {profile_version},\n\
+                 \"scope\": {{\"kind\": \"selected_unit\", \"roots\": [\"id\"]}},\n\
+                 \"bodies\": []\n\
+               }}\n\
+             }}\n\
+             JSON\n\
+             printf 'module\\nprelude\\n' > \"$out_dir/Captured.lean\"\n\
+             printf '{{\"status\":\"captured\"}}\\n'\n",
+            invoked = capture_invoked.display(),
+            lib_sha = {
+                use sha2::{Digest as _, Sha256};
+                format!("{:x}", Sha256::digest(b"pub fn id(x: u64) -> u64 { x }\n"))
+            },
+        );
+        fs::write(&fake_capture, script).unwrap();
+        fs::set_permissions(&fake_capture, fs::Permissions::from_mode(0o755)).unwrap();
+    };
+    write_fake_capture(1);
+
+    // 1. CLI argument conflicts fail with exit 2 and empty stdout.
+    for conflict in [
+        &["verify", "--theory-dir", "a", "--theory-archive", "b.tar.zst"][..],
+        &["verify", "--no-cache", "--olean-cache-dir", "c"][..],
+        &[
+            "verify",
+            "--allow-unpinned-lean",
+            "--lean",
+            fake_lean.to_str().unwrap(),
+            "--correspondence-provenance",
+            "prov.json",
+        ][..],
+    ] {
+        let out = command(Route::Direct, project.path()).args(conflict).output().unwrap();
+        assert_result(&out, 2, "", "error:");
+        assert!(out.stdout.is_empty(), "{conflict:?}: {out:?}");
+    }
+
+    // 2. An invalid explicit `--theory-dir` fails before capture.
+    let bad_theory_dir = project.path().join("bad-theory");
+    fs::create_dir(&bad_theory_dir).unwrap();
+    fs::write(bad_theory_dir.join("bundle-manifest.json"), b"{\"schema_version\":1}\n").unwrap();
+    let _ = fs::remove_file(&capture_invoked);
+    let bad_tdir_out = command(Route::Direct, project.path())
+        .args([
+            "verify",
+            "--format",
+            "json",
+            "--request",
+            request_path.to_str().unwrap(),
+            "--capture",
+            fake_capture.to_str().unwrap(),
+            "--sysroot",
+            sysroot.to_str().unwrap(),
+            "--lean",
+            fake_lean.to_str().unwrap(),
+            "--theory-dir",
+            bad_theory_dir.to_str().unwrap(),
+        ])
+        .output()
+        .unwrap();
+    assert_result(&bad_tdir_out, 2, "", "");
+    let bad_tdir_receipt: serde_json::Value = serde_json::from_slice(&bad_tdir_out.stdout).unwrap();
+    assert_eq!(bad_tdir_receipt["phase"], "theory-bundle", "{bad_tdir_receipt}");
+    assert!(!capture_invoked.exists(), "invalid --theory-dir must fail before capture");
+
+    // 3. Valid external `--theory-dir`, `.tar.zst` `--theory-archive`, and
+    //    `--olean-cache-dir` pass bundle admission before capture (including
+    //    when built with `--no-default-features`). The synthetic capture
+    //    manifest then fails capture validation, which is expected here.
+    let archive_path = project.path().join("theory-bundle.tar.zst");
+    let tar_status = Command::new("sh")
+        .arg("-ceu")
+        .arg("tar -C \"$1\" -cf - theory | zstd -1 -f -o \"$2\"")
+        .arg("sh")
+        .arg(&anneal_root)
+        .arg(&archive_path)
+        .status()
+        .unwrap();
+    assert!(tar_status.success());
+    let olean_cache = project.path().join("olean-cache");
+    for theory_flag in [
+        ["--theory-dir", real_theory_dir.to_str().unwrap()],
+        ["--theory-archive", archive_path.to_str().unwrap()],
+    ] {
+        let _ = fs::remove_file(&capture_invoked);
+        let out = command(Route::Direct, project.path())
+            .args([
+                "verify",
+                "--format",
+                "json",
+                "--request",
+                request_path.to_str().unwrap(),
+                "--capture",
+                fake_capture.to_str().unwrap(),
+                "--sysroot",
+                sysroot.to_str().unwrap(),
+                "--lean",
+                fake_lean.to_str().unwrap(),
+                "--olean-cache-dir",
+                olean_cache.to_str().unwrap(),
+            ])
+            .args(theory_flag)
+            .output()
+            .unwrap();
+        let receipt: serde_json::Value = serde_json::from_slice(&out.stdout).unwrap();
+        assert!(capture_invoked.exists(), "valid {theory_flag:?} must reach capture: {receipt}");
+        assert_ne!(receipt["phase"], "theory-bundle", "{receipt}");
+    }
+
+    // 4. Without explicit external theory inputs, implicit bundle resolution
+    //    (toolchain share or `bundled-theory`) is deferred until after
+    //    capture, so capture still runs first in both feature modes.
+    let _ = fs::remove_file(&capture_invoked);
+    let no_ext_out = command(Route::Direct, project.path())
+        .env_remove("ANNEAL_THEORY_DIR")
+        .args([
+            "verify",
+            "--format",
+            "json",
+            "--request",
+            request_path.to_str().unwrap(),
+            "--capture",
+            fake_capture.to_str().unwrap(),
+            "--sysroot",
+            sysroot.to_str().unwrap(),
+            "--lean",
+            fake_lean.to_str().unwrap(),
+        ])
+        .output()
+        .unwrap();
+    let no_ext_receipt: serde_json::Value = serde_json::from_slice(&no_ext_out.stdout).unwrap();
+    assert!(capture_invoked.exists(), "{no_ext_receipt}");
+    assert_eq!(no_ext_receipt["phase"], "capture", "{no_ext_receipt}");
+
+    // 5. `--correspondence-provenance` strictly validates JSON, duplicate
+    //    keys, and `trusted_lean` / sysroot parity before capture.
+    let valid_prov_path = project.path().join("valid-prov.json");
+    let render_out = Command::new("python3")
+        .arg(anneal_root.join("ci/render_correspondence_provenance.py"))
+        .arg("--anneal-root")
+        .arg(&anneal_root)
+        .arg("--output")
+        .arg(&valid_prov_path)
+        .output()
+        .unwrap();
+    assert!(render_out.status.success(), "{render_out:?}");
+    let valid_prov_raw = fs::read_to_string(&valid_prov_path).unwrap();
+
+    let bad_prov_dup = project.path().join("dup-prov.json");
+    fs::write(&bad_prov_dup, b"{\"schema_version\":1,\"schema_version\":1}\n").unwrap();
+    let bad_prov_inapp = project.path().join("inapp-prov.json");
+    fs::write(&bad_prov_inapp, b"{\"applicable\":false,\"reason\":\"x\"}\n").unwrap();
+    let bad_prov_tampered = project.path().join("tampered-prov.json");
+    let mut tampered_val: serde_json::Value = serde_json::from_str(&valid_prov_raw).unwrap();
+    tampered_val["trusted_lean"]["trusted/lean/Trusted.lean"] = serde_json::json!("0".repeat(64));
+    fs::write(&bad_prov_tampered, serde_json::to_vec(&tampered_val).unwrap()).unwrap();
+
+    for bad_prov in [&bad_prov_dup, &bad_prov_inapp, &bad_prov_tampered] {
+        let _ = fs::remove_file(&capture_invoked);
+        let out = command(Route::Direct, project.path())
+            .args([
+                "verify",
+                "--format",
+                "json",
+                "--request",
+                request_path.to_str().unwrap(),
+                "--capture",
+                fake_capture.to_str().unwrap(),
+                "--sysroot",
+                sysroot.to_str().unwrap(),
+                "--lean",
+                fake_lean.to_str().unwrap(),
+                "--theory-dir",
+                real_theory_dir.to_str().unwrap(),
+                "--correspondence-provenance",
+                bad_prov.to_str().unwrap(),
+            ])
+            .output()
+            .unwrap();
+        assert_result(&out, 2, "", "");
+        let receipt: serde_json::Value = serde_json::from_slice(&out.stdout).unwrap();
+        assert_eq!(receipt["phase"], "correspondence-provenance", "{bad_prov:?}: {receipt}");
+        assert!(!capture_invoked.exists(), "{bad_prov:?} must fail before capture");
+    }
+
+    // 6. `--receipt-out` aliasing of `--correspondence-provenance`, or a
+    //    path inside `--theory-dir` or `--olean-cache-dir`, is rejected
+    //    without unlinking the input file.
+    fs::create_dir_all(&olean_cache).unwrap();
+    let inside_theory = bad_theory_dir.join("receipt.json");
+    let inside_cache = olean_cache.join("receipt.json");
+    for aliased_out in [&valid_prov_path, &inside_theory, &inside_cache] {
+        let out = command(Route::Direct, project.path())
+            .args([
+                "verify",
+                "--format",
+                "json",
+                "--request",
+                request_path.to_str().unwrap(),
+                "--capture",
+                fake_capture.to_str().unwrap(),
+                "--sysroot",
+                sysroot.to_str().unwrap(),
+                "--lean",
+                fake_lean.to_str().unwrap(),
+                "--theory-dir",
+                bad_theory_dir.to_str().unwrap(),
+                "--olean-cache-dir",
+                olean_cache.to_str().unwrap(),
+                "--correspondence-provenance",
+                valid_prov_path.to_str().unwrap(),
+                "--receipt-out",
+                aliased_out.to_str().unwrap(),
+            ])
+            .output()
+            .unwrap();
+        assert_result(&out, 2, "", "");
+        let receipt: serde_json::Value = serde_json::from_slice(&out.stdout).unwrap();
+        assert_eq!(receipt["phase"], "receipt-out", "{aliased_out:?}: {receipt}");
+    }
+    // Also check direct `--theory-archive` aliasing separately.
+    let arch_alias_out = command(Route::Direct, project.path())
+        .args([
+            "verify",
+            "--format",
+            "json",
+            "--request",
+            request_path.to_str().unwrap(),
+            "--capture",
+            fake_capture.to_str().unwrap(),
+            "--sysroot",
+            sysroot.to_str().unwrap(),
+            "--lean",
+            fake_lean.to_str().unwrap(),
+            "--theory-archive",
+            archive_path.to_str().unwrap(),
+            "--receipt-out",
+            archive_path.to_str().unwrap(),
+        ])
+        .output()
+        .unwrap();
+    assert_result(&arch_alias_out, 2, "", "");
+    let arch_alias_receipt: serde_json::Value =
+        serde_json::from_slice(&arch_alias_out.stdout).unwrap();
+    assert_eq!(arch_alias_receipt["phase"], "receipt-out", "{arch_alias_receipt}");
+    assert!(valid_prov_path.is_file(), "valid_prov_path must survive --receipt-out check");
+    assert!(archive_path.is_file(), "archive_path must survive --receipt-out check");
 }

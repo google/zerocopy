@@ -8286,27 +8286,49 @@ fn enforces_bundled_resources_parity_and_regular_files() {
         .find(|m| m.path == "theory/Anneal/MirWp.lean")
         .unwrap()
         .sha256 = sha256_bytes(drifted_mir_wp.as_bytes());
+    drifted_manifest.theory_merkle_root =
+        Some(anneal_audit::bundle::compute_theory_merkle_root(&drifted_manifest.modules));
     fs::write(
         &manifest_path,
         format!("{}\n", serde_json::to_string_pretty(&drifted_manifest).unwrap()),
     )
     .unwrap();
-    expect_policy("embedded cargo-anneal EMBEDDED_THEORY_BUNDLE_JSON differs");
+    if cargo_anneal::EMBEDDED_THEORY_BUNDLE_JSON_OPT.is_some() {
+        expect_policy("embedded cargo-anneal EMBEDDED_THEORY_BUNDLE_JSON differs");
+    } else {
+        // Under `default-features = false` (`bundled-theory` disabled),
+        // consistent updates to `theory/` and `theory/bundle-manifest.json`
+        // succeed without invalidating `cargo-anneal`.
+        verify_bundled_resources(&root).unwrap();
+    }
     fs::write(&source, &orig_mir_wp).unwrap();
     fs::write(&manifest_path, &original_manifest_bytes).unwrap();
     verify_bundled_resources(&root).unwrap();
 
-    // 12. Theory manifest fail-closed rejections: tampered hash, duplicate
-    // entry, unsorted entry, out-of-tree / path-traversal / umbrella paths,
-    // missing required `MirWp.lean`, unknown JSON field, wrong schema, symlink,
-    // and missing manifest.
+    // 12. Theory manifest fail-closed rejections: tampered hash, tampered
+    // Merkle root, incompatible Trusted/ Merkle root, duplicate entry, unsorted
+    // entry, out-of-tree / path-traversal / umbrella paths, missing required
+    // `MirWp.lean`, unknown JSON field, wrong schema, symlink, and missing
+    // manifest.
     let write_manifest = |m: &TheoryBundleManifest| {
         fs::write(&manifest_path, format!("{}\n", serde_json::to_string_pretty(m).unwrap()))
             .unwrap();
     };
 
+    let mut bad_merkle = manifest.clone();
+    bad_merkle.theory_merkle_root = Some("0".repeat(64));
+    write_manifest(&bad_merkle);
+    expect_policy("theory_merkle_root mismatch");
+
+    let mut bad_trusted_compat = manifest.clone();
+    bad_trusted_compat.compatible_trusted_merkle_roots = Some(vec!["f".repeat(64)]);
+    write_manifest(&bad_trusted_compat);
+    expect_policy("incompatible with embedded Ring-0 Trusted/ Merkle root");
+
     let mut bad_hash = manifest.clone();
     bad_hash.modules[0].sha256 = "0".repeat(64);
+    bad_hash.theory_merkle_root =
+        Some(anneal_audit::bundle::compute_theory_merkle_root(&bad_hash.modules));
     write_manifest(&bad_hash);
     expect_policy("theory bundle manifest SHA-256 mismatch");
 
@@ -8342,9 +8364,9 @@ fn enforces_bundled_resources_parity_and_regular_files() {
     expect_policy("missing required theory module: theory/Anneal/MirWp.lean");
 
     let mut wrong_schema = manifest.clone();
-    wrong_schema.schema_version = 2;
+    wrong_schema.schema_version = 99;
     write_manifest(&wrong_schema);
-    expect_policy("unsupported schema_version 2");
+    expect_policy("unsupported schema_version 99");
 
     fs::write(&manifest_path, b"{\"schema_version\": 1, \"modules\": [], \"extra\": true}\n")
         .unwrap();
@@ -8371,9 +8393,12 @@ fn enforces_bundled_resources_parity_and_regular_files() {
     fs::write(&trusted_entry, &orig_trusted_entry).unwrap();
     verify_bundled_resources(&root).unwrap();
 
+    // Pass-2 `correspondence/` edits with valid inventory no longer invalidate
+    // `cargo-anneal` (since `CORRESPONDENCE_PROVENANCE_JSON` is decoupled from
+    // `cargo-anneal`), while Ring-0 `Trusted.lean` edits still fail closed.
     let orig_prov = fs::read(&prov).unwrap();
     fs::write(&prov, format!("{}\n-- drifted\n", String::from_utf8_lossy(&orig_prov))).unwrap();
-    expect_policy("embedded cargo-anneal CORRESPONDENCE_PROVENANCE_JSON differs");
+    verify_bundled_resources(&root).unwrap();
     fs::write(&prov, &orig_prov).unwrap();
     verify_bundled_resources(&root).unwrap();
 

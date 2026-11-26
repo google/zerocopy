@@ -18,11 +18,12 @@ edition = "2024"
 publish = false
 
 [features]
-default = ["setup"]
-# Mirrors `cargo-anneal`'s optional `setup` feature so offline CLI tests
-# (`--no-default-features --test cli`) compile and run with zero `exocrate`
-# dependency in the Cargo graph.
+default = ["setup", "bundled-theory"]
+# Mirrors `cargo-anneal`'s optional `setup` and `bundled-theory` features so
+# offline CLI tests (`--no-default-features --test cli`) compile and run with
+# zero `exocrate` dependency and zero embedded `bundled_theory.json`.
 setup = ["cargo-anneal/setup", "dep:exocrate"]
+bundled-theory = ["cargo-anneal/bundled-theory"]
 
 [dependencies]
 cargo-anneal = { path = "../../trusted/cargo-anneal", default-features = false }

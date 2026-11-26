@@ -86,6 +86,10 @@ impl Bundle {
     pub(crate) fn prebuilt_dir(&self) -> PathBuf {
         self.root.join("share/anneal/prebuilt")
     }
+
+    pub(crate) fn theory_dir(&self) -> PathBuf {
+        self.root.join("share/anneal/theory")
+    }
 }
 
 /// Installs or resolves the Anneal toolchain archive in the user-global cache

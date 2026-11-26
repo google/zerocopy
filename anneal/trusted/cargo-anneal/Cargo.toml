@@ -40,8 +40,9 @@ name = "regenerate_bundle"
 test = true
 
 [features]
-default = ["setup"]
+default = ["setup", "bundled-theory"]
 setup = ["dep:exocrate"]
+bundled-theory = []
 
 [dependencies]
 clap = { version = "4.5", default-features = false, features = ["std", "help", "usage", "error-context", "suggestions", "derive"] }
@@ -49,6 +50,7 @@ exocrate = { version = "0.3.1", optional = true }
 serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0"
 sha2 = "0.10"
+tar = "0.4"
 tempfile = "3.27"
 thiserror = "2.0"
 walkdir = "2.5"
@@ -63,5 +65,4 @@ sha2 = "0.10"
 walkdir = "2.5"
 
 [dev-dependencies]
-tar = "0.4"
 zstd = "0.13"

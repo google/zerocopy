@@ -3664,8 +3664,13 @@ mod tests {
         include!(concat!(env!("OUT_DIR"), "/bundled_resources.rs"));
 
         pub fn entries() -> &'static [(&'static str, &'static str)] {
-            let _ = CORRESPONDENCE_PROVENANCE_JSON;
+            let _ = EMBEDDED_TRUSTED_MERKLE_ROOT;
             BUNDLE
+        }
+
+        #[cfg(not(feature = "bundled-theory"))]
+        pub fn trusted_merkle_root() -> &'static str {
+            EMBEDDED_TRUSTED_MERKLE_ROOT
         }
     }
 
@@ -3676,10 +3681,8 @@ mod tests {
     }
 
     impl EmbeddedBundle {
-        /// Materialize `cargo-anneal`'s embedded trusted and theory bundles
-        /// into `root` just as `verify.rs` does, so `target::tests` runs
-        /// without reaching outside the package (including from an unpacked
-        /// `cargo package` tarball).
+        /// Materialize `cargo-anneal`'s trusted and theory bundles into `root`
+        /// just as `verify.rs` does.
         fn materialize(root: &Path) -> Self {
             let mut model_modules = Vec::new();
             let mut theory_modules = Vec::new();
@@ -3703,8 +3706,22 @@ mod tests {
                     });
                 }
             }
+            #[cfg(feature = "bundled-theory")]
             let bundled_theory =
                 crate::bundle::embedded_theory_bundle().expect("embedded theory bundle");
+            #[cfg(not(feature = "bundled-theory"))]
+            let bundled_theory = {
+                let theory_dir = Path::new(env!("CARGO_MANIFEST_DIR")).join("../../theory");
+                crate::bundle::load_external_theory_dir(
+                    &theory_dir,
+                    crate::TOOLCHAIN,
+                    embedded::trusted_merkle_root(),
+                    5,
+                    crate::bundle::ExternalTheorySource::ExternalDir,
+                )
+                .expect("external theory bundle in workspace")
+                .bundle
+            };
             for entry in bundled_theory.modules {
                 let path = root.join(&entry.path);
                 fs::create_dir_all(path.parent().unwrap()).unwrap();

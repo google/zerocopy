@@ -19,11 +19,12 @@ use std::{
 };
 
 use cargo_anneal::{
-    EMBEDDED_BUNDLE_SOURCES, EMBEDDED_CORRESPONDENCE_PROVENANCE_JSON, EMBEDDED_THEORY_BUNDLE_JSON,
+    EMBEDDED_BUNDLE_SOURCES, EMBEDDED_THEORY_BUNDLE_JSON_OPT, EMBEDDED_TRUSTED_MERKLE_ROOT,
     Failure, SafeFs,
     bundle::{
         BundleError, LEGACY_BUNDLE_DESTINATION, LEGACY_THEORY_BUNDLE_DESTINATION,
-        render_bundled_resources_parts, render_bundled_theory, validate_bundle_source,
+        render_bundled_resources_parts, render_bundled_theory,
+        render_correspondence_provenance_from_checkout, validate_bundle_source,
     },
     is_clean_relative_path, is_sha256_hex, regular, sha256_file,
 };
@@ -367,13 +368,18 @@ pub fn verify_bundled_resources(checkout: &Path) -> Result<(), Failure> {
             ));
         }
     }
-    if expected.provenance_json != EMBEDDED_CORRESPONDENCE_PROVENANCE_JSON {
+    if expected.trusted_merkle_root != EMBEDDED_TRUSTED_MERKLE_ROOT {
         return Err(Failure::policy(
             phase,
-            "embedded cargo-anneal CORRESPONDENCE_PROVENANCE_JSON differs from canonical \
+            "embedded cargo-anneal EMBEDDED_TRUSTED_MERKLE_ROOT differs from canonical \
              checkout sources; rebuild cargo-anneal and anneal-audit",
         ));
     }
+    // Pass-2 correspondence inventory & UPSTREAM_PIN.json are verified directly
+    // against canonical checkout sources here in `anneal-audit` (decoupled from
+    // `cargo-anneal`'s ELF binary).
+    let _ = render_correspondence_provenance_from_checkout(checkout).map_err(map_bundle_error)?;
+
     let packaged_dir = checkout.join("trusted/cargo-anneal/packaged");
     match fs::symlink_metadata(&packaged_dir) {
         Ok(_) => {
@@ -395,7 +401,9 @@ pub fn verify_bundled_resources(checkout: &Path) -> Result<(), Failure> {
     }
 
     let expected_theory = render_bundled_theory(checkout).map_err(map_bundle_error)?;
-    if expected_theory != EMBEDDED_THEORY_BUNDLE_JSON {
+    if let Some(embedded_theory) = EMBEDDED_THEORY_BUNDLE_JSON_OPT
+        && expected_theory != embedded_theory
+    {
         return Err(Failure::policy(
             phase,
             "embedded cargo-anneal EMBEDDED_THEORY_BUNDLE_JSON differs from canonical \

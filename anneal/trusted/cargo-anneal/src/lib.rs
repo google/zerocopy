@@ -60,10 +60,16 @@ pub use verify::check_bundled_model_audit;
 #[doc(hidden)]
 pub const EMBEDDED_BUNDLE_SOURCES: &[(&str, &str)] = verify::EMBEDDED_BUNDLE_SOURCES;
 #[doc(hidden)]
-pub const EMBEDDED_CORRESPONDENCE_PROVENANCE_JSON: &str =
-    verify::EMBEDDED_CORRESPONDENCE_PROVENANCE_JSON;
+pub const EMBEDDED_TRUSTED_MERKLE_ROOT: &str = verify::TRUSTED_MERKLE_ROOT;
+#[cfg(feature = "bundled-theory")]
 #[doc(hidden)]
 pub const EMBEDDED_THEORY_BUNDLE_JSON: &str = bundle::EMBEDDED_THEORY_BUNDLE_JSON;
+#[cfg(feature = "bundled-theory")]
+#[doc(hidden)]
+pub const EMBEDDED_THEORY_BUNDLE_JSON_OPT: Option<&str> = Some(bundle::EMBEDDED_THEORY_BUNDLE_JSON);
+#[cfg(not(feature = "bundled-theory"))]
+#[doc(hidden)]
+pub const EMBEDDED_THEORY_BUNDLE_JSON_OPT: Option<&str> = None;
 
 pub use core::Failure;
 #[doc(hidden)]

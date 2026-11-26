@@ -41,6 +41,12 @@ pub struct VerifySuccessReceipt {
     pub capture_binary_sha256: String,
     pub toolchain_identity: Value,
     pub model_manifest_sha256: String,
+    #[serde(default)]
+    pub trusted_model_manifest_sha256: Option<String>,
+    #[serde(default)]
+    pub theory_manifest_sha256: Option<String>,
+    #[serde(default)]
+    pub theory_source: Option<String>,
     pub specification_manifest_sha256: String,
     pub correspondence_provenance: Value,
     pub scope: Value,

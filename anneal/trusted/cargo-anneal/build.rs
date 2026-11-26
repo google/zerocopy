@@ -6,9 +6,10 @@
 // This file may not be copied, modified, or distributed except according to
 // those terms.
 
-//! Generates `$OUT_DIR/bundled_resources.rs` and `$OUT_DIR/bundled_theory.json`
-//! deterministically from canonical workspace sources (or from `packaged/`
-//! snapshots inside an unpacked `.crate` archive).
+//! Generates `$OUT_DIR/bundled_resources.rs` (and, when the `bundled-theory`
+//! Cargo feature is enabled, `$OUT_DIR/bundled_theory.json`) deterministically
+//! from canonical workspace sources (or from `packaged/` snapshots inside an
+//! unpacked `.crate` archive).
 
 #[allow(dead_code)]
 #[path = "src/theory_bundle.rs"]
@@ -53,15 +54,29 @@ fn main() {
 
     let trusted_plan = trusted_bundle::resolve_build_script_bundle(&manifest_dir)
         .unwrap_or_else(|e| panic!("{e}"));
-    let theory_plan = theory_bundle::resolve_build_script_theory_bundle(&manifest_dir)
-        .unwrap_or_else(|e| panic!("{e}"));
+    let theory_plan = if env::var_os("CARGO_FEATURE_BUNDLED_THEORY").is_some() {
+        Some(
+            theory_bundle::resolve_build_script_theory_bundle(&manifest_dir)
+                .unwrap_or_else(|e| panic!("{e}")),
+        )
+    } else {
+        None
+    };
 
     let mut seen = BTreeSet::new();
-    for path in trusted_plan.rerun_if_changed.iter().chain(&theory_plan.rerun_if_changed) {
+    for path in trusted_plan
+        .rerun_if_changed
+        .iter()
+        .chain(theory_plan.iter().flat_map(|p| p.rerun_if_changed.iter()))
+    {
         if seen.insert(path.clone()) {
             emit_rerun_if_changed(path);
         }
     }
     write_if_changed(&out_dir.join("bundled_resources.rs"), &trusted_plan.rendered_source);
-    write_if_changed(&out_dir.join("bundled_theory.json"), &theory_plan.rendered_json);
+    if let Some(plan) = theory_plan {
+        write_if_changed(&out_dir.join("bundled_theory.json"), &plan.rendered_json);
+    } else {
+        let _ = fs::remove_file(out_dir.join("bundled_theory.json"));
+    }
 }

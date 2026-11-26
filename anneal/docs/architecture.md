@@ -97,7 +97,15 @@ Both `theory/` (in the Pass 1 `anneal-audit` repository audit, distinct from
 the syntactic-preflight vs. replay phases within a run) and `correspondence/`
 (in blocking Pass 2 `anneal-audit --require-correspondence`) are staged,
 source-preflighted, and replayed in the standalone Lean kernel as pure,
-axiom-free `.theory` modules. Pass 2 runs in a fresh, isolated staging
+axiom-free `.theory` modules. Under Tier-1 split packaging, `cargo-anneal`
+decouples both `0`-TCB `theory/` (`--theory-dir`, `--theory-archive`,
+`ANNEAL_THEORY_DIR`, gated on `#[cfg(feature = "bundled-theory")]`) and Pass-2
+`correspondence/` provenance (`--correspondence-provenance`, audited directly in
+repository CI by `anneal-audit`) from the `cargo-anneal` binary, splitting
+Receipt Schema v3 digests into `trusted_model_manifest_sha256` (Ring-0 TCB) and
+`theory_manifest_sha256` (`0`-TCB provenance) while sharing Merkle-keyed
+`.olean`s across crates via `--olean-cache-dir` (`anneal-olean-cache-v2`). Pass
+2 runs in a fresh, isolated staging
 environment—extending Pass 1's from-source compilation, preflight, and kernel
 replay of `trusted/lean/` and `theory/` with from-source compilation,
 preflight, and kernel replay of `trusted/correspondence/` and

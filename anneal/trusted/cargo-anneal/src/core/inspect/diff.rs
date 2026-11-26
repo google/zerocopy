@@ -652,7 +652,7 @@ pub fn diff_receipts(
                 "model_manifest_sha256",
                 &b.model_manifest_sha256,
                 &h.model_manifest_sha256,
-                "Anneal trusted/theory bundle digest changed",
+                "Anneal Ring-0 Trusted/ model bundle digest changed",
             ),
             ("audit.canonicalRoot", &b.canonical_root, &h.canonical_root, "root theorem changed"),
             ("audit.theorem", &b.theorem, &h.theorem, "proof theorem symbol changed"),
@@ -660,6 +660,36 @@ pub fn diff_receipts(
             if bv != hv {
                 push(&mut changes, DiffTier::TierB, field, bv.clone(), hv.clone(), note);
             }
+        }
+        if b.trusted_model_manifest_sha256 != h.trusted_model_manifest_sha256 {
+            push(
+                &mut changes,
+                DiffTier::TierB,
+                "trusted_model_manifest_sha256",
+                b.trusted_model_manifest_sha256.as_deref().unwrap_or("<none>").to_owned(),
+                h.trusted_model_manifest_sha256.as_deref().unwrap_or("<none>").to_owned(),
+                "Anneal Ring-0 Trusted/ explicit model digest changed",
+            );
+        }
+        if b.theory_manifest_sha256 != h.theory_manifest_sha256 {
+            push(
+                &mut changes,
+                DiffTier::TierC,
+                "theory_manifest_sha256",
+                b.theory_manifest_sha256.as_deref().unwrap_or("<none>").to_owned(),
+                h.theory_manifest_sha256.as_deref().unwrap_or("<none>").to_owned(),
+                "0-TCB theory/ bundle Merkle digest changed",
+            );
+        }
+        if b.theory_source != h.theory_source {
+            push(
+                &mut changes,
+                DiffTier::TierC,
+                "theory_source",
+                b.theory_source.as_deref().unwrap_or("<none>").to_owned(),
+                h.theory_source.as_deref().unwrap_or("<none>").to_owned(),
+                "0-TCB theory/ bundle source changed",
+            );
         }
         if b.capture_shards_sha256 != h.capture_shards_sha256 {
             push(
@@ -672,8 +702,8 @@ pub fn diff_receipts(
             );
         }
         if b.shards != h.shards {
-            let fmt_shards = |sh: Option<&crate::core::inspect::schema::ReceiptShardsManifest>| {
-                match sh {
+            let fmt_shards =
+                |sh: Option<&crate::core::inspect::schema::ReceiptShardsManifest>| match sh {
                     None => "<none>".to_owned(),
                     Some(m) => format!(
                         "{} shard(s), {} body(s), {} SCC(s) ({} cyclic), id_tree={}",
@@ -683,8 +713,7 @@ pub fn diff_receipts(
                         m.cyclic_sccs,
                         m.id_tree_sha256
                     ),
-                }
-            };
+                };
             push(
                 &mut changes,
                 DiffTier::TierC,

@@ -170,6 +170,10 @@ mod tests {
         }
         let manifest = TheoryBundleManifest {
             schema_version: 1,
+            lean_toolchain: None,
+            compatible_trusted_merkle_roots: None,
+            min_mir_ast_wire_version: None,
+            theory_merkle_root: None,
             modules: entries,
         };
         let manifest_path = root.join(THEORY_BUNDLE_MANIFEST);

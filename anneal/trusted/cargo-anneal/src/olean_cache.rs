@@ -29,16 +29,22 @@ use std::{
     fs::{self, OpenOptions},
     io::{self, Write as _},
     path::{Component, Path, PathBuf},
+    sync::{
+        Arc,
+        atomic::{AtomicUsize, Ordering},
+    },
 };
 
 use serde::{Deserialize, Serialize};
 use sha2::{Digest, Sha256};
 
-use crate::core::validate_olean_v2_header;
-use crate::sandbox::{MAX_OLEAN_BYTES, copy_readonly_file, set_mode};
-use crate::sys_util::{SafeFs, failure_from_io};
 use crate::{
-    Failure, ImportEdge, ModuleArtifacts, is_clean_relative_path, is_sha256_hex, sha256_bytes,
+    Failure, ImportEdge, ModuleArtifacts,
+    core::validate_olean_v2_header,
+    is_clean_relative_path, is_sha256_hex,
+    sandbox::{MAX_OLEAN_BYTES, copy_readonly_file, set_mode},
+    sha256_bytes,
+    sys_util::{SafeFs, failure_from_io},
     toolchain::cache_dir_for_platform,
 };
 
@@ -229,6 +235,27 @@ pub(crate) fn is_cacheable_target_shard_module(module: &str) -> bool {
         || module.starts_with("Proof.Shard_")
 }
 
+/// Resolve a shared or per-user `.olean` disk cache directory following Tier-1
+/// precedence:
+/// 1. Explicit `--olean-cache-dir` path;
+/// 2. `ANNEAL_OLEAN_CACHE_DIR` environment variable (when non-empty);
+/// 3. `<XDG_CACHE_HOME>/anneal/olean-cache` or
+///    `<HOME>/.cache/anneal/olean-cache`.
+pub(crate) fn resolve_olean_cache_dir(
+    explicit: Option<&Path>,
+    anneal_olean_cache_dir: Option<&OsStr>,
+    home: Option<&OsStr>,
+    xdg_cache_home: Option<&OsStr>,
+) -> Option<PathBuf> {
+    if let Some(dir) = explicit {
+        return Some(dir.to_path_buf());
+    }
+    if let Some(env_dir) = anneal_olean_cache_dir.filter(|v| !v.is_empty()) {
+        return Some(PathBuf::from(env_dir));
+    }
+    cache_dir_from_env_vars(home, xdg_cache_home)
+}
+
 /// Derive a per-user disk cache directory (`<cache>/anneal/olean-cache`)
 /// from explicit `HOME` and optional `XDG_CACHE_HOME` values without reading
 /// ambient process environment variables.
@@ -245,9 +272,10 @@ pub(crate) fn cache_dir_from_env_vars(
 /// matching `toolchain.rs` XDG precedence without creating any directories.
 #[cfg(test)]
 pub(crate) fn default_olean_cache_dir() -> Option<PathBuf> {
+    let env_dir = std::env::var_os("ANNEAL_OLEAN_CACHE_DIR");
     let home = std::env::var_os("HOME");
     let xdg = std::env::var_os("XDG_CACHE_HOME");
-    cache_dir_from_env_vars(home.as_deref(), xdg.as_deref())
+    resolve_olean_cache_dir(None, env_dir.as_deref(), home.as_deref(), xdg.as_deref())
 }
 
 type PrebuiltEntryMap = BTreeMap<(CacheKind, String), PrebuiltManifestEntry>;
@@ -269,30 +297,35 @@ pub(crate) struct OleanCache {
     disk_dir: Option<PathBuf>,
     prebuilt_entries: Option<PrebuiltEntryMap>,
     prebuilt_skipped_version: Option<u32>,
+    hits: Arc<AtomicUsize>,
+    misses: Arc<AtomicUsize>,
 }
 
 impl OleanCache {
     pub(crate) fn with_env_vars(home: Option<&OsStr>, xdg_cache_home: Option<&OsStr>) -> Self {
+        Self::with_resolved_dir(cache_dir_from_env_vars(home, xdg_cache_home))
+    }
+
+    pub(crate) fn with_resolved_dir(disk_dir: Option<PathBuf>) -> Self {
         Self {
             enabled: true,
             no_rebuild_bundled: false,
             prebuilt_dir: None,
-            disk_dir: cache_dir_from_env_vars(home, xdg_cache_home),
+            disk_dir,
             prebuilt_entries: None,
             prebuilt_skipped_version: None,
+            hits: Arc::new(AtomicUsize::new(0)),
+            misses: Arc::new(AtomicUsize::new(0)),
         }
     }
 
     #[cfg(test)]
     pub(crate) fn new_default() -> Self {
-        Self {
-            enabled: true,
-            no_rebuild_bundled: false,
-            prebuilt_dir: None,
-            disk_dir: default_olean_cache_dir(),
-            prebuilt_entries: None,
-            prebuilt_skipped_version: None,
-        }
+        Self::with_resolved_dir(default_olean_cache_dir())
+    }
+
+    pub(crate) fn stats(&self) -> (usize, usize) {
+        (self.hits.load(Ordering::Relaxed), self.misses.load(Ordering::Relaxed))
     }
 
     pub(crate) fn preload_prebuilt(&mut self) -> Result<(), Failure> {
@@ -320,7 +353,6 @@ impl OleanCache {
         }
     }
 
-    #[cfg(test)]
     pub(crate) fn set_disk_dir(&mut self, dir: Option<PathBuf>) {
         self.disk_dir = dir;
     }
@@ -391,14 +423,18 @@ impl OleanCache {
                 &entry.parts,
                 /*require_owner_uid=*/ false,
             )?;
+            self.hits.fetch_add(1, Ordering::Relaxed);
             return Ok(Some(parts));
         }
 
         if let Some(ref disk_dir) = self.disk_dir
             && let Some(parts) = lookup_disk_cache_bytes(disk_dir, input)?
         {
+            self.hits.fetch_add(1, Ordering::Relaxed);
             return Ok(Some(parts));
         }
+
+        self.misses.fetch_add(1, Ordering::Relaxed);
 
         if self.no_rebuild_bundled
             && (input.kind == CacheKind::Inspector || is_cacheable_bundled_module(&input.module))

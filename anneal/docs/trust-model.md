@@ -167,10 +167,15 @@ Anneal's architecture enforces **Statement-Origin Separation** between the two:
   theorem statement.
 - Declarations from `theory/` appear only inside the *proof term*
   (`ConstantInfo.value?`). Because `anneal-audit` verifies in CI that `theory/`
-  is pure, effect-free, and free of custom axioms, and the Lean 4 kernel checks
-  that `ConstantInfo.value?` inhabits `ConstantInfo.type`, `theory/` can supply
-  arbitrarily rich lowering passes and tactics without being able to weaken the
-  theorem statement.
+  is pure, effect-free, and free of custom axioms, and because
+  `cargo-anneal verify` stages external `--theory-dir` / `--theory-archive`
+  modules strictly as `TargetRole::Proof` inside `ExecSeal` (`bwrap` / Landlock)
+  and replays the compiled theorem environment against `TrustedBoundary`,
+  rolling `theory/` independently of the prebuilt binary is `0`-TCB-safe: at
+  worst a broken `theory/` update causes proof elaboration to fail, never a
+  soundness bypass. Moreover, because `Trusted.*` never imports `Anneal.*`,
+  `anneal-olean-cache-v2` (`--olean-cache-dir`) preserves 100% of `Trusted.*`
+  `.olean` cache entries across `theory/` updates.
 
 ### Profile-parametric verification envelopes (`Trusted.Framework`)
 

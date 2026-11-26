@@ -198,7 +198,7 @@ def load_trusted_module_sources(anneal_root: Path) -> dict[str, Path]:
 def load_theory_module_sources(anneal_root: Path) -> dict[str, Path]:
     manifest_path = anneal_root / "theory/bundle-manifest.json"
     manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
-    if manifest.get("schema_version") != 1:
+    if manifest.get("schema_version") not in (1, 2):
         raise RuntimeError(f"unsupported theory manifest schema_version in {manifest_path}")
     modules: dict[str, Path] = {}
     for entry in manifest["modules"]:

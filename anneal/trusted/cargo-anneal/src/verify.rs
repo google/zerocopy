@@ -56,7 +56,7 @@ use crate::{
 include!(concat!(env!("OUT_DIR"), "/bundled_resources.rs"));
 
 pub(crate) const EMBEDDED_BUNDLE_SOURCES: &[(&str, &str)] = BUNDLE;
-pub(crate) const EMBEDDED_CORRESPONDENCE_PROVENANCE_JSON: &str = CORRESPONDENCE_PROVENANCE_JSON;
+pub(crate) const TRUSTED_MERKLE_ROOT: &str = EMBEDDED_TRUSTED_MERKLE_ROOT;
 
 const PINNED_CAPTURE_SCHEMA_VERSION: u32 = 5;
 const PINNED_RUSTC_COMMIT: &str = "f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1";
@@ -356,6 +356,22 @@ pub struct VerifyArgs {
     /// `TrustedBoundary` when absent from prebuilt or local `.olean` caches.
     #[arg(long, global = true, conflicts_with = "no_cache")]
     no_rebuild_bundled: bool,
+    /// Shared content-addressed Merkle `.olean` disk cache directory
+    /// (`v2/<merkle_key>/`; overrides `ANNEAL_OLEAN_CACHE_DIR`).
+    #[arg(long, global = true, value_name = "DIR", conflicts_with = "no_cache")]
+    olean_cache_dir: Option<PathBuf>,
+    /// External `0`-TCB `theory/` directory containing `bundle-manifest.json`
+    /// and `Anneal/**/*.lean` (overrides `ANNEAL_THEORY_DIR` and bundled
+    /// theory).
+    #[arg(long, global = true, value_name = "DIR", conflicts_with = "theory_archive")]
+    theory_dir: Option<PathBuf>,
+    /// CAS-safe `.tar` or `.tar.zst` archive containing `bundle-manifest.json`
+    /// and `Anneal/**/*.lean`.
+    #[arg(long, global = true, value_name = "ARCHIVE", conflicts_with = "theory_dir")]
+    theory_archive: Option<PathBuf>,
+    /// Optional detached Pass-2 correspondence provenance JSON file.
+    #[arg(long, global = true, value_name = "PATH")]
+    correspondence_provenance: Option<PathBuf>,
     /// Sharding budget configuration for Tarjan SCC `.olean` partitioning.
     #[command(flatten)]
     shard: ShardArgs,
@@ -821,6 +837,24 @@ impl VerifyArgs {
             return Err(cmd.error(
                 ErrorKind::ArgumentConflict,
                 "`--no-cache` and `--no-rebuild-bundled` cannot be used together",
+            ));
+        }
+        if self.no_cache && self.olean_cache_dir.is_some() {
+            return Err(cmd.error(
+                ErrorKind::ArgumentConflict,
+                "`--no-cache` and `--olean-cache-dir` cannot be used together",
+            ));
+        }
+        if self.theory_dir.is_some() && self.theory_archive.is_some() {
+            return Err(cmd.error(
+                ErrorKind::ArgumentConflict,
+                "`--theory-dir` and `--theory-archive` cannot be used together",
+            ));
+        }
+        if self.allow_unpinned_lean && self.correspondence_provenance.is_some() {
+            return Err(cmd.error(
+                ErrorKind::ArgumentConflict,
+                "`--allow-unpinned-lean` and `--correspondence-provenance` cannot be used together",
             ));
         }
         #[cfg(not(feature = "setup"))]
@@ -1985,10 +2019,18 @@ struct SelectedTools {
     sysroot: Option<PathBuf>,
     lean: Option<PathBuf>,
     prebuilt_dir: Option<PathBuf>,
+    share_theory_dir: Option<PathBuf>,
     // Keep the shared bundle flock held until `verify::run` finishes so a
     // concurrent `setup --local-archive` cannot swap toolchain binaries in use.
     #[cfg(feature = "setup")]
     _bundle_lease: Option<crate::setup::Bundle>,
+}
+
+fn infer_sibling_share_theory_dir(lean: Option<&Path>) -> Option<PathBuf> {
+    lean.and_then(Path::parent)
+        .and_then(Path::parent)
+        .and_then(Path::parent)
+        .map(|root| root.join("share/anneal/theory"))
 }
 
 fn select_tools(args: &VerifyArgs) -> Result<SelectedTools> {
@@ -2025,11 +2067,17 @@ fn select_tools_with(
         } else {
             None
         };
+        let share_theory_dir = if require_lean && lean.is_none() {
+            installed.as_ref().map(crate::setup::Bundle::theory_dir)
+        } else {
+            infer_sibling_share_theory_dir(tools.lean.as_deref())
+        };
         Ok(SelectedTools {
             capture: tools.capture,
             sysroot: tools.sysroot,
             lean: tools.lean,
             prebuilt_dir,
+            share_theory_dir,
             _bundle_lease: installed,
         })
     }
@@ -2042,6 +2090,7 @@ fn select_tools_with(
                     sysroot: Some(sysroot.to_path_buf()),
                     lean: lean_opt.map(Path::to_path_buf),
                     prebuilt_dir: None,
+                    share_theory_dir: infer_sibling_share_theory_dir(lean_opt),
                 })
             }
             _ => {
@@ -2360,6 +2409,35 @@ fn validate_receipt_out_pre_stage(
         direct_inputs.push(sysroot.to_path_buf());
         protected_dirs.push(sysroot.to_path_buf());
     }
+    if let Some(prov) = args.correspondence_provenance.as_deref() {
+        direct_inputs.push(prov.to_path_buf());
+    }
+    if let Some(tdir) = args.theory_dir.as_deref() {
+        direct_inputs.push(tdir.to_path_buf());
+        protected_dirs.push(tdir.to_path_buf());
+    }
+    if let Some(tarch) = args.theory_archive.as_deref() {
+        direct_inputs.push(tarch.to_path_buf());
+    }
+    if let Some(env_tdir) =
+        std::env::var_os("ANNEAL_THEORY_DIR").filter(|v| !v.is_empty()).map(PathBuf::from)
+    {
+        direct_inputs.push(env_tdir.clone());
+        protected_dirs.push(env_tdir);
+    }
+    if let Some(ocache) = args.olean_cache_dir.as_deref() {
+        direct_inputs.push(ocache.to_path_buf());
+        protected_dirs.push(ocache.to_path_buf());
+    }
+    if let Some(env_ocache) =
+        std::env::var_os("ANNEAL_OLEAN_CACHE_DIR").filter(|v| !v.is_empty()).map(PathBuf::from)
+    {
+        direct_inputs.push(env_ocache.clone());
+        protected_dirs.push(env_ocache);
+    }
+    if let Some(pd) = args.proof_dir.as_deref() {
+        protected_dirs.push(pd.to_path_buf());
+    }
     // Also guard auto-discovered toolchain paths and the running executable
     // before preflight/staging can emit an early failure receipt.
     if let Ok(exe) = std::env::current_exe() {
@@ -2377,6 +2455,10 @@ fn validate_receipt_out_pre_stage(
         if let Some(prebuilt) = tools.prebuilt_dir {
             direct_inputs.push(prebuilt.clone());
             protected_dirs.push(prebuilt);
+        }
+        if let Some(share_theory) = tools.share_theory_dir {
+            direct_inputs.push(share_theory.clone());
+            protected_dirs.push(share_theory);
         }
     }
     for dir in &protected_dirs {
@@ -3108,6 +3190,50 @@ fn run<Out: std::io::Write + Send, ErrOut: std::io::Write + Send>(
     // and Lean stay paired, falling back to a sibling capture executable and
     // `default_lean_path` when unavailable. When built without `setup`, all
     // three tool paths must be passed explicitly.
+    let computed_trusted_merkle =
+        crate::bundle::compute_trusted_merkle_root(BUNDLE.iter().map(|(r, t)| (*r, t.as_bytes())));
+    if computed_trusted_merkle != EMBEDDED_TRUSTED_MERKLE_ROOT {
+        return Err(error(
+            "tool_failed",
+            "bundle",
+            format!(
+                "corrupt embedded Trusted/ Merkle root: expected {EMBEDDED_TRUSTED_MERKLE_ROOT}, \
+                 computed {computed_trusted_merkle}"
+            ),
+        ));
+    }
+    let trusted_model_manifest_sha256 = computed_trusted_merkle;
+    let model_manifest_sha256 = trusted_model_manifest_sha256.clone();
+
+    let detached_correspondence_provenance =
+        if let Some(prov_path) = &args.correspondence_provenance {
+            if let Some(target) = receipt_out {
+                check_receipt_out_candidate(target, prov_path)?;
+            }
+            let canon_prov =
+                fs::canonicalize(prov_path).map_err(|e| io("correspondence-provenance", e))?;
+            let (prov_bytes, prov_sha) =
+                read_regular_file_deref(&canon_prov, "correspondence-provenance")
+                    .map_err(|e| error("tool_failed", "correspondence-provenance", e.message))?;
+            let mut expected_trusted_lean = BTreeMap::new();
+            for (rel, text) in BUNDLE {
+                if rel.starts_with("trusted/lean/") {
+                    expected_trusted_lean.insert(*rel, sha256_bytes(text.as_bytes()));
+                }
+            }
+            let parsed = crate::core::inspect::schema::validate_detached_correspondence_provenance(
+                &prov_bytes,
+                TOOLCHAIN,
+                crate::trusted_bundle::LOCKED_SYSROOT_FOUNDATION_MANIFEST_SHA256,
+                &expected_trusted_lean,
+            )
+            .map_err(|msg| error("tool_failed", "correspondence-provenance", msg))?;
+            originals.push((canon_prov, prov_sha));
+            Some(parsed)
+        } else {
+            None
+        };
+
     let tools = select_tools(args)?;
     if let Some(target) = receipt_out {
         check_receipt_out_candidate(target, &tools.capture)?;
@@ -3117,8 +3243,36 @@ fn run<Out: std::io::Write + Send, ErrOut: std::io::Write + Send>(
         if let Some(lean) = tools.lean.as_deref() {
             check_receipt_out_candidate(target, lean)?;
         }
+        if let Some(prebuilt) = tools.prebuilt_dir.as_deref() {
+            check_receipt_out_candidate(target, prebuilt)?;
+        }
+        if let Some(share_theory) = tools.share_theory_dir.as_deref() {
+            check_receipt_out_candidate(target, share_theory)?;
+        }
     }
     reject_receipt_out_originals_aliasing(receipt_out, &originals)?;
+
+    let env_theory_dir =
+        std::env::var_os("ANNEAL_THEORY_DIR").filter(|v| !v.is_empty()).map(PathBuf::from);
+    let explicit_external_theory =
+        args.theory_dir.is_some() || args.theory_archive.is_some() || env_theory_dir.is_some();
+    let pre_capture_theory = if explicit_external_theory {
+        Some(
+            crate::bundle::resolve_runtime_theory_bundle(
+                args.theory_dir.as_deref(),
+                args.theory_archive.as_deref(),
+                env_theory_dir.as_deref(),
+                tools.share_theory_dir.as_deref(),
+                TOOLCHAIN,
+                &trusted_model_manifest_sha256,
+                PINNED_CAPTURE_SCHEMA_VERSION,
+            )
+            .map_err(|e| error("tool_failed", "theory-bundle", format!("{e}")))?,
+        )
+    } else {
+        None
+    };
+
     session.report_phase(VerifyPhase::Capture {
         crate_name: SanitizedInline::new(&request.compilation.crate_name),
     });
@@ -3158,19 +3312,42 @@ fn run<Out: std::io::Write + Send, ErrOut: std::io::Write + Send>(
     let manifest = capture_outcome.manifest;
     let shards_outcome = capture_outcome.shards;
 
+    if manifest.program.mir_profile_version == 2 && detached_correspondence_provenance.is_some() {
+        return Err(error(
+            "tool_failed",
+            "correspondence-provenance",
+            "--correspondence-provenance applies only to Profile v1 captures; \
+             captured program uses Profile v2",
+        ));
+    }
+
+    let resolved_theory = match pre_capture_theory {
+        Some(resolved) => resolved,
+        None => crate::bundle::resolve_runtime_theory_bundle(
+            args.theory_dir.as_deref(),
+            args.theory_archive.as_deref(),
+            env_theory_dir.as_deref(),
+            tools.share_theory_dir.as_deref(),
+            TOOLCHAIN,
+            &trusted_model_manifest_sha256,
+            PINNED_CAPTURE_SCHEMA_VERSION,
+        )
+        .map_err(|e| error("tool_failed", "theory-bundle", format!("{e}")))?,
+    };
+
     let bundle = work.join("anneal");
     let mut modules = Vec::new();
-    let mut model_identity: Vec<(String, String)> = Vec::new();
-    // Installed theory remains proof code even though it ships with the
-    // model. Only primitive trusted modules may determine the canonical
-    // proposition; packaging must not promote proof helpers into its TCB.
+    // Installed or externalized `theory/` remains `0`-TCB `TargetRole::Proof`
+    // code. Only Ring-0 `Trusted/` modules enter
+    // `trusted_model_manifest_sha256` (`model_manifest_sha256`), so rolling
+    // `theory/` never alters the TCB model identity or invalidates `Trusted.*`
+    // `.olean` cache entries.
     let mut model_tiers: BTreeMap<String, TrustTier> = BTreeMap::new();
     let mut model_modules: BTreeSet<String> = BTreeSet::new();
     for (relative, text) in BUNDLE {
         let path = bundle.join(relative);
         write(&path, text.as_bytes())?;
         let file_sha256 = sha256_bytes(text.as_bytes());
-        model_identity.push(((*relative).to_owned(), file_sha256.clone()));
         if let Some((module, tier)) = bundled_model_tier(relative, text)? {
             model_tiers.insert(module.clone(), tier);
             model_modules.insert(module.clone());
@@ -3182,13 +3359,11 @@ fn run<Out: std::io::Write + Send, ErrOut: std::io::Write + Send>(
             });
         }
     }
-    let bundled_theory = crate::bundle::embedded_theory_bundle().map_err(|e| {
-        error("tool_failed", "bundle", format!("corrupt embedded theory bundle: {e}"))
-    })?;
-    for entry in bundled_theory.modules {
+    let theory_manifest_sha256 = resolved_theory.theory_merkle_root.clone();
+    let theory_source = resolved_theory.source.as_str();
+    for entry in resolved_theory.bundle.modules {
         let path = bundle.join(&entry.path);
         write(&path, entry.content.as_bytes())?;
-        model_identity.push((entry.path.clone(), entry.sha256.clone()));
         modules.push(TargetModule {
             module: entry
                 .path
@@ -3200,7 +3375,6 @@ fn run<Out: std::io::Write + Send, ErrOut: std::io::Write + Send>(
             role: TargetRole::Proof,
         });
     }
-    let model_manifest_sha256 = sha256_bytes(&encoded(&model_identity)?);
     if let Some(ref shards) = shards_outcome {
         for (module, path, sha256) in &shards.shard_modules {
             modules.push(TargetModule {
@@ -3378,6 +3552,10 @@ fn run<Out: std::io::Write + Send, ErrOut: std::io::Write + Send>(
     checker.set_lean_memory_limit_mb(args.lean_memory_mb);
     checker.set_use_olean_cache(!args.no_cache);
     checker.set_no_rebuild_bundled(args.no_rebuild_bundled);
+    if let Some(ref cache_dir) = args.olean_cache_dir {
+        let abs_cache = normalize_lexical_absolute(cache_dir).map_err(|e| io("olean-cache", e))?;
+        checker.set_olean_disk_cache_dir(Some(abs_cache));
+    }
     checker.set_prebuilt_olean_dir(tools.prebuilt_dir);
     checker.set_paranoid_quorum(args.paranoid_quorum);
     let audit_result = checker.run_target_with_progress(&audit_request, |ev| {
@@ -3481,15 +3659,13 @@ fn run<Out: std::io::Write + Send, ErrOut: std::io::Write + Send>(
                        only; Profile v2 execution rules are not certified \
                        against lean-miri",
         })
+    } else if let Some(parsed_prov) = detached_correspondence_provenance {
+        parsed_prov
     } else {
-        serde_json::from_str(CORRESPONDENCE_PROVENANCE_JSON).map_err(|e| {
-            error(
-                "tool_failed",
-                "bundle",
-                format!("corrupt bundled correspondence provenance: {e}"),
-            )
-            .with_sandbox(Some(active_sandbox.as_str()))
-        })?
+        json!({
+            "applicable": false,
+            "reason": crate::bundle::DECOUPLED_CORRESPONDENCE_PROVENANCE_REASON,
+        })
     };
     let adm = checker.admitted().map_err(|e| {
         error("tool_failed", "toolchain", e.message).with_sandbox(Some(active_sandbox.as_str()))
@@ -3659,6 +3835,9 @@ fn run<Out: std::io::Write + Send, ErrOut: std::io::Write + Send>(
         "capture_binary_sha256": capture_binary_sha256,
         "toolchain_identity": toolchain_identity,
         "model_manifest_sha256": model_manifest_sha256,
+        "trusted_model_manifest_sha256": trusted_model_manifest_sha256,
+        "theory_manifest_sha256": theory_manifest_sha256,
+        "theory_source": theory_source,
         "specification_manifest_sha256": specification_manifest_sha256,
         "correspondence_provenance": correspondence_provenance,
         "scope": request.scope, "selected": manifest.selected,
@@ -5357,6 +5536,10 @@ mod tests {
             lean_memory_mb: None,
             no_cache: false,
             no_rebuild_bundled: false,
+            olean_cache_dir: None,
+            theory_dir: None,
+            theory_archive: None,
+            correspondence_provenance: None,
             shard: ShardArgs::default(),
             verify_shard_plan: None,
             command: None,
@@ -5400,6 +5583,10 @@ mod tests {
                         lean_memory_mb: None,
                         no_cache: false,
                         no_rebuild_bundled: false,
+                        olean_cache_dir: None,
+                        theory_dir: None,
+                        theory_archive: None,
+                        correspondence_provenance: None,
                         shard: ShardArgs::default(),
                         verify_shard_plan: None,
                         command: None,
@@ -5856,21 +6043,12 @@ mod tests {
     }
 
     #[test]
-    fn bundled_correspondence_provenance_is_well_formed() {
-        let provenance: Value = serde_json::from_str(CORRESPONDENCE_PROVENANCE_JSON)
-            .expect("bundled correspondence provenance must be valid JSON");
-        assert_eq!(provenance["schema_version"], 1);
-        assert_eq!(provenance["upstream_repository"], "https://github.com/proofs-rs/lean-miri.git");
-        assert_eq!(provenance["upstream_commit"], "c92d1d9754c9dd585b6b9d6949ae67e5e4665d6a");
-        assert_eq!(
-            provenance["sysroot_foundation_manifest_sha256"],
-            crate::LOCKED_SYSROOT_FOUNDATION_MANIFEST_SHA256
+    fn embedded_trusted_merkle_root_matches_bundled_sources() {
+        let computed = crate::bundle::compute_trusted_merkle_root(
+            BUNDLE.iter().map(|(rel, text)| (*rel, text.as_bytes())),
         );
-        assert_eq!(provenance["upstream_pin_sha256"].as_str().unwrap().len(), 64);
-        assert_eq!(provenance["correspondence_adapters"].as_object().unwrap().len(), 7);
-        assert_eq!(provenance["patched_files"].as_array().unwrap().len(), 13);
-        assert_eq!(provenance["correspondence_proofs"].as_object().unwrap().len(), 19);
-        assert_eq!(provenance["trusted_lean"].as_object().unwrap().len(), 24);
+        assert_eq!(computed.len(), 64);
+        assert_eq!(computed, EMBEDDED_TRUSTED_MERKLE_ROOT);
     }
 
     #[cfg(not(feature = "setup"))]
@@ -5902,6 +6080,10 @@ mod tests {
             lean_memory_mb: None,
             no_cache: false,
             no_rebuild_bundled: false,
+            olean_cache_dir: None,
+            theory_dir: None,
+            theory_archive: None,
+            correspondence_provenance: None,
             shard: ShardArgs::default(),
             verify_shard_plan: None,
             command: None,
@@ -5951,6 +6133,10 @@ mod tests {
                 lean_memory_mb: None,
                 no_cache: false,
                 no_rebuild_bundled: false,
+                olean_cache_dir: None,
+                theory_dir: None,
+                theory_archive: None,
+                correspondence_provenance: None,
                 shard: ShardArgs::default(),
                 verify_shard_plan: None,
                 command: None,
@@ -6733,6 +6919,10 @@ mod tests {
             lean: None,
             no_cache: false,
             no_rebuild_bundled: false,
+            olean_cache_dir: None,
+            theory_dir: None,
+            theory_archive: None,
+            correspondence_provenance: None,
             export_lean_lib: false,
             lean_memory_mb: None,
             allow_unsandboxed_elaboration: false,

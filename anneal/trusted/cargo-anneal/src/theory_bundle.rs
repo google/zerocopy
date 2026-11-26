@@ -12,20 +12,26 @@
 
 use std::{
     collections::BTreeSet,
+    fmt::Write as _,
     fs, io,
     path::{Component, Path, PathBuf},
 };
 
 use serde::{Deserialize, Serialize};
+use sha2::{Digest, Sha256};
 
 use super::trusted_bundle::{
-    BundleError, is_anneal_workspace, sha256_bytes, validate_bundle_source,
+    BundleError, CURRENT_MIR_AST_WIRE_VERSION, LOCKED_LEAN_TOOLCHAIN, is_anneal_workspace,
+    render_bundled_resources_parts, sha256_bytes, validate_bundle_source,
     validate_destination_path, validate_parent_directories,
 };
 
 /// Names the repository-relative path of the sorted, SHA-256-pinned manifest
 /// enumerating bundled Pass 1 `theory/Anneal/**/*.lean` proof libraries.
 pub const THEORY_BUNDLE_MANIFEST: &str = "theory/bundle-manifest.json";
+
+/// Names the manifest filename inside an external `--theory-dir` directory.
+pub const EXTERNAL_THEORY_MANIFEST_FILENAME: &str = "bundle-manifest.json";
 
 /// Names the legacy checked-in JSON theory bundle path, which must stay absent
 /// from clean repository checkouts now that `build.rs` emits into `$OUT_DIR`.
@@ -58,6 +64,28 @@ fn is_lowercase_sha256_hex(value: &str) -> bool {
     value.len() == 64 && value.bytes().all(|b| matches!(b, b'0'..=b'9' | b'a'..=b'f'))
 }
 
+fn feed_len_str(h: &mut Sha256, s: &str) {
+    h.update((s.len() as u64).to_le_bytes());
+    h.update(s.as_bytes());
+}
+
+/// Compute the canonical `0`-TCB `theory/` Merkle root (`theory_merkle_root`)
+/// over strictly sorted [`TheoryBundleEntry`] records.
+pub fn compute_theory_merkle_root(entries: &[TheoryBundleEntry]) -> String {
+    let mut h = Sha256::new();
+    h.update(b"anneal-theory-merkle-v1\0");
+    h.update((entries.len() as u64).to_le_bytes());
+    for entry in entries {
+        feed_len_str(&mut h, &entry.path);
+        feed_len_str(&mut h, &entry.sha256);
+    }
+    let mut hex = String::with_capacity(64);
+    for byte in h.finalize() {
+        let _ = write!(&mut hex, "{byte:02x}");
+    }
+    hex
+}
+
 /// Describes one SHA-256-pinned entry in [`THEORY_BUNDLE_MANIFEST`].
 #[derive(Debug, Clone, PartialEq, Eq, Deserialize, Serialize)]
 #[serde(deny_unknown_fields)]
@@ -69,18 +97,37 @@ pub struct TheoryBundleEntry {
 }
 
 /// Represents the validated contents of [`THEORY_BUNDLE_MANIFEST`].
+///
+/// `schema_version = 2` carries fast-fail compatibility headers
+/// (`lean_toolchain`, `compatible_trusted_merkle_roots`,
+/// `min_mir_ast_wire_version`, `theory_merkle_root`) so an external
+/// `--theory-dir` or `--theory-archive` fails closed in `<1 ms` on Ring-0
+/// `Trusted/` or toolchain skew rather than mid-elaboration. Version `1`
+/// omits those optional headers for backward compatibility in legacy synthetic
+/// unit fixtures.
 #[derive(Debug, Clone, PartialEq, Eq, Deserialize, Serialize)]
 #[serde(deny_unknown_fields)]
 pub struct TheoryBundleManifest {
-    /// Manifest format version (must be `1`).
+    /// Manifest format version (`1` or `2`; external `--theory-dir` needs `2`).
     pub schema_version: u32,
+    /// Pinned Lean toolchain identifier (`schema_version = 2`).
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub lean_toolchain: Option<String>,
+    /// Allowed Ring-0 `Trusted/` Merkle roots (`schema_version = 2`).
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub compatible_trusted_merkle_roots: Option<Vec<String>>,
+    /// Minimum `MirAst` wire schema version required (`schema_version = 2`).
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub min_mir_ast_wire_version: Option<u32>,
+    /// Canonical Merkle digest over `modules` (`schema_version = 2`).
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub theory_merkle_root: Option<String>,
     /// Strictly lexicographically sorted, duplicate-free list of bundled
     /// `theory/Anneal/**/*.lean` modules.
     pub modules: Vec<TheoryBundleEntry>,
 }
 
-/// Holds one embedded bundled `theory/` source module inside
-/// `bundled_theory.json`.
+/// Holds one embedded or externally loaded `theory/` source module.
 #[derive(Debug, Clone, PartialEq, Eq, Deserialize, Serialize)]
 #[serde(deny_unknown_fields)]
 pub struct BundledTheoryModule {
@@ -88,21 +135,34 @@ pub struct BundledTheoryModule {
     pub path: String,
     /// Lowercase 64-character hex SHA-256 digest of `content.as_bytes()`.
     pub sha256: String,
-    /// Exact UTF-8 source bytes of the bundled `theory/` module.
+    /// Exact UTF-8 source bytes of the `theory/` module.
     pub content: String,
 }
 
 /// Holds the parsed, self-verified contents of `$OUT_DIR/bundled_theory.json`
-/// (or `packaged/bundled_theory.json` inside standalone `.crate` builds).
+/// (or an externally loaded `--theory-dir` / `--theory-archive` bundle).
 #[derive(Debug, Clone, PartialEq, Eq, Deserialize, Serialize)]
 #[serde(deny_unknown_fields)]
 pub struct BundledTheory {
-    /// Bundle format version (must be `1`).
+    /// Bundle format version (`1` or `2`).
     pub schema_version: u32,
     /// Lowercase 64-character hex SHA-256 digest of the canonical
     /// [`THEORY_BUNDLE_MANIFEST`] file bytes used to render this bundle.
     pub manifest_sha256: String,
-    /// Strictly lexicographically sorted, duplicate-free list of embedded
+    /// Canonical Merkle root over `modules`.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub theory_merkle_root: Option<String>,
+    /// Pinned Lean toolchain identifier from a `schema_version = 2` manifest.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub lean_toolchain: Option<String>,
+    /// Allowed Ring-0 `Trusted/` Merkle roots from a v2 manifest.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub compatible_trusted_merkle_roots: Option<Vec<String>>,
+    /// Minimum `MirAst` wire schema version from a `schema_version = 2`
+    /// manifest.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub min_mir_ast_wire_version: Option<u32>,
+    /// Strictly lexicographically sorted, duplicate-free list of
     /// `theory/Anneal/**/*.lean` modules.
     pub modules: Vec<BundledTheoryModule>,
 }
@@ -197,55 +257,166 @@ where
     Ok(())
 }
 
-/// Load and strictly validate [`THEORY_BUNDLE_MANIFEST`] under `root`,
+/// Parse and structurally validate raw `bundle-manifest.json` bytes,
 /// returning `(manifest_sha256, manifest)`.
-///
-/// Rejects symlinks, malformed JSON, unknown fields, wrong `schema_version`,
-/// out-of-tree or non-`Anneal` paths, duplicate or unsorted entries, missing
-/// required core theory (`theory/Anneal/MirWp.lean`), and non-lowercase or
-/// malformed SHA-256 digests. Callers that need on-disk source parity should
-/// use [`render_bundled_theory`], which also checks every listed file's bytes
-/// against its manifest digest.
-pub fn load_theory_bundle_manifest(
-    root: &Path,
+pub fn parse_theory_bundle_manifest_bytes(
+    manifest_bytes: &[u8],
+    label: &str,
 ) -> Result<(String, TheoryBundleManifest), BundleError> {
-    let manifest_path = validate_bundle_source(root, THEORY_BUNDLE_MANIFEST)?;
-    let manifest_bytes = fs::read(manifest_path).map_err(BundleError::Io)?;
-    let manifest_sha256 = sha256_bytes(&manifest_bytes);
-    let manifest: TheoryBundleManifest = serde_json::from_slice(&manifest_bytes).map_err(|err| {
-        BundleError::Policy(format!("malformed {THEORY_BUNDLE_MANIFEST}: {err}"))
-    })?;
-    if manifest.schema_version != 1 {
-        return Err(BundleError::Policy(format!(
-            "unsupported schema_version {} in {THEORY_BUNDLE_MANIFEST}",
-            manifest.schema_version
-        )));
-    }
-    validate_theory_path_sequence(
-        manifest.modules.iter().map(|entry| entry.path.as_str()),
-        THEORY_BUNDLE_MANIFEST,
-    )?;
+    let manifest_sha256 = sha256_bytes(manifest_bytes);
+    let manifest: TheoryBundleManifest = serde_json::from_slice(manifest_bytes)
+        .map_err(|err| BundleError::Policy(format!("malformed {label}: {err}")))?;
+    validate_theory_path_sequence(manifest.modules.iter().map(|entry| entry.path.as_str()), label)?;
     for entry in &manifest.modules {
         if !is_lowercase_sha256_hex(&entry.sha256) {
             return Err(BundleError::Policy(format!(
-                "invalid lowercase SHA-256 in {THEORY_BUNDLE_MANIFEST} for {}",
+                "invalid lowercase SHA-256 in {label} for {}",
                 entry.path
+            )));
+        }
+    }
+    let computed_merkle = compute_theory_merkle_root(&manifest.modules);
+    match manifest.schema_version {
+        1 => {
+            if manifest.lean_toolchain.is_some()
+                || manifest.compatible_trusted_merkle_roots.is_some()
+                || manifest.min_mir_ast_wire_version.is_some()
+                || manifest.theory_merkle_root.is_some()
+            {
+                return Err(BundleError::Policy(format!(
+                    "schema_version 1 in {label} must not include v2 compatibility headers"
+                )));
+            }
+        }
+        2 => {
+            let tc = manifest.lean_toolchain.as_deref().unwrap_or("");
+            if tc.trim().is_empty() {
+                return Err(BundleError::Policy(format!(
+                    "missing or empty lean_toolchain in {label} (schema_version 2)"
+                )));
+            }
+            let Some(ref roots) = manifest.compatible_trusted_merkle_roots else {
+                return Err(BundleError::Policy(format!(
+                    "missing compatible_trusted_merkle_roots in {label} (schema_version 2)"
+                )));
+            };
+            if roots.is_empty() {
+                return Err(BundleError::Policy(format!(
+                    "compatible_trusted_merkle_roots in {label} must list at least one root"
+                )));
+            }
+            let mut prev_root: Option<&str> = None;
+            for root_hex in roots {
+                if !is_lowercase_sha256_hex(root_hex) {
+                    return Err(BundleError::Policy(format!(
+                        "invalid lowercase SHA-256 in compatible_trusted_merkle_roots of {label}: {root_hex}"
+                    )));
+                }
+                if let Some(prev) = prev_root
+                    && root_hex.as_str() <= prev
+                {
+                    return Err(BundleError::Policy(format!(
+                        "compatible_trusted_merkle_roots in {label} must be strictly sorted and duplicate-free"
+                    )));
+                }
+                prev_root = Some(root_hex.as_str());
+            }
+            let Some(min_wire) = manifest.min_mir_ast_wire_version else {
+                return Err(BundleError::Policy(format!(
+                    "missing min_mir_ast_wire_version in {label} (schema_version 2)"
+                )));
+            };
+            if min_wire == 0 {
+                return Err(BundleError::Policy(format!(
+                    "min_mir_ast_wire_version in {label} must be >= 1"
+                )));
+            }
+            let Some(ref declared_merkle) = manifest.theory_merkle_root else {
+                return Err(BundleError::Policy(format!(
+                    "missing theory_merkle_root in {label} (schema_version 2)"
+                )));
+            };
+            if !is_lowercase_sha256_hex(declared_merkle) {
+                return Err(BundleError::Policy(format!(
+                    "invalid lowercase SHA-256 theory_merkle_root in {label}"
+                )));
+            }
+            if *declared_merkle != computed_merkle {
+                return Err(BundleError::Policy(format!(
+                    "theory_merkle_root mismatch in {label}: expected {declared_merkle}, computed {computed_merkle}"
+                )));
+            }
+        }
+        other => {
+            return Err(BundleError::Policy(format!(
+                "unsupported schema_version {other} in {label}"
             )));
         }
     }
     Ok((manifest_sha256, manifest))
 }
 
-/// Parse and self-verify a serialized [`BundledTheory`] JSON payload.
+/// Fail closed unless `manifest` is compatible with the binary's locked
+/// `expected_lean_toolchain`, `expected_trusted_merkle_root`, and
+/// `current_mir_ast_wire_version`.
 ///
-/// Verifies schema version, manifest digest format, strict canonical path
-/// ordering under `theory/Anneal/`, required core module presence, and
-/// per-module SHA-256 equality against each embedded UTF-8 source payload.
+/// When `require_v2` is `true` (all external `--theory-dir` /
+/// `--theory-archive` loads), `schema_version = 1` manifests without
+/// compatibility headers are rejected outright.
+pub fn validate_theory_compatibility(
+    manifest: &TheoryBundleManifest,
+    label: &str,
+    expected_lean_toolchain: &str,
+    expected_trusted_merkle_root: &str,
+    current_mir_ast_wire_version: u32,
+    require_v2: bool,
+) -> Result<(), BundleError> {
+    if require_v2 && manifest.schema_version != 2 {
+        return Err(BundleError::Policy(format!(
+            "external theory manifest {label} must declare schema_version 2 (got {})",
+            manifest.schema_version
+        )));
+    }
+    if let Some(ref tc) = manifest.lean_toolchain
+        && tc != expected_lean_toolchain
+    {
+        return Err(BundleError::Policy(format!(
+            "theory manifest {label} targets lean_toolchain {tc:?}, incompatible with locked {expected_lean_toolchain:?}"
+        )));
+    }
+    if let Some(min_wire) = manifest.min_mir_ast_wire_version
+        && min_wire > current_mir_ast_wire_version
+    {
+        return Err(BundleError::Policy(format!(
+            "theory manifest {label} requires min_mir_ast_wire_version {min_wire}, but embedded Trusted/MirAst wire version is {current_mir_ast_wire_version}"
+        )));
+    }
+    if let Some(ref roots) = manifest.compatible_trusted_merkle_roots
+        && !roots.iter().any(|r| r == expected_trusted_merkle_root)
+    {
+        return Err(BundleError::Policy(format!(
+            "theory manifest {label} is incompatible with embedded Ring-0 Trusted/ Merkle root {expected_trusted_merkle_root} (manifest allows {roots:?})"
+        )));
+    }
+    Ok(())
+}
+
+/// Load and strictly validate [`THEORY_BUNDLE_MANIFEST`] under `root`,
+/// returning `(manifest_sha256, manifest)`.
+pub fn load_theory_bundle_manifest(
+    root: &Path,
+) -> Result<(String, TheoryBundleManifest), BundleError> {
+    let manifest_path = validate_bundle_source(root, THEORY_BUNDLE_MANIFEST)?;
+    let manifest_bytes = fs::read(manifest_path).map_err(BundleError::Io)?;
+    parse_theory_bundle_manifest_bytes(&manifest_bytes, THEORY_BUNDLE_MANIFEST)
+}
+
+/// Parse and self-verify a serialized [`BundledTheory`] JSON payload.
 pub fn parse_bundled_theory(raw: &str) -> Result<BundledTheory, BundleError> {
     let parsed: BundledTheory = serde_json::from_str(raw).map_err(|err| {
         BundleError::Policy(format!("malformed bundled_theory.json: {err}"))
     })?;
-    if parsed.schema_version != 1 {
+    if !matches!(parsed.schema_version, 1 | 2) {
         return Err(BundleError::Policy(format!(
             "unsupported schema_version {} in bundled_theory.json",
             parsed.schema_version
@@ -260,6 +431,7 @@ pub fn parse_bundled_theory(raw: &str) -> Result<BundledTheory, BundleError> {
         parsed.modules.iter().map(|entry| entry.path.as_str()),
         "bundled_theory.json",
     )?;
+    let mut entries = Vec::with_capacity(parsed.modules.len());
     for entry in &parsed.modules {
         if !is_lowercase_sha256_hex(&entry.sha256) {
             return Err(BundleError::Policy(format!(
@@ -274,6 +446,28 @@ pub fn parse_bundled_theory(raw: &str) -> Result<BundledTheory, BundleError> {
                 entry.path, entry.sha256
             )));
         }
+        entries.push(TheoryBundleEntry { path: entry.path.clone(), sha256: entry.sha256.clone() });
+    }
+    let computed_merkle = compute_theory_merkle_root(&entries);
+    if let Some(ref declared) = parsed.theory_merkle_root
+        && *declared != computed_merkle
+    {
+        return Err(BundleError::Policy(format!(
+            "theory_merkle_root mismatch in bundled_theory.json: expected {declared}, computed {computed_merkle}"
+        )));
+    }
+    if parsed.schema_version == 2 {
+        let synthetic_manifest = TheoryBundleManifest {
+            schema_version: 2,
+            lean_toolchain: parsed.lean_toolchain.clone(),
+            compatible_trusted_merkle_roots: parsed.compatible_trusted_merkle_roots.clone(),
+            min_mir_ast_wire_version: parsed.min_mir_ast_wire_version,
+            theory_merkle_root: parsed.theory_merkle_root.clone(),
+            modules: entries,
+        };
+        let manifest_bytes = serde_json::to_vec(&synthetic_manifest)
+            .map_err(|e| BundleError::Policy(format!("cannot encode manifest check: {e}")))?;
+        parse_theory_bundle_manifest_bytes(&manifest_bytes, "bundled_theory.json")?;
     }
     Ok(parsed)
 }
@@ -283,6 +477,19 @@ fn render_bundled_theory_from_manifest(
     manifest_sha256: String,
     manifest: TheoryBundleManifest,
 ) -> Result<String, BundleError> {
+    if manifest.schema_version == 2
+        && let Ok(trusted_parts) = render_bundled_resources_parts(root)
+    {
+        validate_theory_compatibility(
+            &manifest,
+            THEORY_BUNDLE_MANIFEST,
+            LOCKED_LEAN_TOOLCHAIN,
+            &trusted_parts.trusted_merkle_root,
+            CURRENT_MIR_AST_WIRE_VERSION,
+            /*require_v2=*/ true,
+        )?;
+    }
+    let computed_merkle = compute_theory_merkle_root(&manifest.modules);
     let mut modules = Vec::with_capacity(manifest.modules.len());
     for entry in manifest.modules {
         let source_path = validate_bundle_source(root, &entry.path)?;
@@ -301,8 +508,12 @@ fn render_bundled_theory_from_manifest(
         });
     }
     let payload = BundledTheory {
-        schema_version: 1,
+        schema_version: manifest.schema_version,
         manifest_sha256,
+        theory_merkle_root: if manifest.schema_version == 2 { Some(computed_merkle) } else { None },
+        lean_toolchain: manifest.lean_toolchain,
+        compatible_trusted_merkle_roots: manifest.compatible_trusted_merkle_roots,
+        min_mir_ast_wire_version: manifest.min_mir_ast_wire_version,
         modules,
     };
     let mut rendered = serde_json::to_string_pretty(&payload).map_err(|err| {
@@ -441,11 +652,21 @@ mod tests {
                 sha256: sha256_bytes(content.as_bytes()),
             });
         }
-        let manifest = TheoryBundleManifest { schema_version: 1, modules: entries };
+        let manifest = TheoryBundleManifest {
+            schema_version: 1,
+            lean_toolchain: None,
+            compatible_trusted_merkle_roots: None,
+            min_mir_ast_wire_version: None,
+            theory_merkle_root: None,
+            modules: entries,
+        };
         let manifest_path = dest.join(THEORY_BUNDLE_MANIFEST);
         fs::create_dir_all(manifest_path.parent().unwrap()).unwrap();
-        fs::write(&manifest_path, format!("{}\n", serde_json::to_string_pretty(&manifest).unwrap()))
-            .unwrap();
+        fs::write(
+            &manifest_path,
+            format!("{}\n", serde_json::to_string_pretty(&manifest).unwrap()),
+        )
+        .unwrap();
         manifest_dir
     }
 

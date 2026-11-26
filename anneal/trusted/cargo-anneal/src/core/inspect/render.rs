@@ -725,6 +725,26 @@ fn render_human(
             }
             let _ = writeln!(out, "  capture_bin:   {}", opts.fmt_digest(&s.capture_binary_sha256));
             let _ = writeln!(out, "  model:         {}", opts.fmt_digest(&s.model_manifest_sha256));
+            if let Some(ref tm) = s.trusted_model_manifest_sha256 {
+                let _ = writeln!(out, "  trusted_model: {}", opts.fmt_digest(tm));
+            }
+            if let Some(ref th) = s.theory_manifest_sha256 {
+                match s.theory_source.as_deref() {
+                    Some(src) => {
+                        let _ = writeln!(
+                            out,
+                            "  theory:        {} ({})",
+                            opts.fmt_digest(th),
+                            SanitizedInline(src)
+                        );
+                    }
+                    None => {
+                        let _ = writeln!(out, "  theory:        {}", opts.fmt_digest(th));
+                    }
+                }
+            } else if let Some(ref src) = s.theory_source {
+                let _ = writeln!(out, "  theory_source: {}", SanitizedInline(src));
+            }
             let _ = writeln!(
                 out,
                 "  specification: {}",
@@ -948,11 +968,8 @@ fn render_ledger(
             let _ = writeln!(out, "digest.request_sha256={}", SanitizedInline(&s.request_sha256));
             let _ = writeln!(out, "digest.capture_sha256={}", SanitizedInline(&s.capture_sha256));
             if let Some(shards_sha) = &s.capture_shards_sha256 {
-                let _ = writeln!(
-                    out,
-                    "digest.capture_shards_sha256={}",
-                    SanitizedInline(shards_sha)
-                );
+                let _ =
+                    writeln!(out, "digest.capture_shards_sha256={}", SanitizedInline(shards_sha));
             }
             let _ = writeln!(
                 out,
@@ -964,6 +981,16 @@ fn render_ledger(
                 "digest.model_manifest_sha256={}",
                 SanitizedInline(&s.model_manifest_sha256)
             );
+            if let Some(ref tm) = s.trusted_model_manifest_sha256 {
+                let _ =
+                    writeln!(out, "digest.trusted_model_manifest_sha256={}", SanitizedInline(tm));
+            }
+            if let Some(ref th) = s.theory_manifest_sha256 {
+                let _ = writeln!(out, "digest.theory_manifest_sha256={}", SanitizedInline(th));
+            }
+            if let Some(ref src) = s.theory_source {
+                let _ = writeln!(out, "theory_source={}", SanitizedInline(src));
+            }
             let _ = writeln!(
                 out,
                 "digest.specification_manifest_sha256={}",
@@ -974,11 +1001,8 @@ fn render_ledger(
             let _ = writeln!(out, "counts.sources={}", s.sources.len());
             if let Some(sh) = &s.shards {
                 let _ = writeln!(out, "counts.shards={}", sh.total_shards);
-                let _ = writeln!(
-                    out,
-                    "shards.id_tree_sha256={}",
-                    SanitizedInline(&sh.id_tree_sha256)
-                );
+                let _ =
+                    writeln!(out, "shards.id_tree_sha256={}", SanitizedInline(&sh.id_tree_sha256));
             }
             let _ = writeln!(out, "counts.spec_warnings={}", s.spec_warnings.len());
         }
@@ -1139,6 +1163,25 @@ fn render_markdown(
                 "| Capture Shards | `{}` shard(s), `{}` SCC(s) (`{}` cyclic) |",
                 sh.total_shards, sh.total_sccs, sh.cyclic_sccs
             );
+        }
+        let _ = writeln!(
+            out,
+            "| Model Digest | {} |",
+            format_gfm_code_cell(&opts.fmt_digest(&s.model_manifest_sha256))
+        );
+        if let Some(ref tm) = s.trusted_model_manifest_sha256 {
+            let _ = writeln!(
+                out,
+                "| Trusted Model Digest | {} |",
+                format_gfm_code_cell(&opts.fmt_digest(tm))
+            );
+        }
+        if let Some(ref th) = s.theory_manifest_sha256 {
+            let _ =
+                writeln!(out, "| Theory Digest | {} |", format_gfm_code_cell(&opts.fmt_digest(th)));
+        }
+        if let Some(ref src) = s.theory_source {
+            let _ = writeln!(out, "| Theory Source | {} |", format_gfm_code_cell(src));
         }
         let _ = writeln!(
             out,
