@@ -27,6 +27,7 @@
 /anneal/tests/testkit/Cargo.toml @joshlf @jswrenn @mdittmer
 /anneal/tests/audit/Cargo.toml @joshlf @jswrenn @mdittmer
 /anneal/tests/cargo-anneal/Cargo.toml @joshlf @jswrenn @mdittmer
+/anneal/tests/differential/Cargo.toml @joshlf @jswrenn @mdittmer
 /anneal/tests/rustc-capture/Cargo.toml @joshlf @jswrenn @mdittmer
 /anneal/tests/itree_diff/Cargo.toml @joshlf @jswrenn @mdittmer
 /anneal/tests/cargo-anneal/tests/fixtures/starnix/source.json @joshlf @jswrenn @mdittmer

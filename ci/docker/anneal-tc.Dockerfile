@@ -65,6 +65,7 @@ COPY anneal/trusted/rustc-capture/Cargo.toml /tmp/anneal-seed/anneal/trusted/rus
 COPY anneal/tests/testkit/Cargo.toml /tmp/anneal-seed/anneal/tests/testkit/Cargo.toml
 COPY anneal/tests/audit/Cargo.toml /tmp/anneal-seed/anneal/tests/audit/Cargo.toml
 COPY anneal/tests/cargo-anneal/Cargo.toml /tmp/anneal-seed/anneal/tests/cargo-anneal/Cargo.toml
+COPY anneal/tests/differential/Cargo.toml /tmp/anneal-seed/anneal/tests/differential/Cargo.toml
 COPY anneal/tests/rustc-capture/Cargo.toml /tmp/anneal-seed/anneal/tests/rustc-capture/Cargo.toml
 COPY anneal/tests/itree_diff/Cargo.toml /tmp/anneal-seed/anneal/tests/itree_diff/Cargo.toml
 COPY anneal/trusted/lean/lean-toolchain /tmp/anneal-seed/anneal/trusted/lean/lean-toolchain
@@ -86,6 +87,7 @@ RUN mkdir -p /opt/nix-cache /opt/anneal-nix/runtime-libs /opt/anneal-cargo-vendo
       /tmp/anneal-seed/anneal/tests/testkit/src \
       /tmp/anneal-seed/anneal/tests/audit/src/bin \
       /tmp/anneal-seed/anneal/tests/cargo-anneal/src/bin \
+      /tmp/anneal-seed/anneal/tests/differential/src/bin \
       /tmp/anneal-seed/anneal/tests/rustc-capture/src/bin \
       /tmp/anneal-seed/anneal/tests/itree_diff/src/bin && \
     touch /tmp/anneal-seed/anneal/ci/pack_omnibus_archive.sh \
@@ -105,6 +107,9 @@ RUN mkdir -p /opt/nix-cache /opt/anneal-nix/runtime-libs /opt/anneal-cargo-vendo
       /tmp/anneal-seed/anneal/tests/testkit/src/lib.rs \
       /tmp/anneal-seed/anneal/tests/audit/src/bin/anneal-audit-test-bin.rs \
       /tmp/anneal-seed/anneal/tests/cargo-anneal/src/bin/cargo-anneal-test-bin.rs \
+      /tmp/anneal-seed/anneal/tests/differential/src/lib.rs \
+      /tmp/anneal-seed/anneal/tests/differential/src/bin/anneal-diff.rs \
+      /tmp/anneal-seed/anneal/tests/differential/src/bin/anneal-diff-capture-test-bin.rs \
       /tmp/anneal-seed/anneal/tests/rustc-capture/src/bin/anneal-rustc-capture-test-bin.rs \
       /tmp/anneal-seed/anneal/tests/itree_diff/src/lib.rs \
       /tmp/anneal-seed/anneal/tests/itree_diff/src/bin/itree_diff.rs \

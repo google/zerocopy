@@ -152,6 +152,7 @@ context = [
     "anneal/tests/testkit/Cargo.toml",
     "anneal/tests/audit/Cargo.toml",
     "anneal/tests/cargo-anneal/Cargo.toml",
+    "anneal/tests/differential/Cargo.toml",
     "anneal/tests/rustc-capture/Cargo.toml",
     "anneal/tests/itree_diff/Cargo.toml",
     "anneal/trusted/lean/lean-toolchain",

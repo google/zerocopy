@@ -58,6 +58,7 @@ pub fn copy_cargo_workspace(root: &Path) {
         "tests/cargo-anneal/Cargo.toml",
         "tests/itree_diff/Cargo.toml",
         "tests/rustc-capture/Cargo.toml",
+        "tests/differential/Cargo.toml",
     ] {
         let dest = root.join(rel);
         if let Some(parent) = dest.parent() {

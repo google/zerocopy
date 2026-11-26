@@ -1,0 +1,485 @@
+# Copyright 2026 The Fuchsia Authors
+#
+# Licensed under a BSD-style license <LICENSE-BSD>, Apache License, Version 2.0
+# <LICENSE-APACHE or https://www.apache.org/licenses/LICENSE-2.0>, or the MIT
+# license <LICENSE-MIT or https://opensource.org/licenses/MIT>, at your option.
+# This file may not be copied, modified, or distributed except according to
+# those terms.
+
+schema_version = 1
+mir_dialect = "profile_v1"
+
+[[case]]
+id = "arith_u32_wrapping_add"
+source = "src/arith_pass.rs"
+function = "u32_wrapping_add"
+category = "arith"
+expected = "pass"
+args = [
+    { kind = "u32", value = "4294967290" },
+    { kind = "u32", value = "10" },
+]
+expected_return = { kind = "u32", value = "4" }
+fuel = 200
+
+[[case]]
+id = "arith_i32_wrapping_sub"
+source = "src/arith_pass.rs"
+function = "i32_wrapping_sub"
+category = "arith"
+expected = "pass"
+args = [
+    { kind = "i32", value = "-2147483648" },
+    { kind = "i32", value = "1" },
+]
+expected_return = { kind = "i32", value = "2147483647" }
+fuel = 200
+
+[[case]]
+id = "arith_i16_wrapping_mul"
+source = "src/arith_pass.rs"
+function = "i16_wrapping_mul"
+category = "arith"
+expected = "pass"
+args = [
+    { kind = "i16", value = "-300" },
+    { kind = "i16", value = "200" },
+]
+expected_return = { kind = "i16", value = "5536" }
+fuel = 200
+
+[[case]]
+id = "arith_i32_wrapping_neg_min"
+source = "src/arith_pass.rs"
+function = "i32_wrapping_neg"
+category = "arith"
+expected = "pass"
+args = [{ kind = "i32", value = "-2147483648" }]
+expected_return = { kind = "i32", value = "-2147483648" }
+fuel = 200
+
+[[case]]
+id = "arith_u8_wrapping_add_sysroot"
+source = "src/arith_pass.rs"
+function = "u8_wrapping_add_sysroot"
+category = "arith"
+expected = "pass"
+args = [
+    { kind = "u8", value = "250" },
+    { kind = "u8", value = "10" },
+]
+expected_return = { kind = "u8", value = "4" }
+fuel = 200
+
+[[case]]
+id = "arith_u32_shl_over_width"
+source = "src/arith_pass.rs"
+function = "u32_shl_masked"
+category = "shifts"
+expected = "pass"
+args = [
+    { kind = "u32", value = "1" },
+    { kind = "u32", value = "35" },
+]
+expected_return = { kind = "u32", value = "8" }
+fuel = 200
+
+[[case]]
+id = "arith_u32_shl_signed_neg_rhs"
+source = "src/arith_pass.rs"
+function = "u32_shl_signed_rhs"
+category = "shifts"
+expected = "pass"
+args = [
+    { kind = "u32", value = "1" },
+    { kind = "i32", value = "-1" },
+]
+expected_return = { kind = "u32", value = "2147483648" }
+fuel = 200
+
+[[case]]
+id = "arith_i32_shr_arithmetic"
+source = "src/arith_pass.rs"
+function = "i32_shr_arithmetic"
+category = "shifts"
+expected = "pass"
+args = [
+    { kind = "i32", value = "-16" },
+    { kind = "u32", value = "2" },
+]
+expected_return = { kind = "i32", value = "-4" }
+fuel = 200
+
+[[case]]
+id = "arith_u64_bitwise_mix"
+source = "src/arith_pass.rs"
+function = "u64_bitwise_mix"
+category = "bitwise"
+expected = "pass"
+args = [
+    { kind = "u64", value = "0" },
+    { kind = "u64", value = "240" },
+]
+expected_return = { kind = "u64", value = "18446744073709551375" }
+fuel = 200
+
+[[case]]
+id = "arith_bool_logic_xor"
+source = "src/arith_pass.rs"
+function = "bool_logic_xor"
+category = "bitwise"
+expected = "pass"
+args = [
+    { kind = "bool", value = "true" },
+    { kind = "bool", value = "false" },
+]
+expected_return = { kind = "bool", value = "true" }
+fuel = 200
+
+[[case]]
+id = "arith_i64_lt_cmp"
+source = "src/arith_pass.rs"
+function = "i64_lt_cmp"
+category = "cmp"
+expected = "pass"
+args = [
+    { kind = "i64", value = "-10" },
+    { kind = "i64", value = "5" },
+]
+expected_return = { kind = "bool", value = "true" }
+fuel = 200
+
+[[case]]
+id = "arith_u128_bitwise_mix"
+source = "src/arith_pass.rs"
+function = "u128_bitwise_mix"
+category = "bitwise"
+expected = "pass"
+args = [
+    { kind = "u128", value = "0" },
+    { kind = "u128", value = "240" },
+]
+expected_return = { kind = "u128", value = "340282366920938463463374607431768207361" }
+fuel = 200
+
+[[case]]
+id = "cf_loop_sum_u32"
+source = "src/control_enum_pass.rs"
+function = "loop_sum_u32"
+category = "control_flow"
+expected = "pass"
+args = [{ kind = "u32", value = "10" }]
+expected_return = { kind = "u32", value = "55" }
+fuel = 1000
+
+[[case]]
+id = "cast_char_bool_int_branch_true"
+source = "src/control_enum_pass.rs"
+function = "cast_char_bool_int"
+category = "casts"
+expected = "pass"
+args = [
+    { kind = "char", value = "A" },
+    { kind = "u8", value = "200" },
+    { kind = "bool", value = "true" },
+    { kind = "i16", value = "-3" },
+]
+expected_return = { kind = "u32", value = "64" }
+fuel = 300
+
+[[case]]
+id = "cast_char_bool_int_branch_false"
+source = "src/control_enum_pass.rs"
+function = "cast_char_bool_int"
+category = "casts"
+expected = "pass"
+args = [
+    { kind = "char", value = "U+03BB" },
+    { kind = "u8", value = "65" },
+    { kind = "bool", value = "true" },
+    { kind = "i16", value = "-3" },
+]
+expected_return = { kind = "u32", value = "952" }
+fuel = 300
+
+[[case]]
+id = "ord_three_way_cmp_less"
+source = "src/control_enum_pass.rs"
+function = "cmp_three_way"
+category = "ordering"
+expected = "pass"
+args = [
+    { kind = "i32", value = "-5" },
+    { kind = "i32", value = "10" },
+]
+expected_return = { kind = "ordering", value = "less" }
+fuel = 200
+
+[[case]]
+id = "enum_signed_neg_discr"
+source = "src/control_enum_pass.rs"
+function = "match_signed_enum"
+category = "enums"
+expected = "pass"
+args = [{ kind = "enum", enum_type = "SignedTag", variant = "NegTwo", variant_index = 0 }]
+expected_return = { kind = "i32", value = "-20" }
+fuel = 200
+
+[[case]]
+id = "enum_signed_seven"
+source = "src/control_enum_pass.rs"
+function = "match_signed_enum"
+category = "enums"
+expected = "pass"
+args = [{ kind = "enum", enum_type = "SignedTag", variant = "Seven", variant_index = 2 }]
+expected_return = { kind = "i32", value = "70" }
+fuel = 200
+
+[[case]]
+id = "enum_repr_u8_singleton"
+source = "src/control_enum_pass.rs"
+function = "match_zst_enum"
+category = "enums"
+expected = "pass"
+args = [{ kind = "enum", enum_type = "Solo", variant = "Only", variant_index = 0 }]
+expected_return = { kind = "u8", value = "42" }
+fuel = 200
+
+[[case]]
+id = "cf_move_then_reinit"
+source = "src/control_enum_pass.rs"
+function = "move_then_reinit"
+category = "locals"
+expected = "pass"
+args = [
+    { kind = "enum", enum_type = "SignedTag", variant = "NegTwo", variant_index = 0 },
+    { kind = "enum", enum_type = "SignedTag", variant = "Seven", variant_index = 2 },
+]
+expected_return = { kind = "i16", value = "5" }
+fuel = 200
+
+[[case]]
+id = "cf_branch_safe_arm"
+source = "src/ub_corpus.rs"
+function = "branch_guarded_unchecked_sub"
+category = "control_flow"
+expected = "pass"
+args = [{ kind = "u32", value = "5" }]
+expected_return = { kind = "u32", value = "6" }
+fuel = 200
+
+[[case]]
+id = "pass_unchecked_add_u32_benign"
+source = "src/ub_corpus.rs"
+function = "u32_unchecked_add"
+category = "arith"
+expected = "pass"
+args = [
+    { kind = "u32", value = "40" },
+    { kind = "u32", value = "2" },
+]
+expected_return = { kind = "u32", value = "42" }
+fuel = 200
+
+[[case]]
+id = "pass_unchecked_add_i32_benign"
+source = "src/ub_corpus.rs"
+function = "i32_unchecked_add"
+category = "arith"
+expected = "pass"
+args = [
+    { kind = "i32", value = "-10" },
+    { kind = "i32", value = "3" },
+]
+expected_return = { kind = "i32", value = "-7" }
+fuel = 200
+
+[[case]]
+id = "pass_unchecked_sub_i32_benign"
+source = "src/ub_corpus.rs"
+function = "i32_unchecked_sub"
+category = "arith"
+expected = "pass"
+args = [
+    { kind = "i32", value = "-2147483648" },
+    { kind = "i32", value = "-1" },
+]
+expected_return = { kind = "i32", value = "-2147483647" }
+fuel = 200
+
+[[case]]
+id = "pass_unchecked_sub_i64_benign"
+source = "src/ub_corpus.rs"
+function = "i64_unchecked_sub"
+category = "arith"
+expected = "pass"
+args = [
+    { kind = "i64", value = "-9223372036854775808" },
+    { kind = "i64", value = "-1" },
+]
+expected_return = { kind = "i64", value = "-9223372036854775807" }
+fuel = 200
+
+[[case]]
+id = "pass_unchecked_mul_i8_benign"
+source = "src/ub_corpus.rs"
+function = "i8_unchecked_mul"
+category = "arith"
+expected = "pass"
+args = [
+    { kind = "i8", value = "-7" },
+    { kind = "i8", value = "3" },
+]
+expected_return = { kind = "i8", value = "-21" }
+fuel = 200
+
+[[case]]
+id = "pass_branch_unchecked_add_false"
+source = "src/ub_corpus.rs"
+function = "branch_unchecked_add"
+category = "control_flow"
+expected = "pass"
+args = [{ kind = "bool", value = "false" }]
+expected_return = { kind = "u32", value = "77" }
+fuel = 200
+
+[[case]]
+id = "pass_loop_to_unchecked_sub_benign"
+source = "src/ub_corpus.rs"
+function = "loop_to_unchecked_sub"
+category = "control_flow"
+expected = "pass"
+args = [
+    { kind = "u32", value = "3" },
+    { kind = "u32", value = "0" },
+]
+expected_return = { kind = "u32", value = "0" }
+fuel = 500
+
+[[case]]
+id = "ub_unchecked_add_u32_ovf"
+source = "src/ub_corpus.rs"
+function = "u32_unchecked_add"
+category = "ub"
+expected = "ub"
+miri_ub_contains = "arithmetic overflow"
+args = [
+    { kind = "u32", value = "4294967295" },
+    { kind = "u32", value = "1" },
+]
+fuel = 200
+
+[[case]]
+id = "ub_unchecked_add_i32_ovf"
+source = "src/ub_corpus.rs"
+function = "i32_unchecked_add"
+category = "ub"
+expected = "ub"
+miri_ub_contains = "arithmetic overflow"
+args = [
+    { kind = "i32", value = "2147483647" },
+    { kind = "i32", value = "1" },
+]
+fuel = 200
+
+[[case]]
+id = "ub_unchecked_sub_i32_ovf"
+source = "src/ub_corpus.rs"
+function = "i32_unchecked_sub"
+category = "ub"
+expected = "ub"
+miri_ub_contains = "arithmetic overflow"
+args = [
+    { kind = "i32", value = "-2147483648" },
+    { kind = "i32", value = "1" },
+]
+fuel = 200
+
+[[case]]
+id = "ub_unchecked_sub_i64_ovf"
+source = "src/ub_corpus.rs"
+function = "i64_unchecked_sub"
+category = "ub"
+expected = "ub"
+miri_ub_contains = "arithmetic overflow"
+args = [
+    { kind = "i64", value = "-9223372036854775808" },
+    { kind = "i64", value = "1" },
+]
+fuel = 200
+
+[[case]]
+id = "ub_unchecked_mul_i8_ovf"
+source = "src/ub_corpus.rs"
+function = "i8_unchecked_mul"
+category = "ub"
+expected = "ub"
+miri_ub_contains = "arithmetic overflow"
+args = [
+    { kind = "i8", value = "64" },
+    { kind = "i8", value = "4" },
+]
+fuel = 200
+
+[[case]]
+id = "ub_branch_unchecked_add"
+source = "src/ub_corpus.rs"
+function = "branch_unchecked_add"
+category = "ub"
+expected = "ub"
+miri_ub_contains = "arithmetic overflow"
+args = [{ kind = "bool", value = "true" }]
+fuel = 200
+
+[[case]]
+id = "ub_branch_guarded_unchecked_sub"
+source = "src/ub_corpus.rs"
+function = "branch_guarded_unchecked_sub"
+category = "ub"
+expected = "ub"
+miri_ub_contains = "arithmetic overflow"
+args = [{ kind = "u32", value = "11" }]
+fuel = 200
+
+[[case]]
+id = "ub_loop_to_unchecked_sub"
+source = "src/ub_corpus.rs"
+function = "loop_to_unchecked_sub"
+category = "ub"
+expected = "ub"
+miri_ub_contains = "arithmetic overflow"
+args = [
+    { kind = "u32", value = "3" },
+    { kind = "u32", value = "1" },
+]
+fuel = 500
+
+[[case]]
+id = "pass_abort_control_benign"
+source = "src/unsupported_controls.rs"
+function = "abort_control"
+category = "unsupported_control"
+expected = "pass"
+args = [{ kind = "u32", value = "1" }]
+expected_return = { kind = "u32", value = "2" }
+fuel = 200
+
+[[case]]
+id = "unsup_diverging_abort_call"
+source = "src/unsupported_controls.rs"
+function = "abort_control"
+category = "unsupported_control"
+expected = "unsupported_control"
+expected_miri = "abnormal_abort"
+args = [{ kind = "u32", value = "0" }]
+fuel = 200
+
+[[case]]
+id = "unsup_hint_unreachable_call"
+source = "src/unsupported_controls.rs"
+function = "hint_unreach"
+category = "unsupported_control"
+expected = "unsupported_control"
+expected_miri = "ub"
+args = []
+fuel = 200

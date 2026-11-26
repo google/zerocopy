@@ -23,4 +23,5 @@ members = [
     "tests/cargo-anneal",
     "tests/itree_diff",
     "tests/rustc-capture",
+    "tests/differential",
 ]

@@ -1,0 +1,32 @@
+# Copyright 2026 The Fuchsia Authors
+#
+# Licensed under a BSD-style license <LICENSE-BSD>, Apache License, Version 2.0
+# <LICENSE-APACHE or https://www.apache.org/licenses/LICENSE-2.0>, or the MIT
+# license <LICENSE-MIT or https://opensource.org/licenses/MIT>, at your option.
+# This file may not be copied, modified, or distributed except according to
+# those terms.
+
+[package]
+name = "anneal-differential-tests"
+version = "0.1.0"
+edition = "2024"
+publish = false
+
+# Workspace tests (`cargo test -p anneal-differential-tests`) require a Rust
+# sysroot bundling `cargo`, `miri`, and vendored `rust-src` sources under
+# `<sysroot>/lib/rustlib/src/rust/library/vendor`, plus Lean 4.34.1 and
+# `anneal-rustc-capture`.
+[lib]
+doctest = false
+
+[dependencies]
+anneal-rustc-capture = { path = "../../trusted/rustc-capture" }
+anneal-testkit = { path = "../testkit" }
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+sha2 = "0.10"
+tempfile = "3.27"
+toml = "0.9"
+
+[target.'cfg(unix)'.dependencies]
+libc = "0.2"

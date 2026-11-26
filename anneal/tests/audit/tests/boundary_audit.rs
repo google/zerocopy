@@ -786,6 +786,7 @@ fn rejects_cargo_workspace_members_and_path_deps_outside_trusted() {
         "tests/cargo-anneal/Cargo.toml",
         "tests/itree_diff/Cargo.toml",
         "tests/rustc-capture/Cargo.toml",
+        "tests/differential/Cargo.toml",
     ] {
         let dest = fix.root.join(rel);
         fs::create_dir_all(dest.parent().unwrap()).unwrap();

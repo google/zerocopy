@@ -26,6 +26,7 @@ LEAN_ONLY_FILES = ("lean/bin/lean",)
 FULL_BUNDLE_FILES = (
     "rust/bin/rustc",
     "rust/bin/rustdoc",
+    "rust/bin/cargo",
     "lean/bin/lean",
     "bin/anneal-rustc-capture",
     "share/anneal/correspondence-provenance.json",
@@ -35,7 +36,19 @@ FULL_BUNDLE_FILES = (
     "share/anneal/trusted/audit/SpecPreflight.lean",
     "share/anneal/trusted/audit/TrustedBoundary.lean",
 )
-FULL_BUNDLE_DIRS = ("rust", "rust/lib", "lean", "bin", "share/anneal")
+FULL_BUNDLE_DIRS = (
+    "rust",
+    "rust/lib",
+    "lean",
+    "bin",
+    "share/anneal",
+)
+MIRI_BUNDLE_FILES = (
+    "rust/bin/miri",
+    "rust/bin/cargo-miri",
+    "rust/lib/rustlib/src/rust/library/Cargo.toml",
+)
+MIRI_BUNDLE_DIRS = ("rust/lib/rustlib/src/rust/library/vendor",)
 
 
 def _check_env_safe(value: str, label: str) -> None:
@@ -71,6 +84,7 @@ def verify_bundle_tree(
     *,
     cache_root: Path | None = None,
     lean_only: bool = False,
+    require_miri: bool = False,
 ) -> tuple[Path, Path | None]:
     """Verify confinement of `root` and return resolved `(root, cache_root)`."""
     real_cache: Path | None = None
@@ -133,8 +147,15 @@ def verify_bundle_tree(
             elif not (stat.S_ISREG(mode) or stat.S_ISDIR(mode)):
                 raise SystemExit(f"unexpected special file in bundle: {entry}")
 
-    required_dirs = ("lean",) if lean_only else FULL_BUNDLE_DIRS
-    required_files = LEAN_ONLY_FILES if lean_only else FULL_BUNDLE_FILES
+    if lean_only:
+        required_dirs: tuple[str, ...] = ("lean",)
+        required_files: tuple[str, ...] = LEAN_ONLY_FILES
+    elif require_miri:
+        required_dirs = FULL_BUNDLE_DIRS + MIRI_BUNDLE_DIRS
+        required_files = FULL_BUNDLE_FILES + MIRI_BUNDLE_FILES
+    else:
+        required_dirs = FULL_BUNDLE_DIRS
+        required_files = FULL_BUNDLE_FILES
     for rel_dir in required_dirs:
         _walk_non_symlink_dirs(real_root, Path(rel_dir).parts)
     for rel_file in required_files:
@@ -181,6 +202,11 @@ def main(argv: list[str] | None = None) -> int:
         help="Validate only lean/bin/lean and emit ANNEAL_TEST_INSTALL_ROOT.",
     )
     parser.add_argument(
+        "--require-miri",
+        action="store_true",
+        help="Also require Miri binaries and vendored rust-src sources.",
+    )
+    parser.add_argument(
         "--diagnostics",
         type=Path,
         help="Optional path to write installation.json evidence.",
@@ -191,6 +217,8 @@ def main(argv: list[str] | None = None) -> int:
     )
     args = parser.parse_args(argv)
 
+    if args.lean_only and args.require_miri:
+        raise SystemExit("--require-miri cannot be combined with --lean-only")
     if args.discover_single and args.cache_root is None:
         raise SystemExit("--discover-single requires --cache-root")
     if not args.lean_only and args.cache_root is None:
@@ -204,7 +232,10 @@ def main(argv: list[str] | None = None) -> int:
         else args.root
     )
     real_root, real_cache = verify_bundle_tree(
-        target_root, cache_root=args.cache_root, lean_only=args.lean_only
+        target_root,
+        cache_root=args.cache_root,
+        lean_only=args.lean_only,
+        require_miri=args.require_miri,
     )
     _check_env_safe(str(real_root), "ANNEAL_TEST_INSTALL_ROOT")
 

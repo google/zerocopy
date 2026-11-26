@@ -21,6 +21,7 @@ import subprocess
 import sys
 import tempfile
 import unittest
+from unittest import mock
 
 import perf_tracking
 import prebuild_bundled_oleans
@@ -575,11 +576,15 @@ print(json.dumps(receipt))
                 "lean": paths["lean"],
                 "auditor": paths["auditor"],
             }
+            self.assertEqual(len(perf_tracking.COLLECTABLE_CATEGORIES), 5)
+            self.assertNotIn(
+                "differential_oracle", perf_tracking.COLLECTABLE_CATEGORIES
+            )
             record = perf_tracking.collect_record(
                 anneal_root=paths["anneal"],
                 repo_root=paths["repo"],
                 profile="linux-x86_64",
-                categories=set(perf_tracking.CATEGORIES),
+                categories=set(perf_tracking.COLLECTABLE_CATEGORIES),
                 modules=None,
                 verify_repeats=2,
                 cold_no_cache_repeats=1,
@@ -902,6 +907,165 @@ print(json.dumps(receipt))
             self.assertIn("theory_elab.trusted_mirast.cold_j1_ms", m)
             self.assertNotIn("theory_elab.anneal_mirwp.cold_j1_ms", m)
             self.assertNotIn("theory_elab.trustedboundary.cold_j1_ms", m)
+
+    def test_collect_excludes_differential_oracle_by_default_and_rejects_explicit(
+        self,
+    ):
+        # (i) Default category resolution excludes `differential_oracle`.
+        default_cats = perf_tracking._parse_categories(None)
+        self.assertEqual(default_cats, set(perf_tracking.COLLECTABLE_CATEGORIES))
+        self.assertNotIn("differential_oracle", default_cats)
+        self.assertEqual(
+            perf_tracking._parse_categories(""),
+            set(perf_tracking.COLLECTABLE_CATEGORIES),
+        )
+        with self.assertRaises(perf_tracking.ValidationError):
+            perf_tracking._parse_categories(" , ")
+
+        with tempfile.TemporaryDirectory() as tmp:
+            paths = self._build_synthetic_repo(Path(tmp))
+            out_default = Path(tmp) / "default-collect.json"
+            rc = perf_tracking.main(
+                [
+                    "collect",
+                    "--anneal-root",
+                    str(paths["anneal"]),
+                    "--repo-root",
+                    str(paths["repo"]),
+                    "--profile",
+                    "linux-x86_64",
+                    "--cli",
+                    str(paths["cli"]),
+                    "--capture",
+                    str(paths["capture"]),
+                    "--sysroot",
+                    str(paths["sysroot"]),
+                    "--lean",
+                    str(paths["lean"]),
+                    "--auditor",
+                    str(paths["auditor"]),
+                    "--omnibus-archive",
+                    str(paths["archive"]),
+                    "--verify-repeats",
+                    "1",
+                    "--cold-no-cache-repeats",
+                    "1",
+                    "--time-bin",
+                    str(paths["time_bin"]),
+                    "--output",
+                    str(out_default),
+                ]
+            )
+            self.assertEqual(rc, 0)
+            collected = perf_tracking.load_record(out_default)
+            self.assertFalse(
+                any(
+                    k.startswith("differential_oracle.")
+                    for k in collected["metrics"]
+                )
+            )
+
+            tools = {
+                "cli": paths["cli"],
+                "capture": paths["capture"],
+                "sysroot": paths["sysroot"],
+                "lean": paths["lean"],
+                "auditor": paths["auditor"],
+            }
+
+            # (ii) & (iii) Both solo and mixed `differential_oracle` selections
+            # fail closed immediately before any collector or tool lookup runs.
+            for bad_raw, bad_set in (
+                ("differential_oracle", {"differential_oracle"}),
+                (
+                    "verify,differential_oracle",
+                    {"verify", "differential_oracle"},
+                ),
+            ):
+                with self.subTest(selection=bad_raw):
+                    with self.assertRaises(perf_tracking.ValidationError):
+                        perf_tracking._parse_categories(bad_raw)
+                    with (
+                        mock.patch.object(
+                            perf_tracking, "collect_verify_scalar"
+                        ) as verify_mock,
+                        mock.patch.object(
+                            perf_tracking, "_discover_tools"
+                        ) as discover_mock,
+                    ):
+                        with self.assertRaises(perf_tracking.ValidationError):
+                            perf_tracking.collect_record(
+                                anneal_root=paths["anneal"],
+                                repo_root=paths["repo"],
+                                profile="linux-x86_64",
+                                categories=bad_set,
+                                modules=None,
+                                verify_repeats=1,
+                                cold_no_cache_repeats=1,
+                                tools=tools,
+                                omnibus_archive=None,
+                                branch_override=None,
+                                timeout=30.0,
+                                time_bin=paths["time_bin"],
+                            )
+                        verify_mock.assert_not_called()
+                        with self.assertRaises(perf_tracking.ValidationError):
+                            perf_tracking.main(
+                                [
+                                    "collect",
+                                    "--anneal-root",
+                                    str(paths["anneal"]),
+                                    "--categories",
+                                    bad_raw,
+                                ]
+                            )
+                        discover_mock.assert_not_called()
+                        verify_mock.assert_not_called()
+
+        # (iv) `validate_record` and `describe_metric` still accept
+        # `differential_oracle` telemetry records emitted by
+        # `ci/check_mir_differential.py`.
+        diff_rec = _make_record(
+            metrics={
+                "differential_oracle.litmus.compared_count": 39,
+                "differential_oracle.litmus.unsound_missed_fault_count": 0,
+                "differential_oracle.mutants.killed_pct": 100.0,
+            }
+        )
+        self.assertEqual(perf_tracking.validate_record(diff_rec), diff_rec)
+        self.assertEqual(
+            perf_tracking.describe_metric(
+                "differential_oracle.litmus.compared_count"
+            )["direction"],
+            "higher_is_better",
+        )
+        self.assertEqual(
+            perf_tracking.describe_metric(
+                "differential_oracle.litmus.unsound_missed_fault_count"
+            )["direction"],
+            "lower_is_better",
+        )
+        self.assertEqual(
+            perf_tracking.describe_metric(
+                "differential_oracle.mutants.killed_pct"
+            )["unit"],
+            "%",
+        )
+        import render_perf_dashboard
+
+        html = render_perf_dashboard.render_html(
+            render_perf_dashboard.build_dashboard_bundle(
+                [
+                    _make_record(
+                        sha_idx=1,
+                        unix_ts=100,
+                        metrics={"differential_oracle.mutants.killed_pct": 100.0},
+                    )
+                ]
+            )
+        )
+        self.assertIn('if (unit === "%")', html)
+        self.assertIn('+ "%"', html)
 
 
 class AppendBudgetsAndAnalysisTests(unittest.TestCase):
