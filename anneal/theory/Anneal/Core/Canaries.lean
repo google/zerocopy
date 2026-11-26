@@ -33,6 +33,8 @@ public import Anneal.Core.SpecRealizability
 public import Anneal.Core.AlignMath
 public import Anneal.Core.BitValidity
 public import Anneal.Core.FixedByteCodec
+public import Anneal.ByteSubLens.Lens
+public import Anneal.Core.PtrTypestate
 
 public section
 
@@ -3853,6 +3855,798 @@ theorem canary_fixedByteCodec_padding_and_transmute (endian : TargetEndian) :
     · exact FixedByteCodec.padRight_not_isInitCodec
         (FixedByteCodec.prod (intBvCodec endian .i32) boolCodec)
         (by decide : 0 < 3) (BitVec.ofNat 32 0, false)
+
+/-! ## Zerocopy `PtrTypestate` & Framing Canaries (`Core.PtrTypestate`) -/
+
+section
+open Anneal.ByteSubLens
+
+/-- Partial-order and strict-separation canaries across `AliasingLe`,
+`AlignLe`, `ValidityLe`, and `PtrInvLe`. -/
+theorem canary_ptrInv_partial_order_and_separation :
+    AliasingLe .exclusive .shared ∧
+    ¬ AliasingLe .shared .exclusive ∧
+    AlignLe .aligned .unaligned ∧
+    ¬ AlignLe .unaligned .aligned ∧
+    ValidityLe .safe .asInitialized ∧
+    ValidityLe .initialized .asInitialized ∧
+    ValidityLe .asInitialized .uninit ∧
+    ¬ ValidityLe .safe .initialized ∧
+    ¬ ValidityLe .initialized .safe ∧
+    ¬ ValidityLe .asInitialized .initialized ∧
+    ¬ ValidityLe .asInitialized .safe ∧
+    ¬ ValidityLe .uninit .asInitialized ∧
+    PtrInvLe ⟨.exclusive, .aligned, .safe⟩
+      ⟨.shared, .unaligned, .asInitialized⟩ :=
+  ⟨rfl, aliasingLe_shared_exclusive_false,
+   rfl, alignLe_unaligned_aligned_false,
+   rfl, rfl, rfl,
+   validityLe_safe_initialized_false,
+   validityLe_initialized_safe_false,
+   validityLe_asInitialized_initialized_false,
+   validityLe_asInitialized_safe_false,
+   validityLe_uninit_asInitialized_false,
+   ⟨rfl, rfl, rfl⟩⟩
+
+abbrev ptCanaryAllocMutUninit : Allocation :=
+  { allocId := 0, alignLog2 := 2, mutability := .mut,
+    bytes := [.uninit, .uninit, .uninit, .uninit,
+              .init 0x10 none, .init 0x20 none, .init 0x30 none,
+              .init 0x40 none],
+    live := true }
+
+abbrev ptCanaryAllocSharedRo : Allocation :=
+  { allocId := 1, alignLog2 := 2, mutability := .shared,
+    bytes := [.init 0x78 none, .init 0x56 none, .init 0x34 none,
+              .init 0x12 none],
+    live := true }
+
+abbrev ptCanaryMem0 : MemoryState :=
+  { nextAllocId := 2
+    allocations := [ptCanaryAllocMutUninit, ptCanaryAllocSharedRo] }
+
+abbrev ptCanarySub0 : ByteSubLens := ⟨0, 0, 4, 2⟩
+abbrev ptCanarySub0B : ByteSubLens := ⟨0, 4, 4, 2⟩
+abbrev ptCanarySubRo : ByteSubLens := ⟨1, 0, 4, 2⟩
+
+/-- End-to-end `PtrHolds` lifecycle canary on concrete `MemoryState`:
+`.uninit` read refusal -> `ptrWrite` upgrade to `.safe` -> `as_mut` via
+`byteSubLensGet`/`byteSubLensPut` -> `forget_aligned` & `try_into_aligned` ->
+`into_shared` / `reborrow_shared` -> `as_ref` read -> `.shared` allocation
+read via `ptrRead` (`readBytes`) -> `.shared` write rejection. -/
+theorem canary_ptr_lifecycle_and_shared_vs_mut :
+    (ptrRead ptCanarySub0 (u32Codec .little) ⟨.exclusive, .aligned, .uninit⟩
+      false true ptCanaryMem0 = none) ∧
+    (∃ mem1 mem2 : MemoryState,
+      ptrWrite ptCanarySub0 (u32Codec .little) ⟨.exclusive, .aligned, .uninit⟩
+        (BitVec.ofNat 32 0x12345678) ptCanaryMem0 = some mem1 ∧
+      PtrHolds ptCanarySub0 (u32Codec .little) ⟨.exclusive, .aligned, .safe⟩
+        false mem1 ∧
+      ptrRead ptCanarySub0 (u32Codec .little) ⟨.exclusive, .aligned, .safe⟩
+        false true mem1 = some (BitVec.ofNat 32 0x12345678) ∧
+      byteSubLensPut ptCanarySub0 mem1
+        ((u32Codec .little).encode (BitVec.ofNat 32 0xdeadbeef)) = some mem2 ∧
+      (byteSubLensGet ptCanarySub0 mem2).bind (u32Codec .little).decode =
+        some (BitVec.ofNat 32 0xdeadbeef) ∧
+      PtrHolds ptCanarySub0 (u32Codec .little)
+        ⟨.exclusive, .unaligned, .safe⟩ false mem2 ∧
+      ptrCheckAligned ptCanarySub0 mem2 = true ∧
+      PtrHolds ptCanarySub0 (u32Codec .little) ⟨.shared, .aligned, .safe⟩
+        false mem2 ∧
+      ptrAsRefRead ptCanarySub0 (u32Codec .little) ⟨.shared, .aligned, .safe⟩
+        false mem2 = some (BitVec.ofNat 32 0xdeadbeef)) ∧
+    (PtrHolds ptCanarySubRo (u32Codec .little) ⟨.shared, .aligned, .safe⟩
+      false ptCanaryMem0 ∧
+     ptrRead ptCanarySubRo (u32Codec .little) ⟨.shared, .aligned, .safe⟩
+       false true ptCanaryMem0 = some (BitVec.ofNat 32 0x12345678) ∧
+     ptrWrite ptCanarySubRo (u32Codec .little) ⟨.shared, .aligned, .safe⟩
+       (BitVec.ofNat 32 0) ptCanaryMem0 = none ∧
+     byteSubLensGet ptCanarySubRo ptCanaryMem0 = none) := by
+  have hUninitNone :
+      ptrRead ptCanarySub0 (u32Codec .little) ⟨.exclusive, .aligned, .uninit⟩
+        false true ptCanaryMem0 = none :=
+    ptrRead_rejected_of_uninit ptCanarySub0 (u32Codec .little)
+      ⟨.exclusive, .aligned, .uninit⟩ false true ptCanaryMem0 rfl
+  have hHoldsUninit :
+      PtrHolds ptCanarySub0 (u32Codec .little) ⟨.exclusive, .aligned, .uninit⟩
+        false ptCanaryMem0 :=
+    ⟨by decide, rfl, ptCanaryAllocMutUninit, rfl, rfl, ⟨rfl, by decide⟩,
+     (fun _ => rfl), (fun _ => rfl), ⟨rfl, trivial⟩⟩
+  let ⟨mem1, hWr1, _, hHolds1, hRd1⟩ :=
+    ptrWrite_sound ptCanarySub0 (u32Codec .little)
+      ⟨.exclusive, .aligned, .uninit⟩ false (BitVec.ofNat 32 0x12345678)
+      ptCanaryMem0 rfl (validityIncl_of_validityLe _ rfl) hHoldsUninit
+  let ⟨_, _, mem2, _, _, hPut2, hHolds2, hRdMut2⟩ :=
+    ptrAsMut_access_sound ptCanarySub0 (u32Codec .little)
+      ⟨.exclusive, .aligned, .safe⟩ false mem1 rfl hHolds1
+      (BitVec.ofNat 32 0xdeadbeef)
+  have hUnalign2 :=
+    ptrHolds_forgetAligned ptCanarySub0 (u32Codec .little)
+      ⟨.exclusive, .aligned, .safe⟩ false mem2 hHolds2
+  have hChk2 : ptrCheckAligned ptCanarySub0 mem2 = true :=
+    (ptrTryIntoAligned_iff ptCanarySub0 (u32Codec .little)
+      ⟨.exclusive, .unaligned, .safe⟩ false mem2 hUnalign2).mpr hHolds2
+  have hShared2 :=
+    ptrHolds_intoShared ptCanarySub0 (u32Codec .little)
+      ⟨.exclusive, .aligned, .safe⟩ false mem2 hHolds2
+  let ⟨_xRef, _hxRef, hRefShared⟩ :=
+    ptrAsRefRead_sound ptCanarySub0 (u32Codec .little)
+      ⟨.shared, .aligned, .safe⟩ false mem2 rfl hShared2
+  have hRdDirect :
+      ptrAsRefRead ptCanarySub0 (u32Codec .little) ⟨.shared, .aligned, .safe⟩
+        false mem2 = some (BitVec.ofNat 32 0xdeadbeef) := by
+    have hEq :=
+      ptrRead_agrees_with_byteSubLensGet ptCanarySub0 (u32Codec .little)
+        ⟨.exclusive, .aligned, .safe⟩ false mem2 rfl rfl rfl hHolds2
+    rw [hRdMut2] at hEq
+    -- Compare via direct readBytesComp on shared vs exclusive mem2.
+    have hAsRefEq :
+        ptrAsRefRead ptCanarySub0 (u32Codec .little) ⟨.shared, .aligned, .safe⟩
+          false mem2 =
+        ptrRead ptCanarySub0 (u32Codec .little) ⟨.exclusive, .aligned, .safe⟩
+          false true mem2 := rfl
+    rw [hAsRefEq, hEq]
+  have hRoHolds :
+      PtrHolds ptCanarySubRo (u32Codec .little) ⟨.shared, .aligned, .safe⟩
+        false ptCanaryMem0 :=
+    ⟨by decide, rfl, ptCanaryAllocSharedRo, rfl, rfl, ⟨rfl, by decide⟩,
+     (fun hEx => by nomatch hEx), (fun _ => rfl),
+     ⟨rfl, ⟨BitVec.ofNat 32 0x12345678, rfl⟩⟩⟩
+  refine ⟨hUninitNone, ⟨mem1, mem2, hWr1, hHolds1, hRd1, hPut2, hRdMut2,
+    hUnalign2, hChk2, hRefShared, hRdDirect⟩,
+    ⟨hRoHolds, rfl, rfl, rfl⟩⟩
+
+@[expose] def ptPairU16Codec : FixedByteCodec (BitVec 16 × BitVec 16) 4 :=
+  FixedByteCodec.prod (u16Codec .little) (u16Codec .little)
+
+/-- `bool -> u8` shared-transmute inclusion: `bool` is unpadded `IntoBytes`
+and `u8` is `FromBytes`. -/
+theorem ptCanary_boolU8_validityIncl :
+    ValidityIncl boolCodec .safe (u8Codec .little) .safe :=
+  validityIncl_intoBytes_fromBytes boolCodec_allDecodableInit
+    (uintBvCodec_isSurjectiveInitDecoder .little 1 (by decide))
+
+/-- Transmutation and fallible `try_cast_into` canaries: `(u16, u16) -> u32`
+under either aliasing (both are `IntoBytes + FromBytes`, so the exclusive
+reverse inclusion holds), which forgets alignment like `zerocopy`'s
+`transmute`; a shared `(u16, u16) -> u32` whose alignment is regained by
+`try_into_aligned`; shared `bool -> u8`; valid `u8 -> bool` `ptrTryCastInto`
+(`0x01`); and invalid `u8 -> bool` rejection (`0x02`). -/
+theorem canary_ptr_transmute_and_tryCastInto_matrix :
+    (∀ (mem : MemoryState) (inv : PtrInv),
+      inv.validity = .safe →
+      PtrHolds ptCanarySub0 ptPairU16Codec inv false mem →
+      PtrHolds { ptCanarySub0 with alignLog2 := 2 } (u32Codec .little)
+        { inv with align := .unaligned, validity := .safe } false mem) ∧
+    (∀ (mem : MemoryState),
+      PtrHolds ptCanarySub0 ptPairU16Codec ⟨.shared, .aligned, .safe⟩
+        false mem →
+      PtrHolds { ptCanarySub0 with alignLog2 := 1 } (u32Codec .little)
+        ⟨.shared, .aligned, .safe⟩ false mem) ∧
+    (∀ (mem : MemoryState),
+      PtrHolds ⟨0, 0, 1, 0⟩ boolCodec ⟨.shared, .aligned, .safe⟩ false mem →
+      PtrHolds ⟨0, 0, 1, 0⟩ (u8Codec .little) ⟨.shared, .unaligned, .safe⟩
+        false mem) ∧
+    (let memTrue : MemoryState :=
+       { nextAllocId := 1
+         allocations := [{ allocId := 0, alignLog2 := 0, mutability := .shared,
+                           bytes := [.init 1 none], live := true }] }
+     let memTwo : MemoryState :=
+       { nextAllocId := 1
+         allocations := [{ allocId := 0, alignLog2 := 0, mutability := .shared,
+                           bytes := [.init 2 none], live := true }] }
+     ptrTryCastInto ⟨0, 0, 1, 0⟩ 0 boolCodec ⟨.shared, .aligned, .safe⟩
+       false false memTrue = some true ∧
+     PtrHolds ⟨0, 0, 1, 0⟩ boolCodec ⟨.shared, .aligned, .safe⟩ false memTrue ∧
+     ptrTryCastInto ⟨0, 0, 1, 0⟩ 0 boolCodec ⟨.shared, .aligned, .safe⟩
+       false false memTwo = none) := by
+  have hPairInit : AllDecodableInit ptPairU16Codec :=
+    prod_allDecodableInit
+      (uintBvCodec_allDecodableInit .little 2 (by decide))
+      (uintBvCodec_allDecodableInit .little 2 (by decide))
+  have hPairSurj : ptPairU16Codec.IsSurjectiveInitDecoder :=
+    FixedByteCodec.prod_isSurjectiveInitDecoder
+      (uintBvCodec_isSurjectiveInitDecoder .little 2 (by decide))
+      (uintBvCodec_isSurjectiveInitDecoder .little 2 (by decide))
+  have hU32Init : AllDecodableInit (u32Codec .little) :=
+    uintBvCodec_allDecodableInit .little 4 (by decide)
+  have hU32Surj := uintBvCodec_isSurjectiveInitDecoder .little 4 (by decide)
+  have hFwd : ValidityIncl ptPairU16Codec .safe (u32Codec .little) .safe :=
+    validityIncl_intoBytes_fromBytes hPairInit hU32Surj
+  have hRev : ValidityIncl (u32Codec .little) .safe ptPairU16Codec .safe :=
+    validityIncl_intoBytes_fromBytes hU32Init hPairSurj
+  refine ⟨?_, ?_, ?_, ?_⟩
+  · intro mem inv hSafe hHolds
+    have hC : TransmuteCompat inv.aliasing false false ptPairU16Codec
+        inv.validity (u32Codec .little) .safe := by
+      rw [hSafe]
+      cases inv.aliasing with
+      | exclusive => exact transmuteCompat_exclusive false false hFwd hRev
+      | shared => exact transmuteCompat_shared hFwd
+    exact (ptrTransmute_sound ptCanarySub0 2 ptPairU16Codec (u32Codec .little)
+      inv .safe false false mem hC hHolds).1
+  · intro mem hHolds
+    have hSrc1 :=
+      ptrHolds_shrinkAlign ptCanarySub0 1 ptPairU16Codec
+        ⟨.shared, .aligned, .safe⟩ false mem (fun _ => Nat.ble_eq.mp rfl) hHolds
+    have hChk : ptrCheckAligned { ptCanarySub0 with alignLog2 := 1 } mem =
+        true :=
+      (ptrTryIntoAligned_iff { ptCanarySub0 with alignLog2 := 1 }
+        ptPairU16Codec ⟨.shared, .aligned, .safe⟩ false mem hSrc1).mpr hSrc1
+    have hDst := (ptrTransmute_sound ptCanarySub0 1 ptPairU16Codec
+      (u32Codec .little) ⟨.shared, .aligned, .safe⟩ .safe false false mem
+      (transmuteCompat_shared hFwd) hHolds).1
+    exact ptrTryIntoAligned_sound { ptCanarySub0 with alignLog2 := 1 }
+      (u32Codec .little) ⟨.shared, .unaligned, .safe⟩ false mem hDst hChk
+  · intro mem hHolds
+    exact (ptrTransmute_sound ⟨0, 0, 1, 0⟩ 0 boolCodec (u8Codec .little)
+      ⟨.shared, .aligned, .safe⟩ .safe false false mem
+      (transmuteCompat_shared ptCanary_boolU8_validityIncl) hHolds).1
+  · dsimp only
+    let memTrue : MemoryState :=
+      { nextAllocId := 1
+        allocations := [{ allocId := 0, alignLog2 := 0, mutability := .shared,
+                          bytes := [.init 1 none], live := true }] }
+    have hSrcTrue :
+        PtrHolds ⟨0, 0, 1, 0⟩ (u8Codec .little) ⟨.shared, .aligned, .safe⟩
+          false memTrue :=
+      ⟨by decide, rfl,
+       { allocId := 0, alignLog2 := 0, mutability := .shared,
+         bytes := [.init 1 none], live := true },
+       rfl, rfl, ⟨rfl, by decide⟩, (fun hEx => by nomatch hEx), (fun _ => rfl),
+       ⟨rfl, ⟨BitVec.ofNat 8 1, rfl⟩⟩⟩
+    exact ⟨rfl,
+      (ptrTryCastInto_sound ⟨0, 0, 1, 0⟩ 0 (u8Codec .little) boolCodec
+        ⟨.shared, .aligned, .safe⟩ false false memTrue true
+        (fun hPM => nomatch hPM) hSrcTrue rfl).1,
+      rfl⟩
+
+/-- Cast-compatibility boundary canaries.
+
+(a) Exclusive `bool -> u8` is rejected (`TransmuteCompat` fails): writing `2`
+through the `u8` view of a `.mut` `bool` leaves a valid `u8` and an invalid
+`bool`. Shared `bool -> u8` and exclusive equivalent representations
+(`u32 <-> [u8; 4]`, `u8 <-> u8`) are accepted, and a shared `UnsafeCell`
+destination is rejected (`castReadCompat`).
+(b) A `2^63`-byte span passes `isInBounds` against a `2^63`-byte allocation, but
+no such allocation fits in `isize` (`PtrSpanInBounds`), so no `PtrHolds` covers
+a `2^63`-byte codec.
+(c) Shared `ptrTryCastInto` into an `UnsafeCell` destination fails closed,
+whereas the same cast into an `UnsafeCell`-free destination, or under
+`.exclusive`, succeeds. -/
+theorem canary_ptr_cast_compat_boundaries :
+    (¬ TransmuteCompat .exclusive false false boolCodec .safe
+        (u8Codec .little) .safe ∧
+     (let sub : ByteSubLens := ⟨0, 0, 1, 0⟩
+      let memTrue : MemoryState :=
+        { nextAllocId := 1
+          allocations := [{ allocId := 0, alignLog2 := 0, mutability := .mut,
+                            bytes := [.init 1 none], live := true }] }
+      let memTwo : MemoryState :=
+        { nextAllocId := 1
+          allocations := [{ allocId := 0, alignLog2 := 0, mutability := .mut,
+                            bytes := [.init 2 none], live := true }] }
+      PtrHolds sub boolCodec ⟨.exclusive, .aligned, .safe⟩ false memTrue ∧
+      ptrWrite sub (u8Codec .little) ⟨.exclusive, .aligned, .safe⟩
+        (BitVec.ofNat 8 2) memTrue = some memTwo ∧
+      PtrHolds sub (u8Codec .little) ⟨.exclusive, .aligned, .safe⟩ false
+        memTwo ∧
+      ¬ PtrHolds sub boolCodec ⟨.exclusive, .aligned, .safe⟩ false memTwo) ∧
+     TransmuteCompat .shared false false boolCodec .safe
+       (u8Codec .little) .safe ∧
+     ¬ TransmuteCompat .shared false true boolCodec .safe
+       (u8Codec .little) .safe ∧
+     TransmuteCompat .exclusive false false (u32Codec .little) .safe
+       (FixedByteCodec.array 4 (u8Codec .little)) .safe ∧
+     TransmuteCompat .exclusive false false (u8Codec .little) .safe
+       (u8Codec .little) .safe) ∧
+    (∀ a : Allocation, a.bytes.length = isizeMaxBytes →
+      isInBounds a 0 isizeMaxBytes = true ∧
+        ¬ PtrSpanInBounds a 0 isizeMaxBytes) ∧
+    (∀ {α : Type} (sub : ByteSubLens) (c : FixedByteCodec α isizeMaxBytes)
+        (inv : PtrInv) (uc : Bool) (mem : MemoryState),
+      ¬ PtrHolds sub c inv uc mem) ∧
+    (let memTrue : MemoryState :=
+       { nextAllocId := 1
+         allocations := [{ allocId := 0, alignLog2 := 0, mutability := .shared,
+                           bytes := [.init 1 none], live := true }] }
+     ptrTryCastInto ⟨0, 0, 1, 0⟩ 0 boolCodec ⟨.shared, .aligned, .safe⟩
+       false true memTrue = none ∧
+     ptrTryCastInto ⟨0, 0, 1, 0⟩ 0 boolCodec ⟨.shared, .aligned, .safe⟩
+       false false memTrue = some true ∧
+     ptrTryCastInto ⟨0, 0, 1, 0⟩ 0 boolCodec ⟨.exclusive, .aligned, .safe⟩
+       false true memTrue = some true) := by
+  have hNotExcl : ¬ TransmuteCompat .exclusive false false boolCodec .safe
+      (u8Codec .little) .safe := by
+    intro ⟨_, _, hMutC⟩
+    have hU8 : ValidityHolds (u8Codec .little) .safe [.init 2 none] :=
+      ⟨rfl, ⟨BitVec.ofNat 8 2, rfl⟩⟩
+    let ⟨_, hDec⟩ := (hMutC rfl _ hU8).2
+    nomatch hDec
+  let allocTrue : Allocation :=
+    { allocId := 0, alignLog2 := 0, mutability := .mut,
+      bytes := [.init 1 none], live := true }
+  let allocTwo : Allocation :=
+    { allocId := 0, alignLog2 := 0, mutability := .mut,
+      bytes := [.init 2 none], live := true }
+  have hBoolTrue :
+      PtrHolds ⟨0, 0, 1, 0⟩ boolCodec ⟨.exclusive, .aligned, .safe⟩ false
+        { nextAllocId := 1, allocations := [allocTrue] } :=
+    ⟨by decide, rfl, allocTrue, rfl, rfl, ⟨rfl, by decide⟩, (fun _ => rfl),
+     (fun _ => rfl), ⟨rfl, ⟨true, rfl⟩⟩⟩
+  have hU8Two :
+      PtrHolds ⟨0, 0, 1, 0⟩ (u8Codec .little) ⟨.exclusive, .aligned, .safe⟩
+        false { nextAllocId := 1, allocations := [allocTwo] } :=
+    ⟨by decide, rfl, allocTwo, rfl, rfl, ⟨rfl, by decide⟩, (fun _ => rfl),
+     (fun _ => rfl), ⟨rfl, ⟨BitVec.ofNat 8 2, rfl⟩⟩⟩
+  have hBoolTwo :
+      ¬ PtrHolds ⟨0, 0, 1, 0⟩ boolCodec ⟨.exclusive, .aligned, .safe⟩ false
+        { nextAllocId := 1, allocations := [allocTwo] } := by
+    intro ⟨_, _, a, hFind, _, _, _, _, hVal⟩
+    injection hFind with hEq
+    subst hEq
+    let ⟨_, hDec⟩ := hVal.2
+    nomatch hDec
+  have hNotSharedUc : ¬ TransmuteCompat .shared false true boolCodec .safe
+      (u8Codec .little) .safe := by
+    intro ⟨hRd, _, _⟩
+    nomatch hRd
+  have hU32Arr : TransmuteCompat .exclusive false false (u32Codec .little)
+      .safe (FixedByteCodec.array 4 (u8Codec .little)) .safe :=
+    transmuteCompat_exclusive false false
+      (validityIncl_intoBytes_fromBytes
+        (uintBvCodec_allDecodableInit .little 4 (by decide))
+        (FixedByteCodec.array_isSurjectiveInitDecoder
+          (uintBvCodec_isSurjectiveInitDecoder .little 1 (by decide)) 4))
+      (validityIncl_intoBytes_fromBytes
+        (array_allDecodableInit
+          (uintBvCodec_allDecodableInit .little 1 (by decide)) 4)
+        (uintBvCodec_isSurjectiveInitDecoder .little 4 (by decide)))
+  have hSpan : ∀ a : Allocation, a.bytes.length = isizeMaxBytes →
+      isInBounds a 0 isizeMaxBytes = true ∧
+        ¬ PtrSpanInBounds a 0 isizeMaxBytes := by
+    intro a hLen
+    refine ⟨?_, fun h => ?_⟩
+    · unfold isInBounds
+      rw [hLen, Nat.zero_add]
+      exact Nat.ble_eq.mpr (Nat.le_refl _)
+    · have hLt := h.2
+      rw [hLen] at hLt
+      exact Nat.lt_irrefl _ hLt
+  have hNoHolds : ∀ {α : Type} (sub : ByteSubLens)
+      (c : FixedByteCodec α isizeMaxBytes) (inv : PtrInv) (uc : Bool)
+      (mem : MemoryState), ¬ PtrHolds sub c inv uc mem := by
+    intro _ sub _ _ _ _ ⟨_, _, _, _, _, hB, _, _, _⟩
+    exact Nat.lt_irrefl _ (Nat.lt_of_le_of_lt
+      (Nat.le_add_left isizeMaxBytes sub.offset)
+      (ptrSpanInBounds_end_lt_isize hB))
+  exact ⟨⟨hNotExcl, ⟨hBoolTrue, rfl, hU8Two, hBoolTwo⟩,
+      transmuteCompat_shared ptCanary_boolU8_validityIncl, hNotSharedUc,
+      hU32Arr,
+      transmuteCompat_exclusive false false (validityIncl_refl _ _)
+        (validityIncl_refl _ _)⟩,
+    hSpan, hNoHolds, ⟨rfl, rfl, rfl⟩⟩
+
+abbrev ptPadU16Codec := FixedByteCodec.padRight (u16Codec .little) 2
+
+abbrev ptArrU8x4Codec := FixedByteCodec.array 4 (u8Codec .little)
+
+abbrev ptCanaryAllocMis1 : Allocation :=
+  { allocId := 0, alignLog2 := 2, mutability := .mut,
+    bytes := [.init 0 none, .init 1 none, .init 2 none, .init 3 none,
+              .init 4 none],
+    live := true }
+
+abbrev ptCanaryMemMis1 : MemoryState :=
+  { nextAllocId := 1, allocations := [ptCanaryAllocMis1] }
+
+/-- Offset `1` in `ptCanaryAllocMis1`, aligned only for `alignLog2 = 0`. -/
+abbrev ptCanarySubMis1 : ByteSubLens := ⟨0, 1, 4, 0⟩
+
+/-- Validity-change, alignment, and `Copy` boundary canaries.
+
+(a) An exclusive `.initialized -> .safe` recall on padded `ptPadU16Codec` is
+rejected (`¬ MutationCompat`): its zero encoding is `.safe` but leaves the
+padding uninitialized, so a `.safe` write would break `.initialized`. The same
+fact refutes `ptrWrite_sound`'s precondition on an `.initialized` padded
+pointer. The shared recall and the exclusive unpadded `u32Codec` recall
+succeed.
+(b) Transmuting an aligned `[u8; 4]` at offset `1` (`alignLog2 = 0`) to `u32`
+(`dstAlignLog2 = 2`) yields an `.unaligned` pointer with `alignLog2 = 2`, and
+`try_into_aligned` rejects it.
+(c) `ptrRead` fails closed for a non-`Copy` referent (`isCopy = false`) and
+succeeds for a `Copy` one. -/
+theorem canary_ptr_validity_change_boundaries :
+    (¬ MutationCompat .exclusive false ptPadU16Codec .initialized
+        ptPadU16Codec .safe ∧
+     ¬ ValidityIncl ptPadU16Codec .safe ptPadU16Codec .initialized ∧
+     (∀ (sub : ByteSubLens) (mem : MemoryState),
+       PtrHolds sub ptPadU16Codec ⟨.shared, .aligned, .initialized⟩ false mem →
+       PtrHolds sub ptPadU16Codec ⟨.shared, .aligned, .safe⟩ false mem) ∧
+     (∀ (sub : ByteSubLens) (mem : MemoryState),
+       PtrHolds sub (u32Codec .little) ⟨.exclusive, .aligned, .initialized⟩
+         false mem →
+       PtrHolds sub (u32Codec .little) ⟨.exclusive, .aligned, .safe⟩ false
+         mem)) ∧
+    (PtrHolds ptCanarySubMis1 ptArrU8x4Codec ⟨.exclusive, .aligned, .safe⟩
+       false ptCanaryMemMis1 ∧
+     PtrHolds { ptCanarySubMis1 with alignLog2 := 2 } (u32Codec .little)
+       ⟨.exclusive, .unaligned, .safe⟩ false ptCanaryMemMis1 ∧
+     ptrCheckAligned { ptCanarySubMis1 with alignLog2 := 2 }
+       ptCanaryMemMis1 = false ∧
+     ¬ PtrHolds { ptCanarySubMis1 with alignLog2 := 2 } (u32Codec .little)
+       ⟨.exclusive, .aligned, .safe⟩ false ptCanaryMemMis1) ∧
+    (ptrRead ptCanarySubRo (u32Codec .little) ⟨.shared, .aligned, .safe⟩
+       false false ptCanaryMem0 = none ∧
+     ptrRead ptCanarySubRo (u32Codec .little) ⟨.shared, .aligned, .safe⟩
+       false true ptCanaryMem0 = some (BitVec.ofNat 32 0x12345678)) := by
+  have hU32Init : AllDecodableInit (u32Codec .little) :=
+    uintBvCodec_allDecodableInit .little 4 (by decide)
+  have hU32Surj := uintBvCodec_isSurjectiveInitDecoder .little 4 (by decide)
+  have hU8Surj := uintBvCodec_isSurjectiveInitDecoder .little 1 (by decide)
+  have hArrSurj : ptArrU8x4Codec.IsSurjectiveInitDecoder :=
+    FixedByteCodec.array_isSurjectiveInitDecoder hU8Surj 4
+  have hArrInit : AllDecodableInit ptArrU8x4Codec :=
+    array_allDecodableInit (uintBvCodec_allDecodableInit .little 1 (by decide))
+      4
+  have hNotIncl :
+      ¬ ValidityIncl ptPadU16Codec .safe ptPadU16Codec .initialized := by
+    intro hInc
+    have hS : ValidityHolds ptPadU16Codec .safe
+        (ptPadU16Codec.encode (BitVec.ofNat 16 0)) :=
+      ⟨ptPadU16Codec.encode_length _,
+       ⟨BitVec.ofNat 16 0, ptPadU16Codec.decode_encode _⟩⟩
+    have hI : AllBytesInit (ptPadU16Codec.encode (BitVec.ofNat 16 0)) :=
+      (hInc _ hS).2
+    have hF :
+        allBytesInit (ptPadU16Codec.encode (BitVec.ofNat 16 0)) = false :=
+      FixedByteCodec.allBytesInit_padRight_encode_eq_false (u16Codec .little)
+        (by decide) (BitVec.ofNat 16 0)
+    rw [hI] at hF
+    nomatch hF
+  have hPadRecall : ∀ (sub : ByteSubLens) (mem : MemoryState),
+      PtrHolds sub ptPadU16Codec ⟨.shared, .aligned, .initialized⟩ false mem →
+      PtrHolds sub ptPadU16Codec ⟨.shared, .aligned, .safe⟩ false mem :=
+    fun sub mem hHolds =>
+      (ptrRecallValidity_sound sub ptPadU16Codec
+        ⟨.shared, .aligned, .initialized⟩ .safe false mem
+        (validityIncl_initialized_fromBytes ptPadU16Codec
+          (FixedByteCodec.padRight_isSurjectiveInitDecoder 2
+            (uintBvCodec_isSurjectiveInitDecoder .little 2 (by decide))))
+        (fun hPM => nomatch hPM) hHolds).1
+  have hU32Recall : ∀ (sub : ByteSubLens) (mem : MemoryState),
+      PtrHolds sub (u32Codec .little) ⟨.exclusive, .aligned, .initialized⟩
+        false mem →
+      PtrHolds sub (u32Codec .little) ⟨.exclusive, .aligned, .safe⟩ false
+        mem :=
+    fun sub mem hHolds =>
+      (ptrRecallValidity_sound sub (u32Codec .little)
+        ⟨.exclusive, .aligned, .initialized⟩ .safe false mem
+        (validityIncl_initialized_fromBytes (u32Codec .little) hU32Surj)
+        (fun _ => validityIncl_safe_initialized_of_allDecodableInit hU32Init)
+        hHolds).1
+  have hSrc :
+      PtrHolds ptCanarySubMis1 ptArrU8x4Codec ⟨.exclusive, .aligned, .safe⟩
+        false ptCanaryMemMis1 :=
+    ⟨by decide, rfl, ptCanaryAllocMis1, rfl, rfl, ⟨rfl, by decide⟩,
+     (fun _ => rfl),
+     (fun _ => rfl),
+     ⟨rfl, hArrSurj [.init 1 none, .init 2 none, .init 3 none, .init 4 none]
+       rfl rfl⟩⟩
+  have hC : TransmuteCompat .exclusive false false ptArrU8x4Codec .safe
+      (u32Codec .little) .safe :=
+    transmuteCompat_exclusive false false
+      (validityIncl_intoBytes_fromBytes hArrInit hU32Surj)
+      (validityIncl_intoBytes_fromBytes hU32Init hArrSurj)
+  have hDst :
+      PtrHolds { ptCanarySubMis1 with alignLog2 := 2 } (u32Codec .little)
+        ⟨.exclusive, .unaligned, .safe⟩ false ptCanaryMemMis1 :=
+    (ptrTransmute_sound ptCanarySubMis1 2 ptArrU8x4Codec (u32Codec .little)
+      ⟨.exclusive, .aligned, .safe⟩ .safe false false ptCanaryMemMis1 hC
+      hSrc).1
+  have hChk : ptrCheckAligned { ptCanarySubMis1 with alignLog2 := 2 }
+      ptCanaryMemMis1 = false := rfl
+  exact ⟨⟨fun hMut => hNotIncl (hMut rfl), hNotIncl, hPadRecall, hU32Recall⟩,
+    ⟨hSrc, hDst, hChk,
+     ptrTryIntoAligned_rejected { ptCanarySubMis1 with alignLog2 := 2 }
+       (u32Codec .little) ⟨.exclusive, .unaligned, .safe⟩ false
+       ptCanaryMemMis1 hDst hChk⟩,
+    ⟨rfl, rfl⟩⟩
+
+/-- Explicit negative boundary canaries: reject `as_ref` with
+`containsUnsafeCell = true`, reject `as_mut` on `.shared`, reject `transmute`
+from padded `padRight (u16Codec .little) 2` into unpadded `u32Codec .little`,
+reject `ptrRead` on `.uninit`, and reject `try_into_aligned` on misaligned
+offset `1` (`alignLog2 = 2`). -/
+theorem canary_ptr_negative_boundaries :
+    (canAsRef ⟨.shared, .aligned, .safe⟩ true = false ∧
+     ptrAsRefRead ptCanarySubRo (u32Codec .little) ⟨.shared, .aligned, .safe⟩
+       true ptCanaryMem0 = none) ∧
+    (canAsMut ⟨.shared, .aligned, .safe⟩ = false ∧
+     ptrWrite ptCanarySub0 (u32Codec .little) ⟨.shared, .aligned, .safe⟩
+       (BitVec.ofNat 32 0) ptCanaryMem0 = none) ∧
+    (¬ (FixedByteCodec.padRight (u16Codec .little) 2).IsInitCodec ∧
+     ¬ AllDecodableInit (FixedByteCodec.padRight (u16Codec .little) 2) ∧
+     ∃ (sub : ByteSubLens) (mem : MemoryState),
+       PtrHolds sub (FixedByteCodec.padRight (u16Codec .little) 2)
+         ⟨.exclusive, .aligned, .safe⟩ false mem ∧
+       PtrHolds sub (FixedByteCodec.padRight (u16Codec .little) 2)
+         ⟨.exclusive, .aligned, .asInitialized⟩ false mem ∧
+       ¬ PtrHolds sub (FixedByteCodec.padRight (u16Codec .little) 2)
+         ⟨.exclusive, .aligned, .initialized⟩ false mem ∧
+       ¬ PtrHolds sub (u32Codec .little)
+         ⟨.exclusive, .aligned, .safe⟩ false mem) ∧
+    (ptrRead ptCanarySub0 (u32Codec .little) ⟨.exclusive, .aligned, .uninit⟩
+       false true ptCanaryMem0 = none) ∧
+    (let memMisaligned : MemoryState :=
+       { nextAllocId := 1
+         allocations := [{ allocId := 0, alignLog2 := 2, mutability := .mut,
+                           bytes := [.init 0 none, .init 1 none, .init 2 none,
+                                     .init 3 none, .init 4 none],
+                           live := true }] }
+     let subMis : ByteSubLens := ⟨0, 1, 4, 2⟩
+     PtrHolds subMis (u32Codec .little) ⟨.exclusive, .unaligned, .safe⟩
+       false memMisaligned ∧
+     ptrCheckAligned subMis memMisaligned = false ∧
+     ¬ PtrHolds subMis (u32Codec .little) ⟨.exclusive, .aligned, .safe⟩
+       false memMisaligned) := by
+  have hRef := ptrAsRefRead_rejected_of_unsafeCell ptCanarySubRo
+    (u32Codec .little) ⟨.shared, .aligned, .safe⟩ ptCanaryMem0
+  have hMut : canAsMut ⟨.shared, .aligned, .safe⟩ = false ∧
+      ptrWrite ptCanarySub0 (u32Codec .little) ⟨.shared, .aligned, .safe⟩
+        (BitVec.ofNat 32 0) ptCanaryMem0 = none :=
+    ⟨canAsMut_rejected_of_shared ⟨.shared, .aligned, .safe⟩ rfl,
+     ptrWrite_rejected_of_shared ptCanarySub0 (u32Codec .little)
+       ⟨.shared, .aligned, .safe⟩ (BitVec.ofNat 32 0) ptCanaryMem0 rfl⟩
+  have hPad := padding_refutes_intoBytes_and_unpadded_transmute
+  have hUninit := ptrRead_rejected_of_uninit ptCanarySub0 (u32Codec .little)
+    ⟨.exclusive, .aligned, .uninit⟩ false true ptCanaryMem0 rfl
+  let memMisaligned : MemoryState :=
+    { nextAllocId := 1
+      allocations := [{ allocId := 0, alignLog2 := 2, mutability := .mut,
+                        bytes := [.init 0 none, .init 1 none, .init 2 none,
+                                  .init 3 none, .init 4 none],
+                        live := true }] }
+  let subMis : ByteSubLens := ⟨0, 1, 4, 2⟩
+  have hUnalHolds :
+      PtrHolds subMis (u32Codec .little) ⟨.exclusive, .unaligned, .safe⟩
+        false memMisaligned :=
+    ⟨by decide, rfl,
+     { allocId := 0, alignLog2 := 2, mutability := .mut,
+       bytes := [.init 0 none, .init 1 none, .init 2 none, .init 3 none,
+                 .init 4 none],
+       live := true },
+     rfl, rfl, ⟨rfl, by decide⟩, (fun _ => rfl), (fun hAl => by nomatch hAl),
+     ⟨rfl, ⟨BitVec.ofNat 32 0x04030201, rfl⟩⟩⟩
+  have hFailChk : ptrCheckAligned subMis memMisaligned = false := rfl
+  have hNotAligned :=
+    ptrTryIntoAligned_rejected subMis (u32Codec .little)
+      ⟨.exclusive, .unaligned, .safe⟩ false memMisaligned hUnalHolds hFailChk
+  exact ⟨hRef, hMut, hPad, hUninit,
+    ⟨hUnalHolds, hFailChk, hNotAligned⟩⟩
+
+abbrev ptCanaryAllocMutAfter : Allocation :=
+  { allocId := 0, alignLog2 := 2, mutability := .mut,
+    bytes := [.init 0x04 none, .init 0x03 none, .init 0x02 none,
+              .init 0x01 none, .init 0x10 none, .init 0x20 none,
+              .init 0x30 none, .init 0x40 none],
+    live := true }
+
+abbrev ptCanaryMemAfter : MemoryState :=
+  { nextAllocId := 2
+    allocations := [ptCanaryAllocMutAfter, ptCanaryAllocSharedRo] }
+
+/-- Disjoint write framing and `ptrHeapletPred` `FramePreserving` canary:
+writing `ptCanarySub0` preserves disjoint `ptCanarySub0B` (same allocation,
+adjacent `[4, 8)`) and `ptCanarySubRo` (different `.shared` allocation) via
+both `ptrWrite_preserves_disjoint_ptrHolds` and `ptrHolds_of_memDisjointFrame`,
+yields a concrete `MemDisjointFrame [⟨0, 0, 4⟩]`, and lifts cleanly across
+`ptrHeapletPred` frames over `byteHeapletPCM`. -/
+theorem canary_ptr_framing_and_heaplet :
+    (ptrWrite ptCanarySub0 (u32Codec .little) ⟨.exclusive, .aligned, .uninit⟩
+      (BitVec.ofNat 32 0x01020304) ptCanaryMem0 = some ptCanaryMemAfter ∧
+     PtrHolds ptCanarySub0 (u32Codec .little) ⟨.exclusive, .aligned, .safe⟩
+       false ptCanaryMemAfter ∧
+     PtrHolds ptCanarySub0B (u32Codec .little) ⟨.exclusive, .aligned, .safe⟩
+       false ptCanaryMemAfter ∧
+     PtrHolds ptCanarySubRo (u32Codec .little) ⟨.shared, .aligned, .safe⟩
+       false ptCanaryMemAfter ∧
+     MemDisjointFrame [⟨0, 0, 4⟩] ptCanaryMem0 ptCanaryMemAfter) ∧
+    FramePreserving byteHeapletPCM
+      (sepConj byteHeapletPCM
+        (ptrHeapletPred ptCanarySub0 (u32Codec .little)
+          ⟨.exclusive, .aligned, .uninit⟩)
+        (ptrHeapletPred ptCanarySubRo (u32Codec .little)
+          ⟨.shared, .aligned, .safe⟩))
+      (sepConj byteHeapletPCM
+        (ptrHeapletPred ptCanarySub0 (u32Codec .little)
+          ⟨.exclusive, .aligned, .safe⟩)
+        (ptrHeapletPred ptCanarySubRo (u32Codec .little)
+          ⟨.shared, .aligned, .safe⟩)) := by
+  have hHolds0 :
+      PtrHolds ptCanarySub0 (u32Codec .little) ⟨.exclusive, .aligned, .uninit⟩
+        false ptCanaryMem0 :=
+    ⟨by decide, rfl, ptCanaryAllocMutUninit, rfl, rfl, ⟨rfl, by decide⟩,
+     (fun _ => rfl), (fun _ => rfl), ⟨rfl, trivial⟩⟩
+  have hHolds0B :
+      PtrHolds ptCanarySub0B (u32Codec .little) ⟨.exclusive, .aligned, .safe⟩
+        false ptCanaryMem0 :=
+    ⟨by decide, rfl, ptCanaryAllocMutUninit, rfl, rfl, ⟨rfl, by decide⟩,
+     (fun _ => rfl), (fun _ => rfl),
+     ⟨rfl, ⟨BitVec.ofNat 32 0x40302010, rfl⟩⟩⟩
+  have hHoldsRo :
+      PtrHolds ptCanarySubRo (u32Codec .little) ⟨.shared, .aligned, .safe⟩
+        false ptCanaryMem0 :=
+    ⟨by decide, rfl, ptCanaryAllocSharedRo, rfl, rfl, ⟨rfl, by decide⟩,
+     (fun hEx => by nomatch hEx), (fun _ => rfl),
+     ⟨rfl, ⟨BitVec.ofNat 32 0x12345678, rfl⟩⟩⟩
+  have hWr :
+      ptrWrite ptCanarySub0 (u32Codec .little) ⟨.exclusive, .aligned, .uninit⟩
+        (BitVec.ofNat 32 0x01020304) ptCanaryMem0 = some ptCanaryMemAfter := rfl
+  have hAfter0 :
+      PtrHolds ptCanarySub0 (u32Codec .little) ⟨.exclusive, .aligned, .safe⟩
+        false ptCanaryMemAfter :=
+    ⟨by decide, rfl, ptCanaryAllocMutAfter, rfl, rfl, ⟨rfl, by decide⟩,
+     (fun _ => rfl), (fun _ => rfl),
+     ⟨rfl, ⟨BitVec.ofNat 32 0x01020304, rfl⟩⟩⟩
+  have hFrame :
+      MemDisjointFrame [⟨0, 0, 4⟩] ptCanaryMem0 ptCanaryMemAfter := by
+    refine ⟨Nat.le_refl 2, fun aid hAid => ?_⟩
+    cases aid with
+    | zero =>
+      refine ⟨rfl, rfl, rfl, rfl, rfl, fun off hOut => ?_⟩
+      cases off with
+      | zero => cases hOut
+      | succ o1 =>
+        cases o1 with
+        | zero => cases hOut
+        | succ o2 =>
+          cases o2 with
+          | zero => cases hOut
+          | succ o3 =>
+            cases o3 with
+            | zero => cases hOut
+            | succ o4 =>
+              cases o4 with
+              | zero => rfl
+              | succ o5 =>
+                cases o5 with
+                | zero => rfl
+                | succ o6 =>
+                  cases o6 with
+                  | zero => rfl
+                  | succ o7 =>
+                    cases o7 with
+                    | zero => rfl
+                    | succ _ => rfl
+    | succ a1 =>
+      cases a1 with
+      | zero =>
+        refine ⟨rfl, rfl, rfl, rfl, rfl, fun off _ => ?_⟩
+        cases off with
+        | zero => rfl
+        | succ o1 =>
+          cases o1 with
+          | zero => rfl
+          | succ o2 =>
+            cases o2 with
+            | zero => rfl
+            | succ o3 =>
+              cases o3 with
+              | zero => rfl
+              | succ _ => rfl
+      | succ a2 =>
+        exact False.elim
+          (Nat.not_lt_zero a2 (Nat.lt_of_succ_lt_succ (Nat.lt_of_succ_lt_succ hAid)))
+  have hDisj0B : DisjointPtrWrites ptCanarySub0 ptCanarySub0B := rfl
+  have _hAfter0BWrite :=
+    ptrWrite_preserves_disjoint_ptrHolds ptCanarySub0 (u32Codec .little)
+      ⟨.exclusive, .aligned, .uninit⟩ (BitVec.ofNat 32 0x01020304)
+      ptCanarySub0B (u32Codec .little) ⟨.exclusive, .aligned, .safe⟩ false
+      ptCanaryMem0 ptCanaryMemAfter hDisj0B hWr hHolds0B
+  have hAfter0B :=
+    ptrHolds_of_memDisjointFrame [⟨0, 0, 4⟩] ptCanarySub0B (u32Codec .little)
+      ⟨.exclusive, .aligned, .safe⟩ false ptCanaryMem0 ptCanaryMemAfter
+      (by decide) hFrame (fun i hi => by
+        cases i with
+        | zero => rfl
+        | succ i1 =>
+          cases i1 with
+          | zero => rfl
+          | succ i2 =>
+            cases i2 with
+            | zero => rfl
+            | succ i3 =>
+              cases i3 with
+              | zero => rfl
+              | succ i4 =>
+                exact False.elim (Nat.not_lt_zero i4
+                  (Nat.lt_of_succ_lt_succ (Nat.lt_of_succ_lt_succ
+                    (Nat.lt_of_succ_lt_succ (Nat.lt_of_succ_lt_succ hi))))))
+      hHolds0B
+  have hAfterRo :=
+    ptrHolds_of_memDisjointFrame [⟨0, 0, 4⟩] ptCanarySubRo (u32Codec .little)
+      ⟨.shared, .aligned, .safe⟩ false ptCanaryMem0 ptCanaryMemAfter
+      (by decide) hFrame (fun _ _ => rfl) hHoldsRo
+  refine ⟨⟨hWr, hAfter0, hAfter0B, hAfterRo, hFrame⟩, ?_⟩
+  exact ptrHeapletPred_write_framed ptCanarySub0 (u32Codec .little)
+    ⟨.exclusive, .aligned, .uninit⟩ (BitVec.ofNat 32 0x01020304)
+    (ptrHeapletPred ptCanarySubRo (u32Codec .little)
+      ⟨.shared, .aligned, .safe⟩)
+
+/-- `Option<u8>`-like `2`-byte codec whose initialization requirement depends
+on its tag byte: `none ↦ [0x00, uninit]` and `some b ↦ [0x01, b]`. -/
+@[expose] def ptOptU8Codec : FixedByteCodec (Option UInt8) 2 :=
+  FixedByteCodec.ofRoundTrip
+    (fun o =>
+      match o with
+      | none => [AllocByte.init 0 none, AllocByte.uninit]
+      | some b => [AllocByte.init 1 none, AllocByte.init b none])
+    (fun bs =>
+      match bs with
+      | [.init t _, b1] =>
+        if Nat.beq t.toNat 0 then some none
+        else if Nat.beq t.toNat 1 then
+          match b1 with
+          | .init b _ => some (some b)
+          | .uninit => none
+        else none
+      | _ => none)
+    (fun o => by cases o <;> rfl)
+    (fun o => by cases o <;> rfl)
+    (by
+      intro bs _ h
+      cases bs with
+      | nil => nomatch h
+      | cons b0 rest =>
+        cases b0 with
+        | uninit => nomatch h
+        | init _ _ =>
+          cases rest with
+          | nil => nomatch h
+          | cons _ rest2 =>
+            cases rest2 with
+            | nil => rfl
+            | cons _ _ => nomatch h)
+
+private theorem ptOptU8_tag1_requires_payload :
+    ∀ (bs : List AllocByte) (x : Option UInt8),
+      bs.length = 2 →
+      bs.take 1 = [AllocByte.init 1 none] →
+      ptOptU8Codec.decode bs = some x →
+      ByteInitAt bs 1
+  | [_, .init _ _], _, _, _, _ => trivial
+  | [_, .uninit], _, _, hPre, hDec => by
+    cases hPre
+    nomatch hDec
+
+private theorem ptOptU8_asInitFor_none_at :
+    ∀ i : Nat, i < 2 →
+      CodecRequiresInitAt ptOptU8Codec
+        ([AllocByte.init 0 none, AllocByte.uninit].take i) i →
+      ByteInitAt [AllocByte.init 0 none, AllocByte.uninit] i
+  | 0, _, _ => trivial
+  | 1, _, .inl hAll => hAll [.init 0 none, .uninit] none rfl rfl
+  | 1, _, .inr ⟨_, hS⟩ => hS [.init 0 none, .uninit] none rfl rfl rfl
+  | n + 2, hi, _ => absurd hi (Nat.not_lt_of_le (Nat.le_add_left 2 n))
+
+/-- Prefix-conditional `AsInitialized` canary (`AsInitFor`): for
+`ptOptU8Codec`, the first clause does not require payload byte `1` (the `none`
+encoding leaves it `.uninit`), but the second clause requires it after tag
+`0x01`, so `[0x01, uninit]` is not `.asInitialized` while `[0x00, uninit]` is.
+-/
+theorem canary_ptr_asInitFor_prefix_conditional :
+    ¬ (∀ (bs : List AllocByte) (x : Option UInt8),
+        bs.length = 2 → ptOptU8Codec.decode bs = some x → ByteInitAt bs 1) ∧
+      ¬ AsInitFor ptOptU8Codec [AllocByte.init 1 none, AllocByte.uninit] ∧
+      AsInitFor ptOptU8Codec [AllocByte.init 0 none, AllocByte.uninit] :=
+  ⟨fun hAll => hAll [.init 0 none, .uninit] none rfl rfl,
+   fun ⟨_, h⟩ => h 1 (by decide)
+     (.inr ⟨⟨[.init 1 none, .init 0 none], some 0, rfl, rfl, rfl⟩,
+       ptOptU8_tag1_requires_payload⟩),
+   ⟨rfl, ptOptU8_asInitFor_none_at⟩⟩
+
+end
 
 end Anneal.Core
 

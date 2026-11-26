@@ -15,3 +15,4 @@ public import Anneal.Core.SpecRealizability
 public import Anneal.Core.AlignMath
 public import Anneal.Core.BitValidity
 public import Anneal.Core.FixedByteCodec
+public import Anneal.Core.PtrTypestate
