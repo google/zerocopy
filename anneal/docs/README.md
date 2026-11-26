@@ -101,6 +101,7 @@ incrementally.
 | [Review policy design](review-policy-design.md) | Current | Contributor review rules and policy-placement structure. |
 | [Upstream `rustc` workarounds](rustc-workarounds.md) | Current | Tracking, upstream evaluation, and compiler-bump retirement of workarounds for upstream Rust toolchain (`rustc`, `rustdoc`, `cargo`, and standard-library) limitations. |
 | [Gate 2 review guide](codex-review.md) | Current | Automated review gates and standalone diagnostic evaluator. |
+| [Linear arithmetic certifier](farkas-cert-gen.md) | Current | Synthesizes `Anneal.LinearArith` Farkas and Chvatal-Gomory certificates. |
 
 ### Target architecture and interop docs
 
