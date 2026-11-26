@@ -30,9 +30,11 @@ This module states the common steps once, in terms that do not mention either:
 * `frameV2` and `stateV2` build frames and single-frame states with structure
   instance syntax, so a new `FrameState` or `State` field with a default value
   leaves every use unchanged;
-* `evalStepV2_stmt`, `evalStepV2_term`, `evalStepV2_assign_local`, and
-  `evalStepV2_return_ok` reduce one step to the statement or terminator being
-  executed, given the body, block, and statement lookups, and
+* `evalStepV2_stmt` and `evalStepV2_term` reduce one step to the statement or
+  terminator being executed, given the body, block, and statement lookups;
+  `evalStepV2_assign_local`, `evalStepV2_storageLive`,
+  `evalStepV2_storageDead`, `evalStepV2_nop`, `evalStepV2_goto`, and
+  `evalStepV2_return_ok` go on to compute the resulting state, and
   `evalRvalueV2_ref_deref_ok` evaluates a reborrow without unfolding
   `evalRvalueV2`; and
 * `RunsV2` hides the execution fuel, so that elaboration never unfolds
@@ -170,6 +172,120 @@ theorem evalStepV2_assign_local {p : Program} {body : Body} {bb : BasicBlock}
       .step (stateV2 (frameV2 defId b (i + 1) l2) cm m2) :=
   (evalStepV2_stmt hBody hBB hStmt).trans
     (evalStatementV2_assign_local hTy hRv hW)
+
+/-- `StorageLive` of a local whose old slot deallocates successfully. -/
+theorem evalStatementV2_storageLive {body : Body} {defId : DefId} {b i : Nat}
+    {l l1 : List LocalSlot} {cm : CallerMemory} {m m1 : MemoryState}
+    {lid : LocalId} {ty : MirTy} {old : LocalSlot}
+    (hTy : Trusted.MirSemantics.getElem? body.locals lid = some ty)
+    (hOld : Trusted.MirSemantics.getElem? l lid = some old)
+    (hSet : setElem? l lid (liveUninitSlot ty) = some l1)
+    (hFree : deallocateLocal m old = .ok m1) :
+    evalStatementV2 body (frameV2 defId b i l) m cm (.storageLive lid) =
+      .step (stateV2 (frameV2 defId b (i + 1) l1) cm m1) := by
+  unfold evalStatementV2
+  dsimp only
+  rw [hTy, hOld]
+  dsimp only
+  rw [hSet]
+  dsimp only
+  rw [hFree]
+
+/-- `StorageDead` of a non-return local whose old slot deallocates
+successfully. -/
+theorem evalStatementV2_storageDead {body : Body} {defId : DefId} {b i : Nat}
+    {l l1 : List LocalSlot} {cm : CallerMemory} {m m1 : MemoryState}
+    {lid : LocalId} {old : LocalSlot}
+    (hNotRet : Nat.beq lid 0 = false)
+    (hOld : Trusted.MirSemantics.getElem? l lid = some old)
+    (hSet : setElem? l lid .dead = some l1)
+    (hFree : deallocateLocal m old = .ok m1) :
+    evalStatementV2 body (frameV2 defId b i l) m cm (.storageDead lid) =
+      .step (stateV2 (frameV2 defId b (i + 1) l1) cm m1) := by
+  unfold evalStatementV2
+  dsimp only
+  rw [ite_bool_false hNotRet, hOld]
+  dsimp only
+  rw [hSet]
+  dsimp only
+  rw [hFree]
+
+/-- `Nop` advances to the next statement. -/
+theorem evalStatementV2_nop {body : Body} {defId : DefId} {b i : Nat}
+    {l : List LocalSlot} {cm : CallerMemory} {m : MemoryState} :
+    evalStatementV2 body (frameV2 defId b i l) m cm .nop =
+      .step (stateV2 (frameV2 defId b (i + 1) l) cm m) := rfl
+
+/-- `Goto` jumps to the first statement of its target block. -/
+theorem evalTerminatorV2_goto {body : Body} {bb : BasicBlock} {defId : DefId}
+    {b i : Nat} {l : List LocalSlot} {cm : CallerMemory} {m : MemoryState}
+    {ps : PanicStrategy} {hLocal : Bool} {target : BasicBlockId}
+    (hTerm : bb.terminator = .goto target) :
+    evalTerminatorV2 body bb (frameV2 defId b i l) m cm ps hLocal =
+      .step (stateV2 (frameV2 defId target 0 l) cm m) := by
+  unfold evalTerminatorV2
+  rw [hTerm]
+  rfl
+
+/-- One `StorageLive` step. -/
+theorem evalStepV2_storageLive {p : Program} {body : Body} {bb : BasicBlock}
+    {defId : DefId} {b i : Nat} {l l1 : List LocalSlot}
+    {cm : CallerMemory} {m m1 : MemoryState} {lid : LocalId} {ty : MirTy}
+    {old : LocalSlot}
+    (hBody : Trusted.MirSemantics.getElem? p.bodies defId = some body)
+    (hBB : Trusted.MirSemantics.getElem? body.basicBlocks b = some bb)
+    (hStmt : Trusted.MirSemantics.getElem? bb.statements i =
+      some (.storageLive lid))
+    (hTy : Trusted.MirSemantics.getElem? body.locals lid = some ty)
+    (hOld : Trusted.MirSemantics.getElem? l lid = some old)
+    (hSet : setElem? l lid (liveUninitSlot ty) = some l1)
+    (hFree : deallocateLocal m old = .ok m1) :
+    evalStepV2 p (stateV2 (frameV2 defId b i l) cm m) =
+      .step (stateV2 (frameV2 defId b (i + 1) l1) cm m1) :=
+  (evalStepV2_stmt hBody hBB hStmt).trans
+    (evalStatementV2_storageLive hTy hOld hSet hFree)
+
+/-- One `StorageDead` step. -/
+theorem evalStepV2_storageDead {p : Program} {body : Body} {bb : BasicBlock}
+    {defId : DefId} {b i : Nat} {l l1 : List LocalSlot}
+    {cm : CallerMemory} {m m1 : MemoryState} {lid : LocalId}
+    {old : LocalSlot}
+    (hBody : Trusted.MirSemantics.getElem? p.bodies defId = some body)
+    (hBB : Trusted.MirSemantics.getElem? body.basicBlocks b = some bb)
+    (hStmt : Trusted.MirSemantics.getElem? bb.statements i =
+      some (.storageDead lid))
+    (hNotRet : Nat.beq lid 0 = false)
+    (hOld : Trusted.MirSemantics.getElem? l lid = some old)
+    (hSet : setElem? l lid .dead = some l1)
+    (hFree : deallocateLocal m old = .ok m1) :
+    evalStepV2 p (stateV2 (frameV2 defId b i l) cm m) =
+      .step (stateV2 (frameV2 defId b (i + 1) l1) cm m1) :=
+  (evalStepV2_stmt hBody hBB hStmt).trans
+    (evalStatementV2_storageDead hNotRet hOld hSet hFree)
+
+/-- One `Nop` step. -/
+theorem evalStepV2_nop {p : Program} {body : Body} {bb : BasicBlock}
+    {defId : DefId} {b i : Nat} {l : List LocalSlot}
+    {cm : CallerMemory} {m : MemoryState}
+    (hBody : Trusted.MirSemantics.getElem? p.bodies defId = some body)
+    (hBB : Trusted.MirSemantics.getElem? body.basicBlocks b = some bb)
+    (hStmt : Trusted.MirSemantics.getElem? bb.statements i = some .nop) :
+    evalStepV2 p (stateV2 (frameV2 defId b i l) cm m) =
+      .step (stateV2 (frameV2 defId b (i + 1) l) cm m) :=
+  (evalStepV2_stmt hBody hBB hStmt).trans evalStatementV2_nop
+
+/-- One `Goto` step. -/
+theorem evalStepV2_goto {p : Program} {body : Body} {bb : BasicBlock}
+    {defId : DefId} {b i : Nat} {l : List LocalSlot}
+    {cm : CallerMemory} {m : MemoryState} {target : BasicBlockId}
+    (hBody : Trusted.MirSemantics.getElem? p.bodies defId = some body)
+    (hBB : Trusted.MirSemantics.getElem? body.basicBlocks b = some bb)
+    (hStmt : Trusted.MirSemantics.getElem? bb.statements i = none)
+    (hEnd : Nat.beq i bb.statements.length = true)
+    (hTerm : bb.terminator = .goto target) :
+    evalStepV2 p (stateV2 (frameV2 defId b i l) cm m) =
+      .step (stateV2 (frameV2 defId target 0 l) cm m) :=
+  (evalStepV2_term hBody hBB hStmt hEnd).trans (evalTerminatorV2_goto hTerm)
 
 /-- A `return` step that returns a value whose references stay in caller
 memory, in a body whose return type has no raw pointers. -/
