@@ -827,6 +827,152 @@ fn rejects_authored_extern_and_csimp_metadata() {
     }
 }
 
+/// Authored `@[export]`, `@[init]`, and `@[builtin_init]` hooks in `Proof` or
+/// non-`Proof` target modules are refused even when logically unreached, while
+/// legitimate baseline `Init` `@[init]`/`@[export]` entries remain accepted.
+#[test]
+fn rejects_authored_export_init_and_builtin_init_metadata() {
+    // 1. Pinned `Fixture`: unreached `@[export]` in `Proof` fails closed
+    //    through `"target-export"` -> `"target-audit"`.
+    Fixture::new(
+        "prelude\nimport Expected\nimport Init.Data.BitVec.Lemmas\n\
+         @[export anneal_audit_export_helper] def exportHelper (n : Nat) : Nat := n\n\
+         theorem Proof.verify : Expected.claim := by exact And.intro rfl BitVec.and_self\n",
+    )
+    .reject_audit("unchecked compiler export override on exportHelper");
+
+    // 2. Unpinned target mode: baseline `Init.Data.Random` (`@[init]` on
+    //    `IO.stdGenRef`, plus `Init.Prelude` `@[export]`) stays accepted,
+    //    while authored `@[init]` and `@[builtin_init]` in unreached `Proof`
+    //    or non-`Proof` target modules (`Spec`/`Captured`) fail closed.
+    let mut f_ok = Fixture::new(
+        "import Expected\nimport Init.Data.Random\n\
+         theorem Proof.verify : Expected.claim := And.intro rfl BitVec.and_self\n",
+    );
+    let clean_spec = "import Model\ndef Spec.specs (p : BitVec 8) : Prop := BitVec.and p p = p\n";
+    f_ok.set("Spec", TargetRole::Specification, clean_spec);
+    let mut chk = cargo_anneal::Checker::new(&f_ok.root, None).unwrap();
+    chk.set_allow_unpinned_lean(true);
+    let report = chk.run_target(&f_ok.request).unwrap();
+    assert_eq!(report["replay"], true);
+    assert_eq!(report["exactType"], true);
+
+    let recompile_and_inspect = |chk: &mut cargo_anneal::Checker,
+                                 f: &mut Fixture,
+                                 role: TargetRole,
+                                 mod_name: &str,
+                                 src: &str|
+     -> Failure {
+        f.set(mod_name, role, src);
+        let m = f.request.modules.iter().find(|x| x.module == mod_name).unwrap();
+        let staged_src = chk.stage().join("ro").join(format!("{mod_name}.lean"));
+        #[cfg(unix)]
+        {
+            use std::os::unix::fs::PermissionsExt;
+            let _ = fs::set_permissions(&staged_src, fs::Permissions::from_mode(0o600));
+        }
+        fs::copy(&m.source, &staged_src).unwrap();
+        let hdr_json = chk.inspect_headers(&[(mod_name.to_string(), staged_src.clone())]).unwrap();
+        let hdrs: cargo_anneal::PreflightResult = serde_json::from_value(hdr_json).unwrap();
+        let header = hdrs.headers.into_iter().next().unwrap();
+        let dest_olean = chk.stage().join("lib").join(format!("{mod_name}.olean"));
+        if dest_olean.exists() {
+            #[cfg(unix)]
+            {
+                use std::os::unix::fs::PermissionsExt;
+                let _ = fs::set_permissions(&dest_olean, fs::Permissions::from_mode(0o600));
+            }
+        }
+        chk.compile_lean_module(
+            mod_name,
+            &staged_src,
+            header.imports,
+            header.is_module,
+            "lib",
+            false,
+            true,
+        )
+        .unwrap();
+        chk.inspect_target(&f.request).unwrap_err()
+    };
+
+    for (label, proof_decl, expected) in [
+        (
+            "proof-init",
+            "@[init] def initHelper : IO Unit := pure ()\n",
+            "unchecked compiler init override on initHelper",
+        ),
+        (
+            "proof-builtin-init",
+            "@[builtin_init] def builtinInitHelper : IO Unit := pure ()\n",
+            "unchecked compiler builtin_init override on builtinInitHelper",
+        ),
+    ] {
+        let proof_src = format!(
+            "import Expected\n{proof_decl}\
+             theorem Proof.verify : Expected.claim := And.intro rfl BitVec.and_self\n"
+        );
+        let err =
+            recompile_and_inspect(&mut chk, &mut f_ok, TargetRole::Proof, "Proof", &proof_src);
+        assert_eq!((err.code, err.phase.as_str()), (1, "target-audit"), "{label}: {err}");
+        assert!(err.message.contains(expected), "{label}: {err}");
+    }
+    // Restore clean `Proof` (and re-run headers-matched `Spec` / `Captured`)
+    // before testing non-`Proof` target modules.
+    f_ok.set(
+        "Proof",
+        TargetRole::Proof,
+        "import Expected\ntheorem Proof.verify : Expected.claim := And.intro rfl BitVec.and_self\n",
+    );
+    chk.set_allow_unpinned_lean(true);
+    chk.run_target(&f_ok.request).unwrap();
+
+    // 3. Direct non-`Proof` target module check (`Spec` for `@[export]`,
+    //    `Captured` for `@[init]` / `@[builtin_init]`) bypassing preflight.
+    let err_spec_export = recompile_and_inspect(
+        &mut chk,
+        &mut f_ok,
+        TargetRole::Specification,
+        "Spec",
+        "import Model\n\
+         @[export anneal_spec_export] def Spec.badExport (n : Nat) : Nat := n\n\
+         def Spec.specs (p : BitVec 8) : Prop := BitVec.and p p = p\n",
+    );
+    assert_eq!(
+        (err_spec_export.code, err_spec_export.phase.as_str()),
+        (1, "target-audit"),
+        "spec-export: {err_spec_export}"
+    );
+    assert!(
+        err_spec_export
+            .message
+            .contains("unchecked compiler export override on Spec.badExport in Spec"),
+        "spec-export: {err_spec_export}"
+    );
+    f_ok.set("Spec", TargetRole::Specification, clean_spec);
+    chk.run_target(&f_ok.request).unwrap();
+
+    for (label, decl, expected) in [
+        (
+            "capture-init",
+            "@[init] def Captured.badInit : IO Unit := pure ()\n",
+            "unchecked compiler init override on Captured.badInit in Captured",
+        ),
+        (
+            "capture-builtin-init",
+            "@[builtin_init] def Captured.badBuiltinInit : IO Unit := pure ()\n",
+            "unchecked compiler builtin_init override on Captured.badBuiltinInit in Captured",
+        ),
+    ] {
+        let cap_src =
+            format!("import Model\n{decl}def Captured.program : BitVec 8 := BitVec.ofNat 8 7\n");
+        let err =
+            recompile_and_inspect(&mut chk, &mut f_ok, TargetRole::Capture, "Captured", &cap_src);
+        assert_eq!((err.code, err.phase.as_str()), (1, "target-audit"), "{label}: {err}");
+        assert!(err.message.contains(expected), "{label}: {err}");
+    }
+}
+
 /// Expected source is a convenience for authors, not the root authority. Pure
 /// name resolution cannot replace the proposition constructed by the inspector.
 #[test]
@@ -1326,7 +1472,7 @@ fn headers_rejects_module_system_modifiers_and_lean_lake_and_allows_no_prelude()
     let empty_proof_export = probe_checker.stage().join("proof_export_empty.json");
     fs::write(
         &empty_proof_export,
-        r#"{"schemaVersion":1,"names":[],"levels":[],"exprs":[],"modules":[],"compilerOverrides":{"implementedBy":[],"extern":[],"csimp":[]}}"#,
+        r#"{"schemaVersion":1,"names":[],"levels":[],"exprs":[],"modules":[],"compilerOverrides":{"implementedBy":[],"extern":[],"csimp":[],"export":[],"init":[],"builtinInit":[],"cpass":[],"constantFold":[],"postponedCompile":[]}}"#,
     )
     .unwrap();
     let empty_proof_export_lit = serde_json::to_string(
@@ -1383,7 +1529,11 @@ fn headers_rejects_module_system_modifiers_and_lean_lake_and_allows_no_prelude()
                 "constNames": [3],
                 "constants": [["thm", 3, [], 0, 1, [3]]]
             }],
-            "compilerOverrides": {"implementedBy": [], "extern": [], "csimp": []}
+            "compilerOverrides": {
+                "implementedBy": [], "extern": [], "csimp": [],
+                "export": [], "init": [], "builtinInit": [],
+                "cpass": [], "constantFold": [], "postponedCompile": []
+            }
         }))
         .unwrap(),
     )
@@ -1460,7 +1610,11 @@ fn headers_rejects_module_system_modifiers_and_lean_lake_and_allows_no_prelude()
                     "constants": [["thm", 2, [], 2, 1, [2]]]
                 }
             ],
-            "compilerOverrides": {"implementedBy": [], "extern": [], "csimp": []}
+            "compilerOverrides": {
+                "implementedBy": [], "extern": [], "csimp": [],
+                "export": [], "init": [], "builtinInit": [],
+                "cpass": [], "constantFold": [], "postponedCompile": []
+            }
         }))
         .unwrap(),
     )
@@ -3532,6 +3686,36 @@ fn module_mode_targets_verify_and_enforce_boundary_invariants() {
     let err = dup_nonhelper.run().unwrap_err();
     assert_eq!((err.code, err.phase.as_str()), (2, "target-audit"), "{err}");
     assert!(err.message.contains("already contains 'Shared.dup'"), "{err}");
+
+    // 10. Private imports between `module` targets pass `"target-export"` and
+    //     `"target-audit"`: `Spec` privately imports a `module` `SpecHelper`,
+    //     and `Proof` privately imports a `module` `ExpectedClean`. Neither
+    //     helper is imported publicly anywhere, so a `level := .server`
+    //     re-import rooted at `Proof` or `Spec` would need their missing `.ir`.
+    let mut private_imports = make_module_fixture(
+        "module\nprelude\npublic import Model\nimport SpecHelper\n\
+         @[expose] public section\n\
+         def Spec.specs (p : BitVec 8) : Prop := BitVec.and p p = p\n\
+         end\n",
+        "module\nprelude\npublic import Expected\n\
+         import ExpectedClean\nimport Init.Data.BitVec.Lemmas\n\
+         public theorem Proof.verify : Expected.claim := And.intro rfl BitVec.and_self\n",
+    );
+    private_imports.set(
+        "SpecHelper",
+        TargetRole::Specification,
+        "module\nprelude\npublic import Model\n\
+         public def SpecHelper.same (p : BitVec 8) : BitVec 8 := p\n",
+    );
+    private_imports.set(
+        "ExpectedClean",
+        TargetRole::Expected,
+        "module\nprelude\npublic import Init.Core\n\
+         public theorem ExpectedClean.ok : True := True.intro\n",
+    );
+    let private_report = private_imports.run().unwrap();
+    assert_eq!(private_report["replay"], true);
+    assert_eq!(private_report["exactType"], true);
 }
 
 /// Compiling a `TargetRole::Specification` module passes `-DautoImplicit=false`
@@ -3742,39 +3926,53 @@ fn spec_preflight_and_target_audit_reject_io_debug_dynlib_and_uv() {
 
 /// Neither `"target-export"` nor `"target-audit"` executes `[init]` module
 /// initializers (`loadExts := false`), and `"target-audit"` still catches
-/// non-proof `.source` `@[csimp]` and `@[implemented_by]` overrides directly
-/// from `finalizeImport`-populated `getModuleEntries` without importing a
-/// duplicate metadata environment.
+/// authored `[init]` hooks and non-proof `.source` `@[csimp]` overrides from
+/// the serialized extension entries of each module's artifact parts.
 #[test]
 fn target_export_and_audit_do_not_execute_init_and_catch_source_csimp_overrides() {
-    // 1. `[init]` blocks inside both `ModelAux` (non-proof module imported in
-    //    both `"target-export"` and `"target-audit"`) and `Proof` (imported in
-    //    `"target-export"`) that throw an uncaught IO error if executed must
-    //    never execute during `"target-export"` or `"target-audit"`. Omit
-    //    `prelude` in `ModelAux` and `Proof` (unpinned mode) so `IO` and
-    //    `IO.userError` are in scope without executing `ModelAux` during
-    //    downstream target compilation.
-    let mut f = Fixture::new(
-        "import Expected\n\
-         def proofInit : IO Unit := throw (IO.userError \"PROOF_INIT_EXECUTED\")\n\
-         @[init proofInit] def proofInitVal : Unit := ()\n\
-         theorem Proof.verify : Expected.claim := And.intro rfl BitVec.and_self\n",
-    );
-    f.set(
-        "ModelAux",
-        TargetRole::Model,
-        "def modelInit : IO Unit := throw (IO.userError \"MODEL_INIT_EXECUTED\")\n\
-         @[init modelInit] def modelInitVal : Unit := ()\n",
-    );
-    let mut checker = f.cargo_checker();
-    checker.set_allow_unpinned_lean(true);
-    let report = checker.run_target(&f.request).unwrap();
-    assert_eq!(report["replay"], true, "{report}");
-    assert_eq!(report["exactType"], true, "{report}");
+    // 1. `[init]` blocks inside `Proof` (imported in `"target-export"`) and
+    //    `ModelAux` (non-proof module imported in `"target-audit"`) that throw
+    //    an uncaught IO error if executed must never execute during
+    //    `"target-export"` or `"target-audit"`. Omit `prelude` (unpinned mode)
+    //    so `IO` and `IO.userError` are in scope without executing `ModelAux`
+    //    during downstream target compilation.
+    for (label, use_proof_init, expected_err) in [
+        ("proof", true, "unchecked compiler init override on proofInitVal"),
+        ("model-aux", false, "unchecked compiler init override on modelInitVal"),
+    ] {
+        let proof_src = if use_proof_init {
+            "import Expected\n\
+             def proofInit : IO Unit := throw (IO.userError \"PROOF_INIT_EXECUTED\")\n\
+             @[init proofInit] def proofInitVal : Unit := ()\n\
+             theorem Proof.verify : Expected.claim := And.intro rfl BitVec.and_self\n"
+        } else {
+            "import Expected\n\
+             theorem Proof.verify : Expected.claim := And.intro rfl BitVec.and_self\n"
+        };
+        let mut f = Fixture::new(proof_src);
+        if !use_proof_init {
+            f.set(
+                "ModelAux",
+                TargetRole::Model,
+                "def modelInit : IO Unit := throw (IO.userError \"MODEL_INIT_EXECUTED\")\n\
+                 @[init modelInit] def modelInitVal : Unit := ()\n",
+            );
+        }
+        let mut checker = f.cargo_checker();
+        checker.set_allow_unpinned_lean(true);
+        let err = checker.run_target(&f.request).unwrap_err();
+        assert_eq!((err.code, err.phase.as_str()), (1, "target-audit"), "{label}: {err}");
+        assert!(err.message.contains(expected_err), "{label}: {err}");
+        assert!(
+            !err.message.contains("PROOF_INIT_EXECUTED")
+                && !err.message.contains("MODEL_INIT_EXECUTED"),
+            "{label} executed [init] initializer: {err}"
+        );
+    }
 
     // 2. Non-proof `.source` `@[csimp]` override targeting a logically reached
-    //    helper is caught by `getModuleEntries` in `"target-audit"` without
-    //    requiring a separate `fixedMetadata` environment.
+    //    helper is caught in `"target-audit"` from serialized extension
+    //    entries without requiring a separate `fixedMetadata` environment.
     let mut f_csimp = Fixture::new(
         "prelude\nimport Expected\nimport Init.Data.BitVec.Lemmas\n\
          theorem Proof.verify : Expected.claim := And.intro rfl (And.intro rfl BitVec.and_self)\n",

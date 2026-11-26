@@ -102,7 +102,7 @@ flowchart LR
 | Primitive | TCB location | Property owned | Failure / relaxation mode |
 | :--- | :--- | :--- | :--- |
 | **`ExecSeal`** | [`trusted/cargo-anneal/src/sandbox.rs`](../trusted/cargo-anneal) (shared with [`trusted/audit/`](../trusted/audit)) | Confines target-verification and repository Pass 2 Lean compiler and inspector children (repository Pass 1 relies on syntactic preflight), isolates staging directories, validates single-file promotion (Door 1), and verifies pre-audit integrity (`ArtifactLedger`). | Fail closed (`tool_failed`, exit `2`). Bypassed only via `--allow-unsandboxed-elaboration` (taints receipt). |
-| **`ClaimAudit`** | [`trusted/audit/TrustedBoundary.lean`](../trusted/audit) (exact 6 minimal imports) | Validates headers on all target modules, enforces pure declarative syntax on `Specification` modules only, and performs standalone 2-phase kernel replay (`loadExts := false`). | Fail closed (`proof_failed`, exit `1` for policy; `tool_failed`, exit `2` for kernel/operational error). Optional `--allow-sorry-in-proof` (Proof-only outside Phase 1; always taints). |
+| **`ClaimAudit`** | [`trusted/audit/TrustedBoundary.lean`](../trusted/audit) (21 toolchain imports) | Validates headers on all target modules, enforces pure declarative syntax on `Specification` modules only, and performs standalone 2-phase kernel replay (`loadExts := false`). | Fail closed (`proof_failed`, exit `1` for policy; `tool_failed`, exit `2` for kernel/operational error). Optional `--allow-sorry-in-proof` (Proof-only outside Phase 1; always taints). |
 | **`TaintMonoid`** | [`trusted/cargo-anneal/src/verify.rs`](../trusted/cargo-anneal) | Projects active `--allow-*` relaxation flags and sandbox mode onto Receipt Schema v3 (`status`, `taint_reasons`, `elaboration_sandbox`, `sorry_declarations`, `deferred`). | Uniform Flag-Driven Taint Law: active `--allow-*` flag ⟺ present in `taint_reasons`. |
 
 ## 3. `ExecSeal`: OS containment, staging, Door 1, and `ArtifactLedger`
@@ -417,10 +417,14 @@ verification runs through the pure-Rust Universal NDJSON Comparator
 (`5-init`/`5a`/`5b`/`5-pin`/`5c`, see
 [auditing and comparator](auditing-and-comparator.md)).
 
-`trusted/audit/TrustedBoundary.lean` retains its **exact 6 minimal imports**
-(`Lean.Elab.Import`, `Lean.Parser.Tactic`, `Lean.Replay`, and
-`Lean.Compiler.{ImplementedBy,Extern,CSimp}Attr`), keeping inspector startup at
-`~0.300 s` and avoiding cross-version breakage on rolling Lean toolchains.
+`trusted/audit/TrustedBoundary.lean` uses **21 toolchain imports**
+(`Lean.Elab.Import`, `Lean.Parser.Tactic`, `Lean.Replay`, `Lean.Util.PtrSet`,
+`Lean.Compiler.{ImplementedBy,Extern,Export,Init,CSimp}Attr`,
+`Lean.Compiler.Old`, `Lean.Compiler.LCNF.{Main,Passes,Simp.ConstantFold}`, and
+eight `Lean.Meta.*` structural and equation-lemma helpers). Its compiler
+override checks read only typed compiler-extension handles: they never invoke
+`ofOLeanEntry`, keep `loadExts := false` for verification, and fail visibly at
+inspector compile time if upstream Lean renames a handle.
 
 ### 4.1 Batched `"headers"` (all target modules)
 
@@ -523,18 +527,30 @@ command elaboration, zero tactic allowlist on `proof/`):
   `"quot"`/`"quotSeq"` (`dynamicQuot`/`precheckedQuot`), backed by live
   parse-tree round-trip CI tests.
 
-### 4.3 Unified 2-phase `"target-audit"`
+### 4.3 Unified 2-phase `"target-audit"` (`TrustedBoundary.lean` route)
 
+On the `TrustedBoundary.lean` `"target-export"` / `"target-audit"` route,
 `"target-audit"` runs inside `ExecSeal` with `trustLevel := 0`,
 `plugins := #[]`, and `loadExts := false`, verifying `.olean` v2 headers,
 64 KiB companion base-address chaining, `isModule` consistency against the
 admitted source header, artifact part counts (`1` part and empty `.ir` for
-non-`module`; `1..3` parts and empty `.ir` for `module`), and strictly public
-kernel-relevant compiler-override metadata (`getImplementedBy?`,
-`getExternAttrData?`, `csimpEntries` read directly from
-`finalizeImport`-populated `getModuleEntries` on `env`)—with **no** brittle
-blacklist over internal `ModuleData.entries`
-extension names:
+non-`module`; `1..3` parts and empty `.ir` for `module`), and compiler
+overrides. It rejects `@[implemented_by]`, `@[extern]`, and `@[csimp]` on
+logically reached declarations authored by `Proof` modules
+(`proofExport.overrides`) or other non-foundation/non-library modules, and
+rejects any `@[export]`, `@[init]`, `@[builtin_init]`, `@[cpass]`,
+`ConstantFold` folder, or postponed compilation entry in those modules.
+`collectModuleCompilerOverrides` reads these entries through typed
+compiler-extension handles (`implementedByAttr`, `externAttr`, `CSimp.ext`,
+`exportAttr`, `regularInitAttr`, `builtinInitAttr`, `LCNF.passManagerExt`,
+`ConstantFold.folderExt`, and `LCNF.postponedCompileDeclsExt`) from every
+`.olean*` and `.ir*` part that the importer loads for a module, without a
+second import and without invoking `ofOLeanEntry`. The repository `"audit"`
+and `"correspondence-audit"` passes apply the same scan to `.repo` modules.
+The `--allow-unpinned-lean` `v4.35.0+` comparator route via
+`SpecPreflight.lean` `"target-consts"` currently checks only `implemented_by`,
+`extern`, and `csimp` via minimal sysroot imports. `"target-audit"` runs in two
+phases:
 
 1. **Phase 1 (Claim and whole-specification closure):** Seeds `expectedReached`
    from all five canonical roots (`[expectedName, canonicalRoot, crateCtor,
@@ -665,6 +681,7 @@ Continuous integration and test suites enforce these design invariants:
 | **Custom `linux_userns_pivot` (`unshare` + `pivot_root`) in `cargo-anneal`** | Adds ~150–200 LOC of fragile `unsafe` mount-namespace code to the TCB (false-confidence risk vs. hardened upstream `bwrap`) and still fails identically to `bwrap` (`EROFS` on `/proc/self/uid_map`) inside `nsjail` containers with RO `/proc`. |
 | **`bwrap`-only in `cargo-anneal` (no Tier 2 Landlock/Seccomp)** | Fails inside unmodified `nsjail` CI containers (`EROFS` on `/proc/self/uid_map`), forcing downstream infra to weaken `nsjail` (`/proc` RW) and package `bwrap` in prebuilts or run CI unsandboxed. |
 | **Tier 2 seccomp denylist instead of fail-closed allowlist** | Live red-team probes bypassed a denylist via `shmat`, `*xattrat`, `inotify`, `fcntl(F_SETLEASE)`, and `ioctl(FS_IOC_SETFLAGS)`. A fail-closed dual-arch allowlist closes unknown syscalls by construction. |
-| **Internal `ModuleData.entries` extension blacklist in `"target-audit"`** | Broke every `inductive` declaration (`Lean.Elab.Term.elabAsElim`) and created perpetual breakage across rolling Lean releases. `loadExts := false` plus direct `getModuleEntries` checks (`implemented_by`, `extern`, `csimp`) is strictly cleaner and kernel-exact. |
+| **Opaque string-keyed `ModuleData.entries` extension blacklist across non-core extensions in `"target-audit"`** | Broke every `inductive` declaration (`Lean.Elab.Term.elabAsElim`) and drifted silently across rolling Lean releases. Reading the entries of typed `Lean.Compiler.*` handles from each artifact part with `loadExts := false` leaves inductive and elaboration metadata untouched, calls no `ofOLeanEntry` callback, and fails visibly at compile time on upstream renames. |
+| **Second `importModules (level := .server)` to read `module` companion parts** | Failed with `missing data file` whenever a `module` privately imported another `module` without `.ir` parts (target `Specification` and `Proof` helpers, stripped `.vendorMiri` modules), chose which modules to re-import from the `.olean.private` `isModule` flag, and reloaded the whole import closure. Reading each audited module's parts directly has none of these problems. |
 | **Additive Receipt Schema v2** | Carried a redundant 1-field wrapper object (`elaboration_containment: { os_sandbox }`) and mixed v2/v3 validation semantics to avoid updating two consumers. Bumping cleanly to v3 flattens `elaboration_sandbox` and enforces one uniform taint law. |
 | **macOS `sandbox-exec` backend in TCB** | Deprecated by Apple and unverified in Linux-only CI; failing closed unless `--allow-unsandboxed-elaboration` is explicit avoids untested security theater. |
