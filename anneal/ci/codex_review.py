@@ -506,7 +506,8 @@ CARRY_FORWARD_OVERLAP_PATHS = frozenset({"anneal/trusted/root-manifest.sha256"})
 CARRY_FORWARD_POLICY_PATHS = frozenset({
     ".gemini/styleguide.md", "anneal/.gemini/styleguide.md",
     "anneal/docs/codex-review.md", "anneal/docs/review-policy-design.md",
-    "anneal/docs/trust-model.md", "anneal/ci/codex_review.py",
+    "anneal/docs/rustc-workarounds.md", "anneal/docs/trust-model.md",
+    "anneal/ci/codex_review.py",
     "anneal/META_PRINCIPLES.md", "anneal/PRINCIPLES.md",
     "anneal/THREAT_MODEL.md",
 })

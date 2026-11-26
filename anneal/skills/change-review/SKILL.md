@@ -84,22 +84,22 @@ integration, publication, and stack locking or rebasing.
   any triggered Pass 2 in [`trust-review`](../trust-review/SKILL.md) before the
   general pass. In the general pass, audit correctness, error and boundary
   handling, cross-file contracts, test adequacy, maintainability, and manual
-  conventions CI does not enforce (Fuchsia copyright headers on all new code
-  and non-`SKILL.md` Markdown files, 80-column wrapping, relative links, and
-  heading anchors). Check the **Human review surface** in
-  [`AGENTS.md`](../../AGENTS.md#code-review-rules): verify that the Review
-  Receipt comment's `Human review surface` block (or branch-only task handoff)
-  accurately lists every changed surface (including indirect helpers,
-  predicates, constants, types, or trait impls a stated spec transitively
-  depends on) and intentional policy relaxation (or `none` when untouched,
-  completed before marking a draft PR ready for review), that PR descriptions
-  reuse the commit (or squash) message verbatim (unwrapped for Markdown), that
-  relevant commit bodies (or the squash message) explain what changed, why, and
-  any intentional rule relaxation or tightening, and that every relaxation
-  justification is sound. Any omission, mischaracterization, or unsound
-  relaxation blocks merge or ready-for-review. For edits to governing docs,
-  skills, review rules, or `AGENTS.md`, judge against the base rules (e.g. via
-  `git show <target_base>:anneal/AGENTS.md`) for conflicts, missing routing,
+  conventions CI does not enforce (Fuchsia copyright headers on all new code and
+  non-`SKILL.md` Markdown files, 80-column wrapping, relative links, heading
+  anchors, and `RUSTC-WORKAROUND` anchors on toolchain workarounds). Check the
+  **Human review surface** in [`AGENTS.md`](../../AGENTS.md#code-review-rules):
+  verify that the Review Receipt comment's `Human review surface` block (or
+  branch-only task handoff) accurately lists every changed surface (including
+  indirect helpers, predicates, constants, types, or trait impls a stated spec
+  transitively depends on) and intentional policy relaxation (or `none` when
+  untouched, completed before marking a draft PR ready for review), that PR
+  descriptions reuse the commit (or squash) message verbatim (unwrapped for
+  Markdown), that relevant commit bodies (or the squash message) explain what
+  changed, why, and any intentional rule relaxation or tightening, and that
+  every relaxation justification is sound. Any omission, mischaracterization, or
+  unsound relaxation blocks merge or ready-for-review. For edits to governing
+  docs, skills, review rules, or `AGENTS.md`, judge against the base rules (e.g.
+  via `git show <target_base>:anneal/AGENTS.md`) for conflicts, missing routing,
   unintended authority expansion, or weakened checks.
 - **Documentation review:**
   <!-- docs-reviewer -->

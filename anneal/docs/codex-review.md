@@ -136,8 +136,8 @@ gate whenever the identity changes:
        touching the review rules (any `AGENTS.md`, `AGENTS.override.md`,
        `CLAUDE.md`, or `GEMINI.md`, `.gemini/styleguide.md` files, `skills/`
        and `.github/` trees, this document, `review-policy-design.md`,
-       `trust-model.md`, the principles and threat model docs, or
-       `ci/codex_review.py`) or any file the PR touches, except
+       `rustc-workarounds.md`, `trust-model.md`, the principles and threat
+       model docs, or `ci/codex_review.py`) or any file the PR touches, except
        `anneal/trusted/root-manifest.sha256`, whose lines each name their
        file and digest: if the base changed it, only its blob may differ.
 

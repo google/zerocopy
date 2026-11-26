@@ -1036,6 +1036,7 @@ class ReviewSurfaceTests(RepoTestCase):
                      "anneal/trusted/lean/lake-manifest.json",
                      ".github/workflows/anneal.yml", "skills/x/SKILL.md",
                      "anneal/docs/trust-model.md", "rust-toolchain.toml",
+                     "anneal/docs/rustc-workarounds.md",
                      "zerocopy/proofs/01_x/Spec.lean",
                      "zerocopy/proofs/01_x/request.json",
                      "zerocopy/proofs/01_x/SpecHelpers.lean",

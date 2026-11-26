@@ -40,6 +40,7 @@ the single repository-wide ownership map:
 | [`skills/source-control/SKILL.md`](../skills/source-control/SKILL.md) | Commit sizing, bottom-up stack self-containment, commit messages, delegated-worker quarantine, PR/stack publication and readiness, and stack locking/rebasing |
 | [`docs/codex-review.md`](codex-review.md) | Merge gates (including Gate 2 cross-family review), live ruleset state, read-only `ci/codex_review.py` diagnostics, and re-enablement criteria |
 | [`docs/review-policy-design.md`](review-policy-design.md) | Maintainer architecture contract, drift checks, non-bootstrap self-modification rule, and empirical evaluation methodology |
+| [`docs/rustc-workarounds.md`](rustc-workarounds.md) | Upstream `rustc` workaround tracking: inclusion criteria, code anchors, public/private boundary, evaluation rubric, sub-issue template, and compiler-bump retirement checklist |
 | [`skills/README.md`](../skills/README.md) | Index of Anneal policy skills, author routing table, architecture, `trusted/` commenting and dependency conventions, reference-corpus guidance, and pointer to shared [`../../skills/README.md`](../../skills/README.md) |
 
 ### Parity between Code Review Rules and skill hubs

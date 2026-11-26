@@ -99,6 +99,7 @@ incrementally.
 | [MIR correspondence strategy](mir-correspondence-strategy.md) | Current | Proof strategy and simulation obligations for MIR correspondence. |
 | [Lean-Miri provenance](lean-miri-provenance.md) | Current | Provenance and patching policy for `vendor/lean-miri/`. |
 | [Review policy design](review-policy-design.md) | Current | Contributor review rules and policy-placement structure. |
+| [Upstream `rustc` workarounds](rustc-workarounds.md) | Current | Tracking, upstream evaluation, and compiler-bump retirement of workarounds for upstream Rust toolchain (`rustc`, `rustdoc`, `cargo`, and standard-library) limitations. |
 | [Gate 2 review guide](codex-review.md) | Current | Automated review gates and standalone diagnostic evaluator. |
 
 ### Target architecture and interop docs
