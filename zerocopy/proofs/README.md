@@ -10,7 +10,7 @@ those terms. -->
 
 > [!WARNING]
 > **This is alpha software!** Anneal (`0.2.0-alpha`, Stage 0) has not yet
-> completed an independent TCB audit. The units below verify **401 distinct
+> completed an independent TCB audit. The units below verify **441 distinct
 > currently capturable scalar, unit, layout, and empty sentinel
 > functions/monomorphizations** in `../src/` under
 > Profile v1 and **4 byte-slice functions** under the experimental Profile v2
@@ -31,7 +31,7 @@ those terms. -->
 [threat-doc]: ../../anneal/THREAT_MODEL.md
 
 This directory contains out-of-line Anneal formal specifications and
-kernel-checked Lean 4 proofs covering those 401 distinct Profile v1 items
+kernel-checked Lean 4 proofs covering those 441 distinct Profile v1 items
 (scalar, unit, layout, and marker-sentinel functions and
 monomorphizations) and 4 verbatim Profile v2 byte-slice items in `../src/`.
 
@@ -70,6 +70,7 @@ attributes across compiled sources) and every proof unit in
 | `11_primitive_bit_validity` | 77 trait sealing markers for the 15 non-float primitive types in `impls.rs` (`()`, `bool`, `char`, `u8`–`u128`, `i8`–`i128`, `usize`, `isize` across `Immutable`, `TryFromBytes`, `FromZeros`, `FromBytes`, `IntoBytes`, `Unaligned`) | Selected 77-body MIR sealing-marker contracts (`ReturnsTotal`); endian-parametric model-side `Trusted.MirSemantics.Bytes` bit-validity theorems (`IsFromZeros`, `IsFromBytes`, `IsIntoBytes`, `IsUnaligned`, `bool`/`char` `TryFromBytes` conditions; `is_safe` MIR bodies not captured) plus negative `FromBytes` (`bool` `0x02`, `char` `0xD800`) and `Unaligned` model refutations | `["propext"]` |
 | `12_nonzero_niche_bit_validity` | 88 selected trait sealing markers for the 12 `NonZero<*>` and 12 `Option<NonZero<*>>` integer types in `impls.rs:226-295` (`u8`–`u128`, `i8`–`i128`, `usize`, `isize` across `Immutable`, `TryFromBytes`, `FromZeros`, `FromBytes`, `IntoBytes`, `Unaligned`) | Selected 88-body MIR sealing-marker contracts (`ReturnsTotal` and arbitrary-`MemoryState` stepping); endian- and signedness-parametric model-side `Trusted.MirSemantics.Bytes` non-zero characterization (`is_safe` MIR bodies not captured), `NonZero<*>` `FromZeros`/`FromBytes` model refutations and `IntoBytes` no-padding law, `Option<NonZero<*>>` Niche Partition Theorem, and `.i8` vs. multi-byte alignment model refutations | `["propext"]` |
 | `13_float_str_and_atomic_bit_validity` | 61 selected trait sealing markers for `f32`, `f64` (`impls.rs:81-82`), `str` (`impls.rs:165-180`), and `AtomicBool` plus `Atomic{U,I}{8,16,32,64,size}` (`impls.rs:454-609`, excluding `KnownLayout`, `AtomicPtr<T>`, and feature-gated `f16`/`f128`/`simd`) | Selected 61-body MIR sealing-marker contracts (`ReturnsTotal` and arbitrary-`MemoryState` stepping); Spec-local IEEE `f32`/`f64` `AllocByte` bit-validity/layout definitions (`MirTy` lowers `Float`, `Str`, and ADTs to `.unsupported`; `is_safe` MIR bodies not captured), Spec-local RFC 3629 UTF-8 DFA/grammar equivalence (`StrFromZerosSound`, `StrIntoBytesSound`, and `[0xFF]`/`[0x80]`/`[0xC0, 0x80]`/`U+D800` `FromBytes` refutations), `Trusted.MirSemantics` bit-validity proofs for `Atomic*` backing scalars (linked via the `Spec`-local same-size/bit-validity correspondence `atomicBackingMirTy`, incl. `0x02` `FromBytes` refutation), the 1-byte-atomic `Unaligned` argument (a 1-byte layout whose size is a multiple of its alignment has alignment 1), primitive `w ≠ .i8` alignment above 1, and Spec-local `ContainsUnsafeCell` `ImmutableSound` classification | `["propext"]` |
+| `14_known_layout_and_dst_layout` | 41 selected `KnownLayout` trait sealing markers (`11` concrete `Atomic*` types in `impls.rs:405,463`, `29` primitive and `NonZero<*>` types in `lib.rs:1221-1227`, and `str` in `lib.rs:1267-1270`, excluding generic `impls` such as `AtomicPtr<T>`, `LAYOUT` constants, `raw_from_ptr_len`/`pointer_to_metadata`, and feature-gated `f16`/`f128`/`simd`) | Selected 41-body MIR sealing-marker contracts (`isUnsafe = false`, `argumentCount = 0`, `ReturnsTotal` returning `()`, and arbitrary-`MemoryState` stepping); model-side 64-bit `DstLayout`/`TrailingSliceLayout`/`RoundingAlignAndPhase` theorems grounded in `M_anneal`'s 64-bit `isize`/`usize` layout (`layout.rs`/`util/mod.rs` Rust MIR bodies not captured): power-of-two bit-hack iff, `RoundingAlignAndPhase::{new,components,align}` round-trip and Kani postconditions, `size_offset` OR/ADD equivalence, `util::{padding_needed_for,round_down_to_next_multiple_of_alignment}`, `padding_for_elems` fast-vs-naive equivalence and `align ∣ elem_size` invariance, `max_trailing_bytes` Kani agreement and iff optimality, and `size_for_elems`/`size_for_elems_unchecked` Kani agreement and overflow-freedom | `["propext"]` |
 
 ## Reproducing Locally
 
