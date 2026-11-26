@@ -18,7 +18,8 @@ def buggyAddIdentity : String := "rust-path-v1::buggy_add_u8"
 /-- `buggy_add_u8` returns the wrapping increment without diverging, and
 `BodyVerifiedV2` additionally requires that no execution faults. This holds
 only without overflow checks: with them, `x = 255` fails the overflow
-`Assert`, which faults. -/
+`Assert`, which faults under `--panic unwind` and aborts under
+`--panic abort`, so the body does not return. -/
 def property (p : Program) : Prop :=
   match Trusted.MirSemantics.getElem? p.bodies 0 with
   | none => False

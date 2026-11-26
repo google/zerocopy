@@ -1796,7 +1796,7 @@ theorem hasEscapingRodataPtr_false_of_refsStay {cm : CallerMemory}
 explicit non-escaping `.rodata` witness. -/
 theorem evalTerminatorV2_return_ok_of_noRodata {body : Body} {bb : BasicBlock}
     {frame : FrameState} {mem : MemoryState} {callerMem : CallerMemory}
-    {ps : PanicStrategy} {hLocal : Bool}
+    {ps : PanicStrategy} {hLocal : Bool} {oc : Bool}
     {retTy : MirTy} {retVal : Val}
     (hTerm : bb.terminator = .return_)
     (hCleanup : bb.cleanup = false)
@@ -1807,7 +1807,7 @@ theorem evalTerminatorV2_return_ok_of_noRodata {body : Body} {bb : BasicBlock}
     (hStay : refsStayInCallerMem callerMem retTy retVal = true)
     (hValid : refsValidInMem mem retTy retVal = true)
     (hDisj : spansPairwiseDisjoint (refAccessSpans retTy retVal) = true) :
-    evalTerminatorV2 body bb frame mem callerMem ps hLocal =
+    evalTerminatorV2 body bb frame mem callerMem ps hLocal oc =
       .done (.returned ⟨retVal, extractCallerMemory callerMem mem⟩) := by
   unfold evalTerminatorV2
   rw [hTerm]
@@ -1822,7 +1822,7 @@ return type contains no raw pointers (`tyHasRawPtrV2 retTy = false`, discharged
 by `rfl` for concrete types). -/
 theorem evalTerminatorV2_return_ok {body : Body} {bb : BasicBlock}
     {frame : FrameState} {mem : MemoryState} {callerMem : CallerMemory}
-    {ps : PanicStrategy} {hLocal : Bool}
+    {ps : PanicStrategy} {hLocal : Bool} {oc : Bool}
     {retTy : MirTy} {retVal : Val}
     (hTerm : bb.terminator = .return_)
     (hCleanup : bb.cleanup = false)
@@ -1833,7 +1833,7 @@ theorem evalTerminatorV2_return_ok {body : Body} {bb : BasicBlock}
     (hValid : refsValidInMem mem retTy retVal = true)
     (hDisj : spansPairwiseDisjoint (refAccessSpans retTy retVal) = true)
     (hNoRaw : tyHasRawPtrV2 retTy = false := by rfl) :
-    evalTerminatorV2 body bb frame mem callerMem ps hLocal =
+    evalTerminatorV2 body bb frame mem callerMem ps hLocal oc =
       .done (.returned ⟨retVal, extractCallerMemory callerMem mem⟩) :=
   evalTerminatorV2_return_ok_of_noRodata hTerm hCleanup hRetTy hRetSlot
     (hasEscapingRodataPtr_false_of_refsStay hStay hNoRaw) hStay hValid hDisj

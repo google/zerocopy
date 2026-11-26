@@ -20,8 +20,9 @@ def saturatingInc (x : Nat) : Nat :=
   if x < 255 then x + 1 else 255
 
 /-- The body was captured with `-Coverflow-checks=yes` and returns the
-saturating increment without diverging. `BodyVerifiedV2` additionally
-requires that no execution faults, so no overflow check can fire. -/
+saturating increment without diverging. A failed overflow check would fault
+under `--panic unwind` or abort under `--panic abort` instead of returning,
+so no overflow check can fire. -/
 def property (p : Program) : Prop :=
   p.overflowChecks = true ∧
   match Trusted.MirSemantics.getElem? p.bodies 0 with

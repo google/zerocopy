@@ -1300,7 +1300,7 @@ MIR_SEMANTICS_GUARDS: tuple[MirSemanticsGuard, ...] = (
         needs_wf_helper=False,
     ),
     # ------------------------------------------------------------------
-    # Profile v2 memory, step, type-admission, and boundary guards (46 guards)
+    # Profile v2 memory, step, type-admission, and boundary guards (47 guards)
     # ------------------------------------------------------------------
     MirSemanticsGuard(
         guard_id="mem_v2_ptr_add_null_nonzero",
@@ -2056,33 +2056,29 @@ MIR_SEMANTICS_GUARDS: tuple[MirSemanticsGuard, ...] = (
         guard_id="step_assert_optional_overflow_unsupported",
         target_file="trusted/lean/Trusted/MirSemantics/Step.lean",
         target_module="Trusted/MirSemantics/Step",
-        description="evalAssertFailure keeps optional overflow assertions as .fault .unsupported",
-        anchor=(
-            "  | .boundsCheck | .overflow .div | .overflow .rem\n"
-            "  | .divByZero | .remByZero =>\n"
-            "    if hasLocalPanicHandler then\n"
-            "      .fault .unsupported\n"
-            "    else\n"
-            "      match panicStrategy, unwind with\n"
-            "      | .abort, .continue_ | .abort, .unreachable | .abort, .terminate =>\n"
-            "        .done (.aborted callerMem)\n"
-            "      | _, _ => .fault .unsupported\n"
-            "  | .overflow _ | .overflowNeg | .unsupported => .fault .unsupported"
+        description=(
+            "evalAssertFailure keeps optional overflow assertions as "
+            ".fault .unsupported without overflowChecks"
         ),
-        replacement=(
-            "  | .boundsCheck | .overflow _ | .overflowNeg\n"
-            "  | .divByZero | .remByZero =>\n"
-            "    if hasLocalPanicHandler then\n"
-            "      .fault .unsupported\n"
-            "    else\n"
-            "      match panicStrategy, unwind with\n"
-            "      | .abort, .continue_ | .abort, .unreachable | .abort, .terminate =>\n"
-            "        .done (.aborted callerMem)\n"
-            "      | _, _ => .fault .unsupported\n"
-            "  | .unsupported => .fault .unsupported"
-        ),
+        anchor="    if !overflowChecks || hasLocalPanicHandler then",
+        replacement="    if hasLocalPanicHandler then",
         fixture_module="StepRefutations",
         theorem_name="refute_step_assert_optional_overflow_unsupported",
+    ),
+    MirSemanticsGuard(
+        guard_id="step_assert_checked_overflow_local_handler_unsupported",
+        target_file="trusted/lean/Trusted/MirSemantics/Step.lean",
+        target_module="Trusted/MirSemantics/Step",
+        description=(
+            "evalAssertFailure keeps checked overflow assertions as "
+            ".fault .unsupported under a crate-local #[panic_handler]"
+        ),
+        anchor="    if !overflowChecks || hasLocalPanicHandler then",
+        replacement="    if !overflowChecks then",
+        fixture_module="StepRefutations",
+        theorem_name=(
+            "refute_step_assert_checked_overflow_local_handler_unsupported"
+        ),
     ),
     MirSemanticsGuard(
         guard_id="step_assert_local_panic_handler_unsupported",

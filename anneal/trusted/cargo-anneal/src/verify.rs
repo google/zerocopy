@@ -3614,13 +3614,23 @@ fn run<Out: std::io::Write + Send, ErrOut: std::io::Write + Send>(
     if request.compilation.panic == PanicStrategy::Abort
         && !manifest.program.has_local_panic_handler
     {
-        assumptions.push(
+        // With `--overflow-checks`, `evalAssertFailure` also aborts on failed
+        // optional overflow checks, so the receipt must say so.
+        assumptions.push(if request.compilation.overflow_checks {
+            "--panic abort models failed non-optional safe assertions and, under \
+             --overflow-checks, failed overflow checks as .aborted, \
+             meaning control entered the panic runtime and never returns to the caller; \
+             panic hooks and handlers (including downstream #![no_std] binary \
+             #[panic_handler]s) are unverified and may abort or diverge, and only \
+             caller-memory effects before the panic are modeled; a build that elides \
+             the overflow checks wraps instead of aborting"
+        } else {
             "--panic abort models failed non-optional safe assertions as .aborted, \
              meaning control entered the panic runtime and never returns to the caller; \
              panic hooks and handlers (including downstream #![no_std] binary \
              #[panic_handler]s) are unverified and may abort or diverge, and only \
-             caller-memory effects before the panic are modeled",
-        );
+             caller-memory effects before the panic are modeled"
+        });
     }
     if active_sandbox == ActiveSandbox::LinuxLandlockSeccomp {
         assumptions.push(

@@ -1004,7 +1004,8 @@ theorem evalCharSwitchBranchesComp_eq (discr : Char) (otherwise : BasicBlockId)
 /-- Computable mirror of `Trusted.MirSemantics.evalAssertFailure`. -/
 @[expose] def evalAssertFailureComp (msg : AssertKind)
     (panicStrategy : PanicStrategy) (unwind : UnwindAction)
-    (callerMem : CallerMemory) (hasLocalPanicHandler : Bool := true) :
+    (callerMem : CallerMemory) (hasLocalPanicHandler : Bool := true)
+    (overflowChecks : Bool := false) :
     StepResult State TerminalOut :=
   match msg with
   | .misalignedPtrDeref | .nullPtrDeref => .fault .undefined
@@ -1017,16 +1018,26 @@ theorem evalCharSwitchBranchesComp_eq (discr : Char) (otherwise : BasicBlockId)
       | .abort, .continue_ | .abort, .unreachable | .abort, .terminate =>
         .done (.aborted callerMem)
       | _, _ => .fault .unsupported
-  | .overflow _ | .overflowNeg | .unsupported => .fault .unsupported
+  | .overflow .add | .overflow .sub | .overflow .mul | .overflow .shl
+  | .overflow .shr | .overflowNeg =>
+    if !overflowChecks || hasLocalPanicHandler then
+      .fault .unsupported
+    else
+      match panicStrategy, unwind with
+      | .abort, .continue_ | .abort, .unreachable | .abort, .terminate =>
+        .done (.aborted callerMem)
+      | _, _ => .fault .unsupported
+  | .overflow _ | .unsupported => .fault .unsupported
 
 /-- Agreement between `evalAssertFailureComp` and `evalAssertFailure`. -/
 theorem evalAssertFailureComp_eq (msg : AssertKind)
     (panicStrategy : PanicStrategy) (unwind : UnwindAction)
-    (callerMem : CallerMemory) (hasLocalPanicHandler : Bool := true) :
+    (callerMem : CallerMemory) (hasLocalPanicHandler : Bool := true)
+    (overflowChecks : Bool := false) :
     evalAssertFailureComp msg panicStrategy unwind callerMem
-        hasLocalPanicHandler =
+        hasLocalPanicHandler overflowChecks =
       evalAssertFailure msg panicStrategy unwind callerMem
-        hasLocalPanicHandler := rfl
+        hasLocalPanicHandler overflowChecks := rfl
 
 /-- Computable mirror of `Trusted.MirSemantics.evalTerminator`. -/
 @[expose] def evalTerminatorComp (body : Body) (bb : BasicBlock)

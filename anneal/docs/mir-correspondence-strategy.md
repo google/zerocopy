@@ -742,11 +742,12 @@ four outcome cases:
    mutations); Pass 2 `lean-miri` correspondence
    (`CanaryD17AssertPanicAbortClaim`) currently covers only Profile v1 with
    empty `callerMem`, while a Profile v2 / non-empty-`callerMem` simulation
-   proof is not yet implemented. Crates with a crate-local `#[panic_handler]`,
-   `UnwindAction::Terminate` in general, optional overflow checks (whether
-   elided under `-Coverflow-checks=no` or retained under `--overflow-checks`),
-   and abort intrinsics remain unmodeled or fail closed as
-   `FaultKind.unsupported` (covered by Case 1).
+   proof is not yet implemented. In Profile v2, failed optional overflow
+   checks retained under `--overflow-checks` (`Program.overflowChecks`) abort
+   the same way; Pass 2 does not yet cover them. Crates with a crate-local
+   `#[panic_handler]`, `UnwindAction::Terminate` in general, optional overflow
+   checks elided under `-Coverflow-checks=no`, and abort intrinsics remain
+   unmodeled or fail closed as `FaultKind.unsupported` (covered by Case 1).
 4. **Diverging executions (paired $M_{\text{ref}} \to M_{\text{anneal}}$;
    bidirectional whenever reverse totality holds):** For every choice-coupled
    pair of valid executions, whenever the $M_{\text{ref}}$ execution

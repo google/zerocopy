@@ -190,9 +190,11 @@ the MIR semantic profile version `mirProfileVersion`, the capture scope
 3. **Runtime overflow checks (`overflowChecks`):**
    `overflowChecks` records whether `rustc` lowered the program with
    `-Coverflow-checks=yes`, which guards each checked `+`, `-`, `*`, `<<`,
-   `>>`, and unary `-` with an `Assert` terminator. The semantics does not read
-   it, since a failed `Assert` faults either way; it lets a specification state
-   which compilation it describes.
+   `>>`, and unary `-` with an `Assert` terminator. `evalStepV2` reads it: a
+   failed optional overflow check aborts under `--panic abort` (as the other
+   safe panics do) only when `overflowChecks = true`, because codegen elides
+   such checks when overflow checks are off. It also lets a specification
+   state which compilation it describes.
 
 **Producer obligations:** `Program.pointerWidthBits`,
 `Program.mirProfileVersion`, and `Program.scope` carry no defaults so every

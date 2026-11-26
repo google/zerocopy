@@ -613,7 +613,8 @@ theorem positive_step_v2_partial_tuple_moves :
   ⟨rfl, rfl, rfl⟩
 
 /-- `buggy_add_u8(x: u8) -> u8 { x + 1 }` as captured under
-`-Coverflow-checks=yes --panic abort`. -/
+`-Coverflow-checks=yes --panic abort` (hence the `.unreachable` unwind
+action). -/
 noncomputable def bodyOverflowAddV2 : Body := {
   argumentCount := 1
   locals := [.int .i8 false, .int .i8 false, .int .i8 false, overflowPairU8]
@@ -636,7 +637,9 @@ noncomputable def bodyOverflowAddV2 : Body := {
   identity := "guard_mutation::overflow_add_v2"
 }
 
-/-- Profile v2 program wrapping `bodyOverflowAddV2`. -/
+/-- Profile v2 program wrapping `bodyOverflowAddV2`, with overflow checks and
+the default `.unwind` panic strategy, under which a failed overflow assert
+faults rather than aborting. -/
 noncomputable def progOverflowAddV2 : Program := {
   scope := .unit
   pointerWidthBits := 64
@@ -1383,15 +1386,41 @@ theorem refute_step_v2_assert_abort_extract_caller_mem :
      | .error _ => False) :=
   rfl
 
-/-- Guard `step_assert_optional_overflow_unsupported`: under `--panic abort`,
-optional overflow checks (`.overflow .add` and `.overflowNeg`) stay
-`.fault .unsupported` rather than aborting cleanly. -/
+/-- Guard `step_assert_optional_overflow_unsupported`: under `--panic abort`
+and without `overflowChecks`, optional overflow checks (`.overflow .add` and
+`.overflowNeg`) stay `.fault .unsupported` rather than aborting cleanly,
+because codegen elides them when overflow checks are off. -/
 theorem refute_step_assert_optional_overflow_unsupported :
     evalAssertFailure (.overflow .add) .abort .unreachable
         queryEmpty.callerMem false = .fault .unsupported ∧
       evalAssertFailure .overflowNeg .abort .unreachable
         queryEmpty.callerMem false = .fault .unsupported :=
   ⟨rfl, rfl⟩
+
+/-- Guard `step_assert_checked_overflow_local_handler_unsupported`: with
+`overflowChecks` but a crate-local `#[panic_handler]`, a failed checked overflow
+assertion stays `.fault .unsupported` even under `--panic abort`. -/
+theorem refute_step_assert_checked_overflow_local_handler_unsupported :
+    evalAssertFailure (.overflow .add) .abort .unreachable
+        queryEmpty.callerMem true true = .fault .unsupported ∧
+      evalAssertFailure .overflowNeg .abort .unreachable
+        queryEmpty.callerMem true true = .fault .unsupported :=
+  ⟨rfl, rfl⟩
+
+/-- Anti-overreach canary for the two guards above: with `overflowChecks`, no
+crate-local `#[panic_handler]`, and `--panic abort`, a failed checked overflow
+assertion aborts with the caller memory, while under `--panic unwind` it still
+faults. -/
+theorem positive_step_assert_checked_overflow_aborts :
+    evalAssertFailure (.overflow .add) .abort .unreachable
+        queryEmpty.callerMem false true =
+      .done (.aborted queryEmpty.callerMem) ∧
+      evalAssertFailure .overflowNeg .abort .continue_
+        queryEmpty.callerMem false true =
+        .done (.aborted queryEmpty.callerMem) ∧
+      evalAssertFailure (.overflow .shl) .unwind .unreachable
+        queryEmpty.callerMem false true = .fault .unsupported :=
+  ⟨rfl, rfl, rfl⟩
 
 /-- Guard `step_assert_local_panic_handler_unsupported`: when a crate defines a
 crate-local `#[panic_handler]` (`hasLocalPanicHandler = true`), failing safe
