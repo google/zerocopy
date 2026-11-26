@@ -42,6 +42,7 @@ class CiWorkflowManifestGuardTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         cls.runner_script = (SOURCE / "run_anneal_check.sh").read_text()
+        cls.pack_script = (SOURCE / "pack_omnibus_archive.sh").read_text()
         cls.manifest_fn = extract_bash_function(
             cls.runner_script, "verify_root_tcb_manifest"
         )
@@ -289,6 +290,7 @@ class CiWorkflowManifestGuardTests(unittest.TestCase):
             "anneal-sandbox-aarch64",
             "anneal-audit",
             "anneal-guard-mutation",
+            "anneal-ws-meta",
             "anneal-ws-test",
             "anneal-installed-smoke",
         )
@@ -305,6 +307,7 @@ class CiWorkflowManifestGuardTests(unittest.TestCase):
             "anneal-ci-tests",
             "anneal-audit",
             "anneal-guard-mutation",
+            "anneal-ws-meta",
             "anneal-ws-test",
             "anneal-installed-smoke",
         ):
@@ -432,7 +435,7 @@ class CiWorkflowManifestGuardTests(unittest.TestCase):
                 self.runner_script,
             )
 
-        for mode_header in ("sandbox)", "audit)", "ws-test)", "installed-smoke)"):
+        for mode_header in ("sandbox)", "audit)", "ws-meta)", "ws-test)", "installed-smoke)"):
             idx = self.runner_script.index(f"  {mode_header}\n")
             end = self.runner_script.index("\n    ;;", idx)
             window = self.runner_script[idx:end]
@@ -483,8 +486,8 @@ class CiWorkflowManifestGuardTests(unittest.TestCase):
         )
         self.assertIn("--lib --target wasm32-unknown-unknown", clippy)
         self.assertIn("--test cli --test inspect", clippy)
-        ws_test = self._runner_mode("ws-test")
-        self.assertIn("--test cli --test inspect", ws_test)
+        ws_meta = self._runner_mode("ws-meta")
+        self.assertIn("--test cli --test inspect", ws_meta)
 
     def test_installed_smoke_package_stages_generated_bundle_in_scratch(self):
         # `#4244` and `#4341` generate `bundled_resources.rs` and
@@ -520,9 +523,13 @@ class CiWorkflowManifestGuardTests(unittest.TestCase):
         )
         self.assertEqual(stage.count('"${FULL_OPT_ARGS[@]}"'), 2)
         # The checked-in generated file is gone; provenance comes from the
-        # shared renderer instead of scraping Rust source.
+        # shared renderer invoked via `pack_omnibus_archive.sh` instead of
+        # scraping Rust source.
+        self.assertIn("build_omnibus_archive", window)
+        self.assertIn("ci/pack_omnibus_archive.sh", self.runner_script)
         self.assertNotIn("src/bundled_resources.rs", self.runner_script)
-        self.assertIn("ci/render_correspondence_provenance.py", self.runner_script)
+        self.assertNotIn("src/bundled_resources.rs", self.pack_script)
+        self.assertIn("ci/render_correspondence_provenance.py", self.pack_script)
 
 
 class PrHygieneWorkflowTests(unittest.TestCase):
