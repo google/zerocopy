@@ -102,6 +102,7 @@ incrementally.
 | [Lean-Miri provenance](lean-miri-provenance.md) | Current | Provenance and patching policy for `vendor/lean-miri/`. |
 | [Review policy design](review-policy-design.md) | Current | Contributor review rules and policy-placement structure. |
 | [Upstream `rustc` workarounds](rustc-workarounds.md) | Current | Tracking, upstream evaluation, and compiler-bump retirement of workarounds for upstream Rust toolchain (`rustc`, `rustdoc`, `cargo`, and standard-library) limitations. |
+| [Two-phase soundness bug management](two-phase-bug-management.md) | Current | Fail-closed Phase-0 tripwires, public GitHub issue lifecycle, `Trusted.MirSemantics` fallback runbooks, and `tree` CI gate; see per-class guides for [differential/itree](bug-management/itree-and-differential.md), [correspondence](bug-management/correspondence-divergences.md), and [red-team escapes](bug-management/redteam-and-tcb-escapes.md). |
 | [Gate 2 review guide](codex-review.md) | Current | Automated review gates and standalone diagnostic evaluator. |
 | [Linear arithmetic certifier](farkas-cert-gen.md) | Current | Synthesizes `Anneal.LinearArith` Farkas and Chvatal-Gomory certificates. |
 

@@ -38,6 +38,7 @@ mod lean;
 mod mono;
 mod publication;
 mod shard;
+mod tripwires;
 
 use std::collections::{BTreeMap, BTreeSet};
 use std::env;
