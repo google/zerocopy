@@ -2086,4 +2086,77 @@ mod tests {
             "unexpected error: {err_theory}"
         );
     }
+
+    #[test]
+    fn scan_lean_tree_enforces_root_type_allowlists_idents_and_empty_umbrella_rules() {
+        let tmp = tempfile::tempdir().unwrap();
+
+        // 1. A valid `"Trusted"` tree permits `lean-toolchain` and
+        // `foundation-lock.json` alongside `Trusted.lean` and submodules.
+        let trusted_ok = tmp.path().join("trusted-ok");
+        fs::create_dir_all(trusted_ok.join("Trusted")).unwrap();
+        fs::write(trusted_ok.join("Trusted.lean"), b"prelude\n").unwrap();
+        fs::write(trusted_ok.join("Trusted/Core.lean"), b"prelude\n").unwrap();
+        fs::write(trusted_ok.join("lean-toolchain"), b"leanprover/lean4:v4.34.1\n").unwrap();
+        fs::write(trusted_ok.join("foundation-lock.json"), b"{}\n").unwrap();
+        let mods = scan_lean_tree(&trusted_ok, "Trusted").unwrap();
+        assert_eq!(
+            mods.keys().cloned().collect::<Vec<_>>(),
+            vec!["Trusted".to_string(), "Trusted.Core".to_string()]
+        );
+
+        // 2. A regular non-symlink file passed as `root` fails closed with
+        // policy code `1`.
+        let file_root = tmp.path().join("not-a-dir");
+        fs::write(&file_root, b"plain file").unwrap();
+        let err_file_root = scan_lean_tree(&file_root, "Trusted").unwrap_err();
+        assert_eq!(err_file_root.code, 1);
+        assert_eq!(err_file_root.phase, "snapshot");
+        assert!(
+            err_file_root.message.contains("expected regular source directory"),
+            "unexpected error: {err_file_root}"
+        );
+
+        // 3. A `.lean` file under `Trusted/` with an invalid Lean identifier
+        // segment fails closed even though its prefix matches `"Trusted"`.
+        let bad_ident = tmp.path().join("trusted-bad-ident");
+        fs::create_dir_all(bad_ident.join("Trusted")).unwrap();
+        fs::write(bad_ident.join("Trusted.lean"), b"prelude\n").unwrap();
+        fs::write(bad_ident.join("Trusted/bad-name.lean"), b"prelude\n").unwrap();
+        let err_bad_ident = scan_lean_tree(&bad_ident, "Trusted").unwrap_err();
+        assert_eq!(err_bad_ident.code, 1);
+        assert_eq!(err_bad_ident.phase, "snapshot");
+        assert!(
+            err_bad_ident.message.contains("unmappable Lean source: Trusted/bad-name.lean"),
+            "unexpected error: {err_bad_ident}"
+        );
+
+        // 4. Empty-directory umbrella rules: `"Trusted"` requires
+        // `Trusted.lean` even when empty, whereas another prefix with
+        // `require_umbrella = true` allows an empty tree yet still requires
+        // `<prefix>.lean` once any submodule exists.
+        let empty_dir = tmp.path().join("empty");
+        fs::create_dir_all(&empty_dir).unwrap();
+        let err_empty_trusted = scan_lean_tree(&empty_dir, "Trusted").unwrap_err();
+        assert_eq!(err_empty_trusted.code, 1);
+        assert_eq!(err_empty_trusted.phase, "snapshot");
+        assert!(
+            err_empty_trusted.message.contains("missing Trusted.lean umbrella"),
+            "unexpected error: {err_empty_trusted}"
+        );
+
+        let empty_other = scan_lean_tree(&empty_dir, "Other").unwrap();
+        assert!(empty_other.is_empty());
+
+        let nonempty_other = tmp.path().join("other-missing-umbrella");
+        fs::create_dir_all(nonempty_other.join("Other")).unwrap();
+        fs::write(nonempty_other.join("Other/Sub.lean"), b"prelude\n").unwrap();
+        let err_other_missing = scan_lean_tree(&nonempty_other, "Other").unwrap_err();
+        assert_eq!(err_other_missing.code, 1);
+        assert_eq!(err_other_missing.phase, "snapshot");
+        assert!(
+            err_other_missing.message.contains("missing Other.lean umbrella"),
+            "unexpected error: {err_other_missing}"
+        );
+    }
 }
