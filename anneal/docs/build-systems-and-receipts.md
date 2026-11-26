@@ -105,6 +105,7 @@ Five invariants govern build-system integration across all supported ecosystems:
 │     under --overflow-checks                │                 │
 │   • Keeps -Cpanic=unwind|abort, --cfg      │                 │
 │   • Injects -Zmir-preserve-ub              │                 │
+│             -Zmir-opt-level=0              │                 │
 │             --emit=metadata                │                 │
 │   • Runs items_of_instance BFS for         │                 │
 │     required_consts CTFE (no LLVM codegen) │                 │
@@ -152,16 +153,16 @@ Five invariants govern build-system integration across all supported ecosystems:
 - **Fixed capture profile (`Phase 1`):** `anneal-rustc-capture` builds its
   own `rustc` argument list from its typed options instead of forwarding a
   production command line. It always passes `-Copt-level=0`,
-  `-Cdebug-assertions=no`, and `-Zmir-preserve-ub`, plus
+  `-Cdebug-assertions=no`, `-Zmir-preserve-ub`, and `-Zmir-opt-level=0`, plus
   `-Coverflow-checks=yes` under `--overflow-checks` and `-Coverflow-checks=no`
   otherwise, together with the requested `-Cpanic=unwind` or `-Cpanic=abort`,
   `--cfg` values, edition, and target. It then validates the parsed options
   (`-Copt-level=0`, `-Cdebug-assertions=no`, an explicit `-Coverflow-checks`
-  matching the request, and `-Zmir-preserve-ub`) and confirms that the
-  resolved session enables overflow checks exactly when requested, failing the
-  capture otherwise. The capture manifest's `configuration` records the
-  resulting `opt_level`, `debug_assertions`, and `overflow_checks`, and
-  `Captured.lean` records the overflow-check setting as
+  matching the request, `-Zmir-preserve-ub`, and `-Zmir-opt-level=0`) and
+  confirms that the resolved session enables overflow checks exactly when
+  requested, failing the capture otherwise. The capture manifest's
+  `configuration` records the resulting `opt_level`, `debug_assertions`, and
+  `overflow_checks`, and `Captured.lean` records the overflow-check setting as
   `Program.overflowChecks`. A production build with overflow checks on can
   contain overflow `Assert` terminators that MIR captured without
   `--overflow-checks` lacks, and one with debug assertions on can contain

@@ -1657,6 +1657,72 @@ fn headers_rejects_module_system_modifiers_and_lean_lake_and_allows_no_prelude()
         .to_string(),
     )
     .unwrap();
+    let forged_anon_export = probe_checker.stage().join("proof_export_forged_anon.json");
+    fs::write(
+        &forged_anon_export,
+        serde_json::to_string(&serde_json::json!({
+            "schemaVersion": 1,
+            "names": [
+                ["a"],
+                ["s", 0, "True"],
+                ["s", 1, "intro"]
+            ],
+            "levels": [],
+            "exprs": [
+                ["c", 1, []],
+                ["c", 2, []]
+            ],
+            "modules": [{
+                "module": "Proof",
+                "isModule": true,
+                "imports": [{"module": "Init.Core", "importAll": false, "isExported": true, "isMeta": false}],
+                "constNames": [0],
+                "constants": [["thm", 0, [], 0, 1, [0]]]
+            }],
+            "compilerOverrides": {
+                "implementedBy": [], "extern": [], "csimp": [],
+                "export": [], "init": [], "builtinInit": [],
+                "cpass": [], "constantFold": [], "postponedCompile": []
+            }
+        }))
+        .unwrap(),
+    )
+    .unwrap();
+    let forged_anon_req_lit = serde_json::to_string(
+        &serde_json::json!({
+            "mode": "target-audit",
+            "sysroot": "",
+            "artifacts": [],
+            "graph": {},
+            "foundation": ["Init.Control.Lawful.Instances", "Init.Core"],
+            "libraries": [],
+            "axioms": [
+                ["Classical.choice", "Init.Prelude"],
+                ["Quot.sound", "Init.Prelude"],
+                ["propext", "Init.Core"]
+            ],
+            "proofExportPath": forged_anon_export.to_string_lossy(),
+            "target": {
+                "modules": [{"module": "Proof", "expectedSha256": "0", "role": "proof", "isModule": true}],
+                "theoremModule": "Proof",
+                "theoremName": "Proof.verify",
+                "expectedModule": "Expected",
+                "expectedDeclaration": "Expected.claim",
+                "canonicalRoot": "R",
+                "subjectDeclaration": "S",
+                "specificationDeclaration": "P",
+                "allowSorryInProof": false,
+                "bindings": {
+                    "requestSha256": "0",
+                    "captureSha256": "0",
+                    "modelManifestSha256": "0",
+                    "specificationManifestSha256": "0"
+                }
+            }
+        })
+        .to_string(),
+    )
+    .unwrap();
     let inspector = probe_checker.tool_admission().unwrap().inspector.clone();
     let mut probe_src = fs::read_to_string(inspector).unwrap();
     probe_src.push_str(
@@ -1775,6 +1841,37 @@ fn headers_rejects_module_system_modifiers_and_lean_lake_and_allows_no_prelude()
     pure true
   unless dupRejected do
     throw <| IO.userError "forged-proof-dup: unexpectedly accepted"
+  let forgedAnonBase ← IO.ofExcept <| Lean.Json.parse {forged_anon_req_lit}
+  let forgedAnonReq := forgedAnonBase.setObjVal! "graph" (Lean.Json.mkObj gEntries)
+  let assertPolicyErr (label want : String) (act : IO Unit) : IO Unit := do
+    let rejected ← try
+      act
+      pure false
+    catch e =>
+      let msg := e.toString
+      unless msg.startsWith "policy:" && (msg.splitOn want).length > 1 do
+        throw <| IO.userError s!"{{label}}: unexpected error {{msg}}"
+      pure true
+    unless rejected do
+      throw <| IO.userError s!"{{label}}: unexpectedly accepted"
+  assertPolicyErr "forged-proof-anon" "anonymous declaration in target inventory Proof" do
+    discard <| TrustedBoundary.targetAudit forgedAnonReq found
+  assertPolicyErr "replay-map-key" "replay map key MismatchKey differs from Option.map.eq_1" do
+    TrustedBoundary.validateReplayMap initEnv.toKernelEnv
+      (({{}} : Std.HashMap Lean.Name Lean.ConstantInfo).insert `MismatchKey base) "probe"
+  let some trueCi := initEnv.checked.get.find? `True
+    | throw <| IO.userError "missing True in initEnv"
+  assertPolicyErr "replay-base-shadow" "declaration True shadows base environment" do
+    TrustedBoundary.validateReplayMap initEnv.toKernelEnv
+      (({{}} : Std.HashMap Lean.Name Lean.ConstantInfo).insert `True trueCi) "probe"
+  let omittedPartial : Lean.ConstantInfo := .defnInfo {{
+    name := `OmittedPartial, levelParams := [], type := Lean.mkConst `True,
+    value := Lean.mkConst `True.intro, hints := .opaque, safety := .partial,
+    all := [`OmittedPartial] }}
+  assertPolicyErr "replay-omitted" "declaration OmittedPartial omitted after kernel replay" do
+    discard <| TrustedBoundary.replayKernelEnv initEnv.toKernelEnv
+      (({{}} : Std.HashMap Lean.Name Lean.ConstantInfo).insert `OmittedPartial omittedPartial)
+      "probe"
   let missingIsModReq ← IO.ofExcept <| Lean.Json.parse {empty_proof_export_lit}
   for (fnLabel, runner) in #[
       ("targetExport-missing-isModule", TrustedBoundary.targetExport missingIsModReq #[]),
@@ -4293,4 +4390,2003 @@ fn spec_preflight_module_index_reports_target_compiler_overrides() {
     let expected: BTreeSet<String> =
         ["Captured.f", "Captured.g", "Captured.h", "Captured.k"].map(str::to_owned).into();
     assert_eq!(overrides, expected);
+}
+
+/// `SpecPreflight.isPairedUnsafeRec` classifies a `partial` `p._unsafe_rec`
+/// auxiliary as paired only when `p` is a safe total `.defnInfo` in the same
+/// module and both `type` and `levelParams` match (`sameUnsafeRecHeader`), so
+/// forged type- or universe-mismatched auxiliaries stay in the checked
+/// specification inventory rather than being excluded by the comparator.
+#[test]
+fn spec_preflight_paired_unsafe_rec_checks_header_parity() {
+    let f = Fixture::new(
+        "import Expected\ntheorem Proof.verify : Expected.claim := And.intro rfl BitVec.and_self\n",
+    );
+    let (roles, is_module) = with_spec_preflight(&f);
+    let mut checker = cargo_anneal::Checker::new(&f.root, None).unwrap();
+    checker.set_allow_unpinned_lean(true);
+    checker.run_target(&f.request).unwrap();
+
+    let spec_olean = checker.stage().join("lib/Spec.olean");
+    let script = checker.stage().join("ForgeSpecPreflightUnsafeRec.lean");
+    fs::write(
+        &script,
+        format!(
+            "import Lean\n\
+             open Lean in\n\
+             def main : IO Unit := do\n  \
+               let p := System.FilePath.mk {:?}\n  \
+               let (data, _) ← readModuleData p\n  \
+               let mkDef (n : Name) (lvls : List Name) (ty val : Expr) \
+                 (safety : DefinitionSafety) : ConstantInfo := .defnInfo {{\n    \
+                 name := n, levelParams := lvls, type := ty, value := val,\n    \
+                 hints := .abbrev, safety := safety, all := [n] }}\n  \
+               let good := mkDef `Spec.good [] (.const `Nat []) (.lit (.natVal 0)) .safe\n  \
+               let goodRec := mkDef `Spec.good._unsafe_rec [] \
+                 (.const `Nat []) (.lit (.natVal 1)) .partial\n  \
+               let badType := mkDef `Spec.badType [] (.const `Nat []) (.lit (.natVal 0)) .safe\n  \
+               let badTypeRec := mkDef `Spec.badType._unsafe_rec [] \
+                 (.const `Bool []) (.const `Bool.true []) .partial\n  \
+               let badUniv := mkDef `Spec.badUniv [`u] (.const `Nat []) (.lit (.natVal 0)) .safe\n  \
+               let badUnivRec := mkDef `Spec.badUniv._unsafe_rec [`u, `v] \
+                 (.const `Nat []) (.lit (.natVal 0)) .partial\n  \
+               let added := #[good, goodRec, badType, badTypeRec, badUniv, badUnivRec]\n  \
+               saveModuleData p `Spec {{ data with\n    \
+                 constNames := data.constNames ++ added.map ConstantInfo.name,\n    \
+                 constants := data.constants ++ added }}\n",
+            spec_olean.to_string_lossy()
+        ),
+    )
+    .unwrap();
+    checker
+        .process(
+            "forge-spec-preflight-unsafe-rec",
+            &["-j1".into(), "-M4096".into(), "--run".into(), script.to_string_lossy().into()],
+        )
+        .unwrap();
+    let (origins, _) = checker.inspect_target_consts(&roles, &is_module).unwrap();
+    assert_eq!(origins.get("Spec.good._unsafe_rec").map(|(m, p)| (m.as_str(), *p)), Some(("Spec", true)));
+    assert_eq!(
+        origins.get("Spec.badType._unsafe_rec").map(|(m, p)| (m.as_str(), *p)),
+        Some(("Spec", false)),
+        "type-mismatched p._unsafe_rec must not be paired: {origins:?}"
+    );
+    assert_eq!(
+        origins.get("Spec.badUniv._unsafe_rec").map(|(m, p)| (m.as_str(), *p)),
+        Some(("Spec", false)),
+        "levelParams-mismatched p._unsafe_rec must not be paired: {origins:?}"
+    );
+}
+
+/// Writes `source` to `script` and executes it via `lean --run`.
+fn run_lean_script(checker: &mut Checker, label: &str, script: &Path, source: &str) {
+    fs::write(script, source).unwrap();
+    checker
+        .process(
+            label,
+            &["-j1".into(), "-M4096".into(), "--run".into(), script.to_string_lossy().into()],
+        )
+        .unwrap();
+}
+
+/// Verifies `lean4#16677` defense-in-depth hardening in `TrustedBoundary.lean`:
+/// - mismatched `constNames` vs `ConstantInfo.name` in `.olean` inventories;
+/// - intra-module duplicate names in `.library` `.olean` inventories; and
+/// - `TargetRole::Specification` `p._unsafe_rec` with mismatched type.
+#[test]
+fn target_audit_rejects_key_mismatch_dup_library_and_unsafe_rec_type_mismatch() {
+    use std::collections::BTreeMap;
+
+    use anneal_audit::{ImportEdge, ModuleArtifacts};
+
+    // 1. Mismatched `constNames` key (`Captured.wrongKey` vs `Captured.aux`).
+    let mut f_key = Fixture::new(PROOF);
+    f_key.set(
+        "Captured",
+        TargetRole::Capture,
+        "prelude\nimport Model\n\
+         def Captured.aux : Nat := 1\n\
+         def Captured.program : BitVec 8 := BitVec.ofNat 8 7\n",
+    );
+    let mut c_key = f_key.accepted_checker();
+    let cap_olean = c_key.stage().join("lib/Captured.olean");
+    let key_script = c_key.stage().join("ForgeKeyMismatch.lean");
+    run_lean_script(
+        &mut c_key,
+        "forge-key-mismatch",
+        &key_script,
+        &format!(
+            "import Lean\n\
+             open Lean in\n\
+             def main : IO Unit := do\n  \
+               let p := System.FilePath.mk {:?}\n  \
+               let (data, _) ← readModuleData p\n  \
+               let patched := data.constNames.map (fun n =>\n    \
+                 if n == `Captured.aux then `Captured.wrongKey else n)\n  \
+               saveModuleData p `Captured {{ data with constNames := patched }}\n",
+            cap_olean.to_string_lossy()
+        ),
+    );
+    reject_inspected(&mut c_key, f_key.request.clone(), "mismatched checked environment key");
+
+    // 2. Intra-module duplicate declaration in a `.library` module must fail
+    //    closed rather than collapsing silently via `NameSet.ofList`.
+    let f_dup = Fixture::new(PROOF);
+    let mut c_dup = f_dup.accepted_checker();
+    let adm = c_dup.admitted().unwrap();
+    let dep = adm.foundation_modules().into_iter().next().unwrap().to_owned();
+    let dup_lib_olean = c_dup.stage().join("lib/DupLib.olean");
+    let dup_script = c_dup.stage().join("ForgeDupLib.lean");
+    run_lean_script(
+        &mut c_dup,
+        "forge-dup-lib",
+        &dup_script,
+        &format!(
+            "import Lean\n\
+             open Lean in\n\
+             def main : IO Unit := do\n  \
+               let ci : ConstantInfo := .thmInfo {{\n    \
+                 name := `DupLib.t\n    \
+                 levelParams := []\n    \
+                 type := .const `True []\n    \
+                 value := .const `True.intro []\n    \
+                 all := [`DupLib.t]\n  \
+               }}\n  \
+               let md : ModuleData := {{\n    \
+                 isModule := false\n    \
+                 imports := #[{{ module := `{dep} }}]\n    \
+                 constNames := #[`DupLib.t, `DupLib.t]\n    \
+                 constants := #[ci, ci]\n    \
+                 extraConstNames := #[]\n    \
+                 entries := #[]\n  \
+               }}\n  \
+               saveModuleData (System.FilePath.mk {:?}) `DupLib md\n",
+            dup_lib_olean.to_string_lossy()
+        ),
+    );
+    let dup_avail = BTreeMap::from([("olean", dup_lib_olean.to_string_lossy().into_owned())]);
+    let dup_arts = ModuleArtifacts::from_available(&dup_avail, "fixture", String::new).unwrap();
+    let adm_mut = c_dup.admitted_mut().unwrap();
+    adm_mut.artifacts.insert("DupLib".into(), dup_arts);
+    adm_mut.library_modules.insert("DupLib".into());
+    adm_mut.graph.insert(
+        "DupLib".into(),
+        vec![ImportEdge {
+            module: dep,
+            import_all: false,
+            is_exported: true,
+            is_meta: false,
+        }],
+    );
+    reject_inspected(
+        &mut c_dup,
+        f_dup.request.clone(),
+        "duplicate target library declaration DupLib.t",
+    );
+
+    // 3. `TargetRole::Specification` `p._unsafe_rec` with mismatched type fails
+    //    `pairedSpecUnsafeRecParent?` and is rejected as unreplayable partial.
+    let f_rec = Fixture::new(PROOF);
+    let mut c_rec = f_rec.accepted_checker();
+    let spec_olean = c_rec.stage().join("lib/Spec.olean");
+    let rec_script = c_rec.stage().join("ForgeBadUnsafeRec.lean");
+    run_lean_script(
+        &mut c_rec,
+        "forge-bad-unsafe-rec",
+        &rec_script,
+        &format!(
+            "import Lean\n\
+             open Lean in\n\
+             def main : IO Unit := do\n  \
+               let p := System.FilePath.mk {:?}\n  \
+               let (data, _) ← readModuleData p\n  \
+               let parentCi : ConstantInfo := .defnInfo {{\n    \
+                 name := `Spec.foo\n    \
+                 levelParams := []\n    \
+                 type := .const `Nat []\n    \
+                 value := .lit (.natVal 0)\n    \
+                 hints := .abbrev\n    \
+                 safety := .safe\n    \
+                 all := [`Spec.foo]\n  \
+               }}\n  \
+               let badRecCi : ConstantInfo := .defnInfo {{\n    \
+                 name := `Spec.foo._unsafe_rec\n    \
+                 levelParams := []\n    \
+                 type := .const `Bool []\n    \
+                 value := .const `Bool.true []\n    \
+                 hints := .abbrev\n    \
+                 safety := .partial\n    \
+                 all := [`Spec.foo._unsafe_rec]\n  \
+               }}\n  \
+               let newNames := data.constNames ++ #[`Spec.foo, `Spec.foo._unsafe_rec]\n  \
+               let newConsts := data.constants ++ #[parentCi, badRecCi]\n  \
+               saveModuleData p `Spec \
+                 {{ data with constNames := newNames, constants := newConsts }}\n",
+            spec_olean.to_string_lossy()
+        ),
+    );
+    reject_inspected(
+        &mut c_rec,
+        f_rec.request.clone(),
+        "unsafe/partial logical dependency Spec.foo._unsafe_rec",
+    );
+
+    // 4. Duplicate constant inside a `.foundation` `.olean` is rejected by
+    //    `verifyModuleHeaderInventory` in `targetAudit`'s `.foundation` arm.
+    let f_found = Fixture::new(PROOF);
+    let mut c_found = f_found.accepted_checker();
+    let orig_core = c_found.admitted().unwrap().artifacts["Init.Core"].clone();
+    let orig_core_path = orig_core
+        .olean_parts
+        .first()
+        .expect("Init.Core olean");
+    let forged_core = c_found.stage().join("lib/ForgedInitCore.olean");
+    let found_script = c_found.stage().join("ForgeInitCore.lean");
+    let found_src = format!(
+        "import Lean\n\
+         open Lean in\n\
+         def main : IO Unit := do\n  \
+           let (data, _) ← readModuleData (System.FilePath.mk {:?})\n  \
+           let extra := data.constants[0]!\n  \
+           let md : ModuleData := {{ data with\n    \
+             isModule := false,\n    \
+             constNames := data.constNames.push extra.name,\n    \
+             constants := data.constants.push extra }}\n  \
+           saveModuleData (System.FilePath.mk {:?}) `Init.Core md\n",
+        orig_core_path.as_str(),
+        forged_core.to_string_lossy()
+    );
+    run_lean_script(&mut c_found, "forge-foundation-dup", &found_script, &found_src);
+    let forged_avail = BTreeMap::from([("olean", forged_core.to_string_lossy().into_owned())]);
+    let forged_arts = ModuleArtifacts::from_available(&forged_avail, "fixture", String::new).unwrap();
+    c_found.admitted_mut().unwrap().artifacts.insert("Init.Core".into(), forged_arts);
+    reject_inspected(
+        &mut c_found,
+        f_found.request.clone(),
+        "duplicate target declaration",
+    );
+
+    // 5. `Model` `.olean` re-declaring `propext` as a theorem overwrites
+    //    `stored` via Lean `subsumesInfo`, exercising `targetAudit`'s
+    //    `.foundation` reconciliation (`sameConstantShape stored ci`).
+    let f_hijack = Fixture::new(PROOF);
+    let mut c_model_hijack = f_hijack.accepted_checker();
+    let hijack_model = c_model_hijack.stage().join("lib/Model.olean");
+    let hijack_prefix = c_model_hijack.admitted().unwrap().prefix.clone();
+    let hijack_script = c_model_hijack.stage().join("ForgeModelPropextHijack.lean");
+    let hijack_src = format!(
+        "import Lean\n\
+         open Lean in\n\
+         def main : IO Unit := do\n  \
+           initSearchPath (System.FilePath.mk {:?})\n  \
+           let env ← importModules #[{{ module := `Init.Core }}] {{}} \
+             (trustLevel := 0) (plugins := #[]) (loadExts := false) \
+             (level := .private)\n  \
+           let some px := env.checked.get.find? `propext \
+             | throw (IO.userError \"missing propext\")\n  \
+           let p := System.FilePath.mk {:?}\n  \
+           let (data, _) ← readModuleData p\n  \
+           let body := Expr.const `True []\n  \
+           let fakeThm : ConstantInfo := .thmInfo {{\n    \
+             name := `propext, levelParams := px.levelParams,\n    \
+             type := px.type, value := body, all := [`propext] }}\n  \
+           let newNames := data.constNames.push `propext\n  \
+           let newConsts := data.constants.push fakeThm\n  \
+           saveModuleData p `Model \
+             {{ data with constNames := newNames, constants := newConsts }}\n",
+        hijack_prefix.to_string_lossy(),
+        hijack_model.to_string_lossy()
+    );
+    run_lean_script(&mut c_model_hijack, "forge-model-propext-hijack", &hijack_script, &hijack_src);
+    reject_inspected(
+        &mut c_model_hijack,
+        f_hijack.request.clone(),
+        "stored target declaration differs propext",
+    );
+
+    // 6. A `.library` `.olean` overriding a `.foundation` theorem (`Iff.refl`)
+    //    via `subsumesInfo` with a proof body referencing a `.source` constant
+    //    (`Proof.verify`) is rejected by `pendingSourceAlternates` checking
+    //    both `stored` and `ci` even when `Proof.verify` never references
+    //    `Iff.refl`.
+    let f_lib_sub = Fixture::new(PROOF);
+    let mut c_lib_sub = f_lib_sub.accepted_checker();
+    let lib_sub_prefix = c_lib_sub.admitted().unwrap().prefix.clone();
+    let proof_olean_path = c_lib_sub.admitted().unwrap().artifacts["Proof"]
+        .olean_parts
+        .first()
+        .expect("Proof olean")
+        .clone();
+    let lib_sub_olean = c_lib_sub.stage().join("lib/ZZZZSubsumesLib.olean");
+    let lib_sub_script = c_lib_sub.stage().join("ForgeLibSubsumesFoundation.lean");
+    run_lean_script(
+        &mut c_lib_sub,
+        "forge-lib-subsumes-foundation",
+        &lib_sub_script,
+        &format!(
+            "import Lean\n\
+             open Lean in\n\
+             def main : IO Unit := do\n  \
+               initSearchPath (System.FilePath.mk {:?})\n  \
+               let env ← importModules #[{{ module := `Init.Core }}] {{}} \
+                 (trustLevel := 0) (plugins := #[]) (loadExts := false) \
+                 (level := .private)\n  \
+               let some (.thmInfo iffTv) := env.checked.get.find? `Iff.refl \
+                 | throw (IO.userError \"missing Iff.refl\")\n  \
+               let (proofData, _) ← readModuleData (System.FilePath.mk {:?})\n  \
+               let some rootCi := proofData.constants.find? (·.name == `Proof.verify) \
+                 | throw (IO.userError \"missing Proof.verify\")\n  \
+               let wrapped := Expr.letE `_src rootCi.type \
+                 (.const `Proof.verify []) iffTv.value false\n  \
+               let forged : ConstantInfo := .thmInfo {{ iffTv with value := wrapped }}\n  \
+               let md : ModuleData := {{\n    \
+                 isModule := false,\n    \
+                 imports := #[{{ module := `Init.Core }}],\n    \
+                 constNames := #[`Iff.refl],\n    \
+                 constants := #[forged],\n    \
+                 extraConstNames := #[],\n    \
+                 entries := #[] }}\n  \
+               saveModuleData (System.FilePath.mk {:?}) `ZZZZSubsumesLib md\n",
+            lib_sub_prefix.to_string_lossy(),
+            proof_olean_path.as_str(),
+            lib_sub_olean.to_string_lossy()
+        ),
+    );
+    let lib_sub_avail =
+        BTreeMap::from([("olean", lib_sub_olean.to_string_lossy().into_owned())]);
+    let lib_sub_arts =
+        ModuleArtifacts::from_available(&lib_sub_avail, "fixture", String::new).unwrap();
+    {
+        let adm_mut = c_lib_sub.admitted_mut().unwrap();
+        adm_mut.artifacts.insert("ZZZZSubsumesLib".into(), lib_sub_arts);
+        adm_mut.library_modules.insert("ZZZZSubsumesLib".into());
+        adm_mut.graph.insert(
+            "ZZZZSubsumesLib".into(),
+            vec![ImportEdge {
+                module: "Init.Core".into(),
+                import_all: false,
+                is_exported: true,
+                is_meta: false,
+            }],
+        );
+    }
+    reject_inspected(
+        &mut c_lib_sub,
+        f_lib_sub.request.clone(),
+        "installed library Iff.refl references target source Proof.verify",
+    );
+
+    // 7. Realizing a `.foundation` theorem (`flip.eq_1`) inside a `.source`
+    //    `.olean` via `subsumesInfo` derives `storedOrigin` from the actual
+    //    defining module (`storedRoleMap`): `Expected` referencing
+    //    `Spec.specs` (`TargetRole::Specification`, allowed for `Expected`)
+    //    succeeds and kernel-checks both alternates, whereas `Model`
+    //    referencing `Spec.specs` (`TargetRole::Model` cannot depend on
+    //    `Specification`) fails closed with `"target authority violation"`.
+    let forge_flip_sub = |checker: &mut anneal_audit::Checker,
+                          label: &str,
+                          target_mod: &str,
+                          target_olean: &std::path::Path| {
+        let prefix = checker.admitted().unwrap().prefix.clone();
+        let spec_olean = checker.stage().join("lib/Spec.olean");
+        let script = checker.stage().join(format!("{label}.lean"));
+        run_lean_script(
+            checker,
+            label,
+            &script,
+            &format!(
+                "import Lean\n\
+                 open Lean in\n\
+                 def main : IO Unit := do\n  \
+                   initSearchPath (System.FilePath.mk {:?})\n  \
+                   let env ← importModules #[{{ module := `Init.Core }}] {{}} \
+                     (trustLevel := 0) (plugins := #[]) (loadExts := false) \
+                     (level := .private)\n  \
+                   let some (.thmInfo flipTv) := env.checked.get.find? `flip.eq_1 \
+                     | throw (IO.userError \"missing flip.eq_1\")\n  \
+                   let (specData, _) ← readModuleData (System.FilePath.mk {:?})\n  \
+                   let some specCi := specData.constants.find? (·.name == `Spec.specs) \
+                     | throw (IO.userError \"missing Spec.specs\")\n  \
+                   let p := System.FilePath.mk {:?}\n  \
+                   let (modData, _) ← readModuleData p\n  \
+                   let wrapped := Expr.letE `_spec specCi.type \
+                     (.const `Spec.specs []) flipTv.value false\n  \
+                   let forged : ConstantInfo := .thmInfo {{ flipTv with value := wrapped }}\n  \
+                   saveModuleData p `{target_mod} {{ modData with\n    \
+                     constNames := modData.constNames.push `flip.eq_1,\n    \
+                     constants := modData.constants.push forged }}\n",
+                prefix.to_string_lossy(),
+                spec_olean.to_string_lossy(),
+                target_olean.to_string_lossy()
+            ),
+        );
+    };
+    let f_src_sub = Fixture::new(PROOF);
+    let mut c_src_sub = f_src_sub.accepted_checker();
+    let expected_olean = c_src_sub.stage().join("lib/Expected.olean");
+    forge_flip_sub(
+        &mut c_src_sub,
+        "forge-expected-subsumes-foundation",
+        "Expected",
+        &expected_olean,
+    );
+    let src_sub_ok = c_src_sub
+        .inspect(anneal_audit::InspectorRequest::TargetAudit {
+            request: f_src_sub.request.clone(),
+        })
+        .unwrap();
+    assert_eq!(src_sub_ok["replay"], true, "{src_sub_ok}");
+    assert_eq!(src_sub_ok["exactType"], true, "{src_sub_ok}");
+    assert!(
+        src_sub_ok["checkedAlternateProofs"].as_u64().unwrap_or(0) >= 2,
+        "expected alternate proof checks for realized flip.eq_1: {src_sub_ok}"
+    );
+
+    let f_model_sub = Fixture::new(PROOF);
+    let mut c_model_sub = f_model_sub.accepted_checker();
+    let model_olean_for_sub = c_model_sub.stage().join("lib/Model.olean");
+    forge_flip_sub(
+        &mut c_model_sub,
+        "forge-model-subsumes-foundation",
+        "Model",
+        &model_olean_for_sub,
+    );
+    reject_inspected(
+        &mut c_model_sub,
+        f_model_sub.request.clone(),
+        "target authority violation flip.eq_1 references Spec.specs",
+    );
+
+    // 7c. A `.library` `.olean` exporting the exact same `ConstantInfo` body
+    //     for `flip.eq_1` as a later `.source` `.olean` (`Expected`) must still
+    //     be rejected via `isLibraryStored` even though `storedOrigin` resolves
+    //     to `.source .expected`.
+    let f_lib_dup_sub = Fixture::new(PROOF);
+    let mut c_lib_dup_sub = f_lib_dup_sub.accepted_checker();
+    let lib_dup_prefix = c_lib_dup_sub.admitted().unwrap().prefix.clone();
+    let lib_dup_spec = c_lib_dup_sub.stage().join("lib/Spec.olean");
+    let lib_dup_exp = c_lib_dup_sub.stage().join("lib/Expected.olean");
+    let lib_dup_mod = c_lib_dup_sub.stage().join("lib/ZZZZDupLib.olean");
+    let lib_dup_script = c_lib_dup_sub.stage().join("ForgeLibAndExpectedDup.lean");
+    run_lean_script(
+        &mut c_lib_dup_sub,
+        "forge-lib-and-expected-dup",
+        &lib_dup_script,
+        &format!(
+            "import Lean\n\
+             open Lean in\n\
+             def main : IO Unit := do\n  \
+               initSearchPath (System.FilePath.mk {:?})\n  \
+               let env ← importModules #[{{ module := `Init.Core }}] {{}} \
+                 (trustLevel := 0) (plugins := #[]) (loadExts := false) \
+                 (level := .private)\n  \
+               let some (.thmInfo flipTv) := env.checked.get.find? `flip.eq_1 \
+                 | throw (IO.userError \"missing flip.eq_1\")\n  \
+               let (specData, _) ← readModuleData (System.FilePath.mk {:?})\n  \
+               let some specCi := specData.constants.find? (·.name == `Spec.specs) \
+                 | throw (IO.userError \"missing Spec.specs\")\n  \
+               let wrapped := Expr.letE `_spec specCi.type \
+                 (.const `Spec.specs []) flipTv.value false\n  \
+               let forged : ConstantInfo := .thmInfo {{ flipTv with value := wrapped }}\n  \
+               let pExp := System.FilePath.mk {:?}\n  \
+               let (expData, _) ← readModuleData pExp\n  \
+               saveModuleData pExp `Expected {{ expData with\n    \
+                 constNames := expData.constNames.push `flip.eq_1,\n    \
+                 constants := expData.constants.push forged }}\n  \
+               let libMd : ModuleData := {{\n    \
+                 isModule := false,\n    \
+                 imports := #[{{ module := `Init.Core }}],\n    \
+                 constNames := #[`flip.eq_1],\n    \
+                 constants := #[forged],\n    \
+                 extraConstNames := #[],\n    \
+                 entries := #[] }}\n  \
+               saveModuleData (System.FilePath.mk {:?}) `ZZZZDupLib libMd\n",
+            lib_dup_prefix.to_string_lossy(),
+            lib_dup_spec.to_string_lossy(),
+            lib_dup_exp.to_string_lossy(),
+            lib_dup_mod.to_string_lossy()
+        ),
+    );
+    let lib_dup_avail =
+        BTreeMap::from([("olean", lib_dup_mod.to_string_lossy().into_owned())]);
+    let lib_dup_arts =
+        ModuleArtifacts::from_available(&lib_dup_avail, "fixture", String::new).unwrap();
+    {
+        let adm_mut = c_lib_dup_sub.admitted_mut().unwrap();
+        adm_mut.artifacts.insert("ZZZZDupLib".into(), lib_dup_arts);
+        adm_mut.library_modules.insert("ZZZZDupLib".into());
+        adm_mut.graph.insert(
+            "ZZZZDupLib".into(),
+            vec![ImportEdge {
+                module: "Init.Core".into(),
+                import_all: false,
+                is_exported: true,
+                is_meta: false,
+            }],
+        );
+    }
+    reject_inspected(
+        &mut c_lib_dup_sub,
+        f_lib_dup_sub.request.clone(),
+        "installed library flip.eq_1 references target source Spec.specs",
+    );
+
+    // 7d. A first-exporter `.source` module (`Model`) declaring a theorem
+    //     (`Model.badRealized`) referencing `Spec.specs` cannot hide behind a
+    //     later `Expected` module exporting a byte-identical copy.
+    let f_model_dup = Fixture::new(PROOF);
+    let mut c_model_dup = f_model_dup.accepted_checker();
+    let model_dup_spec = c_model_dup.stage().join("lib/Spec.olean");
+    let model_dup_model = c_model_dup.stage().join("lib/Model.olean");
+    let model_dup_exp = c_model_dup.stage().join("lib/Expected.olean");
+    let model_dup_script = c_model_dup.stage().join("ForgeModelAndExpectedDup.lean");
+    run_lean_script(
+        &mut c_model_dup,
+        "forge-model-and-expected-dup",
+        &model_dup_script,
+        &format!(
+            "import Lean\n\
+             open Lean in\n\
+             def main : IO Unit := do\n  \
+               let (specData, _) ← readModuleData (System.FilePath.mk {:?})\n  \
+               let some specCi := specData.constants.find? (·.name == `Spec.specs) \
+                 | throw (IO.userError \"missing Spec.specs\")\n  \
+               let badThm : ConstantInfo := .thmInfo {{\n    \
+                 name := `Model.badRealized, levelParams := [],\n    \
+                 type := .const `True [],\n    \
+                 value := Expr.letE `_spec specCi.type (.const `Spec.specs []) \
+                   (.const `True.intro []) false,\n    \
+                 all := [`Model.badRealized] }}\n  \
+               for (modName, pathStr) in [(`Model, {:?}), (`Expected, {:?})] do\n    \
+                 let p := System.FilePath.mk pathStr\n    \
+                 let (d, _) ← readModuleData p\n    \
+                 saveModuleData p modName {{ d with\n      \
+                   constNames := d.constNames.push `Model.badRealized,\n      \
+                   constants := d.constants.push badThm }}\n",
+            model_dup_spec.to_string_lossy(),
+            model_dup_model.to_string_lossy(),
+            model_dup_exp.to_string_lossy()
+        ),
+    );
+    reject_inspected(
+        &mut c_model_dup,
+        f_model_dup.request.clone(),
+        "target authority violation Model.badRealized references Spec.specs",
+    );
+
+    // 8. A non-proof `.source` `.olean` (`Model`) injecting a `.thmInfo` under
+    //    an `Init.Prelude` `extraConstNames` IR-helper name (`mixHash._boxed`)
+    //    is rejected by `targetAudit`'s `.foundation` `extraConstNames` check.
+    let f_extra_src = Fixture::new(PROOF);
+    let mut c_extra_src = f_extra_src.accepted_checker();
+    let model_extra_olean = c_extra_src.stage().join("lib/Model.olean");
+    let extra_src_script = c_extra_src.stage().join("ForgeModelExtraCollide.lean");
+    run_lean_script(
+        &mut c_extra_src,
+        "forge-model-extra-collide",
+        &extra_src_script,
+        &format!(
+            "import Lean\n\
+             open Lean in\n\
+             def main : IO Unit := do\n  \
+               let p := System.FilePath.mk {:?}\n  \
+               let (data, _) ← readModuleData p\n  \
+               let badThm : ConstantInfo := .thmInfo {{\n    \
+                 name := `mixHash._boxed, levelParams := [],\n    \
+                 type := .const `False [], value := .const `True.intro [],\n    \
+                 all := [`mixHash._boxed] }}\n  \
+               saveModuleData p `Model {{ data with\n    \
+                 constNames := data.constNames.push `mixHash._boxed,\n    \
+                 constants := data.constants.push badThm }}\n",
+            model_extra_olean.to_string_lossy()
+        ),
+    );
+    reject_inspected(
+        &mut c_extra_src,
+        f_extra_src.request.clone(),
+        "uninventoried kernel compiler helper mixHash._boxed",
+    );
+
+    // 9. An exported `Proof` module declaring a constant under an
+    //    `Init.Prelude` `extraConstNames` IR-helper name (`mixHash._boxed`) is
+    //    rejected before `originOf` can misclassify it as `.foundation`.
+    let f_extra_prf = Fixture::new(PROOF);
+    let mut c_extra_prf = f_extra_prf.accepted_checker();
+    let proof_extra_olean = c_extra_prf.stage().join("lib/Proof.olean");
+    let extra_prf_script = c_extra_prf.stage().join("ForgeProofExtraCollide.lean");
+    run_lean_script(
+        &mut c_extra_prf,
+        "forge-proof-extra-collide",
+        &extra_prf_script,
+        &format!(
+            "import Lean\n\
+             open Lean in\n\
+             def main : IO Unit := do\n  \
+               let p := System.FilePath.mk {:?}\n  \
+               let (data, _) ← readModuleData p\n  \
+               let badThm : ConstantInfo := .thmInfo {{\n    \
+                 name := `mixHash._boxed, levelParams := [],\n    \
+                 type := .const `True [], value := .const `True.intro [],\n    \
+                 all := [`mixHash._boxed] }}\n  \
+               saveModuleData p `Proof {{ data with\n    \
+                 constNames := data.constNames.push `mixHash._boxed,\n    \
+                 constants := data.constants.push badThm }}\n",
+            proof_extra_olean.to_string_lossy()
+        ),
+    );
+    reject_inspected(
+        &mut c_extra_prf,
+        f_extra_prf.request.clone(),
+        "target declaration mixHash._boxed collides with imported IR helper",
+    );
+}
+
+/// Verifies `targetAudit` identical-copy role tracking:
+/// 1. A `.foundation` module exporting a theorem (`Target.Alt`) referencing
+///    `.library` (`ZZZZLibMod.secret`) cannot mask the violation behind a
+///    byte-identical copy in a later `.source` module (`Expected`), either
+///    directly or after an earlier `.foundation` declaration (`ZZZZF0`).
+/// 2. Conversely, a valid `.library` theorem referencing another `.library`
+///    declaration also exported identically in `Expected` continues to pass.
+#[test]
+fn target_audit_rejects_foundation_identical_copy_with_later_source() {
+    use anneal_audit::{ImportEdge, InspectorRequest, ModuleArtifacts};
+
+    // Case A & B: `.foundation` `ZZZZFBad` exports `Target.Alt` referencing
+    // `.library` `ZZZZLibMod.secret` alongside an identical copy in `Expected`
+    // (both direct first-export `use_f0 = false` and post-`ZZZZF0` realization
+    // `use_f0 = true`).
+    for use_f0 in [false, true] {
+        let f = Fixture::new(PROOF);
+        let mut c = f.accepted_checker();
+        let dep_core = "Init.Core".to_string();
+        let f0_olean = c.stage().join("lib/ZZZZF0.olean");
+        let lib_olean = c.stage().join("lib/ZZZZLibMod.olean");
+        let fbad_olean = c.stage().join("lib/ZZZZFBad.olean");
+        let exp_olean = c.stage().join("lib/Expected.olean");
+        let script = c.stage().join(if use_f0 {
+            "ForgeFoundationLibCopyAfterF0.lean"
+        } else {
+            "ForgeFoundationLibCopy.lean"
+        });
+        run_lean_script(
+            &mut c,
+            if use_f0 {
+                "forge-foundation-lib-copy-f0"
+            } else {
+                "forge-foundation-lib-copy"
+            },
+            &script,
+            &format!(
+                "import Lean\n\
+                 open Lean in\n\
+                 def main : IO Unit := do\n  \
+                   let secretThm : ConstantInfo := .thmInfo {{\n    \
+                     name := `ZZZZLibMod.secret, levelParams := [],\n    \
+                     type := .const `True [], value := .const `True.intro [],\n    \
+                     all := [`ZZZZLibMod.secret] }}\n  \
+                   saveModuleData (System.FilePath.mk {:?}) `ZZZZLibMod {{\n    \
+                     isModule := false, imports := #[{{ module := `Init.Core }}],\n    \
+                     constNames := #[`ZZZZLibMod.secret], constants := #[secretThm],\n    \
+                     extraConstNames := #[], entries := #[] }}\n  \
+                   if {use_f0} then\n    \
+                     let baseThm : ConstantInfo := .thmInfo {{\n      \
+                       name := `Target.Alt, levelParams := [],\n      \
+                       type := .const `True [], value := .const `True.intro [],\n      \
+                       all := [`Target.Alt] }}\n    \
+                     saveModuleData (System.FilePath.mk {:?}) `ZZZZF0 {{\n      \
+                       isModule := false, imports := #[{{ module := `Init.Core }}],\n      \
+                       constNames := #[`Target.Alt], constants := #[baseThm],\n      \
+                       extraConstNames := #[], entries := #[] }}\n  \
+                   let badVal := Expr.letE `_sec (.const `True [])\n    \
+                     (.const `ZZZZLibMod.secret []) (.const `True.intro []) false\n  \
+                   let badThm : ConstantInfo := .thmInfo {{\n    \
+                     name := `Target.Alt, levelParams := [],\n    \
+                     type := .const `True [], value := badVal,\n    \
+                     all := [`Target.Alt] }}\n  \
+                   let fbadImports := if {use_f0} then\n    \
+                     #[{{ module := `Init.Core }}, {{ module := `ZZZZLibMod }}, {{ module := `ZZZZF0 }}]\n  \
+                     else #[{{ module := `Init.Core }}, {{ module := `ZZZZLibMod }}]\n  \
+                   saveModuleData (System.FilePath.mk {:?}) `ZZZZFBad {{\n    \
+                     isModule := false, imports := fbadImports,\n    \
+                     constNames := #[`Target.Alt], constants := #[badThm],\n    \
+                     extraConstNames := #[], entries := #[] }}\n  \
+                   let expPath := System.FilePath.mk {:?}\n  \
+                   let (expData, _) ← readModuleData expPath\n  \
+                   saveModuleData expPath `Expected {{ expData with\n    \
+                     constNames := expData.constNames.push `Target.Alt,\n    \
+                     constants := expData.constants.push badThm }}\n",
+                lib_olean.to_string_lossy(),
+                f0_olean.to_string_lossy(),
+                fbad_olean.to_string_lossy(),
+                exp_olean.to_string_lossy(),
+            ),
+        );
+        let mk_edge = |m: &str| ImportEdge {
+            module: m.to_string(),
+            import_all: false,
+            is_exported: true,
+            is_meta: false,
+        };
+        let lib_arts = ModuleArtifacts::from_available(
+            &BTreeMap::from([("olean", lib_olean.to_string_lossy().into_owned())]),
+            "fixture",
+            String::new,
+        )
+        .unwrap();
+        let fbad_arts = ModuleArtifacts::from_available(
+            &BTreeMap::from([("olean", fbad_olean.to_string_lossy().into_owned())]),
+            "fixture",
+            String::new,
+        )
+        .unwrap();
+        let adm = c.admitted_mut().unwrap();
+        adm.artifacts.insert("ZZZZLibMod".into(), lib_arts);
+        adm.library_modules.insert("ZZZZLibMod".into());
+        adm.graph.insert("ZZZZLibMod".into(), vec![mk_edge(&dep_core)]);
+        let mut fbad_edges = vec![mk_edge(&dep_core), mk_edge("ZZZZLibMod")];
+        if use_f0 {
+            let f0_arts = ModuleArtifacts::from_available(
+                &BTreeMap::from([("olean", f0_olean.to_string_lossy().into_owned())]),
+                "fixture",
+                String::new,
+            )
+            .unwrap();
+            adm.artifacts.insert("ZZZZF0".into(), f0_arts);
+            adm.foundation_graph
+                .insert("ZZZZF0".into(), vec![mk_edge(&dep_core)]);
+            adm.graph.insert("ZZZZF0".into(), vec![mk_edge(&dep_core)]);
+            fbad_edges.push(mk_edge("ZZZZF0"));
+        }
+        adm.artifacts.insert("ZZZZFBad".into(), fbad_arts);
+        adm.foundation_graph
+            .insert("ZZZZFBad".into(), fbad_edges.clone());
+        adm.graph.insert("ZZZZFBad".into(), fbad_edges);
+        reject_inspected(
+            &mut c,
+            f.request.clone(),
+            "target authority violation Target.Alt references ZZZZLibMod.secret",
+        );
+    }
+
+    // Case C: Legitimate `.library` theorem referencing another `.library`
+    // declaration (`ZZZZLibGood.helper`) with a byte-identical copy in
+    // `Expected` must continue to be accepted (no `.foundation` confusion).
+    let f_ok = Fixture::new(PROOF);
+    let mut c_ok = f_ok.accepted_checker();
+    let lib_ok_olean = c_ok.stage().join("lib/ZZZZLibGood.olean");
+    let exp_ok_olean = c_ok.stage().join("lib/Expected.olean");
+    let ok_script = c_ok.stage().join("ForgeLibOkCopy.lean");
+    run_lean_script(
+        &mut c_ok,
+        "forge-lib-ok-copy",
+        &ok_script,
+        &format!(
+            "import Lean\n\
+             open Lean in\n\
+             def main : IO Unit := do\n  \
+               let helperThm : ConstantInfo := .thmInfo {{\n    \
+                 name := `ZZZZLibGood.helper, levelParams := [],\n    \
+                 type := .const `True [], value := .const `True.intro [],\n    \
+                 all := [`ZZZZLibGood.helper] }}\n  \
+               let sharedVal := Expr.letE `_hlp (.const `True [])\n    \
+                 (.const `ZZZZLibGood.helper []) (.const `True.intro []) false\n  \
+               let sharedThm : ConstantInfo := .thmInfo {{\n    \
+                 name := `Target.LibShared, levelParams := [],\n    \
+                 type := .const `True [], value := sharedVal,\n    \
+                 all := [`Target.LibShared] }}\n  \
+               saveModuleData (System.FilePath.mk {:?}) `ZZZZLibGood {{\n    \
+                 isModule := false, imports := #[{{ module := `Init.Core }}],\n    \
+                 constNames := #[`ZZZZLibGood.helper, `Target.LibShared],\n    \
+                 constants := #[helperThm, sharedThm],\n    \
+                 extraConstNames := #[], entries := #[] }}\n  \
+               let expPath := System.FilePath.mk {:?}\n  \
+               let (expData, _) ← readModuleData expPath\n  \
+               saveModuleData expPath `Expected {{ expData with\n    \
+                 constNames := expData.constNames.push `Target.LibShared,\n    \
+                 constants := expData.constants.push sharedThm }}\n",
+            lib_ok_olean.to_string_lossy(),
+            exp_ok_olean.to_string_lossy(),
+        ),
+    );
+    let lib_ok_arts = ModuleArtifacts::from_available(
+        &BTreeMap::from([("olean", lib_ok_olean.to_string_lossy().into_owned())]),
+        "fixture",
+        String::new,
+    )
+    .unwrap();
+    let adm_ok = c_ok.admitted_mut().unwrap();
+    adm_ok.artifacts.insert("ZZZZLibGood".into(), lib_ok_arts);
+    adm_ok.library_modules.insert("ZZZZLibGood".into());
+    adm_ok.graph.insert(
+        "ZZZZLibGood".into(),
+        vec![ImportEdge {
+            module: "Init.Core".to_string(),
+            import_all: false,
+            is_exported: true,
+            is_meta: false,
+        }],
+    );
+    let ok_rep = c_ok
+        .inspect(InspectorRequest::TargetAudit {
+            request: f_ok.request.clone(),
+        })
+        .unwrap();
+    assert_eq!(ok_rep["replay"], true, "{ok_rep}");
+}
+
+/// Verifies `targetAudit` admission guards on uninventoried library and
+/// source `extraConstNames` declarations using never-reached theorems so
+/// downstream reach-time checks cannot mask regressions.
+#[test]
+fn target_audit_rejects_uninventoried_library_and_source_extra_helpers() {
+    use std::collections::BTreeMap;
+
+    use anneal_audit::{ImportEdge, ModuleArtifacts};
+
+    let f_src = Fixture::new(PROOF);
+    let mut c_src = f_src.accepted_checker();
+    let adm_src = c_src.admitted().unwrap();
+    let dep_src = adm_src.foundation_modules().into_iter().next().unwrap().to_owned();
+    let lib_src_olean = c_src.stage().join("lib/LibSrc.olean");
+    let cap_src_olean = c_src.stage().join("lib/Captured.olean");
+    let forge_src = c_src.stage().join("ForgeSourceUninventoriedLib.lean");
+    run_lean_script(
+        &mut c_src,
+        "forge-source-uninventoried-lib",
+        &forge_src,
+        &format!(
+            "import Lean\n\
+             open Lean in\n\
+             def main : IO Unit := do\n  \
+               let libMd : ModuleData := {{\n    \
+                 isModule := false, imports := #[{{ module := `{dep_src} }}],\n    \
+                 constNames := #[], constants := #[],\n    \
+                 extraConstNames := #[`LibSrc.uninv], entries := #[] }}\n  \
+               saveModuleData (System.FilePath.mk {:?}) `LibSrc libMd\n  \
+               let capPath := System.FilePath.mk {:?}\n  \
+               let (capData, _) ← readModuleData capPath\n  \
+               let uninvThm : ConstantInfo := .thmInfo {{\n    \
+                 name := `LibSrc.uninv, levelParams := [],\n    \
+                 type := .const `True [], value := .const `True.intro [],\n    \
+                 all := [`LibSrc.uninv] }}\n  \
+               saveModuleData capPath `Captured {{ capData with\n    \
+                 imports := capData.imports.push {{ module := `LibSrc }},\n    \
+                 constNames := capData.constNames.push `LibSrc.uninv,\n    \
+                 constants := capData.constants.push uninvThm }}\n",
+            lib_src_olean.to_string_lossy(),
+            cap_src_olean.to_string_lossy(),
+        ),
+    );
+    let lib_src_avail = BTreeMap::from([("olean", lib_src_olean.to_string_lossy().into_owned())]);
+    let lib_src_arts = ModuleArtifacts::from_available(&lib_src_avail, "fixture", String::new).unwrap();
+    let adm_src_mut = c_src.admitted_mut().unwrap();
+    adm_src_mut.artifacts.insert("LibSrc".into(), lib_src_arts);
+    adm_src_mut.library_modules.insert("LibSrc".into());
+    let dep_edge = ImportEdge {
+        module: dep_src,
+        import_all: false,
+        is_exported: true,
+        is_meta: false,
+    };
+    adm_src_mut.graph.insert("LibSrc".into(), vec![dep_edge]);
+    adm_src_mut.graph.get_mut("Captured").unwrap().push(ImportEdge {
+        module: "LibSrc".into(),
+        import_all: false,
+        is_exported: true,
+        is_meta: false,
+    });
+    reject_inspected(
+        &mut c_src,
+        f_src.request.clone(),
+        "uninventoried target library dependency LibSrc.uninv",
+    );
+
+    let f_prf = Fixture::new(PROOF);
+    let mut c_prf = f_prf.accepted_checker();
+    let adm_prf = c_prf.admitted().unwrap();
+    let dep_prf = adm_prf.foundation_modules().into_iter().next().unwrap().to_owned();
+    let lib1_olean = c_prf.stage().join("lib/LibPrf1.olean");
+    let lib2_olean = c_prf.stage().join("lib/LibPrf2.olean");
+    let prf_olean = c_prf.stage().join("lib/Proof.olean");
+    let forge_prf = c_prf.stage().join("ForgeProofUninventoriedLib.lean");
+    run_lean_script(
+        &mut c_prf,
+        "forge-proof-uninventoried-lib",
+        &forge_prf,
+        &format!(
+            "import Lean\n\
+             open Lean in\n\
+             def main : IO Unit := do\n  \
+               let uninvThm : ConstantInfo := .thmInfo {{\n    \
+                 name := `LibPrf1.uninv, levelParams := [],\n    \
+                 type := .const `True [], value := .const `True.intro [],\n    \
+                 all := [`LibPrf1.uninv] }}\n  \
+               saveModuleData (System.FilePath.mk {:?}) `LibPrf1 {{\n    \
+                 isModule := false, imports := #[{{ module := `{dep_prf} }}],\n    \
+                 constNames := #[], constants := #[],\n    \
+                 extraConstNames := #[`LibPrf1.uninv], entries := #[] }}\n  \
+               saveModuleData (System.FilePath.mk {:?}) `LibPrf2 {{\n    \
+                 isModule := false,\n    \
+                 imports := #[{{ module := `{dep_prf} }}, {{ module := `LibPrf1 }}],\n    \
+                 constNames := #[`LibPrf1.uninv], constants := #[uninvThm],\n    \
+                 extraConstNames := #[], entries := #[] }}\n  \
+               let prfPath := System.FilePath.mk {:?}\n  \
+               let (prfData, _) ← readModuleData prfPath\n  \
+               saveModuleData prfPath `Proof {{ prfData with\n    \
+                 constNames := prfData.constNames.push `LibPrf1.uninv,\n    \
+                 constants := prfData.constants.push uninvThm }}\n",
+            lib1_olean.to_string_lossy(),
+            lib2_olean.to_string_lossy(),
+            prf_olean.to_string_lossy(),
+        ),
+    );
+    let lib1_arts = ModuleArtifacts::from_available(
+        &BTreeMap::from([("olean", lib1_olean.to_string_lossy().into_owned())]),
+        "fixture",
+        String::new,
+    )
+    .unwrap();
+    let lib2_arts = ModuleArtifacts::from_available(
+        &BTreeMap::from([("olean", lib2_olean.to_string_lossy().into_owned())]),
+        "fixture",
+        String::new,
+    )
+    .unwrap();
+    let adm_prf_mut = c_prf.admitted_mut().unwrap();
+    adm_prf_mut.artifacts.insert("LibPrf1".into(), lib1_arts);
+    adm_prf_mut.artifacts.insert("LibPrf2".into(), lib2_arts);
+    adm_prf_mut.library_modules.insert("LibPrf1".into());
+    adm_prf_mut.library_modules.insert("LibPrf2".into());
+    let dep_prf_edge = ImportEdge {
+        module: dep_prf,
+        import_all: false,
+        is_exported: true,
+        is_meta: false,
+    };
+    adm_prf_mut.graph.insert("LibPrf1".into(), vec![dep_prf_edge.clone()]);
+    adm_prf_mut.graph.insert(
+        "LibPrf2".into(),
+        vec![
+            dep_prf_edge,
+            ImportEdge {
+                module: "LibPrf1".into(),
+                import_all: false,
+                is_exported: true,
+                is_meta: false,
+            },
+        ],
+    );
+    reject_inspected(
+        &mut c_prf,
+        f_prf.request.clone(),
+        "uninventoried target library dependency LibPrf1.uninv",
+    );
+
+    let f_extra = Fixture::new(PROOF);
+    let mut c_extra = f_extra.accepted_checker();
+    let cap_extra_olean = c_extra.stage().join("lib/Captured.olean");
+    let exp_extra_olean = c_extra.stage().join("lib/Expected.olean");
+    let forge_extra = c_extra.stage().join("ForgeSourceExtraConst.lean");
+    run_lean_script(
+        &mut c_extra,
+        "forge-source-extra-const",
+        &forge_extra,
+        &format!(
+            "import Lean\n\
+             open Lean in\n\
+             def main : IO Unit := do\n  \
+               let capPath := System.FilePath.mk {:?}\n  \
+               let (capData, _) ← readModuleData capPath\n  \
+               saveModuleData capPath `Captured {{ capData with\n    \
+                 extraConstNames := capData.extraConstNames.push `Captured.irHelper }}\n  \
+               let expPath := System.FilePath.mk {:?}\n  \
+               let (expData, _) ← readModuleData expPath\n  \
+               let helperThm : ConstantInfo := .thmInfo {{\n    \
+                 name := `Captured.irHelper, levelParams := [],\n    \
+                 type := .const `True [], value := .const `True.intro [],\n    \
+                 all := [`Captured.irHelper] }}\n  \
+               saveModuleData expPath `Expected {{ expData with\n    \
+                 constNames := expData.constNames.push `Captured.irHelper,\n    \
+                 constants := expData.constants.push helperThm }}\n",
+            cap_extra_olean.to_string_lossy(),
+            exp_extra_olean.to_string_lossy(),
+        ),
+    );
+    reject_inspected(
+        &mut c_extra,
+        f_extra.request.clone(),
+        "uninventoried kernel compiler helper Captured.irHelper",
+    );
+
+    // Reversed extra-name collisions: when an already-declared foundation,
+    // source, or library name appears in a later `.source` module's
+    // `extraConstNames` (absent from `modConsts`), `const2ModIdx` preserves the
+    // earlier owner, so `auditTarget` must still reject the checked-env
+    // collision regardless of `actualOrig`.
+    for (owner_kind, helper_sym, err_sub) in [
+        ("foundation", "True.intro", "uninventoried kernel compiler helper True.intro"),
+        ("source", "Captured.srcHelper", "uninventoried kernel compiler helper Captured.srcHelper"),
+        ("library", "LibSrc2.libHelper", "uninventoried kernel compiler helper LibSrc2.libHelper"),
+    ] {
+        let f_rev = Fixture::new(PROOF);
+        let mut c_rev = f_rev.accepted_checker();
+        let dep_rev = c_rev.admitted().unwrap().foundation_modules().into_iter().next().unwrap().to_owned();
+        let lib2_rev_olean = c_rev.stage().join("lib/LibSrc2.olean");
+        let cap_rev_olean = c_rev.stage().join("lib/Captured.olean");
+        let exp_rev_olean = c_rev.stage().join("lib/Expected.olean");
+        let forge_rev = c_rev.stage().join(format!("ForgeRevExtra_{owner_kind}.lean"));
+        run_lean_script(
+            &mut c_rev,
+            &format!("forge-rev-extra-{owner_kind}"),
+            &forge_rev,
+            &format!(
+                "import Lean\n\
+                 open Lean in\n\
+                 def main : IO Unit := do\n  \
+                   let helperName := `{helper_sym}\n  \
+                   let helperThm : ConstantInfo := .thmInfo {{\n    \
+                     name := helperName, levelParams := [],\n    \
+                     type := .const `True [], value := .const `True.intro [],\n    \
+                     all := [helperName] }}\n  \
+                   let capPath := System.FilePath.mk {:?}\n  \
+                   let (capData, _) ← readModuleData capPath\n  \
+                   let expPath := System.FilePath.mk {:?}\n  \
+                   let (expData, _) ← readModuleData expPath\n  \
+                   if {:?} == \"foundation\" then\n    \
+                     saveModuleData expPath `Expected {{ expData with\n      \
+                       extraConstNames := expData.extraConstNames.push helperName }}\n  \
+                   else if {:?} == \"source\" then\n    \
+                     saveModuleData capPath `Captured {{ capData with\n      \
+                       constNames := capData.constNames.push helperName,\n      \
+                       constants := capData.constants.push helperThm }}\n    \
+                     saveModuleData expPath `Expected {{ expData with\n      \
+                       extraConstNames := expData.extraConstNames.push helperName }}\n  \
+                   else\n    \
+                     saveModuleData (System.FilePath.mk {:?}) `LibSrc2 {{\n      \
+                       isModule := false, imports := #[{{ module := `{dep_rev} }}],\n      \
+                       constNames := #[helperName], constants := #[helperThm],\n      \
+                       extraConstNames := #[], entries := #[] }}\n    \
+                     saveModuleData capPath `Captured {{ capData with\n      \
+                       imports := capData.imports.push {{ module := `LibSrc2 }},\n      \
+                       extraConstNames := capData.extraConstNames.push helperName }}\n",
+                cap_rev_olean.to_string_lossy(),
+                exp_rev_olean.to_string_lossy(),
+                owner_kind,
+                owner_kind,
+                lib2_rev_olean.to_string_lossy(),
+            ),
+        );
+        if owner_kind == "library" {
+            let lib2_arts = ModuleArtifacts::from_available(
+                &BTreeMap::from([("olean", lib2_rev_olean.to_string_lossy().into_owned())]),
+                "fixture",
+                String::new,
+            )
+            .unwrap();
+            let adm_rev = c_rev.admitted_mut().unwrap();
+            adm_rev.artifacts.insert("LibSrc2".into(), lib2_arts);
+            adm_rev.library_modules.insert("LibSrc2".into());
+            adm_rev.graph.insert(
+                "LibSrc2".into(),
+                vec![ImportEdge {
+                    module: dep_rev,
+                    import_all: false,
+                    is_exported: true,
+                    is_meta: false,
+                }],
+            );
+            adm_rev.graph.get_mut("Captured").unwrap().push(ImportEdge {
+                module: "LibSrc2".into(),
+                import_all: false,
+                is_exported: true,
+                is_meta: false,
+            });
+        }
+        reject_inspected(&mut c_rev, f_rev.request.clone(), err_sub);
+    }
+}
+
+/// Under `--allow-sorry-in-proof`, a `.source .proof` alternate body
+/// referencing `sorryAx`:
+/// 1. still enqueues non-`sorryAx` dependencies into `phase2Roots` (rejecting
+///    unapproved axioms and tampered helpers fail-closed);
+/// 2. still undergoes fresh kernel typechecking via `checkAlternateProofs`
+///    (and `phase2Roots` replay when `idx == 0` across two `Proof` modules),
+///    rejecting ill-typed `sorryAx`-bearing alternate proof bodies fail-closed;
+/// 3. passes when the `sorryAx`-bearing alternate proof body is well-typed,
+///    recording the theorem in `sorryDeclarations`.
+#[test]
+fn target_audit_allow_sorry_alternate_keeps_non_sorry_deps_in_phase2() {
+    let mut f_sorry_alt_ax = Fixture::new(PROOF);
+    f_sorry_alt_ax.request.allow_sorry_in_proof = true;
+    let mut c_sorry_alt_ax = f_sorry_alt_ax.accepted_checker();
+    let sorry_alt_prefix = c_sorry_alt_ax.admitted().unwrap().prefix.clone();
+    let proof_sorry_ax_olean = c_sorry_alt_ax.stage().join("lib/Proof.olean");
+    let sorry_ax_script = c_sorry_alt_ax.stage().join("ForgeProofSorryAltAxiom.lean");
+    run_lean_script(
+        &mut c_sorry_alt_ax,
+        "forge-proof-sorry-alt-axiom",
+        &sorry_ax_script,
+        &format!(
+            "import Lean\n\
+             open Lean in\n\
+             def main : IO Unit := do\n  \
+               initSearchPath (System.FilePath.mk {:?})\n  \
+               let env ← importModules #[{{ module := `Init.Core }}] {{}} \
+                 (trustLevel := 0) (plugins := #[]) (loadExts := false) \
+                 (level := .private)\n  \
+               let some (.thmInfo flipTv) := env.checked.get.find? `flip.eq_1 \
+                 | throw (IO.userError \"missing flip.eq_1\")\n  \
+               let (data, _) ← readModuleData (System.FilePath.mk {:?})\n  \
+               let badAx : ConstantInfo := .axiomInfo {{\n    \
+                 name := `Proof.badAxiom, levelParams := [],\n    \
+                 type := .const `True [], isUnsafe := false }}\n  \
+               let sorryTerm := mkApp2 (.const `sorryAx [.zero]) \
+                 (.const `True []) (.const `Bool.false [])\n  \
+               let wrapped := Expr.letE `_s (.const `True []) sorryTerm\n    \
+                 (Expr.letE `_a (.const `True []) (.const `Proof.badAxiom []) \
+                   flipTv.value false) false\n  \
+               let forgedFlip : ConstantInfo := .thmInfo {{ flipTv with value := wrapped }}\n  \
+               saveModuleData (System.FilePath.mk {:?}) `Proof {{ data with\n    \
+                 constNames := (data.constNames.push `Proof.badAxiom).push `flip.eq_1,\n    \
+                 constants := (data.constants.push badAx).push forgedFlip }}\n",
+            sorry_alt_prefix.to_string_lossy(),
+            proof_sorry_ax_olean.to_string_lossy(),
+            proof_sorry_ax_olean.to_string_lossy()
+        ),
+    );
+    reject_inspected(
+        &mut c_sorry_alt_ax,
+        f_sorry_alt_ax.request.clone(),
+        "unapproved axiom Proof.badAxiom from Proof",
+    );
+
+    let mut f_sorry_alt_bad = Fixture::new(PROOF);
+    f_sorry_alt_bad.request.allow_sorry_in_proof = true;
+    let mut c_sorry_alt_bad = f_sorry_alt_bad.accepted_checker();
+    let sorry_bad_prefix = c_sorry_alt_bad.admitted().unwrap().prefix.clone();
+    let proof_sorry_bad_olean = c_sorry_alt_bad.stage().join("lib/Proof.olean");
+    let sorry_bad_script = c_sorry_alt_bad.stage().join("ForgeProofSorryAltBadHelper.lean");
+    run_lean_script(
+        &mut c_sorry_alt_bad,
+        "forge-proof-sorry-alt-bad-helper",
+        &sorry_bad_script,
+        &format!(
+            "import Lean\n\
+             open Lean in\n\
+             def main : IO Unit := do\n  \
+               initSearchPath (System.FilePath.mk {:?})\n  \
+               let env ← importModules #[{{ module := `Init.Core }}] {{}} \
+                 (trustLevel := 0) (plugins := #[]) (loadExts := false) \
+                 (level := .private)\n  \
+               let some (.thmInfo flipTv) := env.checked.get.find? `flip.eq_1 \
+                 | throw (IO.userError \"missing flip.eq_1\")\n  \
+               let (data, _) ← readModuleData (System.FilePath.mk {:?})\n  \
+               let badHelper : ConstantInfo := .thmInfo {{\n    \
+                 name := `Proof.badHelper, levelParams := [],\n    \
+                 type := .const `True [], value := .const `Bool.true [],\n    \
+                 all := [`Proof.badHelper] }}\n  \
+               let sorryTerm := mkApp2 (.const `sorryAx [.zero]) \
+                 (.const `True []) (.const `Bool.false [])\n  \
+               let wrapped := Expr.letE `_s (.const `True []) sorryTerm\n    \
+                 (Expr.letE `_h (.const `True []) (.const `Proof.badHelper []) \
+                   flipTv.value false) false\n  \
+               let forgedFlip : ConstantInfo := .thmInfo {{ flipTv with value := wrapped }}\n  \
+               saveModuleData (System.FilePath.mk {:?}) `Proof {{ data with\n    \
+                 constNames := (data.constNames.push `Proof.badHelper).push `flip.eq_1,\n    \
+                 constants := (data.constants.push badHelper).push forgedFlip }}\n",
+            sorry_bad_prefix.to_string_lossy(),
+            proof_sorry_bad_olean.to_string_lossy(),
+            proof_sorry_bad_olean.to_string_lossy()
+        ),
+    );
+    let replay_err = c_sorry_alt_bad
+        .inspect(anneal_audit::InspectorRequest::TargetAudit {
+            request: f_sorry_alt_bad.request.clone(),
+        })
+        .unwrap_err();
+    assert_eq!(replay_err.code, 2, "{replay_err}");
+    assert!(
+        replay_err
+            .message
+            .contains("kernel replay rejected target dependency")
+            && replay_err.message.contains("Proof.badHelper"),
+        "expected kernel replay rejection on Proof.badHelper, got: {replay_err}"
+    );
+
+    // 3. Under `--allow-sorry-in-proof`, an ill-typed `sorryAx`-bearing
+    //    `.source .proof` alternate (`idx == 1` overriding `.foundation`
+    //    `flip.eq_1`) MUST still undergo fresh kernel typechecking via
+    //    `checkAlternateProofs` and fail closed.
+    let mut f_sorry_ill = Fixture::new(PROOF);
+    f_sorry_ill.request.allow_sorry_in_proof = true;
+    let mut c_sorry_ill = f_sorry_ill.accepted_checker();
+    let sorry_ill_prefix = c_sorry_ill.admitted().unwrap().prefix.clone();
+    let proof_sorry_ill_olean = c_sorry_ill.stage().join("lib/Proof.olean");
+    let sorry_ill_script = c_sorry_ill.stage().join("ForgeProofSorryAltIllTyped.lean");
+    run_lean_script(
+        &mut c_sorry_ill,
+        "forge-proof-sorry-alt-ill-typed",
+        &sorry_ill_script,
+        &format!(
+            "import Lean\n\
+             open Lean in\n\
+             def main : IO Unit := do\n  \
+               initSearchPath (System.FilePath.mk {:?})\n  \
+               let env ← importModules #[{{ module := `Init.Core }}] {{}} \
+                 (trustLevel := 0) (plugins := #[]) (loadExts := false) \
+                 (level := .private)\n  \
+               let some (.thmInfo flipTv) := env.checked.get.find? `flip.eq_1 \
+                 | throw (IO.userError \"missing flip.eq_1\")\n  \
+               let (data, _) ← readModuleData (System.FilePath.mk {:?})\n  \
+               let sorryTerm := mkApp2 (.const `sorryAx [.zero]) \
+                 (.const `True []) (.const `Bool.false [])\n  \
+               let illBody := Expr.letE `_s (.const `True []) sorryTerm \
+                 (.const `Bool.true []) false\n  \
+               let forgedFlip : ConstantInfo := .thmInfo {{ flipTv with value := illBody }}\n  \
+               saveModuleData (System.FilePath.mk {:?}) `Proof {{ data with\n    \
+                 constNames := data.constNames.push `flip.eq_1,\n    \
+                 constants := data.constants.push forgedFlip }}\n",
+            sorry_ill_prefix.to_string_lossy(),
+            proof_sorry_ill_olean.to_string_lossy(),
+            proof_sorry_ill_olean.to_string_lossy()
+        ),
+    );
+    let ill_err = c_sorry_ill
+        .inspect(anneal_audit::InspectorRequest::TargetAudit {
+            request: f_sorry_ill.request.clone(),
+        })
+        .unwrap_err();
+    assert_eq!(ill_err.code, 2, "{ill_err}");
+    assert!(
+        ill_err
+            .message
+            .contains("kernel operation failed (alternate pinned theorem proof check flip.eq_1)")
+            && ill_err.message.contains("declaration type mismatch"),
+        "expected checkAlternateProofs rejection on ill-typed sorryAx alternate flip.eq_1, got: {ill_err}"
+    );
+
+    // 4. Across two `.source .proof` modules (`ProofHelper` `idx == 0` and
+    //    `Proof` `idx == 1`), when `Proof.verify` never references
+    //    `ProofHelper.unused` and both exports carry `sorryAx`-bearing
+    //    alternate bodies (`ProofHelper` ill-typed), `target-audit` enqueues
+    //    `idx == 0` into `phase2Roots` and both into `sourceAlternateProofs`,
+    //    rejecting fail-closed.
+    let mut f_two_proof = Fixture::new(
+        "prelude\nimport Expected\nimport Init.Data.BitVec.Lemmas\nimport ProofHelper\n\
+         theorem Proof.verify : Expected.claim := And.intro rfl BitVec.and_self\n",
+    );
+    f_two_proof.set(
+        "ProofHelper",
+        TargetRole::Proof,
+        "prelude\nimport Expected\ntheorem ProofHelper.unused : True := sorry\n",
+    );
+    f_two_proof.request.allow_sorry_in_proof = true;
+    let mut c_two_proof = f_two_proof.accepted_checker();
+    let helper_olean = c_two_proof.stage().join("lib/ProofHelper.olean");
+    let main_proof_olean = c_two_proof.stage().join("lib/Proof.olean");
+    let two_proof_script = c_two_proof.stage().join("ForgeTwoProofSorryAltIllTyped.lean");
+    run_lean_script(
+        &mut c_two_proof,
+        "forge-two-proof-sorry-alt-ill-typed",
+        &two_proof_script,
+        &format!(
+            "import Lean\n\
+             open Lean in\n\
+             def main : IO Unit := do\n  \
+               let helperPath := System.FilePath.mk {:?}\n  \
+               let (helperData, _) ← readModuleData helperPath\n  \
+               let sorryTrue := mkApp2 (.const `sorryAx [.zero]) \
+                 (.const `True []) (.const `Bool.false [])\n  \
+               let illBody := Expr.letE `_s (.const `True []) sorryTrue \
+                 (.const `Bool.true []) false\n  \
+               let helperAlt : ConstantInfo := .thmInfo {{\n    \
+                 name := `ProofHelper.unused, levelParams := [],\n    \
+                 type := .const `True [], value := illBody,\n    \
+                 all := [`ProofHelper.unused] }}\n  \
+               saveModuleData helperPath `ProofHelper {{ helperData with\n    \
+                 constants := helperData.constants.map fun ci =>\n      \
+                   if ci.name == `ProofHelper.unused then helperAlt else ci }}\n  \
+               let mainPath := System.FilePath.mk {:?}\n  \
+               let (mainData, _) ← readModuleData mainPath\n  \
+               let otherSorry := Expr.letE `_t (.const `True []) sorryTrue \
+                 (.const `True.intro []) false\n  \
+               let mainAlt : ConstantInfo := .thmInfo {{\n    \
+                 name := `ProofHelper.unused, levelParams := [],\n    \
+                 type := .const `True [], value := otherSorry,\n    \
+                 all := [`ProofHelper.unused] }}\n  \
+               saveModuleData mainPath `Proof {{ mainData with\n    \
+                 constNames := mainData.constNames.push `ProofHelper.unused,\n    \
+                 constants := mainData.constants.push mainAlt }}\n",
+            helper_olean.to_string_lossy(),
+            main_proof_olean.to_string_lossy()
+        ),
+    );
+    let two_err = c_two_proof
+        .inspect(anneal_audit::InspectorRequest::TargetAudit {
+            request: f_two_proof.request.clone(),
+        })
+        .unwrap_err();
+    assert_eq!(two_err.code, 2, "{two_err}");
+    assert!(
+        two_err
+            .message
+            .contains("kernel replay rejected target dependency")
+            && two_err.message.contains("ProofHelper.unused"),
+        "expected kernel replay rejection on idx == 0 ill-typed sorryAx alternate ProofHelper.unused, got: {two_err}"
+    );
+
+    // 5. Positive control: a well-typed `sorryAx`-bearing `.source .proof`
+    //    alternate overriding `.foundation` `flip.eq_1` passes fresh kernel
+    //    typechecking in `checkAlternateProofs` and records `flip.eq_1` in
+    //    `sorryDeclarations`.
+    let mut f_sorry_ok = Fixture::new(PROOF);
+    f_sorry_ok.request.allow_sorry_in_proof = true;
+    let mut c_sorry_ok = f_sorry_ok.accepted_checker();
+    let sorry_ok_prefix = c_sorry_ok.admitted().unwrap().prefix.clone();
+    let proof_sorry_ok_olean = c_sorry_ok.stage().join("lib/Proof.olean");
+    let sorry_ok_script = c_sorry_ok.stage().join("ForgeProofSorryAltWellTyped.lean");
+    run_lean_script(
+        &mut c_sorry_ok,
+        "forge-proof-sorry-alt-well-typed",
+        &sorry_ok_script,
+        &format!(
+            "import Lean\n\
+             open Lean in\n\
+             def main : IO Unit := do\n  \
+               initSearchPath (System.FilePath.mk {:?})\n  \
+               let env ← importModules #[{{ module := `Init.Core }}] {{}} \
+                 (trustLevel := 0) (plugins := #[]) (loadExts := false) \
+                 (level := .private)\n  \
+               let some (.thmInfo flipTv) := env.checked.get.find? `flip.eq_1 \
+                 | throw (IO.userError \"missing flip.eq_1\")\n  \
+               let (data, _) ← readModuleData (System.FilePath.mk {:?})\n  \
+               let sorryFlip := mkApp2 (.const `sorryAx [.zero]) \
+                 flipTv.type (.const `Bool.false [])\n  \
+               let forgedFlip : ConstantInfo := .thmInfo {{ flipTv with value := sorryFlip }}\n  \
+               saveModuleData (System.FilePath.mk {:?}) `Proof {{ data with\n    \
+                 constNames := data.constNames.push `flip.eq_1,\n    \
+                 constants := data.constants.push forgedFlip }}\n",
+            sorry_ok_prefix.to_string_lossy(),
+            proof_sorry_ok_olean.to_string_lossy(),
+            proof_sorry_ok_olean.to_string_lossy()
+        ),
+    );
+    let ok_rep = c_sorry_ok
+        .inspect(anneal_audit::InspectorRequest::TargetAudit {
+            request: f_sorry_ok.request.clone(),
+        })
+        .unwrap();
+    assert_eq!(ok_rep["replay"], true);
+    assert_eq!(ok_rep["exactType"], true);
+    assert!(
+        ok_rep["sorryDeclarations"]
+            .as_array()
+            .unwrap()
+            .iter()
+            .any(|n| n == "flip.eq_1"),
+        "expected flip.eq_1 in sorryDeclarations: {ok_rep}"
+    );
+
+    // 6. When a Phase-1 stored constant (`flip.eq_1` used by `Spec.specs`)
+    //    is sorry-free, a well-typed `sorryAx`-bearing `.source .proof`
+    //    alternate in `Proof.olean` enters `altSorryDecls` and must be rejected
+    //    by `TrustedBoundary.lean`'s post-Phase-1 check.
+    let mut f_sorry_phase1_alt = Fixture::new(
+        "prelude\nimport Expected\nimport Init.Data.BitVec.Lemmas\n\
+         theorem Proof.verify : Expected.claim := And.intro rfl BitVec.and_self\n",
+    );
+    f_sorry_phase1_alt.set(
+        "Spec",
+        TargetRole::Specification,
+        "prelude\nimport Model\n\
+         def Spec.specs (p : BitVec 8) : Prop :=\n  \
+           (fun (_ : flip Nat.add 0 1 = Nat.add 1 0) => BitVec.and p p = p)\n    \
+             (@flip.eq_1 Nat Nat Nat Nat.add 1 0)\n",
+    );
+    f_sorry_phase1_alt.request.allow_sorry_in_proof = true;
+    let mut c_sorry_phase1_alt = f_sorry_phase1_alt.accepted_checker();
+    let p1_alt_prefix = c_sorry_phase1_alt.admitted().unwrap().prefix.clone();
+    let proof_p1_alt_olean = c_sorry_phase1_alt.stage().join("lib/Proof.olean");
+    let p1_alt_script = c_sorry_phase1_alt.stage().join("ForgeProofSorryPhase1Alt.lean");
+    run_lean_script(
+        &mut c_sorry_phase1_alt,
+        "forge-proof-sorry-phase1-alt",
+        &p1_alt_script,
+        &format!(
+            "import Lean\n\
+             open Lean in\n\
+             def main : IO Unit := do\n  \
+               initSearchPath (System.FilePath.mk {:?})\n  \
+               let env ← importModules #[{{ module := `Init.Core }}] {{}} \
+                 (trustLevel := 0) (plugins := #[]) (loadExts := false) \
+                 (level := .private)\n  \
+               let some (.thmInfo flipTv) := env.checked.get.find? `flip.eq_1 \
+                 | throw (IO.userError \"missing flip.eq_1\")\n  \
+               let (data, _) ← readModuleData (System.FilePath.mk {:?})\n  \
+               let sorryFlip := mkApp2 (.const `sorryAx [.zero]) \
+                 flipTv.type (.const `Bool.false [])\n  \
+               let forgedFlip : ConstantInfo := .thmInfo {{ flipTv with value := sorryFlip }}\n  \
+               saveModuleData (System.FilePath.mk {:?}) `Proof {{ data with\n    \
+                 constNames := data.constNames.push `flip.eq_1,\n    \
+                 constants := data.constants.push forgedFlip }}\n",
+            p1_alt_prefix.to_string_lossy(),
+            proof_p1_alt_olean.to_string_lossy(),
+            proof_p1_alt_olean.to_string_lossy()
+        ),
+    );
+    reject_inspected(
+        &mut c_sorry_phase1_alt,
+        f_sorry_phase1_alt.request.clone(),
+        "unapproved axiom sorryAx from Init.Prelude",
+    );
+}
+
+/// Verifies `inspectSpecVacuity` handles `BitVec`, `Option`, `Exists`, `Nat.le`
+/// and `BitVec` inequalities/disjunctions while avoiding false positives on
+/// uninhabited `Fin 0` and custom opaque orderings, and surfaces truncation on
+/// opaque or over-long captured programs.
+#[test]
+fn inspect_spec_vacuity_handles_bitvec_option_exists_le_and_fin0() {
+    let make_specs_fixture = |spec_expr: &str| {
+        let mut f = Fixture::new(
+            "prelude\nimport Expected\n\
+             theorem Proof.verify : Expected.claim := ⟨rfl, .inr trivial, .inr trivial⟩\n",
+        );
+        f.set(
+            "Model",
+            TargetRole::Model,
+            "prelude\nimport Init.Data.BitVec.Basic\n\
+             namespace Trusted.MirAst\n\
+             structure Program where\n  \
+               bodies : List Nat\n  \
+               pointerWidthBits : Nat\n  \
+               mirProfileVersion : Nat\n  \
+               entryDefId : Nat\n  \
+               scope : Nat\n  \
+               overflowChecks : Bool\n  \
+               panicStrategy : Nat\n  \
+               hasLocalPanicHandler : Bool\n\
+             opaque customLe : Nat → Nat → Prop\n\
+             end Trusted.MirAst\n\
+             namespace Trusted.MirSemantics\n\
+             structure Val where\n  raw : Nat\n\
+             structure Specs where\n  \
+               safety : String → List Val → Prop\n  \
+               property : Trusted.MirAst.Program → Prop\n\
+             structure Crate where\n  \
+               program : Trusted.MirAst.Program\n  \
+               specs : Specs\n\
+             def UnitTheorem (c : Crate) : Prop :=\n  \
+               c.program.bodies = [] ∧ (c.specs.safety \"\" [] ∨ True) ∧ \
+                 (c.specs.property c.program ∨ True)\n\
+             end Trusted.MirSemantics\n",
+        );
+        f.set(
+            "Captured",
+            TargetRole::Capture,
+            "prelude\nimport Model\n\
+             def Captured.program : Trusted.MirAst.Program := ⟨[], 64, 1, 0, 0, false, 0, false⟩\n",
+        );
+        f.set("Spec", TargetRole::Specification, spec_expr);
+        f.set(
+            "Expected",
+            TargetRole::Expected,
+            "prelude\nimport Model\nimport Captured\nimport Spec\n\
+             def Expected.claim : Prop :=\n  \
+               Trusted.MirSemantics.UnitTheorem\n    \
+                 (Trusted.MirSemantics.Crate.mk Captured.program Spec.specs)\n",
+        );
+        f
+    };
+
+    let rep_bv = make_specs_fixture(
+        "prelude\nimport Model\n\
+         def Spec.specs : Trusted.MirSemantics.Specs :=\n  \
+           ⟨fun _ _ => (∀ _x : BitVec 64, False) ∨ (∀ _o : Option Nat, 1 ≤ 0) ∨ \
+             BitVec.ofNat 64 0 = BitVec.ofNat 64 1,\n   \
+            fun _p => ∃ _b : BitVec 64, True⟩\n",
+    )
+    .run()
+    .unwrap();
+    assert!(
+        rep_bv["specWarnings"]
+            .as_array()
+            .unwrap()
+            .iter()
+            .any(|w| w["code"] == "unsatisfiable_safety"),
+        "expected BitVec/Option/Nat.le unsatisfiable_safety: {rep_bv}"
+    );
+    assert!(
+        rep_bv["specWarnings"]
+            .as_array()
+            .unwrap()
+            .iter()
+            .any(|w| w["code"] == "trivial_property"),
+        "expected Exists BitVec trivial_property: {rep_bv}"
+    );
+
+    // 2. Uninhabited `Fin 0`, modulo-wrapping `(256 : BitVec 8) = 0`, and
+    //    custom opaque `LE Nat` must NOT emit `unsatisfiable_safety`.
+    let rep_non_vacuous = make_specs_fixture(
+        "prelude\nimport Model\n\
+         def Spec.specs : Trusted.MirSemantics.Specs :=\n  \
+           ⟨fun _ _ => (∀ _x : Fin 0, False) ∧\n      \
+              (256 : BitVec 8) = (0 : BitVec 8) ∧\n      \
+              (letI : LE Nat := ⟨Trusted.MirAst.customLe⟩; (1 : Nat) ≤ (0 : Nat)),\n   \
+            fun p => p.bodies = []⟩\n",
+    )
+    .run()
+    .unwrap();
+    assert_eq!(
+        rep_non_vacuous["specWarnings"],
+        serde_json::json!([]),
+        "unexpected vacuity warning on Fin 0 / wrapping BitVec / custom LE: {rep_non_vacuous}"
+    );
+
+    // 3. Inhabited `Fin 1` in `∀ _ : Fin 1, False` triggers
+    //    `unsatisfiable_safety`, while `(256 : BitVec 8) = 0` in `property`
+    //    triggers `trivial_property`.
+    let rep_fin1 = make_specs_fixture(
+        "prelude\nimport Model\n\
+         def Spec.specs : Trusted.MirSemantics.Specs :=\n  \
+           ⟨fun _ _ => ∀ _x : Fin 1, False,\n   \
+            fun _p => (256 : BitVec 8) = (0 : BitVec 8)⟩\n",
+    )
+    .run()
+    .unwrap();
+    let fin1_warnings = rep_fin1["specWarnings"].as_array().unwrap();
+    assert!(
+        fin1_warnings.iter().any(|w| w["code"] == "unsatisfiable_safety"),
+        "expected Fin 1 unsatisfiable_safety: {rep_fin1}"
+    );
+    assert!(
+        fin1_warnings.iter().any(|w| w["code"] == "trivial_property"),
+        "expected trivial_property on (256 : BitVec 8) = 0: {rep_fin1}"
+    );
+
+    // 4. `Trusted.MirSemantics.Val` is recognized as an inhabited domain.
+    let rep_val = make_specs_fixture(
+        "prelude\nimport Model\n\
+         def Spec.specs : Trusted.MirSemantics.Specs :=\n  \
+           ⟨fun _ _ => ∀ _v : Trusted.MirSemantics.Val, False, fun p => p.bodies = []⟩\n",
+    )
+    .run()
+    .unwrap();
+    assert!(
+        rep_val["specWarnings"]
+            .as_array()
+            .unwrap()
+            .iter()
+            .any(|w| w["code"] == "unsatisfiable_safety"),
+        "expected Trusted.MirSemantics.Val unsatisfiable_safety: {rep_val}"
+    );
+}
+
+/// Verifies `inspectSpecVacuity` reduces concrete `BitVec` strict inequalities
+/// into `Nat.le` and emits `vacuity_check_truncated` for opaque or >256-body
+/// captured programs.
+#[test]
+fn inspect_spec_vacuity_checks_bitvec_lt_and_truncation() {
+    let mut f_bv_lt = Fixture::new(
+        "prelude\nimport Expected\n\
+         theorem Proof.verify : Expected.claim := ⟨.inr trivial, .inr trivial⟩\n",
+    );
+    f_bv_lt.set(
+        "Model",
+        TargetRole::Model,
+        "prelude\nimport Init.Data.BitVec.Basic\n\
+         namespace Trusted.MirAst\n\
+         structure Program where\n  \
+           bodies : List Nat\n  \
+           pointerWidthBits : Nat\n  \
+           mirProfileVersion : Nat\n  \
+           entryDefId : Nat\n  \
+           scope : Nat\n  \
+           overflowChecks : Bool\n  \
+           panicStrategy : Nat\n  \
+           hasLocalPanicHandler : Bool\n\
+         end Trusted.MirAst\n\
+         namespace Trusted.MirSemantics\n\
+         structure Val where\n  raw : Nat\n\
+         structure Specs where\n  \
+           safety : String → List Val → Prop\n  \
+           property : Trusted.MirAst.Program → Prop\n\
+         structure Crate where\n  \
+           program : Trusted.MirAst.Program\n  \
+           specs : Specs\n\
+         def UnitTheorem (c : Crate) : Prop :=\n  \
+           (c.specs.safety \"\" [] ∨ True) ∧ (c.specs.property c.program ∨ True)\n\
+         end Trusted.MirSemantics\n",
+    );
+    f_bv_lt.set(
+        "Captured",
+        TargetRole::Capture,
+        "prelude\nimport Model\n\
+         def Captured.program : Trusted.MirAst.Program := ⟨[], 64, 1, 0, 0, false, 0, false⟩\n",
+    );
+    f_bv_lt.set(
+        "Spec",
+        TargetRole::Specification,
+        "prelude\nimport Model\n\
+         def Spec.specs : Trusted.MirSemantics.Specs :=\n  \
+           ⟨fun _ _ => (1 : BitVec 8) < (0 : BitVec 8), fun p => p.bodies = []⟩\n",
+    );
+    f_bv_lt.set(
+        "Expected",
+        TargetRole::Expected,
+        "prelude\nimport Model\nimport Captured\nimport Spec\n\
+         def Expected.claim : Prop :=\n  \
+           Trusted.MirSemantics.UnitTheorem\n    \
+             (Trusted.MirSemantics.Crate.mk Captured.program Spec.specs)\n",
+    );
+    f_bv_lt.set(
+        "Proof",
+        TargetRole::Proof,
+        "prelude\nimport Expected\n\
+         theorem Proof.verify : Expected.claim := ⟨.inr trivial, .inr trivial⟩\n",
+    );
+    let rep_bv_lt = f_bv_lt.run().unwrap();
+    assert!(
+        rep_bv_lt["specWarnings"]
+            .as_array()
+            .unwrap()
+            .iter()
+            .any(|w| w["code"] == "unsatisfiable_safety"),
+        "expected (1 : BitVec 8) < 0 unsatisfiable_safety: {rep_bv_lt}"
+    );
+
+    // 2. Non-reducible `Captured.program.bodies` list emits
+    //    `vacuity_check_truncated` rather than dropping `Specs.safety`
+    //    per-body checks silently, while an opaque outer `Captured.program`
+    //    fails closed with `unexpected Program constructor`.
+    let make_trunc_prog_fixture = |extra_decl: &str, prog_expr: &str| {
+        let mut f = Fixture::new(
+            "prelude\nimport Expected\n\
+             theorem Proof.verify : Expected.claim := ⟨.inr trivial, .inr trivial⟩\n",
+        );
+        f.set(
+            "Model",
+            TargetRole::Model,
+            &format!(
+                "prelude\nimport Init.Data.BitVec.Basic\n\
+                 namespace Trusted.MirAst\n\
+                 structure Program where\n  \
+                   bodies : List Nat\n  \
+                   pointerWidthBits : Nat\n  \
+                   mirProfileVersion : Nat\n  \
+                   entryDefId : Nat\n  \
+                   scope : Nat\n  \
+                   overflowChecks : Bool\n  \
+                   panicStrategy : Nat\n  \
+                   hasLocalPanicHandler : Bool\n\
+                 {extra_decl}\
+                 end Trusted.MirAst\n\
+                 namespace Trusted.MirSemantics\n\
+                 structure Val where\n  raw : Nat\n\
+                 structure Specs where\n  \
+                   safety : String → List Val → Prop\n  \
+                   property : Trusted.MirAst.Program → Prop\n\
+                 structure Crate where\n  \
+                   program : Trusted.MirAst.Program\n  \
+                   specs : Specs\n\
+                 def UnitTheorem (c : Crate) : Prop :=\n  \
+                   (c.specs.safety \"\" [] ∨ True) ∧ (c.specs.property c.program ∨ True)\n\
+                 end Trusted.MirSemantics\n"
+            ),
+        );
+        f.set(
+            "Captured",
+            TargetRole::Capture,
+            &format!("prelude\nimport Model\ndef Captured.program : Trusted.MirAst.Program := {prog_expr}\n"),
+        );
+        f.set(
+            "Spec",
+            TargetRole::Specification,
+            "prelude\nimport Model\n\
+             def Spec.specs : Trusted.MirSemantics.Specs :=\n  \
+               ⟨fun _ _ => True, fun p => p.bodies = []⟩\n",
+        );
+        f.set(
+            "Expected",
+            TargetRole::Expected,
+            "prelude\nimport Model\nimport Captured\nimport Spec\n\
+             def Expected.claim : Prop :=\n  \
+               Trusted.MirSemantics.UnitTheorem\n    \
+                 (Trusted.MirSemantics.Crate.mk Captured.program Spec.specs)\n",
+        );
+        f.set(
+            "Proof",
+            TargetRole::Proof,
+            "prelude\nimport Expected\n\
+             theorem Proof.verify : Expected.claim := ⟨.inr trivial, .inr trivial⟩\n",
+        );
+        f
+    };
+    let f_trunc = make_trunc_prog_fixture(
+        "opaque opaqueBodies : List Nat := []\n",
+        "⟨Trusted.MirAst.opaqueBodies, 64, 1, 0, 0, false, 0, false⟩",
+    );
+    let rep_trunc = f_trunc.run().unwrap();
+    assert!(
+        rep_trunc["specWarnings"]
+            .as_array()
+            .unwrap()
+            .iter()
+            .any(|w| {
+                w["code"] == "vacuity_check_truncated"
+                    && w["message"]
+                        .as_str()
+                        .unwrap_or("")
+                        .contains("unreducible Captured.program.bodies list")
+            }),
+        "expected unreducible Captured.program.bodies vacuity_check_truncated: {rep_trunc}"
+    );
+    let f_opaque_prog = make_trunc_prog_fixture(
+        "opaque opaqueProg : Program := ⟨[], 64, 1, 0, 0, false, 0, false⟩\n",
+        "Trusted.MirAst.opaqueProg",
+    );
+    f_opaque_prog.reject_audit("unexpected Program constructor");
+
+    // 3. Captured program exceeding 256 bodies emits explicit
+    //    `vacuity_check_truncated` ("after 256 captured bodies").
+    let mut f_257 = Fixture::new(
+        "prelude\nimport Expected\n\
+         theorem Proof.verify : Expected.claim := ⟨.inr trivial, .inr trivial⟩\n",
+    );
+    f_257.set(
+        "Model",
+        TargetRole::Model,
+        "prelude\nimport Init.Data.BitVec.Basic\n\
+         namespace Trusted.MirAst\n\
+         structure Body where\n  \
+           argumentCount : Nat\n  \
+           locals : List Nat\n  \
+           basicBlocks : List Nat\n  \
+           isUnsafe : Bool\n  \
+           identity : String\n\
+         structure Program where\n  \
+           bodies : List Body\n  \
+           pointerWidthBits : Nat\n  \
+           mirProfileVersion : Nat\n  \
+           entryDefId : Nat\n  \
+           scope : String\n  \
+           overflowChecks : Bool\n  \
+           panicStrategy : Nat\n  \
+           hasLocalPanicHandler : Bool\n\
+         def app : List Body → List Body → List Body\n  \
+           | [], ys => ys\n  \
+           | x :: xs, ys => x :: app xs ys\n\
+         def sampleBody : Body := ⟨0, [], [], true, \"fn\"⟩\n\
+         def b1 : List Body := [sampleBody]\n\
+         def b2 : List Body := app b1 b1\n\
+         def b4 : List Body := app b2 b2\n\
+         def b8 : List Body := app b4 b4\n\
+         def b16 : List Body := app b8 b8\n\
+         def b32 : List Body := app b16 b16\n\
+         def b64 : List Body := app b32 b32\n\
+         def b128 : List Body := app b64 b64\n\
+         def b257 : List Body := sampleBody :: app b128 b128\n\
+         end Trusted.MirAst\n\
+         namespace Trusted.MirSemantics\n\
+         structure Val where\n  raw : Nat\n\
+         structure Specs where\n  \
+           safety : String → List Val → Prop\n  \
+           property : Trusted.MirAst.Program → Prop\n\
+         structure Crate where\n  \
+           program : Trusted.MirAst.Program\n  \
+           specs : Specs\n\
+         def UnitTheorem (c : Crate) : Prop :=\n  \
+           (c.specs.safety \"\" [] ∨ True) ∧ (c.specs.property c.program ∨ True)\n\
+         end Trusted.MirSemantics\n",
+    );
+    f_257.set(
+        "Captured",
+        TargetRole::Capture,
+        "prelude\nimport Model\n\
+         def Captured.program : Trusted.MirAst.Program :=\n  \
+           ⟨Trusted.MirAst.b257, 64, 1, 0, \"\", false, 0, false⟩\n",
+    );
+    f_257.set(
+        "Spec",
+        TargetRole::Specification,
+        "prelude\nimport Model\n\
+         def Spec.specs : Trusted.MirSemantics.Specs :=\n  \
+           ⟨fun _ _ => True, fun p => p.bodies = []⟩\n",
+    );
+    f_257.set(
+        "Expected",
+        TargetRole::Expected,
+        "prelude\nimport Model\nimport Captured\nimport Spec\n\
+         def Expected.claim : Prop :=\n  \
+           Trusted.MirSemantics.UnitTheorem\n    \
+             (Trusted.MirSemantics.Crate.mk Captured.program Spec.specs)\n",
+    );
+    f_257.set(
+        "Proof",
+        TargetRole::Proof,
+        "prelude\nimport Expected\n\
+         theorem Proof.verify : Expected.claim := ⟨.inr trivial, .inr trivial⟩\n",
+    );
+    let rep_257 = f_257.run().unwrap();
+    assert!(
+        rep_257["specWarnings"]
+            .as_array()
+            .unwrap()
+            .iter()
+            .any(|w| {
+                w["code"] == "vacuity_check_truncated"
+                    && w["message"]
+                        .as_str()
+                        .unwrap_or("")
+                        .contains("after 256 captured bodies")
+            }),
+        "expected after-256 vacuity_check_truncated: {rep_257}"
+    );
+
+    // 4. Unsafe bodies with empty `identity` (`""`) fall back to `body#<idx>`
+    //    across both `unsatisfiable_safety` and wide-body
+    //    `vacuity_check_truncated` (>32 args) so `validate_target_audit_report`
+    //    never rejects an empty `"body"` string operationally.
+    let mut f_empty_id = Fixture::new(
+        "prelude\nimport Expected\n\
+         theorem Proof.verify : Expected.claim := ⟨.inr trivial, .inr trivial⟩\n",
+    );
+    f_empty_id.set(
+        "Model",
+        TargetRole::Model,
+        "prelude\nimport Init.Data.BitVec.Basic\n\
+         namespace Trusted.MirAst\n\
+         structure Body where\n  \
+           argumentCount : Nat\n  \
+           locals : List Nat\n  \
+           basicBlocks : List Nat\n  \
+           isUnsafe : Bool\n  \
+           identity : String\n\
+         structure Program where\n  \
+           bodies : List Body\n  \
+           pointerWidthBits : Nat\n  \
+           mirProfileVersion : Nat\n  \
+           entryDefId : Nat\n  \
+           scope : String\n  \
+           overflowChecks : Bool\n  \
+           panicStrategy : Nat\n  \
+           hasLocalPanicHandler : Bool\n\
+         end Trusted.MirAst\n\
+         namespace Trusted.MirSemantics\n\
+         structure Val where\n  raw : Nat\n\
+         structure Specs where\n  \
+           safety : String → List Val → Prop\n  \
+           property : Trusted.MirAst.Program → Prop\n\
+         structure Crate where\n  \
+           program : Trusted.MirAst.Program\n  \
+           specs : Specs\n\
+         def UnitTheorem (c : Crate) : Prop :=\n  \
+           (c.specs.safety \"\" [] ∨ True) ∧ (c.specs.property c.program ∨ True)\n\
+         end Trusted.MirSemantics\n",
+    );
+    f_empty_id.set(
+        "Captured",
+        TargetRole::Capture,
+        "prelude\nimport Model\n\
+         def Captured.program : Trusted.MirAst.Program :=\n  \
+           ⟨[⟨0, [], [], true, \"\"⟩, ⟨33, [], [], true, \"\"⟩], 64, 1, 0, \"\", false, 0, false⟩\n",
+    );
+    f_empty_id.set(
+        "Spec",
+        TargetRole::Specification,
+        "prelude\nimport Model\n\
+         def Spec.specs : Trusted.MirSemantics.Specs :=\n  \
+           ⟨fun id _ => if id == \"\" then False else True, fun p => p.bodies = []⟩\n",
+    );
+    f_empty_id.set(
+        "Expected",
+        TargetRole::Expected,
+        "prelude\nimport Model\nimport Captured\nimport Spec\n\
+         def Expected.claim : Prop :=\n  \
+           Trusted.MirSemantics.UnitTheorem\n    \
+             (Trusted.MirSemantics.Crate.mk Captured.program Spec.specs)\n",
+    );
+    let rep_empty_id = f_empty_id.run().unwrap();
+    let empty_id_warnings = rep_empty_id["specWarnings"].as_array().unwrap();
+    assert!(
+        empty_id_warnings
+            .iter()
+            .any(|w| w["code"] == "unsatisfiable_safety" && w["body"] == "body#0"),
+        "expected body#0 fallback on empty-identity unsatisfiable_safety: {rep_empty_id}"
+    );
+    assert!(
+        empty_id_warnings
+            .iter()
+            .any(|w| w["code"] == "vacuity_check_truncated" && w["body"] == "body#1"),
+        "expected body#1 fallback on empty-identity vacuity_check_truncated: {rep_empty_id}"
+    );
+
+    // 5. `SpecsV2` (`UnitTheoremV2` / `CrateV2` / `Query`) also emits
+    //    `vacuity_check_truncated` with `SpecsV2.safety` prefix when an unsafe
+    //    body exceeds `maxCheckedArgs` (`32`).
+    let mut f_v2_trunc = Fixture::new(
+        "prelude\nimport Expected\n\
+         theorem Proof.verify : Expected.claim := ⟨.inr trivial, .inr trivial⟩\n",
+    );
+    f_v2_trunc.request.canonical_root = "Trusted.MirSemantics.UnitTheoremV2".into();
+    f_v2_trunc.set(
+        "Model",
+        TargetRole::Model,
+        "prelude\nimport Init.Data.BitVec.Basic\n\
+         namespace Trusted.MirAst\n\
+         structure Body where\n  \
+           argumentCount : Nat\n  \
+           locals : List Nat\n  \
+           basicBlocks : List Nat\n  \
+           isUnsafe : Bool\n  \
+           identity : String\n\
+         structure Program where\n  \
+           bodies : List Body\n  \
+           pointerWidthBits : Nat\n  \
+           mirProfileVersion : Nat\n  \
+           entryDefId : Nat\n  \
+           scope : String\n  \
+           overflowChecks : Bool\n  \
+           panicStrategy : Nat\n  \
+           hasLocalPanicHandler : Bool\n\
+         end Trusted.MirAst\n\
+         namespace Trusted.MirSemantics\n\
+         structure Val where\n  raw : Nat\n\
+         structure CallerMemory where\n  raw : Nat\n\
+         structure Query where\n  \
+           args : List Val\n  \
+           callerMem : CallerMemory\n\
+         structure SpecsV2 where\n  \
+           safety : String → Query → Prop\n  \
+           property : Trusted.MirAst.Program → Prop\n\
+         structure Crate where\n  \
+           program : Trusted.MirAst.Program\n  \
+           specs : SpecsV2\n\
+         structure CrateV2 where\n  \
+           program : Trusted.MirAst.Program\n  \
+           specs : SpecsV2\n\
+         def UnitTheoremV2 (c : CrateV2) : Prop :=\n  \
+           (c.specs.safety \"\" ⟨[], ⟨0⟩⟩ ∨ True) ∧ (c.specs.property c.program ∨ True)\n\
+         end Trusted.MirSemantics\n",
+    );
+    f_v2_trunc.set(
+        "Captured",
+        TargetRole::Capture,
+        "prelude\nimport Model\n\
+         def Captured.program : Trusted.MirAst.Program :=\n  \
+           ⟨[⟨33, [], [], true, \"wide_v2_fn\"⟩], 64, 2, 0, \"\", false, 0, false⟩\n",
+    );
+    f_v2_trunc.set(
+        "Spec",
+        TargetRole::Specification,
+        "prelude\nimport Model\n\
+         def Spec.specs : Trusted.MirSemantics.SpecsV2 :=\n  \
+           ⟨fun _ _ => True, fun p => p.bodies = []⟩\n",
+    );
+    f_v2_trunc.set(
+        "Expected",
+        TargetRole::Expected,
+        "prelude\nimport Model\nimport Captured\nimport Spec\n\
+         def Expected.claim : Prop :=\n  \
+           Trusted.MirSemantics.UnitTheoremV2\n    \
+             (Trusted.MirSemantics.CrateV2.mk Captured.program Spec.specs)\n",
+    );
+    let rep_v2_trunc = f_v2_trunc.run().unwrap();
+    assert!(
+        rep_v2_trunc["specWarnings"]
+            .as_array()
+            .unwrap()
+            .iter()
+            .any(|w| {
+                w["code"] == "vacuity_check_truncated"
+                    && w["body"] == "wide_v2_fn"
+                    && w["message"]
+                        .as_str()
+                        .unwrap_or("")
+                        .contains("SpecsV2.safety per-body lint skipped unsafe body")
+            }),
+        "expected SpecsV2 vacuity_check_truncated: {rep_v2_trunc}"
+    );
 }

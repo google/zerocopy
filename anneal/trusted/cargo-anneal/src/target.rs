@@ -418,8 +418,12 @@ struct TargetSpecWarning {
 }
 
 /// Closed set of anti-vacuity lint warning codes emitted by `"target-audit"`.
-const VALID_SPEC_WARNING_CODES: &[&str] =
-    &["unsatisfiable_safety", "trivial_property", "unused_spec_binding"];
+const VALID_SPEC_WARNING_CODES: &[&str] = &[
+    "unsatisfiable_safety",
+    "trivial_property",
+    "unused_spec_binding",
+    "vacuity_check_truncated",
+];
 
 /// Strict typed schema for the `"result"` payload emitted by `"target-audit"`.
 ///

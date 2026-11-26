@@ -1769,9 +1769,10 @@ fn rustc_crate_type(crate_type: ir::CrateType) -> CrateType {
     }
 }
 
-/// Validate the captured compilation's optimization, debug-assertion,
-/// overflow-check, and UB-preservation flags, returning the numeric
-/// optimization level encoded in `ir::Configuration`.
+/// Validate the captured compilation's optimization level (`-Copt-level=0`),
+/// `-Zmir-opt-level=0`, debug-assertion, overflow-check, and UB-preservation
+/// flags, returning the numeric optimization level encoded in
+/// `ir::Configuration`.
 ///
 /// `rustc` defines `OptLevel::No` as `"-Copt-level=0"`, computes
 /// `"let debug_assertions = cg.debug_assertions.unwrap_or(opt_level ==`
@@ -1810,6 +1811,12 @@ fn validate_profile_options(opts: &Options, expected_overflow_checks: bool) -> R
     // RUSTC-WORKAROUND(#4365): MIR UB checks survive only under this flag.
     if !opts.unstable_opts.mir_preserve_ub {
         return Err("-Zmir-preserve-ub must be enabled during capture".into());
+    }
+    if opts.unstable_opts.mir_opt_level != Some(0) {
+        return Err(format!(
+            "-Zmir-opt-level=0 is required during capture (got {:?})",
+            opts.unstable_opts.mir_opt_level
+        ));
     }
     Ok(opt_level)
 }
@@ -2931,13 +2938,15 @@ pub(crate) fn run(
         // UB-preservation flag. Note that despite `options.rs`'s help text
         // ("implies -Zmir-opt-level=0"), `Session::mir_opt_level` inspects
         // only `mir_opt_level` and `optimize`, so `-Zmir-preserve-ub` does not
-        // force `-Zmir-opt-level=0` (Miri passes both flags separately).
+        // force `-Zmir-opt-level=0` (Miri passes both flags separately; pass
+        // `-Zmir-opt-level=0` explicitly alongside `-Zmir-preserve-ub`):
         // https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_mir_transform/src/remove_place_mention.rs#L10-L12
         // https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_mir_transform/src/simplify.rs#L128-L130
         // https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_mir_transform/src/simplify.rs#L304-L312
         // https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_session/src/session.rs#L617-L622
         // https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/src/tools/miri/src/lib.rs#L183-L188
         "-Zmir-preserve-ub".into(),
+        "-Zmir-opt-level=0".into(),
         // Enforce the closed positive feature allowlist inside `rustc`'s own
         // expansion-time feature collector as defense in depth alongside
         // `validate_active_crate_features` and `check_allowed_features`. For
@@ -3058,6 +3067,7 @@ mod tests {
         opts.debug_assertions = false;
         opts.cg.overflow_checks = Some(false);
         opts.unstable_opts.mir_preserve_ub = true;
+        opts.unstable_opts.mir_opt_level = Some(0);
         opts.unstable_opts.allow_features = Some(vec![String::new()]);
         opts
     }
@@ -3218,6 +3228,20 @@ mod tests {
             )
             .unwrap_err();
             assert!(err.contains("-Coverflow-checks=yes"), "{overflow:?}: {err}");
+        }
+
+        for mir_opt in [None, Some(1), Some(2)] {
+            let mut mir_opts = valid_capture_options(CrateType::Rlib);
+            mir_opts.unstable_opts.mir_opt_level = mir_opt;
+            let err = validate_compiler_options(
+                &mir_opts,
+                ir::CrateType::Lib,
+                ir::PanicStrategy::Unwind,
+                false,
+                FeaturePolicy::Normal(&[]),
+            )
+            .unwrap_err();
+            assert!(err.contains("-Zmir-opt-level=0"), "{mir_opt:?}: {err}");
         }
     }
 

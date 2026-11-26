@@ -22,8 +22,9 @@ in temporary directories (never modifying the repository working tree):
 
 1. Against the unmodified TCB sources, every negative refutation theorem in
    `ci/fixtures/guard_mutation/` must compile with zero errors, and every
-   negative header fixture must be rejected by `TrustedBoundary.lean` with a
-   policy error (`exit 1`, `"category": "policy"`).
+   negative header or boundary fixture must be rejected by
+   `TrustedBoundary.lean` with a policy error (`exit 1`,
+   `"category": "policy"`).
 2. For each cataloged guard, the runner disables only that guard inside a fresh
    `tempfile.TemporaryDirectory()` copy, confirms that the mutated TCB module
    and positive sanity checks still compile cleanly (preventing syntax or type
@@ -35,9 +36,9 @@ in temporary directories (never modifying the repository working tree):
 What this check guarantees — and what it does NOT guarantee
 -----------------------------------------------------------
 
-- **Guarantees:** Every guard explicitly listed in `MIR_SEMANTICS_GUARDS` and
-  `AUDIT_HEADER_GUARDS` is active, non-redundant, and genuinely exercised by a
-  negative refutation or negative auditor fixture.
+- **Guarantees:** Every guard explicitly listed in `MIR_SEMANTICS_GUARDS`,
+  `AUDIT_HEADER_GUARDS`, and `AUDIT_BOUNDARY_GUARDS` is active, non-redundant,
+  and genuinely exercised by a negative refutation or negative auditor fixture.
 - **Does NOT guarantee:** Coverage of unmodeled Rust semantics, UB guards added
   to `Trusted/MirSemantics/` or `TrustedBoundary.lean` without a catalog entry,
   or Rust compiler-capture (`anneal-rustc-capture`) checks outside the Lean TCB
@@ -47,14 +48,17 @@ How to add a new guard
 ----------------------
 
 Whenever a new UB check lands in `trusted/lean/Trusted/MirSemantics/` (or a new
-header/import policy guard lands in `trusted/audit/TrustedBoundary.lean`):
+header/import/boundary policy guard lands in
+`trusted/audit/TrustedBoundary.lean`):
 
 1. Add a minimal negative refutation theorem `refute_<guard_id>` in the
    corresponding `ci/fixtures/guard_mutation/*Refutations.lean` file (or a
-   negative header input for `AUDIT_HEADER_GUARDS`).
-2. Add a matching `MirSemanticsGuard` (or `AuditHeaderGuard`) entry below whose
-   `anchor` matches the guard expression uniquely and whose `replacement`
-   weakens only that guard while keeping the mutated Lean file well-typed.
+   negative header/boundary fixture for `AUDIT_HEADER_GUARDS` /
+   `AUDIT_BOUNDARY_GUARDS`).
+2. Add a matching `MirSemanticsGuard`, `AuditHeaderGuard`, or
+   `AuditBoundaryGuard` entry below whose `anchor` matches the guard expression
+   uniquely and whose `replacement` weakens only that guard while keeping the
+   mutated Lean file well-typed.
 3. Run `python3 -I -B ci/check_guard_mutation.py --lean <path-to-lean>` and
    confirm a 100% kill rate.
 """
@@ -217,6 +221,19 @@ class AuditHeaderGuard:
     anchor: str
     replacement: str
     negative_source: str
+
+
+@dataclass(frozen=True)
+class AuditBoundaryGuard:
+    """Single-guard mutation entry for spec-preflight or target-audit."""
+
+    guard_id: str
+    target_file: str
+    mode: str  # "spec-preflight" | "target-audit"
+    description: str
+    anchor: str
+    replacement: str
+    fixture_id: str
 
 
 @dataclass(frozen=True)
@@ -2301,6 +2318,224 @@ AUDIT_HEADER_GUARDS: tuple[AuditHeaderGuard, ...] = (
 )
 
 
+VALID_SPEC_BOUNDARY_FIXTURE_IDS: frozenset[str] = frozenset(
+    {
+        "spec_auto_implicit",
+        "spec_bang_ident",
+        "spec_dbg_trace",
+        "spec_uv_open",
+    }
+)
+
+VALID_TARGET_BOUNDARY_FIXTURE_IDS: frozenset[str] = frozenset(
+    {
+        "target_expected_true",
+        "target_bad_theorem_type",
+        "target_proof_sorry",
+        "target_impl_by",
+        "target_spec_transitive_dbg",
+        "target_dup_library",
+        "target_unsafe_rec_type_mismatch",
+        "target_foundation_propext_hijack",
+    }
+)
+
+AUDIT_BOUNDARY_GUARDS: tuple[AuditBoundaryGuard, ...] = (
+    AuditBoundaryGuard(
+        guard_id="spec_preflight_reject_auto_implicit",
+        target_file="trusted/audit/TrustedBoundary.lean",
+        mode="spec-preflight",
+        description="validateSpecSetOption rejects `set_option autoImplicit true`",
+        anchor='  else\n    fail s!"unsupported option {optName} in specification"',
+        replacement="  else\n    pure ()",
+        fixture_id="spec_auto_implicit",
+    ),
+    AuditBoundaryGuard(
+        guard_id="spec_preflight_reject_bang_ident",
+        target_file="trusted/audit/TrustedBoundary.lean",
+        mode="spec-preflight",
+        description="inspectSpecSyntax rejects bang helpers like `List.head!`",
+        anchor="if hasForbiddenSpecIdentComponent cand || hasBangComponent cand then",
+        replacement="if hasForbiddenSpecIdentComponent cand then",
+        fixture_id="spec_bang_ident",
+    ),
+    AuditBoundaryGuard(
+        guard_id="spec_preflight_reject_dbg_trace",
+        target_file="trusted/audit/TrustedBoundary.lean",
+        mode="spec-preflight",
+        description=(
+            "inspectSpecSyntax rejects `dbgTrace` identifier references"
+        ),
+        anchor=(
+            "if forbiddenSpecIdentifiers.contains cand then\n"
+            '        fail s!"disallowed identifier {val} in specification"'
+        ),
+        replacement=(
+            "if false then\n"
+            '        fail s!"disallowed identifier {val} in specification"'
+        ),
+        fixture_id="spec_dbg_trace",
+    ),
+    AuditBoundaryGuard(
+        guard_id="spec_preflight_reject_uv_open",
+        target_file="trusted/audit/TrustedBoundary.lean",
+        mode="spec-preflight",
+        description=(
+            "rejectForbiddenSpecNamespace blocks `open Std.Internal.UV`"
+        ),
+        anchor=(
+            "def rejectForbiddenSpecNamespace (how : String) (ns : Name) : "
+            "IO Unit := do\n"
+            "  if isForbiddenPureNamespace ns (banLeanRoot := true) then"
+        ),
+        replacement=(
+            "def rejectForbiddenSpecNamespace (how : String) (ns : Name) : "
+            "IO Unit := do\n"
+            "  if false then"
+        ),
+        fixture_id="spec_uv_open",
+    ),
+    AuditBoundaryGuard(
+        guard_id="target_audit_reject_expected_mismatch",
+        target_file="trusted/audit/TrustedBoundary.lean",
+        mode="target-audit",
+        description=(
+            "targetAudit enforces Expected isDefEq canonical root"
+        ),
+        anchor=(
+            '  requireKernelEquality "compiled Expected comparison"\n'
+            '    "compiled Expected body differs from the canonical root"\n'
+            "    (Kernel.isDefEq checkedEnv {} expectedBody canonical)"
+        ),
+        replacement="  pure ()",
+        fixture_id="target_expected_true",
+    ),
+    AuditBoundaryGuard(
+        guard_id="target_audit_reject_theorem_type",
+        target_file="trusted/audit/TrustedBoundary.lean",
+        mode="target-audit",
+        description=(
+            "targetAudit enforces proof theorem type isDefEq canonical root"
+        ),
+        anchor=(
+            '  requireKernelEquality "target theorem type comparison"\n'
+            '    "target theorem type differs from Expected"\n'
+            "    (Kernel.isDefEq checkedEnv {} theoremInfo.type canonical)"
+        ),
+        replacement="  pure ()",
+        fixture_id="target_bad_theorem_type",
+    ),
+    AuditBoundaryGuard(
+        guard_id="target_audit_reject_proof_sorry",
+        target_file="trusted/audit/TrustedBoundary.lean",
+        mode="target-audit",
+        description=(
+            "runTargetClosurePhase blocks sorryAx in Proof without allowSorry"
+        ),
+        anchor=(
+            "if !inPhase1 && allowSorryInProof &&\n"
+            "            role == .source .proof && "
+            "!phase1Closure.contains n then"
+        ),
+        replacement=(
+            "if !inPhase1 &&\n"
+            "            role == .source .proof && "
+            "!phase1Closure.contains n then"
+        ),
+        fixture_id="target_proof_sorry",
+    ),
+    AuditBoundaryGuard(
+        guard_id="target_audit_reject_compiler_override",
+        target_file="trusted/audit/TrustedBoundary.lean",
+        mode="target-audit",
+        description=(
+            "targetAudit rejects @[implemented_by] on logical dependencies"
+        ),
+        anchor=(
+            "if sourceOverrides.implementedBy.contains n ||\n"
+            "        sourceOverrides.externDecls.contains n then"
+        ),
+        replacement="if sourceOverrides.externDecls.contains n then",
+        fixture_id="target_impl_by",
+    ),
+    AuditBoundaryGuard(
+        guard_id="target_audit_reject_transitive_spec_dbg",
+        target_file="trusted/audit/TrustedBoundary.lean",
+        mode="target-audit",
+        description=(
+            "targetAudit enforces transitive spec ban over Model helpers"
+        ),
+        anchor=(
+            "if isForbiddenSpecTransitiveConst n then\n"
+            '      fail s!"specification transitively references disallowed '
+            'constant {n}"'
+        ),
+        replacement=(
+            "if false then\n"
+            '      fail s!"specification transitively references disallowed '
+            'constant {n}"'
+        ),
+        fixture_id="target_spec_transitive_dbg",
+    ),
+    AuditBoundaryGuard(
+        guard_id="target_audit_reject_dup_library",
+        target_file="trusted/audit/TrustedBoundary.lean",
+        mode="target-audit",
+        description=(
+            "verifyModuleHeaderInventory rejects intra-module duplicates"
+        ),
+        anchor=(
+            "    if modSeen.contains ci.name then\n"
+            '      fail s!"duplicate {dupLabel} {ci.name}"'
+        ),
+        replacement=(
+            "    if false then\n"
+            '      fail s!"duplicate {dupLabel} {ci.name}"'
+        ),
+        fixture_id="target_dup_library",
+    ),
+    AuditBoundaryGuard(
+        guard_id="target_audit_reject_unsafe_rec_type_mismatch",
+        target_file="trusted/audit/TrustedBoundary.lean",
+        mode="target-audit",
+        description=(
+            "pairedSpecUnsafeRecParent? checks _unsafe_rec type and "
+            "levelParams"
+        ),
+        anchor=(
+            "def sameUnsafeRecHeader (unsafeCi parentCi : ConstantInfo) : "
+            "Bool :=\n"
+            "  unsafeCi.type == parentCi.type &&\n"
+            "    unsafeCi.levelParams == parentCi.levelParams"
+        ),
+        replacement=(
+            "def sameUnsafeRecHeader (unsafeCi parentCi : ConstantInfo) : "
+            "Bool :=\n"
+            "  true"
+        ),
+        fixture_id="target_unsafe_rec_type_mismatch",
+    ),
+    AuditBoundaryGuard(
+        guard_id="target_audit_reject_foundation_propext_hijack",
+        target_file="trusted/audit/TrustedBoundary.lean",
+        mode="target-audit",
+        description=(
+            "targetAudit foundation loop rejects subsumed propext theorem"
+        ),
+        anchor=(
+            "        if !sameConstantShape stored ci then\n"
+            "          unless sameRealizedThmHeader stored ci do\n"
+            '            fail s!"stored target declaration differs '
+            '{ci.name}"\n'
+            "          pendingSourceAlternates :=\n"
+            "            pendingSourceAlternates.push (none, stored, ci)"
+        ),
+        replacement="        let _ := (stored, ci)",
+        fixture_id="target_foundation_propext_hijack",
+    ),
+)
+
+
 def apply_single_guard_mutation(
     source_text: str,
     anchor: str,
@@ -2413,6 +2648,20 @@ def classify_refutation_failure(
     )
 
 
+def _lean_subprocess_env(
+    lean_path: list[Path] | None = None,
+) -> dict[str, str]:
+    """Build a cleared allowlisted environment for child `lean` processes."""
+    env: dict[str, str] = {}
+    for key in ("HOME", "TMPDIR", "LANG", "LC_ALL"):
+        if key in os.environ:
+            env[key] = os.environ[key]
+    env["PATH"] = os.environ.get("PATH", "/usr/bin:/bin")
+    if lean_path is not None:
+        env["LEAN_PATH"] = os.pathsep.join(str(p) for p in lean_path)
+    return env
+
+
 def _run_lean(
     lean_bin: Path,
     args: list[str],
@@ -2420,11 +2669,9 @@ def _run_lean(
     lean_path: list[Path],
     timeout_sec: int,
 ) -> subprocess.CompletedProcess[str]:
-    env = os.environ.copy()
-    env["LEAN_PATH"] = os.pathsep.join(str(p) for p in lean_path)
     return subprocess.run(
         [str(lean_bin), *args],
-        env=env,
+        env=_lean_subprocess_env(lean_path),
         capture_output=True,
         text=True,
         timeout=timeout_sec,
@@ -2454,6 +2701,7 @@ def _compile_module(
 def _query_lean_sysroot(lean_bin: Path, timeout_sec: int) -> str:
     res = subprocess.run(
         [str(lean_bin), "--print-prefix"],
+        env=_lean_subprocess_env(),
         capture_output=True,
         text=True,
         timeout=timeout_sec,
@@ -2462,33 +2710,23 @@ def _query_lean_sysroot(lean_bin: Path, timeout_sec: int) -> str:
     return res.stdout.strip()
 
 
-def _run_audit_headers(
+def _run_tb_request(
     lean_bin: Path,
     tb_olean_dir: Path,
-    sysroot: str,
-    source_text: str,
+    req_payload: dict[str, object],
     work_dir: Path,
     *,
+    tag: str,
     module_name: str = "TrustedBoundary",
     timeout_sec: int,
 ) -> tuple[int, dict[str, object] | None, str]:
-    """Invoke precompiled audit module (`TrustedBoundary` or `SpecPreflight`) in `"headers"` mode."""
-    target_src = work_dir / "Target.lean"
-    target_src.write_text(source_text, encoding="utf-8")
-    req_path = work_dir / "req.json"
-    res_path = work_dir / "res.json"
-    runner_path = work_dir / "run_tb.lean"
-    req_path.write_text(
-        json.dumps(
-            {
-                "mode": "headers",
-                "sysroot": sysroot,
-                "sources": [["Target", str(target_src)]],
-            }
-        ),
-        encoding="utf-8",
-    )
-    runner_path.write_text(f"import {module_name}\n", encoding="utf-8")
+    """Invoke precompiled audit module (`TrustedBoundary` or `SpecPreflight`)."""
+    req_path = work_dir / f"req_{tag}.json"
+    res_path = work_dir / f"res_{tag}.json"
+    runner_path = work_dir / f"run_{module_name}.lean"
+    req_path.write_text(json.dumps(req_payload), encoding="utf-8")
+    if not runner_path.exists():
+        runner_path.write_text(f"import {module_name}\n", encoding="utf-8")
     proc = _run_lean(
         lean_bin,
         ["--run", str(runner_path), str(req_path), str(res_path)],
@@ -2502,6 +2740,586 @@ def _run_audit_headers(
         except json.JSONDecodeError:
             parsed = None
     return proc.returncode, parsed, (proc.stdout + "\n" + proc.stderr).strip()
+
+
+def _run_audit_headers(
+    lean_bin: Path,
+    tb_olean_dir: Path,
+    sysroot: str,
+    source_text: str,
+    work_dir: Path,
+    *,
+    module_name: str = "TrustedBoundary",
+    timeout_sec: int,
+) -> tuple[int, dict[str, object] | None, str]:
+    """Invoke precompiled `TrustedBoundary` or `SpecPreflight` in `"headers"` mode."""
+    target_src = work_dir / "Target.lean"
+    target_src.write_text(source_text, encoding="utf-8")
+    return _run_tb_request(
+        lean_bin,
+        tb_olean_dir,
+        {
+            "mode": "headers",
+            "sysroot": sysroot,
+            "sources": [["Target", str(target_src)]],
+        },
+        work_dir,
+        tag="headers",
+        module_name=module_name,
+        timeout_sec=timeout_sec,
+    )
+
+
+def _load_foundation_artifacts(
+    anneal_root: Path,
+    sysroot: str,
+) -> tuple[list[str], dict[str, list[list[str]]]]:
+    """Load foundation module names and sysroot artifact paths from lock."""
+    lock = json.loads(
+        (anneal_root / "trusted/lean/foundation-lock.json").read_text(
+            encoding="utf-8"
+        )
+    )
+    lean_lib = Path(sysroot) / "lib/lean"
+    foundation_mods = sorted(lock["modules"].keys())
+    artifacts: dict[str, list[list[str]]] = {}
+    for mod in foundation_mods:
+        parts = lock["modules"][mod]["parts"]
+        rel = mod.replace(".", "/")
+        olean_parts = [
+            str(lean_lib / f"{rel}.{ext}")
+            for ext in ("olean", "olean.server", "olean.private")
+            if parts.get(ext) is not None
+        ]
+        artifacts[mod] = [olean_parts, []]
+    return foundation_mods, artifacts
+
+
+def _build_boundary_fixtures(
+    *,
+    anneal_root: Path,
+    lean_bin: Path,
+    tb_olean_dir: Path,
+    sysroot: str,
+    fixtures_root: Path,
+    timeout_sec: int,
+) -> tuple[dict[str, dict[str, object]], dict[str, dict[str, object]]]:
+    """Compile minimal baseline and negative boundary fixtures once."""
+    foundation_mods, foundation_arts = _load_foundation_artifacts(
+        anneal_root, sysroot
+    )
+    rc, parsed, out = _run_tb_request(
+        lean_bin,
+        tb_olean_dir,
+        {
+            "mode": "resolve-imports",
+            "sysroot": sysroot,
+            "modules": foundation_mods,
+        },
+        fixtures_root,
+        tag="resolve_found",
+        timeout_sec=timeout_sec,
+    )
+    if rc != 0 or not isinstance(parsed, dict) or parsed.get("ok") is not True:
+        raise RuntimeError(
+            f"resolve-imports failed for foundation: rc={rc} out={out}"
+        )
+    found_graph = dict(parsed["result"]["graph"])  # type: ignore[index]
+
+    # Pre-Preflight requests
+    spec_srcs: dict[str, str] = {
+        "spec_sanity": (
+            "prelude\nimport Model\n"
+            "def Spec.specs (p : Nat) : Prop := p = p\n"
+        ),
+        "spec_auto_implicit": (
+            "prelude\nimport Model\n"
+            "set_option autoImplicit true in\n"
+            "def Spec.bad (x : y_auto) : Nat := 0\n"
+        ),
+        "spec_bang_ident": (
+            "prelude\nimport Model\n"
+            "def Spec.bad (xs : List Nat) : Nat := xs.head!\n"
+        ),
+        "spec_dbg_trace": (
+            "prelude\nimport Model\n"
+            'def Spec.bad : Nat := dbgTrace "leak" fun _ => 1\n'
+        ),
+        "spec_uv_open": (
+            "prelude\nimport Model\ndef Spec.specs (p : Nat) : Prop := p = p\n"
+            "open Std.Internal.UV\n"
+        ),
+    }
+    spec_reqs: dict[str, dict[str, object]] = {}
+    for name, src in spec_srcs.items():
+        p = fixtures_root / f"{name}.lean"
+        p.write_text(src, encoding="utf-8")
+        spec_reqs[name] = {
+            "mode": "spec-preflight",
+            "sysroot": sysroot,
+            "foundation": foundation_mods,
+            "libraries": [],
+            "artifacts": list(foundation_arts.items()),
+            "graph": found_graph,
+            "sources": [["Spec", str(p)]],
+        }
+
+    # Build minimal Init.Core-only `.olean` target fixtures for target-audit.
+    src_dir = fixtures_root / "src"
+    olean_dir = fixtures_root / "olean"
+    src_dir.mkdir()
+    olean_dir.mkdir()
+
+    def compile_target_mod(
+        mod: str,
+        code: str,
+        bucket: str,
+        *,
+        deps_olean_dirs: list[Path] | None = None,
+    ) -> tuple[Path, Path]:
+        mod_src_root = src_dir / bucket
+        mod_olean_root = olean_dir / bucket
+        s_path = mod_src_root / f"{mod}.lean"
+        o_path = mod_olean_root / f"{mod}.olean"
+        s_path.parent.mkdir(parents=True, exist_ok=True)
+        o_path.parent.mkdir(parents=True, exist_ok=True)
+        s_path.write_text(code, encoding="utf-8")
+        c_res = _compile_module(
+            lean_bin,
+            mod_src_root,
+            mod,
+            mod_olean_root,
+            lean_path=[*(deps_olean_dirs or []), mod_olean_root],
+            timeout_sec=timeout_sec,
+        )
+        if c_res.returncode != 0:
+            raise RuntimeError(
+                f"failed to compile {bucket}/{mod}: "
+                f"{c_res.stdout}\n{c_res.stderr}"
+            )
+        return o_path, mod_olean_root
+
+    model_body = (
+        "namespace Trusted.MirSemantics\n"
+        "structure Crate where\n"
+        "  program : Nat\n"
+        "  specs : Nat → Prop\n"
+        "def UnitTheorem (c : Crate) : Prop :=\n"
+        "  c.program = 7 ∧ c.specs c.program\n"
+        "end Trusted.MirSemantics\n"
+    )
+    model_src = "prelude\nimport Init.Core\n" + model_body
+    model_dbg_src = (
+        "prelude\nimport Init.Core\nimport Init.Util\n"
+        + model_body
+        + 'def Model.dbgLeak (n : Nat) : Nat := dbgTrace "leak" fun _ => n\n'
+    )
+    model_olean, base_odir = compile_target_mod("Model", model_src, "base")
+    cap_olean, _ = compile_target_mod(
+        "Captured",
+        "prelude\nimport Model\ndef Captured.program : Nat := 7\n",
+        "base",
+    )
+    spec_ok_src = (
+        "prelude\nimport Model\ndef Spec.specs (p : Nat) : Prop := p = 7\n"
+    )
+    spec_olean, _ = compile_target_mod("Spec", spec_ok_src, "base")
+    exp_ok_src = (
+        "prelude\nimport Model\nimport Captured\nimport Spec\n"
+        "def Expected.claim : Prop :=\n"
+        "  Trusted.MirSemantics.UnitTheorem\n"
+        "    (Trusted.MirSemantics.Crate.mk Captured.program Spec.specs)\n"
+    )
+    exp_olean, _ = compile_target_mod("Expected", exp_ok_src, "base")
+    proof_ok_olean, _ = compile_target_mod(
+        "Proof",
+        "prelude\nimport Expected\n"
+        "theorem Proof.verify : Expected.claim := And.intro rfl rfl\n",
+        "base",
+    )
+
+    core_edge = [{"module": "Init.Core", "isExported": True, "importAll": False, "isMeta": False}]
+    model_edge = [{"module": "Model", "isExported": True, "importAll": False, "isMeta": False}]
+    cap_edge = [{"module": "Captured", "isExported": True, "importAll": False, "isMeta": False}]
+    spec_edge = [{"module": "Spec", "isExported": True, "importAll": False, "isMeta": False}]
+    exp_edge = [{"module": "Expected", "isExported": True, "importAll": False, "isMeta": False}]
+    base_graph = dict(found_graph)
+    base_graph.update(
+        {
+            "Model": core_edge,
+            "Captured": model_edge,
+            "Spec": model_edge,
+            "Expected": model_edge + cap_edge + spec_edge,
+            "Proof": exp_edge,
+        }
+    )
+
+    def make_ta_case(
+        case_id: str,
+        *,
+        mod_oleans: dict[str, Path],
+        proof_o: Path,
+        allow_sorry: bool = False,
+        graph_override: dict[str, object] | None = None,
+        libraries: list[str] | None = None,
+    ) -> dict[str, object]:
+        case_dir = fixtures_root / f"case_{case_id}"
+        case_dir.mkdir()
+        arts_all = dict(foundation_arts)
+        for m, p in mod_oleans.items():
+            arts_all[m] = [[str(p)], []]
+        export_arts = dict(arts_all)
+        export_arts["Proof"] = [[str(proof_o)], []]
+        modules_meta = [
+            {"module": "Model", "role": "model", "isModule": False},
+            {"module": "Captured", "role": "capture", "isModule": False},
+            {"module": "Spec", "role": "specification", "isModule": False},
+            {"module": "Expected", "role": "expected", "isModule": False},
+            {"module": "Proof", "role": "proof", "isModule": False},
+        ]
+        target_meta: dict[str, object] = {
+            "modules": modules_meta,
+            "theoremName": "Proof.verify",
+            "theoremModule": "Proof",
+            "expectedDeclaration": "Expected.claim",
+            "expectedModule": "Expected",
+            "canonicalRoot": "Trusted.MirSemantics.UnitTheorem",
+            "subjectDeclaration": "Captured.program",
+            "specificationDeclaration": "Spec.specs",
+            "allowSorryInProof": allow_sorry,
+        }
+        use_graph = graph_override if graph_override is not None else base_graph
+        use_libs = libraries if libraries is not None else []
+        export_req = {
+            "mode": "target-export",
+            "sysroot": sysroot,
+            "foundation": foundation_mods,
+            "libraries": use_libs,
+            "target": target_meta,
+            "artifacts": list(export_arts.items()),
+            "graph": use_graph,
+        }
+        e_rc, e_parsed, e_out = _run_tb_request(
+            lean_bin,
+            tb_olean_dir,
+            export_req,
+            case_dir,
+            tag="export",
+            timeout_sec=timeout_sec,
+        )
+        if e_rc != 0 or not isinstance(e_parsed, dict) or e_parsed.get("ok") is not True:
+            raise RuntimeError(
+                f"target-export failed for {case_id}: rc={e_rc} out={e_out}"
+            )
+        export_path = case_dir / "proof_export.json"
+        export_path.write_text(
+            json.dumps(e_parsed["result"]), encoding="utf-8"
+        )
+        return {
+            "mode": "target-audit",
+            "sysroot": sysroot,
+            "foundation": foundation_mods,
+            "libraries": use_libs,
+            "target": target_meta,
+            "artifacts": list(arts_all.items()),
+            "graph": use_graph,
+            "proofExportPath": str(export_path),
+            "axioms": [
+                ["Classical.choice", "Init.Prelude"],
+                ["Quot.sound", "Init.Prelude"],
+                ["propext", "Init.Core"],
+            ],
+        }
+
+    target_reqs: dict[str, dict[str, object]] = {
+        "target_sanity": make_ta_case(
+            "sanity",
+            mod_oleans={
+                "Model": model_olean,
+                "Captured": cap_olean,
+                "Spec": spec_olean,
+                "Expected": exp_olean,
+            },
+            proof_o=proof_ok_olean,
+        ),
+    }
+
+    # Case: target_expected_true (`Expected.claim := True` while Proof proves
+    # canonical claim)
+    exp_true_o, exp_true_dir = compile_target_mod(
+        "Expected",
+        "prelude\nimport Model\nimport Captured\nimport Spec\n"
+        "def Expected.claim : Prop := True\n",
+        "expected_true",
+        deps_olean_dirs=[base_odir],
+    )
+    proof_true_o, _ = compile_target_mod(
+        "Proof",
+        "prelude\nimport Expected\n"
+        "theorem Proof.verify : Trusted.MirSemantics.UnitTheorem\n"
+        "    (Trusted.MirSemantics.Crate.mk Captured.program Spec.specs) :=\n"
+        "  And.intro rfl rfl\n",
+        "expected_true",
+        deps_olean_dirs=[exp_true_dir, base_odir],
+    )
+    target_reqs["target_expected_true"] = make_ta_case(
+        "expected_true",
+        mod_oleans={
+            "Model": model_olean,
+            "Captured": cap_olean,
+            "Spec": spec_olean,
+            "Expected": exp_true_o,
+        },
+        proof_o=proof_true_o,
+    )
+
+    # Case: target_bad_theorem_type (theorem Proof.verify takes `(h : False)`)
+    proof_bad_ty_o, _ = compile_target_mod(
+        "Proof",
+        "prelude\nimport Expected\n"
+        "theorem Proof.verify (h : False) : Expected.claim := False.elim h\n",
+        "bad_theorem_type",
+        deps_olean_dirs=[base_odir],
+    )
+    target_reqs["target_bad_theorem_type"] = make_ta_case(
+        "bad_theorem_type",
+        mod_oleans={
+            "Model": model_olean,
+            "Captured": cap_olean,
+            "Spec": spec_olean,
+            "Expected": exp_olean,
+        },
+        proof_o=proof_bad_ty_o,
+    )
+
+    # Case: target_proof_sorry (uses `sorry` with `allowSorryInProof = false`)
+    proof_sorry_o, _ = compile_target_mod(
+        "Proof",
+        "prelude\nimport Expected\n"
+        "theorem Proof.verify : Expected.claim := And.intro rfl sorry\n",
+        "proof_sorry",
+        deps_olean_dirs=[base_odir],
+    )
+    target_reqs["target_proof_sorry"] = make_ta_case(
+        "proof_sorry",
+        mod_oleans={
+            "Model": model_olean,
+            "Captured": cap_olean,
+            "Spec": spec_olean,
+            "Expected": exp_olean,
+        },
+        proof_o=proof_sorry_o,
+        allow_sorry=False,
+    )
+
+    # Case: target_impl_by (`@[implemented_by]` inside Proof on logical helper)
+    proof_impl_o, _ = compile_target_mod(
+        "Proof",
+        "prelude\nimport Expected\n"
+        "unsafe def Proof.nativeH : Nat := 1\n"
+        "@[implemented_by Proof.nativeH] def Proof.logH : Nat := 0\n"
+        "theorem Proof.verify : Expected.claim :=\n"
+        "  (fun _ : Proof.logH = 0 => And.intro rfl rfl) rfl\n",
+        "impl_by",
+        deps_olean_dirs=[base_odir],
+    )
+    target_reqs["target_impl_by"] = make_ta_case(
+        "impl_by",
+        mod_oleans={
+            "Model": model_olean,
+            "Captured": cap_olean,
+            "Spec": spec_olean,
+            "Expected": exp_olean,
+        },
+        proof_o=proof_impl_o,
+    )
+
+    # Case: target_spec_transitive_dbg (Spec calls `Model.dbgLeak`)
+    model_dbg_o, dbg_odir = compile_target_mod(
+        "Model", model_dbg_src, "spec_transitive_dbg"
+    )
+    cap_dbg_o, _ = compile_target_mod(
+        "Captured",
+        "prelude\nimport Model\ndef Captured.program : Nat := 7\n",
+        "spec_transitive_dbg",
+        deps_olean_dirs=[dbg_odir],
+    )
+    spec_dbg_o, _ = compile_target_mod(
+        "Spec",
+        "prelude\nimport Model\n"
+        "def Spec.specs (p : Nat) : Prop := p = 7 ∧ Model.dbgLeak p = p\n",
+        "spec_transitive_dbg",
+        deps_olean_dirs=[dbg_odir],
+    )
+    exp_dbg_o, _ = compile_target_mod(
+        "Expected",
+        exp_ok_src,
+        "spec_transitive_dbg",
+        deps_olean_dirs=[dbg_odir],
+    )
+    proof_dbg_o, _ = compile_target_mod(
+        "Proof",
+        "prelude\nimport Expected\n"
+        "theorem Proof.verify : Expected.claim :=\n"
+        "  And.intro rfl (And.intro rfl rfl)\n",
+        "spec_transitive_dbg",
+        deps_olean_dirs=[dbg_odir],
+    )
+    dbg_graph = dict(base_graph)
+    dbg_graph["Model"] = core_edge + [
+        {"module": "Init.Util", "isExported": True, "importAll": False, "isMeta": False}
+    ]
+    target_reqs["target_spec_transitive_dbg"] = make_ta_case(
+        "spec_transitive_dbg",
+        mod_oleans={
+            "Model": model_dbg_o,
+            "Captured": cap_dbg_o,
+            "Spec": spec_dbg_o,
+            "Expected": exp_dbg_o,
+        },
+        proof_o=proof_dbg_o,
+        graph_override=dbg_graph,
+    )
+
+    def run_lean_forge(tag: str, script_body: str) -> None:
+        script_path = fixtures_root / f"forge_{tag}.lean"
+        script_path.write_text(script_body, encoding="utf-8")
+        res = subprocess.run(
+            [
+                str(lean_bin),
+                "-j1",
+                "-M2048",
+                "-s16384",
+                "--run",
+                str(script_path),
+            ],
+            env=_lean_subprocess_env([]),
+            capture_output=True,
+            text=True,
+            timeout=timeout_sec,
+        )
+        if res.returncode != 0:
+            raise RuntimeError(
+                f"failed forging fixture {tag}: {res.stdout + res.stderr}"
+            )
+
+    # Case: target_dup_library (intra-module duplicate in .library)
+    dup_lib_o = fixtures_root / "DupLib.olean"
+    run_lean_forge(
+        "dup_library",
+        "import Lean.Environment\n"
+        "open Lean in\n"
+        "def main : IO Unit := do\n"
+        "  let ci : ConstantInfo := .thmInfo {\n"
+        "    name := `DupLib.t, levelParams := [], type := .const `True [],\n"
+        "    value := .const `True.intro [], all := [`DupLib.t] }\n"
+        "  let md : ModuleData := {\n"
+        "    isModule := false, imports := #[{ module := `Init.Core }],\n"
+        "    constNames := #[`DupLib.t, `DupLib.t], constants := #[ci, ci],\n"
+        "    extraConstNames := #[], entries := #[] }\n"
+        f"  saveModuleData (System.FilePath.mk {json.dumps(str(dup_lib_o))}) `DupLib md\n",
+    )
+    dup_graph = dict(base_graph)
+    dup_graph["DupLib"] = core_edge
+    target_reqs["target_dup_library"] = make_ta_case(
+        "dup_library",
+        mod_oleans={
+            "Model": model_olean,
+            "Captured": cap_olean,
+            "Spec": spec_olean,
+            "Expected": exp_olean,
+            "DupLib": dup_lib_o,
+        },
+        proof_o=proof_ok_olean,
+        graph_override=dup_graph,
+        libraries=["DupLib"],
+    )
+
+    # Case: target_unsafe_rec_type_mismatch (`Spec.foo._unsafe_rec` : Bool)
+    bad_rec_spec_o = fixtures_root / "SpecBadUnsafeRec.olean"
+    shutil.copy2(spec_olean, bad_rec_spec_o)
+    run_lean_forge(
+        "unsafe_rec_type_mismatch",
+        "import Lean.Environment\n"
+        "open Lean in\n"
+        "def main : IO Unit := do\n"
+        f"  let p := System.FilePath.mk {json.dumps(str(bad_rec_spec_o))}\n"
+        "  let (data, _) ← readModuleData p\n"
+        "  let parentCi : ConstantInfo := .defnInfo {\n"
+        "    name := `Spec.foo, levelParams := [], type := .const `Nat [],\n"
+        "    value := .lit (.natVal 0), hints := .abbrev, safety := .safe,\n"
+        "    all := [`Spec.foo] }\n"
+        "  let badRecCi : ConstantInfo := .defnInfo {\n"
+        "    name := `Spec.foo._unsafe_rec, levelParams := [],\n"
+        "    type := .const `Bool [], value := .const `Bool.true [],\n"
+        "    hints := .abbrev, safety := .partial,\n"
+        "    all := [`Spec.foo._unsafe_rec] }\n"
+        "  let newNames := data.constNames ++ #[`Spec.foo, `Spec.foo._unsafe_rec]\n"
+        "  let newConsts := data.constants ++ #[parentCi, badRecCi]\n"
+        "  saveModuleData p `Spec\n"
+        "    { data with constNames := newNames, constants := newConsts }\n",
+    )
+    target_reqs["target_unsafe_rec_type_mismatch"] = make_ta_case(
+        "unsafe_rec_type_mismatch",
+        mod_oleans={
+            "Model": model_olean,
+            "Captured": cap_olean,
+            "Spec": bad_rec_spec_o,
+            "Expected": exp_olean,
+        },
+        proof_o=proof_ok_olean,
+    )
+
+    # Case: target_foundation_propext_hijack (`Model` subsumes `propext`)
+    bad_propext_model_o = fixtures_root / "ModelPropextHijack.olean"
+    shutil.copy2(model_olean, bad_propext_model_o)
+    run_lean_forge(
+        "foundation_propext_hijack",
+        "import Lean.Environment\n"
+        "open Lean in\n"
+        "def main : IO Unit := do\n"
+        f"  initSearchPath (System.FilePath.mk {json.dumps(str(sysroot))})\n"
+        "  let env ← importModules #[{ module := `Init.Core }] {}\n"
+        "    (trustLevel := 0) (plugins := #[]) (loadExts := false)\n"
+        "    (level := .private)\n"
+        "  let some px := env.checked.get.find? `propext\n"
+        '    | throw (IO.userError "missing propext")\n'
+        f"  let p := System.FilePath.mk {json.dumps(str(bad_propext_model_o))}\n"
+        "  let (data, _) ← readModuleData p\n"
+        "  let body := Expr.const `True []\n"
+        "  let fakeThm : ConstantInfo := .thmInfo {\n"
+        "    name := `propext, levelParams := px.levelParams,\n"
+        "    type := px.type, value := body, all := [`propext] }\n"
+        "  let newNames := data.constNames.push `propext\n"
+        "  let newConsts := data.constants.push fakeThm\n"
+        "  saveModuleData p `Model\n"
+        "    { data with constNames := newNames, constants := newConsts }\n",
+    )
+    target_reqs["target_foundation_propext_hijack"] = make_ta_case(
+        "foundation_propext_hijack",
+        mod_oleans={
+            "Model": bad_propext_model_o,
+            "Captured": cap_olean,
+            "Spec": spec_olean,
+            "Expected": exp_olean,
+        },
+        proof_o=proof_ok_olean,
+    )
+
+    built_spec_ids = set(spec_reqs.keys()) - {"spec_sanity"}
+    if built_spec_ids != VALID_SPEC_BOUNDARY_FIXTURE_IDS:
+        raise RuntimeError(
+            "spec boundary fixture keys drifted from static allowlist: "
+            f"{sorted(built_spec_ids)} != {sorted(VALID_SPEC_BOUNDARY_FIXTURE_IDS)}"
+        )
+    built_target_ids = set(target_reqs.keys()) - {"target_sanity"}
+    if built_target_ids != VALID_TARGET_BOUNDARY_FIXTURE_IDS:
+        raise RuntimeError(
+            "target boundary fixture keys drifted from static allowlist: "
+            f"{sorted(built_target_ids)} != {sorted(VALID_TARGET_BOUNDARY_FIXTURE_IDS)}"
+        )
+
+    return spec_reqs, target_reqs
 
 
 def _check_one_mir_guard(
@@ -2692,6 +3510,37 @@ def _check_one_mir_guard(
         )
 
 
+def _compile_mutated_tb(
+    lean_bin: Path,
+    mutated_text: str,
+    tmp_path: Path,
+    *,
+    module_name: str = "TrustedBoundary",
+    timeout_sec: int,
+) -> tuple[Path | None, str]:
+    """Compile mutated `TrustedBoundary.lean` or `SpecPreflight.lean`."""
+    mut_src_dir = tmp_path / "src"
+    mut_src_dir.mkdir()
+    src_name = f"{module_name}.lean"
+    (mut_src_dir / src_name).write_text(mutated_text, encoding="utf-8")
+    mut_olean_dir = tmp_path / "olean"
+    mut_olean_dir.mkdir()
+    comp = _compile_module(
+        lean_bin,
+        mut_src_dir,
+        module_name,
+        mut_olean_dir,
+        lean_path=[],
+        timeout_sec=timeout_sec,
+    )
+    if comp.returncode != 0:
+        return None, (
+            f"mutated {src_name} failed to compile: "
+            f"{(comp.stdout + comp.stderr).strip()[:300]}"
+        )
+    return mut_olean_dir, ""
+
+
 def _check_one_audit_guard(
     guard: AuditHeaderGuard,
     *,
@@ -2702,6 +3551,7 @@ def _check_one_audit_guard(
 ) -> GuardResult:
     t0 = time.monotonic()
     tb_path = anneal_root / guard.target_file
+    mod_name = Path(guard.target_file).stem
     original_text = tb_path.read_text(encoding="utf-8")
     try:
         mutated_text = apply_single_guard_mutation(
@@ -2724,34 +3574,21 @@ def _check_one_audit_guard(
         prefix=f"anneal-gmut-{guard.guard_id}-"
     ) as tmp:
         tmp_path = Path(tmp)
-        mut_src_dir = tmp_path / "src"
-        mut_src_dir.mkdir()
-        src_name = Path(guard.target_file).name
-        mod_name = Path(guard.target_file).stem
-        mut_tb = mut_src_dir / src_name
-        mut_tb.write_text(mutated_text, encoding="utf-8")
-        mut_olean_dir = tmp_path / "olean"
-        mut_olean_dir.mkdir()
-
-        comp = _compile_module(
+        mut_olean_dir, comp_err = _compile_mutated_tb(
             lean_bin,
-            mut_src_dir,
-            mod_name,
-            mut_olean_dir,
-            lean_path=[],
+            mutated_text,
+            tmp_path,
+            module_name=mod_name,
             timeout_sec=timeout_sec,
         )
-        if comp.returncode != 0:
+        if mut_olean_dir is None:
             return GuardResult(
                 suite="audit_headers",
                 guard_id=guard.guard_id,
                 target_file=guard.target_file,
                 status="ERROR",
                 duration_sec=time.monotonic() - t0,
-                detail=(
-                    f"mutated {src_name} failed to compile: "
-                    f"{(comp.stdout + comp.stderr).strip()[:300]}"
-                ),
+                detail=comp_err,
             )
 
         rc, parsed, out = _run_audit_headers(
@@ -2796,6 +3633,120 @@ def _check_one_audit_guard(
         )
 
 
+def _check_one_boundary_guard(
+    guard: AuditBoundaryGuard,
+    *,
+    anneal_root: Path,
+    lean_bin: Path,
+    sanity_req: dict[str, object],
+    negative_req: dict[str, object],
+    timeout_sec: int,
+) -> GuardResult:
+    t0 = time.monotonic()
+    tb_path = anneal_root / guard.target_file
+    original_text = tb_path.read_text(encoding="utf-8")
+    try:
+        mutated_text = apply_single_guard_mutation(
+            original_text,
+            guard.anchor,
+            guard.replacement,
+            guard_id=guard.guard_id,
+        )
+    except ValueError as exc:
+        return GuardResult(
+            suite="audit_boundary",
+            guard_id=guard.guard_id,
+            target_file=guard.target_file,
+            status="ERROR",
+            duration_sec=time.monotonic() - t0,
+            detail=str(exc),
+        )
+
+    with tempfile.TemporaryDirectory(
+        prefix=f"anneal-gmut-{guard.guard_id}-"
+    ) as tmp:
+        tmp_path = Path(tmp)
+        mut_olean_dir, comp_err = _compile_mutated_tb(
+            lean_bin, mutated_text, tmp_path, timeout_sec=timeout_sec
+        )
+        if mut_olean_dir is None:
+            return GuardResult(
+                suite="audit_boundary",
+                guard_id=guard.guard_id,
+                target_file=guard.target_file,
+                status="ERROR",
+                duration_sec=time.monotonic() - t0,
+                detail=comp_err,
+            )
+
+        s_rc, s_parsed, s_out = _run_tb_request(
+            lean_bin,
+            mut_olean_dir,
+            sanity_req,
+            tmp_path,
+            tag="sanity",
+            timeout_sec=timeout_sec,
+        )
+        if s_rc != 0 or not isinstance(s_parsed, dict) or s_parsed.get("ok") is not True:
+            return GuardResult(
+                suite="audit_boundary",
+                guard_id=guard.guard_id,
+                target_file=guard.target_file,
+                status="ERROR",
+                duration_sec=time.monotonic() - t0,
+                detail=(
+                    f"positive {guard.mode} sanity broke on mutant: "
+                    f"rc={s_rc} parsed={s_parsed!r} out={s_out[:200]}"
+                ),
+            )
+
+        rc, parsed, out = _run_tb_request(
+            lean_bin,
+            mut_olean_dir,
+            negative_req,
+            tmp_path,
+            tag="neg",
+            timeout_sec=timeout_sec,
+        )
+        if rc == 0 and isinstance(parsed, dict) and parsed.get("ok") is True:
+            return GuardResult(
+                suite="audit_boundary",
+                guard_id=guard.guard_id,
+                target_file=guard.target_file,
+                status="KILLED",
+                duration_sec=time.monotonic() - t0,
+                detail=(
+                    f"negative {guard.mode} fixture ({guard.fixture_id}) "
+                    "flipped from policy reject to accept"
+                ),
+            )
+        if (
+            rc == 1
+            and isinstance(parsed, dict)
+            and parsed.get("ok") is False
+            and parsed.get("category") == "policy"
+        ):
+            return GuardResult(
+                suite="audit_boundary",
+                guard_id=guard.guard_id,
+                target_file=guard.target_file,
+                status="SURVIVED",
+                duration_sec=time.monotonic() - t0,
+                detail=(
+                    f"mutant still rejected {guard.mode} fixture: "
+                    f"{parsed.get('message')!r}"
+                ),
+            )
+        return GuardResult(
+            suite="audit_boundary",
+            guard_id=guard.guard_id,
+            target_file=guard.target_file,
+            status="ERROR",
+            duration_sec=time.monotonic() - t0,
+            detail=f"unexpected boundary result rc={rc} parsed={parsed!r} out={out[:200]}",
+        )
+
+
 def validate_catalog_invariants(anneal_root: Path) -> list[str]:
     """Check static catalog invariants without invoking Lean.
 
@@ -2837,10 +3788,25 @@ def validate_catalog_invariants(anneal_root: Path) -> list[str]:
             except ValueError as exc:
                 errors.append(f"{guard.guard_id}: {exc}")
 
-    for guard in AUDIT_HEADER_GUARDS:
+    for guard in (*AUDIT_HEADER_GUARDS, *AUDIT_BOUNDARY_GUARDS):
         if guard.guard_id in seen_ids:
             errors.append(f"duplicate guard_id: {guard.guard_id}")
         seen_ids.add(guard.guard_id)
+        if isinstance(guard, AuditBoundaryGuard):
+            if guard.mode == "spec-preflight":
+                if guard.fixture_id not in VALID_SPEC_BOUNDARY_FIXTURE_IDS:
+                    errors.append(
+                        f"{guard.guard_id}: unknown spec-preflight fixture_id "
+                        f"{guard.fixture_id!r}"
+                    )
+            elif guard.mode == "target-audit":
+                if guard.fixture_id not in VALID_TARGET_BOUNDARY_FIXTURE_IDS:
+                    errors.append(
+                        f"{guard.guard_id}: unknown target-audit fixture_id "
+                        f"{guard.fixture_id!r}"
+                    )
+            else:
+                errors.append(f"{guard.guard_id}: invalid mode {guard.mode!r}")
         target_path = anneal_root / guard.target_file
         if not target_path.is_file():
             errors.append(f"{guard.guard_id}: missing target_file {target_path}")
@@ -2859,7 +3825,11 @@ def validate_catalog_invariants(anneal_root: Path) -> list[str]:
 def _select_guards(
     suite: str,
     name_filter: str | None,
-) -> tuple[list[MirSemanticsGuard], list[AuditHeaderGuard]]:
+) -> tuple[
+    list[MirSemanticsGuard],
+    list[AuditHeaderGuard],
+    list[AuditBoundaryGuard],
+]:
     mir_guards = (
         list(MIR_SEMANTICS_GUARDS)
         if suite in ("all", "mir_semantics")
@@ -2870,10 +3840,18 @@ def _select_guards(
         if suite in ("all", "audit_headers")
         else []
     )
+    boundary_guards = (
+        list(AUDIT_BOUNDARY_GUARDS)
+        if suite in ("all", "audit_boundary")
+        else []
+    )
     if name_filter:
         mir_guards = [g for g in mir_guards if name_filter in g.guard_id]
         audit_guards = [g for g in audit_guards if name_filter in g.guard_id]
-    return mir_guards, audit_guards
+        boundary_guards = [
+            g for g in boundary_guards if name_filter in g.guard_id
+        ]
+    return mir_guards, audit_guards, boundary_guards
 
 
 def run_guard_mutation_suite(
@@ -2894,8 +3872,10 @@ def run_guard_mutation_suite(
             + "\n  - ".join(catalog_errors)
         )
 
-    mir_guards, audit_guards = _select_guards(suite, name_filter)
-    if not mir_guards and not audit_guards:
+    mir_guards, audit_guards, boundary_guards = _select_guards(
+        suite, name_filter
+    )
+    if not mir_guards and not audit_guards and not boundary_guards:
         raise RuntimeError(
             f"no guards matched suite={suite!r} filter={name_filter!r}"
         )
@@ -2977,9 +3957,9 @@ def run_guard_mutation_suite(
             results.extend(mir_by_id[g.guard_id] for g in mir_guards)
 
         # --------------------------------------------------------------
-        # Suite 2: Audit header guards baseline + mutants
+        # Suite 2 & 3: Audit header and boundary guards
         # --------------------------------------------------------------
-        if audit_guards:
+        if audit_guards or boundary_guards:
             t_audit_base = time.monotonic()
             sysroot = _query_lean_sysroot(lean_bin, timeout_sec)
             tb_olean_dir = base_path / "tb_olean"
@@ -3024,28 +4004,138 @@ def run_guard_mutation_suite(
                         f"baseline {mod_name} did not policy-reject "
                         f"{guard.guard_id}: rc={rc} parsed={parsed!r} out={out}"
                     )
+
+            spec_reqs: dict[str, dict[str, object]] = {}
+            target_reqs: dict[str, dict[str, object]] = {}
+            if boundary_guards:
+                if "TrustedBoundary" not in compiled_mods:
+                    comp = _compile_module(
+                        lean_bin,
+                        tb_src_dir,
+                        "TrustedBoundary",
+                        tb_olean_dir,
+                        lean_path=[],
+                        timeout_sec=timeout_sec,
+                    )
+                    if comp.returncode != 0:
+                        raise RuntimeError(
+                            "baseline TrustedBoundary.lean failed to compile:\n"
+                            f"{comp.stdout}\n{comp.stderr}"
+                        )
+                    compiled_mods.add("TrustedBoundary")
+                fixtures_root = base_path / "boundary_fixtures"
+                fixtures_root.mkdir()
+                spec_reqs, target_reqs = _build_boundary_fixtures(
+                    anneal_root=anneal_root,
+                    lean_bin=lean_bin,
+                    tb_olean_dir=tb_olean_dir,
+                    sysroot=sysroot,
+                    fixtures_root=fixtures_root,
+                    timeout_sec=timeout_sec,
+                )
+                for sanity_name, sanity_req in (
+                    ("spec_sanity", spec_reqs["spec_sanity"]),
+                    ("target_sanity", target_reqs["target_sanity"]),
+                ):
+                    s_dir = base_path / f"base_{sanity_name}"
+                    s_dir.mkdir()
+                    s_rc, s_parsed, s_out = _run_tb_request(
+                        lean_bin,
+                        tb_olean_dir,
+                        sanity_req,
+                        s_dir,
+                        tag=sanity_name,
+                        timeout_sec=timeout_sec,
+                    )
+                    if (
+                        s_rc != 0
+                        or not isinstance(s_parsed, dict)
+                        or s_parsed.get("ok") is not True
+                    ):
+                        raise RuntimeError(
+                            f"baseline boundary sanity {sanity_name} failed: "
+                            f"rc={s_rc} parsed={s_parsed!r} out={s_out}"
+                        )
+                for guard in boundary_guards:
+                    req_map = (
+                        spec_reqs
+                        if guard.mode == "spec-preflight"
+                        else target_reqs
+                    )
+                    neg_req = req_map[guard.fixture_id]
+                    b_dir = base_path / f"base_{guard.guard_id}"
+                    b_dir.mkdir()
+                    rc, parsed, out = _run_tb_request(
+                        lean_bin,
+                        tb_olean_dir,
+                        neg_req,
+                        b_dir,
+                        tag="base_neg",
+                        timeout_sec=timeout_sec,
+                    )
+                    if not (
+                        rc == 1
+                        and isinstance(parsed, dict)
+                        and parsed.get("ok") is False
+                        and parsed.get("category") == "policy"
+                    ):
+                        raise RuntimeError(
+                            f"baseline TrustedBoundary did not policy-reject "
+                            f"{guard.guard_id}: rc={rc} parsed={parsed!r} "
+                            f"out={out}"
+                        )
             baseline_sec += time.monotonic() - t_audit_base
 
             # Cap concurrent `TrustedBoundary.lean` compilations to 2 workers
             # to keep peak memory bounded on 4-vCPU CI runners.
-            audit_workers = max(1, min(jobs, 2, len(audit_guards)))
+            total_tb = len(audit_guards) + len(boundary_guards)
+            audit_workers = max(1, min(jobs, 2, total_tb))
             with ThreadPoolExecutor(max_workers=audit_workers) as pool:
-                future_map = {
-                    pool.submit(
-                        _check_one_audit_guard,
-                        guard,
-                        anneal_root=anneal_root,
-                        lean_bin=lean_bin,
-                        sysroot=sysroot,
-                        timeout_sec=timeout_sec,
-                    ): guard
-                    for guard in audit_guards
-                }
-                audit_by_id: dict[str, GuardResult] = {}
-                for fut in as_completed(future_map):
-                    res = fut.result()
-                    audit_by_id[res.guard_id] = res
-            results.extend(audit_by_id[g.guard_id] for g in audit_guards)
+                if audit_guards:
+                    future_map = {
+                        pool.submit(
+                            _check_one_audit_guard,
+                            guard,
+                            anneal_root=anneal_root,
+                            lean_bin=lean_bin,
+                            sysroot=sysroot,
+                            timeout_sec=timeout_sec,
+                        ): guard
+                        for guard in audit_guards
+                    }
+                    audit_by_id: dict[str, GuardResult] = {}
+                    for fut in as_completed(future_map):
+                        res = fut.result()
+                        audit_by_id[res.guard_id] = res
+                    results.extend(audit_by_id[g.guard_id] for g in audit_guards)
+                if boundary_guards:
+                    b_future_map = {
+                        pool.submit(
+                            _check_one_boundary_guard,
+                            guard,
+                            anneal_root=anneal_root,
+                            lean_bin=lean_bin,
+                            sanity_req=(
+                                spec_reqs["spec_sanity"]
+                                if guard.mode == "spec-preflight"
+                                else target_reqs["target_sanity"]
+                            ),
+                            negative_req=(
+                                spec_reqs[guard.fixture_id]
+                                if guard.mode == "spec-preflight"
+                                else target_reqs[guard.fixture_id]
+                            ),
+                            timeout_sec=timeout_sec,
+                        ): guard
+                        for guard in boundary_guards
+                    }
+                    boundary_by_id: dict[str, GuardResult] = {}
+                    for fut in as_completed(b_future_map):
+                        res = fut.result()
+                        boundary_by_id[res.guard_id] = res
+                    results.extend(
+                        boundary_by_id[g.guard_id] for g in boundary_guards
+                    )
 
     total = len(results)
     killed = sum(1 for r in results if r.status == "KILLED")
@@ -3123,7 +4213,7 @@ def main(argv: list[str] | None = None) -> int:
     )
     parser.add_argument(
         "--suite",
-        choices=("all", "mir_semantics", "audit_headers"),
+        choices=("all", "mir_semantics", "audit_headers", "audit_boundary"),
         default="all",
         help="Which guard-mutation suite(s) to execute.",
     )
@@ -3164,12 +4254,17 @@ def main(argv: list[str] | None = None) -> int:
             for err in errors:
                 print(f"ERROR: {err}", file=sys.stderr)
             return 1
-        mir_guards, audit_guards = _select_guards(args.suite, args.name_filter)
+        mir_guards, audit_guards, boundary_guards = _select_guards(
+            args.suite, args.name_filter
+        )
         for g in mir_guards:
             print(f"mir_semantics  {g.guard_id:36s} {g.target_file}")
         for g in audit_guards:
             print(f"audit_headers  {g.guard_id:36s} {g.target_file}")
-        print(f"Total cataloged guards: {len(mir_guards) + len(audit_guards)}")
+        for g in boundary_guards:
+            print(f"audit_boundary {g.guard_id:36s} {g.target_file}")
+        total = len(mir_guards) + len(audit_guards) + len(boundary_guards)
+        print(f"Total cataloged guards: {total}")
         return 0
 
     lean_bin = _resolve_lean_binary(args.lean)

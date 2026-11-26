@@ -95,11 +95,20 @@ def graph (env : Environment) : Json :=
     (env.header.modules.zip env.header.moduleData).toList.map fun (m, d) =>
       (m.module.toString, toJson d.imports)
 
-/-- Verify module/data header alignment on an imported `Environment` and disable
-exporting. -/
+/-- Verify every `(k, ci)` entry in `env.checked.get.constants` satisfies
+`!k.isAnonymous && !ci.name.isAnonymous && k == ci.name`. -/
+def verifyCheckedEnvKeys (env : Environment)
+    (ctx : String := "environment") : IO Unit := do
+  for (k, ci) in env.checked.get.constants do
+    if k.isAnonymous || ci.name.isAnonymous || k != ci.name then
+      fail s!"mismatched checked environment key {k} for {ci.name} in {ctx}"
+
+/-- Verify module/data header alignment and checked-environment keys on an
+imported `Environment` and disable exporting. -/
 def finalizeImportedEnv (env : Environment) : IO Environment := do
   unless env.header.modules.size == env.header.moduleData.size do
     throw <| IO.userError "module/data array alignment failure"
+  verifyCheckedEnvKeys env "imported environment"
   return env.setExporting false
 
 /-- Import `roots` from the explicit artifact map in `j` at `trustLevel := 0`
@@ -1339,22 +1348,29 @@ def collectSysrootConsts (j : Json) (foundation : Array Name) : IO Json := do
     Json.arr #[toJson modStr, toJson consts]
   return Json.mkObj [("sysrootConsts", .arr jsonEntries)]
 
+/-- Return `true` when `unsafeCi` and `parentCi` agree on `type` and
+`levelParams` for `p._unsafe_rec` pairing. -/
+def sameUnsafeRecHeader (unsafeCi parentCi : ConstantInfo) : Bool :=
+  unsafeCi.type == parentCi.type &&
+    unsafeCi.levelParams == parentCi.levelParams
+
 /-- Return `true` when `ci` is the safe `partial` compiler auxiliary
 `p._unsafe_rec` that Lean pairs with a well-founded definition `p`: a
 `.defnInfo` with `isPartial` and not `isUnsafe`, whose parent `p` is a safe,
-non-`partial` `.defnInfo` declared in the same module `m` (mirroring
-`TrustedBoundary.pairedSpecUnsafeRecParent?`). -/
+non-`partial` `.defnInfo` declared in the same module `m` with matching `type`
+and `levelParams` (mirroring `TrustedBoundary.pairedSpecUnsafeRecParent?`). -/
 def isPairedUnsafeRec (env : Environment) (m : Name) (ci : ConstantInfo) :
     Bool :=
   if !ci.isPartial || ci.isUnsafe || !(ci matches .defnInfo _) then false
-  else match ci.name with
-    | .str parent "_unsafe_rec" =>
+  else match Compiler.isUnsafeRecName? ci.name with
+    | some parent =>
       match env.find? parent, env.getModuleIdxFor? parent with
       | some parentCi@(.defnInfo _), some idx =>
         env.header.moduleNames[idx.toNat]? == some m &&
-          !parentCi.isUnsafe && !parentCi.isPartial
+          !parentCi.isUnsafe && !parentCi.isPartial &&
+          sameUnsafeRecHeader ci parentCi
       | _, _ => false
-    | _ => false
+    | none => false
 
 /-- Fail closed when module `m`'s compiled `isModule` header flag `actual`
 differs from the `"isModule"` expectation `expected` that `cargo-anneal`
