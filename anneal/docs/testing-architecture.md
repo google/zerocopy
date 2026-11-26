@@ -158,6 +158,11 @@ anneal/
     │   └── tests/
     │       ├── suite/{main,anti_vacuity_and_e2e,capture_and_cargo_isolation,corpora_runner,helpers,host_and_stage_security,receipt_and_bindings,split_store_bwrap}.rs
     │       └── {cli.rs, harness.rs, installed_smoke.rs, profile_v2_e2e.rs, sandbox_escape.rs, support_paths.rs, support_regressions.rs, support_signals.rs, fixtures/}
+    ├── itree_diff/                    # package = "anneal-itree-diff" (publish = false)
+    │   ├── Cargo.toml
+    │   ├── src/{lib,trace_observer,outcome,spec,rustc_runner,miri_runner,lean_trace_runner,mir_eval_adapter,corpus,fuzzer,shrink}.rs
+    │   ├── src/bin/itree_diff.rs
+    │   └── tests/itree_differential.rs
     ├── rustc-capture/                 # package = "anneal-rustc-capture-tests" (publish = false)
     │   ├── Cargo.toml
     │   ├── src/bin/anneal-rustc-capture-test-bin.rs
@@ -727,6 +732,40 @@ semantic seams:
      (`string_literal_replay_probe`) tracking upstream `leanchecker
      --from-export` status.
 
+3. **Seam C — Multi-Call Observable-Trace `ITree` Differential & Fuzz Suite
+   (`tests/itree_diff/`, `anneal-itree-diff`):**
+   Exercises multi-step and multi-call interaction-tree (`ITree`) observable
+   spines (`CallEnter`, `CallReturn`, `CallUnwind`, `CallerFrameCheck`, and
+   `BranchTag`), SHA-256 entry-argument and post-execution terminal boundary
+   `mem_digest` parity, `core::mem::offset_of!` padding-safe byte capture,
+   live caller-frame and watched-allocation preservation across calls and
+   cleanup unwinds, deterministic `EnvSchedule` actions (`ReturnBytes`,
+   `Unwind`, and real `std::process::abort()` `Abort`), and source-inlined
+   single-body metamorphic twins:
+   - **Miri-First UB Guard, `DegradedNoMiri`, & `DegradedNoLean`:** Miri
+     (`-Zmiri-tree-borrows`) runs first whenever provisioned so Undefined
+     Behavior inputs are never executed natively under host `rustc` (`-O0` /
+     `-O2`). When Miri is absent from the trimmed omnibus archive
+     (`workspace-tests`) or when Lean is disabled (`--no-lean`), `Agree` is
+     never emitted: non-expected-UB cases run natively under `rustc` and
+     classify as `DegradedNoMiri` or `DegradedNoLean` while `--require-miri`
+     (`ANNEAL_ITREE_REQUIRE_MIRI=1`) fails closed, and default `.olean`,
+     capture, and Miri caches write outside the checkout (external
+     `CARGO_TARGET_*`, `XDG_CACHE_HOME` / `~/.cache`, or `TMPDIR`).
+   - **Lean Trace Modes (`mirTyBeqAt 64`):** Instantiates `Anneal.MirTotal` at
+     `mirTyBeqAt 64` (matching `Trusted.MirSemantics.evalStep` for `MirTy`
+     trees of nesting depth `< 64`) in both `StrictVerbatim` mode (running
+     single bodies, `.sysrootCall`, and safe intra-crate `.call`s directly under
+     `evalMirStepBy` while refusing external callees, `.cleanup` unwinds, and
+     unmodeled boundaries) and `CompositionalITree` multi-call stack mode
+     outside `trusted/lean/`
+     (where `ITreeDriver` steps individual bodies via `evalMirStepBy` and
+     stitches call/unwind frames and caller-frame checks in the test driver,
+     validating per-body `MirSemantics` plus harness composition), separating
+     conservative twin skips (`SkippedConservative`) from verified metamorphic
+     passes and pinning `ShrinkFailureSignature` across combined fixed-point
+     `ddmin` + non-monotonic scalar candidate reduction.
+
 #### 4.3 `real_crates/`: Verbatim `zerocopy` Suite and External Smoke Pins
 
 `anneal/tests/corpora/real_crates/` prevents synthetic-fixture overfitting by
@@ -884,7 +923,7 @@ under `NestedBwrap` with `--network=none` and read-only `/nix` `overlayfs`):
 | CI Tier | Trigger & Isolation | Executed Suites & Gates | Wall-Clock Target | Caching Policy |
 | :--- | :--- | :--- | ---: | :--- |
 | **Tier 0: Static & Boundary Preflight** | Ready Anneal-relevant or `run-ci` PRs, `merge_group`, & `push` (draft or non-Anneal PRs without `run-ci` skip `current_anneal` including `static-checks`; target `ci-core`: every PR; `Container --network=none`) | `root-manifest.sha256`, zero-symlink `trusted/`/`tests/` scan, `check_cargo_boundary` (2-zone lattice), `regenerate_bundle --check`, `check_todo.sh`, `check_pr_hygiene.py`, `check_skills.py`, Python `ci/test_*.py`, `--no-default-features` `cargo clippy` + `cli` offline tests | `< 90 s` | Content-addressed `cargo_locked` + `anneal-tc` image |
-| **Tier 1: PR Verification & Regression Gate** | PRs touching `anneal/**`, CI TCB, or `zerocopy/proofs/**` (`anneal.yml` runs `static-checks` on ready PRs and full suites on `run-ci` PRs or `merge_group`/`push`; target `ci-core`: `NestedBwrap` + `ubuntu-24.04-arm` `sandbox-aarch64`) | Workspace unit + single-binary integration suites (`anneal-testkit`, `anneal-audit-tests`, `cargo-anneal-tests`, `anneal-rustc-capture-tests`) run via `cargo nextest run --profile ci --workspace --locked` (`D3-A`, keeping `cargo test --workspace --locked` supported), `adversarial/` `must-reject` corpus, Lean TCB `check_guard_mutation.py` (`84` guards, `~35 s`), path-filtered Rust TCB guard ablation on PR-modified `trusted/**/*.rs` files (`D4-A`), `anneal-audit --require-correspondence` (with verified `lean-miri` `.olean` cache), `perf_tracking.py check-budgets` against `anneal/ci/perf_budgets.json` (plus target Wave-3 `theory/axiom-footprint.json`), `installed_smoke` + `verify_zerocopy.py` (`zerocopy/proofs/` + target `ratchet.json`) + `starnix` | `< 12 min` critical path | `ci-core` attested `Claim::Cache` (`lean-miri` `.olean` + Cargo target) |
+| **Tier 1: PR Verification & Regression Gate** | PRs touching `anneal/**`, CI TCB, or `zerocopy/proofs/**` (`anneal.yml` runs `static-checks` on ready PRs and full suites on `run-ci` PRs or `merge_group`/`push`; target `ci-core`: `NestedBwrap` + `ubuntu-24.04-arm` `sandbox-aarch64`) | Workspace unit + single-binary integration suites (`anneal-testkit`, `anneal-audit-tests`, `cargo-anneal-tests`, `anneal-itree-diff` in `DegradedNoMiri` parity mode when `bin/miri` is trimmed from the omnibus archive, `anneal-rustc-capture-tests`) run via `cargo nextest run --profile ci --workspace --locked` (`D3-A`, keeping `cargo test --workspace --locked` supported), `adversarial/` `must-reject` corpus, Lean TCB `check_guard_mutation.py` (`84` guards, `~35 s`), path-filtered Rust TCB guard ablation on PR-modified `trusted/**/*.rs` files (`D4-A`), `anneal-audit --require-correspondence` (with verified `lean-miri` `.olean` cache), `perf_tracking.py check-budgets` against `anneal/ci/perf_budgets.json` (plus target Wave-3 `theory/axiom-footprint.json`), `installed_smoke` + `verify_zerocopy.py` (`zerocopy/proofs/` + target `ratchet.json`) + `starnix` | `< 12 min` critical path | `ci-core` attested `Claim::Cache` (`lean-miri` `.olean` + Cargo target) |
 | **Tier 2: Merge-Queue Assurance Gate** | `merge_group` (`NestedBwrap`) | **Pass-1 & Pass-2 `anneal-audit --require-correspondence`** (target `ci-core`: cold build; in `anneal-current.yml`, `merge_group` restores SHA-256-verified `lean-miri` `.olean` read-only with workflow miss fallback to cold, while `push` to `main` compiles cold), full Rust + Lean TCB guard-ablation matrix (`D4-A`), **4-kernel `--paranoid-quorum`** (`nanoda_bin` + `con-ron` + `con-leche` + `lean4lean --import` once `v4.35.0` lands), full `zerocopy/proofs/` (`real_crates/zerocopy`) verification | `< 18 min` | Cold on `main` `push` & pin edits; read-only SHA-256-verified `lean-miri` `.olean` on `merge_group` (zero unverified `.olean` cache hits) |
 | **Tier 3: Continuous `main` Telemetry & Scheduled Deep Sweep** | `push` to `main` (`.github/workflows/anneal-perf.yml`), nightly cron, & pre-release qualification (`0.2.0-alpha.11+`) | Continuous `perf_tracking.py collect`/`analyze`/`check-budgets` + static dashboard publication on `benchmark-data` (`anneal-perf.yml`), full **all-guards Rust + Lean TCB ablation matrix** (recompiling all `rustc-capture`/`audit`/`cargo-anneal` single-guard mutants per `D4-A`), full 4-way **`differential/` Miri $\leftrightarrow$ `MirSemantics` boundary/fuzz sweep**, multi-version Lean (`v4.33.1`/`v4.34.1`/`v4.35.0`) matrix, and extended external crate smoke suite | `< 45 min` | Isolated ephemeral runners |
 

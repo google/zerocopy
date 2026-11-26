@@ -35,6 +35,11 @@ threads-required = 2
 slow-timeout = { period = "60s", terminate-after = 4 }
 
 [[profile.default.overrides]]
+filter = 'binary(itree_differential)'
+threads-required = 2
+slow-timeout = { period = "90s", terminate-after = 4 }
+
+[[profile.default.overrides]]
 filter = 'test(/ndjson_quorum|correspondence|scale_|real_crates/)'
 threads-required = 2
 slow-timeout = { period = "45s", terminate-after = 4 }

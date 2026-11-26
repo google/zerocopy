@@ -152,6 +152,7 @@ context = [
     "anneal/tests/audit/Cargo.toml",
     "anneal/tests/cargo-anneal/Cargo.toml",
     "anneal/tests/rustc-capture/Cargo.toml",
+    "anneal/tests/itree_diff/Cargo.toml",
     "anneal/trusted/lean/lean-toolchain",
     "anneal/trusted/lean/foundation-lock.json",
     "anneal/ci/verify_starnix_e2e.py",
