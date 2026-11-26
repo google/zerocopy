@@ -10,6 +10,7 @@
 //! Typed capture does not verify a crate; the host must check the generated
 //! subject against its authored specifications and exact root.
 
+// RUSTC-WORKAROUND(#4368): Path::normalize_lexically is still unstable.
 #![feature(normalize_lexically, rustc_private)]
 
 extern crate rustc_abi;
