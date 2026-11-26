@@ -3648,6 +3648,7 @@ theorem openInitState_framesNoParam (prog : OpenProgram) (env : OpenExecEnv)
               have hIS := (ite_err_ok hIS).2
               have hIS := (ite_err_ok hIS).2
               have hIS := (ite_err_ok hIS).2
+              have hIS := (ite_err_ok hIS).2
               cases hIS
               have hEntryId : day1Prog.entryDefId = prog.entryDefId := by
                 unfold OpenProgram.toDay1? at hD
@@ -4059,7 +4060,50 @@ theorem evalStep_single_preserves_defId (p : Program) (df : FrameState)
               | call _ _ _ _ _ | sysrootCall _ _ _ _ _ =>
                   have hc := basicBlocks_noCall_term (hNoCall body hB) hBb
                   rw [hTerm] at hc; cases hc
-              | unreachable | unwindResume | assert _ _ _ _ _
+              | assert cond expected msg target unwind =>
+                  rw [hTerm] at h
+                  dsimp only [attachCallers] at h
+                  cases hOp : evalPrimitiveOperand body.locals df.locals mem cond with
+                  | error _ => rw [hOp] at h; cases h
+                  | ok res =>
+                      rw [hOp] at h
+                      cases res with
+                      | mk cv rest =>
+                          cases rest with
+                          | mk l₁ m₁ =>
+                              dsimp only at h
+                              cases cv with
+                              | bool b =>
+                                  dsimp only at h
+                                  cases hEq : (b == expected) with
+                                  | true =>
+                                      rw [ite_cond_true hEq] at h
+                                      unfold jumpToBlock at h
+                                      cases h
+                                      exact ⟨_, rfl, rfl, rfl⟩
+                                  | false =>
+                                      rw [ite_cond_false hEq] at h
+                                      have hNe : ∀ (m : AssertKind) (ps : PanicStrategy)
+                                          (uw : UnwindAction) (c : CallerMemory)
+                                          (lh : Bool) (st : State),
+                                          evalAssertFailure m ps uw c lh ≠ .step st := by
+                                        intro m ps uw c lh st hEq'
+                                        cases m with
+                                        | misalignedPtrDeref | nullPtrDeref | overflowNeg
+                                        | unsupported => cases hEq'
+                                        | boundsCheck | divByZero | remByZero =>
+                                            cases lh <;> cases ps <;> cases uw <;> cases hEq'
+                                        | overflow op =>
+                                            cases op <;>
+                                              (first
+                                                | cases hEq'
+                                                | (cases lh <;> cases ps <;> cases uw <;>
+                                                   cases hEq'))
+                                      exact False.elim (hNe _ _ _ _ _ _ h)
+                              | scalar _ | char _ | unit | enumVal _ _ | tuple _ | ptr _
+                              | slicePtr _ _ | rangeTo _ | rangeFrom _ | bytes _
+                              | array _ | ordering _ => cases h
+              | unreachable | unwindResume
               | coreCall _ _ _ _ _ | unsupported =>
                   rw [hTerm] at h; dsimp only [attachCallers] at h; cases h
 
@@ -5232,6 +5276,7 @@ theorem assumeGuaranteeTraitCall_noParam_congr (prog : OpenProgram)
                               refine prop_and_congr Iff.rfl ?_
                               cases out with
                               | unwound _ => exact Iff.rfl
+                              | aborted _ => exact Iff.rfl
                               | returned rv =>
                                   dsimp only
                                   have hCvEq := checkOpenVal_noParam_congr prog
@@ -5342,6 +5387,7 @@ theorem assumeGuaranteeTraitCall_preserves_framesNoParam (prog : OpenProgram)
                                           (fun cf hCf => by
                                             cases hCf; exact hFr1)
                                           (Eq.symm hOut)
+                                  | aborted _ => cases hOut
                                   | returned rv =>
                                       cases rv with
                                       | mk retVal cm' =>
@@ -7369,24 +7415,28 @@ private theorem openWellFormed_day1Some_to_wellFormed (prog : OpenProgram)
                                 | true => rw [ite_cond_true hCas] at hI; cases hI
                                 | false =>
                                     rw [ite_cond_false hCas] at hI
-                                    cases hSup : (!body.locals.all
-                                        isSupportedScalarOrUnitTy) with
-                                    | true =>
-                                        rw [ite_cond_true hSup] at hI; cases hI
+                                    cases hAct : (!assertConditionTypesValid body) with
+                                    | true => rw [ite_cond_true hAct] at hI; cases hI
                                     | false =>
-                                        rw [ite_cond_false hSup] at hI
-                                        have hI := (ite_err_ok hI).2
-                                        have hI := (ite_err_ok hI).2
-                                        cases hChk : (!checkArgsMatch q.args
-                                            ((body.locals.drop 1).take
-                                              body.argumentCount)) with
+                                        rw [ite_cond_false hAct] at hI
+                                        cases hSup : (!body.locals.all
+                                            isSupportedScalarOrUnitTy) with
                                         | true =>
-                                            rw [ite_cond_true hChk] at hI
-                                            cases hI
+                                            rw [ite_cond_true hSup] at hI; cases hI
                                         | false =>
-                                            rw [ite_cond_false hChk] at hI
-                                            cases hI
-                                            exact ⟨_, rfl, rfl⟩
+                                            rw [ite_cond_false hSup] at hI
+                                            have hI := (ite_err_ok hI).2
+                                            have hI := (ite_err_ok hI).2
+                                            cases hChk : (!checkArgsMatch q.args
+                                                ((body.locals.drop 1).take
+                                                  body.argumentCount)) with
+                                            | true =>
+                                                rw [ite_cond_true hChk] at hI
+                                                cases hI
+                                            | false =>
+                                                rw [ite_cond_false hChk] at hI
+                                                cases hI
+                                                exact ⟨_, rfl, rfl⟩
   constructor
   · let ⟨os₀, hOInit, _⟩ := hOWf.1
     rw [hInitEq] at hOInit
@@ -8912,7 +8962,9 @@ private theorem init_sim (prog : OpenProgram) (env' : OpenExecEnv)
   have hCallsAdm := bool_and_right h0
   have hS0 := bool_and_left h0
   have hSupp := bool_and_right hS0
-  have h1 := bool_and_left hS0
+  have hA0 := bool_and_left hS0
+  have hAct := bool_and_right hA0
+  have h1 := bool_and_left hA0
   have hCast := bool_and_right h1
   have h2 := bool_and_left h1
   have hDiscr := bool_and_right h2
@@ -8969,8 +9021,8 @@ private theorem init_sim (prog : OpenProgram) (env' : OpenExecEnv)
     rw [ite_cond_false hHdrD, ite_cond_false hCmD, hEntryD, hErasedP]
     dsimp only
     rw [ite_cond_false hE, ite_not_true hArgLt, ite_not_true hSto,
-      ite_not_true hDiscr, ite_not_true hCast, ite_not_true hSupp,
-      ite_not_true hCallsAdmE, ite_not_true hAllCallE,
+      ite_not_true hDiscr, ite_not_true hCast, ite_not_true hAct,
+      ite_not_true hSupp, ite_not_true hCallsAdmE, ite_not_true hAllCallE,
       ite_not_true hChkArgs]
   unfold openInitState openInitStateAux at hOInit
   rw [hNone] at hOInit
@@ -11515,6 +11567,7 @@ private theorem initState_singleFrame (p : Program) (q : Query) (s : State)
       have h := (ite_err_ok h).2
       have h := (ite_err_ok h).2
       have h := (ite_err_ok h).2
+      have h := (ite_err_ok h).2
       cases h
       exact ⟨_, rfl, rfl, rfl⟩
 
@@ -11648,7 +11701,7 @@ theorem ClosedInstantiationTransfer :
               unfold BodyStaticAdmitted singleBodyStaticAdmitted at hDay1Adm
               have hAL := bool_and_right (bool_and_left (bool_and_left
                 (bool_and_left (bool_and_left (bool_and_left
-                  (bool_and_left hDay1Adm))))))
+                  (bool_and_left (bool_and_left hDay1Adm)))))))
               rw [hParts.1, hParts.2.1, length_map_eq] at hAL
               exact hAL
             have hStepSim := openStep_sim prog hRegWf env σ paramSpecs' hPsLen
@@ -11673,7 +11726,7 @@ theorem ClosedInstantiationTransfer :
           unfold BodyStaticAdmitted singleBodyStaticAdmitted at hDay1Adm
           have hAL := bool_and_right (bool_and_left (bool_and_left
             (bool_and_left (bool_and_left (bool_and_left
-              (bool_and_left hDay1Adm))))))
+              (bool_and_left (bool_and_left hDay1Adm)))))))
           rw [hParts.1, hParts.2.1, length_map_eq] at hAL
           exact hAL
         have hStepSim := openStep_sim prog hRegWf env σ paramSpecs' hPsLen hMap'

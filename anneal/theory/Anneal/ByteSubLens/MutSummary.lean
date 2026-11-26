@@ -114,7 +114,7 @@ temporaries `extraTempTys`. -/
     (fun cur d =>
       match d with
       | .returned out => cur.mem = memOut ∧ out.ret = retVal
-      | .unwound _ => False)
+      | .unwound _ | .aborted _ => False)
     (fun _ _ => False)
     fuel st
 
@@ -132,7 +132,7 @@ theorem mirCalleeRunsTo_succ (p : Program) (memOut : MemoryState)
       | .done d =>
         match d with
         | .returned out => st.mem = memOut ∧ out.ret = retVal
-        | .unwound _ => False
+        | .unwound _ | .aborted _ => False
       | .fault _ => False) := by
   refine propext (execStepPred_succ_iff.trans ?_)
   cases evalStep p 0 st with
@@ -150,7 +150,7 @@ private theorem mirCalleeRunsTo_implies_execState {p : Program}
   intro _ d hd
   cases d with
   | returned out => exact ⟨out, rfl, hd.2⟩
-  | unwound _ => exact False.elim hd
+  | unwound _ | aborted _ => exact False.elim hd
 
 /-- Unconditional adequacy lift from `MirCalleeRunsTo` into
 `Anneal.MirWp.wpState` (`ValidChoice`-quantified weakest precondition over

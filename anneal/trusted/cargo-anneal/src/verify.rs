@@ -1024,6 +1024,8 @@ fn default_profile_version() -> u32 {
 #[derive(Deserialize)]
 struct CaptureProgram {
     scope: Scope,
+    #[serde(default)]
+    has_local_panic_handler: bool,
     #[serde(default = "default_profile_version")]
     mir_profile_version: u32,
     bodies: Vec<serde::de::IgnoredAny>,
@@ -3608,6 +3610,17 @@ fn run<Out: std::io::Write + Send, ErrOut: std::io::Write + Send>(
     assumptions.push("intact compiler and verification environment");
     if !allowed_features.is_empty() {
         assumptions.push(crate::core::inspect::schema::UNSTABLE_FEATURES_ASSUMPTION);
+    }
+    if request.compilation.panic == PanicStrategy::Abort
+        && !manifest.program.has_local_panic_handler
+    {
+        assumptions.push(
+            "--panic abort models failed non-optional safe assertions as .aborted, \
+             meaning control entered the panic runtime and never returns to the caller; \
+             panic hooks and handlers (including downstream #![no_std] binary \
+             #[panic_handler]s) are unverified and may abort or diverge, and only \
+             caller-memory effects before the panic are modeled",
+        );
     }
     if active_sandbox == ActiveSandbox::LinuxLandlockSeccomp {
         assumptions.push(

@@ -634,6 +634,7 @@ private theorem refSingleBodyStaticAdmitted_eq {rp : RefProg} {p : Program}
   rw [h_width, h_prof, h_str, h_arg, mapOption_isEmpty h_bbs,
     refStorageAnnotationsInBounds_eq h_bdec,
     refDiscriminantTypesValid_eq h_bdec, refCastTypesValid_eq h_bdec,
+    refAssertConditionTypesValid_eq h_bdec,
     list_all_congr_eq body.locals _ _ refIsSupportedLocalTy_eq,
     refCallsAdmitted_eq h_dec h_bdec]
 
@@ -695,7 +696,8 @@ theorem initRefState_sim_base : InitRefStateSimClaim := by
           rw [mapOption_isEmpty h_bbs_dec, h_arg,
             refStorageAnnotationsInBounds_eq h_rb_dec,
             refDiscriminantTypesValid_eq h_rb_dec,
-            refCastTypesValid_eq h_rb_dec]
+            refCastTypesValid_eq h_rb_dec,
+            refAssertConditionTypesValid_eq h_rb_dec]
           cases body.basicBlocks.isEmpty
           · cases h_blt : Nat.blt body.argumentCount body.locals.length
             · refine ⟨?_, fun s₀ hs₀ => by cases hs₀⟩
@@ -709,58 +711,61 @@ theorem initRefState_sim_base : InitRefStateSimClaim := by
                 · cases h_cv : castTypesValid body
                   · refine ⟨?_, fun s₀ hs₀ => by cases hs₀⟩
                     intro k hk; injection hk with hk_eq; rw [← hk_eq]; rfl
-                  · rw [list_all_congr_eq body.locals _ _
-                      refIsSupportedLocalTy_eq]
-                    cases h_supp : body.locals.all isSupportedScalarOrUnitTy
+                  · cases h_act : assertConditionTypesValid body
                     · refine ⟨?_, fun s₀ hs₀ => by cases hs₀⟩
                       intro k hk; injection hk with hk_eq; rw [← hk_eq]; rfl
-                    · rw [refCallsAdmitted_eq h_dec h_rb_dec,
-                        refAllCallBodiesStaticAdmitted_eq h_dec h_rb_dec]
-                      cases h_calls : callsAdmitted p body
+                    · rw [list_all_congr_eq body.locals _ _
+                        refIsSupportedLocalTy_eq]
+                      cases h_supp : body.locals.all isSupportedScalarOrUnitTy
                       · refine ⟨?_, fun s₀ hs₀ => by cases hs₀⟩
                         intro k hk; injection hk with hk_eq; rw [← hk_eq]; rfl
-                      · cases h_all_static : allCallBodiesStaticAdmitted p body
+                      · rw [refCallsAdmitted_eq h_dec h_rb_dec,
+                          refAllCallBodiesStaticAdmitted_eq h_dec h_rb_dec]
+                        cases h_calls : callsAdmitted p body
                         · refine ⟨?_, fun s₀ hs₀ => by cases hs₀⟩
                           intro k hk; injection hk with hk_eq; rw [← hk_eq]; rfl
-                        · rw [checkRefArgsMatch_eq]
-                          cases h_args : checkArgsMatch q.args
-                              ((body.locals.drop 1).take body.argumentCount)
+                        · cases h_all_static : allCallBodiesStaticAdmitted p body
                           · refine ⟨?_, fun s₀ hs₀ => by cases hs₀⟩
                             intro k hk; injection hk with hk_eq; rw [← hk_eq]; rfl
-                          · let ⟨retTy, h_ret⟩ := getElem?_zero_of_blt h_blt
-                            let ⟨mem, retPlace, h_init_mem⟩ :=
-                              refInitMemoryAndRetPlace_ok rp.types retTy
-                            rw [h_ret]
-                            dsimp only
-                            rw [h_init_mem]
-                            dsimp only
-                            refine ⟨?_, ?_⟩
-                            · intro k hk; cases hk
-                            · intro s₀ hs₀
-                              injection hs₀ with h_s₀
-                              subst h_s₀
-                              rw [initRefLocalsLoop_eq h_rb_dec q.args 0
-                                body.locals]
-                              have h_entry_ret : entryRetTy? p = some retTy := by
-                                dsimp only [entryRetTy?]
-                                rw [h_b]
-                                exact h_ret
-                              have h_sm := initLocalsLoop_slotsMatchTys body q.args h_args
-                              refine ⟨_, rfl, ?_, rfl, rfl⟩
-                              exact ⟨Array.mk [mkRefMiriFrame rp.types p.entryDefId rbody 0 0
-                                  (liftLocals rp.types body.locals
-                                    (initLocalsLoop body q.args 0 body.locals))
-                                  retPlace],
-                                retTy, mem, refInitControl, none, h_dec, rfl, rfl,
-                                h_entry_ret, rfl, h_init_mem, refControlValid_init,
-                                rfl, rfl,
-                                FramesSimInv.root rfl rfl rfl rfl
-                                  ⟨body, rbody, List.replicate body.locals.length true,
-                                    h_b, h_rb_get, h_rb_dec, h_blt, h_sa, h_dv, h_cv,
-                                    h_calls, h_all_static, h_supp, h_sm,
-                                    fun _ _ => Nat.zero_le _, rfl, by
-                                      rw [liftLocalsCached_replicate_true rp.types
-                                        (SlotsMatchTys.length_eq h_sm)]⟩⟩
+                          · rw [checkRefArgsMatch_eq]
+                            cases h_args : checkArgsMatch q.args
+                                ((body.locals.drop 1).take body.argumentCount)
+                            · refine ⟨?_, fun s₀ hs₀ => by cases hs₀⟩
+                              intro k hk; injection hk with hk_eq; rw [← hk_eq]; rfl
+                            · let ⟨retTy, h_ret⟩ := getElem?_zero_of_blt h_blt
+                              let ⟨mem, retPlace, h_init_mem⟩ :=
+                                refInitMemoryAndRetPlace_ok rp.types retTy
+                              rw [h_ret]
+                              dsimp only
+                              rw [h_init_mem]
+                              dsimp only
+                              refine ⟨?_, ?_⟩
+                              · intro k hk; cases hk
+                              · intro s₀ hs₀
+                                injection hs₀ with h_s₀
+                                subst h_s₀
+                                rw [initRefLocalsLoop_eq h_rb_dec q.args 0
+                                  body.locals]
+                                have h_entry_ret : entryRetTy? p = some retTy := by
+                                  dsimp only [entryRetTy?]
+                                  rw [h_b]
+                                  exact h_ret
+                                have h_sm := initLocalsLoop_slotsMatchTys body q.args h_args
+                                refine ⟨_, rfl, ?_, rfl, rfl⟩
+                                exact ⟨Array.mk [mkRefMiriFrame rp.types p.entryDefId rbody 0 0
+                                    (liftLocals rp.types body.locals
+                                      (initLocalsLoop body q.args 0 body.locals))
+                                    retPlace],
+                                  retTy, mem, refInitControl, none, h_dec, rfl, rfl,
+                                  h_entry_ret, rfl, h_init_mem, refControlValid_init,
+                                  rfl, rfl,
+                                  FramesSimInv.root rfl rfl rfl rfl
+                                    ⟨body, rbody, List.replicate body.locals.length true,
+                                      h_b, h_rb_get, h_rb_dec, h_blt, h_sa, h_dv, h_cv, h_act,
+                                      h_calls, h_all_static, h_supp, h_sm,
+                                      fun _ _ => Nat.zero_le _, rfl, by
+                                        rw [liftLocalsCached_replicate_true rp.types
+                                          (SlotsMatchTys.length_eq h_sm)]⟩⟩
           · refine ⟨?_, fun s₀ hs₀ => by cases hs₀⟩
             intro k hk; injection hk with hk_eq; rw [← hk_eq]; rfl
 
@@ -1037,7 +1042,8 @@ private theorem evalStatement_preserves_meta {body : Body} {f f' : FrameState}
 
 private theorem evalTerminator_preserves_meta {body : Body} {bb : BasicBlock}
     {f f' : FrameState} {amem mem' : MemoryState} {cm cm' : CallerMemory}
-    (h : evalTerminator body bb f amem cm =
+    {ps : PanicStrategy} {lh : Bool}
+    (h : evalTerminator body bb f amem cm ps lh =
       .step { frames := [f'], callerMem := cm', mem := mem' }) :
     f'.sysrootOp? = f.sysrootOp? ∧ f'.retDst? = f.retDst? ∧
       f'.retTarget? = f.retTarget? := by
@@ -1068,8 +1074,41 @@ private theorem evalTerminator_preserves_meta {body : Body} {bb : BasicBlock}
             | error _ => rw [h2] at h; cases h
             | ok o => rw [h2] at h; cases o <;> cases h
     · cases h
-  | unreachable | unwindResume | assert _ _ _ _ _ | call _ _ _ _ _
+  | unreachable | unwindResume | call _ _ _ _ _
   | sysrootCall _ _ _ _ _ | coreCall _ _ _ _ _ | unsupported => cases h
+  | assert cond expected msg target unwind =>
+    dsimp only [evalTerminator] at h
+    cases h_c : evalPrimitiveOperand body.locals f.locals amem cond with
+    | error _ => rw [h_c] at h; cases h
+    | ok res =>
+      rw [h_c] at h
+      cases res with | mk condVal rest =>
+      cases rest with | mk lC mC =>
+      dsimp only at h
+      cases condVal with
+      | bool b =>
+        dsimp only at h
+        cases h_b : (b == expected) with
+        | true =>
+          rw [h_b] at h
+          injection h with hs; injection hs with hfs
+          have h_f := (List.cons.inj hfs).1
+          rw [← h_f]; exact ⟨rfl, rfl, rfl⟩
+        | false =>
+          rw [h_b] at h
+          dsimp only [evalAssertFailure] at h
+          cases msg with
+          | misalignedPtrDeref | nullPtrDeref | unsupported => cases h
+          | boundsCheck | overflowNeg | divByZero | remByZero =>
+            cases lh <;> cases ps <;> cases unwind <;> cases h
+          | overflow op =>
+            cases op <;>
+              (first
+                | (cases lh <;> cases ps <;> cases unwind <;> cases h)
+                | cases h)
+      | scalar _ | char _ | unit | enumVal _ _ | tuple _ | ptr _ | slicePtr _ _
+      | rangeTo _ | rangeFrom _ | bytes _ | array _ | ordering _ =>
+        cases h
   | switchInt discr targets =>
     dsimp only [evalTerminator] at h
     cases h_d : evalPrimitiveOperand body.locals f.locals amem discr with
@@ -1452,7 +1491,7 @@ private theorem sameDepth_step_preserves_aux {rp : RefProg} {p : Program}
          | none => none) = topRel? := by
       rw [h_miri]; rfl
     let ⟨body₀, rbody₀, cache, h_b0, h_rb0, h_bdec, h_arg, h_sa, h_dv, h_cv,
-      h_calls, h_all_static, h_supp, h_inv₀, _, h_crep, h_rf⟩ := h_fs
+      h_act, h_calls, h_all_static, h_supp, h_inv₀, _, h_crep, h_rf⟩ := h_fs
     have h_ab : activeFrameBody p f = some body₀ := by
       dsimp only [activeFrameBody]; rw [h_f_sro]; exact h_b0
     have h_arb : activeRefFrameBody rp f = some rbody₀ := by
@@ -1496,7 +1535,7 @@ private theorem sameDepth_step_preserves_aux {rp : RefProg} {p : Program}
         (h_rdst.trans h_f_rdst) (h_rtgt.trans h_f_rtgt)
         ⟨body, rbody, List.replicate body.locals.length true,
           (h_def.symm ▸ h_b0), (h_def.symm ▸ h_rb0), h_bdec, h_arg, h_sa,
-          h_dv, h_cv, h_calls, h_all_static, h_supp, h_inv', h_pc', rfl, rfl⟩
+          h_dv, h_cv, h_act, h_calls, h_all_static, h_supp, h_inv', h_pc', rfl, rfl⟩
   | @FramesSimInv.push _ _ _ callee0 caller rest rf rcaller rrest callerBody calleeBody dst dstTy cRetTy
       h_fsim_callers h_cb h_calleeb h_frdst h_dst_emp h_dst_ty h_dst_supp
       h_cret_ty h_beq h_tgt_lt h_rc_cached h_cfs => by
@@ -1512,7 +1551,7 @@ private theorem sameDepth_step_preserves_aux {rp : RefProg} {p : Program}
          | none => none) = topRel? := by
       rw [h_miri]; rfl
     let ⟨body₀, rbody₀, cache, fnTag, h_act_b0, h_act_rb0, h_bdec, h_fnTag,
-      h_crate, h_sys, h_arg, h_sa, h_dv, h_cv, h_asg, h_calls, h_all_static,
+      h_crate, h_sys, h_arg, h_sa, h_dv, h_cv, h_act, h_asg, h_calls, h_all_static,
       h_supp, h_inv₀, _, h_c_len, h_rf⟩ := h_cfs
     rw [h_body] at h_act_b0; injection h_act_b0 with hb_eq; subst hb_eq
     rw [h_rbody] at h_act_rb0; injection h_act_rb0 with hrb_eq; subst hrb_eq
@@ -1579,7 +1618,7 @@ private theorem sameDepth_step_preserves_aux {rp : RefProg} {p : Program}
       · exact h_fb'.trans h_body
       · rw [h_rtgt]; exact h_tgt_lt
       · refine ⟨body, rbody, newCache, fnTag, ?_, ?_, h_bdec, ?_, ?_, ?_,
-          h_arg, h_sa, h_dv, h_cv, h_asg, h_calls, h_all_static, h_supp, h_inv',
+          h_arg, h_sa, h_dv, h_cv, h_act, h_asg, h_calls, h_all_static, h_supp, h_inv',
           h_pc', (updateCacheLoop_length _ 0 cache).trans h_c_len, h_rf'_eq⟩
         · exact h_fb'.trans h_body
         · exact h_frb'.trans h_rbody
@@ -1764,6 +1803,7 @@ private theorem evalCallTerminator_step_preserves_aux {rp : RefProg} {p : Progra
     (h_sys : ∀ op, sysrootOp? = some op → calleeDefId = 0)
     (h_cb_calls : callsAdmitted p calleeBody = true)
     (h_cb_all_static : allCallBodiesStaticAdmitted p calleeBody = true)
+    (h_cb_act : assertConditionTypesValid calleeBody = true)
     (h_ec : evalCallTerminator body bb f callers s.mem s.callerMem calleeDefId
       sysrootOp? calleeBody args dst target unwind = .step s') :
     fs = f :: callers →
@@ -1890,7 +1930,7 @@ private theorem evalCallTerminator_step_preserves_aux {rp : RefProg} {p : Progra
                     calleeLocals calleeCache)
                   rframes.size
                 let ⟨body₀, rbody₀, cache, h_b0, h_rb0, h_bdec, h_arg, h_sa,
-                  h_dv, h_cv, h_calls, h_all_static, h_supp, h_inv₀,
+                  h_dv, h_cv, h_act, h_calls, h_all_static, h_supp, h_inv₀,
                   h_pc₀, h_crep, h_rf⟩ := h_fs
                 have h_ab : activeFrameBody p f = some body₀ := by
                   dsimp only [activeFrameBody]; rw [h_f_sro]; exact h_b0
@@ -1980,7 +2020,7 @@ private theorem evalCallTerminator_step_preserves_aux {rp : RefProg} {p : Progra
                 refine FramesSimInv.push
                   (FramesSimInv.root h_defId h_f_sro h_f_rdst h_f_rtgt
                     ⟨body, rbody, List.replicate body.locals.length true,
-                      h_b0, h_rb0, h_bdec, h_arg, h_sa, h_dv, h_cv,
+                      h_b0, h_rb0, h_bdec, h_arg, h_sa, h_dv, h_cv, h_act,
                       h_calls, h_all_static, h_supp, h_cl_inv, h_pc₀,
                       rfl, h_rfCaller'_eq⟩)
                   h_body ?_ rfl h_dst_emp h_dl h_dst_supp h_cl0 h_dst_beq
@@ -2003,7 +2043,7 @@ private theorem evalCallTerminator_step_preserves_aux {rp : RefProg} {p : Progra
                   | none => exact h_crate h_s
                 · refine ⟨calleeBody, calleeRbody, calleeCache, fnTag, ?_, ?_,
                     h_cbdec, rfl, h_crate, h_sys, h_cblt, h_csa, h_cdv,
-                    h_ccv, h_casg, h_cb_calls, h_cb_all_static, h_csupp,
+                    h_ccv, h_cb_act, h_casg, h_cb_calls, h_cb_all_static, h_csupp,
                     h_callee_inv, fun _ _ => Nat.zero_le _,
                     (calleeInitCacheLoop_length calleeRbody.argumentCount 0 calleeBody.locals), rfl⟩
                   · dsimp only [activeFrameBody]
@@ -2139,7 +2179,7 @@ private theorem evalCallTerminator_step_preserves_aux {rp : RefProg} {p : Progra
                     calleeLocals calleeCache)
                   rframes.size
                 let ⟨body₀, rbody₀, cache, callerFnTag, h_act_b0, h_act_rb0,
-                  h_bdec, h_fnTag, h_crate₀, h_sys₀, h_arg, h_sa, h_dv, h_cv,
+                  h_bdec, h_fnTag, h_crate₀, h_sys₀, h_arg, h_sa, h_dv, h_cv, h_act,
                   h_asg, h_calls, h_all_static, h_supp, h_inv₀, h_pc₀,
                   h_c_len, h_rf⟩ := h_cfs
                 rw [h_body] at h_act_b0; injection h_act_b0 with hb_eq; subst hb_eq
@@ -2261,7 +2301,7 @@ private theorem evalCallTerminator_step_preserves_aux {rp : RefProg} {p : Progra
                     h_dst_emp' h_dst_ty' h_dst_supp' h_cret_ty' h_beq'
                     h_tgt_lt' h_rc_cached'
                     ⟨body, rbody, callerCache', callerFnTag, h_body, h_rbody,
-                      h_bdec, h_fnTag, h_crate₀, h_sys₀, h_arg, h_sa, h_dv, h_cv,
+                      h_bdec, h_fnTag, h_crate₀, h_sys₀, h_arg, h_sa, h_dv, h_cv, h_act,
                       h_asg, h_calls, h_all_static, h_supp, h_cl_inv, h_pc₀,
                       (updateCacheLoop_length _ 0 cache).trans h_c_len,
                       h_rfCaller'_eq⟩)
@@ -2286,7 +2326,7 @@ private theorem evalCallTerminator_step_preserves_aux {rp : RefProg} {p : Progra
                 · dsimp only [rfCallee']; rw [h_sz_idx]
                   refine ⟨calleeBody, calleeRbody, calleeCache, fnTag, ?_, ?_,
                     h_cbdec, rfl, h_crate, h_sys, h_cblt, h_csa, h_cdv,
-                    h_ccv, h_casg, h_cb_calls, h_cb_all_static, h_csupp,
+                    h_ccv, h_cb_act, h_casg, h_cb_calls, h_cb_all_static, h_csupp,
                     h_callee_inv, fun _ _ => Nat.zero_le _,
                     (calleeInitCacheLoop_length calleeRbody.argumentCount 0 _), rfl⟩
                   · dsimp only [activeFrameBody]
@@ -2344,6 +2384,7 @@ private theorem evalCallTerminator_step_preserves {rp : RefProg} {p : Program}
     (h_sys : ∀ op, sysrootOp? = some op → calleeDefId = 0)
     (h_cb_calls : callsAdmitted p calleeBody = true)
     (h_cb_all_static : allCallBodiesStaticAdmitted p calleeBody = true)
+    (h_cb_act : assertConditionTypesValid calleeBody = true)
     (h_ec : evalCallTerminator body bb f callers s.mem s.callerMem calleeDefId
       sysrootOp? calleeBody args dst target unwind = .step s') :
     let ctrl' := nextRefControlForStep body f rs.miri.machine.user.control
@@ -2364,7 +2405,7 @@ private theorem evalCallTerminator_step_preserves {rp : RefProg} {p : Program}
     h_init, h_ctrl, h_tr, h_miri, h_fsim⟩ := h_sim
   exact evalCallTerminator_step_preserves_aux h_dec h_smem h_ert h_rty h_init h_ctrl h_tr h_miri
     h_fsim h_body h_rbody h_bb h_call h_cbdec h_res_crate h_res_sys h_crate h_crate_rb
-    h_sys h_cb_calls h_cb_all_static h_ec hs rfl
+    h_sys h_cb_calls h_cb_all_static h_cb_act h_ec hs rfl
 
 private theorem list_any_of_mirGetElem? {α : Type} {xs : List α} {p : α → Bool}
     {i : Nat} {x : α} (h_get : MirSemantics.getElem? xs i = some x)
@@ -2450,7 +2491,7 @@ private theorem evalNonRootReturn_callers_aux {rp : RefProg} {p : Program}
          | none => none) = topRel? := by
       rw [h_miri]; rfl
     let ⟨cBody₀, cRbody₀, cCache, h_c_b0, h_c_rb0, h_c_bdec, h_c_arg,
-      h_c_sa, h_c_dv, h_c_cv, h_c_calls, h_c_all_static, h_c_supp,
+      h_c_sa, h_c_dv, h_c_cv, h_c_act, h_c_calls, h_c_all_static, h_c_supp,
       h_c_inv, _, h_c_crep, h_c_rf⟩ := h_c_fs
     have h_c_ab : activeFrameBody p caller = some cBody₀ := by
       dsimp only [activeFrameBody]; rw [h_c_sro]; exact h_c_b0
@@ -2508,7 +2549,7 @@ private theorem evalNonRootReturn_callers_aux {rp : RefProg} {p : Program}
     rw [show (Array.mk [rcaller']).toList.reverse = [rcaller'] from rfl]
     exact FramesSimInv.root h_c_defId h_c_sro h_c_rdst h_c_rtgt
       ⟨callerBody, cRbody₀, List.replicate callerBody.locals.length true,
-        h_c_b0, h_c_rb0, h_c_bdec, h_c_arg, h_c_sa, h_c_dv, h_c_cv,
+        h_c_b0, h_c_rb0, h_c_bdec, h_c_arg, h_c_sa, h_c_dv, h_c_cv, h_c_act,
         h_c_calls, h_c_all_static, h_c_supp, h_cl_inv,
         fun _ _ => Nat.zero_le _, rfl, h_rcaller'_eq⟩
   | @FramesSimInv.push _ _ _ cCallee grand grest cRf rgrand rgrest
@@ -2528,7 +2569,7 @@ private theorem evalNonRootReturn_callers_aux {rp : RefProg} {p : Program}
       rw [h_miri]; rfl
     let ⟨cBody₀, cRbody₀, cCache, cFnTag, h_c_act_b0, h_c_act_rb0,
       h_c_bdec, h_c_fnTag, h_c_crate, h_c_sys, h_c_arg, h_c_sa,
-      h_c_dv, h_c_cv, h_c_asg, h_c_calls, h_c_all_static, h_c_supp,
+      h_c_dv, h_c_cv, h_c_act, h_c_asg, h_c_calls, h_c_all_static, h_c_supp,
       h_c_inv, _, h_c_len, h_c_rf⟩ := h_c_cfs
     rw [h_cb] at h_c_act_b0; injection h_c_act_b0 with hcb_eq; subst hcb_eq
     rw [h_cb] at h_cb2; injection h_cb2 with hcb2_eq; subst hcb2_eq
@@ -2678,7 +2719,7 @@ private theorem evalNonRootReturn_callers_aux {rp : RefProg} {p : Program}
       h_c_dst_ty h_c_dst_supp h_c_cret_ty h_c_beq h_c_tgt_lt h_rg_cached
       ⟨callerBody, cRbody₀, cCache, cFnTag, h_cb, h_c_act_rb0,
         h_c_bdec, h_c_fnTag, h_c_crate, h_c_sys, h_c_arg, h_c_sa,
-        h_c_dv, h_c_cv, h_c_asg, h_c_calls, h_c_all_static, h_c_supp,
+        h_c_dv, h_c_cv, h_c_act, h_c_asg, h_c_calls, h_c_all_static, h_c_supp,
         h_cl_inv, fun _ _ => Nat.zero_le _, h_c_len, h_rcaller'_eq⟩
 
 private theorem evalNonRootReturn_step_preserves_aux {rp : RefProg} {p : Program}
@@ -2860,7 +2901,7 @@ private theorem framesSimInv_top_props {rp : RefProg} {p : Program}
   | @FramesSimInv.root _ _ _ f0 _ _ h_sro _ _ h_fs => by
     intro h_fs_eq
     injection h_fs_eq with h_f0 h_c0; subst f0
-    let ⟨b₀, rb₀, _, hb₀, hrb₀, hbd, _, _, _, _, hc, has, _, hinv, _⟩ := h_fs
+    let ⟨b₀, rb₀, _, hb₀, hrb₀, hbd, _, _, _, _, _, hc, has, _, hinv, _⟩ := h_fs
     have h_ab : activeFrameBody p f = some b₀ := by
       dsimp only [activeFrameBody]; rw [h_sro]; exact hb₀
     have h_arb : activeRefFrameBody rp f = some rb₀ := by
@@ -2871,7 +2912,8 @@ private theorem framesSimInv_top_props {rp : RefProg} {p : Program}
   | @FramesSimInv.push _ _ _ f0 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ h_cfs => by
     intro h_fs_eq
     injection h_fs_eq with h_f0 h_c0; subst f0
-    let ⟨b₀, rb₀, _, _, hb₀, hrb₀, hbd, _, _, _, _, _, _, _, _, hc, has, _, hinv, _⟩ := h_cfs
+    let ⟨b₀, rb₀, _, _, hb₀, hrb₀, hbd, _, _, _, _, _, _, _, _, _, hc, has, _, hinv, _⟩ :=
+      h_cfs
     rw [h_body] at hb₀; injection hb₀ with hb_eq; subst hb_eq
     rw [h_rbody] at hrb₀; injection hrb₀ with hrb_eq; subst hrb_eq
     exact ⟨hinv, hc, has, hbd⟩
@@ -2977,8 +3019,8 @@ theorem evalStep_step_preserves {rp : RefProg} {p : Program} {c : Choice}
               list_all_mirGetElem? h_all_st.2 h_cb
             unfold callBodyStaticAdmitted singleBodyStaticAdmitted at h_csat
             simp only [Bool.and_eq_true] at h_csat
-            let ⟨⟨⟨⟨⟨⟨⟨⟨⟨⟨_, _⟩, _⟩, _⟩, _⟩, _⟩, _⟩, _⟩, _⟩, callee_calls⟩, callee_assign⟩ :=
-              h_csat
+            let ⟨⟨⟨⟨⟨⟨⟨⟨⟨⟨⟨_, _⟩, _⟩, _⟩, _⟩, _⟩, _⟩, _⟩, callee_act⟩, _⟩, callee_calls⟩,
+              callee_assign⟩ := h_csat
             have h_call_all : allCallBodiesStaticAdmitted p calleeBody = true := by
               dsimp only [allCallBodiesStaticAdmitted]
               cases h_bh : bodyHasAnyCall calleeBody with
@@ -2990,7 +3032,7 @@ theorem evalStep_step_preserves {rp : RefProg} {p : Program} {c : Choice}
               h_bb (Or.inl ⟨callee, tgt, uw, h_bt, rfl, rfl⟩) h_cbdec
               (fun _ => h_res) (fun _ h => by cases h)
               (fun _ => h_cb) (fun _ => h_rcb) (fun _ h => by cases h)
-              callee_calls h_call_all h_es'
+              callee_calls h_call_all callee_act h_es'
         | sysrootCall op args dst tgt uw =>
           rw [h_bt] at h_es'; dsimp only at h_es'
           have h_calls_bb := list_all_mirGetElem? h_calls h_bb
@@ -3021,13 +3063,16 @@ theorem evalStep_step_preserves {rp : RefProg} {p : Program} {c : Choice}
               h_bb (Or.inr ⟨op, tgt, uw, h_bt, rfl, rfl, rfl⟩) h_cbdec
               (fun h => by cases h) (fun op' h => by injection h with ho; subst ho; exact h_res)
               (fun h => by cases h) (fun h => by cases h) (fun _ _ => rfl)
-              h_scalls h_sall h_es'
+              h_scalls h_sall
+              (by cases op with | mk k w s => cases k <;> cases w <;> cases s <;> rfl)
+              h_es'
         | return_ =>
           rw [h_bt] at h_es'
           cases callers with
           | nil =>
             dsimp only at h_es'
-            cases h_evt : evalTerminator body bb f s.mem s.callerMem with
+            cases h_evt : evalTerminator body bb f s.mem s.callerMem
+                p.panicStrategy p.hasLocalPanicHandler with
             | fault _ => rw [h_evt] at h_es'; cases h_es'
             | done _ => rw [h_evt] at h_es'; cases h_es'
             | step s₁ =>
@@ -3044,7 +3089,8 @@ theorem evalStep_step_preserves {rp : RefProg} {p : Program} {c : Choice}
         | goto _ | unreachable | unwindResume | switchInt _ _
         | assert _ _ _ _ _ | coreCall _ _ _ _ _ | unsupported =>
           rw [h_bt] at h_es'; dsimp only at h_es'
-          cases h_evt : evalTerminator body bb f s.mem s.callerMem with
+          cases h_evt : evalTerminator body bb f s.mem s.callerMem
+              p.panicStrategy p.hasLocalPanicHandler with
           | fault _ => rw [h_evt, attachCallers_fault_eq_sim] at h_es'; cases h_es'
           | done _ => rw [h_evt, attachCallers_done_eq_sim] at h_es'; cases h_es'
           | step s₁ =>
@@ -3969,6 +4015,8 @@ theorem refStep_sound_for_allowedStep_base :
       else
         .running { rs with miri := miri', stepsExecuted := rs.stepsExecuted + 1 }
     | (_, .ok false) => .blocked
+    | (miri', .error (.termination (.abort _))) =>
+      .returned (.aborted miri'.machine.user.callerMem)
     | (_, .error (.undefinedBehavior _)) => .ub
     | (_, .error (.stack (.localExpectedLive _))) => .ub
     | (_, .error _) => .blocked) = out at h_ev
@@ -3983,6 +4031,18 @@ theorem refStep_sound_for_allowedStep_base :
         change RefOutcome.ub = out at h_ev
         subst h_ev
         exact ⟨fun _ h => (by cases h), fun _ h => (by cases h)⟩
+      | termination te =>
+        cases te with
+        | abort msg =>
+          change RefOutcome.returned (.aborted miri'.machine.user.callerMem) = out at h_ev
+          subst h_ev
+          refine ⟨fun _ h_r => (by cases h_r), fun t h_t => ?_⟩
+          injection h_t with h_teq
+          exact Or.inr ⟨miri', msg, ⟨refLimits, c, h_vc, h_st⟩, h_teq.symm⟩
+        | _ =>
+          change RefOutcome.blocked = out at h_ev
+          subst h_ev
+          exact ⟨fun _ h => (by cases h), fun _ h => (by cases h)⟩
       | stack se =>
         cases se with
         | localExpectedLive _ =>
@@ -4044,8 +4104,8 @@ theorem refStep_sound_for_allowedStep_base :
             change RefOutcome.returned
               (.returned ⟨retVal, miri'.machine.user.callerMem⟩) = out at h_ev
             subst h_ev
-            refine ⟨fun _ h_r => (by cases h_r), fun t h_t => ?_⟩
-            injection h_t with h_teq
-            exact ⟨miri', ⟨refLimits, c, h_vc, h_st⟩, h_emp, retVal, h_rv, h_teq.symm⟩
+            refine ⟨fun _ h_r => (by cases h_r), fun t h_t => by
+              injection h_t with h_teq
+              exact Or.inl ⟨miri', ⟨refLimits, c, h_vc, h_st⟩, h_emp, retVal, h_rv, h_teq.symm⟩⟩
 
 end Anneal.MirCorrespondence

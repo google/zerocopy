@@ -21,6 +21,7 @@ public import Anneal.MirWp.Core
 public import Anneal.MirWp.Scalars
 public import Anneal.MirWp.Reflection
 public import Anneal.MirWp.Execution
+public import Anneal.MirWp.V2Memory
 
 public section
 
@@ -475,6 +476,674 @@ theorem canary_flat_entryLocals_eq (args : List Val)
         canaryFlatEntryLocalsBody.locals =
       entryLocals canaryFlatEntryLocalsBody args [.dead, .immediate none] :=
   initLocalsLoop_eq_entryLocals hValid (by decide) rfl
+
+@[expose] def usizeTyV2 : MirTy := .int .isize false
+
+@[expose] def divUsizeBodyV2 : Body := {
+  argumentCount := 2
+  locals := [usizeTyV2, usizeTyV2, usizeTyV2, .bool]
+  basicBlocks := [
+    {
+      statements := [
+        .assign ⟨3, []⟩
+          (.binaryOp .eq (.copy ⟨2, []⟩)
+            (.constant ⟨usizeTyV2, .scalar (BitVec.ofNat 128 0)⟩))
+      ]
+      terminator := .assert (.copy ⟨3, []⟩) false .divByZero 1 .continue_
+    },
+    {
+      statements := [
+        .assign ⟨0, []⟩ (.binaryOp .div (.copy ⟨1, []⟩) (.copy ⟨2, []⟩))
+      ]
+      terminator := .return_
+    }
+  ]
+  isUnsafe := false
+  identity := "canary::div_usize_v2"
+}
+
+@[expose] def divUsizeProgV2 (ps : PanicStrategy := .abort) : Program := {
+  entryDefId := 0
+  scope := .unit
+  pointerWidthBits := 64
+  mirProfileVersion := 2
+  panicStrategy := ps
+  hasLocalPanicHandler := false
+  bodies := [divUsizeBodyV2]
+}
+
+@[expose] def divUsizeRetVal (a b : ScalarVal) : Val :=
+  .scalar ⟨.isize, false, BitVec.ofNat 128 (Nat.div a.bits.toNat b.bits.toNat)⟩
+
+@[expose] def divUsizeContractAllowAbort : SafeContractV2 := {
+  behaviorPre := fun _ => True
+  effects := { allowAbort := true }
+  postReturn := fun q out =>
+    match q.args with
+    | [.scalar a, .scalar b] => out = ⟨divUsizeRetVal a b, q.callerMem⟩
+    | _ => False
+  postAbort := fun q cm => cm = q.callerMem
+}
+
+@[expose] def divUsizeContractNoAbort : SafeContractV2 := {
+  behaviorPre := fun q =>
+    match q.args with
+    | [_, .scalar b] => b.bits.toNat ≠ 0
+    | _ => False
+  effects := EffectMaskV2.noAbort
+  postReturn := fun q out =>
+    match q.args with
+    | [.scalar a, .scalar b] => out = ⟨divUsizeRetVal a b, q.callerMem⟩
+    | _ => False
+}
+
+private theorem execStateV2_step {p : Program} {fuel : Nat} {s s' : State}
+    {post : TerminalOut → Prop}
+    (h_step : evalStepV2 p s = .step s')
+    (h_next : execStateV2 p fuel s' post) :
+    execStateV2 p (fuel + 1) s post := by
+  change (match evalStepV2 p s with
+    | .step st' => execStateV2 p fuel st' post
+    | .done out => post out
+    | .fault _ => False)
+  rw [h_step]
+  exact h_next
+
+private theorem execStateV2_done {p : Program} {fuel : Nat} {s : State}
+    {out : TerminalOut} {post : TerminalOut → Prop}
+    (h_step : evalStepV2 p s = .done out)
+    (h_post : post out) :
+    execStateV2 p (fuel + 1) s post := by
+  change (match evalStepV2 p s with
+    | .step st' => execStateV2 p fuel st' post
+    | .done out => post out
+    | .fault _ => False)
+  rw [h_step]
+  exact h_post
+
+private theorem scalarVal_isize_toNat_lt {sv : ScalarVal}
+    (hWf : sv.wf = true) (hW : sv.width = .isize) :
+    sv.bits.toNat < Nat.pow 2 64 := by
+  unfold ScalarVal.wf at hWf
+  rw [hW] at hWf
+  have hTr : truncateBits .isize sv.bits = sv.bits := eq_of_beq hWf
+  rw [← hTr, toNat_truncateBits]
+  exact Nat.mod_lt _ (by decide)
+
+private theorem divUsize_eq_evalBinOp (bBits : BitVec 128)
+    (hB : truncateBits .isize bBits = bBits) :
+    evalBinOp .eq (.scalar ⟨.isize, false, bBits⟩)
+      (.scalar ⟨.isize, false, BitVec.ofNat 128 0⟩) =
+      .ok (.bool (bBits.toNat == 0)) := by
+  dsimp only [evalBinOp, decodeScalar]
+  rw [hB]
+  change (if false then Except.error FaultKind.unsupported
+    else if false then Except.error FaultKind.unsupported
+    else Except.ok (Val.bool (Int.ofNat bBits.toNat == (0 : Int)))) =
+    Except.ok (Val.bool (bBits.toNat == 0))
+  cases bBits.toNat <;> rfl
+
+private theorem divUsize_div_evalBinOp (aBits bBits : BitVec 128)
+    (hA : truncateBits .isize aBits = aBits)
+    (hB : truncateBits .isize bBits = bBits)
+    (hLt : aBits.toNat < Nat.pow 2 64)
+    (hNz : (bBits.toNat == 0) = false) :
+    evalBinOp .div (.scalar ⟨.isize, false, aBits⟩)
+      (.scalar ⟨.isize, false, bBits⟩) =
+      .ok (.scalar ⟨.isize, false,
+        BitVec.ofNat 128 (Nat.div aBits.toNat bBits.toNat)⟩) := by
+  have hDivLt : Nat.div aBits.toNat bBits.toNat < Nat.pow 2 64 :=
+    Nat.lt_of_le_of_lt (Nat.div_le_self _ _) hLt
+  have hDiv128 : Nat.div aBits.toNat bBits.toNat < Nat.pow 2 128 :=
+    Nat.lt_trans hDivLt (by decide)
+  have hR0 : ((Int.ofNat bBits.toNat == (0 : Int))) = false := by
+    cases hN : bBits.toNat with
+    | zero => rw [hN] at hNz; cases hNz
+    | succ _ => rfl
+  have hMod128 :
+      (intEmod (Int.ofNat (Nat.div aBits.toNat bBits.toNat))
+        (Int.ofNat (Nat.pow 2 128))).toNat = Nat.div aBits.toNat bBits.toNat := by
+    have hM : Nat.mod (Nat.div aBits.toNat bBits.toNat) (Nat.pow 2 128) =
+        Nat.div aBits.toNat bBits.toNat :=
+      Nat.mod_eq_of_lt hDiv128
+    change (Int.ofNat (Nat.mod (Nat.div aBits.toNat bBits.toNat)
+      (Nat.pow 2 128))).toNat = Nat.div aBits.toNat bBits.toNat
+    rw [hM]
+    rfl
+  have hTrEq :
+      truncateBits .isize (BitVec.ofNat 128 (Nat.div aBits.toNat bBits.toNat)) =
+        BitVec.ofNat 128 (Nat.div aBits.toNat bBits.toNat) := by
+    apply bitVec_eq_of_toNat_eq
+    rw [toNat_truncateBits]
+    have hBv :
+        (BitVec.ofNat 128 (Nat.div aBits.toNat bBits.toNat)).toNat =
+          Nat.mod (Nat.div aBits.toNat bBits.toNat) (Nat.pow 2 128) := rfl
+    have hM128 : Nat.mod (Nat.div aBits.toNat bBits.toNat) (Nat.pow 2 128) =
+        Nat.div aBits.toNat bBits.toNat :=
+      Nat.mod_eq_of_lt hDiv128
+    rw [hBv, hM128]
+    exact Nat.mod_eq_of_lt hDivLt
+  dsimp only [evalBinOp, evalArithOp, decodeScalar]
+  rw [hA, hB]
+  change (if false then Except.error FaultKind.unsupported
+    else if false then Except.error FaultKind.unsupported
+    else if true && (Int.ofNat bBits.toNat == (0 : Int)) then Except.error FaultKind.undefined
+    else if false && true &&
+        (Int.ofNat aBits.toNat == signedMinInt .isize &&
+          Int.ofNat bBits.toNat == Neg.neg 1) then Except.error FaultKind.undefined
+    else
+      match truncateScalar .isize false
+          (intTdiv (Int.ofNat aBits.toNat) (Int.ofNat bBits.toNat)) with
+      | .error k => Except.error k
+      | .ok (val, lossy) =>
+        if ((decide (intTdiv (Int.ofNat aBits.toNat) (Int.ofNat bBits.toNat) < 0) ||
+            decide (intTdiv (Int.ofNat aBits.toNat) (Int.ofNat bBits.toNat) ≥
+              HPow.hPow (2 : Int) 128)) || lossy) && false then Except.error FaultKind.undefined
+        else if false then Except.error FaultKind.unsupported
+        else Except.ok (Val.scalar val)) = _
+  rw [hR0]
+  dsimp only [truncateScalar, intTdiv, bvOfInt]
+  rw [hMod128, hTrEq]
+  simp [Bool.and_false, bne_self_eq_false]
+
+private theorem divUsize_init_ok (ps : PanicStrategy) {q : Query}
+    (hValid : ValidEntryArgsV2 divUsizeBodyV2 q) :
+    ∃ a b : ScalarVal,
+      a.width = .isize ∧ a.signed = false ∧ a.wf = true ∧
+      b.width = .isize ∧ b.signed = false ∧ b.wf = true ∧
+      q.args = [.scalar a, .scalar b] ∧
+      validCallerMemory q.callerMem = true ∧
+      initStateV2 (divUsizeProgV2 ps) q =
+        .ok ⟨[⟨0, 0, 0,
+            [.immediate none, .immediate (some (.scalar a)),
+              .immediate (some (.scalar b)), .immediate none],
+            none, none, none⟩],
+          q.callerMem, entryMemoryWithCaller q.callerMem⟩ := by
+  let ⟨hCM, hArgs, _, _⟩ := hValid
+  dsimp only [divUsizeBodyV2] at hArgs
+  change checkArgsMatchV2 q.args [usizeTyV2, usizeTyV2] = true at hArgs
+  cases hA0 : q.args with
+  | nil => rw [hA0] at hArgs; cases hArgs
+  | cons v1 tl1 =>
+    rw [hA0] at hArgs
+    dsimp only [checkArgsMatchV2] at hArgs
+    cases hC1 : checkValV2 v1 usizeTyV2 with
+    | false => rw [hC1] at hArgs; cases hArgs
+    | true =>
+      rw [hC1] at hArgs
+      change checkArgsMatchV2 tl1 [usizeTyV2] = true at hArgs
+      cases tl1 with
+      | nil => cases hArgs
+      | cons v2 tl2 =>
+        dsimp only [checkArgsMatchV2] at hArgs
+        cases hC2 : checkValV2 v2 usizeTyV2 with
+        | false => rw [hC2] at hArgs; cases hArgs
+        | true =>
+          rw [hC2] at hArgs
+          change checkArgsMatchV2 tl2 [] = true at hArgs
+          cases tl2 with
+          | cons _ _ => cases hArgs
+          | nil =>
+            let ⟨a, haEq, hWA, hSA, hWfA⟩ := checkValV2_isize_scalar hC1
+            let ⟨b, hbEq, hWB, hSB, hWfB⟩ := checkValV2_isize_scalar hC2
+            subst haEq; subst hbEq
+            refine ⟨a, b, hWA, hSA, hWfA, hWB, hSB, hWfB, rfl, hCM, ?_⟩
+            have hArgs' : checkArgsMatchV2 q.args
+                ((divUsizeBodyV2.locals.drop 1).take divUsizeBodyV2.argumentCount) = true := by
+              rw [hA0]
+              dsimp only [checkArgsMatchV2, checkValV2, checkVal, Val.ty?,
+                divUsizeBodyV2, usizeTyV2, List.drop, List.take]
+              rw [hWfA, hWfB, hWA, hWB, hSA, hSB]; rfl
+            have hRefs' : refsValidInMemList (entryMemoryWithCaller q.callerMem)
+                ((divUsizeBodyV2.locals.drop 1).take divUsizeBodyV2.argumentCount) q.args = true := by
+              rw [hA0]; rfl
+            have hDisj' : spansPairwiseDisjoint (refAccessSpansList
+                ((divUsizeBodyV2.locals.drop 1).take divUsizeBodyV2.argumentCount) q.args) = true := by
+              rw [hA0]; rfl
+            have hOk := initStateV2_ok_of (p := divUsizeProgV2 ps) (q := q)
+              (body := divUsizeBodyV2) rfl rfl hCM rfl rfl rfl rfl rfl rfl rfl rfl
+              hArgs' hRefs' hDisj'
+            rw [hA0] at hOk
+            exact hOk
+
+private theorem divUsize_step_bb0_eq
+    (ps : PanicStrategy) (a b : ScalarVal) (cm : CallerMemory) (res : Bool)
+    (hbEq : b = ⟨.isize, false, b.bits⟩)
+    (hEqOp : evalBinOp .eq (.scalar ⟨.isize, false, b.bits⟩)
+      (.scalar ⟨.isize, false, BitVec.ofNat 128 0⟩) = .ok (.bool res)) :
+    evalStepV2 (divUsizeProgV2 ps)
+      ⟨[⟨0, 0, 0,
+          [.immediate none, .immediate (some (.scalar a)),
+            .immediate (some (.scalar b)), .immediate none],
+          none, none, none⟩],
+        cm, entryMemoryWithCaller cm⟩ =
+      .step ⟨[⟨0, 0, 1,
+          [.immediate none, .immediate (some (.scalar a)),
+            .immediate (some (.scalar b)), .immediate (some (.bool res))],
+          none, none, none⟩],
+        cm, entryMemoryWithCaller cm⟩ := by
+  have hSup : (!isSupportedV2LocalTy usizeTyV2) = false := rfl
+  have hPrim : (!isPrimitiveReadableTy usizeTyV2) = false := rfl
+  have hZTr : (truncateBits .isize (BitVec.ofNat 128 0) != BitVec.ofNat 128 0) = false := rfl
+  have hChk : (!checkValV2 (.bool res) .bool) = false := by cases res <;> rfl
+  have hRv :
+      evalRvalueV2 divUsizeBodyV2.locals
+        [.immediate none, .immediate (some (.scalar a)),
+          .immediate (some (.scalar b)), .immediate none]
+        (entryMemoryWithCaller cm) .bool
+        (.binaryOp .eq (.copy ⟨2, []⟩)
+          (.constant ⟨usizeTyV2, .scalar (BitVec.ofNat 128 0)⟩)) =
+        .ok (.bool res,
+          [.immediate none, .immediate (some (.scalar a)),
+            .immediate (some (.scalar b)), .immediate none],
+          entryMemoryWithCaller cm) := by
+    have hOp1 :
+        evalPrimitiveOperandV2 divUsizeBodyV2.locals
+          [.immediate none, .immediate (some (.scalar a)),
+            .immediate (some (.scalar b)), .immediate none]
+          (entryMemoryWithCaller cm) (.copy ⟨2, []⟩) =
+          .ok (.scalar b,
+            [.immediate none, .immediate (some (.scalar a)),
+              .immediate (some (.scalar b)), .immediate none],
+            entryMemoryWithCaller cm) := rfl
+    have hOp2 :
+        evalPrimitiveOperandV2 divUsizeBodyV2.locals
+          [.immediate none, .immediate (some (.scalar a)),
+            .immediate (some (.scalar b)), .immediate none]
+          (entryMemoryWithCaller cm)
+          (.constant ⟨usizeTyV2, .scalar (BitVec.ofNat 128 0)⟩) =
+          .ok (.scalar ⟨.isize, false, BitVec.ofNat 128 0⟩,
+            [.immediate none, .immediate (some (.scalar a)),
+              .immediate (some (.scalar b)), .immediate none],
+            entryMemoryWithCaller cm) := rfl
+    unfold evalRvalueV2
+    dsimp only
+    rw [hOp1]
+    dsimp only
+    rw [hOp2]
+    dsimp only
+    rw [hbEq, hEqOp]
+  have hWr :
+      writePlaceDestV2
+        [.immediate none, .immediate (some (.scalar a)),
+          .immediate (some (.scalar b)), .immediate none]
+        (entryMemoryWithCaller cm) (.local 3) .bool (.bool res) =
+        .ok ([.immediate none, .immediate (some (.scalar a)),
+              .immediate (some (.scalar b)), .immediate (some (.bool res))],
+          entryMemoryWithCaller cm) := by
+    unfold writePlaceDestV2
+    simp [hChk, Trusted.MirSemantics.getElem?, Trusted.MirSemantics.setElem?]
+  unfold evalStepV2
+  dsimp only [divUsizeProgV2, divUsizeBodyV2, Trusted.MirSemantics.getElem?]
+  change evalStatementV2 divUsizeBodyV2
+      ⟨0, 0, 0, [.immediate none, .immediate (some (.scalar a)),
+        .immediate (some (.scalar b)), .immediate none], none, none, none⟩
+      (entryMemoryWithCaller cm) cm
+      (.assign ⟨3, []⟩ (.binaryOp .eq (.copy ⟨2, []⟩)
+        (.constant ⟨usizeTyV2, .scalar (BitVec.ofNat 128 0)⟩))) = _
+  unfold evalStatementV2
+  change (match evalRvalueV2 divUsizeBodyV2.locals
+      [.immediate none, .immediate (some (.scalar a)),
+        .immediate (some (.scalar b)), .immediate none]
+      (entryMemoryWithCaller cm) .bool
+      (.binaryOp .eq (.copy ⟨2, []⟩)
+        (.constant ⟨usizeTyV2, .scalar (BitVec.ofNat 128 0)⟩)) with
+    | .error k => StepResult.fault k
+    | .ok (val, locals1, mem1) =>
+      match writePlaceDestV2 locals1 mem1 (.local 3) .bool val with
+      | .error k => StepResult.fault k
+      | .ok (locals2, mem2) =>
+        StepResult.step ({
+          frames := [{ defId := 0, blockIdx := 0, stmtIdx := 1, locals := locals2 }]
+          callerMem := cm
+          mem := mem2
+        } : State)) = _
+  rw [hRv]
+  dsimp only
+  rw [hWr]
+
+private theorem divUsize_step_bb1_div
+    (ps : PanicStrategy) (a b : ScalarVal) (cm : CallerMemory)
+    (haEq : a = ⟨.isize, false, a.bits⟩)
+    (hbEq : b = ⟨.isize, false, b.bits⟩)
+    (hDivOp : evalBinOp .div (.scalar ⟨.isize, false, a.bits⟩)
+      (.scalar ⟨.isize, false, b.bits⟩) = .ok (divUsizeRetVal a b))
+    (hOutWf : (⟨.isize, false,
+      BitVec.ofNat 128 (Nat.div a.bits.toNat b.bits.toNat)⟩ : ScalarVal).wf = true) :
+    evalStepV2 (divUsizeProgV2 ps)
+      ⟨[⟨0, 1, 0,
+          [.immediate none, .immediate (some (.scalar a)),
+            .immediate (some (.scalar b)), .immediate (some (.bool false))],
+          none, none, none⟩],
+        cm, entryMemoryWithCaller cm⟩ =
+      .step ⟨[⟨0, 1, 1,
+          [.immediate (some (divUsizeRetVal a b)), .immediate (some (.scalar a)),
+            .immediate (some (.scalar b)), .immediate (some (.bool false))],
+          none, none, none⟩],
+        cm, entryMemoryWithCaller cm⟩ := by
+  have hSup : (!isSupportedV2LocalTy usizeTyV2) = false := rfl
+  have hPrim : (!isPrimitiveReadableTy usizeTyV2) = false := rfl
+  have hChk : (!checkValV2 (divUsizeRetVal a b) usizeTyV2) = false := by
+    dsimp only [checkValV2, checkVal, Val.ty?, MirTy.beq, divUsizeRetVal, usizeTyV2]
+    rw [hOutWf]
+    rfl
+  have hRv :
+      evalRvalueV2 divUsizeBodyV2.locals
+        [.immediate none, .immediate (some (.scalar a)),
+          .immediate (some (.scalar b)), .immediate (some (.bool false))]
+        (entryMemoryWithCaller cm) usizeTyV2
+        (.binaryOp .div (.copy ⟨1, []⟩) (.copy ⟨2, []⟩)) =
+        .ok (divUsizeRetVal a b,
+          [.immediate none, .immediate (some (.scalar a)),
+            .immediate (some (.scalar b)), .immediate (some (.bool false))],
+          entryMemoryWithCaller cm) := by
+    have hOp1 :
+        evalPrimitiveOperandV2 divUsizeBodyV2.locals
+          [.immediate none, .immediate (some (.scalar a)),
+            .immediate (some (.scalar b)), .immediate (some (.bool false))]
+          (entryMemoryWithCaller cm) (.copy ⟨1, []⟩) =
+          .ok (.scalar a,
+            [.immediate none, .immediate (some (.scalar a)),
+              .immediate (some (.scalar b)), .immediate (some (.bool false))],
+            entryMemoryWithCaller cm) := rfl
+    have hOp2 :
+        evalPrimitiveOperandV2 divUsizeBodyV2.locals
+          [.immediate none, .immediate (some (.scalar a)),
+            .immediate (some (.scalar b)), .immediate (some (.bool false))]
+          (entryMemoryWithCaller cm) (.copy ⟨2, []⟩) =
+          .ok (.scalar b,
+            [.immediate none, .immediate (some (.scalar a)),
+              .immediate (some (.scalar b)), .immediate (some (.bool false))],
+            entryMemoryWithCaller cm) := rfl
+    unfold evalRvalueV2
+    dsimp only
+    rw [hOp1]
+    dsimp only
+    rw [hOp2]
+    dsimp only
+    rw [haEq, hbEq, hDivOp]
+    rfl
+  have hWr :
+      writePlaceDestV2
+        [.immediate none, .immediate (some (.scalar a)),
+          .immediate (some (.scalar b)), .immediate (some (.bool false))]
+        (entryMemoryWithCaller cm) (.local 0) usizeTyV2 (divUsizeRetVal a b) =
+        .ok ([.immediate (some (divUsizeRetVal a b)), .immediate (some (.scalar a)),
+              .immediate (some (.scalar b)), .immediate (some (.bool false))],
+          entryMemoryWithCaller cm) := by
+    unfold writePlaceDestV2
+    simp [hChk, Trusted.MirSemantics.getElem?, Trusted.MirSemantics.setElem?]
+  unfold evalStepV2
+  dsimp only [divUsizeProgV2, divUsizeBodyV2, Trusted.MirSemantics.getElem?]
+  change evalStatementV2 divUsizeBodyV2
+      ⟨0, 1, 0, [.immediate none, .immediate (some (.scalar a)),
+        .immediate (some (.scalar b)), .immediate (some (.bool false))],
+        none, none, none⟩
+      (entryMemoryWithCaller cm) cm
+      (.assign ⟨0, []⟩ (.binaryOp .div (.copy ⟨1, []⟩) (.copy ⟨2, []⟩))) = _
+  unfold evalStatementV2
+  change (match evalRvalueV2 divUsizeBodyV2.locals
+      [.immediate none, .immediate (some (.scalar a)),
+        .immediate (some (.scalar b)), .immediate (some (.bool false))]
+      (entryMemoryWithCaller cm) usizeTyV2
+      (.binaryOp .div (.copy ⟨1, []⟩) (.copy ⟨2, []⟩)) with
+    | .error k => StepResult.fault k
+    | .ok (val, locals1, mem1) =>
+      match writePlaceDestV2 locals1 mem1 (.local 0) usizeTyV2 val with
+      | .error k => StepResult.fault k
+      | .ok (locals2, mem2) =>
+        StepResult.step ({
+          frames := [{ defId := 0, blockIdx := 1, stmtIdx := 1, locals := locals2 }]
+          callerMem := cm
+          mem := mem2
+        } : State)) = _
+  rw [hRv]
+  dsimp only
+  rw [hWr]
+
+private theorem divUsize_abort_of_zero {ps : PanicStrategy} {q : Query}
+    {a b : ScalarVal}
+    (hCM : validCallerMemory q.callerMem = true)
+    (hInit : initStateV2 (divUsizeProgV2 ps) q =
+      .ok ⟨[⟨0, 0, 0,
+          [.immediate none, .immediate (some (.scalar a)),
+            .immediate (some (.scalar b)), .immediate none],
+          none, none, none⟩],
+        q.callerMem, entryMemoryWithCaller q.callerMem⟩)
+    (hBW : b.width = .isize) (hBS : b.signed = false) (hBWf : b.wf = true)
+    (hZero : b.bits.toNat = 0) :
+    ∃ s1 : State,
+      StepV2 (divUsizeProgV2 ps)
+        ⟨[⟨0, 0, 0,
+            [.immediate none, .immediate (some (.scalar a)),
+              .immediate (some (.scalar b)), .immediate none],
+            none, none, none⟩],
+          q.callerMem, entryMemoryWithCaller q.callerMem⟩ (.step s1) ∧
+      StepV2 (divUsizeProgV2 ps) s1
+        (match ps with
+         | .abort => .done (.aborted q.callerMem)
+         | .unwind => .fault .unsupported) := by
+  have hBTr : truncateBits .isize b.bits = b.bits := by
+    unfold ScalarVal.wf at hBWf; rw [hBW] at hBWf; exact eq_of_beq hBWf
+  have hbEq : b = ⟨.isize, false, b.bits⟩ := by
+    cases b; subst hBW; subst hBS; rfl
+  have hOp : evalBinOp .eq (.scalar ⟨.isize, false, b.bits⟩)
+      (.scalar ⟨.isize, false, BitVec.ofNat 128 0⟩) = .ok (.bool true) := by
+    rw [divUsize_eq_evalBinOp b.bits hBTr, hZero]; rfl
+  refine ⟨⟨[⟨0, 0, 1,
+      [.immediate none, .immediate (some (.scalar a)),
+        .immediate (some (.scalar b)), .immediate (some (.bool true))],
+      none, none, none⟩],
+    q.callerMem, entryMemoryWithCaller q.callerMem⟩, ?_, ?_⟩
+  · refine ⟨0, rfl, divUsize_step_bb0_eq ps a b q.callerMem true hbEq hOp⟩
+  · refine ⟨0, rfl, ?_⟩
+    unfold evalStepV2Choice evalStepV2 evalTerminatorV2 evalPrimitiveOperandV2
+      evalOperandToSlotV2 readPlaceV2
+    simp [divUsizeProgV2, divUsizeBodyV2, Trusted.MirSemantics.getElem?,
+      isSupportedV2LocalTy, isPrimitiveReadableTy, evalAssertFailure]
+    cases ps
+    · rfl
+    · dsimp only
+      rw [extractCallerMemory_entry q.callerMem hCM]
+
+/-- Pass-1 `SafeContractV2` and `EffectMaskV2` positive and negative non-vacuity
+canaries on a 2-argument `usize` division MIR body:
+1. `--panic abort` verifies `SafeContractV2` with `allowAbort := true` over all
+   `ValidEntryArgsV2` inputs;
+2. `--panic abort` verifies `EffectMaskV2.noAbort` when `behaviorPre` excludes
+   division by zero (`b != 0`);
+3. `--panic abort` rejects default fail-closed `SafeContractV2`
+   (`allowAbort := false`) when `behaviorPre := True` fails to exclude `b = 0`;
+4. `--panic unwind` rejects the panicking division body fail-closed even when
+   `allowAbort := true` because non-abort panics fault `.unsupported`. -/
+theorem canary_safe_contract_v2_div_usize :
+    BodySatisfiesSafeContractV2 (divUsizeProgV2 .abort) 0 divUsizeBodyV2
+      divUsizeContractAllowAbort ∧
+    BodySatisfiesSafeContractV2 (divUsizeProgV2 .abort) 0 divUsizeBodyV2
+      divUsizeContractNoAbort ∧
+    ¬ BodySatisfiesSafeContractV2 (divUsizeProgV2 .abort) 0 divUsizeBodyV2
+      { behaviorPre := fun _ => True } ∧
+    ¬ BodySatisfiesSafeContractV2 (divUsizeProgV2 .unwind) 0 divUsizeBodyV2
+      { behaviorPre := fun _ => True,
+        effects := { allowAbort := true },
+        postAbort := fun _ _ => True } := by
+  have hCommon : ∀ (allowAbort : Bool) (q : Query),
+      ValidEntryArgsV2 divUsizeBodyV2 q →
+      (if allowAbort then True else
+        match q.args with | [_, .scalar b] => b.bits.toNat ≠ 0 | _ => False) →
+      SatisfiesPostV2 (divUsizeProgV2 .abort) q
+        ((if allowAbort then divUsizeContractAllowAbort
+          else divUsizeContractNoAbort).post q) := by
+    intro allowAbort q hValid hPre
+    let ⟨a, b, hAW, hAS, hAWf, hBW, hBS, hBWf, hArgsEq, hCM, hInit⟩ :=
+      divUsize_init_ok .abort hValid
+    have hATr : truncateBits .isize a.bits = a.bits := by
+      unfold ScalarVal.wf at hAWf; rw [hAW] at hAWf; exact eq_of_beq hAWf
+    have hBTr : truncateBits .isize b.bits = b.bits := by
+      unfold ScalarVal.wf at hBWf; rw [hBW] at hBWf; exact eq_of_beq hBWf
+    have haEq : a = ⟨.isize, false, a.bits⟩ := by
+      cases a; subst hAW; subst hAS; rfl
+    have hbEq : b = ⟨.isize, false, b.bits⟩ := by
+      cases b; subst hBW; subst hBS; rfl
+    cases hBz : (b.bits.toNat == 0) with
+    | true =>
+      have hZero : b.bits.toNat = 0 := beq_iff_eq.mp hBz
+      cases allowAbort with
+      | false =>
+        rw [hArgsEq] at hPre
+        exact False.elim (hPre hZero)
+      | true =>
+        have hEqOp : evalBinOp .eq (.scalar ⟨.isize, false, b.bits⟩)
+            (.scalar ⟨.isize, false, BitVec.ofNat 128 0⟩) = .ok (.bool true) := by
+          rw [divUsize_eq_evalBinOp b.bits hBTr, hBz]
+        have hS1 := divUsize_step_bb0_eq .abort a b q.callerMem true hbEq hEqOp
+        have hS2 : evalStepV2 (divUsizeProgV2 .abort)
+            ⟨[⟨0, 0, 1,
+                [.immediate none, .immediate (some (.scalar a)),
+                  .immediate (some (.scalar b)), .immediate (some (.bool true))],
+                none, none, none⟩],
+              q.callerMem, entryMemoryWithCaller q.callerMem⟩ =
+            .done (.aborted q.callerMem) := by
+          unfold evalStepV2 evalTerminatorV2 evalPrimitiveOperandV2
+            evalOperandToSlotV2 readPlaceV2
+          simp [divUsizeProgV2, divUsizeBodyV2, Trusted.MirSemantics.getElem?,
+            isSupportedV2LocalTy, isPrimitiveReadableTy, evalAssertFailure,
+            extractCallerMemory_entry q.callerMem hCM]
+        have hExec : execProgV2 (divUsizeProgV2 .abort) 2 q
+            (fun o => o = .aborted q.callerMem) := by
+          unfold execProgV2
+          rw [hInit]
+          exact execStateV2_step hS1 (execStateV2_done hS2 rfl)
+        exact (spec_and_behaviorV2_of_exec_eq hExec).2.2.2
+          (divUsizeContractAllowAbort.post q) ⟨rfl, rfl⟩
+    | false =>
+      have hEqOp : evalBinOp .eq (.scalar ⟨.isize, false, b.bits⟩)
+          (.scalar ⟨.isize, false, BitVec.ofNat 128 0⟩) = .ok (.bool false) := by
+        rw [divUsize_eq_evalBinOp b.bits hBTr, hBz]
+      have hALt := scalarVal_isize_toNat_lt hAWf hAW
+      have hDivOp := divUsize_div_evalBinOp a.bits b.bits hATr hBTr hALt hBz
+      have hOutWf : (⟨.isize, false,
+          BitVec.ofNat 128 (Nat.div a.bits.toNat b.bits.toNat)⟩ : ScalarVal).wf = true := by
+        have hDivLt : Nat.div a.bits.toNat b.bits.toNat < Nat.pow 2 64 :=
+          Nat.lt_of_le_of_lt (Nat.div_le_self _ _) hALt
+        have hDiv128 : Nat.div a.bits.toNat b.bits.toNat < Nat.pow 2 128 :=
+          Nat.lt_trans hDivLt (by decide)
+        unfold ScalarVal.wf
+        apply beq_iff_eq.mpr
+        apply bitVec_eq_of_toNat_eq
+        rw [toNat_truncateBits]
+        have hBv :
+            (BitVec.ofNat 128 (Nat.div a.bits.toNat b.bits.toNat)).toNat =
+              Nat.mod (Nat.div a.bits.toNat b.bits.toNat) (Nat.pow 2 128) := rfl
+        have hM128 : Nat.mod (Nat.div a.bits.toNat b.bits.toNat) (Nat.pow 2 128) =
+            Nat.div a.bits.toNat b.bits.toNat :=
+          Nat.mod_eq_of_lt hDiv128
+        rw [hBv, hM128]
+        exact Nat.mod_eq_of_lt hDivLt
+      have hS1 := divUsize_step_bb0_eq .abort a b q.callerMem false hbEq hEqOp
+      have hS2 : evalStepV2 (divUsizeProgV2 .abort)
+          ⟨[⟨0, 0, 1,
+              [.immediate none, .immediate (some (.scalar a)),
+                .immediate (some (.scalar b)), .immediate (some (.bool false))],
+              none, none, none⟩],
+            q.callerMem, entryMemoryWithCaller q.callerMem⟩ =
+          .step ⟨[⟨0, 1, 0,
+              [.immediate none, .immediate (some (.scalar a)),
+                .immediate (some (.scalar b)), .immediate (some (.bool false))],
+              none, none, none⟩],
+            q.callerMem, entryMemoryWithCaller q.callerMem⟩ := by
+        unfold evalStepV2 evalTerminatorV2 evalPrimitiveOperandV2
+          evalOperandToSlotV2 readPlaceV2
+        simp [divUsizeProgV2, divUsizeBodyV2, Trusted.MirSemantics.getElem?,
+          isSupportedV2LocalTy, isPrimitiveReadableTy, jumpToBlock]
+      have hS3 := divUsize_step_bb1_div .abort a b q.callerMem haEq hbEq hDivOp hOutWf
+      have hS4 : evalStepV2 (divUsizeProgV2 .abort)
+          ⟨[⟨0, 1, 1,
+              [.immediate (some (divUsizeRetVal a b)), .immediate (some (.scalar a)),
+                .immediate (some (.scalar b)), .immediate (some (.bool false))],
+              none, none, none⟩],
+            q.callerMem, entryMemoryWithCaller q.callerMem⟩ =
+          .done (.returned ⟨divUsizeRetVal a b, q.callerMem⟩) := by
+        have hR1 : (!refsStayInCallerMem q.callerMem usizeTyV2 (divUsizeRetVal a b)) = false := rfl
+        have hR2 : (!refsValidInMem (entryMemoryWithCaller q.callerMem) usizeTyV2
+            (divUsizeRetVal a b)) = false := rfl
+        have hR3 : (!spansPairwiseDisjoint (refAccessSpans usizeTyV2
+            (divUsizeRetVal a b))) = false := rfl
+        unfold evalStepV2 evalTerminatorV2
+        dsimp only [Trusted.MirSemantics.getElem?, divUsizeProgV2, divUsizeBodyV2]
+        change (if (!refsStayInCallerMem q.callerMem usizeTyV2 (divUsizeRetVal a b)) ||
+              (!refsValidInMem (entryMemoryWithCaller q.callerMem) usizeTyV2
+                (divUsizeRetVal a b)) ||
+              (!spansPairwiseDisjoint (refAccessSpans usizeTyV2
+                (divUsizeRetVal a b))) then
+            StepResult.fault .undefined
+          else
+            StepResult.done (TerminalOut.returned ⟨divUsizeRetVal a b,
+              extractCallerMemory q.callerMem (entryMemoryWithCaller q.callerMem)⟩)) = _
+        rw [hR1, hR2, hR3, extractCallerMemory_entry q.callerMem hCM]
+        rfl
+      have hExec : execProgV2 (divUsizeProgV2 .abort) 4 q
+          (fun o => o = .returned ⟨divUsizeRetVal a b, q.callerMem⟩) := by
+        unfold execProgV2
+        rw [hInit]
+        exact execStateV2_step hS1 (execStateV2_step hS2
+          (execStateV2_step hS3 (execStateV2_done hS4 rfl)))
+      have hSpec := (spec_and_behaviorV2_of_exec_eq hExec).2.2.2
+        ((if allowAbort then divUsizeContractAllowAbort
+          else divUsizeContractNoAbort).post q)
+      refine hSpec ?_
+      cases allowAbort
+      · change divUsizeContractNoAbort.post q
+          (.returned ⟨divUsizeRetVal a b, q.callerMem⟩)
+        dsimp only [divUsizeContractNoAbort, SafeContractV2.post]
+        rw [hArgsEq]
+      · change divUsizeContractAllowAbort.post q
+          (.returned ⟨divUsizeRetVal a b, q.callerMem⟩)
+        dsimp only [divUsizeContractAllowAbort, SafeContractV2.post]
+        rw [hArgsEq]
+  refine ⟨⟨rfl, rfl, fun q hV _ => hCommon true q hV trivial⟩,
+          ⟨rfl, rfl, fun q hV hPre => hCommon false q hV hPre⟩, ?_, ?_⟩
+  · intro hSat
+    let q0 : Query := {
+      args := [.scalar ⟨.isize, false, BitVec.ofNat 128 1⟩,
+               .scalar ⟨.isize, false, BitVec.ofNat 128 0⟩]
+      callerMem := ⟨[]⟩
+    }
+    have hV0 : ValidEntryArgsV2 divUsizeBodyV2 q0 := ⟨rfl, rfl, rfl, rfl⟩
+    let ⟨a, b, _, _, _, hBW, hBS, hBWf, hArgsEq, hCM, hInit0⟩ := divUsize_init_ok .abort hV0
+    cases hArgsEq
+    let ⟨s1, hStep0, hStep1⟩ := divUsize_abort_of_zero hCM hInit0 hBW hBS hBWf rfl
+    have hBeh : BehaviorV2 (entryProgForBody (divUsizeProgV2 .abort) 0) q0
+        (.aborted q0.callerMem) := by
+      unfold BehaviorV2 ReachesResultV2
+      change match initStateV2 (divUsizeProgV2 .abort) q0 with
+        | .error _ => False
+        | .ok s₀ => ∃ s : State, ReachesV2 (divUsizeProgV2 .abort) s₀ s ∧
+            StepV2 (divUsizeProgV2 .abort) s (.done (.aborted q0.callerMem))
+      rw [hInit0]
+      exact ⟨s1, ReachesV2.tail (ReachesV2.refl _) hStep0, hStep1⟩
+    have hPost := (hSat.2.2 q0 hV0 trivial).2 (.aborted q0.callerMem) hBeh
+    cases hPost.1
+  · intro hSat
+    let q0 : Query := {
+      args := [.scalar ⟨.isize, false, BitVec.ofNat 128 1⟩,
+               .scalar ⟨.isize, false, BitVec.ofNat 128 0⟩]
+      callerMem := ⟨[]⟩
+    }
+    have hV0 : ValidEntryArgsV2 divUsizeBodyV2 q0 := ⟨rfl, rfl, rfl, rfl⟩
+    let ⟨a, b, _, _, _, hBW, hBS, hBWf, hArgsEq, hCM, hInit0⟩ := divUsize_init_ok .unwind hV0
+    cases hArgsEq
+    let ⟨s1, hStep0, hStep1⟩ := divUsize_abort_of_zero hCM hInit0 hBW hBS hBWf rfl
+    have hFault : ReachesResultV2 (entryProgForBody (divUsizeProgV2 .unwind) 0) q0
+        (.fault .unsupported) := by
+      unfold ReachesResultV2
+      change match initStateV2 (divUsizeProgV2 .unwind) q0 with
+        | .error _ => False
+        | .ok s₀ => ∃ s : State, ReachesV2 (divUsizeProgV2 .unwind) s₀ s ∧
+            StepV2 (divUsizeProgV2 .unwind) s (.fault .unsupported)
+      rw [hInit0]
+      exact ⟨s1, ReachesV2.tail (ReachesV2.refl _) hStep0, hStep1⟩
+    exact (hSat.2.2 q0 hV0 trivial).1.2 .unsupported hFault
 
 end Anneal.MirWp
 

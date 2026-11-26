@@ -172,7 +172,7 @@ private theorem loadU32_correct (q : Query)
                         cm, entryMemoryWithCaller cm⟩ :=
                   initStateV2_ok_of (p := entryProgForBody Captured.program 0)
                     (q := ⟨[.ptr pv], cm⟩) (body := Captured.body_0)
-                    rfl rfl hCallerValid rfl rfl rfl rfl rfl rfl rfl
+                    rfl rfl hCallerValid rfl rfl rfl rfl rfl rfl rfl rfl
                     hArgsMatch hRefs hDisj
                 have hReadP : readPlaceV2 Captured.body_0.locals
                     [.immediate none, .immediate (some (.ptr pv))]
@@ -325,7 +325,7 @@ private theorem storeU8_correct (q : Query)
                           ], none, none, none⟩], cm, entryMemoryWithCaller cm⟩ :=
                       initStateV2_ok_of (p := entryProgForBody Captured.program 1)
                         (q := ⟨[.ptr pv, .scalar sv], cm⟩) (body := Captured.body_1)
-                        rfl rfl hCallerValid rfl rfl rfl rfl rfl rfl rfl
+                        rfl rfl hCallerValid rfl rfl rfl rfl rfl rfl rfl rfl
                         hArgsMatch hRefs hDisj
                     have hStep1 : evalStepV2 (entryProgForBody Captured.program 1)
                         ⟨[⟨1, 0, 0,

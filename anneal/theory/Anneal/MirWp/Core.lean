@@ -677,6 +677,24 @@ theorem wellFormed_and_spec_of_execV2_base : ExecSoundnessClaimV2 execProgV2 := 
         rw [h_init]
         exact ⟨s_end, h_reach, h_term⟩
 
+/-- Profile v2 contract-soundness theorem tying `SafeContractV2` and
+`EffectMaskV2` to `execProgV2`, discharging the trusted
+`SafeContractSoundnessClaimV2`. -/
+theorem safeContract_soundness_of_execV2_base :
+    SafeContractSoundnessClaimV2 execProgV2 := by
+  refine ⟨?_, ?_, ?_⟩
+  · intro p q fuel contract hExec hPre
+    exact (wellFormed_and_spec_of_execV2_base p q fuel (contract.post q)
+      (hExec hPre)).1
+  · intro p defId body contract hBody hAdm hAll
+    refine ⟨hBody, hAdm, fun q hValid hPre => ?_⟩
+    let ⟨fuel, hExec⟩ := hAll q hValid hPre
+    exact (wellFormed_and_spec_of_execV2_base (entryProgForBody p defId) q fuel
+      (contract.post q) hExec).1
+  · intro mask pre postRet postAb q cm hMask hPost
+    subst hMask
+    cases hPost.1
+
 end Anneal.MirWp
 
 end

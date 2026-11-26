@@ -522,26 +522,30 @@ private theorem initState_ok_frame_of_body0 (p : Program) (q : Query)
             · rw [h6] at h_init
               cases h7 : (!castTypesValid body)
               · rw [h7] at h_init
-                cases h8 : (!body.locals.all isSupportedScalarOrUnitTy)
-                · rw [h8] at h_init
-                  cases hc1 : (!callsAdmitted p body)
-                  · rw [hc1] at h_init
-                    cases hc2 : (!allCallBodiesStaticAdmitted p body)
-                    · rw [hc2] at h_init
-                      cases h9 :
-                        (!checkArgsMatch q.args
-                          ((body.locals.drop 1).take body.argumentCount))
-                      · rw [h9] at h_init
-                        dsimp only [ite_false_eq, Bool.false_or] at h_init
-                        injection h_init with h_eq
-                        exact h_eq.symm
-                      · rw [h9] at h_init
+                cases h7a : (!assertConditionTypesValid body)
+                · rw [h7a] at h_init
+                  cases h8 : (!body.locals.all isSupportedScalarOrUnitTy)
+                  · rw [h8] at h_init
+                    cases hc1 : (!callsAdmitted p body)
+                    · rw [hc1] at h_init
+                      cases hc2 : (!allCallBodiesStaticAdmitted p body)
+                      · rw [hc2] at h_init
+                        cases h9 :
+                          (!checkArgsMatch q.args
+                            ((body.locals.drop 1).take body.argumentCount))
+                        · rw [h9] at h_init
+                          dsimp only [ite_false_eq, Bool.false_or] at h_init
+                          injection h_init with h_eq
+                          exact h_eq.symm
+                        · rw [h9] at h_init
+                          cases h_init
+                      · rw [hc2] at h_init
                         cases h_init
-                    · rw [hc2] at h_init
+                    · rw [hc1] at h_init
                       cases h_init
-                  · rw [hc1] at h_init
+                  · rw [h8] at h_init
                     cases h_init
-                · rw [h8] at h_init
+                · rw [h7a] at h_init
                   cases h_init
               · rw [h7] at h_init
                 cases h_init

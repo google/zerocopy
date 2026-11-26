@@ -3360,6 +3360,44 @@ fn enforces_mir_wp_param_claim_proof_rules() {
             ),
         );
     }
+
+    // Missing Profile v2 `SafeContractSoundnessClaimV2`.
+    let mut missing_sc_claim = MirWpFixtureSpec::valid();
+    missing_sc_claim.safe_contract_soundness_claim_v2 = None;
+    missing_sc_claim.safe_contract_soundness_proof_v2 = None;
+    expect_mir_wp_audit_policy_err(
+        &missing_sc_claim,
+        "missing required claim Trusted.MirSemantics.SafeContractSoundnessClaimV2",
+    );
+
+    // Missing `safeContract_soundness_of_execV2`.
+    let mut missing_sc_thm = MirWpFixtureSpec::valid();
+    missing_sc_thm.safe_contract_soundness_proof_v2 = None;
+    expect_mir_wp_audit_policy_err(
+        &missing_sc_thm,
+        "missing required theorem Anneal.MirWp.safeContract_soundness_of_execV2",
+    );
+
+    // `SafeContractSoundnessClaimV2` body missing one required constant.
+    let mut missing_sc_const = MirWpFixtureSpec::valid();
+    missing_sc_const.safe_contract_soundness_claim_v2 = Some(
+        "def SafeContractSoundnessClaimV2 (_f : Nat) : Prop := \
+         And EffectMaskV2 (And SafeContractV2 (And SafeContractV2.post \
+         (And SatisfiesSafeContractV2 BodySatisfiesSafeContractV2)))"
+            .to_string(),
+    );
+    missing_sc_const.safe_contract_soundness_proof_v2 = Some(
+        "theorem safeContract_soundness_of_execV2 : \
+         Trusted.MirSemantics.SafeContractSoundnessClaimV2 Anneal.MirWp.execProgV2 := \
+         And.intro True.intro (And.intro True.intro (And.intro True.intro \
+         (And.intro True.intro True.intro)))"
+            .to_string(),
+    );
+    expect_mir_wp_audit_policy_err(
+        &missing_sc_const,
+        "claim Trusted.MirSemantics.SafeContractSoundnessClaimV2 body must reference \
+         Trusted.MirSemantics.EffectMaskV2.noAbort",
+    );
 }
 
 /// Verifies every rejection branch of `requireClaimProof` (exact-claim mode,
@@ -4000,6 +4038,12 @@ fn enforces_correspondence_non_backsliding() {
             "queryU16_19 = Trusted.MirSemantics.queryEmpty ∧",
             "queryU16_19 = queryU16_19 ∧",
             "Trusted.MirSemantics.queryEmpty",
+        ),
+        (
+            "CanaryD17AssertPanicAbortClaim",
+            "Trusted.MirAst.PanicStrategy.abort = Trusted.MirAst.PanicStrategy.unwind ∧",
+            "Trusted.MirAst.PanicStrategy.unwind = Trusted.MirAst.PanicStrategy.unwind ∧",
+            "Trusted.MirAst.PanicStrategy.abort",
         ),
     ] {
         harness.publish(

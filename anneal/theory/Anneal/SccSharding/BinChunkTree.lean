@@ -1442,6 +1442,7 @@ theorem bodiesHaveUniqueIdentities_of_decisionTree
     Trusted.MirSemantics.storageAnnotationsInBounds body &&
     Trusted.MirSemantics.discriminantTypesValid body &&
     Trusted.MirSemantics.castTypesValid body &&
+    Trusted.MirSemantics.assertConditionTypesValid body &&
     body.locals.all Trusted.MirSemantics.isSupportedScalarOrUnitTy &&
     (!Trusted.MirSemantics.bodyHasAnyCall body)
 
@@ -1457,6 +1458,7 @@ theorem bodyStaticIntrinsic_of_ofList {body : Body} {cs : List Char}
       Trusted.MirSemantics.storageAnnotationsInBounds body &&
       Trusted.MirSemantics.discriminantTypesValid body &&
       Trusted.MirSemantics.castTypesValid body &&
+      Trusted.MirSemantics.assertConditionTypesValid body &&
       body.locals.all Trusted.MirSemantics.isSupportedScalarOrUnitTy &&
       (!Trusted.MirSemantics.bodyHasAnyCall body)) = true) :
     BodyStaticIntrinsic body = true := by
@@ -1730,6 +1732,7 @@ theorem bodyStaticAdmitted_and_noCall_of_intrinsic {p : Program}
       Trusted.MirSemantics.storageAnnotationsInBounds body &&
       Trusted.MirSemantics.discriminantTypesValid body &&
       Trusted.MirSemantics.castTypesValid body &&
+      Trusted.MirSemantics.assertConditionTypesValid body &&
       body.locals.all Trusted.MirSemantics.isSupportedScalarOrUnitTy) with
     | true | false =>
       rw [hPre] at hIntr

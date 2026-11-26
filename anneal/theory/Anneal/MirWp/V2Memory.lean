@@ -1394,6 +1394,7 @@ theorem initStateV2_ok_of {p : Program} {q : Query} {body : Body}
     (hSto : storageAnnotationsInBounds body = true)
     (hDiscr : discriminantTypesValid body = true)
     (hCast : castTypesValid body = true)
+    (hAct : assertConditionTypesValid body = true)
     (hLocs : body.locals.all isSupportedV2LocalTy = true)
     (hArgs : checkArgsMatchV2 q.args
       ((body.locals.drop 1).take body.argumentCount) = true)
@@ -1407,7 +1408,7 @@ theorem initStateV2_ok_of {p : Program} {q : Query} {body : Body}
   unfold initStateV2
   rw [hPW, hPV, hCM, hEntry]
   dsimp only
-  rw [hNonEmpty, hArgLt, hSto, hDiscr, hCast, hLocs]
+  rw [hNonEmpty, hArgLt, hSto, hDiscr, hCast, hAct, hLocs]
   rw [hArgs, hRefs, hDisj]
   rfl
 
@@ -1425,7 +1426,9 @@ theorem initStateV2_ok_of_admitted {p : Program} {q : Query} {body : Body}
   let ⟨hCM, hArgs, hRefs, hDisj⟩ := hValid
   -- `&&` is left-associative in `BodyStaticAdmittedV2`.
   have hLocs := bool_and_right hAdm
-  have r8 := bool_and_left hAdm
+  have r9 := bool_and_left hAdm
+  have r8 := bool_and_left r9
+  have hAct := bool_and_right r8
   have r7 := bool_and_left r8
   have hCast := bool_and_right r7
   have r6 := bool_and_left r7
@@ -1441,7 +1444,7 @@ theorem initStateV2_ok_of_admitted {p : Program} {q : Query} {body : Body}
   have hPV := bool_and_right r1
   have hPW := bool_and_left r1
   exact initStateV2_ok_of hPW hPV hCM hEntry hEmpty hArgLt hSto
-    hDiscr hCast hLocs hArgs hRefs hDisj
+    hDiscr hCast hAct hLocs hArgs hRefs hDisj
 
 /-- Entry initialization equation specialized to `ctx.entryProg`. -/
 theorem BodyCtx.initStateV2_ok_of (ctx : BodyCtx) (h_body : ctx.HasBody)
@@ -1793,6 +1796,7 @@ theorem hasEscapingRodataPtr_false_of_refsStay {cm : CallerMemory}
 explicit non-escaping `.rodata` witness. -/
 theorem evalTerminatorV2_return_ok_of_noRodata {body : Body} {bb : BasicBlock}
     {frame : FrameState} {mem : MemoryState} {callerMem : CallerMemory}
+    {ps : PanicStrategy} {hLocal : Bool}
     {retTy : MirTy} {retVal : Val}
     (hTerm : bb.terminator = .return_)
     (hCleanup : bb.cleanup = false)
@@ -1803,7 +1807,7 @@ theorem evalTerminatorV2_return_ok_of_noRodata {body : Body} {bb : BasicBlock}
     (hStay : refsStayInCallerMem callerMem retTy retVal = true)
     (hValid : refsValidInMem mem retTy retVal = true)
     (hDisj : spansPairwiseDisjoint (refAccessSpans retTy retVal) = true) :
-    evalTerminatorV2 body bb frame mem callerMem =
+    evalTerminatorV2 body bb frame mem callerMem ps hLocal =
       .done (.returned ⟨retVal, extractCallerMemory callerMem mem⟩) := by
   unfold evalTerminatorV2
   rw [hTerm]
@@ -1818,6 +1822,7 @@ return type contains no raw pointers (`tyHasRawPtrV2 retTy = false`, discharged
 by `rfl` for concrete types). -/
 theorem evalTerminatorV2_return_ok {body : Body} {bb : BasicBlock}
     {frame : FrameState} {mem : MemoryState} {callerMem : CallerMemory}
+    {ps : PanicStrategy} {hLocal : Bool}
     {retTy : MirTy} {retVal : Val}
     (hTerm : bb.terminator = .return_)
     (hCleanup : bb.cleanup = false)
@@ -1828,7 +1833,7 @@ theorem evalTerminatorV2_return_ok {body : Body} {bb : BasicBlock}
     (hValid : refsValidInMem mem retTy retVal = true)
     (hDisj : spansPairwiseDisjoint (refAccessSpans retTy retVal) = true)
     (hNoRaw : tyHasRawPtrV2 retTy = false := by rfl) :
-    evalTerminatorV2 body bb frame mem callerMem =
+    evalTerminatorV2 body bb frame mem callerMem ps hLocal =
       .done (.returned ⟨retVal, extractCallerMemory callerMem mem⟩) :=
   evalTerminatorV2_return_ok_of_noRodata hTerm hCleanup hRetTy hRetSlot
     (hasEscapingRodataPtr_false_of_refsStay hStay hNoRaw) hStay hValid hDisj

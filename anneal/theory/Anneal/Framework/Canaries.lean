@@ -785,8 +785,11 @@ theorem v2_unit_1arg_envelope_ok (idStr : String) (paramTy : MirTy)
                 have hEq := hSat.2 out hBeh
                 subst hEq
                 cases hMap
-              · intro m ⟨out, _, hMap⟩
-                cases out <;> cases hMap
+              · intro m ⟨out, hBeh, hMap⟩
+                have hSat := hSpec.2.2.2 _ rfl
+                have hEq := hSat.2 out hBeh
+                subst hEq
+                cases hMap
       · have ⟨q0, hQ0⟩ := hWitness
         exact Or.inl ⟨rfl, Or.inl ⟨q0, hQ0,
           ⟨fun h => Bool.noConfusion h, True.intro⟩⟩⟩
@@ -946,8 +949,11 @@ theorem framework_canary : FrameworkCanaryClaim := by
                 have hEq := hSat.2 out hBeh
                 subst hEq
                 cases hMap
-              · intro m ⟨out, _, hMap⟩
-                cases out <;> cases hMap
+              · intro m ⟨out, hBeh, hMap⟩
+                have hSat := hSpec.2.2.2 _ rfl
+                have hEq := hSat.2 out hBeh
+                subst hEq
+                cases hMap
             | cons _ _ => exact Bool.noConfusion hDom.1
         · exact Or.inl ⟨rfl, Or.inl ⟨{ args := [] }, ⟨rfl, rfl⟩,
             ⟨fun h => Bool.noConfusion h, True.intro⟩⟩⟩
@@ -1020,8 +1026,11 @@ theorem framework_canary : FrameworkCanaryClaim := by
                   have hEq := hSat.2 out hBehOut
                   subst hEq
                   cases hMap
-                · intro m ⟨out, _, hMap⟩
-                  cases out <;> cases hMap
+                · intro m ⟨out, hBehOut, hMap⟩
+                  have hSat := hSpec.2.2.2 _ rfl
+                  have hEq := hSat.2 out hBehOut
+                  subst hEq
+                  cases hMap
             · exact Or.inl ⟨rfl, Or.inl ⟨{ args := [.bool true] }, ⟨rfl, rfl⟩,
                 ⟨fun _ => rfl, True.intro⟩⟩⟩
           | tail _ hNil => cases hNil
@@ -1191,8 +1200,11 @@ theorem framework_canary : FrameworkCanaryClaim := by
               have hEq := hSat.2 out hBeh
               subst hEq
               cases hMap
-            · intro m ⟨out, _, hMap⟩
-              cases out <;> cases hMap
+            · intro m ⟨out, hBeh, hMap⟩
+              have hSat := hSpec.2.2.2 _ rfl
+              have hEq := hSat.2 out hBeh
+              subst hEq
+              cases hMap
         · exact Or.inl ⟨rfl, Or.inl ⟨{ args := [], callerMem := ⟨[]⟩ },
             ⟨rfl, rfl, rfl, rfl⟩,
             ⟨fun h => Bool.noConfusion h, True.intro⟩⟩⟩

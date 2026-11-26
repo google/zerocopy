@@ -193,10 +193,19 @@ structure Out where
   ret : Val
   callerMem : CallerMemory := ⟨[]⟩
 
-/-- Observable terminal outcome of a well-formed execution. -/
+/-- Observable terminal outcome of a well-formed execution:
+- `.returned out`: normal return carrying `_0` and post-call `CallerMemory`.
+- `.unwound callerMem`: entry-frame stack unwind (currently unused by V1/V2).
+- `.aborted callerMem`: non-returning entry into the panic runtime under
+  `--panic abort`, carrying post-mutation `CallerMemory` at the point of panic;
+  control never returns to the caller. Models only pre-panic caller-memory
+  effects and makes no termination claim: panic hooks and handlers (including
+  downstream `#![no_std]` binary `#[panic_handler]`s) are unverified and may
+  abort the process or diverge. -/
 inductive TerminalOut where
   | returned (out : Out)
   | unwound (callerMem : CallerMemory := ⟨[]⟩)
+  | aborted (callerMem : CallerMemory := ⟨[]⟩)
 
 /-- Place in memory: the start of the bytes of a value at byte offset `offset`
 inside allocation `allocId`, corresponding to the thin (unsized-metadata-free)

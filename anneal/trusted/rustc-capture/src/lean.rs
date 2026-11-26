@@ -737,6 +737,8 @@ pub fn render(program: &ir::Program) -> String {
     };
     let profile_version = program.mir_profile_version();
     let overflow_checks = program.overflow_checks();
+    let panic_strategy = program.panic().as_str();
+    let has_local_panic_handler = program.has_local_panic_handler();
     let _ = write!(
         out,
         "def program : Trusted.MirAst.Program :=\n\
@@ -746,7 +748,9 @@ pub fn render(program: &ir::Program) -> String {
          \x20   scope := Trusted.MirAst.VerificationScope.{scope},\n\
          \x20   entryDefId := {ENTRY_DEF_ID},\n\
          \x20   bodies := {bodies_expr},\n\
-         \x20   overflowChecks := {overflow_checks}\n\
+         \x20   overflowChecks := {overflow_checks},\n\
+         \x20   panicStrategy := Trusted.MirAst.PanicStrategy.{panic_strategy},\n\
+         \x20   hasLocalPanicHandler := {has_local_panic_handler}\n\
          \x20 }}\n\nend Captured\n\nend\n"
     );
     out
@@ -793,12 +797,15 @@ pub(crate) fn render_sharded_root(
     scope: &ir::Scope,
     profile_version: u32,
     overflow_checks: bool,
+    panic: ir::PanicStrategy,
+    has_local_panic_handler: bool,
     shards: &[crate::shard::CaptureShardEntry],
 ) -> String {
     let scope_name = match scope {
         ir::Scope::SelectedUnit { .. } => "unit",
         ir::Scope::Crate => "crate",
     };
+    let panic_strategy = panic.as_str();
     let mut out = String::from(LICENSE_PREAMBLE);
     out.push_str("module\nprelude\npublic import Trusted.MirAst\n");
     let mut shard_refs = Vec::with_capacity(shards.len());
@@ -829,7 +836,9 @@ pub(crate) fn render_sharded_root(
          \x20   scope := Trusted.MirAst.VerificationScope.{scope_name},\n\
          \x20   entryDefId := {ENTRY_DEF_ID},\n\
          \x20   bodies := {bodies_expr},\n\
-         \x20   overflowChecks := {overflow_checks}\n\
+         \x20   overflowChecks := {overflow_checks},\n\
+         \x20   panicStrategy := Trusted.MirAst.PanicStrategy.{panic_strategy},\n\
+         \x20   hasLocalPanicHandler := {has_local_panic_handler}\n\
          \x20 }}\n\nend Captured\n\nend\n"
     );
     out
@@ -1229,7 +1238,9 @@ mod tests {
             "              ((BitVec.ofNat 128 0), 1),\n",
             "              ((BitVec.ofNat 128 1), 1)\n",
             "            ]\n            1)),\n",
-            "    bodies := [\n      body_0,\n      body_1\n    ],\n    overflowChecks := false\n",
+            "    bodies := [\n      body_0,\n      body_1\n    ],\n    overflowChecks := false,\n",
+            "    panicStrategy := Trusted.MirAst.PanicStrategy.unwind,\n",
+            "    hasLocalPanicHandler := false\n",
         ] {
             assert!(
                 rendered.contains(expected),

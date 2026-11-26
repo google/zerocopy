@@ -2354,6 +2354,9 @@ def strictLoop (prog : Program) (extCallees : List String) (origFuel : Nat)
             localsOk allocsOk padOk viols eventsRev
         let evs := mkFrameCheckEvent "root_exit" (lOk && pOk) aOk :: evsUnw
         finishUnwoundJson "unwound" origFuel bSlots sched lOk aOk pOk viols' evs
+      | .done (.aborted _) =>
+        let evs := mkFrameCheckEvent "root_exit" (localsOk && padOk) allocsOk :: eventsRev
+        finishAbortedJson "aborted" origFuel bSlots sched localsOk allocsOk padOk viols evs
       | .fault .undefined =>
         let reason :=
           match st.frames with
@@ -2548,6 +2551,9 @@ partial def compositionalLoop (prog : Program) (extCallees : List String) (origF
           | .done (.unwound _) =>
             let evs := mkFrameCheckEvent "root_exit" (localsOk && padOk) allocsOk :: eventsRev
             finishUnwoundJson "unwound" origFuel bSlots sched localsOk allocsOk padOk viols evs
+          | .done (.aborted _) =>
+            let evs := mkFrameCheckEvent "root_exit" (localsOk && padOk) allocsOk :: eventsRev
+            finishAbortedJson "aborted" origFuel bSlots sched localsOk allocsOk padOk viols evs
         else if !Nat.beq top.frame.stmtIdx bb.statements.length then
           finishJson "fault_unsupported" "null" "stmtIdx out of bounds" origFuel bSlots sched localsOk allocsOk padOk viols eventsRev
         else
@@ -2572,6 +2578,9 @@ partial def compositionalLoop (prog : Program) (extCallees : List String) (origF
             | .done (.unwound _) =>
               let evs := mkFrameCheckEvent "root_exit" (localsOk && padOk) allocsOk :: eventsRev
               finishUnwoundJson "unwound" origFuel bSlots sched localsOk allocsOk padOk viols evs
+            | .done (.aborted _) =>
+              let evs := mkFrameCheckEvent "root_exit" (localsOk && padOk) allocsOk :: eventsRev
+              finishAbortedJson "aborted" origFuel bSlots sched localsOk allocsOk padOk viols evs
           | .sysrootCall _ _ dstPlace _ _ =>
             let preAllocs := mem.allocations
             match runSysrootSteps prog 16 { frames := [top.frame], callerMem, mem } with
@@ -2608,6 +2617,9 @@ partial def compositionalLoop (prog : Program) (extCallees : List String) (origF
             | (.done (.unwound _), _) =>
               let evs := mkFrameCheckEvent "root_exit" (localsOk && padOk) allocsOk :: eventsRev
               finishUnwoundJson "unwound" origFuel bSlots sched localsOk allocsOk padOk viols evs
+            | (.done (.aborted _), _) =>
+              let evs := mkFrameCheckEvent "root_exit" (localsOk && padOk) allocsOk :: eventsRev
+              finishAbortedJson "aborted" origFuel bSlots sched localsOk allocsOk padOk viols evs
           | .switchInt discr _ =>
             let discrStr :=
               match evalPrimitiveOperandComp body.locals top.frame.locals mem discr with
@@ -2633,6 +2645,9 @@ partial def compositionalLoop (prog : Program) (extCallees : List String) (origF
             | .done (.unwound _) =>
               let evs := mkFrameCheckEvent "root_exit" (localsOk && padOk) allocsOk :: eventsRev
               finishUnwoundJson "unwound" origFuel bSlots sched localsOk allocsOk padOk viols evs
+            | .done (.aborted _) =>
+              let evs := mkFrameCheckEvent "root_exit" (localsOk && padOk) allocsOk :: eventsRev
+              finishAbortedJson "aborted" origFuel bSlots sched localsOk allocsOk padOk viols evs
           | .return_ =>
             match evalMirStepBy tyEqDepth prog 0 { frames := [top.frame], callerMem, mem } with
             | .done (.returned out) =>

@@ -126,7 +126,8 @@ theorem initStateV2_ok {p : Program} {body : Body} {args : List Val}
     (hDiscr : discriminantTypesValid body = true)
     (hCast : castTypesValid body = true)
     (hLocs : body.locals.all isSupportedV2LocalTy = true)
-    (hValid : ValidEntryArgsV2 body ⟨args, cm⟩) :
+    (hValid : ValidEntryArgsV2 body ⟨args, cm⟩)
+    (hAct : assertConditionTypesValid body = true := by decide) :
     initStateV2 p ⟨args, cm⟩ = .ok ⟨[⟨p.entryDefId, 0, 0,
       initLocalsLoop body args 0 body.locals, none, none, none⟩], cm,
       entryMemoryWithCaller cm⟩ := by
@@ -134,7 +135,7 @@ theorem initStateV2_ok {p : Program} {body : Body} {args : List Val}
   unfold initStateV2
   rw [hPW, hPV, hCM, hEntry]
   dsimp only
-  rw [hNonEmpty, hArgLt, hSto, hDiscr, hCast, hLocs, hArgs, hRefs, hDisj]
+  rw [hNonEmpty, hArgLt, hSto, hDiscr, hCast, hAct, hLocs, hArgs, hRefs, hDisj]
   rfl
 
 /-! ## `u8` values -/

@@ -627,6 +627,61 @@ def CanaryD16WithOverflowOkClaim : Prop :=
     (.returned ⟨.tuple [i8Val 127, .bool true], ⟨[]⟩⟩)
 
 /-- Trusted claim for
+`Anneal.MirCorrespondenceProof.canary_D17_assert_panic_abort`: in both
+$M_{\text{anneal}}$ and $M_{\text{ref}}$, `.assert` terminators agree across:
+1. passing condition (`true`), returning `42u32`;
+2. failing safe panic (`.divByZero`) with `.abort` and `.continue_`,
+   terminating as `.aborted ⟨[]⟩`;
+3. failing safe panic with `.unwind` and `.continue_`, faulting `.unsupported` /
+   `.blocked`;
+4. failing safe panic (`.boundsCheck`) with `.abort` and `.cleanup 0`, faulting
+   `.unsupported` / `.blocked`;
+5. failing UB assertion (`.misalignedPtrDeref`) with `.abort` and `.continue_`,
+   faulting `.undefined` / `.ub`. -/
+def CanaryD17AssertPanicAbortClaim : Prop :=
+  WellFormed (mkAssertProg .abort .continue_ .divByZero)
+    { args := [.bool true] } ∧
+  Behavior (mkAssertProg .abort .continue_ .divByZero)
+    { args := [.bool true] }
+    (.returned ⟨u32Val 42, ⟨[]⟩⟩) ∧
+  RefWellFormed (encodeProg (mkAssertProg .abort .continue_ .divByZero))
+    { args := [.bool true] } ∧
+  RefBehavior (encodeProg (mkAssertProg .abort .continue_ .divByZero))
+    { args := [.bool true] }
+    (.returned ⟨u32Val 42, ⟨[]⟩⟩) ∧
+  WellFormed (mkAssertProg .abort .continue_ .divByZero)
+    { args := [.bool false] } ∧
+  Behavior (mkAssertProg .abort .continue_ .divByZero)
+    { args := [.bool false] }
+    (.aborted ⟨[]⟩) ∧
+  RefWellFormed (encodeProg (mkAssertProg .abort .continue_ .divByZero))
+    { args := [.bool false] } ∧
+  RefBehavior (encodeProg (mkAssertProg .abort .continue_ .divByZero))
+    { args := [.bool false] }
+    (.aborted ⟨[]⟩) ∧
+  ¬ WellFormed (mkAssertProg .unwind .continue_ .divByZero)
+    { args := [.bool false] } ∧
+  ReachesResult (mkAssertProg .unwind .continue_ .divByZero)
+    { args := [.bool false] } (.fault .unsupported) ∧
+  (∃ maxSteps, RefReachesOutcome
+    (encodeProg (mkAssertProg .unwind .continue_ .divByZero))
+    { args := [.bool false] } maxSteps .blocked) ∧
+  ¬ WellFormed (mkAssertProg .abort (.cleanup 0) .boundsCheck)
+    { args := [.bool false] } ∧
+  ReachesResult (mkAssertProg .abort (.cleanup 0) .boundsCheck)
+    { args := [.bool false] } (.fault .unsupported) ∧
+  (∃ maxSteps, RefReachesOutcome
+    (encodeProg (mkAssertProg .abort (.cleanup 0) .boundsCheck))
+    { args := [.bool false] } maxSteps .blocked) ∧
+  ¬ WellFormed (mkAssertProg .abort .continue_ .misalignedPtrDeref)
+    { args := [.bool false] } ∧
+  ReachesResult (mkAssertProg .abort .continue_ .misalignedPtrDeref)
+    { args := [.bool false] } (.fault .undefined) ∧
+  (∃ maxSteps, RefReachesOutcome
+    (encodeProg (mkAssertProg .abort .continue_ .misalignedPtrDeref))
+    { args := [.bool false] } maxSteps .ub)
+
+/-- Trusted claim for
 `Anneal.MirCorrespondenceProof.refStep_sound_for_allowedStep_holds`: every
 non-exhausted `RefStep` transition (`.running` or `.returned`) is witnessed by
 `RefAllowedStep` (instantiating `Miri.Interpreter.ExecutionMachine.AllowedStep`
@@ -638,12 +693,15 @@ def RefStepSoundForAllowedStepClaim : Prop :=
     (∀ rs', out = .running rs' →
       RefAllowedStep rp rs.miri rs'.miri (.ok true)) ∧
     (∀ t, out = .returned t →
-      ∃ miri', RefAllowedStep rp rs.miri miri' (.ok true) ∧
+      (∃ miri', RefAllowedStep rp rs.miri miri' (.ok true) ∧
         miri'.stack.frames.isEmpty = true ∧
         ∃ retVal,
           refReadReturnVal miri'.machine.memory rs.retTy rs.retPlace =
             .ok retVal ∧
-          t = .returned ⟨retVal, miri'.machine.user.callerMem⟩)
+          t = .returned ⟨retVal, miri'.machine.user.callerMem⟩) ∨
+      (∃ miri' msg, RefAllowedStep rp rs.miri miri'
+          (.error (.termination (.abort msg))) ∧
+        t = .aborted miri'.machine.user.callerMem))
 
 /-- Trusted claim for `Anneal.MirCorrespondenceProof.bytes_codec_matches_miri`:
 pins $M_{\text{anneal}}$'s byte codec (`Trusted.MirSemantics.encodeVal` and

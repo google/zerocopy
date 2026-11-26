@@ -1169,7 +1169,9 @@ def AssumeGuaranteeTraitCall (prog : OpenProgram)
                                                     , mem := s.mem }
                                     | .unwound cm' =>
                                         res = openUnwindWith s cm' restFrames
-                                          unwind (some frame₁))
+                                          unwind (some frame₁)
+                                    | .aborted _ =>
+                                        res = .fault .unsupported)
                       | _, _, _ => res = .fault .unsupported
 
 /-- Helper for `openEvalDetStep` parameterized by `OpenProgram.toDay1? prog`.

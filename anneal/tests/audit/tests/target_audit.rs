@@ -2964,6 +2964,77 @@ fn target_audit_reports_empty_and_unused_binding_spec_warnings() {
     );
 }
 
+#[test]
+fn target_audit_rejects_wrong_program_arity_fail_closed() {
+    let make_fixture = |extra_field_decl: &str, extra_field_val: &str| {
+        let mut f = Fixture::new(
+            "prelude\nimport Expected\ntheorem Proof.verify : Expected.claim := And.intro True.intro rfl\n",
+        );
+        f.set(
+            "Model",
+            TargetRole::Model,
+            &format!(
+                "prelude\nimport Init.Prelude\nimport Init.Core\n\
+                 namespace Trusted.MirAst\n\
+                 structure Program where\n\
+                   bodies : List Nat\n\
+                   entryDefId : Nat\n\
+                   pointerWidthBits : Nat\n\
+                   mirProfileVersion : Nat\n\
+                   scope : Nat\n\
+                   overflowChecks : Bool\n\
+                   panicStrategy : Nat\n\
+                 {extra_field_decl}\
+                 end Trusted.MirAst\n\
+                 namespace Trusted.MirSemantics\n\
+                 structure Specs where\n\
+                   safety : String → List Nat → Prop\n\
+                   property : Trusted.MirAst.Program → Prop\n\
+                 structure Crate where\n\
+                   program : Trusted.MirAst.Program\n\
+                   specs : Specs\n\
+                 def UnitTheorem (c : Crate) : Prop :=\n\
+                   c.specs.safety \"\" List.nil ∧ c.specs.property c.program\n\
+                 end Trusted.MirSemantics\n"
+            ),
+        );
+        f.set(
+            "Captured",
+            TargetRole::Capture,
+            &format!(
+                "prelude\nimport Model\n\
+                 def Captured.program : Trusted.MirAst.Program :=\n\
+                   Trusted.MirAst.Program.mk List.nil 0 64 1 0 false 0{extra_field_val}\n"
+            ),
+        );
+        f.set(
+            "Spec",
+            TargetRole::Specification,
+            "prelude\nimport Model\n\
+             def Spec.specs : Trusted.MirSemantics.Specs :=\n\
+               Trusted.MirSemantics.Specs.mk (fun _ _ => True) (fun p => p.pointerWidthBits = 64)\n",
+        );
+        f.set(
+            "Expected",
+            TargetRole::Expected,
+            "prelude\nimport Model\nimport Captured\nimport Spec\n\
+             def Expected.claim : Prop :=\n\
+               Trusted.MirSemantics.UnitTheorem (Trusted.MirSemantics.Crate.mk Captured.program Spec.specs)\n",
+        );
+        f
+    };
+
+    // A 7-field `Program` (wrong arity) must fail closed, never silently skip
+    // linting.
+    let f_wrong_arity = make_fixture("", "");
+    f_wrong_arity.reject_audit("unexpected Program arity");
+
+    // Control: 8-field `Program` (expected arity) passes cleanly.
+    let f_ok = make_fixture("hasLocalPanicHandler : Bool\n", " true");
+    let ok_report = f_ok.run().unwrap();
+    assert_eq!(ok_report["replay"], true);
+}
+
 /// Craft header-chained 88-byte synthetic `.olean.server` and `.olean.private`
 /// companions for `primary_path` under `stage_dir/lib/{stem}.olean.*`. The
 /// companions satisfy the v2 header prefix and 64 KiB base-address chaining

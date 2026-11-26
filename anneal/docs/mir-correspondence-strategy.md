@@ -734,10 +734,19 @@ four outcome cases:
    effects, and caller-visible memory effects); as in Case 2, the reverse
    direction follows automatically whenever reverse totality holds across all
    valid executions. Constructs capable of abnormal process termination without
-   returning from or unwinding out of the entry frame (such as
-   `UnwindAction::Terminate`, aborting panics, or abort intrinsics) remain
-   `unsupported` (`FaultKind.unsupported`, covered by Case 1) unless an
-   explicit `aborted` outcome is added to `TerminalOut`.
+   returning from or unwinding out of the entry frame: under opt-in
+   `--panic abort` (when the crate defines no crate-local `#[panic_handler]`),
+   failed non-optional safe `Terminator::Assert`s map to `TerminalOut.aborted`
+   in both Profile v1 and Profile v2 (`evalTerminatorV2` carries
+   `extractCallerMemory callerMem mem1`, preserving pre-abort caller-memory
+   mutations); Pass 2 `lean-miri` correspondence
+   (`CanaryD17AssertPanicAbortClaim`) currently covers only Profile v1 with
+   empty `callerMem`, while a Profile v2 / non-empty-`callerMem` simulation
+   proof is not yet implemented. Crates with a crate-local `#[panic_handler]`,
+   `UnwindAction::Terminate` in general, optional overflow checks (whether
+   elided under `-Coverflow-checks=no` or retained under `--overflow-checks`),
+   and abort intrinsics remain unmodeled or fail closed as
+   `FaultKind.unsupported` (covered by Case 1).
 4. **Diverging executions (paired $M_{\text{ref}} \to M_{\text{anneal}}$;
    bidirectional whenever reverse totality holds):** For every choice-coupled
    pair of valid executions, whenever the $M_{\text{ref}}$ execution

@@ -3455,6 +3455,19 @@ def verifyMirWpCoreTheorems (env : Environment)
       [`Trusted.MirSemantics.SatisfiesPostV2,
         `Trusted.MirSemantics.DivergesV2,
         `Trusted.MirSemantics.BehaviorV2]
+    -- Profile v2 `SafeContractV2` / `EffectMaskV2` soundness claim: roots all
+    -- six `SafeContractV2` spec-vocabulary declarations in the TCB audit and
+    -- ties them to `execProgV2` and `EffectMaskV2.noAbort`.
+    requireClaimProof env locals semMod wpMod
+      `Trusted.MirSemantics.SafeContractSoundnessClaimV2
+      (some `Anneal.MirWp.execProgV2)
+      `Anneal.MirWp.safeContract_soundness_of_execV2
+      [`Trusted.MirSemantics.EffectMaskV2,
+        `Trusted.MirSemantics.EffectMaskV2.noAbort,
+        `Trusted.MirSemantics.SafeContractV2,
+        `Trusted.MirSemantics.SafeContractV2.post,
+        `Trusted.MirSemantics.SatisfiesSafeContractV2,
+        `Trusted.MirSemantics.BodySatisfiesSafeContractV2]
     let posClaim := `Trusted.MirSemantics.PositiveCanaryClaim
     let negClaim := `Trusted.MirSemantics.NegativeCanaryClaim
     let widthClaim := `Trusted.MirSemantics.IntWidthBoundaryCanary
@@ -4192,6 +4205,24 @@ def verifyCorrespondenceClaims (env : Environment)
          `Trusted.Correspondence.queryU16_19,
          `Trusted.MirSemantics.queryEmpty,
          `Trusted.MirSemantics.scalarNatVal,
+         `Trusted.MirSemantics.WellFormed,
+         `Trusted.MirSemantics.Behavior,
+         `Trusted.MirSemantics.ReachesResult,
+         `Trusted.Correspondence.RefWellFormed,
+         `Trusted.Correspondence.RefBehavior,
+         `Trusted.Correspondence.RefReachesOutcome,
+         `Trusted.Correspondence.encodeProg]),
+      (`Trusted.Correspondence.CanaryD17AssertPanicAbortClaim,
+       `Anneal.MirCorrespondenceProof.canary_D17_assert_panic_abort,
+       [`Trusted.Correspondence.mkAssertProg,
+         `Trusted.MirAst.PanicStrategy.abort,
+         `Trusted.MirAst.PanicStrategy.unwind,
+         `Trusted.MirAst.AssertKind.divByZero,
+         `Trusted.MirAst.AssertKind.boundsCheck,
+         `Trusted.MirAst.AssertKind.misalignedPtrDeref,
+         `Trusted.MirAst.UnwindAction.continue_,
+         `Trusted.MirAst.UnwindAction.cleanup,
+         `Trusted.MirSemantics.TerminalOut.aborted,
          `Trusted.MirSemantics.WellFormed,
          `Trusted.MirSemantics.Behavior,
          `Trusted.MirSemantics.ReachesResult,
@@ -5905,9 +5936,11 @@ structure CapturedBodySummary where
   identityText : Option String
   deriving Inhabited
 
-/-- Unfold `List Body` from `Trusted.MirAst.Program` up to `maxBodies`. -/
+/-- Unfold `List Body` from `Trusted.MirAst.Program` up to `maxBodies`, failing
+closed if a `Trusted.MirAst.Program` value does not reduce to an 8-argument
+`Trusted.MirAst.Program.mk` application. -/
 def extractCapturedBodies (env : Environment) (subjectName : Name)
-    (maxBodies : Nat := 256) : Array CapturedBodySummary := Id.run do
+    (maxBodies : Nat := 256) : IO (Array CapturedBodySummary) := do
   let some subjectInfo := env.checked.get.find? subjectName | return #[]
   let progTy := mkConst `Trusted.MirAst.Program
   let isMirProg := match Kernel.isDefEq env {} subjectInfo.type progTy with
@@ -5918,9 +5951,10 @@ def extractCapturedBodies (env : Environment) (subjectName : Name)
   let progExpr := kernelWhnfSafe env {} (mkConst subjectName)
   let progFn := progExpr.getAppFn
   let progArgs := progExpr.getAppArgs
-  if progFn.constName? != some `Trusted.MirAst.Program.mk ||
-      progArgs.size != 6 then
-    return #[]
+  if progFn.constName? != some `Trusted.MirAst.Program.mk then
+    fail s!"unexpected Program constructor in {subjectName}: {progFn}"
+  if progArgs.size != 8 then
+    fail s!"unexpected Program arity in {subjectName}: expected 8, got {progArgs.size}"
   let mut cur := progArgs[0]!
   let mut out : Array CapturedBodySummary := #[]
   for _ in [0:maxBodies] do
@@ -6078,7 +6112,7 @@ def mirSpecShape? (env : Environment) (specTy : Expr) :
 /-- Run advisory anti-vacuity specification linting over the replayed target
 environment, returning sorted deduplicated [`SpecLintWarning`]s. -/
 def inspectSpecVacuity (env : Environment) (subjectName specName : Name)
-    (specAllConsts : List Name) : Array SpecLintWarning := Id.run do
+    (specAllConsts : List Name) : IO (Array SpecLintWarning) := do
   let mut warnings : Array SpecLintWarning := #[]
   let specAllSorted := specAllConsts.toArray.qsort Name.lt
   -- 1. Syntactic unused user-named bindings across author-written
@@ -6124,7 +6158,7 @@ def inspectSpecVacuity (env : Environment) (subjectName specName : Name)
     else
       -- 2b. Per-unsafe-body `safety` satisfiability check (catches typos
       --     or wrong argument arities on unsafe bodies).
-      let bodies := extractCapturedBodies env subjectName
+      let bodies ← extractCapturedBodies env subjectName
       let maxCheckedArgs : Nat := 32
       for idx in [0:bodies.size] do
         if let some body := bodies[idx]? then
@@ -6184,7 +6218,7 @@ def inspectSpecVacuity (env : Environment) (subjectName specName : Name)
       }
   -- Sort and deduplicate deterministically.
   let sorted := warnings.qsort (fun a b => a.sortKey < b.sortKey)
-  sorted.foldl (init := #[]) fun acc w =>
+  return sorted.foldl (init := #[]) fun acc w =>
     if acc.contains w then acc else acc.push w
 
 /-- Execute Phase 4 (`"target-audit"`) on compiled target artifacts.
@@ -6669,7 +6703,7 @@ def targetAudit (j : Json) (foundation : Array Name) : IO Json := do
       return Json.mkObj [("name", toJson n),
         ("module", toJson (← originOf n))]
   let specWarnings :=
-    (inspectSpecVacuity checkedEnv subjectName specName specAllConsts).map
+    (← inspectSpecVacuity checkedEnv subjectName specName specAllConsts).map
       SpecLintWarning.toJson
   return Json.mkObj [("theorem", toJson theoremName),
     ("canonicalRoot", toJson canonicalRoot), ("subject", toJson subjectName),

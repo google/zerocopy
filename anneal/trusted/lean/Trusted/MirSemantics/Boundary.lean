@@ -81,7 +81,11 @@ starting at `s₀` (`trace 0 = s₀`) in which every transition
 `Behavior` and `ReachesResult` describe only finite executions that stop, so
 two semantics with the same finite outcomes could still differ in whether an
 execution runs forever. `Diverges` makes non-termination observable alongside
-finite outcomes so downstream equivalence proofs can relate both. -/
+finite outcomes so downstream equivalence proofs can relate both. Note that
+`.aborted` under `--panic abort` is modeled as a terminal outcome
+(`.done (.aborted _)`), not an infinite step trace, even though the unverified
+panic runtime or hook may diverge instead of aborting the process; accordingly,
+`¬ Diverges p q` makes no termination claim on paths that reach `.aborted`. -/
 noncomputable def Diverges (p : Program) (q : Query) : Prop :=
   ∃ s₀ : State,
     initState p q = .ok s₀ ∧
@@ -211,7 +215,8 @@ noncomputable def bodiesHaveUniqueIdentities (bodies : List Body) : Bool :=
 /-- Unconditional static admission predicate for `(p, body)`: checks 64-bit
 target layout, MIR semantic profile version 1, non-empty `body.identity`,
 non-empty basic blocks, `argumentCount < locals.length`, in-bounds storage
-annotations, well-typed `Discriminant` and `Cast` destinations, supported local
+annotations, well-typed `Discriminant` and `Cast` destinations and `Assert`
+conditions, supported local
 types (`isSupportedScalarOrUnitTy`), valid intra-crate and pinned-sysroot
 call sites (`callsAdmitted`), and—whenever `body` contains any call—all bodies
 in `p.bodies` (`allCallBodiesStaticAdmitted`), even when `body` has
@@ -231,7 +236,12 @@ in `p`:
    assuming `safetyPre args` only when `body.isUnsafe = true`, executing
    `entryProgForBody p defId` on `{ args := args }` is `WellFormed` (never
    reaches `.fault .undefined` or `.fault .unsupported`; non-terminating loops
-   remain permitted unless ruled out by `Specs.property`). -/
+   remain permitted unless ruled out by `Specs.property`). Under opt-in
+   `--panic abort` (`p.panicStrategy = .abort`), failed safe `Assert`s
+   terminate cleanly as `.aborted`, so panic-freedom under `--panic abort`
+   requires an explicit `noAbort` postcondition in `Specs.property`.
+   Profile v1 `.assert` stepping has `lean-miri` correspondence
+   (`CanaryD17AssertPanicAbortClaim`, empty `callerMem`). -/
 noncomputable def BodyVerified (p : Program) (defId : DefId) (body : Body)
     (safetyPre : List Val → Prop) : Prop :=
   getElem? p.bodies defId = some body ∧
@@ -328,7 +338,12 @@ noncomputable def BehaviorV2 (p : Program) (q : Query) (out : TerminalOut) :
     Prop :=
   ReachesResultV2 p q (.done out)
 
-/-- Profile v2 divergence of `(p, q)`. -/
+/-- Profile v2 divergence of `(p, q)`: an infinite productive step trace from
+`initStateV2 p q`. Note that `.aborted` under `--panic abort` is modeled as a
+terminal outcome (`.done (.aborted _)`), not an infinite step trace, even
+though the unverified panic runtime or hook may diverge instead of aborting the
+process; accordingly, `¬ DivergesV2 p q` makes no termination claim on paths
+that reach `.aborted`. -/
 noncomputable def DivergesV2 (p : Program) (q : Query) : Prop :=
   ∃ s₀ : State,
     initStateV2 p q = .ok s₀ ∧
@@ -456,6 +471,7 @@ noncomputable def BodyStaticAdmittedV2 (p : Program) (body : Body) : Bool :=
     storageAnnotationsInBounds body &&
     discriminantTypesValid body &&
     castTypesValid body &&
+    assertConditionTypesValid body &&
     !bodyMixesRefsAndRawPtrsV2 body &&
     body.locals.all isSupportedV2LocalTy
 
@@ -470,9 +486,20 @@ only for entry arguments (`ValidEntryArgsV2`) and for the returned value
 liveness, bounds, alignment, mutability, and initialization
 (`refValidInMem`). For bodies containing references, excluding raw-pointer
 locals via `BodyStaticAdmittedV2` (`bodyMixesRefsAndRawPtrsV2`) prevents
-deriving conflicting `&mut` references from raw pointers, while raw-pointer-only
-bodies omit intra-body aliasing checks (`Stacked` or `Tree Borrows`, recorded in
-receipt assumptions). -/
+deriving conflicting `&mut` references from raw pointers, while
+raw-pointer-only bodies omit intra-body aliasing checks (`Stacked` or
+`Tree Borrows`, recorded in receipt assumptions).
+
+Under opt-in `--panic abort` (`p.panicStrategy = .abort`,
+`p.hasLocalPanicHandler = false`), failed safe `Assert`s terminate cleanly as
+`.aborted` carrying post-mutation `CallerMemory`, so `BodyVerifiedV2` alone
+permits safe-panic aborts; panic-freedom under `--panic abort` requires an
+explicit `EffectMaskV2.noAbort` `SafeContractV2` obligation in
+`SpecsV2.property`. Crates defining a crate-local `#[panic_handler]`
+(`p.hasLocalPanicHandler = true`) keep failing safe `Assert`s fail-closed as
+`.fault .unsupported`. Note that Profile v2 `.assert` / `.aborted` paths with
+non-empty `callerMem` do not yet have a `lean-miri` simulation proof (unlike
+Profile v1's empty-`callerMem` `CanaryD17AssertPanicAbortClaim`). -/
 noncomputable def BodyVerifiedV2 (p : Program) (defId : DefId) (body : Body)
     (safetyPre : Query → Prop) : Prop :=
   getElem? p.bodies defId = some body ∧
@@ -516,6 +543,58 @@ noncomputable def CrateTheoremV2 (c : CrateV2) : Prop :=
 proof-unit (`Trusted.MirSemantics.UnitTheoremV2`). -/
 noncomputable def UnitTheoremV2 (c : CrateV2) : Prop :=
   c.program.scope = .unit ∧ ProgramVerifiedV2 c.program c.specs
+
+/-- Allowed terminal-effect mask for Profile v2 postcondition contracts
+(fail-closed by default: aborting paths are forbidden unless explicitly
+enabled with `allowAbort := true`). -/
+structure EffectMaskV2 where
+  allowAbort : Bool := false
+
+/-- Effect mask that rejects aborting paths (`allowAbort := false`). -/
+def EffectMaskV2.noAbort : EffectMaskV2 := { allowAbort := false }
+
+/-- Profile v2 contract specification for partial-domain functions. The six
+contract vocabulary declarations (`EffectMaskV2`, `EffectMaskV2.noAbort`,
+`SafeContractV2`, `SafeContractV2.post`, `SatisfiesSafeContractV2`, and
+`BodySatisfiesSafeContractV2`) are rooted in `TrustedBoundary.lean` via
+`Trusted.MirSemantics.SafeContractSoundnessClaimV2` and instantiated by user
+specifications in `SpecsV2.property`:
+- `behaviorPre q`: behavioral / non-panic domain precondition;
+- `effects`: terminal-effect mask controlling whether `.aborted` is permitted
+  (defaults fail-closed to `{ allowAbort := false }`);
+- `postReturn q out`: postcondition when execution returns `out`;
+- `postAbort q callerMem`: postcondition on post-mutation `CallerMemory` when
+  execution aborts under `--panic abort` (defaults fail-closed to `False`). -/
+structure SafeContractV2 where
+  behaviorPre : Query → Prop := fun _ => True
+  effects : EffectMaskV2 := { allowAbort := false }
+  postReturn : Query → Out → Prop := fun _ _ => True
+  postAbort : Query → CallerMemory → Prop := fun _ _ => False
+
+/-- Terminal-outcome predicate induced by `contract : SafeContractV2` on entry
+query `q`. -/
+noncomputable def SafeContractV2.post (contract : SafeContractV2)
+    (q : Query) : TerminalOut → Prop
+  | .returned out => contract.postReturn q out
+  | .unwound _ => False
+  | .aborted callerMem =>
+    contract.effects.allowAbort = true ∧ contract.postAbort q callerMem
+
+/-- Satisfaction of `contract : SafeContractV2` by `p` at entry `q` under
+`contract.behaviorPre q`. -/
+noncomputable def SatisfiesSafeContractV2 (p : Program) (q : Query)
+    (contract : SafeContractV2) : Prop :=
+  contract.behaviorPre q → SatisfiesPostV2 p q (contract.post q)
+
+/-- Body-level `SafeContractV2` judgment quantifying over all
+`ValidEntryArgsV2` inputs for `body` at `defId` in `p`. -/
+noncomputable def BodySatisfiesSafeContractV2 (p : Program) (defId : DefId)
+    (body : Body) (contract : SafeContractV2) : Prop :=
+  getElem? p.bodies defId = some body ∧
+  BodyStaticAdmittedV2 p body = true ∧
+  ∀ q : Query,
+    ValidEntryArgsV2 body q →
+    SatisfiesSafeContractV2 (entryProgForBody p defId) q contract
 
 end Trusted.MirSemantics
 

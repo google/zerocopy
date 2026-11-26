@@ -178,4 +178,56 @@ theorem refute_boundary_v2_rejects_mixed_refs_and_raw_ptrs :
     ¬ BodyVerifiedV2 mixedRefRawProgV2 0 mixedRefRawBodyV2 (fun _ => False) :=
   fun hVer => Bool.noConfusion hVer.2.1
 
+/-- Profile v2 safe body under `--panic abort` that aborts unconditionally via
+a failing `.divByZero` assert. -/
+noncomputable def abortSafeBodyV2 : Body := {
+  argumentCount := 0
+  locals := [.unit]
+  basicBlocks := [{
+    statements := []
+    terminator :=
+      .assert (.constant ⟨.bool, .scalar (BitVec.ofNat 128 0)⟩) true
+        .divByZero 0 .unreachable
+  }]
+  isUnsafe := false
+  identity := "guard_mutation::abort_safe_v2"
+}
+
+/-- Profile v2 `--panic abort` program wrapping `abortSafeBodyV2`. -/
+noncomputable def abortSafeProgV2 : Program := {
+  scope := .unit
+  pointerWidthBits := 64
+  mirProfileVersion := 2
+  panicStrategy := .abort
+  hasLocalPanicHandler := false
+  bodies := [abortSafeBodyV2]
+}
+
+/-- Guard `boundary_v2_effect_mask_allow_abort_default`: `EffectMaskV2` defaults
+`allowAbort` to `false`. -/
+theorem refute_boundary_v2_effect_mask_allow_abort_default :
+    ({} : EffectMaskV2).allowAbort = false :=
+  rfl
+
+/-- Guard `boundary_v2_safe_contract_allow_abort_default`: `SafeContractV2`
+defaults `effects.allowAbort` to `false`, rejecting aborting paths even when
+`postAbort := True`. -/
+theorem refute_boundary_v2_safe_contract_allow_abort_default :
+    ¬ BodySatisfiesSafeContractV2 abortSafeProgV2 0 abortSafeBodyV2
+      { postAbort := fun _ _ => True } :=
+  fun hSat =>
+    Bool.noConfusion
+      ((hSat.2.2 queryEmpty ⟨rfl, rfl, rfl, rfl⟩ trivial).2
+        (.aborted queryEmpty.callerMem) ⟨_, ReachesV2.refl _, ⟨0, rfl, rfl⟩⟩).1
+
+/-- Guard `boundary_v2_safe_contract_post_abort_default`: `SafeContractV2`
+defaults `postAbort` to `False`, rejecting aborting paths even when
+`allowAbort := true`. -/
+theorem refute_boundary_v2_safe_contract_post_abort_default :
+    ¬ BodySatisfiesSafeContractV2 abortSafeProgV2 0 abortSafeBodyV2
+      { effects := { allowAbort := true } } :=
+  fun hSat =>
+    ((hSat.2.2 queryEmpty ⟨rfl, rfl, rfl, rfl⟩ trivial).2
+      (.aborted queryEmpty.callerMem) ⟨_, ReachesV2.refl _, ⟨0, rfl, rfl⟩⟩).2
+
 end GuardMutation

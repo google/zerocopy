@@ -172,6 +172,8 @@ theorem canary_D16_with_overflow_ok : CanaryD16WithOverflowOkClaim :=
 theorem canary_D17_call_and_sysroot_call : CanaryD17CallAndSysrootCallClaim :=
   canary_D17_call_and_sysroot_call_base
 
+theorem canary_D17_assert_panic_abort : CanaryD17AssertPanicAbortClaim :=
+  canary_D17_assert_panic_abort_base
 theorem refStep_sound_for_allowedStep_holds : RefStepSoundForAllowedStepClaim :=
   refStep_sound_for_allowedStep_base
 

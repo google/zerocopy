@@ -144,6 +144,8 @@ structure RefProg where
   mirProfileVersion : Nat
   scope : VerificationScope
   overflowChecks : Bool := false
+  panicStrategy : PanicStrategy := .unwind
+  hasLocalPanicHandler : Bool := true
 
 /-! ## Canonical Type Interning and Codec (`encodeProg` / `decodeProg`) -/
 
@@ -369,7 +371,8 @@ noncomputable def encodeBody (ts : List MirTy) (b : Body) : RefBody :=
 noncomputable def encodeProg (p : Program) : RefProg :=
   let ts := collectProgTypes p
   ⟨p.bodies.map (encodeBody ts), p.entryDefId, ts, p.pointerWidthBits,
-   p.mirProfileVersion, p.scope, p.overflowChecks⟩
+   p.mirProfileVersion, p.scope, p.overflowChecks, p.panicStrategy,
+   p.hasLocalPanicHandler⟩
 
 /-- Decode a `RefProjectionElem` against type table `ts`. -/
 noncomputable def decodeProjElem (ts : List MirTy) :
@@ -476,7 +479,8 @@ noncomputable def decodeBody (ts : List MirTy) (b : RefBody) : Option Body :=
 some p`). -/
 noncomputable def decodeProg (rp : RefProg) : Option Program :=
   optMap (fun bodies => ⟨bodies, rp.entryDefId, rp.pointerWidthBits,
-      rp.mirProfileVersion, rp.scope, rp.overflowChecks⟩)
+      rp.mirProfileVersion, rp.scope, rp.overflowChecks, rp.panicStrategy,
+      rp.hasLocalPanicHandler⟩)
     (mapOption (decodeBody rp.types) rp.bodies)
 
 end Trusted.Correspondence

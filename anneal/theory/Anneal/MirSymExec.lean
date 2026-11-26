@@ -3916,8 +3916,8 @@ theorem symRun_entry_behavior {p : Program} {defId : DefId} {body : Body}
         (fun outcome => outcome = .returned ⟨out.eval env, ⟨[]⟩⟩) := by
     unfold execProg
     rw [initState_entryProgForBody hBody hAdm hArgs]
-    exact (execOutcomeState_entryProg_iff hBody
-      (isSingleFrame0_mkState 0 0 _) h_nocall).mpr hRuns
+    exact execOutcomeState_entryProg_of_noFault hBody
+      (isSingleFrame0_mkState 0 0 _) hRuns h_nocall
   have hAll := spec_and_behavior_of_wp_eq (wpProg_of_execProg hExecProg)
   exact ⟨hSucc.1, hSucc.2, hAll.2.1, hAll.2.2.1, hAll.2.2.2 _ rfl⟩
 

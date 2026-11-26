@@ -900,6 +900,8 @@ pub fn maybe_shard_manifest(
         manifest.program.scope(),
         manifest.program.mir_profile_version(),
         manifest.program.overflow_checks(),
+        manifest.program.panic(),
+        manifest.program.has_local_panic_handler(),
         &shard_entries,
     );
     let shards_manifest = CaptureShardsManifest {
@@ -1272,13 +1274,23 @@ mod tests {
             sharded.root_lean
         );
         assert!(
-            sharded.root_lean.contains("overflowChecks := false"),
+            sharded.root_lean.contains("overflowChecks := false,"),
             "expected default overflowChecks := false in sharded root:\n{}",
             sharded.root_lean
         );
+        assert!(
+            sharded.root_lean.contains("panicStrategy := Trusted.MirAst.PanicStrategy.unwind,"),
+            "expected default panicStrategy := unwind in sharded root:\n{}",
+            sharded.root_lean
+        );
+        assert!(
+            sharded.root_lean.contains("hasLocalPanicHandler := false"),
+            "expected default hasLocalPanicHandler := false in sharded root:\n{}",
+            sharded.root_lean
+        );
 
-        // Verify `overflow_checks = true` survives body reordering and renders
-        // into `Captured.program.overflowChecks := true`.
+        // Verify `overflow_checks`, `panic`, and `has_local_panic_handler`
+        // survive body reordering and render into `Captured.program`.
         let mut checked_bodies = vec![synth_body(
             "rust-path-v1::top_caller",
             1,
@@ -1289,13 +1301,33 @@ mod tests {
         }
         let mut checked = dummy_manifest(checked_bodies.clone());
         checked.configuration.overflow_checks = true;
-        checked.program =
-            ir::Program::try_new_with_overflow_checks(Scope::Crate, true, checked_bodies).unwrap();
+        checked.program = ir::Program::try_new_with_options(
+            Scope::Crate,
+            true,
+            ir::PanicStrategy::Abort,
+            true,
+            checked_bodies,
+        )
+        .unwrap();
         let checked_sharded = maybe_shard_manifest(&mut checked, cfg).unwrap().unwrap();
         assert!(checked.program.overflow_checks());
+        assert_eq!(checked.program.panic(), ir::PanicStrategy::Abort);
+        assert!(checked.program.has_local_panic_handler());
         assert!(
-            checked_sharded.root_lean.contains("overflowChecks := true"),
+            checked_sharded.root_lean.contains("overflowChecks := true,"),
             "expected overflowChecks := true in sharded root:\n{}",
+            checked_sharded.root_lean
+        );
+        assert!(
+            checked_sharded
+                .root_lean
+                .contains("panicStrategy := Trusted.MirAst.PanicStrategy.abort,"),
+            "expected panicStrategy := abort in sharded root:\n{}",
+            checked_sharded.root_lean
+        );
+        assert!(
+            checked_sharded.root_lean.contains("hasLocalPanicHandler := true"),
+            "expected hasLocalPanicHandler := true in sharded root:\n{}",
             checked_sharded.root_lean
         );
     }

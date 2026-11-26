@@ -2635,6 +2635,8 @@ pub enum Scope {
 pub struct Program {
     scope: Scope,
     overflow_checks: bool,
+    panic: PanicStrategy,
+    has_local_panic_handler: bool,
     mir_profile_version: u32,
     bodies: Vec<Body>,
 }
@@ -2642,12 +2644,14 @@ pub struct Program {
 impl Program {
     #[cfg(test)]
     pub fn try_new(scope: Scope, bodies: Vec<Body>) -> Result<Self, String> {
-        Self::try_new_with_overflow_checks(scope, false, bodies)
+        Self::try_new_with_options(scope, false, PanicStrategy::Unwind, false, bodies)
     }
 
-    pub fn try_new_with_overflow_checks(
+    pub fn try_new_with_options(
         scope: Scope,
         overflow_checks: bool,
+        panic: PanicStrategy,
+        has_local_panic_handler: bool,
         bodies: Vec<Body>,
     ) -> Result<Self, String> {
         if let Scope::SelectedUnit { roots, instantiations } = &scope
@@ -2745,6 +2749,8 @@ impl Program {
         Ok(Self {
             scope,
             overflow_checks,
+            panic,
+            has_local_panic_handler,
             mir_profile_version,
             bodies,
         })
@@ -2756,6 +2762,14 @@ impl Program {
 
     pub fn overflow_checks(&self) -> bool {
         self.overflow_checks
+    }
+
+    pub fn panic(&self) -> PanicStrategy {
+        self.panic
+    }
+
+    pub fn has_local_panic_handler(&self) -> bool {
+        self.has_local_panic_handler
     }
 
     pub fn mir_profile_version(&self) -> u32 {
@@ -2953,9 +2967,11 @@ impl Manifest {
             }
             new_bodies.push(body);
         }
-        self.program = Program::try_new_with_overflow_checks(
+        self.program = Program::try_new_with_options(
             self.program.scope.clone(),
             self.program.overflow_checks,
+            self.program.panic,
+            self.program.has_local_panic_handler,
             new_bodies,
         )?;
         for sel in &mut self.selected {

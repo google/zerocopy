@@ -526,14 +526,109 @@ theorem evalStatement_frame_retag (body : Body) (defId : DefId)
                   exact ⟨_, rfl, h_id⟩
   | unsupported => exact ⟨(fun _ h => by cases h), rfl⟩
 
+private theorem evalAssertFailure_ne_step (msg : AssertKind)
+    (ps : PanicStrategy) (unwind : UnwindAction) (cm : CallerMemory)
+    (lh : Bool := true) (s' : State) :
+    evalAssertFailure msg ps unwind cm lh ≠ .step s' := by
+  intro h
+  cases msg with
+  | misalignedPtrDeref | nullPtrDeref | overflowNeg | unsupported => cases h
+  | boundsCheck | divByZero | remByZero =>
+    cases lh <;> cases ps <;> cases unwind <;> cases h
+  | overflow op =>
+    cases op <;>
+      (first
+        | cases h
+        | (cases lh <;> cases ps <;> cases unwind <;> cases h))
+
+private theorem evalAssertFailure_unwind_eq_true (msg : AssertKind)
+    (unwind : UnwindAction) (cm : CallerMemory) (lh : Bool) :
+    evalAssertFailure msg .unwind unwind cm lh =
+      evalAssertFailure msg .unwind unwind cm true := by
+  cases msg with
+  | misalignedPtrDeref | nullPtrDeref | overflowNeg | unsupported => rfl
+  | boundsCheck | divByZero | remByZero => cases lh <;> rfl
+  | overflow op => cases op <;> cases lh <;> rfl
+
+private theorem evalAssertFailure_any_ps_rel (msg : AssertKind)
+    (ps : PanicStrategy) (unwind : UnwindAction) (cm : CallerMemory)
+    (lh : Bool) :
+    (∀ s', evalAssertFailure msg ps unwind cm lh ≠ .step s') ∧
+    (∀ out, evalAssertFailure msg ps unwind cm lh ≠ .done (.returned out)) ∧
+    (∀ out, evalAssertFailure msg .unwind unwind cm true ≠ .done out) ∧
+    (∀ k, evalAssertFailure msg ps unwind cm lh = .fault k →
+      evalAssertFailure msg .unwind unwind cm true = .fault k) := by
+  refine ⟨evalAssertFailure_ne_step msg ps unwind cm lh, ?_, ?_, ?_⟩
+  · intro out h
+    cases msg with
+    | misalignedPtrDeref | nullPtrDeref | overflowNeg | unsupported => cases h
+    | boundsCheck | divByZero | remByZero =>
+      cases lh <;> cases ps <;> cases unwind <;> cases h
+    | overflow op =>
+      cases op <;>
+        (first
+          | cases h
+          | (cases lh <;> cases ps <;> cases unwind <;> cases h))
+  · intro out h
+    cases msg with
+    | misalignedPtrDeref | nullPtrDeref | overflowNeg | unsupported => cases h
+    | boundsCheck | divByZero | remByZero => cases unwind <;> cases h
+    | overflow op => cases op <;> cases h
+  · intro k h
+    cases msg with
+    | misalignedPtrDeref | nullPtrDeref | overflowNeg | unsupported => exact h
+    | boundsCheck | divByZero | remByZero =>
+      cases lh <;> cases ps <;> cases unwind <;> (first | exact h | cases h)
+    | overflow op =>
+      cases op <;>
+        (first
+          | exact h
+          | (cases lh <;> cases ps <;> cases unwind <;> (first | exact h | cases h)))
+
+private theorem evalTerminator_any_ps (body : Body) (bb : BasicBlock)
+    (f : FrameState) (m : MemoryState) (cm : CallerMemory)
+    (ps : PanicStrategy) (lh : Bool) :
+    evalTerminator body bb f m cm ps lh =
+      evalTerminator body bb f m cm .unwind true ∨
+    ∃ (msg : AssertKind) (unwind : UnwindAction),
+      evalTerminator body bb f m cm ps lh =
+        evalAssertFailure msg ps unwind cm lh ∧
+      evalTerminator body bb f m cm .unwind true =
+        evalAssertFailure msg .unwind unwind cm true := by
+  unfold evalTerminator
+  cases bb.terminator with
+  | assert cond expected msg target unwind =>
+    dsimp only
+    cases evalPrimitiveOperand body.locals f.locals m cond with
+    | error _ => exact Or.inl rfl
+    | ok triple =>
+      cases triple with
+      | mk cv rest =>
+        cases rest with
+        | mk l₁ m₁ =>
+          dsimp only
+          cases cv with
+          | bool b =>
+            dsimp only
+            cases (b == expected) with
+            | true => exact Or.inl rfl
+            | false => exact Or.inr ⟨msg, unwind, rfl, rfl⟩
+          | scalar _ | char _ | ptr _ | slicePtr _ _ | rangeTo _
+          | rangeFrom _ | ordering _ | unit | enumVal _ _ | tuple _
+          | array _ | bytes _ => exact Or.inl rfl
+  | goto _ | return_ | unreachable | switchInt _ _ | unwindResume
+  | call _ _ _ _ _ | coreCall _ _ _ _ _ | sysrootCall _ _ _ _ _
+  | unsupported => exact Or.inl rfl
+
 /-- Single-pass `evalTerminator` frame invariant and `retagDefId` commutation.
 -/
 theorem evalTerminator_frame_retag (body : Body) (bb : BasicBlock)
     (defId : DefId) (f : FrameState) (m : MemoryState) (cm : CallerMemory)
-    (h_id : f.defId = 0) :
-    (∀ s', evalTerminator body bb f m cm = .step s' → IsSingleFrame0 s') ∧
-    evalTerminator body bb { f with defId := defId } m cm =
-      match evalTerminator body bb f m cm with
+    (h_id : f.defId = 0) (ps : PanicStrategy := .unwind)
+    (lh : Bool := true) :
+    (∀ s', evalTerminator body bb f m cm ps lh = .step s' → IsSingleFrame0 s') ∧
+    evalTerminator body bb { f with defId := defId } m cm ps lh =
+      match evalTerminator body bb f m cm ps lh with
       | .step next => .step (retagDefId defId next)
       | .done out => .done out
       | .fault k => .fault k := by
@@ -618,7 +713,38 @@ theorem evalTerminator_frame_retag (body : Body) (bb : BasicBlock)
               injection hStep with hEq; subst hEq
               exact ⟨_, rfl, h_id⟩
             | cons _ _ => exact ⟨(fun _ h => by cases h), rfl⟩
-  | unwindResume | assert _ _ _ _ _ | call _ _ _ _ _ | coreCall _ _ _ _ _
+  | assert cond expected msg target unwind =>
+    dsimp only
+    cases evalPrimitiveOperand body.locals f.locals m cond with
+    | error _ => exact ⟨(fun _ h => by cases h), rfl⟩
+    | ok triple =>
+      cases triple with
+      | mk cv rest =>
+        cases rest with
+        | mk l₁ m₁ =>
+          dsimp only
+          cases cv with
+          | bool b =>
+            dsimp only
+            cases hCmp : (b == expected) with
+            | true =>
+              refine ⟨?_, rfl⟩
+              intro s' hStep
+              injection hStep with hEq; subst hEq
+              exact ⟨_, rfl, h_id⟩
+            | false =>
+              refine ⟨fun s' hStep =>
+                False.elim (evalAssertFailure_ne_step msg ps unwind cm lh s' hStep),
+                ?_⟩
+              cases hAf : evalAssertFailure msg ps unwind cm lh with
+              | step next =>
+                exact False.elim (evalAssertFailure_ne_step msg ps unwind cm lh next hAf)
+              | done _ | fault _ => rfl
+          | scalar _ | char _ | ptr _ | slicePtr _ _ | rangeTo _
+          | rangeFrom _ | ordering _ | unit | enumVal _ _ | tuple _
+          | array _ | bytes _ =>
+            exact ⟨(fun _ h => by cases h), rfl⟩
+  | unwindResume | call _ _ _ _ _ | coreCall _ _ _ _ _
   | sysrootCall _ _ _ _ _ | unsupported =>
     exact ⟨(fun _ h => by cases h), rfl⟩
 
@@ -724,6 +850,86 @@ private theorem evalStep_attachCallers_nil_pair
       subst hEq
       exact ⟨f', rfl, h_id'⟩
 
+private theorem evalTerminator_frame_retag_unwind (body : Body)
+    (bb : BasicBlock) (defId : DefId) (f : FrameState) (mem : MemoryState)
+    (cm : CallerMemory) (h_id : f.defId = 0) (lh : Bool) :
+    (∀ s', evalTerminator body bb f mem cm .unwind true = .step s' →
+      IsSingleFrame0 s') ∧
+    evalTerminator body bb { f with defId := defId } mem cm .unwind lh =
+      retagStepResult defId
+        (evalTerminator body bb f mem cm .unwind true) := by
+  have hRetag := evalTerminator_frame_retag body bb defId f mem cm h_id
+    .unwind lh
+  cases evalTerminator_any_ps body bb f mem cm .unwind lh with
+  | inl hEq =>
+    refine ⟨fun s' hs' => hRetag.1 s' (hEq.symm ▸ hs'), ?_⟩
+    change evalTerminator body bb { f with defId := defId } mem cm
+        .unwind lh =
+      match evalTerminator body bb f mem cm .unwind true with
+      | .step next => .step (retagDefId defId next)
+      | .done out => .done out
+      | .fault k => .fault k
+    rw [hRetag.2, hEq]
+  | inr hAf =>
+    let ⟨msg, unwind, hL, hR⟩ := hAf
+    have hEqAf :
+        evalAssertFailure msg .unwind unwind cm lh =
+        evalAssertFailure msg .unwind unwind cm true :=
+      evalAssertFailure_unwind_eq_true msg unwind cm lh
+    have hEq : evalTerminator body bb f mem cm .unwind lh =
+        evalTerminator body bb f mem cm .unwind true :=
+      hL.trans (hEqAf.trans hR.symm)
+    refine ⟨fun s' hs' => hRetag.1 s' (hEq.symm ▸ hs'), ?_⟩
+    change evalTerminator body bb { f with defId := defId } mem cm
+        .unwind lh =
+      match evalTerminator body bb f mem cm .unwind true with
+      | .step next => .step (retagDefId defId next)
+      | .done out => .done out
+      | .fault k => .fault k
+    rw [hRetag.2, hEq]
+
+private theorem attachCallers_nil_evalAssertFailure (msg : AssertKind)
+    (ps : PanicStrategy) (unwind : UnwindAction) (cm : CallerMemory)
+    (lh : Bool) :
+    attachCallers [] (evalAssertFailure msg ps unwind cm lh) =
+      evalAssertFailure msg ps unwind cm lh := by
+  cases hRes : evalAssertFailure msg ps unwind cm lh with
+  | step next =>
+    exact False.elim (evalAssertFailure_ne_step msg ps unwind cm lh next hRes)
+  | done _ | fault _ => rfl
+
+private theorem evalTerminator_any_ps_retag (body : Body) (bb : BasicBlock)
+    (defId : DefId) (f : FrameState) (mem : MemoryState) (cm : CallerMemory)
+    (h_id : f.defId = 0) (ps : PanicStrategy) (lh : Bool) :
+    evalTerminator body bb { f with defId := defId } mem cm ps lh =
+      retagStepResult defId
+        (evalTerminator body bb f mem cm .unwind true) ∨
+    ∃ (msg : AssertKind) (unwind : UnwindAction),
+      evalTerminator body bb { f with defId := defId } mem cm ps lh =
+        evalAssertFailure msg ps unwind cm lh ∧
+      evalTerminator body bb f mem cm .unwind true =
+        evalAssertFailure msg .unwind unwind cm true := by
+  have hRetag := (evalTerminator_frame_retag body bb defId f mem cm h_id
+    ps lh).2
+  cases evalTerminator_any_ps body bb f mem cm ps lh with
+  | inl hEq =>
+    refine Or.inl ?_
+    change evalTerminator body bb { f with defId := defId } mem cm ps lh =
+      match evalTerminator body bb f mem cm .unwind true with
+      | .step next => .step (retagDefId defId next)
+      | .done out => .done out
+      | .fault k => .fault k
+    rw [hRetag, hEq]
+  | inr hAf =>
+    let ⟨msg, unwind, hL, hR⟩ := hAf
+    refine Or.inr ⟨msg, unwind, ?_, hR⟩
+    change evalTerminator body bb { f with defId := defId } mem cm ps lh = _
+    rw [hRetag, hL]
+    cases hRes : evalAssertFailure msg ps unwind cm lh with
+    | step next =>
+      exact False.elim (evalAssertFailure_ne_step msg ps unwind cm lh next hRes)
+    | done _ | fault _ => rfl
+
 /-- Combined single-step `IsSingleFrame0` preservation and `retagDefId`
 simulation between `evalStep (bodyProg body) 0` and
 `evalStep (entryProgForBody p defId) 0` for call-free bodies. -/
@@ -737,7 +943,8 @@ theorem evalStep_entryProg_frame {p : Program} {defId : DefId} {body : Body}
       | exact bodyHasAnyCall_false_of_basicBlocks
           ‹Trusted.MirAst.Body.basicBlocks _ = _› rfl
       | exact bodyHasAnyCall_false_of_all
-          ‹Trusted.MirSemantics.getElem? _ _ = some _› rfl) :
+          ‹Trusted.MirSemantics.getElem? _ _ = some _› rfl)
+    (h_ps : p.panicStrategy = .unwind := by rfl) :
     (∀ s', evalStep (bodyProg body) 0 s = .step s' → IsSingleFrame0 s') ∧
     evalStep (entryProgForBody p defId) 0 (retagDefId defId s) =
       match evalStep (bodyProg body) 0 s with
@@ -753,7 +960,7 @@ theorem evalStep_entryProg_frame {p : Program} {defId : DefId} {body : Body}
     | some op =>
       unfold bodyProg evalStep retagDefId entryProgForBody
       dsimp only [activeFrameBody]
-      rw [h_sys]
+      rw [h_sys, h_ps]
       dsimp only [Trusted.MirSemantics.getElem?]
       cases h_bb : Trusted.MirSemantics.getElem? (sysrootNumBody op).basicBlocks
           f.blockIdx with
@@ -772,8 +979,8 @@ theorem evalStep_entryProg_frame {p : Program} {defId : DefId} {body : Body}
           | false => exact ⟨(fun _ h => by cases h), rfl⟩
           | true =>
             rw [ite_bool_true rfl]
-            have hTerm := evalTerminator_frame_retag (sysrootNumBody op) bb defId
-              f mem cm h_id
+            have hTerm := evalTerminator_frame_retag_unwind (sysrootNumBody op) bb
+              defId f mem cm h_id p.hasLocalPanicHandler
             rw [h_sys] at hTerm
             cases hT : bb.terminator with
             | call _ _ _ _ _ | sysrootCall _ _ _ _ _ =>
@@ -796,7 +1003,7 @@ theorem evalStep_entryProg_frame {p : Program} {defId : DefId} {body : Body}
     | none =>
       unfold bodyProg evalStep retagDefId entryProgForBody
       dsimp only [activeFrameBody]
-      rw [h_sys, h_body, h_id]
+      rw [h_sys, h_body, h_id, h_ps]
       dsimp only [Trusted.MirSemantics.getElem?]
       cases h_bb : Trusted.MirSemantics.getElem? body.basicBlocks f.blockIdx with
       | none => exact ⟨(fun _ h => by cases h), rfl⟩
@@ -814,7 +1021,8 @@ theorem evalStep_entryProg_frame {p : Program} {defId : DefId} {body : Body}
           | true =>
             rw [ite_bool_true rfl]
             have hNoCallBB := bodyHasAnyCall_false_of_getElem? h_nocall h_bb
-            have hTerm := evalTerminator_frame_retag body bb defId f mem cm h_id
+            have hTerm := evalTerminator_frame_retag_unwind body bb defId f mem cm
+              h_id p.hasLocalPanicHandler
             rw [h_sys] at hTerm
             cases hT : bb.terminator with
             | call _ _ _ _ _ => rw [hT] at hNoCallBB; cases hNoCallBB
@@ -824,6 +1032,147 @@ theorem evalStep_entryProg_frame {p : Program} {defId : DefId} {body : Body}
             | goto _ | switchInt _ _ | unreachable | unwindResume
             | assert _ _ _ _ _ | coreCall _ _ _ _ _ | unsupported =>
               exact evalStep_attachCallers_nil_pair hTerm.1 hTerm.2
+
+/-- Single-step relation between `entryProgForBody p defId` and `bodyProg body`
+for arbitrary `p.panicStrategy` and `p.hasLocalPanicHandler` on call-free
+bodies: the two agree identically except possibly at a failing `Assert`
+terminator. -/
+private theorem evalStep_entryProg_any_ps {p : Program} {defId : DefId}
+    {body : Body} {s : State}
+    (h_body : Trusted.MirSemantics.getElem? p.bodies defId = some body)
+    (h_f0 : IsSingleFrame0 s)
+    (h_nocall : bodyHasAnyCall body = false := by
+      first
+      | rfl
+      | exact bodyHasAnyCall_false_of_basicBlocks
+          ‹Trusted.MirAst.Body.basicBlocks _ = _› rfl
+      | exact bodyHasAnyCall_false_of_all
+          ‹Trusted.MirSemantics.getElem? _ _ = some _› rfl) :
+    evalStep (entryProgForBody p defId) 0 (retagDefId defId s) =
+      (match evalStep (bodyProg body) 0 s with
+       | .step next => .step (retagDefId defId next)
+       | .done out => .done out
+       | .fault k => .fault k) ∨
+    ∃ (msg : AssertKind) (unwind : UnwindAction) (cm : CallerMemory),
+      evalStep (entryProgForBody p defId) 0 (retagDefId defId s) =
+        evalAssertFailure msg p.panicStrategy unwind cm p.hasLocalPanicHandler ∧
+      evalStep (bodyProg body) 0 s =
+        evalAssertFailure msg .unwind unwind cm true := by
+  let ⟨f, hf, h_id⟩ := h_f0
+  cases s with
+  | mk frames cm mem =>
+    dsimp only at hf
+    subst hf
+    cases h_sys : f.sysrootOp? with
+    | some op =>
+      unfold bodyProg evalStep retagDefId entryProgForBody
+      dsimp only [activeFrameBody]
+      rw [h_sys]
+      dsimp only [Trusted.MirSemantics.getElem?]
+      cases h_bb : Trusted.MirSemantics.getElem? (sysrootNumBody op).basicBlocks
+          f.blockIdx with
+      | none => exact Or.inl rfl
+      | some bb =>
+        dsimp only
+        cases Trusted.MirSemantics.getElem? bb.statements f.stmtIdx with
+        | some stmt =>
+          have h_st := evalStatement_frame_retag (sysrootNumBody op) defId f mem cm
+            stmt h_id
+          rw [h_sys] at h_st
+          exact Or.inl (evalStep_attachCallers_nil_pair h_st.1 h_st.2).2
+        | none =>
+          dsimp only
+          cases Nat.beq f.stmtIdx bb.statements.length with
+          | false => exact Or.inl rfl
+          | true =>
+            rw [ite_bool_true rfl]
+            have hInv := (evalTerminator_frame_retag (sysrootNumBody op) bb defId
+              f mem cm h_id .unwind true).1
+            have hAny := evalTerminator_any_ps_retag (sysrootNumBody op) bb defId
+              f mem cm h_id p.panicStrategy p.hasLocalPanicHandler
+            rw [h_sys] at hAny
+            cases hT : bb.terminator with
+            | call _ _ _ _ _ | sysrootCall _ _ _ _ _ =>
+              cases hBl : f.blockIdx with
+              | zero =>
+                rw [hBl] at h_bb
+                dsimp [sysrootNumBody, Trusted.MirSemantics.getElem?] at h_bb
+                injection h_bb with hEq
+                rw [← hEq] at hT
+                cases hT
+              | succ _ =>
+                rw [hBl] at h_bb
+                dsimp [sysrootNumBody, Trusted.MirSemantics.getElem?] at h_bb
+                cases h_bb
+            | return_ =>
+              cases hAny with
+              | inl hEq => exact Or.inl hEq
+              | inr hAf =>
+                let ⟨msg, unwind, hL, hR⟩ := hAf
+                exact Or.inr ⟨msg, unwind, cm, hL, hR⟩
+            | goto _ | switchInt _ _ | unreachable | unwindResume
+            | assert _ _ _ _ _ | coreCall _ _ _ _ _ | unsupported =>
+              cases hAny with
+              | inl hEq =>
+                exact Or.inl (evalStep_attachCallers_nil_pair hInv hEq).2
+              | inr hAf =>
+                let ⟨msg, unwind, hL, hR⟩ := hAf
+                refine Or.inr ⟨msg, unwind, cm, ?_, ?_⟩
+                · rw [hL]
+                  exact attachCallers_nil_evalAssertFailure msg p.panicStrategy
+                    unwind cm p.hasLocalPanicHandler
+                · rw [hR]
+                  exact attachCallers_nil_evalAssertFailure msg .unwind unwind cm
+                    true
+    | none =>
+      unfold bodyProg evalStep retagDefId entryProgForBody
+      dsimp only [activeFrameBody]
+      rw [h_sys, h_body, h_id]
+      dsimp only [Trusted.MirSemantics.getElem?]
+      cases h_bb : Trusted.MirSemantics.getElem? body.basicBlocks f.blockIdx with
+      | none => exact Or.inl rfl
+      | some bb =>
+        dsimp only
+        cases Trusted.MirSemantics.getElem? bb.statements f.stmtIdx with
+        | some stmt =>
+          have h_st := evalStatement_frame_retag body defId f mem cm stmt h_id
+          rw [h_sys] at h_st
+          exact Or.inl (evalStep_attachCallers_nil_pair h_st.1 h_st.2).2
+        | none =>
+          dsimp only
+          cases Nat.beq f.stmtIdx bb.statements.length with
+          | false => exact Or.inl rfl
+          | true =>
+            rw [ite_bool_true rfl]
+            have hNoCallBB := bodyHasAnyCall_false_of_getElem? h_nocall h_bb
+            have hInv := (evalTerminator_frame_retag body bb defId f mem cm h_id
+              .unwind true).1
+            have hAny := evalTerminator_any_ps_retag body bb defId f mem cm h_id
+              p.panicStrategy p.hasLocalPanicHandler
+            rw [h_sys] at hAny
+            cases hT : bb.terminator with
+            | call _ _ _ _ _ => rw [hT] at hNoCallBB; cases hNoCallBB
+            | sysrootCall _ _ _ _ _ => rw [hT] at hNoCallBB; cases hNoCallBB
+            | return_ =>
+              cases hAny with
+              | inl hEq => exact Or.inl hEq
+              | inr hAf =>
+                let ⟨msg, unwind, hL, hR⟩ := hAf
+                exact Or.inr ⟨msg, unwind, cm, hL, hR⟩
+            | goto _ | switchInt _ _ | unreachable | unwindResume
+            | assert _ _ _ _ _ | coreCall _ _ _ _ _ | unsupported =>
+              cases hAny with
+              | inl hEq =>
+                exact Or.inl (evalStep_attachCallers_nil_pair hInv hEq).2
+              | inr hAf =>
+                let ⟨msg, unwind, hL, hR⟩ := hAf
+                refine Or.inr ⟨msg, unwind, cm, ?_, ?_⟩
+                · rw [hL]
+                  exact attachCallers_nil_evalAssertFailure msg p.panicStrategy
+                    unwind cm p.hasLocalPanicHandler
+                · rw [hR]
+                  exact attachCallers_nil_evalAssertFailure msg .unwind unwind cm
+                    true
 
 /-- `IsSingleFrame0` is preserved by a single-body step for call-free bodies. -/
 theorem isSingleFrame0_of_step {body : Body} {s s' : State}
@@ -869,13 +1218,14 @@ theorem evalStep_retagDefId {p : Program} {defId : DefId} {body : Body}
       | exact bodyHasAnyCall_false_of_basicBlocks
           ‹Trusted.MirAst.Body.basicBlocks _ = _› rfl
       | exact bodyHasAnyCall_false_of_all
-          ‹Trusted.MirSemantics.getElem? _ _ = some _› rfl) :
+          ‹Trusted.MirSemantics.getElem? _ _ = some _› rfl)
+    (h_ps : p.panicStrategy = .unwind := by rfl) :
     evalStep (entryProgForBody p defId) 0 (retagDefId defId s) =
       match evalStep (bodyProg body) 0 s with
       | .step next => .step (retagDefId defId next)
       | .done out => .done out
       | .fault k => .fault k :=
-  (evalStep_entryProg_frame h_body h_f0 h_nocall).2
+  (evalStep_entryProg_frame h_body h_f0 h_nocall h_ps).2
 
 /-- Exact equivalence of `execOutcomeState` across `retagDefId` between
 `entryProgForBody p defId` and `bodyProg body` for call-free bodies. -/
@@ -889,7 +1239,8 @@ theorem execOutcomeState_entryProg_iff {p : Program} {defId : DefId}
       | exact bodyHasAnyCall_false_of_basicBlocks
           ‹Trusted.MirAst.Body.basicBlocks _ = _› rfl
       | exact bodyHasAnyCall_false_of_all
-          ‹Trusted.MirSemantics.getElem? _ _ = some _› rfl) :
+          ‹Trusted.MirSemantics.getElem? _ _ = some _› rfl)
+    (h_ps : p.panicStrategy = .unwind := by rfl) :
     execOutcomeState (entryProgForBody p defId) onDone onFault fuel
       (retagDefId defId s) ↔
     execOutcomeState (bodyProg body) onDone onFault fuel s :=
@@ -897,11 +1248,62 @@ theorem execOutcomeState_entryProg_iff {p : Program} {defId : DefId}
     (step₁ := evalStep (bodyProg body) 0)
     (step₂ := evalStep (entryProgForBody p defId) 0)
     (Inv := IsSingleFrame0) (map := retagDefId defId)
-    (fun _ s' hF hS => (evalStep_entryProg_frame h_body hF h_nocall).1 s' hS)
+    (fun _ s' hF hS => (evalStep_entryProg_frame h_body hF h_nocall h_ps).1 s' hS)
     (fun st hF => by
-      have he := (evalStep_entryProg_frame h_body hF h_nocall).2
+      have he := (evalStep_entryProg_frame h_body hF h_nocall h_ps).2
       cases hEv : evalStep (bodyProg body) 0 st <;> rw [hEv] at he <;> exact he)
     h_f0
+
+/-- Lift fault-free `execOutcomeState` on `bodyProg body` across `retagDefId`
+to `entryProgForBody p defId` for arbitrary `p.panicStrategy` and
+`p.hasLocalPanicHandler`. Because `onFault` is `False`, no failing `.assert`
+is reached, so `entryProgForBody p defId` steps identically to `bodyProg body`.
+-/
+theorem execOutcomeState_entryProg_of_noFault {p : Program} {defId : DefId}
+    {body : Body} {onDone : TerminalOut → Prop}
+    (h_body : Trusted.MirSemantics.getElem? p.bodies defId = some body)
+    {fuel : Nat} {s : State} (h_f0 : IsSingleFrame0 s)
+    (h_exec : execOutcomeState (bodyProg body) onDone (fun _ => False) fuel s)
+    (h_nocall : bodyHasAnyCall body = false := by
+      first
+      | rfl
+      | exact bodyHasAnyCall_false_of_basicBlocks
+          ‹Trusted.MirAst.Body.basicBlocks _ = _› rfl
+      | exact bodyHasAnyCall_false_of_all
+          ‹Trusted.MirSemantics.getElem? _ _ = some _› rfl) :
+    execOutcomeState (entryProgForBody p defId) onDone (fun _ => False) fuel
+      (retagDefId defId s) := by
+  induction fuel generalizing s with
+  | zero => exact h_exec
+  | succ n ih =>
+    dsimp only [execOutcomeState, execStepOutcome] at h_exec
+    dsimp only [execOutcomeState, execStepOutcome]
+    rw [execStepPred_succ_iff] at h_exec
+    rw [execStepPred_succ_iff]
+    cases evalStep_entryProg_any_ps h_body h_f0 h_nocall with
+    | inl hEq =>
+      rw [hEq]
+      cases hEv : evalStep (bodyProg body) 0 s with
+      | step next =>
+        rw [hEv] at h_exec
+        exact ih (isSingleFrame0_of_step h_f0 hEv h_nocall) h_exec
+      | done out =>
+        rw [hEv] at h_exec
+        exact h_exec
+      | fault _ =>
+        rw [hEv] at h_exec
+        exact False.elim h_exec
+    | inr hAf =>
+      let ⟨msg, unwind, cm, _, hR⟩ := hAf
+      rw [hR] at h_exec
+      have hRel := evalAssertFailure_any_ps_rel msg p.panicStrategy unwind cm
+        p.hasLocalPanicHandler
+      cases hF : evalAssertFailure msg .unwind unwind cm true with
+      | step s' =>
+        exact False.elim
+          (evalAssertFailure_ne_step msg .unwind unwind cm true s' hF)
+      | done out => exact False.elim (hRel.2.2.1 out hF)
+      | fault _ => rw [hF] at h_exec; exact False.elim h_exec
 
 /-- Exact equivalence of `wpOutcomeState` across `retagDefId` between
 `entryProgForBody p defId` and `bodyProg body` for call-free bodies. -/
@@ -915,12 +1317,13 @@ theorem wpOutcomeState_entryProg_iff {p : Program} {defId : DefId}
       | exact bodyHasAnyCall_false_of_basicBlocks
           ‹Trusted.MirAst.Body.basicBlocks _ = _› rfl
       | exact bodyHasAnyCall_false_of_all
-          ‹Trusted.MirSemantics.getElem? _ _ = some _› rfl) :
+          ‹Trusted.MirSemantics.getElem? _ _ = some _› rfl)
+    (h_ps : p.panicStrategy = .unwind := by rfl) :
     wpOutcomeState (entryProgForBody p defId) onDone onFault fuel
       (retagDefId defId s) ↔
     wpOutcomeState (bodyProg body) onDone onFault fuel s :=
   wpOutcomeState_iff_execOutcomeState.trans
-    ((execOutcomeState_entryProg_iff h_body h_f0 h_nocall).trans
+    ((execOutcomeState_entryProg_iff h_body h_f0 h_nocall h_ps).trans
       wpOutcomeState_iff_execOutcomeState.symm)
 
 /-- Entry initialization equation specialized to `entryProgForBody p defId`,
@@ -936,7 +1339,8 @@ theorem initState_entryProgForBody {p : Program} {defId : DefId} {body : Body}
   initState_eq_ok (p := entryProgForBody p defId) h_body h_adm h_args
 
 /-- Project a state of `entryProgForBody p defId` reachable from a retagged
-single-frame state back to `Reach body` via `retagDefId`. -/
+single-frame state back to `Reach body` via `retagDefId` for arbitrary
+`p.panicStrategy` and `p.hasLocalPanicHandler`. -/
 theorem reach_of_reaches_entryProg {p : Program} {defId : DefId} {body : Body}
     {start s_d : State}
     (h_body : Trusted.MirSemantics.getElem? p.bodies defId = some body)
@@ -959,17 +1363,25 @@ theorem reach_of_reaches_entryProg {p : Program} {defId : DefId} {body : Body}
     subst hc
     subst hs
     have h_f0 := isSingleFrame0_of_reach h_start h_reach_s h_nocall
-    rw [evalStep_retagDefId h_body h_f0 h_nocall] at h_eval
-    cases h_st : evalStep (bodyProg body) 0 s with
-    | step next =>
-      rw [h_st] at h_eval
-      injection h_eval with h_eq
-      exact ⟨next, h_eq.symm, .next h_reach_s h_st⟩
-    | done _ => rw [h_st] at h_eval; cases h_eval
-    | fault _ => rw [h_st] at h_eval; cases h_eval
+    cases evalStep_entryProg_any_ps h_body h_f0 h_nocall with
+    | inl hEq =>
+      rw [hEq] at h_eval
+      cases h_st : evalStep (bodyProg body) 0 s with
+      | step next =>
+        rw [h_st] at h_eval
+        injection h_eval with h_eq
+        exact ⟨next, h_eq.symm, .next h_reach_s h_st⟩
+      | done _ => rw [h_st] at h_eval; cases h_eval
+      | fault _ => rw [h_st] at h_eval; cases h_eval
+    | inr hAf =>
+      let ⟨msg, unwind, cm, hL, _⟩ := hAf
+      rw [hL] at h_eval
+      exact False.elim (evalAssertFailure_ne_step msg p.panicStrategy unwind cm
+        p.hasLocalPanicHandler _ h_eval)
 
 /-- Lift a single-body `Reach` trace from a single-frame state to
-`Reaches (entryProgForBody p defId)` via `retagDefId`. -/
+`Reaches (entryProgForBody p defId)` via `retagDefId` for arbitrary
+`p.panicStrategy` and `p.hasLocalPanicHandler`. -/
 theorem reaches_entryProg_of_reach {p : Program} {defId : DefId} {body : Body}
     {start s : State}
     (h_body : Trusted.MirSemantics.getElem? p.bodies defId = some body)
@@ -989,10 +1401,17 @@ theorem reaches_entryProg_of_reach {p : Program} {defId : DefId} {body : Body}
   | next h_prev h_st ih =>
     have h_f0 := isSingleFrame0_of_reach h_start h_prev h_nocall
     refine .tail ih ⟨0, rfl, ?_⟩
-    rw [evalStep_retagDefId h_body h_f0 h_nocall, h_st]
+    cases evalStep_entryProg_any_ps h_body h_f0 h_nocall with
+    | inl hEq => rw [hEq, h_st]
+    | inr hAf =>
+      let ⟨msg, unwind, cm, _, hR⟩ := hAf
+      rw [hR] at h_st
+      exact False.elim (evalAssertFailure_ne_step msg .unwind unwind cm true
+        _ h_st)
 
 /-- Establish per-invocation `WellFormed (entryProgForBody p defId)` from
-single-body `Safe body args`. -/
+single-body `Safe body args` for arbitrary `p.panicStrategy` and
+`p.hasLocalPanicHandler`. -/
 theorem wellFormed_entryProg_of_safe {p : Program} {defId : DefId}
     {body : Body} {args : List Val}
     (h_body : Trusted.MirSemantics.getElem? p.bodies defId = some body)
@@ -1022,17 +1441,27 @@ theorem wellFormed_entryProg_of_safe {p : Program} {defId : DefId}
     subst hs
     have h_f0 :=
       isSingleFrame0_of_reach (isSingleFrame0_mkState 0 0 _) h_reach_s h_nocall
-    rw [evalStep_retagDefId h_body h_f0 h_nocall] at h_eval
-    cases h_st : evalStep (bodyProg body) 0 s with
-    | step _ => rw [h_st] at h_eval; cases h_eval
-    | done _ => rw [h_st] at h_eval; cases h_eval
-    | fault k' =>
-      rw [h_st] at h_eval
-      injection h_eval with h_k
-      subst h_k
-      exact h_safe s k' h_reach_s h_st
+    cases evalStep_entryProg_any_ps h_body h_f0 h_nocall with
+    | inl hEq =>
+      rw [hEq] at h_eval
+      cases h_st : evalStep (bodyProg body) 0 s with
+      | step _ => rw [h_st] at h_eval; cases h_eval
+      | done _ => rw [h_st] at h_eval; cases h_eval
+      | fault k' =>
+        rw [h_st] at h_eval
+        injection h_eval with h_k
+        subst h_k
+        exact h_safe s k' h_reach_s h_st
+    | inr hAf =>
+      let ⟨msg, unwind, cm, hL, hR⟩ := hAf
+      rw [hL] at h_eval
+      have hBodyFault : evalStep (bodyProg body) 0 s = .fault k :=
+        hR.trans ((evalAssertFailure_any_ps_rel msg p.panicStrategy unwind cm
+          p.hasLocalPanicHandler).2.2.2 k h_eval)
+      exact h_safe s k h_reach_s hBodyFault
 
-/-- Establish `BodyVerified p defId body safetyPre` from single-body `Safe`. -/
+/-- Establish `BodyVerified p defId body safetyPre` from single-body `Safe`
+for arbitrary `p.panicStrategy` and `p.hasLocalPanicHandler`. -/
 theorem bodyVerified_of_safe {p : Program} {defId : DefId} {body : Body}
     {safetyPre : List Val → Prop}
     (h_body : Trusted.MirSemantics.getElem? p.bodies defId = some body)
@@ -1053,8 +1482,8 @@ theorem bodyVerified_of_safe {p : Program} {defId : DefId} {body : Body}
     wellFormed_entryProg_of_safe h_body h_adm h_args (h_safe args h_args h_req)
       h_nocall⟩
 
-/-- Establish `Behavior (entryProgForBody p defId)` from single-body `Returns`.
--/
+/-- Establish `Behavior (entryProgForBody p defId)` from single-body `Returns`
+for arbitrary `p.panicStrategy` and `p.hasLocalPanicHandler`. -/
 theorem behavior_of_returns {p : Program} {defId : DefId} {body : Body}
     {args : List Val} {ret : Val}
     (h_body : Trusted.MirSemantics.getElem? p.bodies defId = some body)
@@ -1079,7 +1508,13 @@ theorem behavior_of_returns {p : Program} {defId : DefId} {body : Body}
     0, rfl, ?_⟩
   have h_f0 := isSingleFrame0_of_reach (isSingleFrame0_mkState 0 0 _) h_reach
     h_nocall
-  rw [evalStep_retagDefId h_body h_f0 h_nocall, h_done]
+  cases evalStep_entryProg_any_ps h_body h_f0 h_nocall with
+  | inl hEq => rw [hEq, h_done]
+  | inr hAf =>
+    let ⟨msg, unwind, cm, _, hR⟩ := hAf
+    rw [hR] at h_done
+    exact False.elim ((evalAssertFailure_any_ps_rel msg p.panicStrategy unwind
+      cm p.hasLocalPanicHandler).2.2.1 _ h_done)
 
 /-- Invert `initState (entryProgForBody p defId) { args := args } = .ok s₀` into
 `ValidEntryArgs body args` and the retagged entry state of `body` on `args`. -/
@@ -1120,6 +1555,9 @@ theorem initState_entryProgForBody_ok {p : Program} {defId : DefId}
     cases h5c : castTypesValid body
     · rw [ite_bool_true (by rw [h5c]; rfl)] at h_init; cases h_init
     rw [ite_bool_false (by rw [h5c]; rfl)] at h_init
+    cases h5a : assertConditionTypesValid body
+    · rw [ite_bool_true (by rw [h5a]; rfl)] at h_init; cases h_init
+    rw [ite_bool_false (by rw [h5a]; rfl)] at h_init
     cases h6 : body.locals.all isSupportedScalarOrUnitTy
     · rw [ite_bool_true (by rw [h6]; rfl)] at h_init; cases h_init
     rw [ite_bool_false (by rw [h6]; rfl)] at h_init
@@ -1137,7 +1575,8 @@ theorem initState_entryProgForBody_ok {p : Program} {defId : DefId}
   · rw [ite_bool_true h3] at h_init; cases h_init
 
 /-- Invert `Behavior (entryProgForBody p defId)` into `ValidEntryArgs` and
-single-body `Returns` for call-free bodies. -/
+single-body `Returns` for call-free bodies with arbitrary `p.panicStrategy` and
+`p.hasLocalPanicHandler`. -/
 theorem returns_of_behavior {p : Program} {defId : DefId} {body : Body}
     {args : List Val} {ret : Val}
     (h_body : Trusted.MirSemantics.getElem? p.bodies defId = some body)
@@ -1166,15 +1605,22 @@ theorem returns_of_behavior {p : Program} {defId : DefId} {body : Body}
     subst hs
     have h_f0 := isSingleFrame0_of_reach (isSingleFrame0_mkState 0 0 _) h_reach
       h_nocall
-    rw [evalStep_retagDefId h_body h_f0 h_nocall] at h_eval
-    cases h_st : evalStep (bodyProg body) 0 s with
-    | step _ => rw [h_st] at h_eval; cases h_eval
-    | fault _ => rw [h_st] at h_eval; cases h_eval
-    | done out =>
-      rw [h_st] at h_eval
-      injection h_eval with h_out
-      subst h_out
-      exact ⟨h_args, s, h_reach, h_st⟩
+    cases evalStep_entryProg_any_ps h_body h_f0 h_nocall with
+    | inl hEq =>
+      rw [hEq] at h_eval
+      cases h_st : evalStep (bodyProg body) 0 s with
+      | step _ => rw [h_st] at h_eval; cases h_eval
+      | fault _ => rw [h_st] at h_eval; cases h_eval
+      | done out =>
+        rw [h_st] at h_eval
+        injection h_eval with h_out
+        subst h_out
+        exact ⟨h_args, s, h_reach, h_st⟩
+    | inr hAf =>
+      let ⟨msg, unwind, cm, hL, _⟩ := hAf
+      rw [hL] at h_eval
+      exact False.elim ((evalAssertFailure_any_ps_rel msg p.panicStrategy
+        unwind cm p.hasLocalPanicHandler).2.1 _ h_eval)
 
 /-- Refute `Behavior (entryProgForBody p defId) { args := args } out` when no
 state reachable from the entry state of `body` on `args` steps to
@@ -1191,7 +1637,8 @@ theorem not_behavior_of_no_done {p : Program} {defId : DefId} {body : Body}
       | exact bodyHasAnyCall_false_of_basicBlocks
           ‹Trusted.MirAst.Body.basicBlocks _ = _› rfl
       | exact bodyHasAnyCall_false_of_all
-          ‹Trusted.MirSemantics.getElem? _ _ = some _› rfl) :
+          ‹Trusted.MirSemantics.getElem? _ _ = some _› rfl)
+    (h_ps : p.panicStrategy = .unwind := by rfl) :
     ¬ Behavior (entryProgForBody p defId) { args := args } out := by
   intro h_beh
   unfold Behavior ReachesResult at h_beh
@@ -1209,7 +1656,7 @@ theorem not_behavior_of_no_done {p : Program} {defId : DefId} {body : Body}
     subst hs
     have h_f0 := isSingleFrame0_of_reach (isSingleFrame0_mkState 0 0 _) h_reach
       h_nocall
-    rw [evalStep_retagDefId h_body h_f0 h_nocall] at h_eval
+    rw [evalStep_retagDefId h_body h_f0 h_nocall h_ps] at h_eval
     cases h_st : evalStep (bodyProg body) 0 s with
     | step _ => rw [h_st] at h_eval; cases h_eval
     | fault _ => rw [h_st] at h_eval; cases h_eval
@@ -1222,7 +1669,8 @@ theorem not_behavior_of_no_done {p : Program} {defId : DefId} {body : Body}
 /-- Constructively establish `Diverges (entryProgForBody p defId)` and absence
 of normal `Behavior` from a single-body `ProductiveInvariant` at the entry
 state, with zero `Classical.choice` axioms: the infinite trace iterates the
-deterministic successor selector `next`. -/
+deterministic successor selector `next`. Holds for arbitrary `p.panicStrategy`
+and `p.hasLocalPanicHandler`. -/
 theorem diverges_of_productiveInvariant {p : Program} {defId : DefId}
     {body : Body} {args : List Val} {invariant : State → Prop}
     (h_body : Trusted.MirSemantics.getElem? p.bodies defId = some body)
@@ -1268,18 +1716,50 @@ theorem diverges_of_productiveInvariant {p : Program} {defId : DefId}
       have hNextInv : invariant (iter (n + 1)) := h_inv.2.1 _ _ ih.1 ih.2.2
       let ⟨s'', hs''⟩ := h_inv.2.2 (iter (n + 1)) hNextInv
       exact ⟨hNextInv, .next ih.2.1 ih.2.2, hNext _ s'' hs''⟩
-  refine ⟨?_, fun out => not_behavior_of_no_done h_body
-    (fun s hReach =>
-      (safeFrom_and_no_done_of_productiveInvariant h_inv).2 s out hReach)
-    h_nocall⟩
-  refine ⟨_, initState_entryProgForBody h_body h_adm h_args,
-    fun n => retagDefId defId (iter n), rfl, ?_⟩
-  intro n
-  refine ⟨0, rfl, ?_⟩
-  have hStepN := hIter n
-  have hF0 :=
-    isSingleFrame0_of_reach (isSingleFrame0_mkState 0 0 _) hStepN.2.1 h_nocall
-  rw [evalStep_retagDefId h_body hF0 h_nocall, hStepN.2.2]
+  have hStepEntry : ∀ s s', IsSingleFrame0 s →
+      evalStep (bodyProg body) 0 s = .step s' →
+      evalStep (entryProgForBody p defId) 0 (retagDefId defId s) =
+        .step (retagDefId defId s') := by
+    intro s s' hF0 hSt
+    cases evalStep_entryProg_any_ps h_body hF0 h_nocall with
+    | inl hEq => rw [hEq, hSt]
+    | inr hAf =>
+      let ⟨msg, unwind, cm, _, hR⟩ := hAf
+      rw [hR] at hSt
+      exact False.elim (evalAssertFailure_ne_step msg .unwind unwind cm true
+        _ hSt)
+  refine ⟨?_, ?_⟩
+  · refine ⟨_, initState_entryProgForBody h_body h_adm h_args,
+      fun n => retagDefId defId (iter n), rfl, ?_⟩
+    intro n
+    refine ⟨0, rfl, ?_⟩
+    have hStepN := hIter n
+    have hF0 :=
+      isSingleFrame0_of_reach (isSingleFrame0_mkState 0 0 _) hStepN.2.1 h_nocall
+    exact hStepEntry _ _ hF0 hStepN.2.2
+  · intro out h_beh
+    unfold Behavior ReachesResult at h_beh
+    rw [initState_entryProgForBody h_body h_adm h_args] at h_beh
+    let ⟨s_d, h_reaches, c, hc, h_eval⟩ := h_beh
+    subst hc
+    let ⟨s, hs, h_reach⟩ :=
+      reach_of_reaches_entryProg h_body (isSingleFrame0_mkState 0 0 _)
+        h_reaches h_nocall
+    subst hs
+    have hInvS : invariant s := by
+      have hInvReach : ∀ t, Reach body
+          (mkState 0 0 (initLocalsLoop body args 0 body.locals)) t →
+          invariant t := by
+        intro t hR
+        induction hR with
+        | refl => exact h_inv.1
+        | next _ hSt ih => exact h_inv.2.1 _ _ ih hSt
+      exact hInvReach s h_reach
+    let ⟨s', hs'⟩ := h_inv.2.2 s hInvS
+    have hF0 :=
+      isSingleFrame0_of_reach (isSingleFrame0_mkState 0 0 _) h_reach h_nocall
+    rw [hStepEntry s s' hF0 hs'] at h_eval
+    cases h_eval
 
 /-! ## Part IV: 64-Bit Scalar / Bitwise Assignment Steps and Range Indexing -/
 

@@ -1080,6 +1080,7 @@ checked on normal-return paths (`canNormal = true`); unwind-only calls
           | .step st' => ih st'
           | .done (.returned rv) => onDone (.returned rv.ret st.mem)
           | .done (.unwound _) => False
+          | .done (.aborted _) => False
           | .fault _ => False
         | none =>
         match Trusted.MirSemantics.getElem? body.basicBlocks
@@ -1154,8 +1155,9 @@ checked on normal-return paths (`canNormal = true`); unwind-only calls
                 match v with
                 | .bool b =>
                   if b == expected then
-                    ih { frames := [⟨frame.defId, target, 0, locals',
-                           none, none, none⟩],
+                    ih { frames := [{ frame with
+                           blockIdx := target, stmtIdx := 0,
+                           locals := locals', sysrootOp? := none }],
                          callerMem := st.callerMem, mem := mem' }
                   else
                     match evalCallExitStep body ⟨none, unwind⟩
@@ -1188,24 +1190,28 @@ checked on normal-return paths (`canNormal = true`); unwind-only calls
               | .step st' => ih st'
               | .done (.returned rv) => onDone (.returned rv.ret st.mem)
               | .done (.unwound _) => False
+              | .done (.aborted _) => False
               | .fault _ => False
             | .switchInt _ _ =>
               match evalStep (Anneal.MirWp.bodyProg body) 0 st with
               | .step st' => ih st'
               | .done (.returned rv) => onDone (.returned rv.ret st.mem)
               | .done (.unwound _) => False
+              | .done (.aborted _) => False
               | .fault _ => False
             | .return_ =>
               match evalStep (Anneal.MirWp.bodyProg body) 0 st with
               | .step st' => ih st'
               | .done (.returned rv) => onDone (.returned rv.ret st.mem)
               | .done (.unwound _) => False
+              | .done (.aborted _) => False
               | .fault _ => False
             | .unreachable =>
               match evalStep (Anneal.MirWp.bodyProg body) 0 st with
               | .step st' => ih st'
               | .done (.returned rv) => onDone (.returned rv.ret st.mem)
               | .done (.unwound _) => False
+              | .done (.aborted _) => False
               | .fault _ => False
             | .sysrootCall _ _ _ _ _ => False
             | .unsupported => False
@@ -1215,6 +1221,7 @@ checked on normal-return paths (`canNormal = true`); unwind-only calls
             | .step st' => ih st'
             | .done (.returned rv) => onDone (.returned rv.ret st.mem)
             | .done (.unwound _) => False
+            | .done (.aborted _) => False
             | .fault _ => False)
     fuel s
 
@@ -1286,23 +1293,23 @@ private theorem evalCallTerminator_cases (callerBody : Body) (bb : BasicBlock)
         | partialTuple _ => exact Or.inl ⟨.unsupported, rfl⟩
         | immediate _ => exact Or.inr ⟨_, rfl, rfl⟩
 
-private theorem evalCallTerminator_never_unwound (callerBody : Body)
+private theorem evalCallTerminator_never_done (callerBody : Body)
     (bb : BasicBlock) (caller : FrameState) (callers : List FrameState)
-    (mem : MemoryState) (callerMem cm : CallerMemory) (calleeDefId : DefId)
+    (mem : MemoryState) (callerMem : CallerMemory) (calleeDefId : DefId)
     (sysrootOp? : Option SysrootNumOp) (calleeBody : Body)
     (args : List Operand) (dst : Place) (target : Option BasicBlockId)
-    (unwind : UnwindAction) :
+    (unwind : UnwindAction) (out : TerminalOut) :
     evalCallTerminator callerBody bb caller callers mem callerMem calleeDefId
-        sysrootOp? calleeBody args dst target unwind ≠ .done (.unwound cm) := by
-  intro hUnw
+        sysrootOp? calleeBody args dst target unwind ≠ .done out := by
+  intro hDone
   cases evalCallTerminator_cases callerBody bb caller callers mem callerMem
       calleeDefId sysrootOp? calleeBody args dst target unwind with
   | inl h =>
     cases h with
-    | intro k hk => rw [hk] at hUnw; cases hUnw
+    | intro k hk => rw [hk] at hDone; cases hDone
   | inr h =>
     cases h with
-    | intro s' hs' => rw [hs'.1] at hUnw; cases hUnw
+    | intro s' hs' => rw [hs'.1] at hDone; cases hDone
 
 private theorem attachCallers_done_inv {callers : List FrameState}
     {res : StepResult State TerminalOut} {out : TerminalOut}
@@ -1316,9 +1323,9 @@ private theorem attachCallers_done_inv {callers : List FrameState}
     | done _ => exact h
     | fault _ => cases h
 
-private theorem evalNonRootReturn_cont_never_unwound (p : Program)
+private theorem evalNonRootReturn_cont_never_done (p : Program)
     (callee caller : FrameState) (restCallers : List FrameState)
-    (mem : MemoryState) (callerMem cm : CallerMemory)
+    (mem : MemoryState) (callerMem : CallerMemory) (out : TerminalOut)
     (retRead : Except FaultKind Val)
     (h :
       ((match retRead with
@@ -1354,7 +1361,7 @@ private theorem evalNonRootReturn_cont_never_unwound (p : Program)
                         callerMem := callerMem
                         mem := mem'
                       }) : StepResult State TerminalOut) =
-        .done (.unwound cm)) : False := by
+        .done out) : False := by
   cases retRead with
   | error _ => cases h
   | ok retVal =>
@@ -1385,21 +1392,21 @@ private theorem evalNonRootReturn_cont_never_unwound (p : Program)
               | none => rw [hTg] at h; cases h
               | some _ => rw [hTg] at h; cases h
 
-private theorem evalNonRootReturn_never_unwound (p : Program)
+private theorem evalNonRootReturn_never_done (p : Program)
     (calleeBody : Body) (bb : BasicBlock) (callee caller : FrameState)
     (restCallers : List FrameState) (mem : MemoryState)
-    (callerMem cm : CallerMemory) :
+    (callerMem : CallerMemory) (out : TerminalOut) :
     evalNonRootReturn p calleeBody bb callee caller restCallers mem callerMem ≠
-      .done (.unwound cm) := by
-  intro hUnw
-  unfold evalNonRootReturn at hUnw
+      .done out := by
+  intro hDone
+  unfold evalNonRootReturn at hDone
   cases hClean : (bb.cleanup || localsHaveIndirect callee.locals) with
-  | true => rw [ite_bool_true hClean] at hUnw; cases hUnw
+  | true => rw [ite_bool_true hClean] at hDone; cases hDone
   | false =>
-    rw [ite_bool_false hClean] at hUnw
-    dsimp only at hUnw
-    exact evalNonRootReturn_cont_never_unwound p callee caller restCallers mem
-      callerMem cm
+    rw [ite_bool_false hClean] at hDone
+    dsimp only at hDone
+    exact evalNonRootReturn_cont_never_done p callee caller restCallers mem
+      callerMem out
       (match Trusted.MirSemantics.getElem? callee.locals 0 with
        | some (.immediate (some retVal)) => .ok retVal
        | some (.immediate none) | some .dead => .error .undefined
@@ -1413,12 +1420,53 @@ private theorem evalNonRootReturn_never_unwound (p : Program)
            | .ok none => .error .undefined
            | .error k => .error k
        | none => .error .unsupported)
-      hUnw
+      hDone
 
-private theorem evalStep_single_never_unwound (p : Program) (c : Choice)
+private theorem evalAssertFailure_unwind_fault (msg : AssertKind)
+    (unwind : UnwindAction) (cm : CallerMemory) (lh : Bool) :
+    ∃ k, evalAssertFailure msg .unwind unwind cm lh = .fault k := by
+  unfold evalAssertFailure
+  cases msg with
+  | overflow op => cases op <;> cases lh <;> exact ⟨.unsupported, rfl⟩
+  | overflowNeg => exact ⟨.unsupported, rfl⟩
+  | divByZero => cases lh <;> exact ⟨.unsupported, rfl⟩
+  | remByZero => cases lh <;> exact ⟨.unsupported, rfl⟩
+  | boundsCheck => cases lh <;> exact ⟨.unsupported, rfl⟩
+  | misalignedPtrDeref => exact ⟨.undefined, rfl⟩
+  | nullPtrDeref => exact ⟨.undefined, rfl⟩
+  | unsupported => exact ⟨.unsupported, rfl⟩
+
+private theorem evalAssertFailure_done_cases (msg : AssertKind)
+    (strat : PanicStrategy) (unwind : UnwindAction) (cm : CallerMemory)
+    (lh : Bool) (out : TerminalOut)
+    (hDone : evalAssertFailure msg strat unwind cm lh = .done out) :
+    strat = .abort ∧ ∃ cm', out = .aborted cm' := by
+  cases strat with
+  | unwind =>
+    let ⟨_, hFault⟩ := evalAssertFailure_unwind_fault msg unwind cm lh
+    rw [hFault] at hDone
+    cases hDone
+  | abort =>
+    unfold evalAssertFailure at hDone
+    cases msg with
+    | overflow op =>
+      cases op <;> cases lh <;> cases unwind <;> cases hDone <;> exact ⟨rfl, cm, rfl⟩
+    | boundsCheck =>
+      cases lh <;> cases unwind <;> cases hDone <;> exact ⟨rfl, cm, rfl⟩
+    | divByZero =>
+      cases lh <;> cases unwind <;> cases hDone <;> exact ⟨rfl, cm, rfl⟩
+    | remByZero =>
+      cases lh <;> cases unwind <;> cases hDone <;> exact ⟨rfl, cm, rfl⟩
+    | overflowNeg => cases hDone
+    | misalignedPtrDeref => cases hDone
+    | nullPtrDeref => cases hDone
+    | unsupported => cases hDone
+
+private theorem evalStep_single_done_cases (p : Program) (c : Choice)
     (s : State) (fr : FrameState) (hFrames : s.frames = [fr])
-    (cm : CallerMemory) : evalStep p c s ≠ .done (.unwound cm) := by
-  intro hUnw
+    (out : TerminalOut) (hUnw : evalStep p c s = .done out) :
+    (∃ rv, out = .returned rv) ∨
+      (p.panicStrategy = .abort ∧ ∃ cm, out = .aborted cm) := by
   unfold evalStep at hUnw
   cases hFr : s.frames with
   | nil => rw [hFr] at hFrames; cases hFrames
@@ -1525,8 +1573,41 @@ private theorem evalStep_single_never_unwound (p : Program) (c : Choice)
                 unfold evalTerminator at hUnw; rw [hTerm] at hUnw; cases hUnw
               | unwindResume =>
                 unfold evalTerminator at hUnw; rw [hTerm] at hUnw; cases hUnw
-              | assert _ _ _ _ _ =>
-                unfold evalTerminator at hUnw; rw [hTerm] at hUnw; cases hUnw
+              | assert cond expected msg target unwind =>
+                unfold evalTerminator at hUnw
+                rw [hTerm] at hUnw
+                dsimp only [attachCallers] at hUnw
+                cases hCond : evalPrimitiveOperand b.locals fr.locals s.mem cond with
+                | error _ => rw [hCond] at hUnw; cases hUnw
+                | ok res =>
+                  rw [hCond] at hUnw
+                  dsimp only at hUnw
+                  cases hVal : res.1 with
+                  | bool bVal =>
+                    rw [hVal] at hUnw
+                    dsimp only at hUnw
+                    cases hEq : (bVal == expected) with
+                    | true =>
+                      rw [ite_bool_true hEq] at hUnw
+                      unfold jumpToBlock at hUnw
+                      cases hUnw
+                    | false =>
+                      rw [ite_bool_false hEq] at hUnw
+                      exact .inr (evalAssertFailure_done_cases msg
+                        p.panicStrategy unwind s.callerMem
+                        p.hasLocalPanicHandler out hUnw)
+                  | scalar _ => rw [hVal] at hUnw; cases hUnw
+                  | ptr _ => rw [hVal] at hUnw; cases hUnw
+                  | char _ => rw [hVal] at hUnw; cases hUnw
+                  | ordering _ => rw [hVal] at hUnw; cases hUnw
+                  | unit => rw [hVal] at hUnw; cases hUnw
+                  | enumVal _ _ => rw [hVal] at hUnw; cases hUnw
+                  | tuple _ => rw [hVal] at hUnw; cases hUnw
+                  | bytes _ => rw [hVal] at hUnw; cases hUnw
+                  | array _ => rw [hVal] at hUnw; cases hUnw
+                  | slicePtr _ _ => rw [hVal] at hUnw; cases hUnw
+                  | rangeTo _ => rw [hVal] at hUnw; cases hUnw
+                  | rangeFrom _ => rw [hVal] at hUnw; cases hUnw
               | unsupported =>
                 unfold evalTerminator at hUnw; rw [hTerm] at hUnw; cases hUnw
               | coreCall _ _ _ _ _ =>
@@ -1538,13 +1619,13 @@ private theorem evalStep_single_never_unwound (p : Program) (c : Choice)
                 | none => rw [hCb] at hUnw; cases hUnw
                 | some cbody =>
                   rw [hCb] at hUnw
-                  exact evalCallTerminator_never_unwound b bb fr [] s.mem
-                    s.callerMem cm callee none cbody args dst target unwind hUnw
+                  exact False.elim (evalCallTerminator_never_done b bb fr [] s.mem
+                    s.callerMem callee none cbody args dst target unwind out hUnw)
               | sysrootCall op args dst target unwind =>
                 rw [hTerm] at hUnw
-                exact evalCallTerminator_never_unwound b bb fr [] s.mem
-                  s.callerMem cm 0 (some op) (sysrootNumBody op) args dst
-                  target unwind hUnw
+                exact False.elim (evalCallTerminator_never_done b bb fr [] s.mem
+                  s.callerMem 0 (some op) (sysrootNumBody op) args dst
+                  target unwind out hUnw)
               | return_ =>
                 unfold evalTerminator at hUnw
                 rw [hTerm] at hUnw
@@ -1562,7 +1643,9 @@ private theorem evalStep_single_never_unwound (p : Program) (c : Choice)
                     | immediate ov =>
                       cases ov with
                       | none => cases hUnw
-                      | some _ => cases hUnw
+                      | some rv =>
+                        cases hUnw
+                        exact .inl ⟨⟨rv, s.callerMem⟩, rfl⟩
                     | indirect mp =>
                       cases hTy0 : Trusted.MirSemantics.getElem? b.locals 0 with
                       | none => rw [hTy0] at hUnw; cases hUnw
@@ -1575,7 +1658,9 @@ private theorem evalStep_single_never_unwound (p : Program) (c : Choice)
                           rw [hLoad] at hUnw
                           cases ov with
                           | none => cases hUnw
-                          | some _ => cases hUnw
+                          | some rv =>
+                            cases hUnw
+                            exact .inl ⟨⟨rv, s.callerMem⟩, rfl⟩
               | switchInt discr tgts =>
                 unfold evalTerminator at hUnw
                 rw [hTerm] at hUnw
@@ -1669,86 +1754,106 @@ private theorem evalStep_single_never_unwound (p : Program) (c : Choice)
                     | nil =>
                       rw [hBr] at hUnw; unfold jumpToBlock at hUnw; cases hUnw
 
-private theorem evalStep_never_unwound (p : Program) (c : Choice) (s : State)
-    (cm : CallerMemory) : evalStep p c s ≠ .done (.unwound cm) := by
+private theorem evalStep_done_cases (p : Program) (c : Choice) (s : State)
+    (out : TerminalOut) (hDone : evalStep p c s = .done out) :
+    (∃ rv, out = .returned rv) ∨
+      (p.panicStrategy = .abort ∧ ∃ cm, out = .aborted cm) := by
   cases hFrames : s.frames with
   | nil =>
-    intro hUnw
-    unfold evalStep at hUnw
-    rw [hFrames] at hUnw
-    cases hUnw
+    unfold evalStep at hDone
+    rw [hFrames] at hDone
+    cases hDone
   | cons fr frRest =>
     cases frRest with
-    | nil => exact evalStep_single_never_unwound p c s fr hFrames cm
+    | nil => exact evalStep_single_done_cases p c s fr hFrames out hDone
     | cons caller rest =>
-      intro hUnw
-      unfold evalStep at hUnw
-      rw [hFrames] at hUnw
-      dsimp only at hUnw
+      unfold evalStep at hDone
+      rw [hFrames] at hDone
+      dsimp only at hDone
       cases hBody : activeFrameBody p fr with
-      | none => rw [hBody] at hUnw; cases hUnw
+      | none => rw [hBody] at hDone; cases hDone
       | some body =>
-        rw [hBody] at hUnw; dsimp only at hUnw
+        rw [hBody] at hDone; dsimp only at hDone
         cases hBb : Trusted.MirSemantics.getElem? body.basicBlocks fr.blockIdx
             with
-        | none => rw [hBb] at hUnw; cases hUnw
+        | none => rw [hBb] at hDone; cases hDone
         | some bb =>
-          rw [hBb] at hUnw; dsimp only at hUnw
+          rw [hBb] at hDone; dsimp only at hDone
           cases hStmt : Trusted.MirSemantics.getElem? bb.statements fr.stmtIdx
               with
           | some stmt =>
-            rw [hStmt] at hUnw; dsimp only at hUnw
-            have hSub := attachCallers_done_inv hUnw
+            rw [hStmt] at hDone; dsimp only at hDone
+            have hSub := attachCallers_done_inv hDone
             have hSingle :
-                evalStep p c { s with frames := [fr] } =
-                  .done (.unwound cm) := by
+                evalStep p c { s with frames := [fr] } = .done out := by
               unfold evalStep; dsimp only
               rw [hBody]; dsimp only
               rw [hBb]; dsimp only
               rw [hStmt]; exact hSub
-            exact evalStep_single_never_unwound p c { s with frames := [fr] } fr
-              rfl cm hSingle
+            exact evalStep_single_done_cases p c { s with frames := [fr] } fr
+              rfl out hSingle
           | none =>
-            rw [hStmt] at hUnw; dsimp only at hUnw
+            rw [hStmt] at hDone; dsimp only at hDone
             cases hLen : Nat.beq fr.stmtIdx bb.statements.length with
-            | false => rw [ite_bool_false hLen] at hUnw; cases hUnw
+            | false => rw [ite_bool_false hLen] at hDone; cases hDone
             | true =>
-              rw [ite_bool_true hLen] at hUnw
+              rw [ite_bool_true hLen] at hDone
               cases hTerm : bb.terminator with
               | call callee args dst target unwind =>
-                rw [hTerm] at hUnw; dsimp only at hUnw
+                rw [hTerm] at hDone; dsimp only at hDone
                 cases hCallee : Trusted.MirSemantics.getElem? p.bodies callee
                     with
-                | none => rw [hCallee] at hUnw; cases hUnw
+                | none => rw [hCallee] at hDone; cases hDone
                 | some calleeBody =>
-                  rw [hCallee] at hUnw; dsimp only at hUnw
-                  exact evalCallTerminator_never_unwound body bb fr
-                    (caller :: rest) s.mem s.callerMem cm callee none
-                    calleeBody args dst target unwind hUnw
+                  rw [hCallee] at hDone; dsimp only at hDone
+                  exact False.elim (evalCallTerminator_never_done body bb fr
+                    (caller :: rest) s.mem s.callerMem callee none
+                    calleeBody args dst target unwind out hDone)
               | sysrootCall op args dst target unwind =>
-                rw [hTerm] at hUnw; dsimp only at hUnw
-                exact evalCallTerminator_never_unwound body bb fr
-                  (caller :: rest) s.mem s.callerMem cm 0 (some op)
-                  (sysrootNumBody op) args dst target unwind hUnw
+                rw [hTerm] at hDone; dsimp only at hDone
+                exact False.elim (evalCallTerminator_never_done body bb fr
+                  (caller :: rest) s.mem s.callerMem 0 (some op)
+                  (sysrootNumBody op) args dst target unwind out hDone)
               | return_ =>
-                rw [hTerm] at hUnw; dsimp only at hUnw
-                exact evalNonRootReturn_never_unwound p body bb fr caller rest
-                  s.mem s.callerMem cm hUnw
+                rw [hTerm] at hDone; dsimp only at hDone
+                exact False.elim (evalNonRootReturn_never_done p body bb fr
+                  caller rest s.mem s.callerMem out hDone)
               | goto _ | switchInt _ _ | unreachable | assert _ _ _ _ _
               | unwindResume | coreCall _ _ _ _ _ | unsupported =>
-                rw [hTerm] at hUnw; dsimp only at hUnw
-                have hSub := attachCallers_done_inv hUnw
+                rw [hTerm] at hDone; dsimp only at hDone
+                have hSub := attachCallers_done_inv hDone
                 have hSingle :
-                    evalStep p c { s with frames := [fr] } =
-                      .done (.unwound cm) := by
+                    evalStep p c { s with frames := [fr] } = .done out := by
                   unfold evalStep; dsimp only
                   rw [hBody]; dsimp only
                   rw [hBb]; dsimp only
                   rw [hStmt]; dsimp only
                   rw [ite_bool_true hLen]
                   rw [hTerm]; exact hSub
-                exact evalStep_single_never_unwound p c
-                  { s with frames := [fr] } fr rfl cm hSingle
+                exact evalStep_single_done_cases p c
+                  { s with frames := [fr] } fr rfl out hSingle
+
+private theorem evalStep_never_unwound (p : Program) (c : Choice) (s : State)
+    (cm : CallerMemory) : evalStep p c s ≠ .done (.unwound cm) := by
+  intro hUnw
+  cases evalStep_done_cases p c s (.unwound cm) hUnw with
+  | inl h =>
+    let ⟨_, hEq⟩ := h
+    cases hEq
+  | inr h =>
+    let ⟨_, _, hEq⟩ := h
+    cases hEq
+
+private theorem evalStep_bodyProg_never_aborted (body : Body) (c : Choice)
+    (s : State) (cm : CallerMemory) :
+    evalStep (Anneal.MirWp.bodyProg body) c s ≠ .done (.aborted cm) := by
+  intro hAb
+  cases evalStep_done_cases (Anneal.MirWp.bodyProg body) c s
+      (.aborted cm) hAb with
+  | inl h =>
+    let ⟨_, hEq⟩ := h
+    cases hEq
+  | inr h => cases h.1
 
 private theorem basicBlocks_getElem_hasCall_false_cut
     {bbs : List BasicBlock} {blk : BasicBlockId} {bb : BasicBlock}
@@ -1842,7 +1947,31 @@ private theorem evalTerminator_single_frame {body : Body} {bb : BasicBlock}
   unfold evalTerminator at hTerm
   cases hKind : bb.terminator with
   | goto _ => rw [hKind] at hTerm; unfold jumpToBlock at hTerm; cases hTerm; rfl
-  | unreachable | unwindResume | assert _ _ _ _ _ | call _ _ _ _ _
+  | assert cond expected msg target unwind =>
+    rw [hKind] at hTerm; dsimp only at hTerm
+    cases hCond : evalPrimitiveOperand body.locals fr.locals mem cond with
+    | error _ => rw [hCond] at hTerm; cases hTerm
+    | ok res =>
+      rw [hCond] at hTerm; dsimp only at hTerm
+      cases hVal : res.1 with
+      | bool condB =>
+        rw [hVal] at hTerm; dsimp only at hTerm
+        cases hEq : (condB == expected) with
+        | true =>
+          rw [ite_bool_true hEq] at hTerm
+          unfold jumpToBlock at hTerm
+          cases hTerm
+          rfl
+        | false =>
+          rw [ite_bool_false hEq] at hTerm
+          let ⟨_, hFault⟩ :=
+            evalAssertFailure_unwind_fault msg unwind cm true
+          rw [hFault] at hTerm
+          cases hTerm
+      | scalar _ | ptr _ | char _ | ordering _ | unit | enumVal _ _ | tuple _
+      | bytes _ | array _ | slicePtr _ _ | rangeTo _ | rangeFrom _ =>
+        rw [hVal] at hTerm; cases hTerm
+  | unreachable | unwindResume | call _ _ _ _ _
   | sysrootCall _ _ _ _ _ | coreCall _ _ _ _ _ | unsupported => rw [hKind] at hTerm; cases hTerm
   | return_ =>
     rw [hKind] at hTerm; dsimp only at hTerm
@@ -1977,9 +2106,8 @@ private theorem evalStep_bodyProg_single_frame {body : Body} {s st' : State}
               | goto _ | switchInt _ _ | return_ | unreachable
               | assert _ _ _ _ _ | unwindResume | coreCall _ _ _ _ _ | unsupported =>
                 rw [hKind] at hStep
-                dsimp only at hStep
+                dsimp only [attachCallers] at hStep
                 exact evalTerminator_single_frame hStep
-
 /-- Any pure intra-frame execution certified by `Anneal.MirWp.wpState` over a
 normal-return postcondition lifts directly into `wpFrameOutcome`. -/
 theorem wpFrameOutcome_of_mirWpState (callerLens : ByteSubLens)
@@ -2007,6 +2135,7 @@ theorem wpFrameOutcome_of_mirWpState (callerLens : ByteSubLens)
         | .step st' => wpFrameOutcome callerLens env body fuel st' onDone
         | .done (.returned rv) => onDone (.returned rv.ret s.mem)
         | .done (.unwound _) => False
+        | .done (.aborted _) => False
         | .fault _ => False := by
       cases hSt : evalStep (Anneal.MirWp.bodyProg body) 0 s with
       | step st' =>
@@ -2020,6 +2149,9 @@ theorem wpFrameOutcome_of_mirWpState (callerLens : ByteSubLens)
         | unwound cm =>
           exact False.elim
             (evalStep_never_unwound (Anneal.MirWp.bodyProg body) 0 s cm hSt)
+        | aborted cm =>
+          exact False.elim
+            (evalStep_bodyProg_never_aborted body 0 s cm hSt)
       | fault _ =>
         rw [hSt] at h0
         exact False.elim h0
@@ -2110,16 +2242,61 @@ theorem wpFrameOutcome_of_mirWpState (callerLens : ByteSubLens)
                 | switchInt _ _ => exact hEval
                 | return_ => exact hEval
                 | unreachable => exact hEval
-                | assert _ _ _ _ _ =>
+                | assert cond expected msg target unwind =>
                   unfold evalStep at hEval
                   rw [hFr] at hEval; dsimp only at hEval
                   rw [hSomeB] at hEval; dsimp only at hEval
                   rw [hBb] at hEval; dsimp only at hEval
                   rw [hNoneStmt] at hEval; dsimp only at hEval
                   rw [ite_bool_true hIdx, hTerm] at hEval
+                  dsimp only [attachCallers] at hEval
                   unfold evalTerminator at hEval
                   rw [hTerm] at hEval
-                  exact False.elim hEval
+                  dsimp only at hEval
+                  cases hCond :
+                      evalPrimitiveOperand body.locals frame.locals s.mem
+                        cond with
+                  | error _ => rw [hCond] at hEval; exact False.elim hEval
+                  | ok res =>
+                    rw [hCond] at hEval
+                    dsimp only at hEval
+                    cases hVal : res.1 with
+                    | bool condB =>
+                      rw [hVal] at hEval
+                      dsimp only at hEval
+                      cases hEq : (condB == expected) with
+                      | true =>
+                        rw [ite_bool_true hEq] at hEval
+                        unfold jumpToBlock at hEval
+                        dsimp only at hEval
+                        dsimp only
+                        rw [hCond]
+                        dsimp only
+                        rw [hVal]
+                        dsimp only
+                        rw [ite_bool_true hEq]
+                        rw [hSys] at hEval
+                        exact hEval
+                      | false =>
+                        rw [ite_bool_false hEq] at hEval
+                        dsimp only [Anneal.MirWp.bodyProg] at hEval
+                        let ⟨_, hFault⟩ :=
+                          evalAssertFailure_unwind_fault msg unwind s.callerMem
+                            true
+                        rw [hFault] at hEval
+                        exact False.elim hEval
+                    | scalar _ => rw [hVal] at hEval; exact False.elim hEval
+                    | ptr _ => rw [hVal] at hEval; exact False.elim hEval
+                    | char _ => rw [hVal] at hEval; exact False.elim hEval
+                    | ordering _ => rw [hVal] at hEval; exact False.elim hEval
+                    | unit => rw [hVal] at hEval; exact False.elim hEval
+                    | enumVal _ _ => rw [hVal] at hEval; exact False.elim hEval
+                    | tuple _ => rw [hVal] at hEval; exact False.elim hEval
+                    | bytes _ => rw [hVal] at hEval; exact False.elim hEval
+                    | array _ => rw [hVal] at hEval; exact False.elim hEval
+                    | slicePtr _ _ => rw [hVal] at hEval; exact False.elim hEval
+                    | rangeTo _ => rw [hVal] at hEval; exact False.elim hEval
+                    | rangeFrom _ => rw [hVal] at hEval; exact False.elim hEval
                 | unwindResume =>
                   unfold evalStep at hEval
                   rw [hFr] at hEval; dsimp only at hEval
@@ -2330,7 +2507,9 @@ inductive StackStep
       StackStep implOf
         (.running top callers mem cm)
         (.running { top with
-          frame := ⟨top.frame.defId, target, 0, locals', none, none, none⟩ }
+          frame := { top.frame with
+            blockIdx := target, stmtIdx := 0, locals := locals',
+            sysrootOp? := none } }
           callers mem' cm)
   | assert_unwind_cleanup {top : ExecStackFrame} {callers : List SavedCaller}
       {mem mem' memC : MemoryState} {cm : CallerMemory}
@@ -2625,8 +2804,45 @@ private theorem evalStep_step_preserves_callerMem (b : Body) (fr : FrameState)
             unfold evalTerminator at hStep; rw [hTerm] at hStep; cases hStep
           | unwindResume =>
             unfold evalTerminator at hStep; rw [hTerm] at hStep; cases hStep
-          | assert _ _ _ _ _ =>
-            unfold evalTerminator at hStep; rw [hTerm] at hStep; cases hStep
+          | assert cond expected msg target unwind =>
+            unfold evalTerminator at hStep
+            rw [hTerm] at hStep
+            dsimp only [attachCallers] at hStep
+            cases hCond :
+                evalPrimitiveOperand body.locals fr.locals mem cond with
+            | error _ => rw [hCond] at hStep; cases hStep
+            | ok res =>
+              rw [hCond] at hStep
+              dsimp only at hStep
+              cases hVal : res.1 with
+              | bool condB =>
+                rw [hVal] at hStep
+                dsimp only at hStep
+                cases hEq : (condB == expected) with
+                | true =>
+                  rw [ite_bool_true hEq] at hStep
+                  unfold jumpToBlock at hStep
+                  cases hStep
+                  rfl
+                | false =>
+                  rw [ite_bool_false hEq] at hStep
+                  dsimp only [Anneal.MirWp.bodyProg] at hStep
+                  let ⟨_, hFault⟩ :=
+                    evalAssertFailure_unwind_fault msg unwind cm true
+                  rw [hFault] at hStep
+                  cases hStep
+              | scalar _ => rw [hVal] at hStep; cases hStep
+              | ptr _ => rw [hVal] at hStep; cases hStep
+              | char _ => rw [hVal] at hStep; cases hStep
+              | ordering _ => rw [hVal] at hStep; cases hStep
+              | unit => rw [hVal] at hStep; cases hStep
+              | enumVal _ _ => rw [hVal] at hStep; cases hStep
+              | tuple _ => rw [hVal] at hStep; cases hStep
+              | bytes _ => rw [hVal] at hStep; cases hStep
+              | array _ => rw [hVal] at hStep; cases hStep
+              | slicePtr _ _ => rw [hVal] at hStep; cases hStep
+              | rangeTo _ => rw [hVal] at hStep; cases hStep
+              | rangeFrom _ => rw [hVal] at hStep; cases hStep
           | unsupported =>
             unfold evalTerminator at hStep; rw [hTerm] at hStep; cases hStep
           | coreCall _ _ _ _ _ =>
@@ -2955,6 +3171,7 @@ private theorem wpEvalStep_implies_stackExecutes
         wpFrameOutcome callerLens (calleeLookup callees) body fuel st' onDone
       | .done (.returned rv) => onDone (.returned rv.ret mem)
       | .done (.unwound _) => False
+      | .done (.aborted _) => False
       | .fault _ => False) :
     ∃ out,
       StackReaches implOf
@@ -2966,6 +3183,9 @@ private theorem wpEvalStep_implies_stackExecutes
     rw [hStep] at hEval
     cases out with
     | unwound _ => exact False.elim hEval
+    | aborted cm' =>
+      exact False.elim
+        (evalStep_bodyProg_never_aborted body 0 ⟨[frame], cm, mem⟩ cm' hStep)
     | returned retOut =>
       refine ⟨.returned retOut.ret mem, .tail .refl (.ret_root hStep), hEval⟩
   | step st' =>
@@ -3038,8 +3258,9 @@ private theorem wpAssert_implies_stackExecutes
         | .bool b =>
           if b == expected then
             wpFrameOutcome callerLens (calleeLookup callees) body fuel
-              { frames := [⟨frame.defId, target, 0, locals',
-                  none, none, none⟩],
+              { frames := [{ frame with
+                  blockIdx := target, stmtIdx := 0, locals := locals',
+                  sysrootOp? := none }],
                 callerMem := cm, mem := mem' } onDone
           else
             match evalCallExitStep body ⟨none, unwind⟩ (.unwind mem') with
@@ -3098,7 +3319,9 @@ private theorem wpAssert_implies_stackExecutes
             .ok (.bool expected, res.2.1, res.2.2) := by
           rw [hOp, ← hBEq, ← hRes]
         cases ihFuel
-            ⟨frame.defId, target, 0, res.2.1, none, none, none⟩
+            { frame with
+              blockIdx := target, stmtIdx := 0, locals := res.2.1,
+              sysrootOp? := none }
             res.2.2 cm onDone hWp with
         | intro out hOut =>
           refine ⟨out,
@@ -3663,7 +3886,9 @@ theorem wpFrameOutcome_assert_true_pass_step (callerLens : ByteSubLens)
     (hCond : evalPrimitiveOperand body.locals frame.locals mem cond =
       .ok (.bool expected, locals', mem'))
     (hNext : wpFrameOutcome callerLens env body fuel
-      { frames := [⟨frame.defId, target, 0, locals', none, none, none⟩],
+      { frames := [{ frame with
+          blockIdx := target, stmtIdx := 0, locals := locals',
+          sysrootOp? := none }],
         callerMem := cm, mem := mem' } onDone)
     (hSys : frame.sysrootOp? = none := by rfl) :
     wpFrameOutcome callerLens env body (fuel + 1) ⟨[frame], cm, mem⟩ onDone :=

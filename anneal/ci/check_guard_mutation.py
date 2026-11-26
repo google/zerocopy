@@ -1300,7 +1300,7 @@ MIR_SEMANTICS_GUARDS: tuple[MirSemanticsGuard, ...] = (
         needs_wf_helper=False,
     ),
     # ------------------------------------------------------------------
-    # Profile v2 memory, step, type-admission, and boundary guards (40 guards)
+    # Profile v2 memory, step, type-admission, and boundary guards (46 guards)
     # ------------------------------------------------------------------
     MirSemanticsGuard(
         guard_id="mem_v2_ptr_add_null_nonzero",
@@ -1657,11 +1657,17 @@ MIR_SEMANTICS_GUARDS: tuple[MirSemanticsGuard, ...] = (
         ),
         anchor=(
             "        if b == expected then\n"
-            "          jumpToBlock { frame with locals := locals1 } mem1 callerMem target"
+            "          jumpToBlock { frame with locals := locals1 } mem1 callerMem target\n"
+            "        else\n"
+            "          evalAssertFailure msg panicStrategy unwind\n"
+            "            (extractCallerMemory callerMem mem1) hasLocalPanicHandler"
         ),
         replacement=(
             "        if true then\n"
-            "          jumpToBlock { frame with locals := locals1 } mem1 callerMem target"
+            "          jumpToBlock { frame with locals := locals1 } mem1 callerMem target\n"
+            "        else\n"
+            "          evalAssertFailure msg panicStrategy unwind\n"
+            "            (extractCallerMemory callerMem mem1) hasLocalPanicHandler"
         ),
         fixture_module="StepRefutations",
         theorem_name="refute_step_v2_assert_failure_faults",
@@ -2030,6 +2036,76 @@ MIR_SEMANTICS_GUARDS: tuple[MirSemanticsGuard, ...] = (
         needs_wf_helper=False,
     ),
     MirSemanticsGuard(
+        guard_id="step_v2_assert_abort_extract_caller_mem",
+        target_file="trusted/lean/Trusted/MirSemantics/Step.lean",
+        target_module="Trusted/MirSemantics/Step",
+        description="evalTerminatorV2 .assert abort preserves pre-abort caller memory mutations",
+        anchor=(
+            "        else\n"
+            "          evalAssertFailure msg panicStrategy unwind\n"
+            "            (extractCallerMemory callerMem mem1) hasLocalPanicHandler"
+        ),
+        replacement=(
+            "        else\n"
+            "          evalAssertFailure msg panicStrategy unwind callerMem hasLocalPanicHandler"
+        ),
+        fixture_module="StepRefutations",
+        theorem_name="refute_step_v2_assert_abort_extract_caller_mem",
+    ),
+    MirSemanticsGuard(
+        guard_id="step_assert_optional_overflow_unsupported",
+        target_file="trusted/lean/Trusted/MirSemantics/Step.lean",
+        target_module="Trusted/MirSemantics/Step",
+        description="evalAssertFailure keeps optional overflow assertions as .fault .unsupported",
+        anchor=(
+            "  | .boundsCheck | .overflow .div | .overflow .rem\n"
+            "  | .divByZero | .remByZero =>\n"
+            "    if hasLocalPanicHandler then\n"
+            "      .fault .unsupported\n"
+            "    else\n"
+            "      match panicStrategy, unwind with\n"
+            "      | .abort, .continue_ | .abort, .unreachable | .abort, .terminate =>\n"
+            "        .done (.aborted callerMem)\n"
+            "      | _, _ => .fault .unsupported\n"
+            "  | .overflow _ | .overflowNeg | .unsupported => .fault .unsupported"
+        ),
+        replacement=(
+            "  | .boundsCheck | .overflow _ | .overflowNeg\n"
+            "  | .divByZero | .remByZero =>\n"
+            "    if hasLocalPanicHandler then\n"
+            "      .fault .unsupported\n"
+            "    else\n"
+            "      match panicStrategy, unwind with\n"
+            "      | .abort, .continue_ | .abort, .unreachable | .abort, .terminate =>\n"
+            "        .done (.aborted callerMem)\n"
+            "      | _, _ => .fault .unsupported\n"
+            "  | .unsupported => .fault .unsupported"
+        ),
+        fixture_module="StepRefutations",
+        theorem_name="refute_step_assert_optional_overflow_unsupported",
+    ),
+    MirSemanticsGuard(
+        guard_id="step_assert_local_panic_handler_unsupported",
+        target_file="trusted/lean/Trusted/MirSemantics/Step.lean",
+        target_module="Trusted/MirSemantics/Step",
+        description=(
+            "evalAssertFailure keeps failing safe assertions as .fault .unsupported "
+            "when the crate defines a crate-local #[panic_handler]"
+        ),
+        anchor=(
+            "    if hasLocalPanicHandler then\n"
+            "      .fault .unsupported\n"
+            "    else"
+        ),
+        replacement=(
+            "    if false then\n"
+            "      .fault .unsupported\n"
+            "    else"
+        ),
+        fixture_module="StepRefutations",
+        theorem_name="refute_step_assert_local_panic_handler_unsupported",
+    ),
+    MirSemanticsGuard(
         guard_id="boundary_v2_wellformed_forbids_faults",
         target_file="trusted/lean/Trusted/MirSemantics/Boundary.lean",
         target_module="Trusted/MirSemantics/Boundary",
@@ -2056,8 +2132,18 @@ MIR_SEMANTICS_GUARDS: tuple[MirSemanticsGuard, ...] = (
         target_file="trusted/lean/Trusted/MirSemantics/Boundary.lean",
         target_module="Trusted/MirSemantics/Boundary",
         description="BodyVerifiedV2 requires BodyStaticAdmittedV2 unconditionally",
-        anchor="  BodyStaticAdmittedV2 p body = true ∧",
-        replacement="  True ∧",
+        anchor=(
+            "  BodyStaticAdmittedV2 p body = true ∧\n"
+            "  ∀ q : Query,\n"
+            "    ValidEntryArgsV2 body q →\n"
+            "    (body.isUnsafe = true → safetyPre q) →"
+        ),
+        replacement=(
+            "  True ∧\n"
+            "  ∀ q : Query,\n"
+            "    ValidEntryArgsV2 body q →\n"
+            "    (body.isUnsafe = true → safetyPre q) →"
+        ),
         fixture_module="BoundaryRefutations",
         theorem_name="refute_boundary_v2_body_static_admitted",
         needs_wf_helper=False,
@@ -2071,6 +2157,57 @@ MIR_SEMANTICS_GUARDS: tuple[MirSemanticsGuard, ...] = (
         replacement="    true &&",
         fixture_module="BoundaryRefutations",
         theorem_name="refute_boundary_v2_rejects_mixed_refs_and_raw_ptrs",
+        needs_wf_helper=False,
+    ),
+    MirSemanticsGuard(
+        guard_id="boundary_v2_effect_mask_allow_abort_default",
+        target_file="trusted/lean/Trusted/MirSemantics/Boundary.lean",
+        target_module="Trusted/MirSemantics/Boundary",
+        description="EffectMaskV2 defaults allowAbort to false",
+        anchor=(
+            "structure EffectMaskV2 where\n"
+            "  allowAbort : Bool := false"
+        ),
+        replacement=(
+            "structure EffectMaskV2 where\n"
+            "  allowAbort : Bool := true"
+        ),
+        fixture_module="BoundaryRefutations",
+        theorem_name="refute_boundary_v2_effect_mask_allow_abort_default",
+        needs_wf_helper=False,
+    ),
+    MirSemanticsGuard(
+        guard_id="boundary_v2_safe_contract_allow_abort_default",
+        target_file="trusted/lean/Trusted/MirSemantics/Boundary.lean",
+        target_module="Trusted/MirSemantics/Boundary",
+        description="SafeContractV2 defaults effects.allowAbort to false",
+        anchor=(
+            "  behaviorPre : Query → Prop := fun _ => True\n"
+            "  effects : EffectMaskV2 := { allowAbort := false }"
+        ),
+        replacement=(
+            "  behaviorPre : Query → Prop := fun _ => True\n"
+            "  effects : EffectMaskV2 := { allowAbort := true }"
+        ),
+        fixture_module="BoundaryRefutations",
+        theorem_name="refute_boundary_v2_safe_contract_allow_abort_default",
+        needs_wf_helper=False,
+    ),
+    MirSemanticsGuard(
+        guard_id="boundary_v2_safe_contract_post_abort_default",
+        target_file="trusted/lean/Trusted/MirSemantics/Boundary.lean",
+        target_module="Trusted/MirSemantics/Boundary",
+        description="SafeContractV2 defaults postAbort to False",
+        anchor=(
+            "  postReturn : Query → Out → Prop := fun _ _ => True\n"
+            "  postAbort : Query → CallerMemory → Prop := fun _ _ => False"
+        ),
+        replacement=(
+            "  postReturn : Query → Out → Prop := fun _ _ => True\n"
+            "  postAbort : Query → CallerMemory → Prop := fun _ _ => True"
+        ),
+        fixture_module="BoundaryRefutations",
+        theorem_name="refute_boundary_v2_safe_contract_post_abort_default",
         needs_wf_helper=False,
     ),
 )

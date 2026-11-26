@@ -274,10 +274,12 @@ foundation and other `vetted` modules, never a `candidate:<feature>`,
 
 A verification result covers the MIR that `trusted/rustc-capture/` extracts
 with the pinned toolchain under a fixed profile: `-Copt-level=0`,
-`-Cdebug-assertions=no`, and `-Coverflow-checks=no`, or `-Coverflow-checks=yes`
-when the capture requests `--overflow-checks`. Capture refuses any compilation
-in which debug assertions are on, or in which overflow checks are on without
-`--overflow-checks` (or off with it). As a result:
+`-Cdebug-assertions=no`, `-Coverflow-checks=no` (or `-Coverflow-checks=yes`
+when the capture requests `--overflow-checks`), and `-Cpanic=unwind` (or
+`-Cpanic=abort` when the capture requests `--panic abort`). Capture refuses any
+compilation in which debug assertions are on, in which overflow checks disagree
+with `--overflow-checks`, or in which `-Cpanic` disagrees with `--panic`. As a
+result:
 
 - `cfg(debug_assertions)` is false. Verified MIR contains no checks from
   `debug_assert!`, `debug_assert_eq!`, or `debug_assert_ne!`, and wherever
@@ -288,6 +290,16 @@ in which debug assertions are on, or in which overflow checks are on without
   and shifts): those operations wrap, and shift amounts are masked. With
   `--overflow-checks`, each such operation is guarded by an overflow `Assert`,
   and a failed check faults, so a verified function never reaches one.
+- Under default `--panic unwind`, every failing `Assert` faults
+  (`.unsupported` or `.undefined`), so a verified function never reaches a
+  failing assertion. Under `--panic abort` (when the crate defines no
+  crate-local `#[panic_handler]`), failing non-optional safe `Assert`s
+  terminate as `.aborted` carrying post-mutation caller memory; this satisfies
+  `WellFormed`/`BodyVerified`/`BodyVerifiedV2` without ruling out panics and
+  leaves panic hooks and handlers (including downstream `#![no_std]` binary
+  `#[panic_handler]`s) unverified. Proving panic-freedom under `--panic abort`
+  requires an explicit `EffectMaskV2.noAbort` `SafeContractV2` obligation in
+  `SpecsV2.property`.
 - `cfg(miri)` is refused on every capture (both normal crates and
   `--stdlib-crate core`) so `#[cfg(miri)]` branches cannot substitute Miri-only
   implementations for compiled target code.
@@ -308,33 +320,43 @@ in which debug assertions are on, or in which overflow checks are on without
   `stabilized_features_present`). `--stdlib-crate core` admits only `core`'s
   version-pinned feature set.
 
-The capture manifest's `configuration` records this profile, and
-`Program.overflowChecks` in `Captured.lean` records the overflow-check
-setting.
+The capture manifest's `configuration` records this profile (including `panic`
+and `overflow_checks`), and `Captured.lean` records `Program.overflowChecks`,
+`Program.panicStrategy`, and `Program.hasLocalPanicHandler`.
 
 A production build of the same source can use different settings, such as
-`-Cdebug-assertions=yes` or `-Coverflow-checks=yes` (Cargo's
+`-Cdebug-assertions=yes`, `-Coverflow-checks=yes` (Cargo's
 `debug-assertions = true` and `overflow-checks = true`, both on in Cargo's
-default `dev` profile), a higher optimization level, or a different `rustc`.
-Such a build can compile a different program from the one Anneal verified:
+default `dev` profile), `-Cpanic=unwind` (Cargo's default panic strategy) when
+capture used `--panic abort`, a higher optimization level, or a different
+`rustc`. Such a build can compile a different program—or attach different
+runtime behavior to the same panicking paths—than the one Anneal verified:
 
 - With debug assertions on, `debug_assert!` and its variants become runtime
   checks that panic, and `cfg(debug_assertions)` can select different code,
   including entirely different function bodies.
 - With overflow checks on, the compiler inserts overflow checks that panic,
   unless the capture also used `--overflow-checks`.
+- With `-Cpanic=unwind` in production when capture used `--panic abort`
+  (without an explicit panic-freedom obligation such as
+  `EffectMaskV2.noAbort`), failing non-optional safe assertions that Anneal
+  admitted as terminal `.aborted` instead unwind across callers and run `Drop`
+  glue, which Anneal does not model; `cfg(panic = ...)` can also select
+  different code.
 
-The production binary can therefore contain panic sites, or other code, that
-the verified MIR does not, and the proof says nothing about whether that code
-is reachable or how it behaves.
+The production binary can therefore contain panic sites, unwinding paths, or
+other code that the verified MIR does not cover, and the proof says nothing
+about whether that code is reachable or how it behaves.
 
 Anneal does not verify that the deployed binary corresponds to the captured
 MIR. The receipt lists "faithful pinned compiler capture" among its
 `assumptions` and "source-to-deployed-binary correspondence" under
-`deferred`. Code built for production with debug assertions on, or with
-overflow checks on when capture ran without `--overflow-checks`, should not
-treat a verification result as evidence that those checks never fire, or as
-covering code that only such a build compiles.
+`deferred`. Code built for production with debug assertions on, with overflow
+checks on when capture ran without `--overflow-checks`, or with
+`-Cpanic=unwind` when capture ran with `--panic abort` (without an explicit
+panic-freedom proof) should not treat a verification result as evidence that
+those checks never fire, that panics abort rather than unwind, or as covering
+code that only such a build compiles.
 
 ### Concurrency
 

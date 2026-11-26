@@ -44,6 +44,7 @@ pub const CORE_WP_CLAIMS: &[(&str, &str, &str)] = &[
     ("WpSoundnessClaim", "wpProg", "wellFormed_and_spec_of_wp"),
     ("WpFaultSoundnessClaim", "wpFaultProg", "reaches_fault_and_exclusive_of_wpFault"),
     ("ExecSoundnessClaimV2", "execProgV2", "wellFormed_and_spec_of_execV2"),
+    ("SafeContractSoundnessClaimV2", "execProgV2", "safeContract_soundness_of_execV2"),
 ];
 
 /// Required public aliases `(alias_under_Trusted, target_under_MirSemantics)`
@@ -242,6 +243,7 @@ pub struct MirWpFixtureSpec {
     pub wp_soundness_claim: Option<String>,
     pub wp_fault_soundness_claim: Option<String>,
     pub exec_soundness_claim_v2: Option<String>,
+    pub safe_contract_soundness_claim_v2: Option<String>,
     pub canary_claim_overrides: BTreeMap<String, Option<String>>,
     pub public_alias_overrides: BTreeMap<String, Option<String>>,
     /// Dotted Lean module name of the synthetic theory umbrella file under
@@ -252,6 +254,7 @@ pub struct MirWpFixtureSpec {
     pub wp_soundness_proof: Option<String>,
     pub wp_fault_soundness_proof: Option<String>,
     pub exec_soundness_proof_v2: Option<String>,
+    pub safe_contract_soundness_proof_v2: Option<String>,
     pub canary_proof_overrides: BTreeMap<String, Option<String>>,
     pub mir_wp_extra: String,
     pub include_canaries_module: bool,
@@ -291,6 +294,13 @@ impl MirWpFixtureSpec {
                  And SatisfiesPostV2 (And DivergesV2 BehaviorV2)"
                     .to_string(),
             ),
+            safe_contract_soundness_claim_v2: Some(
+                "def SafeContractSoundnessClaimV2 (_f : Nat) : Prop := \
+                 And EffectMaskV2 (And EffectMaskV2.noAbort \
+                 (And SafeContractV2 (And SafeContractV2.post \
+                 (And SatisfiesSafeContractV2 BodySatisfiesSafeContractV2))))"
+                    .to_string(),
+            ),
             canary_claim_overrides: BTreeMap::new(),
             public_alias_overrides: BTreeMap::new(),
             theory_umbrella_module: "Anneal.Wp".to_string(),
@@ -313,6 +323,15 @@ impl MirWpFixtureSpec {
                  Trusted.MirSemantics.ExecSoundnessClaimV2 \
                  Anneal.MirWp.execProgV2 := \
                  And.intro True.intro (And.intro True.intro True.intro)"
+                    .to_string(),
+            ),
+            safe_contract_soundness_proof_v2: Some(
+                "theorem safeContract_soundness_of_execV2 : \
+                 Trusted.MirSemantics.SafeContractSoundnessClaimV2 \
+                 Anneal.MirWp.execProgV2 := \
+                 And.intro True.intro (And.intro True.intro \
+                 (And.intro True.intro (And.intro True.intro \
+                 (And.intro True.intro True.intro))))"
                     .to_string(),
             ),
             canary_proof_overrides: BTreeMap::new(),
@@ -387,6 +406,12 @@ impl MirWpFixtureSpec {
              def SatisfiesPostV2 : Prop := True\n\
              def DivergesV2 : Prop := True\n\
              def BehaviorV2 : Prop := True\n\
+             def EffectMaskV2 : Prop := True\n\
+             def EffectMaskV2.noAbort : Prop := True\n\
+             def SafeContractV2 : Prop := True\n\
+             def SafeContractV2.post : Prop := True\n\
+             def SatisfiesSafeContractV2 : Prop := True\n\
+             def BodySatisfiesSafeContractV2 : Prop := True\n\
              def PositiveCanaryClaim : Prop := True\n\
              def NegativeCanaryClaim : Prop := True\n\
              def IntWidthBoundaryCanary : Prop := True\n\
@@ -421,6 +446,10 @@ impl MirWpFixtureSpec {
             sem.push('\n');
         }
         if let Some(decl) = &self.exec_soundness_claim_v2 {
+            sem.push_str(decl);
+            sem.push('\n');
+        }
+        if let Some(decl) = &self.safe_contract_soundness_claim_v2 {
             sem.push_str(decl);
             sem.push('\n');
         }
@@ -515,6 +544,10 @@ impl MirWpFixtureSpec {
             wp.push('\n');
         }
         if let Some(decl) = &self.exec_soundness_proof_v2 {
+            wp.push_str(decl);
+            wp.push('\n');
+        }
+        if let Some(decl) = &self.safe_contract_soundness_proof_v2 {
             wp.push_str(decl);
             wp.push('\n');
         }
@@ -910,11 +943,13 @@ mod tests {
             spec.wp_soundness_claim.as_deref().unwrap(),
             spec.wp_fault_soundness_claim.as_deref().unwrap(),
             spec.exec_soundness_claim_v2.as_deref().unwrap(),
+            spec.safe_contract_soundness_claim_v2.as_deref().unwrap(),
         ];
         let core_proof_bodies = [
             spec.wp_soundness_proof.as_deref().unwrap(),
             spec.wp_fault_soundness_proof.as_deref().unwrap(),
             spec.exec_soundness_proof_v2.as_deref().unwrap(),
+            spec.safe_contract_soundness_proof_v2.as_deref().unwrap(),
         ];
         for (((tb_claim, tb_param, tb_proof, tb_reqs), &(c, p, pr)), idx) in
             parsed_core.iter().zip(CORE_WP_CLAIMS.iter()).zip(0usize..)

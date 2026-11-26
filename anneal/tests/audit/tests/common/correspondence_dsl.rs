@@ -158,6 +158,7 @@ def mkIntToIntCastProg : Nat := 0
 def overflowPairTy : Nat := 0
 def queryEmpty : Nat := 0
 def scalarNatVal : Nat := 0
+def TerminalOut.aborted : Nat := 0
 def unlistedAnnealHelper : Nat := 0
 end Trusted.MirSemantics
 ";
@@ -181,6 +182,13 @@ def BinOp.cmp : Nat := 0
 def BinOp.addWithOverflow : Nat := 0
 def BinOp.subWithOverflow : Nat := 0
 def MirTy.char : Nat := 0
+def PanicStrategy.abort : Nat := 0
+def PanicStrategy.unwind : Nat := 0
+def AssertKind.divByZero : Nat := 0
+def AssertKind.boundsCheck : Nat := 0
+def AssertKind.misalignedPtrDeref : Nat := 0
+def UnwindAction.continue_ : Nat := 0
+def UnwindAction.cleanup : Nat := 0
 end Trusted.MirAst
 ";
 
@@ -398,6 +406,7 @@ impl ClaimsSpec {
              def progSysrootUncheckedAddOkD17 : Nat := 0\n\
              def progSysrootUncheckedAddUbD17 : Nat := 0\n\
              def queryU16_19 : Nat := 0\n\
+             def mkAssertProg : Nat := 0\n\
              def transitiveSubHelper : Nat := Trusted.MirSemantics.subEvalHelper\n\
              def initRefState : Nat := {init_ref_state}\n\
              def evalRefStep : Nat := {eval_ref_step}\n\
@@ -488,6 +497,16 @@ impl ClaimsSpec {
                Trusted.MirSemantics.WellFormed ∧ Trusted.MirSemantics.Behavior ∧\n\
                Trusted.MirSemantics.ReachesResult ∧ RefWellFormed ∧\n\
                RefBehavior ∧ RefReachesOutcome\n\
+             def CanaryD17AssertPanicAbortClaim : Prop :=\n\
+               mkAssertProg = mkAssertProg ∧\n\
+               Trusted.MirAst.PanicStrategy.abort = Trusted.MirAst.PanicStrategy.unwind ∧\n\
+               Trusted.MirAst.AssertKind.divByZero = Trusted.MirAst.AssertKind.boundsCheck ∧\n\
+               Trusted.MirAst.AssertKind.misalignedPtrDeref = Trusted.MirAst.AssertKind.divByZero ∧\n\
+               Trusted.MirAst.UnwindAction.continue_ = Trusted.MirAst.UnwindAction.cleanup ∧\n\
+               Trusted.MirSemantics.TerminalOut.aborted = Trusted.MirSemantics.TerminalOut.aborted ∧\n\
+               Trusted.MirSemantics.WellFormed ∧ Trusted.MirSemantics.Behavior ∧\n\
+               Trusted.MirSemantics.ReachesResult ∧ RefWellFormed ∧ RefBehavior ∧\n\
+               RefReachesOutcome ∧ encodeProg = encodeProg\n\
              def RefStepSoundForAllowedStepClaim : Prop := {ref_step_allowed_def}\n\
              {VALID_BYTES_CODEC_DEF}\
              end Trusted.Correspondence\n",
@@ -589,6 +608,8 @@ impl ProofsSpec {
                ⟨Eq.refl _, Eq.refl _, Eq.refl _, True.intro, True.intro, True.intro, True.intro⟩\n\
              theorem canary_D17_call_and_sysroot_call : CanaryD17CallAndSysrootCallClaim :=\n\
                ⟨Eq.refl _, Eq.refl _, Eq.refl _, Eq.refl _, True.intro, True.intro, True.intro, True.intro, True.intro, True.intro⟩\n\
+             theorem canary_D17_assert_panic_abort : CanaryD17AssertPanicAbortClaim :=\n\
+               ⟨Eq.refl _, Eq.refl _, Eq.refl _, Eq.refl _, Eq.refl _, Eq.refl _, True.intro, True.intro, True.intro, True.intro, True.intro, True.intro, Eq.refl _⟩\n\
              theorem refStep_sound_for_allowedStep_holds : RefStepSoundForAllowedStepClaim :=\n\
                {ref_step_allowed}\n\
              theorem bytes_codec_matches_miri : BytesCodecMatchesMiriClaim :=\n\

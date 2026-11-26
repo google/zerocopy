@@ -632,7 +632,8 @@ private theorem hashBlock_openStep_eq (sp0 : TypeLayoutSpec)
                       { defId := 0, blockIdx := 0, stmtIdx := 0
                       , locals := [.immediate none, .immediate (some v1),
                           .immediate (some v2), .immediate (some v3)]
-                      , retDst := none })) := by
+                      , retDst := none })
+              | .aborted _ => res = .fault .unsupported) := by
     unfold OpenStep OpenStepOnFrames OpenStepOnBodyOpt OpenStepOnBlockOpt
       OpenStepOnStmtEnd OpenStepOnTerm
     dsimp only
@@ -1235,7 +1236,8 @@ private theorem verifyAligned_openStep_eq (sp0 : TypeLayoutSpec)
                       { defId := 0, blockIdx := 0, stmtIdx := 0
                       , locals := [.immediate none, .immediate (some v1),
                           .immediate (some v2)]
-                      , retDst := none })) := by
+                      , retDst := none })
+              | .aborted _ => res = .fault .unsupported) := by
     unfold OpenStep OpenStepOnFrames OpenStepOnBodyOpt OpenStepOnBlockOpt
       OpenStepOnStmtEnd OpenStepOnTerm
     dsimp only

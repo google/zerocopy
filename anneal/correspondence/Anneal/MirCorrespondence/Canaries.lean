@@ -287,4 +287,75 @@ theorem canary_D17_call_and_sysroot_call_base :
     h_sat₂.1, h_beh₂, h_rwf₂, (h_rbeh₂ _).1 h_beh₂,
     h_ub₃, h_nwf₃, h_ref_ub₃⟩
 
+/-- `D17` (`TerminatorKind.assert` with `--panic abort`, `--panic unwind`,
+cleanup-block refusal, and pointer-UB classification in both $M_{\text{anneal}}$
+and $M_{\text{ref}}$). -/
+theorem canary_D17_assert_panic_abort_base : CanaryD17AssertPanicAbortClaim := by
+  have h_wp₁ : wpProg (mkAssertProg .abort .continue_ .divByZero) 3
+      { args := [.bool true] }
+      (fun out => out = .returned ⟨u32Val 42, ⟨[]⟩⟩) := by
+    refine ⟨⟨0, rfl⟩, fun c hc => ?_⟩
+    subst hc
+    refine ⟨⟨0, rfl⟩, fun c hc => ?_⟩
+    subst hc
+    refine ⟨⟨0, rfl⟩, fun c hc => ?_⟩
+    subst hc
+    rfl
+  let ⟨h_sat₁, _, out₁, h_beh₁, h_eq₁⟩ := wellFormed_and_spec_of_wp
+    (mkAssertProg .abort .continue_ .divByZero) { args := [.bool true] }
+    3 _ h_wp₁
+  subst h_eq₁
+  let ⟨h_rwf₁, h_rbeh₁, _⟩ := anneal_corresponds_to_miri
+    (mkAssertProg .abort .continue_ .divByZero) { args := [.bool true] } h_sat₁.1
+  have h_wp₂ : wpProg (mkAssertProg .abort .continue_ .divByZero) 1
+      { args := [.bool false] }
+      (fun out => out = .aborted ⟨[]⟩) := by
+    refine ⟨⟨0, rfl⟩, fun c hc => ?_⟩
+    subst hc
+    rfl
+  let ⟨h_sat₂, _, out₂, h_beh₂, h_eq₂⟩ := wellFormed_and_spec_of_wp
+    (mkAssertProg .abort .continue_ .divByZero) { args := [.bool false] }
+    1 _ h_wp₂
+  subst h_eq₂
+  let ⟨h_rwf₂, h_rbeh₂, _⟩ := anneal_corresponds_to_miri
+    (mkAssertProg .abort .continue_ .divByZero) { args := [.bool false] } h_sat₂.1
+  have h_wp₃ : wpFaultProg (mkAssertProg .unwind .continue_ .divByZero) 1
+      { args := [.bool false] } .unsupported := by
+    refine ⟨⟨0, rfl⟩, fun c hc => ?_⟩
+    subst hc
+    rfl
+  let ⟨h_unsup₃, _, _, _, h_nwf₃⟩ := reaches_fault_and_exclusive_of_wpFault
+    (mkAssertProg .unwind .continue_ .divByZero) { args := [.bool false] }
+    1 .unsupported h_wp₃
+  have h_ref₃ := (reachesResult_fault_iff_refReachesOutcome
+    (mkAssertProg .unwind .continue_ .divByZero) { args := [.bool false] }
+    .unsupported).1 h_unsup₃
+  have h_wp₄ : wpFaultProg (mkAssertProg .abort (.cleanup 0) .boundsCheck) 1
+      { args := [.bool false] } .unsupported := by
+    refine ⟨⟨0, rfl⟩, fun c hc => ?_⟩
+    subst hc
+    rfl
+  let ⟨h_unsup₄, _, _, _, h_nwf₄⟩ := reaches_fault_and_exclusive_of_wpFault
+    (mkAssertProg .abort (.cleanup 0) .boundsCheck) { args := [.bool false] }
+    1 .unsupported h_wp₄
+  have h_ref₄ := (reachesResult_fault_iff_refReachesOutcome
+    (mkAssertProg .abort (.cleanup 0) .boundsCheck) { args := [.bool false] }
+    .unsupported).1 h_unsup₄
+  have h_wp₅ : wpFaultProg (mkAssertProg .abort .continue_ .misalignedPtrDeref) 1
+      { args := [.bool false] } .undefined := by
+    refine ⟨⟨0, rfl⟩, fun c hc => ?_⟩
+    subst hc
+    rfl
+  let ⟨h_ub₅, _, _, _, h_nwf₅⟩ := reaches_fault_and_exclusive_of_wpFault
+    (mkAssertProg .abort .continue_ .misalignedPtrDeref) { args := [.bool false] }
+    1 .undefined h_wp₅
+  have h_ref₅ := (reachesResult_fault_iff_refReachesOutcome
+    (mkAssertProg .abort .continue_ .misalignedPtrDeref)
+    { args := [.bool false] } .undefined).1 h_ub₅
+  exact ⟨h_sat₁.1, h_beh₁, h_rwf₁, (h_rbeh₁ _).1 h_beh₁,
+    h_sat₂.1, h_beh₂, h_rwf₂, (h_rbeh₂ _).1 h_beh₂,
+    h_nwf₃, h_unsup₃, h_ref₃,
+    h_nwf₄, h_unsup₄, h_ref₄,
+    h_nwf₅, h_ub₅, h_ref₅⟩
+
 end Anneal.MirCorrespondence

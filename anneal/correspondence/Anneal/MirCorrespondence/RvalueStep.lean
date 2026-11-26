@@ -42,10 +42,11 @@ $M_{\text{anneal}}$ (`Trusted.MirSemantics`) and real
 /-- Classify a `Miri.Interpreter.StepError` into $M_{\text{anneal}}$'s two fault
 poles, matching `evalRefStep`'s error dispatch in
 `Trusted/Correspondence/Eval.lean`. -/
-def stepErrorFaultKind : Miri.Interpreter.StepError → FaultKind
-  | .undefinedBehavior _ => .undefined
-  | .stack (.localExpectedLive _) => .undefined
-  | _ => .unsupported
+def stepErrorFaultKind : Miri.Interpreter.StepError → Option FaultKind
+  | .undefinedBehavior _ => some .undefined
+  | .stack (.localExpectedLive _) => some .undefined
+  | .termination (.abort _) => none
+  | _ => some .unsupported
 
 /-- Validated `ExecutionMachine.Config` for `rp : RefProg`. -/
 noncomputable abbrev refExecCfg (rp : RefProg) :=
@@ -1379,17 +1380,17 @@ theorem operandMachine_evalPlaceToOp_eq (rp : RefProg) (c : Choice)
     match MirSemantics.getElem? bodyLocals pl.localId,
         MirSemantics.getElem? slots pl.localId with
     | some _, some .dead =>
-      ∃ err st', res = .error err st' ∧ stepErrorFaultKind err = .undefined
+      ∃ err st', res = .error err st' ∧ stepErrorFaultKind err = some .undefined
     | some ty, some (.immediate optVal) =>
       if !pl.projection.isEmpty then
-        ∃ err st', res = .error err st' ∧ stepErrorFaultKind err = .unsupported
+        ∃ err st', res = .error err st' ∧ stepErrorFaultKind err = some .unsupported
       else
         res = .ok ⟨.immediate (optValToMiriImm ty optVal),
             refLocalLayoutForTy rp.types ty⟩
           (mkGenSimState rp ctx rbody blockIdx stmtIdx bodyLocals slots
             (cacheTouch cache pl.localId) mem ctrl cm)
     | _, _ =>
-      ∃ err st', res = .error err st' ∧ stepErrorFaultKind err = .unsupported := by
+      ∃ err st', res = .error err st' ∧ stepErrorFaultKind err = some .unsupported := by
   intro st res
   let ⟨h_id, h_emp⟩ := decodePlace_inv h_pl
   have h_deinit : (Miri.Interpreter.ExecutionMachine.operandHooks (refExecCfg rp)).deinitMovedPlace = true := rfl
@@ -1497,6 +1498,58 @@ private theorem path_push_const_beq_fn_false
       have h_eq := List.append_cancel_right h_list
       cases path; dsimp only at h_eq; exact congrArg Array.mk h_eq))
 
+/-- Function-item dispatch arm of `refOperandLeaves`'s `constantAt`, which every
+operand path outside `OperandPath.assertion` reaches. -/
+noncomputable def refConstantAtFnArm (types : List MirTy)
+    (path : Miri.Interpreter.OperandPath) (c : Miri.MIR.ConstOperand)
+    (st : Miri.Interpreter.MachineHooks.State Unit RefUser) :
+    EStateM.Result Miri.Interpreter.StepError
+      (Miri.Interpreter.MachineHooks.State Unit RefUser)
+      (Miri.Interpreter.OpTy Miri.Memory.Provenance) :=
+  match c with
+  | ⟨_, _, .Val .ZeroSized fnTyId⟩ =>
+    if path == (Miri.Interpreter.OperandPath.instruction "function").push
+        (.field "constant") then
+      if Nat.ble (fnTyBase types) fnTyId then
+        .ok ⟨.immediate .uninit, ⟨fnTyId, refUnitLayoutData⟩⟩ st
+      else
+        .error (.unsupported "invalid function TyId") st
+    else
+      refEvalConstOperand types c st
+  | _ => refEvalConstOperand types c st
+
+/-- At an operand path other than `OperandPath.instruction "function"` whose
+`constantAt` dispatch reaches `refConstantAtFnArm` (`h_arm`, closed by `rfl`
+for concrete non-assertion paths), `constantAt` is `refEvalConstOperand`. -/
+theorem refConstantAt_eq_of_ne_fn (rp : RefProg) (c : Choice)
+    (path : Miri.Interpreter.OperandPath)
+    (h_fn : path ≠ Miri.Interpreter.OperandPath.instruction "function")
+    (h_arm : ∀ (mc : Miri.MIR.ConstOperand)
+      (known : Option Miri.Interpreter.LocalLayout)
+      (st : Miri.Interpreter.MachineHooks.State Unit RefUser),
+      (Miri.Interpreter.ExecutionMachine.operandHooks (refExecCfg rp)).constantAt
+        c (path.push (.field "constant")) mc known st =
+        refConstantAtFnArm rp.types (path.push (.field "constant")) mc st) :
+    ∀ (mc : Miri.MIR.ConstOperand)
+      (known : Option Miri.Interpreter.LocalLayout)
+      (st : Miri.Interpreter.MachineHooks.State Unit RefUser),
+      (Miri.Interpreter.ExecutionMachine.operandHooks (refExecCfg rp)).constantAt
+        c (path.push (.field "constant")) mc known st =
+        refEvalConstOperand rp.types mc st := by
+  intro mc known st
+  rw [h_arm]
+  cases mc with
+  | mk sp ut v =>
+    cases v with
+    | Val cv ty =>
+      cases cv with
+      | ZeroSized =>
+        dsimp only [refConstantAtFnArm]
+        rw [path_push_const_beq_fn_false h_fn]
+        rfl
+      | _ => rfl
+    | _ => rfl
+
 theorem operandMachine_evalOperandAt_eq (rp : RefProg) (c : Choice)
     (ctx : SimFrameCtx) (rbody : RefBody) (blockIdx : BasicBlockId) (stmtIdx : Nat)
     (bodyLocals : List MirTy) (slots : List LocalSlot) (cache : List Bool)
@@ -1509,7 +1562,12 @@ theorem operandMachine_evalOperandAt_eq (rp : RefProg) (c : Choice)
     (known : Option LocalLayout)
     (h_locs : decodeLocalTys rp.types rbody.locals = some bodyLocals)
     (h_c_len : cache.length = bodyLocals.length)
-    (h_path : path ≠ Miri.Interpreter.OperandPath.instruction "function")
+    (h_path : ∀ (mc : Miri.MIR.ConstOperand)
+      (known' : Option Miri.Interpreter.LocalLayout)
+      (st' : Miri.Interpreter.MachineHooks.State Unit RefUser),
+      (Miri.Interpreter.ExecutionMachine.operandHooks (refExecCfg rp)).constantAt
+        c (path.push (.field "constant")) mc known' st' =
+        refEvalConstOperand rp.types mc st')
     (h_inv : SlotsMatchTys bodyLocals slots)
     (h_op : decodeOperand rp.types rop = some op)
     (h_known : operandKnownOk rp.types bodyLocals cache op known) :
@@ -1520,7 +1578,7 @@ theorem operandMachine_evalOperandAt_eq (rp : RefProg) (c : Choice)
       c path (toMiriOperand rp.types rop) known st
     match evalOperandToSlot bodyLocals slots amem tyOk op with
     | .error k =>
-      ∃ err st', res = .error err st' ∧ stepErrorFaultKind err = k
+      ∃ err st', res = .error err st' ∧ stepErrorFaultKind err = some k
     | .ok (ty, optVal, slots', _) =>
       res = .ok ⟨.immediate (optValToMiriImm ty optVal),
           refLocalLayoutForTy rp.types ty⟩
@@ -1540,7 +1598,7 @@ theorem operandMachine_evalOperandAt_eq (rp : RefProg) (c : Choice)
       change (match evalOperandToSlot bodyLocals slots amem tyOk (.copy pl) with
         | .error k => ∃ err st', Miri.Interpreter.OperandMachine.evalPlaceToOp
             (Miri.Interpreter.ExecutionMachine.operandHooks (refExecCfg rp))
-            c (toMiriPlace rpl) known st = .error err st' ∧ stepErrorFaultKind err = k
+            c (toMiriPlace rpl) known st = .error err st' ∧ stepErrorFaultKind err = some k
         | .ok (ty, optVal, slots', _) =>
           Miri.Interpreter.OperandMachine.evalPlaceToOp
             (Miri.Interpreter.ExecutionMachine.operandHooks (refExecCfg rp))
@@ -1684,7 +1742,15 @@ theorem operandMachine_evalOperandAt_eq (rp : RefProg) (c : Choice)
               res =
                 refEvalConstOperand rp.types
                   ⟨⟨0⟩, none, .Val (.Scalar (.Int bits.toNat 16))
-                    (canonicalTyId rp.types tyId)⟩ st := rfl
+                    (canonicalTyId rp.types tyId)⟩ st := by
+            have h_eq :
+                res =
+                  (Miri.Interpreter.ExecutionMachine.operandHooks (refExecCfg rp)).constantAt
+                    c (path.push (.field "constant"))
+                    ⟨⟨0⟩, none, .Val (.Scalar (.Int bits.toNat 16))
+                      (canonicalTyId rp.types tyId)⟩ known st := rfl
+            rw [h_eq]
+            exact h_path _ known st
           dsimp only [evalOperandToSlot]
           rw [h_step]
           dsimp only [refEvalConstOperand]
@@ -1695,21 +1761,17 @@ theorem operandMachine_evalOperandAt_eq (rp : RefProg) (c : Choice)
           | error k => cases k <;> exact ⟨_, _, rfl, rfl⟩
           | ok v => rfl
         | zeroSized =>
-          have h_deinit :
-              (Miri.Interpreter.ExecutionMachine.operandHooks (refExecCfg rp)).deinitMovedPlace = true := rfl
-          have h_constAt :
-              (Miri.Interpreter.ExecutionMachine.operandHooks (refExecCfg rp)).constantAt =
-                (refOperandLeaves rp.types).constantAt := rfl
           have h_step :
               res =
                 refEvalConstOperand rp.types
                   ⟨⟨0⟩, none, .Val .ZeroSized (canonicalTyId rp.types tyId)⟩ st := by
-            dsimp only [res, Miri.Interpreter.OperandMachine.evalOperandAt,
-              toMiriOperand]
-            rw [h_deinit, h_constAt]
-            dsimp only [refOperandLeaves]
-            rw [path_push_const_beq_fn_false h_path]
-            rfl
+            have h_eq :
+                res =
+                  (Miri.Interpreter.ExecutionMachine.operandHooks (refExecCfg rp)).constantAt
+                    c (path.push (.field "constant"))
+                    ⟨⟨0⟩, none, .Val .ZeroSized (canonicalTyId rp.types tyId)⟩ known st := rfl
+            rw [h_eq]
+            exact h_path _ known st
           dsimp only [evalOperandToSlot]
           rw [h_step]
           dsimp only [refEvalConstOperand]
@@ -1723,7 +1785,14 @@ theorem operandMachine_evalOperandAt_eq (rp : RefProg) (c : Choice)
           have h_step :
               res =
                 refEvalConstOperand rp.types
-                  ⟨⟨0⟩, none, .Val (.Indirect 0 0) (canonicalTyId rp.types tyId)⟩ st := rfl
+                  ⟨⟨0⟩, none, .Val (.Indirect 0 0) (canonicalTyId rp.types tyId)⟩ st := by
+            have h_eq :
+                res =
+                  (Miri.Interpreter.ExecutionMachine.operandHooks (refExecCfg rp)).constantAt
+                    c (path.push (.field "constant"))
+                    ⟨⟨0⟩, none, .Val (.Indirect 0 0) (canonicalTyId rp.types tyId)⟩ known st := rfl
+            rw [h_eq]
+            exact h_path _ known st
           dsimp only [evalOperandToSlot]
           rw [h_step]
           dsimp only [refEvalConstOperand]
@@ -1898,7 +1967,7 @@ private theorem readImmediate_imm_nonprim_err (ty : MirTy)
       Miri.Interpreter.PlaceMachine.readImmediate refAccessConfig
           ⟨.immediate imm, refLocalLayoutForTy types ty⟩ st =
         .error err st' ∧
-      stepErrorFaultKind err = .unsupported := by
+      stepErrorFaultKind err = some .unsupported := by
   cases ty with
   | bool | int _ _ | char => cases h_np
   | unit | never | ordering | ref _ _ | rawPtr _ _
@@ -2201,7 +2270,12 @@ theorem evalPrimitiveOperand_ref_eq (rp : RefProg) (c : Choice)
     (rop : RefOperand) (op : Operand) (known : Option LocalLayout)
     (h_locs : decodeLocalTys rp.types rbody.locals = some bodyLocals)
     (h_c_len : cache.length = bodyLocals.length)
-    (h_path : path ≠ Miri.Interpreter.OperandPath.instruction "function")
+    (h_path : ∀ (mc : Miri.MIR.ConstOperand)
+      (known' : Option Miri.Interpreter.LocalLayout)
+      (st' : Miri.Interpreter.MachineHooks.State Unit RefUser),
+      (Miri.Interpreter.ExecutionMachine.operandHooks (refExecCfg rp)).constantAt
+        c (path.push (.field "constant")) mc known' st' =
+        refEvalConstOperand rp.types mc st')
     (h_inv : SlotsMatchTys bodyLocals slots)
     (h_op : decodeOperand rp.types rop = some op)
     (h_known : operandKnownOk rp.types bodyLocals cache op known)
@@ -2217,7 +2291,7 @@ theorem evalPrimitiveOperand_ref_eq (rp : RefProg) (c : Choice)
       (Miri.Interpreter.PlaceMachine.readImmediate refAccessConfig) st
     match evalPrimitiveOperand bodyLocals slots amem op with
     | .error k =>
-      ∃ err st', res = .error err st' ∧ stepErrorFaultKind err = k
+      ∃ err st', res = .error err st' ∧ stepErrorFaultKind err = some k
     | .ok (v, slots', _) =>
       ∃ ty : MirTy,
         checkVal v ty = true ∧
@@ -2879,11 +2953,11 @@ theorem tyIdFor_beq_false_of_ne {types : List MirTy} {a b : MirTy}
 
 private theorem stepErrorFaultKind_integerError (err : IntegerOpError) :
     stepErrorFaultKind (Miri.Interpreter.ScalarOps.integerError err) =
-      match err with
+      some (match err with
       | .undefinedBehavior _ => .undefined
       | .scalar (.invalidBool _) => .undefined
       | .scalar (.invalidChar _) => .undefined
-      | _ => .unsupported := by
+      | _ => .unsupported) := by
   cases err with
   | scalar se => cases se <;> rfl
   | undefinedBehavior _ => rfl
@@ -3082,7 +3156,7 @@ private theorem scalarOps_classify_char_or_pair (rp : RefProg) (c : Choice)
     (h_ty : ty = .char ∨ ∃ w s, ty = .tuple [.int w s, .bool]) :
     (∃ e, (Miri.Interpreter.ExecutionMachine.scalarHooks (refExecCfg rp)).classify
         c (tyIdFor rp.types ty) st = .error e st ∧
-        stepErrorFaultKind e = .unsupported) ∨
+        stepErrorFaultKind e = some .unsupported) ∨
       (Miri.Interpreter.ExecutionMachine.scalarHooks (refExecCfg rp)).classify c
         (tyIdFor rp.types ty) st = .ok .character st := by
   dsimp only [Miri.Interpreter.ExecutionMachine.scalarHooks,
@@ -3206,7 +3280,7 @@ private theorem refIntBinRes_handle (rp : RefProg) (op : BinOp)
     match refIntResultVal w₁ s₁ res0 with
     | .error k =>
       ∃ err st', refIntBinRes rp.types w₁ s₁ st res0 = .error err st' ∧
-        stepErrorFaultKind err = k
+        stepErrorFaultKind err = some k
     | .ok v =>
       ∃ resTy : MirTy,
         checkVal v resTy = true ∧
@@ -3295,7 +3369,7 @@ theorem scalarOps_binary_ref_eq (rp : RefProg) (c : Choice) (op : BinOp)
     let res := Miri.Interpreter.ScalarOps.binary sc c (toMiriBinOp op) lhs rhs st
     match evalBinOp op lVal rVal with
     | .error k =>
-      ∃ err st', res = .error err st' ∧ stepErrorFaultKind err = k
+      ∃ err st', res = .error err st' ∧ stepErrorFaultKind err = some k
     | .ok v =>
       ∃ resTy : MirTy,
         checkVal v resTy = true ∧
@@ -3345,7 +3419,7 @@ theorem scalarOps_binary_ref_eq (rp : RefProg) (c : Choice) (op : BinOp)
       subst hty; subst hv
       have h_unfold := scalarOps_bool_bin_unfold rp c op lb rb st
       change (match evalRefBinOp op (.bool lb) (.bool rb) with
-        | .error k => ∃ err st', res = .error err st' ∧ stepErrorFaultKind err = k
+        | .error k => ∃ err st', res = .error err st' ∧ stepErrorFaultKind err = some k
         | .ok v =>
           ∃ resTy, checkVal v resTy = true ∧
             isSupportedScalarOrUnitTy resTy = true ∧
@@ -3605,7 +3679,7 @@ theorem scalarOps_unary_ref_eq (rp : RefProg) (c : Choice) (op : UnOp)
     let res := Miri.Interpreter.ScalarOps.unary sc c (toMiriUnOp op) opImm st
     match evalUnOp op v with
     | .error k =>
-      ∃ err st', res = .error err st' ∧ stepErrorFaultKind err = k
+      ∃ err st', res = .error err st' ∧ stepErrorFaultKind err = some k
     | .ok u =>
       ∃ resTy : MirTy,
         checkVal u resTy = true ∧
@@ -3618,7 +3692,7 @@ theorem scalarOps_unary_ref_eq (rp : RefProg) (c : Choice) (op : UnOp)
       evalRefUnOp op v = .error .unsupported →
       match evalRefUnOp op v with
       | .error k =>
-        ∃ err st', res = .error err st' ∧ stepErrorFaultKind err = k
+        ∃ err st', res = .error err st' ∧ stepErrorFaultKind err = some k
       | .ok u =>
         ∃ resTy : MirTy,
           checkVal u resTy = true ∧
@@ -4527,15 +4601,15 @@ private theorem copyRuntimePlace_imm_to_local_gen (rp : RefProg) (c : Choice)
       ⟨.local ctx.below.size dstId none (LocalsIdentity.ofAllocationToken 0),
         refLocalLayoutForTy rp.types dstTy⟩ allowTransmute st
     if !(MirTy.beq srcTy dstTy) then
-      ∃ err st', res = .error err st' ∧ stepErrorFaultKind err = .unsupported
+      ∃ err st', res = .error err st' ∧ stepErrorFaultKind err = some .unsupported
     else
       match optVal with
       | none =>
-        ∃ err st', res = .error err st' ∧ stepErrorFaultKind err = .undefined
+        ∃ err st', res = .error err st' ∧ stepErrorFaultKind err = some .undefined
       | some v =>
         match writePlace slots amem dstId dstTy v with
         | .error k =>
-          ∃ err st', res = .error err st' ∧ stepErrorFaultKind err = k
+          ∃ err st', res = .error err st' ∧ stepErrorFaultKind err = some k
         | .ok (slots', _) =>
           res = .ok () (mkGenSimState rp ctx rbody blockIdx stmtIdx bodyLocals
             slots' cache mem ctrl cm) := by
@@ -4756,15 +4830,15 @@ theorem copyRuntimePlace_imm_to_local (rp : RefProg) (c : Choice)
       ⟨.local ctx.below.size dstId none (LocalsIdentity.ofAllocationToken 0),
         refLocalLayoutForTy rp.types dstTy⟩ false st
     if !(MirTy.beq srcTy dstTy) then
-      ∃ err st', res = .error err st' ∧ stepErrorFaultKind err = .unsupported
+      ∃ err st', res = .error err st' ∧ stepErrorFaultKind err = some .unsupported
     else
       match optVal with
       | none =>
-        ∃ err st', res = .error err st' ∧ stepErrorFaultKind err = .undefined
+        ∃ err st', res = .error err st' ∧ stepErrorFaultKind err = some .undefined
       | some v =>
         match writePlace slots amem dstId dstTy v with
         | .error k =>
-          ∃ err st', res = .error err st' ∧ stepErrorFaultKind err = k
+          ∃ err st', res = .error err st' ∧ stepErrorFaultKind err = some k
         | .ok (slots', _) =>
           res = .ok () (mkGenSimState rp ctx rbody blockIdx stmtIdx bodyLocals
             slots' cache mem ctrl cm) :=
@@ -4801,11 +4875,11 @@ theorem copyRuntimePlace_imm_to_local_transmute (rp : RefProg) (c : Choice)
         refLocalLayoutForTy rp.types dstTy⟩ true st
     match optVal with
     | none =>
-      ∃ err st', res = .error err st' ∧ stepErrorFaultKind err = .undefined
+      ∃ err st', res = .error err st' ∧ stepErrorFaultKind err = some .undefined
     | some v =>
       match writePlace slots amem dstId dstTy v with
       | .error k =>
-        ∃ err st', res = .error err st' ∧ stepErrorFaultKind err = k
+        ∃ err st', res = .error err st' ∧ stepErrorFaultKind err = some k
       | .ok (slots', _) =>
         res = .ok () (mkGenSimState rp ctx rbody blockIdx stmtIdx bodyLocals
           slots' cache mem ctrl cm) := by
@@ -4849,7 +4923,7 @@ private theorem assertAndWrite_local_eq (rp : RefProg) (c : Choice)
         .error (.invalidProgram "rvalue result layout mismatch") st
     match writePlace slots amem dstId dstTy v with
     | .error k =>
-      ∃ err st', res = .error err st' ∧ stepErrorFaultKind err = k
+      ∃ err st', res = .error err st' ∧ stepErrorFaultKind err = some k
     | .ok (slots', _) =>
       res = .ok () (mkGenSimState rp ctx rbody blockIdx stmtIdx bodyLocals slots'
         cache mem ctrl cm) := by
@@ -5235,7 +5309,7 @@ private theorem cast_intToInt_core (rp : RefProg) (c : Choice)
             ⟨dref, refLocalLayoutForTy rp.types .char⟩ st
         else .error (.invalidProgram "integer-to-char requires a u8 value") st
     | _ => ∃ err st', res = .error err st' ∧
-        stepErrorFaultKind err = .unsupported := by
+        stepErrorFaultKind err = some .unsupported := by
   intro res place
   have h_rd := (castHooks_readImmediate rp c _ st).trans h_read
   dsimp only [res, Miri.Interpreter.Cast.cast, bind, Bind.bind, pure, Pure.pure]
@@ -5527,7 +5601,7 @@ private theorem cast_intToInt_nonIntLike (rp : RefProg) (c : Choice)
           ⟨.immediate imm, refLocalLayoutForTy rp.types srcTy⟩
           .IntToInt (tyIdFor rp.types dstTy)
           ⟨dref, refLocalLayoutForTy rp.types dstTy⟩ st = .error err st' ∧
-        stepErrorFaultKind err = .unsupported := by
+        stepErrorFaultKind err = some .unsupported := by
   dsimp only [Miri.Interpreter.Cast.cast, bind, Bind.bind, pure, Pure.pure]
   rw [eStateM_bind_ok h_take, castHooks_destLayout, refLocalLayoutForTy_ty,
     beq_self_eq_true, ite_true_eq, eStateM_bind_pure, ite_false_eq,
@@ -5593,7 +5667,7 @@ private theorem cast_intToInt_some (rp : RefProg) (c : Choice)
        | .error k => .error k
        | .ok r => writePlace slots amem dstId dstTy r :
          Except FaultKind (List LocalSlot × MemoryState)) with
-    | .error k => ∃ err st', res = .error err st' ∧ stepErrorFaultKind err = k
+    | .error k => ∃ err st', res = .error err st' ∧ stepErrorFaultKind err = some k
     | .ok (slots', _) =>
       res = .ok () (mkGenSimState rp ctx rbody blockIdx stmtIdx bodyLocals
         slots' cache mem ctrl cm) := by
@@ -5676,7 +5750,7 @@ private theorem cast_intToInt_local_eq (rp : RefProg) (c : Choice)
            | .error k => .error k
            | .ok r => writePlace slots amem dstId dstTy r :
          Except FaultKind (List LocalSlot × MemoryState)) with
-    | .error k => ∃ err st', res = .error err st' ∧ stepErrorFaultKind err = k
+    | .error k => ∃ err st', res = .error err st' ∧ stepErrorFaultKind err = some k
     | .ok (slots', _) =>
       res = .ok () (mkGenSimState rp ctx rbody blockIdx stmtIdx bodyLocals
         slots' cache mem ctrl cm) := by
@@ -5860,7 +5934,7 @@ theorem evalRvalueIntoPlace_ref_eq (rp : RefProg) (c : Choice)
             writePlace localsAfterRval memAfterRval dst.localId dstTy val :
               Except FaultKind (List LocalSlot × MemoryState)) with
     | .error k =>
-      ∃ err st', res = .error err st' ∧ stepErrorFaultKind err = k
+      ∃ err st', res = .error err st' ∧ stepErrorFaultKind err = some k
     | .ok (slots', _) =>
       res = .ok () (mkGenSimState rp ctx rbody blockIdx stmtIdx body.locals
         slots' (rvalueCacheTouch dst.localId rv cache) mem ctrl cm) := by
@@ -6048,8 +6122,9 @@ theorem evalRvalueIntoPlace_ref_eq (rp : RefProg) (c : Choice)
               have h_ev := operandMachine_evalOperandAt_eq rp c ctx rbody blockIdx
                 stmtIdx body.locals slots cache₁ amem mem ctrl cm
                 (Miri.Interpreter.OperandPath.rvalue "operand") rop opnd
-                isIntLikeTy none h_locs h_c1_len (by decide) h_inv h_op
-                (operandKnownOk_none _ _ _ _)
+                isIntLikeTy none h_locs h_c1_len
+                (refConstantAt_eq_of_ne_fn rp c _ (by decide) (fun _ _ _ => rfl))
+                h_inv h_op (operandKnownOk_none _ _ _ _)
               have h_res_step :
                   res =
                     EStateM.bind
@@ -6140,7 +6215,8 @@ theorem evalRvalueIntoPlace_ref_eq (rp : RefProg) (c : Choice)
             (Miri.Interpreter.OperandPath.rvalue "operand") rop op
             (fun srcTy => MirTy.beq srcTy dstTy)
             (some (refLocalLayoutForTy rp.types dstTy)) h_locs h_c1_len
-            (by decide) h_inv h_op h_known
+            (refConstantAt_eq_of_ne_fn rp c _ (by decide) (fun _ _ _ => rfl))
+            h_inv h_op h_known
           have h_res_step :
               res =
                 EStateM.bind
@@ -6301,7 +6377,9 @@ theorem evalRvalueIntoPlace_ref_eq (rp : RefProg) (c : Choice)
               (Miri.Interpreter.OperandPath.rvalue "left") rlhs lhs
               (if (toMiriBinOp op).leftHomogeneous then
                 some (refLocalLayoutForTy rp.types dstTy) else none)
-              h_locs h_c1_len (by decide) h_inv h_l h_knownL h_loc_res
+              h_locs h_c1_len
+              (refConstantAt_eq_of_ne_fn rp c _ (by decide) (fun _ _ _ => rfl))
+              h_inv h_l h_knownL h_loc_res
             cases h_pL : evalPrimitiveOperand body.locals slots amem lhs with
             | error k =>
               rw [h_pL] at h_evL
@@ -6341,7 +6419,9 @@ theorem evalRvalueIntoPlace_ref_eq (rp : RefProg) (c : Choice)
                 (Miri.Interpreter.OperandPath.rvalue "right") rrhs rhs
                 (if (toMiriBinOp op).rightHomogeneous then
                   some (refLocalLayoutForTy rp.types lTy) else none)
-                h_locs h_c2_len (by decide) h_inv₁ h_r h_knownR h_loc_res
+                h_locs h_c2_len
+                (refConstantAt_eq_of_ne_fn rp c _ (by decide) (fun _ _ _ => rfl))
+                h_inv₁ h_r h_knownR h_loc_res
               cases h_pR : evalPrimitiveOperand body.locals slots₁ amem₁ rhs with
               | error k =>
                 rw [h_pR] at h_evR
@@ -6444,7 +6524,9 @@ theorem evalRvalueIntoPlace_ref_eq (rp : RefProg) (c : Choice)
             (Miri.Interpreter.OperandPath.rvalue "operand") rop opnd
             (if (toMiriUnOp op).homogeneous then
               some (refLocalLayoutForTy rp.types dstTy) else none)
-            h_locs h_c1_len (by decide) h_inv h_op h_knownO h_loc_res
+            h_locs h_c1_len
+            (refConstantAt_eq_of_ne_fn rp c _ (by decide) (fun _ _ _ => rfl))
+            h_inv h_op h_knownO h_loc_res
           cases h_pO : evalPrimitiveOperand body.locals slots amem opnd with
           | error k =>
             rw [h_pO] at h_evO
@@ -6614,7 +6696,7 @@ theorem evalRvalueIntoPlace_ref_eq (rp : RefProg) (c : Choice)
                                       c discr.imm
                                       ⟨.local ctx.below.size dst.localId none (LocalsIdentity.ofAllocationToken 0),
                                         refLocalLayoutForTy rp.types dstTy⟩)) st₂ =
-                              .error err st' ∧ stepErrorFaultKind err = k
+                              .error err st' ∧ stepErrorFaultKind err = some k
                         | .ok (slots', _) =>
                           EStateM.bind
                             (Miri.Interpreter.Discriminant.readDiscriminant

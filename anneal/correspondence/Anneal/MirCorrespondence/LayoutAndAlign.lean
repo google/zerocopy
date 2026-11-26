@@ -3149,7 +3149,9 @@ theorem evalTerminatorV2_return_enforces_callerMem_validity_and_disjoint_spans
         | true => rw [h_eq] at h_t; cases h_t
         | false =>
           rw [h_eq] at h_t
-          cases msg <;> cases h_t
+          cases msg with
+          | overflow op => cases op <;> cases h_t
+          | _ => cases h_t
       | scalar _ | char _ | ordering _ | unit | enumVal _ _ | ptr _
       | slicePtr _ _ | rangeTo _ | rangeFrom _ | tuple _ | array _
       | bytes _ =>
