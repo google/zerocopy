@@ -1,0 +1,13 @@
+{
+  "kind": "cli",
+  "description": "Fail-closed error when setup receives an invalid local archive",
+  "display_command": "$ cargo anneal setup --local-archive invalid.tar.zst",
+  "argv": ["anneal", "setup", "--local-archive", "invalid.tar.zst"],
+  "expect_exit": 1,
+  "transcript": "transcript.txt",
+  "fresh_cache_env": true,
+  "normalize_tempdir": true,
+  "setup_files": {
+    "invalid.tar.zst": "not a valid toolchain archive\n"
+  }
+}

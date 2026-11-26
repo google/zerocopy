@@ -1,0 +1,11 @@
+$ cargo anneal init --help
+Scaffold starter Spec.lean and Proof.lean proof files
+
+Usage: cargo anneal init [OPTIONS]
+
+Options:
+      --manifest-path <MANIFEST_PATH>  Package Cargo.toml to attach starter proof files to (defaults to ./Cargo.toml)
+      --proof-dir <PROOF_DIR>          Output directory for Spec.lean and Proof.lean (defaults to <crate>/proof, or . with --standalone)
+      --select <SELECT>                Optional function path to note in the generated --select command
+      --standalone                     Create a self-contained runnable example (lib.rs, request.json, Spec.lean, Proof.lean)
+  -h, --help                           Print help

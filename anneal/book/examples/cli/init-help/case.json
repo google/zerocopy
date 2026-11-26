@@ -1,0 +1,8 @@
+{
+  "kind": "cli",
+  "description": "Subcommand help for cargo anneal init",
+  "display_command": "$ cargo anneal init --help",
+  "argv": ["anneal", "init", "--help"],
+  "expect_exit": 0,
+  "transcript": "transcript.txt"
+}

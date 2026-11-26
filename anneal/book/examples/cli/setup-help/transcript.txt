@@ -1,0 +1,16 @@
+$ cargo anneal setup --help
+Install or reuse the versioned Anneal toolchain archive.
+
+Without `--local-archive`, reuses an existing cached installation for this version or installs the pinned remote archive. With `--local-archive`, replaces any existing cached installation for this version while coordinating with concurrent `verify` runs via the cache lock. Pass `--clear-old` to remove older cached toolchain directories without prompting; on an interactive terminal without `--clear-old`, prompts before removing them.
+
+Usage: cargo anneal setup [OPTIONS]
+
+Options:
+      --local-archive <path>
+          Install a local archive, replacing any existing cached version
+
+      --clear-old
+          Remove older cached toolchain directories without prompting
+
+  -h, --help
+          Print help (see a summary with '-h')

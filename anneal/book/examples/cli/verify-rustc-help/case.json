@@ -1,0 +1,8 @@
+{
+  "kind": "cli",
+  "description": "Subcommand help for cargo anneal verify rustc",
+  "display_command": "$ cargo anneal verify rustc --help",
+  "argv": ["anneal", "verify", "rustc", "--help"],
+  "expect_exit": 0,
+  "transcript": "transcript.txt"
+}

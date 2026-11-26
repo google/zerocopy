@@ -1,0 +1,8 @@
+{
+  "kind": "cli",
+  "description": "Top-level cargo anneal --help output",
+  "display_command": "$ cargo anneal --help",
+  "argv": ["anneal", "--help"],
+  "expect_exit": 0,
+  "transcript": "transcript.txt"
+}
