@@ -13,3 +13,4 @@ public import Anneal.PureLift.Canaries.CoreAndHardening
 public import Anneal.PureLift.Canaries.PlanAndCfg
 public import Anneal.PureLift.Canaries.RegionReuse
 public import Anneal.PureLift.Canaries.Writebacks
+public import Anneal.PureLift.Canaries.FixedByteCodecBridge
