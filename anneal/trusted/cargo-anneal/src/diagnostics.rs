@@ -359,6 +359,25 @@ fn hint_for_audit(detail: &str) -> Option<String> {
     if detail.contains("Lean exited ") {
         return summarize_lean_errors(detail);
     }
+    if (detail.contains("exceeds size cap")
+        || detail.contains("grew past size cap")
+        || detail.contains("regular file exceeds ")
+        || detail.contains("regular file exceeded "))
+        && detail.contains("result.json")
+    {
+        let max_cap = crate::sandbox::MAX_CONFIGURABLE_INSPECTOR_RESULT_BYTES;
+        let at_ceiling = detail.contains(&format!(" {max_cap} bytes)"))
+            || detail.contains(&format!("({max_cap} bytes)"))
+            || detail.contains(&format!(" {max_cap}-byte limit"));
+        if !at_ceiling {
+            return Some(
+                "Inspector output `result.json` exceeded the output size cap (default 64 MiB). \
+                 Pass `--max-inspector-output-bytes <BYTES>` (up to 1 GiB) to raise the limit for \
+                 large crate exports."
+                    .into(),
+            );
+        }
+    }
     None
 }
 
@@ -669,6 +688,62 @@ mod tests {
             .to_string();
             let hint = hint_for_failure("unsupported", "capture", &detail).unwrap();
             assert!(hint.contains(needle), "{reason}: {hint}");
+        }
+    }
+
+    #[test]
+    fn maps_inspector_output_size_cap_hints_from_real_errors() {
+        let dir = tempfile::tempdir().unwrap();
+        let out = dir.path().join("out");
+        std::fs::create_dir_all(&out).unwrap();
+        let result_path = out.join("result.json");
+        std::fs::write(&result_path, b"0123456789abcdef").unwrap();
+
+        let door1_err = crate::sandbox::validate_inspector_result_with_cap(&out, "result.json", 10)
+            .unwrap_err()
+            .to_string();
+        let door1_hint = hint_for_failure("tool_failed", "audit", &door1_err).unwrap();
+        assert!(door1_hint.contains("--max-inspector-output-bytes"), "{door1_hint}");
+
+        let direct_err =
+            crate::sys_util::SafeFs::read_regular_string_capped(&result_path, 10, "audit")
+                .unwrap_err()
+                .to_string();
+        let direct_hint = hint_for_failure("tool_failed", "audit", &direct_err).unwrap();
+        assert!(direct_hint.contains("--max-inspector-output-bytes"), "{direct_hint}");
+
+        let grew_hint = hint_for_failure(
+            "tool_failed",
+            "audit",
+            "regular file exceeded 10-byte limit: /work/out/result.json",
+        )
+        .unwrap();
+        assert!(grew_hint.contains("--max-inspector-output-bytes"), "{grew_hint}");
+
+        let door1_grew_hint = hint_for_failure(
+            "tool_failed",
+            "audit",
+            "sandbox output /work/out/result.json grew past size cap (10 bytes)",
+        )
+        .unwrap();
+        assert!(door1_grew_hint.contains("--max-inspector-output-bytes"), "{door1_grew_hint}");
+
+        // When already at the 1 GiB ceiling, do not suggest raising the flag.
+        let max_cap = crate::sandbox::MAX_CONFIGURABLE_INSPECTOR_RESULT_BYTES;
+        for at_max in [
+            format!(
+                "sandbox output /work/out/result.json exceeds size cap ({} > {max_cap} bytes)",
+                max_cap + 1
+            ),
+            format!("sandbox output /work/out/result.json grew past size cap ({max_cap} bytes)"),
+            format!("regular file exceeds {max_cap}-byte limit: /work/out/result.json"),
+            format!("regular file exceeded {max_cap}-byte limit: /work/out/result.json"),
+        ] {
+            assert_eq!(
+                hint_for_failure("tool_failed", "audit", &at_max),
+                None,
+                "should suppress hint at ceiling: {at_max}"
+            );
         }
     }
 }

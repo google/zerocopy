@@ -202,7 +202,9 @@ with one declarative `SandboxPolicy` compiled to either Linux backend:
   `PR_SET_PDEATHSIG(SIGKILL)` followed immediately by
   `if libc::getppid() != parent_pid { libc::_exit(127); }` (closing the
   fork-to-`prctl` parent-death race), `RLIMIT_CORE = 0`,
-  `RLIMIT_FSIZE = 256 MiB`, `RLIMIT_NOFILE = 256`, and a parent wall-clock
+  `RLIMIT_FSIZE = 256 MiB` (raised on sandboxed inspector spawns to
+  `--max-inspector-output-bytes + 1` when set above `256 MiB`),
+  `RLIMIT_NOFILE = 256`, and a parent wall-clock
   timeout killing the child process group (`kill(-child_pgid, SIGKILL)`). On
   non-Linux `SandboxMode::Unsandboxed` hosts, spawns apply `env_clear()`,
   `.stdin(Stdio::null())`, `setpgid(0, 0)` (on Unix), and parent wall-clock
@@ -386,7 +388,8 @@ explicitly passed (producing a tainted Receipt v3).
     (discarding `.ir`/`.ir.sig`), and serialized Door 1 promotion atomically
     `fs::rename`s them into `stage/lib/` before unlocking downstream
     dependents.
-  - Inspectors: strictly `{"result.json"}` (≤ 64 MiB), or an empty `out/`
+  - Inspectors: strictly `{"result.json"}` (≤ 64 MiB by default, configurable
+    up to 1 GiB via `--max-inspector-output-bytes`), or an empty `out/`
     directory when Lean aborts before writing `result.json`, checked on **both**
     exit `0` and exit `1`.
 - **`ArtifactLedger` and `--export-lean-lib`:** Immediately before running

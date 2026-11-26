@@ -59,11 +59,38 @@ const TIMEOUT_OUTPUT_GRACE: Duration = Duration::from_millis(100);
 /// the child's final lines.
 const MAX_CHILD_STREAM_TAIL_BYTES: usize = 64 * 1024;
 
-/// Door 1 size cap for a single inspector `result.json` output (64 MiB).
-pub const MAX_INSPECTOR_RESULT_BYTES: u64 = 64 * 1024 * 1024;
+/// Default Door 1 size cap for a single inspector `result.json` output
+/// (64 MiB).
+pub const DEFAULT_MAX_INSPECTOR_RESULT_BYTES: u64 = 64 * 1024 * 1024;
 
-/// Per-child `RLIMIT_FSIZE` cap (256 MiB).
+/// Door 1 size cap for a single inspector `result.json` output under default
+/// settings (64 MiB).
+pub const MAX_INSPECTOR_RESULT_BYTES: u64 = DEFAULT_MAX_INSPECTOR_RESULT_BYTES;
+
+/// Hard upper ceiling for configurable Door 1 inspector output size limits
+/// (1 GiB).
+pub const MAX_CONFIGURABLE_INSPECTOR_RESULT_BYTES: u64 = 1024 * 1024 * 1024;
+
+/// Per-child default `RLIMIT_FSIZE` cap (256 MiB).
 pub const RLIMIT_FSIZE_BYTES: u64 = 256 * 1024 * 1024;
+
+/// Validate a caller-supplied Door 1 inspector output size cap in bytes.
+///
+/// Rejects `0` and values exceeding
+/// [`MAX_CONFIGURABLE_INSPECTOR_RESULT_BYTES`] (`1 GiB`) so untrusted
+/// inspector outputs remain bounded.
+pub fn validate_max_inspector_result_bytes(max_bytes: u64) -> Result<u64, String> {
+    if max_bytes == 0 {
+        return Err("max inspector output byte cap must be at least 1".to_owned());
+    }
+    if max_bytes > MAX_CONFIGURABLE_INSPECTOR_RESULT_BYTES {
+        return Err(format!(
+            "max inspector output byte cap ({max_bytes} bytes) exceeds hard ceiling of \
+             {MAX_CONFIGURABLE_INSPECTOR_RESULT_BYTES} bytes (1 GiB)"
+        ));
+    }
+    Ok(max_bytes)
+}
 
 /// Per-child `RLIMIT_NOFILE` cap (live-verified on Lean `v4.34.1` & `v4.35.0`).
 pub const RLIMIT_NOFILE_LIMIT: u64 = 256;
@@ -1050,7 +1077,17 @@ impl SandboxRuntime {
 
     /// Execute a single invocation under this runtime's confinement policy.
     pub fn execute(&self, policy: &SandboxPolicy) -> Result<Output, Failure> {
-        self.execute_with_stdout_sink(policy, None)
+        self.execute_with_options(policy, None, RLIMIT_FSIZE_BYTES)
+    }
+
+    /// Execute a single invocation under this runtime's confinement policy with
+    /// an explicit per-child `RLIMIT_FSIZE` cap in bytes.
+    pub(crate) fn execute_with_rlimit_fsize(
+        &self,
+        policy: &SandboxPolicy,
+        rlimit_fsize_bytes: u64,
+    ) -> Result<Output, Failure> {
+        self.execute_with_options(policy, None, rlimit_fsize_bytes)
     }
 
     /// Execute a single invocation under this runtime's confinement policy,
@@ -1066,24 +1103,28 @@ impl SandboxRuntime {
         stdout_path: &Path,
         max_stdout_bytes: u64,
     ) -> Result<Output, Failure> {
-        self.execute_with_stdout_sink(
+        self.execute_with_options(
             policy,
             Some((stdout_path.to_path_buf(), max_stdout_bytes)),
+            RLIMIT_FSIZE_BYTES,
         )
     }
 
-    fn execute_with_stdout_sink(
+    fn execute_with_options(
         &self,
         policy: &SandboxPolicy,
         stdout_file: Option<(PathBuf, u64)>,
+        rlimit_fsize_bytes: u64,
     ) -> Result<Output, Failure> {
         match self.backend {
-            ActiveSandbox::None => run_unsandboxed(policy, stdout_file),
+            ActiveSandbox::None => run_unsandboxed(policy, stdout_file, rlimit_fsize_bytes),
             #[cfg(target_os = "linux")]
-            ActiveSandbox::LinuxBwrap => linux::run_bwrap(self, policy, stdout_file),
+            ActiveSandbox::LinuxBwrap => {
+                linux::run_bwrap(self, policy, stdout_file, rlimit_fsize_bytes)
+            }
             #[cfg(target_os = "linux")]
             ActiveSandbox::LinuxLandlockSeccomp => {
-                linux::run_landlock_seccomp(self, policy, stdout_file)
+                linux::run_landlock_seccomp(self, policy, stdout_file, rlimit_fsize_bytes)
             }
             #[cfg(not(target_os = "linux"))]
             ActiveSandbox::LinuxBwrap | ActiveSandbox::LinuxLandlockSeccomp => Err(
@@ -1456,17 +1497,36 @@ pub fn validate_and_promote_olean_set(
     Ok(())
 }
 
-/// Door 1 validator for `TrustedBoundary.lean` inspector invocations.
+/// Door 1 validator for `TrustedBoundary.lean` inspector invocations using
+/// [`DEFAULT_MAX_INSPECTOR_RESULT_BYTES`] (64 MiB).
 ///
 /// Must be called on **both** exit `0` and exit `1`. Returns `Ok(None)` if
 /// `out_dir` is empty (for instance if Lean aborted before writing the result),
 /// `Ok(Some(bytes))` if `out_dir` contains strictly `expected_filename` as a
-/// regular non-hardlinked file `<= MAX_INSPECTOR_RESULT_BYTES`, and fails
-/// closed on any extra file, subdirectory, symlink, hardlink, or oversize file.
+/// regular non-hardlinked file `<= DEFAULT_MAX_INSPECTOR_RESULT_BYTES`, and
+/// fails closed on any extra file, subdirectory, symlink, hardlink, or oversize
+/// file.
 pub fn validate_inspector_result(
     out_dir: &Path,
     expected_filename: &str,
 ) -> Result<Option<Vec<u8>>, Failure> {
+    validate_inspector_result_with_cap(
+        out_dir,
+        expected_filename,
+        DEFAULT_MAX_INSPECTOR_RESULT_BYTES,
+    )
+}
+
+/// Door 1 validator for `TrustedBoundary.lean` / `SpecPreflight.lean` inspector
+/// invocations enforcing an explicit `max_bytes` upper bound
+/// (`1..=`[`MAX_CONFIGURABLE_INSPECTOR_RESULT_BYTES`]).
+pub fn validate_inspector_result_with_cap(
+    out_dir: &Path,
+    expected_filename: &str,
+    max_bytes: u64,
+) -> Result<Option<Vec<u8>>, Failure> {
+    let max_bytes = validate_max_inspector_result_bytes(max_bytes)
+        .map_err(|msg| Failure::operational("door1", msg))?;
     let entries = collect_out_entries(out_dir, "door1")?;
     if entries.is_empty() {
         return Ok(None);
@@ -1482,23 +1542,19 @@ pub fn validate_inspector_result(
         ));
     }
     let path = &entries[0].1;
-    let mut file = open_validated_out_file(path, MAX_INSPECTOR_RESULT_BYTES, "door1")?;
+    let mut file = open_validated_out_file(path, max_bytes, "door1")?;
     let mut bytes = Vec::new();
-    let mut limited = (&mut file).take(MAX_INSPECTOR_RESULT_BYTES + 1);
+    let mut limited = (&mut file).take(max_bytes.saturating_add(1));
     limited.read_to_end(&mut bytes).map_err(|e| {
         Failure::operational(
             "door1",
             format!("cannot read inspector output {}: {e}", path.display()),
         )
     })?;
-    if (bytes.len() as u64) > MAX_INSPECTOR_RESULT_BYTES {
+    if (bytes.len() as u64) > max_bytes {
         return Err(Failure::operational(
             "door1",
-            format!(
-                "sandbox output {} exceeds size cap ({} bytes)",
-                path.display(),
-                MAX_INSPECTOR_RESULT_BYTES
-            ),
+            format!("sandbox output {} exceeds size cap ({max_bytes} bytes)", path.display()),
         ));
     }
     Ok(Some(bytes))
@@ -2088,6 +2144,7 @@ fn drain_bounded_into(
 fn run_unsandboxed(
     policy: &SandboxPolicy,
     stdout_file: Option<(PathBuf, u64)>,
+    rlimit_fsize_bytes: u64,
 ) -> Result<Output, Failure> {
     reject_forbidden_loader_env(&policy.extra_env)?;
     let cwd = policy.child_cwd.as_ref().map_or(policy.rw_tmp.host.as_path(), |m| m.host.as_path());
@@ -2109,11 +2166,14 @@ fn run_unsandboxed(
         // routines (`setpgid`, `prctl`, `getppid`, `close_range`/`fcntl`,
         // `getrlimit`/`setrlimit`) before `exec`.
         unsafe {
-            cmd.pre_exec(move || linux::apply_process_hygiene(parent_pid, false));
+            cmd.pre_exec(move || {
+                linux::apply_process_hygiene(parent_pid, false, rlimit_fsize_bytes)
+            });
         }
     }
     #[cfg(all(unix, not(target_os = "linux")))]
     {
+        let _ = rlimit_fsize_bytes;
         use std::os::unix::process::CommandExt;
         // SAFETY: `setpgid(0, 0)` is async-signal-safe and isolates the child
         // process group for deterministic timeout reaping.
@@ -2123,6 +2183,10 @@ fn run_unsandboxed(
                 Ok(())
             });
         }
+    }
+    #[cfg(not(unix))]
+    {
+        let _ = rlimit_fsize_bytes;
     }
     spawn_and_wait_with_timeout(cmd, policy.timeout, "unsandboxed-lean", stdout_file)
 }
@@ -2139,7 +2203,7 @@ mod linux {
     };
 
     use super::{
-        MountSpec, OPTIONAL_SYS_PATHS, PathMapper, RLIMIT_FSIZE_BYTES, RLIMIT_NOFILE_LIMIT,
+        MountSpec, OPTIONAL_SYS_PATHS, PathMapper, RLIMIT_NOFILE_LIMIT,
         SandboxPolicy, SandboxRuntime, make_tree_writable, reject_forbidden_loader_env,
         resolve_pt_interp_lib_dirs, resolve_pt_interp_paths, set_mode,
         spawn_and_wait_with_timeout,
@@ -2854,6 +2918,7 @@ mod linux {
     pub(super) unsafe fn apply_process_hygiene(
         parent_pid: libc::pid_t,
         use_setsid: bool,
+        rlimit_fsize_bytes: u64,
     ) -> io::Result<()> {
         if use_setsid {
             if unsafe { libc::setsid() } < 0 {
@@ -2892,7 +2957,7 @@ mod linux {
             }};
         }
         set_clamped_rlimit!(libc::RLIMIT_CORE, 0);
-        set_clamped_rlimit!(libc::RLIMIT_FSIZE, RLIMIT_FSIZE_BYTES);
+        set_clamped_rlimit!(libc::RLIMIT_FSIZE, rlimit_fsize_bytes);
         set_clamped_rlimit!(libc::RLIMIT_NOFILE, RLIMIT_NOFILE_LIMIT);
         Ok(())
     }
@@ -3022,6 +3087,7 @@ mod linux {
         runtime: &SandboxRuntime,
         policy: &SandboxPolicy,
         stdout_file: Option<(PathBuf, u64)>,
+        rlimit_fsize_bytes: u64,
     ) -> Result<Output, Failure> {
         reject_forbidden_loader_env(&policy.extra_env)?;
         let bwrap = runtime.bwrap_path.as_ref().ok_or_else(|| {
@@ -3136,7 +3202,7 @@ mod linux {
         // BPF program while every other descriptor `>= 3` closes on `exec`.
         unsafe {
             cmd.pre_exec(move || {
-                apply_process_hygiene(parent_pid, true)?;
+                apply_process_hygiene(parent_pid, true, rlimit_fsize_bytes)?;
                 if let Some(fd) = preserve_seccomp_fd
                     && libc::fcntl(fd, libc::F_SETFD, 0) < 0
                 {
@@ -3156,6 +3222,7 @@ mod linux {
         runtime: &SandboxRuntime,
         policy: &SandboxPolicy,
         stdout_file: Option<(PathBuf, u64)>,
+        rlimit_fsize_bytes: u64,
     ) -> Result<Output, Failure> {
         reject_forbidden_loader_env(&policy.extra_env)?;
         let ruleset = build_landlock_ruleset(runtime, policy)?;
@@ -3185,7 +3252,7 @@ mod linux {
         // syscalls and two in-place `u32` writes with zero heap allocation.
         unsafe {
             cmd.pre_exec(move || {
-                apply_process_hygiene(parent_pid, true)?;
+                apply_process_hygiene(parent_pid, true, rlimit_fsize_bytes)?;
                 // Lean's `-M` memory limit reads `/proc/self/statm` alongside
                 // `getrusage`. Grant read-only Landlock access strictly to this
                 // child's own `/proc/<child_pid>/statm` inode (`O_PATH` inside
@@ -3250,6 +3317,7 @@ mod linux {
         _runtime: &SandboxRuntime,
         _policy: &SandboxPolicy,
         _stdout_file: Option<(PathBuf, u64)>,
+        _rlimit_fsize_bytes: u64,
     ) -> Result<Output, Failure> {
         Err(Failure::operational(
             "sandbox",
@@ -3570,6 +3638,206 @@ mod tests {
     }
 
     #[test]
+    fn door1_inspector_result_cap_enforces_default_and_configurable_bounds() {
+        assert!(validate_max_inspector_result_bytes(0).unwrap_err().contains("at least 1"));
+        assert!(
+            validate_max_inspector_result_bytes(MAX_CONFIGURABLE_INSPECTOR_RESULT_BYTES + 1)
+                .unwrap_err()
+                .contains("hard ceiling")
+        );
+        assert_eq!(validate_max_inspector_result_bytes(1).unwrap(), 1);
+        assert_eq!(
+            validate_max_inspector_result_bytes(DEFAULT_MAX_INSPECTOR_RESULT_BYTES).unwrap(),
+            DEFAULT_MAX_INSPECTOR_RESULT_BYTES
+        );
+        assert_eq!(
+            validate_max_inspector_result_bytes(MAX_CONFIGURABLE_INSPECTOR_RESULT_BYTES).unwrap(),
+            MAX_CONFIGURABLE_INSPECTOR_RESULT_BYTES
+        );
+
+        let dir = tempfile::tempdir().unwrap();
+        let out = dir.path().join("out");
+        fs::create_dir_all(&out).unwrap();
+        let res_path = out.join("result.json");
+        fs::write(&res_path, b"{\"ok\":true}").unwrap();
+
+        // Invalid bounds fail closed before opening or reading.
+        let err_zero = validate_inspector_result_with_cap(&out, "result.json", 0).unwrap_err();
+        assert_eq!(err_zero.phase, "door1");
+        assert!(err_zero.message.contains("at least 1"), "{err_zero}");
+
+        let err_ceiling = validate_inspector_result_with_cap(
+            &out,
+            "result.json",
+            MAX_CONFIGURABLE_INSPECTOR_RESULT_BYTES + 1,
+        )
+        .unwrap_err();
+        assert_eq!(err_ceiling.phase, "door1");
+        assert!(err_ceiling.message.contains("hard ceiling"), "{err_ceiling}");
+
+        // Small explicit cap rejects larger payload and accepts exact match.
+        let err_small = validate_inspector_result_with_cap(&out, "result.json", 10).unwrap_err();
+        assert_eq!(err_small.phase, "door1");
+        assert!(err_small.message.contains("exceeds size cap"), "{err_small}");
+        let exact = validate_inspector_result_with_cap(&out, "result.json", 11).unwrap().unwrap();
+        assert_eq!(exact, b"{\"ok\":true}");
+
+        // Sparse 64 MiB + 1 file fails default 64 MiB cap and passes raised
+        // 256 MiB cap.
+        let f =
+            fs::OpenOptions::new().write(true).create(true).truncate(true).open(&res_path).unwrap();
+        f.set_len(DEFAULT_MAX_INSPECTOR_RESULT_BYTES + 1).unwrap();
+        drop(f);
+        let default_err = validate_inspector_result(&out, "result.json").unwrap_err();
+        assert_eq!(default_err.phase, "door1");
+        assert!(default_err.message.contains("exceeds size cap"), "{default_err}");
+
+        let raised = validate_inspector_result_with_cap(&out, "result.json", 256 * 1024 * 1024)
+            .unwrap()
+            .unwrap();
+        assert_eq!(raised.len() as u64, DEFAULT_MAX_INSPECTOR_RESULT_BYTES + 1);
+    }
+
+    #[cfg(target_os = "linux")]
+    #[test]
+    fn execute_with_rlimit_fsize_propagates_custom_limit_to_child() {
+        const MODE_ENV: &str = "ANNEAL_SANDBOX_RLIMIT_FSIZE_PROBE";
+        if std::env::var_os(MODE_ENV).is_some() {
+            let mut rlim = libc::rlimit { rlim_cur: 0, rlim_max: 0 };
+            // SAFETY: `rlim` is a valid mutable `libc::rlimit`.
+            assert_eq!(unsafe { libc::getrlimit(libc::RLIMIT_FSIZE, &mut rlim) }, 0);
+            println!("RLIMIT_FSIZE_CUR={}", rlim.rlim_cur);
+            return;
+        }
+
+        let dir = tempfile::tempdir().unwrap();
+        let out_dir = dir.path().join("out");
+        let tmp_dir = dir.path().join("tmp");
+        fs::create_dir_all(&out_dir).unwrap();
+        fs::create_dir_all(&tmp_dir).unwrap();
+
+        let exe = std::env::current_exe().unwrap();
+        let rt = SandboxRuntime {
+            backend: ActiveSandbox::None,
+            bwrap_path: None,
+            bwrap_seccomp_active: false,
+            bwrap_disable_userns: false,
+            exec_lean: exe.clone(),
+            toolchain_dir: dir.path().to_path_buf(),
+            toolchain_ro_mounts: Vec::new(),
+            extra_toolchain_mounts: Vec::new(),
+            pt_interp_paths: Vec::new(),
+            pt_interp_lib_dirs: Vec::new(),
+            needs_nix_store: false,
+            landlock_abi: 0,
+        };
+        let policy = SandboxPolicy {
+            exec_bin: exe,
+            args: vec![
+                "--exact".to_owned(),
+                "sandbox::tests::execute_with_rlimit_fsize_propagates_custom_limit_to_child"
+                    .to_owned(),
+                "--nocapture".to_owned(),
+            ],
+            ro_mounts: Vec::new(),
+            rw_out: MountSpec { host: out_dir, child: PathBuf::from("/work/out") },
+            rw_tmp: MountSpec { host: tmp_dir, child: PathBuf::from("/work/tmp") },
+            child_cwd: None,
+            extra_env: BTreeMap::from([(MODE_ENV.to_owned(), "1".to_owned())]),
+            timeout: Duration::from_secs(10),
+        };
+
+        let mut host_lim = libc::rlimit { rlim_cur: 0, rlim_max: 0 };
+        // SAFETY: `host_lim` is a valid mutable `libc::rlimit`.
+        assert_eq!(unsafe { libc::getrlimit(libc::RLIMIT_FSIZE, &mut host_lim) }, 0);
+        let desired = 128 * 1024u64;
+        let expected = if host_lim.rlim_max == libc::RLIM_INFINITY {
+            desired
+        } else {
+            desired.min(host_lim.rlim_max)
+        };
+
+        let out = rt.execute_with_rlimit_fsize(&policy, desired).unwrap();
+        assert!(out.status.success(), "{out:?}");
+        let stdout = String::from_utf8(out.stdout).unwrap();
+        let reported: u64 = stdout
+            .lines()
+            .find_map(|line| {
+                line.split_once("RLIMIT_FSIZE_CUR=")
+                    .and_then(|(_, rest)| rest.trim().parse::<u64>().ok())
+            })
+            .unwrap_or_else(|| panic!("missing RLIMIT_FSIZE_CUR marker in stdout: {stdout:?}"));
+        assert_eq!(reported, expected);
+    }
+
+    #[cfg(target_os = "linux")]
+    #[test]
+    fn rlimit_fsize_headroom_leaves_over_cap_result_above_door1_cap() {
+        const OUT_ENV: &str = "ANNEAL_SANDBOX_RLIMIT_HEADROOM_OUT";
+        if let Some(dest) = std::env::var_os(OUT_ENV) {
+            let mut f = fs::File::create(dest).unwrap();
+            let buf = [b'x'; 8192];
+            let _ = std::io::Write::write_all(&mut f, &buf);
+            return;
+        }
+
+        let cap = 4096u64;
+        let mut host_lim = libc::rlimit { rlim_cur: 0, rlim_max: 0 };
+        // SAFETY: `host_lim` is a valid mutable `libc::rlimit`.
+        assert_eq!(unsafe { libc::getrlimit(libc::RLIMIT_FSIZE, &mut host_lim) }, 0);
+        if host_lim.rlim_max != libc::RLIM_INFINITY && host_lim.rlim_max <= cap {
+            return;
+        }
+
+        let dir = tempfile::tempdir().unwrap();
+        let out_dir = dir.path().join("out");
+        let tmp_dir = dir.path().join("tmp");
+        fs::create_dir_all(&out_dir).unwrap();
+        fs::create_dir_all(&tmp_dir).unwrap();
+        let result_path = out_dir.join("result.json");
+
+        let exe = std::env::current_exe().unwrap();
+        let rt = SandboxRuntime {
+            backend: ActiveSandbox::None,
+            bwrap_path: None,
+            bwrap_seccomp_active: false,
+            bwrap_disable_userns: false,
+            exec_lean: exe.clone(),
+            toolchain_dir: dir.path().to_path_buf(),
+            toolchain_ro_mounts: Vec::new(),
+            extra_toolchain_mounts: Vec::new(),
+            pt_interp_paths: Vec::new(),
+            pt_interp_lib_dirs: Vec::new(),
+            needs_nix_store: false,
+            landlock_abi: 0,
+        };
+        let policy = SandboxPolicy {
+            exec_bin: exe,
+            args: vec![
+                "--exact".to_owned(),
+                "sandbox::tests::rlimit_fsize_headroom_leaves_over_cap_result_above_door1_cap"
+                    .to_owned(),
+                "--nocapture".to_owned(),
+            ],
+            ro_mounts: Vec::new(),
+            rw_out: MountSpec { host: out_dir.clone(), child: PathBuf::from("/work/out") },
+            rw_tmp: MountSpec { host: tmp_dir, child: PathBuf::from("/work/tmp") },
+            child_cwd: None,
+            extra_env: BTreeMap::from([(
+                OUT_ENV.to_owned(),
+                result_path.to_str().unwrap().to_owned(),
+            )]),
+            timeout: Duration::from_secs(10),
+        };
+
+        let out = rt.execute_with_rlimit_fsize(&policy, cap + 1).unwrap();
+        assert!(!out.status.success(), "over-cap write should hit RLIMIT_FSIZE: {out:?}");
+        let err = validate_inspector_result_with_cap(&out_dir, "result.json", cap).unwrap_err();
+        assert_eq!(err.phase, "door1");
+        assert!(err.message.contains("exceeds size cap"), "{err}");
+    }
+
+    #[test]
     fn door1_olean_set_promotes_allowed_and_discards_ir() {
         let dir = tempfile::tempdir().unwrap();
         let out = dir.path().join("out");
@@ -3833,9 +4101,13 @@ mod tests {
         //    the process group (or hits the short timeout on non-Linux) and
         //    returns without blocking for 60s.
         let start = Instant::now();
-        let out =
-            spawn_and_wait_with_timeout(make_cmd("same_pgid"), Duration::from_secs(3), "test", None)
-                .expect("same-pgid descendant should be reaped cleanly");
+        let out = spawn_and_wait_with_timeout(
+            make_cmd("same_pgid"),
+            Duration::from_secs(3),
+            "test",
+            None,
+        )
+        .expect("same-pgid descendant should be reaped cleanly");
         assert!(out.status.success());
         assert!(
             String::from_utf8_lossy(&out.stdout).contains("leader-out"),

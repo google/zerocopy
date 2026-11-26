@@ -4162,3 +4162,180 @@ fn allow_unstable_feature_conflicts_with_stdlib_crate_request() {
     assert_eq!(receipt["phase"], "request", "{receipt}");
     assert!(receipt["detail"].as_str().unwrap().contains("stdlib_crate"), "{receipt}");
 }
+
+#[test]
+fn max_inspector_output_bytes_validates_bounds_and_propagates_to_verify() {
+    let project = tempfile::tempdir().unwrap();
+    for route in [Route::Direct, Route::Cargo] {
+        for subargs in [&["verify", "--help"][..], &["verify", "rustc", "--help"][..]] {
+            let mut cmd = command(route, project.path());
+            cmd.args(subargs);
+            let output = cmd.output().unwrap();
+            assert_eq!(output.status.code(), Some(0), "{route:?} {subargs:?}: {output:?}");
+            let stdout = String::from_utf8_lossy(&output.stdout);
+            assert!(stdout.contains("--max-inspector-output-bytes"), "{route:?} {subargs:?}");
+        }
+
+        for bad in ["0", "1073741825", "-1", "not-a-number"] {
+            let flag = format!("--max-inspector-output-bytes={bad}");
+            let mut cmd = command(route, project.path());
+            cmd.args(["verify", "--request", "request.json", &flag]);
+            let output = cmd.output().unwrap();
+            assert_result(&output, 2, "", "");
+            let stderr = String::from_utf8_lossy(&output.stderr);
+            assert!(stderr.contains("max-inspector-output-bytes"), "{route:?} bad={bad}: {stderr}");
+        }
+    }
+
+    // End-to-end propagation through `verify`: configure a fake unpinned Lean
+    // toolchain whose inspector run writes a 256-byte `result.json`. Under
+    // `--max-inspector-output-bytes 64`, Door 1 rejects `result.json` with the
+    // size-cap error and `audit` hint; raising `--max-inspector-output-bytes`
+    // to `4096` admits the 256-byte file past Door 1 into protocol parsing.
+    {
+        use std::{fs, os::unix::fs::PermissionsExt};
+
+        let project = tempfile::tempdir().unwrap();
+        let root = project.path();
+        fs::write(root.join("lib.rs"), b"pub fn id(x: u8) -> u8 { x }\n").unwrap();
+        fs::write(root.join("Spec.lean"), b"-- spec\n").unwrap();
+        fs::write(root.join("Proof.lean"), b"-- proof\n").unwrap();
+        let sysroot = root.join("rust-sysroot");
+        fs::create_dir_all(&sysroot).unwrap();
+
+        let lean_prefix = root.join("lean-prefix");
+        fs::create_dir_all(lean_prefix.join("bin")).unwrap();
+        fs::create_dir_all(lean_prefix.join("lib/lean")).unwrap();
+        fs::write(lean_prefix.join("lib/lean/Init.olean"), b"olean\x02init").unwrap();
+        let fake_lean = lean_prefix.join("bin/lean");
+        let lean_script = format!(
+            "#!/bin/sh\n\
+             set -eu\n\
+             if [ \"${{1:-}}\" = '--version' ]; then\n\
+               printf 'Lean (version 4.35.0)\\n'\n\
+               exit 0\n\
+             fi\n\
+             if [ \"${{1:-}}\" = '--print-prefix' ]; then\n\
+               printf '%s\\n' {prefix:?}\n\
+               exit 0\n\
+             fi\n\
+             out_olean=''\n\
+             run_mode=0\n\
+             last=''\n\
+             while [ \"$#\" -gt 0 ]; do\n\
+               case \"$1\" in\n\
+                 -o)\n\
+                   shift\n\
+                   out_olean=\"$1\"\n\
+                   ;;\n\
+                 --run)\n\
+                   run_mode=1\n\
+                   ;;\n\
+               esac\n\
+               last=\"$1\"\n\
+               shift\n\
+             done\n\
+             if [ -n \"$out_olean\" ]; then\n\
+               printf 'olean\\002inspector' > \"$out_olean\"\n\
+               exit 0\n\
+             fi\n\
+             if [ \"$run_mode\" -eq 1 ]; then\n\
+               dd if=/dev/zero bs=256 count=1 of=\"$last\" status=none\n\
+               exit 0\n\
+             fi\n\
+             exit 0\n",
+            prefix = lean_prefix.display(),
+        );
+        fs::write(&fake_lean, lean_script).unwrap();
+        fs::set_permissions(&fake_lean, fs::Permissions::from_mode(0o755)).unwrap();
+
+        let fake_capture = root.join("fake-capture");
+        let cap_script = "#!/bin/sh\n\
+            set -eu\n\
+            out_dir=''\n\
+            while [ \"$#\" -gt 0 ]; do\n\
+              if [ \"$1\" = '--out-dir' ]; then\n\
+                shift\n\
+                out_dir=\"$1\"\n\
+              fi\n\
+              shift\n\
+            done\n\
+            mkdir -p \"$out_dir\"\n\
+            cat > \"$out_dir/capture.json\" <<'JSON'\n\
+            {\n\
+              \"schema_version\": 5,\n\
+              \"compiler\": {\"commit\": \"f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1\"},\n\
+              \"configuration\": {\n\
+                \"crate_name\": \"demo\",\n\
+                \"crate_type\": \"lib\",\n\
+                \"panic\": \"unwind\",\n\
+                \"overflow_checks\": false,\n\
+                \"target\": \"x86_64-unknown-linux-gnu\",\n\
+                \"edition\": \"2024\",\n\
+                \"cfg\": [],\n\
+                \"env\": {}\n\
+              },\n\
+              \"source_files\": [],\n\
+              \"census\": [],\n\
+              \"selected\": [],\n\
+              \"program\": {\"scope\": {\"kind\": \"selected_unit\", \"roots\": [\"id\"]}, \"bodies\": []}\n\
+            }\n\
+            JSON\n\
+            printf -- '-- captured\\n' > \"$out_dir/Captured.lean\"\n\
+            printf '{\"status\":\"captured\"}\\n'\n";
+        fs::write(&fake_capture, cap_script).unwrap();
+        fs::set_permissions(&fake_capture, fs::Permissions::from_mode(0o755)).unwrap();
+
+        let run_verify_with_cap = |cap_bytes: &str| -> serde_json::Value {
+            let mut cmd = command(Route::Direct, root);
+            cmd.args([
+                "verify",
+                "--format",
+                "json",
+                "--no-cache",
+                "--allow-unpinned-lean",
+                "--allow-unsandboxed-elaboration",
+                "--capture",
+                fake_capture.to_str().unwrap(),
+                "--sysroot",
+                sysroot.to_str().unwrap(),
+                "--lean",
+                fake_lean.to_str().unwrap(),
+                "--max-inspector-output-bytes",
+                cap_bytes,
+                "rustc",
+                "lib.rs",
+                "--crate-name",
+                "demo",
+                "--select",
+                "id",
+                "--spec-file",
+                "Spec=Spec.lean",
+                "--proof-file",
+                "Proof=Proof.lean",
+            ]);
+            let output = cmd.output().unwrap();
+            assert_eq!(output.status.code(), Some(2), "cap={cap_bytes}: {output:?}");
+            serde_json::from_slice(&output.stdout).unwrap()
+        };
+
+        let small_receipt = run_verify_with_cap("64");
+        assert_eq!(small_receipt["status"], "tool_failed", "{small_receipt}");
+        assert_eq!(small_receipt["phase"], "audit", "{small_receipt}");
+        let small_detail = small_receipt["detail"].as_str().unwrap();
+        assert!(small_detail.contains("exceeds size cap (256 > 64 bytes)"), "{small_receipt}");
+        let small_hint = small_receipt["hint"].as_str().unwrap();
+        assert!(small_hint.contains("--max-inspector-output-bytes"), "{small_receipt}");
+
+        let raised_receipt = run_verify_with_cap("4096");
+        assert_eq!(raised_receipt["status"], "tool_failed", "{raised_receipt}");
+        assert_eq!(raised_receipt["phase"], "audit", "{raised_receipt}");
+        let raised_detail = raised_receipt["detail"].as_str().unwrap();
+        assert!(!raised_detail.contains("exceeds size cap"), "{raised_receipt}");
+        assert!(
+            raised_detail.contains("unexpected inspector protocol response"),
+            "{raised_receipt}"
+        );
+        assert!(raised_receipt["hint"].is_null(), "{raised_receipt}");
+    }
+}

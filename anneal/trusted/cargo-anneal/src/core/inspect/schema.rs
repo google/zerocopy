@@ -21,7 +21,9 @@ use crate::core::{
             ArtifactAxis, AssuranceProfile, AxiomAxis, ContainmentAxis, ReplayAxis, ScopeAxis,
             TaintAxis,
         },
-        strict_json::{ObjectCursor, StrictJsonDom, escape_json_pointer_token},
+        strict_json::{
+            DEFAULT_MAX_RECEIPT_JSON_BYTES, ObjectCursor, StrictJsonDom, escape_json_pointer_token,
+        },
     },
 };
 
@@ -638,11 +640,24 @@ impl ReceiptEnvelope {
     }
 }
 
-/// Parse raw receipt bytes using [`StrictJsonDom`], validate the schema, run
-/// all 14 cross-checks, and compute its [`AssuranceProfile`].
+/// Parse raw receipt bytes using [`StrictJsonDom`] with the default 64 MiB cap,
+/// validate the schema, run all 14 cross-checks, and compute its
+/// [`AssuranceProfile`].
 pub fn parse_and_validate_receipt(bytes: &[u8]) -> Result<ReceiptEnvelope, InspectParseError> {
+    parse_and_validate_receipt_with_max_bytes(bytes, DEFAULT_MAX_RECEIPT_JSON_BYTES)
+}
+
+/// Parse raw receipt bytes using [`StrictJsonDom`] with an explicit `max_bytes`
+/// limit (up to
+/// [`crate::core::inspect::MAX_CONFIGURABLE_RECEIPT_JSON_BYTES`]), validate
+/// the schema, run all 14 cross-checks, and compute its [`AssuranceProfile`].
+pub fn parse_and_validate_receipt_with_max_bytes(
+    bytes: &[u8],
+    max_bytes: usize,
+) -> Result<ReceiptEnvelope, InspectParseError> {
+    let raw_value = StrictJsonDom::parse_with_max_bytes(bytes, max_bytes)
+        .map_err(InspectParseError::Operational)?;
     let receipt_sha256 = sha256_bytes(bytes);
-    let raw_value = StrictJsonDom::parse(bytes).map_err(InspectParseError::Operational)?;
     let root_obj = raw_value.as_object().ok_or_else(|| {
         InspectParseError::Operational("receipt root must be a JSON object".into())
     })?;
@@ -4297,5 +4312,23 @@ pub(crate) mod tests {
                 sha_env.invariant_violations
             );
         }
+    }
+
+    #[test]
+    fn parse_and_validate_receipt_with_max_bytes_enforces_and_raises_cap() {
+        let receipt_bytes = serde_json::to_vec(&sample_success_json()).unwrap();
+        let err = parse_and_validate_receipt_with_max_bytes(&receipt_bytes, 64).unwrap_err();
+        assert_eq!(err.exit_code(), 2);
+        assert!(err.message().contains("64-byte cap"), "{err:?}");
+
+        let mut over_default = vec![b' '; DEFAULT_MAX_RECEIPT_JSON_BYTES];
+        over_default.extend_from_slice(&receipt_bytes);
+        let default_err = parse_and_validate_receipt(&over_default).unwrap_err();
+        assert_eq!(default_err.exit_code(), 2);
+        assert!(default_err.message().contains("cap"), "{default_err:?}");
+
+        let env = parse_and_validate_receipt_with_max_bytes(&over_default, 256 * 1024 * 1024)
+            .expect("raised cap must parse receipt larger than 64 MiB");
+        assert!(env.invariant_violations.is_empty(), "{:?}", env.invariant_violations);
     }
 }

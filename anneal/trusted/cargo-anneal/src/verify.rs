@@ -352,6 +352,17 @@ pub struct VerifyArgs {
         value_parser = clap::value_parser!(u32).range(1..)
     )]
     lean_memory_mb: Option<u32>,
+    /// Maximum Lean inspector `result.json` output size in bytes (`64 MiB` by
+    /// default, up to `1 GiB`; also raises child `RLIMIT_FSIZE` when above
+    /// `256 MiB`).
+    #[arg(
+        long,
+        global = true,
+        default_value_t = crate::sandbox::DEFAULT_MAX_INSPECTOR_RESULT_BYTES,
+        value_name = "BYTES",
+        value_parser = parse_max_inspector_output_bytes_arg
+    )]
+    max_inspector_output_bytes: u64,
     /// Disable prebuilt and local disk `.olean` caching for bundled modules and
     /// `TrustedBoundary`.
     #[arg(long, global = true)]
@@ -624,6 +635,14 @@ fn parse_unstable_feature_arg(raw: &str) -> std::result::Result<String, String> 
         return Err(format!("invalid feature name {raw:?}: expected [a-z][a-z0-9_]*"));
     }
     Ok(raw.to_owned())
+}
+
+/// Parse and validate `--max-inspector-output-bytes <BYTES>`.
+fn parse_max_inspector_output_bytes_arg(raw: &str) -> std::result::Result<u64, String> {
+    let bytes: u64 = raw.parse().map_err(|_| {
+        format!("invalid `--max-inspector-output-bytes` value {raw:?}: expected a positive integer")
+    })?;
+    crate::sandbox::validate_max_inspector_result_bytes(bytes)
 }
 
 /// The operator's `--allow-unstable-feature` names, sorted and deduplicated.
@@ -3488,6 +3507,9 @@ fn run<Out: std::io::Write + Send, ErrOut: std::io::Write + Send>(
         SandboxMode::PreferBwrapOrLandlock
     });
     checker.set_lean_memory_limit_mb(args.lean_memory_mb);
+    checker
+        .set_max_inspector_result_bytes(Some(args.max_inspector_output_bytes))
+        .map_err(|e| error("tool_failed", "audit", e.message))?;
     checker.set_use_olean_cache(!args.no_cache);
     checker.set_no_rebuild_bundled(args.no_rebuild_bundled);
     checker.set_prebuilt_olean_dir(tools.prebuilt_dir);
@@ -6555,6 +6577,7 @@ mod tests {
             paranoid_quorum: false,
             allow_unstable_feature: Vec::new(),
             lean_memory_mb: None,
+            max_inspector_output_bytes: crate::sandbox::DEFAULT_MAX_INSPECTOR_RESULT_BYTES,
             no_cache: false,
             no_rebuild_bundled: false,
             shard: ShardArgs::default(),
@@ -6599,6 +6622,8 @@ mod tests {
                         paranoid_quorum: false,
                         overwrite_artifacts: false,
                         lean_memory_mb: None,
+                        max_inspector_output_bytes:
+                            crate::sandbox::DEFAULT_MAX_INSPECTOR_RESULT_BYTES,
                         no_cache: false,
                         no_rebuild_bundled: false,
                         shard: ShardArgs::default(),
@@ -7116,6 +7141,7 @@ mod tests {
             paranoid_quorum: false,
             allow_unstable_feature: Vec::new(),
             lean_memory_mb: None,
+            max_inspector_output_bytes: crate::sandbox::DEFAULT_MAX_INSPECTOR_RESULT_BYTES,
             no_cache: false,
             no_rebuild_bundled: false,
             shard: ShardArgs::default(),
@@ -7166,6 +7192,7 @@ mod tests {
                 paranoid_quorum: false,
                 allow_unstable_feature: Vec::new(),
                 lean_memory_mb: None,
+                max_inspector_output_bytes: crate::sandbox::DEFAULT_MAX_INSPECTOR_RESULT_BYTES,
                 no_cache: false,
                 no_rebuild_bundled: false,
                 shard: ShardArgs::default(),
@@ -7953,6 +7980,7 @@ mod tests {
             export_lean_lib: false,
             overwrite_artifacts: false,
             lean_memory_mb: None,
+            max_inspector_output_bytes: crate::sandbox::DEFAULT_MAX_INSPECTOR_RESULT_BYTES,
             allow_unsandboxed_elaboration: false,
             allow_sorry_in_proof: false,
             allow_unstable_feature: Vec::new(),

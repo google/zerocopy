@@ -35,9 +35,12 @@ use crate::{
             },
             schema::{
                 InspectParseError, ParsedReceipt, PolicyRequirements, UnknownFieldsPolicy,
-                parse_and_validate_receipt,
+                parse_and_validate_receipt_with_max_bytes,
             },
-            strict_json::{MAX_RECEIPT_JSON_BYTES, StrictJsonDom},
+            strict_json::{
+                DEFAULT_MAX_RECEIPT_JSON_BYTES, MAX_CONFIGURABLE_RECEIPT_JSON_BYTES, StrictJsonDom,
+                validate_max_receipt_json_bytes,
+            },
         },
         sanitize::SanitizedInline,
     },
@@ -212,6 +215,22 @@ pub struct InspectArgs {
     /// `1` when any Tier A regression is detected.
     #[arg(long, requires = "diff")]
     pub require_unchanged_specs: bool,
+    /// Maximum receipt JSON size in bytes (`64 MiB` by default, up to `1 GiB`).
+    #[arg(
+        long,
+        default_value_t = DEFAULT_MAX_RECEIPT_JSON_BYTES as u64,
+        value_name = "BYTES",
+        value_parser = parse_max_receipt_bytes_arg
+    )]
+    pub max_receipt_bytes: u64,
+}
+
+fn parse_max_receipt_bytes_arg(raw: &str) -> Result<u64, String> {
+    let bytes: u64 = raw.parse().map_err(|_| {
+        format!("invalid `--max-receipt-bytes` value {raw:?}: expected a positive integer")
+    })?;
+    validate_max_receipt_json_bytes(bytes)?;
+    Ok(bytes)
 }
 
 fn parse_feature_name_arg(raw: &str) -> Result<String, String> {
@@ -261,6 +280,8 @@ fn run(
     quiet: bool,
     verbose: bool,
 ) -> Result<ExitCode, InspectParseError> {
+    let max_receipt_bytes = validate_max_receipt_json_bytes(args.max_receipt_bytes)
+        .map_err(InspectParseError::Operational)?;
     let render_opts = build_render_options(args, color, quiet, verbose);
 
     if let Some(diff_paths) = &args.diff {
@@ -269,10 +290,10 @@ fn run(
                 "`--diff` requires exactly two receipt paths".into(),
             ));
         }
-        let base_bytes = read_receipt_input(&diff_paths[0])?;
-        let head_bytes = read_receipt_input(&diff_paths[1])?;
-        let base = parse_and_validate_receipt(&base_bytes)?;
-        let head = parse_and_validate_receipt(&head_bytes)?;
+        let base_bytes = read_receipt_input(&diff_paths[0], max_receipt_bytes)?;
+        let head_bytes = read_receipt_input(&diff_paths[1], max_receipt_bytes)?;
+        let base = parse_and_validate_receipt_with_max_bytes(&base_bytes, max_receipt_bytes)?;
+        let head = parse_and_validate_receipt_with_max_bytes(&head_bytes, max_receipt_bytes)?;
         let unknown_policy = UnknownFieldsPolicy::from(args.unknown_fields);
         if unknown_policy == UnknownFieldsPolicy::Warn {
             warn_unknown_fields("base receipt", &base.unrecognized_fields);
@@ -327,8 +348,8 @@ fn run(
         .receipt
         .as_deref()
         .ok_or_else(|| InspectParseError::Operational("missing receipt path argument".into()))?;
-    let bytes = read_receipt_input(path)?;
-    let mut env = parse_and_validate_receipt(&bytes)?;
+    let bytes = read_receipt_input(path, max_receipt_bytes)?;
+    let mut env = parse_and_validate_receipt_with_max_bytes(&bytes, max_receipt_bytes)?;
 
     let unknown_policy = UnknownFieldsPolicy::from(args.unknown_fields);
     if unknown_policy == UnknownFieldsPolicy::Deny && !env.unrecognized_fields.is_empty() {
@@ -348,6 +369,7 @@ fn run(
             &bytes,
             &env.receipt_sha256,
             args.require_exact_artifacts,
+            max_receipt_bytes,
         )?;
         if summary.exact_match && summary.checked_files > 0 {
             env.profile.artifacts = ArtifactAxis::VerifiedLocal {
@@ -454,24 +476,41 @@ fn warn_unknown_fields(label: &str, fields: &[String]) {
     }
 }
 
-fn read_receipt_input(path: &Path) -> Result<Vec<u8>, InspectParseError> {
+fn read_receipt_input(path: &Path, max_bytes: usize) -> Result<Vec<u8>, InspectParseError> {
     if path == Path::new("-") {
         let mut buf = Vec::new();
-        let limit = (MAX_RECEIPT_JSON_BYTES as u64).saturating_add(1);
+        let limit = (max_bytes as u64).saturating_add(1);
         io::stdin()
             .lock()
             .take(limit)
             .read_to_end(&mut buf)
             .map_err(|e| InspectParseError::Operational(format!("cannot read stdin: {e}")))?;
-        if buf.len() > MAX_RECEIPT_JSON_BYTES {
-            return Err(InspectParseError::Operational(format!(
-                "stdin receipt exceeds {MAX_RECEIPT_JSON_BYTES}-byte limit"
-            )));
+        if buf.len() > max_bytes {
+            let msg = if max_bytes < MAX_CONFIGURABLE_RECEIPT_JSON_BYTES {
+                format!(
+                    "stdin receipt exceeds {max_bytes}-byte limit (pass `--max-receipt-bytes` up \
+                     to {MAX_CONFIGURABLE_RECEIPT_JSON_BYTES} to raise it)"
+                )
+            } else {
+                format!("stdin receipt exceeds {max_bytes}-byte limit")
+            };
+            return Err(InspectParseError::Operational(msg));
         }
         return Ok(buf);
     }
-    SafeFs::read_regular_nofollow_capped(path, MAX_RECEIPT_JSON_BYTES as u64, "inspect")
-        .map_err(|e| InspectParseError::Operational(e.message))
+    SafeFs::read_regular_nofollow_capped(path, max_bytes as u64, "inspect").map_err(|e| {
+        if (e.message.contains("exceeds") || e.message.contains("exceeded"))
+            && max_bytes < MAX_CONFIGURABLE_RECEIPT_JSON_BYTES
+        {
+            InspectParseError::Operational(format!(
+                "{} (pass `--max-receipt-bytes` up to {MAX_CONFIGURABLE_RECEIPT_JSON_BYTES} to \
+                 raise it)",
+                e.message
+            ))
+        } else {
+            InspectParseError::Operational(e.message)
+        }
+    })
 }
 
 fn compare_ledger_file(path: &Path, actual: &str) -> Result<(), InspectParseError> {
@@ -595,7 +634,7 @@ fn normalize_artifact_root(path: &Path) -> Result<std::borrow::Cow<'_, Path>, St
 }
 
 #[cfg(unix)]
-fn read_artifact_under_dir(dir: &Path, rel: &str) -> Result<Vec<u8>, String> {
+fn read_artifact_under_dir(dir: &Path, rel: &str, max_bytes: u64) -> Result<Vec<u8>, String> {
     let dir = normalize_artifact_root(dir)?;
     let dir = dir.as_ref();
     if !is_safe_artifact_rel_path(rel) {
@@ -668,19 +707,19 @@ fn read_artifact_under_dir(dir: &Path, rel: &str) -> Result<Vec<u8>, String> {
     if !meta.is_file() {
         return Err(format!("artifact `{rel}` must be a regular file"));
     }
-    if meta.len() > MAX_ARTIFACT_FILE_BYTES {
+    if meta.len() > max_bytes {
         return Err(format!(
-            "artifact `{rel}` exceeds {MAX_ARTIFACT_FILE_BYTES}-byte cap ({} bytes)",
+            "artifact `{rel}` exceeds {max_bytes}-byte cap ({} bytes)",
             meta.len()
         ));
     }
     let mut buf = Vec::with_capacity(meta.len().min(64 * 1024) as usize);
-    let limit = MAX_ARTIFACT_FILE_BYTES.saturating_add(1);
+    let limit = max_bytes.saturating_add(1);
     file.take(limit)
         .read_to_end(&mut buf)
         .map_err(|e| format!("artifact `{rel}` read failed: {e}"))?;
-    if (buf.len() as u64) > MAX_ARTIFACT_FILE_BYTES {
-        return Err(format!("artifact `{rel}` exceeded {MAX_ARTIFACT_FILE_BYTES}-byte cap"));
+    if (buf.len() as u64) > max_bytes {
+        return Err(format!("artifact `{rel}` exceeded {max_bytes}-byte cap"));
     }
     Ok(buf)
 }
@@ -730,13 +769,13 @@ fn validate_artifact_dir_chain(dir: &Path, rel: &str) -> Result<PathBuf, String>
 }
 
 #[cfg(not(unix))]
-fn read_artifact_under_dir(dir: &Path, rel: &str) -> Result<Vec<u8>, String> {
+fn read_artifact_under_dir(dir: &Path, rel: &str, max_bytes: u64) -> Result<Vec<u8>, String> {
     let dir = normalize_artifact_root(dir)?;
     if !is_safe_artifact_rel_path(rel) {
         return Err(format!("unsafe artifact relative path `{rel}`"));
     }
     let target = validate_artifact_dir_chain(dir.as_ref(), rel)?;
-    SafeFs::read_regular_nofollow_capped(&target, MAX_ARTIFACT_FILE_BYTES, "inspect")
+    SafeFs::read_regular_nofollow_capped(&target, max_bytes, "inspect")
         .map_err(|e| format!("artifact `{rel}` check failed: {}", e.message))
 }
 
@@ -745,10 +784,13 @@ fn check_retained_result_json(
     receipt_bytes: &[u8],
     receipt_sha256: &str,
     artifacts_field: Option<&str>,
+    max_receipt_bytes: usize,
     failures: &mut Vec<String>,
     checked_files: &mut usize,
 ) {
-    let bytes = match read_artifact_under_dir(dir, "result.json") {
+    let cap = MAX_ARTIFACT_FILE_BYTES.max(max_receipt_bytes as u64);
+    let dom_cap = (MAX_ARTIFACT_FILE_BYTES as usize).max(max_receipt_bytes);
+    let bytes = match read_artifact_under_dir(dir, "result.json", cap) {
         Ok(b) => {
             *checked_files += 1;
             b
@@ -768,8 +810,9 @@ fn check_retained_result_json(
     // from the inspected stdout receipt, provided retained `result.json` has
     // no `artifacts` override.
     if let Some(expected_artifacts) = artifacts_field
-        && let Ok(mut receipt_val) = StrictJsonDom::parse(receipt_bytes)
-        && let Ok(retained_val) = StrictJsonDom::parse(&bytes)
+        && let Ok(mut receipt_val) =
+            StrictJsonDom::parse_with_max_bytes(receipt_bytes, max_receipt_bytes)
+        && let Ok(retained_val) = StrictJsonDom::parse_with_max_bytes(&bytes, dom_cap)
         && let (Some(receipt_obj), Some(retained_obj)) =
             (receipt_val.as_object_mut(), retained_val.as_object())
         && !retained_obj.contains_key("artifacts")
@@ -791,7 +834,9 @@ fn verify_retained_artifacts(
     receipt_bytes: &[u8],
     receipt_sha256: &str,
     require_exact: bool,
+    max_receipt_bytes: usize,
 ) -> Result<ArtifactVerificationSummary, InspectParseError> {
+    let receipt_artifact_cap = MAX_ARTIFACT_FILE_BYTES.max(max_receipt_bytes as u64);
     let dir = normalize_artifact_root(dir).map_err(InspectParseError::Operational)?;
     let dir = dir.as_ref();
     let dir_meta = fs::symlink_metadata(dir).map_err(|e| {
@@ -809,19 +854,23 @@ fn verify_retained_artifacts(
     let mut failures = Vec::new();
     let mut checked_files = 0usize;
 
-    let check_hash = |rel: &str, expected: &str, failures: &mut Vec<String>, count: &mut usize| {
-        match read_artifact_under_dir(dir, rel) {
-            Ok(bytes) => {
-                *count += 1;
-                let actual = sha256_bytes(&bytes);
-                if !actual.eq_ignore_ascii_case(expected) {
-                    failures.push(format!(
-                        "artifact `{rel}` SHA-256 mismatch: expected {expected}, got {actual}"
-                    ));
+    let check_hash_capped =
+        |rel: &str, expected: &str, cap: u64, failures: &mut Vec<String>, count: &mut usize| {
+            match read_artifact_under_dir(dir, rel, cap) {
+                Ok(bytes) => {
+                    *count += 1;
+                    let actual = sha256_bytes(&bytes);
+                    if !actual.eq_ignore_ascii_case(expected) {
+                        failures.push(format!(
+                            "artifact `{rel}` SHA-256 mismatch: expected {expected}, got {actual}"
+                        ));
+                    }
                 }
+                Err(msg) => failures.push(msg),
             }
-            Err(msg) => failures.push(msg),
-        }
+        };
+    let check_hash = |rel: &str, expected: &str, failures: &mut Vec<String>, count: &mut usize| {
+        check_hash_capped(rel, expected, MAX_ARTIFACT_FILE_BYTES, failures, count);
     };
 
     match receipt {
@@ -829,7 +878,13 @@ fn verify_retained_artifacts(
             let result_path = dir.join("result.json");
             match SafeFs::probe_symlink_metadata(&result_path, "inspect") {
                 Ok(Some(_)) => {
-                    check_hash("result.json", receipt_sha256, &mut failures, &mut checked_files);
+                    check_hash_capped(
+                        "result.json",
+                        receipt_sha256,
+                        receipt_artifact_cap,
+                        &mut failures,
+                        &mut checked_files,
+                    );
                 }
                 Ok(None) => {
                     if require_exact {
@@ -853,7 +908,11 @@ fn verify_retained_artifacts(
                 &mut checked_files,
             );
             if let Some(ref shards_sha) = s.capture_shards_sha256 {
-                match read_artifact_under_dir(dir, "capture/capture_shards.json") {
+                match read_artifact_under_dir(
+                    dir,
+                    "capture/capture_shards.json",
+                    receipt_artifact_cap,
+                ) {
                     Ok(bytes) => {
                         checked_files += 1;
                         let actual = sha256_bytes(&bytes);
@@ -864,7 +923,10 @@ fn verify_retained_artifacts(
                             ));
                         }
                         if let Some(ref expected_shards) = s.shards {
-                            match StrictJsonDom::parse(&bytes) {
+                            match StrictJsonDom::parse_with_max_bytes(
+                                &bytes,
+                                (MAX_ARTIFACT_FILE_BYTES as usize).max(max_receipt_bytes),
+                            ) {
                                 Ok(disk_val) => match serde_json::to_value(expected_shards) {
                                     Ok(expected_val) => {
                                         if disk_val != expected_val {
@@ -962,7 +1024,7 @@ fn verify_retained_artifacts(
                             continue;
                         }
                     };
-                    match read_artifact_under_dir(dir, &rel) {
+                    match read_artifact_under_dir(dir, &rel, MAX_ARTIFACT_FILE_BYTES) {
                         Ok(bytes) => {
                             checked_files += 1;
                             let actual = sha256_bytes(&bytes);
@@ -1041,6 +1103,7 @@ fn verify_retained_artifacts(
                     receipt_bytes,
                     receipt_sha256,
                     s.artifacts.as_deref(),
+                    max_receipt_bytes,
                     &mut failures,
                     &mut checked_files,
                 );
@@ -1220,5 +1283,32 @@ mod color_tests {
             || panic!("--color never must not probe stdout tty"),
             &cargo_always,
         ));
+    }
+
+    #[test]
+    fn receipt_input_cap_hint_honors_ceiling_and_past_tense_growth() {
+        use std::fs;
+
+        use super::{InspectParseError, MAX_CONFIGURABLE_RECEIPT_JSON_BYTES, read_receipt_input};
+
+        let dir = tempfile::tempdir().unwrap();
+        let path = dir.path().join("oversize.json");
+        fs::write(&path, b"0123456789abcdef").unwrap();
+
+        let err = match read_receipt_input(&path, 8) {
+            Err(InspectParseError::Operational(msg)) => msg,
+            other => panic!("expected operational error, got {other:?}"),
+        };
+        assert!(err.contains("pass `--max-receipt-bytes`"), "{err}");
+
+        let f = fs::OpenOptions::new().write(true).create(true).truncate(true).open(&path).unwrap();
+        f.set_len((MAX_CONFIGURABLE_RECEIPT_JSON_BYTES as u64) + 1).unwrap();
+        drop(f);
+
+        let ceiling_err = match read_receipt_input(&path, MAX_CONFIGURABLE_RECEIPT_JSON_BYTES) {
+            Err(InspectParseError::Operational(msg)) => msg,
+            other => panic!("expected operational error at ceiling, got {other:?}"),
+        };
+        assert!(!ceiling_err.contains("pass `--max-receipt-bytes`"), "{ceiling_err}");
     }
 }
