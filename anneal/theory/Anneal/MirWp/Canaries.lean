@@ -1145,6 +1145,377 @@ theorem canary_safe_contract_v2_div_usize :
       exact ⟨s1, ReachesV2.tail (ReachesV2.refl _) hStep0, hStep1⟩
     exact (hSat.2.2 q0 hV0 trivial).1.2 .unsupported hFault
 
+private theorem validEntryBool_eq_singleton {isU : Bool} {args : List Val}
+    (h : ValidEntryArgs (canaryContractUnsafeGuardBody isU) args) :
+    ∃ b : Bool, args = [.bool b] := by
+  dsimp [ValidEntryArgs, canaryContractUnsafeGuardBody] at h
+  cases args with
+  | nil => cases h
+  | cons a rest =>
+    cases rest with
+    | cons _ _ =>
+      change (checkVal a .bool && false) = true at h
+      cases hChk : checkVal a .bool <;> rw [hChk] at h <;> cases h
+    | nil =>
+      change (checkVal a .bool && true) = true at h
+      cases hChk : checkVal a .bool <;> rw [hChk] at h
+      · cases h
+      · cases a with
+        | bool b => exact ⟨b, rfl⟩
+        | char _ | ordering _ | unit | ptr _ | bytes _ | slicePtr _ _ | rangeTo _
+          | rangeFrom _ | array _ => cases hChk
+        | scalar sv =>
+          dsimp [checkVal, Val.ty?] at hChk
+          cases hWf : sv.wf <;> rw [hWf] at hChk <;> cases hChk
+        | enumVal ety v =>
+          dsimp [checkVal, Val.ty?] at hChk
+          cases hAdm : (enumAdmitted ety && Nat.blt v ety.discriminants.length) <;>
+            rw [hAdm] at hChk <;> cases hChk
+        | tuple xs =>
+          cases xs with
+          | nil => cases hChk
+          | cons x xs' =>
+            cases xs' with
+            | nil => cases x <;> cases hChk
+            | cons y ys =>
+              cases ys with
+              | cons _ _ =>
+                cases x with
+                | scalar _ => cases y <;> cases hChk
+                | _ => cases hChk
+              | nil =>
+                cases x with
+                | scalar sv =>
+                  cases y with
+                  | bool _ =>
+                    dsimp [checkVal, Val.ty?] at hChk
+                    cases hWf : sv.wf <;> rw [hWf] at hChk <;> cases hChk
+                  | _ => cases hChk
+                | _ => cases hChk
+
+/-- Contract-core canary exercising `scalarAsInt`, `safetyPre` vs.
+`behaviorPre` isolation, `terminates` refusal on a self-loop, `requireInhabited`
+non-vacuity enforcement inside `UnitTheorem`, and duplicate-identity rejection
+in `ContractSpecs`. -/
+theorem canary_contract_anneal : CanaryContractAnnealClaim := by
+  have hSafeUnitExec :
+      WellFormed {
+        scope := .unit
+        pointerWidthBits := 64
+        mirProfileVersion := 1
+        bodies := [canarySafeUnitBody]
+      } queryEmpty ∧
+      Behavior {
+        scope := .unit
+        pointerWidthBits := 64
+        mirProfileVersion := 1
+        bodies := [canarySafeUnitBody]
+      } queryEmpty (.returned ⟨.unit, ⟨[]⟩⟩) ∧
+      ¬ Diverges {
+        scope := .unit
+        pointerWidthBits := 64
+        mirProfileVersion := 1
+        bodies := [canarySafeUnitBody]
+      } queryEmpty ∧
+      ∀ post : TerminalOut → Prop,
+        post (.returned ⟨.unit, ⟨[]⟩⟩) →
+        SatisfiesPost {
+          scope := .unit
+          pointerWidthBits := 64
+          mirProfileVersion := 1
+          bodies := [canarySafeUnitBody]
+        } queryEmpty post :=
+    spec_and_behavior_of_wp_eq
+      (p := {
+        scope := .unit
+        pointerWidthBits := 64
+        mirProfileVersion := 1
+        bodies := [canarySafeUnitBody]
+      })
+      (q := queryEmpty) (fuel := 1) (out := .returned ⟨.unit, ⟨[]⟩⟩)
+      (wpProg_of_execProg rfl)
+  have hUnsafeOk :=
+    spec_and_behavior_of_wp_eq
+      (p := entryProgForBody {
+        scope := .unit
+        pointerWidthBits := 64
+        mirProfileVersion := 1
+        bodies := [canaryContractUnsafeGuardBody true]
+      } 0)
+      (q := { args := [.bool true] }) (fuel := 5)
+      (out := .returned ⟨.unit, ⟨[]⟩⟩)
+      (wpProg_of_execProg rfl)
+  have hSafeUnitPair :=
+    spec_and_behavior_of_wp_eq
+      (p := entryProgForBody {
+        scope := .unit
+        pointerWidthBits := 64
+        mirProfileVersion := 1
+        bodies := [canarySafeUnitBody, canaryContractLoopBody]
+      } 0)
+      (q := queryEmpty) (fuel := 1)
+      (out := .returned ⟨.unit, ⟨[]⟩⟩)
+      (wpProg_of_execProg rfl)
+  let loopStart :=
+    mkState 0 0
+      (initLocalsLoop canaryContractLoopBody [] 0 canaryContractLoopBody.locals)
+  have hLoopStep :
+      evalStep (bodyProg canaryContractLoopBody) 0 loopStart =
+        .step loopStart :=
+    rfl
+  have hLoopInv :
+      ProductiveInvariant canaryContractLoopBody loopStart
+        (fun s => s = loopStart) := by
+    refine ⟨rfl, ?_, ?_⟩
+    · intro _ _ hBefore hStep
+      subst hBefore
+      have hEq := hLoopStep.symm.trans hStep
+      injection hEq with hSt
+      exact hSt.symm
+    · intro _ hEq
+      subst hEq
+      exact ⟨loopStart, hLoopStep⟩
+  have hLoopDiv :=
+    diverges_of_productiveInvariant
+      (p := {
+        scope := .unit
+        pointerWidthBits := 64
+        mirProfileVersion := 1
+        bodies := [canaryContractLoopBody]
+      })
+      (defId := 0) (body := canaryContractLoopBody) (args := [])
+      rfl rfl rfl hLoopInv
+  have hLoopWf :
+      WellFormed
+        (entryProgForBody {
+          scope := .unit
+          pointerWidthBits := 64
+          mirProfileVersion := 1
+          bodies := [canaryContractLoopBody]
+        } 0)
+        { args := [] } :=
+    wellFormed_entryProg_of_safe rfl rfl rfl (safeFrom_selfLoop hLoopStep)
+  have hLoopDivPair :=
+    diverges_of_productiveInvariant
+      (p := {
+        scope := .unit
+        pointerWidthBits := 64
+        mirProfileVersion := 1
+        bodies := [canarySafeUnitBody, canaryContractLoopBody]
+      })
+      (defId := 1) (body := canaryContractLoopBody) (args := [])
+      rfl rfl rfl hLoopInv
+  have hLoopEntryRefuted :
+      ¬ bodySatisfiesContractEntry {
+        scope := .unit
+        pointerWidthBits := 64
+        mirProfileVersion := 1
+        bodies := [canarySafeUnitBody, canaryContractLoopBody]
+      } {
+        identity := "canary::contract_loop"
+        contract := { effects := EffectMask.totalNormal }
+        requireInhabited := false
+      } := by
+    intro ⟨defId, body, hGet, hId, _, hSat, _⟩
+    cases defId with
+    | zero =>
+      injection hGet with hEq; subst hEq
+      exact Bool.noConfusion hId
+    | succ n =>
+      cases n with
+      | zero =>
+        injection hGet with hEq; subst hEq
+        have hEntry := hSat.2.2 [] rfl
+        exact (hEntry.2 ⟨fun h => Bool.noConfusion h, trivial⟩).2 rfl
+          hLoopDivPair.1
+      | succ _ =>
+        dsimp [Trusted.MirSemantics.getElem?] at hGet
+        cases hGet
+  refine ⟨?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_,
+    ?_, ?_, ?_, ?_, ?_, ?_, ?_, rfl, rfl⟩
+  · rfl
+  · rfl
+  · rfl
+  · exact fun _ => rfl
+  · refine ⟨rfl, rfl, rfl, rfl, rfl, rfl, ?_, rfl, ?_, trivial⟩
+    · intro defId body hGet
+      cases defId with
+      | zero =>
+        injection hGet with hEq; subst hEq
+        refine ⟨rfl, rfl, fun args hArgs hSafe => ?_⟩
+        let ⟨b, hArgsEq⟩ := validEntryBool_eq_singleton hArgs
+        subst hArgsEq
+        have hEqTrue := hSafe rfl
+        injection hEqTrue with hHead
+        injection hHead with hB
+        subst hB
+        exact hUnsafeOk.1
+      | succ _ =>
+        dsimp [Trusted.MirSemantics.getElem?] at hGet
+        cases hGet
+    · refine ⟨0, canaryContractUnsafeGuardBody true, rfl, rfl, rfl, ?_, ?_⟩
+      · refine ⟨rfl, rfl, fun args hArgs => ?_⟩
+        let ⟨b, hArgsEq⟩ := validEntryBool_eq_singleton hArgs
+        subst hArgsEq
+        refine ⟨?_, ?_⟩
+        · intro hSafe
+          have hEqTrue := hSafe rfl
+          injection hEqTrue with hHead
+          injection hHead with hB
+          subst hB
+          exact hUnsafeOk.1
+        · intro hBehPre
+          have hEqTrue := hBehPre.1 rfl
+          injection hEqTrue with hHead
+          injection hHead with hB
+          subst hB
+          refine ⟨fun out hOut => ?_, fun _ => hUnsafeOk.2.2.1⟩
+          have hSat :=
+            (hUnsafeOk.2.2.2 (fun o => o = .returned ⟨.unit, ⟨[]⟩⟩) rfl).2
+              out hOut
+          rw [hSat]
+      · intro _
+        exact ⟨[.bool true], rfl, fun _ => rfl, trivial⟩
+  · intro c hc hSat
+    subst hc
+    have hEntry := hSat.2.2 [.bool false] rfl
+    have hWf := hEntry.1 (fun h => Bool.noConfusion h)
+    have hNeg : NegativeCanaryClaim
+        (entryProgForBody {
+          scope := .unit
+          pointerWidthBits := 64
+          mirProfileVersion := 1
+          bodies := [canaryContractUnsafeGuardBody false]
+        } 0)
+        { args := [.bool false] } .undefined .unsupported :=
+      negativeCanary_of_execFault (fuel := 2)
+        (fun h => FaultKind.noConfusion h) rfl
+    exact hNeg.2.2 hWf
+  · intro hSat
+    have hEntry := hSat.2.2 [] rfl
+    have hNotDiv :=
+      (hEntry.2 ⟨fun h => Bool.noConfusion h, trivial⟩).2 rfl
+    exact hNotDiv hLoopDiv.1
+  · refine ⟨rfl, rfl, fun args hArgs => ?_⟩
+    cases args with
+    | cons _ _ => cases hArgs
+    | nil =>
+      exact ⟨fun _ => hLoopWf,
+        fun _ => ⟨fun out hOut => False.elim (hLoopDiv.2 out hOut),
+          fun h => Bool.noConfusion h⟩⟩
+  · intro hUnit
+    let ⟨_, _, _, _, _, _, hInh⟩ := hUnit.2.2.2.2.2.2.2.2.1
+    let ⟨_, _, _, hFalse⟩ := hInh rfl
+    exact hFalse
+  · intro e hEntry
+    subst hEntry
+    refine ⟨rfl, rfl, rfl, rfl, rfl, rfl, ?_, rfl, ?_, trivial⟩
+    · intro defId body hGet
+      cases defId with
+      | zero =>
+        injection hGet with hEq; subst hEq
+        refine ⟨rfl, rfl, fun args hArgs _ => ?_⟩
+        cases args with
+        | nil => exact hSafeUnitExec.1
+        | cons _ _ => cases hArgs
+      | succ _ =>
+        dsimp [Trusted.MirSemantics.getElem?] at hGet
+        cases hGet
+    · refine ⟨0, canarySafeUnitBody, rfl, rfl, trivial, ⟨rfl, rfl, fun args hArgs => ?_⟩, ?_⟩
+      · cases args with
+        | cons _ _ => cases hArgs
+        | nil => exact ⟨fun _ => hSafeUnitExec.1, fun hBeh => False.elim hBeh.2⟩
+      · intro hReq
+        exact Bool.noConfusion hReq
+  · intro hInh
+    let ⟨_, _, _, hFalse⟩ := hInh
+    exact hFalse
+  · intro e hEntry hUnit
+    subst hEntry
+    exact Bool.noConfusion hUnit.2.2.2.2.2.2.2.1
+  · intro ⟨defId, body, hGet, hId, hSig, _⟩
+    cases defId with
+    | zero =>
+      injection hGet with hEq; subst hEq
+      exact Bool.noConfusion hSig
+    | succ _ =>
+      dsimp [Trusted.MirSemantics.getElem?] at hGet
+      cases hGet
+  · intro ⟨defId, body, hGet, hId, hSig, _⟩
+    cases defId with
+    | zero =>
+      injection hGet with hEq; subst hEq
+      exact Bool.noConfusion hSig
+    | succ _ =>
+      dsimp [Trusted.MirSemantics.getElem?] at hGet
+      cases hGet
+  · intro ⟨defId, body, hGet, hId, hSig, _⟩
+    cases defId with
+    | zero =>
+      injection hGet with hEq; subst hEq
+      exact Bool.noConfusion hSig
+    | succ _ =>
+      dsimp [Trusted.MirSemantics.getElem?] at hGet
+      cases hGet
+  · intro hSat
+    have hEntry := hSat.2.2 [.bool true] rfl
+    have hRet : Val.unit = Val.bool true :=
+      (hEntry.2 ⟨fun _ => rfl, trivial⟩).1 _ hUnsafeOk.2.1
+    exact Val.noConfusion hRet
+  · refine ⟨0, canarySafeUnitBody, rfl, rfl, trivial,
+      ⟨rfl, rfl, fun args hArgs => ?_⟩, fun h => Bool.noConfusion h⟩
+    cases args with
+    | cons _ _ => cases hArgs
+    | nil =>
+      refine ⟨fun _ => hSafeUnitPair.1,
+        fun _ => ⟨fun out hBeh => ?_, fun h => Bool.noConfusion h⟩⟩
+      cases out with
+      | returned _ => exact trivial
+      | unwound _ => exact ⟨rfl, trivial⟩
+      | aborted _ =>
+        exact TerminalOut.noConfusion
+          ((hSafeUnitPair.2.2.2 (fun o => o = .returned ⟨.unit, ⟨[]⟩⟩)
+            rfl).2 _ hBeh)
+  · intro ⟨defId, body, hGet, hId, _⟩
+    cases defId with
+    | zero =>
+      injection hGet with hEq; subst hEq
+      exact Bool.noConfusion hId
+    | succ n =>
+      cases n with
+      | zero =>
+        injection hGet with hEq; subst hEq
+        exact Bool.noConfusion hId
+      | succ _ =>
+        dsimp [Trusted.MirSemantics.getElem?] at hGet
+        cases hGet
+  · intro ⟨args, hValid, _⟩
+    dsimp [ValidEntryArgs, canaryNeverParamBody] at hValid
+    cases args with
+    | nil => cases hValid
+    | cons a rest =>
+      cases rest with
+      | cons _ _ =>
+        change (checkVal a .never && false) = true at hValid
+        cases hChk : checkVal a .never <;> rw [hChk] at hValid <;>
+          cases hValid
+      | nil =>
+        change (checkVal a .never && true) = true at hValid
+        rw [checkVal_never_false a] at hValid
+        cases hValid
+  · exact hLoopEntryRefuted
+  · intro h
+    exact hLoopEntryRefuted h.2.1
+  · intro ⟨_, _, hPre⟩
+    exact hPre.1 rfl
+  · intro specs hSpecs
+    subst hSpecs
+    refine ⟨rfl, fun h => ?_, fun h => h, trivial⟩
+    have hEq : [Val.bool false] = [Val.bool true] := h
+    injection hEq with hHead _
+    injection hHead with hB
+    exact Bool.noConfusion hB
+
 end Anneal.MirWp
 
 end

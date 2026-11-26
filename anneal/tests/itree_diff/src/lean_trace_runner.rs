@@ -243,6 +243,19 @@ const MIR_TOTAL_DAG: &[LeanDagSpec] = &[
         deps: &["Trusted.MirAst", "Trusted.MirModel", "Trusted.MirSemantics.Boundary"],
     },
     LeanDagSpec {
+        module: "Trusted.MirSemantics.Contract",
+        rel_tree: "trusted/lean",
+        deps: &[
+            "Trusted.MirAst",
+            "Trusted.MirModel",
+            "Trusted.MirSemantics.Enum",
+            "Trusted.MirSemantics.Ops",
+            "Trusted.MirSemantics.State",
+            "Trusted.MirSemantics.Step",
+            "Trusted.MirSemantics.Boundary",
+        ],
+    },
+    LeanDagSpec {
         module: "Trusted.MirSemantics",
         rel_tree: "trusted/lean",
         deps: &[
@@ -257,6 +270,7 @@ const MIR_TOTAL_DAG: &[LeanDagSpec] = &[
             "Trusted.MirSemantics.Step",
             "Trusted.MirSemantics.Boundary",
             "Trusted.MirSemantics.CanaryFixtures",
+            "Trusted.MirSemantics.Contract",
         ],
     },
     LeanDagSpec {

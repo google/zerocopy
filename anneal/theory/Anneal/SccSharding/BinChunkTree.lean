@@ -568,10 +568,10 @@ private theorem identityKeyCmp_eq_bytes {a b : Trusted.MirSemantics.IdentityKey}
       exact byteListCmp8_eq_of_eq h
 
 private def rbMemBytes (bs : List UInt8) :
-    Trusted.MirSemantics.IdentityRbTree → Prop :=
-  @Trusted.MirSemantics.IdentityRbTree.rec (fun _ => Prop)
+    Trusted.MirSemantics.IdentityRbTree Unit → Prop :=
+  @Trusted.MirSemantics.IdentityRbTree.rec Unit (fun _ => Prop)
     False
-    (fun _ _ x _ hl hr => bs = x.bytes ∨ hl ∨ hr)
+    (fun _ _ x _ _ hl hr => bs = x.bytes ∨ hl ∨ hr)
 
 private theorem rbRot_left1 {P Q R S T : Prop} :
     (P ∨ Q ∨ (S ∨ R ∨ T)) ↔ (S ∨ (P ∨ Q ∨ R) ∨ T) := by
@@ -724,48 +724,48 @@ private theorem rbRot_right2 {P Q R S T : Prop} :
           | inr hT => exact Or.inr (Or.inr hT)
 
 private theorem rbMemBytes_balance_right (bs : List UInt8)
-    (l : Trusted.MirSemantics.IdentityRbTree)
+    (l : Trusted.MirSemantics.IdentityRbTree Unit)
     (x : Trusted.MirSemantics.IdentityKey)
-    (r : Trusted.MirSemantics.IdentityRbTree)
-    (hFallRL : ∀ (b : Trusted.MirSemantics.IdentityRbTree)
+    (r : Trusted.MirSemantics.IdentityRbTree Unit)
+    (hFallRL : ∀ (b : Trusted.MirSemantics.IdentityRbTree Unit)
       (y : Trusted.MirSemantics.IdentityKey)
-      (c : Trusted.MirSemantics.IdentityRbTree)
+      (c : Trusted.MirSemantics.IdentityRbTree Unit)
       (z : Trusted.MirSemantics.IdentityKey)
-      (d : Trusted.MirSemantics.IdentityRbTree),
-      Trusted.MirSemantics.identityRbBalance .black l x
-          (.node .red (.node .red b y c) z d) =
-        .node .red (.node .black l x b) y (.node .black c z d))
+      (d : Trusted.MirSemantics.IdentityRbTree Unit),
+      Trusted.MirSemantics.identityRbBalance .black l x ()
+          (.node .red (.node .red b y () c) z () d) =
+        .node .red (.node .black l x () b) y () (.node .black c z () d))
     (hFallRREmpty : ∀ (y : Trusted.MirSemantics.IdentityKey)
-      (c : Trusted.MirSemantics.IdentityRbTree)
+      (c : Trusted.MirSemantics.IdentityRbTree Unit)
       (z : Trusted.MirSemantics.IdentityKey)
-      (d : Trusted.MirSemantics.IdentityRbTree),
-      Trusted.MirSemantics.identityRbBalance .black l x
-          (.node .red .empty y (.node .red c z d)) =
-        .node .red (.node .black l x .empty) y (.node .black c z d))
-    (hFallRRBlack : ∀ (bl : Trusted.MirSemantics.IdentityRbTree)
+      (d : Trusted.MirSemantics.IdentityRbTree Unit),
+      Trusted.MirSemantics.identityRbBalance .black l x ()
+          (.node .red .empty y () (.node .red c z () d)) =
+        .node .red (.node .black l x () .empty) y () (.node .black c z () d))
+    (hFallRRBlack : ∀ (bl : Trusted.MirSemantics.IdentityRbTree Unit)
       (bx : Trusted.MirSemantics.IdentityKey)
-      (br : Trusted.MirSemantics.IdentityRbTree)
+      (br : Trusted.MirSemantics.IdentityRbTree Unit)
       (y : Trusted.MirSemantics.IdentityKey)
-      (c : Trusted.MirSemantics.IdentityRbTree)
+      (c : Trusted.MirSemantics.IdentityRbTree Unit)
       (z : Trusted.MirSemantics.IdentityKey)
-      (d : Trusted.MirSemantics.IdentityRbTree),
-      Trusted.MirSemantics.identityRbBalance .black l x
-          (.node .red (.node .black bl bx br) y (.node .red c z d)) =
-        .node .red (.node .black l x (.node .black bl bx br)) y
-          (.node .black c z d))
+      (d : Trusted.MirSemantics.IdentityRbTree Unit),
+      Trusted.MirSemantics.identityRbBalance .black l x ()
+          (.node .red (.node .black bl bx () br) y () (.node .red c z () d)) =
+        .node .red (.node .black l x () (.node .black bl bx () br)) y ()
+          (.node .black c z () d))
     (hFallPlain :
-      (∀ b y c z d, r ≠ .node .red (.node .red b y c) z d) →
-      (∀ b y c z d, r ≠ .node .red b y (.node .red c z d)) →
-      Trusted.MirSemantics.identityRbBalance .black l x r =
-        .node .black l x r) :
-    rbMemBytes bs (Trusted.MirSemantics.identityRbBalance .black l x r) ↔
+      (∀ b y c z d, r ≠ .node .red (.node .red b y () c) z () d) →
+      (∀ b y c z d, r ≠ .node .red b y () (.node .red c z () d)) →
+      Trusted.MirSemantics.identityRbBalance .black l x () r =
+        .node .black l x () r) :
+    rbMemBytes bs (Trusted.MirSemantics.identityRbBalance .black l x () r) ↔
       bs = x.bytes ∨ rbMemBytes bs l ∨ rbMemBytes bs r := by
   cases r with
   | empty =>
     rw [hFallPlain (fun _ _ _ _ _ h => by cases h)
       (fun _ _ _ _ _ h => by cases h)]
     exact Iff.rfl
-  | node cr rl rx rr =>
+  | node cr rl rx _ rr =>
     cases cr with
     | black =>
       rw [hFallPlain (fun _ _ _ _ _ h => by cases h)
@@ -773,7 +773,7 @@ private theorem rbMemBytes_balance_right (bs : List UInt8)
       exact Iff.rfl
     | red =>
       cases rl with
-      | node crl rll rlx rlr =>
+      | node crl rll rlx _ rlr =>
         cases crl with
         | red =>
           rw [hFallRL]
@@ -781,7 +781,7 @@ private theorem rbMemBytes_balance_right (bs : List UInt8)
           exact rbRot_right1
         | black =>
           cases rr with
-          | node crr rrl rrx rrr =>
+          | node crr rrl rrx _ rrr =>
             cases crr with
             | red =>
               rw [hFallRRBlack]
@@ -790,16 +790,16 @@ private theorem rbMemBytes_balance_right (bs : List UInt8)
             | black =>
               rw [hFallPlain
                 (fun _ _ _ _ _ h => by injection h with _ h1; cases h1)
-                (fun _ _ _ _ _ h => by injection h with _ _ _ h1; cases h1)]
+                (fun _ _ _ _ _ h => by injection h with _ _ _ _ h1; cases h1)]
               exact Iff.rfl
           | empty =>
             rw [hFallPlain
               (fun _ _ _ _ _ h => by injection h with _ h1; cases h1)
-              (fun _ _ _ _ _ h => by injection h with _ _ _ h1; cases h1)]
+              (fun _ _ _ _ _ h => by injection h with _ _ _ _ h1; cases h1)]
             exact Iff.rfl
       | empty =>
         cases rr with
-        | node crr rrl rrx rrr =>
+        | node crr rrl rrx _ rrr =>
           cases crr with
           | red =>
             rw [hFallRREmpty]
@@ -808,19 +808,19 @@ private theorem rbMemBytes_balance_right (bs : List UInt8)
           | black =>
             rw [hFallPlain
               (fun _ _ _ _ _ h => by injection h with _ h1; cases h1)
-              (fun _ _ _ _ _ h => by injection h with _ _ _ h1; cases h1)]
+              (fun _ _ _ _ _ h => by injection h with _ _ _ _ h1; cases h1)]
             exact Iff.rfl
         | empty =>
           rw [hFallPlain (fun _ _ _ _ _ h => by injection h with _ h1; cases h1)
-            (fun _ _ _ _ _ h => by injection h with _ _ _ h1; cases h1)]
+            (fun _ _ _ _ _ h => by injection h with _ _ _ _ h1; cases h1)]
           exact Iff.rfl
 
 private theorem rbMemBytes_balance (bs : List UInt8)
     (c : Trusted.MirSemantics.IdentityRbColor)
-    (l : Trusted.MirSemantics.IdentityRbTree)
+    (l : Trusted.MirSemantics.IdentityRbTree Unit)
     (x : Trusted.MirSemantics.IdentityKey)
-    (r : Trusted.MirSemantics.IdentityRbTree) :
-    rbMemBytes bs (Trusted.MirSemantics.identityRbBalance c l x r) ↔
+    (r : Trusted.MirSemantics.IdentityRbTree Unit) :
+    rbMemBytes bs (Trusted.MirSemantics.identityRbBalance c l x () r) ↔
       bs = x.bytes ∨ rbMemBytes bs l ∨ rbMemBytes bs r := by
   cases c with
   | red => exact Iff.rfl
@@ -832,7 +832,7 @@ private theorem rbMemBytes_balance (bs : List UInt8)
         (fun _ _ _ _ _ _ _ => rfl) (fun h1 h2 => by
           cases r with
           | empty => rfl
-          | node cr rl rx rr =>
+          | node cr rl rx _ rr =>
             cases cr with
             | black => rfl
             | red =>
@@ -840,29 +840,29 @@ private theorem rbMemBytes_balance (bs : List UInt8)
               | empty =>
                 cases rr with
                 | empty => rfl
-                | node crr _ _ _ =>
+                | node crr _ _ _ _ =>
                   cases crr with
                   | black => rfl
                   | red => exact False.elim (h2 _ _ _ _ _ rfl)
-              | node crl _ _ _ =>
+              | node crl _ _ _ _ =>
                 cases crl with
                 | red => exact False.elim (h1 _ _ _ _ _ rfl)
                 | black =>
                   cases rr with
                   | empty => rfl
-                  | node crr _ _ _ =>
+                  | node crr _ _ _ _ =>
                     cases crr with
                     | black => rfl
                     | red => exact False.elim (h2 _ _ _ _ _ rfl))
-    | node cl ll lx lr =>
+    | node cl ll lx _ lr =>
       cases cl with
       | black =>
-        exact rbMemBytes_balance_right bs (.node .black ll lx lr) x r
+        exact rbMemBytes_balance_right bs (.node .black ll lx () lr) x r
           (fun _ _ _ _ _ => rfl) (fun _ _ _ _ => rfl)
           (fun _ _ _ _ _ _ _ => rfl) (fun h1 h2 => by
             cases r with
             | empty => rfl
-            | node cr rl rx rr =>
+            | node cr rl rx _ rr =>
               cases cr with
               | black => rfl
               | red =>
@@ -870,43 +870,43 @@ private theorem rbMemBytes_balance (bs : List UInt8)
                 | empty =>
                   cases rr with
                   | empty => rfl
-                  | node crr _ _ _ =>
+                  | node crr _ _ _ _ =>
                     cases crr with
                     | black => rfl
                     | red => exact False.elim (h2 _ _ _ _ _ rfl)
-                | node crl _ _ _ =>
+                | node crl _ _ _ _ =>
                   cases crl with
                   | red => exact False.elim (h1 _ _ _ _ _ rfl)
                   | black =>
                     cases rr with
                     | empty => rfl
-                    | node crr _ _ _ =>
+                    | node crr _ _ _ _ =>
                       cases crr with
                       | black => rfl
                       | red => exact False.elim (h2 _ _ _ _ _ rfl))
       | red =>
         cases ll with
-        | node cll lll llx llr =>
+        | node cll lll llx _ llr =>
           cases cll with
           | red =>
             dsimp only [Trusted.MirSemantics.identityRbBalance, rbMemBytes]
             exact rbRot_right2.symm
           | black =>
             cases lr with
-            | node clr lrl lrx lrr =>
+            | node clr lrl lrx _ lrr =>
               cases clr with
               | red =>
                 dsimp only [Trusted.MirSemantics.identityRbBalance, rbMemBytes]
                 exact rbRot_left2
               | black =>
                 exact rbMemBytes_balance_right bs
-                  (.node .red (.node .black lll llx llr) lx
-                    (.node .black lrl lrx lrr)) x r
+                  (.node .red (.node .black lll llx () llr) lx ()
+                    (.node .black lrl lrx () lrr)) x r
                   (fun _ _ _ _ _ => rfl) (fun _ _ _ _ => rfl)
                   (fun _ _ _ _ _ _ _ => rfl) (fun h1 h2 => by
                     cases r with
                     | empty => rfl
-                    | node cr rl rx rr =>
+                    | node cr rl rx _ rr =>
                       cases cr with
                       | black => rfl
                       | red =>
@@ -914,28 +914,28 @@ private theorem rbMemBytes_balance (bs : List UInt8)
                         | empty =>
                           cases rr with
                           | empty => rfl
-                          | node crr _ _ _ =>
+                          | node crr _ _ _ _ =>
                             cases crr with
                             | black => rfl
                             | red => exact False.elim (h2 _ _ _ _ _ rfl)
-                        | node crl _ _ _ =>
+                        | node crl _ _ _ _ =>
                           cases crl with
                           | red => exact False.elim (h1 _ _ _ _ _ rfl)
                           | black =>
                             cases rr with
                             | empty => rfl
-                            | node crr _ _ _ =>
+                            | node crr _ _ _ _ =>
                               cases crr with
                               | black => rfl
                               | red => exact False.elim (h2 _ _ _ _ _ rfl))
             | empty =>
               exact rbMemBytes_balance_right bs
-                (.node .red (.node .black lll llx llr) lx .empty) x r
+                (.node .red (.node .black lll llx () llr) lx () .empty) x r
                 (fun _ _ _ _ _ => rfl) (fun _ _ _ _ => rfl)
                 (fun _ _ _ _ _ _ _ => rfl) (fun h1 h2 => by
                   cases r with
                   | empty => rfl
-                  | node cr rl rx rr =>
+                  | node cr rl rx _ rr =>
                     cases cr with
                     | black => rfl
                     | red =>
@@ -943,35 +943,35 @@ private theorem rbMemBytes_balance (bs : List UInt8)
                       | empty =>
                         cases rr with
                         | empty => rfl
-                        | node crr _ _ _ =>
+                        | node crr _ _ _ _ =>
                           cases crr with
                           | black => rfl
                           | red => exact False.elim (h2 _ _ _ _ _ rfl)
-                      | node crl _ _ _ =>
+                      | node crl _ _ _ _ =>
                         cases crl with
                         | red => exact False.elim (h1 _ _ _ _ _ rfl)
                         | black =>
                           cases rr with
                           | empty => rfl
-                          | node crr _ _ _ =>
+                          | node crr _ _ _ _ =>
                             cases crr with
                             | black => rfl
                             | red => exact False.elim (h2 _ _ _ _ _ rfl))
         | empty =>
           cases lr with
-          | node clr lrl lrx lrr =>
+          | node clr lrl lrx _ lrr =>
             cases clr with
             | red =>
               dsimp only [Trusted.MirSemantics.identityRbBalance, rbMemBytes]
               exact rbRot_left2
             | black =>
               exact rbMemBytes_balance_right bs
-                (.node .red .empty lx (.node .black lrl lrx lrr)) x r
+                (.node .red .empty lx () (.node .black lrl lrx () lrr)) x r
                 (fun _ _ _ _ _ => rfl) (fun _ _ _ _ => rfl)
                 (fun _ _ _ _ _ _ _ => rfl) (fun h1 h2 => by
                   cases r with
                   | empty => rfl
-                  | node cr rl rx rr =>
+                  | node cr rl rx _ rr =>
                     cases cr with
                     | black => rfl
                     | red =>
@@ -979,27 +979,28 @@ private theorem rbMemBytes_balance (bs : List UInt8)
                       | empty =>
                         cases rr with
                         | empty => rfl
-                        | node crr _ _ _ =>
+                        | node crr _ _ _ _ =>
                           cases crr with
                           | black => rfl
                           | red => exact False.elim (h2 _ _ _ _ _ rfl)
-                      | node crl _ _ _ =>
+                      | node crl _ _ _ _ =>
                         cases crl with
                         | red => exact False.elim (h1 _ _ _ _ _ rfl)
                         | black =>
                           cases rr with
                           | empty => rfl
-                          | node crr _ _ _ =>
+                          | node crr _ _ _ _ =>
                             cases crr with
                             | black => rfl
                             | red => exact False.elim (h2 _ _ _ _ _ rfl))
           | empty =>
-            exact rbMemBytes_balance_right bs (.node .red .empty lx .empty) x r
+            exact rbMemBytes_balance_right bs (.node .red .empty lx () .empty) x
+              r
               (fun _ _ _ _ _ => rfl) (fun _ _ _ _ => rfl)
               (fun _ _ _ _ _ _ _ => rfl) (fun h1 h2 => by
                 cases r with
                 | empty => rfl
-                | node cr rl rx rr =>
+                | node cr rl rx _ rr =>
                   cases cr with
                   | black => rfl
                   | red =>
@@ -1007,31 +1008,31 @@ private theorem rbMemBytes_balance (bs : List UInt8)
                     | empty =>
                       cases rr with
                       | empty => rfl
-                      | node crr _ _ _ =>
+                      | node crr _ _ _ _ =>
                         cases crr with
                         | black => rfl
                         | red => exact False.elim (h2 _ _ _ _ _ rfl)
-                    | node crl _ _ _ =>
+                    | node crl _ _ _ _ =>
                       cases crl with
                       | red => exact False.elim (h1 _ _ _ _ _ rfl)
                       | black =>
                         cases rr with
                         | empty => rfl
-                        | node crr _ _ _ =>
+                        | node crr _ _ _ _ =>
                           cases crr with
                           | black => rfl
                           | red => exact False.elim (h2 _ _ _ _ _ rfl))
 
 private theorem rbInsertAux_of_not_mem (k : Trusted.MirSemantics.IdentityKey)
-    (tr : Trusted.MirSemantics.IdentityRbTree)
+    (tr : Trusted.MirSemantics.IdentityRbTree Unit)
     (hNot : ¬ rbMemBytes k.bytes tr) :
-    ∃ tr' : Trusted.MirSemantics.IdentityRbTree,
-      Trusted.MirSemantics.identityRbInsertAux k tr = some tr' ∧
+    ∃ tr' : Trusted.MirSemantics.IdentityRbTree Unit,
+      Trusted.MirSemantics.identityRbInsertAux k () tr = some tr' ∧
       ∀ bs : List UInt8,
         rbMemBytes bs tr' ↔ bs = k.bytes ∨ rbMemBytes bs tr := by
   induction tr with
   | empty =>
-    refine ⟨.node .red .empty k .empty, rfl, fun bs => ?_⟩
+    refine ⟨.node .red .empty k () .empty, rfl, fun bs => ?_⟩
     constructor
     · intro h
       cases h with
@@ -1044,7 +1045,7 @@ private theorem rbInsertAux_of_not_mem (k : Trusted.MirSemantics.IdentityKey)
       cases h with
       | inl hEq => exact Or.inl hEq
       | inr hF => exact False.elim hF
-  | node c l x r ihL ihR =>
+  | node c l x _ r ihL ihR =>
     have hNx : k.bytes ≠ x.bytes := fun h => hNot (Or.inl h)
     have hNl : ¬ rbMemBytes k.bytes l := fun h => hNot (Or.inr (Or.inl h))
     have hNr : ¬ rbMemBytes k.bytes r := fun h => hNot (Or.inr (Or.inr h))
@@ -1052,20 +1053,12 @@ private theorem rbInsertAux_of_not_mem (k : Trusted.MirSemantics.IdentityKey)
     | eq => exact False.elim (hNx (identityKeyCmp_eq_bytes hCmp))
     | lt =>
       let ⟨l', hlEq, hlMem⟩ := ihL hNl
-      have hIns : Trusted.MirSemantics.identityRbInsertAux k (.node c l x r) =
-          some (Trusted.MirSemantics.identityRbBalance c l' x r) := by
-        change (match Trusted.MirSemantics.identityKeyCmp k x with
-          | .lt => match Trusted.MirSemantics.identityRbInsertAux k l with
-            | none => none
-            | some l' => some (Trusted.MirSemantics.identityRbBalance c l' x r)
-          | .eq => none
-          | .gt => match Trusted.MirSemantics.identityRbInsertAux k r with
-            | none => none
-            | some r' =>
-              some (Trusted.MirSemantics.identityRbBalance c l x r')) =
-          _
+      have hIns :
+          Trusted.MirSemantics.identityRbInsertAux k () (.node c l x () r) =
+          some (Trusted.MirSemantics.identityRbBalance c l' x () r) := by
+        rw [Trusted.MirSemantics.identityRbInsertAux.eq_2]
         rw [hCmp, hlEq]
-      refine ⟨Trusted.MirSemantics.identityRbBalance c l' x r, hIns,
+      refine ⟨Trusted.MirSemantics.identityRbBalance c l' x () r, hIns,
         fun bs => ?_⟩
       rw [rbMemBytes_balance bs c l' x r, hlMem bs]
       constructor
@@ -1091,20 +1084,12 @@ private theorem rbInsertAux_of_not_mem (k : Trusted.MirSemantics.IdentityKey)
             | inr hR => exact Or.inr (Or.inr hR)
     | gt =>
       let ⟨r', hrEq, hrMem⟩ := ihR hNr
-      have hIns : Trusted.MirSemantics.identityRbInsertAux k (.node c l x r) =
-          some (Trusted.MirSemantics.identityRbBalance c l x r') := by
-        change (match Trusted.MirSemantics.identityKeyCmp k x with
-          | .lt => match Trusted.MirSemantics.identityRbInsertAux k l with
-            | none => none
-            | some l' => some (Trusted.MirSemantics.identityRbBalance c l' x r)
-          | .eq => none
-          | .gt => match Trusted.MirSemantics.identityRbInsertAux k r with
-            | none => none
-            | some r' =>
-              some (Trusted.MirSemantics.identityRbBalance c l x r')) =
-          _
+      have hIns :
+          Trusted.MirSemantics.identityRbInsertAux k () (.node c l x () r) =
+          some (Trusted.MirSemantics.identityRbBalance c l x () r') := by
+        rw [Trusted.MirSemantics.identityRbInsertAux.eq_2]
         rw [hCmp, hrEq]
-      refine ⟨Trusted.MirSemantics.identityRbBalance c l x r', hIns,
+      refine ⟨Trusted.MirSemantics.identityRbBalance c l x () r', hIns,
         fun bs => ?_⟩
       rw [rbMemBytes_balance bs c l x r', hrMem bs]
       constructor
@@ -1130,25 +1115,26 @@ private theorem rbInsertAux_of_not_mem (k : Trusted.MirSemantics.IdentityKey)
             | inr hR => exact Or.inr (Or.inr (Or.inr hR))
 
 private theorem rbInsert_of_not_mem (k : Trusted.MirSemantics.IdentityKey)
-    (tr : Trusted.MirSemantics.IdentityRbTree)
+    (tr : Trusted.MirSemantics.IdentityRbTree Unit)
     (hNot : ¬ rbMemBytes k.bytes tr) :
-    ∃ tr' : Trusted.MirSemantics.IdentityRbTree,
-      Trusted.MirSemantics.identityRbInsert k tr = some tr' ∧
+    ∃ tr' : Trusted.MirSemantics.IdentityRbTree Unit,
+      Trusted.MirSemantics.identityRbInsert k () tr = some tr' ∧
       ∀ bs : List UInt8,
         rbMemBytes bs tr' ↔ bs = k.bytes ∨ rbMemBytes bs tr := by
   let ⟨trAux, hAuxEq, hAuxMem⟩ := rbInsertAux_of_not_mem k tr hNot
   cases trAux with
   | empty =>
-    have hIns : Trusted.MirSemantics.identityRbInsert k tr = some .empty := by
+    have hIns :
+        Trusted.MirSemantics.identityRbInsert k () tr = some .empty := by
       unfold Trusted.MirSemantics.identityRbInsert
       rw [hAuxEq]
     exact ⟨.empty, hIns, hAuxMem⟩
-  | node _ l x r =>
-    have hIns : Trusted.MirSemantics.identityRbInsert k tr =
-        some (.node .black l x r) := by
+  | node _ l x _ r =>
+    have hIns : Trusted.MirSemantics.identityRbInsert k () tr =
+        some (.node .black l x () r) := by
       unfold Trusted.MirSemantics.identityRbInsert
       rw [hAuxEq]
-    exact ⟨.node .black l x r, hIns, hAuxMem⟩
+    exact ⟨.node .black l x () r, hIns, hAuxMem⟩
 
 private theorem ne_0_of_succ (k : Nat) : 0 ≠ k + 1 :=
   fun h => by cases h
@@ -1160,11 +1146,11 @@ private theorem lt_add_left_of_lt {a b k : Nat} (h : a < b) : a < k + b :=
   Nat.lt_of_lt_of_le h (Nat.le_add_left b k)
 
 private theorem rbInsertBody_of_valid (b : Body)
-    (tr : Trusted.MirSemantics.IdentityRbTree)
+    (tr : Trusted.MirSemantics.IdentityRbTree Unit)
     (hNonEmpty : b.identity.toByteArray.data.toList ≠ [])
     (hNot : ¬ rbMemBytes b.identity.toByteArray.data.toList tr) :
-    ∃ tr' : Trusted.MirSemantics.IdentityRbTree,
-      Trusted.MirSemantics.identityRbInsertBody b tr = some tr' ∧
+    ∃ tr' : Trusted.MirSemantics.IdentityRbTree Unit,
+      Trusted.MirSemantics.identityRbInsertByKey b.identity () tr = some tr' ∧
       ∀ bs : List UInt8,
         rbMemBytes bs tr' ↔
           bs = b.identity.toByteArray.data.toList ∨ rbMemBytes bs tr := by
@@ -1182,8 +1168,10 @@ private theorem rbInsertBody_of_valid (b : Body)
       rbInsert_of_not_mem
         ⟨Trusted.MirSemantics.byteListTag 1 0 (u :: us), u :: us⟩ tr hNot'
     have hBodyEq :
-        Trusted.MirSemantics.identityRbInsertBody b tr = some tr' := by
-      unfold Trusted.MirSemantics.identityRbInsertBody
+        Trusted.MirSemantics.identityRbInsertByKey b.identity () tr =
+          some tr' := by
+      unfold Trusted.MirSemantics.identityRbInsertByKey
+        Trusted.MirSemantics.identityKey?
       rw [hBytes]
       exact hEq
     refine ⟨tr', hBodyEq, fun bs => ?_⟩
@@ -1207,9 +1195,16 @@ private theorem getElem?_map_body_bytes {f : List UInt8 → Option Nat}
   injection hF1 with hk
   exact hne (Nat.add_left_cancel hk).symm
 
+private theorem insertByKeyOpt_some (identity : String)
+    (t : Trusted.MirSemantics.IdentityRbTree Unit) :
+    Trusted.MirSemantics.identityRbInsertByKeyOpt identity () (some t) =
+      Trusted.MirSemantics.identityRbInsertByKey identity () t :=
+  rfl
+
 private theorem bodiesHaveUniqueIdentitiesAux_of_inj
     {f : List UInt8 → Option Nat} :
-    ∀ (xs : List Body) (base : Nat) (tr : Trusted.MirSemantics.IdentityRbTree),
+    ∀ (xs : List Body) (base : Nat)
+      (tr : Trusted.MirSemantics.IdentityRbTree Unit),
       (∀ k b, Trusted.MirSemantics.getElem? xs k = some b →
         b.identity.toByteArray.data.toList ≠ [] ∧
         f b.identity.toByteArray.data.toList = some (base + k)) →
@@ -1218,13 +1213,16 @@ private theorem bodiesHaveUniqueIdentitiesAux_of_inj
       Trusted.MirSemantics.bodiesHaveUniqueIdentitiesAux xs tr = true
   | [], _, _, _, _ => rfl
   | [b1], base, tr, hInj, hFresh => by
-    unfold Trusted.MirSemantics.bodiesHaveUniqueIdentitiesAux
+    change (Trusted.MirSemantics.identityRbInsertByKey b1.identity ()
+      tr).isSome = true
     have h1 := rbInsertBody_of_valid b1 tr (hInj 0 b1 rfl).1 (hFresh 0 b1 rfl)
     let ⟨tr1, hEq1, _⟩ := h1
     rw [hEq1]
     rfl
   | [b1, b2], base, tr, hInj, hFresh => by
-    unfold Trusted.MirSemantics.bodiesHaveUniqueIdentitiesAux
+    change (Trusted.MirSemantics.identityRbInsertByKeyOpt b2.identity ()
+      (Trusted.MirSemantics.identityRbInsertByKey b1.identity ()
+        tr)).isSome = true
     let ⟨tr1, hEq1, hMem1⟩ :=
       rbInsertBody_of_valid b1 tr (hInj 0 b1 rfl).1 (hFresh 0 b1 rfl)
     have hNe12 :=
@@ -1238,11 +1236,15 @@ private theorem bodiesHaveUniqueIdentitiesAux_of_inj
     let ⟨tr2, hEq2, _⟩ :=
       rbInsertBody_of_valid b2 tr1 (hInj 1 b2 rfl).1 hFresh2
     rw [hEq1]
-    change (Trusted.MirSemantics.identityRbInsertBody b2 tr1).isSome = true
+    change (Trusted.MirSemantics.identityRbInsertByKey b2.identity ()
+      tr1).isSome = true
     rw [hEq2]
     rfl
   | [b1, b2, b3], base, tr, hInj, hFresh => by
-    unfold Trusted.MirSemantics.bodiesHaveUniqueIdentitiesAux
+    change (Trusted.MirSemantics.identityRbInsertByKeyOpt b3.identity ()
+      (Trusted.MirSemantics.identityRbInsertByKeyOpt b2.identity ()
+        (Trusted.MirSemantics.identityRbInsertByKey b1.identity ()
+          tr))).isSome = true
     let ⟨tr1, hEq1, hMem1⟩ :=
       rbInsertBody_of_valid b1 tr (hInj 0 b1 rfl).1 (hFresh 0 b1 rfl)
     have hNe12 :=
@@ -1271,14 +1273,17 @@ private theorem bodiesHaveUniqueIdentitiesAux_of_inj
         | inr hIn => exact hFresh 2 b3 rfl hIn
     let ⟨tr3, hEq3, _⟩ := rbInsertBody_of_valid b3 tr2 (hInj 2 b3 rfl).1 hFresh3
     rw [hEq1]
-    change (Trusted.MirSemantics.identityRbInsertBodyOpt b3
-      (Trusted.MirSemantics.identityRbInsertBody b2 tr1)).isSome = true
+    change (Trusted.MirSemantics.identityRbInsertByKeyOpt b3.identity ()
+      (Trusted.MirSemantics.identityRbInsertByKey b2.identity ()
+        tr1)).isSome = true
     rw [hEq2]
-    change (Trusted.MirSemantics.identityRbInsertBody b3 tr2).isSome = true
+    change (Trusted.MirSemantics.identityRbInsertByKey b3.identity ()
+      tr2).isSome = true
     rw [hEq3]
     rfl
   | b1 :: b2 :: b3 :: b4 :: rest, base, tr, hInj, hFresh => by
     unfold Trusted.MirSemantics.bodiesHaveUniqueIdentitiesAux
+    rw [Trusted.MirSemantics.identityRbBuildAux.eq_5]
     let ⟨tr1, hEq1, hMem1⟩ :=
       rbInsertBody_of_valid b1 tr (hInj 0 b1 rfl).1 (hFresh 0 b1 rfl)
     have hNe12 :=
@@ -1329,25 +1334,8 @@ private theorem bodiesHaveUniqueIdentitiesAux_of_inj
           | inr hIn => exact hFresh 3 b4 rfl hIn
     let ⟨tr4, hEq4, hMem4⟩ :=
       rbInsertBody_of_valid b4 tr3 (hInj 3 b4 rfl).1 hFresh4
-    rw [hEq1]
-    change (match Trusted.MirSemantics.identityRbInsertBodyOpt b4
-      (Trusted.MirSemantics.identityRbInsertBodyOpt b3
-        (Trusted.MirSemantics.identityRbInsertBody b2 tr1)) with
-      | none => false
-      | some t' =>
-        Trusted.MirSemantics.bodiesHaveUniqueIdentitiesAux rest t') = true
-    rw [hEq2]
-    change (match Trusted.MirSemantics.identityRbInsertBodyOpt b4
-      (Trusted.MirSemantics.identityRbInsertBody b3 tr2) with
-      | none => false
-      | some t' =>
-        Trusted.MirSemantics.bodiesHaveUniqueIdentitiesAux rest t') = true
-    rw [hEq3]
-    change (match Trusted.MirSemantics.identityRbInsertBody b4 tr3 with
-      | none => false
-      | some t' =>
-        Trusted.MirSemantics.bodiesHaveUniqueIdentitiesAux rest t') = true
-    rw [hEq4]
+    rw [hEq1, insertByKeyOpt_some, hEq2, insertByKeyOpt_some, hEq3,
+      insertByKeyOpt_some, hEq4]
     dsimp only
     refine bodiesHaveUniqueIdentitiesAux_of_inj (f := f) rest (base + 4) tr4
       ?_ ?_

@@ -22,6 +22,7 @@ public import Trusted.MirSemantics.State
 public import Trusted.MirSemantics.Step
 public import Trusted.MirSemantics.Boundary
 public import Trusted.MirSemantics.CanaryFixtures
+public import Trusted.MirSemantics.Contract
 
 @[expose] public section
 
@@ -46,7 +47,7 @@ program, proof-unit, and crate verification judgments (`BodyStaticAdmitted`,
 `DivergesV2`, `SatisfiesPostV2`, `BodyVerifiedV2`, `SpecsV2`, `CrateV2`,
 `ProgramVerifiedV2`, `CrateTheoremV2`, and `UnitTheoremV2`), and the Pass 1
 audited claim propositions (`WpSoundnessClaim`, `WpFaultSoundnessClaim`,
-`ExecSoundnessClaimV2`, `SafeContractSoundnessClaimV2`, and the 25
+`ExecSoundnessClaimV2`, `SafeContractSoundnessClaimV2`, and the 26
 `Canary*Claim` propositions).
 
 Human comprehension is therefore the primary design requirement for every
@@ -229,7 +230,7 @@ Key semantic correspondence points:
 The definitions below state the exact mathematical propositions that
 `Anneal.MirWp` (the 2 parameterized WP soundness claims and the Profile v2
 `ExecSoundnessClaimV2` and `SafeContractSoundnessClaimV2` claims) and decoupled
-`Anneal.MirWp.Canaries` (the 25 closed
+`Anneal.MirWp.Canaries` (the 26 closed
 non-vacuity and parameter-boundary canary claims) must prove, enforced by
 `TrustedBoundary.lean` via exact `Expr` equality (`ci.type == .const claimName
 []` or the parameterized claim application) together with claim-body constant
@@ -877,6 +878,279 @@ noncomputable def CanaryNegativeIntToIntCastAnnealClaim : Prop :=
   NegativeCanaryClaim (mkIntToIntCastProg u8Ty .bool) { args := [u8Val 1] }
     .unsupported .undefined ∧
   NegativeCanaryClaim progCastUninitSourceUb queryEmpty .undefined .unsupported
+
+/-- Trusted claim for `Anneal.MirWp.canary_contract_anneal`:
+1. `scalarAsInt` sign-extends signed scalars and zero-extends unsigned ones;
+2. `ContractSpecs` discharges `UnitTheorem` on an `unsafe` guarded body with
+   matching `ContractSignature`, while `isUnsafe = false` refutes
+   `BodyContractSatisfied`, and parameter, unsafety, and return-type
+   signature mismatches refute `bodySatisfiesContractEntry` for that same
+   body and satisfiable contract, and a `postReturn` the normal return
+   violates refutes `BodyContractSatisfied`;
+3. in a two-body program, an entry's contract is checked against the body
+   its identity names: `canary::safe_unit` with `partialAnyExit` holds,
+   `canary::contract_loop` with `totalNormal` is refuted because that loop
+   diverges, an entry naming no body is refuted, and a list whose second
+   entry is violated refutes `ContractEntriesSatisfied`;
+4. `terminates = true` refutes `BodyContractSatisfied` on a `goto 0` loop while
+   `terminates = false` permits divergence;
+5. `requireInhabited = true` enforces `ContractPreInhabited` inside
+   `UnitTheorem`, `requireInhabited = false` waives it, and neither a `False`
+   behavioral precondition, a `False` safety precondition on an `unsafe`
+   body, nor an uninhabited `!` parameter is `ContractPreInhabited`; and
+6. `ContractSpecs` rejects duplicate entry identities and indexes multiple
+   entries for $O(\log N)$ safety lookup, and each lookup applies that
+   entry's own safety precondition, while an identity with no entry has the
+   trivial safety precondition. -/
+noncomputable def CanaryContractAnnealClaim : Prop :=
+  scalarAsInt { width := .i8, signed := true, bits := BitVec.ofNat 128 255 } =
+    Int.negSucc 0 ∧
+  scalarAsInt { width := .i8, signed := false, bits := BitVec.ofNat 128 200 } =
+    (200 : Int) ∧
+  scalarAsInt { width := .i8, signed := true, bits := BitVec.ofNat 128 511 } =
+    Int.negSucc 0 ∧
+  (∀ s : ScalarVal, scalarAsInt s = decodeScalar s) ∧
+  UnitTheorem {
+      program := {
+        scope := .unit
+        pointerWidthBits := 64
+        mirProfileVersion := 1
+        bodies := [canaryContractUnsafeGuardBody true]
+      }
+      specs := ContractSpecs [{
+        identity := "canary::contract_unsafe_guard"
+        contract := {
+          safetyPre := fun q => q.args = [.bool true]
+          postReturn := fun _ out => out.ret = .unit
+          effects := EffectMask.totalNormal
+        }
+        signature := some {
+          isUnsafe := true
+          params := [.bool]
+          ret := .unit
+        }
+      }]
+    } ∧
+  (∀ c : FnContract,
+      c = {
+        safetyPre := fun q => q.args = [.bool true]
+        postReturn := fun _ out => out.ret = .unit
+        effects := EffectMask.totalNormal
+      } →
+      ¬ BodyContractSatisfied {
+        scope := .unit
+        pointerWidthBits := 64
+        mirProfileVersion := 1
+        bodies := [canaryContractUnsafeGuardBody false]
+      } 0 (canaryContractUnsafeGuardBody false) c) ∧
+  ¬ BodyContractSatisfied {
+      scope := .unit
+      pointerWidthBits := 64
+      mirProfileVersion := 1
+      bodies := [canaryContractLoopBody]
+    } 0 canaryContractLoopBody {
+      effects := { terminates := true, noUnwind := true }
+    } ∧
+  BodyContractSatisfied {
+      scope := .unit
+      pointerWidthBits := 64
+      mirProfileVersion := 1
+      bodies := [canaryContractLoopBody]
+    } 0 canaryContractLoopBody {
+      effects := EffectMask.partialAnyExit
+    } ∧
+  ¬ UnitTheorem {
+      program := {
+        scope := .unit
+        pointerWidthBits := 64
+        mirProfileVersion := 1
+        bodies := [canarySafeUnitBody]
+      }
+      specs := ContractSpecs [{
+        identity := "canary::safe_unit"
+        contract := {
+          behaviorPre := fun _ => False
+          effects := EffectMask.totalNormal
+        }
+        requireInhabited := true
+      }]
+    } ∧
+  (∀ e : ContractEntry,
+      e = {
+        identity := "canary::safe_unit"
+        contract := {
+          behaviorPre := fun _ => False
+          effects := EffectMask.totalNormal
+        }
+        requireInhabited := false
+      } →
+      UnitTheorem {
+        program := {
+          scope := .unit
+          pointerWidthBits := 64
+          mirProfileVersion := 1
+          bodies := [canarySafeUnitBody]
+        }
+        specs := ContractSpecs [e]
+      }) ∧
+  ¬ ContractPreInhabited canarySafeUnitBody {
+      behaviorPre := fun _ => False
+      effects := EffectMask.totalNormal
+    } ∧
+  (∀ e : ContractEntry,
+      e = {
+        identity := "canary::safe_unit"
+        contract := { effects := EffectMask.totalNormal }
+      } →
+      ¬ UnitTheorem {
+        program := {
+          scope := .unit
+          pointerWidthBits := 64
+          mirProfileVersion := 1
+          bodies := [canarySafeUnitBody]
+        }
+        specs := ContractSpecs [e, e]
+      }) ∧
+  ¬ bodySatisfiesContractEntry {
+      scope := .unit
+      pointerWidthBits := 64
+      mirProfileVersion := 1
+      bodies := [canaryContractUnsafeGuardBody true]
+    } {
+      identity := "canary::contract_unsafe_guard"
+      contract := {
+        safetyPre := fun q => q.args = [.bool true]
+        postReturn := fun _ out => out.ret = .unit
+        effects := EffectMask.totalNormal
+      }
+      signature := some {
+        isUnsafe := true
+        params := [.int .i8 false]
+        ret := .unit
+      }
+      requireInhabited := false
+    } ∧
+  ¬ bodySatisfiesContractEntry {
+      scope := .unit
+      pointerWidthBits := 64
+      mirProfileVersion := 1
+      bodies := [canaryContractUnsafeGuardBody true]
+    } {
+      identity := "canary::contract_unsafe_guard"
+      contract := {
+        safetyPre := fun q => q.args = [.bool true]
+        postReturn := fun _ out => out.ret = .unit
+        effects := EffectMask.totalNormal
+      }
+      signature := some {
+        isUnsafe := false
+        params := [.bool]
+        ret := .unit
+      }
+      requireInhabited := false
+    } ∧
+  ¬ bodySatisfiesContractEntry {
+      scope := .unit
+      pointerWidthBits := 64
+      mirProfileVersion := 1
+      bodies := [canaryContractUnsafeGuardBody true]
+    } {
+      identity := "canary::contract_unsafe_guard"
+      contract := {
+        safetyPre := fun q => q.args = [.bool true]
+        postReturn := fun _ out => out.ret = .unit
+        effects := EffectMask.totalNormal
+      }
+      signature := some {
+        isUnsafe := true
+        params := [.bool]
+        ret := .bool
+      }
+      requireInhabited := false
+    } ∧
+  ¬ BodyContractSatisfied {
+      scope := .unit
+      pointerWidthBits := 64
+      mirProfileVersion := 1
+      bodies := [canaryContractUnsafeGuardBody true]
+    } 0 (canaryContractUnsafeGuardBody true) {
+      safetyPre := fun q => q.args = [.bool true]
+      postReturn := fun _ out => out.ret = .bool true
+      effects := EffectMask.totalNormal
+    } ∧
+  bodySatisfiesContractEntry {
+      scope := .unit
+      pointerWidthBits := 64
+      mirProfileVersion := 1
+      bodies := [canarySafeUnitBody, canaryContractLoopBody]
+    } {
+      identity := "canary::safe_unit"
+      contract := { effects := EffectMask.partialAnyExit }
+      requireInhabited := false
+    } ∧
+  ¬ bodySatisfiesContractEntry {
+      scope := .unit
+      pointerWidthBits := 64
+      mirProfileVersion := 1
+      bodies := [canarySafeUnitBody, canaryContractLoopBody]
+    } {
+      identity := "canary::missing"
+      contract := { effects := EffectMask.partialAnyExit }
+      requireInhabited := false
+    } ∧
+  ¬ ContractPreInhabited (canaryNeverParamBody false) {
+      effects := EffectMask.totalNormal
+    } ∧
+  ¬ bodySatisfiesContractEntry {
+      scope := .unit
+      pointerWidthBits := 64
+      mirProfileVersion := 1
+      bodies := [canarySafeUnitBody, canaryContractLoopBody]
+    } {
+      identity := "canary::contract_loop"
+      contract := { effects := EffectMask.totalNormal }
+      requireInhabited := false
+    } ∧
+  ¬ ContractEntriesSatisfied {
+      scope := .unit
+      pointerWidthBits := 64
+      mirProfileVersion := 1
+      bodies := [canarySafeUnitBody, canaryContractLoopBody]
+    } [
+      { identity := "canary::safe_unit"
+        contract := { effects := EffectMask.partialAnyExit }
+        requireInhabited := false },
+      { identity := "canary::contract_loop"
+        contract := { effects := EffectMask.totalNormal }
+        requireInhabited := false }
+    ] ∧
+  ¬ ContractPreInhabited (canaryContractUnsafeGuardBody true) {
+      safetyPre := fun _ => False
+      effects := EffectMask.totalNormal
+    } ∧
+  (∀ specs : Specs,
+      specs = ContractSpecs [
+        { identity := "canary::first"
+          contract := {
+            safetyPre := fun _ => False
+            effects := EffectMask.totalNormal
+          } },
+        { identity := "canary::second"
+          contract := {
+            safetyPre := fun q => q.args = [.bool true]
+            effects := EffectMask.totalNormal
+          } }
+      ] →
+      specs.safety "canary::second" [.bool true] ∧
+      ¬ specs.safety "canary::second" [.bool false] ∧
+      ¬ specs.safety "canary::first" [] ∧
+      specs.safety "canary::unlisted" []) ∧
+  bodyMatchesContractSignature (canaryContractUnsafeGuardBody true) ({
+      isUnsafe := true
+      params := [.bool]
+      ret := .unit
+    } : ContractSignature) = true ∧
+  (contractEntryRbLookup .empty "canary::missing").isNone = true
 
 end Trusted.MirSemantics
 

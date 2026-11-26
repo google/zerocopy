@@ -233,9 +233,9 @@ Placing `Trusted.Correspondence*`, `Anneal.MirCorrespondence.*`, and
    definition it references live on the human-audited `Trusted.*` surface
    (`Trusted.MirSemantics`), while only the WP proofs
    (`wellFormed_and_spec_of_wp`, `reaches_fault_and_exclusive_of_wpFault`) in
-   `Anneal.MirWp` and all 15 Day-1 scalar/bool/unit (or 25 full) canary
+   `Anneal.MirWp` and all 15 Day-1 scalar/bool/unit (or 26 full) canary
    theorems in decoupled `Anneal.MirWp.Canaries` (once fieldless enums, `!`,
-   crate/unit scope, byte-level memory, `char`, `BinOp.cmp`,
+   crate/unit scope, byte-level memory, `char`, `BinOp.cmp`, `ContractSpecs`,
    `BinOp.*WithOverflow`, and `CastKind.intToInt` land, including
    `CanaryCrateAndBodyVerifiedAnnealClaim` and
    `CanaryMemoryLifecycleAnnealClaim`) are verified against those exact
@@ -575,7 +575,7 @@ together with every later change to those definitions:
 | | `CrateTheorem`, `UnitTheorem`, `entryProgForBody`, |
 | | `bodiesHaveUniqueIdentities` (Section 4.5) |
 | | `WpSoundnessClaim`, `WpFaultSoundnessClaim`, |
-| | `prog*`, `Canary*Claim` (15 Day-1; 25 with Phase 1, memory, and casts) |
+| | `prog*`, `Canary*Claim` (15 Day-1; 26 with Phase 1, memory, casts, contracts) |
 | `Trusted.Correspondence` | Codec (`RefProg`, `encodeProg`, `decodeProg`), |
 | | reference machine & staged support gate |
 | | (`initRefState`, `refIsSupportedLocalTy`, |
@@ -608,7 +608,8 @@ together with every later change to those definitions:
   fieldless enums, `!`, crate/unit scope, and byte-level memory land, including
   `CanaryCrateAndBodyVerifiedAnnealClaim` and
   `CanaryMemoryLifecycleAnnealClaim`; 25 with `char`, `BinOp.cmp`,
-  `BinOp.*WithOverflow`, and `CastKind.intToInt`).
+  `BinOp.*WithOverflow`, and `CastKind.intToInt`; 26 with
+  `CanaryContractAnnealClaim`).
   `SatisfiesPost` is the contract that per-function specifications discharge
   through `Anneal.MirWp`. The correspondence theorems cross-check the execution
   rules inside `initState` and `evalStep` against $M_{\text{ref}}$, but they
@@ -2432,8 +2433,9 @@ per-crate verification checks `Trusted.*` target theorem statements
 The Pass 1 canaries in decoupled `Anneal.MirWp.Canaries` (15 in the Day-1
 scalar/bool/unit baseline, growing to 19 once fieldless enums, `!`, and
 crate/unit scope land, to 20 with byte-level memory's
-`canary_memory_lifecycle_anneal`, Section 4.6, and to 25 with `char`,
-`BinOp.cmp`, `BinOp.*WithOverflow`, and `CastKind.intToInt`) check
+`canary_memory_lifecycle_anneal`, Section 4.6, to 25 with `char`,
+`BinOp.cmp`, `BinOp.*WithOverflow`, and `CastKind.intToInt`, and to 26 with
+`canary_contract_anneal`) check
 $M_{\text{anneal}}$ directly:
 
 - **`canary_positive_add_anneal`:** `_0 = copy _1 + copy _2; return`
@@ -2533,6 +2535,31 @@ $M_{\text{anneal}}$ directly:
   intermediate exceeds `255`) or casting to `bool` reaches `.fault
   .unsupported`, and casting an uninitialized local reaches `.fault
   .undefined`.
+- **`canary_contract_anneal`:** checks `Trusted.MirSemantics.Contract`
+  (`EffectMask`, `FnContract`, `BodyContractSatisfied`,
+  `ContractPreInhabited`, `ContractSignature`, `bodyMatchesContractSignature`,
+  `ContractSpecs`, `contractEntryRbLookup`, and `scalarAsInt`). `scalarAsInt`
+  sign-extends signed scalars and zero-extends unsigned ones. `ContractSpecs`
+  discharges `UnitTheorem` on an `unsafe` `Bool -> ()` body whose `safetyPre`
+  excludes the `false` path that faults via `.unreachable` and whose
+  `ContractSignature` matches; the same body marked safe refutes
+  `BodyContractSatisfied`, because `safetyPre` binds only `unsafe` bodies,
+  and a `ContractSignature` with a mismatched parameter type, `isUnsafe`, or
+  return type is rejected even though the contract it accompanies holds. A
+  `postReturn` that the normal return violates refutes
+  `BodyContractSatisfied`. In a two-body program, an entry's contract is
+  checked against the body its identity names (a `totalNormal` entry for the
+  diverging loop body is refuted while a `partialAnyExit` entry for the unit
+  body holds), an entry naming no body is refuted, and a list whose second
+  entry is violated is refuted. A
+  `bb0: goto bb0` loop refutes `terminates := true` and
+  satisfies `EffectMask.partialAnyExit`. A `False` behavioral precondition
+  is rejected under `requireInhabited := true` and waived under
+  `requireInhabited := false`, and neither a `False` `safetyPre` on an
+  `unsafe` body nor an uninhabited `!` parameter is `ContractPreInhabited`.
+  `ContractSpecs` rejects duplicate entry identities, selects each entry's
+  safety precondition among several, and gives an identity with no entry a
+  trivial one, and `contractEntryRbLookup .empty` returns `none`.
 
 The Pass 2 canaries in `Anneal.MirCorrespondenceProof` check both models:
 

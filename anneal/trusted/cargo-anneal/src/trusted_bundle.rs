@@ -66,6 +66,7 @@ pub const TRUSTED_BUNDLE_SOURCES: &[&str] = &[
     "trusted/lean/Trusted/MirSemantics/Boundary.lean",
     "trusted/lean/Trusted/MirSemantics/Bytes.lean",
     "trusted/lean/Trusted/MirSemantics/CanaryFixtures.lean",
+    "trusted/lean/Trusted/MirSemantics/Contract.lean",
     "trusted/lean/Trusted/MirSemantics/Enum.lean",
     "trusted/lean/Trusted/MirSemantics/Layout.lean",
     "trusted/lean/Trusted/MirSemantics/Memory.lean",

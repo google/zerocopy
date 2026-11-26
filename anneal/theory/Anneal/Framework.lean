@@ -60,7 +60,7 @@ Untrusted (`0`-TCB) proof theory over `Trusted.Framework`,
 
 /-- Product lattice order on `EffectMask` (`m1 ≤ m2` iff `m2` guarantees every
 effect restriction guaranteed by `m1`). -/
-@[expose] def effectMaskLe (m1 m2 : EffectMask) : Prop :=
+@[expose] def effectMaskLe (m1 m2 : Trusted.Framework.EffectMask) : Prop :=
   (m1.terminates = true → m2.terminates = true) ∧
   (m1.noUnwind = true → m2.noUnwind = true) ∧
   (m1.noAbort = true → m2.noAbort = true)
@@ -109,7 +109,7 @@ theorem wfStutter_rejects_generalHyper (oid : String) :
 /-- Safe functions structurally ignore `safetyPre`: even `safetyPre := False`
 reduces to `True` when `isUnsafe = false`. -/
 theorem safe_fn_ignores_false_safetyPre {Q R M : Type}
-    (c : FnContract Q R M) (q : Q) :
+    (c : Trusted.Framework.FnContract Q R M) (q : Q) :
     c.effectiveSafetyPre false q := by
   intro h
   cases h
@@ -222,7 +222,7 @@ theorem stub_false_post_unrealizable {Prog Body Sig Query Ret Mem : Type}
   have hBeh :
       ({ postReturn := fun _ _ _ => False
          effects := { terminates := true, noUnwind := true, noAbort := true } :
-         FnContract Query Ret Mem }).effectiveBehaviorPre
+         Trusted.Framework.FnContract Query Ret Mem }).effectiveBehaviorPre
         (M.bodyIsUnsafe body) q :=
     ⟨fun _ => True.intro, True.intro⟩
   cases hReal q hDom hBeh with

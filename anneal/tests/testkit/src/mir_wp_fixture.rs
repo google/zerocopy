@@ -230,6 +230,23 @@ pub const SYNTHETIC_CANARIES: &[SyntheticCanary] = &[
         proof_term: "And.intro True.intro (And.intro True.intro \
                      (And.intro True.intro True.intro))",
     },
+    SyntheticCanary {
+        claim: "CanaryContractAnnealClaim",
+        proof: "canary_contract_anneal",
+        body: "And EffectMask.totalNormal (And EffectMask.partialAnyExit \
+               (And FnContract (And decodeScalar (And scalarAsInt \
+               (And BodyContractSatisfied (And ContractPreInhabited \
+               (And ContractSignature (And bodyMatchesContractSignature \
+               (And ContractEntry (And ContractSpecs \
+               (And contractEntryRbLookup UnitTheorem)))))))))))",
+        proof_term: "And.intro True.intro (And.intro True.intro \
+                     (And.intro True.intro (And.intro True.intro \
+                     (And.intro True.intro (And.intro True.intro \
+                     (And.intro True.intro (And.intro True.intro \
+                     (And.intro True.intro (And.intro True.intro \
+                     (And.intro True.intro (And.intro True.intro \
+                     True.intro)))))))))))",
+    },
 ];
 
 /// Configurable synthetic fixture containing minimal `Trusted.MirAst`,
@@ -435,7 +452,19 @@ impl MirWpFixtureSpec {
              def progInvalidCharSwitchCaseUb : Prop := True\n\
              def overflowPairTy : Prop := True\n\
              def mkIntToIntCastProg : Prop := True\n\
-             def progCastUninitSourceUb : Prop := True\n",
+             def progCastUninitSourceUb : Prop := True\n\
+             def EffectMask.totalNormal : Prop := True\n\
+             def EffectMask.partialAnyExit : Prop := True\n\
+             def FnContract : Prop := True\n\
+             def decodeScalar : Prop := True\n\
+             def scalarAsInt : Prop := True\n\
+             def BodyContractSatisfied : Prop := True\n\
+             def ContractPreInhabited : Prop := True\n\
+             def ContractSignature : Prop := True\n\
+             def bodyMatchesContractSignature : Prop := True\n\
+             def ContractEntry : Prop := True\n\
+             def ContractSpecs : Prop := True\n\
+             def contractEntryRbLookup : Prop := True\n",
         );
         if let Some(decl) = &self.wp_soundness_claim {
             sem.push_str(decl);

@@ -3401,7 +3401,7 @@ fn enforces_mir_wp_param_claim_proof_rules() {
 }
 
 /// Verifies every rejection branch of `requireClaimProof` (exact-claim mode,
-/// `argName? = none`) in `TrustedBoundary.lean` across the 25 canary claims
+/// `argName? = none`) in `TrustedBoundary.lean` across the 26 canary claims
 /// (missing claim, non-definition claim, wrong-module claim, non-`Prop` claim,
 /// claim body missing required constant, missing canary theorem, non-theorem
 /// proof, wrong-module proof, and weakened/wrong-type canary theorem).
@@ -3510,10 +3510,10 @@ fn enforces_mir_wp_canary_claim_proof_rules() {
     let mut missing_last_canary = MirWpFixtureSpec::valid();
     missing_last_canary
         .canary_proof_overrides
-        .insert("canary_crate_and_body_verified_anneal".to_string(), None);
+        .insert("canary_contract_anneal".to_string(), None);
     expect_mir_wp_audit_policy_err(
         &missing_last_canary,
-        "missing required theorem Anneal.MirWp.canary_crate_and_body_verified_anneal",
+        "missing required theorem Anneal.MirWp.canary_contract_anneal",
     );
 
     // Non-theorem canary proof (`def` instead of `theorem`).
@@ -3737,6 +3737,177 @@ fn enforces_mir_wp_canary_claim_proof_rules() {
             &format!("alias Trusted.{alias} must directly alias Trusted.MirSemantics.{alias}"),
         );
     }
+}
+
+fn assert_drop_one_contract_req_consts(cases: &[(&str, &str)]) {
+    for &(weakened_body, dropped) in cases {
+        let mut weak_canary = MirWpFixtureSpec::valid();
+        weak_canary.canary_claim_overrides.insert(
+            "CanaryContractAnnealClaim".to_string(),
+            Some(format!("def CanaryContractAnnealClaim : Prop := {weakened_body}")),
+        );
+        expect_mir_wp_audit_policy_err(
+            &weak_canary,
+            &format!(
+                "claim Trusted.MirSemantics.CanaryContractAnnealClaim body must reference {dropped}"
+            ),
+        );
+    }
+}
+
+/// Verifies missing/weakened `CanaryContractAnnealClaim` and
+/// `canary_contract_anneal` rejection plus the first contract constants slice.
+#[test]
+fn enforces_mir_wp_contract_canary_claim_proof_rules() {
+    let mut missing_contract_claim = MirWpFixtureSpec::valid();
+    missing_contract_claim
+        .canary_claim_overrides
+        .insert("CanaryContractAnnealClaim".to_string(), None);
+    missing_contract_claim
+        .canary_proof_overrides
+        .insert("canary_contract_anneal".to_string(), None);
+    expect_mir_wp_audit_policy_err(
+        &missing_contract_claim,
+        "missing required claim Trusted.MirSemantics.CanaryContractAnnealClaim",
+    );
+
+    let mut weakened_contract_canary = MirWpFixtureSpec::valid();
+    weakened_contract_canary.canary_proof_overrides.insert(
+        "canary_contract_anneal".to_string(),
+        Some("theorem canary_contract_anneal : True := True.intro".to_string()),
+    );
+    expect_mir_wp_audit_policy_err(
+        &weakened_contract_canary,
+        "theorem Anneal.MirWp.canary_contract_anneal must prove \
+         Trusted.MirSemantics.CanaryContractAnnealClaim directly",
+    );
+
+    assert_drop_one_contract_req_consts(&[
+        (
+            "And EffectMask.partialAnyExit (And EffectMask.partialAnyExit \
+             (And FnContract (And decodeScalar (And scalarAsInt \
+             (And BodyContractSatisfied (And ContractPreInhabited \
+             (And ContractSignature (And bodyMatchesContractSignature \
+             (And ContractEntry (And ContractSpecs \
+             (And contractEntryRbLookup UnitTheorem)))))))))))",
+            "Trusted.MirSemantics.EffectMask.totalNormal",
+        ),
+        (
+            "And EffectMask.totalNormal (And EffectMask.totalNormal \
+             (And FnContract (And decodeScalar (And scalarAsInt \
+             (And BodyContractSatisfied (And ContractPreInhabited \
+             (And ContractSignature (And bodyMatchesContractSignature \
+             (And ContractEntry (And ContractSpecs \
+             (And contractEntryRbLookup UnitTheorem)))))))))))",
+            "Trusted.MirSemantics.EffectMask.partialAnyExit",
+        ),
+        (
+            "And EffectMask.totalNormal (And EffectMask.partialAnyExit \
+             (And UnitTheorem (And decodeScalar (And scalarAsInt \
+             (And BodyContractSatisfied (And ContractPreInhabited \
+             (And ContractSignature (And bodyMatchesContractSignature \
+             (And ContractEntry (And ContractSpecs \
+             (And contractEntryRbLookup UnitTheorem)))))))))))",
+            "Trusted.MirSemantics.FnContract",
+        ),
+        (
+            "And EffectMask.totalNormal (And EffectMask.partialAnyExit \
+             (And FnContract (And scalarAsInt (And scalarAsInt \
+             (And BodyContractSatisfied (And ContractPreInhabited \
+             (And ContractSignature (And bodyMatchesContractSignature \
+             (And ContractEntry (And ContractSpecs \
+             (And contractEntryRbLookup UnitTheorem)))))))))))",
+            "Trusted.MirSemantics.decodeScalar",
+        ),
+        (
+            "And EffectMask.totalNormal (And EffectMask.partialAnyExit \
+             (And FnContract (And decodeScalar (And decodeScalar \
+             (And BodyContractSatisfied (And ContractPreInhabited \
+             (And ContractSignature (And bodyMatchesContractSignature \
+             (And ContractEntry (And ContractSpecs \
+             (And contractEntryRbLookup UnitTheorem)))))))))))",
+            "Trusted.MirSemantics.scalarAsInt",
+        ),
+        (
+            "And EffectMask.totalNormal (And EffectMask.partialAnyExit \
+             (And FnContract (And decodeScalar (And scalarAsInt \
+             (And ContractPreInhabited (And ContractPreInhabited \
+             (And ContractSignature (And bodyMatchesContractSignature \
+             (And ContractEntry (And ContractSpecs \
+             (And contractEntryRbLookup UnitTheorem)))))))))))",
+            "Trusted.MirSemantics.BodyContractSatisfied",
+        ),
+    ]);
+}
+
+/// Verifies the remaining required constants in `CanaryContractAnnealClaim`.
+#[test]
+fn enforces_mir_wp_contract_canary_req_consts() {
+    assert_drop_one_contract_req_consts(&[
+        (
+            "And EffectMask.totalNormal (And EffectMask.partialAnyExit \
+             (And FnContract (And decodeScalar (And scalarAsInt \
+             (And BodyContractSatisfied (And BodyContractSatisfied \
+             (And ContractSignature (And bodyMatchesContractSignature \
+             (And ContractEntry (And ContractSpecs \
+             (And contractEntryRbLookup UnitTheorem)))))))))))",
+            "Trusted.MirSemantics.ContractPreInhabited",
+        ),
+        (
+            "And EffectMask.totalNormal (And EffectMask.partialAnyExit \
+             (And FnContract (And decodeScalar (And scalarAsInt \
+             (And BodyContractSatisfied (And ContractPreInhabited \
+             (And bodyMatchesContractSignature (And bodyMatchesContractSignature \
+             (And ContractEntry (And ContractSpecs \
+             (And contractEntryRbLookup UnitTheorem)))))))))))",
+            "Trusted.MirSemantics.ContractSignature",
+        ),
+        (
+            "And EffectMask.totalNormal (And EffectMask.partialAnyExit \
+             (And FnContract (And decodeScalar (And scalarAsInt \
+             (And BodyContractSatisfied (And ContractPreInhabited \
+             (And ContractSignature (And ContractSignature \
+             (And ContractEntry (And ContractSpecs \
+             (And contractEntryRbLookup UnitTheorem)))))))))))",
+            "Trusted.MirSemantics.bodyMatchesContractSignature",
+        ),
+        (
+            "And EffectMask.totalNormal (And EffectMask.partialAnyExit \
+             (And FnContract (And decodeScalar (And scalarAsInt \
+             (And BodyContractSatisfied (And ContractPreInhabited \
+             (And ContractSignature (And bodyMatchesContractSignature \
+             (And ContractSpecs (And ContractSpecs \
+             (And contractEntryRbLookup UnitTheorem)))))))))))",
+            "Trusted.MirSemantics.ContractEntry",
+        ),
+        (
+            "And EffectMask.totalNormal (And EffectMask.partialAnyExit \
+             (And FnContract (And decodeScalar (And scalarAsInt \
+             (And BodyContractSatisfied (And ContractPreInhabited \
+             (And ContractSignature (And bodyMatchesContractSignature \
+             (And ContractEntry (And ContractEntry \
+             (And contractEntryRbLookup UnitTheorem)))))))))))",
+            "Trusted.MirSemantics.ContractSpecs",
+        ),
+        (
+            "And EffectMask.totalNormal (And EffectMask.partialAnyExit \
+             (And FnContract (And decodeScalar (And scalarAsInt \
+             (And BodyContractSatisfied (And ContractPreInhabited \
+             (And ContractSignature (And bodyMatchesContractSignature \
+             (And ContractEntry (And ContractSpecs \
+             (And ContractSpecs UnitTheorem)))))))))))",
+            "Trusted.MirSemantics.contractEntryRbLookup",
+        ),
+        (
+            "And EffectMask.totalNormal (And EffectMask.partialAnyExit \
+             (And FnContract (And decodeScalar (And scalarAsInt \
+             (And BodyContractSatisfied (And ContractPreInhabited \
+             (And ContractSignature (And bodyMatchesContractSignature \
+             (And ContractEntry (And ContractSpecs \
+             (And contractEntryRbLookup ContractEntry)))))))))))",
+            "Trusted.MirSemantics.UnitTheorem",
+        ),
+    ]);
 }
 
 /// Verifies Pass 2 non-backsliding enforcement (`--require-correspondence`):

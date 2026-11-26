@@ -111,7 +111,7 @@ noncomputable def byteListTag (w sum : Nat) : List UInt8 → Nat
   | [] => sum
 
 /-- Total comparison key pairing a deterministic checksum tag with the exact
-UTF-8 byte sequence. For keys built by `identityRbInsertBody` (where
+UTF-8 byte sequence. For keys built by `identityKey?` (where
 `tag = byteListTag 1 0 bytes`), `k1.bytes = k2.bytes ↔ identityKeyCmp k1 k2 =
 .eq`. -/
 structure IdentityKey where
@@ -125,91 +125,126 @@ noncomputable def identityKeyCmp (a b : IdentityKey) : ByteCmp :=
   else if Nat.blt b.tag a.tag then .gt
   else byteListCmp8 a.bytes b.bytes
 
-/-- Red-Black tree node color for balanced $O(N \log N)$ identity uniqueness
-checking. -/
+/-- Build the canonical `IdentityKey` for a non-empty `identity` string
+(`none` on empty string). -/
+noncomputable def identityKey? (identity : String) : Option IdentityKey :=
+  match identity.toByteArray.data.toList with
+  | [] => none
+  | bs => some ⟨byteListTag 1 0 bs, bs⟩
+
+/-- Red-Black tree node color for balanced $O(N \log N)$ identity indexing and
+uniqueness checking. -/
 inductive IdentityRbColor where
   | red
   | black
 
-/-- Balanced Red-Black tree storing already-seen non-empty body `IdentityKey`s.
--/
-inductive IdentityRbTree where
+/-- Balanced Red-Black tree keyed by non-empty `IdentityKey`s with payload
+type `α` for $O(\log N)$ uniqueness checking and lookup. -/
+inductive IdentityRbTree (α : Type) where
   | empty
   | node :
-      IdentityRbColor → IdentityRbTree → IdentityKey → IdentityRbTree →
-        IdentityRbTree
+      IdentityRbColor → IdentityRbTree α → IdentityKey → α →
+        IdentityRbTree α → IdentityRbTree α
 
 /-- Okasaki Red-Black rebalance step preserving in-order key sequence. -/
-noncomputable def identityRbBalance :
-    IdentityRbColor → IdentityRbTree → IdentityKey → IdentityRbTree →
-      IdentityRbTree
-  | .black, .node .red (.node .red a x b) y c, z, d =>
-    .node .red (.node .black a x b) y (.node .black c z d)
-  | .black, .node .red a x (.node .red b y c), z, d =>
-    .node .red (.node .black a x b) y (.node .black c z d)
-  | .black, a, x, .node .red (.node .red b y c) z d =>
-    .node .red (.node .black a x b) y (.node .black c z d)
-  | .black, a, x, .node .red b y (.node .red c z d) =>
-    .node .red (.node .black a x b) y (.node .black c z d)
-  | c, a, x, b => .node c a x b
+noncomputable def identityRbBalance {α : Type} :
+    IdentityRbColor → IdentityRbTree α → IdentityKey → α →
+      IdentityRbTree α → IdentityRbTree α
+  | .black, .node .red (.node .red a x xv b) y yv c, z, zv, d =>
+    .node .red (.node .black a x xv b) y yv (.node .black c z zv d)
+  | .black, .node .red a x xv (.node .red b y yv c), z, zv, d =>
+    .node .red (.node .black a x xv b) y yv (.node .black c z zv d)
+  | .black, a, x, xv, .node .red (.node .red b y yv c) z zv d =>
+    .node .red (.node .black a x xv b) y yv (.node .black c z zv d)
+  | .black, a, x, xv, .node .red b y yv (.node .red c z zv d) =>
+    .node .red (.node .black a x xv b) y yv (.node .black c z zv d)
+  | c, a, x, xv, b => .node c a x xv b
 
-/-- Insert `k` into `t`, returning `none` if an equal key is already present. -/
-noncomputable def identityRbInsertAux (k : IdentityKey) :
-    IdentityRbTree → Option IdentityRbTree
-  | .empty => some (.node .red .empty k .empty)
-  | .node c l x r =>
+/-- Insert `(k, v)` into `t`, returning `none` if an equal key is already
+present. -/
+noncomputable def identityRbInsertAux {α : Type} (k : IdentityKey) (v : α) :
+    IdentityRbTree α → Option (IdentityRbTree α)
+  | .empty => some (.node .red .empty k v .empty)
+  | .node c l x xv r =>
     match identityKeyCmp k x with
     | .lt =>
-      match identityRbInsertAux k l with
+      match identityRbInsertAux k v l with
       | none => none
-      | some l' => some (identityRbBalance c l' x r)
+      | some l' => some (identityRbBalance c l' x xv r)
     | .eq => none
     | .gt =>
-      match identityRbInsertAux k r with
+      match identityRbInsertAux k v r with
       | none => none
-      | some r' => some (identityRbBalance c l x r')
+      | some r' => some (identityRbBalance c l x xv r')
 
 /-- Balanced insert returning `none` on collision and recoloring the root
 black. -/
-noncomputable def identityRbInsert (k : IdentityKey) (t : IdentityRbTree) :
-    Option IdentityRbTree :=
-  match identityRbInsertAux k t with
+noncomputable def identityRbInsert {α : Type} (k : IdentityKey) (v : α)
+    (t : IdentityRbTree α) : Option (IdentityRbTree α) :=
+  match identityRbInsertAux k v t with
   | none => none
   | some .empty => some .empty
-  | some (.node _ l x r) => some (.node .black l x r)
+  | some (.node _ l x xv r) => some (.node .black l x xv r)
 
-/-- Insert one `Body`'s `identity`, returning `none` if `body.identity` is
-empty or already present in `t`. -/
-noncomputable def identityRbInsertBody (b : Body) (t : IdentityRbTree) :
-    Option IdentityRbTree :=
-  match b.identity.toByteArray.data.toList with
-  | [] => none
-  | bs => identityRbInsert ⟨byteListTag 1 0 bs, bs⟩ t
-
-/-- Bind helper over `Option IdentityRbTree` for chaining body insertions. -/
-noncomputable def identityRbInsertBodyOpt (b : Body) :
-    Option IdentityRbTree → Option IdentityRbTree
+/-- Insert `(identity, v)` into `t`, returning `none` if `identity` is empty
+or already present in `t`. -/
+noncomputable def identityRbInsertByKey {α : Type} (identity : String)
+    (v : α) (t : IdentityRbTree α) : Option (IdentityRbTree α) :=
+  match identityKey? identity with
   | none => none
-  | some t => identityRbInsertBody b t
+  | some k => identityRbInsert k v t
 
-/-- Single-pass balanced-tree uniqueness check unrolled 4 bodies per recursive
-step so crates with hundreds of captured bodies remain well within Lean's
-default `maxRecDepth`. -/
-noncomputable def bodiesHaveUniqueIdentitiesAux :
-    List Body → IdentityRbTree → Bool
-  | [], _ => true
-  | [b1], t => (identityRbInsertBody b1 t).isSome
-  | [b1, b2], t =>
-    (identityRbInsertBodyOpt b2 (identityRbInsertBody b1 t)).isSome
-  | [b1, b2, b3], t =>
-    (identityRbInsertBodyOpt b3
-      (identityRbInsertBodyOpt b2 (identityRbInsertBody b1 t))).isSome
-  | b1 :: b2 :: b3 :: b4 :: bs, t =>
-    match identityRbInsertBodyOpt b4
-        (identityRbInsertBodyOpt b3
-          (identityRbInsertBodyOpt b2 (identityRbInsertBody b1 t))) with
-    | none => false
-    | some t' => bodiesHaveUniqueIdentitiesAux bs t'
+/-- Bind helper over `Option (IdentityRbTree α)` for chaining insertions. -/
+noncomputable def identityRbInsertByKeyOpt {α : Type} (identity : String)
+    (v : α) : Option (IdentityRbTree α) → Option (IdentityRbTree α)
+  | none => none
+  | some t => identityRbInsertByKey identity v t
+
+/-- Single-pass balanced-tree builder unrolled 4 entries per recursive step so
+crates with hundreds of items remain well within Lean's default
+`maxRecDepth`, returning `none` if any `keyOf item` is empty or duplicated. -/
+noncomputable def identityRbBuildAux {α β : Type} (keyOf : β → String)
+    (valOf : β → α) : List β → IdentityRbTree α → Option (IdentityRbTree α)
+  | [], t => some t
+  | [x1], t => identityRbInsertByKey (keyOf x1) (valOf x1) t
+  | [x1, x2], t =>
+    identityRbInsertByKeyOpt (keyOf x2) (valOf x2)
+      (identityRbInsertByKey (keyOf x1) (valOf x1) t)
+  | [x1, x2, x3], t =>
+    identityRbInsertByKeyOpt (keyOf x3) (valOf x3)
+      (identityRbInsertByKeyOpt (keyOf x2) (valOf x2)
+        (identityRbInsertByKey (keyOf x1) (valOf x1) t))
+  | x1 :: x2 :: x3 :: x4 :: rest, t =>
+    match identityRbInsertByKeyOpt (keyOf x4) (valOf x4)
+        (identityRbInsertByKeyOpt (keyOf x3) (valOf x3)
+          (identityRbInsertByKeyOpt (keyOf x2) (valOf x2)
+            (identityRbInsertByKey (keyOf x1) (valOf x1) t))) with
+    | none => none
+    | some t' => identityRbBuildAux keyOf valOf rest t'
+
+/-- Look up `k` inside an `IdentityRbTree α`. -/
+noncomputable def identityRbLookupAux {α : Type} (k : IdentityKey) :
+    IdentityRbTree α → Option α
+  | .empty => none
+  | .node _ l x v r =>
+    match identityKeyCmp k x with
+    | .lt => identityRbLookupAux k l
+    | .eq => some v
+    | .gt => identityRbLookupAux k r
+
+/-- Look up the unique payload for `identity` in `t` in $O(\log N)$
+comparisons. -/
+noncomputable def identityRbLookup {α : Type} (t : IdentityRbTree α)
+    (identity : String) : Option α :=
+  match identityKey? identity with
+  | none => none
+  | some k => identityRbLookupAux k t
+
+/-- Single-pass balanced-tree uniqueness check over `Body` identities. -/
+noncomputable def bodiesHaveUniqueIdentitiesAux (bs : List Body)
+    (t : IdentityRbTree Unit) : Bool :=
+  (identityRbBuildAux
+    (fun (b : Body) => b.identity) (fun _ => ()) bs t).isSome
 
 /-- Extend or truncate an in-memory scalar enum tag `tagBits` of primitive
 representation `(tagW, tagS)` to the enum's discriminant bit width `discrW`,

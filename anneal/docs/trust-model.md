@@ -550,7 +550,7 @@ kernel-level audit:
    (`require_mir_wp = true`); requires `Trusted.MirAst`,
    `Trusted.MirSemantics`, `Anneal.MirWp`, and `Anneal.MirWp.Canaries` to be
    present, verifies that `wpProg` soundness and `wpFaultProg` soundness in
-   `Anneal.MirWp` and all 25 Pass 1 canaries in decoupled
+   `Anneal.MirWp` and all 26 Pass 1 canaries in decoupled
    `Anneal.MirWp.Canaries` (including `CanaryMemoryLifecycleAnnealClaim`, which
    exercises `forceAllocation`, `.indirect` locals, and `MemoryState`, and the
    `char`, `BinOp.cmp`, `BinOp.*WithOverflow`, and `CastKind.intToInt`
