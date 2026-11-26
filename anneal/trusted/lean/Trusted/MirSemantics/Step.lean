@@ -2460,6 +2460,475 @@ noncomputable def placeStaticTyV2 (bodyLocals : List MirTy) (dst : Place) :
   | _, [] | _, [.deref] => none
   | _, _ => placeProjectedTyV2 bodyLocals dst
 
+/-- Representation class governing whether `StatementKind.assign` copies a
+sized Profile v2 value as zero bytes (`zst`), as a padding-free immediate
+(`scalar` / `scalarPair`), or via `copy_nonoverlapping` memory copy
+(`memoryCopy`).
+
+In MIR (`compiler/rustc_middle/src/mir/syntax.rs:328-335`, `rust-lang/rust`
+`f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1`):
+
+> "We currently require that the LHS place not overlap with any place read as
+> part of computation of the RHS for some rvalues. This requirement is under
+> discussion in [#68364]. Specifically, overlap is permitted only for
+> assignments of a type with `BackendRepr::Scalar | BackendRepr::ScalarPair`
+> where all the scalar fields are
+> [`Scalar::Initialized`][rustc_abi::Scalar::Initialized]."
+
+In `rustc_const_eval`'s `copy_op_no_validate`
+(`compiler/rustc_const_eval/src/interpret/place.rs:901-922, 970-977`,
+`rust-lang/rust` `f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1`):
+
+> "If the source has padding, we want to always do a mem-to-mem copy to ensure
+> consistent padding in the target independent of layout choices."
+> "left_size + right_size != src.layout().size"
+> "BackendRepr::Memory { .. } => true,"
+> "Setting `nonoverlapping` here only has an effect when we don't hit the
+> fast-path above, but that should at least match what LLVM does where `memcpy`
+> is also only used when the type does not have Scalar/ScalarPair layout."
+> "self.mem_copy(src.ptr(), dest.ptr(), dest_size, /*nonoverlapping*/ true)?;"
+
+Vendored `lean-miri` (`anneal/vendor/lean-miri/Miri/Interpreter/Place.lean`,
+lines 339-381, commit `c92d1d9754c9dd585b6b9d6949ae67e5e4665d6a`,
+`copyRuntimePlaceNoValidate`) mirrors this directly:
+
+> "`copy.memoryCopy` enforces `nonoverlapping = true` (per `PlaceCopyHooks` and
+> `Allocation.copyRepeatedly`), so any overlapping copy with initialized bytes
+> fails with `.copyRangesOverlap` UB before reaching deinitialization"
+
+Thus `Rvalue::Use` and per-field `Aggregate` writes take the non-overlapping
+memory-copy path whenever `size > 0` and either the type has
+`BackendRepr::Memory` (arrays `[T; N]` with `N > 0` and non-ZST `T`, tuples
+with `>= 3` scalars, or alignment-inflated tuples such as `([u64; 0], u32, u32)`
+and `([u32; 0], u8)` where aggregate alignment exceeds scalar alignment per
+`rustc_abi::LayoutCalculator::univariant`) or has padding bytes
+(`src_has_padding = true`, e.g. `(u32, bool)` or `(u32, u8)`). -/
+inductive CopyReprV2 where
+  | zst (alignLog2 : Nat)
+  | scalar (alignLog2 : Nat)
+  | scalarPair (elemAlignLog2 : Nat)
+  | memoryCopy
+
+/-- Accumulator for flattening tuple fields when classifying `CopyReprV2`. -/
+inductive TupleCopyPayloadV2 where
+  | none
+  | oneScalar (alignLog2 : Nat)
+  | twoScalars (elemAlignLog2 : Nat)
+  | memory
+
+mutual
+  /-- Classify `ty` into its `CopyReprV2` representation class. -/
+  noncomputable def copyReprOfTyV2 : MirTy → CopyReprV2
+    | .unit | .never => .zst 0
+    | .bool | .ordering => .scalar 0
+    | .int w _ => .scalar (intLayout w).alignLog2
+    | .char => .scalar 2
+    | .enum ety =>
+      if !enumAdmitted ety then
+        .memoryCopy
+      else
+        match ety.tagRepr with
+        | .zeroSized => .zst 0
+        | .scalar tagW _ => .scalar (intLayout tagW).alignLog2
+    | .rangeTo (.int .isize false) | .rangeFrom (.int .isize false) => .scalar 3
+    | .ref _ pt | .rawPtr _ pt =>
+      if isUnsizedTy pt then .scalarPair 3 else .scalar 3
+    | .array elem len =>
+      match copyReprOfTyV2 elem with
+      | .zst a => .zst a
+      | .scalar a | .scalarPair a =>
+        if Nat.beq len 0 then .zst a else .memoryCopy
+      | .memoryCopy =>
+        if Nat.beq len 0 then
+          match layoutOfArrayV2 elem with
+          | some l => .zst l.alignLog2
+          | none => .memoryCopy
+        else
+          .memoryCopy
+    | .tuple fs =>
+      let (maxA, payload) := copyReprOfTupleFieldsV2 fs
+      match payload with
+      | .none => .zst maxA
+      | .oneScalar a => if Nat.ble maxA a then .scalar a else .memoryCopy
+      | .twoScalars a => if Nat.ble maxA a then .scalarPair a else .memoryCopy
+      | .memory => .memoryCopy
+    | .slice _ | .rangeTo _ | .rangeFrom _ | .unsupported => .memoryCopy
+
+  noncomputable def copyReprOfTupleFieldsV2 :
+      List MirTy → Nat × TupleCopyPayloadV2
+    | [] => (0, .none)
+    | f :: fs =>
+      let (restMaxA, restPayload) := copyReprOfTupleFieldsV2 fs
+      match copyReprOfTyV2 f with
+      | .zst fa => (Nat.max fa restMaxA, restPayload)
+      | .scalar fa =>
+        let nextPayload :=
+          match restPayload with
+          | .none => .oneScalar fa
+          | .oneScalar a1 =>
+            if Nat.beq fa a1 then .twoScalars fa else .memory
+          | .twoScalars _ | .memory => .memory
+        (Nat.max fa restMaxA, nextPayload)
+      | .scalarPair fa =>
+        let nextPayload :=
+          match restPayload with
+          | .none => .twoScalars fa
+          | _ => .memory
+        (Nat.max fa restMaxA, nextPayload)
+      | .memoryCopy => (restMaxA, .memory)
+end
+
+/-- Return `true` iff `ty` copies through `copy_nonoverlapping` (`size > 0`
+with `BackendRepr::Memory` or layout padding). -/
+noncomputable def isMemoryCopyReprTyV2 (ty : MirTy) : Bool :=
+  match copyReprOfTyV2 ty with
+  | .memoryCopy => true
+  | _ => false
+
+/-- Normalized projection step inside an unpromoted immediate local slot. -/
+inductive ImmProjStepV2 where
+  | field (idx : Nat)
+  | index (idx : Nat)
+
+/-- Storage span of a place for `Assign` overlap / in-place aliasing checks. -/
+inductive CopyPlaceSpanV2 where
+  | memRange (allocId : AllocId) (offset size : Nat)
+  | immPath (localId : LocalId) (steps : List ImmProjStepV2)
+
+/-- Symmetric prefix relation on immediate-local projection paths: two paths in
+the same immediate local overlap iff one is a prefix of the other. -/
+noncomputable def immProjPrefixSymV2 :
+    List ImmProjStepV2 → List ImmProjStepV2 → Bool
+  | [], _ => true
+  | _, [] => true
+  | .field i :: r1, .field j :: r2 => Nat.beq i j && immProjPrefixSymV2 r1 r2
+  | .index i :: r1, .index j :: r2 => Nat.beq i j && immProjPrefixSymV2 r1 r2
+  | _, _ => false
+
+/-- Return `true` when two `CopyPlaceSpanV2` storage spans overlap on `> 0`
+bytes (or share an immediate-local sub-place prefix). -/
+noncomputable def copySpansOverlapV2 : CopyPlaceSpanV2 → CopyPlaceSpanV2 → Bool
+  | .memRange a1 off1 sz1, .memRange a2 off2 sz2 =>
+    Nat.beq a1 a2 && Nat.blt 0 sz1 && Nat.blt 0 sz2 &&
+      Nat.blt off1 (off2 + sz2) && Nat.blt off2 (off1 + sz1)
+  | .immPath l1 p1, .immPath l2 p2 =>
+    Nat.beq l1 l2 && immProjPrefixSymV2 p1 p2
+  | _, _ => false
+
+/-- Normalize a non-deref projection path on an immediate local of `baseTy`. -/
+noncomputable def normalizeImmProjPathV2 :
+    MirTy → List ProjectionElem → Option (List ImmProjStepV2)
+  | _, [] => some []
+  | .tuple fs, .field idx fTy :: rest =>
+    match getElem? fs idx with
+    | some elemTy =>
+      if !MirTy.beq elemTy fTy then none
+      else (normalizeImmProjPathV2 elemTy rest).map (.field idx :: ·)
+    | none => none
+  | .rangeTo (.int .isize false), .field 0 fTy :: rest
+  | .rangeFrom (.int .isize false), .field 0 fTy :: rest =>
+    if !MirTy.beq (.int .isize false) fTy then none
+    else (normalizeImmProjPathV2 (.int .isize false) rest).map (.field 0 :: ·)
+  | .array elem len, .constantIndex off minLen fromEnd :: rest =>
+    match constantIndexOffset len off minLen fromEnd with
+    | .ok idx => (normalizeImmProjPathV2 elem rest).map (.index idx :: ·)
+    | .error _ => none
+  | _, _ => none
+
+/-- Compute the `CopyPlaceSpanV2` of a resolved assignment destination `dest`
+of type `dstTy` against pre-rvalue `locals`. -/
+noncomputable def destCopySpanV2 (locals : List LocalSlot) (dest : PlaceDestV2)
+    (dstTy : MirTy) : Option CopyPlaceSpanV2 :=
+  match dest with
+  | .local lid =>
+    match getElem? locals lid with
+    | some (.indirect mplace) =>
+      (layoutOfTyV2 dstTy).map (fun lay => .memRange mplace.allocId mplace.offset lay.size)
+    | some (.immediate _) | some (.partialTuple _) => some (.immPath lid [])
+    | _ => none
+  | .localProj lid baseTy projs =>
+    match getElem? locals lid with
+    | some (.indirect mplace) =>
+      match projectMemoryLayoutV2 baseTy projs, layoutOfTyV2 dstTy with
+      | .ok (_, subOff), some lay =>
+        some (.memRange mplace.allocId (mplace.offset + subOff) lay.size)
+      | _, _ => none
+    | some (.immediate _) | some (.partialTuple _) =>
+      (normalizeImmProjPathV2 baseTy projs).map (.immPath lid ·)
+    | _ => none
+  | .indirectProj leafTy mplace subOff =>
+    (layoutOfTyV2 leafTy).map (fun lay =>
+      .memRange mplace.allocId (mplace.offset + subOff) lay.size)
+  | .deref _ lay pv =>
+    pv.allocId.map (fun aid => .memRange aid pv.offsetBytes.toNat lay.size)
+  | .derefProjected _ _ leafTy subOff pv =>
+    match pv.allocId, layoutOfTyV2 leafTy with
+    | some aid, some lay =>
+      some (.memRange aid (pv.offsetBytes.toNat + subOff) lay.size)
+    | _, _ => none
+
+/-- Sub-destination span for field/element `idx` of an `AggregateTuple`
+(`isArray = false`) or `AggregateArray` (`isArray = true`) written into `base`
+of aggregate type `aggTy`. -/
+noncomputable def destAggregateSubSpanV2 (base : CopyPlaceSpanV2)
+    (aggTy elemTy : MirTy) (isArray : Bool) (idx : Nat) :
+    Option CopyPlaceSpanV2 :=
+  match base with
+  | .immPath lid steps =>
+    let step := if isArray then ImmProjStepV2.index idx else .field idx
+    some (.immPath lid (steps ++ [step]))
+  | .memRange aid baseOff _ =>
+    if isArray then
+      (layoutOfTyV2 elemTy).map (fun lay =>
+        .memRange aid (baseOff + idx * lay.size) lay.size)
+    else
+      match aggTy with
+      | .tuple [.int w _, .bool] =>
+        if Nat.beq idx 0 then
+          some (.memRange aid baseOff (intLayout w).size)
+        else if Nat.beq idx 1 then
+          some (.memRange aid (baseOff + (intLayout w).size) 1)
+        else
+          none
+      | _ => none
+
+/-- Compute the `CopyPlaceSpanV2` of a source `Place` against pre-rvalue
+`locals` and `mem`. -/
+noncomputable def srcPlaceCopySpanV2 (bodyLocals : List MirTy)
+    (locals : List LocalSlot) (mem : MemoryState) (place : Place) :
+    Option CopyPlaceSpanV2 :=
+  match getElem? bodyLocals place.localId, getElem? locals place.localId with
+  | some baseTy, some slot =>
+    match place.projection with
+    | [] =>
+      match slot with
+      | .indirect mplace =>
+        (layoutOfTyV2 baseTy).map (fun lay =>
+          .memRange mplace.allocId mplace.offset lay.size)
+      | .immediate _ | .partialTuple _ => some (.immPath place.localId [])
+      | .dead => none
+    | .deref :: rest =>
+      match baseTy with
+      | .ref _ pt | .rawPtr _ pt =>
+        let ptrOpt : Option Val :=
+          match slot with
+          | .immediate optVal => optVal
+          | .indirect mplace =>
+            match loadIndirectV2 mem baseTy mplace with
+            | .ok optVal => optVal
+            | .error _ => none
+          | .dead | .partialTuple _ => none
+        match ptrOpt with
+        | some (.ptr pv) =>
+          match pv.allocId with
+          | none => none
+          | some aid =>
+            if rest.isEmpty then
+              (layoutOfTyV2 pt).map (fun lay =>
+                .memRange aid pv.offsetBytes.toNat lay.size)
+            else
+              match projectMemoryLayoutV2 pt rest with
+              | .ok (leafTy, subOff) =>
+                (layoutOfTyV2 leafTy).map (fun lay =>
+                  .memRange aid (pv.offsetBytes.toNat + subOff) lay.size)
+              | .error _ => none
+        | _ => none
+      | _ => none
+    | projs =>
+      match slot with
+      | .indirect mplace =>
+        match projectMemoryLayoutV2 baseTy projs with
+        | .ok (leafTy, subOff) =>
+          (layoutOfTyV2 leafTy).map (fun lay =>
+            .memRange mplace.allocId (mplace.offset + subOff) lay.size)
+        | .error _ => none
+      | .immediate _ | .partialTuple _ =>
+        (normalizeImmProjPathV2 baseTy projs).map (.immPath place.localId ·)
+      | .dead => none
+  | _, _ => none
+
+/-- Compute the `CopyPlaceSpanV2` of an `Operand` (`none` for `.constant`). -/
+noncomputable def operandCopySpanV2 (bodyLocals : List MirTy)
+    (locals : List LocalSlot) (mem : MemoryState) :
+    Operand → Option CopyPlaceSpanV2
+  | .copy p | .move p => srcPlaceCopySpanV2 bodyLocals locals mem p
+  | .constant _ => none
+
+/-- Compute the storage span of the pointer local read when evaluating a
+`.deref` projection in an `Aggregate` operand (`none` for `.constant` or
+operands without `.deref`; `some none` when a `.deref` operand's base pointer
+local has an unresolved storage span). -/
+noncomputable def operandDerefBaseSpanV2 (bodyLocals : List MirTy)
+    (locals : List LocalSlot) (mem : MemoryState) :
+    Operand → Option (Option CopyPlaceSpanV2)
+  | .copy p | .move p =>
+    let hasDeref :=
+      p.projection.any (fun e => match e with | .deref => true | _ => false)
+    if hasDeref then
+      some (srcPlaceCopySpanV2 bodyLocals locals mem
+        { localId := p.localId, projection := [] })
+    else
+      none
+  | .constant _ => none
+
+/-- Walk aggregate operands left-to-right matching `rustc`'s `write_aggregate`
+(`compiler/rustc_const_eval/src/interpret/step.rs:334-340`, `rust-lang/rust`
+`f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1`):
+
+> "for (field_index, operand) in operands.iter_enumerated() {"
+> "    let field_dest = self.project_field(&variant_dest, field_index)?;"
+> "    let op = self.eval_operand(operand, Some(field_dest.layout))?;"
+> "    self.copy_op_no_validate(&op, &field_dest, /*allow_transmute*/ false)?;"
+> "}"
+
+and vendored `lean-miri`'s `Miri.Interpreter.writeAggregate`
+(`anneal/vendor/lean-miri/Miri/Interpreter/Aggregate.lean:42-74`, commit
+`c92d1d9754c9dd585b6b9d6949ae67e5e4665d6a`), which loops over
+`[:operands.size]` and executes `h.copyOpNoValidate choice operand field false`.
+If an earlier field write `writtenSpans` overlaps either a later operand's
+source span or the pointer local read by a later `.deref` operand, fail closed
+with `.error .unsupported`; if operand `idx` overlaps its own destination field
+span and `isMemoryCopyReprTyV2 fieldTy`, fault `.error .undefined`
+(`copy_nonoverlapping` UB). -/
+noncomputable def checkAggregateCopyHazardLoopV2 (bodyLocals : List MirTy)
+    (locals : List LocalSlot) (mem : MemoryState) (baseSpan : CopyPlaceSpanV2)
+    (aggTy : MirTy) (isArray : Bool) (idx : Nat)
+    (writtenSpans : List CopyPlaceSpanV2) :
+    List MirTy → List Operand → Except FaultKind Unit
+  | [], [] => .ok ()
+  | fieldTy :: restTys, op :: restOps =>
+    let opSpanOpt := operandCopySpanV2 bodyLocals locals mem op
+    let clobberedByEarlier :=
+      match opSpanOpt with
+      | none => false
+      | some opSpan => writtenSpans.any (fun w => copySpansOverlapV2 w opSpan)
+    let ptrClobberedByEarlier :=
+      match operandDerefBaseSpanV2 bodyLocals locals mem op with
+      | none => false
+      | some none => !writtenSpans.isEmpty
+      | some (some ptrSpan) =>
+        writtenSpans.any (fun w => copySpansOverlapV2 w ptrSpan)
+    if clobberedByEarlier then
+      .error .unsupported
+    else if ptrClobberedByEarlier then
+      .error .unsupported
+    else
+      match destAggregateSubSpanV2 baseSpan aggTy fieldTy isArray idx with
+      | none =>
+        let wholeOverlap :=
+          match opSpanOpt with
+          | none => false
+          | some opSpan => copySpansOverlapV2 baseSpan opSpan
+        if wholeOverlap then
+          .error .unsupported
+        else
+          checkAggregateCopyHazardLoopV2 bodyLocals locals mem baseSpan aggTy
+            isArray (idx + 1) (baseSpan :: writtenSpans) restTys restOps
+      | some subSpan =>
+        let selfOverlap :=
+          match opSpanOpt with
+          | none => false
+          | some opSpan => copySpansOverlapV2 subSpan opSpan
+        if selfOverlap && isMemoryCopyReprTyV2 fieldTy then
+          .error .undefined
+        else
+          checkAggregateCopyHazardLoopV2 bodyLocals locals mem baseSpan aggTy
+            isArray (idx + 1) (subSpan :: writtenSpans) restTys restOps
+  | _, _ => .error .unsupported
+
+/-- Post-store non-overlap and in-place aggregate hazard check for Profile v2
+`StatementKind.assign`. Fast-paths non-copy rvalues and immediate/ZST `.use`
+assignments definitionally so proof obligations on scalar, pointer, slice, and
+zero-sized copies reduce by `rfl`.
+
+For `Rvalue.repeat_`, this matches `rustc`'s `write_repeat`
+(`compiler/rustc_const_eval/src/interpret/step.rs:366-388`, `rust-lang/rust`
+`f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1`):
+
+> "let first = self.project_index(&dest, 0)?;"
+> "self.copy_op(&src, &first)?;"
+> "self.mem_copy_repeatedly("
+> "    first_ptr,"
+> "    rest_ptr,"
+> "    elem_size,"
+> "    length - 1,"
+> "    /*nonoverlapping:*/ true,"
+> ")?;"
+
+and vendored `lean-miri`'s `Miri.Interpreter.writeRepeat`
+(`anneal/vendor/lean-miri/Miri/Interpreter/Aggregate.lean:76-95`, commit
+`c92d1d9754c9dd585b6b9d6949ae67e5e4665d6a`):
+
+> "Positive lengths copy once and replicate the resulting bytes; the source can
+> alias the destination, so evaluating/copying every element would be
+> incorrect."
+
+Accordingly, when `count > 0` and `isMemoryCopyReprTyV2 elemTy`, only overlap
+between `op` and element `0` (`first`) faults `.undefined`; overlap with
+elements `1..count` is well-defined because `copy_op` copies `src` into element
+`0` once before `mem_copy_repeatedly` replicates element `0` into the remaining
+elements. -/
+noncomputable def checkAssignCopyHazardV2 (bodyLocals : List MirTy)
+    (locals : List LocalSlot) (mem : MemoryState) (dest : PlaceDestV2)
+    (dstTy : MirTy) : Rvalue → Except FaultKind Unit
+  | .use (.copy src) | .use (.move src)
+  | .useRetag (.copy src) | .useRetag (.move src) =>
+    if !isMemoryCopyReprTyV2 dstTy then
+      .ok ()
+    else
+      match destCopySpanV2 locals dest dstTy,
+          srcPlaceCopySpanV2 bodyLocals locals mem src with
+      | some dSpan, some sSpan =>
+        if copySpansOverlapV2 dSpan sSpan then
+          .error .undefined
+        else
+          .ok ()
+      | _, _ => .error .unsupported
+  | .aggregateTuple fields =>
+    match copyReprOfTyV2 dstTy with
+    | .zst _ => .ok ()
+    | _ =>
+      match dstTy, destCopySpanV2 locals dest dstTy with
+      | .tuple fieldTys, some baseSpan =>
+        checkAggregateCopyHazardLoopV2 bodyLocals locals mem baseSpan dstTy false
+          0 [] fieldTys fields
+      | _, _ => .error .unsupported
+  | .aggregateArray elemTy elems =>
+    match copyReprOfTyV2 dstTy with
+    | .zst _ => .ok ()
+    | _ =>
+      match destCopySpanV2 locals dest dstTy with
+      | some baseSpan =>
+        checkAggregateCopyHazardLoopV2 bodyLocals locals mem baseSpan dstTy true
+          0 [] (List.replicate elems.length elemTy) elems
+      | none => .error .unsupported
+  | .repeat_ op elemTy count =>
+    if Nat.beq count 0 || !isMemoryCopyReprTyV2 elemTy then
+      .ok ()
+    else
+      match op with
+      | .constant _ => .ok ()
+      | .copy src | .move src =>
+        match destCopySpanV2 locals dest dstTy,
+            srcPlaceCopySpanV2 bodyLocals locals mem src with
+        | some baseSpan, some opSpan =>
+          match destAggregateSubSpanV2 baseSpan dstTy elemTy true 0 with
+          | some firstSpan =>
+            if copySpansOverlapV2 firstSpan opSpan then
+              .error .undefined
+            else
+              .ok ()
+          | none =>
+            if copySpansOverlapV2 baseSpan opSpan then
+              .error .unsupported
+            else
+              .ok ()
+        | _, _ => .error .unsupported
+  | .use (.constant _) | .useRetag (.constant _)
+  | .binaryOp _ _ _ | .unaryOp _ _ | .cast _ _ _ | .discriminant _
+  | .ref _ _ | .addressOf _ _ | .aggregateRangeTo _ _
+  | .aggregateRangeFrom _ _ | .unsupported => .ok ()
+
 /-- Evaluate one `StatementKind` in Profile v2.
 
 `.assign dst rvalue` resolves `dst` against the state before the rvalue runs
@@ -2531,15 +3000,19 @@ noncomputable def evalStatementV2 (body : Body) (frame : FrameState)
           match writePlaceDestV2 locals1 mem1 dest dstTy val with
           | .error k => .fault k
           | .ok (locals2, mem2) =>
-            .step {
-              frames := [{
-                frame with
-                stmtIdx := frame.stmtIdx + 1
-                locals := locals2
-              }]
-              callerMem
-              mem := mem2
-            }
+            match checkAssignCopyHazardV2 body.locals frame.locals mem dest
+                dstTy rvalue with
+            | .error k => .fault k
+            | .ok () =>
+              .step {
+                frames := [{
+                  frame with
+                  stmtIdx := frame.stmtIdx + 1
+                  locals := locals2
+                }]
+                callerMem
+                mem := mem2
+              }
   | .unsupported => .fault .unsupported
 
 /-- Element-wise equality helper over two value lists using a fixed element

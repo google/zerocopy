@@ -250,7 +250,8 @@ theorem split_at_shared_correct (q : Query)
         dsimp only
         rw [writePlaceDestV2_immediate_ok
           (by dsimp only [checkValV2, checkVal, Val.ty?]; rw [hMidWf]; rfl)
-          (by rfl) (by rfl)])
+          (by rfl) (by rfl)]
+        rfl)
       -- bb0 stmts 7,8: aggregateRangeTo -> 6, storageDead 7
       apply execOutcomeStateV2_step (by
         dsimp only [evalStepV2, entryProgForBody, Captured.program, Captured.body_0,
@@ -306,7 +307,8 @@ theorem split_at_shared_correct (q : Query)
         dsimp only
         rw [writePlaceDestV2_immediate_ok
           (by dsimp only [checkValV2, checkVal, Val.ty?]; rw [hMidWf]; rfl)
-          (by rfl) (by rfl)])
+          (by rfl) (by rfl)]
+        rfl)
       -- bb1 stmts 10,11: aggregateRangeFrom -> 11, storageDead 12
       apply execOutcomeStateV2_step (by
         dsimp only [evalStepV2, entryProgForBody, Captured.program, Captured.body_0,
@@ -339,7 +341,8 @@ theorem split_at_shared_correct (q : Query)
         dsimp only
         rw [writePlaceDestV2_immediate_ok
           (by dsimp only [checkValV2]; rw [hPRW]; rfl)
-          (by rfl) (by rfl)])
+          (by rfl) (by rfl)]
+        rfl)
       -- bb2 stmts 1..7: storageDead 11,10; aggregateTuple -> 0;
       -- storageDead 8,3,9,4.
       apply execOutcomeStateV2_step (by rfl)
@@ -361,7 +364,8 @@ theorem split_at_shared_correct (q : Query)
         rw [writePlaceDestV2_immediate_ok
           (by change checkValV2 (.tuple [.slicePtr ptr lenL, .slicePtr pR lenR]) _ = true
               dsimp only [checkValV2, checkValV2List]; rw [hPRW]; rfl)
-          (by rfl) (by rfl)])
+          (by rfl) (by rfl)]
+        rfl)
       apply execOutcomeStateV2_step (by rfl)
       apply execOutcomeStateV2_step (by rfl)
       apply execOutcomeStateV2_step (by rfl)

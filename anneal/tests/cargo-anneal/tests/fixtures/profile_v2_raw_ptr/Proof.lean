@@ -165,12 +165,55 @@ private theorem loadU32_correct (q : Query)
             | ⟨a, hFind, hLive, hBounds, hAlign, hInit⟩ =>
               match loadU32_ok cm pv aid a hFind hLive hBounds hAlign hInit with
               | ⟨sv, hLoad, hVWf⟩ =>
+                have hEntryEq0 :
+                    entryMemoryForArgsV2 cm
+                      ((Captured.body_0.locals.drop 1).take Captured.body_0.argumentCount)
+                      [.ptr pv] = entryMemoryWithCaller cm := by
+                  have hAidLe : aid ≤ maxAllocId cm.allocations := by
+                    revert hFind
+                    induction cm.allocations with
+                    | nil => intro hF; cases hF
+                    | cons x xs ih =>
+                      intro hF
+                      unfold findAllocation at hF
+                      cases hBeq : Nat.beq x.allocId aid with
+                      | true =>
+                        have hEqId : x.allocId = aid := Nat.eq_of_beq_eq_true hBeq
+                        subst hEqId
+                        exact Nat.le_max_left _ _
+                      | false =>
+                        rw [hBeq] at hF
+                        exact Nat.le_trans (ih hF) (Nat.le_max_right _ _)
+                  have hLeBase :
+                      maxValPtrAllocIdList [.ptr pv] + 1 ≤
+                        (entryMemoryWithCaller cm).nextAllocId := by
+                    dsimp only [maxValPtrAllocIdList, maxValPtrAllocId]
+                    rw [hAid]
+                    dsimp only [Option.getD]
+                    have hMax0 : Nat.max aid 0 = aid := Nat.max_eq_left (Nat.zero_le aid)
+                    rw [hMax0]
+                    exact Nat.le_trans
+                      (Nat.succ_le_succ (Nat.le_trans hAidLe (Nat.le_max_left _ _)))
+                      (Nat.le_max_right _ _)
+                  change {
+                      nextAllocId := Nat.max (entryMemoryWithCaller cm).nextAllocId
+                        (maxValPtrAllocIdList [.ptr pv] + 1)
+                      allocations := (entryMemoryWithCaller cm).allocations
+                    } = entryMemoryWithCaller cm
+                  cases hBase : entryMemoryWithCaller cm with
+                  | mk nextId allocs =>
+                    rw [hBase] at hLeBase
+                    dsimp only at hLeBase ⊢
+                    have hMax : Nat.max nextId (maxValPtrAllocIdList [.ptr pv] + 1) = nextId :=
+                      Nat.max_eq_left hLeBase
+                    rw [hMax]
                 have hStep0 :
                     initStateV2 (entryProgForBody Captured.program 0) ⟨[.ptr pv], cm⟩ =
                       .ok ⟨[⟨0, 0, 0, [.immediate none, .immediate (some (.ptr pv))],
                         none, none, none⟩],
-                        cm, entryMemoryWithCaller cm⟩ :=
-                  initStateV2_ok_of (p := entryProgForBody Captured.program 0)
+                        cm, entryMemoryWithCaller cm⟩ := by
+                  rw [← hEntryEq0]
+                  exact initStateV2_ok_of (p := entryProgForBody Captured.program 0)
                     (q := ⟨[.ptr pv], cm⟩) (body := Captured.body_0)
                     rfl rfl hCallerValid rfl rfl rfl rfl rfl rfl rfl rfl
                     hArgsMatch hRefs hDisj
@@ -314,6 +357,51 @@ private theorem storeU8_correct (q : Query)
                     | false => rw [h2] at hArgsMatch'; exact Bool.noConfusion hArgsMatch'
                   match storeU8_ok cm pv aid a sv hSvWf hFind hLive hMut hBounds with
                   | ⟨mem', hStore⟩ =>
+                    have hEntryEq1 :
+                        entryMemoryForArgsV2 cm
+                          ((Captured.body_1.locals.drop 1).take Captured.body_1.argumentCount)
+                          [.ptr pv, .scalar sv] = entryMemoryWithCaller cm := by
+                      have hAidLe : aid ≤ maxAllocId cm.allocations := by
+                        revert hFind
+                        induction cm.allocations with
+                        | nil => intro hF; cases hF
+                        | cons x xs ih =>
+                          intro hF
+                          unfold findAllocation at hF
+                          cases hBeq : Nat.beq x.allocId aid with
+                          | true =>
+                            have hEqId : x.allocId = aid := Nat.eq_of_beq_eq_true hBeq
+                            subst hEqId
+                            exact Nat.le_max_left _ _
+                          | false =>
+                            rw [hBeq] at hF
+                            exact Nat.le_trans (ih hF) (Nat.le_max_right _ _)
+                      have hLeBase :
+                          maxValPtrAllocIdList [.ptr pv, .scalar sv] + 1 ≤
+                            (entryMemoryWithCaller cm).nextAllocId := by
+                        dsimp only [maxValPtrAllocIdList, maxValPtrAllocId]
+                        rw [hAid]
+                        dsimp only [Option.getD]
+                        have hMax0 : Nat.max aid (Nat.max 0 0) = aid :=
+                          Nat.max_eq_left (Nat.zero_le aid)
+                        rw [hMax0]
+                        exact Nat.le_trans
+                          (Nat.succ_le_succ (Nat.le_trans hAidLe (Nat.le_max_left _ _)))
+                          (Nat.le_max_right _ _)
+                      change {
+                          nextAllocId := Nat.max (entryMemoryWithCaller cm).nextAllocId
+                            (maxValPtrAllocIdList [.ptr pv, .scalar sv] + 1)
+                          allocations := (entryMemoryWithCaller cm).allocations
+                        } = entryMemoryWithCaller cm
+                      cases hBase : entryMemoryWithCaller cm with
+                      | mk nextId allocs =>
+                        rw [hBase] at hLeBase
+                        dsimp only at hLeBase ⊢
+                        have hMax :
+                            Nat.max nextId (maxValPtrAllocIdList [.ptr pv, .scalar sv] + 1) =
+                              nextId :=
+                          Nat.max_eq_left hLeBase
+                        rw [hMax]
                     have hStep0 :
                         initStateV2 (entryProgForBody Captured.program 1)
                           ⟨[.ptr pv, .scalar sv], cm⟩ =
@@ -322,8 +410,9 @@ private theorem storeU8_correct (q : Query)
                             .immediate (some (.ptr pv)),
                             .immediate (some (.scalar sv)),
                             .dead
-                          ], none, none, none⟩], cm, entryMemoryWithCaller cm⟩ :=
-                      initStateV2_ok_of (p := entryProgForBody Captured.program 1)
+                          ], none, none, none⟩], cm, entryMemoryWithCaller cm⟩ := by
+                      rw [← hEntryEq1]
+                      exact initStateV2_ok_of (p := entryProgForBody Captured.program 1)
                         (q := ⟨[.ptr pv, .scalar sv], cm⟩) (body := Captured.body_1)
                         rfl rfl hCallerValid rfl rfl rfl rfl rfl rfl rfl rfl
                         hArgsMatch hRefs hDisj

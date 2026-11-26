@@ -1547,4 +1547,355 @@ theorem refute_step_v2_assert_non_bool_unsupported :
      | _ => False) :=
   trivial
 
+/-- Guard `step_v2_assign_use_overlap_ub`: `StatementKind.assign` with
+`Rvalue.use` / `Rvalue.useRetag` faults `.fault .undefined` on overlapping
+non-zero-sized `BackendRepr::Memory` or padded places (`*p = *p` on `[u8; 4]`,
+local `a = a` on `[u8; 4]`, and `*p = *p` on padded `(u32, bool)`), while
+permitting zero-sized (`[u8; 0]`, `[u32; 0]`), `Scalar` (`u32`,
+`([u32; 0], u32)`), padding-free `ScalarPair` (`(u32, u32)`, `(u8, bool)`), and
+disjoint element (`a[0] = a[1]`) copies. -/
+theorem refute_step_v2_assign_use_overlap_ub :
+    let arr4Ty : MirTy := .array u8Ty 4
+    let zstArrTy : MirTy := .array (.int .i32 false) 0
+    let mem4 : MemoryState := {
+      allocations := [{
+        allocId := 2
+        alignLog2 := 2
+        mutability := .mut
+        bytes := [.init 1 none, .init 2 none, .init 3 none, .init 4 none]
+        live := true
+      }]
+      nextAllocId := 3
+    }
+    let bodyPtrArr : Body := {
+      argumentCount := 0
+      locals := [.unit, .rawPtr .mut arr4Ty]
+      basicBlocks := []
+    }
+    let framePtrArr : FrameState := {
+      defId := 0, blockIdx := 0, stmtIdx := 0
+      locals := [.immediate none, .immediate (some (.ptr ⟨some 2, 0, .isize⟩))]
+    }
+    let bodyLocArr : Body := {
+      argumentCount := 0
+      locals := [.unit, arr4Ty]
+      basicBlocks := []
+    }
+    let frameLocArr : FrameState := {
+      defId := 0, blockIdx := 0, stmtIdx := 0
+      locals := [.immediate none, .immediate (some (.array [
+        .scalar ⟨.i8, false, 1⟩, .scalar ⟨.i8, false, 2⟩,
+        .scalar ⟨.i8, false, 3⟩, .scalar ⟨.i8, false, 4⟩
+      ]))]
+    }
+    let bodyPaddedPair : Body := {
+      argumentCount := 0
+      locals := [.unit, .tuple [.int .i32 false, .bool]]
+      basicBlocks := []
+    }
+    let framePaddedPair : FrameState := {
+      defId := 0, blockIdx := 0, stmtIdx := 0
+      locals := [.immediate none,
+        .immediate (some (.tuple [.scalar ⟨.i32, false, 9⟩, .bool true]))]
+    }
+    let bodyNoPadPair : Body := {
+      argumentCount := 0
+      locals := [.unit, .tuple [u8Ty, .bool], .tuple [.int .i32 false, .int .i32 false],
+                 zstArrTy, .tuple [zstArrTy, .int .i32 false]]
+      basicBlocks := []
+    }
+    let frameNoPadPair : FrameState := {
+      defId := 0, blockIdx := 0, stmtIdx := 0
+      locals := [
+        .immediate none,
+        .immediate (some (.tuple [.scalar ⟨.i8, false, 9⟩, .bool true])),
+        .immediate (some (.tuple [.scalar ⟨.i32, false, 1⟩, .scalar ⟨.i32, false, 2⟩])),
+        .immediate (some (.array [])),
+        .immediate (some (.tuple [.array [], .scalar ⟨.i32, false, 7⟩]))
+      ]
+    }
+    let bodyArrOfArr : Body := {
+      argumentCount := 0
+      locals := [.unit, .array arr4Ty 2]
+      basicBlocks := []
+    }
+    let vArr4 : Val := .array [
+      .scalar ⟨.i8, false, 1⟩, .scalar ⟨.i8, false, 2⟩,
+      .scalar ⟨.i8, false, 3⟩, .scalar ⟨.i8, false, 4⟩
+    ]
+    let frameArrOfArr : FrameState := {
+      defId := 0, blockIdx := 0, stmtIdx := 0
+      locals := [.immediate none, .immediate (some (.array [vArr4, vArr4]))]
+    }
+    -- Negative (must fault `.undefined`):
+    (match evalStatementV2 bodyPtrArr framePtrArr mem4 { allocations := [] }
+        (.assign { localId := 1, projection := [.deref] }
+          (.use (.copy { localId := 1, projection := [.deref] }))) with
+     | .fault .undefined => True
+     | _ => False) ∧
+    (match evalStatementV2 bodyLocArr frameLocArr emptyMemory { allocations := [] }
+        (.assign { localId := 1, projection := [] }
+          (.use (.copy { localId := 1, projection := [] }))) with
+     | .fault .undefined => True
+     | _ => False) ∧
+    (match evalStatementV2 bodyPaddedPair framePaddedPair emptyMemory { allocations := [] }
+        (.assign { localId := 1, projection := [] }
+          (.use (.copy { localId := 1, projection := [] }))) with
+     | .fault .undefined => True
+     | _ => False) ∧
+    (match evalStatementV2 bodyArrOfArr frameArrOfArr emptyMemory { allocations := [] }
+        (.assign { localId := 1, projection := [.constantIndex 0 2 false] }
+          (.use (.copy { localId := 1, projection := [.constantIndex 0 2 false] }))) with
+     | .fault .undefined => True
+     | _ => False) ∧
+    -- Positive anti-overreach (must step cleanly):
+    (match evalStatementV2 bodyNoPadPair frameNoPadPair emptyMemory { allocations := [] }
+        (.assign { localId := 1, projection := [] }
+          (.use (.copy { localId := 1, projection := [] }))) with
+     | .step _ => True
+     | _ => False) ∧
+    (match evalStatementV2 bodyNoPadPair frameNoPadPair emptyMemory { allocations := [] }
+        (.assign { localId := 2, projection := [] }
+          (.use (.copy { localId := 2, projection := [] }))) with
+     | .step _ => True
+     | _ => False) ∧
+    (match evalStatementV2 bodyNoPadPair frameNoPadPair emptyMemory { allocations := [] }
+        (.assign { localId := 3, projection := [] }
+          (.use (.copy { localId := 3, projection := [] }))) with
+     | .step _ => True
+     | _ => False) ∧
+    (match evalStatementV2 bodyNoPadPair frameNoPadPair emptyMemory { allocations := [] }
+        (.assign { localId := 4, projection := [] }
+          (.use (.copy { localId := 4, projection := [] }))) with
+     | .step _ => True
+     | _ => False) ∧
+    (match evalStatementV2 bodyArrOfArr frameArrOfArr emptyMemory { allocations := [] }
+        (.assign { localId := 1, projection := [.constantIndex 0 2 false] }
+          (.use (.copy { localId := 1, projection := [.constantIndex 1 2 false] }))) with
+     | .step _ => True
+     | _ => False) :=
+  ⟨trivial, trivial, trivial, trivial, trivial, trivial, trivial, trivial, trivial⟩
+
+/-- Guard `step_v2_assign_aggregate_clobber_unsupported`: in-place `Aggregate`
+where an earlier field write (`_1.0`) aliases a later operand (`_1.0` in
+`_1 = (_1.1, _1.0)`) fails closed with `.fault .unsupported`, whereas
+non-clobbering scalar `_1 = (_1.0, _1.1)` steps cleanly. -/
+theorem refute_step_v2_assign_aggregate_clobber_unsupported :
+    let u32Ty : MirTy := .int .i32 false
+    let body : Body := {
+      argumentCount := 0
+      locals := [.unit, .tuple [u32Ty, u32Ty]]
+      basicBlocks := []
+    }
+    let frame : FrameState := {
+      defId := 0, blockIdx := 0, stmtIdx := 0
+      locals := [.immediate none,
+        .immediate (some (.tuple [.scalar ⟨.i32, false, 1⟩, .scalar ⟨.i32, false, 2⟩]))]
+    }
+    (match evalStatementV2 body frame emptyMemory { allocations := [] }
+        (.assign { localId := 1, projection := [] }
+          (.aggregateTuple [
+            .copy { localId := 1, projection := [.field 1 u32Ty] },
+            .copy { localId := 1, projection := [.field 0 u32Ty] }
+          ])) with
+     | .fault .unsupported => True
+     | _ => False) ∧
+    (match evalStatementV2 body frame emptyMemory { allocations := [] }
+        (.assign { localId := 1, projection := [] }
+          (.aggregateTuple [
+            .copy { localId := 1, projection := [.field 0 u32Ty] },
+            .copy { localId := 1, projection := [.field 1 u32Ty] }
+          ])) with
+     | .step _ => True
+     | _ => False) :=
+  ⟨trivial, trivial⟩
+
+/-- Guard `step_v2_assign_aggregate_deref_ptr_clobber_unsupported`: when an
+earlier `Aggregate` field write overwrites the memory holding a pointer local
+`_2 : *const u32`, a later `copy (*_2)` operand fails closed with
+`.fault .unsupported` (for both array destinations and tuple destinations taking
+the conservative `baseSpan` path), whereas reading `*_2` at field 0 before `_2`
+is overwritten steps cleanly. -/
+theorem refute_step_v2_assign_aggregate_deref_ptr_clobber_unsupported :
+    let u32Ty : MirTy := .int .i32 false
+    let ptrU32Ty : MirTy := .rawPtr .shared u32Ty
+    let arr2Ty : MirTy := .array u32Ty 2
+    let tup3Ty : MirTy := .tuple [u32Ty, u32Ty, u32Ty]
+    let mem : MemoryState := {
+      allocations := [
+        { allocId := 1, bytes := [
+            .init 1 none, .init 0 none, .init 0 none, .init 0 none
+          ], alignLog2 := 2, mutability := .mut, live := true },
+        { allocId := 2, bytes := [
+            .init 0 (some 1), .init 0 (some 1), .init 0 (some 1), .init 0 (some 1),
+            .init 0 (some 1), .init 0 (some 1), .init 0 (some 1), .init 0 (some 1),
+            .init 0 none, .init 0 none, .init 0 none, .init 0 none
+          ], alignLog2 := 3, mutability := .mut, live := true }
+      ]
+      nextAllocId := 3
+    }
+    let body : Body := {
+      argumentCount := 0
+      locals := [
+        .unit, u32Ty, ptrU32Ty, .rawPtr .mut arr2Ty, .rawPtr .mut tup3Ty
+      ]
+      basicBlocks := []
+    }
+    let frame : FrameState := {
+      defId := 0, blockIdx := 0, stmtIdx := 0
+      locals := [
+        .immediate none,
+        .immediate (some (.scalar ⟨.i32, false, 7⟩)),
+        .indirect { allocId := 2, offset := 0 },
+        .immediate (some (.ptr { allocId := some 2, offsetBytes := 0, width := .isize })),
+        .immediate (some (.ptr { allocId := some 2, offsetBytes := 0, width := .isize }))
+      ]
+    }
+    (match evalStatementV2 body frame mem { allocations := [] }
+        (.assign { localId := 3, projection := [.deref] }
+          (.aggregateArray u32Ty [
+            .copy { localId := 1, projection := [] },
+            .copy { localId := 2, projection := [.deref] }
+          ])) with
+     | .fault .unsupported => True
+     | _ => False) ∧
+    (match checkAggregateCopyHazardLoopV2 body.locals frame.locals mem
+        (.memRange 2 0 12) tup3Ty false 0 [] [u32Ty, u32Ty, u32Ty] [
+          .copy { localId := 1, projection := [] },
+          .copy { localId := 2, projection := [.deref] },
+          .copy { localId := 1, projection := [] }
+        ] with
+     | .error .unsupported => True
+     | _ => False) ∧
+    (match checkAggregateCopyHazardLoopV2 body.locals frame.locals mem
+        (.memRange 2 0 12) tup3Ty false 0 [] [u32Ty, u32Ty, u32Ty] [
+          .copy { localId := 2, projection := [.deref] },
+          .copy { localId := 1, projection := [] },
+          .copy { localId := 1, projection := [] }
+        ] with
+     | .ok () => True
+     | _ => False) ∧
+    (match evalStatementV2 body frame mem { allocations := [] }
+        (.assign { localId := 3, projection := [.deref] }
+          (.aggregateArray u32Ty [
+            .copy { localId := 2, projection := [.deref] },
+            .copy { localId := 1, projection := [] }
+          ])) with
+     | .step _ => True
+     | _ => False) :=
+  ⟨trivial, trivial, trivial, trivial⟩
+
+/-- Guard `step_v2_assign_aggregate_field_overlap_ub`: in-place `Aggregate`
+copying a `BackendRepr::Memory` field onto itself (`_1 = (_1.0, _1.1)` on
+`([u8; 4], [u8; 4])`) faults `.fault .undefined`. -/
+theorem refute_step_v2_assign_aggregate_field_overlap_ub :
+    let arr4Ty : MirTy := .array u8Ty 4
+    let vArr4 : Val := .array [
+      .scalar ⟨.i8, false, 1⟩, .scalar ⟨.i8, false, 2⟩,
+      .scalar ⟨.i8, false, 3⟩, .scalar ⟨.i8, false, 4⟩
+    ]
+    let body : Body := {
+      argumentCount := 0
+      locals := [.unit, .tuple [arr4Ty, arr4Ty]]
+      basicBlocks := []
+    }
+    let frame : FrameState := {
+      defId := 0, blockIdx := 0, stmtIdx := 0
+      locals := [.immediate none, .immediate (some (.tuple [vArr4, vArr4]))]
+    }
+    (match evalStatementV2 body frame emptyMemory { allocations := [] }
+        (.assign { localId := 1, projection := [] }
+          (.aggregateTuple [
+            .copy { localId := 1, projection := [.field 0 arr4Ty] },
+            .copy { localId := 1, projection := [.field 1 arr4Ty] }
+          ])) with
+     | .fault .undefined => True
+     | _ => False) :=
+  trivial
+
+/-- Guard `step_v2_assign_repeat_overlap_ub`: in-place `Rvalue.repeat_`
+copying a `BackendRepr::Memory` element `a[0]` into `a = [a[0]; 2]` faults
+`.fault .undefined`, while `a = [a[1]; 2]` (disjoint from `a[0]`) steps
+cleanly. -/
+theorem refute_step_v2_assign_repeat_overlap_ub :
+    let arr4Ty : MirTy := .array u8Ty 4
+    let vArr4 : Val := .array [
+      .scalar ⟨.i8, false, 1⟩, .scalar ⟨.i8, false, 2⟩,
+      .scalar ⟨.i8, false, 3⟩, .scalar ⟨.i8, false, 4⟩
+    ]
+    let body : Body := {
+      argumentCount := 0
+      locals := [.unit, .array arr4Ty 2]
+      basicBlocks := []
+    }
+    let frame : FrameState := {
+      defId := 0, blockIdx := 0, stmtIdx := 0
+      locals := [.immediate none, .immediate (some (.array [vArr4, vArr4]))]
+    }
+    (match evalStatementV2 body frame emptyMemory { allocations := [] }
+        (.assign { localId := 1, projection := [] }
+          (.repeat_ (.copy { localId := 1, projection := [.constantIndex 0 2 false] })
+            arr4Ty 2)) with
+     | .fault .undefined => True
+     | _ => False) ∧
+    (match evalStatementV2 body frame emptyMemory { allocations := [] }
+        (.assign { localId := 1, projection := [] }
+          (.repeat_ (.copy { localId := 1, projection := [.constantIndex 1 2 false] })
+            arr4Ty 2)) with
+     | .step _ => True
+     | _ => False) :=
+  ⟨trivial, trivial⟩
+
+/-- Guard `state_v2_init_uses_entry_memory_for_args`: end-to-end Profile v2
+`Program` execution where the caller passes a dangling raw pointer
+`p : *const u8 = ⟨some 2, 0, .isize⟩` with empty `callerMem`, and the callee
+promotes a stack local `_2 : u8 = 42` via `&raw const _2` before reading `*p`.
+`initStateV2` must advance `nextAllocId` past `2` via `entryMemoryForArgsV2` so
+`_2` receives `allocId = 3` and reading dangling `*p` faults `.fault .undefined`
+(whereas falling back to `entryMemoryWithCaller` assigns `allocId = 2` to `_2`
+and unsoundly returns `42`). -/
+theorem refute_state_v2_init_uses_entry_memory_for_args :
+    let rawU8Const : MirTy := .rawPtr .shared u8Ty
+    let prog : Program := {
+      scope := .unit
+      pointerWidthBits := 64
+      mirProfileVersion := 2
+      bodies := [{
+        argumentCount := 1
+        locals := [u8Ty, rawU8Const, u8Ty, rawU8Const]
+        basicBlocks := [{
+          statements := [
+            .storageLive 2,
+            .assign { localId := 2, projection := [] }
+              (.use (.constant ⟨u8Ty, .scalar (BitVec.ofNat 128 42)⟩)),
+            .storageLive 3,
+            .assign { localId := 3, projection := [] }
+              (.addressOf .shared { localId := 2, projection := [] }),
+            .assign { localId := 0, projection := [] }
+              (.use (.copy { localId := 1, projection := [.deref] }))
+          ]
+          terminator := .return_
+        }]
+        isUnsafe := true
+        identity := "guard_mutation::dangling_raw_ptr_vs_stack_alloc"
+      }]
+    }
+    (match initStateV2 prog
+        { args := [.ptr ⟨some 2, 0, .isize⟩], callerMem := { allocations := [] } } with
+     | .ok s0 =>
+       match evalStepV2 prog s0 with
+       | .step s1 =>
+         match evalStepV2 prog s1 with
+         | .step s2 =>
+           match evalStepV2 prog s2 with
+           | .step s3 =>
+             match evalStepV2 prog s3 with
+             | .step s4 => evalStepV2 prog s4 = .fault .undefined
+             | _ => False
+           | _ => False
+         | _ => False
+       | _ => False
+     | .error _ => False) :=
+  rfl
+
 end GuardMutation

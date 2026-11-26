@@ -9,6 +9,7 @@
 prelude
 import Init.Data.BitVec.Lemmas
 import Anneal.MirWp
+import Anneal.MirWp.V2Memory
 
 /-! Generic Profile v2 stepping lemmas and `u8` arithmetic facts shared by the
 overflow-check proofs. Each proof steps a single-frame state of body `0` one
@@ -79,7 +80,9 @@ theorem step_assign {p : Program} {body : Body} {bb : BasicBlock}
       some (.assign ⟨lid, []⟩ rv))
     (hTy : placeStaticTyV2 body.locals ⟨lid, []⟩ = some ty)
     (hRv : evalRvalueV2 body.locals l m ty rv = .ok (v, l1, m1))
-    (hW : writePlaceDestV2 l1 m1 (.local lid) ty v = .ok (l2, m2)) :
+    (hW : writePlaceDestV2 l1 m1 (.local lid) ty v = .ok (l2, m2))
+    (hHaz : checkAssignCopyHazardV2 body.locals l m (.local lid) ty rv =
+      .ok () := by rfl) :
     evalStepV2 p (st b i l cm m) = .step (st b (i + 1) l2 cm m2) := by
   unfold evalStepV2
   dsimp only
@@ -98,6 +101,8 @@ theorem step_assign {p : Program} {body : Body} {bb : BasicBlock}
   rw [hRv]
   dsimp only
   rw [hW]
+  dsimp only
+  rw [hHaz]
 
 /-- Storing a well-typed value into a live, uninitialized local. -/
 theorem writePlaceDestV2_local {locals locals' : List LocalSlot}
@@ -130,13 +135,11 @@ theorem initStateV2_ok {p : Program} {body : Body} {args : List Val}
     (hAct : assertConditionTypesValid body = true := by decide) :
     initStateV2 p ⟨args, cm⟩ = .ok ⟨[⟨p.entryDefId, 0, 0,
       initLocalsLoop body args 0 body.locals, none, none, none⟩], cm,
-      entryMemoryWithCaller cm⟩ := by
+      entryMemoryForArgsV2 cm ((body.locals.drop 1).take body.argumentCount)
+        args⟩ := by
   let ⟨hCM, hArgs, hRefs, hDisj⟩ := hValid
-  unfold initStateV2
-  rw [hPW, hPV, hCM, hEntry]
-  dsimp only
-  rw [hNonEmpty, hArgLt, hSto, hDiscr, hCast, hAct, hLocs, hArgs, hRefs, hDisj]
-  rfl
+  exact Anneal.MirWp.initStateV2_ok_of hPW hPV hCM hEntry hNonEmpty hArgLt
+    hSto hDiscr hCast hAct hLocs hArgs hRefs hDisj
 
 /-! ## `u8` values -/
 

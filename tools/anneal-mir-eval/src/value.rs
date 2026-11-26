@@ -99,6 +99,9 @@ pub enum UbClass {
     PtrOffsetOverflowOrOob,
     /// `slice::get_unchecked` range out of bounds (`start > end || end > len`).
     SliceGetUncheckedOutOfBounds,
+    /// Non-zero-sized `BackendRepr::Memory` or padded `Assign` copy with
+    /// overlapping source and destination places (`copy_nonoverlapping` UB).
+    OverlappingMemoryCopy,
     /// Invalid reference produced (null, unaligned, dangling, OOB, read-only).
     InvalidReferenceProduced,
     /// Returned references violate pairwise `&mut` span disjointness.
@@ -135,6 +138,13 @@ pub enum UbClass {
     /// `-Zmiri-symbolic-alignment-check` and may succeed under concrete base
     /// addresses in default Miri.
     SymbolicAllocAlignment,
+    /// Conservative model-only: overlapping `Assign` copy on a non-`Memory`
+    /// type that does not invoke `copy_nonoverlapping` in Miri — specifically
+    /// an immediate (non-address-taken) padded `ScalarPair` local (e.g.
+    /// `(u32, bool)`) where `rustc_const_eval`/`lean-miri` take the immediate
+    /// fast path, or an unmodeled type conservatively classified as
+    /// `MemoryCopy`.
+    ConservativeOverlappingAssignCopy,
     /// Entry boundary violation: caller passed an invalid or aliasing reference
     /// outside `ValidEntryArgsV2` before entering the body.
     EntryInvalidRefArg,
@@ -163,6 +173,7 @@ impl UbClass {
             | Self::WriteToReadOnlyMemory
             | Self::PtrOffsetOverflowOrOob
             | Self::SliceGetUncheckedOutOfBounds
+            | Self::OverlappingMemoryCopy
             | Self::InvalidReferenceProduced
             | Self::OverlappingMutRefsReturned
             | Self::StackRefEscaped => WitnessClass::ReplayableMiriUb,
@@ -176,6 +187,7 @@ impl UbClass {
             | Self::CheckPtrAssertOnly
             | Self::ZstStackRefEscape
             | Self::SymbolicAllocAlignment
+            | Self::ConservativeOverlappingAssignCopy
             | Self::DivergingCallReturned
             | Self::EntryInvalidRefArg
             | Self::SyntheticInvalidConstOrSwitch => WitnessClass::ModelOnlyUnreplayed,
@@ -222,6 +234,11 @@ impl UbClass {
                 "conservative Trusted.MirSemantics check: allocation-relative alignment \
                  (alloc.align < access_align) requires Miri -Zmiri-symbolic-alignment-check and \
                  may succeed under concrete base addresses in default Miri",
+            ),
+            Self::ConservativeOverlappingAssignCopy => Some(
+                "conservative Trusted.MirSemantics check: overlapping Assign copy on an \
+                 immediate (non-address-taken) padded ScalarPair local (or an unmodeled \
+                 type) does not take Miri's copy_nonoverlapping memory-copy path",
             ),
             Self::DivergingCallReturned => Some(
                 "synthetic MIR artifact: a diverging call terminator (target = None) returning \

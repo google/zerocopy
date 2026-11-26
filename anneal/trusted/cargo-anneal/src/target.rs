@@ -6199,7 +6199,7 @@ mod tests {
                            resolvePlaceDestV2, placeStaticTyV2, Trusted.MirSemantics.getElem?]\n    \
                          rw [evalRvalueV2_useRetag_copy_ok (by rfl) (by rfl) (by rfl) hRV]\n    \
                          dsimp only\n    \
-                         rw [writePlaceDestV2_immediate_ok (by rfl) (by rfl) (by rfl)])\n  \
+                         rw [writePlaceDestV2_immediate_ok (by rfl) (by rfl) (by rfl)]; rfl)\n  \
                        apply execOutcomeStateV2_done (by\n    \
                          dsimp only [evalStepV2, entryProgForBody, Captured.program,\n      \
                            Captured.body0, Captured.sliceTy, Trusted.MirSemantics.getElem?]\n    \

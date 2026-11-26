@@ -345,13 +345,81 @@ noncomputable def maxAllocId : List Allocation → AllocId
   | [] => 0
   | a :: rest => Nat.max a.allocId (maxAllocId rest)
 
+/-- Compute the largest provenance `allocId` carried by initialized bytes in
+`bs` (or `0` when no byte carries provenance). -/
+noncomputable def maxByteProvAllocId : List AllocByte → AllocId
+  | [] => 0
+  | .uninit :: rest => maxByteProvAllocId rest
+  | .init _ none :: rest => maxByteProvAllocId rest
+  | .init _ (some aid) :: rest => Nat.max aid (maxByteProvAllocId rest)
+
+/-- Compute the largest byte-provenance `allocId` across `allocs` (or `0` when
+none). -/
+noncomputable def maxAllocBytesProvId : List Allocation → AllocId
+  | [] => 0
+  | a :: rest => Nat.max (maxByteProvAllocId a.bytes) (maxAllocBytesProvId rest)
+
+/-- Compute the largest allocation id or byte-provenance id across `allocs`. -/
+noncomputable def maxAllocAndProvId (allocs : List Allocation) : AllocId :=
+  Nat.max (maxAllocId allocs) (maxAllocBytesProvId allocs)
+
+mutual
+  /-- Return `true` when `ty` is a raw pointer or a tuple/array containing
+  one. Kept exhaustive over `MirTy` so adding new aggregate/container
+  constructors forces updating raw-pointer freshness tracking. -/
+  noncomputable def tyHasRawPtrV2 : MirTy → Bool
+    | .rawPtr _ _ => true
+    | .array elem _ => tyHasRawPtrV2 elem
+    | .tuple fs => tyListHasRawPtrV2 fs
+    | .bool | .int _ _ | .unit | .never | .char | .ordering | .enum _
+    | .ref _ _ | .slice _ | .rangeTo _ | .rangeFrom _ | .unsupported => false
+
+  noncomputable def tyListHasRawPtrV2 : List MirTy → Bool
+    | [] => false
+    | t :: ts => tyHasRawPtrV2 t || tyListHasRawPtrV2 ts
+end
+
+mutual
+  /-- Compute the largest provenance `allocId` occurring inside pointer or slice
+  leaves of `v` (or `0` when `v` carries no provenance-bearing pointer). Kept
+  exhaustive over `Val` so adding new value constructors forces updating
+  raw-pointer `AllocId` freshness tracking. -/
+  noncomputable def maxValPtrAllocId : Val → AllocId
+    | .ptr p => p.allocId.getD 0
+    | .slicePtr p _ => p.allocId.getD 0
+    | .tuple vs => maxValPtrAllocIdList vs
+    | .array vs => maxValPtrAllocIdList vs
+    | .bytes bs => maxByteProvAllocId bs
+    | .scalar _ | .rangeTo _ | .rangeFrom _ | .bool _ | .char _
+    | .ordering _ | .unit | .enumVal _ _ => 0
+
+  noncomputable def maxValPtrAllocIdList : List Val → AllocId
+    | [] => 0
+    | v :: vs => Nat.max (maxValPtrAllocId v) (maxValPtrAllocIdList vs)
+end
+
 /-- Build the Profile v2 entry `MemoryState` containing `cm.allocations`,
-advancing `nextAllocId` past every caller allocation id (and past
-`entryMemory`'s reserved id `1`) so callee stack allocations can never alias
-`cm`. -/
+advancing `nextAllocId` past every caller allocation id, every provenance id
+stored inside `cm.allocations` bytes, and `entryMemory`'s reserved id `1` so
+callee stack and `.rodata` allocations can never reuse an existing caller or
+provenance `AllocId`. -/
 noncomputable def entryMemoryWithCaller (cm : CallerMemory) : MemoryState :=
-  { nextAllocId := Nat.max entryMemory.nextAllocId (maxAllocId cm.allocations + 1)
+  { nextAllocId := Nat.max entryMemory.nextAllocId (maxAllocAndProvId cm.allocations + 1)
     allocations := cm.allocations }
+
+/-- Build the Profile v2 entry `MemoryState` for a body with parameter types
+`paramTys` and argument values `args`, additionally advancing `nextAllocId`
+past any provenance `AllocId` carried in raw-pointer parameters (including
+dangling provenance ids absent from `cm.allocations`). When `paramTys` contains
+no raw pointers, this reduces definitionally to `entryMemoryWithCaller cm`. -/
+noncomputable def entryMemoryForArgsV2 (cm : CallerMemory)
+    (paramTys : List MirTy) (args : List Val) : MemoryState :=
+  let base := entryMemoryWithCaller cm
+  if !tyListHasRawPtrV2 paramTys then
+    base
+  else
+    { base with
+      nextAllocId := Nat.max base.nextAllocId (maxValPtrAllocIdList args + 1) }
 
 /-- Extract the post-execution caller-visible allocations from `m` in the
 original order of `orig.allocations` so caller-memory mutations are observable
@@ -493,9 +561,10 @@ noncomputable def sliceFromRawPartsCheck (m : MemoryState) (isMut : Bool)
         else
           .ok (.slicePtr p len)
 
-/-- Checked `slice::get_unchecked` subslice on `[u8]` (`[startOff..endOff]` of
-slice `(p, len)`): requires `startOff <= endOff <= len`, advancing `p` by
-`startOff` via `ptrAddInMem`.
+/-- Checked `slice::get_unchecked` subslice (`[startOff..endOff]` of slice
+`(p, len)` with element byte size `elemSize`, defaulting to `1` for `[u8]`):
+requires `startOff <= endOff <= len`, advancing `p` by `startOff` elements of
+size `elemSize` via `ptrAddInMem`.
 
 `<[T]>::get_unchecked` with `RangeTo<usize>` or `RangeFrom<usize>` delegates
 to `(0..self.end)` or `(self.start..slice.len())`. The `Range<usize>` impl
@@ -522,11 +591,11 @@ The documented contract (`library/core/src/slice/mod.rs:613-614`) is:
 > "Calling this method with an out-of-bounds index is *[undefined behavior]*
 > even if the resulting reference is not used." -/
 noncomputable def sliceGetUncheckedCheck (m : MemoryState) (p : PtrVal)
-    (len startOff endOff : Nat) : Except FaultKind Val :=
+    (len startOff endOff : Nat) (elemSize : Nat := 1) : Except FaultKind Val :=
   if !Nat.ble startOff endOff || !Nat.ble endOff len then
     .error .undefined
   else
-    match ptrAddInMem m 1 p startOff with
+    match ptrAddInMem m elemSize p startOff with
     | .error k => .error k
     | .ok p' => .ok (.slicePtr p' (UInt64.ofNat (endOff - startOff)))
 

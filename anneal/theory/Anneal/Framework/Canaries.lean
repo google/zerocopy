@@ -16,6 +16,7 @@ public import Trusted.Framework.Instances
 public import Trusted.Framework.Bridge
 public import Trusted.MirSemantics.CanaryFixtures
 public import Anneal.MirWp
+public import Anneal.MirWp.V2Memory
 public import Anneal.Framework
 
 public section
@@ -657,11 +658,17 @@ theorem v2_unit_1arg_envelope_ok (idStr : String) (paramTy : MirTy)
                        LocalSlot.immediate (some v)]
           }]
           callerMem := callerMem
-          mem := entryMemoryWithCaller callerMem
+          mem := entryMemoryForArgsV2 callerMem [paramTy] [v]
         } := by
+      have hRefsForArgs :
+          refsValidInMemList (entryMemoryForArgsV2 callerMem [paramTy] [v])
+            [paramTy] [v] = true := by
+        rw [Anneal.MirWp.refsValidInMemList_allocations_eq
+          (Anneal.MirWp.entryMemoryForArgsV2_allocations_eq callerMem [paramTy] [v])]
+        exact hRefs
       simp only [initStateV2, entryProgForBody, Trusted.MirSemantics.getElem?,
         progV2, body, List.drop, List.take,
-        hValCm, hLocsSup, hChk, hRefs, hDisj]
+        hValCm, hLocsSup, hChk, hRefsForArgs, hDisj]
       rfl
     have hRet :
         evalStepV2 (entryProgForBody progV2 0) {
@@ -673,14 +680,14 @@ theorem v2_unit_1arg_envelope_ok (idStr : String) (paramTy : MirTy)
                        LocalSlot.immediate (some v)]
           }]
           callerMem := callerMem
-          mem := entryMemoryWithCaller callerMem
+          mem := entryMemoryForArgsV2 callerMem [paramTy] [v]
         } = StepResult.done (TerminalOut.returned ⟨.unit, callerMem⟩) := by
       have hExt :=
-        extractCallerMemory_entryMemoryWithCaller callerMem hValCm
+        extractCallerMemory_entryMemoryForArgsV2 callerMem [paramTy] [v] hValCm
       change
         StepResult.done (TerminalOut.returned ⟨.unit,
           extractCallerMemory callerMem
-            (entryMemoryWithCaller callerMem)⟩) =
+            (entryMemoryForArgsV2 callerMem [paramTy] [v])⟩) =
         StepResult.done (TerminalOut.returned ⟨.unit, callerMem⟩)
       rw [hExt]
     unfold execProgV2
@@ -695,7 +702,7 @@ theorem v2_unit_1arg_envelope_ok (idStr : String) (paramTy : MirTy)
                      LocalSlot.immediate (some v)]
         }]
         callerMem := callerMem
-        mem := entryMemoryWithCaller callerMem
+        mem := entryMemoryForArgsV2 callerMem [paramTy] [v]
       } with
       | StepResult.step _ => False
       | StepResult.done out => out = .returned ⟨.unit, callerMem⟩

@@ -5365,3 +5365,274 @@ fn capture_json_shapes_round_trip_and_legacy_discriminant_is_rejected() {
     .unwrap();
     assert_eq!(elem, ProjectionElem::ConstantIndex { offset: 1, min_length: 2, from_end: true });
 }
+
+#[test]
+fn entry_alloc_id_freshness_assign_overlap_ub_and_slice_elem_size_parity() {
+    let v2_cfg = EvalConfig::profile_v2(TargetEndian::Little);
+
+    // 1. PM-1a: `entry_memory_with_caller` advances `next_alloc_id` past byte-level
+    //    provenance ids (`prov: Some(7)` inside `alloc_id = 2` -> `next_alloc_id = 8`).
+    let cm_prov = CallerMemory {
+        allocations: vec![Allocation {
+            alloc_id: 2,
+            align_log2: 0,
+            mutability: Mutability::Mut,
+            bytes: vec![AllocByte::Init { byte: 0, prov: Some(7) }],
+            live: true,
+        }],
+    };
+    let entry_prov = memory::MemoryState::entry_memory_with_caller(&cm_prov).unwrap();
+    assert_eq!(entry_prov.next_alloc_id, 8);
+
+    // 2. PM-1b: Dangling raw pointer `p = (Some(2), 0)` with empty `caller_mem`
+    //    must fault `DanglingOrUnknownAllocAccess` even after callee promotes a
+    //    stack local `_2: u8 = 42` via `&raw const _2`.
+    let raw_u8_const = Ty::RawPtr { mutability: Mutability::Shared, pointee: Box::new(U8_TY) };
+    let dangling_prog = Program {
+        scope: Scope::Crate,
+        entry_def_id: 0,
+        pointer_width_bits: 64,
+        mir_profile_version: 2,
+        overflow_checks: false,
+        bodies: vec![Body {
+            arg_count: 1,
+            is_unsafe: true,
+            identity: "test::dangling_raw_ptr_vs_stack_alloc".into(),
+            local_tys: vec![U8_TY, raw_u8_const.clone(), U8_TY, raw_u8_const.clone()],
+            blocks: vec![Block {
+                statements: vec![
+                    Statement::StorageLive { local: 2 },
+                    Statement::Assign {
+                        local: 2,
+                        projection: Vec::new(),
+                        value: Rvalue::Use {
+                            operand: Operand::Constant {
+                                ty: U8_TY,
+                                lit: ConstLit::Scalar { bits: 42 },
+                            },
+                            with_retag: false,
+                        },
+                    },
+                    Statement::StorageLive { local: 3 },
+                    Statement::Assign {
+                        local: 3,
+                        projection: Vec::new(),
+                        value: Rvalue::AddressOf {
+                            mutability: Mutability::Shared,
+                            place: Place { local: 2, projection: Vec::new() },
+                        },
+                    },
+                    Statement::Assign {
+                        local: 0,
+                        projection: Vec::new(),
+                        value: Rvalue::Use {
+                            operand: Operand::Copy {
+                                local: 1,
+                                projection: vec![ProjectionElem::Deref],
+                            },
+                            with_retag: false,
+                        },
+                    },
+                ],
+                terminator: Terminator::Ret,
+                cleanup: false,
+            }],
+        }],
+    };
+    let dangling_arg =
+        Val::Ptr(PtrVal { alloc_id: Some(2), offset_bytes: 0, width: IntWidth::Isize });
+    match &eval_body_with_caller_mem(
+        &dangling_prog,
+        0,
+        &[dangling_arg],
+        CallerMemory::default(),
+        32,
+        &v2_cfg,
+    )
+    .outcome
+    {
+        Outcome::Fault(f) => {
+            assert_eq!(f.kind, FaultKind::Undefined);
+            assert_eq!(f.ub_class, Some(UbClass::DanglingOrUnknownAllocAccess));
+        }
+        other => panic!("expected DanglingOrUnknownAllocAccess, got {other:?}"),
+    }
+
+    // 3. PM-3: Overlapping `Assign`:
+    //    - `(u32, u32, u32)` (`BackendRepr::Memory`), alignment-inflated tuples
+    //      such as `([u64; 0], u32, u32)` (`BackendRepr::Memory`), and in-memory
+    //      `(u32, bool)` (`*p = *p`) fault `UbClass::OverlappingMemoryCopy`
+    //      (`ReplayableMiriUb`),
+    //    - immediate padded `(u32, bool)` local faults
+    //      `UbClass::ConservativeOverlappingAssignCopy` (`ModelOnlyUnreplayed`),
+    //    - unpadded `(u32, u32)` and `(u8, bool)` succeed,
+    //    - clobbering `a = (a.1, a.0)` and deref-pointer clobbering in an
+    //      `Aggregate` fail closed `Unsupported`.
+    let tup3_ty = Ty::Tuple { fields: vec![U32_TY, U32_TY, U32_TY] };
+    let tup2_ty = Ty::Tuple { fields: vec![U32_TY, U32_TY] };
+    let padded_ovf_ty = Ty::OverflowPair(IntTy { width: IntWidth::I32, signed: false });
+    let unpadded_ovf_ty = Ty::OverflowPair(IntTy { width: IntWidth::I8, signed: false });
+
+    let mk_self_assign_prog = |ty: Ty| Program {
+        scope: Scope::Crate,
+        entry_def_id: 0,
+        pointer_width_bits: 64,
+        mir_profile_version: 2,
+        overflow_checks: false,
+        bodies: vec![Body {
+            arg_count: 1,
+            is_unsafe: false,
+            identity: "test::self_assign".into(),
+            local_tys: vec![Ty::Unit, ty],
+            blocks: vec![Block {
+                statements: vec![Statement::Assign {
+                    local: 1,
+                    projection: Vec::new(),
+                    value: Rvalue::Use {
+                        operand: Operand::Copy { local: 1, projection: Vec::new() },
+                        with_retag: false,
+                    },
+                }],
+                terminator: Terminator::Ret,
+                cleanup: false,
+            }],
+        }],
+    };
+
+    let v_u32_1 = Val::Scalar(ScalarVal::new(IntWidth::I32, false, 1));
+    let v_u32_2 = Val::Scalar(ScalarVal::new(IntWidth::I32, false, 2));
+    let v_u32_3 = Val::Scalar(ScalarVal::new(IntWidth::I32, false, 3));
+    let v_u8_1 = Val::Scalar(ScalarVal::new(IntWidth::I8, false, 1));
+
+    match &eval_body_with_config(
+        &mk_self_assign_prog(tup3_ty),
+        0,
+        &[Val::Tuple(vec![v_u32_1.clone(), v_u32_2.clone(), v_u32_3])],
+        16,
+        &v2_cfg,
+    )
+    .outcome
+    {
+        Outcome::Fault(f) => {
+            assert_eq!(f.kind, FaultKind::Undefined);
+            assert_eq!(f.ub_class, Some(UbClass::OverlappingMemoryCopy));
+            assert_eq!(f.witness_class(), Some(WitnessClass::ReplayableMiriUb));
+        }
+        other => panic!("expected OverlappingMemoryCopy on (u32, u32, u32), got {other:?}"),
+    }
+
+    match &eval_body_with_config(
+        &mk_self_assign_prog(padded_ovf_ty),
+        0,
+        &[Val::Tuple(vec![v_u32_1.clone(), Val::Bool(true)])],
+        16,
+        &v2_cfg,
+    )
+    .outcome
+    {
+        Outcome::Fault(f) => {
+            assert_eq!(f.kind, FaultKind::Undefined);
+            assert_eq!(f.ub_class, Some(UbClass::ConservativeOverlappingAssignCopy));
+            assert_eq!(f.witness_class(), Some(WitnessClass::ModelOnlyUnreplayed));
+        }
+        other => {
+            panic!(
+                "expected ConservativeOverlappingAssignCopy on immediate (u32, bool), got {other:?}"
+            )
+        }
+    }
+
+    assert!(matches!(
+        eval_body_with_config(
+            &mk_self_assign_prog(tup2_ty.clone()),
+            0,
+            &[Val::Tuple(vec![v_u32_1.clone(), v_u32_2.clone()])],
+            16,
+            &v2_cfg,
+        )
+        .outcome,
+        Outcome::Returned { .. }
+    ));
+    assert!(matches!(
+        eval_body_with_config(
+            &mk_self_assign_prog(unpadded_ovf_ty),
+            0,
+            &[Val::Tuple(vec![v_u8_1, Val::Bool(true)])],
+            16,
+            &v2_cfg,
+        )
+        .outcome,
+        Outcome::Returned { .. }
+    ));
+
+    let swap_in_place_prog = Program {
+        scope: Scope::Crate,
+        entry_def_id: 0,
+        pointer_width_bits: 64,
+        mir_profile_version: 2,
+        overflow_checks: false,
+        bodies: vec![Body {
+            arg_count: 1,
+            is_unsafe: false,
+            identity: "test::swap_in_place".into(),
+            local_tys: vec![Ty::Unit, tup2_ty],
+            blocks: vec![Block {
+                statements: vec![Statement::Assign {
+                    local: 1,
+                    projection: Vec::new(),
+                    value: Rvalue::AggregateTuple {
+                        fields: vec![
+                            Operand::Copy {
+                                local: 1,
+                                projection: vec![ProjectionElem::Field {
+                                    field_idx: 1,
+                                    ty: U32_TY,
+                                }],
+                            },
+                            Operand::Copy {
+                                local: 1,
+                                projection: vec![ProjectionElem::Field {
+                                    field_idx: 0,
+                                    ty: U32_TY,
+                                }],
+                            },
+                        ],
+                    },
+                }],
+                terminator: Terminator::Ret,
+                cleanup: false,
+            }],
+        }],
+    };
+    assert_fault(
+        &eval_body_with_config(
+            &swap_in_place_prog,
+            0,
+            &[Val::Tuple(vec![v_u32_1, v_u32_2])],
+            16,
+            &v2_cfg,
+        ),
+        FaultKind::Unsupported,
+    );
+
+    // 4. `slice_get_unchecked_check` scales `start_off` by `elem_size`.
+    let mem4 = memory::MemoryState {
+        next_alloc_id: 2,
+        allocations: vec![Allocation {
+            alloc_id: 1,
+            align_log2: 2,
+            mutability: Mutability::Mut,
+            bytes: vec![AllocByte::Init { byte: 0, prov: None }; 4],
+            live: true,
+        }],
+    };
+    let p1 = PtrVal { alloc_id: Some(1), offset_bytes: 0, width: IntWidth::Isize };
+    assert_eq!(
+        memory::slice_get_unchecked_check(&mem4, p1, 2, 2, 2, 4).unwrap_err().ub_class,
+        Some(UbClass::PtrOffsetOverflowOrOob)
+    );
+    assert_eq!(
+        memory::slice_get_unchecked_check(&mem4, p1, 1, 1, 1, 4).unwrap(),
+        Val::SlicePtr { ptr: PtrVal { offset_bytes: 4, ..p1 }, len: 0 }
+    );
+}

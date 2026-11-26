@@ -306,6 +306,9 @@ private theorem initStateV2_body0_ok (q : Query)
     ite_bool_false hB4, ite_bool_false hB5, ite_bool_false hB6,
     ite_bool_false hB7]
   rw [hArgs, ite_bool_false hHdr2]
+  rw [show entryMemoryForArgsV2 q.callerMem
+      (List.take Captured.body_0.argumentCount (List.drop 1 Captured.body_0.locals))
+      q.args = entryMemoryWithCaller q.callerMem from rfl]
   have hF1 : ((!true || !true) = false) := rfl
   have hR1 : (!refsValidInMemList (entryMemoryWithCaller q.callerMem)
       (List.take Captured.body_0.argumentCount (List.drop 1 Captured.body_0.locals)) q.args ||
@@ -483,6 +486,7 @@ private theorem evalStepV2_copy_isize_body0 (cm : CallerMemory) (mem : MemorySta
   rw [hOld]
   dsimp only
   rw [hSet]
+  rfl
 
 private theorem evalStepV2_binop_move_const_body0 (cm : CallerMemory) (mem : MemoryState)
     (bIdx sIdx dst src : Nat) (op : BinOp) (isMove : Bool)
@@ -609,6 +613,7 @@ private theorem evalStepV2_binop_move_const_body0 (cm : CallerMemory) (mem : Mem
   rw [hOld]
   dsimp only
   rw [hSet]
+  rfl
 
 private theorem evalStepV2_binop_move_move_body0 (cm : CallerMemory) (mem : MemoryState)
     (bIdx sIdx dst lId rId : Nat) (op : BinOp)
@@ -703,6 +708,7 @@ private theorem evalStepV2_binop_move_move_body0 (cm : CallerMemory) (mem : Memo
   rw [hOld]
   dsimp only
   rw [hSet3]
+  rfl
 
 private theorem evalStepV2_assert_abort_body0 (cm : CallerMemory) (mem : MemoryState)
     (bIdx condId target : Nat) (msg : AssertKind) (expected condVal : Bool)
@@ -1892,6 +1898,9 @@ private theorem initStateV2_body1_ok (q : Query)
     ite_bool_false hB4, ite_bool_false hB5, ite_bool_false hB6,
     ite_bool_false hB7]
   rw [hArgs, ite_bool_false hHdr2]
+  rw [show entryMemoryForArgsV2 q.callerMem
+      (List.take Captured.body_1.argumentCount (List.drop 1 Captured.body_1.locals))
+      q.args = entryMemoryWithCaller q.callerMem from rfl]
   have hF1 : ((!true || !true) = false) := rfl
   have hR1 : (!refsValidInMemList (entryMemoryWithCaller q.callerMem)
       (List.take Captured.body_1.argumentCount (List.drop 1 Captured.body_1.locals)) q.args ||
@@ -2046,6 +2055,7 @@ private theorem body1_satisfies (q : Query)
     rw [ite_bool_false (rfl : (!MirTy.beq (.int .isize false) (.int .isize false)) = false)]
     dsimp only
     rw [hWp2]
+    rfl
   have h34 : evalStepV2 p1 ⟨[⟨1, 0, 3, l3, none, none, none⟩], cm, mem'⟩ =
       .step ⟨[⟨1, 0, 4, l4, none, none, none⟩], cm, mem'⟩ := rfl
   have h45 : evalStepV2 p1 ⟨[⟨1, 0, 4, l4, none, none, none⟩], cm, mem'⟩ =

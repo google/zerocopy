@@ -1021,6 +1021,198 @@ fn miri_witness_replay_confirms_probe_ub_and_contrasts_model_only() {
         }
         other => panic!("misaligned raw u32 deref failed Miri replay: {other:?}"),
     }
+
+    // 7. Live replay of overlapping `(u32, u32, u32)` (`BackendRepr::Memory`)
+    //    `Assign` copy UB (`UbClass::OverlappingMemoryCopy` -> `ConfirmedMiriUb`
+    //    with Miri `copy_nonoverlapping` diagnostic) plus padding-free
+    //    `ScalarPair` `(u32, u32)` positive control (`exit 0`).
+    let tup3_ty = Ty::Tuple { fields: vec![U32_TY, U32_TY, U32_TY] };
+    let overlap_prog = Program {
+        scope: Scope::SelectedUnit {
+            roots: ["rust-path-v1::replay::overlap_assign_tup3".into()]
+                .into_iter()
+                .collect::<BTreeSet<_>>(),
+            instantiations: BTreeSet::new(),
+        },
+        entry_def_id: 0,
+        pointer_width_bits: 64,
+        mir_profile_version: 2,
+        overflow_checks: false,
+        bodies: vec![Body {
+            arg_count: 1,
+            is_unsafe: false,
+            identity: "rust-path-v1::replay::overlap_assign_tup3".into(),
+            local_tys: vec![Ty::Unit, tup3_ty],
+            blocks: vec![Block {
+                statements: vec![Statement::Assign {
+                    local: 1,
+                    projection: Vec::new(),
+                    value: Rvalue::Use {
+                        operand: Operand::Copy { local: 1, projection: Vec::new() },
+                        with_retag: false,
+                    },
+                }],
+                terminator: Terminator::Ret,
+                cleanup: false,
+            }],
+        }],
+    };
+    let overlap_args = vec![Val::Tuple(vec![Val::u32(1), Val::u32(2), Val::u32(3)])];
+    let overlap_cm = CallerMemory::default();
+    let overlap_trace =
+        eval_body_with_caller_mem(&overlap_prog, 0, &overlap_args, overlap_cm.clone(), 16, &v2_cfg);
+    match &overlap_trace.outcome {
+        Outcome::Fault(f) => {
+            assert_eq!(f.kind, FaultKind::Undefined);
+            assert_eq!(f.ub_class, Some(UbClass::OverlappingMemoryCopy));
+            assert_eq!(f.witness_class(), Some(WitnessClass::ReplayableMiriUb));
+        }
+        other => panic!("expected OverlappingMemoryCopy, got {other:?}"),
+    }
+    let overlap_ce = Counterexample::from_trace(overlap_args, overlap_cm, overlap_trace);
+    let overlap_ub_src = "\
+#![allow(internal_features)]\n\
+#![feature(custom_mir, core_intrinsics)]\n\
+use core::intrinsics::mir::*;\n\
+#[custom_mir(dialect = \"runtime\", phase = \"post-cleanup\")]\n\
+fn self_copy_tup3(mut a: (u32, u32, u32)) {\n\
+    mir! { { a = a; Return() } }\n\
+}\n\
+fn main() {\n\
+    self_copy_tup3((1, 2, 3));\n\
+}\n";
+    let v7 = gate_witness_replay(&overlap_ce, || {
+        run_miri_snippet(&toolchain, work_dir.path(), &target_dir, "overlap_ub", overlap_ub_src)
+    });
+    match &v7 {
+        ReplayVerdict::ConfirmedMiriUb { diagnostic } => {
+            assert!(
+                diagnostic.contains("copy_nonoverlapping"),
+                "expected copy_nonoverlapping diagnostic, got: {diagnostic}"
+            );
+            eprintln!("[witness_replay:{toolchain}] overlap_assign_tup3 -> {diagnostic}");
+        }
+        other => panic!("overlapping (u32, u32, u32) Assign witness failed Miri replay: {other:?}"),
+    }
+    let scalar_pair_ok_src = "\
+#![allow(internal_features)]\n\
+#![feature(custom_mir, core_intrinsics)]\n\
+use core::intrinsics::mir::*;\n\
+#[custom_mir(dialect = \"runtime\", phase = \"post-cleanup\")]\n\
+fn self_copy_tup2(mut a: (u32, u32)) {\n\
+    mir! { { a = a; Return() } }\n\
+}\n\
+fn main() {\n\
+    self_copy_tup2((1, 2));\n\
+}\n";
+    let (ov_ok_code, ov_ok_err) = run_miri_snippet(
+        &toolchain,
+        work_dir.path(),
+        &target_dir,
+        "overlap_pair_ok",
+        scalar_pair_ok_src,
+    )
+    .unwrap();
+    assert_eq!(
+        ov_ok_code,
+        Some(0),
+        "padding-free ScalarPair (u32, u32) self-Assign failed under Miri:\n{ov_ok_err}"
+    );
+    // Confirm live Miri ground truth: an immediate (non-address-taken) padded
+    // `(u32, bool)` local produced by `Checked` exits 0 (`ModelOnlyUnreplayed`),
+    // whereas an in-memory padded `(u32, bool)` (`*p = *p`) hits Miri's
+    // `copy_nonoverlapping` UB (`ReplayableMiriUb`).
+    let imm_padded_ok_src = "\
+#![allow(internal_features)]\n\
+#![feature(custom_mir, core_intrinsics)]\n\
+use core::intrinsics::mir::*;\n\
+#[custom_mir(dialect = \"runtime\", phase = \"post-cleanup\")]\n\
+fn self_copy_imm_padded(x: u32) {\n\
+    mir! {\n\
+        let a: (u32, bool);\n\
+        {\n\
+            a = Checked(x + 1_u32);\n\
+            a = a;\n\
+            Return()\n\
+        }\n\
+    }\n\
+}\n\
+fn main() {\n\
+    self_copy_imm_padded(1);\n\
+}\n";
+    let (imm_pad_code, imm_pad_err) = run_miri_snippet(
+        &toolchain,
+        work_dir.path(),
+        &target_dir,
+        "overlap_imm_padded_ok",
+        imm_padded_ok_src,
+    )
+    .unwrap();
+    assert_eq!(
+        imm_pad_code,
+        Some(0),
+        "immediate padded (u32, bool) self-Assign should exit 0 under Miri:\n{imm_pad_err}"
+    );
+    let mem_padded_ub_src = "\
+#![allow(internal_features)]\n\
+#![feature(custom_mir, core_intrinsics)]\n\
+use core::intrinsics::mir::*;\n\
+#[custom_mir(dialect = \"runtime\", phase = \"post-cleanup\")]\n\
+fn self_copy_mem_padded(p: *mut (u32, bool)) {\n\
+    mir! { { *p = *p; Return() } }\n\
+}\n\
+fn main() {\n\
+    let mut a: (u32, bool) = (1, true);\n\
+    self_copy_mem_padded(&raw mut a);\n\
+}\n";
+    let (mem_pad_code, mem_pad_err) = run_miri_snippet(
+        &toolchain,
+        work_dir.path(),
+        &target_dir,
+        "overlap_mem_padded_ub",
+        mem_padded_ub_src,
+    )
+    .unwrap();
+    assert_ne!(
+        mem_pad_code,
+        Some(0),
+        "in-memory padded (u32, bool) *p = *p should trigger Miri UB"
+    );
+    assert!(
+        mem_pad_err.contains("copy_nonoverlapping"),
+        "expected copy_nonoverlapping diagnostic on in-memory (u32, bool), got:\n{mem_pad_err}"
+    );
+    // Confirm live Miri ground truth: alignment-inflated `([u64; 0], u32, u32)`
+    // has `BackendRepr::Memory` (even with zero padding bytes), so local
+    // self-Assign `a = a` hits Miri's `copy_nonoverlapping` UB (`ReplayableMiriUb`).
+    let align_inflated_ub_src = "\
+#![allow(internal_features)]\n\
+#![feature(custom_mir, core_intrinsics)]\n\
+use core::intrinsics::mir::*;\n\
+#[custom_mir(dialect = \"runtime\", phase = \"post-cleanup\")]\n\
+fn self_copy_align_inflated(mut a: ([u64; 0], u32, u32)) {\n\
+    mir! { { a = a; Return() } }\n\
+}\n\
+fn main() {\n\
+    self_copy_align_inflated(([], 1, 2));\n\
+}\n";
+    let (ai_code, ai_err) = run_miri_snippet(
+        &toolchain,
+        work_dir.path(),
+        &target_dir,
+        "overlap_align_inflated_ub",
+        align_inflated_ub_src,
+    )
+    .unwrap();
+    assert_ne!(
+        ai_code,
+        Some(0),
+        "alignment-inflated ([u64; 0], u32, u32) local a = a should trigger Miri UB"
+    );
+    assert!(
+        ai_err.contains("copy_nonoverlapping"),
+        "expected copy_nonoverlapping diagnostic on ([u64; 0], u32, u32), got:\n{ai_err}"
+    );
 }
 
 fn extract_slice_and_mid(ce: &Counterexample) -> (Vec<u8>, u64) {

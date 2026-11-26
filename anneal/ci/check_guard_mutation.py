@@ -1283,6 +1283,20 @@ MIR_SEMANTICS_GUARDS: tuple[MirSemanticsGuard, ...] = (
         fixture_module="StepRefutations",
         theorem_name="refute_state_calls_admitted_unsafe_callee",
     ),
+    MirSemanticsGuard(
+        guard_id="state_v2_init_uses_entry_memory_for_args",
+        target_file="trusted/lean/Trusted/MirSemantics/State.lean",
+        target_module="Trusted/MirSemantics/State",
+        description=(
+            "initStateV2 uses entryMemoryForArgsV2 so callee stack allocations "
+            "cannot reuse dangling raw-pointer argument AllocIds"
+        ),
+        anchor="          let entryMem := entryMemoryForArgsV2 q.callerMem paramTys q.args",
+        replacement="          let entryMem := entryMemoryWithCaller q.callerMem",
+        fixture_module="StepRefutations",
+        theorem_name="refute_state_v2_init_uses_entry_memory_for_args",
+        needs_wf_helper=False,
+    ),
     # ------------------------------------------------------------------
     # Trusted/MirSemantics/Boundary.lean (3 judgment soundness guards)
     # ------------------------------------------------------------------
@@ -1432,17 +1446,73 @@ MIR_SEMANTICS_GUARDS: tuple[MirSemanticsGuard, ...] = (
         target_module="Trusted/MirSemantics/Memory",
         description="sliceGetUncheckedCheck rejects endOff > len out-of-bounds subslice as UB",
         anchor=(
-            "    (len startOff endOff : Nat) : Except FaultKind Val :=\n"
+            "    (len startOff endOff : Nat) (elemSize : Nat := 1) : Except FaultKind Val :=\n"
             "  if !Nat.ble startOff endOff || !Nat.ble endOff len then\n"
             "    .error .undefined"
         ),
         replacement=(
-            "    (len startOff endOff : Nat) : Except FaultKind Val :=\n"
+            "    (len startOff endOff : Nat) (elemSize : Nat := 1) : Except FaultKind Val :=\n"
             "  if !Nat.ble startOff endOff || false then\n"
             "    .error .undefined"
         ),
         fixture_module="MemoryRefutations",
         theorem_name="refute_mem_v2_slice_get_unchecked_oob",
+        sanity_module="MemorySanity",
+        needs_wf_helper=False,
+    ),
+    MirSemanticsGuard(
+        guard_id="mem_v2_entry_byte_prov_fresh",
+        target_file="trusted/lean/Trusted/MirSemantics/Memory.lean",
+        target_module="Trusted/MirSemantics/Memory",
+        description=(
+            "entryMemoryWithCaller advances nextAllocId past provenance AllocIds "
+            "stored inside caller allocation bytes"
+        ),
+        anchor=(
+            "noncomputable def entryMemoryWithCaller (cm : CallerMemory) : MemoryState :=\n"
+            "  { nextAllocId := Nat.max entryMemory.nextAllocId (maxAllocAndProvId cm.allocations + 1)"
+        ),
+        replacement=(
+            "noncomputable def entryMemoryWithCaller (cm : CallerMemory) : MemoryState :=\n"
+            "  { nextAllocId := Nat.max entryMemory.nextAllocId (maxAllocId cm.allocations + 1)"
+        ),
+        fixture_module="MemoryRefutations",
+        theorem_name="refute_mem_v2_entry_byte_prov_fresh",
+        sanity_module="MemorySanity",
+        needs_wf_helper=False,
+    ),
+    MirSemanticsGuard(
+        guard_id="mem_v2_entry_raw_ptr_arg_fresh",
+        target_file="trusted/lean/Trusted/MirSemantics/Memory.lean",
+        target_module="Trusted/MirSemantics/Memory",
+        description=(
+            "entryMemoryForArgsV2 advances nextAllocId past provenance AllocIds "
+            "carried in raw-pointer parameters"
+        ),
+        anchor=(
+            "  let base := entryMemoryWithCaller cm\n"
+            "  if !tyListHasRawPtrV2 paramTys then\n"
+            "    base"
+        ),
+        replacement=(
+            "  let base := entryMemoryWithCaller cm\n"
+            "  if true then\n"
+            "    base"
+        ),
+        fixture_module="MemoryRefutations",
+        theorem_name="refute_mem_v2_entry_raw_ptr_arg_fresh",
+        sanity_module="MemorySanity",
+        needs_wf_helper=False,
+    ),
+    MirSemanticsGuard(
+        guard_id="mem_v2_slice_get_unchecked_elem_size",
+        target_file="trusted/lean/Trusted/MirSemantics/Memory.lean",
+        target_module="Trusted/MirSemantics/Memory",
+        description="sliceGetUncheckedCheck scales startOff by elemSize in ptrAddInMem",
+        anchor="    match ptrAddInMem m elemSize p startOff with",
+        replacement="    match ptrAddInMem m 1 p startOff with",
+        fixture_module="MemoryRefutations",
+        theorem_name="refute_mem_v2_slice_get_unchecked_elem_size",
         sanity_module="MemorySanity",
         needs_wf_helper=False,
     ),
@@ -2220,6 +2290,113 @@ MIR_SEMANTICS_GUARDS: tuple[MirSemanticsGuard, ...] = (
         theorem_name="refute_step_v2_assert_non_bool_unsupported",
     ),
     MirSemanticsGuard(
+        guard_id="step_v2_assign_use_overlap_ub",
+        target_file="trusted/lean/Trusted/MirSemantics/Step.lean",
+        target_module="Trusted/MirSemantics/Step",
+        description=(
+            "checkAssignCopyHazardV2 rejects overlapping non-zero-sized "
+            "BackendRepr::Memory or padded Assign Use copies as UB"
+        ),
+        anchor=(
+            "  | .use (.copy src) | .use (.move src)\n"
+            "  | .useRetag (.copy src) | .useRetag (.move src) =>\n"
+            "    if !isMemoryCopyReprTyV2 dstTy then\n"
+            "      .ok ()"
+        ),
+        replacement=(
+            "  | .use (.copy src) | .use (.move src)\n"
+            "  | .useRetag (.copy src) | .useRetag (.move src) =>\n"
+            "    if true then\n"
+            "      .ok ()"
+        ),
+        fixture_module="StepRefutations",
+        theorem_name="refute_step_v2_assign_use_overlap_ub",
+        needs_wf_helper=False,
+    ),
+    MirSemanticsGuard(
+        guard_id="step_v2_assign_aggregate_clobber_unsupported",
+        target_file="trusted/lean/Trusted/MirSemantics/Step.lean",
+        target_module="Trusted/MirSemantics/Step",
+        description=(
+            "checkAggregateCopyHazardLoopV2 fails closed with .unsupported when "
+            "an earlier Aggregate field write overlaps a later operand"
+        ),
+        anchor=(
+            "    if clobberedByEarlier then\n"
+            "      .error .unsupported"
+        ),
+        replacement=(
+            "    if false then\n"
+            "      .error .unsupported"
+        ),
+        fixture_module="StepRefutations",
+        theorem_name="refute_step_v2_assign_aggregate_clobber_unsupported",
+        needs_wf_helper=False,
+    ),
+    MirSemanticsGuard(
+        guard_id="step_v2_assign_aggregate_deref_ptr_clobber_unsupported",
+        target_file="trusted/lean/Trusted/MirSemantics/Step.lean",
+        target_module="Trusted/MirSemantics/Step",
+        description=(
+            "checkAggregateCopyHazardLoopV2 fails closed with .unsupported when "
+            "an earlier Aggregate field write overlaps the pointer local read by "
+            "a later .deref operand"
+        ),
+        anchor=(
+            "    else if ptrClobberedByEarlier then\n"
+            "      .error .unsupported"
+        ),
+        replacement=(
+            "    else if false then\n"
+            "      .error .unsupported"
+        ),
+        fixture_module="StepRefutations",
+        theorem_name="refute_step_v2_assign_aggregate_deref_ptr_clobber_unsupported",
+        needs_wf_helper=False,
+    ),
+    MirSemanticsGuard(
+        guard_id="step_v2_assign_aggregate_field_overlap_ub",
+        target_file="trusted/lean/Trusted/MirSemantics/Step.lean",
+        target_module="Trusted/MirSemantics/Step",
+        description=(
+            "checkAggregateCopyHazardLoopV2 rejects overlapping "
+            "BackendRepr::Memory Aggregate field writes as UB"
+        ),
+        anchor=(
+            "        if selfOverlap && isMemoryCopyReprTyV2 fieldTy then\n"
+            "          .error .undefined"
+        ),
+        replacement=(
+            "        if false then\n"
+            "          .error .undefined"
+        ),
+        fixture_module="StepRefutations",
+        theorem_name="refute_step_v2_assign_aggregate_field_overlap_ub",
+        needs_wf_helper=False,
+    ),
+    MirSemanticsGuard(
+        guard_id="step_v2_assign_repeat_overlap_ub",
+        target_file="trusted/lean/Trusted/MirSemantics/Step.lean",
+        target_module="Trusted/MirSemantics/Step",
+        description=(
+            "checkAssignCopyHazardV2 rejects overlapping BackendRepr::Memory "
+            "Rvalue.repeat_ initial element copies as UB"
+        ),
+        anchor=(
+            "  | .repeat_ op elemTy count =>\n"
+            "    if Nat.beq count 0 || !isMemoryCopyReprTyV2 elemTy then\n"
+            "      .ok ()"
+        ),
+        replacement=(
+            "  | .repeat_ op elemTy count =>\n"
+            "    if true then\n"
+            "      .ok ()"
+        ),
+        fixture_module="StepRefutations",
+        theorem_name="refute_step_v2_assign_repeat_overlap_ub",
+        needs_wf_helper=False,
+    ),
+    MirSemanticsGuard(
         guard_id="boundary_v2_wellformed_forbids_faults",
         target_file="trusted/lean/Trusted/MirSemantics/Boundary.lean",
         target_module="Trusted/MirSemantics/Boundary",
@@ -2337,12 +2514,12 @@ MIR_SEMANTICS_GUARDS: tuple[MirSemanticsGuard, ...] = (
             "as UB rather than saturating subtraction"
         ),
         anchor=(
-            "    (len startOff endOff : Nat) : Except FaultKind Val :=\n"
+            "    (len startOff endOff : Nat) (elemSize : Nat := 1) : Except FaultKind Val :=\n"
             "  if !Nat.ble startOff endOff || !Nat.ble endOff len then\n"
             "    .error .undefined"
         ),
         replacement=(
-            "    (len startOff endOff : Nat) : Except FaultKind Val :=\n"
+            "    (len startOff endOff : Nat) (elemSize : Nat := 1) : Except FaultKind Val :=\n"
             "  if false || !Nat.ble endOff len then\n"
             "    .error .undefined"
         ),

@@ -370,23 +370,49 @@ impl Ty {
         }
     }
 
-    /// Whether `self` is a reference or a tuple containing one, matching
+    /// Whether `self` is a reference or a tuple/array containing one, matching
     /// `Trusted.MirSemantics.tyHasRefV2`.
     pub fn has_ref_v2(&self) -> bool {
         match self {
             Self::Ref { .. } => true,
+            Self::Array { elem, .. } => elem.has_ref_v2(),
             Self::Tuple { fields } => fields.iter().any(Self::has_ref_v2),
-            _ => false,
+            Self::Bool
+            | Self::Char
+            | Self::Ordering
+            | Self::Unit
+            | Self::Never
+            | Self::Int(_)
+            | Self::Enum(_)
+            | Self::OverflowPair(_)
+            | Self::RawPtr { .. }
+            | Self::Slice { .. }
+            | Self::RangeTo { .. }
+            | Self::RangeFrom { .. }
+            | Self::Unsupported => false,
         }
     }
 
-    /// Whether `self` is a raw pointer or a tuple containing one, matching
-    /// `Trusted.MirSemantics.tyHasRawPtrV2`.
+    /// Whether `self` is a raw pointer or a tuple/array containing one,
+    /// matching `Trusted.MirSemantics.tyHasRawPtrV2`.
     pub fn has_raw_ptr_v2(&self) -> bool {
         match self {
             Self::RawPtr { .. } => true,
+            Self::Array { elem, .. } => elem.has_raw_ptr_v2(),
             Self::Tuple { fields } => fields.iter().any(Self::has_raw_ptr_v2),
-            _ => false,
+            Self::Bool
+            | Self::Char
+            | Self::Ordering
+            | Self::Unit
+            | Self::Never
+            | Self::Int(_)
+            | Self::Enum(_)
+            | Self::OverflowPair(_)
+            | Self::Ref { .. }
+            | Self::Slice { .. }
+            | Self::RangeTo { .. }
+            | Self::RangeFrom { .. }
+            | Self::Unsupported => false,
         }
     }
 
