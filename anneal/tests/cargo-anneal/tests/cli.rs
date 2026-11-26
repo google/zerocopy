@@ -54,6 +54,10 @@ fn command(route: Route, workdir: &Path) -> Command {
             command
         }
     };
+    // The CI images export `CARGO_TERM_COLOR=always`, which would color the
+    // child's `error:` prefixes and break plain-text stderr assertions.
+    // Tests that exercise color set these variables explicitly.
+    command.env_remove("CARGO_TERM_COLOR").env_remove("CLICOLOR_FORCE").env_remove("FORCE_COLOR");
     command.current_dir(workdir);
     command
 }
