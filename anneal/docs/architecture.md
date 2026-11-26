@@ -409,7 +409,8 @@ connects the verification layers to Stage 2 by kernel-checked refinement proofs:
   Diaconescu classical excluded middle and existential choice, WHNF and
   rewrite firewall combinators, foundation-locked helper lemmas (`Bool` and
   `BEq` reflection including polymorphic `List.beq`, `Nat` modular and
-  power-of-two arithmetic, constructive `Int` order and subtraction, list
+  power-of-two arithmetic, `Nat.bitwise`/`Nat.testBit`/shift/extensionality
+  laws, constructive `Int` order and subtraction, list
   slices, bounded `BitVec` `toNat` with non-wrapping `+` and order, and
   `UInt8`–`UInt64` `toNat`/`ofNat` and extensionality), sparse Farkas and
   Chvatal-Gomory linear cut certificate checker, constructive bitvector,
@@ -591,7 +592,7 @@ anneal/
     │   ├── MirTotal.lean           # Computable MIR step mirrors & bridges (+ MirTotal/)
     │   ├── MirWp.lean              # Fuel-bounded MIR WP (+ MirWp/, decoupled Canaries)
     │   ├── MiriTreeBorrows.lean    # Miri-aligned Tree Borrows model & retag laws (+ MiriTreeBorrows/)
-    │   ├── NatBitwise.lean         # Shared Nat.bitwise unfolding & bounds
+    │   ├── NatBitwise.lean         # Foundation Nat.bitwise, testBit, shift & extensionality laws
     │   ├── OverflowCastJoin.lean   # Stage-cut joins for overflowing arithmetic & casts (+ OverflowCastJoin/)
     │   ├── PTree.lean              # Canonical positive radix trie & framing
     │   ├── PureLift.lean           # Functional borrow-lifting calculus

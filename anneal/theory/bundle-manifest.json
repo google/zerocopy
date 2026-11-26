@@ -127,7 +127,7 @@
     },
     {
       "path": "theory/Anneal/NatBitwise.lean",
-      "sha256": "810c3dd7c0ec2ce83381db5249d2f654856474b49cebdf8bd7afdff96d23bc12"
+      "sha256": "8500557e1f6b841865ca77d7aecaeeee33b878129a60c5ef67c6431a0564db1e"
     },
     {
       "path": "theory/Anneal/PTree.lean",
