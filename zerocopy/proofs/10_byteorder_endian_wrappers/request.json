@@ -1,0 +1,1079 @@
+{
+  "schema_version": 1,
+  "compilation": {
+    "source_root": "../../src",
+    "crate_root": "lib.rs",
+    "crate_name": "zerocopy",
+    "edition": "2021",
+    "target": "x86_64-unknown-linux-gnu",
+    "cfg": [
+      "no_zerocopy_allocator_api_1_100_0"
+    ],
+    "env": {
+      "CARGO_PKG_VERSION": "0.8.64"
+    },
+    "source_files": [
+      "byte_slice.rs",
+      "byteorder.rs",
+      "deprecated.rs",
+      "error.rs",
+      "impls.rs",
+      "layout.rs",
+      "lib.rs",
+      "macros.rs",
+      "pointer/inner.rs",
+      "pointer/invariant.rs",
+      "pointer/mod.rs",
+      "pointer/ptr.rs",
+      "pointer/transmute.rs",
+      "ref.rs",
+      "split_at.rs",
+      "util/macro_util.rs",
+      "util/macros.rs",
+      "util/mod.rs",
+      "wrappers.rs"
+    ]
+  },
+  "scope": {
+    "kind": "selected_unit",
+    "roots": [
+      "impls::_::<impl Immutable for u8>::only_derive_is_allowed_to_implement_this_trait",
+      "impls::_::<impl TryFromBytes for u8>::only_derive_is_allowed_to_implement_this_trait",
+      "impls::_::<impl FromZeros for u8>::only_derive_is_allowed_to_implement_this_trait",
+      "impls::_::<impl FromBytes for u8>::only_derive_is_allowed_to_implement_this_trait",
+      "impls::_::<impl IntoBytes for u8>::only_derive_is_allowed_to_implement_this_trait",
+      "impls::_::<impl Unaligned for u8>::only_derive_is_allowed_to_implement_this_trait"
+    ],
+    "instantiations": [
+      {
+        "path": "_::<impl KnownLayout for u8>::only_derive_is_allowed_to_implement_this_trait",
+        "args": []
+      },
+      {
+        "path": "byteorder::_::<impl KnownLayout for byteorder::U16<O>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "byteorder::BigEndian"
+        ]
+      },
+      {
+        "path": "byteorder::_::<impl KnownLayout for byteorder::U16<O>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "byteorder::LittleEndian"
+        ]
+      },
+      {
+        "path": "byteorder::_::<impl Immutable for byteorder::U16<O>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "byteorder::BigEndian"
+        ]
+      },
+      {
+        "path": "byteorder::_::<impl Immutable for byteorder::U16<O>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "byteorder::LittleEndian"
+        ]
+      },
+      {
+        "path": "byteorder::_::<impl TryFromBytes for byteorder::U16<O>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "byteorder::BigEndian"
+        ]
+      },
+      {
+        "path": "byteorder::_::<impl TryFromBytes for byteorder::U16<O>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "byteorder::LittleEndian"
+        ]
+      },
+      {
+        "path": "byteorder::_::<impl FromZeros for byteorder::U16<O>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "byteorder::BigEndian"
+        ]
+      },
+      {
+        "path": "byteorder::_::<impl FromZeros for byteorder::U16<O>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "byteorder::LittleEndian"
+        ]
+      },
+      {
+        "path": "byteorder::_::<impl FromBytes for byteorder::U16<O>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "byteorder::BigEndian"
+        ]
+      },
+      {
+        "path": "byteorder::_::<impl FromBytes for byteorder::U16<O>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "byteorder::LittleEndian"
+        ]
+      },
+      {
+        "path": "byteorder::_::<impl IntoBytes for byteorder::U16<O>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "byteorder::BigEndian"
+        ]
+      },
+      {
+        "path": "byteorder::_::<impl IntoBytes for byteorder::U16<O>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "byteorder::LittleEndian"
+        ]
+      },
+      {
+        "path": "byteorder::_::<impl Unaligned for byteorder::U16<O>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "byteorder::BigEndian"
+        ]
+      },
+      {
+        "path": "byteorder::_::<impl Unaligned for byteorder::U16<O>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "byteorder::LittleEndian"
+        ]
+      },
+      {
+        "path": "byteorder::_::<impl KnownLayout for byteorder::U32<O>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "byteorder::BigEndian"
+        ]
+      },
+      {
+        "path": "byteorder::_::<impl KnownLayout for byteorder::U32<O>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "byteorder::LittleEndian"
+        ]
+      },
+      {
+        "path": "byteorder::_::<impl Immutable for byteorder::U32<O>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "byteorder::BigEndian"
+        ]
+      },
+      {
+        "path": "byteorder::_::<impl Immutable for byteorder::U32<O>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "byteorder::LittleEndian"
+        ]
+      },
+      {
+        "path": "byteorder::_::<impl TryFromBytes for byteorder::U32<O>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "byteorder::BigEndian"
+        ]
+      },
+      {
+        "path": "byteorder::_::<impl TryFromBytes for byteorder::U32<O>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "byteorder::LittleEndian"
+        ]
+      },
+      {
+        "path": "byteorder::_::<impl FromZeros for byteorder::U32<O>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "byteorder::BigEndian"
+        ]
+      },
+      {
+        "path": "byteorder::_::<impl FromZeros for byteorder::U32<O>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "byteorder::LittleEndian"
+        ]
+      },
+      {
+        "path": "byteorder::_::<impl FromBytes for byteorder::U32<O>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "byteorder::BigEndian"
+        ]
+      },
+      {
+        "path": "byteorder::_::<impl FromBytes for byteorder::U32<O>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "byteorder::LittleEndian"
+        ]
+      },
+      {
+        "path": "byteorder::_::<impl IntoBytes for byteorder::U32<O>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "byteorder::BigEndian"
+        ]
+      },
+      {
+        "path": "byteorder::_::<impl IntoBytes for byteorder::U32<O>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "byteorder::LittleEndian"
+        ]
+      },
+      {
+        "path": "byteorder::_::<impl Unaligned for byteorder::U32<O>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "byteorder::BigEndian"
+        ]
+      },
+      {
+        "path": "byteorder::_::<impl Unaligned for byteorder::U32<O>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "byteorder::LittleEndian"
+        ]
+      },
+      {
+        "path": "byteorder::_::<impl KnownLayout for byteorder::U64<O>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "byteorder::BigEndian"
+        ]
+      },
+      {
+        "path": "byteorder::_::<impl KnownLayout for byteorder::U64<O>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "byteorder::LittleEndian"
+        ]
+      },
+      {
+        "path": "byteorder::_::<impl Immutable for byteorder::U64<O>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "byteorder::BigEndian"
+        ]
+      },
+      {
+        "path": "byteorder::_::<impl Immutable for byteorder::U64<O>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "byteorder::LittleEndian"
+        ]
+      },
+      {
+        "path": "byteorder::_::<impl TryFromBytes for byteorder::U64<O>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "byteorder::BigEndian"
+        ]
+      },
+      {
+        "path": "byteorder::_::<impl TryFromBytes for byteorder::U64<O>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "byteorder::LittleEndian"
+        ]
+      },
+      {
+        "path": "byteorder::_::<impl FromZeros for byteorder::U64<O>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "byteorder::BigEndian"
+        ]
+      },
+      {
+        "path": "byteorder::_::<impl FromZeros for byteorder::U64<O>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "byteorder::LittleEndian"
+        ]
+      },
+      {
+        "path": "byteorder::_::<impl FromBytes for byteorder::U64<O>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "byteorder::BigEndian"
+        ]
+      },
+      {
+        "path": "byteorder::_::<impl FromBytes for byteorder::U64<O>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "byteorder::LittleEndian"
+        ]
+      },
+      {
+        "path": "byteorder::_::<impl IntoBytes for byteorder::U64<O>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "byteorder::BigEndian"
+        ]
+      },
+      {
+        "path": "byteorder::_::<impl IntoBytes for byteorder::U64<O>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "byteorder::LittleEndian"
+        ]
+      },
+      {
+        "path": "byteorder::_::<impl Unaligned for byteorder::U64<O>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "byteorder::BigEndian"
+        ]
+      },
+      {
+        "path": "byteorder::_::<impl Unaligned for byteorder::U64<O>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "byteorder::LittleEndian"
+        ]
+      },
+      {
+        "path": "byteorder::_::<impl KnownLayout for byteorder::U128<O>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "byteorder::BigEndian"
+        ]
+      },
+      {
+        "path": "byteorder::_::<impl KnownLayout for byteorder::U128<O>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "byteorder::LittleEndian"
+        ]
+      },
+      {
+        "path": "byteorder::_::<impl Immutable for byteorder::U128<O>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "byteorder::BigEndian"
+        ]
+      },
+      {
+        "path": "byteorder::_::<impl Immutable for byteorder::U128<O>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "byteorder::LittleEndian"
+        ]
+      },
+      {
+        "path": "byteorder::_::<impl TryFromBytes for byteorder::U128<O>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "byteorder::BigEndian"
+        ]
+      },
+      {
+        "path": "byteorder::_::<impl TryFromBytes for byteorder::U128<O>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "byteorder::LittleEndian"
+        ]
+      },
+      {
+        "path": "byteorder::_::<impl FromZeros for byteorder::U128<O>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "byteorder::BigEndian"
+        ]
+      },
+      {
+        "path": "byteorder::_::<impl FromZeros for byteorder::U128<O>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "byteorder::LittleEndian"
+        ]
+      },
+      {
+        "path": "byteorder::_::<impl FromBytes for byteorder::U128<O>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "byteorder::BigEndian"
+        ]
+      },
+      {
+        "path": "byteorder::_::<impl FromBytes for byteorder::U128<O>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "byteorder::LittleEndian"
+        ]
+      },
+      {
+        "path": "byteorder::_::<impl IntoBytes for byteorder::U128<O>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "byteorder::BigEndian"
+        ]
+      },
+      {
+        "path": "byteorder::_::<impl IntoBytes for byteorder::U128<O>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "byteorder::LittleEndian"
+        ]
+      },
+      {
+        "path": "byteorder::_::<impl Unaligned for byteorder::U128<O>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "byteorder::BigEndian"
+        ]
+      },
+      {
+        "path": "byteorder::_::<impl Unaligned for byteorder::U128<O>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "byteorder::LittleEndian"
+        ]
+      },
+      {
+        "path": "byteorder::_::<impl KnownLayout for byteorder::Usize<O>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "byteorder::BigEndian"
+        ]
+      },
+      {
+        "path": "byteorder::_::<impl KnownLayout for byteorder::Usize<O>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "byteorder::LittleEndian"
+        ]
+      },
+      {
+        "path": "byteorder::_::<impl Immutable for byteorder::Usize<O>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "byteorder::BigEndian"
+        ]
+      },
+      {
+        "path": "byteorder::_::<impl Immutable for byteorder::Usize<O>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "byteorder::LittleEndian"
+        ]
+      },
+      {
+        "path": "byteorder::_::<impl TryFromBytes for byteorder::Usize<O>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "byteorder::BigEndian"
+        ]
+      },
+      {
+        "path": "byteorder::_::<impl TryFromBytes for byteorder::Usize<O>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "byteorder::LittleEndian"
+        ]
+      },
+      {
+        "path": "byteorder::_::<impl FromZeros for byteorder::Usize<O>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "byteorder::BigEndian"
+        ]
+      },
+      {
+        "path": "byteorder::_::<impl FromZeros for byteorder::Usize<O>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "byteorder::LittleEndian"
+        ]
+      },
+      {
+        "path": "byteorder::_::<impl FromBytes for byteorder::Usize<O>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "byteorder::BigEndian"
+        ]
+      },
+      {
+        "path": "byteorder::_::<impl FromBytes for byteorder::Usize<O>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "byteorder::LittleEndian"
+        ]
+      },
+      {
+        "path": "byteorder::_::<impl IntoBytes for byteorder::Usize<O>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "byteorder::BigEndian"
+        ]
+      },
+      {
+        "path": "byteorder::_::<impl IntoBytes for byteorder::Usize<O>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "byteorder::LittleEndian"
+        ]
+      },
+      {
+        "path": "byteorder::_::<impl Unaligned for byteorder::Usize<O>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "byteorder::BigEndian"
+        ]
+      },
+      {
+        "path": "byteorder::_::<impl Unaligned for byteorder::Usize<O>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "byteorder::LittleEndian"
+        ]
+      },
+      {
+        "path": "byteorder::_::<impl KnownLayout for byteorder::I16<O>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "byteorder::BigEndian"
+        ]
+      },
+      {
+        "path": "byteorder::_::<impl KnownLayout for byteorder::I16<O>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "byteorder::LittleEndian"
+        ]
+      },
+      {
+        "path": "byteorder::_::<impl Immutable for byteorder::I16<O>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "byteorder::BigEndian"
+        ]
+      },
+      {
+        "path": "byteorder::_::<impl Immutable for byteorder::I16<O>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "byteorder::LittleEndian"
+        ]
+      },
+      {
+        "path": "byteorder::_::<impl TryFromBytes for byteorder::I16<O>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "byteorder::BigEndian"
+        ]
+      },
+      {
+        "path": "byteorder::_::<impl TryFromBytes for byteorder::I16<O>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "byteorder::LittleEndian"
+        ]
+      },
+      {
+        "path": "byteorder::_::<impl FromZeros for byteorder::I16<O>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "byteorder::BigEndian"
+        ]
+      },
+      {
+        "path": "byteorder::_::<impl FromZeros for byteorder::I16<O>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "byteorder::LittleEndian"
+        ]
+      },
+      {
+        "path": "byteorder::_::<impl FromBytes for byteorder::I16<O>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "byteorder::BigEndian"
+        ]
+      },
+      {
+        "path": "byteorder::_::<impl FromBytes for byteorder::I16<O>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "byteorder::LittleEndian"
+        ]
+      },
+      {
+        "path": "byteorder::_::<impl IntoBytes for byteorder::I16<O>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "byteorder::BigEndian"
+        ]
+      },
+      {
+        "path": "byteorder::_::<impl IntoBytes for byteorder::I16<O>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "byteorder::LittleEndian"
+        ]
+      },
+      {
+        "path": "byteorder::_::<impl Unaligned for byteorder::I16<O>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "byteorder::BigEndian"
+        ]
+      },
+      {
+        "path": "byteorder::_::<impl Unaligned for byteorder::I16<O>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "byteorder::LittleEndian"
+        ]
+      },
+      {
+        "path": "byteorder::_::<impl KnownLayout for byteorder::I32<O>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "byteorder::BigEndian"
+        ]
+      },
+      {
+        "path": "byteorder::_::<impl KnownLayout for byteorder::I32<O>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "byteorder::LittleEndian"
+        ]
+      },
+      {
+        "path": "byteorder::_::<impl Immutable for byteorder::I32<O>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "byteorder::BigEndian"
+        ]
+      },
+      {
+        "path": "byteorder::_::<impl Immutable for byteorder::I32<O>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "byteorder::LittleEndian"
+        ]
+      },
+      {
+        "path": "byteorder::_::<impl TryFromBytes for byteorder::I32<O>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "byteorder::BigEndian"
+        ]
+      },
+      {
+        "path": "byteorder::_::<impl TryFromBytes for byteorder::I32<O>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "byteorder::LittleEndian"
+        ]
+      },
+      {
+        "path": "byteorder::_::<impl FromZeros for byteorder::I32<O>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "byteorder::BigEndian"
+        ]
+      },
+      {
+        "path": "byteorder::_::<impl FromZeros for byteorder::I32<O>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "byteorder::LittleEndian"
+        ]
+      },
+      {
+        "path": "byteorder::_::<impl FromBytes for byteorder::I32<O>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "byteorder::BigEndian"
+        ]
+      },
+      {
+        "path": "byteorder::_::<impl FromBytes for byteorder::I32<O>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "byteorder::LittleEndian"
+        ]
+      },
+      {
+        "path": "byteorder::_::<impl IntoBytes for byteorder::I32<O>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "byteorder::BigEndian"
+        ]
+      },
+      {
+        "path": "byteorder::_::<impl IntoBytes for byteorder::I32<O>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "byteorder::LittleEndian"
+        ]
+      },
+      {
+        "path": "byteorder::_::<impl Unaligned for byteorder::I32<O>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "byteorder::BigEndian"
+        ]
+      },
+      {
+        "path": "byteorder::_::<impl Unaligned for byteorder::I32<O>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "byteorder::LittleEndian"
+        ]
+      },
+      {
+        "path": "byteorder::_::<impl KnownLayout for byteorder::I64<O>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "byteorder::BigEndian"
+        ]
+      },
+      {
+        "path": "byteorder::_::<impl KnownLayout for byteorder::I64<O>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "byteorder::LittleEndian"
+        ]
+      },
+      {
+        "path": "byteorder::_::<impl Immutable for byteorder::I64<O>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "byteorder::BigEndian"
+        ]
+      },
+      {
+        "path": "byteorder::_::<impl Immutable for byteorder::I64<O>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "byteorder::LittleEndian"
+        ]
+      },
+      {
+        "path": "byteorder::_::<impl TryFromBytes for byteorder::I64<O>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "byteorder::BigEndian"
+        ]
+      },
+      {
+        "path": "byteorder::_::<impl TryFromBytes for byteorder::I64<O>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "byteorder::LittleEndian"
+        ]
+      },
+      {
+        "path": "byteorder::_::<impl FromZeros for byteorder::I64<O>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "byteorder::BigEndian"
+        ]
+      },
+      {
+        "path": "byteorder::_::<impl FromZeros for byteorder::I64<O>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "byteorder::LittleEndian"
+        ]
+      },
+      {
+        "path": "byteorder::_::<impl FromBytes for byteorder::I64<O>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "byteorder::BigEndian"
+        ]
+      },
+      {
+        "path": "byteorder::_::<impl FromBytes for byteorder::I64<O>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "byteorder::LittleEndian"
+        ]
+      },
+      {
+        "path": "byteorder::_::<impl IntoBytes for byteorder::I64<O>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "byteorder::BigEndian"
+        ]
+      },
+      {
+        "path": "byteorder::_::<impl IntoBytes for byteorder::I64<O>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "byteorder::LittleEndian"
+        ]
+      },
+      {
+        "path": "byteorder::_::<impl Unaligned for byteorder::I64<O>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "byteorder::BigEndian"
+        ]
+      },
+      {
+        "path": "byteorder::_::<impl Unaligned for byteorder::I64<O>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "byteorder::LittleEndian"
+        ]
+      },
+      {
+        "path": "byteorder::_::<impl KnownLayout for byteorder::I128<O>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "byteorder::BigEndian"
+        ]
+      },
+      {
+        "path": "byteorder::_::<impl KnownLayout for byteorder::I128<O>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "byteorder::LittleEndian"
+        ]
+      },
+      {
+        "path": "byteorder::_::<impl Immutable for byteorder::I128<O>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "byteorder::BigEndian"
+        ]
+      },
+      {
+        "path": "byteorder::_::<impl Immutable for byteorder::I128<O>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "byteorder::LittleEndian"
+        ]
+      },
+      {
+        "path": "byteorder::_::<impl TryFromBytes for byteorder::I128<O>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "byteorder::BigEndian"
+        ]
+      },
+      {
+        "path": "byteorder::_::<impl TryFromBytes for byteorder::I128<O>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "byteorder::LittleEndian"
+        ]
+      },
+      {
+        "path": "byteorder::_::<impl FromZeros for byteorder::I128<O>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "byteorder::BigEndian"
+        ]
+      },
+      {
+        "path": "byteorder::_::<impl FromZeros for byteorder::I128<O>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "byteorder::LittleEndian"
+        ]
+      },
+      {
+        "path": "byteorder::_::<impl FromBytes for byteorder::I128<O>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "byteorder::BigEndian"
+        ]
+      },
+      {
+        "path": "byteorder::_::<impl FromBytes for byteorder::I128<O>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "byteorder::LittleEndian"
+        ]
+      },
+      {
+        "path": "byteorder::_::<impl IntoBytes for byteorder::I128<O>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "byteorder::BigEndian"
+        ]
+      },
+      {
+        "path": "byteorder::_::<impl IntoBytes for byteorder::I128<O>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "byteorder::LittleEndian"
+        ]
+      },
+      {
+        "path": "byteorder::_::<impl Unaligned for byteorder::I128<O>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "byteorder::BigEndian"
+        ]
+      },
+      {
+        "path": "byteorder::_::<impl Unaligned for byteorder::I128<O>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "byteorder::LittleEndian"
+        ]
+      },
+      {
+        "path": "byteorder::_::<impl KnownLayout for byteorder::Isize<O>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "byteorder::BigEndian"
+        ]
+      },
+      {
+        "path": "byteorder::_::<impl KnownLayout for byteorder::Isize<O>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "byteorder::LittleEndian"
+        ]
+      },
+      {
+        "path": "byteorder::_::<impl Immutable for byteorder::Isize<O>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "byteorder::BigEndian"
+        ]
+      },
+      {
+        "path": "byteorder::_::<impl Immutable for byteorder::Isize<O>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "byteorder::LittleEndian"
+        ]
+      },
+      {
+        "path": "byteorder::_::<impl TryFromBytes for byteorder::Isize<O>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "byteorder::BigEndian"
+        ]
+      },
+      {
+        "path": "byteorder::_::<impl TryFromBytes for byteorder::Isize<O>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "byteorder::LittleEndian"
+        ]
+      },
+      {
+        "path": "byteorder::_::<impl FromZeros for byteorder::Isize<O>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "byteorder::BigEndian"
+        ]
+      },
+      {
+        "path": "byteorder::_::<impl FromZeros for byteorder::Isize<O>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "byteorder::LittleEndian"
+        ]
+      },
+      {
+        "path": "byteorder::_::<impl FromBytes for byteorder::Isize<O>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "byteorder::BigEndian"
+        ]
+      },
+      {
+        "path": "byteorder::_::<impl FromBytes for byteorder::Isize<O>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "byteorder::LittleEndian"
+        ]
+      },
+      {
+        "path": "byteorder::_::<impl IntoBytes for byteorder::Isize<O>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "byteorder::BigEndian"
+        ]
+      },
+      {
+        "path": "byteorder::_::<impl IntoBytes for byteorder::Isize<O>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "byteorder::LittleEndian"
+        ]
+      },
+      {
+        "path": "byteorder::_::<impl Unaligned for byteorder::Isize<O>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "byteorder::BigEndian"
+        ]
+      },
+      {
+        "path": "byteorder::_::<impl Unaligned for byteorder::Isize<O>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "byteorder::LittleEndian"
+        ]
+      },
+      {
+        "path": "byteorder::_::<impl KnownLayout for byteorder::F32<O>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "byteorder::BigEndian"
+        ]
+      },
+      {
+        "path": "byteorder::_::<impl KnownLayout for byteorder::F32<O>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "byteorder::LittleEndian"
+        ]
+      },
+      {
+        "path": "byteorder::_::<impl Immutable for byteorder::F32<O>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "byteorder::BigEndian"
+        ]
+      },
+      {
+        "path": "byteorder::_::<impl Immutable for byteorder::F32<O>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "byteorder::LittleEndian"
+        ]
+      },
+      {
+        "path": "byteorder::_::<impl TryFromBytes for byteorder::F32<O>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "byteorder::BigEndian"
+        ]
+      },
+      {
+        "path": "byteorder::_::<impl TryFromBytes for byteorder::F32<O>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "byteorder::LittleEndian"
+        ]
+      },
+      {
+        "path": "byteorder::_::<impl FromZeros for byteorder::F32<O>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "byteorder::BigEndian"
+        ]
+      },
+      {
+        "path": "byteorder::_::<impl FromZeros for byteorder::F32<O>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "byteorder::LittleEndian"
+        ]
+      },
+      {
+        "path": "byteorder::_::<impl FromBytes for byteorder::F32<O>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "byteorder::BigEndian"
+        ]
+      },
+      {
+        "path": "byteorder::_::<impl FromBytes for byteorder::F32<O>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "byteorder::LittleEndian"
+        ]
+      },
+      {
+        "path": "byteorder::_::<impl IntoBytes for byteorder::F32<O>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "byteorder::BigEndian"
+        ]
+      },
+      {
+        "path": "byteorder::_::<impl IntoBytes for byteorder::F32<O>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "byteorder::LittleEndian"
+        ]
+      },
+      {
+        "path": "byteorder::_::<impl Unaligned for byteorder::F32<O>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "byteorder::BigEndian"
+        ]
+      },
+      {
+        "path": "byteorder::_::<impl Unaligned for byteorder::F32<O>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "byteorder::LittleEndian"
+        ]
+      },
+      {
+        "path": "byteorder::_::<impl KnownLayout for byteorder::F64<O>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "byteorder::BigEndian"
+        ]
+      },
+      {
+        "path": "byteorder::_::<impl KnownLayout for byteorder::F64<O>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "byteorder::LittleEndian"
+        ]
+      },
+      {
+        "path": "byteorder::_::<impl Immutable for byteorder::F64<O>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "byteorder::BigEndian"
+        ]
+      },
+      {
+        "path": "byteorder::_::<impl Immutable for byteorder::F64<O>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "byteorder::LittleEndian"
+        ]
+      },
+      {
+        "path": "byteorder::_::<impl TryFromBytes for byteorder::F64<O>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "byteorder::BigEndian"
+        ]
+      },
+      {
+        "path": "byteorder::_::<impl TryFromBytes for byteorder::F64<O>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "byteorder::LittleEndian"
+        ]
+      },
+      {
+        "path": "byteorder::_::<impl FromZeros for byteorder::F64<O>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "byteorder::BigEndian"
+        ]
+      },
+      {
+        "path": "byteorder::_::<impl FromZeros for byteorder::F64<O>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "byteorder::LittleEndian"
+        ]
+      },
+      {
+        "path": "byteorder::_::<impl FromBytes for byteorder::F64<O>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "byteorder::BigEndian"
+        ]
+      },
+      {
+        "path": "byteorder::_::<impl FromBytes for byteorder::F64<O>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "byteorder::LittleEndian"
+        ]
+      },
+      {
+        "path": "byteorder::_::<impl IntoBytes for byteorder::F64<O>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "byteorder::BigEndian"
+        ]
+      },
+      {
+        "path": "byteorder::_::<impl IntoBytes for byteorder::F64<O>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "byteorder::LittleEndian"
+        ]
+      },
+      {
+        "path": "byteorder::_::<impl Unaligned for byteorder::F64<O>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "byteorder::BigEndian"
+        ]
+      },
+      {
+        "path": "byteorder::_::<impl Unaligned for byteorder::F64<O>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "byteorder::LittleEndian"
+        ]
+      }
+    ]
+  },
+  "proof": {
+    "source_root": ".",
+    "specification": "Spec.specs",
+    "theorem": "Proof.verify",
+    "sources": [
+      {
+        "module": "Spec",
+        "path": "Spec.lean",
+        "role": "specification"
+      },
+      {
+        "module": "Proof",
+        "path": "Proof.lean",
+        "role": "proof"
+      }
+    ]
+  }
+}
