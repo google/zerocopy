@@ -396,8 +396,8 @@ case "$MODE" in
     # `ANNEAL_CAPTURE` or prebuilt `.olean`s. Stage only the Lean toolchain
     # (for `default_lean_path()` / `ANNEAL_LEAN` unit tests) and point Cargo /
     # rustdoc at `/opt/anneal-nix/rust-toolchain` directly rather than building
-    # `anneal-rustc-capture` and `prebuild_bundled_oleans.py` a fourth time;
-    # all three `ws-test` shards and `installed-smoke` exercise the trimmed
+    # `anneal-rustc-capture` and `prebuild_bundled_oleans.py` an extra time;
+    # all six `ws-test` shards and `installed-smoke` exercise the trimmed
     # omnibus layout.
     verify_bwrap_sandbox
     INSTALL_CACHE="${SCRATCH_ROOT}/anneal-ws-meta-toolchain"
