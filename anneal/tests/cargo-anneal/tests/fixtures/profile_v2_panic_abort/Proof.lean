@@ -372,7 +372,7 @@ private theorem evalStepV2_term (p : Program) (frame : FrameState) (mem : Memory
     (hLen : Nat.beq frame.stmtIdx bb.statements.length = true) :
     evalStepV2 p ⟨[frame], cm, mem⟩ =
       evalTerminatorV2 Captured.body_0 bb frame mem cm p.panicStrategy
-        p.hasLocalPanicHandler := by
+        p.hasLocalPanicHandler p.overflowChecks := by
   unfold evalStepV2
   dsimp only
   rw [hBody]

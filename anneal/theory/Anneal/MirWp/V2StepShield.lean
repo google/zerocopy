@@ -108,7 +108,7 @@ theorem evalStepV2_term {p : Program} {body : Body} {bb : BasicBlock}
     (hEnd : Nat.beq i bb.statements.length = true) :
     evalStepV2 p (stateV2 (frameV2 defId b i locals) cm m) =
       evalTerminatorV2 body bb (frameV2 defId b i locals) m cm p.panicStrategy
-        p.hasLocalPanicHandler := by
+        p.hasLocalPanicHandler p.overflowChecks := by
   unfold evalStepV2
   dsimp only
   rw [hBody]
@@ -219,9 +219,9 @@ theorem evalStatementV2_nop {body : Body} {defId : DefId} {b i : Nat}
 /-- `Goto` jumps to the first statement of its target block. -/
 theorem evalTerminatorV2_goto {body : Body} {bb : BasicBlock} {defId : DefId}
     {b i : Nat} {l : List LocalSlot} {cm : CallerMemory} {m : MemoryState}
-    {ps : PanicStrategy} {hLocal : Bool} {target : BasicBlockId}
+    {ps : PanicStrategy} {hLocal oc : Bool} {target : BasicBlockId}
     (hTerm : bb.terminator = .goto target) :
-    evalTerminatorV2 body bb (frameV2 defId b i l) m cm ps hLocal =
+    evalTerminatorV2 body bb (frameV2 defId b i l) m cm ps hLocal oc =
       .step (stateV2 (frameV2 defId target 0 l) cm m) := by
   unfold evalTerminatorV2
   rw [hTerm]

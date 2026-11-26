@@ -888,7 +888,7 @@ private theorem sliceScan_bb4_return (acc : Nat) (curPtr : PtrVal)
          .immediate (some (.rangeFrom (UInt64.ofNat 1)))],
         none, none, none⟩)
       (mem := entryMemoryWithCaller cm) (callerMem := cm)
-      (ps := .unwind) (hLocal := true)
+      (ps := .unwind) (hLocal := true) (oc := false)
       (retTy := usizeTy) (retVal := usizeVal acc)
       rfl rfl rfl rfl rfl rfl rfl rfl
   rw [hRet, extractCallerMemory_entry cm hCm]
@@ -1551,7 +1551,7 @@ private theorem lex2_bb5_return (acc : Nat) :
          .immediate (some (u64Val 0))],
         none, none, none⟩)
       (mem := entryMemoryWithCaller ⟨[]⟩) (callerMem := ⟨[]⟩)
-      (ps := .unwind) (hLocal := true)
+      (ps := .unwind) (hLocal := true) (oc := false)
       (retTy := u64Ty) (retVal := u64Val acc)
       rfl rfl rfl rfl rfl rfl rfl rfl
   rw [hRet]

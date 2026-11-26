@@ -801,6 +801,7 @@ fn verifies_panic_abort_div_ceil_and_rejects_panic_unwind() {
             a.starts_with("--panic abort models failed non-optional safe assertions as .aborted")
                 && a.contains("panic hooks and handlers")
                 && a.contains("caller-memory effects before the panic")
+                && !a.contains("overflow")
         }),
         "expected explicit --panic abort receipt assumption, got {abort_assumptions:?}"
     );
@@ -841,9 +842,9 @@ fn verifies_panic_abort_div_ceil_and_rejects_panic_unwind() {
         .expect_proof_failed();
 
     // Check 5: optional overflow checks (`-Coverflow-checks=yes`) under
-    // `--panic abort` stay `.fault .unsupported` rather than aborting, because
-    // `evalAssertFailure` keeps optional overflow checks fail-closed even when
-    // `--overflow-checks` is enabled.
+    // `--panic abort` abort cleanly like the other safe panics, because
+    // `evalAssertFailure` models them as runtime panics when
+    // `Program.overflowChecks` is set.
     //
     // First confirm stable `a + b` under `--panic abort --overflow-checks`
     // captures with `overflowChecks := true` and an
@@ -903,8 +904,8 @@ fn verifies_panic_abort_div_ceil_and_rejects_panic_unwind() {
     // `-Coverflow-checks=yes` bodies whose assert condition is a bare scalar
     // (`-a` -> `AssertKind.overflowNeg`, `a << b` ->
     // `AssertKind.overflow BinOp.shl`) that overflowing inputs reach
-    // `.fault .unsupported` and refute `WellFormedV2`. Both proofs fail to
-    // typecheck if optional overflow asserts abort under `--panic abort`.
+    // `.done (.aborted _)`. Both proofs fail to typecheck if optional overflow
+    // asserts fault under `--panic abort --overflow-checks`.
     let overflow_rust_dir = dir.path().join("overflow-rust");
     let overflow_lean_dir = dir.path().join("overflow-lean");
     fs::create_dir_all(&overflow_rust_dir).unwrap();
@@ -945,12 +946,10 @@ def safety (id : String) (q : Query) : Prop :=
       .scalar ⟨.i32, false, BitVec.ofNat 128 2⟩])
 
 def property (p : Program) : Prop :=
-  ReachesResultV2 (entryProgForBody p 0) qNegOverflow
-    (.fault .unsupported) ∧
-  ¬ WellFormedV2 (entryProgForBody p 0) qNegOverflow ∧
-  ReachesResultV2 (entryProgForBody p 1) qShlOverflow
-    (.fault .unsupported) ∧
-  ¬ WellFormedV2 (entryProgForBody p 1) qShlOverflow
+  (∃ cm, ReachesResultV2 (entryProgForBody p 0) qNegOverflow
+    (.done (.aborted cm))) ∧
+  (∃ cm, ReachesResultV2 (entryProgForBody p 1) qShlOverflow
+    (.done (.aborted cm)))
 
 def specs : SpecsV2 := ⟨safety, property⟩
 
@@ -1108,16 +1107,16 @@ private theorem body1_wf (q : Query)
       rfl
     exact wf_of_detTerminates hInit (body1_steps cm (entryMemoryWithCaller cm))
 
-private theorem neg_overflow_unsupported :
-    ReachesResultV2 (entryProgForBody Captured.program 0)
-      Spec.qNegOverflow (.fault .unsupported) :=
-  ⟨_, .tail (.tail (.tail (.refl _) ⟨0, rfl, rfl⟩)
+private theorem neg_overflow_aborts :
+    ∃ cm, ReachesResultV2 (entryProgForBody Captured.program 0)
+      Spec.qNegOverflow (.done (.aborted cm)) :=
+  ⟨_, _, .tail (.tail (.tail (.refl _) ⟨0, rfl, rfl⟩)
     ⟨0, rfl, rfl⟩) ⟨0, rfl, rfl⟩, ⟨0, rfl, rfl⟩⟩
 
-private theorem shl_overflow_unsupported :
-    ReachesResultV2 (entryProgForBody Captured.program 1)
-      Spec.qShlOverflow (.fault .unsupported) :=
-  ⟨_, .tail (.tail (.tail (.tail (.tail (.refl _)
+private theorem shl_overflow_aborts :
+    ∃ cm, ReachesResultV2 (entryProgForBody Captured.program 1)
+      Spec.qShlOverflow (.done (.aborted cm)) :=
+  ⟨_, _, .tail (.tail (.tail (.tail (.tail (.refl _)
     ⟨0, rfl, rfl⟩) ⟨0, rfl, rfl⟩) ⟨0, rfl, rfl⟩)
     ⟨0, rfl, rfl⟩) ⟨0, rfl, rfl⟩, ⟨0, rfl, rfl⟩⟩
 
@@ -1148,10 +1147,7 @@ theorem verify : Expected.claim := by
       | succ _ =>
         change none = some body at hBody
         cases hBody
-  · exact ⟨neg_overflow_unsupported,
-      fun hWf => hWf.2 .unsupported neg_overflow_unsupported,
-      shl_overflow_unsupported,
-      fun hWf => hWf.2 .unsupported shl_overflow_unsupported⟩
+  · exact ⟨neg_overflow_aborts, shl_overflow_aborts⟩
 
 end Proof
 "#,
@@ -1191,6 +1187,19 @@ end Proof
         panic!("expected verified receipt, got {:?}", overflow_ok.receipt);
     };
     assert!(overflow_verified.spec_warnings.is_empty(), "{overflow_verified:?}");
+    let overflow_assumptions: Vec<&str> =
+        overflow_verified.assumptions.iter().map(String::as_str).collect();
+    assert!(
+        overflow_assumptions.iter().any(|a| {
+            a.starts_with(
+                "--panic abort models failed non-optional safe assertions and, under \
+                 --overflow-checks, failed overflow checks as .aborted",
+            ) && a.contains("panic hooks and handlers")
+                && a.contains("a build that elides the overflow checks wraps")
+        }),
+        "expected --panic abort --overflow-checks receipt assumption, got \
+         {overflow_assumptions:?}"
+    );
     let overflow_captured = fs::read_to_string(
         dir.path().join("artifacts-panic-abort-optional-overflow/capture/Captured.lean"),
     )

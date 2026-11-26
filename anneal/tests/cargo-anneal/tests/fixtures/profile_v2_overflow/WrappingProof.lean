@@ -14,7 +14,8 @@ import StepLemmas
 /-! Proof for the capture of `buggy_add_u8` (body `0`) and `zero_pair` (body
 `1`) without overflow checks, where `x + 1` is a wrapping `Add`. With overflow
 checks the capture of body `0` differs, so this proof no longer checks; no
-proof can, because `x = 255` faults. -/
+proof can, because at `x = 255` the body faults or aborts instead of
+returning. -/
 
 namespace Proof
 

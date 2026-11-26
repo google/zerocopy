@@ -288,13 +288,16 @@ result:
 - Without `--overflow-checks`, verified MIR contains none of the overflow
   checks that `-Coverflow-checks` controls (for `+`, `-`, `*`, unary negation,
   and shifts): those operations wrap, and shift amounts are masked. With
-  `--overflow-checks`, each such operation is guarded by an overflow `Assert`,
-  and a failed check faults, so a verified function never reaches one.
+  `--overflow-checks`, each such operation is guarded by an overflow `Assert`.
+  A failed check faults under `--panic unwind`, so a verified function never
+  reaches one. Under `--panic abort` it aborts like the other safe panics,
+  which a contract with `EffectMaskV2.noAbort` rules out.
 - Under default `--panic unwind`, every failing `Assert` faults
   (`.unsupported` or `.undefined`), so a verified function never reaches a
   failing assertion. Under `--panic abort` (when the crate defines no
-  crate-local `#[panic_handler]`), failing non-optional safe `Assert`s
-  terminate as `.aborted` carrying post-mutation caller memory; this satisfies
+  crate-local `#[panic_handler]`), failing non-optional safe `Assert`s, and
+  failing overflow checks under `--overflow-checks`, terminate as `.aborted`
+  carrying post-mutation caller memory; this satisfies
   `WellFormed`/`BodyVerified`/`BodyVerifiedV2` without ruling out panics and
   leaves panic hooks and handlers (including downstream `#![no_std]` binary
   `#[panic_handler]`s) unverified. Proving panic-freedom under `--panic abort`
@@ -337,10 +340,19 @@ runtime behavior to the same panicking paths—than the one Anneal verified:
   including entirely different function bodies.
 - With overflow checks on, the compiler inserts overflow checks that panic,
   unless the capture also used `--overflow-checks`.
+- With overflow checks off when capture used `--overflow-checks --panic abort`
+  (without an explicit panic-freedom obligation such as
+  `EffectMaskV2.noAbort`), an overflow that Anneal admitted as terminal
+  `.aborted` instead wraps (shift amounts are masked) and execution
+  continues, which the verified result does not describe. Cargo's default
+  `release` profile turns overflow checks off. The same applies when a
+  downstream crate built without overflow checks generates code for an
+  `#[inline]` body that capture admitted.
 - With `-Cpanic=unwind` in production when capture used `--panic abort`
   (without an explicit panic-freedom obligation such as
-  `EffectMaskV2.noAbort`), failing non-optional safe assertions that Anneal
-  admitted as terminal `.aborted` instead unwind across callers and run `Drop`
+  `EffectMaskV2.noAbort`), failing non-optional safe assertions (and, under
+  `--overflow-checks`, failing overflow checks) that Anneal admitted as
+  terminal `.aborted` instead unwind across callers and run `Drop`
   glue, which Anneal does not model; `cfg(panic = ...)` can also select
   different code.
 
@@ -352,11 +364,13 @@ Anneal does not verify that the deployed binary corresponds to the captured
 MIR. The receipt lists "faithful pinned compiler capture" among its
 `assumptions` and "source-to-deployed-binary correspondence" under
 `deferred`. Code built for production with debug assertions on, with overflow
-checks on when capture ran without `--overflow-checks`, or with
+checks on when capture ran without `--overflow-checks`, with overflow checks
+off when capture ran with `--overflow-checks --panic abort`, or with
 `-Cpanic=unwind` when capture ran with `--panic abort` (without an explicit
 panic-freedom proof) should not treat a verification result as evidence that
-those checks never fire, that panics abort rather than unwind, or as covering
-code that only such a build compiles.
+those checks never fire, that overflows abort rather than wrap, that panics
+abort rather than unwind, or as covering code that only such a build
+compiles.
 
 ### Concurrency
 

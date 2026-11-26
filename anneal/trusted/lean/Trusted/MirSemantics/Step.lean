@@ -732,16 +732,18 @@ Memory/alignment UB panics (`misalignedPtrDeref`, `nullPtrDeref`) always fault
 crate-local `#[panic_handler]` (`hasLocalPanicHandler = true`), failing safe
 asserts stay `.fault .unsupported` because the unverified handler can execute
 arbitrary code or diverge. Optional overflow checks
-(`overflow .add|.sub|.mul|.shl|.shr`, `overflowNeg`) remain
-`.fault .unsupported`: under default `-Coverflow-checks=no`, codegen elides
-inherited optional overflow asserts (`#[rustc_inherit_overflow_checks]`) as
-`goto target` rather than aborting, and under `--overflow-checks` they are
-runtime panics that this model does not yet treat as `.aborted`. Under
-`--panic unwind` or `.cleanup _`, all failed safe asserts fail closed as
+(`overflow .add|.sub|.mul|.shl|.shr`, `overflowNeg`) abort under the same
+conditions only when `overflowChecks = true`, that is, when the program was
+captured under `-Coverflow-checks=yes`, where codegen keeps them as runtime
+panics. With `overflowChecks = false` they stay `.fault .unsupported`: codegen
+then elides inherited optional overflow asserts
+(`#[rustc_inherit_overflow_checks]`) as `goto target` rather than aborting.
+Under `--panic unwind` or `.cleanup _`, all failed safe asserts fail closed as
 `.fault .unsupported`. -/
 noncomputable def evalAssertFailure (msg : AssertKind)
     (panicStrategy : PanicStrategy) (unwind : UnwindAction)
-    (callerMem : CallerMemory) (hasLocalPanicHandler : Bool := true) :
+    (callerMem : CallerMemory) (hasLocalPanicHandler : Bool := true)
+    (overflowChecks : Bool := false) :
     StepResult State TerminalOut :=
   match msg with
   | .misalignedPtrDeref | .nullPtrDeref => .fault .undefined
@@ -754,7 +756,16 @@ noncomputable def evalAssertFailure (msg : AssertKind)
       | .abort, .continue_ | .abort, .unreachable | .abort, .terminate =>
         .done (.aborted callerMem)
       | _, _ => .fault .unsupported
-  | .overflow _ | .overflowNeg | .unsupported => .fault .unsupported
+  | .overflow .add | .overflow .sub | .overflow .mul | .overflow .shl
+  | .overflow .shr | .overflowNeg =>
+    if !overflowChecks || hasLocalPanicHandler then
+      .fault .unsupported
+    else
+      match panicStrategy, unwind with
+      | .abort, .continue_ | .abort, .unreachable | .abort, .terminate =>
+        .done (.aborted callerMem)
+      | _, _ => .fault .unsupported
+  | .overflow _ | .unsupported => .fault .unsupported
 
 /-- Evaluate a basic block's `TerminatorKind` when
 `frame.stmtIdx == bb.statements.length`, matching `eval_terminator` in
@@ -2723,13 +2734,15 @@ therefore faults with `.undefined`, which is conservative: with checks enabled,
 rustc's behavior is a defined, non-unwinding panic. Every other failed assert
 delegates to `evalAssertFailure`: under `--panic abort` without a crate-local
 `#[panic_handler]` and with a non-cleanup unwind action, non-optional safe
-panics return `.done (.aborted (extractCallerMemory callerMem mem1))`; optional
-overflow checks, crates with a crate-local `#[panic_handler]`, cleanup unwinds,
-and `--panic unwind` stay `.fault .unsupported`. -/
+panics return `.done (.aborted (extractCallerMemory callerMem mem1))`, and so
+do optional overflow checks when `overflowChecks = true`; optional overflow
+checks without `overflowChecks`, crates with a crate-local `#[panic_handler]`,
+cleanup unwinds, and `--panic unwind` stay `.fault .unsupported`. -/
 noncomputable def evalTerminatorV2 (body : Body) (bb : BasicBlock)
     (frame : FrameState) (mem : MemoryState) (callerMem : CallerMemory)
     (panicStrategy : PanicStrategy := .unwind)
-    (hasLocalPanicHandler : Bool := true) :
+    (hasLocalPanicHandler : Bool := true)
+    (overflowChecks : Bool := false) :
     StepResult State TerminalOut :=
   match bb.terminator with
   | .goto target => jumpToBlock frame mem callerMem target
@@ -2794,6 +2807,7 @@ noncomputable def evalTerminatorV2 (body : Body) (bb : BasicBlock)
         else
           evalAssertFailure msg panicStrategy unwind
             (extractCallerMemory callerMem mem1) hasLocalPanicHandler
+            overflowChecks
       | _ => .fault .unsupported
   | .coreCall op args dst (some target) _ =>
     if !dst.projection.isEmpty then
@@ -2832,7 +2846,7 @@ noncomputable def evalStepV2 (p : Program) (s : State) :
         | none =>
           if Nat.beq frame.stmtIdx bb.statements.length then
             evalTerminatorV2 body bb frame s.mem s.callerMem p.panicStrategy
-              p.hasLocalPanicHandler
+              p.hasLocalPanicHandler p.overflowChecks
           else
             .fault .unsupported
   | _ => .fault .unsupported
