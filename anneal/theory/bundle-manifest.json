@@ -122,6 +122,10 @@
       "sha256": "023422877157bf29755f83d31a431f8c4b20a6c320fd4cddcf2a892680024ba6"
     },
     {
+      "path": "theory/Anneal/MirWp/V2StepShield.lean",
+      "sha256": "281608f0e5cbb7b9deecdae246a23932a65ccbc350b2bd9983dd7d7f7b776d73"
+    },
+    {
       "path": "theory/Anneal/NatBitwise.lean",
       "sha256": "810c3dd7c0ec2ce83381db5249d2f654856474b49cebdf8bd7afdff96d23bc12"
     },

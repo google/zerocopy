@@ -10,7 +10,7 @@ prelude
 import Init.SimpLemmas
 import Init.Data.List.Basic
 import Expected
-import Anneal.MirWp.V2Memory
+import Anneal.MirWp.V2StepShield
 
 namespace Proof
 
@@ -41,30 +41,22 @@ theorem body0_correct (q : Query)
   have hInit :
       initStateV2 (entryProgForBody Captured.program 0)
         ⟨[.slicePtr ptr len], q.callerMem⟩ =
-      .ok (State.mk [FrameState.mk 0 0 0
-        [.immediate none, .immediate (some (.slicePtr ptr len))]
-        none none none]
+      .ok (stateV2 (frameV2 0 0 0
+        [.immediate none, .immediate (some (.slicePtr ptr len))])
         q.callerMem m) :=
-    ctx.initStateV2_ok_of rfl (by decide) (by rw [← hQ]; exact hValid)
+    ctx.initStateV2_ok_frameV2 rfl (by decide) (by rw [← hQ]; exact hValid)
   rw [hQ]
   unfold execProgV2
   rw [hInit]
   -- bb0 stmt 0: _0 = useRetag(copy _1)
-  apply execOutcomeStateV2_step (by
-    dsimp only [evalStepV2, entryProgForBody, Captured.program,
-      Captured.body_0, evalStatementV2, resolvePlaceDestV2, placeStaticTyV2,
-      Trusted.MirSemantics.getElem?]
-    rw [evalRvalueV2_useRetag_copy_ok (by rfl) (by rfl) (by rfl) hRV]
-    dsimp only
-    rw [writePlaceDestV2_immediate_ok (by rfl) (by rfl) (by rfl)])
+  apply execOutcomeStateV2_step (evalStepV2_assign_local (by rfl) (by rfl)
+    (by rfl) (by rfl)
+    (evalRvalueV2_useRetag_copy_ok (by rfl) (by rfl) (by rfl) hRV)
+    (writePlaceDestV2_immediate_ok (by rfl) (by rfl) (by rfl)))
   -- bb0 term: return_
-  apply execOutcomeStateV2_done (by
-    dsimp only [evalStepV2, entryProgForBody, Captured.program,
-      Captured.body_0, Trusted.MirSemantics.getElem?]
-    rw [evalTerminatorV2_return_ok (by rfl) (by rfl) (by rfl) (by rfl) hStay
-      hRV spansDisjoint_single, hExt]
-    rfl)
-  rfl
+  exact execOutcomeStateV2_done (evalStepV2_return_ok (by rfl) (by rfl)
+    (by rfl) (by rfl) (by rfl) (by rfl) (by rfl) (by rfl) hStay hRV
+    spansDisjoint_single) (by rw [hExt])
 
 /-- `<&mut [u8] as IntoByteSlice>::into_byte_slice`: `_0 = &(*_1)`. -/
 theorem body1_correct (q : Query)
@@ -90,31 +82,22 @@ theorem body1_correct (q : Query)
   have hInit :
       initStateV2 (entryProgForBody Captured.program 1)
         ⟨[.slicePtr ptr len], q.callerMem⟩ =
-      .ok (State.mk [FrameState.mk 1 0 0
-        [.immediate none, .immediate (some (.slicePtr ptr len))]
-        none none none]
+      .ok (stateV2 (frameV2 1 0 0
+        [.immediate none, .immediate (some (.slicePtr ptr len))])
         q.callerMem m) :=
-    ctx.initStateV2_ok_of rfl (by decide) (by rw [← hQ]; exact hValid)
+    ctx.initStateV2_ok_frameV2 rfl (by decide) (by rw [← hQ]; exact hValid)
   rw [hQ]
   unfold execProgV2
   rw [hInit]
   -- bb0 stmt 0: _0 = &(*_1)
-  apply execOutcomeStateV2_step (by
-    dsimp only [evalStepV2, entryProgForBody, Captured.program,
-      Captured.body_1, evalStatementV2, resolvePlaceDestV2,
-      placeStaticTyV2, evalRvalueV2,
-      Trusted.MirSemantics.getElem?]
-    rw [evalRefRvalueV2_deref_ok (by rfl) (by rfl) (by rfl) hRef]
-    dsimp only
-    rw [writePlaceDestV2_immediate_ok (by rfl) (by rfl) (by rfl)])
+  apply execOutcomeStateV2_step (evalStepV2_assign_local (by rfl) (by rfl)
+    (by rfl) (by rfl)
+    (evalRvalueV2_ref_deref_ok (by rfl) (by rfl) (by rfl) hRef)
+    (writePlaceDestV2_immediate_ok (by rfl) (by rfl) (by rfl)))
   -- bb0 term: return_
-  apply execOutcomeStateV2_done (by
-    dsimp only [evalStepV2, entryProgForBody, Captured.program,
-      Captured.body_1, Trusted.MirSemantics.getElem?]
-    rw [evalTerminatorV2_return_ok (by rfl) (by rfl) (by rfl) (by rfl) hStay
-      hRV spansDisjoint_single, hExt]
-    rfl)
-  rfl
+  exact execOutcomeStateV2_done (evalStepV2_return_ok (by rfl) (by rfl)
+    (by rfl) (by rfl) (by rfl) (by rfl) (by rfl) (by rfl) hStay hRV
+    spansDisjoint_single) (by rw [hExt])
 
 /-- `<&mut [u8] as IntoByteSliceMut>::into_byte_slice_mut`:
 `StorageLive 2; _2 = &mut (*_1); _0 = &mut (*_2); StorageDead 2`. -/
@@ -140,44 +123,31 @@ theorem body2_correct (q : Query)
   have hInit :
       initStateV2 (entryProgForBody Captured.program 2)
         ⟨[.slicePtr ptr len], q.callerMem⟩ =
-      .ok (State.mk [FrameState.mk 2 0 0
-        [.immediate none, .immediate (some (.slicePtr ptr len)), .dead]
-        none none none]
+      .ok (stateV2 (frameV2 2 0 0
+        [.immediate none, .immediate (some (.slicePtr ptr len)), .dead])
         q.callerMem m) :=
-    ctx.initStateV2_ok_of rfl (by decide) (by rw [← hQ]; exact hValid)
+    ctx.initStateV2_ok_frameV2 rfl (by decide) (by rw [← hQ]; exact hValid)
   rw [hQ]
   unfold execProgV2
   rw [hInit]
   -- bb0 stmt 0: StorageLive 2
   apply execOutcomeStateV2_step (by rfl)
   -- bb0 stmt 1: _2 = &mut (*_1)
-  apply execOutcomeStateV2_step (by
-    dsimp only [evalStepV2, entryProgForBody, Captured.program,
-      Captured.body_2, evalStatementV2, resolvePlaceDestV2,
-      placeStaticTyV2, evalRvalueV2,
-      Trusted.MirSemantics.getElem?]
-    rw [evalRefRvalueV2_deref_ok (by rfl) (by rfl) (by rfl) hRef]
-    dsimp only
-    rw [writePlaceDestV2_immediate_ok (by rfl) (by rfl) (by rfl)])
+  apply execOutcomeStateV2_step (evalStepV2_assign_local (by rfl) (by rfl)
+    (by rfl) (by rfl)
+    (evalRvalueV2_ref_deref_ok (by rfl) (by rfl) (by rfl) hRef)
+    (writePlaceDestV2_immediate_ok (by rfl) (by rfl) (by rfl)))
   -- bb0 stmt 2: _0 = &mut (*_2)
-  apply execOutcomeStateV2_step (by
-    dsimp only [evalStepV2, entryProgForBody, Captured.program,
-      Captured.body_2, evalStatementV2, resolvePlaceDestV2,
-      placeStaticTyV2, evalRvalueV2,
-      Trusted.MirSemantics.getElem?]
-    rw [evalRefRvalueV2_deref_ok (by rfl) (by rfl) (by rfl) hRef]
-    dsimp only
-    rw [writePlaceDestV2_immediate_ok (by rfl) (by rfl) (by rfl)])
+  apply execOutcomeStateV2_step (evalStepV2_assign_local (by rfl) (by rfl)
+    (by rfl) (by rfl)
+    (evalRvalueV2_ref_deref_ok (by rfl) (by rfl) (by rfl) hRef)
+    (writePlaceDestV2_immediate_ok (by rfl) (by rfl) (by rfl)))
   -- bb0 stmt 3: StorageDead 2
   apply execOutcomeStateV2_step (by rfl)
   -- bb0 term: return_
-  apply execOutcomeStateV2_done (by
-    dsimp only [evalStepV2, entryProgForBody, Captured.program,
-      Captured.body_2, Trusted.MirSemantics.getElem?]
-    rw [evalTerminatorV2_return_ok (by rfl) (by rfl) (by rfl) (by rfl) hStay
-      hRV spansDisjoint_single, hExt]
-    rfl)
-  rfl
+  exact execOutcomeStateV2_done (evalStepV2_return_ok (by rfl) (by rfl)
+    (by rfl) (by rfl) (by rfl) (by rfl) (by rfl) (by rfl) hStay hRV
+    spansDisjoint_single) (by rw [hExt])
 
 /-! ## Top-Level Claim -/
 
