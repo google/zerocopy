@@ -40,6 +40,62 @@ pub type Json = serde_json::Value;
 /// `foundation-lock.json`.
 pub const TOOLCHAIN: &str = "leanprover/lean4:v4.34.1";
 
+/// Upper bound on worker threads for parallel sysroot SHA-256 verification.
+const SYSROOT_HASH_MAX_WORKERS: usize = 16;
+
+fn sysroot_hash_workers(item_count: usize) -> usize {
+    std::thread::available_parallelism()
+        .map(NonZero::get)
+        .unwrap_or(1)
+        .min(SYSROOT_HASH_MAX_WORKERS)
+        .min(item_count)
+}
+
+/// Evaluate `f` across `items` using up to [`SYSROOT_HASH_MAX_WORKERS`]
+/// threads, returning outputs in original index order or the lowest-index
+/// error deterministically.
+fn parallel_map_indexed<T, V, F>(items: &[T], f: F) -> Result<Vec<V>, Failure>
+where
+    T: Sync,
+    V: Send,
+    F: Fn(&T) -> Result<V, Failure> + Sync,
+{
+    let workers = sysroot_hash_workers(items.len());
+    if workers <= 1 {
+        return items.iter().map(f).collect();
+    }
+    let next_idx = AtomicUsize::new(0);
+    let min_err_idx = AtomicUsize::new(usize::MAX);
+    let outcomes: Mutex<Vec<(usize, Result<V, Failure>)>> =
+        Mutex::new(Vec::with_capacity(items.len()));
+    std::thread::scope(|scope| {
+        for _ in 0..workers {
+            scope.spawn(|| {
+                let mut local = Vec::new();
+                loop {
+                    let idx = next_idx.fetch_add(1, Ordering::Relaxed);
+                    if idx >= items.len() || idx > min_err_idx.load(Ordering::Relaxed) {
+                        break;
+                    }
+                    let res = f(&items[idx]);
+                    if res.is_err() {
+                        min_err_idx.fetch_min(idx, Ordering::Relaxed);
+                    }
+                    local.push((idx, res));
+                }
+                outcomes.lock().unwrap_or_else(|e| e.into_inner()).extend(local);
+            });
+        }
+    });
+    let mut collected = outcomes.into_inner().unwrap_or_else(|e| e.into_inner());
+    collected.sort_unstable_by_key(|(idx, _)| *idx);
+    let mut out = Vec::with_capacity(items.len());
+    for (_, res) in collected {
+        out.push(res?);
+    }
+    Ok(out)
+}
+
 /// Lists the six minimal `Init.*` foundation modules forming the transitive
 /// closure of `{Init.Prelude, Init.Core}` in unpinned Lean admission.
 pub const UNPINNED_FOUNDATION_MODULES: [&str; 6] =
@@ -568,6 +624,24 @@ impl AdmittedToolchain {
     pub fn foundation_modules(&self) -> Vec<&str> {
         self.foundation_graph.keys().map(String::as_str).collect()
     }
+}
+
+/// Verify all installed foundation modules under `prefix` in parallel and
+/// return their [`ModuleArtifacts`] keyed deterministically by module name.
+pub(crate) fn verify_installed_foundation_modules(
+    prefix: &Path,
+    modules: &BTreeMap<String, FoundationModuleRecord>,
+    phase: &str,
+) -> Result<BTreeMap<String, ModuleArtifacts>, Failure> {
+    let entries: Vec<(&String, &FoundationModuleRecord)> = modules.iter().collect();
+    let results = parallel_map_indexed(&entries, |(module, record)| {
+        verify_installed_module_record(prefix, module, record, phase)
+    })?;
+    let mut artifacts = BTreeMap::new();
+    for ((module, _), mod_arts) in entries.into_iter().zip(results) {
+        artifacts.insert(module.clone(), mod_arts);
+    }
+    Ok(artifacts)
 }
 
 /// Verify an installed toolchain module's `.lean` source and 5 compiled
@@ -1143,54 +1217,12 @@ fn walk_and_hash_sysroot_dir_with_mode(
         }
     }
 
-    // Hash the validated regular files across up to 4 bounded worker threads,
-    // then reassemble digests in deterministic index order so both the
-    // canonical `BTreeMap` manifest and the first reported error match a
-    // single-threaded walk.
-    let workers = std::thread::available_parallelism()
-        .map(NonZero::get)
-        .unwrap_or(1)
-        .min(4)
-        .min(files_to_hash.len());
-    let mut entries: BTreeMap<String, String> = BTreeMap::new();
-    let hash_one = |path: &Path| {
+    let results = parallel_map_indexed(&files_to_hash, |(_, path)| {
         if unpinned_tolerant { sha256_file_deref(path, phase) } else { sha256_file(path, phase) }
-    };
-    if workers <= 1 {
-        for (rel, path) in files_to_hash {
-            let sha = hash_one(&path)?;
-            entries.insert(rel, sha);
-        }
-    } else {
-        let next_idx = AtomicUsize::new(0);
-        let min_err_idx = AtomicUsize::new(usize::MAX);
-        let outcomes: Mutex<Vec<(usize, Result<String, Failure>)>> =
-            Mutex::new(Vec::with_capacity(files_to_hash.len()));
-        std::thread::scope(|scope| {
-            for _ in 0..workers {
-                scope.spawn(|| {
-                    let mut local = Vec::new();
-                    loop {
-                        let idx = next_idx.fetch_add(1, Ordering::Relaxed);
-                        if idx >= files_to_hash.len() || idx > min_err_idx.load(Ordering::Relaxed) {
-                            break;
-                        }
-                        let res = hash_one(&files_to_hash[idx].1);
-                        if res.is_err() {
-                            min_err_idx.fetch_min(idx, Ordering::Relaxed);
-                        }
-                        local.push((idx, res));
-                    }
-                    outcomes.lock().unwrap_or_else(|e| e.into_inner()).extend(local);
-                });
-            }
-        });
-        let mut collected = outcomes.into_inner().unwrap_or_else(|e| e.into_inner());
-        collected.sort_unstable_by_key(|(idx, _)| *idx);
-        for (idx, res) in collected {
-            let sha = res?;
-            entries.insert(files_to_hash[idx].0.clone(), sha);
-        }
+    })?;
+    let mut entries: BTreeMap<String, String> = BTreeMap::new();
+    for ((rel, _), sha) in files_to_hash.into_iter().zip(results) {
+        entries.insert(rel, sha);
     }
 
     let mut manifest = String::new();
@@ -1311,48 +1343,9 @@ pub(crate) fn compute_sysroot_tree_digest(root_dir: &Path, phase: &str) -> Resul
     }
     files.sort_by(|a, b| a.0.as_bytes().cmp(b.0.as_bytes()));
 
-    let workers =
-        std::thread::available_parallelism().map(NonZero::get).unwrap_or(1).min(4).min(files.len());
-    let digests: Vec<[u8; 32]> = if workers <= 1 {
-        let mut out = Vec::with_capacity(files.len());
-        for (_, path) in &files {
-            let (_, digest) = read_regular_file_strict_raw(path, None, phase)?;
-            out.push(digest);
-        }
-        out
-    } else {
-        type DigestOutcome = (usize, Result<[u8; 32], Failure>);
-        let next_idx = AtomicUsize::new(0);
-        let min_err_idx = AtomicUsize::new(usize::MAX);
-        let outcomes: Mutex<Vec<DigestOutcome>> = Mutex::new(Vec::with_capacity(files.len()));
-        std::thread::scope(|scope| {
-            for _ in 0..workers {
-                scope.spawn(|| {
-                    let mut local = Vec::new();
-                    loop {
-                        let idx = next_idx.fetch_add(1, Ordering::Relaxed);
-                        if idx >= files.len() || idx > min_err_idx.load(Ordering::Relaxed) {
-                            break;
-                        }
-                        let res = read_regular_file_strict_raw(&files[idx].1, None, phase)
-                            .map(|(_, digest)| digest);
-                        if res.is_err() {
-                            min_err_idx.fetch_min(idx, Ordering::Relaxed);
-                        }
-                        local.push((idx, res));
-                    }
-                    outcomes.lock().unwrap_or_else(|e| e.into_inner()).extend(local);
-                });
-            }
-        });
-        let mut collected = outcomes.into_inner().unwrap_or_else(|e| e.into_inner());
-        collected.sort_unstable_by_key(|(idx, _)| *idx);
-        let mut out = Vec::with_capacity(files.len());
-        for (_, res) in collected {
-            out.push(res?);
-        }
-        out
-    };
+    let digests: Vec<[u8; 32]> = parallel_map_indexed(&files, |(_, path)| {
+        read_regular_file_strict_raw(path, None, phase).map(|(_, digest)| digest)
+    })?;
 
     let mut outer = Sha256::new();
     for ((rel, _), digest) in files.iter().zip(digests.iter()) {
@@ -2016,11 +2009,11 @@ fn check_no_dynamic_libs_in_bin(bin_dir: &Path) -> Result<(), Failure> {
     Ok(())
 }
 
-fn walk_and_check_runtime_lib_dir(
+fn collect_runtime_lib_candidates<'a>(
     lib_root: &Path,
     dir: &Path,
-    allowed: &BTreeMap<&str, &str>,
-    seen: &mut BTreeSet<String>,
+    allowed: &BTreeMap<&str, &'a str>,
+    candidates: &mut Vec<(String, PathBuf, &'a str)>,
 ) -> Result<(), Failure> {
     let entries = fs::read_dir(dir).map_err(|err| {
         Failure::new(
@@ -2055,12 +2048,12 @@ fn walk_and_check_runtime_lib_dir(
         })?;
         let ftype = lmeta.file_type();
         if ftype.is_dir() {
-            walk_and_check_runtime_lib_dir(lib_root, &path, allowed, seen)?;
+            collect_runtime_lib_candidates(lib_root, &path, allowed, candidates)?;
             continue;
         }
         if ftype.is_symlink() && fs::metadata(&path).is_ok_and(|meta| meta.is_dir()) {
             if matches!(rel_str.as_str(), "lean/Lake" | "lean/LeanChecker") {
-                walk_and_check_runtime_lib_dir(lib_root, &path, allowed, seen)?;
+                collect_runtime_lib_candidates(lib_root, &path, allowed, candidates)?;
                 continue;
             }
             return Err(Failure::new(
@@ -2081,7 +2074,24 @@ fn walk_and_check_runtime_lib_dir(
                 format!("unexpected runtime shared library in Lean sysroot: lib/{rel_str}"),
             ));
         };
-        let actual_sha = sha256_file_deref(&path, "toolchain")
+        candidates.push((rel_str, path, expected_sha));
+    }
+    Ok(())
+}
+
+fn walk_and_check_runtime_lib_dir(
+    lib_root: &Path,
+    dir: &Path,
+    allowed: &BTreeMap<&str, &str>,
+    seen: &mut BTreeSet<String>,
+) -> Result<(), Failure> {
+    let mut candidates = Vec::new();
+    collect_runtime_lib_candidates(lib_root, dir, allowed, &mut candidates)?;
+    // Sort by relative path before parallel hashing so error selection is
+    // deterministic regardless of directory traversal order.
+    candidates.sort_by(|a, b| a.0.cmp(&b.0));
+    parallel_map_indexed(&candidates, |(rel_str, path, expected_sha)| {
+        let actual_sha = sha256_file_deref(path, "toolchain")
             .map_err(|err| Failure::new(2, "toolchain", err.message))?;
         if !expected_sha.eq_ignore_ascii_case(&actual_sha) {
             return Err(Failure::new(
@@ -2093,6 +2103,9 @@ fn walk_and_check_runtime_lib_dir(
                 ),
             ));
         }
+        Ok(())
+    })?;
+    for (rel_str, _, _) in candidates {
         seen.insert(rel_str);
     }
     Ok(())
@@ -3162,5 +3175,48 @@ mod unpinned_sysroot_tests {
             assert_eq!(err.code, 1);
             assert!(err.message.contains(needle), "unexpected error: {err}");
         }
+    }
+
+    #[test]
+    fn parallel_sysroot_hashing_preserves_deterministic_order_and_errors() {
+        let items = [0usize, 1, 2, 3, 4, 5];
+        let doubled = parallel_map_indexed(&items, |x| Ok(x * 2)).unwrap();
+        assert_eq!(doubled, vec![0, 2, 4, 6, 8, 10]);
+
+        let err = parallel_map_indexed(&items, |x| {
+            if *x >= 2 { Err(Failure::operational("test", format!("bad-{x}"))) } else { Ok(*x) }
+        })
+        .unwrap_err();
+        assert_eq!(err.message, "bad-2");
+    }
+
+    #[test]
+    fn walk_and_check_runtime_lib_dir_hashes_in_parallel_and_reports_earliest_mismatch() {
+        let dir = tempfile::tempdir().unwrap();
+        let lib_dir = dir.path().join("lib");
+        fs::create_dir_all(lib_dir.join("lean")).unwrap();
+        let a_path = lib_dir.join("liba.so");
+        let b_path = lib_dir.join("lean/libb.so");
+        fs::write(&a_path, b"alpha-lib").unwrap();
+        fs::write(&b_path, b"beta-lib").unwrap();
+        let a_sha = sha256_bytes(b"alpha-lib");
+        let b_sha = sha256_bytes(b"beta-lib");
+
+        let allowed =
+            BTreeMap::from([("liba.so", a_sha.as_str()), ("lean/libb.so", b_sha.as_str())]);
+        let mut seen = BTreeSet::new();
+        walk_and_check_runtime_lib_dir(&lib_dir, &lib_dir, &allowed, &mut seen).unwrap();
+        assert_eq!(seen, BTreeSet::from(["lean/libb.so".to_owned(), "liba.so".to_owned()]));
+
+        // When both mismatch, sorted relative-path order picks `lean/libb.so`
+        // before `liba.so`.
+        let bad_allowed = BTreeMap::from([
+            ("liba.so", "0000000000000000000000000000000000000000000000000000000000000000"),
+            ("lean/libb.so", "1111111111111111111111111111111111111111111111111111111111111111"),
+        ]);
+        let mut bad_seen = BTreeSet::new();
+        let err = walk_and_check_runtime_lib_dir(&lib_dir, &lib_dir, &bad_allowed, &mut bad_seen)
+            .unwrap_err();
+        assert!(err.message.contains("lib/lean/libb.so"), "{}", err.message);
     }
 }
