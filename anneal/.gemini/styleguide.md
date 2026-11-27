@@ -114,7 +114,8 @@ never proves defect absence or substitutes for CI or merge gates.
     `grind`, tactic flags (`+native`, `+kernel`), `by_elab`, `run_tac`,
     `run_cmd`, `include_str`, `#eval`, `#reduce`, `set_option`, `initialize`,
     `builtin_initialize`, `macro`, `elab`, `syntax`, `local`/`scoped` attribute
-    overrides, `@[implemented_by]`, `@[extern]`, `@[csimp]`,
+    overrides (except Pass 1 `theory/`'s closed `localSemireducibleAllowlist`),
+    `@[implemented_by]`, `@[extern]`, `@[csimp]`,
     `Lean.ofReduceBool`, `Lean.trustCompiler`, silent `_unsafe_rec`/`isPartial`
     auxiliaries, and `noncomputable section` (`TrustedBoundary.lean` admits
     `noncomputable` modifiers; `correspondence/` may use `noncomputable def`;

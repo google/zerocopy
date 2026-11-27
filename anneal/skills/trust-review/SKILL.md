@@ -110,25 +110,25 @@ hashed in `trusted/root-manifest.sha256`: `Cargo.toml`, `Cargo.lock`,
    pure declarations and tactics admitted by
    [`TrustedBoundary.lean`](../../trusted/audit/TrustedBoundary.lean)'s
    allowlists (`allowedTrustedSyntaxKinds`, `allowedTheoryTacticKinds`, and
-   `inspectNodeKind`; `trusted/lean/` remains tactic-free). Reject any
-   construct excluded by `TrustedBoundary.lean`'s preflight allowlists or audit
-   phase—or attempting metaprogramming, file or environment I/O, or
-   compiler/elaborator overrides, even if preflight missed that shape—including
-   `axiom`, `sorry`, `admit`, `opaque` (rejected in `theory/` during audit;
-   also forbidden in `trusted/lean/` in Pass 2), `unsafe`, `partial`,
-   `native_decide`, `decide!`, `bv_decide`, `rfl'`, `grind`, tactic flags
-   (`+native`, `+kernel`), `by_elab`, `run_tac`, `run_cmd`, `include_str`,
-   `#eval`, `#reduce`, `set_option`, `initialize`, `builtin_initialize`,
-   `macro`, `elab`, `syntax`, `local`/`scoped` attribute overrides,
-   `@[implemented_by]`, `@[extern]`, `@[csimp]`, `Lean.ofReduceBool`,
-   `Lean.trustCompiler`, silent `_unsafe_rec` or `isPartial` `.olean`
-   auxiliaries, and `noncomputable section` (`TrustedBoundary.lean` admits
-   `noncomputable` declaration modifiers across roles—unlike `theory/`,
-   `correspondence/` modules may use `noncomputable def`; flag redundant
-   `noncomputable` on `: Prop` only as a non-blocking hygiene note). Never
-   declare constants in the `Trusted` root namespace or place
-   `-- anneal-trust-tier:` directives outside `trusted/lean/` and
-   `trusted/correspondence/`.
+   `inspectNodeKind`; `trusted/lean/` remains tactic-free). Reject any construct
+   excluded by `TrustedBoundary.lean`'s preflight allowlists or audit phase—or
+   attempting metaprogramming, file or environment I/O, or compiler/elaborator
+   overrides, even if preflight missed that shape—including `axiom`, `sorry`,
+   `admit`, `opaque` (rejected in `theory/` during audit; also forbidden in
+   `trusted/lean/` in Pass 2), `unsafe`, `partial`, `native_decide`, `decide!`,
+   `bv_decide`, `rfl'`, `grind`, tactic flags (`+native`, `+kernel`), `by_elab`,
+   `run_tac`, `run_cmd`, `include_str`, `#eval`, `#reduce`, `set_option`,
+   `initialize`, `builtin_initialize`, `macro`, `elab`, `syntax`,
+   `local`/`scoped` attribute overrides (apart from the closed Pass 1 `theory/`
+   `localSemireducibleAllowlist`), `@[implemented_by]`, `@[extern]`, `@[csimp]`,
+   `Lean.ofReduceBool`, `Lean.trustCompiler`, silent `_unsafe_rec` or
+   `isPartial` `.olean` auxiliaries, and `noncomputable section`
+   (`TrustedBoundary.lean` admits `noncomputable` declaration modifiers across
+   roles—unlike `theory/`, `correspondence/` modules may use
+   `noncomputable def`; flag redundant `noncomputable` on `: Prop` only as a
+   non-blocking hygiene note). Never declare constants in the `Trusted` root
+   namespace or place `-- anneal-trust-tier:` directives outside `trusted/lean/`
+   and `trusted/correspondence/`.
 4. **Stated specifications, `trusted/`–`theory/` seams, and waivers:** Even
    when `trusted/` is untouched (`THREAT_MODEL.md` §1, §2.2, §3.2), inspect
    edits to stated specifications (`requires`, `ensures`, specification types),

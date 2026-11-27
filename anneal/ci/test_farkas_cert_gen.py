@@ -371,6 +371,7 @@ class FarkasCertGenTests(unittest.TestCase):
             p_req.write_text(json.dumps({
                 "mode": "preflight", "sysroot": sysroot, "artifacts": [],
                 "foundation": sorted(graph), "graph": graph, "axioms": [], "baseSources": [],
+                "allowLocalSemireducible": False,
                 "sources": [
                     ["Anneal.LinearArith", str(_ANNEAL_ROOT / "theory/Anneal/LinearArith.lean")],
                     ["Anneal.TestFarkasPreflight", str(probe)],

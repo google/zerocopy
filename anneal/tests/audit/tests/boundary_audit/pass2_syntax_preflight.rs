@@ -106,6 +106,7 @@ fn rejects_pass2_lean_syntax_extensions_in_correspondence_preflight() {
         .inspect(InspectorRequest::Preflight {
             sources: vec![("Anneal.BadThrowError".to_string(), bad_throw_theory.clone())],
             base_trusted_sources: Vec::new(),
+            allow_local_semireducible: false,
         })
         .expect("foundation-only preflight parses `throwError` as a plain identifier");
 
@@ -427,7 +428,9 @@ fn rejects_scoped_syntax_and_extensions_in_preflight() {
 /// (`open Miri.ScopedSyntax`) with `code == 1`,
 /// `phase == "correspondence-preflight"` BEFORE compiling any Pass 2 module
 /// (`Trusted/Correspondence.olean` and `Anneal/MirCorrespondenceProof.olean`
-/// are never produced).
+/// are never produced). It also verifies that the Pass 2 foundation
+/// `"preflight"` call site rejects the Pass 1 `theory/` `local semireducible`
+/// exception with `phase == "preflight"`.
 #[test]
 fn rejects_pass2_syntax_and_scoped_extensions_in_run_correspondence_pipeline() {
     let fix = TempFixture::new(None);
@@ -574,8 +577,23 @@ fn rejects_pass2_syntax_and_scoped_extensions_in_run_correspondence_pipeline() {
             "cannot open namespace Lean.PostprocessTraces with scoped syntax or extensions",
         ),
     ];
+    // Pass 2 sends foundation `"preflight"` without
+    // `allow_local_semireducible`, so the Pass 1 `theory/` exception is
+    // rejected there, before `"correspondence-preflight"` runs.
+    let local_semireducible_case = (
+        "prelude\nimport Init.Core\nimport Miri.ImportLean\n\
+         import Trusted.Correspondence\n\
+         attribute [local semireducible] _root_.Nat.bitwise in\n\
+         def f : Nat := 0\n",
+        "only `open` and `variable` commands are permitted on the LHS of `in`",
+        "preflight",
+    );
+    let cases = e2e_cases
+        .iter()
+        .map(|&(src, msg)| (src, msg, "correspondence-preflight"))
+        .chain(std::iter::once(local_semireducible_case));
 
-    for (proof_src, expected_msg) in e2e_cases {
+    for (proof_src, expected_msg, expected_phase) in cases {
         // Run Pass 1 cleanly before placing Pass 2 directories in the checkout.
         let _ = fs::remove_dir_all(fix.root.join("trusted/correspondence"));
         let _ = fs::remove_dir_all(fix.root.join("correspondence"));
@@ -606,7 +624,7 @@ fn rejects_pass2_syntax_and_scoped_extensions_in_run_correspondence_pipeline() {
             )
             .unwrap_err();
         assert_eq!(err.code, 1, "expected policy exit 1: {err}");
-        assert_eq!(err.phase, "correspondence-preflight");
+        assert_eq!(err.phase, expected_phase, "unexpected phase: {err}");
         assert!(err.message.contains(expected_msg), "expected `{expected_msg}`, got: {err}");
         assert!(
             !checker.stage().join("lib/Trusted/Correspondence.olean").exists(),

@@ -90,6 +90,7 @@ fn enforces_module_level_trust_tiers_and_namespace_hygiene() {
                 ("Trusted.Cand".to_string(), lean_pf_cand),
             ],
             base_trusted_sources: Vec::new(),
+            allow_local_semireducible: false,
         })
         .unwrap_err();
     assert_eq!(err_lean_pf.code, 1, "unexpected code: {err_lean_pf}");
@@ -112,6 +113,7 @@ fn enforces_module_level_trust_tiers_and_namespace_hygiene() {
                 ("Anneal.Helper".to_string(), lean_pf_theory),
             ],
             base_trusted_sources: Vec::new(),
+            allow_local_semireducible: false,
         })
         .unwrap_err();
     assert_eq!(err_lean_pf_theory.code, 1, "unexpected theory code: {err_lean_pf_theory}");
@@ -151,6 +153,7 @@ fn enforces_module_level_trust_tiers_and_namespace_hygiene() {
         .inspect(InspectorRequest::Preflight {
             sources: vec![("Trusted.Correspondence".to_string(), lean_pf_corr_ok.clone())],
             base_trusted_sources: pf_base_sources.clone(),
+            allow_local_semireducible: false,
         })
         .expect("vetted source importing vetted base module in baseSources must pass");
 
@@ -160,6 +163,7 @@ fn enforces_module_level_trust_tiers_and_namespace_hygiene() {
         .inspect(InspectorRequest::Preflight {
             sources: vec![("Trusted.Correspondence".to_string(), lean_pf_corr_bad)],
             base_trusted_sources: pf_base_sources.clone(),
+            allow_local_semireducible: false,
         })
         .unwrap_err();
     assert_eq!(err_pf_base_cand.code, 1, "unexpected code: {err_pf_base_cand}");
@@ -175,6 +179,7 @@ fn enforces_module_level_trust_tiers_and_namespace_hygiene() {
         .inspect(InspectorRequest::Preflight {
             sources: vec![("Trusted.Correspondence".to_string(), lean_pf_corr_ok.clone())],
             base_trusted_sources: vec![("Anneal.Helper".to_string(), lean_pf_base_theory)],
+            allow_local_semireducible: false,
         })
         .unwrap_err();
     assert_eq!(err_pf_non_trusted_base.code, 1);
@@ -188,6 +193,7 @@ fn enforces_module_level_trust_tiers_and_namespace_hygiene() {
         .inspect(InspectorRequest::Preflight {
             sources: vec![("Trusted.Correspondence".to_string(), lean_pf_corr_ok.clone())],
             base_trusted_sources: vec![("Init.Core".to_string(), lean_pf_base_vetted.clone())],
+            allow_local_semireducible: false,
         })
         .unwrap_err();
     assert_eq!(err_pf_foundation_base.code, 1);
@@ -204,6 +210,7 @@ fn enforces_module_level_trust_tiers_and_namespace_hygiene() {
                 ("Trusted.Base".to_string(), lean_pf_base_cand),
                 ("Trusted.Base".to_string(), lean_pf_base_vetted),
             ],
+            allow_local_semireducible: false,
         })
         .unwrap_err();
     assert_eq!(err_pf_dup_base.code, 1);
@@ -217,6 +224,7 @@ fn enforces_module_level_trust_tiers_and_namespace_hygiene() {
         .inspect(InspectorRequest::Preflight {
             sources: vec![("Trusted.Correspondence".to_string(), lean_pf_corr_ok)],
             base_trusted_sources: vec![("Trusted.Base".to_string(), lean_pf_base_tactic)],
+            allow_local_semireducible: false,
         })
         .unwrap_err();
     assert_eq!(err_pf_bad_base_syntax.code, 1);
@@ -233,6 +241,7 @@ fn enforces_module_level_trust_tiers_and_namespace_hygiene() {
                 ("Trusted.Correspondence".to_string(), lean_pf_user.clone()),
             ],
             base_trusted_sources: pf_base_sources,
+            allow_local_semireducible: false,
         })
         .unwrap_err();
     assert_eq!(err_pf_collision.code, 1, "unexpected collision code: {err_pf_collision}");
@@ -262,6 +271,7 @@ fn enforces_module_level_trust_tiers_and_namespace_hygiene() {
                 ("Trusted.DupCaller".to_string(), lean_pf_dup_caller),
             ],
             base_trusted_sources: Vec::new(),
+            allow_local_semireducible: false,
         })
         .unwrap_err();
     assert_eq!(err_pf_dup.code, 1, "unexpected duplicate code: {err_pf_dup}");
@@ -520,5 +530,50 @@ fn rejects_reserved_kernel_roots_and_user_splitter_children_in_theory() {
     assert!(
         err_land.message.contains("already contains 'Nat.land'"),
         "expected Nat.land collision rejection, got: {err_land}"
+    );
+}
+
+/// Pass 1 `"audit"` independently rejects a compiled `theory/` constant whose
+/// name ends with a name in `localSemireducibleAllowlist`, even when the
+/// module was compiled without repository `"preflight"`, so
+/// `declaresLocalSemireducibleShadow` never saw it. Only
+/// `validateRepoConstant` can reject it.
+#[test]
+fn rejects_compiled_local_semireducible_shadow_in_theory() {
+    let fix = TempFixture::new(None);
+    fs::create_dir_all(fix.root.join("theory")).unwrap();
+    fs::write(
+        fix.root.join("theory/Anneal.lean"),
+        b"prelude\nimport Trusted\nnamespace Anneal\ndef helper : Nat := 0\nend Anneal\n",
+    )
+    .unwrap();
+    let mut checker = fix.checker();
+    checker.set_require_mir_wp(false);
+    checker.run().unwrap();
+
+    let stage = checker.stage().to_path_buf();
+    compile_forged_module(
+        &mut checker,
+        &stage.join("src/forged"),
+        &stage.join("lib"),
+        &[],
+        "Anneal.Forged",
+        "prelude\nimport Init.Core\nnamespace Foo.Nat\ndef bitwise : Nat := 0\nend Foo.Nat\n",
+    );
+    let err = checker
+        .inspect(InspectorRequest::Audit {
+            trusted: vec!["Trusted".to_string()],
+            theory: vec!["Anneal".to_string(), "Anneal.Forged".to_string()],
+            module_tiers: BTreeMap::from([("Trusted".to_string(), TrustTier::Vetted)]),
+        })
+        .unwrap_err();
+    assert_eq!(err.code, 1, "unexpected code: {err}");
+    assert_eq!(err.phase, "audit", "unexpected phase: {err}");
+    assert!(
+        err.message.contains(
+            "theory module Anneal.Forged cannot declare constant Foo.Nat.bitwise, whose name \
+             could shadow one in `localSemireducibleAllowlist`"
+        ),
+        "unexpected error: {err}"
     );
 }
