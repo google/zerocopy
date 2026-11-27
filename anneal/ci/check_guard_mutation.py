@@ -346,7 +346,7 @@ MIR_SEMANTICS_GUARDS: tuple[MirSemanticsGuard, ...] = (
         theorem_name="refute_enum_char_surrogate_gap",
     ),
     # ------------------------------------------------------------------
-    # Trusted/MirSemantics/Bytes.lean (5 validity and uninit-read guards)
+    # Trusted/MirSemantics/Bytes.lean (14 validity, uninit, and UTF-8 guards)
     # ------------------------------------------------------------------
     MirSemanticsGuard(
         guard_id="bytes_invalid_bool_value",
@@ -444,6 +444,152 @@ MIR_SEMANTICS_GUARDS: tuple[MirSemanticsGuard, ...] = (
         ),
         fixture_module="BytesRefutations",
         theorem_name="refute_bytes_uninit_memory_read",
+    ),
+    MirSemanticsGuard(
+        guard_id="bytes_utf8_two_byte_lead_min",
+        target_file="trusted/lean/Trusted/MirSemantics/Bytes.lean",
+        target_module="Trusted/MirSemantics/Bytes",
+        description=(
+            "validUtf8Go rejects the overlong two-byte leads 0xC0 and 0xC1"
+        ),
+        anchor=(
+            "    else if Nat.ble 0xC2 n && Nat.ble n 0xDF then validUtf8Go 1 0x80 0xBF rest"
+        ),
+        replacement=(
+            "    else if Nat.ble 0xC0 n && Nat.ble n 0xDF then validUtf8Go 1 0x80 0xBF rest"
+        ),
+        fixture_module="BytesRefutations",
+        theorem_name="refute_bytes_utf8_two_byte_lead_min",
+    ),
+    MirSemanticsGuard(
+        guard_id="bytes_utf8_e0_overlong",
+        target_file="trusted/lean/Trusted/MirSemantics/Bytes.lean",
+        target_module="Trusted/MirSemantics/Bytes",
+        description=(
+            "validUtf8Go narrows the second byte after 0xE0 to 0xA0..=0xBF"
+        ),
+        anchor=(
+            "    else if Nat.beq n 0xE0 then validUtf8Go 2 0xA0 0xBF rest"
+        ),
+        replacement=(
+            "    else if Nat.beq n 0xE0 then validUtf8Go 2 0x80 0xBF rest"
+        ),
+        fixture_module="BytesRefutations",
+        theorem_name="refute_bytes_utf8_e0_overlong",
+    ),
+    MirSemanticsGuard(
+        guard_id="bytes_utf8_ed_surrogate",
+        target_file="trusted/lean/Trusted/MirSemantics/Bytes.lean",
+        target_module="Trusted/MirSemantics/Bytes",
+        description=(
+            "validUtf8Go narrows the second byte after 0xED to 0x80..=0x9F"
+        ),
+        anchor=(
+            "    else if Nat.beq n 0xED then validUtf8Go 2 0x80 0x9F rest"
+        ),
+        replacement=(
+            "    else if Nat.beq n 0xED then validUtf8Go 2 0x80 0xBF rest"
+        ),
+        fixture_module="BytesRefutations",
+        theorem_name="refute_bytes_utf8_ed_surrogate",
+    ),
+    MirSemanticsGuard(
+        guard_id="bytes_utf8_f0_overlong",
+        target_file="trusted/lean/Trusted/MirSemantics/Bytes.lean",
+        target_module="Trusted/MirSemantics/Bytes",
+        description=(
+            "validUtf8Go narrows the second byte after 0xF0 to 0x90..=0xBF"
+        ),
+        anchor=(
+            "    else if Nat.beq n 0xF0 then validUtf8Go 3 0x90 0xBF rest"
+        ),
+        replacement=(
+            "    else if Nat.beq n 0xF0 then validUtf8Go 3 0x80 0xBF rest"
+        ),
+        fixture_module="BytesRefutations",
+        theorem_name="refute_bytes_utf8_f0_overlong",
+    ),
+    MirSemanticsGuard(
+        guard_id="bytes_utf8_f4_max",
+        target_file="trusted/lean/Trusted/MirSemantics/Bytes.lean",
+        target_module="Trusted/MirSemantics/Bytes",
+        description=(
+            "validUtf8Go narrows the second byte after 0xF4 to 0x80..=0x8F"
+        ),
+        anchor=(
+            "    else if Nat.beq n 0xF4 then validUtf8Go 3 0x80 0x8F rest"
+        ),
+        replacement=(
+            "    else if Nat.beq n 0xF4 then validUtf8Go 3 0x80 0xBF rest"
+        ),
+        fixture_module="BytesRefutations",
+        theorem_name="refute_bytes_utf8_f4_max",
+    ),
+    MirSemanticsGuard(
+        guard_id="bytes_utf8_invalid_lead",
+        target_file="trusted/lean/Trusted/MirSemantics/Bytes.lean",
+        target_module="Trusted/MirSemantics/Bytes",
+        description=(
+            "validUtf8Go rejects lone continuation bytes and leads 0xF5..=0xFF"
+        ),
+        anchor=(
+            "    else if Nat.beq n 0xF4 then validUtf8Go 3 0x80 0x8F rest\n"
+            "    else false"
+        ),
+        replacement=(
+            "    else if Nat.beq n 0xF4 then validUtf8Go 3 0x80 0x8F rest\n"
+            "    else true"
+        ),
+        fixture_module="BytesRefutations",
+        theorem_name="refute_bytes_utf8_invalid_lead",
+    ),
+    MirSemanticsGuard(
+        guard_id="bytes_utf8_truncated",
+        target_file="trusted/lean/Trusted/MirSemantics/Bytes.lean",
+        target_module="Trusted/MirSemantics/Bytes",
+        description=(
+            "validUtf8Go rejects input that ends inside a multi-byte sequence"
+        ),
+        anchor=(
+            "  | _ + 1, _, _, [] => false"
+        ),
+        replacement=(
+            "  | _ + 1, _, _, [] => true"
+        ),
+        fixture_module="BytesRefutations",
+        theorem_name="refute_bytes_utf8_truncated",
+    ),
+    MirSemanticsGuard(
+        guard_id="bytes_utf8_continuation_hi",
+        target_file="trusted/lean/Trusted/MirSemantics/Bytes.lean",
+        target_module="Trusted/MirSemantics/Bytes",
+        description=(
+            "validUtf8Go bounds continuation bytes above by 0xBF"
+        ),
+        anchor=(
+            "    Nat.ble lo b.toNat && Nat.ble b.toNat hi && validUtf8Go k 0x80 0xBF rest"
+        ),
+        replacement=(
+            "    Nat.ble lo b.toNat && validUtf8Go k 0x80 0xBF rest"
+        ),
+        fixture_module="BytesRefutations",
+        theorem_name="refute_bytes_utf8_continuation_hi",
+    ),
+    MirSemanticsGuard(
+        guard_id="bytes_utf8_continuation_lo",
+        target_file="trusted/lean/Trusted/MirSemantics/Bytes.lean",
+        target_module="Trusted/MirSemantics/Bytes",
+        description=(
+            "validUtf8Go bounds continuation bytes below by 0x80"
+        ),
+        anchor=(
+            "    Nat.ble lo b.toNat && Nat.ble b.toNat hi && validUtf8Go k 0x80 0xBF rest"
+        ),
+        replacement=(
+            "    Nat.ble b.toNat hi && validUtf8Go k 0x80 0xBF rest"
+        ),
+        fixture_module="BytesRefutations",
+        theorem_name="refute_bytes_utf8_continuation_lo",
     ),
     # ------------------------------------------------------------------
     # Trusted/MirSemantics/Memory.lean (21 allocation/bounds/align/mut guards)

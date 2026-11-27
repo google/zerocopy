@@ -14,7 +14,7 @@ use core::fmt;
 
 use serde::{Deserialize, Serialize};
 
-use crate::ir::{EnumTagRepr, EnumTy, IntTy, IntWidth, Ty};
+use crate::ir::{EnumTagRepr, EnumTy, IntTy, IntWidth, Mutability, Ty};
 
 /// Operational fault classification matching `Trusted.MirSemantics.FaultKind`.
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, Serialize, Deserialize)]
@@ -591,6 +591,11 @@ pub fn check_val(val: &Val, ty: &Ty, enable_profile_v2: bool) -> bool {
         (Val::Ptr(p), Ty::RawPtr { pointee, .. } | Ty::Ref { pointee, .. }) => {
             !pointee.is_unsized() && p.width == IntWidth::Isize
         }
+        (Val::SlicePtr { ptr, .. }, Ty::Ref { mutability: Mutability::Shared, pointee })
+            if **pointee == Ty::Str =>
+        {
+            ptr.width == IntWidth::Isize
+        }
         (Val::SlicePtr { ptr, .. }, Ty::RawPtr { pointee, .. } | Ty::Ref { pointee, .. }) => {
             matches!(pointee.as_ref(), Ty::Slice { .. }) && ptr.width == IntWidth::Isize
         }
@@ -633,6 +638,7 @@ pub fn is_supported_v2_local_ty(ty: &Ty) -> bool {
         Ty::Enum(ety) => enum_admitted(ety),
         Ty::OverflowPair(_) => true,
         Ty::Tuple { fields } => fields.iter().all(is_supported_v2_local_ty),
+        Ty::Ref { mutability: Mutability::Shared, pointee } if **pointee == Ty::Str => true,
         Ty::Ref { pointee, .. } | Ty::RawPtr { pointee, .. } => match pointee.as_ref() {
             Ty::Slice { elem } => matches!(elem.as_ref(), Ty::Int(_)),
             other => other.as_overflow_pair().is_none() && is_supported_v1_local_ty(other),

@@ -31,6 +31,10 @@ const fn default_pointer_width_bits() -> u64 {
     64
 }
 
+const fn default_has_local_panic_handler() -> bool {
+    true
+}
+
 const fn default_mir_profile_version() -> u32 {
     1
 }
@@ -248,6 +252,8 @@ impl EnumTy {
 }
 
 /// MIR local and constant types matching schema v5 (Profile v1 and v2).
+/// `Str` is `str`, the unsized pointee of shared `&str`
+/// (`Trusted.MirAst.MirTy.str`).
 #[derive(Clone, Debug, PartialEq, Eq, Hash, Serialize, Deserialize)]
 #[serde(tag = "kind", rename_all = "snake_case")]
 pub enum Ty {
@@ -263,6 +269,7 @@ pub enum Ty {
     Ref { mutability: Mutability, pointee: Box<Ty> },
     RawPtr { mutability: Mutability, pointee: Box<Ty> },
     Slice { elem: Box<Ty> },
+    Str,
     RangeTo { elem: Box<Ty> },
     RangeFrom { elem: Box<Ty> },
     Array { elem: Box<Ty>, len: u64 },
@@ -291,10 +298,10 @@ impl Ty {
         matches!(self, Self::Int(IntTy { width: IntWidth::Isize, signed: false }))
     }
 
-    /// Whether `self` is an unsized dynamically-sized type (`[T]`), matching
-    /// `Trusted.MirAst.isUnsizedTy`.
+    /// Whether `self` is an unsized dynamically-sized type (`[T]` or `str`),
+    /// matching `Trusted.MirAst.isUnsizedTy`.
     pub const fn is_unsized(&self) -> bool {
-        matches!(self, Self::Slice { .. })
+        matches!(self, Self::Slice { .. } | Self::Str)
     }
 
     /// Structural equality normalizing `OverflowPair(ity)` and
@@ -341,6 +348,7 @@ impl Ty {
             | Self::OverflowPair(_)
             | Self::RawPtr { .. }
             | Self::Slice { .. }
+            | Self::Str
             | Self::RangeTo { .. }
             | Self::RangeFrom { .. } => true,
             Self::Ref { .. } | Self::Unsupported => false,
@@ -352,7 +360,7 @@ impl Ty {
     /// Whether locals of `self` are statically `Sized`.
     pub fn is_sized(&self) -> bool {
         match self {
-            Self::Slice { .. } | Self::Unsupported => false,
+            Self::Slice { .. } | Self::Str | Self::Unsupported => false,
             Self::Tuple { fields } => fields.iter().all(Self::is_sized),
             Self::Array { elem, .. } => elem.is_sized(),
             Self::Bool
@@ -387,6 +395,7 @@ impl Ty {
             | Self::OverflowPair(_)
             | Self::RawPtr { .. }
             | Self::Slice { .. }
+            | Self::Str
             | Self::RangeTo { .. }
             | Self::RangeFrom { .. }
             | Self::Unsupported => false,
@@ -410,6 +419,7 @@ impl Ty {
             | Self::OverflowPair(_)
             | Self::Ref { .. }
             | Self::Slice { .. }
+            | Self::Str
             | Self::RangeTo { .. }
             | Self::RangeFrom { .. }
             | Self::Unsupported => false,
@@ -883,6 +893,9 @@ pub enum CoreCallOp {
         elem: Ty,
         len: u64,
     },
+    /// Diverging `core::panicking::{panic, panic_nounwind}` taking a shared
+    /// `&str` message (`target = None`).
+    PanicAbort,
 }
 
 /// Pinned `core::num` arithmetic operation executed in Profile v1,
@@ -1027,6 +1040,14 @@ pub struct Program {
     pub pointer_width_bits: u64,
     #[serde(default)]
     pub overflow_checks: bool,
+    /// Captured `-Cpanic` strategy (`Trusted.MirAst.Program.panicStrategy`).
+    #[serde(default)]
+    pub panic: PanicStrategy,
+    /// Whether the crate defines its own `#[panic_handler]`
+    /// (`Trusted.MirAst.Program.hasLocalPanicHandler`, defaulting to `true` so
+    /// a manifest without the field never aborts).
+    #[serde(default = "default_has_local_panic_handler")]
+    pub has_local_panic_handler: bool,
     #[serde(default = "default_mir_profile_version")]
     pub mir_profile_version: u32,
 }
@@ -1154,19 +1175,21 @@ pub struct Manifest {
 
 impl Manifest {
     /// Extract an evaluation-ready `Program` carrying the manifest's configured
-    /// target `pointer_bits` and `overflow_checks`.
+    /// target `pointer_bits`, `overflow_checks`, and `panic` strategy.
     pub fn into_program(mut self) -> Program {
         self.program.pointer_width_bits = self.configuration.pointer_bits;
         self.program.overflow_checks = self.configuration.overflow_checks;
+        self.program.panic = self.configuration.panic;
         self.program
     }
 
-    /// Borrow a cloned evaluation-ready `Program` with `pointer_width_bits`
-    /// and `overflow_checks` synchronized from `configuration`.
+    /// Borrow a cloned evaluation-ready `Program` with `pointer_width_bits`,
+    /// `overflow_checks`, and `panic` synchronized from `configuration`.
     pub fn to_program(&self) -> Program {
         let mut program = self.program.clone();
         program.pointer_width_bits = self.configuration.pointer_bits;
         program.overflow_checks = self.configuration.overflow_checks;
+        program.panic = self.configuration.panic;
         program
     }
 }
@@ -1205,6 +1228,7 @@ impl CaptureInput {
                 .get("program")
                 .and_then(|p| p.get("overflow_checks"))
                 .and_then(serde_json::Value::as_bool);
+            let explicit_prog_panic = raw.get("program").and_then(|p| p.get("panic")).cloned();
             let mut manifest: Manifest = serde_json::from_value(raw)
                 .map_err(|err| format!("invalid capture manifest: {err}"))?;
             if let Some(explicit) = explicit_prog_ptr_bits
@@ -1223,8 +1247,19 @@ impl CaptureInput {
                     manifest.configuration.overflow_checks
                 ));
             }
+            if let Some(explicit) = explicit_prog_panic {
+                let explicit: PanicStrategy = serde_json::from_value(explicit)
+                    .map_err(|err| format!("invalid program.panic: {err}"))?;
+                if explicit != manifest.configuration.panic {
+                    return Err(format!(
+                        "manifest panic strategy mismatch: configuration.panic={:?} != program.panic={explicit:?}",
+                        manifest.configuration.panic
+                    ));
+                }
+            }
             manifest.program.pointer_width_bits = manifest.configuration.pointer_bits;
             manifest.program.overflow_checks = manifest.configuration.overflow_checks;
+            manifest.program.panic = manifest.configuration.panic;
             Ok(Self::Manifest(Box::new(manifest)))
         } else {
             if !obj.contains_key("pointer_width_bits") || !obj.contains_key("mir_profile_version") {

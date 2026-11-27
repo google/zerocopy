@@ -290,6 +290,24 @@ impl MemoryState {
         self.allocations.iter_mut().find(|a| a.alloc_id == alloc_id)
     }
 
+    /// Allocate a fresh live read-only allocation holding `bytes`, matching
+    /// `Trusted.MirSemantics.allocRodataMemory`.
+    pub fn try_allocate_rodata(
+        &mut self,
+        bytes: Vec<AllocByte>,
+        align_log2: u32,
+    ) -> Result<u64, FaultDetail> {
+        let alloc_id = self.reserve_alloc_id()?;
+        self.allocations.push(Allocation {
+            alloc_id,
+            align_log2,
+            mutability: Mutability::Shared,
+            bytes,
+            live: true,
+        });
+        Ok(alloc_id)
+    }
+
     /// Allocate a fresh mutable uninitialized stack object of `layout`,
     /// failing closed with [`FaultKind::Unsupported`] if the allocation id
     /// space is exhausted.
@@ -559,6 +577,40 @@ pub fn ptr_add_in_mem(
             Ok(PtrVal { offset_bytes: ptr.offset_bytes.wrapping_add(delta_u64), ..ptr })
         }
     }
+}
+
+/// Whether the already-validated `&str` slice `(ptr, len)` in `mem` holds
+/// valid UTF-8, matching `Trusted.MirSemantics.strSliceUtf8InMem`.
+///
+/// This checks the bytes with `core::str::from_utf8`, so it also cross-checks
+/// the Lean `validUtf8Bytes` state machine against the real `core` validator.
+pub fn str_slice_utf8_in_mem(mem: &MemoryState, ptr: PtrVal, len: u64) -> bool {
+    if len == 0 {
+        return true;
+    }
+    let Some(aid) = ptr.alloc_id else {
+        return false;
+    };
+    let Some(alloc) = mem.find(aid) else {
+        return false;
+    };
+    let (Ok(start), Ok(n)) = (usize::try_from(ptr.offset_bytes), usize::try_from(len)) else {
+        return false;
+    };
+    let Some(end) = start.checked_add(n) else {
+        return false;
+    };
+    let Some(slice) = alloc.bytes.get(start..end) else {
+        return false;
+    };
+    let mut raw = Vec::with_capacity(n);
+    for b in slice {
+        match b {
+            AllocByte::Init { byte, .. } => raw.push(*byte),
+            AllocByte::Uninit => return false,
+        }
+    }
+    core::str::from_utf8(&raw).is_ok()
 }
 
 /// Validate slice-reference invariants for `&[uN]` / `&mut [uN]` in `mem`,
@@ -855,7 +907,7 @@ pub fn encode_val(
                 ));
             }
             (Ty::RawPtr { pointee, .. } | Ty::Ref { pointee, .. }, Val::SlicePtr { ptr, len })
-                if matches!(pointee.as_ref(), Ty::Slice { .. }) =>
+                if matches!(pointee.as_ref(), Ty::Slice { .. }) || is_shared_str_ref(ty) =>
             {
                 let mut out = init_alloc_bytes(
                     encode_uint(endian, 8, u128::from(ptr.offset_bytes)),
@@ -920,7 +972,7 @@ pub fn decode_val(
         match ty {
             Ty::RawPtr { pointee, .. } | Ty::Ref { pointee, .. } => {
                 if pointee.is_unsized() {
-                    if !matches!(pointee.as_ref(), Ty::Slice { .. }) {
+                    if !matches!(pointee.as_ref(), Ty::Slice { .. }) && !is_shared_str_ref(ty) {
                         return Err(FaultDetail::unsupported(
                             "unsupported unsized pointer pointee",
                         ));
@@ -1072,7 +1124,7 @@ pub fn deinit_indirect(
 }
 
 /// Validate Rust language validity invariants for a `&T`, `&mut T`, `&[uN]`,
-/// or `&mut [uN]` value in `mem` (`Trusted.MirSemantics.refValidInMem`).
+/// `&mut [uN]`, or `&str` value in `mem` (`Trusted.MirSemantics.refValidInMem`).
 pub fn ref_valid_in_mem(
     mem: &MemoryState,
     endian: TargetEndian,
@@ -1081,6 +1133,16 @@ pub fn ref_valid_in_mem(
     val: &Val,
 ) -> Result<(), FaultDetail> {
     match (pointee, val) {
+        (Ty::Str, Val::SlicePtr { ptr, len }) => {
+            if req_mut == Mutability::Mut {
+                return Err(FaultDetail::unsupported("`&mut str` is unsupported in Profile v2"));
+            }
+            slice_from_raw_parts_check(mem, false, 1, 0, *ptr, *len)?;
+            Ok(())
+        }
+        (Ty::Str, _) => {
+            Err(FaultDetail::unsupported("`&str` reference requires a SlicePtr runtime value"))
+        }
         (Ty::Slice { elem }, Val::SlicePtr { ptr, len }) => {
             let Ty::Int(ity) = elem.as_ref() else {
                 return Err(FaultDetail::unsupported(
@@ -1278,6 +1340,16 @@ pub fn ref_access_spans_list(tys: &[Ty], vals: &[Val]) -> Vec<RefAccessSpan> {
 
 fn collect_ref_access_spans(ty: &Ty, val: &Val, out: &mut Vec<RefAccessSpan>) {
     match (ty, val) {
+        (Ty::Ref { mutability, pointee }, Val::SlicePtr { ptr, len }) if **pointee == Ty::Str => {
+            if let Some(alloc_id) = ptr.alloc_id {
+                out.push(RefAccessSpan {
+                    is_mut: *mutability == Mutability::Mut,
+                    alloc_id,
+                    offset: ptr.offset_bytes,
+                    size: u128::from(*len),
+                });
+            }
+        }
         (Ty::Ref { mutability, pointee }, Val::SlicePtr { ptr, len }) => {
             if let Ty::Slice { elem } = pointee.as_ref()
                 && let Ty::Int(ity) = elem.as_ref()
@@ -1331,6 +1403,45 @@ pub fn spans_pairwise_disjoint(spans: &[RefAccessSpan]) -> bool {
         }
     }
     true
+}
+
+/// Whether `ty` is shared `&str`, the only `str` pointer Profile v2 encodes
+/// and decodes (`Trusted.MirSemantics.{encodeValV2, decodeValV2}`).
+fn is_shared_str_ref(ty: &Ty) -> bool {
+    matches!(ty, Ty::Ref { mutability: Mutability::Shared, pointee } if **pointee == Ty::Str)
+}
+
+/// Collect the allocation ids of every reference or raw pointer inside
+/// `(ty, val)`, matching `Trusted.MirSemantics.ptrOrRefAllocIds`.
+fn collect_ptr_or_ref_alloc_ids(ty: &Ty, val: &Val, out: &mut Vec<u64>) {
+    match (ty, val) {
+        (Ty::Ref { pointee, .. } | Ty::RawPtr { pointee, .. }, Val::SlicePtr { ptr, .. })
+            if matches!(pointee.as_ref(), Ty::Slice { .. })
+                || matches!(ty, Ty::Ref { .. }) && **pointee == Ty::Str =>
+        {
+            out.extend(ptr.alloc_id);
+        }
+        (Ty::Ref { .. } | Ty::RawPtr { .. }, Val::Ptr(p)) => out.extend(p.alloc_id),
+        (Ty::Tuple { fields }, Val::Tuple(vals)) if fields.len() == vals.len() => {
+            for (t, v) in fields.iter().zip(vals.iter()) {
+                collect_ptr_or_ref_alloc_ids(t, v, out);
+            }
+        }
+        _ => {}
+    }
+}
+
+/// Whether any reference or raw pointer inside `(ty, val)` points into a
+/// callee-allocated read-only `.rodata` allocation (in `mem` with shared
+/// mutability, absent from `cm`), matching
+/// `Trusted.MirSemantics.hasEscapingRodataPtr`.
+pub fn has_escaping_rodata_ptr(cm: &CallerMemory, mem: &MemoryState, ty: &Ty, val: &Val) -> bool {
+    let mut ids = Vec::new();
+    collect_ptr_or_ref_alloc_ids(ty, val, &mut ids);
+    ids.into_iter().any(|aid| {
+        !cm.allocations.iter().any(|a| a.alloc_id == aid)
+            && mem.find(aid).is_some_and(|a| a.mutability == Mutability::Shared)
+    })
 }
 
 /// Check that every reference provenance `alloc_id` inside `(ty, val)` belongs

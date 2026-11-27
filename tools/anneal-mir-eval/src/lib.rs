@@ -47,16 +47,17 @@ pub use eval::{
 pub use ir::{
     AggregateKind, AssertKind, BinOp, Block, Body, CAPTURE_SCHEMA_VERSION, CaptureInput, CastKind,
     ConstLit, CoreCallOp, EnumTagRepr, EnumTy, Instantiation, IntTy, IntWidth, Manifest,
-    Mutability, Operand, Place, Program, ProjectionElem, RodataByte, Rvalue, Scope, Statement,
-    StdlibCrate, SysrootNumKind, SysrootNumOp, Terminator, Ty, UnOp, UnwindAction,
+    Mutability, Operand, PanicStrategy, Place, Program, ProjectionElem, RodataByte, Rvalue, Scope,
+    Statement, StdlibCrate, SysrootNumKind, SysrootNumOp, Terminator, Ty, UnOp, UnwindAction,
 };
 pub use memory::{
     Allocation, CallerMemory, ISIZE_MAX_BYTES, LayoutData, MemPlace, MemoryState, RefAccessSpan,
-    TargetEndian, decode_val, deinit_indirect, encode_val, eval_const_lit, int_layout,
-    is_slice_all_init, layout_of_ty, load_indirect, offset_is_aligned, overflow_pair_layout,
-    ptr_add_in_mem, read_ptr_prov, ref_access_spans, ref_access_spans_list, ref_valid_in_mem,
-    refs_stay_in_caller_mem, refs_valid_in_mem, refs_valid_in_mem_list, slice_from_raw_parts_check,
-    slice_get_unchecked_check, spans_pairwise_disjoint, store_indirect, valid_caller_memory,
+    TargetEndian, decode_val, deinit_indirect, encode_val, eval_const_lit, has_escaping_rodata_ptr,
+    int_layout, is_slice_all_init, layout_of_ty, load_indirect, offset_is_aligned,
+    overflow_pair_layout, ptr_add_in_mem, read_ptr_prov, ref_access_spans, ref_access_spans_list,
+    ref_valid_in_mem, refs_stay_in_caller_mem, refs_valid_in_mem, refs_valid_in_mem_list,
+    slice_from_raw_parts_check, slice_get_unchecked_check, spans_pairwise_disjoint, store_indirect,
+    str_slice_utf8_in_mem, valid_caller_memory,
 };
 pub use ops::{eval_bin_op, eval_int_to_int_cast, eval_un_op};
 pub use value::{

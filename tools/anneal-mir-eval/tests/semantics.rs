@@ -17,13 +17,13 @@ use anneal_mir_eval::{
     AggregateKind, AllocByte, Allocation, AssertKind, BinOp, Block, Body, CallReturnTarget,
     CallerMemory, CaptureInput, CastKind, ConstLit, CoreCallOp, EnumTagRepr, EnumTy, EvalConfig,
     FaultDetail, FaultKind, FrameState, IntTy, IntWidth, LayoutData, LocalSlot, MachineState,
-    Mutability, Operand, OrderingVal, Outcome, Place, ProbeConfig, Program, ProjectionElem, PtrVal,
-    RodataByte, Rvalue, ScalarVal, Scope, Statement, StdlibCrate, StepOutcome, StepTrace,
-    SysrootNumKind, SysrootNumOp, TargetEndian, TerminalOut, Terminator, Ty, UbClass, UnOp,
-    UnwindAction, Val, WitnessClass, check_val, decode_val, encode_val, eval_body, eval_body_auto,
-    eval_body_by_identity, eval_body_with_caller_mem, eval_body_with_config, layout_of_ty,
-    load_indirect, memory, probe_body, probe_body_with_policy, store_indirect, validate_body_entry,
-    validate_program_config,
+    Mutability, Operand, OrderingVal, Outcome, PanicStrategy, Place, ProbeConfig, Program,
+    ProjectionElem, PtrVal, RodataByte, Rvalue, ScalarVal, Scope, Statement, StdlibCrate,
+    StepOutcome, StepTrace, SysrootNumKind, SysrootNumOp, TargetEndian, TerminalOut, Terminator,
+    Ty, UbClass, UnOp, UnwindAction, Val, WitnessClass, check_val, decode_val, encode_val,
+    eval_body, eval_body_auto, eval_body_by_identity, eval_body_with_caller_mem,
+    eval_body_with_config, layout_of_ty, load_indirect, memory, probe_body, probe_body_with_policy,
+    store_indirect, validate_body_entry, validate_program_config,
 };
 
 const U8_TY: Ty = Ty::Int(IntTy { width: IntWidth::I8, signed: false });
@@ -43,6 +43,8 @@ fn single_unit_program(bodies: Vec<Body>) -> Program {
         pointer_width_bits: 64,
         mir_profile_version: 1,
         overflow_checks: false,
+        panic: PanicStrategy::Unwind,
+        has_local_panic_handler: true,
     }
 }
 
@@ -918,6 +920,8 @@ fn profile_v1_intra_crate_calls_and_sysroot_num_ops() {
                 identity: "test::checked_inc".into(),
             },
         ],
+        panic: PanicStrategy::Unwind,
+        has_local_panic_handler: true,
     };
 
     assert_returned(
@@ -1585,6 +1589,8 @@ fn profile_v2_refuses_call_sysroot_call_and_panicking_assert() {
                 identity: "test::v2_callee".into(),
             },
         ],
+        panic: PanicStrategy::Unwind,
+        has_local_panic_handler: true,
     };
     assert_fault(&eval_body_with_config(&prog_call, 0, &[], 32, &v2_cfg), FaultKind::Unsupported);
 
@@ -1622,6 +1628,8 @@ fn profile_v2_refuses_call_sysroot_call_and_panicking_assert() {
             ],
             identity: "test::v2_sysroot".into(),
         }],
+        panic: PanicStrategy::Unwind,
+        has_local_panic_handler: true,
     };
     assert_fault(
         &eval_body_with_config(&prog_sysroot, 0, &[], 32, &v2_cfg),
@@ -1661,6 +1669,8 @@ fn profile_v2_refuses_call_sysroot_call_and_panicking_assert() {
             ],
             identity: "test::v2_assert".into(),
         }],
+        panic: PanicStrategy::Unwind,
+        has_local_panic_handler: true,
     };
     assert_returned(
         &eval_body_with_config(&mk_assert_prog(1, AssertKind::NullPtrDeref), 0, &[], 32, &v2_cfg),
@@ -1836,6 +1846,8 @@ fn profile_v2_partial_tuple_move_preserves_sibling_fields() {
                 identity: "test::nested_copy_ok".into(),
             },
         ],
+        panic: PanicStrategy::Unwind,
+        has_local_panic_handler: true,
     };
     let pair_val = Val::Tuple(vec![Val::u32(42), Val::Bool(true)]);
     let v2_cfg = EvalConfig::profile_v2(TargetEndian::Little);
@@ -1946,6 +1958,8 @@ fn profile_v2_empty_tuple_aggregate_and_probe_distinguish_unit() {
         pointer_width_bits: 64,
         mir_profile_version: 2,
         overflow_checks: false,
+        panic: PanicStrategy::Unwind,
+        has_local_panic_handler: true,
     };
 
     let cfg = EvalConfig::profile_v2(TargetEndian::Little);
@@ -1983,6 +1997,8 @@ fn partial_tuple_force_allocation_rejects_partial_and_avoids_leak_on_error() {
         pointer_width_bits: 64,
         mir_profile_version: 2,
         overflow_checks: false,
+        panic: PanicStrategy::Unwind,
+        has_local_panic_handler: true,
     };
     let cfg = EvalConfig::profile_v2(TargetEndian::Little);
     let mut err_state = MachineState::init(&bad_prog, 0, &[], &cfg).unwrap();
@@ -2124,6 +2140,8 @@ fn pointer_and_ref_layout_and_encoding_match_profile_v1_vs_v2() {
         pointer_width_bits: 64,
         mir_profile_version: 2,
         overflow_checks: false,
+        panic: PanicStrategy::Unwind,
+        has_local_panic_handler: true,
     };
     let cfg = EvalConfig::profile_v2(TargetEndian::Little);
     let mut state = MachineState::init(&prog, 0, &[], &cfg).unwrap();
@@ -2153,6 +2171,8 @@ fn ret_with_malformed_single_frame_return_to_faults_instead_of_panicking() {
         pointer_width_bits: 64,
         mir_profile_version: 2,
         overflow_checks: false,
+        panic: PanicStrategy::Unwind,
+        has_local_panic_handler: true,
     };
     let cfg = EvalConfig::profile_v2(TargetEndian::Little);
     let mut state = MachineState::init(&prog, 0, &[], &cfg).unwrap();
@@ -2326,6 +2346,8 @@ fn zst_unit_slot_and_partial_tuple_unit_move_match_trusted_mir_semantics() {
         pointer_width_bits: 64,
         mir_profile_version: 2,
         overflow_checks: false,
+        panic: PanicStrategy::Unwind,
+        has_local_panic_handler: true,
     };
 
     let cfg = EvalConfig::profile_v2(TargetEndian::Little);
@@ -2394,6 +2416,8 @@ fn profile_v2_version_bounds_ptr_checks_and_entry_ref_validity() {
             blocks: vec![Block { statements: vec![], terminator: Terminator::Ret, cleanup: false }],
             identity: "test::take_ref".into(),
         }],
+        panic: PanicStrategy::Unwind,
+        has_local_panic_handler: true,
     };
     let null_trace = eval_body_with_config(&ref_prog, 0, &[null_isize], 16, &v2_cfg);
     match &null_trace.outcome {
@@ -2555,6 +2579,8 @@ fn profile_v2_ill_typed_tuple_and_call_fault_unsupported_before_uninit_ub() {
                 cleanup: false,
             }],
         }],
+        panic: PanicStrategy::Unwind,
+        has_local_panic_handler: true,
     };
     match eval_body_with_config(&bad_tuple, 0, &[], 100, &cfg).outcome {
         Outcome::Fault(f) => assert_eq!(f.kind, FaultKind::Unsupported, "{f:?}"),
@@ -2610,6 +2636,8 @@ fn profile_v2_ill_typed_tuple_and_call_fault_unsupported_before_uninit_ub() {
                 }],
             },
         ],
+        panic: PanicStrategy::Unwind,
+        has_local_panic_handler: true,
     };
     match eval_body_with_config(&bad_call, 0, &[], 100, &cfg).outcome {
         Outcome::Fault(f) => assert_eq!(f.kind, FaultKind::Unsupported, "{f:?}"),
@@ -2723,6 +2751,8 @@ fn probe_body_validates_program_body_and_all_params_before_uninhabited_or_zero_c
         mir_profile_version: 1,
         overflow_checks: false,
         bodies: vec![never_body.clone()],
+        panic: PanicStrategy::Unwind,
+        has_local_panic_handler: true,
     };
     let r32 = probe_body(&prog_32, 0, &ProbeConfig::default(), &EvalConfig::profile_v1());
     assert_eq!(r32.unsupported_count, 1);
@@ -2934,6 +2964,8 @@ fn profile_v2_deref_cast_and_discriminant_dst_ty_validation() {
             deref_discr_uninit_body,
             field_dest_body,
         ],
+        panic: PanicStrategy::Unwind,
+        has_local_panic_handler: true,
     };
     let cfg = EvalConfig::profile_v2(TargetEndian::Little);
     let cm = CallerMemory {
@@ -3140,6 +3172,8 @@ fn profile_v2_pointers_slices_retag_refs_casts_offset_and_core_calls() {
                 cleanup: false,
             }],
         }],
+        panic: PanicStrategy::Unwind,
+        has_local_panic_handler: true,
     };
     let cm = CallerMemory {
         allocations: vec![Allocation {
@@ -3268,6 +3302,8 @@ fn profile_v2_pointers_slices_retag_refs_casts_offset_and_core_calls() {
                 }],
             },
         ],
+        panic: PanicStrategy::Unwind,
+        has_local_panic_handler: true,
     };
     let null_ptr = Val::Ptr(PtrVal { alloc_id: None, offset_bytes: 0, width: IntWidth::Isize });
     match &eval_body_with_config(&resolve_order, 0, &[], 32, &cfg).outcome {
@@ -3423,6 +3459,8 @@ fn profile_v2_pointers_slices_retag_refs_casts_offset_and_core_calls() {
                 },
             ],
         }],
+        panic: PanicStrategy::Unwind,
+        has_local_panic_handler: true,
     };
     let slice_cm = CallerMemory {
         allocations: vec![Allocation {
@@ -3608,6 +3646,8 @@ fn profile_v2_pointers_slices_retag_refs_casts_offset_and_core_calls() {
                 ],
             },
         ],
+        panic: PanicStrategy::Unwind,
+        has_local_panic_handler: true,
     };
     let mut arr_bytes = encode_val(TargetEndian::Little, &U32_TY, &Val::u32(100), true).unwrap();
     arr_bytes.extend(encode_val(TargetEndian::Little, &U32_TY, &Val::u32(200), true).unwrap());
@@ -3776,6 +3816,8 @@ fn profile_v2_pointers_slices_retag_refs_casts_offset_and_core_calls() {
                 }],
             },
         ],
+        panic: PanicStrategy::Unwind,
+        has_local_panic_handler: true,
     };
     match &eval_body_with_config(&stack_escape_prog, 0, &[Val::u32(7)], 32, &cfg).outcome {
         Outcome::Fault(f) => {
@@ -4028,6 +4070,8 @@ fn move_on_never_init_and_indirect_move_ret_field_classification() {
                     cleanup: false,
                 }],
             }],
+            panic: PanicStrategy::Unwind,
+            has_local_panic_handler: true,
         };
         match &eval_body_with_config(&prog, 0, &[], 16, cfg).outcome {
             Outcome::Fault(f) => {
@@ -4105,6 +4149,8 @@ fn move_on_never_init_and_indirect_move_ret_field_classification() {
                     }],
                 },
             ],
+            panic: PanicStrategy::Unwind,
+            has_local_panic_handler: true,
         };
         let mut st_moved = MachineState::init(&prog, 0, &[Val::u32(7)], cfg).unwrap();
         assert!(matches!(st_moved.step(&prog, cfg), StepOutcome::Stepped { .. }));
@@ -4201,6 +4247,8 @@ fn move_on_never_init_and_indirect_move_ret_field_classification() {
                 }],
             },
         ],
+        panic: PanicStrategy::Unwind,
+        has_local_panic_handler: true,
     };
     let pair = Val::overflow_pair(ScalarVal::new(IntWidth::I32, false, 5), false);
     let mut st_field_moved = MachineState::init(&field_prog, 0, &[pair], &v2_cfg).unwrap();
@@ -4256,6 +4304,8 @@ fn move_on_never_init_and_indirect_move_ret_field_classification() {
                 cleanup: false,
             }],
         }],
+        panic: PanicStrategy::Unwind,
+        has_local_panic_handler: true,
     };
     let uninit_cm = CallerMemory {
         allocations: vec![Allocation {
@@ -4586,6 +4636,8 @@ fn move_on_never_init_and_indirect_move_ret_field_classification() {
                 }],
             },
         ],
+        panic: PanicStrategy::Unwind,
+        has_local_panic_handler: true,
     };
 
     for (body_id, label) in [
@@ -4664,6 +4716,8 @@ fn caller_memory_u64_max_rejected_and_stack_alloc_id_overflow_fails_closed() {
                 cleanup: false,
             }],
         }],
+        panic: PanicStrategy::Unwind,
+        has_local_panic_handler: true,
     };
     let v2_cfg = EvalConfig::profile_v2(TargetEndian::Little);
     assert_eq!(
@@ -4887,6 +4941,8 @@ fn fail_closed_witness_classification_and_profile_v2_aggregate_unit_endian_parit
                 }],
             },
         ],
+        panic: PanicStrategy::Unwind,
+        has_local_panic_handler: true,
     };
 
     let valid_u32_cm = CallerMemory {
@@ -4973,6 +5029,8 @@ fn fail_closed_witness_classification_and_profile_v2_aggregate_unit_endian_parit
                 cleanup: false,
             }],
         }],
+        panic: PanicStrategy::Unwind,
+        has_local_panic_handler: true,
     };
     assert_fault(
         &eval_body_with_config(&agg_unit_prog, 0, &[], 16, &v2_cfg),
@@ -5438,6 +5496,8 @@ fn entry_alloc_id_freshness_assign_overlap_ub_and_slice_elem_size_parity() {
                 cleanup: false,
             }],
         }],
+        panic: PanicStrategy::Unwind,
+        has_local_panic_handler: true,
     };
     let dangling_arg =
         Val::Ptr(PtrVal { alloc_id: Some(2), offset_bytes: 0, width: IntWidth::Isize });
@@ -5497,6 +5557,8 @@ fn entry_alloc_id_freshness_assign_overlap_ub_and_slice_elem_size_parity() {
                 cleanup: false,
             }],
         }],
+        panic: PanicStrategy::Unwind,
+        has_local_panic_handler: true,
     };
 
     let v_u32_1 = Val::Scalar(ScalarVal::new(IntWidth::I32, false, 1));
@@ -5603,6 +5665,8 @@ fn entry_alloc_id_freshness_assign_overlap_ub_and_slice_elem_size_parity() {
                 cleanup: false,
             }],
         }],
+        panic: PanicStrategy::Unwind,
+        has_local_panic_handler: true,
     };
     assert_fault(
         &eval_body_with_config(
@@ -5681,6 +5745,8 @@ fn profile_v2_fake_address_of_executes_metadata_only_and_rejects_misuse() {
                 cleanup: false,
             }],
         }],
+        panic: PanicStrategy::Unwind,
+        has_local_panic_handler: true,
     };
     let cm = CallerMemory {
         allocations: vec![Allocation {
@@ -5756,6 +5822,8 @@ fn profile_v2_fake_address_of_executes_metadata_only_and_rejects_misuse() {
                 cleanup: false,
             }],
         }],
+        panic: PanicStrategy::Unwind,
+        has_local_panic_handler: true,
     };
     let raw_ptr = Val::Ptr(PtrVal { alloc_id: None, offset_bytes: 1, width: IntWidth::Isize });
     assert_fault(
@@ -5801,9 +5869,482 @@ fn profile_v2_fake_address_of_executes_metadata_only_and_rejects_misuse() {
                 Block { statements: Vec::new(), terminator: Terminator::Ret, cleanup: false },
             ],
         }],
+        panic: PanicStrategy::Unwind,
+        has_local_panic_handler: true,
     };
     assert_fault(
         &eval_body_with_config(&term_escape_prog, 0, std::slice::from_ref(&raw_ptr), 16, &v2_cfg),
         FaultKind::Unsupported,
     );
+}
+
+/// Builds a Profile v2 program whose entry calls
+/// `core::panicking::panic(msg)` (`CoreCallOp::PanicAbort`) on a `.rodata`
+/// `&str` constant holding `msg`.
+fn mk_panic_abort_prog(
+    msg: &[u8],
+    panic: PanicStrategy,
+    has_local_panic_handler: bool,
+    unwind: UnwindAction,
+) -> Program {
+    let str_ref = Ty::Ref { mutability: Mutability::Shared, pointee: Box::new(Ty::Str) };
+    Program {
+        scope: Scope::Crate,
+        entry_def_id: 0,
+        pointer_width_bits: 64,
+        mir_profile_version: 2,
+        overflow_checks: false,
+        panic,
+        has_local_panic_handler,
+        bodies: vec![Body {
+            arg_count: 0,
+            is_unsafe: false,
+            identity: "test::panics".into(),
+            local_tys: vec![Ty::Unit, Ty::Never],
+            blocks: vec![Block {
+                statements: vec![Statement::StorageLive { local: 1 }],
+                terminator: Terminator::CoreCall {
+                    op: CoreCallOp::PanicAbort,
+                    args: vec![Operand::Constant {
+                        ty: str_ref,
+                        lit: ConstLit::RodataRef {
+                            bytes: msg.iter().map(|&byte| RodataByte::Init { byte }).collect(),
+                            align_log2: 0,
+                            offset_bytes: 0,
+                            slice_len: Some(msg.len() as u64),
+                        },
+                    }],
+                    dst: Place { local: 1, projection: Vec::new() },
+                    target: None,
+                    unwind,
+                },
+                cleanup: false,
+            }],
+        }],
+    }
+}
+
+#[test]
+fn panic_abort_str_mirrors_eval_core_panic_abort() {
+    let cfg = EvalConfig::profile_v2(TargetEndian::Little);
+    let run = |prog: &Program| eval_body_with_config(prog, 0, &[], 16, &cfg);
+    let aborted = |prog: &Program| match &run(prog).outcome {
+        Outcome::Aborted { caller_mem } => assert!(caller_mem.allocations.is_empty()),
+        other => panic!("expected Aborted, got {other:?}"),
+    };
+
+    // Aborts under `-Cpanic=abort` without a crate-local `#[panic_handler]`
+    // for every non-cleanup unwind action, on ASCII and multi-byte UTF-8.
+    for unwind in [UnwindAction::Continue, UnwindAction::Unreachable, UnwindAction::Terminate] {
+        aborted(&mk_panic_abort_prog(b"boom", PanicStrategy::Abort, false, unwind));
+    }
+    aborted(&mk_panic_abort_prog(
+        "\u{20ac}\u{1f600}\u{10ffff}".as_bytes(),
+        PanicStrategy::Abort,
+        false,
+        UnwindAction::Continue,
+    ));
+    aborted(&mk_panic_abort_prog(b"", PanicStrategy::Abort, false, UnwindAction::Continue));
+
+    // Fails closed under `-Cpanic=unwind`, with a crate-local
+    // `#[panic_handler]`, or on a cleanup unwind.
+    for prog in [
+        mk_panic_abort_prog(b"boom", PanicStrategy::Unwind, false, UnwindAction::Continue),
+        mk_panic_abort_prog(b"boom", PanicStrategy::Abort, true, UnwindAction::Continue),
+        mk_panic_abort_prog(
+            b"boom",
+            PanicStrategy::Abort,
+            false,
+            UnwindAction::Cleanup { block: 0 },
+        ),
+    ] {
+        assert_fault(&run(&prog), FaultKind::Unsupported);
+    }
+
+    // Initialized but non-UTF-8 `&str` bytes fail closed as `Unsupported`:
+    // an overlong encoding, a surrogate, a code point above `U+10FFFF`, a
+    // truncated sequence, and a lone continuation byte.
+    for bad in
+        [&[0xC0, 0x80][..], &[0xED, 0xA0, 0x80], &[0xF4, 0x90, 0x80, 0x80], &[0xE2, 0x82], &[0x80]]
+    {
+        assert_fault(
+            &run(&mk_panic_abort_prog(bad, PanicStrategy::Abort, false, UnwindAction::Continue)),
+            FaultKind::Unsupported,
+        );
+    }
+
+    // A dead `!` destination fails closed.
+    let mut dead_dst =
+        mk_panic_abort_prog(b"boom", PanicStrategy::Abort, false, UnwindAction::Continue);
+    dead_dst.bodies[0].blocks[0].statements.clear();
+    dead_dst.bodies[0].blocks[0].statements.push(Statement::StorageDead { local: 1 });
+    assert_fault(&run(&dead_dst), FaultKind::Unsupported);
+
+    // A returning `PanicAbort` (`target = Some(_)`) fails closed.
+    let mut returning =
+        mk_panic_abort_prog(b"boom", PanicStrategy::Abort, false, UnwindAction::Continue);
+    if let Terminator::CoreCall { target, .. } = &mut returning.bodies[0].blocks[0].terminator {
+        *target = Some(0);
+    }
+    assert_fault(&run(&returning), FaultKind::Unsupported);
+}
+
+#[test]
+fn str_ptr_metadata_and_serde_mirror_profile_v2() {
+    let cfg = EvalConfig::profile_v2(TargetEndian::Little);
+    let str_ref = Ty::Ref { mutability: Mutability::Shared, pointee: Box::new(Ty::Str) };
+    let msg = "h\u{e9}llo";
+    let prog = Program {
+        scope: Scope::Crate,
+        entry_def_id: 0,
+        pointer_width_bits: 64,
+        mir_profile_version: 2,
+        overflow_checks: false,
+        panic: PanicStrategy::Unwind,
+        has_local_panic_handler: true,
+        bodies: vec![Body {
+            arg_count: 0,
+            is_unsafe: false,
+            identity: "test::str_len".into(),
+            local_tys: vec![USIZE_TY],
+            blocks: vec![Block {
+                statements: vec![Statement::Assign {
+                    local: 0,
+                    projection: Vec::new(),
+                    value: Rvalue::Unary {
+                        op: UnOp::PtrMetadata,
+                        operand: Operand::Constant {
+                            ty: str_ref.clone(),
+                            lit: ConstLit::RodataRef {
+                                bytes: msg.bytes().map(|byte| RodataByte::Init { byte }).collect(),
+                                align_log2: 0,
+                                offset_bytes: 0,
+                                slice_len: Some(msg.len() as u64),
+                            },
+                        },
+                    },
+                }],
+                terminator: Terminator::Ret,
+                cleanup: false,
+            }],
+        }],
+    };
+    // `PtrMetadata` on `&str` is the byte length.
+    assert_returned(&eval_body_with_config(&prog, 0, &[], 16, &cfg), Val::usize_val(6));
+
+    // `Ty::Str`, `CoreCallOp::PanicAbort`, and the panic configuration use
+    // the capture schema's spellings, and a program without the panic fields
+    // defaults to `Unwind` with a crate-local handler (never aborting).
+    assert_eq!(serde_json::to_value(&Ty::Str).unwrap(), serde_json::json!({ "kind": "str" }));
+    assert_eq!(
+        serde_json::to_value(&CoreCallOp::PanicAbort).unwrap(),
+        serde_json::json!({ "kind": "panic_abort" })
+    );
+    let mut json = serde_json::to_value(&prog).unwrap();
+    assert_eq!(json["panic"], "unwind");
+    let obj = json.as_object_mut().unwrap();
+    obj.remove("panic");
+    obj.remove("has_local_panic_handler");
+    let defaulted: Program = serde_json::from_value(json).unwrap();
+    assert_eq!(defaulted.panic, PanicStrategy::Unwind);
+    assert!(defaulted.has_local_panic_handler);
+}
+
+/// A shared `&str` value pointing at `len` bytes of caller allocation `aid`.
+fn caller_str(aid: u64, offset_bytes: u64, len: u64) -> Val {
+    Val::SlicePtr { ptr: PtrVal { alloc_id: Some(aid), offset_bytes, width: IntWidth::Isize }, len }
+}
+
+/// A caller allocation holding initialized `bytes`.
+fn caller_alloc(aid: u64, mutability: Mutability, bytes: &[u8]) -> Allocation {
+    Allocation {
+        alloc_id: aid,
+        align_log2: 0,
+        mutability,
+        bytes: bytes.iter().map(|&byte| AllocByte::Init { byte, prov: None }).collect(),
+        live: true,
+    }
+}
+
+#[test]
+fn str_rodata_escape_spans_codec_and_caller_args_mirror_profile_v2() {
+    let cfg = EvalConfig::profile_v2(TargetEndian::Little);
+    let str_ref = Ty::Ref { mutability: Mutability::Shared, pointee: Box::new(Ty::Str) };
+    let rodata_str = |bytes: Vec<RodataByte>| Operand::Constant {
+        ty: str_ref.clone(),
+        lit: ConstLit::RodataRef {
+            slice_len: Some(bytes.len() as u64),
+            bytes,
+            align_log2: 0,
+            offset_bytes: 0,
+        },
+    };
+    let init = |s: &[u8]| s.iter().map(|&byte| RodataByte::Init { byte }).collect::<Vec<_>>();
+    let ret_prog = |operand: Operand| Program {
+        scope: Scope::Crate,
+        entry_def_id: 0,
+        pointer_width_bits: 64,
+        mir_profile_version: 2,
+        overflow_checks: false,
+        panic: PanicStrategy::Unwind,
+        has_local_panic_handler: true,
+        bodies: vec![Body {
+            arg_count: 0,
+            is_unsafe: false,
+            identity: "test::ret_str".into(),
+            local_tys: vec![str_ref.clone()],
+            blocks: vec![Block {
+                statements: vec![Statement::Assign {
+                    local: 0,
+                    projection: Vec::new(),
+                    value: Rvalue::Use { operand, with_retag: false },
+                }],
+                terminator: Terminator::Ret,
+                cleanup: false,
+            }],
+        }],
+    };
+
+    // Returning a pointer into callee `.rodata` is `Unsupported`
+    // (`hasEscapingRodataPtr`), including for the empty string.
+    for bytes in [init(b"hi"), Vec::new()] {
+        assert_fault(
+            &eval_body_with_config(&ret_prog(rodata_str(bytes)), 0, &[], 16, &cfg),
+            FaultKind::Unsupported,
+        );
+    }
+    // An uninitialized `&str` constant byte is `Undefined`, unlike
+    // initialized non-UTF-8 bytes, which are `Unsupported`.
+    assert_fault(
+        &eval_body_with_config(
+            &ret_prog(rodata_str(vec![RodataByte::Init { byte: b'a' }, RodataByte::Uninit])),
+            0,
+            &[],
+            16,
+            &cfg,
+        ),
+        FaultKind::Undefined,
+    );
+
+    // `&str` and `&mut u8` arguments that overlap in one caller allocation
+    // violate mutable-borrow disjointness at entry (`refAccessSpans`).
+    let mut_u8 = Ty::Ref {
+        mutability: Mutability::Mut,
+        pointee: Box::new(Ty::Int(IntTy { width: IntWidth::I8, signed: false })),
+    };
+    let overlap_prog = Program {
+        bodies: vec![Body {
+            arg_count: 2,
+            is_unsafe: false,
+            identity: "test::overlap".into(),
+            local_tys: vec![Ty::Unit, str_ref.clone(), mut_u8.clone()],
+            blocks: vec![Block {
+                statements: Vec::new(),
+                terminator: Terminator::Ret,
+                cleanup: false,
+            }],
+        }],
+        ..ret_prog(rodata_str(Vec::new()))
+    };
+    let overlap_cm = CallerMemory { allocations: vec![caller_alloc(2, Mutability::Mut, b"ab")] };
+    let mut_ptr = Val::Ptr(PtrVal { alloc_id: Some(2), offset_bytes: 1, width: IntWidth::Isize });
+    assert_fault(
+        &eval_body_with_caller_mem(
+            &overlap_prog,
+            0,
+            &[caller_str(2, 0, 2), mut_ptr.clone()],
+            overlap_cm.clone(),
+            16,
+            &cfg,
+        ),
+        FaultKind::Undefined,
+    );
+    // Disjoint `&str` and `&mut u8` arguments are fine.
+    assert_returned(
+        &eval_body_with_caller_mem(
+            &overlap_prog,
+            0,
+            &[caller_str(2, 0, 1), mut_ptr],
+            overlap_cm,
+            16,
+            &cfg,
+        ),
+        Val::Unit,
+    );
+
+    // A caller `&str` argument passed to `panic`: valid UTF-8 aborts with the
+    // caller's mutation (through a disjoint `&mut u8`) preserved, and
+    // initialized non-UTF-8 bytes pass entry validity but fail closed.
+    let arg_panic_prog = Program {
+        panic: PanicStrategy::Abort,
+        has_local_panic_handler: false,
+        bodies: vec![Body {
+            arg_count: 2,
+            is_unsafe: false,
+            identity: "test::arg_panic".into(),
+            local_tys: vec![Ty::Unit, str_ref.clone(), mut_u8, Ty::Never],
+            blocks: vec![Block {
+                statements: vec![
+                    Statement::Assign {
+                        local: 2,
+                        projection: vec![ProjectionElem::Deref],
+                        value: Rvalue::Use {
+                            operand: Operand::Constant {
+                                ty: Ty::Int(IntTy { width: IntWidth::I8, signed: false }),
+                                lit: ConstLit::Scalar { bits: 7 },
+                            },
+                            with_retag: false,
+                        },
+                    },
+                    Statement::StorageLive { local: 3 },
+                ],
+                terminator: Terminator::CoreCall {
+                    op: CoreCallOp::PanicAbort,
+                    args: vec![Operand::Copy { local: 1, projection: Vec::new() }],
+                    dst: Place { local: 3, projection: Vec::new() },
+                    target: None,
+                    unwind: UnwindAction::Continue,
+                },
+                cleanup: false,
+            }],
+        }],
+        ..ret_prog(rodata_str(Vec::new()))
+    };
+    let msg_cm = |msg: &[u8]| CallerMemory {
+        allocations: vec![
+            caller_alloc(2, Mutability::Shared, msg),
+            caller_alloc(3, Mutability::Mut, &[0]),
+        ],
+    };
+    let out_ptr = Val::Ptr(PtrVal { alloc_id: Some(3), offset_bytes: 0, width: IntWidth::Isize });
+    let msg = "\u{e9}\u{1f600}".as_bytes();
+    match &eval_body_with_caller_mem(
+        &arg_panic_prog,
+        0,
+        &[caller_str(2, 0, msg.len() as u64), out_ptr.clone()],
+        msg_cm(msg),
+        16,
+        &cfg,
+    )
+    .outcome
+    {
+        Outcome::Aborted { caller_mem } => {
+            assert_eq!(caller_mem.allocations.len(), 2);
+            assert_eq!(
+                caller_mem.allocations[1].bytes,
+                vec![AllocByte::Init { byte: 7, prov: None }]
+            );
+        }
+        other => panic!("expected Aborted, got {other:?}"),
+    }
+    assert_fault(
+        &eval_body_with_caller_mem(
+            &arg_panic_prog,
+            0,
+            &[caller_str(2, 0, 2), out_ptr],
+            msg_cm(&[0xC0, 0x80]),
+            16,
+            &cfg,
+        ),
+        FaultKind::Unsupported,
+    );
+
+    // Shared `&str` round-trips through the 16-byte wide-pointer encoding,
+    // while `&mut str` and `*const str` do not decode.
+    let val = caller_str(2, 5, 3);
+    let bytes = encode_val(TargetEndian::Little, &str_ref, &val, true).unwrap();
+    assert_eq!(bytes.len(), 16);
+    assert_eq!(decode_val(TargetEndian::Little, &str_ref, &bytes, true).unwrap(), Some(val));
+    for ty in [
+        Ty::Ref { mutability: Mutability::Mut, pointee: Box::new(Ty::Str) },
+        Ty::RawPtr { mutability: Mutability::Shared, pointee: Box::new(Ty::Str) },
+    ] {
+        assert_eq!(
+            decode_val(TargetEndian::Little, &ty, &bytes, true).unwrap_err().kind,
+            FaultKind::Unsupported
+        );
+    }
+}
+
+#[test]
+fn manifest_panic_strategy_must_match_configuration() {
+    let manifest_json = |program_panic: &str| {
+        let mut v: serde_json::Value = serde_json::from_str(include_str!(
+            "fixtures/zerocopy_08_byte_slice_split_at_unchecked_capture.json"
+        ))
+        .unwrap();
+        v["configuration"]["panic"] = serde_json::json!("unwind");
+        v["program"]["panic"] = serde_json::json!(program_panic);
+        v.to_string()
+    };
+    let ok = CaptureInput::from_json_str(&manifest_json("unwind")).unwrap();
+    assert_eq!(ok.into_program().panic, PanicStrategy::Unwind);
+    let err = CaptureInput::from_json_str(&manifest_json("abort")).unwrap_err();
+    assert!(err.contains("panic strategy mismatch"), "{err}");
+}
+
+#[test]
+fn probe_generates_shared_str_parameters() {
+    let cfg = EvalConfig::profile_v2(TargetEndian::Little);
+    let str_ref = Ty::Ref { mutability: Mutability::Shared, pointee: Box::new(Ty::Str) };
+    let copy_s = Operand::Copy { local: 1, projection: Vec::new() };
+    let mk =
+        |panic: PanicStrategy, has_local_panic_handler: bool, block: Block, tys: Vec<Ty>| Program {
+            scope: Scope::Crate,
+            entry_def_id: 0,
+            pointer_width_bits: 64,
+            mir_profile_version: 2,
+            overflow_checks: false,
+            panic,
+            has_local_panic_handler,
+            bodies: vec![Body {
+                arg_count: 1,
+                is_unsafe: false,
+                identity: "test::str_param".into(),
+                local_tys: tys,
+                blocks: vec![block],
+            }],
+        };
+
+    // `fn(s: &str) -> usize { s.len() }` runs on every candidate.
+    let len_prog = mk(
+        PanicStrategy::Unwind,
+        true,
+        Block {
+            statements: vec![Statement::Assign {
+                local: 0,
+                projection: Vec::new(),
+                value: Rvalue::Unary { op: UnOp::PtrMetadata, operand: copy_s.clone() },
+            }],
+            terminator: Terminator::Ret,
+            cleanup: false,
+        },
+        vec![USIZE_TY, str_ref.clone()],
+    );
+    let report = probe_body(&len_prog, 0, &ProbeConfig::default(), &cfg);
+    assert!(!report.unsupported_param_shape, "{report:?}");
+    assert!(report.cases_run > 0 && report.returned_count == report.cases_run, "{report:?}");
+
+    // `fn(s: &str) -> ! { panic(s) }` aborts on valid UTF-8 and fails closed
+    // on the initialized non-UTF-8 boundary candidate.
+    let panic_prog = mk(
+        PanicStrategy::Abort,
+        false,
+        Block {
+            statements: vec![Statement::StorageLive { local: 2 }],
+            terminator: Terminator::CoreCall {
+                op: CoreCallOp::PanicAbort,
+                args: vec![copy_s],
+                dst: Place { local: 2, projection: Vec::new() },
+                target: None,
+                unwind: UnwindAction::Continue,
+            },
+            cleanup: false,
+        },
+        vec![Ty::Unit, str_ref, Ty::Never],
+    );
+    let report = probe_body(&panic_prog, 0, &ProbeConfig::default(), &cfg);
+    assert!(!report.unsupported_param_shape, "{report:?}");
+    assert!(report.aborted_count > 0 && report.unsupported_count > 0, "{report:?}");
+    assert_eq!(report.aborted_count + report.unsupported_count, report.cases_run, "{report:?}");
 }

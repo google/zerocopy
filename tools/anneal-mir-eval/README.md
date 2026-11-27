@@ -38,9 +38,18 @@ CI ergonomics:
      (`MisalignedPtrDeref`/`NullPtrDeref` -> `Undefined`, other panicking
      asserts -> `Unsupported`), single-level `PartialTuple` moves, and
      allocation-checked zero-sized memory reads/writes.
+   - Shared `&str` (`Ty::Str`) matches `refValidInMem`, `PtrMetadata`, and the
+     `&str` arm of `evalRodataRefConstV2`; initialized non-UTF-8 bytes fail
+     closed with `Unsupported`, checked with `core::str::from_utf8`. Diverging
+     `CoreCallOp::PanicAbort` (`core::panicking::{panic, panic_nounwind}`)
+     matches `validatePanicAbortArgs` and `evalCorePanicAbort`: it ends in
+     `Outcome::Aborted` under `-Cpanic=abort` without a crate-local
+     `#[panic_handler]` on a non-cleanup unwind action, and is `Unsupported`
+     otherwise.
    - Captured constructs that the evaluator does not model yet (array
      aggregates and repeats, `ConstantIndex` projections, `Unsize` casts,
-     read-only data constants, and the `IntToLeBytes` and `ArrayEq` core calls)
+     read-only data constants other than `&str`, and the `IntToLeBytes` and
+     `ArrayEq` core calls)
      still parse, and evaluating them fails closed with `Unsupported`.
    - Every `Undefined` counterexample is explicitly classified as either
      `replayable_miri_ub` (concrete Rust/Miri UB) or `model_only_unreplayed`
@@ -131,8 +140,10 @@ Exit codes for `eval` and `probe`:
 - `2`: Modeled Rust Undefined Behavior (`FaultKind::Undefined`) encountered.
 - `3`: `eval` or `probe` hit `FaultKind::Unsupported`, `Outcome::OutOfFuel`, or
   an unsupported parameter shape.
-- `4`: Reserved for `Outcome::Aborted` (kept for API exhaustiveness; not
-  emitted by `Trusted.MirSemantics` Profile v1 or Profile v2 execution).
+- `4`: `eval` only: `Outcome::Aborted`, from a Profile v2
+  `CoreCallOp::PanicAbort` under `-Cpanic=abort` without a crate-local
+  `#[panic_handler]`. `probe` counts aborts (`aborted=`) without changing its
+  exit code.
 
 ## Miri Witness-Replay Gate
 
