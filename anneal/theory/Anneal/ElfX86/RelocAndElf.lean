@@ -1618,10 +1618,11 @@ private theorem parseAllSectionHdrsAux_length (bs shstrtab : List UInt8) :
   | succ k ih =>
     intro cur secs h
     dsimp only [parseAllSectionHdrsAux] at h
+    revert h
     cases hSh : parseElf64SectionHdrHead? shstrtab cur with
-    | none => rw [hSh] at h; nomatch h
+    | none => intro h; nomatch h
     | some p =>
-      rw [hSh] at h
+      intro h
       cases p with
       | mk sh rest =>
         dsimp only at h
@@ -1695,20 +1696,23 @@ theorem parseElf64Object?_binds_raw (bs : List UInt8)
       ∀ r, r ∈ entry.2.2 → r ∈ obj.allRelas) ∧
     (∃ s0 rest, obj.sections = s0 :: rest ∧ sectionHdrIsNull s0 = true) := by
   dsimp only [parseElf64Object?] at h
+  revert h
   cases hHdr : parseElf64Header? bs with
-  | none => rw [hHdr] at h; nomatch h
+  | none => intro h; nomatch h
   | some hdr =>
-    rw [hHdr] at h; dsimp only at h
+    intro h; dsimp only at h
+    revert h
     cases hZero0 : bytesPrefixAllZero64 (fastDropBytes hdr.eShoff bs) with
-    | false => rw [hZero0] at h; nomatch h
+    | false => intro h; nomatch h
     | true =>
-      rw [hZero0, relocIteFalse (rfl : (!true) = false)] at h
+      intro h; rw [relocIteFalse (rfl : (!true) = false)] at h
+      revert h
       cases hShstrHdr : parseElf64SectionHdrHeadWithName? ".shstrtab"
           (fastDropBytes (hdr.eShstrndx * elf64Shentsize)
             (fastDropBytes hdr.eShoff bs)) with
-      | none => rw [hShstrHdr] at h; nomatch h
+      | none => intro h; nomatch h
       | some shstrP =>
-        rw [hShstrHdr] at h
+        intro h
         cases shstrP with
         | mk shstrHdr _ =>
           dsimp only at h
@@ -1717,16 +1721,18 @@ theorem parseElf64Object?_binds_raw (bs : List UInt8)
           | true => rw [relocIteTrue hStrBad] at h; nomatch h
           | false =>
             rw [relocIteFalse hStrBad] at h
+            revert h
             cases hSlice :
                 sliceBytes? bs shstrHdr.shOffset shstrHdr.shSize with
-            | none => rw [hSlice] at h; nomatch h
+            | none => intro h; nomatch h
             | some shstrtab =>
-              rw [hSlice] at h; dsimp only at h
+              intro h; dsimp only at h
+              revert h
               cases hSecs : parseAllSectionHdrsAux bs shstrtab hdr.eShnum
                   (fastDropBytes hdr.eShoff bs) with
-              | none => rw [hSecs] at h; nomatch h
+              | none => intro h; nomatch h
               | some secs =>
-                rw [hSecs] at h; dsimp only at h
+                intro h; dsimp only at h
                 cases secs with
                 | nil => nomatch h
                 | cons s0 rest =>
@@ -1742,14 +1748,16 @@ theorem parseElf64Object?_binds_raw (bs : List UInt8)
                     have hUnp :
                         listAny sectionIsUnparsedTableType (s0 :: rest) =
                           false := hBad0P.2
+                    revert h
                     cases hSyms : parseObjectSymtab? bs (s0 :: rest) with
-                    | none => rw [hSyms] at h; nomatch h
+                    | none => intro h; nomatch h
                     | some syms =>
-                      rw [hSyms] at h; dsimp only at h
+                      intro h; dsimp only at h
+                      revert h
                       cases hRelas : parseAllRelaSections? bs (s0 :: rest) with
-                      | none => rw [hRelas] at h; nomatch h
+                      | none => intro h; nomatch h
                       | some relaSecs =>
-                        rw [hRelas] at h; dsimp only at h
+                        intro h; dsimp only at h
                         injection h with hObj
                         subst hObj
                         refine ⟨rfl, rfl,
@@ -1779,10 +1787,11 @@ theorem objectHasNoForbiddenElfFeatures_bound (bs : List UInt8)
       (∀ r, r ∈ obj.allRelas → relaIsIRelative r = false) ∧
       allExecRelaFootprintsInBounds obj = true := by
   dsimp only [objectHasNoForbiddenElfFeatures] at h
+  revert h
   cases hP : parseElf64Object? bs with
-  | none => rw [hP] at h; nomatch h
+  | none => intro h; nomatch h
   | some obj =>
-    rw [hP] at h; dsimp only at h
+    intro h; dsimp only at h
     have hB := parseElf64Object?_binds_raw bs obj hP
     have hL3 := relocBandLeft h
     have hFootOk := relocBandRight h
@@ -1849,10 +1858,11 @@ theorem allExecRelaFootprintsInBounds_of_allowed (obj : ParsedElf64Object)
         else true)
     ?_ obj.relaSections h
   intro entry hE
+  revert hE
   cases hSec : listGet? obj.sections entry.2.1.shInfo with
-  | none => rw [hSec] at hE; exact Bool.noConfusion hE
+  | none => intro hE; exact Bool.noConfusion hE
   | some targetSec =>
-    rw [hSec] at hE
+    intro hE
     dsimp only at hE
     dsimp only
     cases hEq : Nat.beq entry.2.1.shInfo textSecIdx with
@@ -2051,10 +2061,11 @@ theorem resolvePc32RodataReloc_sound (bs : List UInt8)
       (∀ entry, entry ∈ obj.relaSections → entry.2.1.shInfo ≠ sym.stShndx) ∧
       allExecRelaTypesAllowed obj textSecIdx = true := by
   dsimp only [resolvePc32RodataReloc] at h
+  revert h
   cases hP : parseElf64Object? bs with
-  | none => rw [hP] at h; nomatch h
+  | none => intro h; nomatch h
   | some obj =>
-    rw [hP] at h; dsimp only at h
+    intro h; dsimp only at h
     cases hBad : (listAny sectionIsForbidden obj.sections ||
         listAny symIsIfunc obj.syms ||
         listAny relaIsIRelative obj.allRelas ||
@@ -2069,18 +2080,21 @@ theorem resolvePc32RodataReloc_sound (bs : List UInt8)
       have hNoIR := (relocBorFalse hBad3).2
       have hNoForb := (relocBorFalse hBadL).1
       have hNoIf := (relocBorFalse hBadL).2
+      revert h
       cases hText : listGet? obj.sections textSecIdx with
-      | none => rw [hText] at h; nomatch h
+      | none => intro h; nomatch h
       | some textSec =>
-        rw [hText] at h; dsimp only at h
+        intro h; dsimp only at h
+        revert h
         cases hExec : sectionIsExecText textSec with
-        | false => rw [hExec] at h; nomatch h
+        | false => intro h; nomatch h
         | true =>
-          rw [hExec, relocIteFalse (rfl : (!true) = false)] at h
+          intro h; rw [relocIteFalse (rfl : (!true) = false)] at h
+          revert h
           cases hRs : findUniqueRelaForTarget? obj.relaSections textSecIdx with
-          | none => rw [hRs] at h; nomatch h
+          | none => intro h; nomatch h
           | some optP =>
-            rw [hRs] at h
+            intro h
             cases optP with
             | none => nomatch h
             | some p =>
@@ -2100,10 +2114,11 @@ theorem resolvePc32RodataReloc_sound (bs : List UInt8)
                     (relocBoolTrueOfNotFalse hHdrOk.1)
                   have hInfSec := relocNatEqOfBeq relaSec.shInfo textSecIdx
                     (relocBoolTrueOfNotFalse hHdrOk.2)
+                  revert h
                   cases hR : listGet? relas relaIdx with
-                  | none => rw [hR] at h; nomatch h
+                  | none => intro h; nomatch h
                   | some r =>
-                    rw [hR] at h; dsimp only at h
+                    intro h; dsimp only at h
                     cases hRTyBad : (!Nat.beq r.rType rX86_64_PC32 ||
                         Nat.beq r.rSymIdx stnUndef ||
                         otherRelaOverlapsPc32 relas relaIdx r.rOffset) with
@@ -2116,10 +2131,11 @@ theorem resolvePc32RodataReloc_sound (bs : List UInt8)
                           (relocBoolTrueOfNotFalse hRTyOk.1)
                       have hSymNe : r.rSymIdx ≠ stnUndef :=
                         relocNatNeOfBeqFalse hRTyOk.2
+                      revert h
                       cases hSym : listGet? obj.syms r.rSymIdx with
-                      | none => rw [hSym] at h; nomatch h
+                      | none => intro h; nomatch h
                       | some sym =>
-                        rw [hSym] at h; dsimp only at h
+                        intro h; dsimp only at h
                         cases hSymBad : (symIsIfunc sym ||
                             !symIsLocalBinding sym ||
                             !shndxIsDefinedRegular sym.stShndx) with
@@ -2134,10 +2150,11 @@ theorem resolvePc32RodataReloc_sound (bs : List UInt8)
                             relocBoolTrueOfNotFalse (relocBorFalse hSymBadL).2
                           have hBindEq : sym.stBind = stbLocal :=
                             relocNatEqOfBeq sym.stBind stbLocal hLocalB
+                          revert h
                           cases hSec : listGet? obj.sections sym.stShndx with
-                          | none => rw [hSec] at h; nomatch h
+                          | none => intro h; nomatch h
                           | some sec =>
-                            rw [hSec] at h; dsimp only at h
+                            intro h; dsimp only at h
                             cases hRoBad : (!sectionIsReadOnlyRodata sec ||
                                 hasRelaTargetingSection obj.relaSections
                                   sym.stShndx) with
@@ -2150,13 +2167,14 @@ theorem resolvePc32RodataReloc_sound (bs : List UInt8)
                               have hNoRoRela :
                                   hasRelaTargetingSection obj.relaSections
                                     sym.stShndx = false := hRoP.2
+                              revert h
                               cases hInt :
                                   intToNat? (Int.ofNat sym.stValue + r.rAddend +
                                     (Int.ofNat insnEnd -
                                       Int.ofNat r.rOffset)) with
-                              | none => rw [hInt] at h; nomatch h
+                              | none => intro h; nomatch h
                               | some effOff =>
-                                rw [hInt] at h; dsimp only at h
+                                intro h; dsimp only at h
                                 cases hBnd :
                                     (Nat.ble (effOff + accessBytes)
                                         sec.shSize &&
@@ -2200,6 +2218,55 @@ theorem resolvePc32RodataReloc_sound (bs : List UInt8)
                                        obj.relaSections sym.stShndx hNoRoRela,
                                      hExecOk⟩⟩
 
+/-- The facts `resolvePc32RodataReloc_sound` gives about the relocation, symbol,
+and section a successful resolution used, restated for the caller's own `obj`,
+`relas`, `r`, `sym`, and `sec`. The negative rejection theorems below share
+this single destructuring of the soundness theorem's long existential. -/
+private theorem resolvePc32RodataReloc_sound_at {bs : List UInt8}
+    {obj : ParsedElf64Object} {relaSec : Elf64SectionHdr}
+    {relas : List Elf64Rela} {r : Elf64Rela}
+    {textSecIdx relaIdx insnEnd accessBytes : Nat} {ref : ResolvedRodataRef}
+    (hRes : resolvePc32RodataReloc bs textSecIdx relaIdx insnEnd accessBytes =
+      some ref)
+    (hP : parseElf64Object? bs = some obj)
+    (hRs : findUniqueRelaForTarget? obj.relaSections textSecIdx =
+      some (some (relaSec, relas)))
+    (hR : listGet? relas relaIdx = some r) :
+    r.rType = rX86_64_PC32 ∧
+    ∀ sym, listGet? obj.syms r.rSymIdx = some sym →
+      sym.stBind = stbLocal ∧
+      (∀ entry, entry ∈ obj.relaSections → entry.2.1.shInfo ≠ sym.stShndx) ∧
+      ∀ sec, listGet? obj.sections sym.stShndx = some sec →
+        sectionIsWritable sec = false ∧ sectionHasGroup sec = false ∧
+        intToNat? (Int.ofNat sym.stValue + r.rAddend +
+          (Int.ofNat insnEnd - Int.ofNat r.rOffset)) = some ref.byteOff ∧
+        ref.byteOff + accessBytes ≤ sec.shSize ∧
+        mergeEntryBoundsOk sec sym ref.byteOff accessBytes = true := by
+  have hS := resolvePc32RodataReloc_sound bs textSecIdx relaIdx insnEnd
+    accessBytes ref hRes
+  have ⟨obj', _, _, relas', r', sym', sec', hP', _, _, hRs', _, _, hR', hTy',
+        _, hSym', _, hSec', hBind', hW', hGrp', _, _, hOff', hLe', hMb', _, _,
+        hNoTarget', _⟩ := hS.2
+  rw [hP] at hP'
+  have hObjEq : obj = obj' := Option.some.inj hP'
+  subst hObjEq
+  rw [hRs] at hRs'
+  have hPairEq := Option.some.inj (Option.some.inj hRs')
+  injection hPairEq with _ hRelasEq
+  subst hRelasEq
+  rw [hR] at hR'
+  have hREq : r = r' := Option.some.inj hR'
+  subst hREq
+  refine ⟨hTy', fun sym hSym => ?_⟩
+  rw [hSym] at hSym'
+  have hSymEq : sym = sym' := Option.some.inj hSym'
+  subst hSymEq
+  refine ⟨hBind', hNoTarget', fun sec hSec => ?_⟩
+  rw [hSec] at hSec'
+  have hSecEq : sec = sec' := Option.some.inj hSec'
+  subst hSecEq
+  exact ⟨hW', hGrp', hOff', hLe', hMb'⟩
+
 /-- Negative rejection: any writable target section (`SHF_WRITE = 1`) is
 rejected fail-closed. -/
 theorem resolvePc32RodataReloc_rejects_writable (bs : List UInt8)
@@ -2220,26 +2287,8 @@ theorem resolvePc32RodataReloc_rejects_writable (bs : List UInt8)
       resolvePc32RodataReloc bs textSecIdx relaIdx insnEnd accessBytes with
   | none => rfl
   | some ref =>
-    have hS := resolvePc32RodataReloc_sound bs textSecIdx relaIdx insnEnd
-      accessBytes ref hRes
-    have ⟨obj', _, _, relas', r', sym', sec', hP', _, _, hRs', _, _, hR', _, _,
-          hSym', _, hSec', _, hWFalse, _⟩ := hS.2
-    rw [hP] at hP'
-    have hObjEq : obj = obj' := Option.some.inj hP'
-    subst hObjEq
-    rw [hRs] at hRs'
-    have hPairEq := Option.some.inj (Option.some.inj hRs')
-    injection hPairEq with _ hRelasEq
-    subst hRelasEq
-    rw [hR] at hR'
-    have hREq : r = r' := Option.some.inj hR'
-    subst hREq
-    rw [hSym] at hSym'
-    have hSymEq : sym = sym' := Option.some.inj hSym'
-    subst hSymEq
-    rw [hSec] at hSec'
-    have hSecEq : sec = sec' := Option.some.inj hSec'
-    subst hSecEq
+    have hA := resolvePc32RodataReloc_sound_at hRes hP hRs hR
+    have hWFalse := ((hA.2 sym hSym).2.2 sec hSec).1
     rw [hW] at hWFalse
     exact Bool.noConfusion hWFalse
 
@@ -2261,24 +2310,8 @@ theorem resolvePc32RodataReloc_rejects_nonlocal (bs : List UInt8)
       resolvePc32RodataReloc bs textSecIdx relaIdx insnEnd accessBytes with
   | none => rfl
   | some ref =>
-    have hS := resolvePc32RodataReloc_sound bs textSecIdx relaIdx insnEnd
-      accessBytes ref hRes
-    have ⟨obj', _, _, relas', r', sym', _, hP', _, _, hRs', _, _, hR', _, _,
-          hSym', _, _, hBind', _⟩ := hS.2
-    rw [hP] at hP'
-    have hObjEq : obj = obj' := Option.some.inj hP'
-    subst hObjEq
-    rw [hRs] at hRs'
-    have hPairEq := Option.some.inj (Option.some.inj hRs')
-    injection hPairEq with _ hRelasEq
-    subst hRelasEq
-    rw [hR] at hR'
-    have hREq : r = r' := Option.some.inj hR'
-    subst hREq
-    rw [hSym] at hSym'
-    have hSymEq : sym = sym' := Option.some.inj hSym'
-    subst hSymEq
-    exact False.elim (hNe hBind')
+    have hA := resolvePc32RodataReloc_sound_at hRes hP hRs hR
+    exact False.elim (hNe (hA.2 sym hSym).1)
 
 /-- Negative rejection: any `SHF_GROUP` (COMDAT) target section is rejected
 fail-closed. -/
@@ -2300,26 +2333,8 @@ theorem resolvePc32RodataReloc_rejects_group (bs : List UInt8)
       resolvePc32RodataReloc bs textSecIdx relaIdx insnEnd accessBytes with
   | none => rfl
   | some ref =>
-    have hS := resolvePc32RodataReloc_sound bs textSecIdx relaIdx insnEnd
-      accessBytes ref hRes
-    have ⟨obj', _, _, relas', r', sym', sec', hP', _, _, hRs', _, _, hR', _, _,
-          hSym', _, hSec', _, _, hGrpFalse, _⟩ := hS.2
-    rw [hP] at hP'
-    have hObjEq : obj = obj' := Option.some.inj hP'
-    subst hObjEq
-    rw [hRs] at hRs'
-    have hPairEq := Option.some.inj (Option.some.inj hRs')
-    injection hPairEq with _ hRelasEq
-    subst hRelasEq
-    rw [hR] at hR'
-    have hREq : r = r' := Option.some.inj hR'
-    subst hREq
-    rw [hSym] at hSym'
-    have hSymEq : sym = sym' := Option.some.inj hSym'
-    subst hSymEq
-    rw [hSec] at hSec'
-    have hSecEq : sec = sec' := Option.some.inj hSec'
-    subst hSecEq
+    have hA := resolvePc32RodataReloc_sound_at hRes hP hRs hR
+    have hGrpFalse := ((hA.2 sym hSym).2.2 sec hSec).2.1
     rw [hGrp] at hGrpFalse
     exact Bool.noConfusion hGrpFalse
 
@@ -2340,21 +2355,8 @@ theorem resolvePc32RodataReloc_rejects_non_pc32 (bs : List UInt8)
       resolvePc32RodataReloc bs textSecIdx relaIdx insnEnd accessBytes with
   | none => rfl
   | some ref =>
-    have hS := resolvePc32RodataReloc_sound bs textSecIdx relaIdx insnEnd
-      accessBytes ref hRes
-    have ⟨obj', _, _, relas', r', _, _, hP', _, _, hRs', _, _, hR', hTy',
-          _⟩ := hS.2
-    rw [hP] at hP'
-    have hObjEq : obj = obj' := Option.some.inj hP'
-    subst hObjEq
-    rw [hRs] at hRs'
-    have hPairEq := Option.some.inj (Option.some.inj hRs')
-    injection hPairEq with _ hRelasEq
-    subst hRelasEq
-    rw [hR] at hR'
-    have hREq : r = r' := Option.some.inj hR'
-    subst hREq
-    exact False.elim (hne hTy')
+    have hA := resolvePc32RodataReloc_sound_at hRes hP hRs hR
+    exact False.elim (hne hA.1)
 
 /-- Negative rejection: any `SHT_RELA` section targeting the resolved `.rodata`
 section (`shInfo = sym.stShndx`) is rejected fail-closed. -/
@@ -2376,24 +2378,8 @@ theorem resolvePc32RodataReloc_rejects_rela_targeting_rodata (bs : List UInt8)
       resolvePc32RodataReloc bs textSecIdx relaIdx insnEnd accessBytes with
   | none => rfl
   | some ref =>
-    have hS := resolvePc32RodataReloc_sound bs textSecIdx relaIdx insnEnd
-      accessBytes ref hRes
-    have ⟨obj', _, _, relas', r', sym', _, hP', _, _, hRs', _, _, hR', _, _,
-          hSym', _, _, _, _, _, _, _, _, _, _, _, _, hNoTarget, _⟩ := hS.2
-    rw [hP] at hP'
-    have hObjEq : obj = obj' := Option.some.inj hP'
-    subst hObjEq
-    rw [hRs] at hRs'
-    have hPairEq := Option.some.inj (Option.some.inj hRs')
-    injection hPairEq with _ hRelasEq
-    subst hRelasEq
-    rw [hR] at hR'
-    have hREq : r = r' := Option.some.inj hR'
-    subst hREq
-    rw [hSym] at hSym'
-    have hSymEq : sym = sym' := Option.some.inj hSym'
-    subst hSymEq
-    exact False.elim (hNoTarget roRela hRoRelaMem hRoRelaInfo)
+    have hA := resolvePc32RodataReloc_sound_at hRes hP hRs hR
+    exact False.elim ((hA.2 sym hSym).2.1 roRela hRoRelaMem hRoRelaInfo)
 
 /-- Negative rejection: any `STT_GNU_IFUNC` symbol anywhere in `obj.syms`
 rejects all relocations fail-closed. -/
@@ -2466,26 +2452,10 @@ theorem resolvePc32RodataReloc_rejects_oob (bs : List UInt8)
       resolvePc32RodataReloc bs textSecIdx relaIdx insnEnd accessBytes with
   | none => rfl
   | some ref =>
-    have hS := resolvePc32RodataReloc_sound bs textSecIdx relaIdx insnEnd
-      accessBytes ref hRes
-    have ⟨obj', _, _, relas', r', sym', sec', hP', _, _, hRs', _, _, hR', _, _,
-          hSym', _, hSec', _, _, _, _, _, hOff', hLe', _⟩ := hS.2
-    rw [hP] at hP'
-    have hObjEq : obj = obj' := Option.some.inj hP'
-    subst hObjEq
-    rw [hRs] at hRs'
-    have hPairEq := Option.some.inj (Option.some.inj hRs')
-    injection hPairEq with _ hRelasEq
-    subst hRelasEq
-    rw [hR] at hR'
-    have hREq : r = r' := Option.some.inj hR'
-    subst hREq
-    rw [hSym] at hSym'
-    have hSymEq : sym = sym' := Option.some.inj hSym'
-    subst hSymEq
-    rw [hSec] at hSec'
-    have hSecEq : sec = sec' := Option.some.inj hSec'
-    subst hSecEq
+    have hA := resolvePc32RodataReloc_sound_at hRes hP hRs hR
+    have hFacts := (hA.2 sym hSym).2.2 sec hSec
+    have hOff' := hFacts.2.2.1
+    have hLe' := hFacts.2.2.2.1
     rw [hOff] at hOff'
     have hEffEq : effOff = ref.byteOff := Option.some.inj hOff'
     subst hEffEq
@@ -2512,26 +2482,8 @@ theorem resolvePc32RodataReloc_rejects_merge_section_sym (bs : List UInt8)
       resolvePc32RodataReloc bs textSecIdx relaIdx insnEnd accessBytes with
   | none => rfl
   | some ref =>
-    have hS := resolvePc32RodataReloc_sound bs textSecIdx relaIdx insnEnd
-      accessBytes ref hRes
-    have ⟨obj', _, _, relas', r', sym', sec', hP', _, _, hRs', _, _, hR', _, _,
-          hSym', _, hSec', _, _, _, _, _, _, _, hMb, _⟩ := hS.2
-    rw [hP] at hP'
-    have hObjEq : obj = obj' := Option.some.inj hP'
-    subst hObjEq
-    rw [hRs] at hRs'
-    have hPairEq := Option.some.inj (Option.some.inj hRs')
-    injection hPairEq with _ hRelasEq
-    subst hRelasEq
-    rw [hR] at hR'
-    have hREq : r = r' := Option.some.inj hR'
-    subst hREq
-    rw [hSym] at hSym'
-    have hSymEq : sym = sym' := Option.some.inj hSym'
-    subst hSymEq
-    rw [hSec] at hSec'
-    have hSecEq : sec = sec' := Option.some.inj hSec'
-    subst hSecEq
+    have hA := resolvePc32RodataReloc_sound_at hRes hP hRs hR
+    have hMb := ((hA.2 sym hSym).2.2 sec hSec).2.2.2.2
     have hFalse :
         mergeEntryBoundsOk sec sym ref.byteOff accessBytes = false := by
       dsimp only [mergeEntryBoundsOk, symIsSection]
@@ -2591,10 +2543,11 @@ theorem extractFuncPcRelRelocs?_resolves_overlapping (bs : List UInt8)
                 some { secIdx := sym.stShndx, byteOff := effOff,
                        accessBytes := accessBytes } := by
   dsimp only [extractFuncPcRelRelocs?] at hExt
+  revert hExt
   cases hP : parseElf64Object? bs with
-  | none => rw [hP] at hExt; nomatch hExt
+  | none => intro hExt; nomatch hExt
   | some obj =>
-    rw [hP] at hExt; dsimp only at hExt
+    intro hExt; dsimp only at hExt
     cases hBad : (listAny sectionIsForbidden obj.sections ||
         listAny symIsIfunc obj.syms ||
         listAny relaIsIRelative obj.allRelas ||
@@ -2614,10 +2567,11 @@ theorem extractFuncPcRelRelocs?_resolves_overlapping (bs : List UInt8)
         rw [hP]; dsimp only
         rw [hNoForb, hNoIf, hNoIR,
           allExecRelaFootprintsInBounds_of_allowed obj textSecIdx hExecOk]; rfl
+      revert hExt
       cases hText : listGet? obj.sections textSecIdx with
-      | none => rw [hText] at hExt; nomatch hExt
+      | none => intro hExt; nomatch hExt
       | some textSec =>
-        rw [hText] at hExt; dsimp only at hExt
+        intro hExt; dsimp only at hExt
         cases hTextBad : (!sectionIsExecText textSec ||
             !Nat.ble (funcOff + funcSize) textSec.shSize) with
         | true => rw [relocIteTrue hTextBad] at hExt; nomatch hExt
@@ -2628,10 +2582,11 @@ theorem extractFuncPcRelRelocs?_resolves_overlapping (bs : List UInt8)
             relocBoolTrueOfNotFalse hTextOk.1
           have hFuncLe : funcOff + funcSize ≤ textSec.shSize :=
             Nat.le_of_ble_eq_true (relocBoolTrueOfNotFalse hTextOk.2)
+          revert hExt
           cases hRs : findUniqueRelaForTarget? obj.relaSections textSecIdx with
-          | none => rw [hRs] at hExt; nomatch hExt
+          | none => intro hExt; nomatch hExt
           | some optP =>
-            rw [hRs] at hExt
+            intro hExt
             cases optP with
             | none =>
               refine ⟨hHyg, ⟨obj, textSec, rfl, hExecOk, hText, hExec, hFuncLe,
@@ -2717,6 +2672,7 @@ theorem extractFuncPcRelRelocs?_resolves_overlapping (bs : List UInt8)
                     | cons hd tl ih =>
                       intro res hF r hMem hNotDisj
                       dsimp only [List.foldr] at hF
+                      revert hF
                       cases hTl : List.foldr
                           (fun r acc =>
                             match acc with
@@ -2757,9 +2713,9 @@ theorem extractFuncPcRelRelocs?_resolves_overlapping (bs : List UInt8)
                                         }
                                         some (pr :: out))
                           (some []) tl with
-                      | none => rw [hTl] at hF; nomatch hF
+                      | none => intro hF; nomatch hF
                       | some tlOut =>
-                        rw [hTl] at hF; dsimp only at hF
+                        intro hF; dsimp only at hF
                         cases hMem with
                         | tail _ hInTl => exact ih tlOut hTl r hInTl hNotDisj
                         | head _ =>
@@ -2770,17 +2726,19 @@ theorem extractFuncPcRelRelocs?_resolves_overlapping (bs : List UInt8)
                           | false =>
                             rw [relocIteFalse hPcBad] at hF
                             have hPcOk := relocBorFalse hPcBad
+                            revert hF
                             cases hStrad : (!Nat.ble funcOff hd.rOffset ||
                                 !Nat.ble (hd.rOffset + 4)
                                   (funcOff + funcSize)) with
-                            | true => rw [hStrad] at hF; nomatch hF
+                            | true => intro hF; nomatch hF
                             | false =>
-                              rw [hStrad, relocIteFalse rfl] at hF
+                              intro hF; rw [relocIteFalse rfl] at hF
                               have hStrOk := relocBorFalse hStrad
+                              revert hF
                               cases hSym : listGet? obj.syms hd.rSymIdx with
-                              | none => rw [hSym] at hF; nomatch hF
+                              | none => intro hF; nomatch hF
                               | some sym =>
-                                rw [hSym] at hF; dsimp only at hF
+                                intro hF; dsimp only at hF
                                 cases hSB :
                                     (symIsIfunc sym ||
                                       !symIsLocalBinding sym ||
@@ -2789,19 +2747,22 @@ theorem extractFuncPcRelRelocs?_resolves_overlapping (bs : List UInt8)
                                   rw [relocIteTrue hSB] at hF; nomatch hF
                                 | false =>
                                   rw [relocIteFalse hSB] at hF
+                                  revert hF
                                   cases hSec :
                                       listGet? obj.sections sym.stShndx with
-                                  | none => rw [hSec] at hF; nomatch hF
+                                  | none => intro hF; nomatch hF
                                   | some sec =>
-                                    rw [hSec] at hF; dsimp only at hF
+                                    intro hF; dsimp only at hF
+                                    revert hF
                                     cases hSecBad :
                                         (!sectionIsReadOnlyRodata sec ||
                                          (sectionHasMerge sec &&
                                            symIsSection sym) ||
                                          hasRelaTargetingSection
                                            obj.relaSections sym.stShndx) with
-                                    | true => rw [hSecBad] at hF; nomatch hF
+                                    | true => intro hF; nomatch hF
                                     | false =>
+                                      intro hF
                                       have hSecBadP := relocBorFalse hSecBad
                                       have hSecBadL :=
                                         relocBorFalse hSecBadP.1
@@ -2985,9 +2946,10 @@ private theorem bytesLenAtLeast_le (n : Nat) (bs : List UInt8)
     rw [relocIteFalse hZ] at h
     have hSub : k + 1 - 1 = k := rfl
     rw [hSub, fastDropBytes_eq_drop] at h
+    revert h
     cases hD : bs.drop k with
-    | nil => rw [hD] at h; exact Bool.noConfusion h
-    | cons b tl => exact drop_cons_le k bs b tl hD
+    | nil => intro h; exact Bool.noConfusion h
+    | cons b tl => intro h; exact drop_cons_le k bs b tl hD
 
 private theorem drop_length_ge {α : Type} :
     ∀ (off len : Nat) (xs : List α),
@@ -3065,10 +3027,11 @@ theorem funcTextBytes?_spec (bs : List UInt8)
       textBytes = (bs.drop (textSec.shOffset + funcOff)).take funcSize ∧
       textBytes.length = funcSize := by
   dsimp only [funcTextBytes?] at h
+  revert h
   cases hP : parseElf64Object? bs with
-  | none => rw [hP] at h; nomatch h
+  | none => intro h; nomatch h
   | some obj =>
-    rw [hP] at h; dsimp only at h
+    intro h; dsimp only at h
     cases hBad : (listAny sectionIsForbidden obj.sections ||
         listAny symIsIfunc obj.syms ||
         listAny relaIsIRelative obj.allRelas ||
@@ -3088,10 +3051,11 @@ theorem funcTextBytes?_spec (bs : List UInt8)
         rw [hP]; dsimp only
         rw [hNoForb, hNoIf, hNoIR,
           allExecRelaFootprintsInBounds_of_allowed obj textSecIdx hExecOk]; rfl
+      revert h
       cases hText : listGet? obj.sections textSecIdx with
-      | none => rw [hText] at h; nomatch h
+      | none => intro h; nomatch h
       | some textSec =>
-        rw [hText] at h; dsimp only at h
+        intro h; dsimp only at h
         cases hTextBad : (!sectionIsExecText textSec ||
             !Nat.ble (funcOff + funcSize) textSec.shSize) with
         | true => rw [relocIteTrue hTextBad] at h; nomatch h
@@ -3161,35 +3125,42 @@ theorem decodeFuncFromElf?_sound (cfg : DecodeConfig) (bs : List UInt8)
             (∀ roE, roE ∈ obj.relaSections →
               roE.2.1.shInfo ≠ sym.stShndx) := by
   dsimp only [decodeFuncFromElf?] at h
+  revert h
   cases hReq : cfg.requireRelocForRip with
-  | false => rw [hReq] at h; nomatch h
+  | false => intro h; nomatch h
   | true =>
-    rw [hReq, relocIteFalse (rfl : (!true) = false)] at h
+    intro h; rw [relocIteFalse (rfl : (!true) = false)] at h
+    revert h
     cases hBytes : funcTextBytes? bs textSecIdx funcOff funcSize with
-    | none => rw [hBytes] at h; nomatch h
+    | none => intro h; nomatch h
     | some textBytes =>
-      rw [hBytes] at h; dsimp only at h
+      intro h; dsimp only at h
+      revert h
       cases hRel : extractFuncPcRelRelocs? bs textSecIdx funcOff funcSize with
-      | none => rw [hRel] at h; nomatch h
+      | none => intro h; nomatch h
       | some relocs =>
-        rw [hRel] at h; dsimp only at h
+        intro h; dsimp only at h
+        revert h
         cases hCov : localDecodeCoverageOk cfg relocs textBytes with
-        | false => rw [hCov] at h; nomatch h
+        | false => intro h; nomatch h
         | true =>
-          rw [hCov, relocIteFalse (rfl : (!true) = false)] at h
+          intro h; rw [relocIteFalse (rfl : (!true) = false)] at h
+          revert h
           cases hDec : decodeStream cfg relocs textBytes with
-          | none => rw [hDec] at h; nomatch h
+          | none => intro h; nomatch h
           | some tr' =>
-            rw [hDec] at h; dsimp only at h
+            intro h; dsimp only at h
+            revert h
             cases hObj : parseElf64Object? bs with
-            | none => rw [hObj] at h; nomatch h
+            | none => intro h; nomatch h
             | some obj =>
-              rw [hObj] at h; dsimp only at h
+              intro h; dsimp only at h
+              revert h
               cases hRs :
                   findUniqueRelaForTarget? obj.relaSections textSecIdx with
-              | none => rw [hRs] at h; nomatch h
+              | none => intro h; nomatch h
               | some optRela =>
-                rw [hRs] at h; dsimp only at h
+                intro h; dsimp only at h
                 cases hAll : listAll (traceEntryRipRelocOk bs
                     (optRelaEntries optRela) textSecIdx funcOff) tr' with
                 | false => rw [relocIteFalse hAll] at h; nomatch h
@@ -3237,17 +3208,19 @@ theorem decodeFuncFromElf?_sound (cfg : DecodeConfig) (bs : List UInt8)
                       | none => dsimp only at hOk; exact Bool.noConfusion hOk
                       | some relocOff =>
                         dsimp only at hOk
+                        revert hOk
                         cases hIdx : findRelaIdxByOffset?
                             (optRelaEntries optRela) (funcOff + relocOff) with
-                        | none => rw [hIdx] at hOk; exact Bool.noConfusion hOk
+                        | none => intro hOk; exact Bool.noConfusion hOk
                         | some rIdx =>
-                          rw [hIdx] at hOk; dsimp only at hOk
+                          intro hOk; dsimp only at hOk
+                          revert hOk
                           cases hGetR :
                               listGet? (optRelaEntries optRela) rIdx with
                           | none =>
-                            rw [hGetR] at hOk; exact Bool.noConfusion hOk
+                            intro hOk; exact Bool.noConfusion hOk
                           | some r =>
-                            rw [hGetR] at hOk; dsimp only at hOk
+                            intro hOk; dsimp only at hOk
                             cases hOffEq :
                                 Nat.beq r.rOffset (funcOff + relocOff) with
                             | false =>
@@ -3255,12 +3228,13 @@ theorem decodeFuncFromElf?_sound (cfg : DecodeConfig) (bs : List UInt8)
                             | true =>
                               rw [hOffEq,
                                   relocIteFalse (rfl : (!true) = false)] at hOk
+                              revert hOk
                               cases hRes : resolvePc32RodataReloc bs textSecIdx
                                   rIdx (funcOff + off + len) accBytes with
                               | none =>
-                                rw [hRes] at hOk; exact Bool.noConfusion hOk
+                                intro hOk; exact Bool.noConfusion hOk
                               | some ref =>
-                                rw [hRes] at hOk; dsimp only at hOk
+                                intro hOk; dsimp only at hOk
                                 have hSecOptEq : secOpt = some ref.secIdx :=
                                   relocOptNatEqOfBeq secOpt (some ref.secIdx)
                                     (relocBandLeft hOk)
