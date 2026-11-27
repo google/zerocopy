@@ -102,6 +102,7 @@ incrementally.
 | [Upstream `rustc` workarounds](rustc-workarounds.md) | Current | Tracking, upstream evaluation, and compiler-bump retirement of workarounds for upstream Rust toolchain (`rustc`, `rustdoc`, `cargo`, and standard-library) limitations. |
 | [Gate 2 review guide](codex-review.md) | Current | Automated review gates and standalone diagnostic evaluator. |
 | [Linear arithmetic certifier](farkas-cert-gen.md) | Current | Synthesizes `Anneal.LinearArith` Farkas and Chvatal-Gomory certificates. |
+| [Anneal Lean 4 LSP helper](anneal-lsp.md) | Current | Warm Lean 4 LSP CLI and stdio MCP server with zero-`.lake` unit discovery. |
 
 ### Target architecture and interop docs
 
