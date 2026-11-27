@@ -2963,6 +2963,59 @@ fn many_block_body_compiles_in_lean_under_default_max_rec_depth() {
 }
 
 #[test]
+fn profile_v1_call_refusal_names_the_profile_v2_trigger() {
+    // Each case pairs a Profile v1 call with a construct that selects Profile
+    // v2. The refusal must name the calling body, the refused call, and the
+    // body and construct that selected Profile v2, even when they differ.
+    // (name, source, extra flags, diagnostic substrings)
+    type Case<'a> = (&'a str, &'a [u8], &'a [&'a str], &'a [&'a str]);
+    let cases: [Case<'_>; 2] = [
+        (
+            // `--overflow-checks` gives `helper` an optional `Add` overflow
+            // `Assert`, which refuses `caller`'s intra-crate call.
+            "overflow_checks",
+            b"pub fn helper(x: u32) -> u32 { x + 1 }\n\
+              pub fn caller(x: u32) -> u32 { helper(x) }\n",
+            &["--overflow-checks"],
+            &[
+                "rust-path-v1::caller makes a Profile v1 call in a Profile v2 program",
+                "terminator: call to rust-path-v1::helper)",
+                "Profile v2 was selected by rust-path-v1::helper (",
+                "terminator: `Assert` (Overflow { op: Add })",
+            ],
+        ),
+        (
+            // Building the `(u64, bool)` return value with a tuple aggregate
+            // selects Profile v2, which refuses the body's own `wrapping_sub`
+            // sysroot call.
+            "tuple_return",
+            b"pub fn sub_borrow(a: u64, b: u32) -> (u64, bool) {\n\
+                  let c = b as u64;\n\
+                  (a.wrapping_sub(c), a < c)\n\
+              }\n",
+            &[],
+            &[
+                "rust-path-v1::sub_borrow makes a Profile v1 call in a Profile v2 program",
+                "terminator: `core::num` call SysrootNumOp { kind: WrappingSub,",
+                "Profile v2 was selected by rust-path-v1::sub_borrow (",
+                ": rvalue AggregateTuple {",
+            ],
+        ),
+    ];
+    for (name, source, flags, needles) in cases {
+        let fixture = Capture::new(source);
+        let output = fixture.command().arg("--scope=crate").args(flags).output().unwrap();
+        assert_eq!(output.status.code(), Some(1), "{name}: {output:?}");
+        let failure = status(&output);
+        let diagnostic = failure["diagnostics"][0].as_str().unwrap();
+        for needle in needles {
+            assert!(diagnostic.contains(needle), "{name}: missing {needle:?} in {diagnostic}");
+        }
+        fixture.assert_no_capture_artifacts();
+    }
+}
+
+#[test]
 fn thousand_one_hundred_function_crate_compiles_in_lean_under_default_max_rec_depth() {
     let mut source = String::with_capacity(64 * 1024);
     for idx in 0..1_100usize {
