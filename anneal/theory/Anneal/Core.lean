@@ -17,3 +17,4 @@ public import Anneal.Core.BitValidity
 public import Anneal.Core.FixedByteCodec
 public import Anneal.Core.PtrTypestate
 public import Anneal.Core.BitVecMirBridge
+public import Anneal.Core.BitVecMirBridgeExt

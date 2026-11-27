@@ -36,6 +36,7 @@ public import Anneal.Core.FixedByteCodec
 public import Anneal.ByteSubLens.Lens
 public import Anneal.Core.PtrTypestate
 public import Anneal.Core.BitVecMirBridge
+public import Anneal.Core.BitVecMirBridgeExt
 
 public section
 
@@ -94,6 +95,9 @@ Exercises `Core.BlockTree`, `Core.SepPCM`, and `Core.StageCut` (`0`
 10. **BitVec, BitVecArith, and LeBytes MIR Bridge (`Core.BitVecMirBridge`):**
    Positive/negative `evalBinOp`/`evalUnOp`/`evalIntToIntCast` bridges, `tnum`
    lifts, byte-codec round-trips, chunking, and symbolic `Body` execution.
+11. **Extended `BitVecMirBridge` Canaries (`Core.BitVecMirBridgeExt`):**
+   Signed/unsigned shifts, signed arithmetic + overflow, `.cmp`/`.bool`/
+   `.char` ops, unary/cast rejections, and signed `.div` `Body` faults.
 -/
 
 /-! ## Computable Scalar / Tuple Helpers (`0` `noncomputable`) -/
@@ -5306,6 +5310,849 @@ theorem bodyTwoPassAdd_bvToScalar_canary
     rw [Anneal.Framework.StepWp.execStepPred_succ_iff, hStep1]
     rfl
   exact positiveCanary_of_exec hExec
+
+/-! ## Canary Suite 8: Extended `BitVecMirBridgeExt` & Signed `Body` Faults -/
+
+/-- `i32` MIR type. -/
+@[expose] def coreI32Ty : MirTy := .int .i32 true
+
+/-- Single-block signed `i32` division body (`_0 := _1 / _2`). -/
+@[expose] def bodyI32Div : Body :=
+  { identity := "anneal_core::i32_div"
+    isUnsafe := false
+    locals := [coreI32Ty, coreI32Ty, coreI32Ty]
+    argumentCount := 2
+    basicBlocks := [{
+      statements := [
+        .assign (coreLocalPlace 0)
+          (.binaryOp .div (.copy (coreLocalPlace 1)) (.copy (coreLocalPlace 2)))
+      ]
+      terminator := .return_
+      cleanup := false
+    }] }
+
+/-- Extended shift canaries covering unsigned/signed `.shrUnchecked`, signed
+`.shl`/`.shr` with signed shift amounts, and negative shift faults. -/
+theorem bitVecMirBridgeExt_shift_canaries
+    (y8 : BitVec (8 * IntWidth.i8.byteSize))
+    (x32 : BitVec (8 * IntWidth.i32.byteSize)) :
+    evalBinOp .shrUnchecked (.scalar (bvToScalar .i32 false x32))
+        (.scalar (bvToScalar .i8 false
+          (BitVec.ofNat (8 * IntWidth.i8.byteSize) 5))) =
+      .ok (.scalar (bvToScalar .i32 false (Anneal.BitVec.ushr x32 5))) ∧
+    evalBinOp .shrUnchecked (.scalar (bvToScalar .i32 false x32))
+        (.scalar (bvToScalar .i8 false
+          (BitVec.ofNat (8 * IntWidth.i8.byteSize) 32))) =
+      .error .undefined ∧
+    evalBinOp .shl (.scalar (bvToScalar .i32 true x32))
+        (.scalar (bvToScalar .i8 true y8)) =
+      .ok (.scalar (bvToScalar .i32 true
+        (Anneal.BitVec.shl x32 (Nat.mod y8.toNat (8 * IntWidth.i32.byteSize))))) ∧
+    evalBinOp .shr (.scalar (bvToScalar .i32 true x32))
+        (.scalar (bvToScalar .i8 true y8)) =
+      .ok (.scalar (bvToScalar .i32 true
+        (Anneal.BitVecArith.ashr x32
+          (Nat.mod y8.toNat (8 * IntWidth.i32.byteSize))))) ∧
+    evalBinOp .shrUnchecked (.scalar (bvToScalar .i32 true x32))
+        (.scalar (bvToScalar .i8 false
+          (BitVec.ofNat (8 * IntWidth.i8.byteSize) 4))) =
+      .ok (.scalar (bvToScalar .i32 true
+        (Anneal.BitVecArith.ashr x32 4))) ∧
+    evalBinOp .shlUnchecked (.scalar (bvToScalar .i32 true x32))
+        (.scalar (bvToScalar .i8 true
+          (Anneal.BitVec.allOnes (8 * IntWidth.i8.byteSize)))) =
+      .error .undefined ∧
+    evalBinOp .shrUnchecked (.scalar (bvToScalar .i32 false x32))
+        (.scalar (bvToScalar .i8 true
+          (Anneal.BitVec.allOnes (8 * IntWidth.i8.byteSize)))) =
+      .error .undefined := by
+  have hUshrOk :
+      evalBinOp .shrUnchecked (.scalar (bvToScalar .i32 false x32))
+          (.scalar (bvToScalar .i8 false
+            (BitVec.ofNat (8 * IntWidth.i8.byteSize) 5))) =
+        .ok (.scalar (bvToScalar .i32 false (Anneal.BitVec.ushr x32 5))) := by
+    have h5 : (BitVec.ofNat (8 * IntWidth.i8.byteSize) 5).toNat = 5 := by
+      decide
+    rw [evalBinOp_shrUnchecked_unsigned_eq,
+      Anneal.InitLemmas.ite_true_of (by decide :
+        (BitVec.ofNat (8 * IntWidth.i8.byteSize) 5).toNat <
+          8 * IntWidth.i32.byteSize),
+      h5]
+  have hUshrOver :
+      evalBinOp .shrUnchecked (.scalar (bvToScalar .i32 false x32))
+          (.scalar (bvToScalar .i8 false
+            (BitVec.ofNat (8 * IntWidth.i8.byteSize) 32))) =
+        .error .undefined := by
+    rw [evalBinOp_shrUnchecked_unsigned_eq]
+    rw [Anneal.InitLemmas.ite_false_of (by decide :
+      ¬ ((BitVec.ofNat (8 * IntWidth.i8.byteSize) 32).toNat <
+        8 * IntWidth.i32.byteSize))]
+  have hSignedShrOk :
+      evalBinOp .shrUnchecked (.scalar (bvToScalar .i32 true x32))
+          (.scalar (bvToScalar .i8 false
+            (BitVec.ofNat (8 * IntWidth.i8.byteSize) 4))) =
+        .ok (.scalar (bvToScalar .i32 true
+          (Anneal.BitVecArith.ashr x32 4))) := by
+    rw [evalBinOp_shrUnchecked_eq]
+    rw [Anneal.InitLemmas.ite_true_of (by decide :
+      ((!false || !Anneal.BitVecArith.msb
+          (BitVec.ofNat (8 * IntWidth.i8.byteSize) 4)) &&
+        decide ((BitVec.ofNat (8 * IntWidth.i8.byteSize) 4).toNat <
+          8 * IntWidth.i32.byteSize)) = true)]
+    rfl
+  have hMsbAll1 :
+      Anneal.BitVecArith.msb
+          (Anneal.BitVec.allOnes (8 * IntWidth.i8.byteSize)) = true := by
+    rw [Anneal.BitVecArith.msb_eq_true_iff (by decide :
+        0 < 8 * IntWidth.i8.byteSize),
+      Anneal.BitVec.toNat_allOnes]
+    decide
+  exact ⟨hUshrOk, hUshrOver,
+    evalBinOp_shl_eq_shl .i32 .i8 true true x32 y8,
+    evalBinOp_shr_eq .i32 .i8 true true x32 y8,
+    hSignedShrOk,
+    evalBinOp_shiftUnchecked_neg_rhs_fault .shlUnchecked (Or.inl rfl)
+      .i32 .i8 true x32 hMsbAll1,
+    evalBinOp_shiftUnchecked_neg_rhs_fault .shrUnchecked (Or.inr rfl)
+      .i32 .i8 false x32 hMsbAll1⟩
+
+/-- Extended signed arithmetic, 128-bit overflow, unchecked overflow fault, and
+signed division/remainder canaries (including `INT_MIN / -1` and `INT_MIN % -1`
+`.undefined` faults). -/
+theorem bitVecMirBridgeExt_signed_arith_and_overflow_canaries
+    (x32 y32 : BitVec (8 * IntWidth.i32.byteSize))
+    (hy32 : y32.toNat ≠ 0)
+    (hNoOvf32 : ¬ (x32 = Anneal.BitVecArith.signBit (w := 8 * IntWidth.i32.byteSize) ∧
+      y32 = Anneal.BitVec.allOnes (8 * IntWidth.i32.byteSize)))
+    (x128 y128 : BitVec (8 * IntWidth.i128.byteSize)) :
+    evalBinOp .mulWithOverflow (.scalar (bvToScalar .i128 false x128))
+        (.scalar (bvToScalar .i128 false y128)) =
+      .ok (.tuple [
+        .scalar (bvToScalar .i128 false (Anneal.BitVec.mul x128 y128)),
+        .bool (decide (Nat.pow 2 (8 * IntWidth.i128.byteSize) ≤
+          x128.toNat * y128.toNat))
+      ]) ∧
+    evalBinOp .mulUnchecked
+        (.scalar (bvToScalar .i128 false
+          (Anneal.BitVecArith.signBit (w := 8 * IntWidth.i128.byteSize))))
+        (.scalar (bvToScalar .i128 false
+          (BitVec.ofNat (8 * IntWidth.i128.byteSize) 2))) =
+      .error .undefined ∧
+    evalBinOp .addWithOverflow
+        (.scalar (bvToScalar .i8 true
+          (BitVec.ofNat (8 * IntWidth.i8.byteSize) 100)))
+        (.scalar (bvToScalar .i8 true
+          (BitVec.ofNat (8 * IntWidth.i8.byteSize) 20))) =
+      .ok (.tuple [
+        .scalar (bvToScalar .i8 true
+          (BitVec.ofNat (8 * IntWidth.i8.byteSize) 120)),
+        .bool false
+      ]) ∧
+    evalBinOp .addUnchecked
+        (.scalar (bvToScalar .i8 true
+          (BitVec.ofNat (8 * IntWidth.i8.byteSize) 100)))
+        (.scalar (bvToScalar .i8 true
+          (BitVec.ofNat (8 * IntWidth.i8.byteSize) 50))) =
+      .error .undefined ∧
+    evalBinOp .subUnchecked
+        (.scalar (bvToScalar .i128 true
+          (Anneal.BitVecArith.signBit (w := 8 * IntWidth.i128.byteSize))))
+        (.scalar (bvToScalar .i128 true
+          (BitVec.ofNat (8 * IntWidth.i128.byteSize) 1))) =
+      .error .undefined ∧
+    evalBinOp .mulUnchecked
+        (.scalar (bvToScalar .i128 true
+          (Anneal.BitVecArith.signBit (w := 8 * IntWidth.i128.byteSize))))
+        (.scalar (bvToScalar .i128 true
+          (Anneal.BitVec.allOnes (8 * IntWidth.i128.byteSize)))) =
+      .error .undefined ∧
+    evalBinOp .div (.scalar (bvToScalar .i32 true x32))
+        (.scalar (bvToScalar .i32 true y32)) =
+      .ok (.scalar (bvToScalar .i32 true (bvSdiv x32 y32))) ∧
+    evalBinOp .rem (.scalar (bvToScalar .i32 true x32))
+        (.scalar (bvToScalar .i32 true y32)) =
+      .ok (.scalar (bvToScalar .i32 true (bvSrem x32 y32))) ∧
+    evalBinOp .div (.scalar (bvToScalar .i32 true x32))
+        (.scalar (bvToScalar .i32 true
+          (BitVec.ofNat (8 * IntWidth.i32.byteSize) 0))) =
+      .error .undefined ∧
+    evalBinOp .div
+        (.scalar (bvToScalar .i32 true
+          (Anneal.BitVecArith.signBit (w := 8 * IntWidth.i32.byteSize))))
+        (.scalar (bvToScalar .i32 true
+          (Anneal.BitVec.allOnes (8 * IntWidth.i32.byteSize)))) =
+      .error .undefined ∧
+    evalBinOp .rem
+        (.scalar (bvToScalar .i128 true
+          (Anneal.BitVecArith.signBit (w := 8 * IntWidth.i128.byteSize))))
+        (.scalar (bvToScalar .i128 true
+          (Anneal.BitVec.allOnes (8 * IntWidth.i128.byteSize)))) =
+      .error .undefined := by
+  have hUMul128Ovf :
+      evalBinOp .mulUnchecked
+          (.scalar (bvToScalar .i128 false
+            (Anneal.BitVecArith.signBit (w := 8 * IntWidth.i128.byteSize))))
+          (.scalar (bvToScalar .i128 false
+            (BitVec.ofNat (8 * IntWidth.i128.byteSize) 2))) =
+        .error .undefined := by
+    rw [evalBinOp_mulUnchecked_unsigned_eq]
+    have hGe : Nat.pow 2 (8 * IntWidth.i128.byteSize) ≤
+        (Anneal.BitVecArith.signBit (w := 8 * IntWidth.i128.byteSize)).toNat *
+          (BitVec.ofNat (8 * IntWidth.i128.byteSize) 2).toNat := by
+      have hSb :
+          (Anneal.BitVecArith.signBit (w := 8 * IntWidth.i128.byteSize)).toNat =
+            Nat.pow 2 127 := by
+        rw [Anneal.BitVecArith.toNat_signBit_of_pos (by decide :
+          0 < 8 * IntWidth.i128.byteSize)]
+        rfl
+      have h2 : (BitVec.ofNat (8 * IntWidth.i128.byteSize) 2).toNat = 2 := rfl
+      change Nat.pow 2 128 ≤ _
+      rw [hSb, h2]
+      decide
+    rw [Anneal.InitLemmas.ite_false_of (Nat.not_lt_of_ge hGe)]
+  have hSAdd8No :
+      evalBinOp .addWithOverflow
+          (.scalar (bvToScalar .i8 true
+            (BitVec.ofNat (8 * IntWidth.i8.byteSize) 100)))
+          (.scalar (bvToScalar .i8 true
+            (BitVec.ofNat (8 * IntWidth.i8.byteSize) 20))) =
+        .ok (.tuple [
+          .scalar (bvToScalar .i8 true
+            (BitVec.ofNat (8 * IntWidth.i8.byteSize) 120)),
+          .bool false
+        ]) := by
+    rw [evalBinOp_addWithOverflow_signed_eq]
+    have hF : signedOverflowAddBv
+        (BitVec.ofNat (8 * IntWidth.i8.byteSize) 100)
+        (BitVec.ofNat (8 * IntWidth.i8.byteSize) 20) = false := by
+      rw [signedOverflowAddBv_eq_false_iff (by decide :
+        0 < 8 * IntWidth.i8.byteSize)]
+      decide
+    rw [hF]
+    rfl
+  have hSAdd8Unchk :
+      evalBinOp .addUnchecked
+          (.scalar (bvToScalar .i8 true
+            (BitVec.ofNat (8 * IntWidth.i8.byteSize) 100)))
+          (.scalar (bvToScalar .i8 true
+            (BitVec.ofNat (8 * IntWidth.i8.byteSize) 50))) =
+        .error .undefined := by
+    rw [evalBinOp_addUnchecked_signed_eq]
+    have hT : signedOverflowAddBv
+        (BitVec.ofNat (8 * IntWidth.i8.byteSize) 100)
+        (BitVec.ofNat (8 * IntWidth.i8.byteSize) 50) = true := by
+      cases hOv : signedOverflowAddBv
+          (BitVec.ofNat (8 * IntWidth.i8.byteSize) 100)
+          (BitVec.ofNat (8 * IntWidth.i8.byteSize) 50) with
+      | true => rfl
+      | false =>
+        rw [signedOverflowAddBv_eq_false_iff (by decide :
+          0 < 8 * IntWidth.i8.byteSize)] at hOv
+        exact False.elim ((by decide : ¬ (Nat.pow 2 (8 * IntWidth.i8.byteSize - 1) ≤
+          Anneal.BitVecArith.signedKey
+            (BitVec.ofNat (8 * IntWidth.i8.byteSize) 100) +
+          Anneal.BitVecArith.signedKey
+            (BitVec.ofNat (8 * IntWidth.i8.byteSize) 50) ∧
+          Anneal.BitVecArith.signedKey
+            (BitVec.ofNat (8 * IntWidth.i8.byteSize) 100) +
+          Anneal.BitVecArith.signedKey
+            (BitVec.ofNat (8 * IntWidth.i8.byteSize) 50) <
+          Nat.pow 2 (8 * IntWidth.i8.byteSize - 1) +
+            Nat.pow 2 (8 * IntWidth.i8.byteSize))) hOv)
+    rw [hT]
+    rfl
+  have hSSub128Unchk :
+      evalBinOp .subUnchecked
+          (.scalar (bvToScalar .i128 true
+            (Anneal.BitVecArith.signBit (w := 8 * IntWidth.i128.byteSize))))
+          (.scalar (bvToScalar .i128 true
+            (BitVec.ofNat (8 * IntWidth.i128.byteSize) 1))) =
+        .error .undefined := by
+    rw [evalBinOp_subUnchecked_signed_eq]
+    have hT : signedOverflowSubBv
+        (Anneal.BitVecArith.signBit (w := 8 * IntWidth.i128.byteSize))
+        (BitVec.ofNat (8 * IntWidth.i128.byteSize) 1) = true := by
+      cases hOv : signedOverflowSubBv
+          (Anneal.BitVecArith.signBit (w := 8 * IntWidth.i128.byteSize))
+          (BitVec.ofNat (8 * IntWidth.i128.byteSize) 1) with
+      | true => rfl
+      | false =>
+        rw [signedOverflowSubBv_eq_false_iff (by decide :
+          0 < 8 * IntWidth.i128.byteSize)] at hOv
+        have hSb : Anneal.BitVecArith.signedKey
+            (Anneal.BitVecArith.signBit (w := 8 * IntWidth.i128.byteSize)) = 0 := by
+          rw [Anneal.BitVecArith.signedKey_eq_of_msb_true (by decide :
+              0 < 8 * IntWidth.i128.byteSize)
+              (by rw [Anneal.BitVecArith.msb_eq_true_iff (by decide :
+                    0 < 8 * IntWidth.i128.byteSize),
+                    Anneal.BitVecArith.toNat_signBit_of_pos (by decide :
+                    0 < 8 * IntWidth.i128.byteSize)]
+                  exact Nat.le_refl _),
+            Anneal.BitVecArith.toNat_signBit_of_pos (by decide :
+              0 < 8 * IntWidth.i128.byteSize), Nat.sub_self]
+        have h1 : Anneal.BitVecArith.signedKey
+            (BitVec.ofNat (8 * IntWidth.i128.byteSize) 1) =
+            Nat.pow 2 127 + 1 := by
+          rw [Anneal.BitVecArith.signedKey_eq_of_msb_false (by decide :
+              0 < 8 * IntWidth.i128.byteSize)
+              (by rw [Anneal.BitVecArith.msb_eq_false_iff (by decide :
+                    0 < 8 * IntWidth.i128.byteSize)]
+                  decide)]
+          rfl
+        have hBad := hOv.1
+        rw [hSb] at hBad
+        rw [h1, Nat.zero_add] at hBad
+        exact False.elim (Nat.not_le_of_gt (Nat.lt_succ_self (Nat.pow 2 127)) hBad)
+    rw [hT]
+    rfl
+  have hSMul128Unchk :
+      evalBinOp .mulUnchecked
+          (.scalar (bvToScalar .i128 true
+            (Anneal.BitVecArith.signBit (w := 8 * IntWidth.i128.byteSize))))
+          (.scalar (bvToScalar .i128 true
+            (Anneal.BitVec.allOnes (8 * IntWidth.i128.byteSize)))) =
+        .error .undefined := by
+    rw [evalBinOp_mulUnchecked_signed_eq]
+    have hT : signedOverflowMulBv
+        (Anneal.BitVecArith.signBit (w := 8 * IntWidth.i128.byteSize))
+        (Anneal.BitVec.allOnes (8 * IntWidth.i128.byteSize)) = true := by
+      cases hOv : signedOverflowMulBv
+          (Anneal.BitVecArith.signBit (w := 8 * IntWidth.i128.byteSize))
+          (Anneal.BitVec.allOnes (8 * IntWidth.i128.byteSize)) with
+      | true => rfl
+      | false =>
+        rw [signedOverflowMulBv_eq_false_iff (by decide :
+          0 < 8 * IntWidth.i128.byteSize)] at hOv
+        have hW128 : 0 < 8 * IntWidth.i128.byteSize := by decide
+        have hProd : bvToInt
+            (Anneal.BitVecArith.signBit (w := 8 * IntWidth.i128.byteSize)) *
+            bvToInt (Anneal.BitVec.allOnes (8 * IntWidth.i128.byteSize)) =
+            Int.ofNat (Nat.pow 2 127) := by
+          rw [bvToInt_signBit, bvToInt_allOnes hW128]
+          have hMin : signedMinInt .i128 =
+              Int.negSucc (Nat.pow 2 127 - 1) := by
+            have hPos : 0 < Nat.pow 2 127 := Anneal.InitLemmas.nat_two_pow_pos 127
+            have hPow : HPow.hPow (2 : Int) 127 =
+                Int.ofNat (Nat.succ (Nat.pow 2 127 - 1)) := by
+              change Int.ofNat (Nat.pow 2 127) =
+                Int.ofNat ((Nat.pow 2 127 - 1) + 1)
+              rw [Nat.sub_add_cancel hPos]
+            unfold signedMinInt
+            change Neg.neg (HPow.hPow (2 : Int) 127) = _
+            rw [hPow]
+            rfl
+          have hNeg1 : Neg.neg (1 : Int) = Int.negSucc 0 := rfl
+          rw [hMin, hNeg1]
+          change Int.ofNat (Nat.succ (Nat.pow 2 127 - 1) * 1) =
+            Int.ofNat (Nat.pow 2 127)
+          rw [Nat.mul_one]
+        have hBad := hOv.2
+        rw [hProd] at hBad
+        change Int.NonNeg (Int.ofNat (Nat.pow 2 127) -
+          (Int.ofNat (Nat.pow 2 127) + 1)) at hBad
+        have hSub : Int.ofNat (Nat.pow 2 127) -
+            (Int.ofNat (Nat.pow 2 127) + 1) = Int.negSucc 0 := by
+          change Int.subNatNat (Nat.pow 2 127) (Nat.pow 2 127 + 1) =
+            Int.negSucc 0
+          unfold Int.subNatNat
+          have hD : (Nat.pow 2 127 + 1) - Nat.pow 2 127 = 1 := by
+            rw [Nat.add_comm, Nat.add_sub_cancel]
+          rw [hD]
+        rw [hSub] at hBad
+        nomatch hBad
+    rw [hT]
+    rfl
+  exact ⟨evalBinOp_mulWithOverflow_unsigned_eq .i128 x128 y128,
+    hUMul128Ovf, hSAdd8No, hSAdd8Unchk, hSSub128Unchk, hSMul128Unchk,
+    evalBinOp_div_signed_eq .i32 hy32 hNoOvf32,
+    evalBinOp_rem_signed_eq .i32 hy32 hNoOvf32,
+    evalBinOp_div_signed_zero_fault .i32 x32 rfl,
+    evalBinOp_div_signed_min_neg_one_fault .i32,
+    evalBinOp_rem_signed_min_neg_one_fault .i128⟩
+
+/-- Extended comparison, `.bool`/`.char`, `evalUnOp` (`srange`/tnum neg), and
+`evalIntToIntCast` canaries (including code points `> 255` `.char` and
+negative-integer cast rejections). -/
+theorem bitVecMirBridgeExt_cmp_bool_char_unop_cast_canaries
+    (x32 y32 m v : BitVec (8 * IntWidth.i32.byteSize))
+    (hm : Anneal.BitVec.MaskEq m x32 v)
+    (b1 b2 : Bool) (c1 c2 : Char) :
+    evalBinOp .ne (.scalar (bvToScalar .i32 true x32))
+        (.scalar (bvToScalar .i32 true y32)) =
+      .ok (.bool (decide (x32 ≠ y32))) ∧
+    evalBinOp .gt (.scalar (bvToScalar .i32 false x32))
+        (.scalar (bvToScalar .i32 false y32)) =
+      .ok (.bool (decide (y32.toNat < x32.toNat))) ∧
+    evalBinOp .ge (.scalar (bvToScalar .i32 false x32))
+        (.scalar (bvToScalar .i32 false y32)) =
+      .ok (.bool (decide (y32.toNat ≤ x32.toNat))) ∧
+    evalBinOp .cmp (.scalar (bvToScalar .i32 false x32))
+        (.scalar (bvToScalar .i32 false y32)) =
+      .ok (.ordering (cmpOrderingOfNat x32.toNat y32.toNat)) ∧
+    evalBinOp .cmp (.scalar (bvToScalar .i32 true x32))
+        (.scalar (bvToScalar .i32 true y32)) =
+      .ok (.ordering (bvScmp x32 y32)) ∧
+    evalBinOp .add (.scalar (bvToScalar .i32 false x32))
+        (.scalar (bvToScalar .i32 true y32)) = .error .unsupported ∧
+    evalBinOp .offset (.scalar (bvToScalar .i32 false x32))
+        (.scalar (bvToScalar .i32 false y32)) = .error .unsupported ∧
+    evalBinOp .bitXor (.bool b1) (.bool b2) = .ok (.bool (bne b1 b2)) ∧
+    evalBinOp .cmp (.bool b1) (.bool b2) = .error .unsupported ∧
+    evalBinOp .cmp (.char c1) (.char c2) =
+      .ok (.ordering (cmpOrderingOfNat c1.toNat c2.toNat)) ∧
+    evalBinOp .add (.char c1) (.char c2) = .error .unsupported ∧
+    evalUnOp .not (.bool b1) = .ok (.bool (!b1)) ∧
+    evalUnOp .neg (.char c1) = .error .unsupported ∧
+    evalUnOp .ptrMetadata (.scalar (bvToScalar .i32 false x32)) =
+      .error .unsupported ∧
+    (∃ r : BitVec (8 * IntWidth.i32.byteSize),
+      evalUnOp .neg (.scalar (bvToScalar .i32 true x32)) =
+        .ok (.scalar (bvToScalar .i32 true r)) ∧
+      Anneal.BitVec.MaskEq (tnumNegMask m v) r (tnumNegVal m v)) ∧
+    (Anneal.BitVecArith.sle (BitVec.ofNat (8 * IntWidth.i32.byteSize) 5) x32 →
+      Anneal.BitVecArith.sle x32 (BitVec.ofNat (8 * IntWidth.i32.byteSize) 20) →
+      Anneal.BitVecArith.sle
+        (Anneal.BitVecArith.neg (BitVec.ofNat (8 * IntWidth.i32.byteSize) 20))
+        (Anneal.BitVecArith.neg x32) ∧
+      Anneal.BitVecArith.sle
+        (Anneal.BitVecArith.neg x32)
+        (Anneal.BitVecArith.neg (BitVec.ofNat (8 * IntWidth.i32.byteSize) 5))) ∧
+    evalIntToIntCast (.bool true) (.int .i32 false) =
+      .ok (.scalar (bvToScalar .i32 false
+        (BitVec.ofNat (8 * IntWidth.i32.byteSize) 1))) ∧
+    evalIntToIntCast
+        (.scalar (bvToScalar .i32 false
+          (BitVec.ofNat (8 * IntWidth.i32.byteSize) 65))) .char =
+      .ok (.char (Char.ofNat 65)) ∧
+    evalIntToIntCast
+        (.scalar (bvToScalar .i32 false
+          (BitVec.ofNat (8 * IntWidth.i32.byteSize) 256))) .char =
+      .error .unsupported ∧
+    evalIntToIntCast
+        (.scalar (bvToScalar .i32 true
+          (Anneal.BitVec.allOnes (8 * IntWidth.i32.byteSize)))) .char =
+      .error .unsupported ∧
+    evalIntToIntCast (.char (Char.ofNat 300)) .char = .error .unsupported ∧
+    evalIntToIntCast .unit (.int .i32 false) = .error .unsupported ∧
+    evalIntToIntCast (.bool b1) .bool = .error .unsupported := by
+  have hSrange :
+      Anneal.BitVecArith.sle (BitVec.ofNat (8 * IntWidth.i32.byteSize) 5) x32 →
+      Anneal.BitVecArith.sle x32 (BitVec.ofNat (8 * IntWidth.i32.byteSize) 20) →
+      Anneal.BitVecArith.sle
+        (Anneal.BitVecArith.neg (BitVec.ofNat (8 * IntWidth.i32.byteSize) 20))
+        (Anneal.BitVecArith.neg x32) ∧
+      Anneal.BitVecArith.sle
+        (Anneal.BitVecArith.neg x32)
+        (Anneal.BitVecArith.neg (BitVec.ofNat (8 * IntWidth.i32.byteSize) 5)) := by
+    intro hLo hHi
+    have hSlt :
+        Anneal.BitVecArith.slt
+          (Anneal.BitVecArith.signBit (w := 8 * IntWidth.i32.byteSize))
+          (BitVec.ofNat (8 * IntWidth.i32.byteSize) 5) :=
+      Anneal.BitVecArith.slt_of_msb_true_false
+        (by decide : Anneal.BitVecArith.msb
+          (Anneal.BitVecArith.signBit (w := 8 * IntWidth.i32.byteSize)) = true)
+        (by decide : Anneal.BitVecArith.msb
+          (BitVec.ofNat (8 * IntWidth.i32.byteSize) 5) = false)
+    exact (evalUnOp_neg_srange_sound .i32 hSlt hLo hHi).2
+  have hCast65 :
+      evalIntToIntCast
+          (.scalar (bvToScalar .i32 false
+            (BitVec.ofNat (8 * IntWidth.i32.byteSize) 65))) .char =
+        .ok (.char (Char.ofNat 65)) := by
+    rw [evalIntToIntCast_unsigned_to_char]
+    rfl
+  have hCast256 :
+      evalIntToIntCast
+          (.scalar (bvToScalar .i32 false
+            (BitVec.ofNat (8 * IntWidth.i32.byteSize) 256))) .char =
+        .error .unsupported := by
+    rw [evalIntToIntCast_unsigned_to_char]
+    rfl
+  have hCastNeg1 :
+      evalIntToIntCast
+          (.scalar (bvToScalar .i32 true
+            (Anneal.BitVec.allOnes (8 * IntWidth.i32.byteSize)))) .char =
+        .error .unsupported := by
+    refine evalIntToIntCast_signed_neg_to_char_unsupported .i32 ?_
+    rw [Anneal.BitVecArith.msb_eq_true_iff (by decide :
+        0 < 8 * IntWidth.i32.byteSize),
+      Anneal.BitVec.toNat_allOnes]
+    decide
+  have hCastChar300 :
+      evalIntToIntCast (.char (Char.ofNat 300)) .char = .error .unsupported := by
+    rw [evalIntToIntCast_char_to_char]
+    rfl
+  exact ⟨evalBinOp_ne_eq .i32 true x32 y32,
+    evalBinOp_gt_unsigned_eq .i32 x32 y32,
+    evalBinOp_ge_unsigned_eq .i32 x32 y32,
+    evalBinOp_cmp_unsigned_eq .i32 x32 y32,
+    evalBinOp_cmp_signed_eq .i32 x32 y32,
+    evalBinOp_nonShift_mismatch_unsupported (op := .add) rfl rfl,
+    evalBinOp_offset_scalar_unsupported (bvToScalar .i32 false x32)
+      (bvToScalar .i32 false y32),
+    evalBinOp_bool_bitXor_eq b1 b2,
+    evalBinOp_bool_cmp_unsupported b1 b2,
+    evalBinOp_char_cmp_eq c1 c2,
+    evalBinOp_char_unsupported (op := .add)
+      ⟨(fun h => by cases h), (fun h => by cases h), (fun h => by cases h),
+       (fun h => by cases h), (fun h => by cases h), (fun h => by cases h),
+       (fun h => by cases h)⟩ c1 c2,
+    evalUnOp_not_bool_eq b1,
+    evalUnOp_char_unsupported .neg c1,
+    evalUnOp_ptrMetadata_unsupported (.scalar (bvToScalar .i32 false x32)),
+    evalUnOp_neg_tnum_sound hm,
+    hSrange,
+    evalIntToIntCast_bool_to_int true .i32 false,
+    hCast65, hCast256, hCastNeg1, hCastChar300,
+    evalIntToIntCast_unsupported_source (v := .unit) rfl (.int .i32 false),
+    evalIntToIntCast_unsupported_target (.bool b1)
+      (fun _ _ h => by cases h) (fun h => by cases h)⟩
+
+private theorem evalRvalue_i32Div {v1 v2 res : Val}
+    (hBin : evalBinOp .div v1 v2 = .ok res) :
+    evalRvalue bodyI32Div.locals
+      [.immediate none, .immediate (some v1), .immediate (some v2)]
+      entryMemory coreI32Ty
+      (.binaryOp .div (.copy (coreLocalPlace 1)) (.copy (coreLocalPlace 2))) =
+      .ok (res, [.immediate none, .immediate (some v1), .immediate (some v2)],
+        entryMemory) := by
+  unfold evalRvalue
+  dsimp only
+  have hP1 : evalPrimitiveOperand bodyI32Div.locals
+      [.immediate none, .immediate (some v1), .immediate (some v2)]
+      entryMemory (.copy (coreLocalPlace 1)) =
+      .ok (v1, [.immediate none, .immediate (some v1), .immediate (some v2)],
+        entryMemory) := rfl
+  have hP2 : evalPrimitiveOperand bodyI32Div.locals
+      [.immediate none, .immediate (some v1), .immediate (some v2)]
+      entryMemory (.copy (coreLocalPlace 2)) =
+      .ok (v2, [.immediate none, .immediate (some v1), .immediate (some v2)],
+        entryMemory) := rfl
+  rw [hP1]
+  dsimp only
+  rw [hP2]
+  dsimp only
+  rw [hBin]
+
+private theorem evalRvalue_i32Div_fault {v1 v2 : Val} {fk : FaultKind}
+    (hBin : evalBinOp .div v1 v2 = .error fk) :
+    evalRvalue bodyI32Div.locals
+      [.immediate none, .immediate (some v1), .immediate (some v2)]
+      entryMemory coreI32Ty
+      (.binaryOp .div (.copy (coreLocalPlace 1)) (.copy (coreLocalPlace 2))) =
+      .error fk := by
+  unfold evalRvalue
+  dsimp only
+  have hP1 : evalPrimitiveOperand bodyI32Div.locals
+      [.immediate none, .immediate (some v1), .immediate (some v2)]
+      entryMemory (.copy (coreLocalPlace 1)) =
+      .ok (v1, [.immediate none, .immediate (some v1), .immediate (some v2)],
+        entryMemory) := rfl
+  have hP2 : evalPrimitiveOperand bodyI32Div.locals
+      [.immediate none, .immediate (some v1), .immediate (some v2)]
+      entryMemory (.copy (coreLocalPlace 2)) =
+      .ok (v2, [.immediate none, .immediate (some v1), .immediate (some v2)],
+        entryMemory) := rfl
+  rw [hP1]
+  dsimp only
+  rw [hP2]
+  dsimp only
+  rw [hBin]
+
+private theorem writePlace_ret_i32Div {v1 v2 res : Val}
+    (hChk : checkVal res coreI32Ty = true) :
+    writePlace [.immediate none, .immediate (some v1), .immediate (some v2)]
+      entryMemory 0 coreI32Ty res =
+      .ok ([.immediate (some res), .immediate (some v1),
+            .immediate (some v2)], entryMemory) := by
+  unfold writePlace
+  rw [hChk]
+  rfl
+
+private theorem execOutcomeState_succ {p : Program}
+    {onDone : TerminalOut → Prop} {onFault : FaultKind → Prop}
+    {fuel : Nat} {s : State} :
+    execOutcomeState p onDone onFault (fuel + 1) s =
+      (match evalStep p 0 s with
+      | .step st' => execOutcomeState p onDone onFault fuel st'
+      | .done out => onDone out
+      | .fault k => onFault k) := by
+  dsimp only [execOutcomeState, Anneal.Framework.StepWp.execStepOutcome]
+  rw [Anneal.Framework.StepWp.execStepPred_succ_iff]
+  cases evalStep p 0 s <;> rfl
+
+private theorem evalStep_i32Div_return {v0 v1 v2 : Val} :
+    evalStep (bodyProg bodyI32Div) 0 {
+      frames := [{
+        defId := 0
+        blockIdx := 0
+        stmtIdx := 1
+        locals := [.immediate (some v0), .immediate (some v1),
+          .immediate (some v2)]
+      }]
+      callerMem := ⟨[]⟩
+      mem := entryMemory
+    } = .done (.returned ⟨v0, ⟨[]⟩⟩) := rfl
+
+private theorem bodyI32Div_pos_canary
+    (x y : BitVec (8 * IntWidth.i32.byteSize)) (hy : y.toNat ≠ 0)
+    (hNoOvf : ¬ (x = Anneal.BitVecArith.signBit (w := 8 * IntWidth.i32.byteSize) ∧
+      y = Anneal.BitVec.allOnes (8 * IntWidth.i32.byteSize))) :
+    PositiveCanaryClaim (bodyProg bodyI32Div)
+      { args := [.scalar (bvToScalar .i32 true x),
+                 .scalar (bvToScalar .i32 true y)] }
+      (.scalar (bvToScalar .i32 true (bvSdiv x y))) := by
+  have hBody : Trusted.MirSemantics.getElem? [bodyI32Div] 0 =
+      some bodyI32Div := rfl
+  have hBb : Trusted.MirSemantics.getElem? bodyI32Div.basicBlocks 0 =
+      some {
+        statements := [
+          .assign (coreLocalPlace 0)
+            (.binaryOp .div (.copy (coreLocalPlace 1))
+              (.copy (coreLocalPlace 2)))
+        ]
+        terminator := .return_
+        cleanup := false
+      } := rfl
+  have hStmt :
+      Trusted.MirSemantics.getElem?
+        [StatementKind.assign (coreLocalPlace 0)
+          (.binaryOp .div (.copy (coreLocalPlace 1))
+            (.copy (coreLocalPlace 2)))]
+        0 =
+        some (.assign (coreLocalPlace 0)
+          (.binaryOp .div (.copy (coreLocalPlace 1))
+            (.copy (coreLocalPlace 2)))) := rfl
+  have hLoc0 : Trusted.MirSemantics.getElem? bodyI32Div.locals 0 =
+      some coreI32Ty := rfl
+  have hProj : (!(coreLocalPlace 0).projection.isEmpty) = false := rfl
+  have hId0 : (coreLocalPlace 0).localId = 0 := rfl
+  have hIfFalse : ∀ {α : Type} (a b : α),
+      (if (false = true) then a else b) = b := fun _ _ => rfl
+  have hChkX :
+      checkVal (.scalar (bvToScalar .i32 true x)) coreI32Ty = true :=
+    checkVal_bvToScalar .i32 true x
+  have hChkY :
+      checkVal (.scalar (bvToScalar .i32 true y)) coreI32Ty = true :=
+    checkVal_bvToScalar .i32 true y
+  have hChkQ :
+      checkVal (.scalar (bvToScalar .i32 true (bvSdiv x y))) coreI32Ty =
+        true :=
+    checkVal_bvToScalar .i32 true (bvSdiv x y)
+  have hArgs :
+      ValidEntryArgs bodyI32Div
+        [.scalar (bvToScalar .i32 true x),
+         .scalar (bvToScalar .i32 true y)] := by
+    unfold ValidEntryArgs
+    change checkArgsMatch
+        [.scalar (bvToScalar .i32 true x),
+         .scalar (bvToScalar .i32 true y)]
+        [coreI32Ty, coreI32Ty] = true
+    unfold checkArgsMatch
+    rw [hChkX]
+    unfold checkArgsMatch
+    rw [hChkY]
+    rfl
+  have hInit :
+      initState (bodyProg bodyI32Div)
+        { args := [.scalar (bvToScalar .i32 true x),
+                   .scalar (bvToScalar .i32 true y)] } =
+        .ok {
+          frames := [{
+            defId := 0
+            blockIdx := 0
+            stmtIdx := 0
+            locals := [
+              .immediate none,
+              .immediate (some (.scalar (bvToScalar .i32 true x))),
+              .immediate (some (.scalar (bvToScalar .i32 true y)))
+            ]
+          }]
+          callerMem := ⟨[]⟩
+          mem := entryMemory
+        } :=
+    initState_eq_ok (body := bodyI32Div) rfl rfl hArgs
+  have hStep1 :
+      evalStep (bodyProg bodyI32Div) 0 {
+        frames := [{
+          defId := 0
+          blockIdx := 0
+          stmtIdx := 0
+          locals := [
+            .immediate none,
+            .immediate (some (.scalar (bvToScalar .i32 true x))),
+            .immediate (some (.scalar (bvToScalar .i32 true y)))
+          ]
+        }]
+        callerMem := ⟨[]⟩
+        mem := entryMemory
+      } =
+      .step {
+        frames := [{
+          defId := 0
+          blockIdx := 0
+          stmtIdx := 1
+          locals := [
+            .immediate (some (.scalar (bvToScalar .i32 true (bvSdiv x y)))),
+            .immediate (some (.scalar (bvToScalar .i32 true x))),
+            .immediate (some (.scalar (bvToScalar .i32 true y)))
+          ]
+        }]
+        callerMem := ⟨[]⟩
+        mem := entryMemory
+      } := by
+    unfold evalStep evalStatement bodyProg
+    dsimp only [activeFrameBody, attachCallers]
+    rw [hBody]
+    dsimp only
+    rw [hBb]
+    dsimp only
+    rw [hStmt]
+    dsimp only
+    rw [hProj, hId0, hIfFalse, hLoc0]
+    dsimp only
+    rw [evalRvalue_i32Div (evalBinOp_div_signed_eq .i32 hy hNoOvf)]
+    dsimp only
+    rw [writePlace_ret_i32Div hChkQ]
+  have hExec : execProg (bodyProg bodyI32Div) 2
+      { args := [.scalar (bvToScalar .i32 true x),
+                 .scalar (bvToScalar .i32 true y)] }
+      (fun out => out = .returned
+        ⟨.scalar (bvToScalar .i32 true (bvSdiv x y)), ⟨[]⟩⟩) := by
+    unfold execProg execState
+    rw [hInit]
+    dsimp only
+    rw [execOutcomeState_succ, hStep1]
+    dsimp only
+    rw [execOutcomeState_succ, evalStep_i32Div_return]
+  exact positiveCanary_of_exec hExec
+
+private theorem bodyI32Div_neg_canary :
+    NegativeCanaryClaim (bodyProg bodyI32Div)
+      { args := [.scalar (bvToScalar .i32 true
+                   (Anneal.BitVecArith.signBit (w := 8 * IntWidth.i32.byteSize))),
+                 .scalar (bvToScalar .i32 true
+                   (Anneal.BitVec.allOnes (8 * IntWidth.i32.byteSize)))] }
+      .undefined .unsupported := by
+  have hBody : Trusted.MirSemantics.getElem? [bodyI32Div] 0 =
+      some bodyI32Div := rfl
+  have hBb : Trusted.MirSemantics.getElem? bodyI32Div.basicBlocks 0 =
+      some {
+        statements := [
+          .assign (coreLocalPlace 0)
+            (.binaryOp .div (.copy (coreLocalPlace 1))
+              (.copy (coreLocalPlace 2)))
+        ]
+        terminator := .return_
+        cleanup := false
+      } := rfl
+  have hStmt :
+      Trusted.MirSemantics.getElem?
+        [StatementKind.assign (coreLocalPlace 0)
+          (.binaryOp .div (.copy (coreLocalPlace 1))
+            (.copy (coreLocalPlace 2)))]
+        0 =
+        some (.assign (coreLocalPlace 0)
+          (.binaryOp .div (.copy (coreLocalPlace 1))
+            (.copy (coreLocalPlace 2)))) := rfl
+  have hLoc0 : Trusted.MirSemantics.getElem? bodyI32Div.locals 0 =
+      some coreI32Ty := rfl
+  have hProj : (!(coreLocalPlace 0).projection.isEmpty) = false := rfl
+  have hId0 : (coreLocalPlace 0).localId = 0 := rfl
+  have hIfFalse : ∀ {α : Type} (a b : α),
+      (if (false = true) then a else b) = b := fun _ _ => rfl
+  let sb := Anneal.BitVecArith.signBit (w := 8 * IntWidth.i32.byteSize)
+  let all1 := Anneal.BitVec.allOnes (8 * IntWidth.i32.byteSize)
+  have hChkSb : checkVal (.scalar (bvToScalar .i32 true sb)) coreI32Ty =
+      true :=
+    checkVal_bvToScalar .i32 true sb
+  have hChkAll1 :
+      checkVal (.scalar (bvToScalar .i32 true all1)) coreI32Ty = true :=
+    checkVal_bvToScalar .i32 true all1
+  have hArgs :
+      ValidEntryArgs bodyI32Div
+        [.scalar (bvToScalar .i32 true sb),
+         .scalar (bvToScalar .i32 true all1)] := by
+    unfold ValidEntryArgs
+    change checkArgsMatch
+        [.scalar (bvToScalar .i32 true sb),
+         .scalar (bvToScalar .i32 true all1)]
+        [coreI32Ty, coreI32Ty] = true
+    unfold checkArgsMatch
+    rw [hChkSb]
+    unfold checkArgsMatch
+    rw [hChkAll1]
+    rfl
+  have hInit :
+      initState (bodyProg bodyI32Div)
+        { args := [.scalar (bvToScalar .i32 true sb),
+                   .scalar (bvToScalar .i32 true all1)] } =
+        .ok {
+          frames := [{
+            defId := 0
+            blockIdx := 0
+            stmtIdx := 0
+            locals := [
+              .immediate none,
+              .immediate (some (.scalar (bvToScalar .i32 true sb))),
+              .immediate (some (.scalar (bvToScalar .i32 true all1)))
+            ]
+          }]
+          callerMem := ⟨[]⟩
+          mem := entryMemory
+        } :=
+    initState_eq_ok (body := bodyI32Div) rfl rfl hArgs
+  have hStepFault :
+      evalStep (bodyProg bodyI32Div) 0 {
+        frames := [{
+          defId := 0
+          blockIdx := 0
+          stmtIdx := 0
+          locals := [
+            .immediate none,
+            .immediate (some (.scalar (bvToScalar .i32 true sb))),
+            .immediate (some (.scalar (bvToScalar .i32 true all1)))
+          ]
+        }]
+        callerMem := ⟨[]⟩
+        mem := entryMemory
+      } = .fault .undefined := by
+    unfold evalStep evalStatement bodyProg
+    dsimp only [activeFrameBody, attachCallers]
+    rw [hBody]
+    dsimp only
+    rw [hBb]
+    dsimp only
+    rw [hStmt]
+    dsimp only
+    rw [hProj, hId0, hIfFalse, hLoc0]
+    dsimp only
+    rw [evalRvalue_i32Div_fault (evalBinOp_div_signed_min_neg_one_fault .i32)]
+  refine negativeCanary_of_execFault (fuel := 1) (by intro h; cases h) ?_
+  unfold execFaultProg
+  rw [hInit]
+  dsimp only [execFaultState]
+  rw [execOutcomeState_succ, hStepFault]
+
+/-- End-to-end signed MIR `Body` execution canary (`bodyI32Div`): succeeds
+with `bvSdiv x y` whenever `y ≠ 0` and `¬ (x = signBit ∧ y = allOnes)`, and
+faults with `FaultKind.undefined` on `i32::MIN / -1`. -/
+theorem bodyI32Div_bvToScalar_and_fault_canary
+    (x y : BitVec (8 * IntWidth.i32.byteSize)) (hy : y.toNat ≠ 0)
+    (hNoOvf : ¬ (x = Anneal.BitVecArith.signBit (w := 8 * IntWidth.i32.byteSize) ∧
+      y = Anneal.BitVec.allOnes (8 * IntWidth.i32.byteSize))) :
+    PositiveCanaryClaim (bodyProg bodyI32Div)
+      { args := [.scalar (bvToScalar .i32 true x),
+                 .scalar (bvToScalar .i32 true y)] }
+      (.scalar (bvToScalar .i32 true (bvSdiv x y))) ∧
+    NegativeCanaryClaim (bodyProg bodyI32Div)
+      { args := [.scalar (bvToScalar .i32 true
+                   (Anneal.BitVecArith.signBit (w := 8 * IntWidth.i32.byteSize))),
+                 .scalar (bvToScalar .i32 true
+                   (Anneal.BitVec.allOnes (8 * IntWidth.i32.byteSize)))] }
+      .undefined .unsupported :=
+  ⟨bodyI32Div_pos_canary x y hy hNoOvf, bodyI32Div_neg_canary⟩
 
 end Anneal.Core
 
