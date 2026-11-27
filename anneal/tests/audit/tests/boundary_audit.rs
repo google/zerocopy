@@ -58,8 +58,14 @@ mod pass1_mir_wp_gates;
 mod pass1_preflight;
 #[path = "boundary_audit/pass1_tiers_and_theory.rs"]
 mod pass1_tiers_and_theory;
+#[path = "boundary_audit/pass1_universes_and_framework.rs"]
+mod pass1_universes_and_framework;
 #[path = "boundary_audit/pass2_correspondence_audit.rs"]
 mod pass2_correspondence_audit;
+#[path = "boundary_audit/pass2_correspondence_non_backsliding.rs"]
+mod pass2_correspondence_non_backsliding;
+#[path = "boundary_audit/pass2_import_graph.rs"]
+mod pass2_import_graph;
 #[path = "boundary_audit/pass2_miri_cache_and_sandbox.rs"]
 mod pass2_miri_cache_and_sandbox;
 #[path = "boundary_audit/pass2_miri_pin.rs"]
