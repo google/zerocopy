@@ -11,3 +11,4 @@ prelude
 public import Anneal.ElfX86.PrefixDecode
 public import Anneal.ElfX86.RelocAndElf
 public import Anneal.ElfX86.DeadFlagAndSfi
+public import Anneal.ElfX86.ProgramHdrsAndCt

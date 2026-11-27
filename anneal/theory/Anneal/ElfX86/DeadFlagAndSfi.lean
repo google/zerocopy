@@ -222,6 +222,18 @@ under the System V ABI). -/
     ⟨FlagMask.dead,
      ⟨true, false, false, true, false, false⟩,
      ⟨false, true, true, false, true, true⟩⟩
+  | .popcnt _ _ _ =>
+    -- Intel SDM: POPCNT defines ZF and zeroes CF, PF, AF, SF, OF.
+    ⟨FlagMask.dead, FlagMask.all, FlagMask.dead⟩
+  | .lzcnt _ _ _ =>
+    -- Intel SDM: LZCNT defines CF and ZF; PF, AF, SF, OF are undefined.
+    ⟨FlagMask.dead,
+     ⟨true, false, false, true, false, false⟩,
+     ⟨false, true, true, false, true, true⟩⟩
+  | .div _ _ _ _ =>
+    -- Intel SDM: DIV/IDIV read no status flags; all 6 status flags are
+    -- undefined.
+    ⟨FlagMask.dead, FlagMask.dead, FlagMask.all⟩
   | .xchgAx _ _ => ⟨FlagMask.dead, FlagMask.dead, FlagMask.dead⟩
   | .pushReg _ _ => ⟨FlagMask.dead, FlagMask.dead, FlagMask.dead⟩
   | .popReg _ _ => ⟨FlagMask.dead, FlagMask.dead, FlagMask.dead⟩
@@ -596,6 +608,9 @@ ensuring any new `DecodedInsn` constructor must be classified here. -/
   | .imulRegRm _ dst _ => [dst]
   | .bsf _ dst _ => [dst]
   | .tzcnt _ dst _ => [dst]
+  | .popcnt _ dst _ => [dst]
+  | .lzcnt _ dst _ => [dst]
+  | .div _ isByte _ _ => if isByte then [.rax] else [.rax, .rdx]
   | .xchgAx _ dst => [.rax, dst]
   | .pushReg _ _ => [.rsp]
   | .popReg _ dst => [dst, .rsp]
@@ -677,6 +692,9 @@ address. -/
     dst.isStackOrFramePtr || gpOpndTouchesStackOrFrame src
   | .bsf _ dst src => dst.isStackOrFramePtr || gpOpndTouchesStackOrFrame src
   | .tzcnt _ dst src => dst.isStackOrFramePtr || gpOpndTouchesStackOrFrame src
+  | .popcnt _ dst src => dst.isStackOrFramePtr || gpOpndTouchesStackOrFrame src
+  | .lzcnt _ dst src => dst.isStackOrFramePtr || gpOpndTouchesStackOrFrame src
+  | .div _ _ _ src => gpOpndTouchesStackOrFrame src
   | .xchgAx _ dst => dst.isStackOrFramePtr
   | .jmpInd target => gpOpndTouchesStackOrFrame target
   | _ => false

@@ -283,6 +283,22 @@ no `0x67`, no segment override or null segment prefix, and no `REX`). -/
   pfx.segOverride.isNone &&
   !pfx.seenRex
 
+/-- True iff `pfx` is canonical mandatory `0xF3` plus at most one trailing `REX`
+byte (no `0xF2`/duplicate `0xF3`, no `LOCK`, no `0x66`/`0x67`, no segment
+override, and no REX before `0xF3`). -/
+@[expose] def PrefixState.isCanonicalF3WithOptRex
+    (pfx : PrefixState) : Bool :=
+  let rexCount := if pfx.rex.isSome then 1 else 0
+  Nat.beq pfx.count (1 + rexCount) &&
+  RepPrefix.beq pfx.rep .repz &&
+  !pfx.hasRepConflict &&
+  !pfx.hasLock &&
+  !pfx.hasLockRepHle &&
+  !pfx.has66 &&
+  !pfx.has67 &&
+  pfx.segOverride.isNone &&
+  (pfx.seenRex == pfx.rex.isSome)
+
 @[expose] def rexBit (rex : Option UInt8) (bitVal : Nat) : Bool :=
   match rex with
   | none => false
@@ -359,11 +375,15 @@ and resetting active `rex := none` on every legacy prefix. -/
 /-- Decoder mode configuration. When `requireRelocForRip = true` (relocatable
 object mode), RIP-relative operands must match an `R_X86_64_PC32` relocation
 with zero placeholder bytes and un-relocated base-less `[disp32]` addressing is
-rejected fail-closed. `F3 0F BC` decodes as `.tzcnt` only when `bmi1 = true`
-(failing closed otherwise, since non-BMI1 hardware executes it as `BSF`). -/
+rejected fail-closed. `F3 0F BC` decodes as `.tzcnt` only when `bmi1 = true`,
+`F3 [REX] 0F B8` decodes as `.popcnt` only when `popcnt = true`, and
+`F3 [REX] 0F BD` decodes as `.lzcnt` only when `lzcnt = true` (failing closed
+otherwise, since non-LZCNT hardware executes `F3 0F BD` as `BSR`). -/
 structure DecodeConfig where
   requireRelocForRip : Bool := true
   bmi1 : Bool := false
+  popcnt : Bool := false
+  lzcnt : Bool := false
 
 /-- An `R_X86_64_PC32` relocation on a `disp32` field at `.text` offset
 `offset`, targeting read-only section `secIdx` with
@@ -539,6 +559,9 @@ inductive DecodedInsn where
   | imulRegRm (sz : OpSize) (dst : Gpr) (src : GpOpnd)
   | bsf (sz : OpSize) (dst : Gpr) (src : GpOpnd)
   | tzcnt (sz : OpSize) (dst : Gpr) (src : GpOpnd)
+  | popcnt (sz : OpSize) (dst : Gpr) (src : GpOpnd)
+  | lzcnt (sz : OpSize) (dst : Gpr) (src : GpOpnd)
+  | div (isSigned isByte : Bool) (sz : OpSize) (src : GpOpnd)
   | xchgAx (sz : OpSize) (dst : Gpr)
   | pushReg (sz : OpSize) (src : Gpr)
   | popReg (sz : OpSize) (dst : Gpr)
@@ -610,6 +633,12 @@ inductive DecodedInsn where
     OpSize.beq z1 z2 && Gpr.beq d1 d2 && GpOpnd.beq s1 s2
   | .tzcnt z1 d1 s1, .tzcnt z2 d2 s2 =>
     OpSize.beq z1 z2 && Gpr.beq d1 d2 && GpOpnd.beq s1 s2
+  | .popcnt z1 d1 s1, .popcnt z2 d2 s2 =>
+    OpSize.beq z1 z2 && Gpr.beq d1 d2 && GpOpnd.beq s1 s2
+  | .lzcnt z1 d1 s1, .lzcnt z2 d2 s2 =>
+    OpSize.beq z1 z2 && Gpr.beq d1 d2 && GpOpnd.beq s1 s2
+  | .div sg1 b1 z1 s1, .div sg2 b2 z2 s2 =>
+    (sg1 == sg2) && (b1 == b2) && OpSize.beq z1 z2 && GpOpnd.beq s1 s2
   | .xchgAx z1 d1, .xchgAx z2 d2 => OpSize.beq z1 z2 && Gpr.beq d1 d2
   | .pushReg z1 s1, .pushReg z2 s2 => OpSize.beq z1 z2 && Gpr.beq s1 s2
   | .popReg z1 d1, .popReg z2 d2 => OpSize.beq z1 z2 && Gpr.beq d1 d2
@@ -659,6 +688,9 @@ inductive DecodedInsn where
   | .imulRegRm sz _ (.mem m) => some (m, sz.byteWidth)
   | .bsf sz _ (.mem m) => some (m, sz.byteWidth)
   | .tzcnt sz _ (.mem m) => some (m, sz.byteWidth)
+  | .popcnt sz _ (.mem m) => some (m, sz.byteWidth)
+  | .lzcnt sz _ (.mem m) => some (m, sz.byteWidth)
+  | .div _ isByte sz (.mem m) => some (m, if isByte then 1 else sz.byteWidth)
   | .jmpInd (.mem m) => some (m, 8)
   | .callInd (.mem m) => some (m, 8)
   | _ => none
@@ -1065,6 +1097,12 @@ prefix set (`isCanonicalSingleF3`) on mandatory-prefix encodings (`F3 0F 1E FA`
           else match resolveGpOpnd cfg relocs (insnPos + len2) rm with
             | some s => some (.imulRegRm sz dstG s, len2)
             | none => none
+        else if Nat.beq o2 0xB8 then
+          if cfg.popcnt && pfx.isCanonicalF3WithOptRex then
+            match resolveGpOpnd cfg relocs (insnPos + len2) rm with
+            | some s => some (.popcnt sz dstG s, len2)
+            | none => none
+          else none
         else if Nat.beq o2 0xBC then
           if RepPrefix.beq pfx.rep .none then
             match resolveGpOpnd cfg relocs (insnPos + len2) rm with
@@ -1073,6 +1111,12 @@ prefix set (`isCanonicalSingleF3`) on mandatory-prefix encodings (`F3 0F 1E FA`
           else if pfx.isCanonicalSingleF3 && cfg.bmi1 then
             match resolveGpOpnd cfg relocs (insnPos + len2) rm with
             | some s => some (.tzcnt sz dstG s, len2)
+            | none => none
+          else none
+        else if Nat.beq o2 0xBD then
+          if cfg.lzcnt && pfx.isCanonicalF3WithOptRex then
+            match resolveGpOpnd cfg relocs (insnPos + len2) rm with
+            | some s => some (.lzcnt sz dstG s, len2)
             | none => none
           else none
         else none
@@ -1294,6 +1338,22 @@ to avoid a branch-predictor penalty on older AMD cores, and emitted by x86inc
                     some (.shiftRmImm sz sop d immB.toNat, lenImm)
                   | _, _ => none
                 | [] => none
+            else if Nat.beq o 0xF6 then
+              if pfx.hasLock || pfx.has66 || rexW pfx.rex then none
+              else if Nat.beq reg3 6 || Nat.beq reg3 7 then
+                let isSigned := Nat.beq reg3 7
+                match resolveGpOpnd cfg relocs (insnPos + len1) rm with
+                | some s => some (.div isSigned true .s32 s, len1)
+                | none => none
+              else none
+            else if Nat.beq o 0xF7 then
+              if pfx.hasLock then none
+              else if Nat.beq reg3 6 || Nat.beq reg3 7 then
+                let isSigned := Nat.beq reg3 7
+                match resolveGpOpnd cfg relocs (insnPos + len1) rm with
+                | some s => some (.div isSigned false sz s, len1)
+                | none => none
+              else none
             else if Nat.beq o 0xFF then
               if pfx.hasLock || pfx.has66 then none
               else if Nat.beq reg3 2 then

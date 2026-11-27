@@ -40,11 +40,12 @@ Pure Pass-1 (`0` `._unsafe_rec`, `0` `partial`, `0` `noncomputable`, axioms
      relocations in relocatable object mode).
    - Data processing register: shifted `ADD`/`SUB`/logical (`shift != 3`,
      32-bit `imm6 < 32`), extended-register `ADD`/`SUB` (`imm3 <= 4` with
-     explicit `ExtendKind`), `CSEL`/`CSINC`/`CSINV`/`CSNEG`, and
-     `MADD`/`MSUB`.
+     explicit `ExtendKind`), `CSEL`/`CSINC`/`CSINV`/`CSNEG`,
+     `MADD`/`MSUB`, and `UDIV`/`SDIV` (`.div`).
    - Branches & system: `B`, `BL`, `B.cond`, `CBZ`/`CBNZ`, `TBZ`/`TBNZ`,
-     `RET`, `BR`, `BLR`, `NOP`, `BTI`, and explicit `.trapOrSys` decoding
-     for `SVC`/`HVC`/`SMC`/`BRK`/`HLT`.
+     `RET`, `BR`, `BLR`, `NOP`, `BTI`, `MSR DIT, #{0,1}` (`.msrDit`),
+     `SVC`/`HVC`/`SMC` as `.sysImm` (carrying `LL` and `imm16`), and
+     `BRK`/`HLT` as `.trapOrSys`.
    - Loads & stores: GP unsigned-offset and pre/post-index `LDR`/`STR`
      (enforcing writeback `Rn != Rt`), GP `LDP`/`STP` (enforcing `Rt != Rt2`
      on load and writeback `Rn != Rt ∧ Rn != Rt2`), SIMD/FP `LDR`/`STR` and
@@ -458,6 +459,8 @@ inductive DecodedInsn where
       (rd : RegOrZr) (rn : RegOrZr) (rm : RegOrZr)
   | maddSub (w : RegWidth) (isSub : Bool)
       (rd : RegOrZr) (rn : RegOrZr) (rm : RegOrZr) (ra : RegOrZr)
+  | div (w : RegWidth) (isSigned : Bool)
+      (rd : RegOrZr) (rn : RegOrZr) (rm : RegOrZr)
   | branch (isLink : Bool) (offBytes : Int)
   | branchCond (cond : Cond) (offBytes : Int)
   | cbz (w : RegWidth) (isNonZero : Bool) (rt : RegOrZr) (offBytes : Int)
@@ -466,6 +469,8 @@ inductive DecodedInsn where
   | branchReg (isLink : Bool) (rn : RegOrZr)
   | nop
   | bti (targetMask : Nat)
+  | msrDit (enable : Bool)
+  | sysImm (ll : Nat) (imm16 : Nat)
   | trapOrSys
   | gpLoadStore (isLoad : Bool) (accessBytes : Nat) (signExt : Bool)
       (destW : RegWidth) (rt : RegOrZr) (rn : RegOrSp) (mode : AddrMode)
@@ -678,19 +683,24 @@ relocations on instructions that do not consume one). -/
       let s19 := sextBits 19 (bits word 5 19)
       let cond := condOfNat (bits word 0 4)
       some (.branchCond cond (Int.mul s19 (Int.ofNat 4)))
-    -- Exception generation (`SVC`/`HVC`/`SMC`/`BRK`/`HLT`):
-    -- `[31:24] = 0xD4`, `op2[4:2] = 000`
+    -- Exception generation (`SVC`/`HVC`/`SMC` -> `sysImm`; `BRK`/`HLT` ->
+    -- `trapOrSys`): `[31:24] = 0xD4`, `op2[4:2] = 000`
     else if Nat.beq (bits word 24 8) 0xD4 && Nat.beq (bits word 2 3) 0 then
       let opc := bits word 21 3
       let ll := bits word 0 2
-      if (Nat.beq opc 0 && Nat.blt 0 ll) ||
-         (Nat.beq opc 1 && Nat.beq ll 0) ||
-         (Nat.beq opc 2 && Nat.beq ll 0) then
+      if Nat.beq opc 0 && Nat.blt 0 ll then
+        some (.sysImm ll (bits word 5 16))
+      else if (Nat.beq opc 1 && Nat.beq ll 0) ||
+              (Nat.beq opc 2 && Nat.beq ll 0) then
         some .trapOrSys
       else none
-    -- System HINTs: `NOP` (`0xD503201F`) and `BTI` (`0xD50324{1,5,9,D}F`)
+    -- System HINTs & PSTATE.DIT: `NOP` (`0xD503201F`), `BTI`, `MSR DIT, #{0,1}`
     else if Nat.beq word 0xD503201F then
       some .nop
+    else if Nat.beq word 0xD503415F then
+      some (.msrDit true)
+    else if Nat.beq word 0xD503405F then
+      some (.msrDit false)
     else if Nat.beq (bits word 12 20) 0xD5032 &&
             Nat.beq (bits word 8 4) 4 &&
             Nat.beq (bits word 0 5) 0x1F &&
@@ -787,6 +797,13 @@ relocations on instructions that do not consume one). -/
         | true,  true  => CondSelOp.csneg
       some (.condSel w csOp cond (decodeRegOrZr rdN)
         (decodeRegOrZr rnN) (decodeRegOrZr rmN))
+    -- Data processing 2-source (`UDIV`, `SDIV`): `[30:21] = 0011010110`,
+    -- `[15:11] = 00001`, `[10] = isSigned`
+    else if Nat.beq (bits word 21 10) 0x0D6 &&
+            Nat.beq (bits word 11 5) 1 then
+      let isSigned := bitAt word 10
+      some (.div w isSigned (decodeRegOrZr rdN) (decodeRegOrZr rnN)
+        (decodeRegOrZr rmN))
     -- Data processing 3-source (`MADD`, `MSUB`): `[30:21] = 0011011000`
     else if Nat.beq (bits word 21 10) 0x0D8 then
       let isSub := bitAt word 15

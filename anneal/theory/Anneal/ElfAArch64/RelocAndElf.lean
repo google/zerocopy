@@ -877,6 +877,7 @@ rejections while preceding 8-byte literal-pool relocations overlapping
   | .logicShift _ _ _ _ rd _ _ => wrZr rd
   | .condSel _ _ _ rd _ _ => wrZr rd
   | .maddSub _ _ rd _ _ _ => wrZr rd
+  | .div _ _ rd _ _ => wrZr rd
   | .gpLoadStore isLoad _ _ _ rt rn mode _ =>
     let wb := match mode with
       | .unsignedOff _ => []
@@ -899,7 +900,8 @@ rejections while preceding 8-byte literal-pool relocations overlapping
     match post with | .none => [] | .imm _ | .reg _ => wrSp rn false
   | .branch isLink _ => if isLink then [.x30] else []
   | .branchCond _ _ | .cbz _ _ _ _ | .tbz _ _ _ _
-  | .ret _ | .branchReg _ _ | .nop | .bti _ | .trapOrSys
+  | .ret _ | .branchReg _ _ | .nop | .bti _ | .msrDit _ | .sysImm _ _
+  | .trapOrSys
   | .simdShiftImm _ _ _ _ _ _ | .simdThreeSame _ _ _ _ _ _
   | .simdCmeqZero _ _ _ _ | .simdPerm _ _ _ _ _ _ => []
 
@@ -907,7 +909,7 @@ rejections while preceding 8-byte literal-pool relocations overlapping
 instructions cannot inherit an `ADRP` page base across it. -/
 @[expose] def adrpClearsAll (i : DecodedInsn) : Bool :=
   match i with
-  | .branch _ _ | .ret _ | .branchReg _ _ | .trapOrSys => true
+  | .branch _ _ | .ret _ | .branchReg _ _ | .sysImm _ _ | .trapOrSys => true
   | _ => false
 
 /-- Collect byte offsets targeted by intra-function direct branches (`B`, `BL`,

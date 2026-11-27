@@ -299,6 +299,8 @@ nesting across CFG relaxation rounds). -/
   | .maddSub w _ _ rn rm ra =>
     regOrZrRead rn w.is64 ++ regOrZrRead rm w.is64 ++
     regOrZrRead ra w.is64
+  | .div w _ _ rn rm =>
+    regOrZrRead rn w.is64 ++ regOrZrRead rm w.is64
   | .branch _ _ => []
   | .branchCond _ _ => []
   | .cbz w _ rt _ => regOrZrRead rt w.is64
@@ -307,6 +309,8 @@ nesting across CFG relaxation rounds). -/
   | .branchReg _ rn => regOrZrRead rn true
   | .nop => []
   | .bti _ => []
+  | .msrDit _ => []
+  | .sysImm _ _ => []
   | .trapOrSys => []
   | .gpLoadStore isLoad _ _ destW rt rn _ _ =>
     regOrSpRead rn true ++
@@ -343,6 +347,7 @@ registers and `x30` on `BL`/`BLR`). -/
   | .logicShift _ _ _ _ rd _ _ => regOrZrWrite rd
   | .condSel _ _ _ rd _ _ => regOrZrWrite rd
   | .maddSub _ _ rd _ _ _ => regOrZrWrite rd
+  | .div _ _ rd _ _ => regOrZrWrite rd
   | .branch isLink _ => if isLink then [.x30] else []
   | .branchCond _ _ => []
   | .cbz _ _ _ _ => []
@@ -351,6 +356,8 @@ registers and `x30` on `BL`/`BLR`). -/
   | .branchReg isLink _ => if isLink then [.x30] else []
   | .nop => []
   | .bti _ => []
+  | .msrDit _ => []
+  | .sysImm _ _ => []
   | .trapOrSys => []
   | .gpLoadStore isLoad _ _ _ rt rn mode _ =>
     let wb :=
@@ -397,9 +404,9 @@ registers and `x30` on `BL`/`BLR`). -/
   | .moveWide _ _ _ _ _ | .bitfield _ _ _ _ _ _ | .pcRelAddr _ _ _ _
   | .addSubShift _ _ _ _ _ _ _ _ | .addSubExt _ _ _ _ _ _ _ _ _
   | .logicShift _ _ _ _ _ _ _ | .condSel _ _ _ _ _ _
-  | .maddSub _ _ _ _ _ _ | .branch _ _ | .branchCond _ _
+  | .maddSub _ _ _ _ _ _ | .div _ _ _ _ _ | .branch _ _ | .branchCond _ _
   | .cbz _ _ _ _ | .tbz _ _ _ _ | .ret _ | .branchReg _ _
-  | .nop | .bti _ | .trapOrSys
+  | .nop | .bti _ | .msrDit _ | .sysImm _ _ | .trapOrSys
   | .gpLoadStore _ _ _ _ _ _ _ _ | .gpLoadStorePair _ _ _ _ _ _ => []
 
 /-- True iff `i` writes `SP` or uses `SP` as a memory base register. -/
@@ -418,9 +425,10 @@ registers and `x30` on `BL`/`BLR`). -/
   | .simdLdSt1 _ _ _ _ _ rn _ => rn.isSp
   | .moveWide _ _ _ _ _ | .bitfield _ _ _ _ _ _ | .pcRelAddr _ _ _ _
   | .addSubShift _ _ _ _ _ _ _ _ | .logicShift _ _ _ _ _ _ _
-  | .condSel _ _ _ _ _ _ | .maddSub _ _ _ _ _ _
+  | .condSel _ _ _ _ _ _ | .maddSub _ _ _ _ _ _ | .div _ _ _ _ _
   | .branch _ _ | .branchCond _ _ | .cbz _ _ _ _ | .tbz _ _ _ _
-  | .ret _ | .branchReg _ _ | .nop | .bti _ | .trapOrSys
+  | .ret _ | .branchReg _ _ | .nop | .bti _ | .msrDit _ | .sysImm _ _
+  | .trapOrSys
   | .simdShiftImm _ _ _ _ _ _ | .simdThreeSame _ _ _ _ _ _
   | .simdCmeqZero _ _ _ _ | .simdPerm _ _ _ _ _ _ => false
 
@@ -458,12 +466,12 @@ branch (including non-`x30` `RET`), or trap/syscall. -/
     match branchTargetPc? pc numInsns off, nextPc? with
     | some t, some n => some [t, n]
     | _, _ => none
-  | .branch true _ | .branchReg _ _ | .trapOrSys => none
+  | .branch true _ | .branchReg _ _ | .sysImm _ _ | .trapOrSys => none
   | .addSubImm _ _ _ _ _ _ _ _ | .logicImm _ _ _ _ _ _ _ _
   | .moveWide _ _ _ _ _ | .bitfield _ _ _ _ _ _ | .pcRelAddr _ _ _ _
   | .addSubShift _ _ _ _ _ _ _ _ | .addSubExt _ _ _ _ _ _ _ _ _
   | .logicShift _ _ _ _ _ _ _ | .condSel _ _ _ _ _ _
-  | .maddSub _ _ _ _ _ _ | .nop | .bti _
+  | .maddSub _ _ _ _ _ _ | .div _ _ _ _ _ | .nop | .bti _ | .msrDit _
   | .gpLoadStore _ _ _ _ _ _ _ _ | .gpLoadStorePair _ _ _ _ _ _
   | .simdLoadStore _ _ _ _ _ _ | .simdLoadStorePair _ _ _ _ _ _
   | .simdLdSt1 _ _ _ _ _ _ _ | .simdShiftImm _ _ _ _ _ _
@@ -1223,6 +1231,7 @@ immediate post-index load/store on `r` with `imm >= 0` and no aliasing GP load
   match i with
   | .branch true _ => true
   | .branchReg _ _ => true
+  | .sysImm _ _ => true
   | .trapOrSys => true
   | .ret rn => !rn.beq (.gpr .x30)
   | _ => false
@@ -1454,9 +1463,10 @@ theorem checkAArch64LeafAbiFixedBases_sound (allowedStoreBases : List Gpr)
     | moveWide _ _ _ _ _ | bitfield _ _ _ _ _ _ | pcRelAddr _ _ _ _
     | addSubShift _ _ _ _ _ _ _ _ | addSubExt _ _ _ _ _ _ _ _ _
     | logicShift _ _ _ _ _ _ _ | condSel _ _ _ _ _ _
-    | maddSub _ _ _ _ _ _ | branch _ _ | branchCond _ _
+    | maddSub _ _ _ _ _ _ | div _ _ _ _ _ | branch _ _ | branchCond _ _
     | cbz _ _ _ _ | tbz _ _ _ _ | branchReg _ _
-    | nop | bti _ | trapOrSys | gpLoadStore _ _ _ _ _ _ _ _
+    | nop | bti _ | msrDit _ | sysImm _ _ | trapOrSys
+    | gpLoadStore _ _ _ _ _ _ _ _
     | gpLoadStorePair _ _ _ _ _ _ | simdLoadStore _ _ _ _ _ _
     | simdLoadStorePair _ _ _ _ _ _ | simdLdSt1 _ _ _ _ _ _ _
     | simdShiftImm _ _ _ _ _ _ | simdThreeSame _ _ _ _ _ _
@@ -1541,9 +1551,10 @@ theorem checkAArch64LeafAbiMonotoneBases_sound (allowedStoreBases : List Gpr)
     | moveWide _ _ _ _ _ | bitfield _ _ _ _ _ _ | pcRelAddr _ _ _ _
     | addSubShift _ _ _ _ _ _ _ _ | addSubExt _ _ _ _ _ _ _ _ _
     | logicShift _ _ _ _ _ _ _ | condSel _ _ _ _ _ _
-    | maddSub _ _ _ _ _ _ | branch _ _ | branchCond _ _
+    | maddSub _ _ _ _ _ _ | div _ _ _ _ _ | branch _ _ | branchCond _ _
     | cbz _ _ _ _ | tbz _ _ _ _ | branchReg _ _
-    | nop | bti _ | trapOrSys | gpLoadStore _ _ _ _ _ _ _ _
+    | nop | bti _ | msrDit _ | sysImm _ _ | trapOrSys
+    | gpLoadStore _ _ _ _ _ _ _ _
     | gpLoadStorePair _ _ _ _ _ _ | simdLoadStore _ _ _ _ _ _
     | simdLoadStorePair _ _ _ _ _ _ | simdLdSt1 _ _ _ _ _ _ _
     | simdShiftImm _ _ _ _ _ _ | simdThreeSame _ _ _ _ _ _
