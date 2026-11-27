@@ -41,6 +41,11 @@ unsafe fn div(n: u32, d: u32) -> u32 {
     n / d
 }
 
+#[anneal::spec(terminates, no_panic, max_steps = 34 * len + 540, ensures(|r| r == len))]
+fn bounded_id(len: usize) -> usize {
+    len
+}
+
 #[anneal::vacuous_ok(reason = "exercises the waiver")]
 #[anneal::spec(requires(false), may_diverge, may_unwind)]
 fn never_called() {}
@@ -65,5 +70,6 @@ fn annotated_items_keep_their_behavior() {
     assert!(nonzero(3));
     // SAFETY: `d` is nonzero.
     assert_eq!(unsafe { div(9, 4) }, 2);
+    assert_eq!(bounded_id(12), 12);
     never_called();
 }

@@ -44,4 +44,12 @@ example : ¬ pure_no_capture 1 5 8 3 0 (-1) := by unfold pure_no_capture; decide
 -- `Val` has no `DecidableEq`, so this one is proved directly.
 example : pure_unit_eq 0 := by unfold pure_unit_eq; exact ⟨rfl, rfl⟩
 
+-- `bounded` (sorted first as `fn0`) lowers `max_steps` to an exact `Nat`
+-- formula over unsigned `Val` arguments:
+-- `34 * 10 + 10 / 3 + 10 % 2 + wrapping_add(1, 1) + 540 = 340 + 3 + 0 + 2 + 540 = 885`.
+private def u64Usize (n : Nat) : Trusted.MirSemantics.Val :=
+  .scalar ⟨.isize, false, BitVec.ofNat 128 n⟩
+
+example : fn0_max_steps { args := [u64Usize 10, u64Usize 3] } = 885 := rfl
+
 end Spec.Check

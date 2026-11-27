@@ -69,4 +69,13 @@ anneal::external_spec! {
 
     #[anneal::spec(requires(tdiv_is(a, b, q) && no_capture(1u8, a, b, 0u8, 0u8, q) && unit_eq(0u8)))]
     fn helpers(a: i32, b: i32, q: i32);
+
+    #[anneal::spec(
+        requires(d != 0usize),
+        terminates,
+        no_panic,
+        max_steps = 34 * n + n / d + n % 2 + wrapping_add(one(), 1u8) + 540,
+        ensures(|r| r == n),
+    )]
+    fn bounded(n: usize, d: usize) -> usize;
 }

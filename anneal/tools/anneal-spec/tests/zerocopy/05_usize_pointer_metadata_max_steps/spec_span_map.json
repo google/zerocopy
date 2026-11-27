@@ -1,0 +1,118 @@
+{
+  "columns": "1-based Unicode scalar values",
+  "entries": [
+    {
+      "lean_decl": "Spec.fn0_id",
+      "lean_line_end": 74,
+      "lean_line_start": 72,
+      "rust": {
+        "end_byte": 803,
+        "file": "tests/zerocopy/05_usize_pointer_metadata_max_steps/spec.rs",
+        "hi_col": 49,
+        "hi_line": 15,
+        "lo_col": 9,
+        "lo_line": 15,
+        "start_byte": 763
+      }
+    },
+    {
+      "lean_decl": "Spec.fn0_post",
+      "lean_line_end": 79,
+      "lean_line_start": 76,
+      "rust": {
+        "end_byte": 752,
+        "file": "tests/zerocopy/05_usize_pointer_metadata_max_steps/spec.rs",
+        "hi_col": 88,
+        "hi_line": 14,
+        "lo_col": 61,
+        "lo_line": 14,
+        "start_byte": 725
+      }
+    },
+    {
+      "lean_decl": "Spec.fn0_max_steps",
+      "lean_line_end": 85,
+      "lean_line_start": 81,
+      "rust": {
+        "end_byte": 723,
+        "file": "tests/zerocopy/05_usize_pointer_metadata_max_steps/spec.rs",
+        "hi_col": 59,
+        "hi_line": 14,
+        "lo_col": 46,
+        "lo_line": 14,
+        "start_byte": 710
+      }
+    },
+    {
+      "lean_decl": "Spec.fn0_contract",
+      "lean_line_end": 90,
+      "lean_line_start": 87,
+      "rust": {
+        "end_byte": 754,
+        "file": "tests/zerocopy/05_usize_pointer_metadata_max_steps/spec.rs",
+        "hi_col": 90,
+        "hi_line": 14,
+        "lo_col": 9,
+        "lo_line": 14,
+        "start_byte": 673
+      }
+    },
+    {
+      "lean_decl": "Spec.fn1_id",
+      "lean_line_end": 94,
+      "lean_line_start": 92,
+      "rust": {
+        "end_byte": 938,
+        "file": "tests/zerocopy/05_usize_pointer_metadata_max_steps/spec.rs",
+        "hi_col": 40,
+        "hi_line": 18,
+        "lo_col": 9,
+        "lo_line": 18,
+        "start_byte": 907
+      }
+    },
+    {
+      "lean_decl": "Spec.fn1_post",
+      "lean_line_end": 99,
+      "lean_line_start": 96,
+      "rust": {
+        "end_byte": 896,
+        "file": "tests/zerocopy/05_usize_pointer_metadata_max_steps/spec.rs",
+        "hi_col": 91,
+        "hi_line": 17,
+        "lo_col": 61,
+        "lo_line": 17,
+        "start_byte": 866
+      }
+    },
+    {
+      "lean_decl": "Spec.fn1_max_steps",
+      "lean_line_end": 105,
+      "lean_line_start": 101,
+      "rust": {
+        "end_byte": 864,
+        "file": "tests/zerocopy/05_usize_pointer_metadata_max_steps/spec.rs",
+        "hi_col": 59,
+        "hi_line": 17,
+        "lo_col": 46,
+        "lo_line": 17,
+        "start_byte": 851
+      }
+    },
+    {
+      "lean_decl": "Spec.fn1_contract",
+      "lean_line_end": 110,
+      "lean_line_start": 107,
+      "rust": {
+        "end_byte": 898,
+        "file": "tests/zerocopy/05_usize_pointer_metadata_max_steps/spec.rs",
+        "hi_col": 93,
+        "hi_line": 17,
+        "lo_col": 9,
+        "lo_line": 17,
+        "start_byte": 814
+      }
+    }
+  ],
+  "schema_version": 1
+}
