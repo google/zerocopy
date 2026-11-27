@@ -371,23 +371,20 @@ def _delegates_to_mir_wp_fixture(rust_src: str, shared_fixture_path: Path) -> bo
 
 
 def _extract_inline_mir_wp_regions(code: str) -> list[str]:
-    """Return inline `SYNTHETIC_CANARIES` / `MirWpSyntheticSpec` / `let canaries` regions."""
+    """Return every inline `SYNTHETIC_CANARIES` / `MirWpSyntheticSpec` / `let canaries` region."""
     regions: list[str] = []
-    synth_canaries = re.search(r"\bconst\s+SYNTHETIC_CANARIES\b", code)
-    if synth_canaries:
+    for synth_canaries in re.finditer(r"\bconst\s+SYNTHETIC_CANARIES\b", code):
         eq_idx = code.find("=", synth_canaries.end())
         if eq_idx != -1:
             regions.append(_extract_bracket_block(code, eq_idx))
-    spec_valid = re.search(r"\bimpl\s+MirWpSyntheticSpec\b", code)
-    if spec_valid:
+    for spec_valid in re.finditer(r"\bimpl\s+MirWpSyntheticSpec\b", code):
         impl_block = _extract_brace_block(code, spec_valid.end())
         valid_fn = re.search(r"\bfn\s+valid\s*\(", impl_block)
         if valid_fn:
             regions.append(_extract_brace_block(impl_block, valid_fn.end()))
         else:
             regions.append(impl_block)
-    local_canaries = re.search(r"\blet\s+canaries\b", code)
-    if local_canaries:
+    for local_canaries in re.finditer(r"\blet\s+canaries\b", code):
         eq_idx = code.find("=", local_canaries.end())
         if eq_idx != -1:
             regions.append(_extract_bracket_block(code, eq_idx))
@@ -403,7 +400,8 @@ def extract_fixture_claims_for_file(
 
     If `rust_file` actively references `anneal_testkit::mir_wp_fixture` and
     `shared_fixture_path` exists, inspects `shared_fixture_path` seamlessly and
-    rejects stray partial inline MirWp claim stubs in `rust_file`.
+    rejects stray partial inline MirWp claim stubs in `rust_file` or any `.rs`
+    file under `rust_file`'s `<stem>/` submodule directory.
     """
     raw = rust_file.read_text(encoding="utf-8")
     code = _strip_rust_comments(raw)
@@ -414,18 +412,35 @@ def extract_fixture_claims_for_file(
         shared_claims, shared_pairs = _extract_claims_and_pairs_from_rust_region(
             shared_code
         )
-        inline_regions = _extract_inline_mir_wp_regions(code)
-        if inline_regions:
-            inline_claims, inline_pairs = _extract_claims_and_pairs_from_rust_region(
-                "\n".join(inline_regions)
+        module_dir = rust_file.with_suffix("")
+        scan_files = [rust_file] + (
+            sorted(module_dir.rglob("*.rs")) if module_dir.is_dir() else []
+        )
+        for src_path in scan_files:
+            src_code = (
+                code
+                if src_path == rust_file
+                else _strip_rust_comments(src_path.read_text(encoding="utf-8"))
             )
-            if inline_claims != shared_claims or inline_pairs != shared_pairs:
-                raise AssertionError(
-                    f"{rust_file.name} delegates to {shared_fixture_path.name} "
-                    "but retains a diverging partial inline MirWp fixture "
-                    f"(inline claims={sorted(inline_claims)}, "
-                    f"shared claims={sorted(shared_claims)})"
+            inline_regions = _extract_inline_mir_wp_regions(src_code)
+            if inline_regions:
+                inline_claims, inline_pairs = (
+                    _extract_claims_and_pairs_from_rust_region(
+                        "\n".join(inline_regions)
+                    )
                 )
+                if inline_claims != shared_claims or inline_pairs != shared_pairs:
+                    src_label = (
+                        rust_file.name
+                        if src_path == rust_file
+                        else f"{rust_file.name} ({src_path.name})"
+                    )
+                    raise AssertionError(
+                        f"{src_label} delegates to {shared_fixture_path.name} "
+                        "but retains a diverging partial inline MirWp fixture "
+                        f"(inline claims={sorted(inline_claims)}, "
+                        f"shared claims={sorted(shared_claims)})"
+                    )
         return (
             f"{rust_file.name} -> {shared_fixture_path.name}",
             shared_claims,
@@ -743,6 +758,44 @@ def audit : IO Unit := pure ()
         with self.assertRaises(AssertionError) as ctx:
             parse_required_mir_wp_claims(tb_src)
         self.assertIn("NovelUnparsedClaim", str(ctx.exception))
+
+    def test_delegating_root_rejects_diverging_inline_fixture_in_submodule(self):
+        with tempfile.TemporaryDirectory(prefix="anneal-claim-submod-") as tmp:
+            shared = Path(tmp) / "mir_wp_fixture.rs"
+            shared.write_text(
+                'pub const SEM: &str = "def WpSoundnessClaim (_f : Nat) : Prop := True\\n";\n'
+                'pub const WP: &str = "theorem wellFormed_and_spec_of_wp : '
+                'Trusted.MirSemantics.WpSoundnessClaim wpProg := True.intro\\n";\n',
+                encoding="utf-8",
+            )
+            root = Path(tmp) / "boundary_audit.rs"
+            root.write_text(
+                "use anneal_testkit::mir_wp_fixture::MirWpFixtureSpec;\n"
+                "fn materialize(spec: &MirWpFixtureSpec) {}\n",
+                encoding="utf-8",
+            )
+            sub_dir = Path(tmp) / "boundary_audit"
+            sub_dir.mkdir()
+            (sub_dir / "gates.rs").write_text(
+                "use super::*;\nfn t() { materialize(&MirWpFixtureSpec::valid()); }\n",
+                encoding="utf-8",
+            )
+            label, claims, _ = extract_fixture_claims_for_file(
+                root, shared_fixture_path=shared
+            )
+            self.assertEqual(label, "boundary_audit.rs -> mir_wp_fixture.rs")
+            self.assertEqual(claims, {"WpSoundnessClaim"})
+
+            # Any diverging partial inline fixture in a submodule fails closed.
+            (sub_dir / "stray.rs").write_text(
+                'const SYNTHETIC_CANARIES: &[(&str, &str)] = '
+                '&[("CanaryExtraDriftClaim", "canary_extra_drift")];\n',
+                encoding="utf-8",
+            )
+            with self.assertRaises(AssertionError) as ctx:
+                extract_fixture_claims_for_file(root, shared_fixture_path=shared)
+            self.assertIn("diverging partial inline MirWp fixture", str(ctx.exception))
+            self.assertIn("stray.rs", str(ctx.exception))
 
 
 if __name__ == "__main__":
