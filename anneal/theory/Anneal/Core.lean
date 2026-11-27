@@ -16,3 +16,4 @@ public import Anneal.Core.AlignMath
 public import Anneal.Core.BitValidity
 public import Anneal.Core.FixedByteCodec
 public import Anneal.Core.PtrTypestate
+public import Anneal.Core.BitVecMirBridge
