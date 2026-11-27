@@ -1217,6 +1217,320 @@ theorem evalBinOp_cmp_eq (w : IntWidth) (s : Bool) (b₁ b₂ : BitVec 128) :
   · dsimp only [evalBinOp]; rw [ite_bool_false (b := BinOp.gt.isShift) rfl, ite_bool_false hG]
   · dsimp only [evalBinOp]; rw [ite_bool_false (b := BinOp.ge.isShift) rfl, ite_bool_false hG]
 
+/-! ## Width- and Signedness-Parametric Arithmetic and Shift Equations
+
+`evalBinOp_{add,sub,mul,shl,shr}_eq` state each operation once for every width
+and signedness in terms of `decodeScalar`, so a proof can rewrite with the
+`decodeScalar_*` lemmas above instead of unfolding `evalArithOp`,
+`evalShiftOp`, or `truncateScalar`. The `_unsigned` forms give closed `Nat`
+results; the `Unchecked` forms discharge the overflow fault from a bound. -/
+
+/-- Width- and signedness-parametric wrapping `.add` in terms of the decoded
+operands. -/
+theorem evalBinOp_add_eq (w : IntWidth) (s : Bool) (b₁ b₂ : BitVec 128) :
+    evalBinOp .add (.scalar ⟨w, s, b₁⟩) (.scalar ⟨w, s, b₂⟩) =
+      .ok (.scalar ⟨w, s, truncateBits w (bvOfInt 128
+        (decodeScalar ⟨w, s, b₁⟩ + decodeScalar ⟨w, s, b₂⟩))⟩) := by
+  dsimp only [evalBinOp]
+  rw [ite_bool_false (b := BinOp.add.isShift) rfl,
+      ite_bool_false (same_scalar_guard_false w s)]
+  dsimp only [evalArithOp]
+  cases s with
+  | false =>
+    rw [ite_bool_false (b := (false && _)) rfl,
+        ite_bool_false (b := (false && false && _)) rfl,
+        truncateScalar_unsigned_eq]
+    dsimp only
+    rw [ite_bool_false (b := (_ && BinOp.add.isUnchecked)) (Bool.and_false _),
+        ite_bool_false (b := BinOp.add.isOverflowing) rfl]
+  | true =>
+    rw [ite_bool_false (b := (false && _)) rfl,
+        ite_bool_false (b := (true && false && _)) rfl,
+        truncateScalar_signed_eq]
+    dsimp only
+    rw [ite_bool_false (b := (_ && BinOp.add.isUnchecked)) (Bool.and_false _),
+        ite_bool_false (b := BinOp.add.isOverflowing) rfl]
+
+/-- Width- and signedness-parametric wrapping `.sub` in terms of the decoded
+operands. -/
+theorem evalBinOp_sub_eq (w : IntWidth) (s : Bool) (b₁ b₂ : BitVec 128) :
+    evalBinOp .sub (.scalar ⟨w, s, b₁⟩) (.scalar ⟨w, s, b₂⟩) =
+      .ok (.scalar ⟨w, s, truncateBits w (bvOfInt 128
+        (decodeScalar ⟨w, s, b₁⟩ - decodeScalar ⟨w, s, b₂⟩))⟩) := by
+  dsimp only [evalBinOp]
+  rw [ite_bool_false (b := BinOp.sub.isShift) rfl,
+      ite_bool_false (same_scalar_guard_false w s)]
+  dsimp only [evalArithOp]
+  cases s with
+  | false =>
+    rw [ite_bool_false (b := (false && _)) rfl,
+        ite_bool_false (b := (false && false && _)) rfl,
+        truncateScalar_unsigned_eq]
+    dsimp only
+    rw [ite_bool_false (b := (_ && BinOp.sub.isUnchecked)) (Bool.and_false _),
+        ite_bool_false (b := BinOp.sub.isOverflowing) rfl]
+  | true =>
+    rw [ite_bool_false (b := (false && _)) rfl,
+        ite_bool_false (b := (true && false && _)) rfl,
+        truncateScalar_signed_eq]
+    dsimp only
+    rw [ite_bool_false (b := (_ && BinOp.sub.isUnchecked)) (Bool.and_false _),
+        ite_bool_false (b := BinOp.sub.isOverflowing) rfl]
+
+/-- Width- and signedness-parametric wrapping `.mul` in terms of the decoded
+operands. -/
+theorem evalBinOp_mul_eq (w : IntWidth) (s : Bool) (b₁ b₂ : BitVec 128) :
+    evalBinOp .mul (.scalar ⟨w, s, b₁⟩) (.scalar ⟨w, s, b₂⟩) =
+      .ok (.scalar ⟨w, s, truncateBits w (bvOfInt 128
+        (decodeScalar ⟨w, s, b₁⟩ * decodeScalar ⟨w, s, b₂⟩))⟩) := by
+  dsimp only [evalBinOp]
+  rw [ite_bool_false (b := BinOp.mul.isShift) rfl,
+      ite_bool_false (same_scalar_guard_false w s)]
+  dsimp only [evalArithOp]
+  cases s with
+  | false =>
+    rw [ite_bool_false (b := (false && _)) rfl,
+        ite_bool_false (b := (false && false && _)) rfl,
+        truncateScalar_unsigned_eq]
+    dsimp only
+    rw [ite_bool_false (b := (_ && BinOp.mul.isUnchecked)) (Bool.and_false _),
+        ite_bool_false (b := BinOp.mul.isOverflowing) rfl]
+  | true =>
+    rw [ite_bool_false (b := (false && _)) rfl,
+        ite_bool_false (b := (true && false && _)) rfl,
+        truncateScalar_signed_eq]
+    dsimp only
+    rw [ite_bool_false (b := (_ && BinOp.mul.isUnchecked)) (Bool.and_false _),
+        ite_bool_false (b := BinOp.mul.isOverflowing) rfl]
+
+/-- Width- and signedness-parametric `.shl` in terms of the decoded
+operands; the shift amount is reduced modulo the bit width. -/
+theorem evalBinOp_shl_eq (w : IntWidth) (s : Bool) (b₁ : BitVec 128)
+    (rw_ : IntWidth) (rs : Bool) (b₂ : BitVec 128) :
+    evalBinOp .shl (.scalar ⟨w, s, b₁⟩) (.scalar ⟨rw_, rs, b₂⟩) =
+      .ok (.scalar ⟨w, s, truncateBits w (bvOfInt 128
+        (intShiftLeft (decodeScalar ⟨w, s, b₁⟩)
+          (intEmod (decodeScalar ⟨rw_, rs, b₂⟩)
+            (Int.ofNat w.bitWidth)).toNat))⟩) := by
+  dsimp only [evalBinOp]
+  rw [ite_bool_true (b := BinOp.shl.isShift) rfl]
+  dsimp only [evalShiftOp]
+  cases s with
+  | false =>
+    rw [truncateScalar_unsigned_eq]
+    dsimp only
+    rw [ite_bool_false (b := (_ && BinOp.shl.isUnchecked)) (Bool.and_false _)]
+  | true =>
+    rw [truncateScalar_signed_eq]
+    dsimp only
+    rw [ite_bool_false (b := (_ && BinOp.shl.isUnchecked)) (Bool.and_false _)]
+
+/-- Width- and signedness-parametric `.shr` in terms of the decoded
+operands; the shift amount is reduced modulo the bit width. -/
+theorem evalBinOp_shr_eq (w : IntWidth) (s : Bool) (b₁ : BitVec 128)
+    (rw_ : IntWidth) (rs : Bool) (b₂ : BitVec 128) :
+    evalBinOp .shr (.scalar ⟨w, s, b₁⟩) (.scalar ⟨rw_, rs, b₂⟩) =
+      .ok (.scalar ⟨w, s, truncateBits w (bvOfInt 128
+        (intShiftRight (decodeScalar ⟨w, s, b₁⟩)
+          (intEmod (decodeScalar ⟨rw_, rs, b₂⟩)
+            (Int.ofNat w.bitWidth)).toNat))⟩) := by
+  dsimp only [evalBinOp]
+  rw [ite_bool_true (b := BinOp.shr.isShift) rfl]
+  dsimp only [evalShiftOp]
+  cases s with
+  | false =>
+    rw [truncateScalar_unsigned_eq]
+    dsimp only
+    rw [ite_bool_false (b := (_ && BinOp.shr.isUnchecked)) (Bool.and_false _)]
+  | true =>
+    rw [truncateScalar_signed_eq]
+    dsimp only
+    rw [ite_bool_false (b := (_ && BinOp.shr.isUnchecked)) (Bool.and_false _)]
+
+/-- Width-parametric unsigned wrapping `.mul` closed form across all six
+widths (including `u128` and `usize`). -/
+theorem evalBinOp_mul_unsigned_eq (w : IntWidth) {b₁ b₂ : BitVec 128}
+    (h₁ : b₁.toNat < intWidthModulus w) (h₂ : b₂.toNat < intWidthModulus w) :
+    evalBinOp .mul (.scalar ⟨w, false, b₁⟩) (.scalar ⟨w, false, b₂⟩) =
+      .ok (.scalar ⟨w, false,
+        BitVec.ofNat 128
+          (Nat.mod (b₁.toNat * b₂.toNat) (intWidthModulus w))⟩) := by
+  rw [evalBinOp_mul_eq, decodeScalar_unsigned_of_lt h₁,
+    decodeScalar_unsigned_of_lt h₂]
+  apply congrArg Except.ok
+  apply congrArg (fun bv => Val.scalar ⟨w, false, bv⟩)
+  apply bitVec_eq_of_toNat_eq
+  rw [show Int.ofNat b₁.toNat * Int.ofNat b₂.toNat =
+      Int.ofNat (b₁.toNat * b₂.toNat) from rfl,
+    truncateBits_bvOfInt_ofNat_toNat]
+  have h128 :
+      Nat.mod (b₁.toNat * b₂.toNat) (intWidthModulus w) < Nat.pow 2 128 :=
+    Nat.lt_of_lt_of_le (Nat.mod_lt _ (intWidth_modulus_pos w))
+      (intWidthModulus_le_pow_128 w)
+  change _ = Nat.mod _ (Nat.pow 2 128)
+  rw [nat_mod_eq_of_lt h128]
+
+/-- Width-parametric unsigned wrapping `.sub` closed form across all six
+widths: `b₁ - b₂` wraps to `(b₁ + (M - b₂)) mod M` with `M` the modulus. -/
+theorem evalBinOp_sub_unsigned_eq (w : IntWidth) {b₁ b₂ : BitVec 128}
+    (h₁ : b₁.toNat < intWidthModulus w) (h₂ : b₂.toNat < intWidthModulus w) :
+    evalBinOp .sub (.scalar ⟨w, false, b₁⟩) (.scalar ⟨w, false, b₂⟩) =
+      .ok (.scalar ⟨w, false,
+        BitVec.ofNat 128 (Nat.mod (b₁.toNat + (intWidthModulus w - b₂.toNat))
+          (intWidthModulus w))⟩) := by
+  rw [evalBinOp_sub_eq, decodeScalar_unsigned_of_lt h₁,
+    decodeScalar_unsigned_of_lt h₂]
+  apply congrArg Except.ok
+  apply congrArg (fun bv => Val.scalar ⟨w, false, bv⟩)
+  apply bitVec_eq_of_toNat_eq
+  have hM := intWidth_modulus_pos w
+  have h128 : Nat.mod (b₁.toNat + (intWidthModulus w - b₂.toNat))
+      (intWidthModulus w) < Nat.pow 2 128 :=
+    Nat.lt_of_lt_of_le (Nat.mod_lt _ hM) (intWidthModulus_le_pow_128 w)
+  change _ = Nat.mod _ (Nat.pow 2 128)
+  rw [nat_mod_eq_of_lt h128]
+  have hb₂M : b₂.toNat ≤ intWidthModulus w := Nat.le_of_lt h₂
+  cases Nat.lt_or_ge b₁.toNat b₂.toNat with
+  | inr hle =>
+    have e₁ : b₁.toNat + (intWidthModulus w - b₂.toNat) =
+        b₁.toNat - b₂.toNat + b₂.toNat + (intWidthModulus w - b₂.toNat) := by
+      rw [Nat.sub_add_cancel hle]
+    have e₂ : b₁.toNat - b₂.toNat + b₂.toNat + (intWidthModulus w - b₂.toNat) =
+        b₁.toNat - b₂.toNat + intWidthModulus w := by
+      rw [Nat.add_assoc, Nat.add_comm b₂.toNat, Nat.sub_add_cancel hb₂M]
+    rw [int_ofNat_sub_of_le hle, truncateBits_bvOfInt_ofNat_toNat, e₁.trans e₂]
+    exact (Nat.add_mod_right _ _).symm
+  | inl hlt =>
+    rw [int_ofNat_sub_of_lt hlt, truncateBits_bvOfInt_negSucc_toNat]
+    have hd : b₂.toNat - b₁.toNat - 1 < intWidthModulus w :=
+      Nat.lt_of_le_of_lt (Nat.le_trans (Nat.sub_le _ _) (Nat.sub_le _ _)) h₂
+    rw [nat_mod_eq_of_lt hd, Nat.sub_add_cancel (Nat.sub_pos_of_lt hlt)]
+    have hSum : b₂.toNat - b₁.toNat +
+        (b₁.toNat + (intWidthModulus w - b₂.toNat)) = intWidthModulus w := by
+      rw [← Nat.add_assoc, Nat.sub_add_cancel (Nat.le_of_lt hlt), Nat.add_comm,
+        Nat.sub_add_cancel hb₂M]
+    have hLtM :
+        b₁.toNat + (intWidthModulus w - b₂.toNat) < intWidthModulus w := by
+      have h := Nat.lt_add_of_pos_left
+        (n := b₁.toNat + (intWidthModulus w - b₂.toNat)) (Nat.sub_pos_of_lt hlt)
+      rw [hSum] at h
+      exact h
+    rw [nat_mod_eq_of_lt hLtM]
+    exact (Nat.sub_eq_of_eq_add (by rw [Nat.add_comm]; exact hSum.symm))
+
+private theorem int_ofNat_not_lt_zero (n : Nat) : ¬ (Int.ofNat n < 0) :=
+  fun h => nomatch h
+
+private theorem int_ofNat_not_ge_pow128 {n : Nat} (h : n < Nat.pow 2 128) :
+    ¬ (Int.ofNat n ≥ HPow.hPow (2 : Int) 128) := by
+  intro hGe
+  have hPow : HPow.hPow (2 : Int) 128 =
+      Int.ofNat (Nat.succ (Nat.pow 2 128 - 1)) := by decide
+  rw [hPow] at hGe
+  change Int.NonNeg
+    (Int.subNatNat n (Nat.succ (Nat.pow 2 128 - 1))) at hGe
+  have hS : Nat.succ (Nat.pow 2 128 - 1) = Nat.pow 2 128 := by decide
+  rw [hS] at hGe
+  unfold Int.subNatNat at hGe
+  cases hSub : Nat.pow 2 128 - n with
+  | zero => exact Nat.not_le_of_gt h (Nat.le_of_sub_eq_zero hSub)
+  | succ k => rw [hSub] at hGe; nomatch hGe
+
+/-- A natural number below the unsigned modulus round-trips through
+`truncateScalar` without overflow or loss. -/
+private theorem unsigned_in_range {w : IntWidth} {n : Nat}
+    (h : n < intWidthModulus w) :
+    truncateBits w (bvOfInt 128 (Int.ofNat n)) = BitVec.ofNat 128 n ∧
+      ((decide (Int.ofNat n < 0) ||
+          decide (Int.ofNat n ≥ HPow.hPow (2 : Int) 128)) ||
+        (truncateBits w (bvOfInt 128 (Int.ofNat n)) !=
+          bvOfInt 128 (Int.ofNat n))) = false := by
+  have h128 : n < Nat.pow 2 128 :=
+    Nat.lt_of_lt_of_le h (intWidthModulus_le_pow_128 w)
+  have hBv : bvOfInt 128 (Int.ofNat n) = BitVec.ofNat 128 n := by
+    apply bitVec_eq_of_toNat_eq
+    rw [bvOfInt_ofNat_toNat]
+    change Nat.mod n (Nat.pow 2 128) = Nat.mod n (Nat.pow 2 128)
+    rfl
+  have hTr : truncateBits w (bvOfInt 128 (Int.ofNat n)) =
+      bvOfInt 128 (Int.ofNat n) := by
+    apply truncateBits_of_toNat_lt
+    rw [bvOfInt_ofNat_toNat, nat_mod_eq_of_lt h128]
+    exact h
+  refine ⟨hTr.trans hBv, ?_⟩
+  rw [hTr, decide_eq_false (int_ofNat_not_lt_zero n),
+    decide_eq_false (int_ofNat_not_ge_pow128 h128), bne_self_eq_false]
+  rfl
+
+/-- Unsigned `.addUnchecked` without overflow, across all six widths. -/
+theorem evalBinOp_addUnchecked_unsigned_of_lt (w : IntWidth)
+    {b₁ b₂ : BitVec 128} (h₁ : b₁.toNat < intWidthModulus w)
+    (h₂ : b₂.toNat < intWidthModulus w)
+    (h : b₁.toNat + b₂.toNat < intWidthModulus w) :
+    evalBinOp .addUnchecked (.scalar ⟨w, false, b₁⟩) (.scalar ⟨w, false, b₂⟩) =
+      .ok (.scalar ⟨w, false, BitVec.ofNat 128 (b₁.toNat + b₂.toNat)⟩) := by
+  dsimp only [evalBinOp]
+  rw [ite_bool_false (b := BinOp.addUnchecked.isShift) rfl,
+      ite_bool_false (same_scalar_guard_false w false),
+      decodeScalar_unsigned_of_lt h₁, decodeScalar_unsigned_of_lt h₂]
+  dsimp only [evalArithOp]
+  let ⟨hEq, hOk⟩ := unsigned_in_range h
+  rw [ite_bool_false (b := (false && _)) rfl,
+      ite_bool_false (b := (false && false && _)) rfl,
+      show Int.ofNat b₁.toNat + Int.ofNat b₂.toNat =
+        Int.ofNat (b₁.toNat + b₂.toNat) from rfl,
+      truncateScalar_unsigned_eq]
+  dsimp only
+  rw [ite_bool_false (b := false) rfl, hOk,
+      ite_bool_false (b := (false && _)) rfl,
+      ite_bool_false (b := BinOp.addUnchecked.isOverflowing) rfl, hEq]
+
+/-- Unsigned `.mulUnchecked` without overflow, across all six widths. -/
+theorem evalBinOp_mulUnchecked_unsigned_of_lt (w : IntWidth)
+    {b₁ b₂ : BitVec 128} (h₁ : b₁.toNat < intWidthModulus w)
+    (h₂ : b₂.toNat < intWidthModulus w)
+    (h : b₁.toNat * b₂.toNat < intWidthModulus w) :
+    evalBinOp .mulUnchecked (.scalar ⟨w, false, b₁⟩) (.scalar ⟨w, false, b₂⟩) =
+      .ok (.scalar ⟨w, false, BitVec.ofNat 128 (b₁.toNat * b₂.toNat)⟩) := by
+  dsimp only [evalBinOp]
+  rw [ite_bool_false (b := BinOp.mulUnchecked.isShift) rfl,
+      ite_bool_false (same_scalar_guard_false w false),
+      decodeScalar_unsigned_of_lt h₁, decodeScalar_unsigned_of_lt h₂]
+  dsimp only [evalArithOp]
+  let ⟨hEq, hOk⟩ := unsigned_in_range h
+  rw [ite_bool_false (b := (false && _)) rfl,
+      ite_bool_false (b := (false && false && _)) rfl,
+      show Int.ofNat b₁.toNat * Int.ofNat b₂.toNat =
+        Int.ofNat (b₁.toNat * b₂.toNat) from rfl,
+      truncateScalar_unsigned_eq]
+  dsimp only
+  rw [ite_bool_false (b := false) rfl, hOk,
+      ite_bool_false (b := (false && _)) rfl,
+      ite_bool_false (b := BinOp.mulUnchecked.isOverflowing) rfl, hEq]
+
+/-- Unsigned `.subUnchecked` without underflow, across all six widths. -/
+theorem evalBinOp_subUnchecked_unsigned_of_le (w : IntWidth)
+    {b₁ b₂ : BitVec 128} (h₁ : b₁.toNat < intWidthModulus w)
+    (h₂ : b₂.toNat < intWidthModulus w)
+    (h : b₂.toNat ≤ b₁.toNat) :
+    evalBinOp .subUnchecked (.scalar ⟨w, false, b₁⟩) (.scalar ⟨w, false, b₂⟩) =
+      .ok (.scalar ⟨w, false, BitVec.ofNat 128 (b₁.toNat - b₂.toNat)⟩) := by
+  dsimp only [evalBinOp]
+  rw [ite_bool_false (b := BinOp.subUnchecked.isShift) rfl,
+      ite_bool_false (same_scalar_guard_false w false),
+      decodeScalar_unsigned_of_lt h₁, decodeScalar_unsigned_of_lt h₂]
+  dsimp only [evalArithOp]
+  let ⟨hEq, hOk⟩ := unsigned_in_range
+    (Nat.lt_of_le_of_lt (Nat.sub_le b₁.toNat b₂.toNat) h₁)
+  rw [ite_bool_false (b := (false && _)) rfl,
+      ite_bool_false (b := (false && false && _)) rfl,
+      int_ofNat_sub_of_le h,
+      truncateScalar_unsigned_eq]
+  dsimp only
+  rw [ite_bool_false (b := false) rfl, hOk,
+      ite_bool_false (b := (false && _)) rfl,
+      ite_bool_false (b := BinOp.subUnchecked.isOverflowing) rfl, hEq]
+
 end Anneal.MirWp
 
 end
