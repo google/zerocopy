@@ -3756,6 +3756,78 @@ MIR_SEMANTICS_GUARDS: tuple[MirSemanticsGuard, ...] = (
         theorem_name="refute_step_v2_option_discriminant_dst_ty",
         needs_wf_helper=False,
     ),
+    # ------------------------------------------------------------------
+    # Rvalue.aggregateEnum (field-less enum and Ordering construction)
+    # ------------------------------------------------------------------
+    MirSemanticsGuard(
+        guard_id="step_v2_aggregate_enum_dst_type",
+        target_file="trusted/lean/Trusted/MirSemantics/Step.lean",
+        target_module="Trusted/MirSemantics/Step",
+        description="evalRvalueV2 .aggregateEnum requires the destination type",
+        anchor=(
+            "  | .aggregateEnum ty variantIdx =>\n"
+            "    if !MirTy.beq dstTy ty then\n"
+            "      .error .unsupported"
+        ),
+        replacement=(
+            "  | .aggregateEnum ty variantIdx =>\n"
+            "    if false then\n"
+            "      .error .unsupported"
+        ),
+        fixture_module="AggregateEnumRefutations",
+        theorem_name="refute_step_v2_aggregate_enum_dst_type",
+        needs_wf_helper=False,
+    ),
+    MirSemanticsGuard(
+        guard_id="step_v2_aggregate_enum_variant_range",
+        target_file="trusted/lean/Trusted/MirSemantics/Step.lean",
+        target_module="Trusted/MirSemantics/Step",
+        description="evalAggregateEnum rejects an out-of-range enum variant index",
+        anchor="    if enumAdmitted ety && Nat.blt variantIdx ety.discriminants.length then",
+        replacement="    if enumAdmitted ety && true then",
+        fixture_module="AggregateEnumRefutations",
+        theorem_name="refute_step_v2_aggregate_enum_variant_range",
+        needs_wf_helper=False,
+    ),
+    MirSemanticsGuard(
+        guard_id="step_v2_aggregate_enum_admitted",
+        target_file="trusted/lean/Trusted/MirSemantics/Step.lean",
+        target_module="Trusted/MirSemantics/Step",
+        description="evalAggregateEnum rejects an unadmitted EnumTy",
+        anchor="    if enumAdmitted ety && Nat.blt variantIdx ety.discriminants.length then",
+        replacement="    if true && Nat.blt variantIdx ety.discriminants.length then",
+        fixture_module="AggregateEnumRefutations",
+        theorem_name="refute_step_v2_aggregate_enum_admitted",
+        needs_wf_helper=False,
+    ),
+    MirSemanticsGuard(
+        guard_id="step_v2_aggregate_enum_ordering_order",
+        target_file="trusted/lean/Trusted/MirSemantics/Step.lean",
+        target_module="Trusted/MirSemantics/Step",
+        description="evalAggregateEnum maps Ordering declaration index 0 to Less",
+        anchor="  | .ordering, 0 => .ok (.ordering .less)",
+        replacement="  | .ordering, 0 => .ok (.ordering .equal)",
+        fixture_module="AggregateEnumRefutations",
+        theorem_name="refute_step_v2_aggregate_enum_ordering_order",
+        needs_wf_helper=False,
+    ),
+    MirSemanticsGuard(
+        guard_id="step_v2_aggregate_enum_ordering_range",
+        target_file="trusted/lean/Trusted/MirSemantics/Step.lean",
+        target_module="Trusted/MirSemantics/Step",
+        description="evalAggregateEnum rejects Ordering declaration indices above 2",
+        anchor=(
+            "  | .ordering, 1 => .ok (.ordering .equal)\n"
+            "  | .ordering, 2 => .ok (.ordering .greater)"
+        ),
+        replacement=(
+            "  | .ordering, 1 => .ok (.ordering .equal)\n"
+            "  | .ordering, _ => .ok (.ordering .greater)"
+        ),
+        fixture_module="AggregateEnumRefutations",
+        theorem_name="refute_step_v2_aggregate_enum_ordering_range",
+        needs_wf_helper=False,
+    ),
 )
 
 

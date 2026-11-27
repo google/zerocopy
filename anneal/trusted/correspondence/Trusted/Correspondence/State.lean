@@ -835,6 +835,7 @@ noncomputable def toMiriRvalue (types : List MirTy) :
   | .aggregateTuple _
   | .aggregateArray _ _ | .repeat_ _ _ _
   | .aggregateRangeTo _ _ | .aggregateRangeFrom _ _
+  | .aggregateEnum _ _
   | .aggregateRange _ _ _ | .aggregateOption _ _ _ | .unsupported =>
     .CopyForDeref ⟨0, Array.empty⟩
 

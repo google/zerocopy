@@ -1221,11 +1221,15 @@ fn rvalue<'tcx>(
         // because unit values are `ZeroSized` constants. For
         // `AggregateKind::Adt(def, variant, ..)`, "The second field is the
         // variant index. It's equal to 0 for struct and union expressions."
-        // Only the sysroot `core::ops::range::{RangeTo, RangeFrom}` lang-item
-        // structs are admitted (see [`core_range`]), requiring
-        // `VariantIdx::ZERO` and exactly one operand (their single
-        // `end`/`start` field); the active-field slot is for unions and must
-        // be `None`.
+        // Three `Adt` shapes are admitted, and the active-field slot (for
+        // unions) must be `None` in each. The sysroot `core::ops::range`
+        // lang-item structs (see [`core_range`]) require `VariantIdx::ZERO`
+        // and one operand per field (`RangeTo { end }`,
+        // `RangeFrom { start }`, `Range { start, end }`).
+        // `core::option::Option<T>` requires `None` (variant 0, no
+        // operands) or `Some` (variant 1, one operand). A variant of an
+        // admitted field-less enum with no operands is captured as
+        // `ir::Rvalue::AggregateEnum` (see [`fieldless_enum_variant`]).
         // https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_middle/src/mir/syntax.rs#L1445-L1453
         // https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_middle/src/mir/syntax.rs#L1546-L1556
         // https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/library/core/src/ops/range.rs#L192-L201
@@ -1304,10 +1308,87 @@ fn rvalue<'tcx>(
                     return Err(format!("unsupported non-core ADT aggregate: {value:?}"));
                 }
             }
+            mir::AggregateKind::Adt(adt_did, variant, _, _, None) if ops.is_empty() => {
+                fieldless_enum_variant(tcx, local_decls, value, *adt_did, *variant)?
+            }
             _ => return Err(format!("unsupported rvalue aggregate: {value:?}")),
         },
         other => return Err(format!("unsupported rvalue: {other:?}")),
     })
+}
+
+/// Capture a field-less `AggregateKind::Adt(def, variant, ..)` with no operands
+/// 1:1 as `ir::Rvalue::AggregateEnum { ty, variant_idx }`
+/// (`Trusted.MirAst.Rvalue.aggregateEnum`).
+///
+/// `Rvalue::Aggregate` "Creates an aggregate value, like a tuple or struct",
+/// and for `Adt` "The second field is the variant index"; the active-field
+/// slot is `None` for non-unions (checked by the caller's pattern). Without
+/// optimizations, `rustc` keeps a bare `State::A` as such an aggregate. The
+/// captured index is that variant index, not the discriminant ("the value of
+/// the discriminant is not the same thing as the variant index"), matching
+/// `Trusted.MirSemantics.Val.enumVal`, which also stores the declaration
+/// index.
+///
+/// Only types that [`ty`] already admits as values are accepted:
+/// `core::cmp::Ordering` and local, non-generic enums whose variants all have
+/// no fields (payload enums, structs, unions, and generic or non-local enums
+/// stay refused). [`ty`] builds `ir::EnumTy::discriminants` from
+/// `AdtDef::discriminants`, which yields one entry per variant in
+/// `VariantIdx` order, so a variant index below the variant count indexes that
+/// list. For `Ordering`, whose Lean semantics fix `Less`, `Equal`, and
+/// `Greater` at declaration indices `0`, `1`, and `2`, the compiler's
+/// discriminants for those indices must be `-1`, `0`, and `1`.
+/// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_middle/src/mir/syntax.rs#L1445-L1453
+/// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_middle/src/mir/syntax.rs#L1546-L1556
+/// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_middle/src/mir/syntax.rs#L1433-L1443
+/// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_middle/src/ty/adt.rs#L660-L680
+/// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/library/core/src/cmp.rs#L400-L415
+fn fieldless_enum_variant<'tcx>(
+    tcx: TyCtxt<'tcx>,
+    local_decls: &mir::LocalDecls<'tcx>,
+    value: &mir::Rvalue<'tcx>,
+    adt_did: DefId,
+    variant: rustc_abi::VariantIdx,
+) -> Result<ir::Rvalue> {
+    let adt = tcx.adt_def(adt_did);
+    if !adt.is_enum() {
+        return Err(format!("unsupported non-enum ADT aggregate: {value:?}"));
+    }
+    if variant.as_usize() >= adt.variants().len() {
+        return Err(format!("enum aggregate variant index out of range: {value:?}"));
+    }
+    if !adt.variant(variant).fields.is_empty() {
+        return Err(format!("enum aggregate of a variant with fields: {value:?}"));
+    }
+    let agg_ty = value.ty(local_decls, tcx);
+    if !matches!(agg_ty.kind(), ty::Adt(def, _) if def.did() == adt_did) {
+        return Err(format!("enum aggregate type disagrees with its ADT: {value:?}"));
+    }
+    let t = ty(tcx, agg_ty)?;
+    match &t {
+        ir::Ty::Ordering => {
+            let discriminants: Vec<u128> =
+                adt.discriminants(tcx).map(|(_, discr)| discr.val).collect();
+            if discriminants != [0xff, 0, 1] {
+                return Err(format!(
+                    "Ordering discriminants {discriminants:?} are not Less = -1, Equal = 0, \
+                     Greater = 1: {value:?}"
+                ));
+            }
+        }
+        ir::Ty::Enum(ety) => {
+            if variant.as_usize() >= ety.discriminants().len() {
+                return Err(format!(
+                    "enum aggregate variant index exceeds the enum type: {value:?}"
+                ));
+            }
+        }
+        _ => return Err(format!("unsupported ADT aggregate type {t:?}: {value:?}")),
+    }
+    let variant_idx = u32::try_from(variant.as_usize())
+        .map_err(|_| format!("enum aggregate variant index overflows u32: {value:?}"))?;
+    Ok(ir::Rvalue::AggregateEnum { ty: t, variant_idx })
 }
 
 /// Storage markers survive capture (`"Using a local in any way (not only

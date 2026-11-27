@@ -111,4 +111,32 @@ theorem positive_sanity_v2_step_and_bytes :
      | _ => False) :=
   ⟨rfl, rfl, rfl, rfl, trivial, trivial⟩
 
+/-- Single-variant zero-sized enum `enum S { Only }`. -/
+noncomputable def zstAggregateEnumTy : EnumTy := {
+  id := 2
+  discrWidth := .isize
+  discrSigned := true
+  tagRepr := .zeroSized
+  discriminants := [0]
+}
+
+/-- Anti-overreach Profile v2 canary for the `Rvalue.aggregateEnum` guards:
+variant `1` of `reprU8EnumTy`, the only variant of a zero-sized enum, and
+`Ordering` declaration indices `1` (`Equal`) and `2` (`Greater`) all evaluate
+to their values without touching locals or memory. -/
+theorem positive_sanity_v2_aggregate_enum :
+    evalRvalueV2 [] [] MemoryState.empty (.enum reprU8EnumTy)
+      (.aggregateEnum (.enum reprU8EnumTy) 1) =
+      .ok (.enumVal reprU8EnumTy 1, [], MemoryState.empty) ∧
+    evalRvalueV2 [] [] MemoryState.empty (.enum zstAggregateEnumTy)
+      (.aggregateEnum (.enum zstAggregateEnumTy) 0) =
+      .ok (.enumVal zstAggregateEnumTy 0, [], MemoryState.empty) ∧
+    evalRvalueV2 [] [] MemoryState.empty .ordering
+      (.aggregateEnum .ordering 1) =
+      .ok (.ordering .equal, [], MemoryState.empty) ∧
+    evalRvalueV2 [] [] MemoryState.empty .ordering
+      (.aggregateEnum .ordering 2) =
+      .ok (.ordering .greater, [], MemoryState.empty) :=
+  ⟨rfl, rfl, rfl, rfl⟩
+
 end GuardMutation

@@ -34,10 +34,11 @@ CI ergonomics:
    - Profile v2 matches `Trusted.MirSemantics.{Layout,Memory,Bytes,Step}`
      including `CallerMemory`, thin and wide slice pointers, `PtrMetadata`,
      `BinOp::Offset`, `CastKind::{PtrToPtr,IntToPtr}`, `Rvalue::{UseRetag,Ref,
-     AddressOf,AggregateRangeTo,AggregateRangeFrom}`, `CoreCallOp`, `Assert`
-     (`MisalignedPtrDeref`/`NullPtrDeref` -> `Undefined`, other panicking
-     asserts -> `Unsupported`), single-level `PartialTuple` moves, and
-     allocation-checked zero-sized memory reads/writes.
+     AddressOf,AggregateRangeTo,AggregateRangeFrom,AggregateEnum}`,
+     `CoreCallOp`, `Assert` (`MisalignedPtrDeref`/`NullPtrDeref` ->
+     `Undefined`, other panicking asserts -> `Unsupported`), single-level
+     `PartialTuple` moves, and allocation-checked zero-sized memory
+     reads/writes.
    - Captured constructs that the evaluator does not model yet (array
      aggregates and repeats, `ConstantIndex` projections, `Unsize` casts,
      read-only data constants, and the `IntToLeBytes` and `ArrayEq` core calls)

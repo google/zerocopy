@@ -409,6 +409,7 @@ theorem rvalueCacheTouch_length (dstId : LocalId) (rv : Rvalue)
   | ref _ _ | addressOf _ _ | fakeAddressOf _ | aggregateTuple _ | unsupported
   | useRetag _
   | aggregateRangeTo _ _ | aggregateRangeFrom _ _ | aggregateArray _ _
+  | aggregateEnum _ _
   | repeat_ _ _ _ | aggregateRange _ _ _ | aggregateOption _ _ _ =>
     exact cacheTouch_length _ _
 
@@ -6138,6 +6139,13 @@ theorem evalRvalueIntoPlace_ref_eq (rp : RefProg) (c : Choice)
             | some _ =>
               rw [h_op] at h_rv; injection h_rv with h_eq; subst h_eq
               exact ⟨_, _, h_copy_for_deref_err, rfl⟩
+      | aggregateEnum tyId _ =>
+        dsimp only [decodeRvalue, optMap] at h_rv
+        cases h_ty : MirSemantics.getElem? rp.types tyId with
+        | none => rw [h_ty] at h_rv; cases h_rv
+        | some _ =>
+          rw [h_ty] at h_rv; injection h_rv with h_eq; subst h_eq
+          exact ⟨_, _, h_copy_for_deref_err, rfl⟩
       | unsupported =>
         injection h_rv with h_eq; subst h_eq
         exact ⟨_, _, h_copy_for_deref_err, rfl⟩

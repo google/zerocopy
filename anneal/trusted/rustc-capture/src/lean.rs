@@ -448,6 +448,10 @@ fn rvalue_at(value: &Rvalue, indent: usize) -> String {
                 ty_at(inner_ty, indent)
             )
         }
+        Rvalue::AggregateEnum { ty, variant_idx } => format!(
+            "(Trusted.MirAst.Rvalue.aggregateEnum {} {variant_idx})",
+            ty_at(ty, indent)
+        ),
     }
 }
 

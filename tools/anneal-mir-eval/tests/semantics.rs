@@ -5807,3 +5807,76 @@ fn profile_v2_fake_address_of_executes_metadata_only_and_rejects_misuse() {
         FaultKind::Unsupported,
     );
 }
+
+#[test]
+fn aggregate_enum_constructs_variants_in_profile_v2_only() {
+    // `_0 = aggregate_enum(ty, variant_idx)` in a `fn(u8) -> ret_ty` body.
+    let program = |profile: u32, ret_ty: Ty, ty: Ty, variant_idx: u32| {
+        unmodeled_shape_program(
+            profile,
+            ret_ty,
+            vec![Statement::Assign {
+                local: 0,
+                projection: Vec::new(),
+                value: Rvalue::AggregateEnum { ty, variant_idx },
+            }],
+            Terminator::Goto { block: 1 },
+        )
+    };
+    let v2_cfg = EvalConfig::profile_v2(TargetEndian::Little);
+    let run_v2 = |ret_ty: Ty, ty: Ty, variant_idx: u32| {
+        eval_body_with_config(&program(2, ret_ty, ty, variant_idx), 0, &[Val::u8(7)], 16, &v2_cfg)
+    };
+    let repr_u8 = Ty::Enum(canary_repr_u8_enum());
+    let zst = Ty::Enum(canary_single_zst_enum());
+
+    // Admitted enum variants and `Ordering` declaration indices 0/1/2.
+    assert_returned(
+        &run_v2(repr_u8.clone(), repr_u8.clone(), 1),
+        Val::EnumVal { ty: canary_repr_u8_enum(), variant: 1 },
+    );
+    assert_returned(
+        &run_v2(zst.clone(), zst.clone(), 0),
+        Val::EnumVal { ty: canary_single_zst_enum(), variant: 0 },
+    );
+    for (idx, ord) in [(0, OrderingVal::Less), (1, OrderingVal::Equal), (2, OrderingVal::Greater)] {
+        assert_returned(&run_v2(Ty::Ordering, Ty::Ordering, idx), Val::Ordering(ord));
+    }
+
+    // Out-of-range indices, a destination-type mismatch, an unadmitted enum,
+    // and a non-enum type all fail closed.
+    let fault_reason = |trace: &anneal_mir_eval::StepTrace| {
+        assert_fault(trace, FaultKind::Unsupported);
+        match &trace.outcome {
+            Outcome::Fault(detail) => detail.reason.clone(),
+            other => panic!("expected fault, got {other:?}"),
+        }
+    };
+    const NOT_ADMITTED: &str = "AggregateEnum type or variant index is not admitted";
+    const MISMATCH: &str = "AggregateEnum type disagrees with destination type";
+    assert_eq!(fault_reason(&run_v2(repr_u8.clone(), repr_u8.clone(), 2)), NOT_ADMITTED);
+    assert_eq!(fault_reason(&run_v2(Ty::Ordering, Ty::Ordering, 3)), NOT_ADMITTED);
+    assert_eq!(fault_reason(&run_v2(repr_u8.clone(), Ty::Ordering, 0)), MISMATCH);
+    // An unadmitted enum cannot even be a local, so entry validation rejects
+    // the body before `eval_aggregate_enum`'s own `enum_admitted` check runs.
+    let colliding = EnumTy { discriminants: vec![10, 10], ..canary_repr_u8_enum() };
+    assert_eq!(
+        fault_reason(&run_v2(Ty::Enum(colliding.clone()), Ty::Enum(colliding), 0)),
+        "body contains unsupported local variable type"
+    );
+    assert_eq!(fault_reason(&run_v2(Ty::Bool, Ty::Bool, 0)), NOT_ADMITTED);
+
+    // Profile v1 does not evaluate the rvalue.
+    let v1 = program(1, repr_u8.clone(), repr_u8, 0);
+    let v1_cfg = EvalConfig::for_program(&v1, Some(TargetEndian::Little)).unwrap();
+    assert!(!v1_cfg.enable_profile_v2());
+    let trace = eval_body_with_config(&v1, 0, &[Val::u8(7)], 16, &v1_cfg);
+    assert_eq!(fault_reason(&trace), "unmodeled Profile v1 MIR rvalue");
+
+    // The capture JSON shape round-trips.
+    let rvalue: Rvalue = serde_json::from_str(
+        r#"{"kind":"aggregate_enum","ty":{"kind":"ordering"},"variant_idx":2}"#,
+    )
+    .unwrap();
+    assert_eq!(rvalue, Rvalue::AggregateEnum { ty: Ty::Ordering, variant_idx: 2 });
+}

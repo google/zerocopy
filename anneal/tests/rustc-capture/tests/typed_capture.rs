@@ -1188,7 +1188,7 @@ fn whole_crate_admits_pure_anon_consts_and_refuses_unsafe_or_call_anon_consts() 
 }
 
 #[test]
-fn selected_unit_captures_explicit_fieldless_enum_discriminants_and_refuses_adt_aggregates() {
+fn selected_unit_captures_explicit_fieldless_enum_discriminants_and_refuses_other_adt_aggregates() {
     // Default-repr narrow signed enum (`discr = isize`, `tag = i8`): in
     // `selected_unit` scope, `rustc`'s evaluated discriminants record the
     // 64-bit two's-complement discriminant alongside the signed 8-bit tag.
@@ -1236,25 +1236,12 @@ fn selected_unit_captures_explicit_fieldless_enum_discriminants_and_refuses_adt_
     assert!(lean.contains("EnumTagRepr.zeroSized"), "{lean}");
     assert!(lean.contains("[42]"), "{lean}");
 
-    // Aggregates other than `()` (`AggregateKind::Adt`), including direct
-    // fieldless enum construction, payload-enum unit variants, 0-field
-    // structs, and non-local enums, must all fail closed.
+    // Field-less `AggregateKind::Adt` construction is admitted only for
+    // enums the capture already admits as values (see
+    // `fieldless_enum_variant_literals_capture_as_aggregate_enum`).
+    // Payload-enum unit variants, 0-field structs, unions, generic enums, and
+    // non-local enums must all fail closed.
     let refused_cases: &[(&str, &[u8], &[&str], &str)] = &[
-        (
-            "direct_narrow_signed_aggregate",
-            b"#[repr(i8)]\n\
-              pub enum NarrowSigned { Neg = -1, Pos = 1 }\n\
-              pub fn make() -> NarrowSigned { NarrowSigned::Neg }\n",
-            &["--select=make"],
-            "unsupported rvalue",
-        ),
-        (
-            "direct_single_zst_aggregate",
-            b"pub enum Single { Only }\n\
-              pub fn make() -> Single { Single::Only }\n",
-            &["--scope=crate"],
-            "unsupported rvalue",
-        ),
         (
             "payload_unit_variant",
             b"pub enum Payload { None, Some(u8) }\n\
@@ -1270,10 +1257,26 @@ fn selected_unit_captures_explicit_fieldless_enum_discriminants_and_refuses_adt_
             "unsupported type",
         ),
         (
-            "ordering_adt_aggregate",
-            b"pub fn f() -> core::cmp::Ordering { core::cmp::Ordering::Less }\n",
+            "union_aggregate",
+            b"pub union U { a: u8 }\n\
+              pub fn f() -> U { U { a: 1 } }\n",
+            &["--select=f"],
+            "unsupported",
+        ),
+        (
+            "generic_fieldless_enum",
+            b"pub enum G<const N: usize> { A, B }\n\
+              pub fn f() -> G<3> { G::A }\n",
+            &["--select=f"],
+            "unsupported type",
+        ),
+        (
+            "non_local_enum_aggregate",
+            b"pub fn f() -> core::sync::atomic::Ordering {\n\
+                  core::sync::atomic::Ordering::Relaxed\n\
+              }\n",
             &["--scope=crate"],
-            "unsupported rvalue",
+            "unsupported type",
         ),
         (
             "non_local_enum",
@@ -1294,6 +1297,88 @@ fn selected_unit_captures_explicit_fieldless_enum_discriminants_and_refuses_adt_
         );
         fixture.assert_no_capture_artifacts();
     }
+}
+
+/// Capture `function` alone from `source` and return the manifest.
+fn selected_manifest(source: &[u8], function: &str) -> Value {
+    let fixture = Capture::new(source);
+    let output = fixture.command().arg(format!("--select={function}")).output().unwrap();
+    assert!(output.status.success(), "{function}: {output:?}");
+    fixture.manifest()
+}
+
+#[test]
+fn fieldless_enum_variant_literals_capture_as_aggregate_enum() {
+    // Without optimizations, `rustc` keeps a bare variant literal such as
+    // `State::A` as a field-less `Rvalue::Aggregate`. It must be captured 1:1
+    // as `aggregate_enum` carrying the variant index (not the discriminant)
+    // and the same enum type that a `const` of that variant has, and it makes
+    // the program Profile v2.
+    let cases: &[(&str, &str, &str, &str, u64)] = &[
+        // (name, declarations, type, variant literal, expected variant index)
+        ("issue_4427", "pub enum State { A, B }\n", "State", "State::B", 1),
+        ("first_variant", "pub enum State { A, B }\n", "State", "State::A", 0),
+        ("default_repr_negative", "pub enum E { Neg = -1, Pos = 1 }\n", "E", "E::Neg", 0),
+        (
+            "repr_i8_non_contiguous",
+            "#[repr(i8)]\npub enum E { Neg = -5, Pos = 42 }\n",
+            "E",
+            "E::Pos",
+            1,
+        ),
+        ("repr_isize_negative", "#[repr(isize)]\npub enum E { A = -9, B = 3 }\n", "E", "E::A", 0),
+        ("repr_u16_max", "#[repr(u16)]\npub enum E { A = 1, B = 65535 }\n", "E", "E::B", 1),
+        (
+            "repr_u32_large",
+            "#[repr(u32)]\npub enum E { A = 7, B = 4000000000, C = 9 }\n",
+            "E",
+            "E::C",
+            2,
+        ),
+        ("repr_c", "#[repr(C)]\npub enum E { A = 3, B = 5 }\n", "E", "E::B", 1),
+        ("ordering_less", "", "core::cmp::Ordering", "core::cmp::Ordering::Less", 0),
+        ("ordering_equal", "", "core::cmp::Ordering", "core::cmp::Ordering::Equal", 1),
+        ("ordering_greater", "", "core::cmp::Ordering", "core::cmp::Ordering::Greater", 2),
+        ("single_zst", "pub enum S { Only }\n", "S", "S::Only", 0),
+        ("single_zst_explicit", "pub enum S { Only = 42 }\n", "S", "S::Only", 0),
+    ];
+    for (name, decls, ty, literal, expected_idx) in cases {
+        let source = format!(
+            "{decls}const K: {ty} = {literal};\n\
+             pub fn direct() -> {ty} {{ {literal} }}\n\
+             pub fn via_const() -> {ty} {{ K }}\n"
+        );
+        let direct = selected_manifest(source.as_bytes(), "direct");
+        let via_const = selected_manifest(source.as_bytes(), "via_const");
+        assert_eq!(direct["program"]["mir_profile_version"], 2, "{name}: {direct}");
+        let value = &direct["program"]["bodies"][0]["blocks"][0]["statements"][0]["value"];
+        assert_eq!(value["kind"], "aggregate_enum", "{name}: {direct}");
+        assert_eq!(value["variant_idx"], *expected_idx, "{name}: {direct}");
+        let const_value = &via_const["program"]["bodies"][0]["blocks"][0]["statements"][0]["value"];
+        assert_eq!(const_value["kind"], "use", "{name}: {via_const}");
+        assert_eq!(value["ty"], const_value["operand"]["ty"], "{name}");
+        assert_eq!(
+            value["ty"], direct["program"]["bodies"][0]["local_tys"][0],
+            "{name}: {direct}"
+        );
+    }
+
+    // The issue's reproducer captures in `selected_unit` and crate scope, and
+    // its captured Lean elaborates.
+    let reproducer = b"#![no_std]\n\
+        pub enum State { A, B }\n\
+        pub fn direct_variant_literal() -> State { State::A }\n\
+        const STATE_A: State = State::A;\n\
+        pub fn workaround_via_const() -> State { STATE_A }\n";
+    let fixture = Capture::new(reproducer);
+    let output = fixture.command().arg("--select=direct_variant_literal").output().unwrap();
+    assert!(output.status.success(), "{output:?}");
+    let fixture = Capture::new(reproducer);
+    let output = fixture.command().arg("--scope=crate").output().unwrap();
+    assert!(output.status.success(), "{output:?}");
+    let lean = fixture.lean_source();
+    assert_eq!(lean.matches("(Trusted.MirAst.Rvalue.aggregateEnum ").count(), 1, "{lean}");
+    compile_captured_lean_if_trusted_sources_present(&fixture.output.join("Captured.lean"));
 }
 
 #[test]

@@ -3094,6 +3094,7 @@ theorem mirDiscriminantTypesValid_eq (body : Body) :
     | addressOf _ _ | fakeAddressOf _ | aggregateTuple _ | aggregateArray _ _
     | repeat_ _ _ _
     | aggregateRangeTo _ | aggregateRangeFrom _
+    | aggregateEnum _ _
     | aggregateRange _ _ _ | aggregateOption _ _ _ | unsupported => rfl
   | storageLive _ | storageDead _ | nop | unsupported => rfl
 
@@ -3168,6 +3169,7 @@ theorem mirCastTypesValid_eq (body : Body)
     | addressOf _ _ | fakeAddressOf _ | aggregateTuple _ | aggregateArray _ _
     | repeat_ _ _ _
     | aggregateRangeTo _ | aggregateRangeFrom _
+    | aggregateEnum _ _
     | aggregateRange _ _ _ | aggregateOption _ _ _ | unsupported => rfl
   | storageLive _ | storageDead _ | nop | unsupported => rfl
 
@@ -3215,6 +3217,7 @@ theorem mirAssignTypesValid_eq (body : Body)
         | discriminant _ | cast _ _ _ | ref _ _ | addressOf _ _
         | fakeAddressOf _
         | aggregateTuple _ | unsupported | useRetag _ | aggregateRangeTo _ _
+        | aggregateEnum _ _
         | aggregateRangeFrom _ _ | aggregateArray _ _ | repeat_ _ _ _ | aggregateOption _ _ _ | aggregateRange _ _ _ => rfl
         | use opnd => exact mirLocalOperandMatchesTy_eq body.locals hSup opnd dstTy
         | binaryOp op lhs rhs =>

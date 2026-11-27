@@ -73,6 +73,7 @@ inductive RefRvalue where
   | aggregateRange (elemTy : TyId) (startOp endOp : RefOperand)
   | aggregateOption (variantIdx : Nat) (innerTy : TyId)
       (payload : Option RefOperand)
+  | aggregateEnum (ty : TyId) (variantIdx : Nat)
   | unsupported
 
 /-- Reference MIR statement (`Miri.MIR.StatementKind`). -/
@@ -268,6 +269,7 @@ noncomputable def collectRvalue (acc : List MirTy) : Rvalue → List MirTy
     let acc1 :=
       match payload with | some op => collectOperand acc op | none => acc
     collectTy acc1 innerTy
+  | .aggregateEnum ty _ => collectTy acc ty
   | .unsupported => acc
 
 /-- Intern all `MirTy` descriptors carried in a `StatementKind`. -/
@@ -347,6 +349,8 @@ noncomputable def encodeRvalue (ts : List MirTy) : Rvalue → RefRvalue
   | .aggregateOption v innerTy payload =>
     .aggregateOption v (lookupTyId ts innerTy)
       (optMap (encodeOperand ts) payload)
+  | .aggregateEnum ty variantIdx =>
+    .aggregateEnum (lookupTyId ts ty) variantIdx
   | .unsupported => .unsupported
 
 /-- Encode a `StatementKind` against type table `ts`. -/
@@ -459,6 +463,9 @@ noncomputable def decodeRvalue (ts : List MirTy) : RefRvalue → Option Rvalue
       optMap (fun op => Rvalue.aggregateOption v ty (some op))
         (decodeOperand ts pOp)
     | none, _ => none
+  | .aggregateEnum tyId variantIdx =>
+    optMap (fun ty => .aggregateEnum ty variantIdx)
+      (MirSemantics.getElem? ts tyId)
   | .unsupported => some .unsupported
 
 /-- Decode a `RefStatementKind` against type table `ts`. -/

@@ -768,6 +768,7 @@ theorem updateCacheLoop_rvalueCacheTouch (dstId : LocalId) (rv : Rvalue)
     exact updateCacheLoop_false _ 0 _ (fun _ _ => rfl)
   | aggregateTuple _ | useRetag _ | aggregateRangeTo _ _
   | aggregateRangeFrom _ _ | aggregateArray _ _ | repeat_ _ _ _
+  | aggregateEnum _ _
   | aggregateRange _ _ _ | aggregateOption _ _ _ =>
     change updateCacheLoop (fun _ => false) 0 (cacheTouch cache dstId) =
       cacheTouch cache dstId

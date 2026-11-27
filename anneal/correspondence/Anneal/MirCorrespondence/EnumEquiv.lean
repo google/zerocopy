@@ -2051,6 +2051,12 @@ private theorem refDiscrStmtOk_eq {ts : List MirTy} {localTys : List MirTy}
               | none => rw [h_o] at h_rv; cases h_rv
               | some _ =>
                 rw [h_o] at h_rv; injection h_rv with h; subst h; rfl
+        | aggregateEnum rty _ =>
+          dsimp only [decodeRvalue] at h_rv
+          cases h_t : MirSemantics.getElem? ts rty with
+          | none => rw [h_t] at h_rv; cases h_rv
+          | some _ =>
+            rw [h_t] at h_rv; injection h_rv with h; subst h; rfl
         | unsupported => injection h_rv with h; subst h; rfl
 
 private theorem refCastStmtOk_eq {ts : List MirTy} {localTys : List MirTy}
@@ -2206,6 +2212,12 @@ private theorem refCastStmtOk_eq {ts : List MirTy} {localTys : List MirTy}
               | none => rw [h_o] at h_rv; cases h_rv
               | some _ =>
                 rw [h_o] at h_rv; injection h_rv with h; subst h; rfl
+        | aggregateEnum rty _ =>
+          dsimp only [decodeRvalue] at h_rv
+          cases h_t : MirSemantics.getElem? ts rty with
+          | none => rw [h_t] at h_rv; cases h_rv
+          | some _ =>
+            rw [h_t] at h_rv; injection h_rv with h; subst h; rfl
         | unsupported => injection h_rv with h; subst h; rfl
 
 theorem refDiscriminantTypesValid_eq {ts : List MirTy} {rbody : RefBody}
@@ -2459,6 +2471,13 @@ private theorem refAssignStmtOk_eq {ts localTys : List MirTy}
             | some _ =>
               rw [h_o] at h_rv; injection h_rv with h; subst h
               dsimp only [refAssignStmtOk, assignStmtOk]; rw [h_demp, h_did]
+        | aggregateEnum rty _ =>
+          dsimp only [decodeRvalue, optMap] at h_rv
+          cases h_t : MirSemantics.getElem? ts rty with
+          | none => rw [h_t] at h_rv; cases h_rv
+          | some _ =>
+            rw [h_t] at h_rv; injection h_rv with h; subst h
+            dsimp only [refAssignStmtOk, assignStmtOk]; rw [h_demp, h_did]
         | aggregateArray rty rops =>
           dsimp only [decodeRvalue, optMap2] at h_rv
           cases h_t : MirSemantics.getElem? ts rty with

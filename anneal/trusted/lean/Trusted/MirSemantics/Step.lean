@@ -1987,6 +1987,40 @@ noncomputable def evalFakeAddressOfRvalueV2 (bodyLocals : List MirTy)
     | _, _ => .error .unsupported
   | _ => .error .unsupported
 
+/-- The value of the field-less enum variant `variantIdx` of `ty`, constructed
+by `Rvalue::Aggregate(AggregateKind::Adt(def, variantIdx, ..), [])`. For
+`AggregateKind::Adt`, "The second field is the variant index"
+(`compiler/rustc_middle/src/mir/syntax.rs`, `rust-lang/rust`
+`f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1`), and `Val.enumVal ety variant`
+likewise holds the declaration index rather than the discriminant, so no
+discriminant arithmetic is needed:
+- `.enum ety` yields `.enumVal ety variantIdx` when `ety` is admitted
+  (`enumAdmitted`) and `variantIdx` indexes `ety.discriminants`.
+- `.ordering` maps the declaration indices `0`, `1`, and `2` to `.less`,
+  `.equal`, and `.greater` (`library/core/src/cmp.rs`, `rust-lang/rust`
+  `f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1`):
+
+  > "pub enum Ordering {
+  >     ...
+  >     Less = -1,
+  >     ...
+  >     Equal = 0,
+  >     ...
+  >     Greater = 1,
+  > }"
+
+Every other type or out-of-range index faults with `.error .unsupported`. -/
+noncomputable def evalAggregateEnum : MirTy → Nat → Except FaultKind Val
+  | .ordering, 0 => .ok (.ordering .less)
+  | .ordering, 1 => .ok (.ordering .equal)
+  | .ordering, 2 => .ok (.ordering .greater)
+  | .enum ety, variantIdx =>
+    if enumAdmitted ety && Nat.blt variantIdx ety.discriminants.length then
+      .ok (.enumVal ety variantIdx)
+    else
+      .error .unsupported
+  | _, _ => .error .unsupported
+
 /-- Evaluate an `Rvalue` in Profile v2.
 
 The Profile v2 arms correspond to rustc as follows (`rust-lang/rust`
@@ -2049,7 +2083,10 @@ The Profile v2 arms correspond to rustc as follows (`rust-lang/rust`
   `evalFakeAddressOfRvalueV2`).
 - `.aggregateRangeTo` and `.aggregateRangeFrom` construct the one-field
   `core::ops::RangeTo { end }` and `RangeFrom { start }` with `Idx = usize`
-  (field layout quoted at `MirTy.rangeTo`). -/
+  (field layout quoted at `MirTy.rangeTo`).
+- `.aggregateEnum ty variantIdx` requires `ty = dstTy` and returns
+  `evalAggregateEnum ty variantIdx`, leaving `locals` and `mem` unchanged
+  because the aggregate has no operands. -/
 noncomputable def evalRvalueV2 (bodyLocals : List MirTy) (locals : List LocalSlot)
     (mem : MemoryState) (dstTy : MirTy) :
     Rvalue → Except FaultKind (Val × List LocalSlot × MemoryState)
@@ -2417,6 +2454,13 @@ noncomputable def evalRvalueV2 (bodyLocals : List MirTy) (locals : List LocalSlo
             .ok (.optionVal (some pVal), locals1, mem1)
         | .ok (_, none, _, _) => .error .undefined
       | _, _ => .error .unsupported
+  | .aggregateEnum ty variantIdx =>
+    if !MirTy.beq dstTy ty then
+      .error .unsupported
+    else
+      match evalAggregateEnum ty variantIdx with
+      | .error k => .error k
+      | .ok v => .ok (v, locals, mem)
   | .cast .unsupported _ _ | .unsupported => .error .unsupported
 
 /-- Update an immediate `Val` along a non-empty `.field` / `.constantIndex`
@@ -3270,7 +3314,7 @@ noncomputable def checkAssignCopyHazardV2 (bodyLocals : List MirTy)
   | .use (.constant _) | .useRetag (.constant _)
   | .binaryOp _ _ _ | .unaryOp _ _ | .cast _ _ _ | .discriminant _
   | .ref _ _ | .addressOf _ _ | .fakeAddressOf _ | .aggregateRangeTo _ _
-  | .aggregateRangeFrom _ _ | .unsupported => .ok ()
+  | .aggregateRangeFrom _ _ | .aggregateEnum _ _ | .unsupported => .ok ()
   | .aggregateRange elemTy startOp endOp =>
     match copyReprOfTyV2 dstTy with
     | .zst _ => .ok ()
