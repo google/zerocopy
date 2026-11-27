@@ -1,0 +1,4321 @@
+{
+  "rustc_version": "rustc 1.98.0-nightly (f8a08b688 2026-05-30)",
+  "toy_o0_abort": {
+    "post_cleanup": [
+      {
+        "fn": "maybe_panic_hook",
+        "bb_count": 2,
+        "atomic_calls": [],
+        "non_atomic_calls": [
+          "core::num::<impl u64>::wrapping_add"
+        ],
+        "has_drop": false,
+        "has_unwind_cleanup": false,
+        "has_unwind_terminate": false,
+        "has_assert": false,
+        "has_panic_str": true,
+        "has_unsafe_cell": false,
+        "has_maybe_uninit": false,
+        "has_raw_ptr": false,
+        "has_discriminant": false,
+        "has_inline_asm": false
+      },
+      {
+        "fn": "stub_futex_wait",
+        "bb_count": 1,
+        "atomic_calls": [],
+        "non_atomic_calls": [],
+        "has_drop": false,
+        "has_unwind_cleanup": false,
+        "has_unwind_terminate": false,
+        "has_assert": false,
+        "has_panic_str": false,
+        "has_unsafe_cell": false,
+        "has_maybe_uninit": false,
+        "has_raw_ptr": false,
+        "has_discriminant": false,
+        "has_inline_asm": false
+      },
+      {
+        "fn": "stub_futex_wake",
+        "bb_count": 1,
+        "atomic_calls": [],
+        "non_atomic_calls": [],
+        "has_drop": false,
+        "has_unwind_cleanup": false,
+        "has_unwind_terminate": false,
+        "has_assert": false,
+        "has_panic_str": false,
+        "has_unsafe_cell": false,
+        "has_maybe_uninit": false,
+        "has_raw_ptr": false,
+        "has_discriminant": false,
+        "has_inline_asm": false
+      },
+      {
+        "fn": "<impl at <tmp>/toy.rs:159:1: 159:19>::get",
+        "bb_count": 7,
+        "atomic_calls": [],
+        "non_atomic_calls": [
+          "Atomic::<u32>::load",
+          "MaybeUninit::<u64>::assume_init",
+          "UnsafeCell::<MaybeUninit<u64>>::get",
+          "switchInt"
+        ],
+        "has_drop": false,
+        "has_unwind_cleanup": false,
+        "has_unwind_terminate": false,
+        "has_assert": false,
+        "has_panic_str": false,
+        "has_unsafe_cell": true,
+        "has_maybe_uninit": true,
+        "has_raw_ptr": true,
+        "has_discriminant": false,
+        "has_inline_asm": false
+      },
+      {
+        "fn": "<impl at <tmp>/toy.rs:159:1: 159:19>::get_or_init_val",
+        "bb_count": 21,
+        "atomic_calls": [
+          "Atomic::<u32>::compare_exchange"
+        ],
+        "non_atomic_calls": [
+          "Atomic::<u32>::load",
+          "Atomic::<u32>::store",
+          "MaybeUninit::<u64>::assume_init",
+          "MaybeUninit::<u64>::write",
+          "UnsafeCell::<MaybeUninit<u64>>::get",
+          "spin_loop",
+          "switchInt"
+        ],
+        "has_drop": false,
+        "has_unwind_cleanup": false,
+        "has_unwind_terminate": false,
+        "has_assert": false,
+        "has_panic_str": false,
+        "has_unsafe_cell": true,
+        "has_maybe_uninit": true,
+        "has_raw_ptr": true,
+        "has_discriminant": true,
+        "has_inline_asm": false
+      },
+      {
+        "fn": "<impl at <tmp>/toy.rs:159:1: 159:19>::new",
+        "bb_count": 4,
+        "atomic_calls": [],
+        "non_atomic_calls": [
+          "Atomic::<u32>::new",
+          "MaybeUninit::<u64>::uninit",
+          "UnsafeCell::<MaybeUninit<u64>>::new"
+        ],
+        "has_drop": false,
+        "has_unwind_cleanup": false,
+        "has_unwind_terminate": false,
+        "has_assert": false,
+        "has_panic_str": false,
+        "has_unsafe_cell": true,
+        "has_maybe_uninit": true,
+        "has_raw_ptr": false,
+        "has_discriminant": false,
+        "has_inline_asm": false
+      },
+      {
+        "fn": "<impl at <tmp>/toy.rs:201:1: 201:20>::lock",
+        "bb_count": 7,
+        "atomic_calls": [
+          "Atomic::<u32>::compare_exchange"
+        ],
+        "non_atomic_calls": [
+          "FutexMutexCore::lock_contended",
+          "Result::<u32, u32>::is_err",
+          "switchInt"
+        ],
+        "has_drop": false,
+        "has_unwind_cleanup": false,
+        "has_unwind_terminate": false,
+        "has_assert": false,
+        "has_panic_str": false,
+        "has_unsafe_cell": false,
+        "has_maybe_uninit": false,
+        "has_raw_ptr": false,
+        "has_discriminant": false,
+        "has_inline_asm": false
+      },
+      {
+        "fn": "<impl at <tmp>/toy.rs:201:1: 201:20>::lock_contended",
+        "bb_count": 19,
+        "atomic_calls": [
+          "Atomic::<u32>::compare_exchange"
+        ],
+        "non_atomic_calls": [
+          "Atomic::<u32>::swap",
+          "FutexMutexCore::spin",
+          "stub_futex_wait",
+          "switchInt"
+        ],
+        "has_drop": false,
+        "has_unwind_cleanup": false,
+        "has_unwind_terminate": false,
+        "has_assert": false,
+        "has_panic_str": false,
+        "has_unsafe_cell": false,
+        "has_maybe_uninit": false,
+        "has_raw_ptr": false,
+        "has_discriminant": true,
+        "has_inline_asm": false
+      },
+      {
+        "fn": "<impl at <tmp>/toy.rs:201:1: 201:20>::spin",
+        "bb_count": 9,
+        "atomic_calls": [],
+        "non_atomic_calls": [
+          "Atomic::<u32>::load",
+          "spin_loop",
+          "switchInt"
+        ],
+        "has_drop": false,
+        "has_unwind_cleanup": false,
+        "has_unwind_terminate": false,
+        "has_assert": false,
+        "has_panic_str": false,
+        "has_unsafe_cell": false,
+        "has_maybe_uninit": false,
+        "has_raw_ptr": false,
+        "has_discriminant": false,
+        "has_inline_asm": false
+      },
+      {
+        "fn": "<impl at <tmp>/toy.rs:201:1: 201:20>::unlock",
+        "bb_count": 6,
+        "atomic_calls": [],
+        "non_atomic_calls": [
+          "Atomic::<u32>::swap",
+          "stub_futex_wake",
+          "switchInt"
+        ],
+        "has_drop": false,
+        "has_unwind_cleanup": false,
+        "has_unwind_terminate": false,
+        "has_assert": false,
+        "has_panic_str": false,
+        "has_unsafe_cell": false,
+        "has_maybe_uninit": false,
+        "has_raw_ptr": false,
+        "has_discriminant": false,
+        "has_inline_asm": false
+      },
+      {
+        "fn": "<impl at <tmp>/toy.rs:244:1: 244:18>::clone_count",
+        "bb_count": 4,
+        "atomic_calls": [],
+        "non_atomic_calls": [
+          "Atomic::<usize>::fetch_add",
+          "switchInt"
+        ],
+        "has_drop": false,
+        "has_unwind_cleanup": false,
+        "has_unwind_terminate": false,
+        "has_assert": false,
+        "has_panic_str": false,
+        "has_unsafe_cell": false,
+        "has_maybe_uninit": false,
+        "has_raw_ptr": false,
+        "has_discriminant": false,
+        "has_inline_asm": false
+      },
+      {
+        "fn": "<impl at <tmp>/toy.rs:244:1: 244:18>::drop_is_last",
+        "bb_count": 6,
+        "atomic_calls": [
+          "fence"
+        ],
+        "non_atomic_calls": [
+          "Atomic::<usize>::fetch_sub",
+          "switchInt"
+        ],
+        "has_drop": false,
+        "has_unwind_cleanup": false,
+        "has_unwind_terminate": false,
+        "has_assert": false,
+        "has_panic_str": false,
+        "has_unsafe_cell": false,
+        "has_maybe_uninit": false,
+        "has_raw_ptr": false,
+        "has_discriminant": false,
+        "has_inline_asm": false
+      },
+      {
+        "fn": "<impl at <tmp>/toy.rs:17:1: 17:17>::lock",
+        "bb_count": 11,
+        "atomic_calls": [
+          "Atomic::<bool>::compare_exchange_weak"
+        ],
+        "non_atomic_calls": [
+          "Atomic::<bool>::load",
+          "Result::<bool, bool>::is_err",
+          "spin_loop",
+          "switchInt"
+        ],
+        "has_drop": false,
+        "has_unwind_cleanup": false,
+        "has_unwind_terminate": false,
+        "has_assert": false,
+        "has_panic_str": false,
+        "has_unsafe_cell": false,
+        "has_maybe_uninit": false,
+        "has_raw_ptr": false,
+        "has_discriminant": false,
+        "has_inline_asm": false
+      },
+      {
+        "fn": "<impl at <tmp>/toy.rs:17:1: 17:17>::new",
+        "bb_count": 3,
+        "atomic_calls": [],
+        "non_atomic_calls": [
+          "Atomic::<bool>::new",
+          "UnsafeCell::<u64>::new"
+        ],
+        "has_drop": false,
+        "has_unwind_cleanup": false,
+        "has_unwind_terminate": false,
+        "has_assert": false,
+        "has_panic_str": false,
+        "has_unsafe_cell": true,
+        "has_maybe_uninit": false,
+        "has_raw_ptr": false,
+        "has_discriminant": false,
+        "has_inline_asm": false
+      },
+      {
+        "fn": "<impl at <tmp>/toy.rs:17:1: 17:17>::try_lock",
+        "bb_count": 3,
+        "atomic_calls": [
+          "Atomic::<bool>::compare_exchange"
+        ],
+        "non_atomic_calls": [
+          "Result::<bool, bool>::is_ok"
+        ],
+        "has_drop": false,
+        "has_unwind_cleanup": false,
+        "has_unwind_terminate": false,
+        "has_assert": false,
+        "has_panic_str": false,
+        "has_unsafe_cell": false,
+        "has_maybe_uninit": false,
+        "has_raw_ptr": false,
+        "has_discriminant": false,
+        "has_inline_asm": false
+      },
+      {
+        "fn": "<impl at <tmp>/toy.rs:17:1: 17:17>::unlock",
+        "bb_count": 2,
+        "atomic_calls": [],
+        "non_atomic_calls": [
+          "Atomic::<bool>::store"
+        ],
+        "has_drop": false,
+        "has_unwind_cleanup": false,
+        "has_unwind_terminate": false,
+        "has_assert": false,
+        "has_panic_str": false,
+        "has_unsafe_cell": false,
+        "has_maybe_uninit": false,
+        "has_raw_ptr": false,
+        "has_discriminant": false,
+        "has_inline_asm": false
+      },
+      {
+        "fn": "<impl at <tmp>/toy.rs:17:1: 17:17>::with_lock_set",
+        "bb_count": 4,
+        "atomic_calls": [],
+        "non_atomic_calls": [
+          "RawSpinLock::lock",
+          "RawSpinLock::unlock",
+          "UnsafeCell::<u64>::get"
+        ],
+        "has_drop": false,
+        "has_unwind_cleanup": false,
+        "has_unwind_terminate": false,
+        "has_assert": false,
+        "has_panic_str": false,
+        "has_unsafe_cell": true,
+        "has_maybe_uninit": false,
+        "has_raw_ptr": true,
+        "has_discriminant": false,
+        "has_inline_asm": false
+      },
+      {
+        "fn": "<impl at <tmp>/toy.rs:56:1: 56:32>::drop",
+        "bb_count": 2,
+        "atomic_calls": [],
+        "non_atomic_calls": [
+          "Atomic::<bool>::store"
+        ],
+        "has_drop": false,
+        "has_unwind_cleanup": false,
+        "has_unwind_terminate": false,
+        "has_assert": false,
+        "has_panic_str": false,
+        "has_unsafe_cell": false,
+        "has_maybe_uninit": false,
+        "has_raw_ptr": false,
+        "has_discriminant": false,
+        "has_inline_asm": false
+      },
+      {
+        "fn": "<impl at <tmp>/toy.rs:64:1: 64:19>::lock",
+        "bb_count": 6,
+        "atomic_calls": [],
+        "non_atomic_calls": [
+          "Atomic::<bool>::swap",
+          "spin_loop",
+          "switchInt"
+        ],
+        "has_drop": false,
+        "has_unwind_cleanup": false,
+        "has_unwind_terminate": false,
+        "has_assert": false,
+        "has_panic_str": false,
+        "has_unsafe_cell": false,
+        "has_maybe_uninit": false,
+        "has_raw_ptr": false,
+        "has_discriminant": false,
+        "has_inline_asm": false
+      },
+      {
+        "fn": "<impl at <tmp>/toy.rs:64:1: 64:19>::with_guard",
+        "bb_count": 5,
+        "atomic_calls": [],
+        "non_atomic_calls": [
+          "GuardSpinLock::lock",
+          "UnsafeCell::<u64>::get",
+          "core::mem::drop::<SpinGuard<'_>>",
+          "maybe_panic_hook"
+        ],
+        "has_drop": false,
+        "has_unwind_cleanup": false,
+        "has_unwind_terminate": false,
+        "has_assert": false,
+        "has_panic_str": true,
+        "has_unsafe_cell": true,
+        "has_maybe_uninit": false,
+        "has_raw_ptr": true,
+        "has_discriminant": false,
+        "has_inline_asm": false
+      },
+      {
+        "fn": "<impl at <tmp>/toy.rs:64:1: 64:19>::with_guard_scope",
+        "bb_count": 5,
+        "atomic_calls": [],
+        "non_atomic_calls": [
+          "GuardSpinLock::lock",
+          "UnsafeCell::<u64>::get",
+          "drop",
+          "maybe_panic_hook"
+        ],
+        "has_drop": true,
+        "has_unwind_cleanup": false,
+        "has_unwind_terminate": false,
+        "has_assert": false,
+        "has_panic_str": true,
+        "has_unsafe_cell": true,
+        "has_maybe_uninit": false,
+        "has_raw_ptr": true,
+        "has_discriminant": false,
+        "has_inline_asm": false
+      },
+      {
+        "fn": "<impl at <tmp>/toy.rs:100:1: 100:16>::lock",
+        "bb_count": 7,
+        "atomic_calls": [],
+        "non_atomic_calls": [
+          "Atomic::<u32>::fetch_add",
+          "Atomic::<u32>::load",
+          "spin_loop",
+          "switchInt"
+        ],
+        "has_drop": false,
+        "has_unwind_cleanup": false,
+        "has_unwind_terminate": false,
+        "has_assert": false,
+        "has_panic_str": false,
+        "has_unsafe_cell": false,
+        "has_maybe_uninit": false,
+        "has_raw_ptr": false,
+        "has_discriminant": false,
+        "has_inline_asm": false
+      },
+      {
+        "fn": "<impl at <tmp>/toy.rs:100:1: 100:16>::unlock",
+        "bb_count": 4,
+        "atomic_calls": [],
+        "non_atomic_calls": [
+          "Atomic::<u32>::load",
+          "Atomic::<u32>::store",
+          "core::num::<impl u32>::wrapping_add"
+        ],
+        "has_drop": false,
+        "has_unwind_cleanup": false,
+        "has_unwind_terminate": false,
+        "has_assert": false,
+        "has_panic_str": false,
+        "has_unsafe_cell": false,
+        "has_maybe_uninit": false,
+        "has_raw_ptr": false,
+        "has_discriminant": false,
+        "has_inline_asm": false
+      },
+      {
+        "fn": "<impl at <tmp>/toy.rs:119:1: 119:17>::read",
+        "bb_count": 11,
+        "atomic_calls": [
+          "fence"
+        ],
+        "non_atomic_calls": [
+          "Atomic::<u64>::load",
+          "UnsafeCell::<[u64; 2]>::get",
+          "spin_loop",
+          "switchInt"
+        ],
+        "has_drop": false,
+        "has_unwind_cleanup": false,
+        "has_unwind_terminate": false,
+        "has_assert": false,
+        "has_panic_str": false,
+        "has_unsafe_cell": true,
+        "has_maybe_uninit": false,
+        "has_raw_ptr": true,
+        "has_discriminant": false,
+        "has_inline_asm": false
+      },
+      {
+        "fn": "<impl at <tmp>/toy.rs:119:1: 119:17>::write",
+        "bb_count": 10,
+        "atomic_calls": [
+          "fence"
+        ],
+        "non_atomic_calls": [
+          "Atomic::<u64>::load",
+          "Atomic::<u64>::store",
+          "UnsafeCell::<[u64; 2]>::get",
+          "assert",
+          "core::num::<impl u64>::wrapping_add"
+        ],
+        "has_drop": false,
+        "has_unwind_cleanup": false,
+        "has_unwind_terminate": false,
+        "has_assert": true,
+        "has_panic_str": false,
+        "has_unsafe_cell": true,
+        "has_maybe_uninit": false,
+        "has_raw_ptr": true,
+        "has_discriminant": false,
+        "has_inline_asm": false
+      }
+    ],
+    "optimized": [
+      {
+        "fn": "<impl at <tmp>/toy.rs:17:1: 17:17>::new",
+        "bb_count": 3,
+        "atomic_calls": [],
+        "non_atomic_calls": [
+          "Atomic::<bool>::new",
+          "UnsafeCell::<u64>::new"
+        ],
+        "has_drop": false,
+        "has_unwind_cleanup": false,
+        "has_unwind_terminate": false,
+        "has_assert": false,
+        "has_panic_str": false,
+        "has_unsafe_cell": true,
+        "has_maybe_uninit": false,
+        "has_raw_ptr": false,
+        "has_discriminant": false,
+        "has_inline_asm": false
+      },
+      {
+        "fn": "<impl at <tmp>/toy.rs:17:1: 17:17>::new",
+        "bb_count": 3,
+        "atomic_calls": [],
+        "non_atomic_calls": [
+          "Atomic::<bool>::new",
+          "UnsafeCell::<u64>::new"
+        ],
+        "has_drop": false,
+        "has_unwind_cleanup": false,
+        "has_unwind_terminate": false,
+        "has_assert": false,
+        "has_panic_str": false,
+        "has_unsafe_cell": true,
+        "has_maybe_uninit": false,
+        "has_raw_ptr": false,
+        "has_discriminant": false,
+        "has_inline_asm": false
+      },
+      {
+        "fn": "<impl at <tmp>/toy.rs:17:1: 17:17>::try_lock",
+        "bb_count": 3,
+        "atomic_calls": [
+          "Atomic::<bool>::compare_exchange"
+        ],
+        "non_atomic_calls": [
+          "Result::<bool, bool>::is_ok"
+        ],
+        "has_drop": false,
+        "has_unwind_cleanup": false,
+        "has_unwind_terminate": false,
+        "has_assert": false,
+        "has_panic_str": false,
+        "has_unsafe_cell": false,
+        "has_maybe_uninit": false,
+        "has_raw_ptr": false,
+        "has_discriminant": false,
+        "has_inline_asm": false
+      },
+      {
+        "fn": "<impl at <tmp>/toy.rs:17:1: 17:17>::lock",
+        "bb_count": 8,
+        "atomic_calls": [
+          "Atomic::<bool>::compare_exchange_weak"
+        ],
+        "non_atomic_calls": [
+          "Atomic::<bool>::load",
+          "Result::<bool, bool>::is_err",
+          "spin_loop",
+          "switchInt"
+        ],
+        "has_drop": false,
+        "has_unwind_cleanup": false,
+        "has_unwind_terminate": false,
+        "has_assert": false,
+        "has_panic_str": false,
+        "has_unsafe_cell": false,
+        "has_maybe_uninit": false,
+        "has_raw_ptr": false,
+        "has_discriminant": false,
+        "has_inline_asm": false
+      },
+      {
+        "fn": "<impl at <tmp>/toy.rs:17:1: 17:17>::unlock",
+        "bb_count": 2,
+        "atomic_calls": [],
+        "non_atomic_calls": [
+          "Atomic::<bool>::store"
+        ],
+        "has_drop": false,
+        "has_unwind_cleanup": false,
+        "has_unwind_terminate": false,
+        "has_assert": false,
+        "has_panic_str": false,
+        "has_unsafe_cell": false,
+        "has_maybe_uninit": false,
+        "has_raw_ptr": false,
+        "has_discriminant": false,
+        "has_inline_asm": false
+      },
+      {
+        "fn": "<impl at <tmp>/toy.rs:17:1: 17:17>::with_lock_set",
+        "bb_count": 4,
+        "atomic_calls": [],
+        "non_atomic_calls": [
+          "RawSpinLock::lock",
+          "RawSpinLock::unlock",
+          "UnsafeCell::<u64>::get"
+        ],
+        "has_drop": false,
+        "has_unwind_cleanup": false,
+        "has_unwind_terminate": false,
+        "has_assert": false,
+        "has_panic_str": false,
+        "has_unsafe_cell": true,
+        "has_maybe_uninit": false,
+        "has_raw_ptr": true,
+        "has_discriminant": false,
+        "has_inline_asm": false
+      },
+      {
+        "fn": "<impl at <tmp>/toy.rs:56:1: 56:32>::drop",
+        "bb_count": 2,
+        "atomic_calls": [],
+        "non_atomic_calls": [
+          "Atomic::<bool>::store"
+        ],
+        "has_drop": false,
+        "has_unwind_cleanup": false,
+        "has_unwind_terminate": false,
+        "has_assert": false,
+        "has_panic_str": false,
+        "has_unsafe_cell": false,
+        "has_maybe_uninit": false,
+        "has_raw_ptr": false,
+        "has_discriminant": false,
+        "has_inline_asm": false
+      },
+      {
+        "fn": "maybe_panic_hook",
+        "bb_count": 2,
+        "atomic_calls": [],
+        "non_atomic_calls": [
+          "core::num::<impl u64>::wrapping_add"
+        ],
+        "has_drop": false,
+        "has_unwind_cleanup": false,
+        "has_unwind_terminate": false,
+        "has_assert": false,
+        "has_panic_str": true,
+        "has_unsafe_cell": false,
+        "has_maybe_uninit": false,
+        "has_raw_ptr": false,
+        "has_discriminant": false,
+        "has_inline_asm": false
+      },
+      {
+        "fn": "<impl at <tmp>/toy.rs:64:1: 64:19>::lock",
+        "bb_count": 5,
+        "atomic_calls": [],
+        "non_atomic_calls": [
+          "Atomic::<bool>::swap",
+          "spin_loop",
+          "switchInt"
+        ],
+        "has_drop": false,
+        "has_unwind_cleanup": false,
+        "has_unwind_terminate": false,
+        "has_assert": false,
+        "has_panic_str": false,
+        "has_unsafe_cell": false,
+        "has_maybe_uninit": false,
+        "has_raw_ptr": false,
+        "has_discriminant": false,
+        "has_inline_asm": false
+      },
+      {
+        "fn": "<impl at <tmp>/toy.rs:64:1: 64:19>::with_guard",
+        "bb_count": 5,
+        "atomic_calls": [],
+        "non_atomic_calls": [
+          "GuardSpinLock::lock",
+          "UnsafeCell::<u64>::get",
+          "core::mem::drop::<SpinGuard<'_>>",
+          "maybe_panic_hook"
+        ],
+        "has_drop": false,
+        "has_unwind_cleanup": false,
+        "has_unwind_terminate": false,
+        "has_assert": false,
+        "has_panic_str": true,
+        "has_unsafe_cell": true,
+        "has_maybe_uninit": false,
+        "has_raw_ptr": true,
+        "has_discriminant": false,
+        "has_inline_asm": false
+      },
+      {
+        "fn": "<impl at <tmp>/toy.rs:64:1: 64:19>::with_guard_scope",
+        "bb_count": 5,
+        "atomic_calls": [],
+        "non_atomic_calls": [
+          "GuardSpinLock::lock",
+          "UnsafeCell::<u64>::get",
+          "drop",
+          "maybe_panic_hook"
+        ],
+        "has_drop": true,
+        "has_unwind_cleanup": false,
+        "has_unwind_terminate": false,
+        "has_assert": false,
+        "has_panic_str": true,
+        "has_unsafe_cell": true,
+        "has_maybe_uninit": false,
+        "has_raw_ptr": true,
+        "has_discriminant": false,
+        "has_inline_asm": false
+      },
+      {
+        "fn": "<impl at <tmp>/toy.rs:100:1: 100:16>::lock",
+        "bb_count": 5,
+        "atomic_calls": [],
+        "non_atomic_calls": [
+          "Atomic::<u32>::fetch_add",
+          "Atomic::<u32>::load",
+          "spin_loop",
+          "switchInt"
+        ],
+        "has_drop": false,
+        "has_unwind_cleanup": false,
+        "has_unwind_terminate": false,
+        "has_assert": false,
+        "has_panic_str": false,
+        "has_unsafe_cell": false,
+        "has_maybe_uninit": false,
+        "has_raw_ptr": false,
+        "has_discriminant": false,
+        "has_inline_asm": false
+      },
+      {
+        "fn": "<impl at <tmp>/toy.rs:100:1: 100:16>::unlock",
+        "bb_count": 4,
+        "atomic_calls": [],
+        "non_atomic_calls": [
+          "Atomic::<u32>::load",
+          "Atomic::<u32>::store",
+          "core::num::<impl u32>::wrapping_add"
+        ],
+        "has_drop": false,
+        "has_unwind_cleanup": false,
+        "has_unwind_terminate": false,
+        "has_assert": false,
+        "has_panic_str": false,
+        "has_unsafe_cell": false,
+        "has_maybe_uninit": false,
+        "has_raw_ptr": false,
+        "has_discriminant": false,
+        "has_inline_asm": false
+      },
+      {
+        "fn": "<impl at <tmp>/toy.rs:119:1: 119:17>::write",
+        "bb_count": 10,
+        "atomic_calls": [
+          "fence"
+        ],
+        "non_atomic_calls": [
+          "Atomic::<u64>::load",
+          "Atomic::<u64>::store",
+          "UnsafeCell::<[u64; 2]>::get",
+          "assert",
+          "core::num::<impl u64>::wrapping_add"
+        ],
+        "has_drop": false,
+        "has_unwind_cleanup": false,
+        "has_unwind_terminate": false,
+        "has_assert": true,
+        "has_panic_str": false,
+        "has_unsafe_cell": true,
+        "has_maybe_uninit": false,
+        "has_raw_ptr": true,
+        "has_discriminant": false,
+        "has_inline_asm": false
+      },
+      {
+        "fn": "<impl at <tmp>/toy.rs:119:1: 119:17>::read",
+        "bb_count": 9,
+        "atomic_calls": [
+          "fence"
+        ],
+        "non_atomic_calls": [
+          "Atomic::<u64>::load",
+          "UnsafeCell::<[u64; 2]>::get",
+          "spin_loop",
+          "switchInt"
+        ],
+        "has_drop": false,
+        "has_unwind_cleanup": false,
+        "has_unwind_terminate": false,
+        "has_assert": false,
+        "has_panic_str": false,
+        "has_unsafe_cell": true,
+        "has_maybe_uninit": false,
+        "has_raw_ptr": true,
+        "has_discriminant": false,
+        "has_inline_asm": false
+      },
+      {
+        "fn": "<impl at <tmp>/toy.rs:159:1: 159:19>::new",
+        "bb_count": 4,
+        "atomic_calls": [],
+        "non_atomic_calls": [
+          "Atomic::<u32>::new",
+          "MaybeUninit::<u64>::uninit",
+          "UnsafeCell::<MaybeUninit<u64>>::new"
+        ],
+        "has_drop": false,
+        "has_unwind_cleanup": false,
+        "has_unwind_terminate": false,
+        "has_assert": false,
+        "has_panic_str": false,
+        "has_unsafe_cell": true,
+        "has_maybe_uninit": true,
+        "has_raw_ptr": false,
+        "has_discriminant": false,
+        "has_inline_asm": false
+      },
+      {
+        "fn": "<impl at <tmp>/toy.rs:159:1: 159:19>::new",
+        "bb_count": 4,
+        "atomic_calls": [],
+        "non_atomic_calls": [
+          "Atomic::<u32>::new",
+          "MaybeUninit::<u64>::uninit",
+          "UnsafeCell::<MaybeUninit<u64>>::new"
+        ],
+        "has_drop": false,
+        "has_unwind_cleanup": false,
+        "has_unwind_terminate": false,
+        "has_assert": false,
+        "has_panic_str": false,
+        "has_unsafe_cell": true,
+        "has_maybe_uninit": true,
+        "has_raw_ptr": false,
+        "has_discriminant": false,
+        "has_inline_asm": false
+      },
+      {
+        "fn": "<impl at <tmp>/toy.rs:159:1: 159:19>::get",
+        "bb_count": 7,
+        "atomic_calls": [],
+        "non_atomic_calls": [
+          "Atomic::<u32>::load",
+          "MaybeUninit::<u64>::assume_init",
+          "UnsafeCell::<MaybeUninit<u64>>::get",
+          "switchInt"
+        ],
+        "has_drop": false,
+        "has_unwind_cleanup": false,
+        "has_unwind_terminate": false,
+        "has_assert": false,
+        "has_panic_str": false,
+        "has_unsafe_cell": true,
+        "has_maybe_uninit": true,
+        "has_raw_ptr": true,
+        "has_discriminant": false,
+        "has_inline_asm": false
+      },
+      {
+        "fn": "<impl at <tmp>/toy.rs:159:1: 159:19>::get_or_init_val",
+        "bb_count": 16,
+        "atomic_calls": [
+          "Atomic::<u32>::compare_exchange"
+        ],
+        "non_atomic_calls": [
+          "Atomic::<u32>::load",
+          "Atomic::<u32>::store",
+          "MaybeUninit::<u64>::assume_init",
+          "MaybeUninit::<u64>::write",
+          "UnsafeCell::<MaybeUninit<u64>>::get",
+          "spin_loop",
+          "switchInt"
+        ],
+        "has_drop": false,
+        "has_unwind_cleanup": false,
+        "has_unwind_terminate": false,
+        "has_assert": false,
+        "has_panic_str": false,
+        "has_unsafe_cell": true,
+        "has_maybe_uninit": true,
+        "has_raw_ptr": true,
+        "has_discriminant": true,
+        "has_inline_asm": false
+      },
+      {
+        "fn": "stub_futex_wait",
+        "bb_count": 1,
+        "atomic_calls": [],
+        "non_atomic_calls": [],
+        "has_drop": false,
+        "has_unwind_cleanup": false,
+        "has_unwind_terminate": false,
+        "has_assert": false,
+        "has_panic_str": false,
+        "has_unsafe_cell": false,
+        "has_maybe_uninit": false,
+        "has_raw_ptr": false,
+        "has_discriminant": false,
+        "has_inline_asm": false
+      },
+      {
+        "fn": "stub_futex_wake",
+        "bb_count": 1,
+        "atomic_calls": [],
+        "non_atomic_calls": [],
+        "has_drop": false,
+        "has_unwind_cleanup": false,
+        "has_unwind_terminate": false,
+        "has_assert": false,
+        "has_panic_str": false,
+        "has_unsafe_cell": false,
+        "has_maybe_uninit": false,
+        "has_raw_ptr": false,
+        "has_discriminant": false,
+        "has_inline_asm": false
+      },
+      {
+        "fn": "<impl at <tmp>/toy.rs:201:1: 201:20>::lock",
+        "bb_count": 5,
+        "atomic_calls": [
+          "Atomic::<u32>::compare_exchange"
+        ],
+        "non_atomic_calls": [
+          "FutexMutexCore::lock_contended",
+          "Result::<u32, u32>::is_err",
+          "switchInt"
+        ],
+        "has_drop": false,
+        "has_unwind_cleanup": false,
+        "has_unwind_terminate": false,
+        "has_assert": false,
+        "has_panic_str": false,
+        "has_unsafe_cell": false,
+        "has_maybe_uninit": false,
+        "has_raw_ptr": false,
+        "has_discriminant": false,
+        "has_inline_asm": false
+      },
+      {
+        "fn": "<impl at <tmp>/toy.rs:201:1: 201:20>::lock_contended",
+        "bb_count": 13,
+        "atomic_calls": [
+          "Atomic::<u32>::compare_exchange"
+        ],
+        "non_atomic_calls": [
+          "Atomic::<u32>::swap",
+          "FutexMutexCore::spin",
+          "stub_futex_wait",
+          "switchInt"
+        ],
+        "has_drop": false,
+        "has_unwind_cleanup": false,
+        "has_unwind_terminate": false,
+        "has_assert": false,
+        "has_panic_str": false,
+        "has_unsafe_cell": false,
+        "has_maybe_uninit": false,
+        "has_raw_ptr": false,
+        "has_discriminant": true,
+        "has_inline_asm": false
+      },
+      {
+        "fn": "<impl at <tmp>/toy.rs:201:1: 201:20>::spin",
+        "bb_count": 7,
+        "atomic_calls": [],
+        "non_atomic_calls": [
+          "Atomic::<u32>::load",
+          "spin_loop",
+          "switchInt"
+        ],
+        "has_drop": false,
+        "has_unwind_cleanup": false,
+        "has_unwind_terminate": false,
+        "has_assert": false,
+        "has_panic_str": false,
+        "has_unsafe_cell": false,
+        "has_maybe_uninit": false,
+        "has_raw_ptr": false,
+        "has_discriminant": false,
+        "has_inline_asm": false
+      },
+      {
+        "fn": "<impl at <tmp>/toy.rs:201:1: 201:20>::unlock",
+        "bb_count": 4,
+        "atomic_calls": [],
+        "non_atomic_calls": [
+          "Atomic::<u32>::swap",
+          "stub_futex_wake",
+          "switchInt"
+        ],
+        "has_drop": false,
+        "has_unwind_cleanup": false,
+        "has_unwind_terminate": false,
+        "has_assert": false,
+        "has_panic_str": false,
+        "has_unsafe_cell": false,
+        "has_maybe_uninit": false,
+        "has_raw_ptr": false,
+        "has_discriminant": false,
+        "has_inline_asm": false
+      },
+      {
+        "fn": "<impl at <tmp>/toy.rs:244:1: 244:18>::clone_count",
+        "bb_count": 4,
+        "atomic_calls": [],
+        "non_atomic_calls": [
+          "Atomic::<usize>::fetch_add",
+          "switchInt"
+        ],
+        "has_drop": false,
+        "has_unwind_cleanup": false,
+        "has_unwind_terminate": false,
+        "has_assert": false,
+        "has_panic_str": false,
+        "has_unsafe_cell": false,
+        "has_maybe_uninit": false,
+        "has_raw_ptr": false,
+        "has_discriminant": false,
+        "has_inline_asm": false
+      },
+      {
+        "fn": "<impl at <tmp>/toy.rs:244:1: 244:18>::drop_is_last",
+        "bb_count": 6,
+        "atomic_calls": [
+          "fence"
+        ],
+        "non_atomic_calls": [
+          "Atomic::<usize>::fetch_sub",
+          "switchInt"
+        ],
+        "has_drop": false,
+        "has_unwind_cleanup": false,
+        "has_unwind_terminate": false,
+        "has_assert": false,
+        "has_panic_str": false,
+        "has_unsafe_cell": false,
+        "has_maybe_uninit": false,
+        "has_raw_ptr": false,
+        "has_discriminant": false,
+        "has_inline_asm": false
+      }
+    ]
+  },
+  "toy_o0_unwind": {
+    "post_cleanup": [
+      {
+        "fn": "maybe_panic_hook",
+        "bb_count": 2,
+        "atomic_calls": [],
+        "non_atomic_calls": [
+          "core::num::<impl u64>::wrapping_add"
+        ],
+        "has_drop": false,
+        "has_unwind_cleanup": false,
+        "has_unwind_terminate": false,
+        "has_assert": false,
+        "has_panic_str": true,
+        "has_unsafe_cell": false,
+        "has_maybe_uninit": false,
+        "has_raw_ptr": false,
+        "has_discriminant": false,
+        "has_inline_asm": false
+      },
+      {
+        "fn": "stub_futex_wait",
+        "bb_count": 1,
+        "atomic_calls": [],
+        "non_atomic_calls": [],
+        "has_drop": false,
+        "has_unwind_cleanup": false,
+        "has_unwind_terminate": false,
+        "has_assert": false,
+        "has_panic_str": false,
+        "has_unsafe_cell": false,
+        "has_maybe_uninit": false,
+        "has_raw_ptr": false,
+        "has_discriminant": false,
+        "has_inline_asm": false
+      },
+      {
+        "fn": "stub_futex_wake",
+        "bb_count": 1,
+        "atomic_calls": [],
+        "non_atomic_calls": [],
+        "has_drop": false,
+        "has_unwind_cleanup": false,
+        "has_unwind_terminate": false,
+        "has_assert": false,
+        "has_panic_str": false,
+        "has_unsafe_cell": false,
+        "has_maybe_uninit": false,
+        "has_raw_ptr": false,
+        "has_discriminant": false,
+        "has_inline_asm": false
+      },
+      {
+        "fn": "<impl at <tmp>/toy.rs:159:1: 159:19>::get",
+        "bb_count": 7,
+        "atomic_calls": [],
+        "non_atomic_calls": [
+          "Atomic::<u32>::load",
+          "MaybeUninit::<u64>::assume_init",
+          "UnsafeCell::<MaybeUninit<u64>>::get",
+          "switchInt"
+        ],
+        "has_drop": false,
+        "has_unwind_cleanup": false,
+        "has_unwind_terminate": false,
+        "has_assert": false,
+        "has_panic_str": false,
+        "has_unsafe_cell": true,
+        "has_maybe_uninit": true,
+        "has_raw_ptr": true,
+        "has_discriminant": false,
+        "has_inline_asm": false
+      },
+      {
+        "fn": "<impl at <tmp>/toy.rs:159:1: 159:19>::get_or_init_val",
+        "bb_count": 21,
+        "atomic_calls": [
+          "Atomic::<u32>::compare_exchange"
+        ],
+        "non_atomic_calls": [
+          "Atomic::<u32>::load",
+          "Atomic::<u32>::store",
+          "MaybeUninit::<u64>::assume_init",
+          "MaybeUninit::<u64>::write",
+          "UnsafeCell::<MaybeUninit<u64>>::get",
+          "spin_loop",
+          "switchInt"
+        ],
+        "has_drop": false,
+        "has_unwind_cleanup": false,
+        "has_unwind_terminate": false,
+        "has_assert": false,
+        "has_panic_str": false,
+        "has_unsafe_cell": true,
+        "has_maybe_uninit": true,
+        "has_raw_ptr": true,
+        "has_discriminant": true,
+        "has_inline_asm": false
+      },
+      {
+        "fn": "<impl at <tmp>/toy.rs:159:1: 159:19>::new",
+        "bb_count": 4,
+        "atomic_calls": [],
+        "non_atomic_calls": [
+          "Atomic::<u32>::new",
+          "MaybeUninit::<u64>::uninit",
+          "UnsafeCell::<MaybeUninit<u64>>::new"
+        ],
+        "has_drop": false,
+        "has_unwind_cleanup": false,
+        "has_unwind_terminate": false,
+        "has_assert": false,
+        "has_panic_str": false,
+        "has_unsafe_cell": true,
+        "has_maybe_uninit": true,
+        "has_raw_ptr": false,
+        "has_discriminant": false,
+        "has_inline_asm": false
+      },
+      {
+        "fn": "<impl at <tmp>/toy.rs:201:1: 201:20>::lock",
+        "bb_count": 7,
+        "atomic_calls": [
+          "Atomic::<u32>::compare_exchange"
+        ],
+        "non_atomic_calls": [
+          "FutexMutexCore::lock_contended",
+          "Result::<u32, u32>::is_err",
+          "switchInt"
+        ],
+        "has_drop": false,
+        "has_unwind_cleanup": false,
+        "has_unwind_terminate": false,
+        "has_assert": false,
+        "has_panic_str": false,
+        "has_unsafe_cell": false,
+        "has_maybe_uninit": false,
+        "has_raw_ptr": false,
+        "has_discriminant": false,
+        "has_inline_asm": false
+      },
+      {
+        "fn": "<impl at <tmp>/toy.rs:201:1: 201:20>::lock_contended",
+        "bb_count": 19,
+        "atomic_calls": [
+          "Atomic::<u32>::compare_exchange"
+        ],
+        "non_atomic_calls": [
+          "Atomic::<u32>::swap",
+          "FutexMutexCore::spin",
+          "stub_futex_wait",
+          "switchInt"
+        ],
+        "has_drop": false,
+        "has_unwind_cleanup": false,
+        "has_unwind_terminate": false,
+        "has_assert": false,
+        "has_panic_str": false,
+        "has_unsafe_cell": false,
+        "has_maybe_uninit": false,
+        "has_raw_ptr": false,
+        "has_discriminant": true,
+        "has_inline_asm": false
+      },
+      {
+        "fn": "<impl at <tmp>/toy.rs:201:1: 201:20>::spin",
+        "bb_count": 9,
+        "atomic_calls": [],
+        "non_atomic_calls": [
+          "Atomic::<u32>::load",
+          "spin_loop",
+          "switchInt"
+        ],
+        "has_drop": false,
+        "has_unwind_cleanup": false,
+        "has_unwind_terminate": false,
+        "has_assert": false,
+        "has_panic_str": false,
+        "has_unsafe_cell": false,
+        "has_maybe_uninit": false,
+        "has_raw_ptr": false,
+        "has_discriminant": false,
+        "has_inline_asm": false
+      },
+      {
+        "fn": "<impl at <tmp>/toy.rs:201:1: 201:20>::unlock",
+        "bb_count": 6,
+        "atomic_calls": [],
+        "non_atomic_calls": [
+          "Atomic::<u32>::swap",
+          "stub_futex_wake",
+          "switchInt"
+        ],
+        "has_drop": false,
+        "has_unwind_cleanup": false,
+        "has_unwind_terminate": false,
+        "has_assert": false,
+        "has_panic_str": false,
+        "has_unsafe_cell": false,
+        "has_maybe_uninit": false,
+        "has_raw_ptr": false,
+        "has_discriminant": false,
+        "has_inline_asm": false
+      },
+      {
+        "fn": "<impl at <tmp>/toy.rs:244:1: 244:18>::clone_count",
+        "bb_count": 4,
+        "atomic_calls": [],
+        "non_atomic_calls": [
+          "Atomic::<usize>::fetch_add",
+          "switchInt"
+        ],
+        "has_drop": false,
+        "has_unwind_cleanup": false,
+        "has_unwind_terminate": false,
+        "has_assert": false,
+        "has_panic_str": false,
+        "has_unsafe_cell": false,
+        "has_maybe_uninit": false,
+        "has_raw_ptr": false,
+        "has_discriminant": false,
+        "has_inline_asm": false
+      },
+      {
+        "fn": "<impl at <tmp>/toy.rs:244:1: 244:18>::drop_is_last",
+        "bb_count": 6,
+        "atomic_calls": [
+          "fence"
+        ],
+        "non_atomic_calls": [
+          "Atomic::<usize>::fetch_sub",
+          "switchInt"
+        ],
+        "has_drop": false,
+        "has_unwind_cleanup": false,
+        "has_unwind_terminate": false,
+        "has_assert": false,
+        "has_panic_str": false,
+        "has_unsafe_cell": false,
+        "has_maybe_uninit": false,
+        "has_raw_ptr": false,
+        "has_discriminant": false,
+        "has_inline_asm": false
+      },
+      {
+        "fn": "<impl at <tmp>/toy.rs:17:1: 17:17>::lock",
+        "bb_count": 11,
+        "atomic_calls": [
+          "Atomic::<bool>::compare_exchange_weak"
+        ],
+        "non_atomic_calls": [
+          "Atomic::<bool>::load",
+          "Result::<bool, bool>::is_err",
+          "spin_loop",
+          "switchInt"
+        ],
+        "has_drop": false,
+        "has_unwind_cleanup": false,
+        "has_unwind_terminate": false,
+        "has_assert": false,
+        "has_panic_str": false,
+        "has_unsafe_cell": false,
+        "has_maybe_uninit": false,
+        "has_raw_ptr": false,
+        "has_discriminant": false,
+        "has_inline_asm": false
+      },
+      {
+        "fn": "<impl at <tmp>/toy.rs:17:1: 17:17>::new",
+        "bb_count": 3,
+        "atomic_calls": [],
+        "non_atomic_calls": [
+          "Atomic::<bool>::new",
+          "UnsafeCell::<u64>::new"
+        ],
+        "has_drop": false,
+        "has_unwind_cleanup": false,
+        "has_unwind_terminate": false,
+        "has_assert": false,
+        "has_panic_str": false,
+        "has_unsafe_cell": true,
+        "has_maybe_uninit": false,
+        "has_raw_ptr": false,
+        "has_discriminant": false,
+        "has_inline_asm": false
+      },
+      {
+        "fn": "<impl at <tmp>/toy.rs:17:1: 17:17>::try_lock",
+        "bb_count": 3,
+        "atomic_calls": [
+          "Atomic::<bool>::compare_exchange"
+        ],
+        "non_atomic_calls": [
+          "Result::<bool, bool>::is_ok"
+        ],
+        "has_drop": false,
+        "has_unwind_cleanup": false,
+        "has_unwind_terminate": false,
+        "has_assert": false,
+        "has_panic_str": false,
+        "has_unsafe_cell": false,
+        "has_maybe_uninit": false,
+        "has_raw_ptr": false,
+        "has_discriminant": false,
+        "has_inline_asm": false
+      },
+      {
+        "fn": "<impl at <tmp>/toy.rs:17:1: 17:17>::unlock",
+        "bb_count": 2,
+        "atomic_calls": [],
+        "non_atomic_calls": [
+          "Atomic::<bool>::store"
+        ],
+        "has_drop": false,
+        "has_unwind_cleanup": false,
+        "has_unwind_terminate": false,
+        "has_assert": false,
+        "has_panic_str": false,
+        "has_unsafe_cell": false,
+        "has_maybe_uninit": false,
+        "has_raw_ptr": false,
+        "has_discriminant": false,
+        "has_inline_asm": false
+      },
+      {
+        "fn": "<impl at <tmp>/toy.rs:17:1: 17:17>::with_lock_set",
+        "bb_count": 4,
+        "atomic_calls": [],
+        "non_atomic_calls": [
+          "RawSpinLock::lock",
+          "RawSpinLock::unlock",
+          "UnsafeCell::<u64>::get"
+        ],
+        "has_drop": false,
+        "has_unwind_cleanup": false,
+        "has_unwind_terminate": false,
+        "has_assert": false,
+        "has_panic_str": false,
+        "has_unsafe_cell": true,
+        "has_maybe_uninit": false,
+        "has_raw_ptr": true,
+        "has_discriminant": false,
+        "has_inline_asm": false
+      },
+      {
+        "fn": "<impl at <tmp>/toy.rs:56:1: 56:32>::drop",
+        "bb_count": 2,
+        "atomic_calls": [],
+        "non_atomic_calls": [
+          "Atomic::<bool>::store"
+        ],
+        "has_drop": false,
+        "has_unwind_cleanup": false,
+        "has_unwind_terminate": false,
+        "has_assert": false,
+        "has_panic_str": false,
+        "has_unsafe_cell": false,
+        "has_maybe_uninit": false,
+        "has_raw_ptr": false,
+        "has_discriminant": false,
+        "has_inline_asm": false
+      },
+      {
+        "fn": "<impl at <tmp>/toy.rs:64:1: 64:19>::lock",
+        "bb_count": 6,
+        "atomic_calls": [],
+        "non_atomic_calls": [
+          "Atomic::<bool>::swap",
+          "spin_loop",
+          "switchInt"
+        ],
+        "has_drop": false,
+        "has_unwind_cleanup": false,
+        "has_unwind_terminate": false,
+        "has_assert": false,
+        "has_panic_str": false,
+        "has_unsafe_cell": false,
+        "has_maybe_uninit": false,
+        "has_raw_ptr": false,
+        "has_discriminant": false,
+        "has_inline_asm": false
+      },
+      {
+        "fn": "<impl at <tmp>/toy.rs:64:1: 64:19>::with_guard",
+        "bb_count": 8,
+        "atomic_calls": [],
+        "non_atomic_calls": [
+          "GuardSpinLock::lock",
+          "UnsafeCell::<u64>::get",
+          "core::mem::drop::<SpinGuard<'_>>",
+          "drop",
+          "maybe_panic_hook",
+          "switchInt"
+        ],
+        "has_drop": true,
+        "has_unwind_cleanup": true,
+        "has_unwind_terminate": true,
+        "has_assert": false,
+        "has_panic_str": true,
+        "has_unsafe_cell": true,
+        "has_maybe_uninit": false,
+        "has_raw_ptr": true,
+        "has_discriminant": false,
+        "has_inline_asm": false
+      },
+      {
+        "fn": "<impl at <tmp>/toy.rs:64:1: 64:19>::with_guard_scope",
+        "bb_count": 7,
+        "atomic_calls": [],
+        "non_atomic_calls": [
+          "GuardSpinLock::lock",
+          "UnsafeCell::<u64>::get",
+          "drop",
+          "maybe_panic_hook"
+        ],
+        "has_drop": true,
+        "has_unwind_cleanup": true,
+        "has_unwind_terminate": true,
+        "has_assert": false,
+        "has_panic_str": true,
+        "has_unsafe_cell": true,
+        "has_maybe_uninit": false,
+        "has_raw_ptr": true,
+        "has_discriminant": false,
+        "has_inline_asm": false
+      },
+      {
+        "fn": "<impl at <tmp>/toy.rs:100:1: 100:16>::lock",
+        "bb_count": 7,
+        "atomic_calls": [],
+        "non_atomic_calls": [
+          "Atomic::<u32>::fetch_add",
+          "Atomic::<u32>::load",
+          "spin_loop",
+          "switchInt"
+        ],
+        "has_drop": false,
+        "has_unwind_cleanup": false,
+        "has_unwind_terminate": false,
+        "has_assert": false,
+        "has_panic_str": false,
+        "has_unsafe_cell": false,
+        "has_maybe_uninit": false,
+        "has_raw_ptr": false,
+        "has_discriminant": false,
+        "has_inline_asm": false
+      },
+      {
+        "fn": "<impl at <tmp>/toy.rs:100:1: 100:16>::unlock",
+        "bb_count": 4,
+        "atomic_calls": [],
+        "non_atomic_calls": [
+          "Atomic::<u32>::load",
+          "Atomic::<u32>::store",
+          "core::num::<impl u32>::wrapping_add"
+        ],
+        "has_drop": false,
+        "has_unwind_cleanup": false,
+        "has_unwind_terminate": false,
+        "has_assert": false,
+        "has_panic_str": false,
+        "has_unsafe_cell": false,
+        "has_maybe_uninit": false,
+        "has_raw_ptr": false,
+        "has_discriminant": false,
+        "has_inline_asm": false
+      },
+      {
+        "fn": "<impl at <tmp>/toy.rs:119:1: 119:17>::read",
+        "bb_count": 11,
+        "atomic_calls": [
+          "fence"
+        ],
+        "non_atomic_calls": [
+          "Atomic::<u64>::load",
+          "UnsafeCell::<[u64; 2]>::get",
+          "spin_loop",
+          "switchInt"
+        ],
+        "has_drop": false,
+        "has_unwind_cleanup": false,
+        "has_unwind_terminate": false,
+        "has_assert": false,
+        "has_panic_str": false,
+        "has_unsafe_cell": true,
+        "has_maybe_uninit": false,
+        "has_raw_ptr": true,
+        "has_discriminant": false,
+        "has_inline_asm": false
+      },
+      {
+        "fn": "<impl at <tmp>/toy.rs:119:1: 119:17>::write",
+        "bb_count": 10,
+        "atomic_calls": [
+          "fence"
+        ],
+        "non_atomic_calls": [
+          "Atomic::<u64>::load",
+          "Atomic::<u64>::store",
+          "UnsafeCell::<[u64; 2]>::get",
+          "assert",
+          "core::num::<impl u64>::wrapping_add"
+        ],
+        "has_drop": false,
+        "has_unwind_cleanup": false,
+        "has_unwind_terminate": false,
+        "has_assert": true,
+        "has_panic_str": false,
+        "has_unsafe_cell": true,
+        "has_maybe_uninit": false,
+        "has_raw_ptr": true,
+        "has_discriminant": false,
+        "has_inline_asm": false
+      }
+    ],
+    "optimized": [
+      {
+        "fn": "<impl at <tmp>/toy.rs:17:1: 17:17>::new",
+        "bb_count": 3,
+        "atomic_calls": [],
+        "non_atomic_calls": [
+          "Atomic::<bool>::new",
+          "UnsafeCell::<u64>::new"
+        ],
+        "has_drop": false,
+        "has_unwind_cleanup": false,
+        "has_unwind_terminate": false,
+        "has_assert": false,
+        "has_panic_str": false,
+        "has_unsafe_cell": true,
+        "has_maybe_uninit": false,
+        "has_raw_ptr": false,
+        "has_discriminant": false,
+        "has_inline_asm": false
+      },
+      {
+        "fn": "<impl at <tmp>/toy.rs:17:1: 17:17>::new",
+        "bb_count": 3,
+        "atomic_calls": [],
+        "non_atomic_calls": [
+          "Atomic::<bool>::new",
+          "UnsafeCell::<u64>::new"
+        ],
+        "has_drop": false,
+        "has_unwind_cleanup": false,
+        "has_unwind_terminate": false,
+        "has_assert": false,
+        "has_panic_str": false,
+        "has_unsafe_cell": true,
+        "has_maybe_uninit": false,
+        "has_raw_ptr": false,
+        "has_discriminant": false,
+        "has_inline_asm": false
+      },
+      {
+        "fn": "<impl at <tmp>/toy.rs:17:1: 17:17>::try_lock",
+        "bb_count": 3,
+        "atomic_calls": [
+          "Atomic::<bool>::compare_exchange"
+        ],
+        "non_atomic_calls": [
+          "Result::<bool, bool>::is_ok"
+        ],
+        "has_drop": false,
+        "has_unwind_cleanup": false,
+        "has_unwind_terminate": false,
+        "has_assert": false,
+        "has_panic_str": false,
+        "has_unsafe_cell": false,
+        "has_maybe_uninit": false,
+        "has_raw_ptr": false,
+        "has_discriminant": false,
+        "has_inline_asm": false
+      },
+      {
+        "fn": "<impl at <tmp>/toy.rs:17:1: 17:17>::lock",
+        "bb_count": 8,
+        "atomic_calls": [
+          "Atomic::<bool>::compare_exchange_weak"
+        ],
+        "non_atomic_calls": [
+          "Atomic::<bool>::load",
+          "Result::<bool, bool>::is_err",
+          "spin_loop",
+          "switchInt"
+        ],
+        "has_drop": false,
+        "has_unwind_cleanup": false,
+        "has_unwind_terminate": false,
+        "has_assert": false,
+        "has_panic_str": false,
+        "has_unsafe_cell": false,
+        "has_maybe_uninit": false,
+        "has_raw_ptr": false,
+        "has_discriminant": false,
+        "has_inline_asm": false
+      },
+      {
+        "fn": "<impl at <tmp>/toy.rs:17:1: 17:17>::unlock",
+        "bb_count": 2,
+        "atomic_calls": [],
+        "non_atomic_calls": [
+          "Atomic::<bool>::store"
+        ],
+        "has_drop": false,
+        "has_unwind_cleanup": false,
+        "has_unwind_terminate": false,
+        "has_assert": false,
+        "has_panic_str": false,
+        "has_unsafe_cell": false,
+        "has_maybe_uninit": false,
+        "has_raw_ptr": false,
+        "has_discriminant": false,
+        "has_inline_asm": false
+      },
+      {
+        "fn": "<impl at <tmp>/toy.rs:17:1: 17:17>::with_lock_set",
+        "bb_count": 4,
+        "atomic_calls": [],
+        "non_atomic_calls": [
+          "RawSpinLock::lock",
+          "RawSpinLock::unlock",
+          "UnsafeCell::<u64>::get"
+        ],
+        "has_drop": false,
+        "has_unwind_cleanup": false,
+        "has_unwind_terminate": false,
+        "has_assert": false,
+        "has_panic_str": false,
+        "has_unsafe_cell": true,
+        "has_maybe_uninit": false,
+        "has_raw_ptr": true,
+        "has_discriminant": false,
+        "has_inline_asm": false
+      },
+      {
+        "fn": "<impl at <tmp>/toy.rs:56:1: 56:32>::drop",
+        "bb_count": 2,
+        "atomic_calls": [],
+        "non_atomic_calls": [
+          "Atomic::<bool>::store"
+        ],
+        "has_drop": false,
+        "has_unwind_cleanup": false,
+        "has_unwind_terminate": false,
+        "has_assert": false,
+        "has_panic_str": false,
+        "has_unsafe_cell": false,
+        "has_maybe_uninit": false,
+        "has_raw_ptr": false,
+        "has_discriminant": false,
+        "has_inline_asm": false
+      },
+      {
+        "fn": "maybe_panic_hook",
+        "bb_count": 2,
+        "atomic_calls": [],
+        "non_atomic_calls": [
+          "core::num::<impl u64>::wrapping_add"
+        ],
+        "has_drop": false,
+        "has_unwind_cleanup": false,
+        "has_unwind_terminate": false,
+        "has_assert": false,
+        "has_panic_str": true,
+        "has_unsafe_cell": false,
+        "has_maybe_uninit": false,
+        "has_raw_ptr": false,
+        "has_discriminant": false,
+        "has_inline_asm": false
+      },
+      {
+        "fn": "<impl at <tmp>/toy.rs:64:1: 64:19>::lock",
+        "bb_count": 5,
+        "atomic_calls": [],
+        "non_atomic_calls": [
+          "Atomic::<bool>::swap",
+          "spin_loop",
+          "switchInt"
+        ],
+        "has_drop": false,
+        "has_unwind_cleanup": false,
+        "has_unwind_terminate": false,
+        "has_assert": false,
+        "has_panic_str": false,
+        "has_unsafe_cell": false,
+        "has_maybe_uninit": false,
+        "has_raw_ptr": false,
+        "has_discriminant": false,
+        "has_inline_asm": false
+      },
+      {
+        "fn": "<impl at <tmp>/toy.rs:64:1: 64:19>::with_guard",
+        "bb_count": 8,
+        "atomic_calls": [],
+        "non_atomic_calls": [
+          "GuardSpinLock::lock",
+          "UnsafeCell::<u64>::get",
+          "core::mem::drop::<SpinGuard<'_>>",
+          "drop",
+          "maybe_panic_hook",
+          "switchInt"
+        ],
+        "has_drop": true,
+        "has_unwind_cleanup": true,
+        "has_unwind_terminate": true,
+        "has_assert": false,
+        "has_panic_str": true,
+        "has_unsafe_cell": true,
+        "has_maybe_uninit": false,
+        "has_raw_ptr": true,
+        "has_discriminant": false,
+        "has_inline_asm": false
+      },
+      {
+        "fn": "<impl at <tmp>/toy.rs:64:1: 64:19>::with_guard_scope",
+        "bb_count": 7,
+        "atomic_calls": [],
+        "non_atomic_calls": [
+          "GuardSpinLock::lock",
+          "UnsafeCell::<u64>::get",
+          "drop",
+          "maybe_panic_hook"
+        ],
+        "has_drop": true,
+        "has_unwind_cleanup": true,
+        "has_unwind_terminate": true,
+        "has_assert": false,
+        "has_panic_str": true,
+        "has_unsafe_cell": true,
+        "has_maybe_uninit": false,
+        "has_raw_ptr": true,
+        "has_discriminant": false,
+        "has_inline_asm": false
+      },
+      {
+        "fn": "<impl at <tmp>/toy.rs:100:1: 100:16>::lock",
+        "bb_count": 5,
+        "atomic_calls": [],
+        "non_atomic_calls": [
+          "Atomic::<u32>::fetch_add",
+          "Atomic::<u32>::load",
+          "spin_loop",
+          "switchInt"
+        ],
+        "has_drop": false,
+        "has_unwind_cleanup": false,
+        "has_unwind_terminate": false,
+        "has_assert": false,
+        "has_panic_str": false,
+        "has_unsafe_cell": false,
+        "has_maybe_uninit": false,
+        "has_raw_ptr": false,
+        "has_discriminant": false,
+        "has_inline_asm": false
+      },
+      {
+        "fn": "<impl at <tmp>/toy.rs:100:1: 100:16>::unlock",
+        "bb_count": 4,
+        "atomic_calls": [],
+        "non_atomic_calls": [
+          "Atomic::<u32>::load",
+          "Atomic::<u32>::store",
+          "core::num::<impl u32>::wrapping_add"
+        ],
+        "has_drop": false,
+        "has_unwind_cleanup": false,
+        "has_unwind_terminate": false,
+        "has_assert": false,
+        "has_panic_str": false,
+        "has_unsafe_cell": false,
+        "has_maybe_uninit": false,
+        "has_raw_ptr": false,
+        "has_discriminant": false,
+        "has_inline_asm": false
+      },
+      {
+        "fn": "<impl at <tmp>/toy.rs:119:1: 119:17>::write",
+        "bb_count": 10,
+        "atomic_calls": [
+          "fence"
+        ],
+        "non_atomic_calls": [
+          "Atomic::<u64>::load",
+          "Atomic::<u64>::store",
+          "UnsafeCell::<[u64; 2]>::get",
+          "assert",
+          "core::num::<impl u64>::wrapping_add"
+        ],
+        "has_drop": false,
+        "has_unwind_cleanup": false,
+        "has_unwind_terminate": false,
+        "has_assert": true,
+        "has_panic_str": false,
+        "has_unsafe_cell": true,
+        "has_maybe_uninit": false,
+        "has_raw_ptr": true,
+        "has_discriminant": false,
+        "has_inline_asm": false
+      },
+      {
+        "fn": "<impl at <tmp>/toy.rs:119:1: 119:17>::read",
+        "bb_count": 9,
+        "atomic_calls": [
+          "fence"
+        ],
+        "non_atomic_calls": [
+          "Atomic::<u64>::load",
+          "UnsafeCell::<[u64; 2]>::get",
+          "spin_loop",
+          "switchInt"
+        ],
+        "has_drop": false,
+        "has_unwind_cleanup": false,
+        "has_unwind_terminate": false,
+        "has_assert": false,
+        "has_panic_str": false,
+        "has_unsafe_cell": true,
+        "has_maybe_uninit": false,
+        "has_raw_ptr": true,
+        "has_discriminant": false,
+        "has_inline_asm": false
+      },
+      {
+        "fn": "<impl at <tmp>/toy.rs:159:1: 159:19>::new",
+        "bb_count": 4,
+        "atomic_calls": [],
+        "non_atomic_calls": [
+          "Atomic::<u32>::new",
+          "MaybeUninit::<u64>::uninit",
+          "UnsafeCell::<MaybeUninit<u64>>::new"
+        ],
+        "has_drop": false,
+        "has_unwind_cleanup": false,
+        "has_unwind_terminate": false,
+        "has_assert": false,
+        "has_panic_str": false,
+        "has_unsafe_cell": true,
+        "has_maybe_uninit": true,
+        "has_raw_ptr": false,
+        "has_discriminant": false,
+        "has_inline_asm": false
+      },
+      {
+        "fn": "<impl at <tmp>/toy.rs:159:1: 159:19>::new",
+        "bb_count": 4,
+        "atomic_calls": [],
+        "non_atomic_calls": [
+          "Atomic::<u32>::new",
+          "MaybeUninit::<u64>::uninit",
+          "UnsafeCell::<MaybeUninit<u64>>::new"
+        ],
+        "has_drop": false,
+        "has_unwind_cleanup": false,
+        "has_unwind_terminate": false,
+        "has_assert": false,
+        "has_panic_str": false,
+        "has_unsafe_cell": true,
+        "has_maybe_uninit": true,
+        "has_raw_ptr": false,
+        "has_discriminant": false,
+        "has_inline_asm": false
+      },
+      {
+        "fn": "<impl at <tmp>/toy.rs:159:1: 159:19>::get",
+        "bb_count": 7,
+        "atomic_calls": [],
+        "non_atomic_calls": [
+          "Atomic::<u32>::load",
+          "MaybeUninit::<u64>::assume_init",
+          "UnsafeCell::<MaybeUninit<u64>>::get",
+          "switchInt"
+        ],
+        "has_drop": false,
+        "has_unwind_cleanup": false,
+        "has_unwind_terminate": false,
+        "has_assert": false,
+        "has_panic_str": false,
+        "has_unsafe_cell": true,
+        "has_maybe_uninit": true,
+        "has_raw_ptr": true,
+        "has_discriminant": false,
+        "has_inline_asm": false
+      },
+      {
+        "fn": "<impl at <tmp>/toy.rs:159:1: 159:19>::get_or_init_val",
+        "bb_count": 16,
+        "atomic_calls": [
+          "Atomic::<u32>::compare_exchange"
+        ],
+        "non_atomic_calls": [
+          "Atomic::<u32>::load",
+          "Atomic::<u32>::store",
+          "MaybeUninit::<u64>::assume_init",
+          "MaybeUninit::<u64>::write",
+          "UnsafeCell::<MaybeUninit<u64>>::get",
+          "spin_loop",
+          "switchInt"
+        ],
+        "has_drop": false,
+        "has_unwind_cleanup": false,
+        "has_unwind_terminate": false,
+        "has_assert": false,
+        "has_panic_str": false,
+        "has_unsafe_cell": true,
+        "has_maybe_uninit": true,
+        "has_raw_ptr": true,
+        "has_discriminant": true,
+        "has_inline_asm": false
+      },
+      {
+        "fn": "stub_futex_wait",
+        "bb_count": 1,
+        "atomic_calls": [],
+        "non_atomic_calls": [],
+        "has_drop": false,
+        "has_unwind_cleanup": false,
+        "has_unwind_terminate": false,
+        "has_assert": false,
+        "has_panic_str": false,
+        "has_unsafe_cell": false,
+        "has_maybe_uninit": false,
+        "has_raw_ptr": false,
+        "has_discriminant": false,
+        "has_inline_asm": false
+      },
+      {
+        "fn": "stub_futex_wake",
+        "bb_count": 1,
+        "atomic_calls": [],
+        "non_atomic_calls": [],
+        "has_drop": false,
+        "has_unwind_cleanup": false,
+        "has_unwind_terminate": false,
+        "has_assert": false,
+        "has_panic_str": false,
+        "has_unsafe_cell": false,
+        "has_maybe_uninit": false,
+        "has_raw_ptr": false,
+        "has_discriminant": false,
+        "has_inline_asm": false
+      },
+      {
+        "fn": "<impl at <tmp>/toy.rs:201:1: 201:20>::lock",
+        "bb_count": 5,
+        "atomic_calls": [
+          "Atomic::<u32>::compare_exchange"
+        ],
+        "non_atomic_calls": [
+          "FutexMutexCore::lock_contended",
+          "Result::<u32, u32>::is_err",
+          "switchInt"
+        ],
+        "has_drop": false,
+        "has_unwind_cleanup": false,
+        "has_unwind_terminate": false,
+        "has_assert": false,
+        "has_panic_str": false,
+        "has_unsafe_cell": false,
+        "has_maybe_uninit": false,
+        "has_raw_ptr": false,
+        "has_discriminant": false,
+        "has_inline_asm": false
+      },
+      {
+        "fn": "<impl at <tmp>/toy.rs:201:1: 201:20>::lock_contended",
+        "bb_count": 13,
+        "atomic_calls": [
+          "Atomic::<u32>::compare_exchange"
+        ],
+        "non_atomic_calls": [
+          "Atomic::<u32>::swap",
+          "FutexMutexCore::spin",
+          "stub_futex_wait",
+          "switchInt"
+        ],
+        "has_drop": false,
+        "has_unwind_cleanup": false,
+        "has_unwind_terminate": false,
+        "has_assert": false,
+        "has_panic_str": false,
+        "has_unsafe_cell": false,
+        "has_maybe_uninit": false,
+        "has_raw_ptr": false,
+        "has_discriminant": true,
+        "has_inline_asm": false
+      },
+      {
+        "fn": "<impl at <tmp>/toy.rs:201:1: 201:20>::spin",
+        "bb_count": 7,
+        "atomic_calls": [],
+        "non_atomic_calls": [
+          "Atomic::<u32>::load",
+          "spin_loop",
+          "switchInt"
+        ],
+        "has_drop": false,
+        "has_unwind_cleanup": false,
+        "has_unwind_terminate": false,
+        "has_assert": false,
+        "has_panic_str": false,
+        "has_unsafe_cell": false,
+        "has_maybe_uninit": false,
+        "has_raw_ptr": false,
+        "has_discriminant": false,
+        "has_inline_asm": false
+      },
+      {
+        "fn": "<impl at <tmp>/toy.rs:201:1: 201:20>::unlock",
+        "bb_count": 4,
+        "atomic_calls": [],
+        "non_atomic_calls": [
+          "Atomic::<u32>::swap",
+          "stub_futex_wake",
+          "switchInt"
+        ],
+        "has_drop": false,
+        "has_unwind_cleanup": false,
+        "has_unwind_terminate": false,
+        "has_assert": false,
+        "has_panic_str": false,
+        "has_unsafe_cell": false,
+        "has_maybe_uninit": false,
+        "has_raw_ptr": false,
+        "has_discriminant": false,
+        "has_inline_asm": false
+      },
+      {
+        "fn": "<impl at <tmp>/toy.rs:244:1: 244:18>::clone_count",
+        "bb_count": 4,
+        "atomic_calls": [],
+        "non_atomic_calls": [
+          "Atomic::<usize>::fetch_add",
+          "switchInt"
+        ],
+        "has_drop": false,
+        "has_unwind_cleanup": false,
+        "has_unwind_terminate": false,
+        "has_assert": false,
+        "has_panic_str": false,
+        "has_unsafe_cell": false,
+        "has_maybe_uninit": false,
+        "has_raw_ptr": false,
+        "has_discriminant": false,
+        "has_inline_asm": false
+      },
+      {
+        "fn": "<impl at <tmp>/toy.rs:244:1: 244:18>::drop_is_last",
+        "bb_count": 6,
+        "atomic_calls": [
+          "fence"
+        ],
+        "non_atomic_calls": [
+          "Atomic::<usize>::fetch_sub",
+          "switchInt"
+        ],
+        "has_drop": false,
+        "has_unwind_cleanup": false,
+        "has_unwind_terminate": false,
+        "has_assert": false,
+        "has_panic_str": false,
+        "has_unsafe_cell": false,
+        "has_maybe_uninit": false,
+        "has_raw_ptr": false,
+        "has_discriminant": false,
+        "has_inline_asm": false
+      }
+    ]
+  },
+  "toy_o1_abort": {
+    "post_cleanup": [
+      {
+        "fn": "maybe_panic_hook",
+        "bb_count": 2,
+        "atomic_calls": [],
+        "non_atomic_calls": [
+          "core::num::<impl u64>::wrapping_add"
+        ],
+        "has_drop": false,
+        "has_unwind_cleanup": false,
+        "has_unwind_terminate": false,
+        "has_assert": false,
+        "has_panic_str": true,
+        "has_unsafe_cell": false,
+        "has_maybe_uninit": false,
+        "has_raw_ptr": false,
+        "has_discriminant": false,
+        "has_inline_asm": false
+      },
+      {
+        "fn": "stub_futex_wait",
+        "bb_count": 1,
+        "atomic_calls": [],
+        "non_atomic_calls": [],
+        "has_drop": false,
+        "has_unwind_cleanup": false,
+        "has_unwind_terminate": false,
+        "has_assert": false,
+        "has_panic_str": false,
+        "has_unsafe_cell": false,
+        "has_maybe_uninit": false,
+        "has_raw_ptr": false,
+        "has_discriminant": false,
+        "has_inline_asm": false
+      },
+      {
+        "fn": "stub_futex_wake",
+        "bb_count": 1,
+        "atomic_calls": [],
+        "non_atomic_calls": [],
+        "has_drop": false,
+        "has_unwind_cleanup": false,
+        "has_unwind_terminate": false,
+        "has_assert": false,
+        "has_panic_str": false,
+        "has_unsafe_cell": false,
+        "has_maybe_uninit": false,
+        "has_raw_ptr": false,
+        "has_discriminant": false,
+        "has_inline_asm": false
+      },
+      {
+        "fn": "<impl at <tmp>/toy.rs:159:1: 159:19>::get",
+        "bb_count": 7,
+        "atomic_calls": [],
+        "non_atomic_calls": [
+          "Atomic::<u32>::load",
+          "MaybeUninit::<u64>::assume_init",
+          "UnsafeCell::<MaybeUninit<u64>>::get",
+          "switchInt"
+        ],
+        "has_drop": false,
+        "has_unwind_cleanup": false,
+        "has_unwind_terminate": false,
+        "has_assert": false,
+        "has_panic_str": false,
+        "has_unsafe_cell": true,
+        "has_maybe_uninit": true,
+        "has_raw_ptr": true,
+        "has_discriminant": false,
+        "has_inline_asm": false
+      },
+      {
+        "fn": "<impl at <tmp>/toy.rs:159:1: 159:19>::get_or_init_val",
+        "bb_count": 21,
+        "atomic_calls": [
+          "Atomic::<u32>::compare_exchange"
+        ],
+        "non_atomic_calls": [
+          "Atomic::<u32>::load",
+          "Atomic::<u32>::store",
+          "MaybeUninit::<u64>::assume_init",
+          "MaybeUninit::<u64>::write",
+          "UnsafeCell::<MaybeUninit<u64>>::get",
+          "spin_loop",
+          "switchInt"
+        ],
+        "has_drop": false,
+        "has_unwind_cleanup": false,
+        "has_unwind_terminate": false,
+        "has_assert": false,
+        "has_panic_str": false,
+        "has_unsafe_cell": true,
+        "has_maybe_uninit": true,
+        "has_raw_ptr": true,
+        "has_discriminant": true,
+        "has_inline_asm": false
+      },
+      {
+        "fn": "<impl at <tmp>/toy.rs:159:1: 159:19>::new",
+        "bb_count": 4,
+        "atomic_calls": [],
+        "non_atomic_calls": [
+          "Atomic::<u32>::new",
+          "MaybeUninit::<u64>::uninit",
+          "UnsafeCell::<MaybeUninit<u64>>::new"
+        ],
+        "has_drop": false,
+        "has_unwind_cleanup": false,
+        "has_unwind_terminate": false,
+        "has_assert": false,
+        "has_panic_str": false,
+        "has_unsafe_cell": true,
+        "has_maybe_uninit": true,
+        "has_raw_ptr": false,
+        "has_discriminant": false,
+        "has_inline_asm": false
+      },
+      {
+        "fn": "<impl at <tmp>/toy.rs:201:1: 201:20>::lock",
+        "bb_count": 7,
+        "atomic_calls": [
+          "Atomic::<u32>::compare_exchange"
+        ],
+        "non_atomic_calls": [
+          "FutexMutexCore::lock_contended",
+          "Result::<u32, u32>::is_err",
+          "switchInt"
+        ],
+        "has_drop": false,
+        "has_unwind_cleanup": false,
+        "has_unwind_terminate": false,
+        "has_assert": false,
+        "has_panic_str": false,
+        "has_unsafe_cell": false,
+        "has_maybe_uninit": false,
+        "has_raw_ptr": false,
+        "has_discriminant": false,
+        "has_inline_asm": false
+      },
+      {
+        "fn": "<impl at <tmp>/toy.rs:201:1: 201:20>::lock_contended",
+        "bb_count": 19,
+        "atomic_calls": [
+          "Atomic::<u32>::compare_exchange"
+        ],
+        "non_atomic_calls": [
+          "Atomic::<u32>::swap",
+          "FutexMutexCore::spin",
+          "stub_futex_wait",
+          "switchInt"
+        ],
+        "has_drop": false,
+        "has_unwind_cleanup": false,
+        "has_unwind_terminate": false,
+        "has_assert": false,
+        "has_panic_str": false,
+        "has_unsafe_cell": false,
+        "has_maybe_uninit": false,
+        "has_raw_ptr": false,
+        "has_discriminant": true,
+        "has_inline_asm": false
+      },
+      {
+        "fn": "<impl at <tmp>/toy.rs:201:1: 201:20>::spin",
+        "bb_count": 9,
+        "atomic_calls": [],
+        "non_atomic_calls": [
+          "Atomic::<u32>::load",
+          "spin_loop",
+          "switchInt"
+        ],
+        "has_drop": false,
+        "has_unwind_cleanup": false,
+        "has_unwind_terminate": false,
+        "has_assert": false,
+        "has_panic_str": false,
+        "has_unsafe_cell": false,
+        "has_maybe_uninit": false,
+        "has_raw_ptr": false,
+        "has_discriminant": false,
+        "has_inline_asm": false
+      },
+      {
+        "fn": "<impl at <tmp>/toy.rs:201:1: 201:20>::unlock",
+        "bb_count": 6,
+        "atomic_calls": [],
+        "non_atomic_calls": [
+          "Atomic::<u32>::swap",
+          "stub_futex_wake",
+          "switchInt"
+        ],
+        "has_drop": false,
+        "has_unwind_cleanup": false,
+        "has_unwind_terminate": false,
+        "has_assert": false,
+        "has_panic_str": false,
+        "has_unsafe_cell": false,
+        "has_maybe_uninit": false,
+        "has_raw_ptr": false,
+        "has_discriminant": false,
+        "has_inline_asm": false
+      },
+      {
+        "fn": "<impl at <tmp>/toy.rs:244:1: 244:18>::clone_count",
+        "bb_count": 4,
+        "atomic_calls": [],
+        "non_atomic_calls": [
+          "Atomic::<usize>::fetch_add",
+          "switchInt"
+        ],
+        "has_drop": false,
+        "has_unwind_cleanup": false,
+        "has_unwind_terminate": false,
+        "has_assert": false,
+        "has_panic_str": false,
+        "has_unsafe_cell": false,
+        "has_maybe_uninit": false,
+        "has_raw_ptr": false,
+        "has_discriminant": false,
+        "has_inline_asm": false
+      },
+      {
+        "fn": "<impl at <tmp>/toy.rs:244:1: 244:18>::drop_is_last",
+        "bb_count": 6,
+        "atomic_calls": [
+          "fence"
+        ],
+        "non_atomic_calls": [
+          "Atomic::<usize>::fetch_sub",
+          "switchInt"
+        ],
+        "has_drop": false,
+        "has_unwind_cleanup": false,
+        "has_unwind_terminate": false,
+        "has_assert": false,
+        "has_panic_str": false,
+        "has_unsafe_cell": false,
+        "has_maybe_uninit": false,
+        "has_raw_ptr": false,
+        "has_discriminant": false,
+        "has_inline_asm": false
+      },
+      {
+        "fn": "<impl at <tmp>/toy.rs:17:1: 17:17>::lock",
+        "bb_count": 11,
+        "atomic_calls": [
+          "Atomic::<bool>::compare_exchange_weak"
+        ],
+        "non_atomic_calls": [
+          "Atomic::<bool>::load",
+          "Result::<bool, bool>::is_err",
+          "spin_loop",
+          "switchInt"
+        ],
+        "has_drop": false,
+        "has_unwind_cleanup": false,
+        "has_unwind_terminate": false,
+        "has_assert": false,
+        "has_panic_str": false,
+        "has_unsafe_cell": false,
+        "has_maybe_uninit": false,
+        "has_raw_ptr": false,
+        "has_discriminant": false,
+        "has_inline_asm": false
+      },
+      {
+        "fn": "<impl at <tmp>/toy.rs:17:1: 17:17>::new",
+        "bb_count": 3,
+        "atomic_calls": [],
+        "non_atomic_calls": [
+          "Atomic::<bool>::new",
+          "UnsafeCell::<u64>::new"
+        ],
+        "has_drop": false,
+        "has_unwind_cleanup": false,
+        "has_unwind_terminate": false,
+        "has_assert": false,
+        "has_panic_str": false,
+        "has_unsafe_cell": true,
+        "has_maybe_uninit": false,
+        "has_raw_ptr": false,
+        "has_discriminant": false,
+        "has_inline_asm": false
+      },
+      {
+        "fn": "<impl at <tmp>/toy.rs:17:1: 17:17>::try_lock",
+        "bb_count": 3,
+        "atomic_calls": [
+          "Atomic::<bool>::compare_exchange"
+        ],
+        "non_atomic_calls": [
+          "Result::<bool, bool>::is_ok"
+        ],
+        "has_drop": false,
+        "has_unwind_cleanup": false,
+        "has_unwind_terminate": false,
+        "has_assert": false,
+        "has_panic_str": false,
+        "has_unsafe_cell": false,
+        "has_maybe_uninit": false,
+        "has_raw_ptr": false,
+        "has_discriminant": false,
+        "has_inline_asm": false
+      },
+      {
+        "fn": "<impl at <tmp>/toy.rs:17:1: 17:17>::unlock",
+        "bb_count": 2,
+        "atomic_calls": [],
+        "non_atomic_calls": [
+          "Atomic::<bool>::store"
+        ],
+        "has_drop": false,
+        "has_unwind_cleanup": false,
+        "has_unwind_terminate": false,
+        "has_assert": false,
+        "has_panic_str": false,
+        "has_unsafe_cell": false,
+        "has_maybe_uninit": false,
+        "has_raw_ptr": false,
+        "has_discriminant": false,
+        "has_inline_asm": false
+      },
+      {
+        "fn": "<impl at <tmp>/toy.rs:17:1: 17:17>::with_lock_set",
+        "bb_count": 4,
+        "atomic_calls": [],
+        "non_atomic_calls": [
+          "RawSpinLock::lock",
+          "RawSpinLock::unlock",
+          "UnsafeCell::<u64>::get"
+        ],
+        "has_drop": false,
+        "has_unwind_cleanup": false,
+        "has_unwind_terminate": false,
+        "has_assert": false,
+        "has_panic_str": false,
+        "has_unsafe_cell": true,
+        "has_maybe_uninit": false,
+        "has_raw_ptr": true,
+        "has_discriminant": false,
+        "has_inline_asm": false
+      },
+      {
+        "fn": "<impl at <tmp>/toy.rs:56:1: 56:32>::drop",
+        "bb_count": 2,
+        "atomic_calls": [],
+        "non_atomic_calls": [
+          "Atomic::<bool>::store"
+        ],
+        "has_drop": false,
+        "has_unwind_cleanup": false,
+        "has_unwind_terminate": false,
+        "has_assert": false,
+        "has_panic_str": false,
+        "has_unsafe_cell": false,
+        "has_maybe_uninit": false,
+        "has_raw_ptr": false,
+        "has_discriminant": false,
+        "has_inline_asm": false
+      },
+      {
+        "fn": "<impl at <tmp>/toy.rs:64:1: 64:19>::lock",
+        "bb_count": 6,
+        "atomic_calls": [],
+        "non_atomic_calls": [
+          "Atomic::<bool>::swap",
+          "spin_loop",
+          "switchInt"
+        ],
+        "has_drop": false,
+        "has_unwind_cleanup": false,
+        "has_unwind_terminate": false,
+        "has_assert": false,
+        "has_panic_str": false,
+        "has_unsafe_cell": false,
+        "has_maybe_uninit": false,
+        "has_raw_ptr": false,
+        "has_discriminant": false,
+        "has_inline_asm": false
+      },
+      {
+        "fn": "<impl at <tmp>/toy.rs:64:1: 64:19>::with_guard",
+        "bb_count": 5,
+        "atomic_calls": [],
+        "non_atomic_calls": [
+          "GuardSpinLock::lock",
+          "UnsafeCell::<u64>::get",
+          "core::mem::drop::<SpinGuard<'_>>",
+          "maybe_panic_hook"
+        ],
+        "has_drop": false,
+        "has_unwind_cleanup": false,
+        "has_unwind_terminate": false,
+        "has_assert": false,
+        "has_panic_str": true,
+        "has_unsafe_cell": true,
+        "has_maybe_uninit": false,
+        "has_raw_ptr": true,
+        "has_discriminant": false,
+        "has_inline_asm": false
+      },
+      {
+        "fn": "<impl at <tmp>/toy.rs:64:1: 64:19>::with_guard_scope",
+        "bb_count": 5,
+        "atomic_calls": [],
+        "non_atomic_calls": [
+          "GuardSpinLock::lock",
+          "UnsafeCell::<u64>::get",
+          "drop",
+          "maybe_panic_hook"
+        ],
+        "has_drop": true,
+        "has_unwind_cleanup": false,
+        "has_unwind_terminate": false,
+        "has_assert": false,
+        "has_panic_str": true,
+        "has_unsafe_cell": true,
+        "has_maybe_uninit": false,
+        "has_raw_ptr": true,
+        "has_discriminant": false,
+        "has_inline_asm": false
+      },
+      {
+        "fn": "<impl at <tmp>/toy.rs:100:1: 100:16>::lock",
+        "bb_count": 7,
+        "atomic_calls": [],
+        "non_atomic_calls": [
+          "Atomic::<u32>::fetch_add",
+          "Atomic::<u32>::load",
+          "spin_loop",
+          "switchInt"
+        ],
+        "has_drop": false,
+        "has_unwind_cleanup": false,
+        "has_unwind_terminate": false,
+        "has_assert": false,
+        "has_panic_str": false,
+        "has_unsafe_cell": false,
+        "has_maybe_uninit": false,
+        "has_raw_ptr": false,
+        "has_discriminant": false,
+        "has_inline_asm": false
+      },
+      {
+        "fn": "<impl at <tmp>/toy.rs:100:1: 100:16>::unlock",
+        "bb_count": 4,
+        "atomic_calls": [],
+        "non_atomic_calls": [
+          "Atomic::<u32>::load",
+          "Atomic::<u32>::store",
+          "core::num::<impl u32>::wrapping_add"
+        ],
+        "has_drop": false,
+        "has_unwind_cleanup": false,
+        "has_unwind_terminate": false,
+        "has_assert": false,
+        "has_panic_str": false,
+        "has_unsafe_cell": false,
+        "has_maybe_uninit": false,
+        "has_raw_ptr": false,
+        "has_discriminant": false,
+        "has_inline_asm": false
+      },
+      {
+        "fn": "<impl at <tmp>/toy.rs:119:1: 119:17>::read",
+        "bb_count": 11,
+        "atomic_calls": [
+          "fence"
+        ],
+        "non_atomic_calls": [
+          "Atomic::<u64>::load",
+          "UnsafeCell::<[u64; 2]>::get",
+          "spin_loop",
+          "switchInt"
+        ],
+        "has_drop": false,
+        "has_unwind_cleanup": false,
+        "has_unwind_terminate": false,
+        "has_assert": false,
+        "has_panic_str": false,
+        "has_unsafe_cell": true,
+        "has_maybe_uninit": false,
+        "has_raw_ptr": true,
+        "has_discriminant": false,
+        "has_inline_asm": false
+      },
+      {
+        "fn": "<impl at <tmp>/toy.rs:119:1: 119:17>::write",
+        "bb_count": 10,
+        "atomic_calls": [
+          "fence"
+        ],
+        "non_atomic_calls": [
+          "Atomic::<u64>::load",
+          "Atomic::<u64>::store",
+          "UnsafeCell::<[u64; 2]>::get",
+          "assert",
+          "core::num::<impl u64>::wrapping_add"
+        ],
+        "has_drop": false,
+        "has_unwind_cleanup": false,
+        "has_unwind_terminate": false,
+        "has_assert": true,
+        "has_panic_str": false,
+        "has_unsafe_cell": true,
+        "has_maybe_uninit": false,
+        "has_raw_ptr": true,
+        "has_discriminant": false,
+        "has_inline_asm": false
+      }
+    ],
+    "optimized": [
+      {
+        "fn": "<impl at <tmp>/toy.rs:17:1: 17:17>::new",
+        "bb_count": 3,
+        "atomic_calls": [],
+        "non_atomic_calls": [
+          "Atomic::<bool>::new",
+          "UnsafeCell::<u64>::new"
+        ],
+        "has_drop": false,
+        "has_unwind_cleanup": false,
+        "has_unwind_terminate": false,
+        "has_assert": false,
+        "has_panic_str": false,
+        "has_unsafe_cell": true,
+        "has_maybe_uninit": false,
+        "has_raw_ptr": false,
+        "has_discriminant": false,
+        "has_inline_asm": false
+      },
+      {
+        "fn": "<impl at <tmp>/toy.rs:17:1: 17:17>::new",
+        "bb_count": 3,
+        "atomic_calls": [],
+        "non_atomic_calls": [
+          "Atomic::<bool>::new",
+          "UnsafeCell::<u64>::new"
+        ],
+        "has_drop": false,
+        "has_unwind_cleanup": false,
+        "has_unwind_terminate": false,
+        "has_assert": false,
+        "has_panic_str": false,
+        "has_unsafe_cell": true,
+        "has_maybe_uninit": false,
+        "has_raw_ptr": false,
+        "has_discriminant": false,
+        "has_inline_asm": false
+      },
+      {
+        "fn": "<impl at <tmp>/toy.rs:17:1: 17:17>::try_lock",
+        "bb_count": 3,
+        "atomic_calls": [
+          "Atomic::<bool>::compare_exchange"
+        ],
+        "non_atomic_calls": [
+          "Result::<bool, bool>::is_ok"
+        ],
+        "has_drop": false,
+        "has_unwind_cleanup": false,
+        "has_unwind_terminate": false,
+        "has_assert": false,
+        "has_panic_str": false,
+        "has_unsafe_cell": false,
+        "has_maybe_uninit": false,
+        "has_raw_ptr": false,
+        "has_discriminant": false,
+        "has_inline_asm": false
+      },
+      {
+        "fn": "<impl at <tmp>/toy.rs:17:1: 17:17>::lock",
+        "bb_count": 11,
+        "atomic_calls": [
+          "Atomic::<bool>::compare_exchange_weak"
+        ],
+        "non_atomic_calls": [
+          "Atomic::<bool>::load",
+          "Result::<bool, bool>::is_err",
+          "spin_loop",
+          "switchInt"
+        ],
+        "has_drop": false,
+        "has_unwind_cleanup": false,
+        "has_unwind_terminate": false,
+        "has_assert": false,
+        "has_panic_str": false,
+        "has_unsafe_cell": false,
+        "has_maybe_uninit": false,
+        "has_raw_ptr": false,
+        "has_discriminant": false,
+        "has_inline_asm": false
+      },
+      {
+        "fn": "<impl at <tmp>/toy.rs:17:1: 17:17>::unlock",
+        "bb_count": 2,
+        "atomic_calls": [],
+        "non_atomic_calls": [
+          "Atomic::<bool>::store"
+        ],
+        "has_drop": false,
+        "has_unwind_cleanup": false,
+        "has_unwind_terminate": false,
+        "has_assert": false,
+        "has_panic_str": false,
+        "has_unsafe_cell": false,
+        "has_maybe_uninit": false,
+        "has_raw_ptr": false,
+        "has_discriminant": false,
+        "has_inline_asm": false
+      },
+      {
+        "fn": "<impl at <tmp>/toy.rs:17:1: 17:17>::with_lock_set",
+        "bb_count": 4,
+        "atomic_calls": [],
+        "non_atomic_calls": [
+          "RawSpinLock::lock",
+          "RawSpinLock::unlock",
+          "UnsafeCell::<u64>::get"
+        ],
+        "has_drop": false,
+        "has_unwind_cleanup": false,
+        "has_unwind_terminate": false,
+        "has_assert": false,
+        "has_panic_str": false,
+        "has_unsafe_cell": true,
+        "has_maybe_uninit": false,
+        "has_raw_ptr": true,
+        "has_discriminant": false,
+        "has_inline_asm": false
+      },
+      {
+        "fn": "<impl at <tmp>/toy.rs:56:1: 56:32>::drop",
+        "bb_count": 2,
+        "atomic_calls": [],
+        "non_atomic_calls": [
+          "Atomic::<bool>::store"
+        ],
+        "has_drop": false,
+        "has_unwind_cleanup": false,
+        "has_unwind_terminate": false,
+        "has_assert": false,
+        "has_panic_str": false,
+        "has_unsafe_cell": false,
+        "has_maybe_uninit": false,
+        "has_raw_ptr": false,
+        "has_discriminant": false,
+        "has_inline_asm": false
+      },
+      {
+        "fn": "maybe_panic_hook",
+        "bb_count": 2,
+        "atomic_calls": [],
+        "non_atomic_calls": [
+          "core::num::<impl u64>::wrapping_add"
+        ],
+        "has_drop": false,
+        "has_unwind_cleanup": false,
+        "has_unwind_terminate": false,
+        "has_assert": false,
+        "has_panic_str": true,
+        "has_unsafe_cell": false,
+        "has_maybe_uninit": false,
+        "has_raw_ptr": false,
+        "has_discriminant": false,
+        "has_inline_asm": false
+      },
+      {
+        "fn": "<impl at <tmp>/toy.rs:64:1: 64:19>::lock",
+        "bb_count": 6,
+        "atomic_calls": [],
+        "non_atomic_calls": [
+          "Atomic::<bool>::swap",
+          "spin_loop",
+          "switchInt"
+        ],
+        "has_drop": false,
+        "has_unwind_cleanup": false,
+        "has_unwind_terminate": false,
+        "has_assert": false,
+        "has_panic_str": false,
+        "has_unsafe_cell": false,
+        "has_maybe_uninit": false,
+        "has_raw_ptr": false,
+        "has_discriminant": false,
+        "has_inline_asm": false
+      },
+      {
+        "fn": "<impl at <tmp>/toy.rs:64:1: 64:19>::with_guard",
+        "bb_count": 5,
+        "atomic_calls": [],
+        "non_atomic_calls": [
+          "GuardSpinLock::lock",
+          "UnsafeCell::<u64>::get",
+          "core::mem::drop::<SpinGuard<'_>>",
+          "maybe_panic_hook"
+        ],
+        "has_drop": false,
+        "has_unwind_cleanup": false,
+        "has_unwind_terminate": false,
+        "has_assert": false,
+        "has_panic_str": true,
+        "has_unsafe_cell": true,
+        "has_maybe_uninit": false,
+        "has_raw_ptr": true,
+        "has_discriminant": false,
+        "has_inline_asm": false
+      },
+      {
+        "fn": "<impl at <tmp>/toy.rs:64:1: 64:19>::with_guard_scope",
+        "bb_count": 5,
+        "atomic_calls": [],
+        "non_atomic_calls": [
+          "GuardSpinLock::lock",
+          "UnsafeCell::<u64>::get",
+          "drop",
+          "maybe_panic_hook"
+        ],
+        "has_drop": true,
+        "has_unwind_cleanup": false,
+        "has_unwind_terminate": false,
+        "has_assert": false,
+        "has_panic_str": true,
+        "has_unsafe_cell": true,
+        "has_maybe_uninit": false,
+        "has_raw_ptr": true,
+        "has_discriminant": false,
+        "has_inline_asm": false
+      },
+      {
+        "fn": "<impl at <tmp>/toy.rs:100:1: 100:16>::lock",
+        "bb_count": 7,
+        "atomic_calls": [],
+        "non_atomic_calls": [
+          "Atomic::<u32>::fetch_add",
+          "Atomic::<u32>::load",
+          "spin_loop",
+          "switchInt"
+        ],
+        "has_drop": false,
+        "has_unwind_cleanup": false,
+        "has_unwind_terminate": false,
+        "has_assert": false,
+        "has_panic_str": false,
+        "has_unsafe_cell": false,
+        "has_maybe_uninit": false,
+        "has_raw_ptr": false,
+        "has_discriminant": false,
+        "has_inline_asm": false
+      },
+      {
+        "fn": "<impl at <tmp>/toy.rs:100:1: 100:16>::unlock",
+        "bb_count": 4,
+        "atomic_calls": [],
+        "non_atomic_calls": [
+          "Atomic::<u32>::load",
+          "Atomic::<u32>::store",
+          "core::num::<impl u32>::wrapping_add"
+        ],
+        "has_drop": false,
+        "has_unwind_cleanup": false,
+        "has_unwind_terminate": false,
+        "has_assert": false,
+        "has_panic_str": false,
+        "has_unsafe_cell": false,
+        "has_maybe_uninit": false,
+        "has_raw_ptr": false,
+        "has_discriminant": false,
+        "has_inline_asm": false
+      },
+      {
+        "fn": "<impl at <tmp>/toy.rs:119:1: 119:17>::write",
+        "bb_count": 8,
+        "atomic_calls": [
+          "fence"
+        ],
+        "non_atomic_calls": [
+          "Atomic::<u64>::load",
+          "Atomic::<u64>::store",
+          "UnsafeCell::<[u64; 2]>::get",
+          "core::num::<impl u64>::wrapping_add"
+        ],
+        "has_drop": false,
+        "has_unwind_cleanup": false,
+        "has_unwind_terminate": false,
+        "has_assert": false,
+        "has_panic_str": false,
+        "has_unsafe_cell": true,
+        "has_maybe_uninit": false,
+        "has_raw_ptr": true,
+        "has_discriminant": false,
+        "has_inline_asm": false
+      },
+      {
+        "fn": "<impl at <tmp>/toy.rs:119:1: 119:17>::read",
+        "bb_count": 11,
+        "atomic_calls": [
+          "fence"
+        ],
+        "non_atomic_calls": [
+          "Atomic::<u64>::load",
+          "UnsafeCell::<[u64; 2]>::get",
+          "spin_loop",
+          "switchInt"
+        ],
+        "has_drop": false,
+        "has_unwind_cleanup": false,
+        "has_unwind_terminate": false,
+        "has_assert": false,
+        "has_panic_str": false,
+        "has_unsafe_cell": true,
+        "has_maybe_uninit": false,
+        "has_raw_ptr": true,
+        "has_discriminant": false,
+        "has_inline_asm": false
+      },
+      {
+        "fn": "<impl at <tmp>/toy.rs:159:1: 159:19>::new",
+        "bb_count": 4,
+        "atomic_calls": [],
+        "non_atomic_calls": [
+          "Atomic::<u32>::new",
+          "MaybeUninit::<u64>::uninit",
+          "UnsafeCell::<MaybeUninit<u64>>::new"
+        ],
+        "has_drop": false,
+        "has_unwind_cleanup": false,
+        "has_unwind_terminate": false,
+        "has_assert": false,
+        "has_panic_str": false,
+        "has_unsafe_cell": true,
+        "has_maybe_uninit": true,
+        "has_raw_ptr": false,
+        "has_discriminant": false,
+        "has_inline_asm": false
+      },
+      {
+        "fn": "<impl at <tmp>/toy.rs:159:1: 159:19>::new",
+        "bb_count": 4,
+        "atomic_calls": [],
+        "non_atomic_calls": [
+          "Atomic::<u32>::new",
+          "MaybeUninit::<u64>::uninit",
+          "UnsafeCell::<MaybeUninit<u64>>::new"
+        ],
+        "has_drop": false,
+        "has_unwind_cleanup": false,
+        "has_unwind_terminate": false,
+        "has_assert": false,
+        "has_panic_str": false,
+        "has_unsafe_cell": true,
+        "has_maybe_uninit": true,
+        "has_raw_ptr": false,
+        "has_discriminant": false,
+        "has_inline_asm": false
+      },
+      {
+        "fn": "<impl at <tmp>/toy.rs:159:1: 159:19>::get",
+        "bb_count": 7,
+        "atomic_calls": [],
+        "non_atomic_calls": [
+          "Atomic::<u32>::load",
+          "MaybeUninit::<u64>::assume_init",
+          "UnsafeCell::<MaybeUninit<u64>>::get",
+          "switchInt"
+        ],
+        "has_drop": false,
+        "has_unwind_cleanup": false,
+        "has_unwind_terminate": false,
+        "has_assert": false,
+        "has_panic_str": false,
+        "has_unsafe_cell": true,
+        "has_maybe_uninit": true,
+        "has_raw_ptr": true,
+        "has_discriminant": false,
+        "has_inline_asm": false
+      },
+      {
+        "fn": "<impl at <tmp>/toy.rs:159:1: 159:19>::get_or_init_val",
+        "bb_count": 21,
+        "atomic_calls": [
+          "Atomic::<u32>::compare_exchange"
+        ],
+        "non_atomic_calls": [
+          "Atomic::<u32>::load",
+          "Atomic::<u32>::store",
+          "MaybeUninit::<u64>::assume_init",
+          "MaybeUninit::<u64>::write",
+          "UnsafeCell::<MaybeUninit<u64>>::get",
+          "spin_loop",
+          "switchInt"
+        ],
+        "has_drop": false,
+        "has_unwind_cleanup": false,
+        "has_unwind_terminate": false,
+        "has_assert": false,
+        "has_panic_str": false,
+        "has_unsafe_cell": true,
+        "has_maybe_uninit": true,
+        "has_raw_ptr": true,
+        "has_discriminant": true,
+        "has_inline_asm": false
+      },
+      {
+        "fn": "stub_futex_wait",
+        "bb_count": 1,
+        "atomic_calls": [],
+        "non_atomic_calls": [],
+        "has_drop": false,
+        "has_unwind_cleanup": false,
+        "has_unwind_terminate": false,
+        "has_assert": false,
+        "has_panic_str": false,
+        "has_unsafe_cell": false,
+        "has_maybe_uninit": false,
+        "has_raw_ptr": false,
+        "has_discriminant": false,
+        "has_inline_asm": false
+      },
+      {
+        "fn": "stub_futex_wake",
+        "bb_count": 1,
+        "atomic_calls": [],
+        "non_atomic_calls": [],
+        "has_drop": false,
+        "has_unwind_cleanup": false,
+        "has_unwind_terminate": false,
+        "has_assert": false,
+        "has_panic_str": false,
+        "has_unsafe_cell": false,
+        "has_maybe_uninit": false,
+        "has_raw_ptr": false,
+        "has_discriminant": false,
+        "has_inline_asm": false
+      },
+      {
+        "fn": "<impl at <tmp>/toy.rs:201:1: 201:20>::lock",
+        "bb_count": 6,
+        "atomic_calls": [
+          "Atomic::<u32>::compare_exchange"
+        ],
+        "non_atomic_calls": [
+          "FutexMutexCore::lock_contended",
+          "Result::<u32, u32>::is_err",
+          "switchInt"
+        ],
+        "has_drop": false,
+        "has_unwind_cleanup": false,
+        "has_unwind_terminate": false,
+        "has_assert": false,
+        "has_panic_str": false,
+        "has_unsafe_cell": false,
+        "has_maybe_uninit": false,
+        "has_raw_ptr": false,
+        "has_discriminant": false,
+        "has_inline_asm": false
+      },
+      {
+        "fn": "<impl at <tmp>/toy.rs:201:1: 201:20>::lock_contended",
+        "bb_count": 19,
+        "atomic_calls": [
+          "Atomic::<u32>::compare_exchange"
+        ],
+        "non_atomic_calls": [
+          "Atomic::<u32>::swap",
+          "FutexMutexCore::spin",
+          "stub_futex_wait",
+          "switchInt"
+        ],
+        "has_drop": false,
+        "has_unwind_cleanup": false,
+        "has_unwind_terminate": false,
+        "has_assert": false,
+        "has_panic_str": false,
+        "has_unsafe_cell": false,
+        "has_maybe_uninit": false,
+        "has_raw_ptr": false,
+        "has_discriminant": true,
+        "has_inline_asm": false
+      },
+      {
+        "fn": "<impl at <tmp>/toy.rs:201:1: 201:20>::spin",
+        "bb_count": 8,
+        "atomic_calls": [],
+        "non_atomic_calls": [
+          "Atomic::<u32>::load",
+          "spin_loop",
+          "switchInt"
+        ],
+        "has_drop": false,
+        "has_unwind_cleanup": false,
+        "has_unwind_terminate": false,
+        "has_assert": false,
+        "has_panic_str": false,
+        "has_unsafe_cell": false,
+        "has_maybe_uninit": false,
+        "has_raw_ptr": false,
+        "has_discriminant": false,
+        "has_inline_asm": false
+      },
+      {
+        "fn": "<impl at <tmp>/toy.rs:201:1: 201:20>::unlock",
+        "bb_count": 6,
+        "atomic_calls": [],
+        "non_atomic_calls": [
+          "Atomic::<u32>::swap",
+          "stub_futex_wake",
+          "switchInt"
+        ],
+        "has_drop": false,
+        "has_unwind_cleanup": false,
+        "has_unwind_terminate": false,
+        "has_assert": false,
+        "has_panic_str": false,
+        "has_unsafe_cell": false,
+        "has_maybe_uninit": false,
+        "has_raw_ptr": false,
+        "has_discriminant": false,
+        "has_inline_asm": false
+      },
+      {
+        "fn": "<impl at <tmp>/toy.rs:244:1: 244:18>::clone_count",
+        "bb_count": 4,
+        "atomic_calls": [],
+        "non_atomic_calls": [
+          "Atomic::<usize>::fetch_add",
+          "switchInt"
+        ],
+        "has_drop": false,
+        "has_unwind_cleanup": false,
+        "has_unwind_terminate": false,
+        "has_assert": false,
+        "has_panic_str": false,
+        "has_unsafe_cell": false,
+        "has_maybe_uninit": false,
+        "has_raw_ptr": false,
+        "has_discriminant": false,
+        "has_inline_asm": false
+      },
+      {
+        "fn": "<impl at <tmp>/toy.rs:244:1: 244:18>::drop_is_last",
+        "bb_count": 6,
+        "atomic_calls": [
+          "fence"
+        ],
+        "non_atomic_calls": [
+          "Atomic::<usize>::fetch_sub",
+          "switchInt"
+        ],
+        "has_drop": false,
+        "has_unwind_cleanup": false,
+        "has_unwind_terminate": false,
+        "has_assert": false,
+        "has_panic_str": false,
+        "has_unsafe_cell": false,
+        "has_maybe_uninit": false,
+        "has_raw_ptr": false,
+        "has_discriminant": false,
+        "has_inline_asm": false
+      }
+    ]
+  },
+  "std_o0_abort": {
+    "post_cleanup": [
+      {
+        "fn": "call_arc_clone_drop",
+        "bb_count": 5,
+        "atomic_calls": [],
+        "non_atomic_calls": [
+          "<Arc<u64> as Clone>::clone",
+          "<Arc<u64> as Deref>::deref",
+          "drop",
+          "std::mem::drop::<Arc<u64>>"
+        ],
+        "has_drop": true,
+        "has_unwind_cleanup": false,
+        "has_unwind_terminate": false,
+        "has_assert": false,
+        "has_panic_str": false,
+        "has_unsafe_cell": false,
+        "has_maybe_uninit": false,
+        "has_raw_ptr": false,
+        "has_discriminant": false,
+        "has_inline_asm": false
+      },
+      {
+        "fn": "call_condvar",
+        "bb_count": 11,
+        "atomic_calls": [],
+        "non_atomic_calls": [
+          "<std::sync::MutexGuard<'_, bool> as Deref>::deref",
+          "Result::<std::sync::MutexGuard<'_, bool>, PoisonError<std::sync::MutexGuard<'_, bool>>>::unwrap",
+          "drop",
+          "std::sync::Condvar::notify_one",
+          "std::sync::Condvar::wait::<bool>",
+          "std::sync::Mutex::<bool>::lock",
+          "switchInt"
+        ],
+        "has_drop": true,
+        "has_unwind_cleanup": false,
+        "has_unwind_terminate": false,
+        "has_assert": false,
+        "has_panic_str": false,
+        "has_unsafe_cell": false,
+        "has_maybe_uninit": false,
+        "has_raw_ptr": false,
+        "has_discriminant": false,
+        "has_inline_asm": false
+      },
+      {
+        "fn": "call_nonpoison_mutex",
+        "bb_count": 5,
+        "atomic_calls": [],
+        "non_atomic_calls": [
+          "<std::sync::nonpoison::MutexGuard<'_, u64> as Deref>::deref",
+          "<std::sync::nonpoison::MutexGuard<'_, u64> as DerefMut>::deref_mut",
+          "drop",
+          "std::sync::nonpoison::Mutex::<u64>::lock"
+        ],
+        "has_drop": true,
+        "has_unwind_cleanup": false,
+        "has_unwind_terminate": false,
+        "has_assert": false,
+        "has_panic_str": false,
+        "has_unsafe_cell": false,
+        "has_maybe_uninit": false,
+        "has_raw_ptr": false,
+        "has_discriminant": false,
+        "has_inline_asm": false
+      },
+      {
+        "fn": "call_once_init::{closure#0}",
+        "bb_count": 1,
+        "atomic_calls": [],
+        "non_atomic_calls": [],
+        "has_drop": false,
+        "has_unwind_cleanup": false,
+        "has_unwind_terminate": false,
+        "has_assert": false,
+        "has_panic_str": false,
+        "has_unsafe_cell": false,
+        "has_maybe_uninit": false,
+        "has_raw_ptr": false,
+        "has_discriminant": false,
+        "has_inline_asm": false
+      },
+      {
+        "fn": "call_once_init",
+        "bb_count": 2,
+        "atomic_calls": [],
+        "non_atomic_calls": [],
+        "has_drop": false,
+        "has_unwind_cleanup": false,
+        "has_unwind_terminate": false,
+        "has_assert": false,
+        "has_panic_str": false,
+        "has_unsafe_cell": false,
+        "has_maybe_uninit": false,
+        "has_raw_ptr": false,
+        "has_discriminant": false,
+        "has_inline_asm": false
+      },
+      {
+        "fn": "call_once_is_completed",
+        "bb_count": 2,
+        "atomic_calls": [],
+        "non_atomic_calls": [
+          "std::sync::Once::is_completed"
+        ],
+        "has_drop": false,
+        "has_unwind_cleanup": false,
+        "has_unwind_terminate": false,
+        "has_assert": false,
+        "has_panic_str": false,
+        "has_unsafe_cell": false,
+        "has_maybe_uninit": false,
+        "has_raw_ptr": false,
+        "has_discriminant": false,
+        "has_inline_asm": false
+      },
+      {
+        "fn": "call_oncelock_get",
+        "bb_count": 2,
+        "atomic_calls": [],
+        "non_atomic_calls": [
+          "OnceLock::<u64>::get"
+        ],
+        "has_drop": false,
+        "has_unwind_cleanup": false,
+        "has_unwind_terminate": false,
+        "has_assert": false,
+        "has_panic_str": false,
+        "has_unsafe_cell": false,
+        "has_maybe_uninit": false,
+        "has_raw_ptr": false,
+        "has_discriminant": false,
+        "has_inline_asm": false
+      },
+      {
+        "fn": "call_oncelock_set",
+        "bb_count": 2,
+        "atomic_calls": [],
+        "non_atomic_calls": [
+          "OnceLock::<u64>::set"
+        ],
+        "has_drop": false,
+        "has_unwind_cleanup": false,
+        "has_unwind_terminate": false,
+        "has_assert": false,
+        "has_panic_str": false,
+        "has_unsafe_cell": false,
+        "has_maybe_uninit": false,
+        "has_raw_ptr": false,
+        "has_discriminant": false,
+        "has_inline_asm": false
+      },
+      {
+        "fn": "call_poison_mutex",
+        "bb_count": 6,
+        "atomic_calls": [],
+        "non_atomic_calls": [
+          "<std::sync::MutexGuard<'_, u64> as Deref>::deref",
+          "<std::sync::MutexGuard<'_, u64> as DerefMut>::deref_mut",
+          "Result::<std::sync::MutexGuard<'_, u64>, PoisonError<std::sync::MutexGuard<'_, u64>>>::unwrap",
+          "drop",
+          "std::sync::Mutex::<u64>::lock"
+        ],
+        "has_drop": true,
+        "has_unwind_cleanup": false,
+        "has_unwind_terminate": false,
+        "has_assert": false,
+        "has_panic_str": false,
+        "has_unsafe_cell": false,
+        "has_maybe_uninit": false,
+        "has_raw_ptr": false,
+        "has_discriminant": false,
+        "has_inline_asm": false
+      },
+      {
+        "fn": "call_rwlock",
+        "bb_count": 9,
+        "atomic_calls": [],
+        "non_atomic_calls": [
+          "<std::sync::RwLockReadGuard<'_, u64> as Deref>::deref",
+          "<std::sync::RwLockWriteGuard<'_, u64> as DerefMut>::deref_mut",
+          "Result::<std::sync::RwLockReadGuard<'_, u64>, PoisonError<std::sync::RwLockReadGuard<'_, u64>>>::unwrap",
+          "Result::<std::sync::RwLockWriteGuard<'_, u64>, PoisonError<std::sync::RwLockWriteGuard<'_, u64>>>::unwrap",
+          "drop",
+          "std::mem::drop::<std::sync::RwLockWriteGuard<'_, u64>>",
+          "std::sync::RwLock::<u64>::read",
+          "std::sync::RwLock::<u64>::write"
+        ],
+        "has_drop": true,
+        "has_unwind_cleanup": false,
+        "has_unwind_terminate": false,
+        "has_assert": false,
+        "has_panic_str": false,
+        "has_unsafe_cell": false,
+        "has_maybe_uninit": false,
+        "has_raw_ptr": false,
+        "has_discriminant": false,
+        "has_inline_asm": false
+      }
+    ],
+    "optimized": [
+      {
+        "fn": "call_once_is_completed",
+        "bb_count": 2,
+        "atomic_calls": [],
+        "non_atomic_calls": [
+          "std::sync::Once::is_completed"
+        ],
+        "has_drop": false,
+        "has_unwind_cleanup": false,
+        "has_unwind_terminate": false,
+        "has_assert": false,
+        "has_panic_str": false,
+        "has_unsafe_cell": false,
+        "has_maybe_uninit": false,
+        "has_raw_ptr": false,
+        "has_discriminant": false,
+        "has_inline_asm": false
+      },
+      {
+        "fn": "call_once_init",
+        "bb_count": 2,
+        "atomic_calls": [],
+        "non_atomic_calls": [],
+        "has_drop": false,
+        "has_unwind_cleanup": false,
+        "has_unwind_terminate": false,
+        "has_assert": false,
+        "has_panic_str": false,
+        "has_unsafe_cell": false,
+        "has_maybe_uninit": false,
+        "has_raw_ptr": false,
+        "has_discriminant": false,
+        "has_inline_asm": false
+      },
+      {
+        "fn": "call_once_init::{closure#0}",
+        "bb_count": 1,
+        "atomic_calls": [],
+        "non_atomic_calls": [],
+        "has_drop": false,
+        "has_unwind_cleanup": false,
+        "has_unwind_terminate": false,
+        "has_assert": false,
+        "has_panic_str": false,
+        "has_unsafe_cell": false,
+        "has_maybe_uninit": false,
+        "has_raw_ptr": false,
+        "has_discriminant": false,
+        "has_inline_asm": false
+      },
+      {
+        "fn": "call_oncelock_get",
+        "bb_count": 2,
+        "atomic_calls": [],
+        "non_atomic_calls": [
+          "OnceLock::<u64>::get"
+        ],
+        "has_drop": false,
+        "has_unwind_cleanup": false,
+        "has_unwind_terminate": false,
+        "has_assert": false,
+        "has_panic_str": false,
+        "has_unsafe_cell": false,
+        "has_maybe_uninit": false,
+        "has_raw_ptr": false,
+        "has_discriminant": false,
+        "has_inline_asm": false
+      },
+      {
+        "fn": "call_oncelock_set",
+        "bb_count": 2,
+        "atomic_calls": [],
+        "non_atomic_calls": [
+          "OnceLock::<u64>::set"
+        ],
+        "has_drop": false,
+        "has_unwind_cleanup": false,
+        "has_unwind_terminate": false,
+        "has_assert": false,
+        "has_panic_str": false,
+        "has_unsafe_cell": false,
+        "has_maybe_uninit": false,
+        "has_raw_ptr": false,
+        "has_discriminant": false,
+        "has_inline_asm": false
+      },
+      {
+        "fn": "call_poison_mutex",
+        "bb_count": 6,
+        "atomic_calls": [],
+        "non_atomic_calls": [
+          "<std::sync::MutexGuard<'_, u64> as Deref>::deref",
+          "<std::sync::MutexGuard<'_, u64> as DerefMut>::deref_mut",
+          "Result::<std::sync::MutexGuard<'_, u64>, PoisonError<std::sync::MutexGuard<'_, u64>>>::unwrap",
+          "drop",
+          "std::sync::Mutex::<u64>::lock"
+        ],
+        "has_drop": true,
+        "has_unwind_cleanup": false,
+        "has_unwind_terminate": false,
+        "has_assert": false,
+        "has_panic_str": false,
+        "has_unsafe_cell": false,
+        "has_maybe_uninit": false,
+        "has_raw_ptr": false,
+        "has_discriminant": false,
+        "has_inline_asm": false
+      },
+      {
+        "fn": "call_nonpoison_mutex",
+        "bb_count": 5,
+        "atomic_calls": [],
+        "non_atomic_calls": [
+          "<std::sync::nonpoison::MutexGuard<'_, u64> as Deref>::deref",
+          "<std::sync::nonpoison::MutexGuard<'_, u64> as DerefMut>::deref_mut",
+          "drop",
+          "std::sync::nonpoison::Mutex::<u64>::lock"
+        ],
+        "has_drop": true,
+        "has_unwind_cleanup": false,
+        "has_unwind_terminate": false,
+        "has_assert": false,
+        "has_panic_str": false,
+        "has_unsafe_cell": false,
+        "has_maybe_uninit": false,
+        "has_raw_ptr": false,
+        "has_discriminant": false,
+        "has_inline_asm": false
+      },
+      {
+        "fn": "call_arc_clone_drop",
+        "bb_count": 5,
+        "atomic_calls": [],
+        "non_atomic_calls": [
+          "<Arc<u64> as Clone>::clone",
+          "<Arc<u64> as Deref>::deref",
+          "drop",
+          "std::mem::drop::<Arc<u64>>"
+        ],
+        "has_drop": true,
+        "has_unwind_cleanup": false,
+        "has_unwind_terminate": false,
+        "has_assert": false,
+        "has_panic_str": false,
+        "has_unsafe_cell": false,
+        "has_maybe_uninit": false,
+        "has_raw_ptr": false,
+        "has_discriminant": false,
+        "has_inline_asm": false
+      },
+      {
+        "fn": "call_rwlock",
+        "bb_count": 9,
+        "atomic_calls": [],
+        "non_atomic_calls": [
+          "<std::sync::RwLockReadGuard<'_, u64> as Deref>::deref",
+          "<std::sync::RwLockWriteGuard<'_, u64> as DerefMut>::deref_mut",
+          "Result::<std::sync::RwLockReadGuard<'_, u64>, PoisonError<std::sync::RwLockReadGuard<'_, u64>>>::unwrap",
+          "Result::<std::sync::RwLockWriteGuard<'_, u64>, PoisonError<std::sync::RwLockWriteGuard<'_, u64>>>::unwrap",
+          "drop",
+          "std::mem::drop::<std::sync::RwLockWriteGuard<'_, u64>>",
+          "std::sync::RwLock::<u64>::read",
+          "std::sync::RwLock::<u64>::write"
+        ],
+        "has_drop": true,
+        "has_unwind_cleanup": false,
+        "has_unwind_terminate": false,
+        "has_assert": false,
+        "has_panic_str": false,
+        "has_unsafe_cell": false,
+        "has_maybe_uninit": false,
+        "has_raw_ptr": false,
+        "has_discriminant": false,
+        "has_inline_asm": false
+      },
+      {
+        "fn": "call_condvar",
+        "bb_count": 10,
+        "atomic_calls": [],
+        "non_atomic_calls": [
+          "<std::sync::MutexGuard<'_, bool> as Deref>::deref",
+          "Result::<std::sync::MutexGuard<'_, bool>, PoisonError<std::sync::MutexGuard<'_, bool>>>::unwrap",
+          "drop",
+          "std::sync::Condvar::notify_one",
+          "std::sync::Condvar::wait::<bool>",
+          "std::sync::Mutex::<bool>::lock",
+          "switchInt"
+        ],
+        "has_drop": true,
+        "has_unwind_cleanup": false,
+        "has_unwind_terminate": false,
+        "has_assert": false,
+        "has_panic_str": false,
+        "has_unsafe_cell": false,
+        "has_maybe_uninit": false,
+        "has_raw_ptr": false,
+        "has_discriminant": false,
+        "has_inline_asm": false
+      }
+    ]
+  },
+  "std_o0_unwind": {
+    "post_cleanup": [
+      {
+        "fn": "call_arc_clone_drop",
+        "bb_count": 9,
+        "atomic_calls": [],
+        "non_atomic_calls": [
+          "<Arc<u64> as Clone>::clone",
+          "<Arc<u64> as Deref>::deref",
+          "drop",
+          "std::mem::drop::<Arc<u64>>",
+          "switchInt"
+        ],
+        "has_drop": true,
+        "has_unwind_cleanup": true,
+        "has_unwind_terminate": true,
+        "has_assert": false,
+        "has_panic_str": false,
+        "has_unsafe_cell": false,
+        "has_maybe_uninit": false,
+        "has_raw_ptr": false,
+        "has_discriminant": false,
+        "has_inline_asm": false
+      },
+      {
+        "fn": "call_condvar",
+        "bb_count": 14,
+        "atomic_calls": [],
+        "non_atomic_calls": [
+          "<std::sync::MutexGuard<'_, bool> as Deref>::deref",
+          "Result::<std::sync::MutexGuard<'_, bool>, PoisonError<std::sync::MutexGuard<'_, bool>>>::unwrap",
+          "drop",
+          "std::sync::Condvar::notify_one",
+          "std::sync::Condvar::wait::<bool>",
+          "std::sync::Mutex::<bool>::lock",
+          "switchInt"
+        ],
+        "has_drop": true,
+        "has_unwind_cleanup": true,
+        "has_unwind_terminate": true,
+        "has_assert": false,
+        "has_panic_str": false,
+        "has_unsafe_cell": false,
+        "has_maybe_uninit": false,
+        "has_raw_ptr": false,
+        "has_discriminant": false,
+        "has_inline_asm": false
+      },
+      {
+        "fn": "call_nonpoison_mutex",
+        "bb_count": 7,
+        "atomic_calls": [],
+        "non_atomic_calls": [
+          "<std::sync::nonpoison::MutexGuard<'_, u64> as Deref>::deref",
+          "<std::sync::nonpoison::MutexGuard<'_, u64> as DerefMut>::deref_mut",
+          "drop",
+          "std::sync::nonpoison::Mutex::<u64>::lock"
+        ],
+        "has_drop": true,
+        "has_unwind_cleanup": true,
+        "has_unwind_terminate": true,
+        "has_assert": false,
+        "has_panic_str": false,
+        "has_unsafe_cell": false,
+        "has_maybe_uninit": false,
+        "has_raw_ptr": false,
+        "has_discriminant": false,
+        "has_inline_asm": false
+      },
+      {
+        "fn": "call_once_init::{closure#0}",
+        "bb_count": 1,
+        "atomic_calls": [],
+        "non_atomic_calls": [],
+        "has_drop": false,
+        "has_unwind_cleanup": false,
+        "has_unwind_terminate": false,
+        "has_assert": false,
+        "has_panic_str": false,
+        "has_unsafe_cell": false,
+        "has_maybe_uninit": false,
+        "has_raw_ptr": false,
+        "has_discriminant": false,
+        "has_inline_asm": false
+      },
+      {
+        "fn": "call_once_init",
+        "bb_count": 2,
+        "atomic_calls": [],
+        "non_atomic_calls": [],
+        "has_drop": false,
+        "has_unwind_cleanup": false,
+        "has_unwind_terminate": false,
+        "has_assert": false,
+        "has_panic_str": false,
+        "has_unsafe_cell": false,
+        "has_maybe_uninit": false,
+        "has_raw_ptr": false,
+        "has_discriminant": false,
+        "has_inline_asm": false
+      },
+      {
+        "fn": "call_once_is_completed",
+        "bb_count": 2,
+        "atomic_calls": [],
+        "non_atomic_calls": [
+          "std::sync::Once::is_completed"
+        ],
+        "has_drop": false,
+        "has_unwind_cleanup": false,
+        "has_unwind_terminate": false,
+        "has_assert": false,
+        "has_panic_str": false,
+        "has_unsafe_cell": false,
+        "has_maybe_uninit": false,
+        "has_raw_ptr": false,
+        "has_discriminant": false,
+        "has_inline_asm": false
+      },
+      {
+        "fn": "call_oncelock_get",
+        "bb_count": 2,
+        "atomic_calls": [],
+        "non_atomic_calls": [
+          "OnceLock::<u64>::get"
+        ],
+        "has_drop": false,
+        "has_unwind_cleanup": false,
+        "has_unwind_terminate": false,
+        "has_assert": false,
+        "has_panic_str": false,
+        "has_unsafe_cell": false,
+        "has_maybe_uninit": false,
+        "has_raw_ptr": false,
+        "has_discriminant": false,
+        "has_inline_asm": false
+      },
+      {
+        "fn": "call_oncelock_set",
+        "bb_count": 2,
+        "atomic_calls": [],
+        "non_atomic_calls": [
+          "OnceLock::<u64>::set"
+        ],
+        "has_drop": false,
+        "has_unwind_cleanup": false,
+        "has_unwind_terminate": false,
+        "has_assert": false,
+        "has_panic_str": false,
+        "has_unsafe_cell": false,
+        "has_maybe_uninit": false,
+        "has_raw_ptr": false,
+        "has_discriminant": false,
+        "has_inline_asm": false
+      },
+      {
+        "fn": "call_poison_mutex",
+        "bb_count": 8,
+        "atomic_calls": [],
+        "non_atomic_calls": [
+          "<std::sync::MutexGuard<'_, u64> as Deref>::deref",
+          "<std::sync::MutexGuard<'_, u64> as DerefMut>::deref_mut",
+          "Result::<std::sync::MutexGuard<'_, u64>, PoisonError<std::sync::MutexGuard<'_, u64>>>::unwrap",
+          "drop",
+          "std::sync::Mutex::<u64>::lock"
+        ],
+        "has_drop": true,
+        "has_unwind_cleanup": true,
+        "has_unwind_terminate": true,
+        "has_assert": false,
+        "has_panic_str": false,
+        "has_unsafe_cell": false,
+        "has_maybe_uninit": false,
+        "has_raw_ptr": false,
+        "has_discriminant": false,
+        "has_inline_asm": false
+      },
+      {
+        "fn": "call_rwlock",
+        "bb_count": 13,
+        "atomic_calls": [],
+        "non_atomic_calls": [
+          "<std::sync::RwLockReadGuard<'_, u64> as Deref>::deref",
+          "<std::sync::RwLockWriteGuard<'_, u64> as DerefMut>::deref_mut",
+          "Result::<std::sync::RwLockReadGuard<'_, u64>, PoisonError<std::sync::RwLockReadGuard<'_, u64>>>::unwrap",
+          "Result::<std::sync::RwLockWriteGuard<'_, u64>, PoisonError<std::sync::RwLockWriteGuard<'_, u64>>>::unwrap",
+          "drop",
+          "std::mem::drop::<std::sync::RwLockWriteGuard<'_, u64>>",
+          "std::sync::RwLock::<u64>::read",
+          "std::sync::RwLock::<u64>::write",
+          "switchInt"
+        ],
+        "has_drop": true,
+        "has_unwind_cleanup": true,
+        "has_unwind_terminate": true,
+        "has_assert": false,
+        "has_panic_str": false,
+        "has_unsafe_cell": false,
+        "has_maybe_uninit": false,
+        "has_raw_ptr": false,
+        "has_discriminant": false,
+        "has_inline_asm": false
+      }
+    ],
+    "optimized": [
+      {
+        "fn": "call_once_is_completed",
+        "bb_count": 2,
+        "atomic_calls": [],
+        "non_atomic_calls": [
+          "std::sync::Once::is_completed"
+        ],
+        "has_drop": false,
+        "has_unwind_cleanup": false,
+        "has_unwind_terminate": false,
+        "has_assert": false,
+        "has_panic_str": false,
+        "has_unsafe_cell": false,
+        "has_maybe_uninit": false,
+        "has_raw_ptr": false,
+        "has_discriminant": false,
+        "has_inline_asm": false
+      },
+      {
+        "fn": "call_once_init",
+        "bb_count": 2,
+        "atomic_calls": [],
+        "non_atomic_calls": [],
+        "has_drop": false,
+        "has_unwind_cleanup": false,
+        "has_unwind_terminate": false,
+        "has_assert": false,
+        "has_panic_str": false,
+        "has_unsafe_cell": false,
+        "has_maybe_uninit": false,
+        "has_raw_ptr": false,
+        "has_discriminant": false,
+        "has_inline_asm": false
+      },
+      {
+        "fn": "call_once_init::{closure#0}",
+        "bb_count": 1,
+        "atomic_calls": [],
+        "non_atomic_calls": [],
+        "has_drop": false,
+        "has_unwind_cleanup": false,
+        "has_unwind_terminate": false,
+        "has_assert": false,
+        "has_panic_str": false,
+        "has_unsafe_cell": false,
+        "has_maybe_uninit": false,
+        "has_raw_ptr": false,
+        "has_discriminant": false,
+        "has_inline_asm": false
+      },
+      {
+        "fn": "call_oncelock_get",
+        "bb_count": 2,
+        "atomic_calls": [],
+        "non_atomic_calls": [
+          "OnceLock::<u64>::get"
+        ],
+        "has_drop": false,
+        "has_unwind_cleanup": false,
+        "has_unwind_terminate": false,
+        "has_assert": false,
+        "has_panic_str": false,
+        "has_unsafe_cell": false,
+        "has_maybe_uninit": false,
+        "has_raw_ptr": false,
+        "has_discriminant": false,
+        "has_inline_asm": false
+      },
+      {
+        "fn": "call_oncelock_set",
+        "bb_count": 2,
+        "atomic_calls": [],
+        "non_atomic_calls": [
+          "OnceLock::<u64>::set"
+        ],
+        "has_drop": false,
+        "has_unwind_cleanup": false,
+        "has_unwind_terminate": false,
+        "has_assert": false,
+        "has_panic_str": false,
+        "has_unsafe_cell": false,
+        "has_maybe_uninit": false,
+        "has_raw_ptr": false,
+        "has_discriminant": false,
+        "has_inline_asm": false
+      },
+      {
+        "fn": "call_poison_mutex",
+        "bb_count": 8,
+        "atomic_calls": [],
+        "non_atomic_calls": [
+          "<std::sync::MutexGuard<'_, u64> as Deref>::deref",
+          "<std::sync::MutexGuard<'_, u64> as DerefMut>::deref_mut",
+          "Result::<std::sync::MutexGuard<'_, u64>, PoisonError<std::sync::MutexGuard<'_, u64>>>::unwrap",
+          "drop",
+          "std::sync::Mutex::<u64>::lock"
+        ],
+        "has_drop": true,
+        "has_unwind_cleanup": true,
+        "has_unwind_terminate": true,
+        "has_assert": false,
+        "has_panic_str": false,
+        "has_unsafe_cell": false,
+        "has_maybe_uninit": false,
+        "has_raw_ptr": false,
+        "has_discriminant": false,
+        "has_inline_asm": false
+      },
+      {
+        "fn": "call_nonpoison_mutex",
+        "bb_count": 7,
+        "atomic_calls": [],
+        "non_atomic_calls": [
+          "<std::sync::nonpoison::MutexGuard<'_, u64> as Deref>::deref",
+          "<std::sync::nonpoison::MutexGuard<'_, u64> as DerefMut>::deref_mut",
+          "drop",
+          "std::sync::nonpoison::Mutex::<u64>::lock"
+        ],
+        "has_drop": true,
+        "has_unwind_cleanup": true,
+        "has_unwind_terminate": true,
+        "has_assert": false,
+        "has_panic_str": false,
+        "has_unsafe_cell": false,
+        "has_maybe_uninit": false,
+        "has_raw_ptr": false,
+        "has_discriminant": false,
+        "has_inline_asm": false
+      },
+      {
+        "fn": "call_arc_clone_drop",
+        "bb_count": 9,
+        "atomic_calls": [],
+        "non_atomic_calls": [
+          "<Arc<u64> as Clone>::clone",
+          "<Arc<u64> as Deref>::deref",
+          "drop",
+          "std::mem::drop::<Arc<u64>>",
+          "switchInt"
+        ],
+        "has_drop": true,
+        "has_unwind_cleanup": true,
+        "has_unwind_terminate": true,
+        "has_assert": false,
+        "has_panic_str": false,
+        "has_unsafe_cell": false,
+        "has_maybe_uninit": false,
+        "has_raw_ptr": false,
+        "has_discriminant": false,
+        "has_inline_asm": false
+      },
+      {
+        "fn": "call_rwlock",
+        "bb_count": 13,
+        "atomic_calls": [],
+        "non_atomic_calls": [
+          "<std::sync::RwLockReadGuard<'_, u64> as Deref>::deref",
+          "<std::sync::RwLockWriteGuard<'_, u64> as DerefMut>::deref_mut",
+          "Result::<std::sync::RwLockReadGuard<'_, u64>, PoisonError<std::sync::RwLockReadGuard<'_, u64>>>::unwrap",
+          "Result::<std::sync::RwLockWriteGuard<'_, u64>, PoisonError<std::sync::RwLockWriteGuard<'_, u64>>>::unwrap",
+          "drop",
+          "std::mem::drop::<std::sync::RwLockWriteGuard<'_, u64>>",
+          "std::sync::RwLock::<u64>::read",
+          "std::sync::RwLock::<u64>::write",
+          "switchInt"
+        ],
+        "has_drop": true,
+        "has_unwind_cleanup": true,
+        "has_unwind_terminate": true,
+        "has_assert": false,
+        "has_panic_str": false,
+        "has_unsafe_cell": false,
+        "has_maybe_uninit": false,
+        "has_raw_ptr": false,
+        "has_discriminant": false,
+        "has_inline_asm": false
+      },
+      {
+        "fn": "call_condvar",
+        "bb_count": 14,
+        "atomic_calls": [],
+        "non_atomic_calls": [
+          "<std::sync::MutexGuard<'_, bool> as Deref>::deref",
+          "Result::<std::sync::MutexGuard<'_, bool>, PoisonError<std::sync::MutexGuard<'_, bool>>>::unwrap",
+          "drop",
+          "std::sync::Condvar::notify_one",
+          "std::sync::Condvar::wait::<bool>",
+          "std::sync::Mutex::<bool>::lock",
+          "switchInt"
+        ],
+        "has_drop": true,
+        "has_unwind_cleanup": true,
+        "has_unwind_terminate": true,
+        "has_assert": false,
+        "has_panic_str": false,
+        "has_unsafe_cell": false,
+        "has_maybe_uninit": false,
+        "has_raw_ptr": false,
+        "has_discriminant": false,
+        "has_inline_asm": false
+      }
+    ]
+  },
+  "rust_src_audit": {
+    "sys_sync_once_futex": {
+      "path": "std/src/sys/sync/once/futex.rs",
+      "lines": 211,
+      "orderings": [
+        "AcqRel",
+        "Acquire",
+        "Relaxed",
+        "Release"
+      ],
+      "atomic_ops": [
+        "compare_exchange_weak",
+        "get_mut",
+        "load",
+        "swap"
+      ],
+      "has_fence": false,
+      "has_unsafe_cell": false,
+      "has_cell": true,
+      "has_maybe_uninit": false,
+      "has_manually_drop": false,
+      "has_non_null": false,
+      "has_box": false,
+      "has_drop_impl": true,
+      "has_futex_wait": true,
+      "has_futex_wake": true,
+      "has_libc_syscall": false,
+      "has_panic_or_assert": true,
+      "has_poison": true,
+      "has_thread_panicking": false,
+      "has_dyn_fn": true,
+      "has_spin_loop": false
+    },
+    "sync_once": {
+      "path": "std/src/sync/once.rs",
+      "lines": 402,
+      "orderings": [],
+      "atomic_ops": [],
+      "has_fence": false,
+      "has_unsafe_cell": false,
+      "has_cell": false,
+      "has_maybe_uninit": false,
+      "has_manually_drop": false,
+      "has_non_null": false,
+      "has_box": false,
+      "has_drop_impl": false,
+      "has_futex_wait": false,
+      "has_futex_wake": false,
+      "has_libc_syscall": false,
+      "has_panic_or_assert": true,
+      "has_poison": true,
+      "has_thread_panicking": false,
+      "has_dyn_fn": false,
+      "has_spin_loop": false
+    },
+    "sync_once_lock": {
+      "path": "std/src/sync/once_lock.rs",
+      "lines": 709,
+      "orderings": [
+        "Relaxed"
+      ],
+      "atomic_ops": [
+        "fetch_add",
+        "get_mut"
+      ],
+      "has_fence": false,
+      "has_unsafe_cell": true,
+      "has_cell": false,
+      "has_maybe_uninit": true,
+      "has_manually_drop": false,
+      "has_non_null": false,
+      "has_box": true,
+      "has_drop_impl": true,
+      "has_futex_wait": false,
+      "has_futex_wake": false,
+      "has_libc_syscall": false,
+      "has_panic_or_assert": true,
+      "has_poison": true,
+      "has_thread_panicking": false,
+      "has_dyn_fn": false,
+      "has_spin_loop": false
+    },
+    "sys_sync_mutex_futex": {
+      "path": "std/src/sys/sync/mutex/futex.rs",
+      "lines": 103,
+      "orderings": [
+        "Acquire",
+        "Relaxed",
+        "Release"
+      ],
+      "atomic_ops": [
+        "compare_exchange",
+        "load",
+        "swap"
+      ],
+      "has_fence": false,
+      "has_unsafe_cell": false,
+      "has_cell": false,
+      "has_maybe_uninit": false,
+      "has_manually_drop": false,
+      "has_non_null": false,
+      "has_box": false,
+      "has_drop_impl": false,
+      "has_futex_wait": true,
+      "has_futex_wake": true,
+      "has_libc_syscall": false,
+      "has_panic_or_assert": false,
+      "has_poison": false,
+      "has_thread_panicking": false,
+      "has_dyn_fn": false,
+      "has_spin_loop": true
+    },
+    "sync_nonpoison_mutex": {
+      "path": "std/src/sync/nonpoison/mutex.rs",
+      "lines": 649,
+      "orderings": [],
+      "atomic_ops": [
+        "get_mut"
+      ],
+      "has_fence": false,
+      "has_unsafe_cell": true,
+      "has_cell": false,
+      "has_maybe_uninit": false,
+      "has_manually_drop": true,
+      "has_non_null": true,
+      "has_box": false,
+      "has_drop_impl": true,
+      "has_futex_wait": false,
+      "has_futex_wake": false,
+      "has_libc_syscall": false,
+      "has_panic_or_assert": true,
+      "has_poison": true,
+      "has_thread_panicking": false,
+      "has_dyn_fn": false,
+      "has_spin_loop": false
+    },
+    "sync_poison_mutex": {
+      "path": "std/src/sync/poison/mutex.rs",
+      "lines": 946,
+      "orderings": [],
+      "atomic_ops": [
+        "get_mut"
+      ],
+      "has_fence": false,
+      "has_unsafe_cell": true,
+      "has_cell": false,
+      "has_maybe_uninit": false,
+      "has_manually_drop": true,
+      "has_non_null": true,
+      "has_box": true,
+      "has_drop_impl": true,
+      "has_futex_wait": false,
+      "has_futex_wake": false,
+      "has_libc_syscall": false,
+      "has_panic_or_assert": true,
+      "has_poison": true,
+      "has_thread_panicking": false,
+      "has_dyn_fn": false,
+      "has_spin_loop": false
+    },
+    "sync_poison": {
+      "path": "std/src/sync/poison.rs",
+      "lines": 389,
+      "orderings": [
+        "Relaxed"
+      ],
+      "atomic_ops": [
+        "load",
+        "store"
+      ],
+      "has_fence": false,
+      "has_unsafe_cell": false,
+      "has_cell": false,
+      "has_maybe_uninit": false,
+      "has_manually_drop": false,
+      "has_non_null": false,
+      "has_box": false,
+      "has_drop_impl": false,
+      "has_futex_wait": false,
+      "has_futex_wake": false,
+      "has_libc_syscall": false,
+      "has_panic_or_assert": true,
+      "has_poison": true,
+      "has_thread_panicking": true,
+      "has_dyn_fn": false,
+      "has_spin_loop": false
+    },
+    "sys_pal_unix_futex": {
+      "path": "std/src/sys/pal/unix/futex.rs",
+      "lines": 284,
+      "orderings": [
+        "Relaxed"
+      ],
+      "atomic_ops": [
+        "load"
+      ],
+      "has_fence": false,
+      "has_unsafe_cell": false,
+      "has_cell": false,
+      "has_maybe_uninit": false,
+      "has_manually_drop": false,
+      "has_non_null": false,
+      "has_box": false,
+      "has_drop_impl": false,
+      "has_futex_wait": true,
+      "has_futex_wake": true,
+      "has_libc_syscall": true,
+      "has_panic_or_assert": false,
+      "has_poison": false,
+      "has_thread_panicking": false,
+      "has_dyn_fn": false,
+      "has_spin_loop": false
+    },
+    "alloc_sync_arc": {
+      "path": "alloc/src/sync.rs",
+      "lines": 4976,
+      "orderings": [
+        "Acquire",
+        "Relaxed",
+        "Release"
+      ],
+      "atomic_ops": [
+        "compare_exchange",
+        "compare_exchange_weak",
+        "fetch_add",
+        "fetch_sub",
+        "load",
+        "store",
+        "try_update"
+      ],
+      "has_fence": true,
+      "has_unsafe_cell": false,
+      "has_cell": false,
+      "has_maybe_uninit": true,
+      "has_manually_drop": true,
+      "has_non_null": true,
+      "has_box": true,
+      "has_drop_impl": true,
+      "has_futex_wait": false,
+      "has_futex_wake": false,
+      "has_libc_syscall": false,
+      "has_panic_or_assert": true,
+      "has_poison": false,
+      "has_thread_panicking": false,
+      "has_dyn_fn": false,
+      "has_spin_loop": true
+    },
+    "sys_sync_rwlock_futex": {
+      "path": "std/src/sys/sync/rwlock/futex.rs",
+      "lines": 359,
+      "orderings": [
+        "Acquire",
+        "Relaxed",
+        "Release"
+      ],
+      "atomic_ops": [
+        "compare_exchange",
+        "compare_exchange_weak",
+        "fetch_add",
+        "fetch_sub",
+        "load",
+        "try_update"
+      ],
+      "has_fence": false,
+      "has_unsafe_cell": false,
+      "has_cell": false,
+      "has_maybe_uninit": false,
+      "has_manually_drop": false,
+      "has_non_null": false,
+      "has_box": false,
+      "has_drop_impl": false,
+      "has_futex_wait": true,
+      "has_futex_wake": true,
+      "has_libc_syscall": false,
+      "has_panic_or_assert": true,
+      "has_poison": false,
+      "has_thread_panicking": false,
+      "has_dyn_fn": false,
+      "has_spin_loop": true
+    },
+    "sys_sync_condvar_futex": {
+      "path": "std/src/sys/sync/condvar/futex.rs",
+      "lines": 56,
+      "orderings": [
+        "Relaxed"
+      ],
+      "atomic_ops": [
+        "fetch_add",
+        "load"
+      ],
+      "has_fence": false,
+      "has_unsafe_cell": false,
+      "has_cell": false,
+      "has_maybe_uninit": false,
+      "has_manually_drop": false,
+      "has_non_null": false,
+      "has_box": false,
+      "has_drop_impl": false,
+      "has_futex_wait": true,
+      "has_futex_wake": true,
+      "has_libc_syscall": false,
+      "has_panic_or_assert": false,
+      "has_poison": false,
+      "has_thread_panicking": false,
+      "has_dyn_fn": false,
+      "has_spin_loop": false
+    }
+  }
+}
