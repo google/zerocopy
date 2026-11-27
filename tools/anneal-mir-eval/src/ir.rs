@@ -677,6 +677,9 @@ pub enum Rvalue {
         mutability: Mutability,
         place: Place,
     },
+    FakeAddressOf {
+        place: Place,
+    },
     Unsupported,
 }
 

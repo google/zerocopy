@@ -3025,6 +3025,212 @@ MIR_SEMANTICS_GUARDS: tuple[MirSemanticsGuard, ...] = (
         theorem_name="refute_step_v2_write_no_prov_non_zst",
         needs_wf_helper=False,
     ),
+    MirSemanticsGuard(
+        guard_id="boundary_v2_fake_ptr_metadata_forbids_arg_or_ret",
+        target_file="trusted/lean/Trusted/MirSemantics/Boundary.lean",
+        target_module="Trusted/MirSemantics/Boundary",
+        description="isFakePtrMetadataLocalV2 rejects return place _0 and caller parameters",
+        anchor=(
+            "noncomputable def isFakePtrMetadataLocalV2 (body : Body)\n"
+            "    (lid : LocalId) : Bool :=\n"
+            "  Nat.blt body.argumentCount lid &&"
+        ),
+        replacement=(
+            "noncomputable def isFakePtrMetadataLocalV2 (body : Body)\n"
+            "    (lid : LocalId) : Bool :=\n"
+            "  true &&"
+        ),
+        fixture_module="BoundaryRefutations",
+        theorem_name="refute_boundary_v2_fake_ptr_metadata_forbids_arg_or_ret",
+        needs_wf_helper=False,
+    ),
+    MirSemanticsGuard(
+        guard_id="boundary_v2_fake_ptr_metadata_requires_fake_assign",
+        target_file="trusted/lean/Trusted/MirSemantics/Boundary.lean",
+        target_module="Trusted/MirSemantics/Boundary",
+        description="isFakePtrMetadataLocalV2 requires at least one .fakeAddressOf assignment",
+        anchor=(
+            "      body.basicBlocks.any (fun bb =>\n"
+            "        bb.statements.any (stmtAssignsFakeAddressOfToV2 lid)) &&"
+        ),
+        replacement="      true &&",
+        fixture_module="BoundaryRefutations",
+        theorem_name="refute_boundary_v2_fake_ptr_metadata_requires_fake_assign",
+        needs_wf_helper=False,
+    ),
+    MirSemanticsGuard(
+        guard_id="boundary_v2_fake_ptr_metadata_forbids_non_metadata_use",
+        target_file="trusted/lean/Trusted/MirSemantics/Boundary.lean",
+        target_module="Trusted/MirSemantics/Boundary",
+        description=(
+            "stmtRespectsFakePtrMetadataLocalV2 rejects non-PtrMetadata reads "
+            "or dereferences of fake metadata locals"
+        ),
+        anchor=(
+            "    else if rvalueMentionsLocalV2 lid rv then\n"
+            "      match rv with"
+        ),
+        replacement=(
+            "    else if false then\n"
+            "      match rv with"
+        ),
+        fixture_module="BoundaryRefutations",
+        theorem_name="refute_boundary_v2_fake_ptr_metadata_forbids_non_metadata_use",
+        needs_wf_helper=False,
+    ),
+    MirSemanticsGuard(
+        guard_id="boundary_v2_fake_ptr_metadata_forbids_self_assign",
+        target_file="trusted/lean/Trusted/MirSemantics/Boundary.lean",
+        target_module="Trusted/MirSemantics/Boundary",
+        description=(
+            "fakeAddressOfTypesMatchV2 rejects self-referential "
+            ".fakeAddressOf (*_lid) assignments"
+        ),
+        anchor=(
+            "noncomputable def fakeAddressOfTypesMatchV2 (locals : List MirTy)\n"
+            "    (dstId : LocalId) (src : Place) : Bool :=\n"
+            "  !Nat.beq src.localId dstId &&"
+        ),
+        replacement=(
+            "noncomputable def fakeAddressOfTypesMatchV2 (locals : List MirTy)\n"
+            "    (dstId : LocalId) (src : Place) : Bool :=\n"
+            "  true &&"
+        ),
+        fixture_module="BoundaryRefutations",
+        theorem_name="refute_boundary_v2_fake_ptr_metadata_forbids_self_assign",
+        needs_wf_helper=False,
+    ),
+    MirSemanticsGuard(
+        guard_id="boundary_v2_fake_ptr_metadata_forbids_overflow_pair",
+        target_file="trusted/lean/Trusted/MirSemantics/Boundary.lean",
+        target_module="Trusted/MirSemantics/Boundary",
+        description=(
+            "fakeAddressOfTypesMatchV2 rejects overflow-pair pointee types"
+        ),
+        anchor="        !isOverflowPairTy pt && MirTy.beq dstTy (.rawPtr .shared pt)",
+        replacement="        true && MirTy.beq dstTy (.rawPtr .shared pt)",
+        fixture_module="BoundaryRefutations",
+        theorem_name="refute_boundary_v2_fake_ptr_metadata_forbids_overflow_pair",
+        needs_wf_helper=False,
+    ),
+    MirSemanticsGuard(
+        guard_id="boundary_v2_fake_ptr_metadata_requires_matching_pointee",
+        target_file="trusted/lean/Trusted/MirSemantics/Boundary.lean",
+        target_module="Trusted/MirSemantics/Boundary",
+        description=(
+            "fakeAddressOfTypesMatchV2 requires destination *const T pointee "
+            "to match base pointee"
+        ),
+        anchor="        !isOverflowPairTy pt && MirTy.beq dstTy (.rawPtr .shared pt)",
+        replacement="        !isOverflowPairTy pt && true",
+        fixture_module="BoundaryRefutations",
+        theorem_name="refute_boundary_v2_fake_ptr_metadata_requires_matching_pointee",
+        needs_wf_helper=False,
+    ),
+    MirSemanticsGuard(
+        guard_id="boundary_v2_fake_ptr_metadata_forbids_projected_dst",
+        target_file="trusted/lean/Trusted/MirSemantics/Boundary.lean",
+        target_module="Trusted/MirSemantics/Boundary",
+        description=(
+            "stmtRespectsFakePtrMetadataLocalV2 rejects projected assignments "
+            "through a fake-metadata local"
+        ),
+        anchor=(
+            "    if placeMentionsLocalV2 lid dst then\n"
+            "      dst.projection.isEmpty &&\n"
+            "        match rv with"
+        ),
+        replacement=(
+            "    if placeMentionsLocalV2 lid dst then\n"
+            "      true &&\n"
+            "        match rv with"
+        ),
+        fixture_module="BoundaryRefutations",
+        theorem_name="refute_boundary_v2_fake_ptr_metadata_forbids_projected_dst",
+        needs_wf_helper=False,
+    ),
+    MirSemanticsGuard(
+        guard_id="boundary_v2_fake_ptr_metadata_forbids_projected_ptr_meta_operand",
+        target_file="trusted/lean/Trusted/MirSemantics/Boundary.lean",
+        target_module="Trusted/MirSemantics/Boundary",
+        description=(
+            "stmtRespectsFakePtrMetadataLocalV2 requires .ptrMetadata operands "
+            "on fake-metadata locals to have empty projections"
+        ),
+        anchor="        | .copy p | .move p => Nat.beq p.localId lid && p.projection.isEmpty",
+        replacement="        | .copy p | .move p => Nat.beq p.localId lid && true",
+        fixture_module="BoundaryRefutations",
+        theorem_name="refute_boundary_v2_fake_ptr_metadata_forbids_projected_ptr_meta_operand",
+        needs_wf_helper=False,
+    ),
+    MirSemanticsGuard(
+        guard_id="boundary_v2_fake_ptr_metadata_forbids_terminator_use",
+        target_file="trusted/lean/Trusted/MirSemantics/Boundary.lean",
+        target_module="Trusted/MirSemantics/Boundary",
+        description=(
+            "isFakePtrMetadataLocalV2 rejects fake-metadata locals mentioned "
+            "by any terminator (e.g. coreCall args or dst)"
+        ),
+        anchor=(
+            "          bb.statements.all\n"
+            "            (stmtRespectsFakePtrMetadataLocalV2 body.locals lid) &&\n"
+            "            !terminatorMentionsLocalV2 lid bb.terminator)"
+        ),
+        replacement=(
+            "          bb.statements.all\n"
+            "            (stmtRespectsFakePtrMetadataLocalV2 body.locals lid) &&\n"
+            "            true)"
+        ),
+        fixture_module="BoundaryRefutations",
+        theorem_name="refute_boundary_v2_fake_ptr_metadata_forbids_terminator_use",
+        needs_wf_helper=False,
+    ),
+    MirSemanticsGuard(
+        guard_id="boundary_v2_body_fake_address_of_valid",
+        target_file="trusted/lean/Trusted/MirSemantics/Boundary.lean",
+        target_module="Trusted/MirSemantics/Boundary",
+        description=(
+            "BodyStaticAdmittedV2 requires bodyFakeAddressOfValidV2 even on "
+            "raw-pointer-only bodies"
+        ),
+        anchor=(
+            "    !bodyMixesRefsAndRawPtrsV2 body &&\n"
+            "    bodyFakeAddressOfValidV2 body &&"
+        ),
+        replacement=(
+            "    !bodyMixesRefsAndRawPtrsV2 body &&\n"
+            "    true &&"
+        ),
+        fixture_module="BoundaryRefutations",
+        theorem_name="refute_boundary_v2_body_fake_address_of_valid",
+        needs_wf_helper=False,
+    ),
+    MirSemanticsGuard(
+        guard_id="step_v2_fake_address_of_ref_validity",
+        target_file="trusted/lean/Trusted/MirSemantics/Step.lean",
+        target_module="Trusted/MirSemantics/Step",
+        description=(
+            "evalFakeAddressOfRvalueV2 enforces refValidInMem on reference "
+            "base locals"
+        ),
+        anchor=(
+            "          match readSlot with\n"
+            "          | .error k => .error k\n"
+            "          | .ok none => .error .undefined\n"
+            "          | .ok (some v) =>\n"
+            "            match refValidInMem mem srcMut pt v with\n"
+            "            | .error k => .error k\n"
+            "            | .ok () => .ok (v, locals, mem)"
+        ),
+        replacement=(
+            "          match readSlot with\n"
+            "          | .error k => .error k\n"
+            "          | .ok none => .error .undefined\n"
+            "          | .ok (some v) => .ok (v, locals, mem)"
+        ),
+        fixture_module="StepRefutations",
+        theorem_name="refute_step_v2_fake_address_of_ref_validity",
+    ),
 )
 
 

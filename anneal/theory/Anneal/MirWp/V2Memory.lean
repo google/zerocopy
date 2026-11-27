@@ -1524,7 +1524,7 @@ theorem initStateV2_ok_of_admitted {p : Program} {q : Query} {body : Body}
   -- `&&` is left-associative in `BodyStaticAdmittedV2`.
   have hLocs := bool_and_right hAdm
   have r9 := bool_and_left hAdm
-  have r8 := bool_and_left r9
+  have r8 := bool_and_left (bool_and_left r9)
   have hAct := bool_and_right r8
   have r7 := bool_and_left r8
   have hCast := bool_and_right r7

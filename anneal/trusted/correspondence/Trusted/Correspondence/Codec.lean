@@ -62,6 +62,7 @@ inductive RefRvalue where
   | discriminant (place : RefPlace)
   | ref (mutability : Mutability) (place : RefPlace)
   | addressOf (mutability : Mutability) (place : RefPlace)
+  | fakeAddressOf (place : RefPlace)
   | aggregateTuple (fields : List RefOperand)
   | aggregateArray (elemTy : TyId) (elems : List RefOperand)
   | repeat_ (op : RefOperand) (elemTy : TyId) (count : Nat)
@@ -245,7 +246,8 @@ noncomputable def collectRvalue (acc : List MirTy) : Rvalue → List MirTy
   | .binaryOp _ l r => collectOperand (collectOperand acc l) r
   | .unaryOp _ op => collectOperand acc op
   | .cast _ op ty => collectTy (collectOperand acc op) ty
-  | .discriminant p | .ref _ p | .addressOf _ p => collectPlace acc p
+  | .discriminant p | .ref _ p | .addressOf _ p | .fakeAddressOf p =>
+    collectPlace acc p
   | .useRetag op => collectOperand acc op
   | .aggregateTuple ops => ops.foldl collectOperand acc
   | .aggregateArray elemTy ops => collectTy (ops.foldl collectOperand acc) elemTy
@@ -315,6 +317,7 @@ noncomputable def encodeRvalue (ts : List MirTy) : Rvalue → RefRvalue
   | .useRetag op => .useRetag (encodeOperand ts op)
   | .ref m p => .ref m (encodePlace ts p)
   | .addressOf m p => .addressOf m (encodePlace ts p)
+  | .fakeAddressOf p => .fakeAddressOf (encodePlace ts p)
   | .aggregateTuple ops => .aggregateTuple (ops.map (encodeOperand ts))
   | .aggregateArray elemTy ops =>
     .aggregateArray (lookupTyId ts elemTy) (ops.map (encodeOperand ts))
@@ -408,6 +411,7 @@ noncomputable def decodeRvalue (ts : List MirTy) : RefRvalue → Option Rvalue
   | .useRetag op => optMap Rvalue.useRetag (decodeOperand ts op)
   | .ref m p => optMap (Rvalue.ref m) (decodePlace ts p)
   | .addressOf m p => optMap (Rvalue.addressOf m) (decodePlace ts p)
+  | .fakeAddressOf p => optMap Rvalue.fakeAddressOf (decodePlace ts p)
   | .aggregateTuple ops =>
     optMap Rvalue.aggregateTuple (mapOption (decodeOperand ts) ops)
   | .aggregateArray tyId ops =>

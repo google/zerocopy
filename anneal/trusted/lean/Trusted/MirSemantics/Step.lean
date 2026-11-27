@@ -1658,8 +1658,8 @@ The value produced must be a valid reference, so `refValidInMem` checks it.
 Retagging is not modeled; see `BodyVerifiedV2`. A `&mut *r` through a shared
 `r : &T` returns `.undefined`, an arm that MIR type checking makes
 unreachable. `&*p` for a raw pointer `p` is `.unsupported`. A body containing
-it would mix reference and raw-pointer locals, which `BodyStaticAdmittedV2`
-rejects anyway. -/
+it would mix reference and non-fake raw-pointer locals, which
+`BodyStaticAdmittedV2` rejects anyway. -/
 noncomputable def evalRefRvalueV2 (bodyLocals : List MirTy)
     (locals : List LocalSlot) (mem : MemoryState) (dstTy : MirTy)
     (reqMut : Mutability) (place : Place) :
@@ -1719,8 +1719,8 @@ borrow even of a place based on a misaligned pointer
 > restrictive requirement than being based on an aligned pointer."
 
 `&raw *r` for a reference `r` is `.unsupported`. A body containing it would
-mix reference and raw-pointer locals, which `BodyStaticAdmittedV2` rejects
-anyway. `&raw mut *p` through a `*const T` returns `.undefined`, like
+mix reference and non-fake raw-pointer locals, which `BodyStaticAdmittedV2`
+rejects anyway. `&raw mut *p` through a `*const T` returns `.undefined`, like
 `&mut *r` through a shared `r` in `evalRefRvalueV2`. MIR borrow checking makes
 that arm unreachable, and refusing it keeps a `*const T` from yielding a
 `*mut T` here, as `evalPtrToPtrCastV2` does for casts. -/
@@ -1754,6 +1754,67 @@ noncomputable def evalAddressOfRvalueV2 (bodyLocals : List MirTy)
             | .immediate optVal => .ok optVal
             | .indirect mplace => loadIndirectV2 mem baseTy mplace
           match ptrRes with
+          | .error k => .error k
+          | .ok none => .error .undefined
+          | .ok (some v) => .ok (v, locals, mem)
+      | _ => .error .unsupported
+    | _, _ => .error .unsupported
+  | _ => .error .unsupported
+
+/-- Evaluate `Rvalue.fakeAddressOf` (`RawPtrKind::FakeForPtrMetadata`) in
+Profile v2 (`&raw const (fake) (*s)`).
+
+Upstream `compiler/rustc_middle/src/mir/syntax.rs#L180-L192` (`rust-lang/rust`
+`f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1`) specifies:
+
+> "In terms of the operational semantics (i.e., Miri), this is equivalent to
+> `RawPtrKind::Mut`, but will never incur a retag."
+
+Matches `Miri.Interpreter.Rvalue` (`| .RawPtr kind src`) with
+`kind = .FakeForPtrMetadata` (`vendor/lean-miri/Miri/Interpreter/Rvalue.lean`
+and `PointerPlaceMachine.lean`):
+1. Only `[.deref]` places are admitted (`rustc` emits `FakeForPtrMetadata`
+   exclusively on dereferenced places for `PtrMetadata` queries).
+2. On a reference base local (`.ref srcMut pt`), dereferencing checks
+   `refValidInMem mem srcMut pt v` without Stacked/Tree Borrows retagging and
+   yields `v` at destination type `.rawPtr .shared pt`. Checking
+   `refValidInMem` is conservatively stricter than
+   `PointerPlaceMachine.dereference` (it can only add faults on invalid
+   references, consistent with `evalRefRvalueV2`).
+3. On a raw-pointer base local (`.rawPtr _ pt`), dereferencing reads `v`
+   without pointee bounds/alignment checks (matching raw-pointer place
+   dereference) and yields `v` at destination type `.rawPtr .shared pt`. -/
+noncomputable def evalFakeAddressOfRvalueV2 (bodyLocals : List MirTy)
+    (locals : List LocalSlot) (mem : MemoryState) (dstTy : MirTy)
+    (place : Place) :
+    Except FaultKind (Val × List LocalSlot × MemoryState) :=
+  match place.projection with
+  | [.deref] =>
+    match getElem? bodyLocals place.localId, getElem? locals place.localId with
+    | some _, some .dead => .error .undefined
+    | some baseTy, some slot =>
+      let readSlot : Except FaultKind (Option Val) :=
+        match slot with
+        | .dead | .partialTuple _ => .error .undefined
+        | .immediate optVal => .ok optVal
+        | .indirect mplace => loadIndirectV2 mem baseTy mplace
+      match baseTy with
+      | .ref srcMut pt =>
+        if isOverflowPairTy pt || !MirTy.beq dstTy (.rawPtr .shared pt) then
+          .error .unsupported
+        else
+          match readSlot with
+          | .error k => .error k
+          | .ok none => .error .undefined
+          | .ok (some v) =>
+            match refValidInMem mem srcMut pt v with
+            | .error k => .error k
+            | .ok () => .ok (v, locals, mem)
+      | .rawPtr _ pt =>
+        if isOverflowPairTy pt || !MirTy.beq dstTy (.rawPtr .shared pt) then
+          .error .unsupported
+        else
+          match readSlot with
           | .error k => .error k
           | .ok none => .error .undefined
           | .ok (some v) => .ok (v, locals, mem)
@@ -1818,8 +1879,9 @@ The Profile v2 arms correspond to rustc as follows (`rust-lang/rust`
   provenance" (`compiler/rustc_middle/src/mir/syntax.rs:1496`). Dropping
   provenance is therefore conservative: the pointer can be used only for
   zero-sized accesses.
-- `.ref` and `.addressOf` are `Rvalue::Ref` and `Rvalue::RawPtr` (see
-  `evalRefRvalueV2` and `evalAddressOfRvalueV2`).
+- `.ref`, `.addressOf`, and `.fakeAddressOf` are `Rvalue::Ref` and
+  `Rvalue::RawPtr` (see `evalRefRvalueV2`, `evalAddressOfRvalueV2`, and
+  `evalFakeAddressOfRvalueV2`).
 - `.aggregateRangeTo` and `.aggregateRangeFrom` construct the one-field
   `core::ops::RangeTo { end }` and `RangeFrom { start }` with `Idx = usize`
   (field layout quoted at `MirTy.rangeTo`). -/
@@ -2051,6 +2113,8 @@ noncomputable def evalRvalueV2 (bodyLocals : List MirTy) (locals : List LocalSlo
       | _, _ => .error .unsupported
   | .ref reqMut place => evalRefRvalueV2 bodyLocals locals mem dstTy reqMut place
   | .addressOf reqMut place => evalAddressOfRvalueV2 bodyLocals locals mem dstTy reqMut place
+  | .fakeAddressOf place =>
+    evalFakeAddressOfRvalueV2 bodyLocals locals mem dstTy place
   | .aggregateTuple fields =>
     match dstTy with
     | .tuple fieldTys =>
@@ -2926,7 +2990,7 @@ noncomputable def checkAssignCopyHazardV2 (bodyLocals : List MirTy)
         | _, _ => .error .unsupported
   | .use (.constant _) | .useRetag (.constant _)
   | .binaryOp _ _ _ | .unaryOp _ _ | .cast _ _ _ | .discriminant _
-  | .ref _ _ | .addressOf _ _ | .aggregateRangeTo _ _
+  | .ref _ _ | .addressOf _ _ | .fakeAddressOf _ | .aggregateRangeTo _ _
   | .aggregateRangeFrom _ _ | .unsupported => .ok ()
 
 /-- Evaluate one `StatementKind` in Profile v2.

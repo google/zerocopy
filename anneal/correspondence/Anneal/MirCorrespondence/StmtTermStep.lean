@@ -762,7 +762,7 @@ theorem updateCacheLoop_rvalueCacheTouch (dstId : LocalId) (rv : Rvalue)
     change updateCacheLoop (fun _ => false) 0 (cacheTouch cache dstId) =
       cacheTouch cache dstId
     exact updateCacheLoop_false _ 0 _ (fun _ _ => rfl)
-  | addressOf _ _ =>
+  | addressOf _ _ | fakeAddressOf _ =>
     change updateCacheLoop (fun _ => false) 0 (cacheTouch cache dstId) =
       cacheTouch cache dstId
     exact updateCacheLoop_false _ 0 _ (fun _ _ => rfl)

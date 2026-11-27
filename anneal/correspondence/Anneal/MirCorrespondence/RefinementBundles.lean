@@ -432,6 +432,7 @@ private theorem isCopy1To0Stmt_eq {st : StatementKind}
           | aggregateTuple _ => cases h
           | ref _ _ => cases h
           | addressOf _ _ => cases h
+          | fakeAddressOf _ => cases h
           | useRetag _ => cases h
           | aggregateRangeTo _ _ => cases h
           | aggregateRangeFrom _ _ => cases h

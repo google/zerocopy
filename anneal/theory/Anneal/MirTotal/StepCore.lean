@@ -716,7 +716,8 @@ theorem evalRvalueBy_eq (tyEq : MirTy → MirTy → Bool)
               | ok optVal => exact evalOrderingDiscriminantOfValComp_eq _ _ _
             | bool | int _ _ | char | unit | never | tuple _ | ref _ _ | rawPtr _ _
             | slice _ | array _ _ | rangeTo _ | rangeFrom _ | unsupported => rfl
-  | useRetag _ | ref _ _ | addressOf _ _ | aggregateTuple _ | aggregateArray _ _
+  | useRetag _ | ref _ _ | addressOf _ _ | fakeAddressOf _ | aggregateTuple _
+  | aggregateArray _ _
   | repeat_ _ _ _ | aggregateRangeTo _ | aggregateRangeFrom _ | unsupported => rfl
 
 /-- Computable mirror of `Trusted.MirSemantics.writePlace` parameterized by
@@ -1778,7 +1779,8 @@ theorem discriminantTypesValidBy_eq (tyEq : MirTy → MirTy → Bool)
   | assign dst rv =>
     cases rv with
     | use _ | useRetag _ | binaryOp _ _ _ | unaryOp _ _ | cast _ _ _ | ref _ _
-    | addressOf _ _ | aggregateTuple _ | aggregateArray _ _ | repeat_ _ _ _
+    | addressOf _ _ | fakeAddressOf _ | aggregateTuple _ | aggregateArray _ _
+    | repeat_ _ _ _
     | aggregateRangeTo _ _ | aggregateRangeFrom _ _ | unsupported => rfl
     | discriminant src =>
       dsimp only
@@ -1836,7 +1838,8 @@ theorem castTypesValidBy_eq (tyEq : MirTy → MirTy → Bool)
   | assign dst rv =>
     cases rv with
     | use _ | useRetag _ | binaryOp _ _ _ | unaryOp _ _ | discriminant _ | ref _ _
-    | addressOf _ _ | aggregateTuple _ | aggregateArray _ _ | repeat_ _ _ _
+    | addressOf _ _ | fakeAddressOf _ | aggregateTuple _ | aggregateArray _ _
+    | repeat_ _ _ _
     | aggregateRangeTo _ _ | aggregateRangeFrom _ _ | unsupported => rfl
     | cast ck _ castTy =>
       cases ck with
@@ -1985,6 +1988,7 @@ theorem assignTypesValidBy_eq (tyEq : MirTy → MirTy → Bool)
       | some dstTy =>
         cases rv with
         | discriminant _ | cast _ _ _ | ref _ _ | addressOf _ _
+        | fakeAddressOf _
         | aggregateTuple _ | unsupported | useRetag _ | aggregateRangeTo _ _
         | aggregateRangeFrom _ _ | aggregateArray _ _ | repeat_ _ _ _ => rfl
         | use opnd => exact localOperandMatchesTyBy_eq tyEq hTyEq body.locals opnd dstTy

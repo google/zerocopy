@@ -41,11 +41,11 @@ Connects `Trusted.Framework.ExecutionModel` and `FnContract` directly to
    `.configuredReferenceScope` whenever `existsWitness` is claimed) and
    Profile v2 (`MirProfileV2`, unbridged via `.unbridged "mir_profile_v2"`,
    requiring `.callerMemoryThreadIsolation "mir_profile_v2"` unconditionally
-   and `.callerRawPtrAliasing "mir_profile_v2"` whenever a body has raw-pointer
-   locals), with both profiles requiring `defaultMirDownstreamGaps` via
-   `modelGaps`, eliminating per-profile contract duplication while projecting
-   `wellFormed` directly to `WellFormed` / `WellFormedV2` with zero WHNF
-   overhead.
+   and `.callerRawPtrAliasing "mir_profile_v2"` whenever a body has non-fake
+   raw-pointer locals), with both profiles requiring `defaultMirDownstreamGaps`
+   via `modelGaps`, eliminating per-profile contract duplication while
+   projecting `wellFormed` directly to `WellFormed` / `WellFormedV2` with zero
+   WHNF overhead.
 -/
 
 /-- Function calling-convention ABI tag, corresponding to the admitted
@@ -248,11 +248,12 @@ including caller memory, is isolated from other threads for the call's duration
 (no foreign writes to memory it reads or writes, and no foreign reads of memory
 it writes; see `docs/trust-model.md` §Concurrency,
 `DisclosedGap.callerMemoryThreadIsolation "mir_profile_v2"`), and bodies
-containing raw-pointer locals also omit intra-body aliasing checks
+containing non-fake raw-pointer locals (`bodyHasRawPtrLocalV2`) also omit
+intra-body aliasing checks
 (`DisclosedGap.callerRawPtrAliasing "mir_profile_v2"`). -/
 noncomputable def mirProfileV2RequiredGaps (body : Body) :
     List DisclosedGap :=
-  if tyListHasRawPtrV2 body.locals then
+  if bodyHasRawPtrLocalV2 body then
     [.callerMemoryThreadIsolation "mir_profile_v2",
      .callerRawPtrAliasing "mir_profile_v2"]
   else

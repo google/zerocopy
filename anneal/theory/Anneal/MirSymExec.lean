@@ -3049,7 +3049,8 @@ theorem symRvalue_sound {tys : List MirTy} {ls ls' : List SymSlot}
     evalRvalue tys (ls.map (SymSlot.eval env)) entryMemory dst rv =
       .ok (v.eval env, ls'.map (SymSlot.eval env), entryMemory) := by
   cases rv with
-  | ref _ _ | addressOf _ _ | aggregateTuple _ | aggregateArray _ _
+  | ref _ _ | addressOf _ _ | fakeAddressOf _ | aggregateTuple _
+  | aggregateArray _ _
   | repeat_ _ _ _ | useRetag _ | aggregateRangeTo _ _ | aggregateRangeFrom _ _
   | unsupported => cases h
   | cast ck a castTy =>

@@ -406,7 +406,8 @@ theorem rvalueCacheTouch_length (dstId : LocalId) (rv : Rvalue)
   | discriminant src =>
     dsimp only [rvalueCacheTouch]
     rw [cacheTouch_length, cacheTouch_length]
-  | ref _ _ | addressOf _ _ | aggregateTuple _ | unsupported | useRetag _
+  | ref _ _ | addressOf _ _ | fakeAddressOf _ | aggregateTuple _ | unsupported
+  | useRetag _
   | aggregateRangeTo _ _ | aggregateRangeFrom _ _ | aggregateArray _ _
   | repeat_ _ _ _ =>
     exact cacheTouch_length _ _
@@ -6038,6 +6039,13 @@ theorem evalRvalueIntoPlace_ref_eq (rp : RefProg) (c : Choice)
           rw [h_p] at h_rv; injection h_rv with h_eq; subst h_eq
           exact ⟨_, _, h_copy_for_deref_err, rfl⟩
       | addressOf _ _ =>
+        dsimp only [decodeRvalue, optMap] at h_rv
+        cases h_p : decodePlace rp.types _ with
+        | none => rw [h_p] at h_rv; cases h_rv
+        | some _ =>
+          rw [h_p] at h_rv; injection h_rv with h_eq; subst h_eq
+          exact ⟨_, _, h_copy_for_deref_err, rfl⟩
+      | fakeAddressOf _ =>
         dsimp only [decodeRvalue, optMap] at h_rv
         cases h_p : decodePlace rp.types _ with
         | none => rw [h_p] at h_rv; cases h_rv

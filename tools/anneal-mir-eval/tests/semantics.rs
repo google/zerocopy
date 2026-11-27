@@ -5636,3 +5636,174 @@ fn entry_alloc_id_freshness_assign_overlap_ub_and_slice_elem_size_parity() {
         Val::SlicePtr { ptr: PtrVal { offset_bytes: 4, ..p1 }, len: 0 }
     );
 }
+
+#[test]
+fn profile_v2_fake_address_of_executes_metadata_only_and_rejects_misuse() {
+    let v2_cfg = EvalConfig::profile_v2(TargetEndian::Little);
+    let slice_u8 = Ty::Slice { elem: Box::new(U8_TY) };
+    let mut_slice_ref =
+        Ty::Ref { mutability: Mutability::Mut, pointee: Box::new(slice_u8.clone()) };
+    let const_slice_ptr =
+        Ty::RawPtr { mutability: Mutability::Shared, pointee: Box::new(slice_u8) };
+    let const_u8_ptr = Ty::RawPtr { mutability: Mutability::Shared, pointee: Box::new(U8_TY) };
+
+    // Valid safe `&mut [u8]` body using `FakeAddressOf` + `PtrMetadata`.
+    let valid_prog = Program {
+        scope: Scope::Crate,
+        entry_def_id: 0,
+        pointer_width_bits: 64,
+        mir_profile_version: 2,
+        overflow_checks: false,
+        bodies: vec![Body {
+            arg_count: 1,
+            is_unsafe: false,
+            identity: "test::mut_slice_fake_meta_len".into(),
+            local_tys: vec![USIZE_TY, mut_slice_ref.clone(), const_slice_ptr.clone()],
+            blocks: vec![Block {
+                statements: vec![
+                    Statement::Assign {
+                        local: 2,
+                        projection: Vec::new(),
+                        value: Rvalue::FakeAddressOf {
+                            place: Place { local: 1, projection: vec![ProjectionElem::Deref] },
+                        },
+                    },
+                    Statement::Assign {
+                        local: 0,
+                        projection: Vec::new(),
+                        value: Rvalue::Unary {
+                            op: UnOp::PtrMetadata,
+                            operand: Operand::Move { local: 2, projection: Vec::new() },
+                        },
+                    },
+                ],
+                terminator: Terminator::Ret,
+                cleanup: false,
+            }],
+        }],
+    };
+    let cm = CallerMemory {
+        allocations: vec![Allocation {
+            alloc_id: 1,
+            align_log2: 0,
+            mutability: Mutability::Mut,
+            bytes: vec![
+                AllocByte::Init { byte: 10, prov: None },
+                AllocByte::Init { byte: 20, prov: None },
+                AllocByte::Init { byte: 30, prov: None },
+            ],
+            live: true,
+        }],
+    };
+    let slice_arg = Val::SlicePtr {
+        ptr: PtrVal { alloc_id: Some(1), offset_bytes: 0, width: IntWidth::Isize },
+        len: 3,
+    };
+    let trace = eval_body_with_caller_mem(
+        &valid_prog,
+        0,
+        std::slice::from_ref(&slice_arg),
+        cm.clone(),
+        16,
+        &v2_cfg,
+    );
+    assert_eq!(
+        trace.outcome,
+        Outcome::Returned(TerminalOut::Returned { ret: Val::usize_val(3), caller_mem: cm.clone() })
+    );
+
+    // Adding an unused real raw-pointer local alongside `&mut [u8]` still fails
+    // `body_mixes_refs_and_raw_ptrs_v2` (`Unsupported`).
+    let mut mixed_prog = valid_prog.clone();
+    mixed_prog.bodies[0].local_tys.push(const_u8_ptr.clone());
+    assert_fault(
+        &eval_body_with_caller_mem(&mixed_prog, 0, &[slice_arg], cm, 16, &v2_cfg),
+        FaultKind::Unsupported,
+    );
+
+    // Escaping a `FakeAddressOf` local in a raw-pointer-only body fails
+    // `body_fake_address_of_valid_v2` (`Unsupported`).
+    let raw_escape_prog = Program {
+        scope: Scope::Crate,
+        entry_def_id: 0,
+        pointer_width_bits: 64,
+        mir_profile_version: 2,
+        overflow_checks: false,
+        bodies: vec![Body {
+            arg_count: 1,
+            is_unsafe: true,
+            identity: "test::raw_only_escaped_fake_meta".into(),
+            local_tys: vec![const_u8_ptr.clone(), const_u8_ptr.clone(), const_u8_ptr],
+            blocks: vec![Block {
+                statements: vec![
+                    Statement::Assign {
+                        local: 2,
+                        projection: Vec::new(),
+                        value: Rvalue::FakeAddressOf {
+                            place: Place { local: 1, projection: vec![ProjectionElem::Deref] },
+                        },
+                    },
+                    Statement::Assign {
+                        local: 0,
+                        projection: Vec::new(),
+                        value: Rvalue::Use {
+                            operand: Operand::Copy { local: 2, projection: Vec::new() },
+                            with_retag: false,
+                        },
+                    },
+                ],
+                terminator: Terminator::Ret,
+                cleanup: false,
+            }],
+        }],
+    };
+    let raw_ptr = Val::Ptr(PtrVal { alloc_id: None, offset_bytes: 1, width: IntWidth::Isize });
+    assert_fault(
+        &eval_body_with_config(&raw_escape_prog, 0, std::slice::from_ref(&raw_ptr), 16, &v2_cfg),
+        FaultKind::Unsupported,
+    );
+
+    // Passing a `FakeAddressOf` local to a `Terminator::CoreCall` must fail
+    // `body_fake_address_of_valid_v2` (`Unsupported`).
+    let const_u8_ptr_t = Ty::RawPtr { mutability: Mutability::Shared, pointee: Box::new(U8_TY) };
+    let term_escape_prog = Program {
+        scope: Scope::Crate,
+        entry_def_id: 0,
+        pointer_width_bits: 64,
+        mir_profile_version: 2,
+        overflow_checks: false,
+        bodies: vec![Body {
+            arg_count: 1,
+            is_unsafe: true,
+            identity: "test::terminator_escape_fake_meta".into(),
+            local_tys: vec![const_u8_ptr_t.clone(), const_u8_ptr_t.clone(), const_u8_ptr_t],
+            blocks: vec![
+                Block {
+                    statements: vec![Statement::Assign {
+                        local: 2,
+                        projection: Vec::new(),
+                        value: Rvalue::FakeAddressOf {
+                            place: Place { local: 1, projection: vec![ProjectionElem::Deref] },
+                        },
+                    }],
+                    terminator: Terminator::CoreCall {
+                        op: CoreCallOp::PtrAdd { mutability: Mutability::Shared, pointee: U8_TY },
+                        args: vec![
+                            Operand::Copy { local: 2, projection: Vec::new() },
+                            Operand::Constant { ty: USIZE_TY, lit: ConstLit::Scalar { bits: 0 } },
+                        ],
+                        dst: Place::local(0),
+                        target: Some(1),
+                        unwind: UnwindAction::Unreachable,
+                    },
+                    cleanup: false,
+                },
+                Block { statements: Vec::new(), terminator: Terminator::Ret, cleanup: false },
+            ],
+        }],
+    };
+    assert_fault(
+        &eval_body_with_config(&term_escape_prog, 0, std::slice::from_ref(&raw_ptr), 16, &v2_cfg),
+        FaultKind::Unsupported,
+    );
+}

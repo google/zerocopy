@@ -414,8 +414,149 @@ mutual
     | t :: ts => tyHasRefV2 t || tyListHasRefV2 ts
 end
 
-/-- Return `true` when `body` has both reference-typed and raw-pointer-typed
-locals.
+/-- Return `true` when `p` accesses local `lid`. (`ProjectionElem` carries no
+local indices in Profile v2.) -/
+noncomputable def placeMentionsLocalV2 (lid : LocalId) (p : Place) : Bool :=
+  Nat.beq p.localId lid
+
+/-- Return `true` when `opnd` reads or moves from local `lid`. -/
+noncomputable def operandMentionsLocalV2 (lid : LocalId) : Operand → Bool
+  | .copy p | .move p => placeMentionsLocalV2 lid p
+  | .constant _ => false
+
+/-- Return `true` when any operand in `ops` mentions local `lid`. -/
+noncomputable def operandListMentionsLocalV2 (lid : LocalId) :
+    List Operand → Bool
+  | [] => false
+  | op :: ops =>
+    operandMentionsLocalV2 lid op || operandListMentionsLocalV2 lid ops
+
+/-- Return `true` when `rv` mentions local `lid` in any operand or place. -/
+noncomputable def rvalueMentionsLocalV2 (lid : LocalId) : Rvalue → Bool
+  | .use op | .useRetag op | .unaryOp _ op | .cast _ op _
+  | .repeat_ op _ _ | .aggregateRangeTo _ op | .aggregateRangeFrom _ op =>
+    operandMentionsLocalV2 lid op
+  | .binaryOp _ lhs rhs =>
+    operandMentionsLocalV2 lid lhs || operandMentionsLocalV2 lid rhs
+  | .discriminant p | .ref _ p | .addressOf _ p | .fakeAddressOf p =>
+    placeMentionsLocalV2 lid p
+  | .aggregateTuple ops | .aggregateArray _ ops =>
+    operandListMentionsLocalV2 lid ops
+  | .unsupported => false
+
+/-- Return `true` when `term` mentions local `lid` in any operand or
+destination place. -/
+noncomputable def terminatorMentionsLocalV2 (lid : LocalId) :
+    TerminatorKind → Bool
+  | .goto _ | .return_ | .unreachable | .unwindResume | .unsupported => false
+  | .switchInt discr _ => operandMentionsLocalV2 lid discr
+  | .assert cond _ _ _ _ => operandMentionsLocalV2 lid cond
+  | .call _ args dst _ _ | .coreCall _ args dst _ _
+  | .sysrootCall _ args dst _ _ =>
+    operandListMentionsLocalV2 lid args || placeMentionsLocalV2 lid dst
+
+/-- Check static well-typedness of `.fakeAddressOf src` into unprojected local
+`dstId`: `src` must be `⟨baseId, [.deref]⟩` with `baseId != dstId`,
+`locals[baseId]?` must be `.ref _ pt` or `.rawPtr _ pt` with
+`!isOverflowPairTy pt`, and `locals[dstId]?` must be `.rawPtr .shared pt`. -/
+noncomputable def fakeAddressOfTypesMatchV2 (locals : List MirTy)
+    (dstId : LocalId) (src : Place) : Bool :=
+  !Nat.beq src.localId dstId &&
+    match src.projection with
+    | [.deref] =>
+      match getElem? locals src.localId, getElem? locals dstId with
+      | some (.ref _ pt), some dstTy
+      | some (.rawPtr _ pt), some dstTy =>
+        !isOverflowPairTy pt && MirTy.beq dstTy (.rawPtr .shared pt)
+      | _, _ => false
+    | _ => false
+
+/-- Return `true` when `stmt` is an unprojected `.fakeAddressOf` assignment to
+local `lid`. -/
+noncomputable def stmtAssignsFakeAddressOfToV2 (lid : LocalId) :
+    StatementKind → Bool
+  | .assign dst rv =>
+    match rv with
+    | .fakeAddressOf _ => Nat.beq dst.localId lid && dst.projection.isEmpty
+    | _ => false
+  | _ => false
+
+/-- Check that `stmt` uses candidate fake-metadata local `lid` exclusively as
+a well-typed unprojected `.fakeAddressOf (*base)` destination (`base != lid`)
+or as an unprojected `.unaryOp .ptrMetadata` operand (into a destination other
+than `lid`), plus `StorageLive`/`StorageDead` markers. -/
+noncomputable def stmtRespectsFakePtrMetadataLocalV2 (locals : List MirTy)
+    (lid : LocalId) : StatementKind → Bool
+  | .assign dst rv =>
+    if placeMentionsLocalV2 lid dst then
+      dst.projection.isEmpty &&
+        match rv with
+        | .fakeAddressOf src => fakeAddressOfTypesMatchV2 locals lid src
+        | _ => false
+    else if rvalueMentionsLocalV2 lid rv then
+      match rv with
+      | .unaryOp .ptrMetadata opnd =>
+        match opnd with
+        | .copy p | .move p => Nat.beq p.localId lid && p.projection.isEmpty
+        | .constant _ => false
+      | _ => false
+    else
+      true
+  | .storageLive _ | .storageDead _ | .nop | .unsupported => true
+
+/-- Return `true` when local `lid` of `body` is a compiler-synthesized
+`RawPtrKind::FakeForPtrMetadata` temporary:
+1. `lid > body.argumentCount` (neither `_0` nor a caller parameter);
+2. `body.locals[lid]? = some (.rawPtr .shared pt)` (top-level `*const` local);
+3. at least one statement in `body` assigns `.fakeAddressOf` to `⟨lid, []⟩`;
+4. every statement and terminator in `body` uses `lid` exclusively as an
+   unprojected `.fakeAddressOf (*base)` destination (`base != lid`) or as an
+   unprojected `.unaryOp .ptrMetadata` operand (never dereferenced, reborrowed,
+   cast, offset, copied elsewhere, passed to calls, or returned). -/
+noncomputable def isFakePtrMetadataLocalV2 (body : Body)
+    (lid : LocalId) : Bool :=
+  Nat.blt body.argumentCount lid &&
+    match getElem? body.locals lid with
+    | some (.rawPtr .shared _) =>
+      body.basicBlocks.any (fun bb =>
+        bb.statements.any (stmtAssignsFakeAddressOfToV2 lid)) &&
+        body.basicBlocks.all (fun bb =>
+          bb.statements.all
+            (stmtRespectsFakePtrMetadataLocalV2 body.locals lid) &&
+            !terminatorMentionsLocalV2 lid bb.terminator)
+    | _ => false
+
+/-- Check that every `.fakeAddressOf` rvalue in `body` assigns into an
+unprojected local satisfying `isFakePtrMetadataLocalV2 body dst.localId` (even
+in bodies without reference locals). -/
+noncomputable def bodyFakeAddressOfValidV2 (body : Body) : Bool :=
+  body.basicBlocks.all (fun bb =>
+    bb.statements.all (fun stmt =>
+      match stmt with
+      | .assign dst rv =>
+        match rv with
+        | .fakeAddressOf _ =>
+          dst.projection.isEmpty && isFakePtrMetadataLocalV2 body dst.localId
+        | _ => true
+      | _ => true))
+
+/-- Loop over `locals` starting at index `idx`, returning `true` if any local
+contains a raw pointer (`tyHasRawPtrV2`) and is not a metadata-only
+`FakeForPtrMetadata` temporary (`isFakePtrMetadataLocalV2`). -/
+noncomputable def bodyHasRawPtrLocalLoopV2 (body : Body) :
+    Nat → List MirTy → Bool
+  | _, [] => false
+  | idx, ty :: rest =>
+    (tyHasRawPtrV2 ty && !isFakePtrMetadataLocalV2 body idx) ||
+      bodyHasRawPtrLocalLoopV2 body (idx + 1) rest
+
+/-- Return `true` when `body` declares any non-`FakeForPtrMetadata` raw-pointer
+local (including raw pointers nested inside tuples or arrays). -/
+noncomputable def bodyHasRawPtrLocalV2 (body : Body) : Bool :=
+  bodyHasRawPtrLocalLoopV2 body 0 body.locals
+
+/-- Return `true` when `body` has both reference-typed and non-fake
+raw-pointer-typed locals.
 
 Profile v2 does not model Rust's pointer aliasing rules. The Rust Reference
 (`src/behavior-considered-undefined.md:36-39`, `rust-lang/reference`
@@ -430,12 +571,17 @@ Profile v2 does not model Rust's pointer aliasing rules. The Rust Reference
 
 Rather than approximate these rules, Profile v2 admits only bodies that
 cannot create or use conflicting references themselves. Every value a body
-creates lives in a local of its type, so a body without raw-pointer locals
+creates lives in a local of its type, so a body without real raw-pointer locals
 creates references only from other references. The borrow checker then rules
-out conflicting uses, since Profile v2 has no `UnsafeCell`. A body without
-reference locals creates no references at all. Mixing the two would let a body
-derive overlapping references from raw pointers, or access referenced memory
-through raw pointers, so `BodyStaticAdmittedV2` rejects such bodies.
+out conflicting uses, since Profile v2 has no `UnsafeCell`. A `*const` local
+used exclusively for `RawPtrKind::FakeForPtrMetadata` + `UnOp::PtrMetadata`
+(`isFakePtrMetadataLocalV2`) never incurs a retag in Miri and can never be
+dereferenced, reborrowed, cast, offset, or escaped, so exempting it cannot
+derive references from raw pointers or access referenced memory through raw
+pointers. A body without reference locals creates no references at all. Mixing
+references with any other raw-pointer local would let a body derive overlapping
+references from raw pointers, or access referenced memory through raw pointers,
+so `BodyStaticAdmittedV2` rejects such bodies.
 
 This does not cover the aliasing permission of raw-pointer arguments: a
 raw-pointer-only body that writes through a `*mut` argument the caller derived
@@ -443,11 +589,12 @@ from a live `&T` is undefined behavior that Profile v2 does not detect. Callers
 must pass raw pointers whose provenance permits the accesses the body makes,
 which receipts record as an assumption. -/
 noncomputable def bodyMixesRefsAndRawPtrsV2 (body : Body) : Bool :=
-  tyListHasRefV2 body.locals && tyListHasRawPtrV2 body.locals
+  tyListHasRefV2 body.locals && bodyHasRawPtrLocalV2 body
 
 /-- Unconditional static admission predicate for Profile v2
 (`p.mirProfileVersion = 2`) and `(p, body)`, which also rejects bodies that mix
-reference and raw-pointer locals (`bodyMixesRefsAndRawPtrsV2`). -/
+reference and non-fake raw-pointer locals (`bodyMixesRefsAndRawPtrsV2`) or
+misuse `Rvalue.fakeAddressOf` (`bodyFakeAddressOfValidV2`). -/
 noncomputable def BodyStaticAdmittedV2 (p : Program) (body : Body) : Bool :=
   Nat.beq p.pointerWidthBits 64 &&
     Nat.beq p.mirProfileVersion 2 &&
@@ -459,6 +606,7 @@ noncomputable def BodyStaticAdmittedV2 (p : Program) (body : Body) : Bool :=
     castTypesValid body &&
     assertConditionTypesValid body &&
     !bodyMixesRefsAndRawPtrsV2 body &&
+    bodyFakeAddressOfValidV2 body &&
     body.locals.all isSupportedV2LocalTy
 
 /-- Profile v2 verification judgment for a single body `body` at index `defId`
@@ -470,9 +618,9 @@ Borrows). Reference validity and mutable-reference disjointness are checked
 only for entry arguments (`ValidEntryArgsV2`) and for the returned value
 (`evalTerminatorV2`). References created inside a body are checked only for
 liveness, bounds, alignment, mutability, and initialization
-(`refValidInMem`). For bodies containing references, excluding raw-pointer
-locals via `BodyStaticAdmittedV2` (`bodyMixesRefsAndRawPtrsV2`) prevents
-deriving conflicting `&mut` references from raw pointers, while
+(`refValidInMem`). For bodies containing references, excluding non-fake
+raw-pointer locals via `BodyStaticAdmittedV2` (`bodyMixesRefsAndRawPtrsV2`)
+prevents deriving conflicting `&mut` references from raw pointers, while
 raw-pointer-only bodies omit intra-body aliasing checks (`Stacked` or
 `Tree Borrows`, recorded in receipt assumptions).
 

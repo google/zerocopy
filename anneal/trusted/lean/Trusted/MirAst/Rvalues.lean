@@ -221,7 +221,22 @@ Constructor correspondence:
   > "Note too that the value of the discriminant is not the same thing as the
   > variant index; use [`discriminant_for_variant`] to convert."
 - `.ref mutability place` corresponds to `Rvalue::Ref(_, borrowKind, place)`.
-- `.addressOf mutability place` corresponds to `Rvalue::RawPtr(kind, place)`.
+- `.addressOf mutability place` corresponds to `Rvalue::RawPtr(kind, place)`
+  for `RawPtrKind::Const` (`.shared`) and `RawPtrKind::Mut` (`.mut`).
+- `.fakeAddressOf place` corresponds to
+  `Rvalue::RawPtr(RawPtrKind::FakeForPtrMetadata, place)` (Profile v2;
+  `compiler/rustc_middle/src/mir/syntax.rs#L180-L192`, `rust-lang/rust`
+  `f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1`):
+
+  > "Creates a raw pointer to a place that will only be used to access its
+  > metadata, not the data behind the pointer. Note that this limitation is
+  > *not* enforced by the validator."
+  > "In terms of the operational semantics (i.e., Miri), this is equivalent to
+  > `RawPtrKind::Mut`, but will never incur a retag."
+
+  Because the `rustc` validator does not enforce the metadata-only limitation,
+  Profile v2 enforces it via `isFakePtrMetadataLocalV2` and
+  `bodyFakeAddressOfValidV2`.
 - `.aggregateTuple fields` corresponds to
   `Rvalue::Aggregate(AggregateKind::Tuple, fields)`.
 - `.aggregateArray elemTy elems` corresponds to
@@ -250,6 +265,7 @@ inductive Rvalue where
   | useRetag (op : Operand)
   | ref (mutability : Mutability) (place : Place)
   | addressOf (mutability : Mutability) (place : Place)
+  | fakeAddressOf (place : Place)
   | aggregateTuple (fields : List Operand)
   | aggregateArray (elemTy : MirTy) (elems : List Operand)
   | repeat_ (op : Operand) (elemTy : MirTy) (count : Nat)

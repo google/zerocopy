@@ -230,4 +230,386 @@ theorem refute_boundary_v2_safe_contract_post_abort_default :
     ((hSat.2.2 queryEmpty ⟨rfl, rfl, rfl, rfl⟩ trivial).2
       (.aborted queryEmpty.callerMem) ⟨_, ReachesV2.refl _, ⟨0, rfl, rfl⟩⟩).2
 
+/-- Profile v2 body where parameter `_2` (`2 <= argumentCount`) is written by
+`.fakeAddressOf` and read by `.ptrMetadata`, which `isFakePtrMetadataLocalV2`
+must reject because caller parameters are never synthetic temporaries. -/
+noncomputable def fakeMetaArgBodyV2 : Body := {
+  argumentCount := 2
+  locals := [
+    .int .isize false,
+    .ref .mut (.slice (.int .i8 false)),
+    .rawPtr .shared (.slice (.int .i8 false))
+  ]
+  basicBlocks := [{
+    statements := [
+      .assign ⟨2, []⟩ (.fakeAddressOf ⟨1, [.deref]⟩),
+      .assign ⟨0, []⟩ (.unaryOp .ptrMetadata (.move ⟨2, []⟩))
+    ]
+    terminator := .return_
+  }]
+  isUnsafe := false
+  identity := "guard_mutation::fake_meta_arg_v2"
+}
+
+/-- Profile v2 program wrapping `fakeMetaArgBodyV2`. -/
+noncomputable def fakeMetaArgProgV2 : Program := {
+  scope := .unit
+  pointerWidthBits := 64
+  mirProfileVersion := 2
+  bodies := [fakeMetaArgBodyV2]
+}
+
+/-- Guard `boundary_v2_fake_ptr_metadata_forbids_arg_or_ret`: caller parameters
+cannot qualify as `isFakePtrMetadataLocalV2` temporaries. -/
+theorem refute_boundary_v2_fake_ptr_metadata_forbids_arg_or_ret :
+    ¬ BodyVerifiedV2 fakeMetaArgProgV2 0 fakeMetaArgBodyV2 (fun _ => False) :=
+  fun hVer => Bool.noConfusion hVer.2.1
+
+/-- Profile v2 body with a reference parameter `_1` and an unused non-argument
+`*const [u8]` local `_2` (`2 > argumentCount`) without any `.fakeAddressOf`
+assignment, which must still be rejected as mixed ref + raw-pointer locals. -/
+noncomputable def unusedRawLocalWithRefBodyV2 : Body := {
+  argumentCount := 1
+  locals := [
+    .unit,
+    .ref .mut (.slice (.int .i8 false)),
+    .rawPtr .shared (.slice (.int .i8 false))
+  ]
+  basicBlocks := [{ statements := [], terminator := .return_ }]
+  isUnsafe := false
+  identity := "guard_mutation::unused_raw_with_ref_v2"
+}
+
+/-- Profile v2 program wrapping `unusedRawLocalWithRefBodyV2`. -/
+noncomputable def unusedRawLocalWithRefProgV2 : Program := {
+  scope := .unit
+  pointerWidthBits := 64
+  mirProfileVersion := 2
+  bodies := [unusedRawLocalWithRefBodyV2]
+}
+
+/-- Guard `boundary_v2_fake_ptr_metadata_requires_fake_assign`: an unused
+non-argument `*const` local without `.fakeAddressOf` must not bypass
+`bodyMixesRefsAndRawPtrsV2`. -/
+theorem refute_boundary_v2_fake_ptr_metadata_requires_fake_assign :
+    ¬ BodyVerifiedV2 unusedRawLocalWithRefProgV2 0
+      unusedRawLocalWithRefBodyV2 (fun _ => False) :=
+  fun hVer => Bool.noConfusion hVer.2.1
+
+/-- Profile v2 body that assigns `.fakeAddressOf` to `_2` and then dereferences
+`*_2` instead of passing `_2` exclusively to `.unaryOp .ptrMetadata`. -/
+noncomputable def derefFakeMetaBodyV2 : Body := {
+  argumentCount := 1
+  locals := [
+    .int .i8 false,
+    .ref .mut (.int .i8 false),
+    .rawPtr .shared (.int .i8 false)
+  ]
+  basicBlocks := [{
+    statements := [
+      .assign ⟨2, []⟩ (.fakeAddressOf ⟨1, [.deref]⟩),
+      .assign ⟨0, []⟩ (.use (.copy ⟨2, [.deref]⟩))
+    ]
+    terminator := .return_
+  }]
+  isUnsafe := false
+  identity := "guard_mutation::deref_fake_meta_v2"
+}
+
+/-- Profile v2 program wrapping `derefFakeMetaBodyV2`. -/
+noncomputable def derefFakeMetaProgV2 : Program := {
+  scope := .unit
+  pointerWidthBits := 64
+  mirProfileVersion := 2
+  bodies := [derefFakeMetaBodyV2]
+}
+
+/-- Guard `boundary_v2_fake_ptr_metadata_forbids_non_metadata_use`: reading or
+dereferencing a `.fakeAddressOf` local outside `.unaryOp .ptrMetadata` must
+refute `BodyVerifiedV2`. -/
+theorem refute_boundary_v2_fake_ptr_metadata_forbids_non_metadata_use :
+    ¬ BodyVerifiedV2 derefFakeMetaProgV2 0 derefFakeMetaBodyV2
+      (fun _ => False) :=
+  fun hVer => Bool.noConfusion hVer.2.1
+
+/-- Raw-pointer-only Profile v2 body (`tyListHasRefV2 = false`) that assigns
+`.fakeAddressOf` to `_2` and copies `_2` into `_0` without `PtrMetadata`-only
+discipline. -/
+noncomputable def rawOnlyEscapedFakeMetaBodyV2 : Body := {
+  argumentCount := 1
+  locals := [
+    .rawPtr .shared (.int .i8 false),
+    .rawPtr .shared (.int .i8 false),
+    .rawPtr .shared (.int .i8 false)
+  ]
+  basicBlocks := [{
+    statements := [
+      .assign ⟨2, []⟩ (.fakeAddressOf ⟨1, [.deref]⟩),
+      .assign ⟨0, []⟩ (.use (.copy ⟨2, []⟩))
+    ]
+    terminator := .return_
+  }]
+  isUnsafe := true
+  identity := "guard_mutation::raw_only_escaped_fake_meta_v2"
+}
+
+/-- Profile v2 program wrapping `rawOnlyEscapedFakeMetaBodyV2`. -/
+noncomputable def rawOnlyEscapedFakeMetaProgV2 : Program := {
+  scope := .unit
+  pointerWidthBits := 64
+  mirProfileVersion := 2
+  bodies := [rawOnlyEscapedFakeMetaBodyV2]
+}
+
+/-- Guard `boundary_v2_body_fake_address_of_valid`: `BodyStaticAdmittedV2` must
+reject non-metadata `.fakeAddressOf` uses even in raw-pointer-only bodies. -/
+theorem refute_boundary_v2_body_fake_address_of_valid :
+    ¬ BodyVerifiedV2 rawOnlyEscapedFakeMetaProgV2 0
+      rawOnlyEscapedFakeMetaBodyV2 (fun _ => False) :=
+  fun hVer => Bool.noConfusion hVer.2.1
+
+/-- Profile v2 body where `.fakeAddressOf` references its own local `_2`
+(`src.localId == dstId`), which `fakeAddressOfTypesMatchV2` must reject. -/
+noncomputable def selfAssignFakeMetaBodyV2 : Body := {
+  argumentCount := 1
+  locals := [
+    .int .isize false,
+    .ref .mut (.slice (.int .i8 false)),
+    .rawPtr .shared (.slice (.int .i8 false))
+  ]
+  basicBlocks := [{
+    statements := [
+      .assign ⟨2, []⟩ (.fakeAddressOf ⟨2, [.deref]⟩),
+      .assign ⟨0, []⟩ (.unaryOp .ptrMetadata (.move ⟨2, []⟩))
+    ]
+    terminator := .return_
+  }]
+  isUnsafe := false
+  identity := "guard_mutation::self_assign_fake_meta_v2"
+}
+
+/-- Profile v2 program wrapping `selfAssignFakeMetaBodyV2`. -/
+noncomputable def selfAssignFakeMetaProgV2 : Program := {
+  scope := .unit
+  pointerWidthBits := 64
+  mirProfileVersion := 2
+  bodies := [selfAssignFakeMetaBodyV2]
+}
+
+/-- Guard `boundary_v2_fake_ptr_metadata_forbids_self_assign`:
+`fakeAddressOfTypesMatchV2` rejects self-referential `.fakeAddressOf (*_lid)`
+assignments into `_lid`. -/
+theorem refute_boundary_v2_fake_ptr_metadata_forbids_self_assign :
+    ¬ BodyVerifiedV2 selfAssignFakeMetaProgV2 0 selfAssignFakeMetaBodyV2
+      (fun _ => False) :=
+  fun hVer => Bool.noConfusion hVer.2.1
+
+/-- Profile v2 body with an overflow-pair pointee `(u8, bool)` on
+`.fakeAddressOf`, exercising `fakeAddressOfTypesMatchV2`'s `!isOverflowPairTy`
+defense-in-depth conjunct directly via `isFakePtrMetadataLocalV2`. -/
+noncomputable def overflowPairFakeMetaBodyV2 : Body := {
+  argumentCount := 1
+  locals := [
+    .unit,
+    .ref .mut (.tuple [.int .i8 false, .bool]),
+    .rawPtr .shared (.tuple [.int .i8 false, .bool])
+  ]
+  basicBlocks := [{
+    statements := [
+      .assign ⟨2, []⟩ (.fakeAddressOf ⟨1, [.deref]⟩),
+      .assign ⟨0, []⟩ (.unaryOp .ptrMetadata (.move ⟨2, []⟩))
+    ]
+    terminator := .return_
+  }]
+  isUnsafe := false
+  identity := "guard_mutation::overflow_pair_fake_meta_v2"
+}
+
+/-- Guard `boundary_v2_fake_ptr_metadata_forbids_overflow_pair`:
+`fakeAddressOfTypesMatchV2` rejects overflow-pair pointees `(int, bool)`. -/
+theorem refute_boundary_v2_fake_ptr_metadata_forbids_overflow_pair :
+    isFakePtrMetadataLocalV2 overflowPairFakeMetaBodyV2 2 = false :=
+  rfl
+
+/-- Profile v2 body where `.fakeAddressOf (*_1)` from `&mut u8` assigns into
+a mismatched `*const u16` destination `_2`. -/
+noncomputable def mismatchedPointeeFakeMetaBodyV2 : Body := {
+  argumentCount := 1
+  locals := [
+    .unit,
+    .ref .mut (.int .i8 false),
+    .rawPtr .shared (.int .i16 false)
+  ]
+  basicBlocks := [{
+    statements := [
+      .assign ⟨2, []⟩ (.fakeAddressOf ⟨1, [.deref]⟩),
+      .assign ⟨0, []⟩ (.unaryOp .ptrMetadata (.move ⟨2, []⟩))
+    ]
+    terminator := .return_
+  }]
+  isUnsafe := false
+  identity := "guard_mutation::mismatched_pointee_fake_meta_v2"
+}
+
+/-- Profile v2 program wrapping `mismatchedPointeeFakeMetaBodyV2`. -/
+noncomputable def mismatchedPointeeFakeMetaProgV2 : Program := {
+  scope := .unit
+  pointerWidthBits := 64
+  mirProfileVersion := 2
+  bodies := [mismatchedPointeeFakeMetaBodyV2]
+}
+
+/-- Guard `boundary_v2_fake_ptr_metadata_requires_matching_pointee`:
+`fakeAddressOfTypesMatchV2` requires the destination `*const T` pointee type to
+match the base place's pointee type. -/
+theorem refute_boundary_v2_fake_ptr_metadata_requires_matching_pointee :
+    ¬ BodyVerifiedV2 mismatchedPointeeFakeMetaProgV2 0
+      mismatchedPointeeFakeMetaBodyV2 (fun _ => False) :=
+  fun hVer => Bool.noConfusion hVer.2.1
+
+/-- Profile v2 body with both an unprojected `.fakeAddressOf` assignment to `_2`
+and a projected assignment `(*_2) = .fakeAddressOf (*_1)`, exercising
+`stmtRespectsFakePtrMetadataLocalV2`'s `dst.projection.isEmpty` conjunct in
+isolation from `bodyFakeAddressOfValidV2`. -/
+noncomputable def projectedDstFakeMetaBodyV2 : Body := {
+  argumentCount := 1
+  locals := [
+    .int .isize false,
+    .ref .mut (.slice (.int .i8 false)),
+    .rawPtr .shared (.slice (.int .i8 false))
+  ]
+  basicBlocks := [{
+    statements := [
+      .assign ⟨2, []⟩ (.fakeAddressOf ⟨1, [.deref]⟩),
+      .assign ⟨2, [.deref]⟩ (.fakeAddressOf ⟨1, [.deref]⟩),
+      .assign ⟨0, []⟩ (.unaryOp .ptrMetadata (.move ⟨2, []⟩))
+    ]
+    terminator := .return_
+  }]
+  isUnsafe := false
+  identity := "guard_mutation::projected_dst_fake_meta_v2"
+}
+
+/-- Guard `boundary_v2_fake_ptr_metadata_forbids_projected_dst`:
+`stmtRespectsFakePtrMetadataLocalV2` rejects projected writes through `_lid`,
+so `bodyHasRawPtrLocalV2` keeps classifying `_2` as a non-fake raw pointer. -/
+theorem refute_boundary_v2_fake_ptr_metadata_forbids_projected_dst :
+    isFakePtrMetadataLocalV2 projectedDstFakeMetaBodyV2 2 = false :=
+  rfl
+
+/-- Profile v2 body where `.unaryOp .ptrMetadata` reads a projected place
+`(*_2)` instead of unprojected `_2`. -/
+noncomputable def projectedPtrMetaOpFakeMetaBodyV2 : Body := {
+  argumentCount := 1
+  locals := [
+    .int .isize false,
+    .ref .mut (.slice (.int .i8 false)),
+    .rawPtr .shared (.slice (.int .i8 false))
+  ]
+  basicBlocks := [{
+    statements := [
+      .assign ⟨2, []⟩ (.fakeAddressOf ⟨1, [.deref]⟩),
+      .assign ⟨0, []⟩ (.unaryOp .ptrMetadata (.move ⟨2, [.deref]⟩))
+    ]
+    terminator := .return_
+  }]
+  isUnsafe := false
+  identity := "guard_mutation::projected_ptr_meta_op_fake_meta_v2"
+}
+
+/-- Profile v2 program wrapping `projectedPtrMetaOpFakeMetaBodyV2`. -/
+noncomputable def projectedPtrMetaOpFakeMetaProgV2 : Program := {
+  scope := .unit
+  pointerWidthBits := 64
+  mirProfileVersion := 2
+  bodies := [projectedPtrMetaOpFakeMetaBodyV2]
+}
+
+/-- Guard `boundary_v2_fake_ptr_metadata_forbids_projected_ptr_meta_operand`:
+`stmtRespectsFakePtrMetadataLocalV2` requires `.ptrMetadata` operands reading
+a fake-metadata local to have an empty projection. -/
+theorem refute_boundary_v2_fake_ptr_metadata_forbids_projected_ptr_meta_operand
+    : ¬ BodyVerifiedV2 projectedPtrMetaOpFakeMetaProgV2 0
+      projectedPtrMetaOpFakeMetaBodyV2 (fun _ => False) :=
+  fun hVer => Bool.noConfusion hVer.2.1
+
+/-- Profile v2 body where a `.fakeAddressOf` local `_2` escapes through a
+`TerminatorKind.coreCall` argument (`ptrAdd`), which `isFakePtrMetadataLocalV2`
+must reject via `!terminatorMentionsLocalV2 lid bb.terminator`. -/
+noncomputable def terminatorEscapeFakeMetaBodyV2 : Body := {
+  argumentCount := 1
+  locals := [
+    .rawPtr .shared (.int .i8 false),
+    .rawPtr .shared (.int .i8 false),
+    .rawPtr .shared (.int .i8 false)
+  ]
+  basicBlocks := [
+    {
+      statements := [
+        .assign ⟨2, []⟩ (.fakeAddressOf ⟨1, [.deref]⟩)
+      ]
+      terminator :=
+        .coreCall (.ptrAdd .shared (.int .i8 false))
+          [.copy ⟨2, []⟩, .constant ⟨.int .isize false, .scalar 0⟩]
+          ⟨0, []⟩ (some 1) .unreachable
+    },
+    {
+      statements := []
+      terminator := .return_
+    }
+  ]
+  isUnsafe := true
+  identity := "guard_mutation::terminator_escape_fake_meta_v2"
+}
+
+/-- Profile v2 program wrapping `terminatorEscapeFakeMetaBodyV2`. -/
+noncomputable def terminatorEscapeFakeMetaProgV2 : Program := {
+  scope := .unit
+  pointerWidthBits := 64
+  mirProfileVersion := 2
+  bodies := [terminatorEscapeFakeMetaBodyV2]
+}
+
+/-- Guard `boundary_v2_fake_ptr_metadata_forbids_terminator_use`:
+`isFakePtrMetadataLocalV2` must reject fake-metadata locals referenced by any
+terminator (such as `coreCall` arguments or destinations). -/
+theorem refute_boundary_v2_fake_ptr_metadata_forbids_terminator_use :
+    ¬ BodyVerifiedV2 terminatorEscapeFakeMetaProgV2 0
+      terminatorEscapeFakeMetaBodyV2 (fun _ => False) :=
+  fun hVer => Bool.noConfusion hVer.2.1
+
+/-- Anti-overreach canary: a safe `&mut [u8]` body using a metadata-only
+`.fakeAddressOf` + `.ptrMetadata` temporary is admitted by
+`BodyStaticAdmittedV2` and has `bodyHasRawPtrLocalV2 = false`. -/
+noncomputable def validFakeMetaBodyV2 : Body := {
+  argumentCount := 1
+  locals := [
+    .int .isize false,
+    .ref .mut (.slice (.int .i8 false)),
+    .rawPtr .shared (.slice (.int .i8 false))
+  ]
+  basicBlocks := [{
+    statements := [
+      .assign ⟨2, []⟩ (.fakeAddressOf ⟨1, [.deref]⟩),
+      .assign ⟨0, []⟩ (.unaryOp .ptrMetadata (.move ⟨2, []⟩))
+    ]
+    terminator := .return_
+  }]
+  isUnsafe := false
+  identity := "guard_mutation::valid_fake_meta_v2"
+}
+
+/-- Profile v2 program wrapping `validFakeMetaBodyV2`. -/
+noncomputable def validFakeMetaProgV2 : Program := {
+  scope := .unit
+  pointerWidthBits := 64
+  mirProfileVersion := 2
+  bodies := [validFakeMetaBodyV2]
+}
+
+theorem positive_boundary_v2_admits_valid_fake_ptr_metadata :
+    BodyStaticAdmittedV2 validFakeMetaProgV2 validFakeMetaBodyV2 = true ∧
+      bodyHasRawPtrLocalV2 validFakeMetaBodyV2 = false :=
+  ⟨rfl, rfl⟩
+
 end GuardMutation

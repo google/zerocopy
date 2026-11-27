@@ -3523,7 +3523,8 @@ theorem evalRvalueAbs_sound {bodyLocals : List MirTy} {env env' : MirAbsEnv}
       | sint w1 a1 srcL? =>
         exact evalRvalueAbs_binaryOp_sint_sound hEnv hOp1
           (by dsimp only [evalRvalueAbs]; rw [hOp1]; exact hAbs)
-  | ref _ _ | addressOf _ _ | aggregateTuple _ | discriminant _
+  | ref _ _ | addressOf _ _ | fakeAddressOf _ | aggregateTuple _
+  | discriminant _
   | useRetag _ | aggregateRangeTo _ _ | aggregateRangeFrom _ _
   | aggregateArray _ _ | repeat_ _ _ _
   | unsupported => nomatch hAbs

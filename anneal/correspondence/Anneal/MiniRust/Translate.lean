@@ -852,8 +852,8 @@ theorem rvalueAdmitted_of_exact (bodyLocals : List MirTy) (dstTy : MirTy)
               | _ => cases h
             | _ => cases srcTy <;> cases h
   | discriminant _ => exact h
-  | useRetag _ | ref _ _ | addressOf _ _ | aggregateTuple _
-  | aggregateArray _ _ | repeat_ _ _ _
+  | useRetag _ | ref _ _ | addressOf _ _ | fakeAddressOf _
+  | aggregateTuple _ | aggregateArray _ _ | repeat_ _ _ _
   | aggregateRangeTo _ _ | aggregateRangeFrom _ _ | unsupported =>
     cases h
 
@@ -1566,8 +1566,8 @@ theorem translateRvalue_variantWF (bodyLocals : List MirTy) (dstTy : MirTy)
         dsimp only [translateRvalue]
         cases castTy <;> exact heInt
   | discriminant _ => rfl
-  | useRetag _ | ref _ _ | addressOf _ _ | aggregateTuple _
-  | aggregateArray _ _ | repeat_ _ _ _
+  | useRetag _ | ref _ _ | addressOf _ _ | fakeAddressOf _
+  | aggregateTuple _ | aggregateArray _ _ | repeat_ _ _ _
   | aggregateRangeTo _ _ | aggregateRangeFrom _ _ | unsupported =>
     cases hadm
 

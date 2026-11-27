@@ -3037,7 +3037,8 @@ theorem mirDiscriminantTypesValid_eq (body : Body) :
           | bool | int _ _ | unit | never | char | tuple _ | ref _ _
           | rawPtr _ _ | slice _ | array _ _ | rangeTo _ | rangeFrom _ | unsupported => rfl
     | use _ | useRetag _ | binaryOp _ _ _ | unaryOp _ _ | cast _ _ _ | ref _ _
-    | addressOf _ _ | aggregateTuple _ | aggregateArray _ _ | repeat_ _ _ _
+    | addressOf _ _ | fakeAddressOf _ | aggregateTuple _ | aggregateArray _ _
+    | repeat_ _ _ _
     | aggregateRangeTo _ | aggregateRangeFrom _
     | unsupported => rfl
   | storageLive _ | storageDead _ | nop | unsupported => rfl
@@ -3110,7 +3111,8 @@ theorem mirCastTypesValid_eq (body : Body)
                 dst.localId dstTy hSup hGet)
       | ptrToPtr | intToPtr | unsize | unsupported => rfl
     | use _ | useRetag _ | binaryOp _ _ _ | unaryOp _ _ | discriminant _ | ref _ _
-    | addressOf _ _ | aggregateTuple _ | aggregateArray _ _ | repeat_ _ _ _
+    | addressOf _ _ | fakeAddressOf _ | aggregateTuple _ | aggregateArray _ _
+    | repeat_ _ _ _
     | aggregateRangeTo _ | aggregateRangeFrom _
     | unsupported => rfl
   | storageLive _ | storageDead _ | nop | unsupported => rfl
@@ -3157,6 +3159,7 @@ theorem mirAssignTypesValid_eq (body : Body)
       | some dstTy =>
         cases rv with
         | discriminant _ | cast _ _ _ | ref _ _ | addressOf _ _
+        | fakeAddressOf _
         | aggregateTuple _ | unsupported | useRetag _ | aggregateRangeTo _ _
         | aggregateRangeFrom _ _ | aggregateArray _ _ | repeat_ _ _ _ => rfl
         | use opnd => exact mirLocalOperandMatchesTy_eq body.locals hSup opnd dstTy
