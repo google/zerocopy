@@ -1,0 +1,76 @@
+{
+  "columns": "1-based Unicode scalar values",
+  "entries": [
+    {
+      "lean_decl": "Spec.fn0_id",
+      "lean_line_end": 34,
+      "lean_line_start": 31,
+      "rust": {
+        "end_byte": 1084,
+        "file": "tests/zerocopy/04_layout_add_scaled_metadata/spec.rs",
+        "hi_col": 94,
+        "hi_line": 22,
+        "lo_col": 9,
+        "lo_line": 22,
+        "start_byte": 999
+      }
+    },
+    {
+      "lean_decl": "Spec.fn0_safety",
+      "lean_line_end": 38,
+      "lean_line_start": 36,
+      "rust": {
+        "end_byte": 892,
+        "file": "tests/zerocopy/04_layout_add_scaled_metadata/spec.rs",
+        "hi_col": 41,
+        "hi_line": 19,
+        "lo_col": 13,
+        "lo_line": 18,
+        "start_byte": 798
+      }
+    },
+    {
+      "lean_decl": "Spec.fn0_pre",
+      "lean_line_end": 42,
+      "lean_line_start": 40,
+      "rust": {
+        "end_byte": 892,
+        "file": "tests/zerocopy/04_layout_add_scaled_metadata/spec.rs",
+        "hi_col": 41,
+        "hi_line": 19,
+        "lo_col": 13,
+        "lo_line": 18,
+        "start_byte": 798
+      }
+    },
+    {
+      "lean_decl": "Spec.fn0_post",
+      "lean_line_end": 46,
+      "lean_line_start": 44,
+      "rust": {
+        "end_byte": 978,
+        "file": "tests/zerocopy/04_layout_add_scaled_metadata/spec.rs",
+        "hi_col": 85,
+        "hi_line": 20,
+        "lo_col": 13,
+        "lo_line": 20,
+        "start_byte": 906
+      }
+    },
+    {
+      "lean_decl": "Spec.fn0_contract",
+      "lean_line_end": 53,
+      "lean_line_start": 48,
+      "rust": {
+        "end_byte": 990,
+        "file": "tests/zerocopy/04_layout_add_scaled_metadata/spec.rs",
+        "hi_col": 11,
+        "hi_line": 21,
+        "lo_col": 9,
+        "lo_line": 16,
+        "start_byte": 751
+      }
+    }
+  ],
+  "schema_version": 1
+}
