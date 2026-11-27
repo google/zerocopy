@@ -1079,8 +1079,14 @@ prefix set (`isCanonicalSingleF3`) on mandatory-prefix encodings (`F3 0F 1E FA`
 
 /-- Decode one legacy/REX or VEX instruction before applying the 15-byte
 `#GP(0)` cap. Rejects conflicting Group-1 prefixes (`LOCK`+`F2`/`F3` and
-multiple `F2`/`F3`), non-mandatory `F2`/`F3` prefixes on all 1-byte opcodes,
-and ignored `FS:`/`GS:`/`0x67` prefixes on non-memory control/NOP opcodes. -/
+multiple `F2`/`F3`), non-mandatory `F2`/`F3` prefixes on 1-byte opcodes (except
+canonical two-byte `F3 C3` `rep ret`), and ignored `FS:`/`GS:`/`0x67` prefixes
+on non-memory control/NOP opcodes.
+
+The Intel SDM marks `F2`/`F3` on non-string instructions as reserved, but
+canonical `F3 C3` is accepted as a plain `ret`: AMD documents `rep ret` (used
+to avoid a branch-predictor penalty on older AMD cores, and emitted by x86inc
+`REP_RET`), and every Intel implementation ignores the prefix in practice. -/
 @[expose] def decodeOneRaw (cfg : DecodeConfig) (relocs : List PcRelReloc)
     (insnPos : Nat) (window : List UInt8) : Option (DecodedInsn × Nat) :=
   let (pfx, rem) := scanPrefixes 16 PrefixState.empty window
@@ -1131,6 +1137,11 @@ and ignored `FS:`/`GS:`/`0x67` prefixes on non-memory control/NOP opcodes. -/
           | _ => none
       else if Nat.beq o 0x0F then
         decodeEsc0F cfg relocs pfx insnPos afterOpc
+      else if Nat.beq o 0xC3 then
+        if pfx.isCanonicalSingleF3 then some (.ret, 2)
+        else if !RepPrefix.beq pfx.rep .none || pfx.hasLock || pfx.has66 ||
+                pfx.segOverride.isSome || pfx.has67 then none
+        else some (.ret, pfx.count + 1)
       else if !RepPrefix.beq pfx.rep .none then none
       else
         let rBit := rexR pfx.rex
@@ -1139,10 +1150,7 @@ and ignored `FS:`/`GS:`/`0x67` prefixes on non-memory control/NOP opcodes. -/
         let sz := opSizeOf pfx
         let szD64 := opSizeD64 pfx
         let noSegA32 := pfx.segOverride.isNone && !pfx.has67
-        if Nat.beq o 0xC3 then
-          if pfx.hasLock || pfx.has66 || !noSegA32 then none
-          else some (.ret, pfx.count + 1)
-        else if Nat.beq o 0x90 then
+        if Nat.beq o 0x90 then
           if pfx.hasLock || !noSegA32 then none
           else if bBit then some (.xchgAx sz (gprOfNat 8), pfx.count + 1)
           else some (.nop, pfx.count + 1)

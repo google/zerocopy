@@ -250,13 +250,40 @@ theorem canary_f2_f3_conflict_and_canonical_mandatory_prefix_rejected :
     decodeOne canaryRelocCfg [] 0 [0xF3, 0xF3, 0x0F, 0x1E, 0xFA] = none :=
   ⟨rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl⟩
 
-/-- Non-mandatory `F2`/`F3` prefixes on 1-byte opcodes and silently-ignored
-`FS:`/`0x67` prefixes on non-memory ops are rejected, while standard 10-byte
-`CS:`-prefixed multi-byte NOP (`66 2E 0F 1F 84 00 00 00 00 00`) decodes. -/
+/-- Canonical `F3 C3` (`rep ret`) decodes as `.ret` (length `2`) and passes
+coverage and leaf SFI, while every non-canonical prefix combination on `ret`
+(`F2 C3`, duplicate/conflicting `F2`/`F3`, `66`/`48`/`64`/`67`/`2E`/`F0` +
+`F3 C3`) is rejected fail-closed. -/
+theorem canary_rep_ret_canonical_accepted_and_noncanonical_rejected :
+    decodeOne canaryRelocCfg [] 0 [0xF3, 0xC3] = some (.ret, 2) ∧
+    localDecodeCoverageOk canaryRelocCfg []
+      [0xC5, 0xF8, 0x77, 0xF3, 0xC3] = true ∧
+    decodeStream canaryRelocCfg [] [0xC5, 0xF8, 0x77, 0xF3, 0xC3] =
+      some [(0, 3, .vzeroupper), (3, 2, .ret)] ∧
+    checkStraightLineAbiSfiArgStores [.vzeroupper, .ret] = true ∧
+    decodeOne canaryRelocCfg [] 0 [0xF2, 0xC3] = none ∧
+    decodeOne canaryRelocCfg [] 0 [0xF3, 0xF3, 0xC3] = none ∧
+    decodeOne canaryRelocCfg [] 0 [0xF2, 0xF3, 0xC3] = none ∧
+    decodeOne canaryRelocCfg [] 0 [0x66, 0xF3, 0xC3] = none ∧
+    decodeOne canaryRelocCfg [] 0 [0xF3, 0x66, 0xC3] = none ∧
+    decodeOne canaryRelocCfg [] 0 [0x48, 0xF3, 0xC3] = none ∧
+    decodeOne canaryRelocCfg [] 0 [0xF3, 0x48, 0xC3] = none ∧
+    decodeOne canaryRelocCfg [] 0 [0x64, 0xF3, 0xC3] = none ∧
+    decodeOne canaryRelocCfg [] 0 [0x67, 0xF3, 0xC3] = none ∧
+    decodeOne canaryRelocCfg [] 0 [0x2E, 0xF3, 0xC3] = none ∧
+    decodeOne canaryRelocCfg [] 0 [0xF3, 0x2E, 0xC3] = none ∧
+    decodeOne canaryRelocCfg [] 0 [0xF0, 0xF3, 0xC3] = none :=
+  ⟨rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl,
+   rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl⟩
+
+/-- Non-mandatory `F2`/`F3` prefixes on 1-byte opcodes (other than canonical
+`F3 C3`) and silently-ignored `FS:`/`0x67` prefixes on non-memory ops are
+rejected, while standard 10-byte `CS:`-prefixed multi-byte NOP
+(`66 2E 0F 1F 84 00 00 00 00 00`) decodes. -/
 theorem canary_non_mandatory_rep_and_ignored_seg_a32_rejected :
     decodeOne canaryRelocCfg [] 0 [0xF2, 0xC3] = none ∧
-    decodeOne canaryRelocCfg [] 0 [0xF3, 0xC3] = none ∧
     decodeOne canaryRelocCfg [] 0 [0xF2, 0xE8, 0x00, 0x00, 0x00, 0x00] = none ∧
+    decodeOne canaryRelocCfg [] 0 [0xF3, 0xE8, 0x00, 0x00, 0x00, 0x00] = none ∧
     decodeOne canaryRelocCfg [] 0 [0xF3, 0x8B, 0x00] = none ∧
     decodeOne canaryRelocCfg [] 0 [0x64, 0xC3] = none ∧
     decodeOne canaryRelocCfg [] 0 [0x67, 0xC3] = none ∧
@@ -1058,6 +1085,260 @@ theorem canary_sibling_relaxable_overlaps_pc32_rejected :
     otherRelaOverlapsPc32 [pc32R, tlsR] 0 12 = true ∧
     resolvePc32RodataReloc elf 3 0 16 32 = none :=
   ⟨rfl, rfl, rfl⟩
+
+/-- Multi-function ELF64 object whose target section `3` (`.text.target`,
+`shSize = 20`) has only an `R_X86_64_PC32` relocation in section `5`, while
+sibling section `6` (`.text.other`, `shSize = 20`, section type `otherTy`)
+carries the caller-supplied encoded relocations `relaOther` in section `7`. -/
+@[expose] def multiFuncSiblingElfWithType (otherTy : Nat)
+    (relaOther : List UInt8) : List UInt8 :=
+  let symBytes : List UInt8 :=
+    encZeroSym ++ encSym 0 stbLocal 0 2 0 32
+  let relaTarget : List UInt8 := encRela 12 1 rX86_64_PC32 (Int.negSucc 3)
+  -- Offsets: hdr=0..63, strtab=64, textTarget=65..84, sym=85..132,
+  -- relaTarget=133..156, relaOther=157.., shOff=157+len (8 shdrs).
+  let hdr : List UInt8 :=
+    [0x7F, 0x45, 0x4C, 0x46, 2, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+     1, 0, 62, 0, 1, 0, 0, 0] ++
+    (encZero8 ++ (encZero8 ++ (encU64 (157 + relaOther.length) ++
+    [0, 0, 0, 0, 64, 0, 0, 0, 0, 0, 64, 0, 8, 0, 1, 0])))
+  let shdrs : List UInt8 :=
+    encNullShdr ++
+    (encShdr 0 shtStrtab 0 64 1 0 0 0 ++
+    (encShdr 0 shtProgbits shfAlloc 0 64 0 0 0 ++
+    (encShdr 0 shtProgbits (shfAlloc + shfExecInstr) 65 20 0 0 0 ++
+    (encShdr 0 shtSymtab 0 85 48 1 2 24 ++
+    (encShdr 0 shtRela 0 133 24 4 3 24 ++
+    (encShdr 0 otherTy (shfAlloc + shfExecInstr) 65 20 0 0 0 ++
+    encShdr 0 shtRela 0 157 relaOther.length 4 6 24))))))
+  hdr ++ ([0] ++ (canaryAvx2Text ++ (symBytes ++
+    (relaTarget ++ (relaOther ++ shdrs)))))
+
+/-- `multiFuncSiblingElfWithType` with an executable `SHT_PROGBITS` sibling
+section `6`. -/
+@[expose] def multiFuncSiblingElfWith (relaOther : List UInt8) :
+    List UInt8 :=
+  multiFuncSiblingElfWithType shtProgbits relaOther
+
+/-- Section types outside `sectionTypeIsKnown` are rejected fail-closed by
+`parseElf64Object?`: compact relocation tables (`SHT_CREL`), `SHT_REL`,
+`SHT_RELR`, `SHT_DYNSYM`, and an unlisted vendor type (`0x6FFFFF00`), while
+the same object with an `SHT_PROGBITS` sibling is accepted. -/
+theorem canary_unknown_section_types_rejected :
+    objectHasNoForbiddenElfFeatures
+      (multiFuncSiblingElfWithType shtProgbits
+        (encRela 1 1 rX86_64_PLT32 (Int.negSucc 3))) = true ∧
+    parseElf64Object?
+      (multiFuncSiblingElfWithType shtCrel
+        (encRela 1 1 rX86_64_PLT32 (Int.negSucc 3))) = none ∧
+    funcTextBytes?
+      (multiFuncSiblingElfWithType shtCrel
+        (encRela 1 1 rX86_64_PLT32 (Int.negSucc 3))) 3 0 20 = none ∧
+    decodeFuncFromElf? canaryRelocCfg
+      (multiFuncSiblingElfWithType shtCrel
+        (encRela 1 1 rX86_64_PLT32 (Int.negSucc 3))) 3 0 20 = none ∧
+    parseElf64Object?
+      (multiFuncSiblingElfWithType shtRel
+        (encRela 1 1 rX86_64_PLT32 (Int.negSucc 3))) = none ∧
+    parseElf64Object?
+      (multiFuncSiblingElfWithType shtRelr
+        (encRela 1 1 rX86_64_PLT32 (Int.negSucc 3))) = none ∧
+    parseElf64Object?
+      (multiFuncSiblingElfWithType shtDynsym
+        (encRela 1 1 rX86_64_PLT32 (Int.negSucc 3))) = none ∧
+    parseElf64Object?
+      (multiFuncSiblingElfWithType 0x6FFFFF00
+        (encRela 1 1 rX86_64_PLT32 (Int.negSucc 3))) = none :=
+  ⟨rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl⟩
+
+/-- ELF64 object shaped like ordinary rustc/LLVM output with unwind tables:
+target `.text` (`sec 3`, `PC32` into `.rodata` via `sec 5`), `.eh_frame`
+(`sec 6`, `SHT_X86_64_UNWIND`) with `.rela.eh_frame` (`sec 7`, a `PC32`
+against the `.text` section symbol), `.llvm_addrsig` (`sec 8`,
+`SHT_LLVM_ADDRSIG`, `SHF_EXCLUDE`), a note (`sec 9`, `SHT_NOTE`), and a
+COMDAT group (`sec 10`, `SHT_GROUP`, no members). -/
+@[expose] def benignSectionTypesElf : List UInt8 :=
+  let symBytes : List UInt8 :=
+    encZeroSym ++ (encSym 0 stbLocal 0 2 0 32 ++
+      encSym 0 stbLocal sttSection 3 0 0)
+  let relaTarget : List UInt8 := encRela 12 1 rX86_64_PC32 (Int.negSucc 3)
+  let ehFrame : List UInt8 := encZero8 ++ (encZero8 ++ [0, 0, 0, 0])
+  let relaEh : List UInt8 := encRela 8 2 rX86_64_PC32 (Int.ofNat 0)
+  let note : List UInt8 := encZero8 ++ encZero8
+  let group : List UInt8 := [1, 0, 0, 0]
+  -- Offsets: hdr=0..63, strtab=64, textTarget=65..84, sym=85..156,
+  -- relaTarget=157..180, ehFrame=181..200, relaEh=201..224,
+  -- addrsig=225, note=226..241, group=242..245, shOff=246 (11 shdrs).
+  let hdr : List UInt8 :=
+    [0x7F, 0x45, 0x4C, 0x46, 2, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+     1, 0, 62, 0, 1, 0, 0, 0] ++
+    (encZero8 ++ (encZero8 ++ (encU64 246 ++
+    [0, 0, 0, 0, 64, 0, 0, 0, 0, 0, 64, 0, 11, 0, 1, 0])))
+  let shdrs : List UInt8 :=
+    encNullShdr ++
+    (encShdr 0 shtStrtab 0 64 1 0 0 0 ++
+    (encShdr 0 shtProgbits shfAlloc 0 64 0 0 0 ++
+    (encShdr 0 shtProgbits (shfAlloc + shfExecInstr) 65 20 0 0 0 ++
+    (encShdr 0 shtSymtab 0 85 72 1 3 24 ++
+    (encShdr 0 shtRela 0 157 24 4 3 24 ++
+    (encShdr 0 shtX8664Unwind shfAlloc 181 20 0 0 0 ++
+    (encShdr 0 shtRela 0 201 24 4 6 24 ++
+    (encShdr 0 shtLlvmAddrsig shfExclude 225 1 4 0 0 ++
+    (encShdr 0 shtNote 0 226 16 0 0 0 ++
+    encShdr 0 shtGroup 0 242 4 4 1 4)))))))))
+  hdr ++ ([0] ++ (canaryAvx2Text ++ (symBytes ++ (relaTarget ++
+    (ehFrame ++ (relaEh ++ ([1] ++ (note ++ (group ++ shdrs)))))))))
+
+/-- Benign non-relocation section types that ordinary rustc/LLVM objects carry
+(`SHT_X86_64_UNWIND` with its `SHT_RELA`, `SHT_LLVM_ADDRSIG`, `SHT_NOTE`,
+`SHT_GROUP`) do not block the target function. -/
+theorem canary_benign_section_types_accepted :
+    objectHasNoForbiddenElfFeatures benignSectionTypesElf = true ∧
+    funcTextBytes? benignSectionTypesElf 3 0 20 = some canaryAvx2Text ∧
+    resolvePc32RodataReloc benignSectionTypesElf 3 0 16 32 =
+      some { secIdx := 2, byteOff := 0, accessBytes := 32 } ∧
+    extractFuncPcRelRelocs? benignSectionTypesElf 3 0 20 =
+      some [ { offset := 12, secIdx := 2, target := Int.negSucc 3 } ] ∧
+    (decodeFuncFromElf? canaryRelocCfg benignSectionTypesElf
+      3 0 20).isSome = true :=
+  ⟨rfl, rfl, rfl, rfl, rfl⟩
+
+/-- Sibling `.text.other` carrying an ordinary `R_X86_64_PLT32` at offset `1`
+(`call` at function start, `[1, 5)`), `R_X86_64_64` at offset `6`
+(`[6, 14)`), and a tail-call `R_X86_64_PLT32` at `shSize - 4 = 16`
+(`[16, 20)`). -/
+@[expose] def multiFuncSiblingExecRelaElf : List UInt8 :=
+  multiFuncSiblingElfWith
+    (encRela 1 1 rX86_64_PLT32 (Int.negSucc 3) ++
+     (encRela 6 1 rX86_64_64 (Int.ofNat 0) ++
+      encRela 16 1 rX86_64_PLT32 (Int.negSucc 3)))
+
+/-- Scoped executable-section relocation allowlist: sibling `.text.other`
+(`sec 6`) carrying in-bounds non-relaxable `PLT32` (at offset `1` and at
+`shSize - 4`) and `R_X86_64_64` does NOT block target `.text.target`
+(`sec 3`), while targeting `sec 6` itself is still rejected fail-closed. -/
+theorem canary_sibling_text_plt32_accepted :
+    objectHasNoForbiddenElfFeatures multiFuncSiblingExecRelaElf = true ∧
+    funcTextBytes? multiFuncSiblingExecRelaElf 3 0 20 = some canaryAvx2Text ∧
+    resolvePc32RodataReloc multiFuncSiblingExecRelaElf 3 0 16 32 =
+      some { secIdx := 2, byteOff := 0, accessBytes := 32 } ∧
+    extractFuncPcRelRelocs? multiFuncSiblingExecRelaElf 3 0 20 =
+      some [ { offset := 12, secIdx := 2, target := Int.negSucc 3 } ] ∧
+    (decodeFuncFromElf? canaryRelocCfg multiFuncSiblingExecRelaElf
+      3 0 20).isSome = true ∧
+    funcTextBytes? multiFuncSiblingExecRelaElf 6 0 20 = none ∧
+    extractFuncPcRelRelocs? multiFuncSiblingExecRelaElf 6 0 20 = none ∧
+    decodeFuncFromElf? canaryRelocCfg multiFuncSiblingExecRelaElf 6 0 20 =
+      none :=
+  ⟨rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl⟩
+
+/-- Relaxable and TLS relocations in a sibling executable section are
+rejected even mid-section (offset `8` of a 20-byte section), because their
+linker rewrite footprint is not fixed per type. -/
+theorem canary_sibling_relaxable_and_tls_rejected :
+    objectHasNoForbiddenElfFeatures
+      (multiFuncSiblingElfWith
+        (encRela 8 1 rX86_64_GOTPCRELX (Int.negSucc 3))) = false ∧
+    objectHasNoForbiddenElfFeatures
+      (multiFuncSiblingElfWith
+        (encRela 8 1 rX86_64_REX_GOTPCRELX (Int.negSucc 3))) = false ∧
+    objectHasNoForbiddenElfFeatures
+      (multiFuncSiblingElfWith
+        (encRela 8 1 rX86_64_GOTTPOFF (Int.negSucc 3))) = false ∧
+    objectHasNoForbiddenElfFeatures
+      (multiFuncSiblingElfWith
+        (encRela 8 1 rX86_64_TLSGD (Int.negSucc 3))) = false ∧
+    objectHasNoForbiddenElfFeatures
+      (multiFuncSiblingElfWith
+        (encRela 8 1 rX86_64_TLSLD (Int.negSucc 3))) = false ∧
+    funcTextBytes?
+      (multiFuncSiblingElfWith
+        (encRela 8 1 rX86_64_REX_GOTPCRELX (Int.negSucc 3))) 3 0 20 =
+      none ∧
+    funcTextBytes?
+      (multiFuncSiblingElfWith
+        (encRela 8 1 rX86_64_TLSLD (Int.negSucc 3))) 3 0 20 = none :=
+  ⟨rfl, rfl, rfl, rfl, rfl, rfl, rfl⟩
+
+/-- Sibling `.text.other` (`shSize = 20`) carrying `R_X86_64_TLSGD` at
+`rOffset = shSize - 4 = 16`, whose linker rewrite could overflow
+`.text.other` and overwrite an adjacent certified section. -/
+@[expose] def multiFuncSiblingTlsgdOobElf : List UInt8 :=
+  multiFuncSiblingElfWith (encRela 16 1 rX86_64_TLSGD (Int.negSucc 3))
+
+/-- Fail-closed sibling relocation bounds: a sibling `.text.other` carrying
+`R_X86_64_TLSGD` at `shSize - 4`, or a relocation of an unlisted type (here
+`R_X86_64_32S`), is rejected object-wide and across all target entry points,
+and `execRelaFootprintInOwnSec` enforces exact boundaries for the admitted
+non-relaxable types while rejecting every relaxable, TLS, or unlisted type
+at any offset. -/
+theorem canary_sibling_text_tlsgd_near_end_rejected :
+    objectHasNoForbiddenElfFeatures multiFuncSiblingTlsgdOobElf = false ∧
+    funcTextBytes? multiFuncSiblingTlsgdOobElf 3 0 20 = none ∧
+    resolvePc32RodataReloc multiFuncSiblingTlsgdOobElf 3 0 16 32 = none ∧
+    extractFuncPcRelRelocs? multiFuncSiblingTlsgdOobElf 3 0 20 = none ∧
+    decodeFuncFromElf? canaryRelocCfg multiFuncSiblingTlsgdOobElf 3 0 20 =
+      none ∧
+    objectHasNoForbiddenElfFeatures
+      (multiFuncSiblingElfWith
+        (encRela 4 1 rX86_64_32S (Int.negSucc 3))) = false ∧
+    funcTextBytes?
+      (multiFuncSiblingElfWith
+        (encRela 4 1 rX86_64_32S (Int.negSucc 3))) 3 0 20 = none ∧
+    execRelaFootprintInOwnSec 20
+      { rOffset := 16, rSymIdx := 1, rType := rX86_64_PC32, rAddend := 0 } =
+      true ∧
+    execRelaFootprintInOwnSec 20
+      { rOffset := 17, rSymIdx := 1, rType := rX86_64_PC32, rAddend := 0 } =
+      false ∧
+    execRelaFootprintInOwnSec 20
+      { rOffset := 0, rSymIdx := 1, rType := rX86_64_PLT32, rAddend := 0 } =
+      true ∧
+    execRelaFootprintInOwnSec 20
+      { rOffset := 17, rSymIdx := 1, rType := rX86_64_PLT32, rAddend := 0 } =
+      false ∧
+    execRelaFootprintInOwnSec 20
+      { rOffset := 12, rSymIdx := 1, rType := rX86_64_64, rAddend := 0 } =
+      true ∧
+    execRelaFootprintInOwnSec 20
+      { rOffset := 13, rSymIdx := 1, rType := rX86_64_64, rAddend := 0 } =
+      false ∧
+    execRelaFootprintInOwnSec 20
+      { rOffset := 8, rSymIdx := 1, rType := rX86_64_GOTPCRELX,
+        rAddend := 0 } = false ∧
+    execRelaFootprintInOwnSec 20
+      { rOffset := 8, rSymIdx := 1, rType := rX86_64_REX_GOTPCRELX,
+        rAddend := 0 } = false ∧
+    execRelaFootprintInOwnSec 20
+      { rOffset := 8, rSymIdx := 1, rType := rX86_64_GOTTPOFF,
+        rAddend := 0 } = false ∧
+    execRelaFootprintInOwnSec 20
+      { rOffset := 8, rSymIdx := 1, rType := rX86_64_TLSGD, rAddend := 0 } =
+      false ∧
+    execRelaFootprintInOwnSec 20
+      { rOffset := 8, rSymIdx := 1, rType := rX86_64_TLSLD, rAddend := 0 } =
+      false ∧
+    execRelaFootprintInOwnSec 20
+      { rOffset := 4, rSymIdx := 1, rType := rX86_64_32S, rAddend := 0 } =
+      false ∧
+    execRelaFootprintInOwnSec 20
+      { rOffset := 4, rSymIdx := 1, rType := 0, rAddend := 0 } = false :=
+  ⟨rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl,
+   rfl, rfl, rfl, rfl, rfl, rfl⟩
+
+/-- Witness exercising `funcTextBytes?_spec` on `cleanMerge32Elf`. -/
+theorem canary_funcTextBytes_spec_witness :
+    objectHasNoForbiddenElfFeatures cleanMerge32Elf = true ∧
+    ∃ obj textSec,
+      parseElf64Object? cleanMerge32Elf = some obj ∧
+      allExecRelaTypesAllowed obj 3 = true ∧
+      listGet? obj.sections 3 = some textSec ∧
+      sectionIsExecText textSec = true ∧
+      0 + 20 ≤ textSec.shSize ∧
+      textSec.shOffset + 0 + 20 ≤ cleanMerge32Elf.length ∧
+      canaryAvx2Text = (cleanMerge32Elf.drop (textSec.shOffset + 0)).take 20 ∧
+      canaryAvx2Text.length = 20 :=
+  funcTextBytes?_spec cleanMerge32Elf 3 0 20 canaryAvx2Text rfl
 
 /-- Synthetic ELF64 object carrying `64 C5 FD FE 05 00 00 00 00; C5 F8 77; C3`
 (`fs vpaddd ymm0, ymm0, [rip+0]; vzeroupper; ret`, 13 bytes) with matching

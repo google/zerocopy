@@ -23,7 +23,8 @@ namespace Anneal.ElfX86
 # Computable ELF64 Relocation & Read-Only `.rodata` Binding
 (`Anneal.ElfX86.RelocAndElf`)
 
-Pure Pass-1 (`0` `._unsafe_rec`, `0` `partial`, `[]` axioms on theorems)
+Pure Pass-1 (`0` `._unsafe_rec`, `0` `partial`, at most `[propext]` axioms on
+theorems)
 ELF64 little-endian `ET_REL` `EM_X86_64` parser and relocation/hygiene
 validator:
 
@@ -37,7 +38,8 @@ validator:
   `SHT_NULL` entry at index `0` and resolving every section name from raw
   `.shstrtab`), the unique `SHT_SYMTAB` (resolving symbol names from its linked
   `SHT_STRTAB`), and every `SHT_RELA` section across the object (rejecting
-  `SHT_DYNSYM`, `SHT_REL`, `SHT_RELR`, or duplicate `SHT_SYMTAB`).
+  every section type outside `sectionTypeIsKnown`, including `SHT_CREL`,
+  `SHT_DYNSYM`, `SHT_REL`, and `SHT_RELR`, and duplicate `SHT_SYMTAB`).
 - **Raw-object-bound public gates:** `objectHasNoForbiddenElfFeatures`,
   `resolvePc32RodataReloc`, `extractFuncPcRelRelocs?`, `funcTextBytes?`, and
   `decodeFuncFromElf?` consume ONLY raw object bytes `bs : List UInt8` via
@@ -59,18 +61,20 @@ validator:
 
 /-! ## 1. Pure Computable Little-Endian Byte & String-Table Parsers -/
 
+/-- Drop `8 * q` bytes in `q` `@Nat.rec` steps. -/
+@[expose] def fastDropBytes8 (q : Nat) (bs : List UInt8) : List UInt8 :=
+  @Nat.rec (fun _ => List UInt8 → List UInt8)
+    (fun xs => xs)
+    (fun _ ih xs =>
+      match xs with
+      | _ :: _ :: _ :: _ :: _ :: _ :: _ :: _ :: rest => ih rest
+      | _ => [])
+    q bs
+
 /-- Drop 8 bytes per step (`@Nat.rec` on `n / 8`, then `n % 8`) so kernel
 reduction stays shallow on multi-hundred-byte ELF64 images. -/
 @[expose] def fastDropBytes (n : Nat) (bs : List UInt8) : List UInt8 :=
-  let drop8 : List UInt8 → List UInt8 :=
-    @Nat.rec (fun _ => List UInt8 → List UInt8)
-      (fun xs => xs)
-      (fun _ ih xs =>
-        match xs with
-        | _ :: _ :: _ :: _ :: _ :: _ :: _ :: _ :: rest => ih rest
-        | _ => [])
-      (Nat.div n 8)
-  listDrop (Nat.mod n 8) (drop8 bs)
+  listDrop (Nat.mod n 8) (fastDropBytes8 (Nat.div n 8) bs)
 
 /-- True iff `bs` has at least `n` bytes (runs in `O(n / 8)` steps without
 walking past byte `n`). -/
@@ -222,6 +226,11 @@ offset `off`. Returns `none` on out-of-bounds or missing NUL terminator. -/
 @[expose] def shtPreinitArray : Nat := 16
 @[expose] def shtSymtabShndx : Nat := 18
 @[expose] def shtRelr : Nat := 19
+@[expose] def shtNote : Nat := 7
+@[expose] def shtGroup : Nat := 17
+@[expose] def shtLlvmAddrsig : Nat := 0x6FFF4C03
+@[expose] def shtX8664Unwind : Nat := 0x70000001
+@[expose] def shtCrel : Nat := 0x40000014
 
 @[expose] def stbLocal : Nat := 0
 @[expose] def stbGlobal : Nat := 1
@@ -838,16 +847,38 @@ out-of-range or reserved `shInfo`, or does not link (`shLink`) to the unique
   Nat.beq sec.shInfo 0 &&
   Nat.beq sec.shEntsize 0
 
-/-- True iff `sec` is an unparsed symbol, dynamic, or relocation table section
-type (`SHT_DYNSYM`, `SHT_REL`, `SHT_RELR`, `SHT_DYNAMIC`, `SHT_SYMTAB_SHNDX`)
-that must be rejected fail-closed so no hidden symbol or relocation can bypass
-`parseElf64Object?`. -/
+/-- True iff `sec.shType` is on the explicit list of section types this parser
+admits: `SHT_NULL`, `SHT_PROGBITS`, `SHT_SYMTAB`, `SHT_STRTAB`, `SHT_RELA`,
+`SHT_NOBITS`, the initializer-array types (`SHT_INIT_ARRAY`, `SHT_FINI_ARRAY`,
+`SHT_PREINIT_ARRAY`, which `sectionIsForbidden` then rejects), and the benign
+non-relocation types that ordinary rustc/LLVM objects carry: `SHT_NOTE`,
+`SHT_GROUP` (group-member code is still rejected through `SHF_GROUP`),
+`SHT_LLVM_ADDRSIG`, and `SHT_X86_64_UNWIND` (`.eh_frame`, whose `SHT_RELA`
+sections remain subject to the usual hygiene checks). Every other type,
+including compact relocation tables (`SHT_CREL`, `0x40000014`), `SHT_REL`,
+`SHT_RELR`, `SHT_DYNSYM`, `SHT_DYNAMIC`, `SHT_SYMTAB_SHNDX`, and every
+unlisted OS-, processor-, or vendor-specific type, is unknown. -/
+@[expose] def sectionTypeIsKnown (sec : Elf64SectionHdr) : Bool :=
+  Nat.beq sec.shType shtNull ||
+  Nat.beq sec.shType shtProgbits ||
+  Nat.beq sec.shType shtSymtab ||
+  Nat.beq sec.shType shtStrtab ||
+  Nat.beq sec.shType shtRela ||
+  Nat.beq sec.shType shtNobits ||
+  Nat.beq sec.shType shtInitArray ||
+  Nat.beq sec.shType shtFiniArray ||
+  Nat.beq sec.shType shtPreinitArray ||
+  Nat.beq sec.shType shtNote ||
+  Nat.beq sec.shType shtGroup ||
+  Nat.beq sec.shType shtLlvmAddrsig ||
+  Nat.beq sec.shType shtX8664Unwind
+
+/-- True iff `sec` has a section type outside `sectionTypeIsKnown`. Such
+sections are rejected fail-closed, so no symbol or relocation table of an
+unmodeled encoding (for example `SHT_CREL`, `SHT_REL`, `SHT_RELR`, or
+`SHT_DYNSYM`) can carry hidden link-time effects past `parseElf64Object?`. -/
 @[expose] def sectionIsUnparsedTableType (sec : Elf64SectionHdr) : Bool :=
-  Nat.beq sec.shType shtDynsym ||
-  Nat.beq sec.shType shtRel ||
-  Nat.beq sec.shType shtRelr ||
-  Nat.beq sec.shType shtDynamic ||
-  Nat.beq sec.shType shtSymtabShndx
+  !sectionTypeIsKnown sec
 
 /-- Parse a complete ELF64 `ET_REL` `EM_X86_64` object directly from raw bytes
 `bs`: validates the full ELF64 header, rejects compressed or malformed
@@ -1033,16 +1064,81 @@ executable-section relocation types: `some (0, 4)` for `R_X86_64_PC32`, and
 @[expose] def execRelaWriteFootprint? (r : Elf64Rela) : Option (Nat × Nat) :=
   if relaTypeAllowedInExecSec r then some (0, 4) else none
 
-/-- True iff every relocation in every `SHT_RELA` section targeting an
-executable section (`sectionIsExec`) belongs to `relaTypeAllowedInExecSec`. -/
-@[expose] def allExecRelaTypesAllowed (obj : ParsedElf64Object) : Bool :=
+/-- Exact `(beforeBytes, afterBytes)` linker write footprint
+`[rOffset - beforeBytes, rOffset + afterBytes)` for the non-relaxable
+relocation types admitted in sibling executable sections, or `none` (fail
+closed) for every other type:
+- `R_X86_64_PC32`, `R_X86_64_PLT32`: `[o, o + 4)`;
+- `R_X86_64_64`: `[o, o + 8)`.
+
+Relaxable and TLS types (`GOTPCRELX`, `REX_GOTPCRELX`, `GOTTPOFF`, `TLSGD`,
+`TLSLD`, and any unlisted type) are excluded because their linker rewrite
+footprint depends on the surrounding section bytes and on which linker runs
+(e.g. lld/mold rewrite TLSGD's MOVABS form over `[o - 3, o + 19)`), so no
+fixed per-type footprint bounds it. -/
+@[expose] def execRelaSiblingFootprint? (r : Elf64Rela) :
+    Option (Nat × Nat) :=
+  if Nat.beq r.rType rX86_64_PC32 || Nat.beq r.rType rX86_64_PLT32 then
+    some (0, 4)
+  else if Nat.beq r.rType rX86_64_64 then some (0, 8)
+  else none
+
+/-- Section-bounds check for a relocation targeting an executable section of
+byte size `secSize`: `R_X86_64_PC32` requires `rOffset + 4 ≤ secSize`, and
+every other type requires its exact `execRelaSiblingFootprint?` write
+footprint `[rOffset - before, rOffset + after)` to lie within `[0, secSize)`.
+Relaxable, TLS, and unlisted relocation types are rejected (no fallback
+envelope). -/
+@[expose] def execRelaFootprintInOwnSec (secSize : Nat)
+    (r : Elf64Rela) : Bool :=
+  if relaTypeAllowedInExecSec r then
+    Nat.ble (r.rOffset + 4) secSize
+  else
+    match execRelaSiblingFootprint? r with
+    | none => false
+    | some (before, after) =>
+      Nat.ble before r.rOffset && Nat.ble (r.rOffset + after) secSize
+
+/-- True iff every `SHT_RELA` section in `obj` targets a valid section header
+`obj.sections[shInfo]` and, whenever that target section is executable
+(`sectionIsExec`), every relocation satisfies `execRelaFootprintInOwnSec`
+against that section's own `shSize` (preventing any sibling relocation or
+linker relaxation from writing past its section into a certified section). -/
+@[expose] def allExecRelaFootprintsInBounds (obj : ParsedElf64Object) : Bool :=
   listAll
     (fun entry =>
       match listGet? obj.sections entry.2.1.shInfo with
       | none => false
       | some targetSec =>
         if sectionIsExec targetSec then
-          listAll relaTypeAllowedInExecSec entry.2.2
+          listAll (execRelaFootprintInOwnSec targetSec.shSize) entry.2.2
+        else true)
+    obj.relaSections
+
+/-- True iff every `SHT_RELA` section in `obj` targets a valid section header
+`obj.sections[shInfo]` such that:
+- if `shInfo == textSecIdx`, every relocation belongs to
+  `relaTypeAllowedInExecSec` (`R_X86_64_PC32`) and satisfies
+  `rOffset + 4 ≤ targetSec.shSize`;
+- if `shInfo ≠ textSecIdx` and `sectionIsExec targetSec`, every relocation
+  satisfies `execRelaFootprintInOwnSec targetSec.shSize` (so every
+  relocation in a sibling executable section is a non-relaxable type whose
+  exact write footprint stays within its own section). -/
+@[expose] def allExecRelaTypesAllowed (obj : ParsedElf64Object)
+    (textSecIdx : Nat) : Bool :=
+  listAll
+    (fun entry =>
+      match listGet? obj.sections entry.2.1.shInfo with
+      | none => false
+      | some targetSec =>
+        if Nat.beq entry.2.1.shInfo textSecIdx then
+          listAll
+            (fun r =>
+              relaTypeAllowedInExecSec r &&
+              Nat.ble (r.rOffset + 4) targetSec.shSize)
+            entry.2.2
+        else if sectionIsExec targetSec then
+          listAll (execRelaFootprintInOwnSec targetSec.shSize) entry.2.2
         else true)
     obj.relaSections
 
@@ -1082,8 +1178,8 @@ parses the complete ELF64 object via `parseElf64Object? bs` and checks zero
 forbidden initializer/`W+X` sections across all `e_shnum` sections, zero
 `STT_GNU_IFUNC` symbols across the entire `SHT_SYMTAB`, zero
 `R_X86_64_IRELATIVE` relocations across every `SHT_RELA` section, and that
-every relocation targeting any executable section belongs to the explicit
-non-relaxable allowlist (`allExecRelaTypesAllowed`). -/
+every executable-section relocation footprint stays within its own section's
+`shSize` (`allExecRelaFootprintsInBounds`). -/
 @[expose] def objectHasNoForbiddenElfFeatures (bs : List UInt8) : Bool :=
   match parseElf64Object? bs with
   | none => false
@@ -1091,7 +1187,7 @@ non-relaxable allowlist (`allExecRelaTypesAllowed`). -/
     !listAny sectionIsForbidden obj.sections &&
     !listAny symIsIfunc obj.syms &&
     !listAny relaIsIRelative obj.allRelas &&
-    allExecRelaTypesAllowed obj
+    allExecRelaFootprintsInBounds obj
 
 /-- Resolve an `R_X86_64_PC32` relocation at index `relaIdx` in the unique
 non-COMDAT `SHT_RELA` section targeting `textSecIdx` (`shInfo == textSecIdx`),
@@ -1120,7 +1216,7 @@ bound directly to raw object bytes `bs`:
     if listAny sectionIsForbidden obj.sections ||
        listAny symIsIfunc obj.syms ||
        listAny relaIsIRelative obj.allRelas ||
-       !allExecRelaTypesAllowed obj then none
+       !allExecRelaTypesAllowed obj textSecIdx then none
     else
       match listGet? obj.sections textSecIdx with
       | none => none
@@ -1184,7 +1280,7 @@ that is itself targeted by an `SHT_RELA` section. -/
     if listAny sectionIsForbidden obj.sections ||
        listAny symIsIfunc obj.syms ||
        listAny relaIsIRelative obj.allRelas ||
-       !allExecRelaTypesAllowed obj then none
+       !allExecRelaTypesAllowed obj textSecIdx then none
     else
       match listGet? obj.sections textSecIdx with
       | none => none
@@ -1247,7 +1343,7 @@ non-executable `textSecIdx`, or `funcOff + funcSize > textSec.shSize`). -/
     if listAny sectionIsForbidden obj.sections ||
        listAny symIsIfunc obj.syms ||
        listAny relaIsIRelative obj.allRelas ||
-       !allExecRelaTypesAllowed obj then none
+       !allExecRelaTypesAllowed obj textSecIdx then none
     else
       match listGet? obj.sections textSecIdx with
       | none => none
@@ -1345,7 +1441,8 @@ trusting any caller-supplied `(bytes, relocs)` pair. -/
                 then some tr
                 else none
 
-/-! ## 4. Soundness, Raw-Object Binding, & Rejection Theorems (`[]` Axioms) -/
+/-! ## 4. Soundness, Raw-Object Binding, & Rejection Theorems
+(at most `[propext]` Axioms) -/
 
 private theorem relocIteTrue {α : Type} {b : Bool} {t e : α}
     (hb : b = true) : (if b then t else e) = t := by
@@ -1582,7 +1679,7 @@ private theorem relocListFindMem {α : Type} (p : α → Bool) :
       rw [relocIteFalse hp] at h
       exact List.Mem.tail y (ih x h)
 
-/-- Raw-object binding theorem (`[]` axioms): whenever
+/-- Raw-object binding theorem (`[propext]` only): whenever
 `parseElf64Object? bs = some obj`, the resulting inventory is bound verbatim
 to `bs`, `obj.sections` has exact length `obj.header.eShnum`, `sections[0]` is
 an all-zero `SHT_NULL` entry, no unparsed symbol/relocation table sections
@@ -1665,11 +1762,11 @@ theorem parseElf64Object?_binds_raw (bs : List UInt8)
                             collectAllRelas_mem relaSecs entry hE r hR,
                           ⟨s0, rest, rfl, hS0Null⟩⟩
 
-/-- Object-hygiene binding theorem (`[]` axioms):
+/-- Object-hygiene binding theorem (`[propext]` only, via `parseElf64Object?`):
 `objectHasNoForbiddenElfFeatures bs = true` proves that `bs` parses cleanly via
 `parseElf64Object? bs = some obj` and that EVERY section in `obj.sections`,
 EVERY symbol in `obj.syms`, EVERY relocation in `obj.allRelas`, and EVERY
-relocation in any executable-section `SHT_RELA` (`allExecRelaTypesAllowed`) is
+executable-section relocation footprint (`allExecRelaFootprintsInBounds`) is
 clean. -/
 theorem objectHasNoForbiddenElfFeatures_bound (bs : List UInt8)
     (h : objectHasNoForbiddenElfFeatures bs = true) :
@@ -1680,17 +1777,17 @@ theorem objectHasNoForbiddenElfFeatures_bound (bs : List UInt8)
       (∀ s, s ∈ obj.sections → sectionIsForbidden s = false) ∧
       (∀ sym, sym ∈ obj.syms → symIsIfunc sym = false) ∧
       (∀ r, r ∈ obj.allRelas → relaIsIRelative r = false) ∧
-      allExecRelaTypesAllowed obj = true := by
+      allExecRelaFootprintsInBounds obj = true := by
   dsimp only [objectHasNoForbiddenElfFeatures] at h
   cases hP : parseElf64Object? bs with
   | none => rw [hP] at h; nomatch h
   | some obj =>
     rw [hP] at h; dsimp only at h
     have hB := parseElf64Object?_binds_raw bs obj hP
-    have hExecOk := relocBandRight h
     have hL3 := relocBandLeft h
-    have hNoIR := relocBoolFalseOfNotTrue (relocBandRight hL3)
+    have hFootOk := relocBandRight h
     have hL2 := relocBandLeft hL3
+    have hNoIR := relocBoolFalseOfNotTrue (relocBandRight hL3)
     have hNoForb := relocBoolFalseOfNotTrue (relocBandLeft hL2)
     have hNoIf := relocBoolFalseOfNotTrue (relocBandRight hL2)
     exact ⟨obj, rfl, hB.1, hB.2.2.1,
@@ -1699,10 +1796,155 @@ theorem objectHasNoForbiddenElfFeatures_bound (bs : List UInt8)
       fun sym hs => relocListAnyFalseOfMem symIsIfunc obj.syms hNoIf sym hs,
       fun r hr => relocListAnyFalseOfMem relaIsIRelative obj.allRelas
         hNoIR r hr,
-      hExecOk⟩
+      hFootOk⟩
 
-/-- Uniqueness theorem for `findUniqueRelaForTarget?` (`[]` axioms): whenever
-`findUniqueRelaForTarget? relaSecs targetSecIdx = some found`, every parsed
+private theorem relocListAllImp {α : Type} (p q : α → Bool)
+    (hImp : ∀ x, p x = true → q x = true) :
+    ∀ (xs : List α), listAll p xs = true → listAll q xs = true := by
+  intro xs
+  induction xs with
+  | nil => intro _; rfl
+  | cons a tl ih =>
+    intro h
+    dsimp only [listAll, List.foldr] at h
+    dsimp only [listAll, List.foldr]
+    have hTl : listAll q tl = true := ih (relocBandRight h)
+    dsimp only [listAll] at hTl
+    rw [hImp a (relocBandLeft h), hTl]
+    rfl
+
+private theorem relocNatBeqRefl : ∀ (n : Nat), Nat.beq n n = true := by
+  intro n
+  induction n with
+  | zero => rfl
+  | succ k ih => exact ih
+
+/-- Target-section allowlist implies object-wide executable-section relocation
+footprint bounds (`[]` axioms). -/
+theorem allExecRelaFootprintsInBounds_of_allowed (obj : ParsedElf64Object)
+    (textSecIdx : Nat) (h : allExecRelaTypesAllowed obj textSecIdx = true) :
+    allExecRelaFootprintsInBounds obj = true := by
+  dsimp only [allExecRelaTypesAllowed] at h
+  dsimp only [allExecRelaFootprintsInBounds]
+  refine relocListAllImp
+    (fun (entry : Nat × Elf64SectionHdr × List Elf64Rela) =>
+      match listGet? obj.sections entry.2.1.shInfo with
+      | none => false
+      | some targetSec =>
+        if Nat.beq entry.2.1.shInfo textSecIdx then
+          listAll
+            (fun r =>
+              relaTypeAllowedInExecSec r &&
+              Nat.ble (r.rOffset + 4) targetSec.shSize)
+            entry.2.2
+        else if sectionIsExec targetSec then
+          listAll (execRelaFootprintInOwnSec targetSec.shSize) entry.2.2
+        else true)
+    (fun (entry : Nat × Elf64SectionHdr × List Elf64Rela) =>
+      match listGet? obj.sections entry.2.1.shInfo with
+      | none => false
+      | some targetSec =>
+        if sectionIsExec targetSec then
+          listAll (execRelaFootprintInOwnSec targetSec.shSize) entry.2.2
+        else true)
+    ?_ obj.relaSections h
+  intro entry hE
+  cases hSec : listGet? obj.sections entry.2.1.shInfo with
+  | none => rw [hSec] at hE; exact Bool.noConfusion hE
+  | some targetSec =>
+    rw [hSec] at hE
+    dsimp only at hE
+    dsimp only
+    cases hEq : Nat.beq entry.2.1.shInfo textSecIdx with
+    | false => rw [relocIteFalse hEq] at hE; exact hE
+    | true =>
+      rw [relocIteTrue hEq] at hE
+      cases hEx : sectionIsExec targetSec with
+      | false => rw [relocIteFalse (rfl : false = false)]
+      | true =>
+        rw [relocIteTrue (rfl : true = true)]
+        refine relocListAllImp
+          (fun r =>
+            relaTypeAllowedInExecSec r &&
+            Nat.ble (r.rOffset + 4) targetSec.shSize)
+          (execRelaFootprintInOwnSec targetSec.shSize)
+          ?_ entry.2.2 hE
+        intro r hR
+        dsimp only [execRelaFootprintInOwnSec]
+        rw [relocIteTrue (relocBandLeft hR)]
+        exact relocBandRight hR
+
+/-- Scoped executable-section relocation allowlist and footprint bound
+(`[]` axioms): `allExecRelaTypesAllowed obj textSecIdx = true` proves that
+every `SHT_RELA` section in `obj` targets a valid section header
+`obj.sections[shInfo] = some targetSec` such that:
+- if `shInfo = textSecIdx`, every relocation is `R_X86_64_PC32` with
+  `rOffset + 4 ≤ targetSec.shSize`;
+- if `sectionIsExec targetSec = true`, every relocation satisfies
+  `execRelaFootprintInOwnSec targetSec.shSize r = true`. -/
+theorem allExecRelaTypesAllowed_bound (obj : ParsedElf64Object)
+    (textSecIdx : Nat) (h : allExecRelaTypesAllowed obj textSecIdx = true) :
+    ∀ entry, entry ∈ obj.relaSections →
+      ∃ targetSec,
+        listGet? obj.sections entry.2.1.shInfo = some targetSec ∧
+        (entry.2.1.shInfo = textSecIdx →
+          ∀ r, r ∈ entry.2.2 →
+            relaTypeAllowedInExecSec r = true ∧
+            r.rOffset + 4 ≤ targetSec.shSize) ∧
+        (sectionIsExec targetSec = true →
+          ∀ r, r ∈ entry.2.2 →
+            execRelaFootprintInOwnSec targetSec.shSize r = true) := by
+  intro entry hE
+  have hFoot := allExecRelaFootprintsInBounds_of_allowed obj textSecIdx h
+  dsimp only [allExecRelaTypesAllowed] at h
+  dsimp only [allExecRelaFootprintsInBounds] at hFoot
+  have hAll := relocListAllMem
+    (fun (e : Nat × Elf64SectionHdr × List Elf64Rela) =>
+      match listGet? obj.sections e.2.1.shInfo with
+      | none => false
+      | some targetSec =>
+        if Nat.beq e.2.1.shInfo textSecIdx then
+          listAll
+            (fun r =>
+              relaTypeAllowedInExecSec r &&
+              Nat.ble (r.rOffset + 4) targetSec.shSize)
+            e.2.2
+        else if sectionIsExec targetSec then
+          listAll (execRelaFootprintInOwnSec targetSec.shSize) e.2.2
+        else true)
+    obj.relaSections h entry hE
+  have hFAll := relocListAllMem
+    (fun (e : Nat × Elf64SectionHdr × List Elf64Rela) =>
+      match listGet? obj.sections e.2.1.shInfo with
+      | none => false
+      | some targetSec =>
+        if sectionIsExec targetSec then
+          listAll (execRelaFootprintInOwnSec targetSec.shSize) e.2.2
+        else true)
+    obj.relaSections hFoot entry hE
+  cases hSec : listGet? obj.sections entry.2.1.shInfo with
+  | none => rw [hSec] at hAll; exact Bool.noConfusion hAll
+  | some targetSec =>
+    rw [hSec] at hAll hFAll; dsimp only at hAll hFAll
+    refine ⟨targetSec, rfl, ?_, ?_⟩
+    · intro hInfo r hR
+      have hBeq : Nat.beq entry.2.1.shInfo textSecIdx = true := by
+        rw [hInfo]; exact relocNatBeqRefl textSecIdx
+      rw [relocIteTrue hBeq] at hAll
+      have hOk := relocListAllMem
+        (fun r =>
+          relaTypeAllowedInExecSec r &&
+          Nat.ble (r.rOffset + 4) targetSec.shSize)
+        entry.2.2 hAll r hR
+      exact ⟨relocBandLeft hOk, Nat.le_of_ble_eq_true (relocBandRight hOk)⟩
+    · intro hEx r hR
+      rw [relocIteTrue hEx] at hFAll
+      exact relocListAllMem
+        (execRelaFootprintInOwnSec targetSec.shSize) entry.2.2 hFAll r hR
+
+/-- Uniqueness theorem for `findUniqueRelaForTarget?` (`[propext]` only):
+whenever `findUniqueRelaForTarget? relaSecs targetSecIdx = some found`, every
+parsed
 `SHT_RELA` section targeting `targetSecIdx` in `relaSecs` equals `found`
 (so no second `SHT_RELA` section targeting `targetSecIdx` can exist). -/
 theorem findUniqueRelaForTarget?_unique
@@ -1765,7 +2007,7 @@ private theorem hasRelaTargetingSection_false_imp
     relaSecs h entry hMem
   exact relocNatNeOfBeqFalse hF
 
-/-- Soundness of `resolvePc32RodataReloc` (`[]` axioms): any resolved
+/-- Soundness of `resolvePc32RodataReloc` (`[propext]` only): any resolved
 reference is bound to `parseElf64Object? bs = some obj`, a validated executable
 `PROGBITS` code section at `textSecIdx` (`sectionIsExecText`), and the unique
 non-COMDAT `SHT_RELA` section targeting `textSecIdx` (`shType = shtRela`,
@@ -1773,8 +2015,9 @@ non-COMDAT `SHT_RELA` section targeting `textSecIdx` (`shType = shtRela`,
 `r_sym ≠ 0`, no overlapping sibling relocation in `relas`, a local non-`IFUNC`
 symbol with `0 < st_shndx < 0xFF00`, a read-only non-COMDAT uncompressed
 non-TLS non-string non-excluded target section with ZERO `SHT_RELA` sections
-targeting `sym.stShndx`, a non-negative in-bounds constant offset, and
-`SHF_MERGE` single-entry bounds (non-`STT_SECTION`). -/
+targeting `sym.stShndx`, a non-negative in-bounds constant offset,
+`SHF_MERGE` single-entry bounds (non-`STT_SECTION`), and the target-section
+relocation allowlist (`allExecRelaTypesAllowed obj textSecIdx = true`). -/
 theorem resolvePc32RodataReloc_sound (bs : List UInt8)
     (textSecIdx relaIdx insnEnd accessBytes : Nat) (ref : ResolvedRodataRef)
     (h : resolvePc32RodataReloc bs textSecIdx relaIdx insnEnd accessBytes =
@@ -1805,7 +2048,8 @@ theorem resolvePc32RodataReloc_sound (bs : List UInt8)
       mergeEntryBoundsOk sec sym ref.byteOff accessBytes = true ∧
       sectionHasGroup relaSec = false ∧
       hasRelaTargetingSection obj.relaSections sym.stShndx = false ∧
-      (∀ entry, entry ∈ obj.relaSections → entry.2.1.shInfo ≠ sym.stShndx) := by
+      (∀ entry, entry ∈ obj.relaSections → entry.2.1.shInfo ≠ sym.stShndx) ∧
+      allExecRelaTypesAllowed obj textSecIdx = true := by
   dsimp only [resolvePc32RodataReloc] at h
   cases hP : parseElf64Object? bs with
   | none => rw [hP] at h; nomatch h
@@ -1814,12 +2058,12 @@ theorem resolvePc32RodataReloc_sound (bs : List UInt8)
     cases hBad : (listAny sectionIsForbidden obj.sections ||
         listAny symIsIfunc obj.syms ||
         listAny relaIsIRelative obj.allRelas ||
-        !allExecRelaTypesAllowed obj) with
+        !allExecRelaTypesAllowed obj textSecIdx) with
     | true => rw [relocIteTrue hBad] at h; nomatch h
     | false =>
       rw [relocIteFalse hBad] at h
       have hBad3 := (relocBorFalse hBad).1
-      have hExecOk : allExecRelaTypesAllowed obj = true :=
+      have hExecOk : allExecRelaTypesAllowed obj textSecIdx = true :=
         relocBoolTrueOfNotFalse (relocBorFalse hBad).2
       have hBadL := (relocBorFalse hBad3).1
       have hNoIR := (relocBorFalse hBad3).2
@@ -1942,7 +2186,9 @@ theorem resolvePc32RodataReloc_sound (bs : List UInt8)
                                         true := by
                                     dsimp only [objectHasNoForbiddenElfFeatures]
                                     rw [hP]; dsimp only
-                                    rw [hNoForb, hNoIf, hNoIR, hExecOk]; rfl
+                                    rw [hNoForb, hNoIf, hNoIR,
+                                      allExecRelaFootprintsInBounds_of_allowed
+                                        obj textSecIdx hExecOk]; rfl
                                   exact ⟨hHyg,
                                     ⟨obj, textSec, relaSec, relas, r, sym, sec,
                                      rfl, hText, hExec, hRs, hTySec, hInfSec,
@@ -1951,7 +2197,8 @@ theorem resolvePc32RodataReloc_sound (bs : List UInt8)
                                      Nat.le_of_ble_eq_true (relocBandLeft hBnd),
                                      relocBandRight hBnd, hRelaNoGrp, hNoRoRela,
                                      hasRelaTargetingSection_false_imp
-                                       obj.relaSections sym.stShndx hNoRoRela⟩⟩
+                                       obj.relaSections sym.stShndx hNoRoRela,
+                                     hExecOk⟩⟩
 
 /-- Negative rejection: any writable target section (`SHF_WRITE = 1`) is
 rejected fail-closed. -/
@@ -2132,7 +2379,7 @@ theorem resolvePc32RodataReloc_rejects_rela_targeting_rodata (bs : List UInt8)
     have hS := resolvePc32RodataReloc_sound bs textSecIdx relaIdx insnEnd
       accessBytes ref hRes
     have ⟨obj', _, _, relas', r', sym', _, hP', _, _, hRs', _, _, hR', _, _,
-          hSym', _, _, _, _, _, _, _, _, _, _, _, _, hNoTarget⟩ := hS.2
+          hSym', _, _, _, _, _, _, _, _, _, _, _, _, hNoTarget, _⟩ := hS.2
     rw [hP] at hP'
     have hObjEq : obj = obj' := Option.some.inj hP'
     subst hObjEq
@@ -2166,7 +2413,7 @@ theorem resolvePc32RodataReloc_rejects_ifunc (bs : List UInt8)
   have hBad : (listAny sectionIsForbidden obj.sections ||
       listAny symIsIfunc obj.syms ||
       listAny relaIsIRelative obj.allRelas ||
-      !allExecRelaTypesAllowed obj) = true := by
+      !allExecRelaTypesAllowed obj textSecIdx) = true := by
     rw [hAny]
     cases listAny sectionIsForbidden obj.sections <;> rfl
   dsimp only [resolvePc32RodataReloc]
@@ -2191,7 +2438,7 @@ theorem resolvePc32RodataReloc_rejects_init_array (bs : List UInt8)
   have hBad : (listAny sectionIsForbidden obj.sections ||
       listAny symIsIfunc obj.syms ||
       listAny relaIsIRelative obj.allRelas ||
-      !allExecRelaTypesAllowed obj) = true := by
+      !allExecRelaTypesAllowed obj textSecIdx) = true := by
     rw [hAny]; rfl
   dsimp only [resolvePc32RodataReloc]
   rw [hP]; dsimp only
@@ -2296,8 +2543,9 @@ theorem resolvePc32RodataReloc_rejects_merge_section_sym (bs : List UInt8)
 /-- Bridge soundness theorem linking raw-object `extractFuncPcRelRelocs?` to
 `resolvePc32RodataReloc`: if `extractFuncPcRelRelocs?` succeeds on `bs` for
 `textSecIdx`, then `parseElf64Object? bs = some obj` passes whole-object
-hygiene, `obj.sections[textSecIdx]` is a validated executable `PROGBITS` code
-section with `funcOff + funcSize ≤ textSec.shSize`, at most one non-COMDAT
+hygiene, `allExecRelaTypesAllowed obj textSecIdx = true`,
+`obj.sections[textSecIdx]` is a validated executable `PROGBITS` code section
+with `funcOff + funcSize ≤ textSec.shSize`, at most one non-COMDAT
 `SHT_RELA` section targets `textSecIdx`, and EVERY overlapping relocation `r`
 in EVERY parsed `SHT_RELA` section targeting `textSecIdx` is a strictly
 contained `R_X86_64_PC32` (`r_sym ≠ 0`, `0 < st_shndx < 0xFF00`) whose target
@@ -2313,6 +2561,7 @@ theorem extractFuncPcRelRelocs?_resolves_overlapping (bs : List UInt8)
     objectHasNoForbiddenElfFeatures bs = true ∧
     ∃ obj textSec,
       parseElf64Object? bs = some obj ∧
+      allExecRelaTypesAllowed obj textSecIdx = true ∧
       listGet? obj.sections textSecIdx = some textSec ∧
       sectionIsExecText textSec = true ∧
       funcOff + funcSize ≤ textSec.shSize ∧
@@ -2349,12 +2598,12 @@ theorem extractFuncPcRelRelocs?_resolves_overlapping (bs : List UInt8)
     cases hBad : (listAny sectionIsForbidden obj.sections ||
         listAny symIsIfunc obj.syms ||
         listAny relaIsIRelative obj.allRelas ||
-        !allExecRelaTypesAllowed obj) with
+        !allExecRelaTypesAllowed obj textSecIdx) with
     | true => rw [relocIteTrue hBad] at hExt; nomatch hExt
     | false =>
       rw [relocIteFalse hBad] at hExt
       have hBad3 := (relocBorFalse hBad).1
-      have hExecOk : allExecRelaTypesAllowed obj = true :=
+      have hExecOk : allExecRelaTypesAllowed obj textSecIdx = true :=
         relocBoolTrueOfNotFalse (relocBorFalse hBad).2
       have hBadL := (relocBorFalse hBad3).1
       have hNoIR := (relocBorFalse hBad3).2
@@ -2363,7 +2612,8 @@ theorem extractFuncPcRelRelocs?_resolves_overlapping (bs : List UInt8)
       have hHyg : objectHasNoForbiddenElfFeatures bs = true := by
         dsimp only [objectHasNoForbiddenElfFeatures]
         rw [hP]; dsimp only
-        rw [hNoForb, hNoIf, hNoIR, hExecOk]; rfl
+        rw [hNoForb, hNoIf, hNoIR,
+          allExecRelaFootprintsInBounds_of_allowed obj textSecIdx hExecOk]; rfl
       cases hText : listGet? obj.sections textSecIdx with
       | none => rw [hText] at hExt; nomatch hExt
       | some textSec =>
@@ -2384,7 +2634,8 @@ theorem extractFuncPcRelRelocs?_resolves_overlapping (bs : List UInt8)
             rw [hRs] at hExt
             cases optP with
             | none =>
-              refine ⟨hHyg, ⟨obj, textSec, rfl, hText, hExec, hFuncLe, ?_⟩⟩
+              refine ⟨hHyg, ⟨obj, textSec, rfl, hExecOk, hText, hExec, hFuncLe,
+                ?_⟩⟩
               intro entry hE hInfo
               have hUniq := findUniqueRelaForTarget?_unique obj.relaSections
                 textSecIdx none hRs entry hE hInfo
@@ -2567,7 +2818,8 @@ theorem extractFuncPcRelRelocs?_resolves_overlapping (bs : List UInt8)
                                           (relocBoolTrueOfNotFalse hStrOk.2),
                                         ⟨sym, sec, rfl, hSec, hSB, hRo,
                                          hSecBadP.2⟩⟩
-                  refine ⟨hHyg, ⟨obj, textSec, rfl, hText, hExec, hFuncLe, ?_⟩⟩
+                  refine ⟨hHyg, ⟨obj, textSec, rfl, hExecOk, hText, hExec,
+                    hFuncLe, ?_⟩⟩
                   intro entry hE hInfo
                   have hUniq := findUniqueRelaForTarget?_unique obj.relaSections
                     textSecIdx (some (relaSec, relas)) hRs entry hE hInfo
@@ -2630,11 +2882,238 @@ theorem extractFuncPcRelRelocs?_resolves_overlapping (bs : List UInt8)
                         rw [hBle, hMerge]; rfl
                       rw [relocIteTrue hCond]
 
-/-- Soundness of composed raw-ELF `decodeFuncFromElf?` (`[]` axioms): any
-decoded trace enforces `cfg.requireRelocForRip = true`, comes from raw ELF64
-object `bs` passing whole-object hygiene (including `allExecRelaTypesAllowed`),
-with `textBytes` sliced directly from validated executable `PROGBITS` section
-`textSecIdx` (`funcOff + funcSize ≤ shSize`), relocations extracted via
+private theorem listDrop_nil {α : Type} (n : Nat) :
+    ([] : List α).drop n = [] := by
+  cases n <;> rfl
+
+private theorem listDrop_eq_drop {α : Type} :
+    ∀ (n : Nat) (xs : List α), listDrop n xs = xs.drop n := by
+  intro n
+  induction n with
+  | zero => intro xs; cases xs <;> rfl
+  | succ k ih =>
+    intro xs
+    cases xs with
+    | nil => rfl
+    | cons _ tl => exact ih tl
+
+private theorem listTake_eq_take {α : Type} :
+    ∀ (n : Nat) (xs : List α), listTake n xs = xs.take n := by
+  intro n
+  induction n with
+  | zero => intro xs; cases xs <;> rfl
+  | succ k ih =>
+    intro xs
+    cases xs with
+    | nil => rfl
+    | cons x tl => exact congrArg (List.cons x) (ih tl)
+
+private theorem listDrop_add {α : Type} :
+    ∀ (a b : Nat) (xs : List α), (xs.drop a).drop b = xs.drop (a + b) := by
+  intro a
+  induction a with
+  | zero =>
+    intro b xs
+    rw [Nat.zero_add]
+    rfl
+  | succ k ih =>
+    intro b xs
+    rw [Nat.succ_add]
+    cases xs with
+    | nil => exact listDrop_nil b
+    | cons _ tl => exact ih b tl
+
+private theorem drop8_eq_drop :
+    ∀ (q : Nat) (xs : List UInt8),
+      fastDropBytes8 q xs = xs.drop (8 * q) := by
+  intro q
+  induction q with
+  | zero => intro xs; rfl
+  | succ k ih =>
+    intro xs
+    dsimp only [fastDropBytes8]
+    have hMul : 8 * (k + 1) = 8 + 8 * k := by
+      rw [Nat.mul_succ, Nat.add_comm]
+    rw [hMul, ← listDrop_add]
+    cases xs with
+    | nil => exact (listDrop_nil (8 * k)).symm
+    | cons _ r1 => cases r1 with
+      | nil => exact (listDrop_nil (8 * k)).symm
+      | cons _ r2 => cases r2 with
+        | nil => exact (listDrop_nil (8 * k)).symm
+        | cons _ r3 => cases r3 with
+          | nil => exact (listDrop_nil (8 * k)).symm
+          | cons _ r4 => cases r4 with
+            | nil => exact (listDrop_nil (8 * k)).symm
+            | cons _ r5 => cases r5 with
+              | nil => exact (listDrop_nil (8 * k)).symm
+              | cons _ r6 => cases r6 with
+                | nil => exact (listDrop_nil (8 * k)).symm
+                | cons _ r7 => cases r7 with
+                  | nil => exact (listDrop_nil (8 * k)).symm
+                  | cons _ rest => exact ih rest
+
+private theorem fastDropBytes_eq_drop (n : Nat) (bs : List UInt8) :
+    fastDropBytes n bs = bs.drop n := by
+  dsimp only [fastDropBytes]
+  have hDm : 8 * Nat.div n 8 + Nat.mod n 8 = n := Nat.div_add_mod n 8
+  rw [listDrop_eq_drop, drop8_eq_drop, listDrop_add, hDm]
+
+private theorem drop_cons_le {α : Type} :
+    ∀ (k : Nat) (xs : List α) (b : α) (tl : List α),
+      xs.drop k = b :: tl → k + 1 ≤ xs.length := by
+  intro k
+  induction k with
+  | zero =>
+    intro xs b tl h
+    cases xs with
+    | nil => nomatch h
+    | cons _ rest => exact Nat.succ_le_succ (Nat.zero_le rest.length)
+  | succ k' ih =>
+    intro xs b tl h
+    cases xs with
+    | nil => nomatch h
+    | cons _ rest => exact Nat.succ_le_succ (ih rest b tl h)
+
+private theorem bytesLenAtLeast_le (n : Nat) (bs : List UInt8)
+    (h : bytesLenAtLeast n bs = true) : n ≤ bs.length := by
+  cases n with
+  | zero => exact Nat.zero_le bs.length
+  | succ k =>
+    dsimp only [bytesLenAtLeast] at h
+    have hZ : Nat.beq (k + 1) 0 = false := rfl
+    rw [relocIteFalse hZ] at h
+    have hSub : k + 1 - 1 = k := rfl
+    rw [hSub, fastDropBytes_eq_drop] at h
+    cases hD : bs.drop k with
+    | nil => rw [hD] at h; exact Bool.noConfusion h
+    | cons b tl => exact drop_cons_le k bs b tl hD
+
+private theorem drop_length_ge {α : Type} :
+    ∀ (off len : Nat) (xs : List α),
+      off + len ≤ xs.length → len ≤ (xs.drop off).length := by
+  intro off
+  induction off with
+  | zero =>
+    intro len xs h
+    rw [Nat.zero_add] at h
+    exact h
+  | succ k ih =>
+    intro len xs h
+    cases xs with
+    | nil =>
+      rw [Nat.succ_add] at h
+      exact False.elim (Nat.not_succ_le_zero (k + len) h)
+    | cons _ tl =>
+      rw [Nat.succ_add] at h
+      exact ih len tl (Nat.le_of_succ_le_succ h)
+
+private theorem take_length_of_le {α : Type} :
+    ∀ (len : Nat) (xs : List α),
+      len ≤ xs.length → (xs.take len).length = len := by
+  intro len
+  induction len with
+  | zero => intro xs _; cases xs <;> rfl
+  | succ k ih =>
+    intro xs h
+    cases xs with
+    | nil => exact False.elim (Nat.not_succ_le_zero k h)
+    | cons _ tl => exact congrArg Nat.succ (ih tl (Nat.le_of_succ_le_succ h))
+
+/-- Exact specification of `sliceBytes?` (`[propext]` only, via `Nat.div`/
+`Nat.mod` in `fastDropBytes`): whenever `sliceBytes? bs off len = some out`,
+`[off, off + len)` lies within `bs`, `out = (bs.drop off).take len`, and
+`out.length = len`. -/
+theorem sliceBytes?_spec (bs : List UInt8) (off len : Nat)
+    (out : List UInt8) (h : sliceBytes? bs off len = some out) :
+    off + len ≤ bs.length ∧
+    out = (bs.drop off).take len ∧
+    out.length = len := by
+  dsimp only [sliceBytes?] at h
+  cases hLen : bytesLenAtLeast (off + len) bs with
+  | false => rw [relocIteFalse hLen] at h; nomatch h
+  | true =>
+    rw [relocIteTrue hLen] at h
+    injection h with hEq
+    subst hEq
+    have hLe : off + len ≤ bs.length := bytesLenAtLeast_le (off + len) bs hLen
+    rw [listTake_eq_take, fastDropBytes_eq_drop]
+    exact ⟨hLe, rfl, take_length_of_le len (bs.drop off)
+      (drop_length_ge off len bs hLe)⟩
+
+/-- Specification of `funcTextBytes?` (`[propext]` only, via `Nat.div`/
+`Nat.mod`/`UInt8` in `parseElf64Object?` and `fastDropBytes`): whenever
+`funcTextBytes? bs textSecIdx funcOff funcSize = some textBytes`, `bs` passes
+whole-object hygiene, `parseElf64Object? bs = some obj`, all relocations in any
+`SHT_RELA` targeting `textSecIdx` belong to the non-relaxable allowlist,
+`obj.sections[textSecIdx]` is a validated executable `PROGBITS` code section
+(`sectionIsExecText textSec = true`) with `funcOff + funcSize ≤ textSec.shSize`
+and `textSec.shOffset + funcOff + funcSize ≤ bs.length`, and `textBytes` equals
+the exact raw slice `(bs.drop (textSec.shOffset + funcOff)).take funcSize` of
+length `funcSize`. -/
+theorem funcTextBytes?_spec (bs : List UInt8)
+    (textSecIdx funcOff funcSize : Nat) (textBytes : List UInt8)
+    (h : funcTextBytes? bs textSecIdx funcOff funcSize = some textBytes) :
+    objectHasNoForbiddenElfFeatures bs = true ∧
+    ∃ obj textSec,
+      parseElf64Object? bs = some obj ∧
+      allExecRelaTypesAllowed obj textSecIdx = true ∧
+      listGet? obj.sections textSecIdx = some textSec ∧
+      sectionIsExecText textSec = true ∧
+      funcOff + funcSize ≤ textSec.shSize ∧
+      textSec.shOffset + funcOff + funcSize ≤ bs.length ∧
+      textBytes = (bs.drop (textSec.shOffset + funcOff)).take funcSize ∧
+      textBytes.length = funcSize := by
+  dsimp only [funcTextBytes?] at h
+  cases hP : parseElf64Object? bs with
+  | none => rw [hP] at h; nomatch h
+  | some obj =>
+    rw [hP] at h; dsimp only at h
+    cases hBad : (listAny sectionIsForbidden obj.sections ||
+        listAny symIsIfunc obj.syms ||
+        listAny relaIsIRelative obj.allRelas ||
+        !allExecRelaTypesAllowed obj textSecIdx) with
+    | true => rw [relocIteTrue hBad] at h; nomatch h
+    | false =>
+      rw [relocIteFalse hBad] at h
+      have hBad3 := (relocBorFalse hBad).1
+      have hExecOk : allExecRelaTypesAllowed obj textSecIdx = true :=
+        relocBoolTrueOfNotFalse (relocBorFalse hBad).2
+      have hBadL := (relocBorFalse hBad3).1
+      have hNoIR := (relocBorFalse hBad3).2
+      have hNoForb := (relocBorFalse hBadL).1
+      have hNoIf := (relocBorFalse hBadL).2
+      have hHyg : objectHasNoForbiddenElfFeatures bs = true := by
+        dsimp only [objectHasNoForbiddenElfFeatures]
+        rw [hP]; dsimp only
+        rw [hNoForb, hNoIf, hNoIR,
+          allExecRelaFootprintsInBounds_of_allowed obj textSecIdx hExecOk]; rfl
+      cases hText : listGet? obj.sections textSecIdx with
+      | none => rw [hText] at h; nomatch h
+      | some textSec =>
+        rw [hText] at h; dsimp only at h
+        cases hTextBad : (!sectionIsExecText textSec ||
+            !Nat.ble (funcOff + funcSize) textSec.shSize) with
+        | true => rw [relocIteTrue hTextBad] at h; nomatch h
+        | false =>
+          rw [relocIteFalse hTextBad] at h
+          have hTextOk := relocBorFalse hTextBad
+          have hExec : sectionIsExecText textSec = true :=
+            relocBoolTrueOfNotFalse hTextOk.1
+          have hFuncLe : funcOff + funcSize ≤ textSec.shSize :=
+            Nat.le_of_ble_eq_true (relocBoolTrueOfNotFalse hTextOk.2)
+          have hSl := sliceBytes?_spec bs (textSec.shOffset + funcOff)
+            funcSize textBytes h
+          exact ⟨hHyg, ⟨obj, textSec, rfl, hExecOk, hText, hExec, hFuncLe,
+            hSl.1, hSl.2.1, hSl.2.2⟩⟩
+
+/-- Soundness of composed raw-ELF `decodeFuncFromElf?` (`[propext]` only):
+any decoded trace enforces `cfg.requireRelocForRip = true`, comes from raw
+ELF64 object `bs` passing whole-object hygiene and the target-section
+relocation allowlist (`allExecRelaTypesAllowed obj textSecIdx = true`, so every
+relocation against `textSecIdx` is `R_X86_64_PC32`), with `textBytes`
+sliced directly from validated executable `PROGBITS` section `textSecIdx`
+(`funcOff + funcSize ≤ shSize`), relocations extracted via
 `extractFuncPcRelRelocs?`, exact 1-to-1 `localDecodeCoverageOk`, AND EVERY
 decoded `.ripRel` operand in `tr` validated via `resolvePc32RodataReloc`
 (`seg = none`, `addr32 = false`, non-negative `effOff = Int.ofNat ref.byteOff`,
@@ -2649,6 +3128,8 @@ theorem decodeFuncFromElf?_sound (cfg : DecodeConfig) (bs : List UInt8)
     ∃ textBytes relocs,
       funcTextBytes? bs textSecIdx funcOff funcSize = some textBytes ∧
       extractFuncPcRelRelocs? bs textSecIdx funcOff funcSize = some relocs ∧
+      (∃ obj, parseElf64Object? bs = some obj ∧
+        allExecRelaTypesAllowed obj textSecIdx = true) ∧
       localDecodeCoverageOk cfg relocs textBytes = true ∧
       decodeStream cfg relocs textBytes = some tr ∧
       ∀ off len ins, (off, len, ins) ∈ tr →
@@ -2718,8 +3199,15 @@ theorem decodeFuncFromElf?_sound (cfg : DecodeConfig) (bs : List UInt8)
                   subst hTrEq
                   have hHyg := (extractFuncPcRelRelocs?_resolves_overlapping bs
                     textSecIdx funcOff funcSize relocs hRel).1
+                  have ⟨objE, _, hPE, hAlE, _⟩ :=
+                    (extractFuncPcRelRelocs?_resolves_overlapping bs
+                      textSecIdx funcOff funcSize relocs hRel).2
+                  have hObjE : objE = obj :=
+                    Option.some.inj (Eq.trans (Eq.symm hPE) hObj)
+                  rw [hObjE] at hAlE
                   refine ⟨rfl, hHyg,
-                    ⟨textBytes, relocs, rfl, rfl, hCov, hDec, ?_⟩⟩
+                    ⟨textBytes, relocs, rfl, rfl, ⟨obj, rfl, hAlE⟩, hCov, hDec,
+                      ?_⟩⟩
                   intro off len ins hMem seg a32 secOpt relocOffOpt effOff
                     accBytes hOp
                   have hOk := relocListAllMem
@@ -2786,7 +3274,7 @@ theorem decodeFuncFromElf?_sound (cfg : DecodeConfig) (bs : List UInt8)
                                       sym', sec', hP', hText', hExec', hRs', _,
                                       _, hR', _, _, hSym', _, hSec', _, _, _,
                                       hRo', hRefSec', _, hLe', hMb', _,
-                                      hNoRoRela', hNoRoImp'⟩ := hS.2
+                                      hNoRoRela', hNoRoImp', _⟩ := hS.2
                                 rw [hObj] at hP'
                                 have hObjEq : obj = obj' := Option.some.inj hP'
                                 subst hObjEq
