@@ -32,9 +32,9 @@ use std::{
 use anneal_mir_eval::{
     AllocByte, Allocation, Block, Body, CallerMemory, CaptureInput, ConstLit, CoreCallOp,
     Counterexample, EvalConfig, FaultDetail, FaultKind, IntTy, IntWidth, Mutability, Operand,
-    Outcome, Place, ProbeConfig, Program, ProjectionElem, PtrVal, Rvalue, Scope, Statement,
-    StepTrace, SysrootNumKind, SysrootNumOp, TargetEndian, Terminator, Ty, UbClass, UnwindAction,
-    Val, WitnessClass, eval_body_with_caller_mem, probe_body,
+    Outcome, PanicStrategy, Place, ProbeConfig, Program, ProjectionElem, PtrVal, Rvalue, Scope,
+    Statement, StepTrace, SysrootNumKind, SysrootNumOp, TargetEndian, Terminator, Ty, UbClass,
+    UnwindAction, Val, WitnessClass, eval_body_with_caller_mem, probe_body,
 };
 
 const U8_TY: Ty = Ty::Int(IntTy { width: IntWidth::I8, signed: false });
@@ -634,6 +634,8 @@ fn miri_witness_replay_confirms_probe_ub_and_contrasts_model_only() {
                 Block { statements: vec![], terminator: Terminator::Ret, cleanup: false },
             ],
         }],
+        panic: PanicStrategy::Unwind,
+        has_local_panic_handler: true,
     };
     let uadd_report = probe_body(
         &uadd_prog,
@@ -703,6 +705,8 @@ fn miri_witness_replay_confirms_probe_ub_and_contrasts_model_only() {
                 Block { statements: vec![], terminator: Terminator::Ret, cleanup: false },
             ],
         }],
+        panic: PanicStrategy::Unwind,
+        has_local_panic_handler: true,
     };
     let v2_cfg = EvalConfig::profile_v2(TargetEndian::Little);
     let ptr_add_report =
@@ -744,6 +748,8 @@ fn miri_witness_replay_confirms_probe_ub_and_contrasts_model_only() {
                 cleanup: false,
             }],
         }],
+        panic: PanicStrategy::Unwind,
+        has_local_panic_handler: true,
     };
     let deref_report =
         probe_body(&deref_prog, 0, &ProbeConfig { max_cases: 32, fuel: 32, seed: 1 }, &v2_cfg);
@@ -789,6 +795,8 @@ fn miri_witness_replay_confirms_probe_ub_and_contrasts_model_only() {
                 Block { statements: vec![], terminator: Terminator::Ret, cleanup: false },
             ],
         }],
+        panic: PanicStrategy::Unwind,
+        has_local_panic_handler: true,
     };
     let dead_cm = CallerMemory {
         allocations: vec![Allocation {
@@ -1057,6 +1065,8 @@ fn miri_witness_replay_confirms_probe_ub_and_contrasts_model_only() {
                 cleanup: false,
             }],
         }],
+        panic: PanicStrategy::Unwind,
+        has_local_panic_handler: true,
     };
     let overlap_args = vec![Val::Tuple(vec![Val::u32(1), Val::u32(2), Val::u32(3)])];
     let overlap_cm = CallerMemory::default();

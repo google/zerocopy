@@ -20,16 +20,18 @@ use serde::{Deserialize, Serialize};
 
 use crate::{
     ir::{
-        AggregateKind, AssertKind, BinOp, Block, Body, CastKind, CoreCallOp, EnumTagRepr, IntTy,
-        IntWidth, Mutability, Operand, Place, Program, ProjectionElem, Rvalue, Statement,
-        SysrootNumKind, SysrootNumOp, Terminator, Ty, UnOp, UnwindAction,
+        AggregateKind, AssertKind, BinOp, Block, Body, CastKind, ConstLit, CoreCallOp, EnumTagRepr,
+        IntTy, IntWidth, Mutability, Operand, PanicStrategy, Place, Program, ProjectionElem,
+        RodataByte, Rvalue, Statement, SysrootNumKind, SysrootNumOp, Terminator, Ty, UnOp,
+        UnwindAction,
     },
     memory::{
         CallerMemory, ISIZE_MAX_BYTES, LayoutData, MemPlace, MemoryState, TargetEndian,
-        deinit_indirect, encode_val, eval_const_lit, int_layout, layout_of_ty, load_indirect,
-        offset_is_aligned, ptr_add_in_mem, ref_access_spans, ref_access_spans_list,
-        ref_valid_in_mem, refs_stay_in_caller_mem, refs_valid_in_mem, refs_valid_in_mem_list,
-        slice_get_unchecked_check, spans_pairwise_disjoint, store_indirect, valid_caller_memory,
+        deinit_indirect, encode_val, eval_const_lit, has_escaping_rodata_ptr, int_layout,
+        layout_of_ty, load_indirect, offset_is_aligned, ptr_add_in_mem, ref_access_spans,
+        ref_access_spans_list, ref_valid_in_mem, refs_stay_in_caller_mem, refs_valid_in_mem,
+        refs_valid_in_mem_list, slice_get_unchecked_check, spans_pairwise_disjoint, store_indirect,
+        str_slice_utf8_in_mem, valid_caller_memory,
     },
     ops::{eval_bin_op, eval_int_to_int_cast, eval_un_op},
     value::{
@@ -93,8 +95,9 @@ pub enum TerminalOut {
 #[serde(tag = "kind", content = "value", rename_all = "snake_case")]
 pub enum Outcome {
     Returned(TerminalOut),
-    /// Process termination via `UnwindAction::Terminate` (unused by current
-    /// `Trusted.MirSemantics`, retained for trace schema compatibility).
+    /// Process abort with the caller-visible memory at that point
+    /// (`Trusted.MirSemantics.TerminalOut.aborted`), from a Profile v2
+    /// `CoreCallOp::PanicAbort` under `-Cpanic=abort`.
     Aborted {
         caller_mem: CallerMemory,
     },
@@ -705,7 +708,7 @@ impl MachineState {
         if let Some(stmt) = bb.statements.get(stmt_idx) {
             self.eval_statement_v2(body, stmt, config)
         } else if stmt_idx == bb.statements.len() {
-            self.eval_terminator_v2(body, bb, config)
+            self.eval_terminator_v2(program, body, bb, config)
         } else {
             StepOutcome::Fault(FaultDetail::unsupported("statement index out of bounds"))
         }
@@ -1369,7 +1372,13 @@ impl MachineState {
         StepOutcome::Stepped { summary }
     }
 
-    fn eval_terminator_v2(&mut self, body: &Body, bb: &Block, config: &EvalConfig) -> StepOutcome {
+    fn eval_terminator_v2(
+        &mut self,
+        program: &Program,
+        body: &Body,
+        bb: &Block,
+        config: &EvalConfig,
+    ) -> StepOutcome {
         match &bb.terminator {
             Terminator::Goto { block } => {
                 self.frames[0].block_idx = *block as usize;
@@ -1436,6 +1445,11 @@ impl MachineState {
                         ));
                     }
                 };
+                if has_escaping_rodata_ptr(&self.caller_mem, &self.mem, ret_ty, &ret_val) {
+                    return StepOutcome::Fault(FaultDetail::unsupported(
+                        "returning a pointer into callee .rodata is unsupported",
+                    ));
+                }
                 if let Err(class) = refs_stay_in_caller_mem(&self.caller_mem, ret_ty, &ret_val) {
                     return StepOutcome::Fault(FaultDetail::undefined_classified(
                         class,
@@ -1600,6 +1614,60 @@ impl MachineState {
                 self.frames[0].block_idx = *target as usize;
                 self.frames[0].stmt_idx = 0;
                 StepOutcome::Stepped { summary: format!("core_call({op:?}->bb{target})") }
+            }
+            Terminator::CoreCall {
+                op: CoreCallOp::PanicAbort,
+                args,
+                dst,
+                target: None,
+                unwind,
+            } => {
+                // `evalTerminatorV2`'s `.coreCall .panicAbort args dst none unwind`
+                // arm: a live `!` destination, then `validatePanicAbortArgs`,
+                // then `evalCorePanicAbort`.
+                if !dst.projection.is_empty() {
+                    return StepOutcome::Fault(FaultDetail::unsupported(
+                        "panicAbort destination must be an unprojected local",
+                    ));
+                }
+                let dst_idx = dst.local as usize;
+                if !matches!(
+                    (body.local_tys.get(dst_idx), self.frames[0].locals.get(dst_idx)),
+                    (
+                        Some(Ty::Never),
+                        Some(LocalSlot::Immediate { .. } | LocalSlot::Indirect { .. })
+                    )
+                ) {
+                    return StepOutcome::Fault(FaultDetail::unsupported(
+                        "panicAbort destination must be a live `!` local",
+                    ));
+                }
+                let mut next_locals = self.frames[0].locals.clone();
+                let mut next_moved = self.moved_locals_per_frame[0].clone();
+                let mut next_move_bytes = self.move_deinit_bytes.clone();
+                let mut next_mem = self.mem.clone();
+                let mut moved =
+                    MoveTracker { locals: &mut next_moved, bytes: &mut next_move_bytes };
+                let typed_args = match eval_arg_operands_v2(
+                    &body.local_tys,
+                    &mut next_locals,
+                    &mut moved,
+                    &mut next_mem,
+                    args,
+                    config.endian,
+                ) {
+                    Ok(v) => v,
+                    Err(err) => return StepOutcome::Fault(err),
+                };
+                if let Err(err) = validate_panic_abort_args(&next_mem, &typed_args, config.endian) {
+                    return StepOutcome::Fault(err);
+                }
+                eval_core_panic_abort(
+                    program.panic,
+                    *unwind,
+                    program.has_local_panic_handler,
+                    next_mem.extract_caller_memory(&self.caller_mem),
+                )
             }
             Terminator::CoreCall { target: None, .. }
             | Terminator::UnwindResume
@@ -3008,6 +3076,7 @@ fn copy_repr_of_ty_v2(ty: &Ty) -> CopyReprV2 {
         }
         Ty::OverflowPair(_)
         | Ty::Slice { .. }
+        | Ty::Str
         | Ty::RangeTo { .. }
         | Ty::RangeFrom { .. }
         | Ty::Unsupported => CopyReprV2::MemoryCopy,
@@ -3154,9 +3223,11 @@ fn overlap_abi_repr_v2(ty: &Ty) -> OverlapAbiReprV2 {
                 TupleOverlapPayloadV2::Memory => OverlapAbiReprV2::Memory { align_log2: max_align },
             }
         }
-        Ty::Slice { .. } | Ty::RangeTo { .. } | Ty::RangeFrom { .. } | Ty::Unsupported => {
-            OverlapAbiReprV2::Unknown
-        }
+        Ty::Slice { .. }
+        | Ty::Str
+        | Ty::RangeTo { .. }
+        | Ty::RangeFrom { .. }
+        | Ty::Unsupported => OverlapAbiReprV2::Unknown,
     }
 }
 
@@ -4005,6 +4076,14 @@ fn eval_operand_to_slot_v2(
     endian: TargetEndian,
 ) -> Result<(Ty, ReadSlotVal), FaultDetail> {
     match opnd {
+        Operand::Constant {
+            ty: ty @ Ty::Ref { mutability: Mutability::Shared, pointee },
+            lit: ConstLit::RodataRef { bytes, align_log2, offset_bytes, slice_len: Some(len) },
+        } if **pointee == Ty::Str => {
+            let val =
+                eval_rodata_str_const_v2(mem, endian, bytes, *align_log2, *offset_bytes, *len)?;
+            Ok((ty.clone(), ReadSlotVal::Init(val)))
+        }
         Operand::Constant { ty, lit } => {
             let val = eval_const_lit(ty, lit)?;
             Ok((ty.clone(), ReadSlotVal::Init(val)))
@@ -4015,6 +4094,88 @@ fn eval_operand_to_slot_v2(
             };
             read_place_v2(body_locals, locals, moved, mem, is_move, local, projection, endian)
         }
+    }
+}
+
+/// The shared `&str` arm of `Trusted.MirSemantics.evalRodataRefConstV2`:
+/// allocate the read-only bytes, check `refValidInMem .shared .str`, and fail
+/// closed with `Unsupported` on initialized non-UTF-8 bytes
+/// (`strSliceUtf8InMem`). Other `.rodata` reference constants are not yet
+/// evaluated here.
+fn eval_rodata_str_const_v2(
+    mem: &mut MemoryState,
+    endian: TargetEndian,
+    bytes: &[RodataByte],
+    align_log2: u32,
+    offset_bytes: u64,
+    len: u64,
+) -> Result<Val, FaultDetail> {
+    if bytes.len() as u64 >= ISIZE_MAX_BYTES || align_log2 > 29 {
+        return Err(FaultDetail::unsupported("`&str` rodata constant out of range"));
+    }
+    let alloc_bytes = bytes
+        .iter()
+        .map(|b| match b {
+            RodataByte::Uninit => AllocByte::Uninit,
+            RodataByte::Init { byte } => AllocByte::Init { byte: *byte, prov: None },
+        })
+        .collect();
+    let alloc_id = mem.try_allocate_rodata(alloc_bytes, align_log2)?;
+    let ptr = PtrVal { alloc_id: Some(alloc_id), offset_bytes, width: IntWidth::Isize };
+    let val = Val::SlicePtr { ptr, len };
+    ref_valid_in_mem(mem, endian, Mutability::Shared, &Ty::Str, &val)?;
+    if !str_slice_utf8_in_mem(mem, ptr, len) {
+        return Err(FaultDetail::unsupported("`&str` rodata constant is not valid UTF-8"));
+    }
+    Ok(val)
+}
+
+/// Validate the evaluated operand of `CoreCallOp::PanicAbort`, matching
+/// `Trusted.MirSemantics.validatePanicAbortArgs`: one live, initialized shared
+/// `&str` holding valid UTF-8.
+fn validate_panic_abort_args(
+    mem: &MemoryState,
+    args: &[(Ty, Val)],
+    endian: TargetEndian,
+) -> Result<(), FaultDetail> {
+    let [(Ty::Ref { mutability: Mutability::Shared, pointee }, val @ Val::SlicePtr { ptr, len })] =
+        args
+    else {
+        return Err(FaultDetail::unsupported("panicAbort expects one shared `&str` operand"));
+    };
+    if **pointee != Ty::Str || ptr.width != IntWidth::Isize {
+        return Err(FaultDetail::unsupported("panicAbort expects one shared `&str` operand"));
+    }
+    ref_valid_in_mem(mem, endian, Mutability::Shared, &Ty::Str, val)?;
+    if !str_slice_utf8_in_mem(mem, *ptr, *len) {
+        return Err(FaultDetail::unsupported("panicAbort message is not valid UTF-8"));
+    }
+    Ok(())
+}
+
+/// Abort rule for diverging `core::panicking::{panic, panic_nounwind}`,
+/// matching `Trusted.MirSemantics.evalCorePanicAbort`: abort only under
+/// `-Cpanic=abort` without a crate-local `#[panic_handler]` and a non-cleanup
+/// unwind action; otherwise fail closed.
+fn eval_core_panic_abort(
+    panic: PanicStrategy,
+    unwind: UnwindAction,
+    has_local_panic_handler: bool,
+    caller_mem: CallerMemory,
+) -> StepOutcome {
+    if has_local_panic_handler {
+        return StepOutcome::Fault(FaultDetail::unsupported(
+            "panicAbort with a crate-local #[panic_handler] is unsupported",
+        ));
+    }
+    match (panic, unwind) {
+        (
+            PanicStrategy::Abort,
+            UnwindAction::Continue | UnwindAction::Unreachable | UnwindAction::Terminate,
+        ) => StepOutcome::Aborted { caller_mem },
+        _ => StepOutcome::Fault(FaultDetail::unsupported(
+            "panicAbort requires -Cpanic=abort and a non-cleanup unwind action",
+        )),
     }
 }
 
@@ -4460,6 +4621,19 @@ fn eval_rvalue_v2(
                             "slice PtrMetadata destination must be usize",
                         ));
                     }
+                    Ok(Val::usize_val(*len))
+                }
+                (
+                    Ty::Ref { mutability: Mutability::Shared, pointee },
+                    Val::SlicePtr { len, .. },
+                ) if **pointee == Ty::Str => {
+                    if !dst_ty.is_usize() {
+                        return Err(FaultDetail::unsupported(
+                            "str PtrMetadata destination must be usize",
+                        ));
+                    }
+                    ref_valid_in_mem(mem, endian, Mutability::Shared, pointee, &val)
+                        .map_err(downgrade_conservative_ref_check)?;
                     Ok(Val::usize_val(*len))
                 }
                 (Ty::Ref { mutability, pointee }, Val::Ptr(_)) => {

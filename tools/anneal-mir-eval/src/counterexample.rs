@@ -443,6 +443,39 @@ fn boundary_candidates_for_ref(
             });
             Some(out)
         }
+        Ty::Str => {
+            // Shared `&str`: an empty dangling string, ASCII, multi-byte
+            // UTF-8, a substring at a non-zero offset, and initialized
+            // non-UTF-8 bytes. `ValidEntryArgsV2` admits the last one because
+            // `refValidInMem` requires only initialized bytes.
+            let mut out = vec![ArgCandidate::pure(Val::SlicePtr {
+                ptr: PtrVal { alloc_id: None, offset_bytes: 1, width: IntWidth::Isize },
+                len: 0,
+            })];
+            let multi_byte = "\u{e9}\u{1f600}".as_bytes();
+            let offset = "xy\u{20ac}".as_bytes();
+            for (bytes, offset_bytes, len) in
+                [(&b"a"[..], 0, 1), (multi_byte, 0, 6), (offset, 2, 3), (&[0xFF, 0xC0][..], 0, 2)]
+            {
+                out.push(ArgCandidate {
+                    val: Val::SlicePtr {
+                        ptr: PtrVal { alloc_id: Some(1), offset_bytes, width: IntWidth::Isize },
+                        len,
+                    },
+                    allocs: vec![Allocation {
+                        alloc_id: 1,
+                        align_log2: 0,
+                        mutability,
+                        bytes: bytes
+                            .iter()
+                            .map(|&byte| AllocByte::Init { byte, prov: None })
+                            .collect(),
+                        live: true,
+                    }],
+                });
+            }
+            Some(out)
+        }
         other => {
             let lay = layout_of_ty(other, true)?;
             let pointee_vals = boundary_candidates_for_ty(other, true, endian)?;
@@ -842,6 +875,32 @@ fn random_candidate_for_ty(
                         align_log2: lay.align_log2,
                         mutability: *mutability,
                         bytes,
+                        live: true,
+                    }],
+                });
+            }
+            if **pointee == Ty::Str {
+                // A random valid UTF-8 string of up to 8 one- to four-byte
+                // characters.
+                const CHARS: [char; 5] = ['a', 'Z', '\u{e9}', '\u{20ac}', '\u{1f600}'];
+                let count = (rng.next_u64() % 9) as usize;
+                let mut text = String::new();
+                for _ in 0..count {
+                    text.push(CHARS[rng.choose_index(CHARS.len())]);
+                }
+                return Some(ArgCandidate {
+                    val: Val::SlicePtr {
+                        ptr: PtrVal { alloc_id: Some(1), offset_bytes: 0, width: IntWidth::Isize },
+                        len: text.len() as u64,
+                    },
+                    allocs: vec![Allocation {
+                        alloc_id: 1,
+                        align_log2: 0,
+                        mutability: *mutability,
+                        bytes: text
+                            .bytes()
+                            .map(|byte| AllocByte::Init { byte, prov: None })
+                            .collect(),
                         live: true,
                     }],
                 });

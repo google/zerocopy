@@ -1620,7 +1620,16 @@ noncomputable def readPlaceV2 (bodyLocals : List MirTy) (locals : List LocalSlot
 read-only provenance-free `Allocation` in `mem` and checking `refValidInMem`
 for reference types. Mutable `&mut`/`*mut` constants into read-only memory and
 out-of-range sizes, alignments, offsets, or lengths fail closed with
-`.unsupported`. -/
+`.unsupported`.
+
+A shared `&str` constant must additionally hold valid UTF-8
+(`strSliceUtf8InMem`). The Reference requires only that a `str` value be
+initialized (`src/behavior-considered-undefined.md:180-181`,
+`rust-lang/reference` `ad35aca481751a06afeb23820a672b0f3b11a476`), so UTF-8 is
+a library safety invariant rather than a validity invariant. Initialized
+non-UTF-8 bytes therefore fail closed with `.unsupported` rather than
+`.undefined`, mirroring `validatePanicAbortArgs` and the capture-side check in
+`validate_constant`. -/
 noncomputable def evalRodataRefConstV2 (ty : MirTy) (bytes : List RodataByte)
     (alignLog2 offsetBytes : Nat) (sliceLen : Option Nat)
     (locals : List LocalSlot) (mem : MemoryState) :

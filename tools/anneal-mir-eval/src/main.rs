@@ -71,6 +71,7 @@ fn format_ty(ty: &Ty) -> String {
             format!("{prefix}{}", format_ty(pointee))
         }
         Ty::Slice { elem } => format!("[{}]", format_ty(elem)),
+        Ty::Str => "str".into(),
         Ty::RangeTo { elem } => format!("RangeTo<{}>", format_ty(elem)),
         Ty::RangeFrom { elem } => format!("RangeFrom<{}>", format_ty(elem)),
         Ty::Array { elem, len } => format!("[{}; {len}]", format_ty(elem)),
@@ -584,7 +585,7 @@ fn cmd_eval(args: &[String]) -> Result<ExitCode, String> {
                 println!("  UNWOUND (panic){site_tag}");
             }
             Outcome::Aborted { .. } => {
-                println!("  ABORTED (UnwindAction::Terminate){site_tag}");
+                println!("  ABORTED (panic abort){site_tag}");
             }
             Outcome::Fault(err) => {
                 if let Some(class) = err.witness_class() {
@@ -833,6 +834,8 @@ mod tests {
             entry_def_id: 0,
             pointer_width_bits: 64,
             overflow_checks: false,
+            panic: anneal_mir_eval::PanicStrategy::Unwind,
+            has_local_panic_handler: true,
             mir_profile_version: 1,
         };
         let v2_prog = Program { mir_profile_version: 2, ..v1_prog.clone() };
