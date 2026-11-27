@@ -255,7 +255,7 @@ theorem evalRefUnOp_eq (op : UnOp) (v : Val) :
   cases v with
   | bool b => cases op <;> rfl
   | unit | enumVal _ _ | ptr _ | slicePtr _ _ | rangeTo _ | rangeFrom _
-  | tuple _ | array _ | bytes _ | char _ | ordering _ =>
+  | range _ _ | optionVal _ | tuple _ | array _ | bytes _ | char _ | ordering _ =>
     cases op <;> rfl
   | scalar sv =>
     cases sv with
@@ -1236,22 +1236,22 @@ theorem evalRefBinOp_eq (op : BinOp) (lhs rhs : Val) :
     evalRefBinOp op lhs rhs = evalBinOp op lhs rhs := by
   cases lhs with
   | unit | enumVal _ _ | ptr _ | slicePtr _ _ | rangeTo _ | rangeFrom _
-  | tuple _ | array _ | bytes _ | ordering _ =>
+  | range _ _ | optionVal _ | tuple _ | array _ | bytes _ | ordering _ =>
     cases rhs <;> rfl
   | bool l =>
     cases rhs with
     | unit | enumVal _ _ | ptr _ | slicePtr _ _ | rangeTo _ | rangeFrom _
-    | tuple _ | array _ | bytes _ | scalar _ | char _ | ordering _ => rfl
+    | range _ _ | optionVal _ | tuple _ | array _ | bytes _ | scalar _ | char _ | ordering _ => rfl
     | bool r => cases op <;> cases l <;> cases r <;> rfl
   | char l =>
     cases rhs with
     | unit | enumVal _ _ | ptr _ | slicePtr _ _ | rangeTo _ | rangeFrom _
-    | tuple _ | array _ | bytes _ | scalar _ | bool _ | ordering _ => rfl
+    | range _ _ | optionVal _ | tuple _ | array _ | bytes _ | scalar _ | bool _ | ordering _ => rfl
     | char r => exact evalCharBinOp_eq op l r
   | scalar l =>
     cases rhs with
     | unit | enumVal _ _ | ptr _ | slicePtr _ _ | rangeTo _ | rangeFrom _
-    | tuple _ | array _ | bytes _ | bool _ | char _ | ordering _ => rfl
+    | range _ _ | optionVal _ | tuple _ | array _ | bytes _ | bool _ | char _ | ordering _ => rfl
     | scalar r =>
       cases l with
       | mk w₁ s₁ bits₁ =>

@@ -230,7 +230,7 @@ theorem val_ty_some_elim {v : Val} {ty : MirTy} (h : v.ty? = some ty) :
       | true =>
         rw [h1, h2] at h; injection h with ht
         exact Or.inr (Or.inr (Or.inr (Or.inr (Or.inr (Or.inl ⟨ety, idx, rfl, h1, nat_lt_of_blt_eq_true h2, ht.symm⟩)))))
-  | ptr _ | slicePtr _ _ | array _ | rangeTo _ | rangeFrom _ => cases h
+  | ptr _ | slicePtr _ _ | array _ | range _ _ | rangeTo _ | rangeFrom _ | optionVal _ => cases h
   | bytes _ => cases h
   | tuple fs =>
     cases fs with
@@ -3431,6 +3431,7 @@ theorem evalRvalue_sim (exact : Bool) (bodyLocals : List MirTy)
                   | _ => cases hadm
   | useRetag _ | ref _ _ | addressOf _ _ | fakeAddressOf _
   | aggregateTuple _ | aggregateArray _ _ | repeat_ _ _ _
-  | aggregateRangeTo _ _ | aggregateRangeFrom _ _ | unsupported => cases hadm
+  | aggregateRange _ _ _ | aggregateRangeTo _ _ | aggregateRangeFrom _ _
+  | aggregateOption _ _ _ | unsupported => cases hadm
 
 end Anneal.MiniRust

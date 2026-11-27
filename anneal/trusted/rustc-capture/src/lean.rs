@@ -186,6 +186,8 @@ fn ty_at(t: &Ty, indent: usize) -> String {
         Ty::RangeFrom { elem } => {
             format!("(Trusted.MirAst.MirTy.rangeFrom {})", ty_at(elem, indent))
         }
+        Ty::Range { elem } => format!("(Trusted.MirAst.MirTy.range {})", ty_at(elem, indent)),
+        Ty::Option { elem } => format!("(Trusted.MirAst.MirTy.option {})", ty_at(elem, indent)),
         Ty::Enum(ety) => {
             let tag_repr = match ety.tag_repr() {
                 ir::EnumTagRepr::ZeroSized => "Trusted.MirAst.EnumTagRepr.zeroSized".into(),
@@ -269,6 +271,9 @@ fn place_at(place: &Place, indent: usize) -> String {
             } => format!(
                 "(Trusted.MirAst.ProjectionElem.constantIndex {offset} {min_length} {from_end})"
             ),
+            PlaceElem::Downcast { variant_idx } => {
+                format!("(Trusted.MirAst.ProjectionElem.downcast {variant_idx})")
+            }
         });
         format!("(Trusted.MirAst.Place.mk {} {projs})", place.local)
     }
@@ -418,6 +423,30 @@ fn rvalue_at(value: &Rvalue, indent: usize) -> String {
             ty_at(elem_ty, indent),
             operand_at(start, indent)
         ),
+        Rvalue::AggregateRange {
+            elem_ty,
+            start,
+            end,
+        } => format!(
+            "(Trusted.MirAst.Rvalue.aggregateRange {} {} {})",
+            ty_at(elem_ty, indent),
+            operand_at(start, indent),
+            operand_at(end, indent)
+        ),
+        Rvalue::AggregateOption {
+            variant_idx,
+            inner_ty,
+            payload,
+        } => {
+            let p_str = match payload {
+                None => "none".into(),
+                Some(op) => format!("(some {})", operand_at(op, indent)),
+            };
+            format!(
+                "(Trusted.MirAst.Rvalue.aggregateOption {variant_idx} {} {p_str})",
+                ty_at(inner_ty, indent)
+            )
+        }
     }
 }
 
@@ -478,6 +507,99 @@ fn core_call_op(op: &CoreCallOp, indent: usize) -> String {
             mutability.lean_name(),
             ty_at(pointee, indent)
         ),
+        CoreCallOp::SliceIndexRange { mutability, elem } => format!(
+            "(Trusted.MirAst.CoreCallOp.sliceIndexRange Trusted.MirAst.Mutability.{} {})",
+            mutability.lean_name(),
+            ty_at(elem, indent)
+        ),
+        CoreCallOp::SliceIndexRangeFrom { mutability, elem } => format!(
+            "(Trusted.MirAst.CoreCallOp.sliceIndexRangeFrom Trusted.MirAst.Mutability.{} {})",
+            mutability.lean_name(),
+            ty_at(elem, indent)
+        ),
+        CoreCallOp::SliceIsEmpty { elem } => {
+            format!("(Trusted.MirAst.CoreCallOp.sliceIsEmpty {})", ty_at(elem, indent))
+        }
+        CoreCallOp::SliceSplitAt { mutability, elem } => format!(
+            "(Trusted.MirAst.CoreCallOp.sliceSplitAt Trusted.MirAst.Mutability.{} {})",
+            mutability.lean_name(),
+            ty_at(elem, indent)
+        ),
+        CoreCallOp::NumIsMultipleOf(ity) => format!(
+            "(Trusted.MirAst.CoreCallOp.numIsMultipleOf Trusted.MirAst.IntWidth.{} {})",
+            ity.width.lean_name(),
+            ity.signed
+        ),
+        CoreCallOp::NumCheckedAdd(ity) => format!(
+            "(Trusted.MirAst.CoreCallOp.numCheckedAdd Trusted.MirAst.IntWidth.{} {})",
+            ity.width.lean_name(),
+            ity.signed
+        ),
+        CoreCallOp::NumCheckedMul(ity) => format!(
+            "(Trusted.MirAst.CoreCallOp.numCheckedMul Trusted.MirAst.IntWidth.{} {})",
+            ity.width.lean_name(),
+            ity.signed
+        ),
+        CoreCallOp::NumCheckedSub(ity) => format!(
+            "(Trusted.MirAst.CoreCallOp.numCheckedSub Trusted.MirAst.IntWidth.{} {})",
+            ity.width.lean_name(),
+            ity.signed
+        ),
+        CoreCallOp::NumSaturatingAdd(ity) => format!(
+            "(Trusted.MirAst.CoreCallOp.numSaturatingAdd Trusted.MirAst.IntWidth.{} {})",
+            ity.width.lean_name(),
+            ity.signed
+        ),
+        CoreCallOp::NumWrappingShl(ity) => format!(
+            "(Trusted.MirAst.CoreCallOp.numWrappingShl Trusted.MirAst.IntWidth.{} {})",
+            ity.width.lean_name(),
+            ity.signed
+        ),
+        CoreCallOp::NumWrappingShr(ity) => format!(
+            "(Trusted.MirAst.CoreCallOp.numWrappingShr Trusted.MirAst.IntWidth.{} {})",
+            ity.width.lean_name(),
+            ity.signed
+        ),
+        CoreCallOp::NumLeadingZeros(ity) => format!(
+            "(Trusted.MirAst.CoreCallOp.numLeadingZeros Trusted.MirAst.IntWidth.{} {})",
+            ity.width.lean_name(),
+            ity.signed
+        ),
+        CoreCallOp::NumOverflowingAdd(ity) => format!(
+            "(Trusted.MirAst.CoreCallOp.numOverflowingAdd Trusted.MirAst.IntWidth.{} {})",
+            ity.width.lean_name(),
+            ity.signed
+        ),
+        CoreCallOp::NumOverflowingSub(ity) => format!(
+            "(Trusted.MirAst.CoreCallOp.numOverflowingSub Trusted.MirAst.IntWidth.{} {})",
+            ity.width.lean_name(),
+            ity.signed
+        ),
+        CoreCallOp::CmpMin(ity) => format!(
+            "(Trusted.MirAst.CoreCallOp.cmpMin Trusted.MirAst.IntWidth.{} {})",
+            ity.width.lean_name(),
+            ity.signed
+        ),
+        CoreCallOp::CmpMax(ity) => format!(
+            "(Trusted.MirAst.CoreCallOp.cmpMax Trusted.MirAst.IntWidth.{} {})",
+            ity.width.lean_name(),
+            ity.signed
+        ),
+        CoreCallOp::MemReplace { ty } => {
+            format!("(Trusted.MirAst.CoreCallOp.memReplace {})", ty_at(ty, indent))
+        }
+        CoreCallOp::OptionIsSome { inner } => {
+            format!("(Trusted.MirAst.CoreCallOp.optionIsSome {})", ty_at(inner, indent))
+        }
+        CoreCallOp::OptionIsNone { inner } => {
+            format!("(Trusted.MirAst.CoreCallOp.optionIsNone {})", ty_at(inner, indent))
+        }
+        CoreCallOp::OptionTake { inner } => {
+            format!("(Trusted.MirAst.CoreCallOp.optionTake {})", ty_at(inner, indent))
+        }
+        CoreCallOp::OptionUnwrap { inner } => {
+            format!("(Trusted.MirAst.CoreCallOp.optionUnwrap {})", ty_at(inner, indent))
+        }
         CoreCallOp::UsizeUncheckedSub => "Trusted.MirAst.CoreCallOp.usizeUncheckedSub".into(),
         CoreCallOp::IntToLeBytes { int_ty } => format!(
             "(Trusted.MirAst.CoreCallOp.intToLeBytes Trusted.MirAst.IntWidth.{} {})",

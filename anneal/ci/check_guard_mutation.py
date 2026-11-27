@@ -103,6 +103,7 @@ SEMANTICS_MODULES: tuple[str, ...] = (
     "Trusted/MirSemantics/Layout",
     "Trusted/MirSemantics/Memory",
     "Trusted/MirSemantics/Bytes",
+    "Trusted/MirSemantics/CoreContracts",
     "Trusted/MirSemantics/State",
     "Trusted/MirSemantics/Step",
     "Trusted/MirSemantics/Boundary",
@@ -117,6 +118,7 @@ SEMANTICS_DOWNSTREAM: dict[str, tuple[str, ...]] = {
         "Trusted/MirSemantics/Layout",
         "Trusted/MirSemantics/Memory",
         "Trusted/MirSemantics/Bytes",
+        "Trusted/MirSemantics/CoreContracts",
         "Trusted/MirSemantics/State",
         "Trusted/MirSemantics/Step",
         "Trusted/MirSemantics/Boundary",
@@ -126,6 +128,7 @@ SEMANTICS_DOWNSTREAM: dict[str, tuple[str, ...]] = {
         "Trusted/MirSemantics/Layout",
         "Trusted/MirSemantics/Memory",
         "Trusted/MirSemantics/Bytes",
+        "Trusted/MirSemantics/CoreContracts",
         "Trusted/MirSemantics/State",
         "Trusted/MirSemantics/Step",
         "Trusted/MirSemantics/Boundary",
@@ -135,7 +138,13 @@ SEMANTICS_DOWNSTREAM: dict[str, tuple[str, ...]] = {
     ),
     "Trusted/MirSemantics/Bytes": (
         "Trusted/MirSemantics/Bytes",
+        "Trusted/MirSemantics/CoreContracts",
         "Trusted/MirSemantics/State",
+        "Trusted/MirSemantics/Step",
+        "Trusted/MirSemantics/Boundary",
+    ),
+    "Trusted/MirSemantics/CoreContracts": (
+        "Trusted/MirSemantics/CoreContracts",
         "Trusted/MirSemantics/Step",
         "Trusted/MirSemantics/Boundary",
     ),
@@ -1334,7 +1343,7 @@ MIR_SEMANTICS_GUARDS: tuple[MirSemanticsGuard, ...] = (
         needs_wf_helper=False,
     ),
     # ------------------------------------------------------------------
-    # Profile v2 memory, step, type-admission, and boundary guards (47 guards)
+    # Profile v2 memory, step, type-admission, and boundary guards (71 guards)
     # ------------------------------------------------------------------
     MirSemanticsGuard(
         guard_id="mem_v2_ptr_add_null_nonzero",
@@ -1384,7 +1393,10 @@ MIR_SEMANTICS_GUARDS: tuple[MirSemanticsGuard, ...] = (
         guard_id="mem_v2_slice_null",
         target_file="trusted/lean/Trusted/MirSemantics/Memory.lean",
         target_module="Trusted/MirSemantics/Memory",
-        description="sliceFromRawPartsCheck rejects null pointer even for zero-length slices as UB",
+        description=(
+            "sliceRefRawCheck and sliceFromRawPartsCheck reject null pointer "
+            "even for zero-length slices as UB"
+        ),
         anchor=(
             "    | none =>\n"
             "      if Nat.beq p.offsetBytes.toNat 0 || Nat.blt 0 totalBytes then\n"
@@ -1404,7 +1416,10 @@ MIR_SEMANTICS_GUARDS: tuple[MirSemanticsGuard, ...] = (
         guard_id="mem_v2_slice_readonly",
         target_file="trusted/lean/Trusted/MirSemantics/Memory.lean",
         target_module="Trusted/MirSemantics/Memory",
-        description="sliceFromRawPartsCheck rejects mutable slice over .shared allocation as UB",
+        description=(
+            "sliceRefRawCheck and sliceFromRawPartsCheck reject mutable slice "
+            "over .shared allocation as UB"
+        ),
         anchor=(
             "        else if isMut && !Mutability.beq a.mutability .mut then\n"
             "          .error .undefined"
@@ -1424,16 +1439,18 @@ MIR_SEMANTICS_GUARDS: tuple[MirSemanticsGuard, ...] = (
         target_module="Trusted/MirSemantics/Memory",
         description="sliceFromRawPartsCheck rejects uninitialized bytes in slice span as UB",
         anchor=(
-            "        else if !isSliceAllInit ((a.bytes.drop p.offsetBytes.toNat).take totalBytes) then\n"
-            "          .error .undefined\n"
-            "        else\n"
-            "          .ok (.slicePtr p len)"
+            "  | .ok (some a) =>\n"
+            "    if !isSliceAllInit ((a.bytes.drop p.offsetBytes.toNat).take totalBytes) then\n"
+            "      .error .undefined\n"
+            "    else\n"
+            "      .ok (.slicePtr p len)"
         ),
         replacement=(
-            "        else if false then\n"
-            "          .error .undefined\n"
-            "        else\n"
-            "          .ok (.slicePtr p len)"
+            "  | .ok (some _) =>\n"
+            "    if false then\n"
+            "      .error .undefined\n"
+            "    else\n"
+            "      .ok (.slicePtr p len)"
         ),
         fixture_module="MemoryRefutations",
         theorem_name="refute_mem_v2_slice_uninit",
@@ -1501,6 +1518,41 @@ MIR_SEMANTICS_GUARDS: tuple[MirSemanticsGuard, ...] = (
         ),
         fixture_module="MemoryRefutations",
         theorem_name="refute_mem_v2_entry_raw_ptr_arg_fresh",
+        sanity_module="MemorySanity",
+        needs_wf_helper=False,
+    ),
+    MirSemanticsGuard(
+        guard_id="mem_v2_entry_option_raw_ptr_ty",
+        target_file="trusted/lean/Trusted/MirSemantics/Memory.lean",
+        target_module="Trusted/MirSemantics/Memory",
+        description=(
+            "tyHasRawPtrV2 recurses through Option so Option<*const T> "
+            "parameters advance the entry nextAllocId"
+        ),
+        anchor=(
+            "    | .option e | .rangeTo e | .rangeFrom e | .range e => "
+            "tyHasRawPtrV2 e\n"
+        ),
+        replacement=(
+            "    | .option _ => false\n"
+            "    | .rangeTo e | .rangeFrom e | .range e => tyHasRawPtrV2 e\n"
+        ),
+        fixture_module="MemoryRefutations",
+        theorem_name="refute_mem_v2_entry_option_raw_ptr_ty",
+        sanity_module="MemorySanity",
+        needs_wf_helper=False,
+    ),
+    MirSemanticsGuard(
+        guard_id="mem_v2_entry_option_raw_ptr_val",
+        target_file="trusted/lean/Trusted/MirSemantics/Memory.lean",
+        target_module="Trusted/MirSemantics/Memory",
+        description=(
+            "maxValPtrAllocId counts provenance AllocIds inside Some payloads"
+        ),
+        anchor="    | .optionVal (some v) => maxValPtrAllocId v\n",
+        replacement="    | .optionVal (some _) => 0\n",
+        fixture_module="MemoryRefutations",
+        theorem_name="refute_mem_v2_entry_option_raw_ptr_val",
         sanity_module="MemorySanity",
         needs_wf_helper=False,
     ),
@@ -1621,6 +1673,74 @@ MIR_SEMANTICS_GUARDS: tuple[MirSemanticsGuard, ...] = (
         theorem_name="refute_step_v2_get_unchecked_range_from_in_mut",
     ),
     MirSemanticsGuard(
+        guard_id="core_contracts_slice_subslice_in_mut",
+        target_file="trusted/lean/Trusted/MirSemantics/CoreContracts.lean",
+        target_module="Trusted/MirSemantics/CoreContracts",
+        description=(
+            "execSliceSubslice validates the input slice reference at its own "
+            "mutability"
+        ),
+        anchor=(
+            "    match refValidInMem m inMut (.slice elem) (.slicePtr p len) with\n"
+            "    | .error k => .error k\n"
+            "    | .ok () =>\n"
+            "      if !Nat.ble startOff endOff || !Nat.ble endOff len.toNat then"
+        ),
+        replacement=(
+            "    match refValidInMem m reqMut (.slice elem) (.slicePtr p len) with\n"
+            "    | .error k => .error k\n"
+            "    | .ok () =>\n"
+            "      if !Nat.ble startOff endOff || !Nat.ble endOff len.toNat then"
+        ),
+        fixture_module="StepRefutations",
+        theorem_name="refute_core_contracts_slice_subslice_in_mut",
+    ),
+    MirSemanticsGuard(
+        guard_id="core_contracts_slice_split_at_in_mut",
+        target_file="trusted/lean/Trusted/MirSemantics/CoreContracts.lean",
+        target_module="Trusted/MirSemantics/CoreContracts",
+        description=(
+            "execSliceSplitAt validates the input slice reference at its own "
+            "mutability"
+        ),
+        anchor=(
+            "    match refValidInMem m inMut (.slice elem) (.slicePtr p len) with\n"
+            "    | .error k => .error k\n"
+            "    | .ok () =>\n"
+            "      if !Nat.ble mid len.toNat then"
+        ),
+        replacement=(
+            "    match refValidInMem m reqMut (.slice elem) (.slicePtr p len) with\n"
+            "    | .error k => .error k\n"
+            "    | .ok () =>\n"
+            "      if !Nat.ble mid len.toNat then"
+        ),
+        fixture_module="StepRefutations",
+        theorem_name="refute_core_contracts_slice_split_at_in_mut",
+    ),
+    MirSemanticsGuard(
+        guard_id="core_contracts_i128_host_overflow",
+        target_file="trusted/lean/Trusted/MirSemantics/CoreContracts.lean",
+        target_module="Trusted/MirSemantics/CoreContracts",
+        description=(
+            "truncateScalarWithHostOverflow detects 128-bit mathematical "
+            "overflow via intHostOverflow before BitVec 128 carrier truncation"
+        ),
+        anchor=(
+            "  match truncateScalar w s value with\n"
+            "  | .error k => .error k\n"
+            "  | .ok (sv, truncOvf) => .ok (sv, intHostOverflow s value || truncOvf)"
+        ),
+        replacement=(
+            "  match truncateScalar w s value with\n"
+            "  | .error k => .error k\n"
+            "  | .ok (sv, truncOvf) => .ok (sv, truncOvf)"
+        ),
+        fixture_module="StepRefutations",
+        theorem_name="refute_core_contracts_i128_host_overflow",
+        needs_wf_helper=False,
+    ),
+    MirSemanticsGuard(
         guard_id="enum_v2_overflow_pair_pointee",
         target_file="trusted/lean/Trusted/MirSemantics/Enum.lean",
         target_module="Trusted/MirSemantics/Enum",
@@ -1634,6 +1754,24 @@ MIR_SEMANTICS_GUARDS: tuple[MirSemanticsGuard, ...] = (
             "noncomputable def isSupportedV2DataTy : MirTy → Bool\n"
             "  | .array elem _ => isSupportedV2DataTy elem\n"
             "  | ty => true && isSupportedScalarOrUnitTy ty"
+        ),
+        fixture_module="EnumRefutations",
+        theorem_name="refute_enum_v2_overflow_pair_pointee",
+    ),
+    MirSemanticsGuard(
+        guard_id="enum_v2_sized_no_ref_tuple_pointee",
+        target_file="trusted/lean/Trusted/MirSemantics/Enum.lean",
+        target_module="Trusted/MirSemantics/Enum",
+        description=(
+            "isSizedNoRefV2Ty and isSupportedV2LocalTy reject pointers to "
+            "tuples and overflow pairs"
+        ),
+        anchor=(
+            "  | .tuple _ | .array _ _ | .ref _ _ | .rawPtr _ _ | .slice _ | .unsupported"
+        ),
+        replacement=(
+            "  | .tuple _ => true\n"
+            "  | .array _ _ | .ref _ _ | .rawPtr _ _ | .slice _ | .unsupported"
         ),
         fixture_module="EnumRefutations",
         theorem_name="refute_enum_v2_overflow_pair_pointee",
@@ -2126,6 +2264,43 @@ MIR_SEMANTICS_GUARDS: tuple[MirSemanticsGuard, ...] = (
         needs_wf_helper=False,
     ),
     MirSemanticsGuard(
+        guard_id="bytes_v2_ptr_or_ref_alloc_ids_option",
+        target_file="trusted/lean/Trusted/MirSemantics/Bytes.lean",
+        target_module="Trusted/MirSemantics/Bytes",
+        description=(
+            "ptrOrRefAllocIds recurses into a Some payload, so returning an "
+            "Option of a pointer into callee .rodata faults .unsupported"
+        ),
+        anchor=(
+            "    | .option inner, .optionVal (some innerV) => "
+            "ptrOrRefAllocIds inner innerV"
+        ),
+        replacement="    | .option _, .optionVal (some _) => []",
+        fixture_module="StepRefutations",
+        theorem_name="refute_step_v2_return_rodata_option_ptr",
+        needs_wf_helper=False,
+    ),
+    MirSemanticsGuard(
+        guard_id="bytes_v2_slice_uninhabited_elem",
+        target_file="trusted/lean/Trusted/MirSemantics/Bytes.lean",
+        target_module="Trusted/MirSemantics/Bytes",
+        description=(
+            "refValidInMem rejects positive-length slices of uninhabited ZST "
+            "or nested uninhabited element types as UB"
+        ),
+        anchor=(
+            "          if Nat.blt 0 len.toNat && !isInhabitedV2Ty elem then\n"
+            "            .error .undefined"
+        ),
+        replacement=(
+            "          if Nat.blt 0 len.toNat && false then\n"
+            "            .error .undefined"
+        ),
+        fixture_module="StepRefutations",
+        theorem_name="refute_bytes_v2_slice_uninhabited_elem",
+        needs_wf_helper=False,
+    ),
+    MirSemanticsGuard(
         guard_id="step_v2_assert_abort_extract_caller_mem",
         target_file="trusted/lean/Trusted/MirSemantics/Step.lean",
         target_module="Trusted/MirSemantics/Step",
@@ -2331,6 +2506,84 @@ MIR_SEMANTICS_GUARDS: tuple[MirSemanticsGuard, ...] = (
         ),
         fixture_module="StepRefutations",
         theorem_name="refute_step_v2_assign_aggregate_clobber_unsupported",
+        needs_wf_helper=False,
+    ),
+    MirSemanticsGuard(
+        guard_id="step_v2_assign_aggregate_range_clobber_unsupported",
+        target_file="trusted/lean/Trusted/MirSemantics/Step.lean",
+        target_module="Trusted/MirSemantics/Step",
+        description=(
+            "checkAssignCopyHazardV2 routes Range aggregates through the "
+            "in-order field-write hazard loop"
+        ),
+        anchor=(
+            "  | .aggregateRange elemTy startOp endOp =>\n"
+            "    match copyReprOfTyV2 dstTy with"
+        ),
+        replacement=(
+            "  | .aggregateRange elemTy startOp endOp =>\n"
+            "    match (CopyReprV2.zst 0 : CopyReprV2) with"
+        ),
+        fixture_module="StepRefutations",
+        theorem_name="refute_step_v2_assign_aggregate_range_clobber_unsupported",
+        needs_wf_helper=False,
+    ),
+    MirSemanticsGuard(
+        guard_id="step_v2_assign_range_field_span",
+        target_file="trusted/lean/Trusted/MirSemantics/Step.lean",
+        target_module="Trusted/MirSemantics/Step",
+        description=(
+            "normalizeImmProjPathV2 resolves Range field projections on "
+            "immediate locals"
+        ),
+        anchor=(
+            "    if !Nat.blt idx 2 || !MirTy.beq (.int .isize false) fTy then none"
+        ),
+        replacement=(
+            "    if true then none"
+        ),
+        fixture_module="StepRefutations",
+        theorem_name="refute_step_v2_assign_range_field_span",
+        needs_wf_helper=False,
+    ),
+    MirSemanticsGuard(
+        guard_id="step_v2_assign_option_payload_span",
+        target_file="trusted/lean/Trusted/MirSemantics/Step.lean",
+        target_module="Trusted/MirSemantics/Step",
+        description=(
+            "normalizeImmProjPathV2 resolves Option payload projections on "
+            "immediate locals"
+        ),
+        anchor=(
+            "  | .option inner, .downcast 1 :: .field 0 fTy :: rest =>\n"
+            "    if !MirTy.beq inner fTy then none"
+        ),
+        replacement=(
+            "  | .option inner, .downcast 1 :: .field 0 fTy :: rest =>\n"
+            "    if true then none"
+        ),
+        fixture_module="StepRefutations",
+        theorem_name="refute_step_v2_assign_option_payload_span",
+        needs_wf_helper=False,
+    ),
+    MirSemanticsGuard(
+        guard_id="step_v2_assign_aggregate_unresolved_operand_unsupported",
+        target_file="trusted/lean/Trusted/MirSemantics/Step.lean",
+        target_module="Trusted/MirSemantics/Step",
+        description=(
+            "checkAggregateCopyHazardLoopV2 fails closed on a non-constant "
+            "operand whose source span is unresolved"
+        ),
+        anchor=(
+            "    else if unresolved &&\n"
+            "        (!writtenSpans.isEmpty || isMemoryCopyReprTyV2 fieldTy) then"
+        ),
+        replacement=(
+            "    else if false &&\n"
+            "        (!writtenSpans.isEmpty || isMemoryCopyReprTyV2 fieldTy) then"
+        ),
+        fixture_module="StepRefutations",
+        theorem_name="refute_step_v2_assign_aggregate_unresolved_operand_unsupported",
         needs_wf_helper=False,
     ),
     MirSemanticsGuard(
@@ -2580,16 +2833,17 @@ MIR_SEMANTICS_GUARDS: tuple[MirSemanticsGuard, ...] = (
             "backed by a provenance-free pointer as UB"
         ),
         anchor=(
-            "      else if !Nat.beq (Nat.mod p.offsetBytes.toNat (Nat.pow 2 elemAlignLog2)) 0 then\n"
+            "      else if !Nat.beq\n"
+            "          (Nat.mod p.offsetBytes.toNat (Nat.pow 2 elemAlignLog2)) 0 then\n"
             "        .error .undefined\n"
             "      else\n"
-            "        .ok (.slicePtr p len)"
+            "        .ok none"
         ),
         replacement=(
             "      else if false then\n"
             "        .error .undefined\n"
             "      else\n"
-            "        .ok (.slicePtr p len)"
+            "        .ok none"
         ),
         fixture_module="ProfileV2MemoryRefutations",
         theorem_name="refute_mem_v2_slice_no_prov_misaligned",
@@ -2713,14 +2967,14 @@ MIR_SEMANTICS_GUARDS: tuple[MirSemanticsGuard, ...] = (
         target_module="Trusted/MirSemantics/Bytes",
         description="refValidInMem rejects null thin reference even for ZST pointee",
         anchor=(
-            "      | none =>\n"
-            "        if Nat.beq p.offsetBytes.toNat 0 || Nat.blt 0 lay.size then\n"
-            "          .error .undefined"
+            "        | none =>\n"
+            "          if Nat.beq p.offsetBytes.toNat 0 || Nat.blt 0 lay.size then\n"
+            "            .error .undefined"
         ),
         replacement=(
-            "      | none =>\n"
-            "        if false || Nat.blt 0 lay.size then\n"
-            "          .error .undefined"
+            "        | none =>\n"
+            "          if false || Nat.blt 0 lay.size then\n"
+            "            .error .undefined"
         ),
         fixture_module="ProfileV2Refutations",
         theorem_name="refute_bytes_v2_ref_valid_null_zst",
@@ -2732,12 +2986,13 @@ MIR_SEMANTICS_GUARDS: tuple[MirSemanticsGuard, ...] = (
         target_module="Trusted/MirSemantics/Bytes",
         description="refValidInMem rejects thin &mut T into a .shared allocation as UB",
         anchor=(
-            "          else if Mutability.beq reqMut .mut && !Mutability.beq a.mutability .mut then\n"
-            "            .error .undefined"
+            "            else if Mutability.beq reqMut .mut &&\n"
+            "                !Mutability.beq a.mutability .mut then\n"
+            "              .error .undefined"
         ),
         replacement=(
-            "          else if false then\n"
-            "            .error .undefined"
+            "            else if false then\n"
+            "              .error .undefined"
         ),
         fixture_module="ProfileV2Refutations",
         theorem_name="refute_bytes_v2_ref_valid_readonly_mut",
@@ -2749,19 +3004,34 @@ MIR_SEMANTICS_GUARDS: tuple[MirSemanticsGuard, ...] = (
         target_module="Trusted/MirSemantics/Bytes",
         description="refValidInMem rejects thin reference to uninitialized pointee as UB",
         anchor=(
-            "            match decodeValV2 profileV2TargetEndian pointee sliceBytes with\n"
-            "            | .ok (some _) => .ok ()\n"
-            "            | .ok none => .error .undefined\n"
-            "            | .error k => .error k"
+            "              match decodeValV2 profileV2TargetEndian pointee sliceBytes with\n"
+            "              | .ok (some _) => .ok ()\n"
+            "              | .ok none => .error .undefined\n"
+            "              | .error k => .error k"
         ),
         replacement=(
-            "            match decodeValV2 profileV2TargetEndian pointee sliceBytes with\n"
-            "            | .ok (some _) => .ok ()\n"
-            "            | .ok none => .ok ()\n"
-            "            | .error k => .error k"
+            "              match decodeValV2 profileV2TargetEndian pointee sliceBytes with\n"
+            "              | .ok (some _) => .ok ()\n"
+            "              | .ok none => .ok ()\n"
+            "              | .error k => .error k"
         ),
         fixture_module="ProfileV2Refutations",
         theorem_name="refute_bytes_v2_ref_valid_uninit_pointee",
+        needs_wf_helper=False,
+    ),
+    MirSemanticsGuard(
+        guard_id="bytes_v2_array_elem_layout",
+        target_file="trusted/lean/Trusted/MirSemantics/Bytes.lean",
+        target_module="Trusted/MirSemantics/Bytes",
+        description=(
+            "encodeValV2 refuses arrays whose element type has no layoutOfTyV2"
+        ),
+        anchor=(
+            "      if !(layoutOfTyV2 elem).isSome || !Nat.beq vs.length len then\n"
+        ),
+        replacement="      if !Nat.beq vs.length len then\n",
+        fixture_module="ProfileV2Refutations",
+        theorem_name="refute_bytes_v2_array_elem_layout",
         needs_wf_helper=False,
     ),
     MirSemanticsGuard(
@@ -3230,6 +3500,58 @@ MIR_SEMANTICS_GUARDS: tuple[MirSemanticsGuard, ...] = (
         ),
         fixture_module="StepRefutations",
         theorem_name="refute_step_v2_fake_address_of_ref_validity",
+    ),
+    MirSemanticsGuard(
+        guard_id="core_contracts_option_unwrap_refs_valid",
+        target_file="trusted/lean/Trusted/MirSemantics/CoreContracts.lean",
+        target_module="Trusted/MirSemantics/CoreContracts",
+        description=(
+            "execCoreContractOp .optionUnwrap validates unwrapped Option<&T> "
+            "reference payloads via refsValidInMem"
+        ),
+        anchor=(
+            "      | some v =>\n"
+            "        if !refsValidInMem m inner v then\n"
+            "          .error .undefined\n"
+            "        else\n"
+            "          .ok (v, m)"
+        ),
+        replacement=(
+            "      | some v =>\n"
+            "        if false then\n"
+            "          .error .undefined\n"
+            "        else\n"
+            "          .ok (v, m)"
+        ),
+        fixture_module="StepRefutations",
+        theorem_name="refute_core_contracts_option_unwrap_refs_valid",
+        needs_wf_helper=False,
+    ),
+    MirSemanticsGuard(
+        guard_id="step_v2_option_discriminant_dst_ty",
+        target_file="trusted/lean/Trusted/MirSemantics/Step.lean",
+        target_module="Trusted/MirSemantics/Step",
+        description=(
+            "evalRvalueV2 .discriminant on projected Option checks dstTy is "
+            "isize"
+        ),
+        anchor=(
+            "        | .option _ =>\n"
+            "          if !MirTy.beq dstTy (.int .isize true) then\n"
+            "            .error .unsupported\n"
+            "          else\n"
+            "            evalOptionDiscriminantOfVal optVal locals1 mem1"
+        ),
+        replacement=(
+            "        | .option _ =>\n"
+            "          if false then\n"
+            "            .error .unsupported\n"
+            "          else\n"
+            "            evalOptionDiscriminantOfVal optVal locals1 mem1"
+        ),
+        fixture_module="StepRefutations",
+        theorem_name="refute_step_v2_option_discriminant_dst_ty",
+        needs_wf_helper=False,
     ),
 )
 

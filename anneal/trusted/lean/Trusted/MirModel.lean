@@ -132,6 +132,8 @@ inductive Val where
   | slicePtr (p : PtrVal) (len : UInt64)
   | rangeTo (endOffset : UInt64)
   | rangeFrom (startOffset : UInt64)
+  | range (startOffset endOffset : UInt64)
+  | optionVal (val : Option Val)
   | bool (b : Bool)
   | char (c : Char)
   | ordering (ord : OrderingVal)

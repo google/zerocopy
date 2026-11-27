@@ -15,8 +15,8 @@
 
 use std::collections::{BTreeMap, BTreeSet};
 use rustc_abi::{
-    BackendRepr, Endian, ExternAbi, HasDataLayout, Integer, Primitive, Scalar, Size, TagEncoding,
-    Variants,
+    BackendRepr, Endian, ExternAbi, FieldIdx, HasDataLayout, Integer, Primitive, Scalar, Size,
+    TagEncoding, VariantIdx, Variants,
 };
 use rustc_ast::Mutability;
 use rustc_hir::attrs::{InlineAttr, OptimizeAttr};
@@ -133,6 +133,136 @@ fn enum_tag_repr<'tcx>(
     }
 }
 
+/// Cross-check `rustc`'s monomorphized layout for an addressable Profile v2
+/// `core::option::Option<T>` (where both `elem.is_sized_no_ref()` and
+/// `elem.is_option_payload_supported_v2()` hold) against the exact size,
+/// alignment, tag encoding, tag offset, payload offset, and variant
+/// discriminants assumed by `Trusted.MirSemantics.{Layout,Bytes}`.
+fn verify_addressable_option_layout<'tcx>(
+    tcx: TyCtxt<'tcx>,
+    t: ty::Ty<'tcx>,
+    adt: ty::AdtDef<'tcx>,
+    elem: &ir::Ty,
+) -> Result<()> {
+    let opt_ty = ir::Ty::Option {
+        elem: Box::new(elem.clone()),
+    };
+    let Some((expected_size, expected_align_log2)) = opt_ty.v2_layout() else {
+        return Err(format!("addressable Option lacks a Profile v2 layout: {t:?}"));
+    };
+    let expected_align = 1u64
+        .checked_shl(expected_align_log2)
+        .ok_or_else(|| format!("Option alignment shift overflow for {t:?}"))?;
+    let layout = tcx
+        .layout_of(TypingEnv::fully_monomorphized().as_query_input(t))
+        .map_err(|err| format!("failed to compute Option layout for {t:?}: {err}"))?;
+    if layout.size.bytes() != expected_size as u64 || layout.align.abi.bytes() != expected_align {
+        return Err(format!(
+            "Option layout (size {}, align {}) disagrees with modeled Profile v2 layout \
+             (size {expected_size}, align {expected_align}): {t:?}",
+            layout.size.bytes(),
+            layout.align.abi.bytes(),
+        ));
+    }
+    let discrs: Vec<(usize, u128)> = adt
+        .discriminants(tcx)
+        .map(|(v, d)| (v.as_usize(), d.val))
+        .collect();
+    if discrs != [(0, 0), (1, 1)] {
+        return Err(format!(
+            "Option discriminants {discrs:?} disagree with modeled (None=0, Some=1): {t:?}"
+        ));
+    }
+    let Variants::Multiple {
+        tag,
+        tag_encoding,
+        tag_field,
+        variants,
+        ..
+    } = &layout.variants
+    else {
+        return Err(format!(
+            "Option layout is not Variants::Multiple ({:?}): {t:?}",
+            layout.variants
+        ));
+    };
+    if tag_field.as_usize() != 0 || layout.fields.offset(0).bytes() != 0 {
+        return Err(format!(
+            "Option tag is not at field 0 offset 0 (tag_field={}, offset={}): {t:?}",
+            tag_field.as_usize(),
+            layout.fields.offset(0).bytes(),
+        ));
+    }
+    let dl = tcx.data_layout();
+    let tag_bytes = tag.size(dl).bytes();
+    let some_variant = variants
+        .get(VariantIdx::from_usize(1))
+        .ok_or_else(|| format!("Option layout missing Some variant 1: {t:?}"))?;
+    match elem {
+        ir::Ty::Bool => {
+            let TagEncoding::Niche {
+                untagged_variant,
+                niche_variants,
+                niche_start,
+            } = tag_encoding
+            else {
+                return Err(format!(
+                    "Option<bool> layout is not niche-encoded ({tag_encoding:?}): {t:?}"
+                ));
+            };
+            if untagged_variant.as_usize() != 1
+                || niche_variants.start.as_usize() != 0
+                || niche_variants.last.as_usize() != 0
+                || *niche_start != 2
+                || tag_bytes != 1
+                || some_variant
+                    .field_offsets
+                    .get(FieldIdx::from_usize(0))
+                    .copied()
+                    .map(Size::bytes)
+                    != Some(0)
+            {
+                return Err(format!(
+                    "Option<bool> niche layout disagrees with modeled (None=2, Some=0/1): {t:?}"
+                ));
+            }
+        }
+        ir::Ty::Unit => {
+            if !matches!(tag_encoding, TagEncoding::Direct) || tag_bytes != 1 {
+                return Err(format!(
+                    "Option<()> layout disagrees with modeled 1-byte direct tag: {t:?}"
+                ));
+            }
+        }
+        ir::Ty::Int(_) => {
+            let (inner_size, _) = elem
+                .v2_layout()
+                .ok_or_else(|| format!("Option payload lacks Profile v2 layout: {t:?}"))?;
+            if !matches!(tag_encoding, TagEncoding::Direct)
+                || tag_bytes != expected_align
+                || some_variant
+                    .field_offsets
+                    .get(FieldIdx::from_usize(0))
+                    .copied()
+                    .map(Size::bytes)
+                    != Some(expected_align)
+                || layout.size.bytes() != expected_align + inner_size as u64
+            {
+                return Err(format!(
+                    "Option<int> direct layout disagrees with modeled \
+                     (tag_size={expected_align}, payload_offset={expected_align}): {t:?}"
+                ));
+            }
+        }
+        other => {
+            return Err(format!(
+                "unexpected addressable Option payload {other:?} in {t:?}"
+            ));
+        }
+    }
+    Ok(())
+}
+
 /// The type grammar is `TyKind` at the pinned compiler revision:
 /// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_type_ir/src/ty_kind.rs
 ///
@@ -246,18 +376,22 @@ pub fn ty<'tcx>(tcx: TyCtxt<'tcx>, t: ty::Ty<'tcx>) -> Result<ir::Ty> {
             Ok(ir::Ty::Ordering)
         }
         // `core::ops::range::RangeTo<Idx>` (`#[lang = "RangeTo"]`, one field
-        // `pub end: Idx`) and `RangeFrom<Idx>` (`#[lang = "RangeFrom"]`, one
-        // field `pub start: Idx`) map to `MirTy.rangeTo`/`MirTy.rangeFrom`
-        // only for `Idx = usize`. They are identified by lang item within
-        // the authenticated sysroot `core` crate ([`core_range`]), never by
-        // printed path, so a look-alike local struct or enum cannot acquire
-        // this one-field layout.
+        // `pub end: Idx`), `RangeFrom<Idx>` (`#[lang = "RangeFrom"]`, one
+        // field `pub start: Idx`), and `Range<Idx>` (`#[lang = "Range"]`, two
+        // fields `pub start: Idx, pub end: Idx`) map to
+        // `MirTy.{rangeTo,rangeFrom,range}` only for `Idx = usize`. They are
+        // identified by lang item within the authenticated sysroot `core`
+        // crate ([`core_range`]), never by printed path, so a look-alike local
+        // struct or enum cannot acquire these range types.
+        // https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/library/core/src/ops/range.rs#L77-L89
         // https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/library/core/src/ops/range.rs#L192-L201
         // https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/library/core/src/ops/range.rs#L276-L285
-        ty::Adt(adt, args) if args.len() == 1 && adt.is_struct() && core_range(tcx, adt.did()).is_some() => {
+        ty::Adt(adt, args)
+            if args.len() == 1 && adt.is_struct() && core_range(tcx, adt.did()).is_some() =>
+        {
             let range = core_range(tcx, adt.did()).expect("checked above");
             let Some(arg_ty) = args[0].as_type() else {
-                return Err(format!("unsupported range type: {t:?}"));
+                return Err(format!("unsupported core ADT argument: {t:?}"));
             };
             let elem = ty(tcx, arg_ty)?;
             if elem
@@ -275,7 +409,31 @@ pub fn ty<'tcx>(tcx: TyCtxt<'tcx>, t: ty::Ty<'tcx>) -> Result<ir::Ty> {
                 CoreRange::From => Ok(ir::Ty::RangeFrom {
                     elem: Box::new(elem),
                 }),
+                CoreRange::Range => Ok(ir::Ty::Range {
+                    elem: Box::new(elem),
+                }),
             }
+        }
+        // `core::option::Option<T>` (`#[lang = "Option"]`, variants `None` = 0
+        // and `Some(T)` = 1) maps to `MirTy.option` when `T` is sized, pinned
+        // to the authenticated sysroot `core` crate ([`is_core_option`]).
+        // https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/library/core/src/option.rs#L594-L606
+        ty::Adt(adt, args)
+            if args.len() == 1 && adt.is_enum() && is_core_option(tcx, adt.did()) =>
+        {
+            let Some(arg_ty) = args[0].as_type() else {
+                return Err(format!("unsupported core ADT argument: {t:?}"));
+            };
+            let elem = ty(tcx, arg_ty)?;
+            if !elem.is_sized() {
+                return Err(format!("unsized Option payload in {t:?} is unsupported"));
+            }
+            if elem.is_sized_no_ref() && elem.is_option_payload_supported_v2() {
+                verify_addressable_option_layout(tcx, t, adt, &elem)?;
+            }
+            Ok(ir::Ty::Option {
+                elem: Box::new(elem),
+            })
         }
         // `Trusted.MirAst.EnumTy` keys nominal enum identity by the `u32` that
         // `enum_id` derives from the enum's semantic path, so the key does not
@@ -364,6 +522,11 @@ fn place<'tcx>(tcx: TyCtxt<'tcx>, place: &mir::Place<'tcx>) -> Result<ir::Place>
                     offset: offset_usize,
                     min_length: min_len_usize,
                     from_end,
+                });
+            }
+            mir::ProjectionElem::Downcast(_, variant) => {
+                projection.push(ir::PlaceElem::Downcast {
+                    variant_idx: variant.as_usize(),
                 });
             }
             other => {
@@ -574,7 +737,9 @@ fn operand<'tcx>(
                 | ir::Ty::Tuple { .. }
                 | ir::Ty::Slice { .. }
                 | ir::Ty::RangeTo { .. }
-                | ir::Ty::RangeFrom { .. } => {
+                | ir::Ty::RangeFrom { .. }
+                | ir::Ty::Range { .. }
+                | ir::Ty::Option { .. } => {
                     return Err(format!("constants of compound/pointer type {t:?} are unsupported"));
                 }
                 ir::Ty::Int(ity) => ity.width.bits(),
@@ -1081,22 +1246,59 @@ fn rvalue<'tcx>(
                 }
                 ir::Rvalue::AggregateTuple { fields }
             }
-            mir::AggregateKind::Adt(adt_did, variant, substs, _, None)
-                if *variant == rustc_abi::VariantIdx::ZERO
-                    && substs.len() == 1
-                    && ops.len() == 1 =>
-            {
-                let Some(range) = core_range(tcx, *adt_did) else {
-                    return Err(format!("unsupported non-core ADT aggregate: {value:?}"));
-                };
+            mir::AggregateKind::Adt(adt_did, variant, substs, _, None) if substs.len() == 1 => {
                 let Some(arg_ty) = substs[0].as_type() else {
                     return Err(format!("unsupported ADT aggregate: {value:?}"));
                 };
                 let elem_ty = ty(tcx, arg_ty)?;
-                let op = operand(tcx, typing_env, &ops[rustc_abi::FieldIdx::from_u32(0)])?;
-                match range {
-                    CoreRange::To => ir::Rvalue::AggregateRangeTo { elem_ty, end: op },
-                    CoreRange::From => ir::Rvalue::AggregateRangeFrom { elem_ty, start: op },
+                if let Some(range) = core_range(tcx, *adt_did) {
+                    if *variant != rustc_abi::VariantIdx::ZERO {
+                        return Err(format!("unsupported ADT aggregate: {value:?}"));
+                    }
+                    match (range, ops.len()) {
+                        (CoreRange::To, 1) => {
+                            let op =
+                                operand(tcx, typing_env, &ops[rustc_abi::FieldIdx::from_u32(0)])?;
+                            ir::Rvalue::AggregateRangeTo { elem_ty, end: op }
+                        }
+                        (CoreRange::From, 1) => {
+                            let op =
+                                operand(tcx, typing_env, &ops[rustc_abi::FieldIdx::from_u32(0)])?;
+                            ir::Rvalue::AggregateRangeFrom { elem_ty, start: op }
+                        }
+                        (CoreRange::Range, 2) => {
+                            let start =
+                                operand(tcx, typing_env, &ops[rustc_abi::FieldIdx::from_u32(0)])?;
+                            let end =
+                                operand(tcx, typing_env, &ops[rustc_abi::FieldIdx::from_u32(1)])?;
+                            ir::Rvalue::AggregateRange {
+                                elem_ty,
+                                start,
+                                end,
+                            }
+                        }
+                        _ => return Err(format!("unsupported ADT aggregate: {value:?}")),
+                    }
+                } else if is_core_option(tcx, *adt_did) {
+                    match (variant.as_usize(), ops.len()) {
+                        (0, 0) => ir::Rvalue::AggregateOption {
+                            variant_idx: 0,
+                            inner_ty: elem_ty,
+                            payload: None,
+                        },
+                        (1, 1) => {
+                            let op =
+                                operand(tcx, typing_env, &ops[rustc_abi::FieldIdx::from_u32(0)])?;
+                            ir::Rvalue::AggregateOption {
+                                variant_idx: 1,
+                                inner_ty: elem_ty,
+                                payload: Some(Box::new(op)),
+                            }
+                        }
+                        _ => return Err(format!("unsupported ADT aggregate: {value:?}")),
+                    }
+                } else {
+                    return Err(format!("unsupported non-core ADT aggregate: {value:?}"));
                 }
             }
             _ => return Err(format!("unsupported rvalue aggregate: {value:?}")),
@@ -1245,15 +1447,15 @@ fn core_def_path(tcx: TyCtxt<'_>, def: DefId) -> Option<String> {
 enum CoreRange {
     To,
     From,
+    Range,
 }
 
-/// Classify `def` as sysroot `core::ops::range::RangeTo` or `RangeFrom` by
-/// lang item (`LangItem::RangeTo` and `LangItem::RangeFrom`, each a
-/// `Target::Struct`), after
-/// pinning `def` to the authenticated sysroot `core` as in [`core_def_path`].
-/// The newer `core::range::RangeFrom` (`RangeFromCopy`) is a distinct lang
-/// item and stays refused.
-/// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_hir/src/lang_items.rs#L406-L418
+/// Classify `def` as sysroot `core::ops::range::{RangeTo, RangeFrom, Range}`
+/// by lang item (`LangItem::{RangeTo, RangeFrom, Range}`, each a
+/// `Target::Struct`), after pinning `def` to the authenticated sysroot `core`
+/// as in [`core_def_path`]. The newer `core::range::{RangeFrom, Range}`
+/// (`RangeFromCopy`, `RangeCopy`) are distinct lang items and stay refused.
+/// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_hir/src/lang_items.rs#L406-L421
 fn core_range(tcx: TyCtxt<'_>, def: DefId) -> Option<CoreRange> {
     if def.is_local() || Some(def.krate) != sysroot_core_crate(tcx) {
         return None;
@@ -1262,9 +1464,78 @@ fn core_range(tcx: TyCtxt<'_>, def: DefId) -> Option<CoreRange> {
         Some(CoreRange::To)
     } else if tcx.is_lang_item(def, rustc_hir::LangItem::RangeFrom) {
         Some(CoreRange::From)
+    } else if tcx.is_lang_item(def, rustc_hir::LangItem::Range) {
+        Some(CoreRange::Range)
     } else {
         None
     }
+}
+
+/// Return `true` when `def` is sysroot `core::option::Option`
+/// (`LangItem::Option`, `Target::Enum`), pinned to the authenticated sysroot
+/// `core` crate as in [`core_def_path`].
+/// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_hir/src/lang_items.rs#L390-L392
+fn is_core_option(tcx: TyCtxt<'_>, def: DefId) -> bool {
+    !def.is_local()
+        && Some(def.krate) == sysroot_core_crate(tcx)
+        && tcx.is_lang_item(def, rustc_hir::LangItem::Option)
+}
+
+fn parse_core_num_impl_method(path: &str) -> Option<(IntTy, &str)> {
+    let rest = path.strip_prefix("core::num::<impl ")?;
+    let (ty_name, method) = rest.split_once(">::")?;
+    let ity = match ty_name {
+        "u8" => IntTy {
+            width: IntWidth::I8,
+            signed: false,
+        },
+        "u16" => IntTy {
+            width: IntWidth::I16,
+            signed: false,
+        },
+        "u32" => IntTy {
+            width: IntWidth::I32,
+            signed: false,
+        },
+        "u64" => IntTy {
+            width: IntWidth::I64,
+            signed: false,
+        },
+        "u128" => IntTy {
+            width: IntWidth::I128,
+            signed: false,
+        },
+        "usize" => IntTy {
+            width: IntWidth::Isize,
+            signed: false,
+        },
+        "i8" => IntTy {
+            width: IntWidth::I8,
+            signed: true,
+        },
+        "i16" => IntTy {
+            width: IntWidth::I16,
+            signed: true,
+        },
+        "i32" => IntTy {
+            width: IntWidth::I32,
+            signed: true,
+        },
+        "i64" => IntTy {
+            width: IntWidth::I64,
+            signed: true,
+        },
+        "i128" => IntTy {
+            width: IntWidth::I128,
+            signed: true,
+        },
+        "isize" => IntTy {
+            width: IntWidth::Isize,
+            signed: true,
+        },
+        _ => return None,
+    };
+    Some((ity, method))
 }
 
 /// Map a returning call to a sysroot `core` function onto the closed
@@ -1276,8 +1547,9 @@ fn core_range(tcx: TyCtxt<'_>, def: DefId) -> Option<CoreRange> {
 /// definition; `ir::Body::try_new` checks argument and destination types,
 /// and `Trusted.MirSemantics` states the operational semantics:
 ///
-/// - `<[T]>::len`: `pub const fn len(&self) -> usize` (`#[lang =
-///   "slice_len_fn"]`);
+/// - `<[T]>::{len, is_empty, split_at, split_at_mut}` and
+///   `core::ops::index::{Index::index, IndexMut::index_mut}` on `[T]` for
+///   `Range<usize>` and `RangeFrom<usize>`;
 /// - `<[T]>::get_unchecked::<I>`: `pub const unsafe fn get_unchecked<I>(&self,
 ///   index: I) -> &I::Output`, admitted only for `I = RangeTo<usize>` or
 ///   `RangeFrom<usize>` (`SliceIndex<[T]> for ops::RangeTo<usize>` /
@@ -1285,19 +1557,25 @@ fn core_range(tcx: TyCtxt<'_>, def: DefId) -> Option<CoreRange> {
 ///   this method with an out-of-bounds index is *[undefined behavior]*";
 /// - `<*const T>::add` and `<*mut T>::add`: `pub const unsafe fn add(self,
 ///   count: usize) -> Self where T: Sized`;
-/// - `<usize>::unchecked_sub`: `pub const unsafe fn unchecked_sub(self, rhs:
-///   Self) -> Self`, from the 64-bit `impl usize { uint_impl! { .. } }`.
+/// - `core::num` inherent integer methods `unchecked_sub` (`usize` only),
+///   `is_multiple_of` (unsigned), `checked_{add, mul, sub}`,
+///   `saturating_add`, `wrapping_{shl, shr}`, `leading_zeros`,
+///   `overflowing_{add, sub}`, and `to_le_bytes`;
+/// - `core::cmp::{min, max}` on integers, `core::mem::replace`,
+///   `core::option::Option::<T>::{is_some, is_none, take, unwrap}`, and
+///   structural `<[T; N] as core::cmp::PartialEq>::eq`.
 ///
-/// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/library/core/src/slice/mod.rs#L101-L118
+/// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/library/core/src/slice/mod.rs#L101-L138
 /// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/library/core/src/slice/mod.rs#L606-L647
-/// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/library/core/src/slice/index.rs#L502
-/// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/library/core/src/slice/index.rs#L541
-/// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/library/core/src/ptr/const_ptr.rs#L7
+/// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/library/core/src/slice/mod.rs#L1953-L1992
+/// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/library/core/src/slice/index.rs#L435-L588
+/// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/library/core/src/ops/index.rs#L73-L179
 /// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/library/core/src/ptr/const_ptr.rs#L811-L832
-/// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/library/core/src/ptr/mut_ptr.rs#L8
 /// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/library/core/src/ptr/mut_ptr.rs#L909-L930
-/// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/library/core/src/num/mod.rs#L1445-L1452
-/// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/library/core/src/num/uint_macros.rs#L1123-L1138
+/// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/library/core/src/num/uint_macros.rs#L896-L1138
+/// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/library/core/src/cmp.rs#L1034-L1078
+/// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/library/core/src/mem/mod.rs#L916-L932
+/// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/library/core/src/option.rs#L632-L1903
 fn core_call_op<'tcx>(
     tcx: TyCtxt<'tcx>,
     def_id: DefId,
@@ -1309,13 +1587,31 @@ fn core_call_op<'tcx>(
             tcx.def_path_str(def_id)
         ));
     };
+    let usize_int = IntTy {
+        width: IntWidth::Isize,
+        signed: false,
+    };
+    let usize_ty = ir::Ty::Int(usize_int);
+    if let Some((ity, method)) = parse_core_num_impl_method(path.as_str()) {
+        return match method {
+            "is_multiple_of" if !ity.signed => Ok(ir::CoreCallOp::NumIsMultipleOf(ity)),
+            "checked_add" => Ok(ir::CoreCallOp::NumCheckedAdd(ity)),
+            "checked_mul" => Ok(ir::CoreCallOp::NumCheckedMul(ity)),
+            "checked_sub" => Ok(ir::CoreCallOp::NumCheckedSub(ity)),
+            "saturating_add" => Ok(ir::CoreCallOp::NumSaturatingAdd(ity)),
+            "wrapping_shl" => Ok(ir::CoreCallOp::NumWrappingShl(ity)),
+            "wrapping_shr" => Ok(ir::CoreCallOp::NumWrappingShr(ity)),
+            "leading_zeros" => Ok(ir::CoreCallOp::NumLeadingZeros(ity)),
+            "overflowing_add" => Ok(ir::CoreCallOp::NumOverflowingAdd(ity)),
+            "overflowing_sub" => Ok(ir::CoreCallOp::NumOverflowingSub(ity)),
+            "unchecked_sub" if ity == usize_int => Ok(ir::CoreCallOp::UsizeUncheckedSub),
+            "to_le_bytes" => Ok(ir::CoreCallOp::IntToLeBytes { int_ty: ity }),
+            _ => Err(format!("unsupported core call `{path}`")),
+        };
+    }
     match path.as_str() {
         "core::slice::<impl [T]>::len" => Ok(ir::CoreCallOp::SliceLen),
         "core::slice::<impl [T]>::get_unchecked" => {
-            let usize_ty = ir::Ty::Int(IntTy {
-                width: IntWidth::Isize,
-                signed: false,
-            });
             let idx_ty = fn_args
                 .get(1)
                 .and_then(|a| a.as_type())
@@ -1331,6 +1627,128 @@ fn core_call_op<'tcx>(
                     "unsupported get_unchecked index type {other:?}"
                 )),
             }
+        }
+        "core::slice::<impl [T]>::is_empty" => {
+            let elem_ty = fn_args
+                .first()
+                .and_then(|a| a.as_type())
+                .ok_or_else(|| format!("missing slice element type in {path}"))?;
+            Ok(ir::CoreCallOp::SliceIsEmpty {
+                elem: ty(tcx, elem_ty)?,
+            })
+        }
+        "core::slice::<impl [T]>::split_at" => {
+            let elem_ty = fn_args
+                .first()
+                .and_then(|a| a.as_type())
+                .ok_or_else(|| format!("missing slice element type in {path}"))?;
+            Ok(ir::CoreCallOp::SliceSplitAt {
+                mutability: ir::Mutability::Shared,
+                elem: ty(tcx, elem_ty)?,
+            })
+        }
+        "core::slice::<impl [T]>::split_at_mut" => {
+            let elem_ty = fn_args
+                .first()
+                .and_then(|a| a.as_type())
+                .ok_or_else(|| format!("missing slice element type in {path}"))?;
+            Ok(ir::CoreCallOp::SliceSplitAt {
+                mutability: ir::Mutability::Mut,
+                elem: ty(tcx, elem_ty)?,
+            })
+        }
+        "core::ops::index::Index::index" | "core::ops::index::IndexMut::index_mut" => {
+            let mutability = if path == "core::ops::index::IndexMut::index_mut" {
+                ir::Mutability::Mut
+            } else {
+                ir::Mutability::Shared
+            };
+            let self_ty = fn_args
+                .first()
+                .and_then(|a| a.as_type())
+                .ok_or_else(|| format!("missing Self type argument in {path}"))?;
+            let idx_ty = fn_args
+                .get(1)
+                .and_then(|a| a.as_type())
+                .ok_or_else(|| format!("missing Idx type argument in {path}"))?;
+            match (ty(tcx, self_ty)?, ty(tcx, idx_ty)?) {
+                (ir::Ty::Slice { elem }, ir::Ty::Range { elem: idx_e }) if *idx_e == usize_ty => {
+                    Ok(ir::CoreCallOp::SliceIndexRange {
+                        mutability,
+                        elem: *elem,
+                    })
+                }
+                (ir::Ty::Slice { elem }, ir::Ty::RangeFrom { elem: idx_e })
+                    if *idx_e == usize_ty =>
+                {
+                    Ok(ir::CoreCallOp::SliceIndexRangeFrom {
+                        mutability,
+                        elem: *elem,
+                    })
+                }
+                (s_ty, i_ty) => Err(format!(
+                    "unsupported {path} receiver/index types ({s_ty:?}, {i_ty:?})"
+                )),
+            }
+        }
+        "core::cmp::min" | "core::cmp::max" => {
+            let arg_ty = fn_args
+                .first()
+                .and_then(|a| a.as_type())
+                .ok_or_else(|| format!("missing type argument in {path}"))?;
+            match ty(tcx, arg_ty)? {
+                ir::Ty::Int(ity) => Ok(if path == "core::cmp::min" {
+                    ir::CoreCallOp::CmpMin(ity)
+                } else {
+                    ir::CoreCallOp::CmpMax(ity)
+                }),
+                other => Err(format!("unsupported {path} integer type {other:?}")),
+            }
+        }
+        "core::mem::replace" => {
+            let arg_ty = fn_args
+                .first()
+                .and_then(|a| a.as_type())
+                .ok_or_else(|| format!("missing type argument in {path}"))?;
+            Ok(ir::CoreCallOp::MemReplace {
+                ty: ty(tcx, arg_ty)?,
+            })
+        }
+        "core::option::Option::<T>::is_some" => {
+            let inner_ty = fn_args
+                .first()
+                .and_then(|a| a.as_type())
+                .ok_or_else(|| format!("missing Option inner type in {path}"))?;
+            Ok(ir::CoreCallOp::OptionIsSome {
+                inner: ty(tcx, inner_ty)?,
+            })
+        }
+        "core::option::Option::<T>::is_none" => {
+            let inner_ty = fn_args
+                .first()
+                .and_then(|a| a.as_type())
+                .ok_or_else(|| format!("missing Option inner type in {path}"))?;
+            Ok(ir::CoreCallOp::OptionIsNone {
+                inner: ty(tcx, inner_ty)?,
+            })
+        }
+        "core::option::Option::<T>::take" => {
+            let inner_ty = fn_args
+                .first()
+                .and_then(|a| a.as_type())
+                .ok_or_else(|| format!("missing Option inner type in {path}"))?;
+            Ok(ir::CoreCallOp::OptionTake {
+                inner: ty(tcx, inner_ty)?,
+            })
+        }
+        "core::option::Option::<T>::unwrap" => {
+            let inner_ty = fn_args
+                .first()
+                .and_then(|a| a.as_type())
+                .ok_or_else(|| format!("missing Option inner type in {path}"))?;
+            Ok(ir::CoreCallOp::OptionUnwrap {
+                inner: ty(tcx, inner_ty)?,
+            })
         }
         "core::ptr::const_ptr::<impl *const T>::add" => {
             let pt = fn_args
@@ -1352,79 +1770,6 @@ fn core_call_op<'tcx>(
                 pointee: ty(tcx, pt)?,
             })
         }
-        "core::num::<impl usize>::unchecked_sub" => Ok(ir::CoreCallOp::UsizeUncheckedSub),
-        "core::num::<impl u8>::to_le_bytes" => Ok(ir::CoreCallOp::IntToLeBytes {
-            int_ty: IntTy {
-                width: IntWidth::I8,
-                signed: false,
-            },
-        }),
-        "core::num::<impl u16>::to_le_bytes" => Ok(ir::CoreCallOp::IntToLeBytes {
-            int_ty: IntTy {
-                width: IntWidth::I16,
-                signed: false,
-            },
-        }),
-        "core::num::<impl u32>::to_le_bytes" => Ok(ir::CoreCallOp::IntToLeBytes {
-            int_ty: IntTy {
-                width: IntWidth::I32,
-                signed: false,
-            },
-        }),
-        "core::num::<impl u64>::to_le_bytes" => Ok(ir::CoreCallOp::IntToLeBytes {
-            int_ty: IntTy {
-                width: IntWidth::I64,
-                signed: false,
-            },
-        }),
-        "core::num::<impl u128>::to_le_bytes" => Ok(ir::CoreCallOp::IntToLeBytes {
-            int_ty: IntTy {
-                width: IntWidth::I128,
-                signed: false,
-            },
-        }),
-        "core::num::<impl usize>::to_le_bytes" => Ok(ir::CoreCallOp::IntToLeBytes {
-            int_ty: IntTy {
-                width: IntWidth::Isize,
-                signed: false,
-            },
-        }),
-        "core::num::<impl i8>::to_le_bytes" => Ok(ir::CoreCallOp::IntToLeBytes {
-            int_ty: IntTy {
-                width: IntWidth::I8,
-                signed: true,
-            },
-        }),
-        "core::num::<impl i16>::to_le_bytes" => Ok(ir::CoreCallOp::IntToLeBytes {
-            int_ty: IntTy {
-                width: IntWidth::I16,
-                signed: true,
-            },
-        }),
-        "core::num::<impl i32>::to_le_bytes" => Ok(ir::CoreCallOp::IntToLeBytes {
-            int_ty: IntTy {
-                width: IntWidth::I32,
-                signed: true,
-            },
-        }),
-        "core::num::<impl i64>::to_le_bytes" => Ok(ir::CoreCallOp::IntToLeBytes {
-            int_ty: IntTy {
-                width: IntWidth::I64,
-                signed: true,
-            },
-        }),
-        "core::num::<impl i128>::to_le_bytes" => Ok(ir::CoreCallOp::IntToLeBytes {
-            int_ty: IntTy {
-                width: IntWidth::I128,
-                signed: true,
-            },
-        }),
-        "core::num::<impl isize>::to_le_bytes" => Ok(ir::CoreCallOp::IntToLeBytes {
-            int_ty: IntTy {
-                width: IntWidth::Isize,
-                signed: true,
-            },
-        }),
         "core::cmp::PartialEq::eq" => {
             if fn_args.len() != 2 {
                 return Err(format!(
@@ -3303,7 +3648,7 @@ mod tests {
             "rust-path-v1::non_enum_discr".into(),
         )
         .unwrap_err();
-        assert!(non_enum_discr.contains("requires a fieldless enum or Ordering place"));
+        assert!(non_enum_discr.contains("requires a fieldless enum, Ordering, or Option place"));
     }
 
     #[test]

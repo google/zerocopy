@@ -201,8 +201,10 @@ noncomputable def layoutOfArrayV2 : MirTy → Option LayoutData
 
 /-- Layout of a Profile v2 local or pointee type (`layoutOfTy` extended with
 fixed-size arrays `[T; N]`, 64-bit thin pointers `⟨8, 3⟩`, 64-bit wide slice
-pointers `⟨16, 3⟩`, and `RangeTo<usize>` / `RangeFrom<usize>` `⟨8, 3⟩`). Returns
-`none` for unsized `.slice` directly and unsupported aggregates.
+pointers `⟨16, 3⟩`, `RangeTo<usize>` / `RangeFrom<usize>` `⟨8, 3⟩`, and
+supported `Option<T>`). Returns `none` for unsized `.slice` directly,
+`Range<usize>`, general tuples other than Profile v1 overflow pairs, and
+unsupported aggregates.
 
 Array layout matches the Rust Reference (`src/type-layout.md`,
 `rust-lang/reference` `a286e1ecb8ce193d50056e4bb042eea9b23876ef`):
@@ -255,7 +257,35 @@ metadata a pointer-sized integer
 `usize` field. The Reference does not guarantee their layout (it requires only
 that the struct alignment be at least that of the field), so `⟨8, 3⟩` is
 rustc's univariant layout of a single-field struct, not a Reference
-guarantee. -/
+guarantee.
+
+For addressable `Option<T>` (where both `isSizedNoRefV2Ty inner` and
+`isOptionPayloadSupportedV2 inner` hold, verified against `rustc`'s
+`layout_of` at capture time; `library/core/src/option.rs:597-606`,
+`rust-lang/rust` `f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1`):
+- `Option<bool>`: `bool` has `valid_range: WrappingRange { start: 0, end: 1 }`
+  (`compiler/rustc_ty_utils/src/layout.rs:388`); `Niche::reserve` takes
+  `move_end` (`is_bool` at `compiler/rustc_abi/src/lib.rs:2067-2068`), keeping
+  size `1` and align `1` (`⟨1, 0⟩`).
+- `Option<()>`: `()` is a 1-ZST with no niche, so `TagEncoding::Direct` keeps
+  `min_ity = I8` (`compiler/rustc_abi/src/layout.rs:844,897,902`), giving
+  `⟨1, 0⟩`.
+- Niche-free addressable `Option<inner>` (`.int _ _`): `TagEncoding::Direct`
+  sets `ity` from initial-field alignment and shifts payload fields past
+  `new_ity_size` (`compiler/rustc_abi/src/layout.rs:845,897,912`,
+  `f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1`):
+
+  > "start_align = start_align.min(field.align.abi);
+  > ...
+  > Integer::for_align(dl, start_align).unwrap_or(min_ity)
+  > ...
+  > *i = new_ity_size;"
+
+  On `x86_64`, `Integer::for_align` (`compiler/rustc_abi/src/lib.rs:1306-1312`)
+  matches `[I8, I16, I32, I64, I128]` for aligns `1, 2, 4, 8, 16`, so `tagBytes`
+  equals `2^lay.alignLog2`, total size is `tagBytes + lay.size`, and alignment
+  is `lay.alignLog2`. Non-addressable `Option<&T>` / `Option<*const/*mut T>`
+  locals never enter memory and return `none`. -/
 noncomputable def layoutOfTyV2 (ty : MirTy) : Option LayoutData :=
   match layoutOfTy ty with
   | some l => some l
@@ -265,6 +295,18 @@ noncomputable def layoutOfTyV2 (ty : MirTy) : Option LayoutData :=
       match layoutOfArrayV2 elem with
       | none => none
       | some elemLay => some ⟨len * elemLay.size, elemLay.alignLog2⟩
+    | .option inner =>
+      if !isSizedNoRefV2Ty inner || !isOptionPayloadSupportedV2 inner then
+        none
+      else
+        match inner with
+        | .bool | .unit => some ⟨1, 0⟩
+        | _ =>
+          match layoutOfTyV2 inner with
+          | none => none
+          | some lay =>
+            let tagBytes := Nat.pow 2 lay.alignLog2
+            some ⟨tagBytes + lay.size, lay.alignLog2⟩
     | _ => layoutOfPtrOrRangeV2 ty
 
 end Trusted.MirSemantics

@@ -1182,6 +1182,8 @@ checked on normal-return paths (`canNormal = true`); unwind-only calls
                 | .rangeTo _ => False
                 | .rangeFrom _ => False
                 | .array _ => False
+                | .range _ _ => False
+                | .optionVal _ => False
             | .unwindResume =>
               checkCleanupBlock body frame.blockIdx = true ∧
               onDone (.unwound st.mem)
@@ -1596,7 +1598,8 @@ private theorem evalStep_single_done_cases (p : Program) (c : Choice)
                       exact .inr (evalAssertFailure_done_cases msg
                         p.panicStrategy unwind s.callerMem
                         p.hasLocalPanicHandler out hUnw)
-                  | scalar _ => rw [hVal] at hUnw; cases hUnw
+                  | scalar _ | optionVal _ | range _ _ =>
+                    rw [hVal] at hUnw; cases hUnw
                   | ptr _ => rw [hVal] at hUnw; cases hUnw
                   | char _ => rw [hVal] at hUnw; cases hUnw
                   | ordering _ => rw [hVal] at hUnw; cases hUnw
@@ -1748,6 +1751,18 @@ private theorem evalStep_single_done_cases (p : Program) (c : Choice)
                     | nil =>
                       rw [hBr] at hUnw; unfold jumpToBlock at hUnw; cases hUnw
                   | array _ =>
+                    rw [hRes] at hUnw; dsimp only at hUnw
+                    cases hBr : tgts.branches with
+                    | cons _ _ => rw [hBr] at hUnw; cases hUnw
+                    | nil =>
+                      rw [hBr] at hUnw; unfold jumpToBlock at hUnw; cases hUnw
+                  | range _ _ =>
+                    rw [hRes] at hUnw; dsimp only at hUnw
+                    cases hBr : tgts.branches with
+                    | cons _ _ => rw [hBr] at hUnw; cases hUnw
+                    | nil =>
+                      rw [hBr] at hUnw; unfold jumpToBlock at hUnw; cases hUnw
+                  | optionVal _ =>
                     rw [hRes] at hUnw; dsimp only at hUnw
                     cases hBr : tgts.branches with
                     | cons _ _ => rw [hBr] at hUnw; cases hUnw
@@ -1969,7 +1984,8 @@ private theorem evalTerminator_single_frame {body : Body} {bb : BasicBlock}
           rw [hFault] at hTerm
           cases hTerm
       | scalar _ | ptr _ | char _ | ordering _ | unit | enumVal _ _ | tuple _
-      | bytes _ | array _ | slicePtr _ _ | rangeTo _ | rangeFrom _ =>
+      | bytes _ | array _ | slicePtr _ _ | rangeTo _ | rangeFrom _
+      | optionVal _ | range _ _ =>
         rw [hVal] at hTerm; cases hTerm
   | unreachable | unwindResume | call _ _ _ _ _
   | sysrootCall _ _ _ _ _ | coreCall _ _ _ _ _ | unsupported => rw [hKind] at hTerm; cases hTerm
@@ -2027,7 +2043,8 @@ private theorem evalTerminator_single_frame {body : Body} {bb : BasicBlock}
         | ok _ =>
           rw [hTg] at hTerm; unfold jumpToBlock at hTerm; cases hTerm; rfl
       | ptr _ | ordering _ | unit | enumVal _ _ | tuple _ | bytes _
-      | slicePtr _ _ | rangeTo _ | rangeFrom _ | array _ =>
+      | slicePtr _ _ | rangeTo _ | rangeFrom _ | array _
+      | range _ _ | optionVal _ =>
         rw [hRes] at hTerm; dsimp only at hTerm
         cases hBr : tgts.branches with
         | cons _ _ => rw [hBr] at hTerm; cases hTerm
@@ -2285,7 +2302,7 @@ theorem wpFrameOutcome_of_mirWpState (callerLens : ByteSubLens)
                             true
                         rw [hFault] at hEval
                         exact False.elim hEval
-                    | scalar _ => rw [hVal] at hEval; exact False.elim hEval
+                    | scalar _ | optionVal _ | range _ _ => rw [hVal] at hEval; exact False.elim hEval
                     | ptr _ => rw [hVal] at hEval; exact False.elim hEval
                     | char _ => rw [hVal] at hEval; exact False.elim hEval
                     | ordering _ => rw [hVal] at hEval; exact False.elim hEval
@@ -2831,7 +2848,7 @@ private theorem evalStep_step_preserves_callerMem (b : Body) (fr : FrameState)
                     evalAssertFailure_unwind_fault msg unwind cm true
                   rw [hFault] at hStep
                   cases hStep
-              | scalar _ => rw [hVal] at hStep; cases hStep
+              | scalar _ | optionVal _ | range _ _ => rw [hVal] at hStep; cases hStep
               | ptr _ => rw [hVal] at hStep; cases hStep
               | char _ => rw [hVal] at hStep; cases hStep
               | ordering _ => rw [hVal] at hStep; cases hStep
@@ -2993,6 +3010,20 @@ private theorem evalStep_step_preserves_callerMem (b : Body) (fr : FrameState)
                   rw [hBr] at hStep; unfold jumpToBlock at hStep
                   cases hStep; rfl
               | array _ =>
+                rw [hRes] at hStep; dsimp only at hStep
+                cases hBr : tgts.branches with
+                | cons _ _ => rw [hBr] at hStep; cases hStep
+                | nil =>
+                  rw [hBr] at hStep; unfold jumpToBlock at hStep
+                  cases hStep; rfl
+              | range _ _ =>
+                rw [hRes] at hStep; dsimp only at hStep
+                cases hBr : tgts.branches with
+                | cons _ _ => rw [hBr] at hStep; cases hStep
+                | nil =>
+                  rw [hBr] at hStep; unfold jumpToBlock at hStep
+                  cases hStep; rfl
+              | optionVal _ =>
                 rw [hRes] at hStep; dsimp only at hStep
                 cases hBr : tgts.branches with
                 | cons _ _ => rw [hBr] at hStep; cases hStep
@@ -3284,7 +3315,9 @@ private theorem wpAssert_implies_stackExecutes
         | .slicePtr _ _ => False
         | .rangeTo _ => False
         | .rangeFrom _ => False
-        | .array _ => False) :
+        | .array _ => False
+        | .range _ _ => False
+        | .optionVal _ => False) :
     ∃ out,
       StackReaches implOf
         (.running ⟨callerLens, callees, body, frame⟩ [] mem cm)
@@ -3307,6 +3340,8 @@ private theorem wpAssert_implies_stackExecutes
     | rangeTo _ => rw [hRes] at hWp; exact False.elim hWp
     | rangeFrom _ => rw [hRes] at hWp; exact False.elim hWp
     | array _ => rw [hRes] at hWp; exact False.elim hWp
+    | range _ _ => rw [hRes] at hWp; exact False.elim hWp
+    | optionVal _ => rw [hRes] at hWp; exact False.elim hWp
     | bool b =>
       rw [hRes] at hWp
       dsimp only at hWp

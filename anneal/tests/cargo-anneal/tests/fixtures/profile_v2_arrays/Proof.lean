@@ -365,7 +365,7 @@ theorem initStateV2_ok_of {p : Program} {q : Query} {body : Body}
     (hNonEmpty : body.basicBlocks.isEmpty = false)
     (hArgLt : Nat.blt body.argumentCount body.locals.length = true)
     (hSto : storageAnnotationsInBounds body = true)
-    (hDiscr : discriminantTypesValid body = true)
+    (hDiscr : discriminantTypesValidV2 body = true)
     (hCast : castTypesValid body = true)
     (hLocs : body.locals.all isSupportedV2LocalTy = true)
     (hArgs : checkArgsMatchV2 q.args ((body.locals.drop 1).take body.argumentCount) = true)
@@ -461,6 +461,38 @@ theorem evalTerminatorV2_return_ok {body : Body} {bb : BasicBlock} {frame : Fram
   dsimp only
   rw [ite_bool_false hNoRodata, ite_bool_false (by rw [hStay, hValid, hDisj]; rfl)]
 
+private theorem layoutOfTyV2_u8x4 :
+    layoutOfTyV2 (.array (.int .i8 false) 4) = some ⟨4, 0⟩ := rfl
+
+private theorem layoutOfTyV2_u8x3 :
+    layoutOfTyV2 (.array (.int .i8 false) 3) = some ⟨3, 0⟩ := rfl
+
+private theorem layoutOfTyV2_u8x2 :
+    layoutOfTyV2 (.array (.int .i8 false) 2) = some ⟨2, 0⟩ := rfl
+
+private theorem layoutOfTyV2_u8 :
+    layoutOfTyV2 (.int .i8 false) = some ⟨1, 0⟩ := rfl
+
+private theorem layoutOfTyV2_u16 :
+    layoutOfTyV2 (.int .i16 false) = some ⟨2, 1⟩ := rfl
+
+private theorem decodeValV2_u8_array (n : Nat) (bytes : List AllocByte) :
+    decodeValV2 profileV2TargetEndian (.array (.int .i8 false) n) bytes =
+      (if !Nat.beq bytes.length (n * 1) then .error .unsupported
+       else
+         match decodeFixedChunks 1 (decodeValV2 profileV2TargetEndian (.int .i8 false))
+             n bytes with
+         | .error k => .error k
+         | .ok none => .ok none
+         | .ok (some vs) => .ok (some (.array vs))) := rfl
+
+private theorem encodeValV2_u8_array (n : Nat) (vs : List Val) :
+    encodeValV2 profileV2TargetEndian (.array (.int .i8 false) n) (.array vs) =
+      (if !checkValV2 (.array vs) (.array (.int .i8 false) n) then .error .unsupported
+       else if !Nat.beq vs.length n then .error .unsupported
+       else encodeValListWith (encodeValV2 profileV2TargetEndian (.int .i8 false)) vs) :=
+  rfl
+
 /-! ## Inversion Helpers for Scalar, Enum, and Array Entry Values -/
 
 private theorem checkValV2_scalar_inv {v : Val} {w : IntWidth} {s : Bool}
@@ -471,7 +503,9 @@ private theorem checkValV2_scalar_inv {v : Val} {w : IntWidth} {s : Bool}
     cases v with
     | scalar sv => unfold checkValV2 at h; exact h
     | bool _ | unit | char _ | ordering _ | tuple _ | enumVal _ _
-    | ptr _ | slicePtr _ _ | array _ | rangeTo _ | rangeFrom _ | bytes _ => cases h
+    | ptr _ | slicePtr _ _ | array _ | rangeTo _ | rangeFrom _ | range _ _
+    | bytes _ => cases h
+    | optionVal o => cases o <;> cases h
   exact let ⟨bits, hv, hTrunc⟩ := checkVal_int_iff.mp h1; ⟨bits, hv, beq_iff_eq.mpr hTrunc⟩
 
 private theorem scalarVal_wf_i16 {bits : BitVec 128}
@@ -511,7 +545,9 @@ private theorem checkValV2_ref_ptr_inv {reqMut : Mutability} {pt : MirTy}
           have hEqW : pw = .isize := by cases pw <;> first | rfl | cases hW
           exact ⟨⟨aid, off, pw⟩, rfl, hEqW⟩
     | bool _ | scalar _ | unit | char _ | ordering _ | tuple _ | enumVal _ _
-    | slicePtr _ _ | array _ | rangeTo _ | rangeFrom _ | bytes _ => cases h
+    | slicePtr _ _ | array _ | rangeTo _ | rangeFrom _ | range _ _
+    | bytes _ => cases h
+    | optionVal o => cases o <;> cases h
 
 private theorem scalarWf_i8_ofNat_lt {n : Nat} (hLt : n < 256) :
     ScalarVal.wf ⟨.i8, false, BitVec.ofNat 128 n⟩ = true := by
@@ -526,7 +562,10 @@ private theorem scalarWf_i8_ofNat_lt {n : Nat} (hLt : n < 256) :
 
 private theorem decodeValV2_u8_uninit :
     decodeValV2 profileV2TargetEndian (.int .i8 false) [.uninit] = .ok none := by
-  unfold decodeValV2 decodeVal layoutOfTy
+  delta decodeValV2
+  dsimp only
+  try (delta decodeValV2._f; dsimp only)
+  unfold decodeVal layoutOfTy
   dsimp only [intLayout]
   rw [ite_bool_false]; rotate_left; rfl
   rw [ite_bool_false]; rotate_left; rfl
@@ -541,7 +580,10 @@ private theorem decodeValV2_u8_init (b : UInt8) (prov : Option AllocId) :
     rw [toNat_truncateBits, BitVec.toNat_ofNat]
     change (b.toNat % Nat.pow 2 128) % 256 = b.toNat % Nat.pow 2 128
     rw [Nat.mod_eq_of_lt (Nat.lt_trans hBLt (by decide)), Nat.mod_eq_of_lt hBLt]
-  unfold decodeValV2 decodeVal layoutOfTy
+  delta decodeValV2
+  dsimp only
+  try (delta decodeValV2._f; dsimp only)
+  unfold decodeVal layoutOfTy
   dsimp only [intLayout, initBytes?, decodeUInt]
   rw [ite_bool_false]; rotate_left; rfl
   rw [ite_bool_false]; rotate_left; rfl
@@ -564,8 +606,9 @@ private theorem decodeValV2_u8x4_init (b0 b1 b2 b3 : UInt8)
         .scalar ⟨.i8, false, BitVec.ofNat 128 b1.toNat⟩,
         .scalar ⟨.i8, false, BitVec.ofNat 128 b2.toNat⟩,
         .scalar ⟨.i8, false, BitVec.ofNat 128 b3.toNat⟩])) := by
-  unfold decodeValV2
-  dsimp only [layoutOfTyV2, layoutOfArrayV2, layoutOfTy, intLayout]
+  rw [decodeValV2_u8_array]
+  try dsimp only [layoutOfTyV2_u8x4, layoutOfTyV2_u8x3, layoutOfTyV2_u8x2, layoutOfTyV2_u8, layoutOfTyV2_u16,
+    layoutOfArrayV2, layoutOfTy, intLayout]
   rw [ite_bool_false]; rotate_left; rfl
   dsimp only [decodeFixedChunks, List.take, List.drop]
   rw [decodeValV2_u8_init b0 p0, decodeValV2_u8_init b1 p1,
@@ -653,6 +696,8 @@ private theorem pack_le_rev_correct (q : Query)
             dsimp only
             rw [ite_bool_false]; rotate_left; decide
             dsimp only
+            repeat (rw [ite_bool_false]; rotate_left; first | rfl | decide)
+            try dsimp only
             rw [writePlaceDestV2_immediate_ok hV0 (by rfl) (by rfl)]; rfl)
           -- bb0 terminator: coreCall intToLeBytes .i16 false [move 5] -> 4 goto
           -- 1
@@ -664,7 +709,7 @@ private theorem pack_le_rev_correct (q : Query)
             rw [ite_bool_false]; rotate_left; decide
             dsimp only [evalArgOperandsV2, evalOperandToSlotV2]
             rw [readPlaceV2_move_local (by rfl) (by rfl) (by decide) (by rfl)]
-            dsimp only [evalArgOperandsV2, argValues, execCoreCallOp, leBytesOfNat]
+            dsimp only [evalArgOperandsV2, argValues, execCoreCallWithMem, execCoreCallOp, leBytesOfNat]
             rw [ite_bool_false]; rotate_left; (dsimp only [IntWidth.byteSize]; rw [hWf]; decide)
             dsimp only [IntWidth.byteSize, List.map]
             have hLe2 : List.map (fun b : UInt8 => Val.scalar ⟨.i8, false, BitVec.ofNat 128 b.toNat⟩)
@@ -694,6 +739,8 @@ private theorem pack_le_rev_correct (q : Query)
             dsimp only [Trusted.MirSemantics.getElem?]
             rw [ite_bool_false]; rotate_left; decide
             dsimp only
+            repeat (rw [ite_bool_false]; rotate_left; first | rfl | decide)
+            try dsimp only
             rw [writePlaceDestV2_immediate_ok hCheckLo (by rfl) (by rfl)]; rfl)
           -- storageLive 3
           apply execOutcomeStateV2_step (by rfl)
@@ -707,6 +754,8 @@ private theorem pack_le_rev_correct (q : Query)
             dsimp only [Trusted.MirSemantics.getElem?]
             rw [ite_bool_false]; rotate_left; decide
             dsimp only
+            repeat (rw [ite_bool_false]; rotate_left; first | rfl | decide)
+            try dsimp only
             rw [writePlaceDestV2_immediate_ok hCheckHi (by rfl) (by rfl)]; rfl)
           -- storageDead 4, storageLive 6
           apply execOutcomeStateV2_step (by rfl)
@@ -720,6 +769,8 @@ private theorem pack_le_rev_correct (q : Query)
             dsimp only
             rw [ite_bool_false]; rotate_left; decide
             dsimp only
+            repeat (rw [ite_bool_false]; rotate_left; first | rfl | decide)
+            try dsimp only
             rw [writePlaceDestV2_immediate_ok hCheckHi (by rfl) (by rfl)]; rfl)
           -- storageLive 7
           apply execOutcomeStateV2_step (by rfl)
@@ -732,6 +783,8 @@ private theorem pack_le_rev_correct (q : Query)
             dsimp only
             rw [ite_bool_false]; rotate_left; decide
             dsimp only
+            repeat (rw [ite_bool_false]; rotate_left; first | rfl | decide)
+            try dsimp only
             rw [writePlaceDestV2_immediate_ok hCheckLo (by rfl) (by rfl)]; rfl)
           -- assign 0 (aggregateArray .i8 [move 6, move 7])
           apply execOutcomeStateV2_step (by
@@ -759,8 +812,9 @@ private theorem pack_le_rev_correct (q : Query)
             simp only [hCheck2]
             rw [ite_bool_false]; rotate_left; rfl
             dsimp only
-            rw [writePlaceDestV2_immediate_ok hChkOut (by rfl) (by rfl)]
-            rfl)
+            repeat (rw [ite_bool_false]; rotate_left; first | rfl | decide)
+            try dsimp only
+            rw [writePlaceDestV2_immediate_ok hChkOut (by rfl) (by rfl)]; rfl)
           -- storageDead 7, 6, 3, 2
           apply execOutcomeStateV2_step (by rfl)
           apply execOutcomeStateV2_step (by rfl)
@@ -833,16 +887,18 @@ private theorem repeat_unsize_len_correct (q : Query)
               .shared (.array (.int .i8 false) 3) (.ptr ⟨some stackAid, UInt64.ofNat 0, .isize⟩) =
             .ok () := by
           unfold refValidInMem
-          dsimp only [layoutOfTyV2, layoutOfArrayV2, layoutOfTy, intLayout]
+          dsimp only [layoutOfTyV2_u8x4, layoutOfTyV2_u8x3, layoutOfTyV2_u8x2, layoutOfTyV2_u8, layoutOfTyV2_u16,
+    layoutOfArrayV2, layoutOfTy, intLayout]
           rw [hFindStack]
           dsimp only
           rw [ite_bool_false]; rotate_left; rfl
           rw [ite_bool_false]; rotate_left; rfl
           rw [show (UInt64.ofNat 0).toNat = 0 from rfl]
-          unfold decodeValV2
-          dsimp only [layoutOfTyV2, layoutOfArrayV2, layoutOfTy, intLayout]
+          rw [decodeValV2_u8_array]
+          try dsimp only [layoutOfTyV2_u8x4, layoutOfTyV2_u8x3, layoutOfTyV2_u8x2, layoutOfTyV2_u8, layoutOfTyV2_u16,
+    layoutOfArrayV2, layoutOfTy, intLayout]
           rw [ite_bool_false]; rotate_left; rfl
-          rw [show 3 * 1 = 3 from rfl]
+          try rw [show 3 * 1 = 3 from rfl]
           dsimp only [stackAlloc, decodeFixedChunks, List.take, List.drop]
           rw [decodeValV2_u8_init]
           rfl
@@ -852,13 +908,15 @@ private theorem repeat_unsize_len_correct (q : Query)
               .shared (.slice (.int .i8 false))
               (.slicePtr ⟨some stackAid, UInt64.ofNat 0, .isize⟩ (UInt64.ofNat 3)) =
             .ok () := by
-          unfold refValidInMem sliceFromRawPartsCheck
-          dsimp only [intLayout]
+          unfold refValidInMem sliceFromRawPartsCheck sliceRefRawCheck
+          dsimp only [intLayout, layoutOfTyV2_u8]
           rw [ite_bool_false]; rotate_left; rfl
           rw [hFindStack]
           dsimp only
           rw [ite_bool_false]; rotate_left; rfl
           rw [ite_bool_false]; rotate_left; rfl
+          rw [ite_bool_false]; rotate_left; rfl
+          dsimp only
           rw [ite_bool_false]; rotate_left; rfl
         have hInit : initStateV2 (entryProgForBody Captured.program 1) q =
             .ok ⟨[⟨1, 0, 0, initLocalsLoop Captured.body_1 q.args 0 Captured.body_1.locals,
@@ -889,6 +947,8 @@ private theorem repeat_unsize_len_correct (q : Query)
             dsimp only
             rw [ite_bool_false]; rotate_left; decide
             dsimp only
+            repeat (rw [ite_bool_false]; rotate_left; first | rfl | decide)
+            try dsimp only
             rw [writePlaceDestV2_immediate_ok hV0 (by rfl) (by rfl)]; rfl)
           -- assign 2 (repeat_ (move 3) .i8 3)
           apply execOutcomeStateV2_step (by
@@ -918,7 +978,8 @@ private theorem repeat_unsize_len_correct (q : Query)
             dsimp only [evalStepV2, entryProgForBody, Captured.program, Captured.body_1,
               List.append, Trusted.MirSemantics.getElem?, evalStatementV2, resolvePlaceDestV2, placeStaticTyV2,
               stepProjectedTyV2, placeProjectedTyV2, evalRvalueV2, evalRefRvalueV2,
-              promoteLocalToMemory, layoutOfTyV2, layoutOfArrayV2, layoutOfTy, intLayout, allocateStack,
+              promoteLocalToMemory, layoutOfTyV2_u8x4, layoutOfTyV2_u8x3, layoutOfTyV2_u8x2, layoutOfTyV2_u8, layoutOfTyV2_u16,
+              layoutOfArrayV2, layoutOfTy, intLayout, allocateStack,
               MemoryState.reserveAllocId, storeIndirectV2]
             have hChkArr : checkValV2 (.array [.scalar ⟨.i8, false, bits⟩,
                 .scalar ⟨.i8, false, bits⟩, .scalar ⟨.i8, false, bits⟩])
@@ -937,7 +998,10 @@ private theorem repeat_unsize_len_correct (q : Query)
                 dsimp only [checkValV2]; exact hCE
               have hEncElem : encodeValV2 profileV2TargetEndian (.int .i8 false) (.scalar ⟨.i8, false, bits⟩) =
                   .ok [AllocByte.init (UInt8.ofNat bits.toNat) none] := by
-                unfold encodeValV2 encodeVal
+                delta encodeValV2
+                dsimp only
+                try (delta encodeValV2._f; dsimp only)
+                unfold encodeVal
                 rw [ite_bool_false (by rw [hCE2]; rfl)]
                 dsimp only
                 rw [ite_bool_false (by rw [hCE]; rfl)]
@@ -949,9 +1013,9 @@ private theorem repeat_unsize_len_correct (q : Query)
                         rw [Nat.mod_mod_of_dvd _ (by decide)]))
                 rw [hByteEq]
                 rfl
-              unfold encodeValV2
+              rw [encodeValV2_u8_array]
               rw [ite_bool_false (by rw [hChkArr]; rfl)]
-              dsimp only
+              try dsimp only
               rw [ite_bool_false]; rotate_left; rfl
               dsimp only [encodeValListWith]
               rw [hEncElem]
@@ -1022,6 +1086,8 @@ private theorem repeat_unsize_len_correct (q : Query)
             rw [ite_bool_false]; rotate_left; decide
             rw [hRefStackPtr]
             dsimp only
+            repeat (rw [ite_bool_false]; rotate_left; first | rfl | decide)
+            try dsimp only
             rw [writePlaceDestV2_immediate_ok (by rfl) (by rfl) (by rfl)]
             try rfl)
           -- assign 5 (ref .shared (*6))
@@ -1033,6 +1099,8 @@ private theorem repeat_unsize_len_correct (q : Query)
             rw [ite_bool_false]; rotate_left; decide
             rw [hRefStackPtr]
             dsimp only
+            repeat (rw [ite_bool_false]; rotate_left; first | rfl | decide)
+            try dsimp only
             rw [writePlaceDestV2_immediate_ok (by rfl) (by rfl) (by rfl)]
             try rfl)
           -- assign 4 (cast .unsize (move 5))
@@ -1049,6 +1117,8 @@ private theorem repeat_unsize_len_correct (q : Query)
             dsimp only
             rw [hRefStackSlice]
             dsimp only
+            repeat (rw [ite_bool_false]; rotate_left; first | rfl | decide)
+            try dsimp only
             rw [writePlaceDestV2_immediate_ok (by rfl) (by rfl) (by rfl)]
             try rfl)
           -- storageDead 5, storageDead 6, storageLive 7
@@ -1064,6 +1134,8 @@ private theorem repeat_unsize_len_correct (q : Query)
             rw [ite_bool_false]; rotate_left; decide
             rw [hRefStackSlice]
             dsimp only
+            repeat (rw [ite_bool_false]; rotate_left; first | rfl | decide)
+            try dsimp only
             rw [writePlaceDestV2_immediate_ok (by rfl) (by rfl) (by rfl)]
             try rfl)
           -- coreCall .sliceLen [move 7] -> 0 goto 1
@@ -1075,7 +1147,7 @@ private theorem repeat_unsize_len_correct (q : Query)
             rw [ite_bool_false]; rotate_left; decide
             dsimp only [evalArgOperandsV2, evalOperandToSlotV2]
             rw [readPlaceV2_move_local (by rfl) (by rfl) (by decide) (by rfl)]
-            dsimp only [evalArgOperandsV2, argValues, execCoreCallOp]
+            dsimp only [evalArgOperandsV2, argValues, execCoreCallWithMem, execCoreCallOp]
             rw [ite_bool_false]; rotate_left; decide
             rw [hRefStackSlice]
             dsimp only
@@ -1153,7 +1225,7 @@ private theorem refValidInMem_tag_inv {m : MemoryState} {p : PtrVal}
       (b = 0 ∨ b = 1) := by
   have hLay : layoutOfTyV2 (.enum tagEnumTy) = some (intLayout .i8) := by
     have hAdm : enumAdmitted tagEnumTy = true := by decide
-    dsimp only [layoutOfTyV2, layoutOfArrayV2, layoutOfTy]; rw [hAdm]; rfl
+    rfl
   unfold refValidInMem at hRef
   rw [hLay] at hRef
   dsimp only [intLayout] at hRef
@@ -1252,7 +1324,9 @@ private theorem refValidInMem_tag_inv {m : MemoryState} {p : PtrVal}
                 rw [Nat.mod_eq_of_lt (Nat.lt_trans hBLt (by decide)), Nat.mod_eq_of_lt hBLt]
               have hLay1 : layoutOfTy (.enum tagEnumTy) = some (intLayout .i8) := by
                 dsimp only [layoutOfTy]; rw [hAdm]; rfl
-              unfold decodeValV2 at hRef
+              delta decodeValV2 at hRef
+              dsimp only at hRef
+              try (delta decodeValV2._f at hRef; dsimp only at hRef)
               change (match decodeVal profileV2TargetEndian (.enum tagEnumTy) [AllocByte.init b prov] with
                 | Except.ok (some _) => Except.ok ()
                 | Except.ok none => Except.error FaultKind.undefined
@@ -1691,7 +1765,7 @@ private theorem tag_eq_correct (q : Query)
                   rw [hList]; rfl
                 have hAdm : enumAdmitted tagEnumTy = true := by decide
                 have hLay : layoutOfTyV2 (.enum tagEnumTy) = some (intLayout .i8) := by
-                  dsimp only [layoutOfTyV2, layoutOfArrayV2, layoutOfTy]; rw [hAdm]; rfl
+                  rfl
                 have hLoadA :
                     loadIndirectV2 (entryMemoryWithCaller q.callerMem) (.enum tagEnumTy)
                       ⟨ida, pa.offsetBytes.toNat⟩ =
@@ -1749,6 +1823,8 @@ private theorem tag_eq_correct (q : Query)
                       dsimp only [refsValidInMem]; rw [hRA]
                     rw [ite_bool_false (by rw [hRV]; rfl)]
                     dsimp only
+                    repeat (rw [ite_bool_false]; rotate_left; first | rfl | decide)
+                    try dsimp only
                     rw [writePlaceDestV2_immediate_ok hV0 (by rfl) (by rfl)]
                     try rfl)
                   -- bb0 stmt 3: storageLive 5
@@ -1766,6 +1842,8 @@ private theorem tag_eq_correct (q : Query)
                       dsimp only [refsValidInMem]; rw [hRB]
                     rw [ite_bool_false (by rw [hRV]; rfl)]
                     dsimp only
+                    repeat (rw [ite_bool_false]; rotate_left; first | rfl | decide)
+                    try dsimp only
                     rw [writePlaceDestV2_immediate_ok hV1 (by rfl) (by rfl)]
                     try rfl)
                   -- bb0 stmt 5: assign 3 (aggregateTuple [move 4, move 5])
@@ -1787,8 +1865,9 @@ private theorem tag_eq_correct (q : Query)
                     simp only [hCL]
                     rw [ite_bool_false]; rotate_left; rfl
                     dsimp only
-                    rw [writePlaceDestV2_immediate_ok hChkTuple (by rfl) (by rfl)]
-                    rfl)
+                    repeat (rw [ite_bool_false]; rotate_left; first | rfl | decide)
+                    try dsimp only
+                    rw [writePlaceDestV2_immediate_ok hChkTuple (by rfl) (by rfl)]; rfl)
                   -- bb0 stmt 6..8: storageDead 5, storageDead 4, nop
                   apply execOutcomeStateV2_step (by rfl)
                   apply execOutcomeStateV2_step (by rfl)
@@ -1804,6 +1883,8 @@ private theorem tag_eq_correct (q : Query)
                     dsimp only
                     rw [ite_bool_false]; rotate_left; decide
                     dsimp only
+                    repeat (rw [ite_bool_false]; rotate_left; first | rfl | decide)
+                    try dsimp only
                     rw [writePlaceDestV2_immediate_ok hV0 (by rfl) (by rfl)]; rfl)
                   -- Split concretely on ba ∈ {0, 1} into dedicated tail lemmas
                   -- to stay comfortably under the default heartbeat budget.
@@ -1886,8 +1967,9 @@ private theorem decodeValV2_u8x4_init_inv {x0 x1 x2 x3 : AllocByte} {v : Val}
     (h : decodeValV2 profileV2TargetEndian (.array (.int .i8 false) 4) [x0, x1, x2, x3] = .ok (some v)) :
     ∃ b0 b1 b2 b3 p0 p1 p2 p3,
       x0 = .init b0 p0 ∧ x1 = .init b1 p1 ∧ x2 = .init b2 p2 ∧ x3 = .init b3 p3 := by
-  unfold decodeValV2 at h
-  dsimp only [layoutOfTyV2, layoutOfArrayV2, layoutOfTy, intLayout] at h
+  rw [decodeValV2_u8_array] at h
+  try dsimp only [layoutOfTyV2_u8x4, layoutOfTyV2_u8x3, layoutOfTyV2_u8x2, layoutOfTyV2_u8, layoutOfTyV2_u16,
+    layoutOfArrayV2, layoutOfTy, intLayout] at h
   rw [ite_bool_false] at h; rotate_left; rfl
   dsimp only [decodeFixedChunks, List.take, List.drop] at h
   rw [ite_bool_true] at h; rotate_left; rfl
@@ -1924,7 +2006,10 @@ private theorem refValidInMem_u8x4_inv {m : MemoryState} {p : PtrVal}
       Trusted.MirSemantics.getElem? a.bytes (p.offsetBytes.toNat + 2) = some (.init b2 p2) ∧
       Trusted.MirSemantics.getElem? a.bytes (p.offsetBytes.toNat + 3) = some (.init b3 p3) := by
   unfold refValidInMem at hRef
-  dsimp only [layoutOfTyV2, layoutOfArrayV2, layoutOfTy, intLayout] at hRef
+  dsimp only at hRef
+  rw [ite_bool_false (b := !isSupportedV2PointeeTy (.array (.int .i8 false) 4))
+    (by decide), layoutOfTyV2_u8x4] at hRef
+  dsimp only at hRef
   cases hAid : p.allocId with
   | none =>
     rw [hAid] at hRef
@@ -2124,6 +2209,8 @@ private theorem matches_pattern_correct (q : Query)
               rw [ite_bool_false]; rotate_left; decide
               rw [ite_bool_false]; rotate_left; decide
               dsimp only
+              repeat (rw [ite_bool_false]; rotate_left; first | rfl | decide)
+              try dsimp only
               rw [writePlaceDestV2_immediate_ok hV0 (by rfl) (by rfl)]; rfl)
             -- bb0 stmt 2: storageLive 3
             apply execOutcomeStateV2_step (by rfl)
@@ -2144,7 +2231,8 @@ private theorem matches_pattern_correct (q : Query)
               have hRefRoMem : refValidInMem
                   { nextAllocId := roAid + 1, allocations := roAlloc :: q.callerMem.allocations }
                   .shared (.array (.int .i8 false) 4) (.ptr ⟨some roAid, UInt64.ofNat 0, .isize⟩) = .ok () := by
-                dsimp only [refValidInMem, layoutOfTyV2, layoutOfArrayV2, layoutOfTy, intLayout]
+                dsimp only [refValidInMem, layoutOfTyV2_u8x4, layoutOfTyV2_u8x3, layoutOfTyV2_u8x2, layoutOfTyV2_u8, layoutOfTyV2_u16,
+    layoutOfArrayV2, layoutOfTy, intLayout]
                 rw [hFindRo]
                 rfl
               rw [hRefRoMem]
@@ -2157,6 +2245,8 @@ private theorem matches_pattern_correct (q : Query)
               rw [ite_bool_false]; rotate_left; decide
               rw [ite_bool_false (by rw [hRoValid]; rfl)]
               dsimp only
+              repeat (rw [ite_bool_false]; rotate_left; first | rfl | decide)
+              try dsimp only
               rw [writePlaceDestV2_immediate_ok (by rfl) (by rfl) (by rfl)]
               try rfl)
             -- bb0 stmt 4: assign 3 (ref .shared (*5))
@@ -2170,13 +2260,16 @@ private theorem matches_pattern_correct (q : Query)
               have hRefRoMem : refValidInMem
                   { nextAllocId := roAid + 1, allocations := roAlloc :: q.callerMem.allocations }
                   .shared (.array (.int .i8 false) 4) (.ptr ⟨some roAid, UInt64.ofNat 0, .isize⟩) = .ok () := by
-                dsimp only [refValidInMem, layoutOfTyV2, layoutOfArrayV2, layoutOfTy, intLayout]
+                dsimp only [refValidInMem, layoutOfTyV2_u8x4, layoutOfTyV2_u8x3, layoutOfTyV2_u8x2, layoutOfTyV2_u8, layoutOfTyV2_u16,
+    layoutOfArrayV2, layoutOfTy, intLayout]
                 rw [hFindRo]
                 rfl
               rw [ite_bool_false]; rotate_left; decide
               rw [ite_bool_false]; rotate_left; decide
               rw [hRefRoMem]
               dsimp only
+              repeat (rw [ite_bool_false]; rotate_left; first | rfl | decide)
+              try dsimp only
               rw [writePlaceDestV2_immediate_ok (by rfl) (by rfl) (by rfl)]
               try rfl)
             -- bb0 terminator: coreCall .arrayEq (.int .i8 false) 4 [move 2,
@@ -2191,7 +2284,7 @@ private theorem matches_pattern_correct (q : Query)
               rw [readPlaceV2_move_local (by rfl) (by rfl) (by decide) (by rfl)]
               dsimp only [evalArgOperandsV2, evalOperandToSlotV2]
               rw [readPlaceV2_move_local (by rfl) (by rfl) (by decide) (by rfl)]
-              dsimp only [argValues, execCoreCallOp]
+              dsimp only [argValues, execCoreCallWithMem, execCoreCallOp]
               rw [ite_bool_false]; rotate_left; decide
               have hFindRo : findAllocation roAid (roAlloc :: q.callerMem.allocations) = some roAlloc := by
                 change (if Nat.beq roAid roAid then some roAlloc else _) = some roAlloc
@@ -2207,18 +2300,22 @@ private theorem matches_pattern_correct (q : Query)
                   { nextAllocId := roAid + 1, allocations := roAlloc :: q.callerMem.allocations }
                   .shared (.array (.int .i8 false) 4) (.ptr pa) = .ok () := by
                 unfold refValidInMem
-                dsimp only [layoutOfTyV2, layoutOfArrayV2, layoutOfTy]
+                dsimp only
+                rw [ite_bool_false (b := !isSupportedV2PointeeTy (.array (.int .i8 false) 4))
+                  (by decide), layoutOfTyV2_u8x4]
+                dsimp only
                 rw [hPaId]; dsimp only
                 rw [hFindACons]; dsimp only
-                rw [ite_bool_false]; rotate_left; (dsimp only [intLayout]; rw [hLiveA, hInBA, hAlA]; rfl)
+                rw [ite_bool_false]; rotate_left; ((try dsimp only [intLayout]); rw [hLiveA, hInBA, hAlA]; rfl)
                 rw [ite_bool_false]; rotate_left; rfl
-                dsimp only [intLayout]
+                try dsimp only [intLayout]
                 rw [drop_take_four_of_getElem hg0 hg1 hg2 hg3]
                 rw [decodeValV2_u8x4_init b0 b1 b2 b3 p0 p1 p2 p3]
               have hRefRo : refValidInMem
                   { nextAllocId := roAid + 1, allocations := roAlloc :: q.callerMem.allocations }
                   .shared (.array (.int .i8 false) 4) (.ptr ⟨some roAid, UInt64.ofNat 0, .isize⟩) = .ok () := by
-                dsimp only [refValidInMem, layoutOfTyV2, layoutOfArrayV2, layoutOfTy, intLayout]
+                dsimp only [refValidInMem, layoutOfTyV2_u8x4, layoutOfTyV2_u8x3, layoutOfTyV2_u8x2, layoutOfTyV2_u8, layoutOfTyV2_u16,
+    layoutOfArrayV2, layoutOfTy, intLayout]
                 rw [hFindRo]
                 rfl
               have hLoadPa : loadIndirectV2
@@ -2230,7 +2327,8 @@ private theorem matches_pattern_correct (q : Query)
                     .scalar ⟨.i8, false, BitVec.ofNat 128 b2.toNat⟩,
                     .scalar ⟨.i8, false, BitVec.ofNat 128 b3.toNat⟩])) := by
                 unfold loadIndirectV2
-                dsimp only [layoutOfTyV2, layoutOfArrayV2, layoutOfTy, intLayout]
+                dsimp only [layoutOfTyV2_u8x4, layoutOfTyV2_u8x3, layoutOfTyV2_u8x2, layoutOfTyV2_u8, layoutOfTyV2_u16,
+    layoutOfArrayV2, layoutOfTy, intLayout]
                 unfold readBytes
                 rw [hFindACons]; dsimp only
                 rw [ite_bool_false]; rotate_left; rfl

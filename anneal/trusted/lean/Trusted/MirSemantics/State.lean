@@ -190,6 +190,25 @@ noncomputable def assertConditionTypesValid (body : Body) : Bool :=
       | .constant c => MirTy.beq c.ty .bool
     | _ => true)
 
+/-- Profile v2 extension of `discriminantTypesValid`, additionally checking
+that `Rvalue.discriminant` on `.option _` writes to `.int .isize true`. -/
+noncomputable def discriminantTypesValidV2 (body : Body) : Bool :=
+  discriminantTypesValid body &&
+  body.basicBlocks.all (fun bb =>
+    bb.statements.all (fun stmt =>
+      match stmt with
+      | .assign dst (.discriminant src) =>
+        if dst.projection.isEmpty && src.projection.isEmpty then
+          match getElem? body.locals src.localId with
+          | some (.option _) =>
+            match getElem? body.locals dst.localId with
+            | some dstTy => MirTy.beq dstTy (.int .isize true)
+            | none => true
+          | _ => true
+        else
+          true
+      | _ => true))
+
 /-- Check that every unprojected `Assign(dst, Cast(IntToInt, _, castTy))` in
 `body` whose `dst` is in bounds has destination type `castTy`, matching
 `rustc`'s MIR well-typedness invariant that an assignment's place and rvalue
@@ -674,7 +693,7 @@ noncomputable def initStateV2 (p : Program) (q : Query) :
         .error .unsupported
       else if !storageAnnotationsInBounds body then
         .error .unsupported
-      else if !discriminantTypesValid body then
+      else if !discriminantTypesValidV2 body then
         .error .unsupported
       else if !castTypesValid body then
         .error .unsupported

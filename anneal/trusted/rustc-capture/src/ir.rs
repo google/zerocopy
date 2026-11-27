@@ -311,6 +311,14 @@ pub enum Ty {
         #[serde(serialize_with = "serialize_boxed_ty")]
         elem: Box<Ty>,
     },
+    Range {
+        #[serde(serialize_with = "serialize_boxed_ty")]
+        elem: Box<Ty>,
+    },
+    Option {
+        #[serde(serialize_with = "serialize_boxed_ty")]
+        elem: Box<Ty>,
+    },
 }
 
 impl Ty {
@@ -341,7 +349,9 @@ impl Ty {
             | Self::RawPtr { .. }
             | Self::Slice { .. }
             | Self::RangeTo { .. }
-            | Self::RangeFrom { .. } => true,
+            | Self::RangeFrom { .. }
+            | Self::Range { .. } => true,
+            Self::Option { elem } => elem.is_retag_noop(),
             Self::Ref { .. } => false,
             Self::Array { elem, .. } => elem.is_retag_noop(),
             Self::Tuple { fields } => fields.iter().all(Self::is_retag_noop),
@@ -384,7 +394,9 @@ impl Ty {
             | Self::Ref { .. }
             | Self::RawPtr { .. }
             | Self::RangeTo { .. }
-            | Self::RangeFrom { .. } => true,
+            | Self::RangeFrom { .. }
+            | Self::Range { .. }
+            | Self::Option { .. } => true,
         }
     }
 
@@ -432,7 +444,9 @@ impl Ty {
             | Self::RawPtr { .. }
             | Self::Slice { .. }
             | Self::RangeTo { .. }
-            | Self::RangeFrom { .. } => false,
+            | Self::RangeFrom { .. }
+            | Self::Range { .. }
+            | Self::Option { .. } => false,
         }
     }
 
@@ -481,29 +495,108 @@ impl Ty {
             {
                 Some((8, 3))
             }
-            Self::Tuple { .. } | Self::Slice { .. } | Self::RangeTo { .. } | Self::RangeFrom { .. } => {
-                None
+            Self::Option { elem } => {
+                if !elem.is_sized_no_ref() || !elem.is_option_payload_supported_v2() {
+                    return None;
+                }
+                match &**elem {
+                    Self::Bool | Self::Unit => Some((1, 0)),
+                    inner => {
+                        let (size, align_log2) = inner.v2_layout()?;
+                        let tag_bytes = 1usize.checked_shl(align_log2)?;
+                        Some((tag_bytes.checked_add(size)?, align_log2))
+                    }
+                }
             }
+            Self::Tuple { .. }
+            | Self::Slice { .. }
+            | Self::RangeTo { .. }
+            | Self::RangeFrom { .. }
+            | Self::Range { .. } => None,
         }
+    }
+
+    /// Whether this type is a sized Profile v2 pointee or slice-element type
+    /// containing no nested references or raw pointers and having a fixed,
+    /// guaranteed ABI layout (matching
+    /// `Trusted.MirSemantics.isSizedNoRefV2Ty`).
+    ///
+    /// Tuples (`OverflowPair` and `Tuple`) and `Range`/`RangeTo`/`RangeFrom`
+    /// are `#[repr(Rust)]` and subject to `rustc_abi`'s `univariant` field
+    /// reordering (`compiler/rustc_abi/src/layout.rs:1111` at
+    /// `f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1`), so they remain local-only
+    /// (`is_supported_v2_local`) and are refused behind references, pointers,
+    /// and slices. `Option<T>` additionally requires
+    /// `is_option_payload_supported_v2` so `&Option<Option<u8>>` fails closed.
+    pub fn is_sized_no_ref(&self) -> bool {
+        match self {
+            Self::Bool
+            | Self::Int(_)
+            | Self::Char
+            | Self::Ordering
+            | Self::Unit
+            | Self::Never
+            | Self::Enum(_) => true,
+            Self::Option { elem } => {
+                elem.is_sized_no_ref() && elem.is_option_payload_supported_v2()
+            }
+            Self::OverflowPair(_)
+            | Self::Tuple { .. }
+            | Self::Array { .. }
+            | Self::RangeTo { .. }
+            | Self::RangeFrom { .. }
+            | Self::Range { .. }
+            | Self::Ref { .. }
+            | Self::RawPtr { .. }
+            | Self::Slice { .. } => false,
+        }
+    }
+
+    /// Whether `self` is an admitted Profile v2 thin pointee (matching
+    /// `Trusted.MirSemantics.isSupportedV2PointeeTy`): the union of
+    /// [`Self::is_sized_no_ref`] and [`Self::is_supported_v2_data`].
+    pub fn is_supported_v2_pointee(&self) -> bool {
+        self.is_sized_no_ref() || self.is_supported_v2_data()
+    }
+
+    /// Whether `self` uses `rustc` `TagEncoding::Direct` with fixed layout
+    /// inside `Option<self>` (scalars and raw pointers; matching
+    /// `Trusted.MirSemantics.isNicheFreeOptionPayloadV2`). Tuples,
+    /// `OverflowPair`, and `Range*` are refused due to `#[repr(Rust)]`
+    /// field reordering and padding-tag optimizations.
+    pub fn is_niche_free_option_payload(&self) -> bool {
+        matches!(self, Self::Int(_) | Self::RawPtr { .. })
+    }
+
+    /// Whether `self` has a modeled `Option<self>` layout in Profile v2
+    /// (matching `Trusted.MirSemantics.isOptionPayloadSupportedV2`).
+    pub fn is_option_payload_supported_v2(&self) -> bool {
+        matches!(self, Self::Unit | Self::Bool | Self::Ref { .. })
+            || self.is_niche_free_option_payload()
     }
 
     /// Whether this type is admitted as a Profile v2 local type (matching
     /// `Trusted.MirSemantics.isSupportedV2LocalTy`). Forbids nested
     /// references/pointers inside pointees (`&&T`, `*mut &T`, `&[&T]`,
-    /// `[&T; N]`).
+    /// `[&T; N]`) and unmodeled niche-packed `Option` payloads.
     ///
-    /// Also forbids overflow-pair pointees and array elements (`&(T, bool)`,
-    /// `*const (T, bool)`, `[(T, bool); N]`). The Reference says "Tuples are
+    /// Also forbids tuple, overflow-pair, and range pointees and overflow-pair
+    /// array elements (`&(T, bool)`, `*const (T, bool)`, `&Range<usize>`,
+    /// `[(T, bool); N]`). The Reference says "Tuples are
     /// laid out according to the [`Rust` representation][`Rust`]." Beyond
-    /// field alignment and non-overlap, "There are no other guarantees of data
-    /// layout made by this representation." Yet
+    /// field alignment and non-overlap, "There are no other guarantees of
+    /// data layout made by this representation." Yet
     /// `Trusted.MirSemantics.overflowPairLayout` fixes one field order and
     /// size without a `layout_of` check. So overflow pairs stay
     /// non-addressable locals that hold checked-operator results, and no
-    /// pointer can reach their bytes.
+    /// pointer can reach their bytes (see [`Self::is_sized_no_ref`]).
     /// https://github.com/rust-lang/reference/blob/ad35aca481751a06afeb23820a672b0f3b11a476/src/type-layout.md#L94
     /// https://github.com/rust-lang/reference/blob/ad35aca481751a06afeb23820a672b0f3b11a476/src/type-layout.md#L184
     pub fn is_supported_v2_local(&self) -> bool {
+        let usize_ty = Self::Int(IntTy {
+            width: IntWidth::Isize,
+            signed: false,
+        });
         match self {
             Self::Bool
             | Self::Int(_)
@@ -516,39 +609,64 @@ impl Ty {
             Self::Array { elem, .. } => elem.is_supported_v2_data(),
             Self::Tuple { fields } => fields.iter().all(Self::is_supported_v2_local),
             Self::Ref { pointee, .. } | Self::RawPtr { pointee, .. } => match &**pointee {
-                Self::Slice { elem } => matches!(&**elem, Self::Int(_)),
-                other => other.is_supported_v2_data(),
+                Self::Slice { elem } => elem.is_sized_no_ref(),
+                other => other.is_supported_v2_pointee(),
             },
-            Self::RangeTo { elem } | Self::RangeFrom { elem } => {
-                **elem
-                    == Self::Int(IntTy {
-                        width: IntWidth::Isize,
-                        signed: false,
-                    })
+            Self::RangeTo { elem } | Self::RangeFrom { elem } | Self::Range { elem } => {
+                **elem == usize_ty
+            }
+            Self::Option { elem } => {
+                elem.is_supported_v2_local() && elem.is_option_payload_supported_v2()
             }
             Self::Slice { .. } => false,
         }
     }
 
-    /// Whether this type is a reference or a tuple/array containing one,
-    /// mirroring `Trusted.MirSemantics.tyHasRefV2`.
+    /// Whether this type is a reference or an `Option`, range, or tuple/array
+    /// containing one, mirroring `Trusted.MirSemantics.tyHasRefV2`.
     pub fn has_ref_v2(&self) -> bool {
         match self {
             Self::Ref { .. } => true,
             Self::Array { elem, .. } => elem.has_ref_v2(),
+            Self::Option { elem }
+            | Self::RangeTo { elem }
+            | Self::RangeFrom { elem }
+            | Self::Range { elem } => elem.has_ref_v2(),
             Self::Tuple { fields } => fields.iter().any(Self::has_ref_v2),
-            _ => false,
+            Self::Bool
+            | Self::Char
+            | Self::Ordering
+            | Self::Unit
+            | Self::Never
+            | Self::Int(_)
+            | Self::Enum(_)
+            | Self::OverflowPair(_)
+            | Self::RawPtr { .. }
+            | Self::Slice { .. } => false,
         }
     }
 
-    /// Whether this type is a raw pointer or a tuple/array containing one,
-    /// mirroring `Trusted.MirSemantics.tyHasRawPtrV2`.
+    /// Whether this type is a raw pointer or an `Option`, range, or tuple/array
+    /// containing one, mirroring `Trusted.MirSemantics.tyHasRawPtrV2`.
     pub fn has_raw_ptr_v2(&self) -> bool {
         match self {
             Self::RawPtr { .. } => true,
             Self::Array { elem, .. } => elem.has_raw_ptr_v2(),
+            Self::Option { elem }
+            | Self::RangeTo { elem }
+            | Self::RangeFrom { elem }
+            | Self::Range { elem } => elem.has_raw_ptr_v2(),
             Self::Tuple { fields } => fields.iter().any(Self::has_raw_ptr_v2),
-            _ => false,
+            Self::Bool
+            | Self::Char
+            | Self::Ordering
+            | Self::Unit
+            | Self::Never
+            | Self::Int(_)
+            | Self::Enum(_)
+            | Self::OverflowPair(_)
+            | Self::Ref { .. }
+            | Self::Slice { .. } => false,
         }
     }
 
@@ -561,7 +679,9 @@ impl Ty {
             | Self::Slice { .. }
             | Self::Array { .. }
             | Self::RangeTo { .. }
-            | Self::RangeFrom { .. } => true,
+            | Self::RangeFrom { .. }
+            | Self::Range { .. }
+            | Self::Option { .. } => true,
             Self::Bool
             | Self::Char
             | Self::Ordering
@@ -594,7 +714,9 @@ impl Ty {
             Self::Slice { elem }
             | Self::Array { elem, .. }
             | Self::RangeTo { elem }
-            | Self::RangeFrom { elem } => {
+            | Self::RangeFrom { elem }
+            | Self::Range { elem }
+            | Self::Option { elem } => {
                 elem.collect_enum_ids(out);
             }
             Self::Bool
@@ -617,7 +739,9 @@ impl Ty {
             Self::Slice { elem }
             | Self::Array { elem, .. }
             | Self::RangeTo { elem }
-            | Self::RangeFrom { elem } => 1 + elem.ast_nodes(),
+            | Self::RangeFrom { elem }
+            | Self::Range { elem }
+            | Self::Option { elem } => 1 + elem.ast_nodes(),
         }
     }
 }
@@ -829,7 +953,9 @@ pub fn validate_constant(ty: &Ty, lit: &ConstLit) -> Result<(), String> {
             | Ty::RawPtr { .. }
             | Ty::Slice { .. }
             | Ty::RangeTo { .. }
-            | Ty::RangeFrom { .. },
+            | Ty::RangeFrom { .. }
+            | Ty::Range { .. }
+            | Ty::Option { .. },
             _,
         ) => Err(format!("constants of compound/pointer type {ty:?} are unsupported")),
         (Ty::Enum(ety), lit) => match (ety.tag_repr, lit) {
@@ -873,6 +999,7 @@ pub enum PlaceElem {
         min_length: usize,
         from_end: bool,
     },
+    Downcast { variant_idx: usize },
 }
 
 #[derive(Clone, Debug, PartialEq, Eq, Serialize)]
@@ -895,7 +1022,9 @@ impl Place {
             .projection
             .iter()
             .map(|elem| match elem {
-                PlaceElem::Deref | PlaceElem::ConstantIndex { .. } => 1,
+                PlaceElem::Deref
+                | PlaceElem::ConstantIndex { .. }
+                | PlaceElem::Downcast { .. } => 1,
                 PlaceElem::Field { ty, .. } => 1 + ty.ast_nodes(),
             })
             .sum::<usize>()
@@ -1056,6 +1185,16 @@ pub enum Rvalue {
         elem_ty: Ty,
         start: Operand,
     },
+    AggregateRange {
+        elem_ty: Ty,
+        start: Operand,
+        end: Operand,
+    },
+    AggregateOption {
+        variant_idx: usize,
+        inner_ty: Ty,
+        payload: Option<Box<Operand>>,
+    },
 }
 
 impl Rvalue {
@@ -1080,6 +1219,12 @@ impl Rvalue {
             Self::AggregateRangeTo { elem_ty, end } => 1 + elem_ty.ast_nodes() + end.ast_nodes(),
             Self::AggregateRangeFrom { elem_ty, start } => {
                 1 + elem_ty.ast_nodes() + start.ast_nodes()
+            }
+            Self::AggregateRange { elem_ty, start, end } => {
+                1 + elem_ty.ast_nodes() + start.ast_nodes() + end.ast_nodes()
+            }
+            Self::AggregateOption { inner_ty, payload, .. } => {
+                1 + inner_ty.ast_nodes() + payload.as_ref().map_or(0, |op| op.ast_nodes())
             }
         }
     }
@@ -1195,6 +1340,48 @@ pub enum CoreCallOp {
     SliceLen,
     SliceGetUncheckedRangeTo,
     SliceGetUncheckedRangeFrom,
+    SliceIndexRange {
+        mutability: Mutability,
+        elem: Ty,
+    },
+    SliceIndexRangeFrom {
+        mutability: Mutability,
+        elem: Ty,
+    },
+    SliceIsEmpty {
+        elem: Ty,
+    },
+    SliceSplitAt {
+        mutability: Mutability,
+        elem: Ty,
+    },
+    NumIsMultipleOf(IntTy),
+    NumCheckedAdd(IntTy),
+    NumCheckedMul(IntTy),
+    NumCheckedSub(IntTy),
+    NumSaturatingAdd(IntTy),
+    NumWrappingShl(IntTy),
+    NumWrappingShr(IntTy),
+    NumLeadingZeros(IntTy),
+    NumOverflowingAdd(IntTy),
+    NumOverflowingSub(IntTy),
+    CmpMin(IntTy),
+    CmpMax(IntTy),
+    MemReplace {
+        ty: Ty,
+    },
+    OptionIsSome {
+        inner: Ty,
+    },
+    OptionIsNone {
+        inner: Ty,
+    },
+    OptionTake {
+        inner: Ty,
+    },
+    OptionUnwrap {
+        inner: Ty,
+    },
     PtrAdd {
         mutability: Mutability,
         pointee: Ty,
@@ -1304,10 +1491,31 @@ impl Terminator {
             Self::CoreCall { op, args, dst, .. } => {
                 let op_nodes = match op {
                     CoreCallOp::PtrAdd { pointee, .. } => 1 + pointee.ast_nodes(),
-                    CoreCallOp::ArrayEq { elem, .. } => 1 + elem.ast_nodes(),
+                    CoreCallOp::SliceIndexRange { elem, .. }
+                    | CoreCallOp::SliceIndexRangeFrom { elem, .. }
+                    | CoreCallOp::SliceIsEmpty { elem }
+                    | CoreCallOp::SliceSplitAt { elem, .. }
+                    | CoreCallOp::ArrayEq { elem, .. } => 1 + elem.ast_nodes(),
+                    CoreCallOp::MemReplace { ty } => 1 + ty.ast_nodes(),
+                    CoreCallOp::OptionIsSome { inner }
+                    | CoreCallOp::OptionIsNone { inner }
+                    | CoreCallOp::OptionTake { inner }
+                    | CoreCallOp::OptionUnwrap { inner } => 1 + inner.ast_nodes(),
                     CoreCallOp::SliceLen
                     | CoreCallOp::SliceGetUncheckedRangeTo
                     | CoreCallOp::SliceGetUncheckedRangeFrom
+                    | CoreCallOp::NumIsMultipleOf(_)
+                    | CoreCallOp::NumCheckedAdd(_)
+                    | CoreCallOp::NumCheckedMul(_)
+                    | CoreCallOp::NumCheckedSub(_)
+                    | CoreCallOp::NumSaturatingAdd(_)
+                    | CoreCallOp::NumWrappingShl(_)
+                    | CoreCallOp::NumWrappingShr(_)
+                    | CoreCallOp::NumLeadingZeros(_)
+                    | CoreCallOp::NumOverflowingAdd(_)
+                    | CoreCallOp::NumOverflowingSub(_)
+                    | CoreCallOp::CmpMin(_)
+                    | CoreCallOp::CmpMax(_)
                     | CoreCallOp::UsizeUncheckedSub
                     | CoreCallOp::IntToLeBytes { .. } => 1,
                 };
@@ -1639,7 +1847,9 @@ fn check_switch_targets(discr_ty: &Ty, targets: &[(u128, u32)]) -> Result<(), St
         | Ty::RawPtr { .. }
         | Ty::Slice { .. }
         | Ty::RangeTo { .. }
-        | Ty::RangeFrom { .. } => Err(format!(
+        | Ty::RangeFrom { .. }
+        | Ty::Range { .. }
+        | Ty::Option { .. } => Err(format!(
             "SwitchInt operand type {discr_ty:?} is not primitive-switchable"
         )),
     }
@@ -1670,8 +1880,12 @@ fn rvalue_mentions_local_v2(rv: &Rvalue, lid: u32) -> bool {
         | Rvalue::AggregateRangeFrom { start: operand, .. } => {
             operand_mentions_local_v2(operand, lid)
         }
-        Rvalue::Binary { left, right, .. } => {
+        Rvalue::Binary { left, right, .. }
+        | Rvalue::AggregateRange { start: left, end: right, .. } => {
             operand_mentions_local_v2(left, lid) || operand_mentions_local_v2(right, lid)
+        }
+        Rvalue::AggregateOption { payload, .. } => {
+            payload.as_deref().is_some_and(|op| operand_mentions_local_v2(op, lid))
         }
         Rvalue::Discriminant { place }
         | Rvalue::Ref { place, .. }
@@ -1967,10 +2181,11 @@ impl Body {
             let base = check_local(local_tys, place.local, role)?;
             let mut cur = base.clone();
             let mut saw_deref = false;
+            let mut downcast_variant: Option<usize> = None;
             for (step, elem) in place.projection.iter().enumerate() {
                 match elem {
                     PlaceElem::Deref => {
-                        if saw_deref || step != 0 {
+                        if saw_deref || step != 0 || downcast_variant.is_some() {
                             return Err("nested or post-field deref projections are unsupported".into());
                         }
                         saw_deref = true;
@@ -1989,17 +2204,46 @@ impl Body {
                             _ => return Err(format!("cannot deref non-pointer local type {cur:?}")),
                         }
                     }
+                    PlaceElem::Downcast { variant_idx } => {
+                        if saw_deref || downcast_variant.is_some() {
+                            return Err("nested or post-deref downcast projections are unsupported".into());
+                        }
+                        if !matches!(cur, Ty::Option { .. }) || *variant_idx != 1 {
+                            return Err(format!("unsupported downcast variant {variant_idx} on {cur:?}"));
+                        }
+                        downcast_variant = Some(*variant_idx);
+                    }
                     PlaceElem::Field { index, ty } => {
                         let usize_ty = Ty::Int(IntTy {
                             width: IntWidth::Isize,
                             signed: false,
                         });
+                        if let Some(variant) = downcast_variant.take() {
+                            if variant != 1 || *index != 0 {
+                                return Err(format!("unsupported downcast field {index} for variant {variant}"));
+                            }
+                            let Ty::Option { elem: inner } = &cur else {
+                                return Err("downcast field requires Option".into());
+                            };
+                            if *ty != **inner {
+                                return Err(format!(
+                                    "Option downcast field type {ty:?} disagrees with {inner:?}"
+                                ));
+                            }
+                            cur = (**inner).clone();
+                            continue;
+                        }
                         let expected_field = match &cur {
                             Ty::Tuple { fields } => fields.get(*index).cloned(),
                             Ty::OverflowPair(ity) if *index == 0 => Some(Ty::Int(*ity)),
                             Ty::OverflowPair(_) if *index == 1 => Some(Ty::Bool),
                             Ty::RangeTo { elem: e } | Ty::RangeFrom { elem: e }
                                 if *index == 0 && **e == usize_ty =>
+                            {
+                                Some(usize_ty)
+                            }
+                            Ty::Range { elem: e }
+                                if (*index == 0 || *index == 1) && **e == usize_ty =>
                             {
                                 Some(usize_ty)
                             }
@@ -2042,6 +2286,9 @@ impl Body {
                         cur = (**elem).clone();
                     }
                 }
+            }
+            if downcast_variant.is_some() {
+                return Err("downcast projection must be followed by field projection".into());
             }
             Ok(cur)
         }
@@ -2137,9 +2384,13 @@ impl Body {
                             width: IntWidth::I8,
                             signed: true,
                         },
+                        Ty::Option { .. } => IntTy {
+                            width: IntWidth::Isize,
+                            signed: true,
+                        },
                         _ => {
                             return Err(
-                                "discriminant rvalue requires a fieldless enum or Ordering place"
+                                "discriminant rvalue requires a fieldless enum, Ordering, or Option place"
                                     .into(),
                             );
                         }
@@ -2375,6 +2626,44 @@ impl Body {
                         return Err("AggregateRangeFrom start operand must be usize".into());
                     }
                 }
+                Rvalue::AggregateRange { elem_ty, start, end } => {
+                    if *elem_ty != usize_ty
+                        || *dst_ty
+                            != (Ty::Range {
+                                elem: Box::new(usize_ty.clone()),
+                            })
+                    {
+                        return Err("AggregateRange requires Range<usize>".into());
+                    }
+                    let got_start = check_operand(local_tys, start)?;
+                    let got_end = check_operand(local_tys, end)?;
+                    if got_start != usize_ty || got_end != usize_ty {
+                        return Err("AggregateRange bounds must be usize".into());
+                    }
+                }
+                Rvalue::AggregateOption {
+                    variant_idx,
+                    inner_ty,
+                    payload,
+                } => {
+                    if *dst_ty
+                        != (Ty::Option {
+                            elem: Box::new(inner_ty.clone()),
+                        })
+                    {
+                        return Err("AggregateOption requires Option<inner_ty> destination".into());
+                    }
+                    match (variant_idx, payload) {
+                        (0, None) => {}
+                        (1, Some(op)) => {
+                            let got = check_operand(local_tys, op)?;
+                            if got != *inner_ty {
+                                return Err("AggregateOption Some payload type mismatch".into());
+                            }
+                        }
+                        _ => return Err("invalid AggregateOption variant/payload".into()),
+                    }
+                }
             }
             Ok(())
         }
@@ -2570,6 +2859,158 @@ impl Body {
                                     len: *len,
                                 })
                             && dst_ty == Ty::Bool => {}
+                        (
+                            CoreCallOp::SliceIndexRange { mutability, elem },
+                            [Ty::Ref {
+                                mutability: in_mut,
+                                pointee,
+                            }, Ty::Range { elem: idx_ty }],
+                        ) if **idx_ty == usize_ty
+                            && elem.is_sized_no_ref()
+                            && matches!(&**pointee, Ty::Slice { elem: e } if **e == *elem)
+                            && *in_mut == *mutability
+                            && dst_ty
+                                == Ty::Ref {
+                                    mutability: *mutability,
+                                    pointee: Box::new(Ty::Slice {
+                                        elem: Box::new(elem.clone()),
+                                    }),
+                                } => {}
+                        (
+                            CoreCallOp::SliceIndexRangeFrom { mutability, elem },
+                            [Ty::Ref {
+                                mutability: in_mut,
+                                pointee,
+                            }, Ty::RangeFrom { elem: idx_ty }],
+                        ) if **idx_ty == usize_ty
+                            && elem.is_sized_no_ref()
+                            && matches!(&**pointee, Ty::Slice { elem: e } if **e == *elem)
+                            && *in_mut == *mutability
+                            && dst_ty
+                                == Ty::Ref {
+                                    mutability: *mutability,
+                                    pointee: Box::new(Ty::Slice {
+                                        elem: Box::new(elem.clone()),
+                                    }),
+                                } => {}
+                        (
+                            CoreCallOp::SliceIsEmpty { elem },
+                            [Ty::Ref { pointee, .. }],
+                        ) if elem.is_sized_no_ref()
+                            && matches!(&**pointee, Ty::Slice { elem: e } if **e == *elem)
+                            && dst_ty == Ty::Bool => {}
+                        (
+                            CoreCallOp::SliceSplitAt { mutability, elem },
+                            [Ty::Ref {
+                                mutability: in_mut,
+                                pointee,
+                            }, mid_ty],
+                        ) if *mid_ty == usize_ty
+                            && elem.is_sized_no_ref()
+                            && matches!(&**pointee, Ty::Slice { elem: e } if **e == *elem)
+                            && *in_mut == *mutability
+                            && dst_ty
+                                == Ty::Tuple {
+                                    fields: vec![
+                                        Ty::Ref {
+                                            mutability: *mutability,
+                                            pointee: Box::new(Ty::Slice {
+                                                elem: Box::new(elem.clone()),
+                                            }),
+                                        },
+                                        Ty::Ref {
+                                            mutability: *mutability,
+                                            pointee: Box::new(Ty::Slice {
+                                                elem: Box::new(elem.clone()),
+                                            }),
+                                        },
+                                    ],
+                                } => {}
+                        (CoreCallOp::NumIsMultipleOf(ity), [l_ty, r_ty])
+                            if !ity.signed
+                                && *l_ty == Ty::Int(*ity)
+                                && *r_ty == Ty::Int(*ity)
+                                && dst_ty == Ty::Bool => {}
+                        (
+                            CoreCallOp::NumCheckedAdd(ity)
+                            | CoreCallOp::NumCheckedMul(ity)
+                            | CoreCallOp::NumCheckedSub(ity),
+                            [l_ty, r_ty],
+                        ) if *l_ty == Ty::Int(*ity)
+                            && *r_ty == Ty::Int(*ity)
+                            && dst_ty
+                                == Ty::Option {
+                                    elem: Box::new(Ty::Int(*ity)),
+                                } => {}
+                        (CoreCallOp::NumSaturatingAdd(ity), [l_ty, r_ty])
+                            if *l_ty == Ty::Int(*ity)
+                            && *r_ty == Ty::Int(*ity)
+                            && dst_ty == Ty::Int(*ity) => {}
+                        (
+                            CoreCallOp::NumWrappingShl(ity) | CoreCallOp::NumWrappingShr(ity),
+                            [l_ty, r_ty],
+                        ) if *l_ty == Ty::Int(*ity)
+                            && *r_ty
+                                == Ty::Int(IntTy {
+                                    width: IntWidth::I32,
+                                    signed: false,
+                                })
+                            && dst_ty == Ty::Int(*ity) => {}
+                        (CoreCallOp::NumLeadingZeros(ity), [l_ty])
+                            if *l_ty == Ty::Int(*ity)
+                                && dst_ty
+                                    == Ty::Int(IntTy {
+                                        width: IntWidth::I32,
+                                        signed: false,
+                                    }) => {}
+                        (
+                            CoreCallOp::NumOverflowingAdd(ity) | CoreCallOp::NumOverflowingSub(ity),
+                            [l_ty, r_ty],
+                        ) if *l_ty == Ty::Int(*ity)
+                            && *r_ty == Ty::Int(*ity)
+                            && dst_ty == Ty::OverflowPair(*ity) => {}
+                        (
+                            CoreCallOp::CmpMin(ity) | CoreCallOp::CmpMax(ity),
+                            [l_ty, r_ty],
+                        ) if *l_ty == Ty::Int(*ity)
+                            && *r_ty == Ty::Int(*ity)
+                            && dst_ty == Ty::Int(*ity) => {}
+                        (
+                            CoreCallOp::MemReplace { ty },
+                            [Ty::Ref {
+                                mutability: Mutability::Mut,
+                                pointee,
+                            }, src_ty],
+                        ) if ty.is_sized_no_ref()
+                            && **pointee == *ty
+                            && *src_ty == *ty
+                            && dst_ty == *ty => {}
+                        (
+                            CoreCallOp::OptionIsSome { inner } | CoreCallOp::OptionIsNone { inner },
+                            [Ty::Ref { pointee, .. }],
+                        ) if inner.is_sized_no_ref()
+                            && inner.is_option_payload_supported_v2()
+                            && matches!(&**pointee, Ty::Option { elem } if **elem == *inner)
+                            && dst_ty == Ty::Bool => {}
+                        (
+                            CoreCallOp::OptionTake { inner },
+                            [Ty::Ref {
+                                mutability: Mutability::Mut,
+                                pointee,
+                            }],
+                        ) if inner.is_sized_no_ref()
+                            && inner.is_option_payload_supported_v2()
+                            && matches!(&**pointee, Ty::Option { elem } if **elem == *inner)
+                            && dst_ty
+                                == Ty::Option {
+                                    elem: Box::new(inner.clone()),
+                                } => {}
+                        (CoreCallOp::OptionUnwrap { inner }, [opt_ty])
+                            if *opt_ty
+                                == Ty::Option {
+                                    elem: Box::new(inner.clone()),
+                                }
+                                && dst_ty == *inner => {}
                         _ => {
                             return Err(format!(
                                 "invalid CoreCall {op:?} arguments {arg_tys:?} -> {dst_ty:?}"
@@ -2710,7 +3151,9 @@ impl Body {
                         | Rvalue::AggregateArray { .. }
                         | Rvalue::Repeat { .. }
                         | Rvalue::AggregateRangeTo { .. }
-                        | Rvalue::AggregateRangeFrom { .. } => return true,
+                        | Rvalue::AggregateRangeFrom { .. }
+                        | Rvalue::AggregateRange { .. }
+                        | Rvalue::AggregateOption { .. } => return true,
                     },
                     Statement::StorageLive { .. }
                     | Statement::StorageDead { .. }
@@ -2831,6 +3274,19 @@ impl Body {
                             elem_ty.collect_enum_ids(out);
                             start.collect_enum_ids(out);
                         }
+                        Rvalue::AggregateRange { elem_ty, start, end } => {
+                            elem_ty.collect_enum_ids(out);
+                            start.collect_enum_ids(out);
+                            end.collect_enum_ids(out);
+                        }
+                        Rvalue::AggregateOption {
+                            inner_ty, payload, ..
+                        } => {
+                            inner_ty.collect_enum_ids(out);
+                            if let Some(op) = payload {
+                                op.collect_enum_ids(out);
+                            }
+                        }
                         Rvalue::Discriminant { place } => place.collect_enum_ids(out),
                     }
                 }
@@ -2840,8 +3296,20 @@ impl Body {
                 Terminator::Assert { cond, .. } => cond.collect_enum_ids(out),
                 Terminator::CoreCall { op, args, dst, .. } => {
                     match op {
-                        CoreCallOp::PtrAdd { pointee, .. } => pointee.collect_enum_ids(out),
-                        CoreCallOp::ArrayEq { elem, .. } => elem.collect_enum_ids(out),
+                        CoreCallOp::PtrAdd { pointee, .. } | CoreCallOp::MemReplace { ty: pointee } => {
+                            pointee.collect_enum_ids(out);
+                        }
+                        CoreCallOp::ArrayEq { elem, .. }
+                        | CoreCallOp::SliceIndexRange { elem, .. }
+                        | CoreCallOp::SliceIndexRangeFrom { elem, .. }
+                        | CoreCallOp::SliceIsEmpty { elem }
+                        | CoreCallOp::SliceSplitAt { elem, .. }
+                        | CoreCallOp::OptionIsSome { inner: elem }
+                        | CoreCallOp::OptionIsNone { inner: elem }
+                        | CoreCallOp::OptionTake { inner: elem }
+                        | CoreCallOp::OptionUnwrap { inner: elem } => {
+                            elem.collect_enum_ids(out);
+                        }
                         _ => {}
                     }
                     for a in args {
@@ -3279,11 +3747,25 @@ mod tests {
         assert!(!nested_array_raw.has_ref_v2());
         let nested = validate_local_tys(&[
             Ty::Tuple {
-                fields: vec![shared_ref, u8_ty],
+                fields: vec![shared_ref.clone(), u8_ty],
+            },
+            raw_ptr.clone(),
+        ]);
+        assert!(nested.unwrap_err().contains("body mixes reference and raw-pointer locals"));
+        let opt_raw = validate_local_tys(&[
+            shared_ref.clone(),
+            Ty::Option {
+                elem: Box::new(raw_ptr.clone()),
+            },
+        ]);
+        assert!(opt_raw.unwrap_err().contains("body mixes reference and raw-pointer locals"));
+        let opt_ref = validate_local_tys(&[
+            Ty::Option {
+                elem: Box::new(shared_ref),
             },
             raw_ptr,
         ]);
-        assert!(nested.unwrap_err().contains("body mixes reference and raw-pointer locals"));
+        assert!(opt_ref.unwrap_err().contains("body mixes reference and raw-pointer locals"));
     }
 
     #[test]
@@ -5668,5 +6150,1727 @@ mod tests {
             }],
             2,
         ));
+    }
+
+    #[test]
+    fn profile_v2_option_range_and_core_call_type_guards() {
+        let usize_ty = Ty::Int(IntTy {
+            width: IntWidth::Isize,
+            signed: false,
+        });
+        let u64_ty = Ty::Int(IntTy {
+            width: IntWidth::I64,
+            signed: false,
+        });
+        let range_ty = Ty::Range {
+            elem: Box::new(usize_ty.clone()),
+        };
+        let opt_u64 = Ty::Option {
+            elem: Box::new(u64_ty.clone()),
+        };
+        let opt_ref = Ty::Option {
+            elem: Box::new(Ty::Ref {
+                mutability: Mutability::Shared,
+                pointee: Box::new(u64_ty.clone()),
+            }),
+        };
+        let opt_opt = Ty::Option {
+            elem: Box::new(opt_u64.clone()),
+        };
+        assert!(range_ty.is_supported_v2_local());
+        assert!(opt_u64.is_supported_v2_local());
+        assert!(opt_u64.is_retag_noop());
+        assert!(opt_ref.is_supported_v2_local());
+        assert!(!opt_ref.is_retag_noop());
+        assert!(!opt_opt.is_supported_v2_local());
+
+        // Local tuples and `Range*` are supported, whereas pointee/slice
+        // elements and `Option` payloads reject `#[repr(Rust)]` tuples (and
+        // `OverflowPair`), `Range*`, and nested `Option<Option<_>>`.
+        let u8_ty = Ty::Int(IntTy {
+            width: IntWidth::I8,
+            signed: false,
+        });
+        let u32_ty = Ty::Int(IntTy {
+            width: IntWidth::I32,
+            signed: false,
+        });
+        let reordered_tuple = Ty::Tuple {
+            fields: vec![u8_ty.clone(), u32_ty.clone(), u8_ty.clone()],
+        };
+        let overflow_pair = Ty::OverflowPair(IntTy {
+            width: IntWidth::I8,
+            signed: false,
+        });
+        assert!(reordered_tuple.is_supported_v2_local());
+        assert!(overflow_pair.is_supported_v2_local());
+        assert!(!reordered_tuple.is_sized_no_ref());
+        assert!(!overflow_pair.is_sized_no_ref());
+        assert!(!range_ty.is_sized_no_ref());
+
+        let mut_opt_u64 = Ty::Ref {
+            mutability: Mutability::Mut,
+            pointee: Box::new(opt_u64.clone()),
+        };
+        assert!(mut_opt_u64.is_supported_v2_local());
+        assert!(!Ty::Ref {
+            mutability: Mutability::Shared,
+            pointee: Box::new(reordered_tuple.clone()),
+        }
+        .is_supported_v2_local());
+        assert!(!Ty::Ref {
+            mutability: Mutability::Shared,
+            pointee: Box::new(overflow_pair.clone()),
+        }
+        .is_supported_v2_local());
+        assert!(!Ty::Ref {
+            mutability: Mutability::Shared,
+            pointee: Box::new(Ty::Slice {
+                elem: Box::new(Ty::Tuple {
+                    fields: vec![u8_ty.clone(), u32_ty],
+                }),
+            }),
+        }
+        .is_supported_v2_local());
+        assert!(!Ty::Ref {
+            mutability: Mutability::Shared,
+            pointee: Box::new(range_ty.clone()),
+        }
+        .is_supported_v2_local());
+        assert!(!Ty::Ref {
+            mutability: Mutability::Shared,
+            pointee: Box::new(Ty::Option {
+                elem: Box::new(Ty::Option {
+                    elem: Box::new(u8_ty),
+                }),
+            }),
+        }
+        .is_supported_v2_local());
+        assert!(!Ty::Option {
+            elem: Box::new(reordered_tuple),
+        }
+        .is_supported_v2_local());
+        assert!(!Ty::Option {
+            elem: Box::new(overflow_pair),
+        }
+        .is_supported_v2_local());
+        assert!(!Ty::Option {
+            elem: Box::new(range_ty),
+        }
+        .is_supported_v2_local());
+        assert!(!Ty::Option {
+            elem: Box::new(Ty::RangeFrom {
+                elem: Box::new(usize_ty.clone()),
+            }),
+        }
+        .is_supported_v2_local());
+        assert!(!Ty::Option {
+            elem: Box::new(Ty::RangeTo {
+                elem: Box::new(usize_ty),
+            }),
+        }
+        .is_supported_v2_local());
+
+        // Downcast on Option must be variant 1 -> field 0 of inner type.
+        let ok_body = Body::try_new(
+            1,
+            false,
+            vec![u64_ty.clone(), opt_u64.clone()],
+            vec![Block {
+                statements: vec![Statement::Assign {
+                    local: 0,
+                    value: Rvalue::Use {
+                        operand: Operand::CopyPlace {
+                            place: Place {
+                                local: 1,
+                                projection: vec![
+                                    PlaceElem::Downcast { variant_idx: 1 },
+                                    PlaceElem::Field {
+                                        index: 0,
+                                        ty: u64_ty.clone(),
+                                    },
+                                ],
+                            },
+                        },
+                        with_retag: false,
+                    },
+                }],
+                terminator: Terminator::Ret,
+            }],
+            "rust-path-v1::option_downcast".into(),
+        );
+        assert!(ok_body.is_ok(), "{ok_body:?}");
+
+        let dangling_downcast = Body::try_new(
+            1,
+            false,
+            vec![opt_u64.clone(), opt_u64],
+            vec![Block {
+                statements: vec![Statement::Assign {
+                    local: 0,
+                    value: Rvalue::Use {
+                        operand: Operand::CopyPlace {
+                            place: Place {
+                                local: 1,
+                                projection: vec![PlaceElem::Downcast { variant_idx: 1 }],
+                            },
+                        },
+                        with_retag: false,
+                    },
+                }],
+                terminator: Terminator::Ret,
+            }],
+            "rust-path-v1::dangling_downcast".into(),
+        )
+        .unwrap_err();
+        assert!(dangling_downcast.contains("must be followed by field projection"));
+    }
+
+    #[test]
+    fn is_sized_and_place_projection_guards_cover_unsized_downcast_and_range() {
+        let u8_ty = Ty::Int(IntTy { width: IntWidth::I8, signed: false });
+        let u32_ty = Ty::Int(IntTy { width: IntWidth::I32, signed: false });
+        let u64_ty = Ty::Int(IntTy { width: IntWidth::I64, signed: false });
+        let usize_ty = Ty::Int(IntTy { width: IntWidth::Isize, signed: false });
+        let slice_u8 = Ty::Slice { elem: Box::new(u8_ty.clone()) };
+        let ref_slice_u8 = Ty::Ref {
+            mutability: Mutability::Shared,
+            pointee: Box::new(slice_u8.clone()),
+        };
+        let ptr_slice_u8 = Ty::RawPtr {
+            mutability: Mutability::Shared,
+            pointee: Box::new(slice_u8.clone()),
+        };
+        let opt_u64 = Ty::Option { elem: Box::new(u64_ty.clone()) };
+        let range_usize = Ty::Range { elem: Box::new(usize_ty.clone()) };
+        let range_u32 = Ty::Range { elem: Box::new(u32_ty.clone()) };
+
+        // Ty::is_sized must return false on unsized slices and unsized
+        // composite tuples, and true on sized references/pointers.
+        assert!(!slice_u8.is_sized());
+        assert!(!Ty::Tuple { fields: vec![u8_ty.clone(), slice_u8.clone()] }.is_sized());
+        assert!(u8_ty.is_sized());
+        assert!(ref_slice_u8.is_sized());
+        assert!(ptr_slice_u8.is_sized());
+        assert!(opt_u64.is_sized());
+        assert!(range_usize.is_sized());
+
+        // Unsized deref in a non-PtrMetadata place must fail closed via
+        // is_sized.
+        let unsized_deref = Body::try_new(
+            1,
+            false,
+            vec![u8_ty.clone(), ref_slice_u8.clone()],
+            vec![Block {
+                statements: vec![Statement::Assign {
+                    local: 0,
+                    value: Rvalue::Use {
+                        operand: Operand::CopyPlace {
+                            place: Place { local: 1, projection: vec![PlaceElem::Deref] },
+                        },
+                        with_retag: false,
+                    },
+                }],
+                terminator: Terminator::Ret,
+            }],
+            "rust-path-v1::unsized_deref".into(),
+        )
+        .unwrap_err();
+        assert!(unsized_deref.contains("unsized deref"), "{unsized_deref}");
+
+        // PtrAdd on an unsized slice pointee must fail closed via is_sized.
+        let unsized_ptr_add = Body::try_new(
+            2,
+            false,
+            vec![ptr_slice_u8.clone(), ptr_slice_u8.clone(), usize_ty.clone()],
+            vec![Block {
+                statements: vec![],
+                terminator: Terminator::CoreCall {
+                    op: CoreCallOp::PtrAdd {
+                        mutability: Mutability::Shared,
+                        pointee: slice_u8.clone(),
+                    },
+                    args: vec![Operand::Copy { local: 1 }, Operand::Copy { local: 2 }],
+                    dst: Place { local: 0, projection: vec![] },
+                    target: 1,
+                    unwind: UnwindAction::Continue,
+                },
+            },
+            Block {
+                statements: vec![],
+                terminator: Terminator::Ret,
+            }],
+            "rust-path-v1::unsized_ptr_add".into(),
+        )
+        .unwrap_err();
+        assert!(unsized_ptr_add.contains("invalid CoreCall PtrAdd"), "{unsized_ptr_add}");
+
+        // Downcast(1) on a non-Option type must fail closed.
+        let non_opt_downcast = Body::try_new(
+            1,
+            false,
+            vec![u64_ty.clone(), u64_ty.clone()],
+            vec![Block {
+                statements: vec![Statement::Assign {
+                    local: 0,
+                    value: Rvalue::Use {
+                        operand: Operand::CopyPlace {
+                            place: Place {
+                                local: 1,
+                                projection: vec![
+                                    PlaceElem::Downcast { variant_idx: 1 },
+                                    PlaceElem::Field { index: 0, ty: u64_ty.clone() },
+                                ],
+                            },
+                        },
+                        with_retag: false,
+                    },
+                }],
+                terminator: Terminator::Ret,
+            }],
+            "rust-path-v1::non_opt_downcast".into(),
+        )
+        .unwrap_err();
+        assert!(non_opt_downcast.contains("unsupported downcast variant"), "{non_opt_downcast}");
+
+        // Downcast(0) (None) on Option must fail closed.
+        let none_downcast = Body::try_new(
+            1,
+            false,
+            vec![u64_ty.clone(), opt_u64.clone()],
+            vec![Block {
+                statements: vec![Statement::Assign {
+                    local: 0,
+                    value: Rvalue::Use {
+                        operand: Operand::CopyPlace {
+                            place: Place {
+                                local: 1,
+                                projection: vec![
+                                    PlaceElem::Downcast { variant_idx: 0 },
+                                    PlaceElem::Field { index: 0, ty: u64_ty.clone() },
+                                ],
+                            },
+                        },
+                        with_retag: false,
+                    },
+                }],
+                terminator: Terminator::Ret,
+            }],
+            "rust-path-v1::none_downcast".into(),
+        )
+        .unwrap_err();
+        assert!(none_downcast.contains("unsupported downcast variant"), "{none_downcast}");
+
+        // [Downcast(1), Field(1)] on Option must fail closed.
+        let bad_downcast_field = Body::try_new(
+            1,
+            false,
+            vec![u64_ty.clone(), opt_u64.clone()],
+            vec![Block {
+                statements: vec![Statement::Assign {
+                    local: 0,
+                    value: Rvalue::Use {
+                        operand: Operand::CopyPlace {
+                            place: Place {
+                                local: 1,
+                                projection: vec![
+                                    PlaceElem::Downcast { variant_idx: 1 },
+                                    PlaceElem::Field { index: 1, ty: u64_ty.clone() },
+                                ],
+                            },
+                        },
+                        with_retag: false,
+                    },
+                }],
+                terminator: Terminator::Ret,
+            }],
+            "rust-path-v1::bad_downcast_field".into(),
+        )
+        .unwrap_err();
+        assert!(bad_downcast_field.contains("unsupported downcast field"), "{bad_downcast_field}");
+
+        // Positive Range<usize> .start (0) and .end (1) projections.
+        for field_idx in [0usize, 1usize] {
+            let ok_range = Body::try_new(
+                1,
+                false,
+                vec![usize_ty.clone(), range_usize.clone()],
+                vec![Block {
+                    statements: vec![Statement::Assign {
+                        local: 0,
+                        value: Rvalue::Use {
+                            operand: Operand::CopyPlace {
+                                place: Place {
+                                    local: 1,
+                                    projection: vec![PlaceElem::Field {
+                                        index: field_idx,
+                                        ty: usize_ty.clone(),
+                                    }],
+                                },
+                            },
+                            with_retag: false,
+                        },
+                    }],
+                    terminator: Terminator::Ret,
+                }],
+                format!("rust-path-v1::range_field_{field_idx}"),
+            );
+            assert!(ok_range.is_ok(), "field {field_idx}: {ok_range:?}");
+        }
+
+        // Out-of-bounds field 2 on Range<usize> must fail closed.
+        let bad_range_idx = Body::try_new(
+            1,
+            false,
+            vec![usize_ty.clone(), range_usize],
+            vec![Block {
+                statements: vec![Statement::Assign {
+                    local: 0,
+                    value: Rvalue::Use {
+                        operand: Operand::CopyPlace {
+                            place: Place {
+                                local: 1,
+                                projection: vec![PlaceElem::Field {
+                                    index: 2,
+                                    ty: usize_ty.clone(),
+                                }],
+                            },
+                        },
+                        with_retag: false,
+                    },
+                }],
+                terminator: Terminator::Ret,
+            }],
+            "rust-path-v1::bad_range_idx".into(),
+        )
+        .unwrap_err();
+        assert!(bad_range_idx.contains("unsupported field 2"), "{bad_range_idx}");
+
+        // Field 0 on non-usize Range<u32> must fail closed.
+        let bad_range_elem = Body::try_new(
+            1,
+            false,
+            vec![u32_ty.clone(), range_u32],
+            vec![Block {
+                statements: vec![Statement::Assign {
+                    local: 0,
+                    value: Rvalue::Use {
+                        operand: Operand::CopyPlace {
+                            place: Place {
+                                local: 1,
+                                projection: vec![PlaceElem::Field {
+                                    index: 0,
+                                    ty: u32_ty.clone(),
+                                }],
+                            },
+                        },
+                        with_retag: false,
+                    },
+                }],
+                terminator: Terminator::Ret,
+            }],
+            "rust-path-v1::bad_range_elem".into(),
+        )
+        .unwrap_err();
+        assert!(
+            bad_range_elem.contains("outside the Profile v2 type fragment"),
+            "{bad_range_elem}"
+        );
+    }
+
+    #[test]
+    fn v2_layout_covers_all_variants_and_rejects_non_zst_as_zero() {
+        let u8_ty = Ty::Int(IntTy {
+            width: IntWidth::I8,
+            signed: false,
+        });
+        let u16_ty = Ty::Int(IntTy {
+            width: IntWidth::I16,
+            signed: false,
+        });
+        let u32_ty = Ty::Int(IntTy {
+            width: IntWidth::I32,
+            signed: false,
+        });
+        let u64_ty = Ty::Int(IntTy {
+            width: IntWidth::I64,
+            signed: false,
+        });
+        let u128_ty = Ty::Int(IntTy {
+            width: IntWidth::I128,
+            signed: false,
+        });
+        let usize_ty = Ty::Int(IntTy {
+            width: IntWidth::Isize,
+            signed: false,
+        });
+        let isize_ty = IntTy {
+            width: IntWidth::Isize,
+            signed: true,
+        };
+        let zst_enum = Ty::Enum(
+            EnumTy::try_new(11, isize_ty, EnumTagRepr::ZeroSized, vec![0]).unwrap(),
+        );
+        let u16_enum = Ty::Enum(
+            EnumTy::try_new(
+                12,
+                isize_ty,
+                EnumTagRepr::Scalar(IntTy {
+                    width: IntWidth::I16,
+                    signed: false,
+                }),
+                vec![0, 1],
+            )
+            .unwrap(),
+        );
+
+        assert_eq!(Ty::Bool.v2_layout(), Some((1, 0)));
+        assert_eq!(Ty::Ordering.v2_layout(), Some((1, 0)));
+        assert_eq!(u8_ty.v2_layout(), Some((1, 0)));
+        assert_eq!(u16_ty.v2_layout(), Some((2, 1)));
+        assert_eq!(u32_ty.v2_layout(), Some((4, 2)));
+        assert_eq!(u64_ty.v2_layout(), Some((8, 3)));
+        assert_eq!(usize_ty.v2_layout(), Some((8, 3)));
+        assert_eq!(u128_ty.v2_layout(), Some((16, 4)));
+        assert_eq!(Ty::Char.v2_layout(), Some((4, 2)));
+        assert_eq!(Ty::Unit.v2_layout(), Some((0, 0)));
+        assert_eq!(Ty::Never.v2_layout(), Some((0, 0)));
+        assert_eq!(zst_enum.v2_layout(), Some((0, 0)));
+        assert_eq!(u16_enum.v2_layout(), Some((2, 1)));
+        assert_eq!(
+            Ty::OverflowPair(IntTy {
+                width: IntWidth::I32,
+                signed: false
+            })
+            .v2_layout(),
+            Some((8, 2))
+        );
+        assert_eq!(
+            Ty::Array {
+                elem: Box::new(u32_ty.clone()),
+                len: 3
+            }
+            .v2_layout(),
+            Some((12, 2))
+        );
+        assert_eq!(
+            Ty::Ref {
+                mutability: Mutability::Shared,
+                pointee: Box::new(u64_ty.clone())
+            }
+            .v2_layout(),
+            Some((8, 3))
+        );
+        assert_eq!(
+            Ty::Ref {
+                mutability: Mutability::Mut,
+                pointee: Box::new(Ty::Slice {
+                    elem: Box::new(u8_ty.clone())
+                })
+            }
+            .v2_layout(),
+            Some((16, 3))
+        );
+        assert_eq!(
+            Ty::RawPtr {
+                mutability: Mutability::Shared,
+                pointee: Box::new(u64_ty.clone())
+            }
+            .v2_layout(),
+            Some((8, 3))
+        );
+        assert_eq!(
+            Ty::RawPtr {
+                mutability: Mutability::Mut,
+                pointee: Box::new(Ty::Slice {
+                    elem: Box::new(u8_ty.clone())
+                })
+            }
+            .v2_layout(),
+            Some((16, 3))
+        );
+        assert_eq!(
+            Ty::RangeTo {
+                elem: Box::new(usize_ty.clone())
+            }
+            .v2_layout(),
+            Some((8, 3))
+        );
+        assert_eq!(
+            Ty::RangeFrom {
+                elem: Box::new(usize_ty.clone())
+            }
+            .v2_layout(),
+            Some((8, 3))
+        );
+        assert_eq!(
+            Ty::Range {
+                elem: Box::new(usize_ty)
+            }
+            .v2_layout(),
+            None
+        );
+        assert_eq!(
+            Ty::Option {
+                elem: Box::new(Ty::Bool)
+            }
+            .v2_layout(),
+            Some((1, 0))
+        );
+        assert_eq!(
+            Ty::Option {
+                elem: Box::new(Ty::Unit)
+            }
+            .v2_layout(),
+            Some((1, 0))
+        );
+        assert_eq!(
+            Ty::Option {
+                elem: Box::new(u64_ty.clone())
+            }
+            .v2_layout(),
+            Some((16, 3))
+        );
+        assert_eq!(
+            Ty::Option {
+                elem: Box::new(Ty::Ref {
+                    mutability: Mutability::Shared,
+                    pointee: Box::new(u8_ty.clone())
+                })
+            }
+            .v2_layout(),
+            None
+        );
+        assert_eq!(
+            Ty::Option {
+                elem: Box::new(Ty::Ref {
+                    mutability: Mutability::Shared,
+                    pointee: Box::new(Ty::Slice {
+                        elem: Box::new(u8_ty.clone())
+                    })
+                })
+            }
+            .v2_layout(),
+            None
+        );
+        assert_eq!(
+            Ty::Option {
+                elem: Box::new(Ty::RawPtr {
+                    mutability: Mutability::Shared,
+                    pointee: Box::new(u8_ty.clone())
+                })
+            }
+            .v2_layout(),
+            None
+        );
+        assert_eq!(
+            Ty::Option {
+                elem: Box::new(Ty::Option {
+                    elem: Box::new(u8_ty.clone())
+                })
+            }
+            .v2_layout(),
+            None
+        );
+        assert_eq!(
+            Ty::Tuple {
+                fields: vec![u8_ty.clone(), u64_ty]
+            }
+            .v2_layout(),
+            None
+        );
+        assert_eq!(
+            Ty::Slice {
+                elem: Box::new(u8_ty)
+            }
+            .v2_layout(),
+            None
+        );
+    }
+
+    #[test]
+    fn profile_v2_validators_and_gating_reject_malformed_ir() {
+        let u8_ity = IntTy {
+            width: IntWidth::I8,
+            signed: false,
+        };
+        let u64_ity = IntTy {
+            width: IntWidth::I64,
+            signed: false,
+        };
+        let usize_ty = Ty::Int(IntTy {
+            width: IntWidth::Isize,
+            signed: false,
+        });
+        let isize_ty = Ty::Int(IntTy {
+            width: IntWidth::Isize,
+            signed: true,
+        });
+        let u8_ty = Ty::Int(u8_ity);
+        let u64_ty = Ty::Int(u64_ity);
+        let range_usize = Ty::Range {
+            elem: Box::new(usize_ty.clone()),
+        };
+        let opt_u64 = Ty::Option {
+            elem: Box::new(u64_ty.clone()),
+        };
+        let mut_ref_u64 = Ty::Ref {
+            mutability: Mutability::Mut,
+            pointee: Box::new(u64_ty.clone()),
+        };
+        let enum_ty = Ty::Enum(
+            EnumTy::try_new(
+                404,
+                IntTy {
+                    width: IntWidth::Isize,
+                    signed: true,
+                },
+                EnumTagRepr::ZeroSized,
+                vec![0],
+            )
+            .unwrap(),
+        );
+
+        // Positive and negative is_array_eq_elem_supported coverage.
+        assert!(u8_ty.is_array_eq_elem_supported());
+        assert!(Ty::Bool.is_array_eq_elem_supported());
+        assert!(Ty::Char.is_array_eq_elem_supported());
+        assert!(Ty::Ordering.is_array_eq_elem_supported());
+        assert!(Ty::Unit.is_array_eq_elem_supported());
+        assert!(Ty::Array {
+            elem: Box::new(u8_ty.clone()),
+            len: 2,
+        }
+        .is_array_eq_elem_supported());
+        assert!(!Ty::Never.is_array_eq_elem_supported());
+        assert!(!enum_ty.is_array_eq_elem_supported());
+        assert!(!opt_u64.is_array_eq_elem_supported());
+        assert!(!range_usize.is_array_eq_elem_supported());
+        assert!(!mut_ref_u64.is_array_eq_elem_supported());
+
+        // Ty::is_profile_v2 gates Range and Option.
+        assert!(range_usize.is_profile_v2());
+        assert!(opt_u64.is_profile_v2());
+        assert!(!u64_ty.is_profile_v2());
+
+        // AggregateRange: positive, wrong dst_ty, and half-ill-typed bounds.
+        let agg_range_ok = Body::try_new(
+            2,
+            false,
+            vec![range_usize.clone(), usize_ty.clone(), usize_ty.clone()],
+            vec![Block {
+                statements: vec![Statement::Assign {
+                    local: 0,
+                    value: Rvalue::AggregateRange {
+                        elem_ty: usize_ty.clone(),
+                        start: Operand::Copy { local: 1 },
+                        end: Operand::Copy { local: 2 },
+                    },
+                }],
+                terminator: Terminator::Ret,
+            }],
+            "rust-path-v1::agg_range_ok".into(),
+        )
+        .unwrap();
+        assert!(agg_range_ok.uses_profile_v2());
+
+        let agg_range_bad_dst = Body::try_new(
+            2,
+            false,
+            vec![usize_ty.clone(), usize_ty.clone(), usize_ty.clone()],
+            vec![Block {
+                statements: vec![Statement::Assign {
+                    local: 0,
+                    value: Rvalue::AggregateRange {
+                        elem_ty: usize_ty.clone(),
+                        start: Operand::Copy { local: 1 },
+                        end: Operand::Copy { local: 2 },
+                    },
+                }],
+                terminator: Terminator::Ret,
+            }],
+            "rust-path-v1::agg_range_bad_dst".into(),
+        )
+        .unwrap_err();
+        assert!(
+            agg_range_bad_dst.contains("AggregateRange"),
+            "{agg_range_bad_dst}"
+        );
+
+        let agg_range_bad_end = Body::try_new(
+            2,
+            false,
+            vec![range_usize.clone(), usize_ty.clone(), u8_ty.clone()],
+            vec![Block {
+                statements: vec![Statement::Assign {
+                    local: 0,
+                    value: Rvalue::AggregateRange {
+                        elem_ty: usize_ty.clone(),
+                        start: Operand::Copy { local: 1 },
+                        end: Operand::Copy { local: 2 },
+                    },
+                }],
+                terminator: Terminator::Ret,
+            }],
+            "rust-path-v1::agg_range_bad_end".into(),
+        )
+        .unwrap_err();
+        assert!(
+            agg_range_bad_end.contains("AggregateRange"),
+            "{agg_range_bad_end}"
+        );
+
+        let agg_range_bad_start = Body::try_new(
+            2,
+            false,
+            vec![range_usize.clone(), u8_ty.clone(), usize_ty.clone()],
+            vec![Block {
+                statements: vec![Statement::Assign {
+                    local: 0,
+                    value: Rvalue::AggregateRange {
+                        elem_ty: usize_ty.clone(),
+                        start: Operand::Copy { local: 1 },
+                        end: Operand::Copy { local: 2 },
+                    },
+                }],
+                terminator: Terminator::Ret,
+            }],
+            "rust-path-v1::agg_range_bad_start".into(),
+        )
+        .unwrap_err();
+        assert!(
+            agg_range_bad_start.contains("AggregateRange"),
+            "{agg_range_bad_start}"
+        );
+
+        // Option Discriminant: positive isize dst, negative non-isize dst.
+        let opt_discr_ok = Body::try_new(
+            1,
+            false,
+            vec![isize_ty.clone(), opt_u64.clone()],
+            vec![Block {
+                statements: vec![Statement::Assign {
+                    local: 0,
+                    value: Rvalue::Discriminant {
+                        place: Place {
+                            local: 1,
+                            projection: vec![],
+                        },
+                    },
+                }],
+                terminator: Terminator::Ret,
+            }],
+            "rust-path-v1::opt_discr_ok".into(),
+        )
+        .unwrap();
+        assert!(opt_discr_ok.uses_profile_v2());
+
+        let opt_discr_bad = Body::try_new(
+            1,
+            false,
+            vec![u8_ty.clone(), opt_u64.clone()],
+            vec![Block {
+                statements: vec![Statement::Assign {
+                    local: 0,
+                    value: Rvalue::Discriminant {
+                        place: Place {
+                            local: 1,
+                            projection: vec![],
+                        },
+                    },
+                }],
+                terminator: Terminator::Ret,
+            }],
+            "rust-path-v1::opt_discr_bad".into(),
+        )
+        .unwrap_err();
+        assert!(opt_discr_bad.contains("discriminant"), "{opt_discr_bad}");
+
+        // NumOverflowingAdd/Sub: positive + negative r_ty/dst_ty/l_ty checks.
+        for op in [
+            CoreCallOp::NumOverflowingAdd(u64_ity),
+            CoreCallOp::NumOverflowingSub(u64_ity),
+        ] {
+            let ovf_ok = Body::try_new(
+                2,
+                false,
+                vec![Ty::OverflowPair(u64_ity), u64_ty.clone(), u64_ty.clone()],
+                vec![
+                    Block {
+                        statements: vec![],
+                        terminator: Terminator::CoreCall {
+                            op: op.clone(),
+                            args: vec![Operand::Copy { local: 1 }, Operand::Copy { local: 2 }],
+                            dst: Place {
+                                local: 0,
+                                projection: vec![],
+                            },
+                            target: 1,
+                            unwind: UnwindAction::Unreachable,
+                        },
+                    },
+                    Block {
+                        statements: vec![],
+                        terminator: Terminator::Ret,
+                    },
+                ],
+                "rust-path-v1::ovf_ok".into(),
+            )
+            .unwrap();
+            assert!(ovf_ok.uses_profile_v2());
+
+            // Valid l_ty + mismatched r_ty must still fail closed.
+            let ovf_bad_rhs = Body::try_new(
+                2,
+                false,
+                vec![Ty::OverflowPair(u64_ity), u64_ty.clone(), u8_ty.clone()],
+                vec![
+                    Block {
+                        statements: vec![],
+                        terminator: Terminator::CoreCall {
+                            op: op.clone(),
+                            args: vec![Operand::Copy { local: 1 }, Operand::Copy { local: 2 }],
+                            dst: Place {
+                                local: 0,
+                                projection: vec![],
+                            },
+                            target: 1,
+                            unwind: UnwindAction::Unreachable,
+                        },
+                    },
+                    Block {
+                        statements: vec![],
+                        terminator: Terminator::Ret,
+                    },
+                ],
+                "rust-path-v1::ovf_bad_rhs".into(),
+            )
+            .unwrap_err();
+            assert!(ovf_bad_rhs.contains("invalid CoreCall"), "{ovf_bad_rhs}");
+
+            // Valid l_ty + valid r_ty + wrong dst_ty must still fail closed.
+            let ovf_bad_dst = Body::try_new(
+                2,
+                false,
+                vec![u64_ty.clone(), u64_ty.clone(), u64_ty.clone()],
+                vec![
+                    Block {
+                        statements: vec![],
+                        terminator: Terminator::CoreCall {
+                            op,
+                            args: vec![Operand::Copy { local: 1 }, Operand::Copy { local: 2 }],
+                            dst: Place {
+                                local: 0,
+                                projection: vec![],
+                            },
+                            target: 1,
+                            unwind: UnwindAction::Unreachable,
+                        },
+                    },
+                    Block {
+                        statements: vec![],
+                        terminator: Terminator::Ret,
+                    },
+                ],
+                "rust-path-v1::ovf_bad_dst".into(),
+            )
+            .unwrap_err();
+            assert!(ovf_bad_dst.contains("invalid CoreCall"), "{ovf_bad_dst}");
+        }
+
+        // CoreCallOp::MemReplace: positive and mismatched src_ty rejection.
+        let mem_replace_ok = Body::try_new(
+            2,
+            false,
+            vec![u64_ty.clone(), mut_ref_u64.clone(), u64_ty.clone()],
+            vec![
+                Block {
+                    statements: vec![],
+                    terminator: Terminator::CoreCall {
+                        op: CoreCallOp::MemReplace { ty: u64_ty.clone() },
+                        args: vec![Operand::Copy { local: 1 }, Operand::Copy { local: 2 }],
+                        dst: Place {
+                            local: 0,
+                            projection: vec![],
+                        },
+                        target: 1,
+                        unwind: UnwindAction::Unreachable,
+                    },
+                },
+                Block {
+                    statements: vec![],
+                    terminator: Terminator::Ret,
+                },
+            ],
+            "rust-path-v1::mem_replace_ok".into(),
+        )
+        .unwrap();
+        assert!(mem_replace_ok.uses_profile_v2());
+
+        let mem_replace_bad_src = Body::try_new(
+            2,
+            false,
+            vec![u64_ty.clone(), mut_ref_u64, u8_ty.clone()],
+            vec![
+                Block {
+                    statements: vec![],
+                    terminator: Terminator::CoreCall {
+                        op: CoreCallOp::MemReplace { ty: u64_ty.clone() },
+                        args: vec![Operand::Copy { local: 1 }, Operand::Copy { local: 2 }],
+                        dst: Place {
+                            local: 0,
+                            projection: vec![],
+                        },
+                        target: 1,
+                        unwind: UnwindAction::Unreachable,
+                    },
+                },
+                Block {
+                    statements: vec![],
+                    terminator: Terminator::Ret,
+                },
+            ],
+            "rust-path-v1::mem_replace_bad_src".into(),
+        )
+        .unwrap_err();
+        assert!(
+            mem_replace_bad_src.contains("invalid CoreCall"),
+            "{mem_replace_bad_src}"
+        );
+
+        // Program::try_new enforces Profile v2 vs Profile v1 Call exclusivity.
+        let v1_callee = Body::try_new(
+            1,
+            false,
+            vec![u64_ty.clone(), u64_ty.clone()],
+            vec![Block {
+                statements: vec![Statement::Assign {
+                    local: 0,
+                    value: Rvalue::Use {
+                        operand: Operand::Copy { local: 1 },
+                        with_retag: false,
+                    },
+                }],
+                terminator: Terminator::Ret,
+            }],
+            "rust-path-v1::v1_callee".into(),
+        )
+        .unwrap();
+        let v1_caller = Body::try_new(
+            1,
+            false,
+            vec![u64_ty.clone(), u64_ty.clone()],
+            vec![
+                Block {
+                    statements: vec![],
+                    terminator: Terminator::Call {
+                        callee: 0,
+                        args: vec![Operand::Copy { local: 1 }],
+                        dst: 0,
+                        target: Some(1),
+                        unwind: UnwindAction::Continue,
+                    },
+                },
+                Block {
+                    statements: vec![],
+                    terminator: Terminator::Ret,
+                },
+            ],
+            "rust-path-v1::v1_caller".into(),
+        )
+        .unwrap();
+        let mixed_err =
+            Program::try_new(Scope::Crate, vec![v1_callee, v1_caller, agg_range_ok]).unwrap_err();
+        assert!(mixed_err.contains("Profile v2"), "{mixed_err}");
+
+        // `Rvalue::AggregateOption` validation: valid None/Some, bad dst,
+        // mismatched Some payload, and invalid variant/payload combinations.
+        let opt_u64_ty = Ty::Option {
+            elem: Box::new(u64_ty.clone()),
+        };
+        let opt_u8_ty = Ty::Option {
+            elem: Box::new(u8_ty.clone()),
+        };
+        let u32_ity = IntTy {
+            width: IntWidth::I32,
+            signed: false,
+        };
+        let u32_ty = Ty::Int(u32_ity);
+        let i32_ty = Ty::Int(IntTy {
+            width: IntWidth::I32,
+            signed: true,
+        });
+        let i64_ty = Ty::Int(IntTy {
+            width: IntWidth::I64,
+            signed: true,
+        });
+        let check_agg_opt = |locals: Vec<Ty>, arg_count: usize, value: Rvalue| {
+            Body::try_new(
+                arg_count,
+                false,
+                locals,
+                vec![Block {
+                    statements: vec![Statement::Assign { local: 0, value }],
+                    terminator: Terminator::Ret,
+                }],
+                "rust-path-v1::agg_opt_check".into(),
+            )
+        };
+        assert!(
+            check_agg_opt(
+                vec![opt_u64_ty.clone()],
+                0,
+                Rvalue::AggregateOption {
+                    variant_idx: 0,
+                    inner_ty: u64_ty.clone(),
+                    payload: None,
+                },
+            )
+            .is_ok()
+        );
+        assert!(
+            check_agg_opt(
+                vec![opt_u64_ty.clone(), u64_ty.clone()],
+                1,
+                Rvalue::AggregateOption {
+                    variant_idx: 1,
+                    inner_ty: u64_ty.clone(),
+                    payload: Some(Box::new(Operand::Copy { local: 1 })),
+                },
+            )
+            .is_ok()
+        );
+        let agg_opt_bad_dst = check_agg_opt(
+            vec![opt_u8_ty],
+            0,
+            Rvalue::AggregateOption {
+                variant_idx: 0,
+                inner_ty: u64_ty.clone(),
+                payload: None,
+            },
+        )
+        .unwrap_err();
+        assert!(
+            agg_opt_bad_dst.contains("AggregateOption requires Option<inner_ty> destination"),
+            "{agg_opt_bad_dst}"
+        );
+        let agg_opt_bad_some_ty = check_agg_opt(
+            vec![opt_u64_ty.clone(), u8_ty.clone()],
+            1,
+            Rvalue::AggregateOption {
+                variant_idx: 1,
+                inner_ty: u64_ty.clone(),
+                payload: Some(Box::new(Operand::Copy { local: 1 })),
+            },
+        )
+        .unwrap_err();
+        assert!(
+            agg_opt_bad_some_ty.contains("AggregateOption Some payload type mismatch"),
+            "{agg_opt_bad_some_ty}"
+        );
+        for (variant_idx, payload) in [
+            (0, Some(Box::new(Operand::Copy { local: 1 }))),
+            (1, None),
+            (2, None),
+        ] {
+            let err = check_agg_opt(
+                vec![opt_u64_ty.clone(), u64_ty.clone()],
+                1,
+                Rvalue::AggregateOption {
+                    variant_idx,
+                    inner_ty: u64_ty.clone(),
+                    payload,
+                },
+            )
+            .unwrap_err();
+            assert!(
+                err.contains("invalid AggregateOption variant/payload"),
+                "variant={variant_idx}: {err}"
+            );
+        }
+
+        // `NumWrappingShl`, `NumWrappingShr`, and `NumLeadingZeros` operand and
+        // destination type guards (positive + every individual mismatch).
+        let check_core_call = |locals: Vec<Ty>, arg_count: usize, op: CoreCallOp, args: Vec<Operand>| {
+            Body::try_new(
+                arg_count,
+                false,
+                locals,
+                vec![
+                    Block {
+                        statements: vec![],
+                        terminator: Terminator::CoreCall {
+                            op,
+                            args,
+                            dst: Place {
+                                local: 0,
+                                projection: vec![],
+                            },
+                            target: 1,
+                            unwind: UnwindAction::Unreachable,
+                        },
+                    },
+                    Block {
+                        statements: vec![],
+                        terminator: Terminator::Ret,
+                    },
+                ],
+                "rust-path-v1::core_call_check".into(),
+            )
+        };
+        for op in [
+            CoreCallOp::NumWrappingShl(u64_ity),
+            CoreCallOp::NumWrappingShr(u64_ity),
+        ] {
+            assert!(
+                check_core_call(
+                    vec![u64_ty.clone(), u64_ty.clone(), u32_ty.clone()],
+                    2,
+                    op.clone(),
+                    vec![Operand::Copy { local: 1 }, Operand::Copy { local: 2 }],
+                )
+                .is_ok()
+            );
+            for (label, locals) in [
+                ("bad_l_ty", vec![u64_ty.clone(), u8_ty.clone(), u32_ty.clone()]),
+                ("bad_r_ty_width", vec![u64_ty.clone(), u64_ty.clone(), u64_ty.clone()]),
+                ("bad_r_ty_sign", vec![u64_ty.clone(), u64_ty.clone(), i32_ty.clone()]),
+                ("bad_dst_width", vec![u32_ty.clone(), u64_ty.clone(), u32_ty.clone()]),
+                ("bad_dst_sign", vec![i64_ty.clone(), u64_ty.clone(), u32_ty.clone()]),
+            ] {
+                let err = check_core_call(
+                    locals,
+                    2,
+                    op.clone(),
+                    vec![Operand::Copy { local: 1 }, Operand::Copy { local: 2 }],
+                )
+                .unwrap_err();
+                assert!(err.contains("invalid CoreCall"), "{label}: {err}");
+            }
+        }
+        assert!(
+            check_core_call(
+                vec![u32_ty.clone(), u64_ty.clone()],
+                1,
+                CoreCallOp::NumLeadingZeros(u64_ity),
+                vec![Operand::Copy { local: 1 }],
+            )
+            .is_ok()
+        );
+        for (label, locals) in [
+            ("lz_bad_l_ty", vec![u32_ty.clone(), u8_ty.clone()]),
+            ("lz_bad_dst_width", vec![u64_ty.clone(), u64_ty.clone()]),
+            ("lz_bad_dst_sign", vec![i32_ty, u64_ty.clone()]),
+        ] {
+            let err = check_core_call(
+                locals,
+                1,
+                CoreCallOp::NumLeadingZeros(u64_ity),
+                vec![Operand::Copy { local: 1 }],
+            )
+            .unwrap_err();
+            assert!(err.contains("invalid CoreCall"), "{label}: {err}");
+        }
+
+        // `CoreCallOp::{SliceSplitAt, NumIsMultipleOf, OptionIsSome, OptionIsNone}`
+        // signature checks (positive + negative cases).
+        let usize_ty = Ty::Int(IntTy {
+            width: IntWidth::Isize,
+            signed: false,
+        });
+        let slice_u8_shared = Ty::Ref {
+            mutability: Mutability::Shared,
+            pointee: Box::new(Ty::Slice {
+                elem: Box::new(u8_ty.clone()),
+            }),
+        };
+        let slice_u8_mut = Ty::Ref {
+            mutability: Mutability::Mut,
+            pointee: Box::new(Ty::Slice {
+                elem: Box::new(u8_ty.clone()),
+            }),
+        };
+        let slice_u32_shared = Ty::Ref {
+            mutability: Mutability::Shared,
+            pointee: Box::new(Ty::Slice {
+                elem: Box::new(u32_ty.clone()),
+            }),
+        };
+        let split_shared_dst = Ty::Tuple {
+            fields: vec![slice_u8_shared.clone(), slice_u8_shared.clone()],
+        };
+        let split_mut_dst = Ty::Tuple {
+            fields: vec![slice_u8_mut.clone(), slice_u8_mut.clone()],
+        };
+        assert!(
+            check_core_call(
+                vec![
+                    split_shared_dst.clone(),
+                    slice_u8_shared.clone(),
+                    usize_ty.clone(),
+                ],
+                2,
+                CoreCallOp::SliceSplitAt {
+                    mutability: Mutability::Shared,
+                    elem: u8_ty.clone(),
+                },
+                vec![Operand::Copy { local: 1 }, Operand::Copy { local: 2 }],
+            )
+            .is_ok()
+        );
+        assert!(
+            check_core_call(
+                vec![split_mut_dst.clone(), slice_u8_mut.clone(), usize_ty.clone()],
+                2,
+                CoreCallOp::SliceSplitAt {
+                    mutability: Mutability::Mut,
+                    elem: u8_ty.clone(),
+                },
+                vec![Operand::Copy { local: 1 }, Operand::Copy { local: 2 }],
+            )
+            .is_ok()
+        );
+        for (label, locals, op) in [
+            (
+                "split_at_bad_mid_ty_with_valid_dst",
+                vec![
+                    split_shared_dst.clone(),
+                    slice_u8_shared.clone(),
+                    u32_ty.clone(),
+                ],
+                CoreCallOp::SliceSplitAt {
+                    mutability: Mutability::Shared,
+                    elem: u8_ty.clone(),
+                },
+            ),
+            (
+                "split_at_bad_elem_with_valid_dst",
+                vec![
+                    split_shared_dst.clone(),
+                    slice_u32_shared.clone(),
+                    usize_ty.clone(),
+                ],
+                CoreCallOp::SliceSplitAt {
+                    mutability: Mutability::Shared,
+                    elem: u8_ty.clone(),
+                },
+            ),
+            (
+                "split_at_bad_mut_with_valid_dst",
+                vec![
+                    split_shared_dst.clone(),
+                    slice_u8_mut.clone(),
+                    usize_ty.clone(),
+                ],
+                CoreCallOp::SliceSplitAt {
+                    mutability: Mutability::Shared,
+                    elem: u8_ty.clone(),
+                },
+            ),
+            (
+                "split_at_bad_dst_ty",
+                vec![
+                    split_mut_dst,
+                    slice_u8_shared.clone(),
+                    usize_ty.clone(),
+                ],
+                CoreCallOp::SliceSplitAt {
+                    mutability: Mutability::Shared,
+                    elem: u8_ty.clone(),
+                },
+            ),
+        ] {
+            let err = check_core_call(
+                locals,
+                2,
+                op,
+                vec![Operand::Copy { local: 1 }, Operand::Copy { local: 2 }],
+            )
+            .unwrap_err();
+            assert!(err.contains("invalid CoreCall"), "{label}: {err}");
+        }
+
+        // `CoreCallOp::SliceIndexRangeFrom` checks the input mutability and
+        // element against the destination, not just the destination.
+        let range_from_usize = Ty::RangeFrom {
+            elem: Box::new(usize_ty.clone()),
+        };
+        let u16_ty = Ty::Int(IntTy {
+            width: IntWidth::I16,
+            signed: false,
+        });
+        let slice_u16_shared = Ty::Ref {
+            mutability: Mutability::Shared,
+            pointee: Box::new(Ty::Slice {
+                elem: Box::new(u16_ty.clone()),
+            }),
+        };
+        assert!(
+            check_core_call(
+                vec![
+                    slice_u8_shared.clone(),
+                    slice_u8_shared.clone(),
+                    range_from_usize.clone(),
+                ],
+                2,
+                CoreCallOp::SliceIndexRangeFrom {
+                    mutability: Mutability::Shared,
+                    elem: u8_ty.clone(),
+                },
+                vec![Operand::Copy { local: 1 }, Operand::Copy { local: 2 }],
+            )
+            .is_ok()
+        );
+        for (label, locals, op) in [
+            (
+                "range_from_shared_to_mut",
+                vec![
+                    slice_u8_mut.clone(),
+                    slice_u8_shared.clone(),
+                    range_from_usize.clone(),
+                ],
+                CoreCallOp::SliceIndexRangeFrom {
+                    mutability: Mutability::Mut,
+                    elem: u8_ty.clone(),
+                },
+            ),
+            (
+                "range_from_elem_mismatch",
+                vec![
+                    slice_u16_shared.clone(),
+                    slice_u8_shared.clone(),
+                    range_from_usize.clone(),
+                ],
+                CoreCallOp::SliceIndexRangeFrom {
+                    mutability: Mutability::Shared,
+                    elem: u16_ty.clone(),
+                },
+            ),
+        ] {
+            let err = check_core_call(
+                locals,
+                2,
+                op,
+                vec![Operand::Copy { local: 1 }, Operand::Copy { local: 2 }],
+            )
+            .unwrap_err();
+            assert!(err.contains("invalid CoreCall"), "{label}: {err}");
+        }
+
+        // `CoreCallOp::{NumCheckedAdd, NumCheckedMul, NumCheckedSub}` admit
+        // `Option<T>` results over matching operands only.
+        let u8_ity = IntTy {
+            width: IntWidth::I8,
+            signed: false,
+        };
+        let opt_u8_ty = Ty::Option {
+            elem: Box::new(u8_ty.clone()),
+        };
+        for op in [
+            CoreCallOp::NumCheckedAdd(u8_ity),
+            CoreCallOp::NumCheckedMul(u8_ity),
+            CoreCallOp::NumCheckedSub(u8_ity),
+        ] {
+            assert!(
+                check_core_call(
+                    vec![opt_u8_ty.clone(), u8_ty.clone(), u8_ty.clone()],
+                    2,
+                    op.clone(),
+                    vec![Operand::Copy { local: 1 }, Operand::Copy { local: 2 }],
+                )
+                .is_ok(),
+                "{op:?}"
+            );
+            for (label, locals) in [
+                (
+                    "checked_bad_dst",
+                    vec![u8_ty.clone(), u8_ty.clone(), u8_ty.clone()],
+                ),
+                (
+                    "checked_bad_rhs",
+                    vec![opt_u8_ty.clone(), u8_ty.clone(), u32_ty.clone()],
+                ),
+            ] {
+                let err = check_core_call(
+                    locals,
+                    2,
+                    op.clone(),
+                    vec![Operand::Copy { local: 1 }, Operand::Copy { local: 2 }],
+                )
+                .unwrap_err();
+                assert!(err.contains("invalid CoreCall"), "{label} {op:?}: {err}");
+            }
+        }
+
+        let i64_ity = IntTy {
+            width: IntWidth::I64,
+            signed: true,
+        };
+        let i64_ty = Ty::Int(i64_ity);
+        assert!(
+            check_core_call(
+                vec![Ty::Bool, u64_ty.clone(), u64_ty.clone()],
+                2,
+                CoreCallOp::NumIsMultipleOf(u64_ity),
+                vec![Operand::Copy { local: 1 }, Operand::Copy { local: 2 }],
+            )
+            .is_ok()
+        );
+        for (label, locals, op) in [
+            (
+                "is_multiple_of_bad_r_ty_width",
+                vec![Ty::Bool, u64_ty.clone(), u32_ty.clone()],
+                CoreCallOp::NumIsMultipleOf(u64_ity),
+            ),
+            (
+                "is_multiple_of_bad_r_ty_sign",
+                vec![Ty::Bool, u64_ty.clone(), i64_ty.clone()],
+                CoreCallOp::NumIsMultipleOf(u64_ity),
+            ),
+            (
+                "is_multiple_of_bad_l_ty",
+                vec![Ty::Bool, u32_ty.clone(), u64_ty.clone()],
+                CoreCallOp::NumIsMultipleOf(u64_ity),
+            ),
+            (
+                "is_multiple_of_signed_rejected",
+                vec![Ty::Bool, i64_ty.clone(), i64_ty],
+                CoreCallOp::NumIsMultipleOf(i64_ity),
+            ),
+            (
+                "is_multiple_of_bad_dst_ty",
+                vec![u64_ty.clone(), u64_ty.clone(), u64_ty.clone()],
+                CoreCallOp::NumIsMultipleOf(u64_ity),
+            ),
+        ] {
+            let err = check_core_call(
+                locals,
+                2,
+                op,
+                vec![Operand::Copy { local: 1 }, Operand::Copy { local: 2 }],
+            )
+            .unwrap_err();
+            assert!(err.contains("invalid CoreCall"), "{label}: {err}");
+        }
+
+        let ref_opt_u32 = Ty::Ref {
+            mutability: Mutability::Shared,
+            pointee: Box::new(Ty::Option {
+                elem: Box::new(u32_ty.clone()),
+            }),
+        };
+        let ref_opt_u64 = Ty::Ref {
+            mutability: Mutability::Shared,
+            pointee: Box::new(Ty::Option {
+                elem: Box::new(u64_ty.clone()),
+            }),
+        };
+        let ref_u32 = Ty::Ref {
+            mutability: Mutability::Shared,
+            pointee: Box::new(u32_ty.clone()),
+        };
+        for op_ctor in [
+            |t| CoreCallOp::OptionIsSome { inner: t },
+            |t| CoreCallOp::OptionIsNone { inner: t },
+        ] {
+            assert!(
+                check_core_call(
+                    vec![Ty::Bool, ref_opt_u32.clone()],
+                    1,
+                    op_ctor(u32_ty.clone()),
+                    vec![Operand::Copy { local: 1 }],
+                )
+                .is_ok()
+            );
+            for (label, locals, op) in [
+                (
+                    "opt_pred_mismatched_inner",
+                    vec![Ty::Bool, ref_opt_u64.clone()],
+                    op_ctor(u32_ty.clone()),
+                ),
+                (
+                    "opt_pred_non_option_pointee",
+                    vec![Ty::Bool, ref_u32.clone()],
+                    op_ctor(u32_ty.clone()),
+                ),
+                (
+                    "opt_pred_bad_dst_ty",
+                    vec![u32_ty.clone(), ref_opt_u32.clone()],
+                    op_ctor(u32_ty.clone()),
+                ),
+            ] {
+                let err = check_core_call(locals, 1, op, vec![Operand::Copy { local: 1 }])
+                    .unwrap_err();
+                assert!(err.contains("invalid CoreCall"), "{label}: {err}");
+            }
+        }
+
+        // `check_place` rejects post-field, post-downcast, and nested `Deref`.
+        let ref_u8_ty = Ty::Ref {
+            mutability: Mutability::Shared,
+            pointee: Box::new(u8_ty.clone()),
+        };
+        let mut_ref_u8_ty = Ty::Ref {
+            mutability: Mutability::Mut,
+            pointee: Box::new(u8_ty.clone()),
+        };
+        let tuple_ref_u8 = Ty::Tuple {
+            fields: vec![ref_u8_ty.clone(), u8_ty.clone()],
+        };
+        let tuple_mut_ref_u8 = Ty::Tuple {
+            fields: vec![mut_ref_u8_ty.clone(), u8_ty.clone()],
+        };
+        let opt_ref_u8 = Ty::Option {
+            elem: Box::new(ref_u8_ty.clone()),
+        };
+        for (label, arg_ty, projection) in [
+            (
+                "post_field_deref",
+                tuple_ref_u8,
+                vec![
+                    PlaceElem::Field {
+                        index: 0,
+                        ty: ref_u8_ty.clone(),
+                    },
+                    PlaceElem::Deref,
+                ],
+            ),
+            (
+                "post_downcast_field_deref",
+                opt_ref_u8,
+                vec![
+                    PlaceElem::Downcast { variant_idx: 1 },
+                    PlaceElem::Field {
+                        index: 0,
+                        ty: ref_u8_ty.clone(),
+                    },
+                    PlaceElem::Deref,
+                ],
+            ),
+            (
+                "nested_deref",
+                ref_u8_ty,
+                vec![PlaceElem::Deref, PlaceElem::Deref],
+            ),
+        ] {
+            let err = Body::try_new(
+                1,
+                false,
+                vec![u8_ty.clone(), arg_ty],
+                vec![Block {
+                    statements: vec![Statement::Assign {
+                        local: 0,
+                        value: Rvalue::Use {
+                            operand: Operand::CopyPlace {
+                                place: Place {
+                                    local: 1,
+                                    projection,
+                                },
+                            },
+                            with_retag: false,
+                        },
+                    }],
+                    terminator: Terminator::Ret,
+                }],
+                "rust-path-v1::bad_deref_read".into(),
+            )
+            .unwrap_err();
+            assert!(
+                err.contains("nested or post-field deref projections are unsupported"),
+                "{label}: {err}"
+            );
+        }
+        let post_field_write_err = Body::try_new(
+            2,
+            false,
+            vec![Ty::Unit, tuple_mut_ref_u8, u8_ty.clone()],
+            vec![Block {
+                statements: vec![Statement::AssignPlace {
+                    place: Place {
+                        local: 1,
+                        projection: vec![
+                            PlaceElem::Field {
+                                index: 0,
+                                ty: mut_ref_u8_ty,
+                            },
+                            PlaceElem::Deref,
+                        ],
+                    },
+                    value: Rvalue::Use {
+                        operand: Operand::Copy { local: 2 },
+                        with_retag: false,
+                    },
+                }],
+                terminator: Terminator::Ret,
+            }],
+            "rust-path-v1::bad_deref_write".into(),
+        )
+        .unwrap_err();
+        assert!(
+            post_field_write_err.contains("nested or post-field deref projections are unsupported"),
+            "{post_field_write_err}"
+        );
+
+        // `check_place` rejects post-deref and nested `Downcast`.
+        let opt_u8 = Ty::Option {
+            elem: Box::new(u8_ty.clone()),
+        };
+        let ref_opt_u8 = Ty::Ref {
+            mutability: Mutability::Shared,
+            pointee: Box::new(opt_u8.clone()),
+        };
+        for (label, arg_ty, projection) in [
+            (
+                "post_deref_downcast",
+                ref_opt_u8,
+                vec![
+                    PlaceElem::Deref,
+                    PlaceElem::Downcast { variant_idx: 1 },
+                    PlaceElem::Field {
+                        index: 0,
+                        ty: u8_ty.clone(),
+                    },
+                ],
+            ),
+            (
+                "nested_downcast",
+                opt_u8,
+                vec![
+                    PlaceElem::Downcast { variant_idx: 1 },
+                    PlaceElem::Downcast { variant_idx: 1 },
+                    PlaceElem::Field {
+                        index: 0,
+                        ty: u8_ty.clone(),
+                    },
+                ],
+            ),
+        ] {
+            let err = Body::try_new(
+                1,
+                false,
+                vec![u8_ty.clone(), arg_ty],
+                vec![Block {
+                    statements: vec![Statement::Assign {
+                        local: 0,
+                        value: Rvalue::Use {
+                            operand: Operand::CopyPlace {
+                                place: Place {
+                                    local: 1,
+                                    projection,
+                                },
+                            },
+                            with_retag: false,
+                        },
+                    }],
+                    terminator: Terminator::Ret,
+                }],
+                "rust-path-v1::bad_downcast_read".into(),
+            )
+            .unwrap_err();
+            assert!(
+                err.contains("nested or post-deref downcast projections are unsupported"),
+                "{label}: {err}"
+            );
+        }
     }
 }

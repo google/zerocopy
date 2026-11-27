@@ -274,4 +274,19 @@ theorem refute_step_v2_write_no_prov_non_zst :
      | _ => False) :=
   trivial
 
+/-- Guard `bytes_v2_array_elem_layout`: `encodeValV2` refuses an array whose
+element type has no `layoutOfTyV2` (`[[Option<bool>; 2]; 1]`, whose inner
+`[Option<bool>; 2]` `layoutOfArrayV2` does not lay out), matching
+`decodeValV2`, which needs that layout to split the bytes. A one-level
+`[Option<bool>; 2]` still encodes to its niche tags `2` (`None`) and `1`
+(`Some(true)`). -/
+theorem refute_bytes_v2_array_elem_layout :
+    encodeValV2 profileV2TargetEndian (.array (.array (.option .bool) 2) 1)
+        (.array [.array [.optionVal none, .optionVal (some (.bool true))]]) =
+      .error .unsupported ∧
+    encodeValV2 profileV2TargetEndian (.array (.option .bool) 2)
+        (.array [.optionVal none, .optionVal (some (.bool true))]) =
+      .ok [AllocByte.init 2 none, AllocByte.init 1 none] :=
+  ⟨rfl, rfl⟩
+
 end GuardMutation

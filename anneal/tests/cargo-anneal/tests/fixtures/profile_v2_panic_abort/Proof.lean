@@ -297,7 +297,7 @@ private theorem initStateV2_body0_ok (q : Query)
   have hB1 : Captured.body_0.basicBlocks.isEmpty = false := rfl
   have hB2 : (!Nat.blt Captured.body_0.argumentCount Captured.body_0.locals.length) = false := rfl
   have hB3 : (!storageAnnotationsInBounds Captured.body_0) = false := by decide
-  have hB4 : (!discriminantTypesValid Captured.body_0) = false := by decide
+  have hB4 : (!discriminantTypesValidV2 Captured.body_0) = false := by decide
   have hB5 : (!castTypesValid Captured.body_0) = false := by decide
   have hB6 : (!assertConditionTypesValid Captured.body_0) = false := by decide
   have hB7 : (!Captured.body_0.locals.all isSupportedV2LocalTy) = false := by decide
@@ -873,6 +873,8 @@ private theorem checkValV2_isize_scalar {v : Val}
   | bytes _ => cases h
   | array _ => cases h
   | tuple _ => cases h
+  | range _ _ => cases h
+  | optionVal o => cases o <;> cases h
 
 private theorem checkArgsMatchV2_two_isize {args : List Val}
     (h : checkArgsMatchV2 args [.int .isize false, .int .isize false] = true) :
@@ -1724,8 +1726,10 @@ private theorem checkValV2_ptr_mut_isize {v : Val}
     ∃ pv : PtrVal, v = .ptr pv ∧ checkValV2 (.ptr pv) (.ref .mut (.int .isize false)) = true := by
   cases v with
   | ptr pv => exact ⟨pv, rfl, h⟩
-  | scalar _ | slicePtr _ _ | rangeTo _ | rangeFrom _ | bool _ | char _
-  | ordering _ | unit | enumVal _ _ | tuple _ | bytes _ | array _ => cases h
+  | optionVal o => cases o <;> cases h
+  | scalar _ | slicePtr _ _ | rangeTo _ | rangeFrom _ | range _ _
+  | bool _ | char _ | ordering _ | unit | enumVal _ _ | tuple _ | bytes _
+  | array _ => cases h
 
 private theorem checkArgsMatchV2_body1 {args : List Val}
     (h : checkArgsMatchV2 args [.ref .mut (.int .isize false), .int .isize false, .int .isize false] = true) :
@@ -1782,7 +1786,10 @@ private theorem ref_mut_isize_store_ok (cm : CallerMemory) (pv : PtrVal) (a : Na
       storeIndirectV2 (entryMemoryWithCaller cm) (.int .isize false)
         ⟨aid, pv.offsetBytes.toNat⟩ (.scalar ⟨.isize, false, BitVec.ofNat 128 a⟩) = .ok mem' := by
   unfold refValidInMem at hRef
-  dsimp only [layoutOfTyV2, layoutOfTy, intLayout] at hRef
+  dsimp only at hRef
+  rw [ite_bool_false (b := !isSupportedV2PointeeTy (.int .isize false)) rfl,
+    show layoutOfTyV2 (.int .isize false) = some ⟨8, 3⟩ from rfl] at hRef
+  dsimp only at hRef
   cases hAid : pv.allocId with
   | none =>
     rw [hAid] at hRef
@@ -1840,7 +1847,9 @@ private theorem ref_mut_isize_store_ok (cm : CallerMemory) (pv : PtrVal) (a : Na
           have hEnc : encodeValV2 profileV2TargetEndian (.int .isize false)
               (.scalar ⟨.isize, false, BitVec.ofNat 128 a⟩) =
               .ok ((encodeUInt profileV2TargetEndian 8 a).map (fun b => AllocByte.init b none)) := by
-            unfold encodeValV2
+            delta encodeValV2
+            dsimp only
+            try (delta encodeValV2._f; dsimp only)
             have hCv := checkValV2_isize_ofNat ha
             rw [ite_bool_false (by rw [hCv]; rfl)]
             unfold encodeVal
@@ -1858,7 +1867,8 @@ private theorem ref_mut_isize_store_ok (cm : CallerMemory) (pv : PtrVal) (a : Na
                 cm.allocations
             } : MemoryState), rfl, hFind, hLive, hMut, ?_⟩
           · unfold storeIndirectV2
-            dsimp only [layoutOfTyV2, layoutOfTy, intLayout]
+            rw [show layoutOfTyV2 (.int .isize false) = some ⟨8, 3⟩ from rfl]
+            dsimp only
             rw [hEnc]
             dsimp only
             have hLen8 : ((encodeUInt profileV2TargetEndian 8 a).map (fun b => AllocByte.init b none)).length = 8 := by
@@ -1888,7 +1898,7 @@ private theorem initStateV2_body1_ok (q : Query)
   have hB1 : Captured.body_1.basicBlocks.isEmpty = false := rfl
   have hB2 : (!Nat.blt Captured.body_1.argumentCount Captured.body_1.locals.length) = false := rfl
   have hB3 : (!storageAnnotationsInBounds Captured.body_1) = false := by decide
-  have hB4 : (!discriminantTypesValid Captured.body_1) = false := by decide
+  have hB4 : (!discriminantTypesValidV2 Captured.body_1) = false := by decide
   have hB5 : (!castTypesValid Captured.body_1) = false := by decide
   have hB6 : (!assertConditionTypesValid Captured.body_1) = false := by decide
   have hB7 : (!Captured.body_1.locals.all isSupportedV2LocalTy) = false := by decide

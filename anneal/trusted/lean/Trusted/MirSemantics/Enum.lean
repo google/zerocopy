@@ -530,12 +530,101 @@ noncomputable def isArrayEqElemSupported : MirTy → Bool
   | .array elem _ => isArrayEqElemSupported elem
   | _ => false
 
+/-- Return `true` when `inner` uses `rustc` `TagEncoding::Direct` with fixed
+layout (scalar integers and raw pointers; no niche packing inside
+`Option<inner>`, and no `#[repr(Rust)]` tuple or range reordering). -/
+noncomputable def isNicheFreeOptionPayloadV2 : MirTy → Bool
+  | .int _ _ | .rawPtr _ _ => true
+  | _ => false
+
+/-- Return `true` when `inner` has a verified `rustc` layout inside
+`Option<inner>` (explicit `.unit`/`.bool`/`.ref` niche cases, or niche-free
+`TagEncoding::Direct` payloads). -/
+noncomputable def isOptionPayloadSupportedV2 (inner : MirTy) : Bool :=
+  match inner with
+  | .unit | .bool | .ref _ _ => true
+  | _ => isNicheFreeOptionPayloadV2 inner
+
+/-- Return `true` when `ty` is a sized Profile v2 pointee or slice-element type
+containing no nested references or raw pointers and having a fixed, guaranteed
+ABI representation across `rustc` field optimizations, so flat 1-level
+`refValidInMem` and `refsStayInCallerMem` remain sound without modeling
+`#[repr(Rust)]` field permutation or recursive pointer chasing.
+
+All tuples (`OverflowPair` and general `.tuple`) and `Range`/`RangeTo`/
+`RangeFrom` return `false` here (they remain local-only in
+`isSupportedV2LocalTy`): `rustc` lays out tuples and `#[repr(Rust)]` structs
+via `univariant` (`compiler/rustc_ty_utils/src/layout.rs:571-575` and
+`compiler/rustc_abi/src/layout.rs:1111-1120`, `rust-lang/rust`
+`f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1`), which reorders fields:
+
+> "ty::Tuple(tys) => {
+>     ...
+>     univariant(tys, kind)?
+> }"
+> "let optimize_field_order = !repr.inhibit_struct_field_reordering();
+> ...
+> if optimize_field_order && fields.len() > 1 {"
+
+`library/core/src/ops/range.rs:82,197,281` declares `Range`, `RangeFrom`,
+and `RangeTo` without `#[repr(C)]`, so their in-memory layout is also governed
+by `univariant`. `.option inner` additionally requires
+`isOptionPayloadSupportedV2 inner` so unmodeled nested options such as
+`&Option<Option<u8>>` fail closed. -/
+noncomputable def isSizedNoRefV2Ty : MirTy → Bool
+  | .bool | .int _ _ | .char | .ordering | .unit | .never => true
+  | .enum ety => enumAdmitted ety
+  | .option inner => isSizedNoRefV2Ty inner && isOptionPayloadSupportedV2 inner
+  | .tuple _ | .array _ _ | .ref _ _ | .rawPtr _ _ | .slice _ | .unsupported
+  | .rangeTo _ | .rangeFrom _ | .range _ => false
+
+mutual
+  /-- Return `true` when `ty` is structurally inhabited in Rust (has at least
+  one valid runtime value):
+  - `.never`, `.unsupported`, and unsized `.slice` have no value (`false`);
+  - `.enum ety`: inhabited iff `enumAdmitted ety` (which requires
+    `!ety.discriminants.isEmpty`);
+  - `.array elem n`: `[T; 0]` is inhabited by `Val.array []` even when `T` is
+    uninhabited (`[!; 0]`), whereas `[T; n + 1]` requires
+    `isInhabitedV2Ty elem`;
+  - `.tuple fs`: inhabited iff every field type is inhabited;
+  - `.option _`: always inhabited by `None` (`Val.optionVal none`);
+  - `.ref _ (.slice _)`: always inhabited by `&[]` (`len = 0`), whereas a thin
+    reference `.ref _ pt` requires `isInhabitedV2Ty pt`;
+  - primitives (`.bool`, `.int`, `.char`, `.ordering`, `.unit`), `.rawPtr`, and
+    `Range`/`RangeTo`/`RangeFrom` over `usize` are inhabited. -/
+  noncomputable def isInhabitedV2Ty : MirTy → Bool
+    | .bool | .int _ _ | .char | .ordering | .unit => true
+    | .never | .slice _ | .unsupported => false
+    | .enum ety => enumAdmitted ety
+    | .array elem n => Nat.beq n 0 || isInhabitedV2Ty elem
+    | .tuple fs => isInhabitedV2TyList fs
+    | .option _ => true
+    | .ref _ (.slice _) => true
+    | .ref _ pt => isInhabitedV2Ty pt
+    | .rawPtr _ _ => true
+    | .rangeTo (.int .isize false) | .rangeFrom (.int .isize false)
+    | .range (.int .isize false) => true
+    | .rangeTo _ | .rangeFrom _ | .range _ => false
+
+  noncomputable def isInhabitedV2TyList : List MirTy → Bool
+    | [] => true
+    | t :: ts => isInhabitedV2Ty t && isInhabitedV2TyList ts
+end
+
+/-- Profile v2 sized pointee admission for thin references and raw pointers:
+the union of the ref-free sized types handled by the core contracts
+(`isSizedNoRefV2Ty`) and the fixed-size array data types
+(`isSupportedV2DataTy`). -/
+noncomputable def isSupportedV2PointeeTy (pt : MirTy) : Bool :=
+  isSizedNoRefV2Ty pt || isSupportedV2DataTy pt
+
 mutual
   /-- Return `true` when `ty` is a valid Profile v2 sized local type
   (scalars, booleans, `char`, `Ordering`, `()`, `!`, admitted fieldless enums,
-  fixed-size arrays `[T; N]` of data types, tuples, `RangeTo`/`RangeFrom` over
-  `usize`, and flat non-nested pointers or references to scalar/unit/enum/
-  fixed-array or integer-slice pointees).
+  fixed-size arrays `[T; N]` of data types, tuples, supported `Option`,
+  `Range`/`RangeTo`/`RangeFrom` over `usize`, and flat non-nested pointers or
+  references to ref-free sized, fixed-array, or slice pointees).
   Nested references/pointers inside pointees (`&&T`, `*mut &T`, `&[&T]`,
   `[&T; N]`) are rejected fail-closed so `refValidInMem` and
   `refsStayInCallerMem` remain complete without recursive heap reference graphs.
@@ -560,9 +649,12 @@ mutual
     | .enum ety => enumAdmitted ety
     | .array elem _ => isSupportedV2DataTy elem
     | .tuple fs => isSupportedV2LocalTyList fs
-    | .ref _ (.slice (.int _ _)) | .rawPtr _ (.slice (.int _ _)) => true
-    | .ref _ pt | .rawPtr _ pt => isSupportedV2DataTy pt
+    | .ref _ (.slice elem) | .rawPtr _ (.slice elem) => isSizedNoRefV2Ty elem
+    | .ref _ pt | .rawPtr _ pt => isSupportedV2PointeeTy pt
     | .rangeTo (.int .isize false) | .rangeFrom (.int .isize false) => true
+    | .range (.int .isize false) => true
+    | .option inner =>
+      isSupportedV2LocalTy inner && isOptionPayloadSupportedV2 inner
     | _ => false
 
   noncomputable def isSupportedV2LocalTyList : List MirTy → Bool
@@ -579,8 +671,8 @@ noncomputable def checkValUniformV2 (check : Val → Bool) : List Val → Bool
 mutual
   /-- Validate runtime value `v` against Profile v2 static type `ty`, matching
   Profile v1 `checkVal` on scalar/enum/unit types and adding thin pointers,
-  wide slice pointers, fixed-size arrays, `RangeTo`/`RangeFrom`, and general
-  tuples. -/
+  wide slice pointers, fixed-size arrays, `Range`/`RangeTo`/`RangeFrom`,
+  `Option`, and general tuples. -/
   noncomputable def checkValV2 : Val → MirTy → Bool
     | .scalar sv, .int w s => checkVal (.scalar sv) (.int w s)
     | .bool b, .bool => checkVal (.bool b) .bool
@@ -596,6 +688,9 @@ mutual
     | .rangeFrom _, .rangeFrom (.int .isize false) => true
     | .array vs, .array elem len =>
       Nat.beq vs.length len && checkValUniformV2 (fun v => checkValV2 v elem) vs
+    | .range _ _, .range (.int .isize false) => true
+    | .optionVal none, .option _ => true
+    | .optionVal (some v), .option inner => checkValV2 v inner
     | .tuple vs, .tuple ts => checkValV2List vs ts
     | _, _ => false
 

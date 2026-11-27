@@ -164,101 +164,72 @@ theorem enumTy_eq_of_beq {a b : EnumTy} (h : EnumTy.beq a b = true) : a = b := b
 
 mutual
 theorem mirTy_eq_of_beq : ∀ {a b : MirTy}, MirTy.beq a b = true → a = b
-  | .bool, .bool, _ => rfl
-  | .int w1 s1, .int w2 s2, h => by
-    dsimp only [MirTy.beq] at h
-    cases hw : IntWidth.beq w1 w2 with
-    | false => rw [hw] at h; cases h
-    | true =>
-      rw [hw] at h
-      rw [intWidth_eq_of_beq hw, bool_eq_of_beq h]
-  | .unit, .unit, _ => rfl
-  | .never, .never, _ => rfl
-  | .char, .char, _ => rfl
-  | .ordering, .ordering, _ => rfl
-  | .enum e1, .enum e2, h => congrArg MirTy.enum (enumTy_eq_of_beq h)
-  | .ref .shared t1, .ref .shared t2, h => congrArg (MirTy.ref .shared) (mirTy_eq_of_beq h)
-  | .ref .mut t1, .ref .mut t2, h => congrArg (MirTy.ref .mut) (mirTy_eq_of_beq h)
-  | .ref .shared _, .ref .mut _, h => by cases h
-  | .ref .mut _, .ref .shared _, h => by cases h
-  | .rawPtr .shared t1, .rawPtr .shared t2, h => congrArg (MirTy.rawPtr .shared) (mirTy_eq_of_beq h)
-  | .rawPtr .mut t1, .rawPtr .mut t2, h => congrArg (MirTy.rawPtr .mut) (mirTy_eq_of_beq h)
-  | .rawPtr .shared _, .rawPtr .mut _, h => by cases h
-  | .rawPtr .mut _, .rawPtr .shared _, h => by cases h
-  | .tuple ts1, .tuple ts2, h =>
-    congrArg MirTy.tuple (mirTyList_eq_of_beq h)
-  | .slice t1, .slice t2, h => congrArg MirTy.slice (mirTy_eq_of_beq h)
-  | .array e1 n1, .array e2 n2, h => by
-    dsimp only [MirTy.beq] at h
-    cases hn : Nat.beq n1 n2 with
-    | false => rw [hn] at h; cases h
-    | true =>
-      rw [hn] at h
-      rw [Nat.eq_of_beq_eq_true hn, mirTy_eq_of_beq h]
-  | .rangeTo t1, .rangeTo t2, h => congrArg MirTy.rangeTo (mirTy_eq_of_beq h)
-  | .rangeFrom t1, .rangeFrom t2, h => congrArg MirTy.rangeFrom (mirTy_eq_of_beq h)
-  | .unsupported, .unsupported, _ => rfl
-  | .bool, .int _ _, h | .bool, .unit, h | .bool, .never, h | .bool, .char, h
-  | .bool, .ordering, h | .bool, .enum _, h | .bool, .ref _ _, h
-  | .bool, .rawPtr _ _, h | .bool, .slice _, h | .bool, .array _ _, h | .bool, .rangeTo _, h
-  | .bool, .rangeFrom _, h | .bool, .tuple _, h | .bool, .unsupported, h
-  | .int _ _, .bool, h | .int _ _, .unit, h | .int _ _, .never, h | .int _ _, .char, h
-  | .int _ _, .ordering, h | .int _ _, .enum _, h | .int _ _, .ref _ _, h
-  | .int _ _, .rawPtr _ _, h | .int _ _, .slice _, h | .int _ _, .array _ _, h | .int _ _, .rangeTo _, h
-  | .int _ _, .rangeFrom _, h | .int _ _, .tuple _, h | .int _ _, .unsupported, h
-  | .unit, .bool, h | .unit, .int _ _, h | .unit, .never, h | .unit, .char, h
-  | .unit, .ordering, h | .unit, .enum _, h | .unit, .ref _ _, h
-  | .unit, .rawPtr _ _, h | .unit, .slice _, h | .unit, .array _ _, h | .unit, .rangeTo _, h
-  | .unit, .rangeFrom _, h | .unit, .tuple _, h | .unit, .unsupported, h
-  | .never, .bool, h | .never, .int _ _, h | .never, .unit, h | .never, .char, h
-  | .never, .ordering, h | .never, .enum _, h | .never, .ref _ _, h
-  | .never, .rawPtr _ _, h | .never, .slice _, h | .never, .array _ _, h | .never, .rangeTo _, h
-  | .never, .rangeFrom _, h | .never, .tuple _, h | .never, .unsupported, h
-  | .char, .bool, h | .char, .int _ _, h | .char, .unit, h | .char, .never, h
-  | .char, .ordering, h | .char, .enum _, h | .char, .ref _ _, h
-  | .char, .rawPtr _ _, h | .char, .slice _, h | .char, .array _ _, h | .char, .rangeTo _, h
-  | .char, .rangeFrom _, h | .char, .tuple _, h | .char, .unsupported, h
-  | .ordering, .bool, h | .ordering, .int _ _, h | .ordering, .unit, h | .ordering, .never, h
-  | .ordering, .char, h | .ordering, .enum _, h | .ordering, .ref _ _, h
-  | .ordering, .rawPtr _ _, h | .ordering, .slice _, h | .ordering, .array _ _, h | .ordering, .rangeTo _, h
-  | .ordering, .rangeFrom _, h | .ordering, .tuple _, h | .ordering, .unsupported, h
-  | .enum _, .bool, h | .enum _, .int _ _, h | .enum _, .unit, h | .enum _, .never, h
-  | .enum _, .char, h | .enum _, .ordering, h | .enum _, .ref _ _, h
-  | .enum _, .rawPtr _ _, h | .enum _, .slice _, h | .enum _, .array _ _, h | .enum _, .rangeTo _, h
-  | .enum _, .rangeFrom _, h | .enum _, .tuple _, h | .enum _, .unsupported, h
-  | .ref _ _, .bool, h | .ref _ _, .int _ _, h | .ref _ _, .unit, h | .ref _ _, .never, h
-  | .ref _ _, .char, h | .ref _ _, .ordering, h | .ref _ _, .enum _, h
-  | .ref _ _, .rawPtr _ _, h | .ref _ _, .slice _, h | .ref _ _, .array _ _, h | .ref _ _, .rangeTo _, h
-  | .ref _ _, .rangeFrom _, h | .ref _ _, .tuple _, h | .ref _ _, .unsupported, h
-  | .rawPtr _ _, .bool, h | .rawPtr _ _, .int _ _, h | .rawPtr _ _, .unit, h | .rawPtr _ _, .never, h
-  | .rawPtr _ _, .char, h | .rawPtr _ _, .ordering, h | .rawPtr _ _, .enum _, h
-  | .rawPtr _ _, .ref _ _, h | .rawPtr _ _, .slice _, h | .rawPtr _ _, .array _ _, h | .rawPtr _ _, .rangeTo _, h
-  | .rawPtr _ _, .rangeFrom _, h | .rawPtr _ _, .tuple _, h | .rawPtr _ _, .unsupported, h
-  | .slice _, .bool, h | .slice _, .int _ _, h | .slice _, .unit, h | .slice _, .never, h
-  | .slice _, .char, h | .slice _, .ordering, h | .slice _, .enum _, h | .slice _, .ref _ _, h
-  | .slice _, .rawPtr _ _, h | .slice _, .array _ _, h | .slice _, .rangeTo _, h | .slice _, .rangeFrom _, h
-  | .slice _, .tuple _, h | .slice _, .unsupported, h
-  | .array _ _, .bool, h | .array _ _, .int _ _, h | .array _ _, .unit, h | .array _ _, .never, h
-  | .array _ _, .char, h | .array _ _, .ordering, h | .array _ _, .enum _, h | .array _ _, .ref _ _, h
-  | .array _ _, .rawPtr _ _, h | .array _ _, .slice _, h | .array _ _, .rangeTo _, h | .array _ _, .rangeFrom _, h
-  | .array _ _, .tuple _, h | .array _ _, .unsupported, h
-  | .rangeTo _, .bool, h | .rangeTo _, .int _ _, h | .rangeTo _, .unit, h | .rangeTo _, .never, h
-  | .rangeTo _, .char, h | .rangeTo _, .ordering, h | .rangeTo _, .enum _, h | .rangeTo _, .ref _ _, h
-  | .rangeTo _, .rawPtr _ _, h | .rangeTo _, .slice _, h | .rangeTo _, .array _ _, h | .rangeTo _, .rangeFrom _, h
-  | .rangeTo _, .tuple _, h | .rangeTo _, .unsupported, h
-  | .rangeFrom _, .bool, h | .rangeFrom _, .int _ _, h | .rangeFrom _, .unit, h | .rangeFrom _, .never, h
-  | .rangeFrom _, .char, h | .rangeFrom _, .ordering, h | .rangeFrom _, .enum _, h | .rangeFrom _, .ref _ _, h
-  | .rangeFrom _, .rawPtr _ _, h | .rangeFrom _, .slice _, h | .rangeFrom _, .array _ _, h | .rangeFrom _, .rangeTo _, h
-  | .rangeFrom _, .tuple _, h | .rangeFrom _, .unsupported, h
-  | .tuple _, .bool, h | .tuple _, .int _ _, h | .tuple _, .unit, h | .tuple _, .never, h
-  | .tuple _, .char, h | .tuple _, .ordering, h | .tuple _, .enum _, h
-  | .tuple _, .ref _ _, h | .tuple _, .rawPtr _ _, h | .tuple _, .slice _, h | .tuple _, .array _ _, h
-  | .tuple _, .rangeTo _, h | .tuple _, .rangeFrom _, h | .tuple _, .unsupported, h
-  | .unsupported, .bool, h | .unsupported, .int _ _, h | .unsupported, .unit, h
-  | .unsupported, .never, h | .unsupported, .char, h | .unsupported, .ordering, h
-  | .unsupported, .enum _, h | .unsupported, .ref _ _, h | .unsupported, .rawPtr _ _, h
-  | .unsupported, .slice _, h | .unsupported, .array _ _, h | .unsupported, .rangeTo _, h | .unsupported, .rangeFrom _, h
-  | .unsupported, .tuple _, h => by cases h
+  | .bool, b, h => by cases b <;> first | rfl | cases h
+  | .int w1 s1, b, h => by
+    cases b with
+    | int w2 s2 =>
+      dsimp only [MirTy.beq] at h
+      cases hw : IntWidth.beq w1 w2 with
+      | false => rw [hw] at h; cases h
+      | true =>
+        rw [hw] at h
+        rw [intWidth_eq_of_beq hw, bool_eq_of_beq h]
+    | _ => cases h
+  | .unit, b, h => by cases b <;> first | rfl | cases h
+  | .never, b, h => by cases b <;> first | rfl | cases h
+  | .char, b, h => by cases b <;> first | rfl | cases h
+  | .ordering, b, h => by cases b <;> first | rfl | cases h
+  | .enum e1, b, h => by
+    cases b with
+    | enum e2 => exact congrArg MirTy.enum (enumTy_eq_of_beq h)
+    | _ => cases h
+  | .ref m1 t1, b, h => by
+    cases b with
+    | ref m2 t2 =>
+      cases m1 <;> cases m2 <;>
+        first | exact congrArg _ (mirTy_eq_of_beq h) | cases h
+    | _ => cases h
+  | .rawPtr m1 t1, b, h => by
+    cases b with
+    | rawPtr m2 t2 =>
+      cases m1 <;> cases m2 <;>
+        first | exact congrArg _ (mirTy_eq_of_beq h) | cases h
+    | _ => cases h
+  | .tuple ts1, b, h => by
+    cases b with
+    | tuple ts2 => exact congrArg MirTy.tuple (mirTyList_eq_of_beq h)
+    | _ => cases h
+  | .slice t1, b, h => by
+    cases b with
+    | slice t2 => exact congrArg MirTy.slice (mirTy_eq_of_beq h)
+    | _ => cases h
+  | .array e1 n1, b, h => by
+    cases b with
+    | array e2 n2 =>
+      dsimp only [MirTy.beq] at h
+      cases hn : Nat.beq n1 n2 with
+      | false => rw [hn] at h; cases h
+      | true =>
+        rw [hn] at h
+        rw [Nat.eq_of_beq_eq_true hn, mirTy_eq_of_beq h]
+    | _ => cases h
+  | .range t1, b, h => by
+    cases b with
+    | range t2 => exact congrArg MirTy.range (mirTy_eq_of_beq h)
+    | _ => cases h
+  | .rangeTo t1, b, h => by
+    cases b with
+    | rangeTo t2 => exact congrArg MirTy.rangeTo (mirTy_eq_of_beq h)
+    | _ => cases h
+  | .rangeFrom t1, b, h => by
+    cases b with
+    | rangeFrom t2 => exact congrArg MirTy.rangeFrom (mirTy_eq_of_beq h)
+    | _ => cases h
+  | .option t1, b, h => by
+    cases b with
+    | option t2 => exact congrArg MirTy.option (mirTy_eq_of_beq h)
+    | _ => cases h
+  | .unsupported, b, h => by cases b <;> first | rfl | cases h
 
 theorem mirTyList_eq_of_beq : ∀ {l1 l2 : List MirTy}, MirTy.beqList l1 l2 = true → l1 = l2
   | [], [], _ => rfl
@@ -1638,7 +1609,7 @@ theorem mrEncode_mrDecode_roundtrip (ty : MirTy) (v : Val)
               dsimp only [translateTy, translateEnumTy]
               rw [hrepr]
               exact hbs.2.1
-  | ptr _ | slicePtr _ _ | array _ | rangeTo _ | rangeFrom _ =>
+  | ptr _ | slicePtr _ _ | array _ | range _ _ | rangeTo _ | rangeFrom _ | optionVal _ =>
     dsimp only [Val.ty?] at hvty
     cases hvty
   | bytes _ =>
@@ -1865,7 +1836,8 @@ theorem mrDecode_replicate_uninit_none (ty : MirTy)
               rw [hd]
           | _ => cases hty
       | _ => cases hty
-  | ref _ _ | rawPtr _ _ | slice _ | array _ _ | rangeTo _ | rangeFrom _ | unsupported =>
+  | ref _ _ | rawPtr _ _ | slice _ | array _ _ | range _ | rangeTo _ | rangeFrom _
+  | option _ | unsupported =>
     cases hty
 
 /-- Valid size and positive alignment hold for every translated type. -/
@@ -1906,7 +1878,8 @@ theorem translateTy_validSize_and_alignPos (ty : MirTy)
               cases w <;> exact ⟨by decide, by decide⟩
           | _ => cases hty
       | _ => cases hty
-  | ref _ _ | rawPtr _ _ | slice _ | array _ _ | rangeTo _ | rangeFrom _ | unsupported =>
+  | ref _ _ | rawPtr _ _ | slice _ | array _ _ | range _ | rangeTo _ | rangeFrom _
+  | option _ | unsupported =>
     cases hty
 
 /-! ## State Relation (`StateRel`) and Memory Invariants -/
@@ -2390,7 +2363,8 @@ theorem liveUninitSlot_isImmediate (ty : MirTy) :
   | char => exact ⟨none, rfl⟩
   | ordering => exact ⟨none, rfl⟩
   | ref _ _ => exact ⟨none, rfl⟩
-  | rawPtr _ _ | slice _ | array _ _ | rangeTo _ | rangeFrom _ => exact ⟨none, rfl⟩
+  | rawPtr _ _ | slice _ | array _ _ | range _ | rangeTo _ | rangeFrom _
+  | option _ => exact ⟨none, rfl⟩
   | tuple _ => exact ⟨none, rfl⟩
   | unsupported => exact ⟨none, rfl⟩
 
@@ -2489,7 +2463,8 @@ theorem liveUninitSlot_slotRel (exact : Bool) (mem : MrMemory) (ty : MirTy)
   | tuple fs =>
     exact ⟨ptr, id, List.replicate (translateTy (.tuple fs)).size.bytes .uninit,
       rfl, hlive, rfl, fun _ => rfl⟩
-  | ref _ _ | rawPtr _ _ | slice _ | array _ _ | rangeTo _ | rangeFrom _ | unsupported =>
+  | ref _ _ | rawPtr _ _ | slice _ | array _ _ | range _ | rangeTo _ | rangeFrom _
+  | option _ | unsupported =>
     cases hty
 
 theorem localMapRemove_of_none (k : LocalName) (m : LocalMap)

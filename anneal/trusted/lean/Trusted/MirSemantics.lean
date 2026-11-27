@@ -18,6 +18,7 @@ public import Trusted.MirSemantics.Enum
 public import Trusted.MirSemantics.Layout
 public import Trusted.MirSemantics.Memory
 public import Trusted.MirSemantics.Bytes
+public import Trusted.MirSemantics.CoreContracts
 public import Trusted.MirSemantics.State
 public import Trusted.MirSemantics.Step
 public import Trusted.MirSemantics.Boundary

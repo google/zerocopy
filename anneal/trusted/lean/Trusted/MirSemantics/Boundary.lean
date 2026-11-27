@@ -399,15 +399,18 @@ noncomputable def ValidEntryArgsV2 (body : Body) (q : Query) : Prop :=
   spansPairwiseDisjoint (refAccessSpansList paramTys q.args) = true
 
 mutual
-  /-- Return `true` when `ty` is a reference or a tuple/array containing one.
-  Profile v2 pointees never contain references or pointers
-  (`isSupportedV2LocalTy`), so only tuple and fixed-array nesting need
-  inspection. -/
+  /-- Return `true` when `ty` is a reference or an option, range, tuple, or
+  fixed-size array containing one. Profile v2 pointees never contain
+  references or pointers (`isSupportedV2LocalTy`), so only algebraic and
+  fixed-array nesting need inspection. Kept exhaustive over `MirTy` so adding
+  new aggregate/container constructors forces updating reference tracking. -/
   noncomputable def tyHasRefV2 : MirTy → Bool
     | .ref _ _ => true
     | .array elem _ => tyHasRefV2 elem
+    | .option e | .rangeTo e | .rangeFrom e | .range e => tyHasRefV2 e
     | .tuple fs => tyListHasRefV2 fs
-    | _ => false
+    | .bool | .int _ _ | .unit | .never | .char | .ordering | .enum _
+    | .rawPtr _ _ | .slice _ | .unsupported => false
 
   noncomputable def tyListHasRefV2 : List MirTy → Bool
     | [] => false
@@ -440,6 +443,10 @@ noncomputable def rvalueMentionsLocalV2 (lid : LocalId) : Rvalue → Bool
     operandMentionsLocalV2 lid lhs || operandMentionsLocalV2 lid rhs
   | .discriminant p | .ref _ p | .addressOf _ p | .fakeAddressOf p =>
     placeMentionsLocalV2 lid p
+  | .aggregateRange _ startOp endOp =>
+    operandMentionsLocalV2 lid startOp || operandMentionsLocalV2 lid endOp
+  | .aggregateOption _ _ (some op) => operandMentionsLocalV2 lid op
+  | .aggregateOption _ _ none => false
   | .aggregateTuple ops | .aggregateArray _ ops =>
     operandListMentionsLocalV2 lid ops
   | .unsupported => false
@@ -602,7 +609,7 @@ noncomputable def BodyStaticAdmittedV2 (p : Program) (body : Body) : Bool :=
     !body.basicBlocks.isEmpty &&
     Nat.blt body.argumentCount body.locals.length &&
     storageAnnotationsInBounds body &&
-    discriminantTypesValid body &&
+    discriminantTypesValidV2 body &&
     castTypesValid body &&
     assertConditionTypesValid body &&
     !bodyMixesRefsAndRawPtrsV2 body &&

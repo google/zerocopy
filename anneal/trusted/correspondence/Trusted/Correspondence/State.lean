@@ -834,7 +834,8 @@ noncomputable def toMiriRvalue (types : List MirTy) :
   | .useRetag _ | .ref _ _ | .addressOf _ _ | .fakeAddressOf _
   | .aggregateTuple _
   | .aggregateArray _ _ | .repeat_ _ _ _
-  | .aggregateRangeTo _ _ | .aggregateRangeFrom _ _ | .unsupported =>
+  | .aggregateRangeTo _ _ | .aggregateRangeFrom _ _
+  | .aggregateRange _ _ _ | .aggregateOption _ _ _ | .unsupported =>
     .CopyForDeref ⟨0, Array.empty⟩
 
 /-- Map `RefStatementKind` to `Miri.MIR.Statement`. `.unsupported` lowers to

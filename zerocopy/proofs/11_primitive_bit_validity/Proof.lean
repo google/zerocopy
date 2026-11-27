@@ -1063,8 +1063,8 @@ private theorem checkVal_bool_inv {v : Val} (h : checkVal v .bool = true) :
   have hTy := checkVal_iff_ty?.mp h
   cases v with
   | bool b => exact ⟨b, rfl⟩
-  | unit | char _ | ordering _ | ptr _ | slicePtr _ _ | rangeTo _
-  | rangeFrom _ | array _ | bytes _ => cases hTy
+  | unit | char _ | ordering _ | ptr _ | slicePtr _ _ | range _ _ | rangeTo _
+  | rangeFrom _ | optionVal _ | array _ | bytes _ => cases hTy
   | scalar sv =>
     dsimp only [Val.ty?] at hTy
     cases hWf : sv.wf <;> rw [hWf] at hTy <;> cases hTy
@@ -1081,8 +1081,8 @@ private theorem checkVal_char_inv {v : Val} (h : checkVal v .char = true) :
   have hTy := checkVal_iff_ty?.mp h
   cases v with
   | char c => exact ⟨c, rfl⟩
-  | unit | bool _ | ordering _ | ptr _ | slicePtr _ _ | rangeTo _
-  | rangeFrom _ | array _ | bytes _ => cases hTy
+  | unit | bool _ | ordering _ | ptr _ | slicePtr _ _ | range _ _ | rangeTo _
+  | rangeFrom _ | optionVal _ | array _ | bytes _ => cases hTy
   | scalar sv =>
     dsimp only [Val.ty?] at hTy
     cases hWf : sv.wf <;> rw [hWf] at hTy <;> cases hTy

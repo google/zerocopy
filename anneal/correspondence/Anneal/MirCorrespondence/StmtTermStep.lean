@@ -426,7 +426,7 @@ theorem evalTerminator_step_inv {body : Body} {bb : BasicBlock}
                 | (cases lh <;> cases ps <;> cases unwind <;> cases h_step)
                 | cases h_step)
       | scalar _ | char _ | unit | enumVal _ _ | tuple _ | ptr _ | slicePtr _ _
-      | rangeTo _ | rangeFrom _ | bytes _ | array _ | ordering _ =>
+      | rangeTo _ | rangeFrom _ | bytes _ | array _ | ordering _ | optionVal _ | range _ _ =>
         cases h_step
   | switchInt discr targets =>
     dsimp only [evalTerminator] at h_step
@@ -465,7 +465,7 @@ theorem evalTerminator_step_inv {body : Body} {bb : BasicBlock}
         · injection h_step with h_eq
           refine ⟨_, h_eq.symm, rfl, h_inv₁, h_pc0 _ localsAfterDiscr⟩
       | unit | enumVal _ _ | tuple _ | array _ | ptr _ | slicePtr _ _ | rangeTo _
-      | rangeFrom _ | bytes _ | ordering _ =>
+      | rangeFrom _ | range _ _ | optionVal _ | bytes _ | ordering _ =>
         dsimp only at h_step
         cases h_br : targets.branches with
         | cons _ _ => rw [h_br] at h_step; cases h_step
@@ -767,7 +767,8 @@ theorem updateCacheLoop_rvalueCacheTouch (dstId : LocalId) (rv : Rvalue)
       cacheTouch cache dstId
     exact updateCacheLoop_false _ 0 _ (fun _ _ => rfl)
   | aggregateTuple _ | useRetag _ | aggregateRangeTo _ _
-  | aggregateRangeFrom _ _ | aggregateArray _ _ | repeat_ _ _ _ =>
+  | aggregateRangeFrom _ _ | aggregateArray _ _ | repeat_ _ _ _
+  | aggregateRange _ _ _ | aggregateOption _ _ _ =>
     change updateCacheLoop (fun _ => false) 0 (cacheTouch cache dstId) =
       cacheTouch cache dstId
     exact updateCacheLoop_false _ 0 _ (fun _ _ => rfl)
@@ -2829,7 +2830,8 @@ private theorem switchInt_forIn_char (rp : RefProg) (c : Choice)
           cases Nat.beq ch.toNat cc.toNat
           · exact ih
           · rfl
-        | scalar _ | ptr _ | slicePtr _ _ | rangeTo _ | rangeFrom _ | bool _
+        | scalar _ | ptr _ | slicePtr _ _ | rangeTo _ | rangeFrom _ | range _ _
+        | optionVal _ | bool _
         | ordering _ | unit | enumVal _ _ | tuple _ | array _ | bytes _ =>
           exact False.elim h_cmp
 
@@ -10306,7 +10308,7 @@ private theorem evalTerminator_done_aborted_of_ne_return {body : Body}
           rw [h_b] at h_ev
           exact evalAssertFailure_done_aborted h_ev
       | scalar _ | char _ | unit | enumVal _ _ | tuple _ | ptr _ | slicePtr _ _
-      | rangeTo _ | rangeFrom _ | bytes _ | array _ | ordering _ =>
+      | rangeTo _ | rangeFrom _ | bytes _ | array _ | ordering _ | optionVal _ | range _ _ =>
         rw [h_v] at h_ev; dsimp only at h_ev; cases h_ev
   | switchInt discr targets =>
     dsimp only [evalTerminator] at h_ev
@@ -10327,7 +10329,7 @@ private theorem evalTerminator_done_aborted_of_ne_return {body : Body}
       | char ch =>
         rw [h_v] at h_ev; dsimp only at h_ev
         cases h_b : evalCharSwitchBranches ch targets.otherwise targets.branches <;> rw [h_b] at h_ev <;> cases h_ev
-      | ptr _ => rw [h_v] at h_ev; dsimp only at h_ev; cases h_brs : targets.branches <;> rw [h_brs] at h_ev <;> dsimp only at h_ev <;> cases h_ev
+      | ptr _ | optionVal _ | range _ _ => rw [h_v] at h_ev; dsimp only at h_ev; cases h_brs : targets.branches <;> rw [h_brs] at h_ev <;> dsimp only at h_ev <;> cases h_ev
       | ordering _ => rw [h_v] at h_ev; dsimp only at h_ev; cases h_brs : targets.branches <;> rw [h_brs] at h_ev <;> dsimp only at h_ev <;> cases h_ev
       | unit => rw [h_v] at h_ev; dsimp only at h_ev; cases h_brs : targets.branches <;> rw [h_brs] at h_ev <;> dsimp only at h_ev <;> cases h_ev
       | enumVal _ _ => rw [h_v] at h_ev; dsimp only at h_ev; cases h_brs : targets.branches <;> rw [h_brs] at h_ev <;> dsimp only at h_ev <;> cases h_ev

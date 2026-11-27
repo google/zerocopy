@@ -708,7 +708,8 @@ private theorem argTopAbsSlot?_noRelGuard {ty : MirTy} {slot : MirAbsSlot}
   | bool => injection h with hEq; subst hEq; rfl
   | unit => injection h with hEq; subst hEq; rfl
   | char | rawPtr _ _ | ref _ _ | tuple _ | enum _ | ordering
-  | slice _ | rangeTo _ | rangeFrom _ | array _ _ | never | unsupported =>
+  | slice _ | rangeTo _ | rangeFrom _ | array _ _ | never | unsupported
+  | option _ | range _ =>
     nomatch h
 
 private theorem intWidth_eq_of_beq {w1 w2 : IntWidth}
@@ -769,13 +770,14 @@ private theorem argTopAbsSlot?_sound {ty : MirTy} {slot : MirAbsSlot}
                 cases hW : sv.wf <;> rw [hW] at hChk <;> nomatch hChk
             | scalar _ | ptr _ | slicePtr _ _ | rangeTo _ | rangeFrom _
             | char _ | ordering _ | unit | enumVal _ _ | tuple _ | array _
-            | bytes _ =>
+            | bytes _ | optionVal _ | range _ _ =>
               nomatch hChk
         | ptr _ | slicePtr _ _ | rangeTo _ | rangeFrom _ | bool _
         | char _ | ordering _ | unit | enumVal _ _ | tuple _ | array _
-        | bytes _ =>
+        | bytes _ | optionVal _ | range _ _ =>
           nomatch hChk
-    | ptr _ | slicePtr _ _ | rangeTo _ | rangeFrom _ | array _ | bytes _ =>
+    | ptr _ | slicePtr _ _ | rangeTo _ | rangeFrom _ | array _ | bytes _
+    | optionVal _ | range _ _ =>
       nomatch hChk
   | bool =>
     injection hSlot with hEq; subst hEq
@@ -807,13 +809,14 @@ private theorem argTopAbsSlot?_sound {ty : MirTy} {slot : MirAbsSlot}
                 cases hW : sv.wf <;> rw [hW] at hChk <;> nomatch hChk
             | scalar _ | ptr _ | slicePtr _ _ | rangeTo _ | rangeFrom _
             | char _ | ordering _ | unit | enumVal _ _ | tuple _ | array _
-            | bytes _ =>
+            | bytes _ | optionVal _ | range _ _ =>
               nomatch hChk
         | ptr _ | slicePtr _ _ | rangeTo _ | rangeFrom _ | bool _
         | char _ | ordering _ | unit | enumVal _ _ | tuple _ | array _
-        | bytes _ =>
+        | bytes _ | optionVal _ | range _ _ =>
           nomatch hChk
-    | ptr _ | slicePtr _ _ | rangeTo _ | rangeFrom _ | array _ | bytes _ =>
+    | ptr _ | slicePtr _ _ | rangeTo _ | rangeFrom _ | array _ | bytes _
+    | optionVal _ | range _ _ =>
       nomatch hChk
   | unit =>
     injection hSlot with hEq; subst hEq
@@ -845,16 +848,18 @@ private theorem argTopAbsSlot?_sound {ty : MirTy} {slot : MirAbsSlot}
                 cases hW : sv.wf <;> rw [hW] at hChk <;> nomatch hChk
             | scalar _ | ptr _ | slicePtr _ _ | rangeTo _ | rangeFrom _
             | char _ | ordering _ | unit | enumVal _ _ | tuple _ | array _
-            | bytes _ =>
+            | bytes _ | optionVal _ | range _ _ =>
               nomatch hChk
         | ptr _ | slicePtr _ _ | rangeTo _ | rangeFrom _ | bool _
         | char _ | ordering _ | unit | enumVal _ _ | tuple _ | array _
-        | bytes _ =>
+        | bytes _ | optionVal _ | range _ _ =>
           nomatch hChk
-    | ptr _ | slicePtr _ _ | rangeTo _ | rangeFrom _ | array _ | bytes _ =>
+    | ptr _ | slicePtr _ _ | rangeTo _ | rangeFrom _ | array _ | bytes _
+    | optionVal _ | range _ _ =>
       nomatch hChk
   | char | rawPtr _ _ | ref _ _ | tuple _ | enum _ | ordering
-  | slice _ | rangeTo _ | rangeFrom _ | array _ _ | never | unsupported =>
+  | slice _ | rangeTo _ | rangeFrom _ | array _ _ | never | unsupported
+  | option _ | range _ =>
     nomatch hSlot
 
 /-- Builds the abstract entry environment matching `initLocalsLoop` from index
@@ -905,7 +910,8 @@ private theorem liveUninitAbsSlot?_sound {ty : MirTy} {slot : MirAbsSlot}
     injection h with hEq; subst hEq
     exact ⟨rfl, rfl⟩
   | char | rawPtr _ _ | ref _ _ | tuple _ | enum _ | ordering
-  | slice _ | rangeTo _ | rangeFrom _ | array _ _ | never | unsupported =>
+  | slice _ | rangeTo _ | rangeFrom _ | array _ _ | never | unsupported
+  | option _ | range _ =>
     nomatch h
 
 private theorem checkArgsMatch_get {args : List Val} {paramTys : List MirTy} :

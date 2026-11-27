@@ -259,7 +259,7 @@ theorem split_at_shared_correct (q : Query)
         rw [readPlaceV2_move_local (by rfl) (by rfl) (by rfl) (by rfl)]
         dsimp only
         rw [readPlaceV2_move_local (by rfl) (by rfl) (by rfl) (by rfl)]
-        dsimp only
+        dsimp only [execCoreCallWithMem]
         rw [execCoreCallOp_sliceGetUncheckedRangeTo_shared_ok hRefValid0 hGetTo]
         dsimp only
         rw [writePlaceV2_immediate_ok (by rfl) (by rfl) (by rfl)]
@@ -303,7 +303,7 @@ theorem split_at_shared_correct (q : Query)
         rw [readPlaceV2_move_local (by rfl) (by rfl) (by rfl) (by rfl)]
         dsimp only
         rw [readPlaceV2_move_local (by rfl) (by rfl) (by rfl) (by rfl)]
-        dsimp only
+        dsimp only [execCoreCallWithMem]
         rw [execCoreCallOp_sliceGetUncheckedRangeFrom_shared_ok hRefValid0 hGetFrom]
         dsimp only
         rw [writePlaceV2_immediate_ok

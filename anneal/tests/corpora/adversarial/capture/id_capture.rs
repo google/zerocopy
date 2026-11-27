@@ -6,9 +6,9 @@
 // This file may not be copied, modified, or distributed except according to
 // those terms.
 
-// === case: saturating_add_one_capture_unsupported ===
-//@ fail(capture): "add_one: bb0 terminator: unsupported core call `core::num::<impl usize>::saturating_add`"
+// === case: saturating_mul_one_capture_unsupported ===
+//@ fail(capture): "mul_one: bb0 terminator: unsupported core call `core::num::<impl usize>::saturating_mul`"
 
-pub fn add_one(x: usize) -> usize {
-    x.saturating_add(1)
+pub fn mul_one(x: usize) -> usize {
+    x.saturating_mul(1)
 }

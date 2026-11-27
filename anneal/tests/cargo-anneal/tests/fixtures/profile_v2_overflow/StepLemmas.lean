@@ -128,7 +128,7 @@ theorem initStateV2_ok {p : Program} {body : Body} {args : List Val}
     (hNonEmpty : body.basicBlocks.isEmpty = false)
     (hArgLt : Nat.blt body.argumentCount body.locals.length = true)
     (hSto : storageAnnotationsInBounds body = true)
-    (hDiscr : discriminantTypesValid body = true)
+    (hDiscr : discriminantTypesValidV2 body = true)
     (hCast : castTypesValid body = true)
     (hLocs : body.locals.all isSupportedV2LocalTy = true)
     (hValid : ValidEntryArgsV2 body ⟨args, cm⟩)
@@ -167,6 +167,7 @@ theorem args_u8 {args : List Val}
     | scalar sv =>
       let ⟨bits, hEq, hT⟩ := checkVal_int_iff.mp hv
       exact ⟨bits, by rw [hEq], hT⟩
+    | optionVal o => cases o <;> cases hv
     | _ => cases hv
 
 theorem decode_u8 {bits : BitVec 128} (hT : truncateBits .i8 bits = bits) :

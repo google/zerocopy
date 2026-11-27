@@ -1235,7 +1235,8 @@ theorem refute_step_v2_return_rodata_unsupported :
       }]
       nextAllocId := 2
     }
-    let bb : BasicBlock := { statements := [], terminator := .return_, cleanup := false }
+    let bb : BasicBlock :=
+      { statements := [], terminator := .return_, cleanup := false }
     let refBody : Body := {
       argumentCount := 0
       locals := [.ref .shared (.slice (.int .i8 false))]
@@ -1262,6 +1263,48 @@ theorem refute_step_v2_return_rodata_unsupported :
      | .fault .unsupported => True
      | _ => False) ∧
     (match evalTerminatorV2 ptrBody bb ptrFrame roMem { allocations := [] } with
+     | .fault .unsupported => True
+     | _ => False) :=
+  ⟨trivial, trivial⟩
+
+/-- Guard `bytes_v2_ptr_or_ref_alloc_ids_option`: returning `Some` of a
+`*const u8` or a `&u8` into a callee-allocated `.rodata` allocation faults
+with `.fault .unsupported`, because `ptrOrRefAllocIds` looks through the
+`Option` payload. -/
+theorem refute_step_v2_return_rodata_option_ptr :
+    let roMem : MemoryState := {
+      allocations := [{
+        allocId := 1
+        alignLog2 := 0
+        mutability := .shared
+        bytes := [.init 1 none]
+        live := true
+      }]
+      nextAllocId := 2
+    }
+    let bb : BasicBlock :=
+      { statements := [], terminator := .return_, cleanup := false }
+    let ptrBody : Body := {
+      argumentCount := 0
+      locals := [.option (.rawPtr .shared (.int .i8 false))]
+      basicBlocks := [bb]
+    }
+    let refBody : Body := {
+      argumentCount := 0
+      locals := [.option (.ref .shared (.int .i8 false))]
+      basicBlocks := [bb]
+    }
+    let frame : FrameState := {
+      defId := 0
+      blockIdx := 0
+      stmtIdx := 0
+      locals :=
+        [.immediate (some (.optionVal (some (.ptr ⟨some 1, 0, .isize⟩))))]
+    }
+    (match evalTerminatorV2 ptrBody bb frame roMem { allocations := [] } with
+     | .fault .unsupported => True
+     | _ => False) ∧
+    (match evalTerminatorV2 refBody bb frame roMem { allocations := [] } with
      | .fault .unsupported => True
      | _ => False) :=
   ⟨trivial, trivial⟩
@@ -1710,6 +1753,96 @@ theorem refute_step_v2_assign_aggregate_clobber_unsupported :
      | _ => False) :=
   ⟨trivial, trivial⟩
 
+/-- Shared locals for the `Range` aggregate hazard refutations: `_1` is the
+immediate `Range<usize>` `10..20` and `_2` an immediate `usize`. -/
+noncomputable def rangeHazLocals : List MirTy × List LocalSlot :=
+  ([.unit, .range (.int .isize false), .int .isize false],
+   [.immediate none, .immediate (some (.range 10 20)),
+    .immediate (some (.scalar ⟨.isize, false, 5⟩))])
+
+/-- Guard `step_v2_assign_aggregate_range_clobber_unsupported`: in-place
+`_1 = Range { start: _1.1, end: _1.0 }` reads `_1.0` after the field-0 write
+clobbered it (`write_aggregate` copies fields in order), so it fails closed
+instead of evaluating both operands against the old `_1`. -/
+theorem refute_step_v2_assign_aggregate_range_clobber_unsupported :
+    checkAssignCopyHazardV2 rangeHazLocals.1 rangeHazLocals.2 emptyMemory
+      (.local 1) (.range (.int .isize false))
+      (.aggregateRange (.int .isize false)
+        (.copy { localId := 1, projection :=
+          [.field 1 (.int .isize false)] })
+        (.copy { localId := 1, projection :=
+          [.field 0 (.int .isize false)] })) =
+      .error .unsupported :=
+  rfl
+
+/-- Guard `step_v2_assign_range_field_span`: `Range` field projections on an
+immediate local resolve to precise spans, so
+`_1 = Range { start: _2, end: _1.1 }` (which reads only the field not yet
+written) passes the hazard check. -/
+theorem refute_step_v2_assign_range_field_span :
+    checkAssignCopyHazardV2 rangeHazLocals.1 rangeHazLocals.2 emptyMemory
+      (.local 1) (.range (.int .isize false))
+      (.aggregateRange (.int .isize false)
+        (.copy { localId := 2, projection := [] })
+        (.copy { localId := 1, projection :=
+          [.field 1 (.int .isize false)] })) =
+      .ok () :=
+  rfl
+
+/-- Shared locals for the `Option` payload hazard refutations:
+`_1 : (Option<u32>, u32)`, `_2 : Option<u32>`, and
+`_3 : (u32, u32, Option<u32>)`, all immediate. -/
+noncomputable def optHazLocals : List MirTy × List LocalSlot :=
+  let u32Ty : MirTy := .int .i32 false
+  ([.unit, .tuple [.option u32Ty, u32Ty], .option u32Ty,
+    .tuple [u32Ty, u32Ty, .option u32Ty]],
+   [.immediate none,
+    .immediate (some (.tuple [.optionVal (some (.scalar ⟨.i32, false, 7⟩)),
+      .scalar ⟨.i32, false, 1⟩])),
+    .immediate (some (.optionVal none)),
+    .immediate (some (.tuple [.scalar ⟨.i32, false, 1⟩,
+      .scalar ⟨.i32, false, 2⟩,
+      .optionVal (some (.scalar ⟨.i32, false, 3⟩))]))])
+
+/-- Guard `step_v2_assign_option_payload_span`: an `Option` payload read
+`(_3.2 as Some).0` resolves to a sub-span of `_3.2`, so
+`_3 = (_1.1, (_3.2 as Some).0, _2)` passes, while
+`_1 = (_2, (_1.0 as Some).0)` reads the payload of the already-overwritten
+`_1.0` and fails closed. -/
+theorem refute_step_v2_assign_option_payload_span :
+    let u32Ty : MirTy := .int .i32 false
+    checkAssignCopyHazardV2 optHazLocals.1 optHazLocals.2 emptyMemory
+      (.local 3) (.tuple [u32Ty, u32Ty, .option u32Ty])
+      (.aggregateTuple [
+        .copy { localId := 1, projection := [.field 1 u32Ty] },
+        .copy { localId := 3, projection :=
+          [.field 2 (.option u32Ty), .downcast 1,
+            .field 0 u32Ty] },
+        .copy { localId := 2, projection := [] }]) = .ok () ∧
+    checkAssignCopyHazardV2 optHazLocals.1 optHazLocals.2 emptyMemory
+      (.local 1) (.tuple [.option u32Ty, u32Ty])
+      (.aggregateTuple [
+        .copy { localId := 2, projection := [] },
+        .copy { localId := 1, projection :=
+          [.field 0 (.option u32Ty), .downcast 1,
+            .field 0 u32Ty] }]) = .error .unsupported :=
+  ⟨rfl, rfl⟩
+
+/-- Guard `step_v2_assign_aggregate_unresolved_operand_unsupported`: a later
+`Aggregate` operand whose source span cannot be resolved (here the bare
+variant place `_1.0 as Some`) fails closed rather than being treated like a
+constant. -/
+theorem refute_step_v2_assign_aggregate_unresolved_operand_unsupported :
+    let u32Ty : MirTy := .int .i32 false
+    checkAssignCopyHazardV2 optHazLocals.1 optHazLocals.2 emptyMemory
+      (.local 1) (.tuple [.option u32Ty, u32Ty])
+      (.aggregateTuple [
+        .copy { localId := 2, projection := [] },
+        .copy { localId := 1, projection :=
+          [.field 0 (.option u32Ty), .downcast 1] }]) =
+      .error .unsupported :=
+  rfl
+
 /-- Guard `step_v2_assign_aggregate_deref_ptr_clobber_unsupported`: when an
 earlier `Aggregate` field write overwrites the memory holding a pointer local
 `_2 : *const u32`, a later `copy (*_2)` operand fails closed with
@@ -1919,5 +2052,222 @@ theorem refute_step_v2_fake_address_of_ref_validity :
      | .error .undefined => True
      | _ => False) :=
   trivial
+
+/-- Guard `core_contracts_slice_subslice_in_mut`: `Index::index(0..1)` on a
+`&mut [u8]` input over a `.shared` allocation faults with `.undefined` even
+though `reqMut = .shared`, because `execSliceSubslice` validates the input at
+`inMut`. -/
+theorem refute_core_contracts_slice_subslice_in_mut :
+    (match execCoreContractOp sharedInit2Mem
+        (.sliceIndexRange .shared (.int .i8 false))
+        [(.ref .mut (.slice (.int .i8 false)), .slicePtr ⟨some 1, 0, .isize⟩ 2),
+          (.range (.int .isize false), .range 0 1)]
+        (.ref .shared (.slice (.int .i8 false))) with
+     | .error .undefined => True
+     | _ => False) :=
+  trivial
+
+/-- Guard `core_contracts_slice_split_at_in_mut`: `slice::split_at(1)` on a
+`&mut [u8]` input over a `.shared` allocation faults with `.undefined` even
+though `reqMut = .shared`, because `execSliceSplitAt` validates the input at
+`inMut`. -/
+theorem refute_core_contracts_slice_split_at_in_mut :
+    (match execCoreContractOp sharedInit2Mem
+        (.sliceSplitAt .shared (.int .i8 false))
+        [(.ref .mut (.slice (.int .i8 false)), .slicePtr ⟨some 1, 0, .isize⟩ 2),
+          (.int .isize false, .scalar ⟨.isize, false, 1⟩)]
+        (.tuple [.ref .shared (.slice (.int .i8 false)),
+          .ref .shared (.slice (.int .i8 false))]) with
+     | .error .undefined => True
+     | _ => False) :=
+  trivial
+
+/-- Anti-overreach canary: the same `Index::index` and `split_at` calls on a
+`&[u8]` input over the `.shared` allocation succeed. -/
+theorem positive_core_contracts_slice_shared_input :
+    (match execCoreContractOp sharedInit2Mem
+        (.sliceIndexRange .shared (.int .i8 false))
+        [(.ref .shared (.slice (.int .i8 false)),
+            .slicePtr ⟨some 1, 0, .isize⟩ 2),
+          (.range (.int .isize false), .range 0 1)]
+        (.ref .shared (.slice (.int .i8 false))) with
+     | .ok _ => True
+     | .error _ => False) ∧
+    (match execCoreContractOp sharedInit2Mem
+        (.sliceSplitAt .shared (.int .i8 false))
+        [(.ref .shared (.slice (.int .i8 false)),
+            .slicePtr ⟨some 1, 0, .isize⟩ 2),
+          (.int .isize false, .scalar ⟨.isize, false, 1⟩)]
+        (.tuple [.ref .shared (.slice (.int .i8 false)),
+          .ref .shared (.slice (.int .i8 false))]) with
+     | .ok _ => True
+     | .error _ => False) :=
+  ⟨trivial, trivial⟩
+
+/-- Guard `core_contracts_i128_host_overflow`: 128-bit checked, saturating,
+and overflowing arithmetic detect mathematical overflow (`intHostOverflow`)
+before `BitVec 128` carrier truncation across unsigned and signed edges. -/
+theorem refute_core_contracts_i128_host_overflow :
+    let u128Ty : MirTy := .int .i128 false
+    let i128Ty : MirTy := .int .i128 true
+    let u128Max : ScalarVal :=
+      ⟨.i128, false, BitVec.ofNat 128 340282366920938463463374607431768211455⟩
+    let u128Zero : ScalarVal := ⟨.i128, false, 0⟩
+    let u128One : ScalarVal := ⟨.i128, false, 1⟩
+    let u128Two : ScalarVal := ⟨.i128, false, 2⟩
+    let i128Max : ScalarVal :=
+      ⟨.i128, true, BitVec.ofNat 128 170141183460469231731687303715884105727⟩
+    let i128Min : ScalarVal :=
+      ⟨.i128, true, BitVec.ofNat 128 170141183460469231731687303715884105728⟩
+    let i128One : ScalarVal := ⟨.i128, true, 1⟩
+    let i128NegOne : ScalarVal :=
+      ⟨.i128, true, BitVec.ofNat 128 340282366920938463463374607431768211455⟩
+    execCoreContractOp MemoryState.empty (.numCheckedAdd .i128 false)
+      [(u128Ty, .scalar u128Max), (u128Ty, .scalar u128One)]
+      (.option u128Ty) =
+      .ok (.optionVal none, MemoryState.empty) ∧
+    execCoreContractOp MemoryState.empty (.numCheckedSub .i128 false)
+      [(u128Ty, .scalar u128Zero), (u128Ty, .scalar u128One)]
+      (.option u128Ty) =
+      .ok (.optionVal none, MemoryState.empty) ∧
+    execCoreContractOp MemoryState.empty (.numCheckedAdd .i128 true)
+      [(i128Ty, .scalar i128Max), (i128Ty, .scalar i128One)]
+      (.option i128Ty) =
+      .ok (.optionVal none, MemoryState.empty) ∧
+    execCoreContractOp MemoryState.empty (.numCheckedMul .i128 false)
+      [(u128Ty, .scalar u128Max), (u128Ty, .scalar u128Two)]
+      (.option u128Ty) =
+      .ok (.optionVal none, MemoryState.empty) ∧
+    execCoreContractOp MemoryState.empty (.numSaturatingAdd .i128 false)
+      [(u128Ty, .scalar u128Max), (u128Ty, .scalar u128One)] u128Ty =
+      .ok (.scalar u128Max, MemoryState.empty) ∧
+    execCoreContractOp MemoryState.empty (.numSaturatingAdd .i128 true)
+      [(i128Ty, .scalar i128Max), (i128Ty, .scalar i128One)] i128Ty =
+      .ok (.scalar i128Max, MemoryState.empty) ∧
+    execCoreContractOp MemoryState.empty (.numSaturatingAdd .i128 true)
+      [(i128Ty, .scalar i128Min), (i128Ty, .scalar i128NegOne)] i128Ty =
+      .ok (.scalar i128Min, MemoryState.empty) ∧
+    execCoreContractOp MemoryState.empty (.numOverflowingAdd .i128 false)
+      [(u128Ty, .scalar u128Max), (u128Ty, .scalar u128One)]
+      (.tuple [u128Ty, .bool]) =
+      .ok (.tuple [.scalar u128Zero, .bool true], MemoryState.empty) ∧
+    execCoreContractOp MemoryState.empty (.numOverflowingSub .i128 false)
+      [(u128Ty, .scalar u128Zero), (u128Ty, .scalar u128One)]
+      (.tuple [u128Ty, .bool]) =
+      .ok (.tuple [.scalar u128Max, .bool true], MemoryState.empty) ∧
+    execCoreContractOp MemoryState.empty (.numOverflowingAdd .i128 true)
+      [(i128Ty, .scalar i128Max), (i128Ty, .scalar i128One)]
+      (.tuple [i128Ty, .bool]) =
+      .ok (.tuple [.scalar i128Min, .bool true], MemoryState.empty) :=
+  ⟨rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl⟩
+
+/-- Anti-overreach canary: in-bounds 128-bit checked, saturating, and
+overflowing arithmetic succeed without false overflow. -/
+theorem positive_core_contracts_i128_in_bounds :
+    let u128Ty : MirTy := .int .i128 false
+    let u128MaxMinus1 : ScalarVal :=
+      ⟨.i128, false, BitVec.ofNat 128 340282366920938463463374607431768211454⟩
+    let u128Max : ScalarVal :=
+      ⟨.i128, false, BitVec.ofNat 128 340282366920938463463374607431768211455⟩
+    let u128One : ScalarVal := ⟨.i128, false, 1⟩
+    let u128Two : ScalarVal := ⟨.i128, false, 2⟩
+    let u128Three : ScalarVal := ⟨.i128, false, 3⟩
+    execCoreContractOp MemoryState.empty (.numCheckedAdd .i128 false)
+      [(u128Ty, .scalar u128One), (u128Ty, .scalar u128Two)]
+      (.option u128Ty) =
+      .ok (.optionVal (some (.scalar u128Three)), MemoryState.empty) ∧
+    execCoreContractOp MemoryState.empty (.numSaturatingAdd .i128 false)
+      [(u128Ty, .scalar u128MaxMinus1), (u128Ty, .scalar u128One)] u128Ty =
+      .ok (.scalar u128Max, MemoryState.empty) ∧
+    execCoreContractOp MemoryState.empty (.numOverflowingAdd .i128 false)
+      [(u128Ty, .scalar u128One), (u128Ty, .scalar u128Two)]
+      (.tuple [u128Ty, .bool]) =
+      .ok (.tuple [.scalar u128Three, .bool false], MemoryState.empty) :=
+  ⟨rfl, rfl, rfl⟩
+
+/-- Guard `bytes_v2_slice_uninhabited_elem`: `refValidInMem` rejects
+positive-length `&[!]` and `&mut [!]` slices (both provenance-free dangling
+pointers and provenance-backed allocations) with `.error .undefined`. -/
+theorem refute_bytes_v2_slice_uninhabited_elem :
+    let mutMem : MemoryState := {
+      allocations := [{
+        allocId := 2
+        alignLog2 := 0
+        mutability := .mut
+        bytes := []
+        live := true
+      }]
+      nextAllocId := 3
+    }
+    refValidInMem MemoryState.empty .shared (.slice .never)
+      (.slicePtr ⟨none, 1, .isize⟩ 1) = .error .undefined ∧
+    refValidInMem MemoryState.empty .mut (.slice .never)
+      (.slicePtr ⟨none, 1, .isize⟩ 2) = .error .undefined ∧
+    refValidInMem mutMem .shared (.slice .never)
+      (.slicePtr ⟨some 2, 0, .isize⟩ 1) = .error .undefined ∧
+    refValidInMem mutMem .mut (.slice .never)
+      (.slicePtr ⟨some 2, 0, .isize⟩ 1) = .error .undefined :=
+  ⟨rfl, rfl, rfl, rfl⟩
+
+/-- Anti-overreach canary: empty `&[] : &[!]` (`len = 0`) and positive-length
+inhabited ZST `&[()]` slices remain valid under `refValidInMem`. -/
+theorem positive_bytes_v2_slice_empty_never_and_zst_unit :
+    refValidInMem MemoryState.empty .shared (.slice .never)
+      (.slicePtr ⟨none, 1, .isize⟩ 0) = .ok () ∧
+    refValidInMem MemoryState.empty .shared (.slice .unit)
+      (.slicePtr ⟨none, 1, .isize⟩ 3) = .ok () :=
+  ⟨rfl, rfl⟩
+
+/-- Guard `core_contracts_option_unwrap_refs_valid`: `Option::unwrap` on
+`Some(&u8)` pointing into a dead allocation faults `.undefined` via
+`refsValidInMem`, while a live `Some(&u8)` succeeds. -/
+theorem refute_core_contracts_option_unwrap_refs_valid :
+    let refU8Ty : MirTy := .ref .shared (.int .i8 false)
+    let deadMem : MemoryState := {
+      allocations := [{
+        allocId := 2
+        alignLog2 := 0
+        mutability := .shared
+        bytes := [.init 7 none]
+        live := false
+      }]
+      nextAllocId := 3
+    }
+    let liveMem : MemoryState := {
+      allocations := [{
+        allocId := 2
+        alignLog2 := 0
+        mutability := .shared
+        bytes := [.init 7 none]
+        live := true
+      }]
+      nextAllocId := 3
+    }
+    execCoreContractOp deadMem (.optionUnwrap refU8Ty)
+      [(.option refU8Ty, .optionVal (some (.ptr ⟨some 2, 0, .isize⟩)))]
+      refU8Ty = .error .undefined ∧
+    execCoreContractOp liveMem (.optionUnwrap refU8Ty)
+      [(.option refU8Ty, .optionVal (some (.ptr ⟨some 2, 0, .isize⟩)))]
+      refU8Ty = .ok (.ptr ⟨some 2, 0, .isize⟩, liveMem) :=
+  ⟨rfl, rfl⟩
+
+/-- Guard `step_v2_option_discriminant_dst_ty`: projected `Option` discriminant
+returns `0isize`/`1isize` for `isize` destination and rejects mismatched
+`dstTy` with `.unsupported`. -/
+theorem refute_step_v2_option_discriminant_dst_ty :
+    let optU8Ty : MirTy := .option (.int .i8 false)
+    let tupTy : MirTy := .tuple [optU8Ty, .int .i8 false]
+    let locals : List LocalSlot := [
+      .immediate (some (.tuple [.optionVal (some (.scalar ⟨.i8, false, 9⟩)),
+        .scalar ⟨.i8, false, 1⟩]))
+    ]
+    let place : Place := { localId := 0, projection := [.field 0 optU8Ty] }
+    evalRvalueV2 [tupTy] locals MemoryState.empty (.int .i8 false)
+      (.discriminant place) = .error .unsupported ∧
+    evalRvalueV2 [tupTy] locals MemoryState.empty (.int .isize true)
+      (.discriminant place) =
+      .ok (.scalar ⟨.isize, true, BitVec.ofNat 128 1⟩, locals,
+        MemoryState.empty) :=
+  ⟨rfl, rfl⟩
 
 end GuardMutation

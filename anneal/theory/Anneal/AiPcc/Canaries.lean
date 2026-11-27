@@ -229,7 +229,7 @@ theorem canary_aligned_stride8_loop_pcc_safe :
       exact h1.symm
     rw [hBv]
   | ptr _ | bool _ | char _ | ordering _ | unit
-  | slicePtr _ _ | rangeTo _ | rangeFrom _ | array _
+  | slicePtr _ _ | rangeTo _ | rangeFrom _ | array _ | range _ _ | optionVal _
   | enumVal _ _ | tuple _ | bytes _ => exact False.elim hDen.2
 
 /-- 32-bit bitmask (`& 0xFF | 1` guaranteeing nonzero divisor in `[1, 255]`),
@@ -342,7 +342,7 @@ theorem canary_bitmask_div_cast_pcc_safe (a b : BitVec 128)
       Nat.lt_of_le_of_lt hLe (Nat.sub_lt (modPow2_pos 32) (Nat.zero_lt_succ 0))
     exact ⟨sb, rfl, hLt32⟩
   | ptr _ | bool _ | char _ | ordering _ | unit
-  | slicePtr _ _ | rangeTo _ | rangeFrom _ | array _
+  | slicePtr _ _ | rangeTo _ | rangeFrom _ | array _ | range _ _ | optionVal _
   | enumVal _ _ | tuple _ | bytes _ => exact False.elim hDen.2
 
 /-! ## Positive Controls, Aliasing, Guards, and CFG Merge Canaries -/

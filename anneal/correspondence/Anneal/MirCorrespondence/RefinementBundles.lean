@@ -401,6 +401,8 @@ private theorem isU32Ty_eq {ty : MirTy} (h : isU32Ty ty = true) :
   | array _ _ => cases h
   | rangeTo _ => cases h
   | rangeFrom _ => cases h
+  | range _ => cases h
+  | option _ => cases h
   | unsupported => cases h
 
 private noncomputable def isCopy1To0Stmt : StatementKind → Bool
@@ -438,6 +440,8 @@ private theorem isCopy1To0Stmt_eq {st : StatementKind}
           | aggregateRangeFrom _ _ => cases h
           | aggregateArray _ _ => cases h
           | repeat_ _ _ _ => cases h
+          | aggregateRange _ _ _ => cases h
+          | aggregateOption _ _ => cases h
           | unsupported => cases h
           | use op =>
             cases op with
