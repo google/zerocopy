@@ -87,8 +87,15 @@ cargo "+${STABLE}" clippy --locked --offline --workspace --all-targets \
   -D warnings
 cargo "+${STABLE}" test --locked --offline --workspace
 # Each checked-in `Spec.lean` must be exactly what `anneal-spec-lower`
-# generates from the unit's `spec.rs`.
+# generates from the unit's companion `spec.rs`. A unit with a
+# `spec_sources.json` instead lowers inline specifications from
+# `zerocopy/src`; the golden tests above and
+# `anneal/ci/verify_anneal_spec_zerocopy.py` (in installed-smoke) check those,
+# so this loop skips them rather than parse that file list here.
 for unit in tests/zerocopy/*; do
+  if [[ -e "$unit/spec_sources.json" || -L "$unit/spec_sources.json" ]]; then
+    continue
+  fi
   cargo "+${STABLE}" run --locked --offline -q -p anneal-spec-lower -- \
     --src-root . --check "$unit" "$unit/spec.rs"
 done

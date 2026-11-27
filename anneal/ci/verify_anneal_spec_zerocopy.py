@@ -36,7 +36,12 @@ def load_strict_json(text):
     )
 
 
-ALLOWED_EXTRA_FILES = frozenset({"spec.rs", "spec_span_map.json"})
+# Every unit carries its span map and exactly one specification input: a
+# companion `spec.rs` (`anneal::external_spec!`) or a `spec_sources.json`
+# naming the crate source files whose inline `anneal::spec` attributes it
+# lowers.
+REQUIRED_EXTRA_FILES = frozenset({"spec_span_map.json"})
+SPEC_INPUT_FILES = ("spec.rs", "spec_sources.json")
 NEG_UNIT = "02_unit_pointer_metadata"
 LEAN_COMPILE_FIXTURE = "tests/lean_compile"
 SPEC_IMPORT_ROOT = "Trusted.MirSemantics"
@@ -110,10 +115,19 @@ def discover_spec_units(proofs_dir, src_dir):
         if not isinstance(sources, list) or not sources:
             raise RuntimeError(f"{entry.name}: proof.sources must be non-empty")
 
-        declared = {"request.json"} | ALLOWED_EXTRA_FILES
-        for extra in ALLOWED_EXTRA_FILES:
+        declared = {"request.json"} | REQUIRED_EXTRA_FILES
+        for extra in REQUIRED_EXTRA_FILES:
             if not (entry / extra).is_file():
                 raise RuntimeError(f"{entry.name}: missing {extra}")
+        spec_inputs = [f for f in SPEC_INPUT_FILES if (entry / f).is_file()]
+        if len(spec_inputs) != 1:
+            raise RuntimeError(
+                f"{entry.name}: expected exactly one of "
+                f"{list(SPEC_INPUT_FILES)}, found {spec_inputs}"
+            )
+        declared.add(spec_inputs[0])
+        if spec_inputs[0] == "spec_sources.json":
+            load_spec_sources(entry, request, resolved_src)
         for source in sources:
             filename = source.get("path") if isinstance(source, dict) else None
             if not is_safe_relative_filename(filename) or not filename.endswith(
@@ -136,17 +150,98 @@ def discover_spec_units(proofs_dir, src_dir):
     return units
 
 
-def check_freshness(arguments, unit_dir):
-    """Run `anneal-spec-lower --check` on `unit_dir`."""
-    rel_spec = os.path.relpath(unit_dir / "spec.rs", arguments.src_root)
+def load_spec_sources(unit_dir, request, resolved_src):
+    """Return the crate source files that `spec_sources.json` names.
+
+    Each entry is a relative path under the unit's crate source root that the
+    request's `compilation.source_files` also lists, so freshness lowers
+    exactly the files that the capture compiles. Lowering them from that root
+    gives inline items their crate module paths.
+    """
+    spec_sources_path = unit_dir / "spec_sources.json"
+    if spec_sources_path.is_symlink() or not spec_sources_path.is_file():
+        raise RuntimeError(
+            f"{unit_dir.name}: spec_sources.json must be a regular file"
+        )
+    spec_sources = load_strict_json(
+        spec_sources_path.read_text(encoding="utf-8")
+    )
+    files = (
+        spec_sources.get("files") if isinstance(spec_sources, dict) else None
+    )
+    if (
+        not isinstance(spec_sources, dict)
+        or set(spec_sources) != {"files"}
+        or not isinstance(files, list)
+        or not files
+    ):
+        raise RuntimeError(
+            f"{unit_dir.name}: spec_sources.json must be "
+            '{"files": [<source file>, ...]}'
+        )
+    compiled = request["compilation"].get("source_files")
+    if not isinstance(compiled, list):
+        raise RuntimeError(
+            f"{unit_dir.name}: spec_sources.json requires "
+            "compilation.source_files"
+        )
+    seen = set()
+    for raw in files:
+        parts = Path(raw).parts if isinstance(raw, str) and raw else ()
+        if (
+            not parts
+            or Path(raw).is_absolute()
+            or any(part in (".", "..") for part in parts)
+            or "\\" in raw
+            or raw.startswith("-")
+            or not raw.endswith(".rs")
+            or Path(*parts).as_posix() != raw
+        ):
+            raise RuntimeError(
+                f"{unit_dir.name}: invalid spec source {raw!r}"
+            )
+        if raw in seen:
+            raise RuntimeError(
+                f"{unit_dir.name}: duplicate spec source {raw!r}"
+            )
+        seen.add(raw)
+        if raw not in compiled:
+            raise RuntimeError(
+                f"{unit_dir.name}: spec source {raw!r} is not in "
+                "compilation.source_files"
+            )
+        path = resolved_src / raw
+        # `resolved_src` is canonical, so a symlink anywhere below it makes
+        # the canonical path differ.
+        if not path.is_file() or path.resolve(strict=True) != path:
+            raise RuntimeError(
+                f"{unit_dir.name}: spec source {raw!r} is not a regular "
+                f"file under {resolved_src}"
+            )
+    return list(files)
+
+
+def check_freshness(arguments, unit_dir, request):
+    """Run `anneal-spec-lower --check` on `unit_dir`.
+
+    A companion `spec.rs` is lowered from the `anneal-spec` workspace root. A
+    `spec_sources.json` unit is lowered from the crate source root, so editing
+    an inline specification in the crate fails this check.
+    """
+    if (unit_dir / "spec_sources.json").is_file():
+        src_root = arguments.src_dir.resolve(strict=True)
+        inputs = load_spec_sources(unit_dir, request, src_root)
+    else:
+        src_root = arguments.src_root
+        inputs = [os.path.relpath(unit_dir / "spec.rs", arguments.src_root)]
     proc = subprocess.run(
         [
             str(arguments.lower),
             "--src-root",
-            str(arguments.src_root),
+            str(src_root),
             "--check",
             str(unit_dir),
-            rel_spec,
+            *inputs,
         ],
         capture_output=True,
         text=True,
@@ -282,7 +377,7 @@ def run_lean_compile_check(arguments, work_dir):
 
 def verify_unit(arguments, unit_dir, request, artifacts_root):
     """Run `cargo-anneal verify` on one unit and validate its Receipt v3."""
-    check_freshness(arguments, unit_dir)
+    check_freshness(arguments, unit_dir, request)
     cmd = [
         str(arguments.cli),
         "verify",
@@ -340,31 +435,67 @@ def _rewrite_source_root(unit_dir, src_dir):
     req_path.write_text(json.dumps(req, indent=2) + "\n", encoding="utf-8")
 
 
+NEG_SPEC_NEEDLE = "ensures(|count| count == 0)"
+NEG_SPEC_MUTATION = "ensures(|count| count == 1)"
+
+
+def _mutate_negative_spec(arguments, neg_dir, work_dir):
+    """Falsify the negative-control unit's Rust specification.
+
+    A companion `spec.rs` is mutated in the copied unit. For a
+    `spec_sources.json` unit, the crate sources are copied, the inline
+    specification is mutated in the copy, and the unit's request is pointed at
+    it. Returns the lowering command that regenerates the unit's `Spec.lean`.
+    """
+    def mutate_once(paths, what):
+        # The needle must occur exactly once across all of `paths`.
+        texts = {p: p.read_text(encoding="utf-8") for p in paths}
+        if sum(t.count(NEG_SPEC_NEEDLE) for t in texts.values()) != 1:
+            raise RuntimeError(f"failed to mutate {what}")
+        for p, t in texts.items():
+            if NEG_SPEC_NEEDLE in t:
+                p.write_text(
+                    t.replace(NEG_SPEC_NEEDLE, NEG_SPEC_MUTATION),
+                    encoding="utf-8",
+                )
+
+    if not (neg_dir / "spec_sources.json").is_file():
+        spec_rs = neg_dir / "spec.rs"
+        mutate_once([spec_rs], "negative-control spec.rs")
+        return [str(arguments.lower), "--out-dir", str(neg_dir), str(spec_rs)]
+    src_dir = arguments.src_dir.resolve(strict=True)
+    request = load_strict_json(
+        (neg_dir / "request.json").read_text(encoding="utf-8")
+    )
+    files = load_spec_sources(neg_dir, request, src_dir)
+    neg_src = work_dir / f"{neg_dir.name}-src"
+    shutil.copytree(src_dir, neg_src, symlinks=True)
+    mutate_once(
+        [neg_src / f for f in files],
+        "the negative-control inline specification",
+    )
+    _rewrite_source_root(neg_dir, neg_src)
+    return [
+        str(arguments.lower),
+        "--src-root",
+        str(neg_src),
+        "--out-dir",
+        str(neg_dir),
+        *files,
+    ]
+
+
 def run_negative_controls(arguments, base_unit_dir, work_dir):
     """Confirm mutated Rust specs and mismatched signatures fail closed."""
     results = {}
     for case in ("mutated_spec_rs", "mismatched_signature"):
         neg_dir = work_dir / f"neg-{case}"
-        shutil.copytree(base_unit_dir, neg_dir)
+        shutil.copytree(base_unit_dir, neg_dir, symlinks=True)
         _rewrite_source_root(neg_dir, arguments.src_dir)
         if case == "mutated_spec_rs":
-            spec_rs = neg_dir / "spec.rs"
-            src_text = spec_rs.read_text(encoding="utf-8")
-            mutated = src_text.replace(
-                "ensures(|count| count == 0)",
-                "ensures(|count| count == 1)",
-                1,
-            )
-            if mutated == src_text:
-                raise RuntimeError("failed to mutate negative-control spec.rs")
-            spec_rs.write_text(mutated, encoding="utf-8")
+            lower_cmd = _mutate_negative_spec(arguments, neg_dir, work_dir)
             lower_proc = subprocess.run(
-                [
-                    str(arguments.lower),
-                    "--out-dir",
-                    str(neg_dir),
-                    str(spec_rs),
-                ],
+                lower_cmd,
                 capture_output=True,
                 text=True,
                 timeout=arguments.timeout,
