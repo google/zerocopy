@@ -230,9 +230,10 @@ theorem resTrie_getBits_modifyBits_ne {α : Type} (p1 p2 : List Bool)
       change (boolEq b1 b2 && listBoolBeq bs1 bs2) = false at hNe
       cases t with
       | empty =>
+        revert hNe
         cases hEqB : boolEq b1 b2 with
         | false =>
-          cases b1 with
+          intro hNe; cases b1 with
           | false =>
             cases b2 with
             | false => exact False.elim (boolTrueNeFalse hEqB)
@@ -242,7 +243,7 @@ theorem resTrie_getBits_modifyBits_ne {α : Type} (p1 p2 : List Bool)
             | false => exact resTrie_getBits_empty bs2
             | true => exact False.elim (boolTrueNeFalse hEqB)
         | true =>
-          rw [hEqB] at hNe
+          intro hNe
           have hB : b1 = b2 := by
             cases b1 with
             | false =>
@@ -260,9 +261,10 @@ theorem resTrie_getBits_modifyBits_ne {α : Type} (p1 p2 : List Bool)
           | true =>
             exact Eq.trans (ih bs2 hL hNe .empty) (resTrie_getBits_empty bs2)
       | node _ l r =>
+        revert hNe
         cases hEqB : boolEq b1 b2 with
         | false =>
-          cases b1 with
+          intro hNe; cases b1 with
           | false =>
             cases b2 with
             | false => exact False.elim (boolTrueNeFalse hEqB)
@@ -272,7 +274,7 @@ theorem resTrie_getBits_modifyBits_ne {α : Type} (p1 p2 : List Bool)
             | false => rfl
             | true => exact False.elim (boolTrueNeFalse hEqB)
         | true =>
-          rw [hEqB] at hNe
+          intro hNe
           have hB : b1 = b2 := by
             cases b1 with
             | false =>
@@ -330,6 +332,10 @@ abbrev Pos4 : Type := Bool × Bool × Bool × Bool
 theorem pos4_beq_refl (a : Pos4) : Pos4.beq a a = true :=
     listBoolBeq_refl (pos4ToList a)
 
+/-- Symmetry of `boolEq`. -/
+private theorem boolEq_symm (x y : Bool) : boolEq x y = boolEq y x := by
+  cases x <;> cases y <;> rfl
+
 /-- Symmetry of `Pos4.beq`. -/
 theorem pos4_beq_symm (a b : Pos4) : Pos4.beq a b = Pos4.beq b a := by
   cases a with
@@ -344,8 +350,13 @@ theorem pos4_beq_symm (a b : Pos4) : Pos4.beq a b = Pos4.beq b a := by
           | mk b1 br2 =>
             cases br2 with
             | mk b2 b3 =>
-              cases a0 <;> cases b0 <;> cases a1 <;> cases b1 <;>
-                cases a2 <;> cases b2 <;> cases a3 <;> cases b3 <;> rfl
+              change
+                (boolEq a0 b0 && (boolEq a1 b1 && (boolEq a2 b2 &&
+                  (boolEq a3 b3 && true)))) =
+                (boolEq b0 a0 && (boolEq b1 a1 && (boolEq b2 a2 &&
+                  (boolEq b3 a3 && true))))
+              rw [boolEq_symm a0 b0, boolEq_symm a1 b1, boolEq_symm a2 b2,
+                boolEq_symm a3 b3]
 
 /-- Soundness of `Pos4.beq`: `Pos4.beq a b = true` implies `a = b`. -/
 theorem pos4_eq_of_beq (a b : Pos4) (h : Pos4.beq a b = true) : a = b := by
@@ -531,17 +542,20 @@ theorem resMerge_assoc (r1 r2 r3 : ResElem) :
         dsimp only [optBind, resMerge]
         have hc := cellFragMerge_assoc c1 c2 c3
         dsimp only [optBind] at hc
+        revert hc
         cases h12 : cellFragMerge c1 c2 with
         | none =>
-          rw [h12] at hc
+          intro hc
+          revert hc
           cases h23 : cellFragMerge c2 c3 with
-          | none => rfl
-          | some _ => rw [h23] at hc; dsimp only at hc; dsimp only; rw [← hc]
+          | none => intro hc; rfl
+          | some _ => intro hc; dsimp only at hc; dsimp only; rw [← hc]
         | some _ =>
-          rw [h12] at hc; dsimp only at hc
+          intro hc; dsimp only at hc
+          revert hc
           cases h23 : cellFragMerge c2 c3 with
-          | none => rw [h23] at hc; dsimp only at hc; dsimp only; rw [hc]
-          | some _ => rw [h23] at hc; dsimp only at hc; dsimp only; rw [hc]
+          | none => intro hc; dsimp only at hc; dsimp only; rw [hc]
+          | some _ => intro hc; dsimp only at hc; dsimp only; rw [hc]
 
 /-- Lifts a partial binary merge `op` to `Option α`, treating `none` as the unit
 (`some y` / `some x`) and returning `none` on conflict. -/
@@ -592,17 +606,20 @@ private theorem optOp_assoc {α : Type} (op : α → α → Option α)
         dsimp only [optBind, optOp]
         have h := hAssoc a b c
         dsimp only [optBind] at h
+        revert h
         cases h1 : op a b with
         | none =>
-          rw [h1] at h; dsimp only; dsimp only at h
+          intro h; dsimp only; dsimp only at h
+          revert h
           cases h2 : op b c with
-          | none => rfl
-          | some _ => rw [h2] at h; dsimp only; dsimp only at h; rw [← h]
+          | none => intro h; rfl
+          | some _ => intro h; dsimp only; dsimp only at h; rw [← h]
         | some _ =>
-          rw [h1] at h; dsimp only; dsimp only at h
+          intro h; dsimp only; dsimp only at h
+          revert h
           cases h2 : op b c with
-          | none => rw [h2] at h; dsimp only; dsimp only at h; rw [h]
-          | some _ => rw [h2] at h; dsimp only; dsimp only at h; rw [h]
+          | none => intro h; dsimp only; dsimp only at h; rw [h]
+          | some _ => intro h; dsimp only; dsimp only at h; rw [h]
 
 /-- Fixed trie-merge recursion depth `7` (`6`-bit path length plus root node).
 -/
@@ -703,20 +720,23 @@ private theorem resTrie_getBits_resTrieMergeFuel (fuel : Nat) (p : List Bool)
           cases va <;> rfl
         | node vb lb rb =>
           rw [resTrieMergeFuel_succ] at hMerge
+          revert hMerge
           cases hV : optOp resMerge va vb with
-          | none => rw [hV] at hMerge; nomatch hMerge
+          | none => intro hMerge; nomatch hMerge
           | some vm =>
-            rw [hV] at hMerge
+            intro hMerge
             dsimp only at hMerge
+            revert hMerge
             cases hL : resTrieMergeFuel resMerge n la lb with
-            | none => rw [hL] at hMerge; nomatch hMerge
+            | none => intro hMerge; nomatch hMerge
             | some lm =>
-              rw [hL] at hMerge
+              intro hMerge
               dsimp only at hMerge
+              revert hMerge
               cases hR : resTrieMergeFuel resMerge n ra rb with
-              | none => rw [hR] at hMerge; nomatch hMerge
+              | none => intro hMerge; nomatch hMerge
               | some rm =>
-                rw [hR] at hMerge
+                intro hMerge
                 injection hMerge with hT
                 rw [← hT]
                 exact hV
@@ -741,20 +761,23 @@ private theorem resTrie_getBits_resTrieMergeFuel (fuel : Nat) (p : List Bool)
           cases ResTrie.getBits (b :: bs) (.node va la ra) <;> rfl
         | node vb lb rb =>
           rw [resTrieMergeFuel_succ] at hMerge
+          revert hMerge
           cases hV : optOp resMerge va vb with
-          | none => rw [hV] at hMerge; nomatch hMerge
+          | none => intro hMerge; nomatch hMerge
           | some vm =>
-            rw [hV] at hMerge
+            intro hMerge
             dsimp only at hMerge
+            revert hMerge
             cases hL : resTrieMergeFuel resMerge n la lb with
-            | none => rw [hL] at hMerge; nomatch hMerge
+            | none => intro hMerge; nomatch hMerge
             | some lm =>
-              rw [hL] at hMerge
+              intro hMerge
               dsimp only at hMerge
+              revert hMerge
               cases hR : resTrieMergeFuel resMerge n ra rb with
-              | none => rw [hR] at hMerge; nomatch hMerge
+              | none => intro hMerge; nomatch hMerge
               | some rm =>
-                rw [hR] at hMerge
+                intro hMerge
                 injection hMerge with hT
                 rw [← hT]
                 cases b with
@@ -900,56 +923,66 @@ private theorem resTrieMerge_assoc_fuel (fuel : Nat) (a b c ab abc : ResTrie
           cases ab with
           | empty =>
             rw [resTrieMergeFuel_succ] at hab
+            revert hab
             cases hv : optOp resMerge va vb with
-            | none => rw [hv] at hab; nomatch hab
+            | none => intro hab; nomatch hab
             | some _ =>
-              rw [hv] at hab; dsimp only at hab
+              intro hab; dsimp only at hab
+              revert hab
               cases hl : resTrieMergeFuel resMerge fuel' la lb with
-              | none => rw [hl] at hab; nomatch hab
+              | none => intro hab; nomatch hab
               | some _ =>
-                rw [hl] at hab; dsimp only at hab
+                intro hab; dsimp only at hab
+                revert hab
                 cases hr : resTrieMergeFuel resMerge fuel' ra rb with
-                | none => rw [hr] at hab; nomatch hab
-                | some _ => rw [hr] at hab; nomatch hab
+                | none => intro hab; nomatch hab
+                | some _ => intro hab; nomatch hab
           | node _ _ _ =>
             injection habc with he; rw [← he]; exact ⟨.node vb lb rb, rfl, hab⟩
         | node vc lc rc =>
           rw [resTrieMergeFuel_succ] at hab
+          revert hab
           cases hv12 : optOp resMerge va vb with
-          | none => rw [hv12] at hab; nomatch hab
+          | none => intro hab; nomatch hab
           | some v12 =>
-            rw [hv12] at hab; dsimp only at hab
+            intro hab; dsimp only at hab
+            revert hab
             cases hl12 : resTrieMergeFuel resMerge fuel' la lb with
-            | none => rw [hl12] at hab; nomatch hab
+            | none => intro hab; nomatch hab
             | some l12 =>
-              rw [hl12] at hab; dsimp only at hab
+              intro hab; dsimp only at hab
+              revert hab
               cases hr12 : resTrieMergeFuel resMerge fuel' ra rb with
-              | none => rw [hr12] at hab; nomatch hab
+              | none => intro hab; nomatch hab
               | some r12 =>
-                rw [hr12] at hab; dsimp only at hab
+                intro hab; dsimp only at hab
                 injection hab with hAbEq
                 rw [← hAbEq] at habc
                 rw [resTrieMergeFuel_succ] at habc
+                revert habc
                 cases hv123 : optOp resMerge v12 vc with
-                | none => rw [hv123] at habc; nomatch habc
+                | none => intro habc; nomatch habc
                 | some v123 =>
-                  rw [hv123] at habc; dsimp only at habc
+                  intro habc; dsimp only at habc
+                  revert habc
                   cases hl123 : resTrieMergeFuel resMerge fuel' l12 lc with
-                  | none => rw [hl123] at habc; nomatch habc
+                  | none => intro habc; nomatch habc
                   | some l123 =>
-                    rw [hl123] at habc; dsimp only at habc
+                    intro habc; dsimp only at habc
+                    revert habc
                     cases hr123 : resTrieMergeFuel resMerge fuel' r12 rc with
-                    | none => rw [hr123] at habc; nomatch habc
+                    | none => intro habc; nomatch habc
                     | some r123 =>
-                      rw [hr123] at habc; dsimp only at habc
+                      intro habc; dsimp only at habc
                       injection habc with hAbcEq
                       have hva := optOp_assoc resMerge resMerge_assoc va vb vc
                       dsimp only [optBind] at hva
                       rw [hv12] at hva; dsimp only at hva; rw [hv123] at hva
+                      revert hva
                       cases hv23 : optOp resMerge vb vc with
-                      | none => rw [hv23] at hva; nomatch hva
+                      | none => intro hva; nomatch hva
                       | some v23 =>
-                        rw [hv23] at hva; dsimp only at hva
+                        intro hva; dsimp only at hva
                         cases ih la lb lc l12 l123 hl12 hl123 with
                         | intro l23 hl23 =>
                           cases ih ra rb rc r12 r123 hr12 hr123 with

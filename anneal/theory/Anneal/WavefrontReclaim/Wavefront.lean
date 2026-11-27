@@ -253,23 +253,28 @@ private theorem natBleAntisymm (a b : Nat)
 private theorem natCmpLtToLt {a b : Nat} (h : natCmp a b = .lt) :
     natLt a b = true := by
   dsimp only [natCmp] at h
+  revert h
   cases hLt : natLt a b with
-  | true => rfl
+  | true => intro h; rfl
   | false =>
-    rw [hLt] at h
+    intro h
+    revert h
     cases hGt : natLt b a with
-    | true => rw [hGt] at h; cases h
-    | false => rw [hGt] at h; cases h
+    | true => intro h; cases h
+    | false => intro h; cases h
 
 private theorem natCmpEqEq {a b : Nat} (h : natCmp a b = .eq) : a = b := by
   dsimp only [natCmp] at h
+  revert h
   cases hLt : natLt a b with
-  | true => rw [hLt] at h; cases h
+  | true => intro h; cases h
   | false =>
-    rw [hLt] at h
+    intro h
+    revert h
     cases hGt : natLt b a with
-    | true => rw [hGt] at h; cases h
+    | true => intro h; cases h
     | false =>
+      intro h
       exact natBleAntisymm a b (natBleOfLtFalse b a hGt) (natBleOfLtFalse a b
         hLt)
 
@@ -304,10 +309,11 @@ private theorem cnfBle_of_lt (xs ys : CnfOrd) (h : cnfLt xs ys = true) :
     cnfBle xs ys = true := by
   dsimp only [cnfLt] at h
   dsimp only [cnfBle]
+  revert h
   cases hc : cnfCmp xs ys with
-  | lt => rfl
-  | eq => rfl
-  | gt => rw [hc] at h; exact False.elim (boolFalseNeTrue h)
+  | lt => intro h; rfl
+  | eq => intro h; rfl
+  | gt => intro h; exact False.elim (boolFalseNeTrue h)
 
 private theorem cnfLt_exists_coeff_drop (xs ys : CnfOrd)
     (hX : isCanonicalCnf xs = true) (hY : isCanonicalCnf ys = true)
@@ -348,10 +354,11 @@ private theorem cnfLt_exists_coeff_drop (xs ys : CnfOrd)
       have hbBel := bandRight (bandLeft hY)
       have hYtl := bandRight hY
       dsimp only [cnfLt, cnfCmp, List.foldr, termCmp] at hLt
+      revert hLt
       cases hCmp1 : natCmp a.1 b.1 with
-      | gt => rw [hCmp1] at hLt; exact False.elim (boolFalseNeTrue hLt)
+      | gt => intro hLt; exact False.elim (boolFalseNeTrue hLt)
       | lt =>
-        have hab := natCmpLtToLt hCmp1
+        intro hLt; have hab := natCmpLtToLt hCmp1
         have hLeAb : Nat.ble a.1 b.1 = true :=
           natBle_trans a.1 (a.1 + 1) b.1 (natBle_succ_right _ _ (natBle_refl
             _)) hab
@@ -372,13 +379,14 @@ private theorem cnfLt_exists_coeff_drop (xs ys : CnfOrd)
             cnfCoeffAt_zero_of_allBelow q (b :: ytl) (bandIntro hGt
               (cnfAllBelow_mono b.1 q ytl hLeBq hbBel))]
       | eq =>
-        rw [hCmp1] at hLt
+        intro hLt
         dsimp only at hLt
         have hab1 := natCmpEqEq hCmp1
+        revert hLt
         cases hCmp2 : natCmp a.2 b.2 with
-        | gt => rw [hCmp2] at hLt; exact False.elim (boolFalseNeTrue hLt)
+        | gt => intro hLt; exact False.elim (boolFalseNeTrue hLt)
         | lt =>
-          refine ⟨a.1, ?_, ?_⟩
+          intro hLt; refine ⟨a.1, ?_, ?_⟩
           · rw [cnfCoeffAt_cons_head a xtl haBel, hab1,
               cnfCoeffAt_cons_head b ytl hbBel]
             exact natCmpLtToLt hCmp2
@@ -393,7 +401,7 @@ private theorem cnfLt_exists_coeff_drop (xs ys : CnfOrd)
               cnfCoeffAt_zero_of_allBelow q (b :: ytl) (bandIntro hBq
                 (cnfAllBelow_mono b.1 q ytl hLeBq hbBel))]
         | eq =>
-          rw [hCmp2] at hLt
+          intro hLt
           dsimp only at hLt
           have hab2 := natCmpEqEq hCmp2
           cases ih hXtl ytl hYtl (by dsimp only [cnfLt]; exact hLt) with
@@ -453,13 +461,14 @@ private theorem cnfBle_cnfNatAdd_left (a b c : CnfOrd)
     (hLe : cnfBle a b = true) :
     cnfBle (cnfNatAdd a c) (cnfNatAdd b c) = true := by
   dsimp only [cnfBle] at hLe
+  revert hLe
   cases hc : cnfCmp a b with
-  | gt => rw [hc] at hLe; exact False.elim (boolFalseNeTrue hLe)
+  | gt => intro hLe; exact False.elim (boolFalseNeTrue hLe)
   | eq =>
-    rw [cnfCmp_eq_imp_eq a b hc]
+    intro hLe; rw [cnfCmp_eq_imp_eq a b hc]
     exact cnfBle_refl (cnfNatAdd b c)
   | lt =>
-    exact cnfBle_of_lt _ _
+    intro hLe; exact cnfBle_of_lt _ _
       (cnfLt_cnfNatAdd_left a b c hA hB (by dsimp only [cnfLt]; rw [hc]))
 
 private theorem cnfBle_cnfNatAdd_right (u a b : CnfOrd)
@@ -583,15 +592,16 @@ private theorem wfFindLoan_wfSetLoanEntryAt_same (loans : List WfLoanEntry)
   | cons hd tl ih =>
     dsimp only [wfFindLoan, List.foldr] at hFind
     dsimp only [wfSetLoanEntryAt, List.map, wfFindLoan, List.foldr]
+    revert hFind
     cases hEq : Pos4.beq hd.id lid with
     | true =>
-      rw [hEq] at hFind
+      intro hFind
       injection hFind with hSame
       rw [← hSame]
       dsimp only
       rw [hEq]
     | false =>
-      rw [hEq] at hFind
+      intro hFind
       dsimp only
       rw [hEq]
       exact ih hFind
@@ -626,10 +636,11 @@ private theorem wfFindLoan_wfSetLoanEntryAt_preserves_none (loans : List
   | cons hd tl ih =>
     dsimp only [wfFindLoan, List.foldr] at hNone
     dsimp only [wfSetLoanEntryAt, List.map, wfFindLoan, List.foldr]
+    revert hNone
     cases hEqQ : Pos4.beq hd.id q with
-    | true => rw [hEqQ] at hNone; nomatch hNone
+    | true => intro hNone; nomatch hNone
     | false =>
-      rw [hEqQ] at hNone
+      intro hNone
       cases Pos4.beq hd.id lid with
       | true => dsimp only; rw [hEqQ]; exact ih hNone
       | false => dsimp only; rw [hEqQ]; exact ih hNone
@@ -643,10 +654,11 @@ private theorem wfSetLoanEntryAt_of_wfFindLoan_none (loans : List WfLoanEntry)
   | cons hd tl ih =>
     dsimp only [wfFindLoan, List.foldr] at hNone
     dsimp only [wfSetLoanEntryAt, List.map]
+    revert hNone
     cases hEq : Pos4.beq hd.id lid with
-    | true => rw [hEq] at hNone; nomatch hNone
+    | true => intro hNone; nomatch hNone
     | false =>
-      rw [hEq] at hNone
+      intro hNone
       exact congrArg (List.cons hd) (ih hNone)
 
 /-- Asserts that `L` is byte-disjoint from every loan lens in `tl`. -/
@@ -678,14 +690,15 @@ private theorem allDisjointFromLens_wfFindLoan (L : ByteSubLens) (tl : List
   | cons hd rest ih =>
     dsimp only [allDisjointFromLens, List.foldr] at hDisj
     dsimp only [wfFindLoan, List.foldr] at hFind
+    revert hFind
     cases hEq : Pos4.beq hd.id lid with
     | true =>
-      rw [hEq] at hFind
+      intro hFind
       injection hFind with hSame
       rw [← hSame]
       exact hDisj.1
     | false =>
-      rw [hEq] at hFind
+      intro hFind
       exact ih hDisj.2 hFind
 
 /-- Couples `loans` to `MemoryState`: unique `Pos4` IDs, pairwise-disjoint
@@ -733,9 +746,10 @@ private theorem wfFindLoan_synced_live_props (loans : List WfLoanEntry) (m :
   | cons hd tl ih =>
     rw [loansSyncedWithMem_cons] at hSync
     dsimp only [wfFindLoan, List.foldr] at hFind
+    revert hFind
     cases hEq : Pos4.beq hd.id lid with
     | true =>
-      rw [hEq] at hFind
+      intro hFind
       injection hFind with hSame
       rw [← hSame]
       have hMem := hSync.2.2.2.2.1
@@ -743,7 +757,7 @@ private theorem wfFindLoan_synced_live_props (loans : List WfLoanEntry) (m :
       rw [hLive] at hMem
       exact ⟨pos4_eq_of_beq hd.id lid hEq, hSync.2.2.1, hSync.2.2.2.1, hMem⟩
     | false =>
-      rw [hEq] at hFind
+      intro hFind
       exact ih hSync.2.2.2.2.2 hFind
 
 private theorem loansSyncedWithMem_put_disjoint (L : ByteSubLens) (loans : List
@@ -783,9 +797,10 @@ private theorem loansSyncedWithMem_setPhase_sameVal (loans : List WfLoanEntry)
     rw [loansSyncedWithMem_cons] at hSync
     dsimp only [wfFindLoan, List.foldr] at hFind
     dsimp only [wfSetLoanEntryAt, List.map]
+    revert hFind
     cases hEq : Pos4.beq hd.id lid with
     | true =>
-      rw [hEq] at hFind
+      intro hFind
       injection hFind with hSame
       have hIdEq := pos4_eq_of_beq hd.id lid hEq
       have hNoneLid : wfFindLoan lid tl = none := by rw [← hIdEq]; exact hSync.1
@@ -801,7 +816,7 @@ private theorem loansSyncedWithMem_setPhase_sameVal (loans : List WfLoanEntry)
       · rw [← hSame]; exact hSync.2.2.2.1
       · dsimp only; rw [hNewLive, ← hSame]; exact hMem
     | false =>
-      rw [hEq] at hFind
+      intro hFind
       change LoansSyncedWithMem (hd :: wfSetLoanEntryAt tl lid newPh e.val) m
       rw [loansSyncedWithMem_cons]
       exact ⟨wfFindLoan_wfSetLoanEntryAt_preserves_none tl hd.id lid newPh
@@ -825,9 +840,10 @@ private theorem loansSyncedWithMem_set_and_put (loans : List WfLoanEntry) (m
     rw [loansSyncedWithMem_cons] at hSync
     dsimp only [wfFindLoan, List.foldr] at hFind
     dsimp only [wfSetLoanEntryAt, List.map]
+    revert hFind
     cases hEq : Pos4.beq hd.id lid with
     | true =>
-      rw [hEq] at hFind
+      intro hFind
       injection hFind with hSame
       have hIdEq := pos4_eq_of_beq hd.id lid hEq
       have hNoneLid : wfFindLoan lid tl = none := by rw [← hIdEq]; exact hSync.1
@@ -844,7 +860,7 @@ private theorem loansSyncedWithMem_set_and_put (loans : List WfLoanEntry) (m
       rw [hNewLive]
       exact byteSubLens_put_get hd.lens m mOut (wfEncodeU32BeSlice newVal) hPut
     | false =>
-      rw [hEq] at hFind
+      intro hFind
       change LoansSyncedWithMem (hd :: wfSetLoanEntryAt tl lid newPh newVal)
         mOut
       rw [loansSyncedWithMem_cons]
@@ -1619,10 +1635,11 @@ private theorem pureLiftSafe_step_core
         WorldMatches.mk hM.viewOk hSyncOut hQOut hPoolOkOut hM.cellOk (fun
           lid2 => by
           have hCk := hM.checkedLoanOk lid2
+          revert hCk
           cases hG : ResTrie.getBits (checkedLoanPath lid2) rIn with
-          | none => exact True.intro
+          | none => intro hCk; exact True.intro
           | some elem =>
-            rw [hG] at hCk
+            intro hCk
             cases elem with
             | pool _ | debt _ | cell _ => exact hCk
             | checkedOutLoan sid lv =>
@@ -1739,14 +1756,15 @@ theorem vsepWpOrdRel_updateSpatialCell (cid : Pos4) (oldVal newVal : Nat) :
                         have hCellInOk := hM.cellOk cid
                         have hCellRIn : ResTrie.getBits (cellPath cid) rIn =
                           some (.cell (.capAndAuth oldVal)) := by
+                          revert hGIn
                           cases hGr : ResTrie.getBits (cellPath cid) rRest with
                           | none =>
-                            rw [hGr] at hGIn
+                            intro hGIn
                             dsimp only [optOp] at hGIn
                             injection hGIn with hEqG
                             exact Eq.symm hEqG
                           | some er =>
-                            rw [hGr] at hGIn
+                            intro hGIn
                             cases er with
                             | pool _ | debt _ | checkedOutLoan _ _ =>
                               dsimp only [optOp, resMerge] at hGIn; nomatch hGIn
@@ -1825,11 +1843,12 @@ theorem vsepWpOrdRel_updateSpatialCell (cid : Pos4) (oldVal newVal : Nat) :
                                     rw [resTrie_getBits_modifyBits_ne (cellPath
                                       cid) (cellPath cid2) rfl hNeCellPath]
                                     have hPrev := hM.cellOk cid2
+                                    revert hPrev
                                     cases hGc2 : ResTrie.getBits (cellPath
                                       cid2) rIn with
-                                    | none => exact True.intro
+                                    | none => intro hPrev; exact True.intro
                                     | some elem2 =>
-                                      rw [hGc2] at hPrev
+                                      intro hPrev
                                       cases elem2 with
                                       | pool _ | debt _ | checkedOutLoan _ _ =>
                                         exact hPrev
@@ -1903,10 +1922,11 @@ theorem vsepWpOrdRel_checkoutLoan (lid : Pos4) (subL : ByteSubLens) (vIn
       have hVal := he.2.2.2
       have hRNone : ResTrie.getBits (checkedLoanPath lid) rIn = none := by
         have hCk := hM.checkedLoanOk lid
+        revert hCk
         cases hGr : ResTrie.getBits (checkedLoanPath lid) rIn with
-        | none => rfl
+        | none => intro hCk; rfl
         | some elem =>
-          rw [hGr] at hCk
+          intro hCk
           cases elem with
           | pool _ | debt _ | cell _ => exact False.elim hCk
           | checkedOutLoan sid _ =>
@@ -1992,10 +2012,11 @@ theorem vsepWpOrdRel_checkoutLoan (lid : Pos4) (subL : ByteSubLens) (vIn
               rw [resTrie_getBits_modifyBits_ne (checkedLoanPath lid)
                 (checkedLoanPath lid2) rfl hNePath]
               have hPrev := hM.checkedLoanOk lid2
+              revert hPrev
               cases hGl2 : ResTrie.getBits (checkedLoanPath lid2) rIn with
-              | none => exact True.intro
+              | none => intro hPrev; exact True.intro
               | some elem2 =>
-                rw [hGl2] at hPrev
+                intro hPrev
                 cases elem2 with
                 | pool _ | debt _ | cell _ => exact hPrev
                 | checkedOutLoan sid2 lv2 =>
@@ -2048,14 +2069,16 @@ theorem vsepWpOrdRel_submitTaskBurst_amortized_growth
         true := by
     intro wIn wOut hEv
     dsimp only [evalHybridCmd, execSubmitTaskBurst] at hEv
+    revert hEv
     cases hFl : wfFindLoan lid wIn.loans with
-    | none => rw [hFl] at hEv; nomatch hEv
+    | none => intro hEv; nomatch hEv
     | some e =>
-      rw [hFl] at hEv; dsimp only at hEv
+      intro hEv; dsimp only at hEv
+      revert hEv
       cases hSc : loanPhaseMatchesScope e.phase scopeId with
-      | false => rw [hSc] at hEv; nomatch hEv
+      | false => intro hEv; nomatch hEv
       | true =>
-        rw [hSc] at hEv
+        intro hEv
         injection hEv with hwOut
         have hMeasOut : worldMeasure wOut =
           cnfAddOrd (burstTaskDelta rank remYields) (worldMeasure wIn) := by
@@ -2131,11 +2154,12 @@ theorem vsepWpOrdRel_submitTaskBurst_amortized_growth
                             injection hGLIn with hMidEqIn
                             have hROutLoanNone : ResTrie.getBits
                               (checkedLoanPath lid) rOut = none := by
+                              revert hGLMid
                               cases hGo : ResTrie.getBits (checkedLoanPath lid)
                                 rOut with
-                              | none => rfl
+                              | none => intro hGLMid; rfl
                               | some eo =>
-                                rw [hGo] at hGLMid
+                                intro hGLMid
                                 dsimp only [optOp, resMerge] at hGLMid
                                 nomatch hGLMid
                             rw [hROutLoanNone] at hGLMid
@@ -2232,12 +2256,13 @@ theorem vsepWpOrdRel_submitTaskBurst_amortized_growth
                                 rOut wOut = true := by
                                 dsimp only [checkWorldMatchesPoolBool]
                                 rw [hPcEq]
+                                revert hPoolDebtIn
                                 cases hPc : extractPoolCap rIn with
                                 | none =>
-                                  rw [hPc] at hPoolDebtIn
+                                  intro hPoolDebtIn
                                   exact False.elim (boolFalseNeTrue hPoolDebtIn)
                                 | some poolCap =>
-                                  rw [hPc] at hPoolDebtIn
+                                  intro hPoolDebtIn
                                   dsimp only at hPoolDebtIn
                                   dsimp only
                                   have hLeGrow : cnfBle (worldMeasure wOut)
@@ -2245,10 +2270,11 @@ theorem vsepWpOrdRel_submitTaskBurst_amortized_growth
                                     true :=
                                     cnfBle_of_lt _ _ hGrow.2
                                   dsimp only [extractDebtCap]
+                                  revert hDebtRel
                                   cases hGdOut : ResTrie.getBits debtPath
                                     rOut with
                                   | none =>
-                                    rw [hGdOut] at hDebtRel
+                                    intro hDebtRel
                                     dsimp only [optOp] at hDebtRel
                                     injection hDebtRel with hGdInEq
                                     dsimp only [extractDebtCap] at hPoolDebtIn
@@ -2268,7 +2294,7 @@ theorem vsepWpOrdRel_submitTaskBurst_amortized_growth
                                     rw [hNilAddOut]
                                     exact bandIntro hOutLePool hOutLePool
                                   | some eOut =>
-                                    rw [hGdOut] at hDebtRel
+                                    intro hDebtRel
                                     cases eOut with
                                     | pool _ | checkedOutLoan _ _ | cell _ =>
                                       dsimp only [optOp, resMerge] at hDebtRel
@@ -2360,11 +2386,12 @@ theorem vsepWpOrdRel_submitTaskBurst_amortized_growth
                                       rw [hPresOther (checkedLoanPath lid2) rfl
                                         rfl hNeL]
                                       have hPrev := hM.checkedLoanOk lid2
+                                      revert hPrev
                                       cases hGl2 : ResTrie.getBits
                                         (checkedLoanPath lid2) rIn with
-                                      | none => exact True.intro
+                                      | none => intro hPrev; exact True.intro
                                       | some elem2 =>
-                                        rw [hGl2] at hPrev
+                                        intro hPrev
                                         cases elem2 with
                                         | pool _ | debt _ | cell _ =>
                                           exact hPrev
@@ -2484,45 +2511,51 @@ private theorem execWavefrontPopped_queues (pol : SpawnPolicy) (hd : WorkerTask)
   change (match spawnAdmissible hd.rank (pol hd.rank).1 (pol hd.rank).2.1 with
     | false => HybridOut.faultInvalidSpawn
     | true => _) = _ at hStep
+  revert hStep
   cases hAdm : spawnAdmissible hd.rank (pol hd.rank).1 (pol hd.rank).2.1 with
-  | false => rw [hAdm] at hStep; nomatch hStep
+  | false => intro hStep; nomatch hStep
   | true =>
-    rw [hAdm] at hStep
+    intro hStep
     dsimp only at hStep
     refine ⟨rfl, ?_⟩
+    revert hStep
     cases hy : hd.remYields with
     | succ y' =>
-      rw [hy] at hStep
+      intro hStep
       injection hStep with hw
       rw [← hw]
       exact Or.inl ⟨y', rfl, rfl, rfl⟩
     | zero =>
-      rw [hy] at hStep
+      intro hStep
       dsimp only at hStep
+      revert hStep
       cases hk : (pol hd.rank).1 with
       | succ k' =>
-        rw [hk] at hStep
+        intro hStep
         injection hStep with hw
         rw [← hw]
         exact Or.inr ⟨rfl, rfl, rfl⟩
       | zero =>
-        rw [hk] at hStep
+        intro hStep
         dsimp only at hStep
+        revert hStep
         cases hFl : wfFindLoan hd.loanId w.loans with
-        | none => rw [hFl] at hStep; nomatch hStep
+        | none => intro hStep; nomatch hStep
         | some e =>
-          rw [hFl] at hStep
+          intro hStep
           dsimp only at hStep
+          revert hStep
           cases hSc : loanPhaseMatchesScope e.phase hd.scopeId with
-          | false => rw [hSc] at hStep; nomatch hStep
+          | false => intro hStep; nomatch hStep
           | true =>
-            rw [hSc] at hStep
+            intro hStep
             dsimp only at hStep
+            revert hStep
             cases hPut : byteSubLensPut e.lens w.mem (wfEncodeU32BeSlice
               (wrapU32 (e.val + hd.writeDelta))) with
-            | none => rw [hPut] at hStep; nomatch hStep
+            | none => intro hStep; nomatch hStep
             | some memOut =>
-              rw [hPut] at hStep
+              intro hStep
               injection hStep with hw
               rw [← hw]
               exact Or.inr ⟨rfl, rfl, rfl⟩
@@ -2629,9 +2662,10 @@ theorem wavefrontStep_strict_cnf_descent (pol : SpawnPolicy) (w wOut :
     (hEval : evalHybridCmd (.poolWavefrontStep pol) w = .returned wOut) :
     cnfLt (worldMeasure wOut) (worldMeasure w) = true := by
   dsimp only [evalHybridCmd] at hEval
+  revert hEval
   cases hF : w.fifoQueue with
   | cons hd ft =>
-    rw [hF] at hEval
+    intro hEval
     apply execWavefrontPopped_strict_cnf_descent pol hd ft w.stealDeque w wOut
       _ hEval
     intro q
@@ -2639,11 +2673,12 @@ theorem wavefrontStep_strict_cnf_descent (pol : SpawnPolicy) (w wOut :
     dsimp only [wfTasksWeightAt, List.foldr]
     rw [natAdd_assoc]
   | nil =>
-    rw [hF] at hEval
+    intro hEval
+    revert hEval
     cases hS : w.stealDeque with
-    | nil => rw [hS] at hEval; nomatch hEval
+    | nil => intro hEval; nomatch hEval
     | cons hd stTail =>
-      rw [hS] at hEval
+      intro hEval
       apply execWavefrontPopped_strict_cnf_descent pol hd [] stTail w wOut _
         hEval
       intro q
@@ -2746,23 +2781,25 @@ theorem execWavefrontPopped_returns_and_preserves (pol : SpawnPolicy)
       rfl
     | zero =>
       dsimp only
+      revert hHdLoan
       cases hFl : wfFindLoan hd.loanId w.loans with
-      | none => rw [hFl] at hHdLoan; exact False.elim (boolFalseNeTrue hHdLoan)
+      | none => intro hHdLoan; exact False.elim (boolFalseNeTrue hHdLoan)
       | some e =>
-        rw [hFl] at hHdLoan
+        intro hHdLoan
         dsimp only at hHdLoan
         dsimp only
         rw [hHdLoan]
         dsimp only
         have hPhEq : e.phase = .spatialCheckedOut hd.scopeId := by
+          revert hHdLoan
           cases hp : e.phase with
           | spatialCheckedOut s =>
-            rw [hp] at hHdLoan
+            intro hHdLoan
             dsimp only [loanPhaseMatchesScope] at hHdLoan
             exact congrArg WfLoanPhase.spatialCheckedOut (natEq_of_beq s
               hd.scopeId hHdLoan)
           | activeMut | frozen | ended =>
-            rw [hp] at hHdLoan; exact False.elim (boolFalseNeTrue hHdLoan)
+            intro hHdLoan; exact False.elim (boolFalseNeTrue hHdLoan)
         have hLiveE : loanPhaseIsLive e.phase = true := by rw [hPhEq]; rfl
         have hProps := wfFindLoan_synced_live_props w.loans w.mem hd.loanId e
           hSync hFl hLiveE
@@ -2918,14 +2955,16 @@ theorem vsepWpOrdRel_wavefrontStep_strict_descent
         have hInOk := hM.poolDebtOk
         dsimp only [checkWorldMatchesPoolBool] at hInOk
         dsimp only [checkWorldMatchesPoolBool]
+        revert hInOk
         cases hPc : extractPoolCap rIn with
-        | none => rw [hPc] at hInOk; exact False.elim (boolFalseNeTrue hInOk)
+        | none => intro hInOk; exact False.elim (boolFalseNeTrue hInOk)
         | some poolCap =>
-          rw [hPc] at hInOk; dsimp only at hInOk; dsimp only
+          intro hInOk; dsimp only at hInOk; dsimp only
+          revert hInOk
           cases hDc : extractDebtCap rIn with
-          | none => rw [hDc] at hInOk; exact False.elim (boolFalseNeTrue hInOk)
+          | none => intro hInOk; exact False.elim (boolFalseNeTrue hInOk)
           | some debtCap =>
-            rw [hDc] at hInOk; dsimp only at hInOk; dsimp only
+            intro hInOk; dsimp only at hInOk; dsimp only
             have h1 : cnfBle (worldMeasure wOut) poolCap = true :=
               cnfBle_trans _ _ _ hLe (bandLeft hInOk)
             have hMonoD : cnfBle (cnfAddOrd debtCap (worldMeasure wOut))
@@ -2946,10 +2985,11 @@ theorem vsepWpOrdRel_wavefrontStep_strict_descent
           (fun cid => by rw [hw.2.2.2.1]; exact hM.cellOk cid)
           (fun lid2 => by
             have hPrev := hM.checkedLoanOk lid2
+            revert hPrev
             cases hGl2 : ResTrie.getBits (checkedLoanPath lid2) rIn with
-            | none => exact True.intro
+            | none => intro hPrev; exact True.intro
             | some elem2 =>
-              rw [hGl2] at hPrev
+              intro hPrev
               cases elem2 with
               | pool _ | debt _ | cell _ => exact hPrev
               | checkedOutLoan sid2 lv2 =>
@@ -3002,14 +3042,16 @@ theorem wavefrontConverges_extract_fuel (pol : SpawnPolicy) (w wFinal :
   induction hConv with
   | quiescent w0 hEmp =>
     dsimp only [wfPoolIsNonEmpty] at hEmp
+    revert hEmp
     cases hF : w0.fifoQueue with
-    | cons _ _ => rw [hF] at hEmp; exact False.elim (boolTrueNeFalse hEmp)
+    | cons _ _ => intro hEmp; exact False.elim (boolTrueNeFalse hEmp)
     | nil =>
-      rw [hF] at hEmp
+      intro hEmp
+      revert hEmp
       cases hS : w0.stealDeque with
-      | cons _ _ => rw [hS] at hEmp; exact False.elim (boolTrueNeFalse hEmp)
+      | cons _ _ => intro hEmp; exact False.elim (boolTrueNeFalse hEmp)
       | nil =>
-        refine ⟨rfl, rfl, ?_, ⟨1, ?_⟩⟩
+        intro hEmp; refine ⟨rfl, rfl, ?_, ⟨1, ?_⟩⟩
         · dsimp only [worldMeasure]; rw [hF, hS]; rfl
         · change
             (match wfPoolIsNonEmpty w0 with
@@ -3172,11 +3214,12 @@ private theorem rankLeafMultAt_fuel_irrel (pol : SpawnPolicy) (hPol :
       dsimp only
       have hAdm := hPol r
       dsimp only [spawnAdmissible] at hAdm
+      revert hAdm
       cases hk : (pol r).1 with
       | zero =>
-        rw [natZeroMul, natZeroMul]
+        intro hAdm; rw [natZeroMul, natZeroMul]
       | succ k' =>
-        rw [hk] at hAdm
+        intro hAdm
         have hLe1 : Nat.ble r n1 = true := h1
         have hLe2 : Nat.ble r n2 = true := h2
         have hCh1 : natLt (pol r).2.1 n1 = true :=
@@ -3202,11 +3245,12 @@ private theorem taskLeafMult_unfold (pol : SpawnPolicy) (hPol :
   dsimp only
   have hAdm := hPol r
   dsimp only [spawnAdmissible] at hAdm
+  revert hAdm
   cases hk : (pol r).1 with
   | zero =>
-    rw [natZeroMul, natZeroMul]
+    intro hAdm; rw [natZeroMul, natZeroMul]
   | succ k' =>
-    rw [hk] at hAdm
+    intro hAdm
     have hEq := rankLeafMultAt_fuel_irrel pol hPol r ((pol r).2.1 +
       1) (pol r).2.1 (pol r).2.2
       hAdm (natLtSuccSelf _)
@@ -3349,9 +3393,10 @@ private theorem execWavefrontPopped_preserves_loanTrackInv (pol : SpawnPolicy)
           (anyTaskHasLoan lid remFifo || anyTaskHasLoan lid remSteal) := by
         rw [hAnyDecomp, hEqHd]; rfl
       rw [hAnyRem] at hTailInv
+      revert hStep
       cases hy : hd.remYields with
       | succ y' =>
-        rw [hy] at hStep
+        intro hStep
         injection hStep with hw
         rw [← hw]
         refine ⟨e, hFindL, hId0, hLens0, ?_, ?_⟩
@@ -3384,11 +3429,12 @@ private theorem execWavefrontPopped_preserves_loanTrackInv (pol : SpawnPolicy)
           rw [hOrF, hOrS]
           exact hTailInv
       | zero =>
-        rw [hy] at hStep
+        intro hStep
         dsimp only at hStep
+        revert hStep
         cases hk : (pol hd.rank).1 with
         | succ k' =>
-          rw [hk] at hStep
+          intro hStep
           injection hStep with hw
           rw [← hw]
           refine ⟨e, hFindL, hId0, hLens0, ?_, ?_⟩
@@ -3403,21 +3449,24 @@ private theorem execWavefrontPopped_preserves_loanTrackInv (pol : SpawnPolicy)
               mkWorkers_not_hasLoan hd.loanId lid _ _ _ _ _ _ hEqHd]
             exact hTailInv
         | zero =>
-          rw [hk] at hStep
+          intro hStep
           dsimp only at hStep
+          revert hStep
           cases hFlHd : wfFindLoan hd.loanId w.loans with
-          | none => rw [hFlHd] at hStep; nomatch hStep
+          | none => intro hStep; nomatch hStep
           | some eHd =>
-            rw [hFlHd] at hStep; dsimp only at hStep
+            intro hStep; dsimp only at hStep
+            revert hStep
             cases hScHd : loanPhaseMatchesScope eHd.phase hd.scopeId with
-            | false => rw [hScHd] at hStep; nomatch hStep
+            | false => intro hStep; nomatch hStep
             | true =>
-              rw [hScHd] at hStep; dsimp only at hStep
+              intro hStep; dsimp only at hStep
+              revert hStep
               cases hPut : byteSubLensPut eHd.lens w.mem (wfEncodeU32BeSlice
                 (wrapU32 (eHd.val + hd.writeDelta))) with
-              | none => rw [hPut] at hStep; nomatch hStep
+              | none => intro hStep; nomatch hStep
               | some memOut =>
-                rw [hPut] at hStep
+                intro hStep
                 injection hStep with hw
                 rw [← hw]
                 refine ⟨e, ?_, hId0, hLens0, ?_, hTailInv⟩
@@ -3430,9 +3479,10 @@ private theorem execWavefrontPopped_preserves_loanTrackInv (pol : SpawnPolicy)
                   exact hWrapTarget
     | true =>
       have hSameId := pos4_eq_of_beq hd.loanId lid hEqHd
+      revert hStep
       cases hy : hd.remYields with
       | succ y' =>
-        rw [hy] at hStep
+        intro hStep
         injection hStep with hw
         rw [← hw]
         refine ⟨e, hFindL, hId0, hLens0, ?_, ?_⟩
@@ -3485,11 +3535,12 @@ private theorem execWavefrontPopped_preserves_loanTrackInv (pol : SpawnPolicy)
           rw [hT1]
           exact True.intro
       | zero =>
-        rw [hy] at hStep
+        intro hStep
         dsimp only at hStep
+        revert hStep
         cases hk : (pol hd.rank).1 with
         | succ k' =>
-          rw [hk] at hStep
+          intro hStep
           injection hStep with hw
           rw [← hw]
           refine ⟨e, hFindL, hId0, hLens0, ?_, ?_⟩
@@ -3518,29 +3569,32 @@ private theorem execWavefrontPopped_preserves_loanTrackInv (pol : SpawnPolicy)
             dsimp only [Bool.or]
             cases anyTaskHasLoan lid remFifo <;> exact True.intro
         | zero =>
-          rw [hk] at hStep
+          intro hStep
           dsimp only at hStep
           rw [hSameId, hFindL] at hStep
           dsimp only at hStep
+          revert hStep
           cases hSc : loanPhaseMatchesScope e.phase hd.scopeId with
-          | false => rw [hSc] at hStep; nomatch hStep
+          | false => intro hStep; nomatch hStep
           | true =>
-            rw [hSc] at hStep
+            intro hStep
             dsimp only at hStep
             have hPhEq : e.phase = .spatialCheckedOut hd.scopeId := by
+              revert hSc
               cases hp : e.phase with
               | spatialCheckedOut s =>
-                rw [hp] at hSc
+                intro hSc
                 dsimp only [loanPhaseMatchesScope] at hSc
                 exact congrArg WfLoanPhase.spatialCheckedOut (natEq_of_beq s
                   hd.scopeId hSc)
               | activeMut | frozen | ended =>
-                rw [hp] at hSc; exact False.elim (boolFalseNeTrue hSc)
+                intro hSc; exact False.elim (boolFalseNeTrue hSc)
+            revert hStep
             cases hPut : byteSubLensPut e.lens w.mem (wfEncodeU32BeSlice
               (wrapU32 (e.val + hd.writeDelta))) with
-            | none => rw [hPut] at hStep; nomatch hStep
+            | none => intro hStep; nomatch hStep
             | some memOut =>
-              rw [hPut] at hStep
+              intro hStep
               injection hStep with hw
               rw [← hw]
               have hScF := anyTaskHasLoanScope_eq_anyTaskHasLoan_of_queueMatches
@@ -3634,24 +3688,27 @@ private theorem wfFindLoan_some_of_hasLoan_queueMatches (lid : Pos4) (qs : List
   | cons t tl ih =>
     dsimp only [anyTaskHasLoan, List.foldr] at hAny
     dsimp only [queueMatchesLoansBool, List.foldr] at hQ
+    revert hAny
     cases hEq : Pos4.beq t.loanId lid with
     | false =>
-      rw [hEq] at hAny
+      intro hAny
       exact ih hAny (bandRight hQ)
     | true =>
-      have hSame := pos4_eq_of_beq t.loanId lid hEq
+      intro hAny; have hSame := pos4_eq_of_beq t.loanId lid hEq
       have hHd := bandLeft hQ
       rw [hSame] at hHd
+      revert hHd
       cases hFl : wfFindLoan lid loans with
-      | none => rw [hFl] at hHd; exact False.elim (boolFalseNeTrue hHd)
+      | none => intro hHd; exact False.elim (boolFalseNeTrue hHd)
       | some e0 =>
-        rw [hFl] at hHd
+        intro hHd
         dsimp only at hHd
         refine ⟨e0, rfl, ?_⟩
+        revert hHd
         cases hp : e0.phase with
-        | spatialCheckedOut _ => rfl
+        | spatialCheckedOut _ => intro hHd; rfl
         | activeMut | frozen | ended =>
-          rw [hp] at hHd; exact False.elim (boolFalseNeTrue hHd)
+          intro hHd; exact False.elim (boolFalseNeTrue hHd)
 
 /-- Across any `WavefrontConverges pol w0 wFinal` from a world satisfying
 `LoansSyncedWithMem` and `QueueMatchesLoans`, every loan `lid` with at least one
@@ -3678,12 +3735,14 @@ theorem universal_post_drain_activeMut_reclaim
           worldLoanDeltaSum pol lid w0))) := by
   have hExE0 : ∃ e0 : WfLoanEntry, wfFindLoan lid w0.loans = some e0 ∧
     loanPhaseIsLive e0.phase = true := by
+    revert hQueued
     cases hAF : anyTaskHasLoan lid w0.fifoQueue with
     | true =>
+      intro hQueued
       exact wfFindLoan_some_of_hasLoan_queueMatches lid w0.fifoQueue w0.loans
         hAF (bandLeft hQ0)
     | false =>
-      rw [hAF] at hQueued
+      intro hQueued
       exact wfFindLoan_some_of_hasLoan_queueMatches lid w0.stealDeque w0.loans
         hQueued (bandRight hQ0)
   cases hExE0 with
