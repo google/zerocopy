@@ -2229,8 +2229,8 @@ theorem evalBinOp_sint_div_rem {op : BinOp} {w : IntWidth} {b1 b2 : BitVec 128}
             Int.ofNat (halfModPow2 (bitWidthComp w))) with
       | false => rfl
       | true =>
-        exact False.elim (hNotMin ⟨int_sub_eq_sub_iff.mp (eq_of_beq hA),
-          int_sub_eq_sub_iff.mp (eq_of_beq hB)⟩)
+        exact False.elim (hNotMin ⟨int_sub_eq_sub_iff.mp (of_decide_eq_true hA),
+          int_sub_eq_sub_iff.mp (of_decide_eq_true hB)⟩)
   cases hOp with
   | inl hDiv =>
     subst hDiv
