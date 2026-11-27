@@ -151,6 +151,27 @@ pub struct SandboxPolicy {
     pub timeout: Duration,
 }
 
+/// Fail-closed seccomp-BPF syscall allowlist tier for a sandboxed invocation.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Default)]
+pub enum SeccompProfile {
+    /// Full Lean elaboration and inspector profile permitting mount- or
+    /// Landlock-confined file writes (`open`/`openat` write flags, `rename*`,
+    /// `mkdir*`, `unlink*`, `ftruncate`, `pwrite64`) and Lean/`libuv`
+    /// event-loop primitives.
+    #[default]
+    Elaborator,
+    /// Read-only stream exporter and Lean-runtime checker profile (`lean`
+    /// metadata queries, `leanexport`, `con-leche`, `lean4lean`): drops all
+    /// filesystem and file-mutation syscalls and restricts `open`/`openat`
+    /// strictly to read-only flags while retaining Lean/`libuv` event-loop
+    /// syscalls.
+    ReadOnlyStream,
+    /// Minimal pure-Rust NDJSON kernel profile (`nanoda_bin`, `con-ron`):
+    /// applies the read-only `open`/`openat` guard and additionally drops
+    /// `libuv` event-loop, `fcntl`, and directory/symlink inspection syscalls.
+    PureKernel,
+}
+
 /// Maps host paths inside mounted roots to child-visible paths.
 #[derive(Debug, Clone)]
 pub struct PathMapper {
@@ -903,7 +924,8 @@ pub struct SandboxRuntime {
     /// `--seccomp` (always `true` on `x86_64`/`aarch64` Linux).
     pub bwrap_seccomp_active: bool,
     /// Whether Tier 1 `bwrap` disables nested user namespaces via
-    /// `--unshare-user --disable-userns` (probed against the host `bwrap`).
+    /// `--unshare-user --disable-userns` (always `true` for
+    /// [`ActiveSandbox::LinuxBwrap`]).
     pub bwrap_disable_userns: bool,
     pub exec_lean: PathBuf,
     pub toolchain_dir: PathBuf,
@@ -1077,7 +1099,17 @@ impl SandboxRuntime {
 
     /// Execute a single invocation under this runtime's confinement policy.
     pub fn execute(&self, policy: &SandboxPolicy) -> Result<Output, Failure> {
-        self.execute_with_options(policy, None, RLIMIT_FSIZE_BYTES)
+        self.execute_with_options(policy, None, RLIMIT_FSIZE_BYTES, SeccompProfile::Elaborator)
+    }
+
+    /// Execute a single invocation under this runtime's confinement policy with
+    /// an explicit [`SeccompProfile`].
+    pub fn execute_with_profile(
+        &self,
+        policy: &SandboxPolicy,
+        profile: SeccompProfile,
+    ) -> Result<Output, Failure> {
+        self.execute_with_options(policy, None, RLIMIT_FSIZE_BYTES, profile)
     }
 
     /// Execute a single invocation under this runtime's confinement policy with
@@ -1087,26 +1119,45 @@ impl SandboxRuntime {
         policy: &SandboxPolicy,
         rlimit_fsize_bytes: u64,
     ) -> Result<Output, Failure> {
-        self.execute_with_options(policy, None, rlimit_fsize_bytes)
+        self.execute_with_options(policy, None, rlimit_fsize_bytes, SeccompProfile::Elaborator)
     }
 
     /// Execute a single invocation under this runtime's confinement policy,
     /// streaming child stdout directly to a host-owned file bounded by
     /// `max_stdout_bytes`.
-    ///
-    /// Used by Actions `5a`/`5b` (`leanexport`) so large NDJSON exports never
-    /// truncate at [`MAX_CHILD_STREAM_BYTES`] while keeping the child's
-    /// writable output mount completely empty.
     pub fn execute_stdout_to_file(
         &self,
         policy: &SandboxPolicy,
         stdout_path: &Path,
         max_stdout_bytes: u64,
     ) -> Result<Output, Failure> {
+        self.execute_stdout_to_file_with_profile(
+            policy,
+            stdout_path,
+            max_stdout_bytes,
+            SeccompProfile::Elaborator,
+        )
+    }
+
+    /// Execute a single invocation under this runtime's confinement policy with
+    /// an explicit [`SeccompProfile`], streaming child stdout directly to a
+    /// host-owned file bounded by `max_stdout_bytes`.
+    ///
+    /// Used by Actions `5a`/`5b` (`leanexport`) so large NDJSON exports never
+    /// truncate at [`MAX_CHILD_STREAM_BYTES`] while keeping the child's
+    /// writable output mount completely empty.
+    pub fn execute_stdout_to_file_with_profile(
+        &self,
+        policy: &SandboxPolicy,
+        stdout_path: &Path,
+        max_stdout_bytes: u64,
+        profile: SeccompProfile,
+    ) -> Result<Output, Failure> {
         self.execute_with_options(
             policy,
             Some((stdout_path.to_path_buf(), max_stdout_bytes)),
             RLIMIT_FSIZE_BYTES,
+            profile,
         )
     }
 
@@ -1115,21 +1166,30 @@ impl SandboxRuntime {
         policy: &SandboxPolicy,
         stdout_file: Option<(PathBuf, u64)>,
         rlimit_fsize_bytes: u64,
+        seccomp_profile: SeccompProfile,
     ) -> Result<Output, Failure> {
         match self.backend {
             ActiveSandbox::None => run_unsandboxed(policy, stdout_file, rlimit_fsize_bytes),
             #[cfg(target_os = "linux")]
             ActiveSandbox::LinuxBwrap => {
-                linux::run_bwrap(self, policy, stdout_file, rlimit_fsize_bytes)
+                linux::run_bwrap(self, policy, stdout_file, rlimit_fsize_bytes, seccomp_profile)
             }
             #[cfg(target_os = "linux")]
-            ActiveSandbox::LinuxLandlockSeccomp => {
-                linux::run_landlock_seccomp(self, policy, stdout_file, rlimit_fsize_bytes)
-            }
-            #[cfg(not(target_os = "linux"))]
-            ActiveSandbox::LinuxBwrap | ActiveSandbox::LinuxLandlockSeccomp => Err(
-                Failure::operational("sandbox", "Linux sandbox backend unavailable on this host"),
+            ActiveSandbox::LinuxLandlockSeccomp => linux::run_landlock_seccomp(
+                self,
+                policy,
+                stdout_file,
+                rlimit_fsize_bytes,
+                seccomp_profile,
             ),
+            #[cfg(not(target_os = "linux"))]
+            ActiveSandbox::LinuxBwrap | ActiveSandbox::LinuxLandlockSeccomp => {
+                let _ = seccomp_profile;
+                Err(Failure::operational(
+                    "sandbox",
+                    "Linux sandbox backend unavailable on this host",
+                ))
+            }
         }
     }
 
@@ -1149,18 +1209,23 @@ impl SandboxRuntime {
 
         let bwrap_err = match find_bwrap_binary() {
             Some(bwrap_path) => {
-                // Prefer `--unshare-user --disable-userns` to block nested
-                // user namespaces inside Tier 1, falling back to `false` only
-                // if the host `bwrap`/kernel does not support `--disable-userns`
-                // while still keeping `--seccomp` enforced on x86_64/aarch64.
-                let seccomp_supported = cfg!(any(target_arch = "x86_64", target_arch = "aarch64"));
-                let mut last_err = String::new();
-                for disable_userns in [true, false] {
+                // Unconditionally require `--unshare-user --disable-userns` in
+                // Tier 1 so an untrusted child cannot create nested user
+                // namespaces; never silently fall back to
+                // `disable_userns=false`.
+                if !linux::bwrap_help_supports_disable_userns(&bwrap_path) {
+                    format!(
+                        "linux_bwrap unavailable: {} does not support mandatory --disable-userns",
+                        bwrap_path.display()
+                    )
+                } else {
+                    let seccomp_supported =
+                        cfg!(any(target_arch = "x86_64", target_arch = "aarch64"));
                     let candidate = Self {
                         backend: ActiveSandbox::LinuxBwrap,
-                        bwrap_path: Some(bwrap_path.clone()),
+                        bwrap_path: Some(bwrap_path),
                         bwrap_seccomp_active: seccomp_supported,
-                        bwrap_disable_userns: disable_userns,
+                        bwrap_disable_userns: true,
                         exec_lean: exec_lean.clone(),
                         toolchain_dir: toolchain_dir.clone(),
                         toolchain_ro_mounts: toolchain_ro_mounts.clone(),
@@ -1173,14 +1238,13 @@ impl SandboxRuntime {
                     match run_functional_lean_probe(&candidate, stage_root) {
                         Ok(()) => return Ok(candidate),
                         Err(err) => {
-                            last_err = format!(
-                                "linux_bwrap probe failed (disable_userns={disable_userns}): {}",
+                            format!(
+                                "linux_bwrap probe failed (disable_userns=true): {}",
                                 err.message
-                            );
+                            )
                         }
                     }
                 }
-                last_err
             }
             None => {
                 "linux_bwrap unavailable: neither /usr/bin/bwrap nor /bin/bwrap exists".to_string()
@@ -2202,9 +2266,11 @@ mod linux {
         process::{Command, Output},
     };
 
+    use sha2::{Digest, Sha256};
+
     use super::{
-        MountSpec, OPTIONAL_SYS_PATHS, PathMapper, RLIMIT_NOFILE_LIMIT,
-        SandboxPolicy, SandboxRuntime, make_tree_writable, reject_forbidden_loader_env,
+        MountSpec, OPTIONAL_SYS_PATHS, PathMapper, RLIMIT_NOFILE_LIMIT, SandboxPolicy,
+        SandboxRuntime, SeccompProfile, make_tree_writable, reject_forbidden_loader_env,
         resolve_pt_interp_lib_dirs, resolve_pt_interp_paths, set_mode,
         spawn_and_wait_with_timeout,
     };
@@ -2459,13 +2525,26 @@ mod linux {
         }
     }
 
-    /// Construct the fail-closed dual-arch seccomp-BPF allowlist pre-fork.
+    #[cfg(any(target_arch = "x86_64", target_arch = "aarch64"))]
+    const READ_ONLY_FORBIDDEN_OPEN_FLAGS: u32 =
+        (libc::O_ACCMODE | libc::O_CREAT | libc::O_TRUNC | libc::O_APPEND) as u32;
+
+    #[cfg(any(target_arch = "x86_64", target_arch = "aarch64"))]
+    const _: () = {
+        assert!(libc::O_RDONLY == 0);
+        // `O_TMPFILE` is blocked because Linux requires `O_WRONLY` or `O_RDWR`,
+        // which `O_ACCMODE` already rejects without matching `O_DIRECTORY`.
+        assert!((libc::O_ACCMODE & libc::O_DIRECTORY) == 0);
+    };
+
+    /// Construct the fail-closed dual-arch seccomp-BPF allowlist pre-fork for
+    /// `profile`.
     ///
     /// Returns the compiled instruction buffer together with the two exact
     /// indices (`kill_pid_idx`, `tgkill_pid_idx`) patched in-place with
     /// `libc::getpid()` inside `pre_exec` (zero heap allocation post-fork).
     #[cfg(any(target_arch = "x86_64", target_arch = "aarch64"))]
-    pub(crate) fn build_seccomp_bpf() -> CompiledBpf {
+    pub(crate) fn build_seccomp_bpf(profile: SeccompProfile) -> CompiledBpf {
         let mut b = BpfBuilder::new();
         // 1. Authenticate syscall ABI architecture.
         b.load_abs(OFFSET_ARCH);
@@ -2480,17 +2559,24 @@ mod linux {
             b.label("nr_ok");
         }
 
-        // 3. Six argument-guarded syscalls (`ioctl` dropped completely).
+        // 3. Argument-guarded syscalls (`ioctl` dropped completely).
         b.jeq(libc::SYS_clone3 as u32, "ret_enosys");
         b.jeq(libc::SYS_clone as u32, "guard_clone");
         b.jeq(libc::SYS_prlimit64 as u32, "guard_prlimit64");
         b.jeq(libc::SYS_kill as u32, "guard_kill");
         b.jeq(libc::SYS_tgkill as u32, "guard_tgkill");
-        b.jeq(libc::SYS_fcntl as u32, "guard_fcntl");
+        if profile != SeccompProfile::PureKernel {
+            b.jeq(libc::SYS_fcntl as u32, "guard_fcntl");
+        }
+        if profile != SeccompProfile::Elaborator {
+            b.jeq(libc::SYS_openat as u32, "guard_openat");
+            #[cfg(target_arch = "x86_64")]
+            b.jeq(libc::SYS_open as u32, "guard_open");
+        }
 
         // 4. Unconditionally allowed pure / Landlock-confined syscalls.
         //    Every symbol comes directly from pinned `libc` (no magic numbers).
-        const COMMON_ALLOWED: &[libc::c_long] = &[
+        const BASE_ALLOWED: &[libc::c_long] = &[
             // Process/thread lifecycle & sync
             libc::SYS_exit,
             libc::SYS_exit_group,
@@ -2520,15 +2606,13 @@ mod linux {
             libc::SYS_mprotect,
             libc::SYS_mremap,
             libc::SYS_madvise,
-            // Landlock-confined file/dir I/O & event loop
+            // Read-only / stream file and descriptor I/O
             libc::SYS_read,
             libc::SYS_write,
             libc::SYS_readv,
             libc::SYS_writev,
             libc::SYS_pread64,
-            libc::SYS_pwrite64,
             libc::SYS_lseek,
-            libc::SYS_openat,
             libc::SYS_close,
             libc::SYS_close_range,
             libc::SYS_dup,
@@ -2538,24 +2622,7 @@ mod linux {
             libc::SYS_statx,
             libc::SYS_faccessat,
             libc::SYS_faccessat2,
-            libc::SYS_readlinkat,
-            libc::SYS_getcwd,
-            libc::SYS_getdents64,
-            libc::SYS_ftruncate,
-            libc::SYS_mkdirat,
-            libc::SYS_unlinkat,
-            libc::SYS_renameat,
-            libc::SYS_renameat2,
-            libc::SYS_fsync,
-            libc::SYS_fdatasync,
-            libc::SYS_pipe2,
-            libc::SYS_epoll_create1,
-            libc::SYS_epoll_ctl,
-            libc::SYS_epoll_pwait,
             libc::SYS_ppoll,
-            libc::SYS_pselect6,
-            libc::SYS_eventfd2,
-            libc::SYS_umask,
             // Time, entropy, and self-accounting (Lean `-M` uses `getrusage`)
             libc::SYS_clock_gettime,
             libc::SYS_clock_getres,
@@ -2565,36 +2632,81 @@ mod linux {
             libc::SYS_getrandom,
             libc::SYS_getcpu,
             libc::SYS_getrusage,
-            libc::SYS_uname,
             libc::SYS_sysinfo,
         ];
-        for &nr in COMMON_ALLOWED {
+        const STREAM_RUNTIME_ALLOWED: &[libc::c_long] = &[
+            libc::SYS_readlinkat,
+            libc::SYS_getcwd,
+            libc::SYS_getdents64,
+            libc::SYS_pipe2,
+            libc::SYS_epoll_create1,
+            libc::SYS_epoll_ctl,
+            libc::SYS_epoll_pwait,
+            libc::SYS_pselect6,
+            libc::SYS_eventfd2,
+            libc::SYS_uname,
+        ];
+        const ELABORATOR_WRITE_ALLOWED: &[libc::c_long] = &[
+            libc::SYS_openat,
+            libc::SYS_pwrite64,
+            libc::SYS_ftruncate,
+            libc::SYS_mkdirat,
+            libc::SYS_unlinkat,
+            libc::SYS_renameat,
+            libc::SYS_renameat2,
+            libc::SYS_fsync,
+            libc::SYS_fdatasync,
+            libc::SYS_umask,
+        ];
+
+        for &nr in BASE_ALLOWED {
             b.jeq(nr as u32, "allow");
+        }
+        if profile != SeccompProfile::PureKernel {
+            for &nr in STREAM_RUNTIME_ALLOWED {
+                b.jeq(nr as u32, "allow");
+            }
+        }
+        if profile == SeccompProfile::Elaborator {
+            for &nr in ELABORATOR_WRITE_ALLOWED {
+                b.jeq(nr as u32, "allow");
+            }
         }
 
         #[cfg(target_arch = "x86_64")]
         {
-            const X86_64_ONLY_ALLOWED: &[libc::c_long] = &[
+            const X86_64_BASE_ALLOWED: &[libc::c_long] = &[
                 libc::SYS_arch_prctl,
-                libc::SYS_open,
                 libc::SYS_dup2,
                 libc::SYS_access,
                 libc::SYS_stat,
                 libc::SYS_lstat,
-                libc::SYS_readlink,
-                libc::SYS_rename,
-                libc::SYS_unlink,
-                libc::SYS_mkdir,
-                libc::SYS_pipe,
                 libc::SYS_poll,
-                libc::SYS_select,
-                libc::SYS_epoll_wait,
-                libc::SYS_eventfd,
                 libc::SYS_getrlimit,
                 libc::SYS_time,
             ];
-            for &nr in X86_64_ONLY_ALLOWED {
+            const X86_64_STREAM_RUNTIME_ALLOWED: &[libc::c_long] = &[
+                libc::SYS_readlink,
+                libc::SYS_pipe,
+                libc::SYS_select,
+                libc::SYS_epoll_wait,
+                libc::SYS_eventfd,
+            ];
+            const X86_64_ELABORATOR_WRITE_ALLOWED: &[libc::c_long] =
+                &[libc::SYS_open, libc::SYS_rename, libc::SYS_unlink, libc::SYS_mkdir];
+
+            for &nr in X86_64_BASE_ALLOWED {
                 b.jeq(nr as u32, "allow");
+            }
+            if profile != SeccompProfile::PureKernel {
+                for &nr in X86_64_STREAM_RUNTIME_ALLOWED {
+                    b.jeq(nr as u32, "allow");
+                }
+            }
+            if profile == SeccompProfile::Elaborator {
+                for &nr in X86_64_ELABORATOR_WRITE_ALLOWED {
+                    b.jeq(nr as u32, "allow");
+                }
             }
         }
 
@@ -2640,23 +2752,46 @@ mod linux {
         b.load_abs(offset_arg_lo(0));
         let tgkill_pid_idx = b.jeq_else(0, "allow", "deny");
 
-        // --- Guard 5: `fcntl` restricted to closed FD/flag manipulation. ---
-        b.label("guard_fcntl");
-        b.load_abs(offset_arg_hi(1));
-        b.jeq_else(0, "guard_fcntl_lo", "deny");
-        b.label("guard_fcntl_lo");
-        b.load_abs(offset_arg_lo(1));
-        for cmd in [
-            libc::F_GETFD,
-            libc::F_SETFD,
-            libc::F_GETFL,
-            libc::F_SETFL,
-            libc::F_DUPFD,
-            libc::F_DUPFD_CLOEXEC,
-        ] {
-            b.jeq(cmd as u32, "allow");
+        if profile != SeccompProfile::PureKernel {
+            // --- Guard 5: `fcntl` restricted to closed FD/flags ops. ---
+            b.label("guard_fcntl");
+            b.load_abs(offset_arg_hi(1));
+            b.jeq_else(0, "guard_fcntl_lo", "deny");
+            b.label("guard_fcntl_lo");
+            b.load_abs(offset_arg_lo(1));
+            for cmd in [
+                libc::F_GETFD,
+                libc::F_SETFD,
+                libc::F_GETFL,
+                libc::F_SETFL,
+                libc::F_DUPFD,
+                libc::F_DUPFD_CLOEXEC,
+            ] {
+                b.jeq(cmd as u32, "allow");
+            }
+            b.jmp("deny");
         }
-        b.jmp("deny");
+
+        if profile != SeccompProfile::Elaborator {
+            // --- Guard 6: `openat` restricted strictly to read-only flags. ---
+            b.label("guard_openat");
+            b.load_abs(offset_arg_hi(2));
+            b.jeq_else(0, "guard_openat_lo", "deny");
+            b.label("guard_openat_lo");
+            b.load_abs(offset_arg_lo(2));
+            b.jset_else(READ_ONLY_FORBIDDEN_OPEN_FLAGS, "deny", "allow");
+
+            #[cfg(target_arch = "x86_64")]
+            {
+                // --- Guard 7: legacy `open` limited to read-only flags. ---
+                b.label("guard_open");
+                b.load_abs(offset_arg_hi(1));
+                b.jeq_else(0, "guard_open_lo", "deny");
+                b.label("guard_open_lo");
+                b.load_abs(offset_arg_lo(1));
+                b.jset_else(READ_ONLY_FORBIDDEN_OPEN_FLAGS, "deny", "allow");
+            }
+        }
 
         // Terminal return blocks.
         b.label("allow");
@@ -2962,6 +3097,25 @@ mod linux {
         Ok(())
     }
 
+    /// Expand one 32-byte host entropy seed into `total_len` isolated child
+    /// `/dev/urandom` bytes using domain-separated SHA-256 counter blocks so no
+    /// raw host CSPRNG stream bytes are ever mounted inside the child.
+    pub(super) fn expand_isolated_urandom(seed: &[u8; 32], total_len: usize) -> Vec<u8> {
+        const DOMAIN: &[u8] = b"anneal-bwrap-child-urandom-v1";
+        let mut out = vec![0u8; total_len];
+        let mut counter = 0u32;
+        for chunk in out.chunks_mut(32) {
+            let mut hasher = Sha256::new();
+            hasher.update(DOMAIN);
+            hasher.update(seed);
+            hasher.update(counter.to_le_bytes());
+            let digest = hasher.finalize();
+            chunk.copy_from_slice(&digest[..chunk.len()]);
+            counter = counter.wrapping_add(1);
+        }
+        out
+    }
+
     /// Per-invocation `0o400` backing files for Tier 1's read-only `/dev/zero`
     /// and `/dev/urandom` mounts.
     ///
@@ -2971,19 +3125,19 @@ mod linux {
     /// Lean startup), whereas `MS_RDONLY` without `MS_NODEV` leaves `0666`
     /// `S_IFCHR` nodes writable (`fs/namei.c:may_open` skips `mnt_want_write`
     /// for character devices). Binding per-invocation `0o400` regular files
-    /// seeded from `/dev/urandom` and NUL bytes via `--ro-bind` keeps both
-    /// paths read-only (`EROFS` on write or truncate) without exposing host
-    /// character devices.
-    struct BwrapRoDevices {
-        dir: tempfile::TempDir,
-        zero: PathBuf,
-        urandom: PathBuf,
+    /// expanded from a single 32-byte host seed and NUL bytes via `--ro-bind`
+    /// keeps both paths read-only (`EROFS` on write or truncate) without
+    /// exposing host character devices or raw host CSPRNG stream bytes.
+    pub(super) struct BwrapRoDevices {
+        pub(super) dir: tempfile::TempDir,
+        pub(super) zero: PathBuf,
+        pub(super) urandom: PathBuf,
     }
 
     impl BwrapRoDevices {
-        const SEED_LEN: usize = 64 * 1024;
+        pub(super) const SEED_LEN: usize = 64 * 1024;
 
-        fn create(out_host: &Path) -> Result<Self, Failure> {
+        pub(super) fn create(out_host: &Path) -> Result<Self, Failure> {
             let mut builder = tempfile::Builder::new();
             builder.prefix("anneal-bwrap-dev-");
             let dir = match out_host.parent() {
@@ -3001,13 +3155,16 @@ mod linux {
             })?;
             set_mode(&zero, 0o400)?;
 
-            let mut rand_bytes = vec![0u8; Self::SEED_LEN];
+            let mut seed = [0u8; 32];
             let mut urandom_src = fs::File::open("/dev/urandom").map_err(|e| {
                 Failure::operational("sandbox", format!("open host /dev/urandom: {e}"))
             })?;
-            urandom_src.read_exact(&mut rand_bytes).map_err(|e| {
-                Failure::operational("sandbox", format!("read host /dev/urandom: {e}"))
+            urandom_src.read_exact(&mut seed).map_err(|e| {
+                Failure::operational("sandbox", format!("read host /dev/urandom seed: {e}"))
             })?;
+            let rand_bytes = expand_isolated_urandom(&seed, Self::SEED_LEN);
+            seed.fill(0);
+            std::hint::black_box(&seed);
             let urandom = dir.path().join("urandom");
             fs::write(&urandom, &rand_bytes).map_err(|e| {
                 Failure::operational(
@@ -3027,8 +3184,8 @@ mod linux {
         }
     }
 
-    /// Build a pipe pre-loaded with the compiled Tier 2 seccomp-BPF allowlist
-    /// for `bwrap --seccomp <fd>` and return its read end.
+    /// Build a pipe pre-loaded with the compiled seccomp-BPF allowlist for
+    /// `profile` (`bwrap --seccomp <fd>`) and return its read end.
     ///
     /// Under `bwrap --unshare-all --as-pid-1`, the confined executable runs as
     /// PID 1 inside its isolated PID namespace, so self-targeted `kill`/`tgkill`
@@ -3036,11 +3193,13 @@ mod linux {
     /// below Linux's minimum 64 KiB pipe buffer, so writing the program and
     /// closing the write end before `spawn` never blocks.
     #[cfg(any(target_arch = "x86_64", target_arch = "aarch64"))]
-    pub(crate) fn prepare_bwrap_seccomp_pipe() -> Result<std::os::unix::io::OwnedFd, Failure> {
+    pub(crate) fn prepare_bwrap_seccomp_pipe(
+        profile: SeccompProfile,
+    ) -> Result<std::os::unix::io::OwnedFd, Failure> {
         use std::io::Write as _;
         use std::os::unix::io::{FromRawFd, OwnedFd};
 
-        let mut compiled = build_seccomp_bpf();
+        let mut compiled = build_seccomp_bpf(profile);
         compiled.filter[compiled.kill_pid_idx].k = 1;
         compiled.filter[compiled.tgkill_pid_idx].k = 1;
 
@@ -3088,20 +3247,30 @@ mod linux {
         policy: &SandboxPolicy,
         stdout_file: Option<(PathBuf, u64)>,
         rlimit_fsize_bytes: u64,
+        seccomp_profile: SeccompProfile,
     ) -> Result<Output, Failure> {
         reject_forbidden_loader_env(&policy.extra_env)?;
+        if !runtime.bwrap_disable_userns {
+            return Err(Failure::operational(
+                "sandbox",
+                "linux_bwrap requires mandatory --disable-userns",
+            ));
+        }
         let bwrap = runtime.bwrap_path.as_ref().ok_or_else(|| {
             Failure::operational("sandbox", "missing bwrap binary path for LinuxBwrap")
         })?;
         let ro_devs = BwrapRoDevices::create(&policy.rw_out.host)?;
         #[cfg(any(target_arch = "x86_64", target_arch = "aarch64"))]
         let seccomp_read_fd = if runtime.bwrap_seccomp_active {
-            Some(prepare_bwrap_seccomp_pipe()?)
+            Some(prepare_bwrap_seccomp_pipe(seccomp_profile)?)
         } else {
             None
         };
         #[cfg(not(any(target_arch = "x86_64", target_arch = "aarch64")))]
-        let seccomp_read_fd: Option<std::os::unix::io::OwnedFd> = None;
+        let seccomp_read_fd: Option<std::os::unix::io::OwnedFd> = {
+            let _ = seccomp_profile;
+            None
+        };
 
         let mut cmd = Command::new(bwrap);
         cmd.env_clear().env("PATH", "/usr/bin:/bin");
@@ -3112,12 +3281,10 @@ mod linux {
         // `kill(-bwrap_pid, SIGKILL)` atomically tears down the entire PID
         // namespace on wall-clock timeout without relying on
         // `--die-with-parent` alone.
-        cmd.arg("--unshare-all");
-        if runtime.bwrap_disable_userns {
-            // `bwrap` requires explicit `--unshare-user` alongside
-            // `--disable-userns` even when `--unshare-all` is set.
-            cmd.args(["--unshare-user", "--disable-userns"]);
-        }
+        //
+        // `bwrap` requires explicit `--unshare-user` alongside
+        // `--disable-userns` even when `--unshare-all` is set.
+        cmd.args(["--unshare-all", "--unshare-user", "--disable-userns"]);
         cmd.args([
             "--as-pid-1",
             "--cap-drop",
@@ -3223,11 +3390,12 @@ mod linux {
         policy: &SandboxPolicy,
         stdout_file: Option<(PathBuf, u64)>,
         rlimit_fsize_bytes: u64,
+        seccomp_profile: SeccompProfile,
     ) -> Result<Output, Failure> {
         reject_forbidden_loader_env(&policy.extra_env)?;
         let ruleset = build_landlock_ruleset(runtime, policy)?;
         let ruleset_fd = ruleset.0;
-        let mut compiled = build_seccomp_bpf();
+        let mut compiled = build_seccomp_bpf(seccomp_profile);
         let kill_idx = compiled.kill_pid_idx;
         let tgkill_idx = compiled.tgkill_pid_idx;
 
@@ -3318,6 +3486,7 @@ mod linux {
         _policy: &SandboxPolicy,
         _stdout_file: Option<(PathBuf, u64)>,
         _rlimit_fsize_bytes: u64,
+        _seccomp_profile: SeccompProfile,
     ) -> Result<Output, Failure> {
         Err(Failure::operational(
             "sandbox",
@@ -3380,12 +3549,20 @@ mod linux {
             || interps.iter().any(|p| p.starts_with("/nix/store"));
         let (toolchain_ro_mounts, extra_toolchain_mounts) =
             SandboxRuntime::discover_toolchain_mounts(&toolchain_dir, None)?;
-        let bwrap_disable_userns = bwrap_help_supports_disable_userns(&bwrap_path);
+        if !bwrap_help_supports_disable_userns(&bwrap_path) {
+            return Err(Failure::operational(
+                "sandbox",
+                format!(
+                    "bwrap at {} does not support mandatory --disable-userns",
+                    bwrap_path.display()
+                ),
+            ));
+        }
         Ok(SandboxRuntime {
             backend: super::ActiveSandbox::LinuxBwrap,
             bwrap_path: Some(bwrap_path),
             bwrap_seccomp_active: cfg!(any(target_arch = "x86_64", target_arch = "aarch64")),
-            bwrap_disable_userns,
+            bwrap_disable_userns: true,
             exec_lean: exec_bin,
             toolchain_dir,
             toolchain_ro_mounts,
@@ -3434,14 +3611,20 @@ mod tests {
     #[cfg(all(target_os = "linux", any(target_arch = "x86_64", target_arch = "aarch64")))]
     #[test]
     fn seccomp_bpf_compiles_within_jump_and_instruction_limits() {
-        let compiled = linux::build_seccomp_bpf();
-        assert!(compiled.filter.len() > 80);
-        assert!(compiled.filter.len() < 4096);
-        assert!(compiled.kill_pid_idx < compiled.filter.len());
-        assert!(compiled.tgkill_pid_idx < compiled.filter.len());
-        assert_ne!(compiled.kill_pid_idx, compiled.tgkill_pid_idx);
-        assert_eq!(compiled.filter[compiled.kill_pid_idx].k, 0);
-        assert_eq!(compiled.filter[compiled.tgkill_pid_idx].k, 0);
+        for profile in [
+            SeccompProfile::Elaborator,
+            SeccompProfile::ReadOnlyStream,
+            SeccompProfile::PureKernel,
+        ] {
+            let compiled = linux::build_seccomp_bpf(profile);
+            assert!(compiled.filter.len() > 70, "{profile:?}");
+            assert!(compiled.filter.len() < 4096, "{profile:?}");
+            assert!(compiled.kill_pid_idx < compiled.filter.len(), "{profile:?}");
+            assert!(compiled.tgkill_pid_idx < compiled.filter.len(), "{profile:?}");
+            assert_ne!(compiled.kill_pid_idx, compiled.tgkill_pid_idx, "{profile:?}");
+            assert_eq!(compiled.filter[compiled.kill_pid_idx].k, 0, "{profile:?}");
+            assert_eq!(compiled.filter[compiled.tgkill_pid_idx].k, 0, "{profile:?}");
+        }
     }
 
     #[test]
@@ -4342,16 +4525,288 @@ mod tests {
     #[cfg(all(target_os = "linux", any(target_arch = "x86_64", target_arch = "aarch64")))]
     #[test]
     fn bwrap_seccomp_pipe_contains_complete_pid1_bpf_program() {
-        let mut expected = linux::build_seccomp_bpf();
-        expected.filter[expected.kill_pid_idx].k = 1;
-        expected.filter[expected.tgkill_pid_idx].k = 1;
+        for profile in [
+            SeccompProfile::Elaborator,
+            SeccompProfile::ReadOnlyStream,
+            SeccompProfile::PureKernel,
+        ] {
+            let mut expected = linux::build_seccomp_bpf(profile);
+            expected.filter[expected.kill_pid_idx].k = 1;
+            expected.filter[expected.tgkill_pid_idx].k = 1;
 
-        let read_fd = linux::prepare_bwrap_seccomp_pipe().unwrap();
-        let mut file = fs::File::from(read_fd);
-        let mut raw = Vec::new();
-        file.read_to_end(&mut raw).unwrap();
-        let expected_len = std::mem::size_of_val(expected.filter.as_slice());
-        assert_eq!(raw.len(), expected_len);
-        assert!(!raw.is_empty() && raw.len() % 8 == 0);
+            let read_fd = linux::prepare_bwrap_seccomp_pipe(profile).unwrap();
+            let mut file = fs::File::from(read_fd);
+            let mut raw = Vec::new();
+            file.read_to_end(&mut raw).unwrap();
+            let expected_len = std::mem::size_of_val(expected.filter.as_slice());
+            assert_eq!(raw.len(), expected_len, "{profile:?}");
+            assert!(!raw.is_empty() && raw.len() % 8 == 0, "{profile:?}");
+        }
+    }
+
+    #[cfg(target_os = "linux")]
+    #[test]
+    fn bwrap_ro_devices_isolates_child_urandom_stream() {
+        let seed = [0xA5u8; 32];
+        let a = linux::expand_isolated_urandom(&seed, 128);
+        let b = linux::expand_isolated_urandom(&seed, 128);
+        assert_eq!(a, b);
+        assert_ne!(&a[..32], &seed);
+        assert_ne!(&a[..32], &a[32..64]);
+        assert_ne!(&a[..], &[0u8; 128]);
+
+        let dir = tempfile::tempdir().unwrap();
+        let out_a = dir.path().join("a/out");
+        let out_b = dir.path().join("b/out");
+        fs::create_dir_all(&out_a).unwrap();
+        fs::create_dir_all(&out_b).unwrap();
+        let devs_a = linux::BwrapRoDevices::create(&out_a).unwrap();
+        let devs_b = linux::BwrapRoDevices::create(&out_b).unwrap();
+        let bytes_a = fs::read(&devs_a.urandom).unwrap();
+        let bytes_b = fs::read(&devs_b.urandom).unwrap();
+        assert_eq!(bytes_a.len(), linux::BwrapRoDevices::SEED_LEN);
+        assert_eq!(bytes_b.len(), linux::BwrapRoDevices::SEED_LEN);
+        assert_ne!(bytes_a, bytes_b);
+        assert_eq!(fs::metadata(&devs_a.urandom).unwrap().permissions().mode() & 0o777, 0o400);
+        assert_eq!(fs::metadata(&devs_a.zero).unwrap().permissions().mode() & 0o777, 0o400);
+    }
+
+    #[cfg(target_os = "linux")]
+    #[test]
+    fn run_bwrap_refuses_disabled_userns_flag() {
+        let dir = tempfile::tempdir().unwrap();
+        let out_dir = dir.path().join("out");
+        let tmp_dir = dir.path().join("tmp");
+        fs::create_dir_all(&out_dir).unwrap();
+        fs::create_dir_all(&tmp_dir).unwrap();
+        let rt = SandboxRuntime {
+            backend: ActiveSandbox::LinuxBwrap,
+            bwrap_path: Some(PathBuf::from("/usr/bin/bwrap")),
+            bwrap_seccomp_active: true,
+            bwrap_disable_userns: false,
+            exec_lean: PathBuf::from("/bin/true"),
+            toolchain_dir: dir.path().to_path_buf(),
+            toolchain_ro_mounts: Vec::new(),
+            extra_toolchain_mounts: Vec::new(),
+            pt_interp_paths: Vec::new(),
+            pt_interp_lib_dirs: Vec::new(),
+            needs_nix_store: false,
+            landlock_abi: 0,
+        };
+        let policy = SandboxPolicy {
+            exec_bin: PathBuf::from("/bin/true"),
+            args: Vec::new(),
+            ro_mounts: Vec::new(),
+            rw_out: MountSpec { host: out_dir, child: PathBuf::from("/work/out") },
+            rw_tmp: MountSpec { host: tmp_dir, child: PathBuf::from("/work/tmp") },
+            child_cwd: None,
+            extra_env: BTreeMap::new(),
+            timeout: Duration::from_secs(5),
+        };
+        let err = rt.execute(&policy).unwrap_err();
+        assert!(err.message.contains("--disable-userns"), "{err}");
+    }
+
+    #[cfg(all(target_os = "linux", any(target_arch = "x86_64", target_arch = "aarch64")))]
+    #[test]
+    fn seccomp_profiles_restrict_readonly_and_pure_kernel_syscalls() {
+        use std::ffi::CString;
+
+        const PROFILE_ENV: &str = "ANNEAL_SECCOMP_PROFILE_PROBE";
+        const READ_PATH_ENV: &str = "ANNEAL_SECCOMP_READ_PATH";
+        const TMP_PATH_ENV: &str = "ANNEAL_SECCOMP_TMP_PATH";
+        const SCRATCH_FILE: &str = "existing.txt";
+        const SCRATCH_BYTES: &[u8] = b"keep\n";
+        const PROBE_OK: &str = "ANNEAL_SECCOMP_PROBE_OK";
+
+        /// A syscall result paired with the `errno` read right after it.
+        type Outcome = (i64, Option<i32>);
+
+        fn last_errno() -> Option<i32> {
+            std::io::Error::last_os_error().raw_os_error()
+        }
+
+        fn assert_eperm((rc, errno): Outcome, what: &str, mode: &str) {
+            assert_eq!(rc, -1, "{what} must fail in {mode}");
+            assert_eq!(errno, Some(libc::EPERM), "{what} errno in {mode}");
+        }
+
+        if let Ok(mode) = std::env::var(PROFILE_ENV) {
+            let read_path = CString::new(std::env::var(READ_PATH_ENV).unwrap()).unwrap();
+            let tmp_dir = std::env::var(TMP_PATH_ENV).unwrap();
+            let scratch_path = CString::new(format!("{tmp_dir}/{SCRATCH_FILE}")).unwrap();
+            let create_path = CString::new(format!("{tmp_dir}/blocked.txt")).unwrap();
+            let mkdir_path = CString::new(format!("{tmp_dir}/blocked_dir")).unwrap();
+            let open_at = |path: &CString, flags: libc::c_int| -> Outcome {
+                // SAFETY: `path` is a valid NUL-terminated string, and the
+                // kernel reads the mode argument only when creating a file.
+                let rc = unsafe { libc::openat(libc::AT_FDCWD, path.as_ptr(), flags, 0o600) };
+                (rc.into(), last_errno())
+            };
+            let close = |fd: libc::c_int| {
+                // SAFETY: `fd` is an open descriptor owned by this probe.
+                unsafe { libc::close(fd) };
+            };
+
+            // Read-only `openat` must succeed in both strict profiles, on the
+            // read-only input and on the Landlock-writable scratch file.
+            for path in [&read_path, &scratch_path] {
+                let (fd, _) = open_at(path, libc::O_RDONLY | libc::O_CLOEXEC);
+                assert!(fd >= 0, "expected O_RDONLY openat to succeed in {mode}");
+                close(fd as libc::c_int);
+            }
+
+            // Every write-capable `openat` must fail closed with EPERM. The
+            // scratch directory is Landlock-writable, so only the seccomp
+            // guard can produce that errno. `O_CREAT`, `O_TRUNC`, and
+            // `O_APPEND` are each paired with `O_RDONLY` so that each probe
+            // depends on that flag's bit alone: Linux creates, truncates, or
+            // appends on such an open.
+            assert_eperm(
+                open_at(&create_path, libc::O_RDONLY | libc::O_CREAT),
+                "creating openat",
+                &mode,
+            );
+            for (flags, what) in [
+                (libc::O_WRONLY, "write-only openat"),
+                (libc::O_RDWR, "read-write openat"),
+                (libc::O_RDONLY | libc::O_TRUNC, "truncating openat"),
+                (libc::O_RDONLY | libc::O_APPEND, "appending openat"),
+            ] {
+                assert_eperm(open_at(&scratch_path, flags), what, &mode);
+            }
+
+            // The legacy `open` syscall is guarded like `openat`.
+            #[cfg(target_arch = "x86_64")]
+            {
+                let legacy_open = |flags: libc::c_int| -> Outcome {
+                    let mode_bits: libc::c_long = 0o600;
+                    // SAFETY: `scratch_path` is a valid NUL-terminated
+                    // string, and every argument fills a whole register.
+                    let rc = unsafe {
+                        libc::syscall(
+                            libc::SYS_open,
+                            scratch_path.as_ptr(),
+                            libc::c_long::from(flags),
+                            mode_bits,
+                        )
+                    };
+                    (rc, last_errno())
+                };
+                let (fd, _) = legacy_open(libc::O_RDONLY);
+                assert!(fd >= 0, "legacy O_RDONLY open must succeed in {mode}");
+                close(fd as libc::c_int);
+                assert_eperm(legacy_open(libc::O_WRONLY), "legacy write-only open", &mode);
+                assert_eperm(
+                    legacy_open(libc::O_RDONLY | libc::O_CREAT),
+                    "legacy creating open",
+                    &mode,
+                );
+                assert_eperm(
+                    legacy_open(libc::O_RDONLY | libc::O_TRUNC),
+                    "legacy truncating open",
+                    &mode,
+                );
+            }
+
+            // Directory mutation (`mkdirat`) must fail closed with EPERM.
+            // SAFETY: `mkdir_path` is a valid NUL-terminated string.
+            let mk_rc = unsafe { libc::mkdirat(libc::AT_FDCWD, mkdir_path.as_ptr(), 0o700) };
+            assert_eperm((mk_rc.into(), last_errno()), "mkdirat", &mode);
+
+            // Threading (`clone(CLONE_THREAD)`) must work in strict profiles.
+            let joined = std::thread::spawn(|| 42u32).join().unwrap();
+            assert_eq!(joined, 42);
+
+            // `pipe2` is the syscall that separates the two strict profiles.
+            let mut pipe_fds = [0 as libc::c_int; 2];
+            // SAFETY: `pipe_fds` is a valid writable 2-element `c_int` array.
+            let pipe_rc = unsafe { libc::pipe2(pipe_fds.as_mut_ptr(), libc::O_CLOEXEC) };
+            let pipe_outcome: Outcome = (pipe_rc.into(), last_errno());
+            match mode.as_str() {
+                "readonly_stream" => {
+                    assert_eq!(pipe_rc, 0, "pipe2 must succeed in ReadOnlyStream");
+                    close(pipe_fds[0]);
+                    close(pipe_fds[1]);
+                }
+                "pure_kernel" => assert_eperm(pipe_outcome, "pipe2", &mode),
+                other => panic!("unexpected probe mode {other}"),
+            }
+            println!("{PROBE_OK}={mode}");
+            return;
+        }
+
+        let exe = std::env::current_exe().unwrap();
+        let exe_dir = exe.parent().unwrap().to_path_buf();
+        // Like the other in-crate tests that force Tier 2, skip on hosts
+        // where no Tier 2 runtime can be built (for example, Landlock ABI
+        // below 3 or a root caller).
+        let rt = match linux::force_tier2_runtime(&exe, &exe_dir) {
+            Ok(rt) => rt,
+            Err(err) => {
+                eprintln!("skipping seccomp profile probe: Tier 2 unavailable: {err}");
+                return;
+            }
+        };
+
+        let dir = tempfile::tempdir().unwrap();
+        let in_dir = dir.path().join("in");
+        let out_dir = dir.path().join("out");
+        let tmp_dir = dir.path().join("tmp");
+        fs::create_dir_all(&in_dir).unwrap();
+        fs::create_dir_all(&out_dir).unwrap();
+        fs::create_dir_all(&tmp_dir).unwrap();
+        // The input stays removable by `TempDir`: Tier 2 confines the child
+        // with Landlock rules, not with file modes.
+        let ro_file = in_dir.join("input.ndjson");
+        fs::write(&ro_file, b"{}\n").unwrap();
+        set_mode(&ro_file, 0o444).unwrap();
+        let scratch_file = tmp_dir.join(SCRATCH_FILE);
+        fs::write(&scratch_file, SCRATCH_BYTES).unwrap();
+
+        for (mode_label, profile) in [
+            ("readonly_stream", SeccompProfile::ReadOnlyStream),
+            ("pure_kernel", SeccompProfile::PureKernel),
+        ] {
+            let policy = SandboxPolicy {
+                exec_bin: exe.clone(),
+                args: vec![
+                    "--exact".to_owned(),
+                    "sandbox::tests::seccomp_profiles_restrict_readonly_and_pure_kernel_syscalls"
+                        .to_owned(),
+                    "--nocapture".to_owned(),
+                ],
+                ro_mounts: vec![MountSpec {
+                    host: in_dir.clone(),
+                    child: PathBuf::from("/work/in"),
+                }],
+                rw_out: MountSpec { host: out_dir.clone(), child: PathBuf::from("/work/out") },
+                rw_tmp: MountSpec { host: tmp_dir.clone(), child: PathBuf::from("/work/tmp") },
+                child_cwd: None,
+                extra_env: BTreeMap::from([
+                    (PROFILE_ENV.to_owned(), mode_label.to_owned()),
+                    (READ_PATH_ENV.to_owned(), ro_file.to_str().unwrap().to_owned()),
+                    (TMP_PATH_ENV.to_owned(), tmp_dir.to_str().unwrap().to_owned()),
+                ]),
+                timeout: Duration::from_secs(10),
+            };
+            let out = rt.execute_with_profile(&policy, profile).unwrap();
+            let stdout = String::from_utf8_lossy(&out.stdout);
+            assert!(
+                out.status.success(),
+                "{mode_label} probe failed: stdout={stdout} stderr={}",
+                String::from_utf8_lossy(&out.stderr),
+            );
+            // The child must report that it ran the probes: if the `--exact`
+            // filter ever stopped matching, the child would run zero tests
+            // and still exit successfully.
+            assert!(
+                stdout.contains(&format!("{PROBE_OK}={mode_label}")),
+                "{mode_label} probe did not run: stdout={stdout}"
+            );
+            assert_eq!(fs::read(&scratch_file).unwrap(), SCRATCH_BYTES, "{mode_label}");
+            assert!(!tmp_dir.join("blocked.txt").exists(), "{mode_label}");
+            assert!(!tmp_dir.join("blocked_dir").exists(), "{mode_label}");
+        }
     }
 }

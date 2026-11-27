@@ -39,8 +39,8 @@ use crate::olean_cache::{
 };
 use crate::sandbox::{
     ActiveSandbox, DEFAULT_CHILD_TIMEOUT, DEFAULT_MAX_INSPECTOR_RESULT_BYTES, MountSpec,
-    PathMapper, RLIMIT_FSIZE_BYTES, SandboxMode, SandboxPolicy, SandboxRuntime, copy_readonly_file,
-    create_dir_mode, make_tree_writable, set_mode, validate_and_promote_olean,
+    PathMapper, RLIMIT_FSIZE_BYTES, SandboxMode, SandboxPolicy, SandboxRuntime, SeccompProfile,
+    copy_readonly_file, create_dir_mode, make_tree_writable, set_mode, validate_and_promote_olean,
     validate_and_promote_olean_set, validate_and_promote_olean_set_with_digests,
     validate_inspector_result_with_cap, validate_max_inspector_result_bytes,
 };
@@ -2467,7 +2467,7 @@ impl Checker {
             extra_env: BTreeMap::new(),
             timeout: self.child_timeout,
         };
-        let exec_res = runtime.execute(&policy);
+        let exec_res = runtime.execute_with_profile(&policy, SeccompProfile::ReadOnlyStream);
         let out_nonempty = fs::read_dir(&out_dir)
             .map(|mut entries| entries.next().is_some())
             .unwrap_or(true);
@@ -4231,7 +4231,12 @@ impl Checker {
             extra_env,
             timeout: self.child_timeout,
         };
-        let output = runtime.execute_stdout_to_file(&policy, dest_ndjson, MAX_NDJSON_BYTES);
+        let output = runtime.execute_stdout_to_file_with_profile(
+            &policy,
+            dest_ndjson,
+            MAX_NDJSON_BYTES,
+            SeccompProfile::ReadOnlyStream,
+        );
         let out_nonempty = fs::read_dir(&out_dir)
             .map(|mut entries| entries.next().is_some())
             .unwrap_or(true);
@@ -4561,7 +4566,7 @@ impl Checker {
             extra_env,
             timeout: self.child_timeout,
         };
-        let output = runtime.execute(&policy);
+        let output = runtime.execute_with_profile(&policy, SeccompProfile::PureKernel);
         let out_nonempty = fs::read_dir(&out_dir)
             .map(|mut entries| entries.next().is_some())
             .unwrap_or(true);
@@ -4647,7 +4652,13 @@ impl Checker {
             extra_env,
             timeout: self.child_timeout,
         };
-        let output = runtime.execute(&policy);
+        let seccomp_profile = match kernel {
+            StandaloneNdjsonKernel::ConRon => SeccompProfile::PureKernel,
+            StandaloneNdjsonKernel::ConLeche | StandaloneNdjsonKernel::Lean4lean => {
+                SeccompProfile::ReadOnlyStream
+            }
+        };
+        let output = runtime.execute_with_profile(&policy, seccomp_profile);
         let out_nonempty = fs::read_dir(&out_dir)
             .map(|mut entries| entries.next().is_some())
             .unwrap_or(true);
