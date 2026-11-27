@@ -246,7 +246,8 @@ private theorem checkValV2_int_scalar {w : IntWidth} {s : Bool}
   have hWf : ScalarVal.wf ⟨w, s, bits⟩ = true := by
     rw [← hTrunc]
     exact scalarWf_truncateBits w s bits
-  unfold checkValV2 checkVal
+  change checkVal (.scalar ⟨w, s, bits⟩) (.int w s) = true
+  unfold checkVal
   dsimp only [Val.ty?]
   rw [hWf]
   exact mirTy_beq_refl (.int w s)
@@ -2173,7 +2174,7 @@ theorem canary_v2_slice_scan_1byte_tight_bound :
       unfold refsValidInMemList
       rw [refsValidInMem_of_refValid hRef1]
       rfl
-    · unfold refAccessSpansList querySlice1 bodyV2SliceScan
+    · unfold querySlice1 bodyV2SliceScan
       dsimp only [List.drop, List.take, sliceU8Ty, refAccessSpansList]
       rw [list_append_nil]
       exact spansDisjoint_single
@@ -2332,7 +2333,7 @@ theorem canary_v2_wrong_post_refutes_step_bound :
   intro bound ⟨s0, hInit, hReach⟩
   have hValid : ValidEntryArgsV2 bodyV2SliceScan querySlice0 := by
     refine ⟨rfl, rfl, rfl, ?_⟩
-    unfold refAccessSpansList querySlice0 bodyV2SliceScan
+    unfold querySlice0 bodyV2SliceScan
     dsimp only [List.drop, List.take, sliceU8Ty, refAccessSpansList]
     rw [list_append_nil]
     exact spansDisjoint_single
