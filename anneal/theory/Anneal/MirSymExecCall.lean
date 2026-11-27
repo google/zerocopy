@@ -52,10 +52,12 @@ against `Trusted.MirSemantics.evalStep` without the
    records that it must not fault. Every soundness theorem assumes the
    recorded conditions (`condsHold`), so callers discharge them from the
    function's `# Safety` precondition instead of losing them.
-4. **Chunked runs (`symProgRunSteps`):** as with `symRunSteps`, proofs check
-   short `rfl` chunks against explicit checkpoint states and compose them with
-   `symProgRunSteps_trans`, then lift the run with
-   `symProgRunSteps_entry_behavior`.
+4. **Bounded runs (`symProgRunSteps`):** a proof checks a run with `rfl` and
+   lifts it with `symProgRunSteps_entry_behavior`. Because every intermediate
+   state is forced (`forceSymProg`), one `rfl` covers runs of dozens of steps
+   under the default `maxHeartbeats`; longer runs can still be checked in
+   chunks against explicit checkpoint states composed with
+   `symProgRunSteps_trans`.
 -/
 
 private theorem if_false_eq {α : Type} {t e : α} :
@@ -1345,16 +1347,184 @@ theorem symProgStep_ret {p : Program} {s : SymProg} {v : SymVal}
             | coreCall _ _ _ _ _ => rw [hT] at h; cases h
             | unsupported => rw [hT] at h; cases h
 
+/-! ## Forcing intermediate states
+
+`symProgStep` builds its successor lazily: struct updates, `Option.map`
+continuations, and `compSetElem?` results all keep pointing at the previous
+state. Neither the elaborator's `whnf` nor `isDefEq` shares work across those
+wrappers, so a field read at step `n` re-reduces the steps before it, and an
+`rfl` check of a `k`-step run grows exponentially in `k` (a 13-step run with
+one sysroot call exceeds the default `maxHeartbeats`).
+
+`forceSymProg s k` case-splits `s` down to its frame and slot constructors in
+continuation-passing style and passes `k` the rebuilt state, whose fields are
+then the reduced subterms rather than references into earlier states.
+`symProgRunSteps` forces every intermediate state through the discriminant of a
+`match`, so `whnf` reduces the whole run in one pass. Each `force*` function is
+extensionally the identity (`force*_eq`), so forcing changes only reduction
+cost, not meaning. -/
+
+/-- Rebuild `n` from its head constructor before passing it to `k`. -/
+@[expose] def forceNatHead {α : Type} (n : Nat) (k : Nat → α) : α :=
+  @Nat.casesOn (fun _ => α) n (k 0) (fun m => k (Nat.succ m))
+
+theorem forceNatHead_eq {α : Type} (n : Nat) (k : Nat → α) :
+    forceNatHead n k = k n := by
+  cases n <;> rfl
+
+/-- Rebuild `o` from its head constructor before passing it to `k`. -/
+@[expose] def forceOptionHead {β α : Type} (o : Option β)
+    (k : Option β → α) : α :=
+  match o with
+  | none => k none
+  | some x => k (some x)
+
+theorem forceOptionHead_eq {β α : Type} (o : Option β) (k : Option β → α) :
+    forceOptionHead o k = k o := by
+  cases o <;> rfl
+
+/-- Rebuild the spine of `xs`, forcing each element with `fe`, before passing
+it to `k`. -/
+@[expose] def forceListWith {β α : Type}
+    (fe : β → (β → List β → α) → List β → α) (xs : List β)
+    (k : List β → α) : α :=
+  List.foldr
+    (fun (x : β) (ih : (List β → α) → α) (k : List β → α) =>
+      ih fun tl => fe x (fun x' tl' => k (x' :: tl')) tl)
+    (fun k => k []) xs k
+
+theorem forceListWith_eq {β α : Type}
+    {fe : β → (β → List β → α) → List β → α}
+    (hfe : ∀ x c tl, fe x c tl = c x tl) :
+    ∀ (xs : List β) (k : List β → α), forceListWith fe xs k = k xs
+  | [], _ => rfl
+  | x :: xs, k => by
+    change forceListWith fe xs
+        (fun tl => fe x (fun x' tl' => k (x' :: tl')) tl) = k (x :: xs)
+    exact (forceListWith_eq hfe xs _).trans (hfe x _ xs)
+
+/-- Rebuild `v` from its head constructor. -/
+@[expose] def forceSymVal {α : Type} (v : SymVal) (k : SymVal → α) : α :=
+  match v with
+  | .conc c => k (.conc c)
+  | .scalar x => k (.scalar x)
+  | .bool b => k (.bool b)
+  | .pair a b => k (.pair a b)
+
+theorem forceSymVal_eq {α : Type} (v : SymVal) (k : SymVal → α) :
+    forceSymVal v k = k v := by
+  cases v <;> rfl
+
+/-- Rebuild a slot, including the head of its value, as a list element. -/
+@[expose] def forceSymSlot {α : Type} (sl : SymSlot)
+    (k : SymSlot → List SymSlot → α) (tl : List SymSlot) : α :=
+  match sl with
+  | .dead => k .dead tl
+  | .immediate none => k (.immediate none) tl
+  | .immediate (some v) => forceSymVal v fun v' => k (.immediate (some v')) tl
+
+theorem forceSymSlot_eq {α : Type} (sl : SymSlot)
+    (k : SymSlot → List SymSlot → α) (tl : List SymSlot) :
+    forceSymSlot sl k tl = k sl tl := by
+  cases sl with
+  | dead => rfl
+  | immediate o =>
+    cases o with
+    | none => rfl
+    | some v => exact forceSymVal_eq v (fun v' => k (.immediate (some v')) tl)
+
+/-- Rebuild a frame's block, statement index, and slots. -/
+@[expose] def forceSymState {α : Type} (s : SymState) (k : SymState → α) : α :=
+  match s with
+  | ⟨b, i, ls⟩ =>
+    forceNatHead b fun b' => forceNatHead i fun i' =>
+      forceListWith forceSymSlot ls fun ls' => k ⟨b', i', ls'⟩
+
+theorem forceSymState_eq {α : Type} (s : SymState) (k : SymState → α) :
+    forceSymState s k = k s := by
+  cases s with
+  | mk b i ls =>
+    change forceNatHead b (fun b' => forceNatHead i fun i' =>
+      forceListWith forceSymSlot ls fun ls' => k ⟨b', i', ls'⟩) = _
+    exact (forceNatHead_eq b _).trans ((forceNatHead_eq i _).trans
+      (forceListWith_eq forceSymSlot_eq ls _))
+
+/-- Rebuild a frame's call-stack metadata. -/
+@[expose] def forceFrameMeta {α : Type} (m : FrameMeta) (k : FrameMeta → α) :
+    α :=
+  match m with
+  | ⟨d, op, dst, tgt⟩ =>
+    forceNatHead d fun d' => forceOptionHead op fun op' =>
+      forceOptionHead dst fun dst' => forceOptionHead tgt fun tgt' =>
+        k ⟨d', op', dst', tgt'⟩
+
+theorem forceFrameMeta_eq {α : Type} (m : FrameMeta) (k : FrameMeta → α) :
+    forceFrameMeta m k = k m := by
+  cases m with
+  | mk d op dst tgt =>
+    change forceNatHead d (fun d' => forceOptionHead op fun op' =>
+      forceOptionHead dst fun dst' => forceOptionHead tgt fun tgt' =>
+        k ⟨d', op', dst', tgt'⟩) = _
+    exact (forceNatHead_eq d _).trans ((forceOptionHead_eq op _).trans
+      ((forceOptionHead_eq dst _).trans (forceOptionHead_eq tgt _)))
+
+/-- Rebuild a frame as a list element. -/
+@[expose] def forceSymFrame {α : Type} (f : SymFrame)
+    (k : SymFrame → List SymFrame → α) (tl : List SymFrame) : α :=
+  match f with
+  | ⟨c, h⟩ => forceSymState c fun c' => forceFrameMeta h fun h' => k ⟨c', h'⟩ tl
+
+theorem forceSymFrame_eq {α : Type} (f : SymFrame)
+    (k : SymFrame → List SymFrame → α) (tl : List SymFrame) :
+    forceSymFrame f k tl = k f tl := by
+  cases f with
+  | mk c h =>
+    change forceSymState c
+      (fun c' => forceFrameMeta h fun h' => k ⟨c', h'⟩ tl) = _
+    exact (forceSymState_eq c _).trans (forceFrameMeta_eq h _)
+
+/-- Rebuild a side condition as a list element. -/
+@[expose] def forceSymCond {α : Type} (c : SymCond)
+    (k : SymCond → List SymCond → α) (tl : List SymCond) : α :=
+  match c with
+  | .ok op a b => k (.ok op a b) tl
+
+theorem forceSymCond_eq {α : Type} (c : SymCond)
+    (k : SymCond → List SymCond → α) (tl : List SymCond) :
+    forceSymCond c k tl = k c tl := by
+  cases c; rfl
+
+/-- Rebuild a call stack and its side conditions. -/
+@[expose] def forceSymProg {α : Type} (s : SymProg) (k : SymProg → α) : α :=
+  match s with
+  | ⟨fs, cs⟩ =>
+    forceListWith forceSymFrame fs fun fs' =>
+      forceListWith forceSymCond cs fun cs' => k ⟨fs', cs'⟩
+
+theorem forceSymProg_eq {α : Type} (s : SymProg) (k : SymProg → α) :
+    forceSymProg s k = k s := by
+  cases s with
+  | mk fs cs =>
+    change forceListWith forceSymFrame fs (fun fs' =>
+      forceListWith forceSymCond cs fun cs' => k ⟨fs', cs'⟩) = _
+    exact (forceListWith_eq forceSymFrame_eq fs _).trans
+      (forceListWith_eq forceSymCond_eq cs _)
+
 /-- Run at most `k` multi-frame symbolic steps (`@Nat.rec`, `0`
 `._unsafe_rec`), returning `.step s'` for the state reached after exactly `k`
-steps if the run has neither returned nor become stuck. -/
+steps if the run has neither returned nor become stuck. Each intermediate
+state is forced (`forceSymProg`) in the discriminant of a `match`, so a single
+`rfl` can check runs of dozens of steps (see the section comment above). -/
 @[expose] noncomputable def symProgRunSteps (p : Program) (k : Nat)
     (s : SymProg) : SymProgRes :=
   @Nat.rec (fun _ => SymProg → SymProgRes)
     (fun st => .step st)
     (fun _ ih st =>
       match symProgStep p st with
-      | .step st' => ih st'
+      | .step st' =>
+        match forceSymProg st' some with
+        | some st'' => ih st''
+        | none => .stuck
       | .ret v cs => .ret v cs
       | .stuck => .stuck)
     k s
@@ -1367,7 +1537,21 @@ theorem symProgRunSteps_succ (p : Program) (k : Nat) (s : SymProg) :
       match symProgStep p s with
       | .step s' => symProgRunSteps p k s'
       | .ret v cs => .ret v cs
-      | .stuck => .stuck := rfl
+      | .stuck => .stuck := by
+  change (match symProgStep p s with
+    | .step s' =>
+      match forceSymProg s' some with
+      | some s'' => symProgRunSteps p k s''
+      | none => .stuck
+    | .ret v cs => .ret v cs
+    | .stuck => .stuck) = _
+  cases symProgStep p s with
+  | step s' =>
+    exact congrArg (fun o => match o with
+      | some s'' => symProgRunSteps p k s''
+      | none => .stuck) (forceSymProg_eq s' some)
+  | ret v cs => rfl
+  | stuck => rfl
 
 theorem symProgRunSteps_add (p : Program) :
     ∀ (m n : Nat) (s : SymProg),

@@ -333,6 +333,76 @@ theorem parityEvenCall_behavior (b : BitVec 8) :
   rw [hOut] at hB
   exact hB.2.1
 
+/-!
+# Single-`rfl` Canary: `add_u32`
+
+`canaryBodyAddU32` is the MIR that `anneal-rustc-capture` emits for
+
+```rust
+#![no_std]
+
+pub fn add_u32(a: u64, b: u32) -> u64 {
+    a.wrapping_add(b as u64)
+}
+```
+
+(edition 2021, `panic = "abort"`), transcribed with the same statements in the
+same order. The run takes 13 steps across one `u64::wrapping_add` sysroot call.
+Checking it with one `rfl` under the default `maxHeartbeats` relies on
+`symProgRunSteps` forcing each intermediate state (`forceSymProg`).
+-/
+
+/-- Body `0`: `add_u32`. -/
+noncomputable def canaryBodyAddU32 : Body :=
+  { identity := "rust-path-v1::add_u32"
+    isUnsafe := false
+    argumentCount := 2
+    locals := [.int .i64 false, .int .i64 false, .int .i32 false,
+               .int .i64 false, .int .i64 false, .int .i32 false]
+    basicBlocks :=
+      [ { statements :=
+            [ .storageLive 3,
+              .assign { localId := 3, projection := [] }
+                (.use (.copy { localId := 1, projection := [] })),
+              .storageLive 4,
+              .storageLive 5,
+              .assign { localId := 5, projection := [] }
+                (.use (.copy { localId := 2, projection := [] })),
+              .assign { localId := 4, projection := [] }
+                (.cast .intToInt (.move { localId := 5, projection := [] })
+                  (.int .i64 false)),
+              .storageDead 5 ]
+          terminator := .sysrootCall ⟨.wrappingAdd, .i64, false⟩
+            [ .move { localId := 3, projection := [] },
+              .move { localId := 4, projection := [] } ]
+            { localId := 0, projection := [] } (some 1) .unreachable
+          cleanup := false },
+        { statements := [.storageDead 4, .storageDead 3]
+          terminator := .return_
+          cleanup := false } ] }
+
+/-- The captured one-body program. -/
+noncomputable def canaryProgAddU32 : Program :=
+  { pointerWidthBits := 64
+    mirProfileVersion := 1
+    scope := .crate
+    entryDefId := 0
+    bodies := [canaryBodyAddU32]
+    overflowChecks := false
+    panicStrategy := .abort
+    hasLocalPanicHandler := false }
+
+noncomputable abbrev addA : SymScalar := .var 0 .i64 false
+noncomputable abbrev addB : SymScalar := .var 1 .i32 false
+
+/-- Kernel-checked single-`rfl` canary (default `maxHeartbeats`): the whole
+13-step run of `add_u32`, including its sysroot call, returns
+`a + (b as u64)` with no side conditions. -/
+theorem symExec_addU32_canary :
+    symProgRunSteps (entryProgForBody canaryProgAddU32 0) 13
+        (symProgEntry 0 canaryBodyAddU32 [.scalar addA, .scalar addB]) =
+      .ret (.scalar (.binOp .add addA (.cast .i64 false addB))) [] := rfl
+
 end Anneal.MirSymExecCall.Canaries
 
 end
