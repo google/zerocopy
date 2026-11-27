@@ -1,0 +1,78 @@
+{
+  "schema_version": 1,
+  "compilation": {
+    "source_root": "../../src",
+    "crate_root": "lib.rs",
+    "crate_name": "zerocopy",
+    "edition": "2021",
+    "target": "x86_64-unknown-linux-gnu",
+    "cfg": [
+      "no_zerocopy_allocator_api_1_100_0"
+    ],
+    "env": {
+      "CARGO_PKG_VERSION": "0.8.64"
+    },
+    "source_files": [
+      "byte_slice.rs",
+      "byteorder.rs",
+      "deprecated.rs",
+      "error.rs",
+      "impls.rs",
+      "layout.rs",
+      "lib.rs",
+      "macros.rs",
+      "pointer/inner.rs",
+      "pointer/invariant.rs",
+      "pointer/mod.rs",
+      "pointer/ptr.rs",
+      "pointer/transmute.rs",
+      "ref.rs",
+      "split_at.rs",
+      "util/macro_util.rs",
+      "util/macros.rs",
+      "util/mod.rs",
+      "wrappers.rs"
+    ]
+  },
+  "scope": {
+    "kind": "selected_unit",
+    "roots": [
+      "<byteorder::Order as core::clone::Clone>::clone",
+      "<byteorder::Order as core::cmp::Eq>::assert_fields_are_eq",
+      "<byteorder::Order as core::cmp::PartialEq>::eq",
+      "<layout::CastType as core::clone::Clone>::clone",
+      "_::<impl KnownLayout for ()>::pointer_to_metadata",
+      "_::<impl KnownLayout for u8>::pointer_to_metadata",
+      "_::<impl KnownLayout for i8>::pointer_to_metadata",
+      "_::<impl KnownLayout for u16>::pointer_to_metadata",
+      "_::<impl KnownLayout for i16>::pointer_to_metadata",
+      "_::<impl KnownLayout for u32>::pointer_to_metadata",
+      "_::<impl KnownLayout for i32>::pointer_to_metadata",
+      "_::<impl KnownLayout for u64>::pointer_to_metadata",
+      "_::<impl KnownLayout for i64>::pointer_to_metadata",
+      "_::<impl KnownLayout for u128>::pointer_to_metadata",
+      "_::<impl KnownLayout for i128>::pointer_to_metadata",
+      "_::<impl KnownLayout for usize>::pointer_to_metadata",
+      "_::<impl KnownLayout for isize>::pointer_to_metadata",
+      "_::<impl KnownLayout for bool>::pointer_to_metadata",
+      "_::<impl KnownLayout for char>::pointer_to_metadata"
+    ]
+  },
+  "proof": {
+    "source_root": ".",
+    "specification": "Spec.specs",
+    "theorem": "Proof.verify",
+    "sources": [
+      {
+        "module": "Spec",
+        "path": "Spec.lean",
+        "role": "specification"
+      },
+      {
+        "module": "Proof",
+        "path": "Proof.lean",
+        "role": "proof"
+      }
+    ]
+  }
+}
