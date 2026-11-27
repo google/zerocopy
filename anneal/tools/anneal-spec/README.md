@@ -30,8 +30,9 @@ specification, and `--check` rejects a stale file.
 The workspace lives in Anneal's untrusted `tools/` zone
 (`anneal/tools/anneal-spec/`), outside Anneal's `trusted/` TCB and `tests/`
 suites. It does not depend on any `anneal/` crate, and no `trusted/` or
-`tests/` crate may depend on `tools/`. CI runs its unit tests, formatting
-checks, and `--check` freshness on `tests/zerocopy/`.
+`tests/` crate may depend on `tools/`. CI runs its unit tests and formatting
+checks, and checks that every generated specification in `zerocopy/proofs` is
+fresh.
 
 ## Attaching specifications
 
@@ -168,22 +169,22 @@ those names (and `Specs`) are reserved for them.
 `spec_span_map.json` maps each generated declaration's Lean line range to the
 Rust span it came from.
 
-`tests/zerocopy/` holds specifications for verbatim `zerocopy` functions
-together with their generated outputs and proofs. A unit's specifications come
-from exactly one of a companion `spec.rs` or a `spec_sources.json` such as
-`{"files": ["lib.rs"]}`. The latter names `zerocopy/src` files, each also
-listed in the unit's `compilation.source_files`, whose inline `anneal::spec`
-attributes are lowered from the crate root, so editing one of those attributes
-makes the freshness check fail.
+The CI verifier also accepts `anneal-spec` units of its own under
+`tests/zerocopy/`, whose specifications come from exactly one of a companion
+`spec.rs` or a `spec_sources.json` such as `{"files": ["lib.rs"]}`. The
+`zerocopy` specifications that used to live there are now written inline in
+`zerocopy/src` and verified through `zerocopy/proofs`, so none remain.
 
-A `zerocopy/proofs` unit can instead take its specification from inline
-attributes, one claim at a time. Its `spec_sources.json` binds a claim, as in
+A `zerocopy/proofs` unit can take its specification from inline attributes,
+one claim at a time. Its `spec_sources.json` binds a claim, as in
 `{"files": ["lib.rs"], "claim": "zc01_usize_pointer_metadata"}`, and the unit
 checks in the span-free module `Specs/zerocopy/<claim>.lean` (from
 `--format v2-module --crate-slug zerocopy --claim <claim>`) as its only
 specification source, with `proof.specification` set to
 `Specs.zerocopy.<claim>.specs`. `verify_zerocopy.py` verifies such a unit like
-any other; the `anneal-spec` verifier checks that its module is fresh.
+any other; the `anneal-spec` verifier checks that its module is fresh, and runs
+its negative controls (a falsified inline specification and a mismatched
+signature must both fail to verify) on `02_unit_pointer_metadata`.
 
 The CI verifier also checks contract uniqueness: it lists the items specified
 in every `zerocopy/src` file and in every companion `spec.rs`. An item

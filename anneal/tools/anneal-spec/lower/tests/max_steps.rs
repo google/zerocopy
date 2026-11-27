@@ -8,7 +8,7 @@
 
 use std::{fs, path::Path, process::Command};
 
-use anneal_spec_lower::{lower, module_path, Lowered, Source};
+use anneal_spec_lower::{lower, lower_with, module_path, Format, Lowered, Options, Source};
 
 fn src(label: &str, text: &str) -> Source {
     Source { label: label.into(), text: text.into(), module: Vec::new() }
@@ -35,44 +35,57 @@ fn wrap(attr: &str, sig: &str) -> String {
     format!("anneal::external_spec! {{ #[anneal::spec({attr})] {sig}; }}")
 }
 
-const MAX_STEPS_UNIT: &str = "05_usize_pointer_metadata_max_steps";
+/// The external form of the step-bounded `<usize as PointerMetadata>`
+/// specification that `zerocopy/src/lib.rs` writes inline.
+const USIZE_MAX_STEPS_SPEC: &str = "anneal::external_spec! {
+    impl PointerMetadata for usize {
+        #[anneal::spec(terminates, no_panic, max_steps = 2, ensures(|ret| ret == elems))]
+        fn from_elem_count(elems: usize) -> Self;
 
-fn unit_dir(unit: &str) -> std::path::PathBuf {
-    Path::new(env!("CARGO_MANIFEST_DIR")).join("../tests/zerocopy").join(unit)
+        #[anneal::spec(terminates, no_panic, max_steps = 2, ensures(|count| count == self))]
+        fn to_elem_count(self) -> usize;
+    }
 }
+";
 
 #[test]
 fn max_steps_zerocopy_unit_matches_checked_in_golden_and_cli_check() {
-    let dir = unit_dir(MAX_STEPS_UNIT);
-    let text = fs::read_to_string(dir.join("spec.rs")).unwrap();
+    let src = Path::new(env!("CARGO_MANIFEST_DIR")).join("../../../../zerocopy/src");
+    let unit = src.join("../proofs/01_usize_pointer_metadata");
+    let claim = "zc01_usize_pointer_metadata";
     let sources = [Source {
-        label: format!("tests/zerocopy/{MAX_STEPS_UNIT}/spec.rs"),
-        text,
-        module: Vec::new(),
+        label: "lib.rs".into(),
+        text: fs::read_to_string(src.join("lib.rs")).unwrap(),
+        module: module_path("lib.rs"),
     }];
-    let l = lower(&sources).unwrap_or_else(|e| panic!("{}", e[0].render(&sources)));
-    assert_eq!(l.spec_lean, fs::read_to_string(dir.join("Spec.lean")).unwrap());
-    assert_eq!(l.span_map, fs::read_to_string(dir.join("spec_span_map.json")).unwrap());
+    let opts = Options {
+        claim: Some(claim.into()),
+        format: Format::V2Module,
+        crate_slug: Some("zerocopy".into()),
+        ..Options::default()
+    };
+    let l = lower_with(&sources, &opts).unwrap_or_else(|e| panic!("{}", e[0].render(&sources)));
+    let golden = fs::read_to_string(unit.join(format!("Specs/zerocopy/{claim}.lean"))).unwrap();
+    assert_eq!(l.spec_lean, golden);
+    assert!(golden.contains("entrySatisfiesStepBound p fn0_id"), "{golden}");
+    assert!(golden.contains("entrySatisfiesStepBound p fn1_id"), "{golden}");
 
     let bin = env!("CARGO_BIN_EXE_anneal-spec-lower");
-    let root = Path::new(env!("CARGO_MANIFEST_DIR")).join("..");
     let status = Command::new(bin)
-        .args([
-            "--src-root",
-            ".",
-            "--check",
-            &format!("tests/zerocopy/{MAX_STEPS_UNIT}"),
-            &format!("tests/zerocopy/{MAX_STEPS_UNIT}/spec.rs"),
-        ])
-        .current_dir(&root)
+        .arg("--src-root")
+        .arg(&src)
+        .args(["--format", "v2-module", "--crate-slug", "zerocopy", "--claim", claim])
+        .arg("--check")
+        .arg(&unit)
+        .arg("lib.rs")
         .status()
         .unwrap();
-    assert!(status.success(), "{MAX_STEPS_UNIT}: --check failed");
+    assert!(status.success(), "{claim}: --check failed");
 }
 
 #[test]
 fn inline_and_external_max_steps_lower_to_identical_spec_lean() {
-    let external = fs::read_to_string(unit_dir(MAX_STEPS_UNIT).join("spec.rs")).unwrap();
+    let external = USIZE_MAX_STEPS_SPEC;
     let inline = r#"
 pub trait PointerMetadata { fn from_elem_count(elems: usize) -> Self; fn to_elem_count(self) -> usize; }
 
@@ -88,7 +101,7 @@ impl PointerMetadata for usize {
     }
 }
 "#;
-    let a = lower_one(&external).unwrap();
+    let a = lower_one(external).unwrap();
     let b = lower(&[Source {
         label: "lib.rs".into(),
         text: inline.into(),

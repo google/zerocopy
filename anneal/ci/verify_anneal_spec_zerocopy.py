@@ -55,7 +55,14 @@ TRUSTED_IMPORT_RE = re.compile(
 
 
 def discover_spec_units(proofs_dir, src_dir):
-    """Validate `proofs_dir` hygiene and return ordered `(unit_dir, req)`."""
+    """Validate `proofs_dir` hygiene and return ordered `(unit_dir, req)`.
+
+    `proofs_dir` holds `anneal-spec`'s own units. It may be absent: the
+    `zerocopy` specifications it once held now live inline, verified through
+    claim-bound `zerocopy/proofs` units (`discover_crate_units`).
+    """
+    if not proofs_dir.exists() and not proofs_dir.is_symlink():
+        return []
     if not proofs_dir.is_dir() or proofs_dir.is_symlink():
         raise RuntimeError(f"invalid anneal-spec proofs directory: {proofs_dir}")
     resolved_src = src_dir.resolve(strict=True)
@@ -148,8 +155,6 @@ def discover_spec_units(proofs_dir, src_dir):
             )
         units.append((entry, request))
 
-    if not units:
-        raise RuntimeError(f"no units discovered under {proofs_dir}")
     return units
 
 
@@ -700,7 +705,8 @@ def _mutate_negative_spec(arguments, neg_dir, work_dir):
     A companion `spec.rs` is mutated in the copied unit. For a
     `spec_sources.json` unit, the crate sources are copied, the inline
     specification is mutated in the copy, and the unit's request is pointed at
-    it. Returns the lowering command that regenerates the unit's `Spec.lean`.
+    it. Returns the lowering command that regenerates the unit's specification
+    (`Spec.lean`, or a claim-bound unit's generated `Specs/<crate>/<claim>.lean`).
     """
     def mutate_once(paths, what):
         # The needle must occur exactly once across all of `paths`.
@@ -722,7 +728,7 @@ def _mutate_negative_spec(arguments, neg_dir, work_dir):
     request = load_strict_json(
         (neg_dir / "request.json").read_text(encoding="utf-8")
     )
-    files = load_spec_sources(neg_dir, request, src_dir)
+    files, claim = load_spec_binding(neg_dir, request, src_dir)
     neg_src = work_dir / f"{neg_dir.name}-src"
     shutil.copytree(src_dir, neg_src, symlinks=True)
     mutate_once(
@@ -730,14 +736,41 @@ def _mutate_negative_spec(arguments, neg_dir, work_dir):
         "the negative-control inline specification",
     )
     _rewrite_source_root(neg_dir, neg_src)
+    claim_args = []
+    if claim is not None:
+        claim_args = [
+            "--format",
+            "v2-module",
+            "--crate-slug",
+            request["compilation"]["crate_name"],
+            "--claim",
+            claim,
+        ]
     return [
         str(arguments.lower),
         "--src-root",
         str(neg_src),
+        *claim_args,
         "--out-dir",
         str(neg_dir),
         *files,
     ]
+
+
+def _specification_path(unit_dir):
+    """The unit's specification source: `Spec.lean`, or the generated module
+    a claim-bound unit's request names."""
+    request = load_strict_json(
+        (unit_dir / "request.json").read_text(encoding="utf-8")
+    )
+    paths = [
+        s["path"]
+        for s in request["proof"]["sources"]
+        if s.get("role") == "specification"
+    ]
+    if len(paths) != 1:
+        raise RuntimeError(f"{unit_dir.name}: expected one specification source")
+    return unit_dir / paths[0]
 
 
 def run_negative_controls(arguments, base_unit_dir, work_dir):
@@ -762,7 +795,7 @@ def run_negative_controls(arguments, base_unit_dir, work_dir):
                     f"{lower_proc.stdout}{lower_proc.stderr}"
                 )
         else:
-            spec_lean = neg_dir / "Spec.lean"
+            spec_lean = _specification_path(neg_dir)
             lean_text = spec_lean.read_text(encoding="utf-8")
             mutated = lean_text.replace(
                 "ret := .int .isize false }",
@@ -771,7 +804,7 @@ def run_negative_controls(arguments, base_unit_dir, work_dir):
             )
             if mutated == lean_text:
                 raise RuntimeError(
-                    "failed to mutate ContractSignature in Spec.lean"
+                    f"failed to mutate ContractSignature in {spec_lean.name}"
                 )
             spec_lean.write_text(mutated, encoding="utf-8")
 
@@ -845,7 +878,13 @@ def run_suite(arguments, work_dir):
         for future in futures:
             name, record = future.result()
             unit_results[name] = record
-    neg_base = next((u for u, _ in units if u.name == NEG_UNIT), None)
+    # The base is a claim-bound `zerocopy/proofs` unit, or an `anneal-spec`
+    # unit of the same name.
+    neg_base = next(
+        (u for u in [u for u, _ in units] + [c[0] for c in crate_units]
+         if u.name == NEG_UNIT),
+        None,
+    )
     if neg_base is None:
         raise RuntimeError(f"missing negative-control base unit {NEG_UNIT}")
     negatives = run_negative_controls(arguments, neg_base, work_dir)
@@ -921,7 +960,11 @@ def main(argv=None):
             parser.error(f"the following arguments are required: --{required}")
         setattr(arguments, required, val.resolve(strict=True))
 
-    arguments.proofs_dir = arguments.proofs_dir.resolve(strict=True)
+    # The directory may be absent, but not a symlink: keep its last component
+    # unresolved so that `discover_spec_units` sees it as it is.
+    arguments.proofs_dir = (
+        arguments.proofs_dir.parent.resolve(strict=True) / arguments.proofs_dir.name
+    )
     arguments.src_root = arguments.src_root.resolve(strict=True)
     arguments.src_dir = arguments.src_dir.resolve(strict=True)
     arguments.zerocopy_proofs_dir = arguments.zerocopy_proofs_dir.resolve(strict=True)

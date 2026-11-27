@@ -853,6 +853,127 @@ class VerifyAnnealSpecZerocopyTests(unittest.TestCase):
             with self.assertRaisesRegex(RuntimeError, "belong in zerocopy/proofs"):
                 verify_anneal_spec_zerocopy.discover_spec_units(proofs_dir, src_dir)
 
+    def test_negative_controls_support_claim_bound_crate_units(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            spec_root, proofs_dir, src_dir, _ = make_fixture(root)
+            # `anneal-spec`'s own unit directory may be absent.
+            shutil.rmtree(proofs_dir)
+            self.assertEqual(
+                verify_anneal_spec_zerocopy.discover_spec_units(proofs_dir, src_dir), []
+            )
+            (src_dir / "lib.rs").write_text(
+                '#[cfg_attr(anneal, anneal::spec(claim = "zc02", total, '
+                "ensures(|count| count == 0)))]\nfn to_elem_count() {}\n",
+                encoding="utf-8",
+            )
+            unit = root / "zerocopy/proofs/02_unit_pointer_metadata"
+            (unit / "Specs/zerocopy").mkdir(parents=True)
+            (unit / "Specs/zerocopy/zc02.lean").write_text(
+                "signature := some { isUnsafe := false, params := [.unit], "
+                "ret := .int .isize false }\n",
+                encoding="utf-8",
+            )
+            (unit / "spec_sources.json").write_text(
+                '{"files": ["lib.rs"], "claim": "zc02"}', encoding="utf-8"
+            )
+            (unit / "request.json").write_text(json.dumps({
+                "compilation": {"crate_name": "zerocopy", "source_root": "../../src",
+                                "source_files": ["lib.rs"]},
+                "proof": {
+                    "specification": "Specs.zerocopy.zc02.specs",
+                    "sources": [
+                        {"module": "Specs.zerocopy.zc02",
+                         "path": "Specs/zerocopy/zc02.lean", "role": "specification"},
+                        {"module": "Proof", "path": "Proof.lean", "role": "proof"},
+                    ],
+                },
+            }), encoding="utf-8")
+            work = root / "work"
+            work.mkdir()
+            args = SimpleNamespace(
+                src_root=spec_root, src_dir=src_dir, lower=root / "lower",
+                cli=root / "cargo-anneal", capture=root / "capture",
+                sysroot=root / "sysroot", lean=root / "lean", timeout=30,
+            )
+            lower_cmds = []
+
+            def fake_run(cmd, **_kwargs):
+                if cmd[0] == str(args.lower):
+                    lower_cmds.append(cmd)
+                    return subprocess.CompletedProcess(cmd, 0, "", "")
+                return subprocess.CompletedProcess(
+                    cmd, 1, json.dumps({"status": "proof_failed"}), ""
+                )
+
+            with mock.patch(
+                "verify_anneal_spec_zerocopy.subprocess.run", side_effect=fake_run
+            ):
+                results = verify_anneal_spec_zerocopy.run_negative_controls(
+                    args, unit, work
+                )
+            self.assertEqual(
+                {k: v["status"] for k, v in results.items()},
+                {"mutated_spec_rs": "proof_failed", "mismatched_signature": "proof_failed"},
+            )
+            neg = work / "neg-mutated_spec_rs"
+            self.assertEqual(
+                lower_cmds,
+                [[str(args.lower), "--src-root", str(work / "neg-mutated_spec_rs-src"),
+                  "--format", "v2-module", "--crate-slug", "zerocopy", "--claim", "zc02",
+                  "--out-dir", str(neg), "lib.rs"]],
+            )
+            self.assertIn(
+                "count == 1",
+                (work / "neg-mutated_spec_rs-src/lib.rs").read_text(encoding="utf-8"),
+            )
+            # The signature mutation edits the generated module.
+            self.assertIn(
+                ".int .i32 false",
+                (work / "neg-mismatched_signature/Specs/zerocopy/zc02.lean").read_text(
+                    encoding="utf-8"
+                ),
+            )
+
+            # The whole suite runs without `anneal-spec` units, with the
+            # negatives on the claim-bound unit.
+            suite_args = SimpleNamespace(
+                **vars(args), proofs_dir=proofs_dir,
+                zerocopy_proofs_dir=root / "zerocopy/proofs",
+                trusted_lean=make_trusted_tree(root), jobs=1,
+            )
+
+            def suite_run(cmd, **_kwargs):
+                if "--list-targets" in cmd:
+                    return subprocess.CompletedProcess(cmd, 0, list_targets_output(cmd), "")
+                if cmd[0] == str(args.lower) or cmd[0] == str(args.lean):
+                    return subprocess.CompletedProcess(cmd, 0, "", "")
+                return subprocess.CompletedProcess(
+                    cmd, 1, json.dumps({"status": "proof_failed"}), ""
+                )
+
+            suite_work = root / "suite-work"
+            suite_work.mkdir()
+            with mock.patch(
+                "verify_anneal_spec_zerocopy.subprocess.run", side_effect=suite_run
+            ):
+                with redirect_stdout(io.StringIO()):
+                    summary = verify_anneal_spec_zerocopy.run_suite(suite_args, suite_work)
+            self.assertEqual(summary["unit_count"], 0)
+            self.assertEqual(summary["contract_uniqueness"]["crate_units"], 1)
+            self.assertEqual(
+                {k: v["status"] for k, v in summary["negatives"].items()},
+                {"mutated_spec_rs": "proof_failed", "mismatched_signature": "proof_failed"},
+            )
+
+            # A symlinked or dangling `anneal-spec` unit directory fails closed.
+            proofs_dir.symlink_to(root / "nowhere")
+            with self.assertRaisesRegex(RuntimeError, "invalid anneal-spec proofs"):
+                verify_anneal_spec_zerocopy.discover_spec_units(proofs_dir, src_dir)
+            (root / "nowhere").mkdir()
+            with self.assertRaisesRegex(RuntimeError, "invalid anneal-spec proofs"):
+                verify_anneal_spec_zerocopy.discover_spec_units(proofs_dir, src_dir)
+
     def test_trusted_module_order_puts_imports_first_and_rejects_cycles(self):
         with tempfile.TemporaryDirectory() as tmp:
             trusted = make_trusted_tree(Path(tmp))

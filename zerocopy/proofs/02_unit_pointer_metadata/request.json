@@ -43,12 +43,12 @@
   },
   "proof": {
     "source_root": ".",
-    "specification": "Spec.specs",
+    "specification": "Specs.zerocopy.zc02_unit_pointer_metadata.specs",
     "theorem": "Proof.verify",
     "sources": [
       {
-        "module": "Spec",
-        "path": "Spec.lean",
+        "module": "Specs.zerocopy.zc02_unit_pointer_metadata",
+        "path": "Specs/zerocopy/zc02_unit_pointer_metadata.lean",
         "role": "specification"
       },
       {
