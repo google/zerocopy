@@ -171,8 +171,11 @@ balanced certificate bounded within Lean's default `maxRecDepth=512` and
     `evalBinOp_shl_eq`, `evalBinOp_shr_eq`.
   - Unsigned closed forms: `evalBinOp_add_unsigned_eq`,
     `evalBinOp_sub_unsigned_eq`, `evalBinOp_mul_unsigned_eq`,
-    `evalBinOp_shl_unsigned_eq`, `evalBinOp_shr_unsigned_eq`, and, without
-    overflow, `evalBinOp_addUnchecked_unsigned_of_lt`,
+    `evalBinOp_shl_unsigned_eq`, `evalBinOp_shr_unsigned_eq`,
+    `evalBinOp_shl_unsigned_signed_rhs_eq`,
+    `evalBinOp_shr_unsigned_signed_rhs_eq` (for untyped `i32` or other signed
+    shift-amount literals), and, without overflow,
+    `evalBinOp_addUnchecked_unsigned_of_lt`,
     `evalBinOp_mulUnchecked_unsigned_of_lt`,
     `evalBinOp_subUnchecked_unsigned_of_le`.
   - Bitwise and comparisons: `evalBinOp_bitAnd_eq`, `evalBinOp_bitOr_eq`,
