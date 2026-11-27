@@ -321,6 +321,80 @@ class VerifyZerocopyTests(unittest.TestCase):
                 finally:
                     stray_top.unlink()
 
+    def test_discover_units_accepts_generated_specification_modules(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            proofs_dir, src_dir, unit = make_proof_tree(Path(tmp))
+            gen = unit / "Specs/zerocopy/zc01.lean"
+            gen.parent.mkdir(parents=True)
+            gen.write_text(
+                "module\nprelude\ndef specs : Specs := ⟨(), ()⟩\n", encoding="utf-8"
+            )
+            (unit / "Spec.lean").unlink()
+            (unit / "spec_sources.json").write_text(
+                '{"files": ["lib.rs"], "claim": "zc01"}', encoding="utf-8"
+            )
+            req_path = unit / "request.json"
+            req = json.loads(req_path.read_text(encoding="utf-8"))
+            req["proof"]["specification"] = "Specs.zerocopy.zc01.specs"
+            for source in req["proof"]["sources"]:
+                if source["role"] == "specification":
+                    source.update(
+                        module="Specs.zerocopy.zc01", path="Specs/zerocopy/zc01.lean"
+                    )
+            req_path.write_text(json.dumps(req), encoding="utf-8")
+
+            def discover():
+                return verify_zerocopy.discover_units(proofs_dir, src_dir)
+
+            self.assertEqual([u.name for u, _ in discover()], ["01_unit"])
+
+            # The module must match its path.
+            good = json.dumps(req)
+            req_path.write_text(
+                good.replace('"module": "Specs.zerocopy.zc01"', '"module": "Specs.zc01"'),
+                encoding="utf-8",
+            )
+            with self.assertRaisesRegex(RuntimeError, "must match its path"):
+                discover()
+            req_path.write_text(good, encoding="utf-8")
+
+            # `spec_sources.json` and a generated specification come together.
+            (unit / "spec_sources.json").unlink()
+            with self.assertRaisesRegex(RuntimeError, "needs spec_sources.json"):
+                discover()
+            (unit / "spec_sources.json").write_text("{}", encoding="utf-8")
+
+            # Nothing else may live under `Specs/`.
+            for stray in ("Specs/zerocopy/other.lean", "Specs/zerocopy/x.txt"):
+                (unit / stray).write_text("", encoding="utf-8")
+                with self.assertRaisesRegex(RuntimeError, "undeclared|unexpected entry"):
+                    discover()
+                (unit / stray).unlink()
+            (unit / "Specs/x.lean").write_text("", encoding="utf-8")
+            with self.assertRaisesRegex(RuntimeError, "unexpected entry"):
+                discover()
+            (unit / "Specs/x.lean").unlink()
+            (unit / "Specs/stray").mkdir()
+            with self.assertRaisesRegex(RuntimeError, "empty directory"):
+                discover()
+            (unit / "Specs/stray").rmdir()
+            (unit / "Specs/zerocopy/link.lean").symlink_to(gen)
+            with self.assertRaisesRegex(RuntimeError, "unexpected entry"):
+                discover()
+            (unit / "Specs/zerocopy/link.lean").unlink()
+
+            # A hand-written `Spec*.lean` unit may not carry
+            # `spec_sources.json`.
+            gen.unlink()
+            gen.parent.rmdir()
+            gen.parent.parent.rmdir()
+            (unit / "Spec.lean").write_text("prelude\n", encoding="utf-8")
+            req_path.write_text(
+                json.dumps(make_unit_request()), encoding="utf-8"
+            )
+            with self.assertRaisesRegex(RuntimeError, "exactly one generated"):
+                discover()
+
     def test_discover_units_rejects_bad_source_root(self):
         with tempfile.TemporaryDirectory() as tmp:
             root = real_tmp_root(tmp)
@@ -2707,6 +2781,8 @@ class VerifyZerocopyTests(unittest.TestCase):
             for required_pat in (
                 "/zerocopy/proofs/*/request.json",
                 "/zerocopy/proofs/*/Spec*.lean",
+                "/zerocopy/proofs/*/Specs/",
+                "/zerocopy/proofs/*/spec_sources.json",
             ):
                 self.assertIn(required_pat, co_patterns)
 

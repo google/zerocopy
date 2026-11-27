@@ -176,8 +176,19 @@ listed in the unit's `compilation.source_files`, whose inline `anneal::spec`
 attributes are lowered from the crate root, so editing one of those attributes
 makes the freshness check fail.
 
+A `zerocopy/proofs` unit can instead take its specification from inline
+attributes, one claim at a time. Its `spec_sources.json` binds a claim, as in
+`{"files": ["lib.rs"], "claim": "zc01_usize_pointer_metadata"}`, and the unit
+checks in the span-free module `Specs/zerocopy/<claim>.lean` (from
+`--format v2-module --crate-slug zerocopy --claim <claim>`) as its only
+specification source, with `proof.specification` set to
+`Specs.zerocopy.<claim>.specs`. `verify_zerocopy.py` verifies such a unit like
+any other; the `anneal-spec` verifier checks that its module is fresh.
+
 The CI verifier also checks contract uniqueness: it lists the items specified
 in every `zerocopy/src` file and in every companion `spec.rs`. An item
 specified in `zerocopy/src` may not also be specified in a companion file, and
-must be lowered by exactly one unit. Companion files are independent fixtures
-and may specify the same item differently.
+must be lowered by exactly one unit: an `anneal-spec` unit whose
+`spec_sources.json` names its file, or a claim-bound `zerocopy/proofs` unit
+that names its file and claim. Companion files are independent fixtures and
+may specify the same item differently.

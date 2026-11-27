@@ -57,6 +57,17 @@ attributes across compiled sources) and every proof unit in
 `../../ci/checks.toml` (`anneal-installed-smoke`) via
 `../../anneal/ci/verify_zerocopy.py`.
 
+A unit's specification is either a hand-written `Spec*.lean` or, for
+specifications written inline in `../src/` as
+`#[cfg_attr(anneal, anneal::spec(..))]` attributes, the module
+`Specs/zerocopy/<claim>.lean` that `anneal-spec-lower --format v2-module`
+generates from them. Such a unit also has a `spec_sources.json` naming the
+source files and the claim it lowers, and CI checks that the module is fresh
+(see [`anneal-spec`][anneal-spec-doc]). Either way, the specification module
+and `request.json` are what reviewers read.
+
+[anneal-spec-doc]: ../../anneal/tools/anneal-spec/README.md
+
 ## Verified Units
 
 | Unit | Verbatim `zerocopy/src/` Targets | Properties Proved | Axioms |

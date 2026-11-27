@@ -1508,10 +1508,12 @@ def is_hrs_path(path: str, trust_tier_changed: bool = False) -> bool:
             or (name.endswith(".lean") and trust_tier_changed)):
         return True
     # Proof-unit specifications and requests, which choose the roots,
-    # sources, and specification; only `Proof.lean` is kernel-checked.
+    # sources, and specification (including the inline specifications a
+    # generated one is lowered from); only `Proof.lean` is kernel-checked.
     if path.startswith("zerocopy/proofs/") and (
-            name == "request.json"
-            or (name.endswith(".lean") and name != "Proof.lean")):
+            name in ("request.json", "spec_sources.json")
+            or (name.endswith(".lean")
+                and not (name == "Proof.lean" and len(parts) == 4))):
         return True
     if path.startswith(ANNEAL):
         rel = path[len(ANNEAL):]

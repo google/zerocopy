@@ -1057,6 +1057,9 @@ class ReviewSurfaceTests(RepoTestCase):
                      "zerocopy/proofs/01_x/Spec.lean",
                      "zerocopy/proofs/01_x/request.json",
                      "zerocopy/proofs/01_x/SpecHelpers.lean",
+                     "zerocopy/proofs/01_x/spec_sources.json",
+                     "zerocopy/proofs/01_x/Specs/zerocopy/zc01.lean",
+                     "zerocopy/proofs/01_x/Specs/zerocopy/Proof.lean",
                      "ci/checks.toml", ".cargo", "anneal/.cargo",
                      ".gitmodules", "anneal/.gitmodules",
                      "anneal/theory/bundle-manifest.json"):
