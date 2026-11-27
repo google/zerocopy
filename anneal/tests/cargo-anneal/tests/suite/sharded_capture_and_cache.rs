@@ -695,6 +695,161 @@ fn sharded_cyclic_crate_verifies_cross_shard_dag_id_tree_and_incremental_cache()
     let mut cache_final = BTreeMap::new();
     collect_oleans(&cache_dir, &mut cache_final);
     assert_eq!(cache_final, cache_after, "the unchanged rerun must only hit the shared cache");
+
+    // 7. An explicit `--prebuilt-dir` must match the run. A bundle whose
+    //    `TrustedBoundary` inspector entry was built from other inputs fails
+    //    verification instead of recompiling the inspector, while a bundle
+    //    that lists nothing defers to the shared cache, which stays unchanged.
+    let bundle = staged.root_dir().join("prebuilt");
+    fs::create_dir_all(&bundle).unwrap();
+    let zeros = "0".repeat(64);
+    let stale_manifest = json!({
+        "schema_version": 2,
+        "entries": [{
+            "kind": "inspector",
+            "module": "TrustedBoundary",
+            "lean_sha256": zeros,
+            "sysroot_manifest_sha256": zeros,
+            "source_sha256": zeros,
+            "is_module": false,
+            "flags": [],
+            "imports": [],
+            "parts": [{ "suffix": "olean", "path": "TrustedBoundary.olean", "sha256": zeros }]
+        }]
+    });
+    let prebuilt_inv = || {
+        with_host_cargo_env(
+            &staged,
+            verify_invocation(&[
+                OsStr::new("--manifest-path"),
+                manifest_path.as_os_str(),
+                OsStr::new("--proof-dir"),
+                proof_dir.as_os_str(),
+                OsStr::new("--shard-min-bodies"),
+                OsStr::new("2"),
+                OsStr::new("--shard-max-bodies"),
+                OsStr::new("2"),
+                OsStr::new("--verify-shard-plan"),
+                plan_path.as_os_str(),
+                OsStr::new("--olean-cache-dir"),
+                populated_cache.as_os_str(),
+                OsStr::new("--prebuilt-dir"),
+                bundle.as_os_str(),
+            ]),
+        )
+    };
+    fs::write(bundle.join("manifest.json"), serde_json::to_vec(&stale_manifest).unwrap()).unwrap();
+    let stale_run = run_verify_inv(&staged, &prebuilt_inv());
+    expect_failed(&stale_run, 2, "tool_failed", Some("audit"), "built from different inputs");
+    fs::write(bundle.join("manifest.json"), br#"{"schema_version":2,"entries":[]}"#).unwrap();
+    let empty_bundle_run = run_verify_inv(&staged, &prebuilt_inv());
+    expect_verified(&empty_bundle_run, "crate_verified", true);
+    // On runners whose Lean toolchain ships `share/anneal/prebuilt`, steps 1-6
+    // read bundled modules from that toolchain bundle rather than populating
+    // `cache_dir`; `empty_bundle_run` above replaces it and warms `cache_dir`,
+    // so a repeat run with the empty bundle must leave `cache_dir` untouched.
+    let mut cache_after_empty = BTreeMap::new();
+    collect_oleans(&cache_dir, &mut cache_after_empty);
+    assert!(!cache_after_empty.is_empty(), "empty bundle run must populate the shared cache");
+    let empty_bundle_rerun = run_verify_inv(&staged, &prebuilt_inv());
+    expect_verified(&empty_bundle_rerun, "crate_verified", true);
+    let mut cache_prebuilt = BTreeMap::new();
+    collect_oleans(&cache_dir, &mut cache_prebuilt);
+    assert_eq!(
+        cache_prebuilt, cache_after_empty,
+        "an empty bundle must defer to the shared cache on repeat runs"
+    );
+
+    // Build a real populated `--prebuilt-dir` bundle containing the bundled
+    // `Trusted.*`, `Anneal.*`, and inspector entries from `populated_cache`
+    // (excluding crate-local `Captured`/`Proof` shards that have pre-edit and
+    // post-edit versions), and verify against a fresh empty `--olean-cache-dir`
+    // that none of the bundle's modules are recompiled or written to disk.
+    let populated_bundle = staged.root_dir().join("prebuilt-populated");
+    fs::create_dir_all(&populated_bundle).unwrap();
+    let mut bundle_entries = Vec::new();
+    let mut bundled_keys = std::collections::BTreeSet::new();
+    let v2_root = populated_cache.join("v2");
+    let mut entry_dirs: Vec<PathBuf> = fs::read_dir(&v2_root)
+        .unwrap()
+        .map(|entry| entry.unwrap().path())
+        .filter(|path| path.join("metadata.json").is_file())
+        .collect();
+    entry_dirs.sort();
+    for entry_dir in entry_dirs {
+        let key_name = entry_dir.file_name().unwrap().to_string_lossy().into_owned();
+        let meta: serde_json::Value =
+            serde_json::from_slice(&fs::read(entry_dir.join("metadata.json")).unwrap()).unwrap();
+        let kind = meta["input"]["kind"].as_str().unwrap();
+        let module = meta["input"]["module"].as_str().unwrap();
+        let is_bundled = kind == "inspector"
+            || module == "Trusted"
+            || module.starts_with("Trusted.")
+            || module == "Anneal"
+            || module.starts_with("Anneal.");
+        if !is_bundled {
+            continue;
+        }
+        bundled_keys.insert(key_name.clone());
+        let mut entry_obj = meta["input"].as_object().unwrap().clone();
+        let mut new_parts = Vec::new();
+        for part in meta["parts"].as_array().unwrap() {
+            let rel_src = part["path"].as_str().unwrap();
+            let rel_dst = format!("{key_name}/{rel_src}");
+            let dst = populated_bundle.join(&rel_dst);
+            fs::create_dir_all(dst.parent().unwrap()).unwrap();
+            fs::copy(entry_dir.join(rel_src), &dst).unwrap();
+            new_parts.push(json!({
+                "suffix": part["suffix"],
+                "path": rel_dst,
+                "sha256": part["sha256"],
+            }));
+        }
+        entry_obj.insert("parts".to_owned(), serde_json::Value::Array(new_parts));
+        bundle_entries.push(serde_json::Value::Object(entry_obj));
+    }
+    assert!(
+        bundle_entries.iter().any(|e| e["kind"] == "inspector"),
+        "expected inspector entry in populated bundle: {bundle_entries:?}"
+    );
+    fs::write(
+        populated_bundle.join("manifest.json"),
+        serde_json::to_vec(&json!({
+            "schema_version": 2,
+            "entries": bundle_entries,
+        }))
+        .unwrap(),
+    )
+    .unwrap();
+    let fresh_cache = staged.root_dir().join("fresh-olean-cache");
+    let populated_inv = with_host_cargo_env(
+        &staged,
+        verify_invocation(&[
+            OsStr::new("--manifest-path"),
+            manifest_path.as_os_str(),
+            OsStr::new("--proof-dir"),
+            proof_dir.as_os_str(),
+            OsStr::new("--shard-min-bodies"),
+            OsStr::new("2"),
+            OsStr::new("--shard-max-bodies"),
+            OsStr::new("2"),
+            OsStr::new("--verify-shard-plan"),
+            plan_path.as_os_str(),
+            OsStr::new("--olean-cache-dir"),
+            fresh_cache.as_os_str(),
+            OsStr::new("--prebuilt-dir"),
+            populated_bundle.as_os_str(),
+        ]),
+    );
+    let populated_run = run_verify_inv(&staged, &populated_inv);
+    expect_verified(&populated_run, "crate_verified", true);
+    let fresh_v2 = fresh_cache.join("v2");
+    for key in &bundled_keys {
+        assert!(
+            !fresh_v2.join(key).exists(),
+            "bundled entry {key} must hit --prebuilt-dir rather than compiling into fresh disk cache"
+        );
+    }
 }
 
 #[test]

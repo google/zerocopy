@@ -1450,6 +1450,16 @@ impl Checker {
         self.prebuilt_olean_dir = dir;
     }
 
+    /// Make the prebuilt `.olean` directory mandatory: an absent directory or
+    /// `manifest.json`, a manifest for another cache format version, or an
+    /// entry for a module that was built from different inputs fails closed
+    /// instead of falling back to compiling. `verify` sets this for an
+    /// explicit `--prebuilt-dir`, which [`Self::set_prebuilt_olean_dir`] makes
+    /// the directory in use.
+    pub fn set_require_prebuilt_olean_dir(&mut self, required: bool) {
+        self.olean_cache.set_prebuilt_required(required);
+    }
+
     /// Use `dir` as the `.olean` disk cache root instead of the per-user
     /// default. Callers pass an absolute path; lookups and stores still
     /// reject a symlinked or foreign-owned root.
@@ -1468,6 +1478,9 @@ impl Checker {
     }
 
     fn effective_prebuilt_dir(&self, prefix: &Path) -> Option<PathBuf> {
+        if self.olean_cache.prebuilt_required() {
+            return self.prebuilt_olean_dir.clone();
+        }
         self.prebuilt_olean_dir.clone().or_else(|| {
             prefix
                 .parent()
@@ -3646,7 +3659,30 @@ impl Checker {
             format!("-M{}", self.effective_lean_memory_limit_mb(Some("compile-inspector")));
 
         let mut guard = slot.lock().unwrap_or_else(|e| e.into_inner());
-        let (olean_dest, olean_sha) = if let Some(cached) = guard.as_ref() {
+        // When an explicit `--prebuilt-dir` is required, check the prebuilt
+        // bundle before the process-global inspector cache so a stale or
+        // mismatched inspector entry fails closed even in multi-run processes.
+        let required_prebuilt_parts = if self.olean_cache.prebuilt_required()
+            && let Some(ref key_input) = inspector_cache_key
+        {
+            self.olean_cache.lookup_bytes(key_input)?
+        } else {
+            None
+        };
+        let (olean_dest, olean_sha) = if let Some(parts) = required_prebuilt_parts {
+            let (bytes, sha) = parts
+                .into_iter()
+                .find(|(suffix, _, _)| suffix == "olean")
+                .map(|(_, bytes, sha)| (bytes, sha))
+                .ok_or_else(|| {
+                    Failure::operational("olean-cache", "cached inspector missing primary olean")
+                })?;
+            let promoted =
+                materialize_cached_inspector_olean(&control_dir, stem, &bytes, &sha, compile_phase)?;
+            *guard =
+                Some(Arc::new(CompiledInspectorArtifacts { bytes, sha256: promoted.1.clone() }));
+            promoted
+        } else if let Some(cached) = guard.as_ref() {
             materialize_cached_inspector_olean(
                 &control_dir,
                 stem,
@@ -3654,7 +3690,8 @@ impl Checker {
                 &cached.sha256,
                 compile_phase,
             )?
-        } else if let Some(ref key_input) = inspector_cache_key
+        } else if !self.olean_cache.prebuilt_required()
+            && let Some(ref key_input) = inspector_cache_key
             && let Some(parts) = self.olean_cache.lookup_bytes(key_input)?
         {
             let (bytes, sha) = parts

@@ -374,6 +374,13 @@ pub struct VerifyArgs {
     /// per-user `XDG_CACHE_HOME`/`HOME` default.
     #[arg(long, global = true, value_name = "DIR", conflicts_with = "no_cache")]
     olean_cache_dir: Option<PathBuf>,
+    /// Read-only prebuilt `.olean` bundle directory (`manifest.json` and the
+    /// artifacts it lists), used instead of the installed bundle's or the Lean
+    /// prefix's `share/anneal/prebuilt`. It must exist and hold a manifest for
+    /// this cache format, and a module it lists must match this run's inputs;
+    /// otherwise verification fails rather than compiling.
+    #[arg(long, global = true, value_name = "DIR", conflicts_with = "no_cache")]
+    prebuilt_dir: Option<PathBuf>,
     /// Sharding budget configuration for Tarjan SCC `.olean` partitioning.
     #[command(flatten)]
     shard: ShardArgs,
@@ -859,6 +866,12 @@ impl VerifyArgs {
             return Err(cmd.error(
                 ErrorKind::ArgumentConflict,
                 "`--no-cache` and `--olean-cache-dir` cannot be used together",
+            ));
+        }
+        if self.no_cache && self.prebuilt_dir.is_some() {
+            return Err(cmd.error(
+                ErrorKind::ArgumentConflict,
+                "`--no-cache` and `--prebuilt-dir` cannot be used together",
             ));
         }
         #[cfg(not(feature = "setup"))]
@@ -2275,15 +2288,34 @@ struct SelectedTools {
 }
 
 fn select_tools(args: &VerifyArgs) -> Result<SelectedTools> {
-    select_tools_with(args.capture.as_deref(), args.sysroot.as_deref(), args.lean.as_deref(), true)
+    select_tools_with(
+        args.capture.as_deref(),
+        args.sysroot.as_deref(),
+        args.lean.as_deref(),
+        args.prebuilt_dir.as_deref(),
+        true,
+    )
+}
+
+/// The explicit `--prebuilt-dir`, made absolute and lexically normalized with
+/// its existing proper ancestors resolved, as for `--olean-cache-dir`, so a
+/// relative or symlinked-ancestor spelling names the real directory. The
+/// final component is never resolved, so a directory that is itself a
+/// symlink still fails the prebuilt cache's non-symlink root check.
+fn explicit_prebuilt_dir(flag: Option<&Path>) -> std::io::Result<Option<PathBuf>> {
+    flag.map(|dir| resolve_existing_ancestor(&normalize_lexical_absolute(dir)?)).transpose()
 }
 
 fn select_tools_with(
     capture: Option<&Path>,
     sysroot: Option<&Path>,
     lean: Option<&Path>,
+    prebuilt: Option<&Path>,
     require_lean: bool,
 ) -> Result<SelectedTools> {
+    let explicit_prebuilt = explicit_prebuilt_dir(prebuilt).map_err(|e| {
+        error("tool_failed", "olean-cache", format!("cannot resolve --prebuilt-dir: {e}"))
+    })?;
     #[cfg(feature = "setup")]
     {
         let needs_discovery =
@@ -2303,7 +2335,9 @@ fn select_tools_with(
             std::env::current_exe(),
         )
         .map_err(|detail| error("tool_failed", "capture-tool", detail))?;
-        let prebuilt_dir = if require_lean && lean.is_none() {
+        let prebuilt_dir = if explicit_prebuilt.is_some() {
+            explicit_prebuilt
+        } else if require_lean && lean.is_none() {
             installed.as_ref().map(crate::setup::Bundle::prebuilt_dir)
         } else {
             None
@@ -2324,7 +2358,7 @@ fn select_tools_with(
                     capture: capture.to_path_buf(),
                     sysroot: Some(sysroot.to_path_buf()),
                     lean: lean_opt.map(Path::to_path_buf),
-                    prebuilt_dir: None,
+                    prebuilt_dir: explicit_prebuilt,
                 })
             }
             _ => {
@@ -2487,39 +2521,12 @@ fn protected_olean_cache_dir_from_env(args: &VerifyArgs) -> Option<PathBuf> {
     )
 }
 
-/// Refuse an overriding `.olean` cache root that lies inside, or contains,
-/// a directory whose contents the verified checkout supplies: the working
+/// Directories whose contents the verified checkout supplies: the working
 /// directory, the manifest directory, `--proof-dir`, the request file's
-/// directory and its declared source roots, or the `rustc`-mode crate,
-/// specification, and proof directories. Cache hits are trusted on the
-/// strength of the entry's own `metadata.json`, so a root that checkout
-/// content can populate could substitute compiled `.olean` artifacts,
-/// including the auditor's `TrustedBoundary.olean`. Both the lexical and the
-/// symlink-resolved spellings of every path are compared, so a symlink in
-/// either direction cannot hide the overlap.
-fn validate_olean_cache_root(
-    args: &VerifyArgs,
-    env: Option<&OsStr>,
-) -> std::result::Result<(), String> {
-    if args.no_cache {
-        return Ok(());
-    }
-    let Some(lexical_root) = lexical_olean_cache_dir(args.olean_cache_dir.as_deref(), env)
-        .map_err(|e| format!("cannot normalize shared .olean cache root: {e}"))?
-    else {
-        return Ok(());
-    };
-    let resolved_root = resolve_existing_ancestor(&lexical_root).map_err(|e| {
-        format!("cannot resolve shared .olean cache root {}: {e}", lexical_root.display())
-    })?;
-    // A root that is itself a symlink fails the cache's own root check, but
-    // compare its target too.
-    let roots: Vec<PathBuf> = [Some(lexical_root.clone()), Some(resolved_root)]
-        .into_iter()
-        .chain(std::iter::once(fs::canonicalize(&lexical_root).ok()))
-        .flatten()
-        .collect();
-
+/// directory and its declared source roots, and the `rustc`-mode crate,
+/// specification, and proof directories. A file input contributes its
+/// directory both as spelled and after resolving the file itself.
+fn checkout_input_dirs(args: &VerifyArgs) -> Vec<(&'static str, PathBuf)> {
     let mut checkout_dirs: Vec<(&'static str, PathBuf)> = Vec::new();
     // A file input contributes its directory both as spelled and after
     // resolving the file itself, since staging opens the resolved file.
@@ -2587,8 +2594,23 @@ fn validate_olean_cache_root(
             checkout_dirs.push(("request source root", dir));
         }
     }
+    checkout_dirs
+}
 
-    for (what, dir) in checkout_dirs {
+/// Refuse a trusted-state root, named `label` in diagnostics, that lies
+/// inside or contains any of [`checkout_input_dirs`]. `roots` are the
+/// spellings of the root to compare (lexical, resolved, and canonical where
+/// available), and `why` explains the refusal. Both the lexical and the
+/// symlink-resolved spellings of every checkout directory are compared, so a
+/// symlink in either direction cannot hide the overlap.
+fn reject_checkout_overlap(
+    args: &VerifyArgs,
+    label: &str,
+    lexical_root: &Path,
+    roots: &[PathBuf],
+    why: &str,
+) -> std::result::Result<(), String> {
+    for (what, dir) in checkout_input_dirs(args) {
         // Compare the lexical spelling and the kernel's resolution, which
         // honors a `<symlink>/..` the way staging's `fs::canonicalize` does.
         let candidates: Vec<PathBuf> =
@@ -2596,13 +2618,11 @@ fn validate_olean_cache_root(
                 .into_iter()
                 .flatten()
                 .collect();
-        for root in &roots {
+        for root in roots {
             for candidate in &candidates {
                 if root.starts_with(candidate) || candidate.starts_with(root) {
                     return Err(format!(
-                        "shared .olean cache root {} must not be inside or contain the {what} {}: \
-                         cache entries are trusted as stored, so the cache root must lie \
-                         outside any checkout and be writable only by equally trusted runs",
+                        "{label} {} must not be inside or contain the {what} {}: {why}",
                         lexical_root.display(),
                         dir.display()
                     ));
@@ -2611,6 +2631,113 @@ fn validate_olean_cache_root(
         }
     }
     Ok(())
+}
+
+/// Refuse an overriding `.olean` cache root that lies inside, or contains,
+/// a directory whose contents the verified checkout supplies (see
+/// [`checkout_input_dirs`]). Cache hits are trusted on the strength of the
+/// entry's own `metadata.json`, so a root that checkout content can populate
+/// could substitute compiled `.olean` artifacts, including the auditor's
+/// `TrustedBoundary.olean`.
+fn validate_olean_cache_root(
+    args: &VerifyArgs,
+    env: Option<&OsStr>,
+) -> std::result::Result<(), String> {
+    if args.no_cache {
+        return Ok(());
+    }
+    let Some(lexical_root) = lexical_olean_cache_dir(args.olean_cache_dir.as_deref(), env)
+        .map_err(|e| format!("cannot normalize shared .olean cache root: {e}"))?
+    else {
+        return Ok(());
+    };
+    let resolved_root = resolve_existing_ancestor(&lexical_root).map_err(|e| {
+        format!("cannot resolve shared .olean cache root {}: {e}", lexical_root.display())
+    })?;
+    // A root that is itself a symlink fails the cache's own root check, but
+    // compare its target too.
+    let roots: Vec<PathBuf> = [Some(lexical_root.clone()), Some(resolved_root)]
+        .into_iter()
+        .chain(std::iter::once(fs::canonicalize(&lexical_root).ok()))
+        .flatten()
+        .collect();
+    reject_checkout_overlap(
+        args,
+        "shared .olean cache root",
+        &lexical_root,
+        &roots,
+        "cache entries are trusted as stored, so the cache root must lie outside any \
+         checkout and be writable only by equally trusted runs",
+    )
+}
+
+/// Validate an explicit `--prebuilt-dir` before anything is staged. Like
+/// the shared cache root, the bundle's artifacts are trusted as stored, so it
+/// must not lie inside or contain any of [`checkout_input_dirs`]. The
+/// directory must also already exist as a real (non-symlink) directory
+/// holding a regular `manifest.json`, so that a mistyped or missing bundle is
+/// reported up front; the prebuilt cache repeats these checks when it opens
+/// the bundle.
+fn validate_prebuilt_dir_root(args: &VerifyArgs) -> std::result::Result<(), String> {
+    let Some(flag) = args.prebuilt_dir.as_deref() else {
+        return Ok(());
+    };
+    let lexical_root = normalize_lexical_absolute(flag)
+        .map_err(|e| format!("cannot normalize --prebuilt-dir {}: {e}", flag.display()))?;
+    let resolved_root = resolve_existing_ancestor(&lexical_root)
+        .map_err(|e| format!("cannot resolve --prebuilt-dir {}: {e}", lexical_root.display()))?;
+    let roots: Vec<PathBuf> = [Some(lexical_root.clone()), Some(resolved_root.clone())]
+        .into_iter()
+        .chain(std::iter::once(fs::canonicalize(&lexical_root).ok()))
+        .flatten()
+        .collect();
+    reject_checkout_overlap(
+        args,
+        "prebuilt .olean directory",
+        &lexical_root,
+        &roots,
+        "prebuilt artifacts are trusted as stored, so the bundle must lie outside any checkout",
+    )?;
+    match fs::symlink_metadata(&resolved_root) {
+        Ok(meta) if meta.file_type().is_symlink() => {
+            return Err(format!(
+                "prebuilt .olean directory {} must not be a symlink",
+                lexical_root.display()
+            ));
+        }
+        Ok(meta) if !meta.is_dir() => {
+            return Err(format!(
+                "prebuilt .olean directory {} is not a directory",
+                lexical_root.display()
+            ));
+        }
+        Ok(_) => {}
+        Err(e) if e.kind() == std::io::ErrorKind::NotFound => {
+            return Err(format!(
+                "prebuilt .olean directory {} does not exist",
+                lexical_root.display()
+            ));
+        }
+        Err(e) => {
+            return Err(format!(
+                "cannot inspect prebuilt .olean directory {}: {e}",
+                lexical_root.display()
+            ));
+        }
+    }
+    let manifest = resolved_root.join(crate::olean_cache::PREBUILT_MANIFEST_FILE);
+    match fs::symlink_metadata(&manifest) {
+        Ok(meta) if meta.file_type().is_file() => Ok(()),
+        Ok(_) => {
+            Err(format!("prebuilt .olean manifest {} is not a regular file", manifest.display()))
+        }
+        Err(e) if e.kind() == std::io::ErrorKind::NotFound => {
+            Err(format!("prebuilt .olean manifest {} does not exist", manifest.display()))
+        }
+        Err(e) => {
+            Err(format!("cannot inspect prebuilt .olean manifest {}: {e}", manifest.display()))
+        }
+    }
 }
 
 #[derive(Clone, Debug)]
@@ -2873,6 +3000,14 @@ fn validate_receipt_out_pre_stage(
         direct_inputs.push(sysroot.to_path_buf());
         protected_dirs.push(sysroot.to_path_buf());
     }
+    if let Some(prebuilt) = args.prebuilt_dir.as_deref() {
+        direct_inputs.push(prebuilt.to_path_buf());
+        protected_dirs.push(prebuilt.to_path_buf());
+        if let Ok(Some(resolved)) = explicit_prebuilt_dir(Some(prebuilt)) {
+            direct_inputs.push(resolved.clone());
+            protected_dirs.push(resolved);
+        }
+    }
     // A receipt written into the `.olean` disk cache could replace a cache
     // entry's metadata, so protect the cache directory `run` will use,
     // including the per-user default.
@@ -2881,11 +3016,19 @@ fn validate_receipt_out_pre_stage(
         protected_dirs.push(cache_dir);
     }
     // Also guard auto-discovered toolchain paths and the running executable
-    // before preflight/staging can emit an early failure receipt.
+    // before preflight/staging can emit an early failure receipt. Discover
+    // toolchain paths independently of `--prebuilt-dir` so an unresolvable
+    // `--prebuilt-dir` cannot skip protecting auto-discovered tools.
     if let Ok(exe) = std::env::current_exe() {
         direct_inputs.push(exe);
     }
-    if let Ok(tools) = select_tools(args) {
+    if let Ok(tools) = select_tools_with(
+        args.capture.as_deref(),
+        args.sysroot.as_deref(),
+        args.lean.as_deref(),
+        None,
+        true,
+    ) {
         direct_inputs.push(tools.capture);
         if let Some(sysroot) = tools.sysroot {
             direct_inputs.push(sysroot.clone());
@@ -3948,6 +4091,7 @@ fn run<Out: std::io::Write + Send, ErrOut: std::io::Write + Send>(
         checker.set_olean_disk_cache_dir(Some(cache_dir));
     }
     checker.set_prebuilt_olean_dir(tools.prebuilt_dir);
+    checker.set_require_prebuilt_olean_dir(args.prebuilt_dir.is_some());
     checker.set_paranoid_quorum(args.paranoid_quorum);
     checker.set_generated_modules(generated_modules);
     let audit_result = checker.run_target_with_progress(&audit_request, |ev| {
@@ -4823,6 +4967,21 @@ pub fn main(args: VerifyArgs, color: ColorChoice, quiet: bool, verbose: bool) ->
             2,
         );
     }
+    if let Err(detail) = validate_prebuilt_dir_root(&args) {
+        return emit_failure(
+            &mut session,
+            resolved_format,
+            receipt_out.as_ref(),
+            taint_reasons,
+            None,
+            "tool_failed",
+            "olean-cache",
+            None,
+            &detail,
+            None,
+            2,
+        );
+    }
     let mut overwrite_inputs =
         if args.overwrite_artifacts { overwrite_protected_inputs(&args) } else { Vec::new() };
     // In Cargo mode, any target root (not only the selected one) could sit
@@ -5459,7 +5618,8 @@ fn run_shard_plan(args: &ShardPlanArgs, work: &Path) -> Result<ShardPlan> {
         symlink_policy,
         &mut originals,
     )?;
-    let tools = select_tools_with(args.capture.as_deref(), args.sysroot.as_deref(), None, false)?;
+    let tools =
+        select_tools_with(args.capture.as_deref(), args.sysroot.as_deref(), None, None, false)?;
     let shard_config = ShardConfig::from(&args.shard);
     let capture_dir = work.join("capture");
     let outcome = run_capture_process(
@@ -5775,14 +5935,26 @@ fn overwrite_protected_inputs(args: &VerifyArgs) -> Vec<PathBuf> {
         args.capture.as_deref(),
         args.sysroot.as_deref(),
         args.lean.as_deref(),
+        args.prebuilt_dir.as_deref(),
     ]
     .into_iter()
     .flatten()
     .map(Path::to_path_buf)
     .collect();
-    // Also protect the tools that `run` will discover rather than receive,
-    // and the running executable.
-    if let Ok(tools) = select_tools(args) {
+    // Protect the normalized `--prebuilt-dir` independently of tool discovery
+    // so `<symlink>/..` spellings stay protected even when `select_tools`
+    // fails, and discover installed tools without letting an unresolvable
+    // `--prebuilt-dir` drop their protection.
+    if let Ok(Some(prebuilt)) = explicit_prebuilt_dir(args.prebuilt_dir.as_deref()) {
+        inputs.push(prebuilt);
+    }
+    if let Ok(tools) = select_tools_with(
+        args.capture.as_deref(),
+        args.sysroot.as_deref(),
+        args.lean.as_deref(),
+        None,
+        true,
+    ) {
         inputs.push(tools.capture);
         inputs.extend(tools.sysroot);
         inputs.extend(tools.lean);
@@ -7113,6 +7285,7 @@ mod tests {
             no_cache: false,
             no_rebuild_bundled: false,
             olean_cache_dir: None,
+            prebuilt_dir: None,
             shard: ShardArgs::default(),
             verify_shard_plan: None,
             command: None,
@@ -7160,6 +7333,7 @@ mod tests {
                         no_cache: false,
                         no_rebuild_bundled: false,
                         olean_cache_dir: None,
+                        prebuilt_dir: None,
                         shard: ShardArgs::default(),
                         verify_shard_plan: None,
                         command: None,
@@ -7647,6 +7821,7 @@ mod tests {
             no_cache: false,
             no_rebuild_bundled: false,
             olean_cache_dir: None,
+            prebuilt_dir: None,
             shard: ShardArgs::default(),
             verify_shard_plan: None,
             command: None,
@@ -7699,6 +7874,7 @@ mod tests {
                 no_cache: false,
                 no_rebuild_bundled: false,
                 olean_cache_dir: None,
+                prebuilt_dir: None,
                 shard: ShardArgs::default(),
                 verify_shard_plan: None,
                 command: None,
@@ -8353,6 +8529,147 @@ mod tests {
         }
     }
 
+    /// `--prebuilt-dir` is a clap-level conflict with `--no-cache`, and with
+    /// explicit tools (even `--lean`, which bypasses the installed bundle) it
+    /// names the prebuilt directory in use: relative and symlinked-ancestor
+    /// spellings resolve to the real parent while the final component is kept
+    /// verbatim for the cache's own non-symlink root check.
+    #[cfg(unix)]
+    #[test]
+    fn prebuilt_dir_flag_conflicts_and_selects_bundle() {
+        #[derive(clap::Parser)]
+        struct Wrapper {
+            #[command(flatten)]
+            verify: VerifyArgs,
+        }
+        let err = <Wrapper as clap::Parser>::try_parse_from([
+            "verify",
+            "--no-cache",
+            "--prebuilt-dir",
+            "/shared/prebuilt",
+        ])
+        .err()
+        .expect("--no-cache must conflict with --prebuilt-dir");
+        assert_eq!(err.kind(), ErrorKind::ArgumentConflict);
+
+        let dir = tempfile::tempdir().unwrap();
+        let real = dir.path().join("real");
+        fs::create_dir(&real).unwrap();
+        std::os::unix::fs::symlink(&real, dir.path().join("link")).unwrap();
+        let canon_real = fs::canonicalize(&real).unwrap();
+        let flag = dir.path().join("link/x/../bundle/");
+        assert_eq!(explicit_prebuilt_dir(Some(&flag)).unwrap(), Some(canon_real.join("bundle")));
+        let root_link = dir.path().join("link");
+        assert_eq!(
+            explicit_prebuilt_dir(Some(&root_link)).unwrap(),
+            Some(fs::canonicalize(dir.path()).unwrap().join("link"))
+        );
+        assert_eq!(explicit_prebuilt_dir(None).unwrap(), None);
+
+        let selected = select_tools_with(
+            Some(Path::new("/tool/capture")),
+            Some(Path::new("/tool/sysroot")),
+            Some(Path::new("/tool/lean")),
+            Some(&flag),
+            true,
+        )
+        .unwrap_or_else(|e| panic!("explicit tools must succeed: {}", e.detail));
+        assert_eq!(selected.prebuilt_dir, Some(canon_real.join("bundle")));
+        assert_eq!(selected.lean, Some(PathBuf::from("/tool/lean")));
+        let without = select_tools_with(
+            Some(Path::new("/tool/capture")),
+            Some(Path::new("/tool/sysroot")),
+            Some(Path::new("/tool/lean")),
+            None,
+            true,
+        )
+        .unwrap_or_else(|e| panic!("explicit tools must succeed: {}", e.detail));
+        assert_eq!(without.prebuilt_dir, None);
+    }
+
+    /// An explicit prebuilt bundle must lie outside the checkout and must
+    /// already be a real directory holding a regular `manifest.json`.
+    #[cfg(unix)]
+    #[test]
+    fn validate_prebuilt_dir_root_rejects_overlap_and_unusable_bundles() {
+        use std::os::unix::fs::symlink;
+        let dir = tempfile::tempdir().unwrap();
+        let outside = tempfile::tempdir().unwrap();
+        let d = |rel: &str| dir.path().join(rel);
+        let o = |rel: &str| outside.path().join(rel);
+        for sub in ["proof", "crate", "proof/bundle"] {
+            fs::create_dir_all(d(sub)).unwrap();
+        }
+        fs::write(d("crate/Cargo.toml"), b"").unwrap();
+        fs::write(d("proof/bundle/manifest.json"), b"{}").unwrap();
+        fs::create_dir_all(o("good")).unwrap();
+        fs::write(o("good/manifest.json"), b"{}").unwrap();
+        symlink(d("proof/bundle"), o("into-proof")).unwrap();
+        let check = |root: &Path| {
+            let args = parse_verify_args(&[
+                OsStr::new("--prebuilt-dir"),
+                root.as_os_str(),
+                OsStr::new("--proof-dir"),
+                d("proof").as_os_str(),
+                OsStr::new("--manifest-path"),
+                d("crate/Cargo.toml").as_os_str(),
+            ]);
+            validate_prebuilt_dir_root(&args)
+        };
+        check(&o("good")).unwrap();
+        check(&o("good/")).unwrap();
+
+        // Inside or containing a checkout directory, directly or through a
+        // symlink that resolves into one.
+        for bad in [d("proof/bundle"), dir.path().to_path_buf(), d("crate/b"), o("into-proof")] {
+            let err = check(&bad).unwrap_err();
+            assert!(err.contains("must not be inside or contain"), "{}: {err}", bad.display());
+        }
+
+        // Missing, not a directory, a symlink, or without a regular manifest.
+        let err = check(&o("missing")).unwrap_err();
+        assert!(err.contains("does not exist"), "{err}");
+        fs::write(o("file"), b"").unwrap();
+        let err = check(&o("file")).unwrap_err();
+        assert!(err.contains("is not a directory"), "{err}");
+        symlink(o("good"), o("link")).unwrap();
+        let err = check(&o("link")).unwrap_err();
+        assert!(err.contains("must not be a symlink"), "{err}");
+        fs::create_dir_all(o("empty")).unwrap();
+        let err = check(&o("empty")).unwrap_err();
+        assert!(err.contains("manifest") && err.contains("does not exist"), "{err}");
+        fs::create_dir_all(o("dir-manifest/manifest.json")).unwrap();
+        let err = check(&o("dir-manifest")).unwrap_err();
+        assert!(err.contains("is not a regular file"), "{err}");
+        fs::create_dir_all(o("link-manifest")).unwrap();
+        symlink(o("good/manifest.json"), o("link-manifest/manifest.json")).unwrap();
+        let err = check(&o("link-manifest")).unwrap_err();
+        assert!(err.contains("is not a regular file"), "{err}");
+
+        // Without the flag nothing is checked.
+        let args = parse_verify_args(&[
+            OsStr::new("--proof-dir"),
+            d("proof").as_os_str(),
+            OsStr::new("--manifest-path"),
+            d("crate/Cargo.toml").as_os_str(),
+        ]);
+        validate_prebuilt_dir_root(&args).unwrap();
+    }
+
+    #[test]
+    fn overwrite_protected_inputs_include_prebuilt_dir() {
+        let parsed = parse_verify_args(&[
+            OsStr::new("--prebuilt-dir"),
+            OsStr::new("/shared/prebuilt"),
+            OsStr::new("--request"),
+            OsStr::new("request.json"),
+        ]);
+        assert!(
+            overwrite_protected_inputs(&parsed).contains(&PathBuf::from("/shared/prebuilt")),
+            "--overwrite-artifacts must protect --prebuilt-dir"
+        );
+    }
+
     /// The guards protect the per-user default cache when no override is
     /// set, the override when one is, and nothing under `--no-cache`.
     #[test]
@@ -8770,6 +9087,7 @@ mod tests {
             no_cache: false,
             no_rebuild_bundled: false,
             olean_cache_dir: None,
+            prebuilt_dir: None,
             export_lean_lib: false,
             overwrite_artifacts: false,
             lean_memory_mb: None,
@@ -9045,5 +9363,45 @@ mod tests {
 
         let wrong_phase = run_emit("proof_failed", "capture", Some("heartbeat_limit_exceeded"), 1);
         assert!(wrong_phase.get("reason").is_none(), "{wrong_phase}");
+    }
+
+    /// `--receipt-out` and `--overwrite-artifacts` must protect the lexically
+    /// normalized `--prebuilt-dir` (including `<symlink>/..` spellings) even
+    /// when `select_tools(args)` fails.
+    #[cfg(unix)]
+    #[test]
+    fn prebuilt_dir_symlink_dotdot_stays_protected_when_tool_discovery_fails() {
+        use std::os::unix::fs::symlink;
+
+        let dir = tempfile::tempdir().unwrap();
+        let root = fs::canonicalize(dir.path()).unwrap();
+        let other = root.join("other/sub");
+        let good = root.join("good");
+        fs::create_dir_all(&other).unwrap();
+        fs::create_dir_all(&good).unwrap();
+        fs::write(good.join("manifest.json"), b"{}").unwrap();
+        let link = root.join("link");
+        symlink(&other, &link).unwrap();
+        // Lexical normalization resolves `link/../good` to `root/good`, while
+        // kernel canonicalization follows `link` to `other/good` (ENOENT).
+        let spelled = link.join("../good");
+        let receipt_inside = good.join("manifest.json");
+        let args = parse_verify_args(&[
+            OsStr::new("--prebuilt-dir"),
+            spelled.as_os_str(),
+            OsStr::new("--receipt-out"),
+            receipt_inside.as_os_str(),
+            OsStr::new("--request"),
+            root.join("request.json").as_os_str(),
+        ]);
+
+        let err = validate_receipt_out_pre_stage(&args, None).unwrap_err();
+        assert!(err.contains("must not"), "{err}");
+        let protected = overwrite_protected_inputs(&args);
+        assert!(
+            protected.contains(&good),
+            "normalized prebuilt dir {} must be protected: {protected:?}",
+            good.display()
+        );
     }
 }

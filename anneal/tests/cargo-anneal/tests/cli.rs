@@ -3764,6 +3764,94 @@ fn receipt_out_persists_valid_v3_json_and_rejects_symlinks_dirs_and_input_aliase
         assert!(!default_receipt.exists());
     }
 
+    // 4e. An explicit `--prebuilt-dir` conflicts with `--no-cache`, must lie
+    //     outside the checkout, and must already be a real directory holding
+    //     a regular `manifest.json`; otherwise verification fails before
+    //     staging rather than compiling the modules the bundle should
+    //     provide. The refusal replaces a stale passing receipt, and
+    //     `--receipt-out` must not land inside the bundle.
+    for (first, second) in [("--no-cache", "--prebuilt-dir"), ("--prebuilt-dir", "--no-cache")] {
+        let mut conflict_cmd = verify_with_fakes(&[]);
+        for flag in [first, second] {
+            conflict_cmd.arg(flag);
+            if flag == "--prebuilt-dir" {
+                conflict_cmd.arg(&olean_cache);
+            }
+        }
+        let conflict = conflict_cmd.output().unwrap();
+        let stderr = String::from_utf8_lossy(&conflict.stderr);
+        assert_eq!(conflict.status.code(), Some(2), "{conflict:?}");
+        assert!(conflict.stdout.is_empty(), "{conflict:?}");
+        assert!(
+            stderr.contains(&format!("the argument '{first}"))
+                && stderr.contains(&format!("cannot be used with '{second}")),
+            "{stderr}"
+        );
+    }
+    let empty = verify_with_fakes(&["--prebuilt-dir".as_ref(), "".as_ref()]).output().unwrap();
+    assert_eq!(empty.status.code(), Some(2), "{empty:?}");
+    assert!(empty.stdout.is_empty(), "{empty:?}");
+    assert!(
+        String::from_utf8_lossy(&empty.stderr)
+            .contains("a value is required for '--prebuilt-dir <DIR>'"),
+        "{empty:?}"
+    );
+    let bundles = tempfile::tempdir().unwrap();
+    let b = |rel: &str| bundles.path().join(rel);
+    fs::create_dir_all(b("good")).unwrap();
+    fs::write(b("good/manifest.json"), br#"{"schema_version":2,"entries":[]}"#).unwrap();
+    fs::create_dir_all(b("empty")).unwrap();
+    fs::write(b("file"), b"").unwrap();
+    std::os::unix::fs::symlink(b("good"), b("link")).unwrap();
+    let in_checkout = project.path().join("prebuilt-in-checkout");
+    fs::create_dir_all(&in_checkout).unwrap();
+    fs::write(in_checkout.join("manifest.json"), br#"{"schema_version":2,"entries":[]}"#).unwrap();
+    for (case, dir, needle) in [
+        ("missing", b("missing"), "does not exist"),
+        ("file", b("file"), "is not a directory"),
+        ("symlink", b("link"), "must not be a symlink"),
+        ("no-manifest", b("empty"), "manifest.json does not exist"),
+        ("in-checkout", in_checkout.clone(), "must not be inside or contain"),
+    ] {
+        fs::write(&stale_receipt, br#"{"schema_version":3,"status":"crate_verified"}"#).unwrap();
+        let out = verify_with_fakes(&[
+            "--prebuilt-dir".as_ref(),
+            dir.as_os_str(),
+            "--receipt-out".as_ref(),
+            stale_receipt.as_os_str(),
+        ])
+        .output()
+        .unwrap();
+        assert_eq!(out.status.code(), Some(2), "{case}: {out:?}");
+        let rec: serde_json::Value = serde_json::from_slice(&out.stdout).unwrap();
+        assert_eq!(rec["phase"], "olean-cache", "{case}: {rec}");
+        assert!(rec["detail"].as_str().unwrap_or("").contains(needle), "{case}: {rec}");
+        let written: serde_json::Value =
+            serde_json::from_slice(&fs::read(&stale_receipt).unwrap()).unwrap();
+        assert_eq!(written["phase"], "olean-cache", "{case}: {written}");
+    }
+    let inside_bundle = b("good/receipt.json");
+    let bundle_receipt = verify_with_fakes(&[
+        "--prebuilt-dir".as_ref(),
+        b("good").as_os_str(),
+        "--receipt-out".as_ref(),
+        inside_bundle.as_os_str(),
+    ])
+    .output()
+    .unwrap();
+    assert_eq!(bundle_receipt.status.code(), Some(2), "{bundle_receipt:?}");
+    let bundle_rec: serde_json::Value = serde_json::from_slice(&bundle_receipt.stdout).unwrap();
+    assert_eq!(bundle_rec["phase"], "receipt-out", "{bundle_rec}");
+    assert!(
+        bundle_rec["detail"].as_str().unwrap_or("").contains(".olean cache directory"),
+        "{bundle_rec}"
+    );
+    assert!(!inside_bundle.exists());
+    let good_out =
+        verify_with_fakes(&["--prebuilt-dir".as_ref(), b("good").as_os_str()]).output().unwrap();
+    let good_rec: serde_json::Value = serde_json::from_slice(&good_out.stdout).unwrap();
+    assert_ne!(good_rec["phase"], "olean-cache", "{good_rec}");
+
     // 5. Unwritable `--receipt-out` parent fails before retaining `--artifacts`
     //    so `--artifacts` is never published on a `tool_failed`/`receipt-out`
     //    exit 2.

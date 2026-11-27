@@ -182,6 +182,14 @@ root write-isolated from less trusted
 runs (for example, runs on untrusted Rust inputs or with unsandboxed
 elaboration) is the operator's responsibility.
 
+The read-only prebuilt `.olean` bundle (the installed bundle's or the Lean
+prefix's `share/anneal/prebuilt`, or a directory named by `--prebuilt-dir`) is
+part of that environment for the same reason: its manifest records the digests
+that its artifacts are checked against. `cargo anneal verify` applies the same
+checkout-overlap refusal to an explicit `--prebuilt-dir`, and fails closed when
+that directory or its manifest is missing, uses another cache format, or lists
+a module built from different inputs.
+
 This assumption naturally aligns with the standard split between **local
 development environments** and **Continuous Integration (CI)**:
 
