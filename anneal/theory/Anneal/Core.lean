@@ -18,3 +18,4 @@ public import Anneal.Core.FixedByteCodec
 public import Anneal.Core.PtrTypestate
 public import Anneal.Core.BitVecMirBridge
 public import Anneal.Core.BitVecMirBridgeExt
+public import Anneal.Core.BitIntrinsicBridge

@@ -37,6 +37,7 @@ public import Anneal.ByteSubLens.Lens
 public import Anneal.Core.PtrTypestate
 public import Anneal.Core.BitVecMirBridge
 public import Anneal.Core.BitVecMirBridgeExt
+public import Anneal.Core.BitIntrinsicBridge
 
 public section
 
@@ -6153,6 +6154,179 @@ theorem bodyI32Div_bvToScalar_and_fault_canary
                    (Anneal.BitVec.allOnes (8 * IntWidth.i32.byteSize)))] }
       .undefined .unsupported :=
   ⟨bodyI32Div_pos_canary x y hy hNoOvf, bodyI32Div_neg_canary⟩
+
+/-! ## Suite 9: Intrinsic Bit-Ops, Endian Swap, Saturating & Codec Canaries -/
+
+/-- Symbolic `bvPopcount`, `bvCttz`, `bvCtlz`, `bvBitreverse`, Kernighan step,
+`isPow2Bv`, alignment mask, and `MaskEq` tnum bound canaries on `u32` and `u64`.
+-/
+theorem canary_bitIntrinsic_bitops_symbolic
+    (x32 m32 v32 : BitVec (8 * IntWidth.i32.byteSize))
+    (x64 : BitVec (8 * IntWidth.i64.byteSize))
+    (hm32 : Anneal.BitVec.MaskEq m32 x32 v32)
+    (hx32 : x32 ≠ BitVec.ofNat (8 * IntWidth.i32.byteSize) 0) :
+    (bvPopcount (Anneal.BitVec.and x32
+        (x32 - BitVec.ofNat (8 * IntWidth.i32.byteSize) 1)) + 1 =
+      bvPopcount x32) ∧
+    ((isPow2Bv x32 = true ↔ bvPopcount x32 = 1) ∧
+      (bvPopcount x32 = 1 ↔
+        ∃ k : Nat, k < 8 * IntWidth.i32.byteSize ∧
+          x32 = BitVec.ofNat (8 * IntWidth.i32.byteSize) (Nat.pow 2 k))) ∧
+    ((3 ≤ bvCttz x32 ↔
+        Anneal.BitVec.and x32
+          (Anneal.BitVec.lowMask (8 * IntWidth.i32.byteSize) 3) =
+        BitVec.ofNat (8 * IntWidth.i32.byteSize) 0) ∧
+      (3 ≤ bvCttz (scalarToBv (bvToScalar .isize false
+        (BitVec.ofNat (8 * IntWidth.isize.byteSize) 8))) ↔
+        Nat.mod (BitVec.ofNat (8 * IntWidth.isize.byteSize) 8).toNat
+          (Nat.pow 2 3) = 0)) ∧
+    (bvCttz (Anneal.BitVec.or v32 m32) ≤ bvCttz x32 ∧
+      bvCttz x32 ≤ bvCttz (Anneal.BitVec.and v32 (Anneal.BitVec.not m32)) ∧
+      bvCtlz (Anneal.BitVec.or v32 m32) ≤ bvCtlz x32 ∧
+      bvCtlz x32 ≤ bvCtlz (Anneal.BitVec.and v32 (Anneal.BitVec.not m32))) ∧
+    (bvPopcount (bvBitreverse x64) = bvPopcount x64 ∧
+      bvCttz (bvBitreverse x64) = bvCtlz x64 ∧
+      bvCtlz (bvBitreverse x64) = bvCttz x64) := by
+  refine ⟨bvPopcount_kernighan_step hx32,
+    ⟨isPow2Bv_eq_true_iff_bvPopcount_eq_one x32,
+      bvPopcount_eq_one_iff_exists_two_pow x32⟩,
+    ⟨le_bvCttz_iff_and_lowMask_eq_zero x32 (by decide),
+      le_bvCttz_scalarToBv_iff false
+        (BitVec.ofNat (8 * IntWidth.isize.byteSize) 8) (by decide)⟩,
+    ⟨bvCttz_tnum_lower hm32, bvCttz_tnum_upper hm32,
+      bvCtlz_tnum_lower hm32, bvCtlz_tnum_upper hm32⟩,
+    ⟨bvPopcount_bvBitreverse x64, bvCttz_bvBitreverse x64,
+      bvCtlz_bvBitreverse x64⟩⟩
+
+/-- Concrete positive and negative `isPow2Bv`, `bvPopcount`, `bvCttz`, and
+`bvCtlz` edge-case canaries (`0`, `6`, `8 = 2^3`). -/
+theorem canary_bitIntrinsic_concrete_edge :
+    bvPopcount (BitVec.ofNat (8 * IntWidth.i32.byteSize) 0) = 0 ∧
+    bvPopcount (BitVec.ofNat (8 * IntWidth.i32.byteSize) (Nat.pow 2 3)) = 1 ∧
+    isPow2Bv (BitVec.ofNat (8 * IntWidth.i8.byteSize) 0) = false ∧
+    isPow2Bv (BitVec.ofNat (8 * IntWidth.i8.byteSize) 6) = false ∧
+    isPow2Bv (BitVec.ofNat (8 * IntWidth.i8.byteSize) 8) = true ∧
+    bvCttz (BitVec.ofNat (8 * IntWidth.i32.byteSize) (Nat.pow 2 3)) = 3 ∧
+    bvCtlz (BitVec.ofNat (8 * IntWidth.i32.byteSize) (Nat.pow 2 3)) = 28 ∧
+    bvPopcount (Anneal.BitVec.lowMask 32 5) = 5 := by
+  refine ⟨bvPopcount_zero 32, bvPopcount_two_pow (w := 32) (k := 3) (by decide),
+    by decide, by decide, by decide,
+    bvCttz_two_pow (w := 32) (k := 3) (by decide),
+    bvCtlz_two_pow (w := 32) (k := 3) (by decide),
+    bvPopcount_lowMask_of_le (w := 32) (k := 5) (by decide)⟩
+
+/-- Endian byte-swap (`bvBswap`) and `encodeVal`/`decodeVal` round-trip
+canaries at `IntWidth` `.i8`, `.i32`, and `.i64`. -/
+theorem canary_bitIntrinsic_bswap_endian
+    (x32 : BitVec (8 * IntWidth.i32.byteSize))
+    (x64 : BitVec (8 * IntWidth.i64.byteSize))
+    (x8 : BitVec (8 * IntWidth.i8.byteSize)) :
+    bvBswap .i8 x8 = x8 ∧
+    bvBswap .i64 (bvBswap .i64 x64) = x64 ∧
+    Anneal.LeBytes.toLeBytes IntWidth.i32.byteSize (toLeWidth (bvBswap .i32 x32)) =
+      Anneal.LeBytes.toBeBytes IntWidth.i32.byteSize (toLeWidth x32) ∧
+    (∃ bytesBe bytesLe : List AllocByte,
+      encodeVal .big (.int .i32 false) (.scalar (bvToScalar .i32 false x32)) =
+        .ok bytesBe ∧
+      decodeVal .little (.int .i32 false) bytesBe =
+        .ok (some (.scalar (bvToScalar .i32 false (bvBswap .i32 x32)))) ∧
+      encodeVal .little (.int .i32 false) (.scalar (bvToScalar .i32 false x32)) =
+        .ok bytesLe ∧
+      decodeVal .big (.int .i32 false) bytesLe =
+        .ok (some (.scalar (bvToScalar .i32 false (bvBswap .i32 x32))))) :=
+  ⟨bvBswap_i8 x8, bvBswap_bvBswap .i64 x64, bvBswap_toLeBytes_eq .i32 x32,
+    decodeVal_encodeVal_bvBswap_roundtrip .i32 false x32⟩
+
+/-- Unsigned and signed saturating arithmetic clamping bounds and MIR
+`evalBinOp` agreement canaries on `u32` and `i32`, plus concrete 8-bit unsigned
+and signed clamp edge cases. -/
+theorem canary_bitIntrinsic_saturating_arith
+    (x32 y32 : BitVec (8 * IntWidth.i32.byteSize)) :
+    (∃ sum : BitVec (8 * IntWidth.i32.byteSize), ∃ ovf : Bool,
+      evalBinOp .addWithOverflow (.scalar (bvToScalar .i32 false x32))
+          (.scalar (bvToScalar .i32 false y32)) =
+        .ok (.tuple [.scalar (bvToScalar .i32 false sum), .bool ovf]) ∧
+      bvSaturatingAddUnsigned x32 y32 =
+        if ovf then Anneal.BitVec.allOnes (8 * IntWidth.i32.byteSize)
+        else sum) ∧
+    (∃ diff : BitVec (8 * IntWidth.i32.byteSize), ∃ ovf : Bool,
+      evalBinOp .subWithOverflow (.scalar (bvToScalar .i32 true x32))
+          (.scalar (bvToScalar .i32 true y32)) =
+        .ok (.tuple [.scalar (bvToScalar .i32 true diff), .bool ovf]) ∧
+      bvSaturatingSubSigned x32 y32 =
+        if ovf then
+          if Anneal.BitVecArith.msb x32 then
+            Anneal.BitVecArith.signBit (w := 8 * IntWidth.i32.byteSize)
+          else signedMaxBv (8 * IntWidth.i32.byteSize)
+        else diff) ∧
+    (Anneal.BitVecArith.sle (Anneal.BitVecArith.signBit (w := 32))
+        (bvSaturatingAddSigned x32 y32) ∧
+      Anneal.BitVecArith.sle (bvSaturatingAddSigned x32 y32)
+        (signedMaxBv 32)) ∧
+    bvSaturatingAddUnsigned (BitVec.ofNat 8 200) (BitVec.ofNat 8 100) =
+      Anneal.BitVec.allOnes 8 ∧
+    bvSaturatingSubUnsigned (BitVec.ofNat 8 10) (BitVec.ofNat 8 25) =
+      BitVec.ofNat 8 0 ∧
+    bvSaturatingAddSigned (BitVec.ofNat 8 100) (BitVec.ofNat 8 50) =
+      signedMaxBv 8 ∧
+    bvSaturatingSubSigned (Anneal.BitVecArith.signBit (w := 8))
+        (BitVec.ofNat 8 1) =
+      Anneal.BitVecArith.signBit (w := 8) := by
+  refine ⟨evalBinOp_addWithOverflow_saturating_unsigned .i32 x32 y32,
+    evalBinOp_subWithOverflow_saturating_signed .i32 x32 y32,
+    ⟨(bvSaturatingAddSigned_bounds (by decide : 0 < 32) x32 y32).1,
+      (bvSaturatingAddSigned_bounds (by decide : 0 < 32) x32 y32).2.1⟩,
+    ?_, ?_, ?_, ?_⟩
+  · decide
+  · decide
+  · decide
+  · decide
+
+/-- Exact division (`ExactDivUnsigned` / `ExactDivSigned`) MIR `evalBinOp` and
+scalar array list codec (`encodeBvListBytes` / `decodeBvListBytes` /
+`chunksOf_decodeVal_encodeScalarList`) canaries, including negative `INT_MIN /
+-1` and `/ 0` faults. -/
+theorem canary_bitIntrinsic_exactDiv_and_listCodec
+    (xu yu q32 y32 : BitVec (8 * IntWidth.i32.byteSize))
+    (hExU : ExactDivUnsigned xu yu)
+    (hy32 : y32.toNat ≠ 0) (hNoMulOvf : signedOverflowMulBv q32 y32 = false)
+    (xs32 : List (BitVec (8 * IntWidth.i32.byteSize)))
+    (xs64 : List (BitVec (8 * IntWidth.i64.byteSize))) :
+    (evalBinOp .div (.scalar (bvToScalar .i32 false xu))
+        (.scalar (bvToScalar .i32 false yu)) =
+      .ok (.scalar (bvToScalar .i32 false (Anneal.BitVec.udiv xu yu))) ∧
+      evalBinOp .mul
+          (.scalar (bvToScalar .i32 false (Anneal.BitVec.udiv xu yu)))
+          (.scalar (bvToScalar .i32 false yu)) =
+        .ok (.scalar (bvToScalar .i32 false xu))) ∧
+    bvSdiv (Anneal.BitVec.mul q32 y32) y32 = q32 ∧
+    evalBinOp .div (.scalar (bvToScalar .i32 false xu))
+        (.scalar (bvToScalar .i32 false
+          (BitVec.ofNat (8 * IntWidth.i32.byteSize) 0))) =
+      .error .undefined ∧
+    evalBinOp .div
+        (.scalar (bvToScalar .i32 true
+          (Anneal.BitVecArith.signBit (w := 8 * IntWidth.i32.byteSize))))
+        (.scalar (bvToScalar .i32 true
+          (Anneal.BitVec.allOnes (8 * IntWidth.i32.byteSize)))) =
+      .error .undefined ∧
+    decodeBvListBytes .little .i32 (encodeBvListBytes .little .i32 xs32) =
+      xs32 ∧
+    decodeBvListBytes .big .i64 (encodeBvListBytes .big .i64 xs64) = xs64 ∧
+    (Anneal.ListChunks.chunksOf IntWidth.i32.byteSize
+        (encodeScalarListAllocBytes .little .i32 none xs32)).map
+        (decodeVal .little (.int .i32 false)) =
+      xs32.map (fun x => .ok (some (.scalar (bvToScalar .i32 false x)))) ∧
+    (encodeBvListBytes .big .i64 xs64).length = xs64.length * 8 :=
+  ⟨evalBinOp_div_mul_exact_unsigned .i32 hExU,
+    bvSdiv_mul_cancel_right (by decide : 0 < 8 * IntWidth.i32.byteSize) hy32
+      hNoMulOvf,
+    evalBinOp_div_unsigned_zero_fault xu _ rfl,
+    evalBinOp_div_signed_min_neg_one_fault .i32,
+    decodeBvListBytes_encodeBvListBytes .little .i32 xs32,
+    decodeBvListBytes_encodeBvListBytes .big .i64 xs64,
+    chunksOf_decodeVal_encodeScalarList .little .i32 false xs32,
+    length_encodeBvListBytes .big .i64 xs64⟩
 
 end Anneal.Core
 
