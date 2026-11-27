@@ -1,0 +1,816 @@
+{
+  "rustc_version": "rustc 1.98.0-nightly (f8a08b688 2026-05-30)",
+  "target_file": "library/std/src/sys/sync/mutex/futex.rs",
+  "variants": {
+    "abort_normal": {
+      "rc": 0,
+      "file_count": 7,
+      "functions": [
+        {
+          "fn": "futex_target::Mutex::lock",
+          "basic_blocks": 7,
+          "cleanup_blocks": 0,
+          "locals_excluding_params": 9,
+          "statement_count": 25,
+          "has_drop": false,
+          "has_assert": false,
+          "has_place_mention": false,
+          "has_discriminant": false,
+          "has_downcast_field": false,
+          "has_struct_aggregate": false,
+          "has_option_none_aggregate": false,
+          "has_ordering_aggregate": true,
+          "calls": [
+            {
+              "callee": "Atomic::<u32>::compare_exchange",
+              "unwind": "unreachable"
+            },
+            {
+              "callee": "Result::<u32, u32>::is_err",
+              "unwind": "unreachable"
+            },
+            {
+              "callee": "Mutex::lock_contended",
+              "unwind": "unreachable"
+            }
+          ]
+        },
+        {
+          "fn": "futex_target::Mutex::lock_contended",
+          "basic_blocks": 19,
+          "cleanup_blocks": 0,
+          "locals_excluding_params": 30,
+          "statement_count": 86,
+          "has_drop": false,
+          "has_assert": false,
+          "has_place_mention": true,
+          "has_discriminant": true,
+          "has_downcast_field": true,
+          "has_struct_aggregate": false,
+          "has_option_none_aggregate": true,
+          "has_ordering_aggregate": true,
+          "calls": [
+            {
+              "callee": "Mutex::spin",
+              "unwind": "unreachable"
+            },
+            {
+              "callee": "Atomic::<u32>::compare_exchange",
+              "unwind": "unreachable"
+            },
+            {
+              "callee": "Atomic::<u32>::swap",
+              "unwind": "unreachable"
+            },
+            {
+              "callee": "futex_wait",
+              "unwind": "unreachable"
+            },
+            {
+              "callee": "Mutex::spin",
+              "unwind": "unreachable"
+            }
+          ]
+        },
+        {
+          "fn": "futex_target::Mutex::new",
+          "basic_blocks": 2,
+          "cleanup_blocks": 0,
+          "locals_excluding_params": 2,
+          "statement_count": 3,
+          "has_drop": false,
+          "has_assert": false,
+          "has_place_mention": false,
+          "has_discriminant": false,
+          "has_downcast_field": false,
+          "has_struct_aggregate": true,
+          "has_option_none_aggregate": false,
+          "has_ordering_aggregate": false,
+          "calls": [
+            {
+              "callee": "Atomic::<u32>::new",
+              "unwind": "unreachable"
+            }
+          ]
+        },
+        {
+          "fn": "futex_target::Mutex::spin",
+          "basic_blocks": 9,
+          "cleanup_blocks": 0,
+          "locals_excluding_params": 14,
+          "statement_count": 39,
+          "has_drop": false,
+          "has_assert": false,
+          "has_place_mention": false,
+          "has_discriminant": false,
+          "has_downcast_field": false,
+          "has_struct_aggregate": false,
+          "has_option_none_aggregate": false,
+          "has_ordering_aggregate": true,
+          "calls": [
+            {
+              "callee": "Atomic::<u32>::load",
+              "unwind": "unreachable"
+            },
+            {
+              "callee": "spin_loop",
+              "unwind": "unreachable"
+            }
+          ]
+        },
+        {
+          "fn": "futex_target::Mutex::try_lock",
+          "basic_blocks": 3,
+          "cleanup_blocks": 0,
+          "locals_excluding_params": 6,
+          "statement_count": 14,
+          "has_drop": false,
+          "has_assert": false,
+          "has_place_mention": false,
+          "has_discriminant": false,
+          "has_downcast_field": false,
+          "has_struct_aggregate": false,
+          "has_option_none_aggregate": false,
+          "has_ordering_aggregate": true,
+          "calls": [
+            {
+              "callee": "Atomic::<u32>::compare_exchange",
+              "unwind": "unreachable"
+            },
+            {
+              "callee": "Result::<u32, u32>::is_ok",
+              "unwind": "unreachable"
+            }
+          ]
+        },
+        {
+          "fn": "futex_target::Mutex::unlock",
+          "basic_blocks": 6,
+          "cleanup_blocks": 0,
+          "locals_excluding_params": 7,
+          "statement_count": 19,
+          "has_drop": false,
+          "has_assert": false,
+          "has_place_mention": false,
+          "has_discriminant": false,
+          "has_downcast_field": false,
+          "has_struct_aggregate": false,
+          "has_option_none_aggregate": false,
+          "has_ordering_aggregate": true,
+          "calls": [
+            {
+              "callee": "Atomic::<u32>::swap",
+              "unwind": "unreachable"
+            },
+            {
+              "callee": "Mutex::wake",
+              "unwind": "unreachable"
+            }
+          ]
+        },
+        {
+          "fn": "futex_target::Mutex::wake",
+          "basic_blocks": 2,
+          "cleanup_blocks": 0,
+          "locals_excluding_params": 4,
+          "statement_count": 9,
+          "has_drop": false,
+          "has_assert": false,
+          "has_place_mention": false,
+          "has_discriminant": false,
+          "has_downcast_field": false,
+          "has_struct_aggregate": false,
+          "has_option_none_aggregate": false,
+          "has_ordering_aggregate": false,
+          "calls": [
+            {
+              "callee": "futex_wake",
+              "unwind": "unreachable"
+            }
+          ]
+        }
+      ]
+    },
+    "unwind_normal": {
+      "rc": 0,
+      "file_count": 7,
+      "functions": [
+        {
+          "fn": "futex_target::Mutex::lock",
+          "basic_blocks": 7,
+          "cleanup_blocks": 0,
+          "locals_excluding_params": 9,
+          "statement_count": 25,
+          "has_drop": false,
+          "has_assert": false,
+          "has_place_mention": false,
+          "has_discriminant": false,
+          "has_downcast_field": false,
+          "has_struct_aggregate": false,
+          "has_option_none_aggregate": false,
+          "has_ordering_aggregate": true,
+          "calls": [
+            {
+              "callee": "Atomic::<u32>::compare_exchange",
+              "unwind": "continue"
+            },
+            {
+              "callee": "Result::<u32, u32>::is_err",
+              "unwind": "continue"
+            },
+            {
+              "callee": "Mutex::lock_contended",
+              "unwind": "continue"
+            }
+          ]
+        },
+        {
+          "fn": "futex_target::Mutex::lock_contended",
+          "basic_blocks": 19,
+          "cleanup_blocks": 0,
+          "locals_excluding_params": 30,
+          "statement_count": 86,
+          "has_drop": false,
+          "has_assert": false,
+          "has_place_mention": true,
+          "has_discriminant": true,
+          "has_downcast_field": true,
+          "has_struct_aggregate": false,
+          "has_option_none_aggregate": true,
+          "has_ordering_aggregate": true,
+          "calls": [
+            {
+              "callee": "Mutex::spin",
+              "unwind": "continue"
+            },
+            {
+              "callee": "Atomic::<u32>::compare_exchange",
+              "unwind": "continue"
+            },
+            {
+              "callee": "Atomic::<u32>::swap",
+              "unwind": "continue"
+            },
+            {
+              "callee": "futex_wait",
+              "unwind": "continue"
+            },
+            {
+              "callee": "Mutex::spin",
+              "unwind": "continue"
+            }
+          ]
+        },
+        {
+          "fn": "futex_target::Mutex::new",
+          "basic_blocks": 2,
+          "cleanup_blocks": 0,
+          "locals_excluding_params": 2,
+          "statement_count": 3,
+          "has_drop": false,
+          "has_assert": false,
+          "has_place_mention": false,
+          "has_discriminant": false,
+          "has_downcast_field": false,
+          "has_struct_aggregate": true,
+          "has_option_none_aggregate": false,
+          "has_ordering_aggregate": false,
+          "calls": [
+            {
+              "callee": "Atomic::<u32>::new",
+              "unwind": "continue"
+            }
+          ]
+        },
+        {
+          "fn": "futex_target::Mutex::spin",
+          "basic_blocks": 9,
+          "cleanup_blocks": 0,
+          "locals_excluding_params": 14,
+          "statement_count": 39,
+          "has_drop": false,
+          "has_assert": false,
+          "has_place_mention": false,
+          "has_discriminant": false,
+          "has_downcast_field": false,
+          "has_struct_aggregate": false,
+          "has_option_none_aggregate": false,
+          "has_ordering_aggregate": true,
+          "calls": [
+            {
+              "callee": "Atomic::<u32>::load",
+              "unwind": "continue"
+            },
+            {
+              "callee": "spin_loop",
+              "unwind": "continue"
+            }
+          ]
+        },
+        {
+          "fn": "futex_target::Mutex::try_lock",
+          "basic_blocks": 3,
+          "cleanup_blocks": 0,
+          "locals_excluding_params": 6,
+          "statement_count": 14,
+          "has_drop": false,
+          "has_assert": false,
+          "has_place_mention": false,
+          "has_discriminant": false,
+          "has_downcast_field": false,
+          "has_struct_aggregate": false,
+          "has_option_none_aggregate": false,
+          "has_ordering_aggregate": true,
+          "calls": [
+            {
+              "callee": "Atomic::<u32>::compare_exchange",
+              "unwind": "continue"
+            },
+            {
+              "callee": "Result::<u32, u32>::is_ok",
+              "unwind": "continue"
+            }
+          ]
+        },
+        {
+          "fn": "futex_target::Mutex::unlock",
+          "basic_blocks": 6,
+          "cleanup_blocks": 0,
+          "locals_excluding_params": 7,
+          "statement_count": 19,
+          "has_drop": false,
+          "has_assert": false,
+          "has_place_mention": false,
+          "has_discriminant": false,
+          "has_downcast_field": false,
+          "has_struct_aggregate": false,
+          "has_option_none_aggregate": false,
+          "has_ordering_aggregate": true,
+          "calls": [
+            {
+              "callee": "Atomic::<u32>::swap",
+              "unwind": "continue"
+            },
+            {
+              "callee": "Mutex::wake",
+              "unwind": "continue"
+            }
+          ]
+        },
+        {
+          "fn": "futex_target::Mutex::wake",
+          "basic_blocks": 2,
+          "cleanup_blocks": 0,
+          "locals_excluding_params": 4,
+          "statement_count": 9,
+          "has_drop": false,
+          "has_assert": false,
+          "has_place_mention": false,
+          "has_discriminant": false,
+          "has_downcast_field": false,
+          "has_struct_aggregate": false,
+          "has_option_none_aggregate": false,
+          "has_ordering_aggregate": false,
+          "calls": [
+            {
+              "callee": "futex_wake",
+              "unwind": "continue"
+            }
+          ]
+        }
+      ]
+    },
+    "abort_cfg_test": {
+      "rc": 0,
+      "file_count": 7,
+      "functions": [
+        {
+          "fn": "futex_target::Mutex::lock",
+          "basic_blocks": 7,
+          "cleanup_blocks": 0,
+          "locals_excluding_params": 9,
+          "statement_count": 25,
+          "has_drop": false,
+          "has_assert": false,
+          "has_place_mention": false,
+          "has_discriminant": false,
+          "has_downcast_field": false,
+          "has_struct_aggregate": false,
+          "has_option_none_aggregate": false,
+          "has_ordering_aggregate": true,
+          "calls": [
+            {
+              "callee": "Atomic::<u32>::compare_exchange",
+              "unwind": "unreachable"
+            },
+            {
+              "callee": "Result::<u32, u32>::is_err",
+              "unwind": "unreachable"
+            },
+            {
+              "callee": "Mutex::lock_contended",
+              "unwind": "unreachable"
+            }
+          ]
+        },
+        {
+          "fn": "futex_target::Mutex::lock_contended",
+          "basic_blocks": 19,
+          "cleanup_blocks": 0,
+          "locals_excluding_params": 30,
+          "statement_count": 86,
+          "has_drop": false,
+          "has_assert": false,
+          "has_place_mention": true,
+          "has_discriminant": true,
+          "has_downcast_field": true,
+          "has_struct_aggregate": false,
+          "has_option_none_aggregate": true,
+          "has_ordering_aggregate": true,
+          "calls": [
+            {
+              "callee": "Mutex::spin",
+              "unwind": "unreachable"
+            },
+            {
+              "callee": "Atomic::<u32>::compare_exchange",
+              "unwind": "unreachable"
+            },
+            {
+              "callee": "Atomic::<u32>::swap",
+              "unwind": "unreachable"
+            },
+            {
+              "callee": "futex_wait",
+              "unwind": "unreachable"
+            },
+            {
+              "callee": "Mutex::spin",
+              "unwind": "unreachable"
+            }
+          ]
+        },
+        {
+          "fn": "futex_target::Mutex::new",
+          "basic_blocks": 2,
+          "cleanup_blocks": 0,
+          "locals_excluding_params": 2,
+          "statement_count": 3,
+          "has_drop": false,
+          "has_assert": false,
+          "has_place_mention": false,
+          "has_discriminant": false,
+          "has_downcast_field": false,
+          "has_struct_aggregate": true,
+          "has_option_none_aggregate": false,
+          "has_ordering_aggregate": false,
+          "calls": [
+            {
+              "callee": "Atomic::<u32>::new",
+              "unwind": "unreachable"
+            }
+          ]
+        },
+        {
+          "fn": "futex_target::Mutex::spin",
+          "basic_blocks": 9,
+          "cleanup_blocks": 0,
+          "locals_excluding_params": 14,
+          "statement_count": 39,
+          "has_drop": false,
+          "has_assert": false,
+          "has_place_mention": false,
+          "has_discriminant": false,
+          "has_downcast_field": false,
+          "has_struct_aggregate": false,
+          "has_option_none_aggregate": false,
+          "has_ordering_aggregate": true,
+          "calls": [
+            {
+              "callee": "Atomic::<u32>::load",
+              "unwind": "unreachable"
+            },
+            {
+              "callee": "spin_loop",
+              "unwind": "unreachable"
+            }
+          ]
+        },
+        {
+          "fn": "futex_target::Mutex::try_lock",
+          "basic_blocks": 3,
+          "cleanup_blocks": 0,
+          "locals_excluding_params": 6,
+          "statement_count": 14,
+          "has_drop": false,
+          "has_assert": false,
+          "has_place_mention": false,
+          "has_discriminant": false,
+          "has_downcast_field": false,
+          "has_struct_aggregate": false,
+          "has_option_none_aggregate": false,
+          "has_ordering_aggregate": true,
+          "calls": [
+            {
+              "callee": "Atomic::<u32>::compare_exchange",
+              "unwind": "unreachable"
+            },
+            {
+              "callee": "Result::<u32, u32>::is_ok",
+              "unwind": "unreachable"
+            }
+          ]
+        },
+        {
+          "fn": "futex_target::Mutex::unlock",
+          "basic_blocks": 6,
+          "cleanup_blocks": 0,
+          "locals_excluding_params": 7,
+          "statement_count": 19,
+          "has_drop": false,
+          "has_assert": false,
+          "has_place_mention": false,
+          "has_discriminant": false,
+          "has_downcast_field": false,
+          "has_struct_aggregate": false,
+          "has_option_none_aggregate": false,
+          "has_ordering_aggregate": true,
+          "calls": [
+            {
+              "callee": "Atomic::<u32>::swap",
+              "unwind": "unreachable"
+            },
+            {
+              "callee": "Mutex::wake",
+              "unwind": "unreachable"
+            }
+          ]
+        },
+        {
+          "fn": "futex_target::Mutex::wake",
+          "basic_blocks": 2,
+          "cleanup_blocks": 0,
+          "locals_excluding_params": 4,
+          "statement_count": 9,
+          "has_drop": false,
+          "has_assert": false,
+          "has_place_mention": false,
+          "has_discriminant": false,
+          "has_downcast_field": false,
+          "has_struct_aggregate": false,
+          "has_option_none_aggregate": false,
+          "has_ordering_aggregate": false,
+          "calls": [
+            {
+              "callee": "futex_wake",
+              "unwind": "unreachable"
+            }
+          ]
+        }
+      ]
+    },
+    "unwind_cfg_test": {
+      "rc": 0,
+      "file_count": 7,
+      "functions": [
+        {
+          "fn": "futex_target::Mutex::lock",
+          "basic_blocks": 7,
+          "cleanup_blocks": 0,
+          "locals_excluding_params": 9,
+          "statement_count": 25,
+          "has_drop": false,
+          "has_assert": false,
+          "has_place_mention": false,
+          "has_discriminant": false,
+          "has_downcast_field": false,
+          "has_struct_aggregate": false,
+          "has_option_none_aggregate": false,
+          "has_ordering_aggregate": true,
+          "calls": [
+            {
+              "callee": "Atomic::<u32>::compare_exchange",
+              "unwind": "continue"
+            },
+            {
+              "callee": "Result::<u32, u32>::is_err",
+              "unwind": "continue"
+            },
+            {
+              "callee": "Mutex::lock_contended",
+              "unwind": "continue"
+            }
+          ]
+        },
+        {
+          "fn": "futex_target::Mutex::lock_contended",
+          "basic_blocks": 19,
+          "cleanup_blocks": 0,
+          "locals_excluding_params": 30,
+          "statement_count": 86,
+          "has_drop": false,
+          "has_assert": false,
+          "has_place_mention": true,
+          "has_discriminant": true,
+          "has_downcast_field": true,
+          "has_struct_aggregate": false,
+          "has_option_none_aggregate": true,
+          "has_ordering_aggregate": true,
+          "calls": [
+            {
+              "callee": "Mutex::spin",
+              "unwind": "continue"
+            },
+            {
+              "callee": "Atomic::<u32>::compare_exchange",
+              "unwind": "continue"
+            },
+            {
+              "callee": "Atomic::<u32>::swap",
+              "unwind": "continue"
+            },
+            {
+              "callee": "futex_wait",
+              "unwind": "continue"
+            },
+            {
+              "callee": "Mutex::spin",
+              "unwind": "continue"
+            }
+          ]
+        },
+        {
+          "fn": "futex_target::Mutex::new",
+          "basic_blocks": 2,
+          "cleanup_blocks": 0,
+          "locals_excluding_params": 2,
+          "statement_count": 3,
+          "has_drop": false,
+          "has_assert": false,
+          "has_place_mention": false,
+          "has_discriminant": false,
+          "has_downcast_field": false,
+          "has_struct_aggregate": true,
+          "has_option_none_aggregate": false,
+          "has_ordering_aggregate": false,
+          "calls": [
+            {
+              "callee": "Atomic::<u32>::new",
+              "unwind": "continue"
+            }
+          ]
+        },
+        {
+          "fn": "futex_target::Mutex::spin",
+          "basic_blocks": 9,
+          "cleanup_blocks": 0,
+          "locals_excluding_params": 14,
+          "statement_count": 39,
+          "has_drop": false,
+          "has_assert": false,
+          "has_place_mention": false,
+          "has_discriminant": false,
+          "has_downcast_field": false,
+          "has_struct_aggregate": false,
+          "has_option_none_aggregate": false,
+          "has_ordering_aggregate": true,
+          "calls": [
+            {
+              "callee": "Atomic::<u32>::load",
+              "unwind": "continue"
+            },
+            {
+              "callee": "spin_loop",
+              "unwind": "continue"
+            }
+          ]
+        },
+        {
+          "fn": "futex_target::Mutex::try_lock",
+          "basic_blocks": 3,
+          "cleanup_blocks": 0,
+          "locals_excluding_params": 6,
+          "statement_count": 14,
+          "has_drop": false,
+          "has_assert": false,
+          "has_place_mention": false,
+          "has_discriminant": false,
+          "has_downcast_field": false,
+          "has_struct_aggregate": false,
+          "has_option_none_aggregate": false,
+          "has_ordering_aggregate": true,
+          "calls": [
+            {
+              "callee": "Atomic::<u32>::compare_exchange",
+              "unwind": "continue"
+            },
+            {
+              "callee": "Result::<u32, u32>::is_ok",
+              "unwind": "continue"
+            }
+          ]
+        },
+        {
+          "fn": "futex_target::Mutex::unlock",
+          "basic_blocks": 6,
+          "cleanup_blocks": 0,
+          "locals_excluding_params": 7,
+          "statement_count": 19,
+          "has_drop": false,
+          "has_assert": false,
+          "has_place_mention": false,
+          "has_discriminant": false,
+          "has_downcast_field": false,
+          "has_struct_aggregate": false,
+          "has_option_none_aggregate": false,
+          "has_ordering_aggregate": true,
+          "calls": [
+            {
+              "callee": "Atomic::<u32>::swap",
+              "unwind": "continue"
+            },
+            {
+              "callee": "Mutex::wake",
+              "unwind": "continue"
+            }
+          ]
+        },
+        {
+          "fn": "futex_target::Mutex::wake",
+          "basic_blocks": 2,
+          "cleanup_blocks": 0,
+          "locals_excluding_params": 4,
+          "statement_count": 9,
+          "has_drop": false,
+          "has_assert": false,
+          "has_place_mention": false,
+          "has_discriminant": false,
+          "has_downcast_field": false,
+          "has_struct_aggregate": false,
+          "has_option_none_aggregate": false,
+          "has_ordering_aggregate": false,
+          "calls": [
+            {
+              "callee": "futex_wake",
+              "unwind": "continue"
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "abort_normal_eq_abort_cfg_test": true,
+  "unwind_normal_eq_unwind_cfg_test": true,
+  "abort_vs_unwind_diff_hunks": [
+    "--- abort_cfg_test\n",
+    "+++ unwind_cfg_test\n",
+    "@@ -25 +25 @@\n",
+    "-        _4 = Atomic::<u32>::compare_exchange(move _5, const futex_target::UNLOCKED, const futex_target::LOCKED, move _6, move _7) -> [return: bb1, unwind unreachable];",
+    "+        _4 = Atomic::<u32>::compare_exchange(move _5, const futex_target::UNLOCKED, const futex_target::LOCKED, move _6, move _7) -> [return: bb1, unwind continue];",
+    "@@ -33 +33 @@\n",
+    "-        _2 = Result::<u32, u32>::is_err(move _3) -> [return: bb2, unwind unreachable];",
+    "+        _2 = Result::<u32, u32>::is_err(move _3) -> [return: bb2, unwind continue];",
+    "@@ -46 +46 @@\n",
+    "-        _8 = Mutex::lock_contended(move _9) -> [return: bb4, unwind unreachable];",
+    "+        _8 = Mutex::lock_contended(move _9) -> [return: bb4, unwind continue];",
+    "@@ -114 +114 @@\n",
+    "-        _2 = Mutex::spin(move _3) -> [return: bb1, unwind unreachable];",
+    "+        _2 = Mutex::spin(move _3) -> [return: bb1, unwind continue];",
+    "@@ -136 +136 @@\n",
+    "-        _7 = Atomic::<u32>::compare_exchange(move _8, const futex_target::UNLOCKED, const futex_target::LOCKED, move _9, move _10) -> [return: bb3, unwind unreachable];",
+    "+        _7 = Atomic::<u32>::compare_exchange(move _8, const futex_target::UNLOCKED, const futex_target::LOCKED, move _9, move _10) -> [return: bb3, unwind continue];",
+    "@@ -203 +203 @@\n",
+    "-        _21 = Atomic::<u32>::swap(move _22, const futex_target::CONTENDED, move _23) -> [return: bb11, unwind unreachable];",
+    "+        _21 = Atomic::<u32>::swap(move _22, const futex_target::CONTENDED, move _23) -> [return: bb11, unwind continue];",
+    "@@ -245 +245 @@\n",
+    "-        _25 = futex_wait(move _26, const futex_target::CONTENDED, move _28) -> [return: bb16, unwind unreachable];",
+    "+        _25 = futex_wait(move _26, const futex_target::CONTENDED, move _28) -> [return: bb16, unwind continue];",
+    "@@ -256 +256 @@\n",
+    "-        _29 = Mutex::spin(move _30) -> [return: bb17, unwind unreachable];",
+    "+        _29 = Mutex::spin(move _30) -> [return: bb17, unwind continue];",
+    "@@ -281 +281 @@\n",
+    "-        _1 = Atomic::<u32>::new(const futex_target::UNLOCKED) -> [return: bb1, unwind unreachable];",
+    "+        _1 = Atomic::<u32>::new(const futex_target::UNLOCKED) -> [return: bb1, unwind continue];",
+    "@@ -329 +329 @@\n",
+    "-        _5 = Atomic::<u32>::load(move _6, move _7) -> [return: bb2, unwind unreachable];",
+    "+        _5 = Atomic::<u32>::load(move _6, move _7) -> [return: bb2, unwind continue];",
+    "@@ -380 +380 @@\n",
+    "-        _14 = spin_loop() -> [return: bb8, unwind unreachable];",
+    "+        _14 = spin_loop() -> [return: bb8, unwind continue];",
+    "@@ -412 +412 @@\n",
+    "-        _3 = Atomic::<u32>::compare_exchange(move _4, const futex_target::UNLOCKED, const futex_target::LOCKED, move _5, move _6) -> [return: bb1, unwind unreachable];",
+    "+        _3 = Atomic::<u32>::compare_exchange(move _4, const futex_target::UNLOCKED, const futex_target::LOCKED, move _5, move _6) -> [return: bb1, unwind continue];",
+    "@@ -420 +420 @@\n",
+    "-        _0 = Result::<u32, u32>::is_ok(move _2) -> [return: bb2, unwind unreachable];",
+    "+        _0 = Result::<u32, u32>::is_ok(move _2) -> [return: bb2, unwind continue];",
+    "@@ -449 +449 @@\n",
+    "-        _3 = Atomic::<u32>::swap(move _4, const futex_target::UNLOCKED, move _5) -> [return: bb1, unwind unreachable];",
+    "+        _3 = Atomic::<u32>::swap(move _4, const futex_target::UNLOCKED, move _5) -> [return: bb1, unwind continue];",
+    "@@ -464 +464 @@\n",
+    "-        _6 = Mutex::wake(move _7) -> [return: bb3, unwind unreachable];",
+    "+        _6 = Mutex::wake(move _7) -> [return: bb3, unwind continue];",
+    "@@ -501 +501 @@\n",
+    "-        _2 = futex_wake(move _3) -> [return: bb1, unwind unreachable];",
+    "+        _2 = futex_wake(move _3) -> [return: bb1, unwind continue];"
+  ]
+}
