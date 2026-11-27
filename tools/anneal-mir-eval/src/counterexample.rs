@@ -14,13 +14,14 @@
 //! witness with [`WitnessClass`] (`replayable_miri_ub` vs
 //! `model_only_unreplayed`).
 
-use alloc::{string::String, vec, vec::Vec};
+use alloc::{format, string::String, vec, vec::Vec};
+use core::fmt;
 
 use serde::{Deserialize, Serialize};
 
 use crate::{
     eval::{
-        EvalConfig, Outcome, StepTrace, TerminalOut, eval_body_with_caller_mem,
+        EvalConfig, Outcome, StepTrace, TerminalOut, eval_body_with_caller_mem, sysroot_num_body,
         validate_body_in_program, validate_program_config,
     },
     ir::{IntTy, IntWidth, Mutability, Program, Ty},
@@ -45,6 +46,94 @@ impl Default for ProbeConfig {
     }
 }
 
+fn is_false(b: &bool) -> bool {
+    !*b
+}
+
+/// Structured MIR location where a fault, abort, unwind, or fuel limit hit.
+#[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize)]
+pub struct TraceLocation {
+    pub step: usize,
+    pub def_id: usize,
+    #[serde(default, skip_serializing_if = "is_false")]
+    pub is_sysroot: bool,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub body_identity: Option<String>,
+    pub block_idx: usize,
+    pub stmt_idx: usize,
+    pub is_terminator: bool,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub kind: Option<String>,
+}
+
+impl TraceLocation {
+    /// Format a compact site tag, suppressing `body[id]` for `entry_body_id`.
+    pub fn format_site(&self, entry_body_id: Option<usize>) -> String {
+        let id = self.body_identity.as_deref().filter(|s| !s.is_empty());
+        let pfx = if self.is_sysroot {
+            format!("{} ", id.unwrap_or("sysroot"))
+        } else if entry_body_id.is_some_and(|e| e != self.def_id) {
+            let b = self.def_id;
+            id.map_or_else(|| format!("body[{b}] "), |s| format!("body[{b}] ({s}) "))
+        } else {
+            String::new()
+        };
+        match (self.kind.as_deref(), self.is_terminator) {
+            (Some("entry"), _) => format!("{pfx}entry"),
+            (_, true) => format!("{pfx}bb{}:term", self.block_idx),
+            (_, false) => format!("{pfx}bb{}:stmt{}", self.block_idx, self.stmt_idx),
+        }
+    }
+}
+
+impl fmt::Display for TraceLocation {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        f.write_str(&self.format_site(None))
+    }
+}
+
+/// Extract the non-return site (`Fault`/`Aborted`/`Unwound`/`OutOfFuel`) of `trace`
+/// using `program` to resolve `body_identity` and statement-vs-terminator status.
+pub fn trace_location(program: &Program, trace: &StepTrace) -> Option<TraceLocation> {
+    let fb = match &trace.outcome {
+        Outcome::Returned(TerminalOut::Returned { .. }) => return None,
+        Outcome::OutOfFuel => "out_of_fuel",
+        Outcome::Fault(_) => "fault",
+        Outcome::Aborted { .. } => "abort",
+        Outcome::Returned(TerminalOut::Unwound { .. }) => "terminal",
+    };
+    let fr = trace.final_state.as_ref().and_then(|s| s.frames.last());
+    let (n, ev) = (trace.steps_executed, trace.events.last());
+    let (step, def_id, block_idx, stmt_idx, kind) = match (fb, fr, ev) {
+        ("out_of_fuel", Some(f), _) => (n, f.def_id, f.block_idx, f.stmt_idx, fb),
+        ("out_of_fuel", None, Some(e)) => (e.step, e.def_id, e.block_idx, e.stmt_idx, fb),
+        (_, _, Some(e)) => (e.step, e.def_id, e.block_idx, e.stmt_idx, e.kind.as_str()),
+        (_, Some(f), None) => (n.saturating_sub(1), f.def_id, f.block_idx, f.stmt_idx, fb),
+        _ => (0, trace.body_id, 0, 0, "entry"),
+    };
+    let site = (def_id, block_idx, stmt_idx);
+    let sys_op =
+        fr.and_then(|f| f.sysroot_op.filter(|_| (f.def_id, f.block_idx, f.stmt_idx) == site));
+    let sys_body = sys_op.map(sysroot_num_body);
+    let body_ref = sys_body.as_ref().or_else(|| program.bodies.get(def_id));
+    let is_terminator = match body_ref {
+        _ if kind == "entry" => false,
+        Some(b) => stmt_idx >= b.blocks.get(block_idx)?.statements.len(),
+        None => return None,
+    };
+    let tid = (def_id == trace.body_id && !trace.identity.is_empty()).then_some(&trace.identity);
+    Some(TraceLocation {
+        step,
+        def_id,
+        is_sysroot: sys_op.is_some(),
+        body_identity: body_ref.map(|b| &b.identity).or(tid).cloned(),
+        block_idx,
+        stmt_idx,
+        is_terminator,
+        kind: Some(kind.into()),
+    })
+}
+
 /// Concrete failing or bounded input query and its execution trace.
 #[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize)]
 pub struct Counterexample {
@@ -55,21 +144,34 @@ pub struct Counterexample {
     pub witness_class: Option<WitnessClass>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub witness_note: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub fault_location: Option<TraceLocation>,
     pub trace: StepTrace,
 }
 
 impl Counterexample {
-    /// Construct a counterexample from `(args, caller_mem, trace)`, populating
-    /// [`Self::witness_class`] and [`Self::witness_note`] fail-closed from the
-    /// trace outcome when it is an `Undefined` fault.
+    /// Build from `(args, caller_mem, trace)` (`fault_location` is `None`;
+    /// use [`Self::from_trace_in_program`] when a [`Program`] is available).
     pub fn from_trace(args: Vec<Val>, caller_mem: CallerMemory, trace: StepTrace) -> Self {
         let (witness_class, witness_note) = match &trace.outcome {
-            Outcome::Fault(fault) if fault.kind == FaultKind::Undefined => {
-                (fault.witness_class(), fault.model_only_note().map(String::from))
+            Outcome::Fault(f) if f.kind == FaultKind::Undefined => {
+                (f.witness_class(), f.model_only_note().map(String::from))
             }
             _ => (None, None),
         };
-        Self { args, caller_mem, witness_class, witness_note, trace }
+        Self { args, caller_mem, witness_class, witness_note, fault_location: None, trace }
+    }
+
+    /// Program-aware variant resolving callee names and terminator flags.
+    pub fn from_trace_in_program(
+        p: &Program,
+        args: Vec<Val>,
+        caller_mem: CallerMemory,
+        trace: StepTrace,
+    ) -> Self {
+        let mut ce = Self::from_trace(args, caller_mem, trace);
+        ce.fault_location = trace_location(p, &ce.trace);
+        ce
     }
 }
 
@@ -851,7 +953,8 @@ pub fn probe_body_with_policy(
     let record_unsupported = |report: &mut ProbeReport, fault: FaultDetail| {
         report.unsupported_count += 1;
         if report.first_unsupported.is_none() {
-            report.first_unsupported = Some(Counterexample::from_trace(
+            report.first_unsupported = Some(Counterexample::from_trace_in_program(
+                program,
                 Vec::new(),
                 CallerMemory::default(),
                 StepTrace {
@@ -948,6 +1051,9 @@ pub fn probe_body_with_policy(
         }
     }
 
+    let mk_ce = |args, caller_mem, trace| {
+        Counterexample::from_trace_in_program(program, args, caller_mem, trace)
+    };
     for (args, caller_mem) in cases {
         let trace = eval_body_with_caller_mem(
             program,
@@ -963,22 +1069,20 @@ pub fn probe_body_with_policy(
             Outcome::Returned(TerminalOut::Unwound { .. }) => {
                 report.unwound_count += 1;
                 if report.first_unwound.is_none() {
-                    report.first_unwound =
-                        Some(Counterexample::from_trace(args, caller_mem, trace));
+                    report.first_unwound = Some(mk_ce(args, caller_mem, trace));
                 }
             }
             Outcome::Aborted { .. } => {
                 report.aborted_count += 1;
                 if report.first_aborted.is_none() {
-                    report.first_aborted =
-                        Some(Counterexample::from_trace(args, caller_mem, trace));
+                    report.first_aborted = Some(mk_ce(args, caller_mem, trace));
                 }
             }
             Outcome::Fault(fault) => match fault.kind {
                 FaultKind::Undefined => {
                     report.undefined_count += 1;
                     let class = fault.witness_class().unwrap_or(WitnessClass::ModelOnlyUnreplayed);
-                    let ce = Counterexample::from_trace(args, caller_mem, trace);
+                    let ce = mk_ce(args, caller_mem, trace);
                     match class {
                         WitnessClass::ReplayableMiriUb => {
                             report.replayable_ub_count += 1;
@@ -1000,16 +1104,14 @@ pub fn probe_body_with_policy(
                 FaultKind::Unsupported => {
                     report.unsupported_count += 1;
                     if report.first_unsupported.is_none() {
-                        report.first_unsupported =
-                            Some(Counterexample::from_trace(args, caller_mem, trace));
+                        report.first_unsupported = Some(mk_ce(args, caller_mem, trace));
                     }
                 }
             },
             Outcome::OutOfFuel => {
                 report.out_of_fuel_count += 1;
                 if report.first_out_of_fuel.is_none() {
-                    report.first_out_of_fuel =
-                        Some(Counterexample::from_trace(args, caller_mem, trace));
+                    report.first_out_of_fuel = Some(mk_ce(args, caller_mem, trace));
                 }
             }
         }

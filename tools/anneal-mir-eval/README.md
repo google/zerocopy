@@ -114,6 +114,12 @@ entries are `{ "kind": "init", "byte": <u8>, "prov": <u64|null> }` or
 }
 ```
 
+Non-returning `eval` and `probe` lines add `@ <site>` (`bbN:stmtM`,
+`bbN:term`, or `entry`); `probe` also prints `caller_allocs=` and
+`ub_class=`, and `--json` adds `fault_location` (`step`, `def_id`,
+`block_idx`, `stmt_idx`, `is_terminator`, optional `is_sysroot`/
+`body_identity`/`kind`) via `trace_location` / `from_trace_in_program`.
+
 Exit codes for `eval` and `probe`:
 
 - `0`: For `eval`, execution returned or unwound without UB (`Returned` or

@@ -13,6 +13,11 @@
 
 use std::{fs, process::Command};
 
+use anneal_mir_eval::{
+    Counterexample, EvalConfig, Outcome, Program, TerminalOut, eval_body_with_config,
+    trace_location,
+};
+
 fn bin_path() -> &'static str {
     env!("CARGO_BIN_EXE_anneal-mir-eval")
 }
@@ -1049,4 +1054,50 @@ fn cli_evaluates_and_probes_real_zerocopy_profile_v2_manifests() {
         probe_ub_json_out.contains("\"witness_class\": \"replayable_miri_ub\""),
         "{probe_ub_json_out}"
     );
+    assert!(probe_ub_json_out.contains("\"fault_location\""), "{probe_ub_json_out}");
+    assert!(probe_ub_out.contains("ub_class=") && probe_ub_out.contains(" @ bb"), "{probe_ub_out}");
+    assert!(eval_oob_out.contains(" @ bb"), "{eval_oob_out}");
+}
+
+#[test]
+fn cli_eval_and_probe_emit_structured_fault_locations() {
+    let jp = std::env::temp_dir().join(format!("anneal-mir-triage-{}.json", std::process::id()));
+    fs::write(&jp, r#"{"scope":{"kind":"selected_unit","roots":["d::a","d::b","d::c"]},"pointer_width_bits":64,"mir_profile_version":2,"bodies":[{"arg_count":1,"is_unsafe":false,"identity":"d::a","local_tys":[{"kind":"int","width":"i32","signed":false},{"kind":"int","width":"i32","signed":false}],"blocks":[{"statements":[{"kind":"assign","local":0,"projection":[],"value":{"kind":"binary","op":"div","left":{"kind":"copy","local":1,"projection":[]},"right":{"kind":"copy","local":1,"projection":[]}}}],"terminator":{"kind":"ret"}}]},{"arg_count":0,"is_unsafe":false,"identity":"d::b","local_tys":[{"kind":"unit"}],"blocks":[{"statements":[],"terminator":{"kind":"goto","block":1}},{"statements":[],"terminator":{"kind":"unreachable"}}]},{"arg_count":1,"is_unsafe":false,"identity":"d::c","local_tys":[{"kind":"unit"},{"kind":"int","width":"i32","signed":false}],"blocks":[{"statements":[],"terminator":{"kind":"unsupported"}}]}]}"#).unwrap();
+    let p = jp.to_str().unwrap();
+    let run = |a: &[&str]| Command::new(bin_path()).args(a).output().unwrap();
+    let chk = |a: &[&str], code: i32, sub: &str| {
+        let o = run(a);
+        assert!(o.status.code() == Some(code) && String::from_utf8_lossy(&o.stdout).contains(sub));
+    };
+    chk(&["eval", p, "--body", "d::a", "--arg", "0"], 2, "@ bb0:stmt0");
+    chk(&["eval", p, "--body", "d::a", "--arg", "1", "--fuel", "0"], 3, "OUT OF FUEL @ bb0:stmt0");
+    chk(&["eval", p, "--body", "d::b"], 2, "@ bb1:term");
+    let po = String::from_utf8(run(&["probe", p, "--all", "--cases", "4"]).stdout).unwrap();
+    assert!(po.contains("ub_class=div_by_zero") && po.contains("@ bb0:stmt0"), "{po}");
+    assert!(po.contains("ub_class=unreachable_executed") && po.contains("@ bb1:term"), "{po}");
+    assert!(po.contains("UNSUPPORTED args=(") && po.contains("@ bb0:term"), "{po}");
+    let out = run(&["probe", p, "--body", "d::a", "--cases", "1", "--fuel", "0", "--json"]);
+    let j: serde_json::Value = serde_json::from_slice(&out.stdout).unwrap();
+    let _ = fs::remove_file(&jp);
+    let fl = &j[0]["first_out_of_fuel"]["fault_location"];
+    assert!(fl["kind"] == "out_of_fuel" && fl["is_terminator"] == false, "{fl}");
+
+    let v1: Program = serde_json::from_str(r#"{"scope":{"kind":"crate"},"pointer_width_bits":64,"mir_profile_version":1,"bodies":[{"arg_count":0,"is_unsafe":false,"identity":"caller","local_tys":[{"kind":"int","width":"i8","signed":false}],"blocks":[{"statements":[],"terminator":{"kind":"sysroot_call","op":{"kind":"unchecked_add","ty":{"width":"i8","signed":false}},"args":[{"kind":"constant","ty":{"kind":"int","width":"i8","signed":false},"lit":{"kind":"scalar","bits":"255"}},{"kind":"constant","ty":{"kind":"int","width":"i8","signed":false},"lit":{"kind":"scalar","bits":"1"}}],"dst":0,"target":0,"unwind":"continue"}}]},{"arg_count":0,"is_unsafe":false,"identity":"callee","local_tys":[{"kind":"unit"}],"blocks":[{"statements":[],"terminator":{"kind":"unreachable"}}]},{"arg_count":0,"is_unsafe":false,"identity":"wrap","local_tys":[{"kind":"unit"}],"blocks":[{"statements":[],"terminator":{"kind":"call","callee":1,"args":[],"dst":0,"target":0,"unwind":"continue"}}]}]}"#).unwrap();
+    let cfg = EvalConfig { record_events: false, ..EvalConfig::profile_v1() };
+    let ev = |id, c: &EvalConfig| eval_body_with_config(&v1, id, &[], 8, c);
+    let loc = |id| trace_location(&v1, &ev(id, &cfg)).unwrap();
+    let s = |id, e| loc(id).format_site(Some(e));
+    assert_eq!((s(0, 0), s(0, 2)), ("core::num::sysroot bb0:stmt0".into(), s(0, 0)));
+    assert_eq!((s(2, 2), s(99, 99)), ("body[1] (callee) bb0:term".into(), "entry".into()));
+    let mut tr = ev(1, &EvalConfig::profile_v1());
+    let cm = Default::default;
+    assert!(Counterexample::from_trace(vec![], cm(), tr.clone()).fault_location.is_none());
+    let ce = Counterexample::from_trace_in_program(&v1, vec![], cm(), tr.clone());
+    assert!(ce.fault_location.is_some_and(|l| l.is_terminator));
+    tr.final_state = None;
+    let unwound = Outcome::Returned(TerminalOut::Unwound { caller_mem: cm() });
+    for o in [unwound, Outcome::Aborted { caller_mem: cm() }] {
+        tr.outcome = o;
+        assert_eq!(trace_location(&v1, &tr).unwrap().format_site(Some(0)), s(2, 2));
+    }
 }

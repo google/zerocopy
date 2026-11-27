@@ -34,7 +34,8 @@ pub mod ops;
 pub mod value;
 
 pub use counterexample::{
-    Counterexample, ProbeConfig, ProbeReport, probe_body, probe_body_with_policy,
+    Counterexample, ProbeConfig, ProbeReport, TraceLocation, probe_body, probe_body_with_policy,
+    trace_location,
 };
 pub use eval::{
     CallReturnTarget, EvalConfig, EvalProfile, FrameState, LocalSlot, MachineState, Outcome, Query,
