@@ -403,7 +403,8 @@ connects the verification layers to Stage 2 by kernel-checked refinement proofs:
   `theory/Anneal/{InitLemmas,ClassicalEm,Firewall,LeBytes,ListChunks}.lean`,
   `theory/Anneal/{NatBitwise,BitTrieLrat,PTree,SpineForce,Generic}.lean`,
   `theory/Anneal/{Scalar,Simd,Wp}.lean`,
-  `theory/Anneal/{AiPcc,ByteRun,ByteSubLens,CallStackUnwind,CnfOrd}/`,
+  `theory/Anneal/{AiPcc,ByteRun,ByteSubLens,CallStackUnwind}/`,
+  `theory/Anneal/{CanonicalDiode,CnfOrd}/`,
   `theory/Anneal/{ConjunctiveWp,F2Simd,Framework,GaloisCodec,MediaBits}/`,
   `theory/Anneal/{MirMemComp,MiriTreeBorrows,OverflowCastJoin,PureLift}/`,
   `theory/Anneal/{RefFrame,SafeTwin,SepAC,SpatialPinV2,WavefrontReclaim}/`, and
@@ -426,7 +427,9 @@ connects the verification layers to Stage 2 by kernel-checked refinement proofs:
   `Repeat` byte-copy laws (`ByteRun`), lawful sub-allocation byte lenses and
   `@[irreducible]` `&mut` method call summaries (`ByteSubLens`), modular
   `@[irreducible]` call-stack framing and multi-level unwind cleanup propagation
-  (`CallStackUnwind`), constructive `< ω^ω` Cantor Normal Form ordinals and
+  (`CallStackUnwind`), prefix-free codec laws, linearly budgeted
+  framed-sequence decoders, and canonical parse-and-reserialize filters
+  (`CanonicalDiode`), constructive `< ω^ω` Cantor Normal Form ordinals and
   multi-rank worklist termination (`CnfOrd`), anti-monotonic weakest liberal
   preconditions, minimum-budget conjunctive WP, constructive divergence
   certificates, and binary-doubling fuel (`ConjunctiveWp`),
@@ -575,6 +578,7 @@ anneal/
     │   ├── ByteRun.lean            # Mixed-InitMask padded & Repeat byte-copy laws (+ ByteRun/)
     │   ├── ByteSubLens.lean        # Sub-alloc byte lenses & &mut summaries (+ ByteSubLens/)
     │   ├── CallStackUnwind.lean    # Modular CallSpecCut & unwind cleanup (+ CallStackUnwind/)
+    │   ├── CanonicalDiode.lean     # Canonical parse-and-reserialize codec laws (+ CanonicalDiode/)
     │   ├── ClassicalEm.lean        # Diaconescu excluded middle and choice
     │   ├── CnfOrd.lean             # Constructive < ω^ω CNF ordinals & worklists (+ CnfOrd/)
     │   ├── ConjunctiveWp.lean      # Anti-monotonic WLP, conjunctive WP & pow2 fuel (+ ConjunctiveWp/)
