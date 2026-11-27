@@ -91,7 +91,10 @@ cargo "+${STABLE}" test --locked --offline --workspace
 # `spec_sources.json` instead lowers inline specifications from
 # `zerocopy/src`; the golden tests above and
 # `anneal/ci/verify_anneal_spec_zerocopy.py` (in installed-smoke) check those,
-# so this loop skips them rather than parse that file list here.
+# so this loop skips them rather than parse that file list here. The
+# `zerocopy` specifications now live inline and are verified through
+# `zerocopy/proofs`, so `tests/zerocopy` may not exist.
+shopt -s nullglob
 for unit in tests/zerocopy/*; do
   if [[ -e "$unit/spec_sources.json" || -L "$unit/spec_sources.json" ]]; then
     continue

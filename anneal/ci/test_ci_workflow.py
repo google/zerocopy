@@ -617,6 +617,9 @@ class CiWorkflowManifestGuardTests(unittest.TestCase):
                 for glob in entry.get("include", [])
             ]
             self.assertIn("zerocopy/src/**", globs, check_id)
+            # Both lower inline specifications against the generated modules
+            # checked in under `zerocopy/proofs`.
+            self.assertIn("zerocopy/proofs/**", globs, check_id)
 
     def test_tools_anneal_spec_freshness_skips_spec_sources_units(self):
         with tempfile.TemporaryDirectory() as tmp:
@@ -666,6 +669,38 @@ class CiWorkflowManifestGuardTests(unittest.TestCase):
                     "--src-root . --check tests/zerocopy/01_companion "
                     "tests/zerocopy/01_companion/spec.rs"
                 ],
+            )
+
+
+    def test_tools_anneal_spec_freshness_allows_no_companion_units(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            (root / "anneal/tools/anneal-spec").mkdir(parents=True)
+            log = root / "cargo.log"
+            stub = root / "bin/cargo"
+            stub.parent.mkdir()
+            stub.write_text(
+                '#!/usr/bin/env bash\nprintf \'%s\\n\' "$*" >> "$CARGO_LOG"\n'
+            )
+            stub.chmod(0o755)
+            script = REPO_ROOT / "ci/scripts/run_anneal_spec_check.sh"
+            res = subprocess.run(
+                ["/bin/bash", str(script)],
+                cwd=root,
+                env={
+                    "PATH": f"{stub.parent}:/usr/bin:/bin",
+                    "HOME": str(root),
+                    "CARGO_LOG": str(log),
+                    "PIN_RUST_TOOLCHAINS__STABLE": "1.0.0",
+                },
+                capture_output=True,
+                text=True,
+                timeout=60,
+                check=False,
+            )
+            self.assertEqual(res.returncode, 0, res.stdout + res.stderr)
+            self.assertFalse(
+                [l for l in log.read_text().splitlines() if l.startswith("+1.0.0 run ")]
             )
 
 

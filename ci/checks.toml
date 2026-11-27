@@ -815,8 +815,10 @@ inputs = [
   { kind = "glob", include = [
     "anneal/tools/anneal-spec/tests/**",
     "ci/scripts/run_anneal_spec_check.sh",
-    # The golden tests lower `spec_sources.json` units from here.
+    # The golden tests lower the inline specifications here and compare them
+    # with the claim-bound `zerocopy/proofs` units' generated modules.
     "zerocopy/src/**",
+    "zerocopy/proofs/**",
   ] },
 ]
 env = { CARGO_HOME = "/cargo-home" }

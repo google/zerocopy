@@ -1009,9 +1009,19 @@ pub trait PointerMetadata: Copy + Eq + Debug + Ord {
 impl PointerMetadata for () {
     #[inline]
     #[allow(clippy::unused_unit)]
+    #[cfg_attr(anneal, anneal::spec(
+        claim = "zc02_unit_pointer_metadata",
+        total,
+        ensures(|ret| ret == ()),
+    ))]
     fn from_elem_count(_elems: usize) -> () {}
 
     #[inline]
+    #[cfg_attr(anneal, anneal::spec(
+        claim = "zc02_unit_pointer_metadata",
+        total,
+        ensures(|count| count == 0),
+    ))]
     fn to_elem_count(self) -> usize {
         0
     }
@@ -1042,11 +1052,21 @@ impl PointerMetadata for () {
 
 impl PointerMetadata for usize {
     #[inline]
+    #[cfg_attr(anneal, anneal::spec(
+        claim = "zc01_usize_pointer_metadata",
+        terminates, no_panic, max_steps = 2,
+        ensures(|ret| ret == elems),
+    ))]
     fn from_elem_count(elems: usize) -> usize {
         elems
     }
 
     #[inline]
+    #[cfg_attr(anneal, anneal::spec(
+        claim = "zc01_usize_pointer_metadata",
+        terminates, no_panic, max_steps = 2,
+        ensures(|count| count == self),
+    ))]
     fn to_elem_count(self) -> usize {
         self
     }

@@ -51,110 +51,122 @@ const USIZE_POINTER_METADATA_SPEC: &str = "anneal::external_spec! {
 }
 ";
 
-const UNITS: &[&str] = &["01_usize_pointer_metadata", "02_unit_pointer_metadata"];
-
-fn unit_dir(unit: &str) -> std::path::PathBuf {
-    Path::new(env!("CARGO_MANIFEST_DIR")).join("../tests/zerocopy").join(unit)
-}
-
-/// The `zerocopy` source root, from which `spec_sources.json` units lower.
+/// The `zerocopy` source root, from which inline specifications lower.
 fn zerocopy_src() -> std::path::PathBuf {
     Path::new(env!("CARGO_MANIFEST_DIR")).join("../../../../zerocopy/src")
 }
 
-/// A unit's lowering inputs: its companion `spec.rs` from the workspace root,
-/// or the `zerocopy/src` files that its `spec_sources.json` names (whose
-/// inline items take their module paths).
-struct UnitInputs {
-    root: std::path::PathBuf,
+/// A claim-bound `zerocopy/proofs` unit: its directory, the `zerocopy/src`
+/// files its `spec_sources.json` names, and its claim.
+struct ClaimUnit {
+    dir: std::path::PathBuf,
     files: Vec<String>,
-    inline: bool,
+    claim: String,
 }
 
-fn unit_inputs(unit: &str) -> UnitInputs {
-    let dir = unit_dir(unit);
-    match fs::read_to_string(dir.join("spec_sources.json")) {
-        Ok(json) => {
-            assert!(
-                fs::symlink_metadata(dir.join("spec.rs")).is_err(),
-                "{unit}: both spec.rs and spec_sources.json"
-            );
-            let v: serde_json::Value = serde_json::from_str(&json).unwrap();
-            let files = v["files"]
-                .as_array()
-                .unwrap()
-                .iter()
-                .map(|f| f.as_str().unwrap().to_string())
-                .collect();
-            UnitInputs { root: zerocopy_src(), files, inline: true }
-        }
-        Err(e) if e.kind() == std::io::ErrorKind::NotFound => UnitInputs {
-            root: Path::new(env!("CARGO_MANIFEST_DIR")).join(".."),
-            files: vec![format!("tests/zerocopy/{unit}/spec.rs")],
-            inline: false,
-        },
-        Err(e) => panic!("{unit}: cannot read spec_sources.json: {e}"),
+impl ClaimUnit {
+    fn module(&self) -> std::path::PathBuf {
+        self.dir.join(format!("Specs/zerocopy/{}.lean", self.claim))
     }
+}
+
+fn claim_units() -> Vec<ClaimUnit> {
+    let proofs = zerocopy_src().join("../proofs");
+    let mut units: Vec<_> = fs::read_dir(&proofs)
+        .unwrap()
+        .filter_map(|e| {
+            let dir = e.unwrap().path();
+            let json = fs::read_to_string(dir.join("spec_sources.json")).ok()?;
+            let v: serde_json::Value = serde_json::from_str(&json).unwrap();
+            let files =
+                v["files"].as_array().unwrap().iter().map(|f| f.as_str().unwrap().into()).collect();
+            Some(ClaimUnit { dir, files, claim: v["claim"].as_str().unwrap().into() })
+        })
+        .collect();
+    units.sort_by(|a, b| a.dir.cmp(&b.dir));
+    units
 }
 
 #[test]
 fn zerocopy_units_match_checked_in_goldens() {
-    for unit in UNITS {
-        let inputs = unit_inputs(unit);
-        let sources: Vec<Source> = inputs
+    let units = claim_units();
+    // `__unsafe`, `add_scaled_metadata`, and the two `PointerMetadata` impls.
+    assert!(units.len() >= 4, "found {} claim-bound units", units.len());
+    for unit in &units {
+        let sources: Vec<Source> = unit
             .files
             .iter()
-            .map(|f| {
-                let text = fs::read_to_string(inputs.root.join(f)).unwrap();
-                let module = if inputs.inline { module_path(f) } else { Vec::new() };
-                Source { label: f.clone(), text, module }
+            .map(|f| Source {
+                label: f.clone(),
+                text: fs::read_to_string(zerocopy_src().join(f)).unwrap(),
+                module: module_path(f),
             })
             .collect();
-        let l = lower(&sources).unwrap_or_else(|e| panic!("{unit}: {}", e[0].render(&sources)));
-        let dir = unit_dir(unit);
-        assert_eq!(
-            l.spec_lean,
-            fs::read_to_string(dir.join("Spec.lean")).unwrap(),
-            "{unit} Spec.lean"
-        );
-        assert_eq!(
-            l.span_map,
-            fs::read_to_string(dir.join("spec_span_map.json")).unwrap(),
-            "{unit} spec_span_map.json"
-        );
+        let opts = Options {
+            claim: Some(unit.claim.clone()),
+            format: Format::V2Module,
+            crate_slug: Some("zerocopy".into()),
+            ..Options::default()
+        };
+        let l = lower_with(&sources, &opts)
+            .unwrap_or_else(|e| panic!("{}: {}", unit.claim, e[0].render(&sources)));
+        assert_eq!(l.spec_lean, fs::read_to_string(unit.module()).unwrap(), "{}", unit.claim);
     }
 }
 
 #[test]
 fn cli_check_accepts_goldens_and_rejects_stale_output() {
     let bin = env!("CARGO_BIN_EXE_anneal-spec-lower");
-    for unit in UNITS {
-        let inputs = unit_inputs(unit);
-        let status = Command::new(bin)
+    let check = |unit: &ClaimUnit, dir: &Path| {
+        Command::new(bin)
             .arg("--src-root")
-            .arg(&inputs.root)
+            .arg(zerocopy_src())
+            .args(["--format", "v2-module", "--crate-slug", "zerocopy", "--claim", &unit.claim])
             .arg("--check")
-            .arg(unit_dir(unit))
-            .args(&inputs.files)
-            .status()
-            .unwrap();
-        assert!(status.success(), "{unit}: --check failed; regenerate with --out-dir");
+            .arg(dir)
+            .args(&unit.files)
+            .output()
+            .unwrap()
+    };
+    let units = claim_units();
+    for unit in &units {
+        let out = check(unit, &unit.dir);
+        assert!(out.status.success(), "{}: --check failed; regenerate with --out-dir", unit.claim);
     }
     let tmp = std::env::temp_dir().join(format!("anneal-spec-stale-{}", std::process::id()));
-    fs::create_dir_all(&tmp).unwrap();
-    fs::write(tmp.join("Spec.lean"), "stale").unwrap();
-    fs::write(tmp.join("spec_span_map.json"), "{}").unwrap();
-    let inputs = unit_inputs(UNITS[0]);
-    let out = Command::new(bin)
-        .arg("--src-root")
-        .arg(&inputs.root)
-        .args(["--check", tmp.to_str().unwrap()])
-        .args(&inputs.files)
-        .output()
-        .unwrap();
+    fs::create_dir_all(tmp.join("Specs/zerocopy")).unwrap();
+    fs::write(tmp.join(format!("Specs/zerocopy/{}.lean", units[0].claim)), "stale").unwrap();
+    let out = check(&units[0], &tmp);
     fs::remove_dir_all(&tmp).unwrap();
     assert_eq!(out.status.code(), Some(1));
     assert!(String::from_utf8_lossy(&out.stderr).contains("is stale"));
+}
+
+#[test]
+fn cli_v1_out_dir_and_check_round_trip() {
+    let bin = env!("CARGO_BIN_EXE_anneal-spec-lower");
+    let tmp = std::env::temp_dir().join(format!("anneal-spec-v1-{}", std::process::id()));
+    let out = tmp.join("out");
+    fs::create_dir_all(&tmp).unwrap();
+    fs::write(tmp.join("spec.rs"), USIZE_POINTER_METADATA_SPEC).unwrap();
+    let run = |mode: &str| {
+        Command::new(bin)
+            .arg("--src-root")
+            .arg(&tmp)
+            .arg(mode)
+            .arg(&out)
+            .arg("spec.rs")
+            .output()
+            .unwrap()
+    };
+    assert!(run("--out-dir").status.success());
+    assert!(out.join("Spec.lean").is_file() && out.join("spec_span_map.json").is_file());
+    assert!(run("--check").status.success());
+    fs::write(out.join("spec_span_map.json"), "{}").unwrap();
+    let stale = run("--check");
+    fs::remove_dir_all(&tmp).unwrap();
+    assert_eq!(stale.status.code(), Some(1));
+    assert!(String::from_utf8_lossy(&stale.stderr).contains("spec_span_map.json is stale"));
 }
 
 #[test]
