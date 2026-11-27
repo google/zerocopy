@@ -104,6 +104,11 @@ fn main() {
         println!("cargo:rustc-check-cfg=cfg(zerocopy_unstable_linux)");
         println!("cargo:rustc-check-cfg=cfg(no_fp_fmt_parse)");
         println!("cargo:rustc-check-cfg=cfg(no_zerocopy_codegen_docs)");
+
+        // `cfg(anneal)` gates `#[cfg_attr(anneal, anneal::spec(..))]`
+        // specifications, which Anneal's specification lowering reads from
+        // the source text. No build sets the cfg, so `rustc` strips them.
+        println!("cargo:rustc-check-cfg=cfg(anneal)");
     }
 
     for version_cfg in version_cfgs {
