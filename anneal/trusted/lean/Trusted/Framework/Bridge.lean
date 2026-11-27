@@ -194,9 +194,94 @@ nor proof modules can substitute a synthetic `ExecutionModel`. -/
     (mkEnvelope MirProfileV2 program entries stubs refutations
       claimShapes gaps)
 
+/-- Noncomputable conjunction of specification obligations (`0` `._unsafe_rec`).
+-/
+noncomputable def AllSpecLaws : List Prop → Prop
+  | [] => True
+  | p :: rest => p ∧ AllSpecLaws rest
+
+/-- Profile-unified structured specification bundle
+(`TargetRole::Specification`). Program-independent `laws` has no default so
+explicit law lists cannot be omitted silently, while `stepBounds` defaults to
+`fun _ => []` so `laws` transfers unchanged to future open-crate bundles. -/
+structure MirEnvelopeSpec where
+  entries     : List MirVerifiedEntry := []
+  stubs       : List MirAssumedStub := []
+  refutations : List MirRefutationEntry := []
+  claimShapes : List ClaimShape
+  gaps        : List DisclosedGap
+  laws        : List Prop
+  stepBounds  : Program → List Prop := fun _ => []
+
+/-- Canonical 2-field bundle (`MirEnvelope.mk Captured.program Spec.specs`). -/
+structure MirEnvelope where
+  program : Program
+  specs   : MirEnvelopeSpec
+
+/-- Scope-pinned envelope predicate (`.selectedUnitScope` is defense-in-depth
+alongside `EnvelopeCommonValid` + `mirProgramIsPartialScope`). -/
+@[reducible] def MirEnvelopeHolds
+    (M : ExecutionModel Program Body MirSignature Query Val CallerMemory)
+    (scope : VerificationScope) (c : MirEnvelope) : Prop :=
+  c.program.scope = scope ∧
+  (scope = .unit → .selectedUnitScope ∈ c.specs.gaps) ∧
+  EnvelopeTheorem
+    (mkEnvelope M c.program c.specs.entries c.specs.stubs
+      c.specs.refutations c.specs.claimShapes c.specs.gaps) ∧
+  AllSpecLaws c.specs.laws ∧
+  AllSpecLaws (c.specs.stepBounds c.program)
+
+/-- Model-pinned whole-crate structured Profile v1 Pass-1 root obligation. -/
+@[reducible] def CrateMirEnvelopeTheoremV1 : MirEnvelope → Prop :=
+  MirEnvelopeHolds MirProfileV1 .crate
+
+/-- Model-pinned selected-unit structured Profile v1 Pass-1 root obligation. -/
+@[reducible] def UnitMirEnvelopeTheoremV1 : MirEnvelope → Prop :=
+  MirEnvelopeHolds MirProfileV1 .unit
+
+/-- Model-pinned whole-crate structured Profile v2 Pass-1 root obligation. -/
+@[reducible] def CrateMirEnvelopeTheoremV2 : MirEnvelope → Prop :=
+  MirEnvelopeHolds MirProfileV2 .crate
+
+/-- Model-pinned selected-unit structured Profile v2 Pass-1 root obligation. -/
+@[reducible] def UnitMirEnvelopeTheoremV2 : MirEnvelope → Prop :=
+  MirEnvelopeHolds MirProfileV2 .unit
+
 end Trusted.Framework
 
 namespace Trusted
+
+/-- Top-level noncomputable specification law conjunction alias. -/
+abbrev AllSpecLaws :=
+  Trusted.Framework.AllSpecLaws
+
+/-- Top-level structured specification bundle alias. -/
+abbrev MirEnvelopeSpec :=
+  Trusted.Framework.MirEnvelopeSpec
+
+/-- Top-level 2-field MIR envelope bundle alias. -/
+abbrev MirEnvelope :=
+  Trusted.Framework.MirEnvelope
+
+/-- Top-level scope-pinned MIR envelope predicate alias. -/
+abbrev MirEnvelopeHolds :=
+  Trusted.Framework.MirEnvelopeHolds
+
+/-- Top-level whole-crate structured Profile v1 Pass-1 root alias. -/
+abbrev CrateMirEnvelopeTheoremV1 :=
+  Trusted.Framework.CrateMirEnvelopeTheoremV1
+
+/-- Top-level selected-unit structured Profile v1 Pass-1 root alias. -/
+abbrev UnitMirEnvelopeTheoremV1 :=
+  Trusted.Framework.UnitMirEnvelopeTheoremV1
+
+/-- Top-level whole-crate structured Profile v2 Pass-1 root alias. -/
+abbrev CrateMirEnvelopeTheoremV2 :=
+  Trusted.Framework.CrateMirEnvelopeTheoremV2
+
+/-- Top-level selected-unit structured Profile v2 Pass-1 root alias. -/
+abbrev UnitMirEnvelopeTheoremV2 :=
+  Trusted.Framework.UnitMirEnvelopeTheoremV2
 
 /-- Top-level model-pinned structured Profile v1 envelope obligation alias. -/
 abbrev MirEnvelopeTheoremV1 :=

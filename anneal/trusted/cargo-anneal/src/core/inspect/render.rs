@@ -997,6 +997,9 @@ fn render_ledger(
                 "digest.specification_manifest_sha256={}",
                 SanitizedInline(&s.specification_manifest_sha256)
             );
+            if let Some(sc_sha) = &s.spec_closure_sha256 {
+                let _ = writeln!(out, "digest.spec_closure_sha256={}", SanitizedInline(sc_sha));
+            }
             let _ = writeln!(out, "counts.selected={}", s.selected.len());
             let _ = writeln!(out, "counts.census={}", s.census.len());
             let _ = writeln!(out, "counts.sources={}", s.sources.len());
@@ -1185,6 +1188,13 @@ fn render_markdown(
             "| Specification Digest | {} |",
             format_gfm_code_cell(&opts.fmt_digest(&s.specification_manifest_sha256))
         );
+        if let Some(sc_sha) = &s.spec_closure_sha256 {
+            let _ = writeln!(
+                out,
+                "| Spec Closure Digest | {} |",
+                format_gfm_code_cell(&opts.fmt_digest(sc_sha))
+            );
+        }
     } else if let ParsedReceipt::Failure(f) = &env.receipt {
         let _ = writeln!(out, "| Phase | {} |", format_gfm_code_cell(&f.phase));
         let _ = writeln!(out, "| Detail | {} |", escape_gfm_cell(&f.detail));
@@ -1648,5 +1658,31 @@ mod tests {
             &RenderOptions { format: InspectFormat::Ledger, ..RenderOptions::default() },
         );
         assert!(ledger.contains("failure.reason=heartbeat_limit_exceeded\n"), "{ledger}");
+    }
+
+    #[test]
+    fn renders_spec_closure_digest_in_ledger_and_markdown() {
+        use crate::core::inspect::schema::tests::sample_envelope_v2_json;
+
+        let env =
+            parse_and_validate_receipt(&serde_json::to_vec(&sample_envelope_v2_json()).unwrap())
+                .unwrap();
+        assert!(env.invariant_violations.is_empty(), "{:?}", env.invariant_violations);
+
+        let ledger = render_inspection(
+            &env,
+            None,
+            &[],
+            &RenderOptions { format: InspectFormat::Ledger, ..RenderOptions::default() },
+        );
+        assert!(ledger.contains(&format!("digest.spec_closure_sha256={}\n", "b".repeat(64))));
+
+        let md = render_inspection(
+            &env,
+            None,
+            &[],
+            &RenderOptions { format: InspectFormat::Markdown, ..RenderOptions::default() },
+        );
+        assert!(md.contains("| Spec Closure Digest | `bbbbbbbbbbbb` |"), "{md}");
     }
 }

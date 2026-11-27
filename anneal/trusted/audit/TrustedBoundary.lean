@@ -8351,10 +8351,454 @@ def inspectSpecVacuity (env originEnv : Environment) (allMatchers : NameSet)
           s!"{shape.specLabel}.property ignores its `Program` argument " ++
           "(normalized body does not reference the captured program)"
       }
+  else
+    let envSpecTy := mkConst `Trusted.Framework.MirEnvelopeSpec
+    let isEnvelopeSpec := match env.checked.get.find? specName with
+      | some specInfo =>
+        match Kernel.isDefEq env {} specInfo.type envSpecTy with
+        | .ok b => b
+        | .error _ => false
+      | none => false
+    if isEnvelopeSpec then
+      let specDeclStr := (privateToUserName specName).toString
+      let entriesProj :=
+        mkApp (mkConst `Trusted.Framework.MirEnvelopeSpec.entries)
+          (mkConst specName)
+      let maxEntries : Nat := 256
+      let mut cur := entriesProj
+      let mut done := false
+      let mut truncReason? : Option String := none
+      for idx in [0:maxEntries] do
+        if done then
+          pure ()
+        else
+          cur := kernelWhnfSafe env {} cur
+          let fn := cur.getAppFn
+          let args := cur.getAppArgs
+          if fn.constName? == some ``List.nil && args.size == 1 then
+            done := true
+          else if fn.constName? == some ``List.cons && args.size == 3 then
+            let entryExpr := args[1]!
+            let sigExpr := .proj `Trusted.Framework.VerifiedEntry 1 entryExpr
+            let isUnsafeOpt := extractBoolLit? env {}
+              (.proj `Trusted.Framework.MirSignature 0 sigExpr)
+            let idOpt := extractStringLit? env {}
+              (.proj `Trusted.Framework.VerifiedEntry 0 entryExpr)
+            match isUnsafeOpt with
+            | some true =>
+              let contractExpr :=
+                .proj `Trusted.Framework.VerifiedEntry 2 entryExpr
+              let safetyPreFn :=
+                .proj `Trusted.Framework.FnContract 0 contractExpr
+              let qFVar : FVarId := { name := `_anneal_lint_safety_query }
+              let lctxSafety := ({} : LocalContext)
+                |>.mkLocalDecl qFVar `q
+                  (mkConst `Trusted.MirSemantics.Query) .default .default
+              let appliedSafety := mkApp safetyPreFn (.fvar qFVar)
+              if isTrivialFalseProp env lctxSafety 100 16 appliedSafety then
+                let bodyLabel := idOpt.filter (fun s => !s.isEmpty)
+                let labelDesc := match bodyLabel with
+                  | some s => s!"`{s}`"
+                  | none => s!"entry#{idx}"
+                warnings := warnings.push {
+                  code := "unsatisfiable_safety"
+                  declaration := specDeclStr
+                  body := bodyLabel
+                  message :=
+                    "MirEnvelopeSpec.entries safetyPre reduces to a " ++
+                    "trivially unsatisfiable proposition for unsafe " ++
+                    s!"{labelDesc}"
+                }
+            | some false => pure ()
+            | none =>
+              truncReason? := truncReason?.orElse
+                (fun () => some "non-literal MirVerifiedEntry metadata")
+            cur := args[2]!
+          else
+            truncReason? := truncReason?.orElse
+              (fun () => some "unreducible MirEnvelopeSpec.entries list")
+            done := true
+      if !done && truncReason?.isNone then
+        let rem := kernelWhnfSafe env {} cur
+        if rem.getAppFn.constName? != some ``List.nil then
+          truncReason? := some s!"after {maxEntries} verified entries"
+      if let some reason := truncReason? then
+        warnings := warnings.push {
+          code := "vacuity_check_truncated"
+          declaration := specDeclStr
+          message := s!"MirEnvelopeSpec.entries lint truncated ({reason})"
+        }
   -- Sort and deduplicate deterministically.
   let sorted := warnings.qsort (fun a b => a.sortKey < b.sortKey)
   return sorted.foldl (init := #[]) fun acc w =>
     if acc.contains w then acc else acc.push w
+
+/-- Map each allowed canonical target theorem root to
+`(crateCtor, isEnvelopeRoot)`. -/
+def canonicalRootInfo? : Name → Option (Name × Bool)
+  | `Trusted.MirSemantics.CrateTheorem =>
+    some (`Trusted.MirSemantics.Crate.mk, false)
+  | `Trusted.MirSemantics.UnitTheorem =>
+    some (`Trusted.MirSemantics.Crate.mk, false)
+  | `Trusted.MirSemantics.CrateTheoremV2 =>
+    some (`Trusted.MirSemantics.CrateV2.mk, false)
+  | `Trusted.MirSemantics.UnitTheoremV2 =>
+    some (`Trusted.MirSemantics.CrateV2.mk, false)
+  | `Trusted.Framework.CrateMirEnvelopeTheoremV1 =>
+    some (`Trusted.Framework.MirEnvelope.mk, true)
+  | `Trusted.Framework.UnitMirEnvelopeTheoremV1 =>
+    some (`Trusted.Framework.MirEnvelope.mk, true)
+  | `Trusted.Framework.CrateMirEnvelopeTheoremV2 =>
+    some (`Trusted.Framework.MirEnvelope.mk, true)
+  | `Trusted.Framework.UnitMirEnvelopeTheoremV2 =>
+    some (`Trusted.Framework.MirEnvelope.mk, true)
+  | _ => none
+
+private def isCompilerGeneratedSpecThm (ctx : SpecVacuityExtContext)
+    (env : Environment) (ci : ConstantInfo) : Bool :=
+  let rawName := ci.name
+  let findConst? (n : Name) : Option ConstantInfo := env.checked.get.find? n
+  if rawName.hasMacroScopes then
+    true
+  else
+    let declModIdx? := ctx.originEnv.getModuleIdxFor? rawName
+    let sameMod (target : Name) : Bool :=
+      match declModIdx?, ctx.originEnv.getModuleIdxFor? target with
+      | some a, some b => a == b
+      | _, _ => false
+    let hasMkAuxDeps := match declModIdx? with
+      | some idx => ctx.mkAuxModIdxs.contains idx
+      | none => false
+    let hasSizeOf := match declModIdx? with
+      | some idx => ctx.sizeOfModIdxs.contains idx
+      | none => false
+    match rawName with
+    | .str rawParent suffix =>
+      match suffix.dropSuffix? "_eq" with
+      | some stem =>
+        if hasMkAuxDeps && hasSizeOf then
+          match findConst? rawParent with
+          | some (.inductInfo iv) =>
+            sameMod rawParent && !isPropInductive env iv &&
+              !ctx.classNames.contains rawParent &&
+              iv.all.head? == some rawParent &&
+              (findConst? (.str rawParent "_sizeOf_inst")).isSome &&
+              isBoundedNestedSuffix "_sizeOf_" stem.toString
+                (iv.all.length + iv.numNested)
+          | _ => false
+        else
+          false
+      | none =>
+        match findConst? rawParent with
+        | some (.ctorInfo cv) =>
+          let (nonProp, isClass, nonBelow) :=
+            match findConst? cv.induct with
+            | some (.inductInfo iv) =>
+              (!isPropInductive env iv, ctx.classNames.contains cv.induct,
+                !isAuxBelowInductive ctx env findConst? rawName cv.induct)
+            | _ => (false, true, false)
+          sameMod cv.induct &&
+            ((hasMkAuxDeps && nonProp && nonBelow &&
+                Nat.blt 0 cv.numFields &&
+                ["inj", "injEq"].contains suffix) ||
+              (hasMkAuxDeps && hasSizeOf && nonProp && !isClass && nonBelow &&
+                suffix == "sizeOf_spec"))
+        | some (.inductInfo iv) =>
+          sameMod rawParent && hasMkAuxDeps && !isPropInductive env iv &&
+            !isAuxBelowInductive ctx env findConst? rawName rawParent &&
+            suffix == "ofNat_ctorIdx"
+        | some (.defnInfo _) | some (.thmInfo _) =>
+          if suffix == "eq" then
+            match rawParent with
+            | .str rawGp mid =>
+              match findConst? rawGp with
+              | some (.inductInfo iv) =>
+                sameMod rawGp && hasMkAuxDeps &&
+                  !isAuxBelowInductive ctx env findConst? rawName rawGp &&
+                  !isPropInductive env iv && iv.isRec &&
+                  (mid == "brecOn" ||
+                    (iv.all.head? == some rawGp &&
+                      isBoundedNestedSuffix "brecOn_" mid iv.numNested))
+              | _ => false
+            | _ => false
+          else
+            sameMod rawParent &&
+              ((hasMkAuxDeps &&
+                  (suffix == "eq_def" || isDigitsAfterPrefix "eq_" suffix)) ||
+                isDigitsAfterPrefix "_proof_" suffix ||
+                isDigitsAfterPrefix "proof_" suffix)
+        | _ => false
+    | _ => false
+
+/-- Extract canonical sorted `SpecUserDecl` entries (`module`, `name`, `kind`)
+across `specMods` excluding compiler-generated artifacts. `originEnv` is the
+imported non-proof environment carrying `const2ModIdx` module indices for all
+target modules. -/
+def extractSpecUserDecls (env originEnv : Environment)
+    (arts : NameMap ImportArtifacts) (allMatchers : NameSet)
+    (specMods : NameSet) (specAllConsts : List Name) :
+    IO (Array Json) := do
+  let extCtx := collectSpecExtContext originEnv
+  let mut instNames : NameSet := {}
+  for m in specMods do
+    let (olean, _) ← readImportedModuleParts arts m
+    for (data, _) in olean do
+      for sc in (partExtEntries Meta.instanceExtension.ext data) do
+        match sc with
+        | .global e | .scoped _ e =>
+          if let some gn := e.globalName? then
+            instNames := instNames.insert gn
+  let findConst? (n : Name) : Option ConstantInfo := env.checked.get.find? n
+  let mut rows : Array (String × String × String) := #[]
+  for n in specAllConsts do
+    if !n.hasMacroScopes then
+      if let some ci := findConst? n then
+        let kindOpt? : Option String := match ci with
+          | .thmInfo _ =>
+            if isCompilerGeneratedSpecDef extCtx env allMatchers ci ||
+                isCompilerGeneratedSpecThm extCtx env ci then none
+            else some "theorem"
+          | .defnInfo dv =>
+            if isCompilerGeneratedSpecDef extCtx env allMatchers ci then none
+            else if instNames.contains n then some "instance"
+            else if dv.hints matches .abbrev then some "abbrev"
+            else some "def"
+          | .inductInfo _ =>
+            if isAuxBelowInductive extCtx env findConst? n n then none
+            else if extCtx.classNames.contains n then some "classInductive"
+            else if Lean.isStructure originEnv n then some "structure"
+            else some "inductive"
+          | _ => none
+        if let some kindStr := kindOpt? then
+          let modStr := (← origin originEnv n).toString
+          rows := rows.push (modStr, n.toString, kindStr)
+  let sorted := rows.qsort fun (m1, n1, _) (m2, n2, _) =>
+    m1 < m2 || (m1 == m2 && n1 < n2)
+  return sorted.map fun (modStr, nameStr, kindStr) =>
+    Json.mkObj [
+      ("module", Json.str modStr),
+      ("name", Json.str nameStr),
+      ("kind", Json.str kindStr)
+    ]
+
+/-- Unfold non-`Trusted.*` constant heads when extracting canonical `law_heads`
+without reducing `Trusted.*` obligations or logical connectives. -/
+partial def unfoldNonTrustedHead (env : Environment) (e : Expr)
+    (fuel : Nat := 32) : Expr :=
+  match fuel with
+  | 0 => e
+  | fuel + 1 =>
+    match e with
+    | .mdata _ b => unfoldNonTrustedHead env b fuel
+    | _ =>
+      let fn := e.getAppFn
+      let args := e.getAppArgs
+      match fn with
+      | .const n lvls =>
+        let stop := n.getRoot == `Trusted ||
+          [``False, ``True, ``And, ``Or, ``Not, ``Eq, ``Iff].contains n
+        if stop then e
+        else
+          match env.checked.get.find? n with
+          | some ci =>
+            if ci.levelParams.length == lvls.length then
+              match ci.value? true with
+              | some v =>
+                let hd := (v.instantiateLevelParams ci.levelParams lvls)
+                let applied := mkAppN hd args
+                unfoldNonTrustedHead env applied fuel
+              | none => e
+            else
+              e
+          | none => e
+      | .lam .. =>
+        let reduced := e.headBeta
+        if reduced == e then e else unfoldNonTrustedHead env reduced fuel
+      | _ => e
+
+private def extractListElems (env : Environment) (listExpr : Expr)
+    (label : String) (maxElems : Nat := 4096) : IO (Array Expr) := do
+  let mut cur := listExpr
+  let mut out : Array Expr := #[]
+  for _ in [0:maxElems] do
+    cur := kernelWhnfSafe env {} cur
+    let fn := cur.getAppFn
+    let args := cur.getAppArgs
+    if fn.constName? == some ``List.nil && args.size == 1 then
+      return out
+    else if fn.constName? == some ``List.cons && args.size == 3 then
+      out := out.push args[1]!
+      cur := args[2]!
+    else
+      fail s!"non-literal list in {label}: {fn}"
+  let rem := kernelWhnfSafe env {} cur
+  if rem.getAppFn.constName? != some ``List.nil then
+    fail s!"list exceeds {maxElems} elements in {label}"
+  return out
+
+private def reqSpecString (env : Environment) (label : String)
+    (e : Expr) : IO String := do
+  match extractStringLit? env {} e with
+  | some s => return s
+  | none => fail s!"non-literal String in {label}"
+
+private def reqSpecBool (env : Environment) (label : String)
+    (e : Expr) : IO Bool := do
+  match extractBoolLit? env {} e with
+  | some b => return b
+  | none => fail s!"non-literal Bool in {label}"
+
+private def decodeClaimShapeTag (env : Environment) (e : Expr) : IO String := do
+  let r := kernelWhnfSafe env {} e
+  let fn := r.getAppFn
+  let args := r.getAppArgs
+  unless args.isEmpty do
+    fail s!"unexpected ClaimShape arguments in {fn}"
+  match fn.constName? with
+  | some `Trusted.Framework.ClaimShape.existsWitness => pure "existsWitness"
+  | some `Trusted.Framework.ClaimShape.forallSafety => pure "forallSafety"
+  | some `Trusted.Framework.ClaimShape.generalHyper => pure "generalHyper"
+  | some `Trusted.Framework.ClaimShape.subsetHyper => pure "subsetHyper"
+  | some `Trusted.Framework.ClaimShape.termination => pure "termination"
+  | _ => fail s!"unexpected ClaimShape constructor: {fn}"
+
+private def decodeDisclosedGapTag (env : Environment) (e : Expr) :
+    IO String := do
+  let r := kernelWhnfSafe env {} e
+  let fn := r.getAppFn
+  let args := r.getAppArgs
+  match fn.constName?, args.size with
+  | some `Trusted.Framework.DisclosedGap.selectedUnitScope, 0 =>
+    pure "selectedUnitScope"
+  | some `Trusted.Framework.DisclosedGap.rawLegacySpec, 0 =>
+    pure "rawLegacySpec"
+  | some `Trusted.Framework.DisclosedGap.unbridgedSemantics, 1 =>
+    let msg ← reqSpecString env "DisclosedGap" args[0]!
+    return s!"unbridgedSemantics({msg})"
+  | some `Trusted.Framework.DisclosedGap.callerRawPtrAliasing, 1 =>
+    let msg ← reqSpecString env "DisclosedGap" args[0]!
+    return s!"callerRawPtrAliasing({msg})"
+  | some `Trusted.Framework.DisclosedGap.callerMemoryThreadIsolation, 1 =>
+    let msg ← reqSpecString env "DisclosedGap" args[0]!
+    return s!"callerMemoryThreadIsolation({msg})"
+  | some `Trusted.Framework.DisclosedGap.configuredReferenceScope, 1 =>
+    let msg ← reqSpecString env "DisclosedGap" args[0]!
+    return s!"configuredReferenceScope({msg})"
+  | some `Trusted.Framework.DisclosedGap.assumedExternalCallee, 1 =>
+    let msg ← reqSpecString env "DisclosedGap" args[0]!
+    return s!"assumedExternalCallee({msg})"
+  | some `Trusted.Framework.DisclosedGap.waivedInhabitation, 1 =>
+    let msg ← reqSpecString env "DisclosedGap" args[0]!
+    return s!"waivedInhabitation({msg})"
+  | some `Trusted.Framework.DisclosedGap.unverifiedDownstream, 1 =>
+    let msg ← reqSpecString env "DisclosedGap" args[0]!
+    return s!"unverifiedDownstream({msg})"
+  | _, _ => fail s!"unexpected DisclosedGap constructor: {fn}"
+
+/-- Extract structured [`SpecEnvelopeSummary`] JSON for a `MirEnvelopeSpec`
+declaration in `env`. -/
+def extractSpecEnvelopeSummary (env : Environment) (specName : Name) :
+    IO Json := do
+  let specInfo ← lookupConst env specName "specification"
+  let isEnvSpec := match Kernel.isDefEq env {} specInfo.type
+      (mkConst `Trusted.Framework.MirEnvelopeSpec) with
+    | .ok b => b
+    | .error _ => false
+  unless isEnvSpec do
+    fail ("envelope root expects Trusted.Framework.MirEnvelopeSpec " ++
+      s!"for {specName}")
+  let specConst := mkConst specName
+  let entryExprs ← extractListElems env
+    (mkApp (mkConst `Trusted.Framework.MirEnvelopeSpec.entries) specConst)
+    "MirEnvelopeSpec.entries"
+  let mut entriesJson : Array Json := #[]
+  for entryExpr in entryExprs do
+    let identity ← reqSpecString env "MirVerifiedEntry.identity"
+      (.proj `Trusted.Framework.VerifiedEntry 0 entryExpr)
+    let sigExpr := .proj `Trusted.Framework.VerifiedEntry 1 entryExpr
+    let isUnsafe ← reqSpecBool env "MirSignature.isUnsafe"
+      (.proj `Trusted.Framework.MirSignature 0 sigExpr)
+    let contractExpr :=
+      .proj `Trusted.Framework.VerifiedEntry 2 entryExpr
+    let effExpr :=
+      .proj `Trusted.Framework.FnContract 5 contractExpr
+    let terminates ← reqSpecBool env "EffectMask.terminates"
+      (.proj `Trusted.Framework.EffectMask 0 effExpr)
+    let noUnwind ← reqSpecBool env "EffectMask.noUnwind"
+      (.proj `Trusted.Framework.EffectMask 1 effExpr)
+    let noAbort ← reqSpecBool env "EffectMask.noAbort"
+      (.proj `Trusted.Framework.EffectMask 2 effExpr)
+    let reqInhab ← reqSpecBool env "MirVerifiedEntry.requireInhabited"
+      (.proj `Trusted.Framework.VerifiedEntry 3 entryExpr)
+    entriesJson := entriesJson.push <| Json.mkObj [
+      ("identity", Json.str identity),
+      ("is_unsafe", Json.bool isUnsafe),
+      ("terminates", Json.bool terminates),
+      ("no_unwind", Json.bool noUnwind),
+      ("no_abort", Json.bool noAbort),
+      ("require_inhabited", Json.bool reqInhab)
+    ]
+  let stubExprs ← extractListElems env
+    (mkApp (mkConst `Trusted.Framework.MirEnvelopeSpec.stubs) specConst)
+    "MirEnvelopeSpec.stubs"
+  let mut stubsJson : Array Json := #[]
+  for stubExpr in stubExprs do
+    let identity ← reqSpecString env "MirAssumedStub.identity"
+      (.proj `Trusted.Framework.AssumedStub 0 stubExpr)
+    stubsJson := stubsJson.push (Json.str identity)
+  let refExprs ← extractListElems env
+    (mkApp (mkConst `Trusted.Framework.MirEnvelopeSpec.refutations) specConst)
+    "MirEnvelopeSpec.refutations"
+  let mut refsJson : Array Json := #[]
+  for refExpr in refExprs do
+    let identity ← reqSpecString env "MirRefutationEntry.identity"
+      (.proj `Trusted.Framework.RefutationEntry 0 refExpr)
+    refsJson := refsJson.push (Json.str identity)
+  let shapeExprs ← extractListElems env
+    (mkApp (mkConst `Trusted.Framework.MirEnvelopeSpec.claimShapes) specConst)
+    "MirEnvelopeSpec.claimShapes"
+  let shapesJson ← shapeExprs.mapM fun e =>
+    return Json.str (← decodeClaimShapeTag env e)
+  let gapExprs ← extractListElems env
+    (mkApp (mkConst `Trusted.Framework.MirEnvelopeSpec.gaps) specConst)
+    "MirEnvelopeSpec.gaps"
+  let gapsJson ← gapExprs.mapM fun e =>
+    return Json.str (← decodeDisclosedGapTag env e)
+  let lawExprs ← extractListElems env
+    (mkApp (mkConst `Trusted.Framework.MirEnvelopeSpec.laws) specConst)
+    "MirEnvelopeSpec.laws"
+  let mut lawHeadsJson : Array Json := #[]
+  for lawExpr in lawExprs do
+    let norm := unfoldNonTrustedHead env lawExpr
+    let headStr := match norm.getAppFn.constName? with
+      | some hn => hn.toString
+      | none => "<non_const>"
+    let constArgs := norm.getAppArgs.filterMap (·.constName?)
+    let targetStr := match constArgs.back? with
+      | some tn => tn.toString
+      | none => ""
+    lawHeadsJson := lawHeadsJson.push <| Json.mkObj [
+      ("head", Json.str headStr),
+      ("target_const", Json.str targetStr)
+    ]
+  let pFVar : FVarId := { name := `_anneal_envelope_prog }
+  let lctxProg := ({} : LocalContext)
+    |>.mkLocalDecl pFVar `p (mkConst `Trusted.MirAst.Program) .default .default
+  let sbApplied := kernelWhnfSafe env lctxProg <|
+    mkApp (mkApp (mkConst `Trusted.Framework.MirEnvelopeSpec.stepBounds)
+      specConst) (.fvar pFVar)
+  let hasStepBounds :=
+    !(sbApplied.getAppFn.constName? == some ``List.nil &&
+      sbApplied.getAppArgs.size == 1)
+  return Json.mkObj [
+    ("entries", .arr entriesJson),
+    ("stubs", .arr stubsJson),
+    ("refutations", .arr refsJson),
+    ("claim_shapes", .arr shapesJson),
+    ("gaps", .arr gapsJson),
+    ("law_heads", .arr lawHeadsJson),
+    ("has_step_bounds", Json.bool hasStepBounds)
+  ]
 
 /-- Execute Phase 4 (`"target-audit"`) on compiled target artifacts.
 
@@ -8455,6 +8899,7 @@ def targetAudit (j : Json) (foundation : Array Name) : IO Json := do
   let mut libraryInventories : Std.HashMap Name NameSet := {}
   let mut libraryExports : Std.HashMap Name (Array ConstantInfo) := {}
   let mut specAllConsts : List Name := []
+  let mut specMods : NameSet := {}
   let mut pairedSpecUnsafeRecs : Array (Name × Name) := #[]
   let mut pendingSourceAlternates :
       Array (Option TargetRole × ConstantInfo × ConstantInfo) := #[]
@@ -8554,6 +8999,7 @@ def targetAudit (j : Json) (foundation : Array Name) : IO Json := do
               pendingFirstOriginThms.push (some targetRole, stored, ci)
           sourceInventory := sourceInventory.insert ci.name
           if targetRole == .specification then
+            specMods := specMods.insert m.module
             if let some parent ← pairedSpecUnsafeRecParent? env m.module ci then
               pairedSpecUnsafeRecs := pairedSpecUnsafeRecs.push (ci.name, parent)
             else
@@ -8669,12 +9115,10 @@ def targetAudit (j : Json) (foundation : Array Name) : IO Json := do
     fail "target and Expected must have no universe parameters"
   unless expectedInfo.type == .sort .zero do fail "Expected must have type Prop"
   let canonicalRoot := (← field (α := String) target "canonicalRoot").toName
-  let crateCtor : Name :=
-    if canonicalRoot == `Trusted.MirSemantics.CrateTheoremV2 ||
-        canonicalRoot == `Trusted.MirSemantics.UnitTheoremV2 then
-      `Trusted.MirSemantics.CrateV2.mk
-    else
-      `Trusted.MirSemantics.Crate.mk
+  let rootInfo? := canonicalRootInfo? canonicalRoot
+  let crateCtor : Name := match rootInfo? with
+    | some (ctor, _) => ctor
+    | none => `Trusted.MirSemantics.Crate.mk
   let subjectName := (← field (α := String) target "subjectDeclaration").toName
   let specName :=
     (← field (α := String) target "specificationDeclaration").toName
@@ -8690,11 +9134,8 @@ def targetAudit (j : Json) (foundation : Array Name) : IO Json := do
     | _ => fail s!"incorrect canonical input origin {n}"
     unless (← lookup n).levelParams.isEmpty do
       fail s!"canonical input has universe parameters {n}"
-  unless canonicalRoot == `Trusted.MirSemantics.CrateTheorem ||
-      canonicalRoot == `Trusted.MirSemantics.UnitTheorem ||
-      canonicalRoot == `Trusted.MirSemantics.CrateTheoremV2 ||
-      canonicalRoot == `Trusted.MirSemantics.UnitTheoremV2 do
-    fail s!"unexpected canonical root {canonicalRoot}"
+  let some (_, isEnvelopeRoot) := rootInfo?
+    | fail s!"unexpected canonical root {canonicalRoot}"
   -- Build the proposition directly from authenticated kernel names. Imported
   -- syntax, namespaces and elaborators may change the compiled Expected body;
   -- that convenience definition is therefore checked against this expression.
@@ -8946,7 +9387,7 @@ def targetAudit (j : Json) (foundation : Array Name) : IO Json := do
   let specWarnings :=
     (← inspectSpecVacuity checkedEnv env allMatchers subjectName specName
       specAllConsts).map SpecLintWarning.toJson
-  return Json.mkObj [("theorem", toJson theoremName),
+  let baseFields := [("theorem", toJson theoremName),
     ("canonicalRoot", toJson canonicalRoot), ("subject", toJson subjectName),
     ("specification", toJson specName), ("graph", combinedGraph),
     ("expected", toJson expectedName), ("axioms", toJson axioms),
@@ -8958,6 +9399,17 @@ def targetAudit (j : Json) (foundation : Array Name) : IO Json := do
     ("modelClosure", .arr (← describe modelClosure)),
     ("specificationClosure", .arr (← describe specClosure)),
     ("specWarnings", .arr specWarnings)]
+  let envFields ← if isEnvelopeRoot then
+      let userDecls ← extractSpecUserDecls checkedEnv env arts allMatchers
+        specMods specAllConsts
+      let envSummary ← extractSpecEnvelopeSummary checkedEnv specName
+      pure [
+        ("specificationUserDecls", .arr userDecls),
+        ("specificationEnvelope", envSummary)
+      ]
+    else
+      pure []
+  return Json.mkObj (baseFields ++ envFields)
 
 /-- Dispatch a repository or target inspection request. -/
 def run (j : Json) : IO Json := do

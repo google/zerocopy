@@ -34,7 +34,13 @@ use serde_json::{Value, json};
 use crate::setup::{ToolOverrides, installed_bundle, resolve_tools};
 use crate::{
     ActiveSandbox, Checker, SandboxMode, TOOLCHAIN, TargetAuditRequest, TargetBindings,
-    TargetModule, TargetProgress, TargetRole, TrustTier, cargo_config, diagnostics,
+    TargetModule, TargetProgress, TargetRole, TrustTier, cargo_config,
+    core::inspect::schema::{
+        SpecClosureGolden, SpecEnvelopeSummary, SpecModuleGolden, SpecUserDecl,
+        canonical_root_is_envelope, is_fatal_envelope_spec_warning,
+        validate_spec_envelope_metadata,
+    },
+    diagnostics,
     output::{
         CardRenderOptions, ColorChoice, FailureCardInput, OutputSession, ResolvedVerifyFormat,
         SanitizedInline, VerifyFormat, VerifyPhase, finish_with_writers, render_failure_card,
@@ -479,6 +485,10 @@ struct RustcArgs {
     /// (`{"path":"...","args":[...]}`).
     #[arg(long, value_name = "JSON", value_parser = parse_instantiation_arg)]
     instantiate: Vec<Instantiation>,
+    /// Canonical structured specification-closure golden JSON
+    /// (`spec-closure.golden`).
+    #[arg(long, value_name = "PATH")]
+    spec_closure: Option<PathBuf>,
 }
 
 /// CLI arguments for `cargo anneal shard-plan`.
@@ -984,6 +994,15 @@ impl Scope {
         }
     }
 
+    const fn envelope_root_theorem(&self, profile_version: u32) -> (&'static str, &'static str) {
+        match (self, profile_version) {
+            (Self::Crate {}, 2) => ("CrateMirEnvelopeTheoremV2", "MirEnvelope"),
+            (Self::SelectedUnit { .. }, 2) => ("UnitMirEnvelopeTheoremV2", "MirEnvelope"),
+            (Self::Crate {}, _) => ("CrateMirEnvelopeTheoremV1", "MirEnvelope"),
+            (Self::SelectedUnit { .. }, _) => ("UnitMirEnvelopeTheoremV1", "MirEnvelope"),
+        }
+    }
+
     const fn verified_status(&self, tainted: bool) -> &'static str {
         match (self, tainted) {
             (Self::Crate {}, false) => "crate_verified",
@@ -1013,6 +1032,8 @@ struct Proof {
     specification_module: Option<String>,
     #[serde(default)]
     theorem_module: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    spec_closure: Option<PathBuf>,
     sources: Vec<ProofSource>,
 }
 
@@ -2078,6 +2099,7 @@ fn cargo_request(args: &VerifyArgs, manifest: &Path) -> Result<(Request, PathBuf
                 theorem: proof_name(),
                 specification_module: None,
                 theorem_module: None,
+                spec_closure: None,
                 sources,
             },
         },
@@ -2209,6 +2231,7 @@ struct PreparedRustcRequest {
     request: Request,
     sources: Vec<SourceIdentity>,
     authored: Vec<StagedAuthored>,
+    spec_file_originals: BTreeMap<String, PathBuf>,
 }
 
 fn prepare_rustc_request(
@@ -2224,6 +2247,7 @@ fn prepare_rustc_request(
     let mut seen_modules = BTreeSet::new();
     let mut authored = Vec::new();
     let mut proof_sources = Vec::new();
+    let mut spec_file_originals = BTreeMap::new();
     for (entry, role) in rustc
         .spec_file
         .iter()
@@ -2246,6 +2270,9 @@ fn prepare_rustc_request(
         let staged_path = work.join("authored").join(&rel_path);
         write(&staged_path, &bytes)?;
         originals.push((entry.path.clone(), sha256.clone()));
+        if matches!(role, AuthoredRole::Specification) {
+            spec_file_originals.insert(entry.module.clone(), entry.path.clone());
+        }
         proof_sources.push(ProofSource {
             module: entry.module.clone(),
             path: rel_path,
@@ -2314,10 +2341,11 @@ fn prepare_rustc_request(
             theorem: rustc.theorem.decl.clone(),
             specification_module: rustc.spec_decl.module.clone(),
             theorem_module: rustc.theorem.module.clone(),
+            spec_closure: None,
             sources: proof_sources,
         },
     };
-    Ok(PreparedRustcRequest { request, sources, authored })
+    Ok(PreparedRustcRequest { request, sources, authored, spec_file_originals })
 }
 
 struct SelectedTools {
@@ -3116,6 +3144,9 @@ fn validate_receipt_out_pre_stage(
         for proof in &rustc.proof_file {
             direct_inputs.push(proof.path.clone());
         }
+        if let Some(sc) = &rustc.spec_closure {
+            direct_inputs.push(sc.clone());
+        }
     }
     for input in &direct_inputs {
         if candidate_aliases_receipt_out(&validated, input) {
@@ -3171,6 +3202,10 @@ fn check_request_inputs_receipt_out_aliasing(
     for input in &request.proof.sources {
         let candidate = declared_file(&proof_root, &input.path)
             .unwrap_or_else(|_| proof_root.join(&input.path));
+        check_receipt_out_candidate(target, &candidate)?;
+    }
+    if let Some(sc) = &request.proof.spec_closure {
+        let candidate = declared_file(&proof_root, sc).unwrap_or_else(|_| proof_root.join(sc));
         check_receipt_out_candidate(target, &candidate)?;
     }
     Ok(())
@@ -3691,6 +3726,354 @@ fn run_capture_process(
     })
 }
 
+struct LoadedSpecClosure {
+    sha256: String,
+    golden: SpecClosureGolden,
+    companions: BTreeMap<String, SpecModuleGolden>,
+}
+
+fn reconstruct_module_golden_bytes(golden: &SpecModuleGolden) -> Result<Vec<u8>> {
+    if !crate::toolchain::is_sha256_hex(&golden.sha256) {
+        return Err(error(
+            "unsupported",
+            "spec",
+            format!("spec-closure module `{}` carries invalid sha256", golden.module),
+        ));
+    }
+    if golden.lines.iter().any(|l| l.contains('\n') || l.contains('\r')) {
+        return Err(error(
+            "unsupported",
+            "spec",
+            format!("spec-closure module `{}` line contains embedded newline", golden.module),
+        ));
+    }
+    let mut rendered = golden.lines.join("\n");
+    if golden.trailing_newline {
+        rendered.push('\n');
+    }
+    let bytes = rendered.into_bytes();
+    let actual_sha = sha256_bytes(&bytes);
+    if !actual_sha.eq_ignore_ascii_case(&golden.sha256) {
+        return Err(error(
+            "proof_failed",
+            "spec",
+            format!(
+                "spec-closure module `{}` digest mismatch: golden sha256={}, lines sha256={actual_sha}",
+                golden.module, golden.sha256
+            ),
+        ));
+    }
+    Ok(bytes)
+}
+
+fn clean_relative_path(raw: &str) -> Result<&Path> {
+    if raw.is_empty() {
+        return Err(error("unsupported", "spec", "spec-closure path must not be empty"));
+    }
+    let path = Path::new(raw);
+    if path.is_absolute()
+        || path.components().any(|c| matches!(c, Component::ParentDir | Component::Prefix(_)))
+    {
+        return Err(error(
+            "unsupported",
+            "spec",
+            format!("spec-closure path must be clean relative without `..`: `{raw}`"),
+        ));
+    }
+    Ok(path)
+}
+
+fn resolve_rustc_companion_golden(
+    sc_orig_path: &Path,
+    spec_orig_path: &Path,
+    golden_path: &str,
+) -> Result<PathBuf> {
+    if golden_path.is_empty() || Path::new(golden_path).is_absolute() {
+        return Err(error(
+            "unsupported",
+            "spec",
+            format!("imported companion golden_path must be relative: `{golden_path}`"),
+        ));
+    }
+    let rel = Path::new(golden_path);
+    if let Ok(clean) = clean_relative_path(golden_path)
+        && let Some(sc_dir) = sc_orig_path.parent()
+    {
+        let cand = sc_dir.join(clean);
+        if cand.exists() {
+            return Ok(cand);
+        }
+    }
+    let sibling = spec_orig_path.with_extension("spec-closure.golden");
+    if sibling.exists() {
+        let canon_sib = fs::canonicalize(&sibling).map_err(|e| io("spec", e))?;
+        if canon_sib.ends_with(rel) {
+            return Ok(sibling);
+        }
+        if let Some(sc_dir) = sc_orig_path.parent()
+            && let Ok(canon_joined) = fs::canonicalize(sc_dir.join(rel))
+            && canon_joined == canon_sib
+        {
+            return Ok(sibling);
+        }
+    }
+    Err(error(
+        "unsupported",
+        "spec",
+        format!("cannot resolve companion spec-closure golden `{golden_path}`"),
+    ))
+}
+
+fn is_valid_spec_closure_filename(path: &Path) -> bool {
+    path.file_name().and_then(|n| n.to_str()).is_some_and(|name| {
+        name == "spec-closure.golden"
+            || (name.len() > ".spec-closure.golden".len() && name.ends_with(".spec-closure.golden"))
+    })
+}
+
+fn load_spec_closure_inputs(
+    sc_path: &Path,
+    symlink_policy: SymlinkPolicy,
+    request_proof_root: Option<&Path>,
+    rustc_spec_files: Option<&BTreeMap<String, PathBuf>>,
+    originals: &mut Vec<(PathBuf, String)>,
+) -> Result<LoadedSpecClosure> {
+    if !is_valid_spec_closure_filename(sc_path) {
+        return Err(error(
+            "unsupported",
+            "spec",
+            format!(
+                "spec-closure file `{}` must be named `spec-closure.golden` or \
+                 `<name>.spec-closure.golden`",
+                sc_path.display()
+            ),
+        ));
+    }
+    let (sc_bytes, sc_sha256) = read_input_file(sc_path, Some(sc_path), symlink_policy, "spec")?;
+    if !originals.iter().any(|(p, _)| p == sc_path) {
+        originals.push((sc_path.to_path_buf(), sc_sha256.clone()));
+    }
+    let golden: SpecClosureGolden = serde_json::from_slice(&sc_bytes).map_err(|e| {
+        error(
+            "unsupported",
+            "spec",
+            format!("malformed spec-closure JSON {}: {e}", sc_path.display()),
+        )
+    })?;
+    validate_spec_envelope_metadata(&golden.user_declarations, &golden.envelope_summary).map_err(
+        |msg| error("unsupported", "spec", format!("invalid spec-closure metadata: {msg}")),
+    )?;
+    reconstruct_module_golden_bytes(&golden.root_spec_module)?;
+    let mut companions = BTreeMap::new();
+    for (mod_name, imp_ref) in &golden.imported_spec_modules {
+        let _ = clean_relative_path(&imp_ref.source_path)?;
+        if !crate::toolchain::is_sha256_hex(&imp_ref.sha256) {
+            return Err(error(
+                "unsupported",
+                "spec",
+                format!("imported spec module `{mod_name}` carries invalid sha256"),
+            ));
+        }
+        if !is_valid_spec_closure_filename(Path::new(&imp_ref.golden_path)) {
+            return Err(error(
+                "unsupported",
+                "spec",
+                format!(
+                    "imported spec module `{mod_name}` companion golden `{}` must be named \
+                     `spec-closure.golden` or `<name>.spec-closure.golden`",
+                    imp_ref.golden_path
+                ),
+            ));
+        }
+        let gp_path = match (request_proof_root, rustc_spec_files) {
+            (Some(proof_root), _) => declared_file(proof_root, Path::new(&imp_ref.golden_path))?,
+            (None, Some(spec_map)) => {
+                let Some(orig_spec) = spec_map.get(mod_name) else {
+                    return Err(error(
+                        "proof_failed",
+                        "spec",
+                        format!(
+                            "spec-closure references imported module `{mod_name}` missing from \
+                             --spec-file inputs"
+                        ),
+                    ));
+                };
+                resolve_rustc_companion_golden(sc_path, orig_spec, &imp_ref.golden_path)?
+            }
+            (None, None) => {
+                return Err(error("tool_failed", "spec", "missing spec source mapping"));
+            }
+        };
+        let (comp_bytes, comp_sha) =
+            read_input_file(&gp_path, Some(&gp_path), symlink_policy, "spec")?;
+        if !originals.iter().any(|(p, _)| p == &gp_path) {
+            originals.push((gp_path.clone(), comp_sha));
+        }
+        let comp: SpecModuleGolden = serde_json::from_slice(&comp_bytes).map_err(|e| {
+            error(
+                "unsupported",
+                "spec",
+                format!("malformed companion golden JSON {}: {e}", gp_path.display()),
+            )
+        })?;
+        if comp.module != *mod_name {
+            return Err(error(
+                "proof_failed",
+                "spec",
+                format!(
+                    "companion golden {} declares module `{}`, expected `{mod_name}`",
+                    gp_path.display(),
+                    comp.module
+                ),
+            ));
+        }
+        if !comp.sha256.eq_ignore_ascii_case(&imp_ref.sha256) {
+            return Err(error(
+                "proof_failed",
+                "spec",
+                format!(
+                    "companion golden `{mod_name}` sha256 ({}) disagrees with \
+                     imported_spec_modules ({})",
+                    comp.sha256, imp_ref.sha256
+                ),
+            ));
+        }
+        reconstruct_module_golden_bytes(&comp)?;
+        companions.insert(mod_name.clone(), comp);
+    }
+    Ok(LoadedSpecClosure { sha256: sc_sha256, golden, companions })
+}
+
+fn verify_spec_closure_sources(
+    loaded: &LoadedSpecClosure,
+    spec_module: &str,
+    spec_bytes: &[u8],
+    modules: &[TargetModule],
+    orig_spec_paths: &BTreeMap<String, PathBuf>,
+) -> Result<()> {
+    if loaded.golden.root_spec_module.module != spec_module {
+        return Err(error(
+            "proof_failed",
+            "spec",
+            format!(
+                "spec-closure root_spec_module.module `{}` differs from `{spec_module}`",
+                loaded.golden.root_spec_module.module
+            ),
+        ));
+    }
+    let root_bytes = reconstruct_module_golden_bytes(&loaded.golden.root_spec_module)?;
+    if root_bytes != spec_bytes {
+        return Err(error(
+            "proof_failed",
+            "spec",
+            format!(
+                "spec-closure root_spec_module lines do not match compiled specification `{spec_module}` byte-for-byte"
+            ),
+        ));
+    }
+    let expected_imported: BTreeMap<&str, &TargetModule> = modules
+        .iter()
+        .filter(|m| matches!(m.role, TargetRole::Specification) && m.module != spec_module)
+        .map(|m| (m.module.as_str(), m))
+        .collect();
+    if loaded.golden.imported_spec_modules.len() != expected_imported.len()
+        || !loaded
+            .golden
+            .imported_spec_modules
+            .keys()
+            .all(|k| expected_imported.contains_key(k.as_str()))
+    {
+        let expected_keys: Vec<_> = expected_imported.keys().copied().collect();
+        let actual_keys: Vec<_> =
+            loaded.golden.imported_spec_modules.keys().map(String::as_str).collect();
+        return Err(error(
+            "proof_failed",
+            "spec",
+            format!(
+                "spec-closure imported_spec_modules keys {actual_keys:?} disagree with \
+                 specification modules {expected_keys:?}"
+            ),
+        ));
+    }
+    for (mod_name, imp_ref) in &loaded.golden.imported_spec_modules {
+        let target_mod = expected_imported[mod_name.as_str()];
+        if !imp_ref.sha256.eq_ignore_ascii_case(&target_mod.expected_sha256) {
+            return Err(error(
+                "proof_failed",
+                "spec",
+                format!(
+                    "spec-closure imported module `{mod_name}` sha256 ({}) disagrees with \
+                     compiled specification sha256 ({})",
+                    imp_ref.sha256, target_mod.expected_sha256
+                ),
+            ));
+        }
+        if let Some(orig_path) = orig_spec_paths.get(mod_name) {
+            let canon_orig = fs::canonicalize(orig_path).unwrap_or_else(|_| orig_path.clone());
+            if !canon_orig.ends_with(Path::new(&imp_ref.source_path)) {
+                return Err(error(
+                    "proof_failed",
+                    "spec",
+                    format!(
+                        "spec-closure imported module `{mod_name}` source_path `{}` does not \
+                         match staged path {}",
+                        imp_ref.source_path,
+                        orig_path.display()
+                    ),
+                ));
+            }
+        }
+        let comp = &loaded.companions[mod_name];
+        let comp_bytes = reconstruct_module_golden_bytes(comp)?;
+        let actual_bytes = fs::read(&target_mod.source).map_err(|e| io("spec", e))?;
+        if comp_bytes != actual_bytes {
+            return Err(error(
+                "proof_failed",
+                "spec",
+                format!(
+                    "companion golden `{mod_name}` lines do not match compiled source byte-for-byte"
+                ),
+            ));
+        }
+    }
+    Ok(())
+}
+
+fn verify_spec_closure_audit(loaded: &LoadedSpecClosure, audit: &Value) -> Result<()> {
+    let user_decls: Vec<SpecUserDecl> =
+        serde_json::from_value(audit.get("specificationUserDecls").cloned().ok_or_else(|| {
+            error("tool_failed", "audit", "missing audit.specificationUserDecls metadata")
+        })?)
+        .map_err(|e| {
+            error("tool_failed", "audit", format!("malformed audit.specificationUserDecls: {e}"))
+        })?;
+    let env_sum: SpecEnvelopeSummary =
+        serde_json::from_value(audit.get("specificationEnvelope").cloned().ok_or_else(|| {
+            error("tool_failed", "audit", "missing audit.specificationEnvelope metadata")
+        })?)
+        .map_err(|e| {
+            error("tool_failed", "audit", format!("malformed audit.specificationEnvelope: {e}"))
+        })?;
+    validate_spec_envelope_metadata(&user_decls, &env_sum).map_err(|msg| {
+        error("tool_failed", "audit", format!("invalid audit envelope metadata: {msg}"))
+    })?;
+    if user_decls != loaded.golden.user_declarations {
+        return Err(error(
+            "proof_failed",
+            "spec",
+            "spec-closure user_declarations does not match audited specification declarations",
+        ));
+    }
+    if env_sum != loaded.golden.envelope_summary {
+        return Err(error(
+            "proof_failed",
+            "spec",
+            "spec-closure envelope_summary does not match audited MirEnvelopeSpec summary",
+        ));
+    }
+    Ok(())
+}
+
 fn run<Out: std::io::Write + Send, ErrOut: std::io::Write + Send>(
     args: &VerifyArgs,
     work: &Path,
@@ -3701,32 +4084,79 @@ fn run<Out: std::io::Write + Send, ErrOut: std::io::Write + Send>(
     let start = Instant::now();
     session.report_phase(VerifyPhase::Stage);
     let mut originals = Vec::new();
-    let (request, base, pre_staged_rust, pre_staged_lean, symlink_policy) =
-        if let Some(VerifySubcommand::Rustc(rustc)) = &args.command {
-            let prepared = prepare_rustc_request(rustc, work, &mut originals)?;
-            reject_receipt_out_originals_aliasing(receipt_out, &originals)?;
-            reject_overwrite_input_aliasing(
-                args,
-                overwrite_inputs,
-                originals.iter().map(|(path, _)| path.clone()),
-            )?;
-            (
-                prepared.request,
-                work.to_path_buf(),
-                Some(prepared.sources),
-                Some(prepared.authored),
+    let (
+        request,
+        base,
+        pre_staged_rust,
+        pre_staged_lean,
+        symlink_policy,
+        orig_spec_paths,
+        loaded_spec_closure,
+    ) = if let Some(VerifySubcommand::Rustc(rustc)) = &args.command {
+        let prepared = prepare_rustc_request(rustc, work, &mut originals)?;
+        let loaded_spec_closure = if let Some(sc_path) = &rustc.spec_closure {
+            Some(load_spec_closure_inputs(
+                sc_path,
                 SymlinkPolicy::DereferenceRegular,
-            )
+                None,
+                Some(&prepared.spec_file_originals),
+                &mut originals,
+            )?)
         } else {
-            let (request, base) = load_request(args)?;
-            check_request_inputs_receipt_out_aliasing(receipt_out, &base, &request)?;
-            reject_overwrite_input_aliasing(
-                args,
-                overwrite_inputs,
-                request_input_paths(&base, &request),
-            )?;
-            (request, base, None, None, SymlinkPolicy::Reject)
+            None
         };
+        reject_receipt_out_originals_aliasing(receipt_out, &originals)?;
+        reject_overwrite_input_aliasing(
+            args,
+            overwrite_inputs,
+            originals.iter().map(|(path, _)| path.clone()),
+        )?;
+        (
+            prepared.request,
+            work.to_path_buf(),
+            Some(prepared.sources),
+            Some(prepared.authored),
+            SymlinkPolicy::DereferenceRegular,
+            prepared.spec_file_originals,
+            loaded_spec_closure,
+        )
+    } else {
+        let (request, base) = load_request(args)?;
+        check_request_inputs_receipt_out_aliasing(receipt_out, &base, &request)?;
+        reject_overwrite_input_aliasing(
+            args,
+            overwrite_inputs,
+            request_input_paths(&base, &request),
+        )?;
+        let (orig_spec_paths, loaded_spec_closure) =
+            if let Some(sc_rel) = &request.proof.spec_closure {
+                let proof_root = root(&base, &request.proof.source_root)?;
+                let mut orig_spec_paths = BTreeMap::new();
+                for input in &request.proof.sources {
+                    if matches!(input.role, AuthoredRole::Specification) {
+                        orig_spec_paths.insert(input.module.clone(), proof_root.join(&input.path));
+                    }
+                }
+                let sc_path = declared_file(&proof_root, sc_rel)?;
+                let loaded = load_spec_closure_inputs(
+                    &sc_path,
+                    SymlinkPolicy::Reject,
+                    Some(&proof_root),
+                    None,
+                    &mut originals,
+                )?;
+                reject_receipt_out_originals_aliasing(receipt_out, &originals)?;
+                reject_overwrite_input_aliasing(
+                    args,
+                    overwrite_inputs,
+                    originals.iter().map(|(path, _)| path.clone()),
+                )?;
+                (orig_spec_paths, Some(loaded))
+            } else {
+                (BTreeMap::new(), None)
+            };
+        (request, base, None, None, SymlinkPolicy::Reject, orig_spec_paths, loaded_spec_closure)
+    };
     // All Rust and Lean verification inputs have passed aliasing checks above.
     // Clear any pre-existing regular file at `--receipt-out` before capture or
     // proof checking begins so a timeout, signal, panic, or later receipt-write
@@ -4061,18 +4491,48 @@ fn run<Out: std::io::Write + Send, ErrOut: std::io::Write + Send>(
         ));
     }
     let spec_bytes = fs::read(&spec_entry.source).map_err(|e| io("spec", e))?;
+    if let Some(ref loaded_sc) = loaded_spec_closure {
+        verify_spec_closure_sources(
+            loaded_sc,
+            &spec_module,
+            &spec_bytes,
+            &modules,
+            &orig_spec_paths,
+        )?;
+    }
     let expected_is_module = source_starts_with_module_keyword(&captured_bytes)
         && source_starts_with_module_keyword(&spec_bytes);
     // Keep the reviewed specification identity separate from ordinary
     // proof edits. The auditor also checks actual compiled dependencies,
     // so a helper that changes a specification's meaning needs its role.
     let specification_manifest_sha256 = sha256_bytes(&encoded(&spec_identity)?);
-    let (root_name, crate_ctor_ty) =
-        request.scope.root_theorem(manifest.program.mir_profile_version);
+    let is_envelope_request = loaded_spec_closure.is_some();
+    let (root_name, crate_ctor_ty) = if is_envelope_request {
+        request.scope.envelope_root_theorem(manifest.program.mir_profile_version)
+    } else {
+        request.scope.root_theorem(manifest.program.mir_profile_version)
+    };
+    let canonical_root_name = if is_envelope_request {
+        format!("Trusted.Framework.{root_name}")
+    } else {
+        format!("Trusted.MirSemantics.{root_name}")
+    };
     // Only validated declaration identifiers enter this fixed template. The
     // authored proof package never supplies an expected proposition or model.
     let header = "-- Copyright 2026 The Fuchsia Authors\n--\n-- Licensed under a BSD-style license <LICENSE-BSD>, Apache License, Version 2.0\n-- <LICENSE-APACHE or https://www.apache.org/licenses/LICENSE-2.0>, or the MIT\n-- license <LICENSE-MIT or https://opensource.org/licenses/MIT>, at your option.\n-- This file may not be copied, modified, or distributed except according to\n-- those terms.\n\n";
-    let expected = if expected_is_module {
+    let expected = if is_envelope_request {
+        if expected_is_module {
+            format!(
+                "{header}module\nprelude\npublic import Trusted.MirSemantics\npublic import Trusted.Framework.Bridge\npublic import Captured\npublic import {spec_module}\n\n@[expose] public section\n\nnamespace Expected\ndef claim : Prop := _root_.Trusted.Framework.{root_name} (_root_.Trusted.Framework.{crate_ctor_ty}.mk _root_.Captured.program _root_.{})\nend Expected\n\nend\n",
+                request.proof.specification
+            )
+        } else {
+            format!(
+                "{header}prelude\nimport Trusted.MirSemantics\nimport Trusted.Framework.Bridge\nimport Captured\nimport {spec_module}\n\nnamespace Expected\ndef claim : Prop := _root_.Trusted.Framework.{root_name} (_root_.Trusted.Framework.{crate_ctor_ty}.mk _root_.Captured.program _root_.{})\nend Expected\n",
+                request.proof.specification
+            )
+        }
+    } else if expected_is_module {
         format!(
             "{header}module\nprelude\npublic import Trusted.MirSemantics\npublic import Captured\npublic import {spec_module}\n\n@[expose] public section\n\nnamespace Expected\ndef claim : Prop := _root_.Trusted.MirSemantics.{root_name} (_root_.Trusted.MirSemantics.{crate_ctor_ty}.mk _root_.Captured.program _root_.{})\nend Expected\n\nend\n",
             request.proof.specification
@@ -4098,7 +4558,7 @@ fn run<Out: std::io::Write + Send, ErrOut: std::io::Write + Send>(
         theorem_name: request.proof.theorem.clone(),
         expected_module: "Expected".to_owned(),
         expected_declaration: "Expected.claim".to_owned(),
-        canonical_root: format!("Trusted.MirSemantics.{root_name}"),
+        canonical_root: canonical_root_name,
         subject_declaration: "Captured.program".to_owned(),
         specification_declaration: request.proof.specification.clone(),
         allow_sorry_in_proof: args.allow_sorry_in_proof,
@@ -4156,6 +4616,9 @@ fn run<Out: std::io::Write + Send, ErrOut: std::io::Write + Send>(
     let audit = match audit_result {
         Ok(audit) => audit,
         Err(e) => {
+            if is_envelope_request && e.phase == "ndjson-comparator" {
+                return Err(error("unsupported", "audit", e.message).with_sandbox(sandbox_label));
+            }
             return Err(handle_failed_target_audit(
                 &checker,
                 work,
@@ -4404,6 +4867,16 @@ fn run<Out: std::io::Write + Send, ErrOut: std::io::Write + Send>(
     // anti-vacuity specification lint, so the receipt omits `spec_warnings`
     // and defers the lint instead of reporting an empty (clean-looking) list.
     let ndjson_route = audit.get("auditMode").and_then(Value::as_str) == Some("ndjson_comparator");
+    let audit_canonical_root = audit.get("canonicalRoot").and_then(Value::as_str).unwrap_or("");
+    let is_envelope_root = canonical_root_is_envelope(audit_canonical_root) || is_envelope_request;
+    if is_envelope_root && ndjson_route {
+        return Err(error(
+            "unsupported",
+            "audit",
+            "envelope canonical roots are not yet supported on the NDJSON comparator route",
+        )
+        .with_sandbox(Some(active_sandbox.as_str())));
+    }
     if ndjson_route {
         deferred.push("anti-vacuity specification lint (not run by the NDJSON comparator)");
         // Proof `.olean`s never load outside the sandboxed exporter on this
@@ -4491,6 +4964,44 @@ fn run<Out: std::io::Write + Send, ErrOut: std::io::Write + Send>(
         let spec_warnings = extract_spec_warnings(&audit)
             .map_err(|e| e.with_sandbox(Some(active_sandbox.as_str())))?;
         result.as_object_mut().unwrap().insert("spec_warnings".into(), Value::Array(spec_warnings));
+    }
+    if is_envelope_root {
+        let Some(ref loaded_sc) = loaded_spec_closure else {
+            return Err(error(
+                "unsupported",
+                "spec",
+                "envelope canonical root requires a spec-closure golden input",
+            )
+            .with_sandbox(Some(active_sandbox.as_str())));
+        };
+        if !audit.get("specWarnings").is_some_and(Value::is_array) {
+            return Err(error("tool_failed", "audit", "missing audit.specWarnings array")
+                .with_sandbox(Some(active_sandbox.as_str())));
+        }
+        let Some(warnings) = result.get("spec_warnings").and_then(Value::as_array) else {
+            return Err(error("tool_failed", "audit", "missing spec_warnings array on envelope root")
+                .with_sandbox(Some(active_sandbox.as_str())));
+        };
+        for warning in warnings {
+            let code = warning.get("code").and_then(Value::as_str).unwrap_or("");
+            if is_fatal_envelope_spec_warning(code) {
+                let decl =
+                    warning.get("declaration").and_then(Value::as_str).unwrap_or("<unknown>");
+                let msg = warning.get("message").and_then(Value::as_str).unwrap_or("");
+                return Err(error(
+                    "proof_failed",
+                    "audit",
+                    format!("fatal specification warning `{code}` on `{decl}`: {msg}"),
+                )
+                .with_sandbox(Some(active_sandbox.as_str())));
+            }
+        }
+        verify_spec_closure_audit(loaded_sc, &audit)
+            .map_err(|e| e.with_sandbox(Some(active_sandbox.as_str())))?;
+        result
+            .as_object_mut()
+            .unwrap()
+            .insert("spec_closure_sha256".into(), json!(loaded_sc.sha256));
     }
     if let Some(ref shards) = shards_outcome {
         let obj = result.as_object_mut().unwrap();
@@ -6019,6 +6530,7 @@ fn overwrite_protected_inputs(args: &VerifyArgs) -> Vec<PathBuf> {
         inputs.extend(rustc.source_file.iter().cloned());
         inputs.extend(rustc.spec_file.iter().map(|spec| spec.path.clone()));
         inputs.extend(rustc.proof_file.iter().map(|proof| proof.path.clone()));
+        inputs.extend(rustc.spec_closure.iter().cloned());
     }
     // Read the request as `load_request` does: one that cannot be read or
     // parsed here fails there too, before it can name any input.
@@ -6058,6 +6570,9 @@ fn request_input_paths(base: &Path, request: &Request) -> Vec<PathBuf> {
             declared_file(&proof_root, &input.path)
                 .unwrap_or_else(|_| proof_root.join(&input.path)),
         );
+    }
+    if let Some(sc) = &request.proof.spec_closure {
+        inputs.push(declared_file(&proof_root, sc).unwrap_or_else(|_| proof_root.join(sc)));
     }
     inputs
 }
@@ -7760,6 +8275,7 @@ mod tests {
             },
             select: Vec::new(),
             instantiate: Vec::new(),
+            spec_closure: None,
         };
         let mut originals = Vec::new();
         let prepared = prepare_rustc_request(&rustc, &work, &mut originals).unwrap();
@@ -7809,6 +8325,7 @@ mod tests {
                 theorem: DeclSpec { module: None, decl: "Proof.verify".to_owned() },
                 select: Vec::new(),
                 instantiate: Vec::new(),
+                spec_closure: None,
             }
         };
         assert_eq!(
@@ -8026,6 +8543,7 @@ mod tests {
             theorem: DeclSpec { module: Some("Proof".to_owned()), decl: "Proof.verify".to_owned() },
             select: Vec::new(),
             instantiate: Vec::new(),
+            spec_closure: None,
         };
 
         let work1 = tempfile::tempdir().unwrap();

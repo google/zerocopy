@@ -8,9 +8,9 @@
 
 //! Pure Receipt Schema v3 parsing and 14-point envelope cross-checking.
 
-use std::collections::BTreeSet;
+use std::collections::{BTreeMap, BTreeSet};
 
-use serde::Serialize;
+use serde::{Deserialize, Serialize};
 use serde_json::{Map, Value};
 
 use crate::core::{
@@ -248,6 +248,152 @@ pub struct ClosureNode {
     pub module: String,
 }
 
+/// Closed set of allowed `SpecUserDecl.kind` strings.
+pub const VALID_SPEC_USER_DECL_KINDS: &[&str] =
+    &["def", "abbrev", "theorem", "structure", "inductive", "classInductive", "instance"];
+
+/// Specification lint codes that are fatal on structured envelope roots.
+pub(crate) const FATAL_ENVELOPE_SPEC_WARNING_CODES: &[&str] =
+    &["unused_spec_binding", "vacuity_check_truncated", "missing_model_law", "missing_trait_law"];
+
+/// Author-declared item in a `TargetRole::Specification` Lean module, using
+/// only canonical module/constant identifiers and declaration kind tags.
+#[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Deserialize, Serialize)]
+#[serde(deny_unknown_fields)]
+pub struct SpecUserDecl {
+    pub module: String,
+    pub name: String,
+    pub kind: String,
+}
+
+/// Summary of one `MirVerifiedEntry` inside `MirEnvelopeSpec.entries`.
+#[derive(Clone, Debug, PartialEq, Eq, Deserialize, Serialize)]
+#[serde(deny_unknown_fields)]
+pub struct SpecEntrySummary {
+    pub identity: String,
+    pub is_unsafe: bool,
+    pub terminates: bool,
+    pub no_unwind: bool,
+    pub no_abort: bool,
+    pub require_inhabited: bool,
+}
+
+/// Canonical law head (`head` constant and optional trailing `target_const`
+/// argument) extracted from one `MirEnvelopeSpec.laws` element.
+#[derive(Clone, Debug, PartialEq, Eq, Deserialize, Serialize)]
+#[serde(deny_unknown_fields)]
+pub struct SpecLawHead {
+    pub head: String,
+    pub target_const: String,
+}
+
+/// Structural summary of a `Trusted.Framework.MirEnvelopeSpec` specification.
+#[derive(Clone, Debug, PartialEq, Eq, Deserialize, Serialize)]
+#[serde(deny_unknown_fields)]
+pub struct SpecEnvelopeSummary {
+    pub entries: Vec<SpecEntrySummary>,
+    pub stubs: Vec<String>,
+    pub refutations: Vec<String>,
+    pub claim_shapes: Vec<String>,
+    pub gaps: Vec<String>,
+    pub law_heads: Vec<SpecLawHead>,
+    pub has_step_bounds: bool,
+}
+
+/// Golden verbatim source snapshot for one `TargetRole::Specification` Lean
+/// module (`root_spec_module` or `<Mod>.spec-closure.golden`).
+#[derive(Clone, Debug, PartialEq, Eq, Deserialize, Serialize)]
+#[serde(deny_unknown_fields)]
+pub struct SpecModuleGolden {
+    pub module: String,
+    pub sha256: String,
+    pub trailing_newline: bool,
+    pub lines: Vec<String>,
+}
+
+/// Digest and companion golden pointer for an imported
+/// `TargetRole::Specification` module referenced in
+/// `SpecClosureGolden.imported_spec_modules`.
+#[derive(Clone, Debug, PartialEq, Eq, Deserialize, Serialize)]
+#[serde(deny_unknown_fields)]
+pub struct ImportedSpecModuleRef {
+    pub sha256: String,
+    pub source_path: String,
+    pub golden_path: String,
+}
+
+/// Canonical JSON closure golden binding compiled specification modules to
+/// author-declared items and structured envelope metadata
+/// (`spec-closure.golden`).
+#[derive(Clone, Debug, PartialEq, Eq, Deserialize, Serialize)]
+#[serde(deny_unknown_fields)]
+pub struct SpecClosureGolden {
+    pub root_spec_module: SpecModuleGolden,
+    #[serde(default)]
+    pub imported_spec_modules: BTreeMap<String, ImportedSpecModuleRef>,
+    pub user_declarations: Vec<SpecUserDecl>,
+    pub envelope_summary: SpecEnvelopeSummary,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub non_normative_context: Option<Value>,
+}
+
+/// Return `true` iff `root` is one of the 4 structured
+/// `MirEnvelopeTheoremV{1,2}` canonical theorem roots.
+pub(crate) fn canonical_root_is_envelope(root: &str) -> bool {
+    matches!(
+        root,
+        "Trusted.Framework.CrateMirEnvelopeTheoremV1"
+            | "Trusted.Framework.UnitMirEnvelopeTheoremV1"
+            | "Trusted.Framework.CrateMirEnvelopeTheoremV2"
+            | "Trusted.Framework.UnitMirEnvelopeTheoremV2"
+    )
+}
+
+/// Return `true` iff `code` is a fatal specification warning on envelope roots.
+pub(crate) fn is_fatal_envelope_spec_warning(code: &str) -> bool {
+    FATAL_ENVELOPE_SPEC_WARNING_CODES.contains(&code)
+}
+
+/// Validate normalized `SpecUserDecl` ordering/vocabulary and
+/// `SpecEnvelopeSummary` non-empty identifier invariants.
+pub(crate) fn validate_spec_envelope_metadata(
+    decls: &[SpecUserDecl],
+    env_sum: &SpecEnvelopeSummary,
+) -> Result<(), String> {
+    for decl in decls {
+        if decl.module.is_empty() || decl.name.is_empty() {
+            return Err("empty module or name in specificationUserDecls".into());
+        }
+        if !VALID_SPEC_USER_DECL_KINDS.contains(&decl.kind.as_str()) {
+            return Err(format!("unknown specificationUserDecls kind `{}`", decl.kind));
+        }
+    }
+    if decls
+        .windows(2)
+        .any(|pair| (&pair[0].module, &pair[0].name) >= (&pair[1].module, &pair[1].name))
+    {
+        return Err("specificationUserDecls must be strictly sorted and duplicate-free".into());
+    }
+    for entry in &env_sum.entries {
+        if entry.identity.is_empty() {
+            return Err("empty entry identity in specificationEnvelope".into());
+        }
+    }
+    if env_sum.stubs.iter().any(String::is_empty)
+        || env_sum.refutations.iter().any(String::is_empty)
+        || env_sum.claim_shapes.iter().any(String::is_empty)
+        || env_sum.gaps.iter().any(String::is_empty)
+    {
+        return Err("empty string in specificationEnvelope list".into());
+    }
+    for head in &env_sum.law_heads {
+        if head.head.is_empty() {
+            return Err("empty head in specificationEnvelope.law_heads".into());
+        }
+    }
+    Ok(())
+}
+
 /// Typed source file identity `{ "relative_path": ..., "sha256": ... }`.
 #[derive(Clone, Debug, PartialEq, Eq, Serialize)]
 pub struct ReceiptSourceIdentity {
@@ -348,6 +494,8 @@ pub struct SuccessReceipt {
     pub capture_binary_sha256: String,
     pub model_manifest_sha256: String,
     pub specification_manifest_sha256: String,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub spec_closure_sha256: Option<String>,
     pub sha256_locked: Vec<String>,
     pub sha256_recorded: Vec<String>,
     pub unhashed: Vec<String>,
@@ -429,6 +577,10 @@ pub struct SuccessReceipt {
     pub unstable_features: Option<UnstableFeaturesRecord>,
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     pub stabilized_features_present: Vec<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub specification_user_decls: Option<Vec<SpecUserDecl>>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub specification_envelope: Option<SpecEnvelopeSummary>,
 }
 
 /// Parsed operator-allowed unstable feature record (`unstable_features`).
@@ -910,6 +1062,18 @@ fn parse_success_receipt(
     let model_manifest_sha256 = req_sha256(root, "model_manifest_sha256", violations)?;
     let specification_manifest_sha256 =
         req_sha256(root, "specification_manifest_sha256", violations)?;
+    let spec_closure_sha256 = match root.opt_str("spec_closure_sha256")? {
+        Some(hex) => {
+            if !is_sha256_hex(hex) {
+                violations.push(format!(
+                    "field `/spec_closure_sha256` must be a 64-character SHA-256 hex digest, \
+                     got `{hex}`"
+                ));
+            }
+            Some(hex.to_owned())
+        }
+        None => None,
+    };
 
     let tc_obj = root.req_obj("toolchain_identity")?;
     let mut tc = ObjectCursor::nested("/toolchain_identity", tc_obj);
@@ -1167,15 +1331,63 @@ fn parse_success_receipt(
         );
     }
 
-    let (expected_v1_root, expected_v2_root) = match scope_kind.as_str() {
-        "crate" => ("Trusted.MirSemantics.CrateTheorem", "Trusted.MirSemantics.CrateTheoremV2"),
-        _ => ("Trusted.MirSemantics.UnitTheorem", "Trusted.MirSemantics.UnitTheoremV2"),
-    };
-    let is_v2_root = canonical_root == expected_v2_root;
-    if canonical_root != expected_v1_root && !is_v2_root {
+    let (expected_v1_root, expected_v2_root, expected_env_v1_root, expected_env_v2_root) =
+        match scope_kind.as_str() {
+            "crate" => (
+                "Trusted.MirSemantics.CrateTheorem",
+                "Trusted.MirSemantics.CrateTheoremV2",
+                "Trusted.Framework.CrateMirEnvelopeTheoremV1",
+                "Trusted.Framework.CrateMirEnvelopeTheoremV2",
+            ),
+            _ => (
+                "Trusted.MirSemantics.UnitTheorem",
+                "Trusted.MirSemantics.UnitTheoremV2",
+                "Trusted.Framework.UnitMirEnvelopeTheoremV1",
+                "Trusted.Framework.UnitMirEnvelopeTheoremV2",
+            ),
+        };
+    let is_v1_root = canonical_root == expected_v1_root || canonical_root == expected_env_v1_root;
+    let is_v2_root = canonical_root == expected_v2_root || canonical_root == expected_env_v2_root;
+    let is_envelope_root =
+        canonical_root == expected_env_v1_root || canonical_root == expected_env_v2_root;
+    if !is_v1_root && !is_v2_root {
         violations.push(format!(
             "audit.canonicalRoot `{canonical_root}` mismatches scope `{scope_kind}` \
-             (expected `{expected_v1_root}` or `{expected_v2_root}`)"
+             (expected `{expected_v1_root}`, `{expected_v2_root}`, `{expected_env_v1_root}`, \
+             or `{expected_env_v2_root}`)"
+        ));
+    }
+    if is_envelope_root {
+        if spec_closure_sha256.is_none() {
+            violations.push(format!(
+                "envelope `audit.canonicalRoot` `{canonical_root}` requires top-level \
+                 `spec_closure_sha256`"
+            ));
+        }
+        if ndjson_comparator {
+            violations.push(format!(
+                "envelope `audit.canonicalRoot` `{canonical_root}` is unsupported under \
+                 `auditMode == \"ndjson_comparator\"`"
+            ));
+        }
+        match &candidate_features {
+            Some(feats) if feats.iter().any(|f| f == "refinement") => {}
+            _ => violations.push(format!(
+                "envelope `audit.canonicalRoot` `{canonical_root}` requires \
+                 `candidate_features` to include `refinement`"
+            )),
+        }
+        for w in &spec_warnings {
+            if is_fatal_envelope_spec_warning(&w.code) {
+                violations.push(format!(
+                    "envelope receipt carries fatal `spec_warnings` entry `{}` on `{}`",
+                    w.code, w.declaration
+                ));
+            }
+        }
+    } else if spec_closure_sha256.is_some() {
+        violations.push(format!(
+            "legacy `audit.canonicalRoot` `{canonical_root}` cannot carry `spec_closure_sha256`"
         ));
     }
     let has_v2_assumption =
@@ -1195,7 +1407,7 @@ fn parse_success_receipt(
         ));
     }
     if !has_unpinned_taint
-        && canonical_root == expected_v1_root
+        && is_v1_root
         && !prov_summary.applicable
         && !prov_summary.decoupled
     {
@@ -1325,6 +1537,43 @@ fn parse_success_receipt(
         };
         parse_ndjson_comparator_audit(&mut audit, &kernels, unknown, violations)?;
     }
+    let specification_user_decls = match audit.opt_array("specificationUserDecls")? {
+        Some(arr) => Some(
+            arr.iter()
+                .enumerate()
+                .map(|(i, val)| {
+                    serde_json::from_value::<SpecUserDecl>(val.clone())
+                        .map_err(|e| format!("malformed `/audit/specificationUserDecls/{i}`: {e}"))
+                })
+                .collect::<Result<Vec<_>, _>>()?,
+        ),
+        None => None,
+    };
+    let specification_envelope = match audit.opt_obj("specificationEnvelope")? {
+        Some(obj) => Some(
+            serde_json::from_value::<SpecEnvelopeSummary>(Value::Object(obj.clone()))
+                .map_err(|e| format!("malformed `/audit/specificationEnvelope`: {e}"))?,
+        ),
+        None => None,
+    };
+    if is_envelope_root {
+        match (&specification_user_decls, &specification_envelope) {
+            (Some(decls), Some(env_sum)) => {
+                if let Err(msg) = validate_spec_envelope_metadata(decls, env_sum) {
+                    violations.push(format!("envelope `audit` metadata invalid: {msg}"));
+                }
+            }
+            _ => violations.push(format!(
+                "envelope `audit.canonicalRoot` `{canonical_root}` requires \
+                 `audit.specificationUserDecls` and `audit.specificationEnvelope`"
+            )),
+        }
+    } else if specification_user_decls.is_some() || specification_envelope.is_some() {
+        violations.push(format!(
+            "legacy `audit.canonicalRoot` `{canonical_root}` cannot carry \
+             `specificationUserDecls` or `specificationEnvelope`"
+        ));
+    }
     for extra in ["moduleIdentities", "toolchain"] {
         audit.mark_visited(extra);
     }
@@ -1435,6 +1684,7 @@ fn parse_success_receipt(
         capture_binary_sha256,
         model_manifest_sha256,
         specification_manifest_sha256,
+        spec_closure_sha256,
         sha256_locked,
         sha256_recorded,
         unhashed,
@@ -1498,6 +1748,8 @@ fn parse_success_receipt(
         shards,
         unstable_features,
         stabilized_features_present,
+        specification_user_decls,
+        specification_envelope,
     })
 }
 
@@ -4468,5 +4720,108 @@ pub(crate) mod tests {
         let env = parse_and_validate_receipt_with_max_bytes(&over_default, 256 * 1024 * 1024)
             .expect("raised cap must parse receipt larger than 64 MiB");
         assert!(env.invariant_violations.is_empty(), "{:?}", env.invariant_violations);
+    }
+
+    pub fn sample_envelope_v2_json() -> Value {
+        let mut r = sample_success_json();
+        let h = "b".repeat(64);
+        r["candidate_features"] = json!(["mir_semantics", "refinement"]);
+        r["spec_closure_sha256"] = json!(h);
+        r["correspondence_provenance"] = json!({
+            "applicable": false,
+            "reason": "Profile v2 decoupled"
+        });
+        r["assumptions"] = json!([
+            "faithful pinned compiler capture",
+            "experimental Profile v2 MIR semantics: caller memory",
+            "Lean kernel and admitted foundation",
+            "intact compiler and verification environment"
+        ]);
+        r["audit"]["canonicalRoot"] = json!("Trusted.Framework.CrateMirEnvelopeTheoremV2");
+        r["audit"]["specificationUserDecls"] = json!([
+            { "module": "Spec", "name": "Spec.specs", "kind": "def" }
+        ]);
+        r["audit"]["specificationEnvelope"] = json!({
+            "entries": [{
+                "identity": "rust-path-v1::zero",
+                "is_unsafe": false,
+                "terminates": true,
+                "no_unwind": true,
+                "no_abort": true,
+                "require_inhabited": true
+            }],
+            "stubs": [],
+            "refutations": [],
+            "claim_shapes": ["forallSafety"],
+            "gaps": ["unbridgedSemantics(mir_profile_v2)"],
+            "law_heads": [],
+            "has_step_bounds": false
+        });
+        r
+    }
+
+    #[test]
+    fn validates_8_canonical_roots_and_envelope_receipt_invariants() {
+        let ok = parse_and_validate_receipt(&serde_json::to_vec(&sample_envelope_v2_json()).unwrap())
+            .unwrap();
+        assert!(ok.invariant_violations.is_empty(), "{:?}", ok.invariant_violations);
+        assert!(ok.unrecognized_fields.is_empty(), "{:?}", ok.unrecognized_fields);
+
+        let mut unit_v1 = sample_success_json();
+        unit_v1["scope"] = json!({ "kind": "selected_unit", "roots": ["zero"] });
+        unit_v1["status"] = json!("selected_unit_verified");
+        unit_v1["candidate_features"] = json!(["mir_semantics", "refinement"]);
+        unit_v1["spec_closure_sha256"] = json!("c".repeat(64));
+        unit_v1["correspondence_provenance"] = json!({
+            "applicable": false,
+            "reason": DECOUPLED_CORRESPONDENCE_PROVENANCE_REASON
+        });
+        unit_v1["audit"]["canonicalRoot"] = json!("Trusted.Framework.UnitMirEnvelopeTheoremV1");
+        unit_v1["audit"]["specificationUserDecls"] = json!([
+            { "module": "Spec", "name": "Spec.specs", "kind": "def" }
+        ]);
+        unit_v1["audit"]["specificationEnvelope"] =
+            sample_envelope_v2_json()["audit"]["specificationEnvelope"].clone();
+        let ok_v1 = parse_and_validate_receipt(&serde_json::to_vec(&unit_v1).unwrap()).unwrap();
+        assert!(ok_v1.invariant_violations.is_empty(), "{:?}", ok_v1.invariant_violations);
+
+        let mut no_sc = sample_envelope_v2_json();
+        no_sc.as_object_mut().unwrap().remove("spec_closure_sha256");
+        let e1 = parse_and_validate_receipt(&serde_json::to_vec(&no_sc).unwrap()).unwrap();
+        assert!(e1.invariant_violations.iter().any(|v| v.contains("spec_closure_sha256")));
+
+        let mut no_ref = sample_envelope_v2_json();
+        no_ref["candidate_features"] = json!(["mir_semantics"]);
+        let e2 = parse_and_validate_receipt(&serde_json::to_vec(&no_ref).unwrap()).unwrap();
+        assert!(e2.invariant_violations.iter().any(|v| v.contains("refinement")));
+
+        let mut fatal_warn = sample_envelope_v2_json();
+        let warn = json!([{
+            "code": "unused_spec_binding",
+            "declaration": "Spec.helper",
+            "message": "unused"
+        }]);
+        fatal_warn["spec_warnings"] = warn.clone();
+        fatal_warn["audit"]["specWarnings"] = warn;
+        let e3 = parse_and_validate_receipt(&serde_json::to_vec(&fatal_warn).unwrap()).unwrap();
+        assert!(e3.invariant_violations.iter().any(|v| v.contains("unused_spec_binding")));
+
+        let mut ndjson_env = sample_ndjson_success_json();
+        ndjson_env["candidate_features"] = json!(["mir_semantics", "refinement"]);
+        ndjson_env["spec_closure_sha256"] = json!("b".repeat(64));
+        ndjson_env["audit"]["canonicalRoot"] =
+            json!("Trusted.Framework.CrateMirEnvelopeTheoremV2");
+        ndjson_env["audit"]["specificationUserDecls"] = json!([
+            { "module": "Spec", "name": "Spec.specs", "kind": "def" }
+        ]);
+        ndjson_env["audit"]["specificationEnvelope"] =
+            sample_envelope_v2_json()["audit"]["specificationEnvelope"].clone();
+        let e4 = parse_and_validate_receipt(&serde_json::to_vec(&ndjson_env).unwrap()).unwrap();
+        assert!(e4.invariant_violations.iter().any(|v| v.contains("ndjson_comparator")));
+
+        let mut legacy_extra = sample_success_json();
+        legacy_extra["spec_closure_sha256"] = json!("d".repeat(64));
+        let e5 = parse_and_validate_receipt(&serde_json::to_vec(&legacy_extra).unwrap()).unwrap();
+        assert!(e5.invariant_violations.iter().any(|v| v.contains("spec_closure_sha256")));
     }
 }

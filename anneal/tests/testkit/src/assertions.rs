@@ -61,6 +61,8 @@ pub struct VerifySuccessReceipt {
     #[serde(default)]
     pub capture_shards_sha256: Option<String>,
     #[serde(default)]
+    pub spec_closure_sha256: Option<String>,
+    #[serde(default)]
     pub shards: Option<Value>,
     #[serde(default)]
     pub artifacts: Option<String>,
