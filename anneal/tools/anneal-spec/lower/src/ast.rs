@@ -189,6 +189,9 @@ pub enum ExprKind {
     /// A parenthesized expression, kept so `(!a) == b` is distinguishable
     /// from the ambiguous `!a == b`.
     Paren(Box<Expr>),
+    /// `if cond { then } else { otherwise }`, where an `else if` chain nests
+    /// another `If` as `otherwise`. The `else` branch is required.
+    If(Box<Expr>, Box<Expr>, Box<Expr>),
 }
 
 #[derive(Clone, Debug)]

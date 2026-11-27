@@ -163,11 +163,15 @@ struct ExprParser {
     toks: Vec<Tok>,
     pos: usize,
     end_span: Span,
+    /// Whether an `if` condition is being parsed. As in Rust, a condition
+    /// ends at the first `{` group in operator position, which opens the
+    /// `then` branch.
+    in_cond: bool,
 }
 
 impl ExprParser {
     fn new(stream: TokenStream, end_span: Span) -> Self {
-        ExprParser { toks: tokenize(stream), pos: 0, end_span }
+        ExprParser { toks: tokenize(stream), pos: 0, end_span, in_cond: false }
     }
 
     fn peek(&self) -> Option<&Tok> {
@@ -192,6 +196,9 @@ impl ExprParser {
         let mut lhs = self.parse_prefix()?;
         loop {
             let Some(tok) = self.peek().cloned() else { break };
+            if self.in_cond && matches!(tok, Tok::Group(Delimiter::Brace, ..)) {
+                break;
+            }
             let Tok::Op(op, op_span) = &tok else { return Err(unexpected(&tok)) };
             if op == "," {
                 return Err(unexpected(&tok));
@@ -216,6 +223,17 @@ impl ExprParser {
                     _ => unexpected(&tok),
                 });
             };
+            if matches!(lhs.kind, ExprKind::If(..)) {
+                return Err(Diagnostic::new(
+                    "E_ANNEAL_SPEC_SYNTAX",
+                    *op_span,
+                    format!("an `if` expression must be parenthesized before `{op}`"),
+                )
+                .help(format!(
+                    "parenthesize the expression that ends with the `if`, as in \
+                     `(if c {{ a }} else {{ b }}) {op} ...` or `(x == if c {{ a }} else {{ b }}) {op} ...`"
+                )));
+            }
             let (l_bp, r_bp) = binding_power(bin);
             if l_bp < min_bp {
                 break;
@@ -286,7 +304,7 @@ impl ExprParser {
                 span,
                 "block expressions are not allowed in a specification",
             )
-            .help("only `math { ... }` takes a block")),
+            .help("only `math { ... }` and the branches of an `if` take a block")),
             other => Err(unexpected(&other)),
         }
     }
@@ -296,8 +314,8 @@ impl ExprParser {
             "true" | "false" => {
                 return Ok(Expr { kind: ExprKind::Bool(name == "true"), span });
             }
-            "let" | "if" | "match" | "loop" | "while" | "for" | "return" | "unsafe" | "async"
-            | "move" => {
+            "if" => return self.parse_if(span),
+            "let" | "match" | "loop" | "while" | "for" | "return" | "unsafe" | "async" | "move" => {
                 return Err(Diagnostic::new(
                     "E_ANNEAL_IMPURE_SPEC_EXPR",
                     span,
@@ -339,12 +357,78 @@ impl ExprParser {
                     _ => Ok(Expr { kind: ExprKind::Call(name, args), span: full }),
                 }
             }
+            Some(Tok::Group(Delimiter::Brace, _, gspan)) if name == "math" && self.in_cond => {
+                Err(Diagnostic::new(
+                    "E_ANNEAL_SPEC_SYNTAX",
+                    join(span, gspan),
+                    "`math { .. }` cannot appear in an `if` condition, where `{` opens the \
+                     `then` branch",
+                )
+                .help("write `math(..)` instead"))
+            }
             Some(Tok::Group(Delimiter::Brace, inner, gspan)) if name == "math" => {
                 self.pos += 1;
                 let e = ExprParser::new(inner, gspan).parse_all()?;
                 Ok(Expr { kind: ExprKind::Math(Box::new(e)), span: join(span, gspan) })
             }
             _ => Ok(Expr { kind: ExprKind::Ident(name), span }),
+        }
+    }
+
+    /// Parses the rest of `if cond { a } else { b }` after the `if` keyword,
+    /// including any `else if` chain. Unlike a Rust `if` statement, a
+    /// specification `if` is an expression, so its `else` branch is required.
+    fn parse_if(&mut self, if_span: Span) -> Result<Expr, Diagnostic> {
+        if let Some(Tok::Group(Delimiter::Brace, _, gspan)) = self.peek() {
+            return Err(Diagnostic::new(
+                "E_ANNEAL_SPEC_SYNTAX",
+                *gspan,
+                "expected a condition after `if`",
+            ));
+        }
+        let outer = std::mem::replace(&mut self.in_cond, true);
+        let cond = self.parse(0);
+        self.in_cond = outer;
+        let cond = cond?;
+        let then = self.parse_branch(if_span, "the `if` condition")?;
+        let else_span = match self.peek() {
+            Some(Tok::Ident(name, s)) if name == "else" => *s,
+            _ => {
+                return Err(Diagnostic::new(
+                    "E_ANNEAL_SPEC_SYNTAX",
+                    join(if_span, then.span),
+                    "`if` without `else`",
+                )
+                .help(
+                    "a specification `if` is an expression, so it needs an `else` branch: \
+                     `if c { a } else { b }`",
+                ))
+            }
+        };
+        self.pos += 1;
+        let otherwise = match self.peek().cloned() {
+            Some(Tok::Ident(name, s)) if name == "if" => {
+                self.pos += 1;
+                self.parse_if(s)?
+            }
+            _ => self.parse_branch(else_span, "`else`")?,
+        };
+        let span = join(if_span, otherwise.span);
+        Ok(Expr { kind: ExprKind::If(Box::new(cond), Box::new(then), Box::new(otherwise)), span })
+    }
+
+    /// Parses one `{ expr }` branch of an `if`, which must hold exactly one
+    /// expression.
+    fn parse_branch(&mut self, after: Span, what: &str) -> Result<Expr, Diagnostic> {
+        match self.next() {
+            Some(Tok::Group(Delimiter::Brace, inner, gspan)) => {
+                ExprParser::new(inner, gspan).parse_all()
+            }
+            other => Err(Diagnostic::new(
+                "E_ANNEAL_SPEC_SYNTAX",
+                other.map_or(after, |t| t.span()),
+                format!("expected `{{` after {what}"),
+            )),
         }
     }
 
@@ -547,9 +631,14 @@ pub fn parse_clauses(stream: TokenStream, span: Span) -> Result<Vec<SpannedClaus
                     )
                     .help("write `max_steps = <expr>`"))
                 } else {
-                    ExprParser { toks: rest.to_vec(), pos: 0, end_span: clause_span }
-                        .parse_all()
-                        .map(Clause::MaxSteps)
+                    ExprParser {
+                        toks: rest.to_vec(),
+                        pos: 0,
+                        end_span: clause_span,
+                        in_cond: false,
+                    }
+                    .parse_all()
+                    .map(Clause::MaxSteps)
                 }
             }
             (

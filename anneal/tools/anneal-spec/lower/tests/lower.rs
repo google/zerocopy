@@ -428,7 +428,7 @@ fn trap_spellings_are_rejected() {
         ("requires(a < b < c)", "fn f(a: u8, b: u8, c: u8)", "E_ANNEAL_CHAINED_COMPARISON"),
         ("requires(a = b)", "fn f(a: u8, b: u8)", "E_ANNEAL_IMPURE_SPEC_EXPR"),
         ("requires({ a })", "fn f(a: bool)", "E_ANNEAL_IMPURE_SPEC_EXPR"),
-        ("requires(if a { true } else { false })", "fn f(a: bool)", "E_ANNEAL_IMPURE_SPEC_EXPR"),
+        ("requires(match a { _ => true })", "fn f(a: bool)", "E_ANNEAL_IMPURE_SPEC_EXPR"),
         ("requires(old(a) == a)", "fn f(a: u8)", "E_ANNEAL_OLD_IN_PRECONDITION"),
         ("ensures(|r| r == old(a))", "fn f(a: u8) -> u8", "E_ANNEAL_UNSUPPORTED_OLD"),
         ("requires(lenght > 0usize)", "fn f(length: usize)", "E_ANNEAL_SPEC_UNKNOWN_IDENT"),
@@ -452,6 +452,234 @@ fn trap_spellings_are_rejected() {
         "E_ANNEAL_SPEC_UNKNOWN_IDENT",
     );
     assert!(suggestion.contains("`length`"), "{suggestion}");
+}
+
+#[test]
+fn if_expressions_lower_by_result_type() {
+    // A `bool`-valued `if` lowers to two implications.
+    let l = lower_one(&wrap(
+        "ensures(|r| if a > 0u8 { r == a } else { r == 1u8 })",
+        "fn f(a: u8) -> u8",
+    ))
+    .unwrap();
+    let cond = "((specInt (specArg q 0)) > (0 : Int))";
+    let want = format!(
+        "(({cond} → ((specInt out.ret) = (specInt (specArg q 0)))) ∧ \
+         (¬ {cond} → ((specInt out.ret) = (1 : Int))))"
+    );
+    assert!(l.spec_lean.contains(&want), "{}", l.spec_lean);
+    // An `if` that chooses a value lowers to Lean's `if`, and an `else if`
+    // chain nests.
+    let l = lower_one(&wrap(
+        "ensures(|r| r == if a < 10u8 { a } else if a < 20u8 { 10u8 } else { 20 })",
+        "fn f(a: u8) -> u8",
+    ))
+    .unwrap();
+    assert!(
+        l.spec_lean.contains(
+            "(if ((specInt (specArg q 0)) < (10 : Int)) then (specInt (specArg q 0)) else \
+             (if ((specInt (specArg q 0)) < (20 : Int)) then (10 : Int) else (20 : Int)))"
+        ),
+        "{}",
+        l.spec_lean
+    );
+    // Untyped literal branches take their type from context, which
+    // range-checks them.
+    let l =
+        lower_one(&wrap("ensures(|r| r == if b { 1 } else { 0 })", "fn f(b: bool) -> u8")).unwrap();
+    assert!(
+        l.spec_lean.contains("(if (specBool (specArg q 0) = true) then (1 : Int) else (0 : Int))"),
+        "{}",
+        l.spec_lean
+    );
+    for body in ["r == if b { 256 } else { 0 }", "r == if b { 0 } else { -1 }"] {
+        expect_error(
+            &wrap(&format!("ensures(|r| {body})"), "fn f(b: bool) -> u8"),
+            "E_ANNEAL_SPEC_LITERAL_RANGE",
+        );
+    }
+    expect_error(
+        &wrap("requires((if b { 1 } else { 0 }) == 1)", "fn f(b: bool)"),
+        "E_ANNEAL_SPEC_TYPE_ANNOTATION_NEEDED",
+    );
+    lower_one(&wrap("requires(math(if b { 1 } else { 0 }) == 1)", "fn f(b: bool)")).unwrap();
+    lower_one(&wrap("requires(math(x) < -(if b { 1 } else { 2 }))", "fn f(b: bool, x: i8)"))
+        .unwrap();
+    // A helper may return an `if` of untyped literals at its return type.
+    lower_one(
+        "anneal::external_spec! {
+            #[anneal::pure]
+            fn bit(b: u8) -> u8 { if b == 0u8 { 0 } else { 1 } }
+            #[anneal::spec(ensures(|r| r == bit(a)))]
+            fn f(a: u8) -> u8;
+        }",
+    )
+    .unwrap();
+    // `max_steps` may choose between bounds.
+    let l = lower_one(&wrap("max_steps = if n > 100 { n } else { 100 }", "fn f(n: u32)")).unwrap();
+    assert!(
+        l.spec_lean.contains(
+            "(if ((specInt (specArg q 0)) > (100 : Int)) then (specNat (specArg q 0)) else \
+             (100 : Nat))"
+        ),
+        "{}",
+        l.spec_lean
+    );
+}
+
+#[test]
+fn if_expressions_are_parsed_and_type_checked_strictly() {
+    let cases: &[(&str, &str, &str)] = &[
+        ("requires(if a { true })", "fn f(a: bool)", "E_ANNEAL_SPEC_SYNTAX"),
+        ("requires(if a { true } else false)", "fn f(a: bool)", "E_ANNEAL_SPEC_SYNTAX"),
+        ("requires(if a { true } else if { false })", "fn f(a: bool)", "E_ANNEAL_SPEC_SYNTAX"),
+        ("requires(if { true } else { false })", "fn f(a: bool)", "E_ANNEAL_SPEC_SYNTAX"),
+        ("requires(if a { } else { false })", "fn f(a: bool)", "E_ANNEAL_SPEC_SYNTAX"),
+        ("requires(if a { a; a } else { false })", "fn f(a: bool)", "E_ANNEAL_SPEC_SYNTAX"),
+        ("requires(if x { true } else { false })", "fn f(x: u8)", "E_ANNEAL_SPEC_TYPE_MISMATCH"),
+        (
+            "ensures(|r| r == if a { 1u8 } else { true })",
+            "fn f(a: bool) -> u8",
+            "E_ANNEAL_SPEC_TYPE_MISMATCH",
+        ),
+        (
+            "ensures(|r| r == if a { x } else { y })",
+            "fn f(a: bool, x: u8, y: u16) -> u8",
+            "E_ANNEAL_SPEC_TYPE_MISMATCH",
+        ),
+        (
+            "ensures(|r| math(r) == if a { math(x) } else { x })",
+            "fn f(a: bool, x: u8) -> u8",
+            "E_ANNEAL_SPEC_TYPE_MISMATCH",
+        ),
+        (
+            "requires((if a { x } else { y }) + 1u8 > 0u8)",
+            "fn f(a: bool, x: u8, y: u8)",
+            "E_ANNEAL_AMBIGUOUS_SPEC_ARITH",
+        ),
+        (
+            "requires(if let true = a { true } else { false })",
+            "fn f(a: bool)",
+            "E_ANNEAL_IMPURE_SPEC_EXPR",
+        ),
+        (
+            "requires(if math { x } > 0 { true } else { false })",
+            "fn f(x: u8)",
+            "E_ANNEAL_SPEC_SYNTAX",
+        ),
+    ];
+    for (attr, sig, code) in cases {
+        expect_error(&wrap(attr, sig), code);
+    }
+    let r = expect_error(&wrap("requires(if a { true })", "fn f(a: bool)"), "E_ANNEAL_SPEC_SYNTAX");
+    assert!(r.contains("`if` without `else`"), "{r}");
+    // A binary operator after an `if` would bind to the whole `if`, which is
+    // easy to misread as binding inside the `else` branch.
+    for clause in [
+        "requires(if a { x } else { y } > 0u8)",
+        "requires(x == if a { x } else { y } && a)",
+        "requires(!if a { a } else { b } == a)",
+    ] {
+        let r = expect_error(
+            &wrap(clause, "fn f(a: bool, b: bool, x: u8, y: u8)"),
+            "E_ANNEAL_SPEC_SYNTAX",
+        );
+        assert!(r.contains("must be parenthesized"), "{clause}: {r}");
+    }
+    lower_one(&wrap("requires((x == if a { x } else { y }) && a)", "fn f(a: bool, x: u8, y: u8)"))
+        .unwrap();
+    // As in Rust, a condition ends at the first `{`, but a nested `if` in the
+    // condition keeps its own branches.
+    lower_one(&wrap(
+        "requires(if if a { b } else { !b } { x > 0u8 } else { x == 0u8 })",
+        "fn f(a: bool, b: bool, x: u8)",
+    ))
+    .unwrap();
+}
+
+#[test]
+fn if_branches_may_divide_by_what_the_condition_proves_nonzero() {
+    let sig = "fn f(n: u8, d: u8) -> u8";
+    for body in [
+        "if d != 0u8 { math(r) == math(n / d) } else { r == 0u8 }",
+        "if d == 0u8 { r == 0u8 } else { math(r) == math(n % d) }",
+        "if !(d > 0u8) { r == 0u8 } else { math(r) == math(n / d) }",
+        "if d == 0u8 || n == 0u8 { r == 0u8 } else { math(r) == math(n / d) }",
+        "if n == 0u8 { r == 0u8 } else if d <= 0u8 { r == 1u8 } else { math(r) == math(n / d) }",
+        "if d == u8::MIN { r == 0u8 } else { math(r) == math(n / d) }",
+    ] {
+        lower_one(&wrap(&format!("ensures(|r| {body})"), sig))
+            .unwrap_or_else(|e| panic!("{body}: {e:?}"));
+    }
+    for body in [
+        "if d == 0u8 { math(r) == math(n / d) } else { r == 0u8 }",
+        "if d != 0u8 { r == 0u8 } else { math(r) == math(n / d) }",
+        "if d != 0u8 || n == 0u8 { math(r) == math(n / d) } else { r == 0u8 }",
+        "(if d != 0u8 { r == 0u8 } else { r == 1u8 }) && math(r) == math(n / d)",
+    ] {
+        expect_error(&wrap(&format!("ensures(|r| {body})"), sig), "E_ANNEAL_UNGUARDED_SPEC_DIV");
+    }
+    lower_one(&wrap("max_steps = if d == 0 { 1 } else { n / d }", "fn f(n: u32, d: u32)")).unwrap();
+    expect_error(
+        &wrap("max_steps = if d == 0 { n / d } else { 1 }", "fn f(n: u32, d: u32)"),
+        "E_ANNEAL_UNGUARDED_SPEC_DIV",
+    );
+}
+
+#[test]
+fn value_ifs_need_decidable_conditions() {
+    let r = expect_error(
+        "anneal::external_spec! {
+            #[anneal::pure]
+            fn pick(b: bool, x: u8) -> u8 { if b { x } else { 0u8 } }
+        }",
+        "E_ANNEAL_UNDECIDABLE_SPEC_IF",
+    );
+    assert!(r.contains("`b` is a `bool` helper parameter"), "{r}");
+    let small = "#[anneal::pure] fn small(x: u8) -> bool { x < 10u8 }";
+    let r = expect_error(
+        &format!(
+            "anneal::external_spec! {{ {small}
+                #[anneal::spec(ensures(|r| r == if small(a) {{ 1u8 }} else {{ 0u8 }}))]
+                fn f(a: u8) -> u8;
+            }}"
+        ),
+        "E_ANNEAL_UNDECIDABLE_SPEC_IF",
+    );
+    assert!(r.contains("`small` is a `bool` helper"), "{r}");
+    expect_error(
+        &wrap("ensures(|r| r == if () == () { 1u8 } else { 0u8 })", "fn f() -> u8"),
+        "E_ANNEAL_UNDECIDABLE_SPEC_IF",
+    );
+    // `()`-valued `if` branches inside a value-choosing `if` condition must
+    // still report undecidable equality even when guarded by nonzero facts.
+    expect_error(
+        &wrap(
+            "ensures(|r| d != 0u8 && r == if (if math(n / d) > 0 { () } else { () }) == () { 1u8 } else { 0u8 })",
+            "fn f(n: u8, d: u8) -> u8",
+        ),
+        "E_ANNEAL_UNDECIDABLE_SPEC_IF",
+    );
+    // Deeply nested `if`s in a comparison condition must lower in linear time.
+    let mut nested = "x == 0u8".to_string();
+    for _ in 0..30 {
+        nested = format!("(if {nested} {{ 1u8 }} else {{ 0u8 }}) == 1u8");
+    }
+    lower_one(&wrap(
+        &format!("ensures(|r| r == if {nested} {{ 1u8 }} else {{ 0u8 }})"),
+        "fn f(x: u8) -> u8",
+    ))
+    .unwrap();
+    // A `bool`-valued `if` needs no decidable condition.
+    lower_one(&format!(
+        "anneal::external_spec! {{ {small}
+            #[anneal::pure]
+            fn pick(b: bool, x: u8) -> bool {{ if b {{ x == 1u8 }} else {{ x == 0u8 }} }}
+            #[anneal::spec(ensures(|r| if small(a) {{ r == 1u8 }} else {{ pick(false, r) }}))]
+            fn f(a: u8) -> u8;
+        }}"
+    ))
+    .unwrap();
 }
 
 #[test]

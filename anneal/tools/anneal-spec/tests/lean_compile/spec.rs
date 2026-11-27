@@ -70,6 +70,36 @@ anneal::external_spec! {
             && u32::MIN == 0u32
     }
 
+    // An `if` that chooses a value lowers to Lean's `if`, so its condition
+    // must be decidable. A `bool`-valued `if` lowers to two implications,
+    // which also admit a `bool` helper parameter as the condition.
+    #[anneal::pure]
+    fn clamp(x: i32, lo: i32, hi: i32) -> i32 {
+        if x < lo { lo } else if x > hi { hi } else { x }
+    }
+
+    #[anneal::pure]
+    fn sign_is(x: i8, s: i8) -> bool {
+        s == if x < 0 { -1 } else if x == 0 { 0 } else { 1 }
+    }
+
+    #[anneal::pure]
+    fn div_or_zero_is(n: u32, d: u32, r: u32) -> bool {
+        if d == 0u32 { r == 0u32 } else { math(r) == math(n / d) }
+    }
+
+    #[anneal::pure]
+    fn flag_is(b: bool, r: u8) -> bool {
+        if b { r == 1u8 } else { r == 0u8 }
+    }
+
+    #[anneal::spec(
+        requires(div_or_zero_is(n, n, 1u32) && flag_is(flag, 1u8) && sign_is(0i8, 0i8)),
+        max_steps = if n > 100 { n } else { 100 },
+        ensures(|r| (r == if flag { n } else { 0u32 }) && clamp(0i32, 1i32, 2i32) == 1i32),
+    )]
+    fn piecewise(n: u32, flag: bool) -> u32;
+
     #[anneal::spec(
         requires(math(n) + 1 <= math(usize::MAX)),
         max_steps = u8::MAX + u32::BITS * 2 + n / u16::MAX,
