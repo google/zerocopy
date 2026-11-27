@@ -28,7 +28,7 @@ threads-required = 2
 slow-timeout = { period = "90s", terminate-after = 4 }
 
 [[profile.default.overrides]]
-filter = 'binary(boundary_audit) | binary(target_audit) | binary(profile_v2_e2e) | test(/verifies_scalar_spec_corpus|selected_unit_normalization_and_boundary_rejections/)'
+filter = 'binary(boundary_audit) | binary(target_audit) | binary(profile_v2_e2e) | test(/verifies_scalar_spec_corpus|selected_unit_normalization_and_boundary_rejections/) | test(/sharded_cyclic_crate_verifies_cross_shard_dag_id_tree_and_incremental_cache/)'
 threads-required = 2
 slow-timeout = { period = "60s", terminate-after = 4 }
 
@@ -47,7 +47,7 @@ threads-required = 4
 slow-timeout = { period = "60s", terminate-after = 4 }
 
 [[profile.default.overrides]]
-filter = 'binary(itree_differential)'
+filter = 'binary(itree_differential) | binary(profile_v2_canaries)'
 threads-required = 2
 slow-timeout = { period = "90s", terminate-after = 4 }
 
