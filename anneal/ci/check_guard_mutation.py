@@ -44,11 +44,11 @@ What this check guarantees — and what it does NOT guarantee
   test whose outcome changes when that single guard is weakened. Most entries
   verify sole UB or admission gates; `EXTRACT_GUARDS` entries marked
   `allow_downstream_fallback=True` (`extract_reject_cleanup_block`,
-  `extract_reject_uninstantiated_generic_fn`, and
-  `extract_eval_required_consts`) pin diagnostic precedence ahead of downstream
-  refusals, and `MIR_SEMANTICS_GUARDS` also includes lockstep fault-kind
-  classification, Profile-v1 alignment, and function-level defense-in-depth
-  guards labeled in their descriptions.
+  `extract_reject_uninstantiated_generic_fn`, `extract_eval_required_consts`,
+  and `extract_mono_verify_predicates_and_wf`) pin diagnostic precedence ahead
+  of downstream refusals, and `MIR_SEMANTICS_GUARDS` also includes lockstep
+  fault-kind classification, Profile-v1 alignment, and function-level
+  defense-in-depth guards labeled in their descriptions.
 - **Does NOT guarantee:** Coverage of unmodeled Rust semantics, guards added to
   `Trusted/MirSemantics/`, `TrustedBoundary.lean`, or
   `trusted/rustc-capture/src/` without a catalog entry, or automatic GitHub
@@ -7977,7 +7977,10 @@ EXTRACT_GUARDS: tuple[ExtractGuard, ...] = (
         guard_id="extract_mono_verify_predicates_and_wf",
         target_file="trusted/rustc-capture/src/mono.rs",
         mode="capture",
-        description="mono::instantiate_body enforces trait and WF predicates",
+        description=(
+            "mono::instantiate_body enforces trait and WF predicates "
+            "(diagnostic-precedence pin ahead of CTFE predicate check)"
+        ),
         anchor='    verify_predicates_and_wf(tcx, typing_env, target_def, args, "target")?;',
         replacement=(
             "    let _ = verify_predicates_and_wf("
@@ -7990,6 +7993,8 @@ EXTRACT_GUARDS: tuple[ExtractGuard, ...] = (
         capture_scope="instantiate",
         instantiate_json='{"path":"f","args":["bool"]}',
         expected_baseline_diagnostic="trait or well-formedness predicates unsatisfied",
+        expected_fallback_diagnostic="failed to select trait implementation for predicate",
+        allow_downstream_fallback=True,
     ),
     ExtractGuard(
         guard_id="extract_reject_cfg_attr_rustc_private",
@@ -8090,6 +8095,711 @@ EXTRACT_GUARDS: tuple[ExtractGuard, ...] = (
         ),
         capture_scope="crate",
         expected_baseline_diagnostic="unsafe blocks are unsupported in constants",
+    ),
+    # ------------------------------------------------------------------
+    # Ambient CTFE and built-in source-location macro guards
+    # ------------------------------------------------------------------
+    ExtractGuard(
+        guard_id="capture_reject_ambient_location_macros",
+        target_file="trusted/rustc-capture/src/capture.rs",
+        mode="capture",
+        description=(
+            "check_no_ambient_builtin_macros rejects file!/line!/column!/"
+            "module_path!"
+        ),
+        anchor=(
+            "        if let Some(name) = builtin\n"
+            "            && matches!(name, sym::file | sym::line | sym::column "
+            "| sym::module_path)\n"
+            "        {"
+        ),
+        replacement=(
+            "        if let Some(name) = builtin\n"
+            "            && false\n"
+            "        {"
+        ),
+        negative_source=(
+            "const F: usize = file!().len();\n"
+            "pub fn selected(x: usize) -> usize { x.wrapping_add(F) }\n"
+        ),
+        expected_baseline_diagnostic="macro is unsupported during capture",
+    ),
+    ExtractGuard(
+        guard_id="admit_const_item_check_ctfe",
+        target_file="trusted/rustc-capture/src/capture.rs",
+        mode="capture",
+        description=(
+            "admit_const_item audits whole-crate Const items via "
+            "extract::check_ctfe_item"
+        ),
+        anchor=(
+            "    check_const_hir_safety(tcx, def, false, &context)?;\n"
+            "    extract::check_ctfe_item(\n"
+            "        tcx,\n"
+            "        def.to_def_id(),\n"
+            "        TypingEnv::fully_monomorphized(),\n"
+            "        ty::GenericArgs::identity_for_item(tcx, def.to_def_id()),\n"
+            "        &context,\n"
+            "    )?;"
+        ),
+        replacement=(
+            "    check_const_hir_safety(tcx, def, false, &context)?;\n"
+            "    if false {\n"
+            "        extract::check_ctfe_item(\n"
+            "            tcx,\n"
+            "            def.to_def_id(),\n"
+            "            TypingEnv::fully_monomorphized(),\n"
+            "            ty::GenericArgs::identity_for_item("
+            "tcx, def.to_def_id()),\n"
+            "            &context,\n"
+            "        )?;\n"
+            "    }"
+        ),
+        negative_source=(
+            "#[track_caller]\n"
+            "const fn tracked_val() -> u32 { 5 }\n"
+            "pub const UNUSED_CONST: u32 = tracked_val();\n"
+            "pub fn selected(x: u32) -> u32 { x }\n"
+        ),
+        capture_scope="crate",
+        expected_baseline_diagnostic="#[track_caller]",
+    ),
+    ExtractGuard(
+        guard_id="ctfe_reject_ambient_type_intrinsics",
+        target_file="trusted/rustc-capture/src/extract.rs",
+        mode="capture",
+        description=(
+            "is_forbidden_ctfe_intrinsic rejects TypeId/type_name/"
+            "caller_location CTFE intrinsics"
+        ),
+        anchor=(
+            "fn is_forbidden_ctfe_intrinsic(name: rustc_span::Symbol) -> bool {\n"
+            "    matches!("
+        ),
+        replacement=(
+            "fn is_forbidden_ctfe_intrinsic(name: rustc_span::Symbol) -> bool {\n"
+            "    false && matches!("
+        ),
+        negative_source=(
+            "const SAME_TY: bool = {\n"
+            "    let _ = core::any::TypeId::of::<u32>();\n"
+            "    true\n"
+            "};\n"
+            "pub fn selected(x: u64) -> u64 { if SAME_TY { x } else { 0 } }\n"
+        ),
+        expected_baseline_diagnostic="CTFE intrinsic",
+    ),
+    ExtractGuard(
+        guard_id="ctfe_reject_panic_location_type",
+        target_file="trusted/rustc-capture/src/extract.rs",
+        mode="capture",
+        description=(
+            "is_panic_location_item rejects core::panic::Location items and "
+            "types in CTFE"
+        ),
+        anchor=(
+            "fn is_panic_location_item(tcx: TyCtxt<'_>, def_id: DefId) -> bool {\n"
+            "    if tcx.is_lang_item(def_id, rustc_hir::LangItem::PanicLocation) {\n"
+            "        return true;\n"
+            "    }"
+        ),
+        replacement=(
+            "fn is_panic_location_item(tcx: TyCtxt<'_>, def_id: DefId) -> bool {\n"
+            "    if false && tcx.is_lang_item("
+            "def_id, rustc_hir::LangItem::PanicLocation) {\n"
+            "        return true;\n"
+            "    }"
+        ),
+        negative_source=(
+            "const LOC_SZ: usize = "
+            "core::mem::size_of::<core::panic::Location<'static>>();\n"
+            "pub fn selected(x: usize) -> usize { x.wrapping_add(LOC_SZ) }\n"
+        ),
+        expected_baseline_diagnostic="core::panic::Location",
+    ),
+    ExtractGuard(
+        guard_id="ctfe_reject_static_reference",
+        target_file="trusted/rustc-capture/src/extract.rs",
+        mode="capture",
+        description=(
+            "check_no_ctfe_static_ref rejects CTFE and HIR constant "
+            "references to statics"
+        ),
+        anchor=(
+            "fn check_no_ctfe_static_ref("
+            "tcx: TyCtxt<'_>, static_did: DefId) -> Result<()> {\n"
+            "    Err(format!(\n"
+            '        "CTFE and constant references to static `{}` are unsupported",\n'
+            "        tcx.def_path_str(static_did)\n"
+            "    ))\n"
+            "}"
+        ),
+        replacement=(
+            "fn check_no_ctfe_static_ref("
+            "tcx: TyCtxt<'_>, static_did: DefId) -> Result<()> {\n"
+            "    let _ = (tcx, static_did);\n"
+            "    Ok(())\n"
+            "}"
+        ),
+        negative_source=(
+            "static S: &str = core::panic::Location::caller().file();\n"
+            "const NON_EMPTY: bool = S.len() > 0;\n"
+            "pub fn selected(x: u64) -> u64 {\n"
+            "    if NON_EMPTY { x.wrapping_add(1) } else { x }\n"
+            "}\n"
+        ),
+        expected_baseline_diagnostic="references to static",
+    ),
+    ExtractGuard(
+        guard_id="ctfe_reject_track_caller_fn",
+        target_file="trusted/rustc-capture/src/extract.rs",
+        mode="capture",
+        description=(
+            "ctfe_requires_caller_location rejects #[track_caller] functions "
+            "in CTFE"
+        ),
+        anchor=(
+            "fn ctfe_requires_caller_location<'tcx>(\n"
+            "    tcx: TyCtxt<'tcx>,\n"
+            "    def_id: DefId,\n"
+            "    inst_kind: Option<ty::InstanceKind<'tcx>>,\n"
+            ") -> bool {\n"
+            "    def_requires_caller_location(tcx, def_id)\n"
+            "        || inst_kind.is_some_and("
+            "|kind| kind.requires_caller_location(tcx))\n"
+            "}"
+        ),
+        replacement=(
+            "fn ctfe_requires_caller_location<'tcx>(\n"
+            "    tcx: TyCtxt<'tcx>,\n"
+            "    def_id: DefId,\n"
+            "    inst_kind: Option<ty::InstanceKind<'tcx>>,\n"
+            ") -> bool {\n"
+            "    false\n"
+            "        && (def_requires_caller_location(tcx, def_id)\n"
+            "            || inst_kind.is_some_and("
+            "|kind| kind.requires_caller_location(tcx)))\n"
+            "}"
+        ),
+        negative_source=(
+            "#[track_caller]\n"
+            "const fn tracked_inc(v: u64) -> u64 { v.wrapping_add(1) }\n"
+            "const C: u64 = tracked_inc(41);\n"
+            "pub fn selected(x: u64) -> u64 { x.wrapping_add(C) }\n"
+        ),
+        expected_baseline_diagnostic="#[track_caller]",
+    ),
+    ExtractGuard(
+        guard_id="ctfe_reject_transitive_untracked_callee",
+        target_file="trusted/rustc-capture/src/extract.rs",
+        mode="capture",
+        description=(
+            "check_ctfe_call_callee recursively audits untracked const fn "
+            "callees in CTFE"
+        ),
+        anchor=(
+            "    if tcx.intrinsic(callee_did).is_none() "
+            "&& !tcx.is_const_fn(callee_did) {\n"
+            "        return Err(format!(\n"
+            '            "CTFE call to non-const function `{}` in '
+            '`{owner_path}` is unsupported",\n'
+            "            tcx.def_path_str(callee_did)\n"
+            "        ));\n"
+            "    }\n"
+            "    check_ctfe_body_recursive("
+            "tcx, typing_env, callee_did, callee_args, None, state)\n"
+            "}"
+        ),
+        replacement=(
+            "    if tcx.intrinsic(callee_did).is_none() "
+            "&& !tcx.is_const_fn(callee_did) {\n"
+            "        return Err(format!(\n"
+            '            "CTFE call to non-const function `{}` in '
+            '`{owner_path}` is unsupported",\n'
+            "            tcx.def_path_str(callee_did)\n"
+            "        ));\n"
+            "    }\n"
+            "    let _ = state;\n"
+            "    Ok(())\n"
+            "}"
+        ),
+        negative_source=(
+            "const fn untracked_line() -> u32 {\n"
+            "    core::panic::Location::caller().line()\n"
+            "}\n"
+            "const C: u32 = untracked_line();\n"
+            "pub fn selected(x: u32) -> u32 { x.wrapping_add(C) }\n"
+        ),
+        expected_baseline_diagnostic="core::panic::Location",
+    ),
+    ExtractGuard(
+        guard_id="ctfe_reject_nested_adt_field_deps",
+        target_file="trusted/rustc-capture/src/extract.rs",
+        mode="capture",
+        description=(
+            "check_ty_ctfe_deps recursively walks normalized ADT field types "
+            "in CTFE"
+        ),
+        anchor=(
+            "                for field in adt.all_fields() {\n"
+            "                    let raw_field_ty = "
+            "tcx.type_of(field.did).instantiate(tcx, norm_adt_args);"
+        ),
+        replacement=(
+            "                for field in adt.all_fields().take(0) {\n"
+            "                    let raw_field_ty = "
+            "tcx.type_of(field.did).instantiate(tcx, norm_adt_args);"
+        ),
+        negative_source=(
+            "const BAD_LEN: usize = "
+            "(core::panic::Location::caller().line() > 0) as usize + 1;\n"
+            "#[allow(dead_code)]\n"
+            "struct Inner<T>(core::marker::PhantomData<T>, [u8; BAD_LEN]);\n"
+            "#[allow(dead_code)]\n"
+            "struct Outer(Inner<u8>);\n"
+            "const H_SZ: usize = core::mem::size_of::<Outer>();\n"
+            "pub fn selected(x: usize) -> usize { x.wrapping_add(H_SZ) }\n"
+        ),
+        expected_baseline_diagnostic="core::panic::Location",
+    ),
+    ExtractGuard(
+        guard_id="extract_body_check_hir_ctfe_deps",
+        target_file="trusted/rustc-capture/src/extract.rs",
+        mode="capture",
+        description=(
+            "body_inner walks HIR CTFE dependencies to catch pre-MIR-folded "
+            "pattern/type constants"
+        ),
+        anchor=(
+            "    check_hir_ctfe_dependencies(tcx, typing_env, def, owner_args)?;\n"
+            "    eval_required_consts(tcx, typing_env, body)?;"
+        ),
+        replacement=(
+            "    if false {\n"
+            "        check_hir_ctfe_dependencies("
+            "tcx, typing_env, def, owner_args)?;\n"
+            "    }\n"
+            "    eval_required_consts(tcx, typing_env, body)?;"
+        ),
+        negative_source=(
+            "#[track_caller]\n"
+            "const fn tracked_tag() -> u32 { 9 }\n"
+            "const PAT_CONST: u32 = tracked_tag();\n"
+            "pub fn selected(x: u32) -> u32 {\n"
+            "    match x {\n"
+            "        PAT_CONST => 1,\n"
+            "        _ => 0,\n"
+            "    }\n"
+            "}\n"
+        ),
+        expected_baseline_diagnostic="#[track_caller]",
+    ),
+    ExtractGuard(
+        guard_id="ctfe_reject_assoc_ty_qpath",
+        target_file="trusted/rustc-capture/src/extract.rs",
+        mode="capture",
+        description=(
+            "HirCtfeDepVisitor::visit_qpath audits DefKind::AssocTy projections "
+            "in CTFE"
+        ),
+        anchor=(
+            "            Res::Def(DefKind::AssocTy, assoc_did) => {\n"
+            "                if let Err(err) = "
+            "self.audit_assoc_ty_qpath(qpath, assoc_did) {\n"
+            "                    return ControlFlow::Break(err);\n"
+            "                }\n"
+            "            }"
+        ),
+        replacement=(
+            "            Res::Def(DefKind::AssocTy, assoc_did) => {\n"
+            "                let _ = (qpath, assoc_did);\n"
+            "            }"
+        ),
+        negative_source=(
+            "trait Tr {\n"
+            "    type A;\n"
+            "}\n"
+            "struct S;\n"
+            "impl Tr for S {\n"
+            "    type A = [u8; { core::panic::Location::caller().file().len() }];\n"
+            "}\n"
+            "const N: usize = core::mem::size_of::<<S as Tr>::A>();\n"
+            "pub fn selected(x: usize) -> usize {\n"
+            "    x.wrapping_add(N)\n"
+            "}\n"
+        ),
+        expected_baseline_diagnostic="core::panic::Location",
+    ),
+    ExtractGuard(
+        guard_id="ctfe_reject_unresolved_assoc_ty_qpath",
+        target_file="trusted/rustc-capture/src/extract.rs",
+        mode="capture",
+        description=(
+            "HirCtfeDepVisitor::audit_assoc_ty_qpath fails closed when qself "
+            "or args cannot lower"
+        ),
+        anchor=(
+            '                Err(format!(\n'
+            '                    "CTFE associated type `{}` with unresolved self '
+            'or generic arguments \\\n'
+            '                     is unsupported",\n'
+            '                    self.tcx.def_path_str(assoc_did)\n'
+            '                ))'
+        ),
+        replacement=(
+            '                let _ = assoc_did;\n'
+            '                Ok(())'
+        ),
+        negative_source=(
+            "trait Tr {\n"
+            "    type A;\n"
+            "}\n"
+            "impl<T: ?Sized> Tr for T {\n"
+            "    type A = [u8; { core::panic::Location::caller().file().len() }];\n"
+            "}\n"
+            "const N: usize = core::mem::size_of::<<dyn Send as Tr>::A>();\n"
+            "pub fn selected(x: usize) -> usize {\n"
+            "    x.wrapping_add(N)\n"
+            "}\n"
+        ),
+        expected_baseline_diagnostic="with unresolved self or generic arguments",
+    ),
+    ExtractGuard(
+        guard_id="ctfe_audit_nonlocal_generic_adt_fields",
+        target_file="trusted/rustc-capture/src/extract.rs",
+        mode="capture",
+        description=(
+            "check_ty_ctfe_deps traverses field types of non-local generic ADTs"
+        ),
+        anchor="            if state.seen_adts.insert((adt.did(), norm_adt_args)) {",
+        replacement=(
+            "            if adt.did().is_local() && "
+            "state.seen_adts.insert((adt.did(), norm_adt_args)) {"
+        ),
+        negative_source=(
+            "struct S;\n"
+            "impl core::iter::Iterator for S {\n"
+            "    type Item = "
+            "[u8; { core::panic::Location::caller().file().len() }];\n"
+            "    fn next(&mut self) -> Option<Self::Item> { None }\n"
+            "}\n"
+            "const N: usize = core::mem::size_of::<core::iter::Peekable<S>>();\n"
+            "pub fn selected(x: usize) -> usize {\n"
+            "    x.wrapping_add(N)\n"
+            "}\n"
+        ),
+        expected_baseline_diagnostic="core::panic::Location",
+    ),
+    ExtractGuard(
+        guard_id="ctfe_audit_fn_def_signature",
+        target_file="trusted/rustc-capture/src/extract.rs",
+        mode="capture",
+        description=(
+            "check_ty_ctfe_deps inspects fn_sig of uncalled FnDef items in "
+            "CTFE types"
+        ),
+        anchor=(
+            "    state.adt_depth += 1;\n"
+            "    let mut sig_err = None;\n"
+            "    for sig_ty in pre_norm_sig.inputs_and_output {\n"
+            "        if sig_ty.has_escaping_bound_vars()\n"
+            "            || sig_ty.has_non_region_param()\n"
+            "            || sig_ty.has_non_region_infer()\n"
+            "            || sig_ty.references_error()\n"
+            "        {\n"
+            "            sig_err = Some(format!(\n"
+            '                "uninstantiated or erroneous CTFE function '
+            'signature type for `{}`: \\\n'
+            '                 {sig_ty:?}",\n'
+            "                tcx.def_path_str(fn_did)\n"
+            "            ));\n"
+            "            break;\n"
+            "        }\n"
+            "        if let Err(err) = "
+            "check_ty_ctfe_deps(tcx, typing_env, sig_ty, state) {\n"
+            "            sig_err = Some(err);\n"
+            "            break;\n"
+            "        }\n"
+            "    }"
+        ),
+        replacement=(
+            "    state.adt_depth += 1;\n"
+            "    let mut sig_err = None;\n"
+            "    for sig_ty in pre_norm_sig.inputs_and_output {\n"
+            "        let _ = sig_ty;\n"
+            "        if false {\n"
+            "            sig_err = Some(String::new());\n"
+            "            break;\n"
+            "        }\n"
+            "    }"
+        ),
+        negative_source=(
+            "fn sneaky() -> "
+            "[u8; { core::panic::Location::caller().file().len() }] {\n"
+            "    unreachable!()\n"
+            "}\n"
+            "const fn use_fn<F: Copy>(_f: F) -> usize {\n"
+            "    1\n"
+            "}\n"
+            "const N: usize = use_fn(sneaky);\n"
+            "pub fn selected(x: usize) -> usize {\n"
+            "    x.wrapping_add(N)\n"
+            "}\n"
+        ),
+        expected_baseline_diagnostic="core::panic::Location",
+    ),
+    ExtractGuard(
+        guard_id="ctfe_audit_item_generics_where_predicates",
+        target_file="trusted/rustc-capture/src/extract.rs",
+        mode="capture",
+        description=(
+            "check_hir_ctfe_dependencies_inner walks generics and "
+            "where-clauses on non-lazy type aliases"
+        ),
+        anchor=(
+            "            hir::ItemKind::TyAlias(_, generics, ty) => {\n"
+            "                let mut res = "
+            "intravisit::Visitor::visit_generics(&mut visitor, generics);"
+        ),
+        replacement=(
+            "            hir::ItemKind::TyAlias(_, generics, ty) => {\n"
+            "                let _ = generics;\n"
+            "                let mut res = ControlFlow::Continue(());"
+        ),
+        negative_source=(
+            "#[allow(type_alias_bounds)]\n"
+            "type WhereAlias\n"
+            "where\n"
+            "    [u8; { core::panic::Location::caller().file().len() }]: Sized,\n"
+            "= u8;\n"
+            "const N: usize = {\n"
+            "    let _: WhereAlias = 0;\n"
+            "    1\n"
+            "};\n"
+            "pub fn selected(x: usize) -> usize {\n"
+            "    x.wrapping_add(N)\n"
+            "}\n"
+        ),
+        expected_baseline_diagnostic="core::panic::Location",
+    ),
+    ExtractGuard(
+        guard_id="ctfe_audit_defaulted_trait_generic_params",
+        target_file="trusted/rustc-capture/src/extract.rs",
+        mode="capture",
+        description=(
+            "HirCtfeDepVisitor::visit_path_segment walks local HIR defaults "
+            "for omitted trait generic params"
+        ),
+        anchor=(
+            "                    if !checked_concrete\n"
+            "                        && let Some(local_target) = "
+            "target_did.as_local()"
+        ),
+        replacement=(
+            "                    if false && !checked_concrete\n"
+            "                        && let Some(local_target) = "
+            "target_did.as_local()"
+        ),
+        negative_source=(
+            "trait BadTr<T, U = "
+            "(T, [u8; core::panic::Location::caller().file().len()])> {}\n"
+            "struct S;\n"
+            "impl BadTr<u8> for S {}\n"
+            "#[allow(type_alias_bounds)]\n"
+            "type Alias<X: BadTr<u8>> = core::marker::PhantomData<X>;\n"
+            "const N: usize = {\n"
+            "    let _: Alias<S> = core::marker::PhantomData;\n"
+            "    1\n"
+            "};\n"
+            "pub fn selected(x: usize) -> usize {\n"
+            "    x.wrapping_add(N)\n"
+            "}\n"
+        ),
+        expected_baseline_diagnostic="core::panic::Location",
+    ),
+    ExtractGuard(
+        guard_id="ctfe_audit_expr_types_in_ctfe_and_opaque",
+        target_file="trusted/rustc-capture/src/extract.rs",
+        mode="capture",
+        description=(
+            "HirCtfeDepVisitor::visit_expr audits expression types and callees "
+            "in CTFE/opaque bodies"
+        ),
+        anchor="        if self.audit_expr_types",
+        replacement="        if false && self.audit_expr_types",
+        negative_source=(
+            "fn g() -> [u8; { core::panic::Location::caller().file().len() }] {\n"
+            "    [0; { core::panic::Location::caller().file().len() }]\n"
+            "}\n"
+            "fn h() -> impl Sized {\n"
+            "    g()\n"
+            "}\n"
+            "const fn s<F: FnOnce() -> R + Copy, R>(_f: F) -> usize {\n"
+            "    core::mem::size_of::<R>()\n"
+            "}\n"
+            "const N: usize = s(h);\n"
+            "pub fn selected(x: usize) -> usize {\n"
+            "    x.wrapping_add(N)\n"
+            "}\n"
+        ),
+        expected_baseline_diagnostic="core::panic::Location",
+    ),
+    ExtractGuard(
+        guard_id="ctfe_audit_instantiated_predicates_projection",
+        target_file="trusted/rustc-capture/src/extract.rs",
+        mode="capture",
+        description=(
+            "audit_clause_ctfe_deps audits ClauseKind::Projection where-clause "
+            "constraints on instantiated CTFE items"
+        ),
+        anchor=(
+            "        ty::ClauseKind::Projection(pp) => {\n"
+            "            audit_projection_clause_ctfe_deps("
+            "tcx, typing_env, pp, state)\n"
+            "        }"
+        ),
+        replacement="        ty::ClauseKind::Projection(_) => Ok(()),",
+        negative_source=(
+            "trait Tr {\n"
+            "    type A;\n"
+            "}\n"
+            "struct S;\n"
+            "impl Tr for S {\n"
+            "    type A = [u8; { core::panic::Location::caller().file().len() }];\n"
+            "}\n"
+            "const fn hidden_sz<T, U>() -> usize\n"
+            "where\n"
+            "    T: Tr<A = U>,\n"
+            "{\n"
+            "    core::mem::size_of::<U>()\n"
+            "}\n"
+            "const SZ: usize = hidden_sz::<S, _>();\n"
+            "pub fn selected(x: usize) -> usize {\n"
+            "    x.wrapping_add(SZ)\n"
+            "}\n"
+        ),
+        expected_baseline_diagnostic="core::panic::Location",
+    ),
+    ExtractGuard(
+        guard_id="ctfe_audit_higher_ranked_binder_alias",
+        target_file="trusted/rustc-capture/src/extract.rs",
+        mode="capture",
+        description=(
+            "check_ty_ctfe_deps erases escaping bound regions on higher-ranked "
+            "ty::Alias projections instead of skipping them"
+        ),
+        anchor=(
+            "        } else if let Some(inner_ty) = arg.as_type()\n"
+            "            && let ty::Alias(raw_alias_ty) = *inner_ty.kind()\n"
+            "        {\n"
+            "            let alias_ty = "
+            "erase_escaping_and_free_regions(tcx, raw_alias_ty);"
+        ),
+        replacement=(
+            "        } else if let Some(inner_ty) = arg.as_type()\n"
+            "            && let ty::Alias(alias_ty) = *inner_ty.kind()\n"
+            "            && !alias_ty.has_escaping_bound_vars()\n"
+            "        {"
+        ),
+        negative_source=(
+            "trait Tr<'a> {\n"
+            "    type Out;\n"
+            "}\n"
+            "impl<'a> Tr<'a> for () {\n"
+            "    type Out = [u8; { core::panic::Location::caller().file().len() }];\n"
+            "}\n"
+            "fn sneaky(_: for<'a> fn(&'a (), <() as Tr<'a>>::Out)) {}\n"
+            "const fn use_fn<F: Copy>(_f: F) -> usize {\n"
+            "    1\n"
+            "}\n"
+            "const N: usize = use_fn(sneaky);\n"
+            "pub fn selected(x: usize) -> usize {\n"
+            "    x.wrapping_add(N)\n"
+            "}\n"
+        ),
+        expected_baseline_diagnostic="core::panic::Location",
+    ),
+    ExtractGuard(
+        guard_id="ctfe_reject_unresolved_ty_alias_args",
+        target_file="trusted/rustc-capture/src/extract.rs",
+        mode="capture",
+        description=(
+            "HirCtfeDepVisitor::visit_qpath fails closed when a local generic "
+            "TyAlias has unresolved arguments"
+        ),
+        anchor=(
+            "                    let Some(alias_args) = alias_args_opt else {\n"
+            "                        return ControlFlow::Break(format!(\n"
+            '                            "CTFE type alias `{}` with unresolved '
+            'arguments is unsupported",\n'
+            "                            self.tcx.def_path_str(did)\n"
+            "                        ));\n"
+            "                    };"
+        ),
+        replacement=(
+            "                    let Some(alias_args) = alias_args_opt else {\n"
+            "                        let _ = local_alias;\n"
+            "                        return ControlFlow::Continue(());\n"
+            "                    };"
+        ),
+        negative_source=(
+            "trait Erase {\n"
+            "    type Out;\n"
+            "}\n"
+            "impl<T: ?Sized> Erase for T {\n"
+            "    type Out = u8;\n"
+            "}\n"
+            "#[allow(type_alias_bounds)]\n"
+            "type Inner<B: ?Sized>\n"
+            "where\n"
+            "    [u8; { core::panic::Location::caller().file().len() }]: Sized,\n"
+            "= <B as Erase>::Out;\n"
+            "type Outer = Inner<dyn Send>;\n"
+            "const N: usize = core::mem::size_of::<Outer>();\n"
+            "pub fn selected(x: usize) -> usize {\n"
+            "    x.wrapping_add(N)\n"
+            "}\n"
+        ),
+        expected_baseline_diagnostic="with unresolved arguments is unsupported",
+    ),
+    ExtractGuard(
+        guard_id="ctfe_mono_instantiate_target_predicates",
+        target_file="trusted/rustc-capture/src/mono.rs",
+        mode="capture",
+        description=(
+            "mono::instantiate_body audits CTFE dependencies of target_def "
+            "predicates before trait method resolution"
+        ),
+        anchor=(
+            "    crate::extract::check_mono_item_ctfe_deps("
+            "tcx, typing_env, target_def, args)?;"
+        ),
+        replacement="    if false { let _ = (target_def, args); }",
+        negative_source=(
+            "pub trait Tr {\n"
+            "    type A;\n"
+            "}\n"
+            "pub trait CallTr<U> {\n"
+            "    fn call(x: usize) -> usize\n"
+            "    where\n"
+            "        Self: Tr<A = U>;\n"
+            "}\n"
+            "pub struct S;\n"
+            "impl Tr for S {\n"
+            "    type A = [u8; {\n"
+            "        if core::panic::Location::caller().file().is_empty() "
+            "{ 4 } else { 4 }\n"
+            "    }];\n"
+            "}\n"
+            "impl CallTr<[u8; 4]> for S {\n"
+            "    fn call(x: usize) -> usize {\n"
+            "        x.wrapping_add(1)\n"
+            "    }\n"
+            "}\n"
+        ),
+        capture_scope="instantiate",
+        instantiate_json='{"path":"CallTr::call","args":["S","[u8; 4]"]}',
+        expected_baseline_diagnostic="core::panic::Location",
     ),
 )
 

@@ -39,7 +39,8 @@ use rustc_middle::ty::{self, TyCtxt, TypeVisitableExt, TypingEnv};
 use rustc_middle::util::Providers;
 use rustc_session::EarlyDiagCtxt;
 use rustc_session::config::{CrateType, OptLevel, Options};
-use rustc_span::def_id::{LOCAL_CRATE, LocalDefId};
+use rustc_span::def_id::{DefId, LOCAL_CRATE, LocalDefId};
+use rustc_span::hygiene::{ExpnData, ExpnKind, LocalExpnId, MacroKind};
 use rustc_span::source_map::{FileLoader, RealFileLoader};
 use rustc_span::{DUMMY_SP, FileName, Symbol, kw, sym};
 use rustc_target::spec::PanicStrategy as RustcPanicStrategy;
@@ -877,10 +878,13 @@ fn admit_const_item(
     }
     const_ty_is_pure_value(tcx, ty, &context)?;
     check_const_hir_safety(tcx, def, false, &context)?;
-    let ctfe_mir = tcx.mir_for_ctfe(def.to_def_id());
-    if ctfe_mir.tainted_by_errors.is_some() {
-        return Err(format!("{context}: constant MIR tainted by compiler errors"));
-    }
+    extract::check_ctfe_item(
+        tcx,
+        def.to_def_id(),
+        TypingEnv::fully_monomorphized(),
+        ty::GenericArgs::identity_for_item(tcx, def.to_def_id()),
+        &context,
+    )?;
     let val = tcx
         .const_eval_poly(def.to_def_id())
         .map_err(|err| format!("{context}: constant failed CTFE: {err:?}"))?;
@@ -913,24 +917,34 @@ fn admit_anon_const(tcx: TyCtxt<'_>, def: LocalDefId, has_body: bool) -> extract
     if !matches!(ty.kind(), ty::Int(_) | ty::Uint(_) | ty::Bool | ty::Char) {
         return Err(format!("{context}: unsupported scalar type {ty:?}"));
     }
-    let ctfe_mir = tcx.mir_for_ctfe(def.to_def_id());
-    if ctfe_mir.tainted_by_errors.is_some() {
-        return Err(format!("{context}: MIR tainted by compiler errors"));
-    }
-    for block in ctfe_mir.basic_blocks.iter() {
-        let Some(term) = &block.terminator else {
-            return Err(format!("{context}: missing terminator in CTFE MIR"));
-        };
-        if matches!(
-            term.kind,
-            mir::TerminatorKind::Call { .. }
-                | mir::TerminatorKind::TailCall { .. }
-                | mir::TerminatorKind::Drop { .. }
-                | mir::TerminatorKind::InlineAsm { .. }
-                | mir::TerminatorKind::Yield { .. }
-                | mir::TerminatorKind::CoroutineDrop
-        ) {
-            return Err(format!("{context}: unsupported CTFE MIR terminator {:?}", term.kind));
+    extract::check_ctfe_item(
+        tcx,
+        def.to_def_id(),
+        TypingEnv::fully_monomorphized(),
+        ty::GenericArgs::identity_for_item(tcx, def.to_def_id()),
+        context,
+    )?;
+    // RUSTC-WORKAROUND(#4503): trivial_const items omit mir_for_ctfe.
+    if tcx.trivial_const(def.to_def_id()).is_none() {
+        let ctfe_mir = tcx.mir_for_ctfe(def.to_def_id());
+        if ctfe_mir.tainted_by_errors.is_some() {
+            return Err(format!("{context}: MIR tainted by compiler errors"));
+        }
+        for block in ctfe_mir.basic_blocks.iter() {
+            let Some(term) = &block.terminator else {
+                return Err(format!("{context}: missing terminator in CTFE MIR"));
+            };
+            if matches!(
+                term.kind,
+                mir::TerminatorKind::Call { .. }
+                    | mir::TerminatorKind::TailCall { .. }
+                    | mir::TerminatorKind::Drop { .. }
+                    | mir::TerminatorKind::InlineAsm { .. }
+                    | mir::TerminatorKind::Yield { .. }
+                    | mir::TerminatorKind::CoroutineDrop
+            ) {
+                return Err(format!("{context}: unsupported CTFE MIR terminator {:?}", term.kind));
+            }
         }
     }
     let val = tcx
@@ -2359,6 +2373,76 @@ fn ordering_shape_matches(
         )
 }
 
+fn builtin_macro_symbol(tcx: TyCtxt<'_>, macro_def_id: DefId) -> Option<Symbol> {
+    rustc_hir::find_attr!(
+        tcx,
+        macro_def_id,
+        RustcBuiltinMacro { builtin_name, .. } => builtin_name.unwrap_or_else(|| tcx.item_name(macro_def_id))
+    )
+}
+
+// RUSTC-WORKAROUND(#4502): HygieneData::local_expn_data is private.
+/// Refuse crate-local expansions of built-in source-location and module-path
+/// macros (`file!`, `line!`, `column!`, `module_path!`).
+///
+/// `expand_file`, `expand_line`, and `expand_column` attach the outermost
+/// root-context `topmost` span to the emitted literal, and `concat!(file!())`
+/// folds the literal eagerly during macro expansion, so HIR spans alone do not
+/// retain the built-in macro mark; meanwhile `use core::file as alias;` with
+/// `alias!()` records `ExpnKind::Macro(Bang, "alias")` while preserving
+/// `expn_data.macro_def_id = Some(core_file_def_id)`. Scanning every crate-
+/// local `LocalExpnId` in `HygieneData` and resolving `macro_def_id`'s
+/// `#[rustc_builtin_macro]` attribute catches direct, `macro_rules!`-nested,
+/// `concat!`-folded, and `use`-aliased invocations without rejecting ordinary
+/// user-defined `macro_rules!` of the same name.
+///
+/// `HygieneData::local_expn_data` is private in `rustc_span`, so after macro
+/// expansion and analysis have completed (`after_analysis` in non-incremental,
+/// analysis-only capture), allocate one `ExpnKind::Root` sentinel ID to bound
+/// `1..sentinel.as_u32()`, guarding `expn_data()` with `catch_unwind` so an
+/// unfilled `fresh_empty()` slot recovers from any unwind into
+/// `Failure::unsupported` (after `rustc`'s panic hook logs to stderr) rather
+/// than propagating an unhandled unwind.
+/// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_builtin_macros/src/source_util.rs#L30-L101
+/// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_resolve/src/macros.rs#L321-L334
+/// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_expand/src/base.rs#L940-L951
+/// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_span/src/hygiene.rs#L212-L228
+/// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_span/src/hygiene.rs#L398-L400
+fn check_no_ambient_builtin_macros(tcx: TyCtxt<'_>) -> Result<(), Failure> {
+    let sentinel = tcx.with_stable_hashing_context(|hcx| {
+        LocalExpnId::fresh(
+            ExpnData::default(ExpnKind::Root, DUMMY_SP, tcx.sess.edition(), None, None),
+            hcx,
+        )
+    });
+    for raw in 1..sentinel.as_u32() {
+        let Ok(expn_data) = std::panic::catch_unwind(std::panic::AssertUnwindSafe(|| {
+            LocalExpnId::from_u32(raw).expn_data()
+        })) else {
+            return Err(Failure::unsupported(
+                "unfilled macro expansion slot in compiler hygiene table",
+            ));
+        };
+        let builtin = match expn_data.macro_def_id {
+            Some(def_id) => builtin_macro_symbol(tcx, def_id),
+            None => match expn_data.kind {
+                ExpnKind::Macro(MacroKind::Bang, name) => Some(name),
+                _ => None,
+            },
+        };
+        if let Some(name) = builtin
+            && matches!(name, sym::file | sym::line | sym::column | sym::module_path)
+        {
+            return Err(Failure::unsupported(format!(
+                "built-in `{name}!()` macro is unsupported during capture: \
+                 source-location and module-path macros depend on build paths \
+                 and source layout"
+            )));
+        }
+    }
+    Ok(())
+}
+
 fn collect(
     tcx: TyCtxt<'_>,
     args: &Args,
@@ -2444,6 +2528,7 @@ fn collect(
     // https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_codegen_ssa/src/mir/mod.rs#L350-L407
     let observed_features =
         check_allowed_features(tcx, feature_policy).map_err(Failure::unsupported)?;
+    check_no_ambient_builtin_macros(tcx)?;
 
     // `iter_local_def_id` finishes analysis and visits all definitions,
     // including definitions created during enumeration: "Recompute the number

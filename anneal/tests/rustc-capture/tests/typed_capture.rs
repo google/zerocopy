@@ -7237,3 +7237,1808 @@ fn profile_v2_refuses_local_alloc_vec_look_alike_in_crate_named_alloc() {
     assert!(failure.to_string().contains("unsupported type: alloc::vec::Vec<u8>"), "{failure}");
     fixture.assert_no_capture_artifacts();
 }
+
+#[test]
+fn ctfe_caller_location_track_caller_and_ambient_intrinsics_fail_closed_in_all_scopes() {
+    // 1. Direct `Location::caller()` inside a `const` item (`--scope=crate` and
+    //    `--select=selected`, including when referenced only in a `match`
+    //    pattern, array length, repeat count, type alias, or enum
+    //    discriminant).
+    let direct_const = br#"const HAS_PATH: bool = core::panic::Location::caller().file().len() > 0;
+pub fn selected(x: u64) -> u64 {
+    if HAS_PATH { x.wrapping_add(1) } else { x }
+}
+"#;
+    for extra in [&["--scope=crate"][..], &["--select=selected"][..]] {
+        let fix = Capture::new(direct_const);
+        let out = fix.command().args(extra).output().unwrap();
+        assert_eq!(out.status.code(), Some(1), "{extra:?}: {out:?}");
+        let st = status(&out);
+        assert_eq!(st["status"], "unsupported", "{extra:?}: {st}");
+        assert!(
+            st.to_string().contains("Location") || st.to_string().contains("caller"),
+            "{extra:?}: {st}"
+        );
+        fix.assert_no_capture_artifacts();
+    }
+
+    // 2. Indirect `#[track_caller]` `const fn` helper AND untracked `const fn`
+    //    helper that internally calls `Location::caller()`, plus indirect
+    //    function-pointer and non-capturing closure calls in CTFE.
+    let helper_cases: &[(&str, &[u8], &str)] = &[
+        (
+            "tracked_const_fn_helper",
+            b"#[track_caller]\n\
+              const fn tracked_line() -> u32 { core::panic::Location::caller().line() }\n\
+              const LINE_OK: bool = tracked_line() > 0;\n\
+              pub fn selected(x: u64) -> u64 { if LINE_OK { x } else { 0 } }\n",
+            "track_caller",
+        ),
+        (
+            "tracked_pure_const_fn_helper",
+            b"#[track_caller]\n\
+              const fn tracked_id(v: u64) -> u64 { v }\n\
+              const VAL: u64 = tracked_id(7);\n\
+              pub fn selected(x: u64) -> u64 { x.wrapping_add(VAL) }\n",
+            "track_caller",
+        ),
+        (
+            "untracked_const_fn_calling_location_caller",
+            b"const fn untracked_file_len() -> usize {\n\
+                  core::panic::Location::caller().file().len()\n\
+              }\n\
+              const FILE_LEN: usize = untracked_file_len();\n\
+              pub fn selected(x: usize) -> usize { x.wrapping_add(FILE_LEN) }\n",
+            "Location",
+        ),
+        (
+            "const_reified_track_caller_fn_ptr",
+            b"#[track_caller]\n\
+              const fn tracked_one() -> u64 { 1 }\n\
+              const HAS_TRACKED_PTR: bool = {\n\
+                  let _f: fn() -> u64 = tracked_one;\n\
+                  true\n\
+              };\n\
+              pub fn selected(x: u64) -> u64 { if HAS_TRACKED_PTR { x } else { 0 } }\n",
+            "track_caller",
+        ),
+        (
+            "const_reified_location_caller_fn_ptr",
+            b"const HAS_LOC_PTR: bool = {\n\
+                  let _f: fn() -> &'static core::panic::Location<'static> =\n\
+                      core::panic::Location::caller;\n\
+                  true\n\
+              };\n\
+              pub fn selected(x: usize) -> usize { if HAS_LOC_PTR { x } else { 0 } }\n",
+            "Location",
+        ),
+    ];
+    for (label, src, needle) in helper_cases {
+        for extra in [&["--scope=crate"][..], &["--select=selected"][..]] {
+            let fix = Capture::new(src);
+            let out = fix.command().args(extra).output().unwrap();
+            assert_eq!(out.status.code(), Some(1), "{label} {extra:?}: {out:?}");
+            let st = status(&out);
+            assert_eq!(st["status"], "unsupported", "{label} {extra:?}: {st}");
+            assert!(
+                st.to_string().contains(needle),
+                "{label} {extra:?}: expected {needle:?} in {st}"
+            );
+            fix.assert_no_capture_artifacts();
+        }
+    }
+
+    // 3. Inline `const { ... }` block, promoted `&const { ... }`, generic
+    //    `--instantiate` inline const, and pre-MIR-folded constants (match
+    //    pattern, array length, type-alias array length, impl header, and
+    //    explicit enum discriminant) in `--select` / `--instantiate` mode.
+    let pre_mir_and_inline_cases: &[(&str, &[u8], &[&str], &str)] = &[
+        (
+            "inline_const_block_select",
+            b"pub fn selected(x: u64) -> u64 {\n\
+                  if const { core::panic::Location::caller().line() > 0 } {\n\
+                      x.wrapping_add(1)\n\
+                  } else {\n\
+                      x\n\
+                  }\n\
+              }\n",
+            &["--select=selected"],
+            "core::panic::Location",
+        ),
+        (
+            "inline_const_block_instantiate",
+            b"pub fn generic_fn<T>(x: u64) -> u64 {\n\
+                  if const { core::mem::size_of::<T>() > 0 && core::panic::Location::caller().column() > 0 } {\n\
+                      x.wrapping_add(1)\n\
+                  } else {\n\
+                      x\n\
+                  }\n\
+              }\n",
+            &["--instantiate", r#"{"path":"generic_fn","args":["u32"]}"#],
+            "core::panic::Location",
+        ),
+        (
+            "promoted_const_ref_select",
+            b"pub fn selected(a: u64, b: u64) -> u64 {\n\
+                  let r: &'static bool = &const { core::panic::Location::caller().line() > 0 };\n\
+                  if *r { a } else { b }\n\
+              }\n",
+            &["--select=selected"],
+            "core::panic::Location",
+        ),
+        (
+            "str_const_from_location_caller_select",
+            b"const MSG: &str = core::panic::Location::caller().file();\n\
+              pub fn selected() {\n\
+                  let _s: &str = MSG;\n\
+              }\n",
+            &["--select=selected"],
+            "core::panic::Location",
+        ),
+        (
+            "pattern_folded_const_select",
+            b"const PAT_LOC: u32 = core::panic::Location::caller().line();\n\
+              pub fn selected(x: u32) -> u32 {\n\
+                  match x {\n\
+                      PAT_LOC => 1,\n\
+                      _ => 0,\n\
+                  }\n\
+              }\n",
+            &["--select=selected"],
+            "core::panic::Location",
+        ),
+        (
+            "array_len_const_select",
+            b"const LEN_LOC: usize = (core::panic::Location::caller().line() > 0) as usize + 1;\n\
+              pub fn selected() -> usize { let arr = [0u8; LEN_LOC]; arr.len() }\n",
+            &["--select=selected"],
+            "core::panic::Location",
+        ),
+        (
+            "type_alias_array_len_select",
+            b"const LEN_LOC: usize = (core::panic::Location::caller().line() > 0) as usize + 1;\n\
+              type Buf = [u8; LEN_LOC];\n\
+              pub fn selected() -> usize { let arr: Buf = [0u8; LEN_LOC]; arr.len() }\n",
+            &["--select=selected"],
+            "core::panic::Location",
+        ),
+        (
+            "enum_discriminant_const_select",
+            b"const DISCR_LOC: isize = (core::panic::Location::caller().line() > 0) as isize;\n\
+              pub enum Flag { A = DISCR_LOC, B = 2 }\n\
+              pub fn selected(f: Flag) -> Flag { f }\n",
+            &["--select=selected"],
+            "core::panic::Location",
+        ),
+        (
+            "ctfe_type_id_of_select",
+            b"const SAME_TY: bool = {\n\
+                  let _ = core::any::TypeId::of::<u32>();\n\
+                  true\n\
+              };\n\
+              pub fn selected(x: u64) -> u64 { if SAME_TY { x } else { 0 } }\n",
+            &["--select=selected"],
+            "type_id",
+        ),
+        (
+            "ctfe_const_type_name_unstable",
+            b"#![feature(const_type_name)]\n\
+              const NAME_LEN: usize = core::any::type_name::<u32>().len();\n\
+              pub fn selected(x: usize) -> usize { x.wrapping_add(NAME_LEN) }\n",
+            &["--allow-unstable-feature=const_type_name", "--select=selected"],
+            "type_name",
+        ),
+        (
+            "static_ref_location_in_const_select",
+            b"static S: &str = core::panic::Location::caller().file();\n\
+              const NON_EMPTY: bool = S.len() > 0;\n\
+              pub fn selected(x: u64) -> u64 {\n\
+                  if NON_EMPTY { x.wrapping_add(1) } else { x }\n\
+              }\n",
+            &["--select=selected"],
+            "references to static",
+        ),
+        (
+            "static_ref_location_in_const_instantiate",
+            b"static S: &str = core::panic::Location::caller().file();\n\
+              const NON_EMPTY: bool = S.len() > 0;\n\
+              pub fn generic_fn<T>(x: u64) -> u64 {\n\
+                  if const { core::mem::size_of::<T>() > 0 && NON_EMPTY } { x.wrapping_add(1) } else { x }\n\
+              }\n",
+            &["--instantiate", r#"{"path":"generic_fn","args":["u32"]}"#],
+            "references to static",
+        ),
+        (
+            "static_ref_location_in_const_fn_select",
+            b"static S: &str = core::panic::Location::caller().file();\n\
+              const fn path_len() -> usize { S.len() }\n\
+              const N: usize = path_len();\n\
+              pub fn selected(x: usize) -> usize { x.wrapping_add(N) }\n",
+            &["--select=selected"],
+            "references to static",
+        ),
+        (
+            "static_ref_location_in_array_len_select",
+            b"static S: &[u8] = core::panic::Location::caller().file().as_bytes();\n\
+              pub fn selected() -> usize { let arr = [0u8; S.len()]; arr.len() }\n",
+            &["--select=selected"],
+            "references to static",
+        ),
+        (
+            "struct_field_array_len_location_in_size_of_select",
+            b"const BAD_LEN: usize = (core::panic::Location::caller().line() > 0) as usize + 1;\n\
+              #[allow(dead_code)]\n\
+              struct Helper([u8; BAD_LEN]);\n\
+              const H_SZ: usize = core::mem::size_of::<Helper>();\n\
+              pub fn selected(x: usize) -> usize { x.wrapping_add(H_SZ) }\n",
+            &["--select=selected"],
+            "core::panic::Location",
+        ),
+        (
+            "nested_struct_field_location_in_size_of_select",
+            b"const BAD_LEN: usize = (core::panic::Location::caller().line() > 0) as usize + 1;\n\
+              #[allow(dead_code)]\n\
+              struct Inner([u8; BAD_LEN]);\n\
+              #[allow(dead_code)]\n\
+              struct Outer(Inner);\n\
+              const H_SZ: usize = core::mem::size_of::<Outer>();\n\
+              pub fn selected(x: usize) -> usize { x.wrapping_add(H_SZ) }\n",
+            &["--select=selected"],
+            "core::panic::Location",
+        ),
+        (
+            "nested_enum_variant_field_location_in_size_of_select",
+            b"const BAD_LEN: usize = (core::panic::Location::caller().line() > 0) as usize + 1;\n\
+              #[allow(dead_code)]\n\
+              struct Inner([u8; BAD_LEN]);\n\
+              #[allow(dead_code)]\n\
+              enum Outer { A(Inner), B }\n\
+              const H_SZ: usize = core::mem::size_of::<Outer>();\n\
+              pub fn selected(x: usize) -> usize { x.wrapping_add(H_SZ) }\n",
+            &["--select=selected"],
+            "core::panic::Location",
+        ),
+        (
+            "nested_array_and_assoc_ty_field_location_in_size_of_select",
+            b"const BAD_LEN: usize = (core::panic::Location::caller().line() > 0) as usize + 1;\n\
+              #[allow(dead_code)]\n\
+              struct Inner([u8; BAD_LEN]);\n\
+              trait Tr { type Assoc; }\n\
+              impl Tr for () { type Assoc = [Inner; 1]; }\n\
+              #[allow(dead_code)]\n\
+              struct Outer(<() as Tr>::Assoc);\n\
+              const H_SZ: usize = core::mem::size_of::<Outer>();\n\
+              pub fn selected(x: usize) -> usize { x.wrapping_add(H_SZ) }\n",
+            &["--select=selected"],
+            "core::panic::Location",
+        ),
+        (
+            "assoc_ty_size_of_qpath_select",
+            b"trait Tr { type A; }\n\
+              struct S;\n\
+              impl Tr for S {\n\
+                  type A = [u8; { core::panic::Location::caller().file().len() }];\n\
+              }\n\
+              const N: usize = core::mem::size_of::<<S as Tr>::A>();\n\
+              pub fn selected(x: usize) -> usize { x.wrapping_add(N) }\n",
+            &["--select=selected"],
+            "core::panic::Location",
+        ),
+        (
+            "assoc_ty_size_of_qpath_instantiate",
+            b"trait Tr { type A; }\n\
+              struct S;\n\
+              impl Tr for S {\n\
+                  type A = [u8; { core::panic::Location::caller().file().len() }];\n\
+              }\n\
+              pub fn generic_fn<T>(x: usize) -> usize {\n\
+                  if const { core::mem::size_of::<<S as Tr>::A>() > 0 && core::mem::size_of::<T>() > 0 } {\n\
+                      x.wrapping_add(1)\n\
+                  } else {\n\
+                      x\n\
+                  }\n\
+              }\n",
+            &["--instantiate", r#"{"path":"generic_fn","args":["u32"]}"#],
+            "core::panic::Location",
+        ),
+        (
+            "assoc_ty_self_alias_qpath_select",
+            b"trait Tr {\n\
+                  type A;\n\
+                  const N: usize;\n\
+              }\n\
+              struct S;\n\
+              impl Tr for S {\n\
+                  type A = [u8; { core::panic::Location::caller().file().len() }];\n\
+                  const N: usize = core::mem::size_of::<Self::A>();\n\
+              }\n\
+              pub fn selected(x: usize) -> usize { x.wrapping_add(<S as Tr>::N) }\n",
+            &["--select=selected"],
+            "core::panic::Location",
+        ),
+        (
+            "assoc_ty_nested_projection_select",
+            b"trait Tr1 { type A; }\n\
+              trait Tr2 { type B; }\n\
+              struct S;\n\
+              impl Tr1 for () { type A = S; }\n\
+              impl Tr2 for S {\n\
+                  type B = [u8; { core::panic::Location::caller().file().len() }];\n\
+              }\n\
+              const N: usize = core::mem::size_of::<<<() as Tr1>::A as Tr2>::B>();\n\
+              pub fn selected(x: usize) -> usize { x.wrapping_add(N) }\n",
+            &["--select=selected"],
+            "core::panic::Location",
+        ),
+        (
+            "assoc_ty_sig_ref_select",
+            b"trait Tr { type Assoc; }\n\
+              impl Tr for () {\n\
+                  type Assoc = [u8; { core::panic::Location::caller().file().len() }];\n\
+              }\n\
+              #[allow(private_interfaces)]\n\
+              pub fn selected(a: &<() as Tr>::Assoc) -> usize { a.len() }\n",
+            &["--select=selected"],
+            "core::panic::Location",
+        ),
+        (
+            "assoc_ty_sig_size_of_projection_select",
+            b"trait Tr { type Assoc; }\n\
+              impl Tr for () {\n\
+                  type Assoc = [u8; { core::panic::Location::caller().file().len() }];\n\
+              }\n\
+              const H_SZ: usize = core::mem::size_of::<<() as Tr>::Assoc>();\n\
+              pub fn selected(x: usize) -> usize { x.wrapping_add(H_SZ) }\n",
+            &["--select=selected"],
+            "core::panic::Location",
+        ),
+        (
+            "assoc_ty_alias_blanket_impl_select",
+            b"trait Tr { type A; }\n\
+              impl<T: ?Sized> Tr for T {\n\
+                  type A = [u8; { core::panic::Location::caller().file().len() }];\n\
+              }\n\
+              type X<T> = <T as Tr>::A;\n\
+              const N: usize = core::mem::size_of::<X<u8>>();\n\
+              pub fn selected(x: usize) -> usize { x.wrapping_add(N) }\n",
+            &["--select=selected"],
+            "core::panic::Location",
+        ),
+        (
+            "assoc_ty_dyn_trait_object_qpath_select",
+            b"trait Tr { type A; }\n\
+              impl<T: ?Sized> Tr for T {\n\
+                  type A = [u8; { core::panic::Location::caller().file().len() }];\n\
+              }\n\
+              const N: usize = core::mem::size_of::<<dyn Send as Tr>::A>();\n\
+              pub fn selected(x: usize) -> usize { x.wrapping_add(N) }\n",
+            &["--select=selected"],
+            "CTFE associated type",
+        ),
+        (
+            "assoc_ty_box_dyn_generic_impl_select",
+            b"trait Tr { type A; }\n\
+              impl<T: ?Sized> Tr for Box<T> {\n\
+                  type A = [u8; { core::panic::Location::caller().file().len() }];\n\
+              }\n\
+              const N: usize = core::mem::size_of::<<Box<dyn Send> as Tr>::A>();\n\
+              pub fn selected(x: usize) -> usize { x.wrapping_add(N) }\n",
+            &["--select=selected"],
+            "CTFE associated type",
+        ),
+        (
+            "assoc_ty_supertrait_ty_param_select",
+            b"trait Super { type A; }\n\
+              trait Sub: Super {}\n\
+              struct S;\n\
+              impl Super for S {\n\
+                  type A = [u8; { core::panic::Location::caller().file().len() }];\n\
+              }\n\
+              impl Sub for S {}\n\
+              const fn size_of_assoc<T: Sub>() -> usize {\n\
+                  core::mem::size_of::<T::A>()\n\
+              }\n\
+              const N: usize = size_of_assoc::<S>();\n\
+              pub fn selected(x: usize) -> usize { x.wrapping_add(N) }\n",
+            &["--select=selected"],
+            "core::panic::Location",
+        ),
+    ];
+    for (label, src, args, expected) in pre_mir_and_inline_cases {
+        let fix = Capture::new(src);
+        let out = fix.command().args(*args).output().unwrap();
+        assert_eq!(out.status.code(), Some(1), "{label}: {out:?}");
+        let st = status(&out);
+        assert_eq!(st["status"], "unsupported", "{label}: {st}");
+        let msg = st.to_string();
+        assert!(
+            msg.contains("CTFE ") && msg.contains(expected),
+            "{label}: expected CTFE refusal containing {expected:?}, got {st}"
+        );
+        fix.assert_no_capture_artifacts();
+    }
+}
+
+#[test]
+fn ambient_source_location_and_module_path_builtin_macros_fail_closed_while_user_macros_pass() {
+    let rejected_macro_cases: &[(&str, &[u8], &str)] = &[
+        (
+            "direct_file_macro",
+            b"const F: usize = file!().len();\n\
+              pub fn selected(x: usize) -> usize { x.wrapping_add(F) }\n",
+            "built-in `file!()` macro is unsupported",
+        ),
+        (
+            "macro_rules_wrapped_file",
+            b"macro_rules! wrapped_file { () => { file!() }; }\n\
+              const F: usize = wrapped_file!().len();\n\
+              pub fn selected(x: usize) -> usize { x.wrapping_add(F) }\n",
+            "built-in `file!()` macro is unsupported",
+        ),
+        (
+            "concat_folded_file",
+            b"const F: usize = concat!(\"p:\", file!()).len();\n\
+              pub fn selected(x: usize) -> usize { x.wrapping_add(F) }\n",
+            "built-in `file!()` macro is unsupported",
+        ),
+        (
+            "use_aliased_core_file",
+            b"use core::file as file_alias;\n\
+              const F: usize = file_alias!().len();\n\
+              pub fn selected(x: usize) -> usize { x.wrapping_add(F) }\n",
+            "built-in `file!()` macro is unsupported",
+        ),
+        (
+            "line_macro",
+            b"pub fn selected(x: u32) -> u32 { x.wrapping_add(line!()) }\n",
+            "built-in `line!()` macro is unsupported",
+        ),
+        (
+            "column_macro",
+            b"pub fn selected(x: u32) -> u32 { x.wrapping_add(column!()) }\n",
+            "built-in `column!()` macro is unsupported",
+        ),
+        (
+            "module_path_macro",
+            b"const M: usize = module_path!().len();\n\
+              pub fn selected(x: usize) -> usize { x.wrapping_add(M) }\n",
+            "built-in `module_path!()` macro is unsupported",
+        ),
+    ];
+    for (label, src, expected) in rejected_macro_cases {
+        let fix = Capture::new(src);
+        let out = fix.selected_command().output().unwrap();
+        assert_eq!(out.status.code(), Some(1), "{label}: {out:?}");
+        let st = status(&out);
+        assert_eq!(st["status"], "unsupported", "{label}: {st}");
+        assert!(
+            st.to_string().contains(expected),
+            "{label}: expected {expected:?}, got {st}"
+        );
+        fix.assert_no_capture_artifacts();
+    }
+
+    // Positive controls: user-defined `macro_rules! line` (shadowing the
+    // prelude name without invoking `#[rustc_builtin_macro]`), pure `const fn`
+    // helpers, `assert!` inside `const`, and top-level `#[track_caller]` on an
+    // uncalled entry point must continue to capture cleanly (plus
+    // `const { assert!(...) }` in `--select=selected` mode).
+    let positive_src = br#"macro_rules! line {
+    () => { 42u64 };
+}
+const fn pure_double(v: u64) -> u64 {
+    v.wrapping_mul(2)
+}
+const BASE: u64 = {
+    assert!(core::mem::size_of::<u64>() == 8);
+    assert!(pure_double(3) == 6);
+    pure_double(21)
+};
+#[track_caller]
+pub fn selected(x: u64) -> u64 {
+    x.wrapping_add(BASE).wrapping_add(line!())
+}
+"#;
+    let pos_fix = Capture::new(positive_src);
+    let pos_out = pos_fix.command().arg("--scope=crate").output().unwrap();
+    assert!(
+        pos_out.status.success(),
+        "expected pure const fn + user macro_rules! + #[track_caller] entry to succeed:\n{}\n{}",
+        stdout(&pos_out),
+        stderr(&pos_out)
+    );
+    compile_captured_lean_if_trusted_sources_present(&pos_fix.output.join("Captured.lean"));
+
+    let pos_inline_src = br#"#[allow(dead_code)]
+struct GenericWrap<T>(T);
+#[allow(dead_code)]
+struct SelfRef<T>(*const SelfRef<T>, T);
+trait EraseToU64 {
+    type Out;
+}
+impl<T> EraseToU64 for T {
+    type Out = u64;
+}
+const BASE: u64 = 42;
+const WRAP_SZ: usize = {
+    let _: Option<GenericWrap<u8>> = None;
+    core::mem::size_of::<GenericWrap<u8>>()
+};
+const SELF_REF_SZ: usize = core::mem::size_of::<SelfRef<u8>>();
+pub fn selected(x: u64) -> u64 {
+    let v: <GenericWrap<u8> as EraseToU64>::Out = x;
+    const {
+        let _: Option<GenericWrap<u8>> = None;
+        assert!(BASE == 42);
+    };
+    v.wrapping_add(BASE)
+        .wrapping_add(WRAP_SZ as u64)
+        .wrapping_add(SELF_REF_SZ as u64)
+}
+"#;
+    let pos_inline_fix = Capture::new(pos_inline_src);
+    let pos_inline_out = pos_inline_fix.selected_command().output().unwrap();
+    assert!(
+        pos_inline_out.status.success(),
+        "expected generic local ADT size_of + self-referential pointer ADT + inline const assert \
+         in selected mode to succeed:\n{}\n{}",
+        stdout(&pos_inline_out),
+        stderr(&pos_inline_out)
+    );
+    compile_captured_lean_if_trusted_sources_present(&pos_inline_fix.output.join("Captured.lean"));
+
+    // Generic outer ADT wrapping an unsupported inner ADT, polymorphic ADT
+    // field recursion, and runtime parameter types reaching a local enum with
+    // an unsupported explicit discriminant must all fail closed with
+    // `unsupported` (never ICE / `tool_failed`).
+    let extra_rejected_cases: &[(&str, &[u8], &str)] = &[
+        (
+            "generic_outer_adt_wrapping_rejected_inner",
+            b"const BAD_LEN: usize = (core::panic::Location::caller().line() > 0) as usize + 1;\n\
+              #[allow(dead_code)]\n\
+              struct Inner([u8; BAD_LEN]);\n\
+              #[allow(dead_code)]\n\
+              struct GenericOuter<T>(T, Inner);\n\
+              const H_SZ: usize = core::mem::size_of::<GenericOuter<u8>>();\n\
+              pub fn selected(x: usize) -> usize { x.wrapping_add(H_SZ) }\n",
+            "core::panic::Location",
+        ),
+        (
+            "polymorphic_adt_recursion_depth_bound",
+            b"#[allow(dead_code)]\n\
+              struct PolyRec<T>(*const PolyRec<(T, T)>, T);\n\
+              const SZ: usize = core::mem::size_of::<PolyRec<u8>>();\n\
+              pub fn selected(x: usize) -> usize { x.wrapping_add(SZ) }\n",
+            "CTFE ADT field recursion depth exceeded",
+        ),
+        (
+            "runtime_assoc_ty_local_enum_explicit_discr",
+            b"const BAD_DISCR: u8 = (core::panic::Location::caller().line() > 0) as u8;\n\
+              #[repr(u8)]\n\
+              pub enum E { A = BAD_DISCR, B = 2 }\n\
+              pub trait Tr { type Assoc; }\n\
+              impl Tr for () { type Assoc = E; }\n\
+              pub fn selected(x: <() as Tr>::Assoc) -> u8 { x as u8 }\n",
+            "core::panic::Location",
+        ),
+        (
+            "omitted_const_default_size_of",
+            b"#[allow(dead_code)]\n\
+              struct Wrapper<const N: usize = { core::panic::Location::caller().line() as usize }>([u8; N]);\n\
+              const SZ: usize = core::mem::size_of::<Wrapper>();\n\
+              pub fn selected(x: usize) -> usize { x.wrapping_add(SZ) }\n",
+            "core::panic::Location",
+        ),
+        (
+            "omitted_const_default_nested_field_size_of",
+            b"#[allow(dead_code)]\n\
+              struct Wrapper<const N: usize = { core::panic::Location::caller().line() as usize }>([u8; N]);\n\
+              #[allow(dead_code)]\n\
+              struct Outer(Wrapper);\n\
+              const SZ: usize = core::mem::size_of::<Outer>();\n\
+              pub fn selected(x: usize) -> usize { x.wrapping_add(SZ) }\n",
+            "core::panic::Location",
+        ),
+        (
+            "omitted_const_default_type_alias_size_of",
+            b"#[allow(dead_code)]\n\
+              struct Wrapper<const N: usize = { core::panic::Location::caller().line() as usize }>([u8; N]);\n\
+              type WrapAlias = Wrapper;\n\
+              pub fn selected(x: usize) -> usize {\n\
+                  x.wrapping_add(core::mem::size_of::<WrapAlias>())\n\
+              }\n",
+            "core::panic::Location",
+        ),
+        (
+            "omitted_const_default_assoc_ty_in_sig",
+            b"#[allow(dead_code)]\n\
+              pub struct Wrapper<const N: usize = { core::panic::Location::caller().line() as usize }>([u8; N]);\n\
+              pub trait Tr { type Assoc; }\n\
+              impl Tr for () { type Assoc = Wrapper; }\n\
+              pub fn selected(_x: &<() as Tr>::Assoc, y: usize) -> usize { y }\n",
+            "core::panic::Location",
+        ),
+        (
+            "omitted_const_default_in_runtime_sig",
+            b"#[allow(dead_code)]\n\
+              pub struct Wrapper<const N: usize = { core::panic::Location::caller().line() as usize }>([u8; N]);\n\
+              pub fn selected(_x: &Wrapper, y: usize) -> usize { y }\n",
+            "core::panic::Location",
+        ),
+        (
+            "omitted_const_default_erased_projection_in_runtime_sig",
+            b"#[allow(dead_code)]\n\
+              pub struct Wrapper<const N: usize = { core::panic::Location::caller().line() as usize }>([u8; N]);\n\
+              pub trait EraseToUsize { type Out; }\n\
+              impl<T> EraseToUsize for T { type Out = usize; }\n\
+              pub fn selected(x: <Wrapper as EraseToUsize>::Out) -> usize { x }\n",
+            "core::panic::Location",
+        ),
+        (
+            "omitted_const_default_inline_const",
+            b"#[allow(dead_code)]\n\
+              struct Wrapper<const N: usize = { core::panic::Location::caller().line() as usize }>([u8; N]);\n\
+              pub fn selected(x: usize) -> usize {\n\
+                  x.wrapping_add(const { core::mem::size_of::<Wrapper>() })\n\
+              }\n",
+            "core::panic::Location",
+        ),
+        (
+            "omitted_type_default_size_of",
+            b"const BAD_LEN: usize = (core::panic::Location::caller().line() > 0) as usize + 1;\n\
+              #[allow(dead_code)]\n\
+              struct WrapTy<T = [u8; BAD_LEN]>(T);\n\
+              const SZ: usize = core::mem::size_of::<WrapTy>();\n\
+              pub fn selected(x: usize) -> usize { x.wrapping_add(SZ) }\n",
+            "core::panic::Location",
+        ),
+        (
+            "omitted_const_default_with_ty_param_size_of",
+            b"#[allow(dead_code)]\n\
+              struct BadDefaultWithTy<T, const N: usize = { core::panic::Location::caller().line() as usize }>(T, [u8; N]);\n\
+              const SZ: usize = core::mem::size_of::<BadDefaultWithTy<u8>>();\n\
+              pub fn selected(x: usize) -> usize { x.wrapping_add(SZ) }\n",
+            "core::panic::Location",
+        ),
+    ];
+    for (label, src, expected) in extra_rejected_cases {
+        let fix = Capture::new(src);
+        let out = fix.selected_command().output().unwrap();
+        assert_eq!(out.status.code(), Some(1), "{label}: {out:?}");
+        let st = status(&out);
+        assert_eq!(st["status"], "unsupported", "{label}: {st}");
+        let msg = st.to_string();
+        assert!(
+            msg.contains("CTFE ") && msg.contains(expected),
+            "{label}: expected CTFE refusal containing {expected:?}, got {st}"
+        );
+        fix.assert_no_capture_artifacts();
+    }
+
+    // Overriding an unused ambient const-generic or type default with an
+    // explicit argument (`Wrapper<1>`, `WrapTy<u8>`), as well as omitting a
+    // pure generic default (`GoodDefault<u8>`), must succeed across runtime
+    // signatures, nested ADTs, type aliases, and inline/named CTFE contexts.
+    let explicit_const_default_override_src = br#"#[allow(dead_code)]
+pub struct Wrapper<const N: usize = { core::panic::Location::caller().line() as usize }>([u8; N]);
+const BAD_TY_LEN: usize = (core::panic::Location::caller().line() > 0) as usize + 1;
+#[allow(dead_code)]
+pub struct WrapTy<T = [u8; BAD_TY_LEN]>(T);
+#[allow(dead_code)]
+pub struct GoodDefault<T, const N: usize = { 2 + 2 }>(T, [u8; N]);
+pub trait EraseToUsize {
+    type Out;
+}
+impl<T> EraseToUsize for T {
+    type Out = usize;
+}
+#[allow(dead_code)]
+struct Outer(Wrapper<1>, WrapTy<u8>, GoodDefault<u8>);
+type ExplicitAlias = Wrapper<1>;
+const EXPLICIT_SZ: usize = {
+    let _w: Option<Wrapper<1>> = None;
+    let _a: Option<ExplicitAlias> = None;
+    let _t: Option<WrapTy<u8>> = None;
+    let _g: Option<GoodDefault<u8>> = None;
+    core::mem::size_of::<Outer>()
+};
+pub fn selected(x: <Wrapper<1> as EraseToUsize>::Out) -> usize {
+    let v: <ExplicitAlias as EraseToUsize>::Out = x;
+    let inline_sz = const {
+        let _w: Option<Wrapper<1>> = None;
+        core::mem::size_of::<Wrapper<1>>()
+    };
+    let good_sz = const { core::mem::size_of::<GoodDefault<u8>>() };
+    v.wrapping_add(EXPLICIT_SZ)
+        .wrapping_add(inline_sz)
+        .wrapping_add(good_sz)
+}
+"#;
+    let explicit_fix = Capture::new(explicit_const_default_override_src);
+    let explicit_out = explicit_fix.selected_command().output().unwrap();
+    assert!(
+        explicit_out.status.success(),
+        "expected explicit const-generic override Wrapper<1> to succeed:\n{}\n{}",
+        stdout(&explicit_out),
+        stderr(&explicit_out)
+    );
+    let good_vs_bad_assoc_src = br#"trait Tr {
+    type A;
+}
+struct Good;
+impl Tr for Good {
+    type A = u8;
+}
+struct Bad;
+impl Tr for Bad {
+    type A = [u8; { core::panic::Location::caller().file().len() }];
+}
+type X<T> = <T as Tr>::A;
+const N: usize = core::mem::size_of::<<Good as Tr>::A>();
+const N_ALIAS: usize = core::mem::size_of::<X<Good>>();
+pub fn selected(x: usize) -> usize {
+    x.wrapping_add(N).wrapping_add(N_ALIAS)
+}
+"#;
+    let good_assoc_fix = Capture::new(good_vs_bad_assoc_src);
+    let good_assoc_out = good_assoc_fix.selected_command().output().unwrap();
+    assert!(
+        good_assoc_out.status.success(),
+        "expected unrelated Bad impl on Tr not to block <Good as Tr>::A:\n{}\n{}",
+        stdout(&good_assoc_out),
+        stderr(&good_assoc_out)
+    );
+
+    // Benign projections referencing parent generic parameters (`Self::A` in a
+    // trait default const, `<T as Tr2>::B` in a blanket impl, `T::A` and
+    // `<T as Tr>::A` inside an inline const of an instantiated generic fn, and
+    // parent `const N: usize` inside an impl assoc const / array length) must
+    // resolve and capture cleanly.
+    let parent_param_assoc_src = br#"pub trait Tr2 {
+    type B;
+}
+pub trait Tr {
+    type A;
+    const N: usize = core::mem::size_of::<Self::A>();
+}
+pub struct S;
+impl Tr2 for S {
+    type B = u16;
+}
+impl<T: Tr2> Tr for T {
+    type A = <T as Tr2>::B;
+}
+pub trait ConstCarrier<const N: usize> {
+    type Arr;
+    const LEN: usize = core::mem::size_of::<[u8; N]>();
+}
+impl<const N: usize> ConstCarrier<N> for () {
+    type Arr = [u8; N];
+}
+pub fn selected(x: usize) -> usize {
+    x.wrapping_add(<S as Tr>::N)
+        .wrapping_add(const { core::mem::size_of::<<S as Tr>::A>() })
+        .wrapping_add(<() as ConstCarrier<4>>::LEN)
+        .wrapping_add(const { core::mem::size_of::<<() as ConstCarrier<4>>::Arr>() })
+}
+pub fn generic_fn<T: Tr>(x: usize) -> usize {
+    let a = if const { core::mem::size_of::<T::A>() > 0 } { 1 } else { 0 };
+    let b = if const { core::mem::size_of::<<T as Tr>::A>() > 0 } { 2 } else { 0 };
+    x.wrapping_add(a).wrapping_add(b)
+}
+"#;
+    let parent_select_fix = Capture::new(parent_param_assoc_src);
+    let parent_select_out = parent_select_fix.selected_command().output().unwrap();
+    assert!(
+        parent_select_out.status.success(),
+        "expected parent Self::A, blanket <T as Tr2>::B, and ConstParam projections to succeed:\n{}\n{}",
+        stdout(&parent_select_out),
+        stderr(&parent_select_out)
+    );
+    let parent_inst_fix = Capture::new(parent_param_assoc_src);
+    let parent_inst_out = parent_inst_fix
+        .command()
+        .arg("--instantiate")
+        .arg(r#"{"path":"generic_fn","args":["S"]}"#)
+        .output()
+        .unwrap();
+    assert!(
+        parent_inst_out.status.success(),
+        "expected --instantiate generic_fn::<S> with T::A and <T as Tr>::A inline consts to succeed:\n{}\n{}",
+        stdout(&parent_inst_out),
+        stderr(&parent_inst_out)
+    );
+
+    compile_captured_lean_if_trusted_sources_present(&good_assoc_fix.output.join("Captured.lean"));
+    compile_captured_lean_if_trusted_sources_present(&explicit_fix.output.join("Captured.lean"));
+    compile_captured_lean_if_trusted_sources_present(&parent_select_fix.output.join("Captured.lean"));
+    compile_captured_lean_if_trusted_sources_present(&parent_inst_fix.output.join("Captured.lean"));
+}
+
+fn assert_unsupported_location_audit(out: &Output, label: &str) {
+    let out_str = stdout(out);
+    let err_str = stderr(out);
+    assert!(
+        !out.status.success(),
+        "expected {label} to fail closed:\n{out_str}\n{err_str}"
+    );
+    let parsed: Value = serde_json::from_str(&out_str).unwrap_or_else(|e| {
+        panic!("expected JSON unsupported report for {label} (not a compiler error): {e}\n{out_str}\n{err_str}")
+    });
+    assert_eq!(
+        parsed.get("status").and_then(Value::as_str),
+        Some("unsupported"),
+        "expected status=unsupported for {label}: {out_str}"
+    );
+    let reasons_joined = parsed
+        .get("unsupported")
+        .and_then(Value::as_array)
+        .into_iter()
+        .flatten()
+        .filter_map(|entry| entry.get("reason").and_then(Value::as_str))
+        .collect::<Vec<_>>()
+        .join("\n");
+    assert!(
+        reasons_joined.contains("panic::Location")
+            || reasons_joined.contains("caller locations depend on build paths")
+            || reasons_joined.contains("#[track_caller]"),
+        "expected CTFE audit reason mentioning caller location for {label}, got: {reasons_joined}\nfull={out_str}"
+    );
+}
+
+#[test]
+fn captures_reject_ctfe_nonlocal_adt_opaque_fndef_defaults_inherent_and_where_clauses() {
+
+    // Non-local generic ADT wrapping an associated type (`Peekable<S>`).
+    let peekable_src = br#"struct S;
+impl core::iter::Iterator for S {
+    type Item = [u8; { core::panic::Location::caller().file().len() }];
+    fn next(&mut self) -> Option<Self::Item> {
+        None
+    }
+}
+const N: usize = core::mem::size_of::<core::iter::Peekable<S>>();
+pub fn selected(x: usize) -> usize {
+    x.wrapping_add(N)
+}
+"#;
+    let peekable_fix = Capture::new(peekable_src);
+    let peekable_out = peekable_fix.selected_command().output().unwrap();
+    assert_unsupported_location_audit(&peekable_out, "Peekable<S>");
+
+    // Uncalled FnDef passed into CTFE (`size_of_ret(sneaky)` and
+    // late-bound `'a`).
+    let fndef_src = br#"fn sneaky() -> [u8; { core::panic::Location::caller().file().len() }] {
+    unreachable!()
+}
+const fn size_of_ret<F: FnOnce() -> R + Copy, R>(_f: F) -> usize {
+    core::mem::size_of::<R>()
+}
+const N: usize = size_of_ret(sneaky);
+pub fn selected(x: usize) -> usize {
+    x.wrapping_add(N)
+}
+"#;
+    let fndef_fix = Capture::new(fndef_src);
+    let fndef_out = fndef_fix.selected_command().output().unwrap();
+    assert_unsupported_location_audit(&fndef_out, "FnDef size_of_ret(sneaky)");
+
+    let fndef_hrtb_src = br#"fn sneaky<'a>(_: &'a ()) -> (&'a (), [u8; { core::panic::Location::caller().file().len() }]) {
+    unreachable!()
+}
+const fn size_of_ret<F: FnOnce(&'static ()) -> R + Copy, R>(_f: F) -> usize {
+    core::mem::size_of::<R>()
+}
+const N: usize = size_of_ret(sneaky);
+pub fn selected(x: usize) -> usize {
+    x.wrapping_add(N)
+}
+"#;
+    let fndef_hrtb_fix = Capture::new(fndef_hrtb_src);
+    let fndef_hrtb_out = fndef_hrtb_fix.selected_command().output().unwrap();
+    assert_unsupported_location_audit(&fndef_hrtb_out, "FnDef late-bound region sneaky<'a>");
+
+    // Opaque `-> impl Sized` return types (monomorphic, late-bound `'a`,
+    // generic, plus benign).
+    let opaque_src = br#"fn hidden_opaque() -> impl Sized {
+    [0u8; { core::panic::Location::caller().file().len() }]
+}
+const fn size_of_ret<F: FnOnce() -> R + Copy, R>(_f: F) -> usize {
+    core::mem::size_of::<R>()
+}
+const N: usize = size_of_ret(hidden_opaque);
+pub fn selected(x: usize) -> usize {
+    x.wrapping_add(N)
+}
+"#;
+    let opaque_fix = Capture::new(opaque_src);
+    let opaque_out = opaque_fix.selected_command().output().unwrap();
+    assert_unsupported_location_audit(&opaque_out, "opaque impl Sized");
+
+    let opaque_hrtb_src = br#"fn hidden_opaque_hr<'a>(x: &'a ()) -> impl Sized + 'a {
+    (x, [0u8; { core::panic::Location::caller().file().len() }])
+}
+const fn size_of_ret<F: FnOnce(&'static ()) -> R + Copy, R>(_f: F) -> usize {
+    core::mem::size_of::<R>()
+}
+const N: usize = size_of_ret(hidden_opaque_hr);
+pub fn selected(x: usize) -> usize {
+    x.wrapping_add(N)
+}
+"#;
+    let opaque_hrtb_fix = Capture::new(opaque_hrtb_src);
+    let opaque_hrtb_out = opaque_hrtb_fix.selected_command().output().unwrap();
+    assert_unsupported_location_audit(&opaque_hrtb_out, "opaque impl Sized + 'a");
+
+    let opaque_generic_src = br#"fn hidden_opaque_gen<T>(_: T) -> impl Sized {
+    [0u8; { core::panic::Location::caller().file().len() }]
+}
+const fn size_of_ret<F: FnOnce(u8) -> R + Copy, R>(_f: F) -> usize {
+    core::mem::size_of::<R>()
+}
+const N: usize = size_of_ret(hidden_opaque_gen::<u8>);
+pub fn selected(x: usize) -> usize {
+    x.wrapping_add(N)
+}
+"#;
+    let opaque_generic_fix = Capture::new(opaque_generic_src);
+    let opaque_generic_out = opaque_generic_fix.selected_command().output().unwrap();
+    assert_unsupported_location_audit(&opaque_generic_out, "generic opaque impl Sized");
+
+    let opaque_ok_src = br#"fn benign_opaque() -> impl Sized {
+    assert!(true);
+    1usize
+}
+const fn size_of_ret<F: FnOnce() -> R + Copy, R>(_f: F) -> usize {
+    core::mem::size_of::<R>()
+}
+const N: usize = size_of_ret(benign_opaque);
+pub fn selected(x: usize) -> usize {
+    x.wrapping_add(N)
+}
+"#;
+    let opaque_ok_fix = Capture::new(opaque_ok_src);
+    let opaque_ok_out = opaque_ok_fix.selected_command().output().unwrap();
+    assert!(
+        opaque_ok_out.status.success(),
+        "expected benign opaque impl Sized in CTFE to succeed:\n{}\n{}",
+        stdout(&opaque_ok_out),
+        stderr(&opaque_ok_out)
+    );
+
+    // Closure, async fn/block coroutine, and nested callee/opaque CTFE
+    // channels, alongside benign unwrap()/closure opaque returns.
+    let via_callee_opaque_src = br#"fn g() -> [u8; { core::panic::Location::caller().file().len() }] {
+    [0; { core::panic::Location::caller().file().len() }]
+}
+fn h() -> impl Sized {
+    g()
+}
+const fn size_of_ret<F: FnOnce() -> R + Copy, R>(_f: F) -> usize {
+    core::mem::size_of::<R>()
+}
+const N: usize = size_of_ret(h);
+pub fn selected(x: usize) -> usize {
+    x.wrapping_add(N)
+}
+"#;
+    let via_callee_opaque_fix = Capture::new(via_callee_opaque_src);
+    let via_callee_opaque_out = via_callee_opaque_fix.selected_command().output().unwrap();
+    assert_unsupported_location_audit(&via_callee_opaque_out, "opaque calling callee g()");
+
+    let closure_const_src = br#"const fn size_of_ret<F: FnOnce() -> R + Copy, R>(_f: F) -> usize {
+    core::mem::size_of::<R>()
+}
+const N: usize = size_of_ret(|| [0u8; { core::panic::Location::caller().file().len() }]);
+pub fn selected(x: usize) -> usize {
+    x.wrapping_add(N)
+}
+"#;
+    let closure_const_fix = Capture::new(closure_const_src);
+    let closure_const_out = closure_const_fix.selected_command().output().unwrap();
+    assert_unsupported_location_audit(&closure_const_out, "closure inferred return in const");
+
+    let closure_capture_src = br#"const fn size_of_ret<F: FnOnce() -> R + Copy, R>(_f: F) -> usize {
+    core::mem::size_of::<R>()
+}
+const N: usize = {
+    let a = [0u8; { core::panic::Location::caller().file().len() }];
+    let c = move || a;
+    size_of_ret(c)
+};
+pub fn selected(x: usize) -> usize {
+    x.wrapping_add(N)
+}
+"#;
+    let closure_capture_fix = Capture::new(closure_capture_src);
+    let closure_capture_out = closure_capture_fix.selected_command().output().unwrap();
+    assert_unsupported_location_audit(&closure_capture_out, "closure capture in const");
+
+    let closure_in_opaque_src = br#"fn h() -> impl Sized {
+    let c = || [0u8; { core::panic::Location::caller().file().len() }];
+    c()
+}
+const fn size_of_ret<F: FnOnce() -> R + Copy, R>(_f: F) -> usize {
+    core::mem::size_of::<R>()
+}
+const N: usize = size_of_ret(h);
+pub fn selected(x: usize) -> usize {
+    x.wrapping_add(N)
+}
+"#;
+    let closure_in_opaque_fix = Capture::new(closure_in_opaque_src);
+    let closure_in_opaque_out = closure_in_opaque_fix.selected_command().output().unwrap();
+    assert_unsupported_location_audit(&closure_in_opaque_out, "closure inside opaque body");
+
+    let async_fn_src = br#"async fn h() {
+    let x = [0u8; { core::panic::Location::caller().file().len() }];
+    core::future::ready(()).await;
+    drop(x);
+}
+const fn size_of_ret<F: FnOnce() -> R + Copy, R>(_f: F) -> usize {
+    core::mem::size_of::<R>()
+}
+const N: usize = size_of_ret(h);
+pub fn selected(x: usize) -> usize {
+    x.wrapping_add(N)
+}
+"#;
+    let async_fn_fix = Capture::new(async_fn_src);
+    let async_fn_out = async_fn_fix.selected_command().output().unwrap();
+    assert_unsupported_location_audit(&async_fn_out, "async fn coroutine state");
+
+    let async_block_src = br#"fn h() -> impl core::future::Future<Output = ()> {
+    async {
+        let x = [0u8; { core::panic::Location::caller().file().len() }];
+        core::future::ready(()).await;
+        drop(x);
+    }
+}
+const fn size_of_ret<F: FnOnce() -> R + Copy, R>(_f: F) -> usize {
+    core::mem::size_of::<R>()
+}
+const N: usize = size_of_ret(h);
+pub fn selected(x: usize) -> usize {
+    x.wrapping_add(N)
+}
+"#;
+    let async_block_fix = Capture::new(async_block_src);
+    let async_block_out = async_block_fix.selected_command().output().unwrap();
+    assert_unsupported_location_audit(&async_block_out, "async block coroutine state");
+
+    let nested_opaque_async_src = br#"fn g() -> impl Sized {
+    [0u8; { core::panic::Location::caller().file().len() }]
+}
+async fn h() {
+    let x = g();
+    core::future::ready(()).await;
+    drop(x);
+}
+const fn size_of_ret<F: FnOnce() -> R + Copy, R>(_f: F) -> usize {
+    core::mem::size_of::<R>()
+}
+const N: usize = size_of_ret(h);
+pub fn selected(x: usize) -> usize {
+    x.wrapping_add(N)
+}
+"#;
+    let nested_opaque_async_fix = Capture::new(nested_opaque_async_src);
+    let nested_opaque_async_out = nested_opaque_async_fix.selected_command().output().unwrap();
+    assert_unsupported_location_audit(&nested_opaque_async_out, "nested opaque in async fn");
+
+    let opaque_unwrap_ok_src = br#"fn h() -> impl Sized {
+    Some(1u8).unwrap()
+}
+const fn size_of_ret<F: FnOnce() -> R + Copy, R>(_f: F) -> usize {
+    core::mem::size_of::<R>()
+}
+const N: usize = size_of_ret(h);
+pub fn selected(x: usize) -> usize {
+    x.wrapping_add(N)
+}
+"#;
+    let opaque_unwrap_ok_fix = Capture::new(opaque_unwrap_ok_src);
+    let opaque_unwrap_ok_out = opaque_unwrap_ok_fix.selected_command().output().unwrap();
+    assert!(
+        opaque_unwrap_ok_out.status.success(),
+        "expected benign Option::unwrap inside opaque fn to succeed:\n{}\n{}",
+        stdout(&opaque_unwrap_ok_out),
+        stderr(&opaque_unwrap_ok_out)
+    );
+
+    let opaque_closure_ok_src = br#"fn h() -> impl Sized {
+    let c = || 1u8;
+    c()
+}
+const fn size_of_ret<F: FnOnce() -> R + Copy, R>(_f: F) -> usize {
+    core::mem::size_of::<R>()
+}
+const N: usize = size_of_ret(h);
+pub fn selected(x: usize) -> usize {
+    x.wrapping_add(N)
+}
+"#;
+    let opaque_closure_ok_fix = Capture::new(opaque_closure_ok_src);
+    let opaque_closure_ok_out = opaque_closure_ok_fix.selected_command().output().unwrap();
+    assert!(
+        opaque_closure_ok_out.status.success(),
+        "expected benign closure inside opaque fn to succeed:\n{}\n{}",
+        stdout(&opaque_closure_ok_out),
+        stderr(&opaque_closure_ok_out)
+    );
+
+    // Trait generic type and const defaults with `typeck == None` or
+    // non-typeck context.
+    let trait_def_ty_src = br#"trait BadTr<T, U = (T, [u8; { core::panic::Location::caller().file().len() }])> {}
+struct S;
+impl BadTr<u8> for S {}
+const fn ok<X: BadTr<u8>>() -> usize {
+    1
+}
+const N: usize = ok::<S>();
+pub fn selected(x: usize) -> usize {
+    x.wrapping_add(N)
+}
+"#;
+    let trait_def_ty_fix = Capture::new(trait_def_ty_src);
+    let trait_def_ty_out = trait_def_ty_fix.selected_command().output().unwrap();
+    assert_unsupported_location_audit(&trait_def_ty_out, "defaulted trait type param");
+
+    let trait_def_const_src = br#"trait BadConstTr<const K: usize = { core::panic::Location::caller().file().len() }> {}
+struct S;
+impl BadConstTr for S {}
+const fn ok<X: BadConstTr>() -> usize {
+    1
+}
+const N: usize = ok::<S>();
+pub fn selected(x: usize) -> usize {
+    x.wrapping_add(N)
+}
+"#;
+    let trait_def_const_fix = Capture::new(trait_def_const_src);
+    let trait_def_const_out = trait_def_const_fix.selected_command().output().unwrap();
+    assert_unsupported_location_audit(&trait_def_const_out, "defaulted trait const param");
+
+    // Defaulted ADT parameter referencing an earlier generic parameter
+    // (`BadTy<u8>`), both inside an outer struct (`typeck == None`) and in a
+    // normalizing projection (`<BadTy<u8> as EraseToUsize>::Out`), while
+    // explicitly overriding the default (`BadTy<u8, ()>`) succeeds.
+    let outer_default_override_src = br#"#[allow(dead_code)]
+struct BadTy<A, B = ([A; 0], [u8; { core::panic::Location::caller().file().len() }])>(A, B);
+#[allow(dead_code)]
+struct OuterGood(BadTy<u8, ()>);
+const N: usize = core::mem::size_of::<OuterGood>();
+pub fn selected(x: usize) -> usize {
+    x.wrapping_add(N)
+}
+"#;
+    let outer_override_fix = Capture::new(outer_default_override_src);
+    let outer_override_out = outer_override_fix.selected_command().output().unwrap();
+    assert!(
+        outer_override_out.status.success(),
+        "expected explicit type default override OuterGood(BadTy<u8, ()>) to succeed:\n{}\n{}",
+        stdout(&outer_override_out),
+        stderr(&outer_override_out)
+    );
+
+    let outer_default_src = br#"#[allow(dead_code)]
+struct BadTy<A, B = ([A; 0], [u8; { core::panic::Location::caller().file().len() }])>(A, B);
+#[allow(dead_code)]
+struct OuterTy(BadTy<u8>);
+const N: usize = core::mem::size_of::<OuterTy>();
+pub fn selected(x: usize) -> usize {
+    x.wrapping_add(N)
+}
+"#;
+    let outer_default_fix = Capture::new(outer_default_src);
+    let outer_default_out = outer_default_fix.selected_command().output().unwrap();
+    assert_unsupported_location_audit(&outer_default_out, "OuterTy(BadTy<u8>)");
+
+    let proj_erase_default_src = br#"#[allow(dead_code)]
+struct BadTy<A, B = ([A; 0], [u8; { core::panic::Location::caller().file().len() }])>(A, B);
+trait EraseToUsize {
+    type Out;
+}
+impl<T> EraseToUsize for T {
+    type Out = usize;
+}
+pub fn selected(x: <BadTy<u8> as EraseToUsize>::Out) -> usize {
+    x
+}
+"#;
+    let proj_erase_fix = Capture::new(proj_erase_default_src);
+    let proj_erase_out = proj_erase_fix.selected_command().output().unwrap();
+    assert_unsupported_location_audit(&proj_erase_out, "<BadTy<u8> as EraseToUsize>::Out");
+
+    // Inherent impl unification when two inherent impls have identical
+    // generic arity.
+    let inherent_unify_src = br#"struct A<T>(T);
+struct B<T>(T);
+struct Wrap<T>(T);
+impl<T> Wrap<A<T>> {
+    const BAD: usize = core::panic::Location::caller().file().len();
+}
+impl<T> Wrap<B<T>> {
+    const GOOD: usize = 7;
+}
+pub fn selected(x: usize) -> usize {
+    x.wrapping_add(Wrap::<B<u8>>::GOOD)
+}
+"#;
+    let inherent_unify_fix = Capture::new(inherent_unify_src);
+    let inherent_unify_out = inherent_unify_fix.selected_command().output().unwrap();
+    assert!(
+        inherent_unify_out.status.success(),
+        "expected inherent impl unification to select Wrap<B<u8>>::GOOD cleanly:\n{}\n{}",
+        stdout(&inherent_unify_out),
+        stderr(&inherent_unify_out)
+    );
+
+    // Where-clause predicates on ADTs, traits, and impl blocks.
+    let where_struct_src = br#"struct WhereS
+where
+    [u8; { core::panic::Location::caller().file().len() }]: Sized;
+const N: usize = core::mem::size_of::<WhereS>();
+pub fn selected(x: usize) -> usize {
+    x.wrapping_add(N)
+}
+"#;
+    let where_struct_fix = Capture::new(where_struct_src);
+    let where_struct_out = where_struct_fix.selected_command().output().unwrap();
+    assert_unsupported_location_audit(&where_struct_out, "struct where-clause");
+
+    let where_impl_src = br#"trait Tr {
+    const N: usize;
+}
+struct S;
+impl<T> Tr for T
+where
+    [u8; { core::panic::Location::caller().file().len() }]: Sized,
+{
+    const N: usize = 1;
+}
+pub fn selected(x: usize) -> usize {
+    x.wrapping_add(<S as Tr>::N)
+}
+"#;
+    let where_impl_fix = Capture::new(where_impl_src);
+    let where_impl_out = where_impl_fix.selected_command().output().unwrap();
+    assert_unsupported_location_audit(&where_impl_out, "impl where-clause");
+
+    // Benign external trait default (`PartialEq<Rhs = Self>`) must still
+    // succeed.
+    let eq_src = br#"const fn helper<T: PartialEq>() -> usize {
+    1
+}
+const N: usize = helper::<u32>();
+pub fn selected(x: usize) -> usize {
+    x.wrapping_add(N)
+}
+"#;
+    let eq_fix = Capture::new(eq_src);
+    let eq_out = eq_fix.selected_command().output().unwrap();
+    assert!(
+        eq_out.status.success(),
+        "expected benign PartialEq<Rhs = Self> omitted default to succeed:\n{}\n{}",
+        stdout(&eq_out),
+        stderr(&eq_out)
+    );
+
+    compile_captured_lean_if_trusted_sources_present(&outer_override_fix.output.join("Captured.lean"));
+    compile_captured_lean_if_trusted_sources_present(&inherent_unify_fix.output.join("Captured.lean"));
+    compile_captured_lean_if_trusted_sources_present(&eq_fix.output.join("Captured.lean"));
+}
+
+#[test]
+fn captures_reject_ctfe_mono_instantiate_ty_alias_and_projection() {
+    let alias_src = br#"const LEN: usize = core::panic::Location::caller().file().len();
+type Buf = [u8; LEN];
+pub fn generic_fn<T>(x: usize) -> usize {
+    x.wrapping_add(const { core::mem::size_of::<T>() })
+}
+"#;
+    let alias_fix = Capture::new(alias_src);
+    let alias_out = alias_fix
+        .command()
+        .arg("--instantiate")
+        .arg(r#"{"path":"generic_fn","args":["Buf"]}"#)
+        .output()
+        .unwrap();
+    assert_unsupported_location_audit(&alias_out, "instantiate type alias");
+
+    let proj_alias_src = br#"trait Tr {
+    type Assoc;
+}
+impl Tr for () {
+    type Assoc = [u8; { core::panic::Location::caller().file().len() }];
+}
+type Proj = <() as Tr>::Assoc;
+pub fn generic_fn<T>(x: usize) -> usize {
+    x.wrapping_add(const { core::mem::size_of::<T>() })
+}
+"#;
+    let proj_fix = Capture::new(proj_alias_src);
+    let proj_out = proj_fix
+        .command()
+        .arg("--instantiate")
+        .arg(r#"{"path":"generic_fn","args":["Proj"]}"#)
+        .output()
+        .unwrap();
+    assert_unsupported_location_audit(&proj_out, "instantiate projection alias");
+
+    let where_inst_src = br#"trait Tr {
+    type A;
+}
+struct S;
+impl Tr for S {
+    type A = [u8; {
+        if core::panic::Location::caller().file().is_empty() { 4 } else { 4 }
+    }];
+}
+pub fn generic_where<T: Tr<A = U>, U>(x: usize) -> usize {
+    x.wrapping_add(core::mem::size_of::<U>() * 0 + 1)
+}
+"#;
+    let where_fix = Capture::new(where_inst_src);
+    let where_out = where_fix
+        .command()
+        .arg("--instantiate")
+        .arg(r#"{"path":"generic_where","args":["S", "[u8; 4]"]}"#)
+        .output()
+        .unwrap();
+    assert_unsupported_location_audit(&where_out, "instantiate where projection equality");
+
+    let trait_where_inst_src = br#"pub trait Tr {
+    type A;
+}
+pub trait CallTr<U> {
+    fn call(x: usize) -> usize
+    where
+        Self: Tr<A = U>;
+}
+pub struct S;
+impl Tr for S {
+    type A = [u8; {
+        if core::panic::Location::caller().file().is_empty() { 4 } else { 4 }
+    }];
+}
+impl CallTr<[u8; 4]> for S {
+    fn call(x: usize) -> usize {
+        x.wrapping_add(1)
+    }
+}
+"#;
+    let trait_where_fix = Capture::new(trait_where_inst_src);
+    let trait_where_out = trait_where_fix
+        .command()
+        .arg("--instantiate")
+        .arg(r#"{"path":"CallTr::call","args":["S", "[u8; 4]"]}"#)
+        .output()
+        .unwrap();
+    assert_unsupported_location_audit(
+        &trait_where_out,
+        "instantiate trait method where projection equality",
+    );
+
+    let where_nested_src = br#"trait Tr {
+    type A;
+}
+struct S;
+impl Tr for S
+where
+    [u8; { core::panic::Location::caller().file().len() }]: Sized,
+{
+    type A = u8;
+}
+pub fn generic_where<T: Tr>(x: usize) -> usize {
+    x
+}
+"#;
+    let where_nested_fix = Capture::new(where_nested_src);
+    let where_nested_out = where_nested_fix
+        .command()
+        .arg("--instantiate")
+        .arg(r#"{"path":"generic_where","args":["S"]}"#)
+        .output()
+        .unwrap();
+    assert_unsupported_location_audit(&where_nested_out, "instantiate impl where predicate");
+
+    let ok_src = br#"type OkBuf = [u8; 4];
+pub fn generic_fn<T>(x: usize) -> usize {
+    x.wrapping_add(const { core::mem::size_of::<T>() })
+}
+"#;
+    let ok_fix = Capture::new(ok_src);
+    let ok_out = ok_fix
+        .command()
+        .arg("--instantiate")
+        .arg(r#"{"path":"generic_fn","args":["OkBuf"]}"#)
+        .output()
+        .unwrap();
+    assert!(
+        ok_out.status.success(),
+        "expected benign OkBuf instantiate capture to succeed:\n{}\n{}",
+        stdout(&ok_out),
+        stderr(&ok_out)
+    );
+    compile_captured_lean_if_trusted_sources_present(&ok_fix.output.join("Captured.lean"));
+}
+
+#[test]
+fn captures_reject_ctfe_where_projection_nested_impl_and_allow_inferred_ty_alias() {
+    let where_proj_src = br#"trait Tr {
+    type A;
+}
+struct S;
+impl Tr for S {
+    type A = [u8; { core::panic::Location::caller().file().len() }];
+}
+const fn hidden_sz<T, U>() -> usize
+where
+    T: Tr<A = U>,
+{
+    core::mem::size_of::<U>()
+}
+const SZ: usize = hidden_sz::<S, _>();
+pub fn selected(x: usize) -> usize {
+    x.wrapping_add(SZ)
+}
+"#;
+    let where_proj_fix = Capture::new(where_proj_src);
+    let where_proj_out = where_proj_fix.selected_command().output().unwrap();
+    assert_unsupported_location_audit(&where_proj_out, "where projection equality");
+
+    let nested_impl_src = br#"trait Helper {}
+trait Tr {
+    type A;
+}
+struct S;
+impl Helper for S where [u8; { core::panic::Location::caller().file().len() }]: Sized {}
+impl<T: Helper> Tr for T {
+    type A = u8;
+}
+const SZ: usize = core::mem::size_of::<<S as Tr>::A>();
+pub fn selected(x: usize) -> usize {
+    x.wrapping_add(SZ)
+}
+"#;
+    let nested_impl_fix = Capture::new(nested_impl_src);
+    let nested_impl_out = nested_impl_fix.selected_command().output().unwrap();
+    assert_unsupported_location_audit(&nested_impl_out, "nested impl bound");
+
+    let ty_alias_where_src = br#"#[allow(type_alias_bounds)]
+type WhereAlias
+where
+    [u8; { core::panic::Location::caller().file().len() }]: Sized,
+= u8;
+const N: usize = {
+    let _: WhereAlias = 0;
+    1
+};
+pub fn selected(x: usize) -> usize {
+    x.wrapping_add(N)
+}
+"#;
+    let ty_alias_where_fix = Capture::new(ty_alias_where_src);
+    let ty_alias_where_out = ty_alias_where_fix.selected_command().output().unwrap();
+    assert_unsupported_location_audit(&ty_alias_where_out, "type alias where predicate");
+
+    let ty_alias_trait_default_src = br#"trait BadTr<T, U = (T, [u8; core::panic::Location::caller().file().len()])> {}
+struct S;
+impl BadTr<u8> for S {}
+#[allow(type_alias_bounds)]
+type Alias<X: BadTr<u8>> = core::marker::PhantomData<X>;
+const N: usize = {
+    let _: Alias<S> = core::marker::PhantomData;
+    1
+};
+pub fn selected(x: usize) -> usize {
+    x.wrapping_add(N)
+}
+"#;
+    let ty_alias_trait_def_fix = Capture::new(ty_alias_trait_default_src);
+    let ty_alias_trait_def_out = ty_alias_trait_def_fix.selected_command().output().unwrap();
+    assert_unsupported_location_audit(&ty_alias_trait_def_out, "type alias trait default");
+
+    let bad_inferred_alias_src = br#"type BadAlias<T> = (T, [u8; {
+    if core::panic::Location::caller().file().is_empty() { 1 } else { 1 }
+}]);
+pub fn selected(v: u8) -> u8 {
+    let x: BadAlias<_> = (v, [0u8; 1]);
+    x.0
+}
+"#;
+    let bad_alias_fix = Capture::new(bad_inferred_alias_src);
+    let bad_alias_out = bad_alias_fix.selected_command().output().unwrap();
+    assert_unsupported_location_audit(&bad_alias_out, "inferred bad type alias");
+
+    let bad_proj_alias_src = br#"trait BadTr {
+    type Out;
+}
+impl BadTr for u8 {
+    type Out = [u8; {
+        if core::panic::Location::caller().file().is_empty() { 1 } else { 1 }
+    }];
+}
+type ProjBad<T> = (T, <T as BadTr>::Out);
+pub fn selected(v: u8) -> u8 {
+    let x: ProjBad<_> = (v, [0u8; 1]);
+    x.0
+}
+"#;
+    let bad_proj_fix = Capture::new(bad_proj_alias_src);
+    let bad_proj_out = bad_proj_fix.selected_command().output().unwrap();
+    assert_unsupported_location_audit(&bad_proj_out, "inferred projection bad type alias");
+
+    let ok_inferred_alias_src = br#"trait OkTr {
+    type Out;
+}
+impl OkTr for u8 {
+    type Out = u16;
+}
+type MyAlias<T> = (T, u8);
+type ProjOk<T> = <T as OkTr>::Out;
+type PairOk<T> = (T, <T as OkTr>::Out);
+pub fn selected(v: u8) -> u16 {
+    let x: MyAlias<_> = (v, 2u8);
+    let _q: Option<ProjOk<u8>> = None;
+    let r: PairOk<_> = (x.0, 3u16);
+    if _q.is_none() && x.1 == 2 && r.0 == v {
+        r.1
+    } else {
+        0
+    }
+}
+"#;
+    let ok_alias_fix = Capture::new(ok_inferred_alias_src);
+    let ok_alias_out = ok_alias_fix.selected_command().output().unwrap();
+    assert!(
+        ok_alias_out.status.success(),
+        "expected benign inferred generic type aliases to succeed:\n{}\n{}",
+        stdout(&ok_alias_out),
+        stderr(&ok_alias_out)
+    );
+    compile_captured_lean_if_trusted_sources_present(&ok_alias_fix.output.join("Captured.lean"));
+}
+
+#[test]
+fn captures_admit_sysroot_nonzero_pattern_range_sub_in_ctfe() {
+    let const_src = br#"const NZ_SIZE: usize = core::mem::size_of::<core::num::NonZero<i128>>();
+pub fn selected(x: usize) -> usize {
+    x.wrapping_add(NZ_SIZE)
+}
+"#;
+    let const_fix = Capture::new(const_src);
+    let const_out = const_fix.selected_command().output().unwrap();
+    assert!(
+        const_out.status.success(),
+        "expected signed NonZero<i128> size_of CTFE check to succeed:\n{}\n{}",
+        stdout(&const_out),
+        stderr(&const_out)
+    );
+    compile_captured_lean_if_trusted_sources_present(&const_fix.output.join("Captured.lean"));
+
+    let trait_src = br#"pub trait Marker {
+    fn tag()
+    where
+        Self: Sized;
+}
+impl Marker for core::num::NonZero<i128> {
+    fn tag()
+    where
+        Self: Sized,
+    {}
+}
+"#;
+    let trait_fix = Capture::new(trait_src);
+    let mut cmd = trait_fix.command();
+    cmd.args(["--instantiate", r#"{"path":"<std::num::NonZero<i128> as Marker>::tag","args":[]}"#]);
+    let trait_out = cmd.output().unwrap();
+    assert!(
+        trait_out.status.success(),
+        "expected impl Marker for NonZero<i128> with where Self: Sized to succeed:\n{}\n{}",
+        stdout(&trait_out),
+        stderr(&trait_out)
+    );
+    compile_captured_lean_if_trusted_sources_present(&trait_fix.output.join("Captured.lean"));
+}
+
+#[test]
+fn captures_reject_ctfe_higher_ranked_binder_projections_and_unresolved_ty_aliases() {
+    // Higher-ranked `for<'a> fn(...)` signature projection.
+    let hrtb_fn_src = br#"trait Tr<'a> {
+    type Out;
+}
+impl<'a> Tr<'a> for () {
+    type Out = [u8; if core::panic::Location::caller().file().is_empty() { 1 } else { 2 }];
+}
+trait Tag {
+    const TAG: usize;
+}
+impl Tag for for<'a> fn(&'a (), [u8; 1]) {
+    const TAG: usize = 1;
+}
+impl Tag for for<'a> fn(&'a (), [u8; 2]) {
+    const TAG: usize = 2;
+}
+fn sneaky(_: for<'a> fn(&'a (), <() as Tr<'a>>::Out)) {}
+const fn leak<A: Tag, F: FnOnce(A) + Copy>(_f: F) -> usize {
+    A::TAG
+}
+const LEAKED: usize = leak(sneaky);
+pub fn selected(x: usize) -> usize {
+    x.wrapping_add(LEAKED)
+}
+"#;
+    let hrtb_fn_fix = Capture::new(hrtb_fn_src);
+    let hrtb_fn_out = hrtb_fn_fix.selected_command().output().unwrap();
+    assert_unsupported_location_audit(&hrtb_fn_out, "higher-ranked fn ptr projection");
+
+    // Higher-ranked `dyn for<'a> ...` existential projection.
+    let hrtb_dyn_src = br#"trait Tr<'a> {
+    type Out;
+}
+impl<'a> Tr<'a> for () {
+    type Out = [u8; if core::panic::Location::caller().file().is_empty() { 1 } else { 2 }];
+}
+trait DynTr<'a> {
+    type X;
+}
+trait Tag {
+    const TAG: usize;
+}
+impl Tag for &(dyn for<'a> DynTr<'a, X = [u8; 1]> + 'static) {
+    const TAG: usize = 1;
+}
+impl Tag for &(dyn for<'a> DynTr<'a, X = [u8; 2]> + 'static) {
+    const TAG: usize = 2;
+}
+fn sneaky(_: &(dyn for<'a> DynTr<'a, X = <() as Tr<'a>>::Out> + 'static)) {}
+const fn leak<A: Tag, F: FnOnce(A) + Copy>(_f: F) -> usize {
+    A::TAG
+}
+const LEAKED: usize = leak(sneaky);
+pub fn selected(x: usize) -> usize {
+    x.wrapping_add(LEAKED)
+}
+"#;
+    let hrtb_dyn_fix = Capture::new(hrtb_dyn_src);
+    let hrtb_dyn_out = hrtb_dyn_fix.selected_command().output().unwrap();
+    assert_unsupported_location_audit(&hrtb_dyn_out, "higher-ranked dyn projection");
+
+    // Generic type alias with `for<'a> fn(...)` argument and erased parameter.
+    let alias_hrtb_src = br#"trait Erase {
+    type Unit;
+}
+impl<T: ?Sized> Erase for T {
+    type Unit = ();
+}
+const fn helper() -> usize {
+    core::panic::Location::caller().line() as usize
+}
+type BadAliasDirect<T: ?Sized> = (<T as Erase>::Unit, [u8; helper()]);
+pub fn selected(x: usize) -> usize {
+    x.wrapping_add(const { core::mem::size_of::<BadAliasDirect<for<'a> fn(&'a u8)>>() })
+}
+"#;
+    let alias_hrtb_fix = Capture::new(alias_hrtb_src);
+    let alias_hrtb_out = alias_hrtb_fix.selected_command().output().unwrap();
+    assert_unsupported_location_audit(&alias_hrtb_out, "type alias with higher-ranked arg");
+
+    // Generic type alias with `dyn Send` argument, projection, and omitted
+    // const default.
+    let alias_dyn_proj_src = br#"trait Tr {
+    type Out;
+}
+impl Tr for u8 {
+    type Out = [u8; if core::panic::Location::caller().file().is_empty() { 1 } else { 2 }];
+}
+trait Erase {
+    type Out;
+}
+impl<T: ?Sized> Erase for T {
+    type Out = u8;
+}
+#[allow(dead_code)]
+struct Wrapper<const N: usize = { core::panic::Location::caller().file().len() }>([u8; N]);
+type SneakyProj<A, B: ?Sized> = Option<(<A as Tr>::Out, <B as Erase>::Out)>;
+type SneakyDef<B: ?Sized> = Option<(Wrapper, <B as Erase>::Out)>;
+const fn sz<T>(_x: &Option<T>) -> usize {
+    core::mem::size_of::<T>()
+}
+pub fn selected(v: usize) -> usize {
+    let a: SneakyProj<u8, dyn Send> = None;
+    v.wrapping_add(sz(&a))
+}
+pub fn selected_def(v: usize) -> usize {
+    let b: SneakyDef<dyn Send> = None;
+    v.wrapping_add(sz(&b))
+}
+"#;
+    let alias_dyn_proj_fix = Capture::new(alias_dyn_proj_src);
+    let alias_dyn_proj_out = alias_dyn_proj_fix.selected_command().output().unwrap();
+    assert_unsupported_location_audit(&alias_dyn_proj_out, "type alias with dyn Send projection");
+    let alias_dyn_def_out = alias_dyn_proj_fix
+        .command()
+        .arg("--select")
+        .arg("selected_def")
+        .output()
+        .unwrap();
+    assert_unsupported_location_audit(&alias_dyn_def_out, "type alias with dyn Send omitted default");
+
+    // Unresolved generic type alias without `typeck` fails closed instead of
+    // falling back to partial AST scanning.
+    let no_typeck_alias_src = br#"trait Erase {
+    type Out;
+}
+impl<T: ?Sized> Erase for T {
+    type Out = u8;
+}
+type Inner<B: ?Sized> = <B as Erase>::Out;
+type Outer = Inner<dyn Send>;
+const SZ: usize = core::mem::size_of::<Outer>();
+pub fn selected(x: usize) -> usize {
+    x.wrapping_add(SZ)
+}
+"#;
+    let no_typeck_fix = Capture::new(no_typeck_alias_src);
+    let no_typeck_out = no_typeck_fix.selected_command().output().unwrap();
+    assert!(
+        !no_typeck_out.status.success(),
+        "expected unresolved no-typeck generic type alias to fail closed"
+    );
+    let no_typeck_json: Value = serde_json::from_str(&stdout(&no_typeck_out)).unwrap();
+    assert_eq!(no_typeck_json.get("status").and_then(Value::as_str), Some("unsupported"));
+
+    // Pure `const { ... }` blocks inside closures nested within generic
+    // functions and methods succeed, while ambient CTFE inside such inline
+    // consts still fails closed.
+    let generic_closure_ok_src = br#"struct Holder<T>(core::marker::PhantomData<T>);
+impl<T> Holder<T> {
+    fn method_inline<U>() -> impl Sized {
+        let c = || const { core::mem::size_of::<(T, U)>() + 1 };
+        c()
+    }
+}
+fn generic_closure_twice<T>() -> impl Sized {
+    let f = || {
+        let g = || const { core::mem::size_of::<T>() + 2 };
+        g()
+    };
+    f()
+}
+const fn size_of_ret<F: FnOnce() -> R + Copy, R>(_f: F) -> usize {
+    core::mem::size_of::<R>()
+}
+const N1: usize = size_of_ret(generic_closure_twice::<u32>);
+const N2: usize = size_of_ret(Holder::<u8>::method_inline::<u16>);
+pub fn selected(x: usize) -> usize {
+    x.wrapping_add(N1).wrapping_add(N2)
+}
+"#;
+    let gc_ok_fix = Capture::new(generic_closure_ok_src);
+    let gc_ok_out = gc_ok_fix.selected_command().output().unwrap();
+    assert!(
+        gc_ok_out.status.success(),
+        "expected pure inline const inside nested generic closures to succeed:\n{}\n{}",
+        stdout(&gc_ok_out),
+        stderr(&gc_ok_out)
+    );
+    compile_captured_lean_if_trusted_sources_present(&gc_ok_fix.output.join("Captured.lean"));
+
+    let generic_closure_bad_src = br#"fn generic_closure_bad<T>() -> impl Sized {
+    let f = || const { core::panic::Location::caller().line() as usize };
+    f()
+}
+const fn size_of_ret<F: FnOnce() -> R + Copy, R>(_f: F) -> usize {
+    core::mem::size_of::<R>()
+}
+const BAD: usize = size_of_ret(generic_closure_bad::<u32>);
+pub fn selected(x: usize) -> usize {
+    x.wrapping_add(BAD)
+}
+"#;
+    let gc_bad_fix = Capture::new(generic_closure_bad_src);
+    let gc_bad_out = gc_bad_fix.selected_command().output().unwrap();
+    assert_unsupported_location_audit(&gc_bad_out, "inline const inside generic closure");
+}
