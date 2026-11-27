@@ -85,7 +85,7 @@ Reach first for bundled `Anneal.*` certificate and lemma libraries listed in
   `Anneal.MirWp.Reflection`, `Anneal.MirWp.Scalars`, `Anneal.MirWp.V2Memory`,
   `Anneal.Wp`, `Anneal.Scalar`, `Anneal.MirTotal.Ops`,
   `Anneal.MirTotal.StepCore`, `Anneal.MirSymExec`, `Anneal.MirSymExec.Bits`,
-  `Anneal.Framework`, `Anneal.Framework.StepWp`
+  `Anneal.MirSymExecCall`, `Anneal.Framework`, `Anneal.Framework.StepWp`
 - Loop invariants, byte/chunk layouts, forcing, `whnf`/rewrite firewalls, path
   trees, and SCC sharding: `Anneal.LoopInv`, `Anneal.LeBytes`,
   `Anneal.ListChunks`, `Anneal.SpineForce`, `Anneal.Firewall`, `Anneal.PTree`,
@@ -154,7 +154,32 @@ balanced certificate bounded within Lean's default `maxRecDepth=512` and
   `decide` / `dsimp`, and do not reduce `if h : P then ... else ...` on
   symbolic `2^64`/`2^128` inequalities without first discharging the branch via
   `ite_prop_true` / `ite_prop_false` or `Anneal.InitLemmas` (`nat_mod_*`,
-  `nat_div_*`, `int_ofNat_*`, `int_subNatNat_*`, `bool_*`).
+  `nat_div_*`, `int_ofNat_*`, `int_subNatNat_*`, `bool_*`). Run `dsimp only`
+  before `rw` on `let`-bound `Ops.lean` bodies: `rw` turns each `let` into a
+  non-dependent `have`, which `dsimp only` (`zetaHave := false`) then leaves
+  alone.
+- **Prefer scalar closed forms over unfolding `Ops.lean`
+  (`Anneal.MirWp.Scalars`):**
+  - Decoding: `decodeScalar_unsigned_of_lt`, `decodeScalar_signed_of_lt_half`,
+    `decodeScalar_signed_of_ge_half`, `truncateScalar_unsigned_eq`,
+    `truncateScalar_signed_eq`.
+  - Casts: `evalIntToIntCast_unsigned`, `evalIntToIntCast_signed_of_nonneg`,
+    `evalIntToIntCast_signed_of_neg`, `evalIntToIntCast_signed_same_width`,
+    `evalIntToIntCast_bool`.
+  - Arithmetic and shifts at every width and signedness, in terms of
+    `decodeScalar`: `evalBinOp_add_eq`, `evalBinOp_sub_eq`, `evalBinOp_mul_eq`,
+    `evalBinOp_shl_eq`, `evalBinOp_shr_eq`.
+  - Unsigned closed forms: `evalBinOp_add_unsigned_eq`,
+    `evalBinOp_sub_unsigned_eq`, `evalBinOp_mul_unsigned_eq`,
+    `evalBinOp_shl_unsigned_eq`, `evalBinOp_shr_unsigned_eq`, and, without
+    overflow, `evalBinOp_addUnchecked_unsigned_of_lt`,
+    `evalBinOp_mulUnchecked_unsigned_of_lt`,
+    `evalBinOp_subUnchecked_unsigned_of_le`.
+  - Bitwise and comparisons: `evalBinOp_bitAnd_eq`, `evalBinOp_bitOr_eq`,
+    `evalBinOp_bitXor_eq`, `evalBinOp_cmp_eq`.
+  - Negative values stay behind abstract moduli
+    (`bvOfInt_negSucc_mod_of_dvd`, `truncateBits_bvOfInt_negSucc_toNat`), so
+    the kernel never subtracts a symbolic value from a literal `2^128`.
 
 **6 algebraic representation shifts (when elaboration or `whnf` explodes):**
 1. **Import `prelude` + targeted `Init.*` (`~152 MiB` vs `~473 MiB`):** Pinned

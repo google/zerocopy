@@ -1516,6 +1516,53 @@ theorem canary_contract_anneal : CanaryContractAnnealClaim := by
     injection hHead with hB
     exact Bool.noConfusion hB
 
+/-! ## Width- and Signedness-Parametric Arithmetic Canaries -/
+
+/-- `unchecked_mul` on in-range `usize` values (the shape `add_scaled_metadata`
+needs) without unfolding `evalArithOp` or `truncateScalar`. -/
+theorem canary_usize_mulUnchecked_of_lt {a c : Nat}
+    (ha : a < intWidthModulus .isize) (hc : c < intWidthModulus .isize)
+    (hac : a * c < intWidthModulus .isize) :
+    evalBinOp .mulUnchecked
+        (.scalar ⟨.isize, false, BitVec.ofNat 128 a⟩)
+        (.scalar ⟨.isize, false, BitVec.ofNat 128 c⟩) =
+      .ok (.scalar ⟨.isize, false, BitVec.ofNat 128 (a * c)⟩) := by
+  have h128 : intWidthModulus .isize < Nat.pow 2 128 := by decide
+  have ha' : (BitVec.ofNat 128 a).toNat = a :=
+    Nat.mod_eq_of_lt (Nat.lt_trans ha h128)
+  have hc' : (BitVec.ofNat 128 c).toNat = c :=
+    Nat.mod_eq_of_lt (Nat.lt_trans hc h128)
+  have h := evalBinOp_mulUnchecked_unsigned_of_lt .isize
+    (b₁ := BitVec.ofNat 128 a) (b₂ := BitVec.ofNat 128 c)
+    (by rw [ha']; exact ha) (by rw [hc']; exact hc)
+    (by rw [ha', hc']; exact hac)
+  rw [ha', hc'] at h
+  exact h
+
+/-- Symbolic signed `i64` wrapping `.add` of a negative and a non-negative
+operand through `evalBinOp_add_eq` and the `decodeScalar` lemmas, with no
+`2^128` subtraction in sight. -/
+theorem canary_symbolic_i64_add_neg {b₁ b₂ : BitVec 128}
+    (hGe : intWidthHalfModulus .i64 ≤ b₁.toNat)
+    (hLt : b₁.toNat < intWidthModulus .i64)
+    (h₂ : b₂.toNat < intWidthHalfModulus .i64) :
+    evalBinOp .add (.scalar ⟨.i64, true, b₁⟩) (.scalar ⟨.i64, true, b₂⟩) =
+      .ok (.scalar ⟨.i64, true, truncateBits .i64 (bvOfInt 128
+        (Int.negSucc (intWidthModulus .i64 - b₁.toNat - 1) +
+          Int.ofNat b₂.toNat))⟩) := by
+  rw [evalBinOp_add_eq, decodeScalar_signed_of_ge_half hGe hLt,
+    decodeScalar_signed_of_lt_half h₂]
+
+/-- Symbolic `u128` wrapping `.sub` closed form. -/
+theorem canary_symbolic_u128_sub {b₁ b₂ : BitVec 128}
+    (h₁ : b₁.toNat < intWidthModulus .i128)
+    (h₂ : b₂.toNat < intWidthModulus .i128) :
+    evalBinOp .sub (.scalar ⟨.i128, false, b₁⟩) (.scalar ⟨.i128, false, b₂⟩) =
+      .ok (.scalar ⟨.i128, false, BitVec.ofNat 128
+        (Nat.mod (b₁.toNat + (intWidthModulus .i128 - b₂.toNat))
+          (intWidthModulus .i128))⟩) :=
+  evalBinOp_sub_unsigned_eq .i128 h₁ h₂
+
 end Anneal.MirWp
 
 end
