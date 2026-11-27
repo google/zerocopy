@@ -269,6 +269,12 @@ Constructor correspondence:
 
   > "/// The pointee of an array slice. Written as `[T]`.
   > Slice(I::Ty),"
+- `.str` corresponds to `TyKind::Str`; it is unsized and appears behind shared
+  `.ref` on string slices (`&str`, Profile v2)
+  (`compiler/rustc_type_ir/src/ty_kind.rs:131-132`, same pin):
+
+  > "/// The pointee of a string slice. Written as `str`.
+  > Str,"
 - `.array elem len` corresponds to `TyKind::Array(elem, len)` (Profile v2).
 - `.rangeTo elem`, `.rangeFrom elem`, and `.range elem` correspond to the
   `core::ops::RangeTo<elem>`, `core::ops::RangeFrom<elem>`, and
@@ -311,7 +317,7 @@ Constructor correspondence:
   >     Some(... T),
   > }"
 - `.unsupported` represents all other `TyKind` variants (`Float`,
-  other non-fieldless-enum `Adt`, `Foreign`, `Str`, `Pat`, `FnDef`,
+  other non-fieldless-enum `Adt`, `Foreign`, `Pat`, `FnDef`,
   `FnPtr`, `Dynamic`, `Closure`, `CoroutineClosure`, `Coroutine`, etc.), causing
   $M_{\text{anneal}}$ to fail closed with `FaultKind.unsupported`. -/
 inductive MirTy where
@@ -326,6 +332,7 @@ inductive MirTy where
   | ref (mutability : Mutability) (pointee : MirTy)
   | rawPtr (mutability : Mutability) (pointee : MirTy)
   | slice (elem : MirTy)
+  | str
   | array (elem : MirTy) (len : Nat)
   | rangeTo (elem : MirTy)
   | rangeFrom (elem : MirTy)
@@ -334,10 +341,10 @@ inductive MirTy where
   | unsupported
 
 /-- Return `true` when `ty` is an unsized dynamically-sized MIR type
-(`.slice _`), which may appear behind `.ref` or `.rawPtr` but cannot be stored
-directly in a local slot by value. -/
+(`.slice _` or `.str`), which may appear behind `.ref` or `.rawPtr` but cannot
+be stored directly in a local slot by value. -/
 noncomputable def isUnsizedTy : MirTy → Bool
-  | .slice _ => true
+  | .slice _ | .str => true
   | _ => false
 
 /-- Explicit structural equality on `IntWidth` (avoiding `deriving BEq` inside
@@ -391,6 +398,7 @@ mutual
     | .ref m₁ p₁, .ref m₂ p₂ => Mutability.beq m₁ m₂ && MirTy.beq p₁ p₂
     | .rawPtr m₁ p₁, .rawPtr m₂ p₂ => Mutability.beq m₁ m₂ && MirTy.beq p₁ p₂
     | .slice e₁, .slice e₂ => MirTy.beq e₁ e₂
+    | .str, .str => true
     | .array e₁ n₁, .array e₂ n₂ => Nat.beq n₁ n₂ && MirTy.beq e₁ e₂
     | .rangeTo e₁, .rangeTo e₂ => MirTy.beq e₁ e₂
     | .rangeFrom e₁, .rangeFrom e₂ => MirTy.beq e₁ e₂

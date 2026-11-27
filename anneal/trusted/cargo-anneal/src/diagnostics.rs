@@ -74,10 +74,10 @@ const UNSUPPORTED_CAPTURE_RULES: &[DetailRule] = &[
     DetailRule {
         needle: "unsupported type: ",
         hint: "Capture refuses this Rust type. Profile v2 admits scalars, fieldless local enums, \
-               tuples, `RangeTo<usize>`/`RangeFrom<usize>`, and single-level references and raw \
-               pointers to scalars and integer slices; references or pointers to other types \
-               (such as `&str` or structs) are not supported yet. Refactor the selected function \
-               or narrow scope with `--select <fn>`.",
+               tuples, `RangeTo<usize>`/`RangeFrom<usize>`, shared `&str`, and single-level \
+               references and raw pointers to scalars and integer slices; references or pointers \
+               to other types (such as `&mut str`, `*const str`, or structs) are not supported \
+               yet. Refactor the selected function or narrow scope with `--select <fn>`.",
     },
     DetailRule {
         needle: "cleanup unwinds on",

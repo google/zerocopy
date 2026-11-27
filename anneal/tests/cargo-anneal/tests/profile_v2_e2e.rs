@@ -807,7 +807,10 @@ fn verifies_panic_abort_div_ceil_and_rejects_panic_unwind() {
         abort_verified.assumptions.iter().map(String::as_str).collect();
     assert!(
         abort_assumptions.iter().any(|a| {
-            a.starts_with("--panic abort models failed non-optional safe assertions as .aborted")
+            a.starts_with(
+                "--panic abort models failed non-optional safe assertions \
+                 and admitted core::panicking calls as .aborted",
+            )
                 && a.contains("panic hooks and handlers")
                 && a.contains("caller-memory effects before the panic")
                 && !a.contains("overflow")
@@ -1201,8 +1204,9 @@ end Proof
     assert!(
         overflow_assumptions.iter().any(|a| {
             a.starts_with(
-                "--panic abort models failed non-optional safe assertions and, under \
-                 --overflow-checks, failed overflow checks as .aborted",
+                "--panic abort models failed non-optional safe assertions, admitted \
+                 core::panicking calls, and, under --overflow-checks, failed overflow \
+                 checks as .aborted",
             ) && a.contains("panic hooks and handlers")
                 && a.contains("a build that elides the overflow checks wraps")
         }),
@@ -1244,7 +1248,7 @@ end Proof
          fn panic(_info: &PanicInfo<'_>) -> ! {\n\
              loop {}\n\
          }\n\
-         pub unsafe fn div_u64(a: u64, b: u64) -> u64 {\n\
+         pub unsafe fn div_u64(a: u64, b: u64, _tag: (u8, u8, u8)) -> u64 {\n\
              a / b\n\
          }\n",
     )
@@ -1258,15 +1262,23 @@ namespace Spec
 
 open Trusted.MirAst Trusted.MirSemantics
 
+def vTag : Val :=
+  .tuple [
+    .scalar ⟨.i8, false, BitVec.ofNat 128 0⟩,
+    .scalar ⟨.i8, false, BitVec.ofNat 128 0⟩,
+    .scalar ⟨.i8, false, BitVec.ofNat 128 0⟩]
+
 def qDivZero : Query :=
   { args := [
       .scalar ⟨.i64, false, BitVec.ofNat 128 7⟩,
-      .scalar ⟨.i64, false, BitVec.ofNat 128 0⟩] }
+      .scalar ⟨.i64, false, BitVec.ofNat 128 0⟩,
+      vTag] }
 
 def safety (_id : String) (q : Query) : Prop :=
   q.args = [
     .scalar ⟨.i64, false, BitVec.ofNat 128 7⟩,
-    .scalar ⟨.i64, false, BitVec.ofNat 128 1⟩]
+    .scalar ⟨.i64, false, BitVec.ofNat 128 1⟩,
+    vTag]
 
 def property (p : Program) : Prop :=
   ReachesResultV2 (entryProgForBody p 0) qDivZero (.fault .unsupported) ∧
@@ -1344,25 +1356,51 @@ private theorem div_steps (cm : CallerMemory) (mem : MemoryState) :
         [.immediate none,
          .immediate (some (.scalar ⟨.i64, false, BitVec.ofNat 128 7⟩)),
          .immediate (some (.scalar ⟨.i64, false, BitVec.ofNat 128 1⟩)),
+         .immediate (some Spec.vTag),
          .dead, .dead, .immediate none] cm mem) := by
   let va : Val := .scalar ⟨.i64, false, BitVec.ofNat 128 7⟩
   let vb : Val := .scalar ⟨.i64, false, BitVec.ofNat 128 1⟩
-  refine .step (s' := mkS 0 0 1 [.immediate none, .immediate (some va), .immediate (some vb), .immediate none, .dead, .immediate none] cm mem) rfl ?_
-  refine .step (s' := mkS 0 0 2 [.immediate none, .immediate (some va), .immediate (some vb), .immediate (some va), .dead, .immediate none] cm mem) rfl ?_
-  refine .step (s' := mkS 0 0 3 [.immediate none, .immediate (some va), .immediate (some vb), .immediate (some va), .immediate none, .immediate none] cm mem) rfl ?_
-  refine .step (s' := mkS 0 0 4 [.immediate none, .immediate (some va), .immediate (some vb), .immediate (some va), .immediate (some vb), .immediate none] cm mem) rfl ?_
-  refine .step (s' := mkS 0 0 5 [.immediate none, .immediate (some va), .immediate (some vb), .immediate (some va), .immediate (some vb), .immediate (some (.bool false))] cm mem) rfl ?_
-  refine .step (s' := mkS 0 1 0 [.immediate none, .immediate (some va), .immediate (some vb), .immediate (some va), .immediate (some vb), .immediate none] cm mem) rfl ?_
-  refine .step (s' := mkS 0 1 1 [.immediate (some va), .immediate (some va), .immediate (some vb), .immediate none, .immediate none, .immediate none] cm mem) rfl ?_
-  refine .step (s' := mkS 0 1 2 [.immediate (some va), .immediate (some va), .immediate (some vb), .immediate none, .dead, .immediate none] cm mem) rfl ?_
-  refine .step (s' := mkS 0 1 3 [.immediate (some va), .immediate (some va), .immediate (some vb), .dead, .dead, .immediate none] cm mem) rfl ?_
+  let vt : Val := Spec.vTag
+  refine .step (s' := mkS 0 0 1
+    [.immediate none, .immediate (some va), .immediate (some vb),
+     .immediate (some vt), .immediate none, .dead, .immediate none] cm mem) rfl ?_
+  refine .step (s' := mkS 0 0 2
+    [.immediate none, .immediate (some va), .immediate (some vb),
+     .immediate (some vt), .immediate (some va), .dead, .immediate none] cm mem) rfl ?_
+  refine .step (s' := mkS 0 0 3
+    [.immediate none, .immediate (some va), .immediate (some vb),
+     .immediate (some vt), .immediate (some va), .immediate none,
+     .immediate none] cm mem) rfl ?_
+  refine .step (s' := mkS 0 0 4
+    [.immediate none, .immediate (some va), .immediate (some vb),
+     .immediate (some vt), .immediate (some va), .immediate (some vb),
+     .immediate none] cm mem) rfl ?_
+  refine .step (s' := mkS 0 0 5
+    [.immediate none, .immediate (some va), .immediate (some vb),
+     .immediate (some vt), .immediate (some va), .immediate (some vb),
+     .immediate (some (.bool false))] cm mem) rfl ?_
+  refine .step (s' := mkS 0 1 0
+    [.immediate none, .immediate (some va), .immediate (some vb),
+     .immediate (some vt), .immediate (some va), .immediate (some vb),
+     .immediate none] cm mem) rfl ?_
+  refine .step (s' := mkS 0 1 1
+    [.immediate (some va), .immediate (some va), .immediate (some vb),
+     .immediate (some vt), .immediate none, .immediate none,
+     .immediate none] cm mem) rfl ?_
+  refine .step (s' := mkS 0 1 2
+    [.immediate (some va), .immediate (some va), .immediate (some vb),
+     .immediate (some vt), .immediate none, .dead, .immediate none] cm mem) rfl ?_
+  refine .step (s' := mkS 0 1 3
+    [.immediate (some va), .immediate (some va), .immediate (some vb),
+     .immediate (some vt), .dead, .dead, .immediate none] cm mem) rfl ?_
   exact .done rfl
 
 private theorem div_ok_wf (q : Query)
     (hValid : ValidEntryArgsV2 Captured.body_0 q)
     (hArgs : q.args = [
       .scalar ⟨.i64, false, BitVec.ofNat 128 7⟩,
-      .scalar ⟨.i64, false, BitVec.ofNat 128 1⟩]) :
+      .scalar ⟨.i64, false, BitVec.ofNat 128 1⟩,
+      Spec.vTag]) :
     WellFormedV2 (entryProgForBody Captured.program 0) q := by
   cases q with
   | mk args cm =>
@@ -1372,11 +1410,13 @@ private theorem div_ok_wf (q : Query)
     have hInit :
         initStateV2 (entryProgForBody Captured.program 0)
           ⟨[.scalar ⟨.i64, false, BitVec.ofNat 128 7⟩,
-            .scalar ⟨.i64, false, BitVec.ofNat 128 1⟩], cm⟩ =
+            .scalar ⟨.i64, false, BitVec.ofNat 128 1⟩,
+            Spec.vTag], cm⟩ =
         .ok (mkS 0 0 0
           [.immediate none,
            .immediate (some (.scalar ⟨.i64, false, BitVec.ofNat 128 7⟩)),
            .immediate (some (.scalar ⟨.i64, false, BitVec.ofNat 128 1⟩)),
+           .immediate (some Spec.vTag),
            .dead, .dead, .immediate none] cm (entryMemoryWithCaller cm)) := by
       unfold initStateV2 entryProgForBody Captured.program
         Trusted.MirSemantics.getElem?
@@ -2224,4 +2264,1080 @@ end Spec
     fs::write(lean_dir.join("Spec.lean"), bad_post).unwrap();
     let neg3_name = "core-contracts-wrong-postcondition";
     run_request(dir.path(), neg3_name, &request).expect_proof_failed();
+}
+
+/// End-to-end verification of `assert!(dst < 16)` (`ebpf_core`
+/// `EbpfInstruction::new` static `&str` `core::panicking::panic` pattern)
+/// aborting under `--panic abort` (`CoreCallOp.panicAbort [rodataRef]`),
+/// rejection under `--panic unwind`, `EffectMaskV2.noAbort`, crate-local
+/// `#[panic_handler]`, and formatted `assert!(cond, "bad cond")`, plus
+/// Profile v1 verification of `x / 16` with its verbatim preserved
+/// `TerminatorKind.assert` (`AssertKind.divByZero`).
+#[test]
+fn verifies_ebpf_assert_aborts_under_panic_abort_and_const_div_stays_v1() {
+    let tools = tools();
+    let dir = TempDir::new().unwrap();
+
+    // Check 1a: `check_ebpf_reg(dst: u8) -> u8` (`assert!(dst < 16); dst`)
+    // verifies `SafeContractV2` under `--panic abort` (`dst >= 16` evaluates
+    // the static `&str` `.rodataRef` message and steps to `.aborted cm`,
+    // `dst < 16` returns `dst` with unchanged `cm`).
+    let rust_dir = dir.path().join("ebpf-reg-rust");
+    let lean_dir = dir.path().join("ebpf-reg-lean");
+    fs::create_dir_all(&rust_dir).unwrap();
+    fs::create_dir_all(&lean_dir).unwrap();
+    fs::write(
+        rust_dir.join("lib.rs"),
+        "pub fn check_ebpf_reg(dst: u8) -> u8 {\n\
+             assert!(dst < 16);\n\
+             dst\n\
+         }\n",
+    )
+    .unwrap();
+    fs::write(
+        lean_dir.join("Spec.lean"),
+        r#"prelude
+import Trusted.MirSemantics
+
+namespace Spec
+
+open Trusted.MirAst Trusted.MirSemantics
+
+def ebpfRegAllowAbort : SafeContractV2 := {
+  behaviorPre := fun _ => True
+  effects := { allowAbort := true }
+  postReturn := fun q out =>
+    match q.args with
+    | [.scalar v] =>
+      v.bits.toNat < 16 ∧ out.ret = .scalar v ∧ out.callerMem = q.callerMem
+    | _ => False
+  postAbort := fun q cm =>
+    match q.args with
+    | [.scalar v] => 16 ≤ v.bits.toNat ∧ cm = q.callerMem
+    | _ => False
+}
+
+def property (p : Program) : Prop :=
+  match Trusted.MirSemantics.getElem? p.bodies 0 with
+  | some body0 => BodySatisfiesSafeContractV2 p 0 body0 ebpfRegAllowAbort
+  | none => False
+
+def specs : SpecsV2 := ⟨fun _ _ => True, property⟩
+
+end Spec
+"#,
+    )
+    .unwrap();
+    fs::write(
+        lean_dir.join("Proof.lean"),
+        r#"prelude
+import Init.NotationExtra
+import Init.Data.Nat.Lemmas
+import Init.Data.Int.Order
+import Anneal.MirWp
+import Anneal.MirWp.V2Memory
+import Spec
+import Expected
+
+namespace Proof
+
+open Trusted.MirAst Trusted.MirSemantics Anneal.MirWp
+
+private theorem execOutcomeStateV2_step {p : Program}
+    {onDone : TerminalOut → Prop} {onFault : FaultKind → Prop}
+    {fuel : Nat} {s s' : State}
+    (hStep : evalStepV2 p s = .step s')
+    (hNext : execOutcomeStateV2 p onDone onFault fuel s') :
+    execOutcomeStateV2 p onDone onFault (fuel + 1) s := by
+  change (match evalStepV2 p s with
+    | .step st' => execOutcomeStateV2 p onDone onFault fuel st'
+    | .done out => onDone out
+    | .fault k => onFault k)
+  rw [hStep]
+  exact hNext
+
+private theorem execOutcomeStateV2_done {p : Program}
+    {onDone : TerminalOut → Prop} {onFault : FaultKind → Prop}
+    {fuel : Nat} {s : State} {out : TerminalOut}
+    (hStep : evalStepV2 p s = .done out)
+    (hDone : onDone out) :
+    execOutcomeStateV2 p onDone onFault (fuel + 1) s := by
+  change (match evalStepV2 p s with
+    | .step st' => execOutcomeStateV2 p onDone onFault fuel st'
+    | .done out => onDone out
+    | .fault k => onFault k)
+  rw [hStep]
+  exact hDone
+
+private theorem allocId_le_maxAllocId {allocs : List Allocation} {a : Allocation}
+    (h : a ∈ allocs) :
+    a.allocId ≤ maxAllocId allocs := by
+  induction allocs with
+  | nil => cases h
+  | cons x xs ih =>
+    cases h with
+    | head _ =>
+      change a.allocId ≤ Nat.max a.allocId (maxAllocId xs)
+      exact Nat.le_max_left _ _
+    | tail _ hIn =>
+      change a.allocId ≤ Nat.max x.allocId (maxAllocId xs)
+      exact Nat.le_trans (ih hIn) (Nat.le_max_right _ _)
+
+private theorem findAllocation_cons_ne {aid : AllocId} {x : Allocation}
+    {xs : List Allocation} (hNe : x.allocId ≠ aid) :
+    findAllocation aid (x :: xs) = findAllocation aid xs := by
+  change (if Nat.beq x.allocId aid then some x else findAllocation aid xs) =
+    findAllocation aid xs
+  cases hEq : Nat.beq x.allocId aid with
+  | false => rfl
+  | true => exact absurd (Nat.eq_of_beq_eq_true hEq) hNe
+
+private theorem extractCallerMemory_cons_fresh {cm : CallerMemory}
+    {x : Allocation} (hGt : maxAllocId cm.allocations < x.allocId)
+    {next : AllocId} :
+    extractCallerMemory cm { nextAllocId := next, allocations := x :: cm.allocations } =
+      extractCallerMemory cm (entryMemoryWithCaller cm) := by
+  cases cm with
+  | mk allocs =>
+    unfold extractCallerMemory
+    apply congrArg CallerMemory.mk
+    have hEq : ∀ suff : List Allocation,
+        (∀ a, a ∈ suff → a.allocId ≤ maxAllocId allocs) →
+        extractCallerAllocations
+          { nextAllocId := next, allocations := x :: allocs } suff =
+          extractCallerAllocations (entryMemoryWithCaller ⟨allocs⟩) suff := by
+      intro suff hBound
+      induction suff with
+      | nil => rfl
+      | cons a rest ih =>
+        unfold extractCallerAllocations
+        have hLe : a.allocId ≤ maxAllocId allocs := hBound a (.head _)
+        have hNe : x.allocId ≠ a.allocId :=
+          Nat.ne_of_gt (Nat.lt_of_le_of_lt hLe hGt)
+        rw [findAllocation_cons_ne hNe]
+        change (findAllocation a.allocId allocs).getD a :: _ = _
+        rw [ih (fun b hb => hBound b (.tail _ hb))]
+        rfl
+    exact hEq allocs (fun a ha => allocId_le_maxAllocId ha)
+
+private theorem checkVal_u8_inv {v : Val}
+    (h : checkValV2 v (.int .i8 false) = true) :
+    ∃ bits : BitVec 128,
+      v = .scalar ⟨.i8, false, bits⟩ ∧
+      ScalarVal.wf ⟨.i8, false, bits⟩ = true ∧
+      (!checkValV2 (.scalar ⟨.i8, false, bits⟩) (.int .i8 false)) = false := by
+  cases v with
+  | scalar sv =>
+    cases sv with
+    | mk w sg bits =>
+      have h' :
+          (match (if ScalarVal.wf { width := w, signed := sg, bits := bits } =
+              true then some (MirTy.int w sg) else none) with
+            | some vTy => vTy.beq (.int .i8 false)
+            | none => false) = true := h
+      cases hWf : ScalarVal.wf { width := w, signed := sg, bits := bits } with
+      | false => rw [hWf] at h'; cases h'
+      | true =>
+        rw [hWf] at h'
+        cases w <;> cases sg <;> cases h'
+        exact ⟨bits, rfl, hWf, by rw [h]; rfl⟩
+  | _ => first | cases h | (rename_i o; cases o <;> cases h)
+
+private theorem checkArgs_u8 {args : List Val}
+    (h : checkArgsMatchV2 args [.int .i8 false] = true) :
+    ∃ bits : BitVec 128,
+      args = [.scalar ⟨.i8, false, bits⟩] ∧
+      ScalarVal.wf ⟨.i8, false, bits⟩ = true ∧
+      (!checkValV2 (.scalar ⟨.i8, false, bits⟩) (.int .i8 false)) = false := by
+  cases args with
+  | nil => cases h
+  | cons a0 rest =>
+    cases rest with
+    | cons a1 rest1 =>
+      unfold checkArgsMatchV2 at h
+      cases h0 : checkValV2 a0 (.int .i8 false) <;> rw [h0] at h <;> cases h
+    | nil =>
+      unfold checkArgsMatchV2 at h
+      cases h0 : checkValV2 a0 (.int .i8 false) with
+      | false => rw [h0] at h; cases h
+      | true =>
+        let ⟨bits, hEq, hWf, hNot⟩ := checkVal_u8_inv h0
+        exact ⟨bits, by rw [hEq], hWf, hNot⟩
+
+private def mkS (bb st : Nat) (locs : List LocalSlot)
+    (cm : CallerMemory) (mem : MemoryState) : State :=
+  ⟨[⟨0, bb, st, locs, none, none, none⟩], cm, mem⟩
+
+private theorem body0_static_admitted :
+    BodyStaticAdmittedV2 Captured.program Captured.body_0 = true := by
+  decide
+
+private theorem ite_bool_false {α : Type _} {b : Bool} {t e : α}
+    (h : b = false) :
+    (if b = true then t else e) = e := by
+  rw [h]; rfl
+
+private theorem body0_safeContract :
+    BodySatisfiesSafeContractV2 Captured.program 0 Captured.body_0
+      Spec.ebpfRegAllowAbort := by
+  refine safeContract_soundness_of_execV2_base.2.1
+    Captured.program 0 Captured.body_0 Spec.ebpfRegAllowAbort
+    rfl body0_static_admitted (fun q hValid _ => ?_)
+  cases q with
+  | mk args cm =>
+    let ⟨hMem, hArgs, _, _⟩ := hValid
+    let ⟨bits, hEq, hWf, hSv⟩ := checkArgs_u8 hArgs
+    subst hEq
+    let sv : ScalarVal := ⟨.i8, false, bits⟩
+    have hTr : truncateBits .i8 bits = bits := by
+      unfold ScalarVal.wf at hWf
+      exact eq_of_beq hWf
+    let mem := entryMemoryWithCaller cm
+    have hInit :
+        initStateV2 (entryProgForBody Captured.program 0)
+          ⟨[.scalar sv], cm⟩ =
+        .ok (mkS 0 0
+          [.immediate none, .immediate (some (.scalar sv)),
+           .dead, .dead, .dead, .dead]
+          cm mem) :=
+      initStateV2_ok_of_admitted (p := entryProgForBody Captured.program 0)
+        rfl body0_static_admitted hValid
+    have hCopy4 :
+        evalStepV2 (entryProgForBody Captured.program 0)
+          (mkS 0 3 [.immediate none, .immediate (some (.scalar sv)),
+            .immediate (some .unit), .immediate none, .immediate none, .dead] cm mem) =
+        .step (mkS 0 4 [.immediate none, .immediate (some (.scalar sv)),
+            .immediate (some .unit), .immediate none,
+            .immediate (some (.scalar sv)), .dead] cm mem) := by
+      change (match (if (!checkValV2 (Val.scalar sv) (MirTy.int IntWidth.i8 false)) = true then
+          Except.error FaultKind.unsupported
+        else
+          Except.ok
+            ([LocalSlot.immediate none, LocalSlot.immediate (some (Val.scalar sv)),
+              LocalSlot.immediate (some Val.unit), LocalSlot.immediate none,
+              LocalSlot.immediate (some (Val.scalar sv)), LocalSlot.dead], mem)) with
+        | Except.error k => StepResult.fault k
+        | Except.ok (locals', mem') => StepResult.step (mkS 0 4 locals' cm mem')) = _
+      rw [hSv]
+      rfl
+    let bLt : Bool :=
+      decide (Int.ofNat (truncateBits .i8 bits).toNat < Int.ofNat 16)
+    have hLtStep :
+        evalStepV2 (entryProgForBody Captured.program 0)
+          (mkS 0 4 [.immediate none, .immediate (some (.scalar sv)),
+            .immediate (some .unit), .immediate none,
+            .immediate (some (.scalar sv)), .dead] cm mem) =
+        .step (mkS 0 5 [.immediate none, .immediate (some (.scalar sv)),
+            .immediate (some .unit), .immediate (some (.bool bLt)),
+            .immediate none, .dead] cm mem) := by
+      have hBin :
+          evalBinOp .lt (.scalar sv)
+            (.scalar ⟨.i8, false, BitVec.ofNat 128 16⟩) =
+          .ok (.bool bLt) := rfl
+      change (match (match evalBinOp .lt (.scalar sv)
+            (.scalar ⟨.i8, false, BitVec.ofNat 128 16⟩) with
+          | Except.error k => Except.error k
+          | Except.ok res =>
+            Except.ok (res,
+              [LocalSlot.immediate none, LocalSlot.immediate (some (Val.scalar sv)),
+               LocalSlot.immediate (some Val.unit), LocalSlot.immediate none,
+               LocalSlot.immediate none, LocalSlot.dead], mem)) with
+        | Except.error k => StepResult.fault k
+        | Except.ok (val, locals1, mem1) =>
+          match writePlaceDestV2 locals1 mem1 (.local 3) .bool val with
+          | Except.error k => StepResult.fault k
+          | Except.ok (locals2, mem2) =>
+            StepResult.step (mkS 0 5 locals2 cm mem2)) = _
+      rw [hBin]
+      have hChkBool : (!checkValV2 (.bool bLt) .bool) = false := by
+        cases bLt <;> rfl
+      change (match (if (!checkValV2 (.bool bLt) .bool) = true then
+            Except.error FaultKind.unsupported
+          else
+            Except.ok
+              ([LocalSlot.immediate none, LocalSlot.immediate (some (Val.scalar sv)),
+                LocalSlot.immediate (some Val.unit),
+                LocalSlot.immediate (some (Val.bool bLt)),
+                LocalSlot.immediate none, LocalSlot.dead], mem)) with
+        | Except.error k => StepResult.fault k
+        | Except.ok (locals2, mem2) =>
+          StepResult.step (mkS 0 5 locals2 cm mem2)) = _
+      rw [hChkBool]
+      rfl
+    cases hBLt : bLt with
+    | false =>
+      have hGe16 : 16 ≤ bits.toNat := by
+        have hNotLtI : ¬ (Int.ofNat (truncateBits .i8 bits).toNat < Int.ofNat 16) :=
+          of_decide_eq_false hBLt
+        rw [hTr] at hNotLtI
+        have hNotLt : ¬ (bits.toNat < 16) := fun h => hNotLtI (Int.ofNat_lt.mpr h)
+        exact Nat.le_of_not_lt hNotLt
+      refine ⟨10, ?_⟩
+      unfold execProgV2
+      rw [hInit]
+      refine execOutcomeStateV2_step (s' := mkS 0 1
+        [.immediate none, .immediate (some (.scalar sv)), .immediate (some .unit),
+         .dead, .dead, .dead] cm mem) rfl ?_
+      refine execOutcomeStateV2_step (s' := mkS 0 2
+        [.immediate none, .immediate (some (.scalar sv)), .immediate (some .unit),
+         .immediate none, .dead, .dead] cm mem) rfl ?_
+      refine execOutcomeStateV2_step (s' := mkS 0 3
+        [.immediate none, .immediate (some (.scalar sv)), .immediate (some .unit),
+         .immediate none, .immediate none, .dead] cm mem) rfl ?_
+      refine execOutcomeStateV2_step hCopy4 ?_
+      have hLtStepF := hLtStep
+      rw [hBLt] at hLtStepF
+      refine execOutcomeStateV2_step hLtStepF ?_
+      refine execOutcomeStateV2_step (s' := mkS 2 0
+        [.immediate none, .immediate (some (.scalar sv)), .immediate (some .unit),
+         .immediate none, .immediate none, .dead] cm mem) rfl ?_
+      refine execOutcomeStateV2_step (s' := mkS 2 1
+        [.immediate none, .immediate (some (.scalar sv)), .immediate (some .unit),
+         .immediate none, .dead, .dead] cm mem) rfl ?_
+      refine execOutcomeStateV2_step (s' := mkS 2 2
+        [.immediate none, .immediate (some (.scalar sv)), .immediate (some .unit),
+         .immediate none, .dead, .immediate none] cm mem) rfl ?_
+      let roRawBytes : List RodataByte :=
+        List.append
+          [RodataByte.init 97, RodataByte.init 115, RodataByte.init 115,
+           RodataByte.init 101, RodataByte.init 114, RodataByte.init 116,
+           RodataByte.init 105, RodataByte.init 111, RodataByte.init 110,
+           RodataByte.init 32, RodataByte.init 102, RodataByte.init 97,
+           RodataByte.init 105, RodataByte.init 108, RodataByte.init 101,
+           RodataByte.init 100]
+          [RodataByte.init 58, RodataByte.init 32, RodataByte.init 100,
+           RodataByte.init 115, RodataByte.init 116, RodataByte.init 32,
+           RodataByte.init 60, RodataByte.init 32, RodataByte.init 49,
+           RodataByte.init 54]
+      let roAid : AllocId := mem.nextAllocId
+      let roAlloc : Allocation := {
+        allocId := roAid
+        bytes := roRawBytes.map rodataByteToAllocByte
+        alignLog2 := 0
+        mutability := .shared
+        live := true
+      }
+      let mem1 : MemoryState := {
+        nextAllocId := roAid + 1
+        allocations := roAlloc :: mem.allocations
+      }
+      have hFindRo : findAllocation roAid mem1.allocations = some roAlloc := by
+        change (if Nat.beq roAid roAid then some roAlloc else _) = some roAlloc
+        rw [Nat.beq_refl]; rfl
+      have hRefRo :
+          refValidInMem mem1 .shared .str
+            (.slicePtr ⟨some roAid, UInt64.ofNat 0, .isize⟩ (UInt64.ofNat 26)) =
+          .ok () := by
+        dsimp only [refValidInMem, sliceFromRawPartsCheck, sliceRefRawCheck]
+        rw [hFindRo]
+        rfl
+      have hUtf8Ro :
+          (!strSliceUtf8InMem mem1 ⟨some roAid, UInt64.ofNat 0, .isize⟩
+            (UInt64.ofNat 26)) = false := by
+        dsimp only [strSliceUtf8InMem]
+        rw [hFindRo]
+        rfl
+      let roConst : ConstOperand :=
+        ⟨.ref .shared .str, .rodataRef roRawBytes 0 0 (some 26)⟩
+      let abortLocals : List LocalSlot :=
+        [.immediate none, .immediate (some (.scalar sv)),
+         .immediate (some .unit), .immediate none, .dead, .immediate none]
+      have hRodata :
+          evalOperandToSlotV2 Captured.body_0.locals abortLocals mem
+            (.constant roConst) =
+          .ok (.ref .shared .str,
+            some (.slicePtr ⟨some roAid, UInt64.ofNat 0, .isize⟩
+              (UInt64.ofNat 26)),
+            abortLocals, mem1) := by
+        dsimp only [evalOperandToSlotV2, evalRodataRefConstV2, roConst,
+          allocRodataMemory, MemoryState.reserveAllocId]
+        have hG1 :
+            (!Nat.blt roRawBytes.length isizeMaxBytes ||
+              !Nat.ble 0 29 || !Nat.blt 0 (Nat.pow 2 64)) = false := by
+          decide
+        have hG2 : (!Nat.blt 26 (Nat.pow 2 64)) = false := by decide
+        have hG3 : Mutability.beq .shared .mut = false := rfl
+        rw [ite_bool_false hG1, ite_bool_false hG2, ite_bool_false hG3, hRefRo]
+        dsimp only
+        rw [ite_bool_false hUtf8Ro]
+      have hAbortStep :
+          evalStepV2 (entryProgForBody Captured.program 0)
+            (mkS 2 2 abortLocals cm mem) =
+          .done (.aborted (extractCallerMemory cm mem1)) := by
+        change (match (match evalOperandToSlotV2 Captured.body_0.locals
+              abortLocals mem (.constant roConst) with
+            | Except.error k => Except.error k
+            | Except.ok (_, none, _, _) => Except.error FaultKind.undefined
+            | Except.ok (ty, some v, locals1, mem1') =>
+              Except.ok ([(ty, v)], locals1, mem1')) with
+          | Except.error k => StepResult.fault k
+          | Except.ok (typedArgs, _, mem1') =>
+            match validatePanicAbortArgs mem1' typedArgs with
+            | Except.error k => StepResult.fault k
+            | Except.ok () =>
+              evalCorePanicAbort .abort .unreachable
+                (extractCallerMemory cm mem1') false) = _
+        rw [hRodata]
+        dsimp only [validatePanicAbortArgs, IntWidth.beq]
+        rw [hRefRo]
+        dsimp only
+        rw [ite_bool_false hUtf8Ro]
+        rfl
+      have hRoGt : maxAllocId cm.allocations < roAid := by
+        change maxAllocId cm.allocations <
+          Nat.max entryMemory.nextAllocId (maxAllocAndProvId cm.allocations + 1)
+        exact Nat.lt_of_lt_of_le (Nat.lt_succ_of_le (Nat.le_max_left _ _))
+          (Nat.le_max_right _ _)
+      have hCmEq : extractCallerMemory cm mem1 = cm :=
+        (extractCallerMemory_cons_fresh hRoGt).trans
+          (extractCallerMemory_entry cm hMem)
+      exact execOutcomeStateV2_done hAbortStep ⟨rfl, hGe16, hCmEq⟩
+    | true =>
+      have hLt16 : bits.toNat < 16 := by
+        have hLtI : Int.ofNat (truncateBits .i8 bits).toNat < Int.ofNat 16 :=
+          of_decide_eq_true hBLt
+        rw [hTr] at hLtI
+        exact Int.ofNat_lt.mp hLtI
+      refine ⟨15, ?_⟩
+      unfold execProgV2
+      rw [hInit]
+      refine execOutcomeStateV2_step (s' := mkS 0 1
+        [.immediate none, .immediate (some (.scalar sv)), .immediate (some .unit),
+         .dead, .dead, .dead] cm mem) rfl ?_
+      refine execOutcomeStateV2_step (s' := mkS 0 2
+        [.immediate none, .immediate (some (.scalar sv)), .immediate (some .unit),
+         .immediate none, .dead, .dead] cm mem) rfl ?_
+      refine execOutcomeStateV2_step (s' := mkS 0 3
+        [.immediate none, .immediate (some (.scalar sv)), .immediate (some .unit),
+         .immediate none, .immediate none, .dead] cm mem) rfl ?_
+      refine execOutcomeStateV2_step hCopy4 ?_
+      have hLtStepT := hLtStep
+      rw [hBLt] at hLtStepT
+      refine execOutcomeStateV2_step hLtStepT ?_
+      refine execOutcomeStateV2_step (s' := mkS 1 0
+        [.immediate none, .immediate (some (.scalar sv)), .immediate (some .unit),
+         .immediate none, .immediate none, .dead] cm mem) rfl ?_
+      refine execOutcomeStateV2_step (s' := mkS 1 1
+        [.immediate none, .immediate (some (.scalar sv)), .immediate (some .unit),
+         .immediate none, .dead, .dead] cm mem) rfl ?_
+      refine execOutcomeStateV2_step (s' := mkS 1 2
+        [.immediate none, .immediate (some (.scalar sv)), .immediate (some .unit),
+         .immediate none, .dead, .dead] cm mem) rfl ?_
+      refine execOutcomeStateV2_step (s' := mkS 1 3
+        [.immediate none, .immediate (some (.scalar sv)), .immediate (some .unit),
+         .dead, .dead, .dead] cm mem) rfl ?_
+      refine execOutcomeStateV2_step (s' := mkS 1 4
+        [.immediate none, .immediate (some (.scalar sv)),
+         .dead, .dead, .dead, .dead] cm mem) rfl ?_
+      have hWrite0 :
+          evalStepV2 (entryProgForBody Captured.program 0)
+            (mkS 1 4 [.immediate none, .immediate (some (.scalar sv)),
+              .dead, .dead, .dead, .dead] cm mem) =
+          .step (mkS 1 5 [.immediate (some (.scalar sv)),
+              .immediate (some (.scalar sv)),
+              .dead, .dead, .dead, .dead] cm mem) := by
+        change (match (if (!checkValV2 (Val.scalar sv) (MirTy.int IntWidth.i8 false)) = true then
+            Except.error FaultKind.unsupported
+          else
+            Except.ok
+              ([LocalSlot.immediate (some (Val.scalar sv)),
+                LocalSlot.immediate (some (Val.scalar sv)),
+                LocalSlot.dead, LocalSlot.dead, LocalSlot.dead, LocalSlot.dead], mem)) with
+          | Except.error k => StepResult.fault k
+          | Except.ok (locals', mem') => StepResult.step (mkS 1 5 locals' cm mem')) = _
+        rw [hSv]
+        rfl
+      refine execOutcomeStateV2_step hWrite0 ?_
+      exact execOutcomeStateV2_done rfl ⟨hLt16, rfl, extractCallerMemory_entry cm hMem⟩
+
+theorem verify : Expected.claim := by
+  refine ⟨rfl, rfl, rfl, rfl, rfl, by decide, ?_, ?_⟩
+  · intro defId body hBody
+    cases defId with
+    | zero =>
+      change some Captured.body_0 = some body at hBody
+      cases hBody
+      exact ⟨rfl, body0_static_admitted, fun q hValid _ =>
+        (body0_safeContract.2.2 q hValid trivial).1⟩
+    | succ _ =>
+      change none = some body at hBody
+      cases hBody
+  · exact body0_safeContract
+
+end Proof
+"#,
+    )
+    .unwrap();
+    let abort_request = json!({
+        "schema_version": 1,
+        "compilation": {
+            "source_root": rust_dir.to_str().unwrap(),
+            "crate_root": "lib.rs",
+            "crate_name": "ebpf_reg_demo",
+            "edition": "2021",
+            "target": "x86_64-unknown-linux-gnu",
+            "panic": "abort",
+            "cfg": [],
+            "source_files": ["lib.rs"]
+        },
+        "scope": {"kind": "crate"},
+        "proof": {
+            "source_root": lean_dir.to_str().unwrap(),
+            "specification": "Spec.specs",
+            "theorem": "Proof.verify",
+            "sources": [
+                {"module": "Spec", "path": "Spec.lean", "role": "specification"},
+                {"module": "Proof", "path": "Proof.lean", "role": "proof"}
+            ]
+        }
+    });
+    let abort_ok = run_request(dir.path(), "ebpf-reg-panic-abort", &abort_request);
+    abort_ok.expect_ok("crate_verified");
+    let VerifyReceipt::Verified(verified) = &abort_ok.receipt else {
+        panic!("expected verified receipt, got {:?}", abort_ok.receipt);
+    };
+    assert!(verified.spec_warnings.is_empty(), "{verified:?}");
+    assert!(
+        verified.assumptions.iter().any(|a| a.contains("as .aborted")),
+        "expected --panic abort assumption in receipt: {:?}",
+        verified.assumptions
+    );
+    let captured_lean = fs::read_to_string(
+        dir.path().join("artifacts-ebpf-reg-panic-abort/capture/Captured.lean"),
+    )
+    .unwrap();
+    assert!(
+        captured_lean.contains("Trusted.MirAst.CoreCallOp.panicAbort [")
+            && captured_lean.contains("Trusted.MirAst.ConstLit.rodataRef")
+            && !captured_lean.contains("TerminatorKind.assert"),
+        "{captured_lean}"
+    );
+
+    // Check 1b: full `ebpf_core` `EbpfInstruction::new` shape
+    // (`assert!(dst < 16); assert!(src < 16); ...`) captures cleanly under
+    // `--panic abort` with two static `&str` `CoreCallOp.panicAbort`
+    // terminators.
+    let ebpf_full_dir = dir.path().join("ebpf-insn-full");
+    fs::create_dir_all(&ebpf_full_dir).unwrap();
+    let ebpf_full_src = ebpf_full_dir.join("lib.rs");
+    fs::write(
+        &ebpf_full_src,
+        "pub fn ebpf_insn_new(code: u8, dst: u8, src: u8, offset: i16, imm: i32) -> u64 {\n\
+             assert!(dst < 16);\n\
+             assert!(src < 16);\n\
+             (code as u64)\n\
+                 | ((dst as u64) << 8)\n\
+                 | ((src as u64) << 12)\n\
+                 | ((offset as u16 as u64) << 16)\n\
+                 | ((imm as u32 as u64) << 32)\n\
+         }\n",
+    )
+    .unwrap();
+    let ebpf_full_out = dir.path().join("ebpf-insn-full-capture");
+    let ebpf_cap = Command::new(tools.capture.as_deref().expect("capture bin"))
+        .args([
+            "capture",
+            "--crate-root",
+            ebpf_full_src.to_str().unwrap(),
+            "--crate-name",
+            "ebpf_insn_full",
+            "--crate-type",
+            "lib",
+            "--edition",
+            "2021",
+            "--target",
+            "x86_64-unknown-linux-gnu",
+            "--panic",
+            "abort",
+            "--scope",
+            "crate",
+            "--out-dir",
+            ebpf_full_out.to_str().unwrap(),
+            "--sysroot",
+            tools.sysroot.to_str().unwrap(),
+            "--source-file",
+            ebpf_full_src.to_str().unwrap(),
+        ])
+        .output()
+        .unwrap();
+    assert!(
+        ebpf_cap.status.success(),
+        "ebpf_insn_new capture failed: {}",
+        String::from_utf8_lossy(&ebpf_cap.stdout)
+    );
+    let ebpf_full_lean = fs::read_to_string(ebpf_full_out.join("Captured.lean")).unwrap();
+    assert_eq!(
+        ebpf_full_lean
+            .matches("Trusted.MirAst.CoreCallOp.panicAbort [")
+            .count(),
+        2,
+        "{ebpf_full_lean}"
+    );
+
+    // Check 2: under `--panic unwind`, `check_ebpf_reg` keeps the diverging
+    // `core::panicking::panic` call as `TerminatorKind.unsupported` (selecting
+    // Profile v1) and fails verification on the abort path.
+    let mut unwind_request = abort_request.clone();
+    unwind_request["compilation"]["panic"] = json!("unwind");
+    run_request(dir.path(), "ebpf-reg-panic-unwind", &unwind_request)
+        .expect_proof_failed();
+
+    // Check 3: `EffectMaskV2.noAbort` rejects `check_ebpf_reg` without a
+    // `dst < 16` precondition even under `--panic abort`.
+    let no_abort_lean = dir.path().join("ebpf-reg-noabort-lean");
+    fs::create_dir_all(&no_abort_lean).unwrap();
+    let spec_src = fs::read_to_string(lean_dir.join("Spec.lean")).unwrap();
+    fs::write(
+        no_abort_lean.join("Spec.lean"),
+        spec_src.replace("effects := { allowAbort := true }", "effects := EffectMaskV2.noAbort"),
+    )
+    .unwrap();
+    fs::copy(lean_dir.join("Proof.lean"), no_abort_lean.join("Proof.lean")).unwrap();
+    let mut no_abort_request = abort_request.clone();
+    no_abort_request["proof"]["source_root"] = json!(no_abort_lean.to_str().unwrap());
+    run_request(dir.path(), "ebpf-reg-no-abort", &no_abort_request).expect_proof_failed();
+
+    // Check 4: `#![no_std]` binary with crate-local `#[panic_handler]` keeps
+    // `assert!(dst < 16)` unlowered as `TerminatorKind.unsupported` even under
+    // `--panic abort` and fails verification, while formatted
+    // `assert!(cond, "bad cond")` is refused fail-closed at capture.
+    let lh_rust = dir.path().join("ebpf-reg-lh-rust");
+    fs::create_dir_all(&lh_rust).unwrap();
+    fs::write(
+        lh_rust.join("main.rs"),
+        "#![no_std]\n\
+         #![no_main]\n\
+         use core::panic::PanicInfo;\n\
+         #[panic_handler]\n\
+         fn panic(_info: &PanicInfo<'_>) -> ! { loop {} }\n\
+         pub fn check_ebpf_reg_lh(dst: u8) -> u8 {\n\
+             assert!(dst < 16);\n\
+             dst\n\
+         }\n",
+    )
+    .unwrap();
+    let lh_request = json!({
+        "schema_version": 1,
+        "compilation": {
+            "source_root": lh_rust.to_str().unwrap(),
+            "crate_root": "main.rs",
+            "crate_name": "ebpf_reg_lh_demo",
+            "crate_type": "bin",
+            "edition": "2021",
+            "target": "x86_64-unknown-linux-gnu",
+            "panic": "abort",
+            "cfg": [],
+            "source_files": ["main.rs"]
+        },
+        "scope": {"kind": "selected_unit", "roots": ["check_ebpf_reg_lh"]},
+        "proof": {
+            "source_root": lean_dir.to_str().unwrap(),
+            "specification": "Spec.specs",
+            "theorem": "Proof.verify",
+            "sources": [
+                {"module": "Spec", "path": "Spec.lean", "role": "specification"},
+                {"module": "Proof", "path": "Proof.lean", "role": "proof"}
+            ]
+        }
+    });
+    run_request(dir.path(), "ebpf-reg-local-handler", &lh_request)
+        .expect_proof_failed();
+
+    let fmt_rust = dir.path().join("assert-fmt-refused-rust");
+    fs::create_dir_all(&fmt_rust).unwrap();
+    fs::write(
+        fmt_rust.join("lib.rs"),
+        "pub fn assert_msg_refused(cond: bool, val: u8) -> u8 {\n\
+             assert!(cond, \"bad cond\");\n\
+             val\n\
+         }\n",
+    )
+    .unwrap();
+    let mut fmt_request = abort_request.clone();
+    fmt_request["compilation"]["source_root"] = json!(fmt_rust.to_str().unwrap());
+    fmt_request["compilation"]["crate_name"] = json!("assert_fmt_refused");
+    run_request(dir.path(), "assert-fmt-refused", &fmt_request)
+        .expect_capture_refused("Arguments");
+
+    // Check 5: constant nonzero divisor `x / 16` preserves its primitive
+    // `TerminatorKind.assert` (`AssertKind.divByZero`) verbatim without CFG
+    // folding and still verifies cleanly on Profile v1 (`CrateTheorem`).
+    let div16_rust = dir.path().join("div16-v1-rust");
+    let div16_lean = dir.path().join("div16-v1-lean");
+    fs::create_dir_all(&div16_rust).unwrap();
+    fs::create_dir_all(&div16_lean).unwrap();
+    fs::write(
+        div16_rust.join("lib.rs"),
+        "pub fn div_by_16(x: u64) -> u64 {\n\
+             x / 16\n\
+         }\n",
+    )
+    .unwrap();
+    fs::write(
+        div16_lean.join("Spec.lean"),
+        r#"prelude
+import Trusted.MirSemantics
+
+namespace Spec
+
+open Trusted.MirAst Trusted.MirSemantics
+
+def property (p : Program) : Prop :=
+  p.mirProfileVersion = 1
+
+def specs : Specs := ⟨fun _ _ => True, property⟩
+
+end Spec
+"#,
+    )
+    .unwrap();
+    fs::write(
+        div16_lean.join("Proof.lean"),
+        r#"prelude
+import Init.NotationExtra
+import Anneal.MirWp
+import Spec
+import Expected
+
+namespace Proof
+
+open Trusted.MirAst Trusted.MirSemantics Anneal.MirWp
+
+private theorem wpOutcomeState_step {p : Program}
+    {onDone : TerminalOut → Prop} {onFault : FaultKind → Prop}
+    {fuel : Nat} {s s' : State}
+    (hStep : evalStep p 0 s = .step s')
+    (hNext : wpOutcomeState p onDone onFault fuel s') :
+    wpOutcomeState p onDone onFault (fuel + 1) s :=
+  ⟨⟨0, rfl⟩, fun c hc => by
+    have hc0 : c = 0 := hc
+    rw [hc0, hStep]
+    exact hNext⟩
+
+private theorem wpOutcomeState_done {p : Program}
+    {onDone : TerminalOut → Prop} {onFault : FaultKind → Prop}
+    {fuel : Nat} {s : State} {out : TerminalOut}
+    (hStep : evalStep p 0 s = .done out)
+    (hDone : onDone out) :
+    wpOutcomeState p onDone onFault (fuel + 1) s :=
+  ⟨⟨0, rfl⟩, fun c hc => by
+    have hc0 : c = 0 := hc
+    rw [hc0, hStep]
+    exact hDone⟩
+
+private theorem div16_evalBinOp (bits : BitVec 128)
+    (hTr : truncateBits .i64 bits = bits)
+    (hLt : bits.toNat < Nat.pow 2 64) :
+    evalBinOp .div (.scalar ⟨.i64, false, bits⟩)
+      (.scalar ⟨.i64, false, BitVec.ofNat 128 16⟩) =
+      .ok (.scalar ⟨.i64, false, BitVec.ofNat 128 (Nat.div bits.toNat 16)⟩) := by
+  have hDivLt : Nat.div bits.toNat 16 < Nat.pow 2 64 :=
+    Nat.lt_of_le_of_lt (Nat.div_le_self _ _) hLt
+  have hDiv128 : Nat.div bits.toNat 16 < Nat.pow 2 128 :=
+    Nat.lt_trans hDivLt (by decide)
+  have hMod128 :
+      (intEmod (Int.ofNat (Nat.div bits.toNat 16))
+        (Int.ofNat (Nat.pow 2 128))).toNat = Nat.div bits.toNat 16 := by
+    have hM : Nat.mod (Nat.div bits.toNat 16) (Nat.pow 2 128) =
+        Nat.div bits.toNat 16 := Nat.mod_eq_of_lt hDiv128
+    change (Int.ofNat (Nat.mod (Nat.div bits.toNat 16)
+      (Nat.pow 2 128))).toNat = Nat.div bits.toNat 16
+    rw [hM]; rfl
+  have hTrEq :
+      truncateBits .i64 (BitVec.ofNat 128 (Nat.div bits.toNat 16)) =
+        BitVec.ofNat 128 (Nat.div bits.toNat 16) := by
+    apply bitVec_eq_of_toNat_eq
+    rw [toNat_truncateBits]
+    have hBv :
+        (BitVec.ofNat 128 (Nat.div bits.toNat 16)).toNat =
+          Nat.mod (Nat.div bits.toNat 16) (Nat.pow 2 128) := rfl
+    have hM128 : Nat.mod (Nat.div bits.toNat 16) (Nat.pow 2 128) =
+        Nat.div bits.toNat 16 := Nat.mod_eq_of_lt hDiv128
+    rw [hBv, hM128]
+    exact Nat.mod_eq_of_lt hDivLt
+  dsimp only [evalBinOp, evalArithOp, decodeScalar]
+  rw [hTr]
+  change (if false then Except.error FaultKind.unsupported
+    else if false then Except.error FaultKind.unsupported
+    else if false then Except.error FaultKind.undefined
+    else if false && true &&
+        (Int.ofNat bits.toNat == signedMinInt .i64 &&
+          Int.ofNat 16 == Neg.neg 1) then Except.error FaultKind.undefined
+    else
+      match truncateScalar .i64 false
+          (intTdiv (Int.ofNat bits.toNat) (Int.ofNat 16)) with
+      | .error k => Except.error k
+      | .ok (val, lossy) =>
+        if ((decide (intTdiv (Int.ofNat bits.toNat) (Int.ofNat 16) < 0) ||
+            decide (intTdiv (Int.ofNat bits.toNat) (Int.ofNat 16) ≥
+              HPow.hPow (2 : Int) 128)) || lossy) && false then Except.error FaultKind.undefined
+        else if false then Except.error FaultKind.unsupported
+        else Except.ok (Val.scalar val)) = _
+  dsimp only [truncateScalar, intTdiv, bvOfInt]
+  rw [hMod128, hTrEq]
+  simp [Bool.and_false, bne_self_eq_false]
+
+private theorem checkVal_u64_inv {v : Val}
+    (h : checkVal v (.int .i64 false) = true) :
+    ∃ bits : BitVec 128, v = .scalar ⟨.i64, false, bits⟩ ∧
+      ScalarVal.wf ⟨.i64, false, bits⟩ = true := by
+  unfold checkVal at h
+  cases v with
+  | scalar sv =>
+    cases sv with
+    | mk w s bits =>
+      cases hwf : ScalarVal.wf ⟨w, s, bits⟩ with
+      | false =>
+        change (match if ScalarVal.wf ⟨w, s, bits⟩ then some (MirTy.int w s) else none with
+          | some ty => MirTy.beq ty (.int .i64 false)
+          | none => false) = true at h
+        rw [hwf] at h; cases h
+      | true =>
+        change (match if ScalarVal.wf ⟨w, s, bits⟩ then some (MirTy.int w s) else none with
+          | some ty => MirTy.beq ty (.int .i64 false)
+          | none => false) = true at h
+        rw [hwf] at h
+        cases w with
+        | i64 =>
+          cases s with
+          | false => exact ⟨bits, rfl, hwf⟩
+          | true => cases h
+        | _ => cases h
+  | enumVal ety discr =>
+    cases hValid : enumAdmitted ety && Nat.blt discr ety.discriminants.length with
+    | false =>
+      change (match if (enumAdmitted ety && Nat.blt discr ety.discriminants.length) = true
+          then some (MirTy.enum ety) else none with
+        | some ty => MirTy.beq ty (.int .i64 false)
+        | none => false) = true at h
+      rw [hValid] at h; cases h
+    | true =>
+      change (match if (enumAdmitted ety && Nat.blt discr ety.discriminants.length) = true
+          then some (MirTy.enum ety) else none with
+        | some ty => MirTy.beq ty (.int .i64 false)
+        | none => false) = true at h
+      rw [hValid] at h; cases h
+  | tuple fs =>
+    cases fs with
+    | nil => cases h
+    | cons a r1 =>
+      cases r1 with
+      | nil => cases a <;> cases h
+      | cons b r2 =>
+        cases r2 with
+        | cons _ _ => cases a <;> cases b <;> cases h
+        | nil =>
+          cases a with
+          | scalar sv =>
+            cases b with
+            | bool _ =>
+              cases hwf : sv.wf with
+              | false =>
+                change (match if sv.wf = true
+                    then some (MirTy.tuple [.int sv.width sv.signed, .bool])
+                    else none with
+                  | some ty => MirTy.beq ty (.int .i64 false)
+                  | none => false) = true at h
+                rw [hwf] at h; cases h
+              | true =>
+                change (match if sv.wf = true
+                    then some (MirTy.tuple [.int sv.width sv.signed, .bool])
+                    else none with
+                  | some ty => MirTy.beq ty (.int .i64 false)
+                  | none => false) = true at h
+                rw [hwf] at h; cases h
+            | _ => cases h
+          | _ => cases h
+  | _ => cases h
+
+private theorem div16_wf (args : List Val) (hValid : ValidEntryArgs Captured.body_0 args) :
+    WellFormed (entryProgForBody Captured.program 0) { args := args } := by
+  change checkArgsMatch args [.int .i64 false] = true at hValid
+  cases args with
+  | nil => cases hValid
+  | cons v rest =>
+    cases rest with
+    | cons a1 rest1 =>
+      change checkVal v (.int .i64 false) && checkArgsMatch (a1 :: rest1) [] = true at hValid
+      cases h0 : checkVal v (.int .i64 false) <;> rw [h0] at hValid <;> cases hValid
+    | nil =>
+      change checkVal v (.int .i64 false) && true = true at hValid
+      cases h0 : checkVal v (.int .i64 false) with
+      | false => rw [h0] at hValid; cases hValid
+      | true =>
+        let ⟨bits, hvEq, hwf⟩ := checkVal_u64_inv h0
+        subst hvEq
+        have hTr : truncateBits .i64 bits = bits := by
+          unfold ScalarVal.wf at hwf
+          exact eq_of_beq hwf
+        have hLt : bits.toNat < Nat.pow 2 64 := by
+          rw [← hTr, toNat_truncateBits]
+          exact Nat.mod_lt _ (by decide)
+        have hResWf :
+            ScalarVal.wf ⟨.i64, false, BitVec.ofNat 128 (Nat.div bits.toNat 16)⟩ = true := by
+          have hDivLt : Nat.div bits.toNat 16 < Nat.pow 2 64 :=
+            Nat.lt_of_le_of_lt (Nat.div_le_self _ _) hLt
+          have hDiv128 : Nat.div bits.toNat 16 < Nat.pow 2 128 :=
+            Nat.lt_trans hDivLt (by decide)
+          have hResTr :
+              truncateBits .i64 (BitVec.ofNat 128 (Nat.div bits.toNat 16)) =
+                BitVec.ofNat 128 (Nat.div bits.toNat 16) := by
+            apply bitVec_eq_of_toNat_eq
+            rw [toNat_truncateBits]
+            have hBv :
+                (BitVec.ofNat 128 (Nat.div bits.toNat 16)).toNat =
+                  Nat.mod (Nat.div bits.toNat 16) (Nat.pow 2 128) := rfl
+            have hM128 : Nat.mod (Nat.div bits.toNat 16) (Nat.pow 2 128) =
+                Nat.div bits.toNat 16 := Nat.mod_eq_of_lt hDiv128
+            rw [hBv, hM128]
+            exact Nat.mod_eq_of_lt hDivLt
+          unfold ScalarVal.wf
+          rw [hResTr]
+          exact beq_self_eq_true _
+        have hDiv : evalBinOp .div (.scalar ⟨.i64, false, bits⟩)
+            (.scalar ⟨.i64, false, BitVec.ofNat 128 16⟩) =
+            .ok (.scalar ⟨.i64, false, BitVec.ofNat 128 (Nat.div bits.toNat 16)⟩) :=
+          div16_evalBinOp bits hTr hLt
+        let vIn : Val := .scalar ⟨.i64, false, bits⟩
+        let vOut : Val := .scalar ⟨.i64, false, BitVec.ofNat 128 (Nat.div bits.toNat 16)⟩
+        have hCheckIn : checkVal vIn (.int .i64 false) = true := h0
+        have hCheckOut : checkVal vOut (.int .i64 false) = true := by
+          unfold checkVal
+          change (match if ScalarVal.wf ⟨.i64, false, BitVec.ofNat 128 (Nat.div bits.toNat 16)⟩
+              then some (MirTy.int .i64 false) else none with
+            | some ty => MirTy.beq ty (.int .i64 false)
+            | none => false) = true
+          rw [hResWf]; rfl
+        have hInit :
+            initState (entryProgForBody Captured.program 0) { args := [vIn] } =
+            .ok (mkState 0 0 [.immediate none, .immediate (some vIn), .dead, .immediate none]) := by
+          change (if (!(checkVal vIn (.int .i64 false) && true)) = true then
+            Except.error FaultKind.unsupported
+          else
+            Except.ok (mkState 0 0 [.immediate none, .immediate (some vIn),
+              .dead, .immediate none])) = _
+          rw [hCheckIn]; rfl
+        have hWp :
+            wpProg (entryProgForBody Captured.program 0) 10
+              { args := [vIn] } (fun _ => True) := by
+          unfold wpProg
+          rw [hInit]
+          refine wpOutcomeState_step (s' := mkState 0 1
+            [.immediate none, .immediate (some vIn), .immediate none,
+             .immediate none]) rfl ?_
+          have hCopy :
+              evalStep (entryProgForBody Captured.program 0) 0
+                (mkState 0 1 [.immediate none, .immediate (some vIn),
+                  .immediate none, .immediate none]) =
+              .step (mkState 0 2 [.immediate none, .immediate (some vIn),
+                .immediate (some vIn), .immediate none]) := by
+            change (match (if (!checkVal vIn (.int .i64 false)) = true then
+                Except.error FaultKind.unsupported
+              else
+                Except.ok ([LocalSlot.immediate none,
+                  LocalSlot.immediate (some vIn),
+                  LocalSlot.immediate (some vIn),
+                  LocalSlot.immediate none], entryMemory)) with
+              | Except.error k => StepResult.fault k
+              | Except.ok (locals', mem') => StepResult.step (mkState 0 2 locals' 0 mem')) = _
+            rw [hCheckIn]; rfl
+          refine wpOutcomeState_step hCopy ?_
+          refine wpOutcomeState_step (s' := mkState 0 3
+            [.immediate none, .immediate (some vIn), .immediate (some vIn),
+             .immediate (some (.bool false))]) rfl ?_
+          refine wpOutcomeState_step (s' := mkState 1 0
+            [.immediate none, .immediate (some vIn), .immediate (some vIn),
+             .immediate none]) rfl ?_
+          have hDivStep :
+              evalStep (entryProgForBody Captured.program 0) 0
+                (mkState 1 0 [.immediate none, .immediate (some vIn),
+                  .immediate (some vIn), .immediate none]) =
+              .step (mkState 1 1 [.immediate (some vOut), .immediate (some vIn),
+                .immediate none, .immediate none]) := by
+            change (match (match evalBinOp .div vIn
+                  (.scalar ⟨.i64, false, BitVec.ofNat 128 16⟩) with
+              | Except.error k => Except.error k
+              | Except.ok res =>
+                Except.ok (res, [LocalSlot.immediate none,
+                  LocalSlot.immediate (some vIn), LocalSlot.immediate none,
+                  LocalSlot.immediate none], entryMemory)) with
+              | Except.error k => StepResult.fault k
+              | Except.ok (res, locals1, mem1) =>
+                match writePlace locals1 mem1 0 (.int .i64 false) res with
+                | Except.error k => StepResult.fault k
+                | Except.ok (locals', mem') =>
+                  StepResult.step (mkState 1 1 locals' 0 mem')) = _
+            rw [hDiv]
+            change (match (if (!checkVal vOut (.int .i64 false)) = true then
+                Except.error FaultKind.unsupported
+              else
+                Except.ok ([LocalSlot.immediate (some vOut),
+                  LocalSlot.immediate (some vIn), LocalSlot.immediate none,
+                  LocalSlot.immediate none], entryMemory)) with
+              | Except.error k => StepResult.fault k
+              | Except.ok (locals', mem') =>
+                StepResult.step (mkState 1 1 locals' 0 mem')) = _
+            rw [hCheckOut]; rfl
+          refine wpOutcomeState_step hDivStep ?_
+          refine wpOutcomeState_step (s' := mkState 1 2
+            [.immediate (some vOut), .immediate (some vIn), .dead,
+             .immediate none]) rfl ?_
+          exact wpOutcomeState_done rfl trivial
+        exact (wellFormed_and_spec_of_wp_base _ _ 10 (fun _ => True) hWp).1.1
+
+theorem verify : Expected.claim := by
+  refine ⟨rfl, rfl, rfl, rfl, rfl, by decide, ?_, rfl⟩
+  intro defId body hBody
+  cases defId with
+  | zero =>
+    change some Captured.body_0 = some body at hBody
+    cases hBody
+    refine ⟨rfl, by decide, fun args hValid _ => div16_wf args hValid⟩
+  | succ _ =>
+    change none = some body at hBody
+    cases hBody
+
+end Proof
+"#,
+    )
+    .unwrap();
+    let div16_request = json!({
+        "schema_version": 1,
+        "compilation": {
+            "source_root": div16_rust.to_str().unwrap(),
+            "crate_root": "lib.rs",
+            "crate_name": "div16_v1_demo",
+            "edition": "2021",
+            "target": "x86_64-unknown-linux-gnu",
+            "panic": "abort",
+            "cfg": [],
+            "source_files": ["lib.rs"]
+        },
+        "scope": {"kind": "crate"},
+        "proof": {
+            "source_root": div16_lean.to_str().unwrap(),
+            "specification": "Spec.specs",
+            "theorem": "Proof.verify",
+            "sources": [
+                {"module": "Spec", "path": "Spec.lean", "role": "specification"},
+                {"module": "Proof", "path": "Proof.lean", "role": "proof"}
+            ]
+        }
+    });
+    let div16_ok = run_request(dir.path(), "div16-stays-v1", &div16_request);
+    div16_ok.expect_ok("crate_verified");
+    let div16_capture: Value = serde_json::from_slice(
+        &fs::read(dir.path().join("artifacts-div16-stays-v1/capture/capture.json")).unwrap(),
+    )
+    .unwrap();
+    assert_eq!(div16_capture["program"]["mir_profile_version"], 1, "{div16_capture}");
+    let div16_lean_captured = fs::read_to_string(
+        dir.path().join("artifacts-div16-stays-v1/capture/Captured.lean"),
+    )
+    .unwrap();
+    assert!(
+        div16_lean_captured.contains("TerminatorKind.assert")
+            && div16_lean_captured.contains("AssertKind.divByZero"),
+        "expected verbatim preserved DivByZero Assert on Profile v1:\n{div16_lean_captured}"
+    );
 }

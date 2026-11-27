@@ -2193,8 +2193,9 @@ def describeUndefinedStepFault (prog : Program) (frame : FrameState) (mem : Memo
             "pointer dereference undefined: Trusted.MirSemantics.FaultKind.undefined"
           else
             "uninitialized or invalid value undefined: Trusted.MirSemantics.FaultKind.undefined"
-        | .coreCall coreOp argOps dstPlace _ _ =>
-          if isDeadSlotOpt (compGetElem? frame.locals dstPlace.localId) then
+        | .coreCall coreOp argOps dstPlace targetOpt _ =>
+          if targetOpt.isSome
+              && isDeadSlotOpt (compGetElem? frame.locals dstPlace.localId) then
             "dead local write undefined: Trusted.MirSemantics.FaultKind.undefined"
           else
             match evalCallArgs body.locals argOps frame.locals mem with
@@ -2212,7 +2213,8 @@ def describeUndefinedStepFault (prog : Program) (frame : FrameState) (mem : Memo
               | .numWrappingShr _ _ | .numLeadingZeros _ _
               | .numOverflowingAdd _ _ | .numOverflowingSub _ _
               | .cmpMin _ _ | .cmpMax _ _ | .optionIsSome _
-              | .optionIsNone _ | .optionUnwrap _ | .intToLeBytes _ _ =>
+              | .optionIsNone _ | .optionUnwrap _ | .intToLeBytes _ _
+              | .panicAbort =>
                 "uninitialized or invalid value undefined: Trusted.MirSemantics.FaultKind.undefined"
             | .error _ =>
               "uninitialized or invalid value undefined: Trusted.MirSemantics.FaultKind.undefined"

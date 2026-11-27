@@ -15,11 +15,11 @@
     },
     {
       "path": "theory/Anneal/AiPcc/MirPcc.lean",
-      "sha256": "672e19bce16f579b9b467a62255bd649a6cb75022ea0812efa2dc804114ab85c"
+      "sha256": "52d77bf7b33a1f3ef9a1d89f921d4614e42a5f432c71377082097c633b5a0331"
     },
     {
       "path": "theory/Anneal/AiPcc/MirTransfer.lean",
-      "sha256": "4fe8119e9a566416f126d66a2f1936141e77c11f524a0021a97a19aea4ce5391"
+      "sha256": "6455c3fd87cece29f15d7c9651172b03750868e579c2640a118f2d02ebf82531"
     },
     {
       "path": "theory/Anneal/AiPcc/ReducedProduct.lean",
@@ -83,7 +83,7 @@
     },
     {
       "path": "theory/Anneal/MirSymExec.lean",
-      "sha256": "c814cfcc1c28c71dff36a699637ba417fba90d0dc6f3af787d49dfab631561eb"
+      "sha256": "7097e2a0f7d2c8e9cba4bfeca1701d0391cefd842493dc0e10a140d499d8f688"
     },
     {
       "path": "theory/Anneal/MirSymExec/Bits.lean",
@@ -95,11 +95,11 @@
     },
     {
       "path": "theory/Anneal/MirTotal/Ops.lean",
-      "sha256": "b8691d27c72ef095da244e17769a38279ccdbfeb42e954cb4d150d8763c32858"
+      "sha256": "6bf56ae3ab272ab0b3b7a3c8b14fef4d5323b77a4b8375df75d3a4a421b72b18"
     },
     {
       "path": "theory/Anneal/MirTotal/StepCore.lean",
-      "sha256": "cdb2231064cadaaebad0d3d6a3552c0f797a7bcb84324809136f4e529e063219"
+      "sha256": "584b53c96f7c999bf594526abedadc5a6d0ebc0176afb752f2c8b3961d69a6b8"
     },
     {
       "path": "theory/Anneal/MirWp.lean",
@@ -115,7 +115,7 @@
     },
     {
       "path": "theory/Anneal/MirWp/Reflection.lean",
-      "sha256": "3ea1cc28e3518694b6d388e124a265f429be6c4de88436a358d57ce180eec52c"
+      "sha256": "10cf8bad0225fd67e7d453ffe9afe24c787e28a55c1e29c59ba0b7923e63160e"
     },
     {
       "path": "theory/Anneal/MirWp/Scalars.lean",
@@ -123,7 +123,7 @@
     },
     {
       "path": "theory/Anneal/MirWp/V2Memory.lean",
-      "sha256": "818245c8f6250c4f06e6ab12c50a46a78be97aaf62f6980e9631df2e9c22a1e2"
+      "sha256": "f43e17cf9882a7ff42364ec41408e4e872b771b088034ed513662607b7e57aab"
     },
     {
       "path": "theory/Anneal/MirWp/V2StepShield.lean",

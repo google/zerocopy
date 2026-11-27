@@ -132,6 +132,7 @@ private theorem mirTyListEqExact_eq
       | .ref _ _, .ref _ _ => none
       | .rawPtr _ _, .rawPtr _ _ => none
       | .slice _, .slice _ => none
+      | .str, .str => some true
       | .array _ _, .array _ _ => none
       | .rangeTo _, .rangeTo _ => none
       | .rangeFrom _, .rangeFrom _ => none
@@ -154,6 +155,7 @@ private theorem mirTyListEqExact_eq
       | .rawPtr m1 p1, .rawPtr m2 p2 =>
         if mutabilityBeqComp m1 m2 then ih p1 p2 else some false
       | .slice e1, .slice e2 => ih e1 e2
+      | .str, .str => some true
       | .array _ _, .array _ _ => none
       | .rangeTo e1, .rangeTo e2 => ih e1 e2
       | .rangeFrom e1, .rangeFrom e2 => ih e1 e2
@@ -269,6 +271,8 @@ theorem mirTyEqExact_eq :
       cases b with
       | slice e2 => exact mirTyEqExact_eq fuel e1 e2 r h
       | _ => cases h; rfl
+    | str =>
+      cases b <;> (cases h; rfl)
     | array _ _ =>
       cases b <;> first | (cases h; rfl) | (change none = some r at h; cases h)
     | rangeTo e1 =>
@@ -2814,7 +2818,7 @@ theorem symCastIntToInt_sound {v res : SymVal} {castTy : MirTy}
         dsimp only [evalIntToIntCast, intLikeBits]
         cases (s.eval env).signed <;> rfl
       | bool | unit | never | char | ordering | enum _ | tuple _
-      | ref _ _ | rawPtr _ _ | slice _ | array _ _ | rangeTo _ | rangeFrom _
+      | ref _ _ | rawPtr _ _ | slice _ | str | array _ _ | rangeTo _ | rangeFrom _
       | unsupported | option _ | range _ => cases h
 
 /-- Symbolic local slot (uninitialized/initialized immediate or dead; indirect
@@ -2845,7 +2849,7 @@ theorem liveSymUninitSlot_eval (env : SymEnv) (ty : MirTy) :
     rw [isZstEnumTyComp_eq]
     cases isZstEnumTy ety <;> rfl
   | bool | int _ _ | char | ordering | unit | never | tuple _ | ref _ _
-  | rawPtr _ _ | slice _ | array _ _ | rangeTo _ | rangeFrom _
+  | rawPtr _ _ | slice _ | str | array _ _ | rangeTo _ | rangeFrom _
   | unsupported | option _ | range _ => rfl
 
 /-- Symbolic single-frame MIR execution state (always at `defId = 0`, `mem =
@@ -3291,7 +3295,7 @@ theorem symRvalue_sound {tys : List MirTy} {ls ls' : List SymSlot}
                         | rangeFrom _ | range _ _ => cases hEv
                         | optionVal optV => cases optV <;> (cases hEv)
                 | bool | int _ _ | char | unit | never | tuple _ | ref _ _
-                | rawPtr _ _ | slice _ | array _ _ | rangeTo _ | rangeFrom _
+                | rawPtr _ _ | slice _ | str | array _ _ | rangeTo _ | rangeFrom _
                 | unsupported | option _ | range _ =>
                   rw [ht, hs] at h; cases h
 

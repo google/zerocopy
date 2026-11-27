@@ -15,10 +15,11 @@ pub fn nested_ref_passthrough(r: &&usize, x: usize) -> usize {
     x
 }
 
-// === case: unsized_str_ref_rejected ===
-//@ fail(capture): "unsized_str_passthrough: unsupported type: str"
+// === case: mut_str_ref_rejected ===
+//@ fail(capture): "outside the Profile v2 type fragment"
 
-pub fn unsized_str_passthrough(s: &str) -> usize {
+/// Only shared `&str` is admitted; `&mut str` stays refused.
+pub fn mut_str_passthrough(s: &mut str) -> usize {
     let _ = s;
     0
 }

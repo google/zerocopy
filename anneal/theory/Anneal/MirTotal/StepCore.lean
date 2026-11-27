@@ -59,43 +59,43 @@ exceeds `fuel`. -/
         match b with
         | .bool => true
         | .int _ _ | .unit | .never | .char | .ordering | .enum _ | .tuple _
-        | .ref _ _ | .rawPtr _ _ | .slice _ | .array _ _ | .rangeTo _ | .rangeFrom _
+        | .ref _ _ | .rawPtr _ _ | .slice _ | .str | .array _ _ | .rangeTo _ | .rangeFrom _
         | .range _ | .option _ | .unsupported => false
       | .int w1 s1 =>
         match b with
         | .int w2 s2 => intWidthBeqComp w1 w2 && boolBeqComp s1 s2
         | .bool | .unit | .never | .char | .ordering | .enum _ | .tuple _
-        | .ref _ _ | .rawPtr _ _ | .slice _ | .array _ _ | .rangeTo _ | .rangeFrom _
+        | .ref _ _ | .rawPtr _ _ | .slice _ | .str | .array _ _ | .rangeTo _ | .rangeFrom _
         | .range _ | .option _ | .unsupported => false
       | .unit =>
         match b with
         | .unit => true
         | .bool | .int _ _ | .never | .char | .ordering | .enum _ | .tuple _
-        | .ref _ _ | .rawPtr _ _ | .slice _ | .array _ _ | .rangeTo _ | .rangeFrom _
+        | .ref _ _ | .rawPtr _ _ | .slice _ | .str | .array _ _ | .rangeTo _ | .rangeFrom _
         | .range _ | .option _ | .unsupported => false
       | .never =>
         match b with
         | .never => true
         | .bool | .int _ _ | .unit | .char | .ordering | .enum _ | .tuple _
-        | .ref _ _ | .rawPtr _ _ | .slice _ | .array _ _ | .rangeTo _ | .rangeFrom _
+        | .ref _ _ | .rawPtr _ _ | .slice _ | .str | .array _ _ | .rangeTo _ | .rangeFrom _
         | .range _ | .option _ | .unsupported => false
       | .char =>
         match b with
         | .char => true
         | .bool | .int _ _ | .unit | .never | .ordering | .enum _ | .tuple _
-        | .ref _ _ | .rawPtr _ _ | .slice _ | .array _ _ | .rangeTo _ | .rangeFrom _
+        | .ref _ _ | .rawPtr _ _ | .slice _ | .str | .array _ _ | .rangeTo _ | .rangeFrom _
         | .range _ | .option _ | .unsupported => false
       | .ordering =>
         match b with
         | .ordering => true
         | .bool | .int _ _ | .unit | .never | .char | .enum _ | .tuple _
-        | .ref _ _ | .rawPtr _ _ | .slice _ | .array _ _ | .rangeTo _ | .rangeFrom _
+        | .ref _ _ | .rawPtr _ _ | .slice _ | .str | .array _ _ | .rangeTo _ | .rangeFrom _
         | .range _ | .option _ | .unsupported => false
       | .enum e1 =>
         match b with
         | .enum e2 => enumTyBeqComp e1 e2
         | .bool | .int _ _ | .unit | .never | .char | .ordering | .tuple _
-        | .ref _ _ | .rawPtr _ _ | .slice _ | .array _ _ | .rangeTo _ | .rangeFrom _
+        | .ref _ _ | .rawPtr _ _ | .slice _ | .str | .array _ _ | .rangeTo _ | .rangeFrom _
         | .range _ | .option _ | .unsupported => false
       | .tuple fs1 =>
         match b with
@@ -108,60 +108,67 @@ exceeds `fuel`. -/
             (fun ys => match ys with | [] => true | _ :: _ => false)
             fs1 fs2
         | .bool | .int _ _ | .unit | .never | .char | .ordering | .enum _
-        | .ref _ _ | .rawPtr _ _ | .slice _ | .array _ _ | .rangeTo _ | .rangeFrom _
+        | .ref _ _ | .rawPtr _ _ | .slice _ | .str | .array _ _ | .rangeTo _ | .rangeFrom _
         | .range _ | .option _ | .unsupported => false
       | .ref m1 p1 =>
         match b with
         | .ref m2 p2 => mutabilityBeqComp m1 m2 && ih p1 p2
         | .bool | .int _ _ | .unit | .never | .char | .ordering | .enum _
-        | .tuple _ | .rawPtr _ _ | .slice _ | .array _ _ | .rangeTo _ | .rangeFrom _
+        | .tuple _ | .rawPtr _ _ | .slice _ | .str | .array _ _ | .rangeTo _ | .rangeFrom _
         | .range _ | .option _ | .unsupported => false
       | .rawPtr m1 p1 =>
         match b with
         | .rawPtr m2 p2 => mutabilityBeqComp m1 m2 && ih p1 p2
         | .bool | .int _ _ | .unit | .never | .char | .ordering | .enum _
-        | .tuple _ | .ref _ _ | .slice _ | .array _ _ | .rangeTo _ | .rangeFrom _
+        | .tuple _ | .ref _ _ | .slice _ | .str | .array _ _ | .rangeTo _ | .rangeFrom _
         | .range _ | .option _ | .unsupported => false
       | .slice p1 =>
         match b with
         | .slice p2 => ih p1 p2
         | .bool | .int _ _ | .unit | .never | .char | .ordering | .enum _
-        | .tuple _ | .ref _ _ | .rawPtr _ _ | .array _ _ | .rangeTo _ | .rangeFrom _ | .unsupported | .option _ | .range _ => false
+        | .tuple _ | .ref _ _ | .rawPtr _ _ | .str | .array _ _ | .rangeTo _
+        | .rangeFrom _ | .unsupported | .option _ | .range _ => false
+      | .str =>
+        match b with
+        | .str => true
+        | .bool | .int _ _ | .unit | .never | .char | .ordering | .enum _
+        | .tuple _ | .ref _ _ | .rawPtr _ _ | .slice _ | .array _ _ | .rangeTo _
+        | .rangeFrom _ | .unsupported | .option _ | .range _ => false
       | .array p1 n1 =>
         match b with
         | .array p2 n2 => Nat.beq n1 n2 && ih p1 p2
         | .bool | .int _ _ | .unit | .never | .char | .ordering | .enum _
-        | .tuple _ | .ref _ _ | .rawPtr _ _ | .slice _ | .rangeTo _ | .rangeFrom _
+        | .tuple _ | .ref _ _ | .rawPtr _ _ | .slice _ | .str | .rangeTo _ | .rangeFrom _
         | .range _ | .option _ | .unsupported => false
       | .rangeTo p1 =>
         match b with
         | .rangeTo p2 => ih p1 p2
         | .bool | .int _ _ | .unit | .never | .char | .ordering | .enum _
-        | .tuple _ | .ref _ _ | .rawPtr _ _ | .slice _ | .array _ _ | .rangeFrom _
+        | .tuple _ | .ref _ _ | .rawPtr _ _ | .slice _ | .str | .array _ _ | .rangeFrom _
         | .range _ | .option _ | .unsupported => false
       | .rangeFrom p1 =>
         match b with
         | .rangeFrom p2 => ih p1 p2
         | .bool | .int _ _ | .unit | .never | .char | .ordering | .enum _
-        | .tuple _ | .ref _ _ | .rawPtr _ _ | .slice _ | .array _ _ | .rangeTo _
+        | .tuple _ | .ref _ _ | .rawPtr _ _ | .slice _ | .str | .array _ _ | .rangeTo _
         | .range _ | .option _ | .unsupported => false
       | .range p1 =>
         match b with
         | .range p2 => ih p1 p2
         | .bool | .int _ _ | .unit | .never | .char | .ordering | .enum _
-        | .tuple _ | .ref _ _ | .rawPtr _ _ | .slice _ | .rangeTo _
+        | .tuple _ | .ref _ _ | .rawPtr _ _ | .slice _ | .str | .rangeTo _
         | .rangeFrom _ | .option _ | .unsupported | .array _ _ => false
       | .option p1 =>
         match b with
         | .option p2 => ih p1 p2
         | .bool | .int _ _ | .unit | .never | .char | .ordering | .enum _
-        | .tuple _ | .ref _ _ | .rawPtr _ _ | .slice _ | .rangeTo _
+        | .tuple _ | .ref _ _ | .rawPtr _ _ | .slice _ | .str | .rangeTo _
         | .rangeFrom _ | .range _ | .unsupported | .array _ _ => false
       | .unsupported =>
         match b with
         | .unsupported => true
         | .bool | .int _ _ | .unit | .never | .char | .ordering | .enum _
-        | .tuple _ | .ref _ _ | .rawPtr _ _ | .slice _ | .array _ _ | .rangeTo _
+        | .tuple _ | .ref _ _ | .rawPtr _ _ | .slice _ | .str | .array _ _ | .rangeTo _
         | .rangeFrom _ | .range _ | .option _ => false)
     fuel
 
@@ -299,12 +306,12 @@ theorem encodeValBy_eq (tyEq : MirTy → MirTy → Bool)
                 | optionVal _ | bool _ | char _ | ordering _ | unit | enumVal _ _
                 | array _ | bytes _ => rfl
             | int _ _ | char | ordering | unit | never | enum _ | tuple _
-            | ref _ _ | rawPtr _ _ | slice _ | array _ _ | rangeTo _ | rangeFrom _
+            | ref _ _ | rawPtr _ _ | slice _ | str | array _ _ | rangeTo _ | rangeFrom _
             | range _ | option _ | unsupported => rfl
         | bool | char | ordering | unit | never | enum _ | tuple _
-        | ref _ _ | rawPtr _ _ | slice _ | array _ _ | rangeTo _ | rangeFrom _
+        | ref _ _ | rawPtr _ _ | slice _ | str | array _ _ | rangeTo _ | rangeFrom _
         | range _ | option _ | unsupported => rfl
-    | bool | unit | never | ref _ _ | rawPtr _ _ | slice _ | array _ _ | rangeTo _
+    | bool | unit | never | ref _ _ | rawPtr _ _ | slice _ | str | array _ _ | rangeTo _
     | rangeFrom _ | range _ | option _ | unsupported => cases v <;> rfl
 
 /-- Computable mirror of `Trusted.MirSemantics.storeIndirect` parameterized by
@@ -743,7 +750,7 @@ theorem evalRvalueBy_eq (tyEq : MirTy → MirTy → Bool)
               | error _ => rfl
               | ok optVal => exact evalOrderingDiscriminantOfValComp_eq _ _ _
             | bool | int _ _ | char | unit | never | tuple _ | ref _ _ | rawPtr _ _
-            | slice _ | array _ _ | rangeTo _ | rangeFrom _ | range _ | option _ | unsupported => rfl
+            | slice _ | str | array _ _ | rangeTo _ | rangeFrom _ | range _ | option _ | unsupported => rfl
   | useRetag _ | ref _ _ | addressOf _ _ | fakeAddressOf _ | aggregateTuple _
   | aggregateArray _ _
   | repeat_ _ _ _ | aggregateRangeTo _ | aggregateRangeFrom _ | aggregateRange _ _ _ | aggregateOption _ _ _
@@ -1837,7 +1844,7 @@ theorem discriminantTypesValidBy_eq (tyEq : MirTy → MirTy → Bool)
             | none => rfl
             | some dstTy => exact hTyEq dstTy (.int .i8 true)
           | bool | int _ _ | char | unit | never | tuple _ | ref _ _ | rawPtr _ _
-          | slice _ | array _ _ | rangeTo _ | rangeFrom _ | range _ | option _
+          | slice _ | str | array _ _ | rangeTo _ | rangeFrom _ | range _ | option _
           | unsupported => rfl
 
 /-- Computable mirror of `Trusted.MirSemantics.castTypesValid` parameterized by

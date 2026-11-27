@@ -373,7 +373,7 @@ mutual
     | .array elem _ => tyHasRawPtrV2 elem
     | .option e | .rangeTo e | .rangeFrom e | .range e => tyHasRawPtrV2 e
     | .tuple fs => tyListHasRawPtrV2 fs
-    | .bool | .int _ _ | .unit | .never | .char | .ordering | .enum _
+    | .bool | .int _ _ | .unit | .never | .char | .str | .ordering | .enum _
     | .ref _ _ | .slice _ | .unsupported => false
 
   noncomputable def tyListHasRawPtrV2 : List MirTy → Bool

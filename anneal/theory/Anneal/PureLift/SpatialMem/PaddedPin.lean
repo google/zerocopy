@@ -268,7 +268,7 @@ rejecting `.tuple`, `.ref`, `.unsupported`, and wide-pointer pointees. -/
     execLayoutOfTy ty
   | .rawPtr _ pointee =>
     if sizedPointeeAdmittedAt 8 pointee then some ⟨8, 3⟩ else none
-  | .tuple _ | .ref _ _ | .slice _ | .array _ _ | .rangeTo _ | .rangeFrom _
+  | .tuple _ | .ref _ _ | .slice _ | .str | .array _ _ | .rangeTo _ | .rangeFrom _
   | .range _
   | .option _ | .unsupported => none
 
@@ -456,7 +456,7 @@ theorem reprCLayout_extends_trusted_layoutOfTy (ty : MirTy) (l : LayoutData)
           execLayoutOfTy]
         rw [hAdm, hTag]
         rfl
-  | ref _ _ | rawPtr _ _ | slice _ | array _ _ | rangeTo _ | rangeFrom _
+  | ref _ _ | rawPtr _ _ | slice _ | str | array _ _ | rangeTo _ | rangeFrom _
   | range _ | option _
   | unsupported => nomatch h
   | tuple fs =>
@@ -465,7 +465,7 @@ theorem reprCLayout_extends_trusted_layoutOfTy (ty : MirTy) (l : LayoutData)
     | cons t1 r1 =>
       cases t1 with
       | bool | unit | never | char | ordering | enum _ | tuple _ | ref _ _
-      | rawPtr _ _ | slice _ | array _ _ | rangeTo _ | rangeFrom _
+      | rawPtr _ _ | slice _ | str | array _ _ | rangeTo _ | rangeFrom _
       | range _ | option _
       | unsupported =>
         cases r1 with
@@ -477,7 +477,7 @@ theorem reprCLayout_extends_trusted_layoutOfTy (ty : MirTy) (l : LayoutData)
         | cons t2 r2 =>
           cases t2 with
           | int _ _ | unit | never | char | ordering | enum _ | tuple _
-          | ref _ _ | rawPtr _ _ | slice _ | array _ _ | rangeTo _ | rangeFrom _
+          | ref _ _ | rawPtr _ _ | slice _ | str | array _ _ | rangeTo _ | rangeFrom _
           | range _ | option _
           | unsupported =>
             cases r2 <;> nomatch h
@@ -500,7 +500,7 @@ wide-pointer pointees). -/
     match v with
     | .ptr pv => mirIntWidthBeq pv.width .isize
     | _ => false
-  | .tuple _ | .ref _ _ | .slice _ | .array _ _ | .rangeTo _ | .rangeFrom _
+  | .tuple _ | .ref _ _ | .slice _ | .str | .array _ _ | .rangeTo _ | .rangeFrom _
   | .range _
   | .option _ | .unsupported => false
 
@@ -606,7 +606,7 @@ while `.rawPtr` 8-byte slices must encode `pv.offsetBytes` and carry
       sliceAllInitOptProv slice pv.allocId &&
       allocBytesListBeq slice expectedSlice
     | _ => false
-  | .tuple _ | .ref _ _ | .slice _ | .array _ _ | .rangeTo _ | .rangeFrom _
+  | .tuple _ | .ref _ _ | .slice _ | .str | .array _ _ | .rangeTo _ | .rangeFrom _
   | .range _
   | .option _ | .unsupported => false
 
@@ -763,7 +763,7 @@ theorem valAndBytesMatchTargetSpec_false_of_true (spec : SpatialTargetSpec)
   | mirTy ty =>
     cases ty with
     | bool | int _ _ | unit | never | char | ordering | enum _ | ref _ _
-    | rawPtr _ _ | slice _ | array _ _ | rangeTo _ | rangeFrom _
+    | rawPtr _ _ | slice _ | str | array _ _ | rangeTo _ | rangeFrom _
     | range _ | option _
     | unsupported => exact h
     | tuple ts =>
@@ -772,7 +772,7 @@ theorem valAndBytesMatchTargetSpec_false_of_true (spec : SpatialTargetSpec)
       | cons t1 r1 =>
         cases t1 with
         | bool | unit | never | char | ordering | enum _ | tuple _ | ref _ _
-        | rawPtr _ _ | slice _ | array _ _ | rangeTo _ | rangeFrom _
+        | rawPtr _ _ | slice _ | str | array _ _ | rangeTo _ | rangeFrom _
         | range _ | option _
         | unsupported =>
           cases r1 with
@@ -784,7 +784,7 @@ theorem valAndBytesMatchTargetSpec_false_of_true (spec : SpatialTargetSpec)
           | cons t2 r2 =>
             cases t2 with
             | int _ _ | unit | never | char | ordering | enum _ | tuple _
-            | ref _ _ | rawPtr _ _ | slice _ | array _ _ | rangeTo _
+            | ref _ _ | rawPtr _ _ | slice _ | str | array _ _ | rangeTo _
             | rangeFrom _
             | range _ | option _ | unsupported =>
               cases r2 <;> exact h
@@ -4285,6 +4285,7 @@ theorem mirTyBeqAt_sound (d : Nat) :
     | never => cases b <;> first | rfl | nomatch h
     | char => cases b <;> first | rfl | nomatch h
     | ordering => cases b <;> first | rfl | nomatch h
+    | str => cases b <;> first | rfl | nomatch h
     | unsupported => cases b <;> first | rfl | nomatch h
     | int w1 s1 =>
       cases b with
@@ -4307,6 +4308,7 @@ theorem mirTyBeqAt_sound (d : Nat) :
     | never => cases b <;> first | rfl | nomatch h
     | char => cases b <;> first | rfl | nomatch h
     | ordering => cases b <;> first | rfl | nomatch h
+    | str => cases b <;> first | rfl | nomatch h
     | unsupported => cases b <;> first | rfl | nomatch h
     | int w1 s1 =>
       cases b with
@@ -4436,7 +4438,7 @@ private theorem specsFoldr_toCapturedMirTy_eq (ctx : BodySpatialCtx) :
         cases capTy with
         | unsupported => rw [hRest]
         | bool | int _ _ | unit | never | char | ordering | enum _ | tuple _
-        | ref _ _ | rawPtr _ _ | slice _ | array _ _ | rangeTo _
+        | ref _ _ | rawPtr _ _ | slice _ | str | array _ _ | rangeTo _
         | rangeFrom _
         | range _ | option _ => nomatch hCap
 
@@ -4518,7 +4520,7 @@ private theorem specsFoldr_slot_sound (ctx : BodySpatialCtx) :
           have hAdt := boolAnd_right hHere
           cases capTy with
           | bool | int _ _ | unit | never | char | ordering | enum _ | tuple _
-          | ref _ _ | rawPtr _ _ | slice _ | array _ _ | rangeTo _
+          | ref _ _ | rawPtr _ _ | slice _ | str | array _ _ | rangeTo _
           | rangeFrom _
           | range _ | option _ => nomatch hCap
           | unsupported =>

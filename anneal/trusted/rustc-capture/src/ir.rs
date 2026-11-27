@@ -298,6 +298,7 @@ pub enum Ty {
         #[serde(serialize_with = "serialize_boxed_ty")]
         elem: Box<Ty>,
     },
+    Str,
     Array {
         #[serde(serialize_with = "serialize_boxed_ty")]
         elem: Box<Ty>,
@@ -348,6 +349,7 @@ impl Ty {
             | Self::OverflowPair(_)
             | Self::RawPtr { .. }
             | Self::Slice { .. }
+            | Self::Str
             | Self::RangeTo { .. }
             | Self::RangeFrom { .. }
             | Self::Range { .. } => true,
@@ -372,15 +374,15 @@ impl Ty {
     /// `PlaceMention` of a `Sized` local returns `Place::Local` without reading
     /// memory or checking liveness (an exact operational no-op), whereas an
     /// unsized local accesses its local operand and checks liveness. Unsized
-    /// [`Ty`] variants (such as [`Self::Slice`]) return `false` so capture
-    /// fails closed rather than rendering `Statement::PlaceMention` as
+    /// [`Ty`] variants ([`Self::Slice`] and [`Self::Str`]) return `false` so
+    /// capture fails closed rather than rendering `Statement::PlaceMention` as
     /// `StatementKind.nop`.
     /// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_const_eval/src/interpret/step.rs#L117-L119
     /// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_const_eval/src/interpret/place.rs#L519-L536
     /// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_const_eval/src/interpret/stack.rs#L610-L631
     pub fn is_sized(&self) -> bool {
         match self {
-            Self::Slice { .. } => false,
+            Self::Slice { .. } | Self::Str => false,
             Self::Array { elem, .. } => elem.is_sized(),
             Self::Tuple { fields } => fields.iter().all(Self::is_sized),
             Self::Bool
@@ -443,6 +445,7 @@ impl Ty {
             | Self::Ref { .. }
             | Self::RawPtr { .. }
             | Self::Slice { .. }
+            | Self::Str
             | Self::RangeTo { .. }
             | Self::RangeFrom { .. }
             | Self::Range { .. }
@@ -478,7 +481,7 @@ impl Ty {
                 Some((size, align_log2))
             }
             Self::Ref { pointee, .. } | Self::RawPtr { pointee, .. } => {
-                Some(if matches!(&**pointee, Self::Slice { .. }) {
+                Some(if matches!(&**pointee, Self::Slice { .. } | Self::Str) {
                     (16, 3)
                 } else {
                     (8, 3)
@@ -510,6 +513,7 @@ impl Ty {
             }
             Self::Tuple { .. }
             | Self::Slice { .. }
+            | Self::Str
             | Self::RangeTo { .. }
             | Self::RangeFrom { .. }
             | Self::Range { .. } => None,
@@ -548,7 +552,8 @@ impl Ty {
             | Self::Range { .. }
             | Self::Ref { .. }
             | Self::RawPtr { .. }
-            | Self::Slice { .. } => false,
+            | Self::Slice { .. }
+            | Self::Str => false,
         }
     }
 
@@ -608,7 +613,15 @@ impl Ty {
             | Self::OverflowPair(_) => true,
             Self::Array { elem, .. } => elem.is_supported_v2_data(),
             Self::Tuple { fields } => fields.iter().all(Self::is_supported_v2_local),
-            Self::Ref { pointee, .. } | Self::RawPtr { pointee, .. } => match &**pointee {
+            Self::Ref {
+                mutability,
+                pointee,
+            } => match (&**pointee, mutability) {
+                (Self::Slice { elem }, _) => elem.is_sized_no_ref(),
+                (Self::Str, Mutability::Shared) => true,
+                (other, _) => other.is_supported_v2_pointee(),
+            },
+            Self::RawPtr { pointee, .. } => match &**pointee {
                 Self::Slice { elem } => elem.is_sized_no_ref(),
                 other => other.is_supported_v2_pointee(),
             },
@@ -618,7 +631,7 @@ impl Ty {
             Self::Option { elem } => {
                 elem.is_supported_v2_local() && elem.is_option_payload_supported_v2()
             }
-            Self::Slice { .. } => false,
+            Self::Slice { .. } | Self::Str => false,
         }
     }
 
@@ -642,7 +655,8 @@ impl Ty {
             | Self::Enum(_)
             | Self::OverflowPair(_)
             | Self::RawPtr { .. }
-            | Self::Slice { .. } => false,
+            | Self::Slice { .. }
+            | Self::Str => false,
         }
     }
 
@@ -666,7 +680,8 @@ impl Ty {
             | Self::Enum(_)
             | Self::OverflowPair(_)
             | Self::Ref { .. }
-            | Self::Slice { .. } => false,
+            | Self::Slice { .. }
+            | Self::Str => false,
         }
     }
 
@@ -677,6 +692,7 @@ impl Ty {
             | Self::Ref { .. }
             | Self::RawPtr { .. }
             | Self::Slice { .. }
+            | Self::Str
             | Self::Array { .. }
             | Self::RangeTo { .. }
             | Self::RangeFrom { .. }
@@ -724,6 +740,7 @@ impl Ty {
             | Self::Ordering
             | Self::Unit
             | Self::Never
+            | Self::Str
             | Self::Int(_)
             | Self::OverflowPair(_) => {}
         }
@@ -731,7 +748,13 @@ impl Ty {
 
     pub fn ast_nodes(&self) -> usize {
         match self {
-            Self::Bool | Self::Char | Self::Ordering | Self::Unit | Self::Never | Self::Int(_) => 1,
+            Self::Bool
+            | Self::Char
+            | Self::Ordering
+            | Self::Unit
+            | Self::Never
+            | Self::Str
+            | Self::Int(_) => 1,
             Self::OverflowPair(_) => 3,
             Self::Enum(ety) => 1 + ety.discriminants.len(),
             Self::Tuple { fields } => 1 + fields.iter().map(Self::ast_nodes).sum::<usize>(),
@@ -923,6 +946,43 @@ pub fn validate_constant(ty: &Ty, lit: &ConstLit) -> Result<(), String> {
                 }
                 Ok(())
             }
+            (Ty::Str, Some(len))
+                if matches!(
+                    ty,
+                    Ty::Ref {
+                        mutability: Mutability::Shared,
+                        ..
+                    }
+                ) =>
+            {
+                let max_bytes = 1usize << 63;
+                if bytes.len() >= max_bytes || *align_log2 > 29 || *len >= max_bytes {
+                    return Err(
+                        "rodata str allocation or length exceeds size or alignment limit".into(),
+                    );
+                }
+                let end = offset_bytes
+                    .checked_add(*len)
+                    .ok_or_else(|| "rodata str offset overflow".to_string())?;
+                if end > bytes.len() {
+                    return Err(format!(
+                        "rodata str range [{offset_bytes}..{end}) exceeds rodata size {}",
+                        bytes.len()
+                    ));
+                }
+                let mut raw_bytes = Vec::with_capacity(*len);
+                for byte in &bytes[*offset_bytes..end] {
+                    match byte {
+                        RodataByte::Init { byte } => raw_bytes.push(*byte),
+                        RodataByte::Uninit => {
+                            return Err("uninitialized byte in rodata &str constant".into());
+                        }
+                    }
+                }
+                std::str::from_utf8(&raw_bytes)
+                    .map_err(|_| "non-UTF-8 rodata &str constant is unsupported".to_string())?;
+                Ok(())
+            }
             (pt, None) if pt.is_supported_v2_data() => {
                 let Some((pt_size, pt_align_log2)) = pt.v2_layout() else {
                     return Err(format!("rodata pointee type {pt:?} lacks layout"));
@@ -952,6 +1012,7 @@ pub fn validate_constant(ty: &Ty, lit: &ConstLit) -> Result<(), String> {
             | Ty::Ref { .. }
             | Ty::RawPtr { .. }
             | Ty::Slice { .. }
+            | Ty::Str
             | Ty::RangeTo { .. }
             | Ty::RangeFrom { .. }
             | Ty::Range { .. }
@@ -1333,7 +1394,8 @@ impl UnwindAction {
 
 /// The closed table of sysroot `core` calls that Profile v2 executes,
 /// matching `Trusted.MirAst.CoreCallOp` 1:1. `extract::core_call_op` maps
-/// each entry from one pinned `library/core` definition.
+/// returning entries and `extract::terminator` maps diverging
+/// [`Self::PanicAbort`] from pinned `library/core` definitions.
 #[derive(Clone, Debug, PartialEq, Eq, Serialize)]
 #[serde(tag = "kind", rename_all = "snake_case")]
 pub enum CoreCallOp {
@@ -1394,6 +1456,7 @@ pub enum CoreCallOp {
         elem: Ty,
         len: usize,
     },
+    PanicAbort,
 }
 
 /// A `core::num` arithmetic method that Profile v1 calls through its pinned
@@ -1439,7 +1502,7 @@ pub enum Terminator {
         op: CoreCallOp,
         args: Vec<Operand>,
         dst: Place,
-        target: u32,
+        target: Option<u32>,
         unwind: UnwindAction,
     },
     Call {
@@ -1517,7 +1580,8 @@ impl Terminator {
                     | CoreCallOp::CmpMin(_)
                     | CoreCallOp::CmpMax(_)
                     | CoreCallOp::UsizeUncheckedSub
-                    | CoreCallOp::IntToLeBytes { .. } => 1,
+                    | CoreCallOp::IntToLeBytes { .. }
+                    | CoreCallOp::PanicAbort => 1,
                 };
                 1 + op_nodes + args.iter().map(Operand::ast_nodes).sum::<usize>() + dst.ast_nodes()
             }
@@ -1632,7 +1696,25 @@ fn check_binary_types(op: BinOp, l_ty: &Ty, r_ty: &Ty, dst_ty: &Ty) -> Result<()
 fn check_unary_types(op: UnOp, op_ty: &Ty, dst_ty: &Ty) -> Result<(), String> {
     if op == UnOp::PtrMetadata {
         return match op_ty {
-            Ty::Ref { pointee, .. } | Ty::RawPtr { pointee, .. } => match &**pointee {
+            Ty::Ref {
+                mutability,
+                pointee,
+            } => match (&**pointee, mutability) {
+                (Ty::Slice { .. }, _) | (Ty::Str, Mutability::Shared)
+                    if *dst_ty
+                        == Ty::Int(IntTy {
+                            width: IntWidth::Isize,
+                            signed: false,
+                        }) =>
+                {
+                    Ok(())
+                }
+                (pt, _) if pt.is_sized() && *dst_ty == Ty::Unit => Ok(()),
+                _ => Err(format!(
+                    "invalid PtrMetadata destination {dst_ty:?} for {op_ty:?}"
+                )),
+            },
+            Ty::RawPtr { pointee, .. } => match &**pointee {
                 Ty::Slice { .. }
                     if *dst_ty
                         == Ty::Int(IntTy {
@@ -1846,6 +1928,7 @@ fn check_switch_targets(discr_ty: &Ty, targets: &[(u128, u32)]) -> Result<(), St
         | Ty::Ref { .. }
         | Ty::RawPtr { .. }
         | Ty::Slice { .. }
+        | Ty::Str
         | Ty::RangeTo { .. }
         | Ty::RangeFrom { .. }
         | Ty::Range { .. }
@@ -3011,13 +3094,34 @@ impl Body {
                                     elem: Box::new(inner.clone()),
                                 }
                                 && dst_ty == *inner => {}
+                        (
+                            CoreCallOp::PanicAbort,
+                            [Ty::Ref {
+                                mutability: Mutability::Shared,
+                                pointee,
+                            }],
+                        ) if **pointee == Ty::Str && dst_ty == Ty::Never => {}
                         _ => {
                             return Err(format!(
                                 "invalid CoreCall {op:?} arguments {arg_tys:?} -> {dst_ty:?}"
                             ));
                         }
                     }
-                    check_block(*target)?;
+                    let is_diverging_panic = matches!(op, CoreCallOp::PanicAbort);
+                    match (is_diverging_panic, target) {
+                        (true, None) => {}
+                        (false, Some(target_block)) => check_block(*target_block)?,
+                        (true, Some(_)) => {
+                            return Err(format!(
+                                "diverging panic CoreCall {op:?} must not have a return target"
+                            ));
+                        }
+                        (false, None) => {
+                            return Err(format!(
+                                "returning CoreCall {op:?} must have a return target"
+                            ));
+                        }
+                    }
                 }
                 Terminator::Call {
                     args, dst, target, ..
@@ -3167,7 +3271,29 @@ impl Body {
                         return true;
                     }
                 }
-                Terminator::Assert { .. } | Terminator::CoreCall { .. } => return true,
+                // Profile v1 `evalTerminator` already models `Assert` for
+                // primitive conditions with `lean-miri` correspondence
+                // (`CanaryD17AssertPanicAbortClaim`); route to Profile v2 only
+                // when `cond` requires Profile v2 or `msg` is an optional
+                // arithmetic overflow assert outside Profile v1's domain.
+                Terminator::Assert { cond, msg, .. } => {
+                    if cond.is_profile_v2()
+                        || !matches!(
+                            msg,
+                            AssertKind::DivByZero
+                                | AssertKind::RemByZero
+                                | AssertKind::Overflow {
+                                    op: BinOp::Div | BinOp::Rem
+                                }
+                                | AssertKind::BoundsCheck
+                                | AssertKind::MisalignedPtrDeref
+                                | AssertKind::NullPtrDeref
+                        )
+                    {
+                        return true;
+                    }
+                }
+                Terminator::CoreCall { .. } => return true,
                 // Intra-crate and `core::num` sysroot calls are Profile v1
                 // terminators; `Program::try_new` refuses them in a Profile v2
                 // program.
@@ -4167,8 +4293,6 @@ mod tests {
 
     #[test]
     fn retag_guard_refuses_erasing_an_effective_retag() {
-        // No admitted `Ty` can carry a reference, so exercise the refusal
-        // through the decision that `check_use_retag` delegates to.
         let refusal = admit_retag(false, true).unwrap_err();
         assert!(
             refusal.contains("retagging Use rvalues on reference-bearing types are unsupported"),
@@ -4177,9 +4301,33 @@ mod tests {
         assert!(admit_retag(false, false).is_ok());
         assert!(admit_retag(true, true).is_ok());
         assert!(admit_retag(true, false).is_ok());
+        for ref_ty in [
+            Ty::Ref {
+                mutability: Mutability::Shared,
+                pointee: Box::new(Ty::Bool),
+            },
+            Ty::Ref {
+                mutability: Mutability::Shared,
+                pointee: Box::new(Ty::Str),
+            },
+            Ty::Tuple {
+                fields: vec![
+                    Ty::Bool,
+                    Ty::Ref {
+                        mutability: Mutability::Shared,
+                        pointee: Box::new(Ty::Str),
+                    },
+                ],
+            },
+        ] {
+            assert!(!ref_ty.is_retag_noop(), "{ref_ty:?}");
+            assert!(check_use_retag(&ref_ty, true).is_err(), "{ref_ty:?}");
+            assert!(check_use_retag(&ref_ty, false).is_ok(), "{ref_ty:?}");
+        }
         for ty in [
             Ty::Bool,
             Ty::Char,
+            Ty::Str,
             Ty::Ordering,
             Ty::Unit,
             Ty::Never,
@@ -4795,7 +4943,7 @@ mod tests {
                             local: 0,
                             projection: vec![],
                         },
-                        target: 1,
+                        target: Some(1),
                         unwind: UnwindAction::Continue,
                     },
                 },
@@ -5191,7 +5339,7 @@ mod tests {
                             local: 0,
                             projection: vec![],
                         },
-                        target: 1,
+                        target: Some(1),
                         unwind: UnwindAction::Unreachable,
                     },
                 },
@@ -5249,7 +5397,7 @@ mod tests {
                             local: 2,
                             projection: vec![],
                         },
-                        target: 1,
+                        target: Some(1),
                         unwind: UnwindAction::Unreachable,
                     },
                 },
@@ -5891,14 +6039,14 @@ mod tests {
                     local: 0,
                     projection: vec![],
                 },
-                target: 0,
+                target: Some(0),
                 unwind: UnwindAction::Continue,
             },
             Terminator::CoreCall {
                 op: CoreCallOp::SliceLen,
                 args: vec![Operand::Copy { local: 1 }],
                 dst: p2.clone(),
-                target: 0,
+                target: Some(0),
                 unwind: UnwindAction::Continue,
             },
             Terminator::Call {
@@ -6392,7 +6540,7 @@ mod tests {
                     },
                     args: vec![Operand::Copy { local: 1 }, Operand::Copy { local: 2 }],
                     dst: Place { local: 0, projection: vec![] },
-                    target: 1,
+                    target: Some(1),
                     unwind: UnwindAction::Continue,
                 },
             },
@@ -7005,7 +7153,7 @@ mod tests {
                                 local: 0,
                                 projection: vec![],
                             },
-                            target: 1,
+                            target: Some(1),
                             unwind: UnwindAction::Unreachable,
                         },
                     },
@@ -7034,7 +7182,7 @@ mod tests {
                                 local: 0,
                                 projection: vec![],
                             },
-                            target: 1,
+                            target: Some(1),
                             unwind: UnwindAction::Unreachable,
                         },
                     },
@@ -7063,7 +7211,7 @@ mod tests {
                                 local: 0,
                                 projection: vec![],
                             },
-                            target: 1,
+                            target: Some(1),
                             unwind: UnwindAction::Unreachable,
                         },
                     },
@@ -7093,7 +7241,7 @@ mod tests {
                             local: 0,
                             projection: vec![],
                         },
-                        target: 1,
+                        target: Some(1),
                         unwind: UnwindAction::Unreachable,
                     },
                 },
@@ -7121,7 +7269,7 @@ mod tests {
                             local: 0,
                             projection: vec![],
                         },
-                        target: 1,
+                        target: Some(1),
                         unwind: UnwindAction::Unreachable,
                     },
                 },
@@ -7306,7 +7454,7 @@ mod tests {
                                 local: 0,
                                 projection: vec![],
                             },
-                            target: 1,
+                            target: Some(1),
                             unwind: UnwindAction::Unreachable,
                         },
                     },
@@ -7870,6 +8018,452 @@ mod tests {
             assert!(
                 err.contains("nested or post-deref downcast projections are unsupported"),
                 "{label}: {err}"
+            );
+        }
+    }
+
+    #[test]
+    fn core_panic_ops_validate_diverging_signatures() {
+        let usize_ty = Ty::Int(IntTy {
+            width: IntWidth::Isize,
+            signed: false,
+        });
+        let u8_ty = Ty::Int(IntTy {
+            width: IntWidth::I8,
+            signed: false,
+        });
+        let str_ref_ty = Ty::Ref {
+            mutability: Mutability::Shared,
+            pointee: Box::new(Ty::Str),
+        };
+        let valid_str_arg = Operand::Constant {
+            ty: str_ref_ty.clone(),
+            lit: ConstLit::RodataRef {
+                bytes: vec![
+                    RodataByte::Init { byte: b'o' },
+                    RodataByte::Init { byte: b'k' },
+                ],
+                align_log2: 0,
+                offset_bytes: 0,
+                slice_len: Some(2),
+            },
+        };
+        let never_dst = Place {
+            local: 1,
+            projection: vec![],
+        };
+        let unit_dst = Place {
+            local: 0,
+            projection: vec![],
+        };
+
+        // Valid `PanicAbort`: 1 `&str` rodata arg, `dst: !`, `target: None`.
+        assert!(
+            Body::try_new(
+                0,
+                false,
+                vec![Ty::Unit, Ty::Never],
+                vec![Block {
+                    statements: vec![],
+                    terminator: Terminator::CoreCall {
+                        op: CoreCallOp::PanicAbort,
+                        args: vec![valid_str_arg.clone()],
+                        dst: never_dst.clone(),
+                        target: None,
+                        unwind: UnwindAction::Unreachable,
+                    },
+                }],
+                "rust-path-v1::panic_abort_ok".into(),
+            )
+            .is_ok()
+        );
+
+        // `PanicAbort` with `target: Some(_)` reaches the diverging target
+        // guard ("diverging panic CoreCall PanicAbort must not have a return
+        // target").
+        let target_err = Body::try_new(
+            0,
+            false,
+            vec![Ty::Unit, Ty::Never],
+            vec![Block {
+                statements: vec![],
+                terminator: Terminator::CoreCall {
+                    op: CoreCallOp::PanicAbort,
+                    args: vec![valid_str_arg.clone()],
+                    dst: never_dst.clone(),
+                    target: Some(0),
+                    unwind: UnwindAction::Unreachable,
+                },
+            }],
+            "rust-path-v1::panic_abort_bad_target".into(),
+        )
+        .unwrap_err();
+        assert!(
+            target_err
+                .contains("diverging panic CoreCall PanicAbort must not have a return target"),
+            "{target_err}"
+        );
+
+        // `PanicAbort` rejects 0 args, 2 args, non-`&str` args, and non-`!`
+        // destinations (killing every guard clause).
+        for bad_args in [
+            vec![],
+            vec![valid_str_arg.clone(), valid_str_arg.clone()],
+            vec![Operand::Constant {
+                ty: usize_ty.clone(),
+                lit: ConstLit::Scalar { bits: 3 },
+            }],
+            vec![Operand::Constant {
+                ty: Ty::Ref {
+                    mutability: Mutability::Shared,
+                    pointee: Box::new(Ty::Slice {
+                        elem: Box::new(u8_ty),
+                    }),
+                },
+                lit: ConstLit::RodataRef {
+                    bytes: vec![RodataByte::Init { byte: b'o' }],
+                    align_log2: 0,
+                    offset_bytes: 0,
+                    slice_len: Some(1),
+                },
+            }],
+        ] {
+            let err = Body::try_new(
+                0,
+                false,
+                vec![Ty::Unit, Ty::Never],
+                vec![Block {
+                    statements: vec![],
+                    terminator: Terminator::CoreCall {
+                        op: CoreCallOp::PanicAbort,
+                        args: bad_args,
+                        dst: never_dst.clone(),
+                        target: None,
+                        unwind: UnwindAction::Unreachable,
+                    },
+                }],
+                "rust-path-v1::panic_abort_bad_args".into(),
+            )
+            .unwrap_err();
+            assert!(err.contains("invalid CoreCall PanicAbort"), "{err}");
+        }
+        let dst_err = Body::try_new(
+            0,
+            false,
+            vec![Ty::Unit, Ty::Never],
+            vec![Block {
+                statements: vec![],
+                terminator: Terminator::CoreCall {
+                    op: CoreCallOp::PanicAbort,
+                    args: vec![valid_str_arg],
+                    dst: unit_dst,
+                    target: None,
+                    unwind: UnwindAction::Unreachable,
+                },
+            }],
+            "rust-path-v1::panic_abort_bad_dst".into(),
+        )
+        .unwrap_err();
+        assert!(dst_err.contains("invalid CoreCall PanicAbort"), "{dst_err}");
+
+        // `validate_constant` enforces UTF-8, initialization, bounds,
+        // alignment, and shared-reference-only invariants on `&str` rodata
+        // constants.
+        let hello_bytes: Vec<RodataByte> =
+            b"hello".iter().map(|&byte| RodataByte::Init { byte }).collect();
+        assert!(
+            validate_constant(
+                &str_ref_ty,
+                &ConstLit::RodataRef {
+                    bytes: hello_bytes.clone(),
+                    align_log2: 0,
+                    offset_bytes: 0,
+                    slice_len: Some(5),
+                },
+            )
+            .is_ok()
+        );
+        // Valid interior and exact-end subslices
+        // (`offset_bytes + len <= bytes.len()`), plus maximum allowed
+        // `align_log2 == 29`.
+        assert!(
+            validate_constant(
+                &str_ref_ty,
+                &ConstLit::RodataRef {
+                    bytes: hello_bytes.clone(),
+                    align_log2: 29,
+                    offset_bytes: 1,
+                    slice_len: Some(3),
+                },
+            )
+            .is_ok()
+        );
+        assert!(
+            validate_constant(
+                &str_ref_ty,
+                &ConstLit::RodataRef {
+                    bytes: hello_bytes.clone(),
+                    align_log2: 0,
+                    offset_bytes: 2,
+                    slice_len: Some(3),
+                },
+            )
+            .is_ok()
+        );
+        // Out-of-bounds subslice (`offset_bytes + len > bytes.len()`), `usize`
+        // addition overflow, excessive alignment (`align_log2 > 29`), excessive
+        // `len >= 2^63`, missing `slice_len`, and `&mut str` must fail closed
+        // without panicking.
+        assert!(
+            validate_constant(
+                &str_ref_ty,
+                &ConstLit::RodataRef {
+                    bytes: hello_bytes.clone(),
+                    align_log2: 0,
+                    offset_bytes: 3,
+                    slice_len: Some(3),
+                },
+            )
+            .is_err()
+        );
+        assert!(
+            validate_constant(
+                &str_ref_ty,
+                &ConstLit::RodataRef {
+                    bytes: hello_bytes.clone(),
+                    align_log2: 0,
+                    offset_bytes: usize::MAX,
+                    slice_len: Some(1),
+                },
+            )
+            .is_err()
+        );
+        assert!(
+            validate_constant(
+                &str_ref_ty,
+                &ConstLit::RodataRef {
+                    bytes: hello_bytes.clone(),
+                    align_log2: 30,
+                    offset_bytes: 0,
+                    slice_len: Some(5),
+                },
+            )
+            .is_err()
+        );
+        assert!(
+            validate_constant(
+                &str_ref_ty,
+                &ConstLit::RodataRef {
+                    bytes: hello_bytes.clone(),
+                    align_log2: 0,
+                    offset_bytes: 0,
+                    slice_len: Some(1usize << 63),
+                },
+            )
+            .is_err()
+        );
+        assert!(
+            validate_constant(
+                &str_ref_ty,
+                &ConstLit::RodataRef {
+                    bytes: hello_bytes.clone(),
+                    align_log2: 0,
+                    offset_bytes: 0,
+                    slice_len: None,
+                },
+            )
+            .is_err()
+        );
+        assert!(
+            validate_constant(
+                &Ty::Ref {
+                    mutability: Mutability::Mut,
+                    pointee: Box::new(Ty::Str),
+                },
+                &ConstLit::RodataRef {
+                    bytes: hello_bytes,
+                    align_log2: 0,
+                    offset_bytes: 0,
+                    slice_len: Some(5),
+                },
+            )
+            .is_err()
+        );
+        assert!(
+            validate_constant(
+                &str_ref_ty,
+                &ConstLit::RodataRef {
+                    bytes: vec![RodataByte::Init { byte: 0xff }],
+                    align_log2: 0,
+                    offset_bytes: 0,
+                    slice_len: Some(1),
+                },
+            )
+            .is_err()
+        );
+        assert!(
+            validate_constant(
+                &str_ref_ty,
+                &ConstLit::RodataRef {
+                    bytes: vec![RodataByte::Uninit],
+                    align_log2: 0,
+                    offset_bytes: 0,
+                    slice_len: Some(1),
+                },
+            )
+            .is_err()
+        );
+        assert!(
+            validate_constant(
+                &Ty::RawPtr {
+                    mutability: Mutability::Shared,
+                    pointee: Box::new(Ty::Str),
+                },
+                &ConstLit::RodataRef {
+                    bytes: vec![RodataByte::Init { byte: b'a' }],
+                    align_log2: 0,
+                    offset_bytes: 0,
+                    slice_len: Some(1),
+                },
+            )
+            .is_err()
+        );
+
+        // `Ty::Str` and `&str` predicates (`is_sized`,
+        // `is_array_eq_elem_supported`, `v2_layout`, `is_supported_v2_local`,
+        // `is_profile_v2`).
+        let mut_str_ref_ty = Ty::Ref {
+            mutability: Mutability::Mut,
+            pointee: Box::new(Ty::Str),
+        };
+        let const_str_ptr_ty = Ty::RawPtr {
+            mutability: Mutability::Shared,
+            pointee: Box::new(Ty::Str),
+        };
+        let mut_str_ptr_ty = Ty::RawPtr {
+            mutability: Mutability::Mut,
+            pointee: Box::new(Ty::Str),
+        };
+        assert!(!Ty::Str.is_sized());
+        assert!(!Ty::Str.is_array_eq_elem_supported());
+        assert_eq!(Ty::Str.v2_layout(), None);
+        assert!(!Ty::Str.is_supported_v2_local());
+        assert!(Ty::Str.is_profile_v2());
+        assert!(str_ref_ty.is_sized());
+        assert!(!str_ref_ty.is_array_eq_elem_supported());
+        assert_eq!(str_ref_ty.v2_layout(), Some((16, 3)));
+        assert!(str_ref_ty.is_supported_v2_local());
+        assert!(str_ref_ty.is_profile_v2());
+        assert!(mut_str_ref_ty.is_sized());
+        assert_eq!(mut_str_ref_ty.v2_layout(), Some((16, 3)));
+        assert!(!mut_str_ref_ty.is_supported_v2_local());
+        assert!(!const_str_ptr_ty.is_supported_v2_local());
+        assert!(!mut_str_ptr_ty.is_supported_v2_local());
+
+        // `check_unary_types` for `UnOp::PtrMetadata` across shared/mut `&str`,
+        // raw `str` pointers, slice references/pointers, and sized pointers.
+        let u8_ty = Ty::Int(IntTy {
+            width: IntWidth::I8,
+            signed: false,
+        });
+        let u64_ty = Ty::Int(IntTy {
+            width: IntWidth::I64,
+            signed: false,
+        });
+        let u8_slice_ty = Ty::Slice {
+            elem: Box::new(u8_ty.clone()),
+        };
+        assert!(check_unary_types(UnOp::PtrMetadata, &str_ref_ty, &usize_ty).is_ok());
+        assert!(check_unary_types(UnOp::PtrMetadata, &str_ref_ty, &u64_ty).is_err());
+        assert!(check_unary_types(UnOp::PtrMetadata, &str_ref_ty, &Ty::Unit).is_err());
+        assert!(check_unary_types(UnOp::PtrMetadata, &mut_str_ref_ty, &usize_ty).is_err());
+        assert!(check_unary_types(UnOp::PtrMetadata, &mut_str_ref_ty, &Ty::Unit).is_err());
+        assert!(check_unary_types(UnOp::PtrMetadata, &const_str_ptr_ty, &usize_ty).is_err());
+        assert!(check_unary_types(UnOp::PtrMetadata, &const_str_ptr_ty, &Ty::Unit).is_err());
+        assert!(check_unary_types(UnOp::PtrMetadata, &mut_str_ptr_ty, &usize_ty).is_err());
+        assert!(check_unary_types(UnOp::PtrMetadata, &Ty::Str, &usize_ty).is_err());
+        for mutability in [Mutability::Shared, Mutability::Mut] {
+            let slice_ref = Ty::Ref {
+                mutability,
+                pointee: Box::new(u8_slice_ty.clone()),
+            };
+            let slice_ptr = Ty::RawPtr {
+                mutability,
+                pointee: Box::new(u8_slice_ty.clone()),
+            };
+            let sized_ref = Ty::Ref {
+                mutability,
+                pointee: Box::new(u8_ty.clone()),
+            };
+            let sized_ptr = Ty::RawPtr {
+                mutability,
+                pointee: Box::new(u8_ty.clone()),
+            };
+            assert!(check_unary_types(UnOp::PtrMetadata, &slice_ref, &usize_ty).is_ok());
+            assert!(check_unary_types(UnOp::PtrMetadata, &slice_ref, &Ty::Unit).is_err());
+            assert!(check_unary_types(UnOp::PtrMetadata, &slice_ptr, &usize_ty).is_ok());
+            assert!(check_unary_types(UnOp::PtrMetadata, &slice_ptr, &u64_ty).is_err());
+            assert!(check_unary_types(UnOp::PtrMetadata, &slice_ptr, &Ty::Unit).is_err());
+            assert!(check_unary_types(UnOp::PtrMetadata, &sized_ref, &Ty::Unit).is_ok());
+            assert!(check_unary_types(UnOp::PtrMetadata, &sized_ref, &usize_ty).is_err());
+            assert!(check_unary_types(UnOp::PtrMetadata, &sized_ptr, &Ty::Unit).is_ok());
+            assert!(check_unary_types(UnOp::PtrMetadata, &sized_ptr, &usize_ty).is_err());
+        }
+
+        // `Body::uses_profile_v2` `Assert` narrowing: primitive Profile v1
+        // `AssertKind`s stay in Profile v1, while optional overflow kinds
+        // route to Profile v2.
+        let mk_assert_body = |cond: Operand, msg: AssertKind| {
+            Body::try_new(
+                0,
+                false,
+                vec![Ty::Unit, Ty::Bool],
+                vec![
+                    Block {
+                        statements: Vec::new(),
+                        terminator: Terminator::Assert {
+                            cond,
+                            expected: true,
+                            msg,
+                            target: 1,
+                            unwind: UnwindAction::Continue,
+                        },
+                    },
+                    Block {
+                        statements: Vec::new(),
+                        terminator: Terminator::Ret,
+                    },
+                ],
+                "rust-path-v1::assert_profile_routing".into(),
+            )
+            .unwrap()
+        };
+        let v1_bool_cond = Operand::Copy { local: 1 };
+        for v1_msg in [
+            AssertKind::DivByZero,
+            AssertKind::RemByZero,
+            AssertKind::Overflow { op: BinOp::Div },
+            AssertKind::Overflow { op: BinOp::Rem },
+            AssertKind::BoundsCheck,
+            AssertKind::MisalignedPtrDeref,
+            AssertKind::NullPtrDeref,
+        ] {
+            assert!(
+                !mk_assert_body(v1_bool_cond.clone(), v1_msg).uses_profile_v2(),
+                "expected Profile v1 for {v1_msg:?}"
+            );
+        }
+        for v2_msg in [
+            AssertKind::Overflow { op: BinOp::Add },
+            AssertKind::Overflow { op: BinOp::Sub },
+            AssertKind::Overflow { op: BinOp::Mul },
+            AssertKind::Overflow { op: BinOp::Shl },
+            AssertKind::Overflow { op: BinOp::Shr },
+            AssertKind::OverflowNeg,
+        ] {
+            assert!(
+                mk_assert_body(v1_bool_cond.clone(), v2_msg).uses_profile_v2(),
+                "expected Profile v2 for {v2_msg:?}"
             );
         }
     }

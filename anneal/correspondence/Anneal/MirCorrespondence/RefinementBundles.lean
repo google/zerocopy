@@ -398,6 +398,7 @@ private theorem isU32Ty_eq {ty : MirTy} (h : isU32Ty ty = true) :
   | ref _ _ => cases h
   | rawPtr _ _ => cases h
   | slice _ => cases h
+  | str => cases h
   | array _ _ => cases h
   | rangeTo _ => cases h
   | rangeFrom _ => cases h

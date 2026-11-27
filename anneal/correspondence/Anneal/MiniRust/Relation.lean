@@ -178,6 +178,7 @@ theorem mirTy_eq_of_beq : ∀ {a b : MirTy}, MirTy.beq a b = true → a = b
   | .unit, b, h => by cases b <;> first | rfl | cases h
   | .never, b, h => by cases b <;> first | rfl | cases h
   | .char, b, h => by cases b <;> first | rfl | cases h
+  | .str, b, h => by cases b <;> first | rfl | cases h
   | .ordering, b, h => by cases b <;> first | rfl | cases h
   | .enum e1, b, h => by
     cases b with
@@ -1836,7 +1837,7 @@ theorem mrDecode_replicate_uninit_none (ty : MirTy)
               rw [hd]
           | _ => cases hty
       | _ => cases hty
-  | ref _ _ | rawPtr _ _ | slice _ | array _ _ | range _ | rangeTo _ | rangeFrom _
+  | ref _ _ | rawPtr _ _ | slice _ | str | array _ _ | range _ | rangeTo _ | rangeFrom _
   | option _ | unsupported =>
     cases hty
 
@@ -1878,7 +1879,7 @@ theorem translateTy_validSize_and_alignPos (ty : MirTy)
               cases w <;> exact ⟨by decide, by decide⟩
           | _ => cases hty
       | _ => cases hty
-  | ref _ _ | rawPtr _ _ | slice _ | array _ _ | range _ | rangeTo _ | rangeFrom _
+  | ref _ _ | rawPtr _ _ | slice _ | str | array _ _ | range _ | rangeTo _ | rangeFrom _
   | option _ | unsupported =>
     cases hty
 
@@ -2363,7 +2364,7 @@ theorem liveUninitSlot_isImmediate (ty : MirTy) :
   | char => exact ⟨none, rfl⟩
   | ordering => exact ⟨none, rfl⟩
   | ref _ _ => exact ⟨none, rfl⟩
-  | rawPtr _ _ | slice _ | array _ _ | range _ | rangeTo _ | rangeFrom _
+  | rawPtr _ _ | slice _ | str | array _ _ | range _ | rangeTo _ | rangeFrom _
   | option _ => exact ⟨none, rfl⟩
   | tuple _ => exact ⟨none, rfl⟩
   | unsupported => exact ⟨none, rfl⟩
@@ -2463,7 +2464,7 @@ theorem liveUninitSlot_slotRel (exact : Bool) (mem : MrMemory) (ty : MirTy)
   | tuple fs =>
     exact ⟨ptr, id, List.replicate (translateTy (.tuple fs)).size.bytes .uninit,
       rfl, hlive, rfl, fun _ => rfl⟩
-  | ref _ _ | rawPtr _ _ | slice _ | array _ _ | range _ | rangeTo _ | rangeFrom _
+  | ref _ _ | rawPtr _ _ | slice _ | str | array _ _ | range _ | rangeTo _ | rangeFrom _
   | option _ | unsupported =>
     cases hty
 

@@ -576,12 +576,13 @@ noncomputable def isSizedNoRefV2Ty : MirTy → Bool
   | .enum ety => enumAdmitted ety
   | .option inner => isSizedNoRefV2Ty inner && isOptionPayloadSupportedV2 inner
   | .tuple _ | .array _ _ | .ref _ _ | .rawPtr _ _ | .slice _ | .unsupported
-  | .rangeTo _ | .rangeFrom _ | .range _ => false
+  | .str | .rangeTo _ | .rangeFrom _ | .range _ => false
 
 mutual
   /-- Return `true` when `ty` is structurally inhabited in Rust (has at least
   one valid runtime value):
-  - `.never`, `.unsupported`, and unsized `.slice` have no value (`false`);
+  - `.never`, `.unsupported`, and unsized `.slice` and `.str` have no value
+    (`false`);
   - `.enum ety`: inhabited iff `enumAdmitted ety` (which requires
     `!ety.discriminants.isEmpty`);
   - `.array elem n`: `[T; 0]` is inhabited by `Val.array []` even when `T` is
@@ -589,18 +590,19 @@ mutual
     `isInhabitedV2Ty elem`;
   - `.tuple fs`: inhabited iff every field type is inhabited;
   - `.option _`: always inhabited by `None` (`Val.optionVal none`);
-  - `.ref _ (.slice _)`: always inhabited by `&[]` (`len = 0`), whereas a thin
-    reference `.ref _ pt` requires `isInhabitedV2Ty pt`;
+  - `.ref _ (.slice _)` and `.ref _ .str`: always inhabited by `&[]` and `""`
+    (`len = 0`), whereas a thin reference `.ref _ pt` requires
+    `isInhabitedV2Ty pt`;
   - primitives (`.bool`, `.int`, `.char`, `.ordering`, `.unit`), `.rawPtr`, and
     `Range`/`RangeTo`/`RangeFrom` over `usize` are inhabited. -/
   noncomputable def isInhabitedV2Ty : MirTy → Bool
     | .bool | .int _ _ | .char | .ordering | .unit => true
-    | .never | .slice _ | .unsupported => false
+    | .never | .slice _ | .str | .unsupported => false
     | .enum ety => enumAdmitted ety
     | .array elem n => Nat.beq n 0 || isInhabitedV2Ty elem
     | .tuple fs => isInhabitedV2TyList fs
     | .option _ => true
-    | .ref _ (.slice _) => true
+    | .ref _ (.slice _) | .ref _ .str => true
     | .ref _ pt => isInhabitedV2Ty pt
     | .rawPtr _ _ => true
     | .rangeTo (.int .isize false) | .rangeFrom (.int .isize false)
@@ -623,8 +625,9 @@ mutual
   /-- Return `true` when `ty` is a valid Profile v2 sized local type
   (scalars, booleans, `char`, `Ordering`, `()`, `!`, admitted fieldless enums,
   fixed-size arrays `[T; N]` of data types, tuples, supported `Option`,
-  `Range`/`RangeTo`/`RangeFrom` over `usize`, and flat non-nested pointers or
-  references to ref-free sized, fixed-array, or slice pointees).
+  `Range`/`RangeTo`/`RangeFrom` over `usize`, shared `&str`, and flat
+  non-nested pointers or references to ref-free sized, fixed-array, or slice
+  pointees).
   Nested references/pointers inside pointees (`&&T`, `*mut &T`, `&[&T]`,
   `[&T; N]`) are rejected fail-closed so `refValidInMem` and
   `refsStayInCallerMem` remain complete without recursive heap reference graphs.
@@ -650,6 +653,7 @@ mutual
     | .array elem _ => isSupportedV2DataTy elem
     | .tuple fs => isSupportedV2LocalTyList fs
     | .ref _ (.slice elem) | .rawPtr _ (.slice elem) => isSizedNoRefV2Ty elem
+    | .ref .shared .str => true
     | .ref _ pt | .rawPtr _ pt => isSupportedV2PointeeTy pt
     | .rangeTo (.int .isize false) | .rangeFrom (.int .isize false) => true
     | .range (.int .isize false) => true
@@ -671,8 +675,8 @@ noncomputable def checkValUniformV2 (check : Val → Bool) : List Val → Bool
 mutual
   /-- Validate runtime value `v` against Profile v2 static type `ty`, matching
   Profile v1 `checkVal` on scalar/enum/unit types and adding thin pointers,
-  wide slice pointers, fixed-size arrays, `Range`/`RangeTo`/`RangeFrom`,
-  `Option`, and general tuples. -/
+  wide slice pointers, shared `&str`, fixed-size arrays,
+  `Range`/`RangeTo`/`RangeFrom`, `Option`, and general tuples. -/
   noncomputable def checkValV2 : Val → MirTy → Bool
     | .scalar sv, .int w s => checkVal (.scalar sv) (.int w s)
     | .bool b, .bool => checkVal (.bool b) .bool
@@ -684,6 +688,7 @@ mutual
     | .ptr p, .ref _ pt => !isUnsizedTy pt && IntWidth.beq p.width .isize
     | .slicePtr p _, .rawPtr _ (.slice _) => IntWidth.beq p.width .isize
     | .slicePtr p _, .ref _ (.slice _) => IntWidth.beq p.width .isize
+    | .slicePtr p _, .ref .shared .str => IntWidth.beq p.width .isize
     | .rangeTo _, .rangeTo (.int .isize false) => true
     | .rangeFrom _, .rangeFrom (.int .isize false) => true
     | .array vs, .array elem len =>

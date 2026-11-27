@@ -4597,7 +4597,7 @@ theorem evalIntToIntCast_unsupported_target (v : Val) {castTy : MirTy}
     cases castTy with
     | int w s => exact False.elim (hNotInt w s rfl)
     | char => exact False.elim (hNotChar rfl)
-    | bool | unit | never | ordering | enum _ | ref _ _ | rawPtr _ _
+    | bool | unit | never | str | ordering | enum _ | ref _ _ | rawPtr _ _
     | slice _ | array _ _ | rangeTo _ | rangeFrom _ | range _ | option _
     | tuple _ | unsupported => rfl
 

@@ -119,9 +119,9 @@ exactly the Unicode scalar values that Rust's `char` admits), and
 `.ordering ord` is a value of `core::cmp::Ordering`.
 
 Profile v2 adds three constructors:
-- `.slicePtr p len` is a wide pointer or reference to `[T]`: the data pointer
-  `p` plus the slice-length metadata `len`, matching rustc's `(ptr, meta)`
-  scalar-pair layout for pointers to slices (`layoutOfTyV2`).
+- `.slicePtr p len` is a wide pointer or reference to `[T]` or `str`: the data
+  pointer `p` plus the slice-length metadata `len`, matching rustc's
+  `(ptr, meta)` scalar-pair layout for wide pointers (`layoutOfTyV2`).
 - `.rangeTo endOffset` and `.rangeFrom startOffset` are values of
   `core::ops::RangeTo<usize>` and `core::ops::RangeFrom<usize>` (the
   single-field structs `RangeTo { end }` and `RangeFrom { start }`). Profile v2

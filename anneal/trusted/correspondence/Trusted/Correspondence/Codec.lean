@@ -193,6 +193,7 @@ mutual
     | .char => insertTy .char acc
     | .ordering => insertTy .ordering acc
     | .enum ety => insertTy (.enum ety) acc
+    | .str => insertTy .str acc
     | .unsupported => insertTy .unsupported acc
     | .ref m p => insertTy (.ref m p) (collectTy acc p)
     | .rawPtr m p => insertTy (.rawPtr m p) (collectTy acc p)

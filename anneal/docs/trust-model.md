@@ -316,11 +316,13 @@ result:
   A failed check faults under `--panic unwind`, so a verified function never
   reaches one. Under `--panic abort` it aborts like the other safe panics,
   which a contract with `EffectMaskV2.noAbort` rules out.
-- Under default `--panic unwind`, every failing `Assert` faults
-  (`.unsupported` or `.undefined`), so a verified function never reaches a
-  failing assertion. Under `--panic abort` (when the crate defines no
-  crate-local `#[panic_handler]`), failing non-optional safe `Assert`s, and
-  failing overflow checks under `--overflow-checks`, terminate as `.aborted`
+- Under default `--panic unwind` (or in a crate with a crate-local
+  `#[panic_handler]`), capture leaves `core::panicking` calls unlowered and
+  every failing `Assert` or `core::panicking` call faults (`.unsupported` or
+  `.undefined`), so a verified function never reaches one. Under
+  `--panic abort` (when the crate defines no crate-local `#[panic_handler]`),
+  failing non-optional safe `Assert`s, admitted `core::panicking` calls, and
+  failing overflow checks under `--overflow-checks` terminate as `.aborted`
   carrying post-mutation caller memory; this satisfies
   `WellFormed`/`BodyVerified`/`BodyVerifiedV2` without ruling out panics and
   leaves panic hooks and handlers (including downstream `#![no_std]` binary
@@ -374,11 +376,11 @@ runtime behavior to the same panicking paths—than the one Anneal verified:
   `#[inline]` body that capture admitted.
 - With `-Cpanic=unwind` in production when capture used `--panic abort`
   (without an explicit panic-freedom obligation such as
-  `EffectMaskV2.noAbort`), failing non-optional safe assertions (and, under
-  `--overflow-checks`, failing overflow checks) that Anneal admitted as
-  terminal `.aborted` instead unwind across callers and run `Drop`
-  glue, which Anneal does not model; `cfg(panic = ...)` can also select
-  different code.
+  `EffectMaskV2.noAbort`), failing non-optional safe assertions, admitted
+  `core::panicking` calls, and (under `--overflow-checks`) failing overflow
+  checks that Anneal admitted as terminal `.aborted` instead unwind across
+  callers and run `Drop` glue, which Anneal does not model; `cfg(panic = ...)`
+  can also select different code.
 
 The production binary can therefore contain panic sites, unwinding paths, or
 other code that the verified MIR does not cover, and the proof says nothing

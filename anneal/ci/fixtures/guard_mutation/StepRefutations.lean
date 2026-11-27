@@ -2270,4 +2270,228 @@ theorem refute_step_v2_option_discriminant_dst_ty :
         MemoryState.empty) :=
   ⟨rfl, rfl⟩
 
+/-- Guard `step_v2_core_panic_local_handler_unsupported`: diverging
+`core::panicking::*` calls stay `.fault .unsupported` when
+`hasLocalPanicHandler = true`, even under `--panic abort`. -/
+theorem refute_step_v2_core_panic_local_handler_unsupported :
+    evalCorePanicAbort .abort .unreachable queryEmpty.callerMem true =
+      .fault .unsupported ∧
+    evalCorePanicAbort .abort .continue_ queryEmpty.callerMem true =
+      .fault .unsupported :=
+  ⟨rfl, rfl⟩
+
+/-- Guard `step_v2_core_panic_unwind_unsupported`: diverging
+`core::panicking::*` calls stay `.fault .unsupported` under `--panic unwind`. -/
+theorem refute_step_v2_core_panic_unwind_unsupported :
+    evalCorePanicAbort .unwind .continue_ queryEmpty.callerMem false =
+      .fault .unsupported ∧
+    evalCorePanicAbort .unwind .unreachable queryEmpty.callerMem false =
+      .fault .unsupported :=
+  ⟨rfl, rfl⟩
+
+/-- Shared valid `&'static str` `"ok"` rodata operand for `.panicAbort`
+guard-mutation fixtures. -/
+def panicOkStrOperand : Operand :=
+  .constant ⟨.ref .shared .str, .rodataRef [.init 111, .init 107] 0 0 (some 2)⟩
+
+/-- Profile v2 program under `--panic abort` writing `7 : u8` through `&mut u8`
+before executing `.coreCall .panicAbort`. -/
+noncomputable def progMutBeforeCorePanicV2 : Program := {
+  scope := .unit
+  pointerWidthBits := 64
+  mirProfileVersion := 2
+  panicStrategy := .abort
+  hasLocalPanicHandler := false
+  bodies := [{
+    argumentCount := 1
+    locals := [.unit, .ref .mut u8Ty, .never]
+    basicBlocks := [{
+      statements := [
+        .assign { localId := 1, projection := [.deref] }
+          (.use (.constant ⟨u8Ty, .scalar (BitVec.ofNat 128 7)⟩))
+      ]
+      terminator :=
+        .coreCall .panicAbort [panicOkStrOperand]
+          { localId := 2, projection := [] } none .unreachable
+    }]
+    isUnsafe := false
+    identity := "guard_mutation::mut_before_core_panic_v2"
+  }]
+}
+
+/-- Guard `step_v2_core_panic_abort_extract_caller_mem`: pre-abort `&mut`
+mutations must survive in `.aborted (extractCallerMemory callerMem mem1)` when
+stepping `.coreCall .panicAbort`. -/
+theorem refute_step_v2_core_panic_abort_extract_caller_mem :
+    (match initStateV2 progMutBeforeCorePanicV2
+        { args := [.ptr ⟨some 2, 0, .isize⟩], callerMem := cmBeforeAbort } with
+     | .ok s₀ =>
+       match evalStepV2 progMutBeforeCorePanicV2 s₀ with
+       | .step s₁ =>
+         match evalStepV2 progMutBeforeCorePanicV2 s₁ with
+         | .done (.aborted cm') => cm' = cmAfterAbort
+         | _ => False
+       | _ => False
+     | .error _ => False) :=
+  rfl
+
+/-- Guard `step_v2_core_panic_abort_eval_args`:
+`.coreCall .panicAbort` evaluates its `&str` argument (including `.rodataRef`
+byte-initialization checks) before aborting, so both an uninitialized `&str`
+local and an uninitialized `.rodataRef` operand fault `.fault .undefined`
+rather than `.aborted`. -/
+theorem refute_step_v2_core_panic_abort_eval_args :
+    let uninitTerm : TerminatorKind :=
+      .coreCall .panicAbort
+        [.copy { localId := 1, projection := [] }]
+        { localId := 2, projection := [] } none .unreachable
+    let uninitRodataTerm : TerminatorKind :=
+      .coreCall .panicAbort
+        [.constant ⟨.ref .shared .str, .rodataRef [.uninit] 0 0 (some 1)⟩]
+        { localId := 2, projection := [] } none .unreachable
+    let body : Body := {
+      argumentCount := 0
+      locals := [.unit, .ref .shared .str, .never]
+      basicBlocks := [{ statements := [], terminator := uninitTerm }]
+    }
+    let frame : FrameState := {
+      defId := 0
+      blockIdx := 0
+      stmtIdx := 0
+      locals := [.immediate none, .immediate none, .immediate none]
+    }
+    evalTerminatorV2 body { statements := [], terminator := uninitTerm }
+      frame MemoryState.empty { allocations := [] } .abort false =
+      .fault .undefined ∧
+    evalTerminatorV2 body { statements := [], terminator := uninitRodataTerm }
+      frame MemoryState.empty { allocations := [] } .abort false =
+      .fault .undefined :=
+  ⟨rfl, rfl⟩
+
+/-- Guard `step_v2_core_panic_abort_ref_valid`:
+`validatePanicAbortArgs` re-validates `refValidInMem` on a local `&str` operand
+passed to `.coreCall .panicAbort`, so a dangling `&str` local (including zero
+length into a nonexistent allocation) faults `.fault .undefined` rather than
+`.aborted` or `.unsupported`. -/
+theorem refute_step_v2_core_panic_abort_ref_valid :
+    let term : TerminatorKind :=
+      .coreCall .panicAbort
+        [.copy { localId := 1, projection := [] }]
+        { localId := 2, projection := [] } none .unreachable
+    let body : Body := {
+      argumentCount := 0
+      locals := [.unit, .ref .shared .str, .never]
+      basicBlocks := [{ statements := [], terminator := term }]
+    }
+    let danglingStr : Val := .slicePtr ⟨some 99, 0, .isize⟩ 0
+    let frame : FrameState := {
+      defId := 0
+      blockIdx := 0
+      stmtIdx := 0
+      locals :=
+        [.immediate none, .immediate (some danglingStr), .immediate none]
+    }
+    evalTerminatorV2 body { statements := [], terminator := term }
+      frame MemoryState.empty { allocations := [] } .abort false =
+      .fault .undefined :=
+  rfl
+
+/-- Guard `step_v2_core_panic_abort_non_utf8_unsupported`:
+`validatePanicAbortArgs` rejects initialized non-UTF-8 `&str` bytes passed to
+`.coreCall .panicAbort` as `.fault .unsupported` rather than `.aborted`. -/
+theorem refute_step_v2_core_panic_abort_non_utf8_unsupported :
+    let term : TerminatorKind :=
+      .coreCall .panicAbort
+        [.copy { localId := 1, projection := [] }]
+        { localId := 2, projection := [] } none .unreachable
+    let body : Body := {
+      argumentCount := 0
+      locals := [.unit, .ref .shared .str, .never]
+      basicBlocks := [{ statements := [], terminator := term }]
+    }
+    let badUtf8Mem : MemoryState := {
+      nextAllocId := 3
+      allocations := [{
+        allocId := 2
+        bytes := [.init 0xff none]
+        alignLog2 := 0
+        mutability := .shared
+        live := true
+      }]
+    }
+    let badStr : Val := .slicePtr ⟨some 2, 0, .isize⟩ 1
+    let frame : FrameState := {
+      defId := 0
+      blockIdx := 0
+      stmtIdx := 0
+      locals := [.immediate none, .immediate (some badStr), .immediate none]
+    }
+    evalTerminatorV2 body { statements := [], terminator := term }
+      frame badUtf8Mem { allocations := [] } .abort false =
+      .fault .unsupported :=
+  rfl
+
+/-- Guard `step_v2_ptr_metadata_str_dst_ty`:
+`evalRvalueV2` `.unaryOp .ptrMetadata` on `&str` requires `usize` destination
+type, returning `.ok` on `usize` and failing closed as `.error .unsupported` on
+non-`usize` destinations. -/
+theorem refute_step_v2_ptr_metadata_str_dst_ty :
+    let localsTys : List MirTy := [.int .isize false, .ref .shared .str]
+    let validStr : Val := .slicePtr ⟨some 2, 0, .isize⟩ 2
+    let locals : List LocalSlot := [.immediate none, .immediate (some validStr)]
+    let mem : MemoryState := {
+      nextAllocId := 3
+      allocations := [{
+        allocId := 2
+        bytes := [.init 111 none, .init 107 none]
+        alignLog2 := 0
+        mutability := .shared
+        live := true
+      }]
+    }
+    evalRvalueV2 localsTys locals mem (.int .isize false)
+      (.unaryOp .ptrMetadata (.copy { localId := 1, projection := [] })) =
+      .ok (.scalar ⟨.isize, false, BitVec.ofNat 128 2⟩, locals, mem) ∧
+    evalRvalueV2 localsTys locals mem .bool
+      (.unaryOp .ptrMetadata (.copy { localId := 1, projection := [] })) =
+      .error .unsupported :=
+  ⟨rfl, rfl⟩
+
+/-- Guard `step_v2_ptr_metadata_str_ref_valid`:
+`evalRvalueV2` `.unaryOp .ptrMetadata` on `&str` validates `refValidInMem` on
+the source slice, faulting `.error .undefined` on a dangling `&str` pointer. -/
+theorem refute_step_v2_ptr_metadata_str_ref_valid :
+    let localsTys : List MirTy := [.int .isize false, .ref .shared .str]
+    let danglingStr : Val := .slicePtr ⟨some 99, 0, .isize⟩ 3
+    let locals : List LocalSlot :=
+      [.immediate none, .immediate (some danglingStr)]
+    evalRvalueV2 localsTys locals MemoryState.empty (.int .isize false)
+      (.unaryOp .ptrMetadata (.copy { localId := 1, projection := [] })) =
+      .error .undefined :=
+  rfl
+
+/-- Guard `step_v2_core_panic_abort_dead_dst_unsupported`:
+`.coreCall .panicAbort` requires its `!` destination local slot to be live
+(`some (.immediate _)` or `some (.indirect _)`), failing closed as
+`.fault .unsupported` when `dst` is `.dead`. -/
+theorem refute_step_v2_core_panic_abort_dead_dst_unsupported :
+    let term : TerminatorKind :=
+      .coreCall .panicAbort [panicOkStrOperand]
+        { localId := 1, projection := [] } none .unreachable
+    let body : Body := {
+      argumentCount := 0
+      locals := [.unit, .never]
+      basicBlocks := [{ statements := [], terminator := term }]
+    }
+    let frame : FrameState := {
+      defId := 0
+      blockIdx := 0
+      stmtIdx := 0
+      locals := [.immediate none, .dead]
+    }
+    evalTerminatorV2 body { statements := [], terminator := term }
+      frame MemoryState.empty { allocations := [] } .abort false =
+      .fault .unsupported :=
+  rfl
+
 end GuardMutation
