@@ -145,10 +145,11 @@ private theorem setElem?_lt_and_length {α : Type} :
     exact ⟨Nat.succ_pos _, rfl⟩
   | _ :: tl, _, k + 1, val, hSet => by
     dsimp only [Trusted.MirSemantics.setElem?] at hSet
+    revert hSet
     cases hSub : Trusted.MirSemantics.setElem? tl k val with
-    | none => rw [hSub] at hSet; cases hSet
+    | none => intro hSet; cases hSet
     | some tl' =>
-      rw [hSub] at hSet
+      intro hSet
       injection hSet with hEq
       subst hEq
       have ih := @setElem?_lt_and_length α tl tl' k val hSub
@@ -165,10 +166,11 @@ private theorem bt_getElem?_setElem?_same {α : Type} :
     rfl
   | _ :: tl, _, k + 1, val, hSet => by
     dsimp only [Trusted.MirSemantics.setElem?] at hSet
+    revert hSet
     cases hSub : Trusted.MirSemantics.setElem? tl k val with
-    | none => rw [hSub] at hSet; cases hSet
+    | none => intro hSet; cases hSet
     | some tl' =>
-      rw [hSub] at hSet
+      intro hSet
       injection hSet with hEq
       subst hEq
       exact @bt_getElem?_setElem?_same α tl tl' k val hSub
@@ -187,19 +189,21 @@ private theorem bt_getElem?_setElem?_ne {α : Type} :
     rfl
   | _ :: tl, _, k + 1, 0, val, _, hSet => by
     dsimp only [Trusted.MirSemantics.setElem?] at hSet
+    revert hSet
     cases hSub : Trusted.MirSemantics.setElem? tl k val with
-    | none => rw [hSub] at hSet; cases hSet
+    | none => intro hSet; cases hSet
     | some tl' =>
-      rw [hSub] at hSet
+      intro hSet
       injection hSet with hEq
       subst hEq
       rfl
   | _ :: tl, _, k + 1, m + 1, val, hNe, hSet => by
     dsimp only [Trusted.MirSemantics.setElem?] at hSet
+    revert hSet
     cases hSub : Trusted.MirSemantics.setElem? tl k val with
-    | none => rw [hSub] at hSet; cases hSet
+    | none => intro hSet; cases hSet
     | some tl' =>
-      rw [hSub] at hSet
+      intro hSet
       injection hSet with hEq
       subst hEq
       exact @bt_getElem?_setElem?_ne α tl tl' k m val
@@ -314,16 +318,17 @@ theorem ptreeGetAt_ptreeTabulateAt_in {α : Type}
     have hhalf : Nat.div idx 2 < pow2 d :=
       (Nat.div_lt_iff_lt_mul (Nat.succ_pos 1)).mpr hidx
     have hde := nat_div2_decomp idx
+    revert hde
     cases hbeq : Nat.beq (Nat.mod idx 2) 0 with
     | true =>
-      rw [hbeq] at hde
+      intro hde
       change 2 * Nat.div idx 2 = idx at hde
       rw [ite_bool_true rfl, ih (Nat.div idx 2) offset (2 * step) hhalf]
       have hmul : (2 * step) * Nat.div idx 2 = step * idx := by
         rw [Nat.mul_comm 2 step, Nat.mul_assoc step 2 (Nat.div idx 2), hde]
       rw [hmul]
     | false =>
-      rw [hbeq] at hde
+      intro hde
       change 2 * Nat.div idx 2 + 1 = idx at hde
       rw [ite_bool_false rfl,
         ih (Nat.div idx 2) (offset + step) (2 * step) hhalf]
@@ -481,16 +486,17 @@ theorem ptreeGetAt_ptreeModifyAt_ne {α : Type}
       intro hParEq hDivEq
       have hdj := nat_div2_decomp j
       have hdi := nat_div2_decomp idx
+      revert hParEq hdi
       cases hp : Nat.beq (Nat.mod idx 2) 0 with
       | true =>
-        rw [hp] at hParEq hdi
+        intro hParEq hdi
         rw [hParEq] at hdj
         change 2 * Nat.div j 2 = j at hdj
         change 2 * Nat.div idx 2 = idx at hdi
         rw [hDivEq, hdi] at hdj
         exact hNe hdj.symm
       | false =>
-        rw [hp] at hParEq hdi
+        intro hParEq hdi
         rw [hParEq] at hdj
         change 2 * Nat.div j 2 + 1 = j at hdj
         change 2 * Nat.div idx 2 + 1 = idx at hdi
@@ -726,15 +732,16 @@ theorem ptreeGetAt_ptreeFromListAt {α : Type} :
            (Nat.div idx 2)) =
       Trusted.MirSemantics.getElem? xs idx
     have hde := nat_div2_decomp idx
+    revert hde
     cases hbeq : Nat.beq (Nat.mod idx 2) 0 with
     | true =>
-      rw [hbeq] at hde
+      intro hde
       change 2 * Nat.div idx 2 = idx at hde
       rw [ite_bool_true rfl,
         ptreeGetAt_ptreeFromListAt d (unzipEvenOdd xs).1 hSub1 (Nat.div idx 2),
         (getElem?_unzipEvenOdd xs (Nat.div idx 2)).1, hde]
     | false =>
-      rw [hbeq] at hde
+      intro hde
       change 2 * Nat.div idx 2 + 1 = idx at hde
       rw [ite_bool_false rfl,
         ptreeGetAt_ptreeFromListAt d (unzipEvenOdd xs).2 hSub2 (Nat.div idx 2),
@@ -858,130 +865,6 @@ theorem BlockTree.valid_modify_of_setElem? {α : Type} {xs xs' : List α}
 
 /-! ## `BlockTree`-Accelerated Single-Body MIR Step Evaluator -/
 
-private theorem attachCallersComp_nil_evalStatementBy
-    (tyEq : MirTy → MirTy → Bool) (body : Body) (frame : FrameState)
-    (mem : MemoryState) (callerMem : CallerMemory) (stmt : StatementKind) :
-    Anneal.MirTotal.attachCallersComp []
-        (Anneal.MirTotal.evalStatementBy tyEq body frame mem callerMem stmt) =
-      Anneal.MirTotal.evalStatementBy tyEq body frame mem callerMem stmt := by
-  unfold Anneal.MirTotal.evalStatementBy
-  cases stmt with
-  | nop | unsupported => rfl
-  | storageLive lid =>
-    dsimp only
-    cases Anneal.MirTotal.compGetElem? body.locals lid with
-    | none => rfl
-    | some _ =>
-      dsimp only
-      cases Anneal.MirTotal.compGetElem? frame.locals lid with
-      | none => rfl
-      | some old =>
-        dsimp only
-        cases Anneal.MirTotal.compSetElem? frame.locals lid _ with
-        | none => rfl
-        | some _ =>
-          dsimp only
-          cases Anneal.MirTotal.deallocateLocalComp mem old <;> rfl
-  | storageDead lid =>
-    dsimp only
-    cases Nat.beq lid 0 with
-    | true => rfl
-    | false =>
-      cases Anneal.MirTotal.compGetElem? frame.locals lid with
-      | none => rfl
-      | some old =>
-        dsimp only
-        cases Anneal.MirTotal.compSetElem? frame.locals lid .dead with
-        | none => rfl
-        | some _ =>
-          dsimp only
-          cases Anneal.MirTotal.deallocateLocalComp mem old <;> rfl
-  | assign dst rv =>
-    dsimp only
-    cases (!dst.projection.isEmpty) with
-    | true => rfl
-    | false =>
-      cases Anneal.MirTotal.compGetElem? body.locals dst.localId with
-      | none => rfl
-      | some dstTy =>
-        dsimp only
-        cases Anneal.MirTotal.evalRvalueBy tyEq body.locals frame.locals mem
-            dstTy rv with
-        | error _ => rfl
-        | ok triple =>
-          dsimp only
-          cases triple with
-          | mk v rest =>
-            cases rest with
-            | mk ls₁ m₁ =>
-              dsimp only
-              cases Anneal.MirTotal.writePlaceBy tyEq ls₁ m₁ dst.localId dstTy
-                  v with
-              | error _ => rfl
-              | ok pair => cases pair; rfl
-
-private theorem attachCallersComp_nil_evalTerminatorComp (body : Body)
-    (bb : BasicBlock) (frame : FrameState) (mem : MemoryState)
-    (callerMem : CallerMemory) :
-    Anneal.MirTotal.attachCallersComp []
-        (Anneal.MirTotal.evalTerminatorComp body bb frame mem callerMem) =
-      Anneal.MirTotal.evalTerminatorComp body bb frame mem callerMem := by
-  unfold Anneal.MirTotal.evalTerminatorComp
-  cases bb.terminator with
-  | goto _ | unreachable | unwindResume | assert _ _ _ _ _ | call _ _ _ _ _
-  | sysrootCall _ _ _ _ _ | coreCall _ _ _ _ _ | unsupported => rfl
-  | return_ =>
-    dsimp only
-    cases bb.cleanup with
-    | true => rfl
-    | false =>
-      cases Anneal.MirTotal.compGetElem? frame.locals 0 with
-      | none => rfl
-      | some slot =>
-        cases slot with
-        | dead => rfl
-        | partialTuple _ => rfl
-        | immediate opt => cases opt <;> rfl
-        | indirect mplace =>
-          dsimp only
-          cases Anneal.MirTotal.compGetElem? body.locals 0 with
-          | none => rfl
-          | some retTy =>
-            dsimp only
-            cases Anneal.MirTotal.loadIndirectComp mem retTy mplace with
-            | error _ => rfl
-            | ok opt => cases opt <;> rfl
-  | switchInt discr targets =>
-    dsimp only
-    cases Anneal.MirTotal.evalPrimitiveOperandComp body.locals frame.locals mem
-        discr with
-    | error _ => rfl
-    | ok triple =>
-      dsimp only
-      cases triple with
-      | mk dv rest =>
-        cases rest with
-        | mk ls₁ m₁ =>
-          dsimp only
-          cases dv with
-          | scalar sv =>
-            dsimp only
-            cases Anneal.MirTotal.evalSwitchBranchesComp sv.width sv.bits
-                targets.otherwise targets.branches <;> rfl
-          | bool b =>
-            dsimp only
-            cases Anneal.MirTotal.evalBoolSwitchBranchesComp b targets.otherwise
-                targets.branches <;> rfl
-          | char c =>
-            dsimp only
-            cases Anneal.MirTotal.evalCharSwitchBranchesComp c targets.otherwise
-                targets.branches <;> rfl
-          | ptr _ | ordering _ | unit | tuple _ | bytes _ | enumVal _ _
-          | slicePtr _ _ | rangeTo _ | rangeFrom _ | array _
-          | range _ _ | optionVal _ =>
-            dsimp only
-            cases targets.branches <;> rfl
-
 /-- Shared proof equating any indexed single-body step evaluator (such as
 `evalMirStepBlockTreeBy` or `evalMirStepChunk8By`) with `evalMirStepBy` on
 `Anneal.MirWp.bodyProg body` for every `s : State`. -/
@@ -1036,30 +919,17 @@ private theorem evalMirStepIndexed_eq_evalMirStepBy
               rw [show compGetElem? [body] 0 = some body from rfl]
               dsimp only
               rw [hLookup blockIdx]
-              cases hBB : compGetElem? body.basicBlocks blockIdx with
+              cases compGetElem? body.basicBlocks blockIdx with
               | none => rfl
               | some bb =>
                 dsimp only
-                cases hSt : compGetElem? bb.statements stmtIdx with
-                | some stmt =>
-                  exact (attachCallersComp_nil_evalStatementBy tyEq body
-                    ⟨0, blockIdx, stmtIdx, locals, none, retDst?, retTarget?⟩ mem
-                    callerMem stmt).symm
+                cases compGetElem? bb.statements stmtIdx with
+                | some stmt => rfl
                 | none =>
                   dsimp only
-                  cases hLen : Nat.beq stmtIdx bb.statements.length with
+                  cases Nat.beq stmtIdx bb.statements.length with
                   | false => rfl
-                  | true =>
-                    cases hT : bb.terminator with
-                    | return_ => rfl
-                    | call _ _ _ _ _ | sysrootCall _ _ _ _ _ =>
-                      rw [ite_bool_false (rfl : (!Nat.zero.beq 0) = false)]
-                      rw [ite_bool_true rfl]
-                    | goto _ | switchInt _ _ | unreachable | unwindResume
-                    | assert _ _ _ _ _ | coreCall _ _ _ _ _ | unsupported =>
-                      exact (attachCallersComp_nil_evalTerminatorComp body bb
-                        ⟨0, blockIdx, stmtIdx, locals, none, retDst?, retTarget?⟩
-                        mem callerMem).symm
+                  | true => cases bb.terminator <;> rfl
 
 /-- Single-body MIR step evaluator (`0` `noncomputable`) indexing basic blocks
 via `bt.lookup` (`O(bt.depth)` trie steps on a normalized `BlockTree`). -/
@@ -1293,222 +1163,223 @@ theorem Chunk8.get_set_same {α : Type} (c : Chunk8 α) {r : Nat}
 private theorem chunk8_get_set_ne_lt8 {α : Type} (c : Chunk8 α) {r j : Nat}
     (v : Option α) (hNe : j ≠ r) :
     (c.set r v).get j = c.get j := by
+  revert hNe
   cases j with
   | zero =>
     cases r with
-    | zero => exact False.elim (hNe rfl)
-    | succ r1 =>
-      cases r1 with
-      | zero => cases c; rfl
-      | succ r2 =>
-        cases r2 with
-        | zero => cases c; rfl
-        | succ r3 =>
-          cases r3 with
-          | zero => cases c; rfl
-          | succ r4 =>
-            cases r4 with
-            | zero => cases c; rfl
-            | succ r5 =>
-              cases r5 with
-              | zero => cases c; rfl
-              | succ r6 =>
-                cases r6 with
-                | zero => cases c; rfl
-                | succ r7 =>
-                  cases r7 with
-                  | zero => cases c; rfl
-                  | succ _ => cases c; rfl
-  | succ j1 =>
-    cases j1 with
+    | zero => intro h; exact False.elim (h rfl)
+    | succ r =>
+      cases r with
+      | zero => intro _; rfl
+      | succ r =>
+        cases r with
+        | zero => intro _; rfl
+        | succ r =>
+          cases r with
+          | zero => intro _; rfl
+          | succ r =>
+            cases r with
+            | zero => intro _; rfl
+            | succ r =>
+              cases r with
+              | zero => intro _; rfl
+              | succ r =>
+                cases r with
+                | zero => intro _; rfl
+                | succ r =>
+                  cases r with
+                  | zero => intro _; rfl
+                  | succ _ => intro _; rfl
+  | succ j =>
+    cases j with
     | zero =>
       cases r with
-      | zero => cases c; rfl
-      | succ r1 =>
-        cases r1 with
-        | zero => exact False.elim (hNe rfl)
-        | succ r2 =>
-          cases r2 with
-          | zero => cases c; rfl
-          | succ r3 =>
-            cases r3 with
-            | zero => cases c; rfl
-            | succ r4 =>
-              cases r4 with
-              | zero => cases c; rfl
-              | succ r5 =>
-                cases r5 with
-                | zero => cases c; rfl
-                | succ r6 =>
-                  cases r6 with
-                  | zero => cases c; rfl
-                  | succ r7 =>
-                    cases r7 with
-                    | zero => cases c; rfl
-                    | succ _ => cases c; rfl
-    | succ j2 =>
-      cases j2 with
+      | zero => intro _; rfl
+      | succ r =>
+        cases r with
+        | zero => intro h; exact False.elim (h rfl)
+        | succ r =>
+          cases r with
+          | zero => intro _; rfl
+          | succ r =>
+            cases r with
+            | zero => intro _; rfl
+            | succ r =>
+              cases r with
+              | zero => intro _; rfl
+              | succ r =>
+                cases r with
+                | zero => intro _; rfl
+                | succ r =>
+                  cases r with
+                  | zero => intro _; rfl
+                  | succ r =>
+                    cases r with
+                    | zero => intro _; rfl
+                    | succ _ => intro _; rfl
+    | succ j =>
+      cases j with
       | zero =>
         cases r with
-        | zero => cases c; rfl
-        | succ r1 =>
-          cases r1 with
-          | zero => cases c; rfl
-          | succ r2 =>
-            cases r2 with
-            | zero => exact False.elim (hNe rfl)
-            | succ r3 =>
-              cases r3 with
-              | zero => cases c; rfl
-              | succ r4 =>
-                cases r4 with
-                | zero => cases c; rfl
-                | succ r5 =>
-                  cases r5 with
-                  | zero => cases c; rfl
-                  | succ r6 =>
-                    cases r6 with
-                    | zero => cases c; rfl
-                    | succ r7 =>
-                      cases r7 with
-                      | zero => cases c; rfl
-                      | succ _ => cases c; rfl
-      | succ j3 =>
-        cases j3 with
+        | zero => intro _; rfl
+        | succ r =>
+          cases r with
+          | zero => intro _; rfl
+          | succ r =>
+            cases r with
+            | zero => intro h; exact False.elim (h rfl)
+            | succ r =>
+              cases r with
+              | zero => intro _; rfl
+              | succ r =>
+                cases r with
+                | zero => intro _; rfl
+                | succ r =>
+                  cases r with
+                  | zero => intro _; rfl
+                  | succ r =>
+                    cases r with
+                    | zero => intro _; rfl
+                    | succ r =>
+                      cases r with
+                      | zero => intro _; rfl
+                      | succ _ => intro _; rfl
+      | succ j =>
+        cases j with
         | zero =>
           cases r with
-          | zero => cases c; rfl
-          | succ r1 =>
-            cases r1 with
-            | zero => cases c; rfl
-            | succ r2 =>
-              cases r2 with
-              | zero => cases c; rfl
-              | succ r3 =>
-                cases r3 with
-                | zero => exact False.elim (hNe rfl)
-                | succ r4 =>
-                  cases r4 with
-                  | zero => cases c; rfl
-                  | succ r5 =>
-                    cases r5 with
-                    | zero => cases c; rfl
-                    | succ r6 =>
-                      cases r6 with
-                      | zero => cases c; rfl
-                      | succ r7 =>
-                        cases r7 with
-                        | zero => cases c; rfl
-                        | succ _ => cases c; rfl
-        | succ j4 =>
-          cases j4 with
+          | zero => intro _; rfl
+          | succ r =>
+            cases r with
+            | zero => intro _; rfl
+            | succ r =>
+              cases r with
+              | zero => intro _; rfl
+              | succ r =>
+                cases r with
+                | zero => intro h; exact False.elim (h rfl)
+                | succ r =>
+                  cases r with
+                  | zero => intro _; rfl
+                  | succ r =>
+                    cases r with
+                    | zero => intro _; rfl
+                    | succ r =>
+                      cases r with
+                      | zero => intro _; rfl
+                      | succ r =>
+                        cases r with
+                        | zero => intro _; rfl
+                        | succ _ => intro _; rfl
+        | succ j =>
+          cases j with
           | zero =>
             cases r with
-            | zero => cases c; rfl
-            | succ r1 =>
-              cases r1 with
-              | zero => cases c; rfl
-              | succ r2 =>
-                cases r2 with
-                | zero => cases c; rfl
-                | succ r3 =>
-                  cases r3 with
-                  | zero => cases c; rfl
-                  | succ r4 =>
-                    cases r4 with
-                    | zero => exact False.elim (hNe rfl)
-                    | succ r5 =>
-                      cases r5 with
-                      | zero => cases c; rfl
-                      | succ r6 =>
-                        cases r6 with
-                        | zero => cases c; rfl
-                        | succ r7 =>
-                          cases r7 with
-                          | zero => cases c; rfl
-                          | succ _ => cases c; rfl
-          | succ j5 =>
-            cases j5 with
+            | zero => intro _; rfl
+            | succ r =>
+              cases r with
+              | zero => intro _; rfl
+              | succ r =>
+                cases r with
+                | zero => intro _; rfl
+                | succ r =>
+                  cases r with
+                  | zero => intro _; rfl
+                  | succ r =>
+                    cases r with
+                    | zero => intro h; exact False.elim (h rfl)
+                    | succ r =>
+                      cases r with
+                      | zero => intro _; rfl
+                      | succ r =>
+                        cases r with
+                        | zero => intro _; rfl
+                        | succ r =>
+                          cases r with
+                          | zero => intro _; rfl
+                          | succ _ => intro _; rfl
+          | succ j =>
+            cases j with
             | zero =>
               cases r with
-              | zero => cases c; rfl
-              | succ r1 =>
-                cases r1 with
-                | zero => cases c; rfl
-                | succ r2 =>
-                  cases r2 with
-                  | zero => cases c; rfl
-                  | succ r3 =>
-                    cases r3 with
-                    | zero => cases c; rfl
-                    | succ r4 =>
-                      cases r4 with
-                      | zero => cases c; rfl
-                      | succ r5 =>
-                        cases r5 with
-                        | zero => exact False.elim (hNe rfl)
-                        | succ r6 =>
-                          cases r6 with
-                          | zero => cases c; rfl
-                          | succ r7 =>
-                            cases r7 with
-                            | zero => cases c; rfl
-                            | succ _ => cases c; rfl
-            | succ j6 =>
-              cases j6 with
+              | zero => intro _; rfl
+              | succ r =>
+                cases r with
+                | zero => intro _; rfl
+                | succ r =>
+                  cases r with
+                  | zero => intro _; rfl
+                  | succ r =>
+                    cases r with
+                    | zero => intro _; rfl
+                    | succ r =>
+                      cases r with
+                      | zero => intro _; rfl
+                      | succ r =>
+                        cases r with
+                        | zero => intro h; exact False.elim (h rfl)
+                        | succ r =>
+                          cases r with
+                          | zero => intro _; rfl
+                          | succ r =>
+                            cases r with
+                            | zero => intro _; rfl
+                            | succ _ => intro _; rfl
+            | succ j =>
+              cases j with
               | zero =>
                 cases r with
-                | zero => cases c; rfl
-                | succ r1 =>
-                  cases r1 with
-                  | zero => cases c; rfl
-                  | succ r2 =>
-                    cases r2 with
-                    | zero => cases c; rfl
-                    | succ r3 =>
-                      cases r3 with
-                      | zero => cases c; rfl
-                      | succ r4 =>
-                        cases r4 with
-                        | zero => cases c; rfl
-                        | succ r5 =>
-                          cases r5 with
-                          | zero => cases c; rfl
-                          | succ r6 =>
-                            cases r6 with
-                            | zero => exact False.elim (hNe rfl)
-                            | succ r7 =>
-                              cases r7 with
-                              | zero => cases c; rfl
-                              | succ _ => cases c; rfl
-              | succ j7 =>
-                cases j7 with
+                | zero => intro _; rfl
+                | succ r =>
+                  cases r with
+                  | zero => intro _; rfl
+                  | succ r =>
+                    cases r with
+                    | zero => intro _; rfl
+                    | succ r =>
+                      cases r with
+                      | zero => intro _; rfl
+                      | succ r =>
+                        cases r with
+                        | zero => intro _; rfl
+                        | succ r =>
+                          cases r with
+                          | zero => intro _; rfl
+                          | succ r =>
+                            cases r with
+                            | zero => intro h; exact False.elim (h rfl)
+                            | succ r =>
+                              cases r with
+                              | zero => intro _; rfl
+                              | succ _ => intro _; rfl
+              | succ j =>
+                cases j with
                 | zero =>
                   cases r with
-                  | zero => cases c; rfl
-                  | succ r1 =>
-                    cases r1 with
-                    | zero => cases c; rfl
-                    | succ r2 =>
-                      cases r2 with
-                      | zero => cases c; rfl
-                      | succ r3 =>
-                        cases r3 with
-                        | zero => cases c; rfl
-                        | succ r4 =>
-                          cases r4 with
-                          | zero => cases c; rfl
-                          | succ r5 =>
-                            cases r5 with
-                            | zero => cases c; rfl
-                            | succ r6 =>
-                              cases r6 with
-                              | zero => cases c; rfl
-                              | succ r7 =>
-                                cases r7 with
-                                | zero => exact False.elim (hNe rfl)
-                                | succ _ => cases c; rfl
-                | succ j8 => exact chunk8_get_set_ge8 c r j8 v
+                  | zero => intro _; rfl
+                  | succ r =>
+                    cases r with
+                    | zero => intro _; rfl
+                    | succ r =>
+                      cases r with
+                      | zero => intro _; rfl
+                      | succ r =>
+                        cases r with
+                        | zero => intro _; rfl
+                        | succ r =>
+                          cases r with
+                          | zero => intro _; rfl
+                          | succ r =>
+                            cases r with
+                            | zero => intro _; rfl
+                            | succ r =>
+                              cases r with
+                              | zero => intro _; rfl
+                              | succ r =>
+                                cases r with
+                                | zero => intro h; exact False.elim (h rfl)
+                                | succ _ => intro _; rfl
+                | succ j => intro _; exact chunk8_get_set_ge8 _ r j v
 
 /-- Distinct-slot frame law for `Chunk8.set` (`j ≠ r`). -/
 theorem Chunk8.get_set_ne {α : Type} (c : Chunk8 α) {r j : Nat}
@@ -2066,16 +1937,17 @@ theorem chunk8TreeLookupChunkAt_fromChunksAt {α : Type} :
           (chunk8TreeFromChunksAt d (unzipEvenOdd cs).2) (Nat.div chunkIdx 2)) =
       Trusted.MirSemantics.getElem? cs chunkIdx
     have hde := nat_div2_decomp chunkIdx
+    revert hde
     cases hbeq : Nat.beq (Nat.mod chunkIdx 2) 0 with
     | true =>
-      rw [hbeq] at hde
+      intro hde
       change 2 * Nat.div chunkIdx 2 = chunkIdx at hde
       dsimp only [cond]
       rw [chunk8TreeLookupChunkAt_fromChunksAt d (unzipEvenOdd cs).1 hSub1
             (Nat.div chunkIdx 2),
           (getElem?_unzipEvenOdd cs (Nat.div chunkIdx 2)).1, hde]
     | false =>
-      rw [hbeq] at hde
+      intro hde
       change 2 * Nat.div chunkIdx 2 + 1 = chunkIdx at hde
       dsimp only [cond]
       rw [chunk8TreeLookupChunkAt_fromChunksAt d (unzipEvenOdd cs).2 hSub2
@@ -2239,16 +2111,17 @@ private theorem chunk8TreeLookupChunkAt_modify_ne {α : Type}
       intro hParEq hDivEq
       have hdq := nat_div2_decomp q
       have hdc := nat_div2_decomp chunkIdx
+      revert hParEq hdc
       cases hp : Nat.beq (Nat.mod chunkIdx 2) 0 with
       | true =>
-        rw [hp] at hParEq hdc
+        intro hParEq hdc
         rw [hParEq] at hdq
         change 2 * Nat.div q 2 = q at hdq
         change 2 * Nat.div chunkIdx 2 = chunkIdx at hdc
         rw [hDivEq, hdc] at hdq
         exact hNe hdq.symm
       | false =>
-        rw [hp] at hParEq hdc
+        intro hParEq hdc
         rw [hParEq] at hdq
         change 2 * Nat.div q 2 + 1 = q at hdq
         change 2 * Nat.div chunkIdx 2 + 1 = chunkIdx at hdc
@@ -2417,7 +2290,6 @@ theorem valid_chunk8BlockTree_ofListAt {α : Type} (xs : List α) (depth : Nat)
     exact Nat.le_trans hPackLe (Nat.mul_le_mul_left 8 hChunks)
   refine ⟨hLen, fun idx => ?_⟩
   unfold Chunk8BlockTree.lookup Chunk8BlockTree.ofListAt chunk8TreeGetAt
-  dsimp only
   rw [chunk8TreeLookupChunkAt_fromChunksAt depth (packChunk8 xs) hChunks
     (Nat.div idx 8)]
   exact getElem?_packChunk8Fuel (Nat.div (compListLength xs + 7) 8) xs
@@ -2457,7 +2329,6 @@ theorem Chunk8BlockTree.lookup_modify_same {α : Type}
     rw [Nat.mul_comm 8 (pow2 bt.depth)] at hidx
     exact (Nat.div_lt_iff_lt_mul (Nat.succ_pos 7)).mpr hidx
   unfold Chunk8BlockTree.lookup Chunk8BlockTree.modify chunk8TreeGetAt
-  dsimp only
   rw [chunk8TreeLookupChunkAt_modify_same bt.depth bt.tree (Nat.div idx 8)
     (Nat.mod idx 8) v hc]
   exact Chunk8.get_set_same _ v (Nat.mod_lt idx (Nat.succ_pos 7))
@@ -2796,9 +2667,10 @@ private theorem chunk8TreeLookupChunkAt_tabulateAt_in {α : Type}
           (chunk8TreeTabulateAt d (chunkOff + step) (2 * step) f)
           (Nat.div chunkIdx 2)) = _
     have hde := nat_div2_decomp chunkIdx
+    revert hde
     cases hbeq : Nat.beq (Nat.mod chunkIdx 2) 0 with
     | true =>
-      rw [hbeq] at hde
+      intro hde
       change 2 * Nat.div chunkIdx 2 = chunkIdx at hde
       dsimp only [cond]
       rw [ih (Nat.div chunkIdx 2) chunkOff (2 * step) hhalf]
@@ -2806,7 +2678,7 @@ private theorem chunk8TreeLookupChunkAt_tabulateAt_in {α : Type}
         rw [Nat.mul_comm 2 step, Nat.mul_assoc step 2 (Nat.div chunkIdx 2), hde]
       rw [hmul]
     | false =>
-      rw [hbeq] at hde
+      intro hde
       change 2 * Nat.div chunkIdx 2 + 1 = chunkIdx at hde
       dsimp only [cond]
       rw [ih (Nat.div chunkIdx 2) (chunkOff + step) (2 * step) hhalf]
@@ -2863,9 +2735,7 @@ theorem Chunk8BlockTree.lookup_tabulate_in {α : Type} (depth : Nat)
     rw [Nat.mul_comm 8 (pow2 depth)] at hidx
     exact (Nat.div_lt_iff_lt_mul (Nat.succ_pos 7)).mpr hidx
   unfold Chunk8BlockTree.lookup Chunk8BlockTree.tabulate chunk8TreeGetAt
-  dsimp only
   rw [chunk8TreeLookupChunkAt_tabulateAt_in depth (Nat.div idx 8) 0 1 f hc]
-  dsimp only
   rw [Nat.one_mul, Nat.zero_add]
   have hde : 8 * Nat.div idx 8 + Nat.mod idx 8 = idx := Nat.div_add_mod idx 8
   have hr : Nat.mod idx 8 < 8 := Nat.mod_lt idx (Nat.succ_pos 7)
@@ -2929,7 +2799,6 @@ theorem Chunk8BlockTree.lookup_tabulate_oob {α : Type} (depth : Nat)
     rw [Nat.mul_comm 8 (pow2 depth)] at hoob
     exact (Nat.le_div_iff_mul_le (Nat.succ_pos 7)).mpr hoob
   unfold Chunk8BlockTree.lookup Chunk8BlockTree.tabulate chunk8TreeGetAt
-  dsimp only
   rw [chunk8TreeLookupChunkAt_tabulateAt_oob depth (Nat.div idx 8) 0 1 f hc]
 
 /-- Exact height of `Chunk8BlockTree.tabulate depth f` at fuel `depth + 1`
@@ -2939,7 +2808,6 @@ theorem Chunk8BlockTree.tabulate_height {α : Type} (depth : Nat)
     (f : Nat → Option α) :
     (Chunk8BlockTree.tabulate depth f).tree.heightAt (depth + 1) = depth + 1 := by
   unfold Chunk8BlockTree.tabulate
-  dsimp only
   have hAt :
       ∀ (d off step : Nat),
         (chunk8TreeTabulateAt d off step f).heightAt (d + 1) = d + 1 := by

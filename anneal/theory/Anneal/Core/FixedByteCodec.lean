@@ -306,12 +306,13 @@ private theorem fbc_allBytesInit_replicate_uninit_pos {n : Nat} (hPos : 0 < n) :
 theorem sliceBytes_length {bs sub : List AllocByte} {off len : Nat}
     (h : sliceBytes bs off len = some sub) : sub.length = len := by
   unfold sliceBytes at h
+  revert h
   cases hBle : Nat.ble (off + len) bs.length with
   | false =>
-    rw [hBle] at h
+    intro h
     nomatch h
   | true =>
-    rw [hBle] at h
+    intro h
     injection h with hSub
     subst hSub
     have hLe : off + len ≤ bs.length := Nat.ble_eq.mp hBle
@@ -342,12 +343,13 @@ theorem allBytesInit_of_sliceBytes {bs sub : List AllocByte} {off len : Nat}
     (hInit : AllBytesInit bs) (hSlice : sliceBytes bs off len = some sub) :
     AllBytesInit sub := by
   unfold sliceBytes at hSlice
+  revert hSlice
   cases hBle : Nat.ble (off + len) bs.length with
   | false =>
-    rw [hBle] at hSlice
+    intro hSlice
     nomatch hSlice
   | true =>
-    rw [hBle] at hSlice
+    intro hSlice
     injection hSlice with hSub
     subst hSub
     exact fbc_allBytesInit_take len (bs.drop off) (fbc_allBytesInit_drop off bs hInit)
@@ -528,11 +530,12 @@ theorem IsSurjectiveInitDecoder.hasZeroValid {α : Type} {n : Nat}
       exact congrArg some (right_inv b))
     (by
       intro bs _ h
+      revert h
       cases hc : c.decode bs with
       | none =>
-        rw [hc] at h
+        intro h
         nomatch h
-      | some _ => exact c.decode_length hc)
+      | some _ => intro h; exact c.decode_length hc)
 
 theorem imap_encode_to {α β : Type} {n : Nat}
     (c : FixedByteCodec α n) (toβ : α → β) (ofβ : β → α)
@@ -638,18 +641,18 @@ theorem zst_hasZeroValid : zst.HasZeroValid := ⟨(), rfl⟩
         rw [List.length_append, c₁.encode_length a, c₂.encode_length b]
       have hBeq : Nat.beq (c₁.encode a ++ c₂.encode b).length (m + n) = true :=
         (nat_beq_iff _ _).mpr hLen
-      dsimp only
       rw [ite_true_of hBeq,
           fbc_take_append_left_eq (c₁.encode a) (c₂.encode b) (c₁.encode_length a),
           fbc_drop_append_left_eq (c₁.encode a) (c₂.encode b) (c₁.encode_length a),
           c₁.decode_encode a, c₂.decode_encode b])
     (by
       intro bs _ h
+      revert h
       cases hBeq : Nat.beq bs.length (m + n) with
       | false =>
-        rw [hBeq] at h
+        intro h
         nomatch h
-      | true => exact nat_eq_of_beq hBeq)
+      | true => intro h; exact nat_eq_of_beq hBeq)
 
 theorem prod_encode_eq {α β : Type} {m n : Nat}
     (c₁ : FixedByteCodec α m) (c₂ : FixedByteCodec β n) (a : α) (b : β) :
@@ -677,25 +680,28 @@ theorem prod_decode_projections {α β : Type} {m n : Nat}
       c₁.decode (bs.take m) = some a ∧ c₂.decode (bs.drop m) = some b := by
   unfold prod ofRoundTrip at hDec
   dsimp only at hDec
+  revert hDec
   cases hBeq : Nat.beq bs.length (m + n) with
   | false =>
-    rw [hBeq] at hDec
+    intro hDec
     nomatch hDec
   | true =>
-    rw [hBeq] at hDec
+    intro hDec
     have hLen : bs.length = m + n := nat_eq_of_beq hBeq
+    revert hDec
     cases h1 : c₁.decode (bs.take m) with
     | none =>
-      rw [h1] at hDec
+      intro hDec
       nomatch hDec
     | some a' =>
-      rw [h1] at hDec
+      intro hDec
+      revert hDec
       cases h2 : c₂.decode (bs.drop m) with
       | none =>
-        rw [h2] at hDec
+        intro hDec
         nomatch hDec
       | some b' =>
-        rw [h2] at hDec
+        intro hDec
         injection hDec with hPair
         injection hPair with ha hb
         subst ha
@@ -821,11 +827,12 @@ theorem prod_decode_eq_none_of_snd_none {α β : Type} {m n : Nat}
       exact ite_true_of hBeq)
     (by
       intro bs _ h
+      revert h
       cases hBeq : Nat.beq bs.length pad with
       | false =>
-        rw [hBeq] at h
+        intro h
         nomatch h
-      | true => exact nat_eq_of_beq hBeq)
+      | true => intro h; exact nat_eq_of_beq hBeq)
 
 theorem padUninit_encode_eq (pad : Nat) :
     (padUninit pad).encode () = List.replicate pad AllocByte.uninit := rfl
@@ -833,7 +840,6 @@ theorem padUninit_encode_eq (pad : Nat) :
 theorem padUninit_decode_of_length_eq (pad : Nat) {bs : List AllocByte}
     (hLen : bs.length = pad) : (padUninit pad).decode bs = some () := by
   unfold padUninit ofRoundTrip
-  dsimp only
   exact ite_true_of ((nat_beq_iff _ _).mpr hLen)
 
 theorem padUninit_noProvCodec (pad : Nat) : (padUninit pad).NoProvCodec :=
@@ -1152,18 +1158,20 @@ theorem decodeChunks_length_eq {α : Type} {n : Nat} (c : FixedByteCodec α n) :
       nomatch hDec
     | true =>
       rw [ite_true_of hBle] at hDec
+      revert hDec
       cases hHead : c.decode (bs.take n) with
       | none =>
-        rw [hHead] at hDec
+        intro hDec
         nomatch hDec
       | some _ =>
-        rw [hHead] at hDec
+        intro hDec
+        revert hDec
         cases hTail : decodeChunks c k (bs.drop n) with
         | none =>
-          rw [hTail] at hDec
+          intro hDec
           nomatch hDec
         | some tailSub =>
-          have hLe : n ≤ bs.length := Nat.ble_eq.mp hBle
+          intro hDec; have hLe : n ≤ bs.length := Nat.ble_eq.mp hBle
           have hDropLen : (bs.drop n).length = k * n :=
             decodeChunks_length_eq c hTail
           rw [fbc_length_drop] at hDropLen
@@ -1358,18 +1366,20 @@ theorem decode_array_elem_of_getElem? {α : Type} {n : Nat}
       nomatch hDec
     | true =>
       rw [ite_true_of hBle] at hDec
+      revert hDec
       cases hHead : c.decode (bs.take n) with
       | none =>
-        rw [hHead] at hDec
+        intro hDec
         nomatch hDec
       | some y =>
-        rw [hHead] at hDec
+        intro hDec
+        revert hDec
         cases hTail : decodeChunks c k (bs.drop n) with
         | none =>
-          rw [hTail] at hDec
+          intro hDec
           nomatch hDec
         | some tailSub =>
-          rw [hTail] at hDec
+          intro hDec
           injection hDec with hSub
           cases tailSub with
           | mk ys hys =>
@@ -1405,16 +1415,16 @@ pattern). -/
       | some x => if h : P x = true then some ⟨x, h⟩ else none)
     (fun sub => c.encode_length sub.val)
     (fun ⟨x, hx⟩ => by
-      dsimp only
       rw [c.decode_encode x]
       exact dite_true_of hx)
     (by
       intro bs _ h
+      revert h
       cases hc : c.decode bs with
       | none =>
-        rw [hc] at h
+        intro h
         nomatch h
-      | some _ => exact c.decode_length hc)
+      | some _ => intro h; exact c.decode_length hc)
 
 theorem refineNiche_isInitCodec {α : Type} {n : Nat}
     {c : FixedByteCodec α n} (P : α → Bool) (hInit : c.IsInitCodec) :
@@ -1651,7 +1661,6 @@ private theorem encodeUInt_bv_bytes (endian : TargetEndian) (sz : Nat)
               (fun b => AllocByte.init (UInt8.ofBitVec b) none)).length = sz := by
           rw [length_map_eq, toLeBytes_length]
         have hBeq : Nat.beq _ sz = true := (nat_beq_iff _ _).mpr hLen
-        dsimp only
         rw [ite_true_of hBeq,
             ← fbc_map_comp (fun b => AllocByte.init b none) UInt8.ofBitVec
               (toLeBytes sz x),
@@ -1667,7 +1676,6 @@ private theorem encodeUInt_bv_bytes (endian : TargetEndian) (sz : Nat)
               (fun b => AllocByte.init (UInt8.ofBitVec b) none)).length = sz := by
           rw [length_map_eq, toBeBytes_length]
         have hBeq : Nat.beq _ sz = true := (nat_beq_iff _ _).mpr hLen
-        dsimp only
         rw [ite_true_of hBeq,
             ← fbc_map_comp (fun b => AllocByte.init b none) UInt8.ofBitVec
               (toBeBytes sz x),
@@ -1938,13 +1946,11 @@ theorem decodeVal_bool_eq_boolCodec (endian : TargetEndian)
         dsimp only
         have hInit : initBytes? [AllocByte.init b prov] = some [b] := rfl
         rw [hInit]
-        dsimp only
         unfold evalConstLit
         dsimp only
         rw [hNe]
         rw [hU8]
         unfold boolCodec FixedByteCodec.ofRoundTrip
-        dsimp only
         cases h0 : Nat.beq b.toNat 0 with
         | true =>
           have hb0 : b = 0 := fbc_uint8_eq_of_toNat_eq (nat_eq_of_beq h0)
@@ -2244,12 +2250,13 @@ theorem isExactTryFromBytes {endian : TargetEndian} {ty : MirTy}
   have hLenSz : bs.length = sz := by rw [hLen, m.size_eq]
   have hDec := m.decode_ok_of_init bs hLenSz hInit
   change (m.codec.decode bs).isSome = true ↔ _
+  revert hDec
   cases hC : m.codec.decode bs with
   | some x =>
-    rw [hC] at hDec
+    intro hDec
     exact ⟨fun _ => ⟨m.layout, m.toVal x, hL, hLen, hDec⟩, fun _ => rfl⟩
   | none =>
-    rw [hC] at hDec
+    intro hDec
     exact ⟨(fun h => nomatch h),
       (fun ⟨_, v, _, _, hv⟩ => absurd ⟨v, hv⟩ hDec)⟩
 
@@ -2342,12 +2349,13 @@ theorem not_isIntoBytes_of_uninit {endian : TargetEndian} {ty : MirTy}
   encode_toVal u := by cases u; rfl
   encode_canonical v bs hEnc := by
     unfold encodeVal at hEnc
+    revert hEnc
     cases hChk : checkVal v .unit with
     | false =>
-      rw [hChk, fbc_if_not_false] at hEnc
+      intro hEnc; rw [fbc_if_not_false] at hEnc
       nomatch hEnc
     | true =>
-      rw [hChk, fbc_if_not_true] at hEnc
+      intro hEnc; rw [fbc_if_not_true] at hEnc
       cases v with
       | unit =>
         injection hEnc with hBs
@@ -2389,12 +2397,13 @@ theorem not_isIntoBytes_of_uninit {endian : TargetEndian} {ty : MirTy}
   encode_toVal b := encodeVal_bool_eq_boolCodec endian b
   encode_canonical v bs hEnc := by
     unfold encodeVal at hEnc
+    revert hEnc
     cases hChk : checkVal v .bool with
     | false =>
-      rw [hChk, fbc_if_not_false] at hEnc
+      intro hEnc; rw [fbc_if_not_false] at hEnc
       nomatch hEnc
     | true =>
-      rw [hChk, fbc_if_not_true] at hEnc
+      intro hEnc; rw [fbc_if_not_true] at hEnc
       cases v with
       | bool b =>
         injection hEnc with hBs
@@ -2496,12 +2505,13 @@ theorem not_isIntoBytes_of_uninit {endian : TargetEndian} {ty : MirTy}
   encode_toVal x := encodeVal_int_eq_intBvCodec endian w s x
   encode_canonical v bs hEnc := by
     unfold encodeVal at hEnc
+    revert hEnc
     cases hChk : checkVal v (.int w s) with
     | false =>
-      rw [hChk, fbc_if_not_false] at hEnc
+      intro hEnc; rw [fbc_if_not_false] at hEnc
       nomatch hEnc
     | true =>
-      rw [hChk, fbc_if_not_true] at hEnc
+      intro hEnc; rw [fbc_if_not_true] at hEnc
       cases v with
       | scalar sv =>
         injection hEnc with hBs
@@ -2593,12 +2603,13 @@ theorem not_isIntoBytes_of_uninit {endian : TargetEndian} {ty : MirTy}
     | true =>
       rw [ite_true_of hLen] at hEq
       rw [hDec] at hEq
+      revert hEq
       cases hDecC : (intBvCodec endian w).decode bs with
       | none =>
-        rw [hDecC] at hEq
+        intro hEq
         nomatch hEq
       | some x =>
-        rw [hDecC] at hEq
+        intro hEq
         injection hEq with hOpt
         injection hOpt with hV
         refine ⟨x, hV, ?_⟩
