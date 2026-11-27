@@ -159,6 +159,62 @@ fn accepts_authored_proof_and_preserves_read_only_sources() {
     }
 }
 
+/// The dotted spelling of name pool entry `id` of a proof export.
+fn export_name(export: &Json, id: usize) -> String {
+    let entry = export["names"][id].as_array().unwrap();
+    match entry[0].as_str().unwrap() {
+        "a" => String::new(),
+        "s" => {
+            let pre = export_name(export, entry[1].as_u64().unwrap() as usize);
+            let seg = entry[2].as_str().unwrap();
+            if pre.is_empty() { seg.to_owned() } else { format!("{pre}.{seg}") }
+        }
+        tag => panic!("unexpected name tag {tag}"),
+    }
+}
+
+/// The type and value expression pool indices of definition `name` in a
+/// proof export.
+fn export_defn_ids(export: &Json, name: &str) -> (u64, u64) {
+    for module in export["modules"].as_array().unwrap() {
+        for constant in module["constants"].as_array().unwrap() {
+            let c = constant.as_array().unwrap();
+            if c[0] == "defn" && export_name(export, c[1].as_u64().unwrap() as usize) == name {
+                return (c[3].as_u64().unwrap(), c[4].as_u64().unwrap());
+            }
+        }
+    }
+    panic!("no definition {name} in proof export");
+}
+
+/// `"target-export"` interns by strict structure: the same term in two proof
+/// modules (separate `.olean` objects, so distinct heap objects) shares one
+/// expression entry, and two types that differ only in a binder's info (the
+/// binder names `h` and `x` match) keep distinct entries, so the decoded
+/// declarations are exactly the compiled ones.
+#[test]
+fn target_export_interns_by_strict_structure() {
+    let mut f = Fixture::new(
+        "prelude\nimport Expected\nimport ProofAux\nimport Init.Data.BitVec.Lemmas\n\
+         def Proof.shareB (a b : Nat) : Nat := a + b * a + (b + a) * (a + b)\n\
+         def Proof.explicitArg (h : ∀ (x : Nat), x = x) : 0 = 0 := h 0\n\
+         def Proof.implicitArg (h : ∀ {x : Nat}, x = x) : 0 = 0 := @h 0\n\
+         theorem Proof.verify : Expected.claim := And.intro rfl BitVec.and_self\n",
+    );
+    f.set(
+        "ProofAux",
+        TargetRole::Proof,
+        "prelude\nimport Init.Data.BitVec.Lemmas\n\
+         def ProofAux.shareA (a b : Nat) : Nat := a + b * a + (b + a) * (a + b)\n",
+    );
+    let mut checker = f.cargo_checker();
+    checker.run_target(&f.request).unwrap();
+    let export = checker.inspect_target_export(&f.request).unwrap();
+    let ids = |name| export_defn_ids(&export, name);
+    assert_eq!(ids("ProofAux.shareA").1, ids("Proof.shareB").1);
+    assert_ne!(ids("Proof.explicitArg").0, ids("Proof.implicitArg").0);
+}
+
 /// Claim identities include a library used only through the selected subject,
 /// without turning proof helpers or unused Capture modules into meaning roots.
 #[test]

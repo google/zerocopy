@@ -612,6 +612,25 @@ fn validate_target_audit_report(
     Ok(())
 }
 
+/// Whether each target module's source on disk starts with the `module`
+/// keyword, which is the `isModule` expectation `"target-audit"` checks.
+fn target_source_is_modules(
+    request: &TargetAuditRequest,
+) -> Result<BTreeMap<String, bool>, Failure> {
+    let mut is_modules = BTreeMap::new();
+    for module in &request.modules {
+        let source = fs::read(&module.source).map_err(|e| {
+            Failure::operational(
+                "target-audit",
+                format!("cannot read target source {}: {e}", module.source.display()),
+            )
+        })?;
+        is_modules
+            .insert(module.module.clone(), crate::stage::source_starts_with_module_keyword(&source));
+    }
+    Ok(is_modules)
+}
+
 /// Run `"target-export"` (isolated proof-artifact export) followed by
 /// `"target-audit"` (verdict-producing replay with zero `Proof` `.olean`s
 /// mounted or imported) and validate the strict [`TargetAuditReport`] schema.
@@ -620,20 +639,47 @@ impl Checker {
     /// `isModule` expectations from the target source headers on disk.
     #[doc(hidden)]
     pub fn inspect_target(&mut self, request: &TargetAuditRequest) -> Result<Json, Failure> {
-        let mut is_modules = BTreeMap::new();
-        for module in &request.modules {
-            let source = fs::read(&module.source).map_err(|e| {
-                Failure::operational(
-                    "target-audit",
-                    format!("cannot read target source {}: {e}", module.source.display()),
-                )
-            })?;
-            is_modules.insert(
-                module.module.clone(),
-                crate::stage::source_starts_with_module_keyword(&source),
-            );
-        }
+        let is_modules = target_source_is_modules(request)?;
         self.inspect_target_with_modes(request, &is_modules)
+    }
+
+    /// Run only `"target-export"` over compiled target artifacts and return
+    /// the proof export, which [`Self::inspect_target_with_modes`] passes to
+    /// `"target-audit"`. This exposes the export's encoding to tests.
+    #[doc(hidden)]
+    pub fn inspect_target_export(&mut self, request: &TargetAuditRequest) -> Result<Json, Failure> {
+        let is_modules = target_source_is_modules(request)?;
+        let inspector_target =
+            InspectorTargetAuditRequest::from_request_and_modes(request, &is_modules)?;
+        self.run_target_export(&inspector_target)
+    }
+
+    /// Run `"target-export"` in its own isolated ExecSeal child process,
+    /// with no write access to `"target-audit"`'s verdict file. Operational
+    /// and policy errors map back to the `"target-audit"` phase so callers
+    /// see a unified audit failure surface.
+    fn run_target_export(
+        &mut self,
+        inspector_target: &InspectorTargetAuditRequest,
+    ) -> Result<Json, Failure> {
+        let export_req = {
+            let adm = self.admitted()?;
+            let arts_arr: Vec<Json> =
+                adm.artifacts.iter().map(|(k, parts)| json!([k, parts.to_wire()])).collect();
+            let libraries: Vec<&str> = adm.library_modules.iter().map(String::as_str).collect();
+            json!({
+                "mode": "target-export",
+                "sysroot": adm.prefix.to_string_lossy(),
+                "artifacts": arts_arr,
+                "foundation": adm.foundation_modules(),
+                "libraries": libraries,
+                "graph": &adm.graph,
+                "axioms": &adm.axioms,
+                "target": inspector_target,
+            })
+        };
+        self.invoke_inspector("target-export", &export_req)
+            .map_err(|e| Failure::new(e.code, "target-audit", e.message))
     }
 
     /// Run `"target-audit"` mode over compiled target artifacts with explicit
@@ -652,32 +698,9 @@ impl Checker {
             .collect();
         let inspector_target =
             InspectorTargetAuditRequest::from_request_and_modes(request, is_modules)?;
-        let (export_req, expected_graph) = {
-            let adm = self.admitted()?;
-            let arts_arr: Vec<Json> =
-                adm.artifacts.iter().map(|(k, parts)| json!([k, parts.to_wire()])).collect();
-            let libraries: Vec<&str> = adm.library_modules.iter().map(String::as_str).collect();
-            (
-                json!({
-                    "mode": "target-export",
-                    "sysroot": adm.prefix.to_string_lossy(),
-                    "artifacts": arts_arr,
-                    "foundation": adm.foundation_modules(),
-                    "libraries": libraries,
-                    "graph": &adm.graph,
-                    "axioms": &adm.axioms,
-                    "target": &inspector_target,
-                }),
-                adm.graph.clone(),
-            )
-        };
-        // Step 1: Run `"target-export"` in its own isolated ExecSeal child
-        // process with no write access to `"target-audit"`'s verdict file.
-        // Map operational/policy errors back to the `"target-audit"` phase so
-        // callers see a unified audit failure surface.
-        let proof_export = self
-            .invoke_inspector("target-export", &export_req)
-            .map_err(|e| Failure::new(e.code, "target-audit", e.message))?;
+        let expected_graph = self.admitted()?.graph.clone();
+        // Step 1: Run `"target-export"` (`run_target_export`).
+        let proof_export = self.run_target_export(&inspector_target)?;
 
         let export_run_id = self.next_counter();
         let proof_export_host = self.stage.join(format!("proof-export-{export_run_id:03}.json"));

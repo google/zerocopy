@@ -5281,22 +5281,39 @@ def runTargetClosurePhase
 
 /-! ## Isolated structural proof-module export/decode (`"target-export"`) -/
 
-/-- Pointer-identity interning pools used by `"target-export"` to serialize
-proof-module `Name`, `Level`, and `Expr` DAGs into pure structural JSON with
-zero heap pointers and zero cached metadata words. -/
+/-- An `Expr` compared by strict structural equality, `Expr.equal`, which
+also compares binder names and binder info. `BEq Expr` (`Expr.eqv`) ignores
+binder info, so keying on it could merge `∀ x, p x` with `∀ {x}, p x`.
+`Expr.hash` ignores binder names and info, so equal keys hash equally. -/
+private structure StrictExpr where
+  expr : Expr
+
+private instance : BEq StrictExpr := ⟨fun a b => a.expr.equal b.expr⟩
+private instance : Hashable StrictExpr := ⟨fun a => a.expr.hash⟩
+
+/-- Interning pools used by `"target-export"` to serialize proof-module
+`Name`, `Level`, and `Expr` DAGs into pure structural JSON with zero heap
+pointers and zero cached metadata words.
+
+The pools are keyed by structure rather than pointer identity, so a subterm
+that elaboration left as many distinct heap objects is encoded once. A key's
+pool index decodes (`decodeProofExport`) to a term equal to the key, up to the
+`Expr.mdata` stripping below: `BEq Name` and `BEq Level` are structural, and
+`Expr` keys compare as `StrictExpr`. So sharing changes only how many entries
+the pools hold, not the declarations they decode to. -/
 private unsafe structure ProofExportPool where
-  nameIds : PtrMap Name Nat := mkPtrMap
+  nameIds : Std.HashMap Name Nat := {}
   names : Array Json := #[]
-  levelIds : PtrMap Level Nat := mkPtrMap
+  levelIds : Std.HashMap Level Nat := {}
   levels : Array Json := #[]
-  exprIds : PtrMap Expr Nat := mkPtrMap
+  exprIds : Std.HashMap StrictExpr Nat := {}
   exprs : Array Json := #[]
 
 private unsafe def internExportName (ref : IO.Ref ProofExportPool)
     (n : Name) : IO Nat := do
   -- Use `modifyGet` so `ProofExportPool` keeps reference count 1 and
-  -- `PtrMap.insert` / `Array.push` stay O(1) instead of cloning the pools.
-  if let some idx ← ref.modifyGet fun st => (st.nameIds.find? n, st) then
+  -- `HashMap.insert` / `Array.push` stay O(1) instead of cloning the pools.
+  if let some idx ← ref.modifyGet fun st => (st.nameIds.get? n, st) then
     return idx
   let encoded : Json ← match n with
     | .anonymous => pure (.arr #[toJson "a"])
@@ -5314,7 +5331,7 @@ private unsafe def internExportName (ref : IO.Ref ProofExportPool)
 
 private unsafe def internExportLevel (ref : IO.Ref ProofExportPool)
     (l : Level) : IO Nat := do
-  if let some idx ← ref.modifyGet fun st => (st.levelIds.find? l, st) then
+  if let some idx ← ref.modifyGet fun st => (st.levelIds.get? l, st) then
     return idx
   let encoded : Json ← match l with
     | .zero => pure (.arr #[toJson "z"])
@@ -5413,11 +5430,11 @@ here so the structural wire format never needs to carry elaborator `Syntax`
 payloads. -/
 private unsafe def internExportExpr (ref : IO.Ref ProofExportPool)
     (e : Expr) : IO Nat := do
-  if let some idx ← ref.modifyGet fun st => (st.exprIds.find? e, st) then
+  if let some idx ← ref.modifyGet fun st => (st.exprIds.get? ⟨e⟩, st) then
     return idx
   if let .mdata _ body := e then
     let bodyId ← internExportExpr ref body
-    ref.modify fun st => { st with exprIds := st.exprIds.insert e bodyId }
+    ref.modify fun st => { st with exprIds := st.exprIds.insert ⟨e⟩ bodyId }
     return bodyId
   let encoded : Json ← match e with
     | .bvar idx =>
@@ -5470,7 +5487,7 @@ private unsafe def internExportExpr (ref : IO.Ref ProofExportPool)
   ref.modifyGet fun st =>
     let idx := st.exprs.size
     (idx, { st with
-      exprIds := st.exprIds.insert e idx
+      exprIds := st.exprIds.insert ⟨e⟩ idx
       exprs := st.exprs.push encoded })
 
 private unsafe def encodeExportConstantInfo (ref : IO.Ref ProofExportPool)
