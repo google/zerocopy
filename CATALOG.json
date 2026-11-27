@@ -56716,6 +56716,99 @@
         "domains/cps/runtime-monitoring"
       ]
     },
+    "hybrid-verified-software-building-block-constraints-and-anneal-integration": {
+      "observed_at": "2026-11-27",
+      "subjects": [
+        {
+          "identity": {
+            "path": "anneal/",
+            "repository": "google/zerocopy",
+            "revision": "487101d7a5233982e7bd05a1c76e039073ce1702"
+          },
+          "name": "Anneal verification framework, contracts, and Profile v2 MIR semantics"
+        },
+        {
+          "identity": {
+            "path": "zerocopy/src/",
+            "repository": "google/zerocopy",
+            "revision": "487101d7a5233982e7bd05a1c76e039073ce1702"
+          },
+          "name": "zerocopy byte-slice and layout validation APIs"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4 toolchain"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1",
+            "version": "rustc 1.102.0-nightly / miri 0.1.0 (2026-11-11)"
+          },
+          "name": "Rust compiler and Miri interpreter"
+        }
+      ],
+      "topics": [
+        "anneal/architecture",
+        "anneal/theory",
+        "lean/mechanization",
+        "rust/unsafe",
+        "security/sandboxing",
+        "verification/hybrid",
+        "verification/refinement"
+      ]
+    },
+    "hybrid-verified-software-certified-gate-algebra-and-anneal-architecture": {
+      "observed_at": "2026-11-27",
+      "subjects": [
+        {
+          "identity": {
+            "path": "anneal/",
+            "repository": "google/zerocopy",
+            "revision": "487101d7a5233982e7bd05a1c76e039073ce1702"
+          },
+          "name": "Anneal verification framework, contracts, audit boundary, and MIR semantics"
+        },
+        {
+          "identity": {
+            "path": "zerocopy/",
+            "repository": "google/zerocopy",
+            "revision": "487101d7a5233982e7bd05a1c76e039073ce1702"
+          },
+          "name": "zerocopy byte-slice, layout validation, and proof units"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4 toolchain"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1",
+            "version": "rustc 1.102.0-nightly / miri 0.1.0 (2026-11-11)"
+          },
+          "name": "Rust compiler and Miri interpreter"
+        }
+      ],
+      "topics": [
+        "anneal/architecture",
+        "anneal/theory",
+        "lean/mechanization",
+        "rust/unsafe",
+        "security/sandboxing",
+        "verification/hybrid",
+        "verification/refinement",
+        "zerocopy/layout"
+      ]
+    },
     "hybrid-verified-software-contracts-fallback-and-ratcheting": {
       "observed_at": "2026-11-24",
       "subjects": [

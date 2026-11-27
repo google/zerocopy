@@ -1,0 +1,5 @@
+name = "HybridBuildingBlock"
+defaultTargets = ["HybridBuildingBlock"]
+
+[[lean_lib]]
+name = "HybridBuildingBlock"

@@ -1,0 +1,5 @@
+name = "HybridArchitecture"
+defaultTargets = ["HybridArchitecture"]
+
+[[lean_lib]]
+name = "HybridArchitecture"
