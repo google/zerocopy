@@ -372,4 +372,46 @@ theorem refute_mem_v2_slice_get_unchecked_elem_size :
       .ok (.slicePtr ⟨some 1, 4, .isize⟩ 0) :=
   ⟨rfl, rfl⟩
 
+/-- Guard `mem_reserve_alloc_id_monotonic`: two consecutive `allocateStack`
+calls must receive distinct allocation ids so deallocating the first never
+kills the second. -/
+theorem refute_mem_reserve_alloc_id_monotonic :
+    (let (m1, p1) := allocateStack MemoryState.empty ⟨4, 2⟩
+     let (_, p2) := allocateStack m1 ⟨4, 2⟩
+     Nat.beq p1.allocId p2.allocId = false) :=
+  rfl
+
+/-- Guard `mem_alloc_initializes_uninit`: freshly allocated stack bytes start
+`.uninit` rather than zero-initialized. -/
+theorem refute_mem_alloc_initializes_uninit :
+    (let (m1, p1) := allocateStack MemoryState.empty ⟨4, 2⟩
+     readBytes m1 p1 4 2 = .ok [.uninit, .uninit, .uninit, .uninit]) :=
+  rfl
+
+/-- Guard `mem_dealloc_marks_dead`: `deallocateStack` marks the freed
+allocation `live := false` so a subsequent `readBytes` faults with
+`.undefined`. -/
+theorem refute_mem_dealloc_marks_dead :
+    (match deallocateStack (singleAllocMem liveMut4Alloc) ⟨1, 0⟩ with
+     | .error _ => False
+     | .ok m1 => readBytes m1 ⟨1, 0⟩ 4 2 = .error .undefined) :=
+  rfl
+
+/-- Guard `mem_in_bounds_includes_size`: a partial-overlap read starting
+in-bounds at offset `2` with `size = 4` in a 4-byte allocation faults with
+`.undefined`. -/
+theorem refute_mem_in_bounds_includes_size :
+    readBytes (singleAllocMem liveMut4Alloc) ⟨1, 2⟩ 4 1 =
+      .error .undefined :=
+  rfl
+
+/-- Guard `mem_write_uninit_marks_uninit`: `writeUninit` overwrites bytes with
+`.uninit` rather than zero bytes. -/
+theorem refute_mem_write_uninit_marks_uninit :
+    (match writeUninit (singleAllocMem liveMut4Alloc) ⟨1, 0⟩ 4 2 with
+     | .error _ => False
+     | .ok m1 => readBytes m1 ⟨1, 0⟩ 4 2 =
+       .ok [.uninit, .uninit, .uninit, .uninit]) :=
+  rfl
+
 end GuardMutation

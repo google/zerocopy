@@ -438,6 +438,7 @@ case "$MODE" in
     rm -rf "$GUARD_DIAG"
     mkdir -p "$GUARD_DIAG"
     /usr/bin/python3 -I -B ci/check_guard_mutation.py \
+      --lean-only \
       --lean /opt/anneal-nix/lean-toolchain/bin/lean \
       --jobs 4 \
       --json-out "$GUARD_DIAG/guard-mutation.json"

@@ -13,16 +13,21 @@ import GuardRefuteBase
 /-!
 # Negative Refutations for `Trusted.MirSemantics.Boundary` Soundness Guards
 
-Exercises the top-level verification-judgment guards in
+Exercises every top-level verification-judgment and static-admission guard in
 `Trusted/MirSemantics/Boundary.lean`:
 
-1. `WellFormed` forbids reachable faults (disabling the fault-forbidding
-   conjunct must break `¬ WellFormed`).
-2. `BodyVerified` ignores `safetyPre` for safe functions (`isUnsafe = false`),
-   preventing a `False` safety precondition from vacuously verifying an unsound
-   safe function.
-3. `BodyVerified` requires `BodyStaticAdmitted` unconditionally, even for
-   functions with uninhabited (`MirTy.never`) parameters.
+- `WellFormed`: forbids reachable faults.
+- `SatisfiesPost`: requires `WellFormed` and enforces `post` on terminal output.
+- `BodyStaticAdmitted`: all 9 unconditional single-body static-admission
+  conjuncts (`singleBodyStaticAdmitted` in `Trusted/MirSemantics/State.lean`,
+  tested with uninhabited `MirTy.never` parameter bodies so `ValidEntryArgs`
+  is empty and `BodyStaticAdmitted` is the sole line of defense).
+- `BodyVerified`: binds `body` to `p.bodies[defId]`, requires
+  `BodyStaticAdmitted`, and ignores `safetyPre` on safe functions.
+- `ProgramVerified`: non-empty `bodies`, `entryDefId < bodies.length`,
+  `bodiesHaveUniqueIdentities`, universal per-body `BodyVerified`, and
+  `specs.property`.
+- `CrateTheorem` and `UnitTheorem`: enforce `.crate` vs `.unit` scope.
 -/
 
 namespace GuardMutation
@@ -611,5 +616,255 @@ theorem positive_boundary_v2_admits_valid_fake_ptr_metadata :
     BodyStaticAdmittedV2 validFakeMetaProgV2 validFakeMetaBodyV2 = true ∧
       bodyHasRawPtrLocalV2 validFakeMetaBodyV2 = false :=
   ⟨rfl, rfl⟩
+
+/-- Guard `boundary_satisfies_post_requires_wf`: a faulty program refutes
+`SatisfiesPost` even when `post` is `True`. -/
+theorem refute_boundary_satisfies_post_requires_wf :
+    ¬ SatisfiesPost safeUnreachableProg queryEmpty (fun _ => True) :=
+  fun hSat =>
+    hSat.1.2 .undefined (reachesResult_of_execFault (fuel := 1) rfl)
+
+/-- Guard `boundary_satisfies_post_enforces_post`: a well-formed program
+returning `42u32` refutes `SatisfiesPost` for `out = returned(0u32)`. -/
+theorem refute_boundary_satisfies_post_enforces_post :
+    ¬ SatisfiesPost (mkConstRetProg u32Ty 42) queryEmpty
+        (fun out => out = .returned ⟨u32Val 0, ⟨[]⟩⟩) :=
+  fun hSat =>
+    have hEq : TerminalOut.returned ⟨u32Val 42, ⟨[]⟩⟩ =
+        TerminalOut.returned ⟨u32Val 0, ⟨[]⟩⟩ :=
+      hSat.2 _ (behavior_of_execDone (fuel := 2) rfl)
+    by cases hEq
+
+/-- Valid uninhabited (`MirTy.never`) parameter body used to isolate individual
+`BodyStaticAdmitted` conjuncts. -/
+noncomputable def okNeverBody : Body := {
+  argumentCount := 1
+  locals := [.unit, .never]
+  basicBlocks := [{ statements := [], terminator := .unreachable }]
+  isUnsafe := false
+  identity := "guard_mutation::ok_never"
+}
+
+/-- Helper wrapping a single body into a `Program` with configurable metadata.
+-/
+noncomputable def mkBoundaryProg (body : Body) (ptrBits : Nat := 64)
+    (profVer : Nat := 1) (sc : VerificationScope := .unit) : Program := {
+  scope := sc
+  pointerWidthBits := ptrBits
+  mirProfileVersion := profVer
+  bodies := [body]
+}
+
+/-- Guard `boundary_static_admitted_pointer_width`: `BodyStaticAdmitted`
+rejects 32-bit `pointerWidthBits` even on an uninhabited `never`-arg body. -/
+theorem refute_boundary_static_admitted_pointer_width :
+    ¬ BodyVerified (mkBoundaryProg okNeverBody (ptrBits := 32)) 0 okNeverBody
+        (fun _ => True) :=
+  fun hVer => Bool.noConfusion hVer.2.1
+
+/-- Guard `boundary_static_admitted_profile_v1`: `BodyStaticAdmitted` rejects
+`mirProfileVersion = 2` even on an uninhabited `never`-arg body. -/
+theorem refute_boundary_static_admitted_profile_v1 :
+    ¬ BodyVerified (mkBoundaryProg okNeverBody (profVer := 2)) 0 okNeverBody
+        (fun _ => True) :=
+  fun hVer => Bool.noConfusion hVer.2.1
+
+/-- Uninhabited `never`-arg body with an empty `identity := ""`. -/
+noncomputable def emptyIdNeverBody : Body :=
+  { okNeverBody with identity := "" }
+
+/-- Guard `boundary_static_admitted_nonempty_identity`: `BodyStaticAdmitted`
+rejects empty `body.identity` even on an uninhabited `never`-arg body. -/
+theorem refute_boundary_static_admitted_nonempty_identity :
+    ¬ BodyVerified (mkBoundaryProg emptyIdNeverBody) 0 emptyIdNeverBody
+        (fun _ => True) :=
+  fun hVer => Bool.noConfusion hVer.2.1
+
+/-- Uninhabited `never`-arg body with zero basic blocks. -/
+noncomputable def emptyBlocksNeverBody : Body :=
+  { okNeverBody with basicBlocks := [] }
+
+/-- Guard `boundary_static_admitted_nonempty_blocks`: `BodyStaticAdmitted`
+rejects empty `basicBlocks` even on an uninhabited `never`-arg body. -/
+theorem refute_boundary_static_admitted_nonempty_blocks :
+    ¬ BodyVerified (mkBoundaryProg emptyBlocksNeverBody) 0 emptyBlocksNeverBody
+        (fun _ => True) :=
+  fun hVer => Bool.noConfusion hVer.2.1
+
+/-- Uninhabited `never`-arg body with `argumentCount = 2 ≥ locals.length`. -/
+noncomputable def badArgCountNeverBody : Body :=
+  { okNeverBody with argumentCount := 2 }
+
+/-- Guard `boundary_static_admitted_arg_count_bound`: `BodyStaticAdmitted`
+rejects `argumentCount ≥ locals.length` on an uninhabited `never`-arg body. -/
+theorem refute_boundary_static_admitted_arg_count_bound :
+    ¬ BodyVerified (mkBoundaryProg badArgCountNeverBody) 0 badArgCountNeverBody
+        (fun _ => True) :=
+  fun hVer => Bool.noConfusion hVer.2.1
+
+/-- Guard `boundary_static_admitted_storage_bounds`: `BodyStaticAdmitted`
+rejects out-of-bounds `StorageLive` on an uninhabited `never`-arg body. -/
+theorem refute_boundary_static_admitted_storage_bounds :
+    ¬ BodyVerified badNeverProg 0 badNeverBody (fun _ => True) :=
+  fun hVer => Bool.noConfusion hVer.2.1
+
+/-- Uninhabited `never`-arg body with an ill-typed `Discriminant` assignment.
+-/
+noncomputable def badDiscrNeverBody : Body := {
+  argumentCount := 1
+  locals := [u8Ty, .never, .ordering]
+  basicBlocks := [{
+    statements := [.assign ⟨0, []⟩ (.discriminant ⟨2, []⟩)]
+    terminator := .unreachable
+  }]
+  isUnsafe := false
+  identity := "guard_mutation::bad_discr_never"
+}
+
+/-- Guard `boundary_static_admitted_discr_types`: `BodyStaticAdmitted` rejects
+ill-typed `Discriminant` destinations on an uninhabited `never`-arg body. -/
+theorem refute_boundary_static_admitted_discr_types :
+    ¬ BodyVerified (mkBoundaryProg badDiscrNeverBody) 0 badDiscrNeverBody
+        (fun _ => True) :=
+  fun hVer => Bool.noConfusion hVer.2.1
+
+/-- Uninhabited `never`-arg body with an ill-typed `Cast(IntToInt)` assignment.
+-/
+noncomputable def badCastNeverBody : Body := {
+  argumentCount := 1
+  locals := [u8Ty, .never, u32Ty]
+  basicBlocks := [{
+    statements := [.assign ⟨0, []⟩ (.cast .intToInt (.copy ⟨2, []⟩) u32Ty)]
+    terminator := .unreachable
+  }]
+  isUnsafe := false
+  identity := "guard_mutation::bad_cast_never"
+}
+
+/-- Guard `boundary_static_admitted_cast_types`: `BodyStaticAdmitted` rejects
+ill-typed `Cast` destinations on an uninhabited `never`-arg body. -/
+theorem refute_boundary_static_admitted_cast_types :
+    ¬ BodyVerified (mkBoundaryProg badCastNeverBody) 0 badCastNeverBody
+        (fun _ => True) :=
+  fun hVer => Bool.noConfusion hVer.2.1
+
+/-- Uninhabited `never`-arg body carrying an unsupported `.ref` local. -/
+noncomputable def badLocalTyNeverBody : Body := {
+  argumentCount := 1
+  locals := [.unit, .never, .ref .shared u32Ty]
+  basicBlocks := [{ statements := [], terminator := .unreachable }]
+  isUnsafe := false
+  identity := "guard_mutation::bad_local_never"
+}
+
+/-- Guard `boundary_static_admitted_local_types`: `BodyStaticAdmitted` rejects
+unsupported local types on an uninhabited `never`-arg body. -/
+theorem refute_boundary_static_admitted_local_types :
+    ¬ BodyVerified (mkBoundaryProg badLocalTyNeverBody) 0 badLocalTyNeverBody
+        (fun _ => True) :=
+  fun hVer => Bool.noConfusion hVer.2.1
+
+/-- Guard `boundary_body_verified_binds_body`: `BodyVerified` refuses a
+mismatched `body` stub (`okNeverBody`) that disagrees with `p.bodies[0]`
+(`safeUnreachableBody`). -/
+theorem refute_boundary_body_verified_binds_body :
+    ¬ BodyVerified safeUnreachableProg 0 okNeverBody (fun _ => True) :=
+  fun hVer => by cases hVer.1
+
+/-- Minimal valid 0-arg unit-returning body with identity `ident`. -/
+noncomputable def mkOkUnitBody (ident : String) : Body := {
+  argumentCount := 0
+  locals := [.unit]
+  basicBlocks := [{ statements := [], terminator := .return_ }]
+  isUnsafe := false
+  identity := ident
+}
+
+/-- Default trivial `Specs`. -/
+noncomputable def trivialSpecs : Specs :=
+  ⟨fun _ _ => True, fun _ => True⟩
+
+/-- Program whose `entryDefId` (`1`) is out of bounds for 1 body. -/
+noncomputable def badEntryDefIdProg : Program := {
+  scope := .unit
+  entryDefId := 1
+  pointerWidthBits := 64
+  mirProfileVersion := 1
+  bodies := [mkOkUnitBody "guard_mutation::ok_only"]
+}
+
+/-- Guard `boundary_program_verified_entry_in_bounds`: `ProgramVerified`
+rejects out-of-bounds `entryDefId`. -/
+theorem refute_boundary_program_verified_entry_in_bounds :
+    ¬ ProgramVerified badEntryDefIdProg trivialSpecs :=
+  fun hVer => Bool.noConfusion hVer.2.2.2.1
+
+/-- Program with two valid bodies sharing the same `identity`. -/
+noncomputable def dupIdProg : Program := {
+  scope := .unit
+  pointerWidthBits := 64
+  mirProfileVersion := 1
+  bodies := [
+    mkOkUnitBody "guard_mutation::dup",
+    mkOkUnitBody "guard_mutation::dup"
+  ]
+}
+
+/-- Guard `boundary_program_verified_unique_identities`: `ProgramVerified`
+rejects programs containing duplicate body identities. -/
+theorem refute_boundary_program_verified_unique_identities :
+    ¬ ProgramVerified dupIdProg trivialSpecs :=
+  fun hVer => Bool.noConfusion hVer.2.2.2.2.1
+
+/-- Two-body program where body `0` is valid and body `1` faults with
+`.unreachable`. -/
+noncomputable def twoBodySecondBadProg : Program := {
+  scope := .unit
+  pointerWidthBits := 64
+  mirProfileVersion := 1
+  bodies := [
+    mkOkUnitBody "guard_mutation::ok_0",
+    safeUnreachableBody
+  ]
+}
+
+/-- Guard `boundary_program_verified_checks_all_bodies`: `ProgramVerified`
+verifies every body in `p.bodies`, not only `entryDefId = 0`. -/
+theorem refute_boundary_program_verified_checks_all_bodies :
+    ¬ ProgramVerified twoBodySecondBadProg trivialSpecs :=
+  fun hVer =>
+    have hBody1 : BodyVerified twoBodySecondBadProg 1 safeUnreachableBody
+        (fun _ => True) :=
+      hVer.2.2.2.2.2.1 1 safeUnreachableBody rfl
+    have hWf : WellFormed (entryProgForBody twoBodySecondBadProg 1)
+        { args := [] } :=
+      hBody1.2.2 [] rfl (fun _ => trivial)
+    hWf.2 .undefined (reachesResult_of_execFault (fuel := 1) rfl)
+
+/-- Valid 1-body unit-scoped program. -/
+noncomputable def okUnitScopeProg : Program :=
+  mkBoundaryProg (mkOkUnitBody "guard_mutation::ok_unit") (sc := .unit)
+
+/-- Valid 1-body crate-scoped program. -/
+noncomputable def okCrateScopeProg : Program :=
+  mkBoundaryProg (mkOkUnitBody "guard_mutation::ok_crate") (sc := .crate)
+
+/-- Guard `boundary_program_verified_checks_property`: `ProgramVerified`
+enforces `specs.property p`. -/
+theorem refute_boundary_program_verified_checks_property :
+    ¬ ProgramVerified okUnitScopeProg ⟨fun _ _ => True, fun _ => False⟩ :=
+  fun hVer => hVer.2.2.2.2.2.2
+
+/-- Guard `boundary_crate_theorem_requires_crate_scope`: `CrateTheorem` rejects
+a `.unit`-scoped capture. -/
+theorem refute_boundary_crate_theorem_requires_crate_scope :
+    ¬ CrateTheorem ⟨okUnitScopeProg, trivialSpecs⟩ :=
+  fun hCrate => by cases hCrate.1
+
+/-- Guard `boundary_unit_theorem_requires_unit_scope`: `UnitTheorem` rejects a
+`.crate`-scoped capture. -/
+theorem refute_boundary_unit_theorem_requires_unit_scope :
+    ¬ UnitTheorem ⟨okCrateScopeProg, trivialSpecs⟩ :=
+  fun hUnit => by cases hUnit.1
 
 end GuardMutation
