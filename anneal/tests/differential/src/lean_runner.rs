@@ -13,19 +13,20 @@
 //! UB cases (`<= 9` MIR statements, no 128-bit scalars, `<= 16` WP fuel).
 
 use std::{
-    collections::{BTreeMap, BTreeSet},
+    collections::{BTreeMap, BTreeSet, VecDeque},
     env,
     ffi::{OsStr, OsString},
     fmt::Write as _,
     fs::{self, File},
     io::Read as _,
     path::{Component, Path, PathBuf},
+    sync::Arc,
     thread,
-    time::Duration,
+    time::{Duration, Instant},
 };
 
-use anneal_testkit::{Invocation, ProcessOutcome, ProcessSupervisor, Termination, ToolchainEnv};
-use serde::Deserialize;
+use anneal_testkit::{Invocation, ProcessOutcome, Termination, ToolchainEnv};
+use serde::{Deserialize, Serialize};
 use sha2::{Digest, Sha256};
 
 use crate::{
@@ -319,6 +320,14 @@ pub struct LeanSession {
     pub prebuilt_overlay: String,
     pub ld_library_path: String,
     pub child_path: OsString,
+    pub(crate) lean_ld_library_path: String,
+    pub(crate) lean_child_path: OsString,
+    pub(crate) validated_tmpdir: Option<PathBuf>,
+    pub(crate) _rust_sysroot_staging: Option<Arc<crate::rustc_runner::ImmutableStagingDir>>,
+    pub(crate) _capture_staging: Option<Arc<crate::rustc_runner::ImmutableStagingDir>>,
+    pub(crate) _lean_lib_staging: Option<Arc<crate::rustc_runner::ImmutableStagingDir>>,
+    pub(crate) _lean_stdlib_staging: Option<Arc<crate::rustc_runner::ImmutableStagingDir>>,
+    pub(crate) _lean_dag_staging: Option<Arc<crate::rustc_runner::ImmutableStagingDir>>,
 }
 
 /// Captured artifact pair and per-case metadata for one source module group.
@@ -344,11 +353,108 @@ pub struct LeanCaseResult {
     pub kernel_checked: bool,
 }
 
+/// Serialized captured MIR body slice for a Stage-2 fuzz case, allowing the
+/// Python report verifier to recompute `capture_body_sha256` and cross-check
+/// the captured function identity, parameter count, local types, and blocks
+/// against the regenerated Rust source.
+#[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize)]
+pub struct FuzzCaptureBody {
+    pub body_id: usize,
+    pub fn_identity: String,
+    pub arg_count: usize,
+    pub local_tys: Vec<serde_json::Value>,
+    pub blocks: Vec<serde_json::Value>,
+    pub capture_body_sha256: String,
+}
+
+/// Stage-2 Lean evaluation result for one generated program, retaining capture
+/// provenance for optional Leg 3 (`anneal-mir-eval`) cross-checking and
+/// distinguishing capture-time refusal from runtime evaluation outcomes.
+#[derive(Clone, Debug)]
+pub struct FuzzLeanCaseResult {
+    pub outcome: ObservedOutcome,
+    pub capture_rejected: Option<String>,
+    pub capture_refusal_json: Option<String>,
+    pub capture_json: Option<PathBuf>,
+    pub capture_body: Option<FuzzCaptureBody>,
+    pub lean_probe_line: Option<String>,
+    pub exercised_move_reinit: bool,
+    pub move_reinit_evidence: Option<MoveReinitEvidence>,
+}
+
+/// Exact step and MIR coordinate in the captured body for one move/reinit
+/// transition observed during concrete Lean `evalMirStepBy` execution.
+#[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize)]
+pub struct MoveReinitStep {
+    pub step: usize,
+    pub block: usize,
+    pub stmt: usize,
+}
+
+/// Tamper-checked execution and captured-MIR witness proving a Stage-2 fuzz
+/// case initialized, moved via `Operand::Move` (deinitializing), reinitialized,
+/// and read a non-ZST local during concrete Lean evaluation.
+#[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize)]
+pub struct MoveReinitEvidence {
+    pub body_id: usize,
+    pub fn_identity: String,
+    pub local_slot: usize,
+    pub arg_count: usize,
+    pub local_tys: Vec<serde_json::Value>,
+    pub blocks: Vec<serde_json::Value>,
+    pub total_steps: usize,
+    pub init_step: MoveReinitStep,
+    pub move_step: MoveReinitStep,
+    pub reinit_step: MoveReinitStep,
+    pub read_step: MoveReinitStep,
+    pub lean_probe_line: String,
+    pub capture_body_sha256: String,
+}
+
+#[derive(Clone, Debug, PartialEq, Eq)]
+struct ParsedLeanFuzzProbeLine {
+    body_id: Option<usize>,
+    fn_identity: Option<String>,
+    outcome: ObservedOutcome,
+    lean_probe_line: Option<String>,
+    move_reinit: Option<ParsedLeanMoveReinit>,
+}
+
+#[derive(Clone, Debug, PartialEq, Eq)]
+struct ParsedLeanMoveReinit {
+    local_slot: usize,
+    total_steps: usize,
+    init_step: MoveReinitStep,
+    move_step: MoveReinitStep,
+    reinit_step: MoveReinitStep,
+    read_step: MoveReinitStep,
+}
+
 #[derive(Deserialize)]
 struct CaptureStatusOk {
     status: String,
     capture: PathBuf,
     lean: PathBuf,
+    #[serde(default)]
+    capture_shards: Option<PathBuf>,
+}
+
+#[derive(Deserialize)]
+struct CaptureShardsManifest {
+    shards: Vec<CaptureShardEntry>,
+}
+
+#[derive(Debug, Deserialize)]
+struct CaptureShardEntry {
+    shard_idx: usize,
+    capture_module: String,
+}
+
+struct CaptureCompileEnv<'a> {
+    out_dir: &'a Path,
+    lean_path: &'a str,
+    work_dir: &'a Path,
+    deadline: Option<Instant>,
 }
 
 #[derive(Deserialize)]
@@ -361,7 +467,7 @@ struct CaptureProgram {
     bodies: Vec<CaptureBody>,
 }
 
-#[derive(Deserialize)]
+#[derive(Clone, Deserialize, Serialize)]
 pub(crate) struct CaptureBlock {
     pub(crate) statements: Vec<serde_json::Value>,
     #[serde(default)]
@@ -390,12 +496,402 @@ fn is_sysroot_ub_kernel_whnf(body: &CaptureBody) -> bool {
         && t1.get("kind").and_then(serde_json::Value::as_str) == Some("ret")
 }
 
-#[derive(Deserialize)]
+#[derive(Clone, Deserialize, Serialize)]
 pub(crate) struct CaptureBody {
     pub(crate) identity: String,
     pub(crate) arg_count: usize,
     pub(crate) local_tys: Vec<serde_json::Value>,
     pub(crate) blocks: Vec<CaptureBlock>,
+}
+
+fn write_canonical_json(val: &serde_json::Value, out: &mut String) {
+    match val {
+        serde_json::Value::Null => out.push_str("null"),
+        serde_json::Value::Bool(b) => out.push_str(if *b { "true" } else { "false" }),
+        serde_json::Value::Number(n) => out.push_str(&n.to_string()),
+        serde_json::Value::String(s) => {
+            out.push_str(&serde_json::to_string(s).unwrap_or_else(|_| "\"\"".to_owned()));
+        }
+        serde_json::Value::Array(items) => {
+            out.push('[');
+            for (idx, item) in items.iter().enumerate() {
+                if idx > 0 {
+                    out.push(',');
+                }
+                write_canonical_json(item, out);
+            }
+            out.push(']');
+        }
+        serde_json::Value::Object(map) => {
+            let mut keys: Vec<&str> = map.keys().map(String::as_str).collect();
+            keys.sort_unstable();
+            out.push('{');
+            for (idx, k) in keys.iter().enumerate() {
+                if idx > 0 {
+                    out.push(',');
+                }
+                out.push_str(&serde_json::to_string(k).unwrap_or_else(|_| "\"\"".to_owned()));
+                out.push(':');
+                write_canonical_json(&map[*k], out);
+            }
+            out.push('}');
+        }
+    }
+}
+
+pub(crate) fn compute_capture_body_sha256(
+    fn_identity: &str,
+    arg_count: usize,
+    local_tys: &[serde_json::Value],
+    blocks: &[serde_json::Value],
+) -> String {
+    let payload = serde_json::json!({
+        "identity": fn_identity,
+        "arg_count": arg_count,
+        "local_tys": local_tys,
+        "blocks": blocks,
+    });
+    let mut canonical = String::new();
+    write_canonical_json(&payload, &mut canonical);
+    let mut hasher = Sha256::new();
+    hasher.update(canonical.as_bytes());
+    let digest = hasher.finalize();
+    let mut hex = String::with_capacity(64);
+    for b in digest {
+        let _ = write!(hex, "{b:02x}");
+    }
+    hex
+}
+
+fn block_action_at<'a>(
+    blocks: &'a [serde_json::Value],
+    coord: &MoveReinitStep,
+    label: &str,
+) -> Result<(bool, &'a serde_json::Value), String> {
+    let block = blocks
+        .get(coord.block)
+        .ok_or_else(|| format!("{label} block {} out of bounds ({})", coord.block, blocks.len()))?;
+    let stmts = block
+        .get("statements")
+        .and_then(serde_json::Value::as_array)
+        .ok_or_else(|| format!("{label} block {} missing statements array", coord.block))?;
+    if coord.stmt < stmts.len() {
+        Ok((false, &stmts[coord.stmt]))
+    } else if coord.stmt == stmts.len() {
+        let term = block
+            .get("terminator")
+            .ok_or_else(|| format!("{label} block {} missing terminator", coord.block))?;
+        if term.is_null() {
+            return Err(format!("{label} block {} has null terminator", coord.block));
+        }
+        Ok((true, term))
+    } else {
+        Err(format!(
+            "{label} stmt {} out of bounds for block {} (stmts={})",
+            coord.stmt,
+            coord.block,
+            stmts.len()
+        ))
+    }
+}
+
+fn stmt_writes_local(stmt: &serde_json::Value, target_local: u64) -> Option<bool> {
+    match stmt.get("kind").and_then(serde_json::Value::as_str)? {
+        "assign" => {
+            Some(stmt.get("local").and_then(serde_json::Value::as_u64) == Some(target_local))
+        }
+        "assign_place" => {
+            let p = stmt.get("place")?;
+            let proj_empty = p
+                .get("projection")
+                .and_then(serde_json::Value::as_array)
+                .is_some_and(Vec::is_empty);
+            Some(
+                proj_empty
+                    && p.get("local").and_then(serde_json::Value::as_u64) == Some(target_local),
+            )
+        }
+        _ => Some(false),
+    }
+}
+
+fn operand_moves_local(op: &serde_json::Value, target_local: u64) -> bool {
+    match op.get("kind").and_then(serde_json::Value::as_str) {
+        Some("move") => op.get("local").and_then(serde_json::Value::as_u64) == Some(target_local),
+        Some("move_place") => {
+            let Some(p) = op.get("place") else {
+                return false;
+            };
+            let proj_empty = p
+                .get("projection")
+                .and_then(serde_json::Value::as_array)
+                .is_some_and(Vec::is_empty);
+            proj_empty && p.get("local").and_then(serde_json::Value::as_u64) == Some(target_local)
+        }
+        _ => false,
+    }
+}
+
+fn operand_reads_local_any(op: &serde_json::Value, target_local: u64) -> bool {
+    match op.get("kind").and_then(serde_json::Value::as_str) {
+        Some("copy" | "move") => {
+            op.get("local").and_then(serde_json::Value::as_u64) == Some(target_local)
+        }
+        Some("copy_place" | "move_place") => {
+            op.get("place").and_then(|p| p.get("local")).and_then(serde_json::Value::as_u64)
+                == Some(target_local)
+        }
+        _ => false,
+    }
+}
+
+fn rvalue_reads_local_extended(rvalue: &serde_json::Value, target_local: u64) -> bool {
+    if rvalue_reads_local(rvalue, target_local) {
+        return true;
+    }
+    match rvalue.get("kind").and_then(serde_json::Value::as_str) {
+        Some("aggregate_tuple") => {
+            rvalue.get("fields").and_then(serde_json::Value::as_array).is_some_and(|fields| {
+                fields.iter().any(|op| operand_reads_local_any(op, target_local))
+            })
+        }
+        Some("aggregate_range_to") => {
+            rvalue.get("end").is_some_and(|op| operand_reads_local_any(op, target_local))
+        }
+        Some("aggregate_range_from") => {
+            rvalue.get("start").is_some_and(|op| operand_reads_local_any(op, target_local))
+        }
+        _ => false,
+    }
+}
+
+fn term_reads_local(term: &serde_json::Value, target_local: u64) -> bool {
+    match term.get("kind").and_then(serde_json::Value::as_str) {
+        Some("switch_int") => {
+            term.get("operand").is_some_and(|op| operand_reads_local_any(op, target_local))
+        }
+        Some("assert") => {
+            term.get("cond").is_some_and(|op| operand_reads_local_any(op, target_local))
+        }
+        Some("core_call" | "call" | "sysroot_call") => term
+            .get("args")
+            .and_then(serde_json::Value::as_array)
+            .is_some_and(|args| args.iter().any(|op| operand_reads_local_any(op, target_local))),
+        _ => false,
+    }
+}
+
+fn block_successors(term: &serde_json::Value) -> Vec<usize> {
+    let mut succs = Vec::new();
+    match term.get("kind").and_then(serde_json::Value::as_str) {
+        Some("goto") => {
+            if let Some(b) = term.get("block").and_then(serde_json::Value::as_u64) {
+                succs.push(b as usize);
+            }
+        }
+        Some("switch_int") => {
+            if let Some(targets) = term.get("targets").and_then(serde_json::Value::as_array) {
+                for pair in targets {
+                    if let Some(arr) = pair.as_array()
+                        && let Some(b) = arr.get(1).and_then(serde_json::Value::as_u64)
+                    {
+                        succs.push(b as usize);
+                    }
+                }
+            }
+            if let Some(b) = term.get("otherwise").and_then(serde_json::Value::as_u64) {
+                succs.push(b as usize);
+            }
+        }
+        Some("assert" | "core_call" | "call" | "sysroot_call") => {
+            if let Some(b) = term.get("target").and_then(serde_json::Value::as_u64) {
+                succs.push(b as usize);
+            }
+        }
+        _ => {}
+    }
+    succs
+}
+
+fn cfg_can_reach(
+    blocks: &[serde_json::Value],
+    from_block: usize,
+    to_block: usize,
+    allow_zero_edges: bool,
+) -> bool {
+    if allow_zero_edges && from_block == to_block {
+        return true;
+    }
+    let mut seen = BTreeSet::new();
+    let mut queue = VecDeque::new();
+    let Some(first_term) = blocks.get(from_block).and_then(|b| b.get("terminator")) else {
+        return false;
+    };
+    for s in block_successors(first_term) {
+        if s < blocks.len() && seen.insert(s) {
+            queue.push_back(s);
+        }
+    }
+    while let Some(cur) = queue.pop_front() {
+        if cur == to_block {
+            return true;
+        }
+        if let Some(term) = blocks.get(cur).and_then(|b| b.get("terminator")) {
+            for s in block_successors(term) {
+                if s < blocks.len() && seen.insert(s) {
+                    queue.push_back(s);
+                }
+            }
+        }
+    }
+    false
+}
+
+fn cfg_step_follows(blocks: &[serde_json::Value], a: &MoveReinitStep, b: &MoveReinitStep) -> bool {
+    if a.block == b.block && a.stmt < b.stmt {
+        return true;
+    }
+    cfg_can_reach(blocks, a.block, b.block, a.block != b.block)
+}
+
+/// Independently verify every execution-trace and captured-MIR invariant of
+/// [`MoveReinitEvidence`] against `fn_name` and `arg_count`.
+pub(crate) fn verify_move_reinit_evidence(
+    ev: &MoveReinitEvidence,
+    case_id: &str,
+    fn_name: &str,
+    arg_count: usize,
+) -> Result<(), String> {
+    let matches_fn = ev.fn_identity == fn_name
+        || ev.fn_identity == format!("rust-path-v1::{fn_name}")
+        || ev.fn_identity.ends_with(&format!("::{fn_name}"));
+    if !matches_fn {
+        return Err(format!(
+            "move_reinit_evidence fn_identity {:?} does not match {:?}",
+            ev.fn_identity, fn_name
+        ));
+    }
+    if ev.arg_count != arg_count {
+        return Err(format!("move_reinit_evidence arg_count {} != {}", ev.arg_count, arg_count));
+    }
+    if ev.local_slot <= ev.arg_count || ev.local_slot >= ev.local_tys.len() {
+        return Err(format!(
+            "move_reinit_evidence local_slot {} invalid for arg_count={}, locals={}",
+            ev.local_slot,
+            ev.arg_count,
+            ev.local_tys.len()
+        ));
+    }
+    if !is_non_zst_captured_ty(&ev.local_tys[ev.local_slot]) {
+        return Err(format!(
+            "move_reinit_evidence local_slot {} has zero-sized/unsupported type {}",
+            ev.local_slot, ev.local_tys[ev.local_slot]
+        ));
+    }
+    if !(ev.init_step.step < ev.move_step.step
+        && ev.move_step.step < ev.reinit_step.step
+        && ev.reinit_step.step < ev.read_step.step
+        && ev.read_step.step < ev.total_steps)
+    {
+        return Err("move_reinit_evidence step timestamps are not strictly increasing".to_owned());
+    }
+    let expected_sha =
+        compute_capture_body_sha256(&ev.fn_identity, ev.arg_count, &ev.local_tys, &ev.blocks);
+    if ev.capture_body_sha256 != expected_sha {
+        return Err("move_reinit_evidence capture_body_sha256 mismatch".to_owned());
+    }
+    let expected_probe_prefix = format!(
+        "ANNEAL_LEAN_CASE:{case_id}:BODY|{}|{}|MR1|{}|{}|{},{},{}|{},{},{}|{},{},{}|{},{},{}:",
+        ev.body_id,
+        ev.fn_identity,
+        ev.local_slot,
+        ev.total_steps,
+        ev.init_step.step,
+        ev.init_step.block,
+        ev.init_step.stmt,
+        ev.move_step.step,
+        ev.move_step.block,
+        ev.move_step.stmt,
+        ev.reinit_step.step,
+        ev.reinit_step.block,
+        ev.reinit_step.stmt,
+        ev.read_step.step,
+        ev.read_step.block,
+        ev.read_step.stmt,
+    );
+    if !ev.lean_probe_line.starts_with(&expected_probe_prefix) {
+        return Err(format!(
+            "move_reinit_evidence lean_probe_line {:?} does not bind prefix {:?}",
+            ev.lean_probe_line, expected_probe_prefix
+        ));
+    }
+    let slot_u64 = ev.local_slot as u64;
+    let (init_is_term, init_act) = block_action_at(&ev.blocks, &ev.init_step, "init")?;
+    if init_is_term || stmt_writes_local(init_act, slot_u64) != Some(true) {
+        return Err("move_reinit_evidence init step does not assign local_slot".to_owned());
+    }
+    let (move_is_term, move_act) = block_action_at(&ev.blocks, &ev.move_step, "move")?;
+    let moves_ok = if move_is_term {
+        match move_act.get("kind").and_then(serde_json::Value::as_str) {
+            Some("switch_int") => {
+                move_act.get("operand").is_some_and(|op| operand_moves_local(op, slot_u64))
+            }
+            Some("assert") => {
+                move_act.get("cond").is_some_and(|op| operand_moves_local(op, slot_u64))
+            }
+            Some("core_call" | "call" | "sysroot_call") => move_act
+                .get("args")
+                .and_then(serde_json::Value::as_array)
+                .is_some_and(|args| args.iter().any(|op| operand_moves_local(op, slot_u64))),
+            _ => false,
+        }
+    } else if matches!(
+        move_act.get("kind").and_then(serde_json::Value::as_str),
+        Some("assign" | "assign_place")
+    ) && stmt_writes_local(move_act, slot_u64) == Some(false)
+    {
+        let rv = move_act.get("value");
+        rv.is_some_and(|r| {
+            matches!(r.get("kind").and_then(serde_json::Value::as_str), Some("use" | "use_retag"))
+                && r.get("operand").is_some_and(|op| operand_moves_local(op, slot_u64))
+        })
+    } else {
+        false
+    };
+    if !moves_ok {
+        return Err(
+            "move_reinit_evidence move step is not an Operand::Move of local_slot".to_owned()
+        );
+    }
+    let (reinit_is_term, reinit_act) = block_action_at(&ev.blocks, &ev.reinit_step, "reinit")?;
+    if reinit_is_term || stmt_writes_local(reinit_act, slot_u64) != Some(true) {
+        return Err("move_reinit_evidence reinit step does not reinitialize local_slot".to_owned());
+    }
+    let (read_is_term, read_act) = block_action_at(&ev.blocks, &ev.read_step, "read")?;
+    let reads_ok = if read_is_term {
+        term_reads_local(read_act, slot_u64)
+    } else {
+        matches!(
+            read_act.get("kind").and_then(serde_json::Value::as_str),
+            Some("assign" | "assign_place")
+        ) && read_act.get("value").is_some_and(|r| rvalue_reads_local_extended(r, slot_u64))
+    };
+    if !reads_ok {
+        return Err(
+            "move_reinit_evidence read step does not read reinitialized local_slot".to_owned()
+        );
+    }
+    if !cfg_can_reach(&ev.blocks, 0, ev.init_step.block, true)
+        || !cfg_step_follows(&ev.blocks, &ev.init_step, &ev.move_step)
+        || !cfg_step_follows(&ev.blocks, &ev.move_step, &ev.reinit_step)
+        || !cfg_step_follows(&ev.blocks, &ev.reinit_step, &ev.read_step)
+    {
+        return Err(
+            "move_reinit_evidence CFG blocks do not connect init -> move -> reinit -> read"
+                .to_owned(),
+        );
+    }
+    Ok(())
 }
 
 fn is_non_zst_captured_ty(ty: &serde_json::Value) -> bool {
@@ -410,25 +906,13 @@ fn is_non_zst_captured_ty(ty: &serde_json::Value) -> bool {
 }
 
 fn rvalue_reads_local(rvalue: &serde_json::Value, target_local: u64) -> bool {
-    let op_has_local = |op: &serde_json::Value| -> bool {
-        match op.get("kind").and_then(serde_json::Value::as_str) {
-            Some("copy" | "move") => {
-                op.get("local").and_then(serde_json::Value::as_u64) == Some(target_local)
-            }
-            Some("copy_place" | "move_place") => {
-                op.get("place").and_then(|p| p.get("local")).and_then(serde_json::Value::as_u64)
-                    == Some(target_local)
-            }
-            _ => false,
-        }
-    };
     match rvalue.get("kind").and_then(serde_json::Value::as_str) {
         Some("use" | "use_retag" | "unary" | "cast") => {
-            rvalue.get("operand").is_some_and(op_has_local)
+            rvalue.get("operand").is_some_and(|op| operand_reads_local_any(op, target_local))
         }
         Some("binary") => {
-            rvalue.get("left").is_some_and(op_has_local)
-                || rvalue.get("right").is_some_and(op_has_local)
+            rvalue.get("left").is_some_and(|op| operand_reads_local_any(op, target_local))
+                || rvalue.get("right").is_some_and(|op| operand_reads_local_any(op, target_local))
         }
         Some("discriminant") => {
             rvalue
@@ -442,10 +926,18 @@ fn rvalue_reads_local(rvalue: &serde_json::Value, target_local: u64) -> bool {
     }
 }
 
-/// Check whether `body` initializes a non-argument, non-ZST local, moves out of
-/// it via `Rvalue::Use(Operand::Move)` (deinitializing it), reinitializes that
-/// same local, and subsequently reads or moves from it again.
+/// Check whether a single-block straight-line `body` initializes a
+/// non-argument, non-ZST local, moves out of it via
+/// `Rvalue::Use(Operand::Move)` (deinitializing it), reinitializes that same
+/// local, and subsequently reads or moves from it again.
+///
+/// Multi-block bodies are rejected here because basic-block order does not
+/// establish reachability; Stage-2 fuzzing instead records move/reinit
+/// coverage directly from the concrete `evalMirStepBy` execution trace.
 pub(crate) fn body_exercises_move_then_reinit(body: &CaptureBody) -> bool {
+    if body.blocks.len() != 1 {
+        return false;
+    }
     'slot_loop: for (slot_idx, ty) in body.local_tys.iter().enumerate().skip(body.arg_count + 1) {
         if !is_non_zst_captured_ty(ty) {
             continue;
@@ -512,6 +1004,28 @@ pub(crate) fn effective_timeout_secs(default_secs: u64) -> Result<u64, String> {
     effective_timeout_secs_from(env::var_os("ANNEAL_DIFF_TIMEOUT_SECS").as_deref(), default_secs)
 }
 
+pub(crate) fn effective_timeout_duration(
+    default_secs: u64,
+    deadline: Option<Instant>,
+) -> Result<Duration, String> {
+    let base = Duration::from_secs(effective_timeout_secs(default_secs)?);
+    clamp_timeout_to_deadline(base, deadline)
+}
+
+pub(crate) fn clamp_timeout_to_deadline(
+    base: Duration,
+    deadline: Option<Instant>,
+) -> Result<Duration, String> {
+    let Some(dl) = deadline else {
+        return Ok(base);
+    };
+    let now = Instant::now();
+    if now >= dl {
+        return Err("shrink wall-clock deadline exhausted before subprocess launch".to_owned());
+    }
+    Ok(base.min(dl.saturating_duration_since(now)).max(Duration::from_millis(1)))
+}
+
 fn effective_timeout_secs_from(
     raw_override: Option<&OsStr>,
     default_secs: u64,
@@ -564,56 +1078,318 @@ pub(crate) fn sha256_file_hex(path: &Path) -> Result<String, String> {
     Ok(hex)
 }
 
-/// Reject symlinks and non-regular files BEFORE `fs::canonicalize` runs.
-pub(crate) fn validate_and_canonicalize_capture_bin(raw: &Path) -> Result<PathBuf, String> {
-    let meta = fs::symlink_metadata(raw)
-        .map_err(|e| format!("stat capture binary {}: {e}", raw.display()))?;
-    if meta.file_type().is_symlink() {
-        return Err(format!("capture binary must not be a symlink: {}", raw.display()));
-    }
-    if !meta.is_file() {
-        return Err(format!("capture binary path is not a regular file: {}", raw.display()));
-    }
-    fs::canonicalize(raw).map_err(|e| format!("canonicalize capture bin {}: {e}", raw.display()))
-}
-
-pub(crate) fn run_supervised_cmd(
+pub(crate) fn run_supervised_cmd_in_tmp(
     inv: &Invocation,
     work_dir: &Path,
     timeout_secs: u64,
+    tmp_parent: Option<&Path>,
     context: &str,
 ) -> Result<ProcessOutcome, String> {
-    let tmp =
-        tempfile::tempdir().map_err(|e| format!("create supervisor temp dir ({context}): {e}"))?;
-    let canon_root = fs::canonicalize(tmp.path())
-        .map_err(|e| format!("canonicalize supervisor temp dir ({context}): {e}"))?;
-    let canon_work = fs::canonicalize(work_dir)
-        .map_err(|e| format!("canonicalize work dir ({context}): {e}"))?;
-    let supervisor = ProcessSupervisor::new(Duration::from_secs(timeout_secs))?;
-    supervisor.run(inv, &canon_work, &canon_root.join("log"), &canon_root)
+    crate::rustc_runner::run_supervised_in_tmp(
+        inv,
+        work_dir,
+        Duration::from_secs(timeout_secs),
+        tmp_parent,
+        context,
+    )
 }
 
-fn default_child_path() -> OsString {
-    env::var_os("PATH").unwrap_or_else(|| OsString::from("/usr/bin:/bin"))
+pub(crate) fn validated_system_child_path() -> Result<OsString, String> {
+    let caller_cwd =
+        env::current_dir().map_err(|e| format!("resolve current working directory: {e}"))?;
+    let store_prefix = Path::new(crate::rustc_runner::STORE_PREFIX);
+    let trusted_child_dirs: Vec<&Path> =
+        crate::rustc_runner::TRUSTED_CHILD_PATH_DIRS.iter().map(Path::new).collect();
+    crate::rustc_runner::build_child_path_with_bins(
+        &[],
+        None,
+        store_prefix,
+        &trusted_child_dirs,
+        None,
+        &caller_cwd,
+    )
 }
 
-pub(crate) fn apply_lean_tool_env(mut inv: Invocation, lean_bin: &Path) -> Invocation {
-    if let Some(ld) = env::var_os("LD_LIBRARY_PATH").filter(|v| !v.is_empty()) {
-        inv = inv.env("LD_LIBRARY_PATH", ld);
-    } else if let Some(lib_dir) =
-        lean_bin.parent().and_then(Path::parent).map(|p| p.join("lib/lean"))
-        && lib_dir.is_dir()
-    {
-        inv = inv.env("LD_LIBRARY_PATH", lib_dir);
+#[cfg_attr(not(test), allow(dead_code))]
+#[derive(Debug)]
+pub(crate) struct PreparedLeanInvocation {
+    pub(crate) inv: Invocation,
+    pub(crate) validated_tmpdir: Option<PathBuf>,
+    pub(crate) _staging: Option<Arc<crate::rustc_runner::ImmutableStagingDir>>,
+}
+
+fn apply_prepared_lean_tool_env(
+    mut inv: Invocation,
+    ld_lib: &str,
+    child_path: &OsStr,
+    validated_tmpdir: Option<&Path>,
+) -> Invocation {
+    if !ld_lib.is_empty() {
+        inv = inv.env("LD_LIBRARY_PATH", ld_lib);
     }
-    inv = inv.env("PATH", default_child_path());
-    if let Some(tmp) = env::var_os("TMPDIR").filter(|v| !v.is_empty()) {
-        inv = inv.env("TMPDIR", tmp);
+    inv = inv.env("PATH", child_path);
+    if let Some(td) = validated_tmpdir {
+        inv = inv.env("TMPDIR", td);
     }
     inv
 }
 
+fn rewrite_lean_invocation_executable(
+    mut inv: Invocation,
+    raw_lean_bin: &Path,
+    staged_lean_bin: &Path,
+    caller_cwd: &Path,
+) -> Invocation {
+    let raw_abs = if raw_lean_bin.is_absolute() {
+        raw_lean_bin.to_path_buf()
+    } else {
+        caller_cwd.join(raw_lean_bin)
+    };
+    let inv_abs = if inv.executable.is_absolute() {
+        inv.executable.clone()
+    } else {
+        caller_cwd.join(&inv.executable)
+    };
+    let bare_match = raw_lean_bin.file_name().is_some_and(|name| inv.executable == Path::new(name));
+    if inv.executable == raw_lean_bin
+        || bare_match
+        || fs::canonicalize(&inv_abs).ok() == fs::canonicalize(&raw_abs).ok()
+    {
+        inv.executable = staged_lean_bin.to_path_buf();
+    }
+    inv
+}
+
+fn apply_lean_tool_env_validated(
+    inv: Invocation,
+    lean_bin: &Path,
+    store_prefix: &Path,
+    trusted_child_dirs: &[&Path],
+    ambient_path: Option<&OsStr>,
+    caller_cwd: &Path,
+    validated_tmpdir: Option<PathBuf>,
+) -> Result<PreparedLeanInvocation, String> {
+    let prepared_libs =
+        crate::rustc_runner::prepare_lean_library_path(lean_bin, store_prefix, caller_cwd)?;
+    let valid_bin_dir = crate::rustc_runner::validated_store_aware_dir(
+        &prepared_libs.bin_dir,
+        store_prefix,
+        caller_cwd,
+        "Lean bin dir",
+    )?;
+    let raw_child_path = crate::rustc_runner::build_child_path_with_bins(
+        &[&valid_bin_dir],
+        None,
+        store_prefix,
+        trusted_child_dirs,
+        ambient_path,
+        caller_cwd,
+    )?;
+    let lean_guards = [prepared_libs._staging.as_ref()];
+    let pinned_lean_bin = crate::rustc_runner::ImmutableStagingDir::pin_path_with_guards(
+        &lean_guards,
+        &prepared_libs.lean_bin,
+    );
+    let pinned_ld = if prepared_libs.ld_library_path.is_empty() {
+        String::new()
+    } else {
+        crate::rustc_runner::ImmutableStagingDir::pin_env_paths_with_guards(
+            &lean_guards,
+            OsStr::new(&prepared_libs.ld_library_path),
+        )?
+        .to_string_lossy()
+        .into_owned()
+    };
+    let pinned_child_path = crate::rustc_runner::ImmutableStagingDir::pin_env_paths_with_guards(
+        &lean_guards,
+        &raw_child_path,
+    )?;
+    let staged_inv = rewrite_lean_invocation_executable(
+        apply_prepared_lean_tool_env(
+            inv,
+            &pinned_ld,
+            &pinned_child_path,
+            validated_tmpdir.as_deref(),
+        ),
+        lean_bin,
+        &pinned_lean_bin,
+        caller_cwd,
+    );
+    Ok(PreparedLeanInvocation {
+        inv: staged_inv,
+        validated_tmpdir,
+        _staging: prepared_libs._staging,
+    })
+}
+
+#[cfg_attr(not(test), allow(dead_code))]
+pub(crate) fn apply_lean_tool_env_with_tmpdir(
+    inv: Invocation,
+    lean_bin: &Path,
+    store_prefix: &Path,
+    trusted_child_dirs: &[&Path],
+    ambient_path: Option<&OsStr>,
+    caller_cwd: &Path,
+    tmpdir_env: Option<&OsStr>,
+) -> Result<PreparedLeanInvocation, String> {
+    let validated_tmpdir = crate::mir_eval_runner::validate_optional_existing_dir_env(
+        tmpdir_env, caller_cwd, "TMPDIR",
+    )?;
+    apply_lean_tool_env_validated(
+        inv,
+        lean_bin,
+        store_prefix,
+        trusted_child_dirs,
+        ambient_path,
+        caller_cwd,
+        validated_tmpdir,
+    )
+}
+
+fn prepare_lean_tool_env(
+    inv: Invocation,
+    lean_bin: &Path,
+    validated_tmpdir: Option<PathBuf>,
+) -> Result<PreparedLeanInvocation, String> {
+    let caller_cwd =
+        env::current_dir().map_err(|e| format!("resolve current working directory: {e}"))?;
+    let store_prefix = Path::new(crate::rustc_runner::STORE_PREFIX);
+    let trusted_child_dirs: Vec<&Path> =
+        crate::rustc_runner::TRUSTED_CHILD_PATH_DIRS.iter().map(Path::new).collect();
+    let ambient_path = env::var_os("PATH");
+    apply_lean_tool_env_validated(
+        inv,
+        lean_bin,
+        store_prefix,
+        &trusted_child_dirs,
+        ambient_path.as_deref(),
+        &caller_cwd,
+        validated_tmpdir,
+    )
+}
+
+fn run_lean_with_optional_env(
+    inv: Invocation,
+    lean_bin: &Path,
+    work_dir: &Path,
+    timeout_secs: u64,
+    prepared_env: Option<LeanPreparedEnv<'_>>,
+    validated_tmpdir: Option<&Path>,
+    context: &str,
+) -> Result<ProcessOutcome, String> {
+    if let Some(env_cfg) = prepared_env {
+        let prepared_inv = apply_prepared_lean_tool_env(
+            inv,
+            env_cfg.ld_library_path,
+            env_cfg.child_path,
+            env_cfg.validated_tmpdir,
+        );
+        return run_supervised_cmd_in_tmp(
+            &prepared_inv,
+            work_dir,
+            timeout_secs,
+            env_cfg.validated_tmpdir,
+            context,
+        );
+    }
+    run_lean_supervised_in_tmp(inv, lean_bin, work_dir, timeout_secs, validated_tmpdir, context)
+}
+
+fn run_lean_supervised_in_tmp(
+    inv: Invocation,
+    lean_bin: &Path,
+    work_dir: &Path,
+    timeout_secs: u64,
+    validated_tmpdir: Option<&Path>,
+    context: &str,
+) -> Result<ProcessOutcome, String> {
+    let prepared = prepare_lean_tool_env(inv, lean_bin, validated_tmpdir.map(Path::to_path_buf))?;
+    run_supervised_cmd_in_tmp(
+        &prepared.inv,
+        work_dir,
+        timeout_secs,
+        prepared.validated_tmpdir.as_deref(),
+        context,
+    )
+}
+
+fn stage_immutable_lean_dir_in_tmp(
+    src_dir: &Path,
+    pinned: Option<(&crate::rustc_runner::PinnedPrivateDir, &Path)>,
+    rel_subdir: &str,
+    tmp_parent: Option<&Path>,
+    label: &str,
+) -> Result<(PathBuf, Arc<crate::rustc_runner::ImmutableStagingDir>), String> {
+    let temp = crate::mir_eval_runner::build_temp_dir("anneal-lean-stage-", tmp_parent)?;
+    let (_, staging) =
+        crate::rustc_runner::ImmutableStagingDir::build_and_pin(temp, label, |_, pinned_root| {
+            let dst = pinned_root.join(rel_subdir);
+            if let Some((pin, rel_dir)) = pinned {
+                pin.copy_rel_subtree_to(rel_dir, &dst, false, label)
+            } else {
+                crate::rustc_runner::copy_validated_subtree(src_dir, &dst, None, false, label)
+            }
+        })?;
+    Ok((staging.root().join(rel_subdir), staging))
+}
+
+#[cfg_attr(not(test), allow(dead_code))]
+fn resolve_immutable_lean_stdlib_in(
+    lean_prefix: &Path,
+    lean_bin: &Path,
+    prepared_libs: &crate::rustc_runner::PreparedLeanLibs,
+    store_prefix: &Path,
+    caller_cwd: &Path,
+    tmp_parent: Option<&Path>,
+) -> Result<(PathBuf, Option<Arc<crate::rustc_runner::ImmutableStagingDir>>), String> {
+    let bin_prefix =
+        lean_bin.parent().and_then(Path::parent).and_then(|p| fs::canonicalize(p).ok());
+    if bin_prefix.as_deref() == Some(lean_prefix)
+        && let Some(staged_lib_lean) = &prepared_libs.lib_lean_dir
+    {
+        return Ok((staged_lib_lean.clone(), None));
+    }
+    let stdlib_cand = lean_prefix.join("lib/lean");
+    if let Some(res) = crate::rustc_runner::try_validate_store_contained_path(
+        &stdlib_cand,
+        store_prefix,
+        caller_cwd,
+        true,
+        "lean stdlib",
+    ) {
+        let canon = res?;
+        let canon_store =
+            crate::mir_eval_runner::validate_dir_path_no_symlinks(store_prefix, caller_cwd)?;
+        crate::rustc_runner::validate_store_contained_dir_tree(
+            &canon,
+            &canon_store,
+            &canon_store,
+            "lean stdlib",
+        )?;
+        return Ok((canon, None));
+    }
+    let canon = crate::mir_eval_runner::validate_dir_path_no_symlinks(&stdlib_cand, caller_cwd)?;
+    let (staged, guard) =
+        stage_immutable_lean_dir_in_tmp(&canon, None, "lib/lean", tmp_parent, "lean stdlib")?;
+    Ok((staged, Some(guard)))
+}
+
+#[derive(Clone, Copy)]
+enum LeanCacheRoot<'a> {
+    Path(&'a Path),
+    Pinned(&'a crate::rustc_runner::PinnedPrivateDir),
+}
+
 impl LeanSession {
+    pub(crate) fn apply_lean_env(&self, inv: Invocation) -> Invocation {
+        apply_prepared_lean_tool_env(
+            inv,
+            &self.lean_ld_library_path,
+            &self.lean_child_path,
+            self.validated_tmpdir.as_deref(),
+        )
+    }
+
     /// Resolve `anneal-rustc-capture` and Lean 4.34.1, and ensure compiled
     /// `.olean` artifacts for `Anneal.MirTotal.{Ops,StepCore,ExecTotal}` exist
     /// in `cache_root`.
@@ -622,26 +1398,239 @@ impl LeanSession {
         tools: &ToolchainEnv,
         cache_root: &Path,
     ) -> Result<Self, String> {
-        let rust_sysroot = fs::canonicalize(&tools.sysroot)
-            .map_err(|e| format!("canonicalize rust sysroot: {e}"))?;
-        let lean_bin =
-            fs::canonicalize(&tools.lean).map_err(|e| format!("canonicalize lean bin: {e}"))?;
-        let ld_library_path = join_library_path(&rust_sysroot.join("lib"));
-        let capture_bin = resolve_explicit_capture_bin(tools)?;
+        let caller_cwd =
+            env::current_dir().map_err(|e| format!("resolve current working directory: {e}"))?;
+        let ambient_tmpdir = env::var_os("TMPDIR");
+        Self::prepare_at(anneal_root, tools, cache_root, &caller_cwd, ambient_tmpdir.as_deref())
+    }
 
-        let lean_prefix = query_lean_prefix(&lean_bin)?;
-        let lean_stdlib = lean_prefix.join("lib/lean");
+    fn prepare_at(
+        anneal_root: &Path,
+        tools: &ToolchainEnv,
+        cache_root: &Path,
+        caller_cwd: &Path,
+        tmpdir_env: Option<&OsStr>,
+    ) -> Result<Self, String> {
+        let validated_tmpdir = crate::mir_eval_runner::validate_optional_existing_dir_env(
+            tmpdir_env, caller_cwd, "TMPDIR",
+        )?;
+        let store_prefix = Path::new(crate::rustc_runner::STORE_PREFIX);
+        let prepared_sys = crate::rustc_runner::prepare_sysroot_binary_in(
+            &tools.sysroot,
+            &format!("bin/rustc{}", env::consts::EXE_SUFFIX),
+            store_prefix,
+            validated_tmpdir.as_deref(),
+            "LeanSession rustc binary",
+        )?;
+        Self::prepare_from_sysroot_at_cache(
+            anneal_root,
+            tools,
+            LeanCacheRoot::Path(cache_root),
+            prepared_sys,
+            caller_cwd,
+            validated_tmpdir,
+        )
+    }
+
+    pub(crate) fn prepare_from_sysroot(
+        anneal_root: &Path,
+        tools: &ToolchainEnv,
+        cache_root: &Path,
+        prepared_sys: crate::rustc_runner::PreparedSysroot,
+    ) -> Result<Self, String> {
+        let caller_cwd =
+            env::current_dir().map_err(|e| format!("resolve current working directory: {e}"))?;
+        let ambient_tmpdir = env::var_os("TMPDIR");
+        let validated_tmpdir = crate::mir_eval_runner::validate_optional_existing_dir_env(
+            ambient_tmpdir.as_deref(),
+            &caller_cwd,
+            "TMPDIR",
+        )?;
+        Self::prepare_from_sysroot_at_cache(
+            anneal_root,
+            tools,
+            LeanCacheRoot::Path(cache_root),
+            prepared_sys,
+            &caller_cwd,
+            validated_tmpdir,
+        )
+    }
+
+    pub(crate) fn prepare_from_sysroot_pinned(
+        anneal_root: &Path,
+        tools: &ToolchainEnv,
+        cache_root: &crate::rustc_runner::PinnedPrivateDir,
+        prepared_sys: crate::rustc_runner::PreparedSysroot,
+    ) -> Result<Self, String> {
+        let caller_cwd =
+            env::current_dir().map_err(|e| format!("resolve current working directory: {e}"))?;
+        let ambient_tmpdir = env::var_os("TMPDIR");
+        let validated_tmpdir = crate::mir_eval_runner::validate_optional_existing_dir_env(
+            ambient_tmpdir.as_deref(),
+            &caller_cwd,
+            "TMPDIR",
+        )?;
+        Self::prepare_from_sysroot_at_cache(
+            anneal_root,
+            tools,
+            LeanCacheRoot::Pinned(cache_root),
+            prepared_sys,
+            &caller_cwd,
+            validated_tmpdir,
+        )
+    }
+
+    fn prepare_from_sysroot_at_cache(
+        anneal_root: &Path,
+        tools: &ToolchainEnv,
+        cache: LeanCacheRoot<'_>,
+        prepared_sys: crate::rustc_runner::PreparedSysroot,
+        caller_cwd: &Path,
+        validated_tmpdir: Option<PathBuf>,
+    ) -> Result<Self, String> {
+        let store_prefix = Path::new(crate::rustc_runner::STORE_PREFIX);
+        let trusted_child_dirs: Vec<&Path> =
+            crate::rustc_runner::TRUSTED_CHILD_PATH_DIRS.iter().map(Path::new).collect();
+        let raw_rust_sysroot = prepared_sys.sysroot;
+        let raw_ld_library_path = prepared_sys.ld_library_path;
+        let prepared_lean_libs = crate::rustc_runner::prepare_lean_runtime_library_path_in(
+            &tools.lean,
+            store_prefix,
+            caller_cwd,
+            validated_tmpdir.as_deref(),
+        )?;
+        let raw_lean_bin = prepared_lean_libs.lean_bin.clone();
+        let valid_lean_bin_dir = crate::rustc_runner::validated_store_aware_dir(
+            &prepared_lean_libs.bin_dir,
+            store_prefix,
+            caller_cwd,
+            "Lean bin dir",
+        )?;
+        let valid_rust_bin = crate::rustc_runner::validated_store_aware_dir(
+            &raw_rust_sysroot.join("bin"),
+            store_prefix,
+            caller_cwd,
+            "LeanSession rust bin dir",
+        )?;
+        let ambient_path = env::var_os("PATH");
+        let raw_child_path = crate::rustc_runner::build_child_path_with_bins(
+            &[&valid_rust_bin],
+            None,
+            store_prefix,
+            &trusted_child_dirs,
+            ambient_path.as_deref(),
+            caller_cwd,
+        )?;
+        let raw_lean_child_path = crate::rustc_runner::build_child_path_with_bins(
+            &[&valid_lean_bin_dir],
+            None,
+            store_prefix,
+            &trusted_child_dirs,
+            ambient_path.as_deref(),
+            caller_cwd,
+        )?;
+        let raw_capture_bin = resolve_explicit_capture_bin(tools)?;
+        let (raw_capture_bin, capture_staging) =
+            crate::rustc_runner::stage_immutable_named_executable(
+                &raw_capture_bin,
+                store_prefix,
+                caller_cwd,
+                validated_tmpdir.as_deref(),
+                "capture binary",
+            )?;
+
+        let lean_guards = [prepared_lean_libs._staging.as_ref()];
+        let lean_bin = crate::rustc_runner::ImmutableStagingDir::pin_path_with_guards(
+            &lean_guards,
+            &raw_lean_bin,
+        );
+        let lean_ld_library_path = if prepared_lean_libs.ld_library_path.is_empty() {
+            String::new()
+        } else {
+            crate::rustc_runner::ImmutableStagingDir::pin_env_paths_with_guards(
+                &lean_guards,
+                OsStr::new(&prepared_lean_libs.ld_library_path),
+            )?
+            .to_string_lossy()
+            .into_owned()
+        };
+        let lean_child_path = crate::rustc_runner::ImmutableStagingDir::pin_env_paths_with_guards(
+            &lean_guards,
+            &raw_lean_child_path,
+        )?;
+
         let prebuilt_dir = env::var_os("ANNEAL_TEST_INSTALL_ROOT")
             .filter(|v| !v.is_empty())
             .map(|r| PathBuf::from(r).join("share/anneal/prebuilt"));
+        let lean_tool_env = LeanPreparedEnv {
+            ld_library_path: &lean_ld_library_path,
+            child_path: &lean_child_path,
+            validated_tmpdir: validated_tmpdir.as_deref(),
+        };
 
-        let (olean_paths, prebuilt_overlay) = ensure_lean_dag_oleans(
-            anneal_root,
-            &lean_bin,
-            &lean_stdlib,
-            prebuilt_dir.as_deref(),
-            cache_root,
+        let lean_prefix = query_lean_prefix_with_env(&lean_bin, Some(lean_tool_env))?;
+        let (lean_stdlib, lean_stdlib_staging) = resolve_immutable_lean_stdlib_in(
+            &lean_prefix,
+            &raw_lean_bin,
+            &prepared_lean_libs,
+            store_prefix,
+            caller_cwd,
+            validated_tmpdir.as_deref(),
         )?;
+        let stdlib_guard =
+            lean_stdlib_staging.as_deref().or(prepared_lean_libs._staging.as_deref());
+        let source_lib_lean_dir = if lean_stdlib_staging.is_none() {
+            prepared_lean_libs.source_lib_lean_dir.as_deref()
+        } else {
+            None
+        };
+
+        let (raw_olean_paths, prebuilt_overlay, lean_dag_staging) =
+            ensure_lean_dag_oleans_in_tmp_inner(
+                anneal_root,
+                &lean_bin,
+                &lean_stdlib,
+                stdlib_guard,
+                source_lib_lean_dir,
+                prebuilt_dir.as_deref(),
+                cache,
+                Some(lean_tool_env),
+            )?;
+
+        let sysroot_guards = [prepared_sys._staging.as_ref()];
+        let rust_sysroot = crate::rustc_runner::ImmutableStagingDir::pin_path_with_guards(
+            &sysroot_guards,
+            &raw_rust_sysroot,
+        );
+        let ld_library_path = if raw_ld_library_path.is_empty() {
+            String::new()
+        } else {
+            crate::rustc_runner::ImmutableStagingDir::pin_env_paths_with_guards(
+                &sysroot_guards,
+                OsStr::new(&raw_ld_library_path),
+            )?
+            .to_string_lossy()
+            .into_owned()
+        };
+        let child_path = crate::rustc_runner::ImmutableStagingDir::pin_env_paths_with_guards(
+            &sysroot_guards,
+            &raw_child_path,
+        )?;
+        let capture_bin = crate::rustc_runner::ImmutableStagingDir::pin_path_with_guards(
+            &[capture_staging.as_ref()],
+            &raw_capture_bin,
+        );
+        let olean_guards = [
+            lean_dag_staging.as_ref(),
+            lean_stdlib_staging.as_ref(),
+            prepared_lean_libs._staging.as_ref(),
+        ];
+        let olean_paths = raw_olean_paths
+            .into_iter()
+            .map(|p| {
+                crate::rustc_runner::ImmutableStagingDir::pin_path_with_guards(&olean_guards, &p)
+            })
+            .collect();
 
         Ok(Self {
             anneal_root: anneal_root.to_path_buf(),
@@ -651,7 +1640,15 @@ impl LeanSession {
             olean_paths,
             prebuilt_overlay,
             ld_library_path,
-            child_path: default_child_path(),
+            child_path,
+            lean_ld_library_path,
+            lean_child_path,
+            validated_tmpdir,
+            _rust_sysroot_staging: prepared_sys._staging,
+            _capture_staging: capture_staging,
+            _lean_lib_staging: prepared_lean_libs._staging,
+            _lean_stdlib_staging: lean_stdlib_staging,
+            _lean_dag_staging: lean_dag_staging,
         })
     }
 
@@ -665,6 +1662,106 @@ impl LeanSession {
         env::join_paths(entries)
             .map(|s| s.to_string_lossy().into_owned())
             .map_err(|e| format!("join LEAN_PATH: {e}"))
+    }
+
+    fn compile_single_lean_module(
+        &self,
+        env: &CaptureCompileEnv<'_>,
+        lean_src: &Path,
+        olean_out: &Path,
+        context: &str,
+    ) -> Result<(), String> {
+        if let Some(parent) = olean_out.parent() {
+            fs::create_dir_all(parent).map_err(|e| format!("create {}: {e}", parent.display()))?;
+        }
+        let compile_inv = self.apply_lean_env(
+            Invocation::new(&self.lean_bin, LEAN_COMPILE_FLAGS)
+                .arg("-R")
+                .arg(env.out_dir)
+                .arg("-o")
+                .arg(olean_out)
+                .arg(lean_src)
+                .env("LEAN_PATH", env.lean_path),
+        );
+        let compile_cap = crate::rustc_runner::run_supervised_in_tmp(
+            &compile_inv,
+            env.work_dir,
+            effective_timeout_duration(LEAN_COMPILE_TIMEOUT_SECS, env.deadline)?,
+            self.validated_tmpdir.as_deref(),
+            context,
+        )?;
+        match compile_cap.termination {
+            Termination::Exited(s) if s.success() => Ok(()),
+            other => Err(format!(
+                "compiling {} failed ({}):\nstdout:\n{}\nstderr:\n{}",
+                lean_src.display(),
+                other.describe(),
+                String::from_utf8_lossy(&compile_cap.stdout),
+                String::from_utf8_lossy(&compile_cap.stderr)
+            )),
+        }
+    }
+
+    /// Compile any `Captured.Shard_*` modules emitted by `anneal-rustc-capture`
+    /// before compiling root `Captured.lean`, returning
+    /// `(olean_dir, lean_path)`.
+    fn compile_captured_lean_modules(
+        &self,
+        group_dir: &Path,
+        out_dir: &Path,
+        status_ok: &CaptureStatusOk,
+        deadline: Option<Instant>,
+        label: &str,
+    ) -> Result<(PathBuf, String), String> {
+        let caller_cwd =
+            env::current_dir().map_err(|e| format!("resolve current working directory: {e}"))?;
+        let canon_out_dir =
+            crate::mir_eval_runner::validate_dir_path_no_symlinks(out_dir, &caller_cwd)
+                .map_err(|e| format!("invalid capture_out directory: {e}"))?;
+        let valid_root_lean = validate_capture_output_file(
+            &canon_out_dir,
+            &caller_cwd,
+            &status_ok.lean,
+            "captured Lean module",
+        )?;
+        let mod_olean_dir = group_dir.join("olean_out");
+        fs::create_dir_all(&mod_olean_dir)
+            .map_err(|e| format!("create {}: {e}", mod_olean_dir.display()))?;
+        let canon_mod_olean_dir =
+            crate::mir_eval_runner::validate_dir_path_no_symlinks(&mod_olean_dir, &caller_cwd)
+                .map_err(|e| format!("invalid olean_out directory: {e}"))?;
+        let lean_path = self.lean_path_with(Some(&canon_mod_olean_dir))?;
+        let env = CaptureCompileEnv {
+            out_dir: &canon_out_dir,
+            lean_path: &lean_path,
+            work_dir: group_dir,
+            deadline,
+        };
+        let shards =
+            load_capture_shards(&canon_out_dir, &caller_cwd, status_ok.capture_shards.as_deref())?;
+        for shard in &shards {
+            let rel = shard_module_rel_path(&shard.capture_module)?;
+            let shard_src = validate_capture_output_file(
+                &canon_out_dir,
+                &caller_cwd,
+                &canon_out_dir.join(rel.with_extension("lean")),
+                &format!("captured shard {}", shard.capture_module),
+            )?;
+            let shard_olean = canon_mod_olean_dir.join(rel.with_extension("olean"));
+            self.compile_single_lean_module(
+                &env,
+                &shard_src,
+                &shard_olean,
+                &format!("compile {} ({label})", shard.capture_module),
+            )?;
+        }
+        self.compile_single_lean_module(
+            &env,
+            &valid_root_lean,
+            &canon_mod_olean_dir.join("Captured.olean"),
+            &format!("compile Captured.lean ({label})"),
+        )?;
+        Ok((canon_mod_olean_dir, lean_path))
     }
 
     /// Capture one fixture crate group, compile `Captured.lean`, evaluate all
@@ -686,7 +1783,12 @@ impl LeanSession {
             }
         }
 
-        let out_dir = group_dir.join("capture_out");
+        let caller_cwd =
+            env::current_dir().map_err(|e| format!("resolve current working directory: {e}"))?;
+        let canon_group_dir =
+            crate::mir_eval_runner::validate_dir_path_no_symlinks(group_dir, &caller_cwd)
+                .map_err(|e| format!("invalid capture group dir {}: {e}", group_dir.display()))?;
+        let out_dir = canon_group_dir.join("capture_out");
         let mut cap_inv = Invocation::new(&self.capture_bin, &["capture"])
             .arg("--crate-root")
             .arg(source_abs)
@@ -700,19 +1802,22 @@ impl LeanSession {
             .arg(&self.rust_sysroot)
             .arg("--source-file")
             .arg(source_abs)
-            .env("LD_LIBRARY_PATH", &self.ld_library_path)
             .env("PATH", &self.child_path);
-        if let Some(tmp) = env::var_os("TMPDIR").filter(|v| !v.is_empty()) {
-            cap_inv = cap_inv.env("TMPDIR", tmp);
+        if !self.ld_library_path.is_empty() {
+            cap_inv = cap_inv.env("LD_LIBRARY_PATH", &self.ld_library_path);
+        }
+        if let Some(td) = &self.validated_tmpdir {
+            cap_inv = cap_inv.env("TMPDIR", td);
         }
         for f in &selected_fns {
             cap_inv = cap_inv.arg("--select").arg(f);
         }
 
-        let cap_out = run_supervised_cmd(
+        let cap_out = run_supervised_cmd_in_tmp(
             &cap_inv,
-            group_dir,
+            &canon_group_dir,
             effective_timeout_secs(CAPTURE_TIMEOUT_SECS)?,
+            self.validated_tmpdir.as_deref(),
             &format!("capture {crate_name}"),
         )?;
         let cap_stdout = String::from_utf8_lossy(&cap_out.stdout);
@@ -727,15 +1832,43 @@ impl LeanSession {
             }
         }
 
-        let status_ok: CaptureStatusOk = serde_json::from_str(cap_stdout.trim()).map_err(|e| {
-            format!("parse capture output JSON for {crate_name}: {e}; raw={cap_stdout:?}")
-        })?;
+        let mut status_ok: CaptureStatusOk =
+            serde_json::from_str(cap_stdout.trim()).map_err(|e| {
+                format!("parse capture output JSON for {crate_name}: {e}; raw={cap_stdout:?}")
+            })?;
         if status_ok.status != "captured" {
             return Err(format!(
                 "unexpected capture status {:?} for {crate_name}",
                 status_ok.status
             ));
         }
+        let canon_out_dir =
+            crate::mir_eval_runner::validate_dir_path_no_symlinks(&out_dir, &canon_group_dir)
+                .map_err(|e| format!("invalid capture_out directory for {crate_name}: {e}"))?;
+        status_ok.capture = validate_capture_output_file(
+            &canon_out_dir,
+            &canon_group_dir,
+            &status_ok.capture,
+            "capture manifest",
+        )?;
+        status_ok.lean = validate_capture_output_file(
+            &canon_out_dir,
+            &canon_group_dir,
+            &status_ok.lean,
+            "captured Lean module",
+        )?;
+        status_ok.capture_shards = status_ok
+            .capture_shards
+            .as_deref()
+            .map(|p| {
+                validate_capture_output_file(
+                    &canon_out_dir,
+                    &canon_group_dir,
+                    p,
+                    "capture shards manifest",
+                )
+            })
+            .transpose()?;
 
         let manifest_raw = fs::read_to_string(&status_ok.capture)
             .map_err(|e| format!("read {}: {e}", status_ok.capture.display()))?;
@@ -757,42 +1890,16 @@ impl LeanSession {
             }
         }
 
-        let mod_olean_dir = group_dir.join("olean_out");
-        fs::create_dir_all(&mod_olean_dir)
-            .map_err(|e| format!("create {}: {e}", mod_olean_dir.display()))?;
-        let lean_path = self.lean_path_with(Some(&mod_olean_dir))?;
-
-        let compile_inv = apply_lean_tool_env(
-            Invocation::new(&self.lean_bin, LEAN_COMPILE_FLAGS)
-                .arg("-R")
-                .arg(&out_dir)
-                .arg("-o")
-                .arg(mod_olean_dir.join("Captured.olean"))
-                .arg(&status_ok.lean)
-                .env("LEAN_PATH", &lean_path),
-            &self.lean_bin,
-        );
-        let compile_cap = run_supervised_cmd(
-            &compile_inv,
-            group_dir,
-            effective_timeout_secs(LEAN_COMPILE_TIMEOUT_SECS)?,
-            &format!("compile Captured.lean ({crate_name})"),
+        let (mod_olean_dir, lean_path) = self.compile_captured_lean_modules(
+            &canon_group_dir,
+            &canon_out_dir,
+            &status_ok,
+            None,
+            crate_name,
         )?;
-        match compile_cap.termination {
-            Termination::Exited(s) if s.success() => {}
-            other => {
-                return Err(format!(
-                    "compiling {} failed ({}):\nstdout:\n{}\nstderr:\n{}",
-                    status_ok.lean.display(),
-                    other.describe(),
-                    String::from_utf8_lossy(&compile_cap.stdout),
-                    String::from_utf8_lossy(&compile_cap.stderr)
-                ));
-            }
-        }
 
         let captured = CapturedModule {
-            capture_dir: out_dir,
+            capture_dir: canon_out_dir,
             capture_json: status_ok.capture,
             captured_lean: status_ok.lean,
             olean_dir: mod_olean_dir,
@@ -802,8 +1909,13 @@ impl LeanSession {
             move_reinit_fns,
         };
 
-        let results =
-            self.evaluate_captured_group(group_dir, crate_name, &lean_path, &captured, cases)?;
+        let results = self.evaluate_captured_group(
+            &canon_group_dir,
+            crate_name,
+            &lean_path,
+            &captured,
+            cases,
+        )?;
         Ok((captured, results))
     }
 
@@ -824,16 +1936,16 @@ impl LeanSession {
         fs::write(&probe_path, &probe_src)
             .map_err(|e| format!("write {}: {e}", probe_path.display()))?;
 
-        let eval_inv = apply_lean_tool_env(
+        let eval_inv = self.apply_lean_env(
             Invocation::new(&self.lean_bin, LEAN_COMPILE_FLAGS)
                 .arg(&probe_path)
                 .env("LEAN_PATH", lean_path),
-            &self.lean_bin,
         );
-        let eval_out = run_supervised_cmd(
+        let eval_out = run_supervised_cmd_in_tmp(
             &eval_inv,
             group_dir,
             effective_timeout_secs(LEAN_EVAL_TIMEOUT_SECS)?,
+            self.validated_tmpdir.as_deref(),
             &format!("eval Probe.lean ({crate_name})"),
         )?;
         let stdout = String::from_utf8_lossy(&eval_out.stdout);
@@ -894,17 +2006,17 @@ impl LeanSession {
         let wp_path = group_dir.join(format!("WpProbe_{seq}.lean"));
         fs::write(&wp_path, &wp_src).map_err(|e| format!("write {}: {e}", wp_path.display()))?;
 
-        let wp_inv = apply_lean_tool_env(
+        let wp_inv = self.apply_lean_env(
             Invocation::new(&self.lean_bin, LEAN_COMPILE_FLAGS)
                 .arg("-DwarningAsError=true")
                 .arg(&wp_path)
                 .env("LEAN_PATH", lean_path),
-            &self.lean_bin,
         );
-        let wp_out = run_supervised_cmd(
+        let wp_out = run_supervised_cmd_in_tmp(
             &wp_inv,
             group_dir,
             effective_timeout_secs(LEAN_EVAL_TIMEOUT_SECS)?,
+            self.validated_tmpdir.as_deref(),
             &format!("check WpProbe_{seq}.lean ({crate_name})"),
         )?;
         match wp_out.termination {
@@ -964,6 +2076,1117 @@ impl LeanSession {
             )),
         }
     }
+
+    /// Capture and evaluate a batch of Stage-2 [`crate::r#gen::GenProgram`]
+    /// cases in a single `anneal-rustc-capture` + `lean` `#eval` pass for
+    /// admitted/UB cases, isolating `ScopeControl` cases so expected capture
+    /// rejections never bisect the admitted batch.
+    pub fn capture_and_evaluate_fuzz_batch(
+        &self,
+        group_dir: &Path,
+        crate_name: &str,
+        programs: &[&crate::r#gen::GenProgram],
+    ) -> Result<BTreeMap<String, FuzzLeanCaseResult>, String> {
+        self.capture_and_evaluate_fuzz_batch_until(group_dir, crate_name, programs, None)
+    }
+
+    pub fn capture_and_evaluate_fuzz_batch_until(
+        &self,
+        group_dir: &Path,
+        crate_name: &str,
+        programs: &[&crate::r#gen::GenProgram],
+        deadline: Option<Instant>,
+    ) -> Result<BTreeMap<String, FuzzLeanCaseResult>, String> {
+        if programs.is_empty() {
+            return Ok(BTreeMap::new());
+        }
+        let mut clean_batch = Vec::new();
+        let mut scope_controls = Vec::new();
+        for &p in programs {
+            if p.category == crate::r#gen::GenCategory::ScopeControl {
+                scope_controls.push(p);
+            } else {
+                clean_batch.push(p);
+            }
+        }
+        if !clean_batch.is_empty() && !scope_controls.is_empty() {
+            let mut combined = self.capture_and_evaluate_fuzz_group(
+                &group_dir.join("admitted"),
+                &format!("{crate_name}_adm"),
+                &clean_batch,
+                deadline,
+            )?;
+            for (idx, sc) in scope_controls.into_iter().enumerate() {
+                combined.extend(self.capture_and_evaluate_fuzz_group(
+                    &group_dir.join(format!("scope_{idx}")),
+                    &format!("{crate_name}_sc_{idx}"),
+                    &[sc],
+                    deadline,
+                )?);
+            }
+            return Ok(combined);
+        }
+        self.capture_and_evaluate_fuzz_group(group_dir, crate_name, programs, deadline)
+    }
+
+    fn capture_and_evaluate_fuzz_group(
+        &self,
+        group_dir: &Path,
+        crate_name: &str,
+        programs: &[&crate::r#gen::GenProgram],
+        deadline: Option<Instant>,
+    ) -> Result<BTreeMap<String, FuzzLeanCaseResult>, String> {
+        if programs.is_empty() {
+            return Ok(BTreeMap::new());
+        }
+        fs::create_dir_all(group_dir)
+            .map_err(|e| format!("create fuzz capture group dir {}: {e}", group_dir.display()))?;
+        let caller_cwd =
+            env::current_dir().map_err(|e| format!("resolve current working directory: {e}"))?;
+        let canon_group_dir =
+            crate::mir_eval_runner::validate_dir_path_no_symlinks(group_dir, &caller_cwd)
+                .map_err(|e| format!("invalid fuzz capture group dir: {e}"))?;
+
+        let source_text = crate::r#gen::render_batch_crate(programs);
+        let source_path = canon_group_dir.join("fuzz_batch.rs");
+        fs::write(&source_path, &source_text)
+            .map_err(|e| format!("write {}: {e}", source_path.display()))?;
+
+        let out_dir = canon_group_dir.join("capture_out");
+        let mut cap_inv = Invocation::new(&self.capture_bin, &["capture"])
+            .arg("--crate-root")
+            .arg(&source_path)
+            .arg("--crate-name")
+            .arg(crate_name)
+            .arg("--target")
+            .arg("x86_64-unknown-linux-gnu")
+            .arg("--out-dir")
+            .arg(&out_dir)
+            .arg("--sysroot")
+            .arg(&self.rust_sysroot)
+            .arg("--source-file")
+            .arg(&source_path)
+            .env("PATH", &self.child_path);
+        if !self.ld_library_path.is_empty() {
+            cap_inv = cap_inv.env("LD_LIBRARY_PATH", &self.ld_library_path);
+        }
+        if let Some(td) = &self.validated_tmpdir {
+            cap_inv = cap_inv.env("TMPDIR", td);
+        }
+        for p in programs {
+            cap_inv = cap_inv.arg("--select").arg(&p.fn_name);
+        }
+
+        let cap_out = crate::rustc_runner::run_supervised_in_tmp(
+            &cap_inv,
+            &canon_group_dir,
+            effective_timeout_duration(CAPTURE_TIMEOUT_SECS, deadline)?,
+            self.validated_tmpdir.as_deref(),
+            &format!("fuzz capture {crate_name}"),
+        )?;
+        let cap_stdout = String::from_utf8_lossy(&cap_out.stdout);
+        let cap_stderr = String::from_utf8_lossy(&cap_out.stderr);
+        let capture_ok = matches!(cap_out.termination, Termination::Exited(s) if s.success());
+        if !capture_ok {
+            if programs.len() == 1
+                || !is_bisectable_capture_rejection(&cap_out.termination, &cap_stdout)
+            {
+                let expected_fn = (programs.len() == 1).then_some(programs[0].fn_name.as_str());
+                let classified = classify_single_capture_failure(
+                    &cap_out.termination,
+                    &cap_stdout,
+                    &cap_stderr,
+                    expected_fn,
+                );
+                let mut out = BTreeMap::new();
+                for p in programs {
+                    out.insert(p.case_id.clone(), classified.clone());
+                }
+                return Ok(out);
+            }
+            let mid = programs.len() / 2;
+            let mut combined = self.capture_and_evaluate_fuzz_batch_until(
+                &canon_group_dir.join("bisect_l"),
+                &format!("{crate_name}_l"),
+                &programs[..mid],
+                deadline,
+            )?;
+            combined.extend(self.capture_and_evaluate_fuzz_batch_until(
+                &canon_group_dir.join("bisect_r"),
+                &format!("{crate_name}_r"),
+                &programs[mid..],
+                deadline,
+            )?);
+            return Ok(combined);
+        }
+
+        let mut status_ok: CaptureStatusOk =
+            serde_json::from_str(cap_stdout.trim()).map_err(|e| {
+                format!("parse fuzz capture output JSON for {crate_name}: {e}; raw={cap_stdout:?}")
+            })?;
+        if status_ok.status != "captured" {
+            return Err(format!(
+                "unexpected fuzz capture status {:?} for {crate_name}",
+                status_ok.status
+            ));
+        }
+        let canon_out_dir =
+            crate::mir_eval_runner::validate_dir_path_no_symlinks(&out_dir, &canon_group_dir)
+                .map_err(|e| format!("invalid fuzz capture_out directory for {crate_name}: {e}"))?;
+        status_ok.capture = validate_capture_output_file(
+            &canon_out_dir,
+            &canon_group_dir,
+            &status_ok.capture,
+            "capture manifest",
+        )?;
+        status_ok.lean = validate_capture_output_file(
+            &canon_out_dir,
+            &canon_group_dir,
+            &status_ok.lean,
+            "captured Lean module",
+        )?;
+        status_ok.capture_shards = status_ok
+            .capture_shards
+            .as_deref()
+            .map(|p| {
+                validate_capture_output_file(
+                    &canon_out_dir,
+                    &canon_group_dir,
+                    p,
+                    "capture shards manifest",
+                )
+            })
+            .transpose()?;
+
+        let manifest_raw = fs::read_to_string(&status_ok.capture)
+            .map_err(|e| format!("read {}: {e}", status_ok.capture.display()))?;
+        let manifest: CaptureManifest = serde_json::from_str(&manifest_raw)
+            .map_err(|e| format!("parse {}: {e}", status_ok.capture.display()))?;
+
+        let mut body_ids_by_fn = BTreeMap::new();
+        for p in programs {
+            let (idx, _body) =
+                select_captured_body(&manifest.program.bodies, &p.fn_name, &status_ok.capture)?;
+            body_ids_by_fn.insert(p.fn_name.clone(), idx);
+        }
+
+        let (_mod_olean_dir, lean_path) = self.compile_captured_lean_modules(
+            &canon_group_dir,
+            &canon_out_dir,
+            &status_ok,
+            deadline,
+            &format!("fuzz {crate_name}"),
+        )?;
+
+        let raw_outcomes = self.eval_fuzz_probe_with_bisection(
+            &canon_group_dir,
+            &lean_path,
+            &body_ids_by_fn,
+            programs,
+            0,
+            deadline,
+        )?;
+        let mut results = BTreeMap::new();
+        for p in programs {
+            let body_id = body_ids_by_fn.get(&p.fn_name).copied();
+            let capture_body = if let Some(def_id) = body_id {
+                let body = &manifest.program.bodies[def_id];
+                let blocks_json: Vec<serde_json::Value> = body
+                    .blocks
+                    .iter()
+                    .map(|b| serde_json::to_value(b).map_err(|e| format!("serialize block: {e}")))
+                    .collect::<Result<Vec<_>, _>>()?;
+                let cap_sha = compute_capture_body_sha256(
+                    &body.identity,
+                    body.arg_count,
+                    &body.local_tys,
+                    &blocks_json,
+                );
+                Some(FuzzCaptureBody {
+                    body_id: def_id,
+                    fn_identity: body.identity.clone(),
+                    arg_count: body.arg_count,
+                    local_tys: body.local_tys.clone(),
+                    blocks: blocks_json,
+                    capture_body_sha256: cap_sha,
+                })
+            } else {
+                None
+            };
+            let parsed_entry =
+                raw_outcomes.get(&p.case_id).cloned().unwrap_or_else(|| ParsedLeanFuzzProbeLine {
+                    body_id: None,
+                    fn_identity: None,
+                    outcome: ObservedOutcome::ToolError {
+                        detail: format!("Lean fuzz output missing case {:?}", p.case_id),
+                    },
+                    lean_probe_line: None,
+                    move_reinit: None,
+                });
+            let (mut outcome, mut lean_probe_line, parsed_mr) =
+                bind_fuzz_probe_result_to_capture_body(
+                    &p.case_id,
+                    parsed_entry,
+                    capture_body.as_ref(),
+                );
+            let mut move_reinit_evidence = None;
+            let mut exercised_move_reinit = false;
+            if let Some(mr) = parsed_mr {
+                let Some(cb) = &capture_body else {
+                    outcome = ObservedOutcome::ToolError {
+                        detail: format!("missing body_id for move/reinit witness {}", p.case_id),
+                    };
+                    results.insert(
+                        p.case_id.clone(),
+                        FuzzLeanCaseResult {
+                            outcome,
+                            capture_rejected: None,
+                            capture_refusal_json: None,
+                            capture_json: Some(status_ok.capture.clone()),
+                            capture_body: None,
+                            lean_probe_line: None,
+                            exercised_move_reinit: false,
+                            move_reinit_evidence: None,
+                        },
+                    );
+                    continue;
+                };
+                let ev = MoveReinitEvidence {
+                    body_id: cb.body_id,
+                    fn_identity: cb.fn_identity.clone(),
+                    local_slot: mr.local_slot,
+                    arg_count: cb.arg_count,
+                    local_tys: cb.local_tys.clone(),
+                    blocks: cb.blocks.clone(),
+                    total_steps: mr.total_steps,
+                    init_step: mr.init_step,
+                    move_step: mr.move_step,
+                    reinit_step: mr.reinit_step,
+                    read_step: mr.read_step,
+                    lean_probe_line: lean_probe_line.clone().unwrap_or_default(),
+                    capture_body_sha256: cb.capture_body_sha256.clone(),
+                };
+                match verify_move_reinit_evidence(&ev, &p.case_id, &p.fn_name, p.args().len()) {
+                    Ok(()) => {
+                        exercised_move_reinit = true;
+                        move_reinit_evidence = Some(ev);
+                    }
+                    Err(err) => {
+                        outcome = ObservedOutcome::ToolError {
+                            detail: format!("invalid move/reinit witness for {}: {err}", p.case_id),
+                        };
+                        lean_probe_line = None;
+                    }
+                }
+            }
+            results.insert(
+                p.case_id.clone(),
+                FuzzLeanCaseResult {
+                    outcome,
+                    capture_rejected: None,
+                    capture_refusal_json: None,
+                    capture_json: Some(status_ok.capture.clone()),
+                    capture_body,
+                    lean_probe_line,
+                    exercised_move_reinit,
+                    move_reinit_evidence,
+                },
+            );
+        }
+        Ok(results)
+    }
+
+    fn eval_fuzz_probe_with_bisection(
+        &self,
+        group_dir: &Path,
+        lean_path: &str,
+        body_ids_by_fn: &BTreeMap<String, usize>,
+        programs: &[&crate::r#gen::GenProgram],
+        probe_tag: usize,
+        deadline: Option<Instant>,
+    ) -> Result<BTreeMap<String, ParsedLeanFuzzProbeLine>, String> {
+        let probe_src = generate_fuzz_lean_probe(body_ids_by_fn, programs)?;
+        let probe_path = group_dir.join(format!("FuzzProbe_{probe_tag}.lean"));
+        fs::write(&probe_path, &probe_src)
+            .map_err(|e| format!("write {}: {e}", probe_path.display()))?;
+
+        let eval_inv = self.apply_lean_env(
+            Invocation::new(&self.lean_bin, LEAN_COMPILE_FLAGS)
+                .arg(&probe_path)
+                .env("LEAN_PATH", lean_path),
+        );
+        let eval_out = crate::rustc_runner::run_supervised_in_tmp(
+            &eval_inv,
+            group_dir,
+            effective_timeout_duration(LEAN_EVAL_TIMEOUT_SECS, deadline)?,
+            self.validated_tmpdir.as_deref(),
+            &format!("eval FuzzProbe_{probe_tag}.lean"),
+        )?;
+        let stdout = String::from_utf8_lossy(&eval_out.stdout);
+        let stderr = String::from_utf8_lossy(&eval_out.stderr);
+        let eval_exited_ok = matches!(eval_out.termination, Termination::Exited(s) if s.success());
+        let mut parse_err: Option<String> = None;
+        if eval_exited_ok {
+            let ids: Vec<&str> = programs.iter().map(|p| p.case_id.as_str()).collect();
+            match parse_fuzz_lean_probe_output_ids(&stdout, &ids) {
+                Ok(parsed) => return Ok(parsed),
+                Err(err) => parse_err = Some(err),
+            }
+        }
+        if programs.len() == 1
+            || is_global_lean_probe_failure(
+                &eval_out.termination,
+                &probe_src,
+                &probe_path,
+                &stdout,
+                &stderr,
+            )
+        {
+            let diag = stderr
+                .lines()
+                .chain(stdout.lines())
+                .filter(|l| !l.trim().is_empty())
+                .take(6)
+                .collect::<Vec<_>>()
+                .join(" | ");
+            let detail = if let Some(err) = parse_err {
+                format!(
+                    "Lean fuzz probe parse failed ({}): {err} ({diag})",
+                    eval_out.termination.describe()
+                )
+            } else {
+                format!("Lean fuzz probe failed ({}): {diag}", eval_out.termination.describe())
+            };
+            let mut out = BTreeMap::new();
+            for p in programs {
+                out.insert(
+                    p.case_id.clone(),
+                    ParsedLeanFuzzProbeLine {
+                        body_id: None,
+                        fn_identity: None,
+                        outcome: ObservedOutcome::ToolError { detail: detail.clone() },
+                        lean_probe_line: None,
+                        move_reinit: None,
+                    },
+                );
+            }
+            return Ok(out);
+        }
+
+        let mid = programs.len() / 2;
+        let mut combined = self.eval_fuzz_probe_with_bisection(
+            group_dir,
+            lean_path,
+            body_ids_by_fn,
+            &programs[..mid],
+            probe_tag * 2 + 1,
+            deadline,
+        )?;
+        combined.extend(self.eval_fuzz_probe_with_bisection(
+            group_dir,
+            lean_path,
+            body_ids_by_fn,
+            &programs[mid..],
+            probe_tag * 2 + 2,
+            deadline,
+        )?);
+        Ok(combined)
+    }
+}
+
+/// Return `true` only when a failed fuzz Lean probe reflects a batch-wide
+/// failure (timeout, launch failure, signal death, preamble/import error, or
+/// CLI/loader error) rather than an `#eval runCase` case-local error that
+/// bisection can isolate.
+fn is_global_lean_probe_failure(
+    termination: &Termination,
+    probe_src: &str,
+    probe_path: &Path,
+    stdout: &str,
+    stderr: &str,
+) -> bool {
+    match termination {
+        Termination::TimedOut(_) | Termination::LaunchFailed(_) => true,
+        Termination::Exited(status) => {
+            if stdout.contains(LEAN_CASE_PREFIX) {
+                return false;
+            }
+            let preamble_lines =
+                probe_src.lines().take_while(|line| !line.starts_with("#eval runCase ")).count();
+            if let Some(file_name) = probe_path.file_name().and_then(|n| n.to_str()) {
+                let prefix = format!("{file_name}:");
+                let mut saw_preamble_diag = false;
+                let mut saw_case_diag = false;
+                for line in stderr.lines().chain(stdout.lines()) {
+                    if let Some((_, after)) = line.split_once(&prefix)
+                        && let Some(line_str) = after.split(':').next()
+                        && let Ok(diag_line) = line_str.parse::<usize>()
+                    {
+                        if diag_line <= preamble_lines {
+                            saw_preamble_diag = true;
+                        } else {
+                            saw_case_diag = true;
+                        }
+                    }
+                }
+                if saw_preamble_diag {
+                    return true;
+                }
+                if saw_case_diag {
+                    return false;
+                }
+            }
+            if status.code().is_none() {
+                return true;
+            }
+            let combined_lower = format!("{stderr}\n{stdout}").to_ascii_lowercase();
+            [
+                "unknown module prefix",
+                "unknown package",
+                "error while loading shared libraries",
+                "cannot open shared object file",
+                "unrecognized option",
+                "unknown option",
+                "command line",
+                "invalid object file",
+                "no such file or directory",
+                "does not exist",
+            ]
+            .iter()
+            .any(|needle| combined_lower.contains(needle))
+        }
+    }
+}
+
+fn generate_fuzz_lean_probe(
+    body_ids_by_fn: &BTreeMap<String, usize>,
+    programs: &[&crate::r#gen::GenProgram],
+) -> Result<String, String> {
+    let mut out = String::from(
+        "-- Copyright 2026 The Fuchsia Authors\n\
+         import Captured\n\
+         import Anneal.MirTotal.ExecTotal\n\
+         open Trusted.MirAst Trusted.MirSemantics Anneal.MirTotal\n\n\
+         def widthName : IntWidth → String\n\
+           | .i8 => \"i8\" | .i16 => \"i16\" | .i32 => \"i32\"\n\
+           | .i64 => \"i64\" | .i128 => \"i128\" | .isize => \"isize\"\n\n\
+         def renderPrimitive : Val → String\n\
+           | .scalar sv => \"INT:\" ++ widthName sv.width ++ \":\" ++ (if sv.signed then \"s\" else \"u\") ++ \":\" ++ toString sv.bits.toNat\n\
+           | .bool b => if b then \"BOOL:true\" else \"BOOL:false\"\n\
+           | .char c => \"CHAR:\" ++ toString c.toNat\n\
+           | .ordering .less => \"ORDERING:less\"\n\
+           | .ordering .equal => \"ORDERING:equal\"\n\
+           | .ordering .greater => \"ORDERING:greater\"\n\
+           | .unit => \"UNIT\"\n\
+           | .tuple [.scalar sv, .bool b] => \"OVF:\" ++ widthName sv.width ++ \":\" ++ (if sv.signed then \"s\" else \"u\") ++ \":\" ++ toString sv.bits.toNat ++ \":\" ++ (if b then \"true\" else \"false\")\n\
+           | _ => \"OTHER\"\n\n\
+         def argEnumVal (prog : Program) (defId argIdx variantIdx : Nat) : Val :=\n\
+           match (prog.bodies[defId]?).bind (fun b => b.locals[argIdx + 1]?) with\n\
+           | some (.enum ety) => .enumVal ety variantIdx\n\
+           | _ => .unit\n\n\
+         structure StageRec where\n\
+           stg : Nat := 0\n\
+           iS : Nat := 0\n\
+           iB : Nat := 0\n\
+           iI : Nat := 0\n\
+           mS : Nat := 0\n\
+           mB : Nat := 0\n\
+           mI : Nat := 0\n\
+           rS : Nat := 0\n\
+           rB : Nat := 0\n\
+           rI : Nat := 0\n\
+           rdS : Nat := 0\n\
+           rdB : Nat := 0\n\
+           rdI : Nat := 0\n\n\
+         def mkZeroRecs : Nat → List StageRec\n\
+           | 0 => []\n\
+           | n + 1 => {} :: mkZeroRecs n\n\n\
+         def mapIdxRecs : Nat → List StageRec → (Nat → StageRec → StageRec) → List StageRec\n\
+           | _, [], _ => []\n\
+           | idx, rec :: rest, f => f idx rec :: mapIdxRecs (idx + 1) rest f\n\n\
+         def findWitness : Nat → List StageRec → Option (Nat × StageRec)\n\
+           | _, [] => none\n\
+           | idx, rec :: rest => if Nat.beq rec.stg 4 then some (idx, rec) else findWitness (idx + 1) rest\n\n\
+         def opReadsSlot (slot : Nat) : Operand → Bool\n\
+           | .copy p | .move p => Nat.beq p.localId slot\n\
+           | _ => false\n\n\
+         def rvReadsSlot (slot : Nat) : Rvalue → Bool\n\
+           | .use op | .useRetag op | .unaryOp _ op | .cast _ op _\n\
+           | .aggregateRangeTo _ op | .aggregateRangeFrom _ op => opReadsSlot slot op\n\
+           | .binaryOp _ l r => opReadsSlot slot l || opReadsSlot slot r\n\
+           | .discriminant p => Nat.beq p.localId slot\n\
+           | .aggregateTuple ops => ops.any (opReadsSlot slot)\n\
+           | _ => false\n\n\
+         def stepReadsSlot (slot : Nat) (stmt? : Option StatementKind)\n\
+             (term? : Option TerminatorKind) : Bool :=\n\
+           match stmt? with\n\
+           | some (.assign _ rv) => rvReadsSlot slot rv\n\
+           | _ =>\n\
+             match term? with\n\
+             | some (.switchInt op _) | some (.assert op _ _ _ _) => opReadsSlot slot op\n\
+             | some (.call _ ops _ _ _)\n\
+             | some (.coreCall _ ops _ _ _)\n\
+             | some (.sysrootCall _ ops _ _ _) => ops.any (opReadsSlot slot)\n\
+             | _ => false\n\n\
+         def stepMovesSlot (slot : Nat) (stmt? : Option StatementKind)\n\
+             (term? : Option TerminatorKind) : Bool :=\n\
+           match stmt? with\n\
+           | some (.assign dst (.use (.move src))) | some (.assign dst (.useRetag (.move src))) =>\n\
+             Nat.beq src.localId slot && src.projection.isEmpty && !Nat.beq dst.localId slot\n\
+           | _ =>\n\
+             match term? with\n\
+             | some (.switchInt (.move src) _) | some (.assert (.move src) _ _ _ _) =>\n\
+               Nat.beq src.localId slot && src.projection.isEmpty\n\
+             | some (.call _ ops _ _ _)\n\
+             | some (.coreCall _ ops _ _ _)\n\
+             | some (.sysrootCall _ ops _ _ _) =>\n\
+               ops.any (fun op =>\n\
+                 match op with\n\
+                 | .move src => Nat.beq src.localId slot && src.projection.isEmpty\n\
+                 | _ => false)\n\
+             | _ => false\n\n\
+         def slotInit : Option LocalSlot → Bool\n\
+           | some (.immediate (some _)) => true\n\
+           | _ => false\n\n\
+         def slotDeinit : Option LocalSlot → Bool\n\
+           | some (.immediate none) => true\n\
+           | _ => false\n\n\
+         def slotDead : Option LocalSlot → Bool\n\
+           | some .dead => true\n\
+           | _ => false\n\n\
+         def updateSlotRec (stepIdx argCount slot bbIdx stmtIdx : Nat) (rec : StageRec)\n\
+             (bSlot aSlot : Option LocalSlot) (stmt? : Option StatementKind)\n\
+             (term? : Option TerminatorKind) : StageRec :=\n\
+           if Nat.ble slot argCount then {}\n\
+           else if Nat.beq rec.stg 4 then rec\n\
+           else if slotDead aSlot then {}\n\
+           else if Nat.beq rec.stg 0 then\n\
+             if slotInit aSlot then { stg := 1, iS := stepIdx, iB := bbIdx, iI := stmtIdx } else {}\n\
+           else if Nat.beq rec.stg 1 then\n\
+             if slotInit bSlot && stepMovesSlot slot stmt? term? && slotDeinit aSlot then\n\
+               { rec with stg := 2, mS := stepIdx, mB := bbIdx, mI := stmtIdx }\n\
+             else if slotInit aSlot then rec else {}\n\
+           else if Nat.beq rec.stg 2 then\n\
+             if slotInit aSlot then { rec with stg := 3, rS := stepIdx, rB := bbIdx, rI := stmtIdx }\n\
+             else if slotDeinit aSlot then rec else {}\n\
+           else\n\
+             if slotInit bSlot && stepReadsSlot slot stmt? term? then\n\
+               { rec with stg := 4, rdS := stepIdx, rdB := bbIdx, rdI := stmtIdx }\n\
+             else if slotInit bSlot && stepMovesSlot slot stmt? term? && slotDeinit aSlot then\n\
+               { rec with stg := 2, mS := stepIdx, mB := bbIdx, mI := stmtIdx }\n\
+             else if slotInit aSlot then rec\n\
+             else if slotDeinit aSlot then rec else {}\n\n\
+         def advanceRecs (stepIdx : Nat) (body : Body) (defId : Nat) (f0 f1 : FrameState)\n\
+             (recs : List StageRec) : List StageRec :=\n\
+           if !(Nat.beq f0.defId defId && Nat.beq f1.defId defId) then recs\n\
+           else\n\
+             let bb? := body.basicBlocks[f0.blockIdx]?\n\
+             let stmt? := bb?.bind (fun bb => bb.statements[f0.stmtIdx]?)\n\
+             let term? := bb?.bind (fun bb =>\n\
+               if Nat.beq f0.stmtIdx bb.statements.length then some bb.terminator else none)\n\
+             mapIdxRecs 0 recs (fun slot rec =>\n\
+               updateSlotRec stepIdx body.argumentCount slot f0.blockIdx f0.stmtIdx rec f0.locals[slot]? f1.locals[slot]? stmt? term?)\n\n\
+         def binOpIsShift : BinOp → Bool\n\
+           | .shl | .shlUnchecked | .shr | .shrUnchecked => true\n\
+           | _ => false\n\n\
+         def operandIsZeroScalar (f0 : FrameState) : Operand → Bool\n\
+           | .constant c =>\n\
+             (match c.lit with\n\
+              | .scalar bits => Nat.beq bits.toNat 0\n\
+              | _ => false)\n\
+           | .copy p | .move p =>\n\
+             if !p.projection.isEmpty then false\n\
+             else\n\
+               (match f0.locals[p.localId]? with\n\
+                | some (.immediate (some (.scalar sv))) => Nat.beq sv.bits.toNat 0\n\
+                | _ => false)\n\n\
+         def describeUbFault (prog : Program) (st : State) : String :=\n\
+           match st.frames.head? with\n\
+           | none => \"undefined\"\n\
+           | some f0 =>\n\
+             (match (activeFrameBodyComp prog f0).bind (fun b => b.basicBlocks[f0.blockIdx]?) with\n\
+              | none => \"undefined\"\n\
+              | some bb =>\n\
+                if Nat.blt f0.stmtIdx bb.statements.length then\n\
+                  (match bb.statements[f0.stmtIdx]? with\n\
+                   | some (.assign _ (.binaryOp op _ rhs)) =>\n\
+                     if binOpIsShift op then \"overflowing shift\"\n\
+                     else\n\
+                       (match op with\n\
+                        | .div | .rem =>\n\
+                          if operandIsZeroScalar f0 rhs then \"dividing by zero\"\n\
+                          else \"overflow in signed division\"\n\
+                        | .addUnchecked | .subUnchecked | .mulUnchecked =>\n\
+                          \"arithmetic overflow\"\n\
+                        | _ => \"undefined\")\n\
+                   | some (.assign _ (.cast _ _ _)) => \"invalid value\"\n\
+                   | some (.assign _ _) => \"uninitialized\"\n\
+                   | _ => \"undefined\")\n\
+                else\n\
+                  (match bb.terminator with\n\
+                   | .unreachable => \"unreachable\"\n\
+                   | .assert _ _ .divByZero _ _ | .assert _ _ .remByZero _ _ =>\n\
+                     \"dividing by zero\"\n\
+                   | .assert _ _ (.overflow op) _ _ =>\n\
+                     (match op with\n\
+                      | .div | .rem => \"overflow in signed division\"\n\
+                      | _ => if binOpIsShift op then \"overflowing shift\" else \"arithmetic overflow\")\n\
+                   | .assert _ _ .overflowNeg _ _ => \"overflow in signed negation\"\n\
+                   | .assert _ _ .misalignedPtrDeref _ _\n\
+                   | .assert _ _ .nullPtrDeref _ _\n\
+                   | .assert _ _ .boundsCheck _ _ => \"invalid value\"\n\
+                   | .coreCall .usizeUncheckedSub _ _ _ _ => \"arithmetic overflow\"\n\
+                   | .return_ => \"uninitialized\"\n\
+                   | _ => \"undefined\"))\n\n\
+         def renderCoord (s b i : Nat) : String := toString s ++ \",\" ++ toString b ++ \",\" ++ toString i\n\n\
+         def renderMrTag (totalSteps : Nat) (w? : Option (Nat × StageRec)) : String :=\n\
+           match w? with\n\
+           | none => \"MR0\"\n\
+           | some (slot, rec) =>\n\
+             \"MR1|\" ++ toString slot ++ \"|\" ++ toString totalSteps ++ \"|\" ++\n\
+             renderCoord rec.iS rec.iB rec.iI ++ \"|\" ++\n\
+             renderCoord rec.mS rec.mB rec.mI ++ \"|\" ++\n\
+             renderCoord rec.rS rec.rB rec.rI ++ \"|\" ++\n\
+             renderCoord rec.rdS rec.rdB rec.rdI\n\n\
+         def evalTraceFuel (prog : Program) (defId stepIdx : Nat) :\n\
+             Nat → State → List StageRec → StepResult State TerminalOut × Nat × Option (Nat × StageRec) × String\n\
+           | 0, st, _ => (.step st, stepIdx, none, \"\")\n\
+           | fuel + 1, st, recs =>\n\
+             match evalMirStepBy (mirTyBeqAt 8) prog 0 st with\n\
+             | .step st' =>\n\
+               let recs' :=\n\
+                 match prog.bodies[defId]?, st.frames, st'.frames with\n\
+                 | some body, [f0], [f1] => advanceRecs stepIdx body defId f0 f1 recs\n\
+                 | _, _, _ => recs\n\
+               evalTraceFuel prog defId (stepIdx + 1) fuel st' recs'\n\
+             | .done out =>\n\
+               let recs' :=\n\
+                 match prog.bodies[defId]?, st.frames with\n\
+                 | some body, [f0] =>\n\
+                   let bb? := body.basicBlocks[f0.blockIdx]?\n\
+                   let term? := bb?.bind (fun bb =>\n\
+                     if Nat.beq f0.stmtIdx bb.statements.length then some bb.terminator else none)\n\
+                   mapIdxRecs 0 recs (fun slot rec =>\n\
+                     if Nat.beq rec.stg 3 && slotInit f0.locals[slot]? && stepReadsSlot slot none term? then\n\
+                       { rec with stg := 4, rdS := stepIdx, rdB := f0.blockIdx, rdI := f0.stmtIdx }\n\
+                     else rec)\n\
+                 | _, _ => recs\n\
+               (.done out, stepIdx + 1, findWitness 0 recs', \"\")\n\
+             | .fault .undefined => (.fault .undefined, stepIdx + 1, none, describeUbFault prog st)\n\
+             | .fault .unsupported => (.fault .unsupported, stepIdx + 1, none, \"\")\n\n\
+         def runCase (caseId : String) (defId fuel : Nat) (args : List Val) : String :=\n\
+           let prog : Program := { Captured.program with entryDefId := defId }\n\
+           let bodyIdent := match prog.bodies[defId]? with\n\
+             | some b => ((b.identity.replace \"|\" \"_\").replace \"\\r\" \"_\").replace \"\\n\" \"_\"\n\
+             | none => \"<MISSING_BODY>\"\n\
+           let numLocals := match prog.bodies[defId]? with | some b => b.locals.length | none => 0\n\
+           let (mrTag, res) :=\n\
+             match initStateBy (mirTyBeqAt 8) prog { args := args } with\n\
+             | .error .undefined => (\"MR0\", \"INIT_UNDEFINED\")\n\
+             | .error .unsupported => (\"MR0\", \"INIT_UNSUPPORTED\")\n\
+             | .ok s0 =>\n\
+               match evalTraceFuel prog defId 0 fuel s0 (mkZeroRecs numLocals) with\n\
+               | (.step _, _, _, _) => (\"MR0\", \"OUT_OF_FUEL\")\n\
+               | (.fault .undefined, _, _, cause) => (\"MR0\", \"FAULT:undefined:\" ++ cause)\n\
+               | (.fault .unsupported, _, _, _) => (\"MR0\", \"FAULT:unsupported\")\n\
+               | (.done (.unwound _), totalSteps, w?, _) => (renderMrTag totalSteps w?, \"UNWOUND\")\n\
+               | (.done (.aborted _), totalSteps, w?, _) => (renderMrTag totalSteps w?, \"ABORTED\")\n\
+               | (.done (.returned out), totalSteps, w?, _) => (renderMrTag totalSteps w?, \"RETURNED:\" ++ renderPrimitive out.ret)\n\
+           \"ANNEAL_LEAN_CASE:\" ++ caseId ++ \":BODY|\" ++ toString defId ++ \"|\" ++ bodyIdent ++ \"|\" ++ mrTag ++ \":\" ++ res\n\n",
+    );
+
+    for prog in programs {
+        let def_id = body_ids_by_fn
+            .get(&prog.fn_name)
+            .copied()
+            .ok_or_else(|| format!("missing defId for fuzz function {:?}", prog.fn_name))?;
+        let args = prog.args();
+        let args_lean = args
+            .iter()
+            .enumerate()
+            .map(|(arg_idx, val)| lean_val_expr(val, def_id, arg_idx))
+            .collect::<Result<Vec<_>, _>>()?
+            .join(", ");
+        out.push_str(&format!(
+            "#eval runCase {:?} {def_id} {} [{args_lean}]\n",
+            prog.case_id, prog.fuel
+        ));
+    }
+    Ok(out)
+}
+
+#[derive(Deserialize)]
+struct CaptureUnsupportedItem {
+    #[serde(default)]
+    path: String,
+    #[serde(default)]
+    reason: String,
+}
+
+#[derive(Deserialize)]
+struct CaptureFailureStatus {
+    status: String,
+    #[serde(default)]
+    diagnostics: Vec<String>,
+    #[serde(default)]
+    unsupported: Vec<CaptureUnsupportedItem>,
+}
+
+fn refusal_binds_fn(path: &str, fn_name: &str) -> bool {
+    path == fn_name
+        || path == format!("rust-path-v1::{fn_name}")
+        || path.ends_with(&format!("::{fn_name}"))
+}
+
+/// Return `true` when a batch `anneal-rustc-capture` exit represents either an
+/// item-level `{"status": "unsupported"}` refusal or a batch-rendered
+/// `{"status": "compiler_failed"}` diagnostic worth bisecting with
+/// subset-specific rendered crates, rather than a batch-wide timeout, launch
+/// error, or infrastructure `tool_failed`.
+fn is_bisectable_capture_rejection(termination: &Termination, stdout: &str) -> bool {
+    if !matches!(termination, Termination::Exited(s) if s.code() == Some(1)) {
+        return false;
+    }
+    for line in stdout.lines().rev() {
+        let trimmed = line.trim();
+        if !trimmed.starts_with('{') {
+            continue;
+        }
+        if let Ok(parsed) = serde_json::from_str::<CaptureFailureStatus>(trimmed) {
+            return matches!(parsed.status.as_str(), "unsupported" | "compiler_failed");
+        }
+    }
+    false
+}
+
+/// Classify a failed single-program `anneal-rustc-capture` run:
+/// only structured `{"status": "unsupported", ...}` on exit code `1` (with
+/// non-empty diagnostics and case-bound unsupported items when `expected_fn` is
+/// supplied) becomes `capture_rejected = Some(...)`; any `tool_failed`,
+/// `compiler_failed`, signal, timeout, `LaunchFailed`, or unbound/malformed
+/// JSON becomes `ToolError`.
+fn classify_single_capture_failure(
+    termination: &Termination,
+    stdout: &str,
+    stderr: &str,
+    expected_fn: Option<&str>,
+) -> FuzzLeanCaseResult {
+    let summary = stderr.lines().chain(stdout.lines()).take(4).collect::<Vec<_>>().join(" | ");
+    if matches!(termination, Termination::Exited(s) if s.code() == Some(1)) {
+        for line in stdout.lines().rev() {
+            let trimmed = line.trim();
+            if !trimmed.starts_with('{') {
+                continue;
+            }
+            if let Ok(parsed) = serde_json::from_str::<CaptureFailureStatus>(trimmed) {
+                let has_diags = !parsed.diagnostics.is_empty()
+                    && parsed.diagnostics.iter().all(|d| !d.trim().is_empty());
+                let fn_bound = expected_fn.is_none_or(|fn_name| {
+                    parsed
+                        .unsupported
+                        .iter()
+                        .any(|u| !u.reason.trim().is_empty() && refusal_binds_fn(&u.path, fn_name))
+                });
+                if parsed.status == "unsupported" && has_diags && fn_bound {
+                    let diag = format!("{} ({trimmed})", parsed.diagnostics.join("; "));
+                    let reason = format!("capture unsupported: {diag}");
+                    return FuzzLeanCaseResult {
+                        outcome: ObservedOutcome::Unsupported { detail: reason.clone() },
+                        capture_rejected: Some(reason),
+                        capture_refusal_json: Some(trimmed.to_owned()),
+                        capture_json: None,
+                        capture_body: None,
+                        lean_probe_line: None,
+                        exercised_move_reinit: false,
+                        move_reinit_evidence: None,
+                    };
+                }
+                let detail =
+                    format!("capture {} ({}): {}", parsed.status, termination.describe(), summary);
+                return FuzzLeanCaseResult {
+                    outcome: ObservedOutcome::ToolError { detail },
+                    capture_rejected: None,
+                    capture_refusal_json: None,
+                    capture_json: None,
+                    capture_body: None,
+                    lean_probe_line: None,
+                    exercised_move_reinit: false,
+                    move_reinit_evidence: None,
+                };
+            }
+        }
+    }
+    let detail =
+        format!("capture infrastructure failure ({}): {}", termination.describe(), summary);
+    FuzzLeanCaseResult {
+        outcome: ObservedOutcome::ToolError { detail },
+        capture_rejected: None,
+        capture_refusal_json: None,
+        capture_json: None,
+        capture_body: None,
+        lean_probe_line: None,
+        exercised_move_reinit: false,
+        move_reinit_evidence: None,
+    }
+}
+
+fn parse_mr_coord(raw: &str) -> Result<MoveReinitStep, String> {
+    let mut parts = raw.splitn(4, ',');
+    let step = parts
+        .next()
+        .ok_or_else(|| format!("missing step in coord {raw:?}"))?
+        .parse::<usize>()
+        .map_err(|e| format!("invalid step in coord {raw:?}: {e}"))?;
+    let block = parts
+        .next()
+        .ok_or_else(|| format!("missing block in coord {raw:?}"))?
+        .parse::<usize>()
+        .map_err(|e| format!("invalid block in coord {raw:?}: {e}"))?;
+    let stmt = parts
+        .next()
+        .ok_or_else(|| format!("missing stmt in coord {raw:?}"))?
+        .parse::<usize>()
+        .map_err(|e| format!("invalid stmt in coord {raw:?}: {e}"))?;
+    if parts.next().is_some() {
+        return Err(format!("trailing fields in coord {raw:?}"));
+    }
+    Ok(MoveReinitStep { step, block, stmt })
+}
+
+fn parse_mr_witness_tag(tag: &str) -> Result<Option<ParsedLeanMoveReinit>, String> {
+    if tag == "MR0" {
+        return Ok(None);
+    }
+    let Some(rest) = tag.strip_prefix("MR1|") else {
+        return Err(format!("invalid MR tag {tag:?}"));
+    };
+    let parts: Vec<&str> = rest.split('|').collect();
+    if parts.len() != 6 {
+        return Err(format!("malformed MR1 witness tag {tag:?}"));
+    }
+    let local_slot = parts[0]
+        .parse::<usize>()
+        .map_err(|e| format!("invalid MR1 local_slot {:?}: {e}", parts[0]))?;
+    let total_steps = parts[1]
+        .parse::<usize>()
+        .map_err(|e| format!("invalid MR1 total_steps {:?}: {e}", parts[1]))?;
+    let init_step = parse_mr_coord(parts[2])?;
+    let move_step = parse_mr_coord(parts[3])?;
+    let reinit_step = parse_mr_coord(parts[4])?;
+    let read_step = parse_mr_coord(parts[5])?;
+    if !(init_step.step < move_step.step
+        && move_step.step < reinit_step.step
+        && reinit_step.step < read_step.step
+        && read_step.step < total_steps)
+    {
+        return Err(format!("non-monotonic MR1 step timestamps in {tag:?}"));
+    }
+    Ok(Some(ParsedLeanMoveReinit {
+        local_slot,
+        total_steps,
+        init_step,
+        move_step,
+        reinit_step,
+        read_step,
+    }))
+}
+
+fn parse_fuzz_lean_probe_output_ids(
+    stdout: &str,
+    ids: &[&str],
+) -> Result<BTreeMap<String, ParsedLeanFuzzProbeLine>, String> {
+    let mut raw_map = BTreeMap::new();
+    for line in stdout.lines() {
+        let trimmed = line.trim();
+        let unquoted =
+            trimmed.strip_prefix('"').and_then(|s| s.strip_suffix('"')).unwrap_or(trimmed);
+        let Some(rest) = unquoted.strip_prefix(LEAN_CASE_PREFIX) else {
+            continue;
+        };
+        let Some((id, after_id)) = rest.split_once(':') else {
+            return Err(format!("malformed Lean fuzz output line {trimmed:?}"));
+        };
+        let Some(after_body) = after_id.strip_prefix("BODY|") else {
+            return Err(format!("missing BODY binding in Lean fuzz line {trimmed:?}"));
+        };
+        let mut body_parts = after_body.splitn(3, '|');
+        let (Some(body_id_raw), Some(fn_ident), Some(mr_and_payload)) =
+            (body_parts.next(), body_parts.next(), body_parts.next())
+        else {
+            return Err(format!("malformed BODY binding in Lean fuzz line {trimmed:?}"));
+        };
+        let body_id = body_id_raw.parse::<usize>().map_err(|e| {
+            format!("invalid BODY defId {body_id_raw:?} in Lean fuzz line {trimmed:?}: {e}")
+        })?;
+        if fn_ident.is_empty() {
+            return Err(format!("empty BODY fn_identity in Lean fuzz line {trimmed:?}"));
+        }
+        let Some((mr_tag, payload)) = mr_and_payload.split_once(':') else {
+            return Err(format!("missing MR0/MR1 trace tag in Lean fuzz line {trimmed:?}"));
+        };
+        let move_reinit = parse_mr_witness_tag(mr_tag)?;
+        let outcome = parse_lean_payload(payload)?;
+        raw_map.insert(
+            id.to_owned(),
+            ParsedLeanFuzzProbeLine {
+                body_id: Some(body_id),
+                fn_identity: Some(fn_ident.to_owned()),
+                outcome,
+                lean_probe_line: Some(unquoted.to_owned()),
+                move_reinit,
+            },
+        );
+    }
+
+    let mut out = BTreeMap::new();
+    for &id in ids {
+        let entry = raw_map.remove(id).unwrap_or_else(|| ParsedLeanFuzzProbeLine {
+            body_id: None,
+            fn_identity: None,
+            outcome: ObservedOutcome::ToolError {
+                detail: format!("Lean output missing case {id:?}"),
+            },
+            lean_probe_line: None,
+            move_reinit: None,
+        });
+        out.insert(id.to_owned(), entry);
+    }
+    Ok(out)
+}
+
+fn bind_fuzz_probe_result_to_capture_body(
+    case_id: &str,
+    parsed: ParsedLeanFuzzProbeLine,
+    capture_body: Option<&FuzzCaptureBody>,
+) -> (ObservedOutcome, Option<String>, Option<ParsedLeanMoveReinit>) {
+    if parsed.lean_probe_line.is_some() {
+        let Some(cb) = capture_body else {
+            return (
+                ObservedOutcome::ToolError {
+                    detail: format!("missing captured body for Lean fuzz probe {case_id}"),
+                },
+                None,
+                None,
+            );
+        };
+        if parsed.body_id != Some(cb.body_id)
+            || parsed.fn_identity.as_deref() != Some(cb.fn_identity.as_str())
+        {
+            return (
+                ObservedOutcome::ToolError {
+                    detail: format!(
+                        "Lean fuzz probe body mismatch for {case_id}: probe reported body_id={:?} identity={:?}, expected body_id={} identity={:?}",
+                        parsed.body_id, parsed.fn_identity, cb.body_id, cb.fn_identity
+                    ),
+                },
+                None,
+                None,
+            );
+        }
+    }
+    (parsed.outcome, parsed.lean_probe_line, parsed.move_reinit)
+}
+
+fn shard_module_rel_path(module: &str) -> Result<PathBuf, String> {
+    if !module.starts_with("Captured.") {
+        return Err(format!(
+            "invalid captured shard module {module:?}: must start with \"Captured.\""
+        ));
+    }
+    let mut rel = PathBuf::new();
+    for seg in module.split('.') {
+        if seg.is_empty() || !seg.bytes().all(|b| b.is_ascii_alphanumeric() || b == b'_') {
+            return Err(format!(
+                "invalid captured shard module {module:?}: unsafe segment {seg:?}"
+            ));
+        }
+        rel.push(seg);
+    }
+    Ok(rel)
+}
+
+/// Validate a capture-reported artifact path BEFORE opening or passing it to
+/// Lean: rejects symlink leaves/ancestors, non-regular files, hardlinks
+/// (`nlink > 1`), and paths escaping `canon_out_dir`.
+fn validate_capture_output_file(
+    canon_out_dir: &Path,
+    work_dir: &Path,
+    raw_path: &Path,
+    label: &str,
+) -> Result<PathBuf, String> {
+    let canon_file =
+        crate::mir_eval_runner::validate_executable_no_links(raw_path, work_dir, label)?;
+    let rel = canon_file.strip_prefix(canon_out_dir).map_err(|_| {
+        format!(
+            "{label} escapes capture_out directory {}: {}",
+            canon_out_dir.display(),
+            canon_file.display()
+        )
+    })?;
+    if rel.as_os_str().is_empty() {
+        return Err(format!("{label} must name a file inside {}", canon_out_dir.display()));
+    }
+    Ok(canon_file)
+}
+
+fn load_capture_shards(
+    canon_out_dir: &Path,
+    work_dir: &Path,
+    status_shards: Option<&Path>,
+) -> Result<Vec<CaptureShardEntry>, String> {
+    let fallback_path = canon_out_dir.join("capture_shards.json");
+    let captured_dir = canon_out_dir.join("Captured");
+    let valid_path = if let Some(explicit) = status_shards {
+        Some(validate_capture_output_file(
+            canon_out_dir,
+            work_dir,
+            explicit,
+            "capture shards manifest",
+        )?)
+    } else if fs::symlink_metadata(&fallback_path).is_ok() {
+        Some(validate_capture_output_file(
+            canon_out_dir,
+            work_dir,
+            &fallback_path,
+            "capture shards manifest",
+        )?)
+    } else if fs::symlink_metadata(&captured_dir).is_ok() {
+        return Err(format!(
+            "captured shard directory {} exists without {}",
+            captured_dir.display(),
+            fallback_path.display()
+        ));
+    } else {
+        None
+    };
+
+    let Some(path) = valid_path else {
+        return Ok(Vec::new());
+    };
+    let raw = fs::read_to_string(&path).map_err(|e| format!("read {}: {e}", path.display()))?;
+    let manifest: CaptureShardsManifest =
+        serde_json::from_str(&raw).map_err(|e| format!("parse {}: {e}", path.display()))?;
+    if manifest.shards.is_empty() {
+        return Err(format!("capture shard manifest {} lists zero shards", path.display()));
+    }
+    let mut shards = manifest.shards;
+    shards.sort_by_key(|entry| entry.shard_idx);
+    let mut seen_idxs = BTreeSet::new();
+    let mut seen_mods = BTreeSet::new();
+    for shard in &shards {
+        if !seen_idxs.insert(shard.shard_idx) {
+            return Err(format!("duplicate shard_idx {} in {}", shard.shard_idx, path.display()));
+        }
+        let _ = shard_module_rel_path(&shard.capture_module)?;
+        if !seen_mods.insert(shard.capture_module.clone()) {
+            return Err(format!(
+                "duplicate capture_module {:?} in {}",
+                shard.capture_module,
+                path.display()
+            ));
+        }
+    }
+    Ok(shards)
 }
 
 fn select_captured_body<'a>(
@@ -1008,6 +3231,13 @@ fn select_captured_body<'a>(
     }
 }
 
+#[derive(Clone, Copy)]
+struct LeanPreparedEnv<'a> {
+    ld_library_path: &'a str,
+    child_path: &'a OsStr,
+    validated_tmpdir: Option<&'a Path>,
+}
+
 fn resolve_explicit_capture_bin(tools: &ToolchainEnv) -> Result<PathBuf, String> {
     let Some(p) = &tools.capture else {
         return Err("missing `anneal-rustc-capture` binary: pass `--capture-bin` or set `ANNEAL_CAPTURE`, `ANNEAL_CLI`, or `ANNEAL_TEST_INSTALL_ROOT`".to_owned());
@@ -1018,13 +3248,30 @@ fn resolve_explicit_capture_bin(tools: &ToolchainEnv) -> Result<PathBuf, String>
     Ok(p.clone())
 }
 
-fn query_lean_prefix(lean_bin: &Path) -> Result<PathBuf, String> {
-    let inv = apply_lean_tool_env(Invocation::new(lean_bin, &["--print-prefix"]), lean_bin);
+fn query_lean_prefix_with_env(
+    lean_bin: &Path,
+    prepared_env: Option<LeanPreparedEnv<'_>>,
+) -> Result<PathBuf, String> {
+    query_lean_prefix_with_env_and_tmp(
+        lean_bin,
+        prepared_env,
+        prepared_env.and_then(|e| e.validated_tmpdir),
+    )
+}
+
+fn query_lean_prefix_with_env_and_tmp(
+    lean_bin: &Path,
+    prepared_env: Option<LeanPreparedEnv<'_>>,
+    validated_tmpdir: Option<&Path>,
+) -> Result<PathBuf, String> {
     let work_dir = lean_bin.parent().unwrap_or_else(|| Path::new("/"));
-    let out = run_supervised_cmd(
-        &inv,
+    let out = run_lean_with_optional_env(
+        Invocation::new(lean_bin, &["--print-prefix"]),
+        lean_bin,
         work_dir,
         effective_timeout_secs(LEAN_PROBE_TIMEOUT_SECS)?,
+        prepared_env,
+        validated_tmpdir,
         "lean --print-prefix",
     )?;
     match out.termination {
@@ -1234,148 +3481,152 @@ fn resolve_safe_prebuilt_part(canon_pb_dir: &Path, rel_raw: &str) -> Result<Path
 /// `SYSROOT_MANIFEST_PARTS` framing `<rel>:<sha256>\n` so prebuilt `.olean`
 /// overlays and local `#eval` DAG cache keys are bound to all active Lean
 /// sysroot artifacts).
-pub(crate) fn compute_lean_sysroot_manifest_sha256(lean_stdlib: &Path) -> Result<String, String> {
-    let stdlib_meta = fs::symlink_metadata(lean_stdlib)
-        .map_err(|e| format!("stat Lean stdlib {}: {e}", lean_stdlib.display()))?;
-    if stdlib_meta.file_type().is_symlink() || !stdlib_meta.is_dir() {
-        return Err(format!(
-            "Lean stdlib must be a non-symlink directory: {}",
-            lean_stdlib.display()
-        ));
+fn is_lean_sysroot_artifact_rel_for_packages(rel: &str, packages: &[&str]) -> bool {
+    let has_ext = LEAN_ARTIFACT_EXTS.iter().any(|ext| rel.ends_with(&format!(".{ext}")));
+    if !has_ext {
+        return false;
     }
+    packages
+        .iter()
+        .any(|pkg| rel.starts_with(&format!("{pkg}/")) || rel.starts_with(&format!("{pkg}.")))
+}
 
-    fn walk_pkg_dir(
-        lib_dir: &Path,
-        cur_dir: &Path,
-        out: &mut Vec<(String, PathBuf)>,
-    ) -> Result<(), String> {
-        let mut dir_entries: Vec<_> = fs::read_dir(cur_dir)
-            .map_err(|e| format!("read Lean sysroot dir {}: {e}", cur_dir.display()))?
-            .collect::<Result<Vec<_>, _>>()
-            .map_err(|e| format!("iterate Lean sysroot dir {}: {e}", cur_dir.display()))?;
-        dir_entries.sort_by_key(|e| e.file_name());
-        for entry in dir_entries {
-            let path = entry.path();
-            let ft = entry
-                .file_type()
-                .map_err(|e| format!("inspect Lean sysroot entry {}: {e}", path.display()))?;
-            if ft.is_symlink() {
-                return Err(format!("symlink forbidden in Lean sysroot: {}", path.display()));
-            }
-            if ft.is_dir() {
-                walk_pkg_dir(lib_dir, &path, out)?;
+fn is_lean_sysroot_artifact_rel(rel: &str) -> bool {
+    is_lean_sysroot_artifact_rel_for_packages(rel, LEAN_SYSROOT_PACKAGES)
+}
+
+fn collect_lean_sysroot_artifact_entries(
+    lean_stdlib: &Path,
+    packages: &[&str],
+) -> Result<BTreeMap<String, String>, String> {
+    #[cfg(unix)]
+    {
+        use std::os::fd::{AsFd as _, OwnedFd};
+
+        let root_fd =
+            crate::rustc_runner::open_dir_handle_no_symlinks(lean_stdlib, None, "Lean sysroot")?;
+        let mut out = BTreeMap::new();
+        let top_entries =
+            crate::rustc_runner::read_dir_entries_from_fd(root_fd.as_fd(), "Lean sysroot")?;
+        let mut stack: Vec<(OwnedFd, PathBuf)> = Vec::new();
+        for entry in top_entries {
+            let Some(name_str) = entry.os_name.to_str() else {
                 continue;
+            };
+            if crate::rustc_runner::is_dir_mode(&entry.stat) {
+                if packages.contains(&name_str) {
+                    let child = crate::rustc_runner::open_child_dir_nofollow(
+                        root_fd.as_fd(),
+                        &entry.c_name,
+                        Some(crate::rustc_runner::stat_dev_ino(&entry.stat)),
+                        "Lean sysroot",
+                    )?;
+                    stack.push((child, PathBuf::from(&entry.os_name)));
+                }
+            } else if crate::rustc_runner::is_lnk_mode(&entry.stat) {
+                if is_lean_sysroot_artifact_rel_for_packages(name_str, packages)
+                    || packages.contains(&name_str)
+                {
+                    return Err(format!("symlink forbidden in Lean sysroot: {name_str}"));
+                }
+            } else if crate::rustc_runner::is_reg_mode(&entry.stat)
+                && is_lean_sysroot_artifact_rel_for_packages(name_str, packages)
+            {
+                let mut f = crate::rustc_runner::open_regular_file_from_fd(
+                    root_fd.as_fd(),
+                    &entry.c_name,
+                    Some(crate::rustc_runner::stat_dev_ino(&entry.stat)),
+                    false,
+                    "Lean sysroot",
+                )?
+                .0;
+                let sha = crate::rustc_runner::sha256_opened_file_hex(&mut f, name_str)?;
+                out.insert(name_str.to_owned(), sha);
+            } else if is_lean_sysroot_artifact_rel_for_packages(name_str, packages) {
+                return Err(format!("unexpected non-regular entry in Lean sysroot: {name_str}"));
             }
-            if !ft.is_file() {
-                return Err(format!(
-                    "unexpected non-regular entry in Lean sysroot: {}",
-                    path.display()
-                ));
-            }
-            let rel = path
-                .strip_prefix(lib_dir)
-                .map_err(|e| format!("strip Lean sysroot prefix {}: {e}", path.display()))?;
-            let mut segs = Vec::new();
-            for comp in rel.components() {
-                let Component::Normal(os) = comp else {
+        }
+        while let Some((dir_fd, rel_prefix)) = stack.pop() {
+            let entries =
+                crate::rustc_runner::read_dir_entries_from_fd(dir_fd.as_fd(), "Lean sysroot")?;
+            for entry in entries {
+                let next_rel = rel_prefix.join(&entry.os_name);
+                if crate::rustc_runner::is_lnk_mode(&entry.stat) {
                     return Err(format!(
-                        "invalid relative component in Lean sysroot: {}",
-                        path.display()
+                        "symlink forbidden in Lean sysroot: {}",
+                        next_rel.display()
                     ));
-                };
-                let s = os
-                    .to_str()
-                    .ok_or_else(|| format!("non-UTF-8 path in Lean sysroot: {}", path.display()))?;
-                segs.push(s);
-            }
-            let rel_str = segs.join("/");
-            if LEAN_ARTIFACT_EXTS.iter().any(|ext| rel_str.ends_with(&format!(".{ext}"))) {
-                out.push((rel_str, path));
-            }
-        }
-        Ok(())
-    }
-
-    let mut files_to_hash: Vec<(String, PathBuf)> = Vec::new();
-    for pkg in LEAN_SYSROOT_PACKAGES {
-        for ext in LEAN_ARTIFACT_EXTS {
-            let rel = format!("{pkg}.{ext}");
-            let path = lean_stdlib.join(&rel);
-            match fs::symlink_metadata(&path) {
-                Ok(meta) => {
-                    if meta.file_type().is_symlink() {
-                        return Err(format!(
-                            "symlink forbidden in Lean sysroot: {}",
-                            path.display()
-                        ));
+                } else if crate::rustc_runner::is_dir_mode(&entry.stat) {
+                    let child = crate::rustc_runner::open_child_dir_nofollow(
+                        dir_fd.as_fd(),
+                        &entry.c_name,
+                        Some(crate::rustc_runner::stat_dev_ino(&entry.stat)),
+                        "Lean sysroot",
+                    )?;
+                    stack.push((child, next_rel));
+                } else if crate::rustc_runner::is_reg_mode(&entry.stat) {
+                    let rel_key =
+                        crate::rustc_runner::path_slashes_utf8(&next_rel, "Lean sysroot")?;
+                    if LEAN_ARTIFACT_EXTS.iter().any(|ext| rel_key.ends_with(&format!(".{ext}"))) {
+                        let mut f = crate::rustc_runner::open_regular_file_from_fd(
+                            dir_fd.as_fd(),
+                            &entry.c_name,
+                            Some(crate::rustc_runner::stat_dev_ino(&entry.stat)),
+                            false,
+                            "Lean sysroot",
+                        )?
+                        .0;
+                        let sha = crate::rustc_runner::sha256_opened_file_hex(&mut f, &rel_key)?;
+                        out.insert(rel_key, sha);
                     }
-                    if !meta.is_file() {
-                        return Err(format!(
-                            "unexpected non-regular entry in Lean sysroot: {}",
-                            path.display()
-                        ));
-                    }
-                    files_to_hash.push((rel, path));
-                }
-                Err(e) if e.kind() == std::io::ErrorKind::NotFound => {}
-                Err(e) => {
-                    return Err(format!("stat Lean sysroot {}: {e}", path.display()));
-                }
-            }
-        }
-        let pkg_dir = lean_stdlib.join(pkg);
-        match fs::symlink_metadata(&pkg_dir) {
-            Ok(meta) => {
-                if meta.file_type().is_symlink() || !meta.is_dir() {
+                } else {
                     return Err(format!(
-                        "Lean sysroot package dir must be a real directory: {}",
-                        pkg_dir.display()
+                        "unexpected non-regular entry in Lean sysroot: {}",
+                        next_rel.display()
                     ));
                 }
-                walk_pkg_dir(lean_stdlib, &pkg_dir, &mut files_to_hash)?;
-            }
-            Err(e) if e.kind() == std::io::ErrorKind::NotFound => {}
-            Err(e) => {
-                return Err(format!("stat Lean sysroot dir {}: {e}", pkg_dir.display()));
             }
         }
+        Ok(out)
     }
+    #[cfg(not(unix))]
+    {
+        Ok(crate::rustc_runner::collect_rel_file_sha256s_nofollow(
+            lean_stdlib,
+            None,
+            "Lean sysroot",
+        )?
+        .into_iter()
+        .filter(|(rel, _)| is_lean_sysroot_artifact_rel_for_packages(rel, packages))
+        .collect())
+    }
+}
 
-    let workers = thread::available_parallelism()
-        .map(|n| n.get().clamp(1, 4))
-        .unwrap_or(1)
-        .min(files_to_hash.len().max(1));
-    let mut entries: BTreeMap<String, String> = BTreeMap::new();
-    if files_to_hash.len() <= 1 || workers <= 1 {
-        for (rel, path) in files_to_hash {
-            entries.insert(rel, sha256_file_hex(&path)?);
-        }
+pub(crate) fn compute_lean_sysroot_manifest_sha256(lean_stdlib: &Path) -> Result<String, String> {
+    compute_lean_sysroot_manifest_sha256_inner(lean_stdlib, None, None)
+}
+
+fn compute_lean_sysroot_manifest_sha256_inner(
+    lean_stdlib: &Path,
+    stdlib_guard: Option<&crate::rustc_runner::ImmutableStagingDir>,
+    source_lib_lean_dir: Option<&Path>,
+) -> Result<String, String> {
+    let mut entries: BTreeMap<String, String> = if let Some(guard) = stdlib_guard {
+        guard
+            .collect_rel_file_sha256s(Some(Path::new("lib/lean")), None, "Lean sysroot")?
+            .into_iter()
+            .filter(|(rel, _)| is_lean_sysroot_artifact_rel(rel))
+            .collect()
     } else {
-        let chunk_size = files_to_hash.len().div_ceil(workers);
-        let chunk_results: Vec<Result<Vec<(String, String)>, String>> = thread::scope(|scope| {
-            let handles: Vec<_> = files_to_hash
-                .chunks(chunk_size)
-                .map(|chunk| {
-                    scope.spawn(move || {
-                        let mut local = Vec::with_capacity(chunk.len());
-                        for (rel, path) in chunk {
-                            local.push((rel.clone(), sha256_file_hex(path)?));
-                        }
-                        Ok(local)
-                    })
-                })
-                .collect();
-            handles
-                .into_iter()
-                .map(|h| {
-                    h.join().unwrap_or_else(|_| Err("sysroot hash worker panicked".to_owned()))
-                })
-                .collect()
-        });
-        for res in chunk_results {
-            for (rel, sha) in res? {
-                entries.insert(rel, sha);
-            }
+        collect_lean_sysroot_artifact_entries(lean_stdlib, LEAN_SYSROOT_PACKAGES)?
+    };
+    if let Some(orig_lib_lean) = source_lib_lean_dir {
+        let omitted = collect_lean_sysroot_artifact_entries(
+            orig_lib_lean,
+            crate::rustc_runner::LEAN_RUNTIME_OMITTED_SYSROOT_PACKAGES,
+        )?;
+        for (rel, sha) in omitted {
+            entries.entry(rel).or_insert(sha);
         }
     }
 
@@ -1626,19 +3877,22 @@ fn inspect_prebuilt_overlay(
     })
 }
 
-fn compute_lean_cache_key(
+fn compute_lean_cache_key_with_env(
     dag: &[LeanDagSpec],
     base_root: &Path,
     lean_bin: &Path,
     active_sysroot_sha: &str,
     overlay: &VerifiedPrebuiltOverlay,
+    prepared_env: Option<LeanPreparedEnv<'_>>,
 ) -> Result<String, String> {
-    let inv = apply_lean_tool_env(Invocation::new(lean_bin, &["--version"]), lean_bin);
     let work_dir = lean_bin.parent().unwrap_or_else(|| Path::new("/"));
-    let ver = run_supervised_cmd(
-        &inv,
+    let ver = run_lean_with_optional_env(
+        Invocation::new(lean_bin, &["--version"]),
+        lean_bin,
         work_dir,
         effective_timeout_secs(LEAN_PROBE_TIMEOUT_SECS)?,
+        prepared_env,
+        prepared_env.and_then(|e| e.validated_tmpdir),
         "lean --version",
     )?;
     match ver.termination {
@@ -1700,14 +3954,19 @@ fn compute_lean_cache_key(
     Ok(hex)
 }
 
-fn ensure_lean_dag_oleans(
+#[allow(clippy::too_many_arguments)]
+fn ensure_lean_dag_oleans_in_tmp_inner(
     anneal_root: &Path,
     lean_bin: &Path,
     lean_stdlib: &Path,
+    stdlib_guard: Option<&crate::rustc_runner::ImmutableStagingDir>,
+    source_lib_lean_dir: Option<&Path>,
     prebuilt_dir: Option<&Path>,
-    cache_root: &Path,
-) -> Result<(Vec<PathBuf>, String), String> {
-    let active_sysroot_sha = compute_lean_sysroot_manifest_sha256(lean_stdlib)?;
+    cache: LeanCacheRoot<'_>,
+    prepared_env: Option<LeanPreparedEnv<'_>>,
+) -> Result<(Vec<PathBuf>, String, Option<Arc<crate::rustc_runner::ImmutableStagingDir>>), String> {
+    let active_sysroot_sha =
+        compute_lean_sysroot_manifest_sha256_inner(lean_stdlib, stdlib_guard, source_lib_lean_dir)?;
     let overlay = inspect_prebuilt_overlay(
         prebuilt_dir,
         MIR_TOTAL_DAG,
@@ -1715,28 +3974,43 @@ fn ensure_lean_dag_oleans(
         lean_bin,
         &active_sysroot_sha,
     )?;
-    let key = compute_lean_cache_key(
+    let key = compute_lean_cache_key_with_env(
         MIR_TOTAL_DAG,
         anneal_root,
         lean_bin,
         &active_sysroot_sha,
         &overlay,
+        prepared_env,
     )?;
-    fs::create_dir_all(cache_root)
-        .map_err(|e| format!("create cache root {}: {e}", cache_root.display()))?;
-
     let dir_prefix =
         if overlay.modules.is_empty() { "lean-mirtotal-full" } else { "lean-mirtotal-overlay" };
-    let out_dir = cache_root.join(format!("{dir_prefix}-{key}"));
-    let lock_path = cache_root.join(format!("{dir_prefix}-{key}.lock"));
-    ensure_dag_with_verified_overlay(
+    let out_rel = PathBuf::from(format!("{dir_prefix}-{key}"));
+    let lock_rel = PathBuf::from(format!("{dir_prefix}-{key}.lock"));
+    let (out_dir, lock_path, pinned_rel) = match cache {
+        LeanCacheRoot::Path(cache_root) => {
+            fs::create_dir_all(cache_root)
+                .map_err(|e| format!("create cache root {}: {e}", cache_root.display()))?;
+            (cache_root.join(&out_rel), cache_root.join(&lock_rel), None)
+        }
+        LeanCacheRoot::Pinned(pinned) => (
+            pinned.pin_path(&out_rel),
+            pinned.pin_path(&lock_rel),
+            Some((pinned, out_rel.as_path())),
+        ),
+    };
+    let pinned_stdlib =
+        stdlib_guard.map_or_else(|| lean_stdlib.to_path_buf(), |g| g.pin_path(lean_stdlib));
+    ensure_dag_with_verified_overlay_in(
         MIR_TOTAL_DAG,
         anneal_root,
         lean_bin,
-        lean_stdlib,
+        &pinned_stdlib,
         &overlay,
         &out_dir,
+        pinned_rel,
         &lock_path,
+        prepared_env,
+        true,
     )
 }
 
@@ -1777,6 +4051,7 @@ fn module_needs_eval_ir(module: &str) -> bool {
         || module.starts_with("TestRoot.")
 }
 
+#[allow(clippy::too_many_arguments)]
 fn synthesize_missing_eval_ir(
     dag: &[LeanDagSpec],
     staged: &BTreeSet<&'static str>,
@@ -1785,6 +4060,7 @@ fn synthesize_missing_eval_ir(
     lean_stdlib: &Path,
     out_dir: &Path,
     compile_timeout: u64,
+    prepared_env: Option<LeanPreparedEnv<'_>>,
 ) -> Result<(), String> {
     let missing: Vec<&LeanDagSpec> = dag
         .iter()
@@ -1842,7 +4118,7 @@ fn synthesize_missing_eval_ir(
                 fs::create_dir_all(parent)
                     .map_err(|e| format!("mkdir {}: {e}", parent.display()))?;
             }
-            let inv = apply_lean_tool_env(
+            let res = run_lean_with_optional_env(
                 Invocation::new(lean_bin, LEAN_COMPILE_FLAGS)
                     .arg("-R")
                     .arg(&tree_root)
@@ -1851,11 +4127,10 @@ fn synthesize_missing_eval_ir(
                     .arg(&src)
                     .env("LEAN_PATH", &ir_lean_path),
                 lean_bin,
-            );
-            let res = run_supervised_cmd(
-                &inv,
                 &tree_root,
                 compile_timeout,
+                prepared_env,
+                prepared_env.and_then(|e| e.validated_tmpdir),
                 &format!("lean synthesize IR {}", spec.module),
             )?;
             match res.termination {
@@ -1895,6 +4170,258 @@ fn synthesize_missing_eval_ir(
     Ok(())
 }
 
+#[derive(Debug, Deserialize, Serialize)]
+struct LeanDagCacheStamp {
+    version: u32,
+    label: String,
+    files: BTreeMap<String, String>,
+}
+
+const LEAN_DAG_CACHE_STAMP_VERSION: u32 = 2;
+
+fn expected_dag_cache_label(dag: &[LeanDagSpec], overlay: &VerifiedPrebuiltOverlay) -> String {
+    let mut staged: BTreeSet<&'static str> = BTreeSet::new();
+    for spec in dag {
+        if overlay.modules.contains_key(spec.module) && spec.deps.iter().all(|d| staged.contains(d))
+        {
+            staged.insert(spec.module);
+        }
+    }
+    if staged.is_empty() {
+        overlay.fallback_label.clone()
+    } else {
+        format!("staged:{}/{}", staged.len(), dag.len())
+    }
+}
+
+fn collect_dag_cache_file_digests(out_dir: &Path) -> Result<BTreeMap<String, String>, String> {
+    crate::rustc_runner::collect_rel_file_sha256s_nofollow(
+        out_dir,
+        Some(Path::new(".anneal-oleans-ready")),
+        "Lean DAG cache",
+    )
+}
+
+#[cfg_attr(not(test), allow(dead_code))]
+fn verify_and_read_dag_cache_stamp(
+    out_dir: &Path,
+    dag: &[LeanDagSpec],
+    expected_label: &str,
+) -> Option<String> {
+    verify_dag_cache_stamp_with_staging(out_dir, None, dag, expected_label)
+}
+
+fn verify_dag_cache_stamp_from_parts(
+    mut ready_file: File,
+    disk_files: BTreeMap<String, String>,
+    dag: &[LeanDagSpec],
+    expected_label: &str,
+) -> Option<String> {
+    let mut raw = String::new();
+    std::io::Read::read_to_string(&mut ready_file, &mut raw).ok()?;
+    let stamp: LeanDagCacheStamp = serde_json::from_str(&raw).ok()?;
+    if stamp.version != LEAN_DAG_CACHE_STAMP_VERSION || stamp.label != expected_label {
+        return None;
+    }
+    for spec in dag {
+        let rel_olean = format!("{}.olean", spec.module.replace('.', "/"));
+        if !disk_files.contains_key(&rel_olean) {
+            return None;
+        }
+    }
+    if disk_files.len() != stamp.files.len() {
+        return None;
+    }
+    for (k, expected_sha) in &stamp.files {
+        let actual_sha = disk_files.get(k)?;
+        if !actual_sha.eq_ignore_ascii_case(expected_sha) {
+            return None;
+        }
+    }
+    Some(stamp.label)
+}
+
+fn verify_dag_cache_stamp_from_pinned(
+    pinned: &crate::rustc_runner::PinnedPrivateDir,
+    rel_dir: &Path,
+    dag: &[LeanDagSpec],
+    expected_label: &str,
+) -> Option<String> {
+    if !pinned.has_rel_dir(rel_dir, "Lean DAG cache") {
+        return None;
+    }
+    let ready = pinned
+        .open_verified_rel_file(&rel_dir.join(".anneal-oleans-ready"), "Lean DAG stamp")
+        .ok()?;
+    let files = pinned
+        .collect_rel_file_sha256s(
+            Some(rel_dir),
+            Some(Path::new(".anneal-oleans-ready")),
+            "Lean DAG cache",
+        )
+        .ok()?;
+    verify_dag_cache_stamp_from_parts(ready, files, dag, expected_label)
+}
+
+fn verify_dag_cache_stamp_with_staging(
+    out_dir: &Path,
+    staging: Option<&crate::rustc_runner::ImmutableStagingDir>,
+    dag: &[LeanDagSpec],
+    expected_label: &str,
+) -> Option<String> {
+    let (ready_file, disk_files) = if let Some(guard) = staging {
+        let ready = guard
+            .open_verified_rel_file(Path::new("dag/.anneal-oleans-ready"), "Lean DAG stamp")
+            .ok()?;
+        let files = guard
+            .collect_rel_file_sha256s(
+                Some(Path::new("dag")),
+                Some(Path::new(".anneal-oleans-ready")),
+                "Lean DAG cache",
+            )
+            .ok()?;
+        (ready, files)
+    } else {
+        #[cfg(unix)]
+        {
+            use std::os::fd::AsFd as _;
+            let out_fd =
+                crate::rustc_runner::open_dir_handle_no_symlinks(out_dir, None, "Lean DAG cache")
+                    .ok()?;
+            let (ready, _) = crate::rustc_runner::open_regular_file_from_fd(
+                out_fd.as_fd(),
+                c".anneal-oleans-ready",
+                None,
+                false,
+                "Lean DAG stamp",
+            )
+            .ok()?;
+            let files = crate::rustc_runner::collect_rel_file_sha256s_from_fd(
+                out_fd.as_fd(),
+                Some(Path::new(".anneal-oleans-ready")),
+                "Lean DAG cache",
+            )
+            .ok()?;
+            (ready, files)
+        }
+        #[cfg(not(unix))]
+        {
+            let dir_meta = fs::symlink_metadata(out_dir).ok()?;
+            if dir_meta.file_type().is_symlink() || !dir_meta.is_dir() {
+                return None;
+            }
+            let ready = out_dir.join(".anneal-oleans-ready");
+            let ready_meta = fs::symlink_metadata(&ready).ok()?;
+            if ready_meta.file_type().is_symlink()
+                || !ready_meta.is_file()
+                || crate::rustc_runner::hardlink_count(&ready_meta) > 1
+            {
+                return None;
+            }
+            let ready_file = File::open(&ready).ok()?;
+            let files = collect_dag_cache_file_digests(out_dir).ok()?;
+            (ready_file, files)
+        }
+    };
+    verify_dag_cache_stamp_from_parts(ready_file, disk_files, dag, expected_label)
+}
+
+fn write_dag_cache_stamp_in(
+    out_dir: &Path,
+    pinned: Option<(&crate::rustc_runner::PinnedPrivateDir, &Path)>,
+    dag: &[LeanDagSpec],
+    overlay_label: &str,
+) -> Result<(), String> {
+    use std::io::Write as _;
+
+    let ready = out_dir.join(".anneal-oleans-ready");
+    if fs::symlink_metadata(&ready).is_ok() {
+        fs::remove_file(&ready)
+            .map_err(|e| format!("remove stale Lean ready stamp {}: {e}", ready.display()))?;
+    }
+    let files = if let Some((pin, rel_dir)) = pinned {
+        pin.collect_rel_file_sha256s(
+            Some(rel_dir),
+            Some(Path::new(".anneal-oleans-ready")),
+            "Lean DAG cache",
+        )?
+    } else {
+        collect_dag_cache_file_digests(out_dir)?
+    };
+    for spec in dag {
+        let rel_olean = format!("{}.olean", spec.module.replace('.', "/"));
+        if !files.contains_key(&rel_olean) {
+            return Err(format!(
+                "missing compiled `.olean` for {} in {}",
+                spec.module,
+                out_dir.display()
+            ));
+        }
+    }
+    let payload = serde_json::to_string_pretty(&LeanDagCacheStamp {
+        version: LEAN_DAG_CACHE_STAMP_VERSION,
+        label: overlay_label.to_owned(),
+        files,
+    })
+    .map_err(|e| format!("serialize Lean ready stamp: {e}"))?;
+
+    let mut opts = fs::OpenOptions::new();
+    opts.write(true).create_new(true);
+    #[cfg(unix)]
+    {
+        use std::os::unix::fs::OpenOptionsExt as _;
+        opts.custom_flags(libc::O_NOFOLLOW);
+    }
+    let mut file = opts
+        .open(&ready)
+        .map_err(|e| format!("write Lean ready stamp {}: {e}", ready.display()))?;
+    file.write_all(payload.as_bytes())
+        .map_err(|e| format!("write Lean ready stamp {}: {e}", ready.display()))?;
+    file.write_all(b"\n")
+        .map_err(|e| format!("flush Lean ready stamp {}: {e}", ready.display()))?;
+    file.flush().map_err(|e| format!("flush Lean ready stamp {}: {e}", ready.display()))?;
+    Ok(())
+}
+
+#[cfg(test)]
+fn stage_and_verify_lean_dag_dir(
+    out_dir: &Path,
+    dag: &[LeanDagSpec],
+    expected_label: &str,
+) -> Result<(PathBuf, Arc<crate::rustc_runner::ImmutableStagingDir>), String> {
+    stage_and_verify_lean_dag_dir_in(out_dir, None, dag, expected_label)
+}
+
+#[cfg(test)]
+fn stage_and_verify_lean_dag_dir_in(
+    out_dir: &Path,
+    pinned: Option<(&crate::rustc_runner::PinnedPrivateDir, &Path)>,
+    dag: &[LeanDagSpec],
+    expected_label: &str,
+) -> Result<(PathBuf, Arc<crate::rustc_runner::ImmutableStagingDir>), String> {
+    stage_and_verify_lean_dag_dir_in_tmp(out_dir, pinned, None, dag, expected_label)
+}
+
+fn stage_and_verify_lean_dag_dir_in_tmp(
+    out_dir: &Path,
+    pinned: Option<(&crate::rustc_runner::PinnedPrivateDir, &Path)>,
+    tmp_parent: Option<&Path>,
+    dag: &[LeanDagSpec],
+    expected_label: &str,
+) -> Result<(PathBuf, Arc<crate::rustc_runner::ImmutableStagingDir>), String> {
+    let (staged_dag, guard) =
+        stage_immutable_lean_dir_in_tmp(out_dir, pinned, "dag", tmp_parent, "Lean DAG cache")?;
+    if verify_dag_cache_stamp_with_staging(&staged_dag, Some(&guard), dag, expected_label).is_none()
+    {
+        return Err(format!(
+            "frozen Lean DAG cache failed `.anneal-oleans-ready` verification: {}",
+            staged_dag.display()
+        ));
+    }
+    Ok((staged_dag, guard))
+}
+
+#[allow(clippy::too_many_arguments)]
 #[cfg_attr(not(test), allow(dead_code))]
 fn ensure_dag_with_overlay(
     dag: &[LeanDagSpec],
@@ -1904,11 +4431,12 @@ fn ensure_dag_with_overlay(
     prebuilt_dir: Option<&Path>,
     out_dir: &Path,
     lock_path: &Path,
+    prepared_env: Option<LeanPreparedEnv<'_>>,
 ) -> Result<(Vec<PathBuf>, String), String> {
     let active_sysroot_sha = compute_lean_sysroot_manifest_sha256(lean_stdlib)?;
     let overlay =
         inspect_prebuilt_overlay(prebuilt_dir, dag, base_root, lean_bin, &active_sysroot_sha)?;
-    ensure_dag_with_verified_overlay(
+    let (paths, label, _) = ensure_dag_with_verified_overlay(
         dag,
         base_root,
         lean_bin,
@@ -1916,9 +4444,13 @@ fn ensure_dag_with_overlay(
         &overlay,
         out_dir,
         lock_path,
-    )
+        prepared_env,
+        false,
+    )?;
+    Ok((paths, label))
 }
 
+#[allow(clippy::too_many_arguments)]
 fn ensure_dag_with_verified_overlay(
     dag: &[LeanDagSpec],
     base_root: &Path,
@@ -1927,7 +4459,36 @@ fn ensure_dag_with_verified_overlay(
     overlay: &VerifiedPrebuiltOverlay,
     out_dir: &Path,
     lock_path: &Path,
-) -> Result<(Vec<PathBuf>, String), String> {
+    prepared_env: Option<LeanPreparedEnv<'_>>,
+    stage_immutable: bool,
+) -> Result<(Vec<PathBuf>, String, Option<Arc<crate::rustc_runner::ImmutableStagingDir>>), String> {
+    ensure_dag_with_verified_overlay_in(
+        dag,
+        base_root,
+        lean_bin,
+        lean_stdlib,
+        overlay,
+        out_dir,
+        None,
+        lock_path,
+        prepared_env,
+        stage_immutable,
+    )
+}
+
+#[allow(clippy::too_many_arguments)]
+fn ensure_dag_with_verified_overlay_in(
+    dag: &[LeanDagSpec],
+    base_root: &Path,
+    lean_bin: &Path,
+    lean_stdlib: &Path,
+    overlay: &VerifiedPrebuiltOverlay,
+    out_dir: &Path,
+    pinned: Option<(&crate::rustc_runner::PinnedPrivateDir, &Path)>,
+    lock_path: &Path,
+    prepared_env: Option<LeanPreparedEnv<'_>>,
+    stage_immutable: bool,
+) -> Result<(Vec<PathBuf>, String, Option<Arc<crate::rustc_runner::ImmutableStagingDir>>), String> {
     let lock_file = File::options()
         .create(true)
         .read(true)
@@ -1937,23 +4498,36 @@ fn ensure_dag_with_verified_overlay(
         .map_err(|e| format!("open Lean cache lock {}: {e}", lock_path.display()))?;
     lock_file.lock().map_err(|e| format!("lock Lean cache {}: {e}", lock_path.display()))?;
 
-    let ready = out_dir.join(".anneal-oleans-ready");
     // Always place all prebuilt + newly compiled module roots inside `out_dir`
     // so `LEAN_PATH` has a single workspace root before `lean_stdlib`.
-    let search_paths = vec![out_dir.to_path_buf(), lean_stdlib.to_path_buf()];
+    let mut search_paths = vec![out_dir.to_path_buf(), lean_stdlib.to_path_buf()];
     let lean_path = env::join_paths(&search_paths)
         .map_err(|e| format!("join LEAN_PATH: {e}"))?
         .to_string_lossy()
         .into_owned();
 
     let compile_timeout = effective_timeout_secs(LEAN_COMPILE_TIMEOUT_SECS)?;
+    let expected_label = expected_dag_cache_label(dag, overlay);
     let overlay_label;
-    if !ready.is_file() {
-        // Wipe any unstamped partial `.olean` directory under the lock so stale
-        // artifacts from interrupted builds can never poison the cache.
-        if out_dir.exists() {
-            fs::remove_dir_all(out_dir)
-                .map_err(|e| format!("wipe unstamped Lean cache {}: {e}", out_dir.display()))?;
+    let verified = match pinned {
+        Some((pin, rel_dir)) => {
+            verify_dag_cache_stamp_from_pinned(pin, rel_dir, dag, &expected_label)
+        }
+        None => verify_and_read_dag_cache_stamp(out_dir, dag, &expected_label),
+    };
+    if let Some(verified_label) = verified {
+        overlay_label = verified_label;
+    } else {
+        // Wipe any unstamped, partial, or tampered `.olean` directory under the
+        // lock so stale or substituted artifacts can never poison the cache.
+        if let Ok(meta) = fs::symlink_metadata(out_dir) {
+            if meta.file_type().is_symlink() || !meta.is_dir() {
+                fs::remove_file(out_dir)
+                    .map_err(|e| format!("wipe Lean cache entry {}: {e}", out_dir.display()))?;
+            } else {
+                fs::remove_dir_all(out_dir)
+                    .map_err(|e| format!("wipe Lean cache {}: {e}", out_dir.display()))?;
+            }
         }
         fs::create_dir_all(out_dir).map_err(|e| format!("create {}: {e}", out_dir.display()))?;
 
@@ -1980,6 +4554,7 @@ fn ensure_dag_with_verified_overlay(
             lean_stdlib,
             out_dir,
             compile_timeout,
+            prepared_env,
         )?;
 
         let max_workers = thread::available_parallelism().map(|n| n.get().clamp(1, 4)).unwrap_or(1);
@@ -1998,6 +4573,7 @@ fn ensure_dag_with_verified_overlay(
                 return Err("dependency cycle in Lean build DAG".to_owned());
             }
 
+            let validated_tmpdir = prepared_env.and_then(|e| e.validated_tmpdir);
             for chunk in ready_batch.chunks(max_workers) {
                 let batch_results: Vec<Result<&'static str, String>> = thread::scope(|scope| {
                     let mut handles = Vec::with_capacity(chunk.len());
@@ -2012,7 +4588,7 @@ fn ensure_dag_with_verified_overlay(
                                 fs::create_dir_all(parent)
                                     .map_err(|e| format!("mkdir {}: {e}", parent.display()))?;
                             }
-                            let inv = apply_lean_tool_env(
+                            let res = run_lean_with_optional_env(
                                 Invocation::new(lean_bin, LEAN_COMPILE_FLAGS)
                                     .arg("-R")
                                     .arg(&tree_root)
@@ -2021,11 +4597,10 @@ fn ensure_dag_with_verified_overlay(
                                     .arg(&src)
                                     .env("LEAN_PATH", lean_path_ref),
                                 lean_bin,
-                            );
-                            let res = run_supervised_cmd(
-                                &inv,
                                 &tree_root,
                                 compile_timeout,
+                                prepared_env,
+                                validated_tmpdir,
                                 &format!("lean compile {}", spec.module),
                             )?;
                             match res.termination {
@@ -2061,27 +4636,24 @@ fn ensure_dag_with_verified_overlay(
         } else {
             format!("staged:{}/{}", staged.len(), dag.len())
         };
-        fs::write(&ready, format!("{overlay_label}\n"))
-            .map_err(|e| format!("write Lean ready stamp {}: {e}", ready.display()))?;
-    } else if overlay.modules.is_empty() {
-        overlay_label = overlay.fallback_label.clone();
-    } else {
-        let stamped = fs::read_to_string(&ready)
-            .map_err(|e| format!("read Lean ready stamp {}: {e}", ready.display()))?;
-        let trimmed = stamped.trim();
-        overlay_label =
-            if trimmed.is_empty() { overlay.fallback_label.clone() } else { trimmed.to_owned() };
+        write_dag_cache_stamp_in(out_dir, pinned, dag, &overlay_label)?;
     }
+    let staging_guard = if stage_immutable {
+        let (staged_dag, guard) = stage_and_verify_lean_dag_dir_in_tmp(
+            out_dir,
+            pinned,
+            prepared_env.and_then(|e| e.validated_tmpdir),
+            dag,
+            &overlay_label,
+        )?;
+        search_paths[0] = staged_dag;
+        Some(guard)
+    } else {
+        None
+    };
     drop(lock_file);
 
-    Ok((search_paths, overlay_label))
-}
-
-fn join_library_path(primary: &Path) -> String {
-    match env::var("LD_LIBRARY_PATH") {
-        Ok(existing) if !existing.is_empty() => format!("{}:{existing}", primary.display()),
-        _ => primary.display().to_string(),
-    }
+    Ok((search_paths, overlay_label, staging_guard))
 }
 
 pub(crate) fn lean_val_expr(
@@ -2624,13 +5196,21 @@ pub fn parse_lean_payload(payload: &str) -> Result<ObservedOutcome, String> {
         "OUT_OF_FUEL" => Ok(ObservedOutcome::OutOfFuel {
             detail: "Anneal.MirTotal.evalMirFuelBy reached fuel limit".to_owned(),
         }),
-        "UNWOUND" => Ok(ObservedOutcome::AbnormalAbort {
+        "UNWOUND" => Ok(ObservedOutcome::Unwound {
             detail: "Trusted.MirModel.TerminalOut.unwound".to_owned(),
         }),
         "ABORTED" => Ok(ObservedOutcome::AbnormalAbort {
             detail: "Trusted.MirModel.TerminalOut.aborted".to_owned(),
         }),
         _ => {
+            if let Some(cause) = payload.strip_prefix("FAULT:undefined:") {
+                let detail = if cause.is_empty() {
+                    "Trusted.MirSemantics.FaultKind.undefined".to_owned()
+                } else {
+                    format!("Trusted.MirSemantics.FaultKind.undefined ({cause})")
+                };
+                return Ok(ObservedOutcome::UndefinedBehavior { detail });
+            }
             let Some(ret_spec) = payload.strip_prefix("RETURNED:") else {
                 return Err(format!("unknown Lean payload {payload:?}"));
             };
@@ -2748,6 +5328,93 @@ mod tests {
             ObservedOutcome::AbnormalAbort { ref detail }
                 if detail == "Trusted.MirModel.TerminalOut.aborted"
         ));
+        assert!(matches!(parse_lean_payload("UNWOUND").unwrap(), ObservedOutcome::Unwound { .. }));
+    }
+
+    #[test]
+    fn classify_single_capture_failure_accepts_only_unsupported_status() {
+        #[cfg(unix)]
+        {
+            use std::os::unix::process::ExitStatusExt;
+            let exit_1 = Termination::Exited(std::process::ExitStatus::from_raw(1 << 8));
+            let unsup = classify_single_capture_failure(
+                &exit_1,
+                "{\"status\":\"unsupported\",\"diagnostics\":[\"1 unsupported\"],\"unsupported\":[]}\n",
+                "",
+                None,
+            );
+            assert!(unsup.capture_rejected.is_some());
+            assert!(unsup.capture_refusal_json.is_some());
+            assert!(matches!(unsup.outcome, ObservedOutcome::Unsupported { .. }));
+            let bound_json = "{\"status\":\"unsupported\",\"diagnostics\":[\"1 required obligations are unsupported\"],\"unsupported\":[{\"def_id\":1,\"path\":\"fuzz_batch::fuzz_case_0003\",\"reason\":\"unsupported intrinsic\"}]}";
+            let bound_ok = classify_single_capture_failure(
+                &exit_1,
+                &format!("{bound_json}\n"),
+                "",
+                Some("fuzz_case_0003"),
+            );
+            assert!(bound_ok.capture_rejected.is_some());
+            assert_eq!(bound_ok.capture_refusal_json.as_deref(), Some(bound_json));
+            for bad_bound in [
+                "{\"status\":\"unsupported\",\"diagnostics\":[\"1 unsupported\"],\"unsupported\":[]}\n",
+                "{\"status\":\"unsupported\",\"diagnostics\":[\"1 unsupported\"],\"unsupported\":[{\"def_id\":1,\"path\":\"fuzz_batch::other_fn\",\"reason\":\"unsupported\"}]}\n",
+            ] {
+                let rej =
+                    classify_single_capture_failure(&exit_1, bad_bound, "", Some("fuzz_case_0003"));
+                assert!(rej.capture_rejected.is_none());
+                assert!(rej.capture_refusal_json.is_none());
+                assert!(matches!(rej.outcome, ObservedOutcome::ToolError { .. }));
+            }
+            assert!(is_bisectable_capture_rejection(
+                &exit_1,
+                "{\"status\":\"unsupported\",\"diagnostics\":[\"1 unsupported\"]}\n",
+            ));
+
+            let tool_fail = classify_single_capture_failure(
+                &exit_1,
+                "{\"status\":\"tool_failed\",\"diagnostics\":[\"panicked\"],\"unsupported\":[]}\n",
+                "thread 'rustc' panicked",
+                None,
+            );
+            assert!(tool_fail.capture_rejected.is_none());
+            assert!(matches!(tool_fail.outcome, ObservedOutcome::ToolError { .. }));
+            assert!(!is_bisectable_capture_rejection(
+                &exit_1,
+                "{\"status\":\"tool_failed\",\"diagnostics\":[\"panicked\"]}\n",
+            ));
+            assert!(!is_bisectable_capture_rejection(
+                &Termination::TimedOut(std::process::ExitStatus::from_raw(9)),
+                "{\"status\":\"unsupported\",\"diagnostics\":[\"stalled\"]}\n",
+            ));
+
+            assert!(is_bisectable_capture_rejection(
+                &exit_1,
+                "{\"status\":\"compiler_failed\",\"diagnostics\":[\"syntax error\"]}\n",
+            ));
+
+            let comp_fail = classify_single_capture_failure(
+                &exit_1,
+                "{\"status\":\"compiler_failed\",\"diagnostics\":[\"syntax error\"],\"unsupported\":[]}\n",
+                "",
+                None,
+            );
+            assert!(comp_fail.capture_rejected.is_none());
+            assert!(matches!(comp_fail.outcome, ObservedOutcome::ToolError { .. }));
+
+            let garbage = classify_single_capture_failure(&exit_1, "not json\n", "boom", None);
+            assert!(garbage.capture_rejected.is_none());
+            assert!(matches!(garbage.outcome, ObservedOutcome::ToolError { .. }));
+
+            let sig = Termination::Exited(std::process::ExitStatus::from_raw(9));
+            let killed = classify_single_capture_failure(
+                &sig,
+                "{\"status\":\"unsupported\",\"diagnostics\":[],\"unsupported\":[]}\n",
+                "",
+                None,
+            );
+            assert!(killed.capture_rejected.is_none());
+            assert!(matches!(killed.outcome, ObservedOutcome::ToolError { .. }));
+        }
     }
 
     #[test]
@@ -2931,12 +5598,64 @@ mod tests {
 
     #[test]
     fn ensure_dag_with_overlay_verifies_manifest_rejects_stale_source_and_wipes_partial() {
-        let lean_bin = fs::canonicalize(default_lean_path().expect("resolve pinned lean"))
+        let raw_lean_bin = fs::canonicalize(default_lean_path().expect("resolve pinned lean"))
             .expect("canonicalize lean");
-        let lean_prefix = query_lean_prefix(&lean_bin).expect("query lean prefix");
-        let lean_stdlib = lean_prefix.join("lib/lean");
+        let caller_cwd = env::current_dir().expect("cwd");
+        let store_prefix = Path::new(crate::rustc_runner::STORE_PREFIX);
+        let trusted_child_dirs: Vec<&Path> =
+            crate::rustc_runner::TRUSTED_CHILD_PATH_DIRS.iter().map(Path::new).collect();
+        let prepared_lean = crate::rustc_runner::prepare_lean_library_path(
+            &raw_lean_bin,
+            store_prefix,
+            &caller_cwd,
+        )
+        .expect("stage lean toolchain once for overlay test");
+        let lean_bin = prepared_lean.lean_bin.clone();
+        let valid_lean_bin_dir = crate::rustc_runner::validated_store_aware_dir(
+            &prepared_lean.bin_dir,
+            store_prefix,
+            &caller_cwd,
+            "Lean bin dir",
+        )
+        .expect("validated staged Lean bin dir");
+        let lean_child_path = crate::rustc_runner::build_child_path_with_bins(
+            &[&valid_lean_bin_dir],
+            None,
+            store_prefix,
+            &trusted_child_dirs,
+            env::var_os("PATH").as_deref(),
+            &caller_cwd,
+        )
+        .expect("build staged Lean child PATH");
+        let lean_tool_env = LeanPreparedEnv {
+            ld_library_path: &prepared_lean.ld_library_path,
+            child_path: &lean_child_path,
+            validated_tmpdir: None,
+        };
+        let lean_prefix =
+            query_lean_prefix_with_env(&lean_bin, Some(lean_tool_env)).expect("query lean prefix");
+        let (lean_stdlib, _stdlib_staging) = resolve_immutable_lean_stdlib_in(
+            &lean_prefix,
+            &lean_bin,
+            &prepared_lean,
+            store_prefix,
+            &caller_cwd,
+            None,
+        )
+        .expect("resolve immutable lean stdlib");
         let active_sysroot_sha =
             compute_lean_sysroot_manifest_sha256(&lean_stdlib).expect("hash active lean stdlib");
+        let run_test_lean = |inv: Invocation, work_dir: &Path, timeout: u64, ctx: &str| {
+            run_lean_with_optional_env(
+                inv,
+                &lean_bin,
+                work_dir,
+                timeout,
+                Some(lean_tool_env),
+                None,
+                ctx,
+            )
+        };
 
         // Sysroot digest must include `.ir` and `.ir.sig` alongside `.olean*`
         // (parity with `ci/prebuild_bundled_oleans.py` and `cargo-anneal`), and
@@ -2957,6 +5676,14 @@ mod tests {
         fs::write(mock_stdlib.join("Init/Core.ir.sig"), b"v2").unwrap();
         let sys_sha_3 = compute_lean_sysroot_manifest_sha256(&mock_stdlib).unwrap();
         assert_ne!(sys_sha_2, sys_sha_3, "sysroot manifest must track .ir.sig changes");
+        #[cfg(unix)]
+        {
+            let alias = sys_tmp.path().join("alias.olean");
+            fs::hard_link(mock_stdlib.join("Init/Core.olean"), &alias).unwrap();
+            let err_hard = compute_lean_sysroot_manifest_sha256(&mock_stdlib).unwrap_err();
+            assert!(err_hard.contains("hardlink"), "{err_hard}");
+            fs::remove_file(&alias).unwrap();
+        }
 
         let tmp = tempfile::tempdir().unwrap();
         let src_tree = tmp.path().join("src");
@@ -2977,7 +5704,7 @@ mod tests {
 
         let prebuilt = tmp.path().join("prebuilt");
         fs::create_dir_all(prebuilt.join("lib/TestRoot")).unwrap();
-        let prebuilt_inv = apply_lean_tool_env(
+        let base_res = run_test_lean(
             Invocation::new(&lean_bin, LEAN_COMPILE_FLAGS)
                 .arg("-R")
                 .arg(&src_tree)
@@ -2985,10 +5712,6 @@ mod tests {
                 .arg(prebuilt.join("lib/TestRoot/Base.olean"))
                 .arg(&base_src)
                 .env("LEAN_PATH", &lean_stdlib),
-            &lean_bin,
-        );
-        let base_res = run_supervised_cmd(
-            &prebuilt_inv,
             &src_tree,
             LEAN_COMPILE_TIMEOUT_SECS,
             "prebuilt base",
@@ -3022,6 +5745,7 @@ mod tests {
             Some(&prebuilt),
             &out_dir,
             &lock_path,
+            Some(lean_tool_env),
         )
         .expect("overlay DAG compilation must succeed with verified manifest artifacts");
 
@@ -3118,17 +5842,14 @@ mod tests {
         )
         .unwrap();
         fs::create_dir_all(prebuilt.join("lib/SkipIrDep")).unwrap();
-        let skip_dep_res = run_supervised_cmd(
-            &apply_lean_tool_env(
-                Invocation::new(&lean_bin, LEAN_COMPILE_FLAGS)
-                    .arg("-R")
-                    .arg(&src_tree)
-                    .arg("-o")
-                    .arg(prebuilt.join("lib/SkipIrDep/Leaf.olean"))
-                    .arg(&skip_dep_src)
-                    .env("LEAN_PATH", &lean_stdlib),
-                &lean_bin,
-            ),
+        let skip_dep_res = run_test_lean(
+            Invocation::new(&lean_bin, LEAN_COMPILE_FLAGS)
+                .arg("-R")
+                .arg(&src_tree)
+                .arg("-o")
+                .arg(prebuilt.join("lib/SkipIrDep/Leaf.olean"))
+                .arg(&skip_dep_src)
+                .env("LEAN_PATH", &lean_stdlib),
             &src_tree,
             LEAN_COMPILE_TIMEOUT_SECS,
             "prebuilt skip-ir dep",
@@ -3139,7 +5860,7 @@ mod tests {
             "compile prebuilt SkipIrDep.Leaf: {}",
             skip_dep_res.describe()
         );
-        let child_pb_inv = apply_lean_tool_env(
+        let child_res = run_test_lean(
             Invocation::new(&lean_bin, LEAN_COMPILE_FLAGS)
                 .arg("-R")
                 .arg(&src_tree)
@@ -3150,10 +5871,6 @@ mod tests {
                     "LEAN_PATH",
                     env::join_paths([prebuilt.join("lib"), lean_stdlib.clone()]).unwrap(),
                 ),
-            &lean_bin,
-        );
-        let child_res = run_supervised_cmd(
-            &child_pb_inv,
             &src_tree,
             LEAN_COMPILE_TIMEOUT_SECS,
             "prebuilt child",
@@ -3164,20 +5881,17 @@ mod tests {
             "compile prebuilt Child: {}",
             child_res.describe()
         );
-        let synth_host_res = run_supervised_cmd(
-            &apply_lean_tool_env(
-                Invocation::new(&lean_bin, LEAN_COMPILE_FLAGS)
-                    .arg("-R")
-                    .arg(&src_tree)
-                    .arg("-o")
-                    .arg(prebuilt.join("lib/TestRoot/SynthHost.olean"))
-                    .arg(&synth_host_src)
-                    .env(
-                        "LEAN_PATH",
-                        env::join_paths([prebuilt.join("lib"), lean_stdlib.clone()]).unwrap(),
-                    ),
-                &lean_bin,
-            ),
+        let synth_host_res = run_test_lean(
+            Invocation::new(&lean_bin, LEAN_COMPILE_FLAGS)
+                .arg("-R")
+                .arg(&src_tree)
+                .arg("-o")
+                .arg(prebuilt.join("lib/TestRoot/SynthHost.olean"))
+                .arg(&synth_host_src)
+                .env(
+                    "LEAN_PATH",
+                    env::join_paths([prebuilt.join("lib"), lean_stdlib.clone()]).unwrap(),
+                ),
             &src_tree,
             LEAN_COMPILE_TIMEOUT_SECS,
             "prebuilt synth host",
@@ -3333,6 +6047,7 @@ mod tests {
             Some(&pb_v2),
             &v2_out_dir,
             &v2_lock,
+            Some(lean_tool_env),
         )
         .expect("staging .ir-stripped prebuilt v2 must synthesize missing .ir companions");
         assert_eq!(v2_status, "staged:4/4");
@@ -3353,17 +6068,14 @@ mod tests {
         let mut cap_paths = vec![cap_dir.clone()];
         cap_paths.extend(v2_paths);
         let cap_lean_path = env::join_paths(&cap_paths).unwrap();
-        let cap_res = run_supervised_cmd(
-            &apply_lean_tool_env(
-                Invocation::new(&lean_bin, LEAN_COMPILE_FLAGS)
-                    .arg("-R")
-                    .arg(&cap_dir)
-                    .arg("-o")
-                    .arg(cap_dir.join("Captured.olean"))
-                    .arg(&cap_src)
-                    .env("LEAN_PATH", &cap_lean_path),
-                &lean_bin,
-            ),
+        let cap_res = run_test_lean(
+            Invocation::new(&lean_bin, LEAN_COMPILE_FLAGS)
+                .arg("-R")
+                .arg(&cap_dir)
+                .arg("-o")
+                .arg(cap_dir.join("Captured.olean"))
+                .arg(&cap_src)
+                .env("LEAN_PATH", &cap_lean_path),
             &cap_dir,
             LEAN_COMPILE_TIMEOUT_SECS,
             "compile non-module Captured against .ir-stripped prebuilt",
@@ -3377,13 +6089,10 @@ mod tests {
         let v2_probe = cap_dir.join("Probe.lean");
         fs::write(&v2_probe, "import Captured\n#eval IO.println s!\"{h.val}:{h.label}\"\n")
             .unwrap();
-        let v2_eval = run_supervised_cmd(
-            &apply_lean_tool_env(
-                Invocation::new(&lean_bin, LEAN_COMPILE_FLAGS)
-                    .arg(&v2_probe)
-                    .env("LEAN_PATH", &cap_lean_path),
-                &lean_bin,
-            ),
+        let v2_eval = run_test_lean(
+            Invocation::new(&lean_bin, LEAN_COMPILE_FLAGS)
+                .arg(&v2_probe)
+                .env("LEAN_PATH", &cap_lean_path),
             &cap_dir,
             LEAN_EVAL_TIMEOUT_SECS,
             "eval Probe against synthesized .ir companions",
@@ -3465,6 +6174,7 @@ mod tests {
             Some(&pb_partial),
             &partial_out_dir,
             &partial_lock,
+            Some(lean_tool_env),
         )
         .expect("partially-stripped overlay must synthesize missing .ir companions cleanly");
         assert_eq!(partial_status, "staged:4/4");
@@ -3508,6 +6218,7 @@ mod tests {
             Some(&prebuilt),
             &stale_out_dir,
             &stale_lock,
+            Some(lean_tool_env),
         )
         .expect("modified source must compile fresh rather than failing on stale prebuilt");
         assert_eq!(stale_status, "skipped:digest_mismatch");
@@ -3515,13 +6226,10 @@ mod tests {
         let eval_probe = tmp.path().join("EvalChild.lean");
         fs::write(&eval_probe, "import TestRoot.Child\n#eval childVal\n").unwrap();
         let stale_lean_path = env::join_paths(&stale_paths).unwrap();
-        let eval_res = run_supervised_cmd(
-            &apply_lean_tool_env(
-                Invocation::new(&lean_bin, LEAN_COMPILE_FLAGS)
-                    .arg(&eval_probe)
-                    .env("LEAN_PATH", &stale_lean_path),
-                &lean_bin,
-            ),
+        let eval_res = run_test_lean(
+            Invocation::new(&lean_bin, LEAN_COMPILE_FLAGS)
+                .arg(&eval_probe)
+                .env("LEAN_PATH", &stale_lean_path),
             tmp.path(),
             LEAN_EVAL_TIMEOUT_SECS,
             "eval fresh childVal",
@@ -3548,11 +6256,279 @@ mod tests {
             None,
             &partial_out,
             &partial_lock,
+            Some(lean_tool_env),
         )
         .expect("unstamped partial cache must be wiped and rebuilt cleanly");
         assert_eq!(clean_status, "none");
         assert!(!partial_out.join("TestRoot/StaleJunk.txt").exists());
         assert!(partial_out.join(".anneal-oleans-ready").is_file());
+
+        // Tampering a cached `.olean` or injecting an unmanifested file despite
+        // a present `.anneal-oleans-ready` MUST fail verification, wipe, and
+        // rebuild cleanly from source.
+        let good_base_sha = sha256_file_hex(&partial_out.join("TestRoot/Base.olean")).unwrap();
+        fs::write(partial_out.join("TestRoot/Base.olean"), b"poisoned-base-olean").unwrap();
+        fs::write(partial_out.join("TestRoot/Injected.olean"), b"injected-olean").unwrap();
+        let (_, rebuilt_status) = ensure_dag_with_overlay(
+            &dag,
+            tmp.path(),
+            &lean_bin,
+            &lean_stdlib,
+            None,
+            &partial_out,
+            &partial_lock,
+            Some(lean_tool_env),
+        )
+        .expect("tampered cache must wipe and rebuild cleanly");
+        assert_eq!(rebuilt_status, "none");
+        assert!(!partial_out.join("TestRoot/Injected.olean").exists());
+        assert_eq!(
+            sha256_file_hex(&partial_out.join("TestRoot/Base.olean")).unwrap(),
+            good_base_sha
+        );
+
+        // Frozen immutable Lean DAG staging under lock (`stage_immutable=true`)
+        // freezes `out_dir`, verifies `.anneal-oleans-ready` on the frozen
+        // copy, and stays immune to post-staging source cache tamper.
+        let no_overlay =
+            inspect_prebuilt_overlay(None, &dag, tmp.path(), &lean_bin, &active_sysroot_sha)
+                .unwrap();
+        let (staged_paths, staged_status, staged_guard) = ensure_dag_with_verified_overlay(
+            &dag,
+            tmp.path(),
+            &lean_bin,
+            &lean_stdlib,
+            &no_overlay,
+            &partial_out,
+            &partial_lock,
+            Some(lean_tool_env),
+            true,
+        )
+        .expect("locked immutable Lean DAG staging and verification must pass");
+        assert_eq!(staged_status, "none");
+        let _staged_guard = staged_guard.expect("stage_immutable=true must retain guard");
+        let staged_dag = &staged_paths[0];
+        assert_ne!(staged_dag, &partial_out);
+        #[cfg(unix)]
+        {
+            use std::os::unix::fs::{MetadataExt as _, PermissionsExt as _};
+            let dag_meta = fs::symlink_metadata(staged_dag).unwrap();
+            assert_eq!(dag_meta.permissions().mode() & 0o777, 0o555);
+            let olean_meta = fs::symlink_metadata(staged_dag.join("TestRoot/Base.olean")).unwrap();
+            assert_eq!(olean_meta.permissions().mode() & 0o777, 0o444);
+            assert_eq!(olean_meta.nlink(), 1);
+        }
+        assert!(verify_and_read_dag_cache_stamp(staged_dag, &dag, "none").is_some());
+        let bad_label_err = stage_and_verify_lean_dag_dir(&partial_out, &dag, "wrong").unwrap_err();
+        assert!(bad_label_err.contains("frozen Lean DAG cache failed"), "{bad_label_err}");
+        fs::write(partial_out.join("TestRoot/Base.olean"), b"post-freeze-poison").unwrap();
+        assert_eq!(
+            sha256_file_hex(&staged_dag.join("TestRoot/Base.olean")).unwrap(),
+            good_base_sha
+        );
+        let tampered_stage_err =
+            stage_and_verify_lean_dag_dir(&partial_out, &dag, "none").unwrap_err();
+        assert!(
+            tampered_stage_err.contains("frozen Lean DAG cache failed"),
+            "{tampered_stage_err}"
+        );
+    }
+
+    #[cfg(unix)]
+    #[test]
+    fn runtime_init_only_lean_staging_preserves_full_prebuilt_sysroot_manifest() {
+        use std::os::unix::fs::{PermissionsExt as _, symlink};
+
+        let tmp = tempfile::tempdir().expect("tempdir");
+        let base = fs::canonicalize(tmp.path()).expect("canon tempdir");
+        let fake_store = base.join("nix-store");
+        fs::create_dir_all(&fake_store).unwrap();
+
+        let lean_tc = base.join("lean-install-root");
+        let orig_lib_lean = lean_tc.join("lib/lean");
+        for dir in ["Init", "Std", "Lean", "Lake"] {
+            fs::create_dir_all(orig_lib_lean.join(dir)).unwrap();
+        }
+        fs::create_dir_all(lean_tc.join("bin")).unwrap();
+        let lean_bin_orig = lean_tc.join("bin/lean");
+        fs::write(
+            &lean_bin_orig,
+            "#!/bin/sh\nif [ \"${1:-}\" = \"--print-prefix\" ]; then\n  CDPATH= cd -- \"$(dirname -- \"$0\")/..\" && pwd -P\n  exit 0\nfi\nexit 1\n",
+        )
+        .unwrap();
+        fs::set_permissions(&lean_bin_orig, fs::Permissions::from_mode(0o755)).unwrap();
+        fs::write(lean_tc.join("lib/libleanshared.so"), b"so").unwrap();
+        fs::write(orig_lib_lean.join("Init.olean"), b"init-top").unwrap();
+        fs::write(orig_lib_lean.join("Init/Core.olean"), b"init-core-olean").unwrap();
+        fs::write(orig_lib_lean.join("Init/Core.ir"), b"init-core-ir").unwrap();
+        fs::write(orig_lib_lean.join("Std.olean"), b"std-top").unwrap();
+        fs::write(orig_lib_lean.join("Std/Data.olean"), b"std-data-olean").unwrap();
+        fs::write(orig_lib_lean.join("Std/Data.ir.sig"), b"std-data-irsig").unwrap();
+        fs::write(orig_lib_lean.join("Lean.olean"), b"lean-top").unwrap();
+        fs::write(orig_lib_lean.join("Lean/Meta.olean"), b"lean-meta-olean").unwrap();
+        fs::write(orig_lib_lean.join("Lake/Core.olean"), b"lake-ignored").unwrap();
+        fs::write(orig_lib_lean.join("libLean.a"), b"static-ignored").unwrap();
+
+        let expected_full_sha =
+            compute_lean_sysroot_manifest_sha256(&orig_lib_lean).expect("full sysroot sha");
+        let prepared_lean_libs = crate::rustc_runner::prepare_lean_runtime_library_path_in(
+            &lean_bin_orig,
+            &fake_store,
+            &base,
+            Some(&base),
+        )
+        .expect("stage init-only runtime Lean libs");
+        assert_eq!(
+            prepared_lean_libs.source_lib_lean_dir.as_deref(),
+            Some(orig_lib_lean.as_path())
+        );
+
+        let lean_guards = [prepared_lean_libs._staging.as_ref()];
+        let lean_bin = crate::rustc_runner::ImmutableStagingDir::pin_path_with_guards(
+            &lean_guards,
+            &prepared_lean_libs.lean_bin,
+        );
+        let valid_bin_dir = crate::rustc_runner::validated_store_aware_dir(
+            &prepared_lean_libs.bin_dir,
+            &fake_store,
+            &base,
+            "Lean bin dir",
+        )
+        .unwrap();
+        let trusted_child_dirs: Vec<&Path> =
+            crate::rustc_runner::TRUSTED_CHILD_PATH_DIRS.iter().map(Path::new).collect();
+        let raw_child_path = crate::rustc_runner::build_child_path_with_bins(
+            &[&valid_bin_dir],
+            None,
+            &fake_store,
+            &trusted_child_dirs,
+            None,
+            &base,
+        )
+        .unwrap();
+        let lean_child_path = crate::rustc_runner::ImmutableStagingDir::pin_env_paths_with_guards(
+            &lean_guards,
+            &raw_child_path,
+        )
+        .unwrap();
+        let lean_tool_env = LeanPreparedEnv {
+            ld_library_path: &prepared_lean_libs.ld_library_path,
+            child_path: &lean_child_path,
+            validated_tmpdir: Some(&base),
+        };
+        let lean_prefix =
+            query_lean_prefix_with_env(&lean_bin, Some(lean_tool_env)).expect("query prefix");
+        let (lean_stdlib, lean_stdlib_staging) = resolve_immutable_lean_stdlib_in(
+            &lean_prefix,
+            &prepared_lean_libs.lean_bin,
+            &prepared_lean_libs,
+            &fake_store,
+            &base,
+            None,
+        )
+        .expect("resolve runtime stdlib");
+        assert!(lean_stdlib_staging.is_none());
+        assert!(!lean_stdlib.join("Std").exists());
+        assert!(!lean_stdlib.join("Lean").exists());
+        assert!(!lean_stdlib.join("Lake").exists());
+
+        let stdlib_guard =
+            lean_stdlib_staging.as_deref().or(prepared_lean_libs._staging.as_deref());
+        let stripped_only_sha =
+            compute_lean_sysroot_manifest_sha256_inner(&lean_stdlib, stdlib_guard, None).unwrap();
+        assert_ne!(stripped_only_sha, expected_full_sha);
+
+        let active_sysroot_sha = compute_lean_sysroot_manifest_sha256_inner(
+            &lean_stdlib,
+            stdlib_guard,
+            prepared_lean_libs.source_lib_lean_dir.as_deref(),
+        )
+        .expect("compute Init+Std+Lean sysroot sha from runtime staging + validated source");
+        assert_eq!(active_sysroot_sha, expected_full_sha);
+
+        let src_tree = base.join("src");
+        let base_dir = src_tree.join("TestRoot");
+        fs::create_dir_all(&base_dir).unwrap();
+        let base_src = base_dir.join("Base.lean");
+        fs::write(&base_src, "module\npublic def baseVal : Nat := 7\n").unwrap();
+        let prebuilt = base.join("prebuilt");
+        fs::create_dir_all(prebuilt.join("lib/TestRoot")).unwrap();
+        fs::write(prebuilt.join("lib/TestRoot/Base.olean"), b"fake-olean").unwrap();
+        write_test_prebuilt_manifest(
+            &prebuilt,
+            &lean_bin,
+            &expected_full_sha,
+            "TestRoot.Base",
+            "lib/TestRoot/Base",
+            &base_src,
+        );
+        let dag = [LeanDagSpec { module: "TestRoot.Base", rel_tree: "src", deps: &[] }];
+        let overlay =
+            inspect_prebuilt_overlay(Some(&prebuilt), &dag, &base, &lean_bin, &active_sysroot_sha)
+                .unwrap();
+        assert_eq!(overlay.fallback_label, "staged:1/1");
+
+        // Tampering or symlinking omitted `Std`/`Lean` packages in the source
+        // sysroot must either mismatch `manifest.json` or fail closed.
+        fs::write(orig_lib_lean.join("Std/Data.olean"), b"tampered-std").unwrap();
+        let tampered_sha = compute_lean_sysroot_manifest_sha256_inner(
+            &lean_stdlib,
+            stdlib_guard,
+            prepared_lean_libs.source_lib_lean_dir.as_deref(),
+        )
+        .unwrap();
+        assert_ne!(tampered_sha, expected_full_sha);
+        let mismatch_overlay =
+            inspect_prebuilt_overlay(Some(&prebuilt), &dag, &base, &lean_bin, &tampered_sha)
+                .unwrap();
+        assert_eq!(mismatch_overlay.fallback_label, "skipped:digest_mismatch");
+
+        symlink(&base_src, orig_lib_lean.join("Lean/Evil.olean")).unwrap();
+        let err_sym = compute_lean_sysroot_manifest_sha256_inner(
+            &lean_stdlib,
+            stdlib_guard,
+            prepared_lean_libs.source_lib_lean_dir.as_deref(),
+        )
+        .unwrap_err();
+        assert!(err_sym.contains("symlink"), "{err_sym}");
+    }
+
+    #[cfg(target_os = "linux")]
+    #[test]
+    fn lean_pinned_cache_dir_resists_parent_rename_during_staging() {
+        let tmp = tempfile::tempdir().unwrap();
+        let base = fs::canonicalize(tmp.path()).unwrap();
+        let tmp_parent = base.join("tmpdir");
+        fs::create_dir_all(&tmp_parent).unwrap();
+        let pinned = crate::rustc_runner::PinnedPrivateDir::create(
+            "lean-pin-",
+            Some(&tmp_parent),
+            &base,
+            "pinned lean cache",
+        )
+        .expect("create pinned lean cache");
+        assert!(pinned.path().starts_with("/proc/self/fd/"));
+
+        let disk_path = pinned.fs_root().to_path_buf();
+        let out_rel = Path::new("lean-mirtotal-full-test");
+        let real_out = pinned.pin_path(out_rel);
+        fs::create_dir_all(real_out.join("TestRoot")).unwrap();
+        fs::write(real_out.join("TestRoot/Base.olean"), b"legit-olean").unwrap();
+
+        let moved_path = base.join("moved-lean");
+        fs::rename(&disk_path, &moved_path).unwrap();
+        fs::create_dir_all(disk_path.join("lean-mirtotal-full-test/TestRoot")).unwrap();
+        fs::write(disk_path.join("lean-mirtotal-full-test/TestRoot/Base.olean"), b"trojan-olean")
+            .unwrap();
+
+        let dag = [LeanDagSpec { module: "TestRoot.Base", rel_tree: "src", deps: &[] }];
+        write_dag_cache_stamp_in(&real_out, Some((&pinned, out_rel)), &dag, "none")
+            .expect("stamp write/hash via PinnedPrivateDir fd must succeed");
+        let (staged_dag, guard) =
+            stage_and_verify_lean_dag_dir_in(&real_out, Some((&pinned, out_rel)), &dag, "none")
+                .expect("staging via PinnedPrivateDir fd must ignore trojan TMPDIR replacement");
+        let _guard = guard;
+        assert_eq!(fs::read(staged_dag.join("TestRoot/Base.olean")).unwrap(), b"legit-olean");
     }
 
     #[test]
@@ -3613,6 +6589,92 @@ mod tests {
             }],
         };
         assert!(body_exercises_move_then_reinit(&valid_move_reinit));
+        let valid_blocks_json: Vec<serde_json::Value> =
+            valid_move_reinit.blocks.iter().map(|b| serde_json::to_value(b).unwrap()).collect();
+        let valid_sha = compute_capture_body_sha256(
+            &valid_move_reinit.identity,
+            valid_move_reinit.arg_count,
+            &valid_move_reinit.local_tys,
+            &valid_blocks_json,
+        );
+        let valid_ev = MoveReinitEvidence {
+            body_id: 0,
+            fn_identity: valid_move_reinit.identity.clone(),
+            local_slot: 3,
+            arg_count: 2,
+            local_tys: valid_move_reinit.local_tys.clone(),
+            blocks: valid_blocks_json.clone(),
+            total_steps: 5,
+            init_step: MoveReinitStep { step: 0, block: 0, stmt: 0 },
+            move_step: MoveReinitStep { step: 1, block: 0, stmt: 1 },
+            reinit_step: MoveReinitStep { step: 2, block: 0, stmt: 2 },
+            read_step: MoveReinitStep { step: 3, block: 0, stmt: 3 },
+            lean_probe_line:
+                "ANNEAL_LEAN_CASE:c_taken:BODY|0|probe::move_then_reinit|MR1|3|5|0,0,0|1,0,1|2,0,2|3,0,3:RETURNED:INT:i16:s:4"
+                    .to_owned(),
+            capture_body_sha256: valid_sha,
+        };
+        verify_move_reinit_evidence(&valid_ev, "c_taken", "move_then_reinit", 2).unwrap();
+
+        let mut bad_sha_ev = valid_ev.clone();
+        bad_sha_ev.capture_body_sha256 = "0".repeat(64);
+        assert!(
+            verify_move_reinit_evidence(&bad_sha_ev, "c_taken", "move_then_reinit", 2).is_err()
+        );
+
+        let mut bad_probe_ev = valid_ev.clone();
+        bad_probe_ev.lean_probe_line =
+            "ANNEAL_LEAN_CASE:c_taken:BODY|9|probe::move_then_reinit|MR1|3|5|0,0,0|1,0,1|2,0,2|3,0,3:RETURNED:INT:i16:s:4"
+                .to_owned();
+        assert!(
+            verify_move_reinit_evidence(&bad_probe_ev, "c_taken", "move_then_reinit", 2).is_err()
+        );
+
+        let mut bad_copy_blocks = valid_blocks_json;
+        bad_copy_blocks[0]["statements"][1]["value"]["operand"]["kind"] = serde_json::json!("copy");
+        let mut copy_ev = valid_ev.clone();
+        copy_ev.blocks = bad_copy_blocks;
+        copy_ev.capture_body_sha256 = compute_capture_body_sha256(
+            &copy_ev.fn_identity,
+            copy_ev.arg_count,
+            &copy_ev.local_tys,
+            &copy_ev.blocks,
+        );
+        assert!(verify_move_reinit_evidence(&copy_ev, "c_taken", "move_then_reinit", 2).is_err());
+
+        // `assign_place` read steps must be accepted cleanly while non-assign
+        // `move_step` statements with a `value` field must be rejected.
+        let mut ap_read_ev = valid_ev.clone();
+        ap_read_ev.blocks[0]["statements"][3] = serde_json::json!({
+            "kind": "assign_place",
+            "place": { "local": 0, "projection": [] },
+            "value": valid_ev.blocks[0]["statements"][3]["value"].clone(),
+        });
+        ap_read_ev.capture_body_sha256 = compute_capture_body_sha256(
+            &ap_read_ev.fn_identity,
+            ap_read_ev.arg_count,
+            &ap_read_ev.local_tys,
+            &ap_read_ev.blocks,
+        );
+        verify_move_reinit_evidence(&ap_read_ev, "c_taken", "move_then_reinit", 2)
+            .expect("assign_place read_step must satisfy move/reinit verification");
+
+        let mut bad_kind_move_ev = valid_ev;
+        bad_kind_move_ev.blocks[0]["statements"][1] = serde_json::json!({
+            "kind": "storage_live",
+            "local": 4,
+            "value": bad_kind_move_ev.blocks[0]["statements"][1]["value"].clone(),
+        });
+        bad_kind_move_ev.capture_body_sha256 = compute_capture_body_sha256(
+            &bad_kind_move_ev.fn_identity,
+            bad_kind_move_ev.arg_count,
+            &bad_kind_move_ev.local_tys,
+            &bad_kind_move_ev.blocks,
+        );
+        assert!(
+            verify_move_reinit_evidence(&bad_kind_move_ev, "c_taken", "move_then_reinit", 2)
+                .is_err()
+        );
 
         // Reading a moved-out enum via `Discriminant { place }` before
         // reinitialization must reset stage tracking and fail cleanly.
@@ -3673,10 +6735,181 @@ mod tests {
         let zst_only = CaptureBody {
             identity: "probe::zst_move".to_owned(),
             arg_count: 1,
-            local_tys: vec![i16_ty, zst_enum.clone(), zst_enum.clone(), zst_enum],
+            local_tys: vec![i16_ty.clone(), zst_enum.clone(), zst_enum.clone(), zst_enum],
             blocks: valid_move_reinit.blocks,
         };
         assert!(!body_exercises_move_then_reinit(&zst_only));
+
+        // Multi-block bodies must be rejected by the static single-block helper
+        // so dead-branch `MoveReinit` blocks cannot satisfy non-vacuity gates.
+        let mut split_blocks = zst_only.blocks;
+        let tail_stmt = split_blocks[0].statements.pop().unwrap();
+        split_blocks.push(CaptureBlock {
+            statements: vec![tail_stmt],
+            terminator: serde_json::json!({ "kind": "ret" }),
+        });
+        let multi_block = CaptureBody {
+            identity: "probe::multi_block_dead_arm".to_owned(),
+            arg_count: 2,
+            local_tys: vec![
+                i16_ty,
+                serde_json::json!({
+                    "kind": "enum",
+                    "id": 1,
+                    "discr_width": "i16",
+                    "discr_signed": true,
+                    "tag_repr": { "kind": "scalar", "width": "i16", "signed": true },
+                    "discriminants": ["65534", "0", "7"]
+                }),
+                serde_json::json!({
+                    "kind": "enum",
+                    "id": 1,
+                    "discr_width": "i16",
+                    "discr_signed": true,
+                    "tag_repr": { "kind": "scalar", "width": "i16", "signed": true },
+                    "discriminants": ["65534", "0", "7"]
+                }),
+                serde_json::json!({
+                    "kind": "enum",
+                    "id": 1,
+                    "discr_width": "i16",
+                    "discr_signed": true,
+                    "tag_repr": { "kind": "scalar", "width": "i16", "signed": true },
+                    "discriminants": ["65534", "0", "7"]
+                }),
+                serde_json::json!({
+                    "kind": "enum",
+                    "id": 1,
+                    "discr_width": "i16",
+                    "discr_signed": true,
+                    "tag_repr": { "kind": "scalar", "width": "i16", "signed": true },
+                    "discriminants": ["65534", "0", "7"]
+                }),
+            ],
+            blocks: split_blocks,
+        };
+        assert!(!body_exercises_move_then_reinit(&multi_block));
+
+        let parsed = parse_fuzz_lean_probe_output_ids(
+            "\"ANNEAL_LEAN_CASE:c_taken:BODY|0|rust-path-v1::fuzz_case_0000|MR1|3|5|0,0,0|1,0,1|2,0,2|3,0,3:RETURNED:INT:i16:s:4\"\n\
+             \"ANNEAL_LEAN_CASE:c_dead:BODY|1|rust-path-v1::fuzz_case_0001|MR0:RETURNED:INT:i16:s:0\"\n\
+             \"ANNEAL_LEAN_CASE:c_ub:BODY|2|rust-path-v1::fuzz_case_0002|MR0:FAULT:undefined\"\n",
+            &["c_taken", "c_dead", "c_ub"],
+        )
+        .unwrap();
+        assert_eq!(parsed["c_taken"].body_id, Some(0));
+        assert_eq!(parsed["c_taken"].fn_identity.as_deref(), Some("rust-path-v1::fuzz_case_0000"));
+        assert!(parsed["c_taken"].move_reinit.is_some());
+        assert!(parsed["c_taken"].lean_probe_line.is_some());
+        assert!(parsed["c_dead"].move_reinit.is_none());
+        assert!(parsed["c_dead"].lean_probe_line.is_some());
+        assert!(parsed["c_ub"].move_reinit.is_none());
+        assert!(parsed["c_ub"].lean_probe_line.is_some());
+
+        let expected_cb = FuzzCaptureBody {
+            body_id: 1,
+            fn_identity: "rust-path-v1::fuzz_case_0001".to_owned(),
+            arg_count: 0,
+            local_tys: vec![],
+            blocks: vec![],
+            capture_body_sha256: "0".repeat(64),
+        };
+        let (ok_out, ok_line, _) = bind_fuzz_probe_result_to_capture_body(
+            "c_dead",
+            parsed["c_dead"].clone(),
+            Some(&expected_cb),
+        );
+        assert!(matches!(ok_out, ObservedOutcome::Returned { .. }));
+        assert!(ok_line.is_some());
+
+        let mut wrong_id_cb = expected_cb.clone();
+        wrong_id_cb.body_id = 9;
+        let (bad_id_out, bad_id_line, bad_id_mr) = bind_fuzz_probe_result_to_capture_body(
+            "c_dead",
+            parsed["c_dead"].clone(),
+            Some(&wrong_id_cb),
+        );
+        assert!(matches!(bad_id_out, ObservedOutcome::ToolError { .. }));
+        assert!(bad_id_line.is_none());
+        assert!(bad_id_mr.is_none());
+
+        let mut wrong_ident_cb = expected_cb;
+        wrong_ident_cb.fn_identity = "rust-path-v1::other_fn".to_owned();
+        let (bad_ident_out, bad_ident_line, _) = bind_fuzz_probe_result_to_capture_body(
+            "c_dead",
+            parsed["c_dead"].clone(),
+            Some(&wrong_ident_cb),
+        );
+        assert!(matches!(bad_ident_out, ObservedOutcome::ToolError { .. }));
+        assert!(bad_ident_line.is_none());
+
+        assert!(
+            parse_fuzz_lean_probe_output_ids(
+                "\"ANNEAL_LEAN_CASE:c_missing_body:MR0:RETURNED:INT:i16:s:4\"\n",
+                &["c_missing_body"],
+            )
+            .is_err()
+        );
+        assert!(
+            parse_fuzz_lean_probe_output_ids(
+                "\"ANNEAL_LEAN_CASE:c_bare_mr1:BODY|0|crate::f|MR1:RETURNED:INT:i16:s:4\"\n",
+                &["c_bare_mr1"],
+            )
+            .is_err()
+        );
+        assert!(
+            parse_fuzz_lean_probe_output_ids(
+                "\"ANNEAL_LEAN_CASE:c_bad_order:BODY|0|crate::f|MR1|3|5|2,0,0|1,0,1|3,0,2|4,0,3:RETURNED:INT:i16:s:4\"\n",
+                &["c_bad_order"],
+            )
+            .is_err()
+        );
+        assert!(
+            parse_fuzz_lean_probe_output_ids(
+                "\"ANNEAL_LEAN_CASE:c_legacy:RETURNED:INT:i16:s:4\"\n",
+                &["c_legacy"],
+            )
+            .is_err()
+        );
+    }
+
+    #[test]
+    fn clamp_timeout_to_deadline_enforces_wall_clock_cutoff_on_stalled_subprocess() {
+        let base = Duration::from_secs(120);
+        assert_eq!(clamp_timeout_to_deadline(base, None).unwrap(), base);
+
+        let expired = Instant::now() - Duration::from_millis(5);
+        assert!(
+            clamp_timeout_to_deadline(base, Some(expired)).is_err(),
+            "expired shrink deadline must fail closed before spawning a child"
+        );
+
+        let tight_deadline = Instant::now() + Duration::from_millis(200);
+        let clamped = clamp_timeout_to_deadline(base, Some(tight_deadline)).unwrap();
+        assert!(clamped <= Duration::from_millis(200));
+        assert!(!clamped.is_zero());
+
+        let work = tempfile::tempdir().unwrap();
+        let inv = Invocation::new("/bin/sh", &["-c", "sleep 30"]);
+        let started = Instant::now();
+        let out = crate::rustc_runner::run_supervised_in_tmp(
+            &inv,
+            work.path(),
+            clamped,
+            None,
+            "deadline clamp probe",
+        )
+        .unwrap();
+        assert!(
+            matches!(out.termination, Termination::TimedOut(_)),
+            "expected stalled child to time out at clamped deadline, got {:?}",
+            out.termination
+        );
+        assert!(
+            started.elapsed() < Duration::from_secs(3),
+            "clamped subprocess ran too long: {:?}",
+            started.elapsed()
+        );
     }
 
     #[test]
@@ -3940,5 +7173,982 @@ mod tests {
                 "expected parse failure for {bad_stdout:?}"
             );
         }
+    }
+
+    #[cfg(unix)]
+    #[test]
+    fn eval_fuzz_probe_bisects_case_local_nonzero_exit_and_propagates_global_failures() {
+        use std::os::unix::{fs::PermissionsExt as _, process::ExitStatusExt as _};
+
+        let tmp = tempfile::tempdir().unwrap();
+        let progs = crate::r#gen::generate_campaign(
+            &crate::r#gen::GenConfig {
+                master_seed: 20261124,
+                max_stmts: 4,
+                ub_ratio: 0.2,
+                default_fuel: 1500,
+            },
+            4,
+        );
+        let refs: Vec<&crate::r#gen::GenProgram> = progs.iter().collect();
+        let mut body_ids_by_fn = BTreeMap::new();
+        for (idx, p) in progs.iter().enumerate() {
+            body_ids_by_fn.insert(p.fn_name.clone(), idx);
+        }
+        let sample_src = generate_fuzz_lean_probe(&body_ids_by_fn, &refs).unwrap();
+        let preamble_lines =
+            sample_src.lines().take_while(|line| !line.starts_with("#eval runCase ")).count();
+        let fake_probe_path = Path::new("/tmp/FuzzProbe_0.lean");
+
+        assert!(is_global_lean_probe_failure(
+            &Termination::TimedOut(std::process::ExitStatus::from_raw(9)),
+            &sample_src,
+            fake_probe_path,
+            "",
+            "",
+        ));
+        assert!(is_global_lean_probe_failure(
+            &Termination::LaunchFailed("enoent".to_owned()),
+            &sample_src,
+            fake_probe_path,
+            "",
+            "",
+        ));
+        assert!(is_global_lean_probe_failure(
+            &Termination::Exited(std::process::ExitStatus::from_raw(1 << 8)),
+            &sample_src,
+            fake_probe_path,
+            "",
+            &format!(
+                "FuzzProbe_0.lean:2:0: error: unknown module prefix 'Captured'\n\
+                 FuzzProbe_0.lean:{}:0: error: unknown identifier 'Captured.program'",
+                preamble_lines + 1
+            ),
+        ));
+        assert!(!is_global_lean_probe_failure(
+            &Termination::Exited(std::process::ExitStatus::from_raw(1 << 8)),
+            &sample_src,
+            fake_probe_path,
+            "",
+            &format!(
+                "FuzzProbe_0.lean:{}:0: error: simulated elaboration failure",
+                preamble_lines + 2
+            ),
+        ));
+
+        let bad_id = &progs[2].case_id;
+        let case_fail_lean = tmp.path().join("case_fail_lean.sh");
+        let case_script = format!(
+            "#!/bin/sh\n\
+             probe=\"\"\n\
+             for a in \"$@\"; do probe=\"$a\"; done\n\
+             if grep -Fq '{bad_id}' \"$probe\"; then\n\
+               echo \"$(basename \"$probe\"):$(( $(grep -n '^#eval runCase ' \"$probe\" | head -n1 | cut -d: -f1) )):0: error: simulated case-local failure in {bad_id}\" >&2\n\
+               exit 1\n\
+             fi\n\
+             grep '^#eval runCase ' \"$probe\" | sed -E 's/^#eval runCase \"([^\"]+)\".*/\"ANNEAL_LEAN_CASE:\\1:BODY|0|rust-path-v1::fuzz_case|MR0:RETURNED:INT:i32:u:7\"/'\n\
+             exit 0\n"
+        );
+        fs::write(&case_fail_lean, case_script).unwrap();
+        fs::set_permissions(&case_fail_lean, fs::Permissions::from_mode(0o755)).unwrap();
+
+        let make_session = |lean_bin: PathBuf| LeanSession {
+            anneal_root: tmp.path().to_path_buf(),
+            capture_bin: tmp.path().join("cap"),
+            rust_sysroot: tmp.path().to_path_buf(),
+            lean_bin,
+            olean_paths: vec![tmp.path().to_path_buf()],
+            prebuilt_overlay: "none".to_owned(),
+            ld_library_path: String::new(),
+            child_path: validated_system_child_path().unwrap(),
+            lean_ld_library_path: String::new(),
+            lean_child_path: validated_system_child_path().unwrap(),
+            validated_tmpdir: None,
+            _rust_sysroot_staging: None,
+            _capture_staging: None,
+            _lean_lib_staging: None,
+            _lean_stdlib_staging: None,
+            _lean_dag_staging: None,
+        };
+
+        let case_dir = tmp.path().join("case_bisect");
+        fs::create_dir_all(&case_dir).unwrap();
+        let bisected = make_session(case_fail_lean)
+            .eval_fuzz_probe_with_bisection(
+                &case_dir,
+                tmp.path().to_str().unwrap(),
+                &body_ids_by_fn,
+                &refs,
+                0,
+                None,
+            )
+            .expect("case-local probe failure must bisect cleanly");
+        assert_eq!(bisected.len(), 4);
+        for (idx, p) in progs.iter().enumerate() {
+            let entry = &bisected[&p.case_id];
+            if idx == 2 {
+                assert!(
+                    matches!(&entry.outcome, ObservedOutcome::ToolError { detail } if detail.contains("simulated case-local failure")),
+                    "expected ToolError for {}, got {:?}",
+                    p.case_id,
+                    entry.outcome
+                );
+            } else {
+                assert_eq!(
+                    entry.outcome,
+                    ObservedOutcome::Returned {
+                        value: MirValue::Int { int_kind: IntKind::U32, bits: 7 }
+                    }
+                );
+            }
+        }
+
+        // Batch-wide preamble failure must NOT bisect across all programs.
+        let global_fail_lean = tmp.path().join("global_fail_lean.sh");
+        let count_file = tmp.path().join("global_count.txt");
+        let global_script = format!(
+            "#!/bin/sh\n\
+             echo x >> '{}'\n\
+             probe=\"\"\n\
+             for a in \"$@\"; do probe=\"$a\"; done\n\
+             echo \"$(basename \"$probe\"):2:0: error: unknown module prefix 'Captured'\" >&2\n\
+             exit 1\n",
+            count_file.display()
+        );
+        fs::write(&global_fail_lean, global_script).unwrap();
+        fs::set_permissions(&global_fail_lean, fs::Permissions::from_mode(0o755)).unwrap();
+
+        let global_dir = tmp.path().join("global_fail");
+        fs::create_dir_all(&global_dir).unwrap();
+        let global_res = make_session(global_fail_lean)
+            .eval_fuzz_probe_with_bisection(
+                &global_dir,
+                tmp.path().to_str().unwrap(),
+                &body_ids_by_fn,
+                &refs,
+                0,
+                None,
+            )
+            .expect("global failure must emit structured ToolError batch");
+        assert_eq!(global_res.len(), 4);
+        assert_eq!(fs::read_to_string(&count_file).unwrap().lines().count(), 1);
+        for p in &progs {
+            assert!(matches!(global_res[&p.case_id].outcome, ObservedOutcome::ToolError { .. }));
+        }
+    }
+
+    #[test]
+    fn compile_captured_lean_modules_handles_sharded_modules_and_rejects_invalid_manifests() {
+        let lean_bin = fs::canonicalize(default_lean_path().expect("resolve pinned lean"))
+            .expect("canonicalize lean");
+        let tmp = tempfile::tempdir().unwrap();
+        let make_session = || LeanSession {
+            anneal_root: tmp.path().to_path_buf(),
+            capture_bin: tmp.path().join("cap"),
+            rust_sysroot: tmp.path().to_path_buf(),
+            lean_bin: lean_bin.clone(),
+            olean_paths: Vec::new(),
+            prebuilt_overlay: "none".to_owned(),
+            ld_library_path: String::new(),
+            child_path: validated_system_child_path().unwrap(),
+            lean_ld_library_path: String::new(),
+            lean_child_path: validated_system_child_path().unwrap(),
+            validated_tmpdir: None,
+            _rust_sysroot_staging: None,
+            _capture_staging: None,
+            _lean_lib_staging: None,
+            _lean_stdlib_staging: None,
+            _lean_dag_staging: None,
+        };
+        let session = make_session();
+
+        // Real Lean 4 `module` sharded tree (`Shard_000` + `Shard_001` ->
+        // `Captured.lean`) listed out of order in `capture_shards.json`.
+        let out_dir = tmp.path().join("sharded_out");
+        let sharded_group = tmp.path().join("sharded_group");
+        fs::create_dir_all(out_dir.join("Captured")).unwrap();
+        fs::create_dir_all(&sharded_group).unwrap();
+        fs::write(
+            out_dir.join("Captured/Shard_000.lean"),
+            "module\n@[expose] public section\nnamespace Captured.Shard_000\ndef a : Nat := 19\nend Captured.Shard_000\nend\n",
+        )
+        .unwrap();
+        fs::write(
+            out_dir.join("Captured/Shard_001.lean"),
+            "module\npublic import Captured.Shard_000\n@[expose] public section\nnamespace Captured.Shard_001\ndef b : Nat := Captured.Shard_000.a + 23\nend Captured.Shard_001\nend\n",
+        )
+        .unwrap();
+        let root_lean = out_dir.join("Captured.lean");
+        fs::write(
+            &root_lean,
+            "module\npublic import Captured.Shard_000\npublic import Captured.Shard_001\n@[expose] public section\nnamespace Captured\ndef answer : Nat := Captured.Shard_001.b\nend Captured\nend\n",
+        )
+        .unwrap();
+        let shards_json = out_dir.join("capture_shards.json");
+        fs::write(
+            &shards_json,
+            r#"{"shards":[{"shard_idx":1,"capture_module":"Captured.Shard_001"},{"shard_idx":0,"capture_module":"Captured.Shard_000"}]}"#,
+        )
+        .unwrap();
+
+        let status = CaptureStatusOk {
+            status: "captured".to_owned(),
+            capture: out_dir.join("capture.json"),
+            lean: root_lean.clone(),
+            capture_shards: Some(shards_json.clone()),
+        };
+        let (olean_dir, lean_path) = session
+            .compile_captured_lean_modules(&sharded_group, &out_dir, &status, None, "shard_unit")
+            .expect("sharded modules must compile in shard_idx order");
+        assert!(olean_dir.join("Captured/Shard_000.olean").is_file());
+        assert!(olean_dir.join("Captured/Shard_001.olean").is_file());
+        assert!(olean_dir.join("Captured.olean").is_file());
+
+        let probe = tmp.path().join("ShardProbe.lean");
+        fs::write(&probe, "import Captured\n#eval IO.println s!\"ANS:{Captured.answer}\"\n")
+            .unwrap();
+        let probe_res = run_supervised_cmd_in_tmp(
+            &session.apply_lean_env(
+                Invocation::new(&lean_bin, LEAN_COMPILE_FLAGS)
+                    .arg(&probe)
+                    .env("LEAN_PATH", &lean_path),
+            ),
+            tmp.path(),
+            LEAN_EVAL_TIMEOUT_SECS,
+            None,
+            "eval sharded Captured probe",
+        )
+        .unwrap();
+        assert!(
+            matches!(probe_res.termination, Termination::Exited(s) if s.success()),
+            "sharded probe failed: {}",
+            probe_res.describe()
+        );
+        assert!(String::from_utf8_lossy(&probe_res.stdout).contains("ANS:42"));
+
+        // Fallback discovery without explicit `status.capture_shards` path.
+        let fallback_group = tmp.path().join("fallback_group");
+        fs::create_dir_all(&fallback_group).unwrap();
+        let status_no_field = CaptureStatusOk {
+            status: "captured".to_owned(),
+            capture: out_dir.join("capture.json"),
+            lean: root_lean,
+            capture_shards: None,
+        };
+        let (fallback_olean, _) = session
+            .compile_captured_lean_modules(
+                &fallback_group,
+                &out_dir,
+                &status_no_field,
+                None,
+                "shard_fallback",
+            )
+            .expect("fallback discovery of capture_shards.json must succeed");
+        assert!(fallback_olean.join("Captured.olean").is_file());
+
+        // Reject unsafe module prefixes, missing manifests with `Captured/`,
+        // duplicate shard indices, and missing shard source files.
+        assert!(shard_module_rel_path("Other.Shard_000").is_err());
+        assert!(shard_module_rel_path("Captured.../../Evil").is_err());
+        assert!(shard_module_rel_path("Captured.Shard/000").is_err());
+
+        let orphan_dir = tmp.path().join("orphan");
+        fs::create_dir_all(orphan_dir.join("Captured")).unwrap();
+        let orphan_err = load_capture_shards(&orphan_dir, tmp.path(), None).err().unwrap();
+        assert!(orphan_err.contains("capture_shards.json"), "{orphan_err}");
+
+        let dup_manifest = out_dir.join("dup_shards.json");
+        fs::write(
+            &dup_manifest,
+            r#"{"shards":[{"shard_idx":0,"capture_module":"Captured.Shard_000"},{"shard_idx":0,"capture_module":"Captured.Shard_001"}]}"#,
+        )
+        .unwrap();
+        let dup_err = load_capture_shards(&out_dir, tmp.path(), Some(&dup_manifest)).err().unwrap();
+        assert!(dup_err.contains("duplicate shard_idx"), "{dup_err}");
+
+        let fallback_empty_dir = tmp.path().join("fallback_empty_shards");
+        fs::create_dir_all(&fallback_empty_dir).unwrap();
+        fs::write(fallback_empty_dir.join("capture_shards.json"), r#"{"shards":[]}"#).unwrap();
+        let empty_err = load_capture_shards(&fallback_empty_dir, tmp.path(), None).err().unwrap();
+        assert!(empty_err.contains("zero shards"), "{empty_err}");
+
+        let probe_src =
+            generate_fuzz_lean_probe(&BTreeMap::new(), &[]).expect("empty batch probe renders");
+        assert!(probe_src.contains("activeFrameBodyComp prog f0"), "{probe_src}");
+        assert!(probe_src.contains("\"arithmetic overflow\""), "{probe_src}");
+        assert!(!probe_src.contains("\"overflow in signed arithmetic\""), "{probe_src}");
+        assert!(probe_src.contains("some (.sysrootCall _ ops _ _ _)"), "{probe_src}");
+        assert!(probe_src.contains("some (.coreCall _ ops _ _ _)"), "{probe_src}");
+
+        let missing_src_out = tmp.path().join("missing_src_out");
+        fs::create_dir_all(&missing_src_out).unwrap();
+        fs::write(missing_src_out.join("Captured.lean"), "def ok : Nat := 0\n").unwrap();
+        let missing_src_manifest = missing_src_out.join("capture_shards.json");
+        fs::write(
+            &missing_src_manifest,
+            r#"{"shards":[{"shard_idx":9,"capture_module":"Captured.Shard_009"}]}"#,
+        )
+        .unwrap();
+        let status_missing = CaptureStatusOk {
+            status: "captured".to_owned(),
+            capture: missing_src_out.join("capture.json"),
+            lean: missing_src_out.join("Captured.lean"),
+            capture_shards: Some(missing_src_manifest),
+        };
+        let missing_group = tmp.path().join("missing_group");
+        fs::create_dir_all(&missing_group).unwrap();
+        let missing_err = session
+            .compile_captured_lean_modules(
+                &missing_group,
+                &missing_src_out,
+                &status_missing,
+                None,
+                "missing_src",
+            )
+            .unwrap_err();
+        assert!(
+            missing_err.contains("captured shard Captured.Shard_009"),
+            "unexpected missing shard error: {missing_err}"
+        );
+
+        #[cfg(unix)]
+        {
+            // Out-of-tree, symlinked, and hardlinked capture artifacts must
+            // fail closed before Lean/JSON reads.
+            let outside_file = tmp.path().join("outside_manifest.json");
+            fs::write(&outside_file, r#"{"shards":[]}"#).unwrap();
+            let esc_err = validate_capture_output_file(
+                &out_dir,
+                tmp.path(),
+                &outside_file,
+                "capture manifest",
+            )
+            .unwrap_err();
+            assert!(esc_err.contains("escapes capture_out directory"), "{esc_err}");
+
+            let esc_shard_manifest_err =
+                load_capture_shards(&out_dir, tmp.path(), Some(&outside_file)).unwrap_err();
+            assert!(
+                esc_shard_manifest_err.contains("escapes capture_out directory"),
+                "{esc_shard_manifest_err}"
+            );
+
+            let sym_dir = tmp.path().join("sym_artifact_out");
+            fs::create_dir_all(&sym_dir).unwrap();
+            let evil_lean = tmp.path().join("evil_target.lean");
+            fs::write(&evil_lean, "def evil : Nat := 1\n").unwrap();
+            std::os::unix::fs::symlink(&evil_lean, sym_dir.join("Captured.lean")).unwrap();
+            let sym_status = CaptureStatusOk {
+                status: "captured".to_owned(),
+                capture: sym_dir.join("capture.json"),
+                lean: sym_dir.join("Captured.lean"),
+                capture_shards: None,
+            };
+            let sym_err = session
+                .compile_captured_lean_modules(&missing_group, &sym_dir, &sym_status, None, "sym")
+                .unwrap_err();
+            assert!(sym_err.contains("symlink"), "{sym_err}");
+
+            let hard_dir = tmp.path().join("hard_artifact_out");
+            fs::create_dir_all(&hard_dir).unwrap();
+            fs::hard_link(&evil_lean, hard_dir.join("Captured.lean")).unwrap();
+            let hard_status = CaptureStatusOk {
+                status: "captured".to_owned(),
+                capture: hard_dir.join("capture.json"),
+                lean: hard_dir.join("Captured.lean"),
+                capture_shards: None,
+            };
+            let hard_err = session
+                .compile_captured_lean_modules(
+                    &missing_group,
+                    &hard_dir,
+                    &hard_status,
+                    None,
+                    "hard",
+                )
+                .unwrap_err();
+            assert!(hard_err.contains("hardlink"), "{hard_err}");
+        }
+    }
+
+    #[cfg(unix)]
+    #[test]
+    fn capture_fuzz_batch_bisects_compiler_failed_and_validates_reported_artifact_paths() {
+        use std::os::unix::fs::PermissionsExt as _;
+
+        let tmp = tempfile::tempdir().unwrap();
+        let progs = crate::r#gen::generate_campaign(
+            &crate::r#gen::GenConfig {
+                master_seed: 20261124,
+                max_stmts: 4,
+                ub_ratio: 0.2,
+                default_fuel: 1500,
+            },
+            4,
+        );
+        let refs: Vec<&crate::r#gen::GenProgram> = progs.iter().collect();
+        let bad_fn = &progs[1].fn_name;
+
+        let fake_cap = tmp.path().join("fake_capture_bisect.sh");
+        let cap_script = format!(
+            r#"#!/bin/sh
+src=""
+outdir=""
+selected=""
+while [ "$#" -gt 0 ]; do
+  case "$1" in
+    --crate-root) src="$2"; shift 2 ;;
+    --out-dir) outdir="$2"; shift 2 ;;
+    --select) selected="$selected $2"; shift 2 ;;
+    *) shift ;;
+  esac
+done
+if grep -Fq "{bad_fn}" "$src"; then
+  echo '{{"status":"compiler_failed","diagnostics":["simulated case syntax error"],"unsupported":[]}}'
+  exit 1
+fi
+mkdir -p "$outdir"
+python3 - "$outdir" $selected <<'PY'
+import json, sys
+from pathlib import Path
+out_dir = Path(sys.argv[1])
+bodies = []
+for fn in sys.argv[2:]:
+    bodies.append({{
+        "identity": f"rust-path-v1::{{fn}}",
+        "arg_count": 0,
+        "local_tys": ["u32"],
+        "blocks": [{{"statements": [], "terminator": {{"kind": "return"}}}}],
+    }})
+cap_path = out_dir / "capture.json"
+lean_path = out_dir / "Captured.lean"
+cap_path.write_text(json.dumps({{"program": {{"bodies": bodies}}}}), encoding="utf-8")
+lean_path.write_text("-- stub\n", encoding="utf-8")
+print(json.dumps({{"status": "captured", "capture": str(cap_path), "lean": str(lean_path)}}))
+PY
+"#
+        );
+        fs::write(&fake_cap, cap_script).unwrap();
+        fs::set_permissions(&fake_cap, fs::Permissions::from_mode(0o755)).unwrap();
+
+        let fake_lean = tmp.path().join("fake_lean_ok.sh");
+        let lean_script = r#"#!/bin/sh
+probe=""
+for a in "$@"; do probe="$a"; done
+case "$probe" in
+  *FuzzProbe_*.lean)
+    python3 - "$probe" <<'PY'
+import json, re, sys
+from pathlib import Path
+probe = Path(sys.argv[1])
+text = probe.read_text(encoding="utf-8")
+cap = json.loads((probe.parent / "capture_out" / "capture.json").read_text(encoding="utf-8"))
+bodies = cap["program"]["bodies"]
+for cid, did in re.findall(r'#eval runCase "([^"]+)" (\d+)\b', text):
+    ident = bodies[int(did)]["identity"]
+    print(f'"ANNEAL_LEAN_CASE:{cid}:BODY|{did}|{ident}|MR0:RETURNED:INT:i32:u:7"')
+PY
+    ;;
+esac
+exit 0
+"#;
+        fs::write(&fake_lean, lean_script).unwrap();
+        fs::set_permissions(&fake_lean, fs::Permissions::from_mode(0o755)).unwrap();
+
+        let session = LeanSession {
+            anneal_root: tmp.path().to_path_buf(),
+            capture_bin: fake_cap,
+            rust_sysroot: tmp.path().to_path_buf(),
+            lean_bin: fake_lean.clone(),
+            olean_paths: vec![tmp.path().to_path_buf()],
+            prebuilt_overlay: "none".to_owned(),
+            ld_library_path: String::new(),
+            child_path: validated_system_child_path().unwrap(),
+            lean_ld_library_path: String::new(),
+            lean_child_path: validated_system_child_path().unwrap(),
+            validated_tmpdir: None,
+            _rust_sysroot_staging: None,
+            _capture_staging: None,
+            _lean_lib_staging: None,
+            _lean_stdlib_staging: None,
+            _lean_dag_staging: None,
+        };
+
+        let bisect_dir = tmp.path().join("compiler_bisect");
+        let bisect_res = session
+            .capture_and_evaluate_fuzz_batch(&bisect_dir, "cmp_bisect", &refs)
+            .expect("case-local compiler_failed must bisect cleanly");
+        assert_eq!(bisect_res.len(), 4);
+        for (idx, p) in progs.iter().enumerate() {
+            let entry = &bisect_res[&p.case_id];
+            if idx == 1 {
+                assert!(
+                    matches!(&entry.outcome, ObservedOutcome::ToolError { detail } if detail.contains("compiler_failed")),
+                    "expected ToolError for {}, got {:?}",
+                    p.case_id,
+                    entry.outcome
+                );
+            } else {
+                assert_eq!(
+                    entry.outcome,
+                    ObservedOutcome::Returned {
+                        value: MirValue::Int { int_kind: IntKind::U32, bits: 7 }
+                    }
+                );
+            }
+        }
+
+        // Genuine batch-wide `tool_failed` on a multi-program batch still
+        // avoids bisection (1 invocation for the non-ScopeControl batch).
+        let clean_refs: Vec<&crate::r#gen::GenProgram> = progs
+            .iter()
+            .filter(|p| p.category != crate::r#gen::GenCategory::ScopeControl)
+            .collect();
+        assert!(clean_refs.len() >= 2);
+        let tool_fail_count = tmp.path().join("tool_fail_count.txt");
+        let fake_tool_fail = tmp.path().join("fake_capture_tool_fail.sh");
+        fs::write(
+            &fake_tool_fail,
+            format!(
+                "#!/bin/sh\necho x >> '{}'\necho '{{\"status\":\"tool_failed\",\"diagnostics\":[\"broken sysroot\"],\"unsupported\":[]}}'\nexit 1\n",
+                tool_fail_count.display()
+            ),
+        )
+        .unwrap();
+        fs::set_permissions(&fake_tool_fail, fs::Permissions::from_mode(0o755)).unwrap();
+        let tool_fail_session = LeanSession { capture_bin: fake_tool_fail, ..session.clone() };
+        let tf_dir = tmp.path().join("tool_fail_group");
+        let tf_res = tool_fail_session
+            .capture_and_evaluate_fuzz_batch(&tf_dir, "tool_fail", &clean_refs)
+            .expect("tool_failed batch emits structured ToolError");
+        assert_eq!(fs::read_to_string(&tool_fail_count).unwrap().lines().count(), 1);
+        for p in &clean_refs {
+            assert!(matches!(tf_res[&p.case_id].outcome, ObservedOutcome::ToolError { .. }));
+        }
+
+        // Capture JSON naming an out-of-tree artifact path fails closed.
+        let evil_cap_target = tmp.path().join("escaped_capture.json");
+        fs::write(&evil_cap_target, r#"{"program":{"bodies":[]}}"#).unwrap();
+        let fake_evil_cap = tmp.path().join("fake_capture_escape.sh");
+        fs::write(
+            &fake_evil_cap,
+            format!(
+                r#"#!/bin/sh
+outdir=""
+while [ "$#" -gt 0 ]; do
+  case "$1" in
+    --out-dir) outdir="$2"; shift 2 ;;
+    *) shift ;;
+  esac
+done
+mkdir -p "$outdir"
+echo "-- stub" > "$outdir/Captured.lean"
+printf '{{"status":"captured","capture":"{}","lean":"%s/Captured.lean"}}\n' "$outdir"
+"#,
+                evil_cap_target.display()
+            ),
+        )
+        .unwrap();
+        fs::set_permissions(&fake_evil_cap, fs::Permissions::from_mode(0o755)).unwrap();
+        let evil_session = LeanSession { capture_bin: fake_evil_cap, ..session };
+        let esc_group = tmp.path().join("escape_group");
+        let esc_err = evil_session
+            .capture_and_evaluate_fuzz_batch(&esc_group, "esc", &refs[..1])
+            .unwrap_err();
+        assert!(esc_err.contains("escapes capture_out directory"), "{esc_err}");
+
+        // Capture JSON reporting a `sub/../capture.json` parent-traversal path
+        // inside `capture_out` also fails closed.
+        let fake_trav_cap = tmp.path().join("fake_capture_trav.sh");
+        fs::write(
+            &fake_trav_cap,
+            r#"#!/bin/sh
+outdir=""
+while [ "$#" -gt 0 ]; do
+  case "$1" in
+    --out-dir) outdir="$2"; shift 2 ;;
+    *) shift ;;
+  esac
+done
+mkdir -p "$outdir/sub"
+echo '{"program":{"bodies":[]}}' > "$outdir/capture.json"
+echo "-- stub" > "$outdir/Captured.lean"
+printf '{"status":"captured","capture":"%s/sub/../capture.json","lean":"%s/Captured.lean"}\n' "$outdir" "$outdir"
+"#,
+        )
+        .unwrap();
+        fs::set_permissions(&fake_trav_cap, fs::Permissions::from_mode(0o755)).unwrap();
+        let trav_session = LeanSession { capture_bin: fake_trav_cap, ..evil_session };
+        let trav_group = tmp.path().join("trav_group");
+        let trav_err = trav_session
+            .capture_and_evaluate_fuzz_batch(&trav_group, "trav", &refs[..1])
+            .unwrap_err();
+        assert!(trav_err.contains(".."), "{trav_err}");
+    }
+
+    #[cfg(unix)]
+    #[test]
+    fn apply_lean_tool_env_strips_ambient_paths_and_rejects_poisoned_lean_dirs() {
+        use std::os::unix::fs::{PermissionsExt as _, symlink};
+
+        let tmp = tempfile::tempdir().unwrap();
+        let base = fs::canonicalize(tmp.path()).unwrap();
+        let prefix = base.join("lean-toolchain");
+        let evil_dir = base.join("evil-dir");
+        for d in [prefix.join("bin"), prefix.join("lib/lean"), evil_dir.clone()] {
+            fs::create_dir_all(d).unwrap();
+        }
+        let lean_bin = prefix.join("bin/lean");
+        fs::write(&lean_bin, "#!/bin/sh\nexit 0\n").unwrap();
+        fs::set_permissions(&lean_bin, fs::Permissions::from_mode(0o755)).unwrap();
+
+        let fake_store = base.join("nix-store");
+        fs::create_dir_all(&fake_store).unwrap();
+        let trusted_child_dirs: Vec<&Path> =
+            crate::rustc_runner::TRUSTED_CHILD_PATH_DIRS.iter().map(Path::new).collect();
+        let poisoned_path = env::join_paths([&evil_dir, &PathBuf::from("./rel-evil")]).unwrap();
+
+        fs::write(prefix.join("lib/lean/Init.olean"), b"init").unwrap();
+        let built = apply_lean_tool_env_with_tmpdir(
+            Invocation::new(&lean_bin, &[]),
+            &lean_bin,
+            &fake_store,
+            &trusted_child_dirs,
+            Some(poisoned_path.as_os_str()),
+            &base,
+            None,
+        )
+        .expect("clean Lean toolchain should build sanitized Invocation");
+        assert!(built._staging.is_some());
+        let built_ld = built
+            .inv
+            .environment
+            .get(OsStr::new("LD_LIBRARY_PATH"))
+            .expect("validated Lean LD_LIBRARY_PATH");
+        let built_ld_dirs: Vec<PathBuf> = env::split_paths(built_ld).collect();
+        assert_eq!(built_ld_dirs.len(), 2);
+        assert_ne!(built_ld_dirs[0], prefix.join("lib/lean"));
+        assert_ne!(built_ld_dirs[1], prefix.join("lib"));
+        let staged_init = built_ld_dirs[0].join("Init.olean");
+        assert_eq!(fs::read(&staged_init).unwrap(), b"init");
+        fs::write(prefix.join("lib/lean/Init.olean"), b"tampered-init").unwrap();
+        assert_eq!(fs::read(&staged_init).unwrap(), b"init");
+        let built_path_dirs: Vec<PathBuf> =
+            env::split_paths(built.inv.environment.get(OsStr::new("PATH")).unwrap()).collect();
+        assert!(!built_path_dirs.contains(&evil_dir));
+        assert!(!built_path_dirs.contains(&PathBuf::from("./rel-evil")));
+        assert!(!built_path_dirs.contains(&prefix.join("bin")));
+        assert_ne!(built.inv.executable, lean_bin);
+        let staged_lean_meta = fs::symlink_metadata(&built.inv.executable).unwrap();
+        assert!(!staged_lean_meta.file_type().is_symlink());
+        assert_eq!(crate::rustc_runner::hardlink_count(&staged_lean_meta), 1);
+        assert!(staged_lean_meta.permissions().readonly());
+        let staged_bin_dir = built.inv.executable.parent().unwrap().to_path_buf();
+        assert!(built_path_dirs.contains(&staged_bin_dir));
+        fs::write(&lean_bin, b"#!/bin/sh\nexit 99\n").unwrap();
+        assert_eq!(fs::read(&built.inv.executable).unwrap(), b"#!/bin/sh\nexit 0\n");
+        fs::write(&lean_bin, b"#!/bin/sh\nexit 0\n").unwrap();
+
+        // Symlinked `lib/lean` must fail closed before running Lean.
+        let bad_prefix = base.join("bad-lean-toolchain");
+        fs::create_dir_all(bad_prefix.join("bin")).unwrap();
+        fs::create_dir_all(bad_prefix.join("lib")).unwrap();
+        let bad_lean = bad_prefix.join("bin/lean");
+        fs::write(&bad_lean, "#!/bin/sh\nexit 0\n").unwrap();
+        fs::set_permissions(&bad_lean, fs::Permissions::from_mode(0o755)).unwrap();
+        symlink(&evil_dir, bad_prefix.join("lib/lean")).unwrap();
+        let err_sym = apply_lean_tool_env_with_tmpdir(
+            Invocation::new(&bad_lean, &[]),
+            &bad_lean,
+            &fake_store,
+            &trusted_child_dirs,
+            None,
+            &base,
+            None,
+        )
+        .unwrap_err();
+        assert!(err_sym.contains("symlink"), "{err_sym}");
+
+        // Relative `TMPDIR` anchors to `caller_cwd`; bad `TMPDIR` fails closed.
+        let caller_cwd = base.join("caller");
+        let rel_tmp = caller_cwd.join("rel-tmp");
+        fs::create_dir_all(&rel_tmp).unwrap();
+        let with_rel_tmp = apply_lean_tool_env_with_tmpdir(
+            Invocation::new(&lean_bin, &[]),
+            &lean_bin,
+            &fake_store,
+            &trusted_child_dirs,
+            None,
+            &caller_cwd,
+            Some(OsStr::new("rel-tmp")),
+        )
+        .expect("relative existing TMPDIR must anchor cleanly");
+        assert_eq!(with_rel_tmp.validated_tmpdir.as_deref(), Some(rel_tmp.as_path()));
+        assert_eq!(
+            with_rel_tmp.inv.environment.get(OsStr::new("TMPDIR")).map(OsString::as_os_str),
+            Some(rel_tmp.as_os_str())
+        );
+
+        let sym_tmp = caller_cwd.join("sym-tmp");
+        symlink(&rel_tmp, &sym_tmp).unwrap();
+        for bad_tmp in [OsStr::new("../outside"), sym_tmp.as_os_str(), OsStr::new("missing-tmp")] {
+            let err_tmp = apply_lean_tool_env_with_tmpdir(
+                Invocation::new(&lean_bin, &[]),
+                &lean_bin,
+                &fake_store,
+                &trusted_child_dirs,
+                None,
+                &caller_cwd,
+                Some(bad_tmp),
+            )
+            .unwrap_err();
+            assert!(err_tmp.contains("TMPDIR"), "bad TMPDIR {:?} -> {err_tmp}", bad_tmp);
+        }
+
+        // `LeanSession` forwards anchored canonical `TMPDIR` to both capture
+        // and Lean subprocesses even after switching into private group dirs,
+        // and `LeanSession::prepare_at` rejects unsafe `TMPDIR` upfront.
+        let fake_rust_sys = base.join("rust-sys");
+        fs::create_dir_all(fake_rust_sys.join("bin")).unwrap();
+        fs::create_dir_all(fake_rust_sys.join("lib")).unwrap();
+        fs::write(fake_rust_sys.join("bin/rustc"), "#!/bin/sh\nexit 0\n").unwrap();
+        let cap_tmp_log = base.join("cap-tmp.txt");
+        let lean_tmp_log = base.join("lean-tmp.txt");
+        let fake_cap = base.join("fake-capture.sh");
+        fs::write(
+            &fake_cap,
+            format!(
+                "#!/bin/sh\nset -eu\n\
+                 printf '%s\\n' \"${{TMPDIR:-}}\" >> '{}'\n\
+                 outdir=\"\"\nwhile [ \"$#\" -gt 0 ]; do\n\
+                   case \"$1\" in --out-dir) outdir=\"$2\"; shift 2 ;; *) shift ;; esac\n\
+                 done\n\
+                 mkdir -p \"$outdir\"\n\
+                 echo '-- stub' > \"$outdir/Captured.lean\"\n\
+                 echo '{{\"program\":{{\"bodies\":[{{\"identity\":\"rust-path-v1::fuzz_ok\",\"arg_count\":0,\"local_tys\":[\"u32\"],\"blocks\":[{{\"statements\":[],\"terminator\":{{\"kind\":\"return\"}}}}]}}]}}}}' > \"$outdir/capture.json\"\n\
+                 printf '{{\"status\":\"captured\",\"capture\":\"%s/capture.json\",\"lean\":\"%s/Captured.lean\"}}\\n' \"$outdir\" \"$outdir\"\n",
+                cap_tmp_log.display(),
+            ),
+        )
+        .unwrap();
+        fs::set_permissions(&fake_cap, fs::Permissions::from_mode(0o755)).unwrap();
+
+        let fake_lean_run = prefix.join("bin/lean");
+        fs::write(
+            &fake_lean_run,
+            format!(
+                "#!/bin/sh\nset -eu\n\
+                 printf '%s\\n' \"${{TMPDIR:-}}\" >> '{}'\n\
+                 out=\"\"\nprobe=\"\"\n\
+                 while [ \"$#\" -gt 0 ]; do\n\
+                   case \"$1\" in\n\
+                     -o) out=\"$2\"; shift 2 ;;\n\
+                     -R|-D) shift 2 ;;\n\
+                     *) probe=\"$1\"; shift ;;\n\
+                   esac\n\
+                 done\n\
+                 if [ -n \"$out\" ]; then : > \"$out\"; exit 0; fi\n\
+                 echo '\"ANNEAL_LEAN_CASE:c0:BODY|0|rust-path-v1::fuzz_ok|MR0:RETURNED:INT:i32:u:7\"'\n",
+                lean_tmp_log.display(),
+            ),
+        )
+        .unwrap();
+        fs::set_permissions(&fake_lean_run, fs::Permissions::from_mode(0o755)).unwrap();
+
+        let bad_tools = ToolchainEnv {
+            sysroot: fake_rust_sys.clone(),
+            lean: fake_lean_run.clone(),
+            lean_bin_dir: prefix.join("bin"),
+            cli: None,
+            capture: Some(fake_cap.clone()),
+            auditor: None,
+            has_ndjson_quorum_tools: false,
+        };
+        let err_prep_tmp = LeanSession::prepare_at(
+            &base,
+            &bad_tools,
+            &base.join("lean-cache"),
+            &caller_cwd,
+            Some(OsStr::new("../outside")),
+        )
+        .unwrap_err();
+        assert!(err_prep_tmp.contains("TMPDIR"), "{err_prep_tmp}");
+        assert!(!lean_tmp_log.exists(), "lean must not run with bad TMPDIR");
+
+        let child_path = crate::rustc_runner::build_child_path_with_bins(
+            &[&prefix.join("bin")],
+            None,
+            &fake_store,
+            &trusted_child_dirs,
+            None,
+            &caller_cwd,
+        )
+        .unwrap();
+        let session = LeanSession {
+            anneal_root: base.clone(),
+            capture_bin: fake_cap,
+            rust_sysroot: fake_rust_sys,
+            lean_bin: fake_lean_run,
+            olean_paths: vec![base.clone()],
+            prebuilt_overlay: "none".to_owned(),
+            ld_library_path: String::new(),
+            child_path: child_path.clone(),
+            lean_ld_library_path: prefix.join("lib/lean").to_string_lossy().into_owned(),
+            lean_child_path: child_path,
+            validated_tmpdir: Some(rel_tmp.clone()),
+            _rust_sysroot_staging: None,
+            _capture_staging: None,
+            _lean_lib_staging: None,
+            _lean_stdlib_staging: None,
+            _lean_dag_staging: None,
+        };
+        let prog = crate::r#gen::GenProgram {
+            case_id: "c0".to_owned(),
+            fn_name: "fuzz_ok".to_owned(),
+            master_seed: 1,
+            case_index: 0,
+            category: crate::r#gen::GenCategory::SafeAdmitted,
+            is_unsafe: false,
+            params: vec![],
+            locals: vec![],
+            body: vec![],
+            ret_ty: crate::r#gen::GenType::Int(IntKind::U32),
+            ret_expr: crate::r#gen::GenExpr::Lit(MirValue::Int { int_kind: IntKind::U32, bits: 7 }),
+            fuel: 100,
+        };
+        let res = session
+            .capture_and_evaluate_fuzz_batch(&base.join("group_tmp"), "tmp_mod", &[&prog])
+            .expect("capture and lean eval must succeed with anchored TMPDIR");
+        assert_eq!(
+            res["c0"].outcome,
+            ObservedOutcome::Returned { value: MirValue::Int { int_kind: IntKind::U32, bits: 7 } }
+        );
+        assert_eq!(fs::read_to_string(&cap_tmp_log).unwrap().trim(), rel_tmp.display().to_string());
+        let lean_tmps = fs::read_to_string(&lean_tmp_log).unwrap();
+        assert_eq!(lean_tmps.lines().count(), 2, "{lean_tmps}");
+        assert!(lean_tmps.lines().all(|l| l == rel_tmp.display().to_string()), "{lean_tmps}");
+    }
+
+    #[cfg(unix)]
+    #[test]
+    fn lean_session_prepare_stages_non_store_lean_and_capture_against_post_prepare_tamper() {
+        use std::os::unix::fs::{MetadataExt as _, PermissionsExt as _};
+
+        let tmp = tempfile::tempdir().unwrap();
+        let base = fs::canonicalize(tmp.path()).unwrap();
+        let anneal_root = base.join("anneal");
+        let tc = base.join("writable-lean-tc");
+        let rust_sys = base.join("rust-sys");
+        for d in [tc.join("bin"), tc.join("lib/lean"), rust_sys.join("bin"), rust_sys.join("lib")] {
+            fs::create_dir_all(d).unwrap();
+        }
+        for spec in MIR_TOTAL_DAG {
+            let rel_mod = spec.module.replace('.', "/");
+            let lean_src = anneal_root.join(spec.rel_tree).join(format!("{rel_mod}.lean"));
+            fs::create_dir_all(lean_src.parent().unwrap()).unwrap();
+            fs::write(&lean_src, "-- stub\n").unwrap();
+        }
+        fs::write(rust_sys.join("bin/rustc"), "#!/bin/sh\nexit 0\n").unwrap();
+        fs::set_permissions(rust_sys.join("bin/rustc"), fs::Permissions::from_mode(0o755)).unwrap();
+        fs::write(tc.join("lib/lean/Init.olean"), b"init").unwrap();
+        fs::write(tc.join("lib/libleanshared.so"), b"lean-so").unwrap();
+
+        let cap_bin = base.join("writable-capture");
+        let cap_script = "#!/bin/sh\nset -eu\n\
+             outdir=\"\"\nwhile [ \"$#\" -gt 0 ]; do\n\
+               case \"$1\" in --out-dir) outdir=\"$2\"; shift 2 ;; *) shift ;; esac\n\
+             done\n\
+             mkdir -p \"$outdir\"\n\
+             echo '-- stub' > \"$outdir/Captured.lean\"\n\
+             echo '{\"program\":{\"bodies\":[{\"identity\":\"rust-path-v1::fuzz_ok\",\"arg_count\":0,\"local_tys\":[\"u32\"],\"blocks\":[{\"statements\":[],\"terminator\":{\"kind\":\"return\"}}]}]}}' > \"$outdir/capture.json\"\n\
+             printf '{\"status\":\"captured\",\"capture\":\"%s/capture.json\",\"lean\":\"%s/Captured.lean\"}\\n' \"$outdir\" \"$outdir\"\n";
+        fs::write(&cap_bin, cap_script).unwrap();
+        fs::set_permissions(&cap_bin, fs::Permissions::from_mode(0o755)).unwrap();
+
+        let lean_bin = tc.join("bin/lean");
+        let lean_script = "#!/bin/sh\nset -eu\n\
+             if [ \"${1:-}\" = \"--print-prefix\" ]; then\n\
+               bin_dir=$(cd \"$(dirname \"$0\")\" && pwd -P)\n\
+               dirname \"$bin_dir\"\n\
+               exit 0\n\
+             fi\n\
+             out=\"\"\n\
+             while [ \"$#\" -gt 0 ]; do\n\
+               case \"$1\" in\n\
+                 -o) out=\"$2\"; shift 2 ;;\n\
+                 -R|-D) shift 2 ;;\n\
+                 *) shift ;;\n\
+               esac\n\
+             done\n\
+             if [ -n \"$out\" ]; then mkdir -p \"$(dirname \"$out\")\"; : > \"$out\"; exit 0; fi\n\
+             echo '\"ANNEAL_LEAN_CASE:c0:BODY|0|rust-path-v1::fuzz_ok|MR0:RETURNED:INT:i32:u:7\"'\n";
+        fs::write(&lean_bin, lean_script).unwrap();
+        fs::set_permissions(&lean_bin, fs::Permissions::from_mode(0o755)).unwrap();
+
+        let tools = ToolchainEnv {
+            sysroot: rust_sys,
+            lean: lean_bin.clone(),
+            lean_bin_dir: tc.join("bin"),
+            cli: None,
+            capture: Some(cap_bin.clone()),
+            auditor: None,
+            has_ndjson_quorum_tools: false,
+        };
+        let session =
+            LeanSession::prepare_at(&anneal_root, &tools, &base.join("lean-cache"), &base, None)
+                .expect("LeanSession::prepare_at must succeed on clean writable Lean toolchain");
+
+        assert_ne!(session.lean_bin, lean_bin);
+        assert_ne!(session.capture_bin, cap_bin);
+        assert!(session._lean_dag_staging.is_some());
+        assert_ne!(session.olean_paths[0], base.join("lean-cache"));
+        assert_eq!(
+            fs::symlink_metadata(&session.olean_paths[0]).unwrap().permissions().mode() & 0o777,
+            0o555
+        );
+        for staged in [&session.lean_bin, &session.capture_bin] {
+            let meta = fs::symlink_metadata(staged).unwrap();
+            assert!(!meta.file_type().is_symlink());
+            assert_eq!(meta.nlink(), 1);
+            assert_eq!(meta.permissions().mode() & 0o777, 0o555);
+            assert_eq!(
+                fs::symlink_metadata(staged.parent().unwrap()).unwrap().permissions().mode()
+                    & 0o777,
+                0o555
+            );
+        }
+        let lean_path_dirs: Vec<PathBuf> = env::split_paths(&session.lean_child_path).collect();
+        assert!(lean_path_dirs.contains(&session.lean_bin.parent().unwrap().to_path_buf()));
+        assert!(!lean_path_dirs.contains(&tc.join("bin")));
+        assert_eq!(
+            session.olean_paths.last().map(PathBuf::as_path),
+            Some(session.lean_bin.parent().unwrap().parent().unwrap().join("lib/lean").as_path())
+        );
+
+        // Overwrite original `lean_bin` and `capture_bin` after prepare:
+        // session must keep executing the frozen immutable staged copies.
+        fs::write(&lean_bin, "#!/bin/sh\necho TAMPERED_LEAN >&2\nexit 99\n").unwrap();
+        fs::write(&cap_bin, "#!/bin/sh\necho TAMPERED_CAP >&2\nexit 99\n").unwrap();
+        let prog = crate::r#gen::GenProgram {
+            case_id: "c0".to_owned(),
+            fn_name: "fuzz_ok".to_owned(),
+            master_seed: 1,
+            case_index: 0,
+            category: crate::r#gen::GenCategory::SafeAdmitted,
+            is_unsafe: false,
+            params: vec![],
+            locals: vec![],
+            body: vec![],
+            ret_ty: crate::r#gen::GenType::Int(IntKind::U32),
+            ret_expr: crate::r#gen::GenExpr::Lit(MirValue::Int { int_kind: IntKind::U32, bits: 7 }),
+            fuel: 100,
+        };
+        let res = session
+            .capture_and_evaluate_fuzz_batch(&base.join("group_tmp"), "tmp_mod", &[&prog])
+            .expect("staged lean and capture binaries must resist post-prepare source tamper");
+        assert_eq!(
+            res["c0"].outcome,
+            ObservedOutcome::Returned { value: MirValue::Int { int_kind: IntKind::U32, bits: 7 } }
+        );
     }
 }

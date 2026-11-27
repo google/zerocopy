@@ -7,7 +7,7 @@
 // those terms.
 
 //! Verdict algebra, canonical MIR value representation, and red-flag guards
-//! for the Stage-1 multi-leg differential oracle.
+//! for the Stage-1 and Stage-2 multi-leg differential oracle.
 
 use std::fmt;
 
@@ -172,14 +172,18 @@ impl IntKind {
 
     /// Format a valid Rust literal expression with explicit type suffix.
     pub fn format_rust_literal(self, bits: u128) -> String {
-        if self == Self::I128 && self.to_signed_i128(bits) == i128::MIN {
-            return "i128::MIN".to_owned();
-        }
-        if self == Self::I64 && self.to_signed_i128(bits) == i64::MIN as i128 {
-            return "i64::MIN".to_owned();
-        }
         if self.is_signed() {
-            format!("({}{})", self.to_signed_i128(bits), self.rust_name())
+            let signed = self.to_signed_i128(bits);
+            match self {
+                Self::I8 if signed == i8::MIN as i128 => return "i8::MIN".to_owned(),
+                Self::I16 if signed == i16::MIN as i128 => return "i16::MIN".to_owned(),
+                Self::I32 if signed == i32::MIN as i128 => return "i32::MIN".to_owned(),
+                Self::I64 if signed == i64::MIN as i128 => return "i64::MIN".to_owned(),
+                Self::I128 if signed == i128::MIN => return "i128::MIN".to_owned(),
+                Self::Isize if signed == i64::MIN as i128 => return "isize::MIN".to_owned(),
+                _ => {}
+            }
+            format!("({signed}{})", self.rust_name())
         } else {
             format!("{}{}", bits & self.mask(), self.rust_name())
         }
@@ -310,6 +314,7 @@ pub enum ObservedOutcome {
     UndefinedBehavior { detail: String },
     InitUnsupported { detail: String },
     Unsupported { detail: String },
+    Unwound { detail: String },
     AbnormalAbort { detail: String },
     Panic { detail: String },
     OutOfFuel { detail: String },
@@ -396,7 +401,7 @@ impl Verdict {
 ///   over optional Leg 3 (`mir_eval`) comparisons so secondary Leg 3
 ///   disagreements never mask a missed UB/fault or value mismatch in Lean.
 /// - Any `Returned` value from Lean when Miri observed `UndefinedBehavior`,
-///   `AbnormalAbort`, or `Panic` is classified as
+///   `AbnormalAbort`, `Panic`, or `Unwound` is classified as
 ///   [`Verdict::UnsoundMissedFault`].
 /// - Once Miri and Lean agree on an admissible primary verdict, any present
 ///   Leg 3 (`mir_eval`) tool error, fuel exhaustion, or outcome discrepancy
@@ -432,7 +437,8 @@ pub fn evaluate_case(
         ObservedOutcome::Returned { value: lean_val } => match miri {
             ObservedOutcome::UndefinedBehavior { .. }
             | ObservedOutcome::AbnormalAbort { .. }
-            | ObservedOutcome::Panic { .. } => Verdict::UnsoundMissedFault {
+            | ObservedOutcome::Panic { .. }
+            | ObservedOutcome::Unwound { .. } => Verdict::UnsoundMissedFault {
                 miri: Box::new(miri.clone()),
                 lean: Box::new(lean.clone()),
             },
@@ -506,6 +512,7 @@ pub fn evaluate_case(
                     | ObservedOutcome::UndefinedBehavior { .. }
                     | ObservedOutcome::AbnormalAbort { .. }
                     | ObservedOutcome::Panic { .. }
+                    | ObservedOutcome::Unwound { .. }
                     | ObservedOutcome::Unsupported { .. } => {
                         if let Some(pin) = expected_miri
                             && !pin.matches_outcome(miri)
@@ -534,13 +541,13 @@ pub fn evaluate_case(
                 }
             }
         }
-        ObservedOutcome::AbnormalAbort { detail } | ObservedOutcome::Panic { detail } => {
-            Verdict::LegDivergence {
-                detail: format!(
-                    "unexpected unwind outcome (expected={expected:?}, lean={detail}, miri={miri:?})"
-                ),
-            }
-        }
+        ObservedOutcome::AbnormalAbort { detail }
+        | ObservedOutcome::Panic { detail }
+        | ObservedOutcome::Unwound { detail } => Verdict::LegDivergence {
+            detail: format!(
+                "unexpected unwind outcome (expected={expected:?}, lean={detail}, miri={miri:?})"
+            ),
+        },
         other => {
             Verdict::LegDivergence { detail: format!("unexpected Lean outcome state: {other:?}") }
         }
@@ -572,7 +579,7 @@ pub fn evaluate_case(
     primary
 }
 
-fn outcomes_agree_mir(lean: &ObservedOutcome, mir_eval: &ObservedOutcome) -> bool {
+pub(crate) fn outcomes_agree_mir(lean: &ObservedOutcome, mir_eval: &ObservedOutcome) -> bool {
     match (lean, mir_eval) {
         (ObservedOutcome::Returned { value: a }, ObservedOutcome::Returned { value: b }) => a == b,
         (ObservedOutcome::UndefinedBehavior { .. }, ObservedOutcome::UndefinedBehavior { .. }) => {
@@ -583,10 +590,12 @@ fn outcomes_agree_mir(lean: &ObservedOutcome, mir_eval: &ObservedOutcome) -> boo
         // passing `evaluate_case` later (step 3 rejects it unconditionally).
         (ObservedOutcome::InitUnsupported { .. }, ObservedOutcome::Unsupported { .. })
         | (ObservedOutcome::Unsupported { .. }, ObservedOutcome::Unsupported { .. }) => true,
+        (ObservedOutcome::OutOfFuel { .. }, ObservedOutcome::OutOfFuel { .. }) => true,
         (
-            ObservedOutcome::AbnormalAbort { .. } | ObservedOutcome::Panic { .. },
-            ObservedOutcome::AbnormalAbort { .. } | ObservedOutcome::Panic { .. },
+            ObservedOutcome::Unwound { .. } | ObservedOutcome::Panic { .. },
+            ObservedOutcome::Unwound { .. } | ObservedOutcome::Panic { .. },
         ) => true,
+        (ObservedOutcome::AbnormalAbort { .. }, ObservedOutcome::AbnormalAbort { .. }) => true,
         _ => false,
     }
 }
@@ -704,6 +713,462 @@ impl SuiteMetrics {
         checks_passed += 1;
         Ok(checks_passed)
     }
+}
+
+/// Canonical terminal execution outcome shared across Leg 0 (`rustc`), Leg 1
+/// (Miri), Leg 2 (Lean `MirSemantics`), and optional Leg 3 (`anneal-mir-eval`).
+#[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(tag = "kind", rename_all = "snake_case")]
+pub enum TerminalOutcome {
+    Returned { value: MirValue },
+    Unwound { detail: String },
+    Aborted { detail: String },
+    UndefinedBehavior { detail: String },
+    Unsupported { detail: String },
+    OutOfFuel { detail: String },
+}
+
+impl ObservedOutcome {
+    /// Project an [`ObservedOutcome`] onto its canonical [`TerminalOutcome`],
+    /// returning `Err(detail)` for infrastructure
+    /// [`ObservedOutcome::ToolError`].
+    pub fn to_terminal_outcome(&self) -> Result<TerminalOutcome, String> {
+        match self {
+            Self::Returned { value } => Ok(TerminalOutcome::Returned { value: value.clone() }),
+            Self::Panic { detail } | Self::Unwound { detail } => {
+                Ok(TerminalOutcome::Unwound { detail: detail.clone() })
+            }
+            Self::AbnormalAbort { detail } => {
+                Ok(TerminalOutcome::Aborted { detail: detail.clone() })
+            }
+            Self::UndefinedBehavior { detail } => {
+                Ok(TerminalOutcome::UndefinedBehavior { detail: detail.clone() })
+            }
+            Self::Unsupported { detail } | Self::InitUnsupported { detail } => {
+                Ok(TerminalOutcome::Unsupported { detail: detail.clone() })
+            }
+            Self::OutOfFuel { detail } => Ok(TerminalOutcome::OutOfFuel { detail: detail.clone() }),
+            Self::ToolError { detail } => Err(detail.clone()),
+        }
+    }
+}
+
+/// Four-way Stage-2 differential oracle agreement / failure classification.
+#[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord, Hash, Serialize, Deserialize)]
+#[serde(rename_all = "snake_case")]
+pub enum OracleAgreementClass {
+    /// Authority (Miri + compiled `rustc` on UB-free cases) and Lean agree on
+    /// the exact [`TerminalOutcome`], including `UB == UB` and
+    /// `Unwound == Unwound`.
+    BiFaultEquivAgreement,
+    /// Authority completes or faults while Lean conservatively faults
+    /// (`Unsupported`, `OutOfFuel`, or false-positive `UndefinedBehavior`).
+    /// Preserves universal forward-simulation safety (`WellFormed` soundness)
+    /// but does NOT certify existential UB refutation / bi-fault equivalence.
+    ConservativeOverApproxForwardSimOnly,
+    /// P0 hard soundness failure: authority faults (UB/panic/abort) or returns
+    /// `v1`, while Lean accepts or returns `v2 != v1` (or mismatches unwind vs
+    /// abort/return). Never suppressible as a disclosed gap.
+    UnsoundAcceptCritical,
+    /// Hard authority/infrastructure failure: compiled `rustc` disagrees with
+    /// Miri on a UB-free case, optional `anneal-mir-eval` disagrees with Lean
+    /// on an admitted case, `initStateBy` rejects a captured body, or an oracle
+    /// leg hit a tool error.
+    AuthorityDisagreement,
+}
+
+impl OracleAgreementClass {
+    /// Whether this class is a hard failure that must fail CI and trigger
+    /// counterexample shrinking.
+    pub const fn is_hard_failure(self) -> bool {
+        matches!(self, Self::UnsoundAcceptCritical | Self::AuthorityDisagreement)
+    }
+
+    pub const fn as_str(self) -> &'static str {
+        match self {
+            Self::BiFaultEquivAgreement => "bi_fault_equiv_agreement",
+            Self::ConservativeOverApproxForwardSimOnly => {
+                "conservative_over_approx_forward_sim_only"
+            }
+            Self::UnsoundAcceptCritical => "unsound_accept_critical",
+            Self::AuthorityDisagreement => "authority_disagreement",
+        }
+    }
+}
+
+/// Explicit model/scope boundary classification for conservative gaps.
+#[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord, Hash, Serialize, Deserialize)]
+#[serde(rename_all = "snake_case")]
+pub enum DisclosedGapKind {
+    SelectedUnitScope,
+    CallerRawPtrAliasing,
+    UnbridgedSemantics,
+    FuelExhausted,
+}
+
+impl DisclosedGapKind {
+    pub const fn as_str(self) -> &'static str {
+        match self {
+            Self::SelectedUnitScope => "selected_unit_scope",
+            Self::CallerRawPtrAliasing => "caller_raw_ptr_aliasing",
+            Self::UnbridgedSemantics => "unbridged_semantics",
+            Self::FuelExhausted => "fuel_exhausted",
+        }
+    }
+}
+
+/// Result of cross-checking Leg 0 compiled host `rustc` against Leg 1 Miri.
+#[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(tag = "status", rename_all = "snake_case")]
+pub enum RustcCheckStatus {
+    NotRun,
+    Agreed,
+    /// Strict UB authority rule: Miri observed UB, so compiled host `rustc`
+    /// output is informational only and never treated as an authority conflict.
+    IgnoredDueToMiriUb,
+    Disagreement {
+        detail: String,
+    },
+}
+
+/// Full Stage-2 multi-leg evaluation result for a single generated case.
+#[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize)]
+pub struct FuzzCaseEvaluation {
+    pub agreement: OracleAgreementClass,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub disclosed_gap: Option<DisclosedGapKind>,
+    pub rustc_status: RustcCheckStatus,
+    #[serde(default)]
+    pub is_spurious_lean_ub: bool,
+    pub detail: String,
+}
+
+impl FuzzCaseEvaluation {
+    /// Whether this case violates zero-tolerance gates
+    /// (`UnsoundAcceptCritical`, `AuthorityDisagreement`, or spurious Lean UB
+    /// on UB-free execution) and must fail CI and trigger counterexample
+    /// shrinking.
+    pub const fn is_shrinkable_failure(&self) -> bool {
+        self.agreement.is_hard_failure() || self.is_spurious_lean_ub
+    }
+}
+
+fn check_rustc_against_miri(
+    miri: &ObservedOutcome,
+    rustc: Option<&ObservedOutcome>,
+    rustc_leg_active: bool,
+) -> RustcCheckStatus {
+    if matches!(miri, ObservedOutcome::UndefinedBehavior { .. })
+        && (rustc_leg_active || rustc.is_some())
+    {
+        return RustcCheckStatus::IgnoredDueToMiriUb;
+    }
+    let Some(rustc_out) = rustc else {
+        return RustcCheckStatus::NotRun;
+    };
+    let miri_term = match miri.to_terminal_outcome() {
+        Ok(t) => t,
+        Err(detail) => {
+            return RustcCheckStatus::Disagreement {
+                detail: format!("cannot compare rustc against Miri tool error: {detail}"),
+            };
+        }
+    };
+    let rustc_term = match rustc_out.to_terminal_outcome() {
+        Ok(t) => t,
+        Err(detail) => {
+            return RustcCheckStatus::Disagreement {
+                detail: format!("compiled rustc tool error on UB-free case: {detail}"),
+            };
+        }
+    };
+    match (&miri_term, &rustc_term) {
+        (TerminalOutcome::Returned { value: m }, TerminalOutcome::Returned { value: r }) => {
+            if m == r {
+                RustcCheckStatus::Agreed
+            } else {
+                RustcCheckStatus::Disagreement {
+                    detail: format!(
+                        "compiled rustc returned {r} while Miri returned {m} on UB-free case"
+                    ),
+                }
+            }
+        }
+        (TerminalOutcome::Unwound { .. }, TerminalOutcome::Unwound { .. })
+        | (TerminalOutcome::Aborted { .. }, TerminalOutcome::Aborted { .. }) => {
+            RustcCheckStatus::Agreed
+        }
+        _ => RustcCheckStatus::Disagreement {
+            detail: format!(
+                "compiled rustc outcome {rustc_term:?} disagreed with Miri {miri_term:?} on UB-free case"
+            ),
+        },
+    }
+}
+
+/// Evaluate a Stage-2 fuzz case across Leg 0 (`rustc`), Leg 1 (`miri`),
+/// Leg 2 (captured Lean `StepCore`), and optional Leg 3 (`anneal-mir-eval`).
+pub fn evaluate_fuzz_case(
+    miri: &ObservedOutcome,
+    lean: &ObservedOutcome,
+    rustc: Option<&ObservedOutcome>,
+    mir_eval: Option<&ObservedOutcome>,
+    capture_rejected: Option<&str>,
+) -> FuzzCaseEvaluation {
+    evaluate_fuzz_case_with_rustc_leg(miri, lean, rustc, mir_eval, capture_rejected, false)
+}
+
+/// Variant of [`evaluate_fuzz_case`] aware of whether Leg 0 (`rustc`) is
+/// enabled for the campaign so Miri-established UB skipped before host
+/// execution records [`RustcCheckStatus::IgnoredDueToMiriUb`].
+pub fn evaluate_fuzz_case_with_rustc_leg(
+    miri: &ObservedOutcome,
+    lean: &ObservedOutcome,
+    rustc: Option<&ObservedOutcome>,
+    mir_eval: Option<&ObservedOutcome>,
+    capture_rejected: Option<&str>,
+    rustc_leg_active: bool,
+) -> FuzzCaseEvaluation {
+    let rustc_status = check_rustc_against_miri(miri, rustc, rustc_leg_active);
+
+    let miri_term = match miri.to_terminal_outcome() {
+        Ok(t) => t,
+        Err(detail) => {
+            return FuzzCaseEvaluation {
+                agreement: OracleAgreementClass::AuthorityDisagreement,
+                disclosed_gap: None,
+                rustc_status,
+                is_spurious_lean_ub: false,
+                detail: format!("Miri tool error: {detail}"),
+            };
+        }
+    };
+
+    if let RustcCheckStatus::Disagreement { detail } = &rustc_status {
+        return FuzzCaseEvaluation {
+            agreement: OracleAgreementClass::AuthorityDisagreement,
+            disclosed_gap: None,
+            rustc_status: rustc_status.clone(),
+            is_spurious_lean_ub: false,
+            detail: detail.clone(),
+        };
+    }
+
+    if let TerminalOutcome::Unsupported { detail } | TerminalOutcome::OutOfFuel { detail } =
+        &miri_term
+    {
+        return FuzzCaseEvaluation {
+            agreement: OracleAgreementClass::AuthorityDisagreement,
+            disclosed_gap: None,
+            rustc_status,
+            is_spurious_lean_ub: false,
+            detail: format!("Miri authority could not evaluate case: {detail}"),
+        };
+    }
+
+    if let Some(cap_err) = capture_rejected {
+        return FuzzCaseEvaluation {
+            agreement: OracleAgreementClass::ConservativeOverApproxForwardSimOnly,
+            disclosed_gap: Some(DisclosedGapKind::UnbridgedSemantics),
+            rustc_status,
+            is_spurious_lean_ub: false,
+            detail: format!("capture refused candidate fail-closed: {cap_err}"),
+        };
+    }
+
+    if let ObservedOutcome::InitUnsupported { detail } = lean {
+        return FuzzCaseEvaluation {
+            agreement: OracleAgreementClass::AuthorityDisagreement,
+            disclosed_gap: None,
+            rustc_status,
+            is_spurious_lean_ub: false,
+            detail: format!("Lean initStateBy rejected captured body before stepping: {detail}"),
+        };
+    }
+
+    let lean_term = match lean.to_terminal_outcome() {
+        Ok(t) => t,
+        Err(detail) => {
+            return FuzzCaseEvaluation {
+                agreement: OracleAgreementClass::AuthorityDisagreement,
+                disclosed_gap: None,
+                rustc_status,
+                is_spurious_lean_ub: false,
+                detail: format!("Lean tool error: {detail}"),
+            };
+        }
+    };
+
+    let primary = match (&miri_term, &lean_term) {
+        (TerminalOutcome::Returned { value: mv }, TerminalOutcome::Returned { value: lv }) => {
+            if mv == lv {
+                FuzzCaseEvaluation {
+                    agreement: OracleAgreementClass::BiFaultEquivAgreement,
+                    disclosed_gap: None,
+                    rustc_status: rustc_status.clone(),
+                    is_spurious_lean_ub: false,
+                    detail: format!("exact value agreement: {mv}"),
+                }
+            } else {
+                FuzzCaseEvaluation {
+                    agreement: OracleAgreementClass::UnsoundAcceptCritical,
+                    disclosed_gap: None,
+                    rustc_status: rustc_status.clone(),
+                    is_spurious_lean_ub: false,
+                    detail: format!("value mismatch: Miri returned {mv}, Lean returned {lv}"),
+                }
+            }
+        }
+        (
+            TerminalOutcome::UndefinedBehavior { detail: md },
+            TerminalOutcome::UndefinedBehavior { detail: ld },
+        ) => FuzzCaseEvaluation {
+            agreement: OracleAgreementClass::BiFaultEquivAgreement,
+            disclosed_gap: None,
+            rustc_status: rustc_status.clone(),
+            is_spurious_lean_ub: false,
+            detail: format!("exact UB agreement: miri={md}; lean={ld}"),
+        },
+        (TerminalOutcome::Unwound { detail: md }, TerminalOutcome::Unwound { detail: ld }) => {
+            FuzzCaseEvaluation {
+                agreement: OracleAgreementClass::BiFaultEquivAgreement,
+                disclosed_gap: None,
+                rustc_status: rustc_status.clone(),
+                is_spurious_lean_ub: false,
+                detail: format!("exact unwind agreement: miri={md}; lean={ld}"),
+            }
+        }
+        (TerminalOutcome::Aborted { detail: md }, TerminalOutcome::Aborted { detail: ld }) => {
+            FuzzCaseEvaluation {
+                agreement: OracleAgreementClass::BiFaultEquivAgreement,
+                disclosed_gap: None,
+                rustc_status: rustc_status.clone(),
+                is_spurious_lean_ub: false,
+                detail: format!("exact abort agreement: miri={md}; lean={ld}"),
+            }
+        }
+        (
+            TerminalOutcome::UndefinedBehavior { detail: md },
+            TerminalOutcome::Returned { value: lv },
+        ) => FuzzCaseEvaluation {
+            agreement: OracleAgreementClass::UnsoundAcceptCritical,
+            disclosed_gap: None,
+            rustc_status: rustc_status.clone(),
+            is_spurious_lean_ub: false,
+            detail: format!("P0 unsound missed UB: Miri hit UB ({md}), Lean returned {lv}"),
+        },
+        (
+            TerminalOutcome::UndefinedBehavior { detail: md },
+            TerminalOutcome::Unwound { detail: ld } | TerminalOutcome::Aborted { detail: ld },
+        ) => FuzzCaseEvaluation {
+            agreement: OracleAgreementClass::UnsoundAcceptCritical,
+            disclosed_gap: None,
+            rustc_status: rustc_status.clone(),
+            is_spurious_lean_ub: false,
+            detail: format!(
+                "P0 unsound missed UB: Miri hit UB ({md}), Lean claimed non-UB termination ({ld})"
+            ),
+        },
+        (
+            TerminalOutcome::Unwound { detail: md } | TerminalOutcome::Aborted { detail: md },
+            TerminalOutcome::Returned { value: lv },
+        ) => FuzzCaseEvaluation {
+            agreement: OracleAgreementClass::UnsoundAcceptCritical,
+            disclosed_gap: None,
+            rustc_status: rustc_status.clone(),
+            is_spurious_lean_ub: false,
+            detail: format!("P0 unsound missed fault: Miri faulted ({md}), Lean returned {lv}"),
+        },
+        (TerminalOutcome::Unwound { detail: md }, TerminalOutcome::Aborted { detail: ld })
+        | (TerminalOutcome::Aborted { detail: md }, TerminalOutcome::Unwound { detail: ld }) => {
+            FuzzCaseEvaluation {
+                agreement: OracleAgreementClass::UnsoundAcceptCritical,
+                disclosed_gap: None,
+                rustc_status: rustc_status.clone(),
+                is_spurious_lean_ub: false,
+                detail: format!("P0 unwind/abort mismatch: Miri ({md}) disagreed with Lean ({ld})"),
+            }
+        }
+        (
+            TerminalOutcome::Returned { value: mv },
+            TerminalOutcome::Unwound { detail: ld } | TerminalOutcome::Aborted { detail: ld },
+        ) => FuzzCaseEvaluation {
+            agreement: OracleAgreementClass::UnsoundAcceptCritical,
+            disclosed_gap: None,
+            rustc_status: rustc_status.clone(),
+            is_spurious_lean_ub: false,
+            detail: format!(
+                "P0 spurious unwind/abort: Miri returned {mv}, Lean claimed termination ({ld})"
+            ),
+        },
+        (TerminalOutcome::Unsupported { detail } | TerminalOutcome::OutOfFuel { detail }, _) => {
+            FuzzCaseEvaluation {
+                agreement: OracleAgreementClass::AuthorityDisagreement,
+                disclosed_gap: None,
+                rustc_status: rustc_status.clone(),
+                is_spurious_lean_ub: false,
+                detail: format!("Miri authority could not evaluate case: {detail}"),
+            }
+        }
+        (_, TerminalOutcome::OutOfFuel { detail }) => FuzzCaseEvaluation {
+            agreement: OracleAgreementClass::ConservativeOverApproxForwardSimOnly,
+            disclosed_gap: Some(DisclosedGapKind::FuelExhausted),
+            rustc_status: rustc_status.clone(),
+            is_spurious_lean_ub: false,
+            detail: format!("Lean out of fuel (forward-sim safe only): {detail}"),
+        },
+        (_, TerminalOutcome::Unsupported { detail }) => FuzzCaseEvaluation {
+            agreement: OracleAgreementClass::ConservativeOverApproxForwardSimOnly,
+            disclosed_gap: Some(DisclosedGapKind::UnbridgedSemantics),
+            rustc_status: rustc_status.clone(),
+            is_spurious_lean_ub: false,
+            detail: format!("Lean conservative .unsupported (forward-sim safe only): {detail}"),
+        },
+        (
+            TerminalOutcome::Returned { .. }
+            | TerminalOutcome::Unwound { .. }
+            | TerminalOutcome::Aborted { .. },
+            TerminalOutcome::UndefinedBehavior { detail },
+        ) => FuzzCaseEvaluation {
+            agreement: OracleAgreementClass::ConservativeOverApproxForwardSimOnly,
+            disclosed_gap: None,
+            rustc_status: rustc_status.clone(),
+            is_spurious_lean_ub: true,
+            detail: format!("spurious Lean UB on UB-free authority execution: {detail}"),
+        },
+    };
+
+    // Primary Miri-vs-Lean failures (`UnsoundAcceptCritical` and spurious Lean
+    // UB) always take precedence over secondary Leg 3 (`anneal-mir-eval`) so a
+    // P0 soundness defect is never downgraded to `AuthorityDisagreement`.
+    if primary.is_shrinkable_failure() {
+        return primary;
+    }
+
+    if let Some(eval_out) = mir_eval {
+        if let ObservedOutcome::ToolError { detail } = eval_out {
+            return FuzzCaseEvaluation {
+                agreement: OracleAgreementClass::AuthorityDisagreement,
+                disclosed_gap: None,
+                rustc_status,
+                is_spurious_lean_ub: false,
+                detail: format!("anneal-mir-eval tool error: {detail}"),
+            };
+        }
+        if !outcomes_agree_mir(lean, eval_out) {
+            return FuzzCaseEvaluation {
+                agreement: OracleAgreementClass::AuthorityDisagreement,
+                disclosed_gap: None,
+                rustc_status,
+                is_spurious_lean_ub: false,
+                detail: format!(
+                    "Leg 2 (Lean) and Leg 3 (anneal-mir-eval) disagreed: lean={lean:?}, mir_eval={eval_out:?}"
+                ),
+            };
+        }
+    }
+
+    primary
 }
 
 #[cfg(test)]
@@ -962,6 +1427,175 @@ mod tests {
             IntKind::I32.format_decimal(IntKind::I32.parse_decimal_bits("-2147483648").unwrap()),
             "-2147483648"
         );
+        assert_eq!(IntKind::Isize.format_rust_literal((i64::MIN as u64) as u128), "isize::MIN");
+    }
+
+    #[test]
+    fn stage2_fuzz_agreement_taxonomy_and_rustc_ub_authority_rule() {
+        let eq = evaluate_fuzz_case(&ret_u32(9), &ret_u32(9), Some(&ret_u32(9)), None, None);
+        assert_eq!(eq.agreement, OracleAgreementClass::BiFaultEquivAgreement);
+        assert_eq!(eq.rustc_status, RustcCheckStatus::Agreed);
+        assert!(eq.disclosed_gap.is_none());
+
+        // Strict UB authority rule: Miri UB yields `IgnoredDueToMiriUb` when
+        // Leg 0 is active or pre-populated; disabling Leg 0 keeps `NotRun`.
+        let ub_skipped = evaluate_fuzz_case_with_rustc_leg(
+            &ObservedOutcome::UndefinedBehavior { detail: "div by zero".to_owned() },
+            &ObservedOutcome::UndefinedBehavior { detail: "undefined".to_owned() },
+            None,
+            None,
+            None,
+            true,
+        );
+        assert_eq!(ub_skipped.agreement, OracleAgreementClass::BiFaultEquivAgreement);
+        assert_eq!(ub_skipped.rustc_status, RustcCheckStatus::IgnoredDueToMiriUb);
+        assert!(!ub_skipped.is_spurious_lean_ub);
+
+        let ub_disabled = evaluate_fuzz_case(
+            &ObservedOutcome::UndefinedBehavior { detail: "div by zero".to_owned() },
+            &ObservedOutcome::UndefinedBehavior { detail: "undefined".to_owned() },
+            None,
+            None,
+            None,
+        );
+        assert_eq!(ub_disabled.rustc_status, RustcCheckStatus::NotRun);
+
+        let ub_ok = evaluate_fuzz_case(
+            &ObservedOutcome::UndefinedBehavior { detail: "div by zero".to_owned() },
+            &ObservedOutcome::UndefinedBehavior { detail: "undefined".to_owned() },
+            Some(&ret_u32(0)),
+            None,
+            None,
+        );
+        assert_eq!(ub_ok.agreement, OracleAgreementClass::BiFaultEquivAgreement);
+        assert_eq!(ub_ok.rustc_status, RustcCheckStatus::IgnoredDueToMiriUb);
+        assert!(!ub_ok.is_spurious_lean_ub);
+
+        // Compiled rustc disagreeing with Miri on a UB-free case is an
+        // AuthorityDisagreement.
+        let auth_disagree =
+            evaluate_fuzz_case(&ret_u32(9), &ret_u32(9), Some(&ret_u32(10)), None, None);
+        assert_eq!(auth_disagree.agreement, OracleAgreementClass::AuthorityDisagreement);
+        assert!(matches!(auth_disagree.rustc_status, RustcCheckStatus::Disagreement { .. }));
+        assert!(auth_disagree.agreement.is_hard_failure());
+
+        // Missed UB is P0 UnsoundAcceptCritical (never suppressible as a gap).
+        let missed_ub = evaluate_fuzz_case(
+            &ObservedOutcome::UndefinedBehavior { detail: "div by zero".to_owned() },
+            &ret_u32(0),
+            Some(&ObservedOutcome::AbnormalAbort { detail: "SIGFPE".to_owned() }),
+            None,
+            None,
+        );
+        assert_eq!(missed_ub.agreement, OracleAgreementClass::UnsoundAcceptCritical);
+        assert!(missed_ub.disclosed_gap.is_none());
+        assert!(missed_ub.agreement.is_hard_failure());
+
+        // Value mismatch is P0 UnsoundAcceptCritical.
+        let val_mismatch =
+            evaluate_fuzz_case(&ret_u32(7), &ret_u32(8), Some(&ret_u32(7)), None, None);
+        assert_eq!(val_mismatch.agreement, OracleAgreementClass::UnsoundAcceptCritical);
+        assert!(val_mismatch.agreement.is_hard_failure());
+
+        // Conservative unsupported / fuel exhaustion preserve forward
+        // simulation only, and Leg 3 OutOfFuel agrees with Lean OutOfFuel.
+        let fuel = evaluate_fuzz_case(
+            &ret_u32(1),
+            &ObservedOutcome::OutOfFuel { detail: "fuel".to_owned() },
+            Some(&ret_u32(1)),
+            Some(&ObservedOutcome::OutOfFuel { detail: "mir-eval fuel".to_owned() }),
+            None,
+        );
+        assert_eq!(fuel.agreement, OracleAgreementClass::ConservativeOverApproxForwardSimOnly);
+        assert_eq!(fuel.disclosed_gap, Some(DisclosedGapKind::FuelExhausted));
+        assert!(!fuel.is_shrinkable_failure());
+
+        // Lean false-positive UB on UB-free Miri execution flags
+        // `is_spurious_lean_ub`, carries no disclosed conservative gap, and
+        // triggers a shrinkable gate failure.
+        let spurious_ub = evaluate_fuzz_case(
+            &ret_u32(1),
+            &ObservedOutcome::UndefinedBehavior { detail: "oversized shift".to_owned() },
+            Some(&ret_u32(1)),
+            None,
+            None,
+        );
+        assert!(spurious_ub.is_spurious_lean_ub);
+        assert!(spurious_ub.disclosed_gap.is_none());
+        assert!(spurious_ub.is_shrinkable_failure());
+
+        // Miri authority `Unsupported` / `OutOfFuel` must be caught before
+        // `capture_rejected` can mask it as conservative.
+        let miri_unsup_masked = evaluate_fuzz_case(
+            &ObservedOutcome::Unsupported { detail: "foreign call".to_owned() },
+            &ObservedOutcome::Unsupported { detail: "capture rejected".to_owned() },
+            None,
+            None,
+            Some("unsupported item"),
+        );
+        assert_eq!(miri_unsup_masked.agreement, OracleAgreementClass::AuthorityDisagreement);
+
+        // Explicit `ObservedOutcome::Unwound` maps cleanly without substring
+        // matching on `AbnormalAbort`.
+        let unwound_agree = evaluate_fuzz_case(
+            &ObservedOutcome::Panic { detail: "panicked".to_owned() },
+            &ObservedOutcome::Unwound { detail: "TerminalOut.unwound".to_owned() },
+            Some(&ObservedOutcome::Panic { detail: "panicked".to_owned() }),
+            Some(&ObservedOutcome::Unwound { detail: "mir-eval unwound".to_owned() }),
+            None,
+        );
+        assert_eq!(unwound_agree.agreement, OracleAgreementClass::BiFaultEquivAgreement);
+
+        let unsup = evaluate_fuzz_case(
+            &ObservedOutcome::AbnormalAbort { detail: "aborted".to_owned() },
+            &ObservedOutcome::Unsupported { detail: "abort call".to_owned() },
+            Some(&ObservedOutcome::AbnormalAbort { detail: "signal 6".to_owned() }),
+            None,
+            None,
+        );
+        assert_eq!(unsup.agreement, OracleAgreementClass::ConservativeOverApproxForwardSimOnly);
+        assert_eq!(unsup.disclosed_gap, Some(DisclosedGapKind::UnbridgedSemantics));
+        assert_eq!(unsup.rustc_status, RustcCheckStatus::Agreed);
+
+        // Leg 3 mir_eval disagreement with Lean triggers AuthorityDisagreement
+        // when the primary Miri-vs-Lean pair agreed.
+        let leg3_div = evaluate_fuzz_case(
+            &ret_u32(7),
+            &ret_u32(7),
+            Some(&ret_u32(7)),
+            Some(&ret_u32(99)),
+            None,
+        );
+        assert_eq!(leg3_div.agreement, OracleAgreementClass::AuthorityDisagreement);
+
+        // Primary Miri-vs-Lean P0 unsoundness (`UnsoundAcceptCritical`) and
+        // `is_spurious_lean_ub` take precedence over Leg 3 (`anneal-mir-eval`).
+        let ub_missed_with_leg3 = evaluate_fuzz_case(
+            &ObservedOutcome::UndefinedBehavior { detail: "dividing by zero".to_owned() },
+            &ret_u32(0),
+            Some(&ret_u32(0)),
+            Some(&ObservedOutcome::UndefinedBehavior { detail: "dividing by zero".to_owned() }),
+            None,
+        );
+        assert_eq!(ub_missed_with_leg3.agreement, OracleAgreementClass::UnsoundAcceptCritical);
+
+        let val_mis_with_leg3 = evaluate_fuzz_case(
+            &ret_u32(7),
+            &ret_u32(8),
+            Some(&ret_u32(7)),
+            Some(&ret_u32(7)),
+            None,
+        );
+        assert_eq!(val_mis_with_leg3.agreement, OracleAgreementClass::UnsoundAcceptCritical);
+
+        let spurious_ub_with_leg3 = evaluate_fuzz_case(
+            &ret_u32(7),
+            &ObservedOutcome::UndefinedBehavior { detail: "overflowing shift".to_owned() },
+            Some(&ret_u32(7)),
+            Some(&ret_u32(7)),
+            None,
+        );
+        assert!(spurious_ub_with_leg3.is_spurious_lean_ub);
     }
 
     #[test]

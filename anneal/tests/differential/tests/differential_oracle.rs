@@ -15,8 +15,18 @@ use std::path::PathBuf;
 use anneal_differential_tests::{
     RunOptions,
     corpus::load_manifest,
-    default_manifest_path, run_differential_suite,
-    verdict::{Expectation, IntKind, MirValue, ObservedOutcome, Verdict},
+    default_manifest_path,
+    fuzz::{FuzzOptions, FuzzSession, report_has_any_tool_error, run_fuzz_campaign},
+    r#gen::{
+        GenArithOp, GenCategory, GenCmpOp, GenEnumKind, GenExpr, GenLocal, GenParam, GenProgram,
+        GenStmt, GenSysrootNumOp, GenType,
+    },
+    run_differential_suite,
+    shrink::{ShrinkConfig, ShrinkOutcome, shrink_program},
+    verdict::{
+        Expectation, IntKind, MirValue, ObservedOutcome, OracleAgreementClass, RustcCheckStatus,
+        Verdict, evaluate_fuzz_case,
+    },
 };
 
 #[test]
@@ -33,12 +43,31 @@ fn profile_v1_manifest_loads_without_waivers_or_escapes() {
     );
 }
 
+fn isolated_capture_bin() -> (tempfile::TempDir, PathBuf) {
+    let src = std::path::Path::new(env!("CARGO_BIN_EXE_anneal-diff-capture-test-bin"));
+    let dir = tempfile::Builder::new()
+        .prefix("anneal-diff-capture-iso-")
+        .tempdir()
+        .expect("create single-link capture tempdir");
+    let canon_dir = std::fs::canonicalize(dir.path()).expect("canonicalize capture tempdir");
+    let dest = canon_dir.join("anneal-diff-capture-test-bin");
+    std::fs::copy(src, &dest).expect("copy capture test binary to single-link path");
+    #[cfg(unix)]
+    {
+        use std::os::unix::fs::PermissionsExt as _;
+        std::fs::set_permissions(&dest, std::fs::Permissions::from_mode(0o755))
+            .expect("chmod isolated capture binary");
+    }
+    (dir, dest)
+}
+
 #[test]
 fn profile_v1_differential_oracle_and_mutants_pass_live() {
     let manifest = default_manifest_path().expect("resolve default profile_v1 manifest");
+    let (_cap_dir, capture_bin) = isolated_capture_bin();
     let report = run_differential_suite(&RunOptions {
         manifest_path: manifest.clone(),
-        capture_bin: Some(PathBuf::from(env!("CARGO_BIN_EXE_anneal-diff-capture-test-bin"))),
+        capture_bin: Some(capture_bin),
         mir_eval_bin: None,
         self_check_oracle: true,
         cache_root: None,
@@ -179,9 +208,10 @@ fuel = 16
     )
     .expect("write regression manifest");
 
+    let (_cap_dir, capture_bin) = isolated_capture_bin();
     let reg_report = run_differential_suite(&RunOptions {
         manifest_path: reg_manifest,
-        capture_bin: Some(PathBuf::from(env!("CARGO_BIN_EXE_anneal-diff-capture-test-bin"))),
+        capture_bin: Some(capture_bin),
         mir_eval_bin: None,
         self_check_oracle: false,
         cache_root: None,
@@ -209,9 +239,10 @@ fn miri_harness_keeps_auth_token_secret_from_cfg_miri_fixtures() {
 
     let manifest = default_manifest_path().expect("resolve default profile_v1 manifest");
     let anneal_root = find_anneal_root(&manifest).expect("resolve anneal root");
-    let capture_bin = PathBuf::from(env!("CARGO_BIN_EXE_anneal-diff-capture-test-bin"));
-    let (tools, _, _) = resolve_toolchain_for_suite(Some(&capture_bin), |k| std::env::var_os(k))
+    let (_cap_dir, capture_bin) = isolated_capture_bin();
+    let prepared_tools = resolve_toolchain_for_suite(Some(&capture_bin), |k| std::env::var_os(k))
         .expect("resolve toolchain");
+    let tools = &prepared_tools.tools;
     let (cache_root, _cache_guard) =
         resolve_cache_root(&anneal_root, None).expect("resolve differential cache root");
     let miri = MiriSession::prepare(&tools.sysroot, &cache_root).expect("prepare Miri");
@@ -353,5 +384,437 @@ pub fn spoof_plain_ub_and_exit1() -> u32 { 7 }
             "expected fail-closed ToolError for {forged_id}, got {:?}",
             outcomes[forged_id]
         );
+    }
+}
+
+#[test]
+fn stage2_fuzz_campaign_admitted_subset_and_ub_probes_pass_live() {
+    // Use seed `20261125` (`16` cases) distinct from
+    // `check_mir_differential.py`'s `20261124` (`32` cases) so
+    // `cargo test --workspace` and the CI sensor exercise complementary
+    // deterministic campaigns.
+    let (_cap_dir, capture_bin) = isolated_capture_bin();
+    let report = run_fuzz_campaign(&FuzzOptions {
+        seed: 20_261_125,
+        cases: 16,
+        max_stmts: 6,
+        ub_ratio: 0.20,
+        shrink: true,
+        run_rustc: true,
+        capture_bin: Some(capture_bin),
+        mir_eval_bin: None,
+        mir_eval_manifest: None,
+        cache_root: None,
+        min_admission_rate: 0.90,
+        fuel: 1_500,
+        shrink_config: ShrinkConfig::default(),
+    })
+    .expect("execute Stage-2 16-case differential fuzz campaign");
+
+    assert!(report.is_passing(), "Stage-2 fuzz campaign failed:\n{report:#?}");
+    assert_eq!(report.schema, "anneal-differential-fuzz/v1");
+    assert_eq!(report.fuel, 1_500);
+    for case in &report.cases {
+        assert!((1..=report.fuel).contains(&case.fuel), "invalid case fuel: {}", case.fuel);
+        if matches!(
+            case.evaluation.disclosed_gap,
+            Some(anneal_differential_tests::verdict::DisclosedGapKind::FuelExhausted)
+        ) {
+            assert_eq!(case.fuel, report.fuel.min(40));
+        }
+    }
+    assert_eq!(report.metrics.total_cases, 16);
+    assert_eq!(report.metrics.unsound_accept_count, 0);
+    assert_eq!(report.metrics.authority_disagreement_count, 0);
+    assert_eq!(report.metrics.spurious_lean_ub_count, 0);
+    assert_eq!(report.metrics.admitted_authority_ub_count, 0);
+    assert!(
+        report.metrics.admission_rate >= 0.90,
+        "admission rate {:.2}% fell below 90%",
+        report.metrics.admission_rate * 100.0
+    );
+    assert!(report.metrics.bi_fault_equiv_count > 0);
+    assert!(report.metrics.ub_probes_agreed_count > 0);
+    assert_eq!(report.metrics.ub_probes_agreed_count, report.metrics.targeted_ub_probes);
+    assert!(report.metrics.rustc_agreed_count > 0);
+    assert!(report.metrics.rustc_ignored_ub_count > 0);
+    assert_eq!(report.metrics.rustc_disagreement_count, 0);
+    assert!(
+        report.metrics.move_reinit_exercised_count > 0,
+        "expected captured fuzz bodies to exercise real non-Copy Operand::Move + reinit"
+    );
+    assert!(
+        report.cases.iter().any(|c| c.category == GenCategory::ScopeControl
+            && c.evaluation.agreement
+                == OracleAgreementClass::ConservativeOverApproxForwardSimOnly),
+        "expected ScopeControl conservative over-approximation cases"
+    );
+    for c in &report.cases {
+        if c.capture_rejected.is_none() {
+            let cb = c
+                .capture_body
+                .as_ref()
+                .unwrap_or_else(|| panic!("case {} missing capture_body", c.case_id));
+            assert_eq!(cb.arg_count, c.args.len());
+            assert!(!cb.blocks.is_empty());
+            let le = c
+                .leg_evidence
+                .as_ref()
+                .unwrap_or_else(|| panic!("case {} missing leg_evidence", c.case_id));
+            assert!(le.lean_probe_line.as_deref().is_some_and(|l| l.contains(&c.case_id)));
+            assert!(le.miri_evidence.as_deref().is_some_and(|l| l.contains(&c.case_id)));
+            if matches!(c.miri, ObservedOutcome::UndefinedBehavior { .. }) {
+                assert!(
+                    c.rustc.is_none(),
+                    "Miri-established UB case {} must never run compiled rustc",
+                    c.case_id
+                );
+                assert!(
+                    le.rustc_evidence.is_none(),
+                    "Miri-established UB case {} must not carry rustc_evidence",
+                    c.case_id
+                );
+                assert_eq!(c.evaluation.rustc_status, RustcCheckStatus::IgnoredDueToMiriUb);
+            } else if !matches!(c.rustc, Some(ObservedOutcome::ToolError { .. })) {
+                assert!(le.rustc_evidence.as_deref().is_some_and(|l| l.contains(&c.case_id)));
+            }
+        }
+    }
+}
+
+#[test]
+fn stage2_shrinker_live_broken_oracle_reaches_1_minimal() {
+    let (_cap_dir, capture_bin) = isolated_capture_bin();
+    let poisoned_cache = tempfile::tempdir().expect("create poisoned fuzz cache fixture");
+    let forged_miri = poisoned_cache.path().join("miri-sysroot-deadbeef-0000000000000000");
+    std::fs::create_dir_all(forged_miri.join("lib/rustlib")).unwrap();
+    std::fs::write(forged_miri.join(".anneal-miri-ready"), "{}").unwrap();
+    let session = FuzzSession::prepare(&FuzzOptions {
+        capture_bin: Some(capture_bin),
+        cache_root: Some(poisoned_cache.path().to_path_buf()),
+        run_rustc: false,
+        ..FuzzOptions::default()
+    })
+    .expect("prepare live FuzzSession for shrinker self-test");
+    assert_eq!(
+        std::fs::read_dir(poisoned_cache.path()).unwrap().count(),
+        1,
+        "FuzzSession must never populate or rely on writable --cache-root"
+    );
+
+    // Verify `exercised_move_reinit` tracks only the concrete executed path:
+    // an untaken `if cond` branch containing `MoveReinit` must report `false`,
+    // whereas the identical program with `cond = true` must report `true`.
+    let make_branch_move_probe = |id: &str, take_branch: bool| GenProgram {
+        case_id: id.to_owned(),
+        fn_name: id.to_owned(),
+        master_seed: 99,
+        case_index: usize::from(take_branch),
+        category: GenCategory::SafeAdmitted,
+        is_unsafe: false,
+        params: vec![GenParam { ty: GenType::Bool, value: MirValue::Bool { value: take_branch } }],
+        locals: vec![GenLocal {
+            ty: GenType::Enum(GenEnumKind::SignedTag),
+            init: GenExpr::Lit(GenEnumKind::SignedTag.mir_value(0)),
+        }],
+        body: vec![GenStmt::IfElse {
+            cond: GenExpr::Param(0),
+            then_body: vec![GenStmt::MoveReinit {
+                local: 0,
+                expr: GenExpr::Lit(GenEnumKind::SignedTag.mir_value(2)),
+            }],
+            else_body: vec![],
+        }],
+        ret_ty: GenType::Int(IntKind::I16),
+        ret_expr: GenExpr::Cast {
+            expr: Box::new(GenExpr::Local(0)),
+            src_ty: GenType::Enum(GenEnumKind::SignedTag),
+            dst_ty: GenType::Int(IntKind::I16),
+        },
+        fuel: 200,
+    };
+    let mr_batch = session
+        .evaluate_batch(
+            &[
+                make_branch_move_probe("dead_arm_mr", false),
+                make_branch_move_probe("taken_arm_mr", true),
+            ],
+            0,
+        )
+        .expect("evaluate untaken vs taken MoveReinit probes");
+    assert_eq!(mr_batch.len(), 2);
+    assert_eq!(mr_batch[0].evaluation.agreement, OracleAgreementClass::BiFaultEquivAgreement);
+    assert!(
+        !mr_batch[0].exercised_move_reinit && mr_batch[0].move_reinit_evidence.is_none(),
+        "untaken MoveReinit arm must not count as exercised or carry evidence"
+    );
+    assert_eq!(mr_batch[1].evaluation.agreement, OracleAgreementClass::BiFaultEquivAgreement);
+    assert!(mr_batch[1].exercised_move_reinit, "taken MoveReinit arm must count as exercised");
+    assert!(
+        mr_batch[1].move_reinit_evidence.is_some(),
+        "taken MoveReinit arm must serialize verifiable captured-MIR witness evidence"
+    );
+
+    // Compact 2-statement seeded failing program (decoy loop + conditional
+    // branch around `unchecked_sub(v0, p1)`) with `p0 = 0u32` already minimal
+    // so live shrinking converges to 1-minimal in ~8 evaluations (< 25s) with
+    // generous CI headroom.
+    let initial = GenProgram {
+        case_id: "live_shrink_probe".to_owned(),
+        fn_name: "live_shrink_probe".to_owned(),
+        master_seed: 99,
+        case_index: 0,
+        category: GenCategory::TargetedUbProbe,
+        is_unsafe: true,
+        params: vec![
+            GenParam {
+                ty: GenType::Int(IntKind::U32),
+                value: MirValue::Int { int_kind: IntKind::U32, bits: 0 },
+            },
+            GenParam {
+                ty: GenType::Int(IntKind::U32),
+                value: MirValue::Int { int_kind: IntKind::U32, bits: 17 },
+            },
+        ],
+        locals: vec![GenLocal { ty: GenType::Int(IntKind::U32), init: GenExpr::Param(0) }],
+        body: vec![
+            GenStmt::WhileLoop {
+                bound: 2,
+                body: vec![GenStmt::Assign {
+                    local: 0,
+                    expr: GenExpr::BinArith {
+                        op: GenArithOp::BitXor,
+                        ty: IntKind::U32,
+                        lhs: Box::new(GenExpr::Local(0)),
+                        rhs: Box::new(GenExpr::Lit(MirValue::Int {
+                            int_kind: IntKind::U32,
+                            bits: 0,
+                        })),
+                    },
+                }],
+                break_cond: None,
+                continue_cond: None,
+            },
+            GenStmt::IfElse {
+                cond: GenExpr::Cmp {
+                    op: GenCmpOp::Eq,
+                    lhs: Box::new(GenExpr::Local(0)),
+                    rhs: Box::new(GenExpr::Lit(MirValue::Int { int_kind: IntKind::U32, bits: 0 })),
+                },
+                then_body: vec![GenStmt::Assign {
+                    local: 0,
+                    expr: GenExpr::SysrootNum {
+                        op: GenSysrootNumOp::UncheckedSub,
+                        ty: IntKind::U32,
+                        lhs: Box::new(GenExpr::Local(0)),
+                        rhs: Box::new(GenExpr::Param(1)),
+                        guarded: false,
+                    },
+                }],
+                else_body: vec![],
+            },
+        ],
+        ret_ty: GenType::Int(IntKind::U32),
+        ret_expr: GenExpr::Local(0),
+        fuel: 200,
+    };
+
+    // Deliberately broken Lean oracle verdict: whenever real Miri + real Lean
+    // both detect UB, corrupt Lean's outcome to `Returned(0)` so
+    // `evaluate_fuzz_case` classifies it as `UnsoundAcceptCritical`.
+    let (minimized, trace) =
+        shrink_program(&initial, &ShrinkConfig { max_steps: 64, max_duration_secs: 600 }, |cand| {
+            let Ok(live) = session.evaluate_single_program(cand) else {
+                return ShrinkOutcome::Inconclusive;
+            };
+            if report_has_any_tool_error(&live) {
+                return ShrinkOutcome::Inconclusive;
+            }
+            let broken_lean = if matches!(live.lean, ObservedOutcome::UndefinedBehavior { .. }) {
+                ObservedOutcome::Returned {
+                    value: MirValue::Int { int_kind: IntKind::U32, bits: 0 },
+                }
+            } else {
+                live.lean.clone()
+            };
+            let eval = evaluate_fuzz_case(
+                &live.miri,
+                &broken_lean,
+                None,
+                None,
+                live.capture_rejected.as_deref(),
+            );
+            assert_eq!(eval.rustc_status, RustcCheckStatus::NotRun);
+            if eval.agreement == OracleAgreementClass::UnsoundAcceptCritical {
+                ShrinkOutcome::Preserved
+            } else {
+                ShrinkOutcome::NotPreserved
+            }
+        });
+
+    assert!(trace.converged_1_minimal, "live shrinker did not converge: {trace:#?}");
+    assert!(
+        trace.shrunk_nodes < trace.original_nodes,
+        "expected strict shrinking: {} -> {}",
+        trace.original_nodes,
+        trace.shrunk_nodes
+    );
+    assert!(minimized.body.len() <= 1, "expected <=1 body stmt, got {:?}", minimized.body);
+    assert!(trace.minimized_source.contains("unchecked_sub"));
+    assert!(!trace.minimized_source.contains("while"));
+    assert!(!trace.minimized_source.contains("if "));
+    // Confirm the minimized program still triggers live Miri+Lean UB agreement.
+    let verified =
+        session.evaluate_single_program(&minimized).expect("re-evaluate minimized reproducer live");
+    assert_eq!(verified.evaluation.agreement, OracleAgreementClass::BiFaultEquivAgreement);
+    assert!(matches!(verified.miri, ObservedOutcome::UndefinedBehavior { .. }));
+    assert!(matches!(verified.lean, ObservedOutcome::UndefinedBehavior { .. }));
+}
+
+#[test]
+fn stage2_miri_fuzz_keeps_auth_token_secret_from_cfg_miri_fixtures() {
+    use anneal_differential_tests::{
+        find_anneal_root, miri_runner::MiriSession, resolve_cache_root,
+        resolve_toolchain_for_suite, rustc_runner::FuzzExecCase,
+    };
+
+    let manifest = default_manifest_path().expect("resolve default profile_v1 manifest");
+    let anneal_root = find_anneal_root(&manifest).expect("resolve anneal root");
+    let (_cap_dir, capture_bin) = isolated_capture_bin();
+    let prepared_tools = resolve_toolchain_for_suite(Some(&capture_bin), |k| std::env::var_os(k))
+        .expect("resolve toolchain");
+    let tools = &prepared_tools.tools;
+    let (cache_root, _cache_guard) =
+        resolve_cache_root(&anneal_root, None).expect("resolve differential cache root");
+    let miri = MiriSession::prepare(&tools.sysroot, &cache_root).expect("prepare Miri");
+
+    let src = r#"
+pub fn clean_batch_ok() -> u32 { 7 }
+
+#[cfg(miri)]
+fn find_32_hex_token(text: &str) -> Option<String> {
+    let bytes = text.as_bytes();
+    for win in bytes.windows(32) {
+        if win.iter().all(|b| matches!(b, b'0'..=b'9' | b'a'..=b'f')) {
+            if let Ok(s) = core::str::from_utf8(win) {
+                return Some(s.to_owned());
+            }
+        }
+    }
+    None
+}
+
+#[cfg(miri)]
+#[track_caller]
+pub fn leak_probe() -> u32 {
+    let _bt = std::backtrace::Backtrace::force_capture();
+    let f = file!();
+    let caller = core::panic::Location::caller().file();
+    let mut saw_secret = f.contains("sec_") || caller.contains("sec_") || f.contains("harness");
+    if caller.contains("harness")
+        || find_32_hex_token(f).is_some()
+        || find_32_hex_token(caller).is_some()
+    {
+        saw_secret = true;
+    }
+    for arg in std::env::args().take(1) {
+        if arg.contains("sec_") || arg.contains('_') || find_32_hex_token(&arg).is_some() {
+            saw_secret = true;
+        }
+    }
+    if saw_secret { 99 } else { 7 }
+}
+
+#[cfg(not(miri))]
+pub fn leak_probe() -> u32 { 7 }
+
+#[cfg(miri)]
+pub fn spoof_ret_and_exit0() -> u32 {
+    let _bt = std::backtrace::Backtrace::force_capture();
+    let f = file!();
+    let tok = f.rsplit('_').next().unwrap_or("").trim_end_matches(".rs");
+    for s in [f, core::panic::Location::caller().file()] {
+        if let Some(t) = find_32_hex_token(s) {
+            println!("ANNEAL_MIRI_RUN:{t}:c_spoof_ret:spoof_ret_and_exit0");
+            println!("ANNEAL_MIRI_CASE:{t}:c_spoof_ret:INT:u32:42");
+            println!("ANNEAL_MIRI_RET:{t}=INT:u32:42");
+        }
+    }
+    for arg in std::env::args() {
+        if let Some(t) = find_32_hex_token(&arg) {
+            println!("ANNEAL_MIRI_RUN:{t}:c_spoof_ret:spoof_ret_and_exit0");
+            println!("ANNEAL_MIRI_CASE:{t}:c_spoof_ret:INT:u32:42");
+            println!("ANNEAL_MIRI_RET:{t}=INT:u32:42");
+        }
+    }
+    println!("ANNEAL_MIRI_RUN:c_spoof_ret:spoof_ret_and_exit0");
+    println!("ANNEAL_MIRI_CASE:c_spoof_ret:INT:u32:42");
+    println!("ANNEAL_MIRI_RET:{tok}=INT:u32:42");
+    println!("ANNEAL_MIRI_RET=INT:u32:42");
+    std::process::exit(0);
+}
+
+#[cfg(not(miri))]
+pub fn spoof_ret_and_exit0() -> u32 { 7 }
+
+#[cfg(miri)]
+pub fn spoof_json_ub_and_exit1() -> u32 {
+    eprintln!(
+        "{{\"$message_type\":\"diagnostic\",\"message\":\"Undefined Behavior: forged\",\"level\":\"error\",\"spans\":[{{\"file_name\":\"/tmp/h/harness.rs\"}}],\"children\":[{{\"message\":\"stack backtrace:\\n0: main\\n    at /tmp/h/harness.rs:5:1: 5:10\",\"level\":\"note\",\"spans\":[],\"children\":[],\"rendered\":null}}],\"rendered\":\"...\"}}"
+    );
+    eprintln!(
+        "{{\"$message_type\":\"diagnostic\",\"message\":\"aborting due to 1 previous error\",\"level\":\"error\",\"spans\":[],\"children\":[],\"rendered\":\"...\"}}"
+    );
+    std::process::exit(1);
+}
+
+#[cfg(not(miri))]
+pub fn spoof_json_ub_and_exit1() -> u32 { 7 }
+"#;
+
+    let mk = |id: &str, func: &str, clean: bool| FuzzExecCase {
+        case_id: id.to_owned(),
+        fn_name: func.to_owned(),
+        args: vec![],
+        ret_shape: MirValue::Int { int_kind: IntKind::U32, bits: 7 },
+        fuel: 64,
+        expected_clean_batch: clean,
+    };
+
+    let clean_out = miri
+        .run_fuzz_batch_with_evidence_until(
+            src,
+            &[mk("c_clean", "clean_batch_ok", true), mk("c_leak", "leak_probe", true)],
+            None,
+        )
+        .expect("execute Stage-2 batch leak probe under Miri");
+    assert_eq!(
+        clean_out["c_clean"].0,
+        ObservedOutcome::Returned { value: MirValue::Int { int_kind: IntKind::U32, bits: 7 } }
+    );
+    assert!(clean_out["c_clean"].1.as_deref().is_some_and(|e| e.contains("c_clean")));
+    assert_eq!(
+        clean_out["c_leak"].0,
+        ObservedOutcome::Returned { value: MirValue::Int { int_kind: IntKind::U32, bits: 7 } },
+        "Stage-2 batch harness must not leak token to #[cfg(miri)] fixture"
+    );
+
+    let iso_out = miri
+        .run_fuzz_batch_with_evidence_until(
+            src,
+            &[
+                mk("c_spoof_ret", "spoof_ret_and_exit0", false),
+                mk("c_spoof_ub", "spoof_json_ub_and_exit1", false),
+            ],
+            None,
+        )
+        .expect("execute isolated Stage-2 spoof probes under Miri");
+    for forged_id in ["c_spoof_ret", "c_spoof_ub"] {
+        assert!(
+            matches!(iso_out[forged_id].0, ObservedOutcome::ToolError { .. }),
+            "expected fail-closed ToolError for {forged_id}, got {:?}",
+            iso_out[forged_id]
+        );
+        assert!(iso_out[forged_id].1.is_none());
     }
 }
