@@ -1,0 +1,64 @@
+{
+  "observed_at": "2026-11-27",
+  "subjects": [
+    {
+      "identity": {
+        "repository": "asterinas/asterinas",
+        "revision": "a97b435bf5b95f5839cc8acaa773e31463f04602",
+        "version": "v0.19.0"
+      },
+      "name": "Asterinas OS kernel and OSTD framekernel (asterinas/asterinas)"
+    },
+    {
+      "identity": {
+        "repository": "asterinas/vostd",
+        "revision": "51b4459029c8f9dfa6e86fff26d13c49bfc29b51"
+      },
+      "name": "vOSTd Verus verification of Asterinas OSTD (asterinas/vostd)"
+    },
+    {
+      "identity": {
+        "repository": "google/zerocopy",
+        "revision": "8d60e1e085bdbce3d84e88a68b2bfcfcc6f8e0de",
+        "subpath": "anneal"
+      },
+      "name": "Anneal verification toolchain in zerocopy (google/zerocopy)"
+    },
+    {
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1",
+        "version": "1.98.0-nightly (2026-05-30)"
+      },
+      "name": "Pinned Anneal Rust compiler toolchain (rust-lang/rust)"
+    },
+    {
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "version": "v4.34.1"
+      },
+      "name": "Lean 4 theorem prover (leanprover/lean4)"
+    }
+  ],
+  "topics": [
+    "anneal",
+    "anneal/architecture",
+    "anneal/mir-semantics",
+    "anneal/rustc-capture",
+    "build",
+    "rust",
+    "rust/inline-asm",
+    "rust/memory-model",
+    "rust/unsafe",
+    "rustc",
+    "rustc/mir",
+    "systems",
+    "systems/os-kernels",
+    "verification",
+    "verification/os-kernels",
+    "verification/rust",
+    "verification/verus",
+    "zerocopy"
+  ]
+}

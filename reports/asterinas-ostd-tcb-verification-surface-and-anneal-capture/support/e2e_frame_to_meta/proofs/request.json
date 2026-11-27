@@ -1,0 +1,41 @@
+{
+  "schema_version": 1,
+  "compilation": {
+    "source_root": "../src",
+    "crate_root": "lib.rs",
+    "crate_name": "ostd_meta_probe",
+    "crate_type": "lib",
+    "panic": "abort",
+    "overflow_checks": true,
+    "edition": "2024",
+    "target": "x86_64-unknown-linux-gnu",
+    "cfg": [],
+    "env": {},
+    "source_files": [
+      "lib.rs"
+    ]
+  },
+  "scope": {
+    "kind": "selected_unit",
+    "roots": [
+      "frame_to_meta"
+    ]
+  },
+  "proof": {
+    "source_root": ".",
+    "specification": "Spec.specs",
+    "theorem": "Proof.verify",
+    "sources": [
+      {
+        "module": "Spec",
+        "path": "Spec.lean",
+        "role": "specification"
+      },
+      {
+        "module": "Proof",
+        "path": "Proof.lean",
+        "role": "proof"
+      }
+    ]
+  }
+}
