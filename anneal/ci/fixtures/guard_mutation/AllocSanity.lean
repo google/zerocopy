@@ -60,11 +60,13 @@ noncomputable def acB (b : UInt8) : AllocByte := .init b none
 
 /-- `Vec<u8>` handle in mutable allocation `1`: pointer to `acBufPtr`, then
 `cap`, then `len` (little-endian `usize` words). -/
-noncomputable def acVecHandle (cap len : UInt8) : Allocation :=
+noncomputable def acVecHandle (cap : UInt8) (len : UInt8) : Allocation :=
   { allocId := 1, alignLog2 := 3, mutability := .mut,
-    bytes := List.replicate 8 (.init 0 (some 2)) ++
-      (acB cap :: List.replicate 7 (acB 0)) ++
-      (acB len :: List.replicate 7 (acB 0)),
+    bytes := [.init 0 (some 2), .init 0 (some 2), .init 0 (some 2),
+      .init 0 (some 2), .init 0 (some 2), .init 0 (some 2),
+      .init 0 (some 2), .init 0 (some 2),
+      acB cap, acB 0, acB 0, acB 0, acB 0, acB 0, acB 0, acB 0,
+      acB len, acB 0, acB 0, acB 0, acB 0, acB 0, acB 0, acB 0],
     live := true }
 
 /-- Pointer to the `Vec` handle in allocation `1`. -/
@@ -73,7 +75,8 @@ noncomputable def acVecPtr : PtrVal := ⟨some 1, 0, .isize⟩
 /-- `Vec<u8>` buffer with `cap = 8` and `len = 2`: exactly 8 bytes, the first
 two initialized. -/
 noncomputable def acStaleMem : MemoryState :=
-  acMem [acBuf ([acB 3, acB 5] ++ List.replicate 6 .uninit)]
+  acMem [acBuf [acB 3, acB 5, .uninit, .uninit, .uninit, .uninit, .uninit,
+    .uninit]]
 
 theorem alloc_sanity_vec_box_valid :
     vecValidInMem (acMem [acBuf [acB 7, acB 9]]) true

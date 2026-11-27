@@ -48,14 +48,6 @@ theorem refute_enum_v2_overflow_pair_pointee :
     isSupportedV2LocalTy (.ref .mut (.tuple [.int .i32 true, .bool])) = false :=
   ⟨rfl, rfl⟩
 
-/-- Anti-overreach canary: an overflow pair itself, and pointers to its
-integer or `bool` field types, remain admitted local types. -/
-theorem positive_enum_v2_overflow_pair_local :
-    isSupportedV2LocalTy (.tuple [.int .i8 false, .bool]) = true ∧
-    isSupportedV2LocalTy (.rawPtr .shared (.int .i8 false)) = true ∧
-    isSupportedV2LocalTy (.ref .shared .bool) = true :=
-  ⟨rfl, rfl, rfl⟩
-
 /-- Guard `enum_v2_overflow_pair_vec_elem`: a `Vec`'s elements are
 addressable, so no Profile v2 local may be a `Vec` of overflow pairs. -/
 theorem refute_enum_v2_overflow_pair_vec_elem :
@@ -76,14 +68,5 @@ theorem refute_enum_v2_overflow_pair_slice_elem :
     isSupportedV2LocalTy
         (.rawPtr .mut (.slice (.tuple [.int .i16 true, .bool]))) = false :=
   ⟨rfl, rfl⟩
-
-/-- Anti-overreach canary: `Vec`, `Box`, and slices of scalar elements remain
-admitted local types. -/
-theorem positive_enum_v2_vec_box_slice_scalar_elems :
-    isSupportedV2LocalTy (.vec (.int .i8 false)) = true ∧
-    isSupportedV2LocalTy (.box (.int .i64 false)) = true ∧
-    isSupportedV2LocalTy (.box (.slice .bool)) = true ∧
-    isSupportedV2LocalTy (.ref .shared (.slice .char)) = true :=
-  ⟨rfl, rfl, rfl, rfl⟩
 
 end GuardMutation

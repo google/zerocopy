@@ -52,7 +52,8 @@ theorem refute_alloc_vec_valid_unsupported_elem :
 an empty `Box<[(u8, bool)]>` with `.unsupported`. -/
 theorem refute_alloc_box_valid_unsupported_slice_elem :
     boxValidInMem MemoryState.empty false
-        ⟨.slice acPairTy, acDangling, some 0⟩ = .error .unsupported :=
+        { pointee := .slice acPairTy, ptr := acDangling, len := some 0 } =
+      .error .unsupported :=
   rfl
 
 /-- Guard `alloc_vec_grow_cap_u64_bound`: growing a zero-sized-element buffer
@@ -62,22 +63,21 @@ theorem refute_alloc_vec_grow_cap_u64_bound :
     vecGrowCap 0 0 (Nat.pow 2 64) = none :=
   rfl
 
-/-- Guard `alloc_vec_grow_cap_doubled_overflow`: from capacity `2^62 + 1`,
-the doubled capacity `2^63 + 2` of a `Vec<u8>` exceeds `isize::MAX` bytes,
-so `vecGrowCap` fails even though `minCap = 2^62 + 2` itself fits. -/
+/-- Guard `alloc_vec_grow_cap_doubled_overflow`: from capacity `2^62 + 1`
+(`4611686018427387905`), the doubled capacity `2^63 + 2` of a `Vec<u8>`
+exceeds `isize::MAX` bytes, so `vecGrowCap` fails even though
+`minCap = 2^62 + 2` (`4611686018427387906`) itself fits. -/
 theorem refute_alloc_vec_grow_cap_doubled_overflow :
-    vecGrowCap 1 (Nat.pow 2 62 + 1) (Nat.pow 2 62 + 2) = none :=
+    vecGrowCap 1 4611686018427387905 4611686018427387906 = none :=
   rfl
 
 /-- Guard `alloc_vec_with_capacity_overflow`:
-`Vec::<u64>::with_capacity(2^62)` needs `2^65` bytes, more than `isize::MAX`,
-so it faults with `.unsupported` (a capacity-overflow panic) instead of
-allocating. -/
+`Vec::<u64>::with_capacity(2^62)` (`4611686018427387904`) needs `2^65` bytes,
+more than `isize::MAX`, so it faults with `.unsupported` (a capacity-overflow
+panic) instead of allocating. -/
 theorem refute_alloc_vec_with_capacity_overflow :
-    (match evalVecWithCapacity MemoryState.empty (.int .i64 false)
-        (UInt64.ofNat (Nat.pow 2 62)) with
-     | .error .unsupported => true
-     | _ => false) = true :=
+    evalVecWithCapacity MemoryState.empty (.int .i64 false)
+        4611686018427387904 = .error .unsupported :=
   rfl
 
 /-- Guard `alloc_vec_index_oob`: indexing a `Vec<u8>` with `len = 1` at index
