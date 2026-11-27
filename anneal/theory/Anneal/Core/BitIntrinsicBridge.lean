@@ -2562,6 +2562,33 @@ or `signedMaxBv w` (`INT_MAX`) on signed overflow. -/
   else
     x - y
 
+/-- Wrapping `BitVec` addition subtracts the modulus once the `Nat` sum reaches
+it. -/
+private theorem bv_toNat_add_of_ge {w : Nat} {x y : BitVec w}
+    (hge : Nat.pow 2 w ≤ x.toNat + y.toNat) :
+    (x + y).toNat = x.toNat + y.toNat - Nat.pow 2 w := by
+  have hSp : x.toNat + y.toNat =
+      (x.toNat + y.toNat - Nat.pow 2 w) + Nat.pow 2 w :=
+    (Nat.sub_add_cancel hge).symm
+  have hSubLt : x.toNat + y.toNat - Nat.pow 2 w < Nat.pow 2 w :=
+    nat_sub_lt_of_lt_add (nat_two_pow_pos w)
+      (Nat.add_lt_add (bitVec_toNat_lt_pow x) (bitVec_toNat_lt_pow y))
+  have hModEq :
+      Nat.mod (x.toNat + y.toNat) (Nat.pow 2 w) =
+        x.toNat + y.toNat - Nat.pow 2 w := by
+    rw [hSp, nat_add_mod_left, nat_mod_eq_of_lt hSubLt, Nat.add_sub_cancel]
+  rw [Anneal.BitVec.toNat_add, hModEq]
+
+/-- Subtracting a modulus `P = H + H` and adding back `H` subtracts `H`. -/
+private theorem nat_wrap_add_half {a P H : Nat} (hPow : P = H + H)
+    (hge : P ≤ a) :
+    a - P + H = a - H := by
+  apply Nat.add_right_cancel (m := P)
+  have hSubLe : H ≤ a := Nat.le_trans (by
+    rw [hPow]; exact Nat.le_add_right H H) hge
+  rw [Nat.add_assoc (a - P) H P, Nat.add_comm H P, ← Nat.add_assoc,
+    Nat.sub_add_cancel hge, hPow, ← Nat.add_assoc, Nat.sub_add_cancel hSubLe]
+
 private theorem signedKey_add_of_no_overflow {w : Nat} (hw : 0 < w)
     {x y : BitVec w} (hNoOvf : signedOverflowAddBv x y = false) :
     Anneal.BitVecArith.signedKey (x + y) =
@@ -2612,18 +2639,7 @@ private theorem signedKey_add_of_no_overflow {w : Nat} (hw : 0 < w)
     | inr hge =>
       have hsumLt : x.toNat + y.toNat < H + Nat.pow 2 w :=
         Nat.add_lt_add hxLt (bitVec_toNat_lt_pow y)
-      have hzNat : (x + y).toNat = x.toNat + y.toNat - Nat.pow 2 w := by
-        have hSp : x.toNat + y.toNat =
-            (x.toNat + y.toNat - Nat.pow 2 w) + Nat.pow 2 w :=
-          (Nat.sub_add_cancel hge).symm
-        have hSubLt : x.toNat + y.toNat - Nat.pow 2 w < Nat.pow 2 w :=
-          nat_sub_lt_of_lt_add (nat_two_pow_pos w)
-            (Nat.add_lt_add (bitVec_toNat_lt_pow x) (bitVec_toNat_lt_pow y))
-        have hModEq :
-            Nat.mod (x.toNat + y.toNat) (Nat.pow 2 w) =
-              x.toNat + y.toNat - Nat.pow 2 w := by
-          rw [hSp, nat_add_mod_left, nat_mod_eq_of_lt hSubLt, Nat.add_sub_cancel]
-        rw [Anneal.BitVec.toNat_add, hModEq]
+      have hzNat := bv_toNat_add_of_ge hge
       have hzLt : (x + y).toNat < H := by
         rw [hzNat]
         exact nat_sub_lt_of_lt_add (nat_two_pow_pos (w - 1)) hsumLt
@@ -2634,13 +2650,7 @@ private theorem signedKey_add_of_no_overflow {w : Nat} (hw : 0 < w)
         rw [Nat.add_assoc, Nat.add_comm H (y.toNat - H),
           Nat.sub_add_cancel hyGe]
       rw [h1]
-      apply Nat.add_right_cancel (m := Nat.pow 2 w)
-      have hSubLe : H ≤ x.toNat + y.toNat := Nat.le_trans (by
-        rw [hPow]; exact Nat.le_add_right H H) hge
-      rw [Nat.add_assoc (x.toNat + y.toNat - Nat.pow 2 w) H (Nat.pow 2 w),
-        Nat.add_comm H (Nat.pow 2 w), ← Nat.add_assoc,
-        Nat.sub_add_cancel hge, hPow, ← Nat.add_assoc,
-        Nat.sub_add_cancel hSubLe]
+      exact nat_wrap_add_half hPow hge
   · have hxGe := (Anneal.BitVecArith.msb_eq_true_iff hw x).1 hmx
     have hyLt := (Anneal.BitVecArith.msb_eq_false_iff hw y).1 hmy
     rw [Anneal.BitVecArith.signedKey_eq_of_msb_true hw hmx,
@@ -2663,18 +2673,7 @@ private theorem signedKey_add_of_no_overflow {w : Nat} (hw : 0 < w)
       have hsumLt : x.toNat + y.toNat < H + Nat.pow 2 w := by
         rw [Nat.add_comm H (Nat.pow 2 w)]
         exact Nat.add_lt_add (bitVec_toNat_lt_pow x) hyLt
-      have hzNat : (x + y).toNat = x.toNat + y.toNat - Nat.pow 2 w := by
-        have hSp : x.toNat + y.toNat =
-            (x.toNat + y.toNat - Nat.pow 2 w) + Nat.pow 2 w :=
-          (Nat.sub_add_cancel hge).symm
-        have hSubLt : x.toNat + y.toNat - Nat.pow 2 w < Nat.pow 2 w :=
-          nat_sub_lt_of_lt_add (nat_two_pow_pos w)
-            (Nat.add_lt_add (bitVec_toNat_lt_pow x) (bitVec_toNat_lt_pow y))
-        have hModEq :
-            Nat.mod (x.toNat + y.toNat) (Nat.pow 2 w) =
-              x.toNat + y.toNat - Nat.pow 2 w := by
-          rw [hSp, nat_add_mod_left, nat_mod_eq_of_lt hSubLt, Nat.add_sub_cancel]
-        rw [Anneal.BitVec.toNat_add, hModEq]
+      have hzNat := bv_toNat_add_of_ge hge
       have hzLt : (x + y).toNat < H := by
         rw [hzNat]
         exact nat_sub_lt_of_lt_add (nat_two_pow_pos (w - 1)) hsumLt
@@ -2685,13 +2684,7 @@ private theorem signedKey_add_of_no_overflow {w : Nat} (hw : 0 < w)
         rw [Nat.add_comm y.toNat H, ← Nat.add_assoc,
           Nat.sub_add_cancel hxGe]
       rw [h1]
-      apply Nat.add_right_cancel (m := Nat.pow 2 w)
-      have hSubLe : H ≤ x.toNat + y.toNat := Nat.le_trans (by
-        rw [hPow]; exact Nat.le_add_right H H) hge
-      rw [Nat.add_assoc (x.toNat + y.toNat - Nat.pow 2 w) H (Nat.pow 2 w),
-        Nat.add_comm H (Nat.pow 2 w), ← Nat.add_assoc,
-        Nat.sub_add_cancel hge, hPow, ← Nat.add_assoc,
-        Nat.sub_add_cancel hSubLe]
+      exact nat_wrap_add_half hPow hge
   · have hxGe := (Anneal.BitVecArith.msb_eq_true_iff hw x).1 hmx
     have hyGe := (Anneal.BitVecArith.msb_eq_true_iff hw y).1 hmy
     rw [hmx, hmy] at hNoOvf
@@ -2701,19 +2694,7 @@ private theorem signedKey_add_of_no_overflow {w : Nat} (hw : 0 < w)
       | false => rw [hc] at hNoOvf; nomatch hNoOvf
     have hge : Nat.pow 2 w ≤ x.toNat + y.toNat := by
       rw [hPow]; exact Nat.add_le_add hxGe hyGe
-    have hsumLt : x.toNat + y.toNat < Nat.pow 2 w + Nat.pow 2 w :=
-      Nat.add_lt_add x.isLt y.isLt
-    have hzNat : (x + y).toNat = x.toNat + y.toNat - Nat.pow 2 w := by
-      have hSp : x.toNat + y.toNat =
-          (x.toNat + y.toNat - Nat.pow 2 w) + Nat.pow 2 w :=
-        (Nat.sub_add_cancel hge).symm
-      have hSubLt : x.toNat + y.toNat - Nat.pow 2 w < Nat.pow 2 w :=
-        nat_sub_lt_of_lt_add (nat_two_pow_pos w) hsumLt
-      have hModEq :
-          Nat.mod (x.toNat + y.toNat) (Nat.pow 2 w) =
-            x.toNat + y.toNat - Nat.pow 2 w := by
-        rw [hSp, nat_add_mod_left, nat_mod_eq_of_lt hSubLt, Nat.add_sub_cancel]
-      rw [Anneal.BitVec.toNat_add, hModEq]
+    have hzNat := bv_toNat_add_of_ge hge
     have hzGe := (Anneal.BitVecArith.msb_eq_true_iff hw _).1 hmz
     rw [Anneal.BitVecArith.signedKey_eq_of_msb_true hw hmz, hzNat,
       Anneal.BitVecArith.signedKey_eq_of_msb_true hw hmx,
