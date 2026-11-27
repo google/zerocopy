@@ -103,6 +103,16 @@ VALID_PROOF_SOURCE_KEYS = frozenset({"module", "path", "role"})
 VALID_CRATE_TYPES = frozenset({"lib", "bin"})
 VALID_PANIC_STRATEGIES = frozenset({"unwind", "abort"})
 SPEC_FILE_PATTERN = re.compile(r"^Spec[A-Za-z0-9_]*\.lean$")
+# A specification module that `anneal-spec-lower --format v2-module` generates
+# from inline `anneal::spec` attributes: `Specs/<crate>/<claim>.lean`, module
+# `Specs.<crate>.<claim>`. Such a unit also carries the `spec_sources.json`
+# that binds it to its sources and claim, which
+# `verify_anneal_spec_zerocopy.py` checks for freshness and uniqueness.
+GENERATED_SPEC_PATTERN = re.compile(
+    r"^Specs/[A-Za-z][A-Za-z0-9_]*/[A-Za-z][A-Za-z0-9_]*\.lean$"
+)
+GENERATED_SPEC_DIR = "Specs"
+SPEC_SOURCES_FILE = "spec_sources.json"
 _SHA256_HEX_RE = re.compile(r"\A[0-9a-f]{64}\Z")
 PROVENANCE_V1_KEYS = frozenset({
     "schema_version",
@@ -1404,8 +1414,15 @@ def _validate_request_unit(
             )
         declared_modules.add(mod_name)
         filename = source.get("path")
-        if not is_safe_relative_filename(filename) or not filename.endswith(
-            ".lean"
+        role = source.get("role")
+        generated = (
+            role == "specification"
+            and isinstance(filename, str)
+            and GENERATED_SPEC_PATTERN.fullmatch(filename) is not None
+        )
+        if not generated and (
+            not is_safe_relative_filename(filename)
+            or not filename.endswith(".lean")
         ):
             raise RuntimeError(
                 f"{entry_name}: invalid Lean source path {filename!r}"
@@ -1414,13 +1431,18 @@ def _validate_request_unit(
             raise RuntimeError(
                 f"{entry_name}: duplicate proof source path {filename!r}"
             )
-        role = source.get("role")
         if role not in ("specification", "proof"):
             raise RuntimeError(
                 f"{entry_name}: invalid proof source role {role!r}"
             )
         if role == "specification":
-            if (
+            if generated:
+                if mod_name != filename[:-5].replace("/", "."):
+                    raise RuntimeError(
+                        f"{entry_name}: generated specification module "
+                        f"{mod_name!r} must match its path {filename!r}"
+                    )
+            elif (
                 not SPEC_FILE_PATTERN.fullmatch(filename)
                 or mod_name != filename[:-5]
             ):
@@ -1438,6 +1460,21 @@ def _validate_request_unit(
             )
         declared_files.add(filename)
 
+    generated_specs = [
+        f for f in declared_files if GENERATED_SPEC_PATTERN.fullmatch(f)
+    ]
+    if generated_specs and SPEC_SOURCES_FILE not in unit_files:
+        raise RuntimeError(
+            f"{entry_name}: a generated specification needs "
+            f"{SPEC_SOURCES_FILE}"
+        )
+    if SPEC_SOURCES_FILE in unit_files:
+        if len(generated_specs) != 1:
+            raise RuntimeError(
+                f"{entry_name}: {SPEC_SOURCES_FILE} needs exactly one "
+                "generated specification source"
+            )
+        declared_files.add(SPEC_SOURCES_FILE)
     unexpected = set(unit_files) - declared_files
     if unexpected:
         raise RuntimeError(
@@ -1497,6 +1534,40 @@ def _validate_request_unit(
     return request_with_expected, comp_sig
 
 
+def _generated_spec_files(specs_dir):
+    """Return the unit-relative paths under a unit's `Specs/` directory.
+
+    It may hold only `Specs/<crate>/<claim>.lean` regular files; the
+    caller's undeclared-file check then requires each to be a declared
+    specification source.
+    """
+    files = []
+    for crate_dir in sorted(specs_dir.iterdir(), key=lambda p: p.name):
+        if crate_dir.is_symlink() or not crate_dir.is_dir():
+            raise RuntimeError(
+                f"unexpected entry in generated specification tree: {crate_dir}"
+            )
+        children = sorted(crate_dir.iterdir(), key=lambda p: p.name)
+        if not children:
+            raise RuntimeError(
+                f"empty directory in generated specification tree: {crate_dir}"
+            )
+        for child in children:
+            rel = f"{GENERATED_SPEC_DIR}/{crate_dir.name}/{child.name}"
+            if (
+                child.is_symlink()
+                or not child.is_file()
+                or not GENERATED_SPEC_PATTERN.fullmatch(rel)
+            ):
+                raise RuntimeError(
+                    f"unexpected entry in generated specification tree: {child}"
+                )
+            files.append(rel)
+    if not files:
+        raise RuntimeError(f"empty generated specification tree: {specs_dir}")
+    return files
+
+
 def discover_units(
     proofs_dir,
     src_dir,
@@ -1539,6 +1610,9 @@ def discover_units(
         for child in sorted(entry.iterdir(), key=lambda p: p.name):
             if child.is_symlink():
                 raise RuntimeError(f"symlink disallowed in proof unit: {child}")
+            if child.is_dir() and child.name == GENERATED_SPEC_DIR:
+                unit_files.extend(_generated_spec_files(child))
+                continue
             if not child.is_file():
                 raise RuntimeError(
                     f"unexpected non-file entry in proof unit: {child}"

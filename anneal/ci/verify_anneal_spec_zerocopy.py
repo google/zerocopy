@@ -43,6 +43,9 @@ def load_strict_json(text):
 REQUIRED_EXTRA_FILES = frozenset({"spec_span_map.json"})
 SPEC_INPUT_FILES = ("spec.rs", "spec_sources.json")
 NEG_UNIT = "02_unit_pointer_metadata"
+# A claim identifier, as `anneal-spec-lower` accepts one (it also rejects
+# reserved names).
+CLAIM_RE = re.compile(r"[A-Za-z][A-Za-z0-9_]{0,63}")
 LEAN_COMPILE_FIXTURE = "tests/lean_compile"
 SPEC_IMPORT_ROOT = "Trusted.MirSemantics"
 TRUSTED_IMPORT_RE = re.compile(
@@ -151,7 +154,24 @@ def discover_spec_units(proofs_dir, src_dir):
 
 
 def load_spec_sources(unit_dir, request, resolved_src):
-    """Return the crate source files that `spec_sources.json` names.
+    """Return the crate source files that a unit's `spec_sources.json` names.
+
+    `anneal-spec` units lower every specification in those files; they may
+    not bind a claim (see `load_spec_binding`).
+    """
+    files, claim = load_spec_binding(unit_dir, request, resolved_src)
+    if claim is not None:
+        raise RuntimeError(
+            f"{unit_dir.name}: claim-bound units belong in zerocopy/proofs"
+        )
+    return files
+
+
+def load_spec_binding(unit_dir, request, resolved_src):
+    """Return `(files, claim)` from a unit's `spec_sources.json`.
+
+    `claim` is `None` unless the file binds the unit to one claim, as
+    `{"files": [...], "claim": "<C>"}`.
 
     Each entry is a relative path under the unit's crate source root that the
     request's `compilation.source_files` also lists, so freshness lowers
@@ -169,15 +189,19 @@ def load_spec_sources(unit_dir, request, resolved_src):
     files = (
         spec_sources.get("files") if isinstance(spec_sources, dict) else None
     )
+    claim = spec_sources.get("claim") if isinstance(spec_sources, dict) else None
     if (
         not isinstance(spec_sources, dict)
-        or set(spec_sources) != {"files"}
+        or not set(spec_sources) <= {"files", "claim"}
         or not isinstance(files, list)
         or not files
+        or ("claim" in spec_sources and not (
+            isinstance(claim, str) and CLAIM_RE.fullmatch(claim)
+        ))
     ):
         raise RuntimeError(
             f"{unit_dir.name}: spec_sources.json must be "
-            '{"files": [<source file>, ...]}'
+            '{"files": [<source file>, ...]} with an optional "claim": <id>'
         )
     compiled = request["compilation"].get("source_files")
     if not isinstance(compiled, list):
@@ -218,7 +242,97 @@ def load_spec_sources(unit_dir, request, resolved_src):
                 f"{unit_dir.name}: spec source {raw!r} is not a regular "
                 f"file under {resolved_src}"
             )
-    return list(files)
+    return list(files), claim
+
+
+def discover_crate_units(zerocopy_proofs_dir, src_dir):
+    """Return `(unit_dir, request, files, claim, crate)` for each unit under
+    `zerocopy/proofs` whose specification is generated from inline
+    specifications: one with a `spec_sources.json` that binds a claim.
+
+    `verify_zerocopy.py` validates and verifies those units; this checks
+    that their generated module is fresh and that their binding agrees with
+    their request.
+    """
+    resolved_src = src_dir.resolve(strict=True)
+    units = []
+    seen = {}
+    for entry in sorted(zerocopy_proofs_dir.iterdir(), key=lambda p: p.name):
+        if entry.is_symlink():
+            raise RuntimeError(f"symlink disallowed in proofs tree: {entry}")
+        bound = entry / "spec_sources.json"
+        if not entry.is_dir() or not (bound.exists() or bound.is_symlink()):
+            continue
+        request = load_strict_json(
+            (entry / "request.json").read_text(encoding="utf-8")
+        )
+        if not isinstance(request, dict) or not isinstance(
+            request.get("compilation"), dict
+        ):
+            raise RuntimeError(f"{entry.name}: request.json needs a compilation table")
+        files, claim = load_spec_binding(entry, request, resolved_src)
+        if claim is None:
+            raise RuntimeError(
+                f"{entry.name}: a zerocopy/proofs spec_sources.json must bind a claim"
+            )
+        crate = request["compilation"].get("crate_name")
+        if not isinstance(crate, str) or not CLAIM_RE.fullmatch(crate):
+            raise RuntimeError(f"{entry.name}: invalid compilation.crate_name {crate!r}")
+        module = f"Specs.{crate}.{claim}"
+        proof = request.get("proof")
+        sources = proof.get("sources") if isinstance(proof, dict) else None
+        if not isinstance(sources, list) or not all(isinstance(s, dict) for s in sources):
+            raise RuntimeError(f"{entry.name}: request.json needs proof.sources")
+        spec_sources = [s for s in sources if s.get("role") == "specification"]
+        expected = {
+            "module": module,
+            "path": f"Specs/{crate}/{claim}.lean",
+            "role": "specification",
+        }
+        if spec_sources != [expected] or proof.get("specification") != f"{module}.specs":
+            raise RuntimeError(
+                f"{entry.name}: a unit bound to claim {claim!r} must have exactly "
+                f"the specification source {expected} and proof.specification "
+                f"{module}.specs"
+            )
+        # One claim is one module and one proof: splitting it across units
+        # would give two modules the same name.
+        if module in seen:
+            raise RuntimeError(
+                f"{entry.name}: claim {claim!r} is already bound by {seen[module]}"
+            )
+        seen[module] = entry.name
+        units.append((entry, request, files, claim, crate))
+    return units
+
+
+def check_crate_unit_freshness(arguments, unit_dir, files, claim, crate):
+    """Run `anneal-spec-lower --check` on a claim-bound `zerocopy/proofs` unit."""
+    proc = subprocess.run(
+        [
+            str(arguments.lower),
+            "--src-root",
+            str(arguments.src_dir.resolve(strict=True)),
+            "--format",
+            "v2-module",
+            "--crate-slug",
+            crate,
+            "--claim",
+            claim,
+            "--check",
+            str(unit_dir),
+            *files,
+        ],
+        capture_output=True,
+        text=True,
+        timeout=arguments.timeout,
+        check=False,
+    )
+    if proc.returncode != 0:
+        raise RuntimeError(
+            f"{unit_dir.name}: generated specification freshness check failed "
+            f"(exit {proc.returncode}): {proc.stdout}{proc.stderr}"
+        )
 
 
 def check_freshness(arguments, unit_dir, request):
@@ -272,18 +386,20 @@ def list_targets(arguments, src_root, inputs):
     return load_strict_json(proc.stdout)
 
 
-def check_contract_uniqueness(arguments, units):
+def check_contract_uniqueness(arguments, units, crate_units=()):
     """Check that every specification in the crate has exactly one home.
 
     Specifications live in two places: attributes and `external_spec!` blocks
     in the crate's own sources, and units' companion `spec.rs` files. An item
     specified in the crate's sources is its single source of truth, so it may
     not also be specified in a companion file, and it must be lowered by
-    exactly one unit, through a `spec_sources.json` that names its file;
-    otherwise it is an orphan that no proof covers, or a specification that
-    two units would each claim. Companion files are independent test
-    fixtures and may specify the same item differently (for example, with
-    and without a step bound).
+    exactly one unit; otherwise it is an orphan that no proof covers, or a
+    specification that two units would each claim. An `anneal-spec` unit's
+    `spec_sources.json` lowers every item in its files; a claim-bound
+    `zerocopy/proofs` unit (`crate_units`, from `discover_crate_units`)
+    lowers the items of its claim in its files. Companion files are
+    independent test fixtures and may specify the same item differently (for
+    example, with and without a step bound).
     """
     src_dir = arguments.src_dir.resolve(strict=True)
     crate_files = []
@@ -295,13 +411,18 @@ def check_contract_uniqueness(arguments, units):
     # `--list-targets` rejects an item specified twice within the crate.
     crate_targets = list_targets(arguments, src_dir, crate_files)
     in_crate = {e["target"]: f"zerocopy/src/{e['file']}" for e in crate_targets}
-    claimed = {}
+    # `(files, claim or None, unit name)` for every unit that lowers crate
+    # sources.
+    owners = [
+        (set(files), claim, unit_dir.name)
+        for unit_dir, _, files, claim, _ in crate_units
+    ]
     companion_targets = 0
     errors = []
     for unit_dir, request in units:
         if (unit_dir / "spec_sources.json").is_file():
-            for raw in load_spec_sources(unit_dir, request, src_dir):
-                claimed.setdefault(raw, []).append(unit_dir.name)
+            files = load_spec_sources(unit_dir, request, src_dir)
+            owners.append((set(files), None, unit_dir.name))
             continue
         spec = os.path.relpath(unit_dir / "spec.rs", arguments.src_root)
         for entry in list_targets(arguments, arguments.src_root, [spec]):
@@ -312,7 +433,11 @@ def check_contract_uniqueness(arguments, units):
                     f"{in_crate[entry['target']]} and {entry['file']}"
                 )
     for entry in crate_targets:
-        units_for = claimed.get(entry["file"], [])
+        units_for = [
+            name
+            for files, claim, name in owners
+            if entry["file"] in files and claim in (None, entry["claim"])
+        ]
         if len(units_for) != 1:
             errors.append(
                 f"`{entry['target']}` (zerocopy/src/{entry['file']}) must be "
@@ -323,6 +448,7 @@ def check_contract_uniqueness(arguments, units):
     return {
         "crate_targets": len(crate_targets),
         "companion_targets": companion_targets,
+        "crate_units": len(crate_units),
     }
 
 
@@ -702,7 +828,12 @@ def run_suite(arguments, work_dir):
     """Run all positive unit verifications and negative controls."""
     lean_compile = run_lean_compile_check(arguments, work_dir)
     units = discover_spec_units(arguments.proofs_dir, arguments.src_dir)
-    uniqueness = check_contract_uniqueness(arguments, units)
+    crate_units = discover_crate_units(
+        arguments.zerocopy_proofs_dir, arguments.src_dir
+    )
+    for unit_dir, _, files, claim, crate in crate_units:
+        check_crate_unit_freshness(arguments, unit_dir, files, claim, crate)
+    uniqueness = check_contract_uniqueness(arguments, units, crate_units)
     workers = max(1, min(arguments.jobs, len(units)))
     started = time.monotonic()
     unit_results = {}
@@ -747,6 +878,12 @@ def main(argv=None):
     parser.add_argument("--src-root", type=Path, default=spec_root)
     parser.add_argument("--src-dir", type=Path, default=repo_root / "zerocopy/src")
     parser.add_argument(
+        "--zerocopy-proofs-dir",
+        type=Path,
+        default=repo_root / "zerocopy/proofs",
+        help="Claim-bound units here are checked for freshness and uniqueness.",
+    )
+    parser.add_argument(
         "--trusted-lean", type=Path, default=anneal_root / "trusted/lean"
     )
     parser.add_argument(
@@ -787,6 +924,7 @@ def main(argv=None):
     arguments.proofs_dir = arguments.proofs_dir.resolve(strict=True)
     arguments.src_root = arguments.src_root.resolve(strict=True)
     arguments.src_dir = arguments.src_dir.resolve(strict=True)
+    arguments.zerocopy_proofs_dir = arguments.zerocopy_proofs_dir.resolve(strict=True)
     arguments.trusted_lean = arguments.trusted_lean.resolve(strict=True)
 
     def run(work_dir):
