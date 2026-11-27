@@ -58,6 +58,25 @@ anneal::external_spec! {
         Val == Val && () == ()
     }
 
+    // Integer constants lower to their values on the profile v1 target,
+    // where `usize` and `isize` are 64 bits wide.
+    #[anneal::pure]
+    fn consts_are(umax: usize, imin: isize, i8min: i8, u128max: u128, bits: u32) -> bool {
+        umax == usize::MAX
+            && imin == isize::MIN
+            && i8min == i8::MIN
+            && u128max == u128::MAX
+            && bits == usize::BITS
+            && u32::MIN == 0u32
+    }
+
+    #[anneal::spec(
+        requires(math(n) + 1 <= math(usize::MAX)),
+        max_steps = u8::MAX + u32::BITS * 2 + n / u16::MAX,
+        ensures(|r| math(r) == math(n) + 1),
+    )]
+    fn consts(n: usize) -> usize;
+
     #[anneal::spec(
         requires(d != 0u32),
         ensures(|r| math(r) == math(n / d) && math(n % d) < math(d)),

@@ -20,7 +20,9 @@ use std::{cell::Cell, collections::BTreeMap};
 use proc_macro2::Span;
 
 use crate::{
-    ast::{BinOp, Clause, Effect, Expr, ExprKind, IntTy, Param, PureFn, SpecFn, Ty, UnOp},
+    ast::{
+        BinOp, Clause, Effect, Expr, ExprKind, IntConst, IntTy, Param, PureFn, SpecFn, Ty, UnOp,
+    },
     diag::Diagnostic,
 };
 
@@ -231,6 +233,21 @@ fn int_lit(v: IntLit) -> String {
     v.to_lean()
 }
 
+/// The value and type of the integer constant `t::c` on the profile v1
+/// target, where `usize` and `isize` are 64 bits wide. As in Rust, `T::MIN`
+/// and `T::MAX` have type `T`, and `T::BITS` has type `u32`.
+fn int_const(t: IntTy, c: IntConst) -> (IntLit, IntTy) {
+    let (lo, hi) = t.range();
+    match c {
+        IntConst::Min => (IntLit::new(lo < 0, lo.unsigned_abs()), t),
+        IntConst::Max => (IntLit::new(false, hi), t),
+        IntConst::Bits => (
+            IntLit::new(false, u128::from(t.bits)),
+            IntTy { bits: 32, signed: false, pointer_sized: false },
+        ),
+    }
+}
+
 fn type_error(span: Span, msg: impl Into<String>) -> Diagnostic {
     Diagnostic::new("E_ANNEAL_SPEC_TYPE_MISMATCH", span, msg)
 }
@@ -342,6 +359,21 @@ impl Env<'_> {
                     }
                 }
                 Ok(format!("({v} : Nat)"))
+            }
+            ExprKind::IntConst(t, c) => {
+                let (lit, ty) = int_const(*t, *c);
+                if ty.signed {
+                    return Err(type_error(
+                        e.span,
+                        format!(
+                            "`max_steps` requires a non-negative integer, found signed `{}::{}`",
+                            t.rust_name(),
+                            c.rust_name()
+                        ),
+                    )
+                    .help("use an unsigned integer constant or literal"));
+                }
+                Ok(format!("({} : Nat)", lit.mag))
             }
             ExprKind::Ident(name) => {
                 let Some(b) = self.names.get(name) else {
@@ -495,6 +527,10 @@ impl Env<'_> {
                     None => Ok(Low::Lit(lit, e.span)),
                 }
             }
+            ExprKind::IntConst(t, c) => {
+                let (lit, ty) = int_const(*t, *c);
+                Ok(Low::Int(int_lit(lit), if math { Ty::Math } else { Ty::Int(ty) }))
+            }
             ExprKind::Ident(name) => self.ident(name, e.span, math),
             ExprKind::Paren(inner) => self.lower(inner, math, facts),
             ExprKind::Math(inner) => {
@@ -638,7 +674,7 @@ impl Env<'_> {
                 let a = int_term(a, l.span, op)?;
                 let b = int_term(b, r.span, op)?;
                 if matches!(op, BinOp::Div | BinOp::Rem) {
-                    let nonzero_lit = matches!(&r.kind, ExprKind::Int(v, _) if *v != 0);
+                    let nonzero_lit = const_int_lit(r).is_some_and(|v| v.mag != 0);
                     if !nonzero_lit && !facts.contains(&b) {
                         return Err(Diagnostic::new(
                             "E_ANNEAL_UNGUARDED_SPEC_DIV",
@@ -683,7 +719,7 @@ impl Env<'_> {
                 self.collect_facts(r, facts);
             }
             ExprKind::Binary(op @ (BinOp::Ne | BinOp::Gt | BinOp::Lt), l, r) => {
-                let zero = |x: &Expr| matches!(x.kind, ExprKind::Int(0, _));
+                let zero = |x: &Expr| const_int_lit(x).is_some_and(|v| v.mag == 0);
                 let subject = match op {
                     BinOp::Ne if zero(r) => Some(l),
                     BinOp::Ne if zero(l) => Some(r),
@@ -946,12 +982,19 @@ fn int_term(l: Low, span: Span, op: BinOp) -> Result<String, Diagnostic> {
     }
 }
 
-fn is_nonzero_nat_lit(e: &Expr) -> bool {
+/// Returns the constant integer value of `e` when `e` is a literal or
+/// associated integer constant (possibly parenthesized or wrapped in `math`).
+fn const_int_lit(e: &Expr) -> Option<IntLit> {
     match &e.kind {
-        ExprKind::Int(v, _) => *v != 0,
-        ExprKind::Paren(inner) | ExprKind::Math(inner) => is_nonzero_nat_lit(inner),
-        _ => false,
+        ExprKind::Int(v, _) => Some(IntLit::new(false, *v)),
+        ExprKind::IntConst(t, c) => Some(int_const(*t, *c).0),
+        ExprKind::Paren(inner) | ExprKind::Math(inner) => const_int_lit(inner),
+        _ => None,
     }
+}
+
+fn is_nonzero_nat_lit(e: &Expr) -> bool {
+    const_int_lit(e).is_some_and(|v| !v.neg && v.mag != 0)
 }
 
 /// The lowered pieces of one specified function.

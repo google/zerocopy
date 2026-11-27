@@ -7,8 +7,9 @@
 -- those terms.
 
 -- Pins the meaning of the helpers that `spec.rs` lowers into `Spec.lean`:
--- Rust's truncating `/` and `%`, two's-complement wrapping, and parameters
--- that must not capture the generated names they are named after.
+-- Rust's truncating `/` and `%`, two's-complement wrapping, the values of
+-- integer constants, and parameters that must not capture the generated names
+-- they are named after.
 prelude
 import Spec
 
@@ -51,5 +52,22 @@ private def u64Usize (n : Nat) : Trusted.MirSemantics.Val :=
   .scalar ⟨.isize, false, BitVec.ofNat 128 n⟩
 
 example : fn0_max_steps { args := [u64Usize 10, u64Usize 3] } = 885 := rfl
+
+-- Integer constants lower to their values on the profile v1 target, where
+-- `usize` and `isize` are 64 bits wide and `T::BITS` is the bit width.
+example : pure_consts_are 18446744073709551615 (-9223372036854775808) (-128)
+    340282366920938463463374607431768211455 64 := by
+  unfold pure_consts_are; decide
+example : ¬ pure_consts_are 4294967295 (-9223372036854775808) (-128)
+    340282366920938463463374607431768211455 64 := by
+  unfold pure_consts_are; decide
+example : ¬ pure_consts_are 18446744073709551615 (-9223372036854775808) (-128)
+    340282366920938463463374607431768211455 32 := by
+  unfold pure_consts_are; decide
+
+-- `consts` (sorted second as `fn1`) lowers
+-- `max_steps = u8::MAX + u32::BITS * 2 + n / u16::MAX`:
+-- `255 + 32 * 2 + 131070 / 65535 = 255 + 64 + 2 = 321`.
+example : fn1_max_steps { args := [u64Usize 131070] } = 321 := rfl
 
 end Spec.Check
