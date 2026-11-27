@@ -83,6 +83,7 @@ pub struct Uses {
     pub q: Cell<bool>,
     pub out: Cell<bool>,
     pub val_int: Cell<bool>,
+    pub val_nat: Cell<bool>,
     pub val_bool: Cell<bool>,
     pub arg: Cell<bool>,
 }
@@ -301,6 +302,168 @@ impl Env<'_> {
             other => {
                 Err(type_error(e.span, format!("expected `bool`, found {}", describe(&other))))
             }
+        }
+    }
+
+    /// Type-checks and lowers a `max_steps` expression to a non-negative `Nat`
+    /// term over entry arguments. Arithmetic in `max_steps` is mathematical
+    /// (`Nat` step count, never wrapping machine width), while signed values,
+    /// unary negation, and subtraction are rejected fail-closed so `Spec.lean`
+    /// never silently clamps or saturates a negative bound to `0`.
+    pub fn lower_nat(&self, e: &Expr, facts: &mut Vec<String>) -> Result<String, Diagnostic> {
+        match &e.kind {
+            ExprKind::Int(v, suffix) => {
+                let lit = IntLit::new(false, *v);
+                if let Some(t) = suffix {
+                    check_range(lit, *t, e.span)?;
+                    if t.signed {
+                        return Err(type_error(
+                            e.span,
+                            format!(
+                                "`max_steps` requires a non-negative integer, found signed `{}`",
+                                t.rust_name()
+                            ),
+                        )
+                        .help("use an unsuffixed or unsigned integer literal"));
+                    }
+                }
+                Ok(format!("({v} : Nat)"))
+            }
+            ExprKind::Ident(name) => {
+                let Some(b) = self.names.get(name) else {
+                    let mut d = Diagnostic::new(
+                        "E_ANNEAL_SPEC_UNKNOWN_IDENT",
+                        e.span,
+                        format!("cannot find `{name}` in this specification"),
+                    );
+                    if let Some(s) = suggest(name, self.names.keys()) {
+                        d = d.help(format!("a binding with a similar name exists: `{s}`"));
+                    } else if name == "ret" {
+                        d = d.help("the return value is only in scope inside `ensures(|ret| ...)`");
+                    }
+                    return Err(d);
+                };
+                match b {
+                    Binding::Arg(i, Ty::Int(t)) if !t.signed => {
+                        self.uses.q.set(true);
+                        self.uses.arg.set(true);
+                        self.uses.val_nat.set(true);
+                        Ok(format!("(specNat (specArg q {i}))"))
+                    }
+                    Binding::Arg(_, ty @ Ty::Int(_)) => Err(type_error(
+                        e.span,
+                        format!(
+                            "`max_steps` requires a non-negative integer, but `{name}` has signed \
+                             type `{}`",
+                            ty.describe()
+                        ),
+                    )
+                    .help("step bounds may only depend on unsigned integer parameters")),
+                    Binding::Arg(_, ty) | Binding::Ret(ty) | Binding::HelperParam(_, ty) => {
+                        Err(type_error(
+                            e.span,
+                            format!(
+                                "`max_steps` expects a non-negative integer, found `{}`",
+                                ty.describe()
+                            ),
+                        ))
+                    }
+                }
+            }
+            ExprKind::Paren(inner) | ExprKind::Math(inner) => self.lower_nat(inner, facts),
+            ExprKind::Old(_) => Err(Diagnostic::new(
+                "E_ANNEAL_OLD_IN_PRECONDITION",
+                e.span,
+                "`old(...)` is meaningless in `max_steps`, which is already evaluated in the \
+                 entry state",
+            )),
+            ExprKind::Bool(_) => Err(type_error(
+                e.span,
+                "expected a non-negative integer for `max_steps`, found `bool`",
+            )),
+            ExprKind::Unit => Err(type_error(
+                e.span,
+                "expected a non-negative integer for `max_steps`, found `()`",
+            )),
+            ExprKind::Unary(UnOp::Neg, _) => Err(type_error(
+                e.span,
+                "unary `-` is not allowed in `max_steps`: step bounds must be non-negative",
+            )),
+            ExprKind::Unary(UnOp::Not, _) => {
+                let _ = self.lower(e, false, facts)?;
+                Err(type_error(
+                    e.span,
+                    "expected a non-negative integer for `max_steps`, found `bool`",
+                ))
+            }
+            ExprKind::Binary(op, l, r) => match op {
+                BinOp::Add | BinOp::Mul | BinOp::Div | BinOp::Rem => {
+                    let a = self.lower_nat(l, facts)?;
+                    let b = self.lower_nat(r, facts)?;
+                    if matches!(op, BinOp::Div | BinOp::Rem) {
+                        let guarded = is_nonzero_nat_lit(r) || {
+                            let mut scratch = Vec::new();
+                            matches!(
+                                self.lower(r, true, &mut scratch),
+                                Ok(Low::Int(t, _)) if facts.contains(&t)
+                            )
+                        };
+                        if !guarded {
+                            return Err(Diagnostic::new(
+                                "E_ANNEAL_UNGUARDED_SPEC_DIV",
+                                r.span,
+                                format!("the divisor of `{}` may be zero", op.rust()),
+                            )
+                            .help("guard it in `requires`, e.g. `requires(d != 0usize)`"));
+                        }
+                    }
+                    Ok(match op {
+                        BinOp::Add => format!("({a} + {b})"),
+                        BinOp::Mul => format!("({a} * {b})"),
+                        BinOp::Div => format!("(Nat.div {a} {b})"),
+                        _ => format!("(Nat.mod {a} {b})"),
+                    })
+                }
+                BinOp::Sub => {
+                    let _ = self.lower_nat(l, facts)?;
+                    let _ = self.lower_nat(r, facts)?;
+                    Err(type_error(
+                        e.span,
+                        "subtraction `-` is not allowed in `max_steps`: step bounds must be \
+                         syntactically non-negative",
+                    )
+                    .help("rewrite the bound using `+`, `*`, `/`, and `%` over non-negative terms"))
+                }
+                BinOp::BitAnd | BinOp::BitOr | BinOp::BitXor | BinOp::Shl | BinOp::Shr => {
+                    let _ = self.binary(*op, l, r, e.span, true, facts)?;
+                    unreachable!("bitwise operators are rejected above")
+                }
+                _ => {
+                    let _ = self.binary(*op, l, r, e.span, false, facts)?;
+                    Err(type_error(
+                        e.span,
+                        "expected a non-negative integer for `max_steps`, found `bool`",
+                    ))
+                }
+            },
+            ExprKind::Call(name, args) => match self.call(name, args, e.span, false, facts)? {
+                Low::Int(term, Ty::Int(t)) if !t.signed => Ok(format!("(Int.toNat {term})")),
+                Low::Int(_, Ty::Int(t)) => Err(type_error(
+                    e.span,
+                    format!(
+                        "`max_steps` requires a non-negative integer, but `{name}` returns signed \
+                         `{}`",
+                        t.rust_name()
+                    ),
+                )),
+                other => Err(type_error(
+                    e.span,
+                    format!(
+                        "`max_steps` expects a non-negative integer, found {}",
+                        describe(&other)
+                    ),
+                )),
+            },
         }
     }
 
@@ -769,15 +932,25 @@ fn int_term(l: Low, span: Span, op: BinOp) -> Result<String, Diagnostic> {
     }
 }
 
+fn is_nonzero_nat_lit(e: &Expr) -> bool {
+    match &e.kind {
+        ExprKind::Int(v, _) => *v != 0,
+        ExprKind::Paren(inner) | ExprKind::Math(inner) => is_nonzero_nat_lit(inner),
+        _ => false,
+    }
+}
+
 /// The lowered pieces of one specified function.
 pub struct LoweredFn {
     pub behavior_pre: Option<String>,
     pub safety_pre: Option<String>,
     pub post: Option<String>,
+    pub max_steps: Option<String>,
     pub uses_pre_q: bool,
     pub uses_safety_q: bool,
     pub uses_post_q: bool,
     pub uses_post_out: bool,
+    pub uses_max_steps_q: bool,
     pub terminates: bool,
     pub no_unwind: bool,
 }
@@ -813,6 +986,7 @@ pub fn lower_fn(
     let mut may_diverge_span: Option<Span> = None;
     let mut no_unwind_claim: Option<&'static str> = None;
     let mut may_unwind_claim: Option<(&'static str, Span)> = None;
+    let mut max_steps: Option<(&Expr, Span)> = None;
     let mut targets = 0;
     for c in &f.clauses {
         match &c.clause {
@@ -836,6 +1010,17 @@ pub fn lower_fn(
                 }
             }
             Clause::Ensures { binder, body } => ensures.push((binder, body, c.span)),
+            Clause::MaxSteps(e) => {
+                if max_steps.is_some() {
+                    errors.push(Diagnostic::new(
+                        "E_ANNEAL_DUPLICATE_CLAUSE",
+                        c.span,
+                        "at most one `max_steps` clause is allowed",
+                    ));
+                } else {
+                    max_steps = Some((e, c.span));
+                }
+            }
             Clause::Effect(e) => match e {
                 Effect::Total => {
                     (terminates, no_unwind) = (true, true);
@@ -885,6 +1070,16 @@ pub fn lower_fn(
             md_span,
             format!("`may_diverge` conflicts with `{pos_name}` in the same contract"),
         ));
+    }
+    if let (Some((_, ms_span)), Some(md_span)) = (max_steps, may_diverge_span) {
+        let span = if terminates_claim.is_some() { ms_span } else { md_span };
+        errors.push(Diagnostic::new(
+            "E_ANNEAL_CONFLICTING_EFFECTS",
+            span,
+            "`max_steps` conflicts with `may_diverge` in the same contract",
+        ));
+    } else if max_steps.is_some() {
+        terminates = true;
     }
     if let (Some(pos_name), Some((neg_name, mw_span))) = (no_unwind_claim, may_unwind_claim) {
         errors.push(Diagnostic::new(
@@ -970,9 +1165,27 @@ pub fn lower_fn(
     }
     for u in [&pre_uses, &post_uses] {
         runtime.val_int.set(runtime.val_int.get() | u.val_int.get());
+        runtime.val_nat.set(runtime.val_nat.get() | u.val_nat.get());
         runtime.val_bool.set(runtime.val_bool.get() | u.val_bool.get());
         runtime.arg.set(runtime.arg.get() | u.arg.get());
     }
+    let steps_uses = Uses::default();
+    let mut steps_env = Env::for_fn(f, helpers, &steps_uses);
+    steps_env.in_requires = true;
+    let lowered_max_steps = match max_steps {
+        Some((e, _)) => match steps_env.lower_nat(e, &mut facts.clone()) {
+            Ok(t) => Some(t),
+            Err(d) => {
+                errors.push(d);
+                None
+            }
+        },
+        None => None,
+    };
+    runtime.val_int.set(runtime.val_int.get() | steps_uses.val_int.get());
+    runtime.val_nat.set(runtime.val_nat.get() | steps_uses.val_nat.get());
+    runtime.val_bool.set(runtime.val_bool.get() | steps_uses.val_bool.get());
+    runtime.arg.set(runtime.arg.get() | steps_uses.arg.get());
     if !errors.is_empty() {
         return Err(errors);
     }
@@ -986,10 +1199,12 @@ pub fn lower_fn(
         behavior_pre,
         safety_pre,
         post: conj(&post_parts),
+        max_steps: lowered_max_steps,
         uses_pre_q: pre_q,
         uses_safety_q: safety_q || pre_q,
         uses_post_q: post_uses.q.get(),
         uses_post_out: post_uses.out.get(),
+        uses_max_steps_q: steps_uses.q.get(),
         terminates,
         no_unwind,
     })

@@ -458,6 +458,20 @@ pub fn parse_clauses(stream: TokenStream, span: Span) -> Result<Vec<SpannedClaus
             ("ensures", [Tok::Group(Delimiter::Parenthesis, inner, g)]) => {
                 parse_ensures(inner.clone(), *g)
             }
+            ("max_steps", [eq, rest @ ..]) if eq.is_op("=") => {
+                if rest.is_empty() {
+                    Err(Diagnostic::new(
+                        "E_ANNEAL_SPEC_SYNTAX",
+                        eq.span(),
+                        "expected an expression",
+                    )
+                    .help("write `max_steps = <expr>`"))
+                } else {
+                    ExprParser { toks: rest.to_vec(), pos: 0, end_span: clause_span }
+                        .parse_all()
+                        .map(Clause::MaxSteps)
+                }
+            }
             (
                 "cases" | "modifies" | "ensures_err" | "ensures_unwind" | "after_expiry"
                 | "unwinds_if" | "decreases" | "witness" | "must_reject",
@@ -469,13 +483,19 @@ pub fn parse_clauses(stream: TokenStream, span: Span) -> Result<Vec<SpannedClaus
             )),
             (
                 "requires" | "safety_requires" | "ensures" | "total" | "terminates" | "no_panic"
-                | "no_unwind" | "may_diverge" | "may_unwind" | "may_panic" | "target",
+                | "no_unwind" | "may_diverge" | "may_unwind" | "may_panic" | "max_steps" | "target",
                 _,
-            ) => Err(Diagnostic::new(
-                "E_ANNEAL_SPEC_SYNTAX",
-                clause_span,
-                format!("malformed `{name}` clause"),
-            )),
+            ) => {
+                let mut d = Diagnostic::new(
+                    "E_ANNEAL_SPEC_SYNTAX",
+                    clause_span,
+                    format!("malformed `{name}` clause"),
+                );
+                if name == "max_steps" {
+                    d = d.help("write `max_steps = <expr>`");
+                }
+                Err(d)
+            }
             _ => Err(Diagnostic::new(
                 "E_ANNEAL_UNKNOWN_CLAUSE",
                 name_span,

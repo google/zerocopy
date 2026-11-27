@@ -185,14 +185,18 @@ fn mir_ty(t: Ty) -> String {
     }
 }
 
-fn contract_signature(f: &SpecFn) -> String {
+fn contract_signature_record(f: &SpecFn) -> String {
     let params: Vec<String> = f.params.iter().map(|p| mir_ty(p.ty)).collect();
     format!(
-        "some {{ isUnsafe := {}, params := [{}], ret := {} }}",
+        "{{ isUnsafe := {}, params := [{}], ret := {} }}",
         f.is_unsafe,
         params.join(", "),
-        mir_ty(f.ret),
+        mir_ty(f.ret)
     )
+}
+
+fn contract_signature(f: &SpecFn) -> String {
+    format!("some {}", contract_signature_record(f))
 }
 
 fn signature(f: &SpecFn) -> String {
@@ -221,6 +225,7 @@ pub fn emit(
     w.push("namespace Spec");
     w.push("");
     w.push("open Trusted.MirAst Trusted.MirSemantics");
+    let any_max_steps = fns.iter().any(|(_, l)| l.max_steps.is_some());
     if runtime.val_int.get() {
         w.push("");
         w.push(
@@ -228,6 +233,16 @@ pub fn emit(
              well-typed argument or return value never is). -/\n\
              noncomputable def specInt : Val → Int\n  \
              | .scalar s => scalarAsInt s\n  \
+             | _ => 0",
+        );
+    }
+    if runtime.val_nat.get() {
+        w.push("");
+        w.push(
+            "/-- Mathematical value of an unsigned integer `Val` as `Nat` (`0` for any\n\
+             other or negative value, which a well-typed unsigned argument never is). -/\n\
+             noncomputable def specNat : Val → Nat\n  \
+             | .scalar s => (scalarAsInt s).toNat\n  \
              | _ => 0",
         );
     }
@@ -250,6 +265,55 @@ pub fn emit(
              match Trusted.MirSemantics.getElem? q.args i with\n  \
              | some v => v\n  \
              | none => .unit",
+        );
+    }
+    if any_max_steps {
+        w.push("");
+        w.push(
+            "/-- State `s` reaches `.done out` satisfying `post out` within at most `bound`\n\
+             deterministic MIR small steps (`Step`), without faulting. Bounds abstract MIR\n\
+             transitions, not physical wall-clock time or hardware cycles. -/\n\
+             private noncomputable def reachesDoneWithin (p : Program)\n    \
+             (post : TerminalOut → Prop) : Nat → State → Prop :=\n  \
+             @Nat.rec (fun _ => State → Prop)\n    \
+             (fun _ => False)\n    \
+             (fun _ ih s =>\n      \
+             (∃ out : TerminalOut, Step p s (.done out) ∧ post out) ∨\n      \
+             (∃ s' : State, Step p s (.step s') ∧ ih s'))",
+        );
+        w.push("");
+        w.push(
+            "/-- Terminal-outcome predicate of `c : FnContract` on entry `q` (rejecting\n\
+             `.aborted`, gating `.unwound` by `c.effects.noUnwind = false`, and checking\n\
+             `c.postReturn` on normal return). -/\n\
+             private noncomputable def contractTerminalPost (c : FnContract) (q : Query)\n    \
+             (out : TerminalOut) : Prop :=\n  \
+             match out with\n  \
+             | .returned retOut => c.postReturn q retOut\n  \
+             | .unwound uwMem => c.effects.noUnwind = false ∧ c.postUnwind q uwMem\n  \
+             | .aborted _ => False",
+        );
+        w.push("");
+        w.push(
+            "/-- Bounded-step adequacy obligation for one `ContractEntry`: the body in `p`\n\
+             matching `identity` and `sig` initializes cleanly and reaches a\n\
+             contract-admissible terminal outcome within `bound { args := args }` MIR\n\
+             small steps on every valid entry in `c.effectiveBehaviorPre`. -/\n\
+             private noncomputable def entrySatisfiesStepBound (p : Program)\n    \
+             (identity : String) (sig : ContractSignature) (c : FnContract)\n    \
+             (bound : Query → Nat) : Prop :=\n  \
+             ∃ (defId : DefId) (body : Body),\n    \
+             Trusted.MirSemantics.getElem? p.bodies defId = some body ∧\n    \
+             stringBeq body.identity identity = true ∧\n    \
+             bodyMatchesContractSignature body sig = true ∧\n    \
+             ∀ args : List Val,\n      \
+             ValidEntryArgs body args →\n      \
+             c.effectiveBehaviorPre body.isUnsafe { args := args } →\n      \
+             ∃ s₀ : State,\n        \
+             initState (entryProgForBody p defId) { args := args } = .ok s₀ ∧\n        \
+             reachesDoneWithin (entryProgForBody p defId)\n          \
+             (contractTerminalPost c { args := args })\n          \
+             (bound { args := args }) s₀",
         );
     }
     for (h, body) in helpers {
@@ -325,6 +389,24 @@ pub fn emit(
                 clause_span(&|c| matches!(c, C::Ensures { .. })),
             );
         }
+        if let Some(ms) = &l.max_steps {
+            w.push("");
+            let decl = format!(
+                "{}\nnoncomputable def fn{k}_max_steps ({} : Query) : Nat :=\n  {ms}",
+                doc_comment(&format!(
+                    "Deterministic MIR small-step bound of `{}` (abstract `Step` transitions, \
+                     not physical wall-clock time).",
+                    doc_text(&f.path)
+                )),
+                binder(l.uses_max_steps_q, "q"),
+            );
+            w.decl(
+                &format!("fn{k}_max_steps"),
+                &decl,
+                f.file,
+                clause_span(&|c| matches!(c, C::MaxSteps(_))),
+            );
+        }
         let mut fields = Vec::new();
         if l.safety_pre.is_some() {
             fields.push(format!("  safetyPre := fn{k}_safety"));
@@ -363,10 +445,34 @@ pub fn emit(
             ));
         }
     }
-    w.push(&format!(
-        "noncomputable def specs : Specs := ContractSpecs [\n{}\n]",
-        entries.join("\n")
-    ));
+    if any_max_steps {
+        w.push(&format!(
+            "private noncomputable def contractSpecs : Specs := ContractSpecs [\n{}\n]",
+            entries.join("\n")
+        ));
+        let mut step_obligations = Vec::new();
+        for (k, (f, l)) in fns.iter().enumerate() {
+            if l.max_steps.is_some() {
+                step_obligations.push(format!(
+                    "    entrySatisfiesStepBound p fn{k}_id\n      {}\n      fn{k}_contract fn{k}_max_steps",
+                    contract_signature_record(f)
+                ));
+            }
+        }
+        w.push("");
+        w.push(&format!(
+            "noncomputable def specs : Specs := {{\n  \
+             safety := contractSpecs.safety\n  \
+             property := fun p =>\n    \
+             contractSpecs.property p ∧\n{}\n}}",
+            step_obligations.join(" ∧\n")
+        ));
+    } else {
+        w.push(&format!(
+            "noncomputable def specs : Specs := ContractSpecs [\n{}\n]",
+            entries.join("\n")
+        ));
+    }
     w.push("");
     w.push("end Spec");
     let map = json!({

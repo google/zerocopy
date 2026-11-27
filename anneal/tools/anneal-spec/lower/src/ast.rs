@@ -189,6 +189,9 @@ pub enum Clause {
         body: Expr,
     },
     Effect(Effect),
+    /// `max_steps = E`: deterministic MIR small-step upper bound over entry
+    /// arguments (counts abstract `Step` transitions, not wall-clock time).
+    MaxSteps(Expr),
     /// `target = "path"`: overrides the derived item path.
     Target(String),
 }
