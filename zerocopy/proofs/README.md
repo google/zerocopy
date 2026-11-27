@@ -12,9 +12,9 @@ those terms. -->
 > **This is alpha software!** Anneal (`0.2.0-alpha`, Stage 0) has not yet
 > completed an independent TCB audit. The units below verify **530 distinct
 > currently capturable scalar, unit, layout, generic, and sentinel
-> functions/monomorphizations** in `../src/` under
-> Profile v1 and **4 byte-slice functions** under the experimental Profile v2
-> (`x86_64-unknown-linux-gnu`, `-C opt-level=0`,
+> functions/monomorphizations** in `../src/` under Profile v1 and **23
+> byte-slice, fieldless-enum, and raw-pointer functions** under the experimental
+> Profile v2 (`x86_64-unknown-linux-gnu`, `-C opt-level=0`,
 > `no_zerocopy_allocator_api_1_100_0` only). Passing CI here **does not** verify
 > other pointer or slice operations (`Ref`, `Ptr`, `transmute!`), Cargo features
 > (`alloc`, `simd`, `derive`), or the `unsafe impl` safety contracts of marker
@@ -33,14 +33,17 @@ those terms. -->
 This directory contains out-of-line Anneal formal specifications and
 kernel-checked Lean 4 proofs covering those 530 distinct Profile v1 items
 (scalar, unit, layout, generic, and marker-sentinel functions and
-monomorphizations) and 4 verbatim Profile v2 byte-slice items in `../src/`.
+monomorphizations) and 23 verbatim Profile v2 byte-slice, fieldless-enum, and
+raw-pointer items in `../src/`. Together they cover every non-generic function
+in `../src/` that whole-crate capture currently admits.
 
-The Profile v2 units (`06_*` and `08_*`) rest on additional assumptions,
-described in [Profile v2][profile-v2-doc]. Profile v2 has no aliasing model:
-the theorems quantify only over entries whose reference arguments are valid,
-initialized, and, for `&mut`, disjoint, and receipts record these as
-assumptions. Receipts also mark `correspondence_provenance` inapplicable,
-because the `lean-miri` correspondence covers only Profile v1 rules.
+The Profile v2 units (`06_*`, `08_*`, and `16_*`) rest on additional
+assumptions, described in [Profile v2][profile-v2-doc]. Profile v2 has no
+aliasing model: the theorems quantify only over entries whose reference
+arguments are valid, initialized, and, for `&mut`, disjoint, and receipts record
+these as assumptions. Receipts also mark `correspondence_provenance`
+inapplicable, because the `lean-miri` correspondence covers only Profile v1
+rules.
 
 [profile-v2-doc]: ../../anneal/docs/alpha.md#experimental-mir-profile-v2-borrowed-slices-and-raw-pointers
 
@@ -72,6 +75,7 @@ attributes across compiled sources) and every proof unit in
 | `13_float_str_and_atomic_bit_validity` | 61 selected trait sealing markers for `f32`, `f64` (`impls.rs:81-82`), `str` (`impls.rs:165-180`), and `AtomicBool` plus `Atomic{U,I}{8,16,32,64,size}` (`impls.rs:454-609`, excluding `KnownLayout`, `AtomicPtr<T>`, and feature-gated `f16`/`f128`/`simd`) | Selected 61-body MIR sealing-marker contracts (`ReturnsTotal` and arbitrary-`MemoryState` stepping); Spec-local IEEE `f32`/`f64` `AllocByte` bit-validity/layout definitions (`MirTy` lowers `Float`, `Str`, and ADTs to `.unsupported`; `is_safe` MIR bodies not captured), Spec-local RFC 3629 UTF-8 DFA/grammar equivalence (`StrFromZerosSound`, `StrIntoBytesSound`, and `[0xFF]`/`[0x80]`/`[0xC0, 0x80]`/`U+D800` `FromBytes` refutations), `Trusted.MirSemantics` bit-validity proofs for `Atomic*` backing scalars (linked via the `Spec`-local same-size/bit-validity correspondence `atomicBackingMirTy`, incl. `0x02` `FromBytes` refutation), the 1-byte-atomic `Unaligned` argument (a 1-byte layout whose size is a multiple of its alignment has alignment 1), primitive `w ≠ .i8` alignment above 1, and Spec-local `ContainsUnsafeCell` `ImmutableSound` classification | `["propext"]` |
 | `14_known_layout_and_dst_layout` | 41 selected `KnownLayout` trait sealing markers (`11` concrete `Atomic*` types in `impls.rs:405,463`, `29` primitive and `NonZero<*>` types in `lib.rs:1221-1227`, and `str` in `lib.rs:1267-1270`, excluding generic `impls` such as `AtomicPtr<T>`, `LAYOUT` constants, `raw_from_ptr_len`/`pointer_to_metadata`, and feature-gated `f16`/`f128`/`simd`) | Selected 41-body MIR sealing-marker contracts (`isUnsafe = false`, `argumentCount = 0`, `ReturnsTotal` returning `()`, and arbitrary-`MemoryState` stepping); model-side 64-bit `DstLayout`/`TrailingSliceLayout`/`RoundingAlignAndPhase` theorems grounded in `M_anneal`'s 64-bit `isize`/`usize` layout (`layout.rs`/`util/mod.rs` Rust MIR bodies not captured): power-of-two bit-hack iff, `RoundingAlignAndPhase::{new,components,align}` round-trip and Kani postconditions, `size_offset` OR/ADD equivalence, `util::{padding_needed_for,round_down_to_next_multiple_of_alignment}`, `padding_for_elems` fast-vs-naive equivalence and `align ∣ elem_size` invariance, `max_trailing_bytes` Kani agreement and iff optimality, and `size_for_elems`/`size_for_elems_unchecked` Kani agreement and overflow-freedom | `["propext"]` |
 | `15_generic_wrapper_and_array_markers` | `util::macros::__unsafe` (`1` non-generic root), `util::macro_util::must_use::<{bool,u32,u8,usize}>` (`4` substantive generic functions in `util/macro_util.rs:963-968`), and `85` concrete `--instantiate` trait sealing markers in `wrappers.rs`, `impls.rs`, and `lib.rs` across `Unalign<u32>`, `ReadOnly<{u32,u8,UnsafeCell<u32>}>`, `Wrapping<{u32,u8}>`, `ManuallyDrop<{u32,u8}>`, `core::mem::MaybeUninit<{u32,u8}>`, `wrappers::MaybeUninit<u32>`, `[u8; 4]`, `[u32; 4]`, `PhantomData<*const u8>`, `*const u8`, `*mut u8`, `AtomicPtr<u8>`, `UnsafeCell<u8>`, `Cell<u8>`, and `Option<{NonZero<u32>,&u8,NonNull<u8>}>` | Selected 90-body MIR contracts (`ReturnsTotal` and arbitrary-`MemoryState` stepping, including universal identity contracts over all `Bool`/`u32`/`u8`/`usize` inputs for `must_use::<*>`); direct `Trusted.MirSemantics.{Bytes,Layout,Memory}` theorems for `UnalignMemorySound` (alignment-1 `writeBytes`/`readBytes` at arbitrary offsets vs. `w ≠ .i8` `loadIndirect`/`storeIndirect` alignment faults at offset `1` and `u32` offset-1 round-trip), `MaybeUninitSound` (`initBytes? = none`, `decodeVal = .ok none`, and `encodeVal ≠ .ok` on `.uninit` buffers), 64-bit thin-pointer `decodeUInt` `is_zeroed` iff characterization (`1 :: replicate 7 0` refutation), and ZST `.unit` `0`-byte codec/`readBytes`/`writeBytes` laws; plus `Spec`-local `[T; N]` `encodeArray`/`decodeArray` lifting (`[bool; 4]` `0x02` `FromBytes` refutation; Profile v1 `layoutOfTy`/`encodeVal`/`decodeVal` do not handle `Struct`/`Union`/`Array`/raw pointers—`MirTy.array` is Profile v2 only—and inherent wrapper methods are uncaptured) | `["propext"]` |
+| `16_enum_impls_and_pointer_to_metadata` | The derived `<byteorder::Order as Clone>::clone`, `<byteorder::Order as PartialEq>::eq`, and `<byteorder::Order as Eq>::assert_fields_are_eq` (`byteorder.rs:102`) and `<layout::CastType as Clone>::clone` (`layout.rs:862`), plus the 15 `<T as KnownLayout>::pointer_to_metadata` bodies for `()`, `u8`–`u128`, `i8`–`i128`, `usize`, `isize`, `bool`, and `char` generated by `impl_known_layout!` (`util/macros.rs:476`) | Profile v2 (`UnitTheoremV2`) over all valid entries and caller memory, with each safe body pinned to its identity: `clone` returns exactly the enum value `&self` points to, `eq` returns whether its two (possibly aliased) referents are the same variant, and `assert_fields_are_eq` and every `pointer_to_metadata` (for any `*mut Self`) return `()`; each with caller memory unchanged as its only terminal behavior | `["propext"]` |
 
 ## Reproducing Locally
 
