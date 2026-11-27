@@ -576,14 +576,15 @@ private theorem resolveAddrInMap_in_map (m : MemoryState)
     dsimp only [resolveAddrInMap, List.foldr] at h
     change (Nat.beq exp.allocId a.allocId ||
       allocIdInExposedMap a.allocId rest) = true
+    revert h
     cases hLu : lookupMirAlloc exp.allocId m with
     | none =>
-      rw [hLu] at h
+      intro h
       dsimp only at h
       have hTail := ih h
       rw [hTail, borTrueRight]
     | some a0 =>
-      rw [hLu] at h
+      intro h
       dsimp only at h
       cases hIn : (Nat.ble exp.baseAddr addr &&
           Nat.blt (addr - exp.baseAddr) a0.bytes.length) with
@@ -623,20 +624,22 @@ private theorem commitOneMachineByteWrite_preserves_unexposed
           rw [hIdEq] at hInMap
           rw [hInMap] at hUnexp
           exact False.elim (boolFalseNeTrue hUnexp.symm)
+      revert hStep
       cases hPerm : (a.live && isMutableAlloc a.mutability) with
       | false =>
-        rw [hPerm] at hStep
+        intro hStep
         cases hStep
       | true =>
-        rw [hPerm] at hStep
+        intro hStep
         dsimp only [Bool.not] at hStep
         rw [ite_bool_false rfl] at hStep
+        revert hStep
         cases hSet : setAllocByteAt a.bytes off (.init w.2 none) with
         | none =>
-          rw [hSet] at hStep
+          intro hStep
           cases hStep
         | some bs' =>
-          rw [hSet] at hStep
+          intro hStep
           cases hStep
           exact lookupMirAlloc_updateAlloc_ne
             { a with bytes := bs' } m targetId hNe
@@ -669,12 +672,13 @@ theorem commitMachineByteWrites_preserves_unexposed
     rfl
   | cons w rest ih =>
     dsimp only [List.foldl] at hCommit
+    revert hCommit
     cases hOne : commitOneMachineByteWrite m map w with
     | none =>
-      rw [hOne, foldl_commit_none] at hCommit
+      intro hCommit; rw [foldl_commit_none] at hCommit
       cases hCommit
     | some m1 =>
-      rw [hOne] at hCommit
+      intro hCommit
       have hRest := ih m1 hCommit
       have hFirst :=
         commitOneMachineByteWrite_preserves_unexposed m m1 map w targetId
@@ -699,23 +703,25 @@ private theorem exposedEntriesWf_resolve_bridge (m : MemoryState)
   | cons exp rest ih =>
     dsimp only [exposedEntriesWf, List.foldr] at hWf
     dsimp only [resolveAddrInMap, List.foldr] at hRes
+    revert hWf
     cases hLu : lookupMirAlloc exp.allocId m with
     | none =>
-      rw [hLu] at hWf
+      intro hWf
       dsimp only at hWf
       exact False.elim (boolFalseNeTrue hWf)
     | some a0 =>
-      rw [hLu] at hWf
+      intro hWf
       dsimp only at hWf
+      revert hWf
       cases hLive0 : a0.live with
       | false =>
-        rw [hLive0] at hWf
+        intro hWf
         dsimp only [Bool.not] at hWf
         rw [ite_bool_true rfl] at hWf
         dsimp only at hWf
         exact False.elim (boolFalseNeTrue hWf)
       | true =>
-        rw [hLive0] at hWf
+        intro hWf
         dsimp only [Bool.not] at hWf
         rw [ite_bool_false rfl] at hWf
         dsimp only at hWf
@@ -786,23 +792,25 @@ private theorem exposedEntriesWf_resolveSpan_bridge (m : MemoryState)
   | cons exp rest ih =>
     dsimp only [exposedEntriesWf, List.foldr] at hWf
     dsimp only [resolveSpanInMap, List.foldr] at hRes
+    revert hWf
     cases hLu : lookupMirAlloc exp.allocId m with
     | none =>
-      rw [hLu] at hWf
+      intro hWf
       dsimp only at hWf
       exact False.elim (boolFalseNeTrue hWf)
     | some a0 =>
-      rw [hLu] at hWf
+      intro hWf
       dsimp only at hWf
+      revert hWf
       cases hLive0 : a0.live with
       | false =>
-        rw [hLive0] at hWf
+        intro hWf
         dsimp only [Bool.not] at hWf
         rw [ite_bool_true rfl] at hWf
         dsimp only at hWf
         exact False.elim (boolFalseNeTrue hWf)
       | true =>
-        rw [hLive0] at hWf
+        intro hWf
         dsimp only [Bool.not] at hWf
         rw [ite_bool_false rfl] at hWf
         dsimp only at hWf
@@ -997,12 +1005,13 @@ theorem exposedWindow_read_implies_asmStackAccessValid
   have hHead := bandLeft hRegFit
   have hEntWf := bandRight hWf
   unfold readExposedMachineByte at hRead
+  revert hRead
   cases hRes : resolveAddrInMap m map addr with
   | none =>
-    rw [hRes] at hRead
+    intro hRead
     cases hRead
   | some pair =>
-    cases pair with
+    intro hRead; cases pair with
     | mk a off =>
       have hBr := exposedEntriesWf_resolve_bridge m spec
         (protectedStackRegion spec entrySp callerFrameBytes) map addr a off
@@ -1035,22 +1044,24 @@ theorem exposedWindow_readBytes_implies_asmStackAccessValid
   have hRegFit := bandLeft (bandLeft hWf)
   have hEntWf := bandRight hWf
   unfold readExposedMachineBytes at hRead
+  revert hRead
   cases hBounds : addrRangeFitsPointerBits spec addr len with
   | false =>
-    rw [hBounds] at hRead
+    intro hRead
     dsimp only [Bool.not] at hRead
     rw [ite_bool_true rfl] at hRead
     cases hRead
   | true =>
-    rw [hBounds] at hRead
+    intro hRead
     dsimp only [Bool.not] at hRead
     rw [ite_bool_false rfl] at hRead
+    revert hRead
     cases hRes : resolveSpanInMap m map addr len with
     | none =>
-      rw [hRes] at hRead
+      intro hRead
       cases hRead
     | some pair =>
-      cases pair with
+      intro hRead; cases pair with
       | mk a off =>
         have hBr := exposedEntriesWf_resolveSpan_bridge m spec
           (protectedStackRegion spec entrySp callerFrameBytes) map addr len
@@ -1093,12 +1104,13 @@ theorem exposedWindow_write_implies_asmStackAccessValid
     | mk a off =>
       rw [hRes] at hWrite
       dsimp only at hWrite
+      revert hWrite
       cases hPerm : (a.live && isMutableAlloc a.mutability) with
       | false =>
-        rw [hPerm] at hWrite
+        intro hWrite
         cases hWrite
       | true =>
-        have hMut := bandRight hPerm
+        intro hWrite; have hMut := bandRight hPerm
         have hBr := exposedEntriesWf_resolve_bridge m spec
           (protectedStackRegion spec entrySp callerFrameBytes) map addr a off
           true hEntWf hRes (Or.inr hMut)
@@ -1418,11 +1430,11 @@ theorem macroblock16_all_strides_ge32_disjoint
       hI.1 hJ.1 hk1 hk2 hSt hGrid
   dsimp only [patchesDisjoint, subBlockPatch, patchRowIntervals,
     intervalsDisjointFromFrames, intervalDisjointFromList, List.foldr]
-  rw [hPair 0 0 h0 h0, hPair 0 1 h0 h1, hPair 0 2 h0 h2, hPair 0 3 h0 h3,
-      hPair 1 0 h1 h0, hPair 1 1 h1 h1, hPair 1 2 h1 h2, hPair 1 3 h1 h3,
-      hPair 2 0 h2 h0, hPair 2 1 h2 h1, hPair 2 2 h2 h2, hPair 2 3 h2 h3,
-      hPair 3 0 h3 h0, hPair 3 1 h3 h1, hPair 3 2 h3 h2, hPair 3 3 h3 h3]
-  rfl
+  simp only [hPair 0 0 h0 h0, hPair 0 1 h0 h1, hPair 0 2 h0 h2,
+    hPair 0 3 h0 h3, hPair 1 0 h1 h0, hPair 1 1 h1 h1, hPair 1 2 h1 h2,
+    hPair 1 3 h1 h3, hPair 2 0 h2 h0, hPair 2 1 h2 h1, hPair 2 2 h2 h2,
+    hPair 2 3 h2 h3, hPair 3 0 h3 h0, hPair 3 1 h3 h1, hPair 3 2 h3 h2,
+    hPair 3 3 h3 h3, Bool.and_true]
 
 private theorem bandFalseLeft (b : Bool) : (false && b) = false := rfl
 
