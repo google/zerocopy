@@ -1387,10 +1387,11 @@ theorem evalBinOp_shl_eq_shl (w wR : IntWidth) (s sR : Bool)
         (.scalar (bvToScalar wR sR y)) =
       .ok (.scalar (bvToScalar w s
         (Anneal.BitVec.shl x (Nat.mod y.toNat (8 * w.byteSize))))) := by
-  unfold evalBinOp evalShiftOp
+  change evalShiftOp .shl w s (decodeScalar (bvToScalar w s x))
+    (decodeScalar (bvToScalar wR sR y)) = _
+  unfold evalShiftOp
   dsimp only
-  rw [if_bool_true (rfl : BinOp.shl.isShift = true), bvToScalar_width,
-    bvToScalar_signed, intEmod_decodeScalar_eq_mod]
+  rw [intEmod_decodeScalar_eq_mod]
   dsimp only [Int.toNat]
   let ⟨lossy, hTrunc⟩ := truncateScalar_val_eq w s
     (intShiftLeft (decodeScalar (bvToScalar w s x))
@@ -1423,10 +1424,11 @@ theorem evalBinOp_shr_eq (w wR : IntWidth) (s sR : Bool)
       .ok (.scalar (bvToScalar w s
         (if s then Anneal.BitVecArith.ashr x (Nat.mod y.toNat (8 * w.byteSize))
         else Anneal.BitVec.ushr x (Nat.mod y.toNat (8 * w.byteSize))))) := by
-  unfold evalBinOp evalShiftOp
+  change evalShiftOp .shr w s (decodeScalar (bvToScalar w s x))
+    (decodeScalar (bvToScalar wR sR y)) = _
+  unfold evalShiftOp
   dsimp only
-  rw [if_bool_true (rfl : BinOp.shr.isShift = true), bvToScalar_width,
-    bvToScalar_signed, intEmod_decodeScalar_eq_mod]
+  rw [intEmod_decodeScalar_eq_mod]
   dsimp only [Int.toNat]
   let ⟨lossy, hTrunc⟩ := truncateScalar_val_eq w s
     (intShiftRight (decodeScalar (bvToScalar w s x))
@@ -1462,10 +1464,10 @@ theorem evalBinOp_shlUnchecked_eq (w wR : IntWidth) (s sR : Bool)
         .ok (.scalar (bvToScalar w s (Anneal.BitVec.shl x y.toNat)))
       else
         .error .undefined := by
-  unfold evalBinOp evalShiftOp
+  change evalShiftOp .shlUnchecked w s (decodeScalar (bvToScalar w s x))
+    (decodeScalar (bvToScalar wR sR y)) = _
+  unfold evalShiftOp
   dsimp only
-  rw [if_bool_true (rfl : BinOp.shlUnchecked.isShift = true),
-    bvToScalar_width, bvToScalar_signed]
   have hOvf := shiftOverflow_eq w wR sR y
   rw [intEmod_decodeScalar_eq_mod]
   dsimp only [Int.toNat]
@@ -1513,10 +1515,10 @@ theorem evalBinOp_shrUnchecked_eq (w wR : IntWidth) (s sR : Bool)
           else Anneal.BitVec.ushr x y.toNat)))
       else
         .error .undefined := by
-  unfold evalBinOp evalShiftOp
+  change evalShiftOp .shrUnchecked w s (decodeScalar (bvToScalar w s x))
+    (decodeScalar (bvToScalar wR sR y)) = _
+  unfold evalShiftOp
   dsimp only
-  rw [if_bool_true (rfl : BinOp.shrUnchecked.isShift = true),
-    bvToScalar_width, bvToScalar_signed]
   have hOvf := shiftOverflow_eq w wR sR y
   rw [intEmod_decodeScalar_eq_mod]
   dsimp only [Int.toNat]
@@ -1581,6 +1583,14 @@ private theorem bvToInt_in_i128_range (y : BitVec 128) :
   rw [hP, decide_eq_false ((int_not_lt_iff_le _ _).mpr h.1),
     decide_eq_false ((int_not_le_iff_lt _ _).mpr h.2)]
   rfl
+
+private theorem truncateScalar_signed_eq (w : IntWidth) (value : Int) :
+    truncateScalar w true value =
+      .ok (⟨w, true, truncateBits w (bvOfInt 128 value)⟩,
+        signExtendBits w (truncateBits w (bvOfInt 128 value)) !=
+          bvToInt (bvOfInt 128 value)) := by
+  dsimp only [truncateScalar]
+  rw [if_true_eq, bvToInt_in_i128_range, if_false_eq, bvOfInt_128_bvToInt]
 
 private theorem unsigned_nat_overflow_flag_eq (w : IntWidth) (n : Nat) :
     let result := Int.ofNat n
@@ -1782,33 +1792,22 @@ theorem evalBinOp_mulWithOverflow_unsigned_eq (w : IntWidth)
         .scalar (bvToScalar w false (Anneal.BitVec.mul x y)),
         .bool (decide (Nat.pow 2 (8 * w.byteSize) ≤ x.toNat * y.toNat))
       ]) := by
-  unfold evalBinOp evalArithOp
-  dsimp only
-  rw [if_bool_false (rfl : BinOp.mulWithOverflow.isShift = false),
-    bvToScalar_width, bvToScalar_width, bvToScalar_signed, bvToScalar_signed,
-    if_bool_false (evalBinOp_header_eq w false),
-    Bool.false_and, if_false_eq, Bool.false_and, Bool.false_and, if_false_eq,
-    decodeScalar_unsigned_eq, decodeScalar_unsigned_eq]
-  dsimp only [truncateScalar]
-  rw [if_false_eq]
-  dsimp only
-  have hU : BinOp.mulWithOverflow.isUnchecked = false := rfl
-  have hO : BinOp.mulWithOverflow.isOverflowing = true := rfl
-  have hMulInt : Int.ofNat x.toNat * Int.ofNat y.toNat =
-      Int.ofNat (x.toNat * y.toNat) := rfl
-  rw [hU, hO, Bool.and_false, if_false_eq, if_true_eq, if_false_eq, hMulInt,
-    unsigned_nat_overflow_flag_eq w (x.toNat * y.toNat)]
+  refine (if_bool_false (evalBinOp_header_eq w false) _ _).trans ?_
+  change evalArithOp .mulWithOverflow w false
+    (decodeScalar (bvToScalar w false x))
+    (decodeScalar (bvToScalar w false y)) = _
+  rw [decodeScalar_unsigned_eq, decodeScalar_unsigned_eq]
   have hBits : truncateBits w (bvOfInt 128 (Int.ofNat (x.toNat * y.toNat))) =
       bvZeroExtend 128 (Anneal.BitVec.mul x y) := by
     apply Anneal.BitVec.eq_of_toNat_eq
     rw [toNat_truncateBits_bvOfInt_ofNat,
       toNat_bvZeroExtend_of_le (intWidth_bitWidth_le_128_eight w),
       Anneal.BitVec.toNat_mul]
-  change Except.ok (Val.tuple [Val.scalar ⟨w, false,
-      truncateBits w (bvOfInt 128 (Int.ofNat (x.toNat * y.toNat)))⟩,
-    Val.bool (decide (Nat.pow 2 (8 * w.byteSize) ≤ x.toNat * y.toNat))]) = _
-  rw [hBits]
-  rfl
+  exact (if_bool_false (Bool.and_false _) _ _).trans
+    ((congrArg (fun f => Except.ok (Val.tuple [Val.scalar ⟨w, false, _⟩,
+      Val.bool f])) (unsigned_nat_overflow_flag_eq w (x.toNat * y.toNat))).trans
+    (congrArg (fun b => Except.ok (Val.tuple [Val.scalar ⟨w, false, b⟩,
+      Val.bool _])) hBits))
 
 /-- Unsigned `evalBinOp .mulUnchecked` succeeds with `x * y` iff
 `x.toNat * y.toNat < 2^(8 * w.byteSize)` and faults with `.undefined`
@@ -1821,40 +1820,28 @@ theorem evalBinOp_mulUnchecked_unsigned_eq (w : IntWidth)
         .ok (.scalar (bvToScalar w false (Anneal.BitVec.mul x y)))
       else
         .error .undefined := by
-  unfold evalBinOp evalArithOp
-  dsimp only
-  rw [if_bool_false (rfl : BinOp.mulUnchecked.isShift = false),
-    bvToScalar_width, bvToScalar_width, bvToScalar_signed, bvToScalar_signed,
-    if_bool_false (evalBinOp_header_eq w false),
-    Bool.false_and, if_false_eq, Bool.false_and, Bool.false_and, if_false_eq,
-    decodeScalar_unsigned_eq, decodeScalar_unsigned_eq]
-  dsimp only [truncateScalar]
-  rw [if_false_eq]
-  dsimp only
-  have hU : BinOp.mulUnchecked.isUnchecked = true := rfl
-  have hMulInt : Int.ofNat x.toNat * Int.ofNat y.toNat =
-      Int.ofNat (x.toNat * y.toNat) := rfl
-  rw [hU, Bool.and_true, if_false_eq, hMulInt,
-    unsigned_nat_overflow_flag_eq w (x.toNat * y.toNat)]
+  refine (if_bool_false (evalBinOp_header_eq w false) _ _).trans ?_
+  change evalArithOp .mulUnchecked w false
+    (decodeScalar (bvToScalar w false x))
+    (decodeScalar (bvToScalar w false y)) = _
+  rw [decodeScalar_unsigned_eq, decodeScalar_unsigned_eq]
+  have hBits : truncateBits w (bvOfInt 128 (Int.ofNat (x.toNat * y.toNat))) =
+      bvZeroExtend 128 (Anneal.BitVec.mul x y) := by
+    apply Anneal.BitVec.eq_of_toNat_eq
+    rw [toNat_truncateBits_bvOfInt_ofNat,
+      toNat_bvZeroExtend_of_le (intWidth_bitWidth_le_128_eight w),
+      Anneal.BitVec.toNat_mul]
+  have hF := (Bool.and_true _).trans
+    (unsigned_nat_overflow_flag_eq w (x.toNat * y.toNat))
   cases Nat.lt_or_ge (x.toNat * y.toNat) (Nat.pow 2 (8 * w.byteSize)) with
   | inl hLt =>
-    rw [Anneal.InitLemmas.ite_true_of hLt,
-      decide_eq_false (Nat.not_le_of_gt hLt), if_false_eq]
-    have hO : BinOp.mulUnchecked.isOverflowing = false := rfl
-    rw [hO, if_false_eq]
-    have hBits : truncateBits w (bvOfInt 128 (Int.ofNat (x.toNat * y.toNat))) =
-        bvZeroExtend 128 (Anneal.BitVec.mul x y) := by
-      apply Anneal.BitVec.eq_of_toNat_eq
-      rw [toNat_truncateBits_bvOfInt_ofNat,
-        toNat_bvZeroExtend_of_le (intWidth_bitWidth_le_128_eight w),
-        Anneal.BitVec.toNat_mul]
-    change Except.ok (Val.scalar ⟨w, false,
-        truncateBits w (bvOfInt 128 (Int.ofNat (x.toNat * y.toNat)))⟩) = _
-    rw [hBits]
-    rfl
+    exact (if_bool_false (hF.trans (decide_eq_false (Nat.not_le_of_gt hLt)))
+        _ _).trans
+      ((congrArg (fun b => Except.ok (Val.scalar ⟨w, false, b⟩)) hBits).trans
+        (Anneal.InitLemmas.ite_true_of hLt).symm)
   | inr hGe =>
-    rw [Anneal.InitLemmas.ite_false_of (Nat.not_lt_of_ge hGe),
-      decide_eq_true hGe, if_true_eq]
+    exact (if_bool_true (hF.trans (decide_eq_true hGe)) _ _).trans
+      (Anneal.InitLemmas.ite_false_of (Nat.not_lt_of_ge hGe)).symm
 
 /-- Bitvector signed-addition overflow predicate: equal sign bits flipping on
 `(x + y)`. -/
@@ -2841,29 +2828,24 @@ theorem evalBinOp_addWithOverflow_signed_eq (w : IntWidth)
   have hW : 0 < 8 * w.byteSize := by
     rw [← intWidth_bitWidth_eq_eight_mul]
     exact intWidth_bitWidth_pos w
-  unfold evalBinOp evalArithOp
+  refine (if_bool_false (evalBinOp_header_eq w true) _ _).trans ?_
+  change evalArithOp .addWithOverflow w true
+    (decodeScalar (bvToScalar w true x))
+    (decodeScalar (bvToScalar w true y)) = _
+  rw [decodeScalar_signed_eq_bvToInt, decodeScalar_signed_eq_bvToInt]
+  unfold evalArithOp
   dsimp only
-  rw [if_bool_false (rfl : BinOp.addWithOverflow.isShift = false),
-    bvToScalar_width, bvToScalar_width, bvToScalar_signed, bvToScalar_signed,
-    if_bool_false (evalBinOp_header_eq w true),
-    Bool.false_and, if_false_eq, Bool.true_and, Bool.false_and, if_false_eq,
-    decodeScalar_signed_eq_bvToInt, decodeScalar_signed_eq_bvToInt]
-  dsimp only [truncateScalar]
-  rw [if_true_eq, bvToInt_in_i128_range, if_false_eq, bvOfInt_128_bvToInt]
-  dsimp only
-  have hU : BinOp.addWithOverflow.isUnchecked = false := rfl
-  have hO : BinOp.addWithOverflow.isOverflowing = true := rfl
-  rw [hU, hO, Bool.and_false, if_false_eq, if_true_eq, if_true_eq,
-    signed_int_overflow_flag_eq w (bvToInt x + bvToInt y),
-    ← signedOverflowAddBv_eq_int_overflow hW x y]
+  rw [truncateScalar_signed_eq]
   have hBits : truncateBits w (bvOfInt 128 (bvToInt x + bvToInt y)) =
       bvZeroExtend 128 (x + y) := by
     rw [truncateBits_bvOfInt_eq_bvZeroExtend, bvOfInt_bvToInt_add hW]
-  change Except.ok (Val.tuple [Val.scalar ⟨w, true,
-      truncateBits w (bvOfInt 128 (bvToInt x + bvToInt y))⟩,
-    Val.bool (signedOverflowAddBv x y)]) = _
-  rw [hBits]
-  rfl
+  have hF := Eq.trans (signed_int_overflow_flag_eq w (bvToInt x + bvToInt y))
+    (signedOverflowAddBv_eq_int_overflow hW x y).symm
+  exact (if_bool_false (Bool.and_false _) _ _).trans
+    ((congrArg (fun f => Except.ok (Val.tuple [Val.scalar ⟨w, true, _⟩,
+      Val.bool f])) hF).trans
+    (congrArg (fun b => Except.ok (Val.tuple [Val.scalar ⟨w, true, b⟩,
+      Val.bool _])) hBits))
 
 /-- Signed `evalBinOp .addUnchecked` succeeds with `x + y` iff
 `signedOverflowAddBv x y = false` and faults with `.undefined` otherwise. -/
@@ -2878,34 +2860,27 @@ theorem evalBinOp_addUnchecked_signed_eq (w : IntWidth)
   have hW : 0 < 8 * w.byteSize := by
     rw [← intWidth_bitWidth_eq_eight_mul]
     exact intWidth_bitWidth_pos w
-  unfold evalBinOp evalArithOp
+  refine (if_bool_false (evalBinOp_header_eq w true) _ _).trans ?_
+  change evalArithOp .addUnchecked w true
+    (decodeScalar (bvToScalar w true x))
+    (decodeScalar (bvToScalar w true y)) = _
+  rw [decodeScalar_signed_eq_bvToInt, decodeScalar_signed_eq_bvToInt]
+  unfold evalArithOp
   dsimp only
-  rw [if_bool_false (rfl : BinOp.addUnchecked.isShift = false),
-    bvToScalar_width, bvToScalar_width, bvToScalar_signed, bvToScalar_signed,
-    if_bool_false (evalBinOp_header_eq w true),
-    Bool.false_and, if_false_eq, Bool.true_and, Bool.false_and, if_false_eq,
-    decodeScalar_signed_eq_bvToInt, decodeScalar_signed_eq_bvToInt]
-  dsimp only [truncateScalar]
-  rw [if_true_eq, bvToInt_in_i128_range, if_false_eq, bvOfInt_128_bvToInt]
-  dsimp only
-  have hU : BinOp.addUnchecked.isUnchecked = true := rfl
-  rw [hU, Bool.and_true, if_true_eq,
-    signed_int_overflow_flag_eq w (bvToInt x + bvToInt y),
-    ← signedOverflowAddBv_eq_int_overflow hW x y]
+  rw [truncateScalar_signed_eq]
+  have hBits : truncateBits w (bvOfInt 128 (bvToInt x + bvToInt y)) =
+      bvZeroExtend 128 (x + y) := by
+    rw [truncateBits_bvOfInt_eq_bvZeroExtend, bvOfInt_bvToInt_add hW]
+  have hF := Eq.trans (signed_int_overflow_flag_eq w (bvToInt x + bvToInt y))
+    (signedOverflowAddBv_eq_int_overflow hW x y).symm
+  have hF' := (Bool.and_true _).trans hF
   cases hOv : signedOverflowAddBv x y with
   | false =>
-    rw [if_false_eq, if_false_false_eq]
-    have hO : BinOp.addUnchecked.isOverflowing = false := rfl
-    rw [hO, if_false_eq]
-    have hBits : truncateBits w (bvOfInt 128 (bvToInt x + bvToInt y)) =
-        bvZeroExtend 128 (x + y) := by
-      rw [truncateBits_bvOfInt_eq_bvZeroExtend, bvOfInt_bvToInt_add hW]
-    change Except.ok (Val.scalar ⟨w, true,
-        truncateBits w (bvOfInt 128 (bvToInt x + bvToInt y))⟩) = _
-    rw [hBits]
-    rfl
+    exact (if_bool_false (hF'.trans hOv) _ _).trans
+      ((congrArg (fun b => Except.ok (Val.scalar ⟨w, true, b⟩)) hBits).trans
+        (if_false_false_eq _ _).symm)
   | true =>
-    rw [if_true_eq, if_true_false_eq]
+    exact (if_bool_true (hF'.trans hOv) _ _).trans (if_true_false_eq _ _).symm
 
 /-- Signed `evalBinOp .subWithOverflow` returns `(x - y, signedOverflowSubBv x
 y)` across all six widths (including `i128`). -/
@@ -2920,29 +2895,24 @@ theorem evalBinOp_subWithOverflow_signed_eq (w : IntWidth)
   have hW : 0 < 8 * w.byteSize := by
     rw [← intWidth_bitWidth_eq_eight_mul]
     exact intWidth_bitWidth_pos w
-  unfold evalBinOp evalArithOp
+  refine (if_bool_false (evalBinOp_header_eq w true) _ _).trans ?_
+  change evalArithOp .subWithOverflow w true
+    (decodeScalar (bvToScalar w true x))
+    (decodeScalar (bvToScalar w true y)) = _
+  rw [decodeScalar_signed_eq_bvToInt, decodeScalar_signed_eq_bvToInt]
+  unfold evalArithOp
   dsimp only
-  rw [if_bool_false (rfl : BinOp.subWithOverflow.isShift = false),
-    bvToScalar_width, bvToScalar_width, bvToScalar_signed, bvToScalar_signed,
-    if_bool_false (evalBinOp_header_eq w true),
-    Bool.false_and, if_false_eq, Bool.true_and, Bool.false_and, if_false_eq,
-    decodeScalar_signed_eq_bvToInt, decodeScalar_signed_eq_bvToInt]
-  dsimp only [truncateScalar]
-  rw [if_true_eq, bvToInt_in_i128_range, if_false_eq, bvOfInt_128_bvToInt]
-  dsimp only
-  have hU : BinOp.subWithOverflow.isUnchecked = false := rfl
-  have hO : BinOp.subWithOverflow.isOverflowing = true := rfl
-  rw [hU, hO, Bool.and_false, if_false_eq, if_true_eq, if_true_eq,
-    signed_int_overflow_flag_eq w (bvToInt x - bvToInt y),
-    ← signedOverflowSubBv_eq_int_overflow hW x y]
+  rw [truncateScalar_signed_eq]
   have hBits : truncateBits w (bvOfInt 128 (bvToInt x - bvToInt y)) =
       bvZeroExtend 128 (x - y) := by
     rw [truncateBits_bvOfInt_eq_bvZeroExtend, bvOfInt_bvToInt_sub hW]
-  change Except.ok (Val.tuple [Val.scalar ⟨w, true,
-      truncateBits w (bvOfInt 128 (bvToInt x - bvToInt y))⟩,
-    Val.bool (signedOverflowSubBv x y)]) = _
-  rw [hBits]
-  rfl
+  have hF := Eq.trans (signed_int_overflow_flag_eq w (bvToInt x - bvToInt y))
+    (signedOverflowSubBv_eq_int_overflow hW x y).symm
+  exact (if_bool_false (Bool.and_false _) _ _).trans
+    ((congrArg (fun f => Except.ok (Val.tuple [Val.scalar ⟨w, true, _⟩,
+      Val.bool f])) hF).trans
+    (congrArg (fun b => Except.ok (Val.tuple [Val.scalar ⟨w, true, b⟩,
+      Val.bool _])) hBits))
 
 /-- Signed `evalBinOp .subUnchecked` succeeds with `x - y` iff
 `signedOverflowSubBv x y = false` and faults with `.undefined` otherwise. -/
@@ -2957,34 +2927,27 @@ theorem evalBinOp_subUnchecked_signed_eq (w : IntWidth)
   have hW : 0 < 8 * w.byteSize := by
     rw [← intWidth_bitWidth_eq_eight_mul]
     exact intWidth_bitWidth_pos w
-  unfold evalBinOp evalArithOp
+  refine (if_bool_false (evalBinOp_header_eq w true) _ _).trans ?_
+  change evalArithOp .subUnchecked w true
+    (decodeScalar (bvToScalar w true x))
+    (decodeScalar (bvToScalar w true y)) = _
+  rw [decodeScalar_signed_eq_bvToInt, decodeScalar_signed_eq_bvToInt]
+  unfold evalArithOp
   dsimp only
-  rw [if_bool_false (rfl : BinOp.subUnchecked.isShift = false),
-    bvToScalar_width, bvToScalar_width, bvToScalar_signed, bvToScalar_signed,
-    if_bool_false (evalBinOp_header_eq w true),
-    Bool.false_and, if_false_eq, Bool.true_and, Bool.false_and, if_false_eq,
-    decodeScalar_signed_eq_bvToInt, decodeScalar_signed_eq_bvToInt]
-  dsimp only [truncateScalar]
-  rw [if_true_eq, bvToInt_in_i128_range, if_false_eq, bvOfInt_128_bvToInt]
-  dsimp only
-  have hU : BinOp.subUnchecked.isUnchecked = true := rfl
-  rw [hU, Bool.and_true, if_true_eq,
-    signed_int_overflow_flag_eq w (bvToInt x - bvToInt y),
-    ← signedOverflowSubBv_eq_int_overflow hW x y]
+  rw [truncateScalar_signed_eq]
+  have hBits : truncateBits w (bvOfInt 128 (bvToInt x - bvToInt y)) =
+      bvZeroExtend 128 (x - y) := by
+    rw [truncateBits_bvOfInt_eq_bvZeroExtend, bvOfInt_bvToInt_sub hW]
+  have hF := Eq.trans (signed_int_overflow_flag_eq w (bvToInt x - bvToInt y))
+    (signedOverflowSubBv_eq_int_overflow hW x y).symm
+  have hF' := (Bool.and_true _).trans hF
   cases hOv : signedOverflowSubBv x y with
   | false =>
-    rw [if_false_eq, if_false_false_eq]
-    have hO : BinOp.subUnchecked.isOverflowing = false := rfl
-    rw [hO, if_false_eq]
-    have hBits : truncateBits w (bvOfInt 128 (bvToInt x - bvToInt y)) =
-        bvZeroExtend 128 (x - y) := by
-      rw [truncateBits_bvOfInt_eq_bvZeroExtend, bvOfInt_bvToInt_sub hW]
-    change Except.ok (Val.scalar ⟨w, true,
-        truncateBits w (bvOfInt 128 (bvToInt x - bvToInt y))⟩) = _
-    rw [hBits]
-    rfl
+    exact (if_bool_false (hF'.trans hOv) _ _).trans
+      ((congrArg (fun b => Except.ok (Val.scalar ⟨w, true, b⟩)) hBits).trans
+        (if_false_false_eq _ _).symm)
   | true =>
-    rw [if_true_eq, if_true_false_eq]
+    exact (if_bool_true (hF'.trans hOv) _ _).trans (if_true_false_eq _ _).symm
 
 /-- Signed `evalBinOp .mulWithOverflow` returns `(x * y, signedOverflowMulBv x
 y)` across all six widths (including `i128`). -/
@@ -2999,30 +2962,25 @@ theorem evalBinOp_mulWithOverflow_signed_eq (w : IntWidth)
   have hW : 0 < 8 * w.byteSize := by
     rw [← intWidth_bitWidth_eq_eight_mul]
     exact intWidth_bitWidth_pos w
-  unfold evalBinOp evalArithOp
+  refine (if_bool_false (evalBinOp_header_eq w true) _ _).trans ?_
+  change evalArithOp .mulWithOverflow w true
+    (decodeScalar (bvToScalar w true x))
+    (decodeScalar (bvToScalar w true y)) = _
+  rw [decodeScalar_signed_eq_bvToInt, decodeScalar_signed_eq_bvToInt]
+  unfold evalArithOp
   dsimp only
-  rw [if_bool_false (rfl : BinOp.mulWithOverflow.isShift = false),
-    bvToScalar_width, bvToScalar_width, bvToScalar_signed, bvToScalar_signed,
-    if_bool_false (evalBinOp_header_eq w true),
-    Bool.false_and, if_false_eq, Bool.true_and, Bool.false_and, if_false_eq,
-    decodeScalar_signed_eq_bvToInt, decodeScalar_signed_eq_bvToInt]
-  dsimp only [truncateScalar]
-  rw [if_true_eq, bvToInt_in_i128_range, if_false_eq, bvOfInt_128_bvToInt]
-  dsimp only
-  have hU : BinOp.mulWithOverflow.isUnchecked = false := rfl
-  have hO : BinOp.mulWithOverflow.isOverflowing = true := rfl
-  rw [hU, hO, Bool.and_false, if_false_eq, if_true_eq, if_true_eq,
-    signed_int_overflow_flag_eq w (bvToInt x * bvToInt y),
-    ← signedOverflowMulBv_eq_int_overflow hW x y]
+  rw [truncateScalar_signed_eq]
   have hBits : truncateBits w (bvOfInt 128 (bvToInt x * bvToInt y)) =
       bvZeroExtend 128 (Anneal.BitVec.mul x y) := by
     rw [truncateBits_bvOfInt_eq_bvZeroExtend, bvOfInt_mul,
       bvOfInt_bvToInt_self hW x, bvOfInt_bvToInt_self hW y]
-  change Except.ok (Val.tuple [Val.scalar ⟨w, true,
-      truncateBits w (bvOfInt 128 (bvToInt x * bvToInt y))⟩,
-    Val.bool (signedOverflowMulBv x y)]) = _
-  rw [hBits]
-  rfl
+  have hF := Eq.trans (signed_int_overflow_flag_eq w (bvToInt x * bvToInt y))
+    (signedOverflowMulBv_eq_int_overflow hW x y).symm
+  exact (if_bool_false (Bool.and_false _) _ _).trans
+    ((congrArg (fun f => Except.ok (Val.tuple [Val.scalar ⟨w, true, _⟩,
+      Val.bool f])) hF).trans
+    (congrArg (fun b => Except.ok (Val.tuple [Val.scalar ⟨w, true, b⟩,
+      Val.bool _])) hBits))
 
 /-- Signed `evalBinOp .mulUnchecked` succeeds with `x * y` iff
 `signedOverflowMulBv x y = false` and faults with `.undefined` otherwise
@@ -3038,35 +2996,28 @@ theorem evalBinOp_mulUnchecked_signed_eq (w : IntWidth)
   have hW : 0 < 8 * w.byteSize := by
     rw [← intWidth_bitWidth_eq_eight_mul]
     exact intWidth_bitWidth_pos w
-  unfold evalBinOp evalArithOp
+  refine (if_bool_false (evalBinOp_header_eq w true) _ _).trans ?_
+  change evalArithOp .mulUnchecked w true
+    (decodeScalar (bvToScalar w true x))
+    (decodeScalar (bvToScalar w true y)) = _
+  rw [decodeScalar_signed_eq_bvToInt, decodeScalar_signed_eq_bvToInt]
+  unfold evalArithOp
   dsimp only
-  rw [if_bool_false (rfl : BinOp.mulUnchecked.isShift = false),
-    bvToScalar_width, bvToScalar_width, bvToScalar_signed, bvToScalar_signed,
-    if_bool_false (evalBinOp_header_eq w true),
-    Bool.false_and, if_false_eq, Bool.true_and, Bool.false_and, if_false_eq,
-    decodeScalar_signed_eq_bvToInt, decodeScalar_signed_eq_bvToInt]
-  dsimp only [truncateScalar]
-  rw [if_true_eq, bvToInt_in_i128_range, if_false_eq, bvOfInt_128_bvToInt]
-  dsimp only
-  have hU : BinOp.mulUnchecked.isUnchecked = true := rfl
-  rw [hU, Bool.and_true, if_true_eq,
-    signed_int_overflow_flag_eq w (bvToInt x * bvToInt y),
-    ← signedOverflowMulBv_eq_int_overflow hW x y]
+  rw [truncateScalar_signed_eq]
+  have hBits : truncateBits w (bvOfInt 128 (bvToInt x * bvToInt y)) =
+      bvZeroExtend 128 (Anneal.BitVec.mul x y) := by
+    rw [truncateBits_bvOfInt_eq_bvZeroExtend, bvOfInt_mul,
+      bvOfInt_bvToInt_self hW x, bvOfInt_bvToInt_self hW y]
+  have hF := Eq.trans (signed_int_overflow_flag_eq w (bvToInt x * bvToInt y))
+    (signedOverflowMulBv_eq_int_overflow hW x y).symm
+  have hF' := (Bool.and_true _).trans hF
   cases hOv : signedOverflowMulBv x y with
   | false =>
-    rw [if_false_eq, if_false_false_eq]
-    have hO : BinOp.mulUnchecked.isOverflowing = false := rfl
-    rw [hO, if_false_eq]
-    have hBits : truncateBits w (bvOfInt 128 (bvToInt x * bvToInt y)) =
-        bvZeroExtend 128 (Anneal.BitVec.mul x y) := by
-      rw [truncateBits_bvOfInt_eq_bvZeroExtend, bvOfInt_mul,
-        bvOfInt_bvToInt_self hW x, bvOfInt_bvToInt_self hW y]
-    change Except.ok (Val.scalar ⟨w, true,
-        truncateBits w (bvOfInt 128 (bvToInt x * bvToInt y))⟩) = _
-    rw [hBits]
-    rfl
+    exact (if_bool_false (hF'.trans hOv) _ _).trans
+      ((congrArg (fun b => Except.ok (Val.scalar ⟨w, true, b⟩)) hBits).trans
+        (if_false_false_eq _ _).symm)
   | true =>
-    rw [if_true_eq, if_true_false_eq]
+    exact (if_bool_true (hF'.trans hOv) _ _).trans (if_true_false_eq _ _).symm
 
 /-- Unsigned magnitude of a signed `w`-bit bitvector (`-x` when `msb x = true`,
 else `x`). -/
@@ -3299,13 +3250,9 @@ theorem evalBinOp_div_signed_zero_fault (w : IntWidth)
     (hy : y.toNat = 0) :
     evalBinOp .div (.scalar (bvToScalar w true x))
         (.scalar (bvToScalar w true y)) = .error .undefined := by
-  unfold evalBinOp evalArithOp
-  dsimp only
-  rw [if_bool_false (rfl : BinOp.div.isShift = false),
-    bvToScalar_width, bvToScalar_width, bvToScalar_signed, bvToScalar_signed,
-    if_bool_false (evalBinOp_header_eq w true),
-    decodeScalar_signed_eq_zero_iff w y, decide_eq_true hy]
-  rfl
+  refine (if_bool_false (evalBinOp_header_eq w true) _ _).trans ?_
+  exact if_bool_true
+    ((decodeScalar_signed_eq_zero_iff w y).trans (decide_eq_true hy)) _ _
 
 /-- Signed `evalBinOp .div` faults with `.error .undefined` on `INT_MIN / -1`.
 -/
@@ -3315,20 +3262,22 @@ theorem evalBinOp_div_signed_min_neg_one_fault (w : IntWidth) :
           (Anneal.BitVecArith.signBit (w := 8 * w.byteSize))))
         (.scalar (bvToScalar w true
           (Anneal.BitVec.allOnes (8 * w.byteSize)))) = .error .undefined := by
-  unfold evalBinOp evalArithOp
-  dsimp only
-  rw [if_bool_false (rfl : BinOp.div.isShift = false),
-    bvToScalar_width, bvToScalar_width, bvToScalar_signed, bvToScalar_signed,
-    if_bool_false (evalBinOp_header_eq w true)]
   have hYnz : (Anneal.BitVec.allOnes (8 * w.byteSize)).toNat ≠ 0 := by
     rw [Anneal.BitVec.toNat_allOnes]
     exact Nat.ne_of_gt (Nat.zero_lt_sub_of_lt
       (Nat.lt_of_lt_of_le (by decide : 1 < Nat.pow 2 8)
         (Nat.pow_le_pow_right (by decide : 0 < 2) (intWidth_eight_le w))))
-  rw [decodeScalar_signed_eq_zero_iff, decide_eq_false hYnz, Bool.and_false,
-    if_false_eq, decodeScalar_signed_eq_min_iff,
-    decodeScalar_signed_eq_neg_one_iff, beq_self_eq_true, beq_self_eq_true]
-  rfl
+  have hG2 : (decodeScalar (bvToScalar w true
+        (Anneal.BitVecArith.signBit (w := 8 * w.byteSize))) == signedMinInt w &&
+      decodeScalar (bvToScalar w true
+        (Anneal.BitVec.allOnes (8 * w.byteSize))) == Neg.neg 1) = true := by
+    rw [decodeScalar_signed_eq_min_iff, decodeScalar_signed_eq_neg_one_iff,
+      beq_self_eq_true, beq_self_eq_true]
+    rfl
+  refine (if_bool_false (evalBinOp_header_eq w true) _ _).trans ?_
+  refine (if_bool_false ((decodeScalar_signed_eq_zero_iff w _).trans
+    (decide_eq_false hYnz)) _ _).trans ?_
+  exact if_bool_true hG2 _ _
 
 /-- Signed `evalBinOp .rem` faults with `.error .undefined` when `y.toNat = 0`.
 -/
@@ -3337,13 +3286,9 @@ theorem evalBinOp_rem_signed_zero_fault (w : IntWidth)
     (hy : y.toNat = 0) :
     evalBinOp .rem (.scalar (bvToScalar w true x))
         (.scalar (bvToScalar w true y)) = .error .undefined := by
-  unfold evalBinOp evalArithOp
-  dsimp only
-  rw [if_bool_false (rfl : BinOp.rem.isShift = false),
-    bvToScalar_width, bvToScalar_width, bvToScalar_signed, bvToScalar_signed,
-    if_bool_false (evalBinOp_header_eq w true),
-    decodeScalar_signed_eq_zero_iff w y, decide_eq_true hy]
-  rfl
+  refine (if_bool_false (evalBinOp_header_eq w true) _ _).trans ?_
+  exact if_bool_true
+    ((decodeScalar_signed_eq_zero_iff w y).trans (decide_eq_true hy)) _ _
 
 /-- Signed `evalBinOp .rem` faults with `.error .undefined` on `INT_MIN % -1`.
 -/
@@ -3353,20 +3298,22 @@ theorem evalBinOp_rem_signed_min_neg_one_fault (w : IntWidth) :
           (Anneal.BitVecArith.signBit (w := 8 * w.byteSize))))
         (.scalar (bvToScalar w true
           (Anneal.BitVec.allOnes (8 * w.byteSize)))) = .error .undefined := by
-  unfold evalBinOp evalArithOp
-  dsimp only
-  rw [if_bool_false (rfl : BinOp.rem.isShift = false),
-    bvToScalar_width, bvToScalar_width, bvToScalar_signed, bvToScalar_signed,
-    if_bool_false (evalBinOp_header_eq w true)]
   have hYnz : (Anneal.BitVec.allOnes (8 * w.byteSize)).toNat ≠ 0 := by
     rw [Anneal.BitVec.toNat_allOnes]
     exact Nat.ne_of_gt (Nat.zero_lt_sub_of_lt
       (Nat.lt_of_lt_of_le (by decide : 1 < Nat.pow 2 8)
         (Nat.pow_le_pow_right (by decide : 0 < 2) (intWidth_eight_le w))))
-  rw [decodeScalar_signed_eq_zero_iff, decide_eq_false hYnz, Bool.and_false,
-    if_false_eq, decodeScalar_signed_eq_min_iff,
-    decodeScalar_signed_eq_neg_one_iff, beq_self_eq_true, beq_self_eq_true]
-  rfl
+  have hG2 : (decodeScalar (bvToScalar w true
+        (Anneal.BitVecArith.signBit (w := 8 * w.byteSize))) == signedMinInt w &&
+      decodeScalar (bvToScalar w true
+        (Anneal.BitVec.allOnes (8 * w.byteSize))) == Neg.neg 1) = true := by
+    rw [decodeScalar_signed_eq_min_iff, decodeScalar_signed_eq_neg_one_iff,
+      beq_self_eq_true, beq_self_eq_true]
+    rfl
+  refine (if_bool_false (evalBinOp_header_eq w true) _ _).trans ?_
+  refine (if_bool_false ((decodeScalar_signed_eq_zero_iff w _).trans
+    (decide_eq_false hYnz)) _ _).trans ?_
+  exact if_bool_true hG2 _ _
 
 private theorem bvOfInt_ofNat (W n : Nat) :
     bvOfInt W (Int.ofNat n) = BitVec.ofNat W n := by
@@ -3393,22 +3340,21 @@ theorem evalBinOp_div_signed_eq (w : IntWidth)
     · cases hy1 : y == Anneal.BitVec.allOnes W
       · rfl
       · exact False.elim (hNoOvf ⟨of_decide_eq_true hx, of_decide_eq_true hy1⟩)
-  unfold evalBinOp evalArithOp
+  have hG2 : (decodeScalar (bvToScalar w true x) == signedMinInt w &&
+      decodeScalar (bvToScalar w true y) == Neg.neg 1) = false := by
+    rw [decodeScalar_signed_eq_min_iff w x,
+      decodeScalar_signed_eq_neg_one_iff w y, hMinNe]
+  refine (if_bool_false (evalBinOp_header_eq w true) _ _).trans ?_
+  change evalArithOp .div w true (decodeScalar (bvToScalar w true x))
+    (decodeScalar (bvToScalar w true y)) = _
+  refine (if_bool_false ((decodeScalar_signed_eq_zero_iff w y).trans
+    (decide_eq_false hy)) _ _).trans ?_
+  refine (if_bool_false hG2 _ _).trans ?_
   dsimp only
-  rw [if_bool_false (rfl : BinOp.div.isShift = false),
-    bvToScalar_width, bvToScalar_width, bvToScalar_signed, bvToScalar_signed,
-    if_bool_false (evalBinOp_header_eq w true),
-    decodeScalar_signed_eq_zero_iff w y, decide_eq_false hy, Bool.and_false,
-    if_false_eq, decodeScalar_signed_eq_min_iff w x,
-    decodeScalar_signed_eq_neg_one_iff w y, hMinNe, Bool.and_false, if_false_eq]
   let l := decodeScalar (bvToScalar w true x)
   let r := decodeScalar (bvToScalar w true y)
   let ⟨lossy, hTrunc⟩ := truncateScalar_val_eq w true (intTdiv l r)
   rw [hTrunc]
-  dsimp only
-  have hU : BinOp.div.isUnchecked = false := rfl
-  have hO : BinOp.div.isOverflowing = false := rfl
-  rw [hU, hO, Bool.and_false, if_false_eq, if_false_eq]
   have hBvEq : bvOfInt W (intTdiv l r) = bvSdiv x y := by
     unfold bvSdiv
     have hbyPos : 0 < (bvAbs y).toNat := bvAbs_pos_of_ne_zero hW hy
@@ -3500,9 +3446,10 @@ theorem evalBinOp_div_signed_eq (w : IntWidth)
       unfold intTdiv
       dsimp only
       rw [hxEq, hyEq, bvOfInt_ofNat, hUdiv]
-  change Except.ok (Val.scalar ⟨w, true, truncateBits w (bvOfInt 128 (intTdiv l r))⟩) = _
-  rw [truncateBits_bvOfInt_eq_bvZeroExtend, hBvEq]
-  rfl
+  exact (if_bool_false (Bool.and_false _) _ _).trans
+    (congrArg (fun b => Except.ok (Val.scalar ⟨w, true, b⟩))
+      ((truncateBits_bvOfInt_eq_bvZeroExtend w _).trans
+        (congrArg (bvZeroExtend 128) hBvEq)))
 
 /-- Signed `evalBinOp .rem` returns `bvSrem x y` whenever `y ≠ 0` and
 `¬ (x = signBit ∧ y = allOnes)`. -/
@@ -3524,22 +3471,21 @@ theorem evalBinOp_rem_signed_eq (w : IntWidth)
     · cases hy1 : y == Anneal.BitVec.allOnes W
       · rfl
       · exact False.elim (hNoOvf ⟨of_decide_eq_true hx, of_decide_eq_true hy1⟩)
-  unfold evalBinOp evalArithOp
+  have hG2 : (decodeScalar (bvToScalar w true x) == signedMinInt w &&
+      decodeScalar (bvToScalar w true y) == Neg.neg 1) = false := by
+    rw [decodeScalar_signed_eq_min_iff w x,
+      decodeScalar_signed_eq_neg_one_iff w y, hMinNe]
+  refine (if_bool_false (evalBinOp_header_eq w true) _ _).trans ?_
+  change evalArithOp .rem w true (decodeScalar (bvToScalar w true x))
+    (decodeScalar (bvToScalar w true y)) = _
+  refine (if_bool_false ((decodeScalar_signed_eq_zero_iff w y).trans
+    (decide_eq_false hy)) _ _).trans ?_
+  refine (if_bool_false hG2 _ _).trans ?_
   dsimp only
-  rw [if_bool_false (rfl : BinOp.rem.isShift = false),
-    bvToScalar_width, bvToScalar_width, bvToScalar_signed, bvToScalar_signed,
-    if_bool_false (evalBinOp_header_eq w true),
-    decodeScalar_signed_eq_zero_iff w y, decide_eq_false hy, Bool.and_false,
-    if_false_eq, decodeScalar_signed_eq_min_iff w x,
-    decodeScalar_signed_eq_neg_one_iff w y, hMinNe, Bool.and_false, if_false_eq]
   let l := decodeScalar (bvToScalar w true x)
   let r := decodeScalar (bvToScalar w true y)
   let ⟨lossy, hTrunc⟩ := truncateScalar_val_eq w true (intTmod l r)
   rw [hTrunc]
-  dsimp only
-  have hU : BinOp.rem.isUnchecked = false := rfl
-  have hO : BinOp.rem.isOverflowing = false := rfl
-  rw [hU, hO, Bool.and_false, if_false_eq, if_false_eq]
   have hBvEq : bvOfInt W (intTmod l r) = bvSrem x y := by
     unfold bvSrem
     have hbyPos : 0 < (bvAbs y).toNat := bvAbs_pos_of_ne_zero hW hy
@@ -3618,9 +3564,10 @@ theorem evalBinOp_rem_signed_eq (w : IntWidth)
       rw [hxEq, hyEq]
       change bvOfInt W (Neg.neg (Int.ofNat _)) = _
       rw [bvOfInt_neg_ofNat, hUrem]
-  change Except.ok (Val.scalar ⟨w, true, truncateBits w (bvOfInt 128 (intTmod l r))⟩) = _
-  rw [truncateBits_bvOfInt_eq_bvZeroExtend, hBvEq]
-  rfl
+  exact (if_bool_false (Bool.and_false _) _ _).trans
+    (congrArg (fun b => Except.ok (Val.scalar ⟨w, true, b⟩))
+      ((truncateBits_bvOfInt_eq_bvZeroExtend w _).trans
+        (congrArg (bvZeroExtend 128) hBvEq)))
 
 
 /-! ## 3. Remaining `evalBinOp` Scalar, `bool`, and `char` Bridges -/
@@ -3714,11 +3661,7 @@ theorem evalBinOp_ne_eq (w : IntWidth) (s : Bool)
     evalBinOp .ne (.scalar (bvToScalar w s x))
         (.scalar (bvToScalar w s y)) =
       .ok (.bool (decide (x ≠ y))) := by
-  unfold evalBinOp
-  dsimp only
-  rw [if_bool_false (rfl : BinOp.ne.isShift = false), bvToScalar_width,
-    bvToScalar_width, bvToScalar_signed, bvToScalar_signed,
-    if_bool_false (evalBinOp_header_eq w s)]
+  refine (if_bool_false (evalBinOp_header_eq w s) _ _).trans ?_
   cases Nat.decEq x.toNat y.toNat with
   | isTrue hEq =>
     have hBv : x = y := Anneal.BitVec.eq_of_toNat_eq hEq
@@ -3746,12 +3689,8 @@ theorem evalBinOp_gt_unsigned_eq (w : IntWidth)
     evalBinOp .gt (.scalar (bvToScalar w false x))
         (.scalar (bvToScalar w false y)) =
       .ok (.bool (decide (y.toNat < x.toNat))) := by
-  unfold evalBinOp
-  dsimp only
-  rw [if_bool_false (rfl : BinOp.gt.isShift = false), bvToScalar_width,
-    bvToScalar_width, bvToScalar_signed, bvToScalar_signed,
-    if_bool_false (evalBinOp_header_eq w false),
-    decodeScalar_unsigned_eq, decodeScalar_unsigned_eq]
+  refine (if_bool_false (evalBinOp_header_eq w false) _ _).trans ?_
+  rw [decodeScalar_unsigned_eq, decodeScalar_unsigned_eq]
   cases Nat.lt_or_ge y.toNat x.toNat with
   | inl h =>
     have hGt : Int.ofNat x.toNat > Int.ofNat y.toNat := int_ofNat_lt_iff.mpr h
@@ -3767,12 +3706,8 @@ theorem evalBinOp_ge_unsigned_eq (w : IntWidth)
     evalBinOp .ge (.scalar (bvToScalar w false x))
         (.scalar (bvToScalar w false y)) =
       .ok (.bool (decide (y.toNat ≤ x.toNat))) := by
-  unfold evalBinOp
-  dsimp only
-  rw [if_bool_false (rfl : BinOp.ge.isShift = false), bvToScalar_width,
-    bvToScalar_width, bvToScalar_signed, bvToScalar_signed,
-    if_bool_false (evalBinOp_header_eq w false),
-    decodeScalar_unsigned_eq, decodeScalar_unsigned_eq]
+  refine (if_bool_false (evalBinOp_header_eq w false) _ _).trans ?_
+  rw [decodeScalar_unsigned_eq, decodeScalar_unsigned_eq]
   cases Nat.lt_or_ge x.toNat y.toNat with
   | inl h =>
     have hN : ¬ (y.toNat ≤ x.toNat) := Nat.not_le_of_gt h
@@ -3790,11 +3725,7 @@ theorem evalBinOp_gt_signed_eq_decide (w : IntWidth)
         (.scalar (bvToScalar w true y)) =
       .ok (.bool (decide
         (Anneal.BitVecArith.signedKey y < Anneal.BitVecArith.signedKey x))) := by
-  unfold evalBinOp
-  dsimp only
-  rw [if_bool_false (rfl : BinOp.gt.isShift = false), bvToScalar_width,
-    bvToScalar_width, bvToScalar_signed, bvToScalar_signed,
-    if_bool_false (evalBinOp_header_eq w true)]
+  refine (if_bool_false (evalBinOp_header_eq w true) _ _).trans ?_
   cases h : decide (decodeScalar (bvToScalar w true x) >
       decodeScalar (bvToScalar w true y)) with
   | true =>
@@ -3829,11 +3760,7 @@ theorem evalBinOp_ge_signed_eq_decide (w : IntWidth)
         (.scalar (bvToScalar w true y)) =
       .ok (.bool (decide
         (Anneal.BitVecArith.signedKey y ≤ Anneal.BitVecArith.signedKey x))) := by
-  unfold evalBinOp
-  dsimp only
-  rw [if_bool_false (rfl : BinOp.ge.isShift = false), bvToScalar_width,
-    bvToScalar_width, bvToScalar_signed, bvToScalar_signed,
-    if_bool_false (evalBinOp_header_eq w true)]
+  refine (if_bool_false (evalBinOp_header_eq w true) _ _).trans ?_
   cases h : decide (decodeScalar (bvToScalar w true x) ≥
       decodeScalar (bvToScalar w true y)) with
   | true =>
@@ -3867,12 +3794,10 @@ theorem evalBinOp_cmp_unsigned_eq (w : IntWidth)
     evalBinOp .cmp (.scalar (bvToScalar w false x))
         (.scalar (bvToScalar w false y)) =
       .ok (.ordering (cmpOrderingOfNat x.toNat y.toNat)) := by
-  unfold evalBinOp cmpOrderingOfInt cmpOrderingOfNat
-  dsimp only
-  rw [if_bool_false (rfl : BinOp.cmp.isShift = false), bvToScalar_width,
-    bvToScalar_width, bvToScalar_signed, bvToScalar_signed,
-    if_bool_false (evalBinOp_header_eq w false),
-    decodeScalar_unsigned_eq, decodeScalar_unsigned_eq]
+  refine (if_bool_false (evalBinOp_header_eq w false) _ _).trans ?_
+  dsimp only [cmpOrderingOfInt, cmpOrderingOfNat, bvToScalar_width,
+    bvToScalar_signed]
+  rw [decodeScalar_unsigned_eq, decodeScalar_unsigned_eq]
   cases Nat.lt_or_ge x.toNat y.toNat with
   | inl hLt =>
     rw [decide_eq_true (int_ofNat_lt_iff.mpr hLt), decide_eq_true hLt]
@@ -3896,11 +3821,9 @@ theorem evalBinOp_cmp_signed_eq (w : IntWidth)
     evalBinOp .cmp (.scalar (bvToScalar w true x))
         (.scalar (bvToScalar w true y)) =
       .ok (.ordering (bvScmp x y)) := by
-  unfold evalBinOp bvScmp cmpOrderingOfInt cmpOrderingOfNat
-  dsimp only
-  rw [if_bool_false (rfl : BinOp.cmp.isShift = false), bvToScalar_width,
-    bvToScalar_width, bvToScalar_signed, bvToScalar_signed,
-    if_bool_false (evalBinOp_header_eq w true)]
+  refine (if_bool_false (evalBinOp_header_eq w true) _ _).trans ?_
+  dsimp only [bvScmp, cmpOrderingOfInt, cmpOrderingOfNat, bvToScalar_width,
+    bvToScalar_signed]
   cases Nat.lt_or_ge
       (Anneal.BitVecArith.signedKey x) (Anneal.BitVecArith.signedKey y) with
   | inl hLt =>
