@@ -754,6 +754,7 @@ theorem evalRvalueBy_eq (tyEq : MirTy → MirTy → Bool)
   | useRetag _ | ref _ _ | addressOf _ _ | fakeAddressOf _ | aggregateTuple _
   | aggregateArray _ _
   | repeat_ _ _ _ | aggregateRangeTo _ | aggregateRangeFrom _ | aggregateRange _ _ _ | aggregateOption _ _ _
+  | aggregateEnum _ _
   | unsupported => rfl
 
 /-- Computable mirror of `Trusted.MirSemantics.writePlace` parameterized by
@@ -1818,6 +1819,7 @@ theorem discriminantTypesValidBy_eq (tyEq : MirTy → MirTy → Bool)
     | use _ | useRetag _ | binaryOp _ _ _ | unaryOp _ _ | cast _ _ _ | ref _ _
     | addressOf _ _ | fakeAddressOf _ | aggregateTuple _ | aggregateArray _ _
     | repeat_ _ _ _
+    | aggregateEnum _ _
     | aggregateRangeTo _ _ | aggregateRangeFrom _ _ | aggregateRange _ _ _ | aggregateOption _ _ _ | unsupported => rfl
     | discriminant src =>
       dsimp only
@@ -1878,6 +1880,7 @@ theorem castTypesValidBy_eq (tyEq : MirTy → MirTy → Bool)
     | use _ | useRetag _ | binaryOp _ _ _ | unaryOp _ _ | discriminant _ | ref _ _
     | addressOf _ _ | fakeAddressOf _ | aggregateTuple _ | aggregateArray _ _
     | repeat_ _ _ _
+    | aggregateEnum _ _
     | aggregateRangeTo _ _ | aggregateRangeFrom _ _ | aggregateRange _ _ _ | aggregateOption _ _ _ | unsupported => rfl
     | cast ck _ castTy =>
       cases ck with
@@ -2028,6 +2031,7 @@ theorem assignTypesValidBy_eq (tyEq : MirTy → MirTy → Bool)
         | discriminant _ | cast _ _ _ | ref _ _ | addressOf _ _
         | fakeAddressOf _
         | aggregateTuple _ | unsupported | useRetag _ | aggregateRangeTo _ _
+        | aggregateEnum _ _
         | aggregateRangeFrom _ _ | aggregateArray _ _ | repeat_ _ _ _ | aggregateOption _ _ _ | aggregateRange _ _ _ => rfl
         | use opnd => exact localOperandMatchesTyBy_eq tyEq hTyEq body.locals opnd dstTy
         | binaryOp op lhs rhs =>

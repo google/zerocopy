@@ -3073,6 +3073,7 @@ theorem symRvalue_sound {tys : List MirTy} {ls ls' : List SymSlot}
   | ref _ _ | addressOf _ _ | fakeAddressOf _ | aggregateTuple _
   | aggregateArray _ _
   | repeat_ _ _ _ | useRetag _ | aggregateRangeTo _ _ | aggregateRangeFrom _ _
+  | aggregateEnum _ _
   | unsupported | aggregateOption _ _ _ | aggregateRange _ _ _ => cases h
   | cast ck a castTy =>
     cases ck with

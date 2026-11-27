@@ -194,9 +194,9 @@ truncated to `discrWidth` (`d < Nat.pow 2 discrWidth.bitWidth`; e.g., `-1i8` is
 All five fields (`id` plus the four discriminant and tag layout fields) are
 required explicitly (with no defaults) so a producer cannot silently inherit an
 `isize` discriminant or tag layout that disagrees with `rustc`. Direct
-`Rvalue::Aggregate(AggregateKind::Adt, [])` enum construction is intentionally
-out of scope and fails closed as `Rvalue.unsupported` (fieldless enum values
-are modeled via constant and `Rvalue.discriminant` operations). -/
+construction of a field-less variant (an operand-less `Rvalue::Aggregate` of
+`AggregateKind::Adt`) is `Rvalue.aggregateEnum`, which only Profile v2
+evaluates; Profile v1 rejects it like every other aggregate. -/
 structure EnumTy where
   id : Nat
   discrWidth : IntWidth

@@ -665,6 +665,13 @@ pub enum Rvalue {
         elem_ty: Ty,
         start: Operand,
     },
+    /// Operand-less `AggregateKind::Adt` constructing variant `variant_idx`
+    /// (the declaration index, not the discriminant) of a field-less enum or
+    /// `Ordering`, matching `Trusted.MirAst.Rvalue.aggregateEnum` (Profile v2).
+    AggregateEnum {
+        ty: Ty,
+        variant_idx: u32,
+    },
     Aggregate {
         aggregate_kind: AggregateKind,
         fields: Vec<Operand>,

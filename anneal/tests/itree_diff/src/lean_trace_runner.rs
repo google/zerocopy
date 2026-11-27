@@ -2134,7 +2134,7 @@ def rvalueHasDeref : Rvalue → Bool
   | .binaryOp _ l r => operandHasDeref l || operandHasDeref r
   | .discriminant p | .ref _ p | .addressOf _ p | .fakeAddressOf p => placeHasDeref p
   | .aggregateTuple ops | .aggregateArray _ ops => ops.any operandHasDeref
-  | .unsupported => false
+  | .aggregateEnum _ _ | .unsupported => false
 
 def operandReadyInFrame (bodyLocals : List MirTy) (locals : List LocalSlot)
     (mem : MemoryState) (opnd : Operand) : Bool :=

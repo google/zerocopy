@@ -1256,6 +1256,10 @@ pub enum Rvalue {
         inner_ty: Ty,
         payload: Option<Box<Operand>>,
     },
+    AggregateEnum {
+        ty: Ty,
+        variant_idx: u32,
+    },
 }
 
 impl Rvalue {
@@ -1287,6 +1291,7 @@ impl Rvalue {
             Self::AggregateOption { inner_ty, payload, .. } => {
                 1 + inner_ty.ast_nodes() + payload.as_ref().map_or(0, |op| op.ast_nodes())
             }
+            Self::AggregateEnum { ty, .. } => 1 + ty.ast_nodes(),
         }
     }
 }
@@ -1977,6 +1982,7 @@ fn rvalue_mentions_local_v2(rv: &Rvalue, lid: u32) -> bool {
         Rvalue::AggregateTuple { fields: ops } | Rvalue::AggregateArray { elems: ops, .. } => {
             ops.iter().any(|op| operand_mentions_local_v2(op, lid))
         }
+        Rvalue::AggregateEnum { .. } => false,
     }
 }
 
@@ -2747,6 +2753,27 @@ impl Body {
                         _ => return Err("invalid AggregateOption variant/payload".into()),
                     }
                 }
+                Rvalue::AggregateEnum { ty, variant_idx } => {
+                    if ty != dst_ty {
+                        return Err(format!(
+                            "AggregateEnum type {ty:?} disagrees with destination {dst_ty:?}"
+                        ));
+                    }
+                    let variant_count = match ty {
+                        Ty::Ordering => 3,
+                        Ty::Enum(ety) => ety.discriminants().len(),
+                        _ => {
+                            return Err(format!(
+                                "AggregateEnum requires a field-less enum or Ordering, got {ty:?}"
+                            ));
+                        }
+                    };
+                    if usize::try_from(*variant_idx).map_or(true, |idx| idx >= variant_count) {
+                        return Err(format!(
+                            "AggregateEnum variant index {variant_idx} is out of range for {ty:?}"
+                        ));
+                    }
+                }
             }
             Ok(())
         }
@@ -3257,6 +3284,7 @@ impl Body {
                         | Rvalue::AggregateRangeTo { .. }
                         | Rvalue::AggregateRangeFrom { .. }
                         | Rvalue::AggregateRange { .. }
+                        | Rvalue::AggregateEnum { .. }
                         | Rvalue::AggregateOption { .. } => return true,
                     },
                     Statement::StorageLive { .. }
@@ -3413,6 +3441,7 @@ impl Body {
                                 op.collect_enum_ids(out);
                             }
                         }
+                        Rvalue::AggregateEnum { ty, .. } => ty.collect_enum_ids(out),
                         Rvalue::Discriminant { place } => place.collect_enum_ids(out),
                     }
                 }
@@ -3939,6 +3968,51 @@ mod tests {
                 check_cast_types(CastKind::PtrToPtr, &reference, &const_u8, &const_u8).unwrap_err();
             assert!(err.contains("PtrToPtr cast from reference"), "{err}");
         }
+    }
+
+    #[test]
+    fn body_try_new_checks_aggregate_enum_type_and_variant_index() {
+        let enum_ty = Ty::Enum(
+            EnumTy::try_new(
+                7,
+                IntTy {
+                    width: IntWidth::Isize,
+                    signed: true,
+                },
+                EnumTagRepr::Scalar(IntTy {
+                    width: IntWidth::I8,
+                    signed: true,
+                }),
+                vec![u128::from(u64::MAX), 1],
+            )
+            .unwrap(),
+        );
+        let body = |dst_ty: Ty, ty: Ty, variant_idx: u32| {
+            Body::try_new(
+                0,
+                false,
+                vec![dst_ty],
+                vec![Block {
+                    statements: vec![Statement::Assign {
+                        local: 0,
+                        value: Rvalue::AggregateEnum { ty, variant_idx },
+                    }],
+                    terminator: Terminator::Ret,
+                }],
+                "rust-path-v1::aggregate_enum".into(),
+            )
+        };
+        let admitted = body(enum_ty.clone(), enum_ty.clone(), 1).unwrap();
+        assert!(admitted.uses_profile_v2());
+        assert!(body(Ty::Ordering, Ty::Ordering, 2).is_ok());
+        let out_of_range = body(enum_ty.clone(), enum_ty.clone(), 2).unwrap_err();
+        assert!(out_of_range.contains("out of range"), "{out_of_range}");
+        let ordering_out_of_range = body(Ty::Ordering, Ty::Ordering, 3).unwrap_err();
+        assert!(ordering_out_of_range.contains("out of range"), "{ordering_out_of_range}");
+        let mismatch = body(Ty::Ordering, enum_ty, 0).unwrap_err();
+        assert!(mismatch.contains("disagrees with destination"), "{mismatch}");
+        let not_enum = body(Ty::Bool, Ty::Bool, 0).unwrap_err();
+        assert!(not_enum.contains("field-less enum or Ordering"), "{not_enum}");
     }
 
     #[test]

@@ -33,9 +33,10 @@ use crate::{
     },
     ops::{eval_bin_op, eval_int_to_int_cast, eval_un_op},
     value::{
-        AllocByte, FaultDetail, FaultKind, PtrVal, ScalarVal, UbClass, Val, check_args_match,
-        check_val, enum_admitted, is_int_like_ty, is_primitive_readable_ty, is_supported_local_ty,
-        is_supported_v1_local_ty, is_supported_v2_local_ty, is_unicode_scalar, is_zst_enum_ty,
+        AllocByte, FaultDetail, FaultKind, OrderingVal, PtrVal, ScalarVal, UbClass, Val,
+        check_args_match, check_val, enum_admitted, is_int_like_ty, is_primitive_readable_ty,
+        is_supported_local_ty, is_supported_v1_local_ty, is_supported_v2_local_ty,
+        is_unicode_scalar, is_zst_enum_ty,
     },
 };
 
@@ -307,7 +308,7 @@ fn rvalue_mentions_local_v2(rv: &Rvalue, lid: u32) -> bool {
         Rvalue::AggregateArray { elems, .. } => {
             elems.iter().any(|op| operand_mentions_local_v2(op, lid))
         }
-        Rvalue::Unsupported => false,
+        Rvalue::AggregateEnum { .. } | Rvalue::Unsupported => false,
     }
 }
 
@@ -3546,6 +3547,7 @@ fn check_assign_copy_hazard_v2(
         | Rvalue::Repeat { .. }
         | Rvalue::AggregateRangeTo { .. }
         | Rvalue::AggregateRangeFrom { .. }
+        | Rvalue::AggregateEnum { .. }
         | Rvalue::Aggregate { .. }
         | Rvalue::Ref { .. }
         | Rvalue::AddressOf { .. }
@@ -4648,11 +4650,37 @@ fn eval_rvalue_v2(
                 _ => Err(FaultDetail::unsupported("AggregateRangeFrom start must be usize")),
             }
         }
+        Rvalue::AggregateEnum { ty, variant_idx } => {
+            if !dst_ty.structural_eq(ty) {
+                return Err(FaultDetail::unsupported(
+                    "AggregateEnum type disagrees with destination type",
+                ));
+            }
+            eval_aggregate_enum(ty, *variant_idx)
+        }
         Rvalue::Cast { cast_kind: CastKind::Unsize | CastKind::Unsupported, .. }
         | Rvalue::Aggregate { .. }
         | Rvalue::AggregateArray { .. }
         | Rvalue::Repeat { .. }
         | Rvalue::Unsupported => Err(FaultDetail::unsupported("unmodeled Profile v2 MIR rvalue")),
+    }
+}
+
+/// Mirror of `Trusted.MirSemantics.evalAggregateEnum`: variant `variant_idx`
+/// of an admitted field-less enum, or `Ordering` declaration index 0, 1, or 2
+/// (`Less`, `Equal`, `Greater`). Every other type or index is unsupported.
+fn eval_aggregate_enum(ty: &Ty, variant_idx: u32) -> Result<Val, FaultDetail> {
+    let idx = usize::try_from(variant_idx).ok();
+    match (ty, idx) {
+        (Ty::Ordering, Some(0)) => Ok(Val::Ordering(OrderingVal::Less)),
+        (Ty::Ordering, Some(1)) => Ok(Val::Ordering(OrderingVal::Equal)),
+        (Ty::Ordering, Some(2)) => Ok(Val::Ordering(OrderingVal::Greater)),
+        (Ty::Enum(ety), Some(variant))
+            if enum_admitted(ety) && variant < ety.discriminants.len() =>
+        {
+            Ok(Val::EnumVal { ty: ety.clone(), variant })
+        }
+        _ => Err(FaultDetail::unsupported("AggregateEnum type or variant index is not admitted")),
     }
 }
 

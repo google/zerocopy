@@ -439,6 +439,7 @@ private theorem isCopy1To0Stmt_eq {st : StatementKind}
           | useRetag _ => cases h
           | aggregateRangeTo _ _ => cases h
           | aggregateRangeFrom _ _ => cases h
+          | aggregateEnum _ _ => cases h
           | aggregateArray _ _ => cases h
           | repeat_ _ _ _ => cases h
           | aggregateRange _ _ _ => cases h

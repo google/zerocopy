@@ -397,6 +397,7 @@ theorem encodeRvalue_binaryOp_iff_base : EncodeRvalueBinaryOpIffClaim := by
   | aggregateTuple _ | aggregateArray _ _
   | repeat_ _ _ _ | aggregateRangeTo _ _
   | aggregateRangeFrom _ _ | aggregateRange _ _ _ | aggregateOption _ _ _
+  | aggregateEnum _ _
   | unsupported =>
     constructor
     · intro h; cases h
@@ -426,6 +427,7 @@ theorem encodeRvalue_unaryOp_iff_base : EncodeRvalueUnaryOpIffClaim := by
   | aggregateTuple _ | aggregateArray _ _
   | repeat_ _ _ _ | aggregateRangeTo _ _
   | aggregateRangeFrom _ _ | aggregateRange _ _ _ | aggregateOption _ _ _
+  | aggregateEnum _ _
   | unsupported =>
     constructor
     · intro h; cases h
@@ -1020,6 +1022,12 @@ theorem collectRvalue_spec (acc : List MirTy) (rv : Rvalue) :
       rw [h_dec₂ ts h_s]
       dsimp only
       rw [h_dec₁ ts (SubTable.trans h_sub₂ h_s)]
+  | aggregateEnum ty variantIdx =>
+    let ⟨h_sub, h_dec⟩ := collectTy_spec acc ty
+    refine ⟨h_sub, fun ts h_s => ?_⟩
+    dsimp only [encodeRvalue, decodeRvalue]
+    rw [h_dec ts h_s]
+    rfl
   | unsupported => exact ⟨SubTable.refl acc, fun _ _ => rfl⟩
 
 theorem collectStmt_spec (acc : List MirTy) (s : StatementKind) :
@@ -1274,6 +1282,7 @@ theorem collectRvalue_canonical (acc : List MirTy) (rv : Rvalue)
     | some pOp =>
       exact collectTy_canonical (collectOperand acc pOp) ty
         (collectOperand_canonical acc pOp h)
+  | aggregateEnum ty _ => exact collectTy_canonical acc ty h
   | unsupported => exact h
 
 theorem collectStmt_canonical (acc : List MirTy) (s : StatementKind)

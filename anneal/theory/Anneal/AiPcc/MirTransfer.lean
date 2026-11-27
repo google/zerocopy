@@ -3530,6 +3530,7 @@ theorem evalRvalueAbs_sound {bodyLocals : List MirTy} {env env' : MirAbsEnv}
   | ref _ _ | addressOf _ _ | fakeAddressOf _ | aggregateTuple _
   | discriminant _
   | useRetag _ | aggregateRangeTo _ _ | aggregateRangeFrom _ _
+  | aggregateEnum _ _
   | aggregateArray _ _ | repeat_ _ _ _
   | aggregateRange _ _ _ | aggregateOption _ _ _
   | unsupported => nomatch hAbs

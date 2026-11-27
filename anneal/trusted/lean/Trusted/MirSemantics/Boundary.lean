@@ -449,7 +449,7 @@ noncomputable def rvalueMentionsLocalV2 (lid : LocalId) : Rvalue → Bool
   | .aggregateOption _ _ none => false
   | .aggregateTuple ops | .aggregateArray _ ops =>
     operandListMentionsLocalV2 lid ops
-  | .unsupported => false
+  | .aggregateEnum _ _ | .unsupported => false
 
 /-- Return `true` when `term` mentions local `lid` in any operand or
 destination place. -/

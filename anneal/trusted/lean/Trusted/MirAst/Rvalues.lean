@@ -255,14 +255,19 @@ Constructor correspondence:
   `core::option::Option::<innerTy>::None` (`variantIdx = 0`, `payload = none`)
   or `core::option::Option::<innerTy>::Some(x)` (`variantIdx = 1`,
   `payload = some x`) (Profile v2).
+- `.aggregateEnum ty variantIdx` corresponds to
+  `Rvalue::Aggregate(AggregateKind::Adt(def, variantIdx, ..), [])` constructing
+  a variant of the field-less enum or `core::cmp::Ordering` type `ty`
+  (Profile v2). `variantIdx` is the variant index, not the discriminant
+  (`compiler/rustc_middle/src/mir/syntax.rs`, `rust-lang/rust`
+  `f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1`):
+
+  > "The second field is the variant index. It's equal to 0 for struct
+  > and union expressions."
 - `.useRetag op` corresponds to a retagging `Use(op, WithRetag::Yes)` of a
   type that is not retag-free.
 - `.unsupported` represents all other `Rvalue` variants (`ThreadLocalRef`,
-  other `Aggregate`s (including direct fieldless
-  enum construction `Rvalue::Aggregate(AggregateKind::Adt, [])`, which is
-  intentionally out of scope and lowers fail-closed to `.unsupported` in favor
-  of constant and discriminant operations), `CopyForDeref`,
-  `WrapUnsafeBinder`, and `Reborrow`).
+  other `Aggregate`s, `CopyForDeref`, `WrapUnsafeBinder`, and `Reborrow`).
 -/
 inductive Rvalue where
   | use (op : Operand)
@@ -282,6 +287,7 @@ inductive Rvalue where
   | aggregateRange (elemTy : MirTy) (startOp endOp : Operand)
   | aggregateOption (variantIdx : Nat) (innerTy : MirTy)
       (payload : Option Operand)
+  | aggregateEnum (ty : MirTy) (variantIdx : Nat)
   | unsupported
 
 end Trusted.MirAst
