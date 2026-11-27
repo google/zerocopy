@@ -19,6 +19,9 @@ and lowers them to a declarative `Spec.lean` built on
   per-claim Lean modules.
 - `macros/` (`anneal-spec`, imported as `anneal`): inert attributes that only
   check clause syntax, for crates that choose to depend on them.
+- `obligations/` (`anneal-obligations`): `cargo anneal-obligations`, which
+  reports one evidence tier per function from receipts, requests, and these
+  specifications (see its [README](obligations/README.md)).
 
 Nothing here is part of Anneal's trusted computing base, but the lowering
 decides what every Rust-syntax specification means. The generated `Spec.lean`

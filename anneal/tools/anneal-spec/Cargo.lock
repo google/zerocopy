@@ -3,6 +3,14 @@
 version = 4
 
 [[package]]
+name = "anneal-obligations"
+version = "0.1.0"
+dependencies = [
+ "anneal-spec-lower",
+ "serde_json",
+]
+
+[[package]]
 name = "anneal-spec"
 version = "0.1.0"
 dependencies = [

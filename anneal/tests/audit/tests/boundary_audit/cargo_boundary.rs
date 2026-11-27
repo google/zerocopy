@@ -33,6 +33,7 @@ fn rejects_cargo_workspace_members_and_path_deps_outside_trusted() {
         "tools/anneal-scaffold/scaffold/Cargo.toml",
         "tools/anneal-spec/Cargo.toml",
         "tools/anneal-spec/Cargo.lock",
+        "tools/anneal-spec/obligations/Cargo.toml",
         "tools/anneal-spec/lower/Cargo.toml",
         "tools/anneal-spec/macros/Cargo.toml",
     ] {
