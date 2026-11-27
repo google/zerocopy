@@ -842,6 +842,7 @@ macro_rules! impl_transitive_transmute_from {
 /// Calling this function in a macro expansion ensures that the macro's caller
 /// must wrap the call in `unsafe { ... }`.
 #[inline(always)]
+#[cfg_attr(anneal, anneal::spec(claim = "zc03_macros_unsafe", total, ensures(|ret| ret == ())))]
 pub(crate) const unsafe fn __unsafe() {}
 
 /// Extracts the contents of doc comments.

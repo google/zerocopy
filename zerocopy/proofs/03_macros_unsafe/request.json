@@ -42,12 +42,12 @@
   },
   "proof": {
     "source_root": ".",
-    "specification": "Spec.specs",
+    "specification": "Specs.zerocopy.zc03_macros_unsafe.specs",
     "theorem": "Proof.verify",
     "sources": [
       {
-        "module": "Spec",
-        "path": "Spec.lean",
+        "module": "Specs.zerocopy.zc03_macros_unsafe",
+        "path": "Specs/zerocopy/zc03_macros_unsafe.lean",
         "role": "specification"
       },
       {

@@ -42,12 +42,12 @@
   },
   "proof": {
     "source_root": ".",
-    "specification": "Spec.specs",
+    "specification": "Specs.zerocopy.zc05_layout_add_scaled_metadata.specs",
     "theorem": "Proof.verify",
     "sources": [
       {
-        "module": "Spec",
-        "path": "Spec.lean",
+        "module": "Specs.zerocopy.zc05_layout_add_scaled_metadata",
+        "path": "Specs/zerocopy/zc05_layout_add_scaled_metadata.lean",
         "role": "specification"
       },
       {

@@ -6,9 +6,8 @@
 -- This file may not be copied, modified, or distributed except according to
 -- those terms.
 
-module
 prelude
-public import Expected
+import Expected
 import Anneal.MirWp
 
 namespace Proof
@@ -21,43 +20,78 @@ private theorem body0_adm :
 private theorem body0_runs :
     Runs Captured.body_0 2 [] .unit := rfl
 
-private theorem total_of_runs {defId : DefId} {body : Body}
+/-- A concrete run of the entry body yields an exact-outcome `wpProg` proof. -/
+private theorem wp_of_runs {defId : DefId} {body : Body}
     {fuel : Nat} {args : List Val} {ret : Val}
     (h_body : Trusted.MirSemantics.getElem? Captured.program.bodies defId = some body)
     (h_adm : BodyStaticAdmitted Captured.program body = true)
     (h_args : ValidEntryArgs body args)
     (h_runs : Runs body fuel args ret) :
-    Spec.ReturnsTotal Captured.program defId args ret := by
+    wpProg (entryProgForBody Captured.program defId) fuel { args := args }
+      (fun outcome => outcome = .returned ⟨ret, ⟨[]⟩⟩) := by
   have h_execProg :
       execProg (entryProgForBody Captured.program defId) fuel { args := args }
         (fun outcome => outcome = .returned ⟨ret, ⟨[]⟩⟩) := by
     unfold execProg
     rw [initState_entryProgForBody h_body h_adm h_args]
     exact (execOutcomeState_entryProg_iff h_body (isSingleFrame0_mkState 0 0 _)).mpr h_runs
-  have h_all := spec_and_behavior_of_wp_eq (wpProg_of_execProg h_execProg)
-  exact ⟨h_all.2.2.2 _ rfl, h_all.2.2.1, h_all.2.1⟩
+  exact wpProg_of_execProg h_execProg
+
+/-- The per-argument obligations of `BodyContractSatisfied`, discharged from an
+exact-outcome `wpProg` proof whose unique return satisfies `postReturn`. -/
+private theorem obligations_of_wp {defId : DefId} {args : List Val}
+    {ret : Val} {fuel : Nat} {c : FnContract} {isUnsafe : Bool}
+    (h_wp : wpProg (entryProgForBody Captured.program defId) fuel { args := args }
+      (fun outcome => outcome = .returned ⟨ret, ⟨[]⟩⟩))
+    (h_post : c.postReturn { args := args } ⟨ret, ⟨[]⟩⟩) :
+    (c.effectiveSafetyPre isUnsafe { args := args } →
+      WellFormed (entryProgForBody Captured.program defId) { args := args }) ∧
+    (c.effectiveBehaviorPre isUnsafe { args := args } →
+      (∀ out : TerminalOut,
+        Behavior (entryProgForBody Captured.program defId) { args := args } out →
+        match out with
+        | .returned retOut => c.postReturn { args := args } retOut
+        | .unwound uwMem =>
+          c.effects.noUnwind = false ∧ c.postUnwind { args := args } uwMem
+        | .aborted _ => False) ∧
+      (c.effects.terminates = true →
+        ¬ Diverges (entryProgForBody Captured.program defId) { args := args })) := by
+  have h := spec_and_behavior_of_wp_eq h_wp
+  refine ⟨fun _ => h.1, fun _ => ⟨fun out hOut => ?_, fun _ => h.2.2.1⟩⟩
+  have hEq := (h.2.2.2 (fun o => o = .returned ⟨ret, ⟨[]⟩⟩) rfl).2 out hOut
+  subst hEq
+  exact h_post
 
 private theorem body0_safe_verified :
     BodyVerified Captured.program 0 Captured.body_0
-      (Spec.specs.safety Captured.body_0.identity) := by
+      (Specs.zerocopy.zc03_macros_unsafe.specs.safety Captured.body_0.identity) := by
   refine bodyVerified_of_safe rfl body0_adm (fun args valid _ => ?_)
   have hMatch : checkArgsMatch args [] = true := valid
   have hNil : args = [] := checkArgsMatch_nil_iff.mp hMatch
   subst hNil
   exact (run_initial_success body0_runs).1
 
-private theorem body0_total :
-    Spec.ReturnsTotal Captured.program 0 [] .unit :=
-  total_of_runs rfl body0_adm rfl body0_runs
+private theorem body0_contract :
+    BodyContractSatisfied Captured.program 0 Captured.body_0 Specs.zerocopy.zc03_macros_unsafe.fn0_contract := by
+  refine ⟨rfl, body0_adm, fun args valid => ?_⟩
+  have hMatch : checkArgsMatch args [] = true := valid
+  have hNil : args = [] := checkArgsMatch_nil_iff.mp hMatch
+  subst hNil
+  exact obligations_of_wp (wp_of_runs rfl body0_adm valid body0_runs) rfl
 
-public theorem verify : Expected.claim := by
+private theorem body0_inhabited :
+    ContractPreInhabited Captured.body_0 Specs.zerocopy.zc03_macros_unsafe.fn0_contract :=
+  ⟨[], rfl, fun _ => trivial, trivial⟩
+
+theorem verify : Expected.claim := by
   refine ⟨rfl, rfl, rfl, rfl, rfl, rfl, ?_, ?_⟩
-  · have hAll : BodiesVerified Captured.program Spec.specs 0 Captured.program.bodies :=
+  · have hAll : BodiesVerified Captured.program Specs.zerocopy.zc03_macros_unsafe.specs 0 Captured.program.bodies :=
       ⟨body0_safe_verified, True.intro⟩
     intro defId body found
     have hSub := bodiesVerified_getElem hAll defId body found
     rw [Nat.zero_add] at hSub
     exact hSub
-  · exact ⟨rfl, 0, Captured.body_0, rfl, rfl, rfl, rfl, body0_total⟩
+  · exact ⟨rfl, ⟨0, Captured.body_0, rfl, rfl, rfl, body0_contract, fun _ => body0_inhabited⟩,
+      trivial⟩
 
 end Proof

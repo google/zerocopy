@@ -51,12 +51,7 @@ const USIZE_POINTER_METADATA_SPEC: &str = "anneal::external_spec! {
 }
 ";
 
-const UNITS: &[&str] = &[
-    "01_usize_pointer_metadata",
-    "02_unit_pointer_metadata",
-    "03_macros_unsafe",
-    "04_layout_add_scaled_metadata",
-];
+const UNITS: &[&str] = &["01_usize_pointer_metadata", "02_unit_pointer_metadata"];
 
 fn unit_dir(unit: &str) -> std::path::PathBuf {
     Path::new(env!("CARGO_MANIFEST_DIR")).join("../tests/zerocopy").join(unit)

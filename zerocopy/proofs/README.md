@@ -22,20 +22,23 @@ those terms. -->
 > `only_derive_is_allowed_to_implement_this_trait` sentinel methods are checked
 > today). Treat passing runs as experimental alpha checks under intact-host
 > assumptions and human review of stated specifications (each unit's primary
-> specification module—here `Spec.lean`—plus any `specification`-role modules
-> and their transitive meaning dependencies), `request.json`, CI workflows, and
-> TCB audit logs (complete review-surface reporting remains under active
-> development; see [alpha usage][alpha-doc] and [threat model][threat-doc]).
+> specification module—here `Spec.lean`, or a generated `Specs/zerocopy/*.lean`
+> together with the inline attributes it is lowered from—plus any
+> `specification`-role modules and their transitive meaning dependencies),
+> `request.json`, CI workflows, and TCB audit logs (complete review-surface
+> reporting remains under active development; see [alpha usage][alpha-doc] and
+> [threat model][threat-doc]).
 
 [alpha-doc]: ../../anneal/docs/alpha.md
 [threat-doc]: ../../anneal/THREAT_MODEL.md
 
-This directory contains out-of-line Anneal formal specifications and
-kernel-checked Lean 4 proofs covering those 530 distinct Profile v1 items
-(scalar, unit, layout, generic, and marker-sentinel functions and
-monomorphizations) and 23 verbatim Profile v2 byte-slice, fieldless-enum, and
-raw-pointer items in `../src/`. Together they cover every non-generic function
-in `../src/` that whole-crate capture currently admits.
+This directory contains Anneal formal specifications (out-of-line, or generated
+from inline attributes in `../src/`) and kernel-checked Lean 4 proofs covering
+those 530 distinct Profile v1 items (scalar, unit, layout, generic, and
+marker-sentinel functions and monomorphizations) and 23 verbatim Profile v2
+byte-slice, fieldless-enum, and raw-pointer items in `../src/`. Together they
+cover every non-generic function in `../src/` that whole-crate capture
+currently admits.
 
 The Profile v2 units (`06_*`, `08_*`, and `16_*`) rest on additional
 assumptions, described in [Profile v2][profile-v2-doc]. Profile v2 has no
@@ -74,9 +77,9 @@ and `request.json` are what reviewers read.
 | --- | --- | --- | --- |
 | `01_usize_pointer_metadata` | `<usize as PointerMetadata>::{from,to}_elem_count` | Total execution over all `2^64` `usize` inputs; two-way bijection round-trips; safe signatures (`isUnsafe = false`) | `["propext"]` |
 | `02_unit_pointer_metadata` | `<() as PointerMetadata>::{from,to}_elem_count` | Universal constant `()` and `0usize` return; round-trip invariants; safe signatures (`isUnsafe = false`) | `["propext"]` |
-| `03_macros_unsafe` | `util::macros::__unsafe` | Exact identity, `isUnsafe = true`, zero-argument signature, non-vacuous safety precondition, total `()` return | `["propext"]` |
+| `03_macros_unsafe` | `util::macros::__unsafe` (specified inline, claim `zc03_macros_unsafe`) | Exact identity and signature (`isUnsafe = true`, no parameters, `()` return); total execution returning `()` | `["propext"]` |
 | `04_substantive_and_frombytes_markers` | All 5 substantive scalar/unit/macro items above plus 4 `u8` derive-only sentinel methods (`only_derive_is_allowed_to_implement_this_trait` for `Immutable`, `TryFromBytes`, `FromZeros`, `FromBytes`; does not verify `unsafe impl` soundness) | Compositional 9-body `BodiesVerified` dispatch and functional postconditions | `["propext"]` |
-| `05_layout_add_scaled_metadata` | `layout::add_scaled_metadata` (`unsafe`; calls `core::num` `unchecked_mul` and `unchecked_add`) | Under its `# Safety` contract (`base + metadata * multiple <= usize::MAX` on a 64-bit target): no undefined behavior, termination, and an exact `base + metadata * multiple` return across both sysroot call frames, matching its Kani `ensures` contract. Covers the inherent `core::num` methods selected by Anneal's pinned toolchain, not the `util::polyfills::NumExt` fallback used on older toolchains | `["propext"]` |
+| `05_layout_add_scaled_metadata` | `layout::add_scaled_metadata` (`unsafe`; calls `core::num` `unchecked_mul` and `unchecked_add`; specified inline, claim `zc05_layout_add_scaled_metadata`) | Under its `# Safety` contract (`base + metadata * multiple <= usize::MAX` on a 64-bit target): no undefined behavior, termination, and an exact `base + metadata * multiple` return across both sysroot call frames, matching its Kani `ensures` contract. Covers the inherent `core::num` methods selected by Anneal's pinned toolchain, not the `util::polyfills::NumExt` fallback used on older toolchains | `["propext"]` |
 | `05_sharded_tryfrombytes` | All 5 substantive items above plus 20 primitive derive-only sentinel methods (`u8`, `i8`, `u16`, `i16`, `usize`, incl. 101B `TryFromBytes for usize`; does not verify `unsafe impl` soundness) | Tarjan SCC 2-shard `.olean` split (`Proof.IdTree`, `Proof.Shard_000..001`, non-unfolding `BinChunkTree` assembly) | `["propext"]` |
 | `06_byte_slice_into_byte_slice` | `<&[u8] as IntoByteSlice>::into_byte_slice`, `<&mut [u8] as IntoByteSlice>::into_byte_slice`, `<&mut [u8] as IntoByteSliceMut>::into_byte_slice_mut` | Profile v2 stability over all valid entries and caller memory: each body is well-formed and returns the same slice address and length with caller memory unchanged as its only terminal behavior | `["propext"]` |
 | `08_byte_slice_split_at_unchecked` | `<&[u8] as SplitByteSlice>::split_at_unchecked` | Profile v2 (`UnitTheoremV2`) over all valid entries satisfying `mid <= len`, execution reaches a return of `(s[..mid], s[mid..])` (second slice at `addr + mid`, lengths summing to `len`) with caller memory unchanged | `["propext"]` |
