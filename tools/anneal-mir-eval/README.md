@@ -38,6 +38,10 @@ CI ergonomics:
      (`MisalignedPtrDeref`/`NullPtrDeref` -> `Undefined`, other panicking
      asserts -> `Unsupported`), single-level `PartialTuple` moves, and
      allocation-checked zero-sized memory reads/writes.
+   - Captured constructs that the evaluator does not model yet (array
+     aggregates and repeats, `ConstantIndex` projections, `Unsize` casts,
+     read-only data constants, and the `IntToLeBytes` and `ArrayEq` core calls)
+     still parse, and evaluating them fails closed with `Unsupported`.
    - Every `Undefined` counterexample is explicitly classified as either
      `replayable_miri_ub` (concrete Rust/Miri UB) or `model_only_unreplayed`
      (documented conservative `Trusted.MirSemantics` over-approximation or
