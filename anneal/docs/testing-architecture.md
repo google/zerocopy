@@ -169,7 +169,9 @@ anneal/
     ├── rustc-capture/                 # package = "anneal-rustc-capture-tests" (publish = false)
     │   ├── Cargo.toml
     │   ├── src/bin/anneal-rustc-capture-test-bin.rs
-    │   └── tests/{typed_capture.rs, stdlib_capture.rs, compiler_session.rs, pass_order_sentinel.rs}
+    │   └── tests/
+    │       ├── pass_order_sentinel/{cfg_expansion_and_o1a_dual,feature_allowlist,mir_pass_seams}.rs
+    │       └── {typed_capture.rs, stdlib_capture.rs, compiler_session.rs, pass_order_sentinel.rs}
     │       # (Wave 2B target: decompose typed_capture.rs into suite/main.rs)
     ├── differential/                  # package = "anneal-differential-tests" (publish = false)
     │   ├── Cargo.toml
