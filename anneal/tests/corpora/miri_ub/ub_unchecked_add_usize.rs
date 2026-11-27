@@ -1,0 +1,13 @@
+// Copyright 2026 The Fuchsia Authors
+//
+// Licensed under a BSD-style license <LICENSE-BSD>, Apache License, Version 2.0
+// <LICENSE-APACHE or https://www.apache.org/licenses/LICENSE-2.0>, or the MIT
+// license <LICENSE-MIT or https://opensource.org/licenses/MIT>, at your option.
+// This file may not be copied, modified, or distributed except according to
+// those terms.
+
+fn main() {
+    let a: usize = usize::MAX;
+    let b: usize = 1;
+    let _ = unsafe { a.unchecked_add(b) };
+}
