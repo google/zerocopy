@@ -90,6 +90,10 @@
       "sha256": "bd4ba225b0f7c30eb6c829a89c781cb1f8d19d1f334f5dfa41327f55f4f724cb"
     },
     {
+      "path": "theory/Anneal/MirSymExecCall.lean",
+      "sha256": "7c3b8c54be8d36c7d8c05f7087a8218de7cd6355caaf2e71b50f14318250651e"
+    },
+    {
       "path": "theory/Anneal/MirTotal/Ops.lean",
       "sha256": "08ac0128adc874c15250238f7ecdaf8e35a026ba9cc8180969863fe1d082427c"
     },

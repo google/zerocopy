@@ -593,6 +593,7 @@ anneal/
     │   ├── MediaBits.lean          # Strict RBSP bijection, Exp-Golomb & dual-context lenses (+ MediaBits/)
     │   ├── MirMemComp.lean         # MIR memory/codec layer (+ MirMemComp/)
     │   ├── MirSymExec.lean         # Reflective symbolic MIR executor (+ MirSymExec/)
+    │   ├── MirSymExecCall.lean     # Multi-frame symbolic executor for calls (+ MirSymExecCall/)
     │   ├── MirTotal.lean           # Computable MIR step mirrors & bridges (+ MirTotal/)
     │   ├── MirWp.lean              # Fuel-bounded MIR WP (+ MirWp/, decoupled Canaries)
     │   ├── MiriTreeBorrows.lean    # Miri-aligned Tree Borrows model & retag laws (+ MiriTreeBorrows/)
