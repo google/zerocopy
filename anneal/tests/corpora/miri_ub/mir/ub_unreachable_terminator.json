@@ -1,0 +1,32 @@
+{
+  "scope": {
+    "kind": "selected_unit",
+    "roots": [
+      "miri_ub::unreachable_terminator"
+    ],
+    "instantiations": []
+  },
+  "bodies": [
+    {
+      "arg_count": 0,
+      "is_unsafe": true,
+      "local_tys": [
+        {
+          "kind": "unit"
+        }
+      ],
+      "blocks": [
+        {
+          "statements": [],
+          "terminator": {
+            "kind": "unreachable"
+          }
+        }
+      ],
+      "identity": "miri_ub::unreachable_terminator"
+    }
+  ],
+  "entry_def_id": 0,
+  "pointer_width_bits": 64,
+  "mir_profile_version": 1
+}

@@ -1,0 +1,67 @@
+{
+  "scope": {
+    "kind": "selected_unit",
+    "roots": [
+      "miri_ub::rem_min_neg1_i64"
+    ],
+    "instantiations": []
+  },
+  "bodies": [
+    {
+      "arg_count": 0,
+      "is_unsafe": true,
+      "local_tys": [
+        {
+          "kind": "int",
+          "width": "i64",
+          "signed": true
+        }
+      ],
+      "blocks": [
+        {
+          "statements": [
+            {
+              "kind": "assign",
+              "local": 0,
+              "value": {
+                "kind": "binary",
+                "op": "rem",
+                "left": {
+                  "kind": "constant",
+                  "ty": {
+                    "kind": "int",
+                    "width": "i64",
+                    "signed": true
+                  },
+                  "lit": {
+                    "kind": "scalar",
+                    "bits": "9223372036854775808"
+                  }
+                },
+                "right": {
+                  "kind": "constant",
+                  "ty": {
+                    "kind": "int",
+                    "width": "i64",
+                    "signed": true
+                  },
+                  "lit": {
+                    "kind": "scalar",
+                    "bits": "18446744073709551615"
+                  }
+                }
+              }
+            }
+          ],
+          "terminator": {
+            "kind": "ret"
+          }
+        }
+      ],
+      "identity": "miri_ub::rem_min_neg1_i64"
+    }
+  ],
+  "entry_def_id": 0,
+  "pointer_width_bits": 64,
+  "mir_profile_version": 1
+}

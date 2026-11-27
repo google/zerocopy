@@ -1,0 +1,317 @@
+{
+  "schema_version": 1,
+  "fixtures": [
+    {
+      "id": "rust_ub_unchecked_add_i8",
+      "path": "ub_unchecked_add_i8.rs",
+      "kind": "rust_ub_caught",
+      "category": "arith_unchecked",
+      "expected_fault_substring": "unchecked signed arithmetic overflow"
+    },
+    {
+      "id": "rust_ub_unchecked_add_i32",
+      "path": "ub_unchecked_add_i32.rs",
+      "kind": "rust_ub_caught",
+      "category": "arith_unchecked",
+      "expected_fault_substring": "unchecked signed arithmetic overflow"
+    },
+    {
+      "id": "rust_ub_unchecked_add_i128",
+      "path": "ub_unchecked_add_i128.rs",
+      "kind": "rust_ub_caught",
+      "category": "arith_unchecked",
+      "expected_fault_substring": "unchecked signed arithmetic overflow"
+    },
+    {
+      "id": "rust_ub_unchecked_add_u8",
+      "path": "ub_unchecked_add_u8.rs",
+      "kind": "rust_ub_caught",
+      "category": "arith_unchecked",
+      "expected_fault_substring": "unchecked unsigned arithmetic overflow"
+    },
+    {
+      "id": "rust_ub_unchecked_add_u64",
+      "path": "ub_unchecked_add_u64.rs",
+      "kind": "rust_ub_caught",
+      "category": "arith_unchecked",
+      "expected_fault_substring": "unchecked unsigned arithmetic overflow"
+    },
+    {
+      "id": "rust_ub_unchecked_add_usize",
+      "path": "ub_unchecked_add_usize.rs",
+      "kind": "rust_ub_caught",
+      "category": "arith_unchecked",
+      "expected_fault_substring": "unchecked unsigned arithmetic overflow"
+    },
+    {
+      "id": "rust_ub_unchecked_sub_i16",
+      "path": "ub_unchecked_sub_i16.rs",
+      "kind": "rust_ub_caught",
+      "category": "arith_unchecked",
+      "expected_fault_substring": "unchecked signed arithmetic overflow"
+    },
+    {
+      "id": "rust_ub_unchecked_sub_i64",
+      "path": "ub_unchecked_sub_i64.rs",
+      "kind": "rust_ub_caught",
+      "category": "arith_unchecked",
+      "expected_fault_substring": "unchecked signed arithmetic overflow"
+    },
+    {
+      "id": "rust_ub_unchecked_sub_isize",
+      "path": "ub_unchecked_sub_isize.rs",
+      "kind": "rust_ub_caught",
+      "category": "arith_unchecked",
+      "expected_fault_substring": "unchecked signed arithmetic overflow"
+    },
+    {
+      "id": "rust_ub_unchecked_sub_u32",
+      "path": "ub_unchecked_sub_u32.rs",
+      "kind": "rust_ub_caught",
+      "category": "arith_unchecked",
+      "expected_fault_substring": "unchecked unsigned arithmetic overflow"
+    },
+    {
+      "id": "rust_ub_unchecked_sub_u128",
+      "path": "ub_unchecked_sub_u128.rs",
+      "kind": "rust_ub_caught",
+      "category": "arith_unchecked",
+      "expected_fault_substring": "unchecked unsigned arithmetic overflow"
+    },
+    {
+      "id": "rust_ub_unchecked_sub_usize",
+      "path": "ub_unchecked_sub_usize.rs",
+      "kind": "rust_ub_caught",
+      "category": "arith_unchecked",
+      "expected_fault_substring": "usize::unchecked_sub underflow"
+    },
+    {
+      "id": "rust_ub_unchecked_mul_i32",
+      "path": "ub_unchecked_mul_i32.rs",
+      "kind": "rust_ub_caught",
+      "category": "arith_unchecked",
+      "expected_fault_substring": "unchecked signed arithmetic overflow"
+    },
+    {
+      "id": "rust_ub_unchecked_mul_i64",
+      "path": "ub_unchecked_mul_i64.rs",
+      "kind": "rust_ub_caught",
+      "category": "arith_unchecked",
+      "expected_fault_substring": "unchecked signed arithmetic overflow"
+    },
+    {
+      "id": "rust_ub_unchecked_mul_u16",
+      "path": "ub_unchecked_mul_u16.rs",
+      "kind": "rust_ub_caught",
+      "category": "arith_unchecked",
+      "expected_fault_substring": "unchecked unsigned arithmetic overflow"
+    },
+    {
+      "id": "rust_ub_unchecked_mul_u128",
+      "path": "ub_unchecked_mul_u128.rs",
+      "kind": "rust_ub_caught",
+      "category": "arith_unchecked",
+      "expected_fault_substring": "unchecked unsigned arithmetic overflow"
+    },
+    {
+      "id": "rust_ub_branch_enum_unchecked_add",
+      "path": "ub_branch_enum_unchecked_add.rs",
+      "kind": "rust_ub_caught",
+      "category": "control_flow_ub",
+      "expected_fault_substring": "unchecked signed arithmetic overflow"
+    },
+    {
+      "id": "mir_ub_div_zero_i32",
+      "path": "mir/ub_div_zero_i32.json",
+      "kind": "mir_ub_caught",
+      "category": "arith_div_zero",
+      "expected_fault_substring": "division or remainder by zero"
+    },
+    {
+      "id": "mir_ub_div_zero_u32",
+      "path": "mir/ub_div_zero_u32.json",
+      "kind": "mir_ub_caught",
+      "category": "arith_div_zero",
+      "expected_fault_substring": "division or remainder by zero"
+    },
+    {
+      "id": "mir_ub_rem_zero_i64",
+      "path": "mir/ub_rem_zero_i64.json",
+      "kind": "mir_ub_caught",
+      "category": "arith_div_zero",
+      "expected_fault_substring": "division or remainder by zero"
+    },
+    {
+      "id": "mir_ub_div_min_neg1_i8",
+      "path": "mir/ub_div_min_neg1_i8.json",
+      "kind": "mir_ub_caught",
+      "category": "arith_signed_overflow",
+      "expected_fault_substring": "MIN / -1"
+    },
+    {
+      "id": "mir_ub_rem_min_neg1_i64",
+      "path": "mir/ub_rem_min_neg1_i64.json",
+      "kind": "mir_ub_caught",
+      "category": "arith_signed_overflow",
+      "expected_fault_substring": "MIN / -1"
+    },
+    {
+      "id": "mir_ub_unchecked_add_signed_overflow",
+      "path": "mir/ub_unchecked_add_signed_overflow.json",
+      "kind": "mir_ub_caught",
+      "category": "arith_unchecked",
+      "expected_fault_substring": "unchecked signed arithmetic overflow"
+    },
+    {
+      "id": "mir_ub_unchecked_sub_unsigned_underflow",
+      "path": "mir/ub_unchecked_sub_unsigned_underflow.json",
+      "kind": "mir_ub_caught",
+      "category": "arith_unchecked",
+      "expected_fault_substring": "unchecked unsigned arithmetic overflow"
+    },
+    {
+      "id": "mir_ub_unchecked_mul_signed_overflow",
+      "path": "mir/ub_unchecked_mul_signed_overflow.json",
+      "kind": "mir_ub_caught",
+      "category": "arith_unchecked",
+      "expected_fault_substring": "unchecked signed arithmetic overflow"
+    },
+    {
+      "id": "mir_ub_unchecked_shl_oob",
+      "path": "mir/ub_unchecked_shl_oob.json",
+      "kind": "mir_ub_caught",
+      "category": "shift_unchecked",
+      "expected_fault_substring": "unchecked shift amount out of range"
+    },
+    {
+      "id": "mir_ub_unchecked_shr_oob",
+      "path": "mir/ub_unchecked_shr_oob.json",
+      "kind": "mir_ub_caught",
+      "category": "shift_unchecked",
+      "expected_fault_substring": "unchecked shift amount out of range"
+    },
+    {
+      "id": "mir_ub_read_uninit_local",
+      "path": "mir/ub_read_uninit_local.json",
+      "kind": "mir_ub_caught",
+      "category": "uninit_memory",
+      "expected_fault_substring": "uninitialized"
+    },
+    {
+      "id": "mir_ub_read_dead_local",
+      "path": "mir/ub_read_dead_local.json",
+      "kind": "mir_ub_caught",
+      "category": "dead_local",
+      "expected_fault_substring": "dead local"
+    },
+    {
+      "id": "mir_ub_unreachable_terminator",
+      "path": "mir/ub_unreachable_terminator.json",
+      "kind": "mir_ub_caught",
+      "category": "unreachable",
+      "expected_fault_substring": "Unreachable"
+    },
+    {
+      "id": "rust_fc_zst_unaligned_ptr",
+      "path": "ub_fc_zst_unaligned_ptr.rs",
+      "kind": "rust_ub_fail_closed",
+      "category": "alignment_zst"
+    },
+    {
+      "id": "rust_fc_unaligned_u32_read",
+      "path": "ub_fc_unaligned_u32_read.rs",
+      "kind": "rust_ub_fail_closed",
+      "category": "alignment_nonzero"
+    },
+    {
+      "id": "rust_fc_null_ptr_deref",
+      "path": "ub_fc_null_ptr_deref.rs",
+      "kind": "rust_ub_fail_closed",
+      "category": "pointer_null"
+    },
+    {
+      "id": "rust_fc_oob_ptr_read",
+      "path": "ub_fc_oob_ptr_read.rs",
+      "kind": "rust_ub_fail_closed",
+      "category": "pointer_oob"
+    },
+    {
+      "id": "rust_fc_dangling_stack_uaf",
+      "path": "ub_fc_dangling_stack_uaf.rs",
+      "kind": "rust_ub_fail_closed",
+      "category": "pointer_uaf"
+    },
+    {
+      "id": "rust_fc_uninit_read",
+      "path": "ub_fc_uninit_read.rs",
+      "kind": "rust_ub_fail_closed",
+      "category": "uninit_memory"
+    },
+    {
+      "id": "rust_fc_invalid_bool",
+      "path": "ub_fc_invalid_bool.rs",
+      "kind": "rust_ub_fail_closed",
+      "category": "scalar_validity"
+    },
+    {
+      "id": "rust_fc_invalid_char_surrogate",
+      "path": "ub_fc_invalid_char_surrogate.rs",
+      "kind": "rust_ub_fail_closed",
+      "category": "scalar_validity"
+    },
+    {
+      "id": "rust_fc_invalid_enum_tag",
+      "path": "ub_fc_invalid_enum_tag.rs",
+      "kind": "rust_ub_fail_closed",
+      "category": "scalar_validity"
+    },
+    {
+      "id": "rust_fc_invalid_nonzero",
+      "path": "ub_fc_invalid_nonzero.rs",
+      "kind": "rust_ub_fail_closed",
+      "category": "scalar_validity"
+    },
+    {
+      "id": "rust_fc_immutable_write",
+      "path": "ub_fc_immutable_write.rs",
+      "kind": "rust_ub_fail_closed",
+      "category": "provenance_immutability"
+    },
+    {
+      "id": "rust_fc_unchecked_shl_oob",
+      "path": "ub_fc_unchecked_shl_oob.rs",
+      "kind": "rust_ub_fail_closed",
+      "category": "shift_unchecked"
+    },
+    {
+      "id": "rust_fc_init_array_ctor",
+      "path": "ub_fc_init_array_ctor.rs",
+      "kind": "rust_ub_fail_closed",
+      "category": "crate_scope_ctor"
+    },
+    {
+      "id": "rust_valid_scalar_arith",
+      "path": "valid_scalar_arith.rs",
+      "kind": "rust_valid_control",
+      "category": "valid_control"
+    },
+    {
+      "id": "rust_valid_enum_control_flow",
+      "path": "valid_enum_control_flow.rs",
+      "kind": "rust_valid_control",
+      "category": "valid_control"
+    },
+    {
+      "id": "rust_valid_unchecked_arith_safe",
+      "path": "valid_unchecked_arith_safe.rs",
+      "kind": "rust_valid_control",
+      "category": "valid_control"
+    },
+    {
+      "id": "mir_valid_scalar_return",
+      "path": "mir/valid_scalar_return.json",
+      "kind": "mir_valid_control",
+      "category": "valid_control"
+    }
+  ]
+}

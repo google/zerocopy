@@ -1,0 +1,43 @@
+{
+  "schema_version": 1,
+  "upstream_repo": "rust-lang/miri",
+  "miri_commit": "36d14d1151d146c267c50033a20bf75d0f85fa45",
+  "rustc_toolchain_channel": "nightly-2026-05-31",
+  "rustc_commit": "f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1",
+  "miri_tree_sha": "f24b5c0edcb5bd6fa6f85af2c37aa7cd58b6b98b",
+  "fail_tree_sha": "2e23c8313630c7eabf2eac00bad2151a8aeb678e",
+  "archive_url": "https://github.com/rust-lang/miri/archive/36d14d1151d146c267c50033a20bf75d0f85fa45.tar.gz",
+  "archive_sha256": "9d134e346a0475da959e31ca3c37a5f88e6a059baa6036a52f0282554a65bdb4",
+  "expected_top_dir": "miri-36d14d1151d146c267c50033a20bf75d0f85fa45",
+  "extract_subdirs": [
+    "tests/fail"
+  ],
+  "expected_file_count": 512,
+  "expected_unit_count": 571,
+  "max_harness_skips": 5,
+  "max_rustc_or_harness_rejected": 14,
+  "corpus_manifest_sha256": "f353aa94a5b651dfbf0aea4924b0f1467412d0b7d687b002b5229b2074a55094",
+  "target": "x86_64-unknown-linux-gnu",
+  "capture_scope": "crate",
+  "fuel": 2000000,
+  "profile": "auto",
+  "max_unsound_accepts": 0,
+  "max_tool_errors": 0,
+  "min_caught_ub": 6,
+  "expected_caught_ub_units": [
+    "fail/intrinsics/unchecked_add1.rs",
+    "fail/intrinsics/unchecked_add2.rs",
+    "fail/intrinsics/unchecked_mul1.rs",
+    "fail/intrinsics/unchecked_mul2.rs",
+    "fail/intrinsics/unchecked_sub1.rs",
+    "fail/intrinsics/unchecked_sub2.rs"
+  ],
+  "tier_b_corpus_sha256": "85ce79fd380436cb276902f41c79a7296687f4dd3443757dca33fc7d657bad67",
+  "tier_b_min_counts": {
+    "mir_ub_caught": 13,
+    "mir_valid_control": 1,
+    "rust_ub_caught": 17,
+    "rust_ub_fail_closed": 13,
+    "rust_valid_control": 3
+  }
+}
