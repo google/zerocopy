@@ -579,125 +579,60 @@ theorem evalFloatArithBase_lt (op : FloatBinOp) (f : IeeeFormat)
     evalFloatArithBase op f lhsBits rhsBits < pow2 f.width := by
   have hExactLt : ∀ a b : FloatKind, exactSumFloat f a b < pow2 f.width := by
     intro a b
-    cases a <;> cases b <;> dsimp only [exactSumFloat]
-    · exact zeroBits_lt f _
-    · exact roundRatioTiesToEven_lt f _ _ _
-    · exact infBits_lt f _
-    · exact preferredNaNBits_lt f
-    · exact roundRatioTiesToEven_lt f _ _ _
-    · exact roundRatioTiesToEven_lt f _ _ _
-    · exact infBits_lt f _
-    · exact preferredNaNBits_lt f
-    · exact infBits_lt f _
-    · exact infBits_lt f _
-    · cases bne (_ : Bool) _ with
-      | true => exact preferredNaNBits_lt f
-      | false => exact infBits_lt f _
-    · exact preferredNaNBits_lt f
-    · exact preferredNaNBits_lt f
-    · exact preferredNaNBits_lt f
-    · exact preferredNaNBits_lt f
-    · exact preferredNaNBits_lt f
+    cases a <;> (repeat exact preferredNaNBits_lt f) <;> cases b <;>
+      first
+      | exact preferredNaNBits_lt f
+      | exact zeroBits_lt f _
+      | exact infBits_lt f _
+      | exact roundRatioTiesToEven_lt f _ _ _
+      | (dsimp only [exactSumFloat]
+         cases bne (_ : Bool) _ with
+         | true => exact preferredNaNBits_lt f
+         | false => exact infBits_lt f _)
+  have hLbLt : Nat.mod lhsBits (pow2 f.width) < pow2 f.width :=
+    Nat.mod_lt lhsBits (pow2_pos f.width)
   cases op with
   | add => exact hExactLt _ _
   | sub => exact hExactLt _ _
-  | mul =>
+  | _ =>
     dsimp only [evalFloatArithBase]
     cases decodeBits f (Nat.mod lhsBits (pow2 f.width)) <;>
+      (repeat exact preferredNaNBits_lt f) <;>
       cases decodeBits f (Nat.mod rhsBits (pow2 f.width)) <;>
-      dsimp only
-    · exact zeroBits_lt f _
-    · exact zeroBits_lt f _
-    · exact preferredNaNBits_lt f
-    · exact preferredNaNBits_lt f
-    · exact zeroBits_lt f _
-    · exact roundRatioTiesToEven_lt f _ _ _
-    · cases Nat.beq _ 0 with
-      | true => exact preferredNaNBits_lt f
-      | false => exact infBits_lt f _
-    · exact preferredNaNBits_lt f
-    · exact preferredNaNBits_lt f
-    · cases Nat.beq _ 0 with
-      | true => exact preferredNaNBits_lt f
-      | false => exact infBits_lt f _
-    · exact infBits_lt f _
-    · exact preferredNaNBits_lt f
-    · exact preferredNaNBits_lt f
-    · exact preferredNaNBits_lt f
-    · exact preferredNaNBits_lt f
-    · exact preferredNaNBits_lt f
-  | div =>
-    dsimp only [evalFloatArithBase]
-    cases decodeBits f (Nat.mod lhsBits (pow2 f.width)) <;>
-      cases decodeBits f (Nat.mod rhsBits (pow2 f.width)) <;>
-      dsimp only
-    · exact preferredNaNBits_lt f
-    · cases Nat.beq _ 0 with
-      | true => exact preferredNaNBits_lt f
-      | false => exact zeroBits_lt f _
-    · exact zeroBits_lt f _
-    · exact preferredNaNBits_lt f
-    · cases Nat.beq _ 0 with
-      | true => exact preferredNaNBits_lt f
-      | false => exact infBits_lt f _
-    · cases Nat.beq _ 0 with
-      | true =>
-        cases Nat.beq _ 0 with
-        | true => exact preferredNaNBits_lt f
-        | false => exact infBits_lt f _
-      | false => exact roundRatioTiesToEven_lt f _ _ _
-    · exact zeroBits_lt f _
-    · exact preferredNaNBits_lt f
-    · exact infBits_lt f _
-    · exact infBits_lt f _
-    · exact preferredNaNBits_lt f
-    · exact preferredNaNBits_lt f
-    · exact preferredNaNBits_lt f
-    · exact preferredNaNBits_lt f
-    · exact preferredNaNBits_lt f
-    · exact preferredNaNBits_lt f
-  | rem =>
-    dsimp only [evalFloatArithBase]
-    have hLbLt : Nat.mod lhsBits (pow2 f.width) < pow2 f.width :=
-      Nat.mod_lt lhsBits (pow2_pos f.width)
-    cases decodeBits f (Nat.mod lhsBits (pow2 f.width)) <;>
-      cases decodeBits f (Nat.mod rhsBits (pow2 f.width)) <;>
-      dsimp only
-    · exact preferredNaNBits_lt f
-    · cases Nat.beq _ 0 with
-      | true => exact preferredNaNBits_lt f
-      | false => exact zeroBits_lt f _
-    · exact hLbLt
-    · exact preferredNaNBits_lt f
-    · exact preferredNaNBits_lt f
-    · cases Nat.beq _ 0 with
-      | true => exact preferredNaNBits_lt f
-      | false => exact roundRatioTiesToEven_lt f _ _ _
-    · exact hLbLt
-    · exact preferredNaNBits_lt f
-    · exact preferredNaNBits_lt f
-    · exact preferredNaNBits_lt f
-    · exact preferredNaNBits_lt f
-    · exact preferredNaNBits_lt f
-    · exact preferredNaNBits_lt f
-    · exact preferredNaNBits_lt f
-    · exact preferredNaNBits_lt f
-    · exact preferredNaNBits_lt f
+      first
+      | exact preferredNaNBits_lt f
+      | exact zeroBits_lt f _
+      | exact infBits_lt f _
+      | exact roundRatioTiesToEven_lt f _ _ _
+      | exact hLbLt
+      | (dsimp only
+         cases Nat.beq _ 0 <;>
+           first
+           | exact preferredNaNBits_lt f
+           | exact zeroBits_lt f _
+           | exact infBits_lt f _
+           | exact roundRatioTiesToEven_lt f _ _ _
+           | (cases Nat.beq _ 0 <;>
+               first
+               | exact preferredNaNBits_lt f
+               | exact infBits_lt f _))
 
 /-- `evalFloatFmaBase` always returns `< 2^f.width` (`[propext]` only). -/
 theorem evalFloatFmaBase_lt (f : IeeeFormat) (aBits bBits cBits : Nat) :
     evalFloatFmaBase f aBits bBits cBits < pow2 f.width := by
   dsimp only [evalFloatFmaBase]
   cases decodeBits f (Nat.mod aBits (pow2 f.width)) <;>
+    (repeat exact preferredNaNBits_lt f) <;>
     cases decodeBits f (Nat.mod bBits (pow2 f.width)) <;>
+    (repeat exact preferredNaNBits_lt f) <;>
     cases decodeBits f (Nat.mod cBits (pow2 f.width)) <;>
-    dsimp only <;>
     first
     | exact preferredNaNBits_lt f
     | exact zeroBits_lt f _
     | exact infBits_lt f _
     | exact roundRatioTiesToEven_lt f _ _ _
-    | (cases decodedIsZeroMag _ with
+    | (dsimp only
+       cases decodedIsZeroMag _ with
        | true => exact preferredNaNBits_lt f
        | false =>
          first
@@ -723,12 +658,13 @@ theorem evalFloatToFloatRel_det_imp_nondet (src dst : IeeeFormat)
     EvalFloatToFloatRel .nondeterministic src dst bits outBits := by
   dsimp only [EvalFloatToFloatRel] at h
   dsimp only [EvalFloatToFloatRel]
+  revert h
   cases hN : isNaNBits dst (evalFloatToFloatRoundTiesToEven src dst bits) with
   | false =>
-    rw [hN] at h
+    intro h
     exact h
   | true =>
-    rw [hN] at h
+    intro h
     dsimp only [nanChoices] at h
     cases h with
     | head =>
@@ -756,12 +692,13 @@ theorem evalFloatBinOpRel_det_imp_nondet (op : FloatBinOp) (f : IeeeFormat)
     EvalFloatBinOpRel .nondeterministic op f lhsBits rhsBits outBits := by
   dsimp only [EvalFloatBinOpRel] at h
   dsimp only [EvalFloatBinOpRel]
+  revert h
   cases hN : isNaNBits f (evalFloatArithBase op f lhsBits rhsBits) with
   | false =>
-    rw [hN] at h
+    intro h
     exact h
   | true =>
-    rw [hN] at h
+    intro h
     dsimp only [nanChoices] at h
     cases h with
     | head =>
@@ -777,12 +714,13 @@ theorem evalFloatFmaRel_det_imp_nondet (f : IeeeFormat)
     EvalFloatFmaRel .nondeterministic f aBits bBits cBits outBits := by
   dsimp only [EvalFloatFmaRel] at h
   dsimp only [EvalFloatFmaRel]
+  revert h
   cases hN : isNaNBits f (evalFloatFmaBase f aBits bBits cBits) with
   | false =>
-    rw [hN] at h
+    intro h
     exact h
   | true =>
-    rw [hN] at h
+    intro h
     dsimp only [nanChoices] at h
     cases h with
     | head =>
