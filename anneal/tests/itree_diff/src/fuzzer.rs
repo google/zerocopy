@@ -94,7 +94,7 @@ impl FuzzArithOp {
         }
     }
 
-    fn lean_binop(self) -> &'static str {
+    pub(crate) fn lean_binop(self) -> &'static str {
         match self {
             Self::Add => ".add",
             Self::Sub => ".sub",
@@ -147,6 +147,19 @@ impl MutatorKind {
     ];
 }
 
+/// Maximum structured step count permitted in a persisted or generated
+/// [`FuzzProgram`] seed so preflight bounds total execution within Lean fuel.
+pub const MAX_FUZZ_PROGRAM_STEPS: usize = 32;
+
+/// Minimum iteration bound permitted on [`FuzzStep::BoundedLoop`].
+pub const MIN_FUZZ_BOUNDED_LOOP_ITERS: u32 = 1;
+
+/// Maximum iteration bound permitted on [`FuzzStep::BoundedLoop`].
+pub const MAX_FUZZ_BOUNDED_LOOP_ITERS: u32 = 4;
+
+/// Number of captured `fuzz_helper_k` definitions emitted by [`FuzzProgram`].
+pub const NUM_FUZZ_HELPERS: usize = 3;
+
 /// Complete structured representation of a generated multi-call fuzz program.
 #[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize)]
 pub struct FuzzProgram {
@@ -159,6 +172,44 @@ pub struct FuzzProgram {
 }
 
 impl FuzzProgram {
+    /// Enforce structural seed invariants on step counts, `BoundedLoop`
+    /// iteration bounds (`1..=4`), `HelperCall` callee indices (`0..3`), and
+    /// mutator history length before lowering/execution.
+    pub fn validate(&self) -> Result<(), String> {
+        let case_id = format!("fuzz_s{}_i{:03}", self.seed, self.index);
+        if self.steps.len() > MAX_FUZZ_PROGRAM_STEPS {
+            return Err(format!(
+                "FuzzProgram `{case_id}` step count {} exceeds limit {MAX_FUZZ_PROGRAM_STEPS}",
+                self.steps.len()
+            ));
+        }
+        if self.applied_mutators.len() > MAX_FUZZ_PROGRAM_STEPS {
+            return Err(format!(
+                "FuzzProgram `{case_id}` applied_mutators count {} exceeds limit {MAX_FUZZ_PROGRAM_STEPS}",
+                self.applied_mutators.len()
+            ));
+        }
+        for (idx, step) in self.steps.iter().enumerate() {
+            match step {
+                FuzzStep::BoundedLoop { iters, .. }
+                    if !(MIN_FUZZ_BOUNDED_LOOP_ITERS..=MAX_FUZZ_BOUNDED_LOOP_ITERS)
+                        .contains(iters) =>
+                {
+                    return Err(format!(
+                        "FuzzProgram `{case_id}` step {idx} BoundedLoop iters={iters} outside allowed range {MIN_FUZZ_BOUNDED_LOOP_ITERS}..={MAX_FUZZ_BOUNDED_LOOP_ITERS}"
+                    ));
+                }
+                FuzzStep::HelperCall { callee_idx, .. } if *callee_idx >= NUM_FUZZ_HELPERS => {
+                    return Err(format!(
+                        "FuzzProgram `{case_id}` step {idx} HelperCall callee_idx={callee_idx} outside allowed range 0..{NUM_FUZZ_HELPERS}"
+                    ));
+                }
+                _ => {}
+            }
+        }
+        Ok(())
+    }
+
     /// Deterministically generate one initial multi-call fuzz program from
     /// `rng`, applying 1..=2 structured mutators.
     pub fn generate(seed: u64, index: usize, rng: &mut DeterministicRng) -> Self {
@@ -271,6 +322,7 @@ impl FuzzProgram {
             "fuzz_helper_1".to_string(),
             "fuzz_helper_2".to_string(),
             "fuzz_ext_unwind".to_string(),
+            "fuzz_ext_probe".to_string(),
         ];
 
         TraceTestCase {
@@ -378,6 +430,21 @@ pub fn fuzz_ext_unwind(v: u32, trigger: u32) -> u32 {
 }
 
 #[inline(never)]
+pub fn fuzz_ext_probe(v: u32, trigger: u32) -> u32 {
+    anneal_rt::handle_scheduled_call(
+        "fuzz_ext_probe",
+        vec![anneal_rt::capture_value_bytes(&v), anneal_rt::capture_value_bytes(&trigger)],
+        vec![format!("{v}"), format!("{trigger}")],
+        || {
+            if trigger != 0 {
+                panic!("fuzz injected unwind");
+            }
+            v.wrapping_add(1)
+        },
+    )
+}
+
+#[inline(never)]
 pub fn fuzz_entry(x: u32, y: u32) -> u32 {
     let mut acc: u32 = x.wrapping_add(y);
     let sentinel: u32 = x ^ 0xA5A5u32;
@@ -448,7 +515,11 @@ pub fn fuzz_entry(x: u32, y: u32) -> u32 {
                     );
                 }
                 FuzzStep::UnwindProbe { trigger_unwind } => {
-                    let trig = if *trigger_unwind { 1u32 } else { 0u32 };
+                    let (helper_fn, trig) = if *trigger_unwind {
+                        ("fuzz_ext_unwind", 1u32)
+                    } else {
+                        ("fuzz_ext_probe", 0u32)
+                    };
                     let _ =
                         writeln!(out, "    struct DropGuard_{i}(*const FuzzPaddedCarrier, u32);");
                     let _ = writeln!(
@@ -459,7 +530,7 @@ pub fn fuzz_entry(x: u32, y: u32) -> u32 {
                         out,
                         "    let _g_{i} = DropGuard_{i}(live_ptr.cast_const(), sentinel);"
                     );
-                    let _ = writeln!(out, "    acc = fuzz_ext_unwind(acc, {trig}u32);");
+                    let _ = writeln!(out, "    acc = {helper_fn}(acc, {trig}u32);");
                 }
             }
         }
@@ -523,10 +594,92 @@ pub fn fuzz_entry(x: u32, y: u32) -> u32 {
         out
     }
 
+    /// Lower one shared pure intra-body `FuzzStep` into `cur_stmts` /
+    /// `blocks` (`ArithImm`, `BranchMix`, `BoundedLoop`, `PaddedRoundTrip`).
+    fn push_common_lean_step(
+        step: &FuzzStep,
+        cur_stmts: &mut Vec<String>,
+        blocks: &mut Vec<String>,
+    ) -> bool {
+        match step {
+            FuzzStep::ArithImm { op, imm } => {
+                if *op == FuzzArithOp::BitAndMask {
+                    cur_stmts.push(
+                        ".assign ⟨5, []⟩ (.binaryOp .bitAnd (.copy ⟨3, []⟩) (.constant ⟨.int .i32 false, .scalar (BitVec.ofNat 128 65535)⟩))"
+                            .to_string(),
+                    );
+                    cur_stmts.push(format!(
+                        ".assign ⟨3, []⟩ (.binaryOp .add (.copy ⟨5, []⟩) (.constant ⟨.int .i32 false, .scalar (BitVec.ofNat 128 {imm})⟩))"
+                    ));
+                } else {
+                    cur_stmts.push(format!(
+                        ".assign ⟨3, []⟩ (.binaryOp {} (.copy ⟨3, []⟩) (.constant ⟨.int .i32 false, .scalar (BitVec.ofNat 128 {imm})⟩))",
+                        op.lean_binop()
+                    ));
+                }
+                true
+            }
+            FuzzStep::BranchMix { then_imm, else_imm } => {
+                cur_stmts.push(
+                    ".assign ⟨5, []⟩ (.binaryOp .bitAnd (.copy ⟨3, []⟩) (.constant ⟨.int .i32 false, .scalar (BitVec.ofNat 128 1)⟩))"
+                        .to_string(),
+                );
+                let then_bb = blocks.len() + 1;
+                let else_bb = blocks.len() + 2;
+                let join_bb = blocks.len() + 3;
+                blocks.push(format!(
+                    "{{ statements := [{}], terminator := .switchInt (.copy ⟨5, []⟩) ⟨[(BitVec.ofNat 128 0, {then_bb})], {else_bb}⟩ }}",
+                    cur_stmts.join(", ")
+                ));
+                cur_stmts.clear();
+                blocks.push(format!(
+                    "{{ statements := [.assign ⟨3, []⟩ (.binaryOp .add (.copy ⟨3, []⟩) (.constant ⟨.int .i32 false, .scalar (BitVec.ofNat 128 {then_imm})⟩))], terminator := .goto {join_bb} }}"
+                ));
+                blocks.push(format!(
+                    "{{ statements := [.assign ⟨3, []⟩ (.binaryOp .bitXor (.copy ⟨3, []⟩) (.constant ⟨.int .i32 false, .scalar (BitVec.ofNat 128 {else_imm})⟩))], terminator := .goto {join_bb} }}"
+                ));
+                true
+            }
+            FuzzStep::BoundedLoop { iters, step_imm } => {
+                cur_stmts.push(
+                    ".assign ⟨6, []⟩ (.use (.constant ⟨.int .i32 false, .scalar (BitVec.ofNat 128 0)⟩))"
+                        .to_string(),
+                );
+                let header_bb = blocks.len() + 1;
+                let body_bb = blocks.len() + 2;
+                let exit_bb = blocks.len() + 3;
+                blocks.push(format!(
+                    "{{ statements := [{}], terminator := .goto {header_bb} }}",
+                    cur_stmts.join(", ")
+                ));
+                cur_stmts.clear();
+                blocks.push(format!(
+                    "{{ statements := [.assign ⟨7, []⟩ (.binaryOp .lt (.copy ⟨6, []⟩) (.constant ⟨.int .i32 false, .scalar (BitVec.ofNat 128 {iters})⟩))], terminator := .switchInt (.copy ⟨7, []⟩) ⟨[(BitVec.ofNat 128 0, {exit_bb})], {body_bb}⟩ }}"
+                ));
+                blocks.push(format!(
+                    "{{ statements := [\
+                        .assign ⟨5, []⟩ (.binaryOp .mul (.copy ⟨6, []⟩) (.constant ⟨.int .i32 false, .scalar (BitVec.ofNat 128 {step_imm})⟩)), \
+                        .assign ⟨5, []⟩ (.binaryOp .add (.copy ⟨5, []⟩) (.constant ⟨.int .i32 false, .scalar (BitVec.ofNat 128 1)⟩)), \
+                        .assign ⟨3, []⟩ (.binaryOp .add (.copy ⟨3, []⟩) (.copy ⟨5, []⟩)), \
+                        .assign ⟨6, []⟩ (.binaryOp .add (.copy ⟨6, []⟩) (.constant ⟨.int .i32 false, .scalar (BitVec.ofNat 128 1)⟩))\
+                    ], terminator := .goto {header_bb} }}"
+                ));
+                true
+            }
+            FuzzStep::PaddedRoundTrip { tag_byte } => {
+                cur_stmts.push(format!(
+                    ".assign ⟨3, []⟩ (.binaryOp .add (.copy ⟨3, []⟩) (.constant ⟨.int .i32 false, .scalar (BitVec.ofNat 128 {tag_byte})⟩))"
+                ));
+                true
+            }
+            FuzzStep::HelperCall { .. } | FuzzStep::UnwindProbe { .. } => false,
+        }
+    }
+
     /// Lower the caller function directly to a `Trusted.MirAst.Body` whose
     /// `TerminatorKind.call` instructions target the REAL captured helper
     /// bodies at DefIds `1 = fuzz_helper_0`, `2 = fuzz_helper_1`,
-    /// `3 = fuzz_helper_2`, `4 = fuzz_ext_unwind`.
+    /// `3 = fuzz_helper_2`, `4 = fuzz_ext_unwind`, `5 = fuzz_ext_probe`.
     fn render_lean_caller_body(&self) -> String {
         let mut blocks: Vec<String> = Vec::new();
         let mut cur_stmts: Vec<String> = vec![
@@ -535,23 +688,10 @@ pub fn fuzz_entry(x: u32, y: u32) -> u32 {
         ];
 
         for step in &self.steps {
+            if Self::push_common_lean_step(step, &mut cur_stmts, &mut blocks) {
+                continue;
+            }
             match step {
-                FuzzStep::ArithImm { op, imm } => {
-                    if *op == FuzzArithOp::BitAndMask {
-                        cur_stmts.push(
-                            ".assign ⟨5, []⟩ (.binaryOp .bitAnd (.copy ⟨3, []⟩) (.constant ⟨.int .i32 false, .scalar (BitVec.ofNat 128 65535)⟩))"
-                                .to_string(),
-                        );
-                        cur_stmts.push(format!(
-                            ".assign ⟨3, []⟩ (.binaryOp .add (.copy ⟨5, []⟩) (.constant ⟨.int .i32 false, .scalar (BitVec.ofNat 128 {imm})⟩))"
-                        ));
-                    } else {
-                        cur_stmts.push(format!(
-                            ".assign ⟨3, []⟩ (.binaryOp {} (.copy ⟨3, []⟩) (.constant ⟨.int .i32 false, .scalar (BitVec.ofNat 128 {imm})⟩))",
-                            op.lean_binop()
-                        ));
-                    }
-                }
                 FuzzStep::HelperCall { callee_idx, bias } => {
                     let callee_def_id = 1 + (callee_idx % 3);
                     cur_stmts.push(format!(
@@ -564,63 +704,14 @@ pub fn fuzz_entry(x: u32, y: u32) -> u32 {
                     ));
                     cur_stmts.clear();
                 }
-                FuzzStep::BranchMix { then_imm, else_imm } => {
-                    cur_stmts.push(
-                        ".assign ⟨5, []⟩ (.binaryOp .bitAnd (.copy ⟨3, []⟩) (.constant ⟨.int .i32 false, .scalar (BitVec.ofNat 128 1)⟩))"
-                            .to_string(),
-                    );
-                    let then_bb = blocks.len() + 1;
-                    let else_bb = blocks.len() + 2;
-                    let join_bb = blocks.len() + 3;
-                    blocks.push(format!(
-                        "{{ statements := [{}], terminator := .switchInt (.copy ⟨5, []⟩) ⟨[(BitVec.ofNat 128 0, {then_bb})], {else_bb}⟩ }}",
-                        cur_stmts.join(", ")
-                    ));
-                    cur_stmts.clear();
-                    blocks.push(format!(
-                        "{{ statements := [.assign ⟨3, []⟩ (.binaryOp .add (.copy ⟨3, []⟩) (.constant ⟨.int .i32 false, .scalar (BitVec.ofNat 128 {then_imm})⟩))], terminator := .goto {join_bb} }}"
-                    ));
-                    blocks.push(format!(
-                        "{{ statements := [.assign ⟨3, []⟩ (.binaryOp .bitXor (.copy ⟨3, []⟩) (.constant ⟨.int .i32 false, .scalar (BitVec.ofNat 128 {else_imm})⟩))], terminator := .goto {join_bb} }}"
-                    ));
-                }
-                FuzzStep::BoundedLoop { iters, step_imm } => {
-                    cur_stmts.push(
-                        ".assign ⟨6, []⟩ (.use (.constant ⟨.int .i32 false, .scalar (BitVec.ofNat 128 0)⟩))"
-                            .to_string(),
-                    );
-                    let header_bb = blocks.len() + 1;
-                    let body_bb = blocks.len() + 2;
-                    let exit_bb = blocks.len() + 3;
-                    blocks.push(format!(
-                        "{{ statements := [{}], terminator := .goto {header_bb} }}",
-                        cur_stmts.join(", ")
-                    ));
-                    cur_stmts.clear();
-                    blocks.push(format!(
-                        "{{ statements := [.assign ⟨7, []⟩ (.binaryOp .lt (.copy ⟨6, []⟩) (.constant ⟨.int .i32 false, .scalar (BitVec.ofNat 128 {iters})⟩))], terminator := .switchInt (.copy ⟨7, []⟩) ⟨[(BitVec.ofNat 128 0, {exit_bb})], {body_bb}⟩ }}"
-                    ));
-                    blocks.push(format!(
-                        "{{ statements := [\
-                            .assign ⟨5, []⟩ (.binaryOp .mul (.copy ⟨6, []⟩) (.constant ⟨.int .i32 false, .scalar (BitVec.ofNat 128 {step_imm})⟩)), \
-                            .assign ⟨5, []⟩ (.binaryOp .add (.copy ⟨5, []⟩) (.constant ⟨.int .i32 false, .scalar (BitVec.ofNat 128 1)⟩)), \
-                            .assign ⟨3, []⟩ (.binaryOp .add (.copy ⟨3, []⟩) (.copy ⟨5, []⟩)), \
-                            .assign ⟨6, []⟩ (.binaryOp .add (.copy ⟨6, []⟩) (.constant ⟨.int .i32 false, .scalar (BitVec.ofNat 128 1)⟩))\
-                        ], terminator := .goto {header_bb} }}"
-                    ));
-                }
-                FuzzStep::PaddedRoundTrip { tag_byte } => {
-                    cur_stmts.push(format!(
-                        ".assign ⟨3, []⟩ (.binaryOp .add (.copy ⟨3, []⟩) (.constant ⟨.int .i32 false, .scalar (BitVec.ofNat 128 {tag_byte})⟩))"
-                    ));
-                }
                 FuzzStep::UnwindProbe { trigger_unwind } => {
-                    let trig = if *trigger_unwind { 1u32 } else { 0u32 };
+                    let (callee_def_id, trig) =
+                        if *trigger_unwind { (4usize, 1u32) } else { (5usize, 0u32) };
                     let resume_bb = blocks.len() + 1;
                     let cleanup_bb = blocks.len() + 2;
                     let after_bb = blocks.len() + 3;
                     blocks.push(format!(
-                        "{{ statements := [{}], terminator := .call 4 [.copy ⟨3, []⟩, .constant ⟨.int .i32 false, .scalar (BitVec.ofNat 128 {trig})⟩] ⟨3, []⟩ (some {resume_bb}) (.cleanup {cleanup_bb}) }}",
+                        "{{ statements := [{}], terminator := .call {callee_def_id} [.copy ⟨3, []⟩, .constant ⟨.int .i32 false, .scalar (BitVec.ofNat 128 {trig})⟩] ⟨3, []⟩ (some {resume_bb}) (.cleanup {cleanup_bb}) }}",
                         cur_stmts.join(", ")
                     ));
                     cur_stmts.clear();
@@ -630,6 +721,7 @@ pub fn fuzz_entry(x: u32, y: u32) -> u32 {
                             .to_string(),
                     );
                 }
+                _ => unreachable!("handled by push_common_lean_step"),
             }
         }
 
@@ -643,6 +735,107 @@ pub fn fuzz_entry(x: u32, y: u32) -> u32 {
 
         format!(
             "{{\n  argumentCount := 2,\n  locals := [.int .i32 false, .int .i32 false, .int .i32 false, .int .i32 false, .int .i32 false, .int .i32 false, .int .i32 false, .bool],\n  basicBlocks := [{}]\n}}",
+            blocks.join(", ")
+        )
+    }
+
+    /// Lower the source-inlined twin directly to a standalone
+    /// `Trusted.MirAst.Body` matching `render_inlined_pure_rust` (zero
+    /// external `.call` instructions so Lean `StrictVerbatim` can execute
+    /// it verbatim alongside `CompositionalITree`).
+    pub(crate) fn render_lean_inlined_body(&self) -> String {
+        let mut blocks: Vec<String> = Vec::new();
+        let mut cur_stmts: Vec<String> = vec![
+            ".assign ⟨3, []⟩ (.binaryOp .add (.copy ⟨1, []⟩) (.copy ⟨2, []⟩))".to_string(),
+            ".assign ⟨4, []⟩ (.binaryOp .bitXor (.copy ⟨1, []⟩) (.constant ⟨.int .i32 false, .scalar (BitVec.ofNat 128 42405)⟩))".to_string(),
+        ];
+
+        for step in &self.steps {
+            if Self::push_common_lean_step(step, &mut cur_stmts, &mut blocks) {
+                continue;
+            }
+            match step {
+                FuzzStep::HelperCall { callee_idx, bias } => {
+                    cur_stmts.push(format!(
+                        ".assign ⟨8, []⟩ (.binaryOp .add (.copy ⟨2, []⟩) (.constant ⟨.int .i32 false, .scalar (BitVec.ofNat 128 {bias})⟩))"
+                    ));
+                    match callee_idx % 3 {
+                        0 => {
+                            cur_stmts.push(
+                                ".assign ⟨5, []⟩ (.binaryOp .mul (.copy ⟨3, []⟩) (.constant ⟨.int .i32 false, .scalar (BitVec.ofNat 128 3)⟩))"
+                                    .to_string(),
+                            );
+                            cur_stmts.push(
+                                ".assign ⟨3, []⟩ (.binaryOp .add (.copy ⟨5, []⟩) (.copy ⟨8, []⟩))"
+                                    .to_string(),
+                            );
+                        }
+                        1 => {
+                            cur_stmts.push(
+                                ".assign ⟨5, []⟩ (.binaryOp .bitXor (.copy ⟨3, []⟩) (.copy ⟨8, []⟩))"
+                                    .to_string(),
+                            );
+                            cur_stmts.push(
+                                ".assign ⟨3, []⟩ (.binaryOp .add (.copy ⟨5, []⟩) (.constant ⟨.int .i32 false, .scalar (BitVec.ofNat 128 17)⟩))"
+                                    .to_string(),
+                            );
+                        }
+                        _ => {
+                            cur_stmts.push(
+                                ".assign ⟨7, []⟩ (.binaryOp .ge (.copy ⟨3, []⟩) (.copy ⟨8, []⟩))"
+                                    .to_string(),
+                            );
+                            let then_bb = blocks.len() + 1;
+                            let else_bb = blocks.len() + 2;
+                            let join_bb = blocks.len() + 3;
+                            blocks.push(format!(
+                                "{{ statements := [{}], terminator := .switchInt (.copy ⟨7, []⟩) ⟨[(BitVec.ofNat 128 0, {else_bb})], {then_bb}⟩ }}",
+                                cur_stmts.join(", ")
+                            ));
+                            cur_stmts.clear();
+                            blocks.push(format!(
+                                "{{ statements := [\
+                                    .assign ⟨5, []⟩ (.binaryOp .sub (.copy ⟨3, []⟩) (.copy ⟨8, []⟩)), \
+                                    .assign ⟨3, []⟩ (.binaryOp .add (.copy ⟨5, []⟩) (.constant ⟨.int .i32 false, .scalar (BitVec.ofNat 128 5)⟩))\
+                                ], terminator := .goto {join_bb} }}"
+                            ));
+                            blocks.push(format!(
+                                "{{ statements := [\
+                                    .assign ⟨5, []⟩ (.binaryOp .sub (.copy ⟨8, []⟩) (.copy ⟨3, []⟩)), \
+                                    .assign ⟨3, []⟩ (.binaryOp .add (.copy ⟨5, []⟩) (.constant ⟨.int .i32 false, .scalar (BitVec.ofNat 128 9)⟩))\
+                                ], terminator := .goto {join_bb} }}"
+                            ));
+                        }
+                    }
+                }
+                FuzzStep::UnwindProbe { trigger_unwind } => {
+                    if *trigger_unwind {
+                        blocks.push(format!(
+                            "{{ statements := [{}], terminator := .unsupported }}",
+                            cur_stmts.join(", ")
+                        ));
+                        cur_stmts.clear();
+                    } else {
+                        cur_stmts.push(
+                            ".assign ⟨3, []⟩ (.binaryOp .add (.copy ⟨3, []⟩) (.constant ⟨.int .i32 false, .scalar (BitVec.ofNat 128 1)⟩))"
+                                .to_string(),
+                        );
+                    }
+                }
+                _ => unreachable!("handled by push_common_lean_step"),
+            }
+        }
+
+        cur_stmts.push(
+            ".assign ⟨0, []⟩ (.binaryOp .bitXor (.copy ⟨3, []⟩) (.copy ⟨4, []⟩))".to_string(),
+        );
+        blocks.push(format!(
+            "{{ statements := [{}], terminator := .return_ }}",
+            cur_stmts.join(", ")
+        ));
+
+        format!(
+            "{{\n  argumentCount := 2,\n  locals := [.int .i32 false, .int .i32 false, .int .i32 false, .int .i32 false, .int .i32 false, .int .i32 false, .int .i32 false, .bool, .int .i32 false],\n  basicBlocks := [{}]\n}}",
             blocks.join(", ")
         )
     }
@@ -689,6 +882,11 @@ pub fn fuzz_helper_2(a: u32, b: u32) -> u32 {
 
 #[inline(never)]
 pub fn fuzz_ext_unwind(v: u32, _trigger: u32) -> u32 {
+    v + 1
+}
+
+#[inline(never)]
+pub fn fuzz_ext_probe(v: u32, _trigger: u32) -> u32 {
     v + 1
 }
 "#;

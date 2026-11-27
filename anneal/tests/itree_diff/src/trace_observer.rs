@@ -38,7 +38,7 @@ use std::{
     panic::{self, AssertUnwindSafe},
 };
 
-use serde::{Deserialize, Serialize};
+use serde::{Deserialize, Deserializer, Serialize, Serializer};
 use sha2::{Digest, Sha256};
 
 /// Error returned when a scheduled environment payload violates size or
@@ -795,8 +795,7 @@ impl ObservableSpine {
 }
 
 /// Scheduled environment response for an external call boundary (`MirCallE`).
-#[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize)]
-#[serde(tag = "action", rename_all = "snake_case")]
+#[derive(Clone, Debug, PartialEq, Eq)]
 pub enum EnvAction {
     /// Return raw little-endian bytes decoded via [`FromScheduleBytes`].
     ReturnBytes(Vec<u8>),
@@ -804,6 +803,44 @@ pub enum EnvAction {
     Unwind { message: String },
     /// Abort execution immediately via `std::process::abort()` at the boundary.
     Abort { reason: String },
+}
+
+#[derive(Serialize)]
+#[serde(tag = "action", rename_all = "snake_case")]
+enum EnvActionSerializeRef<'a> {
+    ReturnBytes { bytes: &'a [u8] },
+    Unwind { message: &'a str },
+    Abort { reason: &'a str },
+}
+
+#[derive(Deserialize)]
+#[serde(tag = "action", rename_all = "snake_case")]
+enum EnvActionDeserializeOwned {
+    ReturnBytes { bytes: Vec<u8> },
+    Unwind { message: String },
+    Abort { reason: String },
+}
+
+impl Serialize for EnvAction {
+    fn serialize<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
+        let repr = match self {
+            Self::ReturnBytes(bytes) => EnvActionSerializeRef::ReturnBytes { bytes },
+            Self::Unwind { message } => EnvActionSerializeRef::Unwind { message },
+            Self::Abort { reason } => EnvActionSerializeRef::Abort { reason },
+        };
+        repr.serialize(serializer)
+    }
+}
+
+impl<'de> Deserialize<'de> for EnvAction {
+    fn deserialize<D: Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        let repr = EnvActionDeserializeOwned::deserialize(deserializer)?;
+        Ok(match repr {
+            EnvActionDeserializeOwned::ReturnBytes { bytes } => Self::ReturnBytes(bytes),
+            EnvActionDeserializeOwned::Unwind { message } => Self::Unwind { message },
+            EnvActionDeserializeOwned::Abort { reason } => Self::Abort { reason },
+        })
+    }
 }
 
 /// Deterministic environment response schedule for multi-call ITree runs.
@@ -1443,6 +1480,41 @@ mod anneal_rt {
 
     pub fn push_global_action(action: RtEnvAction) {
         GLOBAL_SCHED.with(|g| g.borrow_mut().push_back(action));
+    }
+
+    pub fn reset_schedules() {
+        PER_CALLEE_SCHED.with(|m| m.borrow_mut().clear());
+        GLOBAL_SCHED.with(|g| g.borrow_mut().clear());
+    }
+
+    pub fn reset_trace_observer() {
+        EVENTS.with(|e| e.borrow_mut().clear());
+        LOCALS_OK.with(|c| c.set(true));
+        ALLOCS_OK.with(|c| c.set(true));
+        PADDING_OK.with(|c| c.set(true));
+        FRAME_VIOLATIONS.with(|v| v.borrow_mut().clear());
+        BOUNDARY_SLOTS.with(|b| b.borrow_mut().clear());
+        CALLER_FRAME_BASELINE.with(|b| b.borrow_mut().clear());
+        CALLER_FRAME_PTR.with(|p| p.set(core::ptr::null()));
+        WATCHED_ALLOC_BASELINE.with(|b| b.borrow_mut().clear());
+        WATCHED_ALLOC_PTR.with(|p| p.set(core::ptr::null()));
+        WATCHED_ALLOC_LEN.with(|l| l.set(0));
+    }
+
+    pub fn current_boundary_slots_json() -> String {
+        let slots = BOUNDARY_SLOTS.with(|b| {
+            b.borrow().iter().map(|s| format_opt_bytes(s)).collect::<Vec<_>>().join(",")
+        });
+        format!("[{slots}]")
+    }
+
+    pub fn current_events_json() -> String {
+        let events = EVENTS.with(|e| e.borrow().join(","));
+        format!("[{events}]")
+    }
+
+    pub fn current_caller_frame_preserved() -> bool {
+        LOCALS_OK.with(Cell::get) && ALLOCS_OK.with(Cell::get) && PADDING_OK.with(Cell::get)
     }
 
     pub fn pop_action(callee: &str) -> Option<RtEnvAction> {
