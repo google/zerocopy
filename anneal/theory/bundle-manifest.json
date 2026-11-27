@@ -55,7 +55,7 @@
     },
     {
       "path": "theory/Anneal/Framework.lean",
-      "sha256": "df58aeb53bc7f888d838e56b1aa5b2157169fbd3e30b37fdfcd6b39a7d0fdf71"
+      "sha256": "07557b90ab03019fc9135a94725905f70b8084d97578bc4a78d43ee11c725241"
     },
     {
       "path": "theory/Anneal/Framework/StepWp.lean",
@@ -91,7 +91,7 @@
     },
     {
       "path": "theory/Anneal/MirTotal/Ops.lean",
-      "sha256": "28ffc1bd27702218cd9e3a3535b44f3f846fcd383f247136cbdfa46612f71a5c"
+      "sha256": "08ac0128adc874c15250238f7ecdaf8e35a026ba9cc8180969863fe1d082427c"
     },
     {
       "path": "theory/Anneal/MirTotal/StepCore.lean",
@@ -119,11 +119,11 @@
     },
     {
       "path": "theory/Anneal/MirWp/V2Memory.lean",
-      "sha256": "a068ebc75603a5c9a6ea21067f9078a4ab164bfc5255db7e28801cc8266a59e3"
+      "sha256": "b04bd2dad8753db2ae1dfdfdc8e9183c1b51181080f6ea8d46282197edb50033"
     },
     {
       "path": "theory/Anneal/MirWp/V2StepShield.lean",
-      "sha256": "fee69564da3daee93b714f31ab647be6678f9f9ca1cf2d43132947ce449847a1"
+      "sha256": "8452af8133d0c822948de5a2fa4d2169037268598060094406e3a2595d55b0bb"
     },
     {
       "path": "theory/Anneal/NatBitwise.lean",

@@ -3070,16 +3070,66 @@ theorem evalStatementV2_assign_deref_requires_mut_ptr_and_checkVal
           cases res2 with | mk locals2 mem2 =>
           rw [h_wp] at h_st
           dsimp only at h_st
-          injection h_st with h_st_eq
-          subst h_st_eq
-          let ⟨ptrTy, pt, lay, pv, h_l, h_m, h_us, h_eq, h_lay, h_d⟩ :=
-            resolvePlaceDestV2_deref_requires_mut_ptr body.locals frame.locals
-              m dst dstTy dest h_proj h_res
-          subst h_d
-          exact ⟨dstTy, ptrTy, pt, lay, pv, val, locals1, mem1, locals2, mem2,
-            rfl, h_l, h_m, h_us, h_eq, h_lay, h_res, h_ev, h_wp,
-            writePlaceDestV2_requires_checkValV2 locals1 mem1 (.deref pt lay pv)
-              dstTy val locals2 mem2 h_wp, rfl⟩
+          cases h_ov : checkAssignCopyHazardV2 body.locals frame.locals m dest
+              dstTy rv with
+          | error k => rw [h_ov] at h_st; cases h_st
+          | ok u =>
+            cases u
+            rw [h_ov] at h_st
+            dsimp only at h_st
+            injection h_st with h_st_eq
+            subst h_st_eq
+            let ⟨ptrTy, pt, lay, pv, h_l, h_m, h_us, h_eq, h_lay, h_d⟩ :=
+              resolvePlaceDestV2_deref_requires_mut_ptr body.locals frame.locals
+                m dst dstTy dest h_proj h_res
+            subst h_d
+            exact ⟨dstTy, ptrTy, pt, lay, pv, val, locals1, mem1, locals2, mem2,
+              rfl, h_l, h_m, h_us, h_eq, h_lay, h_res, h_ev, h_wp,
+              writePlaceDestV2_requires_checkValV2 locals1 mem1
+                (.deref pt lay pv) dstTy val locals2 mem2 h_wp, rfl⟩
+
+/-- Lean-side operational invariant for Profile v2 `Assign` `.use` non-overlap
+(matching `Miri/Interpreter/Place.lean:348-380`, `copyRuntimePlaceNoValidate` ->
+`Allocation.copyRepeatedly` `nonoverlapping = true`): every successful
+`evalStatementV2 .assign` copying a `BackendRepr::Memory` or padded type
+(`isMemoryCopyReprTyV2 dstTy = true`) via `.use (.copy src)` guarantees that
+whenever destination and source resolve to storage spans `dSpan` and `sSpan`,
+`copySpansOverlapV2 dSpan sSpan = false`. -/
+theorem evalStatementV2_assign_use_copy_nonoverlapping
+    (body : Body) (frame : FrameState) (m : MirSemantics.MemoryState)
+    (callerMem : CallerMemory) (dst src : Place) (st : MirSemantics.State)
+    (dstTy : MirTy) (dest : PlaceDestV2) (dSpan sSpan : CopyPlaceSpanV2)
+    (h_ty : placeStaticTyV2 body.locals dst = some dstTy)
+    (h_memRepr : isMemoryCopyReprTyV2 dstTy = true)
+    (h_res : resolvePlaceDestV2 body.locals frame.locals m dst dstTy = .ok dest)
+    (h_dSpan : destCopySpanV2 frame.locals dest dstTy = some dSpan)
+    (h_sSpan : srcPlaceCopySpanV2 body.locals frame.locals m src = some sSpan)
+    (h_st : evalStatementV2 body frame m callerMem
+      (.assign dst (.use (.copy src))) = .step st) :
+    copySpansOverlapV2 dSpan sSpan = false := by
+  dsimp only [evalStatementV2] at h_st
+  rw [h_ty] at h_st
+  dsimp only at h_st
+  rw [h_res] at h_st
+  dsimp only at h_st
+  cases h_ev : evalRvalueV2 body.locals frame.locals m dstTy (.use (.copy src)) with
+  | error k => rw [h_ev] at h_st; cases h_st
+  | ok res =>
+    cases res with | mk val res =>
+    cases res with | mk locals1 mem1 =>
+    rw [h_ev] at h_st
+    dsimp only at h_st
+    cases h_wp : writePlaceDestV2 locals1 mem1 dest dstTy val with
+    | error k => rw [h_wp] at h_st; cases h_st
+    | ok res2 =>
+      cases res2 with | mk locals2 mem2 =>
+      rw [h_wp] at h_st
+      dsimp only [checkAssignCopyHazardV2] at h_st
+      rw [h_memRepr, Bool.not_true, h_dSpan, h_sSpan] at h_st
+      dsimp only at h_st
+      cases h_ov : copySpansOverlapV2 dSpan sSpan with
+      | true => rw [h_ov] at h_st; cases h_st
+      | false => rfl
 
 /-- Overflow pairs `(T, bool)` are rejected as Profile v2 pointees behind both
 raw pointers and references (`isSupportedV2LocalTy`). -/

@@ -437,7 +437,10 @@ private theorem sliceScan_setup_bounded {q : Query} {ptrAid : Option AllocId}
   rw [hDef]
   have hS0 :
       ⟨[⟨0, 0, 0, initLocalsLoop bodyV2SliceScan q.args 0 bodyV2SliceScan.locals,
-          none, none, none⟩], q.callerMem, entryMemoryWithCaller q.callerMem⟩ =
+          none, none, none⟩], q.callerMem,
+        entryMemoryForArgsV2 q.callerMem
+          (List.take bodyV2SliceScan.argumentCount (List.drop 1 bodyV2SliceScan.locals))
+          q.args⟩ =
       sliceScanState 0 0 (.immediate none)
         (.immediate (some (.slicePtr ⟨ptrAid, ptrOff, .isize⟩ len)))
         (.immediate none) (.immediate none)
@@ -1590,7 +1593,10 @@ private theorem lex2_setup_exact (outer inner : Nat)
   refine ⟨hValid, _, hInit, ?_⟩
   have hS0 :
       ⟨[⟨0, 0, 0, initLocalsLoop bodyV2Lex2Loop q.args 0 bodyV2Lex2Loop.locals,
-          none, none, none⟩], q.callerMem, entryMemoryWithCaller q.callerMem⟩ =
+          none, none, none⟩], q.callerMem,
+        entryMemoryForArgsV2 q.callerMem
+          (List.take bodyV2Lex2Loop.argumentCount (List.drop 1 bodyV2Lex2Loop.locals))
+          q.args⟩ =
       lex2State 0 0 (.immediate none) (.immediate (some (u64Val outer)))
         (.immediate (some (u64Val inner))) := rfl
   rw [hS0]
@@ -2185,7 +2191,10 @@ theorem canary_v2_slice_scan_1byte_tight_bound :
             initLocalsLoop bodyV2SliceScan querySlice1.args 0
               bodyV2SliceScan.locals,
             none, none, none⟩],
-          querySlice1.callerMem, entryMemoryWithCaller querySlice1.callerMem⟩ =
+          querySlice1.callerMem,
+          entryMemoryForArgsV2 querySlice1.callerMem
+            (List.take bodyV2SliceScan.argumentCount (List.drop 1 bodyV2SliceScan.locals))
+            querySlice1.args⟩ =
         sliceScanState 0 0 (.immediate none)
           (.immediate (some (.slicePtr ptr0 (UInt64.ofNat 1))))
           (.immediate none) (.immediate none)

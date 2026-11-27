@@ -482,18 +482,42 @@ theorem extractCallerAllocations_self
     dsimp only [Option.getD]
     rw [ih (fun b hb => hSub b (List.Mem.tail _ hb))]
 
+/-- Snapshotting unmodified caller memory from any `m` with
+`m.allocations = cm.allocations` returns `cm` unchanged whenever
+`validCallerMemory cm = true`. -/
+theorem extractCallerMemory_of_allocations_eq (cm : CallerMemory)
+    (m : MemoryState) (hEq : m.allocations = cm.allocations)
+    (hVal : validCallerMemory cm = true) :
+    extractCallerMemory cm m = cm := by
+  cases cm with
+  | mk allocs =>
+    change ⟨extractCallerAllocations m allocs⟩ = (⟨allocs⟩ : CallerMemory)
+    rw [extractCallerAllocations_self m [] allocs allocs (fun _ h => h) hEq hVal]
+
 /-- Snapshotting unmodified caller memory from `entryMemoryWithCaller cm`
 returns `cm` unchanged whenever `validCallerMemory cm = true`. -/
 theorem extractCallerMemory_entryMemoryWithCaller (cm : CallerMemory)
     (hVal : validCallerMemory cm = true) :
-    extractCallerMemory cm (entryMemoryWithCaller cm) = cm := by
-  cases cm with
-  | mk allocs =>
-    change
-      ⟨extractCallerAllocations (entryMemoryWithCaller ⟨allocs⟩) allocs⟩ =
-        (⟨allocs⟩ : CallerMemory)
-    rw [extractCallerAllocations_self (entryMemoryWithCaller ⟨allocs⟩) []
-      allocs allocs (fun _ h => h) rfl hVal]
+    extractCallerMemory cm (entryMemoryWithCaller cm) = cm :=
+  extractCallerMemory_of_allocations_eq cm (entryMemoryWithCaller cm) rfl hVal
+
+/-- Snapshotting unmodified caller memory from `entryMemoryForArgsV2`
+returns `cm` unchanged whenever `validCallerMemory cm = true`. -/
+theorem extractCallerMemory_entryMemoryForArgsV2 (cm : CallerMemory)
+    (paramTys : List MirTy) (args : List Val)
+    (hVal : validCallerMemory cm = true) :
+    extractCallerMemory cm (entryMemoryForArgsV2 cm paramTys args) = cm := by
+  apply extractCallerMemory_of_allocations_eq cm _ _ hVal
+  unfold entryMemoryForArgsV2
+  cases tyListHasRawPtrV2 paramTys <;> rfl
+
+/-- `entryMemoryForArgsV2` preserves `entryMemoryWithCaller`'s allocations. -/
+theorem entryMemoryForArgsV2_allocations_eq (cm : CallerMemory)
+    (paramTys : List MirTy) (args : List Val) :
+    (entryMemoryForArgsV2 cm paramTys args).allocations =
+      (entryMemoryWithCaller cm).allocations := by
+  unfold entryMemoryForArgsV2
+  cases tyListHasRawPtrV2 paramTys <;> rfl
 
 theorem programVerified_iff_legacyEnvelope (p : Program) (specs : Specs)
     (gaps : List DisclosedGap)

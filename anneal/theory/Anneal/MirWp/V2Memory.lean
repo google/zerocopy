@@ -1383,6 +1383,91 @@ theorem validEntryArgsV2_slice_u8_inv {body : Body} {reqMut : Mutability}
   | error k => rw [hR] at hRefs'; cases hRefs'
   | ok u => cases u; rfl
 
+private theorem refValidInMem_allocations_eq {m1 m2 : MemoryState}
+    (hEq : m1.allocations = m2.allocations) (reqMut : Mutability)
+    (pt : MirTy) (v : Val) :
+    refValidInMem m1 reqMut pt v = refValidInMem m2 reqMut pt v := by
+  cases m1 with
+  | mk n1 a1 =>
+    cases m2 with
+    | mk n2 a2 =>
+      dsimp only at hEq
+      subst hEq
+      cases v with
+      | ptr p =>
+        unfold refValidInMem
+        cases isUnsizedTy pt <;> rfl
+      | slicePtr p len =>
+        unfold refValidInMem
+        cases pt with
+        | slice elem =>
+          unfold sliceFromRawPartsCheck
+          rfl
+        | _ => rfl
+      | _ => rfl
+
+mutual
+  /-- `refsValidInMem` depends only on `m.allocations`, not `m.nextAllocId`. -/
+  theorem refsValidInMem_allocations_eq {m1 m2 : MemoryState}
+      (hEq : m1.allocations = m2.allocations) :
+      ∀ (ty : MirTy) (v : Val),
+        refsValidInMem m1 ty v = refsValidInMem m2 ty v
+    | .ref reqMut pt, v => by
+      unfold refsValidInMem
+      rw [refValidInMem_allocations_eq hEq reqMut pt v]
+    | .tuple fs, .tuple vs => by
+      unfold refsValidInMem
+      exact refsValidInMemList_allocations_eq hEq fs vs
+    | .tuple _, .scalar _ | .tuple _, .bool _ | .tuple _, .char _
+    | .tuple _, .ordering _ | .tuple _, .unit | .tuple _, .enumVal _ _
+    | .tuple _, .ptr _ | .tuple _, .slicePtr _ _ | .tuple _, .rangeTo _
+    | .tuple _, .rangeFrom _ | .tuple _, .array _ | .tuple _, .bytes _ => rfl
+    | .array elem _, .array vs => by
+      unfold refsValidInMem
+      exact refsValidInMemArray_allocations_eq hEq elem vs
+    | .array _ _, .scalar _ | .array _ _, .bool _ | .array _ _, .char _
+    | .array _ _, .ordering _ | .array _ _, .unit | .array _ _, .enumVal _ _
+    | .array _ _, .ptr _ | .array _ _, .slicePtr _ _ | .array _ _, .rangeTo _
+    | .array _ _, .rangeFrom _ | .array _ _, .tuple _
+    | .array _ _, .bytes _ => rfl
+    | .bool, v | .int _ _, v | .unit, v | .never, v | .char, v
+    | .ordering, v | .enum _, v | .rawPtr _ _, v | .slice _, v
+    | .rangeTo _, v | .rangeFrom _, v | .unsupported, v => by
+      unfold refsValidInMem
+      cases v <;> rfl
+
+  /-- `refsValidInMemList` depends only on `m.allocations`. -/
+  theorem refsValidInMemList_allocations_eq {m1 m2 : MemoryState}
+      (hEq : m1.allocations = m2.allocations) :
+      ∀ (tys : List MirTy) (vs : List Val),
+        refsValidInMemList m1 tys vs = refsValidInMemList m2 tys vs
+    | [], [] => rfl
+    | t :: ts, v :: vs => by
+      unfold refsValidInMemList
+      rw [refsValidInMem_allocations_eq hEq t v,
+        refsValidInMemList_allocations_eq hEq ts vs]
+    | [], _ :: _ | _ :: _, [] => rfl
+
+  /-- `refsValidInMemArray` depends only on `m.allocations`. -/
+  theorem refsValidInMemArray_allocations_eq {m1 m2 : MemoryState}
+      (hEq : m1.allocations = m2.allocations) (elem : MirTy) :
+      ∀ (vs : List Val),
+        refsValidInMemArray m1 elem vs = refsValidInMemArray m2 elem vs
+    | [] => rfl
+    | v :: vs => by
+      unfold refsValidInMemArray
+      rw [refsValidInMem_allocations_eq hEq elem v,
+        refsValidInMemArray_allocations_eq hEq elem vs]
+end
+
+/-- `entryMemoryForArgsV2` preserves `entryMemoryWithCaller`'s allocations. -/
+theorem entryMemoryForArgsV2_allocations_eq (cm : CallerMemory)
+    (paramTys : List MirTy) (args : List Val) :
+    (entryMemoryForArgsV2 cm paramTys args).allocations =
+      (entryMemoryWithCaller cm).allocations := by
+  unfold entryMemoryForArgsV2
+  cases tyListHasRawPtrV2 paramTys <;> rfl
+
 /-- Reduce `initStateV2 p q` directly to `.ok` from its component checks. -/
 theorem initStateV2_ok_of {p : Program} {q : Query} {body : Body}
     (hPW : Nat.beq p.pointerWidthBits 64 = true)
@@ -1404,12 +1489,22 @@ theorem initStateV2_ok_of {p : Program} {q : Query} {body : Body}
       ((body.locals.drop 1).take body.argumentCount) q.args) = true) :
     initStateV2 p q = .ok ⟨[⟨p.entryDefId, 0, 0,
       initLocalsLoop body q.args 0 body.locals, none, none, none⟩],
-      q.callerMem, entryMemoryWithCaller q.callerMem⟩ := by
+      q.callerMem,
+      entryMemoryForArgsV2 q.callerMem
+        ((body.locals.drop 1).take body.argumentCount) q.args⟩ := by
+  have hRefsForArgs :
+      refsValidInMemList
+        (entryMemoryForArgsV2 q.callerMem
+          ((body.locals.drop 1).take body.argumentCount) q.args)
+        ((body.locals.drop 1).take body.argumentCount) q.args = true := by
+    rw [refsValidInMemList_allocations_eq
+      (entryMemoryForArgsV2_allocations_eq q.callerMem _ q.args)]
+    exact hRefs
   unfold initStateV2
   rw [hPW, hPV, hCM, hEntry]
   dsimp only
   rw [hNonEmpty, hArgLt, hSto, hDiscr, hCast, hAct, hLocs]
-  rw [hArgs, hRefs, hDisj]
+  rw [hArgs, hRefsForArgs, hDisj]
   rfl
 
 /-- Program-parameterized entry initialization from `BodyStaticAdmittedV2` and
@@ -1421,7 +1516,9 @@ theorem initStateV2_ok_of_admitted {p : Program} {q : Query} {body : Body}
     (hValid : ValidEntryArgsV2 body q) :
     initStateV2 p q = .ok ⟨[⟨p.entryDefId, 0, 0,
       initLocalsLoop body q.args 0 body.locals, none, none, none⟩],
-      q.callerMem, entryMemoryWithCaller q.callerMem⟩ := by
+      q.callerMem,
+      entryMemoryForArgsV2 q.callerMem
+        ((body.locals.drop 1).take body.argumentCount) q.args⟩ := by
   unfold BodyStaticAdmittedV2 at hAdm
   let ⟨hCM, hArgs, hRefs, hDisj⟩ := hValid
   -- `&&` is left-associative in `BodyStaticAdmittedV2`.
@@ -1453,7 +1550,9 @@ theorem BodyCtx.initStateV2_ok_of (ctx : BodyCtx) (h_body : ctx.HasBody)
     (hValid : ValidEntryArgsV2 ctx.body q) :
     initStateV2 ctx.entryProg q = .ok ⟨[⟨ctx.defId, 0, 0,
       initLocalsLoop ctx.body q.args 0 ctx.body.locals, none, none, none⟩],
-      q.callerMem, entryMemoryWithCaller q.callerMem⟩ :=
+      q.callerMem,
+      entryMemoryForArgsV2 q.callerMem
+        ((ctx.body.locals.drop 1).take ctx.body.argumentCount) q.args⟩ :=
   Anneal.MirWp.initStateV2_ok_of_admitted
     (p := ctx.entryProg) h_body hAdm hValid
 

@@ -13,6 +13,7 @@ import Init.Data.List.Lemmas
 import Spec
 import Expected
 import Anneal.MirWp
+import Anneal.MirWp.V2Memory
 
 namespace Proof
 
@@ -372,16 +373,17 @@ theorem initStateV2_ok_of {p : Program} {q : Query} {body : Body}
       ((body.locals.drop 1).take body.argumentCount) q.args = true)
     (hDisj : spansPairwiseDisjoint (refAccessSpansList
       ((body.locals.drop 1).take body.argumentCount) q.args) = true)
-    (hAct : assertConditionTypesValid body = true := by decide) :
+    (hAct : assertConditionTypesValid body = true := by decide)
+    (hNoRaw : tyListHasRawPtrV2
+      ((body.locals.drop 1).take body.argumentCount) = false := by rfl) :
     initStateV2 p q = .ok ⟨[⟨p.entryDefId, 0, 0,
       initLocalsLoop body q.args 0 body.locals, none, none, none⟩],
       q.callerMem, entryMemoryWithCaller q.callerMem⟩ := by
-  unfold initStateV2
-  rw [hPW, hPV, hCM, hEntry]
-  dsimp only
-  rw [hNonEmpty, hArgLt, hSto, hDiscr, hCast, hAct, hLocs]
-  rw [hArgs, hRefs, hDisj]
-  rfl
+  have h := Anneal.MirWp.initStateV2_ok_of hPW hPV hCM hEntry hNonEmpty hArgLt
+    hSto hDiscr hCast hAct hLocs hArgs hRefs hDisj
+  unfold entryMemoryForArgsV2 at h
+  rw [hNoRaw] at h
+  exact h
 
 theorem writePlaceDestV2_immediate_ok {locals locals' : List LocalSlot}
     {mem : MemoryState} {lid : LocalId} {ty : MirTy} {val : Val} {oldOpt : Option Val}
@@ -651,7 +653,7 @@ private theorem pack_le_rev_correct (q : Query)
             dsimp only
             rw [ite_bool_false]; rotate_left; decide
             dsimp only
-            rw [writePlaceDestV2_immediate_ok hV0 (by rfl) (by rfl)])
+            rw [writePlaceDestV2_immediate_ok hV0 (by rfl) (by rfl)]; rfl)
           -- bb0 terminator: coreCall intToLeBytes .i16 false [move 5] -> 4 goto
           -- 1
           apply execOutcomeStateV2_step (by
@@ -692,7 +694,7 @@ private theorem pack_le_rev_correct (q : Query)
             dsimp only [Trusted.MirSemantics.getElem?]
             rw [ite_bool_false]; rotate_left; decide
             dsimp only
-            rw [writePlaceDestV2_immediate_ok hCheckLo (by rfl) (by rfl)])
+            rw [writePlaceDestV2_immediate_ok hCheckLo (by rfl) (by rfl)]; rfl)
           -- storageLive 3
           apply execOutcomeStateV2_step (by rfl)
           -- assign 3 (copy 4.[1])
@@ -705,7 +707,7 @@ private theorem pack_le_rev_correct (q : Query)
             dsimp only [Trusted.MirSemantics.getElem?]
             rw [ite_bool_false]; rotate_left; decide
             dsimp only
-            rw [writePlaceDestV2_immediate_ok hCheckHi (by rfl) (by rfl)])
+            rw [writePlaceDestV2_immediate_ok hCheckHi (by rfl) (by rfl)]; rfl)
           -- storageDead 4, storageLive 6
           apply execOutcomeStateV2_step (by rfl)
           apply execOutcomeStateV2_step (by rfl)
@@ -718,7 +720,7 @@ private theorem pack_le_rev_correct (q : Query)
             dsimp only
             rw [ite_bool_false]; rotate_left; decide
             dsimp only
-            rw [writePlaceDestV2_immediate_ok hCheckHi (by rfl) (by rfl)])
+            rw [writePlaceDestV2_immediate_ok hCheckHi (by rfl) (by rfl)]; rfl)
           -- storageLive 7
           apply execOutcomeStateV2_step (by rfl)
           -- assign 7 (copy 2)
@@ -730,7 +732,7 @@ private theorem pack_le_rev_correct (q : Query)
             dsimp only
             rw [ite_bool_false]; rotate_left; decide
             dsimp only
-            rw [writePlaceDestV2_immediate_ok hCheckLo (by rfl) (by rfl)])
+            rw [writePlaceDestV2_immediate_ok hCheckLo (by rfl) (by rfl)]; rfl)
           -- assign 0 (aggregateArray .i8 [move 6, move 7])
           apply execOutcomeStateV2_step (by
             dsimp only [evalStepV2, entryProgForBody, Captured.program, Captured.body_0,
@@ -757,7 +759,8 @@ private theorem pack_le_rev_correct (q : Query)
             simp only [hCheck2]
             rw [ite_bool_false]; rotate_left; rfl
             dsimp only
-            rw [writePlaceDestV2_immediate_ok hChkOut (by rfl) (by rfl)])
+            rw [writePlaceDestV2_immediate_ok hChkOut (by rfl) (by rfl)]
+            rfl)
           -- storageDead 7, 6, 3, 2
           apply execOutcomeStateV2_step (by rfl)
           apply execOutcomeStateV2_step (by rfl)
@@ -808,8 +811,9 @@ private theorem repeat_unsize_len_correct (q : Query)
           have hLe : a.allocId ≤ maxAllocId q.callerMem.allocations := allocId_le_maxAllocId ha
           have hLtAid : maxAllocId q.callerMem.allocations < stackAid := by
             change maxAllocId q.callerMem.allocations <
-              Nat.max entryMemory.nextAllocId (maxAllocId q.callerMem.allocations + 1)
-            exact Nat.lt_of_lt_of_le (Nat.lt_succ_self _) (Nat.le_max_right _ _)
+              Nat.max entryMemory.nextAllocId (maxAllocAndProvId q.callerMem.allocations + 1)
+            exact Nat.lt_of_lt_of_le (Nat.lt_succ_of_le (Nat.le_max_left _ _))
+              (Nat.le_max_right _ _)
           exact absurd (hEq ▸ hLe) (Nat.not_le_of_lt hLtAid)
         let stackAlloc : Allocation := {
           allocId := stackAid
@@ -885,7 +889,7 @@ private theorem repeat_unsize_len_correct (q : Query)
             dsimp only
             rw [ite_bool_false]; rotate_left; decide
             dsimp only
-            rw [writePlaceDestV2_immediate_ok hV0 (by rfl) (by rfl)])
+            rw [writePlaceDestV2_immediate_ok hV0 (by rfl) (by rfl)]; rfl)
           -- assign 2 (repeat_ (move 3) .i8 3)
           apply execOutcomeStateV2_step (by
             dsimp only [evalStepV2, entryProgForBody, Captured.program, Captured.body_1,
@@ -903,7 +907,7 @@ private theorem repeat_unsize_len_correct (q : Query)
               dsimp only [checkValV2, checkValUniformV2, checkVal, Val.ty?, IntWidth.bitWidth]
               rw [ite_bool_true hWf]
               rfl
-            rw [writePlaceDestV2_immediate_ok hChkArr (by rfl) (by rfl)])
+            rw [writePlaceDestV2_immediate_ok hChkArr (by rfl) (by rfl)]; rfl)
           -- storageDead 3, storageLive 4, storageLive 5, storageLive 6
           apply execOutcomeStateV2_step (by rfl)
           apply execOutcomeStateV2_step (by rfl)
@@ -1783,7 +1787,8 @@ private theorem tag_eq_correct (q : Query)
                     simp only [hCL]
                     rw [ite_bool_false]; rotate_left; rfl
                     dsimp only
-                    rw [writePlaceDestV2_immediate_ok hChkTuple (by rfl) (by rfl)])
+                    rw [writePlaceDestV2_immediate_ok hChkTuple (by rfl) (by rfl)]
+                    rfl)
                   -- bb0 stmt 6..8: storageDead 5, storageDead 4, nop
                   apply execOutcomeStateV2_step (by rfl)
                   apply execOutcomeStateV2_step (by rfl)
@@ -1799,7 +1804,7 @@ private theorem tag_eq_correct (q : Query)
                     dsimp only
                     rw [ite_bool_false]; rotate_left; decide
                     dsimp only
-                    rw [writePlaceDestV2_immediate_ok hV0 (by rfl) (by rfl)])
+                    rw [writePlaceDestV2_immediate_ok hV0 (by rfl) (by rfl)]; rfl)
                   -- Split concretely on ba ∈ {0, 1} into dedicated tail lemmas
                   -- to stay comfortably under the default heartbeat budget.
                   rcases hBaCase with rfl | rfl
@@ -2072,8 +2077,9 @@ private theorem matches_pattern_correct (q : Query)
           let roAid := (entryMemoryWithCaller q.callerMem).nextAllocId
           have hRoGt : maxAllocId q.callerMem.allocations < roAid := by
             change maxAllocId q.callerMem.allocations <
-              Nat.max entryMemory.nextAllocId (maxAllocId q.callerMem.allocations + 1)
-            exact Nat.lt_of_lt_of_le (Nat.lt_succ_self _) (Nat.le_max_right _ _)
+              Nat.max entryMemory.nextAllocId (maxAllocAndProvId q.callerMem.allocations + 1)
+            exact Nat.lt_of_lt_of_le (Nat.lt_succ_of_le (Nat.le_max_left _ _))
+              (Nat.le_max_right _ _)
           have hIdaLe : ida ≤ maxAllocId q.callerMem.allocations := by
             have hMemA : allocA ∈ q.callerMem.allocations := findAllocation_mem hFindA
             have hEqId : allocA.allocId = ida := findAllocation_allocId_eq hFindA
@@ -2118,7 +2124,7 @@ private theorem matches_pattern_correct (q : Query)
               rw [ite_bool_false]; rotate_left; decide
               rw [ite_bool_false]; rotate_left; decide
               dsimp only
-              rw [writePlaceDestV2_immediate_ok hV0 (by rfl) (by rfl)])
+              rw [writePlaceDestV2_immediate_ok hV0 (by rfl) (by rfl)]; rfl)
             -- bb0 stmt 2: storageLive 3
             apply execOutcomeStateV2_step (by rfl)
             -- bb0 stmt 3: assign 5 (useRetag (rodataRef [1,2,3,4] 0 0 none))

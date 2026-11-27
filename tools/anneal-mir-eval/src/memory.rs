@@ -178,6 +178,29 @@ impl Default for MemoryState {
     }
 }
 
+fn max_val_ptr_alloc_id(v: &Val) -> u64 {
+    match v {
+        Val::Ptr(p) | Val::SlicePtr { ptr: p, .. } => p.alloc_id.unwrap_or(0),
+        Val::Tuple(vs) => vs.iter().map(max_val_ptr_alloc_id).max().unwrap_or(0),
+        Val::Bytes(bs) => bs
+            .iter()
+            .filter_map(|b| match b {
+                AllocByte::Init { prov: Some(pid), .. } => Some(*pid),
+                AllocByte::Init { prov: None, .. } | AllocByte::Uninit => None,
+            })
+            .max()
+            .unwrap_or(0),
+        Val::Scalar(_)
+        | Val::Bool(_)
+        | Val::Char(_)
+        | Val::Ordering(_)
+        | Val::Unit
+        | Val::EnumVal { .. }
+        | Val::RangeTo(_)
+        | Val::RangeFrom(_) => 0,
+    }
+}
+
 impl MemoryState {
     /// Empty memory starting with allocation id `1`.
     pub const fn empty() -> Self {
@@ -190,15 +213,51 @@ impl MemoryState {
     }
 
     /// Profile v2 entry memory pre-populated with caller allocations,
-    /// matching `Trusted.MirSemantics.entryMemoryWithCaller`, failing closed
-    /// if a caller allocation id would overflow `next_alloc_id`.
+    /// matching `Trusted.MirSemantics.entryMemoryWithCaller` (advancing
+    /// `next_alloc_id` past both caller allocation ids and provenance ids
+    /// stored inside caller bytes), failing closed if an id would overflow
+    /// `next_alloc_id`.
     pub fn entry_memory_with_caller(cm: &CallerMemory) -> Result<Self, FaultDetail> {
-        let max_id = cm.allocations.iter().map(|a| a.alloc_id).max().unwrap_or(0);
+        let max_alloc_id = cm.allocations.iter().map(|a| a.alloc_id).max().unwrap_or(0);
+        let max_prov_id = cm
+            .allocations
+            .iter()
+            .flat_map(|a| a.bytes.iter())
+            .filter_map(|b| match b {
+                AllocByte::Init { prov: Some(pid), .. } => Some(*pid),
+                _ => None,
+            })
+            .max()
+            .unwrap_or(0);
+        let max_id = max_alloc_id.max(max_prov_id);
         let next_from_caller = max_id.checked_add(1).ok_or_else(|| {
-            FaultDetail::unsupported("caller allocation id u64::MAX overflows next_alloc_id")
+            FaultDetail::unsupported(
+                "caller allocation or provenance id u64::MAX overflows next_alloc_id",
+            )
         })?;
         let next_alloc_id = Self::entry_memory().next_alloc_id.max(next_from_caller);
         Ok(Self { next_alloc_id, allocations: cm.allocations.clone() })
+    }
+
+    /// Profile v2 entry memory for `(param_tys, args)`, matching
+    /// `Trusted.MirSemantics.entryMemoryForArgsV2` by additionally advancing
+    /// `next_alloc_id` past provenance ids carried in raw-pointer parameters.
+    pub fn entry_memory_for_args_v2(
+        cm: &CallerMemory,
+        param_tys: &[Ty],
+        args: &[Val],
+    ) -> Result<Self, FaultDetail> {
+        let mut base = Self::entry_memory_with_caller(cm)?;
+        if param_tys.iter().any(Ty::has_raw_ptr_v2) {
+            let max_arg_ptr = args.iter().map(max_val_ptr_alloc_id).max().unwrap_or(0);
+            let next_from_args = max_arg_ptr.checked_add(1).ok_or_else(|| {
+                FaultDetail::unsupported(
+                    "raw pointer argument alloc_id u64::MAX overflows next_alloc_id",
+                )
+            })?;
+            base.next_alloc_id = base.next_alloc_id.max(next_from_args);
+        }
+        Ok(base)
     }
 
     /// Snapshot caller-visible allocations in the original order of `orig`,
@@ -594,14 +653,16 @@ pub fn slice_from_raw_parts_check(
     }
 }
 
-/// Checked `slice::get_unchecked` subslice on `[u8]` (`[start_off..end_off]`
-/// of `(ptr, len)`), matching `Trusted.MirSemantics.sliceGetUncheckedCheck`.
+/// Checked `slice::get_unchecked` subslice (`[start_off..end_off]` of
+/// `(ptr, len)` with element byte size `elem_size`), matching
+/// `Trusted.MirSemantics.sliceGetUncheckedCheck`.
 pub fn slice_get_unchecked_check(
     mem: &MemoryState,
     ptr: PtrVal,
     len: u64,
     start_off: u64,
     end_off: u64,
+    elem_size: u64,
 ) -> Result<Val, FaultDetail> {
     if start_off > end_off || end_off > len {
         return Err(FaultDetail::undefined_classified(
@@ -609,7 +670,7 @@ pub fn slice_get_unchecked_check(
             "slice::get_unchecked range exceeds slice bounds",
         ));
     }
-    let advanced = ptr_add_in_mem(mem, 1, ptr, start_off)?;
+    let advanced = ptr_add_in_mem(mem, elem_size, ptr, start_off)?;
     Ok(Val::SlicePtr { ptr: advanced, len: end_off - start_off })
 }
 

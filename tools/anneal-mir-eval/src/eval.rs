@@ -20,13 +20,13 @@ use serde::{Deserialize, Serialize};
 
 use crate::{
     ir::{
-        AggregateKind, AssertKind, BinOp, Block, Body, CastKind, CoreCallOp, IntTy, IntWidth,
-        Mutability, Operand, Place, Program, ProjectionElem, Rvalue, Statement, SysrootNumKind,
-        SysrootNumOp, Terminator, Ty, UnOp, UnwindAction,
+        AggregateKind, AssertKind, BinOp, Block, Body, CastKind, CoreCallOp, EnumTagRepr, IntTy,
+        IntWidth, Mutability, Operand, Place, Program, ProjectionElem, Rvalue, Statement,
+        SysrootNumKind, SysrootNumOp, Terminator, Ty, UnOp, UnwindAction,
     },
     memory::{
         CallerMemory, ISIZE_MAX_BYTES, LayoutData, MemPlace, MemoryState, TargetEndian,
-        deinit_indirect, encode_val, eval_const_lit, layout_of_ty, load_indirect,
+        deinit_indirect, encode_val, eval_const_lit, int_layout, layout_of_ty, load_indirect,
         offset_is_aligned, ptr_add_in_mem, ref_access_spans, ref_access_spans_list,
         ref_valid_in_mem, refs_stay_in_caller_mem, refs_valid_in_mem, refs_valid_in_mem_list,
         slice_get_unchecked_check, spans_pairwise_disjoint, store_indirect, valid_caller_memory,
@@ -369,7 +369,7 @@ impl MachineState {
                     "entry arguments do not match Profile v2 body parameter types",
                 ));
             }
-            let entry_mem = MemoryState::entry_memory_with_caller(&caller_mem)?;
+            let entry_mem = MemoryState::entry_memory_for_args_v2(&caller_mem, param_tys, args)?;
             if let Err(err) = refs_valid_in_mem_list(&entry_mem, config.endian, param_tys, args) {
                 return Err(FaultDetail::undefined_classified(
                     UbClass::EntryInvalidRefArg,
@@ -1183,6 +1183,17 @@ impl MachineState {
                     &dest,
                     &dst_ty,
                     val,
+                    config.endian,
+                ) {
+                    return StepOutcome::Fault(err);
+                }
+                if let Err(err) = check_assign_copy_hazard_v2(
+                    &body.local_tys,
+                    &self.frames[0].locals,
+                    &self.mem,
+                    &dest,
+                    &dst_ty,
+                    value,
                     config.endian,
                 ) {
                     return StepOutcome::Fault(err);
@@ -2700,6 +2711,690 @@ fn write_place_dest_v2(
     }
 }
 
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+enum CopyReprV2 {
+    Zst { align_log2: u32 },
+    Scalar { align_log2: u32 },
+    ScalarPair { elem_align_log2: u32 },
+    MemoryCopy,
+}
+
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+enum TupleCopyPayloadV2 {
+    None,
+    OneScalar(u32),
+    TwoScalars(u32),
+    Memory,
+}
+
+fn layout_of_array_elem_v2(ty: &Ty) -> Option<LayoutData> {
+    match ty {
+        Ty::Array { elem, len } => {
+            let elem_lay = layout_of_array_elem_v2(elem)?;
+            Some(LayoutData {
+                size: len.checked_mul(elem_lay.size)?,
+                align_log2: elem_lay.align_log2,
+            })
+        }
+        other => layout_of_ty(other, true),
+    }
+}
+
+fn copy_repr_of_ty_v2(ty: &Ty) -> CopyReprV2 {
+    if let Some(ity) = ty.as_overflow_pair() {
+        let a = int_layout(ity.width).align_log2;
+        return if a == 0 {
+            CopyReprV2::ScalarPair { elem_align_log2: 0 }
+        } else {
+            CopyReprV2::MemoryCopy
+        };
+    }
+    match ty {
+        Ty::Unit | Ty::Never => CopyReprV2::Zst { align_log2: 0 },
+        Ty::Bool | Ty::Ordering => CopyReprV2::Scalar { align_log2: 0 },
+        Ty::Int(ity) => CopyReprV2::Scalar { align_log2: int_layout(ity.width).align_log2 },
+        Ty::Char => CopyReprV2::Scalar { align_log2: 2 },
+        Ty::Enum(ety) => {
+            if !enum_admitted(ety) {
+                CopyReprV2::MemoryCopy
+            } else {
+                match ety.tag_repr {
+                    EnumTagRepr::ZeroSized => CopyReprV2::Zst { align_log2: 0 },
+                    EnumTagRepr::Scalar(tag) => {
+                        CopyReprV2::Scalar { align_log2: int_layout(tag.width).align_log2 }
+                    }
+                }
+            }
+        }
+        Ty::RangeTo { elem } | Ty::RangeFrom { elem } if elem.is_usize() => {
+            CopyReprV2::Scalar { align_log2: 3 }
+        }
+        Ty::Ref { pointee, .. } | Ty::RawPtr { pointee, .. } => {
+            if pointee.is_unsized() {
+                CopyReprV2::ScalarPair { elem_align_log2: 3 }
+            } else {
+                CopyReprV2::Scalar { align_log2: 3 }
+            }
+        }
+        Ty::Array { elem, len } => match copy_repr_of_ty_v2(elem) {
+            CopyReprV2::Zst { align_log2 } => CopyReprV2::Zst { align_log2 },
+            CopyReprV2::Scalar { align_log2 }
+            | CopyReprV2::ScalarPair { elem_align_log2: align_log2 } => {
+                if *len == 0 {
+                    CopyReprV2::Zst { align_log2 }
+                } else {
+                    CopyReprV2::MemoryCopy
+                }
+            }
+            CopyReprV2::MemoryCopy => {
+                if *len == 0 {
+                    match layout_of_array_elem_v2(elem) {
+                        Some(lay) => CopyReprV2::Zst { align_log2: lay.align_log2 },
+                        None => CopyReprV2::MemoryCopy,
+                    }
+                } else {
+                    CopyReprV2::MemoryCopy
+                }
+            }
+        },
+        Ty::Tuple { fields } => {
+            let mut max_align = 0u32;
+            let mut payload = TupleCopyPayloadV2::None;
+            for f in fields {
+                match copy_repr_of_ty_v2(f) {
+                    CopyReprV2::Zst { align_log2 } => {
+                        max_align = max_align.max(align_log2);
+                    }
+                    CopyReprV2::Scalar { align_log2 } => {
+                        max_align = max_align.max(align_log2);
+                        payload = match payload {
+                            TupleCopyPayloadV2::None => TupleCopyPayloadV2::OneScalar(align_log2),
+                            TupleCopyPayloadV2::OneScalar(a0) if a0 == align_log2 => {
+                                TupleCopyPayloadV2::TwoScalars(a0)
+                            }
+                            _ => TupleCopyPayloadV2::Memory,
+                        };
+                    }
+                    CopyReprV2::ScalarPair { elem_align_log2 } => {
+                        max_align = max_align.max(elem_align_log2);
+                        payload = match payload {
+                            TupleCopyPayloadV2::None => {
+                                TupleCopyPayloadV2::TwoScalars(elem_align_log2)
+                            }
+                            _ => TupleCopyPayloadV2::Memory,
+                        };
+                    }
+                    CopyReprV2::MemoryCopy => {
+                        payload = TupleCopyPayloadV2::Memory;
+                    }
+                }
+            }
+            match payload {
+                TupleCopyPayloadV2::None => CopyReprV2::Zst { align_log2: max_align },
+                TupleCopyPayloadV2::OneScalar(a) => {
+                    if max_align <= a {
+                        CopyReprV2::Scalar { align_log2: a }
+                    } else {
+                        CopyReprV2::MemoryCopy
+                    }
+                }
+                TupleCopyPayloadV2::TwoScalars(a) => {
+                    if max_align <= a {
+                        CopyReprV2::ScalarPair { elem_align_log2: a }
+                    } else {
+                        CopyReprV2::MemoryCopy
+                    }
+                }
+                TupleCopyPayloadV2::Memory => CopyReprV2::MemoryCopy,
+            }
+        }
+        Ty::OverflowPair(_)
+        | Ty::Slice { .. }
+        | Ty::RangeTo { .. }
+        | Ty::RangeFrom { .. }
+        | Ty::Unsupported => CopyReprV2::MemoryCopy,
+    }
+}
+
+fn is_memory_copy_repr_ty_v2(ty: &Ty) -> bool {
+    matches!(copy_repr_of_ty_v2(ty), CopyReprV2::MemoryCopy)
+}
+
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+enum OverlapReplayKindV2 {
+    /// True `BackendRepr::Memory` (always copied via `copy_nonoverlapping` in Miri).
+    AlwaysBackendMemory,
+    /// Padded `ScalarPair` (triggers `copy_nonoverlapping` UB in Miri only when
+    /// the source place is in memory / indirect, not an immediate local).
+    PaddedScalarPair,
+    /// Conservative model-only over-approximation (e.g. unmodeled/unknown types).
+    ConservativeModelOnly,
+}
+
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+enum OverlapAbiReprV2 {
+    Zst { align_log2: u32 },
+    Scalar { align_log2: u32 },
+    ScalarPair { a0: u32, a1: u32 },
+    Memory { align_log2: u32 },
+    Unknown,
+}
+
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+enum TupleOverlapPayloadV2 {
+    None,
+    OneScalar(u32),
+    TwoScalars(u32, u32),
+    Memory,
+}
+
+fn overlap_abi_repr_v2(ty: &Ty) -> OverlapAbiReprV2 {
+    match ty {
+        Ty::Unit | Ty::Never => OverlapAbiReprV2::Zst { align_log2: 0 },
+        Ty::Bool | Ty::Ordering => OverlapAbiReprV2::Scalar { align_log2: 0 },
+        Ty::Int(ity) => OverlapAbiReprV2::Scalar { align_log2: int_layout(ity.width).align_log2 },
+        Ty::Char => OverlapAbiReprV2::Scalar { align_log2: 2 },
+        Ty::Enum(ety) => {
+            if !enum_admitted(ety) {
+                OverlapAbiReprV2::Unknown
+            } else {
+                match ety.tag_repr {
+                    EnumTagRepr::ZeroSized => OverlapAbiReprV2::Zst { align_log2: 0 },
+                    EnumTagRepr::Scalar(tag) => {
+                        OverlapAbiReprV2::Scalar { align_log2: int_layout(tag.width).align_log2 }
+                    }
+                }
+            }
+        }
+        Ty::RangeTo { elem } | Ty::RangeFrom { elem } if elem.is_usize() => {
+            OverlapAbiReprV2::Scalar { align_log2: 3 }
+        }
+        Ty::Ref { pointee, .. } | Ty::RawPtr { pointee, .. } => {
+            if pointee.is_unsized() {
+                OverlapAbiReprV2::ScalarPair { a0: 3, a1: 3 }
+            } else {
+                OverlapAbiReprV2::Scalar { align_log2: 3 }
+            }
+        }
+        Ty::OverflowPair(ity) => {
+            OverlapAbiReprV2::ScalarPair { a0: int_layout(ity.width).align_log2, a1: 0 }
+        }
+        Ty::Array { elem, len } => match overlap_abi_repr_v2(elem) {
+            OverlapAbiReprV2::Zst { align_log2 } => OverlapAbiReprV2::Zst { align_log2 },
+            OverlapAbiReprV2::Scalar { align_log2 } | OverlapAbiReprV2::Memory { align_log2 } => {
+                if *len == 0 {
+                    OverlapAbiReprV2::Zst { align_log2 }
+                } else {
+                    OverlapAbiReprV2::Memory { align_log2 }
+                }
+            }
+            OverlapAbiReprV2::ScalarPair { a0, a1 } => {
+                let align_log2 = a0.max(a1);
+                if *len == 0 {
+                    OverlapAbiReprV2::Zst { align_log2 }
+                } else {
+                    OverlapAbiReprV2::Memory { align_log2 }
+                }
+            }
+            OverlapAbiReprV2::Unknown => OverlapAbiReprV2::Unknown,
+        },
+        Ty::Tuple { fields } => {
+            let mut max_align = 0u32;
+            let mut payload = TupleOverlapPayloadV2::None;
+            for f in fields {
+                match overlap_abi_repr_v2(f) {
+                    OverlapAbiReprV2::Zst { align_log2 } => {
+                        max_align = max_align.max(align_log2);
+                    }
+                    OverlapAbiReprV2::Scalar { align_log2 } => {
+                        max_align = max_align.max(align_log2);
+                        payload = match payload {
+                            TupleOverlapPayloadV2::None => {
+                                TupleOverlapPayloadV2::OneScalar(align_log2)
+                            }
+                            TupleOverlapPayloadV2::OneScalar(a0) => {
+                                TupleOverlapPayloadV2::TwoScalars(a0, align_log2)
+                            }
+                            TupleOverlapPayloadV2::TwoScalars(..)
+                            | TupleOverlapPayloadV2::Memory => TupleOverlapPayloadV2::Memory,
+                        };
+                    }
+                    OverlapAbiReprV2::ScalarPair { a0, a1 } => {
+                        max_align = max_align.max(a0).max(a1);
+                        payload = match payload {
+                            TupleOverlapPayloadV2::None => {
+                                TupleOverlapPayloadV2::TwoScalars(a0, a1)
+                            }
+                            TupleOverlapPayloadV2::OneScalar(..)
+                            | TupleOverlapPayloadV2::TwoScalars(..)
+                            | TupleOverlapPayloadV2::Memory => TupleOverlapPayloadV2::Memory,
+                        };
+                    }
+                    OverlapAbiReprV2::Memory { align_log2 } => {
+                        max_align = max_align.max(align_log2);
+                        payload = TupleOverlapPayloadV2::Memory;
+                    }
+                    OverlapAbiReprV2::Unknown => return OverlapAbiReprV2::Unknown,
+                }
+            }
+            match payload {
+                TupleOverlapPayloadV2::None => OverlapAbiReprV2::Zst { align_log2: max_align },
+                TupleOverlapPayloadV2::OneScalar(a) => {
+                    if max_align > a {
+                        OverlapAbiReprV2::Memory { align_log2: max_align }
+                    } else {
+                        OverlapAbiReprV2::Scalar { align_log2: a }
+                    }
+                }
+                TupleOverlapPayloadV2::TwoScalars(a0, a1) => {
+                    if max_align > a0.max(a1) {
+                        OverlapAbiReprV2::Memory { align_log2: max_align }
+                    } else {
+                        OverlapAbiReprV2::ScalarPair { a0, a1 }
+                    }
+                }
+                TupleOverlapPayloadV2::Memory => OverlapAbiReprV2::Memory { align_log2: max_align },
+            }
+        }
+        Ty::Slice { .. } | Ty::RangeTo { .. } | Ty::RangeFrom { .. } | Ty::Unsupported => {
+            OverlapAbiReprV2::Unknown
+        }
+    }
+}
+
+fn overlap_replay_kind_v2(ty: &Ty) -> OverlapReplayKindV2 {
+    match overlap_abi_repr_v2(ty) {
+        OverlapAbiReprV2::Memory { .. } => OverlapReplayKindV2::AlwaysBackendMemory,
+        OverlapAbiReprV2::ScalarPair { a0, a1 } if a0 != a1 => {
+            OverlapReplayKindV2::PaddedScalarPair
+        }
+        _ => OverlapReplayKindV2::ConservativeModelOnly,
+    }
+}
+
+fn overlapping_copy_ub_class_v2(ty: &Ty, src_span: &CopyPlaceSpanV2) -> UbClass {
+    match overlap_replay_kind_v2(ty) {
+        OverlapReplayKindV2::AlwaysBackendMemory => UbClass::OverlappingMemoryCopy,
+        OverlapReplayKindV2::PaddedScalarPair => {
+            if matches!(src_span, CopyPlaceSpanV2::MemRange { .. }) {
+                UbClass::OverlappingMemoryCopy
+            } else {
+                UbClass::ConservativeOverlappingAssignCopy
+            }
+        }
+        OverlapReplayKindV2::ConservativeModelOnly => UbClass::ConservativeOverlappingAssignCopy,
+    }
+}
+
+#[derive(Clone, Debug, PartialEq, Eq)]
+enum CopyPlaceSpanV2 {
+    MemRange { alloc_id: u64, offset: u64, size: u64 },
+    ImmPath { local_id: u32, steps: Vec<u32> },
+}
+
+fn imm_proj_prefix_sym_v2(a: &[u32], b: &[u32]) -> bool {
+    a.iter().zip(b.iter()).all(|(x, y)| x == y)
+}
+
+fn copy_spans_overlap_v2(a: &CopyPlaceSpanV2, b: &CopyPlaceSpanV2) -> bool {
+    match (a, b) {
+        (
+            CopyPlaceSpanV2::MemRange { alloc_id: a1, offset: o1, size: s1 },
+            CopyPlaceSpanV2::MemRange { alloc_id: a2, offset: o2, size: s2 },
+        ) => {
+            a1 == a2
+                && *s1 > 0
+                && *s2 > 0
+                && u128::from(*o1) < u128::from(*o2) + u128::from(*s2)
+                && u128::from(*o2) < u128::from(*o1) + u128::from(*s1)
+        }
+        (
+            CopyPlaceSpanV2::ImmPath { local_id: l1, steps: p1 },
+            CopyPlaceSpanV2::ImmPath { local_id: l2, steps: p2 },
+        ) => l1 == l2 && imm_proj_prefix_sym_v2(p1, p2),
+        _ => false,
+    }
+}
+
+fn normalize_imm_proj_path_v2(base_ty: &Ty, projs: &[ProjectionElem]) -> Option<Vec<u32>> {
+    let mut cur_ty = base_ty.clone();
+    let mut steps = Vec::with_capacity(projs.len());
+    for elem in projs {
+        let ProjectionElem::Field { field_idx, ty: f_ty } = elem else {
+            return None;
+        };
+        let idx = *field_idx as usize;
+        if let Some(ts) = tuple_field_tys(&cur_ty) {
+            let elem_ty = ts.get(idx)?;
+            if !elem_ty.structural_eq(f_ty) {
+                return None;
+            }
+            steps.push(*field_idx);
+            cur_ty = elem_ty.clone();
+        } else if matches!(
+            &cur_ty,
+            Ty::RangeTo { elem } | Ty::RangeFrom { elem } if elem.is_usize()
+        ) && *field_idx == 0
+            && f_ty.is_usize()
+        {
+            steps.push(0);
+            cur_ty = Ty::Int(IntTy { width: IntWidth::Isize, signed: false });
+        } else {
+            return None;
+        }
+    }
+    Some(steps)
+}
+
+fn project_memory_field_layout_v2(base_ty: &Ty, projs: &[ProjectionElem]) -> Option<(Ty, u64)> {
+    let mut cur_ty = base_ty.clone();
+    let mut off = 0u64;
+    for elem in projs {
+        let ProjectionElem::Field { field_idx, ty: f_ty } = elem else {
+            return None;
+        };
+        if let Some(ity) = cur_ty.as_overflow_pair() {
+            match *field_idx {
+                0 => {
+                    let expected = Ty::Int(ity);
+                    if !expected.structural_eq(f_ty) {
+                        return None;
+                    }
+                    cur_ty = expected;
+                }
+                1 => {
+                    if *f_ty != Ty::Bool {
+                        return None;
+                    }
+                    off = off.checked_add(int_layout(ity.width).size)?;
+                    cur_ty = Ty::Bool;
+                }
+                _ => return None,
+            }
+        } else if matches!(
+            &cur_ty,
+            Ty::RangeTo { elem } | Ty::RangeFrom { elem } if elem.is_usize()
+        ) && *field_idx == 0
+            && f_ty.is_usize()
+        {
+            cur_ty = Ty::Int(IntTy { width: IntWidth::Isize, signed: false });
+        } else {
+            return None;
+        }
+    }
+    Some((cur_ty, off))
+}
+
+fn dest_copy_span_v2(
+    locals: &[LocalSlot],
+    dest: &PlaceDestV2,
+    dst_ty: &Ty,
+) -> Option<CopyPlaceSpanV2> {
+    match dest {
+        PlaceDestV2::Local(lid) => match locals.get(*lid as usize)? {
+            LocalSlot::Indirect { place } => {
+                let lay = layout_of_ty(dst_ty, true)?;
+                Some(CopyPlaceSpanV2::MemRange {
+                    alloc_id: place.alloc_id,
+                    offset: place.offset,
+                    size: lay.size,
+                })
+            }
+            LocalSlot::Immediate { .. } | LocalSlot::PartialTuple { .. } => {
+                Some(CopyPlaceSpanV2::ImmPath { local_id: *lid, steps: Vec::new() })
+            }
+            LocalSlot::Dead => None,
+        },
+        PlaceDestV2::Deref { lay, pv, .. } => pv.alloc_id.map(|alloc_id| {
+            CopyPlaceSpanV2::MemRange { alloc_id, offset: pv.offset_bytes, size: lay.size }
+        }),
+    }
+}
+
+fn dest_aggregate_sub_span_v2(
+    base: &CopyPlaceSpanV2,
+    agg_ty: &Ty,
+    idx: usize,
+) -> Option<CopyPlaceSpanV2> {
+    let idx_u32 = u32::try_from(idx).ok()?;
+    match base {
+        CopyPlaceSpanV2::ImmPath { local_id, steps } => {
+            let mut next = steps.clone();
+            next.push(idx_u32);
+            Some(CopyPlaceSpanV2::ImmPath { local_id: *local_id, steps: next })
+        }
+        CopyPlaceSpanV2::MemRange { alloc_id, offset, .. } => {
+            let ity = agg_ty.as_overflow_pair()?;
+            match idx {
+                0 => Some(CopyPlaceSpanV2::MemRange {
+                    alloc_id: *alloc_id,
+                    offset: *offset,
+                    size: int_layout(ity.width).size,
+                }),
+                1 => Some(CopyPlaceSpanV2::MemRange {
+                    alloc_id: *alloc_id,
+                    offset: offset.checked_add(int_layout(ity.width).size)?,
+                    size: 1,
+                }),
+                _ => None,
+            }
+        }
+    }
+}
+
+fn src_place_copy_span_v2(
+    body_locals: &[Ty],
+    locals: &[LocalSlot],
+    mem: &MemoryState,
+    local: u32,
+    projection: &[ProjectionElem],
+    endian: TargetEndian,
+) -> Option<CopyPlaceSpanV2> {
+    let base_ty = body_locals.get(local as usize)?;
+    let slot = locals.get(local as usize)?;
+    match projection {
+        [] => match slot {
+            LocalSlot::Indirect { place } => {
+                let lay = layout_of_ty(base_ty, true)?;
+                Some(CopyPlaceSpanV2::MemRange {
+                    alloc_id: place.alloc_id,
+                    offset: place.offset,
+                    size: lay.size,
+                })
+            }
+            LocalSlot::Immediate { .. } | LocalSlot::PartialTuple { .. } => {
+                Some(CopyPlaceSpanV2::ImmPath { local_id: local, steps: Vec::new() })
+            }
+            LocalSlot::Dead => None,
+        },
+        [ProjectionElem::Deref, rest @ ..] => {
+            let pointee = match base_ty {
+                Ty::Ref { pointee, .. } | Ty::RawPtr { pointee, .. } => pointee.as_ref(),
+                _ => return None,
+            };
+            let ptr_val = match slot {
+                LocalSlot::Immediate { val } => val.clone()?,
+                LocalSlot::Indirect { place } => {
+                    load_indirect(mem, endian, base_ty, *place, true).ok()??
+                }
+                LocalSlot::Dead | LocalSlot::PartialTuple { .. } => return None,
+            };
+            let Val::Ptr(pv) = ptr_val else { return None };
+            let alloc_id = pv.alloc_id?;
+            if rest.is_empty() {
+                let lay = layout_of_ty(pointee, true)?;
+                Some(CopyPlaceSpanV2::MemRange {
+                    alloc_id,
+                    offset: pv.offset_bytes,
+                    size: lay.size,
+                })
+            } else {
+                let (leaf_ty, sub_off) = project_memory_field_layout_v2(pointee, rest)?;
+                let lay = layout_of_ty(&leaf_ty, true)?;
+                Some(CopyPlaceSpanV2::MemRange {
+                    alloc_id,
+                    offset: pv.offset_bytes.checked_add(sub_off)?,
+                    size: lay.size,
+                })
+            }
+        }
+        projs => match slot {
+            LocalSlot::Indirect { place } => {
+                let (leaf_ty, sub_off) = project_memory_field_layout_v2(base_ty, projs)?;
+                let lay = layout_of_ty(&leaf_ty, true)?;
+                Some(CopyPlaceSpanV2::MemRange {
+                    alloc_id: place.alloc_id,
+                    offset: place.offset.checked_add(sub_off)?,
+                    size: lay.size,
+                })
+            }
+            LocalSlot::Immediate { .. } | LocalSlot::PartialTuple { .. } => {
+                let steps = normalize_imm_proj_path_v2(base_ty, projs)?;
+                Some(CopyPlaceSpanV2::ImmPath { local_id: local, steps })
+            }
+            LocalSlot::Dead => None,
+        },
+    }
+}
+
+fn operand_copy_span_v2(
+    body_locals: &[Ty],
+    locals: &[LocalSlot],
+    mem: &MemoryState,
+    opnd: &Operand,
+    endian: TargetEndian,
+) -> Option<CopyPlaceSpanV2> {
+    let (local, projection, _is_move) = opnd.as_place()?;
+    src_place_copy_span_v2(body_locals, locals, mem, local, projection, endian)
+}
+
+fn operand_deref_base_span_v2(
+    body_locals: &[Ty],
+    locals: &[LocalSlot],
+    mem: &MemoryState,
+    opnd: &Operand,
+    endian: TargetEndian,
+) -> Option<Option<CopyPlaceSpanV2>> {
+    let (local, projection, _is_move) = opnd.as_place()?;
+    if projection.iter().any(|e| matches!(e, ProjectionElem::Deref)) {
+        Some(src_place_copy_span_v2(body_locals, locals, mem, local, &[], endian))
+    } else {
+        None
+    }
+}
+
+fn check_assign_copy_hazard_v2(
+    body_locals: &[Ty],
+    locals: &[LocalSlot],
+    mem: &MemoryState,
+    dest: &PlaceDestV2,
+    dst_ty: &Ty,
+    rvalue: &Rvalue,
+    endian: TargetEndian,
+) -> Result<(), FaultDetail> {
+    match rvalue {
+        Rvalue::Use { operand, .. } | Rvalue::UseRetag { operand } => {
+            let Some((src_local, src_proj, _)) = operand.as_place() else {
+                return Ok(());
+            };
+            if !is_memory_copy_repr_ty_v2(dst_ty) {
+                return Ok(());
+            }
+            match (
+                dest_copy_span_v2(locals, dest, dst_ty),
+                src_place_copy_span_v2(body_locals, locals, mem, src_local, src_proj, endian),
+            ) {
+                (Some(d_span), Some(s_span)) => {
+                    if copy_spans_overlap_v2(&d_span, &s_span) {
+                        return Err(FaultDetail::undefined_classified(
+                            overlapping_copy_ub_class_v2(dst_ty, &s_span),
+                            "overlapping memory copy in Assign Use",
+                        ));
+                    }
+                    Ok(())
+                }
+                _ => Err(FaultDetail::unsupported(
+                    "unresolved copy span in Profile v2 Assign Use hazard check",
+                )),
+            }
+        }
+        Rvalue::AggregateTuple { fields }
+        | Rvalue::Aggregate { aggregate_kind: AggregateKind::Tuple, fields } => {
+            if matches!(copy_repr_of_ty_v2(dst_ty), CopyReprV2::Zst { .. }) {
+                return Ok(());
+            }
+            let (Some(field_tys), Some(base_span)) =
+                (tuple_field_tys(dst_ty), dest_copy_span_v2(locals, dest, dst_ty))
+            else {
+                return Err(FaultDetail::unsupported(
+                    "unresolved destination span in Profile v2 AggregateTuple hazard check",
+                ));
+            };
+            let mut written_spans: Vec<CopyPlaceSpanV2> = Vec::with_capacity(fields.len());
+            for (idx, (field_ty, opnd)) in field_tys.iter().zip(fields.iter()).enumerate() {
+                let op_span = operand_copy_span_v2(body_locals, locals, mem, opnd, endian);
+                if let Some(ref os) = op_span
+                    && written_spans.iter().any(|w| copy_spans_overlap_v2(w, os))
+                {
+                    return Err(FaultDetail::unsupported(
+                        "in-place Aggregate field write aliases a subsequent operand",
+                    ));
+                }
+                let ptr_clobbered =
+                    match operand_deref_base_span_v2(body_locals, locals, mem, opnd, endian) {
+                        None => false,
+                        Some(None) => !written_spans.is_empty(),
+                        Some(Some(ref ps)) => {
+                            written_spans.iter().any(|w| copy_spans_overlap_v2(w, ps))
+                        }
+                    };
+                if ptr_clobbered {
+                    return Err(FaultDetail::unsupported(
+                        "in-place Aggregate field write aliases a subsequent deref pointer local",
+                    ));
+                }
+                match dest_aggregate_sub_span_v2(&base_span, dst_ty, idx) {
+                    Some(sub_span) => {
+                        if let Some(ref os) = op_span
+                            && copy_spans_overlap_v2(&sub_span, os)
+                            && is_memory_copy_repr_ty_v2(field_ty)
+                        {
+                            return Err(FaultDetail::undefined_classified(
+                                overlapping_copy_ub_class_v2(field_ty, os),
+                                "overlapping memory copy in Aggregate field write",
+                            ));
+                        }
+                        written_spans.push(sub_span);
+                    }
+                    None => {
+                        if let Some(ref os) = op_span
+                            && copy_spans_overlap_v2(&base_span, os)
+                        {
+                            return Err(FaultDetail::unsupported(
+                                "in-place Aggregate destination aliases operand",
+                            ));
+                        }
+                        written_spans.push(base_span.clone());
+                    }
+                }
+            }
+            Ok(())
+        }
+        Rvalue::Binary { .. }
+        | Rvalue::Unary { .. }
+        | Rvalue::Cast { .. }
+        | Rvalue::Discriminant { .. }
+        | Rvalue::AggregateArray { .. }
+        | Rvalue::Repeat { .. }
+        | Rvalue::AggregateRangeTo { .. }
+        | Rvalue::AggregateRangeFrom { .. }
+        | Rvalue::Aggregate { .. }
+        | Rvalue::Ref { .. }
+        | Rvalue::AddressOf { .. }
+        | Rvalue::Unsupported => Ok(()),
+    }
+}
+
 fn eval_ptr_offset_v2(
     mem: &MemoryState,
     elem_size: u64,
@@ -3764,7 +4459,7 @@ fn exec_core_call_op(
                 ));
             }
             ref_valid_in_mem(mem, endian, *in_mut, pointee, val)?;
-            slice_get_unchecked_check(mem, *ptr, *len, 0, *end_off)
+            slice_get_unchecked_check(mem, *ptr, *len, 0, *end_off, 1)
         }
         (
             CoreCallOp::SliceGetUncheckedRangeFrom,
@@ -3795,7 +4490,7 @@ fn exec_core_call_op(
                 ));
             }
             ref_valid_in_mem(mem, endian, *in_mut, pointee, val)?;
-            slice_get_unchecked_check(mem, *ptr, *len, *start_off, *len)
+            slice_get_unchecked_check(mem, *ptr, *len, *start_off, *len, 1)
         }
         (
             CoreCallOp::PtrAdd { mutability, pointee },
@@ -4060,4 +4755,200 @@ fn eval_char_switch(
 /// [`FaultKind::Undefined`].
 pub const fn is_undefined_fault(outcome: &Outcome) -> bool {
     matches!(outcome, Outcome::Fault(FaultDetail { kind: FaultKind::Undefined, .. }))
+}
+
+#[cfg(test)]
+mod overlapping_copy_class_tests {
+    use super::*;
+    use crate::{memory::Allocation, value::WitnessClass};
+
+    #[test]
+    fn classifies_replayable_vs_conservative_overlapping_assign_copies() {
+        let u8_ty = Ty::Int(IntTy { width: IntWidth::I8, signed: false });
+        let u32_ty = Ty::Int(IntTy { width: IntWidth::I32, signed: false });
+        let u64_ty = Ty::Int(IntTy { width: IntWidth::I64, signed: false });
+        let imm = CopyPlaceSpanV2::ImmPath { local_id: 1, steps: Vec::new() };
+        let mem = CopyPlaceSpanV2::MemRange { alloc_id: 1, offset: 0, size: 8 };
+
+        let tup3 = Ty::Tuple { fields: vec![u32_ty.clone(), u32_ty.clone(), u32_ty.clone()] };
+        assert_eq!(overlapping_copy_ub_class_v2(&tup3, &imm), UbClass::OverlappingMemoryCopy);
+        assert_eq!(overlapping_copy_ub_class_v2(&tup3, &mem), UbClass::OverlappingMemoryCopy);
+
+        let padded_pair = Ty::OverflowPair(IntTy { width: IntWidth::I32, signed: false });
+        let imm_cls = overlapping_copy_ub_class_v2(&padded_pair, &imm);
+        assert_eq!(imm_cls, UbClass::ConservativeOverlappingAssignCopy);
+        assert_eq!(imm_cls.witness_class(), WitnessClass::ModelOnlyUnreplayed);
+        let mem_cls = overlapping_copy_ub_class_v2(&padded_pair, &mem);
+        assert_eq!(mem_cls, UbClass::OverlappingMemoryCopy);
+        assert_eq!(mem_cls.witness_class(), WitnessClass::ReplayableMiriUb);
+
+        let u16_ty = Ty::Int(IntTy { width: IntWidth::I16, signed: false });
+        let u128_ty = Ty::Int(IntTy { width: IntWidth::I128, signed: false });
+        let byte_slice_ref = Ty::Ref {
+            mutability: Mutability::Shared,
+            pointee: Box::new(Ty::Slice { elem: Box::new(u8_ty.clone()) }),
+        };
+
+        // Alignment-inflated tuples have `BackendRepr::Memory` in rustc
+        // whenever a ZST field raises aggregate alignment above the scalar
+        // alignment, so both immediate and in-memory overlaps are replayable.
+        let align_inflated_cases = [
+            Ty::Tuple {
+                fields: vec![
+                    Ty::Array { elem: Box::new(u64_ty.clone()), len: 0 },
+                    u32_ty.clone(),
+                    u32_ty.clone(),
+                ],
+            },
+            Ty::Tuple {
+                fields: vec![Ty::Array { elem: Box::new(u32_ty.clone()), len: 0 }, u8_ty.clone()],
+            },
+            Ty::Tuple {
+                fields: vec![
+                    Ty::Array { elem: Box::new(u16_ty), len: 0 },
+                    u8_ty.clone(),
+                    u8_ty.clone(),
+                ],
+            },
+            Ty::Tuple {
+                fields: vec![Ty::Array { elem: Box::new(u128_ty), len: 0 }, byte_slice_ref],
+            },
+            Ty::Tuple {
+                fields: vec![
+                    Ty::Array { elem: Box::new(u64_ty), len: 0 },
+                    u32_ty.clone(),
+                    Ty::Bool,
+                ],
+            },
+            Ty::Tuple {
+                fields: vec![
+                    Ty::Tuple {
+                        fields: vec![Ty::Array { elem: Box::new(u32_ty.clone()), len: 0 }, u8_ty],
+                    },
+                    u32_ty.clone(),
+                ],
+            },
+        ];
+        for ty in &align_inflated_cases {
+            assert!(is_memory_copy_repr_ty_v2(ty), "expected MemoryCopy for {ty:?}");
+            assert_eq!(
+                overlapping_copy_ub_class_v2(ty, &imm),
+                UbClass::OverlappingMemoryCopy,
+                "expected ReplayableMiriUb (imm) for {ty:?}"
+            );
+            assert_eq!(
+                overlapping_copy_ub_class_v2(ty, &mem),
+                UbClass::OverlappingMemoryCopy,
+                "expected ReplayableMiriUb (mem) for {ty:?}"
+            );
+        }
+
+        // Negative controls: ZST alignment <= scalar alignment does not force
+        // `BackendRepr::Memory`.
+        let non_inflated_pair = Ty::Tuple {
+            fields: vec![
+                Ty::Array { elem: Box::new(u32_ty.clone()), len: 0 },
+                u32_ty.clone(),
+                u32_ty.clone(),
+            ],
+        };
+        assert!(!is_memory_copy_repr_ty_v2(&non_inflated_pair));
+
+        let non_inflated_padded = Ty::Tuple {
+            fields: vec![Ty::Array { elem: Box::new(u32_ty.clone()), len: 0 }, u32_ty, Ty::Bool],
+        };
+        assert!(is_memory_copy_repr_ty_v2(&non_inflated_padded));
+        assert_eq!(
+            overlapping_copy_ub_class_v2(&non_inflated_padded, &imm),
+            UbClass::ConservativeOverlappingAssignCopy
+        );
+        assert_eq!(
+            overlapping_copy_ub_class_v2(&non_inflated_padded, &mem),
+            UbClass::OverlappingMemoryCopy
+        );
+    }
+
+    #[test]
+    fn aggregate_deref_ptr_clobber_fails_closed_while_pre_write_order_succeeds() {
+        let u32_ty = Ty::Int(IntTy { width: IntWidth::I32, signed: false });
+        let ptr_u32 =
+            Ty::RawPtr { mutability: Mutability::Shared, pointee: Box::new(u32_ty.clone()) };
+        let ovf_u32 = Ty::OverflowPair(IntTy { width: IntWidth::I32, signed: false });
+        let ptr_bool = Ty::RawPtr { mutability: Mutability::Shared, pointee: Box::new(Ty::Bool) };
+        let mem = MemoryState {
+            next_alloc_id: 3,
+            allocations: vec![
+                Allocation {
+                    alloc_id: 1,
+                    align_log2: 2,
+                    mutability: Mutability::Mut,
+                    bytes: vec![AllocByte::Init { byte: 1, prov: None }; 4],
+                    live: true,
+                },
+                Allocation {
+                    alloc_id: 2,
+                    align_log2: 3,
+                    mutability: Mutability::Mut,
+                    bytes: vec![AllocByte::Init { byte: 0, prov: Some(1) }; 8],
+                    live: true,
+                },
+            ],
+        };
+        let body_locals = vec![Ty::Unit, u32_ty, ptr_bool, ptr_u32];
+        let locals = vec![
+            LocalSlot::Immediate { val: None },
+            LocalSlot::Immediate { val: Some(Val::u32(7)) },
+            LocalSlot::Indirect { place: MemPlace { alloc_id: 2, offset: 0 } },
+            LocalSlot::Indirect { place: MemPlace { alloc_id: 2, offset: 0 } },
+        ];
+        let dest = PlaceDestV2::Deref {
+            pointee: ovf_u32.clone(),
+            lay: LayoutData { size: 8, align_log2: 2 },
+            pv: PtrVal { alloc_id: Some(2), offset_bytes: 0, width: IntWidth::Isize },
+        };
+        let clobber_rv = Rvalue::AggregateTuple {
+            fields: vec![
+                Operand::Copy { local: 1, projection: Vec::new() },
+                Operand::Copy { local: 2, projection: vec![ProjectionElem::Deref] },
+            ],
+        };
+        let err = check_assign_copy_hazard_v2(
+            &body_locals,
+            &locals,
+            &mem,
+            &dest,
+            &ovf_u32,
+            &clobber_rv,
+            TargetEndian::Little,
+        )
+        .unwrap_err();
+        assert_eq!(err.kind, FaultKind::Unsupported);
+
+        // Positive control: when `_2` lives in a disjoint allocation (or is
+        // read before its storage is overwritten), the hazard check passes.
+        let safe_locals = vec![
+            LocalSlot::Immediate { val: None },
+            LocalSlot::Immediate { val: Some(Val::u32(7)) },
+            LocalSlot::Immediate {
+                val: Some(Val::Ptr(PtrVal {
+                    alloc_id: Some(1),
+                    offset_bytes: 0,
+                    width: IntWidth::Isize,
+                })),
+            },
+            LocalSlot::Indirect { place: MemPlace { alloc_id: 2, offset: 0 } },
+        ];
+        assert!(
+            check_assign_copy_hazard_v2(
+                &body_locals,
+                &safe_locals,
+                &mem,
+                &dest,
+                &ovf_u32,
+                &clobber_rv,
+                TargetEndian::Little,
+            )
+            .is_ok()
+        );
+    }
 }

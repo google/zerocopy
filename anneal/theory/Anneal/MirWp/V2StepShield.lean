@@ -68,15 +68,34 @@ abbrev stateV2 (frame : FrameState) (callerMem : CallerMemory)
   { frames := [frame], callerMem := callerMem, mem := mem }
 
 /-- `BodyCtx.initStateV2_ok_of`, with the entry state written with `stateV2`
-and `frameV2`. -/
-theorem BodyCtx.initStateV2_ok_frameV2 (ctx : BodyCtx) (h_body : ctx.HasBody)
-    {q : Query}
+and `frameV2` for any body (including raw-pointer parameters). -/
+theorem BodyCtx.initStateV2_ok_frameV2_forArgs (ctx : BodyCtx)
+    (h_body : ctx.HasBody) {q : Query}
     (hAdm : BodyStaticAdmittedV2 ctx.program ctx.body = true)
     (hValid : ValidEntryArgsV2 ctx.body q) :
     initStateV2 ctx.entryProg q = .ok (stateV2
       (frameV2 ctx.defId 0 0 (initLocalsLoop ctx.body q.args 0 ctx.body.locals))
-      q.callerMem (entryMemoryWithCaller q.callerMem)) :=
+      q.callerMem
+      (entryMemoryForArgsV2 q.callerMem
+        ((ctx.body.locals.drop 1).take ctx.body.argumentCount) q.args)) :=
   ctx.initStateV2_ok_of h_body hAdm hValid
+
+/-- `BodyCtx.initStateV2_ok_of`, with the entry state written with `stateV2`
+and `frameV2` for bodies whose parameters contain no raw pointers. -/
+theorem BodyCtx.initStateV2_ok_frameV2 (ctx : BodyCtx) (h_body : ctx.HasBody)
+    {q : Query}
+    (hAdm : BodyStaticAdmittedV2 ctx.program ctx.body = true)
+    (hValid : ValidEntryArgsV2 ctx.body q)
+    (hNoRaw : tyListHasRawPtrV2
+      ((ctx.body.locals.drop 1).take ctx.body.argumentCount) = false :=
+        by rfl) :
+    initStateV2 ctx.entryProg q = .ok (stateV2
+      (frameV2 ctx.defId 0 0 (initLocalsLoop ctx.body q.args 0 ctx.body.locals))
+      q.callerMem (entryMemoryWithCaller q.callerMem)) := by
+  have h := ctx.initStateV2_ok_of h_body hAdm hValid
+  unfold entryMemoryForArgsV2 at h
+  rw [hNoRaw] at h
+  exact h
 
 /-! ## One step -/
 
@@ -121,13 +140,15 @@ theorem evalStepV2_term {p : Program} {body : Body} {bb : BasicBlock}
   rfl
 
 /-- An `assign` to an unprojected local, split into the evaluation of its
-rvalue and the store of the result. -/
+rvalue, the store of the result, and the copy-overlap hazard check. -/
 theorem evalStatementV2_assign_local {body : Body} {defId : DefId} {b i : Nat}
     {l l1 l2 : List LocalSlot} {cm : CallerMemory} {m m1 m2 : MemoryState}
     {lid : LocalId} {rv : Rvalue} {ty : MirTy} {v : Val}
     (hTy : placeStaticTyV2 body.locals ⟨lid, []⟩ = some ty)
     (hRv : evalRvalueV2 body.locals l m ty rv = .ok (v, l1, m1))
-    (hW : writePlaceDestV2 l1 m1 (.local lid) ty v = .ok (l2, m2)) :
+    (hW : writePlaceDestV2 l1 m1 (.local lid) ty v = .ok (l2, m2))
+    (hHaz : checkAssignCopyHazardV2 body.locals l m (.local lid) ty rv =
+      .ok () := by rfl) :
     evalStatementV2 body (frameV2 defId b i l) m cm (.assign ⟨lid, []⟩ rv) =
       .step (stateV2 (frameV2 defId b (i + 1) l2) cm m2) := by
   unfold evalStatementV2
@@ -140,6 +161,8 @@ theorem evalStatementV2_assign_local {body : Body} {defId : DefId} {b i : Nat}
   rw [hRv]
   dsimp only
   rw [hW]
+  dsimp only
+  rw [hHaz]
 
 /-- A reborrow `&(*_lid)` (or `&mut (*_lid)`) of a valid reference held in an
 immediate local evaluates to that reference. -/
@@ -167,11 +190,13 @@ theorem evalStepV2_assign_local {p : Program} {body : Body} {bb : BasicBlock}
       some (.assign ⟨lid, []⟩ rv))
     (hTy : placeStaticTyV2 body.locals ⟨lid, []⟩ = some ty)
     (hRv : evalRvalueV2 body.locals l m ty rv = .ok (v, l1, m1))
-    (hW : writePlaceDestV2 l1 m1 (.local lid) ty v = .ok (l2, m2)) :
+    (hW : writePlaceDestV2 l1 m1 (.local lid) ty v = .ok (l2, m2))
+    (hHaz : checkAssignCopyHazardV2 body.locals l m (.local lid) ty rv =
+      .ok () := by rfl) :
     evalStepV2 p (stateV2 (frameV2 defId b i l) cm m) =
       .step (stateV2 (frameV2 defId b (i + 1) l2) cm m2) :=
   (evalStepV2_stmt hBody hBB hStmt).trans
-    (evalStatementV2_assign_local hTy hRv hW)
+    (evalStatementV2_assign_local hTy hRv hW hHaz)
 
 /-- `StorageLive` of a local whose old slot deallocates successfully. -/
 theorem evalStatementV2_storageLive {body : Body} {defId : DefId} {b i : Nat}

@@ -140,13 +140,14 @@ theorem listAny_congr {α : Type} {f g : α → Bool} (xs : List α)
 
 private theorem decCasesBool_eq {p : Prop} (b : Bool) (d : Decidable p)
     (hIff : b = true ↔ p) :
-    b = @Decidable.casesOn p (fun _ => Bool) d (fun _ => false) (fun _ => true) := by
+    b = @decide p d := by
   cases d with
   | isFalse hNot =>
     cases hb : b with
-    | false => rfl
+    | false => exact (@decide_eq_false p (.isFalse hNot) hNot).symm
     | true => exact False.elim (hNot (hIff.mp hb))
   | isTrue hYes =>
+    rw [@decide_eq_true p (.isTrue hYes) hYes]
     exact hIff.mpr hYes
 
 /-- Total computable equality on `Int`. -/
@@ -254,19 +255,25 @@ theorem intBleComp_iff (a b : Int) : intBleComp a b = true ↔ a ≤ b := by
         exact Nat.ble_eq.mpr
           (Nat.le_of_succ_le_succ ((int_subNatNat_nonNeg_iff (m + 1) (n + 1)).mp hLe))
 
-/-- Agreement between `intBleComp` and `Int.decLe`. -/
+/-- Agreement between `intBleComp` and `decide (a ≤ b)`. -/
 theorem intBleComp_eq_dec (a b : Int) :
-    intBleComp a b =
-      @Decidable.casesOn (a ≤ b) (fun _ => Bool) (Int.decLe a b)
-        (fun _ => false) (fun _ => true) :=
-  decCasesBool_eq (intBleComp a b) (Int.decLe a b) (intBleComp_iff a b)
+    intBleComp a b = decide (a ≤ b) :=
+  decCasesBool_eq (intBleComp a b) inferInstance (intBleComp_iff a b)
 
-/-- Agreement between `intBltComp` and `Int.decLt`. -/
+/-- Agreement between `intBltComp` and `decide (a < b)`. -/
 theorem intBltComp_eq_dec (a b : Int) :
-    intBltComp a b =
-      @Decidable.casesOn (a < b) (fun _ => Bool) (Int.decLt a b)
-        (fun _ => false) (fun _ => true) :=
-  decCasesBool_eq (intBltComp a b) (Int.decLt a b) (intBleComp_iff (a + 1) b)
+    intBltComp a b = decide (a < b) :=
+  decCasesBool_eq (intBltComp a b) inferInstance (intBleComp_iff (a + 1) b)
+
+/-- Agreement between `intBleComp b a` and `decide (a ≥ b)`. -/
+theorem intBgeComp_eq_dec (a b : Int) :
+    intBleComp b a = decide (a ≥ b) :=
+  decCasesBool_eq (intBleComp b a) inferInstance (intBleComp_iff b a)
+
+/-- Agreement between `intBltComp b a` and `decide (a > b)`. -/
+theorem intBgtComp_eq_dec (a b : Int) :
+    intBltComp b a = decide (a > b) :=
+  decCasesBool_eq (intBltComp b a) inferInstance (intBleComp_iff (b + 1) a)
 
 /-- Total computable equality on `BitVec 128`. -/
 @[expose] def bv128BeqComp (x y : BitVec 128) : Bool :=
@@ -573,20 +580,16 @@ theorem intNotComp_eq (x : Int) : intNotComp x = intNot x := by
 /-- Agreement between `bvToIntComp` and `bvToInt`. -/
 theorem bvToIntComp_eq {n : Nat} (x : BitVec n) : bvToIntComp x = bvToInt x := by
   unfold bvToIntComp bvToInt
-  have hBlt : Nat.blt (2 * x.toNat) (Nat.pow 2 n) =
-      @Decidable.casesOn (2 * x.toNat < Nat.pow 2 n) (fun _ => Bool)
-        (Nat.decLt (2 * x.toNat) (Nat.pow 2 n)) (fun _ => false) (fun _ => true) :=
-    decCasesBool_eq (Nat.blt (2 * x.toNat) (Nat.pow 2 n))
-      (Nat.decLt (2 * x.toNat) (Nat.pow 2 n)) (Iff.of_eq Nat.blt_eq)
-  cases hd : Nat.decLt (2 * x.toNat) (Nat.pow 2 n) with
-  | isFalse _ =>
-    rw [hd] at hBlt
+  cases Nat.decLt (2 * x.toNat) (Nat.pow 2 n) with
+  | isTrue hLt =>
+    have hBlt : Nat.blt (2 * x.toNat) (Nat.pow 2 n) = true :=
+      (Iff.of_eq Nat.blt_eq).mpr hLt
     rw [hBlt]
     rfl
-  | isTrue _ =>
-    rw [hd] at hBlt
-    rw [hBlt]
-    rfl
+  | isFalse hNotLt =>
+    cases hBlt : Nat.blt (2 * x.toNat) (Nat.pow 2 n) with
+    | false => rfl
+    | true => exact False.elim (hNotLt ((Iff.of_eq Nat.blt_eq).mp hBlt))
 
 /-- Computable mirror of `Trusted.MirSemantics.bvOfInt`. -/
 @[expose] def bvOfIntComp (n : Nat) (i : Int) : BitVec n :=
@@ -710,12 +713,8 @@ theorem truncateScalarComp_eq (w : IntWidth) (s : Bool) (value : Int) :
           !(intBeqComp (signExtendBitsComp w (truncateBitsComp w (bvOfIntComp 128 wrappedC)))
             wrappedC))) :
         Except FaultKind (ScalarVal × Bool)) =
-      (if (@Decidable.casesOn (wrappedT < Neg.neg (HPow.hPow (2 : Int) 127)) (fun _ => Bool)
-            (Int.decLt wrappedT (Neg.neg (HPow.hPow (2 : Int) 127))) (fun _ => false)
-            (fun _ => true) ||
-          @Decidable.casesOn (HPow.hPow (2 : Int) 127 ≤ wrappedT) (fun _ => Bool)
-            (Int.decLe (HPow.hPow (2 : Int) 127) wrappedT) (fun _ => false)
-            (fun _ => true)) = true then
+      (if (decide (wrappedT < Neg.neg (HPow.hPow (2 : Int) 127)) ||
+            decide (HPow.hPow (2 : Int) 127 ≤ wrappedT)) = true then
         Except.error FaultKind.unsupported
       else
         Except.ok (ScalarVal.mk w true (truncateBits w (bvOfInt 128 wrappedT)),
@@ -806,15 +805,11 @@ private theorem evalArithFinish_eq
           Except.ok (Val.scalar val)) : Except FaultKind Val) =
     (let hostOverflow : Bool :=
        if s then
-         @Decidable.casesOn (result < Neg.neg (HPow.hPow (2 : Int) 127)) (fun _ => Bool)
-           (Int.decLt result (Neg.neg (HPow.hPow (2 : Int) 127))) (fun _ => false) (fun _ => true) ||
-         @Decidable.casesOn (HPow.hPow (2 : Int) 127 ≤ result) (fun _ => Bool)
-           (Int.decLe (HPow.hPow (2 : Int) 127) result) (fun _ => false) (fun _ => true)
+         decide (result < Neg.neg (HPow.hPow (2 : Int) 127)) ||
+         decide (HPow.hPow (2 : Int) 127 ≤ result)
        else
-         @Decidable.casesOn (result < 0) (fun _ => Bool)
-           (Int.decLt result 0) (fun _ => false) (fun _ => true) ||
-         @Decidable.casesOn (HPow.hPow (2 : Int) 128 ≤ result) (fun _ => Bool)
-           (Int.decLe (HPow.hPow (2 : Int) 128) result) (fun _ => false) (fun _ => true)
+         decide (result < 0) ||
+         decide (HPow.hPow (2 : Int) 128 ≤ result)
      match truncateScalar w s result with
      | .error k => Except.error k
      | .ok (val, lossy) =>
@@ -827,15 +822,11 @@ private theorem evalArithFinish_eq
   rw [truncateScalarComp_eq, binOpIsUncheckedComp_eq, binOpIsOverflowingComp_eq]
   have hHost : hostOverflowComp s result =
       (if s then
-         @Decidable.casesOn (result < Neg.neg (HPow.hPow (2 : Int) 127)) (fun _ => Bool)
-           (Int.decLt result (Neg.neg (HPow.hPow (2 : Int) 127))) (fun _ => false) (fun _ => true) ||
-         @Decidable.casesOn (HPow.hPow (2 : Int) 127 ≤ result) (fun _ => Bool)
-           (Int.decLe (HPow.hPow (2 : Int) 127) result) (fun _ => false) (fun _ => true)
+         decide (result < Neg.neg (HPow.hPow (2 : Int) 127)) ||
+         decide (HPow.hPow (2 : Int) 127 ≤ result)
        else
-         @Decidable.casesOn (result < 0) (fun _ => Bool)
-           (Int.decLt result 0) (fun _ => false) (fun _ => true) ||
-         @Decidable.casesOn (HPow.hPow (2 : Int) 128 ≤ result) (fun _ => Bool)
-           (Int.decLe (HPow.hPow (2 : Int) 128) result) (fun _ => false) (fun _ => true)) := by
+         decide (result < 0) ||
+         decide (HPow.hPow (2 : Int) 128 ≤ result)) := by
     cases s with
     | false =>
       change (intBltComp result 0 || intBleComp (HPow.hPow (2 : Int) 128) result) = _
@@ -1003,8 +994,10 @@ theorem evalBinOpComp_eq (op : BinOp) (lhs rhs : Val) :
           | rfl
           | rw [intBneComp_eq]
           | rw [intBeqComp_eq_beq]
-          | (rw [intBltComp_eq_dec]; exact rfl)
-          | (rw [intBleComp_eq_dec]; exact rfl)
+          | rw [intBltComp_eq_dec]
+          | rw [intBleComp_eq_dec]
+          | rw [intBgtComp_eq_dec]
+          | rw [intBgeComp_eq_dec]
           | rw [cmpOrderingOfIntComp_eq]
           | exact congrArg
               (fun x => if !(l.width.beq r.width && (l.signed == r.signed)) then
@@ -1027,8 +1020,10 @@ theorem evalBinOpComp_eq (op : BinOp) (lhs rhs : Val) :
           | rfl
           | rw [intBneComp_eq]
           | rw [intBeqComp_eq_beq]
-          | (rw [intBltComp_eq_dec]; exact rfl)
-          | (rw [intBleComp_eq_dec]; exact rfl)
+          | rw [intBltComp_eq_dec]
+          | rw [intBleComp_eq_dec]
+          | rw [intBgtComp_eq_dec]
+          | rw [intBgeComp_eq_dec]
           | rw [cmpOrderingOfIntComp_eq]
     | scalar _ | ptr _ | slicePtr _ _ | rangeTo _ | rangeFrom _
     | bool _ | ordering _ | unit | enumVal _ _ | tuple _ | array _ | bytes _ => rfl

@@ -8647,3 +8647,17 @@ fn fault_ub_enforces_entry_input_parity_and_pre_entry_authentication() {
     unflagged_none.post_only_mem_digest = false;
     assert!(compare_ub_fault_results(&miri_33, &unflagged_none).is_err());
 }
+
+#[test]
+fn overlapping_memory_copy_ub_fault_class_matches_miri_copy_nonoverlapping() {
+    assert_eq!(
+        classify_ub_fault_detail(
+            "Undefined Behavior: `copy_nonoverlapping` called on overlapping ranges"
+        ),
+        UbFaultClass::PointerOrMemoryAccess
+    );
+    assert_eq!(
+        classify_ub_fault_detail("overlapping memory copy in Assign Use"),
+        UbFaultClass::PointerOrMemoryAccess
+    );
+}

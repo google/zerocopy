@@ -296,4 +296,47 @@ theorem positive_zst_alignment_only_canaries :
       .ok (singleAllocMem liveMut4Alloc) :=
   ⟨rfl, rfl, rfl, rfl⟩
 
+/-- Guard `mem_v2_entry_byte_prov_fresh`: `entryMemoryWithCaller` advances
+`nextAllocId` past provenance `AllocId`s stored inside caller allocation bytes
+(`some 5` inside `allocId = 2`), so callee stack allocation gets `allocId = 6`
+and never aliases `some 5`. -/
+theorem refute_mem_v2_entry_byte_prov_fresh :
+    let cm : CallerMemory := {
+      allocations := [{
+        allocId := 2
+        alignLog2 := 0
+        mutability := .mut
+        bytes := [.init 0 (some 5)]
+        live := true
+      }]
+    }
+    (allocateStack (entryMemoryWithCaller cm) ⟨1, 0⟩).2.allocId = 6 :=
+  rfl
+
+/-- Guard `mem_v2_entry_raw_ptr_arg_fresh`: `entryMemoryForArgsV2` advances
+`nextAllocId` past provenance `AllocId`s carried by raw-pointer arguments (even
+dangling `some 5` absent from `cm.allocations`), while reducing to
+`entryMemoryWithCaller` when no parameter has a raw-pointer type. -/
+theorem refute_mem_v2_entry_raw_ptr_arg_fresh :
+    let emptyCm : CallerMemory := { allocations := [] }
+    (allocateStack
+      (entryMemoryForArgsV2 emptyCm
+        [.rawPtr .shared (.int .i8 false)]
+        [.ptr ⟨some 5, 0, .isize⟩]) ⟨1, 0⟩).2.allocId = 6 ∧
+    (entryMemoryForArgsV2 emptyCm [.int .i32 false]
+      [.scalar ⟨.i32, false, 0⟩]).nextAllocId = 2 :=
+  ⟨rfl, rfl⟩
+
+/-- Guard `mem_v2_slice_get_unchecked_elem_size`: `sliceGetUncheckedCheck`
+scales `startOff` by `elemSize` in `ptrAddInMem` (`2 * 4 = 8 > 4` on a 4-byte
+allocation faults `.error .undefined`, whereas `elemSize = 4` with
+`startOff = 1` on a 4-byte allocation succeeds at byte offset `4`). -/
+theorem refute_mem_v2_slice_get_unchecked_elem_size :
+    sliceGetUncheckedCheck (singleAllocMem liveMut4Alloc)
+      ⟨some 1, 0, .isize⟩ 2 2 2 4 = .error .undefined ∧
+    sliceGetUncheckedCheck (singleAllocMem liveMut4Alloc)
+      ⟨some 1, 0, .isize⟩ 1 1 1 4 =
+      .ok (.slicePtr ⟨some 1, 4, .isize⟩ 0) :=
+  ⟨rfl, rfl⟩
+
 end GuardMutation

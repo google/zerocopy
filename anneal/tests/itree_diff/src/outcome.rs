@@ -986,6 +986,8 @@ pub fn classify_ub_fault_detail(detail: &str) -> UbFaultClass {
         || lower.contains("borrow stack")
         || lower.contains("tree borrows")
         || lower.contains("is forbidden")
+        || lower.contains("copy_nonoverlapping")
+        || lower.contains("overlapping memory copy")
     {
         UbFaultClass::PointerOrMemoryAccess
     } else if lower.contains("constructing invalid value")

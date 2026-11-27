@@ -687,7 +687,7 @@ noncomputable def initStateV2 (p : Program) (q : Query) :
         if !checkArgsMatchV2 q.args paramTys then
           .error .unsupported
         else
-          let entryMem := entryMemoryWithCaller q.callerMem
+          let entryMem := entryMemoryForArgsV2 q.callerMem paramTys q.args
           if !refsValidInMemList entryMem paramTys q.args ||
               !spansPairwiseDisjoint (refAccessSpansList paramTys q.args) then
             .error .undefined

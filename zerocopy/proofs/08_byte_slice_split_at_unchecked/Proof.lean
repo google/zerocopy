@@ -337,7 +337,8 @@ theorem split_at_shared_correct (q : Query)
         rw [writePlaceDestV2_immediate_ok
           (by change checkValV2 (.tuple [.slicePtr ptr lenL, .slicePtr pR lenR]) _ = true
               dsimp only [checkValV2, checkValV2List]; rw [hPRW]; rfl)
-          (by rfl) (by rfl)])
+          (by rfl) (by rfl)]
+        rfl)
       apply execOutcomeStateV2_step (by rfl)
       apply execOutcomeStateV2_step (by rfl)
       apply execOutcomeStateV2_step (by rfl)

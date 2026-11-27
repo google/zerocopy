@@ -414,20 +414,6 @@ mutual
     | t :: ts => tyHasRefV2 t || tyListHasRefV2 ts
 end
 
-mutual
-  /-- Return `true` when `ty` is a raw pointer or a tuple/array containing
-  one. -/
-  noncomputable def tyHasRawPtrV2 : MirTy → Bool
-    | .rawPtr _ _ => true
-    | .array elem _ => tyHasRawPtrV2 elem
-    | .tuple fs => tyListHasRawPtrV2 fs
-    | _ => false
-
-  noncomputable def tyListHasRawPtrV2 : List MirTy → Bool
-    | [] => false
-    | t :: ts => tyHasRawPtrV2 t || tyListHasRawPtrV2 ts
-end
-
 /-- Return `true` when `body` has both reference-typed and raw-pointer-typed
 locals.
 

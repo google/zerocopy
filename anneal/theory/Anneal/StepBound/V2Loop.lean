@@ -366,7 +366,9 @@ theorem execWithinStepsV2_of_bodyCtx (ctx : BodyCtx) (q : Query)
     (hRun : ReachesDoneWithinV2 ctx.entryProg post bound
       ⟨[⟨ctx.defId, 0, 0, initLocalsLoop ctx.body q.args 0 ctx.body.locals,
         none, none, none⟩],
-        q.callerMem, entryMemoryWithCaller q.callerMem⟩) :
+        q.callerMem,
+        entryMemoryForArgsV2 q.callerMem
+          ((ctx.body.locals.drop 1).take ctx.body.argumentCount) q.args⟩) :
     ExecWithinStepsV2 ctx.entryProg q bound post ∧
     WellFormedV2 ctx.entryProg q ∧
     ¬ DivergesV2 ctx.entryProg q ∧
