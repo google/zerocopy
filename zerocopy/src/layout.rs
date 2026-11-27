@@ -1865,6 +1865,12 @@ impl DstLayout {
 #[cfg_attr(kani, kani::ensures(|&result| {
     metadata.checked_mul(multiple).and_then(|scaled| base.checked_add(scaled)) == Some(result)
 }))]
+#[cfg_attr(anneal, anneal::spec(
+    claim = "zc05_layout_add_scaled_metadata",
+    total,
+    requires(math(base) + math(metadata) * math(multiple) <= 18446744073709551615),
+    ensures(|ret| math(ret) == math(base) + math(metadata) * math(multiple)),
+))]
 unsafe fn add_scaled_metadata(base: usize, metadata: usize, multiple: usize) -> usize {
     // The call-site safety argument establishes that both operations are
     // representable for valid source metadata. This harness verifies the
