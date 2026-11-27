@@ -176,6 +176,8 @@ mod role_and_origin_gates;
 mod spec_and_phase_gates;
 #[path = "target_audit/spec_effects_and_module_index.rs"]
 mod spec_effects_and_module_index;
+#[path = "target_audit/spec_g4_vacuity.rs"]
+mod spec_g4_vacuity;
 #[path = "target_audit/spec_preflight_parse_tree.rs"]
 mod spec_preflight_parse_tree;
 #[path = "target_audit/spec_vacuity.rs"]
