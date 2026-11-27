@@ -21,6 +21,7 @@ CHECKS_TOML = REPO_ROOT / "ci" / "checks.toml"
 LEAN_SCAN_DIRS = (
     REPO_ROOT / "anneal" / "theory",
     REPO_ROOT / "anneal" / "correspondence",
+    REPO_ROOT / "anneal" / "tools" / "anneal-spec" / "tests",
     REPO_ROOT / "zerocopy" / "proofs",
 )
 RUST_INIT_TEMPLATE = (

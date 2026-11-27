@@ -15,17 +15,19 @@ those terms. -->
 > [`#4095`](https://github.com/google/zerocopy/issues/4095)); the contract
 > core in `Trusted.MirSemantics.Contract` (`EffectMask`, `FnContract`,
 > `ContractSignature`, `BodyContractSatisfied`, `ContractPreInhabited`,
-> `ContractEntry`, `ContractSpecs`, `scalarAsInt`); and `autoImplicit false` /
+> `ContractEntry`, `ContractSpecs`, `scalarAsInt`); the standalone Rust-syntax
+> lowering (`anneal/tools/anneal-spec`); and `autoImplicit false` /
 > `relaxedAutoImplicit false` for specification modules, enforced by both
 > `"spec-preflight"` and Lean compilation.
 >
 > **Target design, not yet implemented:** everything else below, including
 > `EffectMask.le`, the `measure`, `InvariantEnv`, `SpecEval`, and abort-related
 > parts of the §1–§2 sketches (which therefore differ from the shipped
-> definitions), assumed-contract realizability, the Rust surface syntax, and
-> Golden Spec Closure rendering with `CODEOWNERS`/`OWNERS` governance. These are
-> tracked under [`#4102`](https://github.com/google/zerocopy/issues/4102) and
-> sequenced after Stage 1 audited TCB accounting
+> definitions), assumed-contract realizability, inline `SpecEval`-based
+> contract capture, and Golden Spec Closure rendering with
+> `CODEOWNERS`/`OWNERS` governance. These are tracked under
+> [`#4102`](https://github.com/google/zerocopy/issues/4102) and sequenced
+> after Stage 1 audited TCB accounting
 > ([`#4012`](https://github.com/google/zerocopy/issues/4012)).
 
 Anneal's design goal is to let Rust programmers write ergonomic inline

@@ -60,12 +60,14 @@ code in `ci/` and the
 [`ci-core` check graph](../../ci/checks.toml).
 The vendored reference model and its replay support the correspondence audit.
 
-The current workspace divides verification, test, and audit code into four zones.
+The current workspace divides verification, test, tool, and audit code into
+five zones.
 
 | Zone | Directory | Role | Trust status |
 | :--- | :--- | :--- | :--- |
 | **Trusted foundation** | [`trusted/`](../trusted) | Extracts MIR and emits pure proof scripts (`trusted/rustc-capture/`), defines captured MIR syntax and verification operational semantics (`trusted/lean/`), states MIR correspondence claims and reference-adapter specifications (`trusted/correspondence/`), orchestrates CLI invocation (`trusted/cargo-anneal/`), and audits the Anneal repository in CI (`trusted/audit/`). | **In the TCB.** Audited by humans (alongside external files pinned by hash manifests inside `trusted/`). |
-| **Integration test suites** | [`tests/`](../tests) | Hosts shared test scaffolding (`tests/testkit/`), workspace integration test suites and fixtures for `anneal-audit`, `cargo-anneal`, `anneal-rustc-capture`, and `anneal-differential-tests` (`tests/audit/`, `tests/cargo-anneal/`, `tests/rustc-capture/`, `tests/differential/`, `tests/corpora/differential/`), and the multi-call observable-trace differential fuzzer (`tests/itree_diff/`). | **Outside the production TCB.** Enforced as `publish = false` crates under a two-zone monotonic lattice (`trusted/` = zone 0 < `tests/` = zone 1: `tests/` may depend on `trusted/` or shared `tests/` helpers such as `tests/testkit/`, while `trusted/` may never depend on `tests/`) with no `build.rs` or proc-macros. |
+| **Integration test suites** | [`tests/`](../tests) | Hosts shared test scaffolding (`tests/testkit/`), workspace integration test suites and fixtures for `anneal-audit`, `cargo-anneal`, `anneal-rustc-capture`, and `anneal-differential-tests` (`tests/audit/`, `tests/cargo-anneal/`, `tests/rustc-capture/`, `tests/differential/`, `tests/corpora/differential/`), and the multi-call observable-trace differential fuzzer (`tests/itree_diff/`). | **Outside the production TCB.** Enforced as `publish = false` crates under the monotonic lattice (`trusted/` = zone 0 < `tests/` = zone 1 < `tools/` = zone 2: `tests/` may depend on `trusted/` or shared `tests/` helpers such as `tests/testkit/`, while `trusted/` may never depend on `tests/` or `tools/`) with no `build.rs` or proc-macros. |
+| **Developer tools** | [`tools/`](../tools) | Hosts untrusted standalone developer tools such as [`tools/anneal-spec/`](../tools/anneal-spec) that lower Rust-syntax surface contracts into reviewable `Spec.lean` modules. | **Outside the TCB.** Enforced as `publish = false`, `build.rs`-free crates in zone 2 (`proc-macro` targets allowed here only; neither `trusted/` nor `tests/` may depend on `tools/`). |
 | **Proof theory & correspondence** | `theory/`, `correspondence/` | Defines the normalized `StableAst`, proves lowering passes (`Abstracts`), provides WP calculi (`theory/Anneal/MirWp.lean`), separation logic, and proof tactics (`theory/`), and proves the MIR correspondence theorems and canaries (`correspondence/Anneal/MirCorrespondence*`, discharging locked `Trusted.Correspondence` claims, and the `10` unlocked MiniRust witness modules `correspondence/Anneal/MiniRust/*` + `MiniRustProof.lean`). | **Outside the TCB.** Treated as potentially adversarial; audited mechanically in Anneal's CI and checked by the Lean 4 kernel (`correspondence/` is checked by the `anneal-audit` correspondence stage in CI only, hashed into correspondence provenance, and excluded from the user toolchain archive; unlocked MiniRust claim statements in `correspondence/` have theorem-name, hygiene, and `SpecAnchor` checks in `ci/check_minirust_pin.py` and rely on `CODEOWNERS`-gated per-PR human review of statement bodies). |
 | **Vendored reference models** | `vendor/lean-miri/`, `vendor/minirust/` | `vendor/lean-miri/` is a pinned snapshot of `proofs-rs/lean-miri` with a human-audited 10-file opt-in `deinitMovedPlace` delta and 3-file theorem-only memory specification patch ([#4009](https://github.com/google/zerocopy/issues/4009); [`docs/mir-correspondence-design.md`](mir-correspondence-design.md)); `vendor/minirust/` pins `30` upstream files (`27` `spec/**/*.md` specification files, `LICENSE-APACHE`, `LICENSE-MIT`, and `README.md`) at `minirust/minirust@d821c6e3a3d3`, linked by `58` `SpecAnchor` records in `correspondence/Anneal/MiniRust/Anchors.lean` (`ci/check_minirust_pin.py`). Never shipped in the user toolchain archive. | **In the correspondence TCB (`vendor/lean-miri/`) / pinned spec anchor (`vendor/minirust/`).** `vendor/lean-miri/UPSTREAM_PIN.json` is locked by `LOCKED_UPSTREAM_PIN_SHA256` and `LOCKED_PATCHED_MIRI_FILES` in `trusted/audit/`; its 160-module `Miri.Interpreter.ExecutionMachine` slice is compiled inside `bwrap`, verified by `.olean` SHA-256, and replayed from scratch through the standalone Lean 4 kernel (`toKernelEnv.replay`) onto the authenticated sysroot base, followed by replaying `Trusted.Correspondence*`, `Anneal.MirCorrespondence*`, and `Anneal.MiniRust*` (`Anneal.MiniRustProof`; `anneal-audit` permits `Classical.choice`, while local/manual `ci/check_minirust_pin.py --check-axioms` verifies `{propext, Quot.sound}` purity). |
 
@@ -136,10 +138,10 @@ flowchart TD
      job is to verify in CI that all first-party Lean code outside `trusted/`
      (`theory/` and `correspondence/`) is pure, effect-free, and within the
      locked foundation axiom allowlist (and that Cargo workspace crates reside
-     only under `trusted/` or `tests/` under the monotonic
-     `zone(dst) <= zone(src)` boundary prohibiting `trusted/` -> `tests/`
-     dependencies). Vendored reference-model sources under `vendor/lean-miri/`
-     are
+     only under `trusted/`, `tests/`, or `tools/` under the monotonic
+     `zone(dst) <= zone(src)` boundary prohibiting `trusted/` ->
+     `{tests/, tools/}` and `tests/` -> `tools/` dependencies). Vendored
+     reference-model sources under `vendor/lean-miri/` are
      never packaged into the user toolchain archive and are admitted under Pass
      2 by content-addressed SHA-256 pinning, human semantic and compile-time
      review of upstream pin diffs and local patches, OS-sandboxed compilation
@@ -437,19 +439,27 @@ compilation (`rustc`) remains under the intact-host assumption in
 
 Before inspecting Lean files, `anneal-audit` verifies the repository's root
 manifests against [`root-manifest.sha256`](../trusted/root-manifest.sha256)
-(`trusted/root-manifest.sha256`) and checks that every Cargo workspace member
-resides under `trusted/` (production TCB, zone 0) or `tests/` (fenced
-`publish = false` test/harness crates, zone 1), that no workspace crate
-declares `package.build` or non-`crates.io` dependencies, that no workspace
-crate other than `cargo-anneal` includes a `build.rs` script (only
+(`trusted/root-manifest.sha256`) and checks that every root Cargo workspace
+member resides under `trusted/` (production TCB, zone 0) or `tests/` (fenced
+`publish = false` test/harness crates, zone 1), that crates under `tools/`
+(untrusted standalone tools with `publish = false`, zone 2, where `proc-macro`
+targets are permitted) are listed in `workspace.exclude` rather than
+`workspace.members` so they never build in the root workspace, that no
+workspace crate declares `package.build`, `[patch]`, `[replace]`, or
+non-`crates.io` dependencies, that no workspace crate other than
+`cargo-anneal` includes a `build.rs` script (only
 `trusted/cargo-anneal/build.rs`, which deterministically emits
 `$OUT_DIR/bundled_resources.rs` and `$OUT_DIR/bundled_theory.json` from
 canonical sources, is allowed and required), and that every `path` dependency
 targets a registered workspace member satisfying `zone(dst) <= zone(src)`. This
-enforces a two-zone monotonic lattice: `tests/` suites may exercise `trusted/`
-crates and share `tests/` helpers (`tests/testkit`) without inflating
-`trusted/`, while production TCB crates under `trusted/` can never depend on
-`tests/`.
+enforces a three-zone monotonic lattice: `tests/` suites may exercise
+`trusted/` crates and share `tests/` helpers (`tests/testkit`) without
+inflating `trusted/`, production TCB crates under `trusted/` can never depend
+on `tests/` or `tools/`, and `tests/` crates can never depend on `tools/`.
+Excluded standalone tool workspaces and all `Cargo.toml` manifests under
+`tools/` undergo the same containment and `Cargo.lock` provenance checks, and
+each `Cargo.lock` may list without a `source` only the crates it resolves and
+their transitive `path` dependencies.
 
 ### Syntactic source preflight (`"preflight"` & `"correspondence-preflight"`)
 

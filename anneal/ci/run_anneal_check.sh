@@ -689,6 +689,73 @@ case "$MODE" in
       --artifacts-dir "$ZC_OUT/zerocopy-evidence" \
       --jobs "$ANNEAL_TEST_JOBS"
 
+    # Untrusted `tools/anneal-spec`: build `anneal-spec-lower` from its own
+    # locked workspace, then verify its `zerocopy` units and the mutated-spec
+    # and mismatched-signature negative controls against the installed
+    # toolchain. `tools/` may contain proc-macro crates, so the build runs in
+    # a fresh sandbox that sees only the read-only checkout, the toolchain,
+    # the vendored sources, and its own Cargo home and target directory. Its
+    # lockfile pins a subset of `Cargo.lock`, so the vendored sources cover
+    # it offline. `apply_bundle_env` has pointed `RUSTC` into the installed
+    # bundle, which this sandbox does not mount, so the build names the
+    # image's build toolchain explicitly.
+    SPEC_TARGET="${SCRATCH_ROOT}/anneal-spec-target"
+    SPEC_CARGO_HOME="${SCRATCH_ROOT}/anneal-spec-cargo-home"
+    SPEC_OUT="${SCRATCH_ROOT}/anneal-spec-run"
+    rm -rf "$SPEC_TARGET" "$SPEC_CARGO_HOME" "$SPEC_OUT"
+    mkdir -p "$SPEC_TARGET" "$SPEC_CARGO_HOME" "$SPEC_OUT"
+    SPEC_RUSTC=/opt/anneal-nix/build-rustc
+    SPEC_CARGO=/opt/anneal-nix/rust-toolchain/bin/cargo
+    if [[ ! -d /opt/anneal-cargo-vendor || ! -x "$SPEC_RUSTC" \
+        || ! -x "$SPEC_CARGO" ]]; then
+      echo "error: building tools/anneal-spec requires /opt/anneal-cargo-vendor," \
+        "$SPEC_RUSTC, and $SPEC_CARGO" >&2
+      exit 1
+    fi
+    cp "$ANNEAL_CARGO_HOME/config.toml" "$SPEC_CARGO_HOME/config.toml"
+    bwrap --unshare-all --die-with-parent --new-session \
+      --clearenv --cap-drop ALL --tmpfs / --dev /dev --proc /proc \
+      --tmpfs /tmp --dir /tmp/home --chdir "$PWD/tools/anneal-spec" \
+      --setenv HOME /tmp/home --setenv TMPDIR /tmp \
+      --setenv PATH /usr/bin:/bin \
+      --setenv CARGO_HOME /cargo-home --setenv CARGO_TARGET_DIR /target \
+      --setenv CARGO_NET_OFFLINE true \
+      --setenv RUSTC "$SPEC_RUSTC" \
+      --ro-bind /usr /usr \
+      --ro-bind-try /bin /bin --ro-bind-try /lib /lib \
+      --ro-bind-try /lib64 /lib64 --ro-bind-try /etc /etc \
+      --ro-bind-try /nix /nix \
+      --ro-bind /opt/anneal-nix /opt/anneal-nix \
+      --ro-bind /opt/anneal-cargo-vendor /opt/anneal-cargo-vendor \
+      --ro-bind "$REPO_ROOT" "$REPO_ROOT" \
+      --bind "$SPEC_CARGO_HOME" /cargo-home \
+      --bind "$SPEC_TARGET" /target \
+      -- "$SPEC_CARGO" build --locked --offline -p anneal-spec-lower
+    bwrap --unshare-all --die-with-parent --new-session \
+      --clearenv --cap-drop ALL --tmpfs / --dev /dev --proc /proc \
+      --tmpfs /tmp --dir /tmp/home --chdir "$PWD" \
+      --setenv HOME /tmp/home --setenv TMPDIR /tmp \
+      --setenv PATH /usr/bin:/bin \
+      --setenv LD_LIBRARY_PATH "$ANNEAL_SYSROOT/lib" \
+      --ro-bind /usr /usr \
+      --ro-bind-try /bin /bin --ro-bind-try /lib /lib \
+      --ro-bind-try /lib64 /lib64 --ro-bind-try /etc /etc \
+      --ro-bind-try /nix/store /nix/store \
+      --ro-bind "$REPO_ROOT" "$REPO_ROOT" \
+      --ro-bind "$ANNEAL_TEST_INSTALL_ROOT" "$ANNEAL_TEST_INSTALL_ROOT" \
+      --ro-bind "$ANNEAL_TEST_TOOLS_ROOT" "$ANNEAL_TEST_TOOLS_ROOT" \
+      --ro-bind "$SPEC_TARGET" "$SPEC_TARGET" \
+      --bind "$SPEC_OUT" "$SPEC_OUT" \
+      -- /usr/bin/python3 -I -B ci/verify_anneal_spec_zerocopy.py \
+      --cli "$ANNEAL_TEST_CARGO_ANNEAL" \
+      --capture "$ANNEAL_CAPTURE" \
+      --sysroot "$ANNEAL_SYSROOT" \
+      --lean "$ANNEAL_LEAN" \
+      --lower "$SPEC_TARGET/debug/anneal-spec-lower" \
+      --artifacts-dir "$SPEC_OUT/evidence" \
+      --jobs "$ANNEAL_TEST_JOBS"
+    rm -rf "$SPEC_TARGET" "$SPEC_CARGO_HOME"
+
     # `cargo package` archives only the crate directory, so the packaged build
     # script needs staged `packaged/{bundled_resources.rs,bundled_theory.json}`
     # snapshots. The checkout is read-only here, so stage them in a scratch

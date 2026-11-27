@@ -69,6 +69,7 @@ class CargoHomeGuardTests(unittest.TestCase):
         ]
         self.assertIn(SCRIPTS / "run_exocrate_test.sh", scripts)
         self.assertIn(SCRIPTS / "run_anneal_mir_eval_check.sh", scripts)
+        self.assertIn(SCRIPTS / "run_anneal_spec_check.sh", scripts)
         return scripts
 
     def test_guard_runs_once_cargo_home_is_final(self) -> None:

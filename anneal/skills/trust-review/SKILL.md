@@ -41,7 +41,7 @@ companions—to its required pass:
 | Touched path or trigger | Required pass | Sub-surface scope |
 |---|---|---|
 | Filesystem, mode, Unicode, or ambient config anomalies anywhere in the repo | Repo-wide check | Always runs on every path |
-| `theory/`, `correspondence/`, target-crate test fixtures, specs, docs, or tests/new dirs outside TCB/CI | Pass 1 | Untrusted input, seam, and spec integrity |
+| `theory/`, `correspondence/`, `tools/`, target-crate test fixtures, specs, docs, or tests/new dirs outside TCB/CI | Pass 1 | Untrusted input, seam, and spec integrity |
 | `trusted/lean/`, `trusted/correspondence/` | Pass 2 | §1 Lean TCB and trust tiers |
 | `trusted/rustc-capture/` | Pass 2 | §2 Capture and two-surface completeness |
 | `trusted/audit/`, `trusted/cargo-anneal/` | Pass 2 | §3 Auditor and orchestrator |
@@ -93,21 +93,21 @@ hashed in `trusted/root-manifest.sha256`: `Cargo.toml`, `Cargo.lock`,
    `build.rs`, proc-macro, `Makefile`, `GNUmakefile`, `Justfile`, `lakefile*`,
    `lean-toolchain`, `.nix`, workflow, `.pre-commit-config.yaml`, or shell or
    Python script (except unexecuted SHA-256-pinned provenance files under
-   `vendor/lean-miri/`).
+   `vendor/lean-miri/`); the CRR's `tools/` exception admits only excluded,
+   `build.rs`-free, `publish = false` crates, never scripts.
 3. **Lean file placement and `theory/`/`correspondence/` purity:** Outside
    `trusted/`, `ci/`, `.github/`, and pinned root manifests, reject `.lean`
-   files outside `theory/`, `correspondence/`, and the SHA-256-pinned
-   `vendor/lean-miri/` reference model (audit `.lean` files inside
-   `trusted/lean/` and `trusted/correspondence/` under Pass 2). For any change
-   touching `vendor/lean-miri/` (which bypasses Phase 1 syntactic preflight
-   and belongs to the correspondence TCB), verify `LOCKED_MIRI_COMMIT`,
-   `vendor_tree.manifest_sha256`, `LOCKED_PATCHED_MIRI_FILES`,
-   `LOCKED_UPSTREAM_PIN_SHA256` in `trusted/audit/src/lib.rs`, and human
-   audit of both the resolved old-to-new reference-model semantic diff on any
-   upstream pin update and any compile-time code (`run_cmd`, `initialize`,
-   custom tactic `elab`s) in vendored or patched modules. In
-   `theory/`, `.lean` files must use only pure declarations and tactics
-   admitted by
+   files outside `theory/`, `correspondence/`, `tools/`, and pinned
+   `vendor/lean-miri/` (audit `trusted/{lean,correspondence}/` under Pass 2).
+   For any change touching `vendor/lean-miri/` (which bypasses Phase 1
+   syntactic preflight and belongs to the correspondence TCB), verify
+   `LOCKED_MIRI_COMMIT`, `vendor_tree.manifest_sha256`,
+   `LOCKED_PATCHED_MIRI_FILES`, `LOCKED_UPSTREAM_PIN_SHA256` in
+   `trusted/audit/src/lib.rs`, and human audit of both the resolved
+   old-to-new reference-model semantic diff on any upstream pin update and
+   any compile-time code (`run_cmd`, `initialize`, custom tactic `elab`s) in
+   vendored or patched modules. In `theory/`, `.lean` files must use only
+   pure declarations and tactics admitted by
    [`TrustedBoundary.lean`](../../trusted/audit/TrustedBoundary.lean)'s
    allowlists (`allowedTrustedSyntaxKinds`, `allowedTheoryTacticKinds`, and
    `inspectNodeKind`; `trusted/lean/` remains tactic-free). Reject any

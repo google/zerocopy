@@ -1,0 +1,25 @@
+# Copyright 2026 The Fuchsia Authors
+#
+# Licensed under a BSD-style license <LICENSE-BSD>, Apache License, Version 2.0
+# <LICENSE-APACHE or https://www.apache.org/licenses/LICENSE-2.0>, or the MIT
+# license <LICENSE-MIT or https://opensource.org/licenses/MIT>, at your option.
+# This file may not be copied, modified, or distributed except according to
+# those terms.
+
+[package]
+name = "anneal-spec-lower"
+version = "0.1.0"
+edition = "2021"
+license = "BSD-2-Clause OR Apache-2.0 OR MIT"
+publish = false
+description = "Lower Rust-syntax Anneal surface specifications to Spec.lean."
+
+[[bin]]
+name = "anneal-spec-lower"
+path = "src/main.rs"
+
+[dependencies]
+proc-macro2 = { version = "1.0.107", features = ["span-locations"] }
+quote = "1.0.47"
+serde_json = "1.0.154"
+syn = { version = "2.0.119", features = ["full"] }

@@ -21,7 +21,11 @@ NIGHTLY="$(zerocopy/cargo.sh --version nightly)"
 
 zerocopy/ci/check_fmt.sh "$@"
 
-for manifest in tools/cargo-zerocopy/Cargo.toml tools/generate-readme/Cargo.toml tools/ui-runner/Cargo.toml tools/anneal-mir-eval/Cargo.toml; do
-    cargo +"$NIGHTLY" fmt --manifest-path "$manifest" "${FMT_FLAGS[@]}" >&2
+# `--all` formats every workspace member. Without it, older `cargo fmt`
+# releases fail with "Failed to find targets" on a virtual manifest such as
+# `anneal/tools/anneal-spec/Cargo.toml`. None of these manifests has path
+# dependencies outside its own workspace, which `--all` would also format.
+for manifest in anneal/tools/anneal-spec/Cargo.toml tools/cargo-zerocopy/Cargo.toml tools/generate-readme/Cargo.toml tools/ui-runner/Cargo.toml tools/anneal-mir-eval/Cargo.toml; do
+    cargo +"$NIGHTLY" fmt --manifest-path "$manifest" --all "${FMT_FLAGS[@]}" >&2
 done
 cargo +"$NIGHTLY" fmt --manifest-path exocrate/Cargo.toml "${FMT_FLAGS[@]}" >&2

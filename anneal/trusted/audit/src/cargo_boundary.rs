@@ -400,50 +400,59 @@ pub fn verify_bundled_resources(checkout: &Path) -> Result<(), Failure> {
 }
 
 /// Verify that a workspace member target neither declares a `proc-macro`
-/// (which executes arbitrary code at compile time) nor escapes its member
-/// directory via `..` or an absolute `path`.
+/// outside `WorkspaceZone::Tools` (which executes arbitrary code at compile
+/// time) nor escapes its member directory via `..` or an absolute `path`.
 fn validate_member_target(
     member: &str,
+    zone: WorkspaceZone,
     section: &str,
     target: &MemberTarget,
 ) -> Result<(), Failure> {
     let phase = "cargo-boundary";
-    for (key, value) in
-        [("proc-macro", &target.proc_macro), ("proc_macro", &target.proc_macro_underscore)]
-    {
-        if let Some(val) = value
-            && val.as_bool() != Some(false)
+    if zone != WorkspaceZone::Tools {
+        for (key, value) in
+            [("proc-macro", &target.proc_macro), ("proc_macro", &target.proc_macro_underscore)]
         {
-            return Err(Failure::new(
-                1,
-                phase,
-                format!("disallowed proc-macro target ({section}.{key}) in {member}/Cargo.toml"),
-            ));
+            if let Some(val) = value
+                && val.as_bool() != Some(false)
+            {
+                return Err(Failure::new(
+                    1,
+                    phase,
+                    format!(
+                        "disallowed proc-macro target ({section}.{key}) in {member}/Cargo.toml"
+                    ),
+                ));
+            }
         }
-    }
-    for (key, value) in
-        [("crate-type", &target.crate_type), ("crate_type", &target.crate_type_underscore)]
-    {
-        if let Some(val) = value {
-            let arr = val.as_array().ok_or_else(|| {
-                Failure::new(1, phase, format!("invalid {section}.{key} in {member}/Cargo.toml"))
-            })?;
-            for item in arr {
-                let kind = item.as_str().ok_or_else(|| {
+        for (key, value) in
+            [("crate-type", &target.crate_type), ("crate_type", &target.crate_type_underscore)]
+        {
+            if let Some(val) = value {
+                let arr = val.as_array().ok_or_else(|| {
                     Failure::new(
                         1,
                         phase,
-                        format!("invalid {section}.{key} entry in {member}/Cargo.toml"),
+                        format!("invalid {section}.{key} in {member}/Cargo.toml"),
                     )
                 })?;
-                if kind == "proc-macro" {
-                    return Err(Failure::new(
-                        1,
-                        phase,
-                        format!(
-                            "disallowed proc-macro crate-type ({section}.{key}) in {member}/Cargo.toml"
-                        ),
-                    ));
+                for item in arr {
+                    let kind = item.as_str().ok_or_else(|| {
+                        Failure::new(
+                            1,
+                            phase,
+                            format!("invalid {section}.{key} entry in {member}/Cargo.toml"),
+                        )
+                    })?;
+                    if kind == "proc-macro" {
+                        return Err(Failure::new(
+                            1,
+                            phase,
+                            format!(
+                                "disallowed proc-macro crate-type ({section}.{key}) in {member}/Cargo.toml"
+                            ),
+                        ));
+                    }
                 }
             }
         }
@@ -470,19 +479,22 @@ fn validate_member_target(
     Ok(())
 }
 
-/// Two-zone monotonic trust lattice for Cargo workspace members:
-/// `Trusted` (rank 0) < `Tests` (rank 1).
+/// Three-zone monotonic trust lattice for Cargo workspace crates:
+/// `Trusted` (rank 0) < `Tests` (rank 1) < `Tools` (rank 2).
 ///
 /// Dependencies may only flow downward or laterally (`zone(dst) <= zone(src)`):
-/// `Trusted -> Trusted`, `Tests -> Trusted`, and `Tests -> Tests` (such as
-/// shared test infrastructure under `tests/testkit`) are permitted, while
-/// `Trusted -> Tests` is rejected across every Cargo dependency table.
+/// `Trusted -> Trusted`, `Tests -> Trusted`, `Tests -> Tests`,
+/// `Tools -> Trusted`, `Tools -> Tests`, and `Tools -> Tools` are permitted,
+/// while `Trusted -> Tests`, `Trusted -> Tools`, and `Tests -> Tools` are
+/// rejected across every Cargo dependency table.
 #[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord)]
 enum WorkspaceZone {
     /// Production TCB crates under `trusted/` (rank 0).
     Trusted = 0,
     /// Non-shipping test and harness crates under `tests/` (rank 1).
     Tests = 1,
+    /// Untrusted standalone tools under `tools/` (rank 2).
+    Tools = 2,
 }
 
 fn classify_member_zone(rel_path: &str) -> Result<WorkspaceZone, Failure> {
@@ -493,18 +505,21 @@ fn classify_member_zone(rel_path: &str) -> Result<WorkspaceZone, Failure> {
         Ok(WorkspaceZone::Trusted)
     } else if rel_path.starts_with("tests/") {
         Ok(WorkspaceZone::Tests)
+    } else if rel_path.starts_with("tools/") {
+        Ok(WorkspaceZone::Tools)
     } else {
         Err(Failure::new(
             1,
             "cargo-boundary",
-            format!("workspace member outside trusted/ or tests/: {rel_path}"),
+            format!("workspace member outside trusted/, tests/, or tools/: {rel_path}"),
         ))
     }
 }
 
 /// Validate a single dependency table (`[dependencies]`, `[dev-dependencies]`,
 /// `[build-dependencies]`, or `[target.<cfg>.*]`) inside a workspace member's
-/// `Cargo.toml`.
+/// `Cargo.toml`, returning each validated `path` dependency's
+/// checkout-relative crate directory.
 fn validate_dep_table(
     checkout_canon: &Path,
     member: &str,
@@ -513,10 +528,11 @@ fn validate_dep_table(
     member_set: &BTreeSet<String>,
     section: &str,
     table_val: Option<&toml::Value>,
-) -> Result<(), Failure> {
+) -> Result<Vec<String>, Failure> {
     let phase = "cargo-boundary";
+    let mut path_deps = Vec::new();
     let Some(table_val) = table_val else {
-        return Ok(());
+        return Ok(path_deps);
     };
     let table = table_val.as_table().ok_or_else(|| {
         Failure::new(1, phase, format!("invalid {section} in {member}/Cargo.toml"))
@@ -555,15 +571,17 @@ fn validate_dep_table(
             Failure::new(1, phase, format!("{member} path dependency escapes checkout: {dep_path}"))
         })?;
         let rel_str = rel.to_string_lossy().replace('\\', "/");
-        // Enforce the two-zone monotonic lattice (`zone(dst) <= zone(src)`):
-        // `trusted/* -> trusted/*`, `tests/* -> trusted/*`, and
-        // `tests/* -> tests/*` are permitted, while `trusted/* -> tests/*` and
-        // targets outside either zone are rejected across all dep tables.
+        // Enforce the three-zone monotonic lattice (`zone(dst) <= zone(src)`):
+        // `Trusted -> Tests`, `Trusted -> Tools`, `Tests -> Tools`, and
+        // targets outside `trusted/`, `tests/`, or `tools/` are rejected across
+        // all dependency tables.
         let dst_zone = classify_member_zone(&rel_str).map_err(|_| {
             Failure::new(
                 1,
                 phase,
-                format!("{member} path dependency points outside trusted/ or tests/: {rel_str}"),
+                format!(
+                    "{member} path dependency points outside trusted/, tests/, or tools/: {rel_str}"
+                ),
             )
         })?;
         if dst_zone > src_zone {
@@ -583,14 +601,20 @@ fn validate_dep_table(
             ));
         }
         regular(&resolved.join("Cargo.toml"), phase)?;
+        path_deps.push(rel_str);
     }
-    Ok(())
+    Ok(path_deps)
 }
 
-/// Validate `Cargo.lock` (when present): version 4, every external dependency
-/// sourced from `crates.io-index` with a 64-hex SHA-256 checksum, and every
-/// source-less package belonging to `member_pkg_names`.
-fn verify_cargo_lock(checkout: &Path, member_pkg_names: &BTreeSet<String>) -> Result<(), Failure> {
+/// Validate `Cargo.lock`: version 4, every external dependency sourced from
+/// `crates.io-index` with a 64-hex SHA-256 checksum, and every source-less
+/// package belonging to `member_pkg_names`. When `required` is `true`, a
+/// missing `Cargo.lock` fails closed.
+fn verify_cargo_lock_with_mode(
+    checkout: &Path,
+    member_pkg_names: &BTreeSet<String>,
+    required: bool,
+) -> Result<(), Failure> {
     let phase = "cargo-boundary";
     let lock_path = checkout.join("Cargo.lock");
     match fs::symlink_metadata(&lock_path) {
@@ -603,7 +627,16 @@ fn verify_cargo_lock(checkout: &Path, member_pkg_names: &BTreeSet<String>) -> Re
                 ));
             }
         }
-        Err(e) if e.kind() == io::ErrorKind::NotFound => return Ok(()),
+        Err(e) if e.kind() == io::ErrorKind::NotFound => {
+            if required {
+                return Err(Failure::new(
+                    1,
+                    phase,
+                    format!("missing required Cargo.lock in {}", checkout.display()),
+                ));
+            }
+            return Ok(());
+        }
         Err(e) => {
             return Err(Failure::new(2, phase, format!("cannot inspect Cargo.lock: {e}")));
         }
@@ -650,14 +683,337 @@ fn verify_cargo_lock(checkout: &Path, member_pkg_names: &BTreeSet<String>) -> Re
     Ok(())
 }
 
+fn verify_cargo_lock(checkout: &Path, member_pkg_names: &BTreeSet<String>) -> Result<(), Failure> {
+    verify_cargo_lock_with_mode(checkout, member_pkg_names, false)
+}
+
+/// A member crate manifest that passed [`validate_member_crate`].
+struct ValidatedCrate {
+    /// The crate's `package.name`.
+    pkg_name: String,
+    /// Checkout-relative directories of the crate's validated `path`
+    /// dependencies, all drawn from the `member_set` it was validated
+    /// against.
+    path_deps: Vec<String>,
+}
+
+/// Reject `[patch]` and `[replace]` in a crate manifest. Cargo applies these
+/// tables only from the manifest at a workspace root, but every excluded
+/// single crate is its own root, so they are rejected in every member and
+/// excluded manifest. Keys are compared after ASCII lowercasing and mapping
+/// `_` to `-`, so near-spellings also fail closed.
+fn reject_patch_and_replace(member: &str, raw_member: &toml::Table) -> Result<(), Failure> {
+    for key in raw_member.keys() {
+        let norm = key.to_ascii_lowercase().replace('_', "-");
+        if norm == "patch" || norm == "replace" {
+            return Err(Failure::new(
+                1,
+                "cargo-boundary",
+                format!("disallowed [{key}] section in {member}/Cargo.toml"),
+            ));
+        }
+    }
+    Ok(())
+}
+
+/// Collect the `package.name` of every crate in `roots` and of every crate
+/// reachable from them through validated `path` dependencies in `crates`.
+/// These are the only packages that may appear without a `source` in the
+/// `Cargo.lock` that resolves `roots`.
+fn local_package_closure<'a>(
+    roots: impl IntoIterator<Item = &'a str>,
+    crates: &BTreeMap<String, ValidatedCrate>,
+) -> Result<BTreeSet<String>, Failure> {
+    let mut seen = BTreeSet::new();
+    let mut names = BTreeSet::new();
+    let mut stack: Vec<&str> = roots.into_iter().collect();
+    while let Some(rel) = stack.pop() {
+        if !seen.insert(rel) {
+            continue;
+        }
+        // Every `path` dependency was checked against a `member_set` whose
+        // entries are all validated, so a miss here is an internal error.
+        let krate = crates.get(rel).ok_or_else(|| {
+            Failure::new(2, "cargo-boundary", format!("unvalidated crate in path closure: {rel}"))
+        })?;
+        names.insert(krate.pkg_name.clone());
+        stack.extend(krate.path_deps.iter().map(String::as_str));
+    }
+    Ok(names)
+}
+
+/// Validate one member crate manifest against its zone (`Trusted`, `Tests`,
+/// or `Tools`) and registered dependency set, returning its `package.name`
+/// and validated `path` dependencies.
+fn validate_member_crate(
+    checkout: &Path,
+    checkout_canon: &Path,
+    member: &str,
+    src_zone: WorkspaceZone,
+    member_set: &BTreeSet<String>,
+) -> Result<ValidatedCrate, Failure> {
+    let phase = "cargo-boundary";
+    let member_toml_path = checkout.join(member).join("Cargo.toml");
+    regular(&member_toml_path, phase)?;
+    let member_text = fs::read_to_string(&member_toml_path).map_err(|e| {
+        Failure::new(1, phase, format!("malformed member Cargo.toml in {member}: {e}"))
+    })?;
+    let raw_member: toml::Table = toml::from_str(&member_text).map_err(|e| {
+        Failure::new(1, phase, format!("malformed member Cargo.toml in {member}: {e}"))
+    })?;
+    if raw_member.contains_key("workspace") {
+        return Err(Failure::new(
+            1,
+            phase,
+            format!("disallowed [workspace] section in member crate {member}/Cargo.toml"),
+        ));
+    }
+    reject_patch_and_replace(member, &raw_member)?;
+    let manifest: MemberCargoManifest = toml::from_str(&member_text).map_err(|e| {
+        Failure::new(1, phase, format!("malformed member Cargo.toml in {member}: {e}"))
+    })?;
+    let pkg_name = manifest
+        .package
+        .name
+        .as_deref()
+        .filter(|s| !s.is_empty())
+        .ok_or_else(|| Failure::new(1, phase, format!("missing package.name in {member}")))?;
+
+    // Non-trusted crates (`tests/` and `tools/`) must opt out of crates.io
+    // publication explicitly.
+    if src_zone != WorkspaceZone::Trusted
+        && manifest.package.publish != Some(toml::Value::Boolean(false))
+    {
+        return Err(Failure::new(
+            1,
+            phase,
+            format!(
+                "non-trusted {} crate must set publish = false in {member}/Cargo.toml",
+                if src_zone == WorkspaceZone::Tests { "test" } else { "tool" }
+            ),
+        ));
+    }
+
+    if manifest.package.build.is_some() || manifest.package.workspace.is_some() {
+        return Err(Failure::new(
+            1,
+            phase,
+            format!("disallowed package.build or package.workspace in {member}/Cargo.toml"),
+        ));
+    }
+    let build_rs_path = checkout.join(member).join("build.rs");
+    if member == "trusted/cargo-anneal" {
+        match fs::symlink_metadata(&build_rs_path) {
+            Ok(meta) if !meta.file_type().is_symlink() && meta.file_type().is_file() => {}
+            Ok(_) => {
+                return Err(Failure::policy(
+                    phase,
+                    format!("build script must be a regular file: {member}/build.rs"),
+                ));
+            }
+            Err(err) if err.kind() == std::io::ErrorKind::NotFound => {
+                return Err(Failure::policy(
+                    phase,
+                    format!("missing required build script {member}/build.rs"),
+                ));
+            }
+            Err(err) => {
+                return Err(Failure::operational(
+                    phase,
+                    format!("cannot inspect {member}/build.rs: {err}"),
+                ));
+            }
+        }
+    } else if fs::symlink_metadata(&build_rs_path).is_ok() {
+        return Err(Failure::new(1, phase, format!("disallowed build script {member}/build.rs")));
+    }
+
+    for (section, target) in manifest.all_targets() {
+        validate_member_target(member, src_zone, section, target)?;
+    }
+
+    let member_parent = member_toml_path.parent().unwrap();
+    let mut path_deps = Vec::new();
+    for (section, tbl) in manifest.all_dep_tables() {
+        path_deps.extend(validate_dep_table(
+            checkout_canon,
+            member,
+            src_zone,
+            member_parent,
+            member_set,
+            &section,
+            tbl,
+        )?);
+    }
+
+    Ok(ValidatedCrate { pkg_name: pkg_name.to_string(), path_deps })
+}
+
+/// Validate an excluded standalone `[workspace]` under `tools/` (such as
+/// `tools/anneal-spec`), enforcing resolver v2, zone-2 member containment,
+/// toolchain override absence, and `Cargo.lock` provenance.
+fn validate_tools_subworkspace(
+    checkout: &Path,
+    checkout_canon: &Path,
+    sub_rel: &str,
+    sub_manifest: &RootCargoManifest,
+    registered_tools_manifests: &mut BTreeSet<String>,
+    registered_tools_locks: &mut BTreeSet<String>,
+) -> Result<(), Failure> {
+    let phase = "cargo-boundary";
+    let sub_root = checkout.join(sub_rel);
+    reject_cargo_toolchain_overrides(&sub_root)?;
+    if sub_manifest.workspace.resolver.as_deref() != Some("2") {
+        return Err(Failure::new(
+            1,
+            phase,
+            format!("{sub_rel}/Cargo.toml [workspace] resolver must be \"2\""),
+        ));
+    }
+    if !sub_manifest.workspace.exclude.is_empty() {
+        return Err(Failure::new(
+            1,
+            phase,
+            format!("{sub_rel}/Cargo.toml must not declare workspace.exclude"),
+        ));
+    }
+    registered_tools_manifests.insert(format!("{sub_rel}/Cargo.toml"));
+    registered_tools_locks.insert(format!("{sub_rel}/Cargo.lock"));
+
+    let mut sub_member_paths = Vec::with_capacity(sub_manifest.workspace.members.len());
+    let mut sub_member_set = BTreeSet::new();
+    for raw_member in &sub_manifest.workspace.members {
+        if !is_clean_relative_path(raw_member)
+            || raw_member.ends_with('/')
+            || raw_member.contains('\\')
+        {
+            return Err(Failure::new(
+                1,
+                phase,
+                format!("unclean member path in {sub_rel}/Cargo.toml: {raw_member}"),
+            ));
+        }
+        // `sub_rel` is a clean path under `tools/` and `raw_member` is a
+        // clean relative path (only normal components), so `full_rel` stays
+        // under `sub_rel` and needs no separate zone check.
+        let full_rel = format!("{sub_rel}/{raw_member}");
+        registered_tools_manifests.insert(format!("{full_rel}/Cargo.toml"));
+        sub_member_set.insert(full_rel.clone());
+        sub_member_paths.push(full_rel);
+    }
+
+    let mut sub_pkg_names = BTreeSet::new();
+    for member in &sub_member_paths {
+        let krate = validate_member_crate(
+            checkout,
+            checkout_canon,
+            member,
+            WorkspaceZone::Tools,
+            &sub_member_set,
+        )?;
+        sub_pkg_names.insert(krate.pkg_name);
+    }
+    verify_cargo_lock_with_mode(&sub_root, &sub_pkg_names, true)?;
+    Ok(())
+}
+
+/// Walk `checkout/tools/` (when present) and reject symlinks, nested
+/// Cargo/toolchain override entries, or any unregistered `Cargo.toml` /
+/// `Cargo.lock`.
+fn scan_tools_tree(
+    checkout: &Path,
+    registered_tools_manifests: &BTreeSet<String>,
+    registered_tools_locks: &BTreeSet<String>,
+) -> Result<(), Failure> {
+    let phase = "cargo-boundary";
+    let tools_dir = checkout.join("tools");
+    let meta = match fs::symlink_metadata(&tools_dir) {
+        Ok(meta) => meta,
+        Err(e) if e.kind() == io::ErrorKind::NotFound => return Ok(()),
+        Err(e) => {
+            return Err(Failure::new(2, phase, format!("cannot inspect tools/: {e}")));
+        }
+    };
+    if meta.file_type().is_symlink() || !meta.is_dir() {
+        return Err(Failure::new(1, phase, "tools/ must be a regular directory"));
+    }
+    let mut stack = vec![tools_dir];
+    while let Some(dir) = stack.pop() {
+        let entries = fs::read_dir(&dir)
+            .map_err(|e| Failure::new(2, phase, format!("cannot read {}: {e}", dir.display())))?;
+        for entry in entries {
+            let entry = entry
+                .map_err(|e| Failure::new(2, phase, format!("cannot inspect tools/ entry: {e}")))?;
+            let path = entry.path();
+            let md = fs::symlink_metadata(&path).map_err(|e| {
+                Failure::new(1, phase, format!("cannot stat {}: {e}", path.display()))
+            })?;
+            if md.file_type().is_symlink() {
+                return Err(Failure::new(
+                    1,
+                    phase,
+                    format!("disallowed symlink under tools/: {}", path.display()),
+                ));
+            }
+            let file_name = entry.file_name();
+            let lower = file_name.to_string_lossy().to_ascii_lowercase();
+            let rel = path
+                .strip_prefix(checkout)
+                .map_err(|_| Failure::new(2, phase, "tools/ strip_prefix failed"))?
+                .to_string_lossy()
+                .replace('\\', "/");
+            if lower == ".cargo"
+                || lower == ".gitmodules"
+                || lower == "rust-toolchain"
+                || lower.starts_with("rust-toolchain.")
+            {
+                return Err(Failure::new(
+                    1,
+                    phase,
+                    format!("forbidden Cargo/toolchain override under tools/: {rel}"),
+                ));
+            }
+            if md.is_dir() {
+                stack.push(path);
+            } else if lower == "cargo.toml" {
+                // Match case-insensitively: on case-insensitive filesystems
+                // Cargo may load `cargo.toml` or `CARGO.TOML`, so only the
+                // exact registered spelling is admitted.
+                if !registered_tools_manifests.contains(&rel) {
+                    return Err(Failure::new(
+                        1,
+                        phase,
+                        format!("unregistered Cargo manifest under tools/: {rel}"),
+                    ));
+                }
+            } else if lower == "cargo.lock" && !registered_tools_locks.contains(&rel) {
+                return Err(Failure::new(
+                    1,
+                    phase,
+                    format!("unregistered Cargo.lock under tools/: {rel}"),
+                ));
+            }
+        }
+    }
+    Ok(())
+}
+
 /// Verify Cargo workspace DAG containment, root Cargo/toolchain hygiene,
 /// `Cargo.lock` dependency provenance, and `trusted/root-manifest.sha256` (when
-/// present): workspace crates must reside under `trusted/` (production TCB,
-/// zone 0) or `tests/` (non-trusted test/harness crates with `publish = false`,
-/// zone 1), and every `path` dependency must target a registered workspace
-/// member satisfying `zone(dst) <= zone(src)` (enforcing the two-zone monotonic
-/// lattice so `tests/` crates may share `tests/` helpers and depend on
-/// `trusted/`, while `trusted/` crates may never depend on `tests/`).
+/// present): root workspace members must reside under `trusted/` (production
+/// TCB, zone 0) or `tests/` (non-trusted test/harness crates with
+/// `publish = false`, zone 1). Crates under `tools/` (untrusted tools with
+/// `publish = false`, zone 2, where `proc-macro` targets are permitted) must
+/// be listed in `workspace.exclude` so they never build in the root
+/// workspace. Every `path` dependency must target a registered crate
+/// satisfying `zone(dst) <= zone(src)` (enforcing the three-zone monotonic
+/// lattice so `trusted/` crates may never depend on `tests/` or `tools/`, and
+/// `tests/` crates may never depend on `tools/`). No member or excluded
+/// manifest may declare `[patch]` or `[replace]`. Excluded standalone
+/// `[workspace]` tools under `tools/` must pass the same zone-2 crate and
+/// `Cargo.lock` checks, and no unregistered `Cargo.toml` or `Cargo.lock` may
+/// exist under `tools/`. Each `Cargo.lock` may list without a `source` only
+/// the crates it resolves and their transitive `path` dependencies.
 ///
 /// This check reads only Cargo manifests, `Cargo.lock`,
 /// `trusted/root-manifest.sha256`, and the root build files that the root
@@ -684,107 +1040,102 @@ pub fn check_cargo_boundary(checkout: &Path) -> Result<(), Failure> {
     let checkout_canon = fs::canonicalize(checkout)
         .map_err(|e| Failure::new(2, phase, format!("cannot canonicalize checkout: {e}")))?;
 
-    let member_set: BTreeSet<String> = root_manifest
-        .workspace
-        .members
-        .iter()
-        .chain(&root_manifest.workspace.exclude)
-        .cloned()
-        .collect();
+    let mut member_set: BTreeSet<String> =
+        root_manifest.workspace.members.iter().cloned().collect();
     if !member_set.contains("trusted/rustc-capture") {
         return Err(Failure::new(1, phase, "trusted/rustc-capture missing from workspace.members"));
     }
 
-    let mut member_pkg_names = BTreeSet::new();
-    for member in root_manifest.workspace.members.iter().chain(&root_manifest.workspace.exclude) {
-        // Only two workspace zones are permitted (`WorkspaceZone::Trusted = 0 <
-        // WorkspaceZone::Tests = 1`). Both zones remain subject to manifest,
-        // build-script, and lockfile checks; `validate_dep_table` enforces
-        // `zone(dst) <= zone(src)`.
+    let mut crate_entries: Vec<(String, WorkspaceZone)> = Vec::new();
+    let mut excluded_single_crates: Vec<(String, WorkspaceZone)> = Vec::new();
+    let mut registered_tools_manifests = BTreeSet::new();
+    let mut registered_tools_locks = BTreeSet::new();
+    for member in &root_manifest.workspace.members {
         let src_zone = classify_member_zone(member)?;
-        let member_toml_path = checkout.join(member).join("Cargo.toml");
-        regular(&member_toml_path, phase)?;
-        let member_text = fs::read_to_string(&member_toml_path).map_err(|e| {
-            Failure::new(1, phase, format!("malformed member Cargo.toml in {member}: {e}"))
-        })?;
-        let manifest: MemberCargoManifest = toml::from_str(&member_text).map_err(|e| {
-            Failure::new(1, phase, format!("malformed member Cargo.toml in {member}: {e}"))
-        })?;
-        let pkg_name =
-            manifest.package.name.as_deref().filter(|s| !s.is_empty()).ok_or_else(|| {
-                Failure::new(1, phase, format!("missing package.name in {member}"))
-            })?;
-        member_pkg_names.insert(pkg_name.to_string());
-
-        // Non-trusted test crates exist solely to verify the workspace and must
-        // opt out of crates.io publication explicitly.
-        if src_zone == WorkspaceZone::Tests
-            && manifest.package.publish != Some(toml::Value::Boolean(false))
-        {
+        // `validate_member_target` admits proc-macros in `tools/`, so a
+        // `tools/` crate must never build as part of the root workspace.
+        if src_zone == WorkspaceZone::Tools {
             return Err(Failure::new(
                 1,
                 phase,
-                format!("non-trusted test crate must set publish = false in {member}/Cargo.toml"),
+                format!(
+                    "tools/ crate must be in workspace.exclude, not workspace.members: {member}"
+                ),
             ));
         }
-
-        if manifest.package.build.is_some() || manifest.package.workspace.is_some() {
-            return Err(Failure::new(
-                1,
-                phase,
-                format!("disallowed package.build or package.workspace in {member}/Cargo.toml"),
-            ));
-        }
-        let build_rs_path = checkout.join(member).join("build.rs");
-        if member == "trusted/cargo-anneal" {
-            match fs::symlink_metadata(&build_rs_path) {
-                Ok(meta) if !meta.file_type().is_symlink() && meta.file_type().is_file() => {}
-                Ok(_) => {
-                    return Err(Failure::policy(
-                        phase,
-                        format!("build script must be a regular file: {member}/build.rs"),
-                    ));
-                }
-                Err(err) if err.kind() == std::io::ErrorKind::NotFound => {
-                    return Err(Failure::policy(
-                        phase,
-                        format!("missing required build script {member}/build.rs"),
-                    ));
-                }
-                Err(err) => {
-                    return Err(Failure::operational(
-                        phase,
-                        format!("cannot inspect {member}/build.rs: {err}"),
-                    ));
-                }
+        crate_entries.push((member.clone(), src_zone));
+    }
+    for excl in &root_manifest.workspace.exclude {
+        let excl_zone = classify_member_zone(excl)?;
+        let excl_root = checkout.join(excl);
+        let excl_toml_path = excl_root.join("Cargo.toml");
+        regular(&excl_toml_path, phase)?;
+        let excl_text = fs::read_to_string(&excl_toml_path)
+            .map_err(|e| Failure::new(1, phase, format!("malformed Cargo.toml in {excl}: {e}")))?;
+        let raw_excl: toml::Table = toml::from_str(&excl_text)
+            .map_err(|e| Failure::new(1, phase, format!("malformed Cargo.toml in {excl}: {e}")))?;
+        if raw_excl.contains_key("workspace") {
+            if excl_zone != WorkspaceZone::Tools {
+                return Err(Failure::new(
+                    1,
+                    phase,
+                    format!("disallowed [workspace] in excluded crate outside tools/: {excl}"),
+                ));
             }
-        } else if fs::symlink_metadata(&build_rs_path).is_ok() {
-            return Err(Failure::new(
-                1,
-                phase,
-                format!("disallowed build script {member}/build.rs"),
-            ));
-        }
-
-        for (section, target) in manifest.all_targets() {
-            validate_member_target(member, section, target)?;
-        }
-
-        let member_parent = member_toml_path.parent().unwrap();
-        for (section, tbl) in manifest.all_dep_tables() {
-            validate_dep_table(
+            let sub_manifest: RootCargoManifest = toml::from_str(&excl_text).map_err(|e| {
+                Failure::new(
+                    1,
+                    phase,
+                    format!("{excl}/Cargo.toml may contain only [workspace]: {e}"),
+                )
+            })?;
+            validate_tools_subworkspace(
+                checkout,
                 &checkout_canon,
-                member,
-                src_zone,
-                member_parent,
-                &member_set,
-                &section,
-                tbl,
+                excl,
+                &sub_manifest,
+                &mut registered_tools_manifests,
+                &mut registered_tools_locks,
             )?;
+        } else {
+            reject_cargo_toolchain_overrides(&excl_root)?;
+            if excl_zone == WorkspaceZone::Tools {
+                registered_tools_manifests.insert(format!("{excl}/Cargo.toml"));
+                registered_tools_locks.insert(format!("{excl}/Cargo.lock"));
+            }
+            member_set.insert(excl.clone());
+            crate_entries.push((excl.clone(), excl_zone));
+            excluded_single_crates.push((excl.clone(), excl_zone));
         }
     }
 
-    verify_cargo_lock(checkout, &member_pkg_names)?;
+    let mut crates = BTreeMap::new();
+    for (member, src_zone) in &crate_entries {
+        let krate =
+            validate_member_crate(checkout, &checkout_canon, member, *src_zone, &member_set)?;
+        crates.insert(member.clone(), krate);
+    }
+
+    // Each excluded single crate is its own Cargo root, so its `Cargo.lock`
+    // may name without a `source` only itself and its transitive `path`
+    // dependencies, never the root workspace's other members.
+    for (excl, excl_zone) in &excluded_single_crates {
+        let excl_pkg_names = local_package_closure([excl.as_str()], &crates)?;
+        verify_cargo_lock_with_mode(
+            &checkout.join(excl),
+            &excl_pkg_names,
+            *excl_zone == WorkspaceZone::Tools,
+        )?;
+    }
+
+    scan_tools_tree(checkout, &registered_tools_manifests, &registered_tools_locks)?;
+    // Likewise, the root `Cargo.lock` admits only root members and their
+    // transitive `path` dependencies. No root member is in `tools/`, and the
+    // lattice forbids `trusted/` or `tests/` -> `tools/`, so no excluded
+    // `tools/` crate name can enter this set.
+    let root_pkg_names =
+        local_package_closure(root_manifest.workspace.members.iter().map(String::as_str), &crates)?;
+    verify_cargo_lock(checkout, &root_pkg_names)?;
     Ok(())
 }
 
@@ -851,5 +1202,15 @@ mod tests {
             err_lock.message.contains("cannot inspect Cargo.lock"),
             "unexpected lock message: {err_lock}"
         );
+
+        // `tools/` is optional, but only `NotFound` may skip its scan.
+        let err_tools =
+            scan_tools_tree(&not_a_checkout_dir, &BTreeSet::new(), &BTreeSet::new()).unwrap_err();
+        assert_eq!(err_tools.code, 2, "unexpected tools error: {err_tools}");
+        assert!(
+            err_tools.message.contains("cannot inspect tools/"),
+            "unexpected tools message: {err_tools}"
+        );
+        scan_tools_tree(&blocked_dir, &BTreeSet::new(), &BTreeSet::new()).unwrap();
     }
 }
