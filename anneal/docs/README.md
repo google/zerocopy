@@ -95,7 +95,9 @@ incrementally.
 | [Scaffolding and testing](scaffolding.md) | Current | Running workspace tests, `installed_smoke`, packaging checks, and failure bundles. |
 | [Multi-step MIR architecture](architecture.md) | Current + planned | Three-stage MIR pipeline, repository layout, and compiler integration. |
 | [Trust model and boundary enforcement](trust-model.md) | Current | The `trusted/` boundary, dependency pins, and repository CI audits. |
+| [Workspace composition and role binding](workspace-composition.md) | Current | How `cargo-anneal` composes `Captured.lean`, `Expected.lean`, `Spec/`, `Proof/`, and `request.json` across `crate` and `selected_unit` scopes. |
 | [Elaborator containment and Receipt v3](elaborator-containment-design.md) | Current | Linux `ExecSeal` sandboxing, specification preflight, target replay, and Receipt v3 taint law. |
+| [Automated red-teaming harness](red-teaming.md) | Current | Adversarial evaluation of proof, code+proof, spec-preflight, and theory-audit bypasses with deterministic deduplication. |
 | [Performance tracking and dashboard](perf-tracking.md) | Current | Continuous benchmark collection, Tier A budgets, MAD regression checks, and the static `/bench/anneal/` dashboard pipeline. |
 | [MIR correspondence design](mir-correspondence-design.md) | Current | Pass 2 correspondence anchoring `Trusted.MirSemantics` against `vendor/lean-miri/`. |
 | [MIR correspondence strategy](mir-correspondence-strategy.md) | Current | Proof strategy and simulation obligations for MIR correspondence. |
