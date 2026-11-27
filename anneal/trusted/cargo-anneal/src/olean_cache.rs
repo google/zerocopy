@@ -43,7 +43,7 @@ use crate::{
 };
 
 const CACHE_FORMAT_VERSION: u32 = 2;
-const PREBUILT_MANIFEST_FILE: &str = "manifest.json";
+pub(crate) const PREBUILT_MANIFEST_FILE: &str = "manifest.json";
 const ENTRY_METADATA_FILE: &str = "metadata.json";
 
 /// Discriminates cached `TrustedBoundary` inspector artifacts from regular
@@ -266,6 +266,10 @@ pub(crate) struct OleanCache {
     enabled: bool,
     no_rebuild_bundled: bool,
     prebuilt_dir: Option<PathBuf>,
+    /// Whether `prebuilt_dir` was named explicitly (`--prebuilt-dir`), so
+    /// that an absent, unreadable, or stale bundle fails closed instead of
+    /// counting as a miss.
+    prebuilt_required: bool,
     disk_dir: Option<PathBuf>,
     prebuilt_entries: Option<PrebuiltEntryMap>,
     prebuilt_skipped_version: Option<u32>,
@@ -279,6 +283,7 @@ impl OleanCache {
             enabled: true,
             no_rebuild_bundled: false,
             prebuilt_dir: None,
+            prebuilt_required: false,
             disk_dir: cache_dir_from_env_vars(home, xdg_cache_home),
             prebuilt_entries: None,
             prebuilt_skipped_version: None,
@@ -293,6 +298,7 @@ impl OleanCache {
             enabled: true,
             no_rebuild_bundled: false,
             prebuilt_dir: None,
+            prebuilt_required: false,
             disk_dir: default_olean_cache_dir(),
             prebuilt_entries: None,
             prebuilt_skipped_version: None,
@@ -318,10 +324,30 @@ impl OleanCache {
         self.no_rebuild_bundled = no_rebuild;
     }
 
+    /// Replace the prebuilt `.olean` bundle directory. Collecting the
+    /// components drops `.` segments and any trailing `/`, so a trailing-slash
+    /// path to a symlink cannot slip past the non-symlink root check in
+    /// `lstat`.
     pub(crate) fn set_prebuilt_dir(&mut self, dir: Option<PathBuf>) {
+        let dir = dir.map(|dir| dir.components().collect());
         if self.prebuilt_dir != dir {
             self.prebuilt_dir = dir;
             self.prebuilt_entries = None;
+            self.prebuilt_skipped_version = None;
+        }
+    }
+
+    pub(crate) fn prebuilt_required(&self) -> bool {
+        self.prebuilt_required
+    }
+
+    /// Require the prebuilt directory to be a usable bundle: when `required`,
+    /// a missing directory or `manifest.json`, a manifest for another cache
+    /// format version, or an entry for a looked-up module that was built from
+    /// different inputs is an error rather than a miss.
+    pub(crate) fn set_prebuilt_required(&mut self, required: bool) {
+        self.prebuilt_required = required;
+        if required {
             self.prebuilt_skipped_version = None;
         }
     }
@@ -342,17 +368,35 @@ impl OleanCache {
         if self.prebuilt_entries.is_some() {
             return Ok(self.prebuilt_entries.as_ref());
         }
-        if self.prebuilt_skipped_version.is_some() {
+        if self.prebuilt_skipped_version.is_some() && !self.prebuilt_required {
             return Ok(None);
         }
         let Some(ref prebuilt_dir) = self.prebuilt_dir else {
+            if self.prebuilt_required {
+                return Err(Failure::operational(
+                    "olean-cache",
+                    "prebuilt .olean directory is required, but none is configured",
+                ));
+            }
             return Ok(None);
         };
         if !probe_existing_non_symlink_dir(prebuilt_dir, false)? {
+            if self.prebuilt_required {
+                return Err(Failure::operational(
+                    "olean-cache",
+                    format!("prebuilt .olean directory {} does not exist", prebuilt_dir.display()),
+                ));
+            }
             return Ok(None);
         }
         let manifest_path = prebuilt_dir.join(PREBUILT_MANIFEST_FILE);
         if !probe_existing_regular_file(&manifest_path, false)? {
+            if self.prebuilt_required {
+                return Err(Failure::operational(
+                    "olean-cache",
+                    format!("prebuilt .olean manifest {} does not exist", manifest_path.display()),
+                ));
+            }
             return Ok(None);
         }
         let bytes = read_regular_nofollow_capped(&manifest_path, MAX_OLEAN_BYTES, "olean-cache")?;
@@ -363,6 +407,17 @@ impl OleanCache {
             )
         })?;
         if header.schema_version != CACHE_FORMAT_VERSION {
+            if self.prebuilt_required {
+                return Err(Failure::operational(
+                    "olean-cache",
+                    format!(
+                        "prebuilt .olean manifest {} has schema_version {}, but this cargo-anneal \
+                         reads only schema_version {CACHE_FORMAT_VERSION}",
+                        manifest_path.display(),
+                        header.schema_version
+                    ),
+                ));
+            }
             // Treat mismatched prebuilt manifest versions (e.g. a pinned v1
             // toolchain archive) as a cache miss rather than aborting,
             // matching v1/ disk-cache directory isolation while keeping
@@ -394,18 +449,32 @@ impl OleanCache {
         if !self.enabled {
             return Ok(None);
         }
-        if let Some(prebuilt_dir) = self.prebuilt_dir.clone()
-            && let Some(entries) = self.load_prebuilt()?
+        let prebuilt_dir = self.prebuilt_dir.clone();
+        if let Some(entries) = self.load_prebuilt()?
+            && let Some(prebuilt_dir) = prebuilt_dir
             && let Some(entry) = entries.get(&(input.kind, input.module.clone()))
-            && entry.input.matches_entry(input)
         {
-            let parts = load_validated_parts(
-                &prebuilt_dir,
-                &entry.parts,
-                /*require_owner_uid=*/ false,
-            )?;
-            self.hits += 1;
-            return Ok(Some(parts));
+            if entry.input.matches_entry(input) {
+                let parts = load_validated_parts(
+                    &prebuilt_dir,
+                    &entry.parts,
+                    /*require_owner_uid=*/ false,
+                )?;
+                self.hits += 1;
+                return Ok(Some(parts));
+            }
+            if self.prebuilt_required {
+                return Err(Failure::operational(
+                    "olean-cache",
+                    format!(
+                        "prebuilt .olean bundle {} has an entry for {} that was built from \
+                         different inputs (Lean, sysroot, source, flags, or imports) than this \
+                         run; refusing to rebuild a module the bundle provides",
+                        prebuilt_dir.display(),
+                        input.module
+                    ),
+                ));
+            }
         }
 
         if let Some(ref disk_dir) = self.disk_dir
@@ -1407,6 +1476,124 @@ mod tests {
         assert_eq!(err.code, 2);
         assert_eq!(err.phase, "olean-cache");
         assert!(err.message.contains("cannot inspect"), "{err}");
+    }
+
+    /// An explicit (`--prebuilt-dir`) bundle fails closed where the
+    /// implicitly discovered one is skipped: a missing directory or
+    /// manifest, a manifest for another cache format, and an entry for the
+    /// looked-up module that does not match its inputs. A module the bundle
+    /// does not list still falls through to the disk cache.
+    #[test]
+    fn required_prebuilt_fails_closed_where_optional_prebuilt_is_skipped() {
+        let tmp = tempfile::tempdir().unwrap();
+        let prebuilt = tmp.path().join("prebuilt");
+        let disk = tmp.path().join("disk");
+        let src = tmp.path().join("src");
+        fs::create_dir_all(&src).unwrap();
+        let input = sample_input(&"6".repeat(64));
+        let stale = sample_input(&"7".repeat(64));
+        let mut other = sample_input(&"6".repeat(64));
+        other.module = "Trusted.Other".to_owned();
+
+        let new_cache = |required: bool| {
+            let mut cache = OleanCache::new_default();
+            cache.set_disk_dir(Some(disk.clone()));
+            cache.set_prebuilt_dir(Some(prebuilt.clone()));
+            cache.set_prebuilt_required(required);
+            cache
+        };
+        let expect_err = |mut cache: OleanCache, needle: &str| {
+            let err = cache.lookup_bytes(&input).unwrap_err();
+            assert_eq!(err.code, 2);
+            assert_eq!(err.phase, "olean-cache");
+            assert!(err.message.contains(needle), "{needle}: {err}");
+        };
+
+        // Missing directory, then missing manifest.
+        assert!(new_cache(false).lookup_bytes(&input).unwrap().is_none());
+        expect_err(new_cache(true), "prebuilt .olean directory");
+        fs::create_dir_all(prebuilt.join("lib/Trusted")).unwrap();
+        assert!(new_cache(false).lookup_bytes(&input).unwrap().is_none());
+        expect_err(new_cache(true), "prebuilt .olean manifest");
+
+        // A manifest for another cache format version.
+        let bytes = fake_olean();
+        let sha = sha256_bytes(&bytes);
+        let rel = "lib/Trusted/MirAst.olean";
+        fs::write(prebuilt.join(rel), &bytes).unwrap();
+        let write_manifest = |schema_version: u32, entry_input: &OleanCacheKeyInput| {
+            let manifest = PrebuiltManifest {
+                schema_version,
+                entries: vec![PrebuiltManifestEntry {
+                    input: entry_input.clone(),
+                    parts: vec![CachePartRecord {
+                        suffix: "olean".to_owned(),
+                        path: rel.to_owned(),
+                        sha256: sha.clone(),
+                    }],
+                }],
+            };
+            fs::write(
+                prebuilt.join(PREBUILT_MANIFEST_FILE),
+                serde_json::to_vec(&manifest).unwrap(),
+            )
+            .unwrap();
+        };
+        write_manifest(CACHE_FORMAT_VERSION + 1, &input);
+        assert!(new_cache(false).lookup_bytes(&input).unwrap().is_none());
+        expect_err(new_cache(true), "schema_version");
+
+        // Enabling `prebuilt_required` with no directory configured or after a
+        // prior optional lookup cached `prebuilt_skipped_version` must still
+        // fail closed.
+        let mut unconfigured = OleanCache::new_default();
+        unconfigured.set_disk_dir(Some(disk.clone()));
+        unconfigured.set_prebuilt_required(true);
+        expect_err(unconfigured, "none is configured");
+
+        write_manifest(CACHE_FORMAT_VERSION + 1, &input);
+        let mut toggled = new_cache(false);
+        assert!(toggled.lookup_bytes(&input).unwrap().is_none());
+        toggled.set_prebuilt_required(true);
+        expect_err(toggled, "schema_version");
+
+        // A matching entry hits in both modes.
+        write_manifest(CACHE_FORMAT_VERSION, &input);
+        for required in [false, true] {
+            let hit = new_cache(required).lookup_bytes(&input).unwrap().expect("hit");
+            assert_eq!(hit[0].2, sha);
+        }
+
+        // A stale entry falls through to the disk cache unless required, in
+        // which case even a disk-cache entry for the current inputs is not
+        // consulted.
+        let src_olean = src.join("MirAst.olean");
+        fs::write(&src_olean, &bytes).unwrap();
+        new_cache(false).store_compiled(&input, &[("olean", &src_olean, &sha)]).unwrap();
+        write_manifest(CACHE_FORMAT_VERSION, &stale);
+        assert!(new_cache(false).lookup_bytes(&input).unwrap().is_some());
+        expect_err(new_cache(true), "built from different inputs");
+
+        // A module the bundle does not list is an ordinary miss.
+        assert!(new_cache(true).lookup_bytes(&other).unwrap().is_none());
+
+        // A symlinked bundle root (with or without a trailing slash) fails
+        // closed in both modes.
+        #[cfg(unix)]
+        {
+            let link = tmp.path().join("prebuilt-link");
+            std::os::unix::fs::symlink(&prebuilt, &link).unwrap();
+            let link_slash = PathBuf::from(format!("{}/", link.display()));
+            for candidate in [&link, &link_slash] {
+                for required in [false, true] {
+                    let mut cache = new_cache(required);
+                    cache.set_prebuilt_dir(Some(candidate.clone()));
+                    let err = cache.lookup_bytes(&input).unwrap_err();
+                    assert_eq!(err.phase, "olean-cache");
+                    assert!(err.message.contains("symlink"), "{err}");
+                }
+            }
+        }
     }
 
     #[cfg(unix)]

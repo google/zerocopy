@@ -160,6 +160,15 @@ be as trusted as the runs that read it.
 working directory or any input directory (manifest, proof, request, or `rustc`
 source directories, comparing lexical and symlink-resolved paths);
 write-isolating roots across trust tiers remains an operator obligation.
+The read-only prebuilt `.olean` bundle (`share/anneal/prebuilt` beside the
+installed or `--lean` toolchain, or an explicit `--prebuilt-dir`) is trusted
+state on the same terms, since its `manifest.json` supplies the digests its
+artifacts are checked against; unlike the writable per-user disk cache, its
+files are not owner-UID checked so read-only system-wide installs (such as
+Nix store paths or Bazel runfiles) remain usable. An explicit `--prebuilt-dir`
+is subject to the same checkout-overlap refusal and must already hold a
+manifest for this cache format; a module it lists that was built from different
+inputs fails verification instead of being recompiled.
 
 ### Statement-Origin Separation (`ConstantInfo.type` vs. `ConstantInfo.value?`)
 

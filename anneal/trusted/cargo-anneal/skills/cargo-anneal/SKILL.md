@@ -58,6 +58,20 @@ untrusted Rust inputs or with `--allow-unsandboxed-elaboration` their own
 directory. `--olean-cache-dir` cannot be combined with `--no-cache`, and
 `--receipt-out` must not point inside the cache directory in use.
 
+When the prebuilt `.olean` bundle is not beside the Lean toolchain (for
+example, in Nix or Bazel layouts, or with a `cargo-anneal` built separately
+from its Lean tree), name it with `--prebuilt-dir <DIR>`, the directory holding
+the bundle's `manifest.json`. It replaces the installed bundle's and the
+`--lean` prefix's `share/anneal/prebuilt`, and works with explicit `--lean` and
+`--no-default-features` builds. There is no environment variable. Like a shared
+cache, the bundle is trusted as stored: `verify` refuses a directory inside or
+containing the working directory or any input directory, a missing directory or
+manifest, a symlinked directory, or a manifest for another cache format, and
+fails rather than recompiling a module the bundle lists with different inputs.
+Modules the bundle does not list still use the disk cache or compile.
+`--prebuilt-dir` cannot be combined with `--no-cache`, and `--receipt-out` must
+not point inside it.
+
 Run verification (defaults to `--format human` on stdout), atomically write a
 Receipt Schema v3 JSON file via `--receipt-out` (or pass `--format json` to
 stream JSON on stdout), and treat the process exit code (`0` verified, `1`
