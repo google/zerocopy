@@ -61,9 +61,6 @@ pub use verify::check_bundled_model_audit;
 #[doc(hidden)]
 pub const EMBEDDED_BUNDLE_SOURCES: &[(&str, &str)] = verify::EMBEDDED_BUNDLE_SOURCES;
 #[doc(hidden)]
-pub const EMBEDDED_CORRESPONDENCE_PROVENANCE_JSON: &str =
-    verify::EMBEDDED_CORRESPONDENCE_PROVENANCE_JSON;
-#[doc(hidden)]
 pub const EMBEDDED_THEORY_BUNDLE_JSON: &str = bundle::EMBEDDED_THEORY_BUNDLE_JSON;
 
 pub use core::Failure;

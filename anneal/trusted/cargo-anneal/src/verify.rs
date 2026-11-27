@@ -50,13 +50,11 @@ use crate::{
 
 // Generated deterministically by `build.rs` into `$OUT_DIR` from canonical
 // workspace sources (or from `packaged/bundled_resources.rs` in standalone
-// `.crate` builds), keeping edits to `trusted/` and `correspondence/` free of
-// checked-in monolith conflicts while binding the compiled binary to audited
-// bytes.
+// `.crate` builds), keeping edits to `trusted/` free of checked-in monolith
+// conflicts while binding the compiled binary to audited bytes.
 include!(concat!(env!("OUT_DIR"), "/bundled_resources.rs"));
 
 pub(crate) const EMBEDDED_BUNDLE_SOURCES: &[(&str, &str)] = BUNDLE;
-pub(crate) const EMBEDDED_CORRESPONDENCE_PROVENANCE_JSON: &str = CORRESPONDENCE_PROVENANCE_JSON;
 
 const PINNED_CAPTURE_SCHEMA_VERSION: u32 = 5;
 const PINNED_RUSTC_COMMIT: &str = "f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1";
@@ -3799,14 +3797,10 @@ fn run<Out: std::io::Write + Send, ErrOut: std::io::Write + Send>(
                        against lean-miri",
         })
     } else {
-        serde_json::from_str(CORRESPONDENCE_PROVENANCE_JSON).map_err(|e| {
-            error(
-                "tool_failed",
-                "bundle",
-                format!("corrupt bundled correspondence provenance: {e}"),
-            )
-            .with_sandbox(Some(active_sandbox.as_str()))
-        })?
+        json!({
+            "applicable": false,
+            "reason": crate::bundle::DECOUPLED_CORRESPONDENCE_PROVENANCE_REASON,
+        })
     };
     let adm = checker.admitted().map_err(|e| {
         error("tool_failed", "toolchain", e.message).with_sandbox(Some(active_sandbox.as_str()))
@@ -7344,38 +7338,6 @@ mod tests {
                 "expected invalid scope JSON to fail: {invalid}"
             );
         }
-    }
-
-    #[test]
-    fn bundled_correspondence_provenance_is_well_formed() {
-        let provenance: Value = serde_json::from_str(CORRESPONDENCE_PROVENANCE_JSON)
-            .expect("bundled correspondence provenance must be valid JSON");
-        assert_eq!(provenance["schema_version"], 1);
-        assert_eq!(provenance["upstream_repository"], "https://github.com/proofs-rs/lean-miri.git");
-        assert_eq!(provenance["upstream_commit"], "c92d1d9754c9dd585b6b9d6949ae67e5e4665d6a");
-        assert_eq!(
-            provenance["sysroot_foundation_manifest_sha256"],
-            crate::LOCKED_SYSROOT_FOUNDATION_MANIFEST_SHA256
-        );
-        assert_eq!(provenance["upstream_pin_sha256"].as_str().unwrap().len(), 64);
-        let minirust = &provenance["minirust_upstream"];
-        assert_eq!(minirust["upstream_repository"], "https://github.com/minirust/minirust");
-        assert_eq!(minirust["upstream_commit"], "d821c6e3a3d358fa8a556774dc12b4aa5d0d65ed");
-        assert_eq!(minirust["file_count"], 30);
-        for sha_field in ["upstream_pin_sha256", "tarball_sha256", "manifest_sha256"] {
-            let digest = minirust[sha_field].as_str().unwrap();
-            assert_eq!(digest.len(), 64, "{sha_field}");
-            assert!(digest.bytes().all(|b| b.is_ascii_hexdigit()), "{sha_field}");
-        }
-        let mr_files = minirust["files"].as_object().unwrap();
-        assert_eq!(mr_files.len(), 30);
-        assert!(mr_files.values().all(|v| {
-            v.as_str().is_some_and(|s| s.len() == 64 && s.bytes().all(|b| b.is_ascii_hexdigit()))
-        }));
-        assert_eq!(provenance["correspondence_adapters"].as_object().unwrap().len(), 7);
-        assert_eq!(provenance["patched_files"].as_array().unwrap().len(), 13);
-        assert_eq!(provenance["correspondence_proofs"].as_object().unwrap().len(), 29);
-        assert_eq!(provenance["trusted_lean"].as_object().unwrap().len(), 25);
     }
 
     #[cfg(not(feature = "setup"))]

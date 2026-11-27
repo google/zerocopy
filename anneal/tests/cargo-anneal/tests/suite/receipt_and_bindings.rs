@@ -153,7 +153,22 @@ fn check_provenance_and_toolchain(ok: &anneal_testkit::VerifySuccessReceipt) {
     };
     assert_eq!(ok.toolchain_identity, expected_identity);
 
-    let prov = &ok.correspondence_provenance;
+    // Pinned Profile v1 receipts carry only the exact decoupled sentinel.
+    assert_eq!(
+        ok.correspondence_provenance,
+        json!({
+            "applicable": false,
+            "reason": cargo_anneal::bundle::DECOUPLED_CORRESPONDENCE_PROVENANCE_REASON,
+        })
+    );
+
+    // The repository record renders from the checkout (as `anneal-audit` and
+    // CI do) and matches the Python renderer and any packaged archive copy.
+    let checkout_prov_json =
+        cargo_anneal::bundle::render_correspondence_provenance_from_checkout(&anneal_root())
+            .unwrap();
+    let checkout_prov: Value = serde_json::from_str(&checkout_prov_json).unwrap();
+    let prov = &checkout_prov;
     assert_eq!(prov["schema_version"], 1);
     assert_eq!(prov["upstream_repository"], "https://github.com/proofs-rs/lean-miri.git");
     assert_eq!(prov["upstream_commit"], "c92d1d9754c9dd585b6b9d6949ae67e5e4665d6a");
@@ -204,10 +219,6 @@ fn check_provenance_and_toolchain(ok: &anneal_testkit::VerifySuccessReceipt) {
     }
     assert!(prov["note"].as_str().unwrap().contains("anneal-audit --require-correspondence"));
 
-    let bundled_prov: Value =
-        serde_json::from_str(cargo_anneal::EMBEDDED_CORRESPONDENCE_PROVENANCE_JSON).unwrap();
-    assert_eq!(prov, &bundled_prov);
-
     let rendered_py = std::process::Command::new("python3")
         .arg("-B")
         .arg(anneal_root().join("ci/render_correspondence_provenance.py"))
@@ -220,10 +231,7 @@ fn check_provenance_and_toolchain(ok: &anneal_testkit::VerifySuccessReceipt) {
         "render_correspondence_provenance.py failed: {}",
         String::from_utf8_lossy(&rendered_py.stderr)
     );
-    assert_eq!(
-        String::from_utf8(rendered_py.stdout).unwrap(),
-        cargo_anneal::EMBEDDED_CORRESPONDENCE_PROVENANCE_JSON
-    );
+    assert_eq!(String::from_utf8(rendered_py.stdout).unwrap(), checkout_prov_json);
 
     if let Ok(install_root) = env::var("ANNEAL_TEST_INSTALL_ROOT")
         && !install_root.is_empty()

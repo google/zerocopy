@@ -189,6 +189,15 @@ ALLOWED_PROVENANCE_TAINTS = frozenset({
     "vendor_upstream_patches_present",
 })
 ALLOWED_PROVENANCE_SCOPES = frozenset({"full_gate", "partial_gate"})
+# Mirrors `DECOUPLED_CORRESPONDENCE_PROVENANCE_REASON` in
+# `trusted/cargo-anneal/src/core/inspect/schema.rs`: the only inapplicable
+# record (`applicable: false`) a pinned Profile v1 receipt may carry, which
+# `cargo anneal verify` records for every pinned Profile v1 run.
+DECOUPLED_CORRESPONDENCE_PROVENANCE_REASON = (
+    "Pass 2 correspondence provenance is decoupled from cargo-anneal; "
+    "verify repository correspondence via anneal-audit "
+    "--require-correspondence"
+)
 VALID_MODEL_SYSTEM_RELATION_KEYS = frozenset({
     "kind",
     "qualifier",
@@ -2328,6 +2337,12 @@ def _validate_profile_v1_provenance(provenance, failures):
             "Profile v1 receipt missing correspondence_provenance "
             f"object: {provenance!r}"
         )
+        return
+    if (
+        set(provenance) == {"applicable", "reason"}
+        and provenance["applicable"] is False
+        and provenance["reason"] == DECOUPLED_CORRESPONDENCE_PROVENANCE_REASON
+    ):
         return
     if "applicable" in provenance or "reason" in provenance:
         failures.append(

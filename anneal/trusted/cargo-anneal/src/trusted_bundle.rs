@@ -127,15 +127,17 @@ pub const CORRESPONDENCE_PROOF_PATHS: &[&str] = &[
 ];
 const TRUSTED_LEAN_PREFIX: &str = "trusted/lean/";
 
-/// Lists the canonical repository-relative files hashed into
-/// `CORRESPONDENCE_PROVENANCE_JSON`.
+/// Lists the canonical repository-relative files hashed into the Pass 2
+/// correspondence provenance record.
 ///
 /// These files are never embedded verbatim or shipped to target users; only
-/// their pinned metadata and SHA-256 digests are recorded so verification
-/// receipts identify the Pass 2 correspondence certification performed in
-/// repository CI. Derived from the single set of named provenance constants
-/// above and cross-checked against the `.lean` trees under
-/// `trusted/correspondence/` and `correspondence/` during rendering.
+/// their pinned metadata and SHA-256 digests are recorded so the packaged
+/// archive's provenance record identifies the Pass 2 correspondence
+/// certification performed in repository CI. `cargo-anneal` neither embeds
+/// nor watches them, so Pass 2 edits never force a `cargo-anneal` rebuild.
+/// Derived from the single set of named provenance constants above and
+/// cross-checked against the `.lean` trees under `trusted/correspondence/`
+/// and `correspondence/` during rendering.
 pub const PROVENANCE_SOURCES: &[&str] = &[
     UPSTREAM_PIN_PATH,
     MINIRUST_UPSTREAM_PIN_PATH,
@@ -312,6 +314,10 @@ pub const BUNDLE_HEADER: &str = "\
 #[rustfmt::skip]
 const BUNDLE: &[(&str, &str)] = &[
 ";
+
+/// Closes the `BUNDLE` array opened by [`BUNDLE_HEADER`]; every rendered
+/// `bundled_resources.rs` ends with exactly this suffix.
+const BUNDLE_FOOTER: &str = "];\n";
 
 /// Compute the lowercase hex-encoded FIPS 180-4 SHA-256 digest of `data`.
 pub fn sha256_bytes(data: &[u8]) -> String {
@@ -544,8 +550,8 @@ fn hash_bundle_sources(
     Ok(hashes)
 }
 
-/// Render `CORRESPONDENCE_PROVENANCE_JSON` from canonical Miri and MiniRust
-/// `UPSTREAM_PIN.json` manifests, `trusted/correspondence/`,
+/// Render the Pass 2 correspondence provenance record from canonical Miri and
+/// MiniRust `UPSTREAM_PIN.json` manifests, `trusted/correspondence/`,
 /// `correspondence/`, and `trusted_lean` digests.
 pub fn render_correspondence_provenance(
     root: &Path,
@@ -657,37 +663,52 @@ pub fn render_correspondence_provenance(
     })
 }
 
-/// Holds rendered canonical bundle entries and provenance JSON.
+/// Render the Pass 2 correspondence provenance record directly from the
+/// canonical sources under `root`.
+///
+/// `anneal-audit` uses this to check the repository's Pass 2 inventory, and
+/// CI checks that `ci/render_correspondence_provenance.py` (which renders the
+/// archive's `share/anneal/correspondence-provenance.json`) agrees with it.
+pub fn render_correspondence_provenance_from_checkout(root: &Path) -> Result<String, BundleError> {
+    let mut trusted_lean = BTreeMap::new();
+    for path in TRUSTED_BUNDLE_SOURCES {
+        if path.starts_with(TRUSTED_LEAN_PREFIX) {
+            let source_path = validate_bundle_source(root, path)?;
+            let bytes = fs::read(source_path).map_err(BundleError::Io)?;
+            trusted_lean.insert(*path, sha256_bytes(&bytes));
+        }
+    }
+    render_correspondence_provenance(root, trusted_lean)
+}
+
+/// Holds rendered canonical bundle entries.
 pub struct RenderedBundleParts {
     /// Ordered `(repo_rel_path, source_text)` entries matching `BUNDLE`.
     pub entries: Vec<(&'static str, String)>,
-    /// Canonical JSON string for `CORRESPONDENCE_PROVENANCE_JSON`.
-    pub provenance_json: String,
 }
 
-/// Validate canonical files in [`TRUSTED_BUNDLE_SOURCES`] and
-/// [`PROVENANCE_SOURCES`] under `root` and return [`RenderedBundleParts`].
+/// Validate canonical files in [`TRUSTED_BUNDLE_SOURCES`] under `root` and
+/// return [`RenderedBundleParts`].
+///
+/// [`PROVENANCE_SOURCES`] are deliberately not read here, so Pass 2
+/// correspondence edits never change (or invalidate) the `cargo-anneal`
+/// binary.
 pub fn render_bundled_resources_parts(root: &Path) -> Result<RenderedBundleParts, BundleError> {
     let mut entries = Vec::with_capacity(TRUSTED_BUNDLE_SOURCES.len());
-    let mut trusted_lean = BTreeMap::new();
     for path in TRUSTED_BUNDLE_SOURCES {
         let source_path = validate_bundle_source(root, path)?;
         let source = fs::read_to_string(source_path).map_err(BundleError::Io)?;
-        if path.starts_with(TRUSTED_LEAN_PREFIX) {
-            trusted_lean.insert(*path, sha256_bytes(source.as_bytes()));
-        }
         entries.push((*path, source));
     }
-    let provenance_json = render_correspondence_provenance(root, trusted_lean)?;
-    Ok(RenderedBundleParts { entries, provenance_json })
+    Ok(RenderedBundleParts { entries })
 }
 
 /// Render the exact expected contents of `bundled_resources.rs` (generated
 /// into `$OUT_DIR/bundled_resources.rs` by `build.rs` or staged for standalone
 /// `.crate` packaging) from the canonical regular files in
-/// [`TRUSTED_BUNDLE_SOURCES`] and [`PROVENANCE_SOURCES`] under `root`.
+/// [`TRUSTED_BUNDLE_SOURCES`] under `root`.
 pub fn render_bundled_resources(root: &Path) -> Result<String, BundleError> {
-    let RenderedBundleParts { entries, provenance_json } = render_bundled_resources_parts(root)?;
+    let RenderedBundleParts { entries } = render_bundled_resources_parts(root)?;
     let mut generated = BUNDLE_HEADER.to_owned();
     for (path, source) in entries {
         // Rust's standard string formatter supplies valid Rust literal escapes.
@@ -695,12 +716,7 @@ pub fn render_bundled_resources(root: &Path) -> Result<String, BundleError> {
         writeln!(generated, "    (\n        {path:?},\n        {source:?},\n    ),")
             .expect("writing to String cannot fail");
     }
-    generated.push_str("];\n\n");
-    writeln!(
-        generated,
-        "#[rustfmt::skip]\nconst CORRESPONDENCE_PROVENANCE_JSON: &str = {provenance_json:?};"
-    )
-    .expect("writing to String cannot fail");
+    generated.push_str(BUNDLE_FOOTER);
     Ok(generated)
 }
 
@@ -778,12 +794,9 @@ pub fn resolve_build_script_bundle(manifest_dir: &Path) -> Result<BuildScriptPla
     }
 
     if in_workspace {
-        for rel in TRUSTED_BUNDLE_SOURCES.iter().copied().chain(PROVENANCE_SOURCES.iter().copied())
-        {
+        for rel in TRUSTED_BUNDLE_SOURCES {
             rerun_if_changed.push(workspace_root.join(rel));
         }
-        rerun_if_changed.push(workspace_root.join(CORRESPONDENCE_ADAPTER_DIR));
-        rerun_if_changed.push(workspace_root.join(CORRESPONDENCE_PROOF_DIR));
 
         let rendered_source = render_bundled_resources(&workspace_root)?;
 
@@ -820,8 +833,7 @@ pub fn resolve_build_script_bundle(manifest_dir: &Path) -> Result<BuildScriptPla
             )));
         }
         let rendered_source = fs::read_to_string(&pkg_path).map_err(BundleError::Io)?;
-        if !rendered_source.starts_with(BUNDLE_HEADER)
-            || !rendered_source.contains("const CORRESPONDENCE_PROVENANCE_JSON: &str =")
+        if !rendered_source.starts_with(BUNDLE_HEADER) || !rendered_source.ends_with(BUNDLE_FOOTER)
         {
             return Err(BundleError::Policy(format!(
                 "malformed packaged bundle snapshot at {}",
@@ -899,12 +911,38 @@ mod tests {
         let workspace_root = tmp.path().join("anneal");
         let manifest_dir = seed_synthetic_workspace_fixture(&workspace_root);
 
-        // Clean workspace: enters workspace mode and watches `.` for packaged/.
+        // Clean workspace: enters workspace mode and watches `.` for packaged/,
+        // but never watches Pass 2 correspondence inputs.
         let plan = resolve_build_script_bundle(&manifest_dir).unwrap();
         assert!(plan.rerun_if_changed.contains(&PathBuf::from(".")));
         assert!(plan.rerun_if_changed.contains(&PathBuf::from("src")));
         assert!(!plan.rerun_if_changed.contains(&PathBuf::from("packaged")));
+        // Watches are spelled `<manifest_dir>/../../<rel>`, so match them by
+        // component suffix rather than by an exact (differently spelled) path;
+        // the trusted sources prove the predicate sees real watches.
+        let watches = |rel: &str| plan.rerun_if_changed.iter().any(|p| p.ends_with(rel));
+        for rel in TRUSTED_BUNDLE_SOURCES {
+            assert!(watches(rel), "{rel}");
+        }
+        for rel in PROVENANCE_SOURCES
+            .iter()
+            .chain([&CORRESPONDENCE_ADAPTER_DIR, &CORRESPONDENCE_PROOF_DIR])
+        {
+            assert!(!watches(rel), "{rel}");
+        }
         assert_eq!(plan.rendered_source, render_bundled_resources(&workspace_root).unwrap());
+        assert!(!plan.rendered_source.contains("CORRESPONDENCE_PROVENANCE_JSON"));
+
+        // Missing or malformed Pass 2 inputs do not affect the embedded bundle;
+        // only checkout provenance rendering (used by `anneal-audit`) fails.
+        let pin = workspace_root.join(UPSTREAM_PIN_PATH);
+        let orig_pin = fs::read(&pin).unwrap();
+        fs::write(&pin, b"not json").unwrap();
+        assert_eq!(render_bundled_resources(&workspace_root).unwrap(), plan.rendered_source);
+        let err = render_correspondence_provenance_from_checkout(&workspace_root).unwrap_err();
+        assert!(err.to_string().contains("malformed vendor/lean-miri/UPSTREAM_PIN.json"), "{err}");
+        fs::write(&pin, orig_pin).unwrap();
+        render_correspondence_provenance_from_checkout(&workspace_root).unwrap();
 
         // Reintroduced legacy src/bundled_resources.rs fails closed.
         let legacy = manifest_dir.join("src/bundled_resources.rs");
@@ -962,9 +1000,10 @@ mod tests {
         let err = resolve_build_script_bundle(&manifest_dir).unwrap_err();
         assert!(err.to_string().contains("missing"), "{err}");
 
-        // Malformed snapshots (missing header or provenance const) fail closed.
+        // Malformed snapshots (missing header, unterminated `BUNDLE`, or a
+        // legacy trailing provenance const) fail closed.
         let pkg_file = manifest_dir.join(PACKAGED_BUNDLE_CRATE_REL);
-        fs::write(&pkg_file, b"const CORRESPONDENCE_PROVENANCE_JSON: &str = \"{}\";\n").unwrap();
+        fs::write(&pkg_file, BUNDLE_FOOTER.as_bytes()).unwrap();
         let err = resolve_build_script_bundle(&manifest_dir).unwrap_err();
         assert!(err.to_string().contains("malformed packaged bundle snapshot"), "{err}");
 
@@ -972,10 +1011,17 @@ mod tests {
         let err = resolve_build_script_bundle(&manifest_dir).unwrap_err();
         assert!(err.to_string().contains("malformed packaged bundle snapshot"), "{err}");
 
+        let legacy_snapshot = format!(
+            "{BUNDLE_HEADER}{BUNDLE_FOOTER}\n\
+             const CORRESPONDENCE_PROVENANCE_JSON: &str = \"{{}}\";\n"
+        );
+        fs::write(&pkg_file, legacy_snapshot.as_bytes()).unwrap();
+        let err = resolve_build_script_bundle(&manifest_dir).unwrap_err();
+        assert!(err.to_string().contains("malformed packaged bundle snapshot"), "{err}");
+
         // Valid standalone snapshot succeeds and MUST NOT emit `.` so in-place
         // builds with a crate-local `target/` remain fresh.
-        let valid_snapshot =
-            format!("{BUNDLE_HEADER}];\nconst CORRESPONDENCE_PROVENANCE_JSON: &str = \"{{}}\";\n");
+        let valid_snapshot = format!("{BUNDLE_HEADER}{BUNDLE_FOOTER}");
         fs::write(&pkg_file, valid_snapshot.as_bytes()).unwrap();
         let plan = resolve_build_script_bundle(&manifest_dir).unwrap();
         assert!(!plan.rerun_if_changed.contains(&PathBuf::from(".")));
@@ -1032,7 +1078,7 @@ mod tests {
         ];
         for (payload, expected) in bad_cases {
             fs::write(&mr_pin_path, payload).unwrap();
-            let err = match render_bundled_resources(&workspace_root) {
+            let err = match render_correspondence_provenance_from_checkout(&workspace_root) {
                 Ok(_) => panic!("expected rejection containing {expected:?}"),
                 Err(err) => err,
             };
@@ -1040,6 +1086,6 @@ mod tests {
         }
 
         fs::write(&mr_pin_path, valid).unwrap();
-        assert!(render_bundled_resources(&workspace_root).is_ok());
+        assert!(render_correspondence_provenance_from_checkout(&workspace_root).is_ok());
     }
 }

@@ -165,16 +165,15 @@ packages `theory/` into `share/anneal/theory` (requiring
 To preserve bounded human-review auditability without shipping
 `vendor/lean-miri/` or `correspondence/` at runtime
 ([`docs/architecture.md`](architecture.md),
-[`docs/trust-model.md`](trust-model.md)), packaged user archives and
-`cargo-anneal` bundles instead carry a compact, CI-checked, digest-bound
-**correspondence provenance record**; [`docs/trust-model.md`](trust-model.md)
-(control 5) is authoritative for its fields and enforcement. Active today: CI
-binds the record to the canonical `trusted/` sources, `omnibus-archive` renders
-it from those same sources, and `cargo anneal verify` fails closed if it is
-malformed and copies it into every verification receipt. Planned: archive
-construction and `cargo anneal verify` will also hash the actual packaged
-`trusted/lean/` artifacts and fail closed unless those computed digests exactly
-match the record. Per
+[`docs/trust-model.md`](trust-model.md)), packaged user archives instead carry
+a compact, CI-checked, digest-bound **correspondence provenance record**;
+[`docs/trust-model.md`](trust-model.md) (control 5) is authoritative for its
+fields and enforcement. Active today: CI binds the record to the canonical
+`trusted/` sources and `omnibus-archive` renders it from those same sources;
+`cargo-anneal` neither embeds nor copies it, so receipts point auditors at
+`anneal-audit --require-correspondence` instead. Planned: archive construction
+will also hash the actual packaged `trusted/lean/` artifacts and fail closed
+unless those computed digests exactly match the record. Per
 [`docs/mir-correspondence-strategy.md`](mir-correspondence-strategy.md), the
 Phase 1 correspondence domain covers concrete, monomorphic captured MIR carrying
 concrete instance/layout metadata (with polymorphic generic library verification
@@ -255,8 +254,9 @@ Placing `Trusted.Correspondence*`, `Anneal.MirCorrespondence.*`, and
    ship `trusted/lean/` and, once MIR scaffolding and end-to-end packaging
    land, also ship the decoupled `theory/` closure (with `Anneal/MirWp.lean`
    and zero `*Canaries*.lean` modules) plus the compact correspondence
-   provenance record surfaced in `cargo anneal verify`'s TCB
-   audit log, while never packaging `vendor/lean-miri/`,
+   provenance record (`share/anneal/correspondence-provenance.json`, which
+   `cargo anneal verify` neither embeds nor copies into receipts), while
+   never packaging `vendor/lean-miri/`,
    `trusted/correspondence/`, or `correspondence/`, keeping downstream
    per-crate verification independent of `vendor/lean-miri/`. (In intermediate
    commits after `vendor/lean-miri/` lands and before
@@ -750,7 +750,7 @@ operational correspondence witness against the upstream MiniRust specification
   source-preflights, compiles inside
   isolated `bwrap` sandboxes, and standalone-kernel-replays all declarations of
   the `10` `Anneal.MiniRust*` modules (hashing them and binding
-  `vendor/minirust/UPSTREAM_PIN.json` into `CORRESPONDENCE_PROVENANCE_JSON`,
+  `vendor/minirust/UPSTREAM_PIN.json` into the correspondence provenance record,
   where `correspondence/` permits `Classical.choice` because `vendor/lean-miri`
   uses it). Constructive `{propext, Quot.sound}` purity (zero
   `Classical.choice`, zero `sorryAx`) is verified via the local/manual

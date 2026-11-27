@@ -66,6 +66,13 @@ const ALLOWED_CLAIM_KINDS: &[&str] = &["exact_refines", "sound_refines", "pure_s
 const ALLOWED_PROVENANCE_TAINTS: &[&str] =
     &["assumed_seams_present", "choice_total_false", "vendor_upstream_patches_present"];
 const ALLOWED_PROVENANCE_SCOPES: &[&str] = &["full_gate", "partial_gate"];
+/// Exact `correspondence_provenance.reason` that `cargo anneal verify` records
+/// for a pinned Profile v1 run. Pass 2 provenance is no longer compiled into
+/// `cargo-anneal`, so the receipt binds no Pass 2 artifacts and instead points
+/// auditors at the repository check.
+pub const DECOUPLED_CORRESPONDENCE_PROVENANCE_REASON: &str = "Pass 2 correspondence \
+    provenance is decoupled from cargo-anneal; verify repository correspondence \
+    via anneal-audit --require-correspondence";
 
 /// Controls how unrecognized RFC 6901 JSON pointers in a receipt are handled.
 #[derive(Clone, Copy, Debug, Default, PartialEq, Eq)]
@@ -345,6 +352,10 @@ pub struct SuccessReceipt {
     pub sha256_recorded: Vec<String>,
     pub unhashed: Vec<String>,
     pub correspondence_applicable: bool,
+    /// `correspondence_provenance.reason` when `correspondence_applicable` is
+    /// false (Profile v2, unpinned Lean, or the decoupled sentinel).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub correspondence_inapplicable_reason: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub correspondence_schema_version: Option<u64>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1183,7 +1194,11 @@ fn parse_success_receipt(
              pointer-free `assumptions`"
         ));
     }
-    if !has_unpinned_taint && canonical_root == expected_v1_root && !prov_summary.applicable {
+    if !has_unpinned_taint
+        && canonical_root == expected_v1_root
+        && !prov_summary.applicable
+        && !prov_summary.decoupled
+    {
         violations.push(
             "pinned Profile v1 verification correspondence_provenance must omit `applicable: false`"
                 .into(),
@@ -1424,6 +1439,7 @@ fn parse_success_receipt(
         sha256_recorded,
         unhashed,
         correspondence_applicable: prov_summary.applicable,
+        correspondence_inapplicable_reason: prov_summary.inapplicable_reason,
         correspondence_schema_version: prov_summary.schema_version,
         correspondence_claim_kind: prov_summary.claim_kind,
         correspondence_permitted_axioms: prov_summary.permitted_axioms,
@@ -1487,6 +1503,11 @@ fn parse_success_receipt(
 
 struct ProvenanceSummary {
     applicable: bool,
+    /// `applicable: false` with exactly
+    /// [`DECOUPLED_CORRESPONDENCE_PROVENANCE_REASON`].
+    decoupled: bool,
+    /// `reason` of an `applicable: false` record.
+    inapplicable_reason: Option<String>,
     schema_version: Option<u64>,
     claim_kind: Option<String>,
     permitted_axioms: Option<Vec<String>>,
@@ -1561,6 +1582,8 @@ fn parse_provenance(
         prov.collect_unrecognized(unknown);
         Ok(ProvenanceSummary {
             applicable,
+            decoupled: !applicable && reason == DECOUPLED_CORRESPONDENCE_PROVENANCE_REASON,
+            inapplicable_reason: (!applicable).then(|| reason.to_owned()),
             schema_version: None,
             claim_kind: None,
             permitted_axioms: None,
@@ -1740,6 +1763,8 @@ fn parse_provenance(
         prov.collect_unrecognized(unknown);
         Ok(ProvenanceSummary {
             applicable: true,
+            decoupled: false,
+            inapplicable_reason: None,
             schema_version: Some(sv),
             claim_kind,
             permitted_axioms,
@@ -3722,6 +3747,32 @@ pub(crate) mod tests {
             "{:?}",
             env.invariant_violations
         );
+
+        // Only the exact decoupled sentinel may stand in for pinned Profile v1
+        // provenance.
+        let mut v1_decoupled = sample_success_json();
+        v1_decoupled["correspondence_provenance"] = json!({
+            "applicable": false,
+            "reason": DECOUPLED_CORRESPONDENCE_PROVENANCE_REASON,
+        });
+        let env = parse_and_validate_receipt(&serde_json::to_vec(&v1_decoupled).unwrap()).unwrap();
+        assert!(env.invariant_violations.is_empty(), "{:?}", env.invariant_violations);
+        assert!(env.unrecognized_fields.is_empty(), "{:?}", env.unrecognized_fields);
+        for reason in [
+            format!("{DECOUPLED_CORRESPONDENCE_PROVENANCE_REASON} "),
+            DECOUPLED_CORRESPONDENCE_PROVENANCE_REASON.to_uppercase(),
+        ] {
+            v1_decoupled["correspondence_provenance"]["reason"] = json!(reason);
+            let env =
+                parse_and_validate_receipt(&serde_json::to_vec(&v1_decoupled).unwrap()).unwrap();
+            assert!(
+                env.invariant_violations.iter().any(|v| v.contains(
+                    "pinned Profile v1 verification correspondence_provenance must omit"
+                )),
+                "{reason:?}: {:?}",
+                env.invariant_violations
+            );
+        }
 
         let mut v2_applicable_true = sample_success_json();
         v2_applicable_true["audit"]["canonicalRoot"] = json!("Trusted.MirSemantics.CrateTheoremV2");

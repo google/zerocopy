@@ -106,19 +106,22 @@ excluding `vendor/lean-miri/`, `trusted/correspondence/`, and `correspondence/`
 from both Pass 1 and packaged user toolchain archives. To preserve
 [`THREAT_MODEL.md`](../THREAT_MODEL.md)'s bounded human-review guarantee without
 shipping the vendored `vendor/lean-miri/` tree or `correspondence/` proofs at
-runtime, every packaged user toolchain archive and `cargo-anneal` bundle
-carries a compact, CI-checked, digest-bound **correspondence provenance
-record** (pinned toolchain metadata, `trusted/lean/` and
-`trusted/correspondence/` source digests, `vendor/lean-miri/` upstream commit,
-`UPSTREAM_PIN.json` SHA-256, `patched_files` allowlist/digests, and
-`correspondence/` proof digests). Repository CI binds the record to the
-canonical sources it embeds, `cargo anneal verify` fails closed if the record
-is malformed, and it copies the record into every verification receipt—so an
-auditor inspecting only stated specifications and the receipt can identify and
-audit every TCB artifact, including $M_{\text{ref}}$ and
-$\tau_{\text{prog}}$. Re-hashing the packaged `trusted/lean/` artifacts
-against the record at archive construction and verification time remains
-planned ([`docs/trust-model.md`](trust-model.md)). For
+runtime, every packaged user toolchain archive carries a compact, CI-checked,
+digest-bound **correspondence provenance record** (pinned toolchain metadata,
+`trusted/lean/` and `trusted/correspondence/` source digests,
+`vendor/lean-miri/` upstream commit, `UPSTREAM_PIN.json` SHA-256,
+`patched_files` allowlist/digests, and `correspondence/` proof digests).
+Repository CI binds the record to the canonical sources it hashes, so an
+auditor holding the archive's record, the stated specifications, and a receipt
+(whose `model_manifest_sha256` covers the model bytes it staged) can identify
+and audit every TCB artifact, including $M_{\text{ref}}$ and
+$\tau_{\text{prog}}$. The record is not compiled into `cargo-anneal`, so Pass 2
+edits never rebuild it, and `cargo anneal verify` cannot authenticate it;
+receipts therefore record that Pass 2 provenance is not applicable and point
+at `anneal-audit --require-correspondence` rather than copying an
+unauthenticated record. Re-hashing the packaged `trusted/lean/` artifacts
+against the record at archive construction remains planned
+([`docs/trust-model.md`](trust-model.md)). For
 `vendor/lean-miri/`, Pass 2 verifies every vendored file against
 `vendor/lean-miri/UPSTREAM_PIN.json`—whose own SHA-256 digest and first-party
 patched-file allowlist are pinned inside `trusted/audit/`, rejecting extraneous

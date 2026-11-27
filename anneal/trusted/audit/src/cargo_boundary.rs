@@ -19,11 +19,11 @@ use std::{
 };
 
 use cargo_anneal::{
-    EMBEDDED_BUNDLE_SOURCES, EMBEDDED_CORRESPONDENCE_PROVENANCE_JSON, EMBEDDED_THEORY_BUNDLE_JSON,
-    Failure, SafeFs,
+    EMBEDDED_BUNDLE_SOURCES, EMBEDDED_THEORY_BUNDLE_JSON, Failure, SafeFs,
     bundle::{
         BundleError, LEGACY_BUNDLE_DESTINATION, LEGACY_THEORY_BUNDLE_DESTINATION,
-        render_bundled_resources_parts, render_bundled_theory, validate_bundle_source,
+        render_bundled_resources_parts, render_bundled_theory,
+        render_correspondence_provenance_from_checkout, validate_bundle_source,
     },
     is_clean_relative_path, is_sha256_hex, regular, sha256_file,
 };
@@ -305,10 +305,10 @@ fn map_bundle_error(err: BundleError) -> Failure {
 /// [`cargo_anneal::bundle::PROVENANCE_SOURCES`] are regular files under
 /// regular directories, that legacy checked-in `src/bundled_resources.rs`,
 /// `src/bundled_theory.json`, and transient `packaged/` staging directories
-/// are absent, and that canonical bundle rendering matches `cargo-anneal`'s
-/// compiled-in [`EMBEDDED_BUNDLE_SOURCES`],
-/// [`EMBEDDED_CORRESPONDENCE_PROVENANCE_JSON`], and
-/// [`EMBEDDED_THEORY_BUNDLE_JSON`] byte-for-byte.
+/// are absent, that canonical bundle rendering matches `cargo-anneal`'s
+/// compiled-in [`EMBEDDED_BUNDLE_SOURCES`] and [`EMBEDDED_THEORY_BUNDLE_JSON`]
+/// byte-for-byte, and that the Pass 2 correspondence provenance record (which
+/// `cargo-anneal` no longer embeds) renders from the checkout.
 pub fn verify_bundled_resources(checkout: &Path) -> Result<(), Failure> {
     let phase = "bundle-manifest";
     validate_bundle_source(checkout, "trusted/cargo-anneal/build.rs")
@@ -367,13 +367,7 @@ pub fn verify_bundled_resources(checkout: &Path) -> Result<(), Failure> {
             ));
         }
     }
-    if expected.provenance_json != EMBEDDED_CORRESPONDENCE_PROVENANCE_JSON {
-        return Err(Failure::policy(
-            phase,
-            "embedded cargo-anneal CORRESPONDENCE_PROVENANCE_JSON differs from canonical \
-             checkout sources; rebuild cargo-anneal and anneal-audit",
-        ));
-    }
+    render_correspondence_provenance_from_checkout(checkout).map_err(map_bundle_error)?;
     let packaged_dir = checkout.join("trusted/cargo-anneal/packaged");
     match fs::symlink_metadata(&packaged_dir) {
         Ok(_) => {

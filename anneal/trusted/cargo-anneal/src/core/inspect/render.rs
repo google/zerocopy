@@ -453,6 +453,12 @@ fn assurance_qualification_tags(receipt: &ParsedReceipt) -> Vec<String> {
         if has_prov_qual {
             tags.push("provenance=qualified".to_owned());
         }
+        // No Pass 2 record binds the model this receipt relied on (Profile v2,
+        // unpinned Lean, or the decoupled sentinel), so the success is only as
+        // strong as a separate `anneal-audit --require-correspondence` run.
+        if !s.correspondence_applicable {
+            tags.push("correspondence=inapplicable".to_owned());
+        }
     }
     tags
 }
@@ -590,6 +596,13 @@ fn render_human(
                         out,
                         "  relation: {}",
                         sanitize_inline_string(&fmt_relation_summary(rel))
+                    );
+                }
+                if let Some(reason) = &s.correspondence_inapplicable_reason {
+                    let _ = writeln!(
+                        out,
+                        "  correspondence: inapplicable ({})",
+                        SanitizedInline(reason)
                     );
                 }
                 if s.correspondence_schema_version == Some(3) {
@@ -899,6 +912,11 @@ fn render_ledger(
                 let _ =
                     writeln!(out, "correspondence_provenance.claim_kind={}", SanitizedInline(ck));
             }
+            if let Some(reason) = &s.correspondence_inapplicable_reason {
+                let _ = writeln!(out, "correspondence_provenance.applicable=false");
+                let _ =
+                    writeln!(out, "correspondence_provenance.reason={}", SanitizedInline(reason));
+            }
             if let Some(pa) = &s.correspondence_permitted_axioms {
                 let _ = writeln!(
                     out,
@@ -1093,6 +1111,13 @@ fn render_markdown(
                 format_gfm_code_cell(&fmt_relation_summary(rel))
             );
         }
+        if let Some(reason) = &s.correspondence_inapplicable_reason {
+            let _ = writeln!(
+                out,
+                "| Correspondence Provenance | not applicable: {} |",
+                format_gfm_code_cell(reason)
+            );
+        }
         if let Some(sv) = s.correspondence_schema_version {
             let _ = writeln!(
                 out,
@@ -1237,6 +1262,54 @@ mod tests {
         assert!(ledger.contains("horizon=unknown(\\u{001B}[8m\\ninvariant_violations=0)\n"));
         assert!(ledger.lines().all(|line| !line.starts_with("invariant_violations=0")));
         assert!(ledger.contains("unrecognized_fields=/\\u{001B}[31m\\nbad_key"));
+    }
+
+    #[test]
+    fn renders_sanitize_inapplicable_correspondence_reason() {
+        let mut r = sample_success_json();
+        let reason = "Evil\x1b[31m|`<tag>\r\n## Spoofed\ncorrespondence_provenance.applicable=true";
+        r["correspondence_provenance"] = json!({ "applicable": false, "reason": reason });
+        let env = parse_and_validate_receipt(&serde_json::to_vec(&r).unwrap()).unwrap();
+        let render = |format| {
+            render_inspection(
+                &env,
+                None,
+                &[],
+                &RenderOptions { format, ..RenderOptions::default() },
+            )
+        };
+        let injected = |out: &str| {
+            out.lines().any(|line| {
+                let line = line.trim_start();
+                line.starts_with("## Spoofed")
+                    || line.starts_with("correspondence_provenance.applicable=true")
+            })
+        };
+
+        let human = render(InspectFormat::Human);
+        assert!(!human.contains('\x1b') && !human.contains('\r'), "{human}");
+        assert!(!injected(&human), "{human}");
+        assert!(human.contains(" [QUALIFIED]\n"), "{human}");
+        assert!(human.contains("  correspondence: inapplicable (Evil\\u{001B}[31m"), "{human}");
+
+        let md = render(InspectFormat::Markdown);
+        assert!(!md.contains('\x1b') && !injected(&md), "{md}");
+        assert!(
+            md.contains(&format!(
+                "| Correspondence Provenance | not applicable: {} |\n",
+                format_gfm_code_cell(reason)
+            )),
+            "{md}"
+        );
+
+        let ledger = render(InspectFormat::Ledger);
+        assert!(!ledger.contains('\x1b') && !injected(&ledger), "{ledger}");
+        assert!(ledger.contains("correspondence_provenance.applicable=false\n"), "{ledger}");
+        assert_eq!(
+            ledger.lines().filter(|l| l.starts_with("correspondence_provenance.reason=")).count(),
+            1,
+            "{ledger}"
+        );
     }
 
     fn s3_relation_test_receipt(scope_kind: &str) -> serde_json::Value {

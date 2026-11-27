@@ -8533,8 +8533,9 @@ fn enforces_bundled_resources_parity_and_regular_files() {
     fs::write(&manifest_path, &original_manifest_bytes).unwrap();
     verify_bundled_resources(&root).unwrap();
 
-    // 13. Drifted canonical trusted source or provenance file vs compiled-in
-    // `cargo_anneal` bundle -> policy rejection (code 1).
+    // 13. Drifted canonical trusted source vs compiled-in `cargo_anneal`
+    // bundle -> policy rejection (code 1). Pass 2 provenance sources are not
+    // compiled into `cargo-anneal`, so editing them does not.
     let trusted_entry = root.join("trusted/lean/Trusted.lean");
     let orig_trusted_entry = fs::read(&trusted_entry).unwrap();
     let drifted_entry = format!("{}\n-- drifted\n", String::from_utf8_lossy(&orig_trusted_entry));
@@ -8545,7 +8546,7 @@ fn enforces_bundled_resources_parity_and_regular_files() {
 
     let orig_prov = fs::read(&prov).unwrap();
     fs::write(&prov, format!("{}\n-- drifted\n", String::from_utf8_lossy(&orig_prov))).unwrap();
-    expect_policy("embedded cargo-anneal CORRESPONDENCE_PROVENANCE_JSON differs");
+    verify_bundled_resources(&root).unwrap();
     fs::write(&prov, &orig_prov).unwrap();
     verify_bundled_resources(&root).unwrap();
 

@@ -3668,7 +3668,6 @@ mod tests {
         include!(concat!(env!("OUT_DIR"), "/bundled_resources.rs"));
 
         pub fn entries() -> &'static [(&'static str, &'static str)] {
-            let _ = CORRESPONDENCE_PROVENANCE_JSON;
             BUNDLE
         }
     }
