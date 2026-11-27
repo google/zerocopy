@@ -20,6 +20,7 @@ import Lean.Meta.Match.MatchEqs
 import Lean.Meta.Constructions.SparseCasesOn
 import Lean.Meta.Constructions.SparseCasesOnEq
 import Lean.Meta.Tactic.FunInd
+import Lean.Elab.PreDefinition.WF.Eqns
 import Lean.Meta.CongrTheorems
 import Lean.Meta.Injective
 import Lean.Meta.MethodSpecs
@@ -6644,48 +6645,1467 @@ def isUserNamedBinder (n : Name) (bi : BinderInfo) : Bool :=
   | .str .anonymous s => !s.startsWith "_" && !s.endsWith "✝" && s != "this"
   | _ => false
 
-/-- Return `true` when `ci` is a compiler-generated definition (projection,
-aux recursor, matcher, splitter, noConfusion, ctorIdx, etc.) rather than an
-author-written specification definition. -/
-def isCompilerGeneratedSpecDef (env : Environment)
-    (ci : ConstantInfo) : Bool :=
-  let userName := privateToUserName ci.name
-  let generatedSuffix := match userName with
-    | .str _ suffix =>
-      let suffixes := [
-        "noConfusionType", "ctorIdx", "toCtorIdx", "splitter", "inj", "injEq"
-      ]
-      suffixes.contains suffix
-    | _ => false
-  generatedSuffix || userName.isInternalDetail ||
-    isAuxRecursor env ci.name || isNoConfusion env ci.name ||
-    env.isProjectionFn ci.name
+/-- Collect user-named bindings (in `.lam`, `.forallE`, `.letE`, and joint
+`dite` branches) whose loose bound variable index `0` never occurs in the body
+expression. -/
+partial def collectUnusedBindersExpr (e : Expr) : Array String :=
+  let fn := e.getAppFn
+  let args := e.getAppArgs
+  if fn.constName? == some ``dite && args.size >= 5 then
+    match args[3]!, args[4]! with
+    | .lam n1 d1 b1 bi1, .lam n2 d2 b2 _ =>
+      if n1 == n2 then Id.run do
+        let here :=
+          if isUserNamedBinder n1 bi1 &&
+              !b1.hasLooseBVar 0 && !b2.hasLooseBVar 0 then
+            #[n1.toString]
+          else #[]
+        let mut out :=
+          collectUnusedBindersExpr args[0]! ++
+            collectUnusedBindersExpr args[1]! ++
+            collectUnusedBindersExpr args[2]! ++
+            here ++
+            collectUnusedBindersExpr d1 ++ collectUnusedBindersExpr b1 ++
+            collectUnusedBindersExpr d2 ++ collectUnusedBindersExpr b2
+        for i in [5:args.size] do
+          out := out ++ collectUnusedBindersExpr args[i]!
+        return out
+      else
+        args.foldl (init := collectUnusedBindersExpr fn) fun acc a =>
+          acc ++ collectUnusedBindersExpr a
+    | _, _ =>
+      args.foldl (init := collectUnusedBindersExpr fn) fun acc a =>
+        acc ++ collectUnusedBindersExpr a
+  else
+    match e with
+    | .lam n d b bi =>
+      let here := if isUserNamedBinder n bi && !b.hasLooseBVar 0
+        then #[n.toString] else #[]
+      here ++ collectUnusedBindersExpr d ++ collectUnusedBindersExpr b
+    | .forallE n d b bi =>
+      let here := if isUserNamedBinder n bi && !b.hasLooseBVar 0
+        then #[n.toString] else #[]
+      here ++ collectUnusedBindersExpr d ++ collectUnusedBindersExpr b
+    | .letE n t v b _ =>
+      let here := if isUserNamedBinder n .default && !b.hasLooseBVar 0
+        then #[n.toString] else #[]
+      here ++ collectUnusedBindersExpr t ++ collectUnusedBindersExpr v ++
+        collectUnusedBindersExpr b
+    | .app f a =>
+      collectUnusedBindersExpr f ++ collectUnusedBindersExpr a
+    | .mdata _ b => collectUnusedBindersExpr b
+    | .proj _ _ b => collectUnusedBindersExpr b
+    | _ => #[]
 
-/-- Collect user-named bindings (in `.lam`, `.forallE`, `.letE`) whose loose
-bound variable index `0` never occurs in the body expression. -/
-partial def collectUnusedBindersExpr : Expr → Array String
+/-- Return `true` when `slice` (`(declName, numVaryingArgs)` per mutual branch)
+still packs either multiple mutual branches (`PSum`) or `≥ 2` varying arguments
+(`PSigma`). -/
+def isWfCompositeSlice (slice : Array (Name × Nat)) : Bool :=
+  slice.size > 1 || (slice.size == 1 && slice[0]!.2 >= 2)
+
+/-- Collect unused binders inside a `PSum`/`PSigma` type-family expression in a
+compiler-generated well-founded argument packer bounded by `ArgsPacker` branch
+arities `slice`, auditing leaf user types strictly. -/
+partial def collectWfPackedTypeUnused (slice : Array (Name × Nat))
+    (e : Expr) : Array String :=
+  if slice.size > 1 then
+    match e with
+    | .app (.app (.const ``PSum _) l) r =>
+      collectWfPackedTypeUnused #[slice[0]!] l ++
+        collectWfPackedTypeUnused (slice.extract 1 slice.size) r
+    | _ => collectUnusedBindersExpr e
+  else if slice.size == 1 && slice[0]!.2 >= 2 then
+    let rem := #[(slice[0]!.1, slice[0]!.2 - 1)]
+    match e with
+    | .app (.app (.const ``PSigma _) d) (.lam _ fd fb _) =>
+      collectUnusedBindersExpr d ++ collectUnusedBindersExpr fd ++
+        collectWfPackedTypeUnused rem fb
+    | .app (.app (.const ``PSigma _) d) fam =>
+      collectUnusedBindersExpr d ++ collectUnusedBindersExpr fam
+    | _ => collectUnusedBindersExpr e
+  else
+    collectUnusedBindersExpr e
+
+/-- Collect unused binders inside a top-level compiler-generated well-founded
+packed argument (`PSum.inl`/`PSum.inr`/`PSigma.mk` telescope passed to a
+verified `_unary`/`_mutual` helper), peeling only up to `ArgsPacker` arity
+`slice`. -/
+partial def collectWfPackedArgUnused (slice : Array (Name × Nat))
+    (e : Expr) : Array String :=
+  if slice.size > 1 then
+    let lSlice := #[slice[0]!]
+    let rSlice := slice.extract 1 slice.size
+    match e with
+    | .app (.app (.app (.const ``PSum.inl _) lTy) rTy) v =>
+      collectWfPackedTypeUnused lSlice lTy ++
+        collectWfPackedTypeUnused rSlice rTy ++
+        collectWfPackedArgUnused lSlice v
+    | .app (.app (.app (.const ``PSum.inr _) lTy) rTy) v =>
+      collectWfPackedTypeUnused lSlice lTy ++
+        collectWfPackedTypeUnused rSlice rTy ++
+        collectWfPackedArgUnused rSlice v
+    | _ => collectUnusedBindersExpr e
+  else if slice.size == 1 && slice[0]!.2 >= 2 then
+    let rem := #[(slice[0]!.1, slice[0]!.2 - 1)]
+    match e with
+    | .app (.app (.app (.app (.const ``PSigma.mk _) aTy) (.lam _ fd fb _))
+        fst) snd =>
+      collectUnusedBindersExpr aTy ++ collectUnusedBindersExpr fd ++
+        collectWfPackedTypeUnused rem fb ++ collectUnusedBindersExpr fst ++
+        collectWfPackedArgUnused rem snd
+    | _ => collectUnusedBindersExpr e
+  else
+    collectUnusedBindersExpr e
+
+/-- Collect unused user-named bindings on a well-founded wrapper definition
+calling a verified `_unary`/`_mutual` helper in `wfNonRecSlices`. -/
+partial def collectUnusedBindersWfRoot
+    (wfNonRecSlices : Std.HashMap Name (Array (Name × Nat))) :
+    Expr → Array String
   | .lam n d b bi =>
     let here := if isUserNamedBinder n bi && !b.hasLooseBVar 0
       then #[n.toString] else #[]
-    here ++ collectUnusedBindersExpr d ++ collectUnusedBindersExpr b
-  | .forallE n d b bi =>
+    here ++ collectUnusedBindersExpr d ++
+      collectUnusedBindersWfRoot wfNonRecSlices b
+  | e =>
+    let fn := e.getAppFn
+    let args := e.getAppArgs
+    match fn.constName? with
+    | some helper =>
+      match wfNonRecSlices[helper]? with
+      | some slice =>
+        args.foldl (init := #[]) fun acc arg =>
+          acc ++ collectWfPackedArgUnused slice arg
+      | none => collectUnusedBindersExpr e
+    | none => collectUnusedBindersExpr e
+
+/-- Return `true` when `e` contains a `.const target _` subterm. -/
+def exprContainsConst (e : Expr) (target : Name) : Bool :=
+  match e with
+  | .const n _ => n == target
+  | .app f a => exprContainsConst f target || exprContainsConst a target
+  | .lam _ d b _ | .forallE _ d b _ =>
+    exprContainsConst d target || exprContainsConst b target
+  | .letE _ t v b _ =>
+    exprContainsConst t target || exprContainsConst v target ||
+      exprContainsConst b target
+  | .mdata _ b | .proj _ _ b => exprContainsConst b target
+  | _ => false
+
+/-- Audit the codomain of a compiler-synthesized structural-recursion motive
+(`mkBRecOnMotive` + `PProdN.packLambdas`), peeling `PProd`/`And` motive tuples
+and `otherArgs` `.forallE` arrows while checking every domain and leaf type. -/
+partial def peelStructMotiveBody : Expr → Array String
+  | .app (.app (.const ``PProd _) a) b
+  | .app (.app (.const ``And _) a) b =>
+    peelStructMotiveBody a ++ peelStructMotiveBody b
+  | .forallE _ d b _ =>
+    collectUnusedBindersExpr d ++ peelStructMotiveBody b
+  | e => collectUnusedBindersExpr e
+
+/-- Count outer `.forallE` binders on a recursor motive parameter domain ending
+in `.sort _`. -/
+def countMotiveBinders : Expr → Option Nat
+  | .sort _ => some 0
+  | .forallE _ _ b _ => (· + 1) <$> countMotiveBinders b
+  | _ => none
+
+/-- Peel `k` compiler-synthesized outer `.lam` binders (`indexMajorArgs`) on a
+structural-recursion motive, auditing each binder domain and its codomain. -/
+def peelCompilerMotive : Nat → Expr → Array String
+  | 0, e => peelStructMotiveBody e
+  | k + 1, .lam _ d b _ =>
+    collectUnusedBindersExpr d ++ peelCompilerMotive k b
+  | _, e => collectUnusedBindersExpr e
+
+/-- Return `true` when `s` is `pfx ++ N` with `1 ≤ N ≤ bound` and canonical
+ASCII decimal digits (rejecting zero-padded suffixes such as `01`). -/
+def isBoundedNestedSuffix (pfx s : String) (bound : Nat) : Bool :=
+  match s.dropPrefix? pfx with
+  | some rest =>
+    let restStr := rest.toString
+    if restStr.isEmpty || !restStr.all Char.isDigit then false
+    else match restStr.toNat? with
+      | some k => 1 <= k && k <= bound && toString k == restStr
+      | none => false
+  | none => false
+
+/-- Resolve `(numParams, motiveArities)` when `fn` is a `brecOn`/`below`
+auxiliary recursor of a kernel inductive in `env`. -/
+def auxRecMotiveArities? (originEnv env : Environment) (fn : Expr) :
+    Option (Nat × Array Nat) := do
+  let cName ← fn.constName?
+  guard (Lean.isAuxRecursor originEnv cName)
+  let .str indName s := cName | none
+  let .inductInfo iv ← env.checked.get.find? indName | none
+  guard (s == "brecOn" || s == "below" ||
+    isBoundedNestedSuffix "brecOn_" s iv.numNested ||
+    isBoundedNestedSuffix "below_" s iv.numNested)
+  let cInfo ← env.checked.get.find? cName
+  let numMotives := iv.all.length + iv.numNested
+  let rec skipParams : Nat → Expr → Option Expr
+    | 0, ty => some ty
+    | n + 1, .forallE _ _ b _ => skipParams n b
+    | _, _ => none
+  let rec readMotives : Nat → Expr → Array Nat → Option (Array Nat)
+    | 0, _, acc => some acc
+    | n + 1, .forallE _ d b _, acc => do
+      let ar ← countMotiveBinders d
+      readMotives n b (acc.push ar)
+    | _, _, _ => none
+  let afterParams ← skipParams iv.numParams cInfo.type
+  let arities ← readMotives numMotives afterParams #[]
+  some (iv.numParams, arities)
+
+/-- Audit a top-level structural `brecOn` application (possibly wrapped in
+`PProd`/`And` projections and applied to `otherArgs`), skipping only
+compiler-synthesized `brecOn` and packed `below` motive binders. -/
+partial def collectStructBrecApp (originEnv env : Environment) (e : Expr) :
+    Array String :=
+  match e with
+  | .proj _ _ inner => collectStructBrecApp originEnv env inner
+  | _ =>
+    let fn := e.getAppFn
+    let args := e.getAppArgs
+    if fn matches .proj _ _ _ then
+      collectStructBrecApp originEnv env fn ++
+        args.foldl (init := #[])
+          (fun acc a => acc ++ collectUnusedBindersExpr a)
+    else
+      match auxRecMotiveArities? originEnv env fn with
+      | none => collectUnusedBindersExpr e
+      | some (numParams, arities) => Id.run do
+        let numMotives := arities.size
+        if args.size < numParams + numMotives then
+          return collectUnusedBindersExpr e
+        let mut out : Array String := #[]
+        for i in [0:args.size] do
+          let arg := args[i]!
+          if i >= numParams && i < numParams + numMotives then
+            out := out ++ peelCompilerMotive arities[i - numParams]! arg
+          else
+            let rec auditPackedF : Expr → Array String
+              | .lam n d b bi =>
+                let here := if isUserNamedBinder n bi && !b.hasLooseBVar 0
+                  then #[n.toString] else #[]
+                let dUnused :=
+                  match auxRecMotiveArities? originEnv env d.getAppFn with
+                  | some (bp, bar) =>
+                    let bargs := d.getAppArgs
+                    if bargs.size >= bp + bar.size then Id.run do
+                      let mut u : Array String := #[]
+                      for j in [0:bargs.size] do
+                        if j >= bp && j < bp + bar.size then
+                          u := u ++ peelCompilerMotive bar[j - bp]! bargs[j]!
+                        else
+                          u := u ++ collectUnusedBindersExpr bargs[j]!
+                      u
+                    else collectUnusedBindersExpr d
+                  | none => collectUnusedBindersExpr d
+                here ++ dUnused ++ auditPackedF b
+              | body => collectUnusedBindersExpr body
+            out := out ++ auditPackedF arg
+        return out
+
+/-- Audit the top-level wrapper body of a structurally recursive definition. -/
+partial def collectUnusedBindersStructRoot (originEnv env : Environment) :
+    Expr → Array String
+  | .lam n d b bi =>
     let here := if isUserNamedBinder n bi && !b.hasLooseBVar 0
       then #[n.toString] else #[]
-    here ++ collectUnusedBindersExpr d ++ collectUnusedBindersExpr b
+    here ++ collectUnusedBindersExpr d ++
+      collectUnusedBindersStructRoot originEnv env b
   | .letE n t v b _ =>
     let here := if isUserNamedBinder n .default && !b.hasLooseBVar 0
       then #[n.toString] else #[]
     here ++ collectUnusedBindersExpr t ++ collectUnusedBindersExpr v ++
-      collectUnusedBindersExpr b
-  | .app f a => collectUnusedBindersExpr f ++ collectUnusedBindersExpr a
-  | .mdata _ b => collectUnusedBindersExpr b
-  | .proj _ _ b => collectUnusedBindersExpr b
-  | _ => #[]
+      collectUnusedBindersStructRoot originEnv env b
+  | e => collectStructBrecApp originEnv env e
+
+/-- Audit `e` while peeling only subexpressions matching one of the outer
+`Ind.below` compiler motives lifted to binder depth `depth`. -/
+partial def collectWithExactMotives (motives : Array (Nat × Expr))
+    (depth : Nat) (e : Expr) : Array String :=
+  let hit? := motives.find? fun (_, m) => m.liftLooseBVars 0 depth == e
+  if let some (ar, _) := hit? then
+    peelCompilerMotive ar e
+  else
+    match e with
+    | .lam n d b bi =>
+      let here := if isUserNamedBinder n bi && !b.hasLooseBVar 0
+        then #[n.toString] else #[]
+      here ++ collectWithExactMotives motives depth d ++
+        collectWithExactMotives motives (depth + 1) b
+    | .forallE n d b bi =>
+      let here := if isUserNamedBinder n bi && !b.hasLooseBVar 0
+        then #[n.toString] else #[]
+      here ++ collectWithExactMotives motives depth d ++
+        collectWithExactMotives motives (depth + 1) b
+    | .letE n t v b _ =>
+      let here := if isUserNamedBinder n .default && !b.hasLooseBVar 0
+        then #[n.toString] else #[]
+      here ++ collectWithExactMotives motives depth t ++
+        collectWithExactMotives motives depth v ++
+        collectWithExactMotives motives (depth + 1) b
+    | .app f a =>
+      collectWithExactMotives motives depth f ++
+        collectWithExactMotives motives depth a
+    | .mdata _ b => collectWithExactMotives motives depth b
+    | .proj _ _ b => collectWithExactMotives motives depth b
+    | _ => #[]
+
+/-- Audit a compiler-generated `<fn>._f` functional body, skipping only the
+exact `Ind.below` motive binders synthesized from its `below` parameter while
+flagging any unused user parameters or interior bindings. -/
+partial def collectUnusedBindersStructF (originEnv env : Environment) :
+    Expr → Array String
+  | .lam n d b bi =>
+    let here := if isUserNamedBinder n bi && !b.hasLooseBVar 0
+      then #[n.toString] else #[]
+    match auxRecMotiveArities? originEnv env d.getAppFn with
+    | some (bp, bar) =>
+      let bargs := d.getAppArgs
+      if bargs.size >= bp + bar.size then Id.run do
+        let mut dUnused : Array String := #[]
+        let mut motives : Array (Nat × Expr) := #[]
+        for j in [0:bargs.size] do
+          if j >= bp && j < bp + bar.size then
+            let ar := bar[j - bp]!
+            dUnused := dUnused ++ peelCompilerMotive ar bargs[j]!
+            motives := motives.push (ar, bargs[j]!)
+          else
+            dUnused := dUnused ++ collectUnusedBindersExpr bargs[j]!
+        return here ++ dUnused ++ collectWithExactMotives motives 1 b
+      else
+        here ++ collectUnusedBindersExpr d ++
+          collectUnusedBindersStructF originEnv env b
+    | none =>
+      here ++ collectUnusedBindersExpr d ++
+        collectUnusedBindersStructF originEnv env b
+  | e => collectUnusedBindersExpr e
+
+/-- Return `true` when `fnName` is a `<helper>._proof_<N>` auxiliary proof
+constant synthesized inside `helper`. -/
+def isWfHelperProofConst (helper fnName : Name) : Bool :=
+  match fnName with
+  | .str p s =>
+    p == helper &&
+      match s.dropPrefix? "_proof_" with
+      | some r => !r.toString.isEmpty && r.toString.all Char.isDigit
+      | none => false
+  | _ => false
+
+/-- Return `true` when binder domain `d` has sort `Prop` (`.sort .zero`) under
+`Kernel.check` + `Kernel.whnf`, returning `false` on non-`Prop` or kernel error.
+-/
+def isPropDomain (env : Environment) (lctx : LocalContext) (d : Expr) : Bool :=
+  match Kernel.check env lctx d with
+  | .ok domSort =>
+    match Kernel.whnf env lctx domSort with
+    | .ok (.sort .zero) => true
+    | _ => false
+  | .error _ => false
+
+/-- Return `true` when `d` has the shape `∀ y : packTy, ∀ h_rel, C` of a
+compiler-synthesized well-founded induction hypothesis over `rootPackLifted`
+(where `h_rel` is an anonymous or macro-scoped relation binder). -/
+def isWfIhDomain (rootPackLifted : Expr) : Expr → Bool
+  | .forallE _ yDom (.forallE m _ _ _) _ =>
+    (m.isAnonymous || m.hasMacroScopes) && yDom == rootPackLifted
+  | _ => false
+
+/-- Return `true` when loose `bvar idx` occurs in `e` outside compiler-only
+positions (matcher motive arguments, macro-scoped WF induction-hypothesis
+domains, `skipAtFix?` `termination_by` relation/proof terms at `fixDepth`, and
+packed/measure parameters inside `ih` decreasing-proof arguments `args[1..]`,
+while counting user `<helper>._proof_<N>` terms in `args[0]` and pure `Prop`
+hypotheses in `ih` decreasing proofs as genuine uses). -/
+partial def usesBVarOutsideCompiler (env : Environment)
+    (matcherNumParams : Std.HashMap Name Nat) (helper : Name)
+    (skipAtFix? : Option (Array Expr × Nat)) (ihVars : List Nat)
+    (curDepth idx : Nat) (e : Expr) : Bool :=
+  if !e.hasLooseBVars then
+    false
+  else if match skipAtFix? with
+    | some (rels, fixDepth) =>
+      curDepth >= fixDepth &&
+        rels.any fun r => r.liftLooseBVars 0 (curDepth - fixDepth) == e
+    | none => false then
+    false
+  else
+    let fn := e.getAppFn
+    let args := e.getAppArgs
+    if match fn with
+      | .bvar fIdx => ihVars.contains fIdx && args.size >= 1
+      | _ => false then
+      let fHit := match fn with
+        | .bvar fIdx => fIdx == idx
+        | _ => false
+      if fHit ||
+          usesBVarOutsideCompiler env matcherNumParams helper skipAtFix? ihVars
+            curDepth idx args[0]! then
+        true
+      else Id.run do
+        for j in [1:args.size] do
+          let decArg := args[j]!
+          let pFn := decArg.getAppFn
+          let pArgs := decArg.getAppArgs
+          match pFn.constName? with
+          | some pName =>
+            if isWfHelperProofConst helper pName then
+              if let some pci := env.checked.get.find? pName then
+                let mut ty := pci.type
+                let mut lctx : LocalContext := {}
+                let mut nextFv : Nat := 0
+                for k in [0:pArgs.size] do
+                  match ty with
+                  | .forallE pn pdom pbody pbi =>
+                    if !pbody.hasLooseBVar 0 &&
+                        isPropDomain env lctx pdom then
+                      if usesBVarOutsideCompiler env matcherNumParams helper
+                          skipAtFix? ihVars curDepth idx pArgs[k]! then
+                        return true
+                    let fv : FVarId :=
+                      { name := Name.num `_anneal_wf_dec nextFv }
+                    lctx := lctx.mkLocalDecl fv pn pdom pbi
+                    ty := pbody.instantiate1 (.fvar fv)
+                    nextFv := nextFv + 1
+                  | _ =>
+                    if usesBVarOutsideCompiler env matcherNumParams helper
+                        skipAtFix? ihVars curDepth idx pArgs[k]! then
+                      return true
+            else if usesBVarOutsideCompiler env matcherNumParams helper
+                skipAtFix? ihVars curDepth idx decArg then
+              return true
+          | none =>
+            if usesBVarOutsideCompiler env matcherNumParams helper skipAtFix?
+                ihVars curDepth idx decArg then
+              return true
+        return false
+    else if let some fnName := fn.constName? then
+      if let some numP := matcherNumParams[fnName]? then
+        Id.run do
+          for i in [0:args.size] do
+            if i < numP || i >= numP + 1 then
+              if usesBVarOutsideCompiler env matcherNumParams helper skipAtFix?
+                  ihVars curDepth idx args[i]! then
+                return true
+          return false
+      else
+        args.any (usesBVarOutsideCompiler env matcherNumParams helper skipAtFix?
+          ihVars curDepth idx)
+    else
+      match e with
+      | .bvar i => i == idx
+      | .app f a =>
+        usesBVarOutsideCompiler env matcherNumParams helper skipAtFix? ihVars
+            curDepth idx f ||
+          usesBVarOutsideCompiler env matcherNumParams helper skipAtFix? ihVars
+            curDepth idx a
+      | .lam n d b _ | .forallE n d b _ =>
+        let isMacroIhDom := n.hasMacroScopes &&
+          match d with
+          | .forallE _ _ (.forallE m _ _ _) _ =>
+            m.isAnonymous || m.hasMacroScopes
+          | _ => false
+        let ihVars' :=
+          if isMacroIhDom then 0 :: ihVars.map (· + 1)
+          else ihVars.map (· + 1)
+        (!isMacroIhDom &&
+            usesBVarOutsideCompiler env matcherNumParams helper skipAtFix?
+              ihVars curDepth idx d) ||
+          usesBVarOutsideCompiler env matcherNumParams helper skipAtFix?
+            ihVars' (curDepth + 1) (idx + 1) b
+      | .letE _ t v b _ =>
+        usesBVarOutsideCompiler env matcherNumParams helper skipAtFix? ihVars
+            curDepth idx t ||
+          usesBVarOutsideCompiler env matcherNumParams helper skipAtFix? ihVars
+            curDepth idx v ||
+          usesBVarOutsideCompiler env matcherNumParams helper skipAtFix?
+            (ihVars.map (· + 1)) (curDepth + 1) (idx + 1) b
+      | .mdata _ b | .proj _ _ b =>
+        usesBVarOutsideCompiler env matcherNumParams helper skipAtFix? ihVars
+          curDepth idx b
+      | _ => false
+
+/-- Audit a subterm inside a well-founded definition or `_unary`/`_mutual`
+helper guided by the root `WellFounded.fix` packed domain `rootPackTy` and
+`ArgsPacker` branch arities `rootSlice`: peels `PSum.casesOn` and
+`PSigma.casesOn` motives/packers only up to `ArgsPacker` arity on tracked
+compiler-packed `bvar`s, peels `PSum.inl`/`PSum.inr`/`PSigma.mk` families up to
+`rootSlice` only in the first argument of a tracked `ih` `bvar` call, handles
+joint `dite` binders, skips macro-scoped `ih` domains and `<helper>._proof_<N>`
+constants, and attributes each mutual branch's unused bindings to its owning
+declaration. -/
+partial def collectWfBodyWithPack (env : Environment)
+    (matcherNumParams : Std.HashMap Name Nat) (helper owner : Name)
+    (rootSlice : Array (Name × Nat)) (rootPackTy : Expr) (depth : Nat)
+    (packedVars : List (Nat × Expr × Array (Name × Nat)))
+    (ihVars : List Nat) (e : Expr) : Array (Name × String) :=
+  let shiftPacked (k : Nat) :=
+    packedVars.map fun (i, ty, sl) => (i + k, ty.liftLooseBVars 0 k, sl)
+  let shiftIh (k : Nat) := ihVars.map (· + k)
+  let rec collectPackArg (curSlice : Array (Name × Nat)) (expTy : Expr)
+      (d : Nat) (pv : List (Nat × Expr × Array (Name × Nat)))
+      (iv : List Nat) (arg : Expr) : Array (Name × String) :=
+    let afn := arg.getAppFn
+    let aargs := arg.getAppArgs
+    let expFn := expTy.getAppFn
+    let expArgs := expTy.getAppArgs
+    if curSlice.size > 1 &&
+        expFn.constName? == some ``PSum && expArgs.size == 2 &&
+        afn.constName? == some ``PSum.inl && aargs.size == 3 &&
+        aargs[0]! == expArgs[0]! && aargs[1]! == expArgs[1]! then
+      collectPackArg #[curSlice[0]!] expArgs[0]! d pv iv aargs[2]!
+    else if curSlice.size > 1 &&
+        expFn.constName? == some ``PSum && expArgs.size == 2 &&
+        afn.constName? == some ``PSum.inr && aargs.size == 3 &&
+        aargs[0]! == expArgs[0]! && aargs[1]! == expArgs[1]! then
+      collectPackArg (curSlice.extract 1 curSlice.size) expArgs[1]! d pv iv
+        aargs[2]!
+    else if curSlice.size == 1 && curSlice[0]!.2 >= 2 &&
+        expFn.constName? == some ``PSigma && expArgs.size == 2 &&
+        afn.constName? == some ``PSigma.mk && aargs.size == 4 &&
+        aargs[0]! == expArgs[0]! && aargs[1]! == expArgs[1]! then
+      let remSlice := #[(curSlice[0]!.1, curSlice[0]!.2 - 1)]
+      let fstOut := collectWfBodyWithPack env matcherNumParams helper owner
+        rootSlice rootPackTy d pv iv aargs[2]!
+      let sndOut := match expArgs[1]! with
+        | .lam _ _ famBody _ =>
+          collectPackArg remSlice (famBody.instantiate1 aargs[2]!) d pv iv
+            aargs[3]!
+        | _ =>
+          collectWfBodyWithPack env matcherNumParams helper owner rootSlice
+            rootPackTy d pv iv aargs[3]!
+      fstOut ++ sndOut
+    else
+      collectWfBodyWithPack env matcherNumParams helper owner rootSlice
+        rootPackTy d pv iv arg
+  let peelPackMotive (pSlice : Array (Name × Nat)) (matchedTy m : Expr) :
+      Array (Name × String) :=
+    match m with
+    | .lam _ md mb _ =>
+      let pv' := (0, matchedTy.liftLooseBVars 0 1, pSlice) :: shiftPacked 1
+      (collectWfPackedTypeUnused pSlice md).map (owner, ·) ++
+        collectWfBodyWithPack env matcherNumParams helper owner rootSlice
+          rootPackTy (depth + 1) pv' (shiftIh 1) mb
+    | _ =>
+      collectWfBodyWithPack env matcherNumParams helper owner rootSlice
+        rootPackTy depth packedVars ihVars m
+  let fn := e.getAppFn
+  let args := e.getAppArgs
+  if match fn.constName? with
+    | some fnName => isWfHelperProofConst helper fnName
+    | none => false then
+    args.foldl (init := #[]) fun acc a =>
+      acc ++ collectWfBodyWithPack env matcherNumParams helper owner rootSlice
+        rootPackTy depth packedVars ihVars a
+  else if fn.constName? == some ``dite && args.size >= 5 then
+    match args[3]!, args[4]! with
+    | .lam n1 d1 b1 bi1, .lam n2 d2 b2 _ =>
+      if n1 == n2 then Id.run do
+        let iv1 := shiftIh 1
+        let pv1 := shiftPacked 1
+        let used1 := usesBVarOutsideCompiler env matcherNumParams helper none
+          iv1 0 0 b1
+        let used2 := usesBVarOutsideCompiler env matcherNumParams helper none
+          iv1 0 0 b2
+        let here :=
+          if isUserNamedBinder n1 bi1 && !used1 && !used2 then
+            #[(owner, n1.toString)]
+          else #[]
+        let mut out :=
+          collectWfBodyWithPack env matcherNumParams helper owner rootSlice
+              rootPackTy depth packedVars ihVars args[0]! ++
+            collectWfBodyWithPack env matcherNumParams helper owner rootSlice
+              rootPackTy depth packedVars ihVars args[1]! ++
+            collectWfBodyWithPack env matcherNumParams helper owner rootSlice
+              rootPackTy depth packedVars ihVars args[2]! ++
+            here ++
+            collectWfBodyWithPack env matcherNumParams helper owner rootSlice
+              rootPackTy depth packedVars ihVars d1 ++
+            collectWfBodyWithPack env matcherNumParams helper owner rootSlice
+              rootPackTy (depth + 1) pv1 iv1 b1 ++
+            collectWfBodyWithPack env matcherNumParams helper owner rootSlice
+              rootPackTy depth packedVars ihVars d2 ++
+            collectWfBodyWithPack env matcherNumParams helper owner rootSlice
+              rootPackTy (depth + 1) pv1 iv1 b2
+        for i in [5:args.size] do
+          out := out ++
+            collectWfBodyWithPack env matcherNumParams helper owner rootSlice
+              rootPackTy depth packedVars ihVars args[i]!
+        return out
+      else
+        args.foldl
+          (init := collectWfBodyWithPack env matcherNumParams helper owner
+            rootSlice rootPackTy depth packedVars ihVars fn)
+          fun acc a => acc ++
+            collectWfBodyWithPack env matcherNumParams helper owner rootSlice
+              rootPackTy depth packedVars ihVars a
+    | _, _ =>
+      args.foldl
+        (init := collectWfBodyWithPack env matcherNumParams helper owner
+          rootSlice rootPackTy depth packedVars ihVars fn)
+        fun acc a => acc ++
+          collectWfBodyWithPack env matcherNumParams helper owner rootSlice
+            rootPackTy depth packedVars ihVars a
+  else if fn.constName? == some ``PSum.casesOn && args.size >= 6 then
+    let matchedPack? : Option (Expr × Expr × Expr × Array (Name × Nat)) :=
+      match args[3]! with
+      | .bvar pIdx =>
+        packedVars.findSome? fun (i, ty, sl) =>
+          if i == pIdx && sl.size > 1 &&
+              ty.getAppFn.constName? == some ``PSum &&
+              ty.getAppArgs.size == 2 &&
+              ty.getAppArgs[0]! == args[0]! &&
+              ty.getAppArgs[1]! == args[1]! then
+            some (ty, ty.getAppArgs[0]!, ty.getAppArgs[1]!, sl)
+          else none
+      | _ => none
+    if let some (matchedTy, expL, expR, pSlice) := matchedPack? then
+      let leftSlice := #[pSlice[0]!]
+      let rightSlice := pSlice.extract 1 pSlice.size
+      let checkBranch (brSlice : Array (Name × Nat))
+          (branchTy branch : Expr) : Array (Name × String) :=
+        let brOwner := match brSlice[0]? with
+          | some (o, _) => o
+          | none => owner
+        match branch with
+        | .lam bn bd bb bbi =>
+          if isWfCompositeSlice brSlice then
+            let pv' := (0, branchTy.liftLooseBVars 0 1, brSlice) ::
+              shiftPacked 1
+            (collectWfPackedTypeUnused brSlice bd).map (brOwner, ·) ++
+              collectWfBodyWithPack env matcherNumParams helper brOwner
+                rootSlice rootPackTy (depth + 1) pv' (shiftIh 1) bb
+          else
+            let iv1 := shiftIh 1
+            let used := usesBVarOutsideCompiler env matcherNumParams helper none
+              iv1 0 0 bb
+            let here :=
+              if isUserNamedBinder bn bbi && !used
+              then #[(brOwner, bn.toString)] else #[]
+            let isIh := bn.hasMacroScopes &&
+              isWfIhDomain (rootPackTy.liftLooseBVars 0 depth) bd
+            let dOut := if !isIh then
+              collectWfBodyWithPack env matcherNumParams helper brOwner
+                rootSlice rootPackTy depth packedVars ihVars bd
+            else #[]
+            here ++ dOut ++
+              collectWfBodyWithPack env matcherNumParams helper brOwner
+                rootSlice rootPackTy (depth + 1) (shiftPacked 1) iv1 bb
+        | _ =>
+          collectWfBodyWithPack env matcherNumParams helper brOwner rootSlice
+            rootPackTy depth packedVars ihVars branch
+      Id.run do
+        let mut out :=
+          (collectWfPackedTypeUnused pSlice matchedTy).map (owner, ·) ++
+            peelPackMotive pSlice matchedTy args[2]! ++
+            checkBranch leftSlice expL args[4]! ++
+            checkBranch rightSlice expR args[5]!
+        for i in [6:args.size] do
+          out := out ++
+            collectWfBodyWithPack env matcherNumParams helper owner rootSlice
+              rootPackTy depth packedVars ihVars args[i]!
+        return out
+    else
+      args.foldl
+        (init := collectWfBodyWithPack env matcherNumParams helper owner
+          rootSlice rootPackTy depth packedVars ihVars fn)
+        fun acc a => acc ++
+          collectWfBodyWithPack env matcherNumParams helper owner rootSlice
+            rootPackTy depth packedVars ihVars a
+  else if fn.constName? == some ``PSigma.casesOn && args.size >= 5 then
+    let matchedPack? : Option (Expr × Expr × Name × Nat) :=
+      match args[3]! with
+      | .bvar pIdx =>
+        packedVars.findSome? fun (i, ty, sl) =>
+          if i == pIdx && sl.size == 1 && sl[0]!.2 >= 2 &&
+              ty.getAppFn.constName? == some ``PSigma &&
+              ty.getAppArgs.size == 2 &&
+              ty.getAppArgs[0]! == args[0]! &&
+              ty.getAppArgs[1]! == args[1]! then
+            some (ty, ty.getAppArgs[1]!, sl[0]!.1, sl[0]!.2)
+          else none
+      | _ => none
+    if let some (matchedTy, expFam, brOwner, arity) := matchedPack? then
+      let pSlice := #[(brOwner, arity)]
+      let remSlice := #[(brOwner, arity - 1)]
+      let mkBranch := args[4]!
+      let mkOut := match mkBranch, expFam with
+        | .lam n1 d1 (.lam n2 d2 b2 bi2) bi1, Expr.lam _ _ famBody _ =>
+          let remTy := famBody.liftLooseBVars 0 1
+          let used1 := if isWfCompositeSlice remSlice then
+            usesBVarOutsideCompiler env matcherNumParams helper none
+              (shiftIh 2) 0 1 b2
+          else
+            usesBVarOutsideCompiler env matcherNumParams helper none
+              (shiftIh 1) 0 0 (.lam n2 d2 b2 bi2)
+          let here1 :=
+            if isUserNamedBinder n1 bi1 && !used1
+            then #[(brOwner, n1.toString)] else #[]
+          let d1Out := collectWfBodyWithPack env matcherNumParams helper
+            brOwner rootSlice rootPackTy depth packedVars ihVars d1
+          if isWfCompositeSlice remSlice then
+            let pv' := (0, remTy, remSlice) :: shiftPacked 2
+            here1 ++ d1Out ++
+              (collectWfPackedTypeUnused remSlice d2).map (brOwner, ·) ++
+              collectWfBodyWithPack env matcherNumParams helper brOwner
+                rootSlice rootPackTy (depth + 2) pv' (shiftIh 2) b2
+          else
+            let iv2 := shiftIh 2
+            let used2 := usesBVarOutsideCompiler env matcherNumParams helper
+              none iv2 0 0 b2
+            let here2 :=
+              if isUserNamedBinder n2 bi2 && !used2
+              then #[(brOwner, n2.toString)] else #[]
+            let d2Out := collectWfBodyWithPack env matcherNumParams helper
+              brOwner rootSlice rootPackTy (depth + 1) (shiftPacked 1)
+              (shiftIh 1) d2
+            here1 ++ d1Out ++ here2 ++ d2Out ++
+              collectWfBodyWithPack env matcherNumParams helper brOwner
+                rootSlice rootPackTy (depth + 2) (shiftPacked 2) iv2 b2
+        | _, _ =>
+          collectWfBodyWithPack env matcherNumParams helper brOwner rootSlice
+            rootPackTy depth packedVars ihVars mkBranch
+      Id.run do
+        let mut out :=
+          (collectWfPackedTypeUnused pSlice matchedTy).map (brOwner, ·) ++
+            peelPackMotive pSlice matchedTy args[2]! ++ mkOut
+        for i in [5:args.size] do
+          out := out ++
+            collectWfBodyWithPack env matcherNumParams helper brOwner rootSlice
+              rootPackTy depth packedVars ihVars args[i]!
+        return out
+    else
+      args.foldl
+        (init := collectWfBodyWithPack env matcherNumParams helper owner
+          rootSlice rootPackTy depth packedVars ihVars fn)
+        fun acc a => acc ++
+          collectWfBodyWithPack env matcherNumParams helper owner rootSlice
+            rootPackTy depth packedVars ihVars a
+  else if match fn with
+    | .bvar i => ihVars.contains i && args.size >= 1
+    | _ => false then
+    Id.run do
+      let mut out := collectPackArg rootSlice
+        (rootPackTy.liftLooseBVars 0 depth) depth packedVars ihVars args[0]!
+      for i in [1:args.size] do
+        out := out ++
+          collectWfBodyWithPack env matcherNumParams helper owner rootSlice
+            rootPackTy depth packedVars ihVars args[i]!
+      return out
+  else
+    match e with
+    | .lam n d b bi | .forallE n d b bi =>
+      let isIh := n.hasMacroScopes &&
+        isWfIhDomain (rootPackTy.liftLooseBVars 0 depth) d
+      let iv' := if isIh then 0 :: shiftIh 1 else shiftIh 1
+      let used := usesBVarOutsideCompiler env matcherNumParams helper none iv'
+        0 0 b
+      let here := if isUserNamedBinder n bi && !used
+        then #[(owner, n.toString)] else #[]
+      let dOut := if !isIh then
+        collectWfBodyWithPack env matcherNumParams helper owner rootSlice
+          rootPackTy depth packedVars ihVars d
+      else #[]
+      here ++ dOut ++
+        collectWfBodyWithPack env matcherNumParams helper owner rootSlice
+          rootPackTy (depth + 1) (shiftPacked 1) iv' b
+    | .letE n t v b _ =>
+      let iv1 := shiftIh 1
+      let used := usesBVarOutsideCompiler env matcherNumParams helper none iv1
+        0 0 b
+      let here := if isUserNamedBinder n .default && !used
+        then #[(owner, n.toString)] else #[]
+      here ++
+        collectWfBodyWithPack env matcherNumParams helper owner rootSlice
+          rootPackTy depth packedVars ihVars t ++
+        collectWfBodyWithPack env matcherNumParams helper owner rootSlice
+          rootPackTy depth packedVars ihVars v ++
+        collectWfBodyWithPack env matcherNumParams helper owner rootSlice
+          rootPackTy (depth + 1) (shiftPacked 1) iv1 b
+    | .app f a =>
+      collectWfBodyWithPack env matcherNumParams helper owner rootSlice
+          rootPackTy depth packedVars ihVars f ++
+        collectWfBodyWithPack env matcherNumParams helper owner rootSlice
+          rootPackTy depth packedVars ihVars a
+    | .mdata _ b | .proj _ _ b =>
+      collectWfBodyWithPack env matcherNumParams helper owner rootSlice
+        rootPackTy depth packedVars ihVars b
+    | _ => #[]
+
+/-- Locate the inner `WellFounded.fix`/`WellFounded.Nat.fix` relation/proof
+terms and binder depth beneath outer fixed-parameter lambdas or `let`s of a
+well-founded definition or `_unary`/`_mutual` helper. -/
+partial def findInnerWfFixRels? : Expr → Option (Array Expr × Nat)
+  | .lam _ _ b _ | .letE _ _ _ b _ =>
+    (findInnerWfFixRels? b).map fun (rs, d) => (rs, d + 1)
+  | e =>
+    let fn := e.getAppFn
+    let args := e.getAppArgs
+    match fn.constName?, args.size with
+    | some ``WellFounded.Nat.fix, 4 | some ``WellFounded.Nat.fix, 5 =>
+      some (#[args[2]!], 0)
+    | some ``WellFounded.fix, 5 | some ``WellFounded.fix, 6 =>
+      some (#[args[2]!, args[3]!], 0)
+    | _, _ => none
+
+/-- Audit a verified well-founded definition or `<fn>._unary`/`<fn>._mutual`
+body so unused varying parameters, fixed parameters used only in
+`termination_by`, unused `let`s, and nested `PSigma`/`PSum` spoofs are reported
+against the owning WF declaration in `rootSlice`. -/
+partial def collectUnusedBindersWfNonRec (env : Environment)
+    (matcherNumParams : Std.HashMap Name Nat) (helper : Name)
+    (rootSlice : Array (Name × Nat)) (e : Expr) : Array (Name × String) :=
+  let headOwner := match rootSlice[0]? with
+    | some (o, _) => o
+    | none => helper
+  match e with
+  | .lam n d b bi =>
+    let used := usesBVarOutsideCompiler env matcherNumParams helper
+      (findInnerWfFixRels? b) [] 0 0 b
+    let here := if isUserNamedBinder n bi && !used
+      then #[(headOwner, n.toString)] else #[]
+    here ++ (collectUnusedBindersExpr d).map (headOwner, ·) ++
+      collectUnusedBindersWfNonRec env matcherNumParams helper rootSlice b
+  | .letE n t v b _ =>
+    let used := usesBVarOutsideCompiler env matcherNumParams helper
+      (findInnerWfFixRels? b) [] 0 0 b
+    let here := if isUserNamedBinder n .default && !used
+      then #[(headOwner, n.toString)] else #[]
+    here ++
+      (collectUnusedBindersExpr t ++ collectUnusedBindersExpr v).map
+        (headOwner, ·) ++
+      collectUnusedBindersWfNonRec env matcherNumParams helper rootSlice b
+  | _ =>
+    let fn := e.getAppFn
+    let args := e.getAppArgs
+    let runFix (stepArg : Expr) (extraArgs : Array Expr) :=
+      let rootPackTy := args[0]!
+      let packOut :=
+        (collectWfPackedTypeUnused rootSlice rootPackTy).map (headOwner, ·)
+      let motiveOut := match args[1]! with
+        | .lam _ md mb _ =>
+          let pvM :=
+            if isWfCompositeSlice rootSlice then
+              [(0, rootPackTy.liftLooseBVars 0 1, rootSlice)]
+            else []
+          (collectWfPackedTypeUnused rootSlice md).map (headOwner, ·) ++
+            collectWfBodyWithPack env matcherNumParams helper headOwner
+              rootSlice rootPackTy 1 pvM [] mb
+        | m => (collectUnusedBindersExpr m).map (headOwner, ·)
+      let stepOut := match stepArg with
+        | .lam xn xd (.lam _ _ sb _) xbi =>
+          if isWfCompositeSlice rootSlice then
+            (collectWfPackedTypeUnused rootSlice xd).map (headOwner, ·) ++
+              collectWfBodyWithPack env matcherNumParams helper headOwner
+                rootSlice rootPackTy 2
+                [(1, rootPackTy.liftLooseBVars 0 2, rootSlice)] [0] sb
+          else
+            let usedX := usesBVarOutsideCompiler env matcherNumParams helper
+              none [0] 0 1 sb
+            let hereX :=
+              if isUserNamedBinder xn xbi && !usedX
+              then #[(headOwner, xn.toString)] else #[]
+            hereX ++ (collectUnusedBindersExpr xd).map (headOwner, ·) ++
+              collectWfBodyWithPack env matcherNumParams helper headOwner
+                rootSlice rootPackTy 2 [] [0] sb
+        | s => (collectUnusedBindersExpr s).map (headOwner, ·)
+      let extraOut := extraArgs.foldl (init := #[]) fun acc a =>
+        acc ++ (collectUnusedBindersExpr a).map (headOwner, ·)
+      packOut ++ motiveOut ++ stepOut ++ extraOut
+    match fn.constName?, args.size with
+    | some ``WellFounded.Nat.fix, 4 => runFix args[3]! #[]
+    | some ``WellFounded.Nat.fix, 5 => runFix args[3]! #[args[4]!]
+    | some ``WellFounded.fix, 5 => runFix args[4]! #[]
+    | some ``WellFounded.fix, 6 => runFix args[4]! #[args[5]!]
+    | _, _ => (collectUnusedBindersExpr e).map (headOwner, ·)
 
 /-- Deduplicate strings preserving first-seen order. -/
 def dedupStrings (xs : Array String) : Array String :=
   xs.foldl (init := #[]) fun acc s =>
     if acc.contains s then acc else acc.push s
+
+/-- Precomputed `originEnv` (`loadExts := false`) module-import closure sets and
+persistent extension memberships queried by [`isCompilerGeneratedSpecDef`]. -/
+structure SpecVacuityExtContext where
+  originEnv : Environment
+  classNames : NameSet
+  wfNonRecNames : NameSet
+  wfNonRecSlices : Std.HashMap Name (Array (Name × Nat))
+  wfDeclNames : NameSet
+  wfHeadToNonRec : Std.HashMap Name (Name × Array (Name × Nat))
+  matcherNumParams : Std.HashMap Name Nat
+  structDeclNames : NameSet
+  unsafeRecParents : NameSet
+  mkAuxModIdxs : Std.HashSet Nat
+  sizeOfModIdxs : Std.HashSet Nat
+
+/-- Compute all module indices in `originEnv` whose module is or transitively
+imports `depConst`'s defining module, walking reverse import edges once. -/
+partial def modsImportingConst (originEnv : Environment)
+    (revImports : Std.HashMap Nat (Array Nat))
+    (depConst : Name) : Std.HashSet Nat :=
+  match originEnv.getModuleIdxFor? depConst with
+  | none => {}
+  | some targetIdx =>
+    let rec bfs (visited : Std.HashSet Nat) : List Nat → Std.HashSet Nat
+      | [] => visited
+      | cur :: rest =>
+        if visited.contains cur then
+          bfs visited rest
+        else
+          let visited' := visited.insert cur
+          let next := (revImports[cur]?.getD #[]).foldl (init := rest)
+            fun acc parentIdx =>
+              if visited'.contains parentIdx then acc else parentIdx :: acc
+          bfs visited' next
+    bfs {} [targetIdx]
+
+/-- Collect `originEnv` transitive dependency module sets, typeclass
+registrations (`classExtension`), matcher parameter counts, and well-founded
+definition / helper names (`WF.eqnInfoExt`) once per `inspectSpecVacuity` run.
+-/
+def collectSpecExtContext (originEnv : Environment) : SpecVacuityExtContext :=
+  Id.run do
+    let mut modIdxMap : Std.HashMap Name Nat := {}
+    let mut classNames : NameSet := {}
+    let mut wfNonRecNames : NameSet := {}
+    let mut wfNonRecSlices : Std.HashMap Name (Array (Name × Nat)) := {}
+    let mut wfDeclNames : NameSet := {}
+    let mut wfHeadToNonRec : Std.HashMap Name (Name × Array (Name × Nat)) := {}
+    let mut matcherNumParams : Std.HashMap Name Nat := {}
+    let mut structDeclNames : NameSet := {}
+    let mut unsafeRecParents : NameSet := {}
+    for modIdx in Array.range originEnv.header.moduleData.size do
+      if let some modName := originEnv.header.moduleNames[modIdx]? then
+        modIdxMap := modIdxMap.insert modName modIdx
+      if let some data := originEnv.header.moduleData[modIdx]? then
+        for ci in data.constants do
+          if ci.isPartial && !ci.isUnsafe && (ci matches .defnInfo _) then
+            if let some p := Compiler.isUnsafeRecName? ci.name then
+              unsafeRecParents := unsafeRecParents.insert p
+      for entry in Lean.classExtension.getModuleEntries originEnv modIdx do
+        classNames := classNames.insert entry.name
+      for entry in
+          Lean.Meta.Match.Extension.extension.getModuleEntries originEnv
+            modIdx do
+        let .mk mName mInfo := entry
+        matcherNumParams := matcherNumParams.insert mName mInfo.numParams
+      for (_, info) in
+          Lean.Elab.WF.eqnInfoExt.getModuleEntries originEnv modIdx do
+        let slice :=
+          info.declNames.zip (info.argsPacker.varNamess.map Array.size)
+        if let some headDn := info.declNames[0]? then
+          wfHeadToNonRec := wfHeadToNonRec.insert headDn
+            (info.declNameNonRec, slice)
+          if info.declNameNonRec != headDn then
+            wfNonRecNames := wfNonRecNames.insert info.declNameNonRec
+            wfNonRecSlices := wfNonRecSlices.insert info.declNameNonRec slice
+        for dn in info.declNames do
+          wfDeclNames := wfDeclNames.insert dn
+      for (dn, info) in
+          Lean.Elab.Structural.eqnInfoExt.getModuleEntries originEnv modIdx do
+        structDeclNames := structDeclNames.insert dn
+        for fn in info.declNames do
+          structDeclNames := structDeclNames.insert fn
+    let mut revImports : Std.HashMap Nat (Array Nat) := {}
+    for modIdx in Array.range originEnv.header.moduleData.size do
+      if let some data := originEnv.header.moduleData[modIdx]? then
+        for imp in data.imports do
+          if let some impIdx := modIdxMap[imp.module]? then
+            revImports := revImports.insert impIdx
+              ((revImports[impIdx]?.getD #[]).push modIdx)
+    let punitMods := modsImportingConst originEnv revImports ``PUnit
+    let eqMods := modsImportingConst originEnv revImports ``Eq
+    let heqMods := modsImportingConst originEnv revImports ``HEq
+    let prodMods := modsImportingConst originEnv revImports ``Prod
+    let natMods := modsImportingConst originEnv revImports ``Nat
+    let mkAuxModIdxs := punitMods.fold (init := {}) fun acc idx =>
+      if eqMods.contains idx && heqMods.contains idx &&
+          prodMods.contains idx && natMods.contains idx then
+        acc.insert idx
+      else acc
+    let sizeOfModIdxs := modsImportingConst originEnv revImports ``SizeOf
+    return {
+      originEnv, classNames, wfNonRecNames, wfNonRecSlices, wfDeclNames,
+      wfHeadToNonRec, matcherNumParams, structDeclNames, unsafeRecParents,
+      mkAuxModIdxs, sizeOfModIdxs
+    }
+
+/-- Return `true` when `ty` reduces under kernel WHNF to a telescope ending in
+`Prop` (`.sort .zero`), matching Lean's `isPropFormerType`, failing closed as
+`true` on fuel exhaustion or kernel error so compiler exemptions do not turn
+on. -/
+def isPropResult (env : Environment) (fuel : Nat) (lctx : LocalContext := {})
+    (nextIdx : Nat := 0) (e : Expr) : Bool :=
+  match fuel with
+  | 0 => true
+  | fuel + 1 =>
+    match Kernel.whnf env lctx e with
+    | .ok (.forallE n d b bi) =>
+      let fv : FVarId := { name := Name.num `_anneal_prop_res nextIdx }
+      let lctx' := lctx.mkLocalDecl fv n d bi
+      isPropResult env fuel lctx' (nextIdx + 1) (b.instantiate1 (.fvar fv))
+    | .ok (.sort .zero) => true
+    | .ok _ => false
+    | .error _ => true
+
+/-- Return `true` when `iv` is a `Prop`-sorted inductive or inductive predicate
+family after kernel WHNF reduction, for which Lean emits neither
+`noConfusion*`, `ctorIdx`, nor `ctorElim*`. -/
+def isPropInductive (env : Environment) (iv : InductiveVal) : Bool :=
+  isPropResult env 128 {} 0 iv.type
+
+/-- Return `true` when `ci` is a single-constructor structure or class field
+projection `fun params... (self : S params...) => Expr.proj S idx self` with
+exact parameter arity `numParams + 1`, `self` domain `indName params...`, and
+clean parameter binder domains. -/
+def isKernelStructureProjDef (indName : Name) (numParams : Nat)
+    (ci : ConstantInfo) : Bool :=
+  let rec checkSelfDomain : Expr → Nat → Bool
+    | .app f (.bvar idx), expectedIdx =>
+      idx == expectedIdx && checkSelfDomain f (expectedIdx + 1)
+    | .const fn _, expectedIdx =>
+      expectedIdx == numParams && fn == indName
+    | _, _ => false
+  let rec peelParams : Nat → Expr → Bool
+    | 0, .lam _ d (.proj sName _ (.bvar 0)) _ =>
+      sName == indName && checkSelfDomain d 0
+    | n + 1, .lam _ d b _ =>
+      (collectUnusedBindersExpr d).isEmpty && peelParams n b
+    | _, _ => false
+  match ci.value? true with
+  | some v => peelParams numParams v
+  | none => false
+
+/-- Return `true` when `e` is `@id idTy rhs` with `idTy` definitionally equal
+to `dTy` (and `pFieldTy?` when available) and zero unused author binders
+inside `rhs`. -/
+def isIdDefaultApp (env : Environment) (lctx : LocalContext) (dTy : Expr)
+    (pFieldTy? : Option Expr) (e : Expr) : Bool :=
+  match e with
+  | .app (.app (.const ``id _) idTy) rhs =>
+    let eqD := match Kernel.isDefEq env lctx idTy dTy with
+      | .ok b => b
+      | .error _ => false
+    let eqP := match pFieldTy? with
+      | some pFieldTy =>
+        match Kernel.isDefEq env lctx idTy pFieldTy with
+        | .ok b => b
+        | .error _ => false
+      | none => true
+    eqD && eqP && (collectUnusedBindersExpr idTy).isEmpty &&
+      (collectUnusedBindersExpr rhs).isEmpty
+  | _ => false
+
+/-- Resolve the instantiated projection return type of `fieldId` on
+`structName` (walking subobject parents when inherited) under `lctx`, returning
+`none` only when no projection exists or the field type depends on `self`. -/
+def resolveStructFieldTy? (ctx : SpecVacuityExtContext) (env : Environment)
+    (lctx : LocalContext) (structName fieldId : Name)
+    (topParams : Array Expr) : Option Expr :=
+  let findConst? (n : Name) : Option ConstantInfo := env.checked.get.find? n
+  let rec instParams (e : Expr) : List Expr → Option Expr
+    | [] => some e
+    | arg :: rest =>
+      match e with
+      | .forallE _ _ b _ => instParams (b.instantiate1 arg) rest
+      | _ => none
+  let rec go (fuel : Nat) (curStruct : Name) (curArgs : Array Expr) :
+      Option Expr :=
+    match fuel with
+    | 0 => none
+    | fuel' + 1 =>
+      match Lean.getProjFnForField? ctx.originEnv curStruct fieldId with
+      | some projFn =>
+        match findConst? projFn with
+        | some pci =>
+          match instParams pci.type curArgs.toList with
+          | some (.forallE _ _ body _) =>
+            if !body.hasLooseBVar 0 then some body else none
+          | _ => none
+        | none => none
+      | none =>
+        match Lean.getStructureInfo? ctx.originEnv curStruct with
+        | some sinfo =>
+          sinfo.parentInfo.findSome? fun pi =>
+            if !pi.subobject then none
+            else
+              match findConst? pi.projFn with
+              | some pci =>
+                match instParams pci.type curArgs.toList with
+                | some (.forallE _ _ parentRet _) =>
+                  if parentRet.hasLooseBVar 0 then none
+                  else
+                    let whnfParent := kernelWhnfSafe env lctx parentRet
+                    if whnfParent.getAppFn.constName? == some pi.structName then
+                      go fuel' pi.structName whnfParent.getAppArgs
+                    else none
+                | _ => none
+              | none => none
+        | none => none
+  go 32 structName topParams
+
+/-- Return `true` when an ancestor structure of `structName` declares a
+`<Ancestor>.<fieldId>._default` or `_inherited_default` constant in `env`. -/
+def hasAncestorDefault (ctx : SpecVacuityExtContext) (env : Environment)
+    (structName fieldId : Name) : Bool :=
+  let findConst? (n : Name) : Option ConstantInfo := env.checked.get.find? n
+  let rec go (fuel : Nat) (curStruct : Name) : Bool :=
+    match fuel with
+    | 0 => false
+    | fuel' + 1 =>
+      match Lean.getStructureInfo? ctx.originEnv curStruct with
+      | some sinfo =>
+        sinfo.parentInfo.any fun pi =>
+          let p := pi.structName
+          let defName := Name.str (Name.str p fieldId.toString) "_default"
+          let inhName :=
+            Name.str (Name.str p fieldId.toString) "_inherited_default"
+          let projHit :=
+            match Lean.getProjFnForField? ctx.originEnv p fieldId with
+            | some pf =>
+              (findConst? (Name.str pf "_default")).isSome ||
+                (findConst? (Name.str pf "_inherited_default")).isSome
+            | none => false
+          (findConst? defName).isSome || (findConst? inhName).isSome ||
+            projHit || go fuel' p
+      | none => false
+  go 64 structName
+
+/-- Verify Lean's compiler-generated structure `_default` /
+`_inherited_default` shape against `iv`: matching `levelParams`, `iv.numParams`
+implicit/instance parameter domains matching `iv.type`, zero or more dependent
+field lambdas with clean domains, and terminal `@id idTy rhs` matching
+`ci.type` (and the resolved projection field type when non-dependent on `self`)
+with zero unused user binders. -/
+def peelStructDefaultParams (ctx : SpecVacuityExtContext) (env : Environment)
+    (iv : InductiveVal) (structName fieldId : Name) (ci : ConstantInfo)
+    (v : Expr) : Bool :=
+  let rec checkDepFields (fuel : Nat) (lctx : LocalContext) (dVal dTy : Expr)
+      (pFieldTy? : Option Expr) (step : Nat) : Bool :=
+    match fuel, dVal, dTy with
+    | 0, _, _ => false
+    | fuel' + 1, .lam n d b bi, .forallE _ dt db _ =>
+      let domEq := match Kernel.isDefEq env lctx d dt with
+        | .ok ok => ok
+        | .error _ => false
+      !(isUserNamedBinder n bi && !b.hasLooseBVar 0) &&
+        domEq &&
+        (collectUnusedBindersExpr d).isEmpty &&
+        (collectUnusedBindersExpr dt).isEmpty &&
+        let fv : FVarId := { name := Name.num `_anneal_def_dep step }
+        let lctx' := lctx.mkLocalDecl fv n d bi
+        checkDepFields fuel' lctx' (b.instantiate1 (.fvar fv))
+          (db.instantiate1 (.fvar fv)) pFieldTy? (step + 1)
+    | _ + 1, .lam _ _ _ _, _ => false
+    | _ + 1, body, remTy => isIdDefaultApp env lctx remTy pFieldTy? body
+  let rec peelParams (lctx : LocalContext) (rem : Nat)
+      (sTy dVal dTy : Expr) (params : Array Expr) (idx : Nat) : Bool :=
+    match rem with
+    | 0 =>
+      let pFieldTy? :=
+        resolveStructFieldTy? ctx env lctx structName fieldId params
+      checkDepFields 256 lctx dVal dTy pFieldTy? 0
+    | rem' + 1 =>
+      match sTy, dVal, dTy with
+      | .forallE sN sD sB _, .lam _ vD vB vBi, .forallE _ tD tB tBi =>
+        let eqSV := match Kernel.isDefEq env lctx sD vD with
+          | .ok ok => ok
+          | .error _ => false
+        let eqST := match Kernel.isDefEq env lctx sD tD with
+          | .ok ok => ok
+          | .error _ => false
+        (vBi == .implicit || vBi == .instImplicit) &&
+          vBi == tBi &&
+          eqSV && eqST &&
+          (collectUnusedBindersExpr vD).isEmpty &&
+          (collectUnusedBindersExpr tD).isEmpty &&
+          let fv : FVarId := { name := Name.num `_anneal_def_param idx }
+          let fvE : Expr := .fvar fv
+          let lctx' := lctx.mkLocalDecl fv sN sD vBi
+          peelParams lctx' rem' (sB.instantiate1 fvE)
+            (vB.instantiate1 fvE) (tB.instantiate1 fvE)
+            (params.push fvE) (idx + 1)
+      | _, _, _ => false
+  if ci.levelParams != iv.levelParams then
+    false
+  else
+    peelParams {} iv.numParams iv.type v ci.type #[] 0
+
+/-- Return `true` when `ci` at raw `rawName` is a compiler-generated structure
+field `_default` or `_inherited_default` helper in the same module as a verified
+structure in `ctx.originEnv` whose raw inductive exists in `env` (supporting
+private defaulted fields on public structures and requiring `_inherited_default`
+to have an ancestor default and no own `_default` override). -/
+def isStructureDefaultHelper (ctx : SpecVacuityExtContext) (env : Environment)
+    (rawName : Name) (ci : ConstantInfo) : Bool :=
+  let findConst? (n : Name) : Option ConstantInfo := env.checked.get.find? n
+  match rawName with
+  | .str (.str rawStructName fieldName) suffix =>
+    if suffix != "_default" && suffix != "_inherited_default" then
+      false
+    else
+      let structName := match findConst? rawStructName with
+        | some (.inductInfo _) => rawStructName
+        | _ =>
+          if isPrivateName rawName then privateToUserName rawStructName
+          else rawStructName
+      let fieldId := Name.mkSimple fieldName
+      let sameStructMod := match ctx.originEnv.getModuleIdxFor? rawName,
+          ctx.originEnv.getModuleIdxFor? structName with
+        | some a, some b => a == b
+        | _, _ => false
+      let privFieldMatches :=
+        if rawStructName != structName then
+          Lean.getProjFnForField? ctx.originEnv structName fieldId ==
+            some (Name.str rawStructName fieldName)
+        else true
+      if !sameStructMod || !Lean.isStructure ctx.originEnv structName ||
+          !privFieldMatches then
+        false
+      else
+        match findConst? structName with
+        | some (.inductInfo iv) =>
+          let hasField :=
+            (Lean.findField? ctx.originEnv structName fieldId).isSome
+          let fieldValid :=
+            if suffix == "_default" then
+              hasField
+            else
+              let rawPrefix := Name.str rawStructName fieldName
+              let pubPrefix := Name.str structName fieldName
+              let projOwnDef :=
+                match Lean.getProjFnForField? ctx.originEnv structName
+                    fieldId with
+                | some pf => (findConst? (Name.str pf "_default")).isSome
+                | none => false
+              let hasOwnDefault :=
+                (findConst? (Name.str rawPrefix "_default")).isSome ||
+                (findConst? (Name.str pubPrefix "_default")).isSome ||
+                projOwnDef
+              hasField && !hasOwnDefault &&
+                hasAncestorDefault ctx env structName fieldId
+          fieldValid &&
+            match ci.value? true with
+            | some v =>
+              peelStructDefaultParams ctx env iv structName fieldId ci v
+            | none => false
+        | _ => false
+  | _ => false
+
+/-- Return `true` when raw name `rawP` is a compiler-generated `<Ind>.below`
+auxiliary inductive predicate rather than an author-declared inductive. -/
+def isAuxBelowInductive (ctx : SpecVacuityExtContext) (env : Environment)
+    (findConst? : Name → Option ConstantInfo) (rawName rawP : Name) : Bool :=
+  let sameModParent (p : Name) : Bool :=
+    match ctx.originEnv.getModuleIdxFor? rawName,
+        ctx.originEnv.getModuleIdxFor? p with
+    | some a, some b => a == b
+    | _, _ => false
+  match rawP with
+  | .str rawGp s =>
+    match findConst? rawGp with
+    | some (.inductInfo iv) =>
+      sameModParent rawGp && isPropInductive env iv && iv.isRec &&
+        (s == "below" ||
+          (iv.all.head? == some rawGp &&
+            isBoundedNestedSuffix "below_" s iv.numNested))
+    | _ => false
+  | _ => false
+
+/-- Return `true` when `ty` is a telescope ending in `Nat`. -/
+def isNatResult : Expr → Bool
+  | .forallE _ _ b _ => isNatResult b
+  | .const ``Nat _ => true
+  | _ => false
+
+/-- Return `true` when `ty` is a telescope ending in `SizeOf (indName ...)`.
+-/
+def isSizeOfInstType (indName : Name) : Expr → Bool
+  | .forallE _ _ b _ => isSizeOfInstType indName b
+  | .app (.const ``SizeOf _) target =>
+    target.getAppFn.constName? == some indName
+  | _ => false
+
+/-- Return `true` when `e` (after peeling outer lambdas, `let`s, and `PProd` /
+`And` projections) is headed by a non-`Prop` `Ind.brecOn` auxiliary recursor.
+-/
+partial def hasNonPropBrecOnHead (originEnv env : Environment) : Expr → Bool
+  | .lam _ _ b _ | .letE _ _ _ b _ | .proj _ _ b =>
+    hasNonPropBrecOnHead originEnv env b
+  | e =>
+    let fn := e.getAppFn
+    if fn matches .proj _ _ _ then
+      hasNonPropBrecOnHead originEnv env fn
+    else
+      match fn.constName? with
+      | some cName =>
+        Lean.isAuxRecursor originEnv cName &&
+          match cName with
+          | .str indName s =>
+            match env.checked.get.find? indName with
+            | some (.inductInfo iv) =>
+              !isPropInductive env iv && iv.isRec &&
+                (s == "brecOn" ||
+                  (iv.all.head? == some indName &&
+                    isBoundedNestedSuffix "brecOn_" s iv.numNested))
+            | _ => false
+          | _ => false
+      | none => false
+
+/-- Return `true` when `ci` is a compiler-generated definition attached to a
+same-module kernel-verified raw `.inductInfo` or `.ctorInfo` in `env` (checking
+`originEnv` persistent extension tags `isAuxRecursor`, `isNoConfusion`,
+`projectionFnInfoExt`, `getSparseCasesOnInfoCore`, `classExtension`,
+`WF.eqnInfoExt`, `Structural.eqnInfoExt`, structure default helpers, and
+imported foundation dependencies `PUnit`/`Eq`/`HEq`/`Prod`/`Nat`/`SizeOf`;
+verified `_unary`/`_mutual` and `_f` bodies are audited via their parent
+declarations). Rejects privacy-stripped and cross-module parent fallbacks.
+Residual boundary: explicit `set_option genCtorIdx false` / `genSizeOf false`
+suppression, same-module hand-written `ctorIdx`/`noConfusionType`/`ctorElimType`
+clones on large-elimination-free non-`Prop` inductives, same-module
+`_default`/`_inherited_default` clones matching `iv.type` and the field return
+type, and same-module public `.elim` helpers when a private constructor's
+`.elim` was not generated are not distinguishable via `.olean` metadata. -/
+def isCompilerGeneratedSpecDef (ctx : SpecVacuityExtContext) (env : Environment)
+    (allMatchers : NameSet) (ci : ConstantInfo) : Bool :=
+  let rawName := ci.name
+  let findConst? (n : Name) : Option ConstantInfo := env.checked.get.find? n
+  let declModIdx? := ctx.originEnv.getModuleIdxFor? rawName
+  let sameMod (p : Name) : Bool :=
+    declModIdx?.isSome && declModIdx? == ctx.originEnv.getModuleIdxFor? p
+  let isWfNonRec := ctx.wfNonRecNames.contains rawName &&
+    match rawName with
+    | .str _ s => s == "_unary" || s == "_mutual"
+    | _ => false
+  let isStructRecF := match rawName with
+    | .str rawParent "_f" =>
+      sameMod rawParent && !ctx.wfDeclNames.contains rawParent &&
+        (ctx.structDeclNames.contains rawParent ||
+          ctx.unsafeRecParents.contains rawParent) &&
+        match findConst? rawParent with
+        | some pCi =>
+          match pCi.value? true with
+          | some pVal =>
+            hasNonPropBrecOnHead ctx.originEnv env pVal &&
+              exprContainsConst pVal rawName
+          | none => false
+        | none => false
+    | _ => false
+  let isMatcherOrCompilerInternal :=
+    allMatchers.contains rawName ||
+      rawName.hasMacroScopes ||
+      (Lean.Meta.getSparseCasesOnInfoCore ctx.originEnv rawName).isSome ||
+      isWfNonRec ||
+      isStructRecF
+  let hasMkAuxDeps := match declModIdx? with
+    | some idx => ctx.mkAuxModIdxs.contains idx
+    | none => false
+  let hasSizeOf := match declModIdx? with
+    | some idx => ctx.sizeOfModIdxs.contains idx
+    | none => false
+  let isInductAux :=
+    if isStructureDefaultHelper ctx env rawName ci then
+      true
+    else
+      match rawName with
+      | .str rawParent suffix =>
+        if isPrivateName rawName && suffix == "splitter" &&
+            sameMod rawParent && allMatchers.contains rawParent then
+          true
+        else if suffix == "go" then
+          match rawParent with
+          | .str rawGp mid =>
+            match findConst? rawParent, findConst? rawGp with
+            | some (.defnInfo _), some (.inductInfo iv) =>
+              sameMod rawGp && hasMkAuxDeps &&
+                !isAuxBelowInductive ctx env findConst? rawName rawGp &&
+                !isPropInductive env iv && iv.isRec &&
+                (mid == "brecOn" ||
+                  (iv.all.head? == some rawGp &&
+                    isBoundedNestedSuffix "brecOn_" mid iv.numNested))
+            | _, _ => false
+          | _ => false
+        else
+          match findConst? rawParent with
+          | some (.inductInfo iv) =>
+            if !sameMod rawParent then
+              false
+            else if isAuxBelowInductive ctx env findConst? rawName
+                rawParent then
+              hasMkAuxDeps && Lean.isAuxRecursor ctx.originEnv rawName &&
+                suffix == "casesOn"
+            else
+              let nonProp := !isPropInductive env iv
+              let isClass := ctx.classNames.contains rawParent
+              let multiCtor := Nat.blt 1 iv.numCtors
+              let isAuxTag := Lean.isAuxRecursor ctx.originEnv rawName
+              let isNoConfTag := Lean.isNoConfusion ctx.originEnv rawName
+              (isAuxTag &&
+                (suffix == "recOn" ||
+                  (hasMkAuxDeps &&
+                    (suffix == "casesOn" ||
+                      (nonProp && multiCtor && suffix == "ctorElim") ||
+                      (nonProp && iv.isRec &&
+                        (["below", "brecOn"].contains suffix ||
+                          (iv.all.head? == some rawParent &&
+                            (isBoundedNestedSuffix "below_" suffix
+                                iv.numNested ||
+                              isBoundedNestedSuffix "brecOn_" suffix
+                                iv.numNested)))))))) ||
+                (hasMkAuxDeps && nonProp && isNoConfTag &&
+                  suffix == "noConfusion") ||
+                (hasMkAuxDeps && nonProp &&
+                  ["noConfusionType", "ctorIdx"].contains suffix) ||
+                (hasMkAuxDeps && nonProp && multiCtor &&
+                  suffix == "ctorElimType") ||
+                (hasMkAuxDeps && nonProp && !isClass && hasSizeOf &&
+                  ((suffix == "_sizeOf_inst" &&
+                      isSizeOfInstType rawParent ci.type) ||
+                    (iv.all.head? == some rawParent &&
+                      (findConst? (.str rawParent "_sizeOf_inst")).isSome &&
+                      isBoundedNestedSuffix "_sizeOf_" suffix
+                        (iv.all.length + iv.numNested) &&
+                      isNatResult ci.type))) ||
+                (iv.numCtors == 1 &&
+                  Lean.isStructure ctx.originEnv rawParent &&
+                  (Lean.projectionFnInfoExt.find? ctx.originEnv
+                    rawName).isSome &&
+                  isKernelStructureProjDef rawParent iv.numParams ci)
+          | some (.ctorInfo cv) =>
+            let (nonProp, multiCtor) := match findConst? cv.induct with
+              | some (.inductInfo iv) =>
+                (!isPropInductive env iv &&
+                  !isAuxBelowInductive ctx env findConst? rawName cv.induct,
+                 Nat.blt 1 iv.numCtors)
+              | _ => (false, false)
+            sameMod cv.induct && hasMkAuxDeps &&
+              ((Lean.isNoConfusion ctx.originEnv rawName && nonProp &&
+                  Nat.blt 0 cv.numFields && suffix == "noConfusion") ||
+                (Lean.isAuxRecursor ctx.originEnv rawName && nonProp &&
+                  multiCtor && suffix == "elim"))
+          | none =>
+            if !isPrivateName rawName && suffix == "elim" && hasMkAuxDeps &&
+                Lean.isAuxRecursor ctx.originEnv rawName then
+              match rawParent with
+              | .str indName _ =>
+                match findConst? indName with
+                | some (.inductInfo iv) =>
+                  sameMod indName && !isPropInductive env iv &&
+                    !isAuxBelowInductive ctx env findConst? rawName indName &&
+                    Nat.blt 1 iv.numCtors &&
+                    iv.ctors.any fun cn =>
+                      sameMod cn && privateToUserName cn == rawParent
+                | _ => false
+              | _ => false
+            else
+              false
+          | _ => false
+      | _ => false
+  isInductAux || isMatcherOrCompilerInternal
 
 /-- Extracted field constants and domain types for checking either a
 `Trusted.MirSemantics.Specs` or `Trusted.MirSemantics.SpecsV2` specification.
@@ -6758,18 +8178,66 @@ def mirSpecShape? (env : Environment) (specTy : Expr) :
 
 /-- Run advisory anti-vacuity specification linting over the replayed target
 environment, returning sorted deduplicated [`SpecLintWarning`]s. -/
-def inspectSpecVacuity (env : Environment) (subjectName specName : Name)
-    (specAllConsts : List Name) : IO (Array SpecLintWarning) := do
+def inspectSpecVacuity (env originEnv : Environment) (allMatchers : NameSet)
+    (subjectName specName : Name) (specAllConsts : List Name) :
+    IO (Array SpecLintWarning) := do
   let mut warnings : Array SpecLintWarning := #[]
   let specAllSorted := specAllConsts.toArray.qsort Name.lt
+  let extCtx := collectSpecExtContext originEnv
   -- 1. Syntactic unused user-named bindings across author-written
   --    TargetRole::Specification definitions.
+  let mut wfNonRecByDecl : Std.HashMap Name (Array String) := {}
+  for n in specAllSorted do
+    if let some (hName, slice) := extCtx.wfHeadToNonRec[n]? then
+      let sameModH :=
+        extCtx.originEnv.getModuleIdxFor? n ==
+          extCtx.originEnv.getModuleIdxFor? hName
+      if let some ci := env.checked.get.find? n then
+        if let some val := ci.value? true then
+          if sameModH && (hName == n || exprContainsConst val hName) then
+            if let some hCi := env.checked.get.find? hName then
+              if let some hv := hCi.value? true then
+                for (owner, bStr) in collectUnusedBindersWfNonRec env
+                    extCtx.matcherNumParams hName slice hv do
+                  wfNonRecByDecl := wfNonRecByDecl.insert owner
+                    ((wfNonRecByDecl[owner]?.getD #[]).push bStr)
   for n in specAllSorted do
     if let some ci := env.checked.get.find? n then
       if ci matches .defnInfo _ then
-        unless isCompilerGeneratedSpecDef env ci do
+        unless isCompilerGeneratedSpecDef extCtx env allMatchers ci do
           if let some val := ci.value? true then
-            let unused := dedupStrings (collectUnusedBindersExpr val)
+            let isStructRoot :=
+              !extCtx.wfDeclNames.contains n &&
+                (extCtx.structDeclNames.contains n ||
+                  (extCtx.unsafeRecParents.contains n &&
+                    hasNonPropBrecOnHead extCtx.originEnv env val))
+            let rawUnused :=
+              if extCtx.wfDeclNames.contains n then
+                let selfNonRec :=
+                  extCtx.wfHeadToNonRec[n]?.map Prod.fst == some n
+                let rootOut :=
+                  if selfNonRec then #[]
+                  else collectUnusedBindersWfRoot extCtx.wfNonRecSlices val
+                rootOut ++ (wfNonRecByDecl[n]?.getD #[])
+              else if isStructRoot then
+                let fName := Name.str n "_f"
+                let sameModF :=
+                  extCtx.originEnv.getModuleIdxFor? n ==
+                    extCtx.originEnv.getModuleIdxFor? fName
+                let fUnused := match env.checked.get.find? fName with
+                  | some fCi =>
+                    if sameModF && exprContainsConst val fName then
+                      match fCi.value? true with
+                      | some fv =>
+                        collectUnusedBindersStructF extCtx.originEnv env fv
+                      | none => #[]
+                    else #[]
+                  | none => #[]
+                collectUnusedBindersStructRoot extCtx.originEnv env val ++
+                  fUnused
+              else
+                collectUnusedBindersExpr val
+            let unused := dedupStrings rawUnused
             unless unused.isEmpty do
               let listStr := String.intercalate ", " unused.toList
               let declStr := (privateToUserName n).toString
@@ -7476,8 +8944,8 @@ def targetAudit (j : Json) (foundation : Array Name) : IO Json := do
       return Json.mkObj [("name", toJson n),
         ("module", toJson (← originOf n))]
   let specWarnings :=
-    (← inspectSpecVacuity checkedEnv subjectName specName specAllConsts).map
-      SpecLintWarning.toJson
+    (← inspectSpecVacuity checkedEnv env allMatchers subjectName specName
+      specAllConsts).map SpecLintWarning.toJson
   return Json.mkObj [("theorem", toJson theoremName),
     ("canonicalRoot", toJson canonicalRoot), ("subject", toJson subjectName),
     ("specification", toJson specName), ("graph", combinedGraph),

@@ -151,7 +151,7 @@ anneal/
     ├── audit/                         # package = "anneal-audit-tests" (publish = false)
     │   ├── Cargo.toml
     │   ├── src/bin/anneal-audit-test-bin.rs
-    │   └── tests/{boundary_audit.rs, boundary_audit/, target_audit.rs, target_audit/, cli_environment.rs, common/, fixtures/}
+    │   └── tests/{boundary_audit.rs, boundary_audit/, spec_g4_vacuity.rs, target_audit.rs, target_audit/, cli_environment.rs, common/, fixtures/}
     │       # (`boundary_audit/` and `target_audit/` hold the domain submodules of
     │       #  the `boundary_audit` and `target_audit` targets)
     ├── cargo-anneal/                  # package = "cargo-anneal-tests" (publish = false)
