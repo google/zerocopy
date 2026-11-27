@@ -443,54 +443,153 @@ mutual
 /-- `OpenMirTy.beq` implies equality (with `OpenMirTy.beqList`). -/
 theorem openMirTy_beq_eq :
     ∀ {a b : OpenMirTy}, OpenMirTy.beq a b = true → a = b
-  | .bool, .bool, _ => rfl
-  | .int w₁ s₁, .int w₂ s₂, h => by
-      change (IntWidth.beq w₁ w₂ && (s₁ == s₂)) = true at h
-      have hw := intWidth_beq_eq (bool_and_left h)
-      have hs := eq_of_beq (bool_and_right h)
-      subst hw hs; rfl
-  | .unit, .unit, _ => rfl
-  | .never, .never, _ => rfl
-  | .char, .char, _ => rfl
-  | .ordering, .ordering, _ => rfl
-  | .enum e₁, .enum e₂, h => congrArg OpenMirTy.enum (enumTy_beq_eq h)
-  | .tuple fs₁, .tuple fs₂, h =>
-      congrArg OpenMirTy.tuple (openMirTyList_beq_eq h)
-  | .slice e₁, .slice e₂, h =>
-      congrArg OpenMirTy.slice (openMirTy_beq_eq h)
-  | .array e₁ n₁, .array e₂ n₂, h => by
-      change (OpenMirTy.beq e₁ e₂ && Nat.beq n₁ n₂) = true at h
-      have he := openMirTy_beq_eq (bool_and_left h)
-      have hn := nat_beq_eq (bool_and_right h)
-      subst he hn; rfl
-  | .adt id₁ as₁, .adt id₂ as₂, h => by
-      change (Nat.beq id₁ id₂ && OpenMirTy.beqList as₁ as₂) = true at h
-      have hi := nat_beq_eq (bool_and_left h)
-      have ha := openMirTyList_beq_eq (bool_and_right h)
-      subst hi ha; rfl
-  | .ref m₁ p₁, .ref m₂ p₂, h => by
-      change (Mutability.beq m₁ m₂ && OpenMirTy.beq p₁ p₂) = true at h
-      have hm := mutability_beq_eq (bool_and_left h)
-      have hp := openMirTy_beq_eq (bool_and_right h)
-      subst hm hp; rfl
-  | .rawPtr m₁ p₁, .rawPtr m₂ p₂, h => by
-      change (Mutability.beq m₁ m₂ && OpenMirTy.beq p₁ p₂) = true at h
-      have hm := mutability_beq_eq (bool_and_left h)
-      have hp := openMirTy_beq_eq (bool_and_right h)
-      subst hm hp; rfl
-  | .param id₁, .param id₂, h =>
-      congrArg OpenMirTy.param (nat_beq_eq h)
-  | .assocProj s₁ tr₁ as₁ i₁, .assocProj s₂ tr₂ as₂ i₂, h => by
-      change (OpenMirTy.beq s₁ s₂ && Nat.beq tr₁ tr₂ &&
-        OpenMirTy.beqList as₁ as₂ && Nat.beq i₁ i₂) = true at h
-      have hi := nat_beq_eq (bool_and_right h)
-      have h1 := bool_and_left h
-      have ha := openMirTyList_beq_eq (bool_and_right h1)
-      have h2 := bool_and_left h1
-      have hs := openMirTy_beq_eq (bool_and_left h2)
-      have ht := nat_beq_eq (bool_and_right h2)
-      subst hs ht ha hi; rfl
-  | .unsupported, .unsupported, _ => rfl
+  | .bool, b, h => by
+      cases b with
+      | bool => exact rfl
+      | int _ _ | unit | never | char | ordering | enum _ | tuple _
+      | slice _ | array _ _ | adt _ _ | ref _ _ | rawPtr _ _ | param _
+      | assocProj _ _ _ _ | unsupported =>
+          nomatch h
+  | .int w₁ s₁, b, h => by
+      cases b with
+      | int w₂ s₂ =>
+          change (IntWidth.beq w₁ w₂ && (s₁ == s₂)) = true at h
+          have hw := intWidth_beq_eq (bool_and_left h)
+          have hs := eq_of_beq (bool_and_right h)
+          subst hw hs; rfl
+      | bool | unit | never | char | ordering | enum _ | tuple _ | slice _
+      | array _ _ | adt _ _ | ref _ _ | rawPtr _ _ | param _
+      | assocProj _ _ _ _ | unsupported =>
+          nomatch h
+  | .unit, b, h => by
+      cases b with
+      | unit => exact rfl
+      | bool | int _ _ | never | char | ordering | enum _ | tuple _
+      | slice _ | array _ _ | adt _ _ | ref _ _ | rawPtr _ _ | param _
+      | assocProj _ _ _ _ | unsupported =>
+          nomatch h
+  | .never, b, h => by
+      cases b with
+      | never => exact rfl
+      | bool | int _ _ | unit | char | ordering | enum _ | tuple _
+      | slice _ | array _ _ | adt _ _ | ref _ _ | rawPtr _ _ | param _
+      | assocProj _ _ _ _ | unsupported =>
+          nomatch h
+  | .char, b, h => by
+      cases b with
+      | char => exact rfl
+      | bool | int _ _ | unit | never | ordering | enum _ | tuple _
+      | slice _ | array _ _ | adt _ _ | ref _ _ | rawPtr _ _ | param _
+      | assocProj _ _ _ _ | unsupported =>
+          nomatch h
+  | .ordering, b, h => by
+      cases b with
+      | ordering => exact rfl
+      | bool | int _ _ | unit | never | char | enum _ | tuple _ | slice _
+      | array _ _ | adt _ _ | ref _ _ | rawPtr _ _ | param _
+      | assocProj _ _ _ _ | unsupported =>
+          nomatch h
+  | .enum e₁, b, h => by
+      cases b with
+      | enum e₂ => exact congrArg OpenMirTy.enum (enumTy_beq_eq h)
+      | bool | int _ _ | unit | never | char | ordering | tuple _
+      | slice _ | array _ _ | adt _ _ | ref _ _ | rawPtr _ _ | param _
+      | assocProj _ _ _ _ | unsupported =>
+          nomatch h
+  | .tuple fs₁, b, h => by
+      cases b with
+      | tuple fs₂ =>
+          exact
+            congrArg OpenMirTy.tuple (openMirTyList_beq_eq h)
+      | bool | int _ _ | unit | never | char | ordering | enum _ | slice _
+      | array _ _ | adt _ _ | ref _ _ | rawPtr _ _ | param _
+      | assocProj _ _ _ _ | unsupported =>
+          nomatch h
+  | .slice e₁, b, h => by
+      cases b with
+      | slice e₂ =>
+          exact
+            congrArg OpenMirTy.slice (openMirTy_beq_eq h)
+      | bool | int _ _ | unit | never | char | ordering | enum _ | tuple _
+      | array _ _ | adt _ _ | ref _ _ | rawPtr _ _ | param _
+      | assocProj _ _ _ _ | unsupported =>
+          nomatch h
+  | .array e₁ n₁, b, h => by
+      cases b with
+      | array e₂ n₂ =>
+          change (OpenMirTy.beq e₁ e₂ && Nat.beq n₁ n₂) = true at h
+          have he := openMirTy_beq_eq (bool_and_left h)
+          have hn := nat_beq_eq (bool_and_right h)
+          subst he hn; rfl
+      | bool | int _ _ | unit | never | char | ordering | enum _ | tuple _
+      | slice _ | adt _ _ | ref _ _ | rawPtr _ _ | param _
+      | assocProj _ _ _ _ | unsupported =>
+          nomatch h
+  | .adt id₁ as₁, b, h => by
+      cases b with
+      | adt id₂ as₂ =>
+          change (Nat.beq id₁ id₂ && OpenMirTy.beqList as₁ as₂) = true at h
+          have hi := nat_beq_eq (bool_and_left h)
+          have ha := openMirTyList_beq_eq (bool_and_right h)
+          subst hi ha; rfl
+      | bool | int _ _ | unit | never | char | ordering | enum _ | tuple _
+      | slice _ | array _ _ | ref _ _ | rawPtr _ _ | param _
+      | assocProj _ _ _ _ | unsupported =>
+          nomatch h
+  | .ref m₁ p₁, b, h => by
+      cases b with
+      | ref m₂ p₂ =>
+          change (Mutability.beq m₁ m₂ && OpenMirTy.beq p₁ p₂) = true at h
+          have hm := mutability_beq_eq (bool_and_left h)
+          have hp := openMirTy_beq_eq (bool_and_right h)
+          subst hm hp; rfl
+      | bool | int _ _ | unit | never | char | ordering | enum _ | tuple _
+      | slice _ | array _ _ | adt _ _ | rawPtr _ _ | param _
+      | assocProj _ _ _ _ | unsupported =>
+          nomatch h
+  | .rawPtr m₁ p₁, b, h => by
+      cases b with
+      | rawPtr m₂ p₂ =>
+          change (Mutability.beq m₁ m₂ && OpenMirTy.beq p₁ p₂) = true at h
+          have hm := mutability_beq_eq (bool_and_left h)
+          have hp := openMirTy_beq_eq (bool_and_right h)
+          subst hm hp; rfl
+      | bool | int _ _ | unit | never | char | ordering | enum _ | tuple _
+      | slice _ | array _ _ | adt _ _ | ref _ _ | param _
+      | assocProj _ _ _ _ | unsupported =>
+          nomatch h
+  | .param id₁, b, h => by
+      cases b with
+      | param id₂ =>
+          exact
+            congrArg OpenMirTy.param (nat_beq_eq h)
+      | bool | int _ _ | unit | never | char | ordering | enum _ | tuple _
+      | slice _ | array _ _ | adt _ _ | ref _ _ | rawPtr _ _
+      | assocProj _ _ _ _ | unsupported =>
+          nomatch h
+  | .assocProj s₁ tr₁ as₁ i₁, b, h => by
+      cases b with
+      | assocProj s₂ tr₂ as₂ i₂ =>
+          change (OpenMirTy.beq s₁ s₂ && Nat.beq tr₁ tr₂ &&
+            OpenMirTy.beqList as₁ as₂ && Nat.beq i₁ i₂) = true at h
+          have hi := nat_beq_eq (bool_and_right h)
+          have h1 := bool_and_left h
+          have ha := openMirTyList_beq_eq (bool_and_right h1)
+          have h2 := bool_and_left h1
+          have hs := openMirTy_beq_eq (bool_and_left h2)
+          have ht := nat_beq_eq (bool_and_right h2)
+          subst hs ht ha hi; rfl
+      | bool | int _ _ | unit | never | char | ordering | enum _ | tuple _
+      | slice _ | array _ _ | adt _ _ | ref _ _ | rawPtr _ _ | param _
+      | unsupported =>
+          nomatch h
+  | .unsupported, b, h => by
+      cases b with
+      | unsupported => exact rfl
+      | bool | int _ _ | unit | never | char | ordering | enum _ | tuple _
+      | slice _ | array _ _ | adt _ _ | ref _ _ | rawPtr _ _ | param _
+      | assocProj _ _ _ _ =>
+          nomatch h
 
 theorem openMirTyList_beq_eq :
       ∀ {xs ys : List OpenMirTy}, OpenMirTy.beqList xs ys = true → xs = ys
@@ -532,10 +631,13 @@ theorem traitRegistryWf_no_tail_shadow (k : ImplKey) (b : ImplBinding)
     lookupImpl rest k = none := by
   have hDistinct := bool_and_left hWf
   have hNotIn := bool_and_left hDistinct
+  revert hNotIn
   cases hIn : implKeyInRegistry k rest with
-  | false => exact implKeyInRegistry_false_lookupImpl_none k rest hIn
+  | false =>
+      intro hNotIn
+      exact implKeyInRegistry_false_lookupImpl_none k rest hIn
   | true =>
-      rw [hIn] at hNotIn
+      intro hNotIn
       cases hNotIn
 
 /-- Look up element `idx` in `xs` while proving `WellFormedTypeLayoutSpec` if
@@ -991,13 +1093,14 @@ theorem assocTypesWf_lookup_isClosed :
       have hRhs := bool_and_right (bool_and_left hWf)
       have hRest := bool_and_right hWf
       simp only [lookupAssocType] at hLook
+      revert hLook
       cases hEq : Nat.beq b.assocIdx idx with
       | true =>
-          rw [hEq] at hLook
+          intro hLook
           cases hLook
           exact hRhs
       | false =>
-          rw [hEq] at hLook
+          intro hLook
           exact assocTypesWf_lookup_isClosed rest idx rhs hRest hLook
 
 /-- Well-formed registry entries guarantee `assocTypesWf` and closed keys on
@@ -1020,15 +1123,16 @@ theorem implRegistryEntriesWf_lookupImpl :
       have hSelf := bool_and_left h2
       have hArgs := bool_and_right h2
       simp only [lookupImpl] at hLook
+      revert hLook
       cases hEq : ImplKey.beq k key with
       | true =>
-          rw [hEq] at hLook
+          intro hLook
           have hKey := implKey_beq_eq hEq
           cases hLook
           rw [← hKey]
           exact ⟨hSelf, hArgs, hAssoc⟩
       | false =>
-          rw [hEq] at hLook
+          intro hLook
           exact implRegistryEntriesWf_lookupImpl rest key binding hRest hLook
 
 /-- Well-formed registry entries guarantee `WhereClause.isClosedList` on any
@@ -1045,13 +1149,14 @@ theorem implRegistryEntriesWf_whereClosed :
       have h4 := bool_and_left (bool_and_left h5)
       have hWcs := bool_and_right h4
       simp only [lookupImpl] at hLook
+      revert hLook
       cases hEq : ImplKey.beq k key with
       | true =>
-          rw [hEq] at hLook
+          intro hLook
           cases hLook
           exact hWcs
       | false =>
-          rw [hEq] at hLook
+          intro hLook
           exact implRegistryEntriesWf_whereClosed rest key binding hRest hLook
 
 /-- Any successful `resolveAssocType` in a `TraitRegistryWf` registry implies
@@ -1065,10 +1170,11 @@ theorem resolveAssocType_wf_info (reg : TraitRegistry)
     OpenMirTy.isClosed rhs = true := by
   have hEntries := bool_and_right hWf
   unfold resolveAssocType at hRes
+  revert hRes
   cases hImpl : lookupImpl reg ⟨s, tr, args⟩ with
-  | none => rw [hImpl] at hRes; cases hRes
+  | none => intro hRes; cases hRes
   | some b =>
-      rw [hImpl] at hRes
+      intro hRes
       have hInfo := implRegistryEntriesWf_lookupImpl reg ⟨s, tr, args⟩ b
         hEntries hImpl
       exact ⟨hInfo.1, hInfo.2.1,
@@ -1224,13 +1330,14 @@ theorem normalizeOpenTyStep_closed_subst (reg : TraitRegistry)
   | .assocProj s tr args idx, h => by
       dsimp only [normalizeOpenTyStep] at h
       dsimp only [normalizeOpenTyStep]
+      revert h
       cases hRes : resolveAssocType reg (normalizeOpenTyStep reg s) tr
           (normalizeOpenTyStepList reg args) idx with
       | none =>
-          rw [hRes] at h
+          intro h
           cases h
       | some rhs =>
-          have hInfo := resolveAssocType_wf_info reg hWf
+          intro h; have hInfo := resolveAssocType_wf_info reg hWf
             (normalizeOpenTyStep reg s) tr
             (normalizeOpenTyStepList reg args) idx rhs hRes
           have ihS := normalizeOpenTyStep_closed_subst reg hWf σ s hInfo.1
@@ -2065,11 +2172,12 @@ theorem normalizeOpenTyStep_eq_int_subst (reg : TraitRegistry)
   | int _ _ => exact h
   | assocProj selfTy tr args idx =>
       dsimp only [normalizeOpenTyStep] at h
+      revert h
       cases hRes : resolveAssocType reg (normalizeOpenTyStep reg selfTy) tr
           (normalizeOpenTyStepList reg args) idx with
-      | none => rw [hRes] at h; cases h
+      | none => intro h; cases h
       | some rhs =>
-          rw [hRes] at h
+          intro h
           have hInfo := resolveAssocType_wf_info reg hRegWf
             (normalizeOpenTyStep reg selfTy) tr
             (normalizeOpenTyStepList reg args) idx rhs hRes
@@ -2094,11 +2202,12 @@ theorem normalizeOpenTyStep_eq_bool_subst (reg : TraitRegistry)
   | bool => exact h
   | assocProj selfTy tr args idx =>
       dsimp only [normalizeOpenTyStep] at h
+      revert h
       cases hRes : resolveAssocType reg (normalizeOpenTyStep reg selfTy) tr
           (normalizeOpenTyStepList reg args) idx with
-      | none => rw [hRes] at h; cases h
+      | none => intro h; cases h
       | some rhs =>
-          rw [hRes] at h
+          intro h
           have hInfo := resolveAssocType_wf_info reg hRegWf
             (normalizeOpenTyStep reg selfTy) tr
             (normalizeOpenTyStepList reg args) idx rhs hRes
@@ -2200,13 +2309,14 @@ theorem evalNormOpenTySpec_subst_param_some (reg : TraitRegistry)
   | .param id, sp, hEval => by
       dsimp only [normalizeOpenTyStep, evalNormOpenTySpec] at hEval
       rw [hParam id] at hEval
+      revert hEval
       cases hGet : openListGet? σ id with
       | none =>
-          rw [hGet] at hEval
+          intro hEval
           change none = some sp at hEval
           cases hEval
       | some rep =>
-          rw [hGet] at hEval
+          intro hEval
           change evalNormOpenTySpec baseClosed
               (normalizeOpenTyStep reg rep) =
             some sp at hEval
@@ -2215,61 +2325,67 @@ theorem evalNormOpenTySpec_subst_param_some (reg : TraitRegistry)
           exact hEval
   | .slice e, sp, hEval => by
       dsimp only [normalizeOpenTyStep, evalNormOpenTySpec] at hEval
+      revert hEval
       cases hE : evalNormOpenTySpec env' (normalizeOpenTyStep reg e) with
-      | none => rw [hE] at hEval; cases hEval
+      | none => intro hEval; cases hEval
       | some eSp =>
-          rw [hE] at hEval
+          intro hEval
           dsimp only [normalizeOpenTyStep, OpenMirTy.subst, evalNormOpenTySpec]
           rw [evalNormOpenTySpec_subst_param_some reg hRegWf env' baseClosed σ
             hAdt hParam hClosed hAssoc e eSp hE]
           exact hEval
   | .array e n, sp, hEval => by
       dsimp only [normalizeOpenTyStep, evalNormOpenTySpec] at hEval
+      revert hEval
       cases hE : evalNormOpenTySpec env' (normalizeOpenTyStep reg e) with
-      | none => rw [hE] at hEval; cases hEval
+      | none => intro hEval; cases hEval
       | some eSp =>
-          rw [hE] at hEval
+          intro hEval
           dsimp only [normalizeOpenTyStep, OpenMirTy.subst, evalNormOpenTySpec]
           rw [evalNormOpenTySpec_subst_param_some reg hRegWf env' baseClosed σ
             hAdt hParam hClosed hAssoc e eSp hE]
           exact hEval
   | .ref m p, sp, hEval => by
       dsimp only [normalizeOpenTyStep, evalNormOpenTySpec] at hEval
+      revert hEval
       cases hP : evalNormOpenTySpec env' (normalizeOpenTyStep reg p) with
-      | none => rw [hP] at hEval; cases hEval
+      | none => intro hEval; cases hEval
       | some pSp =>
-          rw [hP] at hEval
+          intro hEval
           dsimp only [normalizeOpenTyStep, OpenMirTy.subst, evalNormOpenTySpec]
           rw [evalNormOpenTySpec_subst_param_some reg hRegWf env' baseClosed σ
             hAdt hParam hClosed hAssoc p pSp hP]
           exact hEval
   | .rawPtr m p, sp, hEval => by
       dsimp only [normalizeOpenTyStep, evalNormOpenTySpec] at hEval
+      revert hEval
       cases hP : evalNormOpenTySpec env' (normalizeOpenTyStep reg p) with
-      | none => rw [hP] at hEval; cases hEval
+      | none => intro hEval; cases hEval
       | some pSp =>
-          rw [hP] at hEval
+          intro hEval
           dsimp only [normalizeOpenTyStep, OpenMirTy.subst, evalNormOpenTySpec]
           rw [evalNormOpenTySpec_subst_param_some reg hRegWf env' baseClosed σ
             hAdt hParam hClosed hAssoc p pSp hP]
           exact hEval
   | .adt id args, sp, hEval => by
       dsimp only [normalizeOpenTyStep, evalNormOpenTySpec] at hEval
+      revert hEval
       cases hAs : evalNormOpenTySpecList env'
           (normalizeOpenTyStepList reg args) with
-      | none => rw [hAs] at hEval; cases hEval
+      | none => intro hEval; cases hEval
       | some argSps =>
-          rw [hAs] at hEval
+          intro hEval
           dsimp only [normalizeOpenTyStep, OpenMirTy.subst, evalNormOpenTySpec]
           rw [← hAdt, evalNormOpenTySpec_subst_param_some_list reg hRegWf env'
             baseClosed σ hAdt hParam hClosed hAssoc args argSps hAs]
           exact hEval
   | .assocProj s tr args idx, sp, hEval => by
       dsimp only [normalizeOpenTyStep] at hEval
+      revert hEval
       cases hRes : resolveAssocType reg (normalizeOpenTyStep reg s) tr
           (normalizeOpenTyStepList reg args) idx with
       | some rhs =>
-          rw [hRes] at hEval
+          intro hEval
           have hInfo := resolveAssocType_wf_info reg hRegWf
             (normalizeOpenTyStep reg s) tr (normalizeOpenTyStepList reg args)
             idx rhs hRes
@@ -2283,7 +2399,7 @@ theorem evalNormOpenTySpec_subst_param_some (reg : TraitRegistry)
             hInfo.2.2]
           exact hEval
       | none =>
-          rw [hRes] at hEval
+          intro hEval
           dsimp only [evalNormOpenTySpec] at hEval
           dsimp only [OpenMirTy.subst]
           rw [← hAssoc s tr args idx hRes]
@@ -2317,15 +2433,17 @@ theorem evalNormOpenTySpec_subst_param_some_list (reg : TraitRegistry)
     | [], sps, hL => by cases hL; rfl
     | x :: xs, sps, hL => by
         dsimp only [normalizeOpenTyStepList, evalNormOpenTySpecList] at hL
+        revert hL
         cases hx : evalNormOpenTySpec env' (normalizeOpenTyStep reg x) with
-        | none => rw [hx] at hL; cases hL
+        | none => intro hL; cases hL
         | some xSp =>
-            rw [hx] at hL
+            intro hL
+            revert hL
             cases hxs : evalNormOpenTySpecList env'
                 (normalizeOpenTyStepList reg xs) with
-            | none => rw [hxs] at hL; cases hL
+            | none => intro hL; cases hL
             | some xsSps =>
-                rw [hxs] at hL
+                intro hL
                 cases hL
                 dsimp only [OpenMirTy.substList, normalizeOpenTyStepList,
                   evalNormOpenTySpecList]
@@ -2989,10 +3107,13 @@ private theorem binop_match_step
               | none => cases h
               | some mDst =>
                   dsimp only at h
+                  revert h
                   cases hR : (!isPrimitiveReadableTy ml ||
                     !isPrimitiveReadableTy mr || !checkVal resV mDst) with
-                  | true => rw [hR, if_true_eq] at h; cases h
-                  | false => rw [hR, if_false_eq] at h; exact ⟨resV, rfl, h⟩
+                  | true => intro h; rw [if_true_eq] at h; cases h
+                  | false =>
+                      intro h
+                      rw [if_false_eq] at h; exact ⟨resV, rfl, h⟩
 
 private theorem unop_match_step
     (c1 c2 : Option MirTy) (eu : Except FaultKind Val)
@@ -3618,26 +3739,29 @@ theorem openInitState_framesNoParam (prog : OpenProgram) (env : OpenExecEnv)
     (hInit : openInitState prog env q = .ok s₀) :
     FramesNoParam prog s₀.frames := by
   unfold openInitState openInitStateAux at hInit
+  revert hInit
   cases hD : OpenProgram.toDay1? prog with
   | some day1Prog =>
-      rw [hD] at hInit
+      intro hInit
       dsimp only at hInit
+      revert hInit
       cases hIS : initState day1Prog q with
-      | error _ => rw [hIS] at hInit; cases hInit
+      | error _ => intro hInit; cases hInit
       | ok ds =>
-          rw [hIS] at hInit
+          intro hInit
           cases hInit
           unfold initState at hIS
           have hIS := (ite_err_ok hIS).2
           have hIS := (ite_err_ok hIS).2
+          revert hIS
           cases hB : Trusted.MirSemantics.getElem? day1Prog.bodies
               day1Prog.entryDefId with
           | none =>
-              rw [hB] at hIS
+              intro hIS
               dsimp only at hIS
               cases hIS
           | some body =>
-              rw [hB] at hIS
+              intro hIS
               dsimp only at hIS
               have hIS := (ite_err_ok hIS).2
               have hIS := (ite_err_ok hIS).2
@@ -3652,28 +3776,31 @@ theorem openInitState_framesNoParam (prog : OpenProgram) (env : OpenExecEnv)
               cases hIS
               have hEntryId : day1Prog.entryDefId = prog.entryDefId := by
                 unfold OpenProgram.toDay1? at hD
+                revert hD
                 cases hL : OpenProgram.toDay1List? prog.bodies with
-                | none => rw [hL] at hD; cases hD
-                | some bs => rw [hL] at hD; cases hD; rfl
+                | none => intro hD; cases hD
+                | some bs => intro hD; cases hD; rfl
               change FramesNoParam prog
                 [{ defId := day1Prog.entryDefId, blockIdx := 0, stmtIdx := 0,
                    locals := _, retDst := none }]
               rw [hEntryId]
               exact ⟨hEntry, True.intro⟩
   | none =>
-      rw [hD] at hInit
+      intro hInit
       dsimp only at hInit
       have hInit := (ite_err_ok hInit).2
+      revert hInit
       cases hB : openListGet? prog.bodies prog.entryDefId with
-      | none => rw [hB] at hInit; cases hInit
+      | none => intro hInit; cases hInit
       | some ob =>
-          rw [hB] at hInit
+          intro hInit
           dsimp only at hInit
           have hInit := (ite_err_ok hInit).2
+          revert hInit
           cases hLoc : initOpenLocals prog env ob q.args with
-          | none => rw [hLoc] at hInit; cases hInit
+          | none => intro hInit; cases hInit
           | some ls =>
-              rw [hLoc] at hInit
+              intro hInit
               cases hInit
               exact ⟨hEntry, True.intro⟩
 
@@ -3693,9 +3820,10 @@ private theorem openTerm_toDay1_noCall (t : OpenTerminatorKind)
       injection h with h; subst h; rfl
   | switchInt d tgts =>
       dsimp only [OpenTerminatorKind.toDay1?] at h
+      revert h
       cases hd : OpenOperand.toDay1? d with
-      | none => rw [hd] at h; cases h
-      | some _ => rw [hd] at h; injection h with h; subst h; rfl
+      | none => intro h; cases h
+      | some _ => intro h; injection h with h; subst h; rfl
   | return_ =>
       dsimp only [OpenTerminatorKind.toDay1?] at h
       injection h with h; subst h; rfl
@@ -3707,9 +3835,10 @@ private theorem openTerm_toDay1_noCall (t : OpenTerminatorKind)
       injection h with h; subst h; rfl
   | assert cond _ _ _ _ =>
       dsimp only [OpenTerminatorKind.toDay1?] at h
+      revert h
       cases hc : OpenOperand.toDay1? cond with
-      | none => rw [hc] at h; cases h
-      | some _ => rw [hc] at h; injection h with h; subst h; rfl
+      | none => intro h; cases h
+      | some _ => intro h; injection h with h; subst h; rfl
   | call _ _ _ _ _ _ =>
       dsimp only [OpenTerminatorKind.toDay1?] at h
       cases h
@@ -3799,10 +3928,11 @@ theorem toDay1?_noCall (prog : OpenProgram) (p : Program)
     (h : OpenProgram.toDay1? prog = some p) :
     p.bodies.all (fun b => !bodyHasAnyCall b) = true := by
   unfold OpenProgram.toDay1? at h
+  revert h
   cases hl : OpenProgram.toDay1List? prog.bodies with
-  | none => rw [hl] at h; cases h
+  | none => intro h; cases h
   | some bs =>
-      rw [hl] at h
+      intro h
       injection h with h; subst h
       exact openProgList_toDay1_noCall prog.bodies bs hl
 
@@ -3815,11 +3945,12 @@ private theorem bodies_all_noCall_getElem? :
   | b0 :: rest, defId, b, hAll, hb => by
       unfold List.all at hAll
       dsimp only at hAll
+      revert hAll
       cases h0 : bodyHasAnyCall b0 with
       | true =>
-          rw [h0, Bool.not_true, Bool.false_and] at hAll; cases hAll
+          intro hAll; rw [Bool.not_true, Bool.false_and] at hAll; cases hAll
       | false =>
-          rw [h0, Bool.not_false, Bool.true_and] at hAll
+          intro hAll; rw [Bool.not_false, Bool.true_and] at hAll
           cases defId with
           | zero =>
               dsimp only [Trusted.MirSemantics.getElem?] at hb
@@ -3835,15 +3966,16 @@ theorem activeFrameBody_noCall (p : Program) (f : FrameState)
     ∀ b, activeFrameBody p f = some b → bodyHasAnyCall b = false := by
   intro b hb
   unfold activeFrameBody at hb
+  revert hb
   cases hs : f.sysrootOp? with
   | some op =>
-      rw [hs] at hb
+      intro hb
       injection hb with hb; subst hb
       unfold bodyHasAnyCall
       cases op with
       | mk kind _ _ => cases kind <;> rfl
   | none =>
-      rw [hs] at hb
+      intro hb
       exact bodies_all_noCall_getElem? p.bodies f.defId b hAll hb
 
 private theorem basicBlocks_noCall_term_aux
@@ -3895,150 +4027,173 @@ theorem evalStep_single_preserves_defId (p : Program) (df : FrameState)
       df'.sysrootOp? = df.sysrootOp? := by
   unfold evalStep at h
   dsimp only at h
+  revert h
   cases hB : activeFrameBody p df with
-  | none => rw [hB] at h; cases h
+  | none => intro h; cases h
   | some body =>
-      rw [hB] at h
+      intro h
       dsimp only at h
+      revert h
       cases hBb : Trusted.MirSemantics.getElem? body.basicBlocks df.blockIdx with
-      | none => rw [hBb] at h; cases h
+      | none => intro h; cases h
       | some bb =>
-          rw [hBb] at h
+          intro h
           dsimp only at h
+          revert h
           cases hSt : Trusted.MirSemantics.getElem? bb.statements df.stmtIdx
               with
           | some stmt =>
-              rw [hSt] at h
+              intro h
               dsimp only [attachCallers] at h
               unfold evalStatement at h
               cases stmt with
               | nop => cases h; exact ⟨_, rfl, rfl, rfl⟩
               | storageLive lid =>
                   dsimp only at h
+                  revert h
                   cases h1 : Trusted.MirSemantics.getElem? body.locals lid with
-                  | none => rw [h1] at h; cases h
+                  | none => intro h; cases h
                   | some lty =>
-                      rw [h1] at h
+                      intro h
                       dsimp only at h
+                      revert h
                       cases h2 : Trusted.MirSemantics.getElem? df.locals lid
                         with
-                      | none => rw [h2] at h; cases h
+                      | none => intro h; cases h
                       | some _ =>
-                          rw [h2] at h
+                          intro h
                           dsimp only at h
+                          revert h
                           cases h3 : setElem? df.locals lid
                               (liveUninitSlot lty) with
-                          | none => rw [h3] at h; cases h
+                          | none => intro h; cases h
                           | some _ =>
-                              rw [h3] at h
+                              intro h
                               dsimp only at h
+                              revert h
                               cases h4 : deallocateLocal mem _ with
-                              | error _ => rw [h4] at h; cases h
-                              | ok _ => rw [h4] at h; cases h; exact ⟨_, rfl, rfl, rfl⟩
+                              | error _ => intro h; cases h
+                              | ok _ =>
+                                  intro h
+                                  cases h; exact ⟨_, rfl, rfl, rfl⟩
               | storageDead lid =>
                   dsimp only at h
                   have h := ite_fault_step h
+                  revert h
                   cases h1 : Trusted.MirSemantics.getElem? df.locals lid with
-                  | none => rw [h1] at h; cases h
+                  | none => intro h; cases h
                   | some _ =>
-                      rw [h1] at h
+                      intro h
                       dsimp only at h
+                      revert h
                       cases h2 : setElem? df.locals lid .dead with
-                      | none => rw [h2] at h; cases h
+                      | none => intro h; cases h
                       | some _ =>
-                          rw [h2] at h
+                          intro h
                           dsimp only at h
+                          revert h
                           cases h3 : deallocateLocal mem _ with
-                          | error _ => rw [h3] at h; cases h
-                          | ok _ => rw [h3] at h; cases h; exact ⟨_, rfl, rfl, rfl⟩
+                          | error _ => intro h; cases h
+                          | ok _ => intro h; cases h; exact ⟨_, rfl, rfl, rfl⟩
               | assign dst rv =>
                   dsimp only at h
                   have h := ite_fault_step h
+                  revert h
                   cases h1 : Trusted.MirSemantics.getElem? body.locals
                       dst.localId with
-                  | none => rw [h1] at h; cases h
+                  | none => intro h; cases h
                   | some dstTy =>
-                      rw [h1] at h
+                      intro h
                       dsimp only at h
+                      revert h
                       cases h2 : evalRvalue body.locals df.locals mem dstTy rv
                         with
-                      | error _ => rw [h2] at h; cases h
+                      | error _ => intro h; cases h
                       | ok r2 =>
-                          rw [h2] at h
+                          intro h
                           dsimp only at h
+                          revert h
                           cases h3 : writePlace r2.2.1 r2.2.2 dst.localId dstTy
                               r2.1 with
-                          | error _ => rw [h3] at h; cases h
-                          | ok r3 => rw [h3] at h; cases h; exact ⟨_, rfl, rfl, rfl⟩
+                          | error _ => intro h; cases h
+                          | ok r3 => intro h; cases h; exact ⟨_, rfl, rfl, rfl⟩
               | unsupported => cases h
           | none =>
-              rw [hSt] at h
+              intro h
               dsimp only at h
               have h := ite_step_fault_false h
               unfold evalTerminator at h
+              revert h
               cases hTerm : bb.terminator with
               | goto tgt =>
-                  rw [hTerm] at h
+                  intro h
                   dsimp only [attachCallers] at h
                   unfold jumpToBlock at h
                   cases h; exact ⟨_, rfl, rfl, rfl⟩
               | switchInt discr tgts =>
-                  rw [hTerm] at h
+                  intro h
                   dsimp only [attachCallers] at h
+                  revert h
                   cases h1 : evalPrimitiveOperand body.locals df.locals mem
                       discr with
-                  | error _ => rw [h1] at h; cases h
+                  | error _ => intro h; cases h
                   | ok r1 =>
-                      rw [h1] at h
+                      intro h
                       dsimp only at h
+                      revert h
                       cases hDv : r1.1 with
                       | scalar sv =>
-                          rw [hDv] at h; dsimp only at h
+                          intro h; dsimp only at h
+                          revert h
                           cases h2 : evalSwitchBranches sv.width sv.bits
                               tgts.otherwise tgts.branches with
-                          | error _ => rw [h2] at h; cases h
+                          | error _ => intro h; cases h
                           | ok _ =>
-                              rw [h2] at h; dsimp only at h
+                              intro h; dsimp only at h
                               unfold jumpToBlock at h
                               cases h; exact ⟨_, rfl, rfl, rfl⟩
                       | bool b =>
-                          rw [hDv] at h; dsimp only at h
+                          intro h; dsimp only at h
+                          revert h
                           cases h2 : evalBoolSwitchBranches b tgts.otherwise
                               tgts.branches with
-                          | error _ => rw [h2] at h; cases h
+                          | error _ => intro h; cases h
                           | ok _ =>
-                              rw [h2] at h; dsimp only at h
+                              intro h; dsimp only at h
                               unfold jumpToBlock at h
                               cases h; exact ⟨_, rfl, rfl, rfl⟩
                       | char c =>
-                          rw [hDv] at h; dsimp only at h
+                          intro h; dsimp only at h
+                          revert h
                           cases h2 : evalCharSwitchBranches c tgts.otherwise
                               tgts.branches with
-                          | error _ => rw [h2] at h; cases h
+                          | error _ => intro h; cases h
                           | ok _ =>
-                              rw [h2] at h; dsimp only at h
+                              intro h; dsimp only at h
                               unfold jumpToBlock at h
                               cases h; exact ⟨_, rfl, rfl, rfl⟩
                       | unit | enumVal _ _ | ordering _ | tuple _
                       | bytes _ | ptr _ | slicePtr _ _ | rangeTo _
                       | rangeFrom _ | array _ | optionVal _ | range _ _
                       | vec _ _ _ | boxPtr _ _ =>
-                          rw [hDv] at h; dsimp only at h
+                          intro h; dsimp only at h
+                          revert h
                           cases hBr : tgts.branches with
                           | nil =>
-                              rw [hBr] at h
+                              intro h
                               unfold jumpToBlock at h
                               cases h; exact ⟨_, rfl, rfl, rfl⟩
                           | cons _ _ =>
-                              rw [hBr] at h; cases h
+                              intro h; cases h
               | return_ =>
-                  rw [hTerm] at h
+                  intro h
                   dsimp only [attachCallers] at h
                   have h := ite_fault_step h
+                  revert h
                   cases h1 : Trusted.MirSemantics.getElem? df.locals 0 with
-                  | none => rw [h1] at h; cases h
+                  | none => intro h; cases h
                   | some sl =>
-                      rw [h1] at h
+                      intro h
                       cases sl with
                       | dead => cases h
                       | partialTuple _ => cases h
@@ -4047,27 +4202,31 @@ theorem evalStep_single_preserves_defId (p : Program) (df : FrameState)
                           | none => cases h
                           | some _ => cases h
                       | indirect mp =>
+                          revert h
                           cases h2 : Trusted.MirSemantics.getElem? body.locals 0
                             with
-                          | none => rw [h2] at h; cases h
+                          | none => intro h; cases h
                           | some rty =>
-                              rw [h2] at h
+                              intro h
                               dsimp only at h
+                              revert h
                               cases h3 : loadIndirect mem rty mp with
-                              | error _ => rw [h3] at h; cases h
+                              | error _ => intro h; cases h
                               | ok opt =>
-                                  rw [h3] at h
+                                  intro h
                                   cases opt <;> cases h
               | call _ _ _ _ _ | sysrootCall _ _ _ _ _ =>
+                  intro h
                   have hc := basicBlocks_noCall_term (hNoCall body hB) hBb
                   rw [hTerm] at hc; cases hc
               | assert cond expected msg target unwind =>
-                  rw [hTerm] at h
+                  intro h
                   dsimp only [attachCallers] at h
+                  revert h
                   cases hOp : evalPrimitiveOperand body.locals df.locals mem cond with
-                  | error _ => rw [hOp] at h; cases h
+                  | error _ => intro h; cases h
                   | ok res =>
-                      rw [hOp] at h
+                      intro h
                       cases res with
                       | mk cv rest =>
                           cases rest with
@@ -4108,7 +4267,7 @@ theorem evalStep_single_preserves_defId (p : Program) (df : FrameState)
                               | optionVal optV => cases optV <;> (cases h)
               | unreachable | unwindResume
               | coreCall _ _ _ _ _ | unsupported =>
-                  rw [hTerm] at h; dsimp only [attachCallers] at h; cases h
+                  intro h; dsimp only [attachCallers] at h; cases h
 
 /-- `evalOpenOperand` preserves `frame.defId`. -/
 theorem evalOpenOperand_preserves_defId (prog : OpenProgram) (env : OpenExecEnv)
@@ -4119,62 +4278,70 @@ theorem evalOpenOperand_preserves_defId (prog : OpenProgram) (env : OpenExecEnv)
   cases op with
   | copy p =>
       dsimp only [evalOpenOperand] at h
+      revert h
       cases h1 : openListGet? ob.locals p.localId with
-      | none => rw [h1] at h; cases h
+      | none => intro h; cases h
       | some ty =>
-          rw [h1] at h
+          intro h
+          revert h
           cases h2 : Trusted.MirSemantics.getElem? frame.locals p.localId with
-          | none => rw [h2] at h; cases h
+          | none => intro h; cases h
           | some sl =>
-              rw [h2] at h
+              intro h
               cases sl with
               | dead => cases h
               | partialTuple _ => cases h
               | indirect _ => cases h
               | immediate opt =>
+                  revert h
                   cases hEmp : (!p.projection.isEmpty) with
-                  | true => rw [hEmp] at h; cases h
+                  | true => intro h; cases h
                   | false =>
-                      rw [hEmp] at h
+                      intro h
                       cases opt with
                       | none => cases h
                       | some _ => cases h; rfl
   | move p =>
       dsimp only [evalOpenOperand] at h
+      revert h
       cases h1 : openListGet? ob.locals p.localId with
-      | none => rw [h1] at h; cases h
+      | none => intro h; cases h
       | some ty₁ =>
-          rw [h1] at h
+          intro h
+          revert h
           cases h2 : Trusted.MirSemantics.getElem? frame.locals p.localId with
-          | none => rw [h2] at h; cases h
+          | none => intro h; cases h
           | some sl =>
-              rw [h2] at h
+              intro h
               cases sl with
               | dead => cases h
               | partialTuple _ => cases h
               | indirect _ => cases h
               | immediate opt =>
                   dsimp only at h
+                  revert h
                   cases hEmp : (!p.projection.isEmpty) with
-                  | true => rw [hEmp, if_true_eq] at h; cases h
+                  | true => intro h; rw [if_true_eq] at h; cases h
                   | false =>
-                      rw [hEmp, if_false_eq] at h
+                      intro h; rw [if_false_eq] at h
                       cases opt with
                       | none => cases h
                       | some _ =>
+                          revert h
                           cases h3 : setElem? frame.locals p.localId
                               (openLiveUninitSlot prog ty₁) with
-                          | none => rw [h3] at h; cases h
-                          | some ls' => rw [h3] at h; cases h; rfl
+                          | none => intro h; cases h
+                          | some ls' => intro h; cases h; rfl
   | constant c =>
       cases hCl : OpenMirTy.toClosedMirTy? c.ty with
       | some mty =>
           dsimp only [evalOpenOperand] at h
           rw [hCl] at h
           dsimp only at h
+          revert h
           cases hEv : evalConstLit mty c.lit with
-          | error _ => rw [hEv] at h; cases h
-          | ok _ => rw [hEv] at h; cases h; rfl
+          | error _ => intro h; cases h
+          | ok _ => intro h; cases h; rfl
       | none =>
           cases hLit : c.lit with
           | scalar _ | rodataBytes _ | rodataRef _ _ _ _ =>
@@ -4185,11 +4352,12 @@ theorem evalOpenOperand_preserves_defId (prog : OpenProgram) (env : OpenExecEnv)
               dsimp only [evalOpenOperand] at h
               rw [hCl, hLit] at h
               dsimp only at h
+              revert h
               cases hE : evalOpenTySpec prog.traitRegistry normFuel
                   env.typeSpecs c.ty with
-              | none => rw [hE] at h; cases h
+              | none => intro h; cases h
               | some sp =>
-                  rw [hE] at h
+                  intro h
                   dsimp only at h
                   have hOk := except_ite_ok h
                   cases hOk; rfl
@@ -4204,15 +4372,17 @@ theorem evalOpenOperands_preserves_defId (prog : OpenProgram)
   | [], frame, vs, f', h => by cases h; rfl
   | op :: ops, frame, vs, f', h => by
       unfold evalOpenOperands at h
+      revert h
       cases h1 : evalOpenOperand prog env ob frame op with
-      | error _ => rw [h1] at h; cases h
+      | error _ => intro h; cases h
       | ok r₁ =>
-          rw [h1] at h
+          intro h
           dsimp only at h
+          revert h
           cases h2 : evalOpenOperands prog env ob r₁.2.2 ops with
-          | error _ => rw [h2] at h; cases h
+          | error _ => intro h; cases h
           | ok r₂ =>
-              rw [h2] at h
+              intro h
               have hd1 := evalOpenOperand_preserves_defId prog env ob frame op
                 r₁.1 r₁.2.1 r₁.2.2 h1
               have hd2 := evalOpenOperands_preserves_defId prog env ob ops
@@ -4234,27 +4404,31 @@ theorem writeOpenPlace_preserves_defId (prog : OpenProgram) (env : OpenExecEnv)
   | true =>
       unfold writeOpenPlace at h
       rw [hEmp, if_not_true_eq] at h
+      revert h
       cases hGet : openListGet? ob.locals dst.localId with
-      | none => rw [hGet] at h; cases h
+      | none => intro h; cases h
       | some dstTy =>
-          rw [hGet] at h
+          intro h
           dsimp only at h
+          revert h
           cases hChk : (!checkOpenVal prog env v dstTy) with
-          | true => rw [hChk] at h; cases h
+          | true => intro h; cases h
           | false =>
-              rw [hChk] at h
+              intro h
+              revert h
               cases hLoc : Trusted.MirSemantics.getElem? frame.locals dst.localId
                 with
-              | none => rw [hLoc] at h; cases h
+              | none => intro h; cases h
               | some sl =>
-                  rw [hLoc] at h
+                  intro h
                   cases sl with
                   | dead | partialTuple _ | indirect _ => cases h
                   | immediate _ =>
+                      revert h
                       cases hSet : setElem? frame.locals dst.localId
                           (.immediate (some v)) with
-                      | none => rw [hSet] at h; cases h
-                      | some ls' => rw [hSet] at h; cases h; rfl
+                      | none => intro h; cases h
+                      | some ls' => intro h; cases h; rfl
 
 /-- `openUnwindWith` preserves `FramesNoParam prog`. -/
 theorem openUnwindWith_preserves_framesNoParam (prog : OpenProgram) :
@@ -4281,10 +4455,11 @@ theorem openUnwindWith_preserves_framesNoParam (prog : OpenProgram) :
       cases uw with
       | continue_ =>
           dsimp only at hStep
+          revert hStep
           cases hRet : caller.retDst with
-          | none => rw [hRet] at hStep; cases hStep
+          | none => intro hStep; cases hStep
           | some p =>
-              rw [hRet] at hStep
+              intro hStep
               exact openUnwindWith_preserves_framesNoParam prog tail
                 { s with callerMem := cm } cm p.2.2 none s' hRest.2
                 (fun _ h => by cases h) hStep
@@ -4336,16 +4511,18 @@ private theorem openReturn_preserves_framesNoParam (prog : OpenProgram)
                   cases tgtOpt with
                   | none => cases hStep
                   | some _ =>
+                      revert hStep
                       cases h4 : openListGet? prog.bodies caller.defId with
-                      | none => rw [h4] at hStep; cases hStep
+                      | none => intro hStep; cases hStep
                       | some cb =>
-                          rw [h4] at hStep
+                          intro hStep
                           dsimp only at hStep
+                          revert hStep
                           cases h5 : writeOpenPlace prog env cb caller dstSnd
                               retV with
-                          | error _ => rw [h5] at hStep; cases hStep
+                          | error _ => intro hStep; cases hStep
                           | ok c' =>
-                              rw [h5] at hStep
+                              intro hStep
                               cases hStep
                               have hc := writeOpenPlace_preserves_defId prog env
                                 cb caller dstSnd retV c' h5
@@ -4363,9 +4540,10 @@ theorem openEvalDetStep_preserves_framesNoParam (prog : OpenProgram)
     (hStep : openEvalDetStep prog env s = .step s') :
     FramesNoParam prog s'.frames := by
   unfold openEvalDetStep openEvalDetStepAux at hStep
+  revert hStep
   cases hD : OpenProgram.toDay1? prog with
   | some day1Prog =>
-      rw [hD] at hStep
+      intro hStep
       dsimp only at hStep
       cases hSf : s.frames with
       | nil =>
@@ -4392,13 +4570,14 @@ theorem openEvalDetStep_preserves_framesNoParam (prog : OpenProgram)
                 unfold OpenState.toState at hStep
                 rw [hSf] at hStep
                 exact hStep
+              revert hStep'
               cases hEval : evalStep day1Prog 0
                   { frames := [OpenFrameState.toFrameState of_],
                     callerMem := s.callerMem, mem := s.mem } with
-              | done _ => rw [hEval] at hStep'; cases hStep'
-              | fault _ => rw [hEval] at hStep'; cases hStep'
+              | done _ => intro hStep'; cases hStep'
+              | fault _ => intro hStep'; cases hStep'
               | step next =>
-                  rw [hEval] at hStep'
+                  intro hStep'
                   cases hStep'
                   let ⟨df', hNextFr, hDefEq, _⟩ :=
                     evalStep_single_preserves_defId day1Prog
@@ -4416,93 +4595,106 @@ theorem openEvalDetStep_preserves_framesNoParam (prog : OpenProgram)
                   rw [hDefEq]
                   exact hFrames.1
   | none =>
-      rw [hD] at hStep
+      intro hStep
       dsimp only at hStep
       cases hFr : s.frames with
       | nil => rw [hFr] at hStep; cases hStep
       | cons frame restFrames =>
           rw [hFr] at hFrames hStep
           dsimp only at hStep
+          revert hStep
           cases hB : openListGet? prog.bodies frame.defId with
-          | none => rw [hB] at hStep; cases hStep
+          | none => intro hStep; cases hStep
           | some ob =>
-              rw [hB] at hStep
+              intro hStep
               dsimp only at hStep
+              revert hStep
               cases hBb : openListGet? ob.basicBlocks frame.blockIdx with
-              | none => rw [hBb] at hStep; cases hStep
+              | none => intro hStep; cases hStep
               | some bb =>
-                  rw [hBb] at hStep
+                  intro hStep
                   dsimp only at hStep
+                  revert hStep
                   cases hSt : openListGet? bb.statements frame.stmtIdx with
                   | some stmt =>
-                      rw [hSt] at hStep
+                      intro hStep
                       dsimp only at hStep
                       cases stmt with
                       | nop => cases hStep; exact hFrames
                       | storageLive lid =>
                           dsimp only at hStep
+                          revert hStep
                           cases h1 : openListGet? ob.locals lid with
-                          | none => rw [h1] at hStep; cases hStep
+                          | none => intro hStep; cases hStep
                           | some ty =>
-                              rw [h1] at hStep
+                              intro hStep
+                              revert hStep
                               cases h2 : Trusted.MirSemantics.getElem?
                                   frame.locals lid with
-                              | none => rw [h2] at hStep; cases hStep
+                              | none => intro hStep; cases hStep
                               | some old =>
-                                  rw [h2] at hStep
+                                  intro hStep
                                   dsimp only at hStep
+                                  revert hStep
                                   cases h3 : setElem? frame.locals lid
                                       (openLiveUninitSlot prog ty) with
-                                  | none => rw [h3] at hStep; cases hStep
+                                  | none => intro hStep; cases hStep
                                   | some ls' =>
-                                      rw [h3] at hStep
+                                      intro hStep
+                                      revert hStep
                                       cases h4 : deallocateLocal s.mem old with
-                                      | error _ => rw [h4] at hStep; cases hStep
+                                      | error _ => intro hStep; cases hStep
                                       | ok mem' =>
-                                          rw [h4] at hStep
+                                          intro hStep
                                           cases hStep; exact hFrames
                       | storageDead lid =>
                           dsimp only at hStep
                           have hStep := ite_fault_step hStep
+                          revert hStep
                           cases h2 : Trusted.MirSemantics.getElem? frame.locals
                               lid with
-                          | none => rw [h2] at hStep; cases hStep
+                          | none => intro hStep; cases hStep
                           | some old =>
-                              rw [h2] at hStep
+                              intro hStep
                               dsimp only at hStep
+                              revert hStep
                               cases h3 : setElem? frame.locals lid .dead with
-                              | none => rw [h3] at hStep; cases hStep
+                              | none => intro hStep; cases hStep
                               | some ls' =>
-                                  rw [h3] at hStep
+                                  intro hStep
+                                  revert hStep
                                   cases h4 : deallocateLocal s.mem old with
-                                  | error _ => rw [h4] at hStep; cases hStep
+                                  | error _ => intro hStep; cases hStep
                                   | ok mem' =>
-                                      rw [h4] at hStep
+                                      intro hStep
                                       cases hStep; exact hFrames
                       | assign dst rv =>
                           dsimp only at hStep
                           have hStep := ite_fault_step hStep
+                          revert hStep
                           cases h2 : openListGet? ob.locals dst.localId with
-                          | none => rw [h2] at hStep; cases hStep
+                          | none => intro hStep; cases hStep
                           | some dstTy =>
-                              rw [h2] at hStep
+                              intro hStep
                               cases rv with
                               | discriminant _ | ref _ _ | addressOf _ _
                               | aggregateTuple _ | unsupported => cases hStep
                               | «use» op =>
                                   dsimp only at hStep
+                                  revert hStep
                                   cases h3 : evalOpenOperand prog env ob frame op
                                     with
-                                  | error _ => rw [h3] at hStep; cases hStep
+                                  | error _ => intro hStep; cases hStep
                                   | ok r =>
-                                      rw [h3] at hStep
+                                      intro hStep
                                       dsimp only at hStep
                                       have hStep := ite_fault_step hStep
+                                      revert hStep
                                       cases h5 : writeOpenPlace prog env ob
                                           r.2.2 dst r.1 with
-                                      | error _ => rw [h5] at hStep; cases hStep
+                                      | error _ => intro hStep; cases hStep
                                       | ok f' =>
-                                          rw [h5] at hStep
+                                          intro hStep
                                           cases hStep
                                           have hd1 :=
                                             evalOpenOperand_preserves_defId
@@ -4520,26 +4712,29 @@ theorem openEvalDetStep_preserves_framesNoParam (prog : OpenProgram)
                                           exact hFrames.1
                               | binaryOp op lhs rhs =>
                                   dsimp only at hStep
+                                  revert hStep
                                   cases h3 : evalOpenOperand prog env ob frame lhs
                                     with
-                                  | error _ => rw [h3] at hStep; cases hStep
+                                  | error _ => intro hStep; cases hStep
                                   | ok r₁ =>
-                                      rw [h3] at hStep
+                                      intro hStep
                                       dsimp only at hStep
+                                      revert hStep
                                       cases h4 : evalOpenOperand prog env ob
                                           r₁.2.2 rhs with
-                                      | error _ => rw [h4] at hStep; cases hStep
+                                      | error _ => intro hStep; cases hStep
                                       | ok r₂ =>
-                                          rw [h4] at hStep
+                                          intro hStep
                                           dsimp only at hStep
                                           have ⟨resV, _, hWr⟩ :=
                                             binop_match_step _ _ _ _ _ hStep
+                                          revert hWr
                                           cases h5 : writeOpenPlace prog env ob
                                               r₂.2.2 dst resV with
                                           | error _ =>
-                                              rw [h5] at hWr; cases hWr
+                                              intro hWr; cases hWr
                                           | ok f' =>
-                                              rw [h5] at hWr; cases hWr
+                                              intro hWr; cases hWr
                                               have hd1 :=
                                                 evalOpenOperand_preserves_defId
                                                   prog env ob frame lhs r₁.1
@@ -4561,19 +4756,21 @@ theorem openEvalDetStep_preserves_framesNoParam (prog : OpenProgram)
                                               exact hFrames.1
                               | unaryOp op opnd =>
                                   dsimp only at hStep
+                                  revert hStep
                                   cases h3 : evalOpenOperand prog env ob frame
                                       opnd with
-                                  | error _ => rw [h3] at hStep; cases hStep
+                                  | error _ => intro hStep; cases hStep
                                   | ok r₁ =>
-                                      rw [h3] at hStep
+                                      intro hStep
                                       dsimp only at hStep
                                       have ⟨resV, _, hWr⟩ :=
                                         unop_match_step _ _ _ _ hStep
+                                      revert hWr
                                       cases h5 : writeOpenPlace prog env ob
                                           r₁.2.2 dst resV with
-                                      | error _ => rw [h5] at hWr; cases hWr
+                                      | error _ => intro hWr; cases hWr
                                       | ok f' =>
-                                          rw [h5] at hWr; cases hWr
+                                          intro hWr; cases hWr
                                           have hd1 :=
                                             evalOpenOperand_preserves_defId
                                               prog env ob frame opnd r₁.1
@@ -4596,18 +4793,20 @@ theorem openEvalDetStep_preserves_framesNoParam (prog : OpenProgram)
                                   | intToInt =>
                                       dsimp only at hStep
                                       have hStep := ite_fault_step hStep
+                                      revert hStep
                                       cases h3 : evalOpenOperand prog env ob
                                           frame opnd with
-                                      | error _ => rw [h3] at hStep; cases hStep
+                                      | error _ => intro hStep; cases hStep
                                       | ok r₁ =>
-                                          rw [h3] at hStep
+                                          intro hStep
+                                          revert hStep
                                           cases hc1 : OpenMirTy.toClosedMirTy?
                                               (normalizeOpenTy
                                                 prog.traitRegistry normFuel
                                                 castTy) with
-                                          | none => rw [hc1] at hStep; cases hStep
+                                          | none => intro hStep; cases hStep
                                           | some mCast =>
-                                              rw [hc1] at hStep
+                                              intro hStep
                                               dsimp only at hStep
                                               cases hc2 :
                                                   OpenMirTy.toClosedMirTy?
@@ -4619,22 +4818,24 @@ theorem openEvalDetStep_preserves_framesNoParam (prog : OpenProgram)
                                                   dsimp only at hStep
                                                   have hStep :=
                                                     ite_fault_step hStep
+                                                  revert hStep
                                                   cases hev : evalIntToIntCast
                                                       r₁.1 mCast with
                                                   | error _ =>
-                                                      rw [hev] at hStep
+                                                      intro hStep
                                                       cases hStep
                                                   | ok resV =>
-                                                      rw [hev] at hStep
+                                                      intro hStep
                                                       dsimp only at hStep
+                                                      revert hStep
                                                       cases h5 : writeOpenPlace
                                                           prog env ob r₁.2.2 dst
                                                           resV with
                                                       | error _ =>
-                                                          rw [h5] at hStep
+                                                          intro hStep
                                                           cases hStep
                                                       | ok f' =>
-                                                          rw [h5] at hStep
+                                                          intro hStep
                                                           cases hStep
                                                           have hd1 :=
                                                             evalOpenOperand_preserves_defId
@@ -4657,21 +4858,23 @@ theorem openEvalDetStep_preserves_framesNoParam (prog : OpenProgram)
                                                           exact hFrames.1
                       | unsupported => cases hStep
                   | none =>
-                      rw [hSt] at hStep
+                      intro hStep
                       dsimp only at hStep
                       have hStep := ite_fault_step hStep
+                      revert hStep
                       cases hTerm : bb.terminator with
                       | goto _ =>
-                          rw [hTerm] at hStep; cases hStep; exact hFrames
+                          intro hStep; cases hStep; exact hFrames
                       | return_ =>
-                          rw [hTerm] at hStep
+                          intro hStep
                           dsimp only at hStep
                           have hStep := ite_fault_step hStep
+                          revert hStep
                           cases h3 : Trusted.MirSemantics.getElem? frame.locals
                               0 with
-                          | none => rw [h3] at hStep; cases hStep
+                          | none => intro hStep; cases hStep
                           | some sl =>
-                              rw [h3] at hStep
+                              intro hStep
                               cases sl with
                               | dead | partialTuple _ | indirect _ => cases hStep
                               | immediate opt =>
@@ -4681,9 +4884,9 @@ theorem openEvalDetStep_preserves_framesNoParam (prog : OpenProgram)
                                       exact openReturn_preserves_framesNoParam
                                         prog env s frame retV restFrames
                                         hFrames.2 s' hStep
-                      | unreachable => rw [hTerm] at hStep; cases hStep
+                      | unreachable => intro hStep; cases hStep
                       | unwindResume =>
-                          rw [hTerm] at hStep
+                          intro hStep
                           dsimp only at hStep
                           have hStep := ite_fault_step hStep
                           cases restFrames with
@@ -4704,28 +4907,32 @@ theorem openEvalDetStep_preserves_framesNoParam (prog : OpenProgram)
                                               s.callerMem uw none s' hFrames.2
                                               (fun _ hc => by cases hc) hStep
                       | switchInt discr tgts =>
-                          rw [hTerm] at hStep
+                          intro hStep
                           dsimp only at hStep
+                          revert hStep
                           cases h2 : evalOpenOperand prog env ob frame discr with
-                          | error _ => rw [h2] at hStep; cases hStep
+                          | error _ => intro hStep; cases hStep
                           | ok r =>
-                              rw [h2] at hStep
+                              intro hStep
                               dsimp only at hStep
+                              revert hStep
                               cases hc : OpenMirTy.toClosedMirTy? r.2.1 with
-                              | none => rw [hc] at hStep; cases hStep
+                              | none => intro hStep; cases hStep
                               | some mTy =>
-                                  rw [hc] at hStep
+                                  intro hStep
                                   dsimp only at hStep
                                   have hStep := ite_fault_step hStep
+                                  revert hStep
                                   cases hV : r.1 with
                                   | scalar sv =>
-                                      rw [hV] at hStep; dsimp only at hStep
+                                      intro hStep; dsimp only at hStep
+                                      revert hStep
                                       cases hTgt : evalSwitchBranches sv.width
                                           sv.bits tgts.otherwise
                                           tgts.branches with
-                                      | error _ => rw [hTgt] at hStep; cases hStep
+                                      | error _ => intro hStep; cases hStep
                                       | ok _ =>
-                                          rw [hTgt] at hStep
+                                          intro hStep
                                           cases hStep
                                           have hd := evalOpenOperand_preserves_defId
                                             prog env ob frame discr r.1 r.2.1
@@ -4738,12 +4945,13 @@ theorem openEvalDetStep_preserves_framesNoParam (prog : OpenProgram)
                                           rw [hd]
                                           exact hFrames.1
                                   | bool b =>
-                                      rw [hV] at hStep; dsimp only at hStep
+                                      intro hStep; dsimp only at hStep
+                                      revert hStep
                                       cases hTgt : evalBoolSwitchBranches b
                                           tgts.otherwise tgts.branches with
-                                      | error _ => rw [hTgt] at hStep; cases hStep
+                                      | error _ => intro hStep; cases hStep
                                       | ok _ =>
-                                          rw [hTgt] at hStep
+                                          intro hStep
                                           cases hStep
                                           have hd := evalOpenOperand_preserves_defId
                                             prog env ob frame discr r.1 r.2.1
@@ -4756,12 +4964,13 @@ theorem openEvalDetStep_preserves_framesNoParam (prog : OpenProgram)
                                           rw [hd]
                                           exact hFrames.1
                                   | char c =>
-                                      rw [hV] at hStep; dsimp only at hStep
+                                      intro hStep; dsimp only at hStep
+                                      revert hStep
                                       cases hTgt : evalCharSwitchBranches c
                                           tgts.otherwise tgts.branches with
-                                      | error _ => rw [hTgt] at hStep; cases hStep
+                                      | error _ => intro hStep; cases hStep
                                       | ok _ =>
-                                          rw [hTgt] at hStep
+                                          intro hStep
                                           cases hStep
                                           have hd := evalOpenOperand_preserves_defId
                                             prog env ob frame discr r.1 r.2.1
@@ -4777,10 +4986,11 @@ theorem openEvalDetStep_preserves_framesNoParam (prog : OpenProgram)
                                   | bytes _ | ptr _ | slicePtr _ _ | rangeTo _
                                   | rangeFrom _ | array _ | optionVal _
                                   | range _ _ | vec _ _ _ | boxPtr _ _ =>
-                                      rw [hV] at hStep; dsimp only at hStep
+                                      intro hStep; dsimp only at hStep
+                                      revert hStep
                                       cases hBr : tgts.branches with
                                       | nil =>
-                                          rw [hBr] at hStep
+                                          intro hStep
                                           cases hStep
                                           have hd := evalOpenOperand_preserves_defId
                                             prog env ob frame discr r.1 r.2.1
@@ -4793,14 +5003,15 @@ theorem openEvalDetStep_preserves_framesNoParam (prog : OpenProgram)
                                           rw [hd]
                                           exact hFrames.1
                                       | cons _ _ =>
-                                          rw [hBr] at hStep; cases hStep
+                                          intro hStep; cases hStep
                       | assert cond exp _ tgt uw =>
-                          rw [hTerm] at hStep
+                          intro hStep
                           dsimp only at hStep
+                          revert hStep
                           cases h2 : evalOpenOperand prog env ob frame cond with
-                          | error _ => rw [h2] at hStep; cases hStep
+                          | error _ => intro hStep; cases hStep
                           | ok r =>
-                              rw [h2] at hStep
+                              intro hStep
                               dsimp only at hStep
                               have hd := evalOpenOperand_preserves_defId prog env
                                 ob frame cond r.1 r.2.1 r.2.2 h2
@@ -4811,27 +5022,29 @@ theorem openEvalDetStep_preserves_framesNoParam (prog : OpenProgram)
                                     openBodyNoParam b = true
                                 rw [hd]
                                 exact hFrames.1
+                              revert hStep
                               cases hVal : r.1 with
                               | bool b =>
-                                  rw [hVal] at hStep
+                                  intro hStep
                                   dsimp only at hStep
+                                  revert hStep
                                   cases h3 : b == exp with
                                   | true =>
-                                      rw [h3, if_true_eq] at hStep
+                                      intro hStep; rw [if_true_eq] at hStep
                                       cases hStep; exact hrFr
                                   | false =>
-                                      rw [h3, if_false_eq] at hStep
+                                      intro hStep; rw [if_false_eq] at hStep
                                       exact openUnwindWith_preserves_framesNoParam
                                         prog restFrames s s.callerMem uw
                                         (some r.2.2) s' hFrames.2
                                         (fun cf hCf => by cases hCf; exact hrFr.1)
                                         hStep
                               | _ =>
-                                  rw [hVal] at hStep
+                                  intro hStep
                                   dsimp only at hStep
                                   cases hStep
                       | call _ _ _ _ _ _ | traitCall _ _ _ _ _ _ _ _
-                      | unsupported => rw [hTerm] at hStep; cases hStep
+                      | unsupported => intro hStep; cases hStep
 
 mutual
   /-- Reverse `.param`-absence preservation for single-step normalization. -/
@@ -4851,10 +5064,11 @@ mutual
     | .adt _ args, h => normalizeOpenTyStepList_noParam_rev reg hWf args h
     | .assocProj s tr args idx, h => by
         dsimp only [normalizeOpenTyStep] at h
+        revert h
         cases hRes : resolveAssocType reg (normalizeOpenTyStep reg s) tr
             (normalizeOpenTyStepList reg args) idx with
         | some rhs =>
-            have hInfo := resolveAssocType_wf_info reg hWf
+            intro h; have hInfo := resolveAssocType_wf_info reg hWf
               (normalizeOpenTyStep reg s) tr
               (normalizeOpenTyStepList reg args) idx rhs hRes
             have hS := normalizeOpenTyStep_closed_subst reg hWf [] s hInfo.1
@@ -4863,7 +5077,7 @@ mutual
                 reg hWf [] args hInfo.2.1).1
             exact bool_and_eq_true hS.1 hA
         | none =>
-            rw [hRes] at h
+            intro h
             dsimp only [openMirTyNoParam] at h
             exact bool_and_eq_true
               (normalizeOpenTyStep_noParam_rev reg hWf s (bool_and_left h))
@@ -5056,29 +5270,34 @@ theorem concreteTraitCallStep_preserves_framesNoParam (prog : OpenProgram)
         argsN mIdx args dst tgt uw = .step s') :
     FramesNoParam prog s'.frames := by
   unfold concreteTraitCallStep at hStep
+  revert hStep
   cases hReg : (!TraitRegistryWf prog.traitRegistry) with
-  | true => rw [hReg, if_true_eq] at hStep; cases hStep
+  | true => intro hStep; rw [if_true_eq] at hStep; cases hStep
   | false =>
-      rw [hReg, if_false_eq] at hStep
+      intro hStep; rw [if_false_eq] at hStep
       dsimp only at hStep
+      revert hStep
       cases hL : lookupImpl prog.traitRegistry ⟨selfN, tr, argsN⟩ with
-      | none => rw [hL] at hStep; cases hStep
+      | none => intro hStep; cases hStep
       | some binding =>
-          rw [hL] at hStep
+          intro hStep
           dsimp only at hStep
+          revert hStep
           cases hB0 : (!Nat.beq binding.implTyParamCount 0) with
-          | true => rw [hB0, if_true_eq] at hStep; cases hStep
+          | true => intro hStep; rw [if_true_eq] at hStep; cases hStep
           | false =>
-              rw [hB0, if_false_eq] at hStep
+              intro hStep; rw [if_false_eq] at hStep
+              revert hStep
               cases hM : lookupImplMethod binding.methodDefIds mIdx with
-              | none => rw [hM] at hStep; cases hStep
+              | none => intro hStep; cases hStep
               | some calleeId =>
-                  rw [hM] at hStep
+                  intro hStep
                   dsimp only at hStep
+                  revert hStep
                   cases hCB : openListGet? prog.bodies calleeId with
-                  | none => rw [hCB] at hStep; cases hStep
+                  | none => intro hStep; cases hStep
                   | some calleeBody =>
-                      rw [hCB] at hStep
+                      intro hStep
                       dsimp only at hStep
                       cases hBad :
                           (!Nat.beq calleeBody.sig.tyParamCount 0 ||
@@ -5093,15 +5312,19 @@ theorem concreteTraitCallStep_preserves_framesNoParam (prog : OpenProgram)
                               (bool_or_eq_false_right
                                 (bool_or_eq_false_left
                                   (bool_or_eq_false_left hBad)))
+                          revert hStep
                           cases hProj : (!dst.projection.isEmpty) with
-                          | true => rw [hProj, if_true_eq] at hStep; cases hStep
+                          | true =>
+                              intro hStep
+                              rw [if_true_eq] at hStep; cases hStep
                           | false =>
-                              rw [hProj, if_false_eq] at hStep
+                              intro hStep; rw [if_false_eq] at hStep
+                              revert hStep
                               cases hDst : openListGet? ob.locals dst.localId
                                 with
-                              | none => rw [hDst] at hStep; cases hStep
+                              | none => intro hStep; cases hStep
                               | some dstTy =>
-                                  rw [hDst] at hStep
+                                  intro hStep
                                   dsimp only at hStep
                                   cases hRetEq :
                                       (!OpenMirTy.beq
@@ -5314,41 +5537,47 @@ theorem assumeGuaranteeTraitCall_preserves_framesNoParam (prog : OpenProgram)
   unfold AssumeGuaranteeTraitCall at hStep
   dsimp only at hStep
   have hStep := prop_ite_step_rhs hStep
+  revert hStep
   cases hTc : env.traitContracts tr with
-  | none => rw [hTc] at hStep; cases hStep
+  | none => intro hStep; cases hStep
   | some contract =>
-      rw [hTc] at hStep
+      intro hStep
       dsimp only at hStep
       have hStep := prop_ite_step_rhs hStep
+      revert hStep
       cases hMs : lookupMethodSpec contract.methodSpecs mIdx with
-      | none => rw [hMs] at hStep; cases hStep
+      | none => intro hStep; cases hStep
       | some mspec =>
-          rw [hMs] at hStep
+          intro hStep
           dsimp only at hStep
           have hStep := prop_ite_step_rhs hStep
+          revert hStep
           cases hDst : openListGet? ob.locals dst.localId with
-          | none => rw [hDst] at hStep; cases hStep
+          | none => intro hStep; cases hStep
           | some _ =>
-              rw [hDst] at hStep
+              intro hStep
               dsimp only at hStep
               rw [ite_eq_right_of_eq_false _ _
                 (eq_false (fun hBad => by
                   rw [ite_eq_left_of_eq_true _ _ (eq_true hBad)] at hStep
                   cases hStep))] at hStep
+              revert hStep
               cases hSS : evalOpenTySpec prog.traitRegistry normFuel
                   env.typeSpecs
                   (normalizeOpenTy prog.traitRegistry normFuel selfTy)
                 with
-              | none => rw [hSS] at hStep; cases hStep
+              | none => intro hStep; cases hStep
               | some _ =>
-                  rw [hSS] at hStep
+                  intro hStep
+                  revert hStep
                   cases hSA : evalNormOpenTySpecList env.typeSpecs
                       (trArgs.map
                         (normalizeOpenTy prog.traitRegistry normFuel))
                     with
-                  | none => rw [hSA] at hStep; cases hStep
+                  | none => intro hStep; cases hStep
                   | some _ =>
-                      rw [hSA] at hStep
+                      intro hStep
+                      revert hStep
                       cases hSAss : resolveTraitAssocSpecs prog env
                           (normalizeOpenTy prog.traitRegistry normFuel
                             selfTy)
@@ -5357,14 +5586,15 @@ theorem assumeGuaranteeTraitCall_preserves_framesNoParam (prog : OpenProgram)
                             (normalizeOpenTy prog.traitRegistry
                               normFuel))
                           contract.assocTypeCount with
-                      | none => rw [hSAss] at hStep; cases hStep
+                      | none => intro hStep; cases hStep
                       | some _ =>
-                          rw [hSAss] at hStep
+                          intro hStep
+                          revert hStep
                           cases hOps : evalOpenOperands prog env ob
                               frame args with
-                          | error _ => rw [hOps] at hStep; cases hStep
+                          | error _ => intro hStep; cases hStep
                           | ok r =>
-                              rw [hOps] at hStep
+                              intro hStep
                               dsimp only at hStep
                               have hStep := prop_ite_step_rhs hStep
                               cases hStep with
@@ -5453,14 +5683,15 @@ theorem openStep_noParam_congr (prog : OpenProgram)
   have hDet := openEvalDetStep_noParam_congr prog hRegWf env₁ env₂ hAdt hAssoc s
     hFrames
   unfold OpenStep OpenStepOnFrames
+  revert hFrames
   cases hFr : s.frames with
   | nil =>
-      refine ⟨Iff.rfl, ?_⟩
+      intro hFrames; refine ⟨Iff.rfl, ?_⟩
       intro s' hEq hStep
       subst hEq
       cases hStep
   | cons frame restFrames =>
-      rw [hFr] at hFrames
+      intro hFrames
       dsimp only
       let ⟨ob0, hGet0, hNoP0⟩ := hFrames.1
       unfold OpenStepOnBodyOpt
@@ -6073,9 +6304,10 @@ theorem whereClauseParamSem_of_discharged (prog : OpenProgram)
             paramInvs hLenEq hMap' selfTy hSTup]
           exact hSEval
         refine ⟨selfSpec, hSEval', hSWf, ?_⟩
+        revert hSEval'
         cases hSN : normalizeOpenTy prog.traitRegistry normFuel selfTy with
         | param i =>
-            rw [hSN] at hSEval'
+            intro hSEval'
             unfold evalOpenTySpec at hSEval'
             rw [normalizeOpenTy_normFuel_eq_step prog.traitRegistry hRegWf
               (.param i)] at hSEval'
@@ -6093,7 +6325,7 @@ theorem whereClauseParamSem_of_discharged (prog : OpenProgram)
         | bool | int _ _ | unit | never | char | ordering | enum _ | tuple _
         | slice _ | array _ _ | adt _ _ | ref _ _ | rawPtr _ _
         | assocProj _ _ _ _ | unsupported =>
-            exact hSInv
+            intro hSEval'; exact hSInv
       · refine ⟨assocSpecs, ?_, hAssWf⟩
         have hAuxEq :
             ∀ rem idx : Nat,
@@ -6455,13 +6687,14 @@ private theorem findDiscrVariantAux_lt (bits : BitVec 128) :
   | _, [], _, h => by cases h
   | idx, d :: ds, v, h => by
       dsimp only [findDiscrVariantAux] at h
+      revert h
       cases hEq : (BitVec.ofNat 128 d == bits) with
       | true =>
-          rw [hEq] at h
+          intro h
           cases h
           exact Nat.lt_add_of_pos_right (Nat.succ_pos _)
       | false =>
-          rw [hEq] at h
+          intro h
           have hSub := findDiscrVariantAux_lt bits (idx + 1) ds v h
           rw [Nat.add_assoc, Nat.add_comm 1 ds.length] at hSub
           exact hSub
@@ -6475,10 +6708,11 @@ private theorem evalConstLit_checkVal (mty : MirTy) (lit : ConstLit) (v : Val)
       | zeroSized | rodataBytes _ | rodataRef _ _ _ _ => cases h
       | scalar bits =>
           dsimp only [evalConstLit] at h
+          revert h
           cases hNe : (truncateBits w bits != bits) with
-          | true => rw [hNe] at h; cases h
+          | true => intro h; cases h
           | false =>
-              rw [hNe] at h
+              intro h
               cases h
               dsimp only [checkVal, Val.ty?]
               rw [ite_cond_true (scalarVal_wf_truncate w s bits)]
@@ -6490,17 +6724,20 @@ private theorem evalConstLit_checkVal (mty : MirTy) (lit : ConstLit) (v : Val)
       | zeroSized | rodataBytes _ | rodataRef _ _ _ _ => cases h
       | scalar bits =>
           dsimp only [evalConstLit] at h
+          revert h
           cases hNe : (truncateBits .i8 bits != bits) with
-          | true => rw [hNe] at h; cases h
+          | true => intro h; cases h
           | false =>
-              rw [hNe] at h
+              intro h
+              revert h
               cases hB0 : (UInt8.ofNat (truncateBits .i8 bits).toNat == 0) with
-              | true => rw [hB0] at h; cases h; rfl
+              | true => intro h; cases h; rfl
               | false =>
-                  rw [hB0] at h
+                  intro h
+                  revert h
                   cases hB1 : (UInt8.ofNat (truncateBits .i8 bits).toNat == 1) with
-                  | true => rw [hB1] at h; cases h; rfl
-                  | false => rw [hB1] at h; cases h
+                  | true => intro h; cases h; rfl
+                  | false => intro h; cases h
   | unit =>
       cases lit with
       | scalar _ | rodataBytes _ | rodataRef _ _ _ _ => cases h
@@ -6510,40 +6747,46 @@ private theorem evalConstLit_checkVal (mty : MirTy) (lit : ConstLit) (v : Val)
       | zeroSized | rodataBytes _ | rodataRef _ _ _ _ => cases h
       | scalar bits =>
           dsimp only [evalConstLit] at h
+          revert h
           cases hNe : (truncateBits .i32 bits != bits) with
-          | true => rw [hNe] at h; cases h
+          | true => intro h; cases h
           | false =>
-              rw [hNe] at h
+              intro h
+              revert h
               cases hUni : isUnicodeScalar bits.toNat with
-              | false => rw [hUni] at h; cases h
-              | true => rw [hUni] at h; cases h; rfl
+              | false => intro h; cases h
+              | true => intro h; cases h; rfl
   | ordering =>
       cases lit with
       | zeroSized | rodataBytes _ | rodataRef _ _ _ _ => cases h
       | scalar bits =>
           dsimp only [evalConstLit] at h
+          revert h
           cases hNe : (truncateBits .i8 bits != bits) with
-          | true => rw [hNe] at h; cases h
+          | true => intro h; cases h
           | false =>
-              rw [hNe] at h
+              intro h
+              revert h
               cases hOrd : orderingOfTagBits bits.toNat with
-              | none => rw [hOrd] at h; cases h
-              | some ord => rw [hOrd] at h; cases h; rfl
+              | none => intro h; cases h
+              | some ord => intro h; cases h; rfl
   | enum ety =>
       cases lit with
       | rodataBytes _ | rodataRef _ _ _ _ => cases h
       | zeroSized =>
           dsimp only [evalConstLit] at h
+          revert h
           cases hZst : isZstEnumTy ety with
-          | false => rw [hZst] at h; cases h
+          | false => intro h; cases h
           | true =>
-              rw [hZst] at h
+              intro h
               cases h
               unfold isZstEnumTy at hZst
+              revert hZst
               cases hTag : ety.tagRepr with
-              | scalar _ _ => rw [hTag] at hZst; cases hZst
+              | scalar _ _ => intro hZst; cases hZst
               | zeroSized =>
-                  rw [hTag] at hZst
+                  intro hZst
                   dsimp only at hZst
                   have hNonEmpty : (!ety.discriminants.isEmpty) = true := by
                     unfold enumAdmitted at hZst
@@ -6554,10 +6797,11 @@ private theorem evalConstLit_checkVal (mty : MirTy) (lit : ConstLit) (v : Val)
                   exact enumTy_beq_self ety
       | scalar bits =>
           dsimp only [evalConstLit] at h
+          revert h
           cases hTag : ety.tagRepr with
-          | zeroSized => rw [hTag] at h; cases h
+          | zeroSized => intro h; cases h
           | scalar tagW tagS =>
-              rw [hTag] at h
+              intro h
               dsimp only at h
               cases hBad : (!enumAdmitted ety || truncateBits tagW bits != bits) with
               | true => rw [ite_cond_true hBad] at h; cases h
@@ -6565,12 +6809,13 @@ private theorem evalConstLit_checkVal (mty : MirTy) (lit : ConstLit) (v : Val)
                   rw [ite_cond_false hBad] at h
                   have hAdm : enumAdmitted ety = true :=
                     not_bool_eq_false (bool_or_eq_false_left hBad)
+                  revert h
                   cases hFind : findDiscrVariant?
                       (tagBitsToDiscrBits tagW tagS ety.discrWidth bits)
                       ety.discriminants with
-                  | none => rw [hFind] at h; cases h
+                  | none => intro h; cases h
                   | some idx =>
-                      rw [hFind] at h
+                      intro h
                       cases h
                       have hLt : idx < ety.discriminants.length :=
                         Nat.zero_add ety.discriminants.length ▸
@@ -6586,10 +6831,11 @@ private theorem evalIntToIntCast_checkVal (v : Val) (castTy : MirTy) (res : Val)
     (h : evalIntToIntCast v castTy = .ok res) :
     checkVal res castTy = true := by
   unfold evalIntToIntCast at h
+  revert h
   cases hBits : intLikeBits v with
-  | none => rw [hBits] at h; cases h
+  | none => intro h; cases h
   | some bits =>
-      rw [hBits] at h
+      intro h
       cases castTy with
       | int w s =>
           cases h
@@ -6618,16 +6864,18 @@ theorem toClosedMirTy?_isClosed :
       cases h
   | .ref _ p, _, h | .rawPtr _ p, _, h => by
       dsimp only [OpenMirTy.toClosedMirTy?] at h
+      revert h
       cases hP : OpenMirTy.toClosedMirTy? p with
-      | none => rw [hP] at h; cases h
+      | none => intro h; cases h
       | some _ =>
-          dsimp only [OpenMirTy.isClosed]
+          intro h; dsimp only [OpenMirTy.isClosed]
           exact toClosedMirTy?_isClosed hP
   | .tuple fs, _, h => by
       dsimp only [OpenMirTy.toClosedMirTy?] at h
+      revert h
       cases hFs : OpenMirTy.toClosedMirTyList? fs with
-      | none => rw [hFs] at h; cases h
-      | some _ => exact toClosedMirTyList?_isClosed hFs
+      | none => intro h; cases h
+      | some _ => intro h; exact toClosedMirTyList?_isClosed hFs
 
 theorem toClosedMirTyList?_isClosed :
       ∀ {fs : List OpenMirTy} {cs : List MirTy},
@@ -6636,14 +6884,16 @@ theorem toClosedMirTyList?_isClosed :
     | [], _, _ => rfl
     | x :: xs, cs, h => by
         dsimp only [OpenMirTy.toClosedMirTyList?] at h
+        revert h
         cases hx : OpenMirTy.toClosedMirTy? x with
-        | none => rw [hx] at h; cases h
+        | none => intro h; cases h
         | some cx =>
-            rw [hx] at h
+            intro h
+            revert h
             cases hxs : OpenMirTy.toClosedMirTyList? xs with
-            | none => rw [hxs] at h; cases h
+            | none => intro h; cases h
             | some cxs =>
-                exact bool_and_eq_true (toClosedMirTy?_isClosed hx)
+                intro h; exact bool_and_eq_true (toClosedMirTy?_isClosed hx)
                   (toClosedMirTyList?_isClosed hxs)
 end
 
@@ -6679,14 +6929,16 @@ private theorem toDay1List?_map_eraseOpenTy (reg : TraitRegistry)
   | [], mtys, h => by cases h; rfl
   | x :: xs, mtys, h => by
       dsimp only [OpenMirTy.toClosedMirTyList?] at h
+      revert h
       cases hx : OpenMirTy.toClosedMirTy? x with
-      | none => rw [hx] at h; cases h
+      | none => intro h; cases h
       | some cx =>
-          rw [hx] at h
+          intro h
+          revert h
           cases hxs : OpenMirTy.toClosedMirTyList? xs with
-          | none => rw [hxs] at h; cases h
+          | none => intro h; cases h
           | some cxs =>
-              rw [hxs] at h
+              intro h
               cases h
               dsimp only [List.map]
               rw [toClosedMirTy?_erase_subst reg σ hx,
@@ -6701,10 +6953,11 @@ private theorem toDay1?_erase_projElem (reg : TraitRegistry)
   | unsupported => cases h; rfl
   | field idx ty =>
       dsimp only [OpenProjectionElem.toDay1?] at h
+      revert h
       cases hTy : OpenMirTy.toClosedMirTy? ty with
-      | none => rw [hTy] at h; cases h
+      | none => intro h; cases h
       | some mty =>
-          rw [hTy] at h
+          intro h
           cases h
           dsimp only [OpenProjectionElem.subst, eraseOpenProjectionElem]
           rw [toClosedMirTy?_erase_subst reg σ hTy]
@@ -6719,14 +6972,16 @@ private theorem toDay1List?_erase_projElem (reg : TraitRegistry)
   | [], des, h => by cases h; rfl
   | e :: es, des, h => by
       dsimp only [OpenProjectionElem.toDay1List?] at h
+      revert h
       cases he : OpenProjectionElem.toDay1? e with
-      | none => rw [he] at h; cases h
+      | none => intro h; cases h
       | some de =>
-          rw [he] at h
+          intro h
+          revert h
           cases hes : OpenProjectionElem.toDay1List? es with
-          | none => rw [hes] at h; cases h
+          | none => intro h; cases h
           | some ds =>
-              rw [hes] at h
+              intro h
               cases h
               dsimp only [List.map]
               rw [toDay1?_erase_projElem reg σ he,
@@ -6737,10 +6992,11 @@ private theorem toDay1?_erase_place (reg : TraitRegistry)
     (h : OpenPlace.toDay1? p = some dp) :
     eraseOpenPlace (OpenPlace.subst reg normFuel σ p) = dp := by
   dsimp only [OpenPlace.toDay1?] at h
+  revert h
   cases hPs : OpenProjectionElem.toDay1List? p.projection with
-  | none => rw [hPs] at h; cases h
+  | none => intro h; cases h
   | some ps =>
-      rw [hPs] at h
+      intro h
       cases h
       dsimp only [OpenPlace.subst, eraseOpenPlace]
       rw [toDay1List?_erase_projElem reg σ hPs]
@@ -6752,24 +7008,27 @@ private theorem toDay1?_erase_operand (reg : TraitRegistry)
   cases op with
   | copy p =>
       dsimp only [OpenOperand.toDay1?] at h
+      revert h
       cases hp : OpenPlace.toDay1? p with
-      | none => rw [hp] at h; cases h
+      | none => intro h; cases h
       | some dp =>
-          rw [hp] at h; cases h
+          intro h; cases h
           exact congrArg Operand.copy (toDay1?_erase_place reg σ hp)
   | move p =>
       dsimp only [OpenOperand.toDay1?] at h
+      revert h
       cases hp : OpenPlace.toDay1? p with
-      | none => rw [hp] at h; cases h
+      | none => intro h; cases h
       | some dp =>
-          rw [hp] at h; cases h
+          intro h; cases h
           exact congrArg Operand.move (toDay1?_erase_place reg σ hp)
   | constant c =>
       dsimp only [OpenOperand.toDay1?] at h
+      revert h
       cases hTy : OpenMirTy.toClosedMirTy? c.ty with
-      | none => rw [hTy] at h; cases h
+      | none => intro h; cases h
       | some mty =>
-          rw [hTy] at h; cases h
+          intro h; cases h
           dsimp only [OpenOperand.subst, eraseOpenOperand]
           rw [toClosedMirTy?_erase_subst reg σ hTy]
 
@@ -6783,14 +7042,16 @@ private theorem toDay1List?_erase_operand (reg : TraitRegistry)
   | [], dops, h => by cases h; rfl
   | x :: xs, dops, h => by
       dsimp only [OpenOperand.toDay1List?] at h
+      revert h
       cases hx : OpenOperand.toDay1? x with
-      | none => rw [hx] at h; cases h
+      | none => intro h; cases h
       | some dx =>
-          rw [hx] at h
+          intro h
+          revert h
           cases hxs : OpenOperand.toDay1List? xs with
-          | none => rw [hxs] at h; cases h
+          | none => intro h; cases h
           | some dxs =>
-              rw [hxs] at h; cases h
+              intro h; cases h
               dsimp only [List.map]
               rw [toDay1?_erase_operand reg σ hx,
                 toDay1List?_erase_operand reg σ hxs]
@@ -6802,71 +7063,81 @@ private theorem toDay1?_erase_rvalue (reg : TraitRegistry)
   cases rv with
   | use op =>
       dsimp only [OpenRvalue.toDay1?] at h
+      revert h
       cases hop : OpenOperand.toDay1? op with
-      | none => rw [hop] at h; cases h
+      | none => intro h; cases h
       | some dop =>
-          rw [hop] at h; cases h
+          intro h; cases h
           exact congrArg Rvalue.use (toDay1?_erase_operand reg σ hop)
   | binaryOp op l r =>
       dsimp only [OpenRvalue.toDay1?] at h
+      revert h
       cases hl : OpenOperand.toDay1? l with
-      | none => rw [hl] at h; cases h
+      | none => intro h; cases h
       | some dl =>
-          rw [hl] at h
+          intro h
+          revert h
           cases hr : OpenOperand.toDay1? r with
-          | none => rw [hr] at h; cases h
+          | none => intro h; cases h
           | some dr =>
-              rw [hr] at h; cases h
+              intro h; cases h
               dsimp only [OpenRvalue.subst, eraseOpenRvalue]
               rw [toDay1?_erase_operand reg σ hl,
                 toDay1?_erase_operand reg σ hr]
   | unaryOp op opnd =>
       dsimp only [OpenRvalue.toDay1?] at h
+      revert h
       cases hop : OpenOperand.toDay1? opnd with
-      | none => rw [hop] at h; cases h
+      | none => intro h; cases h
       | some dop =>
-          rw [hop] at h; cases h
+          intro h; cases h
           exact congrArg (Rvalue.unaryOp op) (toDay1?_erase_operand reg σ hop)
   | cast k opnd ty =>
       dsimp only [OpenRvalue.toDay1?] at h
+      revert h
       cases hop : OpenOperand.toDay1? opnd with
-      | none => rw [hop] at h; cases h
+      | none => intro h; cases h
       | some dop =>
-          rw [hop] at h
+          intro h
+          revert h
           cases hTy : OpenMirTy.toClosedMirTy? ty with
-          | none => rw [hTy] at h; cases h
+          | none => intro h; cases h
           | some mty =>
-              rw [hTy] at h; cases h
+              intro h; cases h
               dsimp only [OpenRvalue.subst, eraseOpenRvalue]
               rw [toDay1?_erase_operand reg σ hop,
                 toClosedMirTy?_erase_subst reg σ hTy]
   | discriminant p =>
       dsimp only [OpenRvalue.toDay1?] at h
+      revert h
       cases hp : OpenPlace.toDay1? p with
-      | none => rw [hp] at h; cases h
+      | none => intro h; cases h
       | some dp =>
-          rw [hp] at h; cases h
+          intro h; cases h
           exact congrArg Rvalue.discriminant (toDay1?_erase_place reg σ hp)
   | ref m p =>
       dsimp only [OpenRvalue.toDay1?] at h
+      revert h
       cases hp : OpenPlace.toDay1? p with
-      | none => rw [hp] at h; cases h
+      | none => intro h; cases h
       | some dp =>
-          rw [hp] at h; cases h
+          intro h; cases h
           exact congrArg (Rvalue.ref m) (toDay1?_erase_place reg σ hp)
   | addressOf m p =>
       dsimp only [OpenRvalue.toDay1?] at h
+      revert h
       cases hp : OpenPlace.toDay1? p with
-      | none => rw [hp] at h; cases h
+      | none => intro h; cases h
       | some dp =>
-          rw [hp] at h; cases h
+          intro h; cases h
           exact congrArg (Rvalue.addressOf m) (toDay1?_erase_place reg σ hp)
   | aggregateTuple fs =>
       dsimp only [OpenRvalue.toDay1?] at h
+      revert h
       cases hfs : OpenOperand.toDay1List? fs with
-      | none => rw [hfs] at h; cases h
+      | none => intro h; cases h
       | some dfs =>
-          rw [hfs] at h; cases h
+          intro h; cases h
           exact congrArg Rvalue.aggregateTuple
             (toDay1List?_erase_operand reg σ hfs)
   | unsupported => cases h; rfl
@@ -6883,14 +7154,16 @@ private theorem toDay1?_erase_stmt (reg : TraitRegistry) (σ : List OpenMirTy)
   | unsupported => cases h; rfl
   | assign p rv =>
       dsimp only [OpenStatementKind.toDay1?] at h
+      revert h
       cases hp : OpenPlace.toDay1? p with
-      | none => rw [hp] at h; cases h
+      | none => intro h; cases h
       | some dp =>
-          rw [hp] at h
+          intro h
+          revert h
           cases hrv : OpenRvalue.toDay1? rv with
-          | none => rw [hrv] at h; cases h
+          | none => intro h; cases h
           | some drv =>
-              rw [hrv] at h; cases h
+              intro h; cases h
               dsimp only [OpenStatementKind.subst, eraseOpenStatementKind]
               rw [toDay1?_erase_place reg σ hp,
                 toDay1?_erase_rvalue reg σ hrv]
@@ -6905,14 +7178,16 @@ private theorem toDay1List?_erase_stmt (reg : TraitRegistry)
   | [], dsts, h => by cases h; rfl
   | s :: ss, dsts, h => by
       dsimp only [OpenStatementKind.toDay1List?] at h
+      revert h
       cases hs : OpenStatementKind.toDay1? s with
-      | none => rw [hs] at h; cases h
+      | none => intro h; cases h
       | some ds =>
-          rw [hs] at h
+          intro h
+          revert h
           cases hss : OpenStatementKind.toDay1List? ss with
-          | none => rw [hss] at h; cases h
+          | none => intro h; cases h
           | some dss =>
-              rw [hss] at h; cases h
+              intro h; cases h
               dsimp only [List.map]
               rw [toDay1?_erase_stmt reg σ hs,
                 toDay1List?_erase_stmt reg σ hss]
@@ -6931,18 +7206,20 @@ private theorem toDay1?_erase_term (reg : TraitRegistry) (σ : List OpenMirTy)
   | traitCall _ _ _ _ _ _ _ _ => cases h
   | switchInt d tgts =>
       dsimp only [OpenTerminatorKind.toDay1?] at h
+      revert h
       cases hd : OpenOperand.toDay1? d with
-      | none => rw [hd] at h; cases h
+      | none => intro h; cases h
       | some dd =>
-          rw [hd] at h; cases h
+          intro h; cases h
           dsimp only [OpenTerminatorKind.subst, eraseOpenTerminatorKind]
           rw [toDay1?_erase_operand reg σ hd]
   | assert cond exp msg tgt uw =>
       dsimp only [OpenTerminatorKind.toDay1?] at h
+      revert h
       cases hc : OpenOperand.toDay1? cond with
-      | none => rw [hc] at h; cases h
+      | none => intro h; cases h
       | some dc =>
-          rw [hc] at h; cases h
+          intro h; cases h
           dsimp only [OpenTerminatorKind.subst, eraseOpenTerminatorKind]
           rw [toDay1?_erase_operand reg σ hc]
   | call _ _ _ _ _ _ =>
@@ -6954,14 +7231,16 @@ private theorem toDay1?_erase_bb (reg : TraitRegistry) (σ : List OpenMirTy)
     (h : OpenBasicBlock.toDay1? bb = some dbb) :
     eraseOpenBasicBlock (OpenBasicBlock.subst reg normFuel σ bb) = dbb := by
   dsimp only [OpenBasicBlock.toDay1?] at h
+  revert h
   cases hs : OpenStatementKind.toDay1List? bb.statements with
-  | none => rw [hs] at h; cases h
+  | none => intro h; cases h
   | some dsts =>
-      rw [hs] at h
+      intro h
+      revert h
       cases ht : OpenTerminatorKind.toDay1? bb.terminator with
-      | none => rw [ht] at h; cases h
+      | none => intro h; cases h
       | some dtm =>
-          rw [ht] at h; cases h
+          intro h; cases h
           dsimp only [OpenBasicBlock.subst, eraseOpenBasicBlock]
           rw [toDay1List?_erase_stmt reg σ hs, toDay1?_erase_term reg σ ht]
 
@@ -6974,14 +7253,16 @@ private theorem toDay1List?_erase_bb (reg : TraitRegistry) (σ : List OpenMirTy)
   | [], dbbs, h => by cases h; rfl
   | b :: bs, dbbs, h => by
       dsimp only [OpenBasicBlock.toDay1List?] at h
+      revert h
       cases hb : OpenBasicBlock.toDay1? b with
-      | none => rw [hb] at h; cases h
+      | none => intro h; cases h
       | some db =>
-          rw [hb] at h
+          intro h
+          revert h
           cases hbs : OpenBasicBlock.toDay1List? bs with
-          | none => rw [hbs] at h; cases h
+          | none => intro h; cases h
           | some dbs =>
-              rw [hbs] at h; cases h
+              intro h; cases h
               dsimp only [List.map]
               rw [toDay1?_erase_bb reg σ hb, toDay1List?_erase_bb reg σ hbs]
 
@@ -6989,14 +7270,16 @@ theorem day1OfBodySome_eq (reg : TraitRegistry) (σ : List OpenMirTy)
     {ob : OpenBody} {db : Body} (h : OpenBody.toDay1? ob = some db) :
     eraseOpenBody reg σ ob = db := by
   dsimp only [OpenBody.toDay1?] at h
+  revert h
   cases hLoc : OpenMirTy.toClosedMirTyList? ob.locals with
-  | none => rw [hLoc] at h; cases h
+  | none => intro h; cases h
   | some dLoc =>
-      rw [hLoc] at h
+      intro h
+      revert h
       cases hBbs : OpenBasicBlock.toDay1List? ob.basicBlocks with
-      | none => rw [hBbs] at h; cases h
+      | none => intro h; cases h
       | some dBbs =>
-          rw [hBbs] at h; cases h
+          intro h; cases h
           dsimp only [eraseOpenBody, OpenBody.subst]
           rw [toDay1List?_map_eraseOpenTy reg σ hLoc,
             toDay1List?_erase_bb reg σ hBbs]
@@ -7009,14 +7292,16 @@ private theorem toDay1List?_erase_bodies (reg : TraitRegistry)
   | [], dbs, h => by cases h; rfl
   | b :: bs, dbs, h => by
       dsimp only [OpenProgram.toDay1List?] at h
+      revert h
       cases hb : OpenBody.toDay1? b with
-      | none => rw [hb] at h; cases h
+      | none => intro h; cases h
       | some db =>
-          rw [hb] at h
+          intro h
+          revert h
           cases hbs : OpenProgram.toDay1List? bs with
-          | none => rw [hbs] at h; cases h
+          | none => intro h; cases h
           | some dbs' =>
-              rw [hbs] at h; cases h
+              intro h; cases h
               dsimp only [List.map]
               rw [day1OfBodySome_eq reg σ hb,
                 toDay1List?_erase_bodies reg σ hbs]
@@ -7026,10 +7311,11 @@ theorem day1OfProgSome_eq (prog : OpenProgram) (σ : List OpenMirTy)
     (h : OpenProgram.toDay1? (entryOpenProgForBody prog defId) = some day1P) :
     day1P = entryProgForBody (eraseOpenProgram σ prog) defId := by
   dsimp only [OpenProgram.toDay1?, entryOpenProgForBody] at h
+  revert h
   cases hBs : OpenProgram.toDay1List? prog.bodies with
-  | none => rw [hBs] at h; cases h
+  | none => intro h; cases h
   | some dbs =>
-      rw [hBs] at h; cases h
+      intro h; cases h
       dsimp only [entryProgForBody, eraseOpenProgram]
       rw [toDay1List?_erase_bodies prog.traitRegistry σ hBs]
 
@@ -7043,14 +7329,16 @@ private theorem toDay1List?_getElem? :
   | [], _, _, _, _, hGet => by cases hGet
   | b :: bs, dbs, i, ob, hList, hGet => by
       dsimp only [OpenProgram.toDay1List?] at hList
+      revert hList
       cases hb : OpenBody.toDay1? b with
-      | none => rw [hb] at hList; cases hList
+      | none => intro hList; cases hList
       | some db =>
-          rw [hb] at hList
+          intro hList
+          revert hList
           cases hbs : OpenProgram.toDay1List? bs with
-          | none => rw [hbs] at hList; cases hList
+          | none => intro hList; cases hList
           | some dbs' =>
-              rw [hbs] at hList; cases hList
+              intro hList; cases hList
               cases i with
               | zero =>
                   cases hGet
@@ -7066,14 +7354,16 @@ private theorem openBodyToDay1_noTraitCall {ob : OpenBody} {db : Body}
     | .traitCall _ _ _ _ _ _ _ _ => False
     | _ => True := by
   dsimp only [OpenBody.toDay1?] at h
+  revert h
   cases hLoc : OpenMirTy.toClosedMirTyList? ob.locals with
-  | none => rw [hLoc] at h; cases h
+  | none => intro h; cases h
   | some dLoc =>
-      rw [hLoc] at h
+      intro h
+      revert h
       cases hBbs : OpenBasicBlock.toDay1List? ob.basicBlocks with
-      | none => rw [hBbs] at h; cases h
+      | none => intro h; cases h
       | some dBbs =>
-          rw [hBbs] at h
+          intro h
           have hAux : ∀ {bbs : List OpenBasicBlock} {dbbs : List BasicBlock}
               {k : Nat} {b : OpenBasicBlock},
               OpenBasicBlock.toDay1List? bbs = some dbbs →
@@ -7086,14 +7376,16 @@ private theorem openBodyToDay1_noTraitCall {ob : OpenBody} {db : Body}
             | cons x xs ih =>
                 intro dbbs k b hL hG
                 dsimp only [OpenBasicBlock.toDay1List?] at hL
+                revert hL
                 cases hx : OpenBasicBlock.toDay1? x with
-                | none => rw [hx] at hL; cases hL
+                | none => intro hL; cases hL
                 | some dx =>
-                    rw [hx] at hL
+                    intro hL
+                    revert hL
                     cases hxs : OpenBasicBlock.toDay1List? xs with
-                    | none => rw [hxs] at hL; cases hL
+                    | none => intro hL; cases hL
                     | some dxs =>
-                        rw [hxs] at hL; cases hL
+                        intro hL; cases hL
                         cases k with
                         | zero =>
                             cases hG
@@ -7209,10 +7501,11 @@ private theorem openStep_day1Some_iff (prog : OpenProgram) (env : OpenExecEnv)
     cases hGet : openListGet? prog.bodies f.defId with
     | none =>
         dsimp only [OpenProgram.toDay1?] at hDay1
+        revert hDay1
         cases hBs : OpenProgram.toDay1List? prog.bodies with
-        | none => rw [hBs] at hDay1; cases hDay1
+        | none => intro hDay1; cases hDay1
         | some dbs =>
-            rw [hBs] at hDay1; cases hDay1
+            intro hDay1; cases hDay1
             have hNone : Trusted.MirSemantics.getElem? dbs f.defId = none := by
               have hAux : ∀ {obs : List OpenBody} {dbs' : List Body} {k : Nat},
                   OpenProgram.toDay1List? obs = some dbs' →
@@ -7224,14 +7517,16 @@ private theorem openStep_day1Some_iff (prog : OpenProgram) (env : OpenExecEnv)
                 | cons x xs ih =>
                     intro dbs' k hL hG
                     dsimp only [OpenProgram.toDay1List?] at hL
+                    revert hL
                     cases hx : OpenBody.toDay1? x with
-                    | none => rw [hx] at hL; cases hL
+                    | none => intro hL; cases hL
                     | some dx =>
-                        rw [hx] at hL
+                        intro hL
+                        revert hL
                         cases hxs : OpenProgram.toDay1List? xs with
-                        | none => rw [hxs] at hL; cases hL
+                        | none => intro hL; cases hL
                         | some dxs =>
-                            rw [hxs] at hL; cases hL
+                            intro hL; cases hL
                             cases k with
                             | zero => cases hG
                             | succ j =>
@@ -7258,23 +7553,26 @@ private theorem openStep_day1Some_iff (prog : OpenProgram) (env : OpenExecEnv)
         cases hBb : openListGet? ob.basicBlocks f.blockIdx with
         | none =>
             dsimp only [OpenProgram.toDay1?] at hDay1
+            revert hDay1
             cases hBs : OpenProgram.toDay1List? prog.bodies with
-            | none => rw [hBs] at hDay1; cases hDay1
+            | none => intro hDay1; cases hDay1
             | some dbs =>
-                rw [hBs] at hDay1; cases hDay1
+                intro hDay1; cases hDay1
                 let ⟨db, hGetD, hObD⟩ := toDay1List?_getElem? hBs hGet
                 have hBbNone :
                     Trusted.MirSemantics.getElem? db.basicBlocks f.blockIdx =
                       none := by
                   dsimp only [OpenBody.toDay1?] at hObD
+                  revert hObD
                   cases hLoc : OpenMirTy.toClosedMirTyList? ob.locals with
-                  | none => rw [hLoc] at hObD; cases hObD
+                  | none => intro hObD; cases hObD
                   | some _ =>
-                      rw [hLoc] at hObD
+                      intro hObD
+                      revert hObD
                       cases hBbs : OpenBasicBlock.toDay1List? ob.basicBlocks with
-                      | none => rw [hBbs] at hObD; cases hObD
+                      | none => intro hObD; cases hObD
                       | some dbbs =>
-                          rw [hBbs] at hObD; cases hObD
+                          intro hObD; cases hObD
                           have hAux : ∀ {bs : List OpenBasicBlock}
                               {dbs' : List BasicBlock} {k : Nat},
                               OpenBasicBlock.toDay1List? bs = some dbs' →
@@ -7282,18 +7580,22 @@ private theorem openStep_day1Some_iff (prog : OpenProgram) (env : OpenExecEnv)
                               Trusted.MirSemantics.getElem? dbs' k = none := by
                             intro bs
                             induction bs with
-                            | nil => intro dbs' k hL _; cases hL; cases k <;> rfl
+                            | nil =>
+                                intro dbs' k hL _
+                                cases hL; cases k <;> rfl
                             | cons x xs ih =>
                                 intro dbs' k hL hG
                                 dsimp only [OpenBasicBlock.toDay1List?] at hL
+                                revert hL
                                 cases hx : OpenBasicBlock.toDay1? x with
-                                | none => rw [hx] at hL; cases hL
+                                | none => intro hL; cases hL
                                 | some dx =>
-                                    rw [hx] at hL
+                                    intro hL
+                                    revert hL
                                     cases hxs : OpenBasicBlock.toDay1List? xs with
-                                    | none => rw [hxs] at hL; cases hL
+                                    | none => intro hL; cases hL
                                     | some dxs =>
-                                        rw [hxs] at hL; cases hL
+                                        intro hL; cases hL
                                         cases k with
                                         | zero => cases hG
                                         | succ j =>
@@ -7324,18 +7626,20 @@ private theorem openStep_day1Some_iff (prog : OpenProgram) (env : OpenExecEnv)
             | true =>
                 dsimp only
                 dsimp only [OpenProgram.toDay1?] at hDay1
+                revert hDay1
                 cases hBs : OpenProgram.toDay1List? prog.bodies with
-                | none => rw [hBs] at hDay1; cases hDay1
+                | none => intro hDay1; cases hDay1
                 | some _ =>
-                    rw [hBs] at hDay1; cases hDay1
+                    intro hDay1; cases hDay1
                     let ⟨_, _, hObD⟩ := toDay1List?_getElem? hBs hGet
                     have hNoT := openBodyToDay1_noTraitCall hObD hBb
+                    revert hNoT
                     cases hTm : bb.terminator with
-                    | traitCall _ _ _ _ _ _ _ _ => rw [hTm] at hNoT; cases hNoT
+                    | traitCall _ _ _ _ _ _ _ _ => intro hNoT; cases hNoT
                     | goto _ | switchInt _ _ | return_ | unreachable
                     | unwindResume | assert _ _ _ _ _
                     | call _ _ _ _ _ _ | unsupported =>
-                        dsimp only [OpenStepOnTerm]
+                        intro hNoT; dsimp only [OpenStepOnTerm]
                         rw [hDet]
   exact ⟨fun h => ((hDetEq (evalStep day1P 0 s)).mp (hFrames.mp h)).symm,
     fun h => hFrames.mpr ((hDetEq (evalStep day1P 0 s)).mpr h.symm)⟩
@@ -7392,11 +7696,12 @@ private theorem openWellFormed_day1Some_to_wellFormed (prog : OpenProgram)
         | false =>
             rw [ite_cond_false hCm] at hI
             dsimp only at hI
+            revert hI
             cases hB : Trusted.MirSemantics.getElem? day1P.bodies
                 day1P.entryDefId with
-            | none => rw [hB] at hI; cases hI
+            | none => intro hI; cases hI
             | some body =>
-                rw [hB] at hI
+                intro hI
                 dsimp only at hI
                 cases hE : body.basicBlocks.isEmpty with
                 | true => rw [hE] at hI; cases hI
@@ -7444,18 +7749,20 @@ private theorem openWellFormed_day1Some_to_wellFormed (prog : OpenProgram)
   constructor
   · let ⟨os₀, hOInit, _⟩ := hOWf.1
     rw [hInitEq] at hOInit
+    revert hOInit
     cases hDInit : initState day1P q with
-    | error k => rw [hDInit] at hOInit; cases hOInit
-    | ok s₀ => exact ⟨s₀, rfl, fun _ _ => ⟨0, rfl⟩⟩
+    | error k => intro hOInit; cases hOInit
+    | ok s₀ => intro hOInit; exact ⟨s₀, rfl, fun _ _ => ⟨0, rfl⟩⟩
   · intro k hFault
     unfold ReachesResult at hFault
+    revert hFault
     cases hDInit : initState day1P q with
     | error k' =>
-        let ⟨os₀, hOInit, _⟩ := hOWf.1
+        intro hFault; let ⟨os₀, hOInit, _⟩ := hOWf.1
         rw [hInitEq, hDInit] at hOInit
         cases hOInit
     | ok s₀ =>
-        rw [hDInit] at hFault
+        intro hFault
         let ⟨s, hReach, _, _, hEv⟩ := hFault
         have hOInit : openInitState prog env q = .ok (OpenState.ofState s₀) := by
           rw [hInitEq, hDInit]
@@ -7788,9 +8095,10 @@ theorem checkVal_implies_checkValAgainstSpec :
                       have hIdx := Nat.blt_eq.mpr hIdxLt
                       unfold enumTypeLayoutSpec at hEval
                       rw [ite_not_true hAdm] at hEval
+                      revert hEval
                       cases hTag : ety.tagRepr with
                       | zeroSized =>
-                          rw [hTag] at hEval
+                          intro hEval
                           cases hEval
                           dsimp only [checkValAgainstSpec]
                           rw [hAdm, hIdx]
@@ -7800,7 +8108,7 @@ theorem checkVal_implies_checkValAgainstSpec :
                           rw [enumTy_beq_self]
                           rfl
                       | scalar tagW tagS =>
-                          rw [hTag] at hEval
+                          intro hEval
                           cases hEval
                           dsimp only [checkValAgainstSpec]
                           rw [hAdm, hIdx]
@@ -7818,10 +8126,11 @@ theorem checkVal_implies_checkValAgainstSpec :
       | cons a rest =>
           dsimp only [OpenMirTy.toClosedMirTy?,
             OpenMirTy.toClosedMirTyList?] at hCl
+          revert hCl
           cases ha : OpenMirTy.toClosedMirTy? a with
-          | none => rw [ha] at hCl; cases hCl
+          | none => intro hCl; cases hCl
           | some ca =>
-              rw [ha] at hCl
+              intro hCl
               cases rest with
               | nil =>
                   dsimp only [OpenMirTy.toClosedMirTyList?] at hCl
@@ -7830,21 +8139,24 @@ theorem checkVal_implies_checkValAgainstSpec :
                   cases hSupp
               | cons b0 tl =>
                   dsimp only [OpenMirTy.toClosedMirTyList?] at hCl
+                  revert hCl
                   cases hb : OpenMirTy.toClosedMirTy? b0 with
-                  | none => rw [hb] at hCl; cases hCl
+                  | none => intro hCl; cases hCl
                   | some cb =>
-                      rw [hb] at hCl
+                      intro hCl
                       cases tl with
                       | cons c cs =>
                           dsimp only [OpenMirTy.toClosedMirTyList?] at hCl
+                          revert hCl
                           cases hc : OpenMirTy.toClosedMirTy? c with
-                          | none => rw [hc] at hCl; cases hCl
+                          | none => intro hCl; cases hCl
                           | some _ =>
-                              rw [hc] at hCl
+                              intro hCl
+                              revert hCl
                               cases hcs : OpenMirTy.toClosedMirTyList? cs with
-                              | none => rw [hcs] at hCl; cases hCl
+                              | none => intro hCl; cases hCl
                               | some _ =>
-                                  rw [hcs] at hCl
+                                  intro hCl
                                   cases hCl
                                   simp only [isSupportedScalarOrUnitTy,
                                     isOverflowPairTy] at hSupp
@@ -8032,16 +8344,18 @@ private theorem erasedTy_local_props (prog : OpenProgram)
         WellFormedTypeLayoutSpec sp ∧
         sp.isSized = true := by
   dsimp only [OpenBody.toDay1?, OpenBody.subst] at hObEq
+  revert hObEq
   cases hLoc : OpenMirTy.toClosedMirTyList?
       (ob.locals.map (OpenMirTy.substAndNormalize prog.traitRegistry normFuel σ))
       with
-  | none => rw [hLoc] at hObEq; cases hObEq
+  | none => intro hObEq; cases hObEq
   | some dLoc =>
-      rw [hLoc] at hObEq
+      intro hObEq
+      revert hObEq
       cases hBbs : OpenBasicBlock.toDay1List? _ with
-      | none => rw [hBbs] at hObEq; cases hObEq
+      | none => intro hObEq; cases hObEq
       | some _ =>
-          rw [hBbs] at hObEq
+          intro hObEq
           cases hObEq
           dsimp only at hSupp
           have hAux : ∀ (tys : List OpenMirTy) (mtys : List MirTy) (k : Nat)
@@ -8068,18 +8382,20 @@ private theorem erasedTy_local_props (prog : OpenProgram)
             | cons x xs ih =>
                 intro mtys k ty hL hA hS hG
                 dsimp only [List.map, OpenMirTy.toClosedMirTyList?] at hL
+                revert hL
                 cases hx : OpenMirTy.toClosedMirTy?
                     (OpenMirTy.substAndNormalize prog.traitRegistry normFuel σ
                       x) with
-                | none => rw [hx] at hL; cases hL
+                | none => intro hL; cases hL
                 | some cx =>
-                    rw [hx] at hL
+                    intro hL
+                    revert hL
                     cases hxs : OpenMirTy.toClosedMirTyList?
                         (xs.map (OpenMirTy.substAndNormalize prog.traitRegistry
                           normFuel σ)) with
-                    | none => rw [hxs] at hL; cases hL
+                    | none => intro hL; cases hL
                     | some cxs =>
-                        rw [hxs] at hL; cases hL
+                        intro hL; cases hL
                         dsimp only [List.all] at hS
                         cases k with
                         | zero =>
@@ -8106,18 +8422,20 @@ private theorem erasedOb_locals_eq_map (prog : OpenProgram) (σ : List OpenMirTy
       (ob.basicBlocks.map (OpenBasicBlock.subst prog.traitRegistry normFuel σ)).map
         eraseOpenBasicBlock := by
   dsimp only [OpenBody.toDay1?, OpenBody.subst] at hObEq
+  revert hObEq
   cases hLoc : OpenMirTy.toClosedMirTyList?
       (ob.locals.map (OpenMirTy.substAndNormalize prog.traitRegistry normFuel σ))
       with
-  | none => rw [hLoc] at hObEq; cases hObEq
+  | none => intro hObEq; cases hObEq
   | some dLoc =>
-      rw [hLoc] at hObEq
+      intro hObEq
+      revert hObEq
       cases hBbs : OpenBasicBlock.toDay1List?
           (ob.basicBlocks.map (OpenBasicBlock.subst prog.traitRegistry normFuel σ))
           with
-      | none => rw [hBbs] at hObEq; cases hObEq
+      | none => intro hObEq; cases hObEq
       | some dBbs =>
-          rw [hBbs] at hObEq; cases hObEq
+          intro hObEq; cases hObEq
           have hMapLoc : ∀ {xs : List OpenMirTy} {cs : List MirTy},
               OpenMirTy.toClosedMirTyList? xs = some cs →
               cs = xs.map eraseOpenTy := by
@@ -8127,14 +8445,16 @@ private theorem erasedOb_locals_eq_map (prog : OpenProgram) (σ : List OpenMirTy
             | cons x xs ih =>
                 intro cs h
                 dsimp only [OpenMirTy.toClosedMirTyList?] at h
+                revert h
                 cases hx : OpenMirTy.toClosedMirTy? x with
-                | none => rw [hx] at h; cases h
+                | none => intro h; cases h
                 | some cx =>
-                    rw [hx] at h
+                    intro h
+                    revert h
                     cases hxs : OpenMirTy.toClosedMirTyList? xs with
-                    | none => rw [hxs] at h; cases h
+                    | none => intro h; cases h
                     | some cxs =>
-                        rw [hxs] at h; cases h
+                        intro h; cases h
                         dsimp only [List.map]
                         rw [← toClosedMirTy?_eraseOpenTy hx, ih hxs]
           have hMapBbs : ∀ {xs : List OpenBasicBlock} {ds : List BasicBlock},
@@ -8146,14 +8466,16 @@ private theorem erasedOb_locals_eq_map (prog : OpenProgram) (σ : List OpenMirTy
             | cons x xs ih =>
                 intro ds h
                 dsimp only [OpenBasicBlock.toDay1List?] at h
+                revert h
                 cases hx : OpenBasicBlock.toDay1? x with
-                | none => rw [hx] at h; cases h
+                | none => intro h; cases h
                 | some dx =>
-                    rw [hx] at h
+                    intro h
+                    revert h
                     cases hxs : OpenBasicBlock.toDay1List? xs with
-                    | none => rw [hxs] at h; cases h
+                    | none => intro h; cases h
                     | some dxs =>
-                        rw [hxs] at h; cases h
+                        intro h; cases h
                         dsimp only [List.map]
                         have hSub : ∀ {b : OpenBasicBlock} {db : BasicBlock},
                             OpenBasicBlock.toDay1? b = some db →
@@ -8168,10 +8490,11 @@ private theorem erasedOb_locals_eq_map (prog : OpenProgram) (σ : List OpenMirTy
                             | unsupported => cases he; rfl
                             | field _ ty =>
                                 dsimp only [OpenProjectionElem.toDay1?] at he
+                                revert he
                                 cases ht : OpenMirTy.toClosedMirTy? ty with
-                                | none => rw [ht] at he; cases he
+                                | none => intro he; cases he
                                 | some _ =>
-                                    rw [ht] at he; cases he
+                                    intro he; cases he
                                     dsimp only [eraseOpenProjectionElem]
                                     rw [toClosedMirTy?_eraseOpenTy ht]
                           have h2 : ∀ {es : List OpenProjectionElem}
@@ -8184,14 +8507,16 @@ private theorem erasedOb_locals_eq_map (prog : OpenProgram) (σ : List OpenMirTy
                             | cons e es' ih' =>
                                 intro des he
                                 dsimp only [OpenProjectionElem.toDay1List?] at he
+                                revert he
                                 cases hE : OpenProjectionElem.toDay1? e with
-                                | none => rw [hE] at he; cases he
+                                | none => intro he; cases he
                                 | some dE =>
-                                    rw [hE] at he
+                                    intro he
+                                    revert he
                                     cases hEs : OpenProjectionElem.toDay1List? es' with
-                                    | none => rw [hEs] at he; cases he
+                                    | none => intro he; cases he
                                     | some dEs =>
-                                        rw [hEs] at he; cases he
+                                        intro he; cases he
                                         dsimp only [List.map]
                                         rw [← h1 hE, ih' hEs]
                           have h3 : ∀ {p : OpenPlace} {dp : Place},
@@ -8199,10 +8524,11 @@ private theorem erasedOb_locals_eq_map (prog : OpenProgram) (σ : List OpenMirTy
                               dp = eraseOpenPlace p := by
                             intro p dp hp
                             dsimp only [OpenPlace.toDay1?] at hp
+                            revert hp
                             cases hPs : OpenProjectionElem.toDay1List? p.projection with
-                            | none => rw [hPs] at hp; cases hp
+                            | none => intro hp; cases hp
                             | some ps =>
-                                rw [hPs] at hp; cases hp
+                                intro hp; cases hp
                                 dsimp only [eraseOpenPlace]
                                 rw [h2 hPs]
                           have h4 : ∀ {op : OpenOperand} {dop : Operand},
@@ -8212,24 +8538,27 @@ private theorem erasedOb_locals_eq_map (prog : OpenProgram) (σ : List OpenMirTy
                             cases op with
                             | copy p =>
                                 dsimp only [OpenOperand.toDay1?] at hop
+                                revert hop
                                 cases hp : OpenPlace.toDay1? p with
-                                | none => rw [hp] at hop; cases hop
+                                | none => intro hop; cases hop
                                 | some dp =>
-                                    rw [hp] at hop; cases hop
+                                    intro hop; cases hop
                                     exact congrArg Operand.copy (h3 hp)
                             | move p =>
                                 dsimp only [OpenOperand.toDay1?] at hop
+                                revert hop
                                 cases hp : OpenPlace.toDay1? p with
-                                | none => rw [hp] at hop; cases hop
+                                | none => intro hop; cases hop
                                 | some dp =>
-                                    rw [hp] at hop; cases hop
+                                    intro hop; cases hop
                                     exact congrArg Operand.move (h3 hp)
                             | constant c =>
                                 dsimp only [OpenOperand.toDay1?] at hop
+                                revert hop
                                 cases ht : OpenMirTy.toClosedMirTy? c.ty with
-                                | none => rw [ht] at hop; cases hop
+                                | none => intro hop; cases hop
                                 | some _ =>
-                                    rw [ht] at hop; cases hop
+                                    intro hop; cases hop
                                     dsimp only [eraseOpenOperand]
                                     rw [toClosedMirTy?_eraseOpenTy ht]
                           have h5 : ∀ {ops : List OpenOperand} {dops : List Operand},
@@ -8241,14 +8570,16 @@ private theorem erasedOb_locals_eq_map (prog : OpenProgram) (σ : List OpenMirTy
                             | cons o os ih' =>
                                 intro dops ho
                                 dsimp only [OpenOperand.toDay1List?] at ho
+                                revert ho
                                 cases hO : OpenOperand.toDay1? o with
-                                | none => rw [hO] at ho; cases ho
+                                | none => intro ho; cases ho
                                 | some dO =>
-                                    rw [hO] at ho
+                                    intro ho
+                                    revert ho
                                     cases hOs : OpenOperand.toDay1List? os with
-                                    | none => rw [hOs] at ho; cases ho
+                                    | none => intro ho; cases ho
                                     | some dOs =>
-                                        rw [hOs] at ho; cases ho
+                                        intro ho; cases ho
                                         dsimp only [List.map]
                                         rw [← h4 hO, ih' hOs]
                           have h6 : ∀ {rv : OpenRvalue} {drv : Rvalue},
@@ -8258,69 +8589,79 @@ private theorem erasedOb_locals_eq_map (prog : OpenProgram) (σ : List OpenMirTy
                             cases rv with
                             | use op =>
                                 dsimp only [OpenRvalue.toDay1?] at hrv
+                                revert hrv
                                 cases ho : OpenOperand.toDay1? op with
-                                | none => rw [ho] at hrv; cases hrv
+                                | none => intro hrv; cases hrv
                                 | some do_ =>
-                                    rw [ho] at hrv; cases hrv
+                                    intro hrv; cases hrv
                                     exact congrArg Rvalue.use (h4 ho)
                             | binaryOp op l r =>
                                 dsimp only [OpenRvalue.toDay1?] at hrv
+                                revert hrv
                                 cases hl : OpenOperand.toDay1? l with
-                                | none => rw [hl] at hrv; cases hrv
+                                | none => intro hrv; cases hrv
                                 | some dl =>
-                                    rw [hl] at hrv
+                                    intro hrv
+                                    revert hrv
                                     cases hr : OpenOperand.toDay1? r with
-                                    | none => rw [hr] at hrv; cases hrv
+                                    | none => intro hrv; cases hrv
                                     | some dr =>
-                                        rw [hr] at hrv; cases hrv
+                                        intro hrv; cases hrv
                                         dsimp only [eraseOpenRvalue]
                                         rw [h4 hl, h4 hr]
                             | unaryOp op opnd =>
                                 dsimp only [OpenRvalue.toDay1?] at hrv
+                                revert hrv
                                 cases ho : OpenOperand.toDay1? opnd with
-                                | none => rw [ho] at hrv; cases hrv
+                                | none => intro hrv; cases hrv
                                 | some do_ =>
-                                    rw [ho] at hrv; cases hrv
+                                    intro hrv; cases hrv
                                     exact congrArg (Rvalue.unaryOp op) (h4 ho)
                             | cast k opnd ty =>
                                 dsimp only [OpenRvalue.toDay1?] at hrv
+                                revert hrv
                                 cases ho : OpenOperand.toDay1? opnd with
-                                | none => rw [ho] at hrv; cases hrv
+                                | none => intro hrv; cases hrv
                                 | some do_ =>
-                                    rw [ho] at hrv
+                                    intro hrv
+                                    revert hrv
                                     cases ht : OpenMirTy.toClosedMirTy? ty with
-                                    | none => rw [ht] at hrv; cases hrv
+                                    | none => intro hrv; cases hrv
                                     | some _ =>
-                                        rw [ht] at hrv; cases hrv
+                                        intro hrv; cases hrv
                                         dsimp only [eraseOpenRvalue]
                                         rw [h4 ho, toClosedMirTy?_eraseOpenTy ht]
                             | discriminant p =>
                                 dsimp only [OpenRvalue.toDay1?] at hrv
+                                revert hrv
                                 cases hp : OpenPlace.toDay1? p with
-                                | none => rw [hp] at hrv; cases hrv
+                                | none => intro hrv; cases hrv
                                 | some dp =>
-                                    rw [hp] at hrv; cases hrv
+                                    intro hrv; cases hrv
                                     exact congrArg Rvalue.discriminant (h3 hp)
                             | ref m p =>
                                 dsimp only [OpenRvalue.toDay1?] at hrv
+                                revert hrv
                                 cases hp : OpenPlace.toDay1? p with
-                                | none => rw [hp] at hrv; cases hrv
+                                | none => intro hrv; cases hrv
                                 | some dp =>
-                                    rw [hp] at hrv; cases hrv
+                                    intro hrv; cases hrv
                                     exact congrArg (Rvalue.ref m) (h3 hp)
                             | addressOf m p =>
                                 dsimp only [OpenRvalue.toDay1?] at hrv
+                                revert hrv
                                 cases hp : OpenPlace.toDay1? p with
-                                | none => rw [hp] at hrv; cases hrv
+                                | none => intro hrv; cases hrv
                                 | some dp =>
-                                    rw [hp] at hrv; cases hrv
+                                    intro hrv; cases hrv
                                     exact congrArg (Rvalue.addressOf m) (h3 hp)
                             | aggregateTuple fs =>
                                 dsimp only [OpenRvalue.toDay1?] at hrv
+                                revert hrv
                                 cases hfs : OpenOperand.toDay1List? fs with
-                                | none => rw [hfs] at hrv; cases hrv
+                                | none => intro hrv; cases hrv
                                 | some dfs =>
-                                    rw [hfs] at hrv; cases hrv
+                                    intro hrv; cases hrv
                                     exact congrArg Rvalue.aggregateTuple (h5 hfs)
                             | unsupported => cases hrv; rfl
                           have h7 : ∀ {st : OpenStatementKind} {dst : StatementKind},
@@ -8332,14 +8673,16 @@ private theorem erasedOb_locals_eq_map (prog : OpenProgram) (σ : List OpenMirTy
                                 cases hst; rfl
                             | assign dst' rv' =>
                                 dsimp only [OpenStatementKind.toDay1?] at hst
+                                revert hst
                                 cases hp : OpenPlace.toDay1? dst' with
-                                | none => rw [hp] at hst; cases hst
+                                | none => intro hst; cases hst
                                 | some dp =>
-                                    rw [hp] at hst
+                                    intro hst
+                                    revert hst
                                     cases hrv : OpenRvalue.toDay1? rv' with
-                                    | none => rw [hrv] at hst; cases hst
+                                    | none => intro hst; cases hst
                                     | some drv =>
-                                        rw [hrv] at hst; cases hst
+                                        intro hst; cases hst
                                         dsimp only [eraseOpenStatementKind]
                                         rw [h3 hp, h6 hrv]
                           have h8 : ∀ {sts : List OpenStatementKind}
@@ -8352,14 +8695,16 @@ private theorem erasedOb_locals_eq_map (prog : OpenProgram) (σ : List OpenMirTy
                             | cons s ss ih' =>
                                 intro dsts hs'
                                 dsimp only [OpenStatementKind.toDay1List?] at hs'
+                                revert hs'
                                 cases hS : OpenStatementKind.toDay1? s with
-                                | none => rw [hS] at hs'; cases hs'
+                                | none => intro hs'; cases hs'
                                 | some dS =>
-                                    rw [hS] at hs'
+                                    intro hs'
+                                    revert hs'
                                     cases hSs : OpenStatementKind.toDay1List? ss with
-                                    | none => rw [hSs] at hs'; cases hs'
+                                    | none => intro hs'; cases hs'
                                     | some dSs =>
-                                        rw [hSs] at hs'; cases hs'
+                                        intro hs'; cases hs'
                                         dsimp only [List.map]
                                         rw [← h7 hS, ih' hSs]
                           have h9 : ∀ {tm : OpenTerminatorKind} {dtm : TerminatorKind},
@@ -8372,32 +8717,36 @@ private theorem erasedOb_locals_eq_map (prog : OpenProgram) (σ : List OpenMirTy
                             | traitCall _ _ _ _ _ _ _ _ => cases htm
                             | switchInt d tgts =>
                                 dsimp only [OpenTerminatorKind.toDay1?] at htm
+                                revert htm
                                 cases hd : OpenOperand.toDay1? d with
-                                | none => rw [hd] at htm; cases htm
+                                | none => intro htm; cases htm
                                 | some dd =>
-                                    rw [hd] at htm; cases htm
+                                    intro htm; cases htm
                                     dsimp only [eraseOpenTerminatorKind]
                                     rw [h4 hd]
                             | assert cond exp msg tgt uw =>
                                 dsimp only [OpenTerminatorKind.toDay1?] at htm
+                                revert htm
                                 cases hc : OpenOperand.toDay1? cond with
-                                | none => rw [hc] at htm; cases htm
+                                | none => intro htm; cases htm
                                 | some dc =>
-                                    rw [hc] at htm; cases htm
+                                    intro htm; cases htm
                                     dsimp only [eraseOpenTerminatorKind]
                                     rw [h4 hc]
                             | call _ _ _ _ _ _ =>
                                 dsimp only [OpenTerminatorKind.toDay1?] at htm
                                 cases htm
                           dsimp only [OpenBasicBlock.toDay1?] at hb
+                          revert hb
                           cases hSts : OpenStatementKind.toDay1List? b.statements with
-                          | none => rw [hSts] at hb; cases hb
+                          | none => intro hb; cases hb
                           | some dSts =>
-                              rw [hSts] at hb
+                              intro hb
+                              revert hb
                               cases hTm : OpenTerminatorKind.toDay1? b.terminator with
-                              | none => rw [hTm] at hb; cases hb
+                              | none => intro hb; cases hb
                               | some dTm =>
-                                  rw [hTm] at hb; cases hb
+                                  intro hb; cases hb
                                   dsimp only [eraseOpenBasicBlock]
                                   rw [h8 hSts, h9 hTm]
                         rw [← hSub hx, ih hxs]
@@ -8648,10 +8997,11 @@ private theorem openLiveUninitSlot_slotRel (prog : OpenProgram)
               rw [hZ]
               have hChk : checkVal (.enumVal ety 0) (.enum ety) = true := by
                 unfold isZstEnumTy at hZ
+                revert hZ
                 cases hTag : ety.tagRepr with
-                | scalar _ _ => rw [hTag] at hZ; cases hZ
+                | scalar _ _ => intro hZ; cases hZ
                 | zeroSized =>
-                    rw [hTag] at hZ
+                    intro hZ
                     have hAdm : enumAdmitted ety = true := by
                       rw [← hZ]
                     have hNE : (!ety.discriminants.isEmpty) = true := by
@@ -8838,10 +9188,11 @@ private theorem initLocals_rel_aux (prog : OpenProgram)
           have hNotLe : Nat.ble (j + 1) erasedOb.argumentCount = false :=
             nat_ble_false (Nat.lt_succ_of_le hLe)
           dsimp only [initOpenLocalsBuild] at hInit
+          revert hInit
           cases hRest : initOpenLocalsBuild prog ob (j + 2) restTys [] with
-          | none => rw [hRest] at hInit; cases hInit
+          | none => intro hInit; cases hInit
           | some osRest =>
-              rw [hRest] at hInit; cases hInit
+              intro hInit; cases hInit
               dsimp only [List.map, initLocalsLoop]
               rw [ite_cond_false (nat_beq_succ_zero j), ite_cond_false hNotLe,
                 hasStorageAnnotation_eq_open prog σ ob erasedOb hObEq (j + 1)]
@@ -8880,10 +9231,11 @@ private theorem initLocals_rel_aux (prog : OpenProgram)
           have hBle : Nat.ble (j + 1) erasedOb.argumentCount = true :=
             nat_ble_true (by rw [← hLenArgs]; exact hJlt)
           dsimp only [initOpenLocalsBuild] at hInit
+          revert hInit
           cases hRest : initOpenLocalsBuild prog ob (j + 2) restTys vs' with
-          | none => rw [hRest] at hInit; cases hInit
+          | none => intro hInit; cases hInit
           | some osRest =>
-              rw [hRest] at hInit; cases hInit
+              intro hInit; cases hInit
               dsimp only [List.map, List.take, checkArgsMatch] at hChk
               have hChkV := bool_and_left hChk
               have hChkVs := bool_and_right hChk
@@ -9049,11 +9401,12 @@ private theorem init_sim (prog : OpenProgram) (env' : OpenExecEnv)
   | true => rw [ite_cond_true hHdr] at hOInit; cases hOInit
   | false =>
       rw [ite_cond_false hHdr] at hOInit
+      revert hOInit
       cases hLocInit : initOpenLocals (entryOpenProgForBody prog defId) env'
           ob args with
-      | none => rw [hLocInit] at hOInit; cases hOInit
+      | none => intro hOInit; cases hOInit
       | some osLocs =>
-          rw [hLocInit] at hOInit
+          intro hOInit
           cases hOInit
           dsimp only [initOpenLocals] at hLocInit
           rw [checkOpenArgsMatch_eq_of_traitRegistry
@@ -9074,17 +9427,19 @@ private theorem init_sim (prog : OpenProgram) (env' : OpenExecEnv)
                   (bool_or_eq_false_left (bool_or_eq_false_left hGuards))
                 rw [hParts.2.1]
                 exact nat_beq_eq (not_bool_eq_false hg1)
+              revert hLocInit
               cases hObs : ob.locals with
               | nil =>
-                  rw [hParts.1, hParts.2.1, hObs] at hArgLt
+                  intro hLocInit; rw [hParts.1, hParts.2.1, hObs] at hArgLt
                   cases hArgLt
               | cons ty0 restTys =>
-                  rw [hObs] at hLocInit
+                  intro hLocInit
                   dsimp only [initOpenLocalsBuild] at hLocInit
+                  revert hLocInit
                   cases hRestOs : initOpenLocalsBuild prog ob 1 restTys args with
-                  | none => rw [hRestOs] at hLocInit; cases hLocInit
+                  | none => intro hLocInit; cases hLocInit
                   | some restOs =>
-                      rw [hRestOs] at hLocInit; cases hLocInit
+                      intro hLocInit; cases hLocInit
                       have hDropTake :
                           ((erasedOb.locals.drop 1).take erasedOb.argumentCount)
                             =
@@ -9183,13 +9538,15 @@ private theorem valRel_zeroSized_const (prog : OpenProgram)
       cases hCl
       dsimp only [evalNormOpenTySpec] at hNormEval
       unfold enumTypeLayoutSpec at hNormEval
+      revert hNormEval
       cases hAdm : enumAdmitted ety with
-      | false => rw [hAdm] at hNormEval; cases hNormEval
+      | false => intro hNormEval; cases hNormEval
       | true =>
-          rw [hAdm] at hNormEval
+          intro hNormEval
+          revert hNormEval
           cases hTag : ety.tagRepr with
           | zeroSized =>
-              rw [hTag] at hNormEval
+              intro hNormEval
               cases hNormEval
               have hZst : isZstEnumTy ety = true := by
                 unfold isZstEnumTy; rw [hTag]; exact hAdm
@@ -9206,7 +9563,7 @@ private theorem valRel_zeroSized_const (prog : OpenProgram)
               dsimp only [evalConstLit]
               rw [ite_cond_true hZst]
           | scalar tagW tagS =>
-              rw [hTag] at hNormEval
+              intro hNormEval
               cases hNormEval
               cases tagW <;> cases hSz
   | bool =>
@@ -9227,32 +9584,36 @@ private theorem valRel_zeroSized_const (prog : OpenProgram)
   | ref _ p =>
       rw [hSub] at hCl
       dsimp only [OpenMirTy.toClosedMirTy?] at hCl
+      revert hCl
       cases hp : OpenMirTy.toClosedMirTy? p with
-      | none => rw [hp] at hCl; cases hCl
-      | some _ => rw [hp] at hCl; cases hCl; cases hSupp
+      | none => intro hCl; cases hCl
+      | some _ => intro hCl; cases hCl; cases hSupp
   | rawPtr _ p =>
       rw [hSub] at hCl
       dsimp only [OpenMirTy.toClosedMirTy?] at hCl
+      revert hCl
       cases hp : OpenMirTy.toClosedMirTy? p with
-      | none => rw [hp] at hCl; cases hCl
-      | some _ => rw [hp] at hCl; cases hCl; cases hSupp
+      | none => intro hCl; cases hCl
+      | some _ => intro hCl; cases hCl; cases hSupp
   | tuple fs =>
       rw [hSub] at hCl
       dsimp only [OpenMirTy.toClosedMirTy?] at hCl
+      revert hCl
       cases hFs : OpenMirTy.toClosedMirTyList? fs with
-      | none => rw [hFs] at hCl; cases hCl
+      | none => intro hCl; cases hCl
       | some cs =>
-          rw [hFs] at hCl; cases hCl
+          intro hCl; cases hCl
           cases fs with
           | nil => cases hFs; cases hSupp
           | cons a rest =>
               cases rest with
               | nil =>
                   dsimp only [OpenMirTy.toClosedMirTyList?] at hFs
+                  revert hFs
                   cases ha : OpenMirTy.toClosedMirTy? a with
-                  | none => rw [ha] at hFs; cases hFs
+                  | none => intro hFs; cases hFs
                   | some _ =>
-                      rw [ha] at hFs; cases hFs
+                      intro hFs; cases hFs
                       simp only [isSupportedScalarOrUnitTy,
                         isOverflowPairTy] at hSupp
                       cases hSupp
@@ -9260,36 +9621,42 @@ private theorem valRel_zeroSized_const (prog : OpenProgram)
                   cases tl with
                   | cons c ds =>
                       dsimp only [OpenMirTy.toClosedMirTyList?] at hFs
+                      revert hFs
                       cases ha : OpenMirTy.toClosedMirTy? a with
-                      | none => rw [ha] at hFs; cases hFs
+                      | none => intro hFs; cases hFs
                       | some _ =>
-                          rw [ha] at hFs
+                          intro hFs
+                          revert hFs
                           cases hb : OpenMirTy.toClosedMirTy? b with
-                          | none => rw [hb] at hFs; cases hFs
+                          | none => intro hFs; cases hFs
                           | some _ =>
-                              rw [hb] at hFs
+                              intro hFs
+                              revert hFs
                               cases hc : OpenMirTy.toClosedMirTy? c with
-                              | none => rw [hc] at hFs; cases hFs
+                              | none => intro hFs; cases hFs
                               | some _ =>
-                                  rw [hc] at hFs
+                                  intro hFs
+                                  revert hFs
                                   cases hds : OpenMirTy.toClosedMirTyList? ds
                                       with
-                                  | none => rw [hds] at hFs; cases hFs
+                                  | none => intro hFs; cases hFs
                                   | some _ =>
-                                      rw [hds] at hFs; cases hFs
+                                      intro hFs; cases hFs
                                       simp only [isSupportedScalarOrUnitTy,
                                         isOverflowPairTy] at hSupp
                                       cases hSupp
                   | nil =>
                       dsimp only [OpenMirTy.toClosedMirTyList?] at hFs
+                      revert hFs
                       cases ha : OpenMirTy.toClosedMirTy? a with
-                      | none => rw [ha] at hFs; cases hFs
+                      | none => intro hFs; cases hFs
                       | some ca =>
-                          rw [ha] at hFs
+                          intro hFs
+                          revert hFs
                           cases hb : OpenMirTy.toClosedMirTy? b with
-                          | none => rw [hb] at hFs; cases hFs
+                          | none => intro hFs; cases hFs
                           | some cb =>
-                              rw [hb] at hFs; cases hFs
+                              intro hFs; cases hFs
                               have hPair : ∃ w s, ca = .int w s ∧ cb = .bool := by
                                 cases ca <;> cases cb <;>
                                   first
@@ -9360,10 +9727,11 @@ private theorem evalOpenOperand_sim (prog : OpenProgram) (env : OpenExecEnv)
       | none => rw [hL] at hEval; cases hEval
       | some ty =>
           rw [hL] at hEval
+          revert hEval
           cases hF : Trusted.MirSemantics.getElem? of_.locals p.localId with
-          | none => rw [hF] at hEval; cases hEval
+          | none => intro hEval; cases hEval
           | some so =>
-              rw [hF] at hEval
+              intro hEval
               cases so with
               | dead | partialTuple _ | indirect _ => cases hEval
               | immediate optVal =>
@@ -9419,10 +9787,11 @@ private theorem evalOpenOperand_sim (prog : OpenProgram) (env : OpenExecEnv)
       | none => rw [hL] at hEval; cases hEval
       | some ty =>
           rw [hL] at hEval
+          revert hEval
           cases hF : Trusted.MirSemantics.getElem? of_.locals p.localId with
-          | none => rw [hF] at hEval; cases hEval
+          | none => intro hEval; cases hEval
           | some so =>
-              rw [hF] at hEval
+              intro hEval
               cases so with
               | dead | partialTuple _ | indirect _ => cases hEval
               | immediate optVal =>
@@ -9433,11 +9802,12 @@ private theorem evalOpenOperand_sim (prog : OpenProgram) (env : OpenExecEnv)
                       cases optVal with
                       | none => cases hEval
                       | some vo' =>
+                          revert hEval
                           cases hSetO : setElem? of_.locals p.localId
                               (openLiveUninitSlot prog ty) with
-                          | none => rw [hSetO] at hEval; cases hEval
+                          | none => intro hEval; cases hEval
                           | some ls' =>
-                              rw [hSetO] at hEval
+                              intro hEval
                               cases hEval
                               have hProjNil : p.projection = [] :=
                                 list_isEmpty_eq_nil hEmp
@@ -9492,10 +9862,11 @@ private theorem evalOpenOperand_sim (prog : OpenProgram) (env : OpenExecEnv)
       | some mc =>
           rw [hCl] at hEval
           dsimp only at hEval
+          revert hEval
           cases hLit : evalConstLit mc c.lit with
-          | error k => rw [hLit] at hEval; cases hEval
+          | error k => intro hEval; cases hEval
           | ok v =>
-              rw [hLit] at hEval; cases hEval
+              intro hEval; cases hEval
               have hEr : erasedTy prog σ c.ty = mc :=
                 toClosedMirTy?_erase_subst prog.traitRegistry σ hCl
               have hChk := evalConstLit_checkVal mc c.lit vo hLit
@@ -9505,16 +9876,18 @@ private theorem evalOpenOperand_sim (prog : OpenProgram) (env : OpenExecEnv)
               rw [erasedTy_def, hEr, hLit]
       | none =>
           rw [hCl] at hEval
+          revert hEval
           cases hLit : c.lit with
           | scalar _ | rodataBytes _ | rodataRef _ _ _ _ =>
-              rw [hLit] at hEval; cases hEval
+              intro hEval; cases hEval
           | zeroSized =>
-              rw [hLit] at hEval
+              intro hEval
+              revert hEval
               cases hEv : evalOpenTySpec prog.traitRegistry normFuel
                   env.typeSpecs c.ty with
-              | none => rw [hEv] at hEval; cases hEval
+              | none => intro hEval; cases hEval
               | some sp =>
-                  rw [hEv] at hEval
+                  intro hEval
                   dsimp only at hEval
                   have hF : ∀ a : Bool, (a && false) = false := fun a => by
                     cases a <;> rfl
@@ -9537,9 +9910,10 @@ private theorem evalOpenOperand_sim (prog : OpenProgram) (env : OpenExecEnv)
                       | nil =>
                           rw [hRoles] at hEval; dsimp only at hEval
                           rw [hT] at hEval
+                          revert hEval
                           cases hSz : sp.isSized with
                           | false =>
-                              rw [hSz] at hEval
+                              intro hEval
                               rw [show (false && sp.inhabited &&
                                   Nat.beq ((sp.sizeForMeta .none).getD 1) 0) =
                                   false from rfl] at hEval
@@ -9547,10 +9921,11 @@ private theorem evalOpenOperand_sim (prog : OpenProgram) (env : OpenExecEnv)
                                 at hEval
                               cases hEval
                           | true =>
-                              rw [hSz] at hEval
+                              intro hEval
+                              revert hEval
                               cases hIn : sp.inhabited with
                               | false =>
-                                  rw [hIn] at hEval
+                                  intro hEval
                                   rw [show (true && false &&
                                       Nat.beq ((sp.sizeForMeta .none).getD 1)
                                         0) = false from rfl] at hEval
@@ -9558,18 +9933,19 @@ private theorem evalOpenOperand_sim (prog : OpenProgram) (env : OpenExecEnv)
                                     (rfl : (false : Bool) = false)] at hEval
                                   cases hEval
                               | true =>
-                                  rw [hIn] at hEval
+                                  intro hEval
+                                  revert hEval
                                   cases hZ : Nat.beq
                                       ((sp.sizeForMeta .none).getD 1) 0 with
                                   | false =>
-                                      rw [hZ] at hEval
+                                      intro hEval
                                       rw [show (true && true && false) = false
                                         from rfl] at hEval
                                       rw [ite_cond_false
                                         (rfl : (false : Bool) = false)] at hEval
                                       cases hEval
                                   | true =>
-                                      rw [hZ] at hEval
+                                      intro hEval
                                       rw [show (true && true && true) = true
                                         from rfl] at hEval
                                       rw [ite_cond_true
@@ -9646,18 +10022,20 @@ private theorem writePlace_sim (prog : OpenProgram) (env : OpenExecEnv)
       | false => simp only [hChkO] at hW; cases hW
       | true =>
           simp only [hChkO] at hW
+          revert hW
           cases hF : Trusted.MirSemantics.getElem? of_.locals dst.localId with
-          | none => rw [hF] at hW; cases hW
+          | none => intro hW; cases hW
           | some so =>
-              rw [hF] at hW
+              intro hW
               cases so with
               | dead | partialTuple _ | indirect _ => cases hW
               | immediate _ =>
+                  revert hW
                   cases hSetO : setElem? of_.locals dst.localId
                       (.immediate (some vo)) with
-                  | none => rw [hSetO] at hW; cases hW
+                  | none => intro hW; cases hW
                   | some ls' =>
-                      rw [hSetO] at hW; cases hW
+                      intro hW; cases hW
                       cases localsRel_getElem? prog σ dst.localId hRel with
                       | inl hNone =>
                           let ⟨hN1, _, _⟩ := hNone
@@ -9748,12 +10126,13 @@ private theorem openStep_eq_det_none (prog : OpenProgram) (env : OpenExecEnv)
         rw [← getElem?_eq_openListGet?] at hBb
         exact all_getElem?_eq_true
           (p := fun b => openTermIsDay1Pure b.terminator) hErasable hBb
+      revert hTermPure
       cases hTm : bb.terminator with
       | traitCall _ _ _ _ _ _ _ _ | call _ _ _ _ _ _
       | assert _ _ _ _ _ | unwindResume =>
-          rw [hTm] at hTermPure; cases hTermPure
+          intro hTermPure; cases hTermPure
       | goto _ | switchInt _ _ | return_ | unreachable
-      | unsupported => dsimp only; rfl
+      | unsupported => intro hTermPure; dsimp only; rfl
 
 private theorem deallocateLocal_empty {mem : MemoryState} {slot : LocalSlot}
     (hNotInd : ∀ mp, slot ≠ .indirect mp) :
@@ -10030,12 +10409,13 @@ private theorem openStep_term_sim (prog : OpenProgram)
               | mk discrTy f₁ =>
           rw [hOp] at hNoFault
           dsimp only at hNoFault
+          revert hNoFault
           cases hCl : OpenMirTy.toClosedMirTy? discrTy with
           | none =>
-              rw [hCl] at hNoFault
+              intro hNoFault
               exact False.elim (hNoFault .unsupported rfl)
           | some mTy =>
-              rw [hCl] at hNoFault
+              intro hNoFault
               dsimp only at hNoFault
               cases hPrim : isPrimitiveReadableTy mTy with
               | false =>
@@ -10341,12 +10721,13 @@ private theorem openStep_assign_sim (prog : OpenProgram)
   | true =>
       have hProjNil : dst.projection = [] := list_isEmpty_eq_nil hEmp
       rw [ite_not_true hEmp] at hNoFault
+      revert hNoFault
       cases hDst : openListGet? ob.locals dst.localId with
       | none =>
-          rw [hDst] at hNoFault
+          intro hNoFault
           exact False.elim (hNoFault .unsupported rfl)
       | some dstTy =>
-          rw [hDst] at hNoFault
+          intro hNoFault
           dsimp only at hNoFault
           have hDstD : Trusted.MirSemantics.getElem? erasedOb.locals dst.localId =
               some (erasedTy prog σ dstTy) := by
@@ -10384,12 +10765,14 @@ private theorem openStep_assign_sim (prog : OpenProgram)
                             hRegWf σ srcTy,
                           ← substAndNormalize_normalize_eq prog.traitRegistry
                             hRegWf σ dstTy, hNormEq]
+                      revert hNoFault
                       cases hW : writeOpenPlace (entryOpenProgForBody prog defId)
                           env' ob f₁ dst vo with
                       | error k =>
-                          rw [hW] at hNoFault
+                          intro hNoFault
                           exact False.elim (hNoFault k rfl)
                       | ok f₂ =>
+                          intro hNoFault
                           have hOp' : evalOpenOperand prog env' ob of_ op =
                               .ok (vo, srcTy, f₁) := by
                             rw [← evalOpenOperand_entryOpenProgForBody prog defId]
@@ -10679,9 +11062,10 @@ private theorem openStep_assign_sim (prog : OpenProgram)
                           | mk srcR f₂ =>
                       rw [hRhs] at hNoFault
                       dsimp only at hNoFault
+                      revert hNoFault
                       cases hBin : evalBinOp op vl vr with
                       | error k =>
-                          rw [hBin] at hNoFault
+                          intro hNoFault
                           cases hClL : OpenMirTy.toClosedMirTy? srcL <;>
                           cases hClR : OpenMirTy.toClosedMirTy? srcR <;>
                           cases hClD : OpenMirTy.toClosedMirTy?
@@ -10691,28 +11075,31 @@ private theorem openStep_assign_sim (prog : OpenProgram)
                             rw [hClL, hClR, hClD] at hNoFault
                             exact hNoFault k rfl)
                       | ok resV =>
-                          rw [hBin] at hNoFault
+                          intro hNoFault
+                          revert hNoFault
                           cases hClL : OpenMirTy.toClosedMirTy? srcL with
                           | none =>
-                              rw [hClL] at hNoFault
+                              intro hNoFault
                               exact False.elim (hNoFault .unsupported rfl)
                           | some ml =>
-                              rw [hClL] at hNoFault
+                              intro hNoFault
+                              revert hNoFault
                               cases hClR : OpenMirTy.toClosedMirTy? srcR with
                               | none =>
-                                  rw [hClR] at hNoFault
+                                  intro hNoFault
                                   exact False.elim (hNoFault .unsupported rfl)
                               | some mr =>
-                                  rw [hClR] at hNoFault
+                                  intro hNoFault
+                                  revert hNoFault
                                   cases hClD : OpenMirTy.toClosedMirTy?
                                       (normalizeOpenTy prog.traitRegistry normFuel
                                         dstTy) with
                                   | none =>
-                                      rw [hClD] at hNoFault
+                                      intro hNoFault
                                       exact False.elim
                                         (hNoFault .unsupported rfl)
                                   | some mDst =>
-                                      rw [hClD] at hNoFault
+                                      intro hNoFault
                                       dsimp only at hNoFault
                                       cases hBad : (!isPrimitiveReadableTy ml ||
                                           !isPrimitiveReadableTy mr ||
@@ -10736,13 +11123,15 @@ private theorem openStep_assign_sim (prog : OpenProgram)
                                               true :=
                                             not_bool_eq_false
                                               (bool_or_eq_false_right hBad)
+                                          revert hNoFault
                                           cases hW : writeOpenPlace
                                               (entryOpenProgForBody prog defId)
                                               env' ob f₂ dst resV with
                                           | error k =>
-                                              rw [hW] at hNoFault
+                                              intro hNoFault
                                               exact False.elim (hNoFault k rfl)
                                           | ok f₃ =>
+                                              intro hNoFault
                                               have hLhs' : evalOpenOperand prog env' ob
                                                   of_ lhs =
                                                   .ok (vl, srcL, f₁) := by
@@ -10866,9 +11255,10 @@ private theorem openStep_assign_sim (prog : OpenProgram)
                       | mk srcTy f₁ =>
                   rw [hOpnd] at hNoFault
                   dsimp only at hNoFault
+                  revert hNoFault
                   cases hUn : evalUnOp op v with
                   | error k =>
-                      rw [hUn] at hNoFault
+                      intro hNoFault
                       cases hClS : OpenMirTy.toClosedMirTy? srcTy <;>
                       cases hClD : OpenMirTy.toClosedMirTy?
                           (normalizeOpenTy prog.traitRegistry normFuel dstTy) <;>
@@ -10876,20 +11266,22 @@ private theorem openStep_assign_sim (prog : OpenProgram)
                         rw [hClS, hClD] at hNoFault
                         exact hNoFault k rfl)
                   | ok resV =>
-                      rw [hUn] at hNoFault
+                      intro hNoFault
+                      revert hNoFault
                       cases hClS : OpenMirTy.toClosedMirTy? srcTy with
                       | none =>
-                          rw [hClS] at hNoFault
+                          intro hNoFault
                           exact False.elim (hNoFault .unsupported rfl)
                       | some mSrc =>
-                          rw [hClS] at hNoFault
+                          intro hNoFault
+                          revert hNoFault
                           cases hClD : OpenMirTy.toClosedMirTy?
                               (normalizeOpenTy prog.traitRegistry normFuel dstTy) with
                           | none =>
-                              rw [hClD] at hNoFault
+                              intro hNoFault
                               exact False.elim (hNoFault .unsupported rfl)
                           | some mDst =>
-                              rw [hClD] at hNoFault
+                              intro hNoFault
                               dsimp only at hNoFault
                               cases hBad : (!isPrimitiveReadableTy mSrc ||
                                   !checkVal resV mDst) with
@@ -10902,13 +11294,15 @@ private theorem openStep_assign_sim (prog : OpenProgram)
                                     not_bool_eq_false (bool_or_eq_false_left hBad)
                                   have hChkRes : checkVal resV mDst = true :=
                                     not_bool_eq_false (bool_or_eq_false_right hBad)
+                                  revert hNoFault
                                   cases hW : writeOpenPlace
                                       (entryOpenProgForBody prog defId) env' ob f₁
                                       dst resV with
                                   | error k =>
-                                      rw [hW] at hNoFault
+                                      intro hNoFault
                                       exact False.elim (hNoFault k rfl)
                                   | ok f₂ =>
+                                      intro hNoFault
                                       have hOpnd' : evalOpenOperand prog env' ob
                                           of_ opnd = .ok (v, srcTy, f₁) := by
                                         rw [← evalOpenOperand_entryOpenProgForBody prog defId]
@@ -11018,21 +11412,23 @@ private theorem openStep_assign_sim (prog : OpenProgram)
                               cases resOp' with
                               | mk srcTy f₁ =>
                           rw [hOpnd] at hNoFault
+                          revert hNoFault
                           cases hClC : OpenMirTy.toClosedMirTy?
                               (normalizeOpenTy prog.traitRegistry normFuel castTy)
                               with
                           | none =>
-                              rw [hClC] at hNoFault
+                              intro hNoFault
                               exact False.elim (hNoFault .unsupported rfl)
                           | some mCast =>
-                              rw [hClC] at hNoFault
+                              intro hNoFault
                               dsimp only at hNoFault
+                              revert hNoFault
                               cases hClS : OpenMirTy.toClosedMirTy? srcTy with
                               | none =>
-                                  rw [hClS] at hNoFault
+                                  intro hNoFault
                                   exact False.elim (hNoFault .unsupported rfl)
                               | some mSrc =>
-                                  rw [hClS] at hNoFault
+                                  intro hNoFault
                                   dsimp only at hNoFault
                                   cases hInt : isIntLikeTy mSrc with
                                   | false =>
@@ -11041,20 +11437,23 @@ private theorem openStep_assign_sim (prog : OpenProgram)
                                         (hNoFault .unsupported rfl)
                                   | true =>
                                       rw [ite_not_true hInt] at hNoFault
+                                      revert hNoFault
                                       cases hCast : evalIntToIntCast v mCast with
                                       | error k =>
-                                          rw [hCast] at hNoFault
+                                          intro hNoFault
                                           exact False.elim (hNoFault k rfl)
                                       | ok resV =>
-                                          rw [hCast] at hNoFault
+                                          intro hNoFault
                                           dsimp only at hNoFault
+                                          revert hNoFault
                                           cases hW : writeOpenPlace
                                               (entryOpenProgForBody prog defId)
                                               env' ob f₁ dst resV with
                                           | error k =>
-                                              rw [hW] at hNoFault
+                                              intro hNoFault
                                               exact False.elim (hNoFault k rfl)
                                           | ok f₂ =>
+                                              intro hNoFault
                                               have hOpnd' : evalOpenOperand prog
                                                   env' ob of_ opnd =
                                                   .ok (v, srcTy, f₁) := by
@@ -11560,13 +11959,14 @@ private theorem initState_singleFrame (p : Program) (q : Query) (s : State)
   unfold initState at h
   have h := (ite_err_ok h).2
   have h := (ite_err_ok h).2
+  revert h
   cases hB : Trusted.MirSemantics.getElem? p.bodies p.entryDefId with
   | none =>
-      rw [hB] at h
+      intro h
       dsimp only at h
       cases h
   | some body =>
-      rw [hB] at h
+      intro h
       dsimp only at h
       have h := (ite_err_ok h).2
       have h := (ite_err_ok h).2
