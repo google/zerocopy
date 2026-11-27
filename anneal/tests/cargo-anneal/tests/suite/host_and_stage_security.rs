@@ -550,3 +550,65 @@ fn rejects_symlinked_sources_and_disallowed_manifest_targets() {
         expect_failed(&res, 1, "unsupported", Some("cargo"), detail);
     }
 }
+
+#[test]
+fn fast_check_passes_elaboration_and_skips_receipt_end_to_end() {
+    let staged = new_workspace("anneal-fast-check-e2e-").stage().unwrap();
+    let work = staged.work_dir();
+    write_scalar_baseline(work);
+    let lean_dir = work.join("lean");
+    let manifest = work.join("Cargo.toml");
+    fs::write(
+        &manifest,
+        "[package]\nname = \"scalar\"\nversion = \"0.0.0\"\nedition = \"2024\"\n\
+         [lib]\npath = \"lib.rs\"\n",
+    )
+    .unwrap();
+    fs::write(work.join("lib.rs"), SCALAR_SOURCE).unwrap();
+
+    let tools = crate::helpers::workspace_tools();
+    let cli = tools.cli.as_deref().expect("workspace cli binary");
+    let capture = tools.capture.as_deref().expect("workspace capture binary");
+    let inv = with_host_cargo_env(
+        &staged,
+        anneal_testkit::Invocation::new(cli, &["verify", "--fast-check", "--format", "auto"])
+            .arg("--capture")
+            .arg(capture)
+            .arg("--lean")
+            .arg(&tools.lean)
+            .arg("--sysroot")
+            .arg(&tools.sysroot)
+            .arg("--manifest-path")
+            .arg(&manifest)
+            .arg("--proof-dir")
+            .arg(&lean_dir),
+    );
+    let run = staged.exec(&inv).expect("execute cargo-anneal verify --fast-check");
+    run.process.expect_code(3).unwrap();
+    let stdout = String::from_utf8_lossy(&run.process.stdout);
+    let stderr = String::from_utf8_lossy(&run.process.stderr);
+    assert!(stdout.contains("[UNVERIFIED_DEV_ONLY]"), "{stdout}");
+    assert!(stdout.contains("fast_check_dev_mode"), "{stdout}");
+    assert!(stdout.contains("exited 3"), "{stdout}");
+    assert!(stderr.contains("TAINTED"), "{stderr}");
+    assert!(stderr.contains("UNVERIFIED_DEV_ONLY"), "{stderr}");
+    assert!(serde_json::from_slice::<Value>(&run.process.stdout).is_err(), "{stdout}");
+
+    // An elaboration-failing proof still fails closed with exit code `1` under
+    // `--fast-check`.
+    fs::write(
+        lean_dir.join("Proof.lean"),
+        "import Expected\ntheorem verify : Expected.claim := ()\n",
+    )
+    .unwrap();
+    let bad_run =
+        staged.exec(&inv).expect("execute cargo-anneal verify --fast-check on broken proof");
+    bad_run.process.expect_code(1).unwrap();
+    let bad_stdout = String::from_utf8_lossy(&bad_run.process.stdout);
+    let bad_stderr = String::from_utf8_lossy(&bad_run.process.stderr);
+    assert!(bad_stdout.contains("[FAIL]"), "{bad_stdout}");
+    assert!(bad_stdout.contains("proof_failed"), "{bad_stdout}");
+    assert!(bad_stdout.contains("fast_check_dev_mode"), "{bad_stdout}");
+    assert!(bad_stderr.contains("TAINTED"), "{bad_stderr}");
+    assert!(serde_json::from_slice::<Value>(&bad_run.process.stdout).is_err(), "{bad_stdout}");
+}

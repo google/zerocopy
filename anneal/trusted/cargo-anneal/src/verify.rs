@@ -59,12 +59,18 @@ pub(crate) const EMBEDDED_BUNDLE_SOURCES: &[(&str, &str)] = BUNDLE;
 const PINNED_CAPTURE_SCHEMA_VERSION: u32 = 5;
 const PINNED_RUSTC_COMMIT: &str = "f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1";
 const RECEIPT_SCHEMA_VERSION: u32 = 3;
+const FAST_CHECK_EXIT_CODE: u8 = 3;
 
-/// Closed 4-element set of verification taint atoms projected onto Receipt
-/// Schema v3 (`taint_reasons`), sorted lexicographically by wire spelling.
-/// Variant declaration order must match lexicographical `as_str()` order.
+/// Closed 5-element set of verification taint atoms (`taint_reasons`).
+///
+/// `SorryInProof`, `UnmodeledUnstableFeatures`, `UnpinnedLean`, and
+/// `UnsandboxedElaboration` project onto Receipt Schema v3 (`taint_reasons`)
+/// in lexicographical wire-spelling order; `FastCheckDevMode` (`--fast-check`)
+/// applies only to dev-only output cards and exits `3` without emitting a
+/// receipt. Variant declaration order must match lexicographical `as_str()`.
 #[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord)]
 enum VerificationTaint {
+    FastCheckDevMode,
     SorryInProof,
     UnmodeledUnstableFeatures,
     UnpinnedLean,
@@ -74,6 +80,7 @@ enum VerificationTaint {
 impl VerificationTaint {
     const fn as_str(self) -> &'static str {
         match self {
+            Self::FastCheckDevMode => "fast_check_dev_mode",
             Self::SorryInProof => "sorry_in_proof",
             Self::UnmodeledUnstableFeatures => "unmodeled_unstable_features",
             Self::UnpinnedLean => "unpinned_lean",
@@ -83,6 +90,10 @@ impl VerificationTaint {
 
     const fn warning_banner(self) -> &'static str {
         match self {
+            Self::FastCheckDevMode => {
+                "WARNING: running in --fast-check unverified dev-only mode ([6/6] kernel replay \
+                 and audit skipped); result is UNVERIFIED_DEV_ONLY and TAINTED (no receipt emitted)"
+            }
             Self::SorryInProof => {
                 "WARNING: allowing `sorry` in proof modules (--allow-sorry-in-proof); \
                  verification result is TAINTED"
@@ -105,10 +116,13 @@ impl VerificationTaint {
 }
 
 /// Collect active taint atoms under the Uniform Flag-Driven Taint Law: every
-/// `--allow-*` relaxation flag unconditionally inserts its taint atom even when
-/// the relaxed condition did not occur on that run.
+/// `--allow-*` / `--fast-check` relaxation flag unconditionally inserts its
+/// taint atom even when the relaxed condition did not occur on that run.
 fn active_taints(args: &VerifyArgs) -> BTreeSet<VerificationTaint> {
     let mut taints = BTreeSet::new();
+    if args.fast_check {
+        taints.insert(VerificationTaint::FastCheckDevMode);
+    }
     if args.allow_sorry_in_proof {
         taints.insert(VerificationTaint::SorryInProof);
     }
@@ -388,6 +402,24 @@ pub struct VerifyArgs {
     /// `anneal-shards.json` plan before Lean verification.
     #[arg(long, global = true, value_name = "PATH")]
     verify_shard_plan: Option<PathBuf>,
+    /// Unverified dev-only inner-loop check: run capture, toolchain admission,
+    /// specification preflight, and Lean elaboration while skipping `[6/6]`
+    /// kernel replay and target audit. Always refuses `--receipt-out`,
+    /// `--artifacts`, `--overwrite-artifacts`, `--export-lean-lib`,
+    /// `--paranoid-quorum`, and `--format json`, exits `3` (never `0`) on
+    /// pass, and prints `UNVERIFIED_DEV_ONLY` + `TAINTED`.
+    #[arg(
+        long,
+        global = true,
+        conflicts_with_all = [
+            "receipt_out",
+            "export_lean_lib",
+            "artifacts",
+            "overwrite_artifacts",
+            "paranoid_quorum",
+        ]
+    )]
+    fast_check: bool,
     /// Direct rustc-style verification subcommand.
     #[command(subcommand)]
     command: Option<VerifySubcommand>,
@@ -832,6 +864,32 @@ impl VerifyArgs {
             }
         }
 
+        // In clap 4, `conflicts_with_all` on `global = true` args validates
+        // each command level before `propagate_globals`, so enforce the full
+        // `--fast-check` conflict set here across `verify ... rustc` too.
+        if self.fast_check {
+            for (present, flag) in [
+                (self.receipt_out.is_some(), "--receipt-out"),
+                (self.artifacts.is_some(), "--artifacts"),
+                (self.export_lean_lib, "--export-lean-lib"),
+                (self.overwrite_artifacts, "--overwrite-artifacts"),
+                (self.paranoid_quorum, "--paranoid-quorum"),
+            ] {
+                if present {
+                    return Err(cmd.error(
+                        ErrorKind::ArgumentConflict,
+                        format!("`--fast-check` cannot be used with `{flag}`"),
+                    ));
+                }
+            }
+            if matches!(self.format, crate::output::VerifyFormat::Json) {
+                return Err(cmd.error(
+                    ErrorKind::ArgumentConflict,
+                    "`--fast-check` is unverified dev-only mode and cannot be used with \
+                     `--format json`",
+                ));
+            }
+        }
         if self.export_lean_lib && self.artifacts.is_none() {
             return Err(cmd.error(
                 ErrorKind::MissingRequiredArgument,
@@ -3691,13 +3749,30 @@ fn run_capture_process(
     })
 }
 
+struct FastCheckDevOutcome {
+    crate_name: String,
+    edition: String,
+    target: String,
+    elaboration_sandbox: &'static str,
+    module_count: usize,
+    incomplete_observed: Vec<String>,
+    capture_ms: u128,
+    proof_ms: u128,
+    total_ms: u128,
+}
+
+enum VerifyOutcome {
+    Receipt(Value),
+    FastCheckDevOnly(FastCheckDevOutcome),
+}
+
 fn run<Out: std::io::Write + Send, ErrOut: std::io::Write + Send>(
     args: &VerifyArgs,
     work: &Path,
     receipt_out: Option<&ValidatedReceiptOut>,
     session: &mut OutputSession<Out, ErrOut>,
     overwrite_inputs: &mut Vec<PathBuf>,
-) -> Result<Value> {
+) -> Result<VerifyOutcome> {
     let start = Instant::now();
     session.report_phase(VerifyPhase::Stage);
     let mut originals = Vec::new();
@@ -4138,7 +4213,7 @@ fn run<Out: std::io::Write + Send, ErrOut: std::io::Write + Send>(
     checker.set_require_prebuilt_olean_dir(args.prebuilt_dir.is_some());
     checker.set_paranoid_quorum(args.paranoid_quorum);
     checker.set_generated_modules(generated_modules);
-    let audit_result = checker.run_target_with_progress(&audit_request, |ev| {
+    let map_progress = |ev| {
         let phase = match ev {
             TargetProgress::Toolchain => VerifyPhase::Toolchain,
             TargetProgress::SpecPreflight { module_count } => {
@@ -4150,22 +4225,27 @@ fn run<Out: std::io::Write + Send, ErrOut: std::io::Write + Send>(
             TargetProgress::Audit => VerifyPhase::Audit,
         };
         session.report_phase(phase);
-    });
-    let active_sandbox_opt = checker.active_sandbox();
-    let sandbox_label = active_sandbox_opt.map(ActiveSandbox::as_str);
-    let audit = match audit_result {
-        Ok(audit) => audit,
-        Err(e) => {
-            return Err(handle_failed_target_audit(
-                &checker,
-                work,
-                args.export_lean_lib,
-                sandbox_label,
-                e,
-            ));
-        }
     };
-    let Some(active_sandbox) = active_sandbox_opt else {
+    enum TargetAuditDispatch {
+        Full(Value),
+        FastCheck { module_count: usize },
+    }
+    let target_dispatch = if args.fast_check {
+        let res = checker.run_target_fast_check_with_progress(&audit_request, map_progress);
+        let sandbox_label = checker.active_sandbox().map(ActiveSandbox::as_str);
+        let module_count = res.map_err(|e| {
+            handle_failed_target_audit(&checker, work, args.export_lean_lib, sandbox_label, e)
+        })?;
+        TargetAuditDispatch::FastCheck { module_count }
+    } else {
+        let res = checker.run_target_with_progress(&audit_request, map_progress);
+        let sandbox_label = checker.active_sandbox().map(ActiveSandbox::as_str);
+        let audit = res.map_err(|e| {
+            handle_failed_target_audit(&checker, work, args.export_lean_lib, sandbox_label, e)
+        })?;
+        TargetAuditDispatch::Full(audit)
+    };
+    let Some(active_sandbox) = checker.active_sandbox() else {
         return Err(error("tool_failed", "sandbox", "sandbox selection did not complete"));
     };
     if (active_sandbox == ActiveSandbox::None) != args.allow_unsandboxed_elaboration {
@@ -4212,6 +4292,27 @@ fn run<Out: std::io::Write + Send, ErrOut: std::io::Write + Send>(
         )
         .with_sandbox(Some(active_sandbox.as_str())));
     }
+    let audit = match target_dispatch {
+        TargetAuditDispatch::FastCheck { module_count } => {
+            let incomplete_observed = if allowed_features.is_empty() {
+                Vec::new()
+            } else {
+                unstable_features.incomplete_observed
+            };
+            return Ok(VerifyOutcome::FastCheckDevOnly(FastCheckDevOutcome {
+                crate_name: request.compilation.crate_name,
+                edition: request.compilation.edition,
+                target: request.compilation.target,
+                elaboration_sandbox: active_sandbox.as_str(),
+                module_count,
+                incomplete_observed,
+                capture_ms,
+                proof_ms,
+                total_ms: start.elapsed().as_millis(),
+            }));
+        }
+        TargetAuditDispatch::Full(audit) => audit,
+    };
     let candidate_features =
         validate_and_extract_candidate_features(&audit, &model_tiers, &model_modules)
             .map_err(|e| e.with_sandbox(Some(active_sandbox.as_str())))?;
@@ -4503,7 +4604,7 @@ fn run<Out: std::io::Write + Send, ErrOut: std::io::Write + Send>(
         checker.export_target_oleans_gated(dest, true)
     })
     .map_err(|e| e.with_sandbox(Some(active_sandbox.as_str())))?;
-    Ok(result)
+    Ok(VerifyOutcome::Receipt(result))
 }
 
 /// Write `result.json` before promoting `lean-lib` on a passing run so a
@@ -4946,13 +5047,63 @@ fn emit_failure<Out: std::io::Write, ErrOut: std::io::Write>(
 }
 
 pub fn main(args: VerifyArgs, color: ColorChoice, quiet: bool, verbose: bool) -> ExitCode {
-    let (mut session, resolved_format) = OutputSession::live(color, quiet, verbose, args.format);
+    // Force human dev output even on pipes (`--format auto`) under
+    // `--fast-check` so JSON receipt consumers never see an unverified run.
+    let effective_format = if args.fast_check { VerifyFormat::Human } else { args.format };
+    let (mut session, resolved_format) =
+        OutputSession::live(color, quiet, verbose, effective_format);
     let taints = active_taints(&args);
     for taint in &taints {
         session.write_taint_banner(taint.warning_banner());
     }
     let taint_vec = taint_reason_strings(&taints);
     let taint_reasons: &[&str] = &taint_vec;
+    if args.fast_check {
+        for (present, phase, detail) in [
+            (
+                args.receipt_out.is_some(),
+                "receipt-out",
+                "--fast-check cannot be used with --receipt-out",
+            ),
+            (args.artifacts.is_some(), "retention", "--fast-check cannot be used with --artifacts"),
+            (
+                args.export_lean_lib,
+                "export-lean-lib",
+                "--fast-check cannot be used with --export-lean-lib",
+            ),
+            (
+                args.overwrite_artifacts,
+                "retention",
+                "--fast-check cannot be used with --overwrite-artifacts",
+            ),
+            (
+                args.paranoid_quorum,
+                "fast-check",
+                "--fast-check cannot be used with --paranoid-quorum",
+            ),
+            (
+                matches!(args.format, VerifyFormat::Json),
+                "fast-check",
+                "--fast-check cannot be used with --format json",
+            ),
+        ] {
+            if present {
+                return emit_failure(
+                    &mut session,
+                    resolved_format,
+                    None,
+                    taint_reasons,
+                    None,
+                    "tool_failed",
+                    phase,
+                    None,
+                    detail,
+                    None,
+                    2,
+                );
+            }
+        }
+    }
     // Receipts encode the artifact destination as JSON text. Check its exact
     // spelling before staging or retention can create evidence, so an encoding
     // failure cannot leave an export with no receipt. Carry the checked text
@@ -5160,7 +5311,50 @@ pub fn main(args: VerifyArgs, color: ColorChoice, quiet: bool, verbose: bool) ->
     // file behind.
     let unretained_artifacts = if artifacts.is_some() { None } else { Some(None) };
     match outcome {
-        Ok(mut result) => {
+        Ok(VerifyOutcome::FastCheckDevOnly(summary)) => {
+            if receipt_out.is_some() || artifacts.is_some() || args.export_lean_lib {
+                return emit_failure(
+                    &mut session,
+                    resolved_format,
+                    None,
+                    taint_reasons,
+                    Some(summary.elaboration_sandbox),
+                    "tool_failed",
+                    "fast-check",
+                    None,
+                    "--fast-check cannot be used with --receipt-out, --artifacts, or --export-lean-lib",
+                    None,
+                    2,
+                );
+            }
+            for feature in &summary.incomplete_observed {
+                session.write_taint_banner(&format!(
+                    "WARNING: the crate enables `{feature}`, which rustc marks incomplete \
+                     (likely unsound or crash-prone)"
+                ));
+            }
+            let primary = crate::output::render_fast_check_card(
+                &crate::output::FastCheckCardInput {
+                    taint_reasons,
+                    crate_name: &summary.crate_name,
+                    edition: &summary.edition,
+                    target: &summary.target,
+                    elaboration_sandbox: summary.elaboration_sandbox,
+                    module_count: summary.module_count,
+                    capture_ms: summary.capture_ms,
+                    proof_ms: summary.proof_ms,
+                    total_ms: summary.total_ms,
+                },
+                CardRenderOptions {
+                    ansi_color: session.stdout_style.ansi_color,
+                    quiet: session.quiet,
+                    verbose: session.verbose,
+                    receipt_out_path: None,
+                },
+            );
+            finish_with_writers(&mut session, primary.as_bytes(), FAST_CHECK_EXIT_CODE)
+        }
+        Ok(VerifyOutcome::Receipt(mut result)) => {
             if let Some(destination) = artifacts {
                 result["artifacts"] = json!(destination);
             }
@@ -7376,6 +7570,7 @@ mod tests {
             prebuilt_dir: None,
             shard: ShardArgs::default(),
             verify_shard_plan: None,
+            fast_check: false,
             command: None,
         };
         let crate_scope = Scope::Crate {};
@@ -7424,6 +7619,7 @@ mod tests {
                         prebuilt_dir: None,
                         shard: ShardArgs::default(),
                         verify_shard_plan: None,
+                        fast_check: false,
                         command: None,
                     };
                     let taints = active_taints(&args);
@@ -7458,6 +7654,9 @@ mod tests {
                 }
             }
         }
+
+        let fast = VerifyArgs { fast_check: true, ..base };
+        assert_eq!(taint_reason_strings(&active_taints(&fast)), vec!["fast_check_dev_mode"]);
     }
 
     #[test]
@@ -7912,6 +8111,7 @@ mod tests {
             prebuilt_dir: None,
             shard: ShardArgs::default(),
             verify_shard_plan: None,
+            fast_check: false,
             command: None,
         };
 
@@ -7965,6 +8165,7 @@ mod tests {
                 prebuilt_dir: None,
                 shard: ShardArgs::default(),
                 verify_shard_plan: None,
+                fast_check: false,
                 command: None,
             };
             let err = select_tools(&args).err().expect("missing tools must fail");
@@ -9187,6 +9388,7 @@ mod tests {
             paranoid_quorum: false,
             shard: ShardArgs::default(),
             verify_shard_plan: None,
+            fast_check: false,
         };
         let validated = validate_receipt_out_pre_stage(&args, None).unwrap().unwrap();
 
@@ -9489,5 +9691,74 @@ mod tests {
             "normalized prebuilt dir {} must be protected: {protected:?}",
             good.display()
         );
+    }
+
+    #[test]
+    fn fast_check_validate_rejects_conflicts_split_across_rustc_subcommand() {
+        use clap::{CommandFactory, Parser};
+
+        #[derive(clap::Parser)]
+        struct Wrapper {
+            #[command(flatten)]
+            verify: VerifyArgs,
+        }
+
+        let rustc_base = [
+            "rustc",
+            "lib.rs",
+            "--crate-name",
+            "c",
+            "--edition",
+            "2024",
+            "--spec-file",
+            "Spec=Spec.lean",
+            "--proof-file",
+            "Proof=Proof.lean",
+            "--spec-decl",
+            "Spec.specs",
+            "--theorem",
+            "Proof.verify",
+            "--capture",
+            "cap",
+            "--sysroot",
+            "sys",
+            "--lean",
+            "lean",
+        ];
+
+        for (conflicting, expected_flag) in [
+            (&["--receipt-out", "r.json"][..], "--receipt-out"),
+            (&["--artifacts", "art"][..], "--artifacts"),
+            (&["--artifacts", "art", "--export-lean-lib"][..], "--artifacts"),
+            (&["--export-lean-lib"][..], "--export-lean-lib"),
+            (&["--overwrite-artifacts"][..], "--overwrite-artifacts"),
+            (&["--paranoid-quorum"][..], "--paranoid-quorum"),
+            (&["--format", "json"][..], "--format json"),
+        ] {
+            // (1) `--fast-check` before `rustc`, conflicting flag after.
+            let mut argv_before = vec!["verify", "--fast-check"];
+            argv_before.extend_from_slice(&rustc_base);
+            argv_before.extend_from_slice(conflicting);
+            let parsed_before = Wrapper::try_parse_from(&argv_before)
+                .and_then(|w| w.verify.validate(Wrapper::command()).map(|()| w.verify));
+            let err_before = parsed_before.err().expect("split conflict must fail");
+            assert_eq!(err_before.kind(), ErrorKind::ArgumentConflict, "{err_before}");
+            let rendered_before = err_before.to_string();
+            assert!(rendered_before.contains("--fast-check"), "{rendered_before}");
+            assert!(rendered_before.contains(expected_flag), "{rendered_before}");
+
+            // (2) Conflicting flag before `rustc`, `--fast-check` after.
+            let mut argv_after = vec!["verify"];
+            argv_after.extend_from_slice(conflicting);
+            argv_after.extend_from_slice(&rustc_base);
+            argv_after.push("--fast-check");
+            let parsed_after = Wrapper::try_parse_from(&argv_after)
+                .and_then(|w| w.verify.validate(Wrapper::command()).map(|()| w.verify));
+            let err_after = parsed_after.err().expect("reverse split conflict must fail");
+            assert_eq!(err_after.kind(), ErrorKind::ArgumentConflict, "{err_after}");
+            let rendered_after = err_after.to_string();
+            assert!(rendered_after.contains("--fast-check"), "{rendered_after}");
+            assert!(rendered_after.contains(expected_flag), "{rendered_after}");
+        }
     }
 }
