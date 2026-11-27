@@ -52,7 +52,7 @@ use crate::toolchain::{
     compute_unpinned_sysroot_manifest_sha256, default_lean_path, discover_ndjson_comparator_tools,
     is_sha256_hex, regular, run_parallel_dag, scan_sysroot_package_roots, sha256_bytes,
     sha256_file, sha256_file_deref, stage_regular_file, transitive_import_closure,
-    verify_installed_module_record, verify_sysroot_foundation_dir,
+    verify_sysroot_foundation_dir,
 };
 
 /// Cache key for precompiled `TrustedBoundary.olean` / `SpecPreflight.olean`
@@ -2123,12 +2123,11 @@ impl Checker {
             } else {
                 canon_self_lean
             };
-            let mut artifacts = BTreeMap::new();
-            for (module, record) in &parsed_lock.modules {
-                let mod_arts =
-                    verify_installed_module_record(&prefix, module, record, "foundation")?;
-                artifacts.insert(module.clone(), mod_arts);
-            }
+            let artifacts = crate::toolchain::verify_installed_foundation_modules(
+                &prefix,
+                &parsed_lock.modules,
+                "foundation",
+            )?;
             verify_sysroot_foundation_dir(
                 &prefix.join("lib/lean"),
                 &foundation_modules,
@@ -2171,12 +2170,11 @@ impl Checker {
                 // Authenticate foundation modules and the full `Init`/`Std`/
                 // `Lean` sysroot manifest BEFORE launching even the sandboxed
                 // probe or `--version`/`--print-prefix` queries.
-                let mut artifacts = BTreeMap::new();
-                for (module, record) in &parsed_lock.modules {
-                    let mod_arts =
-                        verify_installed_module_record(&prefix, module, record, "foundation")?;
-                    artifacts.insert(module.clone(), mod_arts);
-                }
+                let artifacts = crate::toolchain::verify_installed_foundation_modules(
+                    &prefix,
+                    &parsed_lock.modules,
+                    "foundation",
+                )?;
                 verify_sysroot_foundation_dir(
                     &prefix.join("lib/lean"),
                     &foundation_modules,
