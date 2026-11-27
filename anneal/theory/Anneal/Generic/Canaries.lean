@@ -117,6 +117,12 @@ private theorem canary_if_false {α : Type} {a b : α} :
     (if false = true then a else b) = b :=
   rfl
 
+/-- Proves `P ↔ Q` from a proof against an opaque `q` equal to `Q`, so that
+rewriting `P` does not copy `Q` into every motive. -/
+private theorem iff_of_generalized {P Q : Prop}
+    (h : ∀ q : Prop, Q = q → (P ↔ q)) : P ↔ Q :=
+  h Q rfl
+
 private theorem canary_ite_false {α : Type} {c : Bool} {a b : α}
     (h : c = false) : (if c = true then a else b) = b := by
   subst h
@@ -634,6 +640,8 @@ private theorem hashBlock_openStep_eq (sp0 : TypeLayoutSpec)
                           .immediate (some v2), .immediate (some v3)]
                       , retDst := none })
               | .aborted _ => res = .fault .unsupported) := by
+    apply iff_of_generalized
+    intro q hQ
     unfold OpenStep OpenStepOnFrames OpenStepOnBodyOpt OpenStepOnBlockOpt
       OpenStepOnStmtEnd OpenStepOnTerm
     dsimp only
@@ -697,6 +705,7 @@ private theorem hashBlock_openStep_eq (sp0 : TypeLayoutSpec)
           List.map (normalizeOpenTy hashBlockProgram.traitRegistry normFuel) [])
         sha256MethodSpec.sig.retTy = .adt hashAdtId [] from rfl]
     dsimp only [sha256MethodSpec]
+    subst hQ
     exact Iff.rfl
     · rfl
     · rfl
@@ -1238,6 +1247,8 @@ private theorem verifyAligned_openStep_eq (sp0 : TypeLayoutSpec)
                           .immediate (some v2)]
                       , retDst := none })
               | .aborted _ => res = .fault .unsupported) := by
+    apply iff_of_generalized
+    intro q hQ
     unfold OpenStep OpenStepOnFrames OpenStepOnBodyOpt OpenStepOnBlockOpt
       OpenStepOnStmtEnd OpenStepOnTerm
     dsimp only
@@ -1300,6 +1311,7 @@ private theorem verifyAligned_openStep_eq (sp0 : TypeLayoutSpec)
         byteSourceMethodSpec.sig.retTy =
         .assocProj (.param 0) traitByteSourceId [] 0 from rfl]
     dsimp only [byteSourceMethodSpec]
+    subst hQ
     exact Iff.rfl
     · rfl
     · rfl
@@ -1757,6 +1769,93 @@ def genericIdInv (v1 : Val) (s : OpenState) : Prop :=
        , retDst := none }] ∧
     s.callerMem = ⟨[]⟩)
 
+/-- The first step of `genericIdBody` copies argument `v1` into the return
+slot. -/
+private theorem genericId_det0 (sp0 : TypeLayoutSpec)
+    (paramInvs : List (List AllocByte → Prop))
+    (assocSpecs : OpenMirTy → TraitDefId → List OpenMirTy → AssocItemIdx →
+      Option TypeLayoutSpec)
+    (v1 : Val)
+    (hChk : checkOpenVal genericIdProgram
+      { emptyOpenExecEnv with
+        typeSpecs := substTypeSpecEnv emptyOpenExecEnv.typeSpecs
+          [sp0] paramInvs assocSpecs }
+      v1 (.param 0) = true)
+    (mem : MemoryState) :
+    openEvalDetStep genericIdProgram
+        { emptyOpenExecEnv with
+          typeSpecs := substTypeSpecEnv emptyOpenExecEnv.typeSpecs
+            [sp0] paramInvs assocSpecs }
+        { frames :=
+            [{ defId := 0, blockIdx := 0, stmtIdx := 0
+             , locals := [.immediate none, .immediate (some v1)]
+             , retDst := none }]
+        , callerMem := ⟨[]⟩
+        , mem := mem } =
+      .step
+        { frames :=
+            [{ defId := 0, blockIdx := 0, stmtIdx := 1
+             , locals := [.immediate (some v1), .immediate (some v1)]
+             , retDst := none }]
+        , callerMem := ⟨[]⟩
+        , mem := mem } := by
+  let env' : OpenExecEnv :=
+    { emptyOpenExecEnv with
+      typeSpecs := substTypeSpecEnv emptyOpenExecEnv.typeSpecs
+        [sp0] paramInvs assocSpecs }
+  change openEvalDetStep genericIdProgram env' _ = _
+  unfold openEvalDetStep openEvalDetStepAux
+  rw [show OpenProgram.toDay1? genericIdProgram = none from rfl]
+  have hOp : evalOpenOperand genericIdProgram env' genericIdBody
+      { defId := 0, blockIdx := 0, stmtIdx := 0
+      , locals := [.immediate none, .immediate (some v1)]
+      , retDst := none }
+      (.copy ⟨1, []⟩) =
+      .ok (v1, .param 0,
+        { defId := 0, blockIdx := 0, stmtIdx := 0
+        , locals := [.immediate none, .immediate (some v1)]
+        , retDst := none }) := by
+    unfold evalOpenOperand
+    dsimp only [genericIdProgram, genericIdBody, openListGet?,
+      Trusted.MirSemantics.getElem?, List.isEmpty]
+    rfl
+  have hWr : writeOpenPlace genericIdProgram env' genericIdBody
+      { defId := 0, blockIdx := 0, stmtIdx := 0
+      , locals := [.immediate none, .immediate (some v1)]
+      , retDst := none }
+      ⟨0, []⟩ v1 =
+      .ok
+        { defId := 0, blockIdx := 0, stmtIdx := 0
+        , locals := [.immediate (some v1), .immediate (some v1)]
+        , retDst := none } := by
+    unfold writeOpenPlace
+    dsimp only [genericIdBody, openListGet?,
+      Trusted.MirSemantics.getElem?, setElem?, List.isEmpty]
+    simp only [Bool.not_true, canary_if_false]
+    rw [hChk]
+    simp only [Bool.not_true, canary_if_false]
+  dsimp only
+  rw [show openListGet? genericIdProgram.bodies 0 = some genericIdBody
+    from rfl]
+  dsimp only
+  rw [show openListGet? genericIdBody.basicBlocks 0 =
+      some
+        { statements := [.assign ⟨0, []⟩ (.use (.copy ⟨1, []⟩))]
+        , terminator := .return_ } from rfl]
+  dsimp only [openListGet?, Trusted.MirSemantics.getElem?, List.length,
+    List.isEmpty, Nat.beq]
+  simp only [Bool.not_true, canary_if_false]
+  rw [hOp]
+  dsimp only
+  rw [show openListGet? genericIdBody.locals 0 = some (.param 0) from rfl]
+  dsimp only
+  rw [show OpenMirTy.beq
+      (normalizeOpenTy genericIdProgram.traitRegistry normFuel (.param 0))
+      (normalizeOpenTy genericIdProgram.traitRegistry normFuel (.param 0)) =
+      true from rfl]
+  simp only [Bool.not_true, canary_if_false]
+  rw [hWr]
+
 private theorem genericId_step_preserves (sp0 : TypeLayoutSpec)
     (paramInvs : List (List AllocByte → Prop))
     (assocSpecs : OpenMirTy → TraitDefId → List OpenMirTy → AssocItemIdx →
@@ -1801,58 +1900,8 @@ private theorem genericId_step_preserves (sp0 : TypeLayoutSpec)
                  , locals := [.immediate (some v1), .immediate (some v1)]
                  , retDst := none }]
             , callerMem := ⟨[]⟩
-            , mem := mem } := by
-            unfold openEvalDetStep openEvalDetStepAux
-            rw [show OpenProgram.toDay1? genericIdProgram = none from rfl]
-            have hOp : evalOpenOperand genericIdProgram env' genericIdBody
-                { defId := 0, blockIdx := 0, stmtIdx := 0
-                , locals := [.immediate none, .immediate (some v1)]
-                , retDst := none }
-                (.copy ⟨1, []⟩) =
-                .ok (v1, .param 0,
-                  { defId := 0, blockIdx := 0, stmtIdx := 0
-                  , locals := [.immediate none, .immediate (some v1)]
-                  , retDst := none }) := by
-              unfold evalOpenOperand
-              dsimp only [genericIdProgram, genericIdBody, openListGet?,
-                Trusted.MirSemantics.getElem?, List.isEmpty]
-              rfl
-            have hWr : writeOpenPlace genericIdProgram env' genericIdBody
-                { defId := 0, blockIdx := 0, stmtIdx := 0
-                , locals := [.immediate none, .immediate (some v1)]
-                , retDst := none }
-                ⟨0, []⟩ v1 =
-                .ok
-                  { defId := 0, blockIdx := 0, stmtIdx := 0
-                  , locals := [.immediate (some v1), .immediate (some v1)]
-                  , retDst := none } := by
-              unfold writeOpenPlace
-              dsimp only [genericIdBody, openListGet?,
-                Trusted.MirSemantics.getElem?, setElem?, List.isEmpty]
-              simp only [Bool.not_true, canary_if_false]
-              rw [hChk]
-              simp only [Bool.not_true, canary_if_false]
-            dsimp only
-            rw [show openListGet? genericIdProgram.bodies 0 = some genericIdBody
-              from rfl]
-            dsimp only
-            rw [show openListGet? genericIdBody.basicBlocks 0 =
-                some
-                  { statements := [.assign ⟨0, []⟩ (.use (.copy ⟨1, []⟩))]
-                  , terminator := .return_ } from rfl]
-            dsimp only [openListGet?, Trusted.MirSemantics.getElem?, List.length,
-              List.isEmpty, Nat.beq]
-            simp only [Bool.not_true, canary_if_false]
-            rw [hOp]
-            dsimp only
-            rw [show openListGet? genericIdBody.locals 0 = some (.param 0) from rfl]
-            dsimp only
-            rw [show OpenMirTy.beq
-                (normalizeOpenTy genericIdProgram.traitRegistry normFuel (.param 0))
-                (normalizeOpenTy genericIdProgram.traitRegistry normFuel (.param 0)) =
-                true from rfl]
-            simp only [Bool.not_true, canary_if_false]
-            rw [hWr]
+            , mem := mem } :=
+            genericId_det0 sp0 paramInvs assocSpecs v1 hChk mem
           rw [hDet] at hStep
           have hS2 := StepResult.step.inj hStep
           exact .inr ⟨hS2 ▸ rfl, hS2 ▸ rfl⟩
@@ -1952,58 +2001,8 @@ private theorem genericId_inv_no_fault (sp0 : TypeLayoutSpec)
                  , locals := [.immediate (some v1), .immediate (some v1)]
                  , retDst := none }]
             , callerMem := ⟨[]⟩
-            , mem := mem } := by
-            unfold openEvalDetStep openEvalDetStepAux
-            rw [show OpenProgram.toDay1? genericIdProgram = none from rfl]
-            have hOp : evalOpenOperand genericIdProgram env' genericIdBody
-                { defId := 0, blockIdx := 0, stmtIdx := 0
-                , locals := [.immediate none, .immediate (some v1)]
-                , retDst := none }
-                (.copy ⟨1, []⟩) =
-                .ok (v1, .param 0,
-                  { defId := 0, blockIdx := 0, stmtIdx := 0
-                  , locals := [.immediate none, .immediate (some v1)]
-                  , retDst := none }) := by
-              unfold evalOpenOperand
-              dsimp only [genericIdProgram, genericIdBody, openListGet?,
-                Trusted.MirSemantics.getElem?, List.isEmpty]
-              rfl
-            have hWr : writeOpenPlace genericIdProgram env' genericIdBody
-                { defId := 0, blockIdx := 0, stmtIdx := 0
-                , locals := [.immediate none, .immediate (some v1)]
-                , retDst := none }
-                ⟨0, []⟩ v1 =
-                .ok
-                  { defId := 0, blockIdx := 0, stmtIdx := 0
-                  , locals := [.immediate (some v1), .immediate (some v1)]
-                  , retDst := none } := by
-              unfold writeOpenPlace
-              dsimp only [genericIdBody, openListGet?,
-                Trusted.MirSemantics.getElem?, setElem?, List.isEmpty]
-              simp only [Bool.not_true, canary_if_false]
-              rw [hChk]
-              simp only [Bool.not_true, canary_if_false]
-            dsimp only
-            rw [show openListGet? genericIdProgram.bodies 0 = some genericIdBody
-              from rfl]
-            dsimp only
-            rw [show openListGet? genericIdBody.basicBlocks 0 =
-                some
-                  { statements := [.assign ⟨0, []⟩ (.use (.copy ⟨1, []⟩))]
-                  , terminator := .return_ } from rfl]
-            dsimp only [openListGet?, Trusted.MirSemantics.getElem?, List.length,
-              List.isEmpty, Nat.beq]
-            simp only [Bool.not_true, canary_if_false]
-            rw [hOp]
-            dsimp only
-            rw [show openListGet? genericIdBody.locals 0 = some (.param 0) from rfl]
-            dsimp only
-            rw [show OpenMirTy.beq
-                (normalizeOpenTy genericIdProgram.traitRegistry normFuel (.param 0))
-                (normalizeOpenTy genericIdProgram.traitRegistry normFuel (.param 0)) =
-                true from rfl]
-            simp only [Bool.not_true, canary_if_false]
-            rw [hWr]
+            , mem := mem } :=
+            genericId_det0 sp0 paramInvs assocSpecs v1 hChk mem
           rw [hDet] at hFault
           exact canary_step_ne_fault hFault.symm
   | inr h1 =>
@@ -2469,11 +2468,16 @@ theorem canary_closed_ref_self_impl_refused :
     unfold SatisfiesTraitSem at hSat
     rw [traitCheckDepth] at hSat
     unfold SatisfiesTraitSemDepth at hSat
-    let ⟨_, _, _, _, _, _, _, binding, hBind, _, _, _, _, _, _, _, _, _, _,
-      hMethods⟩ := hSat
+    refine Exists.elim hSat.2.2.2.2.2.2.2 (fun binding hB => ?_)
+    have hBind := hB.1
     cases hBind
-    let ⟨calleeId, calleeBody, hLook, hGet, _, _, _, hCalAdm, _⟩ :=
-      hMethods byteSourceMethodSpec (List.Mem.head [])
+    refine Exists.elim hB.2.2.2 (fun _ hA => ?_)
+    refine Exists.elim hA.2.2.2 (fun _ hS => Exists.elim hS (fun _ hS => ?_))
+    refine Exists.elim (hS.2.2 byteSourceMethodSpec (List.Mem.head []))
+      (fun calleeId h1 => Exists.elim h1 (fun calleeBody hM => ?_))
+    have hLook := hM.1
+    have hGet := hM.2.1
+    have hCalAdm := hM.2.2.2.2.2.1
     cases hLook
     cases hGet
     exact hNotAdm _ hCalAdm
