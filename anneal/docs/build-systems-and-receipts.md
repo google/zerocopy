@@ -178,10 +178,20 @@ Five invariants govern build-system integration across all supported ecosystems:
 - **Two-Pass closed-world DSO and `proc_macro` accounting (`Phase 1`):**
   Because CAS symlink forests expose hashed filenames in `/proc/self/maps`,
   capture authenticates loaded executable mappings by `(st_dev, st_ino)` rather
-  than pathname substrings. Pass 1 verifies the capture binary, sysroot DSOs,
-  and core C runtime libraries before compilation; Pass 2 re-scans after
-  analysis to admit only declared `--extern` procedural-macro `.so` files (and
-  their `DT_NEEDED` dependencies), recording their SHA-256 digests in
+  than pathname substrings. On filesystems where `/proc/self/maps` reports a
+  superblock device that differs from `fstat(2)`'s and inode numbers can repeat
+  under one superblock (Btrfs subvolumes, OverlayFS over several filesystems), a
+  superblock-and-inode match is accepted only if every mapping's pathname opens
+  to the candidate file and every page-cache-backed page of the mapping equals
+  the bytes hashed from that file. Reading custom runtime directories from the
+  `PT_INTERP` and `DT_RUNPATH` headers of the capture binary and its libraries,
+  and admitting symlinked runtime libraries, still requires an exact `fstat(2)`
+  match, so on such filesystems runtime DSOs outside the standard system library
+  directories are rejected unless the capture binary was launched through an
+  explicit dynamic loader. Pass 1 verifies the capture binary, sysroot DSOs, and
+  core C runtime libraries before compilation; Pass 2 re-scans after analysis to
+  admit only declared `--extern` procedural-macro `.so` files (and their
+  `DT_NEEDED` dependencies), recording their SHA-256 digests in
   `CaptureManifest.json` and Receipt v3 `tcb_shims[]`.
 - **Two-class `env_depinfo` accounting (`Phase 1`):** Semantic environment
   variables (such as `CARGO_PKG_VERSION` or feature toggles) are hashed into
