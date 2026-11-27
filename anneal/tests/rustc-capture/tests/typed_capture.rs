@@ -679,6 +679,127 @@ fn declared_namespace_guards_text_and_binary_include_reads() {
 
 #[cfg(unix)]
 #[test]
+fn inputs_through_a_moving_symlink_capture_one_resolved_snapshot() {
+    use std::os::unix::fs::symlink;
+
+    // Two snapshots of a two-file crate that differ only in `sub.rs`, reached
+    // through `current`, as with a symlink that is atomically retargeted.
+    let mut fixture = Capture::new(b"");
+    let base = fixture.directory.path().canonicalize().unwrap();
+    for (snapshot, value) in [("snap_v1", 1), ("snap_v2", 2)] {
+        let src = base.join(snapshot).join("src");
+        std::fs::create_dir_all(&src).unwrap();
+        std::fs::write(src.join("lib.rs"), "mod sub;\npub fn selected() -> u64 { sub::value() }\n")
+            .unwrap();
+        std::fs::write(src.join("sub.rs"), format!("pub fn value() -> u64 {{ {value} }}\n"))
+            .unwrap();
+    }
+    let current = base.join("current");
+    symlink("snap_v1", &current).unwrap();
+    let path_str = |path: PathBuf| path.to_str().unwrap().to_owned();
+    let v1_sub_sha = sha256_hex(&std::fs::read(base.join("snap_v1/src/sub.rs")).unwrap());
+    let v2_sub_sha = sha256_hex(&std::fs::read(base.join("snap_v2/src/sub.rs")).unwrap());
+
+    // `--crate-root` and `--source-file` name the same file through the link.
+    // rustc receives the resolved crate root, so `mod sub;` resolves inside
+    // the snapshot, and the manifest names only resolved paths.
+    fixture.source = current.join("src/lib.rs");
+    let sub = current.join("src/sub.rs");
+    let output = fixture.selected_command().arg("--source-file").arg(&sub).output().unwrap();
+    assert!(output.status.success(), "{output:?}");
+    let manifest = fixture.manifest();
+    let configuration = &manifest["configuration"];
+    assert_eq!(configuration["crate_root"], path_str(base.join("snap_v1/src/lib.rs")));
+    assert_eq!(
+        configuration["declared_source_files"],
+        serde_json::json!([
+            path_str(base.join("snap_v1/src/lib.rs")),
+            path_str(base.join("snap_v1/src/sub.rs")),
+        ])
+    );
+    let sources = manifest["source_files"].as_array().unwrap();
+    assert_eq!(sources.len(), 2, "{sources:?}");
+    let sub_entry = sources
+        .iter()
+        .find(|entry| entry["path"] == path_str(base.join("snap_v1/src/sub.rs")))
+        .unwrap();
+    assert_eq!(sub_entry["sha256"], v1_sub_sha);
+
+    // A `--source-root` reached through the same link resolves into the same
+    // snapshot, so the crate root and sources normalize under it.
+    fixture.output = base.join("output-source-root");
+    let output = fixture
+        .selected_command()
+        .arg("--source-file")
+        .arg(&sub)
+        .arg("--source-root")
+        .arg(&current)
+        .output()
+        .unwrap();
+    assert!(output.status.success(), "{output:?}");
+    assert_eq!(fixture.manifest()["configuration"]["crate_root"], "src/lib.rs");
+
+    // Resolution happens once per invocation: after the link moves, the next
+    // capture reads the new snapshot.
+    symlink("snap_v2", base.join("next")).unwrap();
+    std::fs::rename(base.join("next"), &current).unwrap();
+    fixture.output = base.join("output-v2");
+    let output = fixture.selected_command().arg("--source-file").arg(&sub).output().unwrap();
+    assert!(output.status.success(), "{output:?}");
+    let manifest = fixture.manifest();
+    assert_eq!(manifest["configuration"]["crate_root"], path_str(base.join("snap_v2/src/lib.rs")));
+    let sources = manifest["source_files"].as_array().unwrap();
+    let sub_entry = sources
+        .iter()
+        .find(|entry| entry["path"] == path_str(base.join("snap_v2/src/sub.rs")))
+        .unwrap();
+    assert_eq!(sub_entry["sha256"], v2_sub_sha);
+
+    // An undeclared sibling module stays absent through the link.
+    fixture.output = base.join("output-undeclared-sub");
+    let output = fixture.selected_command().output().unwrap();
+    assert!(!output.status.success(), "undeclared sibling admitted: {output:?}");
+    fixture.assert_no_capture_artifacts();
+
+    // A crate root that resolves outside the declared files fails before the
+    // compiler runs. This is what a link that moved between resolving
+    // `--crate-root` and resolving `--source-file` would produce, and also
+    // covers an undeclared crate root and a directory crate root.
+    for (name, crate_root) in
+        [("other-snapshot", base.join("snap_v1/src/lib.rs")), ("directory", current.join("src"))]
+    {
+        fixture.source = crate_root.clone();
+        fixture.output = base.join(format!("output-{name}"));
+        let output = fixture
+            .command_with("session", false)
+            .arg("--select=selected")
+            .arg("--source-file")
+            .arg(current.join("src/lib.rs"))
+            .arg("--source-file")
+            .arg(&sub)
+            .output()
+            .unwrap();
+        assert_eq!(output.status.code(), Some(1), "{name}: {output:?}");
+        assert_eq!(status(&output)["status"], "unsupported", "{name}: {output:?}");
+        let expected = format!(
+            "--crate-root is not a declared --source-file: {}",
+            crate_root.canonicalize().unwrap().display()
+        );
+        assert!(stdout(&output).contains(&expected), "{name}: {output:?}");
+        fixture.assert_no_capture_artifacts();
+    }
+
+    // A missing crate root fails during resolution.
+    fixture.source = current.join("src/missing.rs");
+    fixture.output = base.join("output-missing");
+    let output = fixture.selected_command().output().unwrap();
+    assert_eq!(output.status.code(), Some(1), "{output:?}");
+    assert_eq!(status(&output)["status"], "tool_failed", "{output:?}");
+    fixture.assert_no_capture_artifacts();
+}
+
+#[cfg(unix)]
+#[test]
 fn non_utf8_output_destinations_fail_before_publication_and_remain_retryable() {
     use std::{ffi::OsString, os::unix::ffi::OsStringExt};
 
