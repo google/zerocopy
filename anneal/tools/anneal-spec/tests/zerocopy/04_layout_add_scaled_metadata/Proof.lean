@@ -9,211 +9,106 @@
 prelude
 import Expected
 import Anneal.MirWp
+import Anneal.MirSymExecCall
 
 /-!
 `add_scaled_metadata` calls the `core::num` methods `unchecked_mul` and
 `unchecked_add`, so `bodyVerified_of_safe` (which requires a call-free body)
-does not apply. Instead we run the deterministic `c = 0` executor
-(`execOutcomeState`) through all 21 steps by hand, across both pushed sysroot
-frames, and lift the run to the contract obligations. Every obligation needs
-the caller's safety bound `base + metadata * multiple ≤ usize::MAX`, since
-without it the unchecked arithmetic is undefined behavior.
+does not apply. Instead the multi-frame symbolic executor
+`Anneal.MirSymExecCall` runs all 21 steps, across both pushed sysroot frames,
+in five `rfl` chunks. The run returns `base + metadata * multiple` under one
+side condition per unchecked operation (that it does not overflow). Every
+contract obligation needs the caller's safety bound
+`base + metadata * multiple ≤ usize::MAX`, which discharges both.
 -/
 
 namespace Proof
 
-open Trusted.MirAst Trusted.MirSemantics Anneal.MirWp
-
-/-! ## Executor plumbing -/
+open Trusted.MirAst Trusted.MirSemantics Anneal.MirWp Anneal.MirTotal
+open Anneal.MirSymExec Anneal.MirSymExecCall
 
 private abbrev isz : MirTy := .int .isize false
 
-private theorem exec_step {p : Program} {onDone : TerminalOut → Prop}
-    {onFault : FaultKind → Prop} {fuel : Nat} {s s' : State}
-    (h : evalStep p 0 s = .step s')
-    (k : execOutcomeState p onDone onFault fuel s') :
-    execOutcomeState p onDone onFault (fuel + 1) s := by
-  dsimp only [execOutcomeState, Anneal.Framework.StepWp.execStepOutcome]
-  rw [Anneal.Framework.StepWp.execStepPred_succ_iff, h]
-  exact k
-
-private theorem exec_done {p : Program} {onDone : TerminalOut → Prop}
-    {onFault : FaultKind → Prop} {fuel : Nat} {s : State}
-    {out : TerminalOut} (h : evalStep p 0 s = .done out) (k : onDone out) :
-    execOutcomeState p onDone onFault (fuel + 1) s := by
-  dsimp only [execOutcomeState, Anneal.Framework.StepWp.execStepOutcome]
-  rw [Anneal.Framework.StepWp.execStepPred_succ_iff, h]
-  exact k
-
-/-- `writePlace` after its `checkVal` guard has passed. -/
-private noncomputable def writeChecked (locals : List LocalSlot)
-    (mem : MemoryState) (dstLocalId : LocalId) (dstTy : MirTy) (val : Val) :
-    Except FaultKind (List LocalSlot × MemoryState) :=
-  match Trusted.MirSemantics.getElem? locals dstLocalId with
-  | none => .error .unsupported
-  | some LocalSlot.dead => .error .undefined
-  | some (.immediate _) =>
-    match setElem? locals dstLocalId (.immediate (some val)) with
-    | some locals' => .ok (locals', mem)
-    | none => .error .unsupported
-  | some (.indirect mplace) =>
-    match storeIndirect mem dstTy mplace val with
-    | .ok mem' => .ok (locals, mem')
-    | .error k => .error k
-  | some (.partialTuple _) => .error .unsupported
-
-/-- Discharges the only data-dependent guard of `writePlace` on a symbolic
-value; the rest of a step then reduces by `rfl`. -/
-private theorem writePlace_of_check {locals : List LocalSlot}
-    {mem : MemoryState} {i : LocalId} {ty : MirTy} {v : Val}
-    (h : checkVal v ty = true) :
-    writePlace locals mem i ty v = writeChecked locals mem i ty v := by
-  unfold writePlace
-  rw [h]
-  rfl
-
-/-! ## Machine states -/
-
-private abbrev N : LocalSlot := .immediate none
-private abbrev D : LocalSlot := .dead
-private abbrev I (v : Val) : LocalSlot := .immediate (some v)
-
-private abbrev mulOp : SysrootNumOp := ⟨.uncheckedMul, .isize, false⟩
-private abbrev addOp : SysrootNumOp := ⟨.uncheckedAdd, .isize, false⟩
-
-private abbrev rootF (blk stmt : Nat) (ls : List LocalSlot) : FrameState :=
-  { defId := 0, blockIdx := blk, stmtIdx := stmt, locals := ls }
-
-/-- A pushed sysroot frame returning into caller local `dst` and resuming the
-caller at block `tgt`. -/
-private abbrev calleeF (op : SysrootNumOp) (stmt : Nat) (ls : List LocalSlot)
-    (dst tgt : Nat) : FrameState :=
-  { defId := 0, blockIdx := 0, stmtIdx := stmt, locals := ls,
-    sysrootOp? := some op, retDst? := some ⟨dst, []⟩,
-    retTarget? := some tgt }
-
-private noncomputable abbrev st (fs : List FrameState) : State :=
-  { frames := fs, callerMem := ⟨[]⟩, mem := entryMemory }
+/-! ## Symbolic run -/
 
 private noncomputable abbrev P : Program :=
   entryProgForBody Captured.program 0
 
-/-! ## Sysroot callee body `_0 = op(copy _1, copy _2)` -/
+private abbrev vb : SymScalar := .var 0 .isize false
+private abbrev vm : SymScalar := .var 1 .isize false
+private abbrev vk : SymScalar := .var 2 .isize false
+private abbrev vmk : SymScalar := .binOp .mul vm vk
+private abbrev vres : SymScalar := .binOp .add vb vmk
 
-private theorem rv_binop (op : BinOp) (a b v : Val)
-    (h : evalBinOp op a b = .ok v) :
-    evalRvalue [isz, isz, isz] [N, I a, I b] entryMemory isz
-        (.binaryOp op (.copy ⟨1, []⟩) (.copy ⟨2, []⟩)) =
-      .ok (v, [N, I a, I b], entryMemory) := by
-  conv => lhs; whnf
-  rw [h]
+private abbrev I (v : SymScalar) : SymSlot := .immediate (some (.scalar v))
+private abbrev N : SymSlot := .immediate none
+private abbrev D : SymSlot := .dead
 
-private theorem callee_assign (kind : SysrootNumKind) (a b v : Val)
-    (dst tgt : Nat) (h : evalBinOp (sysrootNumBinOp kind) a b = .ok v)
-    (hv : checkVal v isz = true) :
-    evalStatement (sysrootNumBody ⟨kind, .isize, false⟩)
-        (calleeF ⟨kind, .isize, false⟩ 0 [N, I a, I b] dst tgt) entryMemory
-        ⟨[]⟩
-        (.assign ⟨0, []⟩ (.binaryOp (sysrootNumBinOp kind)
-          (.copy ⟨1, []⟩) (.copy ⟨2, []⟩))) =
-      .step (st [calleeF ⟨kind, .isize, false⟩ 1 [I v, I a, I b]
-        dst tgt]) := by
-  conv => lhs; whnf
-  erw [rv_binop _ _ _ _ h]
-  conv => lhs; whnf
-  rw [writePlace_of_check hv]
-  rfl
+private abbrev rootF (blk stmt : Nat) (ls : List SymSlot) : SymFrame :=
+  { core := { block := blk, stmt := stmt, slots := ls },
+    hdr := ⟨0, none, none, none⟩ }
 
-/-! ## The 21-step run
+/-- A pushed sysroot frame computing `kind(a, b)` into caller local `dst` and
+resuming the caller at block `tgt`. -/
+private abbrev calleeF (kind : SysrootNumKind) (a b : SymScalar)
+    (dst tgt : Nat) : SymFrame :=
+  { core := { block := 0, stmt := 0, slots := [N, I a, I b] },
+    hdr := ⟨0, some ⟨kind, .isize, false⟩, some ⟨dst, []⟩, some tgt⟩ }
 
-`x`, `y`, `z` are `base`, `metadata`, `multiple`; `w = y * z` and
-`r = x + w` are the sysroot results, abstracted by their `evalBinOp`
-equations. -/
+private noncomputable abbrev entry : SymProg :=
+  symProgEntry 0 Captured.body_0 [.scalar vb, .scalar vm, .scalar vk]
 
-private theorem run (x y z w r : Val) (hx : checkVal x isz = true)
-    (hy : checkVal y isz = true) (hz : checkVal z isz = true)
-    (hmul : evalBinOp .mulUnchecked y z = .ok w)
-    (hw : checkVal w isz = true)
-    (hadd : evalBinOp .addUnchecked x w = .ok r)
-    (hr : checkVal r isz = true) :
-    execOutcomeState P (fun o => o = .returned ⟨r, ⟨[]⟩⟩) (fun _ => False)
-      21 (st [rootF 0 0 [N, I x, I y, I z, D, D, D, D, D]]) := by
-  -- bb0: StorageLive(_4); StorageLive(_5); _5 = copy _2;
-  -- StorageLive(_6); _6 = copy _3
-  refine exec_step
-    (s' := st [rootF 0 1 [N, I x, I y, I z, N, D, D, D, D]]) rfl ?_
-  refine exec_step
-    (s' := st [rootF 0 2 [N, I x, I y, I z, N, N, D, D, D]]) rfl ?_
-  refine exec_step
-    (s' := st [rootF 0 3 [N, I x, I y, I z, N, I y, D, D, D]]) ?_ ?_
-  · conv => lhs; whnf
-    rw [writePlace_of_check hy]
-    rfl
-  refine exec_step
-    (s' := st [rootF 0 4 [N, I x, I y, I z, N, I y, N, D, D]]) rfl ?_
-  refine exec_step
-    (s' := st [rootF 0 5 [N, I x, I y, I z, N, I y, I z, D, D]]) ?_ ?_
-  · conv => lhs; whnf
-    rw [writePlace_of_check hz]
-    rfl
-  -- _4 = unchecked_mul(move _5, move _6) -> bb1
-  refine exec_step
-    (s' := st [calleeF mulOp 0 [N, I y, I z] 4 1,
-      rootF 0 5 [N, I x, I y, I z, N, N, N, D, D]]) rfl ?_
-  refine exec_step
-    (s' := st [calleeF mulOp 1 [I w, I y, I z] 4 1,
-      rootF 0 5 [N, I x, I y, I z, N, N, N, D, D]]) ?_ ?_
-  · conv => lhs; whnf
-    erw [callee_assign .uncheckedMul y z w 4 1 hmul hw]
-    rfl
-  refine exec_step
-    (s' := st [rootF 1 0 [N, I x, I y, I z, I w, N, N, D, D]]) ?_ ?_
-  · conv => lhs; whnf
-    rw [writePlace_of_check hw]
-    rfl
-  -- bb1: StorageDead(_6); StorageDead(_5); StorageLive(_7);
-  -- _7 = copy _1; StorageLive(_8); _8 = copy _4
-  refine exec_step
-    (s' := st [rootF 1 1 [N, I x, I y, I z, I w, N, D, D, D]]) rfl ?_
-  refine exec_step
-    (s' := st [rootF 1 2 [N, I x, I y, I z, I w, D, D, D, D]]) rfl ?_
-  refine exec_step
-    (s' := st [rootF 1 3 [N, I x, I y, I z, I w, D, D, N, D]]) rfl ?_
-  refine exec_step
-    (s' := st [rootF 1 4 [N, I x, I y, I z, I w, D, D, I x, D]]) ?_ ?_
-  · conv => lhs; whnf
-    rw [writePlace_of_check hx]
-    rfl
-  refine exec_step
-    (s' := st [rootF 1 5 [N, I x, I y, I z, I w, D, D, I x, N]]) rfl ?_
-  refine exec_step
-    (s' := st [rootF 1 6 [N, I x, I y, I z, I w, D, D, I x, I w]]) ?_ ?_
-  · conv => lhs; whnf
-    rw [writePlace_of_check hw]
-    rfl
-  -- _0 = unchecked_add(move _7, move _8) -> bb2
-  refine exec_step
-    (s' := st [calleeF addOp 0 [N, I x, I w] 0 2,
-      rootF 1 6 [N, I x, I y, I z, I w, D, D, N, N]]) rfl ?_
-  refine exec_step
-    (s' := st [calleeF addOp 1 [I r, I x, I w] 0 2,
-      rootF 1 6 [N, I x, I y, I z, I w, D, D, N, N]]) ?_ ?_
-  · conv => lhs; whnf
-    erw [callee_assign .uncheckedAdd x w r 0 2 hadd hr]
-    rfl
-  refine exec_step
-    (s' := st [rootF 2 0 [I r, I x, I y, I z, I w, D, D, N, N]]) ?_ ?_
-  · conv => lhs; whnf
-    rw [writePlace_of_check hr]
-    rfl
-  -- bb2: StorageDead(_8); StorageDead(_7); StorageDead(_4); return
-  refine exec_step
-    (s' := st [rootF 2 1 [I r, I x, I y, I z, I w, D, D, N, D]]) rfl ?_
-  refine exec_step
-    (s' := st [rootF 2 2 [I r, I x, I y, I z, I w, D, D, D, D]]) rfl ?_
-  refine exec_step
-    (s' := st [rootF 2 3 [I r, I x, I y, I z, D, D, D, D, D]]) rfl ?_
-  exact exec_done rfl rfl
+/-- The side conditions: neither unchecked operation overflows. -/
+private abbrev conds : List SymCond :=
+  [.ok .addUnchecked vb vmk, .ok .mulUnchecked vm vk]
+
+-- bb0: StorageLive(_4); StorageLive(_5); _5 = copy _2; StorageLive(_6);
+-- _6 = copy _3; _4 = unchecked_mul(move _5, move _6) -> bb1
+private theorem chunk1 :
+    symProgRunSteps P 6 entry =
+      .step { frames := [calleeF .uncheckedMul vm vk 4 1,
+                rootF 0 5 [N, I vb, I vm, I vk, N, N, N, D, D]],
+              conds := [] } := rfl
+
+private theorem chunk2 :
+    symProgRunSteps P 2
+        { frames := [calleeF .uncheckedMul vm vk 4 1,
+            rootF 0 5 [N, I vb, I vm, I vk, N, N, N, D, D]], conds := [] } =
+      .step { frames := [rootF 1 0 [N, I vb, I vm, I vk, I vmk, N, N, D, D]],
+              conds := [.ok .mulUnchecked vm vk] } := rfl
+
+-- bb1: StorageDead(_6); StorageDead(_5); StorageLive(_7); _7 = copy _1;
+-- StorageLive(_8); _8 = copy _4; _0 = unchecked_add(move _7, move _8) -> bb2
+private theorem chunk3 :
+    symProgRunSteps P 7
+        { frames := [rootF 1 0 [N, I vb, I vm, I vk, I vmk, N, N, D, D]],
+          conds := [.ok .mulUnchecked vm vk] } =
+      .step { frames := [calleeF .uncheckedAdd vb vmk 0 2,
+                rootF 1 6 [N, I vb, I vm, I vk, I vmk, D, D, N, N]],
+              conds := [.ok .mulUnchecked vm vk] } := rfl
+
+private theorem chunk4 :
+    symProgRunSteps P 2
+        { frames := [calleeF .uncheckedAdd vb vmk 0 2,
+            rootF 1 6 [N, I vb, I vm, I vk, I vmk, D, D, N, N]],
+          conds := [.ok .mulUnchecked vm vk] } =
+      .step { frames := [rootF 2 0
+                [I vres, I vb, I vm, I vk, I vmk, D, D, N, N]],
+              conds := conds } := rfl
+
+-- bb2: StorageDead(_8); StorageDead(_7); StorageDead(_4); return
+private theorem chunk5 :
+    symProgRunSteps P 4
+        { frames := [rootF 2 0
+            [I vres, I vb, I vm, I vk, I vmk, D, D, N, N]],
+          conds := conds } =
+      .ret (.scalar vres) conds := rfl
+
+private theorem run :
+    symProgRunSteps P (6 + (2 + (7 + (2 + 4)))) entry =
+      .ret (.scalar vres) conds :=
+  symProgRunSteps_trans chunk1 (symProgRunSteps_trans chunk2
+    (symProgRunSteps_trans chunk3 (symProgRunSteps_trans chunk4 chunk5)))
 
 /-! ## `usize` arithmetic without overflow -/
 
@@ -293,6 +188,71 @@ private theorem add_scal {a c : Nat} (ha : a < Nat.pow 2 64)
     decide_eq_false (not_lt_zero _),
     decide_eq_false (not_ge_pow128 (Nat.lt_trans hac pow64_lt_pow128))]
   rfl
+
+/-! ## Discharging the side conditions -/
+
+/-- Binds `vb`, `vm`, and `vk` to the `usize` values `b`, `m`, and `k`. -/
+private noncomputable abbrev env (b m k : Nat) : SymEnv :=
+  fun i => if Nat.beq i 0 then scal b
+    else if Nat.beq i 1 then scal m else scal k
+
+private theorem var_eval {n : Nat} (h : n < Nat.pow 2 64) :
+    (⟨.isize, false, truncateBitsComp .isize (BitVec.ofNat 128 n)⟩ :
+        ScalarVal) = ⟨.isize, false, BitVec.ofNat 128 n⟩ := by
+  rw [truncateBitsComp_eq, trunc_ofNat h]
+
+private theorem mul_wrap {a c : Nat} (ha : a < Nat.pow 2 64)
+    (hc : c < Nat.pow 2 64) (hac : a * c < Nat.pow 2 64) :
+    evalBinOpComp .mul (scal a) (scal c) = .ok (scal (a * c)) := by
+  rw [evalBinOpComp_eq]
+  exact evalBinOp_unchecked_wrap (k := .uncheckedMul) rfl (mul_scal ha hc hac)
+
+private theorem add_wrap {a c : Nat} (ha : a < Nat.pow 2 64)
+    (hc : c < Nat.pow 2 64) (hac : a + c < Nat.pow 2 64) :
+    evalBinOpComp .add (scal a) (scal c) = .ok (scal (a + c)) := by
+  rw [evalBinOpComp_eq]
+  exact evalBinOp_unchecked_wrap (k := .uncheckedAdd) rfl (add_scal ha hc hac)
+
+/-- The symbolic run's side conditions, result, and arguments under
+`env b m k`. -/
+private theorem run_eval {b m k : Nat} (hb : b < Nat.pow 2 64)
+    (hm : m < Nat.pow 2 64) (hk : k < Nat.pow 2 64)
+    (hB : b + m * k < Nat.pow 2 64) :
+    condsHold (env b m k) conds = true ∧
+      (SymVal.scalar vres).eval (env b m k) = scal (b + m * k) ∧
+      ([SymVal.scalar vb, .scalar vm, .scalar vk]).map
+          (SymVal.eval (env b m k)) = [scal b, scal m, scal k] := by
+  have hmk : m * k < Nat.pow 2 64 :=
+    Nat.lt_of_le_of_lt (Nat.le_add_left _ _) hB
+  have hvb : vb.eval (env b m k) = ⟨.isize, false, BitVec.ofNat 128 b⟩ :=
+    var_eval hb
+  have hvm : vm.eval (env b m k) = ⟨.isize, false, BitVec.ofNat 128 m⟩ :=
+    var_eval hm
+  have hvk : vk.eval (env b m k) = ⟨.isize, false, BitVec.ofNat 128 k⟩ :=
+    var_eval hk
+  have hvmk : vmk.eval (env b m k) =
+      ⟨.isize, false, BitVec.ofNat 128 (m * k)⟩ := by
+    change (match evalBinOpComp .mul (.scalar (vm.eval (env b m k)))
+        (.scalar (vk.eval (env b m k))) with
+      | .ok (.scalar sv) => sv
+      | _ => ⟨vm.width, vm.signed, BitVec.ofNat 128 0⟩) = _
+    rw [hvm, hvk, mul_wrap hm hk hmk]
+  refine ⟨?_, ?_, ?_⟩
+  · change (SymCond.eval (env b m k) (.ok .addUnchecked vb vmk) &&
+      (SymCond.eval (env b m k) (.ok .mulUnchecked vm vk) && true)) = true
+    dsimp only [SymCond.eval]
+    rw [hvb, hvmk, hvm, hvk, evalBinOpComp_eq, evalBinOpComp_eq,
+      add_scal hb hmk hB, mul_scal hm hk hmk]
+    rfl
+  · change Val.scalar (match evalBinOpComp .add (.scalar (vb.eval (env b m k)))
+        (.scalar (vmk.eval (env b m k))) with
+      | .ok (.scalar sv) => sv
+      | _ => ⟨vb.width, vb.signed, BitVec.ofNat 128 0⟩) = _
+    rw [hvb, hvmk, add_wrap hb hmk hB]
+  · change [Val.scalar (vb.eval (env b m k)),
+      Val.scalar (vm.eval (env b m k)),
+      Val.scalar (vk.eval (env b m k))] = _
+    rw [hvb, hvm, hvk]
 
 /-! ## Decoding arguments and the contract -/
 
@@ -383,50 +343,46 @@ private theorem post_ok {b m k : Nat} (hb : b < Nat.pow 2 64)
 
 /-! ## Lifting the run to the contract obligations -/
 
-/-- The exact-outcome `wpProg` of one in-contract call. -/
+/-- Everything the boundary needs about one in-contract call: it is
+well-formed, returns exactly `scal (b + m * k)`, and does not diverge. -/
 private theorem outcome {b m k : Nat} (hb : b < Nat.pow 2 64)
     (hm : m < Nat.pow 2 64) (hk : k < Nat.pow 2 64)
     (hB : b + m * k < Nat.pow 2 64) :
-    wpProg P 21 { args := [scal b, scal m, scal k] }
-      (fun o => o = .returned ⟨scal (b + m * k), ⟨[]⟩⟩) := by
-  have hmk : m * k < Nat.pow 2 64 :=
-    Nat.lt_of_le_of_lt (Nat.le_add_left _ _) hB
-  have hExec : execProg P 21 { args := [scal b, scal m, scal k] }
-      (fun o => o = .returned ⟨scal (b + m * k), ⟨[]⟩⟩) := by
-    unfold execProg
-    rw [initState_eq_ok (p := P) (body := Captured.body_0)
-      (args := [scal b, scal m, scal k]) rfl body0_adm
-      (valid_args (check_scal hb) (check_scal hm) (check_scal hk))]
-    exact run _ _ _ _ _ (check_scal hb) (check_scal hm) (check_scal hk)
-      (mul_scal hm hk hmk) (check_scal hmk)
-      (add_scal hb hmk hB) (check_scal hB)
-  exact wpProg_of_execProg hExec
+    let q : Query := { args := [scal b, scal m, scal k] }
+    let out := TerminalOut.returned ⟨scal (b + m * k), ⟨[]⟩⟩
+    WellFormed P q ∧ Behavior P q out ∧ ¬ Diverges P q ∧
+      ∀ post : TerminalOut → Prop, post out → SatisfiesPost P q post := by
+  let ⟨hConds, hOut, hArgs⟩ := run_eval hb hm hk hB
+  have hValid : ValidEntryArgs Captured.body_0
+      (([SymVal.scalar vb, .scalar vm, .scalar vk]).map
+        (SymVal.eval (env b m k))) := by
+    rw [hArgs]
+    exact valid_args (check_scal hb) (check_scal hm) (check_scal hk)
+  have hRes := symProgRunSteps_entry_behavior (p := Captured.program)
+    (defId := 0) rfl body0_adm (env b m k) hValid run hConds
+  rw [hArgs, hOut] at hRes
+  exact hRes
 
-/-- The per-argument obligations of `BodyContractSatisfied`, discharged from an
-exact-outcome `wpProg` proof whose unique return satisfies `postReturn`. -/
-private theorem obligations_of_wp {defId : DefId} {args : List Val}
-    {ret : Val} {fuel : Nat} {c : FnContract} {isUnsafe : Bool}
-    (h_wp : wpProg (entryProgForBody Captured.program defId) fuel
-      { args := args } (fun outcome => outcome = .returned ⟨ret, ⟨[]⟩⟩))
+/-- The per-argument obligations of `BodyContractSatisfied`, discharged from
+an exact outcome whose unique return satisfies `postReturn`. -/
+private theorem obligations_of_outcome {args : List Val} {ret : Val}
+    {c : FnContract} {isUnsafe : Bool}
+    (h : WellFormed P { args := args } ∧ ¬ Diverges P { args := args } ∧
+      ∀ post : TerminalOut → Prop, post (.returned ⟨ret, ⟨[]⟩⟩) →
+        SatisfiesPost P { args := args } post)
     (h_post : c.postReturn { args := args } ⟨ret, ⟨[]⟩⟩) :
     (c.effectiveSafetyPre isUnsafe { args := args } →
-      WellFormed (entryProgForBody Captured.program defId)
-        { args := args }) ∧
+      WellFormed P { args := args }) ∧
     (c.effectiveBehaviorPre isUnsafe { args := args } →
-      (∀ out : TerminalOut,
-        Behavior (entryProgForBody Captured.program defId)
-          { args := args } out →
+      (∀ out : TerminalOut, Behavior P { args := args } out →
         match out with
         | .returned retOut => c.postReturn { args := args } retOut
         | .unwound uwMem =>
           c.effects.noUnwind = false ∧ c.postUnwind { args := args } uwMem
         | .aborted _ => False) ∧
-      (c.effects.terminates = true →
-        ¬ Diverges (entryProgForBody Captured.program defId)
-          { args := args })) := by
-  have h := spec_and_behavior_of_wp_eq h_wp
-  refine ⟨fun _ => h.1, fun _ => ⟨fun out hOut => ?_, fun _ => h.2.2.1⟩⟩
-  have hEq := (h.2.2.2 (fun o => o = .returned ⟨ret, ⟨[]⟩⟩) rfl).2 out hOut
+      (c.effects.terminates = true → ¬ Diverges P { args := args })) := by
+  refine ⟨fun _ => h.1, fun _ => ⟨fun out hOut => ?_, fun _ => h.2.1⟩⟩
+  have hEq := (h.2.2 (fun o => o = .returned ⟨ret, ⟨[]⟩⟩) rfl).2 out hOut
   subst hEq
   exact h_post
 
@@ -436,8 +392,7 @@ private theorem body0_verified :
   refine ⟨rfl, body0_adm, fun args valid hSafe => ?_⟩
   let ⟨b, m, k, hb, hm, hk, hArgs⟩ := args_inv valid
   subst hArgs
-  have hB := bound_of_safety hb hm hk (hSafe rfl)
-  exact (spec_and_behavior_of_wp_eq (outcome hb hm hk hB)).1
+  exact (outcome hb hm hk (bound_of_safety hb hm hk (hSafe rfl))).1
 
 private theorem body0_contract :
     BodyContractSatisfied Captured.program 0 Captured.body_0
@@ -446,10 +401,10 @@ private theorem body0_contract :
   let ⟨b, m, k, hb, hm, hk, hArgs⟩ := args_inv valid
   subst hArgs
   have hOb := fun hS : Spec.fn0_safety { args := [scal b, scal m, scal k] } =>
-    obligations_of_wp (c := Spec.fn0_contract)
-      (isUnsafe := Captured.body_0.isUnsafe)
-      (outcome hb hm hk (bound_of_safety hb hm hk hS))
-      (post_ok hb hm hk (bound_of_safety hb hm hk hS))
+    let hB := bound_of_safety hb hm hk hS
+    let h := outcome hb hm hk hB
+    obligations_of_outcome (c := Spec.fn0_contract)
+      (isUnsafe := Captured.body_0.isUnsafe) ⟨h.1, h.2.2⟩ (post_ok hb hm hk hB)
   exact ⟨fun hSafe => (hOb (hSafe rfl)).1 hSafe,
     fun hBeh => (hOb (hBeh.1 rfl)).2 hBeh⟩
 
