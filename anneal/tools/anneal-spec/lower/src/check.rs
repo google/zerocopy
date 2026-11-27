@@ -141,7 +141,8 @@ pub fn lean_ident(name: &str) -> String {
 }
 
 // Every global the lowering references is qualified from one of a few root
-// names (`Int`, `True`, `False`, `Trusted`, `Spec`). Helper parameters become
+// names (`Int`, `True`, `False`, `Trusted`, and the output namespace's root,
+// `Spec` or `Specs`). Helper parameters become
 // Lean binders, and a binder captures any unqualified reference with the same
 // name (`pure_g`) and any qualified reference whose first component it names
 // (a binder `Trusted` turns `Trusted.MirSemantics.intTdiv` into a field
@@ -169,17 +170,30 @@ const INT_TDIV: &str = "Trusted.MirSemantics.intTdiv";
 const INT_TMOD: &str = "Trusted.MirSemantics.intTmod";
 /// Euclidean remainder (`Int.emod`), for wrapping arithmetic.
 const INT_EMOD: &str = "Trusted.MirSemantics.intEmod";
-/// The namespace `emit` defines everything in, including helpers.
-const SPEC_NAMESPACE: &str = "Spec";
+/// The namespace `emit` defines everything in for `--format v1`.
+pub const SPEC_NAMESPACE: &str = "Spec";
+/// The root of the `Specs.<crate>.<claim>` namespaces of `--format v2-module`.
+pub const SPECS_ROOT: &str = "Specs";
 
 /// Every global name that lowered helper text references.
-const GLOBALS: &[&str] =
-    &[INT, INT_NEG, TRUE, FALSE, VAL, VAL_UNIT, INT_TDIV, INT_TMOD, INT_EMOD, SPEC_NAMESPACE];
+const GLOBALS: &[&str] = &[
+    INT,
+    INT_NEG,
+    TRUE,
+    FALSE,
+    VAL,
+    VAL_UNIT,
+    INT_TDIV,
+    INT_TMOD,
+    INT_EMOD,
+    SPEC_NAMESPACE,
+    SPECS_ROOT,
+];
 
 /// The Lean name of `#[anneal::pure]` helper `name`, which `emit` defines
-/// as `pure_<name>` in namespace `Spec`.
-pub fn helper_lean_name(name: &str) -> String {
-    format!("{SPEC_NAMESPACE}.pure_{name}")
+/// as `pure_<name>` in namespace `namespace`.
+pub fn helper_lean_name(namespace: &str, name: &str) -> String {
+    format!("{namespace}.pure_{name}")
 }
 
 /// Whether `name` cannot be a helper binder: it would capture a reference in
@@ -988,6 +1002,7 @@ pub fn lower_fn(
     let mut may_unwind_claim: Option<(&'static str, Span)> = None;
     let mut max_steps: Option<(&Expr, Span)> = None;
     let mut targets = 0;
+    let mut claims = 0;
     for c in &f.clauses {
         match &c.clause {
             Clause::Requires(e) => requires.push(e),
@@ -1062,6 +1077,21 @@ pub fn lower_fn(
                     ));
                 }
             }
+            Clause::Claim(_) => {
+                claims += 1;
+                if claims > 1 {
+                    errors.push(Diagnostic::new(
+                        "E_ANNEAL_DUPLICATE_CLAUSE",
+                        c.span,
+                        "at most one `claim` clause is allowed",
+                    ));
+                }
+            }
+            Clause::Instantiate(_) => errors.push(Diagnostic::new(
+                "E_ANNEAL_UNSUPPORTED_CLAUSE",
+                c.span,
+                "`instantiate` is not supported by the profile v1 lowering, which has no generics",
+            )),
         }
     }
     if let (Some(pos_name), Some(md_span)) = (terminates_claim, may_diverge_span) {

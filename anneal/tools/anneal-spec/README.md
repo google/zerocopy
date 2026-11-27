@@ -15,7 +15,8 @@ and lowers them to a declarative `Spec.lean` built on
 `MirTy` signatures for every `ContractEntry`.
 
 - `lower/` (`anneal-spec-lower`): the parser, checker, and emitter, plus a CLI
-  that writes or checks `Spec.lean` and `spec_span_map.json`.
+  that writes or checks `Spec.lean` and `spec_span_map.json`, or span-free
+  per-claim Lean modules.
 - `macros/` (`anneal-spec`, imported as `anneal`): inert attributes that only
   check clause syntax, for crates that choose to depend on them.
 
@@ -59,12 +60,33 @@ name resolution; add `--check-cfg=cfg(anneal)` to silence `unexpected_cfgs`):
 fn from_elem_count(elems: usize) -> usize { elems }
 ```
 
+The `anneal` cfg may enable only these attributes, one per `cfg_attr`:
+`#[cfg_attr(anneal, A)]` where `A` is `anneal::spec(..)`, `anneal::pure`, or
+`anneal::vacuous_ok(..)`. Anything else conditional on
+`anneal` (`#[cfg(anneal)]`, a compound predicate such as
+`cfg_attr(any(anneal, test), ..)`, or `cfg!(anneal)`) would make the crate the
+specifications describe differ from the crate users build, so it is rejected in
+every input file. Because a macro can assemble a cfg predicate from tokens
+that are never adjacent in the source, the identifier `anneal` is reserved: it
+may appear only as such a `cfg_attr` predicate or at the start of an
+`anneal::{spec,pure,vacuous_ok,external_spec}` path.
+
 Lower a unit with:
 
 ```sh
 cargo run -p anneal-spec-lower -- --src-root SRC --out-dir OUT FILE...
 cargo run -p anneal-spec-lower -- --src-root SRC --check OUT FILE...
 ```
+
+Every item is checked, but `--target PATH` (repeatable) and `--claim C` lower
+only the selected items, together with the `#[anneal::pure]` helpers they
+reach. `--list-targets` prints every specified item, its claim, file, and kind
+(`inline` or `external`) as JSON, without type-checking clauses.
+`--format v2-module --crate-slug S --claim C` writes the selection as the Lean
+module `OUT/Specs/S/C.lean` in namespace `Specs.S.C` (spelled
+`Specs.«S».«C»`), with no span map: it records no Rust source positions, so
+edits elsewhere in the Rust file leave it unchanged. The default `--format v1`
+writes `Spec.lean` (namespace `Spec`) and `spec_span_map.json`.
 
 ## Clauses (profile v1)
 
@@ -76,7 +98,9 @@ cargo run -p anneal-spec-lower -- --src-root SRC --check OUT FILE...
 | `terminates`, `may_diverge`, `may_unwind`, `may_panic`, `no_unwind`, `no_panic`, `total` | Effect mask. Total normal return (`terminates := true`, `noUnwind := true`) is the default; `may_diverge` permits divergence (`terminates := false`) while keeping `noUnwind := true`, and `may_unwind` / `may_panic` permit unwinding (`noUnwind := false`). Positive synonyms (`total`, `terminates`, `no_unwind`, `no_panic`) are idempotent. Contradicting `may_diverge` with `terminates`/`total` or `may_unwind`/`may_panic` with `no_unwind`/`no_panic`/`total` is rejected. Bare specs on `-> !` without a precondition or effect opt-out are rejected. `no_abort` is rejected because every contract already rules out aborting. |
 | `max_steps = E` | Upper bound (`Nat`) on deterministic MIR `Step` transitions over unsigned entry arguments (an algorithmic step budget, not physical wall-clock time or hardware cycles). Implies `terminates`, rejects `may_diverge`, and rejects signed values, unary `-`, and subtraction `-` so bounds never silently clamp below zero. |
 | `target = "path"` | Overrides the derived item path, in both attachment forms. Required on inherent `impl` methods. Only characters of a Rust item path are accepted. |
-| `#[anneal::pure]` | A non-recursive, side-effect-free helper usable in clauses. Its name must be an ASCII identifier other than `math`, `old`, `wrapping_*`, or `no_overflow_*`, and its parameters may not be named `Int`, `True`, `False`, `Trusted`, `Spec`, or `_root_`. |
+| `claim = "C"` | Puts the item in verification claim `C`, which `--claim C` selects. `C` is 1 to 64 ASCII letters, digits, and `_`, starting with a letter, and not an Anneal module root, a reserved Lean name, or a name such as `panic` that specifications may not use. Without it, an item is alone in the claim derived from its path: `::` becomes `__`, `<T as Tr>` becomes `impl_Tr_for_T` (`impl_Tr_for_unit` for `()`), any other character becomes `_`, and a `c_` prefix is added if the result does not start with a letter. A derived claim may not coincide with another item's claim (`<usize as PointerMetadata>::from_elem_count` is in `impl_PointerMetadata_for_usize__from_elem_count`). |
+| `instantiate = [["u8"], ...]` | Generic instantiations to verify. Parsed and validated, but rejected by profile v1, which has no generics. |
+| `#[anneal::pure]` | A non-recursive, side-effect-free helper usable in clauses. Its name must be an ASCII identifier other than `math`, `old`, `wrapping_*`, or `no_overflow_*`, and its parameters may not be named `Int`, `True`, `False`, `Trusted`, `Spec`, `Specs`, or `_root_`. |
 | `#[anneal::vacuous_ok(reason = "...")]` | Waives the check that the precondition admits some input. |
 
 Expressions: `true`/`false`, integer literals (with optional suffix),
@@ -124,8 +148,11 @@ UTF-8 source and columns count Unicode scalar values.
 | `E_ANNEAL_UNSUPPORTED_TYPE` / `E_ANNEAL_SPEC_UNSUPPORTED_EXPR` / `E_ANNEAL_UNSUPPORTED_BITWISE` | types and expressions outside profile v1 |
 | `E_ANNEAL_DUPLICATE_TARGET` / `E_ANNEAL_DUPLICATE_CLAUSE` / `E_ANNEAL_DUPLICATE_HELPER` / `E_ANNEAL_CONFLICTING_EFFECTS` / `E_ANNEAL_UNSATISFIABLE_NEVER_EFFECTS` | duplicates, conflicting effect qualifiers, and bare `-> !` total-normal specs |
 | `E_ANNEAL_IGNORED_ATTRIBUTE` | an `anneal::` item in a position the lowering does not read |
+| `E_ANNEAL_BARE_OR_COMPOUND_CFG` | any use of the `anneal` cfg other than `cfg_attr(anneal, ..)` enabling `anneal::` specification attributes, and the identifier `anneal` anywhere but there or in an `anneal::` path |
+| `E_ANNEAL_CLAIM_COLLISION` | a claim derived from an item's path that equals another item's claim |
 | `E_ANNEAL_UNSUPPORTED_IMPORT` | `use anneal::*`, `use anneal::{..}`, or renaming the crate |
-| `E_ANNEAL_INVALID_TARGET` / `E_ANNEAL_RESERVED_HELPER_NAME` / `E_ANNEAL_RESERVED_PARAM_NAME` | unsafe-to-emit names |
+| `E_ANNEAL_INVALID_TARGET` / `E_ANNEAL_INVALID_CLAIM` / `E_ANNEAL_RESERVED_HELPER_NAME` / `E_ANNEAL_RESERVED_PARAM_NAME` | unsafe-to-emit names |
+| `E_ANNEAL_UNKNOWN_TARGET` / `E_ANNEAL_EMPTY_CLAIM` / `E_ANNEAL_INVALID_OPTIONS` | a `--target` that no item specifies or that is outside `--claim`, a `--claim` with no items, or inconsistent options |
 | `E_ANNEAL_TARGET_REQUIRED` / `E_ANNEAL_VACUOUS_OK_REASON` / `E_ANNEAL_EMPTY_UNIT` / `E_ANNEAL_SPEC_ARITY` / `E_ANNEAL_SPEC_SYNTAX` | malformed input |
 
 ## Generated output
@@ -135,8 +162,9 @@ contains no Rust line numbers, so reformatting the Rust source leaves it
 byte-identical. `cargo-anneal` compiles it with `autoImplicit` disabled.
 It imports only `Trusted.MirSemantics` on top of `prelude`, and every global
 name it references is qualified from `Int`, `True`, `False`, `Trusted`, or
-`Spec` (`Spec.pure_h`, `Trusted.MirSemantics.intTdiv`). Helper parameters
-become Lean binders, so those names are reserved for them.
+its own namespace (`Spec.pure_h` or `Specs.S.C.pure_h`,
+`Trusted.MirSemantics.intTdiv`). Helper parameters become Lean binders, so
+those names (and `Specs`) are reserved for them.
 `spec_span_map.json` maps each generated declaration's Lean line range to the
 Rust span it came from.
 
@@ -147,3 +175,9 @@ from exactly one of a companion `spec.rs` or a `spec_sources.json` such as
 listed in the unit's `compilation.source_files`, whose inline `anneal::spec`
 attributes are lowered from the crate root, so editing one of those attributes
 makes the freshness check fail.
+
+The CI verifier also checks contract uniqueness: it lists the items specified
+in every `zerocopy/src` file and in every companion `spec.rs`. An item
+specified in `zerocopy/src` may not also be specified in a companion file, and
+must be lowered by exactly one unit. Companion files are independent fixtures
+and may specify the same item differently.

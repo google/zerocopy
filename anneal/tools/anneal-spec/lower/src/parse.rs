@@ -15,7 +15,7 @@
 
 use std::collections::BTreeSet;
 
-use proc_macro2::{Delimiter, Span, TokenStream, TokenTree};
+use proc_macro2::{Delimiter, Spacing, Span, TokenStream, TokenTree};
 use quote::ToTokens;
 use syn::{
     parse::{Parse, ParseStream},
@@ -449,6 +449,19 @@ pub fn parse_clauses(stream: TokenStream, span: Span) -> Result<Vec<SpannedClaus
                     )),
                 }
             }
+            ("claim", [eq, Tok::Lit(lit, lspan)]) if eq.is_op("=") => {
+                match syn::Lit::new(lit.clone()) {
+                    syn::Lit::Str(s) => Ok(Clause::Claim(s.value())),
+                    _ => Err(Diagnostic::new(
+                        "E_ANNEAL_SPEC_SYNTAX",
+                        *lspan,
+                        "`claim` takes a string literal",
+                    )),
+                }
+            }
+            ("instantiate", [eq, Tok::Group(Delimiter::Bracket, inner, g)]) if eq.is_op("=") => {
+                parse_instantiate(inner.clone(), *g).map(Clause::Instantiate)
+            }
             ("requires", [Tok::Group(Delimiter::Parenthesis, inner, g)]) => {
                 parse_expr(inner.clone(), *g).map(Clause::Requires)
             }
@@ -483,7 +496,8 @@ pub fn parse_clauses(stream: TokenStream, span: Span) -> Result<Vec<SpannedClaus
             )),
             (
                 "requires" | "safety_requires" | "ensures" | "total" | "terminates" | "no_panic"
-                | "no_unwind" | "may_diverge" | "may_unwind" | "may_panic" | "max_steps" | "target",
+                | "no_unwind" | "may_diverge" | "may_unwind" | "may_panic" | "max_steps" | "target"
+                | "claim" | "instantiate",
                 _,
             ) => {
                 let mut d = Diagnostic::new(
@@ -505,6 +519,44 @@ pub fn parse_clauses(stream: TokenStream, span: Span) -> Result<Vec<SpannedClaus
         clauses.push(SpannedClause { clause: clause?, span: clause_span });
     }
     Ok(clauses)
+}
+
+/// Parses the bracketed list of `instantiate = [["u8"], ["u32", "bool"]]`:
+/// a non-empty list of non-empty lists of type names as string literals.
+fn parse_instantiate(stream: TokenStream, span: Span) -> Result<Vec<Vec<String>>, Diagnostic> {
+    let malformed = |s| {
+        Diagnostic::new(
+            "E_ANNEAL_SPEC_SYNTAX",
+            s,
+            "`instantiate` takes a non-empty list of non-empty lists of type names, \
+             such as `[[\"u8\"], [\"u32\"]]`",
+        )
+    };
+    let mut out = Vec::new();
+    for part in split_commas(stream) {
+        let toks = tokenize(part);
+        let [Tok::Group(Delimiter::Bracket, inner, g)] = toks.as_slice() else {
+            return Err(malformed(toks.first().map_or(span, Tok::span)));
+        };
+        let mut tys = Vec::new();
+        for ty in split_commas(inner.clone()) {
+            match tokenize(ty).as_slice() {
+                [Tok::Lit(lit, lspan)] => match syn::Lit::new(lit.clone()) {
+                    syn::Lit::Str(s) if !s.value().trim().is_empty() => tys.push(s.value()),
+                    _ => return Err(malformed(*lspan)),
+                },
+                _ => return Err(malformed(*g)),
+            }
+        }
+        if tys.is_empty() {
+            return Err(malformed(*g));
+        }
+        out.push(tys);
+    }
+    if out.is_empty() {
+        return Err(malformed(span));
+    }
+    Ok(out)
 }
 
 fn parse_ensures(stream: TokenStream, span: Span) -> Result<Clause, Diagnostic> {
@@ -800,6 +852,8 @@ pub fn spec_fn(
         is_unsafe: sig.unsafety.is_some(),
         clauses,
         vacuous_ok,
+        claim: None,
+        external: false,
         sig_span: sig.span(),
         attr_span: spec.1,
         file: 0,
@@ -1025,7 +1079,9 @@ fn collect_ext_fn(
     }
     let spec = require_spec(&attrs, &f.sig)?;
     let vacuous_ok = attrs.vacuous_ok.map(|(r, _)| r);
-    out.fns.push(apply_target(spec_fn(path, &f.sig, self_ty, spec, vacuous_ok)?)?);
+    let mut spec_f = apply_target(spec_fn(path, &f.sig, self_ty, spec, vacuous_ok)?)?;
+    spec_f.external = true;
+    out.fns.push(spec_f);
     Ok(())
 }
 
@@ -1066,13 +1122,29 @@ fn is_external_spec_macro(path: &syn::Path) -> bool {
         || matches!(segs.as_slice(), [a, n] if a == "anneal" && n == "external_spec")
 }
 
-/// Applies a `target = "..."` clause, which overrides the derived path.
+/// Applies a `target = "..."` clause, which overrides the derived path, and
+/// validates and records a `claim = "..."` clause.
 ///
 /// The path is emitted into `Spec.lean`, so it is restricted to characters
 /// that can appear in a Rust item path: in particular, no `/`, quote,
 /// backslash, or control character can open a Lean comment or end a string.
 fn apply_target(mut f: SpecFn) -> Result<SpecFn, Diagnostic> {
+    // Duplicates are rejected here, not only when lowering, because
+    // `list_targets` reports these values without lowering.
+    let (mut target_seen, mut claim_seen) = (false, false);
     for c in &f.clauses {
+        let duplicate = match &c.clause {
+            Clause::Target(_) => std::mem::replace(&mut target_seen, true),
+            Clause::Claim(_) => std::mem::replace(&mut claim_seen, true),
+            _ => false,
+        };
+        if duplicate {
+            return Err(Diagnostic::new(
+                "E_ANNEAL_DUPLICATE_CLAUSE",
+                c.span,
+                "at most one `target` and one `claim` clause are allowed",
+            ));
+        }
         if let Clause::Target(t) = &c.clause {
             let ok = !t.is_empty()
                 && t.chars().all(|ch| ch.is_ascii_alphanumeric() || "_:<>(),[]&*;' ".contains(ch));
@@ -1085,8 +1157,103 @@ fn apply_target(mut f: SpecFn) -> Result<SpecFn, Diagnostic> {
             }
             f.path = t.clone();
         }
+        if let Clause::Claim(id) = &c.clause {
+            if !is_claim_ident(id) {
+                return Err(Diagnostic::new(
+                    "E_ANNEAL_INVALID_CLAIM",
+                    c.span,
+                    format!(
+                        "`{}` is not a valid claim name: use 1 to 64 ASCII letters, digits, and \
+                         `_`, starting with a letter, other than a reserved Lean or Anneal name",
+                        id.escape_debug()
+                    ),
+                ));
+            }
+            f.claim = Some(id.clone());
+        }
     }
     Ok(f)
+}
+
+/// Names that a claim identifier may not take, compared case-insensitively:
+/// Anneal's module roots and the Lean names a claim namespace could shadow.
+const RESERVED_CLAIM_NAMES: &[&str] = &[
+    "Trusted",
+    "Anneal",
+    "Captured",
+    "Expected",
+    "Specs",
+    "Spec",
+    "Generated",
+    "Proof",
+    "ProofLib",
+    "Pure",
+    "Shared",
+    "Handwritten",
+    "Bodies",
+    "TraitMeta",
+    "Init",
+    "Lean",
+    "Std",
+    "Option",
+    "List",
+    "Nat",
+    "Int",
+    "Bool",
+    "Fin",
+    "BitVec",
+    "Classical",
+    "Prop",
+    "Type",
+    "Sort",
+    "True",
+    "False",
+    "namespace",
+    "section",
+    "end",
+    "def",
+    "theorem",
+    "open",
+    "import",
+    "module",
+    "prelude",
+    "private",
+    "public",
+    "fun",
+    "match",
+    "with",
+    "if",
+    "then",
+    "else",
+    "let",
+    "do",
+    "where",
+    "instance",
+    "structure",
+    "class",
+    "inductive",
+    "axiom",
+    "variable",
+    "universe",
+    // Identifier components that `cargo-anneal`'s specification preflight
+    // rejects anywhere in a specification.
+    "autoParam",
+    "panic",
+    "panicCore",
+    "panicWithPos",
+    "panicWithPosWithDecl",
+    "outOfBounds",
+    "repeatM",
+    "sliceOrPanic",
+];
+
+/// Whether `id` can name a claim: a 1-to-64-character ASCII identifier that
+/// starts with a letter and is not reserved.
+pub fn is_claim_ident(id: &str) -> bool {
+    (1..=64).contains(&id.len())
+        && id.starts_with(|c: char| c.is_ascii_alphabetic())
+        && id.chars().all(|c| c.is_ascii_alphanumeric() || c == '_')
+        && !RESERVED_CLAIM_NAMES.iter().any(|r| r.eq_ignore_ascii_case(id))
 }
 
 /// Walks the items of one Rust source file whose module path is `module`,
@@ -1245,6 +1412,137 @@ pub fn ignored_anneal_paths(stream: TokenStream, handled: &[Span]) -> Vec<(Span,
     let handled: Vec<_> = handled.iter().map(|s| key(*s)).collect();
     let mut out = Vec::new();
     walk(stream, &handled, false, &mut out);
+    out
+}
+
+/// Uses of the `anneal` cfg, or of the identifier `anneal`, other than
+/// `#[cfg_attr(anneal, A)]` where `A` is `anneal::spec(..)`, `anneal::pure`, or
+/// `anneal::vacuous_ok(..)`, and `anneal::` paths.
+///
+/// Those attributes carry specifications and nothing else. Any other code
+/// conditional on `anneal` (a `#[cfg(anneal)]` item, a compound predicate such
+/// as `cfg_attr(any(anneal, x), ..)`, or `cfg!(anneal)`) would make the crate
+/// the specifications describe differ from the crate users build. A macro can
+/// assemble such a predicate from tokens that are never adjacent in the source
+/// (`#[cfg($p)]` with `m!(not(anneal))`), so the identifier `anneal` is
+/// reserved: it may appear only as the predicate of an accepted `cfg_attr` or
+/// at the start of an `anneal::{spec,pure,vacuous_ok,external_spec}` path.
+pub fn cfg_anneal_misuse(stream: TokenStream) -> Vec<Span> {
+    /// Whether `id` is `name`, written plainly or as the raw identifier
+    /// `r#name`, which `rustc` treats identically in a cfg.
+    fn is(id: &proc_macro2::Ident, name: &str) -> bool {
+        let s = id.to_string();
+        s.strip_prefix("r#").unwrap_or(&s) == name
+    }
+    fn mentions_anneal(stream: TokenStream) -> bool {
+        stream.into_iter().any(|tt| match tt {
+            TokenTree::Ident(id) => is(&id, "anneal"),
+            TokenTree::Group(g) => mentions_anneal(g.stream()),
+            _ => false,
+        })
+    }
+    fn is_spec_attr(part: &[TokenTree]) -> bool {
+        let colon =
+            |t: Option<&TokenTree>| matches!(t, Some(TokenTree::Punct(p)) if p.as_char() == ':');
+        let head = matches!(part.first(), Some(TokenTree::Ident(a)) if a == "anneal")
+            && colon(part.get(1))
+            && colon(part.get(2));
+        let name = match part.get(3) {
+            Some(TokenTree::Ident(n)) => n.to_string(),
+            _ => return false,
+        };
+        let args_ok = match &part[4.min(part.len())..] {
+            [] => true,
+            [TokenTree::Group(g)] => g.delimiter() == Delimiter::Parenthesis,
+            _ => false,
+        };
+        head && matches!(name.as_str(), "spec" | "pure" | "vacuous_ok") && args_ok
+    }
+    /// Walks `stream`. `in_attr` is set inside `#[..]` and `#![..]`;
+    /// `reported` inside a group already reported, so that one misuse yields
+    /// one diagnostic; `allow_first` for the arguments of an accepted
+    /// `cfg_attr`, whose first token is its `anneal` predicate.
+    fn walk(
+        stream: TokenStream,
+        in_attr: bool,
+        reported: bool,
+        allow_first: bool,
+        out: &mut Vec<Span>,
+    ) {
+        let tts: Vec<TokenTree> = stream.into_iter().collect();
+        let punct = |j: Option<usize>, c: char| matches!(j.and_then(|j| tts.get(j)), Some(TokenTree::Punct(p)) if p.as_char() == c);
+        let group = |j: usize| match tts.get(j) {
+            Some(TokenTree::Group(g)) => Some(g.stream()),
+            _ => None,
+        };
+        // Groups whose contents are already reported, and the arguments of
+        // accepted `cfg_attr`s.
+        let mut covered = vec![false; tts.len() + 2];
+        let mut accepted = vec![false; tts.len() + 2];
+        for (i, tt) in tts.iter().enumerate() {
+            if let TokenTree::Group(g) = tt {
+                // `#[..]` or `#![..]`.
+                let attr = in_attr
+                    || (g.delimiter() == Delimiter::Bracket
+                        && (punct(i.checked_sub(1), '#')
+                            || (punct(i.checked_sub(1), '!') && punct(i.checked_sub(2), '#'))));
+                walk(g.stream(), attr, reported || covered[i], accepted[i], out);
+                continue;
+            }
+            let TokenTree::Ident(id) = tt else { continue };
+            if reported {
+                continue;
+            }
+            // The index of the arguments of a misused `cfg`, `cfg!`, or
+            // `cfg_attr`.
+            let mut misused = None;
+            if is(id, "anneal") {
+                // Exactly `anneal::spec`, `anneal::pure`, `anneal::vacuous_ok`,
+                // or `anneal::external_spec`. `ignored_anneal_paths` rejects
+                // those that are not in a position the parser reads, such as
+                // macro arguments.
+                let joint = matches!(tts.get(i + 1),
+                    Some(TokenTree::Punct(p)) if p.as_char() == ':' && p.spacing() == Spacing::Joint);
+                let named = matches!(tts.get(i + 3), Some(TokenTree::Ident(n))
+                    if ["spec", "pure", "vacuous_ok", "external_spec"].iter().any(|k| n == k));
+                let path = *id == "anneal" && joint && punct(Some(i + 2), ':') && named;
+                if !path && !(allow_first && i == 0) {
+                    out.push(id.span());
+                }
+            } else if is(id, "cfg") && punct(Some(i + 1), '!') {
+                if group(i + 2).is_some_and(mentions_anneal) {
+                    misused = Some(i + 2);
+                }
+            } else if in_attr && is(id, "cfg") {
+                if group(i + 1).is_some_and(mentions_anneal) {
+                    misused = Some(i + 1);
+                }
+            } else if in_attr && is(id, "cfg_attr") {
+                let Some(args) = group(i + 1) else { continue };
+                let mut parts = split_commas(args).into_iter();
+                let pred: Vec<TokenTree> = parts.next().unwrap_or_default().into_iter().collect();
+                if !mentions_anneal(pred.iter().cloned().collect()) {
+                    continue;
+                }
+                let exact = matches!(pred.as_slice(), [TokenTree::Ident(a)] if a == "anneal");
+                let attrs: Vec<Vec<TokenTree>> = parts
+                    .map(|p| p.into_iter().collect())
+                    .filter(|p: &Vec<_>| !p.is_empty())
+                    .collect();
+                if exact && matches!(attrs.as_slice(), [a] if is_spec_attr(a)) {
+                    accepted[i + 1] = true;
+                } else {
+                    misused = Some(i + 1);
+                }
+            }
+            if let Some(args) = misused {
+                out.push(id.span());
+                covered[args] = true;
+            }
+        }
+    }
+    let mut out = Vec::new();
+    walk(stream, false, false, false, &mut out);
     out
 }
 

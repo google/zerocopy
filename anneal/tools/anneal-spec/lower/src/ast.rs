@@ -194,6 +194,12 @@ pub enum Clause {
     MaxSteps(Expr),
     /// `target = "path"`: overrides the derived item path.
     Target(String),
+    /// `claim = "id"`: groups the item into the verification claim `id`
+    /// instead of its singleton claim.
+    Claim(String),
+    /// `instantiate = [["u8"], ["u32"]]`: generic instantiations to verify.
+    /// Profile v1 has no generics, so the lowering rejects it.
+    Instantiate(Vec<Vec<String>>),
 }
 
 #[derive(Clone, Debug)]
@@ -221,12 +227,65 @@ pub struct SpecFn {
     /// `Some(reason)` when `#[anneal::vacuous_ok(reason = ...)]` waives the
     /// non-vacuity obligation.
     pub vacuous_ok: Option<String>,
+    /// The `claim = "..."` clause, if any; see [`SpecFn::claim_id`].
+    pub claim: Option<String>,
+    /// Whether the item was declared in `anneal::external_spec!` rather than
+    /// by an inline attribute on the function itself.
+    pub external: bool,
     /// The span of the function signature.
     pub sig_span: Span,
     /// The span of the `anneal::spec(...)` attribute.
     pub attr_span: Span,
     /// Index of the source file the item came from.
     pub file: usize,
+}
+
+impl SpecFn {
+    /// The verification claim the item belongs to: its `claim = "..."`
+    /// clause, or else its singleton claim [`mangle_slug`]`(path)`.
+    pub fn claim_id(&self) -> String {
+        self.claim.clone().unwrap_or_else(|| mangle_slug(&self.path))
+    }
+}
+
+/// The singleton claim identifier of item `path`: `<T as Tr>::f` becomes
+/// `impl_Tr_for_T__f` (with `unit` for a `()` self type), `::` becomes `__`,
+/// and any other character that cannot appear in a Lean identifier becomes
+/// `_`. A result that does not start with a letter gets a `c_` prefix.
+pub fn mangle_slug(path: &str) -> String {
+    let mut out = mangle_path(path);
+    if !out.starts_with(|c: char| c.is_ascii_alphabetic()) {
+        out.insert_str(0, "c_");
+    }
+    out
+}
+
+fn mangle_path(path: &str) -> String {
+    if path == "()" {
+        return "unit".to_string();
+    }
+    let mut out = String::new();
+    let mut rest = path;
+    while !rest.is_empty() {
+        if let Some(stripped) = rest.strip_prefix("::") {
+            out.push_str("__");
+            rest = stripped;
+        } else if let Some(inner) = rest.strip_prefix('<').and_then(|r| {
+            // `<T as Tr>`: the qualified self type of a trait impl item.
+            let end = r.find('>')?;
+            let (ty, tr) = r[..end].split_once(" as ")?;
+            Some((ty.to_string(), tr.to_string(), &r[end + 1..]))
+        }) {
+            let (ty, tr, after) = inner;
+            out.push_str(&format!("impl_{}_for_{}", mangle_path(&tr), mangle_path(&ty)));
+            rest = after;
+        } else {
+            let c = rest.chars().next().expect("non-empty");
+            out.push(if c.is_ascii_alphanumeric() || c == '_' { c } else { '_' });
+            rest = &rest[c.len_utf8()..];
+        }
+    }
+    out
 }
 
 /// One `#[anneal::pure]` specification helper.

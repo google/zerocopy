@@ -8,7 +8,10 @@
 
 use std::{fs, path::Path, process::Command};
 
-use anneal_spec_lower::{lower, module_path, Lowered, Source};
+use anneal_spec_lower::{
+    ast::mangle_slug, list_targets, lower, lower_with, module_path, Format, Lowered, Options,
+    Source,
+};
 
 fn src(label: &str, text: &str) -> Source {
     Source { label: label.into(), text: text.into(), module: Vec::new() }
@@ -764,7 +767,7 @@ fn helper_parameters_cannot_capture_generated_names() {
     // A parameter named after the root of a qualified reference would capture
     // it (`True`, or `Trusted` in `Trusted.MirSemantics.intTdiv`), and the
     // `Spec.lean` policy rejects `_root_`.
-    for name in ["True", "False", "Int", "Trusted", "Spec", "_root_"] {
+    for name in ["True", "False", "Int", "Trusted", "Spec", "Specs", "_root_"] {
         let msg = expect_error(
             &format!(
                 "anneal::external_spec! {{
@@ -832,4 +835,378 @@ fn contract_signature_is_emitted_in_spec_lean() {
         "{}",
         unsafe_never.spec_lean
     );
+}
+
+fn lower_selected(text: &str, opts: &Options) -> Result<Lowered, Vec<String>> {
+    let sources = [src("spec.rs", text)];
+    lower_with(&sources, opts)
+        .map_err(|errs| errs.iter().map(|e| e.diag.code.to_string()).collect())
+}
+
+/// Three items in two claims, with a helper chain used by only one claim.
+const CLAIMS_SPEC: &str = "anneal::external_spec! {
+    #[anneal::pure] fn nonzero(x: u8) -> bool { x != 0u8 }
+    #[anneal::pure] fn positive(x: u8) -> bool { nonzero(x) }
+    #[anneal::pure] fn unused(x: u8) -> bool { x == 1u8 }
+    #[anneal::spec(claim = \"pair\", requires(positive(x)), ensures(|r| r == x))]
+    fn a(x: u8) -> u8;
+    #[anneal::spec(claim = \"pair\", ensures(|r| r == x))]
+    fn b(x: u8) -> u8;
+    mod m {
+        #[anneal::spec(ensures(|r| r == x))]
+        fn c(x: u8) -> u8;
+    }
+}";
+
+#[test]
+fn claim_clause_names_a_claim_and_instantiate_is_reserved() {
+    lower_one(&wrap("claim = \"zc01_usize\", total", "fn f()")).unwrap();
+    for bad in ["Spec", "specs", "1x", "a-b", "", "namespace"] {
+        expect_error(&wrap(&format!("claim = \"{bad}\""), "fn f()"), "E_ANNEAL_INVALID_CLAIM");
+    }
+    expect_error(
+        &wrap(&format!("claim = \"{}\"", "a".repeat(65)), "fn f()"),
+        "E_ANNEAL_INVALID_CLAIM",
+    );
+    expect_error(&wrap("claim = x", "fn f()"), "E_ANNEAL_SPEC_SYNTAX");
+    expect_error(&wrap("claim = \"a\", claim = \"b\"", "fn f()"), "E_ANNEAL_DUPLICATE_CLAUSE");
+    expect_error(
+        &wrap("instantiate = [[\"u8\"], [\"u32\"]]", "fn f()"),
+        "E_ANNEAL_UNSUPPORTED_CLAUSE",
+    );
+    for bad in ["[]", "[[]]", "[\"u8\"]", "[[u8]]", "[[\"\"]]"] {
+        expect_error(&wrap(&format!("instantiate = {bad}"), "fn f()"), "E_ANNEAL_SPEC_SYNTAX");
+    }
+}
+
+#[test]
+fn singleton_claims_mangle_item_paths() {
+    assert_eq!(
+        mangle_slug("<usize as PointerMetadata>::from_elem_count"),
+        "impl_PointerMetadata_for_usize__from_elem_count"
+    );
+    assert_eq!(mangle_slug("util::macros::__unsafe"), "util__macros____unsafe");
+    assert_eq!(mangle_slug("layout::DstLayout::add"), "layout__DstLayout__add");
+    assert_eq!(
+        mangle_slug("<() as PointerMetadata>::to_elem_count"),
+        "impl_PointerMetadata_for_unit__to_elem_count"
+    );
+    assert_eq!(mangle_slug("<[u8] as Tr>::f"), "impl_Tr_for__u8___f");
+    assert_eq!(mangle_slug("_f"), "c__f");
+}
+
+#[test]
+fn selection_checks_everything_but_lowers_only_the_selection() {
+    let all = lower_one(CLAIMS_SPEC).unwrap();
+    // No selection is exactly `lower`.
+    let same = lower_selected(CLAIMS_SPEC, &Options::default()).unwrap();
+    assert_eq!(all.spec_lean, same.spec_lean);
+    assert_eq!(all.span_map, same.span_map);
+
+    let pair =
+        lower_selected(CLAIMS_SPEC, &Options { claim: Some("pair".into()), ..Options::default() })
+            .unwrap();
+    assert!(pair.spec_lean.contains("rust-path-v1::a\""), "{}", pair.spec_lean);
+    assert!(pair.spec_lean.contains("rust-path-v1::b\""), "{}", pair.spec_lean);
+    assert!(!pair.spec_lean.contains("rust-path-v1::m::c\""), "{}", pair.spec_lean);
+    // The helper cone: `positive` and the `nonzero` it calls, not `unused`.
+    assert!(pair.spec_lean.contains("def pure_positive"), "{}", pair.spec_lean);
+    assert!(pair.spec_lean.contains("def pure_nonzero"), "{}", pair.spec_lean);
+    assert!(!pair.spec_lean.contains("pure_unused"), "{}", pair.spec_lean);
+
+    // `m::c` is alone in its singleton claim and reaches no helper.
+    let c =
+        lower_selected(CLAIMS_SPEC, &Options { claim: Some("m__c".into()), ..Options::default() })
+            .unwrap();
+    assert!(c.spec_lean.contains("rust-path-v1::m::c\""), "{}", c.spec_lean);
+    assert!(!c.spec_lean.contains("def pure_"), "{}", c.spec_lean);
+    let by_target = lower_selected(
+        CLAIMS_SPEC,
+        &Options { targets: vec!["m::c".into()], ..Options::default() },
+    )
+    .unwrap();
+    assert_eq!(c.spec_lean, by_target.spec_lean);
+
+    // The runtime definitions follow the selection too: only `flag` reads a
+    // `bool` argument.
+    let mixed = "anneal::external_spec! {
+        #[anneal::spec(requires(b))] fn flag(b: bool);
+        #[anneal::spec(ensures(|r| r == x))] fn id(x: u8) -> u8;
+    }";
+    let select = |c: &str| {
+        lower_selected(mixed, &Options { claim: Some(c.into()), ..Options::default() })
+            .unwrap()
+            .spec_lean
+    };
+    assert!(lower_one(mixed).unwrap().spec_lean.contains("def specBool"));
+    assert!(select("flag").contains("def specBool"));
+    assert!(!select("id").contains("def specBool"), "{}", select("id"));
+    assert!(select("id").contains("def specInt"), "{}", select("id"));
+
+    // A helper called only from `max_steps` is still in the cone.
+    let steps = "anneal::external_spec! {
+        #[anneal::pure] fn extra(x: u16) -> u16 { x }
+        #[anneal::spec(total, max_steps = extra(k))] fn g(k: u16);
+        #[anneal::spec(total)] fn h();
+    }";
+    let g = lower_selected(steps, &Options { claim: Some("g".into()), ..Options::default() })
+        .unwrap()
+        .spec_lean;
+    assert!(g.contains("def pure_extra"), "{g}");
+    let h = lower_selected(steps, &Options { claim: Some("h".into()), ..Options::default() })
+        .unwrap()
+        .spec_lean;
+    assert!(!h.contains("pure_extra"), "{h}");
+
+    let codes = |opts: Options| lower_selected(CLAIMS_SPEC, &opts).err().unwrap();
+    assert_eq!(
+        codes(Options { targets: vec!["nope".into()], ..Options::default() }),
+        ["E_ANNEAL_UNKNOWN_TARGET"]
+    );
+    assert_eq!(
+        codes(Options {
+            targets: vec!["m::c".into()],
+            claim: Some("pair".into()),
+            ..Options::default()
+        }),
+        ["E_ANNEAL_UNKNOWN_TARGET"]
+    );
+    assert_eq!(
+        codes(Options { claim: Some("nope".into()), ..Options::default() }),
+        ["E_ANNEAL_EMPTY_CLAIM"]
+    );
+
+    // An error in an unselected item still fails the selection.
+    let broken = CLAIMS_SPEC.replace("fn c(x: u8) -> u8;", "fn c(x: u8) -> u8 { x }");
+    assert!(lower_selected(&broken, &Options { claim: Some("pair".into()), ..Options::default() })
+        .is_err());
+}
+
+#[test]
+fn v2_modules_are_span_free_lean_modules() {
+    let opts = Options {
+        claim: Some("pair".into()),
+        format: Format::V2Module,
+        crate_slug: Some("zerocopy".into()),
+        ..Options::default()
+    };
+    let m = lower_selected(CLAIMS_SPEC, &opts).unwrap();
+    assert_eq!(m.module_path.as_deref(), Some("Specs/zerocopy/pair.lean"));
+    assert_eq!(m.outputs(), [("Specs/zerocopy/pair.lean", m.spec_lean.as_str())]);
+    assert!(m.span_map.is_empty());
+    for needle in [
+        "\nmodule\nprelude\npublic import Trusted.MirSemantics\n\n@[expose] public section\n\n\
+         namespace Specs.«zerocopy».«pair»\n",
+        "(Specs.«zerocopy».«pair».pure_positive (specInt (specArg q 0)))",
+        "(Specs.«zerocopy».«pair».pure_nonzero «x»)",
+        "\nend Specs.«zerocopy».«pair»\n\nend\n",
+    ] {
+        assert!(m.spec_lean.contains(needle), "missing {needle:?} in\n{}", m.spec_lean);
+    }
+    assert!(!m.spec_lean.contains("Spec.pure_"), "{}", m.spec_lean);
+    // `max_steps` declarations that `Spec.lean` keeps private are public in a
+    // module, whose public `specs` refers to them.
+    let steps = wrap("total, max_steps = 2", "fn f()");
+    assert!(lower_one(&steps).unwrap().spec_lean.contains("private noncomputable def"));
+    let module =
+        lower_selected(&steps, &Options { claim: Some("f".into()), ..opts.clone() }).unwrap();
+    assert!(module.spec_lean.contains("noncomputable def contractSpecs"), "{}", module.spec_lean);
+    assert!(!module.spec_lean.contains("private"), "{}", module.spec_lean);
+
+    // A derived claim that is not a valid module name (`open` is a Lean
+    // keyword) lowers in v1 but cannot name a v2 module.
+    let open = wrap("ensures(|r| r == x)", "fn open(x: u8) -> u8");
+    lower_one(&open).unwrap();
+    assert_eq!(
+        lower_selected(&open, &Options { claim: Some("open".into()), ..opts.clone() })
+            .err()
+            .unwrap(),
+        ["E_ANNEAL_INVALID_OPTIONS"]
+    );
+    // Moving the items within the file leaves the module unchanged.
+    let moved = format!("// a comment\n\n\n{}", CLAIMS_SPEC.replace("\n    ", "\n        "));
+    assert_eq!(lower_selected(&moved, &opts).unwrap().spec_lean, m.spec_lean);
+
+    for bad in [
+        Options { format: Format::V2Module, ..Options::default() },
+        Options { claim: None, ..opts.clone() },
+        Options { crate_slug: Some("zero-copy".into()), ..opts.clone() },
+        Options { claim: Some("panic".into()), ..opts.clone() },
+        Options { format: Format::V1, ..opts.clone() },
+    ] {
+        assert_eq!(lower_selected(CLAIMS_SPEC, &bad).err().unwrap(), ["E_ANNEAL_INVALID_OPTIONS"]);
+    }
+}
+
+#[test]
+fn specification_paths_in_macro_arguments_are_rejected() {
+    expect_error(
+        "macro_rules! m { ($p:ident :: $q:ident) => { #[cfg($p)] fn f() {} } }\n\
+         m!(anneal::spec);\n#[cfg_attr(anneal, anneal::spec(total))]\nfn g() {}",
+        "E_ANNEAL_IGNORED_ATTRIBUTE",
+    );
+}
+
+#[test]
+fn derived_claims_may_not_collide() {
+    let derived = "anneal::external_spec! {
+        mod foo { #[anneal::spec(total)] fn bar(); }
+        #[anneal::spec(total)] fn foo__bar();
+    }";
+    expect_error(derived, "E_ANNEAL_CLAIM_COLLISION");
+    let explicit = "anneal::external_spec! {
+        #[anneal::spec(total)] fn g();
+        #[anneal::spec(claim = \"g\", total)] fn h();
+    }";
+    expect_error(explicit, "E_ANNEAL_CLAIM_COLLISION");
+    // Explicit claims are shared on purpose.
+    lower_one(CLAIMS_SPEC).unwrap();
+}
+
+#[test]
+fn keyword_claims_are_escaped_in_modules() {
+    let text = wrap("claim = \"syntax\", total", "fn f()");
+    let opts = Options {
+        claim: Some("syntax".into()),
+        format: Format::V2Module,
+        crate_slug: Some("zerocopy".into()),
+        ..Options::default()
+    };
+    let m = lower_selected(&text, &opts).unwrap();
+    assert_eq!(m.module_path.as_deref(), Some("Specs/zerocopy/syntax.lean"));
+    assert!(m.spec_lean.contains("\nnamespace Specs.«zerocopy».«syntax»\n"), "{}", m.spec_lean);
+}
+
+#[test]
+fn list_targets_reports_every_item_and_accepts_none() {
+    let sources = [
+        src("spec.rs", CLAIMS_SPEC),
+        Source {
+            label: "lib.rs".into(),
+            text: "#[cfg_attr(anneal, anneal::spec(total))]\nfn d() {}\n".into(),
+            module: Vec::new(),
+        },
+    ];
+    let t = list_targets(&sources).unwrap_or_else(|_| panic!("listing failed"));
+    let got: Vec<_> =
+        t.iter().map(|t| (t.target.as_str(), t.claim.as_str(), t.file, t.external)).collect();
+    assert_eq!(
+        got,
+        [
+            ("a", "pair", 0, true),
+            ("b", "pair", 0, true),
+            ("d", "d", 1, false),
+            ("m::c", "m__c", 0, true)
+        ]
+    );
+    assert!(list_targets(&[src("lib.rs", "fn f() {}")]).unwrap_or_else(|_| panic!()).is_empty());
+    assert!(list_targets(&[src("lib.rs", "#[anneal::spec(total)] fn f();")]).is_err());
+    for dup in ["target = \"a\", target = \"b\"", "claim = \"c1\", claim = \"c2\""] {
+        let text = format!("#[cfg_attr(anneal, anneal::spec({dup}, total))]\nfn f() {{}}\n");
+        let errs = list_targets(&[src("lib.rs", &text)]).err().unwrap_or_else(|| panic!("{dup}"));
+        assert_eq!(errs[0].diag.code, "E_ANNEAL_DUPLICATE_CLAUSE");
+    }
+    // Listing checks no clauses, so files that different units lower may
+    // each define a helper of the same name, or use one defined elsewhere.
+    let a = "#[cfg_attr(anneal, anneal::pure)]\nfn h() -> bool { true }\n\
+             #[cfg_attr(anneal, anneal::spec(requires(h())))]\nfn a() {}\n";
+    let b = "#[cfg_attr(anneal, anneal::pure)]\nfn h() -> bool { false }\n\
+             #[cfg_attr(anneal, anneal::spec(requires(elsewhere())))]\nfn b() {}\n";
+    let both = [src("a.rs", a), src("b.rs", b)];
+    let listed = list_targets(&both).unwrap_or_else(|_| panic!("listing failed"));
+    assert_eq!(listed.len(), 2);
+    assert!(lower(&both).is_err());
+}
+
+#[test]
+fn anneal_cfg_may_only_enable_specification_attributes() {
+    for ok in [
+        "#[cfg_attr(anneal, anneal::spec(total))]\nfn f() {}",
+        "fn f() -> &'static str { \"anneal\" }",
+        "#[cfg_attr(anneal, anneal::pure)]\nfn p() -> bool { true }",
+        "#[cfg_attr(anneal, anneal::vacuous_ok(reason = \"r\"))]\n\
+         #[cfg_attr(anneal, anneal::spec(requires(false)))]\nfn f() {}",
+        "#[cfg(not(test))]\nfn f() {}\n#[cfg_attr(test, inline)]\nfn g() {}",
+        "fn f() -> bool { cfg!(test) }",
+    ] {
+        lower_one(&format!(
+            "{ok}\n#[cfg_attr(anneal, anneal::spec(total))]\nfn spec_anchor() {{}}"
+        ))
+        .unwrap_or_else(|e| panic!("{ok}: {e:?}"));
+    }
+    for bad in [
+        "#[cfg(anneal)]\nfn f() {}",
+        "#![cfg(anneal)]",
+        "#[cfg(any(anneal, test))]\nfn f() {}",
+        "#[cfg_attr(anneal, inline)]\nfn f() {}",
+        "#[cfg_attr(any(anneal, test), anneal::spec(total))]\nfn f() {}",
+        "#[cfg_attr(not(anneal), inline)]\nfn f() {}",
+        "#[cfg_attr(anneal, anneal::spec(total), inline)]\nfn f() {}",
+        "#[cfg_attr(anneal)]\nfn f() {}",
+        "#[cfg_attr(anneal, anneal::pure, anneal::pure)]\nfn p() -> bool { true }",
+        "#[cfg_attr(test, cfg(anneal))]\nfn f() {}",
+        "fn f() -> bool { cfg!(anneal) }",
+        "macro_rules! m { () => { #[cfg(anneal)] fn f() {} } }",
+        "#[cfg(r#anneal)]\nfn f() {}",
+        "#[r#cfg(anneal)]\nfn f() {}",
+        "#[r#cfg_attr(r#anneal, inline)]\nfn f() {}",
+        "#[cfg_attr(r#anneal, anneal::spec(total))]\nfn f() {}",
+        "fn f() -> bool { r#cfg!(r#anneal) }",
+        // A macro can assemble a cfg predicate from separate tokens, so the
+        // identifier `anneal` is reserved everywhere else.
+        "macro_rules! m { ($p:meta) => { #[cfg($p)] fn f() {} } }\nm!(not(anneal));",
+        "macro_rules! m { ($a:meta) => { #[$a] fn f() {} } }\nm!(cfg(anneal));",
+        "fn f() { let anneal = 1; }",
+        "cfg_select! { anneal => { fn f() {} } _ => { fn f() {} } }",
+        "core::cfg_select! { r#anneal => {} _ => {} }",
+        "#[derive(D)]\n#[d(cfg(anneal))]\nstruct S;",
+        "macro_rules! m { ($p:ident :: $q:ident) => { #[cfg($p)] fn f() {} } }\nm!(anneal::x);",
+        "macro_rules! m { ($p:ident ::) => { #[cfg($p)] fn f() {} } }\nm!(anneal::);",
+        "macro_rules! m { ($p:ident : :) => { #[cfg($p)] fn f() {} } }\nm!(anneal : :);",
+        "macro_rules! m { ($p:ident :: $q:ident) => { #[cfg($p)] fn f() {} } }\nm!(r#anneal::spec);",
+    ] {
+        let text =
+            format!("{bad}\n#[cfg_attr(anneal, anneal::spec(total))]\nfn spec_anchor() {{}}");
+        expect_error(&text, "E_ANNEAL_BARE_OR_COMPOUND_CFG");
+    }
+}
+
+#[test]
+fn cli_selects_lists_and_writes_v2_modules() {
+    let bin = env!("CARGO_BIN_EXE_anneal-spec-lower");
+    let tmp = std::env::temp_dir().join(format!("anneal-spec-v2-{}", std::process::id()));
+    fs::create_dir_all(&tmp).unwrap();
+    fs::write(tmp.join("spec.rs"), CLAIMS_SPEC).unwrap();
+    let run = |args: &[&str]| {
+        Command::new(bin).arg("--src-root").arg(&tmp).args(args).arg("spec.rs").output().unwrap()
+    };
+
+    let out = run(&["--list-targets"]);
+    assert!(out.status.success(), "{}", String::from_utf8_lossy(&out.stderr));
+    let listed: serde_json::Value = serde_json::from_slice(&out.stdout).unwrap();
+    assert_eq!(
+        listed[0],
+        serde_json::json!({"target": "a", "claim": "pair", "file": "spec.rs", "kind": "external"})
+    );
+    assert_eq!(listed.as_array().unwrap().len(), 3);
+
+    let out_dir = tmp.join("out");
+    let v2 = ["--format", "v2-module", "--crate-slug", "zerocopy", "--claim", "pair"];
+    let out = run(&[&v2[..], &["--out-dir", out_dir.to_str().unwrap()]].concat());
+    assert!(out.status.success(), "{}", String::from_utf8_lossy(&out.stderr));
+    assert!(out_dir.join("Specs/zerocopy/pair.lean").is_file());
+    assert!(!out_dir.join("spec_span_map.json").exists());
+    let out = run(&[&v2[..], &["--check", out_dir.to_str().unwrap()]].concat());
+    assert!(out.status.success(), "{}", String::from_utf8_lossy(&out.stderr));
+
+    assert_eq!(
+        run(&["--claim", "nope", "--check", out_dir.to_str().unwrap()]).status.code(),
+        Some(1)
+    );
+    assert_eq!(run(&["--format", "v2-module", "--out-dir", "x"]).status.code(), Some(2));
+    assert_eq!(run(&["--list-targets", "--claim", "pair"]).status.code(), Some(2));
+    assert_eq!(run(&["--list-targets", "--format", "v1"]).status.code(), Some(2));
+    assert_eq!(run(&["--list-targets", "--out-dir", "x"]).status.code(), Some(2));
+    assert_eq!(run(&["--crate-slug", "zerocopy", "--out-dir", "x"]).status.code(), Some(2));
+    fs::remove_dir_all(&tmp).unwrap();
 }
