@@ -378,12 +378,13 @@ private theorem nat_land_sub_one_eq_zero :
         rw [hEven, Nat.add_zero] at hm
         exact hm.symm
       have hQPos : 0 < q := by
+        revert hN
         cases hq : q with
         | zero =>
-          rw [hq, Nat.mul_zero] at hN
+          intro hN; rw [Nat.mul_zero] at hN
           rw [hN] at hpos
           nomatch hpos
-        | succ q' => exact Nat.zero_lt_succ q'
+        | succ q' => intro hN; exact Nat.zero_lt_succ q'
       have hN1 : n - 1 = 2 * (q - 1) + 1 := by
         have hQ : q = (q - 1) + 1 := Eq.symm (Nat.sub_add_cancel hQPos)
         have h1 : n = (2 * (q - 1) + 1) + 1 := by
@@ -443,10 +444,11 @@ private theorem nat_land_sub_one_eq_zero :
         change (n.testBit (i + 1) && (n - 1).testBit (i + 1)) = false at hBit
         rw [nat_testBit_succ, nat_testBit_succ, hDivN1] at hBit
         change (q.testBit i && q.testBit i) = false at hBit
+        revert hBit
         cases hq : q.testBit i with
-        | false => rfl
+        | false => intro hBit; rfl
         | true =>
-          rw [hq] at hBit
+          intro hBit
           exact hBit
       refine ⟨0, Nat.zero_lt_succ w, ?_⟩
       rw [hN, hQ0, Nat.mul_zero, Nat.zero_add, nat_pow_zero]
@@ -1268,11 +1270,8 @@ private theorem evalBinOp_unsigned_sub_align (w : IntWidth) (b₁ b₂ : BitVec 
   have hGuard : (!(IntWidth.beq w w && (false == false))) = false := by
     rw [IntWidth.beq_iff.mpr rfl]
     rfl
-  unfold evalBinOp evalArithOp truncateScalar
-  dsimp only
-  rw [MirWp.ite_bool_false (rfl : BinOp.sub.isShift = false),
-    MirWp.ite_bool_false hGuard]
-  exact MirWp.ite_bool_false (MirWp.and_isUnchecked_false rfl)
+  exact (MirWp.ite_bool_false hGuard).trans
+    (MirWp.ite_bool_false (MirWp.and_isUnchecked_false rfl))
 
 private theorem bvOfInt_negSucc (w m : Nat)
     (hm : m < Nat.pow 2 w) :
@@ -1368,10 +1367,11 @@ private theorem sub_64_bits_eq (x y : BitVec 64) :
     have hSubInt : Int.ofNat x.toNat - Int.ofNat y.toNat =
         Int.negSucc (y.toNat - x.toNat - 1) := by
       rw [int_ofNat_sub_ofNat]
+      revert hdPos
       cases hd : y.toNat - x.toNat with
-      | zero => rw [hd] at hdPos; cases hdPos
+      | zero => intro hdPos; cases hdPos
       | succ _ =>
-        unfold Int.subNatNat
+        intro hdPos; unfold Int.subNatNat
         rw [hd]
         rfl
     have hDiff64 :
@@ -1405,7 +1405,6 @@ private theorem not_64_bits_eq (x : BitVec 64) :
     rw [MirWp.truncateBits_i64_bvZeroExtend, MirWp.bvZeroExtend_128_toNat]
   rw [hDec]
   unfold intNot
-  dsimp only
   have hPow64Pos : 0 < Nat.pow 2 64 := nat_two_pow_pos 64
   have hdPos : 0 < x.toNat + 1 := Nat.zero_lt_succ x.toNat
   have hdLe : x.toNat + 1 ≤ Nat.pow 2 64 := x.isLt
@@ -1455,7 +1454,6 @@ theorem evalUnOp_not_u64 (x : BitVec 64) :
     evalUnOp .not (alignU64Val x) =
       .ok (alignU64Val (Anneal.BitVec.not x)) := by
   unfold evalUnOp alignU64Val truncateScalar
-  dsimp only
   exact congrArg (fun b => Except.ok (Val.scalar ⟨.i64, false, b⟩))
     (not_64_bits_eq x)
 
@@ -1465,7 +1463,6 @@ theorem evalUnOp_not_usize (x : BitVec 64) :
     evalUnOp .not (alignUsizeVal x) =
       .ok (alignUsizeVal (Anneal.BitVec.not x)) := by
   unfold evalUnOp alignUsizeVal truncateScalar
-  dsimp only
   exact congrArg (fun b => Except.ok (Val.scalar ⟨.isize, false, b⟩))
     (not_64_bits_eq x)
 

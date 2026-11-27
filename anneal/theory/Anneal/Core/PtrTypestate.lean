@@ -407,9 +407,10 @@ private theorem pt_drop_take_splice_disjoint (off1 off2 sz2 : Nat)
       (xs.drop off2).take sz2 := by
   have hLe1 : off1 + bs1.length ≤ xs.length := Nat.ble_eq.mp hB1
   have hOff1Le : off1 ≤ xs.length := Nat.le_trans (Nat.le_add_right off1 _) hLe1
+  revert hDisj
   cases hLeft : Nat.ble (off1 + bs1.length) off2 with
   | true =>
-    have hLeOff2 : off1 + bs1.length ≤ off2 := Nat.ble_eq.mp hLeft
+    intro hDisj; have hLeOff2 : off1 + bs1.length ≤ off2 := Nat.ble_eq.mp hLeft
     have hPreLen : (xs.take off1 ++ bs1).length = off1 + bs1.length := by
       rw [List.length_append, pt_list_take_length_of_le off1 xs hOff1Le]
     rw [pt_drop_take_append_right off2 sz2 (xs.take off1 ++ bs1)
@@ -417,7 +418,7 @@ private theorem pt_drop_take_splice_disjoint (off1 off2 sz2 : Nat)
         hPreLen]
     exact pt_drop_take_drop_shift (off1 + bs1.length) off2 sz2 xs hLeOff2
   | false =>
-    rw [hLeft] at hDisj
+    intro hDisj
     have hRight : Nat.ble (off2 + sz2) off1 = true := hDisj
     have hLeRight : off2 + sz2 ≤ off1 := Nat.ble_eq.mp hRight
     have hTakeLen : (xs.take off1).length = off1 :=
@@ -750,11 +751,12 @@ private theorem pt_allBytesInit_of_rawBytes?_some (bs : List AllocByte) :
       change (match rawBytes? rest with
         | some tl => some (b :: tl)
         | none => none) = some raw at h
+      revert h
       cases hRest : rawBytes? rest with
       | none =>
-        rw [hRest] at h
+        intro h
         nomatch h
-      | some _rawRest => exact ih hRest
+      | some _rawRest => intro h; exact ih hRest
 
 theorem uintBvCodec_allDecodableInit (endian : TargetEndian) (sz : Nat)
     (hPos : 0 < sz) : AllDecodableInit (uintBvCodec endian sz hPos) := by
@@ -767,12 +769,13 @@ theorem uintBvCodec_allDecodableInit (endian : TargetEndian) (sz : Nat)
     nomatch hDec
   | true =>
     rw [pt_ite_true hLen] at hDec
+    revert hDec
     cases hRaw : rawBytes? bs with
     | none =>
-      rw [hRaw] at hDec
+      intro hDec
       nomatch hDec
     | some _raw =>
-      exact pt_allBytesInit_of_rawBytes?_some bs hRaw
+      intro hDec; exact pt_allBytesInit_of_rawBytes?_some bs hRaw
 
 theorem prod_allDecodableInit {α β : Type} {m n : Nat}
     {c1 : FixedByteCodec α m} {c2 : FixedByteCodec β n}
@@ -787,18 +790,20 @@ theorem prod_allDecodableInit {α β : Type} {m n : Nat}
     nomatch hDec
   | true =>
     rw [pt_ite_true hLen] at hDec
+    revert hDec
     cases hD1 : c1.decode (bs.take m) with
     | none =>
-      rw [hD1] at hDec
+      intro hDec
       nomatch hDec
     | some a =>
-      rw [hD1] at hDec
+      intro hDec
+      revert hDec
       cases hD2 : c2.decode (bs.drop m) with
       | none =>
-        rw [hD2] at hDec
+        intro hDec
         nomatch hDec
       | some b =>
-        rw [← pt_list_take_append_drop m bs]
+        intro hDec; rw [← pt_list_take_append_drop m bs]
         exact AllBytesInit_append (h1 hD1) (h2 hD2)
 
 theorem array_allDecodableInit {α : Type} {n : Nat}
@@ -819,18 +824,20 @@ theorem array_allDecodableInit {α : Type} {n : Nat}
       nomatch hDec
     | true =>
       rw [pt_ite_true hBle] at hDec
+      revert hDec
       cases hD1 : c.decode (bs.take n) with
       | none =>
-        rw [hD1] at hDec
+        intro hDec
         nomatch hDec
       | some x =>
-        rw [hD1] at hDec
+        intro hDec
+        revert hDec
         cases hD2 : FixedByteCodec.decodeChunks c k (bs.drop n) with
         | none =>
-          rw [hD2] at hDec
+          intro hDec
           nomatch hDec
         | some xs =>
-          rw [← pt_list_take_append_drop n bs]
+          intro hDec; rw [← pt_list_take_append_drop n bs]
           exact AllBytesInit_append (hc hD1) (array_allDecodableInit hc k hD2)
 
 theorem padRight_not_allDecodableInit {α : Type} {n pad : Nat}
@@ -1139,12 +1146,13 @@ theorem ptrHolds_frame_writeBytes {α : Type} {n : Nat}
   unfold writeBytesComp at hWrite
   rw [pt_nat_ble_zero_false_of_pos hNz] at hWrite
   dsimp only [pt_ite_false_true] at hWrite
+  revert hWrite
   cases hFindW : findAllocationComp subWrite.allocId mem1.allocations with
   | none =>
-    rw [hFindW] at hWrite
+    intro hWrite
     nomatch hWrite
   | some aW =>
-    rw [hFindW] at hWrite
+    intro hWrite
     dsimp only at hWrite
     cases hGuard : (!aW.live ||
         !isInBoundsComp aW subWrite.offset bsWrite.length ||
@@ -1171,9 +1179,10 @@ theorem ptrHolds_frame_writeBytes {α : Type} {n : Nat}
         have hG2 := pt_bor_false_elim hG1.1
         have hBoundsW :
             Nat.ble (subWrite.offset + bsWrite.length) aW.bytes.length = true := by
+          revert hG2
           cases hb : isInBoundsComp aW subWrite.offset bsWrite.length with
-          | true => exact hb
-          | false => rw [hb] at hG2; exact False.elim (pt_true_ne_false hG2.2)
+          | true => intro hG2; exact hb
+          | false => intro hG2; exact False.elim (pt_true_ne_false hG2.2)
         have hAllocIdW : aW.allocId = subWrite.allocId :=
           findAllocationComp_allocId subWrite.allocId mem1.allocations aW hFindW
         let bytesW :=
@@ -1333,12 +1342,13 @@ theorem ptrHolds_of_memDisjointFrame {α : Type} {n : Nat}
   let ⟨_, hAlloc⟩ := hFrame
   have hSpec := hAlloc sub.allocId hLt
   rw [hFind1] at hSpec
+  revert hSpec
   cases hFind2 : findAllocation sub.allocId m2.allocations with
   | none =>
-    rw [hFind2] at hSpec
+    intro hSpec
     exact False.elim hSpec
   | some a2 =>
-    rw [hFind2] at hSpec
+    intro hSpec
     dsimp only at hSpec
     let ⟨_, hAlEq, hMutEq, hLiveEq, hLenEq, hByteEq⟩ := hSpec
     have hLive2 : a2.live = true := by rw [hLiveEq]; exact hLive1
@@ -1449,14 +1459,16 @@ theorem ptrAsRefRead_sound {α : Type} {n : Nat} (sub : ByteSubLens)
   have hCanAl := pt_band_left hCan12
   have hCanVal := pt_band_right hCan12
   have hCanAlEq : inv.align = .aligned := by
+    revert hCanAl
     cases hA : inv.align with
-    | aligned => rfl
-    | unaligned => rw [hA] at hCanAl; exact False.elim (pt_false_ne_true hCanAl)
+    | aligned => intro hCanAl; rfl
+    | unaligned => intro hCanAl; exact False.elim (pt_false_ne_true hCanAl)
   have hCanValEq : inv.validity = .safe := by
+    revert hCanVal
     cases hV : inv.validity with
-    | safe => rfl
+    | safe => intro hCanVal; rfl
     | initialized | asInitialized | uninit =>
-      rw [hV] at hCanVal
+      intro hCanVal
       exact False.elim (pt_false_ne_true hCanVal)
   rw [hCanValEq] at hVal
   let ⟨x, hDec⟩ := hVal.2
@@ -1538,19 +1550,22 @@ theorem ptrAsMut_access_sound {α : Type} {n : Nat} (sub : ByteSubLens)
   have hCanAl := pt_band_right hCan12
   have hCanVal := pt_band_right hCan
   have hAliasEq : inv.aliasing = .exclusive := by
+    revert hCanAlias
     cases hE : inv.aliasing with
-    | exclusive => rfl
+    | exclusive => intro hCanAlias; rfl
     | shared =>
-      rw [hE] at hCanAlias; exact False.elim (pt_false_ne_true hCanAlias)
+      intro hCanAlias; exact False.elim (pt_false_ne_true hCanAlias)
   have hAlignEq : inv.align = .aligned := by
+    revert hCanAl
     cases hA : inv.align with
-    | aligned => rfl
-    | unaligned => rw [hA] at hCanAl; exact False.elim (pt_false_ne_true hCanAl)
+    | aligned => intro hCanAl; rfl
+    | unaligned => intro hCanAl; exact False.elim (pt_false_ne_true hCanAl)
   have hValEq : inv.validity = .safe := by
+    revert hCanVal
     cases hV : inv.validity with
-    | safe => rfl
+    | safe => intro hCanVal; rfl
     | initialized | asInitialized | uninit =>
-      rw [hV] at hCanVal; exact False.elim (pt_false_ne_true hCanVal)
+      intro hCanVal; exact False.elim (pt_false_ne_true hCanVal)
   rw [hValEq] at hVal
   let ⟨oldX, hDecOld⟩ := hVal.2
   have hMutA : a.mutability = .mut := hMut hAliasEq
@@ -1564,7 +1579,6 @@ theorem ptrAsMut_access_sound {α : Type} {n : Nat} (sub : ByteSubLens)
     have hPosSz : Nat.blt 0 sub.size = true := by
       rw [hSz]; exact pt_nat_ble_one_of_pos hPos
     rw [hPosSz]
-    dsimp only
     rw [hFindComp]
     dsimp only
     rw [hMutA]
@@ -1596,7 +1610,6 @@ theorem ptrAsMut_access_sound {α : Type} {n : Nat} (sub : ByteSubLens)
       pt_band_intro (by rw [hSz]; exact pt_nat_ble_one_of_pos hPos)
         (pt_nat_beq_of_eq hPutLen)
     rw [hConj]
-    dsimp only
     rw [hWB]
   have hGetAfter : byteSubLensGet sub mem' = some (c.encode y) :=
     byteSubLens_put_get sub mem mem' (c.encode y) hPutSome
@@ -1990,7 +2003,6 @@ theorem ptrRead_agrees_with_byteSubLensGet {α : Type} {n : Nat}
   rw [pt_ite_true hCond, hEff]
   unfold byteSubLensGet
   rw [hPosSz]
-  dsimp only
   rw [hFindComp]
   dsimp only
   rw [hMutA]
@@ -2125,7 +2137,6 @@ theorem ptrWrite_sound {α : Type} {n : Nat} (sub : ByteSubLens)
       c inv.validity uc hMutCompat mem' hSafeAfter
   · have hCanR : canPtrRead ({ inv with validity := .safe }.aliasing) uc =
         true := by
-      dsimp only
       rw [hExcl]
       rfl
     have hValR : validityIsSafe ({ inv with validity := .safe }.validity) =
@@ -2183,14 +2194,15 @@ theorem ptrWrite_preserves_disjoint_ptrHolds {α β : Type} {n m : Nat}
       exact Nat.ble_eq.mp (pt_band_right (pt_band_left hCond))
     have hSzLen : (cW.encode x).length = subW.size := by
       rw [cW.encode_length x, hSzEq]
+    revert hWrite
     cases hWB :
         writeBytesComp mem1 ⟨subW.allocId, subW.offset⟩
           (ptrEffectiveAlignLog2 subW invW) (cW.encode x) with
     | error _ =>
-      rw [hWB] at hWrite
+      intro hWrite
       nomatch hWrite
     | ok memOut =>
-      rw [hWB] at hWrite
+      intro hWrite
       injection hWrite with hMemEq
       rw [← hMemEq]
       rw [writeBytesComp_eq] at hWB
@@ -2423,20 +2435,25 @@ theorem padding_refutes_intoBytes_and_unpadded_transmute :
   have hAsInit :
       PtrHolds sub (FixedByteCodec.padRight (u16Codec .little) 2)
         ⟨.exclusive, .aligned, .asInitialized⟩ false mem := by
-    let ⟨hPos, hSz, a, hFind, hLive, hBounds, hMut, hAlign, hVal⟩ := hSafe
-    exact ⟨hPos, hSz, a, hFind, hLive, hBounds, hMut, hAlign,
-      validityHolds_safe_to_asInitialized _ _ hVal⟩
+    cases hSafe.2.2 with
+    | intro a ha =>
+      exact ⟨hSafe.1, hSafe.2.1, a, ha.1, ha.2.1, ha.2.2.1, ha.2.2.2.1,
+        ha.2.2.2.2.1, validityHolds_safe_to_asInitialized _ _ ha.2.2.2.2.2⟩
   refine ⟨hNotInit, hNotDecInit, sub, mem, hSafe, hAsInit, ?_, ?_⟩
-  · intro ⟨_, _, a, hFind, _, _, _, _, hVal⟩
-    injection hFind with hEq
-    subst hEq
-    have hBad : allBytesInit bs = true := hVal.2
-    nomatch hBad
-  · intro ⟨_, _, a, hFind, _, _, _, _, hVal⟩
-    injection hFind with hEq
-    subst hEq
-    let ⟨_, hDec⟩ := hVal.2
-    nomatch hDec
+  · intro h
+    cases h.2.2 with
+    | intro a ha =>
+      injection ha.1 with hEq
+      subst hEq
+      have hBad : allBytesInit bs = true := ha.2.2.2.2.2.2
+      nomatch hBad
+  · intro h
+    cases h.2.2 with
+    | intro a ha =>
+      injection ha.1 with hEq
+      subst hEq
+      cases ha.2.2.2.2.2.2 with
+      | intro _ hDec => nomatch hDec
 
 end Anneal.Core
 

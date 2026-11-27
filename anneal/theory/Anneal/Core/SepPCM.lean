@@ -101,12 +101,13 @@ theorem ExplPCM.assoc_forward {M : Type} (pcm : ExplPCM M)
   rw [hab] at h
   dsimp only [optBind] at h
   rw [habc] at h
+  revert h
   cases hbc : pcm.op b c with
   | none =>
-    rw [hbc] at h
+    intro h
     cases h
   | some bc =>
-    rw [hbc] at h
+    intro h
     exact ⟨bc, rfl, h.symm⟩
 
 /-- Backward reassociation `b • c = bc → a • bc = abc → ∃ ab, a • b = ab ∧
@@ -119,12 +120,13 @@ theorem ExplPCM.assoc_backward {M : Type} (pcm : ExplPCM M)
   rw [hbc] at h
   dsimp only [optBind] at h
   rw [habc] at h
+  revert h
   cases hab : pcm.op a b with
   | none =>
-    rw [hab] at h
+    intro h
     cases h
   | some ab =>
-    rw [hab] at h
+    intro h
     exact ⟨ab, rfl, h⟩
 
 /-- Compatibility / disjointness relation `∃ c, pcm.op a b = some c`. -/
@@ -298,12 +300,13 @@ theorem addrBeq_iff (a b : ByteAddr) : addrBeq a b = true ↔ a = b := by
       dsimp only
       constructor
       · intro h
+        revert h
         cases hId : Nat.beq aId bId with
         | false =>
-          rw [hId] at h
+          intro h
           cases h
         | true =>
-          rw [hId, Bool.true_and] at h
+          intro h; rw [Bool.true_and] at h
           have e1 := Nat.eq_of_beq_eq_true hId
           have e2 := Nat.eq_of_beq_eq_true h
           subst e1; subst e2
@@ -737,26 +740,30 @@ private theorem mergeDisjointEntries_bounded {V : Type}
     | cons kvy ytl ihY =>
       intro zs lo hBx hBy hM
       rw [mergeDisjointEntries_cons_cons] at hM
+      revert hM
       cases hXY : addrLt kvx.1 kvy.1 with
       | true =>
-        rw [hXY] at hM
+        intro hM
+        revert hM
         cases hSub : mergeDisjointEntries xtl (kvy :: ytl) with
-        | none => rw [hSub] at hM; cases hM
+        | none => intro hM; cases hM
         | some r =>
-          rw [hSub] at hM
+          intro hM
           injection hM with hEq
           subst hEq
           exact ⟨hBx.1, ihX (kvy :: ytl) r kvx.1 hBx.2 ⟨hXY, hBy.2⟩ hSub⟩
       | false =>
-        rw [hXY] at hM
+        intro hM
+        revert hM
         cases hYX : addrLt kvy.1 kvx.1 with
-        | false => rw [hYX] at hM; cases hM
+        | false => intro hM; cases hM
         | true =>
-          rw [hYX] at hM
+          intro hM
+          revert hM
           cases hSub : mergeDisjointEntries (kvx :: xtl) ytl with
-          | none => rw [hSub] at hM; cases hM
+          | none => intro hM; cases hM
           | some r =>
-            rw [hSub] at hM
+            intro hM
             injection hM with hEq
             subst hEq
             exact ⟨hBy.1, ihY r kvy.1 ⟨hYX, hBx.2⟩ hBy.2 hSub⟩
@@ -781,27 +788,31 @@ theorem mergeDisjointEntries_sorted {V : Type}
       exact hSx
     | cons kvy ytl =>
       rw [mergeDisjointEntries_cons_cons] at hM
+      revert hM
       cases hXY : addrLt kvx.1 kvy.1 with
       | true =>
-        rw [hXY] at hM
+        intro hM
+        revert hM
         cases hSub : mergeDisjointEntries xtl (kvy :: ytl) with
-        | none => rw [hSub] at hM; cases hM
+        | none => intro hM; cases hM
         | some r =>
-          rw [hSub] at hM
+          intro hM
           injection hM with hEq
           subst hEq
           exact mergeDisjointEntries_bounded xtl (kvy :: ytl) r kvx.1
             hSx ⟨hXY, hSy⟩ hSub
       | false =>
-        rw [hXY] at hM
+        intro hM
+        revert hM
         cases hYX : addrLt kvy.1 kvx.1 with
-        | false => rw [hYX] at hM; cases hM
+        | false => intro hM; cases hM
         | true =>
-          rw [hYX] at hM
+          intro hM
+          revert hM
           cases hSub : mergeDisjointEntries (kvx :: xtl) ytl with
-          | none => rw [hSub] at hM; cases hM
+          | none => intro hM; cases hM
           | some r =>
-            rw [hSub] at hM
+            intro hM
             injection hM with hEq
             subst hEq
             exact mergeDisjointEntries_bounded (kvx :: xtl) ytl r kvy.1
@@ -846,13 +857,15 @@ private theorem mergeDisjointEntries_sound {V : Type}
         cases ytl with
         | nil => exact True.intro
         | cons _ _ => exact hSy.2
+      revert hM
       cases hXY : addrLt kvx.1 kvy.1 with
       | true =>
-        rw [hXY] at hM
+        intro hM
+        revert hM
         cases hSub : mergeDisjointEntries xtl (kvy :: ytl) with
-        | none => rw [hSub] at hM; cases hM
+        | none => intro hM; cases hM
         | some r =>
-          rw [hSub] at hM
+          intro hM
           injection hM with hEq
           subst hEq
           have hSubSpec := ihX (kvy :: ytl) r hSx' hSy hSub
@@ -881,15 +894,17 @@ private theorem mergeDisjointEntries_sound {V : Type}
             | true => rfl
             | false => exact hSubSpec.2 k
       | false =>
-        rw [hXY] at hM
+        intro hM
+        revert hM
         cases hYX : addrLt kvy.1 kvx.1 with
-        | false => rw [hYX] at hM; cases hM
+        | false => intro hM; cases hM
         | true =>
-          rw [hYX] at hM
+          intro hM
+          revert hM
           cases hSub : mergeDisjointEntries (kvx :: xtl) ytl with
-          | none => rw [hSub] at hM; cases hM
+          | none => intro hM; cases hM
           | some r =>
-            rw [hSub] at hM
+            intro hM
             injection hM with hEq
             subst hEq
             have hSubSpec := ihY r hSx hSy' hSub
@@ -1017,7 +1032,7 @@ private theorem boundedEntriesBool_iff {V : Type}
   | cons kv tl ih =>
     change (addrLt lo kv.1 && boundedEntriesBool tl kv.1) = true ↔
       (addrLt lo kv.1 = true ∧ BoundedEntries tl kv.1)
-    cases hLt : addrLt lo kv.1 with
+    cases addrLt lo kv.1 with
     | false =>
       constructor
       · intro hf; rw [Bool.false_and] at hf; cases hf
@@ -1175,9 +1190,10 @@ private theorem orElseOpt_assoc {V : Type} (x y z : Option V) :
             | inl ha => exact .inl ha
             | inr hbcNone =>
               rw [spBC.2 k] at hbcNone
+              revert hbcNone
               cases hb : lookupEntries b.entries k with
-              | none => exact .inr rfl
-              | some _ => rw [hb] at hbcNone; cases hbcNone
+              | none => intro hbcNone; exact .inr rfl
+              | some _ => intro hbcNone; cases hbcNone
           let ⟨_, hEx⟩ :=
             mergeDisjointEntries_complete a.entries b.entries a.sorted b.sorted hDisjAB
           rw [hAB] at hEx
@@ -1237,10 +1253,11 @@ private theorem orElseOpt_assoc {V : Type} (x y z : Option V) :
           | inr hc0 => exact .inr hc0
           | inl hab0 =>
             rw [spAB.2 k] at hab0
+            revert hab0
             cases ha : lookupEntries a.entries k with
-            | some _ => rw [ha] at hab0; cases hab0
+            | some _ => intro hab0; cases hab0
             | none =>
-              rw [ha] at hab0
+              intro hab0
               exact .inl hab0
         let ⟨zsBC, hBC⟩ :=
           mergeDisjointEntries_complete b.entries c.entries b.sorted c.sorted hDisjBC
@@ -1279,7 +1296,6 @@ private theorem orElseOpt_assoc {V : Type} (x y z : Option V) :
         exact congrArg some (sortedAssocMap_ext hEqEntries)
   unit_left := fun a => by
     unfold SortedAssocMap.merge SortedAssocMap.empty
-    dsimp only
     rw [mergeDisjointEntries_nil_left, mkSortedAssocMap?_some a.sorted]
   cancellative := fun a b₁ b₂ c h1 h2 => by
     unfold SortedAssocMap.merge at h1 h2
@@ -1398,12 +1414,13 @@ theorem bytePointsTo_framePreserving_update (addr : ByteAddr)
   unfold byteHeapletPCM sortedAssocPCM SortedAssocMap.merge
     SortedAssocMap.singleton at hop
   dsimp only at hop
+  revert hop
   cases hM1 : mergeDisjointEntries [(addr, v₁)] hf.entries with
   | none =>
-    rw [hM1] at hop
+    intro hop
     cases hop
   | some zs1 =>
-    have hSp1 :=
+    intro hop; have hSp1 :=
       mergeDisjointEntries_sound [(addr, v₁)] hf.entries zs1 True.intro
         hf.sorted hM1
     have hDisj2 : DisjointEntries [(addr, v₂)] hf.entries := by
@@ -1494,26 +1511,29 @@ theorem MemDisjointFrame.trans {fp : ByteFootprint}
   refine ⟨Nat.le_trans h₁₂.1 h₂₃.1, fun aid hLt1 => ?_⟩
   have h1 := h₁₂.2 aid hLt1
   have h2 := h₂₃.2 aid (Nat.lt_of_lt_of_le hLt1 h₁₂.1)
+  revert h1
   cases f1 : findAllocation aid m₁.allocations with
   | none =>
-    rw [f1] at h1
+    intro h1
     cases f2 : findAllocation aid m₂.allocations with
     | some _ => rw [f2] at h1; exact False.elim h1
     | none =>
       rw [f2] at h2
+      revert h2
       cases f3 : findAllocation aid m₃.allocations with
-      | none => exact True.intro
-      | some _ => rw [f3] at h2; exact False.elim h2
+      | none => intro h2; exact True.intro
+      | some _ => intro h2; exact False.elim h2
   | some a1 =>
-    rw [f1] at h1
+    intro h1
     cases f2 : findAllocation aid m₂.allocations with
     | none => rw [f2] at h1; exact False.elim h1
     | some a2 =>
       rw [f2] at h1 h2
+      revert h2
       cases f3 : findAllocation aid m₃.allocations with
-      | none => rw [f3] at h2; exact False.elim h2
+      | none => intro h2; exact False.elim h2
       | some a3 =>
-        rw [f3] at h2
+        intro h2
         exact ⟨h2.1.trans h1.1,
                h2.2.1.trans h1.2.1,
                h2.2.2.1.trans h1.2.2.1,
@@ -1687,14 +1707,16 @@ private theorem atomBag_eq_of_beqAt :
   | d + 1, .node l1 c1 r1, .node l2 c2 r2, h => by
     change cond (Nat.beq c1 c2)
       (cond (AtomBag.beqAt d l1 l2) (AtomBag.beqAt d r1 r2) false) false = true at h
+    revert h
     cases hc : Nat.beq c1 c2 with
-    | false => rw [hc] at h; cases h
+    | false => intro h; cases h
     | true =>
-      rw [hc] at h; dsimp only [cond] at h
+      intro h; dsimp only [cond] at h
+      revert h
       cases hl : AtomBag.beqAt d l1 l2 with
-      | false => rw [hl] at h; cases h
+      | false => intro h; cases h
       | true =>
-        rw [hl] at h; dsimp only [cond] at h
+        intro h; dsimp only [cond] at h
         rw [Nat.eq_of_beq_eq_true hc, atomBag_eq_of_beqAt hl,
           atomBag_eq_of_beqAt h]
 
@@ -1884,14 +1906,16 @@ private theorem evalBagAt_addAt {M : Type} (pcm : ExplPCM M)
           match AtomBag.addAt d r1 r2 with
           | none => none
           | some r => some (AtomBag.make l (c1 + c2) r)) = some ab at h
+    revert h
     cases hl : AtomBag.addAt d l1 l2 with
-    | none => rw [hl] at h; cases h
+    | none => intro h; cases h
     | some l =>
-      rw [hl] at h
+      intro h
+      revert h
       cases hr : AtomBag.addAt d r1 r2 with
-      | none => rw [hr] at h; cases h
+      | none => intro h; cases h
       | some r =>
-        rw [hr] at h
+        intro h
         injection h with hEq; subst hEq
         refine sepEquiv_trans (evalBagAt_make pcm env base stride l (c1 + c2) r) ?_
         exact sepEquiv_trans
@@ -1946,22 +1970,25 @@ private theorem evalBagAt_cancelAt {M : Type} (pcm : ExplPCM M)
             some (AtomBag.make rl.1 (cond (Nat.ble c1 c2) 0 (c1 - c2)) rr.1,
                   AtomBag.make rl.2 (cond (Nat.ble c1 c2) (c2 - c1) 0) rr.2)) =
       some (out1, out2) at h
+    revert h
     cases hl : AtomBag.cancelAt d l1 l2 with
-    | none => rw [hl] at h; cases h
+    | none => intro h; cases h
     | some rl =>
-      rw [hl] at h
+      intro h
+      revert h
       cases hr : AtomBag.cancelAt d r1 r2 with
-      | none => rw [hr] at h; cases h
+      | none => intro h; cases h
       | some rr =>
-        rw [hr] at h
+        intro h
         injection h with hPair
         let ⟨cl, hL1, hL2⟩ :=
           evalBagAt_cancelAt pcm env d l1 l2 rl.1 rl.2 base (2 * stride) hl
         let ⟨cr, hR1, hR2⟩ :=
           evalBagAt_cancelAt pcm env d r1 r2 rr.1 rr.2 (base + stride) (2 * stride) hr
+        revert hPair
         cases hle : Nat.ble c1 c2 with
         | true =>
-          rw [hle] at hPair
+          intro hPair
           dsimp only [cond] at hPair
           have hOut1 : AtomBag.make rl.1 0 rr.1 = out1 := congrArg Prod.fst hPair
           have hOut2 : AtomBag.make rl.2 (c2 - c1) rr.2 = out2 :=
@@ -1994,7 +2021,7 @@ private theorem evalBagAt_cancelAt {M : Type} (pcm : ExplPCM M)
                   (sepConj_interchange pcm _ _ _ _)))
               (sepConj_interchange pcm _ _ _ _)
         | false =>
-          rw [hle] at hPair
+          intro hPair
           dsimp only [cond] at hPair
           have hOut1 : AtomBag.make rl.1 (c1 - c2) rr.1 = out1 :=
             congrArg Prod.fst hPair
@@ -2097,10 +2124,11 @@ private theorem evalBagAt_singletonFuel {M : Type} (pcm : ExplPCM M)
         exact sepEquiv_trans hStep hIh
       | false =>
         have hm1 : Nat.mod m 2 = 1 := by
+          revert hp
           cases hmv : Nat.mod m 2 with
-          | zero => rw [hmv] at hp; cases hp
+          | zero => intro hp; cases hp
           | succ r =>
-            cases r with
+            intro hp; cases r with
             | zero => rfl
             | succ r' =>
               rw [hmv] at hModLt
@@ -2145,10 +2173,11 @@ private theorem sepExpr_eval_toBagAt {M : Type} (pcm : ExplPCM M)
   | _ + 1, .atom i, b, h => by
     change cond (Nat.blt (i + 1) 1048576) (some (AtomBag.singleton i)) none =
       some b at h
+    revert h
     cases hb : Nat.blt (i + 1) 1048576 with
-    | false => rw [hb] at h; cases h
+    | false => intro h; cases h
     | true =>
-      rw [hb] at h; dsimp only [cond] at h
+      intro h; dsimp only [cond] at h
       injection h with hEq; subst hEq
       have hLt : i + 1 < bagPow2 20 := by
         rw [bagPow2_20]
@@ -2164,14 +2193,16 @@ private theorem sepExpr_eval_toBagAt {M : Type} (pcm : ExplPCM M)
           match b.toBagAt d with
           | none => none
           | some bb => AtomBag.addAt 21 ba bb) = some out at h
+    revert h
     cases ha : a.toBagAt d with
-    | none => rw [ha] at h; cases h
+    | none => intro h; cases h
     | some ba =>
-      rw [ha] at h
+      intro h
+      revert h
       cases hb : b.toBagAt d with
-      | none => rw [hb] at h; cases h
+      | none => intro h; cases h
       | some bb =>
-        rw [hb] at h
+        intro h
         exact sepEquiv_trans
           (sepEquiv_conj_congr pcm
             (sepExpr_eval_toBagAt pcm env d a ba ha)
@@ -2204,14 +2235,16 @@ theorem sepAC_equiv_of_boolCertCut {M : Type} (pcm : ExplPCM M)
   have hRaw : sepACCheckEquiv ⟨lhs, rhs⟩ = true := BoolCertCut.unseal hCert
   unfold sepACCheckEquiv at hRaw
   dsimp only at hRaw
+  revert hRaw
   cases hl : lhs.toBagAt 32 with
-  | none => rw [hl] at hRaw; cases hRaw
+  | none => intro hRaw; cases hRaw
   | some bl =>
-    rw [hl] at hRaw
+    intro hRaw
+    revert hRaw
     cases hr : rhs.toBagAt 32 with
-    | none => rw [hr] at hRaw; cases hRaw
+    | none => intro hRaw; cases hRaw
     | some br =>
-      rw [hr] at hRaw
+      intro hRaw
       have hEq : bl = br := atomBag_eq_of_beqAt hRaw
       subst hEq
       exact sepEquiv_trans (sepExpr_eval_toBagAt pcm env 32 lhs bl hl)
@@ -2255,30 +2288,36 @@ private theorem sepACCancel_decompose {M : Type} (pcm : ExplPCM M)
         (sepConj pcm (evalBag pcm env common) (cert.rhsRem.eval pcm env)) := by
   have hRaw : sepACCheckCancel cert = true := BoolCertCut.unseal hCert
   unfold sepACCheckCancel at hRaw
+  revert hRaw
   cases hl : cert.lhs.toBagAt 32 with
-  | none => rw [hl] at hRaw; cases hRaw
+  | none => intro hRaw; cases hRaw
   | some bl =>
-    rw [hl] at hRaw; dsimp only at hRaw
+    intro hRaw; dsimp only at hRaw
+    revert hRaw
     cases hr : cert.rhs.toBagAt 32 with
-    | none => rw [hr] at hRaw; cases hRaw
+    | none => intro hRaw; cases hRaw
     | some br =>
-      rw [hr] at hRaw; dsimp only at hRaw
+      intro hRaw; dsimp only at hRaw
+      revert hRaw
       cases hlr : cert.lhsRem.toBagAt 32 with
-      | none => rw [hlr] at hRaw; cases hRaw
+      | none => intro hRaw; cases hRaw
       | some blr =>
-        rw [hlr] at hRaw; dsimp only at hRaw
+        intro hRaw; dsimp only at hRaw
+        revert hRaw
         cases hrr : cert.rhsRem.toBagAt 32 with
-        | none => rw [hrr] at hRaw; cases hRaw
+        | none => intro hRaw; cases hRaw
         | some brr =>
-          rw [hrr] at hRaw; dsimp only at hRaw
+          intro hRaw; dsimp only at hRaw
+          revert hRaw
           cases hc : AtomBag.cancelAt 21 bl br with
-          | none => rw [hc] at hRaw; cases hRaw
+          | none => intro hRaw; cases hRaw
           | some res =>
-            rw [hc] at hRaw; dsimp only at hRaw
+            intro hRaw; dsimp only at hRaw
+            revert hRaw
             cases h1 : AtomBag.beq res.1 blr with
-            | false => rw [h1] at hRaw; cases hRaw
+            | false => intro hRaw; cases hRaw
             | true =>
-              rw [h1] at hRaw; dsimp only [cond] at hRaw
+              intro hRaw; dsimp only [cond] at hRaw
               have hEq1 : res.1 = blr := atomBag_eq_of_beqAt h1
               have hEq2 : res.2 = brr := atomBag_eq_of_beqAt hRaw
               let ⟨c, hcL, hcR⟩ :=
