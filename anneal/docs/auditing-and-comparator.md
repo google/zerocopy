@@ -324,11 +324,12 @@ dedicated negative refutation fixtures outside `anneal/trusted/`):
 > **Non-adversarial reviewer sanity checks only — NOT anti-adversarial
 > security guarantees.**
 >
-> Everything in `cargo-anneal audit-spec` (`PreInhabited`, clause independence,
-> and Dual-Polar `MutationRefute`) is designed to help *good-faith authors and
-> human reviewers* catch accidental vacuity, contradictory preconditions, or
-> missing return-value bindings. These checks **do not** defend against an
-> adversarial author or reward-hacking agent trying to weaken a specification.
+> Everything in the spec-adequacy checks (`PreInhabited`, clause
+> independence, and Dual-Polar `MutationRefute`) is designed to help
+> *good-faith authors and human reviewers* catch accidental vacuity,
+> contradictory preconditions, or missing return-value bindings. These checks
+> **do not** defend against an adversarial author or reward-hacking agent
+> trying to weaken a specification.
 >
 > **Why:** A single inhabitant witness (`PreInhabited`) proves only that the
 > precondition set is non-empty, not that it covers the intended input domain.
@@ -345,17 +346,28 @@ dedicated negative refutation fixtures outside `anneal/trusted/`):
 > and always-rendered golden spec closures gated by `CODEOWNERS` / `OWNERS`
 > ([`spec-core-and-golden-closure.md`](spec-core-and-golden-closure.md)).
 
-Within that honest boundary, `cargo-anneal audit-spec` provides four structured
-sanity and adequacy checks:
+Within that honest boundary, three structured sanity and adequacy checks are
+defined. `ci/audit_spec.py` implements `PreInhabited` and Dual-Polar
+`MutationRefute` (see [Running `ci/audit_spec.py`](#running-ciaudit_specpy));
+clause independence is not yet implemented.
 
 ### 1. `PreInhabited` (accidental-vacuity witness)
 
-For any precondition-guarded function (`safetyPre` or `behaviorPre`),
-`PreInhabited` asks for an explicit constructive witness
-`ValidEntryArgs body args_0 ∧ safetyPre args_0 ∧ behaviorPre args_0`. This
-catches accidental contradictions (such as `x < 5 ∧ x > 10` or a typo that
-collapses a precondition to `False`) where any postcondition would hold
-vacuously.
+`Anneal.Diag.ConcreteRefute.SpecsPreInhabited` (`SpecsPreInhabitedV2` for
+Profile v2) lets witnesses constructively supply, for every body of the
+captured program, an explicit inhabitant (which `ci/audit_spec.py` checks
+against a harness-emitted `Trusted.*`-only `AuditSpecNvClaim.claim` predicate so
+`theory/` stays outside the statement TCB):
+
+```lean
+∃ args, ValidEntryArgs body args ∧ (body.isUnsafe = true → specs.safety body.identity args)
+```
+
+For `unsafe` bodies this catches
+accidental contradictions in the safety precondition (such as
+`x < 5 ∧ x > 10`, or a typo that collapses it to `False`) under which any
+postcondition would hold vacuously. For safe bodies it only requires valid
+entry arguments; the behavioral precondition is not constrained.
 
 *(Note: By contrast, `AssumedContractRealizable` on `#[anneal::trusted]` and
 `extern` contracts is a mandatory **soundness obligation** preventing callers
@@ -389,9 +401,9 @@ $P_{\text{mut}}$ and checking whether the existing proof script fails
    and mutation checks must refuse to credit any `proof_failed` receipt carrying
    `"reason"` as a mutant kill.
 
-Dual-Polar `MutationRefute` eliminates both failure modes by pinning the exact
-SHA-256 digest of `Spec.lean` across the positive and negative checks and
-requiring **both poles**:
+Dual-Polar `MutationRefute` eliminates both failure modes by pinning the
+SHA-256 digests of the specification and shipped proof sources across the
+positive and negative checks and requiring **both poles**:
 
 - **Pole A (Clean pipeline rejection):** Running the verifier on
   $(P_{\text{mut}}, \mathsf{Spec}, \pi_{\text{shipped}})$ must exit cleanly
@@ -409,10 +421,45 @@ the mutant's behavior (catching missing return-value bindings or overly weak
 postconditions), rather than merely showing that a particular proof script
 stopped compiling.
 
+### Running `ci/audit_spec.py`
+
+```sh
+python3 -I ci/audit_spec.py --suite suite.json \
+  --cli <cargo-anneal> --capture <anneal-rustc-capture> \
+  --sysroot <rust-sysroot> --lean <lean> [--artifacts-dir <dir>]
+```
+
+Each suite case names a `baseline_request` and a `mutant_request` (which must
+agree on everything except the Rust program: scope, semantic compilation
+flags, specification and theorem bindings, and the SHA-256 of every
+specification and shipped proof source), a `pole_b` Lean module proving
+`¬ Expected.claim` (declaration `pole_b_decl`, default
+`PoleBRefute.refute`), a `nonvacuity` Lean module proving `SpecsPreInhabited`
+(declaration `nonvacuity_decl`, default `NonVacuity.witness`), and
+`expect_adequate`. A case is `adequate` only if the baseline verifies cleanly,
+the non-vacuity witness checks, Pole A rejects cleanly, and Pole B checks. A
+negative case (`expect_adequate: false`) only matches a semantic verdict
+(`vacuous_spec_false_kill`, `pre_vacuous`, or `mutant_verified`), never a
+setup, missing-module, unresolved-identifier, syntax, linter-warning, or
+runtime infrastructure failure (which assumes a well-formed witness targeting
+the specification rather than an unrelated type error inside a helper). Witness
+modules start with `prelude`, match the `module` mode of the generated
+`Expected.lean`, and may only import `Expected`, `Captured`, the request's
+specification modules, and `Trusted.*` / `Anneal.*` (any `Anneal.*` /
+`Trusted.*` modules pruned from `--export-lean-lib` are staged from checked-in
+sources).
+
+The harness treats witness modules as untrusted: it elaborates them only in a
+`bwrap` sandbox (no network, an allowlisted environment, read-only inputs) and
+refuses to run without one, and its inspector imports `.olean` artifacts with
+`loadExts := false`, enforces reserved/kernel-accelerated namespace and
+foundation-axiom origin isolation, and replays each checked theorem's whole
+dependency closure through the Lean kernel.
+
 ### Rollout posture
 
 In Stage 1 (`#4012`), `MirSemantics` Guard-Mutation CI
 (`check_guard_mutation.py`) is targeted as a mandatory repository CI check
-protecting Anneal's own TCB, while `cargo-anneal audit-spec` (`PreInhabited`
-and Dual-Polar `MutationRefute`) starts as an opt-in reviewer aid for crate
+protecting Anneal's own TCB, while `ci/audit_spec.py` (`PreInhabited` and
+Dual-Polar `MutationRefute`) starts as an opt-in reviewer aid for crate
 authors before graduating to recommended CI practice in Stage 2 (`#4096`).
