@@ -715,10 +715,11 @@ theorem listAll_eq_true_iff {α : Type} (p : α → Bool) :
   | cons hd tl ih =>
     intro h x hx
     change (p hd && listAll p tl) = true at h
+    revert h
     cases hhd : p hd with
-    | false => rw [hhd] at h; exact Bool.noConfusion h
+    | false => intro h; exact Bool.noConfusion h
     | true =>
-      rw [hhd] at h
+      intro h
       cases hx with
       | head => exact hhd
       | tail _ hmem => exact ih h x hmem
@@ -848,13 +849,14 @@ theorem postWidthEnv_preserves_agree {env : WidthEnv} {insn : DecodedInsn}
         | cons hd tl ih =>
           intro h1
           change (hd.beq r || listAny (fun w => w.beq r) tl) = true at h1
+          revert h1
           cases heq : hd.beq r with
           | true =>
-            have hrEq : hd = r := gpr_eq_of_beq heq
+            intro h1; have hrEq : hd = r := gpr_eq_of_beq heq
             subst hrEq
             exact List.Mem.head tl
           | false =>
-            rw [heq] at h1
+            intro h1
             exact List.Mem.tail hd (ih h1)
       exact aux (insnGprWrites insn) hMem
     have hSet := (widthEnvSetList_mem env (insnGprWrites insn) .full64).1 r hIn
@@ -907,10 +909,11 @@ theorem natRec_checkLoop_mem (checkPc : Nat → Bool) :
         (fun _ => true)
         (fun _ ih p => checkPc p && ih (p + 1))
         k (start + 1)) = true at h
+    revert h
     cases hc : checkPc start with
-    | false => rw [hc] at h; exact Bool.noConfusion h
+    | false => intro h; exact Bool.noConfusion h
     | true =>
-      rw [hc] at h
+      intro h
       cases Nat.eq_or_lt_of_le hle with
       | inl heq => subst heq; exact hc
       | inr hgt =>
@@ -959,41 +962,46 @@ theorem checkCfgWidthInvs_sound (sig : Aapcs64Sig) (insns : List DecodedInsn)
         InsnReadsAgree insn rf1 rf2 := by
   unfold checkCfgWidthInvs at hCheck
   dsimp only at hCheck
+  revert hCheck
   cases hLenZero : Nat.beq insns.length 0 with
   | true =>
-    rw [hLenZero] at hCheck
+    intro hCheck
     simp only [Bool.true_or, ite_true] at hCheck
     exact Bool.noConfusion hCheck
   | false =>
-    rw [hLenZero] at hCheck
+    intro hCheck
+    revert hCheck
     cases hLenEq : Nat.beq invs.length insns.length with
     | false =>
-      rw [hLenEq] at hCheck
+      intro hCheck
       simp only [Bool.not_false, Bool.false_or, ite_true] at hCheck
       exact Bool.noConfusion hCheck
     | true =>
-      rw [hLenEq] at hCheck
+      intro hCheck
       simp only [Bool.not_true, Bool.false_or, ite_false_eq_true_abi] at hCheck
       have hLenPos : 0 < insns.length := by
+        revert hLenZero
         cases hN : insns.length with
-        | zero => rw [hN] at hLenZero; exact Bool.noConfusion hLenZero
-        | succ m => exact Nat.zero_lt_succ m
+        | zero => intro hLenZero; exact Bool.noConfusion hLenZero
+        | succ m => intro hLenZero; exact Nat.zero_lt_succ m
       have hLenSame : invs.length = insns.length := Nat.eq_of_beq_eq_true hLenEq
+      revert hCheck
       cases hEnv0 : listGet? invs 0 with
       | none =>
-        rw [hEnv0] at hCheck
+        intro hCheck
         dsimp only at hCheck
         exact Bool.noConfusion hCheck
       | some env0 =>
-        rw [hEnv0] at hCheck
+        intro hCheck
         dsimp only at hCheck
+        revert hCheck
         cases hLe0 : widthEnvLe env0 (initWidthEnv sig) with
         | false =>
-          rw [hLe0] at hCheck
+          intro hCheck
           simp only [Bool.not_false, ite_true] at hCheck
           exact Bool.noConfusion hCheck
         | true =>
-          rw [hLe0] at hCheck
+          intro hCheck
           simp only [Bool.not_true, ite_false_eq_true_abi] at hCheck
           have hLoop : ∀ pc, pc < insns.length →
               (match listGet? insns pc, listGet? invs pc with
@@ -1025,15 +1033,17 @@ theorem checkCfgWidthInvs_sound (sig : Aapcs64Sig) (insns : List DecodedInsn)
                   widthEnvLe envS (postWidthEnv insn env) = true) := by
             intro pc hlt
             have hp := hLoop pc hlt
+            revert hp
             cases hi : listGet? insns pc with
-            | none => rw [hi] at hp; dsimp only at hp; exact Bool.noConfusion hp
+            | none => intro hp; dsimp only at hp; exact Bool.noConfusion hp
             | some insn =>
-              rw [hi] at hp
+              intro hp
+              revert hp
               cases hv : listGet? invs pc with
               | none =>
-                rw [hv] at hp; dsimp only at hp; exact Bool.noConfusion hp
+                intro hp; dsimp only at hp; exact Bool.noConfusion hp
               | some env =>
-                rw [hv] at hp
+                intro hp
                 dsimp only at hp
                 cases hx30 :
                     listAny (fun g => g.beq .x30) (insnGprWrites insn) with
@@ -1044,31 +1054,34 @@ theorem checkCfgWidthInvs_sound (sig : Aapcs64Sig) (insns : List DecodedInsn)
                 | false =>
                   rw [hx30] at hp
                   simp only [ite_false_eq_true_abi] at hp
+                  revert hp
                   cases hr : insnReadsWidthOk env insn with
                   | false =>
-                    rw [hr] at hp
+                    intro hp
                     simp only [Bool.not_false, ite_true] at hp
                     exact Bool.noConfusion hp
                   | true =>
-                    rw [hr] at hp
+                    intro hp
                     simp only [Bool.not_true, ite_false_eq_true_abi] at hp
+                    revert hp
                     cases hs : insnSuccPcs? pc insns.length insn with
                     | none =>
-                      rw [hs] at hp; dsimp only at hp
+                      intro hp; dsimp only at hp
                       exact Bool.noConfusion hp
                     | some succs =>
-                      rw [hs] at hp
+                      intro hp
                       dsimp only at hp
                       refine ⟨insn, env, succs, rfl, rfl, hr, hs, ?_⟩
                       intro s hsm
                       have hall := listAll_eq_true_iff _ succs hp s hsm
+                      revert hall
                       cases hvs : listGet? invs s with
                       | none =>
-                        rw [hvs] at hall
+                        intro hall
                         dsimp only at hall
                         exact Bool.noConfusion hall
                       | some envS =>
-                        rw [hvs] at hall
+                        intro hall
                         dsimp only at hall
                         exact ⟨envS, rfl, hall⟩
           intro pc rf1 rf2 hTr
@@ -1352,10 +1365,11 @@ theorem not_listAny_eq_true_iff {α : Type} (p : α → Bool) :
   | cons hd tl ih =>
     intro h x hx
     change (!(p hd || listAny p tl)) = true at h
+    revert h
     cases hhd : p hd with
-    | true => rw [hhd] at h; exact Bool.noConfusion h
+    | true => intro h; exact Bool.noConfusion h
     | false =>
-      rw [hhd] at h
+      intro h
       cases hx with
       | head => exact hhd
       | tail _ hmem => exact ih h x hmem
@@ -1366,10 +1380,11 @@ theorem checkAArch64LeafAbiFixedBases_sound (allowedStoreBases : List Gpr)
     (h : checkAArch64LeafAbiFixedBases allowedStoreBases insns = true) :
     AArch64LeafAbiFixedBasesCert allowedStoreBases insns := by
   unfold checkAArch64LeafAbiFixedBases at h
+  revert h
   cases hLast : listGetLast? insns with
-  | none => rw [hLast] at h; exact Bool.noConfusion h
+  | none => intro h; exact Bool.noConfusion h
   | some lastI =>
-    rw [hLast] at h
+    intro h
     cases lastI with
     | ret rn =>
       cases rn with
@@ -1377,30 +1392,33 @@ theorem checkAArch64LeafAbiFixedBases_sound (allowedStoreBases : List Gpr)
       | gpr r =>
         cases r with
         | x30 =>
+          revert h
           cases hBr : allIntraFuncBranchesValid insns with
-          | false => rw [hBr] at h; exact Bool.noConfusion h
+          | false => intro h; exact Bool.noConfusion h
           | true =>
-            rw [hBr] at h
+            intro h
             simp only [Bool.true_and] at h
             refine ⟨hLast, hBr, ?_⟩
             intro i hi
             have hall := listAll_eq_true_iff _ insns h i hi
+            revert hall
             cases hBase : insnLeafAbiBaseOk i with
             | false =>
-              rw [hBase] at hall
+              intro hall
               simp only [Bool.false_and] at hall
               exact Bool.noConfusion hall
             | true =>
-              rw [hBase] at hall
+              intro hall
               simp only [Bool.true_and] at hall
+              revert hall
               cases hNoWr : (!listAny (gprInList allowedStoreBases)
                   (insnGprWrites i)) with
               | false =>
-                rw [hNoWr] at hall
+                intro hall
                 simp only [Bool.false_and] at hall
                 exact Bool.noConfusion hall
               | true =>
-                rw [hNoWr] at hall
+                intro hall
                 simp only [Bool.true_and] at hall
                 refine ⟨rfl,
                   not_listAny_eq_true_iff _ _ hNoWr, ?_⟩
@@ -1410,21 +1428,23 @@ theorem checkAArch64LeafAbiFixedBases_sound (allowedStoreBases : List Gpr)
                 | sp => exact Bool.noConfusion hall
                 | gpr rg =>
                   dsimp only at hall
+                  revert hall
                   cases hIn : gprInList allowedStoreBases rg with
                   | false =>
-                    rw [hIn] at hall
+                    intro hall
                     simp only [Bool.false_and] at hall
                     exact Bool.noConfusion hall
                   | true =>
-                    rw [hIn] at hall
+                    intro hall
                     simp only [Bool.true_and] at hall
+                    revert hall
                     cases hWb : insnStoreHasWriteback i with
                     | true =>
-                      rw [hWb] at hall
+                      intro hall
                       simp only [Bool.not_true, Bool.false_and] at hall
                       exact Bool.noConfusion hall
                     | false =>
-                      rw [hWb] at hall
+                      intro hall
                       simp only [Bool.not_false, Bool.true_and] at hall
                       exact ⟨rg, rfl, hIn, rfl, hall⟩
         | x0 | x1 | x2 | x3 | x4 | x5 | x6 | x7 | x8 | x9 | x10 | x11 | x12
@@ -1449,10 +1469,11 @@ theorem checkAArch64LeafAbiMonotoneBases_sound (allowedStoreBases : List Gpr)
     (h : checkAArch64LeafAbiMonotoneBases allowedStoreBases insns = true) :
     AArch64LeafAbiMonotoneBasesCert allowedStoreBases insns := by
   unfold checkAArch64LeafAbiMonotoneBases at h
+  revert h
   cases hLast : listGetLast? insns with
-  | none => rw [hLast] at h; exact Bool.noConfusion h
+  | none => intro h; exact Bool.noConfusion h
   | some lastI =>
-    rw [hLast] at h
+    intro h
     cases lastI with
     | ret rn =>
       cases rn with
@@ -1460,32 +1481,35 @@ theorem checkAArch64LeafAbiMonotoneBases_sound (allowedStoreBases : List Gpr)
       | gpr r =>
         cases r with
         | x30 =>
+          revert h
           cases hBr : allIntraFuncBranchesValid insns with
-          | false => rw [hBr] at h; exact Bool.noConfusion h
+          | false => intro h; exact Bool.noConfusion h
           | true =>
-            rw [hBr] at h
+            intro h
             simp only [Bool.true_and] at h
             refine ⟨hLast, hBr, ?_⟩
             intro i hi
             have hall := listAll_eq_true_iff _ insns h i hi
+            revert hall
             cases hBase : insnLeafAbiBaseOk i with
             | false =>
-              rw [hBase] at hall
+              intro hall
               simp only [Bool.false_and] at hall
               exact Bool.noConfusion hall
             | true =>
-              rw [hBase] at hall
+              intro hall
               simp only [Bool.true_and] at hall
+              revert hall
               cases hMono : listAll (fun w =>
                   if gprInList allowedStoreBases w then
                     insnMonotoneAdvanceOf w i
                   else true) (insnGprWrites i) with
               | false =>
-                rw [hMono] at hall
+                intro hall
                 simp only [Bool.false_and] at hall
                 exact Bool.noConfusion hall
               | true =>
-                rw [hMono] at hall
+                intro hall
                 simp only [Bool.true_and] at hall
                 refine ⟨rfl, ?_, ?_⟩
                 · intro w hw hIn
@@ -1500,13 +1524,14 @@ theorem checkAArch64LeafAbiMonotoneBases_sound (allowedStoreBases : List Gpr)
                   | sp => exact Bool.noConfusion hall
                   | gpr rg =>
                     dsimp only at hall
+                    revert hall
                     cases hIn : gprInList allowedStoreBases rg with
                     | false =>
-                      rw [hIn] at hall
+                      intro hall
                       simp only [Bool.false_and] at hall
                       exact Bool.noConfusion hall
                     | true =>
-                      rw [hIn] at hall
+                      intro hall
                       simp only [Bool.true_and] at hall
                       exact ⟨rg, rfl, hIn, hall⟩
         | x0 | x1 | x2 | x3 | x4 | x5 | x6 | x7 | x8 | x9 | x10 | x11 | x12
@@ -1649,20 +1674,23 @@ theorem checkVecTailStrideGuard_sound
         r * dstStride + (k + 1) * chunkBytes ≤ height * dstStride)) := by
   unfold checkVecTailStrideGuard at h
   dsimp only at h
+  revert h
   cases hc : Nat.blt 0 chunkBytes with
-  | false => rw [hc] at h; exact Bool.noConfusion h
+  | false => intro h; exact Bool.noConfusion h
   | true =>
-    rw [hc] at h
+    intro h
     simp only [Bool.true_and] at h
+    revert h
     cases hMax : Nat.ble (w + (chunkBytes - 1)) maxSigned with
-    | false => rw [hMax] at h; exact Bool.noConfusion h
+    | false => intro h; exact Bool.noConfusion h
     | true =>
-      rw [hMax] at h
+      intro h
       simp only [Bool.true_and] at h
+      revert h
       cases hDst : Nat.ble (alignUp w chunkBytes) dstStride with
-      | false => rw [hDst] at h; exact Bool.noConfusion h
+      | false => intro h; exact Bool.noConfusion h
       | true =>
-        rw [hDst] at h
+        intro h
         simp only [Bool.true_and] at h
         have hcPos : 0 < chunkBytes := Nat.le_of_ble_eq_true hc
         have hDstLe : alignUp w chunkBytes ≤ dstStride :=
@@ -1800,67 +1828,78 @@ theorem checkPlaneCopyDispatchGuard_sound
     alignUp bw chunkBytes ≤ sl := by
   unfold checkPlaneCopyDispatchGuard at hOk
   dsimp only at hOk
+  revert hOk
   cases hc : Nat.blt 0 chunkBytes with
   | false =>
-    rw [hc] at hOk
+    intro hOk
     simp only [Bool.not_false, Bool.true_or, ite_true] at hOk
     exact Bool.noConfusion hOk
   | true =>
-    rw [hc] at hOk
+    intro hOk
+    revert hOk
     cases ha : Nat.blt 0 alignBytes with
     | false =>
-      rw [ha] at hOk
+      intro hOk
       simp only [Bool.not_false, Bool.or_true, Bool.true_or, ite_true] at hOk
       exact Bool.noConfusion hOk
     | true =>
-      rw [ha] at hOk
+      intro hOk
+      revert hOk
       cases hca : Nat.beq (Nat.mod chunkBytes alignBytes) 0 with
       | false =>
-        rw [hca] at hOk
+        intro hOk
         simp only [Bool.not_false, Bool.or_true, ite_true] at hOk
         exact Bool.noConfusion hOk
       | true =>
-        rw [hca] at hOk
+        intro hOk
         simp only [Bool.not_true, Bool.or_self, ite_false_eq_true_abi] at hOk
+        revert hOk
         cases hbw : Nat.blt 0 bw with
-        | false => rw [hbw] at hOk; exact Bool.noConfusion hOk
+        | false => intro hOk; exact Bool.noConfusion hOk
         | true =>
-          rw [hbw] at hOk
+          intro hOk
           simp only [Bool.true_and] at hOk
+          revert hOk
           cases hh : Nat.blt 0 h with
-          | false => rw [hh] at hOk; exact Bool.noConfusion hOk
+          | false => intro hOk; exact Bool.noConfusion hOk
           | true =>
-            rw [hh] at hOk
+            intro hOk
             simp only [Bool.true_and] at hOk
+            revert hOk
             cases hmax : Nat.ble (bw + (chunkBytes - 1)) maxSigned with
-            | false => rw [hmax] at hOk; exact Bool.noConfusion hOk
+            | false => intro hOk; exact Bool.noConfusion hOk
             | true =>
-              rw [hmax] at hOk
+              intro hOk
               simp only [Bool.true_and] at hOk
+              revert hOk
               cases hsa : Nat.beq (Nat.mod sa alignBytes) 0 with
-              | false => rw [hsa] at hOk; exact Bool.noConfusion hOk
+              | false => intro hOk; exact Bool.noConfusion hOk
               | true =>
-                rw [hsa] at hOk
+                intro hOk
                 simp only [Bool.true_and] at hOk
+                revert hOk
                 cases hda : Nat.beq (Nat.mod da alignBytes) 0 with
-                | false => rw [hda] at hOk; exact Bool.noConfusion hOk
+                | false => intro hOk; exact Bool.noConfusion hOk
                 | true =>
-                  rw [hda] at hOk
+                  intro hOk
                   simp only [Bool.true_and] at hOk
+                  revert hOk
                   cases hdla : Nat.beq (Nat.mod dl alignBytes) 0 with
-                  | false => rw [hdla] at hOk; exact Bool.noConfusion hOk
+                  | false => intro hOk; exact Bool.noConfusion hOk
                   | true =>
-                    rw [hdla] at hOk
+                    intro hOk
                     simp only [Bool.true_and] at hOk
+                    revert hOk
                     cases hsla : Nat.beq (Nat.mod sl alignBytes) 0 with
-                    | false => rw [hsla] at hOk; exact Bool.noConfusion hOk
+                    | false => intro hOk; exact Bool.noConfusion hOk
                     | true =>
-                      rw [hsla] at hOk
+                      intro hOk
                       simp only [Bool.true_and] at hOk
+                      revert hOk
                       cases hdl : Nat.ble (alignUp bw chunkBytes) dl with
-                      | false => rw [hdl] at hOk; exact Bool.noConfusion hOk
+                      | false => intro hOk; exact Bool.noConfusion hOk
                       | true =>
-                        rw [hdl] at hOk
+                        intro hOk
                         simp only [Bool.true_and] at hOk
                         have haPos : 0 < alignBytes := Nat.le_of_ble_eq_true ha
                         have hChunkEq : Nat.mod chunkBytes alignBytes = 0 :=

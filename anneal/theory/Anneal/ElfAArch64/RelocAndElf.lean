@@ -1107,29 +1107,32 @@ theorem decodeFuncFromElf_implies_hygiene (cfg : DecodeConfig)
     objectHasNoForbiddenElfFeatures bs = true := by
   unfold decodeFuncFromElf? at h
   unfold objectHasNoForbiddenElfFeatures
+  revert h
   cases hReq : cfg.requireRelocForPcRel with
   | false =>
-    rw [hReq] at h
+    intro h
     simp only [Bool.not_false, ite_true] at h
     cases h
   | true =>
-    rw [hReq] at h
+    intro h
     simp only [Bool.not_true, ite_false_eq_true] at h
+    revert h
     cases hp : parseElf64Object? bs with
     | none =>
-      rw [hp] at h
+      intro h
       dsimp only at h
       cases h
     | some obj =>
-      rw [hp] at h
+      intro h
       dsimp only at h
+      revert h
       cases hh : parsedObjectHygieneOk obj with
       | false =>
-        rw [hh] at h
+        intro h
         simp only [Bool.not_false, ite_true] at h
         cases h
       | true =>
-        dsimp only
+        intro h; dsimp only
         exact hh
 
 /-- Any function decoded by `decodeFuncFromElf?` has 4-byte-aligned length and
@@ -1139,74 +1142,84 @@ theorem decodeFuncFromElf_aligned (cfg : DecodeConfig) (bs : List UInt8)
     (h : decodeFuncFromElf? cfg bs textSecIdx funcOff funcSize = some tr) :
     ∀ e, List.Mem e tr → Nat.mod e.1 4 = 0 := by
   unfold decodeFuncFromElf? at h
+  revert h
   cases hReq : cfg.requireRelocForPcRel with
   | false =>
-    rw [hReq] at h
+    intro h
     simp only [Bool.not_false, ite_true] at h
     cases h
   | true =>
-    rw [hReq] at h
+    intro h
     simp only [Bool.not_true, ite_false_eq_true] at h
+    revert h
     cases hp : parseElf64Object? bs with
-    | none => rw [hp] at h; dsimp only at h; cases h
+    | none => intro h; dsimp only at h; cases h
     | some obj =>
-      rw [hp] at h
+      intro h
       dsimp only at h
+      revert h
       cases hh : parsedObjectHygieneOk obj with
       | false =>
-        rw [hh] at h
+        intro h
         simp only [Bool.not_false, ite_true] at h
         cases h
       | true =>
-        rw [hh] at h
+        intro h
         simp only [Bool.not_true, ite_false_eq_true] at h
+        revert h
         cases hs : listGet? obj.sections textSecIdx with
-        | none => rw [hs] at h; dsimp only at h; cases h
+        | none => intro h; dsimp only at h; cases h
         | some sec =>
-          rw [hs] at h
+          intro h
           dsimp only at h
+          revert h
           cases hchk : (!isValidExecTextSection sec ||
               !Nat.blt 0 funcSize ||
               !Nat.beq (Nat.mod funcOff 4) 0 ||
               !Nat.beq (Nat.mod funcSize 4) 0 ||
               !Nat.ble (funcOff + funcSize) sec.shSize) with
           | true =>
-            rw [hchk] at h
+            intro h
             simp only [ite_true] at h
             cases h
           | false =>
-            rw [hchk] at h
+            intro h
             simp only [ite_false_eq_true] at h
+            revert h
             cases hts : sliceBytes? bs (sec.shOffset + funcOff) funcSize with
-            | none => rw [hts] at h; dsimp only at h; cases h
+            | none => intro h; dsimp only at h; cases h
             | some textBs =>
-              rw [hts] at h
+              intro h
+              revert h
               cases hrl : extractParsedFuncRelocs? obj textSecIdx funcOff
                   funcSize with
-              | none => rw [hrl] at h; dsimp only at h; cases h
+              | none => intro h; dsimp only at h; cases h
               | some relocs =>
-                rw [hrl] at h
+                intro h
                 dsimp only at h
+                revert h
                 cases hcov : localDecodeCoverageOk cfg relocs textBs with
                 | false =>
-                  rw [hcov] at h
+                  intro h
                   simp only [Bool.not_false, ite_true] at h
                   cases h
                 | true =>
-                  rw [hcov] at h
+                  intro h
                   simp only [Bool.not_true, ite_false_eq_true] at h
+                  revert h
                   cases hds : decodeStream cfg relocs textBs with
-                  | none => rw [hds] at h; dsimp only at h; cases h
+                  | none => intro h; dsimp only at h; cases h
                   | some tr0 =>
-                    rw [hds] at h
+                    intro h
                     dsimp only at h
+                    revert h
                     cases hp2 : adrpLo12PairingOk tr0 with
                     | false =>
-                      rw [hp2] at h
+                      intro h
                       simp only [Bool.not_false, ite_true] at h
                       cases h
                     | true =>
-                      rw [hp2] at h
+                      intro h
                       simp only [Bool.not_true, ite_false_eq_true] at h
                       have hEq : tr0 = tr := Option.some.inj h
                       subst hEq
