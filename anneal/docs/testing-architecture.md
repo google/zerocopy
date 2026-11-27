@@ -851,8 +851,9 @@ At `c351dd381a`, `theory/bundle-manifest.json` registered `18` bundled
 `Anneal.Firewall`), whereas `theory/Anneal.lean` transitively imported `73`
 Lean modules (`66,307` lines across `19` `trusted/lean` + `54` `theory/` files,
 including `36` unbundled `theory/` modules totaling `43,393` lines and a
-`28`-module `19,704`-line critical path) that `installed_smoke.rs:lean_case`
-compiles cold under `lean -j1 -DElab.async=false -Ddebug.skipKernelTC=false`
+`28`-module `19,704`-line critical path) that `installed_smoke`'s
+`lean_case` (`installed_smoke/lean_file.rs`) compiles cold under
+`lean -j1 -DElab.async=false -Ddebug.skipKernelTC=false`
 with a `120 s` per-child hard timeout. Furthermore, under Lean 4 `module`
 encapsulation (`#4139`, `6a0932de51`), bundled Pass-1 modules emit **three**
 artifact parts (`.olean` public interface, `.olean.server`, and
@@ -1022,8 +1023,9 @@ blast radii remain documented below for durable architectural rationale.
   re-exports all `54` `theory/` modules (`60,192`L—including `36` unbundled
   modules totaling `43,393`L AND internal `*Canaries.lean` test suites totaling
   `~56 s` of single-core Lean elaboration CPU). Because `flake.nix` copies all
-  of `theory/` into `share/anneal/theory` and `installed_smoke.rs:lean_case`
-  compiles the transitive closure of `Anneal.lean` cold with `lean -j1`,
+  of `theory/` into `share/anneal/theory` and `installed_smoke`'s `lean_case`
+  (`installed_smoke/lean_file.rs`) compiles the transitive closure of
+  `Anneal.lean` cold with `lean -j1`,
   `installed_smoke` pays for `3.58x` the bundled `theory/` LOC (`60,192 /
   16,799` lines; `3.95x` or `66,307 / 16,799` lines across the combined
   `trusted/lean/` + `theory/` closure) and drags `*Canaries.lean` into
