@@ -172,7 +172,7 @@ anneal/
     ├── differential/                  # package = "anneal-differential-tests" (publish = false)
     │   ├── Cargo.toml
     │   ├── src/bin/{anneal-diff.rs, anneal-diff-capture-test-bin.rs}
-    │   ├── src/{lib.rs, corpus.rs, miri_runner.rs, lean_runner.rs, mir_eval_runner.rs, mutants.rs, verdict.rs}
+    │   ├── src/{lib.rs, corpus.rs, fuzz.rs, gen.rs, lean_runner.rs, mir_eval_runner.rs, miri_runner.rs, mutants.rs, rustc_runner.rs, shrink.rs, verdict.rs}
     │   └── tests/differential_oracle.rs
     └── corpora/                       # Declarative data-driven corpora consumed by test crates
         ├── adversarial/               # Landed: capture/; Target Wave 3: + guards.toml, spec_and_preflight/, mir_ub_refutations/, audit_and_ndjson/
@@ -688,29 +688,57 @@ anneal/tests/corpora/adversarial/
 semantic seams:
 
 1. **Seam A — Miri $\leftrightarrow$ `Trusted.MirSemantics` Multi-Leg
-   Differential Oracle (`profile_v1/`):**
-   `anneal-differential-tests` (`tests/differential/`) loads
-   `tests/corpora/differential/profile_v1/manifest.toml` (`39` Profile v1 cases)
-   and compares legs under matching flags (`-C opt-level=0 -C
-   debug-assertions=no -C overflow-checks=no`, `--target
-   x86_64-unknown-linux-gnu`):
-   - **Miri (`-Zmiri-tree-borrows`)** against an offline vendored sysroot,
-   - **`anneal-rustc-capture` + Lean `Anneal.MirTotal.StepCore`** executable
-     evaluator on `Captured.lean`,
-   - **Lean kernel `Anneal.MirWp` adequacy theorems** (term-mode `rfl`
-     witnesses under `-Ddebug.skipKernelTC=false`) on budget-fitting
-     single-block `pass` cases and single-block or two-block `sysroot_call`
-     `ub` cases, and
-   - **Optional `anneal-mir-eval`** (`--body <body_id>`), plus native `rustc`
-     and generative fuzzing extensions in Stage 2.
+   Differential Oracle & Property Fuzzer (`profile_v1/`):**
+   `anneal-differential-tests` (`tests/differential/`) runs both the curated
+   `tests/corpora/differential/profile_v1/manifest.toml` litmus corpus (`39`
+   Profile v1 cases via `anneal-diff run`) and the deterministic `SplitMix64`
+   admitted-subset property fuzzer (`anneal-diff fuzz`, with a budgeted 5-pass
+   recursive AST/input shrinker recording `converged_1_minimal` in
+   `shrink_trace`) under `-C opt-level=0`, `-C debug-assertions=no`, and
+   `-C overflow-checks=off` (`--target x86_64-unknown-linux-gnu` on Miri and
+   `anneal-rustc-capture`; host-native compilation on Leg 0 `rustc`):
+   - **Leg 0 — Compiled host `rustc` binary** (`-C overflow-checks=off`;
+     Miri runs first so compiled `rustc` executes only on UB-free cases and is
+     skipped with `IgnoredDueToMiriUb` whenever Miri observes UB),
+   - **Leg 1 — Miri (`-Zmiri-tree-borrows`)** against an offline vendored
+     sysroot (semantic authority),
+   - **Leg 2 — `anneal-rustc-capture` + Lean `Anneal.MirTotal.StepCore`**
+     executable evaluator on `Captured.lean` (plus **Lean kernel
+     `Anneal.MirWp` adequacy theorems** via term-mode `rfl` witnesses under
+     `-Ddebug.skipKernelTC=false` on budget-fitting single-block litmus
+     `pass` cases and single-block or two-block `sysroot_call` `ub` cases),
+     and
+   - **Optional Leg 3 — `anneal-mir-eval`** (`--body <body_id>`).
 
-   | Miri Outcome | Lean `StepCore` Outcome | Differential Verdict | CI Gate Disposition |
+   | Miri Outcome | Lean `StepCore` Outcome | Stage-1 Litmus Verdict / Stage-2 `OracleAgreementClass` | CI Gate Disposition |
    | :--- | :--- | :--- | :--- |
-   | `Returned(v)` | `Returned(v')` with `v == v'` | `AgreeValue` | **PASS** (must also match `expected_return` and any active `mir_eval` leg) |
-   | `Returned(v)` | `Returned(v')` with `v != v'` | **`ValueMismatch`** | **HARD FAIL** (semantic bug in capture or `MirSemantics`) |
-   | `UndefinedBehavior` / `AbnormalAbort` / `Panic` | `Returned(_)` | **`UnsoundMissedFault`** | **HARD FAIL** (missing UB or fault guard in `MirSemantics` or capture) |
-   | `UndefinedBehavior` | `UndefinedBehavior` | `AgreeUndefinedBehavior` | **PASS** (must also match `miri_ub_contains`) |
-   | Any non-error outcome | Step-time `Unsupported` | `SoundConservativeAbstraction` / `ConservativeRejection` | **PASS only on `expected = "unsupported_control"`** with matching `expected_miri` pin (init-time `InitUnsupported` and undeclared `ConservativeRejection` **FAIL**) |
+   | `Returned(v)` (litmus & fuzzer) or `Unwound` / `Aborted` (Stage-2 fuzzer) | Matching `TerminalOutcome` | `AgreeValue` (`Returned`) / `BiFaultEquivAgreement` (Stage-2 fuzzer) | **PASS** (must also match compiled `rustc` on UB-free cases and any active `mir_eval` leg; only clean `Returned(v)` counts toward `admitted_cases` for `admission_rate`) |
+   | `Returned(v)` | `Returned(v')` with `v != v'` (or unwind/abort mismatch) | **`ValueMismatch`** / **`UnsoundAcceptCritical`** | **HARD FAIL** + budgeted shrink attempt (see `shrink_trace.converged_1_minimal`; semantic bug in capture or `MirSemantics`) |
+   | `UndefinedBehavior` / `AbnormalAbort` / `Panic` | `Returned(_)` (or `Unwound` / `Aborted` on Miri UB) | **`UnsoundMissedFault`** / **`UnsoundAcceptCritical`** | **HARD FAIL** + budgeted shrink attempt (see `shrink_trace.converged_1_minimal`; missing UB or fault guard in `MirSemantics` or capture) |
+   | `UndefinedBehavior` | `UndefinedBehavior` | `AgreeUndefinedBehavior` / `BiFaultEquivAgreement` | **PASS** on `expected = "ub"` / `TargetedUbProbe` (`rustc` skipped as `IgnoredDueToMiriUb`; litmus checks `miri_ub_contains`; **HARD FAIL** via `admitted_authority_ub_count == 0` if triggered on `SafeAdmitted` / `BoundaryEdgeCase`) |
+   | Non-error authority outcome | Step-time `Unsupported` or structured `{"status":"unsupported"}` capture refusal | `SoundConservativeAbstraction` / `ConservativeOverApproxForwardSimOnly` | **Litmus:** PASS only on `expected = "unsupported_control"` with matching `expected_miri` pin (`ConservativeRejection` **FAILS**). **Fuzzer:** Disclosed as `UnbridgedSemantics`; `SafeAdmitted` + `BoundaryEdgeCase` cases must maintain **`admission_rate >= 90%`** (`--min-admission-rate 0.90`, with `admitted_authority_ub_count == 0`) |
+   | Non-error authority outcome | `OutOfFuel` | `LegDivergence` / `ConservativeOverApproxForwardSimOnly` | **Litmus:** **HARD FAIL** (`LegDivergence`). **Fuzzer:** Disclosed as `FuelExhausted` (subject to **`admission_rate >= 90%`**) |
+   | `Returned` / `Unwound` / `Aborted` (UB-free) | `UndefinedBehavior` | `LegDivergence` / `ConservativeOverApproxForwardSimOnly` (`is_spurious_lean_ub = true`) | **HARD FAIL** + budgeted shrink attempt (see `shrink_trace.converged_1_minimal`; `spurious_lean_ub_count == 0` zero-tolerance gate; excluded from `admitted_cases` and `conservative_over_approx_count`) |
+   | `Unsupported` or `OutOfFuel` | Any outcome | `LegDivergence` / **`AuthorityDisagreement`** | **HARD FAIL** (Miri authority could not evaluate candidate) |
+   | Any outcome | `InitUnsupported`, `ToolError`, `compiler_failed`/`tool_failed` capture, or `rustc`/`mir_eval` disagreement | `LegDivergence` / **`AuthorityDisagreement`** | **HARD FAIL** + budgeted shrink attempt when non-`ToolError` (see `shrink_trace.converged_1_minimal`) |
+
+   `ci/check_mir_differential.py` runs `anneal-diff run --self-check-oracle`
+   and `anneal-diff fuzz` (`32` cases, seed `20261124`, default
+   `--fuzz-max-stmts 6` bounding rendered body statements after `let mut`
+   local initializers) and emits schema-validated
+   `differential_oracle.{litmus,red_flags,mutants,fuzz}.*` telemetry
+   (`anneal-semantic-detail/v1` and `anneal-perf-record/v1`).
+
+   **Trusted Host & Threat Model (`Seam A`):** `anneal-differential-tests`
+   and `ci/check_mir_differential.py` assume a trusted single-tenant host,
+   kernel, and UID domain. They isolate ambient toolchain/config environment
+   variables, reject symlinks/hardlinks, and stage immutable artifacts to
+   prevent accidental environment contamination and host-path overwrites
+   during multi-leg runs; defending against a concurrent adversarial same-UID
+   process tampering with `TMPDIR`, Cargo caches, or intermediate work
+   directories mid-run is outside the oracle's threat model and belongs to
+   OS/container/CI-runner boundaries (such as `bwrap` and single-tenant CI
+   jobs).
 
 2. **Seam B — Multi-Kernel NDJSON Proof Quorum (`kernel_quorum/`, Lean
    `v4.35.0+`):**

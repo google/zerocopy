@@ -29,8 +29,8 @@ use serde::{Deserialize, Serialize};
 use crate::{
     corpus::LitmusCase,
     lean_runner::{
-        CapturedModule, LEAN_COMPILE_FLAGS, LeanSession, apply_lean_tool_env,
-        effective_timeout_secs, lean_val_expr, parse_lean_payload, run_supervised_cmd,
+        CapturedModule, LEAN_COMPILE_FLAGS, LeanSession, effective_timeout_secs, lean_val_expr,
+        parse_lean_payload, run_supervised_cmd_in_tmp,
     },
     verdict::{Expectation, ObservedOutcome, evaluate_case},
 };
@@ -127,7 +127,8 @@ pub fn run_self_check_mutants(
     let cf_cap = find_captured_suffix(captured_by_source, "control_enum_pass.rs")?;
     let ub_cap = find_captured_suffix(captured_by_source, "ub_corpus.rs")?;
 
-    let tmp = tempfile::tempdir().map_err(|e| format!("create mutant temp dir: {e}"))?;
+    let tmp =
+        crate::mir_eval_runner::build_temp_dir("anneal-mutant-", lean.validated_tmpdir.as_deref())?;
     let probe_sources = build_mutant_probe_sources(arith_cap, cf_cap, ub_cap, &case_by_id)?;
     let raw_outcomes =
         run_mutant_probes(lean, tmp.path(), &probe_sources, arith_cap, cf_cap, ub_cap)?;
@@ -371,16 +372,16 @@ fn run_mutant_probes(
     for (path, olean_dir, src) in specs {
         fs::write(&path, src).map_err(|e| format!("write {}: {e}", path.display()))?;
         let lean_path = lean.lean_path_with(Some(olean_dir))?;
-        let inv = apply_lean_tool_env(
+        let inv = lean.apply_lean_env(
             Invocation::new(&lean.lean_bin, LEAN_COMPILE_FLAGS)
                 .arg(&path)
                 .env("LEAN_PATH", &lean_path),
-            &lean.lean_bin,
         );
-        let out = run_supervised_cmd(
+        let out = run_supervised_cmd_in_tmp(
             &inv,
             dir,
             probe_timeout,
+            lean.validated_tmpdir.as_deref(),
             &format!("mutant probe {}", path.display()),
         )?;
         match out.termination {

@@ -442,6 +442,11 @@ def describe_metric(metric_id: str) -> dict[str, Any]:
             "value_mismatch_count",
             "unexpected_conservative_count",
             "leg_divergence_count",
+            "unsound_accept_count",
+            "authority_disagreement_count",
+            "conservative_over_approx_count",
+            "spurious_lean_ub_count",
+            "admitted_authority_ub_count",
         }
         direction = (
             "lower_is_better" if measure in lower_measures else "higher_is_better"

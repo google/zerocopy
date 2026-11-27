@@ -1304,6 +1304,25 @@ class AppendBudgetsAndAnalysisTests(unittest.TestCase):
         self.assertIn("## Anneal Performance Tracking Summary", md)
         self.assertIn("verify.scalar.cold_prebuilt_total_ms", md)
 
+        for lower_id in (
+            "differential_oracle.fuzz.unsound_accept_count",
+            "differential_oracle.fuzz.authority_disagreement_count",
+            "differential_oracle.fuzz.conservative_over_approx_count",
+            "differential_oracle.fuzz.spurious_lean_ub_count",
+            "differential_oracle.fuzz.admitted_authority_ub_count",
+        ):
+            d = perf_tracking.describe_metric(lower_id)
+            self.assertEqual(d["direction"], "lower_is_better", lower_id)
+        for higher_id in (
+            "differential_oracle.fuzz.total_cases_count",
+            "differential_oracle.fuzz.bi_fault_equiv_count",
+            "differential_oracle.fuzz.ub_probes_agreed_count",
+            "differential_oracle.fuzz.admitted_cases_count",
+            "differential_oracle.fuzz.move_reinit_exercised_count",
+        ):
+            d = perf_tracking.describe_metric(higher_id)
+            self.assertEqual(d["direction"], "higher_is_better", higher_id)
+
     def test_cli_validate_and_check_budgets_exit_codes(self):
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
