@@ -171,6 +171,17 @@ environment:** the operating system, filesystem, environment, and installed
 Anneal toolchain binaries are intact and outside the untrusted actor's write or
 process-control access when verification runs.
 
+The `.olean` disk cache that `cargo anneal verify` reuses (the per-user
+default, or a root named by `--olean-cache-dir` or `ANNEAL_OLEAN_CACHE_DIR`) is
+part of that environment. A cache hit is trusted on the strength of digests the
+entry itself records, so anything that can write the cache root can substitute
+compiled artifacts, including the auditor's. `cargo anneal verify` refuses an
+explicit root inside or containing the working directory or any input
+directory (manifest, proof, request, or `rustc` source directories); keeping the
+root write-isolated from less trusted
+runs (for example, runs on untrusted Rust inputs or with unsandboxed
+elaboration) is the operator's responsibility.
+
 This assumption naturally aligns with the standard split between **local
 development environments** and **Continuous Integration (CI)**:
 

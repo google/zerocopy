@@ -3602,6 +3602,168 @@ fn receipt_out_persists_valid_v3_json_and_rejects_symlinks_dirs_and_input_aliase
     assert_eq!(bare_rec["phase"], "receipt-out", "{bare_rec}");
     assert_eq!(fs::read(&bare_spec).unwrap(), bare_spec_bytes);
 
+    // 4b. `--receipt-out` must not land inside the shared `.olean` cache that
+    //     verification will use, whether it is named by `--olean-cache-dir`,
+    //     by `ANNEAL_OLEAN_CACHE_DIR`, or by a `<symlink>/..` spelling that
+    //     the filesystem would resolve elsewhere. `--olean-cache-dir`
+    //     conflicts with `--no-cache` and must not be empty.
+    let olean_cache = project.path().join("shared-olean-cache");
+    fs::create_dir(&olean_cache).unwrap();
+    let inside_cache = olean_cache.join("receipt.json");
+    let decoy_target = project.path().join("decoy/sub");
+    fs::create_dir_all(&decoy_target).unwrap();
+    std::os::unix::fs::symlink(&decoy_target, project.path().join("cache-link")).unwrap();
+    let dotdot_cache = project.path().join("cache-link/../shared-olean-cache");
+    let verify_with_fakes = |extra: &[&std::ffi::OsStr]| {
+        let mut cmd = command(Route::Direct, project.path());
+        cmd.args(["verify", "--format", "json", "--capture"])
+            .arg(&fake_cap)
+            .arg("--sysroot")
+            .arg(&fake_sysroot)
+            .arg("--lean")
+            .arg(&fake_lean)
+            .arg("--request")
+            .arg(&valid_req)
+            .args(extra)
+            .env_remove("ANNEAL_OLEAN_CACHE_DIR");
+        cmd
+    };
+    for (first, second) in
+        [("--no-cache", "--olean-cache-dir"), ("--olean-cache-dir", "--no-cache")]
+    {
+        let mut conflict_cmd = verify_with_fakes(&[]);
+        for flag in [first, second] {
+            conflict_cmd.arg(flag);
+            if flag == "--olean-cache-dir" {
+                conflict_cmd.arg(&olean_cache);
+            }
+        }
+        let conflict = conflict_cmd.output().unwrap();
+        let stderr = String::from_utf8_lossy(&conflict.stderr);
+        assert_eq!(conflict.status.code(), Some(2), "{conflict:?}");
+        assert!(conflict.stdout.is_empty(), "{conflict:?}");
+        assert!(
+            stderr.contains(&format!("the argument '{first}"))
+                && stderr.contains(&format!("cannot be used with '{second}")),
+            "{stderr}"
+        );
+    }
+    let empty = verify_with_fakes(&["--olean-cache-dir".as_ref(), "".as_ref()]).output().unwrap();
+    assert_eq!(empty.status.code(), Some(2), "{empty:?}");
+    assert!(empty.stdout.is_empty(), "{empty:?}");
+    assert!(
+        String::from_utf8_lossy(&empty.stderr)
+            .contains("a value is required for '--olean-cache-dir <DIR>'"),
+        "{empty:?}"
+    );
+    for (case, flag, env) in [
+        ("flag", Some(&olean_cache), None),
+        ("env", None, Some(&olean_cache)),
+        ("dotdot", Some(&dotdot_cache), None),
+    ] {
+        let mut cache_cmd = verify_with_fakes(&["--receipt-out".as_ref(), inside_cache.as_ref()]);
+        if let Some(flag) = flag {
+            cache_cmd.arg("--olean-cache-dir").arg(flag);
+        }
+        if let Some(env) = env {
+            cache_cmd.env("ANNEAL_OLEAN_CACHE_DIR", env);
+        }
+        let cache_out = cache_cmd.output().unwrap();
+        assert_eq!(cache_out.status.code(), Some(2), "{case}: {cache_out:?}");
+        let cache_rec: serde_json::Value = serde_json::from_slice(&cache_out.stdout).unwrap();
+        assert_eq!(cache_rec["phase"], "receipt-out", "{case}: {cache_rec}");
+        assert!(
+            cache_rec["detail"].as_str().unwrap_or("").contains(".olean cache directory"),
+            "{case}: {cache_rec}"
+        );
+        assert!(!inside_cache.exists(), "{case}");
+    }
+    // An `ANNEAL_OLEAN_CACHE_DIR` that verification ignores, because
+    // `--olean-cache-dir` overrides it or `--no-cache` disables the disk
+    // cache, is not protected.
+    let other_cache = project.path().join("other-olean-cache");
+    for (case, extra) in [
+        ("overridden", vec!["--olean-cache-dir".as_ref(), other_cache.as_os_str()]),
+        ("no-cache", vec!["--no-cache".as_ref()]),
+    ] {
+        let mut ignored_cmd = verify_with_fakes(&extra);
+        ignored_cmd
+            .arg("--receipt-out")
+            .arg(&inside_cache)
+            .env("ANNEAL_OLEAN_CACHE_DIR", &olean_cache);
+        let ignored_out = ignored_cmd.output().unwrap();
+        let ignored_rec: serde_json::Value = serde_json::from_slice(&ignored_out.stdout).unwrap();
+        assert!(
+            !ignored_rec["detail"].as_str().unwrap_or("").contains(".olean cache directory"),
+            "{case}: {ignored_rec}"
+        );
+        assert_ne!(ignored_rec["phase"], "receipt-out", "{case}: {ignored_rec}");
+        let _ = fs::remove_file(&inside_cache);
+    }
+
+    // 4c. An overriding cache root that the checkout could populate (here,
+    //     inside the working directory, which also holds the request) is
+    //     refused before staging, whether it comes from the flag or the
+    //     environment; a root outside the checkout passes this check. The
+    //     refusal also replaces a stale passing `--receipt-out` receipt.
+    let receipt_dir = tempfile::tempdir().unwrap();
+    let stale_receipt = receipt_dir.path().join("receipt.json");
+    for (case, flag, env) in [("flag", Some(&olean_cache), None), ("env", None, Some(&olean_cache))]
+    {
+        fs::write(&stale_receipt, br#"{"schema_version":3,"status":"crate_verified"}"#).unwrap();
+        let mut root_cmd =
+            verify_with_fakes(&["--receipt-out".as_ref(), stale_receipt.as_os_str()]);
+        if let Some(flag) = flag {
+            root_cmd.arg("--olean-cache-dir").arg(flag);
+        }
+        if let Some(env) = env {
+            root_cmd.env("ANNEAL_OLEAN_CACHE_DIR", env);
+        }
+        let root_out = root_cmd.output().unwrap();
+        assert_eq!(root_out.status.code(), Some(2), "{case}: {root_out:?}");
+        let root_rec: serde_json::Value = serde_json::from_slice(&root_out.stdout).unwrap();
+        assert_eq!(root_rec["phase"], "olean-cache", "{case}: {root_rec}");
+        assert!(
+            root_rec["detail"].as_str().unwrap_or("").contains("must not be inside or contain"),
+            "{case}: {root_rec}"
+        );
+        let written: serde_json::Value =
+            serde_json::from_slice(&fs::read(&stale_receipt).unwrap()).unwrap();
+        assert_eq!(written["phase"], "olean-cache", "{case}: {written}");
+    }
+    let outside_root = tempfile::tempdir().unwrap();
+    let outside_out = verify_with_fakes(&[
+        "--olean-cache-dir".as_ref(),
+        outside_root.path().join("cache").as_os_str(),
+    ])
+    .output()
+    .unwrap();
+    let outside_rec: serde_json::Value = serde_json::from_slice(&outside_out.stdout).unwrap();
+    assert_ne!(outside_rec["phase"], "olean-cache", "{outside_rec}");
+
+    // 4d. Without an override, `--receipt-out` must not land inside the
+    //     per-user default cache either.
+    #[cfg(target_os = "linux")]
+    {
+        let home = tempfile::tempdir().unwrap();
+        let default_cache = home.path().join(".cache/anneal/olean-cache");
+        fs::create_dir_all(&default_cache).unwrap();
+        let default_receipt = default_cache.join("receipt.json");
+        let default_out = verify_with_fakes(&["--receipt-out".as_ref(), default_receipt.as_ref()])
+            .env("HOME", home.path())
+            .env_remove("XDG_CACHE_HOME")
+            .output()
+            .unwrap();
+        assert_eq!(default_out.status.code(), Some(2), "{default_out:?}");
+        let default_rec: serde_json::Value = serde_json::from_slice(&default_out.stdout).unwrap();
+        assert_eq!(default_rec["phase"], "receipt-out", "{default_rec}");
+        assert!(
+            default_rec["detail"].as_str().unwrap_or("").contains(".olean cache directory"),
+            "{default_rec}"
+        );
+        assert!(!default_receipt.exists());
+    }
+
     // 5. Unwritable `--receipt-out` parent fails before retaining `--artifacts`
     //    so `--artifacts` is never published on a `tool_failed`/`receipt-out`
     //    exit 2.

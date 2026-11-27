@@ -275,7 +275,10 @@ fn sharded_cyclic_crate_verifies_cross_shard_dag_id_tree_and_incremental_cache()
     let work = staged.work_dir();
     let crate_dir = work.join("crate");
     let proof_dir = work.join("proof");
-    let cache_dir = work.join("olean-cache");
+    // The per-user cache lives outside the working directory (`work`), since
+    // step 5 also names it as an explicit cache root, which must not overlap
+    // the checkout.
+    let cache_dir = staged.root_dir().join("olean-cache");
     let plan_path = work.join("anneal-shards.json");
     let manifest_path = crate_dir.join("Cargo.toml");
 
@@ -464,22 +467,6 @@ fn sharded_cyclic_crate_verifies_cross_shard_dag_id_tree_and_incremental_cache()
         ]),
     )
     .env("XDG_CACHE_HOME", &cache_dir);
-    let base_verify = with_host_cargo_env(
-        &staged,
-        verify_invocation(&[
-            OsStr::new("--manifest-path"),
-            manifest_path.as_os_str(),
-            OsStr::new("--proof-dir"),
-            proof_dir.as_os_str(),
-            OsStr::new("--shard-min-bodies"),
-            OsStr::new("2"),
-            OsStr::new("--shard-max-bodies"),
-            OsStr::new("2"),
-            OsStr::new("--verify-shard-plan"),
-            plan_path.as_os_str(),
-        ]),
-    )
-    .env("XDG_CACHE_HOME", &cache_dir);
     let verify_run = run_verify_inv(&staged, &first_verify);
     let ok = expect_verified(&verify_run, "crate_verified", true);
     let shards_val = ok.shards.as_ref().expect("shards metadata in receipt");
@@ -575,7 +562,11 @@ fn sharded_cyclic_crate_verifies_cross_shard_dag_id_tree_and_incremental_cache()
     expect_failed(&shadow_run, 1, "unsupported", Some("proof"), "reserved proof module");
     fs::remove_file(&authored_id_tree).unwrap();
 
-    // 5. Edit 1 body (`leaf_00` returns 42) and check OleanCache reuse.
+    // 5. Edit 1 body (`leaf_00` returns 42) and check OleanCache reuse. This
+    //    run points `XDG_CACHE_HOME` at an empty directory and
+    //    `ANNEAL_OLEAN_CACHE_DIR` at another one, then names the populated
+    //    per-user cache with `--olean-cache-dir`, so it only reuses entries
+    //    if the flag is wired through and overrides the environment variable.
     std::thread::sleep(std::time::Duration::from_millis(50));
     let edited_rust = rust_src.replacen(
         "pub fn leaf_00() -> u64 { 0 }",
@@ -588,8 +579,37 @@ fn sharded_cyclic_crate_verifies_cross_shard_dag_id_tree_and_incremental_cache()
         render_shard_proof(&leaf_00_shard, cycle_idx, caller_idx, 42),
     )
     .unwrap();
-    let inc_run = run_verify_inv(&staged, &base_verify);
+    let decoy_xdg = work.join("decoy-xdg");
+    let decoy_env_cache = work.join("decoy-env-olean-cache");
+    fs::create_dir_all(&decoy_xdg).unwrap();
+    fs::create_dir_all(&decoy_env_cache).unwrap();
+    let populated_cache = cache_dir.join("anneal/olean-cache");
+    assert!(populated_cache.join("v2").is_dir(), "{}", populated_cache.display());
+    let flag_inv = with_host_cargo_env(
+        &staged,
+        verify_invocation(&[
+            OsStr::new("--manifest-path"),
+            manifest_path.as_os_str(),
+            OsStr::new("--proof-dir"),
+            proof_dir.as_os_str(),
+            OsStr::new("--shard-min-bodies"),
+            OsStr::new("2"),
+            OsStr::new("--shard-max-bodies"),
+            OsStr::new("2"),
+            OsStr::new("--verify-shard-plan"),
+            plan_path.as_os_str(),
+            OsStr::new("--olean-cache-dir"),
+            populated_cache.as_os_str(),
+        ]),
+    )
+    .env("XDG_CACHE_HOME", &decoy_xdg)
+    .env("ANNEAL_OLEAN_CACHE_DIR", &decoy_env_cache);
+    let inc_run = run_verify_inv(&staged, &flag_inv);
     expect_verified(&inc_run, "crate_verified", true);
+    let mut decoy_entries = BTreeMap::new();
+    collect_oleans(&decoy_xdg, &mut decoy_entries);
+    collect_oleans(&decoy_env_cache, &mut decoy_entries);
+    assert!(decoy_entries.is_empty(), "decoy caches must stay unused: {decoy_entries:?}");
 
     let inc_receipt_path = work.join("inc_receipt.json");
     fs::write(&inc_receipt_path, &inc_run.process.stdout).unwrap();
@@ -644,6 +664,37 @@ fn sharded_cyclic_crate_verifies_cross_shard_dag_id_tree_and_incremental_cache()
         cache_before.len(),
         "expected all existing OleanCache entries preserved untouched"
     );
+
+    // 6. `ANNEAL_OLEAN_CACHE_DIR` alone (no flag) also selects the shared
+    //    cache: with `XDG_CACHE_HOME` pointing at yet another empty directory,
+    //    the unchanged rerun verifies without writing anything there.
+    let env_decoy_xdg = work.join("env-decoy-xdg");
+    fs::create_dir_all(&env_decoy_xdg).unwrap();
+    let env_inv = with_host_cargo_env(
+        &staged,
+        verify_invocation(&[
+            OsStr::new("--manifest-path"),
+            manifest_path.as_os_str(),
+            OsStr::new("--proof-dir"),
+            proof_dir.as_os_str(),
+            OsStr::new("--shard-min-bodies"),
+            OsStr::new("2"),
+            OsStr::new("--shard-max-bodies"),
+            OsStr::new("2"),
+            OsStr::new("--verify-shard-plan"),
+            plan_path.as_os_str(),
+        ]),
+    )
+    .env("XDG_CACHE_HOME", &env_decoy_xdg)
+    .env("ANNEAL_OLEAN_CACHE_DIR", &populated_cache);
+    let env_run = run_verify_inv(&staged, &env_inv);
+    expect_verified(&env_run, "crate_verified", true);
+    let mut env_decoy_entries = BTreeMap::new();
+    collect_oleans(&env_decoy_xdg, &mut env_decoy_entries);
+    assert!(env_decoy_entries.is_empty(), "XDG cache must stay unused: {env_decoy_entries:?}");
+    let mut cache_final = BTreeMap::new();
+    collect_oleans(&cache_dir, &mut cache_final);
+    assert_eq!(cache_final, cache_after, "the unchanged rerun must only hit the shared cache");
 }
 
 #[test]

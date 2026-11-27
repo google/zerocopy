@@ -369,6 +369,11 @@ pub struct VerifyArgs {
     /// `TrustedBoundary` when absent from prebuilt or local `.olean` caches.
     #[arg(long, global = true, conflicts_with = "no_cache")]
     no_rebuild_bundled: bool,
+    /// Shared content-addressed `.olean` disk cache directory
+    /// (`v2/<merkle_key>/`); overrides `ANNEAL_OLEAN_CACHE_DIR` and the
+    /// per-user `XDG_CACHE_HOME`/`HOME` default.
+    #[arg(long, global = true, value_name = "DIR", conflicts_with = "no_cache")]
+    olean_cache_dir: Option<PathBuf>,
     /// Sharding budget configuration for Tarjan SCC `.olean` partitioning.
     #[command(flatten)]
     shard: ShardArgs,
@@ -848,6 +853,12 @@ impl VerifyArgs {
             return Err(cmd.error(
                 ErrorKind::ArgumentConflict,
                 "`--no-cache` and `--no-rebuild-bundled` cannot be used together",
+            ));
+        }
+        if self.no_cache && self.olean_cache_dir.is_some() {
+            return Err(cmd.error(
+                ErrorKind::ArgumentConflict,
+                "`--no-cache` and `--olean-cache-dir` cannot be used together",
             ));
         }
         #[cfg(not(feature = "setup"))]
@@ -2372,6 +2383,236 @@ fn normalize_lexical_absolute(path: &Path) -> std::io::Result<PathBuf> {
     Ok(normalized)
 }
 
+/// Resolve symlinks in the longest existing proper ancestor of the
+/// absolute, lexically normalized `path`, then append the components below
+/// it verbatim. `OleanCache` refuses a root with a symlinked ancestor when it
+/// first creates an entry, so without this a root such as macOS `/tmp/cache`
+/// (`/tmp -> private/tmp`) would serve warm hits and then fail on the first
+/// miss. The final component is never resolved, so a root that is itself a
+/// symlink still fails the cache's non-symlink root check, as `--receipt-out`
+/// and `--artifacts` refuse a symlink leaf.
+fn resolve_existing_ancestor(path: &Path) -> std::io::Result<PathBuf> {
+    let (Some(mut existing), Some(name)) = (path.parent(), path.file_name()) else {
+        return fs::canonicalize(path);
+    };
+    let mut missing = vec![name.to_os_string()];
+    loop {
+        match fs::symlink_metadata(existing) {
+            Ok(_) => break,
+            Err(e) if e.kind() == std::io::ErrorKind::NotFound => {
+                let (Some(parent), Some(name)) = (existing.parent(), existing.file_name()) else {
+                    return Err(e);
+                };
+                missing.push(name.to_os_string());
+                existing = parent;
+            }
+            Err(e) => return Err(e),
+        }
+    }
+    let mut resolved = fs::canonicalize(existing)?;
+    resolved.extend(missing.iter().rev());
+    Ok(resolved)
+}
+
+/// The `.olean` cache root that the caller chose: `--olean-cache-dir` if
+/// given, otherwise a non-empty `ANNEAL_OLEAN_CACHE_DIR`, made absolute and
+/// lexically normalized the same way for both sources.
+fn lexical_olean_cache_dir(
+    flag: Option<&Path>,
+    env: Option<&OsStr>,
+) -> std::io::Result<Option<PathBuf>> {
+    let chosen =
+        flag.map(Path::to_path_buf).or_else(|| env.filter(|v| !v.is_empty()).map(PathBuf::from));
+    chosen.map(|dir| normalize_lexical_absolute(&dir)).transpose()
+}
+
+/// Choose the shared `.olean` disk cache root: [`lexical_olean_cache_dir`]
+/// with its existing ancestors resolved by [`resolve_existing_ancestor`], so
+/// a relative, trailing-slash, `..`, or symlinked-ancestor spelling behaves
+/// like the real directory. `None` keeps the per-user default under
+/// `XDG_CACHE_HOME` or `HOME`.
+fn effective_olean_cache_dir(
+    flag: Option<&Path>,
+    env: Option<&OsStr>,
+) -> std::io::Result<Option<PathBuf>> {
+    lexical_olean_cache_dir(flag, env)?.map(|dir| resolve_existing_ancestor(&dir)).transpose()
+}
+
+/// The overriding `.olean` disk cache root that `run` passes to the checker
+/// for `args`, given the value of `ANNEAL_OLEAN_CACHE_DIR`. Under
+/// `--no-cache` no disk cache is read or written, so this is `None`; it is
+/// also `None` when neither source is set and the checker keeps its per-user
+/// default.
+fn active_olean_cache_dir(
+    args: &VerifyArgs,
+    env: Option<&OsStr>,
+) -> std::io::Result<Option<PathBuf>> {
+    if args.no_cache {
+        return Ok(None);
+    }
+    effective_olean_cache_dir(args.olean_cache_dir.as_deref(), env)
+}
+
+/// The `.olean` disk cache root that the run will read and write: the
+/// override from [`active_olean_cache_dir`], or else the per-user default
+/// that the checker derives from `home` and `xdg_cache_home`. The
+/// `--receipt-out` and `--overwrite-artifacts` guards protect this path, so
+/// a `<symlink>/../cache` spelling protects the directory verification
+/// opens, the default cache is protected too, and a source that the flag or
+/// `--no-cache` overrides is not protected at all. If the override cannot be
+/// resolved, `run` fails before touching any cache, so nothing is returned.
+fn protected_olean_cache_dir(
+    args: &VerifyArgs,
+    env: Option<&OsStr>,
+    home: Option<&OsStr>,
+    xdg_cache_home: Option<&OsStr>,
+) -> Option<PathBuf> {
+    if args.no_cache {
+        return None;
+    }
+    match active_olean_cache_dir(args, env) {
+        Ok(Some(dir)) => Some(dir),
+        Ok(None) => crate::olean_cache::cache_dir_from_env_vars(home, xdg_cache_home),
+        Err(_) => None,
+    }
+}
+
+/// [`protected_olean_cache_dir`] for the process environment.
+fn protected_olean_cache_dir_from_env(args: &VerifyArgs) -> Option<PathBuf> {
+    protected_olean_cache_dir(
+        args,
+        std::env::var_os("ANNEAL_OLEAN_CACHE_DIR").as_deref(),
+        std::env::var_os("HOME").as_deref(),
+        std::env::var_os("XDG_CACHE_HOME").as_deref(),
+    )
+}
+
+/// Refuse an overriding `.olean` cache root that lies inside, or contains,
+/// a directory whose contents the verified checkout supplies: the working
+/// directory, the manifest directory, `--proof-dir`, the request file's
+/// directory and its declared source roots, or the `rustc`-mode crate,
+/// specification, and proof directories. Cache hits are trusted on the
+/// strength of the entry's own `metadata.json`, so a root that checkout
+/// content can populate could substitute compiled `.olean` artifacts,
+/// including the auditor's `TrustedBoundary.olean`. Both the lexical and the
+/// symlink-resolved spellings of every path are compared, so a symlink in
+/// either direction cannot hide the overlap.
+fn validate_olean_cache_root(
+    args: &VerifyArgs,
+    env: Option<&OsStr>,
+) -> std::result::Result<(), String> {
+    if args.no_cache {
+        return Ok(());
+    }
+    let Some(lexical_root) = lexical_olean_cache_dir(args.olean_cache_dir.as_deref(), env)
+        .map_err(|e| format!("cannot normalize shared .olean cache root: {e}"))?
+    else {
+        return Ok(());
+    };
+    let resolved_root = resolve_existing_ancestor(&lexical_root).map_err(|e| {
+        format!("cannot resolve shared .olean cache root {}: {e}", lexical_root.display())
+    })?;
+    // A root that is itself a symlink fails the cache's own root check, but
+    // compare its target too.
+    let roots: Vec<PathBuf> = [Some(lexical_root.clone()), Some(resolved_root)]
+        .into_iter()
+        .chain(std::iter::once(fs::canonicalize(&lexical_root).ok()))
+        .flatten()
+        .collect();
+
+    let mut checkout_dirs: Vec<(&'static str, PathBuf)> = Vec::new();
+    // A file input contributes its directory both as spelled and after
+    // resolving the file itself, since staging opens the resolved file.
+    fn push_file_dir(dirs: &mut Vec<(&'static str, PathBuf)>, what: &'static str, file: &Path) {
+        dirs.push((what, receipt_parent(file).to_path_buf()));
+        if let Ok(canon) = fs::canonicalize(file) {
+            dirs.push((what, receipt_parent(&canon).to_path_buf()));
+        }
+    }
+    let manifest = if let Some(mp) = &args.manifest_path {
+        Some(mp.clone())
+    } else if args.request.is_none() && !matches!(args.command, Some(VerifySubcommand::Rustc(_))) {
+        Some(PathBuf::from("Cargo.toml"))
+    } else {
+        None
+    };
+    if let Some(mp) = manifest {
+        push_file_dir(&mut checkout_dirs, "manifest directory", &mp);
+    }
+    if let Some(VerifySubcommand::Rustc(rustc)) = &args.command {
+        push_file_dir(&mut checkout_dirs, "crate directory", &rustc.crate_root);
+        for path in &rustc.source_file {
+            push_file_dir(&mut checkout_dirs, "source file directory", path);
+        }
+        // Staging lays the Rust inputs out relative to their deepest common
+        // directory, which is the closest thing `rustc` mode has to a
+        // checkout root.
+        let parents: Vec<PathBuf> = std::iter::once(&rustc.crate_root)
+            .chain(&rustc.source_file)
+            .filter_map(|file| normalize_lexical_absolute(receipt_parent(file)).ok())
+            .collect();
+        if let Some((first, rest)) = parents.split_first() {
+            let mut common = first.clone();
+            for parent in rest {
+                while !parent.starts_with(&common) && common.pop() {}
+            }
+            if common.parent().is_some() {
+                checkout_dirs.push(("Rust source common directory", common));
+            }
+        }
+        for path in rustc
+            .spec_file
+            .iter()
+            .map(|spec| &spec.path)
+            .chain(rustc.proof_file.iter().map(|proof| &proof.path))
+        {
+            push_file_dir(&mut checkout_dirs, "authored source directory", path);
+        }
+    }
+    if let Some(req) = &args.request {
+        push_file_dir(&mut checkout_dirs, "request directory", req);
+    }
+    if let Ok(cwd) = std::env::current_dir() {
+        checkout_dirs.push(("working directory", cwd));
+    }
+    if let Some(pd) = &args.proof_dir {
+        checkout_dirs.push(("--proof-dir", pd.clone()));
+    }
+    if let Some(req) = &args.request
+        && let Ok(canon_req) = fs::canonicalize(req)
+        && let Ok((bytes, _)) = read_regular_file_deref(&canon_req, "request")
+        && let Ok(request) = serde_json::from_slice::<Request>(&bytes)
+    {
+        for dir in request_input_paths(receipt_parent(&canon_req), &request).into_iter().take(2) {
+            checkout_dirs.push(("request source root", dir));
+        }
+    }
+
+    for (what, dir) in checkout_dirs {
+        // Compare the lexical spelling and the kernel's resolution, which
+        // honors a `<symlink>/..` the way staging's `fs::canonicalize` does.
+        let candidates: Vec<PathBuf> =
+            [normalize_lexical_absolute(&dir).ok(), resolve_path_preserving_symlinks(&dir).ok()]
+                .into_iter()
+                .flatten()
+                .collect();
+        for root in &roots {
+            for candidate in &candidates {
+                if root.starts_with(candidate) || candidate.starts_with(root) {
+                    return Err(format!(
+                        "shared .olean cache root {} must not be inside or contain the {what} {}: \
+                         cache entries are trusted as stored, so the cache root must lie \
+                         outside any checkout and be writable only by equally trusted runs",
+                        lexical_root.display(),
+                        dir.display()
+                    ));
+                }
+            }
+        }
+    }
+    Ok(())
+}
+
 #[derive(Clone, Debug)]
 struct ValidatedReceiptOut {
     raw_path: PathBuf,
@@ -2632,6 +2873,13 @@ fn validate_receipt_out_pre_stage(
         direct_inputs.push(sysroot.to_path_buf());
         protected_dirs.push(sysroot.to_path_buf());
     }
+    // A receipt written into the `.olean` disk cache could replace a cache
+    // entry's metadata, so protect the cache directory `run` will use,
+    // including the per-user default.
+    if let Some(cache_dir) = protected_olean_cache_dir_from_env(args) {
+        direct_inputs.push(cache_dir.clone());
+        protected_dirs.push(cache_dir);
+    }
     // Also guard auto-discovered toolchain paths and the running executable
     // before preflight/staging can emit an early failure receipt.
     if let Ok(exe) = std::env::current_exe() {
@@ -2657,7 +2905,8 @@ fn validate_receipt_out_pre_stage(
             && validated.canon_target.starts_with(&canon_dir)
         {
             return Err(format!(
-                "receipt destination {} must not reside inside toolchain directory {}",
+                "receipt destination {} must not reside inside toolchain or .olean cache \
+                 directory {}",
                 raw_path.display(),
                 dir.display()
             ));
@@ -3692,6 +3941,12 @@ fn run<Out: std::io::Write + Send, ErrOut: std::io::Write + Send>(
         .map_err(|e| error("tool_failed", "audit", e.message))?;
     checker.set_use_olean_cache(!args.no_cache);
     checker.set_no_rebuild_bundled(args.no_rebuild_bundled);
+    if let Some(cache_dir) =
+        active_olean_cache_dir(args, std::env::var_os("ANNEAL_OLEAN_CACHE_DIR").as_deref())
+            .map_err(|e| io("olean-cache", e))?
+    {
+        checker.set_olean_disk_cache_dir(Some(cache_dir));
+    }
     checker.set_prebuilt_olean_dir(tools.prebuilt_dir);
     checker.set_paranoid_quorum(args.paranoid_quorum);
     checker.set_generated_modules(generated_modules);
@@ -4551,6 +4806,23 @@ pub fn main(args: VerifyArgs, color: ColorChoice, quiet: bool, verbose: bool) ->
             );
         }
     };
+    if let Err(detail) =
+        validate_olean_cache_root(&args, std::env::var_os("ANNEAL_OLEAN_CACHE_DIR").as_deref())
+    {
+        return emit_failure(
+            &mut session,
+            resolved_format,
+            receipt_out.as_ref(),
+            taint_reasons,
+            None,
+            "tool_failed",
+            "olean-cache",
+            None,
+            &detail,
+            None,
+            2,
+        );
+    }
     let mut overwrite_inputs =
         if args.overwrite_artifacts { overwrite_protected_inputs(&args) } else { Vec::new() };
     // In Cargo mode, any target root (not only the selected one) could sit
@@ -5516,6 +5788,7 @@ fn overwrite_protected_inputs(args: &VerifyArgs) -> Vec<PathBuf> {
         inputs.extend(tools.lean);
         inputs.extend(tools.prebuilt_dir);
     }
+    inputs.extend(protected_olean_cache_dir_from_env(args));
     inputs.extend(std::env::current_exe().ok());
     if args.request.is_none()
         && args.manifest_path.is_none()
@@ -6839,6 +7112,7 @@ mod tests {
             max_inspector_output_bytes: crate::sandbox::DEFAULT_MAX_INSPECTOR_RESULT_BYTES,
             no_cache: false,
             no_rebuild_bundled: false,
+            olean_cache_dir: None,
             shard: ShardArgs::default(),
             verify_shard_plan: None,
             command: None,
@@ -6885,6 +7159,7 @@ mod tests {
                             crate::sandbox::DEFAULT_MAX_INSPECTOR_RESULT_BYTES,
                         no_cache: false,
                         no_rebuild_bundled: false,
+                        olean_cache_dir: None,
                         shard: ShardArgs::default(),
                         verify_shard_plan: None,
                         command: None,
@@ -7371,6 +7646,7 @@ mod tests {
             max_inspector_output_bytes: crate::sandbox::DEFAULT_MAX_INSPECTOR_RESULT_BYTES,
             no_cache: false,
             no_rebuild_bundled: false,
+            olean_cache_dir: None,
             shard: ShardArgs::default(),
             verify_shard_plan: None,
             command: None,
@@ -7422,6 +7698,7 @@ mod tests {
                 max_inspector_output_bytes: crate::sandbox::DEFAULT_MAX_INSPECTOR_RESULT_BYTES,
                 no_cache: false,
                 no_rebuild_bundled: false,
+                olean_cache_dir: None,
                 shard: ShardArgs::default(),
                 verify_shard_plan: None,
                 command: None,
@@ -7814,6 +8091,294 @@ mod tests {
         }
     }
 
+    #[test]
+    fn effective_olean_cache_dir_prefers_flag_and_normalizes_both_sources() {
+        let cwd = std::env::current_dir().unwrap();
+        let flag = Path::new("/shared/flag-cache/");
+        let env = OsStr::new("/shared/env-cache/./");
+        assert_eq!(
+            effective_olean_cache_dir(Some(flag), Some(env)).unwrap(),
+            Some(PathBuf::from("/shared/flag-cache"))
+        );
+        assert_eq!(
+            effective_olean_cache_dir(None, Some(env)).unwrap(),
+            Some(PathBuf::from("/shared/env-cache"))
+        );
+        assert_eq!(
+            effective_olean_cache_dir(None, Some(OsStr::new("rel/cache/"))).unwrap(),
+            Some(fs::canonicalize(&cwd).unwrap().join("rel/cache"))
+        );
+        // Unset or empty: keep the per-user default.
+        assert_eq!(effective_olean_cache_dir(None, None).unwrap(), None);
+        assert_eq!(effective_olean_cache_dir(None, Some(OsStr::new(""))).unwrap(), None);
+    }
+
+    fn parse_verify_args(argv: &[&OsStr]) -> VerifyArgs {
+        #[derive(clap::Parser)]
+        struct Wrapper {
+            #[command(flatten)]
+            verify: VerifyArgs,
+        }
+        let argv = std::iter::once(OsStr::new("verify")).chain(argv.iter().copied());
+        <Wrapper as clap::Parser>::try_parse_from(argv).unwrap().verify
+    }
+
+    #[test]
+    fn active_olean_cache_dir_ignores_unused_sources() {
+        let env = Some(OsStr::new("/shared/env-cache"));
+        let request = [OsStr::new("--request"), OsStr::new("request.json")];
+        let flagged = parse_verify_args(
+            &[&[OsStr::new("--olean-cache-dir"), OsStr::new("/shared/flag-cache")][..], &request]
+                .concat(),
+        );
+        assert_eq!(
+            active_olean_cache_dir(&flagged, env).unwrap(),
+            Some(PathBuf::from("/shared/flag-cache")),
+            "the flag overrides the environment"
+        );
+        let no_cache = parse_verify_args(&[&[OsStr::new("--no-cache")][..], &request].concat());
+        assert_eq!(
+            active_olean_cache_dir(&no_cache, env).unwrap(),
+            None,
+            "`--no-cache` uses no disk cache, so none is protected"
+        );
+    }
+
+    #[test]
+    fn overwrite_protected_inputs_include_olean_cache_dir() {
+        let parsed = parse_verify_args(&[
+            OsStr::new("--olean-cache-dir"),
+            OsStr::new("/shared/x/../olean-cache"),
+            OsStr::new("--request"),
+            OsStr::new("request.json"),
+        ]);
+        assert!(
+            overwrite_protected_inputs(&parsed).contains(&PathBuf::from("/shared/olean-cache")),
+            "--overwrite-artifacts must protect the normalized --olean-cache-dir"
+        );
+    }
+
+    /// The receipt guard must protect the lexically normalized cache path
+    /// that `run` uses. Resolving `<symlink>/..` through the filesystem would
+    /// protect a different directory and admit a receipt that overwrites a
+    /// cache entry.
+    #[cfg(unix)]
+    #[test]
+    fn receipt_out_guard_protects_lexical_olean_cache_dir() {
+        let dir = tempfile::tempdir().unwrap();
+        let w = dir.path().join("w");
+        let entry = w.join("cache/v2/key");
+        fs::create_dir_all(&entry).unwrap();
+        fs::create_dir_all(dir.path().join("other/sub")).unwrap();
+        std::os::unix::fs::symlink(dir.path().join("other/sub"), w.join("link")).unwrap();
+        let receipt = entry.join("metadata.json");
+        let args = parse_verify_args(&[
+            OsStr::new("--olean-cache-dir"),
+            w.join("link/../cache").as_os_str(),
+            OsStr::new("--receipt-out"),
+            receipt.as_os_str(),
+            OsStr::new("--request"),
+            dir.path().join("request.json").as_os_str(),
+        ]);
+        let err = validate_receipt_out_pre_stage(&args, None).unwrap_err();
+        assert!(err.contains(".olean cache directory"), "{err}");
+    }
+
+    /// `OleanCache` refuses a root with a symlinked ancestor on its first
+    /// store, so the effective root resolves existing ancestors (as macOS
+    /// `/tmp -> private/tmp` requires) and keeps the missing tail verbatim.
+    #[cfg(unix)]
+    #[test]
+    fn effective_olean_cache_dir_resolves_symlinked_ancestors() {
+        let dir = tempfile::tempdir().unwrap();
+        let real = dir.path().join("real");
+        fs::create_dir(&real).unwrap();
+        std::os::unix::fs::symlink(&real, dir.path().join("link")).unwrap();
+        let canon_real = fs::canonicalize(&real).unwrap();
+        let flag = dir.path().join("link/not/yet/cache");
+        assert_eq!(
+            effective_olean_cache_dir(Some(&flag), None).unwrap(),
+            Some(canon_real.join("not/yet/cache"))
+        );
+        // The root itself is never resolved, so a symlinked root still meets
+        // the cache's non-symlink root check.
+        assert_eq!(
+            effective_olean_cache_dir(Some(&dir.path().join("link/")), None).unwrap(),
+            Some(fs::canonicalize(dir.path()).unwrap().join("link"))
+        );
+    }
+
+    /// A cache root that checkout content could populate is refused, in
+    /// either direction and whether the overlap is lexical or only visible
+    /// after resolving symlinks.
+    #[cfg(unix)]
+    #[test]
+    fn validate_olean_cache_root_rejects_checkout_overlap() {
+        use std::os::unix::fs::symlink;
+        let dir = tempfile::tempdir().unwrap();
+        let elsewhere = tempfile::tempdir().unwrap();
+        let d = |rel: &str| dir.path().join(rel);
+        for sub in ["proof", "crate", "deep/proof", "deep/sub", "alias"] {
+            fs::create_dir_all(d(sub)).unwrap();
+        }
+        fs::write(d("crate/Cargo.toml"), b"").unwrap();
+        // `into-proof` resolves inside the proof directory; `proof/escape`
+        // sits lexically inside it but resolves to an unrelated directory.
+        symlink(d("proof"), d("into-proof")).unwrap();
+        symlink(elsewhere.path(), d("proof/escape")).unwrap();
+        // `alias/Cargo.toml` resolves into `crate/`; `link/..` resolves to
+        // `deep/`, not to the lexical parent.
+        symlink(d("crate/Cargo.toml"), d("alias/Cargo.toml")).unwrap();
+        symlink(d("deep/sub"), d("link")).unwrap();
+        let check = |root: &Path, manifest: &Path, proof: &Path| {
+            let args = parse_verify_args(&[
+                OsStr::new("--olean-cache-dir"),
+                root.as_os_str(),
+                OsStr::new("--proof-dir"),
+                proof.as_os_str(),
+                OsStr::new("--manifest-path"),
+                manifest.as_os_str(),
+            ]);
+            validate_olean_cache_root(&args, None)
+        };
+        let (manifest, proof) = (d("crate/Cargo.toml"), d("proof"));
+        for bad in [
+            d("proof/cache"),
+            dir.path().to_path_buf(),
+            d("into-proof/cache"),
+            d("proof/escape/cache"),
+            d("crate/cache"),
+        ] {
+            let err = check(&bad, &manifest, &proof).unwrap_err();
+            assert!(err.contains("must not be inside or contain"), "{}: {err}", bad.display());
+        }
+        let ok_root = tempfile::tempdir().unwrap();
+        check(&ok_root.path().join("cache"), &manifest, &proof).unwrap();
+        // A symlinked manifest and a `<symlink>/..` proof directory are
+        // compared as staging resolves them.
+        check(&d("crate/cache"), &d("alias/Cargo.toml"), &d("elsewhere-proof")).unwrap_err();
+        check(&d("deep/proof/cache"), &manifest, &d("link/../proof")).unwrap_err();
+
+        // `--no-cache` ignores the root, and without an override the per-user
+        // default is not subject to the check.
+        let base = [
+            OsStr::new("--proof-dir"),
+            proof.as_os_str(),
+            OsStr::new("--manifest-path"),
+            manifest.as_os_str(),
+        ];
+        let no_cache = parse_verify_args(&[&[OsStr::new("--no-cache")][..], &base].concat());
+        validate_olean_cache_root(&no_cache, Some(proof.as_os_str())).unwrap();
+        let default = parse_verify_args(&base);
+        validate_olean_cache_root(&default, None).unwrap();
+        assert!(validate_olean_cache_root(&default, Some(proof.as_os_str())).is_err());
+    }
+
+    /// Request mode compares the request's directory and declared source
+    /// roots; `rustc` mode compares the crate, source, specification, and
+    /// proof file directories.
+    #[cfg(unix)]
+    #[test]
+    fn validate_olean_cache_root_covers_request_and_rustc_inputs() {
+        let dir = tempfile::tempdir().unwrap();
+        let d = |rel: &str| dir.path().join(rel);
+        for sub in ["req", "src", "authored", "c", "s"] {
+            fs::create_dir_all(d(sub)).unwrap();
+        }
+        fs::write(
+            d("req/request.json"),
+            br#"{
+  "schema_version": 1,
+  "compilation": {
+    "source_root": "../src",
+    "crate_root": "lib.rs",
+    "crate_name": "demo",
+    "edition": "2024",
+    "target": "x86_64-unknown-linux-gnu",
+    "source_files": ["lib.rs"]
+  },
+  "scope": { "kind": "crate" },
+  "proof": { "source_root": "../authored", "sources": [] }
+}"#,
+        )
+        .unwrap();
+        let request = d("req/request.json");
+        for sub in ["req", "src", "authored"] {
+            let root = d(sub).join("cache");
+            let args = parse_verify_args(&[
+                OsStr::new("--olean-cache-dir"),
+                root.as_os_str(),
+                OsStr::new("--request"),
+                request.as_os_str(),
+            ]);
+            let err = validate_olean_cache_root(&args, None).unwrap_err();
+            assert!(err.contains("must not be inside or contain"), "{sub}: {err}");
+        }
+
+        // The authored files live outside the Rust sources' common directory,
+        // so each overlap below can only be caught by the check it names.
+        let outside = tempfile::tempdir().unwrap();
+        let o = |rel: &str| outside.path().join(rel);
+        for sub in ["spec", "p"] {
+            fs::create_dir_all(o(sub)).unwrap();
+        }
+        let (spec, proof) = (
+            format!("Spec={}", o("spec/Spec.lean").display()),
+            format!("Proof={}", o("p/Proof.lean").display()),
+        );
+        for (root, what) in [
+            (d("c"), "crate directory"),
+            (d("s"), "source file directory"),
+            (d("sibling"), "Rust source common directory"),
+            (o("spec"), "authored source directory"),
+            (o("p"), "authored source directory"),
+        ] {
+            let root = root.join("cache");
+            let args = parse_verify_args(&[
+                OsStr::new("--olean-cache-dir"),
+                root.as_os_str(),
+                OsStr::new("rustc"),
+                d("c/lib.rs").as_os_str(),
+                OsStr::new("--crate-name"),
+                OsStr::new("demo"),
+                OsStr::new("--source-file"),
+                d("s/helper.rs").as_os_str(),
+                OsStr::new("--spec-file"),
+                OsStr::new(&spec),
+                OsStr::new("--proof-file"),
+                OsStr::new(&proof),
+            ]);
+            let err = validate_olean_cache_root(&args, None).unwrap_err();
+            assert!(err.contains(&format!("must not be inside or contain the {what} ")), "{err}");
+        }
+    }
+
+    /// The guards protect the per-user default cache when no override is
+    /// set, the override when one is, and nothing under `--no-cache`.
+    #[test]
+    fn protected_olean_cache_dir_covers_default_cache() {
+        let request = [OsStr::new("--request"), OsStr::new("request.json")];
+        let plain = parse_verify_args(&request);
+        let home = Some(OsStr::new("/home/u"));
+        let expected_default =
+            crate::olean_cache::cache_dir_from_env_vars(home, Some(OsStr::new("/xdg"))).unwrap();
+        assert_eq!(
+            protected_olean_cache_dir(&plain, None, home, Some(OsStr::new("/xdg"))),
+            Some(expected_default)
+        );
+        assert_eq!(
+            protected_olean_cache_dir(
+                &plain,
+                Some(OsStr::new("/shared/env-cache")),
+                home,
+                Some(OsStr::new("/xdg"))
+            ),
+            Some(PathBuf::from("/shared/env-cache"))
+        );
+        let no_cache = parse_verify_args(&[&[OsStr::new("--no-cache")][..], &request].concat());
+        assert_eq!(protected_olean_cache_dir(&no_cache, None, home, None), None);
+    }
+
     #[cfg(unix)]
     #[test]
     fn normalize_lexical_absolute_preserves_symlinked_sysroot_topology() {
@@ -8204,6 +8769,7 @@ mod tests {
             lean: None,
             no_cache: false,
             no_rebuild_bundled: false,
+            olean_cache_dir: None,
             export_lean_lib: false,
             overwrite_artifacts: false,
             lean_memory_mb: None,

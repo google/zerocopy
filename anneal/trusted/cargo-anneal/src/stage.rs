@@ -1450,9 +1450,21 @@ impl Checker {
         self.prebuilt_olean_dir = dir;
     }
 
+    /// Use `dir` as the `.olean` disk cache root instead of the per-user
+    /// default. Callers pass an absolute path; lookups and stores still
+    /// reject a symlinked or foreign-owned root.
+    pub fn set_olean_disk_cache_dir(&mut self, dir: Option<PathBuf>) {
+        self.olean_cache.set_disk_dir(dir);
+    }
+
+    /// Return the `(hits, misses)` of `.olean` cache lookups on this checker.
+    pub fn olean_cache_stats(&self) -> (usize, usize) {
+        self.olean_cache.stats()
+    }
+
     #[cfg(test)]
     pub(crate) fn set_olean_disk_cache_dir_for_test(&mut self, dir: Option<PathBuf>) {
-        self.olean_cache.set_disk_dir(dir);
+        self.set_olean_disk_cache_dir(dir);
     }
 
     fn effective_prebuilt_dir(&self, prefix: &Path) -> Option<PathBuf> {
@@ -6225,6 +6237,9 @@ exit 1
         let cold_lines: Vec<String> =
             fs::read_to_string(&log_file).unwrap().lines().map(str::to_owned).collect();
         assert_eq!(cold_lines.len(), 2, "expected 2 compiles on cold run: {cold_lines:?}");
+        let (cold_hits, cold_misses) = c1.olean_cache_stats();
+        assert_eq!(cold_hits, 0, "cold run must not hit the disk cache");
+        assert!(cold_misses >= 1, "cold run must record cache misses");
         fs::write(&log_file, b"").unwrap();
 
         // Warm run with `--no-rebuild-bundled` hits disk cache with 0 Lean compile spawns.
@@ -6240,6 +6255,9 @@ exit 1
         )
         .unwrap();
         assert_eq!(fs::read_to_string(&log_file).unwrap(), "", "warm run must not spawn lean");
+        let (warm_hits, warm_misses) = c2.olean_cache_stats();
+        assert!(warm_hits >= 1, "warm run must hit the disk cache");
+        assert_eq!(warm_misses, 0, "warm run must not miss");
 
         // Changing bundled module source invalidates key and fails closed under `--no-rebuild-bundled`.
         fs::write(&mod_src, "prelude\n-- modified\n").unwrap();
