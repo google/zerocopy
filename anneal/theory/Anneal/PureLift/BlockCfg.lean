@@ -737,6 +737,65 @@ private def LocalBlockSpecVC {State Ret : Type} (onFault : Prop)
         | some v => PostRet v
         | none => onFault)
 
+/-- A wrapped run (`.jumpWrapped` / `.convergedJump`) meets `BlockCfgSpec`
+when the inner run does and the wrapper preserves `PostRet`. -/
+private theorem wrapped_spec_sound {Ret : Type} {onFault : Prop}
+    {PostRet : Ret → Prop} (wrapRet : Ret → Option Ret)
+    (r : BlockCfgOutcome Ret) (hr : BlockCfgSpec onFault r PostRet)
+    (hWrap : ∀ v, PostRet v →
+      match wrapRet v with
+      | some v' => PostRet v'
+      | none => onFault) :
+    BlockCfgSpec onFault
+      (match r with
+       | .ret v =>
+         match wrapRet v with
+         | some v' => .ret v'
+         | none => .fault
+       | .diverged => .diverged
+       | .fault => .fault) PostRet := by
+  cases r with
+  | ret v =>
+    have hW := hWrap v hr
+    dsimp only [BlockCfgSpec]
+    revert hW
+    cases wrapRet v <;> exact id
+  | diverged => exact True.intro
+  | fault => exact hr
+
+/-- A `.branchJump` run meets `BlockCfgSpec` when both successor runs do and
+the merge function preserves `PostRet`. -/
+private theorem branch_spec_sound {Ret : Type} {onFault : Prop}
+    {PostRet : Ret → Prop} (mergeRet : Ret → Ret → Option Ret)
+    (rT rF : BlockCfgOutcome Ret) (hT : BlockCfgSpec onFault rT PostRet)
+    (hF : BlockCfgSpec onFault rF PostRet)
+    (hMerge : ∀ vt vf, PostRet vt → PostRet vf →
+      match mergeRet vt vf with
+      | some v => PostRet v
+      | none => onFault) :
+    BlockCfgSpec onFault
+      (match rT, rF with
+       | .ret vt, .ret vf =>
+         match mergeRet vt vf with
+         | some v => .ret v
+         | none => .fault
+       | .fault, _ => .fault
+       | _, .fault => .fault
+       | _, _ => .diverged) PostRet := by
+  cases rT with
+  | fault => exact hT
+  | diverged => cases rF with
+    | fault => exact hF
+    | diverged | ret _ => exact True.intro
+  | ret vt => cases rF with
+    | fault => exact hF
+    | diverged => exact True.intro
+    | ret vf =>
+      have hM := hMerge vt vf hT hF
+      dsimp only [BlockCfgSpec]
+      revert hM
+      cases mergeRet vt vf <;> exact id
+
 private theorem runBlockCfgLoop_spec_sound {State Ret : Type}
     {onFault : Prop}
     (stepBb : Nat → State → BlockStepResult State Ret)
@@ -751,96 +810,24 @@ private theorem runBlockCfgLoop_spec_sound {State Ret : Type}
     exact runBlockCfgLoop_spec_sound stepBb BlockInv PostRet hLocal
       fuel' wait' bb st hInv
   | fuel' + 1, 0, bb, st, hInv => by
+    have ih := runBlockCfgLoop_spec_sound stepBb BlockInv PostRet hLocal fuel'
     change BlockCfgSpec onFault (runBlockCfg stepBb bb st (fuel' + 1)) PostRet
     rw [runBlockCfg_succ]
     have hVC := hLocal bb st hInv
     cases hStep : stepBb bb st with
-    | fault =>
-      rw [hStep] at hVC
-      exact hVC
-    | ret v =>
-      rw [hStep] at hVC
-      exact hVC
-    | jump nextBb st' =>
-      rw [hStep] at hVC
-      dsimp at hVC
-      exact runBlockCfgLoop_spec_sound stepBb BlockInv PostRet hLocal
-        fuel' 0 nextBb st' hVC
+    | fault => rw [hStep] at hVC; exact hVC
+    | ret v => rw [hStep] at hVC; exact hVC
+    | jump nextBb st' => rw [hStep] at hVC; exact ih 0 nextBb st' hVC
     | jumpWrapped wrapRet nextBb st' =>
       rw [hStep] at hVC
-      dsimp at hVC
-      dsimp [BlockCfgSpec]
-      have ih := runBlockCfgLoop_spec_sound stepBb BlockInv PostRet hLocal
-        fuel' 0 nextBb st' hVC.1
-      cases hRun : runBlockCfg stepBb nextBb st' fuel' with
-      | ret v =>
-        change runBlockCfgLoop stepBb fuel' 0 nextBb st' = .ret v at hRun
-        rw [hRun] at ih
-        dsimp only
-        have hWrap := hVC.2 v ih
-        cases hW : wrapRet v with
-        | none => rw [hW] at hWrap; exact hWrap
-        | some v' => rw [hW] at hWrap; exact hWrap
-      | diverged => exact True.intro
-      | fault =>
-        change runBlockCfgLoop stepBb fuel' 0 nextBb st' = .fault at hRun
-        rw [hRun] at ih
-        exact ih
+      exact wrapped_spec_sound wrapRet _ (ih 0 nextBb st' hVC.1) hVC.2
     | convergedJump armSteps wrapRet nextBb st' =>
       rw [hStep] at hVC
-      dsimp at hVC
-      dsimp [BlockCfgSpec]
-      have ih := runBlockCfgLoop_spec_sound stepBb BlockInv PostRet hLocal
-        fuel' armSteps nextBb st' hVC.1
-      cases hRun : runBlockCfgLoop stepBb fuel' armSteps nextBb st' with
-      | ret v =>
-        rw [hRun] at ih
-        dsimp only
-        have hWrap := hVC.2 v ih
-        cases hW : wrapRet v with
-        | none => rw [hW] at hWrap; exact hWrap
-        | some v' => rw [hW] at hWrap; exact hWrap
-      | diverged => exact True.intro
-      | fault =>
-        rw [hRun] at ih
-        exact ih
+      exact wrapped_spec_sound wrapRet _ (ih armSteps nextBb st' hVC.1) hVC.2
     | branchJump mergeRet thenBb elseBb st' =>
       rw [hStep] at hVC
-      dsimp at hVC
-      dsimp [BlockCfgSpec]
-      have ihT := runBlockCfgLoop_spec_sound stepBb BlockInv PostRet hLocal
-        fuel' 0 thenBb st' hVC.1
-      have ihF := runBlockCfgLoop_spec_sound stepBb BlockInv PostRet hLocal
-        fuel' 0 elseBb st' hVC.2.1
-      cases hRunT : runBlockCfg stepBb thenBb st' fuel' with
-      | fault =>
-        change runBlockCfgLoop stepBb fuel' 0 thenBb st' = .fault at hRunT
-        rw [hRunT] at ihT
-        exact ihT
-      | diverged =>
-        cases hRunF : runBlockCfg stepBb elseBb st' fuel' with
-        | fault =>
-          change runBlockCfgLoop stepBb fuel' 0 elseBb st' = .fault at hRunF
-          rw [hRunF] at ihF
-          exact ihF
-        | diverged | ret _ => exact True.intro
-      | ret vt =>
-        cases hRunF : runBlockCfg stepBb elseBb st' fuel' with
-        | fault =>
-          change runBlockCfgLoop stepBb fuel' 0 elseBb st' = .fault at hRunF
-          rw [hRunF] at ihF
-          exact ihF
-        | diverged => exact True.intro
-        | ret vf =>
-          change runBlockCfgLoop stepBb fuel' 0 thenBb st' = .ret vt at hRunT
-          change runBlockCfgLoop stepBb fuel' 0 elseBb st' = .ret vf at hRunF
-          rw [hRunT] at ihT
-          rw [hRunF] at ihF
-          dsimp only
-          have hMerge := hVC.2.2 vt vf ihT ihF
-          cases hM : mergeRet vt vf with
-          | none => rw [hM] at hMerge; exact hMerge
-          | some v => rw [hM] at hMerge; exact hMerge
+      exact branch_spec_sound mergeRet _ _ (ih 0 thenBb st' hVC.1)
+        (ih 0 elseBb st' hVC.2.1) hVC.2.2
 
 theorem modular_block_cfg_loop_sound {State Ret : Type}
     (stepBb : Nat → State → BlockStepResult State Ret)
@@ -930,6 +917,153 @@ theorem finishConvergedBranch_returnsHandleFree {Val : Type}
       subst hEq
       exact fun _ out h => handleFreeOutOpt_eq_some alg _ out h
 
+/-- The symbolic-branch tail of `stepBasicBlock`, shared by its
+`.guardedContinuing` (`outerWrap = some wrapOut`) and `.continuing`
+(`outerWrap = none`) cases: the converged step, or else `.branchJump mergeW`,
+returns only handle-free values whenever `mergeW` does. -/
+private theorem convergedBranch_returnsHandleFree {Val : Type}
+    (alg : ValAlgebra Val) (blocks : List (BasicBlock Val)) (bbIdx : BlockId)
+    (cv : Val) (tTgt fTgt : BlockId) (st' : SymState Val)
+    (outerWrap : Option (FuncOut Val → FuncOut Val))
+    (mergeW : FuncOut Val → FuncOut Val → Option (FuncOut Val))
+    (hMerge :
+      ∀ vt vf out, mergeW vt vf = some out → handleFreeOut alg out = true) :
+    StepReturnsHandleFree alg
+      (match
+          (match findConvergenceBlock blocks (blocks.length + 1)
+              tTgt fTgt [bbIdx] with
+            | some joinBb =>
+              match evalArmToJoin alg blocks (blocks.length + 1)
+                      joinBb tTgt st',
+                    evalArmToJoin alg blocks (blocks.length + 1)
+                      joinBb fTgt st' with
+              | .ok (kT, flowT), .ok (kF, flowF) =>
+                match joinExecFlow alg cv flowT flowF with
+                | some joined =>
+                  finishConvergedBranch alg (Nat.max kT kF) outerWrap
+                    joinBb joined
+                | none => none
+              | _, _ => none
+            | none => none) with
+        | some res => res
+        | none => .branchJump mergeW tTgt fTgt st') := by
+  cases findConvergenceBlock blocks (blocks.length + 1) tTgt fTgt [bbIdx] with
+  | none => exact hMerge
+  | some joinBb =>
+    dsimp
+    cases evalArmToJoin alg blocks (blocks.length + 1) joinBb tTgt st' with
+    | fail => exact hMerge
+    | ok resT =>
+      cases resT with
+      | mk kT flowT =>
+        cases evalArmToJoin alg blocks (blocks.length + 1) joinBb fTgt st' with
+        | fail => exact hMerge
+        | ok resF =>
+          cases resF with
+          | mk kF flowF =>
+            dsimp
+            cases joinExecFlow alg cv flowT flowF with
+            | none => exact hMerge
+            | some joined =>
+              dsimp
+              cases hFin :
+                  finishConvergedBranch alg (Nat.max kT kF) outerWrap
+                    joinBb joined with
+              | none => exact hMerge
+              | some res =>
+                exact finishConvergedBranch_returnsHandleFree
+                  alg (Nat.max kT kF) outerWrap joinBb joined res hFin
+
+/-- The terminator dispatch of `stepBasicBlock` after a body that did not
+return, shared by its `.guardedContinuing` and `.continuing` cases: `mk` builds
+a concrete jump, `outerWrap` and `mergeW` handle a symbolic branch, and `g`
+wraps the fall-through return value. -/
+private theorem blockTerm_returnsHandleFree {Val : Type}
+    (alg : ValAlgebra Val) (blocks : List (BasicBlock Val)) (bbIdx : BlockId)
+    (term : BlockTerm Val) (st' : SymState Val)
+    (mk : BlockId → BlockStepResult (SymState Val) (FuncOut Val))
+    (outerWrap : Option (FuncOut Val → FuncOut Val))
+    (mergeW : Val → FuncOut Val → FuncOut Val → Option (FuncOut Val))
+    (g : FuncOut Val → FuncOut Val)
+    (hMk : ∀ tgt, StepReturnsHandleFree alg (mk tgt))
+    (hMerge :
+      ∀ cv vt vf out,
+        mergeW cv vt vf = some out → handleFreeOut alg out = true) :
+    StepReturnsHandleFree alg
+      (match term with
+       | .goto tgt => mk tgt
+       | .branch cond tTgt fTgt =>
+         match evalRval alg cond st' with
+         | some cv =>
+           match alg.asBool cv with
+           | some true => mk tTgt
+           | some false => mk fTgt
+           | none =>
+             if tTgt == fTgt then mk tTgt
+             else
+               match
+                   (match findConvergenceBlock blocks (blocks.length + 1)
+                       tTgt fTgt [bbIdx] with
+                     | some joinBb =>
+                       match evalArmToJoin alg blocks (blocks.length + 1)
+                               joinBb tTgt st',
+                             evalArmToJoin alg blocks (blocks.length + 1)
+                               joinBb fTgt st' with
+                       | .ok (kT, flowT), .ok (kF, flowF) =>
+                         match joinExecFlow alg cv flowT flowF with
+                         | some joined =>
+                           finishConvergedBranch alg (Nat.max kT kF)
+                             outerWrap joinBb joined
+                         | none => none
+                       | _, _ => none
+                     | none => none) with
+               | some res => res
+               | none => .branchJump (mergeW cv) tTgt fTgt st'
+         | none => .fault
+       | .ret retExpr =>
+         if !stateCleanAtReturn st' then .fault
+         else
+           match evalRval alg retExpr st' with
+           | some rv =>
+             if !handleFreeOut alg (g ⟨rv, collectRootMutVals st'.loans⟩)
+             then .fault
+             else .ret (g ⟨rv, collectRootMutVals st'.loans⟩)
+           | none => .fault) := by
+  cases term with
+  | goto tgt => exact hMk tgt
+  | branch cond tTgt fTgt =>
+    dsimp
+    cases evalRval alg cond st' with
+    | none => exact True.intro
+    | some cv =>
+      dsimp
+      cases alg.asBool cv with
+      | some b =>
+        cases b with
+        | true => exact hMk tTgt
+        | false => exact hMk fTgt
+      | none =>
+        dsimp
+        cases tTgt == fTgt with
+        | true => exact hMk tTgt
+        | false =>
+          exact convergedBranch_returnsHandleFree alg blocks bbIdx cv tTgt fTgt
+            st' outerWrap (mergeW cv) (hMerge cv)
+  | ret retExpr =>
+    dsimp
+    cases stateCleanAtReturn st' with
+    | false => exact True.intro
+    | true =>
+      dsimp
+      cases evalRval alg retExpr st' with
+      | none => exact True.intro
+      | some rv =>
+        dsimp
+        cases hFree :
+            handleFreeOut alg (g ⟨rv, collectRootMutVals st'.loans⟩) with
+        | false => exact True.intro
+        | true => exact hFree
+
 theorem stepBasicBlock_returnsHandleFree {Val : Type} (alg : ValAlgebra Val)
     (blocks : List (BasicBlock Val)) (bbIdx : BlockId) (st : SymState Val) :
     StepReturnsHandleFree alg (stepBasicBlock alg blocks bbIdx st) := by
@@ -954,151 +1088,23 @@ theorem stepBasicBlock_returnsHandleFree {Val : Type} (alg : ValAlgebra Val)
         cases valClean with
         | false => exact True.intro
         | true =>
-          dsimp
-          cases bb.term with
-          | goto tgt =>
-            exact fun _ out h => handleFreeOutOpt_eq_some alg _ out h
-          | branch cond tTgt fTgt =>
-            dsimp
-            cases evalRval alg cond st' with
-            | none => exact True.intro
-            | some cv =>
-              dsimp
-              cases alg.asBool cv with
-              | some b =>
-                cases b <;>
-                  exact fun _ out h => handleFreeOutOpt_eq_some alg _ out h
-              | none =>
-                dsimp
-                cases tTgt == fTgt with
-                | true =>
-                  exact fun _ out h => handleFreeOutOpt_eq_some alg _ out h
-                | false =>
-                  dsimp
-                  cases findConvergenceBlock blocks (blocks.length + 1)
-                      tTgt fTgt [bbIdx] with
-                  | none =>
-                    exact fun _ _ out h => handleFreeOutOpt_eq_some alg _ out h
-                  | some joinBb =>
-                    dsimp
-                    cases evalArmToJoin alg blocks (blocks.length + 1)
-                        joinBb tTgt st' with
-                    | fail =>
-                      exact fun _ _ out h =>
-                        handleFreeOutOpt_eq_some alg _ out h
-                    | ok resT =>
-                      cases resT with
-                      | mk kT flowT =>
-                        cases evalArmToJoin alg blocks (blocks.length + 1)
-                            joinBb fTgt st' with
-                        | fail =>
-                          exact fun _ _ out h =>
-                            handleFreeOutOpt_eq_some alg _ out h
-                        | ok resF =>
-                          cases resF with
-                          | mk kF flowF =>
-                            dsimp
-                            cases joinExecFlow alg cv flowT flowF with
-                            | none =>
-                              exact fun _ _ out h =>
-                                handleFreeOutOpt_eq_some alg _ out h
-                            | some joined =>
-                              dsimp
-                              cases hFin :
-                                  finishConvergedBranch alg (Nat.max kT kF)
-                                    (some wrapOut) joinBb joined with
-                              | none =>
-                                exact fun _ _ out h =>
-                                  handleFreeOutOpt_eq_some alg _ out h
-                              | some res =>
-                                exact finishConvergedBranch_returnsHandleFree
-                                  alg (Nat.max kT kF) (some wrapOut) joinBb
-                                  joined res hFin
-          | ret retExpr =>
-            dsimp
-            cases stateCleanAtReturn st' with
-            | false => exact True.intro
-            | true =>
-              dsimp
-              cases evalRval alg retExpr st' with
-              | none => exact True.intro
-              | some rv =>
-                dsimp
-                cases hFree :
-                    handleFreeOut alg
-                      (wrapOut ⟨rv, collectRootMutVals st'.loans⟩) with
-                | false => exact True.intro
-                | true => exact hFree
+          exact blockTerm_returnsHandleFree alg blocks bbIdx bb.term st'
+            (fun tgt =>
+              .jumpWrapped (fun out => handleFreeOutOpt alg (wrapOut out))
+                tgt st')
+            (some wrapOut)
+            (fun cv tOut fOut =>
+              handleFreeOutOpt alg (wrapOut (mergeFuncOut alg cv tOut fOut)))
+            wrapOut
+            (fun _ _ out h => handleFreeOutOpt_eq_some alg _ out h)
+            (fun _ _ _ out h => handleFreeOutOpt_eq_some alg _ out h)
       | continuing st' =>
-        dsimp
-        cases bb.term with
-        | goto tgt => exact True.intro
-        | branch cond tTgt fTgt =>
-          dsimp
-          cases evalRval alg cond st' with
-          | none => exact True.intro
-          | some cv =>
-            dsimp
-            cases alg.asBool cv with
-            | some b => cases b <;> exact True.intro
-            | none =>
-              dsimp
-              cases tTgt == fTgt with
-              | true => exact True.intro
-              | false =>
-                dsimp
-                cases findConvergenceBlock blocks (blocks.length + 1)
-                    tTgt fTgt [bbIdx] with
-                | none =>
-                  exact fun _ _ out h => handleFreeOutOpt_eq_some alg _ out h
-                | some joinBb =>
-                  dsimp
-                  cases evalArmToJoin alg blocks (blocks.length + 1)
-                      joinBb tTgt st' with
-                  | fail =>
-                    exact fun _ _ out h =>
-                      handleFreeOutOpt_eq_some alg _ out h
-                  | ok resT =>
-                    cases resT with
-                    | mk kT flowT =>
-                      cases evalArmToJoin alg blocks (blocks.length + 1)
-                          joinBb fTgt st' with
-                      | fail =>
-                        exact fun _ _ out h =>
-                          handleFreeOutOpt_eq_some alg _ out h
-                      | ok resF =>
-                        cases resF with
-                        | mk kF flowF =>
-                          dsimp
-                          cases joinExecFlow alg cv flowT flowF with
-                          | none =>
-                            exact fun _ _ out h =>
-                              handleFreeOutOpt_eq_some alg _ out h
-                          | some joined =>
-                            dsimp
-                            cases hFin :
-                                finishConvergedBranch alg (Nat.max kT kF)
-                                  none joinBb joined with
-                            | none =>
-                              exact fun _ _ out h =>
-                                handleFreeOutOpt_eq_some alg _ out h
-                            | some res =>
-                              exact finishConvergedBranch_returnsHandleFree
-                                alg (Nat.max kT kF) none joinBb joined res hFin
-        | ret retExpr =>
-          dsimp
-          cases stateCleanAtReturn st' with
-          | false => exact True.intro
-          | true =>
-            dsimp
-            cases evalRval alg retExpr st' with
-            | none => exact True.intro
-            | some rv =>
-              dsimp
-              cases hFree :
-                  handleFreeOut alg ⟨rv, collectRootMutVals st'.loans⟩ with
-              | false => exact True.intro
-              | true => exact hFree
+        exact blockTerm_returnsHandleFree alg blocks bbIdx bb.term st'
+          (fun tgt => .jump tgt st') none
+          (fun cv tOut fOut =>
+            handleFreeOutOpt alg (mergeFuncOut alg cv tOut fOut))
+          id (fun _ => True.intro)
+          (fun _ _ _ out h => handleFreeOutOpt_eq_some alg _ out h)
 
 theorem runBlockCfgLoop_stepBasicBlock_handleFree {Val : Type}
     (alg : ValAlgebra Val) (blocks : List (BasicBlock Val))
@@ -1174,6 +1180,64 @@ structure CfgCertificate {Val : Type} (alg : ValAlgebra Val) where
       evalFnValue alg params plan retExpr = .ok out →
       runBlockCfg (stepBasicBlock alg blocks) entryBb st0 fuel = .ret out
 
+/-- A `.ret` guard of `evalFnValue` that succeeds makes the matching guard of
+`stepBasicBlock` return the same value. -/
+private theorem guardRet_of_guardOk {Val : Type} (b : Bool)
+    (o out : FuncOut Val)
+    (h : (if b then EvalOutcome.fail else .ok o) = .ok out) :
+    (if b then BlockStepResult.fault else .ret o) =
+      (.ret out : BlockStepResult (SymState Val) (FuncOut Val)) := by
+  revert h
+  cases b with
+  | true =>
+    intro h
+    nomatch h
+  | false =>
+    intro h
+    injection h with hOut
+    subst hOut
+    rfl
+
+/-- The fall-through return tail of `evalFnValue`, for a return wrapper `g`
+(`id` for `.continuing`, the pending early-return wrapper for
+`.guardedContinuing`), succeeds only when the `.ret` terminator tail of
+`stepBasicBlock` returns the same value. -/
+private theorem retTail_of_evalTail {Val : Type} (alg : ValAlgebra Val)
+    (retExpr : RvalOp Val) (stF : SymState Val) (c : Bool)
+    (g : FuncOut Val → FuncOut Val) (out : FuncOut Val)
+    (h :
+      (if !c then EvalOutcome.fail
+       else
+         match evalRval alg retExpr stF with
+         | some retVal =>
+           if !handleFreeOut alg (g ⟨retVal, collectRootMutVals stF.loans⟩)
+           then .fail
+           else .ok (g ⟨retVal, collectRootMutVals stF.loans⟩)
+         | none => .fail) = .ok out) :
+    (if !c then BlockStepResult.fault
+     else
+       match evalRval alg retExpr stF with
+       | some rv =>
+         if !handleFreeOut alg (g ⟨rv, collectRootMutVals stF.loans⟩)
+         then .fault
+         else .ret (g ⟨rv, collectRootMutVals stF.loans⟩)
+       | none => .fault) =
+      (.ret out : BlockStepResult (SymState Val) (FuncOut Val)) := by
+  revert h
+  cases c with
+  | false =>
+    intro h
+    nomatch h
+  | true =>
+    cases evalRval alg retExpr stF with
+    | none =>
+      intro h
+      nomatch h
+    | some retVal =>
+      exact guardRet_of_guardOk
+        (!handleFreeOut alg (g ⟨retVal, collectRootMutVals stF.loans⟩))
+        (g ⟨retVal, collectRootMutVals stF.loans⟩) out
+
 /-- Single-block CFG equivalence (`cfg_certificate_step_sound`): executing a
 1-block CFG `[⟨plan, .ret retExpr⟩]` for 1 step via `runBlockCfg` produces `.ret
 out` whenever `evalFnValue alg params plan retExpr = .ok out`. -/
@@ -1184,96 +1248,34 @@ theorem cfg_certificate_step_sound {Val : Type} (alg : ValAlgebra Val)
     (hEval : evalFnValue alg params plan retExpr = .ok out) :
     runBlockCfg (stepBasicBlock alg [⟨plan, .ret retExpr⟩]) 0 st0 1 =
       .ret out := by
-  dsimp [evalFnValue] at hEval
-  rw [hInit] at hEval
-  dsimp at hEval
-  rw [runBlockCfg_succ]
-  dsimp [stepBasicBlock, listGetOpt]
-  revert hEval
-  cases hPlan : evalPlan alg plan st0 with
-  | fail =>
-    intro hFalse
-    nomatch hFalse
-  | ok flow =>
-    cases flow with
-    | returned out' valClean _ =>
-      dsimp
-      cases valClean with
-      | false =>
-        dsimp
-        intro hFalse
-        nomatch hFalse
-      | true =>
-        cases handleFreeOut alg out' with
+  have hStep :
+      stepBasicBlock alg [⟨plan, .ret retExpr⟩] 0 st0 = .ret out := by
+    dsimp [evalFnValue] at hEval
+    rw [hInit] at hEval
+    dsimp at hEval
+    dsimp [stepBasicBlock, listGetOpt]
+    revert hEval
+    cases evalPlan alg plan st0 with
+    | fail =>
+      intro h
+      nomatch h
+    | ok flow =>
+      cases flow with
+      | returned out' valClean _ =>
+        exact guardRet_of_guardOk (!valClean || !handleFreeOut alg out')
+          out' out
+      | continuing stF =>
+        exact retTail_of_evalTail alg retExpr stF (stateCleanAtReturn stF)
+          id out
+      | guardedContinuing guards stF valClean _ =>
+        cases valClean with
         | false =>
-          dsimp
-          intro hFalse
-          nomatch hFalse
+          intro h
+          nomatch h
         | true =>
-          dsimp
-          intro hEq
-          injection hEq with hOut
-          rw [hOut]
-    | continuing stF =>
-      dsimp
-      cases hClean : stateCleanAtReturn stF with
-      | false =>
-        dsimp
-        intro hFalse
-        nomatch hFalse
-      | true =>
-        dsimp
-        cases hRet : evalRval alg retExpr stF with
-        | none =>
-          dsimp
-          intro hFalse
-          nomatch hFalse
-        | some retVal =>
-          dsimp
-          cases handleFreeOut alg ⟨retVal, collectRootMutVals stF.loans⟩ with
-          | false =>
-            dsimp
-            intro hFalse
-            nomatch hFalse
-          | true =>
-            dsimp
-            intro hEq
-            injection hEq with hOut
-            rw [← hOut]
-    | guardedContinuing guards stF valClean _ =>
-      dsimp
-      cases valClean with
-      | false =>
-        dsimp
-        intro hFalse
-        nomatch hFalse
-      | true =>
-        dsimp
-        cases hClean : stateCleanAtReturn stF with
-        | false =>
-          dsimp
-          intro hFalse
-          nomatch hFalse
-        | true =>
-          dsimp
-          cases hRet : evalRval alg retExpr stF with
-          | none =>
-            dsimp
-            intro hFalse
-            nomatch hFalse
-          | some retVal =>
-            dsimp
-            cases handleFreeOut alg
-                (guards ⟨retVal, collectRootMutVals stF.loans⟩) with
-            | false =>
-              dsimp
-              intro hFalse
-              nomatch hFalse
-            | true =>
-              dsimp
-              intro hEq
-              injection hEq with hOut
-              rw [← hOut]
+          exact retTail_of_evalTail alg retExpr stF (stateCleanAtReturn stF)
+            guards out
+  rw [runBlockCfg_succ, hStep]
 
 /-- Single-block `CfgCertificate`: the 1-block CFG `[⟨plan, .ret retExpr⟩]`
 run for one step, certified by `cfg_certificate_step_sound`. -/
@@ -1330,6 +1332,96 @@ theorem cfg_seq_blocks_equiv {Val : Type} (alg : ValAlgebra Val)
     exact h2
   exact ⟨hLeft, hRight⟩
 
+/-- Exit path of the loop CFG in `cfg_certificate_while_sound`: when `cond`
+is `false`, block `0` jumps to block `2`, which returns. -/
+private theorem whileCfg_run_exit {Val : Type} (alg : ValAlgebra Val)
+    (cond : RvalOp Val) (body : FlowPlan Val) (retExpr : RvalOp Val)
+    (n : Nat) (st : SymState Val) (cv retVal : Val)
+    (hCond : evalRval alg cond st = some cv)
+    (hBool : alg.asBool cv = some false)
+    (hClean : stateCleanAtReturn st = true)
+    (hRet : evalRval alg retExpr st = some retVal)
+    (hFree : handleFreeOut alg ⟨retVal, collectRootMutVals st.loans⟩ = true) :
+    runBlockCfg
+      (stepBasicBlock alg
+        [⟨.skip, .branch cond 1 2⟩,
+         ⟨body, .goto 0⟩,
+         ⟨.skip, .ret retExpr⟩])
+      0 st (n + 1 + 1) =
+      .ret ⟨retVal, collectRootMutVals st.loans⟩ := by
+  have hStep1 :
+      stepBasicBlock alg
+        [⟨.skip, .branch cond 1 2⟩,
+         ⟨body, .goto 0⟩,
+         ⟨.skip, .ret retExpr⟩] 0 st =
+        .jump 2 st := by
+    dsimp [stepBasicBlock, listGetOpt, evalPlan, evalPlanOps,
+      stepPlanOp, FlowPlan.skip]
+    rw [hCond]
+    dsimp
+    rw [hBool]
+  have hStep2 :
+      stepBasicBlock alg
+        [⟨.skip, .branch cond 1 2⟩,
+         ⟨body, .goto 0⟩,
+         ⟨.skip, .ret retExpr⟩] 2 st =
+        .ret ⟨retVal, collectRootMutVals st.loans⟩ := by
+    dsimp [stepBasicBlock, listGetOpt, evalPlan, evalPlanOps,
+      stepPlanOp, FlowPlan.skip]
+    rw [hClean]
+    dsimp
+    rw [hRet]
+    dsimp
+    rw [hFree]
+    rfl
+  rw [runBlockCfg_succ, hStep1]
+  dsimp
+  rw [runBlockCfg_succ, hStep2]
+
+/-- Iteration path of the loop CFG in `cfg_certificate_while_sound`: when
+`cond` is `true` and `body` continues in `st'`, two steps reach block `0` in
+`st'`. -/
+private theorem whileCfg_run_body {Val : Type} (alg : ValAlgebra Val)
+    (cond : RvalOp Val) (body : FlowPlan Val) (retExpr : RvalOp Val)
+    (n : Nat) (st st' : SymState Val) (cv : Val)
+    (hCond : evalRval alg cond st = some cv)
+    (hBool : alg.asBool cv = some true)
+    (hBody : evalPlan alg body st = .ok (.continuing st')) :
+    runBlockCfg
+      (stepBasicBlock alg
+        [⟨.skip, .branch cond 1 2⟩,
+         ⟨body, .goto 0⟩,
+         ⟨.skip, .ret retExpr⟩])
+      0 st (n + 1 + 1) =
+      runBlockCfg
+        (stepBasicBlock alg
+          [⟨.skip, .branch cond 1 2⟩,
+           ⟨body, .goto 0⟩,
+           ⟨.skip, .ret retExpr⟩])
+        0 st' n := by
+  have hStep1 :
+      stepBasicBlock alg
+        [⟨.skip, .branch cond 1 2⟩,
+         ⟨body, .goto 0⟩,
+         ⟨.skip, .ret retExpr⟩] 0 st =
+        .jump 1 st := by
+    dsimp [stepBasicBlock, listGetOpt, evalPlan, evalPlanOps,
+      stepPlanOp, FlowPlan.skip]
+    rw [hCond]
+    dsimp
+    rw [hBool]
+  have hStep2 :
+      stepBasicBlock alg
+        [⟨.skip, .branch cond 1 2⟩,
+         ⟨body, .goto 0⟩,
+         ⟨.skip, .ret retExpr⟩] 1 st =
+        .jump 0 st' := by
+    dsimp [stepBasicBlock, listGetOpt]
+    rw [hBody]
+  rw [runBlockCfg_succ, hStep1]
+  dsimp
+  rw [runBlockCfg_succ, hStep2]
+
 /-- Loop CFG equivalence (`cfg_certificate_while_sound`): for the 3-block loop
 CFG `[⟨.skip, .branch cond 1 2⟩, ⟨body, .goto 0⟩, ⟨.skip, .ret retExpr⟩]`
 (block `0` branches to body block `1` on `true` and to exit block `2` on
@@ -1376,32 +1468,13 @@ theorem cfg_certificate_while_sound {Val : Type} (alg : ValAlgebra Val)
           injection hEq with hFlow
           injection hFlow with hSt
           subst hSt
-          change
-            runBlockCfg
-              (stepBasicBlock alg
-                [⟨.skip, .branch cond 1 2⟩,
-                 ⟨body, .goto 0⟩,
-                 ⟨.skip, .ret retExpr⟩])
-              0 st 2 =
-              .ret ⟨retVal, collectRootMutVals st.loans⟩
-          rw [runBlockCfg_succ]
-          dsimp [stepBasicBlock, listGetOpt, evalPlan, evalPlanOps,
-            stepPlanOp, FlowPlan.skip]
-          rw [hCond]
-          dsimp
-          rw [hBool]
-          dsimp
-          rw [runBlockCfg_succ]
-          dsimp [stepBasicBlock, listGetOpt, evalPlan, evalPlanOps,
-            stepPlanOp, FlowPlan.skip]
-          rw [hClean]
-          dsimp
-          rw [hRet]
-          dsimp
-          rw [hFree]
-          rfl
+          exact whileCfg_run_exit alg cond body retExpr 0 st cv retVal hCond
+            hBool hClean hRet hFree
   | k + 1, st, stFinal, retVal, hWhile, hClean, hRet, hFree => by
     rw [runWhileFlowSteps_succ] at hWhile
+    have hArith : 2 * (k + 1) + 2 = (2 * k + 2) + 1 + 1 := by
+      rw [Nat.mul_add]
+    rw [hArith]
     revert hWhile
     cases hCond : evalRval alg cond st with
     | none =>
@@ -1421,35 +1494,8 @@ theorem cfg_certificate_while_sound {Val : Type} (alg : ValAlgebra Val)
           injection hEq with hFlow
           injection hFlow with hSt
           subst hSt
-          have hStep1 :
-              stepBasicBlock alg
-                [⟨.skip, .branch cond 1 2⟩,
-                 ⟨body, .goto 0⟩,
-                 ⟨.skip, .ret retExpr⟩] 0 st = .jump 2 st := by
-            dsimp [stepBasicBlock, listGetOpt, evalPlan, evalPlanOps,
-              stepPlanOp, FlowPlan.skip]
-            rw [hCond]
-            dsimp
-            rw [hBool]
-          have hStep2 :
-              stepBasicBlock alg
-                [⟨.skip, .branch cond 1 2⟩,
-                 ⟨body, .goto 0⟩,
-                 ⟨.skip, .ret retExpr⟩] 2 st =
-                .ret ⟨retVal, collectRootMutVals st.loans⟩ := by
-            dsimp [stepBasicBlock, listGetOpt, evalPlan, evalPlanOps,
-              stepPlanOp, FlowPlan.skip]
-            rw [hClean]
-            dsimp
-            rw [hRet]
-            dsimp
-            rw [hFree]
-            rfl
-          have hArith : 2 * (k + 1) + 2 = (2 * k + 2) + 1 + 1 := by
-            rw [Nat.mul_add]
-          rw [hArith, runBlockCfg_succ, hStep1]
-          dsimp
-          rw [runBlockCfg_succ, hStep2]
+          exact whileCfg_run_exit alg cond body retExpr (2 * k + 2) st cv
+            retVal hCond hBool hClean hRet hFree
         | true =>
           dsimp
           cases hBody : evalPlan alg body st with
@@ -1472,32 +1518,10 @@ theorem cfg_certificate_while_sound {Val : Type} (alg : ValAlgebra Val)
             | continuing st' =>
               dsimp
               intro hRec
-              have ih :=
-                cfg_certificate_while_sound alg cond body retExpr k st'
-                  stFinal retVal hRec hClean hRet hFree
-              have hStep1 :
-                  stepBasicBlock alg
-                    [⟨.skip, .branch cond 1 2⟩,
-                     ⟨body, .goto 0⟩,
-                     ⟨.skip, .ret retExpr⟩] 0 st = .jump 1 st := by
-                dsimp [stepBasicBlock, listGetOpt, evalPlan, evalPlanOps,
-                  stepPlanOp, FlowPlan.skip]
-                rw [hCond]
-                dsimp
-                rw [hBool]
-              have hStep2 :
-                  stepBasicBlock alg
-                    [⟨.skip, .branch cond 1 2⟩,
-                     ⟨body, .goto 0⟩,
-                     ⟨.skip, .ret retExpr⟩] 1 st = .jump 0 st' := by
-                dsimp [stepBasicBlock, listGetOpt]
-                rw [hBody]
-              have hArith : 2 * (k + 1) + 2 = (2 * k + 2) + 1 + 1 := by
-                rw [Nat.mul_add]
-              rw [hArith, runBlockCfg_succ, hStep1]
-              dsimp
-              rw [runBlockCfg_succ, hStep2]
-              exact ih
+              rw [whileCfg_run_body alg cond body retExpr (2 * k + 2) st st' cv
+                hCond hBool hBody]
+              exact cfg_certificate_while_sound alg cond body retExpr k st'
+                stFinal retVal hRec hClean hRet hFree
 
 /-!
 ## Kernel-Checked Unit Tests
