@@ -772,7 +772,22 @@ fn identity(value: &str) -> String {
     identity_at(value, 0)
 }
 
-fn body_record(body: &ir::Body, indent: usize) -> String {
+fn block_at(block: &ir::Block, block_indent: usize) -> String {
+    let bf_col = block_indent + 2;
+    let bf_pad = " ".repeat(bf_col);
+    let bc_pad = " ".repeat(block_indent);
+    format!(
+        "({{\n\
+         {bf_pad}statements := {},\n\
+         {bf_pad}terminator := {},\n\
+         {bf_pad}cleanup := false\n\
+         {bc_pad}}} : Trusted.MirAst.BasicBlock)",
+        list_pretty(&block.statements, bf_col, statement_at),
+        terminator_at(&block.terminator, bf_col)
+    )
+}
+
+fn body_record(body: &ir::Body, indent: usize, basic_blocks: &str) -> String {
     let field_col = indent + 2;
     let field_pad = " ".repeat(field_col);
     let close_pad = " ".repeat(indent);
@@ -781,28 +796,49 @@ fn body_record(body: &ir::Body, indent: usize) -> String {
          {field_pad}argumentCount := {},\n\
          {field_pad}isUnsafe := {},\n\
          {field_pad}locals := {},\n\
-         {field_pad}basicBlocks := {},\n\
+         {field_pad}basicBlocks := {basic_blocks},\n\
          {field_pad}identity := {}\n\
          {close_pad}}}",
         body.arg_count(),
         body.is_unsafe(),
         list_pretty(body.local_tys(), field_col, ty_at),
-        list_pretty(body.blocks(), field_col, |block, block_indent| {
-            let bf_col = block_indent + 2;
-            let bf_pad = " ".repeat(bf_col);
-            let bc_pad = " ".repeat(block_indent);
-            format!(
-                "({{\n\
-                 {bf_pad}statements := {},\n\
-                 {bf_pad}terminator := {},\n\
-                 {bf_pad}cleanup := false\n\
-                 {bc_pad}}} : Trusted.MirAst.BasicBlock)",
-                list_pretty(&block.statements, bf_col, statement_at),
-                terminator_at(&block.terminator, bf_col)
-            )
-        }),
         identity_at(body.identity(), field_col)
     )
+}
+
+/// Write `def {name} : Trusted.MirAst.Body` to `out`.
+///
+/// Lean's elaborator hits `maxRecDepth` once a single definition contains a
+/// few thousand numeric literals, independently of how its lists are nested
+/// (see [`list`]), and a large body's basic blocks carry nearly all of its
+/// literals. A body with more than [`MAX_LIST_CHUNK_LEN`] blocks therefore
+/// emits each [`MAX_LIST_CHUNK_LEN`]-block slice as its own
+/// `{name}_blocks_c<k>` definition, and `basicBlocks` joins those names with
+/// the same balanced `_root_.List.append` tree that [`list_pretty`] builds over
+/// inline chunk literals. Unfolding the chunk definitions recovers the inline
+/// term exactly, so the body is unchanged up to delta reduction, and bodies
+/// with at most [`MAX_LIST_CHUNK_LEN`] blocks render exactly as before.
+fn write_body_def(out: &mut String, name: &str, body: &ir::Body) {
+    let blocks = body.blocks();
+    let basic_blocks = if blocks.len() <= MAX_LIST_CHUNK_LEN {
+        list_pretty(blocks, 4, block_at)
+    } else {
+        let mut chunk_names = Vec::new();
+        for (chunk_idx, chunk) in blocks.chunks(MAX_LIST_CHUNK_LEN).enumerate() {
+            let chunk_name = format!("{name}_blocks_c{chunk_idx}");
+            let chunk_lit = list_literal_at(chunk, Some(2), &|block, indent| {
+                block_at(block, indent.unwrap_or(2))
+            });
+            let _ = writeln!(
+                out,
+                "def {chunk_name} : _root_.List Trusted.MirAst.BasicBlock :=\n  {chunk_lit}\n"
+            );
+            chunk_names.push(chunk_name);
+        }
+        join_balanced_slice(&chunk_names, Some(4), &|name, _| name.clone())
+    };
+    let record = body_record(body, 2, &basic_blocks);
+    let _ = writeln!(out, "def {name} : Trusted.MirAst.Body :=\n  {record}\n");
 }
 
 /// Target pointer width pinned by capture (`capture.rs` refuses any target
@@ -847,7 +883,7 @@ pub fn render(program: &ir::Program) -> String {
     let mut body_names = Vec::with_capacity(program.bodies().len());
     for (index, item) in program.bodies().iter().enumerate() {
         let name = format!("body_{index}");
-        let _ = writeln!(out, "def {name} : Trusted.MirAst.Body :=\n  {}\n", body_record(item, 2));
+        write_body_def(&mut out, &name, item);
         body_names.push(name);
     }
     let bodies_expr = match body_names.as_slice() {
@@ -908,7 +944,7 @@ pub(crate) fn render_shard_module(shard_idx: usize, bodies: &[ir::Body]) -> Stri
     let mut leaf_lists = Vec::with_capacity(bodies.len());
     for (local_idx, item) in bodies.iter().enumerate() {
         let name = format!("body_{local_idx}");
-        let _ = writeln!(out, "def {name} : Trusted.MirAst.Body :=\n  {}\n", body_record(item, 2));
+        write_body_def(&mut out, &name, item);
         leaf_lists.push(format!("[{name}]"));
     }
     let bodies_expr = join_balanced_slice(&leaf_lists, Some(2), &|leaf, _| leaf.clone());
@@ -983,7 +1019,9 @@ pub(crate) fn render_sharded_root(
 mod tests {
     use std::collections::BTreeSet;
 
-    use super::{MAX_LIST_CHUNK_LEN, identity, list, render};
+    use super::{
+        MAX_LIST_CHUNK_LEN, block_at, identity, list, list_pretty, render, render_shard_module,
+    };
     use crate::ir::{
         Block, Body, ConstLit, EnumTagRepr, EnumTy, IntTy, IntWidth, Operand, Program, Rvalue,
         Scope, Statement, Terminator, Ty,
@@ -1186,6 +1224,49 @@ mod tests {
         );
         assert!(rendered.contains("(_root_.List.append "), "{rendered}");
         assert_list_literals_at_most(&rendered, MAX_LIST_CHUNK_LEN);
+    }
+
+    fn goto_chain(identity: &str, len: u32) -> Body {
+        let mut blocks: Vec<Block> = (1..len)
+            .map(|next| Block { statements: vec![], terminator: Terminator::Goto { block: next } })
+            .collect();
+        blocks.push(Block { statements: vec![], terminator: Terminator::Ret });
+        Body::try_new(0, false, vec![Ty::Unit], blocks, identity.into()).unwrap()
+    }
+
+    #[test]
+    fn render_emits_large_body_blocks_as_chunk_defs_that_unfold_to_the_inline_list() {
+        let large = goto_chain("rust-path-v1::large", 40);
+        let small = goto_chain("rust-path-v1::small", MAX_LIST_CHUNK_LEN as u32);
+        let program = Program::try_new(Scope::Crate, vec![large.clone(), small]).unwrap();
+        let rendered = render(&program);
+        assert_list_literals_at_most(&rendered, MAX_LIST_CHUNK_LEN);
+        assert!(!rendered.contains("body_0_blocks_c3"), "{rendered}");
+        assert!(!rendered.contains("body_1_blocks_c"), "{rendered}");
+
+        // Substituting each chunk definition back into `basicBlocks` must yield
+        // the inline list the renderer would otherwise emit.
+        let body_def = rendered.find("def body_0 : Trusted.MirAst.Body :=").unwrap();
+        let start = body_def + rendered[body_def..].find("basicBlocks := ").unwrap() + 15;
+        let end = start + rendered[start..].find(",\n    identity := ").unwrap();
+        let mut unfolded = rendered[start..end].to_owned();
+        for chunk_idx in (0..3).rev() {
+            let header = format!(
+                "def body_0_blocks_c{chunk_idx} : _root_.List Trusted.MirAst.BasicBlock :=\n  "
+            );
+            let def_start = rendered.find(&header).expect(&header) + header.len();
+            assert!(def_start < body_def, "chunk {chunk_idx} must precede body_0");
+            let def_end = def_start + rendered[def_start..].find("\n\n").unwrap();
+            let name = format!("body_0_blocks_c{chunk_idx}");
+            assert_eq!(unfolded.matches(&name).count(), 1, "{unfolded}");
+            unfolded = unfolded.replace(&name, &rendered[def_start..def_end]);
+        }
+        let squash = |text: &str| text.split_whitespace().collect::<String>();
+        assert_eq!(squash(&unfolded), squash(&list_pretty(large.blocks(), 4, block_at)));
+
+        let shard = render_shard_module(0, &[large]);
+        assert!(shard.contains("def body_0_blocks_c2 : _root_.List Trusted.MirAst.BasicBlock :="));
+        assert_list_literals_at_most(&shard, MAX_LIST_CHUNK_LEN);
     }
 
     #[test]

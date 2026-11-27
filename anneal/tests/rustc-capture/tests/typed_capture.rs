@@ -2922,6 +2922,46 @@ fn profile_v1_calls_and_profile_v2_core_calls_stay_disjoint() {
     mixed.assert_no_capture_artifacts();
 }
 
+/// A single body whose blocks carry several thousand numeric literals exceeds
+/// Lean's default `maxRecDepth` when emitted as one definition, so capture
+/// splits its blocks into 16-block chunk definitions.
+#[test]
+fn many_block_body_compiles_in_lean_under_default_max_rec_depth() {
+    let mut source =
+        String::from("pub fn many_blocks(x: u32) -> u32 {\n    let mut acc: u32 = x;\n");
+    for idx in 0..96u32 {
+        let _ = writeln!(
+            source,
+            "    if acc == {idx}u32 {{ acc = ((acc ^ {}u32) & {}u32) | {}u32; }}",
+            idx * 7919 + 1,
+            idx * 104_729 + 3,
+            idx * 15_485_863 + 5
+        );
+    }
+    source.push_str("    acc\n}\n");
+    let fixture = Capture::new(source.as_bytes());
+    let output = fixture.command().arg("--scope=crate").output().unwrap();
+    assert!(
+        output.status.success(),
+        "expected many-block capture to succeed:\n{}\n{}",
+        stdout(&output),
+        stderr(&output)
+    );
+    let manifest = fixture.manifest();
+    let blocks = manifest["program"]["bodies"][0]["blocks"].as_array().unwrap().len();
+    assert!(blocks >= 160, "expected at least 160 blocks, got {blocks}");
+
+    let captured_lean = fixture.output.join("Captured.lean");
+    let lean_text = std::fs::read_to_string(&captured_lean).unwrap();
+    let last_chunk = (blocks - 1) / 16;
+    assert!(lean_text.contains(&format!(
+        "def body_0_blocks_c{last_chunk} : _root_.List Trusted.MirAst.BasicBlock :="
+    )));
+    assert!(!lean_text.contains(&format!("def body_0_blocks_c{}", last_chunk + 1)));
+
+    compile_captured_lean_if_trusted_sources_present(&captured_lean);
+}
+
 #[test]
 fn thousand_one_hundred_function_crate_compiles_in_lean_under_default_max_rec_depth() {
     let mut source = String::with_capacity(64 * 1024);
