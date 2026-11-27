@@ -139,5 +139,10 @@ become Lean binders, so those names are reserved for them.
 `spec_span_map.json` maps each generated declaration's Lean line range to the
 Rust span it came from.
 
-`tests/zerocopy/` holds companion specifications for verbatim `zerocopy`
-functions together with their generated outputs and proofs.
+`tests/zerocopy/` holds specifications for verbatim `zerocopy` functions
+together with their generated outputs and proofs. A unit's specifications come
+from exactly one of a companion `spec.rs` or a `spec_sources.json` such as
+`{"files": ["lib.rs"]}`. The latter names `zerocopy/src` files, each also
+listed in the unit's `compilation.source_files`, whose inline `anneal::spec`
+attributes are lowered from the crate root, so editing one of those attributes
+makes the freshness check fail.

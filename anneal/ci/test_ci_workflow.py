@@ -607,6 +607,66 @@ class CiWorkflowManifestGuardTests(unittest.TestCase):
             '--src-root . --check "$unit" "$unit/spec.rs"',
         ):
             self.assertIn(needle, script)
+        # Inline specifications live in `zerocopy/src`. The verifier checks
+        # `spec_sources.json` units in installed-smoke, and this check's
+        # golden tests lower them too, so both must rerun when it changes.
+        for check_id in ("anneal-installed-smoke", "tools-anneal-spec"):
+            globs = [
+                glob
+                for entry in checks[check_id]["inputs"]
+                for glob in entry.get("include", [])
+            ]
+            self.assertIn("zerocopy/src/**", globs, check_id)
+
+    def test_tools_anneal_spec_freshness_skips_spec_sources_units(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            units = root / "anneal/tools/anneal-spec/tests/zerocopy"
+            for name in ("01_companion", "02_inline", "03_inline_link"):
+                (units / name).mkdir(parents=True)
+            (units / "01_companion/spec.rs").write_text("")
+            (units / "02_inline/spec_sources.json").write_text(
+                '{"files": ["--help"]}'
+            )
+            (units / "03_inline_link/spec_sources.json").symlink_to(
+                root / "missing.json"
+            )
+            log = root / "cargo.log"
+            stub = root / "bin/cargo"
+            stub.parent.mkdir()
+            stub.write_text(
+                '#!/usr/bin/env bash\nprintf \'%s\\n\' "$*" >> "$CARGO_LOG"\n'
+            )
+            stub.chmod(0o755)
+            script = REPO_ROOT / "ci/scripts/run_anneal_spec_check.sh"
+            res = subprocess.run(
+                ["/bin/bash", str(script)],
+                cwd=root,
+                env={
+                    "PATH": f"{stub.parent}:/usr/bin:/bin",
+                    "HOME": str(root),
+                    "CARGO_LOG": str(log),
+                    "PIN_RUST_TOOLCHAINS__STABLE": "1.0.0",
+                },
+                capture_output=True,
+                text=True,
+                timeout=60,
+                check=False,
+            )
+            self.assertEqual(res.returncode, 0, res.stdout + res.stderr)
+            runs = [
+                line
+                for line in log.read_text().splitlines()
+                if line.startswith("+1.0.0 run ")
+            ]
+            self.assertEqual(
+                runs,
+                [
+                    "+1.0.0 run --locked --offline -q -p anneal-spec-lower -- "
+                    "--src-root . --check tests/zerocopy/01_companion "
+                    "tests/zerocopy/01_companion/spec.rs"
+                ],
+            )
 
 
 class PrHygieneWorkflowTests(unittest.TestCase):

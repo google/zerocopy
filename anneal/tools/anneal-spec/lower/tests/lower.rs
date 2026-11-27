@@ -35,6 +35,19 @@ fn wrap(attr: &str, sig: &str) -> String {
     format!("anneal::external_spec! {{ #[anneal::spec({attr})] {sig}; }}")
 }
 
+/// The external form of unit 01's specification, kept here so that tests of
+/// lowering behavior do not depend on which form the unit itself uses.
+const USIZE_POINTER_METADATA_SPEC: &str = "anneal::external_spec! {
+    impl PointerMetadata for usize {
+        #[anneal::spec(total, ensures(|ret| ret == elems))]
+        fn from_elem_count(elems: usize) -> Self;
+
+        #[anneal::spec(total, ensures(|count| count == self))]
+        fn to_elem_count(self) -> usize;
+    }
+}
+";
+
 const UNITS: &[&str] = &[
     "01_usize_pointer_metadata",
     "02_unit_pointer_metadata",
@@ -46,18 +59,70 @@ fn unit_dir(unit: &str) -> std::path::PathBuf {
     Path::new(env!("CARGO_MANIFEST_DIR")).join("../tests/zerocopy").join(unit)
 }
 
+/// The `zerocopy` source root, from which `spec_sources.json` units lower.
+fn zerocopy_src() -> std::path::PathBuf {
+    Path::new(env!("CARGO_MANIFEST_DIR")).join("../../../../zerocopy/src")
+}
+
+/// A unit's lowering inputs: its companion `spec.rs` from the workspace root,
+/// or the `zerocopy/src` files that its `spec_sources.json` names (whose
+/// inline items take their module paths).
+struct UnitInputs {
+    root: std::path::PathBuf,
+    files: Vec<String>,
+    inline: bool,
+}
+
+fn unit_inputs(unit: &str) -> UnitInputs {
+    let dir = unit_dir(unit);
+    match fs::read_to_string(dir.join("spec_sources.json")) {
+        Ok(json) => {
+            assert!(
+                fs::symlink_metadata(dir.join("spec.rs")).is_err(),
+                "{unit}: both spec.rs and spec_sources.json"
+            );
+            let v: serde_json::Value = serde_json::from_str(&json).unwrap();
+            let files = v["files"]
+                .as_array()
+                .unwrap()
+                .iter()
+                .map(|f| f.as_str().unwrap().to_string())
+                .collect();
+            UnitInputs { root: zerocopy_src(), files, inline: true }
+        }
+        Err(e) if e.kind() == std::io::ErrorKind::NotFound => UnitInputs {
+            root: Path::new(env!("CARGO_MANIFEST_DIR")).join(".."),
+            files: vec![format!("tests/zerocopy/{unit}/spec.rs")],
+            inline: false,
+        },
+        Err(e) => panic!("{unit}: cannot read spec_sources.json: {e}"),
+    }
+}
+
 #[test]
 fn zerocopy_units_match_checked_in_goldens() {
     for unit in UNITS {
-        let dir = unit_dir(unit);
-        let text = fs::read_to_string(dir.join("spec.rs")).unwrap();
-        let sources =
-            [Source { label: format!("tests/zerocopy/{unit}/spec.rs"), text, module: Vec::new() }];
+        let inputs = unit_inputs(unit);
+        let sources: Vec<Source> = inputs
+            .files
+            .iter()
+            .map(|f| {
+                let text = fs::read_to_string(inputs.root.join(f)).unwrap();
+                let module = if inputs.inline { module_path(f) } else { Vec::new() };
+                Source { label: f.clone(), text, module }
+            })
+            .collect();
         let l = lower(&sources).unwrap_or_else(|e| panic!("{unit}: {}", e[0].render(&sources)));
+        let dir = unit_dir(unit);
         assert_eq!(
             l.spec_lean,
             fs::read_to_string(dir.join("Spec.lean")).unwrap(),
             "{unit} Spec.lean"
+        );
+        assert_eq!(
+            l.span_map,
+            fs::read_to_string(dir.join("spec_span_map.json")).unwrap(),
+            "{unit} spec_span_map.json"
         );
     }
 }
@@ -65,13 +130,14 @@ fn zerocopy_units_match_checked_in_goldens() {
 #[test]
 fn cli_check_accepts_goldens_and_rejects_stale_output() {
     let bin = env!("CARGO_BIN_EXE_anneal-spec-lower");
-    let root = Path::new(env!("CARGO_MANIFEST_DIR")).join("..");
     for unit in UNITS {
-        let rel = format!("tests/zerocopy/{unit}/spec.rs");
-        let dir = format!("tests/zerocopy/{unit}");
+        let inputs = unit_inputs(unit);
         let status = Command::new(bin)
-            .args(["--src-root", ".", "--check", &dir, &rel])
-            .current_dir(&root)
+            .arg("--src-root")
+            .arg(&inputs.root)
+            .arg("--check")
+            .arg(unit_dir(unit))
+            .args(&inputs.files)
             .status()
             .unwrap();
         assert!(status.success(), "{unit}: --check failed; regenerate with --out-dir");
@@ -80,9 +146,12 @@ fn cli_check_accepts_goldens_and_rejects_stale_output() {
     fs::create_dir_all(&tmp).unwrap();
     fs::write(tmp.join("Spec.lean"), "stale").unwrap();
     fs::write(tmp.join("spec_span_map.json"), "{}").unwrap();
+    let inputs = unit_inputs(UNITS[0]);
     let out = Command::new(bin)
+        .arg("--src-root")
+        .arg(&inputs.root)
         .args(["--check", tmp.to_str().unwrap()])
-        .arg(unit_dir(UNITS[0]).join("spec.rs"))
+        .args(&inputs.files)
         .output()
         .unwrap();
     fs::remove_dir_all(&tmp).unwrap();
@@ -92,7 +161,7 @@ fn cli_check_accepts_goldens_and_rejects_stale_output() {
 
 #[test]
 fn inline_and_external_forms_lower_to_identical_spec_lean() {
-    let external = fs::read_to_string(unit_dir(UNITS[0]).join("spec.rs")).unwrap();
+    let external = USIZE_POINTER_METADATA_SPEC;
     let inline = r#"
 pub trait PointerMetadata { fn from_elem_count(elems: usize) -> Self; fn to_elem_count(self) -> usize; }
 
@@ -109,7 +178,7 @@ impl PointerMetadata for usize {
     }
 }
 "#;
-    let a = lower_one(&external).unwrap();
+    let a = lower_one(external).unwrap();
     let b = lower(&[Source {
         label: "lib.rs".into(),
         text: inline.into(),
@@ -399,8 +468,8 @@ fn diagnostics_use_utf8_byte_offsets_and_scalar_columns() {
 
 #[test]
 fn span_map_points_lean_declarations_at_rust_clauses() {
-    let text = fs::read_to_string(unit_dir(UNITS[0]).join("spec.rs")).unwrap();
-    let l = lower_one(&text).unwrap();
+    let text = USIZE_POINTER_METADATA_SPEC;
+    let l = lower_one(text).unwrap();
     let map: serde_json::Value = serde_json::from_str(&l.span_map).unwrap();
     let lean_lines: Vec<&str> = l.spec_lean.lines().collect();
     let post = map["entries"]
