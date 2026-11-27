@@ -363,6 +363,7 @@ fn synthetic_ce(witness_class: Option<WitnessClass>, witness_note: Option<&str>)
         caller_mem: CallerMemory::default(),
         witness_class,
         witness_note: witness_note.map(str::to_owned),
+        fault_location: None,
         trace: StepTrace {
             body_id: 0,
             identity: "test::synthetic".into(),

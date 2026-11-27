@@ -15,10 +15,11 @@
 use std::{env, fs, process::ExitCode};
 
 use anneal_mir_eval::{
-    AllocByte, Allocation, CallerMemory, CaptureInput, EnumTy, EvalConfig, FaultKind, IntTy,
-    IntWidth, Mutability, OrderingVal, Outcome, ProbeConfig, ProbeReport, Program, PtrVal, Query,
-    ScalarVal, TargetEndian, TerminalOut, Ty, Val, eval_body_with_caller_mem, int_layout,
-    probe_body_with_policy, validate_program_config,
+    AllocByte, Allocation, CallerMemory, CaptureInput, Counterexample, EnumTy, EvalConfig,
+    FaultKind, IntTy, IntWidth, Mutability, OrderingVal, Outcome, ProbeConfig, ProbeReport,
+    Program, PtrVal, Query, ScalarVal, TargetEndian, TerminalOut, Ty, Val,
+    eval_body_with_caller_mem, int_layout, probe_body_with_policy, trace_location,
+    validate_program_config,
 };
 
 fn usage() -> &'static str {
@@ -572,25 +573,28 @@ fn cmd_eval(args: &[String]) -> Result<ExitCode, String> {
             "body [{body_id}] {} (steps={}/{}):",
             trace.identity, trace.steps_executed, trace.fuel_limit
         );
+        let site_tag = trace_location(&program, &trace)
+            .map(|loc| format!(" @ {}", loc.format_site(Some(body_id))))
+            .unwrap_or_default();
         match &trace.outcome {
             Outcome::Returned(TerminalOut::Returned { ret, .. }) => {
                 println!("  RETURNED {}", format_val(ret));
             }
             Outcome::Returned(TerminalOut::Unwound { .. }) => {
-                println!("  UNWOUND (panic)");
+                println!("  UNWOUND (panic){site_tag}");
             }
             Outcome::Aborted { .. } => {
-                println!("  ABORTED (UnwindAction::Terminate)");
+                println!("  ABORTED (UnwindAction::Terminate){site_tag}");
             }
             Outcome::Fault(err) => {
                 if let Some(class) = err.witness_class() {
-                    println!("  FAULT {err} [witness_class={class}]");
+                    println!("  FAULT {err} [witness_class={class}]{site_tag}");
                 } else {
-                    println!("  FAULT {err}");
+                    println!("  FAULT {err}{site_tag}");
                 }
             }
             Outcome::OutOfFuel => {
-                println!("  OUT OF FUEL");
+                println!("  OUT OF FUEL{site_tag}");
             }
         }
         if show_trace {
@@ -616,6 +620,17 @@ fn cmd_eval(args: &[String]) -> Result<ExitCode, String> {
         Outcome::Fault(_) | Outcome::OutOfFuel => ExitCode::from(3),
         Outcome::Aborted { .. } => ExitCode::from(4),
     })
+}
+
+fn print_probe_site(label: &str, cex: &Counterexample, suffix: &str) {
+    let args: Vec<String> = cex.args.iter().map(format_val).collect();
+    let n = cex.caller_mem.allocations.len();
+    let mem = if n == 0 { String::new() } else { format!(" caller_allocs={n}") };
+    let site = cex
+        .fault_location
+        .as_ref()
+        .map_or_else(String::new, |l| format!(" @ {}", l.format_site(Some(cex.trace.body_id))));
+    println!("  {label} args=({}){mem}{site}{suffix}", args.join(", "));
 }
 
 fn cmd_probe(args: &[String]) -> Result<ExitCode, String> {
@@ -736,22 +751,41 @@ fn cmd_probe(args: &[String]) -> Result<ExitCode, String> {
                 r.unsupported_param_shape
             );
             if let Some(cex) = &r.first_undefined {
-                let formatted_args: Vec<String> = cex.args.iter().map(format_val).collect();
-                let reason = match &cex.trace.outcome {
-                    Outcome::Fault(f) => f.reason.as_str(),
-                    _ => "",
+                let (ub_tag, reason) = match &cex.trace.outcome {
+                    Outcome::Fault(f) => {
+                        let ub = f.ub_class.map_or_else(String::new, |c| {
+                            let s = serde_json::to_string(&c).unwrap_or_else(|_| format!("{c:?}"));
+                            format!(", ub_class={}", s.trim_matches('"'))
+                        });
+                        (ub, f.reason.as_str())
+                    }
+                    _ => (String::new(), ""),
                 };
                 let class = cex
                     .witness_class
                     .map(|c| c.to_string())
                     .unwrap_or_else(|| "model_only_unreplayed".into());
-                println!(
-                    "  COUNTEREXAMPLE [class={class}] args=({}) -> {}",
-                    formatted_args.join(", "),
-                    reason
+                print_probe_site(
+                    &format!("COUNTEREXAMPLE [class={class}{ub_tag}]"),
+                    cex,
+                    &format!(" -> {reason}"),
                 );
                 if let Some(note) = &cex.witness_note {
                     println!("    note: {note}");
+                }
+            }
+            for (lbl, opt) in [
+                ("UNWOUND", &r.first_unwound),
+                ("ABORTED", &r.first_aborted),
+                ("OUT_OF_FUEL", &r.first_out_of_fuel),
+                ("UNSUPPORTED", &r.first_unsupported),
+            ] {
+                if let Some(cex) = opt {
+                    let sfx = match (&cex.trace.outcome, lbl) {
+                        (Outcome::Fault(f), "UNSUPPORTED") => format!(" -> {}", f.reason),
+                        _ => String::new(),
+                    };
+                    print_probe_site(lbl, cex, &sfx);
                 }
             }
         }
