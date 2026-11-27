@@ -55,10 +55,11 @@ definition is kernel-reducible (`decide`/`rfl`); definitions are marked
    `symBvLinNe`, `symBvLinDiffConst`):** Bridges all 6 `IntWidth`s (signed and
    unsigned) into `Anneal.PureLift.BvLin`, collapsing modular equalities and
    disequalities statically during symbolic execution.
-4. **Single-Path (`symStep`, `symRun`) & Branched (`symStepBranched`,
-   `symRunPaths`) Symbolic Execution + `MirWp` Adequacy:** Lifts symbolic runs
-   by `rfl` / `decide` (without `decide +kernel`) into `Executes`, `RunsFrom`,
-   `SafeFrom`, `ReturnsFrom`, `Behavior`, and `BodyVerified`.
+4. **Single-Path (`symStep`, `symRun`, step-chunked `symRunSteps`) &
+   Branched (`symStepBranched`, `symRunPaths`) Symbolic Execution + `MirWp`
+   Adequacy:** Lifts symbolic runs by `rfl` / `decide` (without
+   `decide +kernel`) into `Executes`, `RunsFrom`, `SafeFrom`, `ReturnsFrom`,
+   `Behavior`, and `BodyVerified`.
 -/
 
 /-! ## Part I: Exact Depth-Bounded `MirTy` Equality -/
@@ -3982,6 +3983,134 @@ theorem symRun_bodyVerified {p : Program} {defId : DefId} {body : Body}
     BodyVerified p defId body (fun _ => True) :=
   symRun_bodyVerified_pre hBody hAdm hRun hCover h_nocall
 
+/-! ### Step-Chunked Single-Path Runs
+
+Elaborating `symRun body fuel s = .ret out := rfl` reduces the whole run in
+one term, and that reduction does not share intermediate states: every later
+read of a local re-reduces the steps that produced it, so the cost grows much
+faster than the number of steps. `symRunSteps` stops after at most `k` steps
+and reports the state it reached, so a proof can check short `rfl` chunks
+against explicit checkpoint states and compose them with `symRunSteps_add`.
+-/
+
+/-- Run at most `k` single-path symbolic steps (`@Nat.rec`, `0`
+`._unsafe_rec`). Returns `.step s'` for the state reached after exactly `k`
+steps if the body has neither returned nor become stuck by then. -/
+@[expose] noncomputable def symRunSteps (body : Body) (k : Nat) (s : SymState) :
+    SymRes :=
+  @Nat.rec (fun _ => SymState → SymRes)
+    (fun st => .step st)
+    (fun _ ih st =>
+      match symStep body st with
+      | .step st' => ih st'
+      | .ret v => .ret v
+      | .stuck => .stuck)
+    k s
+
+theorem symRunSteps_zero (body : Body) (s : SymState) :
+    symRunSteps body 0 s = .step s := rfl
+
+theorem symRunSteps_succ (body : Body) (k : Nat) (s : SymState) :
+    symRunSteps body (k + 1) s =
+      match symStep body s with
+      | .step s' => symRunSteps body k s'
+      | .ret v => .ret v
+      | .stuck => .stuck := rfl
+
+/-- Running `m + n` steps runs `m` steps, then `n` more from the reached state
+unless the first `m` steps already returned or became stuck. -/
+theorem symRunSteps_add (body : Body) :
+    ∀ (m n : Nat) (s : SymState),
+      symRunSteps body (m + n) s =
+        match symRunSteps body m s with
+        | .step s' => symRunSteps body n s'
+        | .ret v => .ret v
+        | .stuck => .stuck
+  | 0, n, s => by rw [Nat.zero_add]; rfl
+  | m + 1, n, s => by
+    rw [Nat.succ_add, symRunSteps_succ, symRunSteps_succ]
+    cases symStep body s with
+    | step s' => exact symRunSteps_add body m n s'
+    | ret v => rfl
+    | stuck => rfl
+
+/-- A chunked run that returns within `k` steps is a `symRun` with fuel `k`. -/
+theorem symRunSteps_ret_symRun {body : Body} {v : SymVal} :
+    ∀ {k : Nat} {s : SymState},
+      symRunSteps body k s = .ret v → symRun body k s = .ret v
+  | 0, _, h => by cases h
+  | k + 1, s, h => by
+    rw [symRunSteps_succ] at h
+    change (match symStep body s with
+      | .step st' => symRun body k st'
+      | .ret v => .ret v
+      | .stuck => .stuck) = .ret v
+    cases hStep : symStep body s with
+    | step s' => rw [hStep] at h; exact symRunSteps_ret_symRun h
+    | ret w => rw [hStep] at h; exact h
+    | stuck => rw [hStep] at h; cases h
+
+/-- Prefix a concrete `RunsFrom` continuation with `k` symbolic steps. -/
+theorem symRunSteps_step_runsFrom {body : Body} :
+    ∀ {k : Nat} {s s' : SymState},
+      symRunSteps body k s = .step s' →
+      ∀ {n : Nat} {out : Val} (env : SymEnv),
+        RunsFrom body n (s'.toState env) out →
+        RunsFrom body (k + n) (s.toState env) out
+  | 0, s, s', h, n, out, env, hRest => by
+    cases h
+    rw [Nat.zero_add]
+    exact hRest
+  | k + 1, s, s', h, n, out, env, hRest => by
+    rw [symRunSteps_succ] at h
+    rw [Nat.succ_add]
+    dsimp only [RunsFrom, execState, execOutcomeState, execStepOutcome]
+    rw [execStepPred_succ_iff]
+    cases hStep : symStep body s with
+    | step st' =>
+      rw [hStep] at h
+      rw [symStep_step hStep env]
+      exact symRunSteps_step_runsFrom h env hRest
+    | ret v => rw [hStep] at h; cases h
+    | stuck => rw [hStep] at h; cases h
+
+/-- Lift a chunked run that returns within `k` steps into `RunsFrom`. -/
+theorem symRunSteps_ret_runsFrom {body : Body} {k : Nat} {s : SymState}
+    {out : SymVal} (h : symRunSteps body k s = .ret out) (env : SymEnv) :
+    RunsFrom body k (s.toState env) (out.eval env) :=
+  symRun_runsFrom (symRunSteps_ret_symRun h) env
+
+/-- `symRun_entry_behavior` for a chunked run from `symEntry`. -/
+theorem symRunSteps_entry_behavior {p : Program} {defId : DefId} {body : Body}
+    {k : Nat} {args : List SymVal} {out : SymVal}
+    (hBody : Trusted.MirSemantics.getElem? p.bodies defId = some body)
+    (hAdm : BodyStaticAdmitted p body = true)
+    (env : SymEnv)
+    (hArgs : ValidEntryArgs body (args.map (SymVal.eval env)))
+    (hRun : symRunSteps body k (symEntry body args) = .ret out)
+    (h_nocall : bodyHasAnyCall body = false := by
+      first
+      | rfl
+      | exact bodyHasAnyCall_false_of_basicBlocks
+          ‹Trusted.MirAst.Body.basicBlocks _ = _› rfl
+      | exact bodyHasAnyCall_false_of_all
+          ‹Trusted.MirSemantics.getElem? _ _ = some _› rfl) :
+    SafeFrom body (mkState 0 0
+        (initLocalsLoop body (args.map (SymVal.eval env)) 0 body.locals)) ∧
+      ReturnsFrom body (mkState 0 0
+        (initLocalsLoop body (args.map (SymVal.eval env)) 0 body.locals))
+        (out.eval env) ∧
+      Trusted.MirSemantics.Behavior (entryProgForBody p defId)
+        { args := args.map (SymVal.eval env) }
+        (.returned ⟨out.eval env, ⟨[]⟩⟩) ∧
+      ¬ Diverges (entryProgForBody p defId)
+          { args := args.map (SymVal.eval env) } ∧
+      SatisfiesPost (entryProgForBody p defId)
+        { args := args.map (SymVal.eval env) }
+        (fun outcome => outcome = .returned ⟨out.eval env, ⟨[]⟩⟩) :=
+  symRun_entry_behavior hBody hAdm env hArgs (symRunSteps_ret_symRun hRun)
+    h_nocall
+
 /-! ## Part IV: Branched Symbolic Execution with `BvLin` Dead-Branch Pruning -/
 
 /-- Check whether a `SymBool` condition simplifies to `.lit false` (including
@@ -5239,6 +5368,258 @@ theorem symExec_branch_and_cast_canary (flag : Bool) (n : BitVec 32) :
         rw [ite_bool_false]
         exact hExec
     | tail _ hNil => cases hNil
+
+/-! ### Step-Chunked Canary: `parity_even`
+
+`canaryBodyParityEven` is the MIR that `anneal-rustc-capture` emits for
+
+```rust
+#![no_std]
+pub fn parity_even(mut b: u8) -> bool {
+    b ^= b >> 4;
+    b ^= b >> 2;
+    b ^= b >> 1;
+    (b & 1) == 0
+}
+```
+
+(edition 2021, no overflow checks), transcribed with the same statements in
+the same order. Its 28 statements and `return` take 29 steps. A single
+`symRun` over all of them exceeds the default `maxHeartbeats`; four chunks of
+at most 8 steps each check quickly. -/
+
+@[expose] noncomputable def canaryBodyParityEven : Body :=
+  { identity := "rust-path-v1::parity_even"
+    isUnsafe := false
+    argumentCount := 1
+    locals := [.bool, .int .i8 false, .int .i8 false, .int .i8 false,
+               .int .i8 false, .int .i8 false, .int .i8 false, .int .i8 false,
+               .int .i8 false, .int .i8 false]
+    basicBlocks :=
+      [ { statements :=
+            [ .storageLive 2,
+              .storageLive 3,
+              .assign { localId := 3, projection := [] }
+                (.use (.copy { localId := 1, projection := [] })),
+              .assign { localId := 2, projection := [] }
+                (.binaryOp .shr (.move { localId := 3, projection := [] })
+                  (.constant { ty := .int .i32 true, lit := .scalar 4 })),
+              .storageDead 3,
+              .assign { localId := 1, projection := [] }
+                (.binaryOp .bitXor (.copy { localId := 1, projection := [] })
+                  (.move { localId := 2, projection := [] })),
+              .storageDead 2,
+              .storageLive 4,
+              .storageLive 5,
+              .assign { localId := 5, projection := [] }
+                (.use (.copy { localId := 1, projection := [] })),
+              .assign { localId := 4, projection := [] }
+                (.binaryOp .shr (.move { localId := 5, projection := [] })
+                  (.constant { ty := .int .i32 true, lit := .scalar 2 })),
+              .storageDead 5,
+              .assign { localId := 1, projection := [] }
+                (.binaryOp .bitXor (.copy { localId := 1, projection := [] })
+                  (.move { localId := 4, projection := [] })),
+              .storageDead 4,
+              .storageLive 6,
+              .storageLive 7,
+              .assign { localId := 7, projection := [] }
+                (.use (.copy { localId := 1, projection := [] })),
+              .assign { localId := 6, projection := [] }
+                (.binaryOp .shr (.move { localId := 7, projection := [] })
+                  (.constant { ty := .int .i32 true, lit := .scalar 1 })),
+              .storageDead 7,
+              .assign { localId := 1, projection := [] }
+                (.binaryOp .bitXor (.copy { localId := 1, projection := [] })
+                  (.move { localId := 6, projection := [] })),
+              .storageDead 6,
+              .storageLive 8,
+              .storageLive 9,
+              .assign { localId := 9, projection := [] }
+                (.use (.copy { localId := 1, projection := [] })),
+              .assign { localId := 8, projection := [] }
+                (.binaryOp .bitAnd (.move { localId := 9, projection := [] })
+                  (.constant { ty := .int .i8 false, lit := .scalar 1 })),
+              .storageDead 9,
+              .assign { localId := 0, projection := [] }
+                (.binaryOp .eq (.move { localId := 8, projection := [] })
+                  (.constant { ty := .int .i8 false, lit := .scalar 0 })),
+              .storageDead 8 ]
+          terminator := .return_
+          cleanup := false } ] }
+
+/-- The captured single-body program around `canaryBodyParityEven`. -/
+@[expose] noncomputable def canaryProgParityEven : Program :=
+  { pointerWidthBits := 64
+    mirProfileVersion := 1
+    scope := .unit
+    entryDefId := 0
+    bodies := [canaryBodyParityEven]
+    overflowChecks := false
+    panicStrategy := .unwind
+    hasLocalPanicHandler := false }
+
+/-- Symbolic `b ^ (b >> k)` with the `i32` shift amount rustc emits. -/
+@[expose] noncomputable def paritySymFold (b : SymScalar) (k : Nat) :
+    SymScalar :=
+  .binOp .bitXor b (.shift .shr b (.lit ⟨.i32, true, BitVec.ofNat 128 k⟩))
+
+/-- Checkpoint state between the three `b ^= b >> k` rounds: only `b` (local
+`1`) holds a value, and every temporary is dead. -/
+@[expose] noncomputable def paritySymState (stmt : Nat) (b : SymScalar) :
+    SymState :=
+  { block := 0, stmt := stmt,
+    slots := [.immediate none, .immediate (some (.scalar b)), .dead, .dead,
+              .dead, .dead, .dead, .dead, .dead, .dead] }
+
+/-- The symbolic argument `b`. -/
+@[expose] noncomputable def paritySymIn : SymScalar := .var 0 .i8 false
+
+/-- The symbolic return value `(b & 1) == 0` after the three rounds. -/
+@[expose] noncomputable def paritySymOut : SymBool :=
+  .cmp .eq
+    (.binOp .bitAnd
+      (paritySymFold (paritySymFold (paritySymFold paritySymIn 4) 2) 1)
+      (.lit ⟨.i8, false, BitVec.ofNat 128 1⟩))
+    (.lit ⟨.i8, false, BitVec.ofNat 128 0⟩)
+
+theorem parityEven_chunk1 :
+    symRunSteps canaryBodyParityEven 7
+        (symEntry canaryBodyParityEven [.scalar paritySymIn]) =
+      .step (paritySymState 7 (paritySymFold paritySymIn 4)) := rfl
+
+theorem parityEven_chunk2 :
+    symRunSteps canaryBodyParityEven 7
+        (paritySymState 7 (paritySymFold paritySymIn 4)) =
+      .step (paritySymState 14
+        (paritySymFold (paritySymFold paritySymIn 4) 2)) := rfl
+
+theorem parityEven_chunk3 :
+    symRunSteps canaryBodyParityEven 7
+        (paritySymState 14 (paritySymFold (paritySymFold paritySymIn 4) 2)) =
+      .step (paritySymState 21
+        (paritySymFold (paritySymFold (paritySymFold paritySymIn 4) 2) 1)) :=
+  rfl
+
+theorem parityEven_chunk4 :
+    symRunSteps canaryBodyParityEven 8
+        (paritySymState 21
+          (paritySymFold (paritySymFold (paritySymFold paritySymIn 4) 2) 1)) =
+      .ret (.bool paritySymOut) := rfl
+
+/-- Kernel-checked step-chunked canary (`["propext"]` only, default
+`maxHeartbeats`): the whole captured `parity_even` body returns
+`paritySymOut`. -/
+theorem symExec_parityEven_canary :
+    symRunSteps canaryBodyParityEven 29
+        (symEntry canaryBodyParityEven [.scalar paritySymIn]) =
+      .ret (.bool paritySymOut) :=
+  (symRunSteps_add _ 7 22 _).trans (by
+    rw [parityEven_chunk1]
+    exact (symRunSteps_add _ 7 15 _).trans (by
+      rw [parityEven_chunk2]
+      exact (symRunSteps_add _ 7 8 _).trans (by
+        rw [parityEven_chunk3]
+        exact parityEven_chunk4)))
+
+/-- Number of set bits among the low `fuel` bits of `n`. -/
+@[expose] noncomputable def natPopcount (fuel n : Nat) : Nat :=
+  @Nat.rec (fun _ => Nat → Nat) (fun _ => 0)
+    (fun _ ih m => Nat.mod m 2 + ih (Nat.div m 2)) fuel n
+
+/-- Whether `f i` holds for every `i` with `lo ≤ i < lo + len`. -/
+@[expose] noncomputable def natAllFrom (lo len : Nat) (f : Nat → Bool) : Bool :=
+  @Nat.rec (fun _ => Nat → Bool) (fun _ => true)
+    (fun _ ih i => f i && ih (i + 1)) len lo
+
+theorem natAllFrom_sound {f : Nat → Bool} :
+    ∀ {len lo : Nat}, natAllFrom lo len f = true →
+      ∀ {i : Nat}, lo ≤ i → i < lo + len → f i = true
+  | 0, lo, _, _, hle, hlt =>
+    absurd (Nat.lt_of_le_of_lt hle hlt) (Nat.lt_irrefl lo)
+  | len + 1, lo, h, i, hle, hlt => by
+    change (f lo && natAllFrom (lo + 1) len f) = true at h
+    cases hf : f lo with
+    | false => rw [hf] at h; cases h
+    | true =>
+      rw [hf] at h
+      cases Nat.eq_or_lt_of_le hle with
+      | inl hEq => rw [← hEq]; exact hf
+      | inr hLo =>
+        exact natAllFrom_sound h (Nat.succ_le_of_lt hLo)
+          (Nat.succ_add lo len ▸ hlt)
+
+/-- Valuation binding the symbolic argument to the `u8` value `n`. -/
+@[expose] noncomputable def parityEnv (n : Nat) : SymEnv :=
+  fun _ => .scalar ⟨.i8, false, BitVec.ofNat 128 n⟩
+
+/-- Specification: `n` has an even number of set bits in its low byte. -/
+@[expose] noncomputable def parityEvenSpec (n : Nat) : Bool :=
+  Nat.beq (Nat.mod (natPopcount 8 n) 2) 0
+
+/-- Whether `paritySymOut` meets `parityEvenSpec` at the input `n`. -/
+@[expose] noncomputable def parityCheck (n : Nat) : Bool :=
+  decide (paritySymOut.eval (parityEnv n) = parityEvenSpec n)
+
+-- Four checks of 64 inputs each: one check over all 256 inputs exceeds the
+-- default `maxRecDepth`.
+theorem parityCheck_0 : natAllFrom 0 64 parityCheck = true := rfl
+theorem parityCheck_64 : natAllFrom 64 64 parityCheck = true := rfl
+theorem parityCheck_128 : natAllFrom 128 64 parityCheck = true := rfl
+theorem parityCheck_192 : natAllFrom 192 64 parityCheck = true := rfl
+
+/-- `paritySymOut` meets `parityEvenSpec` at every `u8` input (exhaustive). -/
+theorem paritySymOut_eval {n : Nat} (hn : n < 256) :
+    paritySymOut.eval (parityEnv n) = parityEvenSpec n := by
+  have hChk : parityCheck n = true := by
+    cases Nat.lt_or_ge n 128 with
+    | inl h128 =>
+      cases Nat.lt_or_ge n 64 with
+      | inl h64 => exact natAllFrom_sound parityCheck_0 (Nat.zero_le n) h64
+      | inr h64 => exact natAllFrom_sound parityCheck_64 h64 h128
+    | inr h128 =>
+      cases Nat.lt_or_ge n 192 with
+      | inl h192 => exact natAllFrom_sound parityCheck_128 h128 h192
+      | inr h192 => exact natAllFrom_sound parityCheck_192 h192 hn
+  exact of_decide_eq_true hChk
+
+/-- End-to-end functional correctness of the captured `parity_even`
+(`["propext"]` only): for every `b : u8`, the program returns `true` exactly
+when `b` has an even number of set bits. -/
+theorem parityEven_behavior (b : BitVec 8) :
+    Trusted.MirSemantics.Behavior (entryProgForBody canaryProgParityEven 0)
+      { args := [.scalar ⟨.i8, false, BitVec.ofNat 128 b.toNat⟩] }
+      (.returned ⟨.bool (parityEvenSpec b.toNat), ⟨[]⟩⟩) := by
+  have hLt : b.toNat < 256 := b.isLt
+  have hTrunc :
+      truncateBitsComp .i8 (BitVec.ofNat 128 b.toNat) =
+        BitVec.ofNat 128 b.toNat :=
+    truncateBitsComp_bitVec_of_lt b (by decide)
+  have hArgs :
+      ([.scalar paritySymIn] : List SymVal).map
+          (SymVal.eval (parityEnv b.toNat)) =
+        [.scalar ⟨.i8, false, BitVec.ofNat 128 b.toNat⟩] := by
+    dsimp only [List.map, SymVal.eval, SymScalar.eval, paritySymIn, parityEnv]
+    rw [hTrunc]
+  have hValid :
+      ValidEntryArgs canaryBodyParityEven
+        (([.scalar paritySymIn] : List SymVal).map
+          (SymVal.eval (parityEnv b.toNat))) := by
+    rw [hArgs]
+    have hBits :
+        (BitVec.ofNat 128 b.toNat).toNat < intWidthModulus .i8 := by
+      rw [bv_toNat_ofNat]
+      exact Nat.lt_of_le_of_lt (Nat.mod_le _ _) hLt
+    exact checkArgsMatch_cons_iff.mpr
+      ⟨_, [], rfl, checkVal_scalar_of_toNat_lt hBits, rfl⟩
+  have hB := symRunSteps_entry_behavior (p := canaryProgParityEven)
+    (defId := 0) rfl rfl (parityEnv b.toNat) hValid symExec_parityEven_canary
+  rw [hArgs] at hB
+  have hOut : (SymVal.bool paritySymOut).eval (parityEnv b.toNat) =
+      .bool (parityEvenSpec b.toNat) :=
+    congrArg Val.bool (paritySymOut_eval hLt)
+  rw [hOut] at hB
+  exact hB.2.2.1
 
 end Anneal.MirSymExec
 
