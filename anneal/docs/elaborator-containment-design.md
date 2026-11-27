@@ -515,9 +515,15 @@ command elaboration, zero tactic allowlist on `proof/`):
   future Lean versions.
 - **Resolved lexical scope tracking (`applySpecScope` + subtree `Term.open`):**
   Tracks enclosing `namespace` scopes across `namespace`/`section`/`end`/`in`,
-  updating `Parser.parserExtension` scopes across all five `open` forms on
-  admitted `Init`/`Std` namespaces, and rejecting any resolved path rooted in
-  `{Lean, Lake, IO, BaseIO, EIO, EST, ST, Task, System}` (allowing
+  updating `Parser.parserExtension` scopes across all five `open` forms and
+  `export` aliases on admitted `Init`/`Std` namespaces, validating full
+  resolved qualified names `ns ++ itemId` and created alias names (`toId` in
+  `open ... renaming` and `currNs ++ itemId` in `export`), reserving
+  `{Expected, Captured, SpecPreflight, TrustedBoundary}` alongside kernel and
+  TCB roots, blocking `Init.Meta*`, `Std`, `Std.Internal`, `Std.Internal.UV*`,
+  `Std.Async*`, and `Std.Http*` imports, and rejecting any resolved path
+  rooted in `{Lean, Lake, IO, BaseIO, EIO, EST, ST, Task, System}` or
+  forbidden sub-namespaces (allowing
   `System.Platform.{numBits, getNumBits, numBits_eq}` via qualified access or
   selective `open System.Platform (...)`).
 - **Closed attributes, deriving, and options:**
@@ -549,18 +555,24 @@ command elaboration, zero tactic allowlist on `proof/`):
 - **Exact term and quotation guards:** Rejects double-backtick
   `` ``Lean.includeStr `` and `` ``Lean.byElab `` (failing closed at inspector
   compile time if renamed in `Init`), component-matched forbidden identifiers
-  (`{autoParam, panic, panicCore, panicWithPos, panicWithPosWithDecl,
-  outOfBounds, repeatM, sliceOrPanic}`) and `'!'`-containing helper identifiers
-  (`hasBangComponent`) across references, dot-projections, `open`, `export`,
-  and `specialize` arguments, `Term.{binderTactic,quotedName,doubleQuotedName}`,
-  single-backtick meta/debug/panic/loop/parser-macro `Term` and `doElem` forms
-  (`sorry`, `unsafe`, `panic`, `unreachable`, `assert`, `debugAssert`,
-  `«term__[_]_!»`, `doWhile`, `doRepeat`, `doRepeatUntil`, `dbgTrace`, `idbg`,
-  `doDbgTrace`, `doIdbg`, `matchExpr`, `letExpr`, `doMatchExpr`, `doLetExpr`,
+  (`autoParam`, `panic`, `panicCore`, `panicWithPos`, `panicWithPosWithDecl`,
+  `outOfBounds`, `repeatM`, `sliceOrPanic`), exact root-level forbidden
+  identifiers (`optParam` and `forbiddenPureIdentifiers`), and
+  `'!'`-containing helper identifiers (`hasBangComponent`) across references,
+  dot-projections, `open`, `export`, and `specialize` arguments,
+  `Term.{binderTactic,quotedName,doubleQuotedName}`, single-backtick
+  meta/debug/panic/loop/parser-macro `Term` and `doElem` forms (`sorry`,
+  `unsafe`, `panic`, `unreachable`, `assert`, `debugAssert`, `«term__[_]_!»`,
+  `doWhile`, `doRepeat`, `doRepeatUntil`, `dbgTrace`, `idbg`, `doDbgTrace`,
+  `doIdbg`, `matchExpr`, `letExpr`, `doMatchExpr`, `doLetExpr`,
   `doLetMetaExpr`, `showTermElabImpl`, `declName`, `withDeclName`,
   `privateDecl`, `leading_parser`, `trailing_parser`, `elabToSyntax`,
   `termMacro.trace[_]_`, `Syntax.exact?`, `termEval_{prec,prio}_`,
-  `termPrintln!__`, `logNamed*`/`throwNamed*`), and trailing
+  `termPrintln!__`, `logNamed*`/`throwNamed*`, `defaultOrOfNonempty`,
+  `valueOf`, `letMVar`, `waitIfTypeMVar`, `waitIfTypeContainsMVar`,
+  `waitIfContainsMVar`, `waitForExpectedType`, `clear`, `noErrorIfUnused`,
+  `typeOf`, `ensureTypeOf`, `ensureExpectedType`, `noImplicitLambda`,
+  `structInstDefault`, `forInMacro`, `forInMacro'`), and trailing
   `"quot"`/`"quotSeq"` (`dynamicQuot`/`precheckedQuot`), backed by live
   parse-tree round-trip CI tests.
 
@@ -585,9 +597,13 @@ compiler-extension handles (`implementedByAttr`, `externAttr`, `CSimp.ext`,
 second import and without invoking `ofOLeanEntry`. The repository `"audit"`
 and `"correspondence-audit"` passes apply the same scan to `.repo` modules.
 The `--allow-unpinned-lean` `v4.35.0+` comparator route via
-`SpecPreflight.lean` `"target-consts"` currently checks only `implemented_by`,
-`extern`, and `csimp` via minimal sysroot imports. `"target-audit"` runs in two
-phases:
+`SpecPreflight.lean` `"target-consts"` reads `implemented_by`, `extern`,
+`csimp`, and `Lean.aliasExtension` entries directly across every serialized
+`.olean*` and `.ir*` part via `readImportedModuleParts` and `partExtEntries`
+(matching `"target-audit"`), validates companion `.olean*` inventories, and
+applies symmetric transitive library bans in `"sysroot-consts"` and
+`"target-consts"`.
+`"target-audit"` runs in two phases:
 
 1. **Phase 1 (Claim and whole-specification closure):** Seeds `expectedReached`
    from all five canonical roots (`[expectedName, canonicalRoot, crateCtor,
@@ -600,17 +616,27 @@ phases:
      `phase1Closure ∪ phase2Closure`, never inserted into `replayMap`);
    - Strict 3-axiom ceiling (`{Classical.choice, Quot.sound, propext}`, zero
      `sorryAx`);
-   - `.foundation` skipped, `.library` kernel-replayed, and `.source
-     .specification` strictly non-`opaque`, free of direct `Lean.Syntax` and
-     `isPanicSpecConst` edges (`{panic, panicCore, panicWithPos,
-     panicWithPosWithDecl, outOfBounds, String.Pos.sliceOrPanic,
-     String.Slice.Pos.sliceOrPanic}` plus any `'!'`-containing helper via
-     `hasBangComponent`), and transitively free of `{IO, BaseIO, EIO, EST, ST,
-     Task, Lean.{Macro,Elab,Core,Meta,Environment,Compiler,Internal,Loop,
-     getGithash,version}, repeatM, System.FilePath, System.SearchPath,
-     System.Uri, System.Platform.* \ {numBits, getNumBits, numBits_eq},
-     dbgTrace, dbgTraceVal, dbgTraceIfShared, dbgSleep, dbgStackTrace,
-     dbgStackTraceIf}`.
+   - `.foundation` skipped, `.library` kernel-replayed (with transitive
+     `Lean.*`, `Lake.*`, `Std`, `Std.Internal`, `Std.Internal.UV.*`,
+     `Std.Async.*`, and `Std.Http.*` library modules rejected), and
+     `.source .specification` strictly non-`opaque`, free of direct
+     `Lean.Syntax`, `autoParam`, and `isPanicSpecConst` edges (`panic`,
+     `panicCore`, `panicWithPos`, `panicWithPosWithDecl`, `outOfBounds`,
+     `String.Pos.sliceOrPanic`, `String.Slice.Pos.sliceOrPanic`, plus any
+     `'!'`-containing helper via `hasBangComponent`), transitively free of
+     `IO`, `BaseIO`, `EIO`, `EST`, `ST`, `Task`,
+     `Lean.{Macro,Elab,Core,Meta,Environment,Compiler,Internal,Loop}`,
+     `Lean.{LoadDynlib,loadDynlib,loadPlugin,Dynlib}`,
+     `Lean.{getGithash,version}`, `Dynlib`, `repeatM`, `Init.System.*`,
+     `Std.Internal.UV.*`, `Std.Async.*`, `Std.Http.*`, `System.FilePath`,
+     `System.SearchPath`, `System.Uri`, `System.Platform.*` (except
+     `System.Platform.{numBits, getNumBits, numBits_eq}`), and
+     `forbiddenPureIdentifiers` (`includeStr`, `loadDynlib`, `loadPlugin`,
+     `dbgTrace*`, `dbgSleep`, `dbgStackTrace*`, and `lean_*` externs), and
+     free of disallowed `Lean.aliasExtension` exports (`Trusted`-root,
+     reserved-root, disallowed/`autoParam`/panic, `unsafe`, `partial`,
+     unapproved-axiom, non-allowlisted `opaque`, and non-foundation `@[extern]`
+     or `@[implemented_by]` targets).
 2. **Phase 2 (Proof closure `[theoremName]`):** Reuses memoized `phase1Closure`
    state in the same loop. When `--allow-sorry-in-proof` is active, per-edge
    `sorryAx` admission runs in `parent`'s outgoing edge loop **before**

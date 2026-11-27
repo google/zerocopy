@@ -1065,3 +1065,881 @@ fn audit_admits_diamond_realized_theorems_and_paired_unsafe_rec() {
         "{thm_err}"
     );
 }
+
+/// Verifies `autoParam` and `Lean.Syntax` isolation across preflight and audit:
+/// - Rejects `Init.Meta*`, `autoParam`, `optParam`, `Lean.Syntax*`,
+///   `Lean.Name*`, `Lean.SourceInfo*`, `Lean.TSyntax*`, `Lean.Elab*`, and
+///   `Lean.Macro*` during Pass-1 `"preflight"` and Pass-2
+///   `"correspondence-preflight"` before any Lean module compilation occurs
+///   (`execution_began() == false`).
+/// - Defense in depth on compiled `.olean`s audited directly in Pass-1
+///   `"audit"` and Pass-2 `"correspondence-audit"`: rejects non-`_auto_`
+///   `Lean.Syntax` constants, non-literal `_auto_<N>` bodies (e.g. `let`/
+///   `Array.mk`), literal `_auto_<N>` scripts encoding disallowed tactics
+///   (`set_option ... in ...`), `_auto_<N>` helpers outside `theory/` or
+///   `correspondence/`, direct references to `_auto_<N>` / `Lean.Name` /
+///   malformed `autoParam`, while still admitting legitimate `theory/`
+///   `binderTactic` (`:= by rfl`) helpers and non-`Syntax` declarations whose
+///   names happen to end in `_auto_<N>` or `_autoParam`.
+#[test]
+fn rejects_autoparam_and_syntax_construction_across_preflight_and_olean_audit() {
+    // 1. Positive control: legitimate `binderTactic` (`:= by rfl`) and pure
+    //    non-`Syntax` declarations named `_auto_1` / `_autoParam` /
+    //    `cache_auto_1` in `theory/Anneal.lean` pass full Pass-1 preflight,
+    //    compilation, and `validateRepoAutoParamAndMeta` replay.
+    let mut good_fix = TempFixture::new(Some(HEADER));
+    fs::create_dir_all(good_fix.root.join("theory")).unwrap();
+    fs::write(
+        good_fix.root.join("theory/Anneal.lean"),
+        "prelude\nimport Init.NotationExtra\nimport Trusted\n\
+         namespace Anneal\n\
+         namespace Sub\ndef subVal : Nat := 7\nend Sub\n\
+         export Sub (subVal)\n\
+         private theorem privRfl : 0 = 0 := rfl\n\
+         def goodBinderAuto (n : Nat) (_h : 0 = 0 := by rfl) : Nat := n\n\
+         def goodPrivAuto (n : Nat) (_h : 0 = 0 := by exact privRfl) : Nat := n\n\
+         def _auto_1 : Nat := 1\n\
+         def _autoParam : Nat := 2\n\
+         def cache_auto_1 : Nat := 3\n\
+         def useAutoNamed : Nat := _auto_1 + _autoParam + cache_auto_1 + subVal\n\
+         end Anneal\n",
+    )
+    .unwrap();
+    let rep_ok = good_fix.check_expected(None, None, None).unwrap();
+    assert_eq!(rep_ok.get("replay"), Some(&json!(true)));
+
+    // 2. Pass-1 `"preflight"` rejections in both `theory/Anneal.lean` and
+    //    `Trusted.lean` with `execution_began() == false`.
+    let import_cases = [
+        ("import_init_meta_defs", "import Init.Meta.Defs\n"),
+        ("import_init_meta", "import Init.Meta\n"),
+    ];
+    for (label, imp) in import_cases {
+        let mut theory_fix = TempFixture::new(Some(HEADER));
+        fs::create_dir_all(theory_fix.root.join("theory")).unwrap();
+        fs::write(
+            theory_fix.root.join("theory/Anneal.lean"),
+            format!("prelude\nimport Init.NotationExtra\n{imp}def Anneal.bad : Nat := 0\n"),
+        )
+        .unwrap();
+        let err = theory_fix
+            .check_expected(Some(1), Some("preflight"), Some(false))
+            .expect_err(&format!("theory {label} must fail preflight"));
+        assert!(err.message.contains("disallowed sysroot import"), "theory {label}: {err}");
+
+        let mut trusted_fix = TempFixture::new(Some(&format!("{HEADER}{imp}")));
+        let err_t = trusted_fix
+            .check_expected(Some(1), Some("preflight"), Some(false))
+            .expect_err(&format!("trusted {label} must fail preflight"));
+        assert!(err_t.message.contains("disallowed sysroot import"), "trusted {label}: {err_t}");
+    }
+
+    let pure_cases = [
+        (
+            "auto_param",
+            "disallowed reference autoParam",
+            "def badAuto (h : autoParam (0 = 0) x) : Nat := 0\n",
+        ),
+        (
+            "opt_param",
+            "disallowed reference optParam",
+            "def badOpt (n : optParam Nat 0) : Nat := n\n",
+        ),
+        (
+            "lean_syntax_node",
+            "disallowed reference Lean.Syntax.node",
+            "def badNode := Lean.Syntax.node\n",
+        ),
+        (
+            "lean_source_info",
+            "disallowed reference Lean.SourceInfo.none",
+            "def badInfo := Lean.SourceInfo.none\n",
+        ),
+        ("lean_mk_atom", "disallowed reference Lean.mkAtom", "def badAtom := Lean.mkAtom \"x\"\n"),
+        (
+            "lean_name_mkstr",
+            "disallowed reference Lean.Name.mkStr1",
+            "def badName := Lean.Name.mkStr1 \"x\"\n",
+        ),
+        ("lean_tsyntax", "disallowed reference Lean.TSyntax", "def badTStx := Lean.TSyntax\n"),
+        (
+            "lean_elab",
+            "disallowed reference Lean.Elab.Command.CommandElab",
+            "def badElab := Lean.Elab.Command.CommandElab\n",
+        ),
+        (
+            "lean_macro",
+            "disallowed reference Lean.Macro.throwUnsupported",
+            "def badMacro := Lean.Macro.throwUnsupported\n",
+        ),
+        (
+            "lean_term_alias",
+            "disallowed reference Lean.Term",
+            "def badTerm := Lean.Term\n",
+        ),
+        (
+            "lean_mk_lit",
+            "disallowed reference Lean.mkLit",
+            "def badLit := Lean.mkLit\n",
+        ),
+        (
+            "repo_export_std_uv",
+            "disallowed export item Std.Internal.UV.Loop.alive",
+            "export Std.Internal (UV.Loop.alive)\n",
+        ),
+        (
+            "repo_export_std_async",
+            "disallowed export item Std.Async.DNS.getAddrInfo",
+            "export Std (Async.DNS.getAddrInfo)\n",
+        ),
+        (
+            "repo_export_std_http",
+            "disallowed export item Std.Http.Client",
+            "export Std (Http.Client)\n",
+        ),
+        // Chained `export` -> `open` alias tracking (`top`, `in`, and `mutual`)
+        // in `TrustedBoundary.lean` is exercised against scoped namespaces in
+        // `pass2_syntax_preflight::rejects_scoped_syntax_and_extensions_in_preflight`
+        // (`Anneal.ChainedExport{,In,Mutual}ScopedOpen`).
+        (
+            "repo_nested_ns_raw_io",
+            "disallowed reference IO",
+            "namespace SubWrap\nnamespace IO\ndef x : Nat := 0\nend IO\nend SubWrap\n",
+        ),
+        (
+            "repo_export_raw_io_item",
+            "disallowed reference IO.println",
+            "namespace SubWrap\nexport Sub (IO.println)\nend SubWrap\n",
+        ),
+        (
+            "repo_open_raw_dbg_trace",
+            "disallowed reference dbgTrace",
+            "open dbgTrace\n",
+        ),
+        (
+            "repo_export_lean_root",
+            "cannot export from forbidden namespace Lean.Parser",
+            "export Lean.Parser (ident)\n",
+        ),
+        (
+            "repo_unlisted_lean_loop_member",
+            "disallowed reference Lean.Loop.fake",
+            "def x := Lean.Loop.fake\n",
+        ),
+        (
+            "repo_open_lean_loop",
+            "cannot open forbidden namespace Lean.Loop",
+            "open Lean.Loop\n",
+        ),
+        (
+            "repo_export_lean_loop",
+            "cannot export from forbidden namespace Lean.Loop",
+            "export Lean.Loop (mk)\n",
+        ),
+    ];
+    // 3. Defense in depth in Pass-1 `"audit"`: forged `.olean` modules
+    //    audited directly against `TrustedBoundary.lean`. Reuse one
+    //    admitted checker for the pure-identifier preflight matrix so the test
+    //    stays well under CI's nextest timeout.
+    let fix_audit = TempFixture::new(Some(HEADER));
+    fs::create_dir_all(fix_audit.root.join("theory")).unwrap();
+    fs::write(
+        fix_audit.root.join("theory/Anneal.lean"),
+        "prelude\nimport Init.NotationExtra\nimport Trusted\n",
+    )
+    .unwrap();
+    let mut checker = fix_audit.checker();
+    checker.set_require_mir_wp(false);
+    checker.run().unwrap();
+    let stage = checker.stage().to_path_buf();
+    let theory_lib = stage.join("lib");
+    let forged_src = stage.join("src/forged-auto");
+    let pf_src = stage.join("src/auto-pf");
+    fs::create_dir_all(&pf_src).unwrap();
+
+    for (label, expected_msg, body) in pure_cases {
+        let theory_p = pf_src.join(format!("theory_{label}.lean"));
+        fs::write(
+            &theory_p,
+            format!("prelude\nimport Init.NotationExtra\nnamespace Anneal\n{body}end Anneal\n"),
+        )
+        .unwrap();
+        let err = checker
+            .inspect(InspectorRequest::Preflight {
+                sources: vec![("Anneal".to_string(), theory_p)],
+                base_trusted_sources: Vec::new(),
+                allow_local_semireducible: true,
+            })
+            .expect_err(&format!("theory {label} must fail preflight"));
+        assert_eq!((err.code, err.phase.as_str()), (1, "preflight"), "theory {label}: {err}");
+        assert!(err.message.contains(expected_msg), "theory {label}: {err}");
+
+        let trusted_p = pf_src.join(format!("trusted_{label}.lean"));
+        fs::write(&trusted_p, format!("{HEADER}{body}")).unwrap();
+        let err_t = checker
+            .inspect(InspectorRequest::Preflight {
+                sources: vec![("Trusted".to_string(), trusted_p)],
+                base_trusted_sources: Vec::new(),
+                allow_local_semireducible: false,
+            })
+            .expect_err(&format!("trusted {label} must fail preflight"));
+        assert_eq!(
+            (err_t.code, err_t.phase.as_str()),
+            (1, "preflight"),
+            "trusted {label}: {err_t}"
+        );
+        assert!(err_t.message.contains(expected_msg), "trusted {label}: {err_t}");
+    }
+
+    // Closed allowlist `allowedRepoSurfaceLeanDecls` admits the exact 7 pure
+    // `Init.*` `Lean.Loop` / `Lean.Order` constants used by loop-unfolding
+    // proofs in `theory/` and `correspondence/` term position while keeping
+    // `Trusted` modules, top-level `Lean.*` declarations, and `open`/`export`/
+    // other `Lean.*` identifiers blocked.
+    let loop_pos_p = pf_src.join("theory_allowed_lean_loop_order.lean");
+    fs::write(
+        &loop_pos_p,
+        "prelude\nimport Init.Control.Do\nnamespace Anneal\n\
+         def loopRefs := (Lean.Loop, Lean.Loop.mk, Lean.Loop.forIn_eq_of_monadTail,\n  \
+           Lean.Order.MonadTail, Lean.Order.instCCPOPi,\n  \
+           Lean.Order.FlatOrder.instCCPO, Lean.Order.FlatOrder.rel.refl)\n\
+         end Anneal\n",
+    )
+    .unwrap();
+    checker
+        .inspect(InspectorRequest::Preflight {
+            sources: vec![("Anneal".to_string(), loop_pos_p)],
+            base_trusted_sources: Vec::new(),
+            allow_local_semireducible: true,
+        })
+        .expect("allowedRepoSurfaceLeanDecls must pass theory preflight");
+
+    let trusted_loop_p = pf_src.join("trusted_disallowed_lean_loop.lean");
+    fs::write(
+        &trusted_loop_p,
+        format!("{HEADER}import Init.Control.Do\nnamespace Trusted\ndef loopRef := Lean.Loop.mk\nend Trusted\n"),
+    )
+    .unwrap();
+    let err_trusted_loop = checker
+        .inspect(InspectorRequest::Preflight {
+            sources: vec![("Trusted".to_string(), trusted_loop_p)],
+            base_trusted_sources: Vec::new(),
+            allow_local_semireducible: false,
+        })
+        .expect_err("Trusted modules must still reject Lean.Loop.mk in preflight");
+    assert_eq!((err_trusted_loop.code, err_trusted_loop.phase.as_str()), (1, "preflight"));
+    assert!(
+        err_trusted_loop.message.contains("disallowed reference Lean.Loop.mk"),
+        "trusted Lean.Loop.mk: {err_trusted_loop}"
+    );
+
+    let top_decl_loop_p = pf_src.join("theory_declare_lean_loop_mk.lean");
+    fs::write(
+        &top_decl_loop_p,
+        "prelude\nimport Init.NotationExtra\n\
+         def Lean.Loop.mk : Nat := 0\n",
+    )
+    .unwrap();
+    let err_top_decl = checker
+        .inspect(InspectorRequest::Preflight {
+            sources: vec![("Anneal".to_string(), top_decl_loop_p)],
+            base_trusted_sources: Vec::new(),
+            allow_local_semireducible: true,
+        })
+        .expect_err("declaring top-level Lean.Loop.mk must fail preflight");
+    assert_eq!((err_top_decl.code, err_top_decl.phase.as_str()), (1, "preflight"));
+    assert!(
+        err_top_decl.message.contains("cannot declare in namespace Lean with scoped syntax or extensions"),
+        "top decl Lean.Loop.mk: {err_top_decl}"
+    );
+
+    // Top-level `export` in `theory/` and `Trusted` must validate the created
+    // alias name `currNs ++ itemId` (`currNs = .anonymous`), rejecting
+    // `Trusted.*` aliases outside `Trusted` and reserved/forbidden alias roots
+    // (`Expected.*`, `IO.*`, `Lean.*`) everywhere.
+    for (label, theory_only, expected_msg, src) in [
+        (
+            "top_export_trusted",
+            true,
+            "non-Trusted module cannot export alias Trusted.fake in Trusted namespace",
+            "prelude\nimport Init.Core\n\
+             namespace Anneal.Foo.Trusted\ndef fake : Nat := 0\nend Anneal.Foo.Trusted\n\
+             export Anneal.Foo (Trusted.fake)\n",
+        ),
+        (
+            "top_export_expected",
+            false,
+            "cannot export alias Expected.claim in reserved kernel namespace Expected",
+            "prelude\nimport Init.Core\n\
+             namespace Anneal.Foo.Expected\ndef claim : Prop := True\nend Anneal.Foo.Expected\n\
+             export Anneal.Foo (Expected.claim)\n",
+        ),
+        (
+            "top_export_io",
+            false,
+            "cannot export alias IO.println in reserved kernel namespace IO",
+            "prelude\nimport Init.Core\n\
+             namespace Anneal.Foo.IO\ndef println : Nat := 0\nend Anneal.Foo.IO\n\
+             export Anneal.Foo (IO.println)\n",
+        ),
+        (
+            "top_export_lean",
+            false,
+            "cannot export alias Lean.fake in reserved kernel namespace Lean",
+            "prelude\nimport Init.Core\n\
+             namespace Anneal.Foo.Lean\ndef fake : Nat := 0\nend Anneal.Foo.Lean\n\
+             export Anneal.Foo (Lean.fake)\n",
+        ),
+    ] {
+        let p_th = pf_src.join(format!("theory_{label}.lean"));
+        fs::write(&p_th, src).unwrap();
+        let err = checker
+            .inspect(InspectorRequest::Preflight {
+                sources: vec![("Anneal".to_string(), p_th)],
+                base_trusted_sources: Vec::new(),
+                allow_local_semireducible: true,
+            })
+            .expect_err(&format!("theory {label} must fail preflight"));
+        assert_eq!((err.code, err.phase.as_str()), (1, "preflight"), "theory {label}: {err}");
+        assert!(err.message.contains(expected_msg), "theory {label}: {err}");
+
+        if !theory_only {
+            let p_tr = pf_src.join(format!("trusted_{label}.lean"));
+            fs::write(
+                &p_tr,
+                format!("-- anneal-trust-tier: vetted\n{src}"),
+            )
+            .unwrap();
+            let err_t = checker
+                .inspect(InspectorRequest::Preflight {
+                    sources: vec![("Trusted".to_string(), p_tr)],
+                    base_trusted_sources: Vec::new(),
+                    allow_local_semireducible: false,
+                })
+                .expect_err(&format!("trusted {label} must fail preflight"));
+            assert_eq!(
+                (err_t.code, err_t.phase.as_str()),
+                (1, "preflight"),
+                "trusted {label}: {err_t}"
+            );
+            assert!(err_t.message.contains(expected_msg), "trusted {label}: {err_t}");
+        }
+    }
+
+    for (module, body, expected_msg) in [
+        (
+            "Anneal.ForgeNonAutoSyntax",
+            "prelude\nimport Init.Core\n\
+             def Anneal.ForgeNonAutoSyntax.s : Lean.Syntax := Lean.mkAtom \"x\"\n",
+            "disallowed Lean.Syntax declaration Anneal.ForgeNonAutoSyntax.s",
+        ),
+        (
+            "Anneal.ForgeObfAuto",
+            "prelude\nimport Init.Core\n\
+             def Anneal.ForgeObfAuto.f._auto_1 : Lean.Syntax :=\n  \
+               Lean.Syntax.node .none .anonymous (Array.mk (List.cons (Lean.mkAtom \"x\") List.nil))\n\
+             def Anneal.ForgeObfAuto.f (_h : autoParam (0 = 0) Anneal.ForgeObfAuto.f._auto_1) : Nat := 0\n",
+            "disallowed non-literal autoParam tactic Anneal.ForgeObfAuto.f._auto_1",
+        ),
+        (
+            "Anneal.ForgeLetAuto",
+            "prelude\nimport Init.Core\n\
+             def Anneal.ForgeLetAuto.f._auto_1 : Lean.Syntax :=\n  \
+               let a := Lean.mkAtom \"x\"\n  a\n\
+             def Anneal.ForgeLetAuto.f (_h : autoParam (0 = 0) Anneal.ForgeLetAuto.f._auto_1) : Nat := 0\n",
+            "disallowed non-literal autoParam tactic Anneal.ForgeLetAuto.f._auto_1",
+        ),
+        (
+            "Anneal.ForgeBadAutoTactic",
+            "prelude\nimport Init.Core\n\
+             def Anneal.ForgeBadAutoTactic.f (_h : 0 = 0 := by set_option maxHeartbeats 1 in exact rfl) : Nat := 0\n",
+            "disallowed syntax",
+        ),
+        // Literal `Syntax.ident` with harmless `x` name and forbidden
+        // `IO.println` preresolved entry passes `decodePureAutoSyntax?` and
+        // `inspectSyntax`, specifically exercising
+        // `inspectDecodedAutoPreresolved`.
+        (
+            "Anneal.ForgePreresolvedAuto",
+            "prelude\nimport Init.Core\n\
+             def Anneal.ForgePreresolvedAuto.f._auto_1 : Lean.Syntax :=\n  \
+               Lean.Syntax.ident Lean.SourceInfo.none (String.toRawSubstring \"x\")\n    \
+                 (Lean.Name.mkStr1 \"x\")\n    \
+                 (List.cons (Lean.Syntax.Preresolved.decl (Lean.Name.mkStr2 \"IO\" \"println\") List.nil) List.nil)\n\
+             def Anneal.ForgePreresolvedAuto.f (_h : autoParam (0 = 0) Anneal.ForgePreresolvedAuto.f._auto_1) : Nat := 0\n",
+            "disallowed reference x",
+        ),
+        // Private-mangled preresolved target
+        // (`_private.Init.Core.0.IO.println`) using Lean's actual
+        // `OfNat.ofNat` literal encoding (`0`, matching `ToExpr Name` /
+        // `Lean.mkNatLit`) must be decoded and normalized via
+        // `privateToUserName` before checking forbidden namespaces.
+        (
+            "Anneal.ForgePrivatePreresolvedAuto",
+            "prelude\nimport Init.Core\n\
+             def Anneal.ForgePrivatePreresolvedAuto.f._auto_1 : Lean.Syntax :=\n  \
+               Lean.Syntax.ident Lean.SourceInfo.none (String.toRawSubstring \"x\")\n    \
+                 (Lean.Name.mkStr1 \"x\")\n    \
+                 (List.cons (Lean.Syntax.Preresolved.decl (Lean.Name.str (Lean.Name.str (Lean.Name.num (Lean.Name.mkStr3 \"_private\" \"Init\" \"Core\") 0) \"IO\") \"println\") List.nil) List.nil)\n\
+             def Anneal.ForgePrivatePreresolvedAuto.f (_h : autoParam (0 = 0) Anneal.ForgePrivatePreresolvedAuto.f._auto_1) : Nat := 0\n",
+            "disallowed reference x",
+        ),
+        // Raw `.lit (.natVal 0)` encoding is also decoded and normalized.
+        (
+            "Anneal.ForgeRawNatLitPreresolvedAuto",
+            "prelude\nimport Init.Core\n\
+             def Anneal.ForgeRawNatLitPreresolvedAuto.f._auto_1 : Lean.Syntax :=\n  \
+               Lean.Syntax.ident Lean.SourceInfo.none (String.toRawSubstring \"x\")\n    \
+                 (Lean.Name.mkStr1 \"x\")\n    \
+                 (List.cons (Lean.Syntax.Preresolved.decl (Lean.Name.str (Lean.Name.str (Lean.Name.num (Lean.Name.mkStr3 \"_private\" \"Init\" \"Core\") (nat_lit 0)) \"IO\") \"println\") List.nil) List.nil)\n\
+             def Anneal.ForgeRawNatLitPreresolvedAuto.f (_h : autoParam (0 = 0) Anneal.ForgeRawNatLitPreresolvedAuto.f._auto_1) : Nat := 0\n",
+            "disallowed reference x",
+        ),
+        // Custom `OfNat` instance (`{ ofNat := 99 }` instead of `instOfNatNat`)
+        // is rejected as non-literal.
+        (
+            "Anneal.ForgeMismatchedOfNatAuto",
+            "prelude\nimport Init.Core\n\
+             def Anneal.ForgeMismatchedOfNatAuto.f._auto_1 : Lean.Syntax :=\n  \
+               Lean.Syntax.ident Lean.SourceInfo.none (String.toRawSubstring \"x\")\n    \
+                 (Lean.Name.num .anonymous (@OfNat.ofNat Nat (nat_lit 0) { ofNat := 99 }))\n    \
+                 List.nil\n\
+             def Anneal.ForgeMismatchedOfNatAuto.f (_h : autoParam (0 = 0) Anneal.ForgeMismatchedOfNatAuto.f._auto_1) : Nat := 0\n",
+            "disallowed non-literal autoParam tactic Anneal.ForgeMismatchedOfNatAuto.f._auto_1",
+        ),
+        // Private-mangled preresolved target in a forbidden module
+        // (`_private.Init.System.IO.0.secret`) using `OfNat.ofNat` (`0`) must
+        // also be rejected via its embedded module prefix.
+        (
+            "Anneal.ForgePrivateModPreresolvedAuto",
+            "prelude\nimport Init.Core\n\
+             def Anneal.ForgePrivateModPreresolvedAuto.f._auto_1 : Lean.Syntax :=\n  \
+               Lean.Syntax.ident Lean.SourceInfo.none (String.toRawSubstring \"x\")\n    \
+                 (Lean.Name.mkStr1 \"x\")\n    \
+                 (List.cons (Lean.Syntax.Preresolved.decl (Lean.Name.str (Lean.Name.num (Lean.Name.mkStr4 \"_private\" \"Init\" \"System\" \"IO\") 0) \"secret\") List.nil) List.nil)\n\
+             def Anneal.ForgePrivateModPreresolvedAuto.f (_h : autoParam (0 = 0) Anneal.ForgePrivateModPreresolvedAuto.f._auto_1) : Nat := 0\n",
+            "disallowed reference x",
+        ),
+        // `_root_`-prefixed and multi-`_root_` / embedded-`_root_` preresolved
+        // targets (`OfNat.ofNat` `0`) must strip arbitrary leading `_root_`
+        // segments via `stripLeadingRootPrefix` and reject embedded `_root_`.
+        (
+            "Anneal.ForgeRootPrivatePreresolvedAuto",
+            "prelude\nimport Init.Core\n\
+             def Anneal.ForgeRootPrivatePreresolvedAuto.f._auto_1 : Lean.Syntax :=\n  \
+               Lean.Syntax.ident Lean.SourceInfo.none (String.toRawSubstring \"x\")\n    \
+                 (Lean.Name.mkStr1 \"x\")\n    \
+                 (List.cons (Lean.Syntax.Preresolved.decl (Lean.Name.str (Lean.Name.str (Lean.Name.num (Lean.Name.mkStr4 \"_root_\" \"_private\" \"Init\" \"Core\") 0) \"IO\") \"println\") List.nil) List.nil)\n\
+             def Anneal.ForgeRootPrivatePreresolvedAuto.f (_h : autoParam (0 = 0) Anneal.ForgeRootPrivatePreresolvedAuto.f._auto_1) : Nat := 0\n",
+            "disallowed reference x",
+        ),
+        (
+            "Anneal.ForgeMultiRootPrivModPreresolvedAuto",
+            "prelude\nimport Init.Core\n\
+             def Anneal.ForgeMultiRootPrivModPreresolvedAuto.f._auto_1 : Lean.Syntax :=\n  \
+               Lean.Syntax.ident Lean.SourceInfo.none (String.toRawSubstring \"x\")\n    \
+                 (Lean.Name.mkStr1 \"x\")\n    \
+                 (List.cons (Lean.Syntax.Preresolved.decl (Lean.Name.str (Lean.Name.num (Lean.Name.mkStr6 \"_root_\" \"_root_\" \"_private\" \"Init\" \"System\" \"IO\") 0) \"secret\") List.nil) List.nil)\n\
+             def Anneal.ForgeMultiRootPrivModPreresolvedAuto.f (_h : autoParam (0 = 0) Anneal.ForgeMultiRootPrivModPreresolvedAuto.f._auto_1) : Nat := 0\n",
+            "disallowed reference x",
+        ),
+        (
+            "Anneal.ForgeMultiRootIoPreresolvedAuto",
+            "prelude\nimport Init.Core\n\
+             def Anneal.ForgeMultiRootIoPreresolvedAuto.f._auto_1 : Lean.Syntax :=\n  \
+               Lean.Syntax.ident Lean.SourceInfo.none (String.toRawSubstring \"x\")\n    \
+                 (Lean.Name.mkStr1 \"x\")\n    \
+                 (List.cons (Lean.Syntax.Preresolved.decl (Lean.Name.mkStr6 \"_root_\" \"_root_\" \"_root_\" \"_root_\" \"IO\" \"println\") List.nil) List.nil)\n\
+             def Anneal.ForgeMultiRootIoPreresolvedAuto.f (_h : autoParam (0 = 0) Anneal.ForgeMultiRootIoPreresolvedAuto.f._auto_1) : Nat := 0\n",
+            "disallowed reference x",
+        ),
+        (
+            "Anneal.ForgeMultiRootAutoParamPreresolvedAuto",
+            "prelude\nimport Init.Core\n\
+             def Anneal.ForgeMultiRootAutoParamPreresolvedAuto.f._auto_1 : Lean.Syntax :=\n  \
+               Lean.Syntax.ident Lean.SourceInfo.none (String.toRawSubstring \"x\")\n    \
+                 (Lean.Name.mkStr1 \"x\")\n    \
+                 (List.cons (Lean.Syntax.Preresolved.decl (Lean.Name.mkStr4 \"_root_\" \"_root_\" \"_root_\" \"autoParam\") List.nil) List.nil)\n\
+             def Anneal.ForgeMultiRootAutoParamPreresolvedAuto.f (_h : autoParam (0 = 0) Anneal.ForgeMultiRootAutoParamPreresolvedAuto.f._auto_1) : Nat := 0\n",
+            "disallowed reference x",
+        ),
+        (
+            "Anneal.ForgeMultiRootIncludeStrPreresolvedAuto",
+            "prelude\nimport Init.Core\n\
+             def Anneal.ForgeMultiRootIncludeStrPreresolvedAuto.f._auto_1 : Lean.Syntax :=\n  \
+               Lean.Syntax.ident Lean.SourceInfo.none (String.toRawSubstring \"x\")\n    \
+                 (Lean.Name.mkStr1 \"x\")\n    \
+                 (List.cons (Lean.Syntax.Preresolved.decl (Lean.Name.mkStr4 \"_root_\" \"_root_\" \"_root_\" \"includeStr\") List.nil) List.nil)\n\
+             def Anneal.ForgeMultiRootIncludeStrPreresolvedAuto.f (_h : autoParam (0 = 0) Anneal.ForgeMultiRootIncludeStrPreresolvedAuto.f._auto_1) : Nat := 0\n",
+            "disallowed reference x",
+        ),
+        (
+            "Anneal.ForgeEmbeddedRootPrivatePreresolvedAuto",
+            "prelude\nimport Init.Core\n\
+             def Anneal.ForgeEmbeddedRootPrivatePreresolvedAuto.f._auto_1 : Lean.Syntax :=\n  \
+               Lean.Syntax.ident Lean.SourceInfo.none (String.toRawSubstring \"x\")\n    \
+                 (Lean.Name.mkStr1 \"x\")\n    \
+                 (List.cons (Lean.Syntax.Preresolved.decl (Lean.Name.str (Lean.Name.num (Lean.Name.str (Lean.Name.str (Lean.Name.str (Lean.Name.str (Lean.Name.str (Lean.Name.str (Lean.Name.num (Lean.Name.mkStr3 \"_private\" \"Init\" \"Core\") 0) \"_root_\") \"_root_\") \"_private\") \"Init\") \"System\") \"IO\") 0) \"secret\") List.nil) List.nil)\n\
+             def Anneal.ForgeEmbeddedRootPrivatePreresolvedAuto.f (_h : autoParam (0 = 0) Anneal.ForgeEmbeddedRootPrivatePreresolvedAuto.f._auto_1) : Nat := 0\n",
+            "disallowed reference x",
+        ),
+        // Nested `_private` preresolved target (`OfNat.ofNat` `0`) must be
+        // rejected fail-closed.
+        (
+            "Anneal.ForgeNestedPrivatePreresolvedAuto",
+            "prelude\nimport Init.Core\n\
+             def Anneal.ForgeNestedPrivatePreresolvedAuto.f._auto_1 : Lean.Syntax :=\n  \
+               Lean.Syntax.ident Lean.SourceInfo.none (String.toRawSubstring \"x\")\n    \
+                 (Lean.Name.mkStr1 \"x\")\n    \
+                 (List.cons (Lean.Syntax.Preresolved.decl (Lean.Name.str (Lean.Name.num (Lean.Name.str (Lean.Name.str (Lean.Name.str (Lean.Name.str (Lean.Name.num (Lean.Name.mkStr2 \"_private\" \"Anneal\") 0) \"_private\") \"Init\") \"System\") \"IO\") 0) \"secret\") List.nil) List.nil)\n\
+             def Anneal.ForgeNestedPrivatePreresolvedAuto.f (_h : autoParam (0 = 0) Anneal.ForgeNestedPrivatePreresolvedAuto.f._auto_1) : Nat := 0\n",
+            "disallowed reference x",
+        ),
+        // Forged `.olean` `export` aliases in `theory/` creating `Trusted.*`,
+        // reserved-root (`Expected.*`), or forbidden-namespace (`IO.*`) aliases
+        // are rejected in Pass-1 `"audit"` (`validateRepoAliases`).
+        (
+            "Anneal.ForgeExportTrustedAlias",
+            "prelude\nimport Init.Core\n\
+             namespace Anneal.Foo.Trusted\ndef fake : Nat := 0\nend Anneal.Foo.Trusted\n\
+             export Anneal.Foo (Trusted.fake)\n",
+            "cannot export alias Trusted.fake in Trusted namespace",
+        ),
+        (
+            "Anneal.ForgeExportReservedAlias",
+            "prelude\nimport Init.Core\n\
+             namespace Anneal.Foo.Expected\ndef claim : Prop := True\nend Anneal.Foo.Expected\n\
+             export Anneal.Foo (Expected.claim)\n",
+            "cannot export alias Expected.claim in reserved kernel namespace Expected",
+        ),
+        (
+            "Anneal.ForgeExportIoAlias",
+            "prelude\nimport Init.Core\n\
+             namespace Anneal.Foo.IO\ndef fake : Nat := 0\nend Anneal.Foo.IO\n\
+             export Anneal.Foo (IO.fake)\n",
+            "cannot export alias IO.fake in reserved kernel namespace IO",
+        ),
+        (
+            "Anneal.ForgeExportOptParamAlias",
+            "prelude\nimport Init.Core\n\
+             namespace Anneal.Foo\ndef optParam : Nat := 0\nend Anneal.Foo\n\
+             export Anneal.Foo (optParam)\n",
+            "disallowed export alias optParam in Anneal.ForgeExportOptParamAlias",
+        ),
+        (
+            "Anneal.ForgeExportMetaTarget",
+            "prelude\nimport Init.Core\n\
+             namespace Anneal.ForgeExportMetaTarget\nexport Lean (ParserDescr)\n\
+             end Anneal.ForgeExportMetaTarget\n",
+            "disallowed export target Lean.ParserDescr in Anneal.ForgeExportMetaTarget",
+        ),
+        // Lean's type system requires `Lean.Syntax` in the binder/type of any
+        // direct `_auto_<N>` or partial `autoParam` expression, so these hit
+        // the `Lean.Syntax` reference/declaration guards upfront while the
+        // `checkRepoExprAutoAndMeta` direct/malformed checks stay as
+        // defense in depth for untyped forged `.olean` expressions.
+        (
+            "Anneal.ForgeDirectAutoRef",
+            "prelude\nimport Init.Core\n\
+             def Anneal.ForgeDirectAutoRef.h (_x : 0 = 0 := by rfl) : Nat := 0\n\
+             def Anneal.ForgeDirectAutoRef.leak : Nat :=\n  \
+               (fun (_ : Lean.Syntax) => 0) Anneal.ForgeDirectAutoRef.h._auto_1\n",
+            "disallowed reference Lean.Syntax",
+        ),
+        (
+            "Anneal.ForgePartialAuto",
+            "prelude\nimport Init.Core\n\
+             def Anneal.ForgePartialAuto.bad : Lean.Syntax → Prop := @autoParam (0 = 0)\n",
+            "disallowed Lean.Syntax declaration",
+        ),
+        (
+            "Anneal.ForgeNameRef",
+            "prelude\nimport Init.Core\n\
+             def Anneal.ForgeNameRef.n : Lean.Name := Lean.Name.mkStr1 \"x\"\n",
+            "disallowed reference Lean.Name",
+        ),
+        (
+            "Anneal.ForgeMetaParserDescr",
+            "prelude\nimport Init.Core\n\
+             def Anneal.ForgeMetaParserDescr.pd : Type := Lean.ParserDescr\n",
+            "disallowed reference Lean.ParserDescr",
+        ),
+        (
+            "Anneal.ForgeDisallowedAutoTactic",
+            "prelude\nimport Init.Core\n\
+             def Anneal.ForgeDisallowedAutoTactic.f (_h : autoParam (0 = 0) Lean.Syntax.missing) : Nat := 0\n",
+            "disallowed autoParam tactic Lean.Syntax.missing",
+        ),
+    ] {
+        compile_forged_module(&mut checker, &forged_src, &theory_lib, &[], module, body);
+        let err = checker
+            .inspect(InspectorRequest::Audit {
+                trusted: vec!["Trusted".to_string()],
+                theory: vec!["Anneal".to_string(), module.to_string()],
+                module_tiers: BTreeMap::from([("Trusted".to_string(), TrustTier::Vetted)]),
+            })
+            .unwrap_err();
+        assert_eq!((err.code, err.phase.as_str()), (1, "audit"), "{module}: {err}");
+        assert!(
+            err.message.contains(expected_msg)
+                || (expected_msg == "disallowed syntax"
+                    && err.message.contains("unsupported syntax kind")),
+            "{module}: {err}"
+        );
+        let adm = checker.admitted_mut().unwrap();
+        adm.artifacts.remove(module);
+        adm.graph.remove(module);
+    }
+
+    compile_forged_module(
+        &mut checker,
+        &forged_src,
+        &theory_lib,
+        &[],
+        "Trusted.ForgeAutoHelper",
+        "prelude\nimport Init.Core\n\
+         def Trusted.ForgeAutoHelper.f (_h : 0 = 0 := by rfl) : Nat := 0\n",
+    );
+    let err_trusted_auto = checker
+        .inspect(InspectorRequest::Audit {
+            trusted: vec!["Trusted".to_string(), "Trusted.ForgeAutoHelper".to_string()],
+            theory: vec!["Anneal".to_string()],
+            module_tiers: BTreeMap::from([
+                ("Trusted".to_string(), TrustTier::Vetted),
+                ("Trusted.ForgeAutoHelper".to_string(), TrustTier::Vetted),
+            ]),
+        })
+        .unwrap_err();
+    assert_eq!((err_trusted_auto.code, err_trusted_auto.phase.as_str()), (1, "audit"));
+    assert!(err_trusted_auto.message.contains("disallowed autoParam helper"), "{err_trusted_auto}");
+    {
+        let adm = checker.admitted_mut().unwrap();
+        adm.artifacts.remove("Trusted.ForgeAutoHelper");
+        adm.graph.remove("Trusted.ForgeAutoHelper");
+    }
+
+    // Exercise remaining Pass-1 `validateRepoAliases` branches (`opaque`
+    // target outside `Trusted`, role-edge violation, and `unsafe` target)
+    // before Pass-2 `CorrespondenceAudit` remounts `checker`'s sandbox roots.
+    compile_forged_module(
+        &mut checker,
+        &forged_src,
+        &theory_lib,
+        &[],
+        "Trusted.WithOpaque",
+        "prelude\nimport Init.Core\nopaque Trusted.WithOpaque.opq : Nat := 0\n",
+    );
+    compile_forged_module(
+        &mut checker,
+        &forged_src,
+        &theory_lib,
+        &["Trusted.WithOpaque"],
+        "Anneal.ForgeExportOpaqueTarget",
+        "prelude\nimport Init.Core\nimport Trusted.WithOpaque\n\
+         namespace Anneal.ForgeExportOpaqueTarget\n\
+         export Trusted.WithOpaque (opq)\n\
+         end Anneal.ForgeExportOpaqueTarget\n",
+    );
+    let err_opq = checker
+        .inspect(InspectorRequest::Audit {
+            trusted: vec!["Trusted".to_string(), "Trusted.WithOpaque".to_string()],
+            theory: vec!["Anneal".to_string(), "Anneal.ForgeExportOpaqueTarget".to_string()],
+            module_tiers: BTreeMap::from([
+                ("Trusted".to_string(), TrustTier::Vetted),
+                ("Trusted.WithOpaque".to_string(), TrustTier::Vetted),
+            ]),
+        })
+        .unwrap_err();
+    assert_eq!((err_opq.code, err_opq.phase.as_str()), (1, "audit"), "{err_opq}");
+    assert!(
+        err_opq.message.contains("opaque export target Trusted.WithOpaque.opq"),
+        "{err_opq}"
+    );
+    {
+        let adm = checker.admitted_mut().unwrap();
+        adm.artifacts.remove("Anneal.ForgeExportOpaqueTarget");
+        adm.graph.remove("Anneal.ForgeExportOpaqueTarget");
+        adm.artifacts.remove("Trusted.WithOpaque");
+        adm.graph.remove("Trusted.WithOpaque");
+    }
+
+    compile_forged_module(
+        &mut checker,
+        &forged_src,
+        &theory_lib,
+        &[],
+        "Anneal.HelperTheory",
+        "prelude\nimport Init.Core\ndef Anneal.HelperTheory.val : Nat := 0\n",
+    );
+    for (label, trusted_mod, entry_expr, expected_sub) in [
+        (
+            "role_edge",
+            "Trusted.ForgeAliasEdge",
+            "(`Trusted.ForgeAliasEdge.bad, `Anneal.HelperTheory.val)",
+            "references Anneal.HelperTheory.val from non-Trusted module Anneal.HelperTheory",
+        ),
+        (
+            "unsafe_target",
+            "Trusted.ForgeAliasUnsafe",
+            "(`Trusted.ForgeAliasUnsafe.bad, `unsafeCast)",
+            "disallowed unsafe/partial/axiom export target unsafeCast",
+        ),
+    ] {
+        compile_forged_module(
+            &mut checker,
+            &forged_src,
+            &theory_lib,
+            &[],
+            trusted_mod,
+            "prelude\nimport Init.Core\ndef Trusted.dummyVal : Nat := 0\n",
+        );
+        let olean_path = theory_lib.join(format!("{}.olean", trusted_mod.replace('.', "/")));
+        let patch_src = forged_src.join(format!("patch_{label}.lean"));
+        fs::write(
+            &patch_src,
+            format!(
+                "import Lean\nopen Lean in\ndef main : IO Unit := do\n  \
+                   let p := System.FilePath.mk {:?}\n  \
+                   let (data, _) ← readModuleData p\n  \
+                   let e : Array EnvExtensionEntry := unsafe unsafeCast \
+                     (#[{entry_expr}] : Array (Name × Name))\n  \
+                   saveModuleData p `{trusted_mod} \
+                     {{ data with entries := data.entries.push (Lean.aliasExtension.name, e) }}\n",
+                olean_path.to_string_lossy()
+            ),
+        )
+        .unwrap();
+        checker
+            .process(
+                label,
+                &["-j1".into(), "-M2048".into(), "--run".into(), patch_src.to_string_lossy().into()],
+            )
+            .unwrap();
+        let err = checker
+            .inspect(InspectorRequest::Audit {
+                trusted: vec!["Trusted".to_string(), trusted_mod.to_string()],
+                theory: vec!["Anneal".to_string(), "Anneal.HelperTheory".to_string()],
+                module_tiers: BTreeMap::from([
+                    ("Trusted".to_string(), TrustTier::Vetted),
+                    (trusted_mod.to_string(), TrustTier::Vetted),
+                ]),
+            })
+            .unwrap_err();
+        assert_eq!((err.code, err.phase.as_str()), (1, "audit"), "{label}: {err}");
+        assert!(err.message.contains(expected_sub), "{label}: {err}");
+        let adm = checker.admitted_mut().unwrap();
+        adm.artifacts.remove(trusted_mod);
+        adm.graph.remove(trusted_mod);
+    }
+    {
+        let adm = checker.admitted_mut().unwrap();
+        adm.artifacts.remove("Anneal.HelperTheory");
+        adm.graph.remove("Anneal.HelperTheory");
+    }
+
+    // 4. Pass-2 `"correspondence-preflight"` and `"correspondence-audit"`
+    //    coverage for the same `Init.Meta*` / `autoParam` / `Lean.Syntax` /
+    //    alias isolation checks.
+    let corr_pf_dir = stage.join("src/corr-auto-pf");
+    fs::create_dir_all(&corr_pf_dir).unwrap();
+    let trusted_base_src = checker.modules()["Trusted"].clone();
+    for (label, body, expected_msg) in [
+        (
+            "corr_pf_init_meta",
+            "prelude\nimport Init.Core\nimport Init.Meta.Defs\ndef Anneal.CorrMeta.x : Nat := 0\n",
+            "disallowed sysroot import Init.Meta.Defs",
+        ),
+        (
+            "corr_pf_syntax_node",
+            "prelude\nimport Init.Core\ndef Anneal.CorrStx.x := Lean.Syntax.node\n",
+            "disallowed reference Lean.Syntax.node",
+        ),
+        (
+            "corr_pf_auto_param",
+            "prelude\nimport Init.Core\ndef Anneal.CorrAp.x (h : autoParam (0 = 0) y) : Nat := 0\n",
+            "disallowed reference autoParam",
+        ),
+    ] {
+        let p = corr_pf_dir.join(format!("{label}.lean"));
+        fs::write(&p, body).unwrap();
+        let err = checker
+            .inspect(InspectorRequest::CorrespondencePreflight {
+                search_path: vec![theory_lib.clone()],
+                trusted: vec!["Trusted".to_string()],
+                theory: Vec::new(),
+                vendor_miri: Vec::new(),
+                base_trusted_sources: vec![("Trusted".to_string(), trusted_base_src.clone())],
+                sources: vec![(format!("Anneal.{label}"), p)],
+            })
+            .unwrap_err();
+        assert_eq!(
+            (err.code, err.phase.as_str()),
+            (1, "correspondence-preflight"),
+            "{label}: {err}"
+        );
+        assert!(err.message.contains(expected_msg), "{label}: {err}");
+    }
+
+    let corr_mod = "Anneal.CorrForgedObfAuto";
+    compile_forged_module(
+        &mut checker,
+        &forged_src,
+        &theory_lib,
+        &[],
+        corr_mod,
+        "prelude\nimport Init.Core\n\
+         def Anneal.CorrForgedObfAuto.f._auto_1 : Lean.Syntax :=\n  \
+           let a := Lean.mkAtom \"x\"\n  a\n\
+         def Anneal.CorrForgedObfAuto.f (_h : autoParam (0 = 0) Anneal.CorrForgedObfAuto.f._auto_1) : Nat := 0\n",
+    );
+    let err_ca = checker
+        .inspect(InspectorRequest::CorrespondenceAudit {
+            search_path: vec![theory_lib.clone()],
+            trusted: vec!["Trusted".to_string()],
+            corr_trusted: Vec::new(),
+            theory: Vec::new(),
+            corr_theory: vec![corr_mod.to_string()],
+            vendor_miri: Vec::new(),
+            module_tiers: BTreeMap::from([("Trusted".to_string(), TrustTier::Vetted)]),
+        })
+        .unwrap_err();
+    assert_eq!((err_ca.code, err_ca.phase.as_str()), (1, "correspondence-audit"), "{err_ca}");
+    assert!(err_ca.message.contains("disallowed non-literal autoParam tactic"), "{err_ca}");
+    {
+        let adm = checker.admitted_mut().unwrap();
+        adm.artifacts.remove(corr_mod);
+        adm.graph.remove(corr_mod);
+    }
+
+    let corr_alias_mod = "Anneal.CorrForgedTrustedAlias";
+    compile_forged_module(
+        &mut checker,
+        &forged_src,
+        &theory_lib,
+        &[],
+        corr_alias_mod,
+        "prelude\nimport Init.Core\n\
+         namespace Anneal.Foo.Trusted\ndef fake : Nat := 0\nend Anneal.Foo.Trusted\n\
+         export Anneal.Foo (Trusted.fake)\n",
+    );
+    let err_ca_alias = checker
+        .inspect(InspectorRequest::CorrespondenceAudit {
+            search_path: vec![theory_lib.clone()],
+            trusted: vec!["Trusted".to_string()],
+            corr_trusted: Vec::new(),
+            theory: Vec::new(),
+            corr_theory: vec![corr_alias_mod.to_string()],
+            vendor_miri: Vec::new(),
+            module_tiers: BTreeMap::from([("Trusted".to_string(), TrustTier::Vetted)]),
+        })
+        .unwrap_err();
+    assert_eq!(
+        (err_ca_alias.code, err_ca_alias.phase.as_str()),
+        (1, "correspondence-audit"),
+        "{err_ca_alias}"
+    );
+    assert!(
+        err_ca_alias.message.contains("cannot export alias Trusted.fake in Trusted namespace"),
+        "{err_ca_alias}"
+    );
+}

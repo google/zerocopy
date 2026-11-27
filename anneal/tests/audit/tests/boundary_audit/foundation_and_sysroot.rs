@@ -6,8 +6,9 @@
 // This file may not be copied, modified, or distributed except according to
 // those terms.
 
-//! Foundation lock growth, Lean sysroot integrity, unused axioms, and
-//! alternate foundation theorem proofs.
+//! Foundation lock growth, Lean sysroot integrity, unused axioms,
+//! alternate foundation theorem proofs, and specification preflight and
+//! target-audit admission and namespace isolation.
 
 use super::*;
 
@@ -693,4 +694,771 @@ fn locked_lean_sha256_matches_foundation_lock_distributions() {
     sorted.sort_unstable();
     sorted.dedup();
     assert_eq!(keys, sorted, "runtime lib keys must be sorted and unique");
+}
+
+/// Verifies specification preflight and target-audit isolation across preflight
+/// (`"headers"`, `"spec-preflight"`) and compiled `.olean` `"target-audit"`:
+/// - (a) `%`-elaborator term syntax macros (`default_or_ofNonempty% unsafe`,
+///   `value_of%`, `type_of%`, `ensure_expected_type%`, `no_implicit_lambda%`).
+/// - (b) `Std.Async.*` / `Std.Http.*` / `Std.Internal` / `Std` imports (both
+///   direct `"headers"` and transitive `"target-audit"`), dotted/aliased
+///   `open`/`export` (`open Std.Internal (UV.Loop.alive)`,
+///   `open Std.Internal renaming UV.Loop.alive -> uvAlive`,
+///   `export Std.Internal (UV.Loop.alive)`, `open Std (Async)`,
+///   `open Std (Http)`, nested `open Std (Internal)`), and compiled
+///   `Spec.olean` `Lean.aliasExtension` export of `opaque` or direct
+///   `autoParam` dependency.
+/// - (c) Reserved kernel/TCB root namespaces (`Expected`, `Captured`,
+///   `SpecPreflight`, `TrustedBoundary`) in both `"spec-preflight"` and
+///   compiled `.olean` `"target-audit"`.
+#[test]
+fn rejects_spec_preflight_and_target_audit_admission_and_namespace_violations() {
+    use std::os::unix::fs::PermissionsExt;
+
+    use anneal_audit::{TargetAuditRequest, TargetBindings, TargetModule, TargetRole};
+
+    let checkout = repo_root();
+    let helper_fix = TempFixture::new(None);
+    let mut helper_chk = helper_fix.checker();
+    helper_chk.set_require_mir_wp(false);
+    helper_chk.run().unwrap();
+
+    let target_dir = helper_chk.stage().join("spec-audit-target-root");
+    for rel in [
+        "trusted/audit/TrustedBoundary.lean",
+        "trusted/audit/SpecPreflight.lean",
+        "trusted/audit/library-lock.json",
+        "trusted/lean/foundation-lock.json",
+        "trusted/lean/lean-toolchain",
+    ] {
+        fs::create_dir_all(target_dir.join(rel).parent().unwrap()).unwrap();
+        fs::copy(checkout.join(rel), target_dir.join(rel)).unwrap();
+    }
+    fs::create_dir_all(target_dir.join("trusted/lean")).unwrap();
+    fs::write(target_dir.join("trusted/lean/Trusted.lean"), HEADER).unwrap();
+
+    let inputs = target_dir.join("inputs");
+    fs::create_dir_all(&inputs).unwrap();
+    let h = sha256_bytes(b"spec admission regression fixture");
+
+    let model_src = "prelude\nimport Init.Data.BitVec.Basic\n\
+         import Init.Data.String.OrderInstances\nnamespace Trusted.MirSemantics\n\
+         structure Crate where\n  program : BitVec 8\n  specs : BitVec 8 → Prop\n\
+         def UnitTheorem (c : Crate) : Prop := c.program.toNat = 7 ∧ c.specs c.program\n\
+         end Trusted.MirSemantics\n\
+         namespace Model\n\
+         opaque extOpq : Nat\n\
+         end Model\n";
+    let cap_src = "prelude\nimport Model\ndef Captured.program : BitVec 8 := BitVec.ofNat 8 7\n";
+    let spec_ok_src =
+        "prelude\nimport Model\ndef Spec.specs (p : BitVec 8) : Prop := BitVec.and p p = p\n";
+    let exp_src = "prelude\nimport Captured\nimport Spec\ndef Expected.claim : Prop := \
+         Trusted.MirSemantics.UnitTheorem (Trusted.MirSemantics.Crate.mk Captured.program Spec.specs)\n";
+    let proof_src = "prelude\nimport Expected\nimport Init.Data.BitVec.Lemmas\n\
+         theorem Proof.verify : Expected.claim := And.intro rfl BitVec.and_self\n";
+
+    let build_req = |spec_body: &str| {
+        let mut modules = Vec::new();
+        for (name, role, src) in [
+            ("Model", TargetRole::Model, model_src),
+            ("Captured", TargetRole::Capture, cap_src),
+            ("Spec", TargetRole::Specification, spec_body),
+            ("Expected", TargetRole::Expected, exp_src),
+            ("Proof", TargetRole::Proof, proof_src),
+        ] {
+            let p = inputs.join(format!("{name}.lean"));
+            fs::write(&p, src).unwrap();
+            modules.push(TargetModule {
+                module: name.into(),
+                source: p,
+                expected_sha256: sha256_bytes(src.as_bytes()),
+                role,
+            });
+        }
+        TargetAuditRequest {
+            modules,
+            theorem_module: "Proof".into(),
+            theorem_name: "Proof.verify".into(),
+            expected_module: "Expected".into(),
+            expected_declaration: "Expected.claim".into(),
+            canonical_root: "Trusted.MirSemantics.UnitTheorem".into(),
+            subject_declaration: "Captured.program".into(),
+            specification_declaration: "Spec.specs".into(),
+            allow_sorry_in_proof: false,
+            bindings: TargetBindings {
+                request_sha256: h.clone(),
+                capture_sha256: h.clone(),
+                model_manifest_sha256: h.clone(),
+                specification_manifest_sha256: h.clone(),
+            },
+        }
+    };
+
+    // 1. Positive control: valid target with `Captured` in `.capture` and
+    //    `Expected` in `.expected` succeeds cleanly.
+    let base_req = build_req(spec_ok_src);
+    let checker_env = helper_fix.inner.checker_env().unwrap();
+    let mut tgt_chk =
+        cargo_anneal::Checker::new_with_env(&target_dir, None, checker_env.clone()).unwrap();
+    tgt_chk.run_target(&base_req).unwrap();
+
+    // 2. `"headers"` and `"spec-preflight"` negative checks for term-macro,
+    //    library-import, scoped `open`/`export`, and reserved-namespace rules.
+    let preflight_cases = [
+        (
+            "import_std_async_dns",
+            "headers",
+            "disallowed sysroot import Std.Async.DNS",
+            "prelude\nimport Model\nimport Std.Async.DNS\n\
+             def Spec.specs (p : BitVec 8) : Prop := BitVec.and p p = p\n",
+        ),
+        (
+            "import_std_async",
+            "headers",
+            "disallowed sysroot import Std.Async",
+            "prelude\nimport Model\nimport Std.Async\n\
+             def Spec.specs (p : BitVec 8) : Prop := BitVec.and p p = p\n",
+        ),
+        (
+            "import_std_http",
+            "headers",
+            "disallowed sysroot import Std.Http",
+            "prelude\nimport Model\nimport Std.Http\n\
+             def Spec.specs (p : BitVec 8) : Prop := BitVec.and p p = p\n",
+        ),
+        (
+            "import_std_internal",
+            "headers",
+            "disallowed sysroot import Std.Internal",
+            "prelude\nimport Model\nimport Std.Internal\n\
+             def Spec.specs (p : BitVec 8) : Prop := BitVec.and p p = p\n",
+        ),
+        (
+            "import_std",
+            "headers",
+            "disallowed sysroot import Std",
+            "prelude\nimport Model\nimport Std\n\
+             def Spec.specs (p : BitVec 8) : Prop := BitVec.and p p = p\n",
+        ),
+        (
+            "pct_default_or_ofNonempty",
+            "spec-preflight",
+            "disallowed syntax Lean.Parser.Term.defaultOrOfNonempty",
+            "prelude\nimport Model\n\
+             def Spec.specs (_p : BitVec 8) : Prop := (default_or_ofNonempty% unsafe : Nat) = 0\n",
+        ),
+        (
+            "pct_value_of",
+            "spec-preflight",
+            "disallowed syntax Lean.Parser.Term.valueOf",
+            "prelude\nimport Model\n\
+             def Spec.helper : Nat := 0\n\
+             def Spec.specs (_p : BitVec 8) : Prop := value_of% Spec.helper = 0\n",
+        ),
+        (
+            "pct_type_of",
+            "spec-preflight",
+            "disallowed syntax Lean.Parser.Term.typeOf",
+            "prelude\nimport Model\n\
+             def Spec.helper : Nat := 0\n\
+             def Spec.specs (_p : BitVec 8) : Prop := type_of% Spec.helper = Nat\n",
+        ),
+        (
+            "pct_ensure_expected_type",
+            "spec-preflight",
+            "disallowed syntax Lean.Parser.Term.ensureExpectedType",
+            "prelude\nimport Model\n\
+             def Spec.specs (_p : BitVec 8) : Prop := ensure_expected_type% \"ctx\" True\n",
+        ),
+        (
+            "pct_no_implicit_lambda",
+            "spec-preflight",
+            "disallowed syntax Lean.Parser.Term.noImplicitLambda",
+            "prelude\nimport Model\n\
+             def Spec.specs (_p : BitVec 8) : Prop := no_implicit_lambda% True\n",
+        ),
+        (
+            "open_only_uv",
+            "spec-preflight",
+            "disallowed open item Std.Internal.UV.Loop.alive",
+            "prelude\nimport Model\n\
+             open Std.Internal (UV.Loop.alive)\n\
+             def Spec.specs (p : BitVec 8) : Prop := BitVec.and p p = p\n",
+        ),
+        (
+            "open_renaming_uv",
+            "spec-preflight",
+            "disallowed open item Std.Internal.UV.Loop.alive",
+            "prelude\nimport Model\n\
+             open Std.Internal renaming UV.Loop.alive -> uvAlive\n\
+             def Spec.specs (p : BitVec 8) : Prop := BitVec.and p p = p\n",
+        ),
+        (
+            "export_uv",
+            "spec-preflight",
+            "disallowed export item Std.Internal.UV.Loop.alive",
+            "prelude\nimport Model\n\
+             export Std.Internal (UV.Loop.alive)\n\
+             def Spec.specs (p : BitVec 8) : Prop := BitVec.and p p = p\n",
+        ),
+        (
+            "open_std_async",
+            "spec-preflight",
+            "disallowed open item Std.Async",
+            "prelude\nimport Model\n\
+             open Std (Async)\n\
+             def Spec.specs (p : BitVec 8) : Prop := BitVec.and p p = p\n",
+        ),
+        (
+            "open_std_http",
+            "spec-preflight",
+            "disallowed open item Std.Http",
+            "prelude\nimport Model\n\
+             open Std (Http)\n\
+             def Spec.specs (p : BitVec 8) : Prop := BitVec.and p p = p\n",
+        ),
+        (
+            "open_std_internal_chained_uv",
+            "spec-preflight",
+            "disallowed open item Std.Internal.UV.Loop.alive",
+            "prelude\nimport Model\n\
+             open Std renaming Internal -> IntNs\n\
+             open IntNs (UV.Loop.alive)\n\
+             def Spec.specs (p : BitVec 8) : Prop := BitVec.and p p = p\n",
+        ),
+        (
+            "open_renaming_chained_export_uv",
+            "spec-preflight",
+            "disallowed export item Std.Internal.UV.Loop.alive",
+            "prelude\nimport Model\n\
+             open Std renaming Internal -> IntNs\n\
+             export IntNs (UV.Loop.alive)\n\
+             def Spec.specs (p : BitVec 8) : Prop := BitVec.and p p = p\n",
+        ),
+        (
+            "open_only_chained_scoped_tactic",
+            "spec-preflight",
+            "unsupported tactic",
+            "prelude\nimport Model\nimport Init.Data.String.OrderInstances\n\
+             open String (Internal)\n\
+             open Internal\n\
+             theorem Spec.t : True := by order\n\
+             def Spec.specs (p : BitVec 8) : Prop := BitVec.and p p = p\n",
+        ),
+        (
+            "export_chained_scoped_tactic",
+            "spec-preflight",
+            "unsupported tactic",
+            "prelude\nimport Model\nimport Init.Data.String.OrderInstances\n\
+             export String (Internal)\n\
+             open Internal\n\
+             theorem Spec.t : True := by order\n\
+             def Spec.specs (p : BitVec 8) : Prop := BitVec.and p p = p\n",
+        ),
+        (
+            "in_open_renaming_chained_open_uv",
+            "spec-preflight",
+            "disallowed open item Std.Internal.UV.Loop.alive",
+            "prelude\nimport Model\n\
+             open Std renaming Internal -> IntNs in\n\
+             open IntNs (UV.Loop.alive) in\n\
+             def Spec.bad : Nat := 0\n\
+             def Spec.specs (p : BitVec 8) : Prop := BitVec.and p p = p\n",
+        ),
+        (
+            "mutual_open_renaming_chained_export_uv",
+            "spec-preflight",
+            "disallowed export item Std.Internal.UV.Loop.alive",
+            "prelude\nimport Model\n\
+             mutual\n\
+             open Std renaming Internal -> IntNs\n\
+             export IntNs (UV.Loop.alive)\n\
+             end\n\
+             def Spec.specs (p : BitVec 8) : Prop := BitVec.and p p = p\n",
+        ),
+        (
+            "open_renaming_alias_expected",
+            "spec-preflight",
+            "cannot open renaming alias reserved namespace Expected",
+            "prelude\nimport Model\nnamespace Safe\ndef fakePred : Prop := True\nend Safe\n\
+             open Safe renaming fakePred -> Expected.claim\n\
+             def Spec.specs (p : BitVec 8) : Prop := BitVec.and p p = p\n",
+        ),
+        (
+            "open_renaming_alias_trusted",
+            "spec-preflight",
+            "cannot open renaming alias reserved namespace Trusted",
+            "prelude\nimport Model\nnamespace Safe\ndef fakePred : Prop := True\nend Safe\n\
+             open Safe renaming fakePred -> Trusted.MirSemantics.UnitTheorem\n\
+             def Spec.specs (p : BitVec 8) : Prop := BitVec.and p p = p\n",
+        ),
+        (
+            "open_renaming_alias_opt_param",
+            "spec-preflight",
+            "disallowed open renaming alias optParam",
+            "prelude\nimport Model\nnamespace Safe\ndef ok : Nat := 0\nend Safe\n\
+             open Safe renaming ok -> optParam\n\
+             def Spec.specs (p : BitVec 8) : Prop := BitVec.and p p = p\n",
+        ),
+        (
+            "open_renaming_alias_lean",
+            "spec-preflight",
+            "cannot open renaming alias forbidden namespace Lean",
+            "prelude\nimport Model\nnamespace Safe\ndef ok : Nat := 0\nend Safe\n\
+             open Safe renaming ok -> Lean.Parser.fake\n\
+             def Spec.specs (p : BitVec 8) : Prop := BitVec.and p p = p\n",
+        ),
+        (
+            "ns_expected",
+            "spec-preflight",
+            "cannot enter reserved namespace Expected",
+            "prelude\nimport Model\nnamespace Expected\ndef bad : Nat := 0\nend Expected\n\
+             def Spec.specs (p : BitVec 8) : Prop := BitVec.and p p = p\n",
+        ),
+        (
+            "ns_captured",
+            "spec-preflight",
+            "cannot enter reserved namespace Captured",
+            "prelude\nimport Model\nnamespace Captured\ndef bad : Nat := 0\nend Captured\n\
+             def Spec.specs (p : BitVec 8) : Prop := BitVec.and p p = p\n",
+        ),
+        (
+            "ns_spec_preflight",
+            "spec-preflight",
+            "cannot enter reserved namespace SpecPreflight",
+            "prelude\nimport Model\nnamespace SpecPreflight\ndef bad : Nat := 0\nend SpecPreflight\n\
+             def Spec.specs (p : BitVec 8) : Prop := BitVec.and p p = p\n",
+        ),
+        (
+            "ns_trusted_boundary",
+            "spec-preflight",
+            "cannot enter reserved namespace TrustedBoundary",
+            "prelude\nimport Model\nnamespace TrustedBoundary\ndef bad : Nat := 0\nend TrustedBoundary\n\
+             def Spec.specs (p : BitVec 8) : Prop := BitVec.and p p = p\n",
+        ),
+        (
+            "decl_root_expected",
+            "spec-preflight",
+            "reserved namespace",
+            "prelude\nimport Model\ndef Expected.bad : Nat := 0\n\
+             def Spec.specs (p : BitVec 8) : Prop := BitVec.and p p = p\n",
+        ),
+        (
+            "decl_root_captured",
+            "spec-preflight",
+            "reserved namespace",
+            "prelude\nimport Model\ndef Captured.bad : Nat := 0\n\
+             def Spec.specs (p : BitVec 8) : Prop := BitVec.and p p = p\n",
+        ),
+        (
+            "export_alias_expected",
+            "spec-preflight",
+            "cannot export alias reserved namespace Expected",
+            "prelude\nimport Model\nnamespace Safe.Expected\ndef claim : Prop := True\nend Safe.Expected\n\
+             export Safe (Expected.claim)\n\
+             def Spec.specs (p : BitVec 8) : Prop := BitVec.and p p = p\n",
+        ),
+        (
+            "export_alias_trusted",
+            "spec-preflight",
+            "cannot export alias reserved namespace Trusted",
+            "prelude\nimport Model\nnamespace Safe.Trusted\ndef fake : Nat := 0\nend Safe.Trusted\n\
+             export Safe (Trusted.fake)\n\
+             def Spec.specs (p : BitVec 8) : Prop := BitVec.and p p = p\n",
+        ),
+        (
+            "export_alias_io",
+            "spec-preflight",
+            "cannot export alias forbidden namespace IO",
+            "prelude\nimport Model\nnamespace Safe.IO\ndef println : Nat := 0\nend Safe.IO\n\
+             export Safe (IO.println)\n\
+             def Spec.specs (p : BitVec 8) : Prop := BitVec.and p p = p\n",
+        ),
+        (
+            "export_alias_opt_param",
+            "spec-preflight",
+            "disallowed export alias optParam",
+            "prelude\nimport Model\nexport Model (optParam)\n\
+             def Spec.specs (p : BitVec 8) : Prop := BitVec.and p p = p\n",
+        ),
+    ];
+    // Exercise the full `run_target` pipeline end-to-end on representative
+    // `"headers"` and `"spec-preflight"` rejections, then run the full
+    // `preflight_cases` matrix directly on the already-admitted `tgt_chk` so
+    // the test stays fast under CI's nextest timeout.
+    for (label, expected_phase, expected_msg, spec_body) in [preflight_cases[0], preflight_cases[5]]
+    {
+        let req = build_req(spec_body);
+        let mut chk =
+            cargo_anneal::Checker::new_with_env(&target_dir, None, checker_env.clone()).unwrap();
+        let err = chk.run_target(&req).unwrap_err();
+        assert_eq!((err.code, err.phase.as_str()), (1, expected_phase), "e2e {label}: {err}");
+        assert!(err.message.contains(expected_msg), "e2e {label}: {err}");
+    }
+
+    let tstage = tgt_chk.stage().to_path_buf();
+    let spec_pf_dir = tstage.join("src/spec-pf");
+    fs::create_dir_all(&spec_pf_dir).unwrap();
+    for (label, expected_phase, expected_msg, spec_body) in preflight_cases {
+        let p = spec_pf_dir.join(format!("{label}.lean"));
+        fs::write(&p, spec_body).unwrap();
+        let err = if expected_phase == "headers" {
+            tgt_chk.inspect_headers(&[("Spec".into(), p)]).unwrap_err()
+        } else {
+            tgt_chk.inspect_spec_preflight(&[("Spec".into(), p)]).unwrap_err()
+        };
+        assert_eq!((err.code, err.phase.as_str()), (1, expected_phase), "{label}: {err}");
+        assert!(err.message.contains(expected_msg), "{label}: {err}");
+    }
+
+    // 3. Compiled `.olean` `"target-audit"` checks (direct `.olean` audit via
+    //    `tgt_chk.inspect_target` with forged `Spec.olean` artifacts).
+    let spec_olean = tstage.join("lib/Spec.olean");
+    let clean_spec = tstage.join("CleanSpec.olean");
+    fs::copy(&spec_olean, &clean_spec).unwrap();
+    let forged_src = tstage.join("src/spec-forged");
+    let forged_lib = tstage.join("forged-lib");
+    fs::create_dir_all(&forged_lib).unwrap();
+    let tstage_lib = tstage.join("lib");
+
+    let lean_path_joined = env::join_paths([&tstage_lib, &forged_lib]).unwrap();
+    let mut compile_forged_target = |mod_name: &str, body: &str, out_path: &Path| {
+        let rel = mod_name.replace('.', "/");
+        let s_path = forged_src.join(format!("{rel}.lean"));
+        fs::create_dir_all(s_path.parent().unwrap()).unwrap();
+        fs::create_dir_all(out_path.parent().unwrap()).unwrap();
+        fs::write(&s_path, body).unwrap();
+        helper_chk
+            .process_with_path(
+                &format!("compile-spec-{mod_name}"),
+                &[
+                    "-j1".to_string(),
+                    "-M2048".to_string(),
+                    "-t0".to_string(),
+                    "-R".to_string(),
+                    forged_src.to_string_lossy().into_owned(),
+                    "-o".to_string(),
+                    out_path.to_string_lossy().into_owned(),
+                    s_path.to_string_lossy().into_owned(),
+                ],
+                Some(lean_path_joined.as_os_str()),
+            )
+            .unwrap();
+    };
+
+    let swap_spec_artifact = |chk: &mut cargo_anneal::Checker, src_olean: &Path| {
+        #[cfg(unix)]
+        if spec_olean.exists() {
+            let _ = fs::set_permissions(&spec_olean, fs::Permissions::from_mode(0o600));
+        }
+        fs::copy(src_olean, &spec_olean).unwrap();
+        let avail = BTreeMap::from([("olean", spec_olean.to_string_lossy().into_owned())]);
+        let arts = ModuleArtifacts::from_available(&avail, "test", String::new).unwrap();
+        chk.admitted_mut().unwrap().artifacts.insert("Spec".into(), arts);
+    };
+
+    // 3a. Forged `Spec.olean` reserving `Expected`, `Captured`,
+    //     `SpecPreflight`, or `TrustedBoundary`, exporting `Model.extOpq` via
+    //     `aliasExtension`, or referencing `autoParam` directly.
+    for (label, body, expected_msg) in [
+        (
+            "ta_spec_reserved_expected",
+            "prelude\nimport Model\n\
+             def Expected.badDecl : Nat := 0\n\
+             def Spec.specs (p : BitVec 8) : Prop := BitVec.and p p = p\n",
+            "cannot declare constant Expected.badDecl",
+        ),
+        (
+            "ta_spec_reserved_captured",
+            "prelude\nimport Model\n\
+             def Captured.badDecl : Nat := 0\n\
+             def Spec.specs (p : BitVec 8) : Prop := BitVec.and p p = p\n",
+            "cannot declare constant Captured.badDecl",
+        ),
+        (
+            "ta_spec_reserved_spec_preflight",
+            "prelude\nimport Model\n\
+             def SpecPreflight.badDecl : Nat := 0\n\
+             def Spec.specs (p : BitVec 8) : Prop := BitVec.and p p = p\n",
+            "cannot declare constant SpecPreflight.badDecl",
+        ),
+        (
+            "ta_spec_reserved_trusted_boundary",
+            "prelude\nimport Model\n\
+             def TrustedBoundary.badDecl : Nat := 0\n\
+             def Spec.specs (p : BitVec 8) : Prop := BitVec.and p p = p\n",
+            "cannot declare constant TrustedBoundary.badDecl",
+        ),
+        (
+            "ta_spec_export_opaque_alias",
+            "prelude\nimport Model\n\
+             export Model (extOpq)\n\
+             def Spec.specs (p : BitVec 8) : Prop := BitVec.and p p = p\n",
+            "references opaque declaration Model.extOpq",
+        ),
+    ] {
+        let forged_out = forged_lib.join(format!("{label}_Spec.olean"));
+        compile_forged_target("Spec", body, &forged_out);
+        swap_spec_artifact(&mut tgt_chk, &forged_out);
+        let err = tgt_chk.inspect_target(&base_req).unwrap_err();
+        assert_eq!((err.code, err.phase.as_str()), (1, "target-audit"), "{label}: {err}");
+        assert!(err.message.contains(expected_msg), "{label}: {err}");
+        swap_spec_artifact(&mut tgt_chk, &clean_spec);
+    }
+
+    // 3b. Forged transitive `Std.Async.Fake` library admitted into
+    //     `target-audit` with a `Spec.olean` importing it. Place
+    //     `Std/Async/Fake.olean` inside `tstage_lib` so the sandbox mounts it
+    //     cleanly.
+    let async_fake_olean = tstage_lib.join("Std/Async/Fake.olean");
+    compile_forged_target(
+        "Std.Async.Fake",
+        "prelude\nimport Init.Core\ndef Std.Async.Fake.x : Nat := 0\n",
+        &async_fake_olean,
+    );
+    let async_spec_olean = forged_lib.join("ta_async_Spec.olean");
+    compile_forged_target(
+        "Spec",
+        "prelude\nimport Model\nimport Std.Async.Fake\n\
+         def Spec.specs (p : BitVec 8) : Prop := BitVec.and p p = p\n",
+        &async_spec_olean,
+    );
+    let orig_spec_graph = tgt_chk.admitted().unwrap().graph["Spec"].clone();
+    {
+        let async_avail =
+            BTreeMap::from([("olean", async_fake_olean.to_string_lossy().into_owned())]);
+        let async_arts =
+            ModuleArtifacts::from_available(&async_avail, "test", String::new).unwrap();
+        let adm = tgt_chk.admitted_mut().unwrap();
+        adm.library_modules.insert("Std.Async.Fake".into());
+        adm.artifacts.insert("Std.Async.Fake".into(), async_arts);
+        adm.graph.insert(
+            "Std.Async.Fake".into(),
+            vec![ImportEdge {
+                module: "Init.Core".into(),
+                import_all: false,
+                is_exported: true,
+                is_meta: false,
+            }],
+        );
+        adm.graph.insert(
+            "Spec".into(),
+            vec![
+                ImportEdge {
+                    module: "Model".into(),
+                    import_all: false,
+                    is_exported: true,
+                    is_meta: false,
+                },
+                ImportEdge {
+                    module: "Std.Async.Fake".into(),
+                    import_all: false,
+                    is_exported: true,
+                    is_meta: false,
+                },
+            ],
+        );
+    }
+    swap_spec_artifact(&mut tgt_chk, &async_spec_olean);
+    let err_async = tgt_chk.inspect_target(&base_req).unwrap_err();
+    assert_eq!((err_async.code, err_async.phase.as_str()), (1, "target-audit"), "{err_async}");
+    assert!(
+        err_async.message.contains("disallowed transitive sysroot import Std.Async.Fake in target"),
+        "{err_async}"
+    );
+    {
+        let adm = tgt_chk.admitted_mut().unwrap();
+        adm.graph.insert("Spec".into(), orig_spec_graph.clone());
+        adm.library_modules.remove("Std.Async.Fake");
+        adm.artifacts.remove("Std.Async.Fake");
+        adm.graph.remove("Std.Async.Fake");
+    }
+    swap_spec_artifact(&mut tgt_chk, &clean_spec);
+
+    // 3c. Exercise every remaining `targetAudit` `Lean.aliasExtension` branch
+    //     plus pure `autoParam` references and allowlisted `.foundation`
+    //     exports (`System.Platform.getNumBits`, `Nat.add`).
+    let override_lib_olean = tstage_lib.join("Std/TestOverrideLib.olean");
+    compile_forged_target(
+        "Std.TestOverrideLib",
+        "prelude\nimport Init.Core\n\
+         namespace Std.TestOverrideLib\n\
+         @[extern \"anneal_test_ext\"] def extFn : Nat := 0\n\
+         def implTarget : Nat := 1\n\
+         @[implemented_by implTarget] def implFn : Nat := 0\n\
+         unsafe def unsafeFn : Nat := 0\n\
+         partial def partialFn (n : Nat) : Nat := partialFn n\n\
+         axiom unapprovedAx : Prop\n\
+         def autoHelper (_h : 0 = 0 := by rfl) : Nat := 0\n\
+         def bangHelper! : Nat := 0\n\
+         def okDef : Nat := 0\n\
+         end Std.TestOverrideLib\n",
+        &override_lib_olean,
+    );
+    {
+        let lib_avail =
+            BTreeMap::from([("olean", override_lib_olean.to_string_lossy().into_owned())]);
+        let lib_arts = ModuleArtifacts::from_available(&lib_avail, "test", String::new).unwrap();
+        let adm = tgt_chk.admitted_mut().unwrap();
+        adm.library_modules.insert("Std.TestOverrideLib".into());
+        adm.artifacts.insert("Std.TestOverrideLib".into(), lib_arts);
+        adm.graph.insert(
+            "Std.TestOverrideLib".into(),
+            vec![ImportEdge {
+                module: "Init.Core".into(),
+                import_all: false,
+                is_exported: true,
+                is_meta: false,
+            }],
+        );
+        adm.graph.insert(
+            "Spec".into(),
+            vec![
+                ImportEdge {
+                    module: "Model".into(),
+                    import_all: false,
+                    is_exported: true,
+                    is_meta: false,
+                },
+                ImportEdge {
+                    module: "Std.TestOverrideLib".into(),
+                    import_all: false,
+                    is_exported: true,
+                    is_meta: false,
+                },
+            ],
+        );
+    }
+    // Positive control: allowlisted `.foundation` exports (`Nat.add` and
+    // `System.Platform.getNumBits`) pass `target-audit`.
+    let ok_foundation_export_spec = forged_lib.join("ta_spec_export_foundation_ok_Spec.olean");
+    compile_forged_target(
+        "Spec",
+        "prelude\nimport Model\nimport Std.TestOverrideLib\n\
+         namespace MySpec\nexport System.Platform (getNumBits)\nexport Nat (add)\nend MySpec\n\
+         def Spec.specs (p : BitVec 8) : Prop := BitVec.and p p = p\n",
+        &ok_foundation_export_spec,
+    );
+    swap_spec_artifact(&mut tgt_chk, &ok_foundation_export_spec);
+    tgt_chk
+        .inspect_target(&base_req)
+        .expect("allowlisted foundation exports must pass target-audit");
+    swap_spec_artifact(&mut tgt_chk, &clean_spec);
+
+    for (label, body, expected_msg) in [
+        (
+            "ta_spec_export_extern_alias",
+            "prelude\nimport Model\nimport Std.TestOverrideLib\n\
+             export Std.TestOverrideLib (extFn)\n\
+             def Spec.specs (p : BitVec 8) : Prop := BitVec.and p p = p\n",
+            "references compiler override declaration Std.TestOverrideLib.extFn",
+        ),
+        (
+            "ta_spec_export_impl_by_alias",
+            "prelude\nimport Model\nimport Std.TestOverrideLib\n\
+             export Std.TestOverrideLib (implFn)\n\
+             def Spec.specs (p : BitVec 8) : Prop := BitVec.and p p = p\n",
+            "references compiler override declaration Std.TestOverrideLib.implFn",
+        ),
+        (
+            "ta_spec_export_unsafe_alias",
+            "prelude\nimport Model\nimport Std.TestOverrideLib\n\
+             export Std.TestOverrideLib (unsafeFn)\n\
+             def Spec.specs (p : BitVec 8) : Prop := BitVec.and p p = p\n",
+            "references unsafe declaration Std.TestOverrideLib.unsafeFn",
+        ),
+        (
+            "ta_spec_export_axiom_alias",
+            "prelude\nimport Model\nimport Std.TestOverrideLib\n\
+             export Std.TestOverrideLib (unapprovedAx)\n\
+             def Spec.specs (p : BitVec 8) : Prop := BitVec.and p p = p\n",
+            "references unapproved axiom Std.TestOverrideLib.unapprovedAx",
+        ),
+        (
+            "ta_spec_autoparam_ref",
+            "prelude\nimport Model\nimport Std.TestOverrideLib\n\
+             def Spec.useAuto := @Std.TestOverrideLib.autoHelper\n\
+             def Spec.specs (p : BitVec 8) : Prop :=\n  \
+               let _ := @Spec.useAuto\n  BitVec.and p p = p\n",
+            "cannot reference autoParam",
+        ),
+        (
+            "ta_spec_export_bad_alias_name",
+            "prelude\nimport Model\nimport Std.TestOverrideLib\n\
+             namespace MyHelperNs\ndef optParam : Nat := 0\nend MyHelperNs\n\
+             export MyHelperNs (optParam)\n\
+             def Spec.specs (p : BitVec 8) : Prop := BitVec.and p p = p\n",
+            "specification module Spec cannot export alias optParam",
+        ),
+        (
+            "ta_spec_export_trusted_root_alias",
+            "prelude\nimport Model\nimport Std.TestOverrideLib\n\
+             namespace Trusted\nexport Std.TestOverrideLib (okDef)\nend Trusted\n\
+             def Spec.specs (p : BitVec 8) : Prop := BitVec.and p p = p\n",
+            "cannot export alias Trusted.okDef in Trusted namespace",
+        ),
+        (
+            "ta_spec_export_reserved_root_alias",
+            "prelude\nimport Model\nimport Std.TestOverrideLib\n\
+             namespace Expected\nexport Std.TestOverrideLib (okDef)\nend Expected\n\
+             def Spec.specs (p : BitVec 8) : Prop := BitVec.and p p = p\n",
+            "cannot export alias Expected.okDef in reserved kernel namespace Expected",
+        ),
+    ] {
+        let forged_out = forged_lib.join(format!("{label}_Spec.olean"));
+        compile_forged_target("Spec", body, &forged_out);
+        swap_spec_artifact(&mut tgt_chk, &forged_out);
+        let err = tgt_chk.inspect_target(&base_req).unwrap_err();
+        assert_eq!((err.code, err.phase.as_str()), (1, "target-audit"), "{label}: {err}");
+        assert!(err.message.contains(expected_msg), "{label}: {err}");
+    }
+
+    for (label, alias_pair, expected_msg) in [
+        (
+            "ta_spec_export_partial_alias",
+            "(`MySpec.cleanPartial, `Std.TestOverrideLib.partialFn._unsafe_rec)",
+            "references partial declaration Std.TestOverrideLib.partialFn._unsafe_rec",
+        ),
+        (
+            "ta_spec_export_forbidden_alias",
+            "(`MySpec.cleanForbidden, `Std.TestOverrideLib.bangHelper!)",
+            "references disallowed declaration Std.TestOverrideLib.bangHelper!",
+        ),
+    ] {
+        let forged_out = forged_lib.join(format!("{label}_Spec.olean"));
+        fs::copy(&ok_foundation_export_spec, &forged_out).unwrap();
+        let patch_script = forged_src.join(format!("{label}.lean"));
+        fs::write(
+            &patch_script,
+            format!(
+                "import Lean\nopen Lean in\ndef main : IO Unit := do\n  \
+                   let p := System.FilePath.mk {:?}\n  \
+                   let (data, _) ← readModuleData p\n  \
+                   let e : Array EnvExtensionEntry := unsafe unsafeCast \
+                     (#[{alias_pair}] : Array (Name × Name))\n  \
+                   saveModuleData p `Spec \
+                     {{ data with entries := data.entries.push (Lean.aliasExtension.name, e) }}\n",
+                forged_out.to_string_lossy()
+            ),
+        )
+        .unwrap();
+        helper_chk
+            .process(
+                label,
+                &["-j1".into(), "-M2048".into(), "--run".into(), patch_script.to_string_lossy().into()],
+            )
+            .unwrap();
+        swap_spec_artifact(&mut tgt_chk, &forged_out);
+        let err = tgt_chk.inspect_target(&base_req).unwrap_err();
+        assert_eq!((err.code, err.phase.as_str()), (1, "target-audit"), "{label}: {err}");
+        assert!(err.message.contains(expected_msg), "{label}: {err}");
+    }
+    {
+        let adm = tgt_chk.admitted_mut().unwrap();
+        adm.graph.insert("Spec".into(), orig_spec_graph);
+        adm.library_modules.remove("Std.TestOverrideLib");
+        adm.artifacts.remove("Std.TestOverrideLib");
+        adm.graph.remove("Std.TestOverrideLib");
+    }
+    swap_spec_artifact(&mut tgt_chk, &clean_spec);
 }

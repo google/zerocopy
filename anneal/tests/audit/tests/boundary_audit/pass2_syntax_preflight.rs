@@ -388,6 +388,40 @@ fn rejects_scoped_syntax_and_extensions_in_preflight() {
              end Anneal\n",
             "cannot open namespace Lean.PostprocessTraces with scoped syntax or extensions",
         ),
+        (
+            "Anneal.ChainedExportScopedOpen",
+            "Anneal/ChainedExportScopedOpen.lean",
+            "prelude\nimport Init.Core\nimport Miri.ScopedExt\n\
+             namespace Anneal\n\
+             export Miri (ScopedOuter)\n\
+             open ScopedOuter.ScopedInner\n\
+             def f : Nat := 0\n\
+             end Anneal\n",
+            "cannot open namespace Miri.ScopedOuter.ScopedInner with scoped syntax or extensions",
+        ),
+        (
+            "Anneal.ChainedExportInScopedOpen",
+            "Anneal/ChainedExportInScopedOpen.lean",
+            "prelude\nimport Init.Core\nimport Miri.ScopedExt\n\
+             namespace Anneal\n\
+             export Miri (ScopedOuter)\n\
+             open ScopedOuter.ScopedInner in\n\
+             def f : Nat := 0\n\
+             end Anneal\n",
+            "cannot open namespace Miri.ScopedOuter.ScopedInner with scoped syntax or extensions",
+        ),
+        (
+            "Anneal.ChainedExportMutualScopedOpen",
+            "Anneal/ChainedExportMutualScopedOpen.lean",
+            "prelude\nimport Init.Core\nimport Miri.ScopedExt\n\
+             namespace Anneal\n\
+             mutual\n\
+             export Miri (ScopedOuter)\n\
+             open ScopedOuter.ScopedInner\n\
+             end\n\
+             end Anneal\n",
+            "cannot open namespace Miri.ScopedOuter.ScopedInner with scoped syntax or extensions",
+        ),
     ];
 
     for (module, rel, body, expected_msg) in cases {
@@ -463,6 +497,7 @@ fn rejects_pass2_syntax_and_scoped_extensions_in_run_correspondence_pipeline() {
                     scoped macro_rules | `(sneaky_macro) => `(0)\n\
                     end Miri.ScopedSyntax\n\
                     namespace Miri.ImportLean\n\
+                    abbrev Msg := Lean.MessageData\n\
                     def ok : Nat := 0\n\
                     end Miri.ImportLean\n";
     fs::write(&miri_src_path, miri_src).unwrap();
@@ -512,16 +547,18 @@ fn rejects_pass2_syntax_and_scoped_extensions_in_run_correspondence_pipeline() {
     let corr_trusted_path = fix.root.join("trusted/correspondence/Trusted/Correspondence.lean");
     let corr_proof_path = fix.root.join("correspondence/Anneal/MirCorrespondenceProof.lean");
 
-    let e2e_cases: &[(&str, &str)] = &[
+    let e2e_cases: &[(&str, &str, &str)] = &[
         (
-            // Valid compilable `Lean.MessageData` term using `m!`: passes
-            // foundation preflight as an identifier/app, so dropping
-            // `"correspondence-preflight"` would compile both Pass 2 modules.
+            // Valid compilable `Miri.ImportLean.Msg` (`Lean.MessageData`) term
+            // using `m!`: passes foundation preflight as an identifier/app, so
+            // dropping `"correspondence-preflight"` would compile both Pass 2
+            // modules.
             "prelude\nimport Init.Core\nimport Miri.ImportLean\n\
              import Trusted.Correspondence\n\
              namespace Anneal.MirCorrespondenceProof\n\
-             def f : Lean.MessageData := m! \"x\"\n\
+             def f : Miri.ImportLean.Msg := m! \"x\"\n\
              end Anneal.MirCorrespondenceProof\n",
+            "correspondence-preflight",
             "unsupported syntax kind Lean.termM!_",
         ),
         (
@@ -534,6 +571,7 @@ fn rejects_pass2_syntax_and_scoped_extensions_in_run_correspondence_pipeline() {
              namespace Anneal.MirCorrespondenceProof\n\
              def f : Nat := sneaky_macro\n\
              end Anneal.MirCorrespondenceProof\n",
+            "correspondence-preflight",
             "cannot open namespace Miri.ScopedSyntax with scoped syntax or extensions",
         ),
         (
@@ -548,6 +586,7 @@ fn rejects_pass2_syntax_and_scoped_extensions_in_run_correspondence_pipeline() {
              open Miri.ScopedSyntax\n\
              def f : Nat := sneaky_macro\n\
              end Anneal\n",
+            "correspondence-preflight",
             "cannot open namespace Miri.ScopedSyntax with scoped syntax or extensions",
         ),
         (
@@ -562,38 +601,39 @@ fn rejects_pass2_syntax_and_scoped_extensions_in_run_correspondence_pipeline() {
              open ScopedSyntax\n\
              def f : Nat := sneaky_macro\n\
              end Anneal\n",
+            "correspondence-preflight",
             "cannot open namespace Miri.ScopedSyntax with scoped syntax or extensions",
         ),
         (
-            // Decoy-namespace shadowing attack against sysroot
-            // `Lean.PostprocessTraces`: `Anneal.DecoyNs` declares unscoped
-            // `Anneal.Lean.PostprocessTraces` in Pass 1 `theory/`.
+            // Opening sysroot `Lean.PostprocessTraces` under `namespace Anneal`
+            // (with decoy `Anneal.Lean.PostprocessTraces` in Pass 1 `theory/`)
+            // is rejected during foundation `"preflight"` by the root `Lean.*`
+            // namespace ban before Pass 2 compilation begins; direct
+            // `"correspondence-preflight"` scoped-namespace precedence is
+            // covered by `rejects_scoped_syntax_and_extensions_in_preflight`.
             "prelude\nimport Init.Core\nimport Miri.ImportLean\n\
              import Trusted.Correspondence\n\
              namespace Anneal\n\
              open Lean.PostprocessTraces\n\
              def f : Nat := 0\n\
              end Anneal\n",
-            "cannot open namespace Lean.PostprocessTraces with scoped syntax or extensions",
+            "preflight",
+            "cannot open forbidden namespace Lean.PostprocessTraces",
+        ),
+        (
+            // Pass 2 sends foundation `"preflight"` without
+            // `allow_local_semireducible`, so the Pass 1 `theory/` exception is
+            // rejected there, before `"correspondence-preflight"` runs.
+            "prelude\nimport Init.Core\nimport Miri.ImportLean\n\
+             import Trusted.Correspondence\n\
+             attribute [local semireducible] _root_.Nat.bitwise in\n\
+             def f : Nat := 0\n",
+            "preflight",
+            "only `open` and `variable` commands are permitted on the LHS of `in`",
         ),
     ];
-    // Pass 2 sends foundation `"preflight"` without
-    // `allow_local_semireducible`, so the Pass 1 `theory/` exception is
-    // rejected there, before `"correspondence-preflight"` runs.
-    let local_semireducible_case = (
-        "prelude\nimport Init.Core\nimport Miri.ImportLean\n\
-         import Trusted.Correspondence\n\
-         attribute [local semireducible] _root_.Nat.bitwise in\n\
-         def f : Nat := 0\n",
-        "only `open` and `variable` commands are permitted on the LHS of `in`",
-        "preflight",
-    );
-    let cases = e2e_cases
-        .iter()
-        .map(|&(src, msg)| (src, msg, "correspondence-preflight"))
-        .chain(std::iter::once(local_semireducible_case));
 
-    for (proof_src, expected_msg, expected_phase) in cases {
+    for (proof_src, expected_phase, expected_msg) in e2e_cases {
         // Run Pass 1 cleanly before placing Pass 2 directories in the checkout.
         let _ = fs::remove_dir_all(fix.root.join("trusted/correspondence"));
         let _ = fs::remove_dir_all(fix.root.join("correspondence"));
@@ -624,7 +664,7 @@ fn rejects_pass2_syntax_and_scoped_extensions_in_run_correspondence_pipeline() {
             )
             .unwrap_err();
         assert_eq!(err.code, 1, "expected policy exit 1: {err}");
-        assert_eq!(err.phase, expected_phase, "unexpected phase: {err}");
+        assert_eq!(err.phase, *expected_phase, "unexpected phase for error: {err}");
         assert!(err.message.contains(expected_msg), "expected `{expected_msg}`, got: {err}");
         assert!(
             !checker.stage().join("lib/Trusted/Correspondence.olean").exists(),

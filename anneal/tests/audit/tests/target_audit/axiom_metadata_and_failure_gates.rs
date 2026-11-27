@@ -310,7 +310,25 @@ fn rejects_compiled_expected_true_and_namespace_shadowing() {
         "prelude\nimport Model\ndef Spec.specs (p : BitVec 8) : Prop := BitVec.and p p = p\ndef Expected.Trusted.MirSemantics.UnitTheorem (_ : Trusted.MirSemantics.Crate) : Prop := True\n");
     f.set("Expected", TargetRole::Expected,
         "prelude\nimport Captured\nimport Spec\nnamespace Expected\ndef claim : Prop := Trusted.MirSemantics.UnitTheorem (Trusted.MirSemantics.Crate.mk Captured.program Spec.specs)\n");
-    f.reject("Expected body differs");
+    // `Spec` attempting to declare under reserved `Expected.*` is now blocked
+    // upfront in `"spec-preflight"`.
+    f.reject("cannot declare in reserved namespace Expected");
+
+    // Defense in depth: even when `Expected` itself shadows
+    // `Trusted.MirSemantics.UnitTheorem` under `Expected.*`, `"target-audit"`
+    // still rejects the mismatched claim body.
+    let mut f_exp = Fixture::new(proof);
+    f_exp.set(
+        "Captured",
+        TargetRole::Capture,
+        "prelude\nimport Model\ndef Captured.program : BitVec 8 := BitVec.ofNat 8 8\n",
+    );
+    f_exp.set(
+        "Expected",
+        TargetRole::Expected,
+        "prelude\nimport Captured\nimport Spec\nnamespace Expected\ndef Trusted.MirSemantics.UnitTheorem (_ : Trusted.MirSemantics.Crate) : Prop := True\ndef claim : Prop := Trusted.MirSemantics.UnitTheorem (Trusted.MirSemantics.Crate.mk Captured.program Spec.specs)\n",
+    );
+    f_exp.reject("Expected body differs");
 }
 
 #[test]

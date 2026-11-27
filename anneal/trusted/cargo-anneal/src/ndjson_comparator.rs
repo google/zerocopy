@@ -195,6 +195,7 @@ const RESERVED_KERNEL_ROOTS: &[&str] = &[
     "Lean", "Init", "Std", "Lake", "LeanExport", "LeanIR", "System", "IO", "Task", "Thunk",
     "Unit", "PUnit", "Empty", "PEmpty", "True", "False", "And", "Or", "Not", "Iff", "Exists",
     "Sigma", "PSigma", "Decidable", "Nonempty", "Ordering", "Rat", "Except", "EStateM", "StateM",
+    "Expected", "Captured", "SpecPreflight", "TrustedBoundary",
 ];
 
 /// Kernel-accelerated constant names in Lean's C++ reducer (`reduce_nat` and
@@ -667,13 +668,18 @@ impl CanonicalArena {
     }
 
     /// Strip Lean's structural `_private.<module>.<idx>` prefix and any
-    /// `_root_` prefix.
+    /// leading `_root_` prefixes.
     fn user_parts<'a, 'b>(parts: &'b [NamePart<'a>]) -> &'b [NamePart<'a>] {
-        let after_private = Self::parts_without_private(parts);
-        if after_private.first() == Some(&NamePart::Str("_root_")) {
-            &after_private[1..]
-        } else {
-            after_private
+        let mut cur = parts;
+        loop {
+            while cur.first() == Some(&NamePart::Str("_root_")) {
+                cur = &cur[1..];
+            }
+            let next = Self::parts_without_private(cur);
+            if next.len() == cur.len() {
+                break cur;
+            }
+            cur = next;
         }
     }
 
@@ -786,6 +792,11 @@ impl CanonicalArena {
         )
     }
 
+    fn is_auto_param_const(&self, cid: CanonNameId) -> bool {
+        let parts = self.name_parts(cid);
+        matches!(Self::user_parts(&parts), [NamePart::Str("autoParam")])
+    }
+
     fn is_forbidden_spec_transitive_const(&self, cid: CanonNameId) -> bool {
         let parts = self.name_parts(cid);
         let u = Self::user_parts(&parts);
@@ -819,6 +830,8 @@ impl CanonicalArena {
             || has_prefix2("Lean", "version")
             || has_prefix2("Init", "System")
             || has_prefix3("Std", "Internal", "UV")
+            || has_prefix2("Std", "Async")
+            || has_prefix2("Std", "Http")
             || matches!(u.first(), Some(NamePart::Str("repeatM")))
         {
             return true;
@@ -3068,7 +3081,41 @@ pub fn verify_ndjson_structure(
                 ));
             }
             let root = arena.user_name_root(cid);
-            if RESERVED_KERNEL_ROOTS.contains(&root)
+            let is_capture_parts = |parts: &[NamePart<'_>]| {
+                req.target_const_origins
+                    .get(&CanonicalArena::encode_parts(parts))
+                    .is_some_and(|o| o.role == TargetOriginRole::Capture)
+            };
+            let is_expected_parts = |parts: &[NamePart<'_>]| {
+                req.target_const_origins
+                    .get(&CanonicalArena::encode_parts(parts))
+                    .is_some_and(|o| o.role == TargetOriginRole::Expected)
+            };
+            if root == "Captured" {
+                if !origin.is_some_and(|o| o.role == TargetOriginRole::Capture)
+                    && !arena.is_generated_eq_helper(cid, ci, &is_capture_parts)
+                {
+                    return Err(Failure::policy(
+                        phase,
+                        format!(
+                            "{label} declares constant `{}` under reserved root `Captured` outside capture modules",
+                            arena.name_str(cid)
+                        ),
+                    ));
+                }
+            } else if root == "Expected" {
+                if !origin.is_some_and(|o| o.role == TargetOriginRole::Expected)
+                    && !arena.is_generated_eq_helper(cid, ci, &is_expected_parts)
+                {
+                    return Err(Failure::policy(
+                        phase,
+                        format!(
+                            "{label} declares constant `{}` under reserved root `Expected` outside expected modules",
+                            arena.name_str(cid)
+                        ),
+                    ));
+                }
+            } else if RESERVED_KERNEL_ROOTS.contains(&root)
                 && !arena.is_generated_eq_helper(cid, ci, &is_sysroot_parts)
             {
                 return Err(Failure::policy(
@@ -3255,7 +3302,10 @@ pub fn verify_ndjson_structure(
     for &cid in &spec_roots_set {
         let deps = arena.collect_const_deps(&expected_cone.constants[&cid], false);
         for dep in deps {
-            if arena.is_lean_syntax_const(dep) || arena.is_panic_spec_const(dep) {
+            if arena.is_lean_syntax_const(dep)
+                || arena.is_panic_spec_const(dep)
+                || arena.is_auto_param_const(dep)
+            {
                 return Err(Failure::policy(
                     phase,
                     format!(
@@ -4660,8 +4710,8 @@ mod tests {
         assert_eq!(err.code, 1);
         assert!(err.message.contains("dbgTrace"), "{err}");
 
-        // 2. `_root_.Proof.evil` in `expected_cone` must be caught by
-        // `user_name_root`.
+        // 2. `_root_.Proof.evil` and multi-`_root_` / `_private` combinations
+        // in `expected_cone` must be caught by `user_name_root` / `user_parts`.
         let rooted_expected = format!(
             "{expected_s}{}",
             r#"{"in":94,"str":{"pre":0,"str":"_root_"}}
@@ -4671,6 +4721,23 @@ mod tests {
 "#
         );
         let err = run_compare(&init_s, &rooted_expected, &proof_s, false).unwrap_err();
+        assert_eq!(err.code, 1);
+        assert!(err.message.contains("forbidden proof-origin constant"), "{err}");
+
+        let multi_rooted_expected = format!(
+            "{expected_s}{}",
+            r#"{"in":90,"str":{"pre":0,"str":"_root_"}}
+{"in":91,"str":{"pre":90,"str":"_root_"}}
+{"in":92,"str":{"pre":91,"str":"_private"}}
+{"in":93,"str":{"pre":92,"str":"Spec"}}
+{"in":94,"num":{"pre":93,"i":0}}
+{"in":95,"str":{"pre":94,"str":"_root_"}}
+{"in":96,"str":{"pre":95,"str":"Proof"}}
+{"in":97,"str":{"pre":96,"str":"evil"}}
+{"def":{"all":[97],"hints":"abbrev","levelParams":[],"name":97,"safety":"safe","type":10,"value":10}}
+"#
+        );
+        let err = run_compare(&init_s, &multi_rooted_expected, &proof_s, false).unwrap_err();
         assert_eq!(err.code, 1);
         assert!(err.message.contains("forbidden proof-origin constant"), "{err}");
     }
@@ -4955,12 +5022,40 @@ mod tests {
             let bad_req = default_req(false, &sysroot, &bad);
             let err = run_compare_with(&init_s, &expected_s, &proof_s, &bad_req).unwrap_err();
             assert_eq!(err.code, 1, "{name}: {err}");
-            // A non-model `Trusted.*` origin is already refused by the
-            // `Trusted` isolation check.
+            // A non-model `Trusted.*` or non-capture `Captured.*` origin is
+            // already refused by the respective reserved-root isolation check.
             assert!(
                 err.message.contains("incorrect canonical input origin")
-                    || (name.starts_with("Trusted.") && err.message.contains("outside model modules")),
+                    || (name.starts_with("Trusted.")
+                        && err.message.contains("outside model modules"))
+                    || (name.starts_with("Captured.")
+                        && err.message.contains("outside capture modules"))
+                    || (name.starts_with("Expected.")
+                        && err.message.contains("outside expected modules")),
                 "{name}: {err}"
+            );
+        }
+
+        // 6b. Reserved `SpecPreflight` / `TrustedBoundary` roots in target
+        // exports fail closed under `RESERVED_KERNEL_ROOTS`.
+        for reserved_root in ["SpecPreflight", "TrustedBoundary"] {
+            let bad_exp = format!(
+                "{expected_s}{{\"in\":43,\"str\":{{\"pre\":0,\"str\":\"{reserved_root}\"}}}}\n\
+                 {{\"in\":44,\"str\":{{\"pre\":43,\"str\":\"x\"}}}}\n\
+                 {{\"def\":{{\"all\":[44],\"hints\":\"abbrev\",\"levelParams\":[],\"name\":44,\"safety\":\"safe\",\"type\":10,\"value\":10}}}}\n"
+            );
+            let mut bad_origins = default_origins();
+            bad_origins.insert(
+                format!("{reserved_root}.x"),
+                origin("Spec", TargetOriginRole::Specification),
+            );
+            let bad_req = default_req(false, &sysroot, &bad_origins);
+            let err = run_compare_with(&init_s, &bad_exp, &proof_s, &bad_req).unwrap_err();
+            assert_eq!(err.code, 1, "{reserved_root}: {err}");
+            assert!(
+                err.message
+                    .contains(&format!("under reserved kernel/sysroot root `{reserved_root}`")),
+                "{reserved_root}: {err}"
             );
         }
 
@@ -5062,6 +5157,67 @@ mod tests {
             err.message.contains("Contract.instFoo") && err.message.contains("cannot reference"),
             "{err}"
         );
+
+        // 4. Direct `autoParam` references in specification constants fail
+        // closed (parity with `TrustedBoundary.lean` Phase 1).
+        let mut sysroot_ap = sysroot.clone();
+        sysroot_ap.insert("autoParam".to_owned(), "Init.Prelude".to_owned());
+        let ap_expected = format!(
+            "{expected_s}{}",
+            r#"{"il":55,"succ":0}
+{"ie":54,"sort":55}
+{"in":55,"str":{"pre":0,"str":"autoParam"}}
+{"ie":55,"const":{"name":55,"us":[]}}
+{"def":{"all":[55],"hints":"abbrev","levelParams":[],"name":55,"safety":"safe","type":54,"value":10}}
+{"in":56,"str":{"pre":0,"str":"Contract"}}
+{"in":57,"str":{"pre":56,"str":"mySwap"}}
+{"def":{"all":[57],"hints":"abbrev","levelParams":[],"name":57,"safety":"safe","type":10,"value":55}}
+"#
+        );
+        let mut ap_origins = default_origins();
+        ap_origins
+            .insert("Contract.mySwap".to_owned(), origin("Spec", TargetOriginRole::Specification));
+        let req = default_req(false, &sysroot_ap, &ap_origins);
+        let err =
+            run_compare_pinned(&init_s, &ap_expected, &ap_expected, &proof_s, &req).unwrap_err();
+        assert_eq!(err.code, 1, "{err}");
+        assert!(
+            err.message.contains("Contract.mySwap")
+                && err.message.contains("cannot reference `autoParam`"),
+            "{err}"
+        );
+
+        // 5. Transitive `Std.Async` and `Std.Http` constants in specification
+        // closures fail closed (parity with `TrustedBoundary.lean`).
+        for (ns, leaf) in [("Async", "getAddrInfo"), ("Http", "get")] {
+            let fq = format!("Std.{ns}.{leaf}");
+            let mut sysroot_net = sysroot.clone();
+            sysroot_net.insert(fq.clone(), format!("Std.{ns}.Client"));
+            let net_expected = format!(
+                "{expected_s}\
+{{\"in\":60,\"str\":{{\"pre\":0,\"str\":\"Std\"}}}}\n\
+{{\"in\":61,\"str\":{{\"pre\":60,\"str\":\"{ns}\"}}}}\n\
+{{\"in\":62,\"str\":{{\"pre\":61,\"str\":\"{leaf}\"}}}}\n\
+{{\"ie\":62,\"const\":{{\"name\":62,\"us\":[]}}}}\n\
+{{\"def\":{{\"all\":[62],\"hints\":\"abbrev\",\"levelParams\":[],\"name\":62,\"safety\":\"safe\",\"type\":10,\"value\":10}}}}\n\
+{{\"in\":63,\"str\":{{\"pre\":0,\"str\":\"Contract\"}}}}\n\
+{{\"in\":64,\"str\":{{\"pre\":63,\"str\":\"netSpec\"}}}}\n\
+{{\"def\":{{\"all\":[64],\"hints\":\"abbrev\",\"levelParams\":[],\"name\":64,\"safety\":\"safe\",\"type\":10,\"value\":62}}}}\n"
+            );
+            let mut net_origins = default_origins();
+            net_origins.insert(
+                "Contract.netSpec".to_owned(),
+                origin("Spec", TargetOriginRole::Specification),
+            );
+            let req = default_req(false, &sysroot_net, &net_origins);
+            let err = run_compare_pinned(&init_s, &net_expected, &net_expected, &proof_s, &req)
+                .unwrap_err();
+            assert_eq!(err.code, 1, "{fq}: {err}");
+            assert!(
+                err.message.contains("forbidden constant") && err.message.contains(&fq),
+                "{fq}: {err}"
+            );
+        }
     }
 
     #[test]
