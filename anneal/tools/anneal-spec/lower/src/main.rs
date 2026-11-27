@@ -6,7 +6,7 @@
 // This file may not be copied, modified, or distributed except according to
 // those terms.
 
-//! `anneal-spec-lower`: writes or checks `Spec.lean` and `spec_span_map.json`.
+//! `anneal-spec-lower`: writes or checks lowered specification modules.
 
 use std::{
     fs,
@@ -14,21 +14,41 @@ use std::{
     process::ExitCode,
 };
 
-use anneal_spec_lower::{lower, module_path, Source};
+use anneal_spec_lower::{list_targets, lower_with, module_path, Format, Options, Source};
 
 const USAGE: &str = "\
-usage: anneal-spec-lower [--src-root DIR] (--out-dir DIR | --check DIR) FILE...
+usage: anneal-spec-lower [--src-root DIR] [SELECTION] [--format v1|v2-module]
+                         [--crate-slug S] (--out-dir DIR | --check DIR) FILE...
+       anneal-spec-lower [--src-root DIR] --list-targets FILE...
 
 Lowers the `anneal::spec` items and `anneal::external_spec!` blocks in FILE...
-to one specification unit.
+to one specification unit. Every item in FILE... is checked, selected or not.
 
-  --src-root DIR  Resolve FILE relative to DIR and derive each file's module
-                  path from its location (`a/b.rs` is `a::b`). Without it,
-                  FILE paths are used as given and inline items belong to the
-                  crate root.
-  --out-dir DIR   Write DIR/Spec.lean and DIR/spec_span_map.json.
-  --check DIR     Exit 1 unless DIR/Spec.lean and DIR/spec_span_map.json
-                  already match the lowering byte for byte.
+  --src-root DIR    Resolve FILE relative to DIR and derive each file's module
+                    path from its location (`a/b.rs` is `a::b`). Without it,
+                    FILE paths are used as given and inline items belong to
+                    the crate root.
+  --target PATH     Lower only the item with `rust-path-v1` path PATH (no
+                    scheme prefix). Repeatable. Selecting lowers only the
+                    `#[anneal::pure]` helpers the selected items reach.
+  --claim C         Lower only the items in claim C: those with
+                    `claim = \"C\"`, or the one item whose derived singleton
+                    claim is C. With --target, every target must be in C.
+  --format v1       (Default.) Write Spec.lean (namespace `Spec`) and
+                    spec_span_map.json.
+  --format v2-module
+                    Write only Specs/S/C.lean (namespace `Specs.S.C`), a
+                    Lean module that records no Rust source positions.
+                    Needs --crate-slug S and --claim C.
+  --crate-slug S    The crate component of the v2-module namespace.
+  --out-dir DIR     Write the output files under DIR.
+  --check DIR       Exit 1 unless the output files under DIR already match
+                    the lowering byte for byte.
+  --list-targets    Print every item FILE... specify as a JSON array of
+                    {\"target\", \"claim\", \"file\", \"kind\"} objects
+                    sorted by target, where kind is \"inline\" or
+                    \"external\". Clauses are not type-checked, and FILE...
+                    may specify no items.
 
 Exit status: 0 on success, 1 on specification errors or a failed --check,
 2 on usage or I/O errors.";
@@ -36,6 +56,7 @@ Exit status: 0 on success, 1 on specification errors or a failed --check,
 enum Mode {
     Write(PathBuf),
     Check(PathBuf),
+    List,
 }
 
 fn main() -> ExitCode {
@@ -52,6 +73,8 @@ fn run() -> Result<ExitCode, String> {
     let mut args = std::env::args().skip(1);
     let mut src_root: Option<PathBuf> = None;
     let mut mode = None;
+    let mut opts = Options::default();
+    let mut format_given = false;
     let mut files = Vec::new();
     while let Some(a) = args.next() {
         let mut value =
@@ -62,13 +85,41 @@ fn run() -> Result<ExitCode, String> {
                 return Ok(ExitCode::SUCCESS);
             }
             "--src-root" => src_root = Some(value("--src-root")?.into()),
+            "--out-dir" | "--check" | "--list-targets" if mode.is_some() => {
+                return Err(format!(
+                    "only one of --out-dir, --check, or --list-targets may be given\n\n{USAGE}"
+                ));
+            }
             "--out-dir" => mode = Some(Mode::Write(value("--out-dir")?.into())),
             "--check" => mode = Some(Mode::Check(value("--check")?.into())),
+            "--list-targets" => mode = Some(Mode::List),
+            "--target" => opts.targets.push(value("--target")?),
+            "--claim" => opts.claim = Some(value("--claim")?),
+            "--crate-slug" => opts.crate_slug = Some(value("--crate-slug")?),
+            "--format" => {
+                format_given = true;
+                opts.format = match value("--format")?.as_str() {
+                    "v1" => Format::V1,
+                    "v2-module" => Format::V2Module,
+                    f => return Err(format!("unknown format `{f}`\n\n{USAGE}")),
+                }
+            }
             f if f.starts_with('-') => return Err(format!("unknown option `{f}`\n\n{USAGE}")),
             f => files.push(f.to_string()),
         }
     }
-    let mode = mode.ok_or_else(|| format!("one of --out-dir or --check is required\n\n{USAGE}"))?;
+    let mode = mode.ok_or_else(|| {
+        format!("one of --out-dir, --check, or --list-targets is required\n\n{USAGE}")
+    })?;
+    if matches!(mode, Mode::List)
+        && (!opts.targets.is_empty()
+            || opts.claim.is_some()
+            || opts.crate_slug.is_some()
+            || format_given)
+    {
+        return Err(format!("--list-targets takes no selection or format options\n\n{USAGE}"));
+    }
+    opts.validate().map_err(|e| format!("{e}\n\n{USAGE}"))?;
     if files.is_empty() {
         return Err(format!("no input files\n\n{USAGE}"));
     }
@@ -81,31 +132,54 @@ fn run() -> Result<ExitCode, String> {
         let module = if src_root.is_some() { module_path(f) } else { Vec::new() };
         sources.push(Source { label: f.clone(), text, module });
     }
-    let lowered = match lower(&sources) {
-        Ok(l) => l,
-        Err(errors) => {
-            for e in &errors {
-                eprint!("{}", e.render(&sources));
-            }
-            eprintln!("anneal-spec-lower: {} error(s)", errors.len());
-            return Ok(ExitCode::from(1));
+    let fail = |errors: Vec<anneal_spec_lower::LowerError>| {
+        for e in &errors {
+            eprint!("{}", e.render(&sources));
         }
+        eprintln!("anneal-spec-lower: {} error(s)", errors.len());
+        Ok(ExitCode::from(1))
     };
-    let outputs = [("Spec.lean", &lowered.spec_lean), ("spec_span_map.json", &lowered.span_map)];
+    if matches!(mode, Mode::List) {
+        let targets = match list_targets(&sources) {
+            Ok(t) => t,
+            Err(errors) => return fail(errors),
+        };
+        let json: Vec<_> = targets
+            .iter()
+            .map(|t| {
+                serde_json::json!({
+                    "target": t.target,
+                    "claim": t.claim,
+                    "file": sources[t.file].label,
+                    "kind": if t.external { "external" } else { "inline" },
+                })
+            })
+            .collect();
+        let text = serde_json::to_string_pretty(&json).expect("target list serializes");
+        println!("{text}");
+        return Ok(ExitCode::SUCCESS);
+    }
+    let lowered = match lower_with(&sources, &opts) {
+        Ok(l) => l,
+        Err(errors) => return fail(errors),
+    };
     match mode {
         Mode::Write(dir) => {
-            fs::create_dir_all(&dir)
-                .map_err(|e| format!("cannot create {}: {e}", dir.display()))?;
-            for (name, bytes) in outputs {
-                write(&dir.join(name), bytes)?;
+            for (name, bytes) in lowered.outputs() {
+                let path = dir.join(name);
+                if let Some(parent) = path.parent() {
+                    fs::create_dir_all(parent)
+                        .map_err(|e| format!("cannot create {}: {e}", parent.display()))?;
+                }
+                write(&path, bytes)?;
             }
             Ok(ExitCode::SUCCESS)
         }
         Mode::Check(dir) => {
             let mut stale = false;
-            for (name, bytes) in outputs {
+            for (name, bytes) in lowered.outputs() {
                 let path = dir.join(name);
-                if fs::read_to_string(&path).ok().as_deref() != Some(bytes.as_str()) {
+                if fs::read_to_string(&path).ok().as_deref() != Some(bytes) {
                     eprintln!(
                         "anneal-spec-lower: {} is stale; regenerate it with --out-dir",
                         path.display()
@@ -115,6 +189,7 @@ fn run() -> Result<ExitCode, String> {
             }
             Ok(if stale { ExitCode::from(1) } else { ExitCode::SUCCESS })
         }
+        Mode::List => unreachable!("handled above"),
     }
 }
 

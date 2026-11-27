@@ -255,6 +255,77 @@ def check_freshness(arguments, unit_dir, request):
         )
 
 
+def list_targets(arguments, src_root, inputs):
+    """Return `anneal-spec-lower --list-targets` for `inputs` under `src_root`."""
+    proc = subprocess.run(
+        [str(arguments.lower), "--src-root", str(src_root), "--list-targets", *inputs],
+        capture_output=True,
+        text=True,
+        timeout=arguments.timeout,
+        check=False,
+    )
+    if proc.returncode != 0:
+        raise RuntimeError(
+            f"anneal-spec-lower --list-targets failed (exit {proc.returncode}): "
+            f"{proc.stdout}{proc.stderr}"
+        )
+    return load_strict_json(proc.stdout)
+
+
+def check_contract_uniqueness(arguments, units):
+    """Check that every specification in the crate has exactly one home.
+
+    Specifications live in two places: attributes and `external_spec!` blocks
+    in the crate's own sources, and units' companion `spec.rs` files. An item
+    specified in the crate's sources is its single source of truth, so it may
+    not also be specified in a companion file, and it must be lowered by
+    exactly one unit, through a `spec_sources.json` that names its file;
+    otherwise it is an orphan that no proof covers, or a specification that
+    two units would each claim. Companion files are independent test
+    fixtures and may specify the same item differently (for example, with
+    and without a step bound).
+    """
+    src_dir = arguments.src_dir.resolve(strict=True)
+    crate_files = []
+    for path in sorted(src_dir.rglob("*")):
+        if path.is_symlink():
+            raise RuntimeError(f"contract uniqueness: symlink in {src_dir}: {path}")
+        if path.suffix == ".rs" and path.is_file():
+            crate_files.append(path.relative_to(src_dir).as_posix())
+    # `--list-targets` rejects an item specified twice within the crate.
+    crate_targets = list_targets(arguments, src_dir, crate_files)
+    in_crate = {e["target"]: f"zerocopy/src/{e['file']}" for e in crate_targets}
+    claimed = {}
+    companion_targets = 0
+    errors = []
+    for unit_dir, request in units:
+        if (unit_dir / "spec_sources.json").is_file():
+            for raw in load_spec_sources(unit_dir, request, src_dir):
+                claimed.setdefault(raw, []).append(unit_dir.name)
+            continue
+        spec = os.path.relpath(unit_dir / "spec.rs", arguments.src_root)
+        for entry in list_targets(arguments, arguments.src_root, [spec]):
+            companion_targets += 1
+            if entry["target"] in in_crate:
+                errors.append(
+                    f"`{entry['target']}` is specified in both "
+                    f"{in_crate[entry['target']]} and {entry['file']}"
+                )
+    for entry in crate_targets:
+        units_for = claimed.get(entry["file"], [])
+        if len(units_for) != 1:
+            errors.append(
+                f"`{entry['target']}` (zerocopy/src/{entry['file']}) must be "
+                f"lowered by exactly one unit, not {sorted(units_for) or 'none'}"
+            )
+    if errors:
+        raise RuntimeError("contract uniqueness:\n  " + "\n  ".join(errors))
+    return {
+        "crate_targets": len(crate_targets),
+        "companion_targets": companion_targets,
+    }
+
+
 def trusted_module_order(trusted_root, root_module=SPEC_IMPORT_ROOT):
     """Return `(module, source)` for `root_module`'s `Trusted.*` closure.
 
@@ -372,7 +443,65 @@ def run_lean_compile_check(arguments, work_dir):
     _run_lean_silently(
         arguments, [str(fixture / "Check.lean")], lib_dir, "Check.lean"
     )
-    return {"status": "compiled", "trusted_modules": len(modules)}
+    # Each of the fixture's claims also lowers to a span-free module, which
+    # must compile as a Lean module: its public `specs` may only refer to
+    # public declarations, and it carries only the helpers its claim reaches.
+    spec_rs = f"{LEAN_COMPILE_FIXTURE}/spec.rs"
+    claims = sorted(
+        {e["claim"] for e in list_targets(arguments, arguments.src_root, [spec_rs])}
+    )
+    if not claims:
+        raise RuntimeError(
+            f"lean-compile: anneal-spec-lower --list-targets found no items in {spec_rs}"
+        )
+    v2_dir = out_dir / "v2"
+    for claim in claims:
+        lower_proc = subprocess.run(
+            [
+                str(arguments.lower),
+                "--src-root",
+                str(arguments.src_root),
+                "--format",
+                "v2-module",
+                "--crate-slug",
+                "lean_compile",
+                "--claim",
+                claim,
+                "--out-dir",
+                str(v2_dir),
+                spec_rs,
+            ],
+            capture_output=True,
+            text=True,
+            timeout=arguments.timeout,
+            check=False,
+        )
+        if lower_proc.returncode != 0:
+            raise RuntimeError(
+                f"lean-compile: anneal-spec-lower --claim {claim} failed: "
+                f"{lower_proc.stdout}{lower_proc.stderr}"
+            )
+        rel = Path("Specs/lean_compile") / f"{claim}.lean"
+        olean = lib_dir / rel.with_suffix(".olean")
+        olean.parent.mkdir(parents=True, exist_ok=True)
+        _run_lean_silently(
+            arguments,
+            [
+                "-DautoImplicit=false",
+                "-DrelaxedAutoImplicit=false",
+                f"--root={v2_dir}",
+                "-o",
+                str(olean),
+                str(v2_dir / rel),
+            ],
+            lib_dir,
+            f"generated module {rel}",
+        )
+    return {
+        "status": "compiled",
+        "trusted_modules": len(modules),
+        "v2_modules": len(claims),
+    }
 
 
 def verify_unit(arguments, unit_dir, request, artifacts_root):
@@ -573,6 +702,7 @@ def run_suite(arguments, work_dir):
     """Run all positive unit verifications and negative controls."""
     lean_compile = run_lean_compile_check(arguments, work_dir)
     units = discover_spec_units(arguments.proofs_dir, arguments.src_dir)
+    uniqueness = check_contract_uniqueness(arguments, units)
     workers = max(1, min(arguments.jobs, len(units)))
     started = time.monotonic()
     unit_results = {}
@@ -593,6 +723,7 @@ def run_suite(arguments, work_dir):
         "unit_count": len(unit_results),
         "negatives": negatives,
         "lean_compile": lean_compile,
+        "contract_uniqueness": uniqueness,
         "elapsed_seconds": round(time.monotonic() - started, 3),
     }
     (work_dir / "summary.json").write_text(

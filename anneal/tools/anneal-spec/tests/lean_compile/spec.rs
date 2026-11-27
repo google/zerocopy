@@ -64,7 +64,12 @@ anneal::external_spec! {
     )]
     fn div(n: u32, d: u32) -> u32;
 
-    #[anneal::spec(ensures(|r| r == wrapping_mul(wrapping_sub(wrapping_add(a, b), b), 1i64)))]
+    // `syntax` is a Lean keyword, which the claim's module namespace must
+    // escape.
+    #[anneal::spec(
+        claim = "syntax",
+        ensures(|r| r == wrapping_mul(wrapping_sub(wrapping_add(a, b), b), 1i64)),
+    )]
     fn wrap(a: i64, b: i64) -> i64;
 
     #[anneal::spec(requires(tdiv_is(a, b, q) && no_capture(1u8, a, b, 0u8, 0u8, q) && unit_eq(0u8)))]

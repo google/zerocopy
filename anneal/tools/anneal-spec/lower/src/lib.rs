@@ -27,6 +27,7 @@ use std::collections::BTreeMap;
 
 pub use diag::{Diagnostic, SourceMap, SrcSpan};
 pub use emit::Lowered;
+use proc_macro2::Span;
 
 /// One Rust input file.
 pub struct Source {
@@ -67,8 +68,254 @@ pub fn module_path(rel: &str) -> Vec<String> {
     parts
 }
 
+/// The layout of the lowering's output.
+#[derive(Clone, Copy, Debug, Default, PartialEq, Eq)]
+pub enum Format {
+    /// `Spec.lean` in namespace `Spec`, plus `spec_span_map.json`.
+    #[default]
+    V1,
+    /// One span-free Lean module, `Specs/<crate>/<claim>.lean`, in namespace
+    /// `Specs.<crate>.<claim>`. It records no Rust source positions, so edits
+    /// elsewhere in the Rust file leave it unchanged.
+    V2Module,
+}
+
+/// Which items to lower and how to write them.
+#[derive(Clone, Debug, Default)]
+pub struct Options {
+    /// Lower only these items (`rust-path-v1` paths without the scheme).
+    pub targets: Vec<String>,
+    /// Lower only the items whose claim ([`ast::SpecFn::claim_id`]) is this.
+    pub claim: Option<String>,
+    pub format: Format,
+    /// The crate component of the `Format::V2Module` namespace.
+    pub crate_slug: Option<String>,
+}
+
+impl Options {
+    fn selecting(&self) -> bool {
+        !self.targets.is_empty() || self.claim.is_some()
+    }
+
+    /// Checks that the options are consistent, returning the Lean namespace
+    /// the output is written in.
+    pub fn validate(&self) -> Result<String, String> {
+        match self.format {
+            Format::V1 if self.crate_slug.is_some() => {
+                Err("`--crate-slug` needs `--format v2-module`".into())
+            }
+            Format::V1 => Ok(check::SPEC_NAMESPACE.to_string()),
+            Format::V2Module => {
+                let (Some(slug), Some(claim)) = (&self.crate_slug, &self.claim) else {
+                    return Err("`--format v2-module` needs `--crate-slug` and `--claim`".into());
+                };
+                for (what, id) in [("crate slug", slug), ("claim", claim)] {
+                    if !parse::is_claim_ident(id) {
+                        return Err(format!(
+                            "`{}` is not a valid {what} for `--format v2-module`: use 1 to 64 \
+                             ASCII letters, digits, and `_`, starting with a letter, other than \
+                             a reserved Lean or Anneal name (give the item an explicit \
+                             `claim = \"...\"` if its derived claim is not valid)",
+                            id.escape_debug()
+                        ));
+                    }
+                }
+                // Escaped, so that the generated Lean parses whatever
+                // keywords are declared.
+                Ok(format!("{}.«{slug}».«{claim}»", check::SPECS_ROOT))
+            }
+        }
+    }
+}
+
+/// One specified item, as reported by [`list_targets`].
+#[derive(Clone, Debug, PartialEq, Eq)]
+pub struct TargetInfo {
+    /// The item's `rust-path-v1` path, without the scheme.
+    pub target: String,
+    /// The claim the item belongs to.
+    pub claim: String,
+    /// The index of the [`Source`] that specifies it.
+    pub file: usize,
+    /// Whether it is specified in `anneal::external_spec!` (rather than by
+    /// an inline attribute).
+    pub external: bool,
+}
+
 /// Parses, checks, and lowers `sources` into one specification unit.
 pub fn lower(sources: &[Source]) -> Result<Lowered, Vec<LowerError>> {
+    lower_with(sources, &Options::default())
+}
+
+/// Lists every item `sources` specify, sorted by path; `sources` may specify
+/// no items at all.
+///
+/// The sources are parsed and their items collected as [`lower`] would, with
+/// the same file-level checks, duplicate-target check, and claim-collision
+/// check, but clauses are not type-checked: that happens when the unit that
+/// owns an item lowers it, with that unit's own helpers.
+pub fn list_targets(sources: &[Source]) -> Result<Vec<TargetInfo>, Vec<LowerError>> {
+    let (fns, _) = collect(sources)?;
+    Ok(fns
+        .iter()
+        .map(|f| TargetInfo {
+            target: f.path.clone(),
+            claim: f.claim_id(),
+            file: f.file,
+            external: f.external,
+        })
+        .collect())
+}
+
+/// Parses, checks, and lowers the items of `sources` that `opts` selects.
+///
+/// Every item is checked, selected or not, so a selection never hides an
+/// error. When selecting, only the `#[anneal::pure]` helpers the selected
+/// items reach are emitted; without a selection the output is exactly
+/// [`lower`]'s.
+pub fn lower_with(sources: &[Source], opts: &Options) -> Result<Lowered, Vec<LowerError>> {
+    let namespace = opts.validate().map_err(|msg| {
+        vec![LowerError {
+            file: 0,
+            diag: Diagnostic::new("E_ANNEAL_INVALID_OPTIONS", Span::call_site(), msg),
+        }]
+    })?;
+    let a = analyze(sources, &namespace)?;
+    if a.fns.is_empty() {
+        return Err(vec![LowerError {
+            file: 0,
+            diag: Diagnostic::new(
+                "E_ANNEAL_EMPTY_UNIT",
+                Span::call_site(),
+                "no `anneal::spec` items were found",
+            ),
+        }]);
+    }
+    let module_path = match (&opts.format, &opts.crate_slug, &opts.claim) {
+        (Format::V2Module, Some(slug), Some(claim)) => {
+            Some(format!("{}/{slug}/{claim}.lean", check::SPECS_ROOT))
+        }
+        _ => None,
+    };
+    if !opts.selecting() {
+        let helpers: Vec<_> =
+            a.helper_bodies.iter().map(|(i, b)| (&a.helpers[*i], b.clone())).collect();
+        let fns: Vec<_> = a.fns.iter().zip(a.lowered_fns).collect();
+        return Ok(emit::emit(sources, &helpers, &fns, &a.runtime, &namespace, module_path));
+    }
+
+    let selected = select(&a.fns, opts)?;
+    // The helpers the selected items reach, directly or through other
+    // helpers.
+    let index: BTreeMap<&str, usize> =
+        a.helpers.iter().enumerate().map(|(i, h)| (h.name.as_str(), i)).collect();
+    let mut pending = Vec::new();
+    for f in &selected {
+        for c in &f.clauses {
+            // Exhaustive, so that a new clause carrying an expression cannot
+            // silently drop the helpers it calls.
+            match &c.clause {
+                ast::Clause::Requires(e)
+                | ast::Clause::SafetyRequires(e)
+                | ast::Clause::MaxSteps(e)
+                | ast::Clause::Ensures { body: e, .. } => check::calls_in(e, &mut pending),
+                ast::Clause::Effect(_)
+                | ast::Clause::Target(_)
+                | ast::Clause::Claim(_)
+                | ast::Clause::Instantiate(_) => {}
+            }
+        }
+    }
+    let mut reached = vec![false; a.helpers.len()];
+    while let Some(name) = pending.pop() {
+        if let Some(&i) = index.get(name.as_str()) {
+            if !std::mem::replace(&mut reached[i], true) {
+                check::calls_in(&a.helpers[i].body, &mut pending);
+            }
+        }
+    }
+    // Lower the selection again with fresh `Uses`, so the runtime
+    // definitions emitted are exactly the ones the selection references.
+    let mut errors = Vec::new();
+    let runtime = check::Uses::default();
+    let mut helper_bodies = Vec::new();
+    for &i in a.order.iter().filter(|&&i| reached[i]) {
+        let h = &a.helpers[i];
+        match check::lower_helper(h, &a.sigs, &runtime) {
+            Ok(body) => helper_bodies.push((h, body)),
+            Err(d) => errors.push(LowerError { file: h.file, diag: d }),
+        }
+    }
+    let mut lowered_fns = Vec::new();
+    for f in selected {
+        match check::lower_fn(f, &a.sigs, &runtime) {
+            Ok(l) => lowered_fns.push((f, l)),
+            Err(ds) => errors.extend(ds.into_iter().map(|d| LowerError { file: f.file, diag: d })),
+        }
+    }
+    if !errors.is_empty() {
+        return Err(errors);
+    }
+    Ok(emit::emit(sources, &helper_bodies, &lowered_fns, &runtime, &namespace, module_path))
+}
+
+/// The items `opts` selects from `fns`, in `fns`' order.
+fn select<'a>(
+    fns: &'a [ast::SpecFn],
+    opts: &Options,
+) -> Result<Vec<&'a ast::SpecFn>, Vec<LowerError>> {
+    let err = |code: &'static str, msg: String| LowerError {
+        file: 0,
+        diag: Diagnostic::new(code, Span::call_site(), msg),
+    };
+    let mut errors = Vec::new();
+    for t in &opts.targets {
+        match fns.iter().find(|f| &f.path == t) {
+            None => errors.push(err("E_ANNEAL_UNKNOWN_TARGET", format!("no item specifies `{t}`"))),
+            Some(f) => {
+                if let Some(c) = opts.claim.as_ref().filter(|c| **c != f.claim_id()) {
+                    errors.push(err(
+                        "E_ANNEAL_UNKNOWN_TARGET",
+                        format!("`{t}` belongs to claim `{}`, not `{c}`", f.claim_id()),
+                    ));
+                }
+            }
+        }
+    }
+    if !errors.is_empty() {
+        return Err(errors);
+    }
+    let selected: Vec<_> = fns
+        .iter()
+        .filter(|f| opts.targets.is_empty() || opts.targets.contains(&f.path))
+        .filter(|f| opts.claim.as_ref().is_none_or(|c| *c == f.claim_id()))
+        .collect();
+    if selected.is_empty() {
+        let c = opts.claim.as_deref().unwrap_or_default();
+        return Err(vec![err("E_ANNEAL_EMPTY_CLAIM", format!("no item belongs to claim `{c}`"))]);
+    }
+    Ok(selected)
+}
+
+/// Every item and helper of a set of sources, checked and lowered.
+struct Analysis {
+    /// Sorted by name.
+    helpers: Vec<ast::PureFn>,
+    /// Indices into `helpers`, each after the helpers it calls.
+    order: Vec<usize>,
+    sigs: BTreeMap<String, check::HelperSig>,
+    /// `(index into helpers, body)` in `order`.
+    helper_bodies: Vec<(usize, String)>,
+    /// Sorted by path.
+    fns: Vec<ast::SpecFn>,
+    /// Parallel to `fns`.
+    lowered_fns: Vec<check::LoweredFn>,
+    runtime: check::Uses,
+}
+
+/// Parses `sources` and collects their items (sorted by path) and helpers,
+/// rejecting file-level misuse, duplicate targets, and colliding claims.
+fn collect(sources: &[Source]) -> Result<(Vec<ast::SpecFn>, Vec<ast::PureFn>), Vec<LowerError>> {
     let mut errors = Vec::new();
     let mut fns = Vec::new();
     let mut helpers = Vec::new();
@@ -80,12 +327,27 @@ pub fn lower(sources: &[Source]) -> Result<Lowered, Vec<LowerError>> {
                 continue;
             }
         };
+        let stream: proc_macro2::TokenStream = src.text.parse().expect("parsed by syn above");
+        for span in parse::cfg_anneal_misuse(stream.clone()) {
+            let diag = Diagnostic::new(
+                "E_ANNEAL_BARE_OR_COMPOUND_CFG",
+                span,
+                "the `anneal` cfg may only enable `anneal::` specification attributes, and the \
+                 identifier `anneal` is reserved for that use",
+            )
+            .help(
+                "write `#[cfg_attr(anneal, anneal::spec(..))]`, `#[cfg_attr(anneal, \
+                 anneal::pure)]`, or `#[cfg_attr(anneal, anneal::vacuous_ok(..))]`; code that \
+                 is compiled only under `anneal` would make the specified crate differ from \
+                 the built one",
+            );
+            errors.push(LowerError { file: i, diag });
+        }
         let mut c = parse::Collected::default();
         if let Err(d) = parse::collect_items(&file.items, &src.module, &mut c) {
             errors.push(LowerError { file: i, diag: d });
             continue;
         }
-        let stream: proc_macro2::TokenStream = src.text.parse().expect("parsed by syn above");
         for (span, code) in parse::ignored_anneal_paths(stream, &c.handled) {
             let diag = if code == "E_ANNEAL_UNSUPPORTED_IMPORT" {
                 Diagnostic::new(code, span, "importing or renaming `anneal` is not supported")
@@ -115,6 +377,63 @@ pub fn lower(sources: &[Source]) -> Result<Lowered, Vec<LowerError>> {
     if !errors.is_empty() {
         return Err(errors);
     }
+    fns.sort_by(|a, b| a.path.cmp(&b.path));
+    for w in fns.windows(2) {
+        if w[0].path == w[1].path {
+            errors.push(LowerError {
+                file: w[1].file,
+                diag: Diagnostic::new(
+                    "E_ANNEAL_DUPLICATE_TARGET",
+                    w[1].sig_span,
+                    format!("`{}` is specified more than once", w[1].path),
+                ),
+            });
+        }
+    }
+    if !errors.is_empty() {
+        return Err(errors);
+    }
+    // A derived claim names one item, so it may not coincide with another
+    // item's derived claim (`a::b` and `a__b`) or with an explicit claim.
+    let mut claims: BTreeMap<String, (Vec<&ast::SpecFn>, bool)> = BTreeMap::new();
+    for f in &fns {
+        let entry = claims.entry(f.claim_id()).or_default();
+        if f.claim.is_some() {
+            entry.1 = true;
+        } else {
+            entry.0.push(f);
+        }
+    }
+    for (claim, (derived, explicit)) in &claims {
+        if derived.len() + usize::from(*explicit) > 1 {
+            for f in derived {
+                errors.push(LowerError {
+                    file: f.file,
+                    diag: Diagnostic::new(
+                        "E_ANNEAL_CLAIM_COLLISION",
+                        f.sig_span,
+                        format!(
+                            "the claim `{claim}` derived from `{}` is also the claim of another \
+                             item",
+                            f.path
+                        ),
+                    )
+                    .help("give the item an explicit `claim = \"...\"`"),
+                });
+            }
+        }
+    }
+    if !errors.is_empty() {
+        return Err(errors);
+    }
+    Ok((fns, helpers))
+}
+
+/// Parses and checks every item of `sources`, lowering helper references
+/// into `namespace`.
+fn analyze(sources: &[Source], namespace: &str) -> Result<Analysis, Vec<LowerError>> {
+    let (fns, mut helpers) = collect(sources)?;
+    let mut errors = Vec::new();
 
     // Helper signatures, duplicate names, and a call-graph order that puts
     // every helper after the helpers it calls.
@@ -134,7 +453,7 @@ pub fn lower(sources: &[Source]) -> Result<Lowered, Vec<LowerError>> {
         sigs.insert(
             h.name.clone(),
             check::HelperSig {
-                lean_name: check::helper_lean_name(&h.name),
+                lean_name: check::helper_lean_name(namespace, &h.name),
                 params: h.params.iter().map(|p| p.ty).collect(),
                 ret: h.ret,
             },
@@ -150,48 +469,25 @@ pub fn lower(sources: &[Source]) -> Result<Lowered, Vec<LowerError>> {
     };
     let runtime = check::Uses::default();
     let mut helper_bodies = Vec::new();
-    for idx in order {
+    for &idx in &order {
         let h = &helpers[idx];
         match check::lower_helper(h, &sigs, &runtime) {
-            Ok(body) => helper_bodies.push((h, body)),
+            Ok(body) => helper_bodies.push((idx, body)),
             Err(d) => errors.push(LowerError { file: h.file, diag: d }),
         }
     }
 
-    fns.sort_by(|a, b| a.path.cmp(&b.path));
-    for w in fns.windows(2) {
-        if w[0].path == w[1].path {
-            errors.push(LowerError {
-                file: w[1].file,
-                diag: Diagnostic::new(
-                    "E_ANNEAL_DUPLICATE_TARGET",
-                    w[1].sig_span,
-                    format!("`{}` is specified more than once", w[1].path),
-                ),
-            });
-        }
-    }
-    if fns.is_empty() {
-        errors.push(LowerError {
-            file: 0,
-            diag: Diagnostic::new(
-                "E_ANNEAL_EMPTY_UNIT",
-                proc_macro2::Span::call_site(),
-                "no `anneal::spec` items were found",
-            ),
-        });
-    }
     let mut lowered_fns = Vec::new();
     for f in &fns {
         match check::lower_fn(f, &sigs, &runtime) {
-            Ok(l) => lowered_fns.push((f, l)),
+            Ok(l) => lowered_fns.push(l),
             Err(ds) => errors.extend(ds.into_iter().map(|d| LowerError { file: f.file, diag: d })),
         }
     }
     if !errors.is_empty() {
         return Err(errors);
     }
-    Ok(emit::emit(sources, &helper_bodies, &lowered_fns, &runtime))
+    Ok(Analysis { helpers, order, sigs, helper_bodies, fns, lowered_fns, runtime })
 }
 
 fn helper_order(helpers: &[ast::PureFn]) -> Result<Vec<usize>, LowerError> {

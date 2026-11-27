@@ -13,6 +13,7 @@ import io
 import json
 import os
 from pathlib import Path
+import shutil
 import subprocess
 import tempfile
 from types import SimpleNamespace
@@ -173,6 +174,14 @@ def set_source_files(unit: Path, files):
     else:
         req["compilation"]["source_files"] = files
     req_path.write_text(json.dumps(req), encoding="utf-8")
+
+
+def list_targets_output(cmd):
+    """What a fake `--list-targets` reports: one item for the lowering
+    fixture, which must not be empty, and none for anything else."""
+    if cmd[-1] == f"{verify_anneal_spec_zerocopy.LEAN_COMPILE_FIXTURE}/spec.rs":
+        return json.dumps([{"target": "f", "claim": "f", "file": cmd[-1], "kind": "external"}])
+    return "[]"
 
 
 class VerifyAnnealSpecZerocopyTests(unittest.TestCase):
@@ -448,6 +457,8 @@ class VerifyAnnealSpecZerocopyTests(unittest.TestCase):
             verify_cmds = []
 
             def fake_run(cmd, **_kwargs):
+                if "--list-targets" in cmd:
+                    return subprocess.CompletedProcess(cmd, 0, list_targets_output(cmd), "")
                 if "--check" in cmd or "--out-dir" in cmd or cmd[0] == str(args.lean):
                     return subprocess.CompletedProcess(cmd, 0, "", "")
                 verify_cmds.append(cmd)
@@ -467,6 +478,10 @@ class VerifyAnnealSpecZerocopyTests(unittest.TestCase):
             for cmd in verify_cmds:
                 self.assertEqual(cmd[1:4], ["verify", "--format", "json"])
             self.assertEqual(summary["unit_count"], 1)
+            self.assertEqual(
+                summary["contract_uniqueness"],
+                {"crate_targets": 0, "companion_targets": 0},
+            )
             self.assertEqual(summary["lean_compile"]["status"], "compiled")
             self.assertEqual(
                 summary["negatives"]["mutated_spec_rs"]["status"], "proof_failed"
@@ -477,6 +492,8 @@ class VerifyAnnealSpecZerocopyTests(unittest.TestCase):
             )
 
             def broken_neg(cmd, **_kwargs):
+                if "--list-targets" in cmd:
+                    return subprocess.CompletedProcess(cmd, 0, list_targets_output(cmd), "")
                 if "--check" in cmd or "--out-dir" in cmd or cmd[0] == str(args.lean):
                     return subprocess.CompletedProcess(cmd, 0, "", "")
                 return subprocess.CompletedProcess(
@@ -511,6 +528,8 @@ class VerifyAnnealSpecZerocopyTests(unittest.TestCase):
 
             def runner(receipt):
                 def fake_run(cmd, **_kwargs):
+                    if "--list-targets" in cmd:
+                        return subprocess.CompletedProcess(cmd, 0, list_targets_output(cmd), "")
                     if (
                         "--check" in cmd
                         or "--out-dir" in cmd
@@ -554,6 +573,102 @@ class VerifyAnnealSpecZerocopyTests(unittest.TestCase):
                     proofs_dir, src_dir
                 )
 
+    def test_contract_uniqueness_rejects_duplicates_and_orphans(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            spec_root, proofs_dir, src_dir, unit = make_fixture(root)
+            (src_dir / "layout.rs").write_text("", encoding="utf-8")
+            args = SimpleNamespace(
+                src_root=spec_root, src_dir=src_dir, lower=root / "lower",
+                timeout=30,
+            )
+            # What `--list-targets` reports for each input file.
+            listings = {}
+            calls = []
+
+            def fake_run(cmd, **_kwargs):
+                calls.append(cmd)
+                inputs = cmd[cmd.index("--list-targets") + 1:]
+                listed = [e for i in inputs for e in listings.get(i, [])]
+                return subprocess.CompletedProcess(cmd, 0, json.dumps(listed), "")
+
+            def check():
+                units = verify_anneal_spec_zerocopy.discover_spec_units(
+                    proofs_dir, src_dir
+                )
+                calls.clear()
+                with mock.patch(
+                    "verify_anneal_spec_zerocopy.subprocess.run",
+                    side_effect=fake_run,
+                ):
+                    return verify_anneal_spec_zerocopy.check_contract_uniqueness(
+                        args, units
+                    )
+
+            def entry(target, file, kind):
+                return {"target": target, "claim": "c", "file": file, "kind": kind}
+
+            spec_rel = os.path.relpath(unit / "spec.rs", spec_root)
+            listings[spec_rel] = [entry("a", spec_rel, "external")]
+            # Phase 0: only companion specifications, so nothing to claim.
+            self.assertEqual(check(), {"crate_targets": 0, "companion_targets": 1})
+            self.assertEqual(
+                calls[0],
+                [str(args.lower), "--src-root", str(src_dir.resolve()),
+                 "--list-targets", "layout.rs", "lib.rs"],
+            )
+            self.assertEqual(calls[1][2:], [str(spec_root), "--list-targets", spec_rel])
+
+            # An inline specification that no unit lowers.
+            listings["layout.rs"] = [entry("b", "layout.rs", "inline")]
+            with self.assertRaisesRegex(RuntimeError, r"`b` \(zerocopy/src/layout.rs\) "
+                                        r"must be lowered by exactly one unit, not none"):
+                check()
+            # The same item specified inline and in a companion file.
+            listings["layout.rs"] = [entry("a", "layout.rs", "inline")]
+            with self.assertRaisesRegex(
+                RuntimeError, "`a` is specified in both zerocopy/src/layout.rs and "
+            ):
+                check()
+            # Two companion files may specify the same item.
+            listings["layout.rs"] = []
+            shutil.copytree(unit, proofs_dir / "05_again")
+            again = os.path.relpath(proofs_dir / "05_again/spec.rs", spec_root)
+            listings[again] = [entry("a", again, "external")]
+            self.assertEqual(check(), {"crate_targets": 0, "companion_targets": 2})
+            shutil.rmtree(proofs_dir / "05_again")
+            listings["layout.rs"] = [entry("a", "layout.rs", "inline")]
+
+            # A unit that lowers the file claims its specifications.
+            (unit / "spec.rs").unlink()
+            write_spec_sources(unit, ["layout.rs"])
+            set_source_files(unit, ["layout.rs", "lib.rs"])
+            self.assertEqual(check(), {"crate_targets": 1, "companion_targets": 0})
+            # Two units that lower the same file both claim them.
+            shutil.copytree(unit, proofs_dir / "03_copy")
+            with self.assertRaisesRegex(
+                RuntimeError,
+                r"not \['02_unit_pointer_metadata', '03_copy'\]",
+            ):
+                check()
+
+            # Symlinks under the crate sources fail closed rather than being
+            # skipped.
+            (src_dir / "linked.rs").symlink_to(src_dir / "layout.rs")
+            with self.assertRaisesRegex(RuntimeError, "symlink in"):
+                check()
+            (src_dir / "linked.rs").unlink()
+
+            def failing(cmd, **_kwargs):
+                return subprocess.CompletedProcess(cmd, 1, "", "E_ANNEAL_X")
+
+            units = verify_anneal_spec_zerocopy.discover_spec_units(proofs_dir, src_dir)
+            with mock.patch(
+                "verify_anneal_spec_zerocopy.subprocess.run", side_effect=failing
+            ):
+                with self.assertRaisesRegex(RuntimeError, "list-targets failed.*E_ANNEAL_X"):
+                    verify_anneal_spec_zerocopy.check_contract_uniqueness(args, units)
+
     def test_trusted_module_order_puts_imports_first_and_rejects_cycles(self):
         with tempfile.TemporaryDirectory() as tmp:
             trusted = make_trusted_tree(Path(tmp))
@@ -587,25 +702,53 @@ class VerifyAnnealSpecZerocopyTests(unittest.TestCase):
             )
             calls = []
 
+            listing = json.dumps([
+                {"target": t, "claim": c, "file": "tests/lean_compile/spec.rs",
+                 "kind": "external"}
+                for t, c in (("a", "c1"), ("b", "c1"), ("m::d", "m__d"))
+            ])
+
             def clean(cmd, **kwargs):
                 calls.append((cmd, kwargs.get("env")))
-                return subprocess.CompletedProcess(cmd, 0, "", "")
+                out = listing if "--list-targets" in cmd else ""
+                return subprocess.CompletedProcess(cmd, 0, out, "")
 
             work = root / "work"
             work.mkdir()
             with mock.patch("verify_anneal_spec_zerocopy.subprocess.run", side_effect=clean):
                 result = verify_anneal_spec_zerocopy.run_lean_compile_check(args, work)
-            self.assertEqual(result, {"status": "compiled", "trusted_modules": 3})
-            lib = work / "lean-compile/lib"
-            self.assertEqual(calls[0][0][-1], "tests/lean_compile/spec.rs")
             self.assertEqual(
-                [cmd[-1] for cmd, _ in calls[1:]],
+                result, {"status": "compiled", "trusted_modules": 3, "v2_modules": 2}
+            )
+            lib = work / "lean-compile/lib"
+            v2 = work / "lean-compile/v2"
+            self.assertEqual(calls[0][0][-1], "tests/lean_compile/spec.rs")
+            lean_calls = [cmd for cmd, _ in calls if cmd[0] == str(args.lean)]
+            self.assertEqual(
+                [cmd[-1] for cmd in lean_calls],
                 [
                     str(trusted / "Trusted/MirAst.lean"),
                     str(trusted / "Trusted/MirSemantics/Ops.lean"),
                     str(trusted / "Trusted/MirSemantics.lean"),
                     str(work / "lean-compile/Spec.lean"),
                     str(spec_root / "tests/lean_compile/Check.lean"),
+                    str(v2 / "Specs/lean_compile/c1.lean"),
+                    str(v2 / "Specs/lean_compile/m__d.lean"),
+                ],
+            )
+            lower_calls = [cmd for cmd, _ in calls if cmd[0] == str(args.lower)]
+            self.assertEqual(
+                [cmd[cmd.index("--claim") + 1] for cmd in lower_calls if "--claim" in cmd],
+                ["c1", "m__d"],
+            )
+            self.assertEqual(
+                lean_calls[-1][1:6],
+                [
+                    "-DautoImplicit=false",
+                    "-DrelaxedAutoImplicit=false",
+                    f"--root={v2}",
+                    "-o",
+                    str(lib / "Specs/lean_compile/m__d.olean"),
                 ],
             )
             self.assertEqual(calls[3][0][1:4], [f"--root={trusted}", "-o", str(lib / "Trusted/MirSemantics.olean")])
@@ -619,12 +762,14 @@ class VerifyAnnealSpecZerocopyTests(unittest.TestCase):
                     str(lib / "Spec.olean"),
                 ],
             )
-            self.assertTrue(all(env["LEAN_PATH"] == str(lib) for _, env in calls[1:]))
+            self.assertTrue(
+                all(env["LEAN_PATH"] == str(lib) for cmd, env in calls if cmd[0] == str(args.lean))
+            )
 
             def warns_on_spec(cmd, **_kwargs):
                 if cmd[-1].endswith("Spec.lean"):
                     return subprocess.CompletedProcess(cmd, 0, "Spec.lean:1:0: warning: x\n", "")
-                return subprocess.CompletedProcess(cmd, 0, "", "")
+                return clean(cmd)
 
             work_bad = root / "work-bad"
             work_bad.mkdir()
@@ -633,6 +778,36 @@ class VerifyAnnealSpecZerocopyTests(unittest.TestCase):
             ):
                 with self.assertRaisesRegex(RuntimeError, "generated Spec.lean failed"):
                     verify_anneal_spec_zerocopy.run_lean_compile_check(args, work_bad)
+
+            # A module that does not compile fails the check too.
+            def rejects_module(cmd, **_kwargs):
+                if cmd[-1].endswith("m__d.lean"):
+                    return subprocess.CompletedProcess(cmd, 1, "", "error: private\n")
+                return clean(cmd)
+
+            # An empty fixture listing would silently skip the modules.
+            def lists_nothing(cmd, **_kwargs):
+                if "--list-targets" in cmd:
+                    return subprocess.CompletedProcess(cmd, 0, "[]", "")
+                return clean(cmd)
+
+            work_empty = root / "work-empty"
+            work_empty.mkdir()
+            with mock.patch(
+                "verify_anneal_spec_zerocopy.subprocess.run", side_effect=lists_nothing
+            ):
+                with self.assertRaisesRegex(RuntimeError, "found no items"):
+                    verify_anneal_spec_zerocopy.run_lean_compile_check(args, work_empty)
+
+            work_mod = root / "work-mod"
+            work_mod.mkdir()
+            with mock.patch(
+                "verify_anneal_spec_zerocopy.subprocess.run", side_effect=rejects_module
+            ):
+                with self.assertRaisesRegex(
+                    RuntimeError, "generated module Specs/lean_compile/m__d.lean failed"
+                ):
+                    verify_anneal_spec_zerocopy.run_lean_compile_check(args, work_mod)
 
 
 if __name__ == "__main__":
