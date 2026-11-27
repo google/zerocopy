@@ -46,9 +46,16 @@ const CARGO_RULES: &[DetailRule] = &[
                --example` for a template) or `verify rustc`.",
     },
     DetailRule {
+        needle: "cargo metadata probe directory",
+        hint: "The `--manifest-path` Cargo shortcut executes `cargo metadata` from a temporary \
+               directory under `$TMPDIR` and refuses `rust-toolchain` or `rust-toolchain.toml` \
+               files along its resolved ancestry. Unset `TMPDIR` or point it at a clean \
+               directory, or pass `--request <file>` / `verify rustc`.",
+    },
+    DetailRule {
         needle: "explicit configured compilation",
         hint: "The `--manifest-path` Cargo shortcut rejects build scripts, proc-macros, \
-               `rust-toolchain` files, and `.cargo/config` files that set anything beyond the \
+               and `.cargo/config` files that set anything beyond the \
                `[alias]`, `[term]`, `[doc]`, `[cargo-new]`, and `[future-incompat-report]` \
                tables (plus `[net]`, `[registries]`, `[registry]`, and `[source]` strictly above \
                the workspace root or in `$CARGO_HOME`). Use `cargo anneal verify --request <file>` \
@@ -533,6 +540,16 @@ mod tests {
         assert!(compiled_hint.contains("build scripts"), "{compiled_hint}");
         assert!(compiled_hint.contains("--request"), "{compiled_hint}");
         assert!(compiled_hint.contains("`[alias]`"), "{compiled_hint}");
+
+        let probe_cwd_hint = hint_for_failure(
+            "unsupported",
+            "cargo",
+            "compiler overrides need an explicit configured compilation \
+             (rust-toolchain.toml: present in cargo metadata probe directory ancestor /tmp)",
+        )
+        .unwrap();
+        assert!(probe_cwd_hint.contains("$TMPDIR"), "{probe_cwd_hint}");
+        assert!(probe_cwd_hint.contains("--request"), "{probe_cwd_hint}");
     }
 
     #[test]

@@ -1323,18 +1323,23 @@ fn encoded<T: Serialize>(value: &T) -> Result<Vec<u8>> {
     serde_json::to_vec_pretty(value).map_err(|e| error("tool_failed", "json", e))
 }
 
-/// Reject Cargo or toolchain override files under `dir` according to `policy`.
+/// Reject Cargo config override files under `dir` according to `policy`.
 ///
 /// Uses `symlink_metadata` (without following links) so dangling symlinks are
 /// rejected; a plain `.cargo` directory is allowed when it contains no config
 /// file, whereas a `.cargo` symlink, non-directory entry (`!meta.is_dir()`),
-/// or any non-`NotFound` metadata error fails closed. Toolchain files are
-/// always rejected. A `.cargo/config` or `.cargo/config.toml` file is admitted
-/// only when [`cargo_config::check_config_file`] accepts it under `policy`
+/// or any non-`NotFound` metadata error fails closed. A `.cargo/config` or
+/// `.cargo/config.toml` file is admitted only when
+/// [`cargo_config::check_config_file`] accepts it under `policy`
 /// ([`cargo_config::CargoConfigPolicy::InWorkspace`] inside
 /// `source_root..=workspace_root`, or
 /// [`cargo_config::CargoConfigPolicy::AmbientHost`] strictly above
-/// `workspace_root` and in `$CARGO_HOME`).
+/// `workspace_root` and in `$CARGO_HOME`). `rust-toolchain` and
+/// `rust-toolchain.toml` files in the package or its ancestors are ignored
+/// because `cargo metadata` runs from a fresh temporary working directory whose
+/// own ancestry is checked for `rust-toolchain{,.toml}` overrides with
+/// `RUSTUP_TOOLCHAIN` cleared by `env_clear()`, and capture always executes
+/// against Anneal's pinned toolchain.
 fn reject_compiler_overrides_with_policy(
     dir: &Path,
     policy: cargo_config::CargoConfigPolicy,
@@ -1350,21 +1355,22 @@ fn reject_compiler_overrides_with_policy(
             ),
         )
     };
-    for forbidden in
-        [".cargo", ".cargo/config", ".cargo/config.toml", "rust-toolchain", "rust-toolchain.toml"]
-    {
-        let path = dir.join(forbidden);
+    match fs::symlink_metadata(dir.join(".cargo")) {
+        Ok(meta) => {
+            if meta.file_type().is_symlink() || !meta.is_dir() {
+                return Err(reject(".cargo", "not a regular directory"));
+            }
+        }
+        Err(err) if err.kind() == std::io::ErrorKind::NotFound => {}
+        Err(err) => return Err(io("cargo", err)),
+    }
+    for rel in [".cargo/config", ".cargo/config.toml"] {
+        let path = dir.join(rel);
         match fs::symlink_metadata(&path) {
-            Ok(meta) if forbidden == ".cargo" => {
-                if meta.file_type().is_symlink() || !meta.is_dir() {
-                    return Err(reject(forbidden, "not a regular directory"));
-                }
-            }
-            Ok(_) if forbidden.starts_with(".cargo/") => {
+            Ok(_) => {
                 cargo_config::check_config_file(&path, policy)
-                    .map_err(|reason| reject(forbidden, &reason))?;
+                    .map_err(|reason| reject(rel, &reason))?;
             }
-            Ok(_) => return Err(reject(forbidden, "toolchain override")),
             Err(err) if err.kind() == std::io::ErrorKind::NotFound => {}
             Err(err) => return Err(io("cargo", err)),
         }
@@ -1381,16 +1387,50 @@ fn reject_compiler_overrides(dir: &Path) -> Result<()> {
 /// Reject compiler overrides in ancestor directories strictly above
 /// `workspace_root` under [`cargo_config::CargoConfigPolicy::AmbientHost`]:
 ///
-/// - `rust-toolchain` and `rust-toolchain.toml` are always rejected (including
-///   ambient home-directory toolchain files);
 /// - `.cargo` must be absent or a real non-symlink directory;
 /// - `.cargo/config` and `.cargo/config.toml`, when present, must be regular
 ///   non-symlink UTF-8 TOML files within the `AmbientHost` subset (admitting
 ///   benign tables plus `[net]`, `[registries]`, `[registry]`, and `[source]`,
 ///   and failing closed on `[build]`, `[target]`, `[profile]`, `[unstable]`,
-///   `[env]`, `[patch]`, `[http]`, `[install]`, and unparseable syntax).
+///   `[env]`, `[patch]`, `[http]`, `[install]`, and unparseable syntax);
+/// - `rust-toolchain` and `rust-toolchain.toml` are ignored here because
+///   `cargo metadata` does not resolve overrides from `--manifest-path`'s
+///   ancestry (see [`reject_probe_cwd_toolchain_overrides`]).
 fn reject_ancestor_compiler_overrides(dir: &Path) -> Result<()> {
     reject_compiler_overrides_with_policy(dir, cargo_config::CargoConfigPolicy::AmbientHost)
+}
+
+/// Reject `rust-toolchain` and `rust-toolchain.toml` entries in resolved
+/// physical ancestors of the temporary working directory (`probe_cwd`) used by
+/// `cargo metadata`.
+///
+/// `rustup` resolves directory overrides by walking physical ancestors of the
+/// child's working directory (`probe_cwd`), not `--manifest-path`, while
+/// capture runs Anneal's pinned toolchain directly. Canonicalizing `probe_cwd`
+/// and checking its physical ancestry ensures ambient `rust-toolchain` and
+/// `rust-toolchain.toml` file overrides under `$TMPDIR` (even across symlinks,
+/// or if `$TMPDIR` sits under `$HOME` or a repository) cannot redirect `cargo
+/// metadata` via a custom `[toolchain] path = ...` binary.
+fn reject_probe_cwd_toolchain_overrides(dir: &Path) -> Result<()> {
+    for rel in ["rust-toolchain", "rust-toolchain.toml"] {
+        let path = dir.join(rel);
+        match fs::symlink_metadata(&path) {
+            Ok(_) => {
+                return Err(error(
+                    "unsupported",
+                    "cargo",
+                    format!(
+                        "compiler overrides need an explicit configured compilation \
+                         ({rel}: present in cargo metadata probe directory ancestor {})",
+                        dir.display()
+                    ),
+                ));
+            }
+            Err(err) if err.kind() == std::io::ErrorKind::NotFound => {}
+            Err(err) => return Err(io("cargo", err)),
+        }
+    }
+    Ok(())
 }
 
 /// Resolve the absolute Cargo home directory that `cargo metadata` will use:
@@ -1703,8 +1743,12 @@ fn cargo_package_metadata(manifest_path: &Path) -> Result<(PathBuf, Value, usize
     }
     let cargo_home = reject_cargo_home_compiler_overrides()?;
     let probe_cwd = tempfile::tempdir().map_err(|e| io("cargo", e))?;
+    let probe_cwd_path = fs::canonicalize(probe_cwd.path()).map_err(|e| io("cargo", e))?;
+    for ancestor in probe_cwd_path.ancestors() {
+        reject_probe_cwd_toolchain_overrides(ancestor)?;
+    }
     let mut cargo = Command::new("cargo");
-    cargo.current_dir(probe_cwd.path()).env_clear();
+    cargo.current_dir(&probe_cwd_path).env_clear();
     for key in ["PATH", "HOME", "RUSTUP_HOME", "TMPDIR"] {
         if let Some(value) = std::env::var_os(key) {
             cargo.env(key, value);
@@ -6433,8 +6477,12 @@ mod tests {
         assert!(err.detail.contains("(.cargo/config.toml: symlink;"), "{}", err.detail);
         fs::remove_file(dir.path().join(".cargo/config.toml")).unwrap();
 
+        // `rust-toolchain` and `rust-toolchain.toml` (including symlinks) in
+        // package/ancestor paths are ignored because `cargo metadata` runs from
+        // a checked temporary working directory and capture always uses
+        // Anneal's pinned toolchain.
         symlink("missing-toolchain", dir.path().join("rust-toolchain.toml")).unwrap();
-        assert!(reject_compiler_overrides(dir.path()).is_err());
+        assert!(reject_compiler_overrides(dir.path()).is_ok());
         fs::remove_file(dir.path().join("rust-toolchain.toml")).unwrap();
 
         fs::remove_dir(dir.path().join(".cargo")).unwrap();
@@ -6450,6 +6498,37 @@ mod tests {
         };
         assert_eq!(err.status, "tool_failed");
         assert_eq!(err.phase, "cargo");
+    }
+
+    #[test]
+    fn reject_probe_cwd_toolchain_overrides_fails_closed() {
+        let dir = tempfile::tempdir().unwrap();
+        assert!(reject_probe_cwd_toolchain_overrides(dir.path()).is_ok());
+
+        for name in ["rust-toolchain", "rust-toolchain.toml"] {
+            let path = dir.path().join(name);
+            fs::write(&path, "custom\n").unwrap();
+            let err = reject_probe_cwd_toolchain_overrides(dir.path()).unwrap_err();
+            assert_eq!(err.status, "unsupported");
+            assert_eq!(err.phase, "cargo");
+            assert!(err.detail.contains(name), "{}", err.detail);
+            fs::remove_file(&path).unwrap();
+        }
+
+        #[cfg(unix)]
+        {
+            std::os::unix::fs::symlink("missing-target", dir.path().join("rust-toolchain.toml"))
+                .unwrap();
+            let sym_err = reject_probe_cwd_toolchain_overrides(dir.path()).unwrap_err();
+            assert_eq!(sym_err.status, "unsupported");
+            fs::remove_file(dir.path().join("rust-toolchain.toml")).unwrap();
+        }
+
+        let not_a_dir = dir.path().join("file");
+        fs::write(&not_a_dir, b"x").unwrap();
+        let io_err = reject_probe_cwd_toolchain_overrides(&not_a_dir).unwrap_err();
+        assert_eq!(io_err.status, "tool_failed");
+        assert_eq!(io_err.phase, "cargo");
     }
 
     #[test]
@@ -6469,6 +6548,15 @@ mod tests {
                 fs::remove_file(path).unwrap();
             }
         }
+        for benign_toolchain in [
+            ("rust-toolchain.toml", "[toolchain]\nchannel = \"nightly\"\n"),
+            ("rust-toolchain", "nightly\n"),
+        ] {
+            let path = dir.path().join(benign_toolchain.0);
+            fs::write(&path, benign_toolchain.1).unwrap();
+            assert!(reject_compiler_overrides(dir.path()).is_ok(), "{}", benign_toolchain.0);
+            fs::remove_file(&path).unwrap();
+        }
         for (rel, contents, reason) in [
             (".cargo/config.toml", "[build]\nrustflags = [\"-Cdebuginfo=0\"]\n", "table [build]"),
             (".cargo/config", "[build]\nrustflags = []\n", "table [build]"),
@@ -6483,8 +6571,6 @@ mod tests {
             (".cargo/config.toml", "[net]\noffline = true\n", "table [net]"),
             (".cargo/config.toml", "build.rustc-wrapper = \"evil\"\n", "top-level key"),
             (".cargo/config.toml", "[alias\nb = \"build\"\n", "malformed header"),
-            ("rust-toolchain.toml", "[toolchain]\nchannel = \"nightly\"\n", "toolchain override"),
-            ("rust-toolchain", "nightly\n", "toolchain override"),
         ] {
             let path = dir.path().join(rel);
             fs::write(&path, contents).unwrap();
@@ -9307,12 +9393,10 @@ mod tests {
         assert!(ws_build.detail.contains("table [build]"), "{}", ws_build.detail);
         fs::remove_dir_all(ws.join(".cargo")).unwrap();
 
-        // (c) `ws/rust-toolchain.toml` is rejected.
+        // (c) `ws/rust-toolchain.toml` is allowed.
         fs::write(ws.join("rust-toolchain.toml"), "[toolchain]\nchannel = \"nightly\"\n").unwrap();
-        let ws_tc = reject_workspace_compiler_overrides(&member, &metadata).unwrap_err();
-        assert_eq!(ws_tc.status, "unsupported");
-        assert_eq!(ws_tc.phase, "cargo");
-        assert!(ws_tc.detail.contains("toolchain override"), "{}", ws_tc.detail);
+        reject_workspace_compiler_overrides(&member, &metadata)
+            .expect("workspace rust-toolchain.toml must pass");
         fs::remove_file(ws.join("rust-toolchain.toml")).unwrap();
 
         // Clean sibling workspace with `[net]` above LCA passes.
