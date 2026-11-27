@@ -206,6 +206,10 @@ cargo_locked = { workspace = "tools/anneal-mir-eval/Cargo.toml" }
 mount = "/cargo-home"
 cargo_locked = { workspace = "anneal/tools/anneal-spec/Cargo.toml" }
 
+[caches.anneal-scaffold-cargo-v1]
+mount = "/cargo-home"
+cargo_locked = { workspace = "anneal/tools/anneal-scaffold/Cargo.toml" }
+
 [caches.anneal-cargo-v1]
 mount = "/cargo-home"
 cargo_locked = { workspace = "anneal/Cargo.toml" }
@@ -825,6 +829,27 @@ env = { CARGO_HOME = "/cargo-home" }
 command = ["./ci/scripts/run_anneal_spec_check.sh"]
 
 [[checks]]
+id = "tools-anneal-scaffold"
+image = "zc-stable-msrv"
+runner = "ubuntu-24.04"
+pins = ["rust-toolchains"]
+caches = ["anneal-scaffold-cargo-v1"]
+writable_dirs = ["anneal/tools/anneal-scaffold/target"]
+inputs = [
+  { kind = "cargo_workspace", manifest_path = "anneal/tools/anneal-scaffold/Cargo.toml" },
+  { kind = "glob", include = [
+    "ci/scripts/run_anneal_scaffold_check.sh",
+    # The unit tests read these to catch drift from the capture format and
+    # from the module roots that `cargo anneal verify` reserves.
+    "anneal/trusted/rustc-capture/src/ir.rs",
+    "anneal/trusted/rustc-capture/src/lean.rs",
+    "anneal/trusted/cargo-anneal/src/verify.rs",
+  ] },
+]
+env = { CARGO_HOME = "/cargo-home" }
+command = ["./ci/scripts/run_anneal_scaffold_check.sh"]
+
+[[checks]]
 id = "tools-test"
 image = "zc-stable-msrv"
 runner = "ubuntu-24.04"
@@ -987,6 +1012,7 @@ inputs = [
     ".github/release_notes.py",
     "ci/checks.toml",
     "ci/docker/anneal-tc.Dockerfile",
+    "ci/scripts/run_anneal_scaffold_check.sh",
     "ci/scripts/run_anneal_spec_check.sh",
     "zerocopy/Cargo.toml",
     "zerocopy/proofs/**",
