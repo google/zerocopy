@@ -366,23 +366,98 @@ pub(crate) fn manifest_path(
     Ok(PathBuf::from(parts.join("/")))
 }
 
-fn run(mut args: Args) -> Result<serde_json::Value, Failure> {
-    if args.target != "x86_64-unknown-linux-gnu" {
-        return Err(Failure::unsupported(
-            "the initial adapter supports only x86_64-unknown-linux-gnu",
-        ));
+/// Canonicalizes the command-line input paths against one view of the
+/// filesystem, so that inputs reached through the same moving symlink
+/// (for example a `current -> snap_v1` link that is atomically retargeted
+/// to `snap_v2`) all resolve into the same snapshot.
+///
+/// Calling `std::fs::canonicalize` once per argument resolves a shared
+/// prefix once per argument. If the link moves between two of those calls,
+/// `--crate-root` and a `--source-file` that name the same file can resolve
+/// into different snapshots; rustc then reads a name that is not declared,
+/// and capture fails closed with a spurious undeclared-read refusal.
+///
+/// Instead, each path is made absolute and canonicalized one component at a
+/// time by calling `std::fs::canonicalize` on each `(canonical_prefix,
+/// next_component)` step and memoizing the result under the raw prefix. This
+/// is an Anneal cross-argument snapshot consistency mechanism rather than a
+/// compiler or standard-library workaround (neither POSIX `realpath` nor
+/// `std::fs::canonicalize` resolves multiple independent CLI arguments against
+/// a shared moving-symlink snapshot): inputs whose raw spellings share a
+/// prefix observe one resolution of it. On ordinary static paths, this
+/// preserves `std::fs::canonicalize` semantics—including physical `..`,
+/// trailing `/` and `/.` directory checks, and fail-closed errors for missing,
+/// dangling, or non-directory components—differing only on exotic cases such
+/// as chains exceeding Linux's cumulative symlink hop limit across cached
+/// prefixes, `.` under an unsearchable ancestor, or exact errno distinctions
+/// on missing spellings.
+///
+/// Once resolved, only canonical names reach rustc, the `RecordingLoader`
+/// namespace, and the manifest, so later movement of the link cannot change
+/// what is read. This does not make the snapshot itself immutable: as
+/// `RecordingLoader::lookup` states, direct callers must keep the declared
+/// canonical files and their ancestors unchanged for the compiler session.
+/// Distinct raw spellings of moving links (`a/current` and `b/current`) are
+/// resolved independently and can still disagree; that failure is also
+/// closed.
+#[derive(Default)]
+struct InputResolver {
+    resolved: BTreeMap<PathBuf, PathBuf>,
+}
+
+impl InputResolver {
+    fn canonicalize(&mut self, path: &Path) -> std::io::Result<PathBuf> {
+        if path.as_os_str().is_empty() {
+            return path.canonicalize();
+        }
+        let absolute = std::path::absolute(path)?;
+        let mut raw = PathBuf::new();
+        let mut canonical = PathBuf::new();
+        for component in absolute.components() {
+            raw.push(component);
+            match component {
+                Component::RootDir => canonical.push(component),
+                Component::Normal(_) | Component::ParentDir => {
+                    canonical = match self.resolved.get(&raw) {
+                        Some(resolved) => resolved.clone(),
+                        None => {
+                            let resolved = canonical.join(component).canonicalize()?;
+                            self.resolved.insert(raw.clone(), resolved.clone());
+                            resolved
+                        }
+                    };
+                }
+                // `std::path::absolute` removes `.` components on Unix, and
+                // capture runs only on Linux, where paths have no prefix.
+                Component::CurDir | Component::Prefix(_) => {
+                    return Err(std::io::Error::other(format!(
+                        "unexpected component in absolute input path: {}",
+                        absolute.display()
+                    )));
+                }
+            }
+        }
+        // `Path::components` drops a trailing `/` or `/.`, either of which
+        // requires the path to name a directory. Check that requirement as
+        // `canonicalize` does, so that `file.rs/` fails rather than naming
+        // `file.rs`.
+        let spelling = path.as_os_str().as_encoded_bytes();
+        if spelling.ends_with(b"/") || spelling.ends_with(b"/.") {
+            canonical = canonical.join(".").canonicalize()?;
+        }
+        Ok(canonical)
     }
-    // Declarations, selectors, and cfgs are sets. A declared alias selects its
-    // canonical filename; it does not expose other ambient aliases to rustc.
-    // The recording loader uses those names and their ancestor directories as
-    // its source namespace, independently checking the exact bytes read.
-    // Sorting keeps manifests stable; normalization alone proves no read.
-    args.crate_root = args.crate_root.canonicalize().map_err(Failure::io)?;
+}
+
+/// Canonicalize all command-line input paths through one shared `InputResolver`
+/// so inputs reached through the same moving symlink resolve into one snapshot.
+fn resolve_input_paths(args: &mut Args, resolver: &mut InputResolver) -> Result<(), Failure> {
+    args.crate_root = resolver.canonicalize(&args.crate_root).map_err(Failure::io)?;
     for path in &mut args.source_file {
-        *path = path.canonicalize().map_err(Failure::io)?;
+        *path = resolver.canonicalize(path).map_err(Failure::io)?;
     }
     if let Some(source_root) = args.source_root.as_mut() {
-        *source_root = source_root.canonicalize().map_err(Failure::io)?;
+        *source_root = resolver.canonicalize(source_root).map_err(Failure::io)?;
         if !source_root.is_dir() {
             return Err(Failure::unsupported(format!(
                 "--source-root is not a directory: {}",
@@ -394,8 +469,49 @@ fn run(mut args: Args) -> Result<serde_json::Value, Failure> {
             manifest_path(path, Some(source_root))?;
         }
     }
+    Ok(())
+}
+
+fn resolve_verify_shard_plan(
+    verify_shard_plan: Option<PathBuf>,
+    resolver: &mut InputResolver,
+) -> Result<Option<PathBuf>, Failure> {
+    match verify_shard_plan {
+        Some(path) => Ok(Some(resolver.canonicalize(&path).map_err(|e| {
+            Failure::tool(format!("cannot resolve --verify-shard-plan {}: {e}", path.display()))
+        })?)),
+        None => Ok(None),
+    }
+}
+
+fn run(mut args: Args) -> Result<serde_json::Value, Failure> {
+    if args.target != "x86_64-unknown-linux-gnu" {
+        return Err(Failure::unsupported(
+            "the initial adapter supports only x86_64-unknown-linux-gnu",
+        ));
+    }
+    // Declarations, selectors, and cfgs are sets. A declared alias selects its
+    // canonical filename; it does not expose other ambient aliases to rustc.
+    // The recording loader uses those names and their ancestor directories as
+    // its source namespace, independently checking the exact bytes read.
+    // Sorting keeps manifests stable; normalization alone proves no read.
+    // One resolver canonicalizes every input path (including
+    // `--verify-shard-plan` below), so inputs reached through the same moving
+    // symlink resolve into one snapshot.
+    let mut resolver = InputResolver::default();
+    resolve_input_paths(&mut args, &mut resolver)?;
     args.source_file.sort();
     args.source_file.dedup();
+    // rustc reads the crate root through the recording loader, which refuses
+    // any undeclared name. Check that here, before the compiler runs, so
+    // that a crate root resolved outside the declared files fails with a
+    // diagnostic that names the crate root.
+    if args.source_file.binary_search(&args.crate_root).is_err() {
+        return Err(Failure::unsupported(format!(
+            "--crate-root is not a declared --source-file: {}",
+            args.crate_root.display()
+        )));
+    }
     args.cfg.sort();
     args.cfg.dedup();
     args.allow_unstable_feature.sort();
@@ -424,12 +540,8 @@ fn run(mut args: Args) -> Result<serde_json::Value, Failure> {
         shard_max_ast_nodes: args.shard_max_ast_nodes,
     };
     shard_config.validate().map_err(Failure::tool)?;
-    let verify_shard_plan = match args.verify_shard_plan.take() {
-        Some(path) => Some(path.canonicalize().map_err(|e| {
-            Failure::tool(format!("cannot resolve --verify-shard-plan {}: {e}", path.display()))
-        })?),
-        None => None,
-    };
+    let verify_shard_plan =
+        resolve_verify_shard_plan(args.verify_shard_plan.take(), &mut resolver)?;
     let mut manifest = capture::run(&args, &declared_env, &sysroot, &verified)?;
     let prepared_shards =
         shard::maybe_shard_manifest(&mut manifest, shard_config).map_err(Failure::tool)?;
@@ -629,6 +741,166 @@ mod tests {
                 "{err:?}"
             );
         }
+    }
+
+    #[cfg(unix)]
+    #[test]
+    fn input_resolver_matches_canonicalize_without_concurrent_changes() {
+        use std::os::unix::fs::symlink;
+
+        let dir = tempfile::tempdir().unwrap();
+        let base = dir.path().canonicalize().unwrap();
+        std::fs::create_dir_all(base.join("real/inner")).unwrap();
+        std::fs::write(base.join("real/inner/lib.rs"), "").unwrap();
+        std::fs::write(base.join("real/top.rs"), "").unwrap();
+        symlink(base.join("real"), base.join("abs-dir")).unwrap();
+        symlink("real/inner", base.join("rel-dir")).unwrap();
+        symlink("inner/lib.rs", base.join("real/file-link.rs")).unwrap();
+        symlink("rel-dir", base.join("chain")).unwrap();
+        symlink("missing", base.join("dangling")).unwrap();
+        let cases = [
+            "real/inner/lib.rs",
+            "abs-dir/inner/lib.rs",
+            "rel-dir/lib.rs",
+            "chain/lib.rs",
+            "real/file-link.rs",
+            "abs-dir/file-link.rs",
+            "abs-dir",
+            // `..` is physical: `rel-dir/..` is `real`, not `base`.
+            "rel-dir/../top.rs",
+            "chain/../top.rs",
+            "real/inner/../top.rs",
+            // A trailing `/` or `/.` requires a directory.
+            "abs-dir/",
+            "rel-dir/.",
+            "chain/./",
+            "real/top.rs/",
+            "real/top.rs/.",
+            "real/file-link.rs/",
+            // Errors: a missing component, a dangling link, and `..` after a
+            // regular file.
+            "real/missing.rs",
+            "real/missing/../top.rs",
+            "dangling",
+            "real/top.rs/../top.rs",
+        ];
+        let mut shared = InputResolver::default();
+        for case in cases {
+            let path = base.join(case);
+            let expected = path.canonicalize().ok();
+            assert_eq!(InputResolver::default().canonicalize(&path).ok(), expected, "{case}");
+            assert_eq!(shared.canonicalize(&path).ok(), expected, "{case} (shared)");
+        }
+        assert_eq!(
+            shared.canonicalize(&base.join("rel-dir/../top.rs")).unwrap(),
+            base.join("real/top.rs")
+        );
+        assert!(shared.canonicalize(&base.join("real/top.rs/")).is_err());
+        assert!(shared.canonicalize(&base.join("real/top.rs/.")).is_err());
+        assert_eq!(shared.canonicalize(&base.join("rel-dir/.")).unwrap(), base.join("real/inner"));
+    }
+
+    #[cfg(unix)]
+    #[test]
+    fn input_resolver_resolves_a_shared_moving_symlink_once() {
+        use std::os::unix::fs::symlink;
+
+        let dir = tempfile::tempdir().unwrap();
+        let base = dir.path().canonicalize().unwrap();
+        for snapshot in ["snap_v1", "snap_v2"] {
+            std::fs::create_dir_all(base.join(snapshot).join("src")).unwrap();
+            std::fs::write(base.join(snapshot).join("src/lib.rs"), "mod sub;\n").unwrap();
+            std::fs::write(base.join(snapshot).join("src/sub.rs"), "").unwrap();
+        }
+        let current = base.join("current");
+        symlink("snap_v1", &current).unwrap();
+        let mut resolver = InputResolver::default();
+        let crate_root = resolver.canonicalize(&current.join("src/lib.rs")).unwrap();
+        assert_eq!(crate_root, base.join("snap_v1/src/lib.rs"));
+
+        // Retarget the link atomically, as a snapshot publisher would, between
+        // resolving `--crate-root` and resolving the remaining inputs.
+        symlink("snap_v2", base.join("next")).unwrap();
+        std::fs::rename(base.join("next"), &current).unwrap();
+        assert_eq!(
+            current.join("src/sub.rs").canonicalize().unwrap(),
+            base.join("snap_v2/src/sub.rs"),
+            "the link must really have moved"
+        );
+
+        // Every later input that shares the raw `current` prefix stays in the
+        // snapshot that the first input observed.
+        assert_eq!(resolver.canonicalize(&current.join("src/lib.rs")).unwrap(), crate_root);
+        assert_eq!(
+            resolver.canonicalize(&current.join("src/sub.rs")).unwrap(),
+            base.join("snap_v1/src/sub.rs")
+        );
+        assert_eq!(
+            resolver.canonicalize(&current.join("src/../src/sub.rs")).unwrap(),
+            base.join("snap_v1/src/sub.rs")
+        );
+        assert_eq!(resolver.canonicalize(&current).unwrap(), base.join("snap_v1"));
+        // A fresh resolver is a fresh view of the filesystem.
+        assert_eq!(
+            InputResolver::default().canonicalize(&current.join("src/sub.rs")).unwrap(),
+            base.join("snap_v2/src/sub.rs")
+        );
+    }
+
+    #[cfg(unix)]
+    #[test]
+    fn resolve_input_paths_and_shard_plan_share_one_snapshot_resolver() {
+        use std::os::unix::fs::symlink;
+
+        let dir = tempfile::tempdir().unwrap();
+        let base = dir.path().canonicalize().unwrap();
+        for snapshot in ["snap_v1", "snap_v2"] {
+            std::fs::create_dir_all(base.join(snapshot).join("src")).unwrap();
+            std::fs::write(base.join(snapshot).join("src/lib.rs"), "mod sub;\n").unwrap();
+            std::fs::write(base.join(snapshot).join("src/sub.rs"), "").unwrap();
+            std::fs::write(base.join(snapshot).join("anneal-shards.json"), "{}").unwrap();
+        }
+        let current = base.join("current");
+        symlink("snap_v1", &current).unwrap();
+        let mut args = Args::try_parse_from([
+            "anneal-rustc-capture",
+            "--crate-name",
+            "demo",
+            "--target",
+            "x86_64-unknown-linux-gnu",
+            "--scope",
+            "crate",
+            "--crate-root",
+            current.join("src/lib.rs").to_str().unwrap(),
+            "--source-file",
+            current.join("src/lib.rs").to_str().unwrap(),
+            "--source-file",
+            current.join("src/sub.rs").to_str().unwrap(),
+            "--source-root",
+            current.to_str().unwrap(),
+            "--verify-shard-plan",
+            current.join("anneal-shards.json").to_str().unwrap(),
+            "--out-dir",
+            base.join("out").to_str().unwrap(),
+        ])
+        .unwrap();
+
+        let mut resolver = InputResolver::default();
+        resolve_input_paths(&mut args, &mut resolver).unwrap();
+        assert_eq!(args.crate_root, base.join("snap_v1/src/lib.rs"));
+        assert_eq!(
+            args.source_file,
+            vec![base.join("snap_v1/src/lib.rs"), base.join("snap_v1/src/sub.rs")]
+        );
+        assert_eq!(args.source_root, Some(base.join("snap_v1")));
+
+        // Retarget `current` to `snap_v2` before `--verify-shard-plan` is
+        // resolved (the exact window in `run()` around `verify_compiler`).
+        symlink("snap_v2", base.join("next")).unwrap();
+        std::fs::rename(base.join("next"), &current).unwrap();
+        let plan_path =
+            resolve_verify_shard_plan(args.verify_shard_plan.take(), &mut resolver).unwrap();
+        assert_eq!(plan_path, Some(base.join("snap_v1/anneal-shards.json")));
     }
 
     #[test]
