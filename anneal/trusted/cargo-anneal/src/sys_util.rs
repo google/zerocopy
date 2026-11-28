@@ -517,6 +517,148 @@ impl SysSanitizer {
     }
 }
 
+/// Overwrite `buf` with zeroes using volatile writes and a compiler fence so
+/// secret key scrubbing during `Drop` is never optimized away.
+pub fn volatile_zero(buf: &mut [u8]) {
+    for byte in buf {
+        // SAFETY: `byte` is a unique mutable reference to initialized memory.
+        unsafe {
+            std::ptr::write_volatile(byte, 0);
+        }
+    }
+    std::sync::atomic::compiler_fence(std::sync::atomic::Ordering::SeqCst);
+}
+
+/// Overwrite `buf` of `u64` limbs with zeroes using volatile writes and a
+/// compiler fence so accumulator/key scrubbing during `Drop` is not elided.
+pub fn volatile_zero_u64(buf: &mut [u64]) {
+    for word in buf {
+        // SAFETY: `word` is a unique mutable reference to initialized memory.
+        unsafe {
+            std::ptr::write_volatile(word, 0);
+        }
+    }
+    std::sync::atomic::compiler_fence(std::sync::atomic::Ordering::SeqCst);
+}
+
+#[cfg(unix)]
+fn read_dev_urandom_32(dst: &mut [u8; 32]) -> Result<(), Failure> {
+    let mut opts = fs::OpenOptions::new();
+    opts.read(true);
+    opts.custom_flags(libc::O_NOFOLLOW | libc::O_CLOEXEC);
+    let mut file = opts
+        .open("/dev/urandom")
+        .map_err(|e| failure_from_io("it-mac", "open /dev/urandom", &e))?;
+    file.read_exact(dst)
+        .map_err(|e| failure_from_io("it-mac", "read 32-byte key from /dev/urandom", &e))?;
+    Ok(())
+}
+
+/// Fill a 32-byte key buffer from the host OS CSPRNG (`getrandom(2)` with
+/// `flags = 0` on Linux, falling back to `/dev/urandom` on `ENOSYS` or other
+/// Unix platforms).
+pub fn fill_os_random_32(dst: &mut [u8; 32]) -> Result<(), Failure> {
+    #[cfg(target_os = "linux")]
+    {
+        let mut offset = 0usize;
+        while offset < dst.len() {
+            // SAFETY: `dst[offset..]` is a valid writable byte slice.
+            let rc = unsafe {
+                libc::getrandom(
+                    dst[offset..].as_mut_ptr().cast::<libc::c_void>(),
+                    dst.len() - offset,
+                    0,
+                )
+            };
+            if rc > 0 {
+                offset += rc as usize;
+                continue;
+            }
+            let err = io::Error::last_os_error();
+            if err.kind() == io::ErrorKind::Interrupted {
+                continue;
+            }
+            if err.raw_os_error() == Some(libc::ENOSYS) {
+                return read_dev_urandom_32(dst);
+            }
+            return Err(failure_from_io("it-mac", "read 32-byte key from getrandom", &err));
+        }
+        Ok(())
+    }
+    #[cfg(all(unix, not(target_os = "linux")))]
+    {
+        read_dev_urandom_32(dst)
+    }
+    #[cfg(not(unix))]
+    {
+        let _ = dst;
+        Err(Failure::operational("it-mac", "OS entropy source unavailable on non-Unix host"))
+    }
+}
+
+/// Mark an open Unix descriptor non-blocking (`O_NONBLOCK`) via `fcntl`.
+#[cfg(unix)]
+pub fn set_fd_nonblocking(fd: std::os::unix::io::BorrowedFd<'_>) -> Result<(), Failure> {
+    use std::os::unix::io::AsRawFd as _;
+
+    let raw = fd.as_raw_fd();
+    // SAFETY: `fd` is a valid borrowed descriptor for this call.
+    let flags = unsafe { libc::fcntl(raw, libc::F_GETFL) };
+    if flags < 0 {
+        let err = io::Error::last_os_error();
+        return Err(failure_from_io("it-mac", "fcntl(F_GETFL)", &err));
+    }
+    // SAFETY: `fd` is a valid borrowed descriptor and `flags | O_NONBLOCK`
+    // preserves all existing file status flags while enabling non-blocking I/O.
+    if unsafe { libc::fcntl(raw, libc::F_SETFL, flags | libc::O_NONBLOCK) } < 0 {
+        let err = io::Error::last_os_error();
+        return Err(failure_from_io("it-mac", "fcntl(F_SETFL, O_NONBLOCK)", &err));
+    }
+    Ok(())
+}
+
+/// Create an anonymous pipe `(read_fd, write_fd)` with `FD_CLOEXEC` set
+/// atomically on Linux (`pipe2`) or immediately on other Unix platforms.
+#[cfg(unix)]
+pub fn create_cloexec_pipe()
+-> Result<(std::os::unix::io::OwnedFd, std::os::unix::io::OwnedFd), Failure> {
+    use std::os::unix::io::{FromRawFd, OwnedFd};
+
+    let mut fds = [0 as libc::c_int; 2];
+    #[cfg(target_os = "linux")]
+    {
+        // SAFETY: `fds` is a valid writable 2-element `c_int` array.
+        if unsafe { libc::pipe2(fds.as_mut_ptr(), libc::O_CLOEXEC) } != 0 {
+            let err = io::Error::last_os_error();
+            return Err(failure_from_io("it-mac", "pipe2(O_CLOEXEC)", &err));
+        }
+    }
+    #[cfg(not(target_os = "linux"))]
+    {
+        // SAFETY: `fds` is a valid writable 2-element `c_int` array.
+        if unsafe { libc::pipe(fds.as_mut_ptr()) } != 0 {
+            let err = io::Error::last_os_error();
+            return Err(failure_from_io("it-mac", "pipe", &err));
+        }
+        for fd in fds {
+            // SAFETY: `fd` is a valid newly opened descriptor.
+            if unsafe { libc::fcntl(fd, libc::F_SETFD, libc::FD_CLOEXEC) } != 0 {
+                let err = io::Error::last_os_error();
+                // SAFETY: both fds were just returned by `pipe(2)`, are owned
+                // only here, and are not yet wrapped in `OwnedFd`, so closing
+                // each once is sound.
+                unsafe {
+                    let _ = libc::close(fds[0]);
+                    let _ = libc::close(fds[1]);
+                }
+                return Err(failure_from_io("it-mac", "fcntl(FD_CLOEXEC)", &err));
+            }
+        }
+    }
+    // SAFETY: both descriptors are freshly created unique owned pipe ends.
+    unsafe { Ok((OwnedFd::from_raw_fd(fds[0]), OwnedFd::from_raw_fd(fds[1]))) }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;

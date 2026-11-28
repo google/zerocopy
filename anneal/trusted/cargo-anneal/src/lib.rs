@@ -42,6 +42,8 @@ pub mod output;
 #[doc(hidden)]
 pub mod inspect;
 #[doc(hidden)]
+pub mod it_mac;
+#[doc(hidden)]
 pub mod sandbox;
 #[cfg(feature = "setup")]
 #[doc(hidden)]
