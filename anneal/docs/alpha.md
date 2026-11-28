@@ -197,7 +197,9 @@ For a realistic scalar example, `ci/verify_starnix_e2e.py` checks Starnix's
 
 Capture selects Profile v2 (`mirProfileVersion = 2`) for the whole captured
 program when any captured body uses one of its additions; a program without
-them stays on Profile v1. Every body of a Profile v2 program, including
+them stays on Profile v1. When capture refuses a Profile v1 call in a Profile
+v2 program, its diagnostic names the refused call and the first body and
+construct requiring Profile v2. Every body of a Profile v2 program, including
 scalar-only ones, is checked against `UnitTheoremV2` or `CrateTheoremV2`. Its
 receipt lists an "experimental Profile v2 MIR semantics" assumption and marks
 `correspondence_provenance` inapplicable, because Pass 2 relates only Profile

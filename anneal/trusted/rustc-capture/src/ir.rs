@@ -3471,29 +3471,47 @@ impl Body {
 
     /// Whether this body requires Profile v2 execution rules
     /// (`mir_profile_version = 2`).
+    #[cfg(test)]
     pub fn uses_profile_v2(&self) -> bool {
-        if self.local_tys.iter().any(Ty::is_profile_v2) {
-            return true;
+        self.profile_v2_trigger().is_some()
+    }
+
+    /// The first construct in this body that requires Profile v2 execution
+    /// rules, described for diagnostics, or `None` if the body stays in
+    /// Profile v1.
+    ///
+    /// [`Program::try_new_with_options`] names this construct when it refuses
+    /// a Profile v1 call, so users can find which body selected Profile v2.
+    pub fn profile_v2_trigger(&self) -> Option<String> {
+        let v2_local = self.local_tys.iter().enumerate().find(|(_, ty)| ty.is_profile_v2());
+        if let Some((idx, ty)) = v2_local {
+            return Some(format!("local _{idx} has Profile v2 type {ty:?}"));
         }
-        for block in &self.blocks {
-            for stmt in &block.statements {
+        for (bb, block) in self.blocks.iter().enumerate() {
+            for (idx, stmt) in block.statements.iter().enumerate() {
                 match stmt {
-                    Statement::AssignPlace { .. } => return true,
+                    Statement::AssignPlace { .. } => {
+                        return Some(format!("bb{bb}[{idx}]: assignment to a projected place"));
+                    }
                     Statement::Assign { value, .. } => match value {
                         Rvalue::Use { operand, .. } => {
                             if operand.is_profile_v2() {
-                                return true;
+                                return Some(format!("bb{bb}[{idx}]: `Use` of {operand:?}"));
                             }
                         }
                         Rvalue::Binary { op, left, right } => {
                             if *op == BinOp::Offset || left.is_profile_v2() || right.is_profile_v2()
                             {
-                                return true;
+                                return Some(format!(
+                                    "bb{bb}[{idx}]: binary `{op:?}` of {left:?}, {right:?}"
+                                ));
                             }
                         }
                         Rvalue::Unary { op, operand } => {
                             if *op == UnOp::PtrMetadata || operand.is_profile_v2() {
-                                return true;
+                                return Some(format!(
+                                    "bb{bb}[{idx}]: unary `{op:?}` of {operand:?}"
+                                ));
                             }
                         }
                         Rvalue::Cast {
@@ -3505,12 +3523,16 @@ impl Body {
                                 || operand.is_profile_v2()
                                 || ty.is_profile_v2()
                             {
-                                return true;
+                                return Some(format!(
+                                    "bb{bb}[{idx}]: `{cast_kind:?}` cast of {operand:?} to {ty:?}"
+                                ));
                             }
                         }
                         Rvalue::Discriminant { place } => {
                             if !place.projection.is_empty() {
-                                return true;
+                                return Some(format!(
+                                    "bb{bb}[{idx}]: `Discriminant` of projected {place:?}"
+                                ));
                             }
                         }
                         Rvalue::UseRetag { .. }
@@ -3523,7 +3545,9 @@ impl Body {
                         | Rvalue::AggregateRangeTo { .. }
                         | Rvalue::AggregateRangeFrom { .. }
                         | Rvalue::AggregateRange { .. }
-                        | Rvalue::AggregateOption { .. } => return true,
+                        | Rvalue::AggregateOption { .. } => {
+                            return Some(format!("bb{bb}[{idx}]: rvalue {value:?}"));
+                        }
                     },
                     Statement::StorageLive { .. }
                     | Statement::StorageDead { .. }
@@ -3534,7 +3558,7 @@ impl Body {
             match &block.terminator {
                 Terminator::SwitchInt { operand, .. } => {
                     if operand.is_profile_v2() {
-                        return true;
+                        return Some(format!("bb{bb} terminator: `SwitchInt` on {operand:?}"));
                     }
                 }
                 // Profile v1 `evalTerminator` already models `Assert` for
@@ -3556,10 +3580,12 @@ impl Body {
                                 | AssertKind::NullPtrDeref
                         )
                     {
-                        return true;
+                        return Some(format!("bb{bb} terminator: `Assert` ({msg:?}) on {cond:?}"));
                     }
                 }
-                Terminator::CoreCall { .. } => return true,
+                Terminator::CoreCall { op, .. } => {
+                    return Some(format!("bb{bb} terminator: core call {op:?}"));
+                }
                 // Intra-crate and `core::num` sysroot calls are Profile v1
                 // terminators; `Program::try_new` refuses them in a Profile v2
                 // program.
@@ -3571,7 +3597,7 @@ impl Body {
                 | Terminator::Unsupported => {}
             }
         }
-        false
+        None
     }
 
     pub fn callees(&self) -> &BTreeSet<String> {
@@ -3846,26 +3872,32 @@ impl Program {
                 }
             }
         }
-        let mir_profile_version = if bodies.iter().any(Body::uses_profile_v2) {
-            2
-        } else {
-            1
-        };
+        let profile_v2_trigger = bodies
+            .iter()
+            .find_map(|body| body.profile_v2_trigger().map(|why| (&body.identity, why)));
+        let mir_profile_version = if profile_v2_trigger.is_some() { 2 } else { 1 };
         // `Trusted.MirSemantics.evalStepV2` executes a single frame and faults
         // on `.call` and `.sysrootCall`, so refuse them here rather than emit
-        // a program whose calls can only fault.
-        if mir_profile_version == 2
-            && let Some(body) = bodies.iter().find(|body| {
-                body.blocks.iter().any(|block| {
-                    matches!(
-                        block.terminator,
-                        Terminator::Call { .. } | Terminator::SysrootCall { .. }
-                    )
+        // a program whose calls can only fault. Name the refused call and the
+        // construct that selected Profile v2, which may sit in another body.
+        if let Some((trigger_body, trigger)) = &profile_v2_trigger
+            && let Some((body, bb, call)) = bodies.iter().find_map(|body| {
+                body.blocks.iter().enumerate().find_map(|(bb, block)| {
+                    let call = match &block.terminator {
+                        Terminator::Call { callee, .. } => format!(
+                            "call to {}",
+                            bodies.get(*callee).map_or("<unknown callee>", |c| &c.identity)
+                        ),
+                        Terminator::SysrootCall { op, .. } => format!("`core::num` call {op:?}"),
+                        _ => return None,
+                    };
+                    Some((body, bb, call))
                 })
             })
         {
             return Err(format!(
-                "{} makes a Profile v1 call in a Profile v2 program",
+                "{} makes a Profile v1 call in a Profile v2 program (bb{bb} terminator: \
+                 {call}); Profile v2 was selected by {trigger_body} ({trigger})",
                 body.identity
             ));
         }
@@ -7659,9 +7691,54 @@ mod tests {
             "rust-path-v1::v1_caller".into(),
         )
         .unwrap();
-        let mixed_err =
-            Program::try_new(Scope::Crate, vec![v1_callee, v1_caller, agg_range_ok]).unwrap_err();
-        assert!(mixed_err.contains("Profile v2"), "{mixed_err}");
+        let mixed_err = Program::try_new(
+            Scope::Crate,
+            vec![v1_callee.clone(), v1_caller.clone(), agg_range_ok],
+        )
+        .unwrap_err();
+        // The refusal names the refused call and the body and construct that
+        // selected Profile v2.
+        assert!(
+            mixed_err.starts_with(
+                "rust-path-v1::v1_caller makes a Profile v1 call in a Profile v2 program \
+                 (bb0 terminator: call to rust-path-v1::v1_callee); Profile v2 was selected \
+                 by rust-path-v1::agg_range_ok (local _0 has Profile v2 type Range {"
+            ),
+            "{mixed_err}"
+        );
+        let overflow_assert = Body::try_new(
+            1,
+            false,
+            vec![Ty::Unit, Ty::Bool],
+            vec![
+                Block {
+                    statements: vec![],
+                    terminator: Terminator::Assert {
+                        cond: Operand::Copy { local: 1 },
+                        expected: true,
+                        msg: AssertKind::Overflow { op: BinOp::Add },
+                        target: 1,
+                        unwind: UnwindAction::Continue,
+                    },
+                },
+                Block {
+                    statements: vec![],
+                    terminator: Terminator::Ret,
+                },
+            ],
+            "rust-path-v1::overflow_assert".into(),
+        )
+        .unwrap();
+        let overflow_err =
+            Program::try_new(Scope::Crate, vec![v1_callee, v1_caller, overflow_assert])
+                .unwrap_err();
+        assert_eq!(
+            overflow_err,
+            "rust-path-v1::v1_caller makes a Profile v1 call in a Profile v2 program \
+             (bb0 terminator: call to rust-path-v1::v1_callee); Profile v2 was selected by \
+             rust-path-v1::overflow_assert (bb0 terminator: `Assert` (Overflow { op: Add }) \
+             on Copy { local: 1 })"
+        );
 
         // `Rvalue::AggregateOption` validation: valid None/Some, bad dst,
         // mismatched Some payload, and invalid variant/payload combinations.
@@ -8966,5 +9043,72 @@ mod tests {
         )
         .unwrap_err();
         assert!(err.contains("unsupported cast"), "{err}");
+    }
+
+    /// `Body::profile_v2_trigger` routes a `Not`/`Neg` to Profile v2 exactly
+    /// when its operand needs Profile v2. `rustc` usually copies a tuple field
+    /// to a scalar temporary first, so the integration tests only see scalar
+    /// operands; this builds the projected-operand case directly.
+    #[test]
+    fn profile_v2_trigger_unary_follows_operand_profile() {
+        let u32_ity = IntTy {
+            width: IntWidth::I32,
+            signed: false,
+        };
+        let unary_body = |locals: Vec<Ty>, op: UnOp, operand: Operand| {
+            Body::try_new(
+                1,
+                false,
+                locals,
+                vec![Block {
+                    statements: vec![Statement::Assign {
+                        local: 0,
+                        value: Rvalue::Unary { op, operand },
+                    }],
+                    terminator: Terminator::Ret,
+                }],
+                "rust-path-v1::unary_profile_routing".into(),
+            )
+            .unwrap()
+        };
+
+        // Scalar operands stay in Profile v1.
+        let not_scalar = unary_body(
+            vec![Ty::Bool, Ty::Bool],
+            UnOp::Not,
+            Operand::Copy { local: 1 },
+        );
+        assert_eq!(not_scalar.profile_v2_trigger(), None);
+        let i32_ty = Ty::Int(IntTy {
+            width: IntWidth::I32,
+            signed: true,
+        });
+        let neg_scalar = unary_body(
+            vec![i32_ty.clone(), i32_ty],
+            UnOp::Neg,
+            Operand::Copy { local: 1 },
+        );
+        assert_eq!(neg_scalar.profile_v2_trigger(), None);
+
+        // `!copy (_1.1)` on a Profile v1 `(u32, bool)` local: every local type
+        // is Profile v1, so only the projected operand can select Profile v2.
+        let not_field = unary_body(
+            vec![Ty::Bool, Ty::OverflowPair(u32_ity)],
+            UnOp::Not,
+            Operand::CopyPlace {
+                place: Place {
+                    local: 1,
+                    projection: vec![PlaceElem::Field {
+                        index: 1,
+                        ty: Ty::Bool,
+                    }],
+                },
+            },
+        );
+        assert!(!Ty::OverflowPair(u32_ity).is_profile_v2());
+        let trigger = not_field
+            .profile_v2_trigger()
+            .expect("projected operand selects Profile v2");
+        assert!(trigger.starts_with("bb0[0]: unary `Not` of "), "{trigger}");
     }
 }
