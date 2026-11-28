@@ -229,16 +229,25 @@ pub(crate) fn is_cacheable_target_shard_module(module: &str) -> bool {
         || module.starts_with("Proof.Shard_")
 }
 
-/// Derive a per-user disk cache directory (`<cache>/anneal/olean-cache`)
-/// from explicit `HOME` and optional `XDG_CACHE_HOME` values without reading
+/// Derive the per-user cache base directory (`XDG_CACHE_HOME`, `~/.cache`,
+/// or `~/Library/Caches` on macOS) that holds the default disk cache, from
+/// explicit `HOME` and optional `XDG_CACHE_HOME` values without reading
 /// ambient process environment variables.
-pub(crate) fn cache_dir_from_env_vars(
+pub(crate) fn cache_base_from_env_vars(
     home: Option<&OsStr>,
     xdg_cache_home: Option<&OsStr>,
 ) -> Option<PathBuf> {
     let home = home.filter(|v| !v.is_empty()).map(PathBuf::from)?;
-    let base = cache_dir_for_platform(cfg!(target_os = "macos"), xdg_cache_home, &home);
-    Some(base.join("anneal/olean-cache"))
+    Some(cache_dir_for_platform(cfg!(target_os = "macos"), xdg_cache_home, &home))
+}
+
+/// Derive a per-user disk cache directory (`<cache>/anneal/olean-cache`)
+/// under [`cache_base_from_env_vars`].
+pub(crate) fn cache_dir_from_env_vars(
+    home: Option<&OsStr>,
+    xdg_cache_home: Option<&OsStr>,
+) -> Option<PathBuf> {
+    cache_base_from_env_vars(home, xdg_cache_home).map(|base| base.join("anneal/olean-cache"))
 }
 
 /// Derive the default per-user disk cache directory (`<cache>/anneal/olean-cache`)
