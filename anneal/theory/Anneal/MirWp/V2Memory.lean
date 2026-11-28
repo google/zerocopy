@@ -1032,7 +1032,8 @@ theorem boxPointeeValidInMem_shared_of_mut {m : MemoryState} {pt : MirTy}
       exact ownedHeapBufValidInMem_shared_of_mut h
   | int _ _ | bool | char | ordering | unit | tuple _ | enum _
   | unsupported | ref _ _ | rawPtr _ _ | rangeTo _ | rangeFrom _
-  | array _ _ | never | option _ | range _ | vec _ | box _ | str =>
+  | array _ _ | never | option _ | range _ | vec _ | box _
+  | struct_ _ _ | str =>
     cases optLen with
     | none =>
       dsimp only at h
@@ -1075,7 +1076,7 @@ theorem refValid_shared_of_mut {m : MemoryState} {pointee : MirTy} {v : Val}
               sliceCheck_shared_of_mut hS]
         | bool | unit | never | char | ordering | str | enum _ | tuple _ | ref _ _
         | rawPtr _ _ | slice _ | array _ _ | rangeTo _ | rangeFrom _
-        | option _ | range _ | unsupported | box _ | vec _ =>
+        | option _ | range _ | unsupported | box _ | vec _ | struct_ _ _ =>
           dsimp only at h1
           dsimp only
           let ⟨hInh, h2⟩ := ite_err_eq_ok h1
@@ -1099,7 +1100,7 @@ theorem refValid_shared_of_mut {m : MemoryState} {pointee : MirTy} {v : Val}
     cases v <;> cases h
   | int _ _ | bool | char | ordering | unit | tuple _ | enum _ | unsupported
   | ref _ _ | rawPtr _ _ | rangeTo _ | rangeFrom _ | array _ _ | never
-  | option _ | range _ =>
+  | option _ | range _ | struct_ _ _ =>
     cases v with
     | ptr p =>
       dsimp only at h
@@ -1327,7 +1328,7 @@ theorem refsStayInCallerMem_of_refValid {cm : CallerMemory}
               | bool | unit | never | char | ordering | enum _ | tuple _
               | ref _ _ | rawPtr _ _ | slice _ | str | array _ _ | rangeTo _
               | rangeFrom _ | option _ | range _ | unsupported | box _
-              | vec _ =>
+              | vec _ | struct_ _ _ =>
                 dsimp only at h1
                 let ⟨_, h1b⟩ := ite_err_eq_ok h1
                 cases hRes : sliceRefRawCheck (entryMemoryWithCaller cm)
@@ -1391,7 +1392,7 @@ theorem refsStayInCallerMem_of_refValid {cm : CallerMemory}
       unfold refValidInMem at h; cases h
   | int _ _ | bool | char | ordering | unit | tuple _ | enum _ | unsupported
   | ref _ _ | rawPtr _ _ | rangeTo _ | rangeFrom _ | array _ _ | never
-  | option _ | range _ | vec _ | box _ =>
+  | option _ | range _ | vec _ | box _ | struct_ _ _ =>
     cases v with
     | ptr p =>
       cases p with
@@ -1467,7 +1468,7 @@ theorem spansDisjoint_single {reqMut : Mutability} {pt : MirTy} {v : Val} :
       exact Nat.zero_le 1
   | int _ _ | bool | char | ordering | unit | tuple _ | enum _ | unsupported
   | ref _ _ | rawPtr _ _ | rangeTo _ | rangeFrom _ | array _ _ | never
-  | option _ | range _ | vec _ | box _ =>
+  | option _ | range _ | vec _ | box _ | struct_ _ _ =>
     cases v with
     | ptr p =>
       dsimp only
@@ -1872,6 +1873,17 @@ mutual
     | .option _, .rangeFrom _ | .option _, .range _ _ | .option _, .tuple _
     | .option _, .array _ | .option _, .vec _ _ _ | .option _, .boxPtr _ _
     | .option _, .bytes _ => rfl
+    | .struct_ _ fs, .tuple vs => by
+      unfold refsValidInMem
+      exact refsValidInMemList_allocations_eq hEq fs vs
+    | .struct_ _ _, .scalar _ | .struct_ _ _, .ptr _
+    | .struct_ _ _, .slicePtr _ _ | .struct_ _ _, .vec _ _ _
+    | .struct_ _ _, .boxPtr _ _ | .struct_ _ _, .rangeTo _
+    | .struct_ _ _, .rangeFrom _ | .struct_ _ _, .range _ _
+    | .struct_ _ _, .optionVal _ | .struct_ _ _, .bool _
+    | .struct_ _ _, .char _ | .struct_ _ _, .ordering _
+    | .struct_ _ _, .unit | .struct_ _ _, .enumVal _ _
+    | .struct_ _ _, .array _ | .struct_ _ _, .bytes _ => rfl
     | .vec _, v => by
       unfold refsValidInMem
       cases v <;> first
@@ -2312,6 +2324,13 @@ mutual
       | scalar _ | bool _ | char _ | ordering _ | unit | enumVal _ _ | ptr _
       | slicePtr _ _ | rangeTo _ | rangeFrom _ | tuple _ | array _ | bytes _
       | range _ _ | vec _ _ _ | boxPtr _ _ => rfl
+    | .struct_ _ ts, v, hNoRaw => by
+      cases v with
+      | tuple vs => exact ptrOrRefAllocIdsList_eq_refAllocIdsList ts vs hNoRaw
+      | scalar _ | bool _ | char _ | ordering _ | unit | enumVal _ _ | ptr _
+      | slicePtr _ _ | rangeTo _ | rangeFrom _ | array _ | bytes _
+      | range _ _ | vec _ _ _ | boxPtr _ _ => rfl
+      | optionVal optV => cases optV <;> rfl
     | .ref _ pt, v, _ => by cases pt <;> cases v <;> rfl
     | .int _ _, v, _ | .bool, v, _ | .char, v, _ | .ordering, v, _
     | .unit, v, _ | .slice _, v, _ | .str, v, _ | .enum _, v, _ | .rangeTo _, v, _

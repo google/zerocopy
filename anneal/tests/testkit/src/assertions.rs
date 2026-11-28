@@ -53,6 +53,8 @@ pub struct VerifySuccessReceipt {
     pub assumptions: Vec<String>,
     pub deferred: Vec<String>,
     #[serde(default)]
+    pub excluded_items: Option<Vec<Value>>,
+    #[serde(default)]
     pub unpinned_lean: Option<Value>,
     #[serde(default)]
     pub spec_warnings: Vec<Value>,

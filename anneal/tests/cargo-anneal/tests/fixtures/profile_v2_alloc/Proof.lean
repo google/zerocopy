@@ -551,28 +551,33 @@ private theorem getElem_statements_length_none {α : Type} :
 private theorem evalStepV2_stmt {p : Program} {s : State} {frame : FrameState}
     {body : Body} {bb : BasicBlock} {stmt : StatementKind}
     (hF : s.frames = [frame])
-    (hB : Trusted.MirSemantics.getElem? p.bodies frame.defId = some body)
+    (hB : activeFrameBody p frame = some body)
     (hBB :
       Trusted.MirSemantics.getElem? body.basicBlocks frame.blockIdx = some bb)
     (hSt :
       Trusted.MirSemantics.getElem? bb.statements frame.stmtIdx = some stmt) :
     evalStepV2 p s = evalStatementV2 body frame s.mem s.callerMem stmt := by
   unfold evalStepV2; rw [hF]; dsimp only; rw [hB]; dsimp only
-  rw [hBB]; dsimp only; rw [hSt]
+  rw [hBB]; dsimp only; rw [hSt]; rfl
 
 private theorem evalStepV2_term {p : Program} {s : State} {frame : FrameState}
     {body : Body} {bb : BasicBlock}
     (hF : s.frames = [frame])
-    (hB : Trusted.MirSemantics.getElem? p.bodies frame.defId = some body)
+    (hB : activeFrameBody p frame = some body)
     (hBB :
       Trusted.MirSemantics.getElem? body.basicBlocks frame.blockIdx = some bb)
-    (hEnd : frame.stmtIdx = bb.statements.length) :
+    (hEnd : frame.stmtIdx = bb.statements.length)
+    (hNC : (match bb.terminator with
+      | .call _ _ _ _ _ | .callNe _ _ _ _ _ => false
+      | _ => true) = true) :
     evalStepV2 p s =
       evalTerminatorV2 body bb frame s.mem s.callerMem p.panicStrategy
         p.hasLocalPanicHandler p.overflowChecks := by
   unfold evalStepV2; rw [hF]; dsimp only; rw [hB]; dsimp only
   rw [hBB]; dsimp only; rw [hEnd, getElem_statements_length_none]
-  simp only [Nat.beq_refl]; rfl
+  simp only [Nat.beq_refl]
+  cases hT : bb.terminator <;> rw [hT] at hNC <;>
+    first | rfl | (simp at hNC)
 
 private theorem readBytes_ok {m : MemoryState} {place : MemPlace}
     {size alignLog2 : Nat} {a : Allocation}
@@ -1034,7 +1039,7 @@ private theorem evalStepV2_assign_ref_local {p : Program} {frame : FrameState}
     {mem mem1 : MemoryState} {cm : CallerMemory} {body : Body}
     {bb : BasicBlock} {dst src : LocalId} {reqMut : Mutability}
     {localTy : MirTy} {mplace : MemPlace} {locals1 locals2 : List LocalSlot}
-    (hB : Trusted.MirSemantics.getElem? p.bodies frame.defId = some body)
+    (hB : activeFrameBody p frame = some body)
     (hBB :
       Trusted.MirSemantics.getElem? body.basicBlocks frame.blockIdx = some bb)
     (hSt : Trusted.MirSemantics.getElem? bb.statements frame.stmtIdx =
@@ -1054,7 +1059,7 @@ private theorem evalStepV2_assign_ref_local {p : Program} {frame : FrameState}
   rw [writePlaceV2_local] at hWp
   rw [evalStepV2_stmt rfl hB hBB hSt]
   unfold evalStatementV2; dsimp only; rw [hTy]; dsimp only
-  unfold resolvePlaceDestV2; dsimp only
+  unfold resolvePlaceDestV2; dsimp only [resolveIndexProjsV2, consResolvedProjV2]
   unfold evalRvalueV2 evalRefRvalueV2; dsimp only; rw [hProm]; dsimp only
   rw [MirTy.beq_iff.mpr rfl, hRef]
   rw [ite_bool_false (!true) rfl]; dsimp only; rw [hWp]; rfl
@@ -1065,7 +1070,7 @@ private theorem evalStepV2_coreCall {p : Program} {frame : FrameState}
     {target : BasicBlockId} {uw : UnwindAction} {dstTy : MirTy}
     {typedArgs : List (MirTy × Val)} {resVal : Val}
     {locals1 locals2 : List LocalSlot}
-    (hB : Trusted.MirSemantics.getElem? p.bodies frame.defId = some body)
+    (hB : activeFrameBody p frame = some body)
     (hBB :
       Trusted.MirSemantics.getElem? body.basicBlocks frame.blockIdx = some bb)
     (hEnd : frame.stmtIdx = bb.statements.length)
@@ -1083,7 +1088,7 @@ private theorem evalStepV2_coreCall {p : Program} {frame : FrameState}
         { frame with
           blockIdx := target, stmtIdx := 0, locals := locals2 }], cm, mem3⟩
       := by
-  rw [evalStepV2_term rfl hB hBB hEnd]
+  rw [evalStepV2_term rfl hB hBB hEnd (by rw [hTerm])]
   unfold evalTerminatorV2; rw [hTerm]; dsimp only
   rw [ite_bool_false (!dst.projection.isEmpty) (by rw [hNoProj]; rfl)]
   rw [hTy]; dsimp only; rw [hArgs]; dsimp only; rw [hCall]; dsimp only
@@ -1093,7 +1098,7 @@ private theorem evalStepV2_storageDead_indirect {p : Program}
     {frame : FrameState} {mem mem1 : MemoryState} {cm : CallerMemory}
     {body : Body} {bb : BasicBlock} {lid : LocalId} {mplace : MemPlace}
     {locals1 : List LocalSlot}
-    (hB : Trusted.MirSemantics.getElem? p.bodies frame.defId = some body)
+    (hB : activeFrameBody p frame = some body)
     (hBB :
       Trusted.MirSemantics.getElem? body.basicBlocks frame.blockIdx = some bb)
     (hSt : Trusted.MirSemantics.getElem? bb.statements frame.stmtIdx =
@@ -1592,7 +1597,7 @@ private theorem evalStepV2_assign_copy_deref {p : Program} {frame : FrameState}
     {dst ptrLid : LocalId} {ptrTy valTy : MirTy} {pv : PtrVal}
     {aid : AllocId} {lay : LayoutData} {resVal : Val}
     {locals2 : List LocalSlot}
-    (hB : Trusted.MirSemantics.getElem? p.bodies frame.defId = some body)
+    (hB : activeFrameBody p frame = some body)
     (hBB :
       Trusted.MirSemantics.getElem? body.basicBlocks frame.blockIdx = some bb)
     (hSt : Trusted.MirSemantics.getElem? bb.statements frame.stmtIdx =
@@ -1618,7 +1623,7 @@ private theorem evalStepV2_assign_copy_deref {p : Program} {frame : FrameState}
   rw [writePlaceV2_local] at hWp
   rw [evalStepV2_stmt rfl hB hBB hSt]
   unfold evalStatementV2; dsimp only; rw [hDstTy]; dsimp only
-  unfold resolvePlaceDestV2; dsimp only
+  unfold resolvePlaceDestV2; dsimp only [resolveIndexProjsV2, consResolvedProjV2]
   unfold evalRvalueV2 evalOperandToSlotV2 readPlaceV2; dsimp only
   rw [hPtrTy, hSlot]; dsimp only
   cases hPtrMatch with
@@ -1645,7 +1650,7 @@ private theorem evalStepV2_assign_deref_write_u8 {p : Program}
     {frame : FrameState} {mem mem1 : MemoryState} {cm : CallerMemory}
     {body : Body} {bb : BasicBlock} {ptrLid : LocalId} {pv : PtrVal}
     {aid : AllocId} {a : Allocation} {val : Val}
-    (hB : Trusted.MirSemantics.getElem? p.bodies frame.defId = some body)
+    (hB : activeFrameBody p frame = some body)
     (hBB :
       Trusted.MirSemantics.getElem? body.basicBlocks frame.blockIdx = some bb)
     (hSt : Trusted.MirSemantics.getElem? bb.statements frame.stmtIdx =
@@ -1669,7 +1674,7 @@ private theorem evalStepV2_assign_deref_write_u8 {p : Program}
   unfold evalStatementV2; dsimp only
   unfold placeStaticTyV2; rw [hPtrTy]; dsimp only
   rw [ite_bool_false (isUnsizedTy (.int .i8 false)) rfl]; dsimp only
-  unfold resolvePlaceDestV2; dsimp only
+  unfold resolvePlaceDestV2; dsimp only [resolveIndexProjsV2, consResolvedProjV2]
   rw [hPtrTy, hSlot]; dsimp only
   rw [ite_bool_false (isUnsizedTy (.int .i8 false) ||
       !MirTy.beq (.int .i8 false) (.int .i8 false)) rfl]
@@ -1678,7 +1683,7 @@ private theorem evalStepV2_assign_deref_write_u8 {p : Program}
   unfold evalRvalueV2 evalOperandToSlotV2; dsimp only; rw [hEval]; dsimp only
   rw [ite_bool_false (!MirTy.beq (.int .i8 false) (.int .i8 false)) rfl]
   dsimp only
-  unfold writePlaceDestV2; dsimp only
+  unfold writePlaceDestV2; try dsimp only
   have hVal : checkValV2 val (.int .i8 false) = true := by
     have hV : val = .scalar ⟨.i8, false, truncateBits .i8 (BitVec.ofNat 128 42)⟩
         := by
@@ -1717,7 +1722,7 @@ private theorem evalStepV2_assign_move_indirect {p : Program}
     {frame : FrameState} {mem mem1 : MemoryState} {cm : CallerMemory}
     {body : Body} {bb : BasicBlock} {dst src : LocalId} {ty : MirTy}
     {mplace : MemPlace} {val : Val} {locals2 : List LocalSlot}
-    (hB : Trusted.MirSemantics.getElem? p.bodies frame.defId = some body)
+    (hB : activeFrameBody p frame = some body)
     (hBB :
       Trusted.MirSemantics.getElem? body.basicBlocks frame.blockIdx = some bb)
     (hSt : Trusted.MirSemantics.getElem? bb.statements frame.stmtIdx =
@@ -1739,7 +1744,7 @@ private theorem evalStepV2_assign_move_indirect {p : Program}
   rw [writePlaceV2_local] at hWp
   rw [evalStepV2_stmt rfl hB hBB hSt]
   unfold evalStatementV2; dsimp only; rw [hDstTy]; dsimp only
-  unfold resolvePlaceDestV2; dsimp only
+  unfold resolvePlaceDestV2; dsimp only [resolveIndexProjsV2, consResolvedProjV2]
   unfold evalRvalueV2 evalOperandToSlotV2 readPlaceV2; dsimp only
   rw [hSrcTy, hSlot]; dsimp only
   rw [ite_bool_false (!isSupportedV2LocalTy ty) (by rw [hSupp]; rfl)]
@@ -1752,7 +1757,7 @@ private theorem evalStepV2_assign_useRetag_indirect {p : Program}
     {frame : FrameState} {mem mem1 : MemoryState} {cm : CallerMemory}
     {body : Body} {bb : BasicBlock} {dst src : LocalId} {ty : MirTy}
     {mplace : MemPlace} {val : Val} {locals2 : List LocalSlot}
-    (hB : Trusted.MirSemantics.getElem? p.bodies frame.defId = some body)
+    (hB : activeFrameBody p frame = some body)
     (hBB :
       Trusted.MirSemantics.getElem? body.basicBlocks frame.blockIdx = some bb)
     (hSt : Trusted.MirSemantics.getElem? bb.statements frame.stmtIdx =
@@ -1775,7 +1780,7 @@ private theorem evalStepV2_assign_useRetag_indirect {p : Program}
   rw [writePlaceV2_local] at hWp
   rw [evalStepV2_stmt rfl hB hBB hSt]
   unfold evalStatementV2; dsimp only; rw [hDstTy]; dsimp only
-  unfold resolvePlaceDestV2; dsimp only
+  unfold resolvePlaceDestV2; dsimp only [resolveIndexProjsV2, consResolvedProjV2]
   unfold evalRvalueV2 evalOperandToSlotV2 readPlaceV2; dsimp only
   rw [hSrcTy, hSlot]; dsimp only
   rw [ite_bool_false (!isSupportedV2LocalTy ty) (by rw [hSupp]; rfl)]
@@ -1789,7 +1794,7 @@ private theorem evalStepV2_assign_useRetag_imm {p : Program}
     {frame : FrameState} {mem : MemoryState} {cm : CallerMemory}
     {body : Body} {bb : BasicBlock} {dst src : LocalId} {ty : MirTy}
     {val : Val} {locals1 locals2 : List LocalSlot}
-    (hB : Trusted.MirSemantics.getElem? p.bodies frame.defId = some body)
+    (hB : activeFrameBody p frame = some body)
     (hBB :
       Trusted.MirSemantics.getElem? body.basicBlocks frame.blockIdx = some bb)
     (hSt : Trusted.MirSemantics.getElem? bb.statements frame.stmtIdx =
@@ -1812,7 +1817,7 @@ private theorem evalStepV2_assign_useRetag_imm {p : Program}
   rw [writePlaceV2_local] at hWp
   rw [evalStepV2_stmt rfl hB hBB hSt]
   unfold evalStatementV2; dsimp only; rw [hDstTy]; dsimp only
-  unfold resolvePlaceDestV2; dsimp only
+  unfold resolvePlaceDestV2; dsimp only [resolveIndexProjsV2, consResolvedProjV2]
   unfold evalRvalueV2 evalOperandToSlotV2 readPlaceV2; dsimp only
   rw [hSrcTy, hSlot]; dsimp only
   rw [ite_bool_false (!isSupportedV2LocalTy ty) (by rw [hSupp]; rfl)]
@@ -1825,7 +1830,7 @@ private theorem evalStepV2_assign_useRetag_imm {p : Program}
 private theorem evalStepV2_return_imm {p : Program} {frame : FrameState}
     {mem : MemoryState} {cm : CallerMemory} {body : Body} {bb : BasicBlock}
     {retTy : MirTy} {retVal : Val}
-    (hB : Trusted.MirSemantics.getElem? p.bodies frame.defId = some body)
+    (hB : activeFrameBody p frame = some body)
     (hBB :
       Trusted.MirSemantics.getElem? body.basicBlocks frame.blockIdx = some bb)
     (hEnd : frame.stmtIdx = bb.statements.length)
@@ -1841,7 +1846,7 @@ private theorem evalStepV2_return_imm {p : Program} {frame : FrameState}
     evalStepV2 p ⟨[frame], cm, mem⟩ =
       .done (.returned
         ⟨retVal, extractReturnMemoryV2 cm mem frame.locals⟩) := by
-  rw [evalStepV2_term rfl hB hBB hEnd]
+  rw [evalStepV2_term rfl hB hBB hEnd (by rw [hTerm])]
   unfold evalTerminatorV2; rw [hTerm]; dsimp only
   rw [ite_bool_false bb.cleanup hNoClean]
   rw [hRetTy, hRetSlot]; dsimp only
@@ -1869,7 +1874,7 @@ private theorem evalStepV2_assign_reborrow_slice_u8 {p : Program}
     {frame : FrameState} {mem : MemoryState} {cm : CallerMemory}
     {body : Body} {bb : BasicBlock} {dst src : LocalId}
     {pv : PtrVal} {len : UInt64} {locals2 : List LocalSlot}
-    (hB : Trusted.MirSemantics.getElem? p.bodies frame.defId = some body)
+    (hB : activeFrameBody p frame = some body)
     (hBB :
       Trusted.MirSemantics.getElem? body.basicBlocks frame.blockIdx = some bb)
     (hSt : Trusted.MirSemantics.getElem? bb.statements frame.stmtIdx =
@@ -1891,7 +1896,7 @@ private theorem evalStepV2_assign_reborrow_slice_u8 {p : Program}
   rw [writePlaceV2_local] at hWp
   rw [evalStepV2_stmt rfl hB hBB hSt]
   unfold evalStatementV2; dsimp only; rw [hDstTy]; dsimp only
-  unfold resolvePlaceDestV2; dsimp only
+  unfold resolvePlaceDestV2; dsimp only [resolveIndexProjsV2, consResolvedProjV2]
   unfold evalRvalueV2 evalRefRvalueV2; dsimp only
   rw [hSrcTy, hSlot]; dsimp only
   rw [ite_bool_false (Mutability.beq .shared .shared &&
@@ -6582,7 +6587,7 @@ private theorem evalStepV2_assign_boxAsRef_slice_u8 {p : Program}
     {frame : FrameState} {mem : MemoryState} {cm : CallerMemory}
     {body : Body} {bb : BasicBlock} {dst src : LocalId}
     {pv : PtrVal} {len : UInt64} {locals2 : List LocalSlot}
-    (hB : Trusted.MirSemantics.getElem? p.bodies frame.defId = some body)
+    (hB : activeFrameBody p frame = some body)
     (hBB :
       Trusted.MirSemantics.getElem? body.basicBlocks frame.blockIdx = some bb)
     (hSt : Trusted.MirSemantics.getElem? bb.statements frame.stmtIdx =
@@ -6605,7 +6610,7 @@ private theorem evalStepV2_assign_boxAsRef_slice_u8 {p : Program}
   rw [writePlaceV2_local] at hWp
   rw [evalStepV2_stmt rfl hB hBB hSt]
   unfold evalStatementV2; dsimp only; rw [hDstTy]; dsimp only
-  unfold resolvePlaceDestV2; dsimp only
+  unfold resolvePlaceDestV2; dsimp only [resolveIndexProjsV2, consResolvedProjV2]
   unfold evalRvalueV2 evalOperandToSlotV2 readPlaceV2; dsimp only
   rw [hSrcTy, hSlot]; dsimp only
   rw [ite_bool_false
@@ -7175,7 +7180,7 @@ private theorem body3_ok (q : Query)
         unfold checkValV2List; rw [hBLenWf]
         rfl)]
     dsimp only [argValues]
-    unfold writePlaceDestV2; dsimp only
+    unfold writePlaceDestV2; try dsimp only
     rw [ite_bool_false _
       (by
         unfold checkValV2
@@ -8838,7 +8843,7 @@ private theorem evalStepV2_assign_reborrow_vec_mut {p : Program}
     {frame : FrameState} {mem : MemoryState} {cm : CallerMemory}
     {body : Body} {bb : BasicBlock} {dst src : LocalId}
     {pv : PtrVal} {locals2 : List LocalSlot}
-    (hB : Trusted.MirSemantics.getElem? p.bodies frame.defId = some body)
+    (hB : activeFrameBody p frame = some body)
     (hBB :
       Trusted.MirSemantics.getElem? body.basicBlocks frame.blockIdx = some bb)
     (hSt : Trusted.MirSemantics.getElem? bb.statements frame.stmtIdx =
@@ -8860,7 +8865,7 @@ private theorem evalStepV2_assign_reborrow_vec_mut {p : Program}
   rw [writePlaceV2_local] at hWp
   rw [evalStepV2_stmt rfl hB hBB hSt]
   unfold evalStatementV2; dsimp only; rw [hDstTy]; dsimp only
-  unfold resolvePlaceDestV2; dsimp only
+  unfold resolvePlaceDestV2; dsimp only [resolveIndexProjsV2, consResolvedProjV2]
   unfold evalRvalueV2 evalRefRvalueV2; dsimp only
   rw [hSrcTy, hSlot]; dsimp only
   rw [ite_bool_false (Mutability.beq .mut .shared &&

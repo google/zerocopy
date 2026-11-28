@@ -196,6 +196,14 @@ class GuardMutationUnitTests(unittest.TestCase):
             overlap_errs,
         )
 
+        exclude_trait_guards = [
+            g for g in check_guard_mutation.EXTRACT_GUARDS if g.exclude_traits
+        ]
+        self.assertGreaterEqual(len(exclude_trait_guards), 9)
+        for g in exclude_trait_guards:
+            self.assertEqual(g.mode, "capture", g.guard_id)
+            self.assertTrue(g.expected_baseline_diagnostic, g.guard_id)
+
         res = subprocess.run(
             [sys.executable, "-I", "-B", str(SCRIPT), "--list"],
             capture_output=True,
@@ -1124,6 +1132,48 @@ class GuardMutationUnitTests(unittest.TestCase):
             errors,
         )
 
+    def test_run_extract_capture_passes_exclude_traits(self):
+        # `--exclude-trait` guards hand their trait paths to the mutated
+        # capture binary, after the scope-independent flags.
+        seen: list[list[str]] = []
+
+        def fake_run(cmd, **_kwargs):
+            seen.append(list(cmd))
+            return subprocess.CompletedProcess(
+                cmd, 1, stdout='{"status": "unsupported"}\n', stderr=""
+            )
+
+        with tempfile.TemporaryDirectory() as tmp, mock.patch.object(
+            check_guard_mutation.subprocess, "run", side_effect=fake_run
+        ):
+            rc, parsed, _ = check_guard_mutation._run_extract_capture(
+                Path(tmp) / "capture",
+                "pub fn zero() -> u64 { 0 }\n",
+                capture_scope="crate",
+                select_root="selected",
+                instantiate_json="",
+                exclude_traits=("core::fmt::Debug", "core::fmt::Display"),
+                work_dir=Path(tmp),
+                tag="neg",
+                sysroot="/sysroot",
+                host_triple="x86_64-unknown-linux-gnu",
+                env={},
+                timeout_sec=5,
+            )
+        self.assertEqual((rc, parsed), (1, {"status": "unsupported"}))
+        (cmd,) = seen
+        self.assertEqual(
+            cmd[-6:],
+            [
+                "--exclude-trait",
+                "core::fmt::Debug",
+                "--exclude-trait",
+                "core::fmt::Display",
+                "--scope",
+                "crate",
+            ],
+        )
+
     def test_semantics_downstream_covers_transitive_importers(self):
         # Verify that for every `target_module` in `SEMANTICS_DOWNSTREAM`,
         # the rebuild list matches the exact intersection of transitive
@@ -1341,7 +1391,7 @@ class GuardMutationUnitTests(unittest.TestCase):
                                 "if outcome == 'fallback_kill':\\n"
                                 "    print(json.dumps({{'status': 'unsupported', "
                                 "'diagnostics': [], 'unsupported': "
-                                "[{{'reason': 'unsupported type: Guard'}}]}}))\\n"
+                                "[{{'reason': 'structs with a Drop impl are unsupported: Guard'}}]}}))\\n"
                                 "    sys.exit(1)\\n"
                                 "print(json.dumps({{'status': 'unsupported', "
                                 "'diagnostics': ['function alignment'], 'unsupported': "

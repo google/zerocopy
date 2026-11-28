@@ -1219,6 +1219,38 @@ theorem refute_step_v2_array_eq_dangling_ref :
      | _ => False) :=
   trivial
 
+/-- Guard `step_v2_core_call_partial_eq_ne_routed`: `execCoreCallOpWithMem`
+routes `CoreCallOp.partialEqNe` to `execCoreCallOp`, so `ne` on two equal
+`[u8; 2]` values returns `false` (dropping the route falls through to the
+`core` contracts, which fault `.unsupported`). -/
+theorem refute_step_v2_core_call_partial_eq_ne_routed :
+    (match execCoreCallOpWithMem
+        { allocations := [{
+            allocId := 1
+            alignLog2 := 0
+            mutability := .shared
+            bytes := [.init 1 none, .init 2 none]
+            live := true
+          }], nextAllocId := 2 }
+        (.partialEqNe (.array (.int .i8 false) 2))
+        [(.ref .shared (.array (.int .i8 false) 2), .ptr ⟨some 1, 0, .isize⟩),
+         (.ref .shared (.array (.int .i8 false) 2), .ptr ⟨some 1, 0, .isize⟩)]
+        .bool with
+     | .ok (.bool false, _) => True
+     | _ => False) :=
+  trivial
+
+/-- Guard `step_v2_dest_deref_projection_ub`: an out-of-bounds constant index
+below a dereferenced `&mut [u8; 4]` destination faults with `.undefined`
+(the `projectMemoryLayoutV2` fault), not `.unsupported`. -/
+theorem refute_step_v2_dest_deref_projection_ub :
+    (match resolvePlaceDestV2 [.unit, .ref .mut (.array (.int .i8 false) 4)]
+        [.immediate none, .immediate (some (.ptr ⟨some 1, 0, .isize⟩))]
+        emptyMemory ⟨1, [.deref, .constantIndex 4 5 false]⟩ (.int .i8 false) with
+     | .error .undefined => True
+     | _ => False) :=
+  trivial
+
 /-- Guard `step_v2_return_rodata_unsupported`: returning either a `&'static`
 reference or a `*const` raw pointer into a callee-allocated `.rodata`
 allocation faults with `.fault .unsupported` (neither `.undefined` nor
@@ -2066,6 +2098,20 @@ theorem refute_core_contracts_slice_subslice_in_mut :
      | _ => False) :=
   trivial
 
+/-- Guard `step_v2_index_dead_local`: `ProjectionElem.index` through a dead
+`usize` index local faults with `.undefined`. -/
+theorem refute_step_v2_index_dead_local :
+    (match evalRvalueV2
+        [.int .i8 false, .array (.int .i8 false) 2, .int .isize false]
+        [.immediate none,
+         .immediate (some (.array [.scalar ⟨.i8, false, BitVec.ofNat 128 1⟩,
+           .scalar ⟨.i8, false, BitVec.ofNat 128 2⟩])),
+         .dead]
+        emptyMemory (.int .i8 false) (.use (.copy ⟨1, [.index 2]⟩)) with
+     | .error .undefined => True
+     | _ => False) :=
+  trivial
+
 /-- Guard `core_contracts_slice_split_at_in_mut`: `slice::split_at(1)` on a
 `&mut [u8]` input over a `.shared` allocation faults with `.undefined` even
 though `reqMut = .shared`, because `execSliceSplitAt` validates the input at
@@ -2077,6 +2123,20 @@ theorem refute_core_contracts_slice_split_at_in_mut :
           (.int .isize false, .scalar ⟨.isize, false, 1⟩)]
         (.tuple [.ref .shared (.slice (.int .i8 false)),
           .ref .shared (.slice (.int .i8 false))]) with
+     | .error .undefined => True
+     | _ => False) :=
+  trivial
+
+/-- Guard `step_v2_index_uninit_local`: `ProjectionElem.index` through an
+uninitialized `usize` index local faults with `.undefined`. -/
+theorem refute_step_v2_index_uninit_local :
+    (match evalRvalueV2
+        [.int .i8 false, .array (.int .i8 false) 2, .int .isize false]
+        [.immediate none,
+         .immediate (some (.array [.scalar ⟨.i8, false, BitVec.ofNat 128 1⟩,
+           .scalar ⟨.i8, false, BitVec.ofNat 128 2⟩])),
+         .immediate none]
+        emptyMemory (.int .i8 false) (.use (.copy ⟨1, [.index 2]⟩)) with
      | .error .undefined => True
      | _ => False) :=
   trivial
@@ -3001,5 +3061,225 @@ theorem refute_step_assign_oob_dst :
     ReachesResult progAssignOobDst queryEmpty (.fault .unsupported) ∧
     ¬ WellFormed progAssignOobDst queryEmpty :=
   refutes_wf_of_execFault (fuel := 1) rfl
+
+/-- Profile v2 program whose callee returns a reference to its own stack
+local `_1`, which the caller then holds. -/
+noncomputable def progReturnToCallerDanglingV2 : Program := {
+  scope := .unit
+  pointerWidthBits := 64
+  mirProfileVersion := 2
+  bodies := [{
+    argumentCount := 0
+    locals := [.int .i8 false, .ref .shared (.int .i8 false)]
+    basicBlocks := [
+      { statements := []
+        terminator := .call 1 [] { localId := 1, projection := [] } (some 1)
+          .continue_ },
+      { statements := []
+        terminator := .return_ }]
+    identity := "guard_mutation::return_to_caller_dangling_main"
+  }, {
+    argumentCount := 0
+    locals := [.ref .shared (.int .i8 false), .int .i8 false]
+    basicBlocks := [{
+      statements := [
+        .assign { localId := 1, projection := [] }
+          (.use (.constant ⟨.int .i8 false, .scalar (BitVec.ofNat 128 9)⟩)),
+        .assign { localId := 0, projection := [] }
+          (.ref .shared { localId := 1, projection := [] })
+      ]
+      terminator := .return_
+    }]
+    identity := "guard_mutation::return_to_caller_dangling_callee"
+  }]
+}
+
+/-- Guard `step_v2_return_to_caller_dangling`: returning from a callee frame
+a reference to one of its own (deallocated) stack locals faults with
+`.undefined` at the return step. -/
+theorem refute_step_v2_return_to_caller_dangling :
+    (match initStateV2 progReturnToCallerDanglingV2 { args := [] } with
+     | .ok s₀ =>
+       match evalStepV2 progReturnToCallerDanglingV2 s₀ with
+       | .step s₁ =>
+         match evalStepV2 progReturnToCallerDanglingV2 s₁ with
+         | .step s₂ =>
+           match evalStepV2 progReturnToCallerDanglingV2 s₂ with
+           | .step s₃ =>
+             match evalStepV2 progReturnToCallerDanglingV2 s₃ with
+             | .fault .undefined => True
+             | _ => False
+           | _ => False
+         | _ => False
+       | _ => False
+     | .error _ => False) :=
+  trivial
+
+/-- Profile v2 program calling `callee(&u8)`; the caller frame state is built
+directly with a reference argument into a deallocated allocation. -/
+noncomputable def progCallArgInvalidRefV2 : Program := {
+  scope := .unit
+  pointerWidthBits := 64
+  mirProfileVersion := 2
+  bodies := [{
+    argumentCount := 1
+    locals := [.int .i8 false, .ref .shared (.int .i8 false)]
+    basicBlocks := [
+      { statements := []
+        terminator := .call 1 [.copy { localId := 1, projection := [] }]
+          { localId := 0, projection := [] } (some 1) .continue_ },
+      { statements := []
+        terminator := .return_ }]
+    identity := "guard_mutation::call_arg_invalid_ref_main"
+  }, {
+    argumentCount := 1
+    locals := [.int .i8 false, .ref .shared (.int .i8 false)]
+    basicBlocks := [{
+      statements := [
+        .assign { localId := 0, projection := [] }
+          (.use (.copy { localId := 1, projection := [.deref] }))
+      ]
+      terminator := .return_
+    }]
+    identity := "guard_mutation::call_arg_invalid_ref_callee"
+  }]
+}
+
+/-- Memory holding only the deallocated allocation `1`. -/
+noncomputable def memDeadAlloc1 : MemoryState :=
+  { allocations := [{
+      allocId := 1
+      alignLog2 := 0
+      mutability := .shared
+      bytes := [.init 7 none]
+      live := false
+    }], nextAllocId := 2 }
+
+/-- Guard `step_v2_call_arg_invalid_ref`: an intra-crate call whose reference
+argument points into a deallocated allocation faults with `.undefined`
+before the callee frame is pushed. -/
+theorem refute_step_v2_call_arg_invalid_ref :
+    (match evalStepV2 progCallArgInvalidRefV2 {
+        frames := [{
+          defId := 0
+          blockIdx := 0
+          stmtIdx := 0
+          locals := [.immediate none,
+            .immediate (some (.ptr ⟨some 1, 0, .isize⟩))]
+        }]
+        mem := memDeadAlloc1
+      } with
+     | .fault .undefined => True
+     | _ => False) :=
+  trivial
+
+/-- Profile v2 program whose caller calls `callee() -> _1` with the
+destination `_1` dead (`initStateV2` is bypassed by building the frame
+directly), or `callee(move _1) -> _1` in block 1. -/
+noncomputable def progCallDestinationV2 : Program := {
+  scope := .unit
+  pointerWidthBits := 64
+  mirProfileVersion := 2
+  bodies := [{
+    argumentCount := 0
+    locals := [.int .i8 false, .int .i8 false]
+    basicBlocks := [
+      { statements := []
+        terminator := .call 1 [] { localId := 1, projection := [] } (some 2)
+          .continue_ },
+      { statements := []
+        terminator := .call 2 [.move { localId := 1, projection := [] }]
+          { localId := 1, projection := [] } (some 2) .continue_ },
+      { statements := []
+        terminator := .return_ }]
+    identity := "guard_mutation::call_destination_main"
+  }, {
+    argumentCount := 0
+    locals := [.int .i8 false]
+    basicBlocks := [{ statements := [], terminator := .return_ }]
+    identity := "guard_mutation::call_destination_callee"
+  }, {
+    argumentCount := 1
+    locals := [.int .i8 false, .int .i8 false]
+    basicBlocks := [{ statements := [], terminator := .return_ }]
+    identity := "guard_mutation::call_destination_callee_arg"
+  }]
+}
+
+/-- Guard `step_v2_call_dead_destination`: a call whose unprojected
+destination local is dead faults with `.undefined` before the callee frame is
+pushed, even though the callee could diverge. -/
+theorem refute_step_v2_call_dead_destination :
+    (match evalStepV2 progCallDestinationV2 {
+        frames := [{
+          defId := 0
+          blockIdx := 0
+          stmtIdx := 0
+          locals := [.immediate none, .dead]
+        }]
+        mem := emptyMemory
+      } with
+     | .fault .undefined => True
+     | _ => False) :=
+  trivial
+
+/-- Guard `step_v2_call_moves_disjoint`: a call whose destination is also a
+`move` argument (`callee(move _1) -> _1`) is not definitely disjoint and
+faults with `.unsupported`. -/
+theorem refute_step_v2_call_moves_disjoint :
+    (match evalStepV2 progCallDestinationV2 {
+        frames := [{
+          defId := 0
+          blockIdx := 1
+          stmtIdx := 0
+          locals := [.immediate none,
+            .immediate (some (.scalar ⟨.i8, false, BitVec.ofNat 128 3⟩))]
+        }]
+        mem := emptyMemory
+      } with
+     | .fault .unsupported => True
+     | _ => False) :=
+  trivial
+
+/-- Profile v2 program whose safe caller calls an `unsafe` callee. -/
+noncomputable def progCallUnsafeCalleeV2 : Program := {
+  scope := .unit
+  pointerWidthBits := 64
+  mirProfileVersion := 2
+  bodies := [{
+    argumentCount := 0
+    locals := [.int .i8 false]
+    basicBlocks := [
+      { statements := []
+        terminator := .call 1 [] { localId := 0, projection := [] } (some 1)
+          .continue_ },
+      { statements := []
+        terminator := .return_ }]
+    identity := "guard_mutation::call_unsafe_callee_main"
+  }, {
+    argumentCount := 0
+    locals := [.int .i8 false]
+    basicBlocks := [{ statements := [], terminator := .return_ }]
+    isUnsafe := true
+    identity := "guard_mutation::call_unsafe_callee"
+  }]
+}
+
+/-- Guard `step_v2_call_unsafe_callee`: an intra-crate call to an `unsafe`
+callee, whose safety precondition Profile v2 does not check at the call site,
+faults with `.unsupported` instead of pushing the callee frame. -/
+theorem refute_step_v2_call_unsafe_callee :
+    (match evalStepV2 progCallUnsafeCalleeV2 {
+        frames := [{
+          defId := 0
+          blockIdx := 0
+          stmtIdx := 0
+          locals := [.immediate none]
+        }]
+        mem := emptyMemory
+      } with
+     | .fault .unsupported => True
+     | _ => False) :=
+  trivial
 
 end GuardMutation

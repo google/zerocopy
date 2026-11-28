@@ -355,6 +355,8 @@ const TERMINATOR_EDGES: &[(&str, &[(&str, Edge)])] = &[
     ("core_call", &[("target", Edge::OptionalBlock)]),
     ("call", &[("target", Edge::OptionalBlock)]),
     ("sysroot_call", &[("target", Edge::OptionalBlock)]),
+    ("call_ne", &[("target", Edge::OptionalBlock)]),
+    ("drop", &[("target", Edge::Block)]),
     ("ret", &[]),
     ("unreachable", &[]),
     ("unsupported", &[]),
@@ -526,6 +528,33 @@ fn lean_ty(ty: &Value) -> Result<String, String> {
             let fields = ty.get("fields").and_then(Value::as_array).ok_or("tuple has no fields")?;
             let fields = fields.iter().map(lean_ty).collect::<Result<Vec<_>, _>>()?;
             format!("(MirTy.tuple {})", lean_list(&fields))
+        }
+        "struct" => {
+            let layout = ty.get("layout").ok_or("struct has no layout")?;
+            let nat = |key: &str| {
+                layout
+                    .get(key)
+                    .and_then(Value::as_u64)
+                    .ok_or_else(|| format!("struct layout has no {key}"))
+            };
+            let offsets = layout
+                .get("field_offsets")
+                .and_then(Value::as_array)
+                .ok_or("struct layout has no field_offsets")?
+                .iter()
+                .map(|off| off.as_u64().map(|o| o.to_string()).ok_or("struct field offset"))
+                .collect::<Result<Vec<_>, _>>()?;
+            let fields =
+                ty.get("fields").and_then(Value::as_array).ok_or("struct has no fields")?;
+            let fields = fields.iter().map(lean_ty).collect::<Result<Vec<_>, _>>()?;
+            format!(
+                "(MirTy.struct_ (StructLayout.mk {} {} {} {}) {})",
+                nat("id")?,
+                nat("size")?,
+                nat("align_log2")?,
+                lean_list(&offsets),
+                lean_list(&fields)
+            )
         }
         "ref" => format!("(MirTy.ref Mutability.{} {})", mutability(ty)?, boxed(ty, "pointee")?),
         "raw_ptr" => {
@@ -1039,6 +1068,7 @@ mod tests {
                 "pointee": unit, "elem": unit, "len": 1, "fields": [unit], "id": 0,
                 "discr_width": "i8", "discr_signed": true,
                 "tag_repr": { "kind": "zero_sized" }, "discriminants": ["0"],
+                "layout": { "id": 0, "size": 0, "align_log2": 0, "field_offsets": [0] },
             });
             let rendered = lean_ty(&ty).unwrap_or_else(|e| panic!("{variant}: {e}"));
             let arm = emitter

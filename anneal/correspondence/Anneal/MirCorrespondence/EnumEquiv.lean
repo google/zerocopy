@@ -667,8 +667,9 @@ theorem integerCast_u128_to_char (bits : BitVec 128) :
 theorem evalRefConstLit_eq (ty : MirTy) (lit : ConstLit) :
     evalRefConstLit ty lit = evalConstLit ty lit := by
   cases ty with
-  | unit | never | tuple _ | ref _ _ | rawPtr _ _ | slice _ | str | vec _ | box _ | array _ _
-  | rangeTo _ | rangeFrom _ | range _ | option _ | unsupported =>
+  | unit | never | tuple _ | ref _ _ | rawPtr _ _ | slice _ | str | vec _ | box _
+  | array _ _ | rangeTo _ | rangeFrom _ | range _ | option _ | unsupported
+  | struct_ _ _ =>
     cases lit <;> rfl
   | char =>
     cases lit with
@@ -884,8 +885,8 @@ theorem checkRefVal_eq (v : Val) (ty : MirTy) :
     | mk vw vs vbits =>
       cases ty with
       | bool | unit | never | char | ordering | enum _ | tuple _ | ref _ _
-      | rawPtr _ _ | slice _ | vec _ | box _ | str | array _ _ | rangeTo _ | rangeFrom _
-      | range _ | option _
+      | rawPtr _ _ | slice _ | vec _ | box _ | str | array _ _ | rangeTo _
+      | rangeFrom _ | range _ | option _ | struct_ _ _
       | unsupported =>
         dsimp only [checkRefVal, checkVal, Val.ty?]
         cases (ScalarVal.wf ⟨vw, vs, vbits⟩) <;> rfl
@@ -2051,6 +2052,15 @@ private theorem refDiscrStmtOk_eq {ts : List MirTy} {localTys : List MirTy}
               | none => rw [h_o] at h_rv; cases h_rv
               | some _ =>
                 rw [h_o] at h_rv; injection h_rv with h; subst h; rfl
+        | aggregateStruct rty rops =>
+          dsimp only [decodeRvalue] at h_rv
+          cases h_t : MirSemantics.getElem? ts rty with
+          | none => rw [h_t] at h_rv; cases h_rv
+          | some _ =>
+            cases h_os : mapOption (decodeOperand ts) rops with
+            | none => rw [h_t, h_os] at h_rv; cases h_rv
+            | some _ =>
+              rw [h_t, h_os] at h_rv; injection h_rv with h; subst h; rfl
         | unsupported => injection h_rv with h; subst h; rfl
 
 private theorem refCastStmtOk_eq {ts : List MirTy} {localTys : List MirTy}
@@ -2206,6 +2216,15 @@ private theorem refCastStmtOk_eq {ts : List MirTy} {localTys : List MirTy}
               | none => rw [h_o] at h_rv; cases h_rv
               | some _ =>
                 rw [h_o] at h_rv; injection h_rv with h; subst h; rfl
+        | aggregateStruct rty rops =>
+          dsimp only [decodeRvalue] at h_rv
+          cases h_t : MirSemantics.getElem? ts rty with
+          | none => rw [h_t] at h_rv; cases h_rv
+          | some _ =>
+            cases h_os : mapOption (decodeOperand ts) rops with
+            | none => rw [h_t, h_os] at h_rv; cases h_rv
+            | some _ =>
+              rw [h_t, h_os] at h_rv; injection h_rv with h; subst h; rfl
         | unsupported => injection h_rv with h; subst h; rfl
 
 theorem refDiscriminantTypesValid_eq {ts : List MirTy} {rbody : RefBody}
@@ -2513,6 +2532,16 @@ private theorem refAssignStmtOk_eq {ts localTys : List MirTy}
               | some _ =>
                 rw [h_p1] at h_rv; injection h_rv with h; subst h
                 dsimp only [refAssignStmtOk, assignStmtOk]; rw [h_demp, h_did]
+        | aggregateStruct rty rops =>
+          dsimp only [decodeRvalue] at h_rv
+          cases h_t : MirSemantics.getElem? ts rty with
+          | none => rw [h_t] at h_rv; cases h_rv
+          | some _ =>
+            cases h_os : mapOption (decodeOperand ts) rops with
+            | none => rw [h_t, h_os] at h_rv; cases h_rv
+            | some _ =>
+              rw [h_t, h_os] at h_rv; injection h_rv with h; subst h
+              dsimp only [refAssignStmtOk, assignStmtOk]; rw [h_demp, h_did]
         | unsupported =>
           injection h_rv with h; subst h
           dsimp only [refAssignStmtOk, assignStmtOk]; rw [h_demp, h_did]
@@ -2668,7 +2697,7 @@ private theorem refAssertBbOk_eq {ts localTys : List MirTy}
       rw [h_d] at h_term_dec; injection h_term_dec with h
       dsimp only [refAssertBbOk, assertBbOk]; rw [h_rt, ← h]
   | call _ rargs rdst _ _ | sysrootCall _ rargs rdst _ _
-  | coreCall _ rargs rdst _ _ =>
+  | coreCall _ rargs rdst _ _ | callNe _ rargs rdst _ _ =>
     rw [h_rt] at h_term_dec
     dsimp only [decodeTerminator, optMap2] at h_term_dec
     cases h_a : mapOption (decodeOperand ts) rargs with
@@ -2679,6 +2708,14 @@ private theorem refAssertBbOk_eq {ts localTys : List MirTy}
       | some _ =>
         rw [h_a, h_d] at h_term_dec; injection h_term_dec with h
         dsimp only [refAssertBbOk, assertBbOk]; rw [h_rt, ← h]
+  | drop rp _ _ =>
+    rw [h_rt] at h_term_dec
+    dsimp only [decodeTerminator, optMap] at h_term_dec
+    cases h_d : decodePlace ts rp with
+    | none => rw [h_d] at h_term_dec; cases h_term_dec
+    | some _ =>
+      rw [h_d] at h_term_dec; injection h_term_dec with h
+      dsimp only [refAssertBbOk, assertBbOk]; rw [h_rt, ← h]
   | assert rcond _ _ _ _ =>
     rw [h_rt] at h_term_dec
     dsimp only [decodeTerminator, optMap] at h_term_dec

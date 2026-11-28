@@ -185,6 +185,17 @@ fn ty_at(t: &Ty, indent: usize) -> String {
         }
         Ty::Vec { elem } => format!("(Trusted.MirAst.MirTy.vec {})", ty_at(elem, indent)),
         Ty::Box { pointee } => format!("(Trusted.MirAst.MirTy.box {})", ty_at(pointee, indent)),
+        Ty::Struct(sty) => {
+            let layout = sty.layout();
+            format!(
+                "(Trusted.MirAst.MirTy.struct_ (Trusted.MirAst.StructLayout.mk {} {} {} {}) {})",
+                layout.id(),
+                layout.size(),
+                layout.align_log2(),
+                list(layout.field_offsets(), usize::to_string),
+                list_pretty(sty.fields(), indent, ty_at)
+            )
+        }
         Ty::RangeTo { elem } => format!("(Trusted.MirAst.MirTy.rangeTo {})", ty_at(elem, indent)),
         Ty::RangeFrom { elem } => {
             format!("(Trusted.MirAst.MirTy.rangeFrom {})", ty_at(elem, indent))
@@ -276,6 +287,9 @@ fn place_at(place: &Place, indent: usize) -> String {
             ),
             PlaceElem::Downcast { variant_idx } => {
                 format!("(Trusted.MirAst.ProjectionElem.downcast {variant_idx})")
+            }
+            PlaceElem::Index { local } => {
+                format!("(Trusted.MirAst.ProjectionElem.index {local})")
             }
         });
         format!("(Trusted.MirAst.Place.mk {} {projs})", place.local)
@@ -408,6 +422,11 @@ fn rvalue_at(value: &Rvalue, indent: usize) -> String {
             "(Trusted.MirAst.Rvalue.aggregateArray {} {})",
             ty_at(elem_ty, indent),
             list_pretty(elems, indent, operand_at)
+        ),
+        Rvalue::AggregateStruct { ty, fields } => format!(
+            "(Trusted.MirAst.Rvalue.aggregateStruct {} {})",
+            ty_at(ty, indent),
+            list_pretty(fields, indent, operand_at)
         ),
         Rvalue::Repeat {
             operand,
@@ -642,6 +661,9 @@ fn core_call_op(op: &CoreCallOp, indent: usize) -> String {
             "(Trusted.MirAst.CoreCallOp.boxNew {})",
             ty_at(pointee, indent)
         ),
+        CoreCallOp::PartialEqNe { ty } => {
+            format!("(Trusted.MirAst.CoreCallOp.partialEqNe {})", ty_at(ty, indent))
+        }
     }
 }
 
@@ -704,6 +726,15 @@ fn terminator_at(term: &Terminator, indent: usize) -> String {
                 unwind.lean_name(),
             )
         }
+        Terminator::Drop {
+            place,
+            target,
+            unwind,
+        } => format!(
+            "(Trusted.MirAst.TerminatorKind.drop {} {target} Trusted.MirAst.UnwindAction.{})",
+            place_at(place, indent + 2),
+            unwind.lean_name(),
+        ),
         Terminator::Ret => "Trusted.MirAst.TerminatorKind.return_".into(),
         Terminator::Unreachable => "Trusted.MirAst.TerminatorKind.unreachable".into(),
         Terminator::Unsupported => "Trusted.MirAst.TerminatorKind.unsupported".into(),
@@ -718,6 +749,26 @@ fn terminator_at(term: &Terminator, indent: usize) -> String {
             format!(
                 "(Trusted.MirAst.TerminatorKind.call\n\
                  {child_pad}{callee}\n\
+                 {child_pad}{}\n\
+                 {child_pad}(Trusted.MirAst.Place.mk {dst} [])\n\
+                 {child_pad}{}\n\
+                 {child_pad}Trusted.MirAst.UnwindAction.{})",
+                list_pretty(args, indent + 2, operand_at),
+                block_target_opt(*target),
+                unwind.lean_name(),
+            )
+        }
+        Terminator::CallNe {
+            eq_callee,
+            args,
+            dst,
+            target,
+            unwind,
+        } => {
+            let child_pad = " ".repeat(indent + 2);
+            format!(
+                "(Trusted.MirAst.TerminatorKind.callNe\n\
+                 {child_pad}{eq_callee}\n\
                  {child_pad}{}\n\
                  {child_pad}(Trusted.MirAst.Place.mk {dst} [])\n\
                  {child_pad}{}\n\
@@ -907,7 +958,7 @@ const ENTRY_DEF_ID: u32 = 0;
 pub fn render(program: &ir::Program) -> String {
     let scope = match program.scope() {
         ir::Scope::SelectedUnit { .. } => "unit",
-        ir::Scope::Crate => "crate",
+        ir::Scope::Crate { .. } => "crate",
     };
     let mut out = String::from(HEADER);
     let mut body_names = Vec::with_capacity(program.bodies().len());
@@ -1004,7 +1055,7 @@ pub(crate) fn render_sharded_root(
 ) -> String {
     let scope_name = match scope {
         ir::Scope::SelectedUnit { .. } => "unit",
-        ir::Scope::Crate => "crate",
+        ir::Scope::Crate { .. } => "crate",
     };
     let panic_strategy = panic.as_str();
     let mut out = String::from(LICENSE_PREAMBLE);
@@ -1184,7 +1235,9 @@ mod tests {
             "rust-path-v1::unit_fn".into(),
         )
         .unwrap();
-        let program = Program::try_new(Scope::Crate, vec![body.clone()]).unwrap();
+        let program =
+            Program::try_new(Scope::Crate { excluded_traits: BTreeSet::new() }, vec![body.clone()])
+                .unwrap();
         let rendered = render(&program);
         assert!(rendered.contains("pointerWidthBits := 64"), "{rendered}");
         assert!(rendered.contains("mirProfileVersion := 1"), "{rendered}");
@@ -1240,7 +1293,8 @@ mod tests {
                 .unwrap()
             })
             .collect();
-        let program = Program::try_new(Scope::Crate, bodies).unwrap();
+        let program =
+            Program::try_new(Scope::Crate { excluded_traits: BTreeSet::new() }, bodies).unwrap();
         let rendered = render(&program);
         assert!(rendered.contains("def body_0 : Trusted.MirAst.Body :="), "{rendered}");
         assert!(rendered.contains("def body_129 : Trusted.MirAst.Body :="), "{rendered}");
@@ -1268,7 +1322,11 @@ mod tests {
     fn render_emits_large_body_blocks_as_chunk_defs_that_unfold_to_the_inline_list() {
         let large = goto_chain("rust-path-v1::large", 40);
         let small = goto_chain("rust-path-v1::small", MAX_LIST_CHUNK_LEN as u32);
-        let program = Program::try_new(Scope::Crate, vec![large.clone(), small]).unwrap();
+        let program = Program::try_new(
+            Scope::Crate { excluded_traits: BTreeSet::new() },
+            vec![large.clone(), small],
+        )
+        .unwrap();
         let rendered = render(&program);
         assert_list_literals_at_most(&rendered, MAX_LIST_CHUNK_LEN);
         assert!(!rendered.contains("body_0_blocks_c3"), "{rendered}");
@@ -1388,7 +1446,8 @@ mod tests {
                 .unwrap(),
             );
         }
-        let program = Program::try_new(Scope::Crate, bodies).unwrap();
+        let program =
+            Program::try_new(Scope::Crate { excluded_traits: BTreeSet::new() }, bodies).unwrap();
         let rendered = render(&program);
         // `bodies` (depth 3) + Body/BasicBlock/SwitchInt/BitVec wrappers (5)
         // + 250-statement or 70-target append tree (depth 4/3) stays O(log N).
@@ -1465,7 +1524,11 @@ mod tests {
             "rust-path-v1::helper_fn".into(),
         )
         .unwrap();
-        let program = Program::try_new(Scope::Crate, vec![body0, body1]).unwrap();
+        let program = Program::try_new(
+            Scope::Crate { excluded_traits: BTreeSet::new() },
+            vec![body0, body1],
+        )
+        .unwrap();
         let rendered = render(&program);
         for expected in [
             "def body_0 : Trusted.MirAst.Body :=\n  {\n",
@@ -1505,7 +1568,11 @@ mod tests {
             "rust-path-v1::div_call".into(),
         )
         .unwrap();
-        let div_prog = Program::try_new(Scope::Crate, vec![div_body]).unwrap();
+        let div_prog = Program::try_new(
+            Scope::Crate { excluded_traits: BTreeSet::new() },
+            vec![div_body],
+        )
+        .unwrap();
         let div_rendered = render(&div_prog);
         assert!(
             div_rendered.contains("terminator := Trusted.MirAst.TerminatorKind.unsupported,"),
@@ -1527,7 +1594,9 @@ mod tests {
             "rust-path-v1::place_mention_nop".into(),
         )
         .unwrap();
-        let program = Program::try_new(Scope::Crate, vec![body]).unwrap();
+        let program =
+            Program::try_new(Scope::Crate { excluded_traits: BTreeSet::new() }, vec![body])
+                .unwrap();
         let rendered = render(&program);
         assert_eq!(rendered.matches("Trusted.MirAst.StatementKind.nop").count(), 2, "{rendered}");
     }

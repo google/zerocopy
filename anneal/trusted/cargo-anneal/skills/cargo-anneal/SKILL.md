@@ -101,8 +101,8 @@ Output and diagnostic flags:
   and untruncated diagnostics/line progress.
 
 Other entrypoints:
-- Cargo packages: `cargo anneal verify --manifest-path path/to/Cargo.toml --proof-dir path/to/proofs [--no-default-features] [--features <list>] [--all-features]`
-- Build systems with explicit inputs: `cargo anneal verify rustc <crate_root> --crate-name <name> [--env KEY=VALUE ...] --spec-file <Mod>=<path> --proof-file <Mod>=<path> ...`
+- Cargo packages: `cargo anneal verify --manifest-path path/to/Cargo.toml --proof-dir path/to/proofs [--exclude-trait <trait> ...] [--no-default-features] [--features <list>] [--all-features]`
+- Build systems with explicit inputs: `cargo anneal verify rustc <crate_root> --crate-name <name> [--exclude-trait <trait> ...] [--env KEY=VALUE ...] --spec-file <Mod>=<path> --proof-file <Mod>=<path> ...`
 
 ## Create a request and starter proof
 
@@ -115,10 +115,17 @@ files in a temporary directory to test your environment; it proves termination
 and a zero return for a safe no-argument function in the captured MIR model.
 
 1. For request schema `1`, set `scope` to `{"kind": "selected_unit", "roots": ["mod::fn"]}`
-   (`UnitTheorem`) or `{"kind": "crate"}` (`CrateTheorem`). If capture emits
-   MIR Profile v2 (`capture.json` `program.mir_profile_version = 2`, e.g. for
-   references, raw pointers, or slices), the roots are `UnitTheoremV2` /
-   `CrateTheoremV2` over `Trusted.CrateV2`, so `specification` must name a
+   (`UnitTheorem`) or `{"kind": "crate"}` (`CrateTheorem`). Crate scope also
+   accepts an optional `"excluded_traits"` list (or repeatable
+   `--exclude-trait`) from the closed allowlist `core::fmt::Debug`,
+   `core::fmt::Display`, and `core::error::Error`; capture excludes local impls
+   of those traits only after proving they are unreachable from every verified
+   body, and Receipt v3 discloses the excluded census items in `excluded_items`
+   and appends an explicit unverified/unreachable note to `assumptions`. If
+   capture emits MIR Profile v2 (`capture.json`,
+   `program.mir_profile_version = 2`, e.g. for references, raw pointers, or
+   slices), the roots are `UnitTheoremV2` / `CrateTheoremV2` over
+   `Trusted.CrateV2`, so `specification` must name a
    `Trusted.MirSemantics.SpecsV2`. Set `edition`,
    `target`, `cfg`, optional `env` (`KEY -> VALUE` map for `env!`/`option_env!`),
    and `source_files` (including `crate_root`) inside clean relative paths

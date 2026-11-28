@@ -93,6 +93,8 @@ mod artifacts_and_overwrite;
 mod capture_request_binding;
 #[path = "cli/cargo_shortcut.rs"]
 mod cargo_shortcut;
+#[path = "cli/exclude_trait.rs"]
+mod exclude_trait;
 #[path = "cli/help_and_bundled_resources.rs"]
 mod help_and_bundled_resources;
 #[path = "cli/init_and_receipt_output.rs"]

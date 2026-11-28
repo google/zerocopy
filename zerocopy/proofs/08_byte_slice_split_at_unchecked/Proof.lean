@@ -304,7 +304,8 @@ theorem split_at_shared_correct (q : Query)
           (by rfl) (by rfl)))
       -- bb0 stmts 7,8: aggregateRangeTo -> 6, storageDead 7
       apply execOutcomeStateV2_step (by
-        dsimp only [evalStepV2, entryProgForBody, Captured.program, Captured.body_0,
+        dsimp only [evalStepV2, activeFrameBody, attachCallers, List.cons_append,
+            List.nil_append, entryProgForBody, Captured.program, Captured.body_0,
           evalStatementV2, resolvePlaceDestV2, placeStaticTyV2, evalRvalueV2,
           evalOperandToSlotV2, Trusted.MirSemantics.getElem?]
         rw [readPlaceV2_move_local (by rfl) (by rfl) (by rfl) (by rfl)]
@@ -312,7 +313,8 @@ theorem split_at_shared_correct (q : Query)
       apply execOutcomeStateV2_step (by rfl)
       -- bb0 term: coreCall sliceGetUncheckedRangeTo -> 4, bb1
       apply execOutcomeStateV2_step (by
-        dsimp only [evalStepV2, entryProgForBody, Captured.program, Captured.body_0,
+        dsimp only [evalStepV2, activeFrameBody, attachCallers, List.cons_append,
+            List.nil_append, entryProgForBody, Captured.program, Captured.body_0,
           evalTerminatorV2, evalArgOperandsV2, evalOperandToSlotV2,
           Trusted.MirSemantics.getElem?]
         rw [readPlaceV2_move_local (by rfl) (by rfl) (by rfl) (by rfl)]
@@ -350,7 +352,8 @@ theorem split_at_shared_correct (q : Query)
           (by rfl) (by rfl)))
       -- bb1 stmts 10,11: aggregateRangeFrom -> 11, storageDead 12
       apply execOutcomeStateV2_step (by
-        dsimp only [evalStepV2, entryProgForBody, Captured.program, Captured.body_0,
+        dsimp only [evalStepV2, activeFrameBody, attachCallers, List.cons_append,
+            List.nil_append, entryProgForBody, Captured.program, Captured.body_0,
           evalStatementV2, resolvePlaceDestV2, placeStaticTyV2, evalRvalueV2,
           evalOperandToSlotV2, Trusted.MirSemantics.getElem?]
         rw [readPlaceV2_move_local (by rfl) (by rfl) (by rfl) (by rfl)]
@@ -358,7 +361,8 @@ theorem split_at_shared_correct (q : Query)
       apply execOutcomeStateV2_step (by rfl)
       -- bb1 term: coreCall sliceGetUncheckedRangeFrom -> 9, bb2
       apply execOutcomeStateV2_step (by
-        dsimp only [evalStepV2, entryProgForBody, Captured.program, Captured.body_0,
+        dsimp only [evalStepV2, activeFrameBody, attachCallers, List.cons_append,
+            List.nil_append, entryProgForBody, Captured.program, Captured.body_0,
           evalTerminatorV2, evalArgOperandsV2, evalOperandToSlotV2,
           Trusted.MirSemantics.getElem?]
         rw [readPlaceV2_move_local (by rfl) (by rfl) (by rfl) (by rfl)]
@@ -384,7 +388,8 @@ theorem split_at_shared_correct (q : Query)
       apply execOutcomeStateV2_step (by rfl)
       apply execOutcomeStateV2_step (by rfl)
       apply execOutcomeStateV2_step (by
-        dsimp only [evalStepV2, entryProgForBody, Captured.program, Captured.body_0,
+        dsimp only [evalStepV2, activeFrameBody, attachCallers, List.cons_append,
+            List.nil_append, entryProgForBody, Captured.program, Captured.body_0,
           evalStatementV2, resolvePlaceDestV2, placeStaticTyV2, evalRvalueV2,
           evalArgOperandsV2, evalOperandToSlotV2, Trusted.MirSemantics.getElem?]
         rw [readPlaceV2_move_local (by rfl) (by rfl) (by rfl) (by rfl)]

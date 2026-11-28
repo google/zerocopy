@@ -203,7 +203,7 @@ pub struct PreparedShards {
 fn scope_label(scope: &ir::Scope) -> &'static str {
     match scope {
         ir::Scope::SelectedUnit { .. } => "unit",
-        ir::Scope::Crate => "crate",
+        ir::Scope::Crate { .. } => "crate",
     }
 }
 
@@ -1040,7 +1040,11 @@ mod tests {
             census: Vec::new(),
             selected,
             unsupported: Vec::new(),
-            program: ir::Program::try_new(Scope::Crate, bodies).unwrap(),
+            program: ir::Program::try_new(
+                Scope::Crate { excluded_traits: BTreeSet::new() },
+                bodies,
+            )
+            .unwrap(),
         }
     }
 
@@ -1302,7 +1306,7 @@ mod tests {
         let mut checked = dummy_manifest(checked_bodies.clone());
         checked.configuration.overflow_checks = true;
         checked.program = ir::Program::try_new_with_options(
-            Scope::Crate,
+            Scope::Crate { excluded_traits: BTreeSet::new() },
             true,
             ir::PanicStrategy::Abort,
             true,
@@ -1385,6 +1389,64 @@ mod tests {
         match &m.program.bodies()[new_caller_idx].blocks()[0].terminator {
             Terminator::Call { callee, .. } => assert_eq!(*callee, new_callee_idx),
             other => panic!("expected Call terminator, got {other:?}"),
+        }
+    }
+
+    #[test]
+    fn sharding_remaps_call_ne_eq_callee_indices_after_body_reorder() {
+        // Same shape as above, but through `Terminator::CallNe`: `caller` at
+        // index 0 negates `z_eq` (index 2). If `reorder_bodies` left
+        // `eq_callee` unmapped, `x != y` would dispatch to whichever body the
+        // permutation moved into the old slot.
+        // The provided `ne` compares two `&Self` of a crate-local struct.
+        let u8_ty = Ty::Int(ir::IntTy { width: ir::IntWidth::I8, signed: false });
+        let s_ty = Ty::Struct(ir::StructTy::try_new(9, 1, 0, vec![0], vec![u8_ty]).unwrap());
+        let s_ref = Ty::Ref { mutability: ir::Mutability::Shared, pointee: Box::new(s_ty) };
+        let caller = Body::try_new_with_callees(
+            2,
+            false,
+            vec![Ty::Bool, s_ref.clone(), s_ref.clone()],
+            vec![
+                Block {
+                    statements: vec![],
+                    terminator: Terminator::CallNe {
+                        eq_callee: 2,
+                        args: vec![ir::Operand::Copy { local: 1 }, ir::Operand::Copy { local: 2 }],
+                        dst: 0,
+                        target: Some(1),
+                        unwind: ir::UnwindAction::Continue,
+                    },
+                },
+                Block { statements: vec![], terminator: Terminator::Ret },
+            ],
+            "rust-path-v1::a_caller".into(),
+            BTreeSet::from(["rust-path-v1::z_eq".to_owned()]),
+        )
+        .unwrap();
+        let pad = synth_body("rust-path-v1::m_pad", 1, &[]);
+        let eq = Body::try_new(
+            2,
+            false,
+            vec![Ty::Bool, s_ref.clone(), s_ref],
+            vec![Block { statements: vec![], terminator: Terminator::Ret }],
+            "rust-path-v1::z_eq".into(),
+        )
+        .unwrap();
+        let mut m = dummy_manifest(vec![caller, pad, eq]);
+        let cfg = ShardConfig {
+            shard_min_bodies: 2,
+            shard_max_bodies: 1,
+            shard_max_ast_nodes: 100_000,
+        };
+        let _ = maybe_shard_manifest(&mut m, cfg).unwrap().unwrap();
+        let bodies = m.program.bodies();
+        let new_eq_idx = bodies.iter().position(|b| b.identity() == "rust-path-v1::z_eq").unwrap();
+        let new_caller_idx =
+            bodies.iter().position(|b| b.identity() == "rust-path-v1::a_caller").unwrap();
+        assert_ne!(new_eq_idx, 2, "test must exercise an actual move of the eq callee");
+        match &bodies[new_caller_idx].blocks()[0].terminator {
+            Terminator::CallNe { eq_callee, .. } => assert_eq!(*eq_callee, new_eq_idx),
+            other => panic!("expected CallNe terminator, got {other:?}"),
         }
     }
 }

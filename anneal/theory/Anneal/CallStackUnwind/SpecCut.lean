@@ -1230,6 +1230,8 @@ checked on normal-return paths (`canNormal = true`); unwind-only calls
             | .sysrootCall _ _ _ _ _ => False
             | .unsupported => False
             | .coreCall _ _ _ _ _ => False
+            | .callNe _ _ _ _ _ => False
+            | .drop _ _ _ => False
           else
             match evalStep (Anneal.MirWp.bodyProg body) 0 st with
             | .step st' => ih st'
@@ -1658,6 +1660,16 @@ private theorem evalStep_single_done_cases (p : Program) (c : Choice)
                 unfold evalTerminator at hUnw
                 rw [hTerm] at hUnw
                 cases hUnw
+              | callNe _ _ _ _ _ =>
+                intro hUnw
+                unfold evalTerminator at hUnw
+                rw [hTerm] at hUnw
+                cases hUnw
+              | drop _ _ _ =>
+                intro hUnw
+                unfold evalTerminator at hUnw
+                rw [hTerm] at hUnw
+                cases hUnw
               | call callee args dst target unwind =>
                 intro hUnw
                 dsimp only at hUnw
@@ -1917,7 +1929,8 @@ private theorem evalStep_done_cases (p : Program) (c : Choice) (s : State)
                 exact False.elim (evalNonRootReturn_never_done p body bb fr
                   caller rest s.mem s.callerMem out hDone)
               | goto _ | switchInt _ _ | unreachable | assert _ _ _ _ _
-              | unwindResume | coreCall _ _ _ _ _ | unsupported =>
+              | unwindResume | coreCall _ _ _ _ _ | unsupported
+              | callNe _ _ _ _ _ | drop _ _ _ =>
                 intro hDone; dsimp only at hDone
                 have hSub := attachCallers_done_inv hDone
                 have hSingle :
@@ -2084,7 +2097,8 @@ private theorem evalTerminator_single_frame {body : Body} {bb : BasicBlock}
       | optionVal _ | range _ _ | boxPtr _ _ | vec _ _ _ =>
         intro hTerm; cases hTerm
   | unreachable | unwindResume | call _ _ _ _ _
-  | sysrootCall _ _ _ _ _ | coreCall _ _ _ _ _ | unsupported =>
+  | sysrootCall _ _ _ _ _ | coreCall _ _ _ _ _ | unsupported
+  | callNe _ _ _ _ _ | drop _ _ _ =>
     intro hTerm
     cases hTerm
   | return_ =>
@@ -2232,7 +2246,8 @@ private theorem evalStep_bodyProg_single_frame {body : Body} {s st' : State}
               | sysrootCall _ _ _ _ _ =>
                 rw [hKind] at hNoCallBb; cases hNoCallBb
               | goto _ | switchInt _ _ | return_ | unreachable
-              | assert _ _ _ _ _ | unwindResume | coreCall _ _ _ _ _ | unsupported =>
+              | assert _ _ _ _ _ | unwindResume | coreCall _ _ _ _ _ | callNe _ _ _ _ _
+              | drop _ _ _ | unsupported =>
                 rw [hKind] at hStep
                 dsimp only [attachCallers] at hStep
                 exact evalTerminator_single_frame hStep
@@ -2454,6 +2469,28 @@ theorem wpFrameOutcome_of_mirWpState (callerLens : ByteSubLens)
                   exact False.elim hEval
                 | coreCall _ _ _ _ _ =>
                   intro hNoCallBb; unfold evalStep at hEval
+                  rw [hFr] at hEval; dsimp only at hEval
+                  rw [hSomeB] at hEval; dsimp only at hEval
+                  rw [hBb] at hEval; dsimp only at hEval
+                  rw [hNoneStmt] at hEval; dsimp only at hEval
+                  rw [ite_bool_true hIdx, hTerm] at hEval
+                  unfold evalTerminator at hEval
+                  rw [hTerm] at hEval
+                  exact False.elim hEval
+
+                | callNe _ _ _ _ _ =>
+                  unfold evalStep at hEval
+                  rw [hFr] at hEval; dsimp only at hEval
+                  rw [hSomeB] at hEval; dsimp only at hEval
+                  rw [hBb] at hEval; dsimp only at hEval
+                  rw [hNoneStmt] at hEval; dsimp only at hEval
+                  rw [ite_bool_true hIdx, hTerm] at hEval
+                  unfold evalTerminator at hEval
+                  rw [hTerm] at hEval
+                  exact False.elim hEval
+
+                | drop _ _ _ =>
+                  unfold evalStep at hEval
                   rw [hFr] at hEval; dsimp only at hEval
                   rw [hSomeB] at hEval; dsimp only at hEval
                   rw [hBb] at hEval; dsimp only at hEval
@@ -3008,6 +3045,16 @@ private theorem evalStep_step_preserves_callerMem (b : Body) (fr : FrameState)
             rw [hTerm] at hStep
             cases hStep
           | coreCall _ _ _ _ _ =>
+            intro hStep
+            unfold evalTerminator at hStep
+            rw [hTerm] at hStep
+            cases hStep
+          | callNe _ _ _ _ _ =>
+            intro hStep
+            unfold evalTerminator at hStep
+            rw [hTerm] at hStep
+            cases hStep
+          | drop _ _ _ =>
             intro hStep
             unfold evalTerminator at hStep
             rw [hTerm] at hStep
@@ -3651,6 +3698,8 @@ theorem wpFrameOutcome_implies_stackExecutes
             | unsupported => intro hWp; exact False.elim hWp
             | coreCall _ _ _ _ _ => intro hWp; exact False.elim hWp
             | sysrootCall _ _ _ _ _ => intro hWp; exact False.elim hWp
+            | callNe _ _ _ _ _ => intro hWp; exact False.elim hWp
+            | drop _ _ _ => intro hWp; exact False.elim hWp
             | call callee args dst onRet onUnwind =>
               intro hWp
               dsimp only at hWp
@@ -3720,6 +3769,8 @@ theorem wpFrameOutcome_implies_stackExecutes
             cases hTerm : bb.terminator with
             | unsupported => rw [hTerm] at hWp; exact False.elim hWp
             | coreCall _ _ _ _ _ => rw [hTerm] at hWp; exact False.elim hWp
+            | callNe _ _ _ _ _ => rw [hTerm] at hWp; exact False.elim hWp
+            | drop _ _ _ => rw [hTerm] at hWp; exact False.elim hWp
             | sysrootCall _ _ _ _ _ => rw [hTerm] at hWp; exact False.elim hWp
             | unwindResume =>
               rw [hTerm] at hWp

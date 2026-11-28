@@ -162,6 +162,26 @@ theorem enumTy_eq_of_beq {a b : EnumTy} (h : EnumTy.beq a b = true) : a = b := b
                 bool_eq_of_beq h3, enumTagRepr_eq_of_beq h4,
                 natList_eq_of_beq h]
 
+theorem structLayout_eq_of_beq {a b : StructLayout}
+    (h : StructLayout.beq a b = true) : a = b := by
+  cases a with
+  | mk id1 sz1 al1 offs1 =>
+    cases b with
+    | mk id2 sz2 al2 offs2 =>
+      dsimp only [StructLayout.beq] at h
+      cases h1 : Nat.beq id1 id2 with
+      | false => rw [h1] at h; cases h
+      | true =>
+        cases h2 : Nat.beq sz1 sz2 with
+        | false => rw [h1, h2] at h; cases h
+        | true =>
+          cases h3 : Nat.beq al1 al2 with
+          | false => rw [h1, h2, h3] at h; cases h
+          | true =>
+            rw [h1, h2, h3] at h
+            rw [Nat.eq_of_beq_eq_true h1, Nat.eq_of_beq_eq_true h2,
+              Nat.eq_of_beq_eq_true h3, natList_eq_of_beq h]
+
 mutual
 theorem mirTy_eq_of_beq : ∀ {a b : MirTy}, MirTy.beq a b = true → a = b
   | .bool, b, h => by cases b <;> first | rfl | cases h
@@ -237,6 +257,16 @@ theorem mirTy_eq_of_beq : ∀ {a b : MirTy}, MirTy.beq a b = true → a = b
   | .box t1, b, h => by
     cases b with
     | box t2 => exact congrArg MirTy.box (mirTy_eq_of_beq h)
+    | _ => cases h
+  | .struct_ l1 fs1, b, h => by
+    cases b with
+    | struct_ l2 fs2 =>
+      dsimp only [MirTy.beq] at h
+      cases hl : StructLayout.beq l1 l2 with
+      | false => rw [hl] at h; cases h
+      | true =>
+        rw [hl] at h
+        rw [structLayout_eq_of_beq hl, mirTyList_eq_of_beq h]
     | _ => cases h
   | .unsupported, b, h => by cases b <;> first | rfl | cases h
 
@@ -1782,7 +1812,7 @@ theorem mrDecode_replicate_uninit_none (ty : MirTy)
   | ordering => rfl
   | never => rfl
   | unit => cases hnonZst
-  | vec _ | box _ => cases hty
+  | vec _ | box _ | struct_ _ _ => cases hty
   | enum ety =>
     dsimp only [isSupportedScalarOrUnitTy] at hty
     dsimp only [isInhabitedZstTy, isZstEnumTy] at hnonZst
@@ -1890,7 +1920,7 @@ theorem translateTy_validSize_and_alignPos (ty : MirTy)
           | _ => cases hty
       | _ => cases hty
   | ref _ _ | rawPtr _ _ | slice _ | str | array _ _ | range _ | rangeTo _ | rangeFrom _
-  | option _ | vec _ | box _ | unsupported =>
+  | option _ | vec _ | box _ | unsupported | struct_ _ _ =>
     cases hty
 
 /-! ## State Relation (`StateRel`) and Memory Invariants -/
@@ -2375,7 +2405,7 @@ theorem liveUninitSlot_isImmediate (ty : MirTy) :
   | ordering => exact ⟨none, rfl⟩
   | ref _ _ => exact ⟨none, rfl⟩
   | rawPtr _ _ | slice _ | str | array _ _ | range _ | rangeTo _ | rangeFrom _
-  | option _ | vec _ | box _ => exact ⟨none, rfl⟩
+  | option _ | vec _ | box _ | struct_ _ _ => exact ⟨none, rfl⟩
   | tuple _ => exact ⟨none, rfl⟩
   | unsupported => exact ⟨none, rfl⟩
 
@@ -2475,7 +2505,7 @@ theorem liveUninitSlot_slotRel (exact : Bool) (mem : MrMemory) (ty : MirTy)
     exact ⟨ptr, id, List.replicate (translateTy (.tuple fs)).size.bytes .uninit,
       rfl, hlive, rfl, fun _ => rfl⟩
   | ref _ _ | rawPtr _ _ | slice _ | str | array _ _ | range _ | rangeTo _ | rangeFrom _
-  | option _ | vec _ | box _ | unsupported =>
+  | option _ | vec _ | box _ | unsupported | struct_ _ _ =>
     cases hty
 
 theorem localMapRemove_of_none (k : LocalName) (m : LocalMap)
@@ -2733,7 +2763,7 @@ theorem block_terminator_not_call_or_assert (exact : Bool) (argCount : Nat)
       | call _ _ _ _ _ => rw [ht] at hbb; cases hbb
       | sysrootCall _ _ _ _ _ => rw [ht] at hbb; cases hbb
       | goto _ | return_ | unreachable | switchInt _ _ | unwindResume
-      | coreCall _ _ _ _ _ | unsupported => rfl
+      | coreCall _ _ _ _ _ | unsupported | callNe _ _ _ | drop _ _ _ => rfl
 
 theorem block_terminator_not_call (exact : Bool) (argCount : Nat)
     (bodyLocals : List MirTy) (numBlocks : Nat) (bb : BasicBlock)

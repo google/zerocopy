@@ -515,7 +515,7 @@ private theorem evalStepV2_assign_ok {p : Program} {body : Body}
     {bb : BasicBlock} {frame : FrameState} {mem mem1 mem2 : MemoryState}
     {cm : CallerMemory} {lid : LocalId} {rv : Rvalue} {dstTy : MirTy}
     {val : Val} {locals1 locals2 : List LocalSlot}
-    (hB : Trusted.MirSemantics.getElem? p.bodies frame.defId = some body)
+    (hB : activeFrameBody p frame = some body)
     (hBB : Trusted.MirSemantics.getElem? body.basicBlocks frame.blockIdx =
       some bb)
     (hSt : Trusted.MirSemantics.getElem? bb.statements frame.stmtIdx =
@@ -534,7 +534,7 @@ private theorem evalStepV2_assign_ok {p : Program} {body : Body}
       .ok (locals2, mem2) := hWr
   unfold evalStepV2
   dsimp only
-  rw [hB]; dsimp only; rw [hBB]; dsimp only; rw [hSt]; dsimp only
+  rw [hB]; dsimp only; rw [hBB]; dsimp only; rw [hSt]; dsimp only [attachCallers]
   unfold evalStatementV2
   dsimp only
   rw [hTy]; dsimp only [resolvePlaceDestV2]; rw [hRv]; dsimp only; rw [hWr']
@@ -543,7 +543,7 @@ private theorem evalStepV2_assign_ok {p : Program} {body : Body}
 private theorem evalStepV2_nop_ok {p : Program} {body : Body}
     {bb : BasicBlock} {frame : FrameState} {mem : MemoryState}
     {cm : CallerMemory}
-    (hB : Trusted.MirSemantics.getElem? p.bodies frame.defId = some body)
+    (hB : activeFrameBody p frame = some body)
     (hBB : Trusted.MirSemantics.getElem? body.basicBlocks frame.blockIdx =
       some bb)
     (hSt : Trusted.MirSemantics.getElem? bb.statements frame.stmtIdx =
@@ -558,7 +558,7 @@ private theorem evalStepV2_storageLive_ok {p : Program} {body : Body}
     {bb : BasicBlock} {frame : FrameState} {mem : MemoryState}
     {cm : CallerMemory} {lid : LocalId} {localTy : MirTy}
     {locals1 : List LocalSlot}
-    (hB : Trusted.MirSemantics.getElem? p.bodies frame.defId = some body)
+    (hB : activeFrameBody p frame = some body)
     (hBB : Trusted.MirSemantics.getElem? body.basicBlocks frame.blockIdx =
       some bb)
     (hSt : Trusted.MirSemantics.getElem? bb.statements frame.stmtIdx =
@@ -573,7 +573,7 @@ private theorem evalStepV2_storageLive_ok {p : Program} {body : Body}
       .step ⟨[⟨frame.defId, frame.blockIdx, frame.stmtIdx + 1, locals1, frame.sysrootOp?, frame.retDst?, frame.retTarget?⟩],
         cm, mem⟩ := by
   unfold evalStepV2; dsimp only
-  rw [hB]; dsimp only; rw [hBB]; dsimp only; rw [hSt]; dsimp only
+  rw [hB]; dsimp only; rw [hBB]; dsimp only; rw [hSt]; dsimp only [attachCallers]
   unfold evalStatementV2; dsimp only
   rw [hTy, hOld]; dsimp only; rw [hSet]; dsimp only; rw [hDeadOld]
 
@@ -581,7 +581,7 @@ private theorem evalStepV2_storageLive_dead_ok {p : Program} {body : Body}
     {bb : BasicBlock} {frame : FrameState} {mem : MemoryState}
     {cm : CallerMemory} {lid : LocalId} {localTy : MirTy}
     {locals1 : List LocalSlot}
-    (hB : Trusted.MirSemantics.getElem? p.bodies frame.defId = some body)
+    (hB : activeFrameBody p frame = some body)
     (hBB : Trusted.MirSemantics.getElem? body.basicBlocks frame.blockIdx =
       some bb)
     (hSt : Trusted.MirSemantics.getElem? bb.statements frame.stmtIdx =
@@ -594,7 +594,7 @@ private theorem evalStepV2_storageLive_dead_ok {p : Program} {body : Body}
       .step ⟨[⟨frame.defId, frame.blockIdx, frame.stmtIdx + 1, locals1, frame.sysrootOp?, frame.retDst?, frame.retTarget?⟩],
         cm, mem⟩ := by
   unfold evalStepV2; dsimp only
-  rw [hB]; dsimp only; rw [hBB]; dsimp only; rw [hSt]; dsimp only
+  rw [hB]; dsimp only; rw [hBB]; dsimp only; rw [hSt]; dsimp only [attachCallers]
   unfold evalStatementV2; dsimp only
   rw [hTy, hOld]; dsimp only; rw [hSet]; rfl
 
@@ -602,7 +602,7 @@ private theorem evalStepV2_storageDead_imm_ok {p : Program} {body : Body}
     {bb : BasicBlock} {frame : FrameState} {mem : MemoryState}
     {cm : CallerMemory} {lid : LocalId} {optV : Option Val}
     {locals1 : List LocalSlot}
-    (hB : Trusted.MirSemantics.getElem? p.bodies frame.defId = some body)
+    (hB : activeFrameBody p frame = some body)
     (hBB : Trusted.MirSemantics.getElem? body.basicBlocks frame.blockIdx =
       some bb)
     (hSt : Trusted.MirSemantics.getElem? bb.statements frame.stmtIdx =
@@ -616,14 +616,14 @@ private theorem evalStepV2_storageDead_imm_ok {p : Program} {body : Body}
       .step ⟨[⟨frame.defId, frame.blockIdx, frame.stmtIdx + 1, locals1, frame.sysrootOp?, frame.retDst?, frame.retTarget?⟩],
         cm, mem⟩ := by
   unfold evalStepV2; dsimp only
-  rw [hB]; dsimp only; rw [hBB]; dsimp only; rw [hSt]; dsimp only
+  rw [hB]; dsimp only; rw [hBB]; dsimp only; rw [hSt]; dsimp only [attachCallers]
   unfold evalStatementV2; dsimp only
   rw [ite_bool_false hNZ, hOld]; dsimp only; rw [hSet]; rfl
 
 private theorem evalStepV2_goto_ok {p : Program} {body : Body}
     {bb : BasicBlock} {frame : FrameState} {mem : MemoryState}
     {cm : CallerMemory} {target : BasicBlockId}
-    (hB : Trusted.MirSemantics.getElem? p.bodies frame.defId = some body)
+    (hB : activeFrameBody p frame = some body)
     (hBB : Trusted.MirSemantics.getElem? body.basicBlocks frame.blockIdx =
       some bb)
     (hNone : Trusted.MirSemantics.getElem? bb.statements frame.stmtIdx = none)
@@ -643,7 +643,7 @@ private theorem evalStepV2_coreCall_ok {p : Program} {body : Body}
     {target : BasicBlockId} {ua : UnwindAction} {dstTy : MirTy}
     {typedArgs : List (MirTy × Val)} {resVal : Val}
     {locals1 locals2 : List LocalSlot}
-    (hB : Trusted.MirSemantics.getElem? p.bodies frame.defId = some body)
+    (hB : activeFrameBody p frame = some body)
     (hBB : Trusted.MirSemantics.getElem? body.basicBlocks frame.blockIdx =
       some bb)
     (hNone : Trusted.MirSemantics.getElem? bb.statements frame.stmtIdx = none)
@@ -722,7 +722,7 @@ private theorem evalStepV2_switchInt_move_ok {p : Program} {body : Body}
     {cm : CallerMemory} {lid : LocalId} {sv : ScalarVal}
     {targets : SwitchTargets} {target : BasicBlockId}
     {ty : MirTy} {locals1 : List LocalSlot}
-    (hB : Trusted.MirSemantics.getElem? p.bodies frame.defId = some body)
+    (hB : activeFrameBody p frame = some body)
     (hBB : Trusted.MirSemantics.getElem? body.basicBlocks frame.blockIdx =
       some bb)
     (hNone : Trusted.MirSemantics.getElem? bb.statements frame.stmtIdx = none)
@@ -756,7 +756,7 @@ private theorem evalStepV2_switchInt_move_ok {p : Program} {body : Body}
 private theorem evalStepV2_return_any {p : Program} {body : Body}
     {bb : BasicBlock} {frame : FrameState} {mem : MemoryState}
     {callerMem : CallerMemory} {retTy : MirTy} {retVal : Val}
-    (hB : Trusted.MirSemantics.getElem? p.bodies frame.defId = some body)
+    (hB : activeFrameBody p frame = some body)
     (hBB : Trusted.MirSemantics.getElem? body.basicBlocks frame.blockIdx =
       some bb)
     (hNone : Trusted.MirSemantics.getElem? bb.statements frame.stmtIdx = none)
@@ -774,14 +774,14 @@ private theorem evalStepV2_return_any {p : Program} {body : Body}
       .done (.returned ⟨retVal, extractReturnMemoryV2 callerMem mem frame.locals⟩) := by
   unfold evalStepV2; dsimp only
   rw [hB]; dsimp only; rw [hBB]; dsimp only; rw [hNone]; dsimp only
-  rw [ite_bool_true hLen]
+  rw [ite_bool_true hLen, hTerm]; dsimp only
   exact evalTerminatorV2_return_any hTerm hCleanup hRetTy hRetSlot hNoRodata
     hStay hValid hDisj
 
 private theorem evalStepV2_return_ok {p : Program} {body : Body}
     {bb : BasicBlock} {frame : FrameState} {mem : MemoryState}
     {callerMem : CallerMemory} {retTy : MirTy} {retVal : Val}
-    (hB : Trusted.MirSemantics.getElem? p.bodies frame.defId = some body)
+    (hB : activeFrameBody p frame = some body)
     (hBB : Trusted.MirSemantics.getElem? body.basicBlocks frame.blockIdx =
       some bb)
     (hNone : Trusted.MirSemantics.getElem? bb.statements frame.stmtIdx = none)
@@ -802,7 +802,7 @@ private theorem evalStepV2_return_ok {p : Program} {body : Body}
       .done (.returned ⟨retVal, extractCallerMemory callerMem mem⟩) := by
   unfold evalStepV2; dsimp only
   rw [hB]; dsimp only; rw [hBB]; dsimp only; rw [hNone]; dsimp only
-  rw [ite_bool_true hLen]
+  rw [ite_bool_true hLen, hTerm]; dsimp only
   exact evalTerminatorV2_return_ok hTerm hCleanup hRetTy hRetSlot hNoRodata
     hStay hValid hDisj hIds
 
@@ -1687,9 +1687,9 @@ private theorem subslice_correct (q : Query)
         (writePlaceV2_immediate_ok hBChk rfl rfl))
       -- bb0 stmt 9: assign 7 (.aggregateRange isize (move 8) (move 9))
       apply execOutcomeStateV2_step (by
-        dsimp only [evalStepV2, entryProgForBody, Captured.program,
+        dsimp only [evalStepV2, activeFrameBody, attachCallers, entryProgForBody, Captured.program,
           Captured.body_0, evalStatementV2, placeStaticTyV2,
-          resolvePlaceDestV2, writePlaceDestV2, evalRvalueV2,
+          resolvePlaceDestV2, resolveIndexProjsV2, consResolvedProjV2, writePlaceDestV2, evalRvalueV2,
           evalOperandToSlotV2, Trusted.MirSemantics.getElem?]
         rw [readPlaceV2_move_local rfl rfl rfl rfl]
         dsimp only
@@ -2141,10 +2141,6 @@ private theorem execV2_done {p : Program} {P : TerminalOut → Prop}
   unfold execV2
   exact execOutcomeStateV2_done hStep hDone
 
-private theorem body2_at :
-    Trusted.MirSemantics.getElem? (entryProgForBody Captured.program 2).bodies 2 =
-      some Captured.body_2 := rfl
-
 private theorem checked_scalar_tail_ok (m : MemoryState)
     (cm : CallerMemory) (aBits bBits sBits : BitVec 128)
     (sumSv : ScalarVal) (opt5 : Option Val)
@@ -2178,14 +2174,14 @@ private theorem checked_scalar_tail_ok (m : MemoryState)
     exact checkVal_int_eq hSumTr
   -- bb6 stmt 0: storageDead 5
   apply execV2_step
-    (evalStepV2_storageDead_imm_ok body2_at rfl rfl rfl rfl rfl)
+    (evalStepV2_storageDead_imm_ok rfl rfl rfl rfl rfl rfl)
   -- bb6 stmts 1..2: storageLive 12, 13
   apply execV2_step
-    (evalStepV2_storageLive_dead_ok body2_at rfl rfl rfl rfl rfl)
+    (evalStepV2_storageLive_dead_ok rfl rfl rfl rfl rfl rfl)
   apply execV2_step
-    (evalStepV2_storageLive_dead_ok body2_at rfl rfl rfl rfl rfl)
+    (evalStepV2_storageLive_dead_ok rfl rfl rfl rfl rfl rfl)
   -- bb6 stmt 3: assign 13 (.use (.copy 2))
-  apply execV2_step (evalStepV2_assign_ok body2_at rfl rfl rfl
+  apply execV2_step (evalStepV2_assign_ok rfl rfl rfl rfl
     (evalRvalueV2_use_copy_ok rfl rfl rfl rfl)
     (writePlaceV2_immediate_ok hBChk rfl rfl))
   -- bb6 term: coreCall numIsMultipleOf [move 13, const 4] -> 12, bb7
@@ -2219,24 +2215,24 @@ private theorem checked_scalar_tail_ok (m : MemoryState)
     dsimp only
     rw [readPlaceV2_move_local rfl rfl rfl rfl]
     rfl
-  apply execV2_step (evalStepV2_coreCall_ok body2_at rfl rfl rfl rfl
+  apply execV2_step (evalStepV2_coreCall_ok rfl rfl rfl rfl rfl
     rfl rfl hMultArgs (by rfl) (writePlaceV2_immediate_ok rfl rfl rfl))
   -- bb7 stmts 0..2: storageDead 13, storageLive 14, storageLive 15
   apply execV2_step
-    (evalStepV2_storageDead_imm_ok body2_at rfl rfl rfl rfl rfl)
+    (evalStepV2_storageDead_imm_ok rfl rfl rfl rfl rfl rfl)
   apply execV2_step
-    (evalStepV2_storageLive_dead_ok body2_at rfl rfl rfl rfl rfl)
+    (evalStepV2_storageLive_dead_ok rfl rfl rfl rfl rfl rfl)
   apply execV2_step
-    (evalStepV2_storageLive_dead_ok body2_at rfl rfl rfl rfl rfl)
+    (evalStepV2_storageLive_dead_ok rfl rfl rfl rfl rfl rfl)
   -- bb7 stmt 3: assign 15 (.use (.copy 4))
-  apply execV2_step (evalStepV2_assign_ok body2_at rfl rfl rfl
+  apply execV2_step (evalStepV2_assign_ok rfl rfl rfl rfl
     (evalRvalueV2_use_copy_ok rfl rfl rfl rfl)
     (writePlaceV2_immediate_ok hChkSum rfl rfl))
   -- bb7 stmt 4: storageLive 16
   apply execV2_step
-    (evalStepV2_storageLive_dead_ok body2_at rfl rfl rfl rfl rfl)
+    (evalStepV2_storageLive_dead_ok rfl rfl rfl rfl rfl rfl)
   -- bb7 stmt 5: assign 16 (.use (.copy 2))
-  apply execV2_step (evalStepV2_assign_ok body2_at rfl rfl rfl
+  apply execV2_step (evalStepV2_assign_ok rfl rfl rfl rfl
     (evalRvalueV2_use_copy_ok rfl rfl rfl rfl)
     (writePlaceV2_immediate_ok hBChk rfl rfl))
   -- bb7 term: coreCall cmpMin [move 15, move 16] -> 14, bb8
@@ -2247,31 +2243,31 @@ private theorem checked_scalar_tail_ok (m : MemoryState)
     cases decide (decodeScalar sumSv ≤ decodeScalar ⟨.i64, false, bBits⟩)
     · exact hBChk
     · exact hChkSum
-  apply execV2_step (evalStepV2_coreCall_ok body2_at rfl rfl rfl rfl
+  apply execV2_step (evalStepV2_coreCall_ok rfl rfl rfl rfl rfl
     rfl rfl
     (evalArgOperandsV2_two_move rfl rfl rfl rfl rfl rfl rfl rfl)
     (execCoreCall_cmpMin_u64_ok hSumW hSumS rfl rfl)
     (writePlaceV2_immediate_ok hMinChk rfl rfl))
   -- bb8 stmts 0..4: storageDead 16, 15, storageLive 17, 18, 19
   apply execV2_step
-    (evalStepV2_storageDead_imm_ok body2_at rfl rfl rfl rfl rfl)
+    (evalStepV2_storageDead_imm_ok rfl rfl rfl rfl rfl rfl)
   apply execV2_step
-    (evalStepV2_storageDead_imm_ok body2_at rfl rfl rfl rfl rfl)
+    (evalStepV2_storageDead_imm_ok rfl rfl rfl rfl rfl rfl)
   apply execV2_step
-    (evalStepV2_storageLive_dead_ok body2_at rfl rfl rfl rfl rfl)
+    (evalStepV2_storageLive_dead_ok rfl rfl rfl rfl rfl rfl)
   apply execV2_step
-    (evalStepV2_storageLive_dead_ok body2_at rfl rfl rfl rfl rfl)
+    (evalStepV2_storageLive_dead_ok rfl rfl rfl rfl rfl rfl)
   apply execV2_step
-    (evalStepV2_storageLive_dead_ok body2_at rfl rfl rfl rfl rfl)
+    (evalStepV2_storageLive_dead_ok rfl rfl rfl rfl rfl rfl)
   -- bb8 stmt 5: assign 19 (.use (.copy 1))
-  apply execV2_step (evalStepV2_assign_ok body2_at rfl rfl rfl
+  apply execV2_step (evalStepV2_assign_ok rfl rfl rfl rfl
     (evalRvalueV2_use_copy_ok rfl rfl rfl rfl)
     (writePlaceV2_immediate_ok hAChk rfl rfl))
   -- bb8 stmt 6: storageLive 20
   apply execV2_step
-    (evalStepV2_storageLive_dead_ok body2_at rfl rfl rfl rfl rfl)
+    (evalStepV2_storageLive_dead_ok rfl rfl rfl rfl rfl rfl)
   -- bb8 stmt 7: assign 20 (.use (.copy 3))
-  apply execV2_step (evalStepV2_assign_ok body2_at rfl rfl rfl
+  apply execV2_step (evalStepV2_assign_ok rfl rfl rfl rfl
     (evalRvalueV2_use_copy_ok rfl rfl rfl rfl)
     (writePlaceV2_immediate_ok hSChk rfl rfl))
   -- bb8 term: coreCall numWrappingShl [move 19, move 20] -> 18, bb9
@@ -2282,30 +2278,30 @@ private theorem checked_scalar_tail_ok (m : MemoryState)
   have hShlChk : checkValV2 (.scalar ⟨.i64, false, shlBits⟩) (.int .i64 false) =
       true :=
     checkVal_scalar_truncateBits .i64 false (bvOfInt 128 shlRes)
-  apply execV2_step (evalStepV2_coreCall_ok body2_at rfl rfl rfl rfl
+  apply execV2_step (evalStepV2_coreCall_ok rfl rfl rfl rfl rfl
     rfl rfl
     (evalArgOperandsV2_two_move rfl rfl rfl rfl rfl rfl rfl rfl)
     execCoreCall_wrappingShl_u64_ok
     (writePlaceV2_immediate_ok hShlChk rfl rfl))
   -- bb9 stmts 0..1: storageDead 20, 19
   apply execV2_step
-    (evalStepV2_storageDead_imm_ok body2_at rfl rfl rfl rfl rfl)
+    (evalStepV2_storageDead_imm_ok rfl rfl rfl rfl rfl rfl)
   apply execV2_step
-    (evalStepV2_storageDead_imm_ok body2_at rfl rfl rfl rfl rfl)
+    (evalStepV2_storageDead_imm_ok rfl rfl rfl rfl rfl rfl)
   -- bb9 term: coreCall numLeadingZeros [move 18] -> 17, bb10
   let lzBits := truncateBits .i32 (BitVec.ofNat 128
     (leadingZerosFrom (truncateBits .i64 shlBits).toNat IntWidth.i64.bitWidth))
   have hLzChk : checkValV2 (.scalar ⟨.i32, false, lzBits⟩) (.int .i32 false) =
       true :=
     checkVal_scalar_truncateBits .i32 false _
-  apply execV2_step (evalStepV2_coreCall_ok body2_at rfl rfl rfl rfl
+  apply execV2_step (evalStepV2_coreCall_ok rfl rfl rfl rfl rfl
     rfl rfl
     (evalArgOperandsV2_one_move rfl rfl rfl rfl)
     execCoreCall_leadingZeros_u64_ok
     (writePlaceV2_immediate_ok hLzChk rfl rfl))
   -- bb10 stmt 0: storageDead 18
   apply execV2_step
-    (evalStepV2_storageDead_imm_ok body2_at rfl rfl rfl rfl rfl)
+    (evalStepV2_storageDead_imm_ok rfl rfl rfl rfl rfl rfl)
   -- bb10 stmt 1: assign 0 (.aggregateTuple [move 12, move 14, move 17])
   let multVal : Val := .bool (Nat.beq ((truncateBits .i64 bBits).toNat %
     (truncateBits .i64 (truncateBits .i64 (BitVec.ofNat 128 4))).toNat) 0)
@@ -2318,22 +2314,22 @@ private theorem checked_scalar_tail_ok (m : MemoryState)
         [.bool, .int .i64 false, .int .i32 false] = true
     dsimp only [checkValV2List]
     rw [hMultChk, hMinChk, hLzChk]; rfl
-  apply execV2_step (evalStepV2_assign_ok body2_at rfl rfl rfl
+  apply execV2_step (evalStepV2_assign_ok rfl rfl rfl rfl
     (evalRvalueV2_aggregateTuple3_move_ok rfl rfl rfl rfl rfl rfl rfl rfl
       rfl rfl rfl rfl hMultChk hMinChk hLzChk)
     (writePlaceV2_immediate_ok hTupChk rfl rfl))
   -- bb10 stmts 2..5: storageDead 17, 14, 12, 4
   apply execV2_step
-    (evalStepV2_storageDead_imm_ok body2_at rfl rfl rfl rfl rfl)
+    (evalStepV2_storageDead_imm_ok rfl rfl rfl rfl rfl rfl)
   apply execV2_step
-    (evalStepV2_storageDead_imm_ok body2_at rfl rfl rfl rfl rfl)
+    (evalStepV2_storageDead_imm_ok rfl rfl rfl rfl rfl rfl)
   apply execV2_step
-    (evalStepV2_storageDead_imm_ok body2_at rfl rfl rfl rfl rfl)
+    (evalStepV2_storageDead_imm_ok rfl rfl rfl rfl rfl rfl)
   apply execV2_step
-    (evalStepV2_storageDead_imm_ok body2_at rfl rfl rfl rfl rfl)
+    (evalStepV2_storageDead_imm_ok rfl rfl rfl rfl rfl rfl)
   -- bb10 term: return_
   apply execV2_done
-    (evalStepV2_return_any body2_at rfl rfl rfl rfl rfl rfl rfl rfl rfl rfl rfl)
+    (evalStepV2_return_any rfl rfl rfl rfl rfl rfl rfl rfl rfl rfl rfl rfl)
   exact trivial
 
 private theorem checked_scalar_no_ovf_ok (m : MemoryState) (cm : CallerMemory)
@@ -2363,32 +2359,32 @@ private theorem checked_scalar_no_ovf_ok (m : MemoryState) (cm : CallerMemory)
     exact checkVal_int_eq hAddTr
   -- bb1 stmts 0..3 & switchInt -> bb4
   apply execV2_step
-    (evalStepV2_storageDead_imm_ok body2_at rfl rfl rfl rfl rfl)
+    (evalStepV2_storageDead_imm_ok rfl rfl rfl rfl rfl rfl)
   apply execV2_step
-    (evalStepV2_storageDead_imm_ok body2_at rfl rfl rfl rfl rfl)
-  apply execV2_step (evalStepV2_nop_ok body2_at rfl rfl)
-  apply execV2_step (evalStepV2_assign_ok body2_at rfl rfl rfl
+    (evalStepV2_storageDead_imm_ok rfl rfl rfl rfl rfl rfl)
+  apply execV2_step (evalStepV2_nop_ok rfl rfl rfl)
+  apply execV2_step (evalStepV2_assign_ok rfl rfl rfl rfl
     (evalRvalueV2_discriminant_option_some_ok rfl rfl)
     (writePlaceV2_immediate_ok (checkVal_int_eq (by decide)) rfl rfl))
   have hSw1 : evalSwitchBranches .isize (BitVec.ofNat 128 1) 2
       [((BitVec.ofNat 128 0), 3), ((BitVec.ofNat 128 1), 4)] = .ok 4 := rfl
   apply execV2_step
-    (evalStepV2_switchInt_move_ok body2_at rfl rfl rfl rfl rfl rfl rfl rfl rfl hSw1)
+    (evalStepV2_switchInt_move_ok rfl rfl rfl rfl rfl rfl rfl rfl rfl rfl hSw1)
   -- bb4 stmt 0: storageLive 9
   apply execV2_step
-    (evalStepV2_storageLive_dead_ok body2_at rfl rfl rfl rfl rfl)
+    (evalStepV2_storageLive_dead_ok rfl rfl rfl rfl rfl rfl)
   -- bb4 stmt 1: assign 9 (.use (.copy (5, [.downcast 1, .field 0 u64])))
-  apply execV2_step (evalStepV2_assign_ok body2_at rfl rfl rfl
+  apply execV2_step (evalStepV2_assign_ok rfl rfl rfl rfl
     (evalRvalueV2_use_copy_u64_downcast1_field0_ok rfl rfl)
     (writePlaceV2_immediate_ok hAddChk rfl rfl))
   -- bb4 stmt 2: assign 4 (.use (.copy 9))
-  apply execV2_step (evalStepV2_assign_ok body2_at rfl rfl rfl
+  apply execV2_step (evalStepV2_assign_ok rfl rfl rfl rfl
     (evalRvalueV2_use_copy_ok rfl rfl rfl rfl)
     (writePlaceV2_immediate_ok hAddChk rfl rfl))
   -- bb4 stmt 3: storageDead 9; term: goto 6
   apply execV2_step
-    (evalStepV2_storageDead_imm_ok body2_at rfl rfl rfl rfl rfl)
-  apply execV2_step (evalStepV2_goto_ok body2_at rfl rfl rfl rfl)
+    (evalStepV2_storageDead_imm_ok rfl rfl rfl rfl rfl rfl)
+  apply execV2_step (evalStepV2_goto_ok rfl rfl rfl rfl rfl)
   exact checked_scalar_tail_ok m cm aBits bBits sBits addSv
     (some (.scalar addSv)) hATr hBTr hSTr ⟨hAddW, hAddS, hAddTr⟩
 
@@ -2423,26 +2419,26 @@ private theorem checked_scalar_ovf_ok (m : MemoryState) (cm : CallerMemory)
     checkVal_int_eq hBTr
   -- bb1 stmts 0..3 & switchInt -> bb3
   apply execV2_step
-    (evalStepV2_storageDead_imm_ok body2_at rfl rfl rfl rfl rfl)
+    (evalStepV2_storageDead_imm_ok rfl rfl rfl rfl rfl rfl)
   apply execV2_step
-    (evalStepV2_storageDead_imm_ok body2_at rfl rfl rfl rfl rfl)
-  apply execV2_step (evalStepV2_nop_ok body2_at rfl rfl)
-  apply execV2_step (evalStepV2_assign_ok body2_at rfl rfl rfl
+    (evalStepV2_storageDead_imm_ok rfl rfl rfl rfl rfl rfl)
+  apply execV2_step (evalStepV2_nop_ok rfl rfl rfl)
+  apply execV2_step (evalStepV2_assign_ok rfl rfl rfl rfl
     (evalRvalueV2_discriminant_option_none_ok rfl rfl)
     (writePlaceV2_immediate_ok (checkVal_int_eq (by decide)) rfl rfl))
   have hSw0 : evalSwitchBranches .isize (BitVec.ofNat 128 0) 2
       [((BitVec.ofNat 128 0), 3), ((BitVec.ofNat 128 1), 4)] = .ok 3 := rfl
   apply execV2_step
-    (evalStepV2_switchInt_move_ok body2_at rfl rfl rfl rfl rfl rfl rfl rfl rfl hSw0)
+    (evalStepV2_switchInt_move_ok rfl rfl rfl rfl rfl rfl rfl rfl rfl rfl hSw0)
   -- bb3 stmts 0..3
   apply execV2_step
-    (evalStepV2_storageLive_dead_ok body2_at rfl rfl rfl rfl rfl)
-  apply execV2_step (evalStepV2_assign_ok body2_at rfl rfl rfl
+    (evalStepV2_storageLive_dead_ok rfl rfl rfl rfl rfl rfl)
+  apply execV2_step (evalStepV2_assign_ok rfl rfl rfl rfl
     (evalRvalueV2_use_copy_ok rfl rfl rfl rfl)
     (writePlaceV2_immediate_ok hAChk rfl rfl))
   apply execV2_step
-    (evalStepV2_storageLive_dead_ok body2_at rfl rfl rfl rfl rfl)
-  apply execV2_step (evalStepV2_assign_ok body2_at rfl rfl rfl
+    (evalStepV2_storageLive_dead_ok rfl rfl rfl rfl rfl rfl)
+  apply execV2_step (evalStepV2_assign_ok rfl rfl rfl rfl
     (evalRvalueV2_use_copy_ok rfl rfl rfl rfl)
     (writePlaceV2_immediate_ok hBChk rfl rfl))
   -- bb3 term: saturatingAdd
@@ -2461,17 +2457,17 @@ private theorem checked_scalar_ovf_ok (m : MemoryState) (cm : CallerMemory)
     dsimp only at h0
     rw [hOvf] at h0
     exact h0
-  apply execV2_step (evalStepV2_coreCall_ok body2_at rfl rfl rfl rfl
+  apply execV2_step (evalStepV2_coreCall_ok rfl rfl rfl rfl rfl
     rfl rfl
     (evalArgOperandsV2_two_move rfl rfl rfl rfl rfl rfl rfl rfl)
     hSatCall
     (writePlaceV2_immediate_ok hMaxChk rfl rfl))
   -- bb5 stmts 0..1 & goto 6
   apply execV2_step
-    (evalStepV2_storageDead_imm_ok body2_at rfl rfl rfl rfl rfl)
+    (evalStepV2_storageDead_imm_ok rfl rfl rfl rfl rfl rfl)
   apply execV2_step
-    (evalStepV2_storageDead_imm_ok body2_at rfl rfl rfl rfl rfl)
-  apply execV2_step (evalStepV2_goto_ok body2_at rfl rfl rfl rfl)
+    (evalStepV2_storageDead_imm_ok rfl rfl rfl rfl rfl rfl)
+  apply execV2_step (evalStepV2_goto_ok rfl rfl rfl rfl rfl)
   exact checked_scalar_tail_ok m cm aBits bBits sBits satSv none
     hATr hBTr hSTr ⟨rfl, rfl, hMaxTr⟩
 
@@ -2551,21 +2547,21 @@ private theorem checked_scalar_correct (q : Query)
         (fun _ => True) := by
       -- bb0 stmts 0..5
       apply execV2_step
-        (evalStepV2_storageLive_dead_ok body2_at rfl rfl rfl rfl rfl)
+        (evalStepV2_storageLive_dead_ok rfl rfl rfl rfl rfl rfl)
       apply execV2_step
-        (evalStepV2_storageLive_dead_ok body2_at rfl rfl rfl rfl rfl)
+        (evalStepV2_storageLive_dead_ok rfl rfl rfl rfl rfl rfl)
       apply execV2_step
-        (evalStepV2_storageLive_dead_ok body2_at rfl rfl rfl rfl rfl)
-      apply execV2_step (evalStepV2_assign_ok body2_at rfl rfl rfl
+        (evalStepV2_storageLive_dead_ok rfl rfl rfl rfl rfl rfl)
+      apply execV2_step (evalStepV2_assign_ok rfl rfl rfl rfl
         (evalRvalueV2_use_copy_ok rfl rfl rfl rfl)
         (writePlaceV2_immediate_ok hAChk rfl rfl))
       apply execV2_step
-        (evalStepV2_storageLive_dead_ok body2_at rfl rfl rfl rfl rfl)
-      apply execV2_step (evalStepV2_assign_ok body2_at rfl rfl rfl
+        (evalStepV2_storageLive_dead_ok rfl rfl rfl rfl rfl rfl)
+      apply execV2_step (evalStepV2_assign_ok rfl rfl rfl rfl
         (evalRvalueV2_use_copy_ok rfl rfl rfl rfl)
         (writePlaceV2_immediate_ok hBChk rfl rfl))
       -- bb0 term: checkedAdd -> bb1
-      apply execV2_step (evalStepV2_coreCall_ok body2_at rfl rfl rfl
+      apply execV2_step (evalStepV2_coreCall_ok rfl rfl rfl rfl
         rfl rfl rfl
         (evalArgOperandsV2_two_move rfl rfl rfl rfl rfl rfl rfl rfl)
         hAddCall
@@ -2588,21 +2584,21 @@ private theorem checked_scalar_correct (q : Query)
         (fun _ => True) := by
       -- bb0 stmts 0..5
       apply execV2_step
-        (evalStepV2_storageLive_dead_ok body2_at rfl rfl rfl rfl rfl)
+        (evalStepV2_storageLive_dead_ok rfl rfl rfl rfl rfl rfl)
       apply execV2_step
-        (evalStepV2_storageLive_dead_ok body2_at rfl rfl rfl rfl rfl)
+        (evalStepV2_storageLive_dead_ok rfl rfl rfl rfl rfl rfl)
       apply execV2_step
-        (evalStepV2_storageLive_dead_ok body2_at rfl rfl rfl rfl rfl)
-      apply execV2_step (evalStepV2_assign_ok body2_at rfl rfl rfl
+        (evalStepV2_storageLive_dead_ok rfl rfl rfl rfl rfl rfl)
+      apply execV2_step (evalStepV2_assign_ok rfl rfl rfl rfl
         (evalRvalueV2_use_copy_ok rfl rfl rfl rfl)
         (writePlaceV2_immediate_ok hAChk rfl rfl))
       apply execV2_step
-        (evalStepV2_storageLive_dead_ok body2_at rfl rfl rfl rfl rfl)
-      apply execV2_step (evalStepV2_assign_ok body2_at rfl rfl rfl
+        (evalStepV2_storageLive_dead_ok rfl rfl rfl rfl rfl rfl)
+      apply execV2_step (evalStepV2_assign_ok rfl rfl rfl rfl
         (evalRvalueV2_use_copy_ok rfl rfl rfl rfl)
         (writePlaceV2_immediate_ok hBChk rfl rfl))
       -- bb0 term: checkedAdd -> bb1
-      apply execV2_step (evalStepV2_coreCall_ok body2_at rfl rfl rfl
+      apply execV2_step (evalStepV2_coreCall_ok rfl rfl rfl rfl
         rfl rfl rfl
         (evalArgOperandsV2_two_move rfl rfl rfl rfl rfl rfl rfl rfl)
         hAddCall

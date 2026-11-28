@@ -2826,11 +2826,11 @@ theorem mirIsOverflowPairTy_eq (ty : MirTy) :
         | nil => rfl
         | cons t₂ r' => cases t₂ <;> cases r' <;> rfl
       | bool | unit | never | char | ordering | enum _ | tuple _ | ref _ _
-      | rawPtr _ _ | slice _ | vec _ | box _ | str | array _ _ | rangeTo _ | rangeFrom _ | range _ | option _
-      | unsupported => rfl
+      | rawPtr _ _ | slice _ | vec _ | box _ | str | array _ _ | rangeTo _
+      | rangeFrom _ | range _ | option _ | unsupported | struct_ _ _ => rfl
   | bool | int _ _ | unit | never | char | ordering | enum _ | ref _ _
-  | rawPtr _ _ | slice _ | vec _ | box _ | str | array _ _ | rangeTo _ | rangeFrom _ | range _ | option _
-  | unsupported => rfl
+  | rawPtr _ _ | slice _ | vec _ | box _ | str | array _ _ | rangeTo _ | rangeFrom _
+  | range _ | option _ | unsupported | struct_ _ _ => rfl
 
 theorem mirValTy?_eq (v : Val) : mirValTy? v = v.ty? := by
   cases v with
@@ -2937,8 +2937,8 @@ theorem mirTyBeq_int_eq (w : IntWidth) (s : Bool) (b : MirTy) :
       (IntWidth.beq w w₂ && (s == s₂))
     rw [mirIntWidthBeq_eq]
   | bool | unit | never | char | ordering | enum _ | tuple _ | ref _ _
-  | rawPtr _ _ | slice _ | vec _ | box _ | str | array _ _ | rangeTo _ | rangeFrom _ | range _ | option _
-  | unsupported => rfl
+  | rawPtr _ _ | slice _ | vec _ | box _ | str | array _ _ | rangeTo _ | rangeFrom _
+  | range _ | option _ | unsupported | struct_ _ _ => rfl
 
 theorem mirTyBeq_overflowPair_eq (w : IntWidth) (s : Bool) (b : MirTy) :
     mirTyBeq (.tuple [.int w s, .bool]) b =
@@ -2954,11 +2954,11 @@ theorem mirTyBeq_overflowPair_eq (w : IntWidth) (s : Bool) (b : MirTy) :
         | nil => cases w <;> cases w₂ <;> rfl
         | cons t₂ r' => cases t₂ <;> cases r' <;> cases w <;> cases w₂ <;> rfl
       | bool | unit | never | char | ordering | enum _ | tuple _ | ref _ _
-      | rawPtr _ _ | slice _ | vec _ | box _ | str | array _ _ | rangeTo _ | rangeFrom _ | range _ | option _
-      | unsupported => rfl
+      | rawPtr _ _ | slice _ | vec _ | box _ | str | array _ _ | rangeTo _
+      | rangeFrom _ | range _ | option _ | unsupported | struct_ _ _ => rfl
   | bool | int _ _ | unit | never | char | ordering | enum _ | ref _ _
-  | rawPtr _ _ | slice _ | vec _ | box _ | str | array _ _ | rangeTo _ | rangeFrom _ | range _ | option _
-  | unsupported => rfl
+  | rawPtr _ _ | slice _ | vec _ | box _ | str | array _ _ | rangeTo _ | rangeFrom _
+  | range _ | option _ | unsupported | struct_ _ _ => rfl
 
 /-- `mirTyBeq a b` agrees with `MirTy.beq a b` whenever `a` is in the
 supported local-type fragment `isSupportedScalarOrUnitTy` (whose types nest at
@@ -2972,8 +2972,8 @@ theorem mirTyBeq_eq_of_supported (a b : MirTy)
     cases b with
     | enum ety₂ => exact mirEnumTyBeq_eq ety ety₂
     | bool | int _ _ | unit | never | char | ordering | tuple _ | ref _ _
-    | rawPtr _ _ | slice _ | vec _ | box _ | str | array _ _ | rangeTo _ | rangeFrom _ | range _ | option _
-    | unsupported => rfl
+    | rawPtr _ _ | slice _ | vec _ | box _ | str | array _ _ | rangeTo _ | rangeFrom _
+    | range _ | option _ | unsupported | struct_ _ _ => rfl
   | tuple fs =>
     cases fs with
     | nil => nomatch hSup
@@ -2989,14 +2989,16 @@ theorem mirTyBeq_eq_of_supported (a b : MirTy)
             | nil => exact mirTyBeq_overflowPair_eq w s b
             | cons _ _ => nomatch hSup
           | int _ _ | unit | never | char | ordering | enum _ | tuple _
-          | ref _ _ | rawPtr _ _ | slice _ | str | array _ _ | vec _ | box _ | rangeTo _ | rangeFrom _
-          | range _ | option _ | unsupported => nomatch hSup
+          | ref _ _ | rawPtr _ _ | slice _ | str | array _ _ | vec _ | box _
+          | rangeTo _ | rangeFrom _ | range _ | option _ | unsupported
+          | struct_ _ _ => nomatch hSup
       | bool | unit | never | char | ordering | enum _ | tuple _ | ref _ _
-      | rawPtr _ _ | slice _ | vec _ | box _ | str | array _ _ | rangeTo _ | rangeFrom _ | range _ | option _
-      | unsupported => nomatch hSup
+      | rawPtr _ _ | slice _ | vec _ | box _ | str | array _ _ | rangeTo _
+      | rangeFrom _ | range _ | option _ | unsupported
+      | struct_ _ _ => nomatch hSup
   | bool | unit | never | char | ordering => cases b <;> rfl
-  | ref _ _ | rawPtr _ _ | slice _ | str | array _ _ | vec _ | box _ | rangeTo _ | rangeFrom _ | range _
-  | option _ | unsupported => nomatch hSup
+  | ref _ _ | rawPtr _ _ | slice _ | str | array _ _ | vec _ | box _ | rangeTo _
+  | rangeFrom _ | range _ | option _ | unsupported | struct_ _ _ => nomatch hSup
 
 /-- Exact unconditional agreement between `mirCheckVal` and
 `Trusted.MirSemantics.checkVal` across all runtime `Val`s and all `MirTy`s. -/
@@ -3015,8 +3017,8 @@ theorem mirIsSupportedScalarOrUnitTy_eq (ty : MirTy) :
   | enum ety => exact mirEnumAdmitted_eq ety
   | tuple fs => exact mirIsOverflowPairTy_eq (.tuple fs)
   | bool | int _ _ | unit | never | char | ordering | ref _ _ | rawPtr _ _
-  | slice _ | str | array _ _ | vec _ | box _ | rangeTo _ | rangeFrom _ | range _ | option _
-  | unsupported => rfl
+  | slice _ | str | array _ _ | vec _ | box _ | rangeTo _ | rangeFrom _ | range _
+  | option _ | unsupported | struct_ _ _ => rfl
 
 theorem mirLiveUninitSlot_eq (ty : MirTy) :
     mirLiveUninitSlot ty = liveUninitSlot ty := by
@@ -3025,8 +3027,8 @@ theorem mirLiveUninitSlot_eq (ty : MirTy) :
     dsimp only [mirLiveUninitSlot, liveUninitSlot]
     rw [mirIsZstEnumTy_eq ety]
   | bool | int _ _ | unit | never | char | ordering | tuple _ | ref _ _
-  | rawPtr _ _ | slice _ | vec _ | box _ | str | array _ _ | rangeTo _ | rangeFrom _ | range _ | option _
-  | unsupported => rfl
+  | rawPtr _ _ | slice _ | vec _ | box _ | str | array _ _ | rangeTo _ | rangeFrom _
+  | range _ | option _ | unsupported | struct_ _ _ => rfl
 
 theorem mirStorageAnnotationsInBounds_eq (body : Body) :
     mirStorageAnnotationsInBounds body = storageAnnotationsInBounds body := by
@@ -3112,8 +3114,9 @@ theorem mirDiscriminantTypesValid_eq (body : Body) :
                       (s == ety.discrSigned))
                   rw [mirIntWidthBeq_eq]
                 | bool | unit | never | char | ordering | enum _ | tuple _
-                | ref _ _ | rawPtr _ _ | slice _ | str | array _ _ | vec _ | box _ | rangeTo _ | rangeFrom _
-                | range _ | option _ | unsupported => rfl
+                | ref _ _ | rawPtr _ _ | slice _ | str | array _ _ | vec _ | box _
+                | rangeTo _ | rangeFrom _ | range _ | option _ | unsupported
+                | struct_ _ _ => rfl
           | ordering =>
             cases Trusted.MirSemantics.getElem? body.locals dst.localId with
             | none => rfl
@@ -3121,16 +3124,17 @@ theorem mirDiscriminantTypesValid_eq (body : Body) :
               cases dstTy with
               | int w s => cases w <;> rfl
               | bool | unit | never | char | ordering | enum _ | tuple _
-              | ref _ _ | rawPtr _ _ | slice _ | str | array _ _ | vec _ | box _ | rangeTo _ | rangeFrom _
-              | range _ | option _ | unsupported => rfl
+              | ref _ _ | rawPtr _ _ | slice _ | str | array _ _ | vec _ | box _
+              | rangeTo _ | rangeFrom _ | range _ | option _ | unsupported
+              | struct_ _ _ => rfl
           | bool | int _ _ | unit | never | char | tuple _ | ref _ _
-          | rawPtr _ _ | slice _ | vec _ | box _ | str | array _ _ | rangeTo _ | rangeFrom _ | range _
-          | option _ | unsupported => rfl
+          | rawPtr _ _ | slice _ | vec _ | box _ | str | array _ _ | rangeTo _
+          | rangeFrom _ | range _ | option _ | unsupported | struct_ _ _ => rfl
     | use _ | useRetag _ | binaryOp _ _ _ | unaryOp _ _ | cast _ _ _ | ref _ _
     | addressOf _ _ | fakeAddressOf _ | aggregateTuple _ | aggregateArray _ _
-    | repeat_ _ _ _
-    | aggregateRangeTo _ | aggregateRangeFrom _
-    | aggregateRange _ _ _ | aggregateOption _ _ _ | unsupported => rfl
+    | repeat_ _ _ _ | aggregateRangeTo _ | aggregateRangeFrom _
+    | aggregateRange _ _ _ | aggregateOption _ _ _ | unsupported
+    | aggregateStruct _ _ => rfl
   | storageLive _ | storageDead _ | nop | unsupported => rfl
 
 /-- Every element of a list satisfying `xs.all pred` satisfies `pred`. -/
@@ -3202,9 +3206,9 @@ theorem mirCastTypesValid_eq (body : Body)
       | ptrToPtr | intToPtr | unsize | boxAsRef | unsupported => rfl
     | use _ | useRetag _ | binaryOp _ _ _ | unaryOp _ _ | discriminant _ | ref _ _
     | addressOf _ _ | fakeAddressOf _ | aggregateTuple _ | aggregateArray _ _
-    | repeat_ _ _ _
-    | aggregateRangeTo _ | aggregateRangeFrom _
-    | aggregateRange _ _ _ | aggregateOption _ _ _ | unsupported => rfl
+    | repeat_ _ _ _ | aggregateRangeTo _ | aggregateRangeFrom _
+    | aggregateRange _ _ _ | aggregateOption _ _ _ | unsupported
+    | aggregateStruct _ _ => rfl
   | storageLive _ | storageDead _ | nop | unsupported => rfl
 
 private theorem mirLocalOperandMatchesTy_eq (locals : List MirTy)
@@ -3251,7 +3255,9 @@ theorem mirAssignTypesValid_eq (body : Body)
         | discriminant _ | cast _ _ _ | ref _ _ | addressOf _ _
         | fakeAddressOf _
         | aggregateTuple _ | unsupported | useRetag _ | aggregateRangeTo _ _
-        | aggregateRangeFrom _ _ | aggregateArray _ _ | repeat_ _ _ _ | aggregateOption _ _ _ | aggregateRange _ _ _ => rfl
+        | aggregateRangeFrom _ _ | aggregateArray _ _ | repeat_ _ _ _
+        | aggregateOption _ _ _ | aggregateRange _ _ _
+        | aggregateStruct _ _ => rfl
         | use opnd => exact mirLocalOperandMatchesTy_eq body.locals hSup opnd dstTy
         | binaryOp op lhs rhs =>
           dsimp only
@@ -3302,7 +3308,8 @@ private theorem isSupported_of_evalConstLit_ok {ty : MirTy} {lit : ConstLit}
           cases hOk
     | rodataBytes _ | rodataRef _ _ _ _ => cases hOk
   | never | tuple _ | ref _ _ | rawPtr _ _ | slice _ | str | rangeTo _ | rangeFrom _
-  | array _ _ | unsupported | option _ | range _ | box _ | vec _ =>
+  | array _ _ | unsupported | option _ | range _ | box _ | vec _
+  | struct_ _ _ =>
     cases lit <;> cases hOk
 
 private theorem mirCallArgsMatchBody_eq (bodyLocals : List MirTy)
@@ -3351,7 +3358,8 @@ private theorem mirCallsAdmitted_eq (p : Program) (body : Body)
   refine Anneal.MirTotal.listAll_congr body.basicBlocks (fun bb => ?_)
   cases bb.terminator with
   | goto _ | switchInt _ _ | return_ | unreachable | unwindResume
-  | assert _ _ _ _ _ | coreCall _ _ _ _ _ | unsupported => rfl
+  | assert _ _ _ _ _ | coreCall _ _ _ _ _ | callNe _ _ _ _ _ | drop _ _ _
+  | unsupported => rfl
   | call callee args dst target unwind =>
     dsimp only
     rw [Anneal.MirTotal.compGetElem?_eq]
@@ -3431,7 +3439,7 @@ theorem mirAssertConditionTypesValid_eq (body : Body) :
     | constant c => exact mirTyBeq_bool_eq c.ty
   | goto _ | switchInt _ _ | return_ | unreachable | unwindResume
   | call _ _ _ _ _ | coreCall _ _ _ _ _ | sysrootCall _ _ _ _ _
-  | unsupported => rfl
+  | callNe _ _ _ _ _ | drop _ _ _ | unsupported => rfl
 
 private theorem mirSingleBodyStaticAdmitted_eq (p : Program) (body : Body) :
     mirSingleBodyStaticAdmitted p body = singleBodyStaticAdmitted p body := by
@@ -3556,7 +3564,8 @@ theorem mirEvalConstLit_eq (ty : MirTy) (lit : ConstLit) :
             mirTagBitsToDiscrBits_eq, mirFindDiscrVariant?_eq]
         rfl
   | never | tuple _ | ref _ _ | rawPtr _ _ | slice _ | str | array _ _
-  | vec _ | box _ | rangeTo _ | rangeFrom _ | range _ | option _ | unsupported =>
+  | vec _ | box _ | rangeTo _ | rangeFrom _ | range _ | option _ | unsupported
+  | struct_ _ _ =>
     cases lit <;> rfl
 
 theorem mirDecodeScalar_eq (sv : ScalarVal) :
@@ -3808,8 +3817,8 @@ theorem mirEvalIntToIntCast_eq (castTy : MirTy) (v : Val) :
       dsimp only
       cases Nat.ble bits 255 <;> rfl
     | bool | unit | never | ordering | enum _ | tuple _ | ref _ _
-    | rawPtr _ _ | slice _ | vec _ | box _ | str | array _ _ | rangeTo _ | rangeFrom _ | range _ | option _
-    | unsupported => rfl
+    | rawPtr _ _ | slice _ | vec _ | box _ | str | array _ _ | rangeTo _ | rangeFrom _
+    | range _ | option _ | unsupported | struct_ _ _ => rfl
 
 /-! ## Algorithmic Straight-Line MIR Lifter (`liftStraightLineMir`)
 

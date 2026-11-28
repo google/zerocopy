@@ -369,7 +369,8 @@ private theorem refLayoutDataForTy_align (ty : MirTy) :
     (refLayoutDataForTy ty).align.abi = Align.ONE := by
   cases ty with
   | unit | never | bool | int _ _ | char | ordering | ref _ _ | rawPtr _ _
-  | slice _ | str | array _ _ | vec _ | box _ | rangeTo _ | rangeFrom _ | range _ | option _ | unsupported => rfl
+  | slice _ | str | array _ _ | vec _ | box _ | rangeTo _ | rangeFrom _ | range _
+  | option _ | unsupported | struct_ _ _ => rfl
   | tuple fs =>
     cases refLayoutDataForTy_tuple fs with
     | inl h => rw [h]; rfl

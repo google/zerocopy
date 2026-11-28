@@ -3412,7 +3412,7 @@ mutual
          rw [refRefsValidInMiriV2_rangeFrom_indep mAfter mBefore pt v]
          exact h⟩
     | .never, v | .slice _, v | .str, v | .range _, v | .option _, v
-    | .vec _, v | .box _, v | .unsupported, v => by
+    | .vec _, v | .box _, v | .unsupported, v | .struct_ _ _, v => by
       cases v <;> exact ⟨fun _ => rfl, id⟩
 
   /-- Fresh-allocation push framing and monotonicity for

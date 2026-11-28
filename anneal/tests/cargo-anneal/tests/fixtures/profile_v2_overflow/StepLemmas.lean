@@ -84,14 +84,14 @@ theorem step_assign {p : Program} {body : Body} {bb : BasicBlock}
     (hHaz : checkAssignCopyHazardV2 body.locals l m (.local lid) ty rv =
       .ok () := by rfl) :
     evalStepV2 p (st b i l cm m) = .step (st b (i + 1) l2 cm m2) := by
-  unfold evalStepV2
+  unfold evalStepV2 activeFrameBody
   dsimp only
   rw [hBody]
   dsimp only
   rw [hBB]
   dsimp only
   rw [hStmt]
-  unfold evalStatementV2
+  unfold attachCallers evalStatementV2
   dsimp only
   rw [hTy]
   dsimp only

@@ -735,7 +735,8 @@ theorem evalStep_bodyProg_block_term {body : Body} {bt : BlockTree BasicBlock}
     rw [hTerm] at hNoCall
     cases hNoCall
   | goto _ | switchInt _ _ | return_ | unreachable | unwindResume
-  | assert _ _ _ _ _ | coreCall _ _ _ _ _ | unsupported => rfl
+  | assert _ _ _ _ _ | coreCall _ _ _ _ _ | callNe _ _ _ _ _ | drop _ _ _
+  | unsupported => rfl
 
 /-- Single-step `evalStep (bodyProg body) 0` transition for
 `mkOverflowCastEntryBlock flagLocal targetTrue targetFalse`. -/

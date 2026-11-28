@@ -73,18 +73,27 @@ const UNSUPPORTED_CAPTURE_RULES: &[DetailRule] = &[
     },
     DetailRule {
         needle: "outside the Profile v2 type fragment",
-        hint: "Profile v2 admits single-level references and raw pointers to scalars and integer \
-               slices (`&T`, `&mut T`, `&[T]`, `*const T`, `*mut T`); nested references, \
-               pointers to references, and references to other types are not supported yet. \
-               Refactor the selected function or narrow scope with `--select <fn>`.",
+        hint: "Profile v2 admits single-level references and raw pointers to scalars, fixed \
+               arrays, admitted structs, and integer slices (`&T`, `&mut T`, `&[T]`, \
+               `*const T`, `*mut T`); nested references, pointers to references, and slices \
+               of non-integer elements are not supported yet. Refactor the selected function or \
+               narrow scope with `--select <fn>`.",
     },
     DetailRule {
         needle: "unsupported type: ",
         hint: "Capture refuses this Rust type. Profile v2 admits scalars, fieldless local enums, \
-               tuples, `RangeTo<usize>`/`RangeFrom<usize>`, shared `&str`, and single-level \
-               references and raw pointers to scalars and integer slices; references or pointers \
-               to other types (such as `&mut str`, `*const str`, or structs) are not supported \
-               yet. Refactor the selected function or narrow scope with `--select <fn>`.",
+               tuples, fixed arrays, admitted crate-local structs, \
+               `RangeTo<usize>`/`RangeFrom<usize>`, shared `&str`, and single-level \
+               references and raw pointers to scalars, fixed arrays, admitted structs, and \
+               integer slices; references or pointers to other types (such as `&mut str` or \
+               `*const str`) are not supported yet. Refactor the selected function or narrow \
+               scope with `--select <fn>`.",
+    },
+    DetailRule {
+        needle: "structs with a Drop impl are unsupported",
+        hint: "Profile v2 admits non-generic crate-local structs without a `Drop` impl, \
+               interior mutability, `repr(packed)`, or reference/pointer fields. Remove the \
+               `Drop` impl or narrow scope with `--select <fn>`.",
     },
     DetailRule {
         needle: "cleanup unwinds on",
@@ -112,9 +121,21 @@ const UNSUPPORTED_CAPTURE_RULES: &[DetailRule] = &[
                verify a leaf function via `--select <fn>`.",
     },
     DetailRule {
-        needle: "unsupported terminator: Drop",
-        hint: "Neither MIR Profile v1 nor v2 supports `Drop` terminators yet. Keep values with \
-               drop glue out of verified functions or narrow scope with `--select <fn>`.",
+        needle: "calls to generic or monomorphized functions",
+        hint: "Capture does not support calls to generic crate-local functions yet. Make the \
+               helper non-generic or narrow scope with `--select <fn>`.",
+    },
+    DetailRule {
+        needle: "unsupported terminator: Call",
+        hint: "Capture admits returning calls only to non-generic crate-local functions, the \
+               provided `PartialEq::ne`, and a closed set of `core` functions. Inline other \
+               helpers or verify a leaf function via `--select <fn>`.",
+    },
+    DetailRule {
+        needle: "may have drop glue, is unsupported",
+        hint: "Profile v2 supports `Drop` terminators only for types without drop glue. Keep \
+               verified functions limited to types without destructors or narrow scope with \
+               `--select <fn>`.",
     },
     DetailRule {
         needle: "place projections are unsupported",
@@ -291,6 +312,10 @@ fn hint_for_capture(status: &str, detail: &str) -> Option<String> {
     }
     if let Some(diags) = envelope["diagnostics"].as_array() {
         let msgs: Vec<&str> = diags.iter().filter_map(Value::as_str).collect();
+        if let Some(advice) = msgs.iter().find_map(|msg| match_rule(UNSUPPORTED_CAPTURE_RULES, msg))
+        {
+            return Some(format!("Capture rejected compilation: {}. {advice}", msgs.join("; ")));
+        }
         if !msgs.is_empty() {
             return Some(format!(
                 "Capture rejected compilation: {}. See `cargo anneal skill` for the MIR Profile \
@@ -695,7 +720,10 @@ mod tests {
         assert!(hint.contains("Profile v2 (references, raw pointers"), "{hint}");
 
         for (reason, needle) in [
-            ("unsupported terminator: Drop { .. }", "Neither MIR Profile v1 nor v2"),
+            (
+                "bb0 terminator: Drop of String, which may have drop glue, is unsupported",
+                "only for types without drop glue",
+            ),
             ("place projections are unsupported: (*_1)", "temporary local"),
             ("enum payloads are unsupported: E", "Profiles v1 and v2"),
             ("CallSource::Use call terminators are unsupported: x", "every MIR profile"),

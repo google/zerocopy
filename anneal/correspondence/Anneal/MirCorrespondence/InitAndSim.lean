@@ -300,6 +300,40 @@ private theorem decodeTerminator_coreCall_inv {types : List MirTy}
       injection h with h_eq
       exact ⟨args, dst, rfl, rfl, h_eq.symm⟩
 
+private theorem decodeTerminator_callNe_inv {types : List MirTy}
+    {eqCallee : DefId} {rargs : List RefOperand} {rdst : RefPlace}
+    {tgt : Option BasicBlockId} {unwind : UnwindAction} {t : TerminatorKind}
+    (h : decodeTerminator types (.callNe eqCallee rargs rdst tgt unwind) = some t) :
+    ∃ args dst,
+      mapOption (decodeOperand types) rargs = some args ∧
+      decodePlace types rdst = some dst ∧
+      t = .callNe eqCallee args dst tgt unwind := by
+  dsimp only [decodeTerminator, optMap2] at h
+  cases h_a : mapOption (decodeOperand types) rargs with
+  | none => rw [h_a] at h; cases h
+  | some args =>
+    rw [h_a] at h
+    cases h_d : decodePlace types rdst with
+    | none => rw [h_d] at h; cases h
+    | some dst =>
+      rw [h_d] at h
+      injection h with h_eq
+      exact ⟨args, dst, rfl, rfl, h_eq.symm⟩
+
+private theorem decodeTerminator_drop_inv {types : List MirTy}
+    {rplace : RefPlace} {tgt : BasicBlockId} {unwind : UnwindAction}
+    {t : TerminatorKind}
+    (h : decodeTerminator types (.drop rplace tgt unwind) = some t) :
+    ∃ place, decodePlace types rplace = some place ∧
+      t = .drop place tgt unwind := by
+  dsimp only [decodeTerminator, optMap] at h
+  cases h_p : decodePlace types rplace with
+  | none => rw [h_p] at h; cases h
+  | some place =>
+    rw [h_p] at h
+    injection h with h_eq
+    exact ⟨place, rfl, h_eq.symm⟩
+
 private theorem refNatListContains_eq (x : Nat) :
     ∀ ys : List Nat, refNatListContains x ys = natListContains x ys
   | [] => rfl
@@ -573,6 +607,14 @@ private theorem refCallsAdmitted_eq {rp : RefProg} {p : Program}
     rw [h_rt] at h_term
     let ⟨_, _, _, _, h_bt⟩ := decodeTerminator_coreCall_inv h_term
     rw [h_bt]
+  | callNe eqCallee rargs rdst tgt uw =>
+    rw [h_rt] at h_term
+    let ⟨_, _, _, _, h_bt⟩ := decodeTerminator_callNe_inv h_term
+    rw [h_bt]
+  | drop rplace tgt uw =>
+    rw [h_rt] at h_term
+    let ⟨_, _, h_bt⟩ := decodeTerminator_drop_inv h_term
+    rw [h_bt]
   | switchInt discr targets =>
     rw [h_rt] at h_term
     dsimp only [decodeTerminator, optMap] at h_term
@@ -607,6 +649,14 @@ private theorem refBodyHasAnyCall_eq {ts : List MirTy} {rbody : RefBody}
   | coreCall op rargs rdst tgt uw =>
     rw [h_rt] at h_term
     let ⟨_, _, _, _, h_bt⟩ := decodeTerminator_coreCall_inv h_term
+    rw [h_bt]
+  | callNe eqCallee rargs rdst tgt uw =>
+    rw [h_rt] at h_term
+    let ⟨_, _, _, _, h_bt⟩ := decodeTerminator_callNe_inv h_term
+    rw [h_bt]
+  | drop rplace tgt uw =>
+    rw [h_rt] at h_term
+    let ⟨_, _, h_bt⟩ := decodeTerminator_drop_inv h_term
     rw [h_bt]
   | switchInt discr _ =>
     rw [h_rt] at h_term; dsimp only [decodeTerminator, optMap] at h_term
@@ -1074,8 +1124,8 @@ private theorem evalTerminator_preserves_meta {body : Body} {bb : BasicBlock}
             | error _ => rw [h2] at h; cases h
             | ok o => rw [h2] at h; cases o <;> cases h
     · cases h
-  | unreachable | unwindResume | call _ _ _ _ _
-  | sysrootCall _ _ _ _ _ | coreCall _ _ _ _ _ | unsupported => cases h
+  | unreachable | unwindResume | call _ _ _ _ _ | sysrootCall _ _ _ _ _
+  | coreCall _ _ _ _ _ | unsupported | callNe _ _ _ _ _ | drop _ _ _ => cases h
   | assert cond expected msg target unwind =>
     dsimp only [evalTerminator] at h
     cases h_c : evalPrimitiveOperand body.locals f.locals amem cond with
@@ -3089,7 +3139,7 @@ theorem evalStep_step_preserves {rp : RefProg} {p : Program} {c : Choice}
             dsimp only at h_es'
             exact evalNonRootReturn_step_preserves h_dec h_sim hs h_body h_rbody h_es'
         | goto _ | unreachable | unwindResume | switchInt _ _
-        | assert _ _ _ _ _ | coreCall _ _ _ _ _ | unsupported =>
+        | assert _ _ _ _ _ | coreCall _ _ _ _ _ | callNe _ _ _ _ _ | drop _ _ _ | unsupported =>
           rw [h_bt] at h_es'; dsimp only at h_es'
           cases h_evt : evalTerminator body bb f s.mem s.callerMem
               p.panicStrategy p.hasLocalPanicHandler with

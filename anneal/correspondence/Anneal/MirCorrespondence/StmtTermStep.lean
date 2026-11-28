@@ -391,8 +391,8 @@ theorem evalTerminator_step_inv {body : Body} {bb : BasicBlock}
             (SlotsMatchTys.length_eq h_inv) h_sl
           exact False.elim (SlotsMatchTys.not_partialTuple h_inv h_ty h_sl)
     · cases h_step
-  | unreachable | unwindResume | call _ _ _ _ _
-  | coreCall _ _ _ _ _ | sysrootCall _ _ _ _ _ | unsupported =>
+  | unreachable | unwindResume | call _ _ _ _ _ | coreCall _ _ _ _ _
+  | sysrootCall _ _ _ _ _ | unsupported | callNe _ _ _ _ _ | drop _ _ _ =>
     cases h_step
   | assert cond expected msg target unwind =>
     dsimp only [evalTerminator] at h_step
@@ -533,7 +533,7 @@ theorem evalStep_step_inv {p : Program} {c : Choice} {s s' : State}
                 exact False.elim (SlotsMatchTys.not_indirect h_inv h_ty h0)
           · rw [h_bt, h_cl] at h_step; cases h_step
         | goto _ | unreachable | unwindResume | switchInt _ _
-        | assert _ _ _ _ _ | coreCall _ _ _ _ _ | unsupported =>
+        | assert _ _ _ _ _ | coreCall _ _ _ _ _ | callNe _ _ _ _ _ | drop _ _ _ | unsupported =>
           rw [h_bt] at h_step
           dsimp only at h_step
           cases h_ev : evalTerminator body bb f s.mem s.callerMem
@@ -769,7 +769,7 @@ theorem updateCacheLoop_rvalueCacheTouch (dstId : LocalId) (rv : Rvalue)
     exact updateCacheLoop_false _ 0 _ (fun _ _ => rfl)
   | aggregateTuple _ | useRetag _ | aggregateRangeTo _ _
   | aggregateRangeFrom _ _ | aggregateArray _ _ | repeat_ _ _ _
-  | aggregateRange _ _ _ | aggregateOption _ _ _ =>
+  | aggregateRange _ _ _ | aggregateOption _ _ _ | aggregateStruct _ _ =>
     change updateCacheLoop (fun _ => false) 0 (cacheTouch cache dstId) =
       cacheTouch cache dstId
     exact updateCacheLoop_false _ 0 _ (fun _ _ => rfl)
@@ -3609,7 +3609,7 @@ private theorem evalTerminator_ref_eq (rp : RefProg) (c : Choice)
     exact False.elim (h_noncall.1 callee rargs rdst tgt uw h_rt)
   | sysrootCall op rargs rdst tgt uw =>
     exact False.elim (h_noncall.2 op rargs rdst tgt uw h_rt)
-  | coreCall _ rargs rdst _ _ =>
+  | coreCall _ rargs rdst _ _ | callNe _ rargs rdst _ _ =>
     intro res
     rw [h_rt] at h_term_dec
     dsimp only [decodeTerminator, optMap2] at h_term_dec
@@ -3624,6 +3624,18 @@ private theorem evalTerminator_ref_eq (rp : RefProg) (c : Choice)
         dsimp only [evalTerminator]
         rw [← h_eq]
         exact ⟨_, _, rfl, rfl⟩
+  | drop rplace _ _ =>
+    intro res
+    rw [h_rt] at h_term_dec
+    dsimp only [decodeTerminator, optMap] at h_term_dec
+    cases h_p : decodePlace rp.types rplace with
+    | none => rw [h_p] at h_term_dec; cases h_term_dec
+    | some _ =>
+      rw [h_p] at h_term_dec
+      injection h_term_dec with h_eq
+      dsimp only [evalTerminator]
+      rw [← h_eq]
+      exact ⟨_, _, rfl, rfl⟩
   | unsupported =>
     intro res
     rw [h_rt] at h_term_dec
@@ -10041,7 +10053,8 @@ private theorem updateCacheLoop_stepTouchesLocal_term (body : Body) (f : FrameSt
   | switchInt discr _ => exact updateCacheLoop_operandCacheTouch cache discr
   | assert cond _ _ _ _ => exact updateCacheLoop_operandCacheTouch cache cond
   | goto _ | return_ | unreachable | unwindResume
-  | call _ _ _ _ _ | sysrootCall _ _ _ _ _ | coreCall _ _ _ _ _ | unsupported =>
+  | call _ _ _ _ _ | sysrootCall _ _ _ _ _ | coreCall _ _ _ _ _ | unsupported
+  | callNe _ _ _ _ _ | drop _ _ _ =>
     exact updateCacheLoop_false _ 0 cache (fun _ _ => rfl)
 
 private theorem calleeTys_head_eq_of_beq {tys : List MirTy} {retTy dstTy : MirTy}
@@ -10149,7 +10162,7 @@ private theorem decodeTerminator_ne_call {types : List MirTy}
     dsimp only [decodeTerminator] at h_dec
     cases h_dec
     constructor <;> (intro _ _ _ _ _ h; cases h)
-  | coreCall _ rargs rdst _ _ =>
+  | coreCall _ rargs rdst _ _ | callNe _ rargs rdst _ _ =>
     dsimp only [decodeTerminator, optMap2] at h_dec
     cases h_a : mapOption (decodeOperand types) rargs with
     | none => rw [h_a] at h_dec; cases h_dec
@@ -10160,6 +10173,13 @@ private theorem decodeTerminator_ne_call {types : List MirTy}
       | some _ =>
         rw [h_d] at h_dec; cases h_dec
         constructor <;> (intro _ _ _ _ _ h; cases h)
+  | drop rplace _ _ =>
+    dsimp only [decodeTerminator, optMap] at h_dec
+    cases h_p : decodePlace types rplace with
+    | none => rw [h_p] at h_dec; cases h_dec
+    | some _ =>
+      rw [h_p] at h_dec; cases h_dec
+      constructor <;> (intro _ _ _ _ _ h; cases h)
 
 private theorem array_back?_push {α : Type} (arr : Array α) (x : α) :
     (arr.push x).back? = some x := by
@@ -10221,7 +10241,7 @@ private theorem decodeTerminator_ne_return {types : List MirTy}
     | none => rw [h_op] at h_dec; cases h_dec
     | some _ => rw [h_op] at h_dec; cases h_dec; intro h_eq; cases h_eq
   | call _ rargs rdst _ _ | sysrootCall _ rargs rdst _ _
-  | coreCall _ rargs rdst _ _ =>
+  | coreCall _ rargs rdst _ _ | callNe _ rargs rdst _ _ =>
     dsimp only [decodeTerminator, optMap2] at h_dec
     cases h_a : mapOption (decodeOperand types) rargs with
     | none => rw [h_a] at h_dec; cases h_dec
@@ -10230,6 +10250,11 @@ private theorem decodeTerminator_ne_return {types : List MirTy}
       cases h_d : decodePlace types rdst with
       | none => rw [h_d] at h_dec; cases h_dec
       | some _ => rw [h_d] at h_dec; cases h_dec; intro h_eq; cases h_eq
+  | drop rplace _ _ =>
+    dsimp only [decodeTerminator, optMap] at h_dec
+    cases h_p : decodePlace types rplace with
+    | none => rw [h_p] at h_dec; cases h_dec
+    | some _ => rw [h_p] at h_dec; cases h_dec; intro h_eq; cases h_eq
 
 private theorem array_set_push_last {α : Type} (arr : Array α) (x y : α)
     (h : (arr.push x).size - 1 < (arr.push x).size) :
@@ -10286,7 +10311,8 @@ private theorem evalTerminator_done_aborted_of_ne_return {body : Body}
   cases h_t : bb.terminator with
   | return_ => exact False.elim (h_nr h_t)
   | goto _ | unreachable | unwindResume
-  | call _ _ _ _ _ | sysrootCall _ _ _ _ _ | coreCall _ _ _ _ _ | unsupported =>
+  | call _ _ _ _ _ | sysrootCall _ _ _ _ _ | coreCall _ _ _ _ _ | unsupported
+  | callNe _ _ _ _ _ | drop _ _ _ =>
     dsimp only [evalTerminator] at h_ev
     rw [h_t] at h_ev
     cases h_ev
@@ -11014,7 +11040,8 @@ private theorem evalRefStep_eq_base_aux (rp : RefProg) (p : Program) (s : State)
                 liftLocalsCached rp.types body.locals f.locals cache from rfl, h_upd]
             rfl
         | return_ | goto _ | unreachable | unwindResume
-        | switchInt _ _ | assert _ _ _ _ _ | coreCall _ _ _ _ _ | unsupported =>
+        | switchInt _ _ | assert _ _ _ _ _ | coreCall _ _ _ _ _
+        | callNe _ _ _ _ _ | drop _ _ _ | unsupported =>
           have h_noncall :
               (∀ callee args dst tgt uw, rbb.terminator ≠ .call callee args dst tgt uw) ∧
               (∀ op args dst tgt uw, rbb.terminator ≠ .sysrootCall op args dst tgt uw) := by
@@ -11049,7 +11076,8 @@ private theorem evalRefStep_eq_base_aux (rp : RefProg) (p : Program) (s : State)
             | sysrootCall o a d g u => exact False.elim (h_bnoncall.2 o a d g u h_rt_eq)
             | goto _ | unreachable | unwindResume
             | switchInt _ _ | assert _ _ _ _ _
-            | coreCall _ _ _ _ _ | unsupported => exact attachCallers_nil _
+            | coreCall _ _ _ _ _
+            | callNe _ _ _ _ _ | drop _ _ _ | unsupported => exact attachCallers_nil _
           rw [h_rhs_ev]
           cases h_et : evalTerminator body bb f s.mem s.callerMem
               rp.panicStrategy rp.hasLocalPanicHandler with
@@ -11953,7 +11981,8 @@ private theorem evalRefStep_eq_base_aux (rp : RefProg) (p : Program) (s : State)
               rw [array_push_size_sub_one]
               rfl
         | goto _ | unreachable | unwindResume
-        | switchInt _ _ | assert _ _ _ _ _ | coreCall _ _ _ _ _ | unsupported =>
+        | switchInt _ _ | assert _ _ _ _ _ | coreCall _ _ _ _ _
+        | callNe _ _ _ _ _ | drop _ _ _ | unsupported =>
           have h_noncall :
               (∀ callee args dst tgt uw, rbb.terminator ≠ .call callee args dst tgt uw) ∧
               (∀ op args dst tgt uw, rbb.terminator ≠ .sysrootCall op args dst tgt uw) := by
@@ -11987,7 +12016,8 @@ private theorem evalRefStep_eq_base_aux (rp : RefProg) (p : Program) (s : State)
             | call c a d g u => exact False.elim (h_bnoncall.1 c a d g u h_rt_eq)
             | sysrootCall o a d g u => exact False.elim (h_bnoncall.2 o a d g u h_rt_eq)
             | goto _ | unreachable | unwindResume
-            | switchInt _ _ | assert _ _ _ _ _ | coreCall _ _ _ _ _ | unsupported => rfl
+            | switchInt _ _ | assert _ _ _ _ _ | coreCall _ _ _ _ _
+            | callNe _ _ _ _ _ | drop _ _ _ | unsupported => rfl
           rw [h_rhs_ev]
           rw [h_rterm] at h_step_term
           cases h_et : evalTerminator body bb f s.mem s.callerMem

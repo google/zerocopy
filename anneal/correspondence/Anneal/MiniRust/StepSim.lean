@@ -2476,7 +2476,8 @@ theorem evalStep_sim_core (exact : Bool) (p : Program) (s : State) (m : Machine)
               have htermAdm := hbbUnpack.2.2
               cases hterm : bb.terminator with
               | unwindResume | assert _ _ _ _ _ | call _ _ _ _ _ | coreCall _ _ _ _ _
-              | sysrootCall _ _ _ _ _ | unsupported =>
+              | sysrootCall _ _ _ _ _ | unsupported | callNe _ _ _
+              | drop _ _ _ =>
                 rw [hterm] at htermAdm; cases htermAdm
               | goto target =>
                 rw [hterm] at htermAdm hmrTermEq
@@ -3045,7 +3046,8 @@ theorem fullStep_sim (exact : Bool) (p : Program) (s : State) (m : Machine)
                         | unreachable =>
                           rw [ht] at hev; dsimp only [attachCallers, evalTerminator] at hev
                           rw [ht] at hev; cases hev
-                        | unwindResume | coreCall _ _ _ _ _ | unsupported =>
+                        | unwindResume | coreCall _ _ _ _ _ | unsupported
+                        | callNe _ _ _ _ _ | drop _ _ _ =>
                           rw [ht] at hev; dsimp only [attachCallers, evalTerminator] at hev
                           rw [ht] at hev; cases hev
                         | assert _ _ _ _ _ | call _ _ _ _ _ | sysrootCall _ _ _ _ _ =>

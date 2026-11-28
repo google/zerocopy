@@ -109,4 +109,17 @@ theorem refute_layout_overflow_pair_align :
       .error .undefined :=
   rfl
 
+/-- Guard `layout_v2_struct_overlap`: a struct layout whose non-zero-sized
+fields overlap has no Profile v2 layout. -/
+theorem refute_layout_v2_struct_overlap :
+    layoutOfTyV2 (.struct_ ⟨1, 2, 0, [0, 0]⟩ [.int .i8 false, .int .i8 false]) =
+      none :=
+  rfl
+
+/-- Guard `layout_v2_struct_misaligned`: a struct layout placing a `u16` field
+at an odd offset has no Profile v2 layout. -/
+theorem refute_layout_v2_struct_misaligned :
+    layoutOfTyV2 (.struct_ ⟨1, 4, 1, [1]⟩ [.int .i16 false]) = none :=
+  rfl
+
 end GuardMutation

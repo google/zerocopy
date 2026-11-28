@@ -193,8 +193,8 @@ private theorem mirTy_beq_refl_supported {t : MirTy}
     rw [intWidth_beq_refl w]
     cases s <;> rfl
   | char | rawPtr _ _ | ref _ _ | tuple _ | enum _ | ordering
-  | slice _ | str | rangeTo _ | rangeFrom _ | array _ _ | range _ | option _
-  | vec _ | box _
+  | slice _ | str | rangeTo _ | rangeFrom _ | array _ _ | range _ | option _ | vec _
+  | box _ | struct_ _ _
   | never | unsupported => nomatch h
 
 /-- Abstract constant literal evaluator matching `MirSemantics.evalConstLit`
@@ -311,8 +311,8 @@ theorem evalConstLitAbs_sound {locals : List LocalSlot} {c : ConstOperand}
         exact ⟨.unit, rfl, rfl, rfl⟩
       | scalar _ | rodataBytes _ | rodataRef _ _ _ _ => nomatch h
     | char | rawPtr _ _ | ref _ _ | tuple _ | enum _ | ordering
-    | slice _ | str | rangeTo _ | rangeFrom _ | array _ _ | range _ | option _
-    | vec _ | box _
+    | slice _ | str | rangeTo _ | rangeFrom _ | array _ _ | range _ | option _ | vec _
+    | box _ | struct_ _ _
     | never | unsupported => cases lit <;> nomatch h
 
 /-- Abstract operand evaluation for `.copy`, `.move`, and `.constant` operands
@@ -598,7 +598,7 @@ theorem evalOperandAbs_sound {bodyLocals : List MirTy} {env env' : MirAbsEnv}
               rfl
           | char | rawPtr _ _ | ref _ _ | tuple _ | enum _ | ordering
           | slice _ | str | rangeTo _ | rangeFrom _ | array _ _ | range _ | option _
-          | vec _ | box _
+          | vec _ | box _ | struct_ _ _
           | never | unsupported => nomatch hAbs
   | move place =>
     dsimp only [evalOperandAbs] at hAbs
@@ -806,7 +806,7 @@ theorem evalOperandAbs_sound {bodyLocals : List MirTy} {env env' : MirAbsEnv}
                   rfl
           | char | rawPtr _ _ | ref _ _ | tuple _ | enum _ | ordering
           | slice _ | str | rangeTo _ | rangeFrom _ | array _ _ | range _ | option _
-          | vec _ | box _
+          | vec _ | box _ | struct_ _ _
           | never | unsupported => nomatch hAbs
 
 /-- Soundness of `evalOperandAbs` against `evalPrimitiveOperand` for unsigned
@@ -2956,7 +2956,7 @@ theorem evalRvalueAbs_sound {bodyLocals : List MirTy} {env env' : MirAbsEnv}
                   exact False.elim hR.2.1.2
       | unit | bool | char | rawPtr _ _ | ref _ _ | tuple _ | enum _
       | slice _ | str | rangeTo _ | rangeFrom _ | array _ _ | range _ | option _
-      | vec _ | box _
+      | vec _ | box _ | struct_ _ _
       | ordering | never | unsupported => nomatch hAbs
   | binaryOp op lhs rhs =>
     dsimp only [evalRvalueAbs] at hAbs
@@ -3552,8 +3552,8 @@ theorem evalRvalueAbs_sound {bodyLocals : List MirTy} {env env' : MirAbsEnv}
   | ref _ _ | addressOf _ _ | fakeAddressOf _ | aggregateTuple _
   | discriminant _
   | useRetag _ | aggregateRangeTo _ _ | aggregateRangeFrom _ _
-  | aggregateArray _ _ | repeat_ _ _ _
-  | aggregateRange _ _ _ | aggregateOption _ _ _
+  | aggregateArray _ _ | repeat_ _ _ _ | aggregateRange _ _ _
+  | aggregateOption _ _ _ | aggregateStruct _ _
   | unsupported => nomatch hAbs
 
 /-! ## 3. Single-Step Statement & Terminator Abstract Transfer -/
@@ -3663,8 +3663,8 @@ theorem stepStmtAbs_sound {body : Body} {frame : FrameState}
                 injection hU with hEq; subst hEq
                 exact ⟨rfl, rfl⟩
               | char | rawPtr _ _ | ref _ _ | tuple _ | enum _
-              | slice _ | str | rangeTo _ | rangeFrom _ | array _ _ | range _ | option _
-              | vec _ | box _
+              | slice _ | str | rangeTo _ | rangeFrom _ | array _ _ | range _
+              | option _ | vec _ | box _ | struct_ _ _
               | ordering | never | unsupported => nomatch hU
             have hEnv' := setMirAbsSlot_sound hEnv hTy hStep hSetConc hNewDen
             refine ⟨locals', ?_, hEnv'⟩
@@ -4197,7 +4197,8 @@ cleanup `.return_`, uninitialized `_0`, and unsupported terminators. -/
       | none => none
     | _ => none
   | .unreachable | .unwindResume | .assert _ _ _ _ _ | .call _ _ _ _ _
-  | .coreCall _ _ _ _ _ | .sysrootCall _ _ _ _ _ | .unsupported => none
+  | .coreCall _ _ _ _ _ | .sysrootCall _ _ _ _ _ | .callNe _ _ _ _ _
+  | .drop _ _ _ | .unsupported => none
 
 /-- 1-step soundness of `stepTermAbs` against `MirSemantics.evalTerminator`. -/
 theorem stepTermAbs_sound {body : Body} {bb : BasicBlock} {frame : FrameState}
@@ -4416,7 +4417,8 @@ theorem stepTermAbs_sound {body : Body} {bb : BasicBlock} {frame : FrameState}
             | enumVal _ _ | tuple _ | bytes _ =>
               exact False.elim hR.2.1.2.2
   | unreachable | unwindResume | assert _ _ _ _ _ | call _ _ _ _ _
-  | coreCall _ _ _ _ _ | sysrootCall _ _ _ _ _ | unsupported =>
+  | coreCall _ _ _ _ _ | sysrootCall _ _ _ _ _ | callNe _ _ _ _ _ | drop _ _ _
+  | unsupported =>
     dsimp only [stepTermAbs] at hTerm
     rw [hT] at hTerm
     nomatch hTerm

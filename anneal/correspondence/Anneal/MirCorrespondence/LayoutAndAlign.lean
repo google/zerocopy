@@ -322,8 +322,8 @@ theorem layoutOfTy_props (ty : MirTy) (lay : MirSemantics.LayoutData)
             | cons _ _ => dsimp only [layoutOfTy] at h; cases h
           | _ => dsimp only [layoutOfTy] at h; cases h
       | _ => dsimp only [layoutOfTy] at h; cases h
-  | ref _ _ | rawPtr _ _ | slice _ | str | array _ _ | vec _ | box _ | rangeTo _ | rangeFrom _
-  | range _ | option _ | unsupported =>
+  | ref _ _ | rawPtr _ _ | slice _ | str | array _ _ | vec _ | box _ | rangeTo _
+  | rangeFrom _ | range _ | option _ | unsupported | struct_ _ _ =>
     dsimp only [layoutOfTy] at h; cases h
 
 /-- Every zero-sized `MirTy` layout admitted by `layoutOfTy` (`.unit`,
@@ -372,8 +372,8 @@ theorem zst_day1_alignLog2_zero (ty : MirTy) (lay : MirSemantics.LayoutData)
             | cons _ _ => dsimp only [layoutOfTy] at h; cases h
           | _ => dsimp only [layoutOfTy] at h; cases h
       | _ => dsimp only [layoutOfTy] at h; cases h
-  | ref _ _ | rawPtr _ _ | slice _ | str | array _ _ | vec _ | box _ | rangeTo _ | rangeFrom _
-  | range _ | option _ | unsupported =>
+  | ref _ _ | rawPtr _ _ | slice _ | str | array _ _ | vec _ | box _ | rangeTo _
+  | rangeFrom _ | range _ | option _ | unsupported | struct_ _ _ =>
     dsimp only [layoutOfTy] at h; cases h
 
 /-- `Trusted.MirSemantics.readBytes` at `size = 0` resolves the allocation
@@ -2516,7 +2516,7 @@ theorem refValidInMem_slice_general_spec
           exact ⟨a, h_fa, h_live, h_ib, h_al, h_mut⟩
       | bool | unit | never | char | ordering | enum _ | tuple _ | ref _ _
       | rawPtr _ _ | slice _ | str | array _ _ | rangeTo _ | rangeFrom _
-      | option _ | range _ | unsupported | box _ | vec _ =>
+      | option _ | range _ | unsupported | box _ | vec _ | struct_ _ _ =>
         dsimp only at h_rv
         let ⟨h_inh, h_lt, h_none, h_some⟩ := h_other h_rv
         exact ⟨h_sz_true, h_inh, lay, rfl, h_lt, h_none, h_some⟩
@@ -2569,6 +2569,68 @@ theorem evalRefRvalueV2_deref_no_shared_to_mut
     rw [h_slot] at h_ok
     cases slot <;> cases h_ok
 
+/-- The projected-place arm of `evalRefRvalueV2` (after
+`resolveIndexProjsV2` and `placeAddrV2`) yields a valid reference. -/
+private theorem evalRefRvalueV2_projs_refValid
+    {bodyLocals : List MirTy} {locals : List LocalSlot}
+    {m : MirSemantics.MemoryState} {dstTy : MirTy}
+    {reqMut : MirAst.Mutability} {place : Place} {rv : Val}
+    {locals' : List LocalSlot} {m' : MirSemantics.MemoryState}
+    (h_ref :
+      (match resolveIndexProjsV2 bodyLocals locals m place.projection with
+      | .error k => .error k
+      | .ok projs' =>
+        match placeAddrV2 bodyLocals locals m true place.localId projs' with
+        | .error k => .error k
+        | .ok (leafTy, srcMut, ptr, locals1, mem1) =>
+          if Mutability.beq srcMut .shared && Mutability.beq reqMut .mut then
+            .error .undefined
+          else if !MirTy.beq dstTy (.ref reqMut leafTy) then
+            .error .unsupported
+          else
+            match refValidInMem mem1 reqMut leafTy (.ptr ptr) with
+            | .error k => .error k
+            | .ok () => .ok (.ptr ptr, locals1, mem1)) =
+        (.ok (rv, locals', m') :
+          Except FaultKind (Val × List LocalSlot × MirSemantics.MemoryState))) :
+    ∃ pt,
+      dstTy = .ref reqMut pt ∧
+      refValidInMem m' reqMut pt rv = .ok () := by
+  cases hR : resolveIndexProjsV2 bodyLocals locals m place.projection with
+  | error k => rw [hR] at h_ref; dsimp only at h_ref; cases h_ref
+  | ok projs' =>
+    rw [hR] at h_ref
+    dsimp only at h_ref
+    cases hA : placeAddrV2 bodyLocals locals m true place.localId projs' with
+    | error k => rw [hA] at h_ref; dsimp only at h_ref; cases h_ref
+    | ok res =>
+      cases res with | mk leafTy res =>
+      cases res with | mk srcMut res =>
+      cases res with | mk ptr res =>
+      cases res with | mk locals1 mem1 =>
+      rw [hA] at h_ref
+      dsimp only at h_ref
+      cases h_esc :
+          (Mutability.beq srcMut .shared && Mutability.beq reqMut .mut) with
+      | true => rw [h_esc] at h_ref; cases h_ref
+      | false =>
+        cases h_beq : MirTy.beq dstTy (.ref reqMut leafTy) with
+        | false => rw [h_esc, h_beq] at h_ref; cases h_ref
+        | true =>
+          rw [h_esc, h_beq] at h_ref
+          cases h_rv : refValidInMem mem1 reqMut leafTy (.ptr ptr) with
+          | error k => rw [h_rv] at h_ref; dsimp only at h_ref; cases h_ref
+          | ok u =>
+            cases u
+            rw [h_rv] at h_ref
+            dsimp only at h_ref
+            injection h_ref with h_eq
+            have h_rv_eq : rv = .ptr ptr := (congrArg Prod.fst h_eq).symm
+            have h_m_eq : m' = mem1 :=
+              (congrArg (fun p => p.2.2) h_eq).symm
+            rw [h_rv_eq, h_m_eq]
+            exact ⟨leafTy, MirTy.eq_of_beq h_beq, h_rv⟩
+
 /-- Every successful `evalRefRvalueV2` produces a reference valid against the
 resulting memory (`refValidInMem`) at `reqMut`. -/
 theorem evalRefRvalueV2_requires_refValidInMem
@@ -2616,7 +2678,11 @@ theorem evalRefRvalueV2_requires_refValidInMem
     cases hd with
     | deref =>
       cases tl with
-      | cons _ _ => rw [h_proj] at h_ref; cases h_ref
+      | cons _ _ =>
+        rw [h_proj] at h_ref
+        dsimp only at h_ref
+        rw [← h_proj] at h_ref
+        exact evalRefRvalueV2_projs_refValid h_ref
       | nil =>
         rw [h_proj] at h_ref
         dsimp only at h_ref
@@ -2649,7 +2715,7 @@ theorem evalRefRvalueV2_requires_refValidInMem
               | bool | int _ _ | unit | never | char | ordering | enum _
               | tuple _ | rawPtr _ _ | slice _ | str | array _ _ | rangeTo _
               | rangeFrom _ | unsupported | option _ | range _ | box _
-              | vec _ =>
+              | vec _ | struct_ _ _ =>
                 dsimp only at h_ref; cases h_ref
             | immediate optVal =>
               rw [h_sl] at h_ref
@@ -2687,7 +2753,7 @@ theorem evalRefRvalueV2_requires_refValidInMem
               | bool | int _ _ | unit | never | char | ordering | enum _
               | tuple _ | rawPtr _ _ | slice _ | str | array _ _ | rangeTo _
               | rangeFrom _ | unsupported | option _ | range _ | box _
-              | vec _ =>
+              | vec _ | struct_ _ _ =>
                 dsimp only at h_ref; cases h_ref
             | indirect mplace =>
               rw [h_sl] at h_ref
@@ -2730,10 +2796,13 @@ theorem evalRefRvalueV2_requires_refValidInMem
               | bool | int _ _ | unit | never | char | ordering | enum _
               | tuple _ | rawPtr _ _ | slice _ | str | array _ _ | rangeTo _
               | rangeFrom _ | unsupported | option _ | range _ | box _
-              | vec _ =>
+              | vec _ | struct_ _ _ =>
                 dsimp only at h_ref; cases h_ref
-    | field _ _ | constantIndex _ _ _ | unsupported | downcast _ =>
-      rw [h_proj] at h_ref; cases h_ref
+    | field _ _ | constantIndex _ _ _ | unsupported | downcast _ | index _ =>
+      rw [h_proj] at h_ref
+      dsimp only at h_ref
+      rw [← h_proj] at h_ref
+      exact evalRefRvalueV2_projs_refValid h_ref
 
 /-- `execCoreCallOp .sliceGetUncheckedRangeTo` rejects `.shared -> .mut`
 escalation, validates the input slice against `inMut`, and checks `[0..endOff]`
@@ -2784,15 +2853,18 @@ theorem execCoreCallOp_sliceGetUncheckedRangeTo_spec
         | i16 | i32 | i64 | i128 | isize => dsimp only at h_op; cases h_op
       | bool | unit | never | char | ordering | enum _ | tuple _ | ref _ _
       | rawPtr _ _ | slice _ | str | array _ _ | rangeTo _ | rangeFrom _
-      | unsupported | option _ | range _ | box _ | vec _ =>
+      | unsupported | option _ | range _ | box _ | vec _
+      | struct_ _ _ =>
         dsimp only at h_op; cases h_op
     | bool | int _ _ | unit | never | char | ordering | enum _ | tuple _
     | ref _ _ | rawPtr _ _ | str | array _ _ | rangeTo _ | rangeFrom _
-    | unsupported | option _ | range _ | box _ | vec _ =>
+    | unsupported | option _ | range _ | box _ | vec _
+    | struct_ _ _ =>
       dsimp only at h_op; cases h_op
   | bool | int _ _ | unit | never | char | ordering | enum _ | tuple _
   | rawPtr _ _ | slice _ | str | array _ _ | rangeTo _ | rangeFrom _
-  | unsupported | option _ | range _ | box _ | vec _ =>
+  | unsupported | option _ | range _ | box _ | vec _
+  | struct_ _ _ =>
     dsimp only at h_op; cases h_op
 
 /-- `execCoreCallOp .sliceGetUncheckedRangeFrom` rejects `.shared -> .mut`
@@ -2845,15 +2917,18 @@ theorem execCoreCallOp_sliceGetUncheckedRangeFrom_spec
         | i16 | i32 | i64 | i128 | isize => dsimp only at h_op; cases h_op
       | bool | unit | never | char | ordering | enum _ | tuple _ | ref _ _
       | rawPtr _ _ | slice _ | str | array _ _ | rangeTo _ | rangeFrom _
-      | unsupported | option _ | range _ | box _ | vec _ =>
+      | unsupported | option _ | range _ | box _ | vec _
+      | struct_ _ _ =>
         dsimp only at h_op; cases h_op
     | bool | int _ _ | unit | never | char | ordering | enum _ | tuple _
     | ref _ _ | rawPtr _ _ | str | array _ _ | rangeTo _ | rangeFrom _
-    | unsupported | option _ | range _ | box _ | vec _ =>
+    | unsupported | option _ | range _ | box _ | vec _
+    | struct_ _ _ =>
       dsimp only at h_op; cases h_op
   | bool | int _ _ | unit | never | char | ordering | enum _ | tuple _
   | rawPtr _ _ | slice _ | str | array _ _ | rangeTo _ | rangeFrom _
-  | unsupported | option _ | range _ | box _ | vec _ =>
+  | unsupported | option _ | range _ | box _ | vec _
+  | struct_ _ _ =>
     dsimp only at h_op; cases h_op
 
 /-- `execCoreCallOp .sliceLen` validates the slice reference via
@@ -3024,7 +3099,8 @@ theorem aggregateTuple_evalRvalueV2_preserves_checkValV2
         exact ⟨fieldTys, argValues typedVals, rfl, rfl, h_cv⟩
   | bool | int _ _ | unit | never | char | ordering | enum _ | ref _ _
   | rawPtr _ _ | slice _ | str | array _ _ | rangeTo _ | rangeFrom _
-  | unsupported | option _ | range _ | box _ | vec _ =>
+  | unsupported | option _ | range _ | box _ | vec _
+  | struct_ _ _ =>
     dsimp only at h_ev; cases h_ev
 
 /-- Every successful `writePlaceDestV2` (used by both `evalStatementV2 .assign`
@@ -3156,7 +3232,8 @@ theorem resolvePlaceDestV2_deref_requires_mut_ptr
             h_lay, h_d⟩
         | bool | int _ _ | unit | never | char | ordering | enum _
         | tuple _ | slice _ | str | array _ _ | rangeTo _ | rangeFrom _
-        | unsupported | option _ | range _ | box _ | vec _ =>
+        | unsupported | option _ | range _ | box _ | vec _
+        | struct_ _ _ =>
           cases h_res
       | partialTuple _ =>
         rw [h_sl] at h_res
@@ -3179,7 +3256,8 @@ theorem resolvePlaceDestV2_deref_requires_mut_ptr
             h_lay, h_d⟩
         | bool | int _ _ | unit | never | char | ordering | enum _
         | tuple _ | slice _ | str | array _ _ | rangeTo _ | rangeFrom _
-        | unsupported | option _ | range _ | box _ | vec _ =>
+        | unsupported | option _ | range _ | box _ | vec _
+        | struct_ _ _ =>
           cases h_res
 
 /-- Any `.deref` store accepted by `writePlaceV2` must originate from a
@@ -3436,7 +3514,7 @@ theorem evalTerminatorV2_return_enforces_callerMem_validity_and_disjoint_spans
             | int _ _ | bool | char | ordering | unit | enum _
             | ref _ _ | rawPtr _ _ | slice _ | str | array _ _
             | rangeTo _ | rangeFrom _ | tuple _ | option _ | range _
-            | vec _ | box _ | unsupported =>
+            | vec _ | box _ | struct_ _ _ | unsupported =>
               cases h_sl : MirSemantics.getElem? frame.locals dst.localId <;>
                 (rw [h_sl] at h_t; cases h_t)
       | _ => cases h_t
@@ -3471,8 +3549,46 @@ theorem evalTerminatorV2_return_enforces_callerMem_validity_and_disjoint_spans
                 cases res2 with | mk locals2 mem2 =>
                 rw [h_wp] at h_t
                 cases h_t
-  | unwindResume | call _ _ _ _ _ | sysrootCall _ _ _ _ _ | unsupported =>
+  | unwindResume | call _ _ _ _ _ | sysrootCall _ _ _ _ _ | unsupported
+  | callNe _ _ _ _ _ =>
     rw [h_term] at h_t; cases h_t
+  | drop place target _ =>
+    rw [h_term] at h_t
+    dsimp only at h_t
+    cases h_e : place.projection.isEmpty with
+    | false => rw [h_e] at h_t; cases h_t
+    | true =>
+      rw [h_e] at h_t
+      cases h_ty : MirSemantics.getElem? body.locals place.localId with
+      | none => rw [h_ty] at h_t; cases h_t
+      | some ty =>
+        rw [h_ty] at h_t
+        cases h_sl : MirSemantics.getElem? frame.locals place.localId with
+        | none => rw [h_sl] at h_t; cases h_t
+        | some sl =>
+          rw [h_sl] at h_t
+          cases sl with
+          | dead => cases h_t
+          | partialTuple _ => cases h_t
+          | immediate _ =>
+            dsimp only at h_t
+            cases h_s : isSupportedV2LocalTy ty with
+            | false => rw [h_s] at h_t; cases h_t
+            | true =>
+              rw [h_s] at h_t
+              cases h_set :
+                  setElem? frame.locals place.localId (liveUninitSlot ty) with
+              | none => rw [h_set] at h_t; cases h_t
+              | some _ => rw [h_set] at h_t; cases h_t
+          | indirect mplace =>
+            dsimp only at h_t
+            cases h_s : isSupportedV2LocalTy ty with
+            | false => rw [h_s] at h_t; cases h_t
+            | true =>
+              rw [h_s] at h_t
+              cases h_d : deinitIndirectV2 m ty mplace with
+              | error _ => rw [h_d] at h_t; cases h_t
+              | ok _ => rw [h_d] at h_t; cases h_t
   | return_ =>
     rw [h_term] at h_t
     dsimp only at h_t

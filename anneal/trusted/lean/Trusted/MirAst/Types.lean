@@ -204,6 +204,43 @@ structure EnumTy where
   tagRepr : EnumTagRepr
   discriminants : List Nat
 
+/-- Explicit byte layout of a concrete (non-generic, `Drop`-free) Rust `struct`
+(`TyKind::Adt(def, [])` with `def.is_struct()`), as computed by `rustc`'s
+`tcx.layout_of` (`compiler/rustc_abi/src/lib.rs`, `rust-lang/rust`
+`f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1`):
+
+> "/// Struct-like placement, with precomputed offsets.
+> ///
+> /// Fields are guaranteed to not overlap, but note that gaps
+> /// before, between and after all the fields are NOT always
+> /// padding, and as such their contents may not be discarded.
+> /// For example, enum variants leave a gap at the start,
+> /// where the discriminant field in the enum layout goes.
+> Arbitrary {
+>     /// Offsets for the first byte of each field,
+>     /// ordered to match the source definition order.
+>     /// This vector does not go in increasing order.
+>     ...
+>     offsets: IndexVec<FieldIdx, Size>,"
+
+- `id` is the struct's nominal type-identity key (like `EnumTy.id`).
+- `size` and `alignLog2` are `LayoutData::size` and the base-2 logarithm of
+  `LayoutData::align`.
+- `fieldOffsets[i]` is `FieldsShape::Arbitrary::offsets[i]`, the byte offset
+  of field `i` in source definition order. `#[repr(Rust)]` structs may reorder
+  fields in memory, so the offsets are explicit rather than derived from the
+  declaration order.
+
+A plain `struct` has no enum tag, so its gaps are padding.
+`Trusted.MirSemantics.layoutOfArrayV2` (with `structFieldSpansV2`) checks
+that the offsets are aligned, in bounds, and non-overlapping before any
+memory access uses them. -/
+structure StructLayout where
+  id : Nat
+  size : Nat
+  alignLog2 : Nat
+  fieldOffsets : List Nat
+
 /-- Structural MIR type descriptors carried directly by value in
 `Trusted.MirAst`.
 
@@ -316,8 +353,11 @@ Constructor correspondence:
   >     ...
   >     Some(... T),
   > }"
+- `.struct_ layout fields` corresponds to a concrete `TyKind::Adt(def, [])`
+  with `def.is_struct()`, carrying its `rustc` layout and its field types in
+  source definition order (Profile v2).
 - `.unsupported` represents all other `TyKind` variants (`Float`,
-  other non-fieldless-enum `Adt`, `Foreign`, `Pat`, `FnDef`,
+  other `Adt`, `Foreign`, `Pat`, `FnDef`,
   `FnPtr`, `Dynamic`, `Closure`, `CoroutineClosure`, `Coroutine`, etc.), causing
   $M_{\text{anneal}}$ to fail closed with `FaultKind.unsupported`. -/
 inductive MirTy where
@@ -340,6 +380,7 @@ inductive MirTy where
   | rangeFrom (elem : MirTy)
   | range (elem : MirTy)
   | option (elem : MirTy)
+  | struct_ (layout : StructLayout) (fields : List MirTy)
   | unsupported
 
 /-- Return `true` when `ty` is an unsized dynamically-sized MIR type
@@ -378,6 +419,12 @@ noncomputable def EnumTagRepr.beq : EnumTagRepr → EnumTagRepr → Bool
   | .scalar w₁ s₁, .scalar w₂ s₂ => IntWidth.beq w₁ w₂ && (s₁ == s₂)
   | _, _ => false
 
+/-- Explicit structural equality on `StructLayout`. -/
+noncomputable def StructLayout.beq (a b : StructLayout) : Bool :=
+  Nat.beq a.id b.id && Nat.beq a.size b.size &&
+    Nat.beq a.alignLog2 b.alignLog2 &&
+    natListBeq a.fieldOffsets b.fieldOffsets
+
 /-- Explicit structural equality on `EnumTy`. -/
 noncomputable def EnumTy.beq (a b : EnumTy) : Bool :=
   Nat.beq a.id b.id &&
@@ -408,6 +455,8 @@ mutual
     | .rangeFrom e₁, .rangeFrom e₂ => MirTy.beq e₁ e₂
     | .range e₁, .range e₂ => MirTy.beq e₁ e₂
     | .option e₁, .option e₂ => MirTy.beq e₁ e₂
+    | .struct_ l₁ fs₁, .struct_ l₂ fs₂ =>
+      StructLayout.beq l₁ l₂ && MirTy.beqList fs₁ fs₂
     | .unsupported, .unsupported => true
     | _, _ => false
 

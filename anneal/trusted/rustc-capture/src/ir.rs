@@ -227,6 +227,124 @@ impl EnumTy {
     }
 }
 
+/// Validated struct layout descriptor matching `Trusted.MirAst.StructLayout`
+/// and the checks of `Trusted.MirSemantics.layoutOfArrayV2` and
+/// `structFieldSpansV2`.
+///
+/// `field_offsets` are indexed in field-declaration (`FieldIdx`) order, not
+/// memory order. `id` is the nominal key that `extract::struct_id` derives
+/// from the struct's semantic path; `capture.rs` refuses any emitted key
+/// shared by two local struct definitions.
+#[derive(Clone, Debug, PartialEq, Eq, Serialize)]
+pub struct StructLayout {
+    id: u32,
+    size: usize,
+    align_log2: u32,
+    field_offsets: Vec<usize>,
+}
+
+impl StructLayout {
+    pub fn id(&self) -> u32 {
+        self.id
+    }
+
+    pub fn size(&self) -> usize {
+        self.size
+    }
+
+    pub fn align_log2(&self) -> u32 {
+        self.align_log2
+    }
+
+    pub fn field_offsets(&self) -> &[usize] {
+        &self.field_offsets
+    }
+}
+
+/// Validated crate-local struct type matching `Trusted.MirAst.MirTy.struct_`.
+///
+/// Private fields guarantee that every `StructTy` satisfies the checks in
+/// [`StructTy::try_new`], which mirror `layoutOfArrayV2` and
+/// `structFieldSpansV2`: one offset per field, every field a reference- and
+/// pointer-free Profile v2 data type placed aligned and in bounds,
+/// nonzero-size fields pairwise disjoint, and a size that is a multiple of
+/// the alignment and below `2^61`.
+#[derive(Clone, Debug, PartialEq, Eq, Serialize)]
+pub struct StructTy {
+    layout: StructLayout,
+    #[serde(serialize_with = "serialize_ty_slice")]
+    fields: Vec<Ty>,
+}
+
+impl StructTy {
+    pub fn try_new(
+        id: u32,
+        size: usize,
+        align_log2: u32,
+        field_offsets: Vec<usize>,
+        fields: Vec<Ty>,
+    ) -> Result<Self, String> {
+        if field_offsets.len() != fields.len() {
+            return Err(format!(
+                "struct layout has {} offsets for {} fields",
+                field_offsets.len(),
+                fields.len()
+            ));
+        }
+        let size_u64 = u64::try_from(size).map_err(|_| "struct size overflows u64")?;
+        // `obj_size_bound` "Returns **exclusive** upper bound on object size
+        // in bytes", which is `64 => 1 << 61` on the admitted 64-bit targets;
+        // `Trusted.MirSemantics.structSizeBound` is the same bound.
+        // https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_abi/src/lib.rs#L597-L615
+        if size_u64 >= (1u64 << 61) {
+            return Err(format!("struct size {size} is not below 2^61"));
+        }
+        let Some(align) = 1u64.checked_shl(align_log2).filter(|a| *a < (1u64 << 61)) else {
+            return Err(format!("struct alignment 2^{align_log2} is unsupported"));
+        };
+        if !size_u64.is_multiple_of(align) {
+            return Err(format!("struct size {size} is not a multiple of its alignment {align}"));
+        }
+        let mut occupied: Vec<(usize, usize)> = Vec::with_capacity(fields.len());
+        for (index, (field, &offset)) in fields.iter().zip(&field_offsets).enumerate() {
+            if !field.is_supported_v2_data() {
+                return Err(format!(
+                    "struct field {index} of type {field:?} is outside the Profile v2 data \
+                     fragment"
+                ));
+            }
+            let Some((field_size, field_align_log2)) = field.v2_layout() else {
+                return Err(format!("struct field {index} of type {field:?} lacks layout"));
+            };
+            if field_align_log2 > align_log2 {
+                return Err(format!("struct field {index} alignment exceeds the struct alignment"));
+            }
+            if !offset.is_multiple_of(1usize << field_align_log2) {
+                return Err(format!("struct field {index} offset {offset} is misaligned"));
+            }
+            let end = offset
+                .checked_add(field_size)
+                .filter(|end| *end <= size)
+                .ok_or_else(|| format!("struct field {index} exceeds the struct size {size}"))?;
+            if field_size != 0 {
+                if occupied.iter().any(|&(s, e)| offset < e && s < end) {
+                    return Err(format!("struct field {index} overlaps another field"));
+                }
+                occupied.push((offset, end));
+            }
+        }
+        Ok(Self { layout: StructLayout { id, size, align_log2, field_offsets }, fields })
+    }
+
+    pub fn layout(&self) -> &StructLayout {
+        &self.layout
+    }
+
+    pub fn fields(&self) -> &[Ty] {
+        &self.fields
+    }
+}
+
 /// Whether `bits` is a Unicode scalar value (`0x0000..=0xD7FF` or
 /// `0xE000..=0x10FFFF`), matching the Rust Reference ("A value of type `char`
 /// is represented as a 32-bit unsigned word in the 0x0000 to 0xD7FF or 0xE000
@@ -279,6 +397,7 @@ pub enum Ty {
     Never,
     Int(IntTy),
     Enum(EnumTy),
+    Struct(StructTy),
     OverflowPair(IntTy),
     Tuple {
         #[serde(serialize_with = "serialize_ty_slice")]
@@ -366,6 +485,7 @@ impl Ty {
             Self::Ref { .. } | Self::Box { .. } => false,
             Self::Array { elem, .. } => elem.is_retag_noop(),
             Self::Tuple { fields } => fields.iter().all(Self::is_retag_noop),
+            Self::Struct(sty) => sty.fields().iter().all(Self::is_retag_noop),
         }
     }
 
@@ -394,6 +514,7 @@ impl Ty {
             Self::Slice { .. } | Self::Str => false,
             Self::Array { elem, .. } => elem.is_sized(),
             Self::Tuple { fields } => fields.iter().all(Self::is_sized),
+            Self::Struct(sty) => sty.fields().iter().all(Self::is_sized),
             Self::Bool
             | Self::Char
             | Self::Ordering
@@ -431,11 +552,12 @@ impl Ty {
 
     /// Whether this type belongs to the Profile v2 fixed-size data fragment
     /// (`Trusted.MirSemantics.isSupportedV2DataTy`): scalars, units, enums,
-    /// and fixed arrays `[T; N]` without embedded refs, ptrs, or overflow
-    /// pairs.
+    /// fixed arrays `[T; N]`, and admitted crate-local structs, all without
+    /// embedded refs, ptrs, or overflow pairs.
     pub fn is_supported_v2_data(&self) -> bool {
         match self {
             Self::Array { elem, .. } => elem.is_supported_v2_data(),
+            Self::Struct(sty) => sty.fields().iter().all(Self::is_supported_v2_data),
             Self::OverflowPair(_) => false,
             _ => self.is_supported_scalar_or_unit(),
         }
@@ -444,13 +566,14 @@ impl Ty {
     /// Whether this type belongs to the Profile v2 structural `PartialEq`
     /// fragment (`Trusted.MirSemantics.isArrayEqElemSupported`): primitives,
     /// `Ordering`, `()`, and nested fixed-size arrays thereof, excluding enums
-    /// whose `PartialEq` impl may be non-structural.
+    /// and structs whose `PartialEq` impl may be non-structural.
     pub fn is_array_eq_elem_supported(&self) -> bool {
         match self {
             Self::Bool | Self::Int(_) | Self::Char | Self::Ordering | Self::Unit => true,
             Self::Array { elem, .. } => elem.is_array_eq_elem_supported(),
             Self::Never
             | Self::Enum(_)
+            | Self::Struct(_)
             | Self::OverflowPair(_)
             | Self::Tuple { .. }
             | Self::Ref { .. }
@@ -493,6 +616,7 @@ impl Ty {
                 let size = len.checked_mul(elem_size)?;
                 Some((size, align_log2))
             }
+            Self::Struct(sty) => Some((sty.layout().size(), sty.layout().align_log2())),
             Self::Ref { pointee, .. } | Self::RawPtr { pointee, .. } => {
                 Some(if matches!(&**pointee, Self::Slice { .. } | Self::Str) {
                     (16, 3)
@@ -549,6 +673,8 @@ impl Ty {
     /// (`is_supported_v2_local`) and are refused behind references, pointers,
     /// and slices. `Option<T>` additionally requires
     /// `is_option_payload_supported_v2` so `&Option<Option<u8>>` fails closed.
+    /// Structs are admitted as pointees through `is_supported_v2_data`
+    /// instead.
     pub fn is_sized_no_ref(&self) -> bool {
         match self {
             Self::Bool
@@ -572,7 +698,8 @@ impl Ty {
             | Self::Ref { .. }
             | Self::RawPtr { .. }
             | Self::Slice { .. }
-            | Self::Str => false,
+            | Self::Str
+            | Self::Struct(_) => false,
         }
     }
 
@@ -640,6 +767,7 @@ impl Ty {
             | Self::Enum(_)
             | Self::OverflowPair(_) => true,
             Self::Array { elem, .. } => elem.is_supported_v2_data(),
+            Self::Struct(_) => self.is_supported_v2_data(),
             Self::Tuple { fields } => fields.iter().all(Self::is_supported_v2_local),
             Self::Vec { elem } => elem.is_supported_pointee(),
             Self::Box { pointee } => match &**pointee {
@@ -678,8 +806,9 @@ impl Ty {
     }
 
     /// Whether this type is a reference or a `Box` (which the aliasing models
-    /// retag like a unique reference), or an `Option`, range, or tuple/array
-    /// or `Vec` containing one, mirroring `Trusted.MirSemantics.tyHasRefV2`.
+    /// retag like a unique reference), or an `Option`, range, tuple, array,
+    /// struct, or `Vec` containing one, mirroring
+    /// `Trusted.MirSemantics.tyHasRefV2`.
     pub fn has_ref_v2(&self) -> bool {
         match self {
             Self::Ref { .. } | Self::Box { .. } => true,
@@ -690,6 +819,7 @@ impl Ty {
             | Self::Range { elem } => elem.has_ref_v2(),
             Self::Tuple { fields } => fields.iter().any(Self::has_ref_v2),
             Self::Vec { elem } => elem.has_ref_v2(),
+            Self::Struct(sty) => sty.fields().iter().any(Self::has_ref_v2),
             Self::Bool
             | Self::Char
             | Self::Ordering
@@ -705,7 +835,7 @@ impl Ty {
     }
 
     /// Whether this type is a raw pointer or an `Option`, range, tuple, array,
-    /// `Vec`, or `Box` containing one, mirroring
+    /// struct, `Vec`, or `Box` containing one, mirroring
     /// `Trusted.MirSemantics.tyHasRawPtrV2`.
     pub fn has_raw_ptr_v2(&self) -> bool {
         match self {
@@ -718,6 +848,7 @@ impl Ty {
             Self::Tuple { fields } => fields.iter().any(Self::has_raw_ptr_v2),
             Self::Vec { elem } => elem.has_raw_ptr_v2(),
             Self::Box { pointee } => pointee.has_raw_ptr_v2(),
+            Self::Struct(sty) => sty.fields().iter().any(Self::has_raw_ptr_v2),
             Self::Bool
             | Self::Char
             | Self::Ordering
@@ -743,6 +874,7 @@ impl Ty {
             | Self::Array { .. }
             | Self::Vec { .. }
             | Self::Box { .. }
+            | Self::Struct(_)
             | Self::RangeTo { .. }
             | Self::RangeFrom { .. }
             | Self::Range { .. }
@@ -764,19 +896,40 @@ impl Ty {
     /// recurse into its constituent types rather than hiding an enum key from
     /// collision checks.
     pub fn collect_enum_ids(&self, out: &mut BTreeSet<u32>) {
-        match self {
-            Self::Enum(ety) => {
+        self.for_each_nested(&mut |ty| {
+            if let Self::Enum(ety) = ty {
                 out.insert(ety.id());
             }
+        });
+    }
+
+    /// Record every nominal [`StructLayout::id`] embedded in this type.
+    pub fn collect_struct_ids(&self, out: &mut BTreeSet<u32>) {
+        self.for_each_nested(&mut |ty| {
+            if let Self::Struct(sty) = ty {
+                out.insert(sty.layout().id());
+            }
+        });
+    }
+
+    /// Visit this type and every type nested inside it, in pre-order.
+    fn for_each_nested(&self, f: &mut dyn FnMut(&Ty)) {
+        f(self);
+        match self {
             Self::Tuple { fields } => {
-                for f in fields {
-                    f.collect_enum_ids(out);
+                for field in fields {
+                    field.for_each_nested(f);
+                }
+            }
+            Self::Struct(sty) => {
+                for field in sty.fields() {
+                    field.for_each_nested(f);
                 }
             }
             Self::Ref { pointee, .. }
             | Self::RawPtr { pointee, .. }
             | Self::Box { pointee } => {
-                pointee.collect_enum_ids(out);
+                pointee.for_each_nested(f);
             }
             Self::Slice { elem }
             | Self::Array { elem, .. }
@@ -785,7 +938,7 @@ impl Ty {
             | Self::RangeFrom { elem }
             | Self::Range { elem }
             | Self::Option { elem } => {
-                elem.collect_enum_ids(out);
+                elem.for_each_nested(f);
             }
             Self::Bool
             | Self::Char
@@ -794,6 +947,7 @@ impl Ty {
             | Self::Never
             | Self::Str
             | Self::Int(_)
+            | Self::Enum(_)
             | Self::OverflowPair(_) => {}
         }
     }
@@ -820,6 +974,9 @@ impl Ty {
             | Self::Range { elem }
             | Self::Option { elem }
             | Self::Vec { elem } => 1 + elem.ast_nodes(),
+            Self::Struct(st) => {
+                1 + st.fields().len() + st.fields().iter().map(Self::ast_nodes).sum::<usize>()
+            }
         }
     }
 }
@@ -946,6 +1103,33 @@ pub fn validate_constant(ty: &Ty, lit: &ConstLit) -> Result<(), String> {
             Ok(())
         }
         (Ty::Int(_), _) => Err("integer constant must use Scalar literal".into()),
+        // A zero-sized struct value is the compiler's `ZeroSized` constant
+        // ("Only for ZSTs."), and every other struct constant is a by-value
+        // byte image of its full layout size, padding included.
+        // https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_middle/src/mir/consts.rs#L38-L39
+        (Ty::Struct(sty), ConstLit::ZeroSized) => {
+            if sty.layout().size() == 0 {
+                Ok(())
+            } else {
+                Err("ZeroSized constant requires a zero-sized struct type".into())
+            }
+        }
+        (Ty::Struct(sty), ConstLit::RodataBytes { bytes }) => {
+            let size = sty.layout().size();
+            if size == 0 {
+                return Err("zero-sized struct constant must use ZeroSized literal".into());
+            }
+            if bytes.len() != size {
+                return Err(format!(
+                    "struct constant byte length {} disagrees with layout size {size}",
+                    bytes.len()
+                ));
+            }
+            Ok(())
+        }
+        (Ty::Struct(_), _) => {
+            Err("struct constant must use ZeroSized or RodataBytes literal".into())
+        }
         (Ty::Array { elem, .. }, ConstLit::RodataBytes { bytes }) => {
             if !elem.is_supported_v2_data() {
                 return Err(format!(
@@ -1118,6 +1302,9 @@ pub enum PlaceElem {
         from_end: bool,
     },
     Downcast { variant_idx: usize },
+    Index {
+        local: u32,
+    },
 }
 
 #[derive(Clone, Debug, PartialEq, Eq, Serialize)]
@@ -1127,10 +1314,10 @@ pub struct Place {
 }
 
 impl Place {
-    pub fn collect_enum_ids(&self, out: &mut BTreeSet<u32>) {
+    fn for_each_ty(&self, f: &mut dyn FnMut(&Ty)) {
         for elem in &self.projection {
             if let PlaceElem::Field { ty, .. } = elem {
-                ty.collect_enum_ids(out);
+                f(ty);
             }
         }
     }
@@ -1142,7 +1329,8 @@ impl Place {
             .map(|elem| match elem {
                 PlaceElem::Deref
                 | PlaceElem::ConstantIndex { .. }
-                | PlaceElem::Downcast { .. } => 1,
+                | PlaceElem::Downcast { .. }
+                | PlaceElem::Index { .. } => 1,
                 PlaceElem::Field { ty, .. } => 1 + ty.ast_nodes(),
             })
             .sum::<usize>()
@@ -1160,11 +1348,11 @@ pub enum Operand {
 }
 
 impl Operand {
-    fn collect_enum_ids(&self, out: &mut BTreeSet<u32>) {
+    fn for_each_ty(&self, f: &mut dyn FnMut(&Ty)) {
         match self {
             Self::Copy { .. } | Self::Move { .. } => {}
-            Self::CopyPlace { place } | Self::MovePlace { place } => place.collect_enum_ids(out),
-            Self::Constant { ty, .. } => ty.collect_enum_ids(out),
+            Self::CopyPlace { place } | Self::MovePlace { place } => place.for_each_ty(f),
+            Self::Constant { ty, .. } => f(ty),
         }
     }
 
@@ -1300,6 +1488,10 @@ pub enum Rvalue {
         elem_ty: Ty,
         elems: Vec<Operand>,
     },
+    AggregateStruct {
+        ty: Ty,
+        fields: Vec<Operand>,
+    },
     Repeat {
         operand: Operand,
         elem_ty: Ty,
@@ -1350,6 +1542,9 @@ impl Rvalue {
             }
             Self::AggregateRange { elem_ty, start, end } => {
                 1 + elem_ty.ast_nodes() + start.ast_nodes() + end.ast_nodes()
+            }
+            Self::AggregateStruct { ty, fields } => {
+                1 + ty.ast_nodes() + fields.iter().map(Operand::ast_nodes).sum::<usize>()
             }
             Self::AggregateOption { inner_ty, payload, .. } => {
                 1 + inner_ty.ast_nodes() + payload.as_ref().map_or(0, |op| op.ast_nodes())
@@ -1537,6 +1732,9 @@ pub enum CoreCallOp {
         pointee: Ty,
     },
     PanicAbort,
+    PartialEqNe {
+        ty: Ty,
+    },
 }
 
 /// A `core::num` arithmetic method that Profile v1 calls through its pinned
@@ -1599,6 +1797,24 @@ pub enum Terminator {
         target: Option<u32>,
         unwind: UnwindAction,
     },
+    /// Call to `core::cmp::PartialEq::ne`'s default body on a crate-local
+    /// type whose `PartialEq` impl does not override `ne`, executed as a call
+    /// to that impl's `eq` (`Program::bodies[eq_callee]`) whose result is
+    /// negated. Like [`Terminator::Call`], it is resolved from a crate-local
+    /// callee when the program is assembled.
+    CallNe {
+        eq_callee: usize,
+        args: Vec<Operand>,
+        dst: u32,
+        target: Option<u32>,
+        unwind: UnwindAction,
+    },
+    /// `Drop` of an unprojected local whose type has no drop glue.
+    Drop {
+        place: Place,
+        target: u32,
+        unwind: UnwindAction,
+    },
     Ret,
     Unreachable,
     Unsupported,
@@ -1642,7 +1858,8 @@ impl Terminator {
                     | CoreCallOp::ArrayEq { elem, .. }
                     | CoreCallOp::VecNew { elem }
                     | CoreCallOp::VecWithCapacity { elem } => 1 + elem.ast_nodes(),
-                    CoreCallOp::MemReplace { ty } => 1 + ty.ast_nodes(),
+                    CoreCallOp::MemReplace { ty }
+                    | CoreCallOp::PartialEqNe { ty } => 1 + ty.ast_nodes(),
                     CoreCallOp::OptionIsSome { inner }
                     | CoreCallOp::OptionIsNone { inner }
                     | CoreCallOp::OptionTake { inner }
@@ -1681,9 +1898,10 @@ impl Terminator {
                 };
                 1 + op_nodes + args.iter().map(Operand::ast_nodes).sum::<usize>() + dst.ast_nodes()
             }
-            Self::Call { args, .. } | Self::SysrootCall { args, .. } => {
+            Self::Call { args, .. } | Self::SysrootCall { args, .. } | Self::CallNe { args, .. } => {
                 2 + args.iter().map(Operand::ast_nodes).sum::<usize>()
             }
+            Self::Drop { place, .. } => 2 + place.ast_nodes(),
         }
     }
 }
@@ -2031,6 +2249,7 @@ fn check_switch_targets(discr_ty: &Ty, targets: &[(u128, u32)]) -> Result<(), St
         | Ty::Never
         | Ty::Ordering
         | Ty::Enum(_)
+        | Ty::Struct(_)
         | Ty::Array { .. }
         | Ty::Tuple { .. }
         | Ty::Ref { .. }
@@ -2050,6 +2269,13 @@ fn check_switch_targets(discr_ty: &Ty, targets: &[(u128, u32)]) -> Result<(), St
 
 fn place_mentions_local_v2(place: &Place, lid: u32) -> bool {
     place.local == lid
+        || place.projection.iter().any(|elem| match elem {
+            PlaceElem::Index { local } => *local == lid,
+            PlaceElem::Deref
+            | PlaceElem::Field { .. }
+            | PlaceElem::ConstantIndex { .. }
+            | PlaceElem::Downcast { .. } => false,
+        })
 }
 
 fn operand_mentions_local_v2(op: &Operand, lid: u32) -> bool {
@@ -2084,7 +2310,9 @@ fn rvalue_mentions_local_v2(rv: &Rvalue, lid: u32) -> bool {
         | Rvalue::Ref { place, .. }
         | Rvalue::AddressOf { place, .. }
         | Rvalue::FakeAddressOf { place } => place_mentions_local_v2(place, lid),
-        Rvalue::AggregateTuple { fields: ops } | Rvalue::AggregateArray { elems: ops, .. } => {
+        Rvalue::AggregateTuple { fields: ops }
+        | Rvalue::AggregateArray { elems: ops, .. }
+        | Rvalue::AggregateStruct { fields: ops, .. } => {
             ops.iter().any(|op| operand_mentions_local_v2(op, lid))
         }
     }
@@ -2102,9 +2330,12 @@ fn terminator_mentions_local_v2(term: &Terminator, lid: u32) -> bool {
             args.iter().any(|op| operand_mentions_local_v2(op, lid))
                 || place_mentions_local_v2(dst, lid)
         }
-        Terminator::Call { args, dst, .. } | Terminator::SysrootCall { args, dst, .. } => {
+        Terminator::Call { args, dst, .. }
+        | Terminator::SysrootCall { args, dst, .. }
+        | Terminator::CallNe { args, dst, .. } => {
             args.iter().any(|op| operand_mentions_local_v2(op, lid)) || *dst == lid
         }
+        Terminator::Drop { place, .. } => place_mentions_local_v2(place, lid),
     }
 }
 
@@ -2396,7 +2627,15 @@ impl Body {
                                 if require_mut_deref && *mutability != Mutability::Mut {
                                     return Err("cannot write through shared pointer/reference".into());
                                 }
-                                if !allow_unsized_deref && !pointee.is_sized() {
+                                // An unsized slice pointee is admitted only
+                                // as the base of a following `Index`
+                                // projection, which yields a sized element
+                                // place.
+                                let indexed = matches!(
+                                    place.projection.get(step + 1),
+                                    Some(PlaceElem::Index { .. })
+                                );
+                                if !allow_unsized_deref && !indexed && !pointee.is_sized() {
                                     return Err(format!(
                                         "unsized deref of {pointee:?} is unsupported here"
                                     ));
@@ -2437,6 +2676,7 @@ impl Body {
                         }
                         let expected_field = match &cur {
                             Ty::Tuple { fields } => fields.get(*index).cloned(),
+                            Ty::Struct(sty) => sty.fields().get(*index).cloned(),
                             Ty::OverflowPair(ity) if *index == 0 => Some(Ty::Int(*ity)),
                             Ty::OverflowPair(_) if *index == 1 => Some(Ty::Bool),
                             Ty::RangeTo { elem: e } | Ty::RangeFrom { elem: e }
@@ -2484,6 +2724,30 @@ impl Body {
                             return Err(format!(
                                 "ConstantIndex [{offset} of min {min_length}, from_end={from_end}] out of bounds for array length {len}"
                             ));
+                        }
+                        cur = (**elem).clone();
+                    }
+                    PlaceElem::Index { local } => {
+                        if downcast_variant.is_some() {
+                            return Err("downcast projection must be followed by field projection".into());
+                        }
+                        let usize_ty = Ty::Int(IntTy {
+                            width: IntWidth::Isize,
+                            signed: false,
+                        });
+                        let index_ty = check_local(local_tys, *local, "index")?;
+                        if *index_ty != usize_ty {
+                            return Err(format!(
+                                "Index projection local {local} has type {index_ty:?}, not usize"
+                            ));
+                        }
+                        let (Ty::Array { elem, .. } | Ty::Slice { elem }) = &cur else {
+                            return Err(format!(
+                                "Index projection requires an array or dereferenced slice, got {cur:?}"
+                            ));
+                        };
+                        if matches!(cur, Ty::Slice { .. }) && !saw_deref {
+                            return Err("Index projection on an unsized slice requires a deref".into());
                         }
                         cur = (**elem).clone();
                     }
@@ -2605,13 +2869,13 @@ impl Body {
                     }
                 }
                 Rvalue::Ref { mutability, place } => {
-                    if place.projection.len() > 1
-                        || (place.projection.len() == 1
-                            && !matches!(place.projection[0], PlaceElem::Deref))
-                    {
+                    if place.projection.iter().any(|e| matches!(e, PlaceElem::Downcast { .. })) {
                         return Err("unsupported projection in Rvalue::Ref".into());
                     }
-                    if place.projection.len() == 1 {
+                    // `check_place` admits a deref only as the first
+                    // projection, so a borrow through a deref reborrows the
+                    // base local.
+                    if matches!(place.projection.first(), Some(PlaceElem::Deref)) {
                         let base = check_local(local_tys, place.local, "ref")?;
                         // `&(*p)` for a raw pointer `p` would derive a
                         // reference from a raw pointer, which needs the
@@ -2652,13 +2916,13 @@ impl Body {
                     }
                 }
                 Rvalue::AddressOf { mutability, place } => {
-                    if place.projection.len() > 1
-                        || (place.projection.len() == 1
-                            && !matches!(place.projection[0], PlaceElem::Deref))
-                    {
+                    if place.projection.iter().any(|e| matches!(e, PlaceElem::Downcast { .. })) {
                         return Err("unsupported projection in Rvalue::AddressOf".into());
                     }
-                    if place.projection.len() == 1 {
+                    // `check_place` admits a deref only as the first
+                    // projection, so a borrow through a deref reborrows the
+                    // base local.
+                    if matches!(place.projection.first(), Some(PlaceElem::Deref)) {
                         let base = check_local(local_tys, place.local, "addressOf")?;
                         // `&raw (*r)` for a reference `r` is how runtime MIR
                         // converts a reference to a raw pointer. Such a body
@@ -2772,6 +3036,27 @@ impl Body {
                         if &got != elem_ty {
                             return Err(format!(
                                 "AggregateArray element operand type {got:?} disagrees with {elem_ty:?}"
+                            ));
+                        }
+                    }
+                }
+                Rvalue::AggregateStruct { ty, fields } => {
+                    let Ty::Struct(sty) = ty else {
+                        return Err(format!("AggregateStruct requires a struct type, got {ty:?}"));
+                    };
+                    if ty != dst_ty {
+                        return Err(format!(
+                            "AggregateStruct type {ty:?} disagrees with destination {dst_ty:?}"
+                        ));
+                    }
+                    if fields.len() != sty.fields().len() {
+                        return Err("AggregateStruct arity disagrees with the struct field count".into());
+                    }
+                    for (field_op, expected_ty) in fields.iter().zip(sty.fields()) {
+                        let got = check_operand(local_tys, field_op)?;
+                        if &got != expected_ty {
+                            return Err(format!(
+                                "AggregateStruct field type {got:?} disagrees with {expected_ty:?}"
                             ));
                         }
                     }
@@ -3367,6 +3652,13 @@ impl Body {
                                     == Ty::Box {
                                         pointee: Box::new(pointee.clone()),
                                     } => {}
+                        (
+                            CoreCallOp::PartialEqNe { ty },
+                            [Ty::Ref { pointee: pt1, .. }, Ty::Ref { pointee: pt2, .. }],
+                        ) if ty.is_array_eq_elem_supported()
+                            && **pt1 == *ty
+                            && **pt2 == *ty
+                            && dst_ty == Ty::Bool => {}
                         _ => {
                             return Err(format!(
                                 "invalid CoreCall {op:?} arguments {arg_tys:?} -> {dst_ty:?}"
@@ -3391,12 +3683,31 @@ impl Body {
                 }
                 Terminator::Call {
                     args, dst, target, ..
+                }
+                | Terminator::CallNe {
+                    args, dst, target, ..
                 } => {
-                    for arg in args {
-                        check_operand(&local_tys, arg)?;
-                    }
-                    check_local(&local_tys, *dst, "call destination")?;
+                    let arg_tys = args
+                        .iter()
+                        .map(|op| check_operand(&local_tys, op))
+                        .collect::<Result<Vec<_>, _>>()?;
+                    let dst_ty = check_local(&local_tys, *dst, "call destination")?;
                     check_move_disjoint(args, *dst)?;
+                    if let Terminator::CallNe { .. } = &block.terminator {
+                        // The provided `ne` compares two `&Self` of one
+                        // admitted crate-local type and returns `bool`.
+                        let comparable = match arg_tys.as_slice() {
+                            [Ty::Ref { pointee: l, .. }, Ty::Ref { pointee: r, .. }] => {
+                                l == r && matches!(&**l, Ty::Enum(_) | Ty::Struct(_))
+                            }
+                            _ => false,
+                        };
+                        if !comparable || *dst_ty != Ty::Bool || target.is_none() {
+                            return Err(format!(
+                                "invalid PartialEq::ne call {arg_tys:?} -> {dst_ty:?}"
+                            ));
+                        }
+                    }
                     if let Some(target_block) = target {
                         check_block(*target_block)?;
                     }
@@ -3435,6 +3746,13 @@ impl Body {
                     if let Some(target_block) = target {
                         check_block(*target_block)?;
                     }
+                }
+                Terminator::Drop { place, target, .. } => {
+                    if !place.projection.is_empty() {
+                        return Err("Drop place must be an unprojected local".into());
+                    }
+                    check_local(&local_tys, place.local, "drop")?;
+                    check_block(*target)?;
                 }
                 Terminator::Ret | Terminator::Unreachable | Terminator::Unsupported => {}
             }
@@ -3541,6 +3859,7 @@ impl Body {
                         | Rvalue::FakeAddressOf { .. }
                         | Rvalue::AggregateTuple { .. }
                         | Rvalue::AggregateArray { .. }
+                        | Rvalue::AggregateStruct { .. }
                         | Rvalue::Repeat { .. }
                         | Rvalue::AggregateRangeTo { .. }
                         | Rvalue::AggregateRangeFrom { .. }
@@ -3566,7 +3885,8 @@ impl Body {
                 // (`CanaryD17AssertPanicAbortClaim`); route to Profile v2 only
                 // when `cond` requires Profile v2 or `msg` is an optional
                 // arithmetic overflow assert outside Profile v1's domain.
-                Terminator::Assert { cond, msg, .. } => {
+                Terminator::Assert { cond, msg, .. }
+                => {
                     if cond.is_profile_v2()
                         || !matches!(
                             msg,
@@ -3586,9 +3906,15 @@ impl Body {
                 Terminator::CoreCall { op, .. } => {
                     return Some(format!("bb{bb} terminator: core call {op:?}"));
                 }
-                // Intra-crate and `core::num` sysroot calls are Profile v1
-                // terminators; `Program::try_new` refuses them in a Profile v2
-                // program.
+                Terminator::CallNe { eq_callee, .. } => {
+                    return Some(format!("bb{bb} terminator: `PartialEq::ne` via body {eq_callee}"));
+                }
+                Terminator::Drop { place, .. } => {
+                    return Some(format!("bb{bb} terminator: `Drop` of {place:?}"));
+                }
+                // Intra-crate calls are admitted in both profiles; `core::num`
+                // sysroot calls are Profile v1 terminators, which
+                // `Program::try_new` refuses in a Profile v2 program.
                 Terminator::Call { .. }
                 | Terminator::SysrootCall { .. }
                 | Terminator::Goto { .. }
@@ -3631,8 +3957,20 @@ impl Body {
     /// operand, or terminator variant carrying a [`Ty`] must update this
     /// traversal so emitted enum keys cannot bypass collision checks.
     pub fn collect_enum_ids(&self, out: &mut BTreeSet<u32>) {
+        self.for_each_ty(&mut |ty| ty.collect_enum_ids(out));
+    }
+
+    /// Record every nominal [`StructLayout::id`] referenced anywhere in this
+    /// body.
+    pub fn collect_struct_ids(&self, out: &mut BTreeSet<u32>) {
+        self.for_each_ty(&mut |ty| ty.collect_struct_ids(out));
+    }
+
+    /// Visit every type written in this body: local types, projection field
+    /// types, constant types, and the types carried by rvalues and core calls.
+    fn for_each_ty(&self, f: &mut dyn FnMut(&Ty)) {
         for ty in &self.local_tys {
-            ty.collect_enum_ids(out);
+            f(ty);
         }
         for block in &self.blocks {
             for stmt in &block.statements {
@@ -3645,105 +3983,132 @@ impl Body {
                     | Statement::Nop => (None, None),
                 };
                 if let Some(p) = place_opt {
-                    p.collect_enum_ids(out);
+                    p.for_each_ty(f);
                 }
                 if let Some(value) = value_opt {
                     match value {
                         Rvalue::Use { operand, .. }
                         | Rvalue::UseRetag { operand }
-                        | Rvalue::Unary { operand, .. } => {
-                            operand.collect_enum_ids(out);
-                        }
+                        | Rvalue::Unary { operand, .. } => operand.for_each_ty(f),
                         Rvalue::Binary { left, right, .. } => {
-                            left.collect_enum_ids(out);
-                            right.collect_enum_ids(out);
+                            left.for_each_ty(f);
+                            right.for_each_ty(f);
                         }
                         Rvalue::Cast { operand, ty, .. } => {
-                            operand.collect_enum_ids(out);
-                            ty.collect_enum_ids(out);
+                            operand.for_each_ty(f);
+                            f(ty);
                         }
                         Rvalue::Ref { place, .. }
                         | Rvalue::AddressOf { place, .. }
-                        | Rvalue::FakeAddressOf { place } => {
-                            place.collect_enum_ids(out);
-                        }
+                        | Rvalue::FakeAddressOf { place }
+                        | Rvalue::Discriminant { place } => place.for_each_ty(f),
                         Rvalue::AggregateTuple { fields } => {
-                            for f in fields {
-                                f.collect_enum_ids(out);
+                            for op in fields {
+                                op.for_each_ty(f);
                             }
                         }
-                        Rvalue::AggregateArray { elem_ty, elems } => {
-                            elem_ty.collect_enum_ids(out);
-                            for e in elems {
-                                e.collect_enum_ids(out);
+                        Rvalue::AggregateArray { elem_ty: ty, elems: ops }
+                        | Rvalue::AggregateStruct { ty, fields: ops } => {
+                            f(ty);
+                            for op in ops {
+                                op.for_each_ty(f);
                             }
                         }
                         Rvalue::Repeat {
                             operand, elem_ty, ..
+                        }
+                        | Rvalue::AggregateRangeTo {
+                            elem_ty,
+                            end: operand,
+                        }
+                        | Rvalue::AggregateRangeFrom {
+                            elem_ty,
+                            start: operand,
                         } => {
-                            operand.collect_enum_ids(out);
-                            elem_ty.collect_enum_ids(out);
-                        }
-                        Rvalue::AggregateRangeTo { elem_ty, end } => {
-                            elem_ty.collect_enum_ids(out);
-                            end.collect_enum_ids(out);
-                        }
-                        Rvalue::AggregateRangeFrom { elem_ty, start } => {
-                            elem_ty.collect_enum_ids(out);
-                            start.collect_enum_ids(out);
+                            f(elem_ty);
+                            operand.for_each_ty(f);
                         }
                         Rvalue::AggregateRange { elem_ty, start, end } => {
-                            elem_ty.collect_enum_ids(out);
-                            start.collect_enum_ids(out);
-                            end.collect_enum_ids(out);
+                            f(elem_ty);
+                            start.for_each_ty(f);
+                            end.for_each_ty(f);
                         }
                         Rvalue::AggregateOption {
                             inner_ty, payload, ..
                         } => {
-                            inner_ty.collect_enum_ids(out);
+                            f(inner_ty);
                             if let Some(op) = payload {
-                                op.collect_enum_ids(out);
+                                op.for_each_ty(f);
                             }
                         }
-                        Rvalue::Discriminant { place } => place.collect_enum_ids(out),
                     }
                 }
             }
             match &block.terminator {
-                Terminator::SwitchInt { operand, .. } => operand.collect_enum_ids(out),
-                Terminator::Assert { cond, .. } => cond.collect_enum_ids(out),
+                Terminator::SwitchInt { operand, .. } => operand.for_each_ty(f),
+                Terminator::Assert { cond, .. } => cond.for_each_ty(f),
                 Terminator::CoreCall { op, args, dst, .. } => {
                     match op {
-                        CoreCallOp::PtrAdd { pointee, .. }
-                        | CoreCallOp::MemReplace { ty: pointee }
-                        | CoreCallOp::BoxNew { pointee } => {
-                            pointee.collect_enum_ids(out);
-                        }
-                        CoreCallOp::ArrayEq { elem, .. }
-                        | CoreCallOp::SliceIndexRange { elem, .. }
-                        | CoreCallOp::SliceIndexRangeFrom { elem, .. }
-                        | CoreCallOp::SliceIsEmpty { elem }
-                        | CoreCallOp::SliceSplitAt { elem, .. }
-                        | CoreCallOp::OptionIsSome { inner: elem }
-                        | CoreCallOp::OptionIsNone { inner: elem }
-                        | CoreCallOp::OptionTake { inner: elem }
-                        | CoreCallOp::OptionUnwrap { inner: elem }
-                        | CoreCallOp::VecNew { elem }
-                        | CoreCallOp::VecWithCapacity { elem } => {
-                            elem.collect_enum_ids(out);
-                        }
-                        _ => {}
+                        CoreCallOp::PtrAdd { pointee: ty, .. }
+                        | CoreCallOp::MemReplace { ty }
+                        | CoreCallOp::BoxNew { pointee: ty }
+                        | CoreCallOp::ArrayEq { elem: ty, .. }
+                        | CoreCallOp::SliceIndexRange { elem: ty, .. }
+                        | CoreCallOp::SliceIndexRangeFrom { elem: ty, .. }
+                        | CoreCallOp::SliceIsEmpty { elem: ty }
+                        | CoreCallOp::SliceSplitAt { elem: ty, .. }
+                        | CoreCallOp::OptionIsSome { inner: ty }
+                        | CoreCallOp::OptionIsNone { inner: ty }
+                        | CoreCallOp::OptionTake { inner: ty }
+                        | CoreCallOp::OptionUnwrap { inner: ty }
+                        | CoreCallOp::VecNew { elem: ty }
+                        | CoreCallOp::VecWithCapacity { elem: ty }
+                        | CoreCallOp::PartialEqNe { ty } => f(ty),
+                        CoreCallOp::SliceLen
+                        | CoreCallOp::SliceGetUncheckedRangeTo
+                        | CoreCallOp::SliceGetUncheckedRangeFrom
+                        | CoreCallOp::NumIsMultipleOf(_)
+                        | CoreCallOp::NumCheckedAdd(_)
+                        | CoreCallOp::NumCheckedMul(_)
+                        | CoreCallOp::NumCheckedSub(_)
+                        | CoreCallOp::NumSaturatingAdd(_)
+                        | CoreCallOp::NumWrappingShl(_)
+                        | CoreCallOp::NumWrappingShr(_)
+                        | CoreCallOp::NumLeadingZeros(_)
+                        | CoreCallOp::NumOverflowingAdd(_)
+                        | CoreCallOp::NumOverflowingSub(_)
+                        | CoreCallOp::CmpMin(_)
+                        | CoreCallOp::CmpMax(_)
+                        | CoreCallOp::UsizeUncheckedSub
+                        | CoreCallOp::IntToLeBytes { .. }
+                        | CoreCallOp::VecLen
+                        | CoreCallOp::VecPush
+                        | CoreCallOp::VecResize
+                        | CoreCallOp::VecExtendFromSlice
+                        | CoreCallOp::VecIndex
+                        | CoreCallOp::VecIndexMut
+                        | CoreCallOp::VecDeref
+                        | CoreCallOp::VecDerefMut
+                        | CoreCallOp::VecReserve
+                        | CoreCallOp::BoxFromVec
+                        | CoreCallOp::BoxDeref
+                        | CoreCallOp::BoxDerefMut
+                        | CoreCallOp::BoxClone
+                        | CoreCallOp::PanicAbort => {}
                     }
                     for a in args {
-                        a.collect_enum_ids(out);
+                        a.for_each_ty(f);
                     }
-                    dst.collect_enum_ids(out);
+                    dst.for_each_ty(f);
                 }
-                Terminator::Call { args, .. } | Terminator::SysrootCall { args, .. } => {
-                    for arg in args {
-                        arg.collect_enum_ids(out);
+                Terminator::Call { args, .. }
+                | Terminator::CallNe { args, .. }
+                | Terminator::SysrootCall { args, .. } => {
+                    for a in args {
+                        a.for_each_ty(f);
                     }
                 }
+                Terminator::Drop { place, .. } => place.for_each_ty(f),
                 Terminator::Goto { .. }
                 | Terminator::Ret
                 | Terminator::Unreachable
@@ -3766,6 +4131,46 @@ pub struct Instantiation {
     pub path: String,
     pub args: Vec<String>,
 }
+/// Closed allowlist of formatting and diagnostic traits whose crate-local
+/// impls may be excluded from `--scope crate` capture once proven unreachable
+/// from every verified body.
+///
+/// Variant order matches lexicographical canonical path order so
+/// `BTreeSet<ExcludedTrait>` serializes deterministically.
+#[derive(
+    Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord, Hash, serde::Deserialize, serde::Serialize,
+)]
+pub enum ExcludedTrait {
+    #[serde(rename = "core::error::Error")]
+    Error,
+    #[serde(rename = "core::fmt::Debug")]
+    Debug,
+    #[serde(rename = "core::fmt::Display")]
+    Display,
+}
+
+impl ExcludedTrait {
+    pub const fn as_str(self) -> &'static str {
+        match self {
+            Self::Error => "core::error::Error",
+            Self::Debug => "core::fmt::Debug",
+            Self::Display => "core::fmt::Display",
+        }
+    }
+
+    pub fn parse_canonical(raw: &str) -> Result<Self, String> {
+        match raw {
+            "core::error::Error" => Ok(Self::Error),
+            "core::fmt::Debug" => Ok(Self::Debug),
+            "core::fmt::Display" => Ok(Self::Display),
+            _ => Err(format!(
+                "trait `{raw}` is not in the closed --exclude-trait allowlist \
+                 (allowed: core::error::Error, core::fmt::Debug, core::fmt::Display)"
+            )),
+        }
+    }
+}
+
 #[derive(Clone, Debug, PartialEq, Eq, Serialize)]
 #[serde(tag = "kind", rename_all = "snake_case")]
 pub enum Scope {
@@ -3774,7 +4179,10 @@ pub enum Scope {
         #[serde(default, skip_serializing_if = "BTreeSet::is_empty")]
         instantiations: BTreeSet<Instantiation>,
     },
-    Crate,
+    Crate {
+        #[serde(default, skip_serializing_if = "BTreeSet::is_empty")]
+        excluded_traits: BTreeSet<ExcludedTrait>,
+    },
 }
 
 /// Validated captured program enforcing non-empty selected-unit targets,
@@ -3825,6 +4233,12 @@ impl Program {
             for block in &body.blocks {
                 if let Terminator::Call {
                     callee, args, dst, ..
+                }
+                | Terminator::CallNe {
+                    eq_callee: callee,
+                    args,
+                    dst,
+                    ..
                 } = &block.terminator
                 {
                     let callee_body = bodies.get(*callee).ok_or_else(|| {
@@ -3876,18 +4290,15 @@ impl Program {
             .iter()
             .find_map(|body| body.profile_v2_trigger().map(|why| (&body.identity, why)));
         let mir_profile_version = if profile_v2_trigger.is_some() { 2 } else { 1 };
-        // `Trusted.MirSemantics.evalStepV2` executes a single frame and faults
-        // on `.call` and `.sysrootCall`, so refuse them here rather than emit
-        // a program whose calls can only fault. Name the refused call and the
-        // construct that selected Profile v2, which may sit in another body.
+        // `Trusted.MirSemantics.evalStepV2` faults on `.sysrootCall` (Profile
+        // v2 models its `core` calls through `CoreCall` instead), so refuse it
+        // here rather than emit a program whose calls can only fault. Name the
+        // refused call and the construct that selected Profile v2, which may
+        // sit in another body.
         if let Some((trigger_body, trigger)) = &profile_v2_trigger
             && let Some((body, bb, call)) = bodies.iter().find_map(|body| {
                 body.blocks.iter().enumerate().find_map(|(bb, block)| {
                     let call = match &block.terminator {
-                        Terminator::Call { callee, .. } => format!(
-                            "call to {}",
-                            bodies.get(*callee).map_or("<unknown callee>", |c| &c.identity)
-                        ),
                         Terminator::SysrootCall { op, .. } => format!("`core::num` call {op:?}"),
                         _ => return None,
                     };
@@ -4047,6 +4458,8 @@ pub struct CensusItem {
     pub has_body: bool,
     pub selected: bool,
     pub required: bool,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub excluded_by: Option<ExcludedTrait>,
 }
 
 #[derive(Debug, Serialize)]
@@ -4109,15 +4522,29 @@ impl Manifest {
             let mut body = old_opts[old_idx]
                 .take()
                 .ok_or_else(|| format!("missing body at {old_idx}"))?;
-            // Remap intra-crate `Terminator::Call` callee body indices into
-            // the new canonical callee-first body numbering so call targets
-            // stay bound to the exact same `Body` after sharding.
+            // Remap every intra-crate body index a terminator carries
+            // (`Call::callee`, `CallNe::eq_callee`) into the new canonical
+            // callee-first body numbering so call targets stay bound to the
+            // exact same `Body` after sharding. The match is exhaustive so that
+            // a new body-referencing terminator cannot be silently left
+            // unmapped.
             for block in &mut body.blocks {
-                if let Terminator::Call { callee, .. } = &mut block.terminator {
-                    *callee = old_to_new
-                        .get(*callee)
-                        .and_then(|opt| *opt)
-                        .ok_or_else(|| format!("call callee index {} out of bounds", *callee))?;
+                match &mut block.terminator {
+                    Terminator::Call { callee, .. }
+                    | Terminator::CallNe { eq_callee: callee, .. } => {
+                        *callee = old_to_new.get(*callee).and_then(|opt| *opt).ok_or_else(
+                            || format!("call callee index {} out of bounds", *callee),
+                        )?;
+                    }
+                    Terminator::Goto { .. }
+                    | Terminator::SwitchInt { .. }
+                    | Terminator::Assert { .. }
+                    | Terminator::CoreCall { .. }
+                    | Terminator::SysrootCall { .. }
+                    | Terminator::Drop { .. }
+                    | Terminator::Ret
+                    | Terminator::Unreachable
+                    | Terminator::Unsupported => {}
                 }
             }
             new_bodies.push(body);
@@ -5234,7 +5661,13 @@ mod tests {
             "rust-path-v1::caller_ok".into(),
         )
         .unwrap();
-        let prog_ok = Program::try_new(Scope::Crate, vec![caller_ok, callee_body.clone()]).unwrap();
+        let prog_ok = Program::try_new(
+            Scope::Crate {
+                excluded_traits: BTreeSet::new(),
+            },
+            vec![caller_ok, callee_body.clone()],
+        )
+        .unwrap();
         let mut ids = BTreeSet::new();
         prog_ok.bodies()[0].collect_enum_ids(&mut ids);
         assert!(ids.contains(&303));
@@ -5262,7 +5695,12 @@ mod tests {
             "rust-path-v1::caller_bad_type".into(),
         )
         .unwrap();
-        let mismatch = Program::try_new(Scope::Crate, vec![caller_bad_type, callee_body])
+        let mismatch = Program::try_new(
+            Scope::Crate {
+                excluded_traits: BTreeSet::new(),
+            },
+            vec![caller_bad_type, callee_body],
+        )
             .unwrap_err();
         assert!(mismatch.contains("disagrees with callee"), "{mismatch}");
     }
@@ -7650,7 +8088,8 @@ mod tests {
             "{mem_replace_bad_src}"
         );
 
-        // Program::try_new enforces Profile v2 vs Profile v1 Call exclusivity.
+        // Program::try_new admits intra-crate `Call`s in a Profile v2 program
+        // but refuses Profile v1 `SysrootCall`s there.
         let v1_callee = Body::try_new(
             1,
             false,
@@ -7691,18 +8130,53 @@ mod tests {
             "rust-path-v1::v1_caller".into(),
         )
         .unwrap();
+        let sysroot_caller = Body::try_new(
+            1,
+            false,
+            vec![u64_ty.clone(), u64_ty.clone()],
+            vec![
+                Block {
+                    statements: vec![],
+                    terminator: Terminator::SysrootCall {
+                        op: SysrootNumOp {
+                            kind: SysrootNumKind::WrappingAdd,
+                            ty: IntTy { width: IntWidth::I64, signed: false },
+                        },
+                        args: vec![Operand::Copy { local: 1 }, Operand::Copy { local: 1 }],
+                        dst: 0,
+                        target: Some(1),
+                        unwind: UnwindAction::Continue,
+                    },
+                },
+                Block {
+                    statements: vec![],
+                    terminator: Terminator::Ret,
+                },
+            ],
+            "rust-path-v1::sysroot_caller".into(),
+        )
+        .unwrap();
+        // Profile v2 admits intra-crate `Call`s.
+        let with_call = Program::try_new(
+            Scope::Crate { excluded_traits: BTreeSet::new() },
+            vec![v1_callee.clone(), v1_caller, agg_range_ok.clone()],
+        )
+        .unwrap();
+        assert_eq!(with_call.mir_profile_version(), 2);
+        // It refuses `core::num` sysroot calls, naming the refused call and the
+        // body and construct that selected Profile v2.
         let mixed_err = Program::try_new(
-            Scope::Crate,
-            vec![v1_callee.clone(), v1_caller.clone(), agg_range_ok],
+            Scope::Crate { excluded_traits: BTreeSet::new() },
+            vec![v1_callee.clone(), sysroot_caller.clone(), agg_range_ok],
         )
         .unwrap_err();
-        // The refusal names the refused call and the body and construct that
-        // selected Profile v2.
         assert!(
             mixed_err.starts_with(
-                "rust-path-v1::v1_caller makes a Profile v1 call in a Profile v2 program \
-                 (bb0 terminator: call to rust-path-v1::v1_callee); Profile v2 was selected \
-                 by rust-path-v1::agg_range_ok (local _0 has Profile v2 type Range {"
+                "rust-path-v1::sysroot_caller makes a Profile v1 call in a Profile v2 program \
+                 (bb0 terminator: `core::num` call "
+            ) && mixed_err.contains(
+                "); Profile v2 was selected by rust-path-v1::agg_range_ok (local _0 has Profile \
+                 v2 type Range {"
             ),
             "{mixed_err}"
         );
@@ -7729,15 +8203,19 @@ mod tests {
             "rust-path-v1::overflow_assert".into(),
         )
         .unwrap();
-        let overflow_err =
-            Program::try_new(Scope::Crate, vec![v1_callee, v1_caller, overflow_assert])
-                .unwrap_err();
-        assert_eq!(
-            overflow_err,
-            "rust-path-v1::v1_caller makes a Profile v1 call in a Profile v2 program \
-             (bb0 terminator: call to rust-path-v1::v1_callee); Profile v2 was selected by \
-             rust-path-v1::overflow_assert (bb0 terminator: `Assert` (Overflow { op: Add }) \
-             on Copy { local: 1 })"
+        let overflow_err = Program::try_new(
+            Scope::Crate { excluded_traits: BTreeSet::new() },
+            vec![v1_callee, sysroot_caller, overflow_assert],
+        )
+        .unwrap_err();
+        assert!(
+            overflow_err.starts_with(
+                "rust-path-v1::sysroot_caller makes a Profile v1 call in a Profile v2 program"
+            ) && overflow_err.ends_with(
+                "); Profile v2 was selected by rust-path-v1::overflow_assert (bb0 terminator: \
+                 `Assert` (Overflow { op: Add }) on Copy { local: 1 })"
+            ),
+            "{overflow_err}"
         );
 
         // `Rvalue::AggregateOption` validation: valid None/Some, bad dst,
@@ -9110,5 +9588,365 @@ mod tests {
             .profile_v2_trigger()
             .expect("projected operand selects Profile v2");
         assert!(trigger.starts_with("bb0[0]: unary `Not` of "), "{trigger}");
+    }
+
+    fn u8_ty() -> Ty {
+        Ty::Int(IntTy { width: IntWidth::I8, signed: false })
+    }
+
+    fn u32_ty() -> Ty {
+        Ty::Int(IntTy { width: IntWidth::I32, signed: false })
+    }
+
+    fn usize_ty() -> Ty {
+        Ty::Int(IntTy { width: IntWidth::Isize, signed: false })
+    }
+
+    /// `struct Pair { a: u8, b: u32 }` with `rustc`'s reordered layout
+    /// (`b` at offset 0, `a` at offset 4).
+    fn pair_ty() -> Ty {
+        Ty::Struct(StructTy::try_new(77, 8, 2, vec![4, 0], vec![u8_ty(), u32_ty()]).unwrap())
+    }
+
+    fn place(local: u32, projection: Vec<PlaceElem>) -> Place {
+        Place { local, projection }
+    }
+
+    fn single_block_body(
+        arg_count: usize,
+        locals: Vec<Ty>,
+        statements: Vec<Statement>,
+        terminator: Terminator,
+        identity: &str,
+    ) -> Result<Body, String> {
+        let mut blocks = vec![Block { statements, terminator }];
+        if !matches!(blocks[0].terminator, Terminator::Ret) {
+            blocks.push(Block { statements: vec![], terminator: Terminator::Ret });
+        }
+        Body::try_new(arg_count, false, locals, blocks, identity.into())
+    }
+
+    #[test]
+    fn struct_ty_try_new_mirrors_struct_layout_valid() {
+        assert!(StructTy::try_new(1, 0, 0, vec![], vec![]).is_ok());
+        let pair = pair_ty();
+        assert_eq!(pair.v2_layout(), Some((8, 2)));
+        assert!(pair.is_supported_v2_data());
+        assert!(pair.is_supported_v2_local());
+        assert!(pair.is_retag_noop());
+        assert!(pair.is_sized());
+        assert!(pair.is_profile_v2());
+        assert!(!pair.is_array_eq_elem_supported());
+        assert!(!pair.has_ref_v2() && !pair.has_raw_ptr_v2());
+
+        let err = |r: Result<StructTy, String>| r.unwrap_err();
+        assert!(
+            err(StructTy::try_new(1, 8, 2, vec![0], vec![u8_ty(), u32_ty()])).contains("offsets")
+        );
+        assert!(
+            err(StructTy::try_new(1, 8, 2, vec![0, 1], vec![u8_ty(), u32_ty()]))
+                .contains("misaligned")
+        );
+        assert!(
+            err(StructTy::try_new(1, 8, 2, vec![0, 0], vec![u32_ty(), u32_ty()]))
+                .contains("overlaps")
+        );
+        assert!(
+            err(StructTy::try_new(1, 4, 2, vec![0, 4], vec![u32_ty(), u8_ty()]))
+                .contains("exceeds the struct size")
+        );
+        assert!(
+            err(StructTy::try_new(1, 6, 2, vec![0, 4], vec![u32_ty(), u8_ty()]))
+                .contains("not a multiple")
+        );
+        assert!(
+            err(StructTy::try_new(1, 4, 1, vec![0], vec![u32_ty()])).contains("alignment exceeds")
+        );
+        assert!(err(StructTy::try_new(1, 1 << 61, 0, vec![], vec![])).contains("2^61"));
+        let shared_ref = Ty::Ref { mutability: Mutability::Shared, pointee: Box::new(u8_ty()) };
+        assert!(
+            err(StructTy::try_new(1, 8, 3, vec![0], vec![shared_ref])).contains("Profile v2 data")
+        );
+        // Zero-sized fields may share offsets with other fields.
+        assert!(StructTy::try_new(1, 4, 2, vec![0, 0], vec![u32_ty(), Ty::Unit]).is_ok());
+        // Nested structs and arrays of structs are data types.
+        let nested = Ty::Struct(
+            StructTy::try_new(
+                2,
+                24,
+                2,
+                vec![0, 8],
+                vec![pair_ty(), Ty::Array { elem: Box::new(pair_ty()), len: 2 }],
+            )
+            .unwrap(),
+        );
+        let mut ids = BTreeSet::new();
+        nested.collect_struct_ids(&mut ids);
+        assert_eq!(ids, BTreeSet::from([2, 77]));
+    }
+
+    #[test]
+    fn struct_constants_require_zero_sized_or_full_layout_bytes() {
+        let unit_struct = Ty::Struct(StructTy::try_new(3, 0, 0, vec![], vec![]).unwrap());
+        assert!(validate_constant(&unit_struct, &ConstLit::ZeroSized).is_ok());
+        assert!(validate_constant(&unit_struct, &ConstLit::RodataBytes { bytes: vec![] }).is_err());
+        let pair = pair_ty();
+        assert!(validate_constant(&pair, &ConstLit::ZeroSized).is_err());
+        assert!(validate_constant(&pair, &ConstLit::Scalar { bits: 0 }).is_err());
+        let bytes = |n| ConstLit::RodataBytes { bytes: vec![RodataByte::Uninit; n] };
+        assert!(validate_constant(&pair, &bytes(8)).is_ok());
+        assert!(validate_constant(&pair, &bytes(7)).is_err());
+    }
+
+    #[test]
+    fn struct_aggregates_fields_and_index_projections_are_typed() {
+        let pair = pair_ty();
+        let aggregate = |ty: Ty, fields: Vec<Operand>| {
+            single_block_body(
+                2,
+                vec![pair.clone(), u8_ty(), u32_ty()],
+                vec![Statement::Assign { local: 0, value: Rvalue::AggregateStruct { ty, fields } }],
+                Terminator::Ret,
+                "rust-path-v1::make_pair",
+            )
+        };
+        let good =
+            aggregate(pair.clone(), vec![Operand::Copy { local: 1 }, Operand::Copy { local: 2 }])
+                .unwrap();
+        assert!(good.uses_profile_v2());
+        let mut ids = BTreeSet::new();
+        good.collect_struct_ids(&mut ids);
+        assert_eq!(ids, BTreeSet::from([77]));
+        assert!(
+            aggregate(pair.clone(), vec![Operand::Copy { local: 2 }, Operand::Copy { local: 1 }])
+                .unwrap_err()
+                .contains("AggregateStruct field type")
+        );
+        assert!(
+            aggregate(pair.clone(), vec![Operand::Copy { local: 1 }])
+                .unwrap_err()
+                .contains("arity")
+        );
+        assert!(
+            aggregate(u8_ty(), vec![Operand::Copy { local: 1 }])
+                .unwrap_err()
+                .contains("requires a struct type")
+        );
+
+        // `_0 = copy (_1.1)` reads the declaration-order field `b: u32`.
+        let field_read = |index: usize, ty: Ty, dst: Ty| {
+            single_block_body(
+                1,
+                vec![dst, pair.clone()],
+                vec![Statement::Assign {
+                    local: 0,
+                    value: Rvalue::Use {
+                        operand: Operand::CopyPlace {
+                            place: place(1, vec![PlaceElem::Field { index, ty }]),
+                        },
+                        with_retag: true,
+                    },
+                }],
+                Terminator::Ret,
+                "rust-path-v1::get_b",
+            )
+        };
+        assert!(field_read(1, u32_ty(), u32_ty()).is_ok());
+        assert!(field_read(0, u32_ty(), u32_ty()).is_err());
+        assert!(field_read(2, u32_ty(), u32_ty()).is_err());
+
+        // `(*_1)[_2].0` through `&[Pair; 2]`, and `(*_1)[_2]` through `&[u8]`.
+        let array_ref = Ty::Ref {
+            mutability: Mutability::Shared,
+            pointee: Box::new(Ty::Array { elem: Box::new(pair.clone()), len: 2 }),
+        };
+        let slice_ref = Ty::Ref {
+            mutability: Mutability::Shared,
+            pointee: Box::new(Ty::Slice { elem: Box::new(u8_ty()) }),
+        };
+        let indexed = |base: Ty, index_ty: Ty, index_local: u32, tail: Vec<PlaceElem>, dst: Ty| {
+            let mut projection = vec![PlaceElem::Deref, PlaceElem::Index { local: index_local }];
+            projection.extend(tail);
+            single_block_body(
+                2,
+                vec![dst, base, index_ty],
+                vec![Statement::Assign {
+                    local: 0,
+                    value: Rvalue::Use {
+                        operand: Operand::CopyPlace { place: place(1, projection) },
+                        with_retag: true,
+                    },
+                }],
+                Terminator::Ret,
+                "rust-path-v1::index",
+            )
+        };
+        let field_a = vec![PlaceElem::Field { index: 0, ty: u8_ty() }];
+        let ok = indexed(array_ref.clone(), usize_ty(), 2, field_a.clone(), u8_ty()).unwrap();
+        let program = Program::try_new(Scope::Crate { excluded_traits: BTreeSet::new() }, vec![ok]).unwrap();
+        let rendered = crate::lean::render(&program);
+        assert!(rendered.contains("Trusted.MirAst.ProjectionElem.index 2"), "{rendered}");
+        assert!(
+            rendered.contains(
+                "(Trusted.MirAst.MirTy.struct_ (Trusted.MirAst.StructLayout.mk 77 8 2 [4, 0])"
+            ),
+            "{rendered}"
+        );
+        assert!(indexed(slice_ref.clone(), usize_ty(), 2, vec![], u8_ty()).is_ok());
+        assert!(
+            indexed(array_ref.clone(), u32_ty(), 2, field_a.clone(), u8_ty())
+                .unwrap_err()
+                .contains("not usize")
+        );
+        assert!(
+            indexed(array_ref, usize_ty(), 9, field_a, u8_ty())
+                .unwrap_err()
+                .contains("index local 9 out of bounds")
+        );
+        // An unsized slice deref without a following `Index` stays refused.
+        let bare_slice = single_block_body(
+            1,
+            vec![u8_ty(), slice_ref],
+            vec![Statement::Assign {
+                local: 0,
+                value: Rvalue::Use {
+                    operand: Operand::CopyPlace { place: place(1, vec![PlaceElem::Deref]) },
+                    with_retag: true,
+                },
+            }],
+            Terminator::Ret,
+            "rust-path-v1::bare_slice",
+        );
+        assert!(bare_slice.unwrap_err().contains("unsized deref"));
+    }
+
+    #[test]
+    fn refs_to_projected_places_are_typed_and_respect_mutability() {
+        let pair_ref = |mutability| Ty::Ref { mutability, pointee: Box::new(pair_ty()) };
+        let field_ref = |base: Mutability, borrow: Mutability| {
+            single_block_body(
+                1,
+                vec![Ty::Ref { mutability: borrow, pointee: Box::new(u32_ty()) }, pair_ref(base)],
+                vec![Statement::Assign {
+                    local: 0,
+                    value: Rvalue::Ref {
+                        mutability: borrow,
+                        place: place(
+                            1,
+                            vec![PlaceElem::Deref, PlaceElem::Field { index: 1, ty: u32_ty() }],
+                        ),
+                    },
+                }],
+                Terminator::Ret,
+                "rust-path-v1::field_ref",
+            )
+        };
+        // `&((*_1).1)` through `&Pair` and `&mut ((*_1).1)` through
+        // `&mut Pair`.
+        assert!(field_ref(Mutability::Shared, Mutability::Shared).is_ok());
+        assert!(field_ref(Mutability::Mut, Mutability::Mut).is_ok());
+        assert!(
+            field_ref(Mutability::Shared, Mutability::Mut).unwrap_err().contains("cannot reborrow")
+        );
+    }
+
+    #[test]
+    fn call_ne_partial_eq_ne_and_drop_terminators_are_typed() {
+        let pair = pair_ty();
+        let pair_ref = Ty::Ref { mutability: Mutability::Shared, pointee: Box::new(pair.clone()) };
+        let eq = single_block_body(
+            2,
+            vec![Ty::Bool, pair_ref.clone(), pair_ref.clone()],
+            vec![],
+            Terminator::Ret,
+            "rust-path-v1::<Pair as PartialEq>::eq",
+        )
+        .unwrap();
+        let call_ne = |locals: Vec<Ty>| {
+            single_block_body(
+                2,
+                locals,
+                vec![],
+                Terminator::CallNe {
+                    eq_callee: 1,
+                    args: vec![Operand::Copy { local: 1 }, Operand::Copy { local: 2 }],
+                    dst: 0,
+                    target: Some(1),
+                    unwind: UnwindAction::Terminate,
+                },
+                "rust-path-v1::differ",
+            )
+        };
+        let ne = call_ne(vec![Ty::Bool, pair_ref.clone(), pair_ref.clone()]).unwrap();
+        assert!(ne.uses_profile_v2());
+        let program = Program::try_new(Scope::Crate { excluded_traits: BTreeSet::new() }, vec![ne, eq.clone()]).unwrap();
+        assert_eq!(program.mir_profile_version(), 2);
+        let rendered = crate::lean::render(&program);
+        assert!(rendered.contains("(Trusted.MirAst.TerminatorKind.callNe\n"), "{rendered}");
+        assert!(rendered.contains("Trusted.MirAst.UnwindAction.terminate)"), "{rendered}");
+        // The `eq` callee's signature must match the call.
+        let bad_eq = single_block_body(
+            2,
+            vec![u8_ty(), pair_ref.clone(), pair_ref.clone()],
+            vec![],
+            Terminator::Ret,
+            "rust-path-v1::<Pair as PartialEq>::eq",
+        )
+        .unwrap();
+        let ne = call_ne(vec![Ty::Bool, pair_ref.clone(), pair_ref.clone()]).unwrap();
+        assert!(Program::try_new(Scope::Crate { excluded_traits: BTreeSet::new() }, vec![ne, bad_eq]).is_err());
+        assert!(call_ne(vec![u8_ty(), pair_ref.clone(), pair_ref.clone()]).is_err());
+        let u8_ref = Ty::Ref { mutability: Mutability::Shared, pointee: Box::new(u8_ty()) };
+        assert!(call_ne(vec![Ty::Bool, u8_ref.clone(), u8_ref.clone()]).is_err());
+
+        // `CoreCallOp::PartialEqNe` covers the structural primitive/array
+        // fragment only.
+        let array_ty = Ty::Array { elem: Box::new(u8_ty()), len: 4 };
+        let array_ref =
+            Ty::Ref { mutability: Mutability::Shared, pointee: Box::new(array_ty.clone()) };
+        let core_ne = |ty: Ty, arg: Ty| {
+            single_block_body(
+                2,
+                vec![Ty::Bool, arg.clone(), arg],
+                vec![],
+                Terminator::CoreCall {
+                    op: CoreCallOp::PartialEqNe { ty },
+                    args: vec![Operand::Copy { local: 1 }, Operand::Copy { local: 2 }],
+                    dst: place(0, vec![]),
+                    target: Some(1),
+                    unwind: UnwindAction::Continue,
+                },
+                "rust-path-v1::array_ne",
+            )
+        };
+        let body = core_ne(array_ty.clone(), array_ref.clone()).unwrap();
+        let rendered = crate::lean::render(&Program::try_new(Scope::Crate { excluded_traits: BTreeSet::new() }, vec![body]).unwrap());
+        assert!(rendered.contains("Trusted.MirAst.CoreCallOp.partialEqNe"), "{rendered}");
+        assert!(core_ne(pair.clone(), pair_ref.clone()).is_err());
+        assert!(core_ne(u8_ty(), array_ref).is_err());
+
+        // `Drop` admits an unprojected in-bounds local only.
+        let drop_body = |place: Place| {
+            single_block_body(
+                1,
+                vec![Ty::Unit, pair.clone()],
+                vec![],
+                Terminator::Drop { place, target: 1, unwind: UnwindAction::Unreachable },
+                "rust-path-v1::consume",
+            )
+        };
+        let body = drop_body(place(1, vec![])).unwrap();
+        assert!(body.uses_profile_v2());
+        let rendered = crate::lean::render(&Program::try_new(Scope::Crate { excluded_traits: BTreeSet::new() }, vec![body]).unwrap());
+        assert!(
+            rendered.contains("(Trusted.MirAst.TerminatorKind.drop (Trusted.MirAst.Place.mk 1 []) 1 Trusted.MirAst.UnwindAction.unreachable)"),
+            "{rendered}"
+        );
+        assert!(drop_body(place(5, vec![])).unwrap_err().contains("out of bounds"));
+        assert!(
+            drop_body(place(1, vec![PlaceElem::Field { index: 0, ty: u8_ty() }]))
+                .unwrap_err()
+                .contains("unprojected")
+        );
     }
 }

@@ -318,6 +318,9 @@ class ExtractGuard:
     allow_downstream_fallback: bool = False
     allow_unstable_features: tuple[str, ...] = ()
     stdlib_crate: str = ""
+    # `--exclude-trait` paths for `capture` mode. Such guards use
+    # `EXCLUDE_TRAIT_POSITIVE_SANITY_SOURCE` as their positive sanity input.
+    exclude_traits: tuple[str, ...] = ()
     unit_test_name: str = ""
     sanity_unit_test: str = (
         "extract::tests::use_retag_is_admitted_only_for_retag_noop_types"
@@ -3104,16 +3107,18 @@ MIR_SEMANTICS_GUARDS: tuple[MirSemanticsGuard, ...] = (
         target_module="Trusted/MirSemantics/Step",
         description=(
             "Unmodeled terminators "
-            "(unwindResume/call/coreCall/sysrootCall/unsupported) fault"
+            "(unwindResume/call/coreCall/sysrootCall/callNe/drop/unsupported) fault"
         ),
         anchor=(
             "  | .unwindResume | .call _ _ _ _ _ | .coreCall _ _ _ _ _\n"
-            "  | .sysrootCall _ _ _ _ _ | .unsupported =>\n"
+            "  | .sysrootCall _ _ _ _ _ | .callNe _ _ _ _ _ | .drop _ _ _\n"
+            "  | .unsupported =>\n"
             "    .fault .unsupported"
         ),
         replacement=(
             "  | .unwindResume | .call _ _ _ _ _ | .coreCall _ _ _ _ _\n"
-            "  | .sysrootCall _ _ _ _ _ | .unsupported =>\n"
+            "  | .sysrootCall _ _ _ _ _ | .callNe _ _ _ _ _ | .drop _ _ _\n"
+            "  | .unsupported =>\n"
             "    .done (.returned ⟨.unit, callerMem⟩)"
         ),
         fixture_module="StepRefutations",
@@ -3276,7 +3281,7 @@ MIR_SEMANTICS_GUARDS: tuple[MirSemanticsGuard, ...] = (
         needs_wf_helper=False,
     ),
     # ------------------------------------------------------------------
-    # Profile v2 memory, step, type-admission, and boundary guards (83 guards)
+    # Profile v2 memory, step, type-admission, and boundary guards (94 guards)
     # ------------------------------------------------------------------
     MirSemanticsGuard(
         guard_id="mem_v2_ptr_add_null_nonzero",
@@ -3510,16 +3515,16 @@ MIR_SEMANTICS_GUARDS: tuple[MirSemanticsGuard, ...] = (
             "raw pointer as UB"
         ),
         anchor=(
-            "        if isUnsizedTy pt || !MirTy.beq pt dstTy then\n"
-            "          .error .unsupported\n"
-            "        else if !Mutability.beq ptrMut .mut then\n"
-            "          .error .undefined"
+            "            if isUnsizedTy pt || !MirTy.beq pt dstTy then\n"
+            "              .error .unsupported\n"
+            "            else if !Mutability.beq ptrMut .mut then\n"
+            "              .error .undefined"
         ),
         replacement=(
-            "        if isUnsizedTy pt || !MirTy.beq pt dstTy then\n"
-            "          .error .unsupported\n"
-            "        else if false then\n"
-            "          .error .undefined"
+            "            if isUnsizedTy pt || !MirTy.beq pt dstTy then\n"
+            "              .error .unsupported\n"
+            "            else if false then\n"
+            "              .error .undefined"
         ),
         fixture_module="StepRefutations",
         theorem_name="refute_step_v2_write_readonly",
@@ -3679,14 +3684,16 @@ MIR_SEMANTICS_GUARDS: tuple[MirSemanticsGuard, ...] = (
         target_module="Trusted/MirSemantics/Enum",
         description="isSupportedV2DataTy rejects overflow pairs as pointees or array elements",
         anchor=(
-            "noncomputable def isSupportedV2DataTy : MirTy → Bool\n"
-            "  | .array elem _ => isSupportedV2DataTy elem\n"
-            "  | ty => !isOverflowPairTy ty && isSupportedScalarOrUnitTy ty"
+            "  noncomputable def isSupportedV2DataTy : MirTy → Bool\n"
+            "    | .array elem _ => isSupportedV2DataTy elem\n"
+            "    | .struct_ _ fs => isSupportedV2DataTyList fs\n"
+            "    | ty => !isOverflowPairTy ty && isSupportedScalarOrUnitTy ty"
         ),
         replacement=(
-            "noncomputable def isSupportedV2DataTy : MirTy → Bool\n"
-            "  | .array elem _ => isSupportedV2DataTy elem\n"
-            "  | ty => true && isSupportedScalarOrUnitTy ty"
+            "  noncomputable def isSupportedV2DataTy : MirTy → Bool\n"
+            "    | .array elem _ => isSupportedV2DataTy elem\n"
+            "    | .struct_ _ fs => isSupportedV2DataTyList fs\n"
+            "    | ty => true && isSupportedScalarOrUnitTy ty"
         ),
         fixture_module="EnumRefutations",
         theorem_name="refute_enum_v2_overflow_pair_pointee",
@@ -3780,12 +3787,13 @@ MIR_SEMANTICS_GUARDS: tuple[MirSemanticsGuard, ...] = (
         target_module="Trusted/MirSemantics/Step",
         description="readPlaceV2 rejects copying an already moved tuple field as UB",
         anchor=(
-            "                else .ok (elemTy, some elemVal, locals, mem)\n"
-            "              | some _, some none => .error .undefined"
+            "                  else .ok (elemTy, some elemVal, locals, mem)\n"
+            "                | some _, some none => .error .undefined"
         ),
         replacement=(
-            "                else .ok (elemTy, some elemVal, locals, mem)\n"
-            "              | some elemTy, some none => .ok (elemTy, some .unit, locals, mem)"
+            "                  else .ok (elemTy, some elemVal, locals, mem)\n"
+            "                | some elemTy, some none =>\n"
+            "                  .ok (elemTy, some .unit, locals, mem)"
         ),
         fixture_module="StepRefutations",
         theorem_name="refute_step_v2_partial_tuple_copy_moved_field",
@@ -3989,14 +3997,14 @@ MIR_SEMANTICS_GUARDS: tuple[MirSemanticsGuard, ...] = (
             "faults on dereferenced projected stores"
         ),
         anchor=(
-            "          match layoutOfTyV2 pt, projectMemoryLayoutV2 pt rest with\n"
-            "          | none, _ => .error .unsupported\n"
-            "          | _, .error k => .error k"
+            "              match layoutOfTyV2 pt, projectMemoryLayoutV2 pt rest with\n"
+            "              | none, _ => .error .unsupported\n"
+            "              | _, .error k => .error k"
         ),
         replacement=(
-            "          match layoutOfTyV2 pt, projectMemoryLayoutV2 pt rest with\n"
-            "          | none, _ => .error .unsupported\n"
-            "          | _, .error _ => .error .unsupported"
+            "              match layoutOfTyV2 pt, projectMemoryLayoutV2 pt rest with\n"
+            "              | none, _ => .error .unsupported\n"
+            "              | _, .error _ => .error .unsupported"
         ),
         fixture_module="StepRefutations",
         theorem_name="refute_step_v2_resolve_deref_proj_propagates_ub",
@@ -4011,14 +4019,24 @@ MIR_SEMANTICS_GUARDS: tuple[MirSemanticsGuard, ...] = (
             "locals instead of falling back to a whole-local load"
         ),
         anchor=(
-            "        | .indirect mplace =>\n"
-            "          match projectMemoryLayoutV2 baseTy (.field idx fTy :: rest) with\n"
-            "          | .error k => .error k"
+            "          | .dead | .immediate none => .error .undefined\n"
+            "          | .immediate (some v) =>\n"
+            "            match projectValFieldV2 baseTy v projs with\n"
+            "            | .error k => .error k\n"
+            "            | .ok (fty, fv) => .ok (fty, some fv, locals, mem)\n"
+            "          | .indirect mplace =>\n"
+            "            match projectMemoryLayoutV2 baseTy projs with\n"
+            "            | .error k => .error k"
         ),
         replacement=(
-            "        | .indirect mplace =>\n"
-            "          match projectMemoryLayoutV2 baseTy (.field idx fTy :: rest) with\n"
-            "          | .error _ => .error .undefined"
+            "          | .dead | .immediate none => .error .undefined\n"
+            "          | .immediate (some v) =>\n"
+            "            match projectValFieldV2 baseTy v projs with\n"
+            "            | .error k => .error k\n"
+            "            | .ok (fty, fv) => .ok (fty, some fv, locals, mem)\n"
+            "          | .indirect mplace =>\n"
+            "            match projectMemoryLayoutV2 baseTy projs with\n"
+            "            | .error _ => .error .undefined"
         ),
         fixture_module="StepRefutations",
         theorem_name="refute_step_v2_read_indirect_proj_propagates_error",
@@ -4033,14 +4051,14 @@ MIR_SEMANTICS_GUARDS: tuple[MirSemanticsGuard, ...] = (
             "destinations before rvalue evaluation"
         ),
         anchor=(
-            "    | some baseTy, some (.immediate _) =>\n"
-            "      match validatePlaceProjV2 baseTy projs with\n"
-            "      | .error k => .error k"
+            "        | some baseTy, some (.immediate _) =>\n"
+            "          match validatePlaceProjV2 baseTy projs with\n"
+            "          | .error k => .error k"
         ),
         replacement=(
-            "    | some baseTy, some (.immediate _) =>\n"
-            "      match validatePlaceProjV2 baseTy projs with\n"
-            "      | .error _ => .ok (.localProj dst.localId baseTy projs)"
+            "        | some baseTy, some (.immediate _) =>\n"
+            "          match validatePlaceProjV2 baseTy projs with\n"
+            "          | .error _ => .ok (.localProj dst.localId baseTy projs)"
         ),
         fixture_module="StepRefutations",
         theorem_name="refute_step_v2_resolve_local_proj_validates_first",
@@ -4177,6 +4195,51 @@ MIR_SEMANTICS_GUARDS: tuple[MirSemanticsGuard, ...] = (
         ),
         fixture_module="StepRefutations",
         theorem_name="refute_step_v2_array_eq_dangling_ref",
+        needs_wf_helper=False,
+    ),
+    MirSemanticsGuard(
+        guard_id="step_v2_core_call_partial_eq_ne_routed",
+        target_file="trusted/lean/Trusted/MirSemantics/Step.lean",
+        target_module="Trusted/MirSemantics/Step",
+        description="execCoreCallWithMem routes CoreCallOp.partialEqNe to execCoreCallOp",
+        anchor=(
+            "  | .ptrAdd _ _ | .usizeUncheckedSub | .intToLeBytes _ _ | .arrayEq _ _\n"
+            "  | .partialEqNe _ =>\n"
+            "    match execCoreCallOp m op args dstTy with\n"
+            "    | .ok v => .ok (v, m)\n"
+            "    | .error k => .error k\n"
+            "  | .sliceIndexRange _ _"
+        ),
+        replacement=(
+            "  | .ptrAdd _ _ | .usizeUncheckedSub | .intToLeBytes _ _ | .arrayEq _ _ =>\n"
+            "    match execCoreCallOp m op args dstTy with\n"
+            "    | .ok v => .ok (v, m)\n"
+            "    | .error k => .error k\n"
+            "  | .partialEqNe _ | .sliceIndexRange _ _"
+        ),
+        fixture_module="StepRefutations",
+        theorem_name="refute_step_v2_core_call_partial_eq_ne_routed",
+        needs_wf_helper=False,
+    ),
+    MirSemanticsGuard(
+        guard_id="step_v2_dest_deref_projection_ub",
+        target_file="trusted/lean/Trusted/MirSemantics/Step.lean",
+        target_module="Trusted/MirSemantics/Step",
+        description="resolvePlaceDestV2 propagates projectMemoryLayoutV2 faults below a deref",
+        anchor=(
+            "              | none, _ => .error .unsupported\n"
+            "              | _, .error k => .error k\n"
+            "              | some ptLay, .ok (leafTy, subOff) =>\n"
+            "                if !MirTy.beq leafTy dstTy then"
+        ),
+        replacement=(
+            "              | none, _ => .error .unsupported\n"
+            "              | _, .error _ => .error .unsupported\n"
+            "              | some ptLay, .ok (leafTy, subOff) =>\n"
+            "                if !MirTy.beq leafTy dstTy then"
+        ),
+        fixture_module="StepRefutations",
+        theorem_name="refute_step_v2_dest_deref_projection_ub",
         needs_wf_helper=False,
     ),
     MirSemanticsGuard(
@@ -4828,6 +4891,161 @@ MIR_SEMANTICS_GUARDS: tuple[MirSemanticsGuard, ...] = (
         theorem_name="refute_enum_v2_overflow_pair_slice_elem",
     ),
     MirSemanticsGuard(
+        guard_id="layout_v2_struct_overlap",
+        target_file="trusted/lean/Trusted/MirSemantics/Layout.lean",
+        target_module="Trusted/MirSemantics/Layout",
+        description="layoutOfArrayV2 rejects struct layouts with overlapping fields",
+        anchor=(
+            "            Nat.beq (Nat.mod l.size (Nat.pow 2 l.alignLog2)) 0 &&\n"
+            "            natSpansPairwiseDisjoint spans then"
+        ),
+        replacement=(
+            "            Nat.beq (Nat.mod l.size (Nat.pow 2 l.alignLog2)) 0 &&\n"
+            "            true then"
+        ),
+        fixture_module="LayoutRefutations",
+        theorem_name="refute_layout_v2_struct_overlap",
+        sanity_module="LayoutSanity",
+        needs_wf_helper=False,
+    ),
+    MirSemanticsGuard(
+        guard_id="layout_v2_struct_misaligned",
+        target_file="trusted/lean/Trusted/MirSemantics/Layout.lean",
+        target_module="Trusted/MirSemantics/Layout",
+        description="structFieldSpansV2 rejects misaligned struct field offsets",
+        anchor=(
+            "        if Nat.ble (off + lay.size) size && Nat.ble lay.alignLog2 alignLog2 &&\n"
+            "            Nat.beq (Nat.mod off (Nat.pow 2 lay.alignLog2)) 0 then"
+        ),
+        replacement=(
+            "        if Nat.ble (off + lay.size) size && Nat.ble lay.alignLog2 alignLog2 &&\n"
+            "            true then"
+        ),
+        fixture_module="LayoutRefutations",
+        theorem_name="refute_layout_v2_struct_misaligned",
+        sanity_module="LayoutSanity",
+        needs_wf_helper=False,
+    ),
+    MirSemanticsGuard(
+        guard_id="step_v2_index_dead_local",
+        target_file="trusted/lean/Trusted/MirSemantics/Step.lean",
+        target_module="Trusted/MirSemantics/Step",
+        description="ProjectionElem.index through a dead usize local faults UB",
+        anchor="  | some (.int .isize false), some .dead => .error .undefined",
+        replacement="  | some (.int .isize false), some .dead => .ok 0",
+        fixture_module="StepRefutations",
+        theorem_name="refute_step_v2_index_dead_local",
+        needs_wf_helper=False,
+    ),
+    MirSemanticsGuard(
+        guard_id="step_v2_index_uninit_local",
+        target_file="trusted/lean/Trusted/MirSemantics/Step.lean",
+        target_module="Trusted/MirSemantics/Step",
+        description="ProjectionElem.index through an uninitialized usize local faults UB",
+        anchor="  | some (.int .isize false), some (.immediate none) => .error .undefined",
+        replacement="  | some (.int .isize false), some (.immediate none) => .ok 0",
+        fixture_module="StepRefutations",
+        theorem_name="refute_step_v2_index_uninit_local",
+        needs_wf_helper=False,
+    ),
+    MirSemanticsGuard(
+        guard_id="step_v2_return_to_caller_dangling",
+        target_file="trusted/lean/Trusted/MirSemantics/Step.lean",
+        target_module="Trusted/MirSemantics/Step",
+        description=(
+            "evalReturnToCallerV2 rejects returning a reference into the popped "
+            "callee frame as UB"
+        ),
+        anchor=(
+            "          if !refsValidInMem mem1 retTy retVal ||\n"
+            "              !spansPairwiseDisjoint (refAccessSpans retTy retVal) then\n"
+            "            .fault .undefined"
+        ),
+        replacement=(
+            "          if false ||\n"
+            "              !spansPairwiseDisjoint (refAccessSpans retTy retVal) then\n"
+            "            .fault .undefined"
+        ),
+        fixture_module="StepRefutations",
+        theorem_name="refute_step_v2_return_to_caller_dangling",
+        needs_wf_helper=False,
+    ),
+    MirSemanticsGuard(
+        guard_id="step_v2_call_arg_invalid_ref",
+        target_file="trusted/lean/Trusted/MirSemantics/Step.lean",
+        target_module="Trusted/MirSemantics/Step",
+        description="evalCallV2 rejects invalid reference arguments as UB",
+        anchor=(
+            "                  else if !refsValidInMemList mem1 paramTys argVals ||\n"
+            "                      !spansPairwiseDisjoint\n"
+            "                        (refAccessSpansList paramTys argVals) then\n"
+            "                    .fault .undefined"
+        ),
+        replacement=(
+            "                  else if false ||\n"
+            "                      !spansPairwiseDisjoint\n"
+            "                        (refAccessSpansList paramTys argVals) then\n"
+            "                    .fault .undefined"
+        ),
+        fixture_module="StepRefutations",
+        theorem_name="refute_step_v2_call_arg_invalid_ref",
+        needs_wf_helper=False,
+    ),
+    MirSemanticsGuard(
+        guard_id="step_v2_call_dead_destination",
+        target_file="trusted/lean/Trusted/MirSemantics/Step.lean",
+        target_module="Trusted/MirSemantics/Step",
+        description=(
+            "evalCallV2 faults UB on a dead call destination before pushing "
+            "the callee frame"
+        ),
+        anchor=(
+            "                | some .dead => .fault .undefined\n"
+            "                | some _ =>\n"
+            "                  let argVals := argValues typedArgs"
+        ),
+        replacement=(
+            "                | some _ =>\n"
+            "                  let argVals := argValues typedArgs"
+        ),
+        fixture_module="StepRefutations",
+        theorem_name="refute_step_v2_call_dead_destination",
+        needs_wf_helper=False,
+    ),
+    MirSemanticsGuard(
+        guard_id="step_v2_call_unsafe_callee",
+        target_file="trusted/lean/Trusted/MirSemantics/Step.lean",
+        target_module="Trusted/MirSemantics/Step",
+        description=(
+            "bodyCallAdmittedV2 refuses intra-crate calls to unsafe callees"
+        ),
+        anchor=(
+            "noncomputable def bodyCallAdmittedV2 (callee : Body) : Bool :=\n"
+            "  !callee.isUnsafe &&"
+        ),
+        replacement=(
+            "noncomputable def bodyCallAdmittedV2 (callee : Body) : Bool :=\n"
+            "  true &&"
+        ),
+        fixture_module="StepRefutations",
+        theorem_name="refute_step_v2_call_unsafe_callee",
+        needs_wf_helper=False,
+    ),
+    MirSemanticsGuard(
+        guard_id="step_v2_call_moves_disjoint",
+        target_file="trusted/lean/Trusted/MirSemantics/Step.lean",
+        target_module="Trusted/MirSemantics/Step",
+        description=(
+            "evalCallV2 refuses calls whose move arguments and destination "
+            "are not definitely disjoint"
+        ),
+        anchor="    if !moveDefinitelyDisjoint args dst then",
+        replacement="    if false then",
+        fixture_module="StepRefutations",
+        theorem_name="refute_step_v2_call_moves_disjoint",
+        needs_wf_helper=False,
+    ),
+    MirSemanticsGuard(
         guard_id="boundary_v2_wellformed_forbids_faults",
         target_file="trusted/lean/Trusted/MirSemantics/Boundary.lean",
         target_module="Trusted/MirSemantics/Boundary",
@@ -5473,8 +5691,8 @@ MIR_SEMANTICS_GUARDS: tuple[MirSemanticsGuard, ...] = (
     ),
     MirSemanticsGuard(
         guard_id="boundary_v2_fake_ptr_metadata_forbids_arg_or_ret",
-        target_file="trusted/lean/Trusted/MirSemantics/Boundary.lean",
-        target_module="Trusted/MirSemantics/Boundary",
+        target_file="trusted/lean/Trusted/MirSemantics/State.lean",
+        target_module="Trusted/MirSemantics/State",
         description="isFakePtrMetadataLocalV2 rejects return place _0 and caller parameters",
         anchor=(
             "noncomputable def isFakePtrMetadataLocalV2 (body : Body)\n"
@@ -5492,8 +5710,8 @@ MIR_SEMANTICS_GUARDS: tuple[MirSemanticsGuard, ...] = (
     ),
     MirSemanticsGuard(
         guard_id="boundary_v2_fake_ptr_metadata_requires_fake_assign",
-        target_file="trusted/lean/Trusted/MirSemantics/Boundary.lean",
-        target_module="Trusted/MirSemantics/Boundary",
+        target_file="trusted/lean/Trusted/MirSemantics/State.lean",
+        target_module="Trusted/MirSemantics/State",
         description="isFakePtrMetadataLocalV2 requires at least one .fakeAddressOf assignment",
         anchor=(
             "      body.basicBlocks.any (fun bb =>\n"
@@ -5506,8 +5724,8 @@ MIR_SEMANTICS_GUARDS: tuple[MirSemanticsGuard, ...] = (
     ),
     MirSemanticsGuard(
         guard_id="boundary_v2_fake_ptr_metadata_forbids_non_metadata_use",
-        target_file="trusted/lean/Trusted/MirSemantics/Boundary.lean",
-        target_module="Trusted/MirSemantics/Boundary",
+        target_file="trusted/lean/Trusted/MirSemantics/State.lean",
+        target_module="Trusted/MirSemantics/State",
         description=(
             "stmtRespectsFakePtrMetadataLocalV2 rejects non-PtrMetadata reads "
             "or dereferences of fake metadata locals"
@@ -5526,8 +5744,8 @@ MIR_SEMANTICS_GUARDS: tuple[MirSemanticsGuard, ...] = (
     ),
     MirSemanticsGuard(
         guard_id="boundary_v2_fake_ptr_metadata_forbids_self_assign",
-        target_file="trusted/lean/Trusted/MirSemantics/Boundary.lean",
-        target_module="Trusted/MirSemantics/Boundary",
+        target_file="trusted/lean/Trusted/MirSemantics/State.lean",
+        target_module="Trusted/MirSemantics/State",
         description=(
             "fakeAddressOfTypesMatchV2 rejects self-referential "
             ".fakeAddressOf (*_lid) assignments"
@@ -5548,8 +5766,8 @@ MIR_SEMANTICS_GUARDS: tuple[MirSemanticsGuard, ...] = (
     ),
     MirSemanticsGuard(
         guard_id="boundary_v2_fake_ptr_metadata_forbids_overflow_pair",
-        target_file="trusted/lean/Trusted/MirSemantics/Boundary.lean",
-        target_module="Trusted/MirSemantics/Boundary",
+        target_file="trusted/lean/Trusted/MirSemantics/State.lean",
+        target_module="Trusted/MirSemantics/State",
         description=(
             "fakeAddressOfTypesMatchV2 rejects overflow-pair pointee types"
         ),
@@ -5561,8 +5779,8 @@ MIR_SEMANTICS_GUARDS: tuple[MirSemanticsGuard, ...] = (
     ),
     MirSemanticsGuard(
         guard_id="boundary_v2_fake_ptr_metadata_requires_matching_pointee",
-        target_file="trusted/lean/Trusted/MirSemantics/Boundary.lean",
-        target_module="Trusted/MirSemantics/Boundary",
+        target_file="trusted/lean/Trusted/MirSemantics/State.lean",
+        target_module="Trusted/MirSemantics/State",
         description=(
             "fakeAddressOfTypesMatchV2 requires destination *const T pointee "
             "to match base pointee"
@@ -5575,8 +5793,8 @@ MIR_SEMANTICS_GUARDS: tuple[MirSemanticsGuard, ...] = (
     ),
     MirSemanticsGuard(
         guard_id="boundary_v2_fake_ptr_metadata_forbids_projected_dst",
-        target_file="trusted/lean/Trusted/MirSemantics/Boundary.lean",
-        target_module="Trusted/MirSemantics/Boundary",
+        target_file="trusted/lean/Trusted/MirSemantics/State.lean",
+        target_module="Trusted/MirSemantics/State",
         description=(
             "stmtRespectsFakePtrMetadataLocalV2 rejects projected assignments "
             "through a fake-metadata local"
@@ -5597,8 +5815,8 @@ MIR_SEMANTICS_GUARDS: tuple[MirSemanticsGuard, ...] = (
     ),
     MirSemanticsGuard(
         guard_id="boundary_v2_fake_ptr_metadata_forbids_projected_ptr_meta_operand",
-        target_file="trusted/lean/Trusted/MirSemantics/Boundary.lean",
-        target_module="Trusted/MirSemantics/Boundary",
+        target_file="trusted/lean/Trusted/MirSemantics/State.lean",
+        target_module="Trusted/MirSemantics/State",
         description=(
             "stmtRespectsFakePtrMetadataLocalV2 requires .ptrMetadata operands "
             "on fake-metadata locals to have empty projections"
@@ -5611,8 +5829,8 @@ MIR_SEMANTICS_GUARDS: tuple[MirSemanticsGuard, ...] = (
     ),
     MirSemanticsGuard(
         guard_id="boundary_v2_fake_ptr_metadata_forbids_terminator_use",
-        target_file="trusted/lean/Trusted/MirSemantics/Boundary.lean",
-        target_module="Trusted/MirSemantics/Boundary",
+        target_file="trusted/lean/Trusted/MirSemantics/State.lean",
+        target_module="Trusted/MirSemantics/State",
         description=(
             "isFakePtrMetadataLocalV2 rejects fake-metadata locals mentioned "
             "by any terminator (e.g. coreCall args or dst)"
@@ -7089,6 +7307,63 @@ EXTRACT_POSITIVE_SANITY_SOURCE: str = (
     "}\n"
 )
 
+# Positive sanity input for `--exclude-trait` guards: a crate with an
+# excluded derived `Debug` impl that must still capture.
+EXCLUDE_TRAIT_POSITIVE_SANITY_SOURCE: str = (
+    "#[derive(Debug)]\n"
+    "pub enum E { A }\n"
+    "pub fn zero() -> u64 { 0 }\n"
+)
+EXCLUDE_TRAIT_POSITIVE_SANITY_TRAITS: tuple[str, ...] = ("core::fmt::Debug",)
+
+# Defense-in-depth `--exclude-trait` checks in `trusted/rustc-capture/src/`
+# that sit behind an active upstream guard, so mutating only the secondary
+# site cannot flip a valid fixture without first disabling the primary guard.
+# They have no `EXTRACT_GUARDS` entry.
+EXCLUDE_TRAIT_DEFENSE_IN_DEPTH_EXEMPTIONS: dict[str, str] = {
+    "capture_exclude_trait_callee_queue": (
+        "capture.rs collect() callee-queue exclusion check is "
+        "defense-in-depth behind check_body_disjoint(), which inspects "
+        "every Call terminator before extract_body populates callees."
+    ),
+    "capture_exclude_trait_mentioned_items": (
+        "capture.rs check_mentioned_items() (including its None fail-closed"
+        " branch) is an independent rustc MentionedItems cross-check run "
+        "after Runtime(PostCleanup) extraction, behind "
+        "check_body_disjoint()."
+    ),
+    "capture_exclude_trait_unsize_vtable": (
+        "capture.rs check_unsize_cast() vtable_entries loop is "
+        "defense-in-depth behind check_trait_or_supertraits(), which "
+        "already rejects any dyn principal whose trait or supertrait is "
+        "excluded."
+    ),
+    "capture_exclude_trait_default_method_select": (
+        "capture.rs codegen_select_candidate() check for inherited default "
+        "methods (e.g. Error::source) is defense-in-depth behind the "
+        "non-local FnDef predicates_of() elaboration guard (every trait "
+        "method carries Self: Trait); it remains to emit the more specific "
+        "local-impl error."
+    ),
+    "capture_exclude_trait_drop_ty": (
+        "capture.rs check_drop_ty() is defense-in-depth because "
+        "core::ops::Drop is outside the closed --exclude-trait allowlist; "
+        "it guards against future allowlist expansion or drop glue reaching"
+        " excluded items."
+    ),
+    "capture_exclude_trait_const_alloc": (
+        "capture.rs check_const_alloc() GlobalAlloc provenance recursion is"
+        " defense-in-depth behind CTFE MIR and promoted_mir "
+        "check_body_disjoint() walks."
+    ),
+    "capture_exclude_trait_diag_item_krate_kind": (
+        "capture.rs resolve_excluded_traits() krate/DefKind::Trait pin is "
+        "defense-in-depth against a tampered sysroot core mapping "
+        "diagnostic items to non-traits or local defs; unreachable under "
+        "the authenticated pinned rustc sysroot."
+    ),
+}
+
 EXTRACT_GUARDS: tuple[ExtractGuard, ...] = (
     # ------------------------------------------------------------------
     # UB-preservation & compiler profile guards (capture.rs)
@@ -7419,12 +7694,14 @@ EXTRACT_GUARDS: tuple[ExtractGuard, ...] = (
             "    pub fn is_supported_v2_data(&self) -> bool {\n"
             "        match self {\n"
             "            Self::Array { elem, .. } => elem.is_supported_v2_data(),\n"
+            "            Self::Struct(sty) => sty.fields().iter().all(Self::is_supported_v2_data),\n"
             "            Self::OverflowPair(_) => false,"
         ),
         replacement=(
             "    pub fn is_supported_v2_data(&self) -> bool {\n"
             "        match self {\n"
             "            Self::Array { elem, .. } => elem.is_supported_v2_data(),\n"
+            "            Self::Struct(sty) => sty.fields().iter().all(Self::is_supported_v2_data),\n"
             "            Self::OverflowPair(_) => true,"
         ),
         negative_source="pub fn selected(_p: &(u8, bool)) -> u64 { 0 }\n",
@@ -7462,7 +7739,7 @@ EXTRACT_GUARDS: tuple[ExtractGuard, ...] = (
         anchor=(
             "        if defs.len() > 1 {\n"
             "            return Err(Failure::unsupported(format!(\n"
-            '                "enum identity collision: {} and {} share id {id}",\n'
+            '                "{kind} identity collision: {} and {} share id {id}",\n'
             "                tcx.def_path_str(defs[0]),\n"
             "                tcx.def_path_str(defs[1]),\n"
             "            )));\n"
@@ -7710,7 +7987,7 @@ EXTRACT_GUARDS: tuple[ExtractGuard, ...] = (
             "}\n"
         ),
         expected_baseline_diagnostic="cleanup block bb",
-        expected_fallback_diagnostic="unsupported type: Guard",
+        expected_fallback_diagnostic="structs with a Drop impl are unsupported: Guard",
         allow_downstream_fallback=True,
     ),
     # ------------------------------------------------------------------
@@ -8090,6 +8367,115 @@ EXTRACT_GUARDS: tuple[ExtractGuard, ...] = (
         ),
         capture_scope="crate",
         expected_baseline_diagnostic="unsafe blocks are unsupported in constants",
+    ),
+    ExtractGuard(
+        guard_id='capture_exclude_trait_allowlist',
+        target_file='trusted/rustc-capture/src/ir.rs',
+        mode="capture",
+        description='ExcludedTrait::parse_canonical refuses traits outside the closed allowlist (e.g. core::ops::Drop)',
+        anchor='            _ => Err(format!(\n                "trait `{raw}` is not in the closed --exclude-trait allowlist \\\n                 (allowed: core::error::Error, core::fmt::Debug, core::fmt::Display)"\n            )),',
+        replacement='            _ => Ok(Self::Debug),',
+        negative_source='pub fn zero() -> u64 { 0 }\n',
+        capture_scope='crate',
+        exclude_traits=('core::ops::Drop',),
+        expected_baseline_diagnostic='not in the closed --exclude-trait allowlist',
+    ),
+    ExtractGuard(
+        guard_id='capture_exclude_trait_select_scope',
+        target_file='trusted/rustc-capture/src/lib.rs',
+        mode="capture",
+        description='Args::resolved_scope refuses --exclude-trait when combined with --select or --instantiate',
+        anchor='        if !self.exclude_trait.is_empty() {\n            return Err(Failure::unsupported(\n                "--exclude-trait is valid only with --scope crate; \\\n                 cannot be combined with --select or --instantiate",\n            ));\n        }',
+        replacement='        if false && !self.exclude_trait.is_empty() {\n            return Err(Failure::unsupported(\n                "--exclude-trait is valid only with --scope crate; \\\n                 cannot be combined with --select or --instantiate",\n            ));\n        }',
+        negative_source='pub fn selected() -> u64 { 0 }\n',
+        capture_scope='select',
+        exclude_traits=('core::fmt::Debug',),
+        expected_baseline_diagnostic='--exclude-trait is valid only with --scope crate',
+    ),
+    ExtractGuard(
+        guard_id='capture_exclude_trait_reachability',
+        target_file='trusted/rustc-capture/src/capture.rs',
+        mode="capture",
+        description='ExclusionIndex::check_body_disjoint refuses verified bodies or constants referencing excluded trait impl items',
+        anchor="    fn check_body_disjoint<'tcx>(\n        &self,\n        tcx: TyCtxt<'tcx>,\n        typing_env: TypingEnv<'tcx>,\n        body: &mir::Body<'tcx>,\n    ) -> extract::Result<()> {\n        if self.excluded_traits.is_empty() {\n            return Ok(());\n        }",
+        replacement="    fn check_body_disjoint<'tcx>(\n        &self,\n        tcx: TyCtxt<'tcx>,\n        typing_env: TypingEnv<'tcx>,\n        body: &mir::Body<'tcx>,\n    ) -> extract::Result<()> {\n        if true || self.excluded_traits.is_empty() {\n            return Ok(());\n        }",
+        negative_source='#[derive(Debug)]\npub enum E { A }\npub const C: u64 = { let _ = <E as core::fmt::Debug>::fmt; 42 };\npub fn zero() -> u64 { C }\n',
+        capture_scope='crate',
+        exclude_traits=('core::fmt::Debug',),
+        expected_baseline_diagnostic='references excluded item',
+    ),
+    ExtractGuard(
+        guard_id='capture_exclude_trait_nested_def',
+        target_file='trusted/rustc-capture/src/capture.rs',
+        mode="capture",
+        description='find_excluded_ancestor keeps unexcludable nested items (e.g. #[no_mangle] fns) out of the exclusion set',
+        anchor='        if is_unexcludable_nested_def(tcx, id, tcx.def_kind(id)) {\n            return None;\n        }',
+        replacement='        if false && is_unexcludable_nested_def(tcx, id, tcx.def_kind(id)) {\n            return None;\n        }',
+        negative_source='pub enum S { A }\nimpl core::fmt::Display for S {\n    fn fmt(&self, f: &mut core::fmt::Formatter<\'_>) -> core::fmt::Result {\n        #[unsafe(no_mangle)]\n        pub fn smuggled() -> u64 { 0 }\n        f.write_str("s")\n    }\n}\npub fn zero() -> u64 { 0 }\n',
+        capture_scope='crate',
+        exclude_traits=('core::fmt::Display',),
+        expected_baseline_diagnostic='NO_MANGLE',
+    ),
+    ExtractGuard(
+        guard_id='capture_exclude_trait_nested_impl_descendant',
+        target_file='trusted/rustc-capture/src/capture.rs',
+        mode="capture",
+        description='find_excluded_ancestor short-circuits on unexcludable ancestor impls so their descendant methods stay in the required census',
+        anchor='        if is_unexcludable_nested_def(tcx, id, tcx.def_kind(id)) {\n            return None;\n        }',
+        replacement='        if id == def && is_unexcludable_nested_def(tcx, id, tcx.def_kind(id)) {\n            return None;\n        }',
+        negative_source='pub enum S { A }\npub enum K { B }\nimpl core::fmt::Display for S {\n    fn fmt(&self, f: &mut core::fmt::Formatter<\'_>) -> core::fmt::Result {\n        impl K {\n            pub fn evil() -> f64 { 1.0 }\n        }\n        f.write_str("s")\n    }\n}\npub fn zero() -> u64 { 0 }\n',
+        capture_scope='crate',
+        exclude_traits=('core::fmt::Display',),
+        expected_baseline_diagnostic='unsupported type: f64',
+    ),
+    ExtractGuard(
+        guard_id='capture_exclude_trait_impl_header',
+        target_file='trusted/rustc-capture/src/capture.rs',
+        mode="capture",
+        description='build_exclusion_index requires excluded trait impls to pass admit_safe_impl (refusing negative/unsafe/default/const impls)',
+        anchor='        if let Some(&tr) = excluded_traits.get(&trait_did)\n            && admit_safe_impl(tcx, def, true).is_ok()\n        {\n            excluded_impls.insert(def, tr);\n        }',
+        replacement='        if let Some(&tr) = excluded_traits.get(&trait_did)\n            && (true || admit_safe_impl(tcx, def, true).is_ok())\n        {\n            excluded_impls.insert(def, tr);\n        }',
+        negative_source='#![feature(negative_impls)]\npub enum S { A }\nimpl !core::fmt::Display for S {}\npub fn zero() -> u64 { 0 }\n',
+        capture_scope='crate',
+        allow_unstable_features=('negative_impls',),
+        exclude_traits=('core::fmt::Display',),
+        expected_baseline_diagnostic='negative polarity',
+    ),
+    ExtractGuard(
+        guard_id='capture_exclude_trait_supertrait_dyn',
+        target_file='trusted/rustc-capture/src/capture.rs',
+        mode="capture",
+        description='check_trait_or_supertraits elaborates supertraits so dyn subtraits of excluded traits fail closed',
+        anchor='        for super_ref in rustc_trait_selection::traits::supertraits(\n            tcx,\n            ty::Binder::dummy(ty::TraitRef::identity(tcx, principal_did)),\n        ) {',
+        replacement='        for super_ref in rustc_trait_selection::traits::supertraits(\n            tcx,\n            ty::Binder::dummy(ty::TraitRef::identity(tcx, principal_did)),\n        ).take(0) {',
+        negative_source='#[derive(Debug)]\npub enum E { A }\npub trait SubDebug: core::fmt::Debug {}\nimpl SubDebug for E {}\npub const C: u64 = { let _: Option<&dyn SubDebug> = None; 42 };\npub fn zero() -> u64 { C }\n',
+        capture_scope='crate',
+        exclude_traits=('core::fmt::Debug',),
+        expected_baseline_diagnostic='whose supertrait',
+    ),
+    ExtractGuard(
+        guard_id='capture_exclude_trait_nonlocal_predicates',
+        target_file='trusted/rustc-capture/src/capture.rs',
+        mode="capture",
+        description='check_fn_ty elaborates instantiated predicates_of for non-local FnDefs to reject external callees with excluded-trait bounds',
+        anchor='                if !def_id.is_local() {\n                    let instantiated = tcx.predicates_of(def_id).instantiate(tcx, args);',
+        replacement='                if false && !def_id.is_local() {\n                    let instantiated = tcx.predicates_of(def_id).instantiate(tcx, args);',
+        negative_source='#[derive(Debug)]\npub enum E { A }\npub const C: u64 = { let _ = core::result::Result::<u64, E>::unwrap; 42 };\npub fn zero() -> u64 { C }\n',
+        capture_scope='crate',
+        exclude_traits=('core::fmt::Debug',),
+        expected_baseline_diagnostic='trait bound',
+    ),
+    ExtractGuard(
+        guard_id='capture_exclude_trait_promoted_mir',
+        target_file='trusted/rustc-capture/src/capture.rs',
+        mode="capture",
+        description='check_mir_const inspects tcx.promoted_mir(uv.def)[promoted] so promoted constants referencing excluded items fail closed',
+        anchor='                if let Some(promoted) = uv.promoted\n                    && seen_promoted.insert((uv.def, promoted))\n                {',
+        replacement='                if false && let Some(promoted) = uv.promoted\n                    && seen_promoted.insert((uv.def, promoted))\n                {',
+        negative_source="#[derive(Debug)]\npub enum E { A }\npub const C: u64 = {\n    let _r: &'static fn(&E, &mut core::fmt::Formatter<'_>) -> core::fmt::Result =\n        &(<E as core::fmt::Debug>::fmt\n            as fn(&E, &mut core::fmt::Formatter<'_>) -> core::fmt::Result);\n    42\n};\npub fn zero() -> u64 { C }\n",
+        capture_scope='crate',
+        exclude_traits=('core::fmt::Debug',),
+        expected_baseline_diagnostic='promoted',
     ),
 )
 
@@ -10282,6 +10668,7 @@ def _run_extract_capture(
     instantiate_json: str,
     allow_unstable_features: tuple[str, ...] = (),
     stdlib_crate: str = "",
+    exclude_traits: tuple[str, ...] = (),
     work_dir: Path,
     tag: str,
     sysroot: str,
@@ -10316,6 +10703,8 @@ def _run_extract_capture(
         cmd.extend(["--stdlib-crate", stdlib_crate])
     for feat in allow_unstable_features:
         cmd.extend(["--allow-unstable-feature", feat])
+    for trait_path in exclude_traits:
+        cmd.extend(["--exclude-trait", trait_path])
     if capture_scope == "crate":
         cmd.extend(["--scope", "crate"])
     elif capture_scope == "instantiate":
@@ -10699,12 +11088,19 @@ def _check_one_extract_guard(
             )
 
         sanity_scope = "crate" if guard.capture_scope == "crate" else "select"
+        sanity_source = EXTRACT_POSITIVE_SANITY_SOURCE
+        sanity_exclude: tuple[str, ...] = ()
+        if guard.exclude_traits:
+            sanity_scope = "crate"
+            sanity_source = EXCLUDE_TRAIT_POSITIVE_SANITY_SOURCE
+            sanity_exclude = EXCLUDE_TRAIT_POSITIVE_SANITY_TRAITS
         s_rc, s_parsed, s_out = _run_extract_capture(
             mut_cap_bin,
-            EXTRACT_POSITIVE_SANITY_SOURCE,
+            sanity_source,
             capture_scope=sanity_scope,
             select_root="selected",
             instantiate_json="",
+            exclude_traits=sanity_exclude,
             work_dir=tmp_path,
             tag="sanity",
             sysroot=sysroot,
@@ -10737,6 +11133,7 @@ def _check_one_extract_guard(
             instantiate_json=guard.instantiate_json,
             allow_unstable_features=guard.allow_unstable_features,
             stdlib_crate=guard.stdlib_crate,
+            exclude_traits=guard.exclude_traits,
             work_dir=tmp_path,
             tag="neg",
             sysroot=sysroot,
@@ -11839,6 +12236,35 @@ def run_guard_mutation_suite(
                                 f"(rc={s_rc}, parsed={s_parsed!r}):\n"
                                 f"{s_out[-400:]}"
                             )
+                    if any(
+                        g.exclude_traits
+                        for g in extract_guards
+                        if g.mode == "capture"
+                    ):
+                        x_rc, x_parsed, x_out = _run_extract_capture(
+                            cap_bin,
+                            EXCLUDE_TRAIT_POSITIVE_SANITY_SOURCE,
+                            capture_scope="crate",
+                            select_root="selected",
+                            instantiate_json="",
+                            exclude_traits=EXCLUDE_TRAIT_POSITIVE_SANITY_TRAITS,
+                            work_dir=ext_base_work,
+                            tag="sanity_exclude_trait",
+                            sysroot=r_sysroot,
+                            host_triple=host_triple,
+                            env=ext_env,
+                            timeout_sec=timeout_sec,
+                        )
+                        if (
+                            x_rc != 0
+                            or not isinstance(x_parsed, dict)
+                            or x_parsed.get("status") != "captured"
+                        ):
+                            raise RuntimeError(
+                                "baseline capture sanity (exclude-trait) failed "
+                                f"(rc={x_rc}, parsed={x_parsed!r}):\n"
+                                f"{x_out[-400:]}"
+                            )
                     capture_guards = [
                         g for g in extract_guards if g.mode == "capture"
                     ]
@@ -11853,6 +12279,7 @@ def run_guard_mutation_suite(
                             instantiate_json=guard.instantiate_json,
                             allow_unstable_features=guard.allow_unstable_features,
                             stdlib_crate=guard.stdlib_crate,
+                            exclude_traits=guard.exclude_traits,
                             work_dir=ext_base_work,
                             tag=f"neg_{guard.guard_id}",
                             sysroot=r_sysroot,

@@ -1696,7 +1696,8 @@ private theorem callsAdmitted_of_noCall (p : Program) (body : Body)
         rw [hTerm] at hAny
         nomatch hAny
       | goto _ | switchInt _ _ | return_ | unreachable | unwindResume
-      | assert _ _ _ _ _ | coreCall _ _ _ _ _ | unsupported =>
+      | assert _ _ _ _ _ | coreCall _ _ _ _ _ | unsupported
+      | callNe _ _ _ _ _ | drop _ _ _ =>
         rw [hTerm] at hAny
         exact ih hAny
   exact hAux body.basicBlocks hNoCall

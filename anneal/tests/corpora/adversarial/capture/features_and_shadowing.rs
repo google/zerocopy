@@ -64,7 +64,7 @@ pub fn id(x: usize) -> usize {
 }
 
 // === case: primitive_shadowing_struct_u8 ===
-//@ fail(capture): "u8: whole-crate obligation is unsupported: Struct"
+//@ fail(proof, crate): "Trusted.MirSemantics.SpecsV2"
 
 #[allow(non_camel_case_types)]
 pub struct u8(pub u16);

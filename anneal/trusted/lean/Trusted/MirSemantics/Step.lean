@@ -979,7 +979,8 @@ noncomputable def evalTerminator (body : Body) (bb : BasicBlock)
             hasLocalPanicHandler
       | _ => .fault .unsupported
   | .unwindResume | .call _ _ _ _ _ | .coreCall _ _ _ _ _
-  | .sysrootCall _ _ _ _ _ | .unsupported =>
+  | .sysrootCall _ _ _ _ _ | .callNe _ _ _ _ _ | .drop _ _ _
+  | .unsupported =>
     .fault .unsupported
 
 /-!
@@ -1196,6 +1197,17 @@ noncomputable def projectOneElemV2 (ty : MirTy) (v : Val)
         else
           .error .unsupported
       | _ => .error .unsupported
+    | .struct_ _ fs =>
+      match v with
+      | .tuple vs =>
+        match getElem? fs idx, getElem? vs idx with
+        | some elemTy, some elemVal =>
+          if !MirTy.beq elemTy fTy then
+            .error .unsupported
+          else
+            .ok (elemTy, elemVal)
+        | _, _ => .error .unsupported
+      | _ => .error .unsupported
     | _ => .error .unsupported
   | .constantIndex off minLen fromEnd =>
     match ty with
@@ -1215,6 +1227,7 @@ noncomputable def projectOneElemV2 (ty : MirTy) (v : Val)
     | _ => .error .unsupported
   | .deref => .error .unsupported
   | .downcast _ => .error .unsupported
+  | .index _ => .error .unsupported
   | .unsupported => .error .unsupported
 
 /-- Project tuple, range, `Option` payload (`.downcast 1` then `.field 0`), or
@@ -1238,11 +1251,22 @@ noncomputable def projectValFieldV2 (ty : MirTy) (v : Val) :
     | .ok (elemTy, elemVal) => projectValFieldV2 elemTy elemVal rest
 
 /-- Project a memory-backed `MirTy` along `.constantIndex` / fixed-layout
-`.field` projections (`overflowPair` and `RangeTo`/`RangeFrom`), returning the
-leaf `MirTy` and cumulative byte offset from the base allocation offset. -/
+`.field` projections (`overflowPair`, `RangeTo`/`RangeFrom`, and struct fields
+at their `StructLayout.fieldOffsets`), returning the leaf `MirTy` and
+cumulative byte offset from the base allocation offset. -/
 noncomputable def projectMemoryLayoutV2 :
     MirTy → List ProjectionElem → Except FaultKind (MirTy × Nat)
   | ty, [] => .ok (ty, 0)
+  | .struct_ l fs, .field idx fTy :: rest =>
+    match getElem? fs idx, getElem? l.fieldOffsets idx with
+    | some elemTy, some off =>
+      if !MirTy.beq elemTy fTy then
+        .error .unsupported
+      else
+        match projectMemoryLayoutV2 elemTy rest with
+        | .error k => .error k
+        | .ok (leafTy, subOff) => .ok (leafTy, off + subOff)
+    | _, _ => .error .unsupported
   | .array elem len, .constantIndex off minLen fromEnd :: rest =>
     match layoutOfTyV2 elem with
     | none => .error .unsupported
@@ -1273,11 +1297,15 @@ noncomputable def projectMemoryLayoutV2 :
       projectMemoryLayoutV2 (.int .isize false) rest
   | _, _ => .error .unsupported
 
-/-- Step a static `MirTy` along a tail of field and `ConstantIndex`
+/-- Step a static `MirTy` along a tail of field, `ConstantIndex`, and `Index`
 projections. -/
 noncomputable def stepProjectedTyV2 : MirTy → List ProjectionElem → Option MirTy
   | ty, [] => some ty
   | .tuple fs, .field idx fTy :: rest =>
+    match getElem? fs idx with
+    | some t => if MirTy.beq t fTy then stepProjectedTyV2 t rest else none
+    | none => none
+  | .struct_ _ fs, .field idx fTy :: rest =>
     match getElem? fs idx with
     | some t => if MirTy.beq t fTy then stepProjectedTyV2 t rest else none
     | none => none
@@ -1291,10 +1319,21 @@ noncomputable def stepProjectedTyV2 : MirTy → List ProjectionElem → Option M
     else
       none
   | .array elem _, .constantIndex _ _ _ :: rest => stepProjectedTyV2 elem rest
+  | .array elem _, .index _ :: rest => stepProjectedTyV2 elem rest
+  | _, _ => none
+
+/-- Step the static `MirTy` of a dereferenced unsized slice pointee `[T]`
+along a leading element projection (`Index` or `ConstantIndex`) and the
+projections that follow it. -/
+noncomputable def sliceProjectedTyV2 :
+    MirTy → List ProjectionElem → Option MirTy
+  | .slice elem, .index _ :: rest => stepProjectedTyV2 elem rest
+  | .slice elem, .constantIndex _ _ _ :: rest => stepProjectedTyV2 elem rest
   | _, _ => none
 
 /-- Resolve the static `MirTy` of a `Place` in Profile v2, supporting single-
-step leading `.deref`, `.field`, and `.constantIndex` projections. -/
+step leading `.deref` (into a sized pointee or, followed by an element
+projection, a slice), `.field`, `.constantIndex`, and `.index` projections. -/
 noncomputable def placeProjectedTyV2 (bodyLocals : List MirTy)
     (place : Place) : Option MirTy :=
   match getElem? bodyLocals place.localId with
@@ -1304,12 +1343,154 @@ noncomputable def placeProjectedTyV2 (bodyLocals : List MirTy)
     | .deref :: rest =>
       match baseTy with
       | .ref _ pt | .rawPtr _ pt =>
-        if isUnsizedTy pt then none else stepProjectedTyV2 pt rest
+        if isUnsizedTy pt then sliceProjectedTyV2 pt rest
+        else stepProjectedTyV2 pt rest
       | _ => none
     | projs => stepProjectedTyV2 baseTy projs
 
+/-- Read the `usize` index of a `ProjectionElem.index localId` projection from
+local `localId`, matching `project` in
+`compiler/rustc_const_eval/src/interpret/projection.rs` (`rust-lang/rust`
+`f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1`):
+
+> "Index(local) => {
+>     let layout = self.layout_of(self.tcx.types.usize)?;
+>     let n = self.local_to_op(local, Some(layout))?;
+>     let n = self.read_target_usize(&n)?;
+>     self.project_index(base, n)?
+> }"
+
+The local must have type `usize`. A dead or uninitialized index local faults
+with `.undefined` (`local_to_op` raises `DeadLocal`, and `read_target_usize`
+rejects uninitialized bytes). -/
+noncomputable def readIndexLocalV2 (bodyLocals : List MirTy)
+    (locals : List LocalSlot) (mem : MemoryState) (localId : LocalId) :
+    Except FaultKind Nat :=
+  match getElem? bodyLocals localId, getElem? locals localId with
+  | some (.int .isize false), some .dead => .error .undefined
+  | some (.int .isize false), some (.immediate none) => .error .undefined
+  | some (.int .isize false), some (.immediate (some (.scalar sv))) =>
+    if IntWidth.beq sv.width .isize && !sv.signed then
+      .ok sv.bits.toNat
+    else
+      .error .unsupported
+  | some (.int .isize false), some (.indirect mplace) =>
+    match loadIndirectV2 mem (.int .isize false) mplace with
+    | .ok (some (.scalar sv)) => .ok sv.bits.toNat
+    | .ok none => .error .undefined
+    | .ok (some _) => .error .unsupported
+    | .error k => .error k
+  | _, _ => .error .unsupported
+
+/-- Prepend projection `p` to a resolved projection list. -/
+noncomputable def consResolvedProjV2 (p : ProjectionElem) :
+    Except FaultKind (List ProjectionElem) →
+      Except FaultKind (List ProjectionElem)
+  | .ok rest => .ok (p :: rest)
+  | .error k => .error k
+
+/-- Replace every `ProjectionElem.index localId` in `projs` with
+`.constantIndex i (i + 1) false`, where `i` is the value of local `localId`
+(`readIndexLocalV2`).
+
+The two projections agree on every array and slice of length `len`
+(`compiler/rustc_const_eval/src/interpret/projection.rs`, `rust-lang/rust`
+`f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1`): `project_index` faults when
+`i >= len` ("if index >= len { ... throw_ub!(BoundsCheckFailed { len, index
+}); }"), and `project_constant_index` faults when `len < i + 1` ("if n <
+min_length { ... throw_ub!(BoundsCheckFailed { len: min_length, index: n
+}); }") before projecting to index `offset = i`. -/
+noncomputable def resolveIndexProjsV2 (bodyLocals : List MirTy)
+    (locals : List LocalSlot) (mem : MemoryState) :
+    List ProjectionElem → Except FaultKind (List ProjectionElem)
+  | [] => .ok []
+  | .index l :: rest =>
+    match readIndexLocalV2 bodyLocals locals mem l with
+    | .error k => .error k
+    | .ok i =>
+      consResolvedProjV2 (.constantIndex i (i + 1) false)
+        (resolveIndexProjsV2 bodyLocals locals mem rest)
+  | .deref :: rest =>
+    consResolvedProjV2 .deref (resolveIndexProjsV2 bodyLocals locals mem rest)
+  | .field idx ty :: rest =>
+    consResolvedProjV2 (.field idx ty)
+      (resolveIndexProjsV2 bodyLocals locals mem rest)
+  | .constantIndex off minLen fromEnd :: rest =>
+    consResolvedProjV2 (.constantIndex off minLen fromEnd)
+      (resolveIndexProjsV2 bodyLocals locals mem rest)
+  | .downcast v :: rest =>
+    consResolvedProjV2 (.downcast v)
+      (resolveIndexProjsV2 bodyLocals locals mem rest)
+  | .unsupported :: rest =>
+    consResolvedProjV2 .unsupported
+      (resolveIndexProjsV2 bodyLocals locals mem rest)
+
+/-- Resolve the element place `(*p)[i].rest` of a slice `[elem]` addressed by
+the wide pointer `(p, len)`, where `projs` starts with the element projection
+`.constantIndex` (after `resolveIndexProjsV2`), returning the leaf type, its
+allocation, and its byte offset.
+
+The element index must be in bounds (`constantIndexOffset`), and the whole
+element must lie in bounds of a live allocation at its alignment
+(`.undefined` otherwise). A provenance-free pointer (a dangling slice of
+zero-sized elements) is unsupported. -/
+noncomputable def sliceElemAddrV2 (mem : MemoryState) (elem : MirTy)
+    (p : PtrVal) (len : Nat) :
+    List ProjectionElem → Except FaultKind (MirTy × AllocId × Nat)
+  | .constantIndex off minLen fromEnd :: rest =>
+    match layoutOfTyV2 elem with
+    | none => .error .unsupported
+    | some elemLay =>
+      match constantIndexOffset len off minLen fromEnd with
+      | .error k => .error k
+      | .ok idx =>
+        match projectMemoryLayoutV2 elem rest with
+        | .error k => .error k
+        | .ok (leafTy, subOff) =>
+          match p.allocId with
+          | none => .error .unsupported
+          | some aid =>
+            match findAllocation aid mem.allocations with
+            | none => .error .undefined
+            | some a =>
+              let elemOff := p.offsetBytes.toNat + idx * elemLay.size
+              if !a.live || !isInBounds a elemOff elemLay.size ||
+                  !isAligned a elemOff elemLay.alignLog2 then
+                .error .undefined
+              else
+                .ok (leafTy, aid, elemOff + subOff)
+  | _ => .error .unsupported
+
+/-- Read the dereferenced slice element place `(*p)[i].rest` in Profile v2,
+where `slot` holds the wide pointer of type `.ref/.rawPtr _ pt`. (`readPlaceV2`
+refuses a `move` of a `.deref` place before reaching here.) -/
+noncomputable def readDerefSliceV2 (locals : List LocalSlot)
+    (mem : MemoryState) (pt : MirTy) (slot : LocalSlot)
+    (rest : List ProjectionElem) :
+    Except FaultKind (MirTy × Option Val × List LocalSlot × MemoryState) :=
+  match pt with
+  | .slice elem =>
+    let ptrRes : Except FaultKind (Option Val) :=
+      match slot with
+      | .dead | .partialTuple _ => .error .undefined
+      | .immediate optVal => .ok optVal
+      | .indirect mplace => loadIndirectV2 mem (.rawPtr .shared pt) mplace
+    match ptrRes with
+    | .error k => .error k
+    | .ok none => .error .undefined
+    | .ok (some (.slicePtr p len)) =>
+      match sliceElemAddrV2 mem elem p len.toNat rest with
+      | .error k => .error k
+      | .ok (leafTy, aid, off) =>
+        match loadIndirectV2 mem leafTy ⟨aid, off⟩ with
+        | .error k => .error k
+        | .ok optVal => .ok (leafTy, optVal, locals, mem)
+    | .ok (some _) => .error .unsupported
+  | _ => .error .unsupported
+
 /-- Read a dereferenced projected place (`*p` followed by `.constantIndex` /
-`.field` projections) in Profile v2. Both references (`isRef = true`) and raw
+`.field` projections) in Profile v2, including slice element places
+`(*p)[i].rest` (`readDerefSliceV2`). Both references (`isRef = true`) and raw
 pointers (`isRef = false`) require base-pointer alignment to `pt`; references
 additionally require the whole enclosing pointee `pt` to be live and in bounds,
 while raw pointers check liveness/bounds on the projected leaf access. -/
@@ -1318,7 +1499,7 @@ noncomputable def readDerefProjectedV2 (locals : List LocalSlot)
     (rest : List ProjectionElem) :
     Except FaultKind (MirTy × Option Val × List LocalSlot × MemoryState) :=
   if isUnsizedTy pt then
-    .error .unsupported
+    readDerefSliceV2 locals mem pt slot rest
   else
     match layoutOfTyV2 pt with
     | none => .error .unsupported
@@ -1480,12 +1661,15 @@ noncomputable def readPlaceV2 (bodyLocals : List MirTy) (locals : List LocalSlot
       if isMove then
         .error .unsupported
       else if !rest.isEmpty then
-        match baseTy with
-        | .ref _ pt =>
-          readDerefProjectedV2 locals mem true pt slot rest
-        | .rawPtr _ pt =>
-          readDerefProjectedV2 locals mem false pt slot rest
-        | _ => .error .unsupported
+        match resolveIndexProjsV2 bodyLocals locals mem rest with
+        | .error k => .error k
+        | .ok rest' =>
+          match baseTy with
+          | .ref _ pt =>
+            readDerefProjectedV2 locals mem true pt slot rest'
+          | .rawPtr _ pt =>
+            readDerefProjectedV2 locals mem false pt slot rest'
+          | _ => .error .unsupported
       else
         match baseTy with
         | .ref _ pt | .rawPtr _ pt =>
@@ -1568,52 +1752,59 @@ noncomputable def readPlaceV2 (bodyLocals : List MirTy) (locals : List LocalSlot
               | _, _ => .error .unsupported
             | _, _ => .error .unsupported
       else
-        match slot with
-        | .dead | .immediate none => .error .undefined
-        | .immediate (some v) =>
-          match projectValFieldV2 baseTy v (.field idx fTy :: rest) with
-          | .error k => .error k
-          | .ok (fty, fv) => .ok (fty, some fv, locals, mem)
-        | .indirect mplace =>
-          match projectMemoryLayoutV2 baseTy (.field idx fTy :: rest) with
-          | .error k => .error k
-          | .ok (leafTy, subOff) =>
-            match loadIndirectV2 mem leafTy
-                ⟨mplace.allocId, mplace.offset + subOff⟩ with
+        -- Resolve `Index` projections in `rest` (`t.f[i]`) before reading.
+        match resolveIndexProjsV2 bodyLocals locals mem place.projection with
+        | .error k => .error k
+        | .ok projs =>
+          match slot with
+          | .dead | .immediate none => .error .undefined
+          | .immediate (some v) =>
+            match projectValFieldV2 baseTy v projs with
             | .error k => .error k
-            | .ok optVal => .ok (leafTy, optVal, locals, mem)
-        | .partialTuple fs =>
-          if !rest.isEmpty then
-            .error .unsupported
-          else
-            match baseTy with
-            | .tuple ts =>
-              match getElem? ts idx, getElem? fs idx with
-              | some elemTy, some (some elemVal) =>
-                if !MirTy.beq elemTy fTy then .error .unsupported
-                else .ok (elemTy, some elemVal, locals, mem)
-              | some _, some none => .error .undefined
-              | _, _ => .error .unsupported
-            | _ => .error .unsupported
-    | .constantIndex _ _ _ :: _ | .downcast _ :: _ =>
+            | .ok (fty, fv) => .ok (fty, some fv, locals, mem)
+          | .indirect mplace =>
+            match projectMemoryLayoutV2 baseTy projs with
+            | .error k => .error k
+            | .ok (leafTy, subOff) =>
+              match loadIndirectV2 mem leafTy
+                  ⟨mplace.allocId, mplace.offset + subOff⟩ with
+              | .error k => .error k
+              | .ok optVal => .ok (leafTy, optVal, locals, mem)
+          | .partialTuple fs =>
+            if !rest.isEmpty then
+              .error .unsupported
+            else
+              match baseTy with
+              | .tuple ts =>
+                match getElem? ts idx, getElem? fs idx with
+                | some elemTy, some (some elemVal) =>
+                  if !MirTy.beq elemTy fTy then .error .unsupported
+                  else .ok (elemTy, some elemVal, locals, mem)
+                | some _, some none => .error .undefined
+                | _, _ => .error .unsupported
+              | _ => .error .unsupported
+    | .constantIndex _ _ _ :: _ | .downcast _ :: _ | .index _ :: _ =>
       if isMove then
         .error .unsupported
       else
-        match slot with
-        | .dead | .immediate none => .error .undefined
-        | .partialTuple _ => .error .unsupported
-        | .immediate (some v) =>
-          match projectValFieldV2 baseTy v place.projection with
-          | .error k => .error k
-          | .ok (fty, fv) => .ok (fty, some fv, locals, mem)
-        | .indirect mplace =>
-          match projectMemoryLayoutV2 baseTy place.projection with
-          | .error k => .error k
-          | .ok (leafTy, subOff) =>
-            match loadIndirectV2 mem leafTy
-                ⟨mplace.allocId, mplace.offset + subOff⟩ with
+        match resolveIndexProjsV2 bodyLocals locals mem place.projection with
+        | .error k => .error k
+        | .ok projs =>
+          match slot with
+          | .dead | .immediate none => .error .undefined
+          | .partialTuple _ => .error .unsupported
+          | .immediate (some v) =>
+            match projectValFieldV2 baseTy v projs with
             | .error k => .error k
-            | .ok optVal => .ok (leafTy, optVal, locals, mem)
+            | .ok (fty, fv) => .ok (fty, some fv, locals, mem)
+          | .indirect mplace =>
+            match projectMemoryLayoutV2 baseTy projs with
+            | .error k => .error k
+            | .ok (leafTy, subOff) =>
+              match loadIndirectV2 mem leafTy
+                  ⟨mplace.allocId, mplace.offset + subOff⟩ with
+              | .error k => .error k
+              | .ok optVal => .ok (leafTy, optVal, locals, mem)
     | .unsupported :: _ => .error .unsupported
   | _, _ => .error .unsupported
 
@@ -1701,10 +1892,23 @@ noncomputable def evalOperandToSlotV2 (bodyLocals : List MirTy)
   | .move place => readPlaceV2 bodyLocals locals mem true place
   | .constant c =>
     match c.lit with
-    | .scalar _ | .zeroSized =>
+    | .scalar _ =>
       match evalConstLit c.ty c.lit with
       | .ok v => .ok (c.ty, some v, locals, mem)
       | .error k => .error k
+    | .zeroSized =>
+      match c.ty with
+      | .struct_ l fs =>
+        -- A zero-sized struct constant (`ConstValue::ZeroSized`) has no
+        -- bytes; its value is decoded from the empty byte list.
+        match decodeValV2 profileV2TargetEndian (.struct_ l fs) [] with
+        | .ok (some v) => .ok (c.ty, some v, locals, mem)
+        | .ok none => .error .undefined
+        | .error k => .error k
+      | _ =>
+        match evalConstLit c.ty c.lit with
+        | .ok v => .ok (c.ty, some v, locals, mem)
+        | .error k => .error k
     | .rodataBytes bytes =>
       if !isSupportedV2DataTy c.ty then
         .error .unsupported
@@ -1817,6 +2021,89 @@ noncomputable def evalPtrToPtrCastV2 (srcTy : MirTy) (srcVal : Val)
       | _, _ => .error .unsupported
   | _ => .error .unsupported
 
+/-- Resolve a projected place (after `resolveIndexProjsV2`) of local
+`localId` to the memory address of its leaf for `Rvalue.ref` and
+`Rvalue.addressOf` in Profile v2, returning the leaf type, the mutability
+that the base admits, the leaf pointer, and the updated locals and memory:
+- `.deref :: rest` dereferences a reference (when `viaRef`) or a raw pointer
+  (otherwise); the other pointer kind is unsupported, as for `[.deref]` in
+  `evalRefRvalueV2` and `evalAddressOfRvalueV2`. A sized pointee
+  must be live, in bounds, and aligned (as for reads in
+  `readDerefProjectedV2`), and the leaf is at
+  `projectMemoryLayoutV2 pt rest`. A slice pointee addresses an element
+  place (`sliceElemAddrV2`).
+- Any other projection list addresses a field or element of the local, which
+  is first moved to memory (`promoteLocalToMemory`, as `rustc`'s
+  `force_allocation` does for a place whose address is taken).
+A provenance-free pointer base is unsupported. -/
+noncomputable def placeAddrV2 (bodyLocals : List MirTy)
+    (locals : List LocalSlot) (mem : MemoryState) (viaRef : Bool)
+    (localId : LocalId) :
+    List ProjectionElem →
+      Except FaultKind
+        (MirTy × Mutability × PtrVal × List LocalSlot × MemoryState)
+  | .deref :: rest =>
+    match getElem? bodyLocals localId, getElem? locals localId with
+    | some _, some .dead => .error .undefined
+    | some baseTy, some slot =>
+      let baseInfo : Option (Mutability × MirTy) :=
+        match viaRef, baseTy with
+        | true, .ref m pt | false, .rawPtr m pt => some (m, pt)
+        | _, _ => none
+      match baseInfo with
+      | none => .error .unsupported
+      | some (srcMut, pt) =>
+        let ptrRes : Except FaultKind (Option Val) :=
+          match slot with
+          | .dead | .partialTuple _ => .error .undefined
+          | .immediate optVal => .ok optVal
+          | .indirect mplace => loadIndirectV2 mem baseTy mplace
+        match ptrRes with
+        | .error k => .error k
+        | .ok none => .error .undefined
+        | .ok (some (.slicePtr p len)) =>
+          match pt with
+          | .slice elem =>
+            match sliceElemAddrV2 mem elem p len.toNat rest with
+            | .error k => .error k
+            | .ok (leafTy, aid, off) =>
+              .ok (leafTy, srcMut, ⟨some aid, UInt64.ofNat off, .isize⟩,
+                locals, mem)
+          | _ => .error .unsupported
+        | .ok (some (.ptr p)) =>
+          if isUnsizedTy pt then
+            .error .unsupported
+          else
+            match layoutOfTyV2 pt, projectMemoryLayoutV2 pt rest with
+            | none, _ => .error .unsupported
+            | _, .error k => .error k
+            | some ptLay, .ok (leafTy, subOff) =>
+              match p.allocId with
+              | none => .error .unsupported
+              | some aid =>
+                match findAllocation aid mem.allocations with
+                | none => .error .undefined
+                | some a =>
+                  if !a.live || !isInBounds a p.offsetBytes.toNat ptLay.size ||
+                      !isAligned a p.offsetBytes.toNat ptLay.alignLog2 then
+                    .error .undefined
+                  else
+                    .ok (leafTy, srcMut,
+                      ⟨some aid, UInt64.ofNat (p.offsetBytes.toNat + subOff),
+                        .isize⟩, locals, mem)
+        | .ok (some _) => .error .unsupported
+    | _, _ => .error .unsupported
+  | projs =>
+    match promoteLocalToMemory bodyLocals locals mem localId with
+    | .error k => .error k
+    | .ok (localTy, mplace, locals1, mem1) =>
+      match projectMemoryLayoutV2 localTy projs with
+      | .error k => .error k
+      | .ok (leafTy, subOff) =>
+        .ok (leafTy, .mut,
+          ⟨some mplace.allocId, UInt64.ofNat (mplace.offset + subOff), .isize⟩,
+          locals1, mem1)
+
 /-- Evaluate `Rvalue.ref` in Profile v2 (`&local`, or the reborrow `&*r` of a
 reference local `r`).
 
@@ -1834,7 +2121,9 @@ Retagging is not modeled; see `BodyVerifiedV2`. A `&mut *r` through a shared
 `r : &T` returns `.undefined`, an arm that MIR type checking makes
 unreachable. `&*p` for a raw pointer `p` is `.unsupported`. A body containing
 it would mix reference and non-fake raw-pointer locals, which
-`BodyStaticAdmittedV2` rejects anyway. -/
+`BodyStaticAdmittedV2` rejects anyway. Any other projected place is borrowed
+at its `placeAddrV2` address (after `resolveIndexProjsV2`), with the same
+mutability, type, and validity checks. -/
 noncomputable def evalRefRvalueV2 (bodyLocals : List MirTy)
     (locals : List LocalSlot) (mem : MemoryState) (dstTy : MirTy)
     (reqMut : Mutability) (place : Place) :
@@ -1876,7 +2165,21 @@ noncomputable def evalRefRvalueV2 (bodyLocals : List MirTy)
             | .ok () => .ok (v, locals, mem)
       | _ => .error .unsupported
     | _, _ => .error .unsupported
-  | _ => .error .unsupported
+  | projs =>
+    match resolveIndexProjsV2 bodyLocals locals mem projs with
+    | .error k => .error k
+    | .ok projs' =>
+      match placeAddrV2 bodyLocals locals mem true place.localId projs' with
+      | .error k => .error k
+      | .ok (leafTy, srcMut, ptr, locals1, mem1) =>
+        if Mutability.beq srcMut .shared && Mutability.beq reqMut .mut then
+          .error .undefined
+        else if !MirTy.beq dstTy (.ref reqMut leafTy) then
+          .error .unsupported
+        else
+          match refValidInMem mem1 reqMut leafTy (.ptr ptr) with
+          | .error k => .error k
+          | .ok () => .ok (.ptr ptr, locals1, mem1)
 
 /-- Evaluate `Rvalue.addressOf` in Profile v2 (`&raw const/mut local`, or
 `&raw const/mut *p` of a raw-pointer local `p`).
@@ -1898,7 +2201,9 @@ mix reference and non-fake raw-pointer locals, which `BodyStaticAdmittedV2`
 rejects anyway. `&raw mut *p` through a `*const T` returns `.undefined`, like
 `&mut *r` through a shared `r` in `evalRefRvalueV2`. MIR borrow checking makes
 that arm unreachable, and refusing it keeps a `*const T` from yielding a
-`*mut T` here, as `evalPtrToPtrCastV2` does for casts. -/
+`*mut T` here, as `evalPtrToPtrCastV2` does for casts. Any other projected
+place yields its `placeAddrV2` address (after `resolveIndexProjsV2`), with
+the same mutability refusal. -/
 noncomputable def evalAddressOfRvalueV2 (bodyLocals : List MirTy)
     (locals : List LocalSlot) (mem : MemoryState) (dstTy : MirTy)
     (reqMut : Mutability) (place : Place) :
@@ -1934,7 +2239,25 @@ noncomputable def evalAddressOfRvalueV2 (bodyLocals : List MirTy)
           | .ok (some v) => .ok (v, locals, mem)
       | _ => .error .unsupported
     | _, _ => .error .unsupported
-  | _ => .error .unsupported
+  | projs =>
+    match resolveIndexProjsV2 bodyLocals locals mem projs with
+    | .error k => .error k
+    | .ok projs' =>
+      match placeAddrV2 bodyLocals locals mem false place.localId projs' with
+      | .error k => .error k
+      | .ok (leafTy, srcMut, ptr, locals1, mem1) =>
+        if Mutability.beq srcMut .shared && Mutability.beq reqMut .mut then
+          .error .undefined
+        else if !MirTy.beq dstTy (.rawPtr reqMut leafTy) then
+          .error .unsupported
+        else
+          .ok (.ptr ptr, locals1, mem1)
+
+/-- Check that the static types of evaluated operands `typed` equal `tys`. -/
+noncomputable def typedArgsMatchV2 : List (MirTy × Val) → List MirTy → Bool
+  | [], [] => true
+  | (ty, _) :: rest, t :: ts => MirTy.beq ty t && typedArgsMatchV2 rest ts
+  | _, _ => false
 
 /-- Evaluate `Rvalue.fakeAddressOf` (`RawPtrKind::FakeForPtrMetadata`) in
 Profile v2 (`&raw const (fake) (*s)`).
@@ -2463,6 +2786,22 @@ noncomputable def evalRvalueV2 (bodyLocals : List MirTy) (locals : List LocalSlo
             .ok (.optionVal (some pVal), locals1, mem1)
         | .ok (_, none, _, _) => .error .undefined
       | _, _ => .error .unsupported
+  | .aggregateStruct structTy fields =>
+    match structTy with
+    | .struct_ _ fieldTys =>
+      if !MirTy.beq dstTy structTy then
+        .error .unsupported
+      else
+        match evalArgOperandsV2 bodyLocals locals mem fields with
+        | .error k => .error k
+        | .ok (typedVals, locals1, mem1) =>
+          let vs := argValues typedVals
+          if !typedArgsMatchV2 typedVals fieldTys ||
+              !checkValV2List vs fieldTys then
+            .error .unsupported
+          else
+            .ok (.tuple vs, locals1, mem1)
+    | _ => .error .unsupported
   | .cast .unsupported _ _ | .unsupported => .error .unsupported
 
 /-- Update an immediate `Val` along a non-empty `.field` / `.constantIndex`
@@ -2542,12 +2881,27 @@ noncomputable def updateValAtProjV2 :
       | .ok _ => .error .unsupported
     else
       .error .unsupported
+
+  | .struct_ _ fs, .tuple vs, .field idx fTy :: rest, newVal =>
+    match getElem? fs idx, getElem? vs idx with
+    | some elemTy, some oldElem =>
+      if !MirTy.beq elemTy fTy then
+        .error .unsupported
+      else
+        match updateValAtProjV2 elemTy oldElem rest newVal with
+        | .error k => .error k
+        | .ok elem' =>
+          match setElem? vs idx elem' with
+          | some vs' => .ok (.tuple vs')
+          | none => .error .unsupported
+    | _, _ => .error .unsupported
   | _, _, _, _ => .error .unsupported
 
 /-- Validate a non-deref `.field` / `.constantIndex` projection tail against
 `baseTy` before rvalue evaluation (`eval_rvalue_into_place` destination-first
 order), returning `.error .undefined` for out-of-bounds `ConstantIndex`,
 `.error .unsupported` for ill-typed or unmodeled projections, or `.ok leafTy`.
+Tuple and struct fields validate alike, as `updateValAtProjV2` updates both.
 -/
 noncomputable def validatePlaceProjV2 :
     MirTy → List ProjectionElem → Except FaultKind MirTy
@@ -2556,7 +2910,8 @@ noncomputable def validatePlaceProjV2 :
     match constantIndexOffset len off minLen fromEnd with
     | .error k => .error k
     | .ok _ => validatePlaceProjV2 elem rest
-  | .tuple fs, .field idx fTy :: rest =>
+  | .tuple fs, .field idx fTy :: rest
+  | .struct_ _ fs, .field idx fTy :: rest =>
     match getElem? fs idx with
     | some t =>
       if MirTy.beq t fTy then validatePlaceProjV2 t rest
@@ -2577,8 +2932,9 @@ noncomputable def validatePlaceProjV2 :
 /-- Destination of a Profile v2 store, resolved by `resolvePlaceDestV2`
 before the value to store is computed: an unprojected local `localId`, a
 projected local `localId`, a resolved indirect-local sub-place, the pointee
-type `pointee` (with layout `lay`) of a dereferenced pointer local, or a
-dereferenced projected sub-place. -/
+type `pointee` (with layout `lay`) of a dereferenced pointer local, a
+dereferenced projected sub-place, or the leaf (type `leafTy`, at offset `off`
+of allocation `aid`) of a slice element place `(*p)[i].rest`. -/
 inductive PlaceDestV2 where
   | local (localId : LocalId)
   | localProj (localId : LocalId) (baseTy : MirTy)
@@ -2587,6 +2943,7 @@ inductive PlaceDestV2 where
   | deref (pointee : MirTy) (lay : LayoutData) (pv : PtrVal)
   | derefProjected (pointee : MirTy) (ptLay : LayoutData)
       (leafTy : MirTy) (subOff : Nat) (pv : PtrVal)
+  | derefSlice (leafTy : MirTy) (aid : AllocId) (off : Nat)
 
 /-- Resolve the destination `dst : Place` of a Profile v2 store against
 `locals` and `mem`, without accessing the destination itself.
@@ -2608,6 +2965,13 @@ unprojected local resolves to the local itself; whether it is stored in place
 or in its stack allocation is decided at the store, as `rustc` does for
 `Place::Local`.
 
+`.index` projections are first replaced by the value of their index local
+(`resolveIndexProjsV2`), as `eval_place` reads them. A slice element place
+`(*p)[i].rest` is the one projection that inspects the pointed-to allocation
+here: its element address must be in bounds of the slice and of a live
+allocation (`sliceElemAddrV2`), because `rustc` projects slice elements with
+an in-bounds pointer offset during place evaluation.
+
 Stores through `*const T` or `&T` return `.undefined`. MIR type checking
 makes that arm unreachable. -/
 noncomputable def resolvePlaceDestV2 (bodyLocals : List MirTy)
@@ -2615,83 +2979,111 @@ noncomputable def resolvePlaceDestV2 (bodyLocals : List MirTy)
     (dstTy : MirTy) : Except FaultKind PlaceDestV2 :=
   match dst.projection with
   | [] => .ok (.local dst.localId)
-  | [.deref] =>
-    match getElem? bodyLocals dst.localId, getElem? locals dst.localId with
-    | some _, some .dead => .error .undefined
-    | some ptrTy, some slot =>
-      match ptrTy with
-      | .ref ptrMut pt | .rawPtr ptrMut pt =>
-        if isUnsizedTy pt || !MirTy.beq pt dstTy then
-          .error .unsupported
-        else if !Mutability.beq ptrMut .mut then
-          .error .undefined
-        else
-          match layoutOfTyV2 pt with
-          | none => .error .unsupported
-          | some lay =>
-            let ptrRes : Except FaultKind (Option Val) :=
-              match slot with
-              | .dead | .partialTuple _ => .error .undefined
-              | .immediate optVal => .ok optVal
-              | .indirect mplace => loadIndirectV2 mem ptrTy mplace
-            match ptrRes with
-            | .error k => .error k
-            | .ok none => .error .undefined
-            | .ok (some (.ptr pv)) => .ok (.deref pt lay pv)
-            | .ok (some _) => .error .unsupported
-      | _ => .error .unsupported
-    | _, _ => .error .unsupported
-  | .deref :: rest =>
-    match getElem? bodyLocals dst.localId, getElem? locals dst.localId with
-    | some _, some .dead => .error .undefined
-    | some ptrTy, some slot =>
-      match ptrTy with
-      | .ref ptrMut pt | .rawPtr ptrMut pt =>
-        if isUnsizedTy pt then
-          .error .unsupported
-        else if !Mutability.beq ptrMut .mut then
-          .error .undefined
-        else
-          match layoutOfTyV2 pt, projectMemoryLayoutV2 pt rest with
-          | none, _ => .error .unsupported
-          | _, .error k => .error k
-          | some ptLay, .ok (leafTy, subOff) =>
+  | projs0 =>
+    match resolveIndexProjsV2 bodyLocals locals mem projs0 with
+    | .error k => .error k
+    | .ok projs =>
+      match projs with
+      | [] => .ok (.local dst.localId)
+      | [.deref] =>
+        match getElem? bodyLocals dst.localId, getElem? locals dst.localId with
+        | some _, some .dead => .error .undefined
+        | some ptrTy, some slot =>
+          match ptrTy with
+          | .ref ptrMut pt | .rawPtr ptrMut pt =>
+            if isUnsizedTy pt || !MirTy.beq pt dstTy then
+              .error .unsupported
+            else if !Mutability.beq ptrMut .mut then
+              .error .undefined
+            else
+              match layoutOfTyV2 pt with
+              | none => .error .unsupported
+              | some lay =>
+                let ptrRes : Except FaultKind (Option Val) :=
+                  match slot with
+                  | .dead | .partialTuple _ => .error .undefined
+                  | .immediate optVal => .ok optVal
+                  | .indirect mplace => loadIndirectV2 mem ptrTy mplace
+                match ptrRes with
+                | .error k => .error k
+                | .ok none => .error .undefined
+                | .ok (some (.ptr pv)) => .ok (.deref pt lay pv)
+                | .ok (some _) => .error .unsupported
+          | _ => .error .unsupported
+        | _, _ => .error .unsupported
+      | .deref :: rest =>
+        match getElem? bodyLocals dst.localId, getElem? locals dst.localId with
+        | some _, some .dead => .error .undefined
+        | some ptrTy, some slot =>
+          match ptrTy with
+          | .ref ptrMut pt | .rawPtr ptrMut pt =>
+            if isUnsizedTy pt then
+              if !Mutability.beq ptrMut .mut then
+                .error .undefined
+              else
+                match pt with
+                | .slice elem =>
+                  let ptrRes : Except FaultKind (Option Val) :=
+                    match slot with
+                    | .dead | .partialTuple _ => .error .undefined
+                    | .immediate optVal => .ok optVal
+                    | .indirect mplace => loadIndirectV2 mem ptrTy mplace
+                  match ptrRes with
+                  | .error k => .error k
+                  | .ok none => .error .undefined
+                  | .ok (some (.slicePtr p len)) =>
+                    match sliceElemAddrV2 mem elem p len.toNat rest with
+                    | .error k => .error k
+                    | .ok (leafTy, aid, off) =>
+                      if !MirTy.beq leafTy dstTy then
+                        .error .unsupported
+                      else
+                        .ok (.derefSlice leafTy aid off)
+                  | .ok (some _) => .error .unsupported
+                | _ => .error .unsupported
+            else if !Mutability.beq ptrMut .mut then
+              .error .undefined
+            else
+              match layoutOfTyV2 pt, projectMemoryLayoutV2 pt rest with
+              | none, _ => .error .unsupported
+              | _, .error k => .error k
+              | some ptLay, .ok (leafTy, subOff) =>
+                if !MirTy.beq leafTy dstTy then
+                  .error .unsupported
+                else
+                  let ptrRes : Except FaultKind (Option Val) :=
+                    match slot with
+                    | .dead | .partialTuple _ => .error .undefined
+                    | .immediate optVal => .ok optVal
+                    | .indirect mplace => loadIndirectV2 mem ptrTy mplace
+                  match ptrRes with
+                  | .error k => .error k
+                  | .ok none => .error .undefined
+                  | .ok (some (.ptr pv)) =>
+                    .ok (.derefProjected pt ptLay leafTy subOff pv)
+                  | .ok (some _) => .error .unsupported
+          | _ => .error .unsupported
+        | _, _ => .error .unsupported
+      | projs =>
+        match getElem? bodyLocals dst.localId, getElem? locals dst.localId with
+        | some _, some .dead => .error .undefined
+        | some baseTy, some (.immediate _) =>
+          match validatePlaceProjV2 baseTy projs with
+          | .error k => .error k
+          | .ok leafTy =>
             if !MirTy.beq leafTy dstTy then
               .error .unsupported
             else
-              let ptrRes : Except FaultKind (Option Val) :=
-                match slot with
-                | .dead | .partialTuple _ => .error .undefined
-                | .immediate optVal => .ok optVal
-                | .indirect mplace => loadIndirectV2 mem ptrTy mplace
-              match ptrRes with
-              | .error k => .error k
-              | .ok none => .error .undefined
-              | .ok (some (.ptr pv)) =>
-                .ok (.derefProjected pt ptLay leafTy subOff pv)
-              | .ok (some _) => .error .unsupported
-      | _ => .error .unsupported
-    | _, _ => .error .unsupported
-  | projs =>
-    match getElem? bodyLocals dst.localId, getElem? locals dst.localId with
-    | some _, some .dead => .error .undefined
-    | some baseTy, some (.immediate _) =>
-      match validatePlaceProjV2 baseTy projs with
-      | .error k => .error k
-      | .ok leafTy =>
-        if !MirTy.beq leafTy dstTy then
-          .error .unsupported
-        else
-          .ok (.localProj dst.localId baseTy projs)
-    | some baseTy, some (.indirect mplace) =>
-      match projectMemoryLayoutV2 baseTy projs with
-      | .error k => .error k
-      | .ok (leafTy, subOff) =>
-        if !MirTy.beq leafTy dstTy then
-          .error .unsupported
-        else
-          .ok (.indirectProj leafTy mplace subOff)
-    | _, _ => .error .unsupported
+              .ok (.localProj dst.localId baseTy projs)
+        | some baseTy, some (.indirect mplace) =>
+          match projectMemoryLayoutV2 baseTy projs with
+          | .error k => .error k
+          | .ok (leafTy, subOff) =>
+            if !MirTy.beq leafTy dstTy then
+              .error .unsupported
+            else
+              .ok (.indirectProj leafTy mplace subOff)
+        | _, _ => .error .unsupported
 
 /-- Store `val` of type `dstTy` at the destination `dest` resolved by
 `resolvePlaceDestV2`, against the current `locals` and `mem`. Supports
@@ -2800,6 +3192,16 @@ noncomputable def writePlaceDestV2 (locals : List LocalSlot)
             match storeIndirectV2 mem leafTy ⟨aid, pv.offsetBytes.toNat + subOff⟩ val with
             | .ok mem1 => .ok (locals, mem1)
             | .error k => .error k
+    | .derefSlice leafTy aid off =>
+      match findAllocation aid mem.allocations with
+      | none => .error .undefined
+      | some a =>
+        if !a.live || !Mutability.beq a.mutability .mut then
+          .error .undefined
+        else
+          match storeIndirectV2 mem leafTy ⟨aid, off⟩ val with
+          | .ok mem1 => .ok (locals, mem1)
+          | .error k => .error k
 
 /-- Write `val` into `dst : Place` in Profile v2, resolving `dst` and storing
 to it against the same `locals` and `mem` (`resolvePlaceDestV2`, then
@@ -2923,8 +3325,10 @@ mutual
     -- picks `Scalar`/`ScalarPair`: a `None` payload is uninit, so we do not
     -- claim the immediate-copy path. A `Vec` handle (pointer, capacity,
     -- length) has three scalars and is therefore `BackendRepr::Memory`.
-    | .option _ | .vec _ | .slice _ | .str | .rangeTo _ | .rangeFrom _
-    | .range _ | .unsupported => .memoryCopy
+    -- Structs, whose field order and padding come from `rustc`'s layout, are
+    -- classified the same conservative way.
+    | .option _ | .vec _ | .struct_ _ _ | .slice _ | .str | .rangeTo _
+    | .rangeFrom _ | .range _ | .unsupported => .memoryCopy
 
   noncomputable def copyReprOfTupleFieldsV2 :
       List MirTy → Nat × TupleCopyPayloadV2
@@ -2991,7 +3395,7 @@ noncomputable def copySpansOverlapV2 : CopyPlaceSpanV2 → CopyPlaceSpanV2 → B
 noncomputable def normalizeImmProjPathV2 :
     MirTy → List ProjectionElem → Option (List ImmProjStepV2)
   | _, [] => some []
-  | .tuple fs, .field idx fTy :: rest =>
+  | .tuple fs, .field idx fTy :: rest | .struct_ _ fs, .field idx fTy :: rest =>
     match getElem? fs idx with
     | some elemTy =>
       if !MirTy.beq elemTy fTy then none
@@ -3047,6 +3451,8 @@ noncomputable def destCopySpanV2 (locals : List LocalSlot) (dest : PlaceDestV2)
     | some aid, some lay =>
       some (.memRange aid (pv.offsetBytes.toNat + subOff) lay.size)
     | _, _ => none
+  | .derefSlice leafTy aid off =>
+    (layoutOfTyV2 leafTy).map (fun lay => .memRange aid off lay.size)
 
 /-- Sub-destination span for field/element `idx` of an `AggregateTuple`
 (`isArray = false`) or `AggregateArray` (`isArray = true`) written into `base`
@@ -3285,6 +3691,15 @@ noncomputable def checkAssignCopyHazardV2 (bodyLocals : List MirTy)
         checkAggregateCopyHazardLoopV2 bodyLocals locals mem baseSpan dstTy false
           0 [] fieldTys fields
       | _, _ => .error .unsupported
+  | .aggregateStruct _ fields =>
+    match copyReprOfTyV2 dstTy with
+    | .zst _ => .ok ()
+    | _ =>
+      match dstTy, destCopySpanV2 locals dest dstTy with
+      | .struct_ _ fieldTys, some baseSpan =>
+        checkAggregateCopyHazardLoopV2 bodyLocals locals mem baseSpan dstTy
+          false 0 [] fieldTys fields
+      | _, _ => .error .unsupported
   | .aggregateArray elemTy elems =>
     match copyReprOfTyV2 dstTy with
     | .zst _ => .ok ()
@@ -3451,6 +3866,23 @@ noncomputable def arrayValEqV2 : MirTy → Val → Val → Except FaultKind Bool
     valEqListWith (arrayValEqV2 elem) xs ys
   | _, _, _ => .error .unsupported
 
+/-- Load the pointee value of type `ty` behind a valid reference pointer `p`
+(a provenance-free pointer addresses a zero-sized value decoded from no
+bytes). -/
+noncomputable def loadRefPointeeV2 (m : MemoryState) (ty : MirTy)
+    (p : PtrVal) : Except FaultKind Val :=
+  match p.allocId with
+  | none =>
+    match decodeValV2 profileV2TargetEndian ty [] with
+    | .ok (some v) => .ok v
+    | .ok none => .error .undefined
+    | .error k => .error k
+  | some aid =>
+    match loadIndirectV2 m ty ⟨aid, p.offsetBytes.toNat⟩ with
+    | .ok (some v) => .ok v
+    | .ok none => .error .undefined
+    | .error k => .error k
+
 /-- Execute a closed-world `CoreCallOp` primitive in Profile v2 against memory
 `m`. Every argument and result is checked against the callee's `core`
 signature, and any mismatch is `.unsupported`.
@@ -3576,6 +4008,27 @@ noncomputable def execCoreCallOp (m : MemoryState) (op : CoreCallOp)
           match valEqListWith (arrayValEqV2 elem) vs1 vs2 with
           | .ok b => .ok (.bool b)
           | .error k => .error k
+  -- `<T as PartialEq>::ne` on a primitive or fixed array `T` is the negation
+  -- of the structural `eq`, as in `core`'s provided method
+  -- (`library/core/src/cmp.rs`, `rust-lang/rust`
+  -- `f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1`):
+  -- "fn ne(&self, other: &Rhs) -> bool {" ... "!self.eq(other)".
+  | .partialEqNe ty, [(.ref m1 t1, .ptr p1), (.ref m2 t2, .ptr p2)] =>
+    if !MirTy.beq dstTy .bool || !MirTy.beq ty t1 || !MirTy.beq ty t2 ||
+        !isArrayEqElemSupported ty then
+      .error .unsupported
+    else
+      match refValidInMem m m1 ty (.ptr p1), refValidInMem m m2 ty (.ptr p2) with
+      | .error k, _ => .error k
+      | _, .error k => .error k
+      | .ok (), .ok () =>
+        match loadRefPointeeV2 m ty p1, loadRefPointeeV2 m ty p2 with
+        | .error k, _ => .error k
+        | _, .error k => .error k
+        | .ok v1, .ok v2 =>
+          match arrayValEqV2 ty v1 v2 with
+          | .ok b => .ok (.bool !b)
+          | .error k => .error k
   | _, _ => .error .unsupported
 
 /-- Execute any `CoreCallOp` in Profile v2, threading updated `MemoryState`
@@ -3588,7 +4041,8 @@ noncomputable def execCoreCallWithMem (m : MemoryState) (op : CoreCallOp)
     Except FaultKind (Val × MemoryState) :=
   match op with
   | .sliceLen | .sliceGetUncheckedRangeTo | .sliceGetUncheckedRangeFrom
-  | .ptrAdd _ _ | .usizeUncheckedSub | .intToLeBytes _ _ | .arrayEq _ _ =>
+  | .ptrAdd _ _ | .usizeUncheckedSub | .intToLeBytes _ _ | .arrayEq _ _
+  | .partialEqNe _ =>
     match execCoreCallOp m op args dstTy with
     | .ok v => .ok (v, m)
     | .error k => .error k
@@ -3870,36 +4324,66 @@ noncomputable def evalTerminatorV2 (body : Body) (bb : BasicBlock)
             evalCorePanicAbort panicStrategy unwind
               (extractCallerMemory callerMem mem1) hasLocalPanicHandler
       | _, _ => .fault .unsupported
+  | .drop place target _ =>
+    -- `Drop` of an unprojected local whose type has no drop glue (capture
+    -- refuses every other `Drop`). Upstream MIR documents it as a no-op
+    -- ("After drop elaboration: `Drop` terminators are a complete nop for
+    -- types that have no drop glue."), and `rustc`'s `eval_terminator` jumps
+    -- straight to `target` ("This is the branch we enter if and only if the
+    -- dropped type has no drop glue whatsoever. ... we do nothing here."). As
+    -- with `Operand.move`, Profile v2 conservatively deinitializes the
+    -- dropped value, which can only make later reads fault.
+    if !place.projection.isEmpty then
+      .fault .unsupported
+    else
+      match getElem? body.locals place.localId,
+          getElem? frame.locals place.localId with
+      | some ty, some (.immediate _) =>
+        if !isSupportedV2LocalTy ty then
+          .fault .unsupported
+        else
+          match setElem? frame.locals place.localId (liveUninitSlot ty) with
+          | some locals1 =>
+            jumpToBlock { frame with locals := locals1 } mem callerMem target
+          | none => .fault .unsupported
+      | some ty, some (.indirect mplace) =>
+        if !isSupportedV2LocalTy ty then
+          .fault .unsupported
+        else
+          match deinitIndirectV2 mem ty mplace with
+          | .ok mem1 => jumpToBlock frame mem1 callerMem target
+          | .error k => .fault k
+      | _, _ => .fault .unsupported
   | .coreCall _ _ _ none _ | .unwindResume | .call _ _ _ _ _
-  | .sysrootCall _ _ _ _ _ | .unsupported =>
+  | .callNe _ _ _ _ _ | .sysrootCall _ _ _ _ _ | .unsupported =>
     .fault .unsupported
 
-/-- Single small-step transition in Profile v2. -/
-noncomputable def evalStepV2 (p : Program) (s : State) :
-    StepResult State TerminalOut :=
-  match s.frames with
-  | [frame] =>
-    match getElem? p.bodies frame.defId with
-    | none => .fault .unsupported
-    | some body =>
-      match getElem? body.basicBlocks frame.blockIdx with
-      | none => .fault .unsupported
-      | some bb =>
-        match getElem? bb.statements frame.stmtIdx with
-        | some stmt => evalStatementV2 body frame s.mem s.callerMem stmt
-        | none =>
-          if Nat.beq frame.stmtIdx bb.statements.length then
-            evalTerminatorV2 body bb frame s.mem s.callerMem p.panicStrategy
-              p.hasLocalPanicHandler p.overflowChecks
-          else
-            .fault .unsupported
-  | _ => .fault .unsupported
+/-- Static admission of a callee body for a Profile v2 intra-crate call:
+the per-body checks of `initStateV2` (non-empty blocks, in-bounds argument
+count and storage annotations, well-typed `Discriminant` and `Cast`
+destinations and `Assert` conditions, and supported local types) and the
+reference/raw-pointer separation and `.fakeAddressOf` discipline of
+`Trusted.MirSemantics.BodyStaticAdmittedV2` (`bodyMixesRefsAndRawPtrsV2`,
+`bodyFakeAddressOfValidV2`), so every frame on the stack satisfies the same
+static invariants as an entry body.
 
-/-- Choice-indexed wrapper for Profile v2 deterministic small-step
-evaluation. -/
-noncomputable def evalStepV2Choice (p : Program) (_c : Choice) (s : State) :
-    StepResult State TerminalOut :=
-  evalStepV2 p s
+The callee must also be safe (`isUnsafe = false`). An `unsafe` callee may
+assume a caller-supplied safety precondition (`Specs.safety`, see
+`Trusted.MirAst.Body`) that Profile v2 does not check at the call site, and
+that precondition can exclude behavior the model does not treat as UB (such
+as aliasing violations), so calls to `unsafe` callees fail closed. -/
+noncomputable def bodyCallAdmittedV2 (callee : Body) : Bool :=
+  !callee.isUnsafe &&
+    !callee.basicBlocks.isEmpty &&
+    Nat.blt callee.argumentCount callee.locals.length &&
+    storageAnnotationsInBounds callee &&
+    discriminantTypesValidV2 callee &&
+    castTypesValid callee &&
+    assertConditionTypesValid callee &&
+    callee.locals.all isSupportedV2LocalTy &&
+    !bodyMixesRefsAndRawPtrsV2 callee &&
+    bodyFakeAddressOfValidV2 callee
+
 /-- Lift a single-frame `StepResult` onto an ambient `callers` tail stack.
 When `callers = []`, return `res` directly so single-frame steps reduce
 definitionally to the underlying statement or terminator transition. -/
@@ -3913,6 +4397,249 @@ noncomputable def attachCallers (callers : List FrameState)
     | .done out => .done out
     | .fault k => .fault k
 
+/-- Evaluate a direct intra-crate call `callee(args) -> dst` (and the
+`eq` call of `TerminatorKind.callNe`) in Profile v2, matching the `Call` case
+of `eval_terminator` in `compiler/rustc_const_eval/src/interpret/step.rs`
+(`rust-lang/rust` `f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1`):
+
+> "self.eval_callee_and_args(terminator, func, args, &destination)?;"
+> "let destination = self.eval_place(destination)?;"
+> "self.init_fn_call("
+
+- The call must return (`target = some _`) without a cleanup unwind edge,
+  and `dst` must be an unprojected local whose type is the callee's return
+  type `locals[0]`.
+- The `move` arguments and `dst` must be unprojected, pairwise distinct
+  locals (`moveDefinitelyDisjoint`, which is stricter than upstream);
+  otherwise upstream may pass the arguments in place, which Profile v2 does
+  not model (`.unsupported`).
+- The callee body `p.bodies[callee]` must pass `bodyCallAdmittedV2`.
+- The arguments are evaluated left to right (`evalArgOperandsV2`, moving out
+  of moved caller locals). Then `dst` must be live (`.undefined` otherwise),
+  as `eval_place` of a dead local is UB even if the callee never returns.
+- The arguments must match the callee's parameter types statically and by
+  value, and, as at entry (`initStateV2`), every reference argument must be
+  valid and mutable references must not overlap (`.undefined` otherwise).
+- The callee frame starts at block 0 with locals initialized like an entry
+  frame (`initLocalsLoop`) and records the return place `dst` and
+  continuation `target` (`retDst?`/`retTarget?`). The caller frame keeps its
+  location at the call terminator, from which `evalReturnToCallerV2` reads
+  whether to negate the result (`.callNe`). -/
+noncomputable def evalCallV2 (p : Program) (body : Body) (frame : FrameState)
+    (callers : List FrameState) (mem : MemoryState) (callerMem : CallerMemory)
+    (callee : DefId) (args : List Operand) (dst : Place)
+    (target : Option BasicBlockId) (unwind : UnwindAction) :
+    StepResult State TerminalOut :=
+  match target, unwind with
+  | none, _ | some _, .cleanup _ => .fault .unsupported
+  | some _, _ =>
+    if !moveDefinitelyDisjoint args dst then
+      .fault .unsupported
+    else
+      match getElem? body.locals dst.localId, getElem? p.bodies callee with
+      | some dstTy, some calleeBody =>
+        if !bodyCallAdmittedV2 calleeBody then
+          .fault .unsupported
+        else
+          let paramTys :=
+            (calleeBody.locals.drop 1).take calleeBody.argumentCount
+          match getElem? calleeBody.locals 0 with
+          | none => .fault .unsupported
+          | some retTy =>
+            if !MirTy.beq retTy dstTy then
+              .fault .unsupported
+            else
+              match evalArgOperandsV2 body.locals frame.locals mem args with
+              | .error k => .fault k
+              | .ok (typedArgs, locals1, mem1) =>
+                match getElem? locals1 dst.localId with
+                | none => .fault .unsupported
+                | some .dead => .fault .undefined
+                | some _ =>
+                  let argVals := argValues typedArgs
+                  if !typedArgsMatchV2 typedArgs paramTys ||
+                      !checkArgsMatchV2 argVals paramTys then
+                    .fault .unsupported
+                  else if !refsValidInMemList mem1 paramTys argVals ||
+                      !spansPairwiseDisjoint
+                        (refAccessSpansList paramTys argVals) then
+                    .fault .undefined
+                  else
+                    let calleeFrame : FrameState := {
+                      defId := callee
+                      blockIdx := 0
+                      stmtIdx := 0
+                      locals :=
+                        initLocalsLoop calleeBody argVals 0 calleeBody.locals
+                      retDst? := some dst
+                      retTarget? := target
+                    }
+                    .step {
+                      frames :=
+                        calleeFrame :: { frame with locals := locals1 } :: callers
+                      callerMem
+                      mem := mem1
+                    }
+      | _, _ => .fault .unsupported
+
+/-- Deallocate the stack allocations of a popped frame's locals
+(`deallocateLocal` on every slot). -/
+noncomputable def deallocateFrameLocalsV2 (mem : MemoryState) :
+    List LocalSlot → Except FaultKind MemoryState
+  | [] => .ok mem
+  | slot :: rest =>
+    match deallocateLocal mem slot with
+    | .error k => .error k
+    | .ok mem1 => deallocateFrameLocalsV2 mem1 rest
+
+/-- Return from callee frame `frame` to `caller` in Profile v2, matching
+`return_from_current_stack_frame` in
+`compiler/rustc_const_eval/src/interpret/call.rs` and `cleanup_stack_frame`
+in `compiler/rustc_const_eval/src/interpret/stack.rs` (`rust-lang/rust`
+`f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1`):
+
+> "// Remove the frame from the stack.
+> let frame = self.pop_stack_frame_raw()?;
+> // Copy the return value and remember the return continuation.
+> if !unwinding {
+>     self.copy_op_allow_transmute(&return_op, frame.return_place())?;"
+> (`call.rs`)
+>
+> "// Cleanup: deallocate locals.
+> ...
+>     for local in &frame.locals {
+>         self.deallocate_local(local.value)?;
+>     }"
+> (`stack.rs`)
+
+The callee's `_0` must be initialized. The callee's stack allocations are
+deallocated, after which every reference in the returned value must still be
+valid with non-overlapping mutable references (so a reference into the
+popped frame faults with `.undefined`). The value is written to the return
+place `frame.retDst?` that `evalCallV2` recorded, negated when the caller
+frame (still at its call terminator) is at a `.callNe`, and the caller
+continues at `frame.retTarget?`. -/
+noncomputable def evalReturnToCallerV2 (p : Program) (body : Body)
+    (bb : BasicBlock) (frame caller : FrameState) (rest : List FrameState)
+    (mem : MemoryState) (callerMem : CallerMemory) :
+    StepResult State TerminalOut :=
+  if bb.cleanup then
+    .fault .unsupported
+  else
+    match getElem? body.locals 0 with
+    | none => .fault .unsupported
+    | some retTy =>
+      let retRes : Except FaultKind Val :=
+        match getElem? frame.locals 0 with
+        | some (.immediate (some v)) => .ok v
+        | some (.immediate none) | some .dead | some (.partialTuple _) =>
+          .error .undefined
+        | some (.indirect mplace) =>
+          match loadIndirectV2 mem retTy mplace with
+          | .ok (some v) => .ok v
+          | .ok none => .error .undefined
+          | .error k => .error k
+        | none => .error .unsupported
+      match retRes with
+      | .error k => .fault k
+      | .ok retVal =>
+        match deallocateFrameLocalsV2 mem frame.locals with
+        | .error k => .fault k
+        | .ok mem1 =>
+          if !refsValidInMem mem1 retTy retVal ||
+              !spansPairwiseDisjoint (refAccessSpans retTy retVal) then
+            .fault .undefined
+          else
+            match frame.retDst?, frame.retTarget? with
+            | some dst, some t =>
+              match activeFrameBody p caller with
+              | none => .fault .unsupported
+              | some callerBody =>
+                match getElem? callerBody.basicBlocks caller.blockIdx with
+                | none => .fault .unsupported
+                | some callerBb =>
+                  let resRes : Except FaultKind Val :=
+                    match callerBb.terminator, retVal with
+                    | .call _ _ _ _ _, _ => .ok retVal
+                    | .callNe _ _ _ _ _, .bool b => .ok (.bool !b)
+                    | _, _ => .error .unsupported
+                  match resRes, getElem? callerBody.locals dst.localId with
+                  | .error k, _ => .fault k
+                  | .ok _, none => .fault .unsupported
+                  | .ok resVal, some dstTy =>
+                    if !Nat.beq caller.stmtIdx callerBb.statements.length ||
+                        !dst.projection.isEmpty then
+                      .fault .unsupported
+                    else
+                      match writePlaceV2 callerBody.locals caller.locals mem1
+                          dst dstTy resVal with
+                      | .error k => .fault k
+                      | .ok (locals2, mem2) =>
+                        .step {
+                          frames := {
+                            caller with
+                            blockIdx := t
+                            stmtIdx := 0
+                            locals := locals2
+                          } :: rest
+                          callerMem
+                          mem := mem2
+                        }
+            | _, _ => .fault .unsupported
+
+/-- Single small-step transition in Profile v2.
+
+The active frame is the head of `s.frames`, and its body is
+`activeFrameBody` (Profile v2 never creates `sysrootOp?` frames). A `.call` or
+`.callNe` terminator pushes a callee frame (`evalCallV2`). A `.return_`
+terminator in the outermost frame finishes the execution (`evalTerminatorV2`),
+while in a callee frame it pops the frame and resumes the caller
+(`evalReturnToCallerV2`). Every other statement and terminator steps the
+active frame alone, with the caller frames unchanged (`attachCallers`). -/
+noncomputable def evalStepV2 (p : Program) (s : State) :
+    StepResult State TerminalOut :=
+  match s.frames with
+  | frame :: callers =>
+    match activeFrameBody p frame with
+    | none => .fault .unsupported
+    | some body =>
+      match getElem? body.basicBlocks frame.blockIdx with
+      | none => .fault .unsupported
+      | some bb =>
+        match getElem? bb.statements frame.stmtIdx with
+        | some stmt =>
+          attachCallers callers
+            (evalStatementV2 body frame s.mem s.callerMem stmt)
+        | none =>
+          if Nat.beq frame.stmtIdx bb.statements.length then
+            match bb.terminator with
+            | .call callee args dst target unwind =>
+              evalCallV2 p body frame callers s.mem s.callerMem callee args
+                dst target unwind
+            | .callNe eqCallee args dst target unwind =>
+              evalCallV2 p body frame callers s.mem s.callerMem eqCallee args
+                dst target unwind
+            | .return_ =>
+              match callers with
+              | [] =>
+                evalTerminatorV2 body bb frame s.mem s.callerMem
+                  p.panicStrategy p.hasLocalPanicHandler p.overflowChecks
+              | caller :: rest =>
+                evalReturnToCallerV2 p body bb frame caller rest s.mem
+                  s.callerMem
+            | _ =>
+              attachCallers callers
+                (evalTerminatorV2 body bb frame s.mem s.callerMem
+                  p.panicStrategy p.hasLocalPanicHandler p.overflowChecks)
+          else
+            .fault .unsupported
+  | [] => .fault .unsupported
+
+/-- Choice-indexed wrapper for Profile v2 deterministic small-step
+evaluation. -/
+noncomputable def evalStepV2Choice (p : Program) (_c : Choice) (s : State) :
+    StepResult State TerminalOut :=
+  evalStepV2 p s
 /-- Evaluate a single call argument against its declared callee parameter type
 `paramTy`, returning the passed value and updated `(locals, mem)`. Matches
 `evalFnCallArgumentAt` (`deinitMovedPlace = true`) and `passArgument`

@@ -140,6 +140,7 @@ private theorem mirTyListEqExact_eq
       | .option _, .option _ => none
       | .vec _, .vec _ => none
       | .box _, .box _ => none
+      | .struct_ _ _, .struct_ _ _ => none
       | _, _ => some false)
     (fun _ ih x y =>
       match x, y with
@@ -165,6 +166,9 @@ private theorem mirTyListEqExact_eq
       | .option e1, .option e2 => ih e1 e2
       | .vec e1, .vec e2 => ih e1 e2
       | .box e1, .box e2 => ih e1 e2
+      | .struct_ l1 fs1, .struct_ l2 fs2 =>
+        if structLayoutBeqComp l1 l2 then mirTyListEqExact ih fs1 fs2
+        else some false
       | .unsupported, .unsupported => some true
       | _, _ => some false)
     fuel a b
@@ -302,6 +306,21 @@ theorem mirTyEqExact_eq :
     | box e1 =>
       cases b with
       | box e2 => exact mirTyEqExact_eq fuel e1 e2 r h
+      | _ => cases h; rfl
+    | struct_ l1 fs1 =>
+      cases b with
+      | struct_ l2 fs2 =>
+        change (if structLayoutBeqComp l1 l2 then
+          mirTyListEqExact (mirTyEqExact fuel) fs1 fs2
+          else some false) = some r at h
+        dsimp only [MirTy.beq]
+        rw [← structLayoutBeqComp_eq l1 l2]
+        cases hl : structLayoutBeqComp l1 l2 with
+        | false => rw [hl] at h; cases h; rfl
+        | true =>
+          rw [hl] at h
+          exact mirTyListEqExact_eq (mirTyEqExact fuel)
+            (mirTyEqExact_eq fuel) fs1 fs2 r h
       | _ => cases h; rfl
     | unsupported =>
       cases b <;> (cases h; rfl)
@@ -2831,7 +2850,8 @@ theorem symCastIntToInt_sound {v res : SymVal} {castTy : MirTy}
         cases (s.eval env).signed <;> rfl
       | bool | unit | never | char | ordering | enum _ | tuple _
       | ref _ _ | rawPtr _ _ | slice _ | str | array _ _ | rangeTo _ | rangeFrom _
-      | unsupported | option _ | range _ | box _ | vec _ => cases h
+      | unsupported | option _ | range _ | box _ | vec _ | struct_ _ _ =>
+        cases h
 
 /-- Symbolic local slot (uninitialized/initialized immediate or dead; indirect
 slots are never allocated by `symEntry` / `storageLive`). -/
@@ -2862,7 +2882,7 @@ theorem liveSymUninitSlot_eval (env : SymEnv) (ty : MirTy) :
     cases isZstEnumTy ety <;> rfl
   | bool | int _ _ | char | ordering | unit | never | tuple _ | ref _ _
   | rawPtr _ _ | slice _ | str | array _ _ | rangeTo _ | rangeFrom _
-  | unsupported | option _ | range _ | box _ | vec _ => rfl
+  | unsupported | option _ | range _ | box _ | vec _ | struct_ _ _ => rfl
 
 /-- Symbolic single-frame MIR execution state (always at `defId = 0`, `mem =
 entryMemory`, `callerMem = ⟨[]⟩`). -/
@@ -3085,7 +3105,8 @@ theorem symRvalue_sound {tys : List MirTy} {ls ls' : List SymSlot}
   | ref _ _ | addressOf _ _ | fakeAddressOf _ | aggregateTuple _
   | aggregateArray _ _
   | repeat_ _ _ _ | useRetag _ | aggregateRangeTo _ _ | aggregateRangeFrom _ _
-  | unsupported | aggregateOption _ _ _ | aggregateRange _ _ _ => cases h
+  | unsupported | aggregateOption _ _ _ | aggregateRange _ _ _
+  | aggregateStruct _ _ => cases h
   | cast ck a castTy =>
     cases ck with
     | ptrToPtr | intToPtr | unsize | unsupported | boxAsRef => cases h
@@ -3309,7 +3330,8 @@ theorem symRvalue_sound {tys : List MirTy} {ls ls' : List SymSlot}
                         | optionVal optV => cases optV <;> (cases hEv)
                 | bool | int _ _ | char | unit | never | tuple _ | ref _ _
                 | rawPtr _ _ | slice _ | str | array _ _ | rangeTo _ | rangeFrom _
-                | unsupported | option _ | range _ | box _ | vec _ =>
+                | unsupported | option _ | range _ | box _ | vec _
+                | struct_ _ _ =>
                   rw [ht, hs] at h; cases h
 
 /-- Symbolic `evalStatement`. -/
@@ -3522,7 +3544,7 @@ theorem symTerminator_step {body : Body} {bb : BasicBlock}
         | dead => rw [hs] at h; cases h
         | immediate o => cases o <;> (rw [hs] at h; cases h)
   | unreachable | unwindResume | assert _ _ _ _ _ | call _ _ _ _ _
-  | sysrootCall _ _ _ _ _
+  | sysrootCall _ _ _ _ _ | callNe _ _ _ _ _ | drop _ _ _
   | coreCall _ _ _ _ _ | unsupported =>
     rw [hT] at h; cases h
   | switchInt d targets =>
@@ -3650,7 +3672,7 @@ theorem symTerminator_ret {body : Body} {bb : BasicBlock} {s : SymState}
             rw [hT, hCl, getElem?_symSlots, hs]
             rfl
   | goto _ | unreachable | unwindResume | assert _ _ _ _ _ | call _ _ _ _ _
-  | sysrootCall _ _ _ _ _
+  | sysrootCall _ _ _ _ _ | callNe _ _ _ _ _ | drop _ _ _
   | coreCall _ _ _ _ _ | unsupported => rw [hT] at h; cases h
   | switchInt d targets =>
     rw [hT] at h
@@ -4833,7 +4855,7 @@ theorem symStepBranched_wf {body : Body} {pc : SymBool} {s : SymState}
           cases hT : bb.terminator with
           | goto _ | return_ | unreachable | unwindResume
           | assert _ _ _ _ _ | call _ _ _ _ _ | sysrootCall _ _ _ _ _
-          | coreCall _ _ _ _ _
+          | coreCall _ _ _ _ _ | callNe _ _ _ _ _ | drop _ _ _
           | unsupported =>
             rw [hT] at h
             cases hTerm : symTerminator body bb s with
@@ -4977,7 +4999,7 @@ theorem symStepBranched_sound {body : Body} {pc : SymBool} {s : SymState}
             exact ⟨(fun _ _ h => by cases h), (fun _ h => by cases h)⟩
           | goto _ | return_ | unreachable | unwindResume
           | assert _ _ _ _ _ | coreCall _ _ _ _ _
-          | unsupported =>
+          | callNe _ _ _ _ _ | drop _ _ _ | unsupported =>
             dsimp only
             cases hTerm : symTerminator body bb s with
             | stuck => exact ⟨(fun _ _ h => by cases h), (fun _ h => by cases h)⟩

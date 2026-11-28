@@ -391,6 +391,14 @@ theorem enumTy_beq_self (e : EnumTy) : EnumTy.beq e e = true := by
     enumTagRepr_beq_self e.tagRepr, natListBeq_self e.discriminants]
   cases e.discrSigned <;> rfl
 
+/-- `StructLayout.beq` is reflexive. -/
+theorem structLayout_beq_self (l : StructLayout) :
+    StructLayout.beq l l = true := by
+  unfold StructLayout.beq
+  rw [Nat.beq_refl l.id, Nat.beq_refl l.size, Nat.beq_refl l.alignLog2,
+    natListBeq_self l.fieldOffsets]
+  rfl
+
 /-- `EnumTy.beq` implies equality. -/
 theorem enumTy_beq_eq : ∀ {a b : EnumTy}, EnumTy.beq a b = true → a = b
   | ⟨id₁, w₁, s₁, t₁, d₁⟩, ⟨id₂, w₂, s₂, t₂, d₂⟩, h => by
@@ -4266,7 +4274,8 @@ theorem evalStep_single_preserves_defId (p : Program) (df : FrameState)
                               | vec _ _ _ => cases h
                               | optionVal optV => cases optV <;> (cases h)
               | unreachable | unwindResume
-              | coreCall _ _ _ _ _ | unsupported =>
+              | coreCall _ _ _ _ _ | unsupported | callNe _ _ _ _ _
+              | drop _ _ _ =>
                   intro h; dsimp only [attachCallers] at h; cases h
 
 /-- `evalOpenOperand` preserves `frame.defId`. -/
@@ -6824,7 +6833,8 @@ private theorem evalConstLit_checkVal (mty : MirTy) (lit : ConstLit) (v : Val)
                       rw [hAdm, Nat.blt_eq.mpr hLt]
                       exact enumTy_beq_self ety
   | never | tuple _ | ref _ _ | rawPtr _ _ | slice _ | str | rangeTo _ | rangeFrom _
-  | array _ _ | unsupported | option _ | range _ | box _ | vec _ =>
+  | array _ _ | unsupported | option _ | range _ | box _ | vec _
+  | struct_ _ _ =>
       cases lit <;> cases h
 
 private theorem evalIntToIntCast_checkVal (v : Val) (castTy : MirTy) (res : Val)
@@ -6851,7 +6861,8 @@ private theorem evalIntToIntCast_checkVal (v : Val) (castTy : MirTy) (res : Val)
           | true => rw [ite_cond_true hBle] at h; cases h; rfl
       | bool | unit | never | ordering | enum _ | tuple _
       | ref _ _ | rawPtr _ _ | slice _ | str | rangeTo _ | rangeFrom _
-      | array _ _ | unsupported | option _ | range _ | box _ | vec _ => cases h
+      | array _ _ | unsupported | option _ | range _ | box _ | vec _
+      | struct_ _ _ => cases h
 
 mutual
 theorem toClosedMirTy?_isClosed :
@@ -8167,7 +8178,8 @@ theorem checkVal_implies_checkValAgainstSpec :
                           | bool | unit | never | char | ordering | enum _
                           | tuple _ | ref _ _ | rawPtr _ _ | slice _ | str
                           | rangeTo _ | rangeFrom _ | array _ _
-                          | unsupported | option _ | range _ | box _ | vec _ =>
+                          | unsupported | option _ | range _ | box _ | vec _
+                          | struct_ _ _ =>
                               cases hSupp
                           | int w s =>
                               cases cb with
@@ -8175,7 +8187,7 @@ theorem checkVal_implies_checkValAgainstSpec :
                               | enum _ | tuple _ | ref _ _ | rawPtr _ _
                               | slice _ | str | rangeTo _ | rangeFrom _
                               | array _ _ | unsupported | option _ | range _
-                              | box _ | vec _ =>
+                              | box _ | vec _ | struct_ _ _ =>
                                   cases hSupp
                               | bool =>
                                   have haEq := toClosedMirTy?_eq_int ha
@@ -9015,7 +9027,7 @@ private theorem openLiveUninitSlot_slotRel (prog : OpenProgram)
                 ⟨hChk, .inl rfl⟩⟩))
       | bool | int _ _ | never | char | ordering | tuple _ | ref _ _
       | rawPtr _ _ | slice _ | str | rangeTo _ | rangeFrom _ | array _ _
-      | unsupported | option _ | range _ | box _ | vec _ =>
+      | unsupported | option _ | range _ | box _ | vec _ | struct_ _ _ =>
           exact .inr (.inl ⟨rfl, rfl⟩)
   | none =>
       cases hM : eraseOpenTy
@@ -9032,7 +9044,7 @@ private theorem openLiveUninitSlot_slotRel (prog : OpenProgram)
               dsimp only [liveUninitSlot]; rw [ite_cond_false hZ]
       | bool | int _ _ | never | char | ordering | tuple _ | ref _ _
       | rawPtr _ _ | slice _ | str | rangeTo _ | rangeFrom _ | array _ _
-      | unsupported | option _ | range _ | box _ | vec _ =>
+      | unsupported | option _ | range _ | box _ | vec _ | struct_ _ _ =>
           exact .inr (.inl ⟨rfl, rfl⟩)
 
 private theorem localsRel_getElem? (prog : OpenProgram) (σ : List OpenMirTy) :
@@ -10541,6 +10553,10 @@ mutual
     | .array e n => by
         dsimp only [MirTy.beq]
         rw [nat_beq_self n, mirTy_beq_self e]
+        rfl
+    | .struct_ l fs => by
+        dsimp only [MirTy.beq]
+        rw [structLayout_beq_self l, mirTyList_beq_self fs]
         rfl
 
   private theorem mirTyList_beq_self :

@@ -775,7 +775,7 @@ theorem constAdmitted_of_exact (c : ConstOperand)
       cases lit <;> cases h
     | bool | int _ _ | unit | never | ordering | enum _ | ref _ _
     | rawPtr _ _ | slice _ | str | array _ _ | range _ | rangeTo _ | rangeFrom _
-    | option _ | tuple _ | vec _ | box _ | unsupported =>
+    | option _ | tuple _ | vec _ | box _ | unsupported | struct_ _ _ =>
       cases lit <;> exact h
 
 /-- Every exact-admitted operand is forward-admitted. -/
@@ -855,7 +855,7 @@ theorem rvalueAdmitted_of_exact (bodyLocals : List MirTy) (dstTy : MirTy)
   | useRetag _ | ref _ _ | addressOf _ _ | fakeAddressOf _
   | aggregateTuple _ | aggregateArray _ _ | repeat_ _ _ _
   | aggregateRange _ _ _ | aggregateRangeTo _ _ | aggregateRangeFrom _ _
-  | aggregateOption _ _ _ | unsupported =>
+  | aggregateOption _ _ _ | unsupported | aggregateStruct _ _ =>
     cases h
 
 /-- Every exact-admitted statement is forward-admitted. -/
@@ -937,6 +937,8 @@ theorem blockAdmitted_of_exact (argCount : Nat) (bodyLocals : List MirTy)
       | call _ _ _ _ _ => rw [ht] at h; cases h
       | coreCall _ _ _ _ _ => rw [ht] at h; cases h
       | sysrootCall _ _ _ _ _ => rw [ht] at h; cases h
+      | callNe _ _ _ _ _ => rw [ht] at h; cases h
+      | drop _ _ _ => rw [ht] at h; cases h
       | unsupported => rw [ht] at h; cases h
 
 /-- `MiniRustExactAdmitted` implies `MiniRustAdmitted`. -/
@@ -1471,7 +1473,8 @@ theorem translateConst_variantWF (c : ConstOperand)
                   dsimp only [Bool.true_and]
                   exact mrType_beq_emptySizedTy_self tagW.byteSize tagW.byteSize
     | never | ref _ _ | rawPtr _ _ | slice _ | str | array _ _ | range _ | rangeTo _
-    | rangeFrom _ | option _ | tuple _ | vec _ | box _ | unsupported =>
+    | rangeFrom _ | option _ | tuple _ | vec _ | box _ | unsupported
+    | struct_ _ _ =>
       cases lit <;> cases hadm
 
 theorem translateOperand_variantWF (bodyLocals : List MirTy) (opnd : Operand)
@@ -1511,7 +1514,8 @@ theorem translateRvalue_variantWF (bodyLocals : List MirTy) (dstTy : MirTy)
             rfl
           | int _ _ | unit | never | char | ordering | enum _ | ref _ _
           | rawPtr _ _ | slice _ | str | array _ _ | range _ | rangeTo _ | rangeFrom _
-          | option _ | tuple _ | vec _ | box _ | unsupported => exact hw
+          | option _ | tuple _ | vec _ | box _ | unsupported
+          | struct_ _ _ => exact hw
       | neg =>
         cases operandTy? bodyLocals opnd with
         | none => exact hw
@@ -1520,7 +1524,8 @@ theorem translateRvalue_variantWF (bodyLocals : List MirTy) (dstTy : MirTy)
           | int _ s => cases s <;> exact hw
           | bool | unit | never | char | ordering | enum _ | ref _ _
           | rawPtr _ _ | slice _ | str | array _ _ | range _ | rangeTo _ | rangeFrom _
-          | option _ | tuple _ | vec _ | box _ | unsupported => exact hw
+          | option _ | tuple _ | vec _ | box _ | unsupported
+          | struct_ _ _ => exact hw
   | binaryOp op lhs rhs =>
     dsimp only [rvalueAdmitted] at hadm
     cases hl : operandAdmitted false bodyLocals lhs with
@@ -1544,7 +1549,7 @@ theorem translateRvalue_variantWF (bodyLocals : List MirTy) (dstTy : MirTy)
           | char => cases op <;> first | exact hboth | exact hlw
           | unit | never | ordering | enum _ | ref _ _ | rawPtr _ _
           | slice _ | str | array _ _ | range _ | rangeTo _ | rangeFrom _ | option _
-          | tuple _ | vec _ | box _ | unsupported =>
+          | tuple _ | vec _ | box _ | unsupported | struct_ _ _ =>
             exact hlw
   | cast kind opnd castTy =>
     cases kind with
@@ -1566,7 +1571,7 @@ theorem translateRvalue_variantWF (bodyLocals : List MirTy) (dstTy : MirTy)
           | some srcTy => cases srcTy <;> exact hw
         dsimp only [translateRvalue]
         cases castTy <;> exact heInt
-  | discriminant _ => rfl
+  | discriminant _ | aggregateStruct _ _ => rfl
   | useRetag _ | ref _ _ | addressOf _ _ | fakeAddressOf _
   | aggregateTuple _ | aggregateArray _ _ | repeat_ _ _ _
   | aggregateRange _ _ _ | aggregateRangeTo _ _ | aggregateRangeFrom _ _
@@ -1824,7 +1829,7 @@ theorem minirust_admitted_prog_wellFormed {p : Program} {q : Query}
                               rw [list_length_map_tr, Nat.add_comm]
                             cases htm : bb.terminator with
                             | return_ => rfl
-                            | unreachable => rfl
+                            | unreachable | callNe _ _ _ | drop _ _ _ => rfl
                             | goto target =>
                               rw [htm] at hbb
                               dsimp only [translateTerm, mrTermWellFormed]
@@ -1920,7 +1925,8 @@ theorem minirust_admitted_prog_wellFormed {p : Program} {q : Query}
                                     | unit | never | ordering | enum _ | ref _ _
                                     | rawPtr _ _ | slice _ | str | array _ _
                                     | range _ | rangeTo _ | rangeFrom _
-                                    | option _ | tuple _ | vec _ | box _ | unsupported =>
+                                    | option _ | tuple _ | vec _ | box _
+                                    | unsupported | struct_ _ _ =>
                                       cases hbb
                             | unwindResume => rw [htm] at hbb; cases hbb
                             | assert _ _ _ _ _ => rw [htm] at hbb; cases hbb

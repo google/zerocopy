@@ -125,9 +125,10 @@ trusted review surfaces rather than reading every line of proof modules (see the
    `safety` and behavior/postconditions in `property`); and
 2. The TCB audit log (covering the pinned toolchains, the compilation and
    scope configuration in `request.json` or `verify rustc` flags—target triple,
-   `cfg`, `env`, `crate_root`, `source_files`, `scope.roots`—and any host or
-   axiomatic assumptions recorded in the Receipt v3 fields: `taint_reasons`,
-   `elaboration_sandbox`, `assumptions`, `deferred`, and `audit`).
+   `cfg`, `env`, `crate_root`, `source_files`, `scope.roots`,
+   `scope.excluded_traits`—and any host or axiomatic assumptions recorded in
+   the Receipt v3 fields: `taint_reasons`, `elaboration_sandbox`,
+   `excluded_items`, `assumptions`, `deferred`, and `audit`).
 
 Automated reporting across the complete review surface (recorded in `deferred`
 as `"complete review-surface reporting"`) remains under active development.

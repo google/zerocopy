@@ -620,7 +620,7 @@ private theorem evalTerminator_any_ps (body : Body) (bb : BasicBlock)
           | optionVal optV => cases optV <;> (exact Or.inl rfl)
   | goto _ | return_ | unreachable | switchInt _ _ | unwindResume
   | call _ _ _ _ _ | coreCall _ _ _ _ _ | sysrootCall _ _ _ _ _
-  | unsupported => exact Or.inl rfl
+  | unsupported | callNe _ _ _ _ _ | drop _ _ _ => exact Or.inl rfl
 
 /-- Single-pass `evalTerminator` frame invariant and `retagDefId` commutation.
 -/
@@ -751,7 +751,7 @@ theorem evalTerminator_frame_retag (body : Body) (bb : BasicBlock)
           | boxPtr _ _ | vec _ _ _ =>
             exact ⟨(fun _ h => by cases h), rfl⟩
   | unwindResume | call _ _ _ _ _ | coreCall _ _ _ _ _
-  | sysrootCall _ _ _ _ _ | unsupported =>
+  | sysrootCall _ _ _ _ _ | callNe _ _ _ _ _ | drop _ _ _ | unsupported =>
     exact ⟨(fun _ h => by cases h), rfl⟩
 
 private theorem basicBlocks_getElem_hasCall_false
@@ -1004,7 +1004,8 @@ theorem evalStep_entryProg_frame {p : Program} {defId : DefId} {body : Body}
             | return_ =>
               exact hTerm
             | goto _ | switchInt _ _ | unreachable | unwindResume
-            | assert _ _ _ _ _ | coreCall _ _ _ _ _ | unsupported =>
+            | assert _ _ _ _ _ | coreCall _ _ _ _ _ | callNe _ _ _ _ _
+            | drop _ _ _ | unsupported =>
               exact evalStep_attachCallers_nil_pair hTerm.1 hTerm.2
     | none =>
       unfold bodyProg evalStep retagDefId entryProgForBody
@@ -1036,7 +1037,8 @@ theorem evalStep_entryProg_frame {p : Program} {defId : DefId} {body : Body}
             | return_ =>
               exact hTerm
             | goto _ | switchInt _ _ | unreachable | unwindResume
-            | assert _ _ _ _ _ | coreCall _ _ _ _ _ | unsupported =>
+            | assert _ _ _ _ _ | coreCall _ _ _ _ _ | callNe _ _ _ _ _
+            | drop _ _ _ | unsupported =>
               exact evalStep_attachCallers_nil_pair hTerm.1 hTerm.2
 
 /-- Single-step relation between `entryProgForBody p defId` and `bodyProg body`
@@ -1117,7 +1119,8 @@ private theorem evalStep_entryProg_any_ps {p : Program} {defId : DefId}
                 let ⟨msg, unwind, hL, hR⟩ := hAf
                 exact Or.inr ⟨msg, unwind, cm, hL, hR⟩
             | goto _ | switchInt _ _ | unreachable | unwindResume
-            | assert _ _ _ _ _ | coreCall _ _ _ _ _ | unsupported =>
+            | assert _ _ _ _ _ | coreCall _ _ _ _ _ | unsupported
+            | callNe _ _ _ _ _ | drop _ _ _ =>
               cases hAny with
               | inl hEq =>
                 exact Or.inl (evalStep_attachCallers_nil_pair hInv hEq).2
@@ -1166,7 +1169,8 @@ private theorem evalStep_entryProg_any_ps {p : Program} {defId : DefId}
                 let ⟨msg, unwind, hL, hR⟩ := hAf
                 exact Or.inr ⟨msg, unwind, cm, hL, hR⟩
             | goto _ | switchInt _ _ | unreachable | unwindResume
-            | assert _ _ _ _ _ | coreCall _ _ _ _ _ | unsupported =>
+            | assert _ _ _ _ _ | coreCall _ _ _ _ _ | unsupported
+            | callNe _ _ _ _ _ | drop _ _ _ =>
               cases hAny with
               | inl hEq =>
                 exact Or.inl (evalStep_attachCallers_nil_pair hInv hEq).2

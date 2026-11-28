@@ -6,14 +6,16 @@
 // This file may not be copied, modified, or distributed except according to
 // those terms.
 
-// All cases below currently fail at MIR capture because `Struct` items are
-// rejected (`whole-crate obligation is unsupported: Struct`). None of them
-// exercise semantic `NonZero` niche or validity-invariant verification yet;
-// they pin the capture-refusal boundary across candidate `NonZeroUsize` shapes
-// until struct capture and invariant verification are implemented.
+// Profile v2 now captures these crate-local structs, so every case below
+// passes capture as a Profile v2 crate and reaches the proof stage, where the
+// corpus's dummy Profile v1 `Specs` cannot instantiate the `SpecsV2` claim.
+// None of them exercise semantic `NonZero` niche or validity-invariant
+// verification yet; they pin that each candidate `NonZeroUsize` shape is
+// captured under Profile v2 (rather than refused or misrouted to Profile v1)
+// until invariant verification is implemented.
 
-// === case: struct_capture_refused_nonzero_library ===
-//@ fail(capture): "NonZeroUsize: whole-crate obligation is unsupported: Struct"
+// === case: struct_captured_v2_nonzero_library ===
+//@ fail(proof, crate): "Trusted.MirSemantics.SpecsV2"
 
 #[repr(transparent)]
 pub struct NonZeroUsize {
@@ -43,10 +45,10 @@ pub fn get_unchecked(x: NonZeroUsize) -> usize {
     }
 }
 
-// === case: struct_capture_refused_zero_returning_safe_ctor ===
-//@ fail(capture): "NonZeroUsize: whole-crate obligation is unsupported: Struct"
+// === case: struct_captured_v2_zero_returning_safe_ctor ===
+//@ fail(proof, crate): "Trusted.MirSemantics.SpecsV2"
 
-// Rejected at `Struct` capture before any invariant check on `make_nonzero`.
+// `make_nonzero` breaks the invariant; nothing checks it yet.
 #[repr(transparent)]
 pub struct NonZeroUsize {
     val: usize,
@@ -72,10 +74,10 @@ pub fn get_unchecked(x: NonZeroUsize) -> usize {
     }
 }
 
-// === case: struct_capture_refused_pub_field_struct ===
-//@ fail(capture): "NonZeroUsize: whole-crate obligation is unsupported: Struct"
+// === case: struct_captured_v2_pub_field_struct ===
+//@ fail(proof, crate): "Trusted.MirSemantics.SpecsV2"
 
-// Rejected at `Struct` capture before any field-visibility invariant check.
+// No field-visibility invariant check runs yet.
 #[repr(transparent)]
 pub struct NonZeroUsize {
     pub val: usize,
@@ -104,10 +106,10 @@ pub fn get_unchecked(x: NonZeroUsize) -> usize {
     }
 }
 
-// === case: struct_capture_refused_zero_returning_unsafe_ctor ===
-//@ fail(capture): "NonZeroUsize: whole-crate obligation is unsupported: Struct"
+// === case: struct_captured_v2_zero_returning_unsafe_ctor ===
+//@ fail(proof, crate): "Trusted.MirSemantics.SpecsV2"
 
-// Rejected at `Struct` capture before any safety or invariant check.
+// No safety or invariant check runs yet.
 #[repr(transparent)]
 pub struct NonZeroUsize {
     val: usize,
@@ -118,30 +120,30 @@ pub unsafe fn new_unchecked(x: usize) -> NonZeroUsize {
     NonZeroUsize { val: 0 }
 }
 
-// === case: struct_capture_refused_with_requires_clause ===
-//@ fail(capture): "NonZeroUsize: whole-crate obligation is unsupported: Struct"
+// === case: struct_captured_v2_with_requires_clause ===
+//@ fail(proof, crate): "Trusted.MirSemantics.SpecsV2"
 
-// Real capture refuses `Struct` before any specification check.
+// Captured; the dummy specification never states this clause.
 #[repr(transparent)]
 pub struct NonZeroUsize {
     val: usize,
 }
 
-/// Requires `x != 1` (unreachable behind `Struct` refusal).
+/// Requires `x != 1` (not stated by the dummy specification).
 pub unsafe fn new_unchecked(x: usize) -> NonZeroUsize {
     NonZeroUsize { val: x }
 }
 
-// === case: struct_capture_refused_with_spec_clause ===
-//@ fail(capture): "NonZeroUsize: whole-crate obligation is unsupported: Struct"
+// === case: struct_captured_v2_with_spec_clause ===
+//@ fail(proof, crate): "Trusted.MirSemantics.SpecsV2"
 
-// Real capture refuses `Struct` before any specification check.
+// Captured; the dummy specification never states this clause.
 #[repr(transparent)]
 pub struct NonZeroUsize {
     val: usize,
 }
 
-/// Ensures `ret == x` (unreachable behind `Struct` refusal).
+/// Ensures `ret == x` (not stated by the dummy specification).
 pub fn make_nonzero(x: usize) -> NonZeroUsize {
     if x == 0 {
         NonZeroUsize { val: 1 }
@@ -150,8 +152,8 @@ pub fn make_nonzero(x: usize) -> NonZeroUsize {
     }
 }
 
-// === case: struct_capture_refused_plain_wrapper ===
-//@ fail(capture): "Wrapper: whole-crate obligation is unsupported: Struct"
+// === case: struct_captured_v2_plain_wrapper ===
+//@ fail(proof, crate): "Trusted.MirSemantics.SpecsV2"
 
 #[repr(transparent)]
 pub struct Wrapper {

@@ -67,7 +67,9 @@ const ALLOWED_QUOT_SOUND_ENTRIES: &[(&str, &str)] = &[
 /// - `271 -> 275`: `mirTyEqExact`'s diagonal `MirTy.vec`/`MirTy.box` arms (+2)
 ///   and the `refsValidInMem` match splitter that `Anneal.MirWp.V2Memory`
 ///   unfolds gaining the `.vec`/`.box` arms (+2).
-const MAX_SPARSE_CASES_ON: usize = 275;
+/// - `275 -> 277`: the diagonal `MirTy.struct_` arm of `mirTyEqExact` (+1)
+///   and the default-`false` wildcard of `MirWp.isCallTerminatorV2` (+1).
+const MAX_SPARSE_CASES_ON: usize = 277;
 
 fn repo_root() -> PathBuf {
     Path::new(env!("CARGO_MANIFEST_DIR")).parent().unwrap().parent().unwrap().to_path_buf()

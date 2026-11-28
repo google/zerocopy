@@ -6265,15 +6265,19 @@ mod tests {
                        unfold execProgV2\n  \
                        rw [hInit]\n  \
                        apply execOutcomeStateV2_step (by\n    \
-                         dsimp only [evalStepV2, entryProgForBody, Captured.program,\n      \
-                           Captured.body0, Captured.sliceTy, evalStatementV2,\n      \
+                         dsimp only [evalStepV2, activeFrameBody, attachCallers,\n      \
+                           List.cons_append, List.nil_append, entryProgForBody,\n      \
+                           Captured.program, Captured.body0, Captured.sliceTy,\n      \
+                           evalStatementV2,\n      \
                            resolvePlaceDestV2, placeStaticTyV2, Trusted.MirSemantics.getElem?]\n    \
                          rw [evalRvalueV2_useRetag_copy_ok (by rfl) (by rfl) (by rfl) hRV]\n    \
                          dsimp only\n    \
                          rw [writePlaceDestV2_immediate_ok (by rfl) (by rfl) (by rfl)]; rfl)\n  \
                        apply execOutcomeStateV2_done (by\n    \
-                         dsimp only [evalStepV2, entryProgForBody, Captured.program,\n      \
-                           Captured.body0, Captured.sliceTy, Trusted.MirSemantics.getElem?]\n    \
+                         dsimp only [evalStepV2, activeFrameBody, attachCallers,\n      \
+                           List.cons_append, List.nil_append, entryProgForBody,\n      \
+                           Captured.program, Captured.body0, Captured.sliceTy,\n      \
+                           Trusted.MirSemantics.getElem?]\n    \
                          rw [evalTerminatorV2_return_ok (by rfl) (by rfl) (by rfl) (by rfl)\n      \
                            hStay hRV spansDisjoint_single,\n      \
                            extractReturnMemoryV2_entryMemory, hExt]\n    \
