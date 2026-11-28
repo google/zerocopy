@@ -70,4 +70,35 @@ example : ¬ pure_consts_are 18446744073709551615 (-9223372036854775808) (-128)
 -- `255 + 32 * 2 + 131070 / 65535 = 255 + 64 + 2 = 321`.
 example : fn1_max_steps { args := [u64Usize 131070] } = 321 := rfl
 
+-- An `if` that chooses a value takes the branch its condition selects,
+-- through an `else if` chain.
+example : pure_clamp (-5) 0 10 = 0 := by unfold pure_clamp; decide
+example : pure_clamp 15 0 10 = 10 := by unfold pure_clamp; decide
+example : pure_clamp 7 0 10 = 7 := by unfold pure_clamp; decide
+example : pure_sign_is (-3) (-1) := by unfold pure_sign_is; decide
+example : ¬ pure_sign_is (-3) 1 := by unfold pure_sign_is; decide
+example : pure_sign_is 0 0 := by unfold pure_sign_is; decide
+example : pure_sign_is 9 1 := by unfold pure_sign_is; decide
+
+-- A `bool`-valued `if` constrains only the branch its condition selects.
+example : pure_div_or_zero_is 7 0 0 := by unfold pure_div_or_zero_is; decide
+example : ¬ pure_div_or_zero_is 7 0 1 := by unfold pure_div_or_zero_is; decide
+example : pure_div_or_zero_is 7 2 3 := by unfold pure_div_or_zero_is; decide
+example : ¬ pure_div_or_zero_is 7 2 4 := by unfold pure_div_or_zero_is; decide
+
+-- A `bool` helper parameter is a `Prop`, so these are proved directly.
+example : pure_flag_is True 1 :=
+  ⟨fun _ => rfl, fun h => absurd True.intro h⟩
+example : pure_flag_is False 0 :=
+  ⟨fun h => absurd h id, fun _ => rfl⟩
+example : ¬ pure_flag_is True 0 := fun h => absurd (h.1 True.intro) (by decide)
+
+-- `piecewise` (sorted fifth as `fn4`) lowers
+-- `max_steps = if n > 100 { n } else { 100 }`.
+private def u32Val (n : Nat) : Trusted.MirSemantics.Val :=
+  .scalar ⟨.i32, false, BitVec.ofNat 128 n⟩
+
+example : fn4_max_steps { args := [u32Val 250, .bool true] } = 250 := rfl
+example : fn4_max_steps { args := [u32Val 7, .bool true] } = 100 := rfl
+
 end Spec.Check

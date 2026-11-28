@@ -69,14 +69,35 @@ impl std::fmt::Display for IntLit {
     }
 }
 
+/// A lowered `bool` expression (which lowers to a Lean `Prop`), paired with
+/// its decidability status for value-choosing `if` and the nonzero facts it
+/// establishes in true/false branches.
+#[derive(Clone, Debug)]
+struct Prop {
+    term: String,
+    undecidable: Option<(Span, String)>,
+    on_true: Vec<String>,
+    on_false: Vec<String>,
+}
+
+impl Prop {
+    fn pure(term: impl Into<String>) -> Self {
+        Self { term: term.into(), undecidable: None, on_true: Vec::new(), on_false: Vec::new() }
+    }
+}
+
 /// A lowered expression.
 #[derive(Clone, Debug)]
 enum Low {
-    Prop(String),
+    Prop(Prop),
     Int(String, Ty),
     Unit(String),
     /// An integer literal whose type is fixed by context.
     Lit(IntLit, Span),
+    /// An integer-valued `if` whose branches are all untyped literals, such
+    /// as `if c { 1 } else { 0 }`: the lowered term, and each literal leaf
+    /// to range-check once context fixes the type.
+    UntypedIf(String, Vec<(IntLit, Span)>),
 }
 
 /// Which runtime helpers and binders the lowered text referenced.
@@ -301,7 +322,17 @@ impl Env<'_> {
             }
             Binding::HelperParam(lean, ty) => {
                 return Ok(match ty {
-                    Ty::Bool => Low::Prop(lean.clone()),
+                    Ty::Bool => Low::Prop(Prop {
+                        term: lean.clone(),
+                        undecidable: Some((
+                            span,
+                            format!(
+                                "`{name}` is a `bool` helper parameter, which lowers to a `Prop`"
+                            ),
+                        )),
+                        on_true: Vec::new(),
+                        on_false: Vec::new(),
+                    }),
                     Ty::Unit => Low::Unit(lean.clone()),
                     t => Low::Int(lean.clone(), lift(*t)),
                 });
@@ -310,7 +341,7 @@ impl Env<'_> {
         Ok(match ty {
             Ty::Bool => {
                 self.uses.val_bool.set(true);
-                Low::Prop(format!("(specBool {term} = true)"))
+                Low::Prop(Prop::pure(format!("(specBool {term} = true)")))
             }
             Ty::Unit => Low::Unit(term),
             Ty::Int(_) | Ty::Math => {
@@ -328,12 +359,7 @@ impl Env<'_> {
     }
 
     pub fn lower_prop(&self, e: &Expr, facts: &mut Vec<String>) -> Result<String, Diagnostic> {
-        match self.lower(e, false, facts)? {
-            Low::Prop(p) => Ok(p),
-            other => {
-                Err(type_error(e.span, format!("expected `bool`, found {}", describe(&other))))
-            }
-        }
+        self.lower_prop_in(e, false, facts).map(|p| p.term)
     }
 
     /// Type-checks and lowers a `max_steps` expression to a non-negative `Nat`
@@ -417,6 +443,17 @@ impl Env<'_> {
                 }
             }
             ExprKind::Paren(inner) | ExprKind::Math(inner) => self.lower_nat(inner, facts),
+            ExprKind::If(c, t, f) => {
+                let cond = self.lower_prop_in(c, false, facts)?;
+                require_decidable(&cond)?;
+                let mut then_facts = facts.clone();
+                then_facts.extend(cond.on_true);
+                let mut else_facts = facts.clone();
+                else_facts.extend(cond.on_false);
+                let a = self.lower_nat(t, &mut then_facts)?;
+                let b = self.lower_nat(f, &mut else_facts)?;
+                Ok(format!("(if {} then {a} else {b})", cond.term))
+            }
             ExprKind::Old(_) => Err(Diagnostic::new(
                 "E_ANNEAL_OLD_IN_PRECONDITION",
                 e.span,
@@ -515,7 +552,7 @@ impl Env<'_> {
 
     fn lower(&self, e: &Expr, math: bool, facts: &mut Vec<String>) -> Result<Low, Diagnostic> {
         match &e.kind {
-            ExprKind::Bool(b) => Ok(Low::Prop(if *b { TRUE } else { FALSE }.into())),
+            ExprKind::Bool(b) => Ok(Low::Prop(Prop::pure(if *b { TRUE } else { FALSE }))),
             ExprKind::Unit => Ok(Low::Unit(VAL_UNIT.into())),
             ExprKind::Int(v, suffix) => {
                 let lit = IntLit::new(false, *v);
@@ -537,7 +574,7 @@ impl Env<'_> {
                 let low = self.lower(inner, true, facts)?;
                 Ok(match low {
                     Low::Lit(v, _) => Low::Int(int_lit(v), Ty::Math),
-                    Low::Int(t, _) => Low::Int(t, Ty::Math),
+                    Low::Int(t, _) | Low::UntypedIf(t, _) => Low::Int(t, Ty::Math),
                     other => other,
                 })
             }
@@ -557,7 +594,12 @@ impl Env<'_> {
                 .help("profile v1 parameters are passed by value, so `old(x)` would equal `x`")
             }),
             ExprKind::Unary(UnOp::Not, inner) => match self.lower(inner, math, facts)? {
-                Low::Prop(p) => Ok(Low::Prop(format!("(¬ {p})"))),
+                Low::Prop(p) => Ok(Low::Prop(Prop {
+                    term: format!("(¬ {})", p.term),
+                    undecidable: p.undecidable,
+                    on_true: p.on_false,
+                    on_false: p.on_true,
+                })),
                 other => Err(type_error(
                     inner.span,
                     format!("`!` expects `bool`, found {}", describe(&other)),
@@ -583,6 +625,10 @@ impl Env<'_> {
                 let low = self.lower(inner, math, facts)?;
                 match low {
                     Low::Lit(v, s) => Ok(Low::Lit(v.negate(), s)),
+                    Low::UntypedIf(t, leaves) => Ok(Low::UntypedIf(
+                        format!("({INT_NEG} {t})"),
+                        leaves.into_iter().map(|(v, s)| (v.negate(), s)).collect(),
+                    )),
                     Low::Int(t, Ty::Math) => Ok(Low::Int(format!("({INT_NEG} {t})"), Ty::Math)),
                     Low::Int(_, ty) => Err(ambiguous_arith(e.span, "-", ty)),
                     other => Err(type_error(
@@ -593,6 +639,86 @@ impl Env<'_> {
             }
             ExprKind::Binary(op, l, r) => self.binary(*op, l, r, e.span, math, facts),
             ExprKind::Call(name, args) => self.call(name, args, e.span, math, facts),
+            ExprKind::If(c, t, f) => self.lower_if(c, t, f, math, facts),
+        }
+    }
+
+    /// Lowers `if c { t } else { f }`. A `bool`-valued `if` lowers to
+    /// `((c → t) ∧ (¬ c → f))`, which needs no `Decidable` instance for `c`.
+    /// An `if` that chooses an integer or `()` value lowers to Lean's
+    /// `if c then t else f`, so `c` must be decidable (see
+    /// [`require_decidable`]). Each branch may rely on the nonzero facts
+    /// that the condition establishes on its side.
+    fn lower_if(
+        &self,
+        c: &Expr,
+        t: &Expr,
+        f: &Expr,
+        math: bool,
+        facts: &mut Vec<String>,
+    ) -> Result<Low, Diagnostic> {
+        let cond = self.lower_prop_in(c, math, facts)?;
+        let undecidable = cond.undecidable;
+        let mut then_facts = facts.clone();
+        then_facts.extend(cond.on_true);
+        let mut else_facts = facts.clone();
+        else_facts.extend(cond.on_false);
+        let a = self.lower(t, math, &mut then_facts)?;
+        let b = self.lower(f, math, &mut else_facts)?;
+        let cond_term = cond.term.as_str();
+        let ite = |x: &str, y: &str| format!("(if {cond_term} then {x} else {y})");
+        let (a, b) = match (a, b) {
+            (Low::Prop(x), Low::Prop(y)) => {
+                return Ok(Low::Prop(Prop {
+                    term: format!("(({cond_term} → {}) ∧ (¬ {cond_term} → {}))", x.term, y.term),
+                    undecidable: undecidable.or(x.undecidable).or(y.undecidable),
+                    on_true: Vec::new(),
+                    on_false: Vec::new(),
+                }));
+            }
+            (x, y) if is_untyped(&x) && is_untyped(&y) => {
+                require_decidable_reason(undecidable.as_ref())?;
+                let (xt, mut leaves) = untyped_parts(x);
+                let (yt, more) = untyped_parts(y);
+                leaves.extend(more);
+                return Ok(if math {
+                    Low::Int(ite(&xt, &yt), Ty::Math)
+                } else {
+                    Low::UntypedIf(ite(&xt, &yt), leaves)
+                });
+            }
+            (x, Low::Int(yt, ty)) if is_untyped(&x) => (settle(x, ty)?, Low::Int(yt, ty)),
+            (Low::Int(xt, ty), y) if is_untyped(&y) => (Low::Int(xt, ty), settle(y, ty)?),
+            pair => pair,
+        };
+        match (a, b) {
+            (Low::Int(x, tx), Low::Int(y, ty)) => {
+                if tx != ty {
+                    return Err(type_error(
+                        f.span,
+                        format!(
+                            "`if` and `else` have mismatched types `{}` and `{}`",
+                            tx.describe(),
+                            ty.describe()
+                        ),
+                    )
+                    .help("give both branches one type, e.g. by wrapping both in `math(..)`"));
+                }
+                require_decidable_reason(undecidable.as_ref())?;
+                Ok(Low::Int(ite(&x, &y), tx))
+            }
+            (Low::Unit(x), Low::Unit(y)) => {
+                require_decidable_reason(undecidable.as_ref())?;
+                Ok(Low::Unit(ite(&x, &y)))
+            }
+            (a, b) => Err(type_error(
+                f.span,
+                format!(
+                    "`if` and `else` have incompatible types: {} and {}",
+                    describe(&a),
+                    describe(&b)
+                ),
+            )),
         }
     }
 
@@ -612,7 +738,7 @@ impl Env<'_> {
                 // `a`'s nonzero facts may guard divisions in `b`.
                 let mark = facts.len();
                 if matches!(op, BinOp::And | BinOp::Implies) {
-                    self.collect_facts(l, facts);
+                    facts.extend(a.on_true.iter().cloned());
                 }
                 let b = self.lower_prop_in(r, math, facts);
                 facts.truncate(mark);
@@ -623,11 +749,29 @@ impl Env<'_> {
                     BinOp::Implies => "→",
                     _ => "↔",
                 };
-                Ok(Low::Prop(format!("({a} {sym} {b})")))
+                let (on_true, on_false) = match op {
+                    BinOp::And => {
+                        let mut on_true = a.on_true;
+                        on_true.extend(b.on_true);
+                        (on_true, Vec::new())
+                    }
+                    BinOp::Or => {
+                        let mut on_false = a.on_false;
+                        on_false.extend(b.on_false);
+                        (Vec::new(), on_false)
+                    }
+                    _ => (Vec::new(), Vec::new()),
+                };
+                Ok(Low::Prop(Prop {
+                    term: format!("({} {sym} {})", a.term, b.term),
+                    undecidable: a.undecidable.or(b.undecidable),
+                    on_true,
+                    on_false,
+                }))
             }
             _ if op.is_comparison() => {
                 let (a, b) = self.lower_pair(l, r, math, facts)?;
-                self.compare(op, a, b, span)
+                self.compare(op, l, r, a, b, span)
             }
             BinOp::BitAnd | BinOp::BitOr | BinOp::BitXor => {
                 let a = self.lower(l, math, facts)?;
@@ -701,40 +845,12 @@ impl Env<'_> {
         e: &Expr,
         math: bool,
         facts: &mut Vec<String>,
-    ) -> Result<String, Diagnostic> {
+    ) -> Result<Prop, Diagnostic> {
         match self.lower(e, math, facts)? {
             Low::Prop(p) => Ok(p),
             other => {
                 Err(type_error(e.span, format!("expected `bool`, found {}", describe(&other))))
             }
-        }
-    }
-
-    /// Records integer terms that `e` (as a conjunction) proves nonzero.
-    fn collect_facts(&self, e: &Expr, facts: &mut Vec<String>) {
-        match &e.kind {
-            ExprKind::Paren(inner) => self.collect_facts(inner, facts),
-            ExprKind::Binary(BinOp::And, l, r) => {
-                self.collect_facts(l, facts);
-                self.collect_facts(r, facts);
-            }
-            ExprKind::Binary(op @ (BinOp::Ne | BinOp::Gt | BinOp::Lt), l, r) => {
-                let zero = |x: &Expr| const_int_lit(x).is_some_and(|v| v.mag == 0);
-                let subject = match op {
-                    BinOp::Ne if zero(r) => Some(l),
-                    BinOp::Ne if zero(l) => Some(r),
-                    BinOp::Gt if zero(r) => Some(l),
-                    BinOp::Lt if zero(l) => Some(r),
-                    _ => None,
-                };
-                if let Some(s) = subject {
-                    let mut scratch = Vec::new();
-                    if let Ok(Low::Int(t, _)) = self.lower(s, true, &mut scratch) {
-                        facts.push(t);
-                    }
-                }
-            }
-            _ => {}
         }
     }
 
@@ -750,18 +866,19 @@ impl Env<'_> {
         let a = self.lower(l, math, facts)?;
         let b = self.lower(r, math, facts)?;
         let (a, b) = match (a, b) {
-            (Low::Lit(v, s), Low::Int(t, ty)) => (lit_at(v, s, ty)?, Low::Int(t, ty)),
-            (Low::Int(t, ty), Low::Lit(v, s)) => (Low::Int(t, ty), lit_at(v, s, ty)?),
-            (Low::Lit(v, _), Low::Lit(w, _)) if math => {
-                (Low::Int(int_lit(v), Ty::Math), Low::Int(int_lit(w), Ty::Math))
+            (x, Low::Int(t, ty)) if is_untyped(&x) => (settle(x, ty)?, Low::Int(t, ty)),
+            (Low::Int(t, ty), y) if is_untyped(&y) => (Low::Int(t, ty), settle(y, ty)?),
+            (x, y) if math && is_untyped(&x) && is_untyped(&y) => {
+                (settle(x, Ty::Math)?, settle(y, Ty::Math)?)
             }
-            (Low::Lit(_, s), Low::Lit(..)) => {
+            (x, y) if is_untyped(&x) && is_untyped(&y) => {
+                let s = if let Low::Lit(_, s) = x { s } else { l.span };
                 return Err(Diagnostic::new(
                     "E_ANNEAL_SPEC_TYPE_ANNOTATION_NEEDED",
                     s,
                     "the type of this integer literal cannot be inferred",
                 )
-                .help("add a suffix such as `5usize`, or use `math(...)`"))
+                .help("add a suffix such as `5usize`, or use `math(...)`"));
             }
             pair => pair,
         };
@@ -783,7 +900,15 @@ impl Env<'_> {
         Ok((a, b))
     }
 
-    fn compare(&self, op: BinOp, a: Low, b: Low, span: Span) -> Result<Low, Diagnostic> {
+    fn compare(
+        &self,
+        op: BinOp,
+        l: &Expr,
+        r: &Expr,
+        a: Low,
+        b: Low,
+        span: Span,
+    ) -> Result<Low, Diagnostic> {
         let sym = match op {
             BinOp::Eq => "=",
             BinOp::Ne => "≠",
@@ -792,16 +917,50 @@ impl Env<'_> {
             BinOp::Gt => ">",
             _ => "≥",
         };
+        let zero = |x: &Expr| const_int_lit(x).is_some_and(|v| v.mag == 0);
         match (a, b) {
             (Low::Prop(x), Low::Prop(y)) => match op {
-                BinOp::Eq => Ok(Low::Prop(format!("({x} ↔ {y})"))),
-                BinOp::Ne => Ok(Low::Prop(format!("(¬ ({x} ↔ {y}))"))),
+                BinOp::Eq | BinOp::Ne => Ok(Low::Prop(Prop {
+                    term: if matches!(op, BinOp::Eq) {
+                        format!("({} ↔ {})", x.term, y.term)
+                    } else {
+                        format!("(¬ ({} ↔ {}))", x.term, y.term)
+                    },
+                    undecidable: x.undecidable.or(y.undecidable),
+                    on_true: Vec::new(),
+                    on_false: Vec::new(),
+                })),
                 _ => Err(type_error(span, "ordering comparisons on `bool` are not supported")),
             },
             (Low::Unit(x), Low::Unit(y)) if matches!(op, BinOp::Eq | BinOp::Ne) => {
-                Ok(Low::Prop(format!("({x} {sym} {y})")))
+                Ok(Low::Prop(Prop {
+                    term: format!("({x} {sym} {y})"),
+                    undecidable: Some((span, "`()` values have no decidable equality".into())),
+                    on_true: Vec::new(),
+                    on_false: Vec::new(),
+                }))
             }
-            (Low::Int(x, _), Low::Int(y, _)) => Ok(Low::Prop(format!("({x} {sym} {y})"))),
+            (Low::Int(x, _), Low::Int(y, _)) => {
+                let mut on_true = Vec::new();
+                let mut on_false = Vec::new();
+                match op {
+                    BinOp::Ne if zero(r) => on_true.push(x.clone()),
+                    BinOp::Ne if zero(l) => on_true.push(y.clone()),
+                    BinOp::Gt if zero(r) => on_true.push(x.clone()),
+                    BinOp::Lt if zero(l) => on_true.push(y.clone()),
+                    BinOp::Eq if zero(r) => on_false.push(x.clone()),
+                    BinOp::Eq if zero(l) => on_false.push(y.clone()),
+                    BinOp::Le if zero(r) => on_false.push(x.clone()),
+                    BinOp::Ge if zero(l) => on_false.push(y.clone()),
+                    _ => {}
+                }
+                Ok(Low::Prop(Prop {
+                    term: format!("({x} {sym} {y})"),
+                    undecidable: None,
+                    on_true,
+                    on_false,
+                }))
+            }
             (a, b) => Err(type_error(
                 span,
                 format!("cannot compare {} with {}", describe(&a), describe(&b)),
@@ -867,7 +1026,7 @@ impl Env<'_> {
             } else {
                 (format!("(0 : {INT})"), m)
             };
-            return Ok(Low::Prop(format!("({lo} ≤ {sum} ∧ {sum} < {hi})")));
+            return Ok(Low::Prop(Prop::pure(format!("({lo} ≤ {sum} ∧ {sum} < {hi})"))));
         }
         let Some(sig) = self.helpers.get(name) else {
             return Err(unknown_fn(name, span, self.helpers));
@@ -875,9 +1034,12 @@ impl Env<'_> {
         arity(sig.params.len())?;
         let mut lowered = Vec::new();
         for (arg, pty) in args.iter().zip(&sig.params) {
-            let low = self.lower(arg, false, facts)?;
+            let mut low = self.lower(arg, false, facts)?;
+            if let (Low::UntypedIf(..), Ty::Int(_)) = (&low, pty) {
+                low = settle(low, *pty)?;
+            }
             let term = match (low, pty) {
-                (Low::Prop(p), Ty::Bool) => p,
+                (Low::Prop(p), Ty::Bool) => p.term,
                 (Low::Int(t, Ty::Int(a)), Ty::Int(b)) if a == *b => t,
                 (Low::Lit(v, s), Ty::Int(b)) => {
                     check_range(v, *b, s)?;
@@ -898,10 +1060,40 @@ impl Env<'_> {
             format!("({} {})", sig.lean_name, lowered.join(" "))
         };
         Ok(match sig.ret {
-            Ty::Bool => Low::Prop(app),
+            Ty::Bool => Low::Prop(Prop {
+                term: app,
+                undecidable: Some((
+                    span,
+                    format!("`{name}` is a `bool` helper, which lowers to a `Prop`"),
+                )),
+                on_true: Vec::new(),
+                on_false: Vec::new(),
+            }),
             Ty::Unit => Low::Unit(app),
             t => Low::Int(app, if math { Ty::Math } else { t }),
         })
+    }
+}
+
+/// Rejects an `if` condition whose lowered proposition has no Lean
+/// `Decidable` instance (arbitrary `Prop` from `bool` helpers, or `()`
+/// equality).
+fn require_decidable(cond: &Prop) -> Result<(), Diagnostic> {
+    require_decidable_reason(cond.undecidable.as_ref())
+}
+
+fn require_decidable_reason(undecidable: Option<&(Span, String)>) -> Result<(), Diagnostic> {
+    match undecidable {
+        None => Ok(()),
+        Some((span, why)) => Err(Diagnostic::new(
+            "E_ANNEAL_UNDECIDABLE_SPEC_IF",
+            *span,
+            format!("an `if` that chooses a value needs a decidable condition, but {why}"),
+        )
+        .help(
+            "choose between `bool` facts instead, as in `if c { ret == a } else { ret == b }`, \
+             or test integer values in the condition",
+        )),
     }
 }
 
@@ -949,6 +1141,37 @@ fn describe(l: &Low) -> String {
         Low::Int(_, t) => format!("`{}`", t.describe()),
         Low::Unit(_) => "`()`".into(),
         Low::Lit(..) => "an integer literal".into(),
+        Low::UntypedIf(..) => "an `if` of integer literals".into(),
+    }
+}
+
+fn is_untyped(l: &Low) -> bool {
+    matches!(l, Low::Lit(..) | Low::UntypedIf(..))
+}
+
+/// The term and the literal leaves of an untyped integer.
+fn untyped_parts(l: Low) -> (String, Vec<(IntLit, Span)>) {
+    match l {
+        Low::Lit(v, s) => (int_lit(v), vec![(v, s)]),
+        Low::UntypedIf(t, leaves) => (t, leaves),
+        other => unreachable!("not an untyped integer: {other:?}"),
+    }
+}
+
+/// Gives an untyped integer the type `ty`, range-checking its literals.
+/// Every other lowered value is returned unchanged.
+fn settle(l: Low, ty: Ty) -> Result<Low, Diagnostic> {
+    match l {
+        Low::Lit(v, s) => lit_at(v, s, ty),
+        Low::UntypedIf(t, leaves) => {
+            if let Ty::Int(it) = ty {
+                for (v, s) in leaves {
+                    check_range(v, it, s)?;
+                }
+            }
+            Ok(Low::Int(t, ty))
+        }
+        other => Ok(other),
     }
 }
 
@@ -1186,10 +1409,10 @@ pub fn lower_fn(
     let mut lower_all = |exprs: &[&Expr], env: &Env<'_>, facts: &mut Vec<String>| -> Vec<String> {
         let mut out = Vec::new();
         for e in exprs {
-            match env.lower_prop(e, facts) {
+            match env.lower_prop_in(e, false, facts) {
                 Ok(p) => {
-                    env.collect_facts(e, facts);
-                    out.push(p);
+                    facts.extend(p.on_true);
+                    out.push(p.term);
                 }
                 Err(d) => errors.push(d),
             }
@@ -1307,9 +1530,12 @@ pub fn lower_helper(
         }
     }
     let env = Env::for_helper(&h.params, helpers, runtime);
-    let low = env.lower(&h.body, false, &mut Vec::new())?;
+    let mut low = env.lower(&h.body, false, &mut Vec::new())?;
+    if let (Low::UntypedIf(..), Ty::Int(_)) = (&low, h.ret) {
+        low = settle(low, h.ret)?;
+    }
     match (low, h.ret) {
-        (Low::Prop(p), Ty::Bool) => Ok(p),
+        (Low::Prop(p), Ty::Bool) => Ok(p.term),
         (Low::Int(t, Ty::Int(a)), Ty::Int(b)) if a == b => Ok(t),
         (Low::Lit(v, s), Ty::Int(b)) => {
             check_range(v, b, s)?;
@@ -1341,6 +1567,11 @@ pub fn calls_in(e: &Expr, out: &mut Vec<String>) {
         ExprKind::Binary(_, a, b) => {
             calls_in(a, out);
             calls_in(b, out);
+        }
+        ExprKind::If(c, t, f) => {
+            calls_in(c, out);
+            calls_in(t, out);
+            calls_in(f, out);
         }
         _ => {}
     }

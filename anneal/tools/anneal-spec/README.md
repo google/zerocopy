@@ -108,20 +108,34 @@ Expressions: `true`/`false`, integer literals (with optional suffix), the
 integer constants `T::MIN`, `T::MAX`, and `T::BITS` for a fixed-width integer
 type `T`, parameters, the `ensures` binder, `!`, unary `-`, `&&`, `||`, `==>`
 (right-associative), `<==>`, comparisons, `+ - * / %`, helper calls,
-`math(e)`/`math { e }`, `wrapping_{add,sub,mul}`, and
-`no_overflow_{add,sub,mul}`. Types: `bool`, `()`, and fixed-width integers.
+`math(e)`/`math { e }`, `wrapping_{add,sub,mul}`,
+`no_overflow_{add,sub,mul}`, and `if c { a } else { b }` (with `else if`
+chains). Types: `bool`, `()`, and fixed-width integers.
 
 Every integer lowers to its mathematical `Int` value via `scalarAsInt`.
 Arithmetic on machine integers must say what it means: `math(a) + math(b)` is
 unbounded, `wrapping_add(a, b)` is modular, and `no_overflow_add(a, b)` states
 that the mathematical sum is in range. Division and remainder lower to
 `Trusted.MirSemantics.intTdiv`/`intTmod` (Rust's truncating semantics, as in
-`Int.tdiv`/`Int.tmod`) and require the divisor to
-be a nonzero literal or guarded by `d != 0` (or `d > 0`) earlier in a `&&` or
-`==>` chain or in a `requires` clause. A `safety_requires` guard does not
-count outside `safety_requires`, since it is not part of the behavioral
-precondition of a body that is not `unsafe`. Integer literals above
+`Int.tdiv`/`Int.tmod`) and require the divisor to be a nonzero literal or
+guarded by `d != 0` (or `d > 0`) earlier in a `&&` or `==>` chain, by the
+condition of an enclosing `if`, or in a `requires` clause. A `safety_requires`
+guard does not count outside `safety_requires`, since it is not part of the
+behavioral precondition of a body that is not `unsafe`. Integer literals above
 `u128::MAX` are not supported.
+
+A specification `if` is an expression, so its `else` branch is required. As in
+Rust, the condition ends at the first `{`, so write `math(..)` rather than
+`math { .. }` there. No binary operator may follow an `if` directly:
+parenthesize the `if`, or the expression that ends with it, as in
+`(r == if c { a } else { b }) && ..`. Both branches must have one type, and
+untyped integer literal branches take their type from context. An `if` between
+`bool`s lowers to `((c → a) ∧ (¬ c → b))`. An `if` that chooses an integer or
+`()` lowers to Lean's `if c then a else b`, so its condition must be decidable:
+it may test integers and `bool` arguments and return values, but may not call a
+`bool` helper or name a `bool` helper parameter, which lower to arbitrary
+propositions. A branch may divide by what the condition proves nonzero on its
+side, as in `if d == 0 { r == 0 } else { math(r) == math(n / d) }`.
 
 An integer constant lowers to its value on the profile v1 target, where
 `usize` and `isize` are 64 bits wide: `usize::MAX` lowers to
@@ -148,7 +162,8 @@ UTF-8 source and columns count Unicode scalar values.
 | `E_ANNEAL_EAGER_CLAUSE_JOIN` | `&` or `\|` between `bool`s |
 | `E_ANNEAL_AMBIGUOUS_NEGATION` | `!a == b` and `!a != b` |
 | `E_ANNEAL_CHAINED_COMPARISON` | `a < b < c` |
-| `E_ANNEAL_IMPURE_SPEC_EXPR` | assignments, blocks, `if`/`match`/`let`/loops, `unsafe` helpers |
+| `E_ANNEAL_IMPURE_SPEC_EXPR` | assignments, blocks, `match`/`let`/loops, `unsafe` helpers |
+| `E_ANNEAL_UNDECIDABLE_SPEC_IF` | an `if` choosing an integer or `()` whose condition calls a `bool` helper, names a `bool` helper parameter, or compares `()` values |
 | `E_ANNEAL_OLD_IN_PRECONDITION` / `E_ANNEAL_UNSUPPORTED_OLD` | `old(...)` |
 | `E_ANNEAL_SAFETY_REQUIRES_ON_SAFE_FN` | `safety_requires` on a safe function |
 | `E_ANNEAL_SPEC_UNKNOWN_IDENT` / `E_ANNEAL_SPEC_UNKNOWN_FN` | unbound names (with a did-you-mean hint) |
