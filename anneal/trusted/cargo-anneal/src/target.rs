@@ -182,6 +182,14 @@ pub struct TargetAuditRequest {
     pub bindings: TargetBindings,
 }
 
+struct ElaboratedTarget {
+    filtered_request: TargetAuditRequest,
+    roles: BTreeMap<String, TargetRole>,
+    is_module: BTreeMap<String, bool>,
+    order: Vec<String>,
+    staged: BTreeMap<String, PathBuf>,
+}
+
 /// Synchronous progress milestone emitted by
 /// [`Checker::run_target_with_progress`].
 #[doc(hidden)]
@@ -979,6 +987,36 @@ impl Checker {
         request: &TargetAuditRequest,
         mut on_progress: impl FnMut(TargetProgress) + Send,
     ) -> Result<Json, Failure> {
+        let elaborated = self.prepare_and_elaborate_target(request, &mut on_progress)?;
+        self.audit_elaborated_target(request, elaborated, &mut on_progress)
+    }
+
+    /// Dev-only inner-loop check (`--fast-check`): run `[3/6]`..`[5/6]`
+    /// (toolchain admission, specification preflight, and full Lean
+    /// elaboration) while skipping stage `[6/6]` kernel replay and audit.
+    ///
+    /// Returns the count of elaborated target modules without producing any
+    /// audit report.
+    pub(crate) fn run_target_fast_check_with_progress(
+        &mut self,
+        request: &TargetAuditRequest,
+        mut on_progress: impl FnMut(TargetProgress) + Send,
+    ) -> Result<usize, Failure> {
+        if self.paranoid_quorum() {
+            return Err(Failure::operational(
+                "fast-check",
+                "--fast-check cannot be combined with --paranoid-quorum",
+            ));
+        }
+        let elaborated = self.prepare_and_elaborate_target(request, &mut on_progress)?;
+        Ok(elaborated.order.len())
+    }
+
+    fn prepare_and_elaborate_target(
+        &mut self,
+        request: &TargetAuditRequest,
+        on_progress: &mut (impl FnMut(TargetProgress) + Send),
+    ) -> Result<ElaboratedTarget, Failure> {
         self.reset_stage()?;
         on_progress(TargetProgress::Toolchain);
         self.tool_admission()?;
@@ -1284,6 +1322,16 @@ impl Checker {
                 on_progress(TargetProgress::Elaborate { done, total, cached });
             },
         )?;
+        Ok(ElaboratedTarget { filtered_request, roles, is_module, order, staged })
+    }
+
+    fn audit_elaborated_target(
+        &mut self,
+        request: &TargetAuditRequest,
+        elaborated: ElaboratedTarget,
+        on_progress: &mut (impl FnMut(TargetProgress) + Send),
+    ) -> Result<Json, Failure> {
+        let ElaboratedTarget { filtered_request, roles, is_module, staged, .. } = elaborated;
         // Re-hash `stage/control/TrustedBoundary.lean`,
         // `stage/control/TrustedBoundary.olean`, every staged source snapshot
         // in `stage/ro/`, and every Door-1-promoted `.olean` in `stage/lib/`

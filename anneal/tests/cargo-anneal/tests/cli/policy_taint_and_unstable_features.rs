@@ -568,3 +568,129 @@ fn allow_unstable_feature_conflicts_with_stdlib_crate_request() {
     assert_eq!(receipt["phase"], "request", "{receipt}");
     assert!(receipt["detail"].as_str().unwrap().contains("stdlib_crate"), "{receipt}");
 }
+
+#[test]
+fn fast_check_refuses_receipt_outputs_and_never_emits_receipt_v3() {
+    use std::fs;
+
+    let project = tempfile::tempdir().unwrap();
+    let request = project.path().join("request.json");
+    fs::write(&request, b"not JSON\n").unwrap();
+    let lib_rs = project.path().join("lib.rs");
+    let spec_lean = project.path().join("Spec.lean");
+    let proof_lean = project.path().join("Proof.lean");
+    fs::write(&lib_rs, b"pub fn id(x: u32) -> u32 { x }\n").unwrap();
+    fs::write(&spec_lean, b"-- spec\n").unwrap();
+    fs::write(&proof_lean, b"-- proof\n").unwrap();
+
+    // Pre-populate an existing artifact directory so an `--overwrite-artifacts`
+    // bypass would delete `result.json` or `lean-lib/Captured.olean`.
+    let existing_art = project.path().join("existing-art");
+    fs::create_dir_all(existing_art.join("lean-lib")).unwrap();
+    fs::write(existing_art.join(".cargo-anneal-artifacts"), b"").unwrap();
+    fs::write(existing_art.join("result.json"), b"{\"status\":\"crate_verified\"}\n").unwrap();
+    fs::write(existing_art.join("lean-lib/Captured.olean"), b"olean").unwrap();
+
+    let conflict_cases: &[(&[&str], &str)] = &[
+        (&["--receipt-out", "receipt.json"], "--receipt-out"),
+        (&["--artifacts", "art"], "--artifacts"),
+        (&["--artifacts", "art", "--export-lean-lib"], "--artifacts"),
+        (&["--export-lean-lib"], "--export-lean-lib"),
+        (&["--overwrite-artifacts"], "--overwrite-artifacts"),
+        (&["--artifacts", "existing-art", "--overwrite-artifacts"], "--artifacts"),
+        (
+            &["--artifacts", "existing-art", "--overwrite-artifacts", "--export-lean-lib"],
+            "--artifacts",
+        ),
+        (&["--paranoid-quorum"], "--paranoid-quorum"),
+        (&["--format", "json"], "--format json"),
+    ];
+
+    for &(conflicting, expected_flag) in conflict_cases {
+        // (a) Single-level `--request` invocation: must reject specifically on
+        //     `--fast-check` (never vacuously on `requires --artifacts`).
+        let mut cmd = command(Route::Direct, project.path());
+        cmd.args(["verify", "--fast-check", "--request"]).arg(&request).args(conflicting);
+        #[cfg(not(feature = "setup"))]
+        cmd.args(["--capture", "cap", "--sysroot", "sys", "--lean", "lean"]);
+        let output = cmd.output().unwrap();
+        assert_result(&output, 2, "", "--fast-check");
+        assert_result(&output, 2, "", expected_flag);
+        assert!(output.stdout.is_empty(), "{conflicting:?}: {output:?}");
+        let stderr = String::from_utf8_lossy(&output.stderr);
+        assert!(!stderr.contains("requires `--artifacts"), "{stderr}");
+
+        // (b) Split across `verify --fast-check rustc ... <conflicting>`.
+        let spec_arg = format!("Spec={}", spec_lean.display());
+        let proof_arg = format!("Proof={}", proof_lean.display());
+        let mut split_before = command(Route::Direct, project.path());
+        split_before
+            .args(["verify", "--fast-check", "rustc"])
+            .arg(&lib_rs)
+            .args([
+                "--crate-name",
+                "c",
+                "--edition",
+                "2024",
+                "--spec-file",
+                &spec_arg,
+                "--proof-file",
+                &proof_arg,
+                "--spec-decl",
+                "Spec.specs",
+                "--theorem",
+                "Proof.verify",
+            ])
+            .args(conflicting);
+        #[cfg(not(feature = "setup"))]
+        split_before.args(["--capture", "cap", "--sysroot", "sys", "--lean", "lean"]);
+        let out_before = split_before.output().unwrap();
+        assert_result(&out_before, 2, "", "--fast-check");
+        assert_result(&out_before, 2, "", expected_flag);
+        assert!(out_before.stdout.is_empty(), "split_before {conflicting:?}: {out_before:?}");
+
+        // (c) Split across `verify <conflicting> rustc ... --fast-check`.
+        let mut split_after = command(Route::Direct, project.path());
+        split_after.arg("verify").args(conflicting).arg("rustc").arg(&lib_rs).args([
+            "--crate-name",
+            "c",
+            "--edition",
+            "2024",
+            "--spec-file",
+            &spec_arg,
+            "--proof-file",
+            &proof_arg,
+            "--spec-decl",
+            "Spec.specs",
+            "--theorem",
+            "Proof.verify",
+            "--fast-check",
+        ]);
+        #[cfg(not(feature = "setup"))]
+        split_after.args(["--capture", "cap", "--sysroot", "sys", "--lean", "lean"]);
+        let out_after = split_after.output().unwrap();
+        assert_result(&out_after, 2, "", "--fast-check");
+        assert_result(&out_after, 2, "", expected_flag);
+        assert!(out_after.stdout.is_empty(), "split_after {conflicting:?}: {out_after:?}");
+    }
+
+    assert!(!project.path().join("receipt.json").exists());
+    assert!(!project.path().join("art").exists());
+    assert!(existing_art.join("result.json").is_file());
+    assert!(existing_art.join("lean-lib/Captured.olean").is_file());
+
+    // Even when `--format auto` runs over a non-TTY pipe, `--fast-check`
+    // emits human output with explicit tainting rather than Receipt v3 JSON.
+    let mut cmd = command(Route::Direct, project.path());
+    cmd.args(["verify", "--fast-check", "--format", "auto", "--request"]).arg(&request);
+    #[cfg(not(feature = "setup"))]
+    cmd.args(["--capture", "cap", "--sysroot", "sys", "--lean", "lean"]);
+    let output = cmd.output().unwrap();
+    assert_result(&output, 1, "fast_check_dev_mode", "UNVERIFIED_DEV_ONLY");
+    assert_result(&output, 1, "[FAIL]", "TAINTED");
+    assert!(
+        serde_json::from_slice::<serde_json::Value>(&output.stdout).is_err(),
+        "fast-check must never emit JSON receipt: {}",
+        String::from_utf8_lossy(&output.stdout)
+    );
+}

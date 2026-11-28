@@ -514,7 +514,7 @@ pub fn write_all_safe<W: Write>(writer: &mut W, bytes: &[u8]) -> io::Result<()> 
 
 /// Complete a subcommand by writing `primary_bytes` to `stdout_writer` (after
 /// clearing any transient `stderr` progress line) while strictly preserving
-/// non-zero `computed_exit` codes (`1` or `2`) on `BrokenPipe`.
+/// non-zero `computed_exit` codes (`1`, `2`, or `3`) on `BrokenPipe`.
 pub fn finish_with_writers<Out: Write, Err: Write>(
     session: &mut OutputSession<Out, Err>,
     primary_bytes: &[u8],
@@ -964,12 +964,85 @@ fn format_containment_label(sandbox: &str, ansi_color: bool) -> String {
 
 fn taint_flag_hint(reason: &str) -> &'static str {
     match reason {
+        "fast_check_dev_mode" => "--fast-check",
         "sorry_in_proof" => "--allow-sorry-in-proof",
         "unmodeled_unstable_features" => "--allow-unstable-feature",
         "unpinned_lean" => "--allow-unpinned-lean",
         "unsandboxed_elaboration" => "--allow-unsandboxed-elaboration",
         _ => "--allow-*",
     }
+}
+
+/// Summary inputs rendered by [`render_fast_check_card`] when `--fast-check`
+/// passes elaboration without running stage `[6/6]` kernel replay.
+pub struct FastCheckCardInput<'a> {
+    pub taint_reasons: &'a [&'a str],
+    pub crate_name: &'a str,
+    pub edition: &'a str,
+    pub target: &'a str,
+    pub elaboration_sandbox: &'a str,
+    pub module_count: usize,
+    pub capture_ms: u128,
+    pub proof_ms: u128,
+    pub total_ms: u128,
+}
+
+/// Render an unverified dev-only `--fast-check` summary card (never a Receipt
+/// Schema v3 payload).
+pub fn render_fast_check_card(
+    input: &FastCheckCardInput<'_>,
+    opts: CardRenderOptions<'_>,
+) -> String {
+    use fmt::Write as _;
+
+    let badge = style_span("[UNVERIFIED_DEV_ONLY]", "\x1b[1;33m", opts.ansi_color);
+    let headline = style_span(
+        "PROOF ELABORATION PASSED (--fast-check; [6/6] kernel replay skipped -- NO RECEIPT)",
+        "\x1b[1;33m",
+        opts.ansi_color,
+    );
+    let mut out = String::new();
+    let _ = writeln!(out, "{badge} {headline}");
+    for raw_taint in input.taint_reasons {
+        let taint = SanitizedInline::new(raw_taint);
+        let flag = taint_flag_hint(raw_taint);
+        let detail = if *raw_taint == "fast_check_dev_mode" {
+            " -- [6/6] kernel replay & target audit skipped"
+        } else {
+            ""
+        };
+        let _ = writeln!(out, "  ! TAINT    : {taint} ({flag}){detail}");
+    }
+    if opts.quiet {
+        return out;
+    }
+    let _ = writeln!(
+        out,
+        "  Subject    : crate `{}` (edition {}, target {})",
+        SanitizedInline::new(input.crate_name),
+        SanitizedInline::new(input.edition),
+        SanitizedInline::new(input.target),
+    );
+    let _ = writeln!(
+        out,
+        "  Elaborated : {} target module(s) (kernel replay skipped)",
+        input.module_count
+    );
+    let _ = writeln!(
+        out,
+        "  Containment: {}",
+        format_containment_label(input.elaboration_sandbox, opts.ansi_color),
+    );
+    let _ = writeln!(
+        out,
+        "  Timing     : {} ms capture, {} ms preflight+elab, {} ms total",
+        input.capture_ms, input.proof_ms, input.total_ms,
+    );
+    let _ = writeln!(
+        out,
+        "  Notice     : UNVERIFIED_DEV_ONLY -- exited 3; cannot emit Receipt v3; re-run without --fast-check before claiming verification."
+    );
+    out
 }
 
 /// Options controlling human card rendering on `stdout`.
@@ -1988,6 +2061,28 @@ mod tests {
             "{fail_card}"
         );
         assert!(!fail_card.contains("[OK]") && !fail_card.contains("\x1b[1;32m"), "{fail_card}");
+
+        let fast_card = render_fast_check_card(
+            &FastCheckCardInput {
+                taint_reasons: &["fast_check_dev_mode"],
+                crate_name: "scalar",
+                edition: "2024",
+                target: "x86_64-unknown-linux-gnu",
+                elaboration_sandbox: "linux_bwrap",
+                module_count: 4,
+                capture_ms: 100,
+                proof_ms: 250,
+                total_ms: 350,
+            },
+            color_opts,
+        );
+        assert!(fast_card.contains("[UNVERIFIED_DEV_ONLY]"), "{fast_card}");
+        assert!(fast_card.contains("exited 3"), "{fast_card}");
+        assert!(
+            fast_card.contains("! TAINT    : fast_check_dev_mode (--fast-check)"),
+            "{fast_card}"
+        );
+        assert!(!fast_card.contains("[OK]") && !fast_card.contains("\x1b[1;32m"), "{fast_card}");
     }
 
     #[test]

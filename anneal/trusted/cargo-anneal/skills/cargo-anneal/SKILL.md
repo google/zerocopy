@@ -75,8 +75,9 @@ not point inside it.
 Run verification (defaults to `--format human` on stdout), atomically write a
 Receipt Schema v3 JSON file via `--receipt-out` (or pass `--format json` to
 stream JSON on stdout), and treat the process exit code (`0` verified, `1`
-verification failure, `2` operational/argument error) as authoritative
-alongside the receipt file (`--receipt-out` clears any pre-existing non-input
+verification failure, `2` operational/argument error, `3` `--fast-check`
+elaboration passed without kernel replay) as authoritative alongside the
+receipt file (`--receipt-out` clears any pre-existing non-input
 regular file once inputs are validated so interrupted or failed runs cannot
 leave a stale pass behind, while early argument/alias rejections exit `2`
 without touching the destination):
@@ -230,9 +231,16 @@ Taint Law across `--allow-unpinned-lean` (records `unpinned_lean`),
 `--allow-unsandboxed-elaboration` (`"elaboration_sandbox": "none"`),
 `--allow-sorry-in-proof` (records `sorry_declarations` in `proof` modules
 only), and `--allow-unstable-feature <NAME>` (records `unstable_features`):
-each flag prints `TAINTED` on stderr and appends `"unpinned_lean"`,
-`"unsandboxed_elaboration"`, `"sorry_in_proof"`, or
-`"unmodeled_unstable_features"` to `taint_reasons`.
+each flag prints `TAINTED` on stderr and appends `unpinned_lean`,
+`unsandboxed_elaboration`, `sorry_in_proof`, or `unmodeled_unstable_features`
+to `taint_reasons`.
+For fast inner-loop proof iteration, `--fast-check` runs capture, toolchain
+admission, specification preflight, and Lean elaboration while skipping `[6/6]`
+kernel replay and target audit: it surfaces taint `fast_check_dev_mode` and
+`UNVERIFIED_DEV_ONLY`, exits `3` (never `0`), never produces Receipt v3 JSON,
+and refuses `--receipt-out`, `--artifacts`, `--overwrite-artifacts`,
+`--export-lean-lib`, `--paranoid-quorum`, and `--format json`. Re-run without
+`--fast-check` before claiming verification.
 
 On exit `0` (`selected_unit_verified` / `crate_verified`, or `tainted_*` when
 `taint_reasons` is non-empty), inspect `status`, `taint_reasons`,

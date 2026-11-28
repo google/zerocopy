@@ -414,6 +414,15 @@ switches passing status to `tainted_crate_verified` or
   that taint and no other) and optionally
   `--forbid-incomplete-unstable-features`.
 
+For inner-loop proof iteration, `--fast-check` runs capture, toolchain
+admission, specification preflight, and full Lean elaboration while skipping
+stage `[6/6]` kernel replay and target auditing. Because replay is skipped,
+`--fast-check` prints `TAINTED` / `UNVERIFIED_DEV_ONLY`, exits with code `3`
+(never `0`), forces unverified dev output (never Receipt v3 JSON), and fails
+closed if combined with `--receipt-out`, `--artifacts`,
+`--overwrite-artifacts`, `--export-lean-lib`, `--paranoid-quorum`, or
+`--format json`. Re-run without `--fast-check` to emit a verification receipt.
+
 ## Inspect receipts offline
 
 Run `cargo anneal inspect <receipt.json>` (including under
