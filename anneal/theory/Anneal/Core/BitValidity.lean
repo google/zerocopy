@@ -293,12 +293,13 @@ theorem allBytesInit_of_initBytes?_eq_some :
     change (match initBytes? rest with
       | some bs => some (b :: bs)
       | none => none) = some raw at h
+    revert h
     cases hRest : initBytes? rest with
     | none =>
-      rw [hRest] at h
+      intro h
       nomatch h
     | some tl =>
-      rw [hRest] at h
+      intro h
       injection h with hRaw
       subst hRaw
       have ⟨hInit, hLen⟩ := allBytesInit_of_initBytes?_eq_some hRest
@@ -596,144 +597,127 @@ theorem truncateBits_of_lt (w : IntWidth) (n : Nat)
   rw [Nat.mod_eq_of_lt hn, Nat.mod_eq_of_lt hn128]
   exact Eq.symm hMod128
 
+/-- Strip `encodeVal`'s leading `checkVal` guard from a successful result. -/
+private theorem ite_not_error_ok {α : Type} {c : Bool} {e : Except FaultKind α}
+    {x : α}
+    (h : (if (!c) = true then Except.error FaultKind.unsupported else e) =
+      Except.ok x) :
+    e = Except.ok x := by
+  cases c with
+  | false => nomatch h
+  | true => exact h
+
+/-- A guarded encoding whose unguarded result is an error never succeeds.
+Leaves of `noProvBytes_encodeVal` apply it to an unreduced `encodeVal`
+equation so that elaboration, rather than a per-leaf `nomatch`, reduces the
+encoding. -/
+private theorem guarded_error_ne_ok {α : Type} {c : Bool} {e : FaultKind}
+    {x : α}
+    (h : (if (!c) = true then Except.error FaultKind.unsupported else
+      Except.error e) = Except.ok x) :
+    False := by
+  cases c with
+  | false => nomatch h
+  | true => nomatch h
+
+/-- A successful guarded encoding `.ok xs` transfers any property of `xs` to
+the result. -/
+private theorem guarded_ok_elim {P : List AllocByte → Prop} {c : Bool}
+    {xs bs : List AllocByte} (hx : P xs) :
+    (if (!c) = true then Except.error FaultKind.unsupported else
+      (Except.ok xs : Except FaultKind (List AllocByte))) = Except.ok bs →
+    P bs := by
+  intro h
+  injection ite_not_error_ok h with hBs
+  rw [← hBs]
+  exact hx
+
 /-- Every byte sequence emitted by `encodeVal` is provenance-free. -/
 theorem noProvBytes_encodeVal (endian : TargetEndian) (ty : MirTy) (v : Val)
     (bs : List AllocByte) (hEnc : encodeVal endian ty v = .ok bs) :
     NoProvBytes bs := by
-  unfold encodeVal at hEnc
-  cases hChk : checkVal v ty with
-  | false =>
-    rw [hChk] at hEnc
-    nomatch hEnc
-  | true =>
-    rw [hChk] at hEnc
-    cases ty with
-    | int w s =>
-      cases v with
-      | scalar sv =>
-        injection hEnc with hBs
-        rw [← hBs]
-        exact noProvBytes_map_init_none _ _
-      | ptr _ | bool _ | char _ | ordering _ | unit | enumVal _ _ | tuple _
-      | slicePtr _ _ | rangeTo _ | rangeFrom _ | range _ _ | optionVal _
-      | array _ | bytes _ | boxPtr _ _ | vec _ _ _ => nomatch hEnc
-    | bool =>
-      cases v with
-      | bool b =>
-        injection hEnc with hBs
-        rw [← hBs]
-        rfl
-      | scalar _ | ptr _ | char _ | ordering _ | unit | enumVal _ _ | tuple _
-      | slicePtr _ _ | rangeTo _ | rangeFrom _ | range _ _ | optionVal _
-      | array _ | bytes _ | boxPtr _ _ | vec _ _ _ => nomatch hEnc
-    | char =>
-      cases v with
-      | char c =>
-        injection hEnc with hBs
-        rw [← hBs]
-        exact noProvBytes_map_init_none _ _
-      | scalar _ | ptr _ | bool _ | ordering _ | unit | enumVal _ _ | tuple _
-      | slicePtr _ _ | rangeTo _ | rangeFrom _ | range _ _ | optionVal _
-      | array _ | bytes _ | boxPtr _ _ | vec _ _ _ => nomatch hEnc
-    | ordering =>
-      cases v with
-      | ordering ord =>
-        injection hEnc with hBs
-        rw [← hBs]
-        exact noProvBytes_map_init_none _ _
-      | scalar _ | ptr _ | bool _ | char _ | unit | enumVal _ _ | tuple _
-      | slicePtr _ _ | rangeTo _ | rangeFrom _ | range _ _ | optionVal _
-      | array _ | bytes _ | boxPtr _ _ | vec _ _ _ => nomatch hEnc
-    | unit =>
-      cases v with
-      | unit =>
-        injection hEnc with hBs
-        rw [← hBs]
-        rfl
-      | scalar _ | ptr _ | bool _ | char _ | ordering _ | enumVal _ _ | tuple _
-      | slicePtr _ _ | rangeTo _ | rangeFrom _ | range _ _ | optionVal _
-      | array _ | bytes _ | boxPtr _ _ | vec _ _ _ => nomatch hEnc
-    | enum ety =>
-      cases v with
-      | enumVal _ variant =>
-        simp at hEnc
-        cases hTr : ety.tagRepr with
-        | zeroSized =>
-          rw [hTr] at hEnc
-          injection hEnc with hBs
+  revert hEnc
+  cases ty with
+  | int w s =>
+    cases v with
+    | scalar sv => exact guarded_ok_elim (noProvBytes_map_init_none _ _)
+    | _ => exact fun h => (guarded_error_ne_ok h).elim
+  | bool =>
+    cases v with
+    | bool b => exact guarded_ok_elim rfl
+    | _ => exact fun h => (guarded_error_ne_ok h).elim
+  | char =>
+    cases v with
+    | char c => exact guarded_ok_elim (noProvBytes_map_init_none _ _)
+    | _ => exact fun h => (guarded_error_ne_ok h).elim
+  | ordering =>
+    cases v with
+    | ordering ord =>
+      exact guarded_ok_elim (noProvBytes_map_init_none _ _)
+    | _ => exact fun h => (guarded_error_ne_ok h).elim
+  | unit =>
+    cases v with
+    | unit => exact guarded_ok_elim rfl
+    | _ => exact fun h => (guarded_error_ne_ok h).elim
+  | enum ety =>
+    cases v with
+    | enumVal _ variant =>
+      intro hEnc
+      have hE := ite_not_error_ok hEnc
+      dsimp only at hE
+      revert hE
+      cases ety.tagRepr with
+      | zeroSized => intro hE; injection hE with hBs; rw [← hBs]; rfl
+      | scalar tagW tagS =>
+        dsimp only
+        cases Trusted.MirSemantics.getElem? ety.discriminants variant with
+        | none => intro hE; nomatch hE
+        | some disc =>
+          intro hE
+          injection hE with hBs
           rw [← hBs]
-          rfl
-        | scalar tagW tagS =>
-          rw [hTr] at hEnc
-          dsimp only at hEnc
-          cases hGet : Trusted.MirSemantics.getElem? ety.discriminants variant with
-          | none =>
-            rw [hGet] at hEnc
-            nomatch hEnc
-          | some disc =>
-            rw [hGet] at hEnc
-            injection hEnc with hBs
-            rw [← hBs]
-            exact noProvBytes_map_init_none _ _
-      | scalar _ | ptr _ | bool _ | char _ | ordering _ | unit | tuple _
-      | slicePtr _ _ | rangeTo _ | rangeFrom _ | range _ _ | optionVal _
-      | array _ | bytes _ | boxPtr _ _ | vec _ _ _ => nomatch hEnc
-    | tuple fs =>
-      cases fs with
-      | nil => nomatch hEnc
-      | cons f0 fs1 =>
-        cases f0 with
-        | int w s =>
-          cases fs1 with
-          | nil => nomatch hEnc
-          | cons f1 fs2 =>
-            cases f1 with
-            | bool =>
-              cases fs2 with
-              | nil =>
-                cases v with
-                | tuple vs =>
-                  cases vs with
-                  | nil => nomatch hEnc
-                  | cons v0 vs1 =>
-                    cases v0 with
-                    | scalar sv =>
-                      cases vs1 with
-                      | nil => nomatch hEnc
-                      | cons v1 vs2 =>
-                        cases v1 with
-                        | bool b =>
-                          cases vs2 with
-                          | nil =>
-                            injection hEnc with hBs
-                            rw [← hBs]
-                            apply NoProvBytes_append
-                            · exact NoProvBytes_append
-                                (noProvBytes_map_init_none _ _) rfl
-                            · exact noProvBytes_replicate_uninit _
-                          | cons _ _ => nomatch hEnc
-                        | scalar _ | ptr _ | char _ | ordering _ | unit
-                        | slicePtr _ _ | rangeTo _ | rangeFrom _ | range _ _
-                        | optionVal _ | array _ | enumVal _ _ | tuple _
-                        | bytes _ | boxPtr _ _ | vec _ _ _ => nomatch hEnc
-                    | ptr _ | bool _ | char _ | ordering _ | unit | enumVal _ _
-                    | slicePtr _ _ | rangeTo _ | rangeFrom _ | range _ _
-                    | optionVal _ | array _ | tuple _
-                    | bytes _ | boxPtr _ _ | vec _ _ _ => nomatch hEnc
-                | scalar _ | ptr _ | bool _ | char _ | ordering _ | unit
-                | slicePtr _ _ | rangeTo _ | rangeFrom _ | range _ _
-                | optionVal _ | array _ | enumVal _ _
-                | bytes _ | boxPtr _ _ | vec _ _ _ => nomatch hEnc
-              | cons _ _ => nomatch hEnc
-            | int _ _ | unit | never | char | ordering | enum _ | tuple _
-            | slice _ | str | array _ _ | rangeTo _ | rangeFrom _ | range _
-            | option _ | ref _ _ | rawPtr _ _ | unsupported | box _ | vec _ =>
-              nomatch hEnc
-        | bool | unit | never | char | ordering | enum _ | tuple _ | ref _ _
-        | slice _ | str | array _ _ | rangeTo _ | rangeFrom _ | range _ | option _
-        | rawPtr _ _ | unsupported | box _ | vec _ => nomatch hEnc
-    | slice _ | str | array _ _ | rangeTo _ | rangeFrom _ | range _ | option _
-    | never | ref _ _ | rawPtr _ _ | unsupported | box _ | vec _ => nomatch hEnc
+          exact noProvBytes_map_init_none _ _
+    | _ => exact fun h => (guarded_error_ne_ok h).elim
+  | tuple fs =>
+    cases fs with
+    | nil => exact fun h => (guarded_error_ne_ok h).elim
+    | cons f0 fs1 =>
+      cases f0 with
+      | int w s =>
+        cases fs1 with
+        | nil => exact fun h => (guarded_error_ne_ok h).elim
+        | cons f1 fs2 =>
+          cases f1 with
+          | bool =>
+            cases fs2 with
+            | nil =>
+              cases v with
+              | tuple vs =>
+                cases vs with
+                | nil => exact fun h => (guarded_error_ne_ok h).elim
+                | cons v0 vs1 =>
+                  cases v0 with
+                  | scalar sv =>
+                    cases vs1 with
+                    | nil => exact fun h => (guarded_error_ne_ok h).elim
+                    | cons v1 vs2 =>
+                      cases v1 with
+                      | bool b =>
+                        cases vs2 with
+                        | nil =>
+                          exact guarded_ok_elim (NoProvBytes_append
+                            (NoProvBytes_append
+                              (noProvBytes_map_init_none _ _) rfl)
+                            (noProvBytes_replicate_uninit _))
+                        | cons _ _ =>
+                          exact fun h => (guarded_error_ne_ok h).elim
+                      | _ => exact fun h => (guarded_error_ne_ok h).elim
+                  | _ => exact fun h => (guarded_error_ne_ok h).elim
+              | _ => exact fun h => (guarded_error_ne_ok h).elim
+            | cons _ _ => exact fun h => (guarded_error_ne_ok h).elim
+          | _ => exact fun h => (guarded_error_ne_ok h).elim
+      | _ => exact fun h => (guarded_error_ne_ok h).elim
+  | _ => exact fun h => (guarded_error_ne_ok h).elim
 
 /-- Byte position `i` of a `size`-byte sequence of type `ty` whose first `i`
 bytes are `pre` must be initialized under `zerocopy`'s `AsInitialized`: either
@@ -885,14 +869,51 @@ theorem byteSeqValid_asInitialized_not_implies_bitValid_bool
   let h := byteSeqValid_initialized_not_implies_bitValid_bool endian
   ⟨byteSeqValid_initialized_implies_asInitialized endian .bool _ h.1, h.2⟩
 
+/-- A successful overflow-pair decode read an initialized integer prefix and a
+valid `bool` byte. -/
+private theorem overflowPair_decode_some_bytes {endian : TargetEndian}
+    {w : IntWidth} {s : Bool} {bs : List AllocByte} {v : Val}
+    (h : decodeVal endian (.tuple [.int w s, .bool]) bs = .ok (some v)) :
+    (∃ intRaw, initBytes? (bs.take w.byteSize) = some intRaw) ∧
+      ∃ boolRaw boolVal,
+        initBytes? ((bs.drop w.byteSize).take 1) = some boolRaw ∧
+        evalConstLit .bool
+            (.scalar (BitVec.ofNat 128 (decodeUInt endian boolRaw))) =
+          .ok boolVal := by
+  revert h
+  unfold decodeVal
+  dsimp only
+  cases (!Nat.beq bs.length (overflowPairLayout w).size) with
+  | true => intro h; nomatch h
+  | false =>
+    cases initBytes? (bs.take w.byteSize) with
+    | none => intro h; nomatch h
+    | some intRaw =>
+      cases initBytes? ((bs.drop w.byteSize).take 1) with
+      | none => intro h; nomatch h
+      | some boolRaw =>
+        dsimp only
+        cases evalConstLit (.int w s)
+            (.scalar (BitVec.ofNat 128 (decodeUInt endian intRaw))) with
+        | error k => intro h; nomatch h
+        | ok intVal =>
+          dsimp only
+          cases hE : evalConstLit .bool
+              (.scalar (BitVec.ofNat 128 (decodeUInt endian boolRaw))) with
+          | error k => intro h; nomatch h
+          | ok boolVal =>
+            exact fun _ => ⟨⟨intRaw, rfl⟩, boolRaw, boolVal, rfl, hE⟩
+
 private theorem overflowPair_u32_decode_byteInitAt_zero
     (endian : TargetEndian) :
     ∀ (bs : List AllocByte) (v : Val),
       bs.length = 8 →
       decodeVal endian (.tuple [.int .i32 false, .bool]) bs = .ok (some v) →
       ByteInitAt bs 0
-  | [.init _ _, _, _, _, _, _, _, _], _, _, _ => trivial
-  | [.uninit, _, _, _, _, _, _, _], _, _, hDec => nomatch hDec
+  | [], _, hLen, _ => nomatch hLen
+  | .init _ _ :: _, _, _, _ => trivial
+  | .uninit :: _, _, _, hDec =>
+    (overflowPair_decode_some_bytes hDec).1.elim fun _ h => nomatch h
 
 /-- Witness that `.bitValid` does not imply `.initialized` on padding-bearing
 types: an encoded `(u32, bool)` overflow pair contains 3 `.uninit` padding bytes
@@ -963,9 +984,38 @@ private theorem overflowPair_invalidBool_not_valid (endian : TargetEndian) :
       bs.take 5 = [.init 0 none, .init 0 none, .init 0 none, .init 0 none,
         .init (UInt8.ofNat 2) none] →
       decodeVal endian (.tuple [.int .i32 false, .bool]) bs ≠ .ok (some v)
-  | [_, _, _, _, _, _, _, _], _, _, hPre, hDec => by
+  | _ :: _ :: _ :: _ :: _ :: _, _, _, hPre, hDec => by
     cases hPre
-    cases endian <;> nomatch hDec
+    have hB := (overflowPair_decode_some_bytes hDec).2
+    cases hB with
+    | intro boolRaw hB =>
+      cases hB with
+      | intro boolVal hB =>
+        cases hB.1
+        cases endian <;> nomatch hB.2
+
+private theorem take_eq_take_of_take_succ {α : Type} :
+    ∀ (n : Nat) (l p : List α), l.take (n + 1) = p → l.take n = p.take n
+  | 0, _, _, _ => rfl
+  | _ + 1, [], _, h => by rw [← h]; rfl
+  | n + 1, x :: xs, _, h => by
+    rw [← h]
+    exact congrArg (List.cons x) (take_eq_take_of_take_succ n xs _ rfl)
+
+/-- Applying `hAll` to the `overflowPair_padded_bitValid` witness—a valid
+`(u32, bool)` overflow pair whose padding bytes 5–7 are uninitialized—yields
+`ByteInitAt` at byte `i` of that padded sequence (refuting `hAll` for `i` in
+5–7). -/
+private theorem overflowPair_invalidBool_static (endian : TargetEndian)
+    (i : Nat)
+    (hAll : ∀ (bs' : List AllocByte) (v : Val),
+      bs'.length = 8 →
+      decodeVal endian (.tuple [.int .i32 false, .bool]) bs' = .ok (some v) →
+      ByteInitAt bs' i) :
+    ByteInitAt [.init 0 none, .init 0 none, .init 0 none, .init 0 none,
+      .init 0 none, .uninit, .uninit, .uninit] i :=
+  match overflowPair_padded_bitValid endian with
+  | ⟨_, vp, _, _, hDecP⟩ => hAll _ vp rfl hDecP
 
 private theorem overflowPair_invalidBool_byteInitAt (endian : TargetEndian) :
     ∀ i : Nat, i < 8 →
@@ -975,19 +1025,22 @@ private theorem overflowPair_invalidBool_byteInitAt (endian : TargetEndian) :
       ByteInitAt [.init 0 none, .init 0 none, .init 0 none, .init 0 none,
         .init (UInt8.ofNat 2) none, .uninit, .uninit, .uninit] i
   | 0, _, _ | 1, _, _ | 2, _, _ | 3, _, _ | 4, _, _ => trivial
-  | 5, _, .inl hAll | 6, _, .inl hAll | 7, _, .inl hAll =>
-    match overflowPair_padded_bitValid endian with
-    | ⟨_, vp, _, _, hDecP⟩ =>
-      hAll [.init 0 none, .init 0 none, .init 0 none, .init 0 none,
-        .init 0 none, .uninit, .uninit, .uninit] vp rfl hDecP
-  | 5, _, .inr ⟨⟨bs', v, hLen, hPre, hDec⟩, _⟩ =>
-    overflowPair_invalidBool_not_valid endian bs' v hLen hPre hDec
-  | 6, _, .inr ⟨⟨[_, _, _, _, _, _, _, _], v, hLen, hPre, hDec⟩, _⟩ => by
-    cases hPre
-    exact overflowPair_invalidBool_not_valid endian _ v hLen rfl hDec
-  | 7, _, .inr ⟨⟨[_, _, _, _, _, _, _, _], v, hLen, hPre, hDec⟩, _⟩ => by
-    cases hPre
-    exact overflowPair_invalidBool_not_valid endian _ v hLen rfl hDec
+  | 5, _, h =>
+    h.elim (overflowPair_invalidBool_static endian 5) fun hS =>
+      hS.1.elim fun bs' h' => h'.elim fun v h'' =>
+        (overflowPair_invalidBool_not_valid endian bs' v h''.1 h''.2.1
+          h''.2.2).elim
+  | 6, _, h =>
+    h.elim (overflowPair_invalidBool_static endian 6) fun hS =>
+      hS.1.elim fun bs' h' => h'.elim fun v h'' =>
+        (overflowPair_invalidBool_not_valid endian bs' v h''.1
+          (take_eq_take_of_take_succ 5 bs' _ h''.2.1) h''.2.2).elim
+  | 7, _, h =>
+    h.elim (overflowPair_invalidBool_static endian 7) fun hS =>
+      hS.1.elim fun bs' h' => h'.elim fun v h'' =>
+        (overflowPair_invalidBool_not_valid endian bs' v h''.1
+          (take_eq_take_of_take_succ 5 bs' _
+            (take_eq_take_of_take_succ 6 bs' _ h''.2.1)) h''.2.2).elim
   | n + 8, hi, _ => absurd hi (Nat.not_lt_of_le (Nat.le_add_left 8 n))
 
 /-- `.asInitialized` does not require padding after an invalid field: a
@@ -1037,12 +1090,13 @@ theorem layoutOfTy_of_addressableLayoutOfTy {ty : MirTy} {layout : LayoutData}
     (h : addressableLayoutOfTy ty = some layout) :
     layoutOfTy ty = some layout := by
   unfold addressableLayoutOfTy at h
+  revert h
   cases hP : isOverflowPairTy ty with
   | true =>
-    rw [hP] at h
+    intro h
     nomatch h
   | false =>
-    rw [hP] at h
+    intro h
     exact h
 
 theorem addressableLayoutOfTy_of_not_overflowPair {ty : MirTy}
@@ -1318,23 +1372,15 @@ theorem int_isFromZeros (endian : TargetEndian) (w : IntWidth) (s : Bool) :
 theorem int_isIntoBytes (endian : TargetEndian) (w : IntWidth) (s : Bool) :
     IsIntoBytes endian (.int w s) := by
   refine ⟨intLayout w, rfl, ?_⟩
-  intro v bs hEnc
-  unfold encodeVal at hEnc
-  cases hChk : checkVal v (.int w s) with
-  | false =>
-    rw [hChk] at hEnc
-    nomatch hEnc
-  | true =>
-    rw [hChk] at hEnc
-    cases v with
-    | scalar sv =>
-      injection hEnc with hBs
-      rw [← hBs, length_map_eq, length_encodeUInt]
-      have hWSize : (intLayout w).size = w.byteSize := by cases w <;> rfl
-      exact ⟨hWSize.symm, allBytesInit_map_init_none _ _⟩
-    | ptr _ | bool _ | char _ | ordering _ | unit | enumVal _ _ | tuple _
-    | slicePtr _ _ | rangeTo _ | rangeFrom _ | range _ _ | optionVal _
-    | array _ | bytes _ | boxPtr _ _ | vec _ _ _ => nomatch hEnc
+  intro v bs
+  cases v with
+  | scalar sv =>
+    intro hEnc
+    injection ite_not_error_ok hEnc with hBs
+    rw [← hBs, length_map_eq, length_encodeUInt]
+    have hWSize : (intLayout w).size = w.byteSize := by cases w <;> rfl
+    exact ⟨hWSize.symm, allBytesInit_map_init_none _ _⟩
+  | _ => exact fun h => (guarded_error_ne_ok h).elim
 
 theorem int_decodeTyped (endian : TargetEndian) (w : IntWidth)
     (s : Bool) :
@@ -1346,31 +1392,34 @@ theorem int_decodeTyped (endian : TargetEndian) (w : IntWidth)
   intro bs v hDec
   unfold decodeVal layoutOfTy at hDec
   dsimp only at hDec
+  revert hDec
   cases hLen : Nat.beq bs.length (intLayout w).size with
   | false =>
-    rw [hLen] at hDec
+    intro hDec
     nomatch hDec
   | true =>
-    rw [hLen] at hDec
+    intro hDec
     have hNz : Nat.beq (intLayout w).size 0 = false := by cases w <;> rfl
     simp [hNz] at hDec
+    revert hDec
     cases hRaw : initBytes? bs with
     | none =>
-      rw [hRaw] at hDec
+      intro hDec
       nomatch hDec
     | some raw =>
-      rw [hRaw] at hDec
+      intro hDec
       dsimp only at hDec
       unfold evalConstLit at hDec
       dsimp only at hDec
+      revert hDec
       cases hTrunc :
           (truncateBits w (BitVec.ofNat 128 (decodeUInt endian raw)) !=
             BitVec.ofNat 128 (decodeUInt endian raw)) with
       | true =>
-        rw [hTrunc] at hDec
+        intro hDec
         nomatch hDec
       | false =>
-        rw [hTrunc] at hDec
+        intro hDec
         injection hDec with hOpt
         injection hOpt with hV
         rw [← hV]
@@ -1415,12 +1464,13 @@ theorem unit_decodeTyped_eq (endian : TargetEndian) :
   intro bs v hDec
   unfold decodeVal layoutOfTy at hDec
   dsimp only at hDec
+  revert hDec
   cases hLen : Nat.beq bs.length 0 with
   | false =>
-    rw [hLen] at hDec
+    intro hDec
     nomatch hDec
   | true =>
-    simp [hLen] at hDec
+    intro hDec; simp at hDec
     injection hDec with hOpt
     injection hOpt with hV
     exact hV.symm
@@ -1437,22 +1487,14 @@ theorem unit_isFromBytes (endian : TargetEndian) : IsFromBytes endian .unit := b
 
 theorem unit_isIntoBytes (endian : TargetEndian) : IsIntoBytes endian .unit := by
   refine ⟨⟨0, 0⟩, rfl, ?_⟩
-  intro v bs hEnc
-  unfold encodeVal at hEnc
-  cases hChk : checkVal v .unit with
-  | false =>
-    rw [hChk] at hEnc
-    nomatch hEnc
-  | true =>
-    rw [hChk] at hEnc
-    cases v with
-    | unit =>
-      injection hEnc with hBs
-      rw [← hBs]
-      exact ⟨rfl, rfl⟩
-    | scalar _ | ptr _ | bool _ | char _ | ordering _ | enumVal _ _ | tuple _
-    | slicePtr _ _ | rangeTo _ | rangeFrom _ | range _ _ | optionVal _
-    | array _ | bytes _ | boxPtr _ _ | vec _ _ _ => nomatch hEnc
+  intro v bs
+  cases v with
+  | unit =>
+    intro hEnc
+    injection ite_not_error_ok hEnc with hBs
+    rw [← hBs]
+    exact ⟨rfl, rfl⟩
+  | _ => exact fun h => (guarded_error_ne_ok h).elim
 
 theorem unit_isUnaligned : IsUnaligned .unit :=
   ⟨⟨0, 0⟩, rfl, rfl⟩
@@ -1466,9 +1508,8 @@ theorem never_decodeTyped_empty (endian : TargetEndian) :
 theorem never_isIntoBytes (endian : TargetEndian) :
     IsIntoBytes endian .never := by
   refine ⟨⟨0, 0⟩, rfl, ?_⟩
-  intro v bs hEnc
-  unfold encodeVal at hEnc
-  cases hChk : checkVal v .never <;> rw [hChk] at hEnc <;> nomatch hEnc
+  intro v bs
+  exact fun h => (guarded_error_ne_ok h).elim
 
 theorem never_isUnaligned : IsUnaligned .never :=
   ⟨⟨0, 0⟩, rfl, rfl⟩
@@ -1493,22 +1534,14 @@ theorem never_not_isFromBytes (endian : TargetEndian) :
 
 theorem bool_isIntoBytes (endian : TargetEndian) : IsIntoBytes endian .bool := by
   refine ⟨⟨1, 0⟩, rfl, ?_⟩
-  intro v bs hEnc
-  unfold encodeVal at hEnc
-  cases hChk : checkVal v .bool with
-  | false =>
-    rw [hChk] at hEnc
-    nomatch hEnc
-  | true =>
-    rw [hChk] at hEnc
-    cases v with
-    | bool _ =>
-      injection hEnc with hBs
-      rw [← hBs]
-      exact ⟨rfl, rfl⟩
-    | scalar _ | ptr _ | char _ | ordering _ | unit | enumVal _ _ | tuple _
-    | slicePtr _ _ | rangeTo _ | rangeFrom _ | range _ _ | optionVal _
-    | array _ | bytes _ | boxPtr _ _ | vec _ _ _ => nomatch hEnc
+  intro v bs
+  cases v with
+  | bool _ =>
+    intro hEnc
+    injection ite_not_error_ok hEnc with hBs
+    rw [← hBs]
+    exact ⟨rfl, rfl⟩
+  | _ => exact fun h => (guarded_error_ne_ok h).elim
 
 theorem bool_isFromZeros (endian : TargetEndian) : IsFromZeros endian .bool := by
   cases endian with
@@ -1524,51 +1557,56 @@ theorem bool_decodeTyped (endian : TargetEndian) :
   intro bs v hDec
   unfold decodeVal layoutOfTy at hDec
   dsimp only at hDec
+  revert hDec
   cases hLen : Nat.beq bs.length 1 with
   | false =>
-    rw [hLen] at hDec
+    intro hDec
     nomatch hDec
   | true =>
-    simp [hLen] at hDec
+    intro hDec; simp at hDec
+    revert hDec
     cases hRaw : initBytes? bs with
     | none =>
-      rw [hRaw] at hDec
+      intro hDec
       nomatch hDec
     | some raw =>
-      rw [hRaw] at hDec
+      intro hDec
       dsimp only at hDec
       unfold evalConstLit at hDec
       dsimp only at hDec
+      revert hDec
       cases hTrunc :
           (truncateBits .i8 (BitVec.ofNat 128 (decodeUInt endian raw)) !=
             BitVec.ofNat 128 (decodeUInt endian raw)) with
       | true =>
-        rw [hTrunc] at hDec
+        intro hDec
         nomatch hDec
       | false =>
-        rw [hTrunc, bool_ite_false] at hDec
+        intro hDec; rw [bool_ite_false] at hDec
+        revert hDec
         cases h0 :
             (UInt8.ofNat
                 (truncateBits .i8
                   (BitVec.ofNat 128 (decodeUInt endian raw))).toNat == 0) with
         | true =>
-          rw [h0, bool_ite_true] at hDec
+          intro hDec; rw [bool_ite_true] at hDec
           injection hDec with hOpt
           injection hOpt with hV
           exact Or.inl hV.symm
         | false =>
-          rw [h0, bool_ite_false] at hDec
+          intro hDec; rw [bool_ite_false] at hDec
+          revert hDec
           cases h1 :
               (UInt8.ofNat
                   (truncateBits .i8
                     (BitVec.ofNat 128 (decodeUInt endian raw))).toNat == 1) with
           | true =>
-            rw [h1, bool_ite_true] at hDec
+            intro hDec; rw [bool_ite_true] at hDec
             injection hDec with hOpt
             injection hOpt with hV
             exact Or.inr hV.symm
           | false =>
-            rw [h1, bool_ite_false] at hDec
+            intro hDec; rw [bool_ite_false] at hDec
             nomatch hDec
 
 theorem bool_not_isFromBytes (endian : TargetEndian) :
@@ -1584,22 +1622,14 @@ theorem bool_not_isFromBytes (endian : TargetEndian) :
 
 theorem char_isIntoBytes (endian : TargetEndian) : IsIntoBytes endian .char := by
   refine ⟨⟨4, 2⟩, rfl, ?_⟩
-  intro v bs hEnc
-  unfold encodeVal at hEnc
-  cases hChk : checkVal v .char with
-  | false =>
-    rw [hChk] at hEnc
-    nomatch hEnc
-  | true =>
-    rw [hChk] at hEnc
-    cases v with
-    | char c =>
-      injection hEnc with hBs
-      rw [← hBs, length_map_eq, length_encodeUInt]
-      exact ⟨rfl, allBytesInit_map_init_none _ _⟩
-    | scalar _ | ptr _ | bool _ | ordering _ | unit | enumVal _ _ | tuple _
-    | slicePtr _ _ | rangeTo _ | rangeFrom _ | range _ _ | optionVal _
-    | array _ | bytes _ | boxPtr _ _ | vec _ _ _ => nomatch hEnc
+  intro v bs
+  cases v with
+  | char c =>
+    intro hEnc
+    injection ite_not_error_ok hEnc with hBs
+    rw [← hBs, length_map_eq, length_encodeUInt]
+    exact ⟨rfl, allBytesInit_map_init_none _ _⟩
+  | _ => exact fun h => (guarded_error_ne_ok h).elim
 
 theorem char_isFromZeros (endian : TargetEndian) : IsFromZeros endian .char := by
   cases endian with
@@ -1614,36 +1644,40 @@ theorem char_decodeTyped (endian : TargetEndian) :
   intro bs v hDec
   unfold decodeVal layoutOfTy at hDec
   dsimp only at hDec
+  revert hDec
   cases hLen : Nat.beq bs.length 4 with
   | false =>
-    rw [hLen] at hDec
+    intro hDec
     nomatch hDec
   | true =>
-    simp [hLen] at hDec
+    intro hDec; simp at hDec
+    revert hDec
     cases hRaw : initBytes? bs with
     | none =>
-      rw [hRaw] at hDec
+      intro hDec
       nomatch hDec
     | some raw =>
-      rw [hRaw] at hDec
+      intro hDec
       dsimp only at hDec
       unfold evalConstLit at hDec
       dsimp only at hDec
+      revert hDec
       cases hTrunc :
           (truncateBits .i32 (BitVec.ofNat 128 (decodeUInt endian raw)) !=
             BitVec.ofNat 128 (decodeUInt endian raw)) with
       | true =>
-        rw [hTrunc] at hDec
+        intro hDec
         nomatch hDec
       | false =>
-        simp [hTrunc] at hDec
+        intro hDec; simp at hDec
+        revert hDec
         cases hUni :
             isUnicodeScalar (BitVec.ofNat 128 (decodeUInt endian raw)).toNat with
         | false =>
-          rw [hUni] at hDec
+          intro hDec
           nomatch hDec
         | true =>
-          rw [hUni] at hDec
+          intro hDec
           injection hDec with hOpt
           injection hOpt with hV
           exact ⟨(BitVec.ofNat 128 (decodeUInt endian raw)).toNat, hUni, hV.symm⟩
@@ -1677,22 +1711,14 @@ theorem char_not_isUnaligned : ¬ IsUnaligned .char := by
 theorem ordering_isIntoBytes (endian : TargetEndian) :
     IsIntoBytes endian .ordering := by
   refine ⟨⟨1, 0⟩, rfl, ?_⟩
-  intro v bs hEnc
-  unfold encodeVal at hEnc
-  cases hChk : checkVal v .ordering with
-  | false =>
-    rw [hChk] at hEnc
-    nomatch hEnc
-  | true =>
-    rw [hChk] at hEnc
-    cases v with
-    | ordering ord =>
-      injection hEnc with hBs
-      rw [← hBs, length_map_eq, length_encodeUInt]
-      exact ⟨rfl, allBytesInit_map_init_none _ _⟩
-    | scalar _ | ptr _ | bool _ | char _ | unit | enumVal _ _ | tuple _
-    | slicePtr _ _ | rangeTo _ | rangeFrom _ | range _ _ | optionVal _
-    | array _ | bytes _ | boxPtr _ _ | vec _ _ _ => nomatch hEnc
+  intro v bs
+  cases v with
+  | ordering ord =>
+    intro hEnc
+    injection ite_not_error_ok hEnc with hBs
+    rw [← hBs, length_map_eq, length_encodeUInt]
+    exact ⟨rfl, allBytesInit_map_init_none _ _⟩
+  | _ => exact fun h => (guarded_error_ne_ok h).elim
 
 theorem ordering_isFromZeros (endian : TargetEndian) :
     IsFromZeros endian .ordering := by
@@ -1709,37 +1735,41 @@ theorem ordering_decodeTyped (endian : TargetEndian) :
   intro bs v hDec
   unfold decodeVal layoutOfTy at hDec
   dsimp only at hDec
+  revert hDec
   cases hLen : Nat.beq bs.length 1 with
   | false =>
-    rw [hLen] at hDec
+    intro hDec
     nomatch hDec
   | true =>
-    simp [hLen] at hDec
+    intro hDec; simp at hDec
+    revert hDec
     cases hRaw : initBytes? bs with
     | none =>
-      rw [hRaw] at hDec
+      intro hDec
       nomatch hDec
     | some raw =>
-      rw [hRaw] at hDec
+      intro hDec
       dsimp only at hDec
       unfold evalConstLit at hDec
       dsimp only at hDec
+      revert hDec
       cases hTrunc :
           (truncateBits .i8 (BitVec.ofNat 128 (decodeUInt endian raw)) !=
             BitVec.ofNat 128 (decodeUInt endian raw)) with
       | true =>
-        rw [hTrunc] at hDec
+        intro hDec
         nomatch hDec
       | false =>
-        simp [hTrunc] at hDec
+        intro hDec; simp at hDec
+        revert hDec
         cases hOrd :
             orderingOfTagBits
               (BitVec.ofNat 128 (decodeUInt endian raw)).toNat with
         | none =>
-          rw [hOrd] at hDec
+          intro hDec
           nomatch hDec
         | some ord =>
-          rw [hOrd] at hDec
+          intro hDec
           injection hDec with hOpt
           injection hOpt with hV
           exact ⟨ord, hV.symm⟩
@@ -1790,21 +1820,6 @@ theorem overflowPair_localSlot_not_allInitDecode (endian : TargetEndian)
     · exact AllBytesInit_append (allBytesInit_zeroInitBytes _) rfl
     · exact allBytesInit_zeroInitBytes _
   have ⟨_, hv⟩ := hDec badBs hBadLen hBadInit
-  have hLayBeq :
-      Nat.beq badBs.length (overflowPairLayout w).size = true := by
-    rw [hBadLen]
-    exact nat_beq_refl _
-  have hTake :
-      badBs.take w.byteSize = zeroInitBytes w.byteSize := by
-    have hAssoc :
-        badBs = zeroInitBytes w.byteSize ++
-          ([AllocByte.init 2 none] ++ zeroInitBytes (w.byteSize - 1)) :=
-      List.append_assoc _ _ _
-    rw [hAssoc]
-    have hLeft := list_take_append_left (zeroInitBytes w.byteSize)
-      ([AllocByte.init 2 none] ++ zeroInitBytes (w.byteSize - 1))
-    rw [length_zeroInitBytes] at hLeft
-    exact hLeft
   have hDropTake :
       (badBs.drop w.byteSize).take 1 = [AllocByte.init 2 none] := by
     have hAssoc :
@@ -1817,31 +1832,14 @@ theorem overflowPair_localSlot_not_allInitDecode (endian : TargetEndian)
     rw [length_zeroInitBytes] at hDrop
     rw [hDrop]
     rfl
-  unfold decodeVal at hv
-  simp [hLayBeq, hTake, hDropTake, initBytes?_zeroInitBytes] at hv
-  have hBoolInit :
-      initBytes? [AllocByte.init 2 none] = some [2] := rfl
-  rw [hBoolInit] at hv
-  dsimp only at hv
-  have hZeroLt :
-      decodeUInt endian (List.replicate w.byteSize 0) < Nat.pow 2 w.bitWidth := by
-    rw [decodeUInt_replicate_zero]
-    exact nat_two_pow_pos _
-  have hTruncZero :
-      truncateBits w
-          (BitVec.ofNat 128 (decodeUInt endian (List.replicate w.byteSize 0))) =
-        BitVec.ofNat 128 (decodeUInt endian (List.replicate w.byteSize 0)) :=
-    truncateBits_of_lt w _ hZeroLt
-  have hNeZero :
-      (truncateBits w
-          (BitVec.ofNat 128 (decodeUInt endian (List.replicate w.byteSize 0))) !=
-        BitVec.ofNat 128 (decodeUInt endian (List.replicate w.byteSize 0))) =
-        false := by
-    rw [hTruncZero]
-    exact bitVec128_bne_self _
-  unfold evalConstLit at hv
-  simp [hNeZero] at hv
-  cases endian <;> nomatch hv
+  have hB := (overflowPair_decode_some_bytes hv).2
+  rw [hDropTake] at hB
+  cases hB with
+  | intro boolRaw hB =>
+    cases hB with
+    | intro boolVal hB =>
+      cases hB.1
+      cases endian <;> nomatch hB.2
 
 theorem overflowPair_decodeTyped (endian : TargetEndian)
     (w : IntWidth) (s : Bool) :
@@ -1853,12 +1851,13 @@ theorem overflowPair_decodeTyped (endian : TargetEndian)
   intro bs v hDec
   unfold decodeVal at hDec
   dsimp only at hDec
+  revert hDec
   cases hLen : Nat.beq bs.length (overflowPairLayout w).size with
   | false =>
-    rw [hLen] at hDec
+    intro hDec
     nomatch hDec
   | true =>
-    simp [hLen] at hDec
+    intro hDec; simp at hDec
     cases hIntRaw : initBytes? (bs.take w.byteSize) with
     | none =>
       rw [hIntRaw] at hDec
@@ -1871,53 +1870,58 @@ theorem overflowPair_decodeTyped (endian : TargetEndian)
       | some boolRaw =>
         rw [hIntRaw, hBoolRaw] at hDec
         dsimp only at hDec
+        revert hDec
         cases hIntEv : evalConstLit (.int w s)
             (.scalar (BitVec.ofNat 128 (decodeUInt endian intRaw))) with
         | error _ =>
-          rw [hIntEv] at hDec
+          intro hDec
           nomatch hDec
         | ok intVal =>
-          rw [hIntEv] at hDec
+          intro hDec
           dsimp only at hDec
+          revert hDec
           cases hBoolEv : evalConstLit .bool
               (.scalar (BitVec.ofNat 128 (decodeUInt endian boolRaw))) with
           | error _ =>
-            rw [hBoolEv] at hDec
+            intro hDec
             nomatch hDec
           | ok boolVal =>
-            rw [hBoolEv] at hDec
+            intro hDec
             injection hDec with hOpt
             injection hOpt with hV
             unfold evalConstLit at hIntEv
             dsimp only at hIntEv
+            revert hIntEv
             cases hTruncI :
                 (truncateBits w (BitVec.ofNat 128 (decodeUInt endian intRaw)) !=
                   BitVec.ofNat 128 (decodeUInt endian intRaw)) with
             | true =>
-              rw [hTruncI] at hIntEv
+              intro hIntEv
               nomatch hIntEv
             | false =>
-              rw [hTruncI] at hIntEv
+              intro hIntEv
               injection hIntEv with hIv
               have hEqI := bitVec128_eq_of_bne_false hTruncI
               unfold evalConstLit at hBoolEv
               dsimp only at hBoolEv
+              revert hBoolEv
               cases hTruncB :
                   (truncateBits .i8
                       (BitVec.ofNat 128 (decodeUInt endian boolRaw)) !=
                     BitVec.ofNat 128 (decodeUInt endian boolRaw)) with
               | true =>
-                rw [hTruncB] at hBoolEv
+                intro hBoolEv
                 nomatch hBoolEv
               | false =>
-                rw [hTruncB, bool_ite_false] at hBoolEv
+                intro hBoolEv; rw [bool_ite_false] at hBoolEv
+                revert hBoolEv
                 cases hB0 :
                     (UInt8.ofNat
                         (truncateBits .i8
                           (BitVec.ofNat 128
                             (decodeUInt endian boolRaw))).toNat == 0) with
                 | true =>
-                  rw [hB0, bool_ite_true] at hBoolEv
+                  intro hBoolEv; rw [bool_ite_true] at hBoolEv
                   injection hBoolEv with hBv
                   rw [← hV, ← hIv, ← hBv]
                   refine ⟨⟨w, s, truncateBits w
@@ -1927,14 +1931,15 @@ theorem overflowPair_decodeTyped (endian : TargetEndian)
                   rw [hEqI, hEqI]
                   exact bitVec128_beq_self _
                 | false =>
-                  rw [hB0, bool_ite_false] at hBoolEv
+                  intro hBoolEv; rw [bool_ite_false] at hBoolEv
+                  revert hBoolEv
                   cases hB1 :
                       (UInt8.ofNat
                           (truncateBits .i8
                             (BitVec.ofNat 128
                               (decodeUInt endian boolRaw))).toNat == 1) with
                   | true =>
-                    rw [hB1, bool_ite_true] at hBoolEv
+                    intro hBoolEv; rw [bool_ite_true] at hBoolEv
                     injection hBoolEv with hBv
                     rw [← hV, ← hIv, ← hBv]
                     refine ⟨⟨w, s, truncateBits w
@@ -1944,7 +1949,7 @@ theorem overflowPair_decodeTyped (endian : TargetEndian)
                     rw [hEqI, hEqI]
                     exact bitVec128_beq_self _
                   | false =>
-                    rw [hB1, bool_ite_false] at hBoolEv
+                    intro hBoolEv; rw [bool_ite_false] at hBoolEv
                     nomatch hBoolEv
 
 /-- All-zero local-slot bytes decode to `(0, false)`: the local-slot analog of
@@ -1961,53 +1966,27 @@ private theorem overflowPair_i8_encodeVal_allBytesInit (endian : TargetEndian)
     ∀ v bs,
       encodeVal endian (.tuple [.int .i8 s, .bool]) v = .ok bs →
       AllBytesInit bs := by
-  intro v bs hEnc
-  unfold encodeVal at hEnc
-  cases hChk : checkVal v (.tuple [.int .i8 s, .bool]) with
-  | false =>
-    rw [hChk] at hEnc
-    nomatch hEnc
-  | true =>
-    rw [hChk] at hEnc
-    cases v with
-    | tuple vs =>
-      cases vs with
-      | nil => nomatch hEnc
-      | cons v0 vs1 =>
-        cases v0 with
-        | scalar sv =>
-          cases vs1 with
-          | nil => nomatch hEnc
-          | cons v1 vs2 =>
-            cases v1 with
-            | bool b =>
-              cases vs2 with
-              | nil =>
-                injection hEnc with hBs
-                rw [← hBs]
-                have hInit :
-                    AllBytesInit
-                      ((encodeUInt endian IntWidth.i8.byteSize sv.bits.toNat).map
-                          (fun byte => AllocByte.init byte none) ++
-                        [AllocByte.init (if b then 1 else 0) none] ++
-                        List.replicate (IntWidth.i8.byteSize - 1)
-                          AllocByte.uninit) := by
-                  apply AllBytesInit_append
-                  · exact AllBytesInit_append
-                      (allBytesInit_map_init_none _ _) rfl
-                  · rfl
-                exact hInit
-              | cons _ _ => nomatch hEnc
-            | scalar _ | ptr _ | char _ | ordering _ | unit | enumVal _ _
-            | slicePtr _ _ | rangeTo _ | rangeFrom _ | range _ _ | optionVal _
-            | array _ | tuple _ | bytes _ | boxPtr _ _ | vec _ _ _ =>
-              nomatch hEnc
-        | ptr _ | bool _ | char _ | ordering _ | unit | enumVal _ _ | tuple _
-        | slicePtr _ _ | rangeTo _ | rangeFrom _ | range _ _ | optionVal _
-        | array _ | bytes _ | boxPtr _ _ | vec _ _ _ => nomatch hEnc
-    | scalar _ | ptr _ | bool _ | char _ | ordering _ | unit | enumVal _ _
-    | slicePtr _ _ | rangeTo _ | rangeFrom _ | range _ _ | optionVal _
-    | array _ | bytes _ | boxPtr _ _ | vec _ _ _ => nomatch hEnc
+  intro v bs
+  cases v with
+  | tuple vs =>
+    cases vs with
+    | nil => exact fun h => (guarded_error_ne_ok h).elim
+    | cons v0 vs1 =>
+      cases v0 with
+      | scalar sv =>
+        cases vs1 with
+        | nil => exact fun h => (guarded_error_ne_ok h).elim
+        | cons v1 vs2 =>
+          cases v1 with
+          | bool b =>
+            cases vs2 with
+            | nil =>
+              exact guarded_ok_elim (AllBytesInit_append
+                (AllBytesInit_append (allBytesInit_map_init_none _ _) rfl) rfl)
+            | cons _ _ => exact fun h => (guarded_error_ne_ok h).elim
+          | _ => exact fun h => (guarded_error_ne_ok h).elim
+      | _ => exact fun h => (guarded_error_ne_ok h).elim
+  | _ => exact fun h => (guarded_error_ne_ok h).elim
 
 private theorem overflowPair_encodeVal_uninit_of_ne_i8 (endian : TargetEndian)
     {w : IntWidth} (hw : w ≠ .i8) (s : Bool) :
@@ -2134,12 +2113,13 @@ theorem zstEnum_decodeTyped_eq (endian : TargetEndian) (ety : EnumTy)
   unfold decodeVal at hDec
   rw [hLay] at hDec
   dsimp only at hDec
+  revert hDec
   cases hLen : Nat.beq bs.length 0 with
   | false =>
-    rw [hLen] at hDec
+    intro hDec
     nomatch hDec
   | true =>
-    simp [hLen] at hDec
+    intro hDec; simp at hDec
     unfold evalConstLit isZstEnumTy at hDec
     simp [hRepr, hAdm] at hDec
     exact hDec.symm
@@ -2182,22 +2162,17 @@ theorem zstEnum_isIntoBytes (endian : TargetEndian) (ety : EnumTy)
     unfold layoutOfTy
     simp [hAdm, hRepr]
   refine ⟨⟨0, 0⟩, hLay, ?_⟩
-  intro v bs hEnc
-  unfold encodeVal at hEnc
-  cases hChk : checkVal v (.enum ety) with
-  | false =>
-    rw [hChk] at hEnc
-    nomatch hEnc
-  | true =>
-    rw [hChk] at hEnc
-    cases v with
-    | enumVal _ variant =>
-      simp [hRepr] at hEnc
-      rw [← hEnc]
-      exact ⟨rfl, rfl⟩
-    | scalar _ | ptr _ | bool _ | char _ | ordering _ | unit | tuple _
-    | slicePtr _ _ | rangeTo _ | rangeFrom _ | range _ _ | optionVal _
-    | array _ | bytes _ | boxPtr _ _ | vec _ _ _ => nomatch hEnc
+  intro v bs
+  cases v with
+  | enumVal _ variant =>
+    intro hEnc
+    have hE := ite_not_error_ok hEnc
+    dsimp only at hE
+    rw [hRepr] at hE
+    injection hE with hBs
+    rw [← hBs]
+    exact ⟨rfl, rfl⟩
+  | _ => exact fun h => (guarded_error_ne_ok h).elim
 
 theorem zstEnum_isUnaligned (ety : EnumTy)
     (hAdm : enumAdmitted ety = true) (hRepr : ety.tagRepr = .zeroSized) :
@@ -2214,9 +2189,10 @@ theorem findDiscrVariantAux_lt :
   | [], _, _, _, h => by nomatch h
   | d :: ds, idx, bits, v, h => by
     unfold findDiscrVariantAux at h
+    revert h
     cases hEq : (BitVec.ofNat 128 d == bits) with
     | true =>
-      rw [hEq] at h
+      intro h
       injection h with hV
       rw [← hV]
       refine ⟨Nat.le_refl idx, ?_⟩
@@ -2225,7 +2201,7 @@ theorem findDiscrVariantAux_lt :
       rw [Nat.add_zero] at hAdd
       exact hAdd
     | false =>
-      rw [hEq] at h
+      intro h
       have ⟨hGe, hLt⟩ := findDiscrVariantAux_lt ds (idx + 1) bits v h
       have hAssoc : idx + 1 + ds.length = idx + (ds.length + 1) := by
         rw [Nat.add_assoc, Nat.add_comm 1 ds.length]
@@ -2241,31 +2217,25 @@ theorem scalarEnum_isIntoBytes (endian : TargetEndian) (ety : EnumTy)
     unfold layoutOfTy
     simp [hAdm, hRepr]
   refine ⟨intLayout tagW, hLay, ?_⟩
-  intro v bs hEnc
-  unfold encodeVal at hEnc
-  cases hChk : checkVal v (.enum ety) with
-  | false =>
-    rw [hChk] at hEnc
-    nomatch hEnc
-  | true =>
-    rw [hChk] at hEnc
-    cases v with
-    | enumVal _ variant =>
-      simp [hRepr] at hEnc
-      cases hGet : Trusted.MirSemantics.getElem? ety.discriminants variant with
-      | none =>
-        rw [hGet] at hEnc
-        nomatch hEnc
-      | some disc =>
-        rw [hGet] at hEnc
-        injection hEnc with hBs
-        rw [← hBs, length_map_eq, length_encodeUInt]
-        have hWSize : (intLayout tagW).size = tagW.byteSize := by
-          cases tagW <;> rfl
-        exact ⟨hWSize.symm, allBytesInit_map_init_none _ _⟩
-    | scalar _ | ptr _ | bool _ | char _ | ordering _ | unit | tuple _
-    | slicePtr _ _ | rangeTo _ | rangeFrom _ | range _ _ | optionVal _
-    | array _ | bytes _ | boxPtr _ _ | vec _ _ _ => nomatch hEnc
+  intro v bs
+  cases v with
+  | enumVal _ variant =>
+    intro hEnc
+    have hE := ite_not_error_ok hEnc
+    dsimp only at hE
+    rw [hRepr] at hE
+    dsimp only at hE
+    revert hE
+    cases Trusted.MirSemantics.getElem? ety.discriminants variant with
+    | none => intro hE; nomatch hE
+    | some disc =>
+      intro hE
+      injection hE with hBs
+      rw [← hBs, length_map_eq, length_encodeUInt]
+      have hWSize : (intLayout tagW).size = tagW.byteSize := by
+        cases tagW <;> rfl
+      exact ⟨hWSize.symm, allBytesInit_map_init_none _ _⟩
+  | _ => exact fun h => (guarded_error_ne_ok h).elim
 
 theorem scalarEnum_isUnaligned_iff (ety : EnumTy) (tagW : IntWidth)
     (tagS : Bool) (hAdm : enumAdmitted ety = true)
@@ -2303,21 +2273,23 @@ theorem scalarEnum_decodeTyped (endian : TargetEndian) (ety : EnumTy)
   unfold decodeVal at hDec
   rw [hLay] at hDec
   dsimp only at hDec
+  revert hDec
   cases hLen : Nat.beq bs.length (intLayout tagW).size with
   | false =>
-    rw [hLen] at hDec
+    intro hDec
     nomatch hDec
   | true =>
-    rw [hLen] at hDec
+    intro hDec
     have hNz : Nat.beq (intLayout tagW).size 0 = false := by
       cases tagW <;> rfl
     simp [hNz] at hDec
+    revert hDec
     cases hRaw : initBytes? bs with
     | none =>
-      rw [hRaw] at hDec
+      intro hDec
       nomatch hDec
     | some raw =>
-      rw [hRaw] at hDec
+      intro hDec
       dsimp only at hDec
       unfold evalConstLit at hDec
       dsimp only at hDec
@@ -2330,16 +2302,17 @@ theorem scalarEnum_decodeTyped (endian : TargetEndian) (ety : EnumTy)
         simp [hTrunc] at hDec
       | false =>
         simp [hTrunc] at hDec
+        revert hDec
         cases hFind :
             findDiscrVariant?
               (tagBitsToDiscrBits tagW tagS ety.discrWidth
                 (BitVec.ofNat 128 (decodeUInt endian raw)))
               ety.discriminants with
         | none =>
-          rw [hFind] at hDec
+          intro hDec
           nomatch hDec
         | some idx =>
-          rw [hFind] at hDec
+          intro hDec
           injection hDec with hOpt
           injection hOpt with hV
           have ⟨_, hLt⟩ :=
@@ -2419,29 +2392,31 @@ theorem enum_isFromZeros_iff (endian : TargetEndian) (ety : EnumTy) :
             hWNe0] at hDec
         unfold evalConstLit at hDec
         simp [hRepr, hAdm, hNe0] at hDec
+        revert hDec
         cases hFind :
             findDiscrVariant?
               (tagBitsToDiscrBits tagW tagS ety.discrWidth (BitVec.ofNat 128 0))
               ety.discriminants with
         | none =>
-          rw [hFind] at hDec
+          intro hDec
           nomatch hDec
         | some _ =>
-          unfold isFromZerosEnum
+          intro hDec; unfold isFromZerosEnum
           simp [hAdm, hRepr, hFind]
       · intro h
         unfold isFromZerosEnum at h
         rw [hAdm, hRepr] at h
         dsimp only at h
+        revert h
         cases hFind :
             findDiscrVariant?
               (tagBitsToDiscrBits tagW tagS ety.discrWidth (BitVec.ofNat 128 0))
               ety.discriminants with
         | none =>
-          rw [hFind] at h
+          intro h
           nomatch h
         | some idx =>
-          refine ⟨intLayout tagW, .enumVal ety idx,
+          intro h; refine ⟨intLayout tagW, .enumVal ety idx,
             addressableLayoutOfTy_of_not_overflowPair rfl hLay, ?_⟩
           unfold decodeVal
           rw [hLay]
@@ -2510,11 +2485,12 @@ theorem isFromBytesEnum_sound (endian : TargetEndian) (ety : EnumTy)
   unfold isFromBytesEnum at h
   have hAdm := bool_and_left h
   have hBody := bool_and_right h
+  revert hBody
   cases hRepr : ety.tagRepr with
   | zeroSized =>
-    exact zstEnum_isFromBytes endian ety hAdm hRepr
+    intro hBody; exact zstEnum_isFromBytes endian ety hAdm hRepr
   | scalar tagW tagS =>
-    rw [hRepr] at hBody
+    intro hBody
     have hScan := bool_and_right hBody
     have hLay : layoutOfTy (.enum ety) = some (intLayout tagW) := by
       unfold layoutOfTy
@@ -2537,16 +2513,17 @@ theorem isFromBytesEnum_sound (endian : TargetEndian) (ety : EnumTy)
       exact checkAllTagBitsFrom_spec tagW tagS ety (Nat.pow 2 tagW.bitWidth)
         0 (decodeUInt endian raw) hScan h0Le hLt0
     unfold checkTagBitsCovered at hCov
+    revert hCov
     cases hFind :
         findDiscrVariant?
           (tagBitsToDiscrBits tagW tagS ety.discrWidth
             (BitVec.ofNat 128 (decodeUInt endian raw)))
           ety.discriminants with
     | none =>
-      rw [hFind] at hCov
+      intro hCov
       nomatch hCov
     | some idx =>
-      have hTrunc :
+      intro hCov; have hTrunc :
           truncateBits tagW (BitVec.ofNat 128 (decodeUInt endian raw)) =
             BitVec.ofNat 128 (decodeUInt endian raw) :=
         truncateBits_of_lt tagW _ hDecLt
@@ -3223,12 +3200,13 @@ theorem overflowPair_localSlotCheck_exact (endian : TargetEndian)
   · intro ⟨_, v, _, _, hv⟩
     rw [hDec] at hv
     apply hBool.1
+    revert hv
     cases hE : evalConstLit .bool
         (.scalar (BitVec.ofNat 128 (decodeUInt endian boolRaw))) with
     | error k =>
-      rw [hE] at hv
+      intro hv
       nomatch hv
-    | ok bv => exact ⟨bv, rfl⟩
+    | ok bv => intro hv; exact ⟨bv, rfl⟩
 
 /-- The validator that accepts every candidate is not a sound `bool` validator:
 initialized byte `0x02` is not a valid `bool`. -/
