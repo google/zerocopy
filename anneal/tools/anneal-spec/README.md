@@ -101,15 +101,15 @@ writes `Spec.lean` (namespace `Spec`) and `spec_span_map.json`.
 | `target = "path"` | Overrides the derived item path, in both attachment forms. Required on inherent `impl` methods. Only characters of a Rust item path are accepted. |
 | `claim = "C"` | Puts the item in verification claim `C`, which `--claim C` selects. `C` is 1 to 64 ASCII letters, digits, and `_`, starting with a letter, and not an Anneal module root, a reserved Lean name, or a name such as `panic` that specifications may not use. Without it, an item is alone in the claim derived from its path: `::` becomes `__`, `<T as Tr>` becomes `impl_Tr_for_T` (`impl_Tr_for_unit` for `()`), any other character becomes `_`, and a `c_` prefix is added if the result does not start with a letter. A derived claim may not coincide with another item's claim (`<usize as PointerMetadata>::from_elem_count` is in `impl_PointerMetadata_for_usize__from_elem_count`). |
 | `instantiate = [["u8"], ...]` | Generic instantiations to verify. Parsed and validated, but rejected by profile v1, which has no generics. |
-| `#[anneal::pure]` | A non-recursive, side-effect-free helper usable in clauses. Its name must be an ASCII identifier other than `math`, `old`, `abs_diff`, `wrapping_*`, `no_overflow_*`, or `saturating_*`, and its parameters may not be named `Int`, `True`, `False`, `Trusted`, `Spec`, `Specs`, or `_root_`. |
+| `#[anneal::pure]` | A non-recursive, side-effect-free helper usable in clauses. Its name must be an ASCII identifier other than `math`, `old`, `abs_diff`, `wrapping_*`, `no_overflow_*`, or `saturating_*`, and its parameters may not be named `Int`, `True`, `False`, `Trusted`, `Min`, `Max`, `Spec`, `Specs`, or `_root_`. |
 | `#[anneal::vacuous_ok(reason = "...")]` | Waives the check that the precondition admits some input. |
 
 Expressions: `true`/`false`, integer literals (with optional suffix), the
 integer constants `T::MIN`, `T::MAX`, and `T::BITS` for a fixed-width integer
 type `T`, parameters, the `ensures` binder, `!`, unary `-`, `&&`, `||`, `==>`
 (right-associative), `<==>`, comparisons, `+ - * / %`, `& | ^ << >>` and `!`
-on integers, `e as T` casts to fixed-width integer types, helper calls,
-`math(e)`/`math { e }`,
+on integers, `e as T` casts to fixed-width integer types, the integer methods
+below, helper calls, `math(e)`/`math { e }`,
 `wrapping_{add,sub,mul,neg,shl,shr}`,
 `no_overflow_{add,sub,mul,neg}`, `saturating_{add,sub,mul,neg}`,
 `abs_diff`, `if c { a } else { b }` (with `else if` chains),
@@ -160,6 +160,21 @@ like any other value. An unsuffixed literal has Rust's default type, `i32`, so
 an `if` that chooses an integer must be. Any other target, including `bool`
 and `()`, is rejected. In `max_steps`, a cast to an unsigned type is a step
 count.
+
+A fixed-width integer has these methods, which bind tighter than every operator,
+as in Rust, so `!a.min(b)` is `!(a.min(b))`. Each intrinsic above except `math`
+is also a method whose receiver is its first operand: `a.wrapping_add(b)` is
+`wrapping_add(a, b)`. `a.min(b)` and `a.max(b)` lower to Lean's `Min.min` and
+`Max.max`, which evaluate each operand once. `a.clamp(lo, hi)` lowers to
+`Min.min (Max.max a lo) hi`; Rust panics when `lo > hi`, so its bounds must be
+constants in order, and `a.max(lo).min(hi)` states the same value for other
+bounds when they are in order. `a.is_power_of_two()` takes an unsigned integer,
+as in Rust, and lowers to the decidable `0 < p ∧ p &&& (p - 1) = 0`, where `p`
+is `Int.toNat a`, bound once by `let «power_of_two»`. Like the intrinsics, these
+methods take operands of one fixed-width integer type, even inside `math`, where
+their integer results are mathematical, and in `max_steps` an unsigned result is
+a step count. Field accesses and other methods are rejected, as is a method call
+directly after a cast, which Rust also rejects.
 
 Division and remainder lower to
 `Trusted.MirSemantics.intTdiv`/`intTmod` (Rust's truncating semantics, as in
@@ -263,7 +278,7 @@ UTF-8 source and columns count Unicode scalar values.
 
 | Code | Rejects |
 | :--- | :--- |
-| `E_ANNEAL_AMBIGUOUS_SPEC_ARITH` | `+ - * / %` or unary `-` on a machine integer outside `math`, or a shift by an amount that is not a constant |
+| `E_ANNEAL_AMBIGUOUS_SPEC_ARITH` | `+ - * / %` or unary `-` on a machine integer outside `math`, a shift by an amount that is not a constant, or `clamp` with bounds that are not constants |
 | `E_ANNEAL_UNGUARDED_SPEC_DIV` | `/` or `%` whose divisor may be zero |
 | `E_ANNEAL_EAGER_CLAUSE_JOIN` | `&` or `\|` between `bool`s |
 | `E_ANNEAL_AMBIGUOUS_NEGATION` | `!a == b` and `!a != b` |
@@ -296,8 +311,8 @@ UTF-8 source and columns count Unicode scalar values.
 contains no Rust line numbers, so reformatting the Rust source leaves it
 byte-identical. `cargo-anneal` compiles it with `autoImplicit` disabled.
 It imports only `Trusted.MirSemantics` on top of `prelude`, and every global
-name it references is qualified from `Int`, `True`, `False`, `Trusted`, or
-its own namespace (`Spec.pure_h` or `Specs.S.C.pure_h`,
+name it references is qualified from `Int`, `True`, `False`, `Trusted`, `Min`,
+`Max`, or its own namespace (`Spec.pure_h` or `Specs.S.C.pure_h`,
 `Trusted.MirSemantics.intTdiv`). Helper parameters become Lean binders, so
 those names (and `Specs`) are reserved for them.
 `spec_span_map.json` maps each generated declaration's Lean line range to the
