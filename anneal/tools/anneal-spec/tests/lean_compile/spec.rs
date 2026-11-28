@@ -730,6 +730,29 @@ anneal::external_spec! {
         }
     }
 
+    // `ilog2` on receivers that a condition, an earlier `match` arm, or a
+    // range proves positive.
+    #[anneal::pure]
+    fn log2_or_zero(a: i16) -> u32 {
+        if a > 0 { a.ilog2() } else { 0 }
+    }
+
+    #[anneal::pure]
+    fn log2_u64(a: u64) -> u32 {
+        match a {
+            0 => 0,
+            n => n.ilog2(),
+        }
+    }
+
+    #[anneal::pure]
+    fn log2_i8(a: i8) -> u32 {
+        match a {
+            1..=i8::MAX => a.ilog2(),
+            _ => 0,
+        }
+    }
+
     #[anneal::pure]
     fn wshl_is(a: u16, n: u32, r: u16) -> bool {
         wrapping_shl(a, n) == r
@@ -756,6 +779,7 @@ anneal::external_spec! {
                 + n.swap_bytes()
                 + n.count_ones()
                 + n.leading_zeros()
+                + (if n > 0 { n.ilog2() } else { 0 })
                 + match n { 0..=9 => 1, _ => 2 }
         },
         ensures(|r| r == saturating_sub(n, 1u32)),

@@ -448,6 +448,25 @@ example : pure_clamp_byte 7 = 7 := by unfold pure_clamp_byte; decide
 example : pure_clamp_byte 255 = 255 := by unfold pure_clamp_byte; decide
 example : pure_clamp_byte 300 = 255 := by unfold pure_clamp_byte; decide
 
+-- `ilog2` is the position of the highest set bit of a positive receiver.
+example : pure_log2_or_zero 1 = 0 := by unfold pure_log2_or_zero; decide
+example : pure_log2_or_zero 2 = 1 := by unfold pure_log2_or_zero; decide
+example : pure_log2_or_zero 3 = 1 := by unfold pure_log2_or_zero; decide
+example : pure_log2_or_zero 255 = 7 := by unfold pure_log2_or_zero; decide
+example : pure_log2_or_zero 256 = 8 := by unfold pure_log2_or_zero; decide
+example : pure_log2_or_zero 32767 = 14 := by unfold pure_log2_or_zero; decide
+example : pure_log2_or_zero 0 = 0 := by unfold pure_log2_or_zero; decide
+example : pure_log2_or_zero (-5) = 0 := by unfold pure_log2_or_zero; decide
+example : pure_log2_u64 1 = 0 := by unfold pure_log2_u64; decide
+example : pure_log2_u64 1099511627775 = 39 := by unfold pure_log2_u64; decide
+example : pure_log2_u64 1099511627776 = 40 := by unfold pure_log2_u64; decide
+example : pure_log2_u64 18446744073709551615 = 63 := by unfold pure_log2_u64; decide
+example : pure_log2_u64 0 = 0 := by unfold pure_log2_u64; decide
+example : pure_log2_i8 127 = 6 := by unfold pure_log2_i8; decide
+example : pure_log2_i8 64 = 6 := by unfold pure_log2_i8; decide
+example : pure_log2_i8 63 = 5 := by unfold pure_log2_i8; decide
+example : pure_log2_i8 (-128) = 0 := by unfold pure_log2_i8; decide
+
 -- The masked shifts take the amount modulo the width.
 example : pure_wshl_is 1 17 2 := by unfold pure_wshl_is; decide
 example : pure_wshl_is 0x8001 1 2 := by unfold pure_wshl_is; decide
@@ -460,9 +479,10 @@ example : ¬ pure_wshr_is (-32768) 31 1 := by unfold pure_wshr_is; decide
 -- `+ a.cast_signed().unsigned_abs() as u32 + b.saturating_add_signed(-1) as u32`
 -- `+ n.unbounded_shr(31) + n.div_euclid(16) + n.saturating_div(1024)`
 -- `+ n.swap_bytes() + n.count_ones() + n.leading_zeros()`
--- `+ match n { 0..=9 => 1, _ => 2 }`.
-example : fn7_max_steps { args := [u8Val 9, u8Val 2, u32Val 5] } = 83886155 := rfl
+-- `+ (if n > 0 { n.ilog2() } else { 0 }) + match n { 0..=9 => 1, _ => 2 }`.
+example : fn7_max_steps { args := [u8Val 9, u8Val 2, u32Val 5] } = 83886157 := rfl
 example : fn7_max_steps { args := [u8Val 3, u8Val 250, u32Val 4294967295] } =
-    9399436318 := rfl
+    9399436349 := rfl
+example : fn7_max_steps { args := [u8Val 9, u8Val 2, u32Val 0] } = 60 := rfl
 
 end Spec.Check

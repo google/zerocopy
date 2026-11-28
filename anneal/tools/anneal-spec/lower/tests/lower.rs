@@ -2560,7 +2560,7 @@ fn leading_and_trailing_counts_are_checked_strictly() {
         ("requires(i.trailing_ones(1) == 0u32)", "E_ANNEAL_SPEC_ARITY"),
         ("requires(5.leading_ones() == 0u32)", "E_ANNEAL_SPEC_TYPE_ANNOTATION_NEEDED"),
         ("requires(c.trailing_zeros() == 0u32)", "E_ANNEAL_SPEC_TYPE_MISMATCH"),
-        ("requires(u.ilog2() == 0u32)", "E_ANNEAL_SPEC_UNSUPPORTED_EXPR"),
+        ("requires(u.ilog10() == 0u32)", "E_ANNEAL_SPEC_UNSUPPORTED_EXPR"),
     ] {
         expect_error(&wrap(clause, sig), code);
     }
@@ -2570,6 +2570,145 @@ fn leading_and_trailing_counts_are_checked_strictly() {
         sig,
     ))
     .unwrap();
+}
+
+#[test]
+fn ilog2_lowers_exactly() {
+    let x = "(specInt (specArg q 0))";
+    let emod = "Trusted.MirSemantics.intEmod";
+    let lean = |clause: &str, sig: &str| {
+        lower_one(&wrap(clause, sig)).unwrap_or_else(|e| panic!("{clause}: {e:?}")).spec_lean
+    };
+    let has = |text: &str, want: &str| assert!(text.contains(want), "missing {want} in\n{text}");
+    let stage = |body: &str, arg: &str| format!("((fun («x» : Nat) => {body}) {arg})");
+    let ones = |arg: &str| {
+        stage(
+            "(«x» + («x» >>> 4)) &&& 15",
+            &stage(
+                "(«x» &&& 51) + ((«x» >>> 2) &&& 51)",
+                &stage("«x» - ((«x» >>> 1) &&& 85)", arg),
+            ),
+        )
+    };
+    // The span below the highest set bit, less one, on either signedness.
+    let down = stage(
+        "«x» ||| («x» >>> 4)",
+        &stage(
+            "«x» ||| («x» >>> 2)",
+            &stage("«x» ||| («x» >>> 1)", &format!("(Int.toNat ({emod} {x} 256))")),
+        ),
+    );
+    let want = format!("((specInt out.ret) = ((Int.ofNat ({} % 256)) - (1 : Int)))", ones(&down));
+    has(&lean("requires(a != 0u8), ensures(|r| r == a.ilog2())", "fn f(a: u8) -> u32"), &want);
+    has(&lean("requires(a > 0i8), ensures(|r| r == a.ilog2())", "fn f(a: i8) -> u32"), &want);
+    let wide = lean("requires(a != 0u128), ensures(|r| r == a.ilog2())", "fn f(a: u128) -> u32");
+    has(&wide, "«x» ||| («x» >>> 64)");
+    has(&wide, "% 256)) - (1 : Int))");
+    // The result is a `u32`, and positive constants need no guard.
+    for clause in [
+        "ensures(|r| math(r) == math(a.ilog2()) + 1)",
+        "ensures(|r| r == 5u8.ilog2())",
+        "ensures(|r| r == i8::MAX.ilog2())",
+        "ensures(|r| r == u128::MAX.ilog2())",
+    ] {
+        lower_one(&wrap(&format!("requires(a > 0u16), {clause}"), "fn f(a: u16) -> u32"))
+            .unwrap_or_else(|e| panic!("{clause}: {e:?}"));
+    }
+}
+
+#[test]
+fn ilog2_needs_a_positive_receiver() {
+    let sig = "fn f(u: u8, i: i8, w: u64, c: bool) -> u32";
+    let ok = |clause: &str| {
+        lower_one(&wrap(clause, sig)).unwrap_or_else(|e| panic!("{clause}: {e:?}"));
+    };
+    // An unsigned receiver is positive wherever it is nonzero.
+    for guard in ["u != 0u8", "u > 0u8", "0u8 < u", "u >= 1u8", "1u8 <= u", "!(u == 0u8)"] {
+        ok(&format!("requires({guard}), ensures(|r| r == u.ilog2())"));
+    }
+    // A signed receiver needs a positive fact: a comparison that puts it above
+    // a non-negative constant or at least a positive one, either way round
+    // and possibly negated, or `is_positive`.
+    for guard in [
+        "i > 0i8",
+        "0i8 < i",
+        "i >= 1i8",
+        "1i8 <= i",
+        "i > 7i8",
+        "i >= 3i8",
+        "i == 5i8",
+        "5i8 == i",
+        "!(i <= 0i8)",
+        "!(0i8 >= i)",
+        "!(i < 1i8)",
+        "!(1i8 > i)",
+        "!(i != 2i8)",
+        "i.is_positive()",
+        "c && i > 0i8",
+        "{ let ok = i > 0i8; ok }",
+    ] {
+        ok(&format!("requires({guard}), ensures(|r| r == i.ilog2())"));
+    }
+    // The fact flows like a nonzero fact: through implications, `if`
+    // branches, bindings, and `match` arms.
+    for clause in [
+        "ensures(|r| i > 0i8 ==> r == i.ilog2())",
+        "ensures(|r| r == if i > 0i8 { i.ilog2() } else { 0u32 })",
+        "ensures(|r| r == if i <= 0i8 { 0u32 } else { i.ilog2() })",
+        "requires(i > 0i8), ensures(|r| { let j = i; r == j.ilog2() })",
+        "ensures(|r| { let k: i8 = 4; r == k.ilog2() })",
+        "ensures(|r| r == match i { 1..=i8::MAX => i.ilog2(), _ => 0u32 })",
+        "ensures(|r| r == match i { 1 | 4..=9 => i.ilog2(), _ => 0u32 })",
+        "ensures(|r| r == match i { i8::MIN..=0 => 0u32, _ => i.ilog2() })",
+        "ensures(|r| r == match i { i8::MIN..=-1 => 0u32, 0 => 1u32, n => n.ilog2() })",
+        "ensures(|r| r == match u { 0 => 0u32, n => n.ilog2() })",
+        "ensures(|r| r == match w { 0 => 0u32, _ => w.ilog2() })",
+    ] {
+        ok(clause);
+    }
+    // A positive fact also guards a divisor.
+    ok("requires(u >= 1u8), ensures(|r| math(r) == math(w / u))");
+    for clause in [
+        "ensures(|r| r == u.ilog2())",
+        "requires(i != 0i8), ensures(|r| r == i.ilog2())",
+        "requires(i >= 0i8), ensures(|r| r == i.ilog2())",
+        "requires(u >= 0u8), ensures(|r| r == u.ilog2())",
+        "requires(i > -1i8), ensures(|r| r == i.ilog2())",
+        "requires(i >= -5i8), ensures(|r| r == i.ilog2())",
+        "requires(i < 1i8), ensures(|r| r == i.ilog2())",
+        "requires(i == 0i8), ensures(|r| r == i.ilog2())",
+        "requires(!(i < 0i8)), ensures(|r| r == i.ilog2())",
+        "requires(!(i == 1i8)), ensures(|r| r == i.ilog2())",
+        "requires(!i.is_negative()), ensures(|r| r == i.ilog2())",
+        "requires(i > 0i8 || c), ensures(|r| r == i.ilog2())",
+        "requires(u > 0u8), ensures(|r| r == w.ilog2())",
+        "ensures(|r| i > 0i8 || r == i.ilog2())",
+        "ensures(|r| r == if i > 0i8 { 0u32 } else { i.ilog2() })",
+        "ensures(|r| r == match i { 0..=i8::MAX => i.ilog2(), _ => 0u32 })",
+        "ensures(|r| r == match i { 0 => 0u32, _ => i.ilog2() })",
+        "ensures(|r| r == match i { i8::MIN..=-1 => 0u32, _ => i.ilog2() })",
+        "ensures(|r| r == match i { -5..=0 => 0u32, n => n.ilog2() })",
+        "ensures(|r| r == 0u8.ilog2())",
+        "ensures(|r| r == i8::MIN.ilog2())",
+        "requires({ let j = i; j > 0i8 }), ensures(|r| r == i.ilog2())",
+        "ensures(|r| { let k: i8 = -4; r == k.ilog2() })",
+    ] {
+        expect_error(&wrap(clause, sig), "E_ANNEAL_UNGUARDED_SPEC_LOG");
+    }
+    let r = expect_error(
+        &wrap("requires(i != 0i8), ensures(|r| r == i.ilog2())", sig),
+        "E_ANNEAL_UNGUARDED_SPEC_LOG",
+    );
+    assert!(r.contains("the receiver of `ilog2` may not be positive"), "{r}");
+    assert!(r.contains("`x > 0 ==> x.ilog2() == ...`"), "{r}");
+    for (clause, code) in [
+        ("requires(c.ilog2() == 0u32)", "E_ANNEAL_SPEC_TYPE_MISMATCH"),
+        ("requires(5.ilog2() == 0u32)", "E_ANNEAL_SPEC_TYPE_ANNOTATION_NEEDED"),
+        ("requires(u > 0u8 && u.ilog2(2) == 0u32)", "E_ANNEAL_SPEC_ARITY"),
+        ("requires(u > 0u8 && u.ilog2() == u)", "E_ANNEAL_SPEC_TYPE_MISMATCH"),
+    ] {
+        expect_error(&wrap(clause, sig), code);
+    }
 }
 
 #[test]

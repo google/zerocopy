@@ -255,6 +255,17 @@ lowest, set bit, so further SWAR stages copy that bit all the way down with
 the width minus the ones of the copy. The ones counts first complement the
 bits, as `(2^bits - 1) - x`.
 
+`a.ilog2()` is the base-2 logarithm of `a`, rounded down, as a `u32`: the
+position of its highest set bit, which is the span below that bit, as the
+leading zeros compute it, less one. Rust panics unless the receiver is
+positive, so it must be a positive constant or be guarded, as a divisor is,
+by a fact that proves it positive. An unsigned receiver is positive wherever
+it is nonzero, so `x != 0` suffices. A signed one needs a comparison that puts
+it above a non-negative constant or at least a positive one, such as `x > 0`
+or `x >= 1`, either way round and possibly negated, or `x.is_positive()`.
+There `x != 0` is not enough, since `(-1i8).ilog2()` panics. A positive fact
+also guards a divisor.
+
 Division and remainder lower to
 `Trusted.MirSemantics.intTdiv`/`intTmod` (Rust's truncating semantics, as in
 `Int.tdiv`/`Int.tmod`) and require the divisor to be a nonzero literal or
@@ -302,7 +313,8 @@ condition of an `if` that chooses a value exactly when its initializer is.
 
 Divisor guards pass through bindings. A name bound to a nonzero constant, or
 to a value already known to be nonzero, guards a divisor in the rest of its
-block, and a name bound to `0` counts as zero in a guard such as `d != z`. A
+block, and a name bound to a positive constant or value may take `ilog2`
+there. A name bound to `0` counts as zero in a guard such as `d != z`. A
 `bool` binding guards what its initializer guards, so
 `let ok = d != 0; ok ==> math(n / d) == ..` passes. A guard that names a
 block's own binding, such as `{ let e = d; e != 0 }`, does not leave the
@@ -343,7 +355,11 @@ a value use Lean's `if`, which needs a decidable scrutinee when it is a
 `bool`. Each arm may divide by what its pattern and the earlier arms prove
 nonzero, so `match d { 0 => r == 0, _ => math(r) == math(n / d) }` passes, as
 does a name arm after a `0` arm; a range proves the scrutinee nonzero in its arm
-when it excludes zero, and in the later arms when it includes zero.
+when it excludes zero, and in the later arms when it includes zero. Likewise,
+an arm whose patterns are all positive proves the scrutinee positive in that
+arm, and arms that together match every value of its machine type up to `0`
+prove it positive in the later arms, so
+`match i { i8::MIN..=0 => 0, _ => i.ilog2() }` passes.
 
 An integer constant lowers to its value on the profile v1 target, where
 `usize` and `isize` are 64 bits wide: `usize::MAX` lowers to
@@ -367,6 +383,7 @@ UTF-8 source and columns count Unicode scalar values.
 | :--- | :--- |
 | `E_ANNEAL_AMBIGUOUS_SPEC_ARITH` | `+ - * / %` or unary `-` on a machine integer outside `math`, a shift by an amount that is not a constant, or `clamp` with bounds that are not constants |
 | `E_ANNEAL_UNGUARDED_SPEC_DIV` | `/` or `%` whose divisor may be zero |
+| `E_ANNEAL_UNGUARDED_SPEC_LOG` | `ilog2` whose receiver may not be positive |
 | `E_ANNEAL_EAGER_CLAUSE_JOIN` | `&` or `\|` between `bool`s |
 | `E_ANNEAL_AMBIGUOUS_NEGATION` | `!a == b` and `!a != b` |
 | `E_ANNEAL_CHAINED_COMPARISON` | `a < b < c` |

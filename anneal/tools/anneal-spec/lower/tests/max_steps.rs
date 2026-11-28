@@ -484,3 +484,18 @@ fn max_steps_rejects_invalid_and_negative_forms_fail_closed() {
     assert!(ret_msg.contains("ensures"), "{ret_msg}");
     expect_error(&wrap("max_steps = 256u8", "fn f()"), "E_ANNEAL_SPEC_LITERAL_RANGE");
 }
+
+#[test]
+fn max_steps_counts_a_guarded_ilog2() {
+    let sig = "fn f(n: u64, i: i32)";
+    for clause in [
+        "max_steps = if n > 0 { n.ilog2() } else { 0 }",
+        "max_steps = match n { 0 => 0, _ => n.ilog2() }",
+        "max_steps = if i > 0 { i.ilog2() } else { 0 }",
+    ] {
+        lower_one(&wrap(clause, sig)).unwrap_or_else(|e| panic!("{clause}: {e:?}"));
+    }
+    for clause in ["max_steps = n.ilog2()", "max_steps = if i != 0 { i.ilog2() } else { 0 }"] {
+        expect_error(&wrap(clause, sig), "E_ANNEAL_UNGUARDED_SPEC_LOG");
+    }
+}
