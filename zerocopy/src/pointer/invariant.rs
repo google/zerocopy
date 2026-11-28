@@ -195,9 +195,10 @@ unsafe impl Validity for Uninit {
 ///
 /// Formally, given `len = size_of_val_raw(ptr)`, at every byte offset, `b`, in
 /// the range `[0, len)`:
-/// - If, in any instance `t: T` of length `len`, the byte at offset `b` in `t`
-///   is initialized, then the byte at offset `b` within `*ptr` must be
-///   initialized.
+/// - The byte at offset `b` within `*ptr` must be initialized unless both:
+///   - There exists a valid instance `t: T` of length `len`.
+///   - In every valid instance `t: T` of length `len`, the byte at offset
+///     `b` is uninitialized.
 /// - Let `c` be the contents of the byte range `[0, b)` in `*ptr`. Let `S` be
 ///   the subset of valid instances of `T` of length `len` which contain `c` in
 ///   the offset range `[0, b)`. If, in any instance of `t: T` in `S`, the byte
@@ -211,6 +212,47 @@ unsafe impl Validity for Uninit {
 ///   variant's bit validity (although note that the variant may contain another
 ///   enum type, in which case the same rules apply depending on the state of
 ///   its discriminant, and so on recursively).
+///
+/// # Uninhabited referents
+///
+/// If no valid instance of `T` of length `len` exists, the first rule requires
+/// every byte of the referent, including padding, to be initialized. In this
+/// case, `AsInitialized` has the same requirements as [`Initialized`]. It
+/// still does not imply [`Safe`]: initialized storage need not contain a valid
+/// value of `T`.
+///
+/// The following example violates the safety contract of
+/// [`Ptr::assume_validity`][super::Ptr::assume_validity]:
+///
+/// ```no_run
+/// use core::mem::MaybeUninit;
+/// use zerocopy::{invariant::*, Ptr};
+///
+/// enum Never {}
+///
+/// #[repr(u8)]
+/// enum E {
+///     Variant(Never, u8),
+/// }
+///
+/// let mut storage = MaybeUninit::<E>::uninit();
+/// let ptr: Ptr<'_, E, (Exclusive, Unaligned, Uninit)> =
+///     Ptr::from_mut(&mut storage).transmute::<E, Uninit, _>();
+///
+/// // INCORRECT SAFETY ARGUMENT: E has no valid instances, so every valid
+/// // instance has an uninitialized byte at every offset. Therefore,
+/// // AsInitialized permits the referent to be entirely uninitialized.
+/// let _ptr = unsafe { ptr.assume_validity::<AsInitialized>() };
+/// ```
+///
+/// `E` is uninhabited because its only variant contains `Never`, which has no
+/// variants. This makes the argument's claim about every valid instance
+/// vacuously true, but it does not satisfy the first rule's requirement that
+/// at least one such instance exist. The exception therefore does not apply:
+/// all bytes of `E`'s storage must be initialized, including its tag.
+/// [`MaybeUninit::uninit`][core::mem::MaybeUninit::uninit] does not establish
+/// that condition. The `Uninit` pointer is permitted, but the unsafe assertion
+/// of `AsInitialized` is not justified.
 pub enum AsInitialized {}
 // SAFETY: `AsInitialized`'s validity is well-defined for all `T: ?Sized`, and
 // is not a function of any property of `T` other than its bit validity.
