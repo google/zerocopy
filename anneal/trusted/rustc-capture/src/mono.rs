@@ -937,9 +937,14 @@ fn lower_ty<'tcx>(
                 } else {
                     tcx.type_of(did).instantiate(tcx, g_args)
                 };
-                normalize_use_site_ty(tcx, typing_env, lowered, "type alias", || {
+                let pre_norm = lowered.skip_normalization();
+                let norm = normalize_use_site_ty(tcx, typing_env, lowered, "type alias", || {
                     tcx.def_path_str_with_args(did, g_args)
-                })?
+                })?;
+                crate::extract::check_mono_item_ctfe_deps(tcx, typing_env, did, g_args)?;
+                crate::extract::check_mono_ty_ctfe_deps(tcx, typing_env, pre_norm)?;
+                crate::extract::check_mono_ty_ctfe_deps(tcx, typing_env, norm)?;
+                norm
             } else {
                 Ty::new_adt(tcx, tcx.adt_def(did), g_args)
             }
@@ -1032,13 +1037,17 @@ fn build_generic_args<'tcx>(
                     ));
                 }
                 let prefix_args = tcx.mk_args(&built);
+                let instantiated_const_ty = raw_const_ty.instantiate(tcx, prefix_args);
+                let pre_norm_const_ty = instantiated_const_ty.skip_normalization();
                 let const_ty = normalize_use_site_ty(
                     tcx,
                     typing_env,
-                    raw_const_ty.instantiate(tcx, prefix_args),
+                    instantiated_const_ty,
                     "const parameter type",
                     || format!("{}::{}", tcx.def_path_str(def_id), param.name),
                 )?;
+                crate::extract::check_mono_ty_ctfe_deps(tcx, typing_env, pre_norm_const_ty)?;
+                crate::extract::check_mono_ty_ctfe_deps(tcx, typing_env, const_ty)?;
                 let concrete_const = lower_const_arg(tcx, typing_env, const_ty, raw)?;
                 built.push(concrete_const.into());
             }
@@ -1314,6 +1323,7 @@ pub(crate) fn instantiate_body<'tcx>(
     // this explicit check, `Instance::try_resolve` alone could instantiate a
     // callee whose `where` clauses are violated for the requested types.
     verify_predicates_and_wf(tcx, typing_env, target_def, args, "target")?;
+    crate::extract::check_mono_item_ctfe_deps(tcx, typing_env, target_def, args)?;
 
     let instance = Instance::try_resolve(tcx, typing_env, target_def, args)
         .map_err(|_| {
@@ -1354,6 +1364,7 @@ pub(crate) fn instantiate_body<'tcx>(
     if resolved_def != target_def {
         let resolved_args = replace_erased_regions_with_static(tcx, instance.args);
         verify_predicates_and_wf(tcx, typing_env, resolved_def, resolved_args, "resolved impl")?;
+        crate::extract::check_mono_item_ctfe_deps(tcx, typing_env, resolved_def, resolved_args)?;
     }
     if tcx.intrinsic(resolved_def).is_some() {
         return Err(format!(

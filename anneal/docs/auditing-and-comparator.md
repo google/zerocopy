@@ -286,7 +286,7 @@ dedicated negative refutation fixtures outside `anneal/trusted/`):
    `8` guards across `TrustedBoundary.lean` and `SpecPreflight.lean`) and
    boundary (`audit_boundary`, `12` `"spec-preflight"` and `"target-audit"`
    guards) checks in `TrustedBoundary.lean` (`362` Lean guards in total), plus
-   `extract_guards` (`45` `rustc-capture` guards; `407` total cataloged
+   `extract_guards` (`65` `rustc-capture` guards; `427` total cataloged
    guards). Each catalog entry pins a unique source anchor and its exact
    guard-weakening mutation.
 2. **Isolated single-guard mutation:** Copies the relevant files into an
@@ -310,12 +310,13 @@ dedicated negative refutation fixtures outside `anneal/trusted/`):
 - **What it guarantees:** Every executed guard in the catalog is live and
   actively exercised by a negative refutation, negative auditor or capture
   witness, negative unit test, or labeled diagnostic-precedence pin (`362` Lean
-  guards enforced in GitHub Actions PR CI today; `45` `extract_guards` verified
-  under pinned `rustc-dev` and pending `workspace-tests` workflow wiring).
+  guards enforced in GitHub Actions PR CI today; `65` `extract_guards`
+  verified under pinned `rustc-dev` and pending `workspace-tests` workflow
+  wiring).
 - **What it does not guarantee:** It cannot detect bugs in unmodeled Rust
   semantics, missing guards that were never written, newly added guards not yet
   registered in the catalog, Rust-side `anneal-rustc-capture` checks outside the
-  `45` cataloged `extract_guards`, or regressions in `extract_guards` on
+  `65` cataloged `extract_guards`, or regressions in `extract_guards` on
   `--lean-only` CI jobs until `workspace-tests` workflow execution lands.
 
 ## 3. Non-adversarial `audit-spec` sanity checks

@@ -150,7 +150,7 @@ class GuardMutationUnitTests(unittest.TestCase):
             len(check_guard_mutation.AUDIT_BOUNDARY_GUARDS), 12
         )
         self.assertGreaterEqual(
-            len(check_guard_mutation.EXTRACT_GUARDS), 45
+            len(check_guard_mutation.EXTRACT_GUARDS), 65
         )
         # Derive the expected module set from `Trusted/MirSemantics/*.lean` on
         # disk rather than trusting `SEMANTICS_MODULES` alone: every file

@@ -158,9 +158,11 @@ pub struct Args {
     /// and every `--source-file` must canonically reside inside this directory,
     /// and path metadata in `capture.json` (`configuration.crate_root`,
     /// `configuration.declared_source_files`, and `source_files[].path`) is
-    /// normalized to source-root-relative POSIX paths. Only those path fields
-    /// are normalized; crates that embed path-dependent values (for example via
-    /// `file!()`) may still vary across staging directories.
+    /// normalized to source-root-relative POSIX paths. Ambient source-location
+    /// and build-path channels (`file!()`, `line!()`, `column!()`,
+    /// `module_path!()`, `core::panic::Location::caller()`, and CTFE
+    /// `#[track_caller]` / `TypeId` / `type_name` intrinsics) are refused
+    /// separately so staged paths cannot alter captured program values.
     #[arg(long)]
     source_root: Option<PathBuf>,
     /// Capture the named standard-library crate from its unmodified sources.

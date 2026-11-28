@@ -13,20 +13,27 @@
 //! variants remain errors; this adapter performs no control-flow or expression
 //! simplification.
 
-use std::collections::{BTreeMap, BTreeSet};
+use std::collections::{BTreeMap, BTreeSet, HashSet};
+use std::ops::ControlFlow;
 use rustc_abi::{
     BackendRepr, Endian, ExternAbi, FieldIdx, HasDataLayout, Integer, Primitive, Scalar, Size,
     TagEncoding, VariantIdx, Variants,
 };
 use rustc_ast::Mutability;
+use rustc_hir as hir;
 use rustc_hir::attrs::{InlineAttr, OptimizeAttr};
+use rustc_hir::def::{CtorKind, DefKind, Res};
+use rustc_hir::intravisit::{self, VisitorExt};
 use rustc_middle::middle::codegen_fn_attrs::{
     CodegenFnAttrFlags, CodegenFnAttrs, SanitizerFnAttrs,
 };
 use rustc_middle::mir::interpret::{AllocRange, Allocation, GlobalAlloc, Provenance};
 use rustc_middle::mir::{self, MirPhase, RuntimePhase};
-use rustc_middle::ty::{self, TyCtxt, TypeVisitableExt, TypingEnv};
+use rustc_middle::ty::{
+    self, TyCtxt, TypeFoldable, TypeFolder, TypeSuperFoldable, TypeVisitableExt, TypingEnv,
+};
 use rustc_span::def_id::{DefId, LocalDefId};
+use rustc_span::sym;
 use sha2::{Digest, Sha256};
 
 use crate::ir::{self, ConstLit, IntTy, IntWidth};
@@ -530,8 +537,21 @@ pub fn ty<'tcx>(tcx: TyCtxt<'tcx>, t: ty::Ty<'tcx>) -> Result<ir::Ty> {
                 .map_err(|err| format!("unsupported enum discriminant type for {t:?}: {err}"))?;
             let tag_repr = enum_tag_repr(tcx, t, adt.variants().len())?;
             // `discriminants` computes explicit and implicit discriminants;
-            // it is not safe to substitute the enumeration index here.
+            // it is not safe to substitute the enumeration index here. Audit
+            // explicit discriminant `AnonConst` bodies first so `SelectedUnit`
+            // captures cannot fold ambient CTFE channels into tag values.
             // https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_middle/src/ty/adt.rs#L660-L679
+            for variant in adt.variants() {
+                if let ty::VariantDiscr::Explicit(discr_did) = variant.discr {
+                    check_ctfe_item(
+                        tcx,
+                        discr_did,
+                        TypingEnv::fully_monomorphized(),
+                        ty::GenericArgs::identity_for_item(tcx, discr_did),
+                        &format!("enum discriminant `{}`", tcx.def_path_str(discr_did)),
+                    )?;
+                }
+            }
             let discriminants = adt
                 .discriminants(tcx)
                 .map(|(_, entry)| {
@@ -615,9 +635,10 @@ fn local(place: &mir::Place<'_>) -> Result<u32> {
 ///
 /// Upstream `Const::eval` resolves `Const::Unevaluated` via
 /// `const_eval_resolve`, lowers `ConstKind::Value(cv)` via
-/// `valtree_to_const_val`, triggers `bug!("Normalization of
-/// \`ty::ConstKind::Expr\` is unimplemented")` on `ConstKind::Expr`, and calls
-/// `delayed_bug("Unevaluated \`ty::Const\` in MIR body")` on any other
+/// `valtree_to_const_val`, triggers
+/// `bug!("Normalization of ty::ConstKind::Expr is unimplemented")`
+/// on `ConstKind::Expr`, and calls
+/// `delayed_bug("Unevaluated ty::Const in MIR body")` on any other
 /// `Const::Ty`; guard `Const::Ty` before calling `eval`.
 /// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_middle/src/mir/consts.rs#L268-L341
 fn eval_mir_const<'tcx>(
@@ -632,17 +653,4146 @@ fn eval_mir_const<'tcx>(
     {
         return Err(format!("uninstantiated or erroneous constant: {constant:?}"));
     }
+    let mut ty_state = CtfePurityState::default();
+    check_ty_ctfe_deps(tcx, typing_env, constant.ty(), &mut ty_state)?;
     match constant {
-        mir::Const::Val(value, _) => Ok(value),
-        mir::Const::Unevaluated(..) => constant
-            .eval(tcx, typing_env, span)
-            .map_err(|err| format!("unevaluated constant failed CTFE: {err:?}")),
-        mir::Const::Ty(_, ct) if matches!(ct.kind(), ty::ConstKind::Value(_)) => constant
-            .eval(tcx, typing_env, span)
-            .map_err(|err| format!("type-level constant failed evaluation: {err:?}")),
+        mir::Const::Val(value, _) => {
+            check_const_val_allocs(tcx, value)?;
+            Ok(value)
+        }
+        mir::Const::Unevaluated(uv, _) => {
+            check_unevaluated_const_ctfe(tcx, typing_env, uv)?;
+            let val = constant
+                .eval(tcx, typing_env, span)
+                .map_err(|err| format!("unevaluated constant failed CTFE: {err:?}"))?;
+            check_const_val_allocs(tcx, val)?;
+            Ok(val)
+        }
+        mir::Const::Ty(_, ct) if matches!(ct.kind(), ty::ConstKind::Value(_)) => {
+            let val = constant
+                .eval(tcx, typing_env, span)
+                .map_err(|err| format!("type-level constant failed evaluation: {err:?}"))?;
+            check_const_val_allocs(tcx, val)?;
+            Ok(val)
+        }
         mir::Const::Ty(..) => Err(format!(
             "unsupported non-value type-level constant: {constant:?}"
         )),
+    }
+}
+
+/// Refuse CTFE intrinsics whose result depends on build paths, source spans,
+/// compiler crate/type identity hashes, diagnostic type formatting, or CTFE
+/// heap/provenance non-determinism.
+///
+/// - `caller_location` walks the CTFE stack with
+///   `find_closest_untracked_caller_location` and materializes a
+///   `core::panic::Location` containing the compiling host's source filename
+///   (or `--remap-path-prefix` target), line, and column.
+/// - `type_name` formats diagnostic type paths including crate names, and the
+///   `type_id*` / `type_of` reflection intrinsics embed compiler session
+///   `StableCrateId` hashes (`GlobalAlloc::TypeId`).
+/// - `const_allocate`, `const_deallocate`, `const_make_global`,
+///   `ptr_guaranteed_cmp`, and un-remapped `const_eval_select` (`Call`
+///   terminators to `const_eval_select` are rewritten in `mir_for_ctfe` by
+///   `remap_mir_for_const_eval_select` to direct calls to the compile-time
+///   arm, while `TailCall` and reified `FnDef` references are refused here)
+///   expose CTFE heap, provenance, or dispatch machinery outside Anneal's
+///   scalar/rodata constant model.
+///
+/// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_const_eval/src/interpret/intrinsics.rs#L187-L211
+/// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_const_eval/src/interpret/intrinsics.rs#L290-L296
+/// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_const_eval/src/interpret/eval_context.rs#L387-L425
+/// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_const_eval/src/const_eval/machine.rs#L483-L720
+/// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_mir_transform/src/lib.rs#L234-L304
+fn is_forbidden_ctfe_intrinsic(name: rustc_span::Symbol) -> bool {
+    matches!(
+        name,
+        sym::caller_location
+            | sym::type_name
+            | sym::type_id
+            | sym::type_id_eq
+            | sym::type_id_vtable
+            | sym::type_of
+            | sym::size_of_type_id
+            | sym::type_id_fields
+            | sym::type_id_field_representing_type
+            | sym::type_id_variants
+            | sym::field_offset
+            | sym::field_representing_type_actual_type_id
+            | sym::vtable_size
+            | sym::vtable_align
+            | sym::const_allocate
+            | sym::const_deallocate
+            | sym::const_make_global
+            | sym::ptr_guaranteed_cmp
+            | sym::const_eval_select
+    )
+}
+
+fn is_panic_location_item(tcx: TyCtxt<'_>, def_id: DefId) -> bool {
+    if tcx.is_lang_item(def_id, rustc_hir::LangItem::PanicLocation) {
+        return true;
+    }
+    if let Some(impl_did) = tcx.impl_of_assoc(def_id)
+        && matches!(tcx.def_kind(impl_did), DefKind::Impl { of_trait: false })
+        && let Some(adt) = tcx
+            .type_of(impl_did)
+            .instantiate_identity()
+            .skip_norm_wip()
+            .ty_adt_def()
+    {
+        return tcx.is_lang_item(adt.did(), rustc_hir::LangItem::PanicLocation);
+    }
+    false
+}
+
+fn def_requires_caller_location(tcx: TyCtxt<'_>, def_id: DefId) -> bool {
+    tcx.def_kind(def_id).has_codegen_attrs()
+        && tcx
+            .codegen_fn_attrs(def_id)
+            .flags
+            .contains(CodegenFnAttrFlags::TRACK_CALLER)
+}
+
+fn ctfe_requires_caller_location<'tcx>(
+    tcx: TyCtxt<'tcx>,
+    def_id: DefId,
+    inst_kind: Option<ty::InstanceKind<'tcx>>,
+) -> bool {
+    def_requires_caller_location(tcx, def_id)
+        || inst_kind.is_some_and(|kind| kind.requires_caller_location(tcx))
+}
+
+/// Exempt only diverging `TerminatorKind::Call { target: None, .. }` calls to
+/// `!`-returning sysroot `core::panicking::*` and `core::ub_checks::*` abort
+/// hooks in CTFE MIR.
+///
+/// `const { assert!(...) }` expands to an untaken diverging call to
+/// `core::panicking::panic` (`#[track_caller]`, `LangItem::BeginPanic`). In
+/// `CompileTimeMachine::hook_special_const_fn`, reaching a panic hook aborts
+/// CTFE with `ConstEvalErrKind::Panic` rather than returning a `Location` value
+/// to the program, so untaken assertion guards cannot leak caller locations
+/// into evaluated constants while taken assertions fail CTFE closed.
+/// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_const_eval/src/const_eval/machine.rs#L230-L269
+fn is_exempt_ctfe_diverging_panic_hook(
+    tcx: TyCtxt<'_>,
+    def_id: DefId,
+    is_diverging_call: bool,
+) -> bool {
+    is_diverging_call
+        && core_def_path(tcx, def_id).is_some_and(|path| {
+            path.starts_with("core::panicking::") || path.starts_with("core::ub_checks::")
+        })
+        && tcx.fn_sig(def_id).instantiate_identity().skip_binder().output().is_never()
+}
+
+/// Exempt `core::pat::RangePattern::sub_one` (`LangItem::RangeSub`) and its
+/// sysroot `core` implementations from the blanket `#[track_caller]` check.
+///
+/// Sysroot niche types (`core::num::niche_types::NonZeroI*Inner`,
+/// `pattern_type!(i* is ..0 | 1..)`) compute exclusive range endpoints via
+/// `#[lang = "RangeSub"]`, whose trait declaration carries `#[track_caller]`
+/// for its compile-time underflow panic branch. Callers in
+/// `audit_fn_def_ctfe_deps` and `check_ctfe_body_recursive` still inspect the
+/// resolved `mir_for_ctfe` body so any `Location::caller` or ambient read in
+/// the body remains rejected.
+/// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/library/core/src/pat.rs#L28-L78
+fn is_exempt_ctfe_sysroot_range_sub(tcx: TyCtxt<'_>, def_id: DefId) -> bool {
+    let Some(core_crate) = sysroot_core_crate(tcx) else {
+        return false;
+    };
+    if def_id.is_local() || def_id.krate != core_crate {
+        return false;
+    }
+    if tcx.is_lang_item(def_id, rustc_hir::LangItem::RangeSub) {
+        return true;
+    }
+    tcx.opt_associated_item(def_id)
+        .and_then(|item| item.trait_item_def_id())
+        .is_some_and(|trait_item| {
+            !trait_item.is_local()
+                && trait_item.krate == core_crate
+                && tcx.is_lang_item(trait_item, rustc_hir::LangItem::RangeSub)
+        })
+}
+
+fn check_no_ctfe_static_ref(tcx: TyCtxt<'_>, static_did: DefId) -> Result<()> {
+    Err(format!(
+        "CTFE and constant references to static `{}` are unsupported",
+        tcx.def_path_str(static_did)
+    ))
+}
+
+fn check_const_val_allocs<'tcx>(tcx: TyCtxt<'tcx>, val: mir::ConstValue) -> Result<()> {
+    let mut visited = BTreeSet::new();
+    let mut stack = Vec::new();
+    match val {
+        mir::ConstValue::ZeroSized => {}
+        mir::ConstValue::Scalar(mir::interpret::Scalar::Int(_)) => {}
+        mir::ConstValue::Scalar(mir::interpret::Scalar::Ptr(ptr, _)) => {
+            stack.push(ptr.prov_and_relative_offset().0.alloc_id());
+        }
+        mir::ConstValue::Indirect { alloc_id, .. } | mir::ConstValue::Slice { alloc_id, .. } => {
+            stack.push(alloc_id);
+        }
+    }
+    while let Some(alloc_id) = stack.pop() {
+        if !visited.insert(alloc_id) {
+            continue;
+        }
+        match tcx.global_alloc(alloc_id) {
+            GlobalAlloc::Memory(const_alloc) => {
+                for (_, prov) in const_alloc.inner().provenance().ptrs().iter() {
+                    stack.push(prov.alloc_id());
+                }
+            }
+            GlobalAlloc::Static(static_did) => {
+                check_no_ctfe_static_ref(tcx, static_did)?;
+            }
+            GlobalAlloc::TypeId { .. } => {
+                return Err("type-id global allocations are unsupported in constants".into());
+            }
+            GlobalAlloc::VTable(..) => {
+                return Err("vtable global allocations are unsupported in constants".into());
+            }
+            GlobalAlloc::Function { instance } => {
+                check_args_no_ctfe_ambient(tcx, instance.args)?;
+                let inst_did = instance.def_id();
+                if is_panic_location_item(tcx, inst_did) {
+                    return Err(format!(
+                        "CTFE function pointer to `{}` is unsupported because caller \
+                         locations depend on build paths and source layout",
+                        tcx.def_path_str(inst_did)
+                    ));
+                }
+                if let Some(intrinsic) = tcx.intrinsic(inst_did)
+                    && is_forbidden_ctfe_intrinsic(intrinsic.name)
+                {
+                    return Err(format!(
+                        "CTFE intrinsic `{}` is unsupported because its output depends on \
+                         ambient compiler/build context",
+                        intrinsic.name
+                    ));
+                }
+                if ctfe_requires_caller_location(tcx, inst_did, Some(instance.def)) {
+                    return Err(format!(
+                        "CTFE function pointer `{}` carries #[track_caller], which is \
+                         unsupported in constants",
+                        tcx.def_path_str(inst_did)
+                    ));
+                }
+            }
+        }
+    }
+    Ok(())
+}
+
+/// Bound recursive local-ADT field expansion during CTFE type auditing so
+/// polymorphic recursion through pointer indirection (such as
+/// `struct S<T>(*const S<(T, T)>, T)`) fails closed instead of diverging.
+const MAX_CTFE_ADT_DEPTH: usize = 64;
+
+fn check_ty_no_ctfe_ambient<'tcx>(tcx: TyCtxt<'tcx>, root_ty: ty::Ty<'tcx>) -> Result<()> {
+    let mut visited = HashSet::new();
+    let mut walker = root_ty.walk();
+    while let Some(arg) = walker.next() {
+        if !visited.insert(arg) {
+            walker.skip_current_subtree();
+            continue;
+        }
+        let Some(inner_ty) = arg.as_type() else {
+            continue;
+        };
+        match *inner_ty.kind() {
+            ty::Adt(adt, _) if is_panic_location_item(tcx, adt.did()) => {
+                return Err(
+                    "CTFE references to `core::panic::Location` are unsupported because \
+                     caller locations depend on build paths and source layout"
+                        .into(),
+                );
+            }
+            ty::FnDef(fn_did, _) => {
+                if is_panic_location_item(tcx, fn_did) {
+                    return Err(format!(
+                        "CTFE call or reference to `{}` is unsupported because caller \
+                         locations depend on build paths and source layout",
+                        tcx.def_path_str(fn_did)
+                    ));
+                }
+                if let Some(intrinsic) = tcx.intrinsic(fn_did)
+                    && is_forbidden_ctfe_intrinsic(intrinsic.name)
+                {
+                    return Err(format!(
+                        "CTFE intrinsic `{}` is unsupported because its output depends on \
+                         ambient compiler/build context",
+                        intrinsic.name
+                    ));
+                }
+                if !is_exempt_ctfe_sysroot_range_sub(tcx, fn_did)
+                    && ctfe_requires_caller_location(tcx, fn_did, None)
+                {
+                    return Err(format!(
+                        "CTFE function item `{}` carries #[track_caller], which is \
+                         unsupported in constants",
+                        tcx.def_path_str(fn_did)
+                    ));
+                }
+            }
+            _ => {}
+        }
+    }
+    Ok(())
+}
+
+fn check_args_no_ctfe_ambient<'tcx>(
+    tcx: TyCtxt<'tcx>,
+    args: ty::GenericArgsRef<'tcx>,
+) -> Result<()> {
+    for arg in args.types() {
+        check_ty_no_ctfe_ambient(tcx, arg)?;
+    }
+    Ok(())
+}
+
+fn audit_ctfe_const_val<'tcx>(
+    tcx: TyCtxt<'tcx>,
+    typing_env: TypingEnv<'tcx>,
+    ct: ty::Const<'tcx>,
+    state: &mut CtfePurityState<'tcx>,
+) -> Result<()> {
+    match ct.kind() {
+        ty::ConstKind::Unevaluated(uv) => {
+            check_ctfe_body_recursive(tcx, typing_env, uv.def, uv.args, None, state)
+        }
+        ty::ConstKind::Value(cv) => {
+            check_ty_ctfe_deps(tcx, typing_env, cv.ty, state)?;
+            check_const_val_allocs(tcx, tcx.valtree_to_const_val(cv))
+        }
+        _ => Ok(()),
+    }
+}
+
+fn audit_trait_assoc_projection<'tcx>(
+    tcx: TyCtxt<'tcx>,
+    typing_env: TypingEnv<'tcx>,
+    trait_ref: ty::TraitRef<'tcx>,
+    trait_assoc_did: DefId,
+    assoc_own_args: &[ty::GenericArg<'tcx>],
+    state: &mut CtfePurityState<'tcx>,
+) -> Result<()> {
+    if trait_ref.has_escaping_bound_vars()
+        || trait_ref.has_non_region_param()
+        || trait_ref.has_non_region_infer()
+        || trait_ref.references_error()
+    {
+        return Err(format!(
+            "uninstantiated or erroneous CTFE trait projection for `{}`: {trait_ref:?}",
+            tcx.def_path_str(trait_assoc_did)
+        ));
+    }
+    check_args_ctfe_deps(tcx, typing_env, trait_ref.args, state)?;
+    let norm_trait_ref = tcx
+        .try_normalize_erasing_regions(
+            typing_env,
+            ty::EarlyBinder::bind(trait_ref).instantiate_identity(),
+        )
+        .map_err(|_| {
+            format!(
+                "failed to normalize CTFE trait projection `{trait_ref:?}` for `{}`",
+                tcx.def_path_str(trait_assoc_did)
+            )
+        })?;
+    if norm_trait_ref != trait_ref {
+        check_args_ctfe_deps(tcx, typing_env, norm_trait_ref.args, state)?;
+    }
+    let assoc_args_ref = tcx.mk_args(assoc_own_args);
+    if assoc_args_ref.has_escaping_bound_vars()
+        || assoc_args_ref.has_non_region_param()
+        || assoc_args_ref.has_non_region_infer()
+        || assoc_args_ref.references_error()
+    {
+        return Err(format!(
+            "uninstantiated or erroneous CTFE associated type args for `{}`: {assoc_args_ref:?}",
+            tcx.def_path_str(trait_assoc_did)
+        ));
+    }
+    check_args_ctfe_deps(tcx, typing_env, assoc_args_ref, state)?;
+    let Ok(impl_source) = tcx.codegen_select_candidate(typing_env.as_query_input(norm_trait_ref))
+    else {
+        return Err(format!(
+            "failed to select trait implementation for `{norm_trait_ref}` while auditing \
+             CTFE associated type `{}`",
+            tcx.def_path_str(trait_assoc_did)
+        ));
+    };
+    match impl_source {
+        rustc_middle::traits::ImplSource::UserDefined(impl_data) => {
+            audit_user_defined_impl(
+                tcx,
+                typing_env,
+                impl_data.impl_def_id,
+                impl_data.args,
+                state,
+            )?;
+            let target = if let Some(assoc_item) = tcx
+                .associated_items(impl_data.impl_def_id)
+                .in_definition_order()
+                .find(|item| item.trait_item_def_id() == Some(trait_assoc_did))
+            {
+                let impl_assoc_args =
+                    tcx.mk_args_from_iter(impl_data.args.iter().chain(assoc_args_ref.iter()));
+                Some((assoc_item.def_id, impl_assoc_args))
+            } else if tcx
+                .opt_associated_item(trait_assoc_did)
+                .is_some_and(|item| item.defaultness(tcx).has_value())
+            {
+                let default_args =
+                    tcx.mk_args_from_iter(norm_trait_ref.args.iter().chain(assoc_args_ref.iter()));
+                Some((trait_assoc_did, default_args))
+            } else {
+                None
+            };
+            if let Some((target_did, target_args)) = target
+                && target_args.len() == tcx.generics_of(target_did).count()
+                && !target_args.has_escaping_bound_vars()
+                && !target_args.has_non_region_param()
+                && !target_args.has_non_region_infer()
+                && !target_args.references_error()
+            {
+                if let Some(local_assoc) = target_did.as_local() {
+                    check_hir_ctfe_dependencies_inner(
+                        tcx,
+                        typing_env,
+                        local_assoc,
+                        target_args,
+                        state,
+                    )?;
+                }
+                if state.adt_depth >= MAX_CTFE_ADT_DEPTH {
+                    return Err(format!(
+                        "CTFE associated type recursion depth exceeded {MAX_CTFE_ADT_DEPTH} \
+                         while auditing `{}`",
+                        tcx.def_path_str(target_did)
+                    ));
+                }
+                let raw_rhs_ty = tcx.type_of(target_did).instantiate(tcx, target_args);
+                if !raw_rhs_ty.has_escaping_bound_vars()
+                    && !raw_rhs_ty.has_non_region_param()
+                    && !raw_rhs_ty.has_non_region_infer()
+                    && !raw_rhs_ty.references_error()
+                {
+                    let pre_norm_rhs = raw_rhs_ty.skip_norm_wip();
+                    state.adt_depth += 1;
+                    let res = check_ty_ctfe_deps(tcx, typing_env, pre_norm_rhs, state);
+                    state.adt_depth -= 1;
+                    res?;
+                    if let Ok(norm_rhs) = tcx.try_normalize_erasing_regions(typing_env, raw_rhs_ty)
+                        && norm_rhs != pre_norm_rhs
+                    {
+                        state.adt_depth += 1;
+                        let res = check_ty_ctfe_deps(tcx, typing_env, norm_rhs, state);
+                        state.adt_depth -= 1;
+                        res?;
+                    }
+                }
+            }
+        }
+        rustc_middle::traits::ImplSource::Builtin(_, _)
+        | rustc_middle::traits::ImplSource::Param(_) => {
+            if state.adt_depth >= MAX_CTFE_ADT_DEPTH {
+                return Err(format!(
+                    "CTFE built-in projection recursion depth exceeded {MAX_CTFE_ADT_DEPTH} \
+                     while auditing `{}`",
+                    tcx.def_path_str(trait_assoc_did)
+                ));
+            }
+            let full_args =
+                tcx.mk_args_from_iter(norm_trait_ref.args.iter().chain(assoc_args_ref.iter()));
+            if full_args.len() == tcx.generics_of(trait_assoc_did).count() {
+                let proj = ty::Ty::new_projection_from_args(tcx, trait_assoc_did, full_args);
+                if let Ok(norm_proj) = tcx.try_normalize_erasing_regions(
+                    typing_env,
+                    ty::EarlyBinder::bind(proj).instantiate_identity(),
+                ) && norm_proj != proj
+                {
+                    state.adt_depth += 1;
+                    let res = check_ty_ctfe_deps(tcx, typing_env, norm_proj, state);
+                    state.adt_depth -= 1;
+                    res?;
+                }
+            }
+        }
+    }
+    Ok(())
+}
+
+fn audit_user_defined_impl<'tcx>(
+    tcx: TyCtxt<'tcx>,
+    typing_env: TypingEnv<'tcx>,
+    impl_def_id: DefId,
+    impl_args: ty::GenericArgsRef<'tcx>,
+    state: &mut CtfePurityState<'tcx>,
+) -> Result<()> {
+    let impl_args = erase_escaping_and_free_regions(tcx, impl_args);
+    if impl_args.has_escaping_bound_vars()
+        || impl_args.has_non_region_param()
+        || impl_args.has_non_region_infer()
+        || impl_args.references_error()
+    {
+        return Err(format!(
+            "uninstantiated or erroneous CTFE impl arguments for `{}`: {impl_args:?}",
+            tcx.def_path_str(impl_def_id)
+        ));
+    }
+    check_args_ctfe_deps(tcx, typing_env, impl_args, state)?;
+    if let Some(local_impl) = impl_def_id.as_local() {
+        check_hir_ctfe_dependencies_inner(tcx, typing_env, local_impl, impl_args, state)?;
+    }
+    audit_instantiated_predicates(tcx, typing_env, impl_def_id, impl_args, state)
+}
+
+fn audit_clause_ctfe_deps<'tcx>(
+    tcx: TyCtxt<'tcx>,
+    typing_env: TypingEnv<'tcx>,
+    raw_clause: ty::Clause<'tcx>,
+    state: &mut CtfePurityState<'tcx>,
+) -> Result<()> {
+    let clause_kind = erase_escaping_and_free_regions(
+        tcx,
+        tcx.instantiate_bound_regions_with_erased(raw_clause.kind()),
+    );
+    if clause_kind.has_escaping_bound_vars()
+        || clause_kind.has_non_region_param()
+        || clause_kind.has_non_region_infer()
+        || clause_kind.references_error()
+    {
+        return Err(format!(
+            "uninstantiated or erroneous CTFE predicate clause `{clause_kind:?}`"
+        ));
+    }
+    match clause_kind {
+        ty::ClauseKind::Trait(tp) => {
+            let trait_ref = tcx.erase_and_anonymize_regions(tp.trait_ref);
+            check_args_ctfe_deps(tcx, typing_env, trait_ref.args, state)?;
+            if !matches!(tp.polarity, ty::PredicatePolarity::Positive) {
+                return Ok(());
+            }
+            let norm_tr = tcx
+                .try_normalize_erasing_regions(
+                    typing_env,
+                    ty::EarlyBinder::bind(trait_ref).instantiate_identity(),
+                )
+                .map_err(|_| format!("failed to normalize CTFE trait predicate `{trait_ref}`"))?;
+            if norm_tr != trait_ref {
+                check_args_ctfe_deps(tcx, typing_env, norm_tr.args, state)?;
+            }
+            if state.seen_trait_refs.insert(norm_tr) {
+                let Ok(impl_source) =
+                    tcx.codegen_select_candidate(typing_env.as_query_input(norm_tr))
+                else {
+                    return Err(format!(
+                        "failed to select trait implementation for predicate `{norm_tr}`"
+                    ));
+                };
+                if let rustc_middle::traits::ImplSource::UserDefined(impl_data) = impl_source {
+                    audit_user_defined_impl(
+                        tcx,
+                        typing_env,
+                        impl_data.impl_def_id,
+                        impl_data.args,
+                        state,
+                    )?;
+                }
+            }
+            Ok(())
+        }
+        ty::ClauseKind::Projection(pp) => {
+            audit_projection_clause_ctfe_deps(tcx, typing_env, pp, state)
+        }
+        ty::ClauseKind::ConstArgHasType(ct, ty) => {
+            check_ty_ctfe_deps(tcx, typing_env, ty, state)?;
+            audit_ctfe_const_val(tcx, typing_env, ct, state)
+        }
+        ty::ClauseKind::ConstEvaluatable(ct) => audit_ctfe_const_val(tcx, typing_env, ct, state),
+        ty::ClauseKind::TypeOutlives(ty::OutlivesPredicate(ty, _)) => {
+            check_ty_ctfe_deps(tcx, typing_env, ty, state)
+        }
+        ty::ClauseKind::WellFormed(term) => {
+            if let Some(ty) = term.as_type() {
+                check_ty_ctfe_deps(tcx, typing_env, ty, state)?;
+            } else if let Some(ct) = term.as_const() {
+                audit_ctfe_const_val(tcx, typing_env, ct, state)?;
+            }
+            Ok(())
+        }
+        ty::ClauseKind::RegionOutlives(_)
+        | ty::ClauseKind::HostEffect(_)
+        | ty::ClauseKind::UnstableFeature(_) => Ok(()),
+    }
+}
+
+fn audit_projection_clause_ctfe_deps<'tcx>(
+    tcx: TyCtxt<'tcx>,
+    typing_env: TypingEnv<'tcx>,
+    pp: ty::ProjectionPredicate<'tcx>,
+    state: &mut CtfePurityState<'tcx>,
+) -> Result<()> {
+    let trait_ref = tcx.erase_and_anonymize_regions(pp.projection_term.trait_ref(tcx));
+    let trait_gen_count = tcx.generics_of(trait_ref.def_id).count();
+    let assoc_did = pp.projection_term.def_id();
+    match tcx.def_kind(assoc_did) {
+        DefKind::AssocTy => {
+            audit_trait_assoc_projection(
+                tcx,
+                typing_env,
+                trait_ref,
+                assoc_did,
+                &pp.projection_term.args[trait_gen_count..],
+                state,
+            )?;
+        }
+        DefKind::AssocConst { .. } => {
+            check_args_ctfe_deps(tcx, typing_env, trait_ref.args, state)?;
+            let norm_tr = tcx
+                .try_normalize_erasing_regions(
+                    typing_env,
+                    ty::EarlyBinder::bind(trait_ref).instantiate_identity(),
+                )
+                .map_err(|_| {
+                    format!(
+                        "failed to normalize CTFE associated-const projection `{trait_ref}`"
+                    )
+                })?;
+            let (target_did, prefix_args) = match tcx
+                .codegen_select_candidate(typing_env.as_query_input(norm_tr))
+            {
+                Ok(rustc_middle::traits::ImplSource::UserDefined(impl_data)) => {
+                    audit_user_defined_impl(
+                        tcx,
+                        typing_env,
+                        impl_data.impl_def_id,
+                        impl_data.args,
+                        state,
+                    )?;
+                    if let Some(item) = tcx
+                        .associated_items(impl_data.impl_def_id)
+                        .in_definition_order()
+                        .find(|i| i.trait_item_def_id() == Some(assoc_did))
+                    {
+                        (item.def_id, impl_data.args)
+                    } else {
+                        (assoc_did, norm_tr.args)
+                    }
+                }
+                Ok(_) => (assoc_did, norm_tr.args),
+                Err(_) => {
+                    return Err(format!(
+                        "failed to select trait implementation for `{norm_tr}` while \
+                         auditing associated constant `{}`",
+                        tcx.def_path_str(assoc_did)
+                    ));
+                }
+            };
+            let full = tcx.mk_args_from_iter(
+                prefix_args
+                    .iter()
+                    .chain(pp.projection_term.args[trait_gen_count..].iter().copied()),
+            );
+            if full.len() == tcx.generics_of(target_did).count() {
+                check_ctfe_body_recursive(tcx, typing_env, target_did, full, None, state)?;
+            }
+        }
+        _ => {}
+    }
+    if let Some(term_ty) = pp.term.as_type() {
+        check_ty_ctfe_deps(tcx, typing_env, term_ty, state)?;
+    } else if let Some(term_ct) = pp.term.as_const() {
+        audit_ctfe_const_val(tcx, typing_env, term_ct, state)?;
+    }
+    Ok(())
+}
+
+fn audit_instantiated_predicates<'tcx>(
+    tcx: TyCtxt<'tcx>,
+    typing_env: TypingEnv<'tcx>,
+    def_id: DefId,
+    args: ty::GenericArgsRef<'tcx>,
+    state: &mut CtfePurityState<'tcx>,
+) -> Result<()> {
+    if matches!(tcx.def_kind(def_id), DefKind::TyAlias) && !tcx.type_alias_is_lazy(def_id) {
+        return Ok(());
+    }
+    let norm_args = tcx.erase_and_anonymize_regions(args);
+    if norm_args.len() != tcx.generics_of(def_id).count()
+        || norm_args.has_escaping_bound_vars()
+        || norm_args.has_non_region_param()
+        || norm_args.has_non_region_infer()
+        || norm_args.references_error()
+    {
+        return Err(format!(
+            "uninstantiated or erroneous CTFE predicate arguments for `{}`: {norm_args:?}",
+            tcx.def_path_str(def_id)
+        ));
+    }
+    if !state.seen_predicates.insert((def_id, norm_args)) {
+        return Ok(());
+    }
+    if state.pred_depth >= MAX_CTFE_ADT_DEPTH {
+        return Err(format!(
+            "CTFE predicate recursion depth exceeded {MAX_CTFE_ADT_DEPTH} while auditing `{}`",
+            tcx.def_path_str(def_id)
+        ));
+    }
+    state.pred_depth += 1;
+    let mut pred_err = None;
+    for (clause, _) in tcx.predicates_of(def_id).instantiate(tcx, norm_args) {
+        if let Err(err) = audit_clause_ctfe_deps(tcx, typing_env, clause.skip_norm_wip(), state) {
+            pred_err = Some(err);
+            break;
+        }
+    }
+    state.pred_depth -= 1;
+    if let Some(err) = pred_err {
+        return Err(err);
+    }
+    Ok(())
+}
+
+pub(crate) fn check_mono_ty_ctfe_deps<'tcx>(
+    tcx: TyCtxt<'tcx>,
+    typing_env: TypingEnv<'tcx>,
+    ty: ty::Ty<'tcx>,
+) -> Result<()> {
+    if ty.has_escaping_bound_vars()
+        || ty.has_non_region_param()
+        || ty.has_non_region_infer()
+        || ty.references_error()
+    {
+        return Err(format!(
+            "uninstantiated or erroneous monomorphization type: {ty:?}"
+        ));
+    }
+    let mut state = CtfePurityState::default();
+    check_ty_ctfe_deps(tcx, typing_env, ty, &mut state)
+}
+
+pub(crate) fn check_mono_item_ctfe_deps<'tcx>(
+    tcx: TyCtxt<'tcx>,
+    typing_env: TypingEnv<'tcx>,
+    def_id: DefId,
+    args: ty::GenericArgsRef<'tcx>,
+) -> Result<()> {
+    let mut state = CtfePurityState::default();
+    check_args_ctfe_deps(tcx, typing_env, args, &mut state)?;
+    if let Some(local_def) = def_id.as_local() {
+        check_hir_ctfe_dependencies_inner(tcx, typing_env, local_def, args, &mut state)?;
+    }
+    audit_instantiated_predicates(tcx, typing_env, def_id, args, &mut state)
+}
+
+struct EscapingBoundRegionEraser<'tcx> {
+    tcx: TyCtxt<'tcx>,
+    binder_depth: ty::DebruijnIndex,
+}
+
+impl<'tcx> TypeFolder<TyCtxt<'tcx>> for EscapingBoundRegionEraser<'tcx> {
+    fn cx(&self) -> TyCtxt<'tcx> {
+        self.tcx
+    }
+
+    fn fold_binder<T: TypeFoldable<TyCtxt<'tcx>>>(
+        &mut self,
+        t: ty::Binder<'tcx, T>,
+    ) -> ty::Binder<'tcx, T> {
+        self.binder_depth.shift_in(1);
+        let res = t.super_fold_with(self);
+        self.binder_depth.shift_out(1);
+        res
+    }
+
+    fn fold_region(&mut self, r: ty::Region<'tcx>) -> ty::Region<'tcx> {
+        match r.kind() {
+            ty::ReBound(ty::BoundVarIndexKind::Bound(debruijn), _)
+                if debruijn < self.binder_depth =>
+            {
+                r
+            }
+            _ => self.tcx.lifetimes.re_erased,
+        }
+    }
+}
+
+/// Erase free regions and any `ReBound` regions escaping an outer
+/// higher-ranked `ty::Binder` (`for<'a> fn(...)`, `dyn for<'a> ...`) while
+/// preserving bound regions still bound inside nested binders
+/// (`debruijn < binder_depth`). Any remaining `has_escaping_bound_vars()`
+/// after this fold indicates a non-region bound variable (`for<T>`) and must
+/// fail closed.
+fn erase_escaping_and_free_regions<'tcx, T: TypeFoldable<TyCtxt<'tcx>>>(
+    tcx: TyCtxt<'tcx>,
+    value: T,
+) -> T {
+    if !value.has_escaping_bound_vars() && !value.has_free_regions() {
+        return tcx.erase_and_anonymize_regions(value);
+    }
+    let folded = value.fold_with(&mut EscapingBoundRegionEraser {
+        tcx,
+        binder_depth: ty::DebruijnIndex::ZERO,
+    });
+    tcx.erase_and_anonymize_regions(folded)
+}
+
+fn check_ty_ctfe_deps<'tcx>(
+    tcx: TyCtxt<'tcx>,
+    typing_env: TypingEnv<'tcx>,
+    root_ty: ty::Ty<'tcx>,
+    state: &mut CtfePurityState<'tcx>,
+) -> Result<()> {
+    let root_ty = erase_escaping_and_free_regions(tcx, root_ty);
+    check_ty_no_ctfe_ambient(tcx, root_ty)?;
+    let mut walker = root_ty.walk();
+    while let Some(arg) = walker.next() {
+        if !state.seen_generic_args.insert(arg) {
+            walker.skip_current_subtree();
+            continue;
+        }
+        if let Some(inner_ty) = arg.as_type()
+            && let ty::Adt(adt, adt_args) = *inner_ty.kind()
+        {
+            let gens = tcx.generics_of(adt.did());
+            let norm_adt_args = erase_escaping_and_free_regions(tcx, adt_args);
+            if norm_adt_args.len() != gens.count()
+                || norm_adt_args.has_escaping_bound_vars()
+                || norm_adt_args.has_non_region_param()
+                || norm_adt_args.has_non_region_infer()
+                || norm_adt_args.references_error()
+            {
+                return Err(format!(
+                    "uninstantiated or erroneous CTFE ADT arguments for `{}`: {adt_args:?}",
+                    tcx.def_path_str(adt.did())
+                ));
+            }
+            if state.seen_adts.insert((adt.did(), norm_adt_args)) {
+                audit_instantiated_predicates(tcx, typing_env, adt.did(), norm_adt_args, state)?;
+                if let Some(local_adt) = adt.did().as_local() {
+                    for variant in adt.variants() {
+                        if let ty::VariantDiscr::Explicit(discr_did) = variant.discr {
+                            check_ctfe_body_recursive(
+                                tcx,
+                                typing_env,
+                                discr_did,
+                                ty::GenericArgs::identity_for_item(tcx, discr_did),
+                                None,
+                                state,
+                            )?;
+                        }
+                    }
+                    check_hir_ctfe_dependencies_inner(
+                        tcx,
+                        typing_env,
+                        local_adt,
+                        norm_adt_args,
+                        state,
+                    )?;
+                }
+                if state.adt_depth >= MAX_CTFE_ADT_DEPTH {
+                    return Err(format!(
+                        "CTFE ADT field recursion depth exceeded \
+                         {MAX_CTFE_ADT_DEPTH} while auditing `{}`",
+                        tcx.def_path_str(adt.did())
+                    ));
+                }
+                state.adt_depth += 1;
+                let mut field_err = None;
+                for field in adt.all_fields() {
+                    let raw_field_ty = tcx.type_of(field.did).instantiate(tcx, norm_adt_args);
+                    if raw_field_ty.has_non_region_param()
+                        || raw_field_ty.has_non_region_infer()
+                        || raw_field_ty.references_error()
+                    {
+                        field_err = Some(format!(
+                            "uninstantiated or erroneous CTFE ADT field `{}`: {raw_field_ty:?}",
+                            tcx.def_path_str(field.did)
+                        ));
+                        break;
+                    }
+                    let pre_norm_field_ty = raw_field_ty.skip_norm_wip();
+                    if let Err(err) = check_ty_ctfe_deps(tcx, typing_env, pre_norm_field_ty, state) {
+                        field_err = Some(err);
+                        break;
+                    }
+                    let norm_field_ty =
+                        match tcx.try_normalize_erasing_regions(typing_env, raw_field_ty) {
+                            Ok(ty) => ty,
+                            Err(_) => {
+                                field_err = Some(format!(
+                                    "failed to normalize CTFE ADT field `{}`",
+                                    tcx.def_path_str(field.did)
+                                ));
+                                break;
+                            }
+                        };
+                    if norm_field_ty != pre_norm_field_ty
+                        && let Err(err) = check_ty_ctfe_deps(tcx, typing_env, norm_field_ty, state)
+                    {
+                        field_err = Some(err);
+                        break;
+                    }
+                }
+                state.adt_depth -= 1;
+                if let Some(err) = field_err {
+                    return Err(err);
+                }
+            }
+        } else if let Some(inner_ty) = arg.as_type()
+            && let ty::Alias(raw_alias_ty) = *inner_ty.kind()
+        {
+            let alias_ty = erase_escaping_and_free_regions(tcx, raw_alias_ty);
+            if alias_ty.has_escaping_bound_vars()
+                || alias_ty.has_non_region_param()
+                || alias_ty.has_non_region_infer()
+                || alias_ty.references_error()
+            {
+                return Err(format!(
+                    "uninstantiated or erroneous CTFE alias type `{alias_ty:?}`"
+                ));
+            }
+            match alias_ty.kind {
+                ty::AliasTyKind::Free { def_id } | ty::AliasTyKind::Inherent { def_id } => {
+                    if let Some(local_def) = def_id.as_local() {
+                        check_hir_ctfe_dependencies_inner(
+                            tcx,
+                            typing_env,
+                            local_def,
+                            alias_ty.args,
+                            state,
+                        )?;
+                    }
+                    if state.adt_depth >= MAX_CTFE_ADT_DEPTH {
+                        return Err(format!(
+                            "CTFE type alias recursion depth exceeded \
+                             {MAX_CTFE_ADT_DEPTH} while auditing `{}`",
+                            tcx.def_path_str(def_id)
+                        ));
+                    }
+                    let rhs_ty = tcx
+                        .type_of(def_id)
+                        .instantiate(tcx, alias_ty.args)
+                        .skip_norm_wip();
+                    state.adt_depth += 1;
+                    let res = check_ty_ctfe_deps(tcx, typing_env, rhs_ty, state);
+                    state.adt_depth -= 1;
+                    res?;
+                }
+                ty::AliasTyKind::Projection { def_id } => {
+                    let trait_ref = alias_ty.trait_ref(tcx);
+                    let trait_gen_count = tcx.generics_of(trait_ref.def_id).count();
+                    audit_trait_assoc_projection(
+                        tcx,
+                        typing_env,
+                        trait_ref,
+                        def_id,
+                        &alias_ty.args[trait_gen_count..],
+                        state,
+                    )?;
+                }
+                ty::AliasTyKind::Opaque { def_id } => {
+                    if state.adt_depth >= MAX_CTFE_ADT_DEPTH {
+                        return Err(format!(
+                            "CTFE opaque type recursion depth exceeded \
+                             {MAX_CTFE_ADT_DEPTH} while auditing `{}`",
+                            tcx.def_path_str(def_id)
+                        ));
+                    }
+                    if let Some(local_opaque) = def_id.as_local() {
+                        match tcx.local_opaque_ty_origin(local_opaque) {
+                            hir::OpaqueTyOrigin::FnReturn { parent, .. }
+                            | hir::OpaqueTyOrigin::AsyncFn { parent, .. } => {
+                                let parent_gens = tcx.generics_of(parent);
+                                let parent_count = parent_gens.count();
+                                let recovered = if alias_ty.args.len() >= parent_count {
+                                    let prefix = tcx.mk_args(&alias_ty.args[..parent_count]);
+                                    (!prefix.has_non_region_param()
+                                        && !prefix.has_non_region_infer()
+                                        && !prefix.references_error())
+                                    .then_some(prefix)
+                                } else {
+                                    None
+                                }
+                                .or_else(|| {
+                                    (parent_gens.parent.is_none()
+                                        && parent_gens.own_params.iter().all(|p| {
+                                            matches!(p.kind, ty::GenericParamDefKind::Lifetime)
+                                        }))
+                                    .then(|| {
+                                        tcx.mk_args_from_iter(
+                                            parent_gens
+                                                .own_params
+                                                .iter()
+                                                .map(|_| ty::GenericArg::from(tcx.lifetimes.re_erased)),
+                                        )
+                                    })
+                                });
+                                if let Some(parent_args) = recovered {
+                                    state.adt_depth += 1;
+                                    let res = check_hir_ctfe_dependencies_with_mode(
+                                        tcx,
+                                        typing_env,
+                                        parent,
+                                        parent_args,
+                                        true,
+                                        state,
+                                    );
+                                    state.adt_depth -= 1;
+                                    res?;
+                                } else if !state
+                                    .seen_hir_expr_owners
+                                    .iter()
+                                    .any(|(d, _)| *d == parent)
+                                {
+                                    return Err(format!(
+                                        "CTFE opaque type `{}` from generic `{}` with \
+                                         unrecovered parent arguments is unsupported",
+                                        tcx.def_path_str(def_id),
+                                        tcx.def_path_str(parent)
+                                    ));
+                                }
+                            }
+                            hir::OpaqueTyOrigin::TyAlias { parent, .. } => {
+                                return Err(format!(
+                                    "CTFE opaque type-alias `{}` (defined via `{}`) is unsupported",
+                                    tcx.def_path_str(def_id),
+                                    tcx.def_path_str(parent)
+                                ));
+                            }
+                        }
+                    }
+                    let raw_hidden = tcx.type_of(def_id).instantiate(tcx, alias_ty.args);
+                    let pre_norm_hidden = erase_escaping_and_free_regions(tcx, raw_hidden.skip_norm_wip());
+                    if pre_norm_hidden.has_escaping_bound_vars()
+                        || pre_norm_hidden.has_non_region_param()
+                        || pre_norm_hidden.has_non_region_infer()
+                        || pre_norm_hidden.references_error()
+                    {
+                        return Err(format!(
+                            "uninstantiated or erroneous CTFE opaque hidden type for `{}`: \
+                             {pre_norm_hidden:?}",
+                            tcx.def_path_str(def_id)
+                        ));
+                    }
+                    state.adt_depth += 1;
+                    let res = check_ty_ctfe_deps(tcx, typing_env, pre_norm_hidden, state);
+                    state.adt_depth -= 1;
+                    res?;
+                    if let Ok(norm_hidden) = tcx.try_normalize_erasing_regions(
+                        typing_env,
+                        ty::EarlyBinder::bind(pre_norm_hidden).instantiate_identity(),
+                    ) && norm_hidden != pre_norm_hidden
+                    {
+                        state.adt_depth += 1;
+                        let res = check_ty_ctfe_deps(tcx, typing_env, norm_hidden, state);
+                        state.adt_depth -= 1;
+                        res?;
+                    }
+                }
+            }
+        } else if let Some(inner_ty) = arg.as_type()
+            && let ty::FnDef(fn_did, raw_fn_args) = *inner_ty.kind()
+        {
+            let fn_args = erase_escaping_and_free_regions(tcx, raw_fn_args);
+            audit_fn_def_ctfe_deps(tcx, typing_env, fn_did, fn_args, false, state)?;
+        } else if let Some(inner_ty) = arg.as_type()
+            && let ty::Closure(closure_did, raw_closure_args)
+                | ty::Coroutine(closure_did, raw_closure_args)
+                | ty::CoroutineClosure(closure_did, raw_closure_args) = *inner_ty.kind()
+        {
+            let closure_args = erase_escaping_and_free_regions(tcx, raw_closure_args);
+            if closure_args.has_escaping_bound_vars()
+                || closure_args.has_non_region_param()
+                || closure_args.has_non_region_infer()
+                || closure_args.references_error()
+            {
+                return Err(format!(
+                    "uninstantiated or erroneous CTFE closure/coroutine arguments for `{}`: \
+                     {closure_args:?}",
+                    tcx.def_path_str(closure_did)
+                ));
+            }
+            check_args_ctfe_deps(tcx, typing_env, closure_args, state)?;
+            if let Some(local_closure) = closure_did.as_local() {
+                let root = tcx.typeck_root_def_id_local(local_closure);
+                let root_count = tcx.generics_of(root).count();
+                if closure_args.len() < root_count {
+                    return Err(format!(
+                        "CTFE closure/coroutine `{}` has fewer args than enclosing owner `{}`",
+                        tcx.def_path_str(closure_did),
+                        tcx.def_path_str(root)
+                    ));
+                }
+                if state.adt_depth >= MAX_CTFE_ADT_DEPTH {
+                    return Err(format!(
+                        "CTFE closure/coroutine recursion depth exceeded {MAX_CTFE_ADT_DEPTH} \
+                         while auditing `{}`",
+                        tcx.def_path_str(closure_did)
+                    ));
+                }
+                state.adt_depth += 1;
+                let res = check_hir_ctfe_dependencies_with_mode(
+                    tcx,
+                    typing_env,
+                    local_closure,
+                    closure_args,
+                    true,
+                    state,
+                );
+                state.adt_depth -= 1;
+                res?;
+            }
+        } else if let Some(raw_ct) = arg.as_const() {
+            let ct = erase_escaping_and_free_regions(tcx, raw_ct);
+            match ct.kind() {
+                ty::ConstKind::Unevaluated(uv) => {
+                    let uv_args = erase_escaping_and_free_regions(tcx, uv.args);
+                    check_ctfe_body_recursive(tcx, typing_env, uv.def, uv_args, None, state)?;
+                }
+                ty::ConstKind::Value(cv) => {
+                    check_ty_ctfe_deps(tcx, typing_env, cv.ty, state)?;
+                    check_const_val_allocs(tcx, tcx.valtree_to_const_val(cv))?;
+                }
+                ty::ConstKind::Param(_)
+                | ty::ConstKind::Infer(_)
+                | ty::ConstKind::Bound(..)
+                | ty::ConstKind::Placeholder(_)
+                | ty::ConstKind::Error(_)
+                | ty::ConstKind::Expr(_) => {
+                    return Err(format!(
+                        "uninstantiated or erroneous CTFE constant in type: {ct:?}"
+                    ));
+                }
+            }
+        }
+    }
+    Ok(())
+}
+
+fn check_args_ctfe_deps<'tcx>(
+    tcx: TyCtxt<'tcx>,
+    typing_env: TypingEnv<'tcx>,
+    args: ty::GenericArgsRef<'tcx>,
+    state: &mut CtfePurityState<'tcx>,
+) -> Result<()> {
+    for arg in args.types() {
+        check_ty_ctfe_deps(tcx, typing_env, arg, state)?;
+    }
+    for ct in args.consts() {
+        match ct.kind() {
+            ty::ConstKind::Unevaluated(uv) => {
+                check_ctfe_body_recursive(tcx, typing_env, uv.def, uv.args, None, state)?;
+            }
+            ty::ConstKind::Value(cv) => {
+                check_ty_ctfe_deps(tcx, typing_env, cv.ty, state)?;
+                check_const_val_allocs(tcx, tcx.valtree_to_const_val(cv))?;
+            }
+            _ => {}
+        }
+    }
+    Ok(())
+}
+
+fn audit_fn_def_ctfe_deps<'tcx>(
+    tcx: TyCtxt<'tcx>,
+    typing_env: TypingEnv<'tcx>,
+    fn_did: DefId,
+    fn_args: ty::GenericArgsRef<'tcx>,
+    allow_track_caller: bool,
+    state: &mut CtfePurityState<'tcx>,
+) -> Result<()> {
+    if !matches!(
+        tcx.def_kind(fn_did),
+        DefKind::Fn | DefKind::AssocFn | DefKind::Ctor(..)
+    ) {
+        return Err(format!(
+            "unsupported non-function CTFE callable item `{}`",
+            tcx.def_path_str(fn_did)
+        ));
+    }
+    if is_panic_location_item(tcx, fn_did) {
+        return Err(format!(
+            "CTFE call or reference to `{}` is unsupported because caller \
+             locations depend on build paths and source layout",
+            tcx.def_path_str(fn_did)
+        ));
+    }
+    if let Some(intrinsic) = tcx.intrinsic(fn_did)
+        && is_forbidden_ctfe_intrinsic(intrinsic.name)
+    {
+        return Err(format!(
+            "CTFE intrinsic `{}` is unsupported because its output depends on \
+             ambient compiler/build context",
+            intrinsic.name
+        ));
+    }
+    let exempt_range_sub = is_exempt_ctfe_sysroot_range_sub(tcx, fn_did);
+    if !allow_track_caller && !exempt_range_sub && ctfe_requires_caller_location(tcx, fn_did, None) {
+        return Err(format!(
+            "CTFE function item `{}` carries #[track_caller], which is \
+             unsupported in constants",
+            tcx.def_path_str(fn_did)
+        ));
+    }
+    if fn_args.has_escaping_bound_vars()
+        || fn_args.has_non_region_param()
+        || fn_args.has_non_region_infer()
+        || fn_args.references_error()
+    {
+        return Err(format!(
+            "uninstantiated or erroneous CTFE function item arguments for `{}`: {fn_args:?}",
+            tcx.def_path_str(fn_did)
+        ));
+    }
+    check_args_ctfe_deps(tcx, typing_env, fn_args, state)?;
+    if !allow_track_caller && exempt_range_sub {
+        check_ctfe_body_recursive(tcx, typing_env, fn_did, fn_args, None, state)?;
+    }
+    if state.adt_depth >= MAX_CTFE_ADT_DEPTH {
+        return Err(format!(
+            "CTFE function signature recursion depth exceeded \
+             {MAX_CTFE_ADT_DEPTH} while auditing `{}`",
+            tcx.def_path_str(fn_did)
+        ));
+    }
+    let raw_sig = tcx.fn_sig(fn_did).instantiate(tcx, fn_args);
+    let pre_norm_sig = tcx.instantiate_bound_regions_with_erased(raw_sig.skip_norm_wip());
+    let norm_sig_opt = tcx
+        .try_normalize_erasing_regions(typing_env, raw_sig)
+        .ok()
+        .map(|s| tcx.instantiate_bound_regions_with_erased(s))
+        .filter(|s| *s != pre_norm_sig);
+    if let Some(local_fn) = fn_did.as_local() {
+        check_hir_item_generics_ctfe_deps(tcx, typing_env, local_fn, fn_args, state)?;
+        let has_local_opaque = pre_norm_sig
+            .inputs_and_output
+            .iter()
+            .chain(norm_sig_opt.iter().flat_map(|s| s.inputs_and_output.iter()))
+            .any(|sig_ty| {
+                sig_ty.walk().any(|a| {
+                    matches!(
+                        a.as_type().map(|t| *t.kind()),
+                        Some(ty::Alias(al))
+                            if matches!(al.kind, ty::AliasTyKind::Opaque { def_id } if def_id.is_local())
+                    )
+                })
+            });
+        if has_local_opaque {
+            check_hir_ctfe_dependencies_with_mode(tcx, typing_env, local_fn, fn_args, true, state)?;
+        }
+    }
+    audit_instantiated_predicates(tcx, typing_env, fn_did, fn_args, state)?;
+    state.adt_depth += 1;
+    let mut sig_err = None;
+    for sig_ty in pre_norm_sig.inputs_and_output {
+        if sig_ty.has_escaping_bound_vars()
+            || sig_ty.has_non_region_param()
+            || sig_ty.has_non_region_infer()
+            || sig_ty.references_error()
+        {
+            sig_err = Some(format!(
+                "uninstantiated or erroneous CTFE function signature type for `{}`: \
+                 {sig_ty:?}",
+                tcx.def_path_str(fn_did)
+            ));
+            break;
+        }
+        if let Err(err) = check_ty_ctfe_deps(tcx, typing_env, sig_ty, state) {
+            sig_err = Some(err);
+            break;
+        }
+    }
+    if sig_err.is_none()
+        && let Some(norm_sig) = norm_sig_opt
+    {
+        for sig_ty in norm_sig.inputs_and_output {
+            if sig_ty.has_escaping_bound_vars()
+                || sig_ty.has_non_region_param()
+                || sig_ty.has_non_region_infer()
+                || sig_ty.references_error()
+            {
+                sig_err = Some(format!(
+                    "uninstantiated or erroneous normalized CTFE function signature type \
+                     for `{}`: {sig_ty:?}",
+                    tcx.def_path_str(fn_did)
+                ));
+                break;
+            }
+            if let Err(err) = check_ty_ctfe_deps(tcx, typing_env, sig_ty, state) {
+                sig_err = Some(err);
+                break;
+            }
+        }
+    }
+    state.adt_depth -= 1;
+    if let Some(err) = sig_err {
+        return Err(err);
+    }
+    Ok(())
+}
+
+#[derive(Default)]
+struct CtfePurityState<'tcx> {
+    seen_instances: HashSet<(DefId, ty::GenericArgsRef<'tcx>, Option<mir::Promoted>)>,
+    seen_hir_owners: HashSet<(LocalDefId, ty::GenericArgsRef<'tcx>)>,
+    seen_hir_expr_owners: HashSet<(LocalDefId, ty::GenericArgsRef<'tcx>)>,
+    seen_adts: HashSet<(DefId, ty::GenericArgsRef<'tcx>)>,
+    seen_generic_args: HashSet<ty::GenericArg<'tcx>>,
+    seen_predicates: HashSet<(DefId, ty::GenericArgsRef<'tcx>)>,
+    seen_trait_refs: HashSet<ty::TraitRef<'tcx>>,
+    adt_depth: usize,
+    pred_depth: usize,
+}
+
+/// Audit a `Const`, `AssocConst`, `AnonConst`, or `InlineConst` item and its
+/// transitive `mir_for_ctfe` / HIR dependency closure before evaluating it.
+pub(crate) fn check_ctfe_item<'tcx>(
+    tcx: TyCtxt<'tcx>,
+    def_id: DefId,
+    typing_env: TypingEnv<'tcx>,
+    args: ty::GenericArgsRef<'tcx>,
+    context: &str,
+) -> Result<()> {
+    let mut state = CtfePurityState::default();
+    check_ctfe_body_recursive(tcx, typing_env, def_id, args, None, &mut state)
+        .map_err(|err| format!("{context}: {err}"))
+}
+
+fn check_unevaluated_const_ctfe<'tcx>(
+    tcx: TyCtxt<'tcx>,
+    typing_env: TypingEnv<'tcx>,
+    uv: mir::UnevaluatedConst<'tcx>,
+) -> Result<()> {
+    let mut state = CtfePurityState::default();
+    check_ctfe_body_recursive(tcx, typing_env, uv.def, uv.args, uv.promoted, &mut state)
+}
+
+fn check_mir_const_in_ctfe<'tcx>(
+    tcx: TyCtxt<'tcx>,
+    typing_env: TypingEnv<'tcx>,
+    constant: mir::Const<'tcx>,
+    state: &mut CtfePurityState<'tcx>,
+) -> Result<()> {
+    if constant.has_non_region_param()
+        || constant.has_non_region_infer()
+        || constant.references_error()
+    {
+        return Err(format!("uninstantiated or erroneous CTFE constant: {constant:?}"));
+    }
+    check_ty_ctfe_deps(tcx, typing_env, constant.ty(), state)?;
+    match constant {
+        mir::Const::Val(val, _) => check_const_val_allocs(tcx, val),
+        mir::Const::Unevaluated(uv, _) => {
+            check_ctfe_body_recursive(tcx, typing_env, uv.def, uv.args, uv.promoted, state)
+        }
+        mir::Const::Ty(_, ct) => match ct.kind() {
+            ty::ConstKind::Value(cv) => {
+                check_ty_ctfe_deps(tcx, typing_env, cv.ty, state)?;
+                check_const_val_allocs(tcx, tcx.valtree_to_const_val(cv))
+            }
+            _ => Err(format!("unsupported non-value type-level constant in CTFE: {constant:?}")),
+        },
+    }
+}
+
+fn check_mir_const_pre_norm_deps<'tcx>(
+    tcx: TyCtxt<'tcx>,
+    typing_env: TypingEnv<'tcx>,
+    constant: mir::Const<'tcx>,
+    state: &mut CtfePurityState<'tcx>,
+) -> Result<()> {
+    if constant.has_non_region_param()
+        || constant.has_non_region_infer()
+        || constant.references_error()
+    {
+        return Err(format!("uninstantiated or erroneous CTFE constant: {constant:?}"));
+    }
+    check_ty_ctfe_deps(tcx, typing_env, constant.ty(), state)?;
+    match constant {
+        mir::Const::Val(val, _) => check_const_val_allocs(tcx, val),
+        mir::Const::Unevaluated(uv, _) => {
+            check_ctfe_body_recursive(tcx, typing_env, uv.def, uv.args, uv.promoted, state)
+        }
+        mir::Const::Ty(_, ct) => match ct.kind() {
+            ty::ConstKind::Unevaluated(uv) => {
+                check_ctfe_body_recursive(tcx, typing_env, uv.def, uv.args, None, state)
+            }
+            ty::ConstKind::Value(cv) => {
+                check_ty_ctfe_deps(tcx, typing_env, cv.ty, state)?;
+                check_const_val_allocs(tcx, tcx.valtree_to_const_val(cv))
+            }
+            _ => Ok(()),
+        },
+    }
+}
+
+fn check_ctfe_operand<'tcx>(
+    tcx: TyCtxt<'tcx>,
+    typing_env: TypingEnv<'tcx>,
+    subst_args: ty::GenericArgsRef<'tcx>,
+    op: &mir::Operand<'tcx>,
+    state: &mut CtfePurityState<'tcx>,
+) -> Result<()> {
+    if let mir::Operand::Constant(const_op) = op {
+        let instantiated = ty::EarlyBinder::bind(const_op.const_).instantiate(tcx, subst_args);
+        if instantiated.has_non_region_param()
+            || instantiated.has_non_region_infer()
+            || instantiated.references_error()
+        {
+            return Err(format!(
+                "uninstantiated or erroneous CTFE operand constant: {instantiated:?}"
+            ));
+        }
+        check_mir_const_pre_norm_deps(tcx, typing_env, instantiated.skip_norm_wip(), state)?;
+        let inst_const = tcx
+            .try_normalize_erasing_regions(typing_env, instantiated)
+            .map_err(|_| format!("failed to normalize CTFE operand constant {:?}", const_op.const_))?;
+        check_mir_const_in_ctfe(tcx, typing_env, inst_const, state)?;
+    }
+    Ok(())
+}
+
+fn inspect_ctfe_mir_body<'tcx>(
+    tcx: TyCtxt<'tcx>,
+    typing_env: TypingEnv<'tcx>,
+    owner_def: DefId,
+    mir_body: &mir::Body<'tcx>,
+    subst_args: ty::GenericArgsRef<'tcx>,
+    state: &mut CtfePurityState<'tcx>,
+) -> Result<()> {
+    let owner_path = tcx.def_path_str(owner_def);
+    if subst_args.len() != tcx.generics_of(owner_def).count() {
+        return Err(format!(
+            "mismatched CTFE generic argument arity for `{owner_path}`"
+        ));
+    }
+    if mir_body.tainted_by_errors.is_some() {
+        return Err(format!("CTFE MIR for `{owner_path}` is tainted by compiler errors"));
+    }
+    if mir_body.coroutine.is_some() {
+        return Err(format!("coroutines in CTFE (`{owner_path}`) are unsupported"));
+    }
+    let subst_ty = |raw: ty::Ty<'tcx>, state: &mut CtfePurityState<'tcx>| -> Result<ty::Ty<'tcx>> {
+        let instantiated = ty::EarlyBinder::bind(raw).instantiate(tcx, subst_args);
+        if instantiated.has_non_region_param()
+            || instantiated.has_non_region_infer()
+            || instantiated.references_error()
+        {
+            return Err(format!(
+                "uninstantiated or erroneous CTFE type {instantiated:?} in `{owner_path}`"
+            ));
+        }
+        let pre_norm_inst = instantiated.skip_norm_wip();
+        check_ty_ctfe_deps(tcx, typing_env, pre_norm_inst, state)?;
+        let normalized = tcx
+            .try_normalize_erasing_regions(typing_env, instantiated)
+            .map_err(|_| format!("failed to normalize CTFE type {instantiated:?} in `{owner_path}`"))?;
+        if normalized.has_non_region_param()
+            || normalized.has_non_region_infer()
+            || normalized.references_error()
+        {
+            return Err(format!(
+                "uninstantiated or erroneous CTFE type {normalized:?} in `{owner_path}`"
+            ));
+        }
+        if normalized != pre_norm_inst {
+            check_ty_ctfe_deps(tcx, typing_env, normalized, state)?;
+        }
+        Ok(normalized)
+    };
+    for decl in mir_body.local_decls.iter() {
+        let _local_ty = subst_ty(decl.ty, state)?;
+    }
+    if let Some(required_consts) = mir_body.required_consts.as_deref() {
+        for const_op in required_consts {
+            let instantiated =
+                ty::EarlyBinder::bind(const_op.const_).instantiate(tcx, subst_args);
+            if instantiated.has_non_region_param()
+                || instantiated.has_non_region_infer()
+                || instantiated.references_error()
+            {
+                return Err(format!(
+                    "uninstantiated or erroneous required_consts entry \
+                     {instantiated:?} in `{owner_path}`"
+                ));
+            }
+            check_mir_const_pre_norm_deps(tcx, typing_env, instantiated.skip_norm_wip(), state)?;
+            let inst_const = tcx
+                .try_normalize_erasing_regions(typing_env, instantiated)
+                .map_err(|_| {
+                    format!(
+                        "failed to normalize required_consts entry {:?} in `{owner_path}`",
+                        const_op.const_
+                    )
+                })?;
+            check_mir_const_in_ctfe(tcx, typing_env, inst_const, state)?;
+        }
+    }
+    for block in mir_body.basic_blocks.iter() {
+        for stmt in &block.statements {
+            match &stmt.kind {
+                mir::StatementKind::Assign(assign) => match &assign.1 {
+                    mir::Rvalue::Use(op, _)
+                    | mir::Rvalue::Repeat(op, _)
+                    | mir::Rvalue::UnaryOp(_, op)
+                    | mir::Rvalue::Cast(_, op, _)
+                    | mir::Rvalue::WrapUnsafeBinder(op, _) => {
+                        check_ctfe_operand(tcx, typing_env, subst_args, op, state)?;
+                    }
+                    mir::Rvalue::BinaryOp(_, pair) => {
+                        check_ctfe_operand(tcx, typing_env, subst_args, &pair.0, state)?;
+                        check_ctfe_operand(tcx, typing_env, subst_args, &pair.1, state)?;
+                    }
+                    mir::Rvalue::Aggregate(_, ops) => {
+                        for op in ops.iter() {
+                            check_ctfe_operand(tcx, typing_env, subst_args, op, state)?;
+                        }
+                    }
+                    mir::Rvalue::ThreadLocalRef(..) => {
+                        return Err(format!(
+                            "thread-local references in CTFE (`{owner_path}`) are unsupported"
+                        ));
+                    }
+                    mir::Rvalue::Ref(..)
+                    | mir::Rvalue::RawPtr(..)
+                    | mir::Rvalue::Discriminant(..)
+                    | mir::Rvalue::CopyForDeref(..)
+                    | mir::Rvalue::Reborrow(..) => {}
+                },
+                mir::StatementKind::Intrinsic(intr) => match &**intr {
+                    mir::NonDivergingIntrinsic::Assume(op) => {
+                        check_ctfe_operand(tcx, typing_env, subst_args, op, state)?;
+                    }
+                    mir::NonDivergingIntrinsic::CopyNonOverlapping(cn) => {
+                        check_ctfe_operand(tcx, typing_env, subst_args, &cn.src, state)?;
+                        check_ctfe_operand(tcx, typing_env, subst_args, &cn.dst, state)?;
+                        check_ctfe_operand(tcx, typing_env, subst_args, &cn.count, state)?;
+                    }
+                },
+                _ => {}
+            }
+        }
+        let Some(term) = &block.terminator else {
+            return Err(format!("missing terminator in CTFE MIR for `{owner_path}`"));
+        };
+        match &term.kind {
+            mir::TerminatorKind::InlineAsm { .. }
+            | mir::TerminatorKind::Yield { .. }
+            | mir::TerminatorKind::CoroutineDrop => {
+                return Err(format!(
+                    "unsupported CTFE terminator {:?} in `{owner_path}`",
+                    term.kind
+                ));
+            }
+            mir::TerminatorKind::Drop { place, .. } => {
+                let drop_ty = subst_ty(place.ty(&mir_body.local_decls, tcx).ty, state)?;
+                if drop_ty.needs_drop(tcx, typing_env) {
+                    return Err(format!(
+                        "CTFE Drop terminators on types with drop glue (`{drop_ty:?}` \
+                         in `{owner_path}`) are unsupported"
+                    ));
+                }
+            }
+            mir::TerminatorKind::SwitchInt { discr, .. }
+            | mir::TerminatorKind::Assert { cond: discr, .. } => {
+                check_ctfe_operand(tcx, typing_env, subst_args, discr, state)?;
+            }
+            mir::TerminatorKind::Call {
+                func,
+                args: call_args,
+                target,
+                ..
+            } => {
+                for arg in call_args.iter() {
+                    check_ctfe_operand(tcx, typing_env, subst_args, &arg.node, state)?;
+                }
+                check_ctfe_call_callee(
+                    tcx,
+                    typing_env,
+                    &owner_path,
+                    subst_args,
+                    func,
+                    target.is_none(),
+                    state,
+                )?;
+            }
+            mir::TerminatorKind::TailCall {
+                func,
+                args: call_args,
+                ..
+            } => {
+                for arg in call_args.iter() {
+                    check_ctfe_operand(tcx, typing_env, subst_args, &arg.node, state)?;
+                }
+                check_ctfe_call_callee(tcx, typing_env, &owner_path, subst_args, func, false, state)?;
+            }
+            mir::TerminatorKind::Goto { .. }
+            | mir::TerminatorKind::UnwindResume
+            | mir::TerminatorKind::UnwindTerminate(..)
+            | mir::TerminatorKind::Return
+            | mir::TerminatorKind::Unreachable
+            | mir::TerminatorKind::FalseEdge { .. }
+            | mir::TerminatorKind::FalseUnwind { .. } => {}
+        }
+    }
+    Ok(())
+}
+
+fn check_ctfe_call_callee<'tcx>(
+    tcx: TyCtxt<'tcx>,
+    typing_env: TypingEnv<'tcx>,
+    owner_path: &str,
+    subst_args: ty::GenericArgsRef<'tcx>,
+    func: &mir::Operand<'tcx>,
+    is_diverging_call: bool,
+    state: &mut CtfePurityState<'tcx>,
+) -> Result<()> {
+    let mir::Operand::Constant(func_const) = func else {
+        return Err(format!(
+            "indirect or closure calls in CTFE (`{owner_path}`) are unsupported"
+        ));
+    };
+    let instantiated_func_ty =
+        ty::EarlyBinder::bind(func_const.const_.ty()).instantiate(tcx, subst_args);
+    if instantiated_func_ty.has_non_region_param()
+        || instantiated_func_ty.has_non_region_infer()
+        || instantiated_func_ty.references_error()
+    {
+        return Err(format!(
+            "uninstantiated or erroneous CTFE callee type in `{owner_path}`: \
+             {instantiated_func_ty:?}"
+        ));
+    }
+    let pre_norm_func_ty = instantiated_func_ty.skip_norm_wip();
+    if let ty::FnDef(raw_did, raw_args) = *pre_norm_func_ty.kind() {
+        check_args_ctfe_deps(tcx, typing_env, raw_args, state)?;
+        if !is_exempt_ctfe_diverging_panic_hook(tcx, raw_did, is_diverging_call) {
+            check_ty_ctfe_deps(tcx, typing_env, pre_norm_func_ty, state)?;
+        }
+    } else {
+        check_ty_ctfe_deps(tcx, typing_env, pre_norm_func_ty, state)?;
+    }
+    let func_ty = tcx
+        .try_normalize_erasing_regions(typing_env, instantiated_func_ty)
+        .map_err(|_| format!("failed to normalize CTFE callee type in `{owner_path}`"))?;
+    let ty::FnDef(callee_did, callee_args) = *func_ty.kind() else {
+        return Err(format!(
+            "calls through non-FnDef values (`{func_ty:?}`) in CTFE (`{owner_path}`) \
+             are unsupported"
+        ));
+    };
+    check_args_ctfe_deps(tcx, typing_env, callee_args, state)?;
+    if is_exempt_ctfe_diverging_panic_hook(tcx, callee_did, is_diverging_call) {
+        return Ok(());
+    }
+    if tcx.intrinsic(callee_did).is_none() && !tcx.is_const_fn(callee_did) {
+        return Err(format!(
+            "CTFE call to non-const function `{}` in `{owner_path}` is unsupported",
+            tcx.def_path_str(callee_did)
+        ));
+    }
+    check_ctfe_body_recursive(tcx, typing_env, callee_did, callee_args, None, state)
+}
+
+/// Check whether `rustc_metadata::rmeta::encoder::should_encode_mir` encodes
+/// `mir_for_ctfe` (or `trivial_const`) for `def_id` in external crate metadata
+/// and builds `mir_for_ctfe` for local items.
+///
+/// `TyCtxt::is_mir_available` queries `optimized_mir`, which
+/// `should_encode_mir` omits for `Const`, `AssocConst`, `AnonConst`,
+/// `InlineConst`, and `Ctor` items (such as
+/// `core::mem::SizedTypeProperties::SIZE` and `const { ... }` blocks in
+/// `core`).
+/// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_metadata/src/rmeta/encoder.rs#L1102-L1132
+/// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_metadata/src/rmeta/encoder.rs#L1842-L1870
+fn has_ctfe_mir(tcx: TyCtxt<'_>, def_id: DefId) -> bool {
+    // RUSTC-WORKAROUND(#4503): is_mir_available omits CTFE-only items.
+    match tcx.def_kind(def_id) {
+        DefKind::Ctor(_, CtorKind::Fn)
+        | DefKind::AnonConst
+        | DefKind::InlineConst
+        | DefKind::AssocConst { is_type_const: false }
+        | DefKind::Const { is_type_const: false } => {
+            def_id.as_local().is_none_or(|local| {
+                matches!(tcx.def_kind(def_id), DefKind::Ctor(..))
+                    || tcx.hir_maybe_body_owned_by(local).is_some()
+            })
+        }
+        DefKind::Fn | DefKind::AssocFn | DefKind::Closure => {
+            !tcx.is_coroutine(def_id) && tcx.is_const_fn(def_id)
+        }
+        _ => false,
+    }
+}
+
+/// Transitively inspect a CTFE item, promoted constant, or `const fn` callee
+/// before evaluation.
+///
+/// Even when an intermediate `const fn` omits `#[track_caller]`, calling
+/// `Location::caller()` inside its body still invokes `sym::caller_location`
+/// and embeds the intermediate helper's staged file path into the constant
+/// (`find_closest_untracked_caller_location`). Walking the full transitive
+/// `mir_for_ctfe` call graph and local HIR dependency closure catches direct,
+/// `#[track_caller]`, and untracked helper calls alike.
+/// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_const_eval/src/const_eval/eval_queries.rs#L401-L429
+/// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_mir_transform/src/trivial_const.rs#L46-L106
+fn check_ctfe_body_recursive<'tcx>(
+    tcx: TyCtxt<'tcx>,
+    typing_env: TypingEnv<'tcx>,
+    def_id: DefId,
+    raw_args: ty::GenericArgsRef<'tcx>,
+    promoted: Option<mir::Promoted>,
+    state: &mut CtfePurityState<'tcx>,
+) -> Result<()> {
+    if raw_args.has_non_region_param()
+        || raw_args.has_non_region_infer()
+        || raw_args.references_error()
+    {
+        return Err(format!(
+            "uninstantiated or erroneous CTFE generic arguments for `{}`: {raw_args:?}",
+            tcx.def_path_str(def_id)
+        ));
+    }
+    check_args_ctfe_deps(tcx, typing_env, raw_args, state)?;
+    let norm_args = tcx
+        .try_normalize_erasing_regions(
+            typing_env,
+            ty::EarlyBinder::bind(raw_args).instantiate_identity(),
+        )
+        .map_err(|_| format!("failed to normalize CTFE arguments for `{}`", tcx.def_path_str(def_id)))?;
+    if norm_args.has_non_region_param()
+        || norm_args.has_non_region_infer()
+        || norm_args.references_error()
+    {
+        return Err(format!(
+            "uninstantiated or erroneous CTFE generic arguments for `{}`: {norm_args:?}",
+            tcx.def_path_str(def_id)
+        ));
+    }
+    check_args_ctfe_deps(tcx, typing_env, norm_args, state)?;
+    if !state.seen_instances.insert((def_id, norm_args, promoted)) {
+        return Ok(());
+    }
+    if let Some(promoted_idx) = promoted {
+        let inst = ty::Instance::try_resolve(tcx, typing_env, def_id, norm_args)
+            .map_err(|err| {
+                format!(
+                    "failed to resolve promoted constant owner `{}`: {err:?}",
+                    tcx.def_path_str(def_id)
+                )
+            })?
+            .ok_or_else(|| {
+                format!(
+                    "unresolved promoted constant owner `{}`",
+                    tcx.def_path_str(def_id)
+                )
+            })?;
+        let ty::InstanceKind::Item(inst_def) = inst.def else {
+            return Err(format!(
+                "unsupported promoted constant instance kind: {:?}",
+                inst.def
+            ));
+        };
+        if !inst_def.is_local()
+            && !(has_ctfe_mir(tcx, inst_def) && tcx.trivial_const(inst_def).is_none())
+            && !tcx.is_mir_available(inst_def)
+        {
+            return Err(format!(
+                "promoted CTFE MIR is unavailable for `{}`",
+                tcx.def_path_str(inst_def)
+            ));
+        }
+        let promoted_bodies = tcx.promoted_mir(inst_def);
+        let Some(mir_body) = promoted_bodies.get(promoted_idx) else {
+            return Err(format!(
+                "missing promoted constant {promoted_idx:?} in `{}`",
+                tcx.def_path_str(inst_def)
+            ));
+        };
+        return inspect_ctfe_mir_body(tcx, typing_env, inst_def, mir_body, inst.args, state);
+    }
+
+    if is_panic_location_item(tcx, def_id) {
+        return Err(format!(
+            "CTFE call to `{}` is unsupported because caller locations depend on \
+             build paths and source layout",
+            tcx.def_path_str(def_id)
+        ));
+    }
+    if let Some(intrinsic) = tcx.intrinsic(def_id) {
+        if is_forbidden_ctfe_intrinsic(intrinsic.name) {
+            return Err(format!(
+                "CTFE intrinsic `{}` is unsupported because its output depends on \
+                 ambient compiler/build context",
+                intrinsic.name
+            ));
+        }
+        return Ok(());
+    }
+    if !is_exempt_ctfe_sysroot_range_sub(tcx, def_id)
+        && ctfe_requires_caller_location(tcx, def_id, None)
+    {
+        return Err(format!(
+            "CTFE call to #[track_caller] item `{}` is unsupported because caller \
+             locations depend on build paths and source layout",
+            tcx.def_path_str(def_id)
+        ));
+    }
+    let inst = ty::Instance::try_resolve(tcx, typing_env, def_id, norm_args)
+        .map_err(|err| format!("failed to resolve CTFE item `{}`: {err:?}", tcx.def_path_str(def_id)))?
+        .ok_or_else(|| format!("unresolved CTFE item `{}`", tcx.def_path_str(def_id)))?;
+    if !is_exempt_ctfe_sysroot_range_sub(tcx, inst.def_id())
+        && ctfe_requires_caller_location(tcx, inst.def_id(), Some(inst.def))
+    {
+        return Err(format!(
+            "CTFE call to #[track_caller] instance `{}` is unsupported because caller \
+             locations depend on build paths and source layout",
+            tcx.def_path_str(inst.def_id())
+        ));
+    }
+    match inst.def {
+        ty::InstanceKind::Intrinsic(inst_def) => {
+            if let Some(intrinsic) = tcx.intrinsic(inst_def)
+                && is_forbidden_ctfe_intrinsic(intrinsic.name)
+            {
+                return Err(format!(
+                    "CTFE intrinsic `{}` is unsupported because its output depends on \
+                     ambient compiler/build context",
+                    intrinsic.name
+                ));
+            }
+            Ok(())
+        }
+        ty::InstanceKind::Item(inst_def) => {
+            if (inst_def != def_id || inst.args != norm_args)
+                && !state.seen_instances.insert((inst_def, inst.args, None))
+            {
+                return Ok(());
+            }
+            if is_panic_location_item(tcx, inst_def) {
+                return Err(format!(
+                    "CTFE call to `{}` is unsupported because caller locations depend on \
+                     build paths and source layout",
+                    tcx.def_path_str(inst_def)
+                ));
+            }
+            if let Some(intrinsic) = tcx.intrinsic(inst_def) {
+                if is_forbidden_ctfe_intrinsic(intrinsic.name) {
+                    return Err(format!(
+                        "CTFE intrinsic `{}` is unsupported because its output depends on \
+                         ambient compiler/build context",
+                        intrinsic.name
+                    ));
+                }
+                return Ok(());
+            }
+            if !is_exempt_ctfe_sysroot_range_sub(tcx, inst_def)
+                && ctfe_requires_caller_location(tcx, inst_def, None)
+            {
+                return Err(format!(
+                    "CTFE call to #[track_caller] item `{}` is unsupported because caller \
+                     locations depend on build paths and source layout",
+                    tcx.def_path_str(inst_def)
+                ));
+            }
+            audit_instantiated_predicates(tcx, typing_env, inst_def, inst.args, state)?;
+            if let Some(local_def) = inst_def.as_local() {
+                check_hir_ctfe_dependencies_with_mode(
+                    tcx,
+                    typing_env,
+                    local_def,
+                    inst.args,
+                    true,
+                    state,
+                )?;
+            }
+            // RUSTC-WORKAROUND(#4503): trivial_const items omit mir_for_ctfe.
+            // `rustc_metadata` omits `mir_for_ctfe` for `trivial_const` items
+            // (single-block literal assignments without calls), and
+            // `mir_for_ctfe` debug-asserts `!tcx.is_trivial_const(def_id)`.
+            if let Some((triv_val, triv_ty)) = tcx.trivial_const(inst_def) {
+                check_ty_ctfe_deps(tcx, typing_env, triv_ty, state)?;
+                return check_const_val_allocs(tcx, triv_val);
+            }
+            if !has_ctfe_mir(tcx, inst_def) {
+                return Err(format!(
+                    "CTFE MIR is unavailable for `{}`",
+                    tcx.def_path_str(inst_def)
+                ));
+            }
+            let mir_body = tcx.mir_for_ctfe(inst_def);
+            inspect_ctfe_mir_body(tcx, typing_env, inst_def, mir_body, inst.args, state)
+        }
+        other => Err(format!(
+            "unsupported CTFE callable instance kind `{other:?}`"
+        )),
+    }
+}
+
+fn child_args_for_def<'tcx>(
+    tcx: TyCtxt<'tcx>,
+    child_did: DefId,
+    current_owner: LocalDefId,
+    current_args: ty::GenericArgsRef<'tcx>,
+) -> ty::GenericArgsRef<'tcx> {
+    let gens = tcx.generics_of(child_did);
+    if gens.count() == 0 {
+        return ty::GenericArgs::empty();
+    }
+    if child_did == current_owner.to_def_id() && gens.count() == current_args.len() {
+        return current_args;
+    }
+    if gens.count() <= current_args.len()
+        && current_args.len() == tcx.generics_of(current_owner).count()
+    {
+        let mut cursor = tcx.generics_of(current_owner).parent;
+        while let Some(anc) = cursor {
+            if anc == child_did {
+                return tcx.mk_args(&current_args[..gens.count()]);
+            }
+            cursor = tcx.generics_of(anc).parent;
+        }
+    }
+    if gens.own_params.is_empty() && gens.count() <= current_args.len() {
+        let mut cursor = Some(current_owner.to_def_id());
+        while let Some(anc) = cursor {
+            if gens.parent == Some(anc) && tcx.generics_of(anc).count() == gens.count() {
+                return tcx.mk_args(&current_args[..gens.count()]);
+            }
+            cursor = tcx.generics_of(anc).parent;
+        }
+        let mut child_anc = gens.parent;
+        while let Some(anc) = child_anc {
+            if anc == current_owner.to_def_id() {
+                return tcx.mk_args(&current_args[..gens.count()]);
+            }
+            child_anc = tcx.generics_of(anc).parent;
+        }
+    }
+    ty::GenericArgs::identity_for_item(tcx, child_did)
+}
+
+/// Walk a local HIR owner's signature, body, patterns, array/repeat
+/// `AnonConst`s, `const { ... }` `InlineConst` blocks, referenced
+/// `Const`/`AssocConst` paths, local `TyAlias` items, and enclosing `Impl`
+/// headers so constants folded by `rustc` before `Runtime(PostCleanup)` MIR
+/// (such as `const_to_pat` match patterns, `trivial_const` propagations, and
+/// array lengths) still pass [`check_ctfe_body_recursive`].
+/// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_mir_build/src/thir/pattern/const_to_pat.rs#L109-L113
+/// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_mir_build/src/thir/cx/expr.rs#L841-L852
+fn check_hir_ctfe_dependencies<'tcx>(
+    tcx: TyCtxt<'tcx>,
+    typing_env: TypingEnv<'tcx>,
+    owner: LocalDefId,
+    owner_args: ty::GenericArgsRef<'tcx>,
+) -> Result<()> {
+    let mut state = CtfePurityState::default();
+    check_hir_ctfe_dependencies_inner(tcx, typing_env, owner, owner_args, &mut state)
+}
+
+fn check_hir_item_generics_ctfe_deps<'tcx>(
+    tcx: TyCtxt<'tcx>,
+    typing_env: TypingEnv<'tcx>,
+    owner: LocalDefId,
+    owner_args: ty::GenericArgsRef<'tcx>,
+    state: &mut CtfePurityState<'tcx>,
+) -> Result<()> {
+    let norm_owner_args = if owner_args.has_non_region_param()
+        || owner_args.has_non_region_infer()
+        || owner_args.references_error()
+    {
+        tcx.erase_and_anonymize_regions(owner_args)
+    } else {
+        check_args_ctfe_deps(tcx, typing_env, owner_args, state)?;
+        let normalized = tcx
+            .try_normalize_erasing_regions(
+                typing_env,
+                ty::EarlyBinder::bind(owner_args).instantiate_identity(),
+            )
+            .map_err(|_| {
+                format!(
+                    "failed to normalize HIR owner arguments for `{}`",
+                    tcx.def_path_str(owner)
+                )
+            })?;
+        tcx.erase_and_anonymize_regions(normalized)
+    };
+    let mut visitor = HirCtfeDepVisitor {
+        tcx,
+        typing_env,
+        owner,
+        owner_args: norm_owner_args,
+        typeck: None,
+        typeck_owner_args: norm_owner_args,
+        current_ty_adt_args: None,
+        current_ty_resolved_ty: None,
+        audit_expr_types: false,
+        state,
+    };
+    if let Some(generics) = tcx.hir_node_by_def_id(owner).generics()
+        && let ControlFlow::Break(err) = intravisit::Visitor::visit_generics(&mut visitor, generics)
+    {
+        return Err(err);
+    }
+    Ok(())
+}
+
+fn check_hir_ctfe_dependencies_inner<'tcx>(
+    tcx: TyCtxt<'tcx>,
+    typing_env: TypingEnv<'tcx>,
+    owner: LocalDefId,
+    owner_args: ty::GenericArgsRef<'tcx>,
+    state: &mut CtfePurityState<'tcx>,
+) -> Result<()> {
+    check_hir_ctfe_dependencies_with_mode(tcx, typing_env, owner, owner_args, false, state)
+}
+
+fn check_hir_ctfe_dependencies_with_mode<'tcx>(
+    tcx: TyCtxt<'tcx>,
+    typing_env: TypingEnv<'tcx>,
+    owner: LocalDefId,
+    owner_args: ty::GenericArgsRef<'tcx>,
+    audit_expr_types: bool,
+    state: &mut CtfePurityState<'tcx>,
+) -> Result<()> {
+    let norm_owner_args = if owner_args.has_non_region_param()
+        || owner_args.has_non_region_infer()
+        || owner_args.references_error()
+    {
+        tcx.erase_and_anonymize_regions(owner_args)
+    } else {
+        check_args_ctfe_deps(tcx, typing_env, owner_args, state)?;
+        let normalized = tcx
+            .try_normalize_erasing_regions(
+                typing_env,
+                ty::EarlyBinder::bind(owner_args).instantiate_identity(),
+            )
+            .map_err(|_| {
+                format!(
+                    "failed to normalize HIR owner arguments for `{}`",
+                    tcx.def_path_str(owner)
+                )
+            })?;
+        tcx.erase_and_anonymize_regions(normalized)
+    };
+    if audit_expr_types {
+        if !state.seen_hir_expr_owners.insert((owner, norm_owner_args)) {
+            return Ok(());
+        }
+        state.seen_hir_owners.insert((owner, norm_owner_args));
+    } else if state.seen_hir_expr_owners.contains(&(owner, norm_owner_args))
+        || !state.seen_hir_owners.insert((owner, norm_owner_args))
+    {
+        return Ok(());
+    }
+
+    if !norm_owner_args.has_escaping_bound_vars()
+        && !norm_owner_args.has_non_region_param()
+        && !norm_owner_args.has_non_region_infer()
+        && !norm_owner_args.references_error()
+    {
+        audit_instantiated_predicates(tcx, typing_env, owner.to_def_id(), norm_owner_args, state)?;
+    }
+
+    // If `owner` is an associated item inside a local `impl` or `trait`,
+    // audit its enclosing header (`self_ty`, `trait_ref`, `generics`,
+    // supertrait bounds) without walking unselected sibling associated items.
+    if let Some(parent) = tcx.opt_local_parent(owner)
+        && matches!(
+            tcx.def_kind(parent),
+            DefKind::Impl { .. } | DefKind::Trait
+        )
+    {
+        let parent_count = tcx.generics_of(parent).count();
+        let parent_args = if parent_count <= norm_owner_args.len() {
+            tcx.mk_args(&norm_owner_args[..parent_count])
+        } else {
+            ty::GenericArgs::identity_for_item(tcx, parent.to_def_id())
+        };
+        if state.seen_hir_owners.insert((parent, parent_args)) {
+            let mut parent_vis = HirCtfeDepVisitor {
+                tcx,
+                typing_env,
+                owner: parent,
+                owner_args: parent_args,
+                typeck: None,
+                typeck_owner_args: parent_args,
+                current_ty_adt_args: None,
+                current_ty_resolved_ty: None,
+                audit_expr_types: false,
+                state,
+            };
+            match tcx.hir_expect_item(parent).kind {
+                hir::ItemKind::Impl(impl_item) => {
+                    if let ControlFlow::Break(err) =
+                        intravisit::Visitor::visit_generics(&mut parent_vis, impl_item.generics)
+                    {
+                        return Err(err);
+                    }
+                    if let ControlFlow::Break(err) = parent_vis.visit_ty_unambig(impl_item.self_ty)
+                    {
+                        return Err(err);
+                    }
+                    if let Some(of_trait) = impl_item.of_trait
+                        && let ControlFlow::Break(err) = intravisit::Visitor::visit_trait_ref(
+                            &mut parent_vis,
+                            &of_trait.trait_ref,
+                        )
+                    {
+                        return Err(err);
+                    }
+                }
+                hir::ItemKind::Trait {
+                    generics, bounds, ..
+                } => {
+                    if let ControlFlow::Break(err) =
+                        intravisit::Visitor::visit_generics(&mut parent_vis, generics)
+                    {
+                        return Err(err);
+                    }
+                    for bound in bounds {
+                        if let ControlFlow::Break(err) =
+                            intravisit::Visitor::visit_param_bound(&mut parent_vis, bound)
+                        {
+                            return Err(err);
+                        }
+                    }
+                }
+                _ => {}
+            }
+        }
+    }
+
+    let (typeck, typeck_owner_args) = if tcx.has_typeck_results(owner) {
+        let root = tcx.typeck_root_def_id_local(owner);
+        let root_count = tcx.generics_of(root).count();
+        let is_root_or_ancestor = {
+            let mut cur = Some(owner.to_def_id());
+            let mut found = false;
+            while let Some(d) = cur {
+                if d == root.to_def_id() {
+                    found = true;
+                    break;
+                }
+                cur = tcx.generics_of(d).parent;
+            }
+            found
+        };
+        if root == owner {
+            (Some(tcx.typeck(root)), norm_owner_args)
+        } else if is_root_or_ancestor && norm_owner_args.len() >= root_count {
+            (
+                Some(tcx.typeck(root)),
+                tcx.mk_args(&norm_owner_args[..root_count]),
+            )
+        } else {
+            (None, norm_owner_args)
+        }
+    } else {
+        (None, norm_owner_args)
+    };
+
+    let mut visitor = HirCtfeDepVisitor {
+        tcx,
+        typing_env,
+        owner,
+        owner_args: norm_owner_args,
+        typeck,
+        typeck_owner_args,
+        current_ty_adt_args: None,
+        current_ty_resolved_ty: None,
+        audit_expr_types,
+        state,
+    };
+
+    let flow = match tcx.hir_node_by_def_id(owner) {
+        hir::Node::Item(item) => match item.kind {
+            // Do not walk nested module/trait/impl child items from a parent;
+            // each selected or referenced item is checked at its own boundary.
+            hir::ItemKind::Mod(..) => ControlFlow::Continue(()),
+            hir::ItemKind::Trait {
+                generics, bounds, ..
+            }
+            | hir::ItemKind::TraitAlias(_, _, generics, bounds) => {
+                let mut res = intravisit::Visitor::visit_generics(&mut visitor, generics);
+                if res.is_continue() {
+                    for bound in bounds {
+                        res = intravisit::Visitor::visit_param_bound(&mut visitor, bound);
+                        if res.is_break() {
+                            break;
+                        }
+                    }
+                }
+                res
+            }
+            hir::ItemKind::Impl(impl_item) => {
+                let mut res =
+                    intravisit::Visitor::visit_generics(&mut visitor, impl_item.generics);
+                if res.is_continue() {
+                    res = visitor.visit_ty_unambig(impl_item.self_ty);
+                }
+                if res.is_continue()
+                    && let Some(of_trait) = impl_item.of_trait
+                {
+                    res = intravisit::Visitor::visit_trait_ref(&mut visitor, &of_trait.trait_ref);
+                }
+                res
+            }
+            hir::ItemKind::Struct(_, generics, ref vd)
+            | hir::ItemKind::Union(_, generics, ref vd) => {
+                let mut res = intravisit::Visitor::visit_generics(&mut visitor, generics);
+                if res.is_continue() {
+                    res = intravisit::Visitor::visit_variant_data(&mut visitor, vd);
+                }
+                res
+            }
+            hir::ItemKind::Enum(_, generics, ref enum_def) => {
+                let mut res = intravisit::Visitor::visit_generics(&mut visitor, generics);
+                if res.is_continue() {
+                    for variant in enum_def.variants {
+                        res = intravisit::Visitor::visit_variant(&mut visitor, variant);
+                        if res.is_break() {
+                            break;
+                        }
+                    }
+                }
+                res
+            }
+            hir::ItemKind::TyAlias(_, generics, ty) => {
+                let mut res = intravisit::Visitor::visit_generics(&mut visitor, generics);
+                if res.is_continue() {
+                    res = visitor.visit_ty_unambig(ty);
+                }
+                res
+            }
+            _ => intravisit::Visitor::visit_item(&mut visitor, item),
+        },
+        hir::Node::ImplItem(item) => intravisit::Visitor::visit_impl_item(&mut visitor, item),
+        hir::Node::TraitItem(item) => intravisit::Visitor::visit_trait_item(&mut visitor, item),
+        hir::Node::AnonConst(ac) => {
+            let body = tcx.hir_body(ac.body);
+            intravisit::Visitor::visit_body(&mut visitor, body)
+        }
+        hir::Node::ConstBlock(cb) => {
+            let body = tcx.hir_body(cb.body);
+            intravisit::Visitor::visit_body(&mut visitor, body)
+        }
+        hir::Node::Expr(expr) => intravisit::Visitor::visit_expr(&mut visitor, expr),
+        _ => ControlFlow::Continue(()),
+    };
+    if let ControlFlow::Break(err) = flow {
+        return Err(err);
+    }
+    if let Some(body) = tcx.hir_maybe_body_owned_by(owner)
+        && let ControlFlow::Break(err) = intravisit::Visitor::visit_body(&mut visitor, body)
+    {
+        return Err(err);
+    }
+    Ok(())
+}
+
+struct HirCtfeDepVisitor<'a, 'tcx> {
+    tcx: TyCtxt<'tcx>,
+    typing_env: TypingEnv<'tcx>,
+    owner: LocalDefId,
+    owner_args: ty::GenericArgsRef<'tcx>,
+    typeck: Option<&'tcx ty::TypeckResults<'tcx>>,
+    typeck_owner_args: ty::GenericArgsRef<'tcx>,
+    current_ty_adt_args: Option<(DefId, ty::GenericArgsRef<'tcx>)>,
+    current_ty_resolved_ty: Option<ty::Ty<'tcx>>,
+    audit_expr_types: bool,
+    state: &'a mut CtfePurityState<'tcx>,
+}
+
+impl<'a, 'tcx> HirCtfeDepVisitor<'a, 'tcx> {
+    fn resolve_qpath(&self, qpath: &hir::QPath<'_>, id: hir::HirId) -> Res {
+        if let Some(tc) = self.typeck
+            && id.owner == tc.hir_owner
+        {
+            tc.qpath_res(qpath, id)
+        } else if let hir::QPath::Resolved(_, path) = *qpath {
+            path.res
+        } else {
+            Res::Err
+        }
+    }
+
+    fn subst_node_args(
+        &mut self,
+        def_id: DefId,
+        id: hir::HirId,
+    ) -> Result<ty::GenericArgsRef<'tcx>> {
+        let candidate = if let Some(tc) = self.typeck
+            && id.owner == tc.hir_owner
+            && self.typeck_owner_args.len() == self.tcx.generics_of(tc.hir_owner.def_id).count()
+            && let Some(nargs) = tc.node_args_opt(id)
+        {
+            ty::EarlyBinder::bind(nargs).instantiate(self.tcx, self.typeck_owner_args)
+        } else {
+            ty::EarlyBinder::bind(child_args_for_def(
+                self.tcx,
+                def_id,
+                self.owner,
+                self.owner_args,
+            ))
+            .instantiate_identity()
+        };
+        if candidate.has_non_region_param()
+            || candidate.has_non_region_infer()
+            || candidate.references_error()
+        {
+            return Err(format!(
+                "uninstantiated or erroneous CTFE path arguments for `{}`: {candidate:?}",
+                self.tcx.def_path_str(def_id)
+            ));
+        }
+        check_args_ctfe_deps(self.tcx, self.typing_env, candidate.skip_norm_wip(), self.state)?;
+        self.tcx
+            .try_normalize_erasing_regions(self.typing_env, candidate)
+            .map_err(|_| {
+                format!(
+                    "failed to normalize CTFE path arguments for `{}`",
+                    self.tcx.def_path_str(def_id)
+                )
+            })
+    }
+    fn resolve_owner_param_idx(&self, param_did: DefId) -> Option<u32> {
+        self.tcx
+            .generics_of(self.owner.to_def_id())
+            .param_def_id_to_index(self.tcx, param_did)
+    }
+
+    fn parent_or_ancestor_args(&self, target_did: DefId) -> ty::GenericArgsRef<'tcx> {
+        let target_count = self.tcx.generics_of(target_did).count();
+        if target_count == 0 {
+            return ty::GenericArgs::empty();
+        }
+        let mut cur = Some(self.owner.to_def_id());
+        while let Some(did) = cur {
+            if did == target_did && target_count <= self.owner_args.len() {
+                return self.tcx.mk_args(&self.owner_args[..target_count]);
+            }
+            cur = self.tcx.generics_of(did).parent;
+        }
+        child_args_for_def(self.tcx, target_did, self.owner, self.owner_args)
+    }
+
+    fn resolve_hir_const_arg<'v, U>(
+        &mut self,
+        c: &'v hir::ConstArg<'v, U>,
+        expected_ty: ty::Ty<'tcx>,
+        depth: usize,
+    ) -> Option<ty::Const<'tcx>> {
+        if depth >= MAX_CTFE_ADT_DEPTH {
+            return None;
+        }
+        let raw_ct = match c.kind {
+            hir::ConstArgKind::Anon(ac) => {
+                let def_id = ac.def_id.to_def_id();
+                let args = self.parent_or_ancestor_args(def_id);
+                ty::Const::new_unevaluated(self.tcx, ty::UnevaluatedConst::new(def_id, args))
+            }
+            hir::ConstArgKind::Literal { lit, negated } => match lit {
+                rustc_ast::LitKind::Bool(b) if !negated && expected_ty == self.tcx.types.bool => {
+                    ty::Const::from_bool(self.tcx, b)
+                }
+                rustc_ast::LitKind::Int(val, _) if !negated => {
+                    let layout = self
+                        .tcx
+                        .layout_of(self.typing_env.as_query_input(expected_ty))
+                        .ok()?;
+                    let _ = ty::ScalarInt::try_from_uint(val.get(), layout.size)?;
+                    ty::Const::from_bits(self.tcx, val.get(), self.typing_env, expected_ty)
+                }
+                _ => return None,
+            },
+            hir::ConstArgKind::Path(qpath) => match self.resolve_qpath(&qpath, c.hir_id) {
+                Res::Def(DefKind::ConstParam, param_did) => {
+                    let idx = self.resolve_owner_param_idx(param_did)?;
+                    self.owner_args.get(idx as usize)?.as_const()?
+                }
+                Res::Def(DefKind::Const { .. } | DefKind::AssocConst { .. }, did) => {
+                    let args = self.subst_node_args(did, c.hir_id).ok()?;
+                    ty::Const::new_unevaluated(self.tcx, ty::UnevaluatedConst::new(did, args))
+                }
+                _ => return None,
+            },
+            _ => return None,
+        };
+        if raw_ct.has_escaping_bound_vars()
+            || raw_ct.has_non_region_param()
+            || raw_ct.has_non_region_infer()
+            || raw_ct.references_error()
+        {
+            return None;
+        }
+        self.tcx
+            .try_normalize_erasing_regions(
+                self.typing_env,
+                ty::EarlyBinder::bind(raw_ct).instantiate_identity(),
+            )
+            .ok()
+    }
+
+    fn unify_inherent_impl_args(
+        &self,
+        inh_impl: DefId,
+        qself_ty: ty::Ty<'tcx>,
+    ) -> Option<ty::GenericArgsRef<'tcx>> {
+        self.unify_item_self_ty_args(inh_impl, qself_ty)
+    }
+
+    fn unify_item_self_ty_args(
+        &self,
+        item_did: DefId,
+        expected_ty: ty::Ty<'tcx>,
+    ) -> Option<ty::GenericArgsRef<'tcx>> {
+        use rustc_trait_selection::infer::TyCtxtInferExt as _;
+        use rustc_trait_selection::traits::{Obligation, ObligationCause, ObligationCtxt};
+        let (infcx, param_env) = self.tcx.infer_ctxt().build_with_typing_env(self.typing_env);
+        let ocx = ObligationCtxt::new(&infcx);
+        let cause = ObligationCause::dummy();
+        let item_args = infcx.fresh_args_for_item(rustc_span::DUMMY_SP, item_did);
+        let raw_item_ty = self.tcx.type_of(item_did).instantiate(self.tcx, item_args);
+        let norm_item_ty = ocx.normalize(&cause, param_env, raw_item_ty);
+        ocx.eq(&cause, param_env, expected_ty, norm_item_ty).ok()?;
+        for clause in self
+            .tcx
+            .predicates_of(item_did)
+            .instantiate(self.tcx, item_args)
+            .predicates
+        {
+            let clause = ocx.normalize(&cause, param_env, clause);
+            ocx.register_obligation(Obligation::new(
+                self.tcx,
+                cause.clone(),
+                param_env,
+                clause,
+            ));
+        }
+        if !ocx.evaluate_obligations_error_on_ambiguity().is_empty() {
+            return None;
+        }
+        let resolved = infcx.resolve_vars_if_possible(item_args);
+        let erased = self.tcx.erase_and_anonymize_regions(resolved);
+        if erased.has_escaping_bound_vars()
+            || erased.has_non_region_param()
+            || erased.has_non_region_infer()
+            || erased.references_error()
+        {
+            return None;
+        }
+        Some(erased)
+    }
+
+    fn resolve_hir_ty_with_opt_typeck<'v, U>(
+        &mut self,
+        hir_ty: &'v hir::Ty<'v, U>,
+        depth: usize,
+        allow_typeck_ty: bool,
+    ) -> Result<Option<ty::Ty<'tcx>>> {
+        if let Some(resolved) = self.resolve_hir_ty(hir_ty, depth)? {
+            return Ok(Some(resolved));
+        }
+        if allow_typeck_ty
+            && let Some(tc) = self.typeck
+            && hir_ty.hir_id.owner == tc.hir_owner
+            && self.typeck_owner_args.len() == self.tcx.generics_of(tc.hir_owner.def_id).count()
+            && let Some(raw_node_ty) = tc.node_type_opt(hir_ty.hir_id)
+        {
+            let inst_ty =
+                ty::EarlyBinder::bind(raw_node_ty).instantiate(self.tcx, self.typeck_owner_args);
+            if !inst_ty.has_escaping_bound_vars()
+                && !inst_ty.has_non_region_param()
+                && !inst_ty.has_non_region_infer()
+                && !inst_ty.references_error()
+            {
+                let pre_norm_ty = inst_ty.skip_norm_wip();
+                check_ty_ctfe_deps(self.tcx, self.typing_env, pre_norm_ty, self.state)?;
+                let Ok(norm_ty) = self
+                    .tcx
+                    .try_normalize_erasing_regions(self.typing_env, inst_ty)
+                else {
+                    return Ok(None);
+                };
+                if norm_ty != pre_norm_ty {
+                    check_ty_ctfe_deps(self.tcx, self.typing_env, norm_ty, self.state)?;
+                }
+                return Ok(Some(norm_ty));
+            }
+        }
+        Ok(None)
+    }
+
+    fn lower_hir_segment_args<'v>(
+        &mut self,
+        def_id: DefId,
+        prefix_args: &[ty::GenericArg<'tcx>],
+        self_ty_opt: Option<ty::Ty<'tcx>>,
+        segment: &'v hir::PathSegment<'v>,
+        depth: usize,
+    ) -> Result<Option<Vec<ty::GenericArg<'tcx>>>> {
+        self.lower_hir_segment_args_inner(def_id, prefix_args, self_ty_opt, segment, depth, false)
+    }
+
+    fn lower_hir_segment_args_inner<'v>(
+        &mut self,
+        def_id: DefId,
+        prefix_args: &[ty::GenericArg<'tcx>],
+        self_ty_opt: Option<ty::Ty<'tcx>>,
+        segment: &'v hir::PathSegment<'v>,
+        depth: usize,
+        allow_typeck_ty: bool,
+    ) -> Result<Option<Vec<ty::GenericArg<'tcx>>>> {
+        if segment.infer_args {
+            return Ok(None);
+        }
+        let args_info = segment.args();
+        if matches!(
+            args_info.parenthesized,
+            hir::GenericArgsParentheses::ParenSugar
+        ) {
+            return Ok(None);
+        }
+        let gens = self.tcx.generics_of(def_id);
+        let mut full_args: Vec<ty::GenericArg<'tcx>> = prefix_args.to_vec();
+        let rest_params = if let Some(self_ty) = self_ty_opt {
+            full_args.push(self_ty.into());
+            let Some(tail) = gens.own_params.get(1..) else {
+                return Ok(None);
+            };
+            tail
+        } else {
+            &gens.own_params[..]
+        };
+        let explicit_non_lt: Vec<_> = args_info
+            .args
+            .iter()
+            .filter(|a| a.is_ty_or_const())
+            .collect();
+        let mut non_lt_idx = 0usize;
+        for param in rest_params {
+            match param.kind {
+                ty::GenericParamDefKind::Lifetime => {
+                    full_args.push(self.tcx.lifetimes.re_erased.into());
+                }
+                ty::GenericParamDefKind::Type { has_default, .. } => {
+                    if let Some(arg) = explicit_non_lt.get(non_lt_idx) {
+                        non_lt_idx += 1;
+                        let hir::GenericArg::Type(hir_ty) = arg else {
+                            return Ok(None);
+                        };
+                        let Some(resolved) = self.resolve_hir_ty_with_opt_typeck(
+                            *hir_ty,
+                            depth + 1,
+                            allow_typeck_ty,
+                        )?
+                        else {
+                            return Ok(None);
+                        };
+                        full_args.push(resolved.into());
+                    } else if has_default && full_args.len() == param.index as usize {
+                        let args_ref = self.tcx.mk_args(&full_args);
+                        let raw = self
+                            .tcx
+                            .type_of(param.def_id)
+                            .instantiate(self.tcx, args_ref);
+                        if raw.has_escaping_bound_vars()
+                            || raw.has_non_region_param()
+                            || raw.has_non_region_infer()
+                            || raw.references_error()
+                        {
+                            return Ok(None);
+                        }
+                        let pre_norm = raw.skip_norm_wip();
+                        check_ty_ctfe_deps(self.tcx, self.typing_env, pre_norm, self.state)?;
+                        let Ok(norm) = self
+                            .tcx
+                            .try_normalize_erasing_regions(self.typing_env, raw)
+                        else {
+                            return Ok(None);
+                        };
+                        if norm != pre_norm {
+                            check_ty_ctfe_deps(self.tcx, self.typing_env, norm, self.state)?;
+                        }
+                        full_args.push(norm.into());
+                    } else {
+                        return Ok(None);
+                    }
+                }
+                ty::GenericParamDefKind::Const { has_default, .. } => {
+                    let expected_ty = {
+                        let args_ref = self.tcx.mk_args(&full_args);
+                        if args_ref.len() < param.index as usize {
+                            return Ok(None);
+                        }
+                        let raw_ct_ty = self
+                            .tcx
+                            .type_of(param.def_id)
+                            .instantiate(self.tcx, args_ref);
+                        let Ok(norm_ct_ty) = self
+                            .tcx
+                            .try_normalize_erasing_regions(self.typing_env, raw_ct_ty)
+                        else {
+                            return Ok(None);
+                        };
+                        norm_ct_ty
+                    };
+                    if let Some(arg) = explicit_non_lt.get(non_lt_idx) {
+                        non_lt_idx += 1;
+                        let hir::GenericArg::Const(hir_ct) = arg else {
+                            return Ok(None);
+                        };
+                        let Some(resolved) =
+                            self.resolve_hir_const_arg(*hir_ct, expected_ty, depth + 1)
+                        else {
+                            return Ok(None);
+                        };
+                        full_args.push(resolved.into());
+                    } else if has_default && full_args.len() == param.index as usize {
+                        let args_ref = self.tcx.mk_args(&full_args);
+                        let raw = self
+                            .tcx
+                            .const_param_default(param.def_id)
+                            .instantiate(self.tcx, args_ref);
+                        if raw.has_escaping_bound_vars()
+                            || raw.has_non_region_param()
+                            || raw.has_non_region_infer()
+                            || raw.references_error()
+                        {
+                            return Ok(None);
+                        }
+                        let pre_norm = raw.skip_norm_wip();
+                        audit_ctfe_const_val(self.tcx, self.typing_env, pre_norm, self.state)?;
+                        let Ok(norm) = self
+                            .tcx
+                            .try_normalize_erasing_regions(self.typing_env, raw)
+                        else {
+                            return Ok(None);
+                        };
+                        if norm != pre_norm {
+                            audit_ctfe_const_val(self.tcx, self.typing_env, norm, self.state)?;
+                        }
+                        full_args.push(norm.into());
+                    } else {
+                        return Ok(None);
+                    }
+                }
+            }
+        }
+        if non_lt_idx != explicit_non_lt.len() {
+            return Ok(None);
+        }
+        Ok(Some(full_args.split_off(prefix_args.len())))
+    }
+
+    fn resolve_qpath_assoc_ty<'v>(
+        &mut self,
+        qpath: &'v hir::QPath<'v>,
+        assoc_did: DefId,
+        depth: usize,
+    ) -> Result<Option<ty::Ty<'tcx>>> {
+        let parent_did = self.tcx.parent(assoc_did);
+        if self.tcx.def_kind(parent_did) != DefKind::Trait {
+            return Ok(None);
+        }
+        let hir::QPath::Resolved(Some(qself), path) = *qpath else {
+            return Ok(None);
+        };
+        let [.., trait_seg, assoc_seg] = path.segments else {
+            return Ok(None);
+        };
+        let Some(qself_ty) = self.resolve_hir_ty(qself, depth + 1)? else {
+            return Ok(None);
+        };
+        let Some(trait_args) =
+            self.lower_hir_segment_args(parent_did, &[], Some(qself_ty), trait_seg, depth + 1)?
+        else {
+            return Ok(None);
+        };
+        let Some(assoc_own_args) =
+            self.lower_hir_segment_args(assoc_did, &trait_args, None, assoc_seg, depth + 1)?
+        else {
+            return Ok(None);
+        };
+        let full_args = self
+            .tcx
+            .mk_args_from_iter(trait_args.into_iter().chain(assoc_own_args));
+        let proj = ty::Ty::new_projection_from_args(self.tcx, assoc_did, full_args);
+        if proj.has_escaping_bound_vars()
+            || proj.has_non_region_param()
+            || proj.has_non_region_infer()
+            || proj.references_error()
+        {
+            return Ok(None);
+        }
+        Ok(self
+            .tcx
+            .try_normalize_erasing_regions(
+                self.typing_env,
+                ty::EarlyBinder::bind(proj).instantiate_identity(),
+            )
+            .ok())
+    }
+
+    fn resolve_hir_ty<'v, U>(
+        &mut self,
+        hir_ty: &'v hir::Ty<'v, U>,
+        depth: usize,
+    ) -> Result<Option<ty::Ty<'tcx>>> {
+        if depth >= MAX_CTFE_ADT_DEPTH {
+            return Ok(None);
+        }
+        let raw_ty = match hir_ty.kind {
+            hir::TyKind::Slice(elem) => {
+                let Some(elem_ty) = self.resolve_hir_ty(elem, depth + 1)? else {
+                    return Ok(None);
+                };
+                ty::Ty::new_slice(self.tcx, elem_ty)
+            }
+            hir::TyKind::Ptr(mut_ty) => {
+                let Some(inner) = self.resolve_hir_ty(mut_ty.ty, depth + 1)? else {
+                    return Ok(None);
+                };
+                ty::Ty::new_ptr(self.tcx, inner, mut_ty.mutbl)
+            }
+            hir::TyKind::Ref(_, mut_ty) => {
+                let Some(inner) = self.resolve_hir_ty(mut_ty.ty, depth + 1)? else {
+                    return Ok(None);
+                };
+                ty::Ty::new_ref(
+                    self.tcx,
+                    self.tcx.lifetimes.re_erased,
+                    inner,
+                    mut_ty.mutbl,
+                )
+            }
+            hir::TyKind::Never => self.tcx.types.never,
+            hir::TyKind::Tup(elems) => {
+                let mut tys = Vec::with_capacity(elems.len());
+                for elem in elems {
+                    let Some(elem_ty) = self.resolve_hir_ty(elem, depth + 1)? else {
+                        return Ok(None);
+                    };
+                    tys.push(elem_ty);
+                }
+                ty::Ty::new_tup(self.tcx, &tys)
+            }
+            hir::TyKind::Array(elem, len_arg) => {
+                let Some(elem_ty) = self.resolve_hir_ty(elem, depth + 1)? else {
+                    return Ok(None);
+                };
+                let Some(len_ct) =
+                    self.resolve_hir_const_arg(len_arg, self.tcx.types.usize, depth + 1)
+                else {
+                    return Ok(None);
+                };
+                ty::Ty::new_array_with_const_len(self.tcx, elem_ty, len_ct)
+            }
+            hir::TyKind::FnPtr(fn_ptr) if fn_ptr.generic_params.is_empty() => {
+                let mut inputs = Vec::with_capacity(fn_ptr.decl.inputs.len());
+                for inp in fn_ptr.decl.inputs {
+                    let Some(inp_ty) = self.resolve_hir_ty(inp, depth + 1)? else {
+                        return Ok(None);
+                    };
+                    inputs.push(inp_ty);
+                }
+                let output = match fn_ptr.decl.output {
+                    hir::FnRetTy::DefaultReturn(_) => self.tcx.types.unit,
+                    hir::FnRetTy::Return(out_ty) => {
+                        let Some(out) = self.resolve_hir_ty(out_ty, depth + 1)? else {
+                            return Ok(None);
+                        };
+                        out
+                    }
+                };
+                let fn_sig_kind =
+                    ty::FnSigKind::new(fn_ptr.abi, fn_ptr.safety, fn_ptr.decl.c_variadic());
+                ty::Ty::new_fn_ptr(
+                    self.tcx,
+                    ty::Binder::dummy(self.tcx.mk_fn_sig(inputs, output, fn_sig_kind)),
+                )
+            }
+            hir::TyKind::Path(ref qpath) => match *qpath {
+                hir::QPath::Resolved(_, path) => match self.resolve_qpath(qpath, hir_ty.hir_id) {
+                    Res::PrimTy(prim) => match prim {
+                        hir::PrimTy::Bool => self.tcx.types.bool,
+                        hir::PrimTy::Char => self.tcx.types.char,
+                        hir::PrimTy::Str => self.tcx.types.str_,
+                        hir::PrimTy::Int(it) => ty::Ty::new_int(self.tcx, it),
+                        hir::PrimTy::Uint(uit) => ty::Ty::new_uint(self.tcx, uit),
+                        hir::PrimTy::Float(ft) => ty::Ty::new_float(self.tcx, ft),
+                    },
+                    Res::SelfTyParam { .. } => {
+                        let Some(ty) = self.owner_args.first().and_then(|a| a.as_type()) else {
+                            return Ok(None);
+                        };
+                        ty
+                    }
+                    Res::SelfTyAlias { alias_to, .. } => {
+                        let args = self.parent_or_ancestor_args(alias_to);
+                        self.tcx.type_of(alias_to).instantiate(self.tcx, args).skip_norm_wip()
+                    }
+                    Res::Def(DefKind::TyParam, param_did) => {
+                        let Some(idx) = self.resolve_owner_param_idx(param_did) else {
+                            return Ok(None);
+                        };
+                        let Some(ty) = self.owner_args.get(idx as usize).and_then(|a| a.as_type())
+                        else {
+                            return Ok(None);
+                        };
+                        ty
+                    }
+                    Res::Def(DefKind::Struct | DefKind::Union | DefKind::Enum, adt_did) => {
+                        let Some(seg) = path.segments.last() else {
+                            return Ok(None);
+                        };
+                        let Some(own_args) =
+                            self.lower_hir_segment_args(adt_did, &[], None, seg, depth + 1)?
+                        else {
+                            return Ok(None);
+                        };
+                        let args_ref = self.tcx.mk_args(&own_args);
+                        ty::Ty::new_adt(self.tcx, self.tcx.adt_def(adt_did), args_ref)
+                    }
+                    Res::Def(DefKind::TyAlias, alias_did) => {
+                        let Some(seg) = path.segments.last() else {
+                            return Ok(None);
+                        };
+                        let Some(own_args) =
+                            self.lower_hir_segment_args(alias_did, &[], None, seg, depth + 1)?
+                        else {
+                            return Ok(None);
+                        };
+                        let args_ref = self.tcx.mk_args(&own_args);
+                        check_args_ctfe_deps(self.tcx, self.typing_env, args_ref, self.state)?;
+                        self.tcx
+                            .type_of(alias_did)
+                            .instantiate(self.tcx, args_ref)
+                            .skip_norm_wip()
+                    }
+                    Res::Def(DefKind::AssocTy, assoc_did) => {
+                        return self.resolve_qpath_assoc_ty(qpath, assoc_did, depth);
+                    }
+                    _ => return Ok(None),
+                },
+                hir::QPath::TypeRelative(qself, assoc_seg) => {
+                    if let Res::Def(DefKind::AssocTy, assoc_did) =
+                        self.resolve_qpath(qpath, hir_ty.hir_id)
+                        && matches!(
+                            self.tcx.def_kind(self.tcx.parent(assoc_did)),
+                            DefKind::Impl { of_trait: false }
+                        )
+                    {
+                        let inh_impl = self.tcx.parent(assoc_did);
+                        let Some(qself_ty) = self.resolve_hir_ty(qself, depth + 1)? else {
+                            return Ok(None);
+                        };
+                        let Some(impl_args) = self.unify_inherent_impl_args(inh_impl, qself_ty)
+                        else {
+                            return Ok(None);
+                        };
+                        let Some(own_args) = self.lower_hir_segment_args(
+                            assoc_did,
+                            impl_args,
+                            None,
+                            assoc_seg,
+                            depth + 1,
+                        )?
+                        else {
+                            return Ok(None);
+                        };
+                        let args_ref = self
+                            .tcx
+                            .mk_args_from_iter(impl_args.iter().chain(own_args));
+                        self.tcx
+                            .type_of(assoc_did)
+                            .instantiate(self.tcx, args_ref)
+                            .skip_norm_wip()
+                    } else if let hir::TyKind::Path(ref inner_qp) = qself.kind
+                        && let Res::SelfTyAlias {
+                            alias_to,
+                            is_trait_impl: true,
+                        } = self.resolve_qpath(inner_qp, qself.hir_id)
+                    {
+                        let impl_args = self.parent_or_ancestor_args(alias_to);
+                        let trait_ref = self
+                            .tcx
+                            .impl_trait_ref(alias_to)
+                            .instantiate(self.tcx, impl_args);
+                        if trait_ref.has_non_region_param()
+                            || trait_ref.has_non_region_infer()
+                            || trait_ref.references_error()
+                        {
+                            return Ok(None);
+                        }
+                        let Some(assoc_item) = self
+                            .tcx
+                            .associated_items(trait_ref.skip_norm_wip().def_id)
+                            .in_definition_order()
+                            .find(|item| {
+                                item.is_type() && item.opt_name() == Some(assoc_seg.ident.name)
+                            })
+                        else {
+                            return Ok(None);
+                        };
+                        let Ok(trait_ref_norm) = self
+                            .tcx
+                            .try_normalize_erasing_regions(self.typing_env, trait_ref)
+                        else {
+                            return Ok(None);
+                        };
+                        let Some(assoc_own_args) = self.lower_hir_segment_args(
+                            assoc_item.def_id,
+                            trait_ref_norm.args,
+                            None,
+                            assoc_seg,
+                            depth + 1,
+                        )?
+                        else {
+                            return Ok(None);
+                        };
+                        let full_args = self.tcx.mk_args_from_iter(
+                            trait_ref_norm.args.iter().chain(assoc_own_args),
+                        );
+                        ty::Ty::new_projection_from_args(self.tcx, assoc_item.def_id, full_args)
+                    } else if let hir::TyKind::Path(ref inner_qp) = qself.kind {
+                        let inner_res = self.resolve_qpath(inner_qp, qself.hir_id);
+                        let param_idx = match inner_res {
+                            Res::SelfTyParam { trait_ } => {
+                                let self_did = self.tcx.generics_of(trait_).own_params[0].def_id;
+                                self.resolve_owner_param_idx(self_did)
+                            }
+                            Res::Def(DefKind::TyParam, param_did) => {
+                                self.resolve_owner_param_idx(param_did)
+                            }
+                            _ => None,
+                        };
+                        let Some(idx) = param_idx else {
+                            return Ok(None);
+                        };
+                        let bounds =
+                            self.resolve_ty_param_trait_bounds(idx, assoc_seg.ident.name);
+                        if bounds.len() != 1 {
+                            return Ok(None);
+                        }
+                        let (trait_ref, item) = bounds[0];
+                        if !item.is_type() {
+                            return Ok(None);
+                        }
+                        let Some(assoc_own_args) = self.lower_hir_segment_args(
+                            item.def_id,
+                            trait_ref.args,
+                            None,
+                            assoc_seg,
+                            depth + 1,
+                        )?
+                        else {
+                            return Ok(None);
+                        };
+                        let full_args = self
+                            .tcx
+                            .mk_args_from_iter(trait_ref.args.iter().chain(assoc_own_args));
+                        ty::Ty::new_projection_from_args(self.tcx, item.def_id, full_args)
+                    } else {
+                        return Ok(None);
+                    }
+                }
+            },
+            _ => return Ok(None),
+        };
+        if raw_ty.has_escaping_bound_vars()
+            || raw_ty.has_non_region_param()
+            || raw_ty.has_non_region_infer()
+            || raw_ty.references_error()
+        {
+            return Ok(None);
+        }
+        Ok(self
+            .tcx
+            .try_normalize_erasing_regions(
+                self.typing_env,
+                ty::EarlyBinder::bind(raw_ty).instantiate_identity(),
+            )
+            .ok())
+    }
+
+    fn audit_inherent_assoc_ty(&mut self, assoc_did: DefId, args: ty::GenericArgsRef<'tcx>) -> Result<()> {
+        if args.len() != self.tcx.generics_of(assoc_did).count()
+            || args.has_escaping_bound_vars()
+            || args.has_non_region_param()
+            || args.has_non_region_infer()
+            || args.references_error()
+        {
+            return Err(format!(
+                "uninstantiated or erroneous CTFE associated type `{}`: {args:?}",
+                self.tcx.def_path_str(assoc_did)
+            ));
+        }
+        if let Some(local_assoc) = assoc_did.as_local() {
+            check_hir_ctfe_dependencies_inner(
+                self.tcx,
+                self.typing_env,
+                local_assoc,
+                args,
+                self.state,
+            )?;
+        }
+        if self.state.adt_depth >= MAX_CTFE_ADT_DEPTH {
+            return Err(format!(
+                "CTFE associated type recursion depth exceeded {MAX_CTFE_ADT_DEPTH} \
+                 while auditing `{}`",
+                self.tcx.def_path_str(assoc_did)
+            ));
+        }
+        let raw_rhs = self.tcx.type_of(assoc_did).instantiate(self.tcx, args);
+        if !raw_rhs.has_escaping_bound_vars()
+            && !raw_rhs.has_non_region_param()
+            && !raw_rhs.has_non_region_infer()
+            && !raw_rhs.references_error()
+        {
+            let pre_norm_rhs = raw_rhs.skip_norm_wip();
+            self.state.adt_depth += 1;
+            let res = check_ty_ctfe_deps(self.tcx, self.typing_env, pre_norm_rhs, self.state);
+            self.state.adt_depth -= 1;
+            res?;
+        }
+        Ok(())
+    }
+
+    fn audit_assoc_ty_qpath<'v>(
+        &mut self,
+        qpath: &'v hir::QPath<'v>,
+        assoc_did: DefId,
+    ) -> Result<()> {
+        let parent_did = self.tcx.parent(assoc_did);
+        match self.tcx.def_kind(parent_did) {
+            DefKind::Impl { .. } => {
+                let args = self.parent_or_ancestor_args(assoc_did);
+                self.audit_inherent_assoc_ty(assoc_did, args)
+            }
+            DefKind::Trait => {
+                if let hir::QPath::Resolved(Some(qself), path) = *qpath
+                    && let [.., trait_seg, assoc_seg] = path.segments
+                    && let Some(qself_ty) = self.resolve_hir_ty(qself, 0)?
+                    && let Some(trait_args) =
+                        self.lower_hir_segment_args(parent_did, &[], Some(qself_ty), trait_seg, 0)?
+                    && let Some(assoc_own_args) =
+                        self.lower_hir_segment_args(assoc_did, &trait_args, None, assoc_seg, 0)?
+                {
+                    let trait_args_ref = self.tcx.mk_args(&trait_args);
+                    let trait_ref = ty::TraitRef::new_from_args(self.tcx, parent_did, trait_args_ref);
+                    return audit_trait_assoc_projection(
+                        self.tcx,
+                        self.typing_env,
+                        trait_ref,
+                        assoc_did,
+                        &assoc_own_args,
+                        self.state,
+                    );
+                }
+                Err(format!(
+                    "CTFE associated type `{}` with unresolved self or generic arguments \
+                     is unsupported",
+                    self.tcx.def_path_str(assoc_did)
+                ))
+            }
+            _ => Err(format!(
+                "CTFE associated type `{}` has unsupported parent kind",
+                self.tcx.def_path_str(assoc_did)
+            )),
+        }
+    }
+
+    fn resolve_ty_param_trait_bounds(
+        &self,
+        param_idx: u32,
+        assoc_name: rustc_span::Symbol,
+    ) -> Vec<(ty::TraitRef<'tcx>, ty::AssocItem)> {
+        let mut results = Vec::new();
+        let mut seen_traits: HashSet<ty::TraitRef<'tcx>> = HashSet::new();
+        let mut queue: Vec<ty::TraitRef<'tcx>> = Vec::new();
+        let mut cur = Some(self.owner.to_def_id());
+        while let Some(def_id) = cur {
+            let cur_args = self.parent_or_ancestor_args(def_id);
+            let cur_count = self.tcx.generics_of(def_id).count();
+            if cur_args.len() == cur_count
+                && !cur_args.has_non_region_param()
+                && !cur_args.has_non_region_infer()
+                && !cur_args.references_error()
+            {
+                for (pred, _) in self.tcx.predicates_of(def_id).predicates {
+                    let ty::ClauseKind::Trait(tp) = pred.kind().skip_binder() else {
+                        continue;
+                    };
+                    let ty::Param(pt) = *tp.self_ty().kind() else {
+                        continue;
+                    };
+                    if pt.index != param_idx {
+                        continue;
+                    }
+                    let inst_tr = ty::EarlyBinder::bind(tp.trait_ref).instantiate(self.tcx, cur_args);
+                    if let Ok(norm_tr) = self
+                        .tcx
+                        .try_normalize_erasing_regions(self.typing_env, inst_tr)
+                        && !norm_tr.has_escaping_bound_vars()
+                        && !norm_tr.has_non_region_param()
+                        && !norm_tr.has_non_region_infer()
+                        && !norm_tr.references_error()
+                        && seen_traits.insert(norm_tr)
+                    {
+                        queue.push(norm_tr);
+                    }
+                }
+            }
+            cur = self.tcx.generics_of(def_id).parent;
+        }
+        while let Some(tr) = queue.pop() {
+            if let Some(item) = self
+                .tcx
+                .associated_items(tr.def_id)
+                .in_definition_order()
+                .find(|i| {
+                    matches!(
+                        i.kind,
+                        ty::AssocKind::Type { .. } | ty::AssocKind::Const { .. }
+                    ) && i.opt_name() == Some(assoc_name)
+                })
+            {
+                results.push((tr, *item));
+            }
+            for &(super_pred, _) in self.tcx.explicit_super_predicates_of(tr.def_id).skip_binder()
+            {
+                let inst_pred = ty::EarlyBinder::bind(super_pred)
+                    .instantiate(self.tcx, tr.args)
+                    .skip_norm_wip();
+                let ty::ClauseKind::Trait(super_tp) = inst_pred.kind().skip_binder() else {
+                    continue;
+                };
+                if let Ok(norm_super) = self.tcx.try_normalize_erasing_regions(
+                    self.typing_env,
+                    ty::EarlyBinder::bind(super_tp.trait_ref).instantiate_identity(),
+                ) && !norm_super.has_escaping_bound_vars()
+                    && !norm_super.has_non_region_param()
+                    && !norm_super.has_non_region_infer()
+                    && !norm_super.references_error()
+                    && seen_traits.insert(norm_super)
+                {
+                    queue.push(norm_super);
+                }
+            }
+        }
+        results
+    }
+
+    fn audit_type_relative_assoc_on_trait_ref<'v>(
+        &mut self,
+        trait_ref: ty::TraitRef<'tcx>,
+        item: ty::AssocItem,
+        assoc_seg: &'v hir::PathSegment<'v>,
+    ) -> Result<()> {
+        match item.kind {
+            ty::AssocKind::Type { .. } => {
+                let Some(assoc_own_args) =
+                    self.lower_hir_segment_args(item.def_id, trait_ref.args, None, assoc_seg, 0)?
+                else {
+                    return Err(format!(
+                        "CTFE associated type `{}` with unresolved generic arguments is unsupported",
+                        self.tcx.def_path_str(item.def_id)
+                    ));
+                };
+                audit_trait_assoc_projection(
+                    self.tcx,
+                    self.typing_env,
+                    trait_ref,
+                    item.def_id,
+                    &assoc_own_args,
+                    self.state,
+                )
+            }
+            ty::AssocKind::Const { .. } => {
+                let norm_tr = self
+                    .tcx
+                    .try_normalize_erasing_regions(
+                        self.typing_env,
+                        ty::EarlyBinder::bind(trait_ref).instantiate_identity(),
+                    )
+                    .map_err(|_| {
+                        format!(
+                            "failed to normalize CTFE trait ref for associated constant `{}`",
+                            self.tcx.def_path_str(item.def_id)
+                        )
+                    })?;
+                let Ok(impl_source) = self
+                    .tcx
+                    .codegen_select_candidate(self.typing_env.as_query_input(norm_tr))
+                else {
+                    return Err(format!(
+                        "failed to select trait implementation for `{norm_tr}` while auditing `{}`",
+                        self.tcx.def_path_str(item.def_id)
+                    ));
+                };
+                let (target_did, prefix_args) = match impl_source {
+                    rustc_middle::traits::ImplSource::UserDefined(impl_data) => {
+                        if let Some(impl_item) = self
+                            .tcx
+                            .associated_items(impl_data.impl_def_id)
+                            .in_definition_order()
+                            .find(|i| i.trait_item_def_id() == Some(item.def_id))
+                        {
+                            (impl_item.def_id, impl_data.args)
+                        } else {
+                            (item.def_id, norm_tr.args)
+                        }
+                    }
+                    _ => (item.def_id, norm_tr.args),
+                };
+                let Some(assoc_own_args) =
+                    self.lower_hir_segment_args(target_did, prefix_args, None, assoc_seg, 0)?
+                else {
+                    return Err(format!(
+                        "CTFE associated constant `{}` with unresolved generic arguments is unsupported",
+                        self.tcx.def_path_str(target_did)
+                    ));
+                };
+                let full = self
+                    .tcx
+                    .mk_args_from_iter(prefix_args.iter().chain(assoc_own_args));
+                check_ctfe_body_recursive(self.tcx, self.typing_env, target_did, full, None, self.state)
+            }
+            ty::AssocKind::Fn { .. } => Ok(()),
+        }
+    }
+
+    fn audit_type_relative_fallback<'v>(
+        &mut self,
+        qself_hir: &'v hir::Ty<'v>,
+        assoc_seg: &'v hir::PathSegment<'v>,
+    ) -> Result<()> {
+        if let hir::TyKind::Path(ref inner_qp) = qself_hir.kind {
+            match self.resolve_qpath(inner_qp, qself_hir.hir_id) {
+                Res::SelfTyAlias {
+                    alias_to,
+                    is_trait_impl,
+                } => {
+                    let impl_args = self.parent_or_ancestor_args(alias_to);
+                    if impl_args.len() != self.tcx.generics_of(alias_to).count()
+                        || impl_args.has_non_region_param()
+                        || impl_args.has_non_region_infer()
+                        || impl_args.references_error()
+                    {
+                        return Err(format!(
+                            "CTFE type-relative `Self::{}` inside uninstantiated impl is unsupported",
+                            assoc_seg.ident
+                        ));
+                    }
+                    if is_trait_impl {
+                        let raw_tr = self
+                            .tcx
+                            .impl_trait_ref(alias_to)
+                            .instantiate(self.tcx, impl_args);
+                        let trait_did = raw_tr.skip_norm_wip().def_id;
+                        if let Some(item) = self
+                            .tcx
+                            .associated_items(trait_did)
+                            .in_definition_order()
+                            .find(|item| item.opt_name() == Some(assoc_seg.ident.name))
+                        {
+                            return self.audit_type_relative_assoc_on_trait_ref(
+                                raw_tr.skip_norm_wip(),
+                                *item,
+                                assoc_seg,
+                            );
+                        }
+                    } else if let Some(item) = self
+                        .tcx
+                        .associated_items(alias_to)
+                        .in_definition_order()
+                        .find(|item| item.opt_name() == Some(assoc_seg.ident.name))
+                    {
+                        let Some(assoc_own_args) =
+                            self.lower_hir_segment_args(item.def_id, impl_args, None, assoc_seg, 0)?
+                        else {
+                            return Err(format!(
+                                "CTFE associated item `{}` with unresolved arguments is unsupported",
+                                self.tcx.def_path_str(item.def_id)
+                            ));
+                        };
+                        let full = self
+                            .tcx
+                            .mk_args_from_iter(impl_args.iter().chain(assoc_own_args));
+                        match item.kind {
+                            ty::AssocKind::Type { .. } => {
+                                return self.audit_inherent_assoc_ty(item.def_id, full);
+                            }
+                            ty::AssocKind::Const { .. }
+                                if full.len() == self.tcx.generics_of(item.def_id).count()
+                                    && !full.has_non_region_param()
+                                    && !full.has_non_region_infer()
+                                    && !full.references_error() =>
+                            {
+                                return check_ctfe_body_recursive(
+                                    self.tcx,
+                                    self.typing_env,
+                                    item.def_id,
+                                    full,
+                                    None,
+                                    self.state,
+                                );
+                            }
+                            _ => {}
+                        }
+                    }
+                    return Err(format!(
+                        "CTFE type-relative `Self::{}` could not be resolved cleanly",
+                        assoc_seg.ident
+                    ));
+                }
+                Res::SelfTyParam { trait_ } => {
+                    let self_did = self.tcx.generics_of(trait_).own_params[0].def_id;
+                    if let Some(idx) = self.resolve_owner_param_idx(self_did) {
+                        let bounds =
+                            self.resolve_ty_param_trait_bounds(idx, assoc_seg.ident.name);
+                        if !bounds.is_empty() {
+                            for (trait_ref, item) in bounds {
+                                self.audit_type_relative_assoc_on_trait_ref(
+                                    trait_ref, item, assoc_seg,
+                                )?;
+                            }
+                            return Ok(());
+                        }
+                    }
+                    return Err(format!(
+                        "CTFE type-relative `Self::{}` could not be resolved cleanly",
+                        assoc_seg.ident
+                    ));
+                }
+                Res::Def(DefKind::TyParam, param_did) => {
+                    if let Some(idx) = self.resolve_owner_param_idx(param_did) {
+                        let bounds =
+                            self.resolve_ty_param_trait_bounds(idx, assoc_seg.ident.name);
+                        if !bounds.is_empty() {
+                            for (trait_ref, item) in bounds {
+                                self.audit_type_relative_assoc_on_trait_ref(
+                                    trait_ref, item, assoc_seg,
+                                )?;
+                            }
+                            return Ok(());
+                        }
+                    }
+                    return Err(format!(
+                        "CTFE type-relative `{}` could not be resolved from generic bounds",
+                        assoc_seg.ident
+                    ));
+                }
+                _ => {}
+            }
+        }
+        if let Some(qself_ty) = self.resolve_hir_ty(qself_hir, 0)?
+            && let ty::Adt(adt, _) = *qself_ty.kind()
+        {
+            for &inh_impl in self.tcx.inherent_impls(adt.did()) {
+                let Some(item) = self
+                    .tcx
+                    .associated_items(inh_impl)
+                    .in_definition_order()
+                    .find(|i| i.opt_name() == Some(assoc_seg.ident.name))
+                else {
+                    continue;
+                };
+                if let Some(impl_args) = self.unify_inherent_impl_args(inh_impl, qself_ty) {
+                    let Some(assoc_own_args) =
+                        self.lower_hir_segment_args(item.def_id, impl_args, None, assoc_seg, 0)?
+                    else {
+                        return Err(format!(
+                            "CTFE associated item `{}` with unresolved arguments is unsupported",
+                            self.tcx.def_path_str(item.def_id)
+                        ));
+                    };
+                    let full = self
+                        .tcx
+                        .mk_args_from_iter(impl_args.iter().chain(assoc_own_args));
+                    match item.kind {
+                        ty::AssocKind::Type { .. } => {
+                            return self.audit_inherent_assoc_ty(item.def_id, full);
+                        }
+                        ty::AssocKind::Const { .. }
+                            if full.len() == self.tcx.generics_of(item.def_id).count()
+                                && !full.has_non_region_param()
+                                && !full.has_non_region_infer()
+                                && !full.references_error() =>
+                        {
+                            return check_ctfe_body_recursive(
+                                self.tcx,
+                                self.typing_env,
+                                item.def_id,
+                                full,
+                                None,
+                                self.state,
+                            );
+                        }
+                        _ => {}
+                    }
+                }
+            }
+        }
+        Err(format!(
+            "CTFE type-relative path `::{}` with unresolved self type is unsupported",
+            assoc_seg.ident
+        ))
+    }
+}
+
+impl<'v, 'a, 'tcx> intravisit::Visitor<'v> for HirCtfeDepVisitor<'a, 'tcx> {
+    type Result = ControlFlow<String>;
+
+    fn visit_stmt(&mut self, s: &'v hir::Stmt<'v>) -> Self::Result {
+        // Skip unreferenced nested item declarations (`fn unused() { ... }`,
+        // `const UNUSED: ...`) inside a function block unless referenced via a
+        // path/type/constant in the body itself.
+        if matches!(s.kind, hir::StmtKind::Item(_)) {
+            return ControlFlow::Continue(());
+        }
+        intravisit::walk_stmt(self, s)
+    }
+
+    fn visit_generic_param(&mut self, param: &'v hir::GenericParam<'v>) -> Self::Result {
+        // Generic parameter defaults (`= Expr` / `= Ty`) only take effect when
+        // omitted at a use site and are audited there (`visit_path_segment` /
+        // `lower_hir_segment_args`), so explicit overrides (`Wrapper<1>`) do
+        // not inherit an unused default's dependencies.
+        if let hir::GenericParamKind::Const { ty, .. } = param.kind {
+            self.visit_ty_unambig(ty)?;
+        }
+        ControlFlow::Continue(())
+    }
+
+    fn visit_ty(&mut self, hir_ty: &'v hir::Ty<'v, hir::AmbigArg>) -> Self::Result {
+        let mut resolved_adt_args = None;
+        let mut resolved_ty_opt = None;
+        if let Some(tc) = self.typeck
+            && hir_ty.hir_id.owner == tc.hir_owner
+            && self.typeck_owner_args.len() == self.tcx.generics_of(tc.hir_owner.def_id).count()
+            && let Some(raw_ty) = tc.node_type_opt(hir_ty.hir_id)
+        {
+            let inst_ty =
+                ty::EarlyBinder::bind(raw_ty).instantiate(self.tcx, self.typeck_owner_args);
+            if !inst_ty.has_non_region_param()
+                && !inst_ty.has_non_region_infer()
+                && !inst_ty.references_error()
+            {
+                let pre_norm_ty = inst_ty.skip_norm_wip();
+                if let Err(err) =
+                    check_ty_ctfe_deps(self.tcx, self.typing_env, pre_norm_ty, self.state)
+                {
+                    return ControlFlow::Break(err);
+                }
+                let norm_ty = match self
+                    .tcx
+                    .try_normalize_erasing_regions(self.typing_env, inst_ty)
+                {
+                    Ok(ty) => ty,
+                    Err(_) => {
+                        return ControlFlow::Break(format!(
+                            "failed to normalize HIR type `{inst_ty:?}` in `{}`",
+                            self.tcx.def_path_str(self.owner)
+                        ));
+                    }
+                };
+                if norm_ty != pre_norm_ty
+                    && let Err(err) =
+                        check_ty_ctfe_deps(self.tcx, self.typing_env, norm_ty, self.state)
+                {
+                    return ControlFlow::Break(err);
+                }
+                resolved_ty_opt = Some(norm_ty);
+                if let ty::Adt(adt, adt_args) = *norm_ty.kind() {
+                    resolved_adt_args = Some((adt.did(), adt_args));
+                }
+            }
+        }
+        let prev_adt_args = self.current_ty_adt_args.take();
+        let prev_resolved_ty = self.current_ty_resolved_ty.take();
+        self.current_ty_adt_args = resolved_adt_args;
+        self.current_ty_resolved_ty = resolved_ty_opt;
+        let res = intravisit::walk_ty(self, hir_ty);
+        self.current_ty_adt_args = prev_adt_args;
+        self.current_ty_resolved_ty = prev_resolved_ty;
+        res
+    }
+
+    fn visit_path_segment(&mut self, segment: &'v hir::PathSegment<'v>) -> Self::Result {
+        let args_info = segment.args();
+        if !segment.infer_args
+            && !matches!(args_info.parenthesized, hir::GenericArgsParentheses::ParenSugar)
+            && let Res::Def(
+                kind @ (DefKind::Struct
+                | DefKind::Union
+                | DefKind::Enum
+                | DefKind::TyAlias
+                | DefKind::Trait),
+                target_did,
+            ) = segment.res
+        {
+            let gens = self.tcx.generics_of(target_did);
+            let non_lt_params: Vec<_> = gens
+                .own_params
+                .iter()
+                .filter(|p| {
+                    !matches!(p.kind, ty::GenericParamDefKind::Lifetime)
+                        && !(kind == DefKind::Trait && p.index == 0)
+                })
+                .collect();
+            let provided_non_lt = args_info
+                .args
+                .iter()
+                .filter(|arg| arg.is_ty_or_const())
+                .count();
+            if provided_non_lt < non_lt_params.len() {
+                let resolved_args = match self
+                    .current_ty_adt_args
+                    .take()
+                    .and_then(|(did, a)| (did == target_did).then_some(a))
+                {
+                    Some(a) => Some(a),
+                    None if kind != DefKind::Trait => {
+                        match self.lower_hir_segment_args_inner(
+                            target_did, &[], None, segment, 0, true,
+                        ) {
+                            Ok(Some(own_args)) => Some(self.tcx.mk_args(&own_args)),
+                            Ok(None) => None,
+                            Err(err) => return ControlFlow::Break(err),
+                        }
+                    }
+                    None => None,
+                };
+                for param in &non_lt_params[provided_non_lt..] {
+                    let prefix_len = param.index as usize;
+                    let prefix_slice = resolved_args
+                        .filter(|a| a.len() >= prefix_len)
+                        .map(|a| &a[..prefix_len]);
+                    let mut checked_concrete = false;
+                    match param.kind {
+                        ty::GenericParamDefKind::Const { has_default: true, .. } => {
+                            let raw_default = self.tcx.const_param_default(param.def_id);
+                            let inst_ct = match prefix_slice {
+                                Some(slice) => raw_default.instantiate(self.tcx, slice),
+                                None => raw_default.instantiate_identity(),
+                            };
+                            let default_ct = inst_ct.skip_norm_wip();
+                            if !default_ct.has_escaping_bound_vars()
+                                && !default_ct.has_non_region_param()
+                                && !default_ct.has_non_region_infer()
+                                && !default_ct.references_error()
+                            {
+                                checked_concrete = true;
+                                if let Err(err) = audit_ctfe_const_val(
+                                    self.tcx,
+                                    self.typing_env,
+                                    default_ct,
+                                    self.state,
+                                ) {
+                                    return ControlFlow::Break(err);
+                                }
+                                if let Ok(norm_ct) = self
+                                    .tcx
+                                    .try_normalize_erasing_regions(self.typing_env, inst_ct)
+                                    && norm_ct != default_ct
+                                    && let Err(err) = audit_ctfe_const_val(
+                                        self.tcx,
+                                        self.typing_env,
+                                        norm_ct,
+                                        self.state,
+                                    )
+                                {
+                                    return ControlFlow::Break(err);
+                                }
+                            }
+                        }
+                        ty::GenericParamDefKind::Type { has_default: true, .. } => {
+                            let raw_default = self.tcx.type_of(param.def_id);
+                            let inst_ty = match prefix_slice {
+                                Some(slice) => raw_default.instantiate(self.tcx, slice),
+                                None => raw_default.instantiate_identity(),
+                            };
+                            let default_ty = inst_ty.skip_norm_wip();
+                            if !default_ty.has_escaping_bound_vars()
+                                && !default_ty.has_non_region_param()
+                                && !default_ty.has_non_region_infer()
+                                && !default_ty.references_error()
+                            {
+                                checked_concrete = true;
+                                if let Err(err) = check_ty_ctfe_deps(
+                                    self.tcx,
+                                    self.typing_env,
+                                    default_ty,
+                                    self.state,
+                                ) {
+                                    return ControlFlow::Break(err);
+                                }
+                                if let Ok(norm_ty) = self
+                                    .tcx
+                                    .try_normalize_erasing_regions(self.typing_env, inst_ty)
+                                    && norm_ty != default_ty
+                                    && let Err(err) = check_ty_ctfe_deps(
+                                        self.tcx,
+                                        self.typing_env,
+                                        norm_ty,
+                                        self.state,
+                                    )
+                                {
+                                    return ControlFlow::Break(err);
+                                }
+                            }
+                        }
+                        _ => {
+                            checked_concrete = true;
+                        }
+                    }
+                    if !checked_concrete
+                        && let Some(local_target) = target_did.as_local()
+                        && let Some(local_param) = param.def_id.as_local()
+                        && let Some(generics) = self.tcx.hir_node_by_def_id(local_target).generics()
+                        && let Some(gp) = generics.params.iter().find(|p| p.def_id == local_param)
+                    {
+                        let target_identity =
+                            ty::GenericArgs::identity_for_item(self.tcx, local_target.to_def_id());
+                        let mut def_vis = HirCtfeDepVisitor {
+                            tcx: self.tcx,
+                            typing_env: self.typing_env,
+                            owner: local_target,
+                            owner_args: target_identity,
+                            typeck: None,
+                            typeck_owner_args: target_identity,
+                            current_ty_adt_args: None,
+                            current_ty_resolved_ty: None,
+                            audit_expr_types: false,
+                            state: self.state,
+                        };
+                        match gp.kind {
+                            hir::GenericParamKind::Type {
+                                default: Some(def_ty),
+                                ..
+                            } => {
+                                if let ControlFlow::Break(err) = def_vis.visit_ty_unambig(def_ty) {
+                                    return ControlFlow::Break(err);
+                                }
+                            }
+                            hir::GenericParamKind::Const {
+                                default: Some(def_ct),
+                                ..
+                            } => {
+                                let flow = match def_ct.kind {
+                                    hir::ConstArgKind::Anon(ac) => def_vis.visit_anon_const(ac),
+                                    hir::ConstArgKind::Path(ref qp) => {
+                                        def_vis.visit_qpath(qp, def_ct.hir_id, def_ct.span)
+                                    }
+                                    _ => ControlFlow::Continue(()),
+                                };
+                                if let ControlFlow::Break(err) = flow {
+                                    return ControlFlow::Break(err);
+                                }
+                            }
+                            _ => {}
+                        }
+                    }
+                }
+            }
+        }
+        intravisit::walk_path_segment(self, segment)
+    }
+
+    fn visit_anon_const(&mut self, c: &'v hir::AnonConst) -> Self::Result {
+        let def_id = c.def_id.to_def_id();
+        let args = child_args_for_def(self.tcx, def_id, self.owner, self.owner_args);
+        if let Err(err) =
+            check_ctfe_body_recursive(self.tcx, self.typing_env, def_id, args, None, self.state)
+        {
+            return ControlFlow::Break(err);
+        }
+        ControlFlow::Continue(())
+    }
+
+    fn visit_inline_const(&mut self, c: &'v hir::ConstBlock) -> Self::Result {
+        let def_id = c.def_id.to_def_id();
+        let root = self.tcx.typeck_root_def_id_local(c.def_id);
+        let tc = if let Some(existing) = self.typeck
+            && existing.hir_owner.def_id == root
+        {
+            existing
+        } else {
+            self.tcx.typeck(root)
+        };
+        let Some(raw_inline_ty) = tc.node_type_opt(c.hir_id) else {
+            return ControlFlow::Break(format!(
+                "missing typeck result for inline const `{}`",
+                self.tcx.def_path_str(def_id)
+            ));
+        };
+        let parent_args = if self.typeck.is_some_and(|t| t.hir_owner.def_id == root)
+            && self.typeck_owner_args.len() == self.tcx.generics_of(root.to_def_id()).count()
+        {
+            self.typeck_owner_args
+        } else {
+            child_args_for_def(self.tcx, root.to_def_id(), self.owner, self.owner_args)
+        };
+        let parent_args = self.tcx.erase_and_anonymize_regions(parent_args);
+        if parent_args.len() != self.tcx.generics_of(root.to_def_id()).count()
+            || parent_args.has_non_region_param()
+            || parent_args.has_non_region_infer()
+            || parent_args.references_error()
+        {
+            return ControlFlow::Break(format!(
+                "uninstantiated or erroneous inline const parent arguments for `{}`: \
+                 {parent_args:?}",
+                self.tcx.def_path_str(def_id)
+            ));
+        }
+        let instantiated_inline_ty =
+            ty::EarlyBinder::bind(raw_inline_ty).instantiate(self.tcx, parent_args);
+        if instantiated_inline_ty.has_non_region_param()
+            || instantiated_inline_ty.has_non_region_infer()
+            || instantiated_inline_ty.references_error()
+        {
+            return ControlFlow::Break(format!(
+                "uninstantiated or erroneous inline const type for `{}`: \
+                 {instantiated_inline_ty:?}",
+                self.tcx.def_path_str(def_id)
+            ));
+        }
+        if let Err(err) = check_ty_ctfe_deps(
+            self.tcx,
+            self.typing_env,
+            instantiated_inline_ty.skip_norm_wip(),
+            self.state,
+        ) {
+            return ControlFlow::Break(err);
+        }
+        let inst_ty = match self
+            .tcx
+            .try_normalize_erasing_regions(self.typing_env, instantiated_inline_ty)
+        {
+            Ok(t) => t,
+            Err(_) => {
+                return ControlFlow::Break(format!(
+                    "failed to normalize inline const type for `{}`",
+                    self.tcx.def_path_str(def_id)
+                ));
+            }
+        };
+        let inline_args = ty::InlineConstArgs::new(
+            self.tcx,
+            ty::InlineConstArgsParts {
+                parent_args,
+                ty: inst_ty,
+            },
+        )
+        .args;
+        if let Err(err) = check_ctfe_body_recursive(
+            self.tcx,
+            self.typing_env,
+            def_id,
+            inline_args,
+            None,
+            self.state,
+        ) {
+            return ControlFlow::Break(err);
+        }
+        // Also walk the inline const's HIR body under the enclosing `typeck`
+        // table (since `typeck_root_def_id_local(c.def_id) == root`).
+        let prev_owner = self.owner;
+        let prev_args = self.owner_args;
+        let prev_tc = self.typeck;
+        let prev_typeck_args = self.typeck_owner_args;
+        let prev_audit_expr_types = self.audit_expr_types;
+        self.owner = root;
+        self.owner_args = parent_args;
+        self.typeck = Some(tc);
+        self.typeck_owner_args = parent_args;
+        self.audit_expr_types = true;
+        let body = self.tcx.hir_body(c.body);
+        let res = intravisit::walk_body(self, body);
+        self.owner = prev_owner;
+        self.owner_args = prev_args;
+        self.typeck = prev_tc;
+        self.typeck_owner_args = prev_typeck_args;
+        self.audit_expr_types = prev_audit_expr_types;
+        res
+    }
+
+    fn visit_expr(&mut self, expr: &'v hir::Expr<'v>) -> Self::Result {
+        if let hir::ExprKind::Closure(closure) = expr.kind {
+            let root = self.tcx.typeck_root_def_id_local(closure.def_id);
+            let tc = if let Some(existing) = self.typeck
+                && existing.hir_owner.def_id == root
+            {
+                existing
+            } else {
+                self.tcx.typeck(root)
+            };
+            let parent_args = if self.typeck.is_some_and(|t| t.hir_owner.def_id == root)
+                && self.typeck_owner_args.len() == self.tcx.generics_of(root.to_def_id()).count()
+            {
+                self.typeck_owner_args
+            } else {
+                child_args_for_def(
+                    self.tcx,
+                    root.to_def_id(),
+                    self.owner,
+                    self.owner_args,
+                )
+            };
+            let parent_args = self.tcx.erase_and_anonymize_regions(parent_args);
+            let closure_owner_args = if expr.hir_id.owner == tc.hir_owner
+                && parent_args.len() == self.tcx.generics_of(tc.hir_owner.def_id).count()
+                && let Some(raw_closure_ty) = tc.node_type_opt(expr.hir_id)
+                && let inst_closure_ty =
+                    ty::EarlyBinder::bind(raw_closure_ty).instantiate(self.tcx, parent_args)
+                && let ty::Closure(_, cargs)
+                | ty::Coroutine(_, cargs)
+                | ty::CoroutineClosure(_, cargs) = *inst_closure_ty.skip_norm_wip().kind()
+            {
+                self.tcx.erase_and_anonymize_regions(cargs)
+            } else {
+                parent_args
+            };
+            let prev_owner = self.owner;
+            let prev_args = self.owner_args;
+            let prev_tc = self.typeck;
+            let prev_typeck_args = self.typeck_owner_args;
+            self.owner = closure.def_id;
+            self.owner_args = closure_owner_args;
+            self.typeck = Some(tc);
+            self.typeck_owner_args = parent_args;
+            let body = self.tcx.hir_body(closure.body);
+            let res = intravisit::walk_body(self, body);
+            self.owner = prev_owner;
+            self.owner_args = prev_args;
+            self.typeck = prev_tc;
+            self.typeck_owner_args = prev_typeck_args;
+            res?;
+        }
+        intravisit::walk_expr(self, expr)?;
+        if self.audit_expr_types
+            && let Some(tc) = self.typeck
+            && expr.hir_id.owner == tc.hir_owner
+            && self.typeck_owner_args.len() == self.tcx.generics_of(tc.hir_owner.def_id).count()
+        {
+            if let Some(callee_did) = tc.type_dependent_def_id(expr.hir_id)
+                && matches!(
+                    self.tcx.def_kind(callee_did),
+                    DefKind::Fn | DefKind::AssocFn | DefKind::Ctor(..)
+                )
+            {
+                let raw_args = tc
+                    .node_args_opt(expr.hir_id)
+                    .unwrap_or_else(ty::GenericArgs::empty);
+                let inst_args =
+                    ty::EarlyBinder::bind(raw_args).instantiate(self.tcx, self.typeck_owner_args);
+                if !inst_args.has_non_region_param()
+                    && !inst_args.has_non_region_infer()
+                    && !inst_args.references_error()
+                {
+                    if let Err(err) = audit_fn_def_ctfe_deps(
+                        self.tcx,
+                        self.typing_env,
+                        callee_did,
+                        inst_args.skip_norm_wip(),
+                        true,
+                        self.state,
+                    ) {
+                        return ControlFlow::Break(err);
+                    }
+                    if let Ok(norm_args) =
+                        self.tcx
+                            .try_normalize_erasing_regions(self.typing_env, inst_args)
+                        && norm_args != inst_args.skip_norm_wip()
+                        && let Err(err) = audit_fn_def_ctfe_deps(
+                            self.tcx,
+                            self.typing_env,
+                            callee_did,
+                            norm_args,
+                            true,
+                            self.state,
+                        )
+                    {
+                        return ControlFlow::Break(err);
+                    }
+                }
+            }
+            if let Some(raw_ty) = tc.node_type_opt(expr.hir_id) {
+                let inst_ty =
+                    ty::EarlyBinder::bind(raw_ty).instantiate(self.tcx, self.typeck_owner_args);
+                if !inst_ty.has_non_region_param()
+                    && !inst_ty.has_non_region_infer()
+                    && !inst_ty.references_error()
+                {
+                    let pre_norm_ty = inst_ty.skip_norm_wip();
+                    let pre_res = match *pre_norm_ty.kind() {
+                        ty::FnDef(fn_did, fn_args) => audit_fn_def_ctfe_deps(
+                            self.tcx,
+                            self.typing_env,
+                            fn_did,
+                            fn_args,
+                            true,
+                            self.state,
+                        ),
+                        _ => check_ty_ctfe_deps(self.tcx, self.typing_env, pre_norm_ty, self.state),
+                    };
+                    if let Err(err) = pre_res {
+                        return ControlFlow::Break(err);
+                    }
+                    if let Ok(norm_ty) =
+                        self.tcx
+                            .try_normalize_erasing_regions(self.typing_env, inst_ty)
+                        && norm_ty != pre_norm_ty
+                    {
+                        let norm_res = match *norm_ty.kind() {
+                            ty::FnDef(fn_did, fn_args) => audit_fn_def_ctfe_deps(
+                                self.tcx,
+                                self.typing_env,
+                                fn_did,
+                                fn_args,
+                                true,
+                                self.state,
+                            ),
+                            _ => check_ty_ctfe_deps(self.tcx, self.typing_env, norm_ty, self.state),
+                        };
+                        if let Err(err) = norm_res {
+                            return ControlFlow::Break(err);
+                        }
+                    }
+                }
+            }
+        }
+        ControlFlow::Continue(())
+    }
+
+    fn visit_qpath(
+        &mut self,
+        qpath: &'v hir::QPath<'v>,
+        id: hir::HirId,
+        _span: rustc_span::Span,
+    ) -> Self::Result {
+        match self.resolve_qpath(qpath, id) {
+            Res::Def(DefKind::Static { .. }, did) => {
+                if let Err(err) = check_no_ctfe_static_ref(self.tcx, did) {
+                    return ControlFlow::Break(err);
+                }
+            }
+            Res::Def(DefKind::Const { .. } | DefKind::AssocConst { .. }, did) => {
+                let args = match self.subst_node_args(did, id) {
+                    Ok(a) => a,
+                    Err(err) => return ControlFlow::Break(err),
+                };
+                if let Err(err) = check_ctfe_body_recursive(
+                    self.tcx,
+                    self.typing_env,
+                    did,
+                    args,
+                    None,
+                    self.state,
+                ) {
+                    return ControlFlow::Break(err);
+                }
+            }
+            Res::Def(DefKind::TyAlias, did) => {
+                if let Some(local_alias) = did.as_local() {
+                    let alias_args_opt = if let Some(tc) = self.typeck
+                        && id.owner == tc.hir_owner
+                        && self.typeck_owner_args.len()
+                            == self.tcx.generics_of(tc.hir_owner.def_id).count()
+                        && let Some(nargs) = tc.node_args_opt(id)
+                    {
+                        Some(
+                            ty::EarlyBinder::bind(nargs)
+                                .instantiate(self.tcx, self.typeck_owner_args)
+                                .skip_norm_wip(),
+                        )
+                    } else if let hir::QPath::Resolved(_, path) = *qpath
+                        && let Some(seg) = path.segments.last()
+                        && let Some(own_args) = match self
+                            .lower_hir_segment_args_inner(did, &[], None, seg, 0, true)
+                        {
+                            Ok(args) => args,
+                            Err(err) => return ControlFlow::Break(err),
+                        }
+                    {
+                        Some(self.tcx.mk_args(&own_args))
+                    } else if self.tcx.generics_of(did).count() == 0 {
+                        Some(ty::GenericArgs::empty())
+                    } else if let Some(resolved_ty) = self.current_ty_resolved_ty {
+                        self.unify_item_self_ty_args(did, resolved_ty)
+                    } else {
+                        None
+                    };
+                    let Some(alias_args) = alias_args_opt else {
+                        return ControlFlow::Break(format!(
+                            "CTFE type alias `{}` with unresolved arguments is unsupported",
+                            self.tcx.def_path_str(did)
+                        ));
+                    };
+                    if let Err(err) = check_hir_ctfe_dependencies_inner(
+                        self.tcx,
+                        self.typing_env,
+                        local_alias,
+                        alias_args,
+                        self.state,
+                    ) {
+                        return ControlFlow::Break(err);
+                    }
+                    if alias_args.len() == self.tcx.generics_of(did).count()
+                        && !alias_args.has_non_region_param()
+                        && !alias_args.has_non_region_infer()
+                        && !alias_args.references_error()
+                    {
+                        let raw_alias_ty =
+                            self.tcx.type_of(did).instantiate(self.tcx, alias_args);
+                        if !raw_alias_ty.has_non_region_param()
+                            && !raw_alias_ty.has_non_region_infer()
+                            && !raw_alias_ty.references_error()
+                        {
+                            let pre_norm_alias_ty = raw_alias_ty.skip_norm_wip();
+                            if let Err(err) = check_ty_ctfe_deps(
+                                self.tcx,
+                                self.typing_env,
+                                pre_norm_alias_ty,
+                                self.state,
+                            ) {
+                                return ControlFlow::Break(err);
+                            }
+                            let norm_ty = match self
+                                .tcx
+                                .try_normalize_erasing_regions(self.typing_env, raw_alias_ty)
+                            {
+                                Ok(ty) => ty,
+                                Err(_) => {
+                                    return ControlFlow::Break(format!(
+                                        "failed to normalize CTFE type alias `{}`",
+                                        self.tcx.def_path_str(did)
+                                    ));
+                                }
+                            };
+                            if norm_ty != pre_norm_alias_ty
+                                && let Err(err) = check_ty_ctfe_deps(
+                                    self.tcx,
+                                    self.typing_env,
+                                    norm_ty,
+                                    self.state,
+                                )
+                            {
+                                return ControlFlow::Break(err);
+                            }
+                        }
+                    }
+                }
+            }
+            Res::Def(
+                kind @ (DefKind::Struct
+                | DefKind::Union
+                | DefKind::Enum
+                | DefKind::Variant
+                | DefKind::Ctor(..)),
+                did,
+            ) => {
+                let adt_did = match kind {
+                    DefKind::Variant | DefKind::Ctor(hir::def::CtorOf::Struct, _) => {
+                        self.tcx.parent(did)
+                    }
+                    DefKind::Ctor(hir::def::CtorOf::Variant, _) => {
+                        self.tcx.parent(self.tcx.parent(did))
+                    }
+                    _ => did,
+                };
+                // Type-position paths (`size_of::<G<u8>>()`, `let _: G<u8>`)
+                // carry resolved `Ty`s on their enclosing `hir::Ty` node
+                // (`visit_ty`) rather than `node_args` on the `QPath`. Only
+                // instantiate `adt_did` here when `typeck` recorded explicit
+                // `node_args` (value/constructor expressions) or the local ADT
+                // is monomorphic.
+                let adt_args = if adt_did.is_local() {
+                    if let Some(tc) = self.typeck
+                        && id.owner == tc.hir_owner
+                        && self.typeck_owner_args.len()
+                            == self.tcx.generics_of(tc.hir_owner.def_id).count()
+                        && let Some(nargs) = tc.node_args_opt(id)
+                    {
+                        Some(
+                            ty::EarlyBinder::bind(nargs)
+                                .instantiate(self.tcx, self.typeck_owner_args)
+                                .skip_norm_wip(),
+                        )
+                    } else if self.tcx.generics_of(adt_did).count() == 0 {
+                        Some(ty::GenericArgs::empty())
+                    } else {
+                        None
+                    }
+                } else {
+                    None
+                };
+                if let Some(adt_args) = adt_args
+                    && adt_args.len() == self.tcx.generics_of(adt_did).count()
+                    && !adt_args.has_non_region_param()
+                    && !adt_args.has_non_region_infer()
+                    && !adt_args.references_error()
+                {
+                    let raw_adt_ty = self.tcx.type_of(adt_did).instantiate(self.tcx, adt_args);
+                    if !raw_adt_ty.has_non_region_param()
+                        && !raw_adt_ty.has_non_region_infer()
+                        && !raw_adt_ty.references_error()
+                    {
+                        let pre_norm_adt_ty = raw_adt_ty.skip_norm_wip();
+                        if let Err(err) = check_ty_ctfe_deps(
+                            self.tcx,
+                            self.typing_env,
+                            pre_norm_adt_ty,
+                            self.state,
+                        ) {
+                            return ControlFlow::Break(err);
+                        }
+                        let norm_ty = match self
+                            .tcx
+                            .try_normalize_erasing_regions(self.typing_env, raw_adt_ty)
+                        {
+                            Ok(ty) => ty,
+                            Err(_) => {
+                                return ControlFlow::Break(format!(
+                                    "failed to normalize local ADT `{}` in CTFE check",
+                                    self.tcx.def_path_str(adt_did)
+                                ));
+                            }
+                        };
+                        if norm_ty != pre_norm_adt_ty
+                            && let Err(err) =
+                                check_ty_ctfe_deps(self.tcx, self.typing_env, norm_ty, self.state)
+                        {
+                            return ControlFlow::Break(err);
+                        }
+                    }
+                }
+            }
+            Res::Def(DefKind::AssocTy, assoc_did) => {
+                if let Err(err) = self.audit_assoc_ty_qpath(qpath, assoc_did) {
+                    return ControlFlow::Break(err);
+                }
+            }
+            Res::Err => {
+                if let hir::QPath::TypeRelative(qself_hir, assoc_seg) = *qpath
+                    && let Err(err) = self.audit_type_relative_fallback(qself_hir, assoc_seg)
+                {
+                    return ControlFlow::Break(err);
+                }
+            }
+            _ => {}
+        }
+        intravisit::walk_qpath(self, qpath, id)
     }
 }
 
@@ -3282,11 +7432,7 @@ fn terminator<'tcx>(
                         "calls to generic or monomorphized functions (`{path}`) are unsupported"
                     ));
                 }
-                if tcx
-                    .codegen_fn_attrs(callee_did)
-                    .flags
-                    .contains(CodegenFnAttrFlags::TRACK_CALLER)
-                {
+                if def_requires_caller_location(tcx, callee_did) {
                     return Err(format!(
                         "intra-crate calls to #[track_caller] function `{path}` are unsupported"
                     ));
@@ -3860,7 +8006,6 @@ fn body_inner<'tcx>(
     if body.tainted_by_errors.is_some() || body.coroutine.is_some() || body.spread_arg.is_some() {
         return Err("tainted, coroutine or spread-argument body is unsupported".into());
     }
-    eval_required_consts(tcx, typing_env, body)?;
     // Unrequested generic entry points would require quantified instantiation
     // obligations; compiler completion alone does not prove every future
     // instantiation. Explicit concrete instantiations are admitted only after
@@ -3872,7 +8017,7 @@ fn body_inner<'tcx>(
     // counts its parent's parameters, including a trait's implicit `Self`.
     // https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_middle/src/ty/generics.rs#L112-L116
     // https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_middle/src/ty/generics.rs#L153-L156
-    let (signature, identity) = match instance {
+    let (signature, unnorm_sig, identity) = match instance {
         None => {
             // Admit uninstantiated bodies whose own and parent generics are
             // all `GenericParamDefKind::Lifetime` (of `Lifetime`, `Type`, and
@@ -3903,32 +8048,45 @@ fn body_inner<'tcx>(
                 }
                 cur_gen = gens.parent;
             }
-            // With non-lifetime generics and bounds refused, the identity
-            // instantiation is the only one. `skip_binder` "is only valid when
-            // you are either extracting data that does not reference any
-            // generic arguments": the ABI, C-variadic, and safety flags read
-            // below live in `fn_sig_kind`, separately from the argument and
-            // return types that late-bound regions can reference.
-            // https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_type_ir/src/unnormalized.rs#L96-L100
-            // https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_type_ir/src/binder.rs#L164-L170
-            // https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_type_ir/src/ty_kind.rs#L899-L904
-            (
-                tcx.fn_sig(def).instantiate_identity().skip_binder(),
-                item_identity(tcx, def.to_def_id()),
-            )
+            let erased_sig = tcx.instantiate_bound_regions_with_erased(
+                tcx.fn_sig(def).instantiate_identity().skip_norm_wip(),
+            );
+            (erased_sig, erased_sig, item_identity(tcx, def.to_def_id()))
         }
         Some(inst) => {
             let bound_sig = tcx.fn_sig(def).instantiate(tcx, inst.args);
+            let unnorm_sig = tcx.instantiate_bound_regions_with_erased(bound_sig.skip_norm_wip());
             let normalized_sig = tcx
                 .try_normalize_erasing_regions(typing_env, bound_sig)
                 .map_err(|_| "failed to normalize instantiated function signature".to_owned())?;
-            let sig = normalized_sig.skip_binder();
+            let sig = tcx.instantiate_bound_regions_with_erased(normalized_sig);
             if sig.has_non_region_param() || sig.has_non_region_infer() || sig.references_error() {
                 return Err("instantiated function signature remains generic or erroneous".into());
             }
-            (sig, instance_identity(tcx, inst))
+            (sig, unnorm_sig, instance_identity(tcx, inst))
         }
     };
+    let owner_args = match instance {
+        Some(inst) => inst.args,
+        None => ty::GenericArgs::identity_for_item(tcx, def.to_def_id()),
+    };
+    check_hir_ctfe_dependencies(tcx, typing_env, def, owner_args)?;
+    eval_required_consts(tcx, typing_env, body)?;
+    let mut body_ctfe_state = CtfePurityState::default();
+    if !unnorm_sig.has_non_region_param()
+        && !unnorm_sig.has_non_region_infer()
+        && !unnorm_sig.references_error()
+    {
+        for sig_ty in unnorm_sig.inputs_and_output {
+            check_ty_ctfe_deps(tcx, typing_env, sig_ty, &mut body_ctfe_state)?;
+        }
+    }
+    for sig_ty in signature.inputs_and_output {
+        check_ty_ctfe_deps(tcx, typing_env, sig_ty, &mut body_ctfe_state)?;
+    }
+    for decl in body.local_decls.iter() {
+        check_ty_ctfe_deps(tcx, typing_env, decl.ty, &mut body_ctfe_state)?;
+    }
     // The model has ordinary Rust arguments and no foreign/variadic calling
     // convention or hardware-feature entry conditions. Do not infer those
     // missing preconditions merely because the body happens to use scalars.
