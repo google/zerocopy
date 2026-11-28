@@ -233,6 +233,8 @@ pub enum PatKind {
     },
     /// `T::MIN`, `T::MAX`, or `T::BITS`.
     IntConst(IntTy, IntConst),
+    /// `lo..=hi`, whose bounds are `Int` or `IntConst` patterns.
+    Range(Box<Pat>, Box<Pat>),
 }
 
 /// The binding of one `let` statement.

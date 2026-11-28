@@ -21,8 +21,8 @@ use proc_macro2::Span;
 
 use crate::{
     ast::{
-        Arm, BinOp, Clause, Effect, Expr, ExprKind, IntConst, IntTy, LetBinding, Param, PatKind,
-        PureFn, SpecFn, Ty, UnOp,
+        Arm, BinOp, Clause, Effect, Expr, ExprKind, IntConst, IntTy, LetBinding, Param, Pat,
+        PatKind, PureFn, SpecFn, Ty, UnOp,
     },
     diag::Diagnostic,
 };
@@ -435,6 +435,97 @@ fn popcount_stages(bits: u32) -> Vec<String> {
 /// input once.
 fn nat_stages(x: String, stages: &[String]) -> String {
     stages.iter().fold(x, |acc, stage| apply_fun(&["«x»"], NAT, stage, &[acc]))
+}
+
+/// The value of `p`, an integer pattern or range bound against a scrutinee
+/// of kind `kind` and machine type `machine` (described as `describe_kind`),
+/// and the type of `p` itself, if it has one. A pattern must be of the
+/// scrutinee's type and in its range.
+fn int_pat_value(
+    p: &Pat,
+    kind: ScrutKind,
+    machine: Option<IntTy>,
+    describe_kind: &str,
+) -> Result<(IntLit, Option<IntTy>), Diagnostic> {
+    let (v, pty) = match p.kind {
+        PatKind::Int { neg, mag, suffix } => (IntLit::new(neg, mag), suffix),
+        PatKind::IntConst(t, c) => {
+            let (v, ty) = int_const(t, c);
+            (v, Some(ty))
+        }
+        _ => unreachable!("only integer patterns are range bounds"),
+    };
+    let mismatch =
+        |found: &str| type_error(p.span, format!("{found} cannot match `{describe_kind}`"));
+    match kind {
+        ScrutKind::Prop => {
+            return Err(mismatch(&pty.map_or("an integer pattern".into(), |t| {
+                format!("a `{}` pattern", t.rust_name())
+            })));
+        }
+        ScrutKind::Nat if v.neg || pty.is_some_and(|t| t.signed) => {
+            return Err(type_error(
+                p.span,
+                "`max_steps` patterns must be non-negative and unsigned",
+            ));
+        }
+        ScrutKind::Int(_) | ScrutKind::Nat => {
+            if let Some(pt) = pty.filter(|pt| machine.is_some_and(|t| t != *pt)) {
+                return Err(mismatch(&format!("a `{}` pattern", pt.rust_name())));
+            }
+            // As with a suffixed literal in `math(..)`, a suffixed pattern is
+            // in range for its suffix even where the scrutinee has no machine
+            // type.
+            if let Some(t) = machine.or(pty) {
+                check_range(v, t, p.span)?;
+            }
+        }
+    }
+    Ok((v, pty))
+}
+
+/// The position of `v` in the order of the integers, as a pair ordered
+/// lexicographically: negative values first, by decreasing magnitude, then
+/// the others by magnitude. Unlike `i128` or `u128`, it holds every value of
+/// every fixed-width type.
+fn int_order(v: IntLit) -> (bool, u128) {
+    if v.neg && v.mag != 0 {
+        (false, u128::MAX - (v.mag - 1))
+    } else {
+        (true, v.mag)
+    }
+}
+
+/// The integer after the one at `order`, if any has an order position.
+fn next_order(order: (bool, u128)) -> Option<(bool, u128)> {
+    match order {
+        (false, u128::MAX) => Some((true, 0)),
+        (sign, m) => m.checked_add(1).map(|m| (sign, m)),
+    }
+}
+
+/// Whether the inclusive intervals `seen` together contain every integer
+/// from `lo` to `hi`.
+fn covers(seen: &[(IntLit, IntLit)], lo: IntLit, hi: IntLit) -> bool {
+    let (mut at, hi) = (int_order(lo), int_order(hi));
+    loop {
+        let Some(end) = seen
+            .iter()
+            .map(|&(a, b)| (int_order(a), int_order(b)))
+            .filter(|&(a, b)| a <= at && at <= b)
+            .map(|(_, b)| b)
+            .max()
+        else {
+            return false;
+        };
+        if end >= hi {
+            return true;
+        }
+        match next_order(end) {
+            Some(next) => at = next,
+            None => return true,
+        }
+    }
 }
 
 /// Whether `a <= b`.
@@ -1062,11 +1153,18 @@ impl<'a> Env<'a> {
                 Low::Unit(_) => return Err(no_unit()),
                 untyped => {
                     // An untyped scrutinee takes its type from a typed pattern.
-                    let typed = arms.iter().flat_map(|a| &a.pats).find_map(|p| match p.kind {
-                        PatKind::Int { suffix: Some(t), .. } => Some(Ty::Int(t)),
-                        PatKind::IntConst(t, c) => Some(Ty::Int(int_const(t, c).1)),
-                        _ => None,
-                    });
+                    let typed = arms
+                        .iter()
+                        .flat_map(|a| &a.pats)
+                        .flat_map(|p| match &p.kind {
+                            PatKind::Range(lo, hi) => vec![&lo.kind, &hi.kind],
+                            kind => vec![kind],
+                        })
+                        .find_map(|kind| match *kind {
+                            PatKind::Int { suffix: Some(t), .. } => Some(Ty::Int(t)),
+                            PatKind::IntConst(t, c) => Some(Ty::Int(int_const(t, c).1)),
+                            _ => None,
+                        });
                     let Some(ty) = typed.or(math.then_some(Ty::Math)) else {
                         return Err(Diagnostic::new(
                             "E_ANNEAL_SPEC_TYPE_ANNOTATION_NEEDED",
@@ -1111,7 +1209,9 @@ impl<'a> Env<'a> {
             Diagnostic::new("E_ANNEAL_UNREACHABLE_MATCH_ARM", span, msg)
                 .help("remove the pattern or arm that can never be reached")
         };
-        let mut seen: Vec<IntLit> = Vec::new();
+        // The integer values that earlier patterns match, as inclusive
+        // intervals.
+        let mut seen: Vec<(IntLit, IntLit)> = Vec::new();
         let mut seen_bools = [false; 2];
         let mut catch_all = false;
         let mut not_taken: Vec<String> = Vec::new();
@@ -1160,61 +1260,63 @@ impl<'a> Env<'a> {
                         taken.extend(yes.iter().cloned());
                         not_taken_here.extend(no.iter().cloned());
                     }
-                    PatKind::Int { .. } | PatKind::IntConst(..) => {
-                        let (v, pty) = match p.kind {
-                            PatKind::Int { neg, mag, suffix } => (IntLit::new(neg, mag), suffix),
-                            PatKind::IntConst(t, c) => {
-                                let (v, ty) = int_const(t, c);
-                                (v, Some(ty))
-                            }
-                            _ => unreachable!(),
+                    PatKind::Int { .. } | PatKind::IntConst(..) | PatKind::Range(..) => {
+                        let (lo, hi) = match &p.kind {
+                            PatKind::Range(lo, hi) => (lo.as_ref(), hi.as_ref()),
+                            _ => (p, p),
                         };
-                        let mismatch = |found: &str| {
-                            type_error(p.span, format!("{found} cannot match `{describe_kind}`"))
-                        };
-                        match kind {
-                            ScrutKind::Prop => {
-                                return Err(mismatch(
-                                    &pty.map_or("an integer pattern".into(), |t| {
-                                        format!("a `{}` pattern", t.rust_name())
-                                    }),
-                                ))
-                            }
-                            ScrutKind::Nat if v.neg || pty.is_some_and(|t| t.signed) => {
+                        let (lo_v, lo_ty) = int_pat_value(lo, kind, machine, &describe_kind)?;
+                        let (hi_v, hi_ty) = int_pat_value(hi, kind, machine, &describe_kind)?;
+                        if let (None, Some(a), Some(b)) = (machine, lo_ty, hi_ty) {
+                            if a != b {
                                 return Err(type_error(
                                     p.span,
-                                    "`max_steps` patterns must be non-negative and unsigned",
+                                    format!(
+                                        "the bounds of this range have different types `{}` and \
+                                         `{}`",
+                                        a.rust_name(),
+                                        b.rust_name()
+                                    ),
                                 ));
                             }
-                            ScrutKind::Int(_) | ScrutKind::Nat => {
-                                if let Some(pt) = pty.filter(|pt| machine.is_some_and(|t| t != *pt))
-                                {
-                                    return Err(mismatch(&format!(
-                                        "a `{}` pattern",
-                                        pt.rust_name()
-                                    )));
-                                }
-                                // As with a suffixed literal in `math(..)`, a
-                                // suffixed pattern is in range for its suffix
-                                // even where the scrutinee has no machine type.
-                                if let Some(t) = machine.or(pty) {
-                                    check_range(v, t, p.span)?;
-                                }
-                            }
                         }
-                        if seen.iter().any(|w| w.neg == v.neg && w.mag == v.mag) {
+                        let shown = if std::ptr::eq(lo, hi) {
+                            lo_v.to_string()
+                        } else {
+                            format!("{lo_v}..={hi_v}")
+                        };
+                        if !lit_le(lo_v, hi_v) {
                             return Err(unreachable_arm(
                                 p.span,
-                                &format!("`{v}` is already matched"),
+                                &format!(
+                                    "`{shown}` is empty: its lower bound exceeds its upper bound"
+                                ),
                             ));
                         }
-                        seen.push(v);
-                        conds.push(match kind {
-                            ScrutKind::Nat => format!("({MATCH_BINDER} = ({} : Nat))", v.mag),
-                            _ => format!("({MATCH_BINDER} = {})", int_lit(v)),
+                        if covers(&seen, lo_v, hi_v) {
+                            return Err(unreachable_arm(
+                                p.span,
+                                &format!("`{shown}` is already matched"),
+                            ));
+                        }
+                        seen.push((lo_v, hi_v));
+                        let lit = |v: IntLit| match kind {
+                            ScrutKind::Nat => format!("({} : Nat)", v.mag),
+                            _ => int_lit(v),
+                        };
+                        conds.push(if lit_le(hi_v, lo_v) {
+                            format!("({MATCH_BINDER} = {})", lit(lo_v))
+                        } else {
+                            format!(
+                                "({} ≤ {MATCH_BINDER} ∧ {MATCH_BINDER} ≤ {})",
+                                lit(lo_v),
+                                lit(hi_v)
+                            )
                         });
-                        has_zero |= v.mag == 0;
-                        all_nonzero &= v.mag != 0;
+                        let zero = IntLit::new(false, 0);
+                        let matches_zero = lit_le(lo_v, zero) && lit_le(zero, hi_v);
+                        has_zero |= matches_zero;
+                        all_nonzero &= !matches_zero;
                     }
                 }
             }

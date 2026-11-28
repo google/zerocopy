@@ -310,19 +310,25 @@ block.
 
 A `match` examines a `bool` or integer scrutinee and takes the first arm whose
 pattern matches. A pattern is `_`, a name, `true` or `false`, an integer
-literal (optionally negative or suffixed), or an integer constant such as
-`u8::MAX`, and literals may be joined with `|`. A name binds the scrutinee and
-follows the `let` rules. Guards, ranges, and tuple, struct, enum, slice,
-`ref`, and `mut` patterns are rejected. A `match` must be exhaustive: a `bool`
-match covers `true` and `false`, and an integer match ends with a `_` or name
-arm. An arm whose patterns earlier arms already cover is rejected, as is an
-empty `match`. As with an `if`, the scrutinee ends at the first `{`, the arms
+literal (optionally negative or suffixed), an integer constant such as
+`u8::MAX`, or an inclusive range `lo..=hi` whose bounds are literals or
+constants, and literals and ranges may be joined with `|`. A name binds the
+scrutinee and follows the `let` rules. Guards, exclusive and half-open ranges,
+and tuple, struct, enum, slice, `ref`, and `mut` patterns are rejected. A
+`match` must be exhaustive: a `bool` match covers `true` and `false`, and an
+integer match ends with a `_` or name arm, even when its ranges cover every
+value of the scrutinee's type. A pattern that earlier patterns already cover,
+whether one value or the union of earlier ranges, is rejected, as are an empty
+range such as `5..=3` and an empty `match`; a range may overlap earlier
+patterns in part. As with an `if`, the scrutinee ends at the first `{`, the arms
 must have one type, and no binary operator may follow a `match` directly. As
 in Rust, an arm body in braces ends at its `}` and needs no comma after it;
 other arm bodies, including `if` and `match` expressions, need one.
 
-An integer pattern must be in range for the scrutinee's machine type, and a
-suffixed pattern must have that type and be in range for its suffix. A
+An integer pattern, or each bound of a range, must be in range for the
+scrutinee's machine type, and a suffixed pattern must have that type and be in
+range for its suffix; a suffixed bound also types an untyped scrutinee, and
+the bounds of one range must have one type. A
 `math` scrutinee has no machine type, so its suffixed patterns need only be in
 range. In `max_steps`, patterns are non-negative and unsigned, and a scrutinee
 has the machine type it has in a `max_steps` `if` condition: `match n` on a
@@ -331,11 +337,13 @@ has the machine type it has in a `max_steps` `if` condition: `match n` on a
 
 The lowering binds the scrutinee once, as `«match»` (a Rust keyword, so no
 specification name can capture it), and treats the arms as nested `if`s over
-`«match» = v`: arms between `bool`s join as implications, and arms that choose
+`«match» = v`, or `lo ≤ «match» ∧ «match» ≤ hi` for a range with distinct
+bounds: arms between `bool`s join as implications, and arms that choose
 a value use Lean's `if`, which needs a decidable scrutinee when it is a
 `bool`. Each arm may divide by what its pattern and the earlier arms prove
 nonzero, so `match d { 0 => r == 0, _ => math(r) == math(n / d) }` passes, as
-does a name arm after a `0` arm.
+does a name arm after a `0` arm; a range proves the scrutinee nonzero in its arm
+when it excludes zero, and in the later arms when it includes zero.
 
 An integer constant lowers to its value on the profile v1 target, where
 `usize` and `isize` are 64 bits wide: `usize::MAX` lowers to

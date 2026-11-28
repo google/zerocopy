@@ -711,6 +711,25 @@ anneal::external_spec! {
         a.trailing_ones()
     }
 
+    // Inclusive range patterns, alone and in or-patterns.
+    #[anneal::pure]
+    fn classify(a: i8) -> u8 {
+        match a {
+            i8::MIN..=-1 => 0,
+            0 => 1,
+            1..=9 | 20..=29 => 2,
+            _ => 3,
+        }
+    }
+
+    #[anneal::pure]
+    fn clamp_byte(a: u16) -> u16 {
+        match a {
+            0..=255 => a,
+            _ => 255,
+        }
+    }
+
     #[anneal::pure]
     fn wshl_is(a: u16, n: u32, r: u16) -> bool {
         wrapping_shl(a, n) == r
@@ -737,6 +756,7 @@ anneal::external_spec! {
                 + n.swap_bytes()
                 + n.count_ones()
                 + n.leading_zeros()
+                + match n { 0..=9 => 1, _ => 2 }
         },
         ensures(|r| r == saturating_sub(n, 1u32)),
     )]
