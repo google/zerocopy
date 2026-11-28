@@ -1,0 +1,480 @@
+{
+  "schema_version": 1,
+  "compilation": {
+    "source_root": "../../src",
+    "crate_root": "lib.rs",
+    "crate_name": "zerocopy",
+    "edition": "2021",
+    "target": "x86_64-unknown-linux-gnu",
+    "cfg": [
+      "no_zerocopy_allocator_api_1_100_0"
+    ],
+    "env": {
+      "CARGO_PKG_VERSION": "0.8.64"
+    },
+    "source_files": [
+      "byte_slice.rs",
+      "byteorder.rs",
+      "deprecated.rs",
+      "error.rs",
+      "impls.rs",
+      "layout.rs",
+      "lib.rs",
+      "macros.rs",
+      "pointer/inner.rs",
+      "pointer/invariant.rs",
+      "pointer/mod.rs",
+      "pointer/ptr.rs",
+      "pointer/transmute.rs",
+      "ref.rs",
+      "split_at.rs",
+      "util/macro_util.rs",
+      "util/macros.rs",
+      "util/mod.rs",
+      "wrappers.rs"
+    ]
+  },
+  "scope": {
+    "kind": "selected_unit",
+    "roots": [],
+    "instantiations": [
+      {
+        "path": "impls::_::<impl FromBytes for core::cell::Cell<T>>::only_derive_is_allowed_to_implement_this_trait::is_trait",
+        "args": [
+          "core::cell::Cell<u16>",
+          "u16"
+        ]
+      },
+      {
+        "path": "impls::_::<impl FromBytes for core::cell::UnsafeCell<T>>::only_derive_is_allowed_to_implement_this_trait::is_trait",
+        "args": [
+          "core::cell::UnsafeCell<i64>",
+          "i64"
+        ]
+      },
+      {
+        "path": "impls::_::<impl FromBytes for core::mem::ManuallyDrop<T>>::only_derive_is_allowed_to_implement_this_trait::is_trait",
+        "args": [
+          "core::mem::ManuallyDrop<[u8]>",
+          "[u8]"
+        ]
+      },
+      {
+        "path": "impls::_::<impl FromBytes for core::num::Wrapping<T>>::only_derive_is_allowed_to_implement_this_trait::is_trait",
+        "args": [
+          "core::num::Wrapping<u32>",
+          "u32"
+        ]
+      },
+      {
+        "path": "impls::_::<impl FromZeros for core::cell::Cell<T>>::only_derive_is_allowed_to_implement_this_trait::is_trait",
+        "args": [
+          "core::cell::Cell<u16>",
+          "u16"
+        ]
+      },
+      {
+        "path": "impls::_::<impl FromZeros for core::cell::UnsafeCell<T>>::only_derive_is_allowed_to_implement_this_trait::is_trait",
+        "args": [
+          "core::cell::UnsafeCell<i64>",
+          "i64"
+        ]
+      },
+      {
+        "path": "impls::_::<impl FromZeros for core::mem::ManuallyDrop<T>>::only_derive_is_allowed_to_implement_this_trait::is_trait",
+        "args": [
+          "core::mem::ManuallyDrop<[u8]>",
+          "[u8]"
+        ]
+      },
+      {
+        "path": "impls::_::<impl FromZeros for core::num::Wrapping<T>>::only_derive_is_allowed_to_implement_this_trait::is_trait",
+        "args": [
+          "core::num::Wrapping<u32>",
+          "u32"
+        ]
+      },
+      {
+        "path": "impls::_::<impl IntoBytes for core::cell::Cell<T>>::only_derive_is_allowed_to_implement_this_trait::is_trait",
+        "args": [
+          "core::cell::Cell<u16>",
+          "u16"
+        ]
+      },
+      {
+        "path": "impls::_::<impl IntoBytes for core::cell::UnsafeCell<T>>::only_derive_is_allowed_to_implement_this_trait::is_trait",
+        "args": [
+          "core::cell::UnsafeCell<i64>",
+          "i64"
+        ]
+      },
+      {
+        "path": "impls::_::<impl IntoBytes for core::mem::ManuallyDrop<T>>::only_derive_is_allowed_to_implement_this_trait::is_trait",
+        "args": [
+          "core::mem::ManuallyDrop<[u8]>",
+          "[u8]"
+        ]
+      },
+      {
+        "path": "impls::_::<impl IntoBytes for core::num::Wrapping<T>>::only_derive_is_allowed_to_implement_this_trait::is_trait",
+        "args": [
+          "core::num::Wrapping<u32>",
+          "u32"
+        ]
+      },
+      {
+        "path": "impls::_::<impl TryFromBytes for core::cell::Cell<T>>::only_derive_is_allowed_to_implement_this_trait::is_trait",
+        "args": [
+          "core::cell::Cell<u16>",
+          "u16"
+        ]
+      },
+      {
+        "path": "impls::_::<impl TryFromBytes for core::mem::ManuallyDrop<T>>::only_derive_is_allowed_to_implement_this_trait::is_trait",
+        "args": [
+          "core::mem::ManuallyDrop<[u8]>",
+          "[u8]"
+        ]
+      },
+      {
+        "path": "impls::_::<impl TryFromBytes for core::num::Wrapping<T>>::only_derive_is_allowed_to_implement_this_trait::is_trait",
+        "args": [
+          "core::num::Wrapping<u32>",
+          "u32"
+        ]
+      },
+      {
+        "path": "impls::atomics::atomic_16::_::<impl FromBytes for core::sync::atomic::Atomic<i16>>::only_derive_is_allowed_to_implement_this_trait::is_trait",
+        "args": [
+          "core::sync::atomic::Atomic<i16>",
+          "i16"
+        ]
+      },
+      {
+        "path": "impls::atomics::atomic_16::_::<impl FromBytes for core::sync::atomic::Atomic<u16>>::only_derive_is_allowed_to_implement_this_trait::is_trait",
+        "args": [
+          "core::sync::atomic::Atomic<u16>",
+          "u16"
+        ]
+      },
+      {
+        "path": "impls::atomics::atomic_16::_::<impl FromZeros for core::sync::atomic::Atomic<i16>>::only_derive_is_allowed_to_implement_this_trait::is_trait",
+        "args": [
+          "core::sync::atomic::Atomic<i16>",
+          "i16"
+        ]
+      },
+      {
+        "path": "impls::atomics::atomic_16::_::<impl FromZeros for core::sync::atomic::Atomic<u16>>::only_derive_is_allowed_to_implement_this_trait::is_trait",
+        "args": [
+          "core::sync::atomic::Atomic<u16>",
+          "u16"
+        ]
+      },
+      {
+        "path": "impls::atomics::atomic_16::_::<impl IntoBytes for core::sync::atomic::Atomic<i16>>::only_derive_is_allowed_to_implement_this_trait::is_trait",
+        "args": [
+          "core::sync::atomic::Atomic<i16>",
+          "i16"
+        ]
+      },
+      {
+        "path": "impls::atomics::atomic_16::_::<impl IntoBytes for core::sync::atomic::Atomic<u16>>::only_derive_is_allowed_to_implement_this_trait::is_trait",
+        "args": [
+          "core::sync::atomic::Atomic<u16>",
+          "u16"
+        ]
+      },
+      {
+        "path": "impls::atomics::atomic_16::_::<impl TryFromBytes for core::sync::atomic::Atomic<i16>>::only_derive_is_allowed_to_implement_this_trait::is_trait",
+        "args": [
+          "core::sync::atomic::Atomic<i16>",
+          "i16"
+        ]
+      },
+      {
+        "path": "impls::atomics::atomic_16::_::<impl TryFromBytes for core::sync::atomic::Atomic<u16>>::only_derive_is_allowed_to_implement_this_trait::is_trait",
+        "args": [
+          "core::sync::atomic::Atomic<u16>",
+          "u16"
+        ]
+      },
+      {
+        "path": "impls::atomics::atomic_32::_::<impl FromBytes for core::sync::atomic::Atomic<i32>>::only_derive_is_allowed_to_implement_this_trait::is_trait",
+        "args": [
+          "core::sync::atomic::Atomic<i32>",
+          "i32"
+        ]
+      },
+      {
+        "path": "impls::atomics::atomic_32::_::<impl FromBytes for core::sync::atomic::Atomic<u32>>::only_derive_is_allowed_to_implement_this_trait::is_trait",
+        "args": [
+          "core::sync::atomic::Atomic<u32>",
+          "u32"
+        ]
+      },
+      {
+        "path": "impls::atomics::atomic_32::_::<impl FromZeros for core::sync::atomic::Atomic<i32>>::only_derive_is_allowed_to_implement_this_trait::is_trait",
+        "args": [
+          "core::sync::atomic::Atomic<i32>",
+          "i32"
+        ]
+      },
+      {
+        "path": "impls::atomics::atomic_32::_::<impl FromZeros for core::sync::atomic::Atomic<u32>>::only_derive_is_allowed_to_implement_this_trait::is_trait",
+        "args": [
+          "core::sync::atomic::Atomic<u32>",
+          "u32"
+        ]
+      },
+      {
+        "path": "impls::atomics::atomic_32::_::<impl IntoBytes for core::sync::atomic::Atomic<i32>>::only_derive_is_allowed_to_implement_this_trait::is_trait",
+        "args": [
+          "core::sync::atomic::Atomic<i32>",
+          "i32"
+        ]
+      },
+      {
+        "path": "impls::atomics::atomic_32::_::<impl IntoBytes for core::sync::atomic::Atomic<u32>>::only_derive_is_allowed_to_implement_this_trait::is_trait",
+        "args": [
+          "core::sync::atomic::Atomic<u32>",
+          "u32"
+        ]
+      },
+      {
+        "path": "impls::atomics::atomic_32::_::<impl TryFromBytes for core::sync::atomic::Atomic<i32>>::only_derive_is_allowed_to_implement_this_trait::is_trait",
+        "args": [
+          "core::sync::atomic::Atomic<i32>",
+          "i32"
+        ]
+      },
+      {
+        "path": "impls::atomics::atomic_32::_::<impl TryFromBytes for core::sync::atomic::Atomic<u32>>::only_derive_is_allowed_to_implement_this_trait::is_trait",
+        "args": [
+          "core::sync::atomic::Atomic<u32>",
+          "u32"
+        ]
+      },
+      {
+        "path": "impls::atomics::atomic_64::_::<impl FromBytes for core::sync::atomic::Atomic<i64>>::only_derive_is_allowed_to_implement_this_trait::is_trait",
+        "args": [
+          "core::sync::atomic::Atomic<i64>",
+          "i64"
+        ]
+      },
+      {
+        "path": "impls::atomics::atomic_64::_::<impl FromBytes for core::sync::atomic::Atomic<u64>>::only_derive_is_allowed_to_implement_this_trait::is_trait",
+        "args": [
+          "core::sync::atomic::Atomic<u64>",
+          "u64"
+        ]
+      },
+      {
+        "path": "impls::atomics::atomic_64::_::<impl FromZeros for core::sync::atomic::Atomic<i64>>::only_derive_is_allowed_to_implement_this_trait::is_trait",
+        "args": [
+          "core::sync::atomic::Atomic<i64>",
+          "i64"
+        ]
+      },
+      {
+        "path": "impls::atomics::atomic_64::_::<impl FromZeros for core::sync::atomic::Atomic<u64>>::only_derive_is_allowed_to_implement_this_trait::is_trait",
+        "args": [
+          "core::sync::atomic::Atomic<u64>",
+          "u64"
+        ]
+      },
+      {
+        "path": "impls::atomics::atomic_64::_::<impl IntoBytes for core::sync::atomic::Atomic<i64>>::only_derive_is_allowed_to_implement_this_trait::is_trait",
+        "args": [
+          "core::sync::atomic::Atomic<i64>",
+          "i64"
+        ]
+      },
+      {
+        "path": "impls::atomics::atomic_64::_::<impl IntoBytes for core::sync::atomic::Atomic<u64>>::only_derive_is_allowed_to_implement_this_trait::is_trait",
+        "args": [
+          "core::sync::atomic::Atomic<u64>",
+          "u64"
+        ]
+      },
+      {
+        "path": "impls::atomics::atomic_64::_::<impl TryFromBytes for core::sync::atomic::Atomic<i64>>::only_derive_is_allowed_to_implement_this_trait::is_trait",
+        "args": [
+          "core::sync::atomic::Atomic<i64>",
+          "i64"
+        ]
+      },
+      {
+        "path": "impls::atomics::atomic_64::_::<impl TryFromBytes for core::sync::atomic::Atomic<u64>>::only_derive_is_allowed_to_implement_this_trait::is_trait",
+        "args": [
+          "core::sync::atomic::Atomic<u64>",
+          "u64"
+        ]
+      },
+      {
+        "path": "impls::atomics::atomic_8::_::<impl FromBytes for core::sync::atomic::Atomic<i8>>::only_derive_is_allowed_to_implement_this_trait::is_trait",
+        "args": [
+          "core::sync::atomic::Atomic<i8>",
+          "i8"
+        ]
+      },
+      {
+        "path": "impls::atomics::atomic_8::_::<impl FromBytes for core::sync::atomic::Atomic<u8>>::only_derive_is_allowed_to_implement_this_trait::is_trait",
+        "args": [
+          "core::sync::atomic::Atomic<u8>",
+          "u8"
+        ]
+      },
+      {
+        "path": "impls::atomics::atomic_8::_::<impl FromZeros for core::sync::atomic::Atomic<bool>>::only_derive_is_allowed_to_implement_this_trait::is_trait",
+        "args": [
+          "core::sync::atomic::Atomic<bool>",
+          "bool"
+        ]
+      },
+      {
+        "path": "impls::atomics::atomic_8::_::<impl FromZeros for core::sync::atomic::Atomic<i8>>::only_derive_is_allowed_to_implement_this_trait::is_trait",
+        "args": [
+          "core::sync::atomic::Atomic<i8>",
+          "i8"
+        ]
+      },
+      {
+        "path": "impls::atomics::atomic_8::_::<impl FromZeros for core::sync::atomic::Atomic<u8>>::only_derive_is_allowed_to_implement_this_trait::is_trait",
+        "args": [
+          "core::sync::atomic::Atomic<u8>",
+          "u8"
+        ]
+      },
+      {
+        "path": "impls::atomics::atomic_8::_::<impl IntoBytes for core::sync::atomic::Atomic<bool>>::only_derive_is_allowed_to_implement_this_trait::is_trait",
+        "args": [
+          "core::sync::atomic::Atomic<bool>",
+          "bool"
+        ]
+      },
+      {
+        "path": "impls::atomics::atomic_8::_::<impl IntoBytes for core::sync::atomic::Atomic<i8>>::only_derive_is_allowed_to_implement_this_trait::is_trait",
+        "args": [
+          "core::sync::atomic::Atomic<i8>",
+          "i8"
+        ]
+      },
+      {
+        "path": "impls::atomics::atomic_8::_::<impl IntoBytes for core::sync::atomic::Atomic<u8>>::only_derive_is_allowed_to_implement_this_trait::is_trait",
+        "args": [
+          "core::sync::atomic::Atomic<u8>",
+          "u8"
+        ]
+      },
+      {
+        "path": "impls::atomics::atomic_8::_::<impl TryFromBytes for core::sync::atomic::Atomic<bool>>::only_derive_is_allowed_to_implement_this_trait::is_trait",
+        "args": [
+          "core::sync::atomic::Atomic<bool>",
+          "bool"
+        ]
+      },
+      {
+        "path": "impls::atomics::atomic_8::_::<impl TryFromBytes for core::sync::atomic::Atomic<i8>>::only_derive_is_allowed_to_implement_this_trait::is_trait",
+        "args": [
+          "core::sync::atomic::Atomic<i8>",
+          "i8"
+        ]
+      },
+      {
+        "path": "impls::atomics::atomic_8::_::<impl TryFromBytes for core::sync::atomic::Atomic<u8>>::only_derive_is_allowed_to_implement_this_trait::is_trait",
+        "args": [
+          "core::sync::atomic::Atomic<u8>",
+          "u8"
+        ]
+      },
+      {
+        "path": "impls::atomics::atomic_ptr::_::<impl FromBytes for core::sync::atomic::Atomic<isize>>::only_derive_is_allowed_to_implement_this_trait::is_trait",
+        "args": [
+          "core::sync::atomic::Atomic<isize>",
+          "isize"
+        ]
+      },
+      {
+        "path": "impls::atomics::atomic_ptr::_::<impl FromBytes for core::sync::atomic::Atomic<usize>>::only_derive_is_allowed_to_implement_this_trait::is_trait",
+        "args": [
+          "core::sync::atomic::Atomic<usize>",
+          "usize"
+        ]
+      },
+      {
+        "path": "impls::atomics::atomic_ptr::_::<impl FromZeros for core::sync::atomic::Atomic<*mut T>>::only_derive_is_allowed_to_implement_this_trait::is_trait",
+        "args": [
+          "core::sync::atomic::Atomic<*mut u8>",
+          "*mut u8"
+        ]
+      },
+      {
+        "path": "impls::atomics::atomic_ptr::_::<impl FromZeros for core::sync::atomic::Atomic<isize>>::only_derive_is_allowed_to_implement_this_trait::is_trait",
+        "args": [
+          "core::sync::atomic::Atomic<isize>",
+          "isize"
+        ]
+      },
+      {
+        "path": "impls::atomics::atomic_ptr::_::<impl FromZeros for core::sync::atomic::Atomic<usize>>::only_derive_is_allowed_to_implement_this_trait::is_trait",
+        "args": [
+          "core::sync::atomic::Atomic<usize>",
+          "usize"
+        ]
+      },
+      {
+        "path": "impls::atomics::atomic_ptr::_::<impl IntoBytes for core::sync::atomic::Atomic<isize>>::only_derive_is_allowed_to_implement_this_trait::is_trait",
+        "args": [
+          "core::sync::atomic::Atomic<isize>",
+          "isize"
+        ]
+      },
+      {
+        "path": "impls::atomics::atomic_ptr::_::<impl IntoBytes for core::sync::atomic::Atomic<usize>>::only_derive_is_allowed_to_implement_this_trait::is_trait",
+        "args": [
+          "core::sync::atomic::Atomic<usize>",
+          "usize"
+        ]
+      },
+      {
+        "path": "impls::atomics::atomic_ptr::_::<impl TryFromBytes for core::sync::atomic::Atomic<*mut T>>::only_derive_is_allowed_to_implement_this_trait::is_trait",
+        "args": [
+          "core::sync::atomic::Atomic<*mut u8>",
+          "*mut u8"
+        ]
+      },
+      {
+        "path": "impls::atomics::atomic_ptr::_::<impl TryFromBytes for core::sync::atomic::Atomic<isize>>::only_derive_is_allowed_to_implement_this_trait::is_trait",
+        "args": [
+          "core::sync::atomic::Atomic<isize>",
+          "isize"
+        ]
+      },
+      {
+        "path": "impls::atomics::atomic_ptr::_::<impl TryFromBytes for core::sync::atomic::Atomic<usize>>::only_derive_is_allowed_to_implement_this_trait::is_trait",
+        "args": [
+          "core::sync::atomic::Atomic<usize>",
+          "usize"
+        ]
+      }
+    ]
+  },
+  "proof": {
+    "source_root": ".",
+    "specification": "Spec.specs",
+    "theorem": "Proof.verify",
+    "sources": [
+      {
+        "module": "Spec",
+        "path": "Spec.lean",
+        "role": "specification"
+      },
+      {
+        "module": "Proof",
+        "path": "Proof.lean",
+        "role": "proof"
+      }
+    ]
+  }
+}
