@@ -1830,6 +1830,27 @@ impl<'a> Env<'a> {
         Ok(Low::Int(term, if math { Ty::Math } else { Ty::Int(t) }))
     }
 
+    /// Lowers `arg`, the `u32` amount of method `name`, which as in Rust may
+    /// be an untyped literal.
+    fn u32_amount(
+        &self,
+        name: &str,
+        arg: &Expr,
+        facts: &mut Vec<String>,
+    ) -> Result<String, Diagnostic> {
+        match self.lower(arg, false, facts)? {
+            Low::Int(n, Ty::Int(u)) if u == U32 => Ok(n),
+            low @ Low::Lit(..) => {
+                let Low::Int(n, _) = settle(low, Ty::Int(U32))? else { unreachable!() };
+                Ok(n)
+            }
+            low => Err(type_error(
+                arg.span,
+                format!("`{name}` takes a `u32` amount, found {}", describe(&low)),
+            )),
+        }
+    }
+
     /// Lowers the integer method call `recv.name(args)` at `span`. A method
     /// named like an intrinsic is that intrinsic with `recv` as its first
     /// operand. `min`, `max`, and `clamp` take operands of `recv`'s
@@ -1845,7 +1866,9 @@ impl<'a> Env<'a> {
     /// `cast_signed` and `cast_unsigned` reinterpret its bits as the
     /// same-width type of the other signedness. The mixed-signedness
     /// methods, such as `wrapping_add_signed`, take an operand of `recv`'s
-    /// width and the other signedness. An operation that
+    /// width and the other signedness. `unbounded_shl` and `unbounded_shr`
+    /// shift by any `u32` amount, and `midpoint` averages toward zero. An
+    /// operation that
     /// needs an operand more than once applies a Lean `fun` to the operands,
     /// which evaluates each once and keeps every specification name out of
     /// the scope of its binders.
@@ -1986,20 +2009,8 @@ impl<'a> Env<'a> {
             "rotate_left" | "rotate_right" => {
                 arity(1)?;
                 let (a, t) = self.int_operand(name, recv, facts)?;
-                // As in Rust, the amount is a `u32`, taken modulo the width.
-                let n = match self.lower(&args[0], false, facts)? {
-                    Low::Int(n, Ty::Int(u)) if u == U32 => n,
-                    low @ Low::Lit(..) => {
-                        let Low::Int(n, _) = settle(low, Ty::Int(U32))? else { unreachable!() };
-                        n
-                    }
-                    low => {
-                        return Err(type_error(
-                            args[0].span,
-                            format!("`{name}` rotates by a `u32`, found {}", describe(&low)),
-                        ));
-                    }
-                };
+                // As in Rust, the amount is taken modulo the width.
+                let n = self.u32_amount(name, &args[0], facts)?;
                 // Rotate the `Nat` value of `a`'s bits: the bits shifted out
                 // of one end come back in at the other.
                 let (m, bits) = (modulus(t), t.bits);
@@ -2071,6 +2082,39 @@ impl<'a> Env<'a> {
                 let target = IntTy { signed: to_signed, ..t };
                 Ok(Low::Int(wrap_into(&a, target), ty(target)))
             }
+            // Unlike `<<` and `>>`, these shift by any `u32` amount: one
+            // that is not below the width shifts every bit out, leaving `0`,
+            // or `-1` for a negative operand of a signed right shift.
+            "unbounded_shl" | "unbounded_shr" => {
+                arity(1)?;
+                let (a, t) = self.int_operand(name, recv, facts)?;
+                let n = self.u32_amount(name, &args[0], facts)?;
+                let op = if name == "unbounded_shl" { BinOp::Shl } else { BinOp::Shr };
+                let zero = int_lit(IntLit::new(false, 0));
+                let shifted = shift_term(op, "«x»", &format!("({INT}.toNat «n»)"), t);
+                let out = if matches!(op, BinOp::Shr) && t.signed {
+                    format!("if «x» < {zero} then {} else {zero}", int_lit(IntLit::new(true, 1)))
+                } else {
+                    zero
+                };
+                let bits = int_lit(IntLit::new(false, u128::from(t.bits)));
+                let term = apply_fun(
+                    &["«x»", "«n»"],
+                    INT,
+                    &format!("if «n» < {bits} then {shifted} else {out}"),
+                    &[a, n],
+                );
+                Ok(Low::Int(term, ty(t)))
+            }
+            // As in Rust, the average rounds toward zero; it lies between the
+            // operands, so it is in their type.
+            "midpoint" => {
+                arity(1)?;
+                let (a, b, t) =
+                    self.int_pair(name, &[recv.clone(), args[0].clone()], span, facts)?;
+                let two = int_lit(IntLit::new(false, 2));
+                Ok(Low::Int(format!("({INT_TDIV} ({a} + {b}) {two})"), ty(t)))
+            }
             // Rust's mixed-signedness arithmetic adds or subtracts an
             // operand of the receiver's width and the other signedness, and
             // wraps or saturates the exact result into the receiver's type.
@@ -2122,7 +2166,8 @@ impl<'a> Env<'a> {
                 "the integer methods are `min`, `max`, `clamp`, `is_power_of_two`, \
                  `is_multiple_of`, `div_ceil`, `rotate_left`, `rotate_right`, `is_positive`, \
                  `is_negative`, `signum`, `unsigned_abs`, `saturating_abs`, `wrapping_abs`, \
-                 `cast_signed`, `cast_unsigned`, `abs_diff`, the mixed-signedness \
+                 `cast_signed`, `cast_unsigned`, `unbounded_shl`, `unbounded_shr`, \
+                 `midpoint`, `abs_diff`, the mixed-signedness \
                  `wrapping_add_signed` and its kin, and the `wrapping_*`, `saturating_*`, and \
                  `no_overflow_*` intrinsics",
             )),

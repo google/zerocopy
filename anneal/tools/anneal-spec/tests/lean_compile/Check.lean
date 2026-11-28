@@ -314,6 +314,29 @@ example : pure_ssub_unsigned (-100) 200 = -128 := by unfold pure_ssub_unsigned; 
 example : pure_ssub_unsigned 127 255 = -128 := by unfold pure_ssub_unsigned; decide
 example : pure_ssub_unsigned 10 5 = 5 := by unfold pure_ssub_unsigned; decide
 
+-- Unbounded shifts and `midpoint`.
+example : pure_ushl 1 8 = 0 := by unfold pure_ushl; decide
+example : pure_ushl 1 7 = 128 := by unfold pure_ushl; decide
+example : pure_ushl 3 1 = 6 := by unfold pure_ushl; decide
+example : pure_ushl 1 4294967295 = 0 := by unfold pure_ushl; decide
+example : pure_ishl 64 1 = -128 := by unfold pure_ishl; decide
+example : pure_ishl (-1) 8 = 0 := by unfold pure_ishl; decide
+example : pure_ishl (-1) 7 = -128 := by unfold pure_ishl; decide
+example : pure_ushr 5 4294967295 = 0 := by unfold pure_ushr; decide
+example : pure_ushr 256 4 = 16 := by unfold pure_ushr; decide
+example : pure_ushr 4294967295 31 = 1 := by unfold pure_ushr; decide
+example : pure_ishr (-1) 9 = -1 := by unfold pure_ishr; decide
+example : pure_ishr (-128) 7 = -1 := by unfold pure_ishr; decide
+example : pure_ishr 100 200 = 0 := by unfold pure_ishr; decide
+example : pure_ishr (-128) 1 = -64 := by unfold pure_ishr; decide
+example : pure_mid_u 255 254 = 254 := by unfold pure_mid_u; decide
+example : pure_mid_u 0 255 = 127 := by unfold pure_mid_u; decide
+example : pure_mid_u 7 0 = 3 := by unfold pure_mid_u; decide
+example : pure_mid_i (-3) 0 = -1 := by unfold pure_mid_i; decide
+example : pure_mid_i (-3) (-4) = -3 := by unfold pure_mid_i; decide
+example : pure_mid_i 3 4 = 3 := by unfold pure_mid_i; decide
+example : pure_mid_i (-128) 127 = 0 := by unfold pure_mid_i; decide
+
 -- The masked shifts take the amount modulo the width.
 example : pure_wshl_is 1 17 2 := by unfold pure_wshl_is; decide
 example : pure_wshl_is 0x8001 1 2 := by unfold pure_wshl_is; decide
@@ -323,9 +346,10 @@ example : ¬ pure_wshr_is (-32768) 31 1 := by unfold pure_wshr_is; decide
 -- `usat` (sorted eighth as `fn7`) binds `let k: u32 = 31;` in `max_steps =`
 -- `abs_diff(a, b) + saturating_add(n, 1u32) + (n & 15u32) + (n >> 30) + (n >> k)`
 -- `+ n as u8 as u32 + a.max(b) as u32 + n.div_ceil(8)`
--- `+ a.cast_signed().unsigned_abs() as u32 + b.saturating_add_signed(-1) as u32`.
+-- `+ a.cast_signed().unsigned_abs() as u32 + b.saturating_add_signed(-1) as u32`
+-- `+ n.unbounded_shr(31)`.
 example : fn7_max_steps { args := [u8Val 9, u8Val 2, u32Val 5] } = 43 := rfl
 example : fn7_max_steps { args := [u8Val 3, u8Val 250, u32Val 4294967295] } =
-    4831839230 := rfl
+    4831839231 := rfl
 
 end Spec.Check
