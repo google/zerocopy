@@ -288,6 +288,32 @@ example : pure_to_unsigned (-1) = 255 := by unfold pure_to_unsigned; decide
 example : pure_to_unsigned (-128) = 128 := by unfold pure_to_unsigned; decide
 example : pure_to_unsigned 5 = 5 := by unfold pure_to_unsigned; decide
 
+-- Mixed-signedness arithmetic.
+example : pure_wadd_signed 250 10 = 4 := by unfold pure_wadd_signed; decide
+example : pure_wadd_signed 5 (-10) = 251 := by unfold pure_wadd_signed; decide
+example : pure_wadd_signed 5 (-3) = 2 := by unfold pure_wadd_signed; decide
+example : pure_sadd_signed 250 10 = 255 := by unfold pure_sadd_signed; decide
+example : pure_sadd_signed 5 (-10) = 0 := by unfold pure_sadd_signed; decide
+example : pure_sadd_signed 5 3 = 8 := by unfold pure_sadd_signed; decide
+example : pure_wsub_signed 5 10 = 251 := by unfold pure_wsub_signed; decide
+example : pure_wsub_signed 250 (-10) = 4 := by unfold pure_wsub_signed; decide
+example : pure_wsub_signed 5 3 = 2 := by unfold pure_wsub_signed; decide
+example : pure_ssub_signed 5 10 = 0 := by unfold pure_ssub_signed; decide
+example : pure_ssub_signed 250 (-10) = 255 := by unfold pure_ssub_signed; decide
+example : pure_ssub_signed 5 (-3) = 8 := by unfold pure_ssub_signed; decide
+example : pure_wadd_unsigned 100 200 = 44 := by unfold pure_wadd_unsigned; decide
+example : pure_wadd_unsigned (-128) 255 = 127 := by unfold pure_wadd_unsigned; decide
+example : pure_wadd_unsigned 127 1 = -128 := by unfold pure_wadd_unsigned; decide
+example : pure_wsub_unsigned (-100) 200 = -44 := by unfold pure_wsub_unsigned; decide
+example : pure_wsub_unsigned 0 255 = 1 := by unfold pure_wsub_unsigned; decide
+example : pure_wsub_unsigned (-128) 1 = 127 := by unfold pure_wsub_unsigned; decide
+example : pure_sadd_unsigned 100 200 = 127 := by unfold pure_sadd_unsigned; decide
+example : pure_sadd_unsigned (-128) 255 = 127 := by unfold pure_sadd_unsigned; decide
+example : pure_sadd_unsigned (-128) 100 = -28 := by unfold pure_sadd_unsigned; decide
+example : pure_ssub_unsigned (-100) 200 = -128 := by unfold pure_ssub_unsigned; decide
+example : pure_ssub_unsigned 127 255 = -128 := by unfold pure_ssub_unsigned; decide
+example : pure_ssub_unsigned 10 5 = 5 := by unfold pure_ssub_unsigned; decide
+
 -- The masked shifts take the amount modulo the width.
 example : pure_wshl_is 1 17 2 := by unfold pure_wshl_is; decide
 example : pure_wshl_is 0x8001 1 2 := by unfold pure_wshl_is; decide
@@ -297,9 +323,9 @@ example : ¬ pure_wshr_is (-32768) 31 1 := by unfold pure_wshr_is; decide
 -- `usat` (sorted eighth as `fn7`) binds `let k: u32 = 31;` in `max_steps =`
 -- `abs_diff(a, b) + saturating_add(n, 1u32) + (n & 15u32) + (n >> 30) + (n >> k)`
 -- `+ n as u8 as u32 + a.max(b) as u32 + n.div_ceil(8)`
--- `+ a.cast_signed().unsigned_abs() as u32`.
-example : fn7_max_steps { args := [u8Val 9, u8Val 2, u32Val 5] } = 42 := rfl
+-- `+ a.cast_signed().unsigned_abs() as u32 + b.saturating_add_signed(-1) as u32`.
+example : fn7_max_steps { args := [u8Val 9, u8Val 2, u32Val 5] } = 43 := rfl
 example : fn7_max_steps { args := [u8Val 3, u8Val 250, u32Val 4294967295] } =
-    4831838981 := rfl
+    4831839230 := rfl
 
 end Spec.Check

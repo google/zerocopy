@@ -385,6 +385,48 @@ anneal::external_spec! {
         a.cast_unsigned()
     }
 
+    // Mixed-signedness arithmetic wraps or saturates into the receiver's
+    // type.
+    #[anneal::pure]
+    fn wadd_signed(a: u8, b: i8) -> u8 {
+        a.wrapping_add_signed(b)
+    }
+
+    #[anneal::pure]
+    fn sadd_signed(a: u8, b: i8) -> u8 {
+        a.saturating_add_signed(b)
+    }
+
+    #[anneal::pure]
+    fn wsub_signed(a: u8, b: i8) -> u8 {
+        a.wrapping_sub_signed(b)
+    }
+
+    #[anneal::pure]
+    fn ssub_signed(a: u8, b: i8) -> u8 {
+        a.saturating_sub_signed(b)
+    }
+
+    #[anneal::pure]
+    fn wadd_unsigned(a: i8, b: u8) -> i8 {
+        a.wrapping_add_unsigned(b)
+    }
+
+    #[anneal::pure]
+    fn wsub_unsigned(a: i8, b: u8) -> i8 {
+        a.wrapping_sub_unsigned(b)
+    }
+
+    #[anneal::pure]
+    fn sadd_unsigned(a: i8, b: u8) -> i8 {
+        a.saturating_add_unsigned(b)
+    }
+
+    #[anneal::pure]
+    fn ssub_unsigned(a: i8, b: u8) -> i8 {
+        a.saturating_sub_unsigned(b)
+    }
+
     #[anneal::pure]
     fn wshl_is(a: u16, n: u32, r: u16) -> bool {
         wrapping_shl(a, n) == r
@@ -404,6 +446,7 @@ anneal::external_spec! {
                 + a.max(b) as u32
                 + n.div_ceil(8)
                 + a.cast_signed().unsigned_abs() as u32
+                + b.saturating_add_signed(-1) as u32
         },
         ensures(|r| r == saturating_sub(n, 1u32)),
     )]

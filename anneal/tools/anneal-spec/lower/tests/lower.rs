@@ -2059,6 +2059,100 @@ fn sign_abs_and_bit_cast_methods_are_checked_strictly() {
 }
 
 #[test]
+fn mixed_signedness_methods_lower_exactly() {
+    let x = "(specInt (specArg q 0))";
+    let y = "(specInt (specArg q 1))";
+    let emod = "Trusted.MirSemantics.intEmod";
+    let lean = |clause: &str, sig: &str| {
+        lower_one(&wrap(clause, sig)).unwrap_or_else(|e| panic!("{clause}: {e:?}")).spec_lean
+    };
+    let has = |text: &str, want: &str| assert!(text.contains(want), "missing {want} in\n{text}");
+    let sat = |lo: &str, hi: &str, exact: &str| {
+        format!(
+            "(let «saturating» : Int := {exact}; if «saturating» < {lo} then {lo} else if {hi} < \
+             «saturating» then {hi} else «saturating»)"
+        )
+    };
+    // On an unsigned receiver, the operand is signed.
+    has(
+        &lean("ensures(|r| r == a.wrapping_add_signed(b))", "fn f(a: u8, b: i8) -> u8"),
+        &format!("((specInt out.ret) = ({emod} ({x} + {y}) 256))"),
+    );
+    has(
+        &lean("ensures(|r| r == a.wrapping_sub_signed(b))", "fn f(a: u8, b: i8) -> u8"),
+        &format!("((specInt out.ret) = ({emod} ({x} - {y}) 256))"),
+    );
+    has(
+        &lean("ensures(|r| r == a.saturating_sub_signed(b))", "fn f(a: u16, b: i16) -> u16"),
+        &sat("(0 : Int)", "(65535 : Int)", &format!("{x} - {y}")),
+    );
+    has(
+        &lean("ensures(|r| r == a.saturating_add_signed(b))", "fn f(a: usize, b: isize) -> usize"),
+        &sat("(0 : Int)", "(18446744073709551615 : Int)", &format!("{x} + {y}")),
+    );
+    // On a signed receiver, the operand is unsigned.
+    has(
+        &lean("ensures(|r| r == a.wrapping_add_unsigned(b))", "fn f(a: i8, b: u8) -> i8"),
+        &format!("((specInt out.ret) = ({emod} (({x} + {y}) + 128) 256 - 128))"),
+    );
+    has(
+        &lean("ensures(|r| r == a.wrapping_sub_unsigned(b))", "fn f(a: i8, b: u8) -> i8"),
+        &format!("((specInt out.ret) = ({emod} (({x} - {y}) + 128) 256 - 128))"),
+    );
+    has(
+        &lean("ensures(|r| r == a.saturating_add_unsigned(b))", "fn f(a: i16, b: u16) -> i16"),
+        &sat("(Int.neg 32768)", "(32767 : Int)", &format!("{x} + {y}")),
+    );
+    has(
+        &lean("ensures(|r| r == a.saturating_sub_unsigned(b))", "fn f(a: i16, b: u16) -> i16"),
+        &sat("(Int.neg 32768)", "(32767 : Int)", &format!("{x} - {y}")),
+    );
+    // An untyped literal operand takes the operand type.
+    has(
+        &lean("ensures(|r| r == a.wrapping_add_signed(-1))", "fn f(a: u32) -> u32"),
+        &format!("({emod} ({x} + (Int.neg 1)) 4294967296)"),
+    );
+    // Inside `math` the result is mathematical.
+    lower_one(&wrap(
+        "ensures(|r| math(r) == math(a.saturating_add_signed(b) + 1))",
+        "fn f(a: u8, b: i8) -> u8",
+    ))
+    .unwrap();
+}
+
+#[test]
+fn mixed_signedness_methods_are_checked_strictly() {
+    let sig = "fn f(u: u8, i: i8, w: u16, v: i16)";
+    for (clause, code) in [
+        ("requires(i.wrapping_add_signed(i) == i)", "E_ANNEAL_SPEC_TYPE_MISMATCH"),
+        ("requires(u.wrapping_add_signed(u) == u)", "E_ANNEAL_SPEC_TYPE_MISMATCH"),
+        ("requires(u.wrapping_add_signed(v) == u)", "E_ANNEAL_SPEC_TYPE_MISMATCH"),
+        ("requires(u.saturating_add_signed(128) == u)", "E_ANNEAL_SPEC_LITERAL_RANGE"),
+        ("requires(u.wrapping_add_unsigned(u) == u)", "E_ANNEAL_SPEC_TYPE_MISMATCH"),
+        ("requires(i.wrapping_sub_unsigned(i) == i)", "E_ANNEAL_SPEC_TYPE_MISMATCH"),
+        ("requires(i.saturating_add_unsigned(w) == i)", "E_ANNEAL_SPEC_TYPE_MISMATCH"),
+        ("requires(i.saturating_sub_unsigned(-1) == i)", "E_ANNEAL_SPEC_LITERAL_RANGE"),
+        ("requires(i.wrapping_add_unsigned(c) == i)", "E_ANNEAL_SPEC_UNKNOWN_IDENT"),
+        ("requires(i.wrapping_add_unsigned() == i)", "E_ANNEAL_SPEC_ARITY"),
+        ("requires(5.wrapping_add_signed(i) == u)", "E_ANNEAL_SPEC_TYPE_ANNOTATION_NEEDED"),
+        ("requires(i.wrapping_sub_signed(i) == i)", "E_ANNEAL_SPEC_TYPE_MISMATCH"),
+        ("requires(u.saturating_sub_signed(u) == u)", "E_ANNEAL_SPEC_TYPE_MISMATCH"),
+        ("requires(u.checked_add_signed(i) == u)", "E_ANNEAL_SPEC_UNSUPPORTED_EXPR"),
+        ("max_steps = i.wrapping_add_unsigned(u)", "E_ANNEAL_SPEC_TYPE_MISMATCH"),
+    ] {
+        expect_error(&wrap(clause, sig), code);
+    }
+    let r = expect_error(
+        &wrap("requires(u.wrapping_add_signed(u) == u)", sig),
+        "E_ANNEAL_SPEC_TYPE_MISMATCH",
+    );
+    assert!(r.contains("takes a `i8`"), "{r}");
+    // Unsigned results are step counts.
+    lower_one(&wrap("max_steps = w.saturating_add_signed(v) + w.wrapping_add_signed(-1)", sig))
+        .unwrap();
+}
+
+#[test]
 fn saturating_negation_and_abs_diff_intrinsics_lower_exactly() {
     let x = "(specInt (specArg q 0))";
     let y = "(specInt (specArg q 1))";

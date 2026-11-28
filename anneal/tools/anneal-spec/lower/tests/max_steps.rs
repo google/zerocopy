@@ -271,6 +271,24 @@ fn max_steps_counts_unsigned_abs_and_bit_casts() {
 }
 
 #[test]
+fn max_steps_counts_mixed_signedness_sums_on_unsigned_receivers() {
+    let l =
+        lower_one(&wrap("max_steps = n.wrapping_add_signed(d)", "fn f(n: u64, d: i64)")).unwrap();
+    assert!(
+        l.spec_lean.contains(
+            "(Int.toNat (Trusted.MirSemantics.intEmod ((specInt (specArg q 0)) + (specInt \
+             (specArg q 1))) 18446744073709551616))"
+        ),
+        "{}",
+        l.spec_lean
+    );
+    expect_error(
+        &wrap("max_steps = d.saturating_sub_unsigned(n)", "fn f(n: u64, d: i64)"),
+        "E_ANNEAL_SPEC_TYPE_MISMATCH",
+    );
+}
+
+#[test]
 fn max_steps_span_map_records_exact_clause_span() {
     let text = "anneal::external_spec! { #[anneal::spec(total, max_steps = 34 * n + 540)] fn f(n: usize); }";
     let l = lower_one(text).unwrap();

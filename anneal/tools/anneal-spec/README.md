@@ -200,6 +200,16 @@ one reinterpret its bits as the same-width type of the other signedness,
 exactly as `as` does. Each of these methods is rejected on an integer of the
 other signedness, as Rust defines it only on one.
 
+Rust's mixed-signedness methods take an operand of the receiver's width and the
+other signedness: on an unsigned receiver, `wrapping_add_signed`,
+`wrapping_sub_signed`, `saturating_add_signed`, and `saturating_sub_signed` take
+a signed operand; on a signed receiver, `wrapping_add_unsigned`,
+`wrapping_sub_unsigned`, `saturating_add_unsigned`, and
+`saturating_sub_unsigned` take an unsigned one. They lower like the wrapping and
+saturating intrinsics, reducing or clamping the exact sum or difference into the
+receiver's type, and an untyped literal operand takes the operand type, so
+`a.wrapping_add_signed(-1)` is accepted.
+
 Division and remainder lower to
 `Trusted.MirSemantics.intTdiv`/`intTmod` (Rust's truncating semantics, as in
 `Int.tdiv`/`Int.tmod`) and require the divisor to be a nonzero literal or
