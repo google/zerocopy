@@ -202,9 +202,10 @@ Anneal's architecture enforces **Statement-Origin Separation** between the two:
 
 ### Profile-parametric verification envelopes (`Trusted.Framework`)
 
-`Trusted.Framework` (`candidate:refinement`), `Trusted.Framework.Instances`,
-and `Trusted.Framework.Bridge` (`candidate:mir_semantics`) wrap Anneal's outer
-verification claim boundary without wrapping inner small-step execution rules:
+`Trusted.Framework` and `Trusted.Framework.Link` (`candidate:refinement`),
+together with `Trusted.Framework.Instances` and `Trusted.Framework.Bridge`
+(`candidate:mir_semantics`), wrap Anneal's outer verification claim boundary
+without wrapping inner small-step execution rules:
 
 - **`VerificationEnvelope` and `EnvelopeTheorem` (`Trusted.Framework`):**
   Provides a closed two-constructor envelope (`structured` via `mkEnvelope` and
@@ -256,6 +257,44 @@ verification claim boundary without wrapping inner small-step execution rules:
   `TrustedBoundary.lean` auditing must accept only those model-pinned roots so
   neither `Specification` nor `Proof` modules can supply a synthetic
   `ExecutionModel` or `VerificationEnvelope`.
+- **Cross-language stub discharge (`Trusted.Framework.Link`,
+  `candidate:refinement`):** Defines a language-agnostic linking judgment over
+  `Trusted.Framework` alone (no `Trusted.MirSemantics` import). `SimConv`
+  carries a non-empty convention identifier (`convId`) and correspondence grade
+  (`grade : OracleGrade`, whose required unbridged disclosure
+  `SimConv.disclosedGaps` is checked via `EnvelopeGradeDisclosed` and appended
+  to `effectiveGaps`), relating a caller stub profile to a verified callee
+  profile through ABI compatibility, a `Frame` witness, and query, return,
+  unwind, and abort relations, any of which may be one-to-many (for example,
+  unspecified padding bytes or run-time addresses).
+  `StubDischargedByVerifiedCallee` requires matching symbol identities,
+  `abiCompat = true`, effect-mask monotonicity (`EffectMask.le`), and demonic
+  safety and behavioral transfer: every valid caller query satisfying
+  `s.contract.effectiveSafetyPre` relates to at least one callee query, every
+  related callee query is valid and satisfies `e.contract.effectiveBehaviorPre`
+  (so `BodySatisfiesEntry` enforces callee fault-freedom, effect-mask bounds
+  such as `noUnwind` and `noAbort`, and outcome validity even on safety-only
+  calls outside `s.contract.behaviorPre`), and every callee return, unwind, or
+  abort permitted by `e` relates to at least one caller outcome, every one of
+  which satisfies caller return/memory validity and—whenever
+  `s.contract.behaviorPre` holds—the corresponding stub postcondition.
+  `CrossLangLinkedTheorem` combines two `EnvelopeTheorem`s with a discharge
+  witness, restricts caller envelopes to non-existential claims (`refsA = []`
+  and `ClaimShape.existsWitness ∉ shapesA`, since one-way stub refinement
+  cannot preserve existential UB refutations), checks convention and callee
+  claim-shape licensing, enforces constructive `NonVacuousEntry` on the stub's
+  `effectiveBehaviorPre` unless `.waivedInhabitation stub.identity` is
+  disclosed in `gapsA`, rejects callees that stub or disclose the same symbol,
+  and erases only `.assumedExternalCallee stub.identity` from `gapsA` while
+  carrying `gapsB` and `sim.disclosedGaps` into `effectiveGaps`. An unfaithful
+  `SimConv` (for example, one relating each caller query only to a single
+  convenient callee query or overstating `grade`) would discharge stubs the
+  real callee does not implement, so a future Pass-1 linking root must pin
+  `SimConv` and both execution models inside `Trusted.*`, just as
+  `EnvelopeTheorem` roots pin `ExecutionModel`. The judgment covers one stub
+  edge and defines no multi-edge or cyclic composition. Untrusted soundness
+  lemmas, negative refutations, and a constructive positive canary live in
+  `Anneal.Framework.Link`.
 
 ### Staging TCB changes (`vetted` vs. `candidate:<feature>` modules)
 
