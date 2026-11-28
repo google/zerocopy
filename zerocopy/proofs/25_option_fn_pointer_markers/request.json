@@ -1,0 +1,1932 @@
+{
+  "schema_version": 1,
+  "compilation": {
+    "source_root": "../../src",
+    "crate_root": "lib.rs",
+    "crate_name": "zerocopy",
+    "edition": "2021",
+    "target": "x86_64-unknown-linux-gnu",
+    "cfg": [
+      "no_zerocopy_allocator_api_1_100_0"
+    ],
+    "env": {
+      "CARGO_PKG_VERSION": "0.8.64"
+    },
+    "source_files": [
+      "byte_slice.rs",
+      "byteorder.rs",
+      "deprecated.rs",
+      "error.rs",
+      "impls.rs",
+      "layout.rs",
+      "lib.rs",
+      "macros.rs",
+      "pointer/inner.rs",
+      "pointer/invariant.rs",
+      "pointer/mod.rs",
+      "pointer/ptr.rs",
+      "pointer/transmute.rs",
+      "ref.rs",
+      "split_at.rs",
+      "util/macro_util.rs",
+      "util/macros.rs",
+      "util/mod.rs",
+      "wrappers.rs"
+    ]
+  },
+  "scope": {
+    "kind": "selected_unit",
+    "roots": [],
+    "instantiations": [
+      {
+        "path": "impls::_::<impl FromZeros for core::option::Option<extern \"C\" fn() -> M>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "bool"
+        ]
+      },
+      {
+        "path": "impls::_::<impl FromZeros for core::option::Option<extern \"C\" fn(A, B, C, D, E, F, G, H, I, J, K, L) -> M>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u8",
+          "u16",
+          "u32",
+          "u64",
+          "i8",
+          "i16",
+          "i32",
+          "i64",
+          "u128",
+          "i128",
+          "usize",
+          "isize",
+          "bool"
+        ]
+      },
+      {
+        "path": "impls::_::<impl FromZeros for core::option::Option<extern \"C\" fn(B, C, D, E, F, G, H, I, J, K, L) -> M>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u8",
+          "u16",
+          "u32",
+          "u64",
+          "i8",
+          "i16",
+          "i32",
+          "i64",
+          "u128",
+          "i128",
+          "usize",
+          "bool"
+        ]
+      },
+      {
+        "path": "impls::_::<impl FromZeros for core::option::Option<extern \"C\" fn(C, D, E, F, G, H, I, J, K, L) -> M>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u8",
+          "u16",
+          "u32",
+          "u64",
+          "i8",
+          "i16",
+          "i32",
+          "i64",
+          "u128",
+          "i128",
+          "bool"
+        ]
+      },
+      {
+        "path": "impls::_::<impl FromZeros for core::option::Option<extern \"C\" fn(D, E, F, G, H, I, J, K, L) -> M>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u8",
+          "u16",
+          "u32",
+          "u64",
+          "i8",
+          "i16",
+          "i32",
+          "i64",
+          "u128",
+          "bool"
+        ]
+      },
+      {
+        "path": "impls::_::<impl FromZeros for core::option::Option<extern \"C\" fn(E, F, G, H, I, J, K, L) -> M>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u8",
+          "u16",
+          "u32",
+          "u64",
+          "i8",
+          "i16",
+          "i32",
+          "i64",
+          "bool"
+        ]
+      },
+      {
+        "path": "impls::_::<impl FromZeros for core::option::Option<extern \"C\" fn(F, G, H, I, J, K, L) -> M>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u8",
+          "u16",
+          "u32",
+          "u64",
+          "i8",
+          "i16",
+          "i32",
+          "bool"
+        ]
+      },
+      {
+        "path": "impls::_::<impl FromZeros for core::option::Option<extern \"C\" fn(G, H, I, J, K, L) -> M>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u8",
+          "u16",
+          "u32",
+          "u64",
+          "i8",
+          "i16",
+          "bool"
+        ]
+      },
+      {
+        "path": "impls::_::<impl FromZeros for core::option::Option<extern \"C\" fn(H, I, J, K, L) -> M>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u8",
+          "u16",
+          "u32",
+          "u64",
+          "i8",
+          "bool"
+        ]
+      },
+      {
+        "path": "impls::_::<impl FromZeros for core::option::Option<extern \"C\" fn(I, J, K, L) -> M>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u8",
+          "u16",
+          "u32",
+          "u64",
+          "bool"
+        ]
+      },
+      {
+        "path": "impls::_::<impl FromZeros for core::option::Option<extern \"C\" fn(J, K, L) -> M>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u8",
+          "u16",
+          "u32",
+          "bool"
+        ]
+      },
+      {
+        "path": "impls::_::<impl FromZeros for core::option::Option<extern \"C\" fn(K, L) -> M>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u8",
+          "u16",
+          "bool"
+        ]
+      },
+      {
+        "path": "impls::_::<impl FromZeros for core::option::Option<extern \"C\" fn(L) -> M>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u8",
+          "bool"
+        ]
+      },
+      {
+        "path": "impls::_::<impl FromZeros for core::option::Option<fn() -> M>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "bool"
+        ]
+      },
+      {
+        "path": "impls::_::<impl FromZeros for core::option::Option<fn(A, B, C, D, E, F, G, H, I, J, K, L) -> M>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u8",
+          "u16",
+          "u32",
+          "u64",
+          "i8",
+          "i16",
+          "i32",
+          "i64",
+          "u128",
+          "i128",
+          "usize",
+          "isize",
+          "bool"
+        ]
+      },
+      {
+        "path": "impls::_::<impl FromZeros for core::option::Option<fn(B, C, D, E, F, G, H, I, J, K, L) -> M>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u8",
+          "u16",
+          "u32",
+          "u64",
+          "i8",
+          "i16",
+          "i32",
+          "i64",
+          "u128",
+          "i128",
+          "usize",
+          "bool"
+        ]
+      },
+      {
+        "path": "impls::_::<impl FromZeros for core::option::Option<fn(C, D, E, F, G, H, I, J, K, L) -> M>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u8",
+          "u16",
+          "u32",
+          "u64",
+          "i8",
+          "i16",
+          "i32",
+          "i64",
+          "u128",
+          "i128",
+          "bool"
+        ]
+      },
+      {
+        "path": "impls::_::<impl FromZeros for core::option::Option<fn(D, E, F, G, H, I, J, K, L) -> M>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u8",
+          "u16",
+          "u32",
+          "u64",
+          "i8",
+          "i16",
+          "i32",
+          "i64",
+          "u128",
+          "bool"
+        ]
+      },
+      {
+        "path": "impls::_::<impl FromZeros for core::option::Option<fn(E, F, G, H, I, J, K, L) -> M>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u8",
+          "u16",
+          "u32",
+          "u64",
+          "i8",
+          "i16",
+          "i32",
+          "i64",
+          "bool"
+        ]
+      },
+      {
+        "path": "impls::_::<impl FromZeros for core::option::Option<fn(F, G, H, I, J, K, L) -> M>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u8",
+          "u16",
+          "u32",
+          "u64",
+          "i8",
+          "i16",
+          "i32",
+          "bool"
+        ]
+      },
+      {
+        "path": "impls::_::<impl FromZeros for core::option::Option<fn(G, H, I, J, K, L) -> M>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u8",
+          "u16",
+          "u32",
+          "u64",
+          "i8",
+          "i16",
+          "bool"
+        ]
+      },
+      {
+        "path": "impls::_::<impl FromZeros for core::option::Option<fn(H, I, J, K, L) -> M>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u8",
+          "u16",
+          "u32",
+          "u64",
+          "i8",
+          "bool"
+        ]
+      },
+      {
+        "path": "impls::_::<impl FromZeros for core::option::Option<fn(I, J, K, L) -> M>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u8",
+          "u16",
+          "u32",
+          "u64",
+          "bool"
+        ]
+      },
+      {
+        "path": "impls::_::<impl FromZeros for core::option::Option<fn(J, K, L) -> M>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u8",
+          "u16",
+          "u32",
+          "bool"
+        ]
+      },
+      {
+        "path": "impls::_::<impl FromZeros for core::option::Option<fn(K, L) -> M>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u8",
+          "u16",
+          "bool"
+        ]
+      },
+      {
+        "path": "impls::_::<impl FromZeros for core::option::Option<fn(L) -> M>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u8",
+          "bool"
+        ]
+      },
+      {
+        "path": "impls::_::<impl FromZeros for core::option::Option<unsafe extern \"C\" fn() -> M>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "bool"
+        ]
+      },
+      {
+        "path": "impls::_::<impl FromZeros for core::option::Option<unsafe extern \"C\" fn(A, B, C, D, E, F, G, H, I, J, K, L) -> M>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u8",
+          "u16",
+          "u32",
+          "u64",
+          "i8",
+          "i16",
+          "i32",
+          "i64",
+          "u128",
+          "i128",
+          "usize",
+          "isize",
+          "bool"
+        ]
+      },
+      {
+        "path": "impls::_::<impl FromZeros for core::option::Option<unsafe extern \"C\" fn(B, C, D, E, F, G, H, I, J, K, L) -> M>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u8",
+          "u16",
+          "u32",
+          "u64",
+          "i8",
+          "i16",
+          "i32",
+          "i64",
+          "u128",
+          "i128",
+          "usize",
+          "bool"
+        ]
+      },
+      {
+        "path": "impls::_::<impl FromZeros for core::option::Option<unsafe extern \"C\" fn(C, D, E, F, G, H, I, J, K, L) -> M>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u8",
+          "u16",
+          "u32",
+          "u64",
+          "i8",
+          "i16",
+          "i32",
+          "i64",
+          "u128",
+          "i128",
+          "bool"
+        ]
+      },
+      {
+        "path": "impls::_::<impl FromZeros for core::option::Option<unsafe extern \"C\" fn(D, E, F, G, H, I, J, K, L) -> M>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u8",
+          "u16",
+          "u32",
+          "u64",
+          "i8",
+          "i16",
+          "i32",
+          "i64",
+          "u128",
+          "bool"
+        ]
+      },
+      {
+        "path": "impls::_::<impl FromZeros for core::option::Option<unsafe extern \"C\" fn(E, F, G, H, I, J, K, L) -> M>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u8",
+          "u16",
+          "u32",
+          "u64",
+          "i8",
+          "i16",
+          "i32",
+          "i64",
+          "bool"
+        ]
+      },
+      {
+        "path": "impls::_::<impl FromZeros for core::option::Option<unsafe extern \"C\" fn(F, G, H, I, J, K, L) -> M>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u8",
+          "u16",
+          "u32",
+          "u64",
+          "i8",
+          "i16",
+          "i32",
+          "bool"
+        ]
+      },
+      {
+        "path": "impls::_::<impl FromZeros for core::option::Option<unsafe extern \"C\" fn(G, H, I, J, K, L) -> M>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u8",
+          "u16",
+          "u32",
+          "u64",
+          "i8",
+          "i16",
+          "bool"
+        ]
+      },
+      {
+        "path": "impls::_::<impl FromZeros for core::option::Option<unsafe extern \"C\" fn(H, I, J, K, L) -> M>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u8",
+          "u16",
+          "u32",
+          "u64",
+          "i8",
+          "bool"
+        ]
+      },
+      {
+        "path": "impls::_::<impl FromZeros for core::option::Option<unsafe extern \"C\" fn(I, J, K, L) -> M>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u8",
+          "u16",
+          "u32",
+          "u64",
+          "bool"
+        ]
+      },
+      {
+        "path": "impls::_::<impl FromZeros for core::option::Option<unsafe extern \"C\" fn(J, K, L) -> M>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u8",
+          "u16",
+          "u32",
+          "bool"
+        ]
+      },
+      {
+        "path": "impls::_::<impl FromZeros for core::option::Option<unsafe extern \"C\" fn(K, L) -> M>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u8",
+          "u16",
+          "bool"
+        ]
+      },
+      {
+        "path": "impls::_::<impl FromZeros for core::option::Option<unsafe extern \"C\" fn(L) -> M>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u8",
+          "bool"
+        ]
+      },
+      {
+        "path": "impls::_::<impl FromZeros for core::option::Option<unsafe fn() -> M>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "bool"
+        ]
+      },
+      {
+        "path": "impls::_::<impl FromZeros for core::option::Option<unsafe fn(A, B, C, D, E, F, G, H, I, J, K, L) -> M>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u8",
+          "u16",
+          "u32",
+          "u64",
+          "i8",
+          "i16",
+          "i32",
+          "i64",
+          "u128",
+          "i128",
+          "usize",
+          "isize",
+          "bool"
+        ]
+      },
+      {
+        "path": "impls::_::<impl FromZeros for core::option::Option<unsafe fn(B, C, D, E, F, G, H, I, J, K, L) -> M>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u8",
+          "u16",
+          "u32",
+          "u64",
+          "i8",
+          "i16",
+          "i32",
+          "i64",
+          "u128",
+          "i128",
+          "usize",
+          "bool"
+        ]
+      },
+      {
+        "path": "impls::_::<impl FromZeros for core::option::Option<unsafe fn(C, D, E, F, G, H, I, J, K, L) -> M>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u8",
+          "u16",
+          "u32",
+          "u64",
+          "i8",
+          "i16",
+          "i32",
+          "i64",
+          "u128",
+          "i128",
+          "bool"
+        ]
+      },
+      {
+        "path": "impls::_::<impl FromZeros for core::option::Option<unsafe fn(D, E, F, G, H, I, J, K, L) -> M>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u8",
+          "u16",
+          "u32",
+          "u64",
+          "i8",
+          "i16",
+          "i32",
+          "i64",
+          "u128",
+          "bool"
+        ]
+      },
+      {
+        "path": "impls::_::<impl FromZeros for core::option::Option<unsafe fn(E, F, G, H, I, J, K, L) -> M>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u8",
+          "u16",
+          "u32",
+          "u64",
+          "i8",
+          "i16",
+          "i32",
+          "i64",
+          "bool"
+        ]
+      },
+      {
+        "path": "impls::_::<impl FromZeros for core::option::Option<unsafe fn(F, G, H, I, J, K, L) -> M>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u8",
+          "u16",
+          "u32",
+          "u64",
+          "i8",
+          "i16",
+          "i32",
+          "bool"
+        ]
+      },
+      {
+        "path": "impls::_::<impl FromZeros for core::option::Option<unsafe fn(G, H, I, J, K, L) -> M>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u8",
+          "u16",
+          "u32",
+          "u64",
+          "i8",
+          "i16",
+          "bool"
+        ]
+      },
+      {
+        "path": "impls::_::<impl FromZeros for core::option::Option<unsafe fn(H, I, J, K, L) -> M>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u8",
+          "u16",
+          "u32",
+          "u64",
+          "i8",
+          "bool"
+        ]
+      },
+      {
+        "path": "impls::_::<impl FromZeros for core::option::Option<unsafe fn(I, J, K, L) -> M>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u8",
+          "u16",
+          "u32",
+          "u64",
+          "bool"
+        ]
+      },
+      {
+        "path": "impls::_::<impl FromZeros for core::option::Option<unsafe fn(J, K, L) -> M>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u8",
+          "u16",
+          "u32",
+          "bool"
+        ]
+      },
+      {
+        "path": "impls::_::<impl FromZeros for core::option::Option<unsafe fn(K, L) -> M>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u8",
+          "u16",
+          "bool"
+        ]
+      },
+      {
+        "path": "impls::_::<impl FromZeros for core::option::Option<unsafe fn(L) -> M>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u8",
+          "bool"
+        ]
+      },
+      {
+        "path": "impls::_::<impl Immutable for core::option::Option<extern \"C\" fn() -> M>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "bool"
+        ]
+      },
+      {
+        "path": "impls::_::<impl Immutable for core::option::Option<extern \"C\" fn(A, B, C, D, E, F, G, H, I, J, K, L) -> M>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u8",
+          "u16",
+          "u32",
+          "u64",
+          "i8",
+          "i16",
+          "i32",
+          "i64",
+          "u128",
+          "i128",
+          "usize",
+          "isize",
+          "bool"
+        ]
+      },
+      {
+        "path": "impls::_::<impl Immutable for core::option::Option<extern \"C\" fn(B, C, D, E, F, G, H, I, J, K, L) -> M>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u8",
+          "u16",
+          "u32",
+          "u64",
+          "i8",
+          "i16",
+          "i32",
+          "i64",
+          "u128",
+          "i128",
+          "usize",
+          "bool"
+        ]
+      },
+      {
+        "path": "impls::_::<impl Immutable for core::option::Option<extern \"C\" fn(C, D, E, F, G, H, I, J, K, L) -> M>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u8",
+          "u16",
+          "u32",
+          "u64",
+          "i8",
+          "i16",
+          "i32",
+          "i64",
+          "u128",
+          "i128",
+          "bool"
+        ]
+      },
+      {
+        "path": "impls::_::<impl Immutable for core::option::Option<extern \"C\" fn(D, E, F, G, H, I, J, K, L) -> M>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u8",
+          "u16",
+          "u32",
+          "u64",
+          "i8",
+          "i16",
+          "i32",
+          "i64",
+          "u128",
+          "bool"
+        ]
+      },
+      {
+        "path": "impls::_::<impl Immutable for core::option::Option<extern \"C\" fn(E, F, G, H, I, J, K, L) -> M>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u8",
+          "u16",
+          "u32",
+          "u64",
+          "i8",
+          "i16",
+          "i32",
+          "i64",
+          "bool"
+        ]
+      },
+      {
+        "path": "impls::_::<impl Immutable for core::option::Option<extern \"C\" fn(F, G, H, I, J, K, L) -> M>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u8",
+          "u16",
+          "u32",
+          "u64",
+          "i8",
+          "i16",
+          "i32",
+          "bool"
+        ]
+      },
+      {
+        "path": "impls::_::<impl Immutable for core::option::Option<extern \"C\" fn(G, H, I, J, K, L) -> M>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u8",
+          "u16",
+          "u32",
+          "u64",
+          "i8",
+          "i16",
+          "bool"
+        ]
+      },
+      {
+        "path": "impls::_::<impl Immutable for core::option::Option<extern \"C\" fn(H, I, J, K, L) -> M>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u8",
+          "u16",
+          "u32",
+          "u64",
+          "i8",
+          "bool"
+        ]
+      },
+      {
+        "path": "impls::_::<impl Immutable for core::option::Option<extern \"C\" fn(I, J, K, L) -> M>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u8",
+          "u16",
+          "u32",
+          "u64",
+          "bool"
+        ]
+      },
+      {
+        "path": "impls::_::<impl Immutable for core::option::Option<extern \"C\" fn(J, K, L) -> M>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u8",
+          "u16",
+          "u32",
+          "bool"
+        ]
+      },
+      {
+        "path": "impls::_::<impl Immutable for core::option::Option<extern \"C\" fn(K, L) -> M>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u8",
+          "u16",
+          "bool"
+        ]
+      },
+      {
+        "path": "impls::_::<impl Immutable for core::option::Option<extern \"C\" fn(L) -> M>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u8",
+          "bool"
+        ]
+      },
+      {
+        "path": "impls::_::<impl Immutable for core::option::Option<fn() -> M>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "bool"
+        ]
+      },
+      {
+        "path": "impls::_::<impl Immutable for core::option::Option<fn(A, B, C, D, E, F, G, H, I, J, K, L) -> M>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u8",
+          "u16",
+          "u32",
+          "u64",
+          "i8",
+          "i16",
+          "i32",
+          "i64",
+          "u128",
+          "i128",
+          "usize",
+          "isize",
+          "bool"
+        ]
+      },
+      {
+        "path": "impls::_::<impl Immutable for core::option::Option<fn(B, C, D, E, F, G, H, I, J, K, L) -> M>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u8",
+          "u16",
+          "u32",
+          "u64",
+          "i8",
+          "i16",
+          "i32",
+          "i64",
+          "u128",
+          "i128",
+          "usize",
+          "bool"
+        ]
+      },
+      {
+        "path": "impls::_::<impl Immutable for core::option::Option<fn(C, D, E, F, G, H, I, J, K, L) -> M>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u8",
+          "u16",
+          "u32",
+          "u64",
+          "i8",
+          "i16",
+          "i32",
+          "i64",
+          "u128",
+          "i128",
+          "bool"
+        ]
+      },
+      {
+        "path": "impls::_::<impl Immutable for core::option::Option<fn(D, E, F, G, H, I, J, K, L) -> M>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u8",
+          "u16",
+          "u32",
+          "u64",
+          "i8",
+          "i16",
+          "i32",
+          "i64",
+          "u128",
+          "bool"
+        ]
+      },
+      {
+        "path": "impls::_::<impl Immutable for core::option::Option<fn(E, F, G, H, I, J, K, L) -> M>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u8",
+          "u16",
+          "u32",
+          "u64",
+          "i8",
+          "i16",
+          "i32",
+          "i64",
+          "bool"
+        ]
+      },
+      {
+        "path": "impls::_::<impl Immutable for core::option::Option<fn(F, G, H, I, J, K, L) -> M>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u8",
+          "u16",
+          "u32",
+          "u64",
+          "i8",
+          "i16",
+          "i32",
+          "bool"
+        ]
+      },
+      {
+        "path": "impls::_::<impl Immutable for core::option::Option<fn(G, H, I, J, K, L) -> M>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u8",
+          "u16",
+          "u32",
+          "u64",
+          "i8",
+          "i16",
+          "bool"
+        ]
+      },
+      {
+        "path": "impls::_::<impl Immutable for core::option::Option<fn(H, I, J, K, L) -> M>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u8",
+          "u16",
+          "u32",
+          "u64",
+          "i8",
+          "bool"
+        ]
+      },
+      {
+        "path": "impls::_::<impl Immutable for core::option::Option<fn(I, J, K, L) -> M>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u8",
+          "u16",
+          "u32",
+          "u64",
+          "bool"
+        ]
+      },
+      {
+        "path": "impls::_::<impl Immutable for core::option::Option<fn(J, K, L) -> M>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u8",
+          "u16",
+          "u32",
+          "bool"
+        ]
+      },
+      {
+        "path": "impls::_::<impl Immutable for core::option::Option<fn(K, L) -> M>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u8",
+          "u16",
+          "bool"
+        ]
+      },
+      {
+        "path": "impls::_::<impl Immutable for core::option::Option<fn(L) -> M>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u8",
+          "bool"
+        ]
+      },
+      {
+        "path": "impls::_::<impl Immutable for core::option::Option<unsafe extern \"C\" fn() -> M>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "bool"
+        ]
+      },
+      {
+        "path": "impls::_::<impl Immutable for core::option::Option<unsafe extern \"C\" fn(A, B, C, D, E, F, G, H, I, J, K, L) -> M>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u8",
+          "u16",
+          "u32",
+          "u64",
+          "i8",
+          "i16",
+          "i32",
+          "i64",
+          "u128",
+          "i128",
+          "usize",
+          "isize",
+          "bool"
+        ]
+      },
+      {
+        "path": "impls::_::<impl Immutable for core::option::Option<unsafe extern \"C\" fn(B, C, D, E, F, G, H, I, J, K, L) -> M>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u8",
+          "u16",
+          "u32",
+          "u64",
+          "i8",
+          "i16",
+          "i32",
+          "i64",
+          "u128",
+          "i128",
+          "usize",
+          "bool"
+        ]
+      },
+      {
+        "path": "impls::_::<impl Immutable for core::option::Option<unsafe extern \"C\" fn(C, D, E, F, G, H, I, J, K, L) -> M>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u8",
+          "u16",
+          "u32",
+          "u64",
+          "i8",
+          "i16",
+          "i32",
+          "i64",
+          "u128",
+          "i128",
+          "bool"
+        ]
+      },
+      {
+        "path": "impls::_::<impl Immutable for core::option::Option<unsafe extern \"C\" fn(D, E, F, G, H, I, J, K, L) -> M>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u8",
+          "u16",
+          "u32",
+          "u64",
+          "i8",
+          "i16",
+          "i32",
+          "i64",
+          "u128",
+          "bool"
+        ]
+      },
+      {
+        "path": "impls::_::<impl Immutable for core::option::Option<unsafe extern \"C\" fn(E, F, G, H, I, J, K, L) -> M>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u8",
+          "u16",
+          "u32",
+          "u64",
+          "i8",
+          "i16",
+          "i32",
+          "i64",
+          "bool"
+        ]
+      },
+      {
+        "path": "impls::_::<impl Immutable for core::option::Option<unsafe extern \"C\" fn(F, G, H, I, J, K, L) -> M>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u8",
+          "u16",
+          "u32",
+          "u64",
+          "i8",
+          "i16",
+          "i32",
+          "bool"
+        ]
+      },
+      {
+        "path": "impls::_::<impl Immutable for core::option::Option<unsafe extern \"C\" fn(G, H, I, J, K, L) -> M>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u8",
+          "u16",
+          "u32",
+          "u64",
+          "i8",
+          "i16",
+          "bool"
+        ]
+      },
+      {
+        "path": "impls::_::<impl Immutable for core::option::Option<unsafe extern \"C\" fn(H, I, J, K, L) -> M>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u8",
+          "u16",
+          "u32",
+          "u64",
+          "i8",
+          "bool"
+        ]
+      },
+      {
+        "path": "impls::_::<impl Immutable for core::option::Option<unsafe extern \"C\" fn(I, J, K, L) -> M>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u8",
+          "u16",
+          "u32",
+          "u64",
+          "bool"
+        ]
+      },
+      {
+        "path": "impls::_::<impl Immutable for core::option::Option<unsafe extern \"C\" fn(J, K, L) -> M>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u8",
+          "u16",
+          "u32",
+          "bool"
+        ]
+      },
+      {
+        "path": "impls::_::<impl Immutable for core::option::Option<unsafe extern \"C\" fn(K, L) -> M>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u8",
+          "u16",
+          "bool"
+        ]
+      },
+      {
+        "path": "impls::_::<impl Immutable for core::option::Option<unsafe extern \"C\" fn(L) -> M>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u8",
+          "bool"
+        ]
+      },
+      {
+        "path": "impls::_::<impl Immutable for core::option::Option<unsafe fn() -> M>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "bool"
+        ]
+      },
+      {
+        "path": "impls::_::<impl Immutable for core::option::Option<unsafe fn(A, B, C, D, E, F, G, H, I, J, K, L) -> M>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u8",
+          "u16",
+          "u32",
+          "u64",
+          "i8",
+          "i16",
+          "i32",
+          "i64",
+          "u128",
+          "i128",
+          "usize",
+          "isize",
+          "bool"
+        ]
+      },
+      {
+        "path": "impls::_::<impl Immutable for core::option::Option<unsafe fn(B, C, D, E, F, G, H, I, J, K, L) -> M>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u8",
+          "u16",
+          "u32",
+          "u64",
+          "i8",
+          "i16",
+          "i32",
+          "i64",
+          "u128",
+          "i128",
+          "usize",
+          "bool"
+        ]
+      },
+      {
+        "path": "impls::_::<impl Immutable for core::option::Option<unsafe fn(C, D, E, F, G, H, I, J, K, L) -> M>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u8",
+          "u16",
+          "u32",
+          "u64",
+          "i8",
+          "i16",
+          "i32",
+          "i64",
+          "u128",
+          "i128",
+          "bool"
+        ]
+      },
+      {
+        "path": "impls::_::<impl Immutable for core::option::Option<unsafe fn(D, E, F, G, H, I, J, K, L) -> M>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u8",
+          "u16",
+          "u32",
+          "u64",
+          "i8",
+          "i16",
+          "i32",
+          "i64",
+          "u128",
+          "bool"
+        ]
+      },
+      {
+        "path": "impls::_::<impl Immutable for core::option::Option<unsafe fn(E, F, G, H, I, J, K, L) -> M>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u8",
+          "u16",
+          "u32",
+          "u64",
+          "i8",
+          "i16",
+          "i32",
+          "i64",
+          "bool"
+        ]
+      },
+      {
+        "path": "impls::_::<impl Immutable for core::option::Option<unsafe fn(F, G, H, I, J, K, L) -> M>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u8",
+          "u16",
+          "u32",
+          "u64",
+          "i8",
+          "i16",
+          "i32",
+          "bool"
+        ]
+      },
+      {
+        "path": "impls::_::<impl Immutable for core::option::Option<unsafe fn(G, H, I, J, K, L) -> M>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u8",
+          "u16",
+          "u32",
+          "u64",
+          "i8",
+          "i16",
+          "bool"
+        ]
+      },
+      {
+        "path": "impls::_::<impl Immutable for core::option::Option<unsafe fn(H, I, J, K, L) -> M>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u8",
+          "u16",
+          "u32",
+          "u64",
+          "i8",
+          "bool"
+        ]
+      },
+      {
+        "path": "impls::_::<impl Immutable for core::option::Option<unsafe fn(I, J, K, L) -> M>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u8",
+          "u16",
+          "u32",
+          "u64",
+          "bool"
+        ]
+      },
+      {
+        "path": "impls::_::<impl Immutable for core::option::Option<unsafe fn(J, K, L) -> M>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u8",
+          "u16",
+          "u32",
+          "bool"
+        ]
+      },
+      {
+        "path": "impls::_::<impl Immutable for core::option::Option<unsafe fn(K, L) -> M>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u8",
+          "u16",
+          "bool"
+        ]
+      },
+      {
+        "path": "impls::_::<impl Immutable for core::option::Option<unsafe fn(L) -> M>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u8",
+          "bool"
+        ]
+      },
+      {
+        "path": "impls::_::<impl TryFromBytes for core::option::Option<extern \"C\" fn() -> M>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "bool"
+        ]
+      },
+      {
+        "path": "impls::_::<impl TryFromBytes for core::option::Option<extern \"C\" fn(A, B, C, D, E, F, G, H, I, J, K, L) -> M>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u8",
+          "u16",
+          "u32",
+          "u64",
+          "i8",
+          "i16",
+          "i32",
+          "i64",
+          "u128",
+          "i128",
+          "usize",
+          "isize",
+          "bool"
+        ]
+      },
+      {
+        "path": "impls::_::<impl TryFromBytes for core::option::Option<extern \"C\" fn(B, C, D, E, F, G, H, I, J, K, L) -> M>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u8",
+          "u16",
+          "u32",
+          "u64",
+          "i8",
+          "i16",
+          "i32",
+          "i64",
+          "u128",
+          "i128",
+          "usize",
+          "bool"
+        ]
+      },
+      {
+        "path": "impls::_::<impl TryFromBytes for core::option::Option<extern \"C\" fn(C, D, E, F, G, H, I, J, K, L) -> M>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u8",
+          "u16",
+          "u32",
+          "u64",
+          "i8",
+          "i16",
+          "i32",
+          "i64",
+          "u128",
+          "i128",
+          "bool"
+        ]
+      },
+      {
+        "path": "impls::_::<impl TryFromBytes for core::option::Option<extern \"C\" fn(D, E, F, G, H, I, J, K, L) -> M>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u8",
+          "u16",
+          "u32",
+          "u64",
+          "i8",
+          "i16",
+          "i32",
+          "i64",
+          "u128",
+          "bool"
+        ]
+      },
+      {
+        "path": "impls::_::<impl TryFromBytes for core::option::Option<extern \"C\" fn(E, F, G, H, I, J, K, L) -> M>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u8",
+          "u16",
+          "u32",
+          "u64",
+          "i8",
+          "i16",
+          "i32",
+          "i64",
+          "bool"
+        ]
+      },
+      {
+        "path": "impls::_::<impl TryFromBytes for core::option::Option<extern \"C\" fn(F, G, H, I, J, K, L) -> M>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u8",
+          "u16",
+          "u32",
+          "u64",
+          "i8",
+          "i16",
+          "i32",
+          "bool"
+        ]
+      },
+      {
+        "path": "impls::_::<impl TryFromBytes for core::option::Option<extern \"C\" fn(G, H, I, J, K, L) -> M>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u8",
+          "u16",
+          "u32",
+          "u64",
+          "i8",
+          "i16",
+          "bool"
+        ]
+      },
+      {
+        "path": "impls::_::<impl TryFromBytes for core::option::Option<extern \"C\" fn(H, I, J, K, L) -> M>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u8",
+          "u16",
+          "u32",
+          "u64",
+          "i8",
+          "bool"
+        ]
+      },
+      {
+        "path": "impls::_::<impl TryFromBytes for core::option::Option<extern \"C\" fn(I, J, K, L) -> M>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u8",
+          "u16",
+          "u32",
+          "u64",
+          "bool"
+        ]
+      },
+      {
+        "path": "impls::_::<impl TryFromBytes for core::option::Option<extern \"C\" fn(J, K, L) -> M>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u8",
+          "u16",
+          "u32",
+          "bool"
+        ]
+      },
+      {
+        "path": "impls::_::<impl TryFromBytes for core::option::Option<extern \"C\" fn(K, L) -> M>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u8",
+          "u16",
+          "bool"
+        ]
+      },
+      {
+        "path": "impls::_::<impl TryFromBytes for core::option::Option<extern \"C\" fn(L) -> M>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u8",
+          "bool"
+        ]
+      },
+      {
+        "path": "impls::_::<impl TryFromBytes for core::option::Option<fn() -> M>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "bool"
+        ]
+      },
+      {
+        "path": "impls::_::<impl TryFromBytes for core::option::Option<fn(A, B, C, D, E, F, G, H, I, J, K, L) -> M>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u8",
+          "u16",
+          "u32",
+          "u64",
+          "i8",
+          "i16",
+          "i32",
+          "i64",
+          "u128",
+          "i128",
+          "usize",
+          "isize",
+          "bool"
+        ]
+      },
+      {
+        "path": "impls::_::<impl TryFromBytes for core::option::Option<fn(B, C, D, E, F, G, H, I, J, K, L) -> M>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u8",
+          "u16",
+          "u32",
+          "u64",
+          "i8",
+          "i16",
+          "i32",
+          "i64",
+          "u128",
+          "i128",
+          "usize",
+          "bool"
+        ]
+      },
+      {
+        "path": "impls::_::<impl TryFromBytes for core::option::Option<fn(C, D, E, F, G, H, I, J, K, L) -> M>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u8",
+          "u16",
+          "u32",
+          "u64",
+          "i8",
+          "i16",
+          "i32",
+          "i64",
+          "u128",
+          "i128",
+          "bool"
+        ]
+      },
+      {
+        "path": "impls::_::<impl TryFromBytes for core::option::Option<fn(D, E, F, G, H, I, J, K, L) -> M>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u8",
+          "u16",
+          "u32",
+          "u64",
+          "i8",
+          "i16",
+          "i32",
+          "i64",
+          "u128",
+          "bool"
+        ]
+      },
+      {
+        "path": "impls::_::<impl TryFromBytes for core::option::Option<fn(E, F, G, H, I, J, K, L) -> M>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u8",
+          "u16",
+          "u32",
+          "u64",
+          "i8",
+          "i16",
+          "i32",
+          "i64",
+          "bool"
+        ]
+      },
+      {
+        "path": "impls::_::<impl TryFromBytes for core::option::Option<fn(F, G, H, I, J, K, L) -> M>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u8",
+          "u16",
+          "u32",
+          "u64",
+          "i8",
+          "i16",
+          "i32",
+          "bool"
+        ]
+      },
+      {
+        "path": "impls::_::<impl TryFromBytes for core::option::Option<fn(G, H, I, J, K, L) -> M>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u8",
+          "u16",
+          "u32",
+          "u64",
+          "i8",
+          "i16",
+          "bool"
+        ]
+      },
+      {
+        "path": "impls::_::<impl TryFromBytes for core::option::Option<fn(H, I, J, K, L) -> M>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u8",
+          "u16",
+          "u32",
+          "u64",
+          "i8",
+          "bool"
+        ]
+      },
+      {
+        "path": "impls::_::<impl TryFromBytes for core::option::Option<fn(I, J, K, L) -> M>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u8",
+          "u16",
+          "u32",
+          "u64",
+          "bool"
+        ]
+      },
+      {
+        "path": "impls::_::<impl TryFromBytes for core::option::Option<fn(J, K, L) -> M>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u8",
+          "u16",
+          "u32",
+          "bool"
+        ]
+      },
+      {
+        "path": "impls::_::<impl TryFromBytes for core::option::Option<fn(K, L) -> M>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u8",
+          "u16",
+          "bool"
+        ]
+      },
+      {
+        "path": "impls::_::<impl TryFromBytes for core::option::Option<fn(L) -> M>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u8",
+          "bool"
+        ]
+      },
+      {
+        "path": "impls::_::<impl TryFromBytes for core::option::Option<unsafe extern \"C\" fn() -> M>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "bool"
+        ]
+      },
+      {
+        "path": "impls::_::<impl TryFromBytes for core::option::Option<unsafe extern \"C\" fn(A, B, C, D, E, F, G, H, I, J, K, L) -> M>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u8",
+          "u16",
+          "u32",
+          "u64",
+          "i8",
+          "i16",
+          "i32",
+          "i64",
+          "u128",
+          "i128",
+          "usize",
+          "isize",
+          "bool"
+        ]
+      },
+      {
+        "path": "impls::_::<impl TryFromBytes for core::option::Option<unsafe extern \"C\" fn(B, C, D, E, F, G, H, I, J, K, L) -> M>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u8",
+          "u16",
+          "u32",
+          "u64",
+          "i8",
+          "i16",
+          "i32",
+          "i64",
+          "u128",
+          "i128",
+          "usize",
+          "bool"
+        ]
+      },
+      {
+        "path": "impls::_::<impl TryFromBytes for core::option::Option<unsafe extern \"C\" fn(C, D, E, F, G, H, I, J, K, L) -> M>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u8",
+          "u16",
+          "u32",
+          "u64",
+          "i8",
+          "i16",
+          "i32",
+          "i64",
+          "u128",
+          "i128",
+          "bool"
+        ]
+      },
+      {
+        "path": "impls::_::<impl TryFromBytes for core::option::Option<unsafe extern \"C\" fn(D, E, F, G, H, I, J, K, L) -> M>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u8",
+          "u16",
+          "u32",
+          "u64",
+          "i8",
+          "i16",
+          "i32",
+          "i64",
+          "u128",
+          "bool"
+        ]
+      },
+      {
+        "path": "impls::_::<impl TryFromBytes for core::option::Option<unsafe extern \"C\" fn(E, F, G, H, I, J, K, L) -> M>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u8",
+          "u16",
+          "u32",
+          "u64",
+          "i8",
+          "i16",
+          "i32",
+          "i64",
+          "bool"
+        ]
+      },
+      {
+        "path": "impls::_::<impl TryFromBytes for core::option::Option<unsafe extern \"C\" fn(F, G, H, I, J, K, L) -> M>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u8",
+          "u16",
+          "u32",
+          "u64",
+          "i8",
+          "i16",
+          "i32",
+          "bool"
+        ]
+      },
+      {
+        "path": "impls::_::<impl TryFromBytes for core::option::Option<unsafe extern \"C\" fn(G, H, I, J, K, L) -> M>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u8",
+          "u16",
+          "u32",
+          "u64",
+          "i8",
+          "i16",
+          "bool"
+        ]
+      },
+      {
+        "path": "impls::_::<impl TryFromBytes for core::option::Option<unsafe extern \"C\" fn(H, I, J, K, L) -> M>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u8",
+          "u16",
+          "u32",
+          "u64",
+          "i8",
+          "bool"
+        ]
+      },
+      {
+        "path": "impls::_::<impl TryFromBytes for core::option::Option<unsafe extern \"C\" fn(I, J, K, L) -> M>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u8",
+          "u16",
+          "u32",
+          "u64",
+          "bool"
+        ]
+      },
+      {
+        "path": "impls::_::<impl TryFromBytes for core::option::Option<unsafe extern \"C\" fn(J, K, L) -> M>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u8",
+          "u16",
+          "u32",
+          "bool"
+        ]
+      },
+      {
+        "path": "impls::_::<impl TryFromBytes for core::option::Option<unsafe extern \"C\" fn(K, L) -> M>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u8",
+          "u16",
+          "bool"
+        ]
+      },
+      {
+        "path": "impls::_::<impl TryFromBytes for core::option::Option<unsafe extern \"C\" fn(L) -> M>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u8",
+          "bool"
+        ]
+      },
+      {
+        "path": "impls::_::<impl TryFromBytes for core::option::Option<unsafe fn() -> M>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "bool"
+        ]
+      },
+      {
+        "path": "impls::_::<impl TryFromBytes for core::option::Option<unsafe fn(A, B, C, D, E, F, G, H, I, J, K, L) -> M>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u8",
+          "u16",
+          "u32",
+          "u64",
+          "i8",
+          "i16",
+          "i32",
+          "i64",
+          "u128",
+          "i128",
+          "usize",
+          "isize",
+          "bool"
+        ]
+      },
+      {
+        "path": "impls::_::<impl TryFromBytes for core::option::Option<unsafe fn(B, C, D, E, F, G, H, I, J, K, L) -> M>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u8",
+          "u16",
+          "u32",
+          "u64",
+          "i8",
+          "i16",
+          "i32",
+          "i64",
+          "u128",
+          "i128",
+          "usize",
+          "bool"
+        ]
+      },
+      {
+        "path": "impls::_::<impl TryFromBytes for core::option::Option<unsafe fn(C, D, E, F, G, H, I, J, K, L) -> M>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u8",
+          "u16",
+          "u32",
+          "u64",
+          "i8",
+          "i16",
+          "i32",
+          "i64",
+          "u128",
+          "i128",
+          "bool"
+        ]
+      },
+      {
+        "path": "impls::_::<impl TryFromBytes for core::option::Option<unsafe fn(D, E, F, G, H, I, J, K, L) -> M>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u8",
+          "u16",
+          "u32",
+          "u64",
+          "i8",
+          "i16",
+          "i32",
+          "i64",
+          "u128",
+          "bool"
+        ]
+      },
+      {
+        "path": "impls::_::<impl TryFromBytes for core::option::Option<unsafe fn(E, F, G, H, I, J, K, L) -> M>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u8",
+          "u16",
+          "u32",
+          "u64",
+          "i8",
+          "i16",
+          "i32",
+          "i64",
+          "bool"
+        ]
+      },
+      {
+        "path": "impls::_::<impl TryFromBytes for core::option::Option<unsafe fn(F, G, H, I, J, K, L) -> M>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u8",
+          "u16",
+          "u32",
+          "u64",
+          "i8",
+          "i16",
+          "i32",
+          "bool"
+        ]
+      },
+      {
+        "path": "impls::_::<impl TryFromBytes for core::option::Option<unsafe fn(G, H, I, J, K, L) -> M>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u8",
+          "u16",
+          "u32",
+          "u64",
+          "i8",
+          "i16",
+          "bool"
+        ]
+      },
+      {
+        "path": "impls::_::<impl TryFromBytes for core::option::Option<unsafe fn(H, I, J, K, L) -> M>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u8",
+          "u16",
+          "u32",
+          "u64",
+          "i8",
+          "bool"
+        ]
+      },
+      {
+        "path": "impls::_::<impl TryFromBytes for core::option::Option<unsafe fn(I, J, K, L) -> M>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u8",
+          "u16",
+          "u32",
+          "u64",
+          "bool"
+        ]
+      },
+      {
+        "path": "impls::_::<impl TryFromBytes for core::option::Option<unsafe fn(J, K, L) -> M>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u8",
+          "u16",
+          "u32",
+          "bool"
+        ]
+      },
+      {
+        "path": "impls::_::<impl TryFromBytes for core::option::Option<unsafe fn(K, L) -> M>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u8",
+          "u16",
+          "bool"
+        ]
+      },
+      {
+        "path": "impls::_::<impl TryFromBytes for core::option::Option<unsafe fn(L) -> M>>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u8",
+          "bool"
+        ]
+      }
+    ]
+  },
+  "proof": {
+    "source_root": ".",
+    "specification": "Spec.specs",
+    "theorem": "Proof.verify",
+    "sources": [
+      {
+        "module": "Spec",
+        "path": "Spec.lean",
+        "role": "specification"
+      },
+      {
+        "module": "Proof",
+        "path": "Proof.lean",
+        "role": "proof"
+      }
+    ]
+  }
+}
