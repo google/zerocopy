@@ -2301,6 +2301,80 @@ fn division_methods_are_checked_strictly() {
 }
 
 #[test]
+fn saturating_and_no_overflow_division_lower_exactly() {
+    let x = "(specInt (specArg q 0))";
+    let y = "(specInt (specArg q 1))";
+    let tdiv = "Trusted.MirSemantics.intTdiv";
+    let lean = |clause: &str, sig: &str| {
+        lower_one(&wrap(clause, sig)).unwrap_or_else(|e| panic!("{clause}: {e:?}")).spec_lean
+    };
+    let has = |text: &str, want: &str| assert!(text.contains(want), "missing {want} in\n{text}");
+    // A signed quotient saturates, which only `MIN / -1` needs.
+    has(
+        &lean("ensures(|r| b != 0 ==> r == saturating_div(a, b))", "fn f(a: i8, b: i8) -> i8"),
+        &format!(
+            "(let «saturating» : Int := {tdiv} {x} {y}; if «saturating» < (Int.neg 128) then \
+             (Int.neg 128) else if (127 : Int) < «saturating» then (127 : Int) else «saturating»)"
+        ),
+    );
+    // An unsigned quotient never overflows.
+    has(
+        &lean("ensures(|r| b != 0 ==> r == saturating_div(a, b))", "fn f(a: u8, b: u8) -> u8"),
+        &format!("((specInt out.ret) = ({tdiv} {x} {y}))"),
+    );
+    has(
+        &lean("requires(b != 0 && no_overflow_div(a, b))", "fn f(a: i8, b: i8)"),
+        &format!("((Int.neg 128) ≤ {tdiv} {x} {y} ∧ {tdiv} {x} {y} < 128)"),
+    );
+    // The methods are the intrinsics applied to the receiver.
+    let pre = |clause: &str| -> String {
+        let text = lean(clause, "fn f(a: i16, b: i16)");
+        let mut lines = text.lines().skip_while(|l| !l.contains("fn0_pre "));
+        lines.nth(1).unwrap_or_else(|| panic!("no fn0_pre in\n{text}")).to_string()
+    };
+    assert_eq!(
+        pre("requires(b != 0 && a.saturating_div(b) == a)"),
+        pre("requires(b != 0 && saturating_div(a, b) == a)")
+    );
+    assert_eq!(
+        pre("requires(b != 0 && a.no_overflow_div(b))"),
+        pre("requires(b != 0 && no_overflow_div(a, b))")
+    );
+    lower_one(&wrap("ensures(|r| math(r) == math(saturating_div(a, 3) + 1))", "fn f(a: i8) -> i8"))
+        .unwrap();
+}
+
+#[test]
+fn saturating_and_no_overflow_division_are_checked_strictly() {
+    let sig = "fn f(u: u8, w: u16, i: i8, n: u32)";
+    for (clause, code) in [
+        ("requires(saturating_div(i, i) == i)", "E_ANNEAL_UNGUARDED_SPEC_DIV"),
+        ("requires(i.saturating_div(0) == i)", "E_ANNEAL_UNGUARDED_SPEC_DIV"),
+        ("requires(no_overflow_div(i, i))", "E_ANNEAL_UNGUARDED_SPEC_DIV"),
+        ("requires(u.no_overflow_div(u))", "E_ANNEAL_UNGUARDED_SPEC_DIV"),
+        ("requires(saturating_div(u, w) == u)", "E_ANNEAL_SPEC_TYPE_MISMATCH"),
+        ("requires(saturating_div(u) == u)", "E_ANNEAL_SPEC_ARITY"),
+        ("requires(i.no_overflow_div())", "E_ANNEAL_SPEC_ARITY"),
+        ("requires(wrapping_div(i, 2i8) == i)", "E_ANNEAL_SPEC_UNKNOWN_FN"),
+        (
+            "requires({ let saturating_div = i; saturating_div == i })",
+            "E_ANNEAL_RESERVED_PARAM_NAME",
+        ),
+        ("max_steps = saturating_div(i, 2i8)", "E_ANNEAL_SPEC_TYPE_MISMATCH"),
+        ("max_steps = u.no_overflow_div(2)", "E_ANNEAL_SPEC_TYPE_MISMATCH"),
+    ] {
+        expect_error(&wrap(clause, sig), code);
+    }
+    let r = expect_error(
+        &wrap("requires(i.saturating_div(0) == i)", sig),
+        "E_ANNEAL_UNGUARDED_SPEC_DIV",
+    );
+    assert!(r.contains("the divisor of `saturating_div` may be zero"), "{r}");
+    // Unsigned results are step counts.
+    lower_one(&wrap("max_steps = n.saturating_div(4) + saturating_div(n, 3)", sig)).unwrap();
+}
+
+#[test]
 fn saturating_negation_and_abs_diff_intrinsics_lower_exactly() {
     let x = "(specInt (specArg q 0))";
     let y = "(specInt (specArg q 1))";
@@ -2405,7 +2479,7 @@ fn new_arithmetic_intrinsics_are_checked_strictly() {
         ("requires(abs_diff(a, math(a)) == 0u8)", "E_ANNEAL_SPEC_TYPE_MISMATCH"),
         ("requires(abs_diff(1, 2) == 0u8)", "E_ANNEAL_SPEC_TYPE_ANNOTATION_NEEDED"),
         ("requires(saturating_add(a, 256) == 0u8)", "E_ANNEAL_SPEC_LITERAL_RANGE"),
-        ("requires(saturating_div(a, a) == 0u8)", "E_ANNEAL_SPEC_UNKNOWN_FN"),
+        ("requires(saturating_pow(a, a) == 0u8)", "E_ANNEAL_SPEC_UNKNOWN_FN"),
         ("requires(wrapping_abs(i) == 0i8)", "E_ANNEAL_SPEC_UNKNOWN_FN"),
         ("requires({ let abs_diff = a; abs_diff == 0u8 })", "E_ANNEAL_RESERVED_PARAM_NAME"),
         ("requires({ let saturating_x = a; saturating_x == 0u8 })", "E_ANNEAL_RESERVED_PARAM_NAME"),

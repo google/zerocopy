@@ -369,6 +369,18 @@ example : pure_reme 255 16 = 15 := by unfold pure_reme; decide
 example : pure_dive 0 9 = 0 := by unfold pure_dive; decide
 example : pure_reme 0 9 = 0 := by unfold pure_reme; decide
 
+-- Saturating and overflow-checked division.
+example : pure_sdiv (-128) (-1) = 127 := by unfold pure_sdiv; decide
+example : pure_sdiv (-7) 2 = -3 := by unfold pure_sdiv; decide
+example : pure_sdiv 127 (-1) = -127 := by unfold pure_sdiv; decide
+example : pure_sdiv 5 0 = 0 := by unfold pure_sdiv; decide
+example : pure_sdiv_u 7 2 = 3 := by unfold pure_sdiv_u; decide
+example : pure_sdiv_u 255 1 = 255 := by unfold pure_sdiv_u; decide
+example : ¬ pure_nodiv (-128) (-1) := by unfold pure_nodiv; decide
+example : pure_nodiv (-128) 1 := by unfold pure_nodiv; decide
+example : pure_nodiv 127 (-1) := by unfold pure_nodiv; decide
+example : pure_nodiv 5 0 := by unfold pure_nodiv; decide
+
 -- The masked shifts take the amount modulo the width.
 example : pure_wshl_is 1 17 2 := by unfold pure_wshl_is; decide
 example : pure_wshl_is 0x8001 1 2 := by unfold pure_wshl_is; decide
@@ -379,9 +391,9 @@ example : ¬ pure_wshr_is (-32768) 31 1 := by unfold pure_wshr_is; decide
 -- `abs_diff(a, b) + saturating_add(n, 1u32) + (n & 15u32) + (n >> 30) + (n >> k)`
 -- `+ n as u8 as u32 + a.max(b) as u32 + n.div_ceil(8)`
 -- `+ a.cast_signed().unsigned_abs() as u32 + b.saturating_add_signed(-1) as u32`
--- `+ n.unbounded_shr(31) + n.div_euclid(16)`.
+-- `+ n.unbounded_shr(31) + n.div_euclid(16) + n.saturating_div(1024)`.
 example : fn7_max_steps { args := [u8Val 9, u8Val 2, u32Val 5] } = 43 := rfl
 example : fn7_max_steps { args := [u8Val 3, u8Val 250, u32Val 4294967295] } =
-    5100274686 := rfl
+    5104468989 := rfl
 
 end Spec.Check

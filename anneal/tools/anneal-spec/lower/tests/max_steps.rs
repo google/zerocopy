@@ -326,6 +326,21 @@ fn max_steps_counts_guarded_unsigned_divisions() {
 }
 
 #[test]
+fn max_steps_counts_guarded_unsigned_saturating_division() {
+    let l = lower_one(&wrap(
+        "requires(d != 0u64), max_steps = n.saturating_div(d)",
+        "fn f(n: u64, d: u64)",
+    ))
+    .unwrap();
+    let want = "(Int.toNat (Trusted.MirSemantics.intTdiv (specInt (specArg q 0)) (specInt (specArg q 1))))";
+    assert!(l.spec_lean.contains(want), "missing {want} in\n{}", l.spec_lean);
+    expect_error(
+        &wrap("max_steps = saturating_div(n, d)", "fn f(n: u64, d: u64)"),
+        "E_ANNEAL_UNGUARDED_SPEC_DIV",
+    );
+}
+
+#[test]
 fn max_steps_span_map_records_exact_clause_span() {
     let text = "anneal::external_spec! { #[anneal::spec(total, max_steps = 34 * n + 540)] fn f(n: usize); }";
     let l = lower_one(text).unwrap();
