@@ -1,0 +1,233 @@
+{
+  "functions": [
+    {
+      "abi_witness": {
+        "cc": "c",
+        "param_passing": [
+          {
+            "bits": 64,
+            "kind": "direct_int"
+          }
+        ],
+        "return_passing": {
+          "bits": 64,
+          "kind": "direct_int"
+        }
+      },
+      "body_stmt": {
+        "kind": "compound",
+        "stmts": [
+          {
+            "expr": {
+              "args": [
+                {
+                  "cast_kind": "noop",
+                  "cast_syntax": "implicit",
+                  "is_implicit": true,
+                  "kind": "cast",
+                  "sub": {
+                    "is_param": true,
+                    "is_ref_binding": false,
+                    "kind": "var_ref",
+                    "param_idx": 0,
+                    "ty": {
+                      "id": "struct.Pod",
+                      "kind": "record"
+                    },
+                    "value_category": "lvalue",
+                    "var_id": 0
+                  },
+                  "ty": {
+                    "id": "struct.Pod",
+                    "kind": "record"
+                  },
+                  "value_category": "lvalue"
+                }
+              ],
+              "callee_symbol": "_Z8bit_castIm3PodET_RKT0_",
+              "is_indirect": false,
+              "is_virtual": false,
+              "kind": "call",
+              "param_is_ref": [
+                true
+              ],
+              "returns_ref": false,
+              "ty": {
+                "bits": 64,
+                "is_char_like": false,
+                "kind": "int",
+                "signed": false
+              },
+              "value_category": "prvalue"
+            },
+            "kind": "return"
+          }
+        ]
+      },
+      "is_const_method": false,
+      "is_definition": true,
+      "is_extern_c": false,
+      "is_static_method": false,
+      "is_trivial": false,
+      "is_variadic": false,
+      "is_virtual": false,
+      "method_kind": "free",
+      "params": [
+        {
+          "dtor_symbol": null,
+          "name": "p",
+          "ty": {
+            "id": "struct.Pod",
+            "kind": "record"
+          }
+        }
+      ],
+      "qualified_name": "pod_to_u64",
+      "return_ty": {
+        "bits": 64,
+        "is_char_like": false,
+        "kind": "int",
+        "signed": false
+      },
+      "symbol": "_Z10pod_to_u643Pod",
+      "template_args": null,
+      "this_record_id": null,
+      "unmangled_name": "pod_to_u64"
+    },
+    {
+      "abi_witness": {
+        "cc": "c",
+        "param_passing": [
+          {
+            "kind": "direct_ptr"
+          }
+        ],
+        "return_passing": {
+          "bits": 64,
+          "kind": "direct_int"
+        }
+      },
+      "body_stmt": {
+        "kind": "compound",
+        "stmts": [
+          {
+            "expr": {
+              "from_ty": {
+                "id": "struct.Pod",
+                "kind": "record"
+              },
+              "kind": "builtin_bit_cast",
+              "sub": {
+                "is_param": true,
+                "is_ref_binding": true,
+                "kind": "var_ref",
+                "param_idx": 0,
+                "ty": {
+                  "id": "struct.Pod",
+                  "kind": "record"
+                },
+                "value_category": "lvalue",
+                "var_id": 0
+              },
+              "ty": {
+                "bits": 64,
+                "is_char_like": false,
+                "kind": "int",
+                "signed": false
+              },
+              "value_category": "prvalue"
+            },
+            "kind": "return"
+          }
+        ]
+      },
+      "is_const_method": false,
+      "is_definition": true,
+      "is_extern_c": false,
+      "is_static_method": false,
+      "is_trivial": false,
+      "is_variadic": false,
+      "is_virtual": false,
+      "method_kind": "free",
+      "params": [
+        {
+          "dtor_symbol": null,
+          "name": "from",
+          "ty": {
+            "is_const": true,
+            "is_rvalue": false,
+            "kind": "ref",
+            "may_alias": false,
+            "pointee": {
+              "id": "struct.Pod",
+              "kind": "record"
+            }
+          }
+        }
+      ],
+      "qualified_name": "bit_cast",
+      "return_ty": {
+        "bits": 64,
+        "is_char_like": false,
+        "kind": "int",
+        "signed": false
+      },
+      "symbol": "_Z8bit_castIm3PodET_RKT0_",
+      "template_args": "<unsigned long, Pod>",
+      "this_record_id": null,
+      "unmangled_name": "bit_cast"
+    }
+  ],
+  "lang_policy": {
+    "char_is_signed": true,
+    "exceptions_enabled": false,
+    "fast_math": false,
+    "is_cplusplus": true,
+    "lang_standard": "c++20",
+    "pointer_width_bits": 64,
+    "signed_overflow": "iso_ub",
+    "strict_aliasing": true
+  },
+  "records": [
+    {
+      "align_bytes": 4,
+      "bases": [],
+      "dtor_symbol": null,
+      "fields": [
+        {
+          "bit_width": null,
+          "name": "lo",
+          "offset_bits": 0,
+          "ty": {
+            "bits": 32,
+            "is_char_like": false,
+            "kind": "int",
+            "signed": false
+          }
+        },
+        {
+          "bit_width": null,
+          "name": "hi",
+          "offset_bits": 32,
+          "ty": {
+            "bits": 32,
+            "is_char_like": false,
+            "kind": "int",
+            "signed": false
+          }
+        }
+      ],
+      "has_non_trivial_dtor": false,
+      "id": "struct.Pod",
+      "is_cxx_record": true,
+      "is_polymorphic": false,
+      "is_trivially_copyable": true,
+      "is_union": false,
+      "name": "Pod",
+      "size_bytes": 8
+    }
+  ],
+  "schema_version": 1,
+  "target_triple": "x86_64-unknown-linux-gnu",
+  "tu_main_file": "cxx_bitcast.cc"
+}

@@ -26,6 +26,7 @@ members = [
     "tests/differential",
 ]
 exclude = [
+    "tools/anneal-cpp",
     "tools/anneal-scaffold",
     "tools/anneal-spec",
 ]

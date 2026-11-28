@@ -34,6 +34,7 @@ case "$FMT_DOMAIN" in
     NIGHTLY="${PIN_RUST_TOOLCHAINS__NIGHTLY:-$(./zerocopy/cargo.sh --version nightly)}"
     # Keep in sync with `ci/check_fmt.sh`, which explains `--all`.
     for manifest in \
+      anneal/tools/anneal-cpp/Cargo.toml \
       anneal/tools/anneal-scaffold/Cargo.toml \
       anneal/tools/anneal-spec/Cargo.toml \
       tools/cargo-zerocopy/Cargo.toml \

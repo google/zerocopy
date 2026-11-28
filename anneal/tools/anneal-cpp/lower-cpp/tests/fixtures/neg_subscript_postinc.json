@@ -1,0 +1,184 @@
+{
+  "functions": [
+    {
+      "abi_witness": {
+        "cc": "c",
+        "param_passing": [
+          {
+            "kind": "direct_ptr"
+          },
+          {
+            "bits": 32,
+            "kind": "direct_int"
+          }
+        ],
+        "return_passing": {
+          "kind": "ignore"
+        }
+      },
+      "body_stmt": {
+        "kind": "compound",
+        "stmts": [
+          {
+            "expr": {
+              "kind": "binary_op",
+              "lhs": {
+                "base": {
+                  "cast_kind": "lvalue_to_rvalue",
+                  "is_implicit": true,
+                  "kind": "cast",
+                  "sub": {
+                    "is_param": true,
+                    "kind": "var_ref",
+                    "param_idx": 0,
+                    "ty": {
+                      "is_const": false,
+                      "is_restrict": false,
+                      "kind": "ptr",
+                      "may_alias": false,
+                      "pointee": {
+                        "bits": 32,
+                        "is_char_like": false,
+                        "kind": "int",
+                        "signed": true
+                      }
+                    },
+                    "value_category": "lvalue",
+                    "var_id": 0
+                  },
+                  "ty": {
+                    "is_const": false,
+                    "is_restrict": false,
+                    "kind": "ptr",
+                    "may_alias": false,
+                    "pointee": {
+                      "bits": 32,
+                      "is_char_like": false,
+                      "kind": "int",
+                      "signed": true
+                    }
+                  },
+                  "value_category": "prvalue"
+                },
+                "idx": {
+                  "cast_kind": "lvalue_to_rvalue",
+                  "is_implicit": true,
+                  "kind": "cast",
+                  "sub": {
+                    "is_param": true,
+                    "kind": "var_ref",
+                    "param_idx": 1,
+                    "ty": {
+                      "bits": 32,
+                      "is_char_like": false,
+                      "kind": "int",
+                      "signed": true
+                    },
+                    "value_category": "lvalue",
+                    "var_id": 1
+                  },
+                  "ty": {
+                    "bits": 32,
+                    "is_char_like": false,
+                    "kind": "int",
+                    "signed": true
+                  },
+                  "value_category": "prvalue"
+                },
+                "kind": "array_subscript",
+                "ty": {
+                  "bits": 32,
+                  "is_char_like": false,
+                  "kind": "int",
+                  "signed": true
+                },
+                "value_category": "lvalue"
+              },
+              "op": "assign",
+              "rhs": {
+                "kind": "unary_op",
+                "op": "post_inc",
+                "sub": {
+                  "is_param": true,
+                  "kind": "var_ref",
+                  "param_idx": 1,
+                  "ty": {
+                    "bits": 32,
+                    "is_char_like": false,
+                    "kind": "int",
+                    "signed": true
+                  },
+                  "value_category": "lvalue",
+                  "var_id": 1
+                },
+                "ty": {
+                  "bits": 32,
+                  "is_char_like": false,
+                  "kind": "int",
+                  "signed": true
+                },
+                "value_category": "prvalue"
+              },
+              "ty": {
+                "bits": 32,
+                "is_char_like": false,
+                "kind": "int",
+                "signed": true
+              },
+              "value_category": "prvalue"
+            },
+            "kind": "expr_stmt"
+          }
+        ]
+      },
+      "is_definition": true,
+      "is_extern_c": true,
+      "is_variadic": false,
+      "params": [
+        {
+          "name": "a",
+          "ty": {
+            "is_const": false,
+            "is_restrict": false,
+            "kind": "ptr",
+            "may_alias": false,
+            "pointee": {
+              "bits": 32,
+              "is_char_like": false,
+              "kind": "int",
+              "signed": true
+            }
+          }
+        },
+        {
+          "name": "i",
+          "ty": {
+            "bits": 32,
+            "is_char_like": false,
+            "kind": "int",
+            "signed": true
+          }
+        }
+      ],
+      "return_ty": {
+        "kind": "void"
+      },
+      "symbol": "neg_subscript_postinc",
+      "unmangled_name": "neg_subscript_postinc"
+    }
+  ],
+  "lang_policy": {
+    "char_is_signed": true,
+    "exceptions_enabled": false,
+    "fast_math": false,
+    "is_cplusplus": false,
+    "lang_standard": "c11",
+    "pointer_width_bits": 64,
+    "signed_overflow": "iso_ub",
+    "strict_aliasing": true
+  },
+  "records": [],
+  "schema_version": 1,
+  "target_triple": "x86_64-unknown-linux-gnu",
+  "tu_main_file": "neg_subscript_postinc.c"
+}

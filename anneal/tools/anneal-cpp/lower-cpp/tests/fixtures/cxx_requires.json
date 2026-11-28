@@ -1,0 +1,153 @@
+{
+  "functions": [
+    {
+      "abi_witness": {
+        "cc": "c",
+        "param_passing": [
+          {
+            "desc": "{ ptr, i64 }",
+            "kind": "direct_other"
+          }
+        ],
+        "return_passing": {
+          "bits": 64,
+          "kind": "direct_int"
+        }
+      },
+      "body_stmt": {
+        "kind": "compound",
+        "stmts": [
+          {
+            "expr": {
+              "cast_kind": "lvalue_to_rvalue",
+              "cast_syntax": "implicit",
+              "is_implicit": true,
+              "kind": "cast",
+              "sub": {
+                "base": {
+                  "is_param": true,
+                  "is_ref_binding": false,
+                  "kind": "var_ref",
+                  "param_idx": 0,
+                  "ty": {
+                    "id": "struct.SliceRef<int>",
+                    "kind": "record"
+                  },
+                  "value_category": "lvalue",
+                  "var_id": 0
+                },
+                "field_idx": 1,
+                "field_name": "len",
+                "is_arrow": false,
+                "kind": "member",
+                "record_id": "struct.SliceRef<int>",
+                "ty": {
+                  "bits": 64,
+                  "is_char_like": false,
+                  "kind": "int",
+                  "signed": false
+                },
+                "value_category": "lvalue"
+              },
+              "ty": {
+                "bits": 64,
+                "is_char_like": false,
+                "kind": "int",
+                "signed": false
+              },
+              "value_category": "prvalue"
+            },
+            "kind": "return"
+          }
+        ]
+      },
+      "is_const_method": false,
+      "is_definition": true,
+      "is_extern_c": false,
+      "is_static_method": false,
+      "is_trivial": false,
+      "is_variadic": false,
+      "is_virtual": false,
+      "method_kind": "free",
+      "params": [
+        {
+          "dtor_symbol": null,
+          "name": "s",
+          "ty": {
+            "id": "struct.SliceRef<int>",
+            "kind": "record"
+          }
+        }
+      ],
+      "qualified_name": "slice_len",
+      "return_ty": {
+        "bits": 64,
+        "is_char_like": false,
+        "kind": "int",
+        "signed": false
+      },
+      "symbol": "_Z9slice_lenIiQ5SmallIT_EEm8SliceRefIS0_E",
+      "template_args": "<int>",
+      "this_record_id": null,
+      "unmangled_name": "slice_len"
+    }
+  ],
+  "lang_policy": {
+    "char_is_signed": true,
+    "exceptions_enabled": false,
+    "fast_math": false,
+    "is_cplusplus": true,
+    "lang_standard": "c++20",
+    "pointer_width_bits": 64,
+    "signed_overflow": "iso_ub",
+    "strict_aliasing": true
+  },
+  "records": [
+    {
+      "align_bytes": 8,
+      "bases": [],
+      "dtor_symbol": null,
+      "fields": [
+        {
+          "bit_width": null,
+          "name": "ptr",
+          "offset_bits": 0,
+          "ty": {
+            "is_const": true,
+            "is_restrict": false,
+            "kind": "ptr",
+            "may_alias": false,
+            "pointee": {
+              "bits": 32,
+              "is_char_like": false,
+              "kind": "int",
+              "signed": true
+            }
+          }
+        },
+        {
+          "bit_width": null,
+          "name": "len",
+          "offset_bits": 64,
+          "ty": {
+            "bits": 64,
+            "is_char_like": false,
+            "kind": "int",
+            "signed": false
+          }
+        }
+      ],
+      "has_non_trivial_dtor": false,
+      "id": "struct.SliceRef<int>",
+      "is_cxx_record": true,
+      "is_polymorphic": false,
+      "is_trivially_copyable": true,
+      "is_union": false,
+      "name": "SliceRef",
+      "size_bytes": 16
+    }
+  ],
+  "schema_version": 1,
+  "target_triple": "x86_64-unknown-linux-gnu",
+  "tu_main_file": "cxx_requires.cc"
+}

@@ -1,0 +1,26 @@
+# Copyright 2026 The Fuchsia Authors
+#
+# Licensed under a BSD-style license <LICENSE-BSD>, Apache License, Version 2.0
+# <LICENSE-APACHE or https://www.apache.org/licenses/LICENSE-2.0>, or the MIT
+# license <LICENSE-MIT or https://opensource.org/licenses/MIT>, at your option.
+# This file may not be copied, modified, or distributed except according to
+# those terms.
+
+[package]
+name = "anneal-lower-cpp"
+version = "0.0.0"
+edition = "2021"
+publish = false
+description = "Lowers anneal-clang-dump RawCppBundle JSON into Trusted.CppAst Lean terms"
+license = "BSD-2-Clause OR Apache-2.0 OR MIT"
+
+[lib]
+path = "src/lib.rs"
+
+[[bin]]
+name = "anneal-lower-cpp"
+path = "src/main.rs"
+
+[dependencies]
+anneal-lower-common = { path = "../lower-common" }
+serde_json = "1"

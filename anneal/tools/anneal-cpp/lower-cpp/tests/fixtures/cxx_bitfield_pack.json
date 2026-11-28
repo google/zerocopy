@@ -1,0 +1,506 @@
+{
+  "functions": [
+    {
+      "abi_witness": {
+        "cc": "c",
+        "param_passing": [
+          {
+            "bits": 16,
+            "kind": "extend_int",
+            "sign_ext": false
+          },
+          {
+            "bits": 16,
+            "kind": "extend_int",
+            "sign_ext": false
+          },
+          {
+            "bits": 16,
+            "kind": "extend_int",
+            "sign_ext": false
+          }
+        ],
+        "return_passing": {
+          "bits": 64,
+          "kind": "direct_int"
+        }
+      },
+      "body_stmt": {
+        "kind": "compound",
+        "stmts": [
+          {
+            "dtor_symbol": null,
+            "init": {
+              "inits": [
+                {
+                  "kind": "implicit_value_init",
+                  "ty": {
+                    "bits": 16,
+                    "is_char_like": false,
+                    "kind": "int",
+                    "signed": false
+                  },
+                  "value_category": "prvalue"
+                },
+                {
+                  "kind": "implicit_value_init",
+                  "ty": {
+                    "bits": 16,
+                    "is_char_like": false,
+                    "kind": "int",
+                    "signed": false
+                  },
+                  "value_category": "prvalue"
+                },
+                {
+                  "kind": "implicit_value_init",
+                  "ty": {
+                    "bits": 16,
+                    "is_char_like": false,
+                    "kind": "int",
+                    "signed": false
+                  },
+                  "value_category": "prvalue"
+                },
+                {
+                  "kind": "implicit_value_init",
+                  "ty": {
+                    "bits": 16,
+                    "is_char_like": false,
+                    "kind": "int",
+                    "signed": false
+                  },
+                  "value_category": "prvalue"
+                },
+                {
+                  "kind": "implicit_value_init",
+                  "ty": {
+                    "bits": 16,
+                    "is_char_like": false,
+                    "kind": "int",
+                    "signed": false
+                  },
+                  "value_category": "prvalue"
+                },
+                {
+                  "kind": "implicit_value_init",
+                  "ty": {
+                    "bits": 32,
+                    "is_char_like": false,
+                    "kind": "int",
+                    "signed": false
+                  },
+                  "value_category": "prvalue"
+                }
+              ],
+              "kind": "init_list",
+              "ty": {
+                "id": "struct.PacketDesc",
+                "kind": "record"
+              },
+              "value_category": "prvalue"
+            },
+            "is_nrvo": false,
+            "is_ref": false,
+            "kind": "decl_stmt",
+            "name": "d",
+            "ty": {
+              "id": "struct.PacketDesc",
+              "kind": "record"
+            },
+            "var_id": 3
+          },
+          {
+            "expr": {
+              "kind": "binary_op",
+              "lhs": {
+                "base": {
+                  "is_param": false,
+                  "is_ref_binding": false,
+                  "kind": "var_ref",
+                  "param_idx": null,
+                  "ty": {
+                    "id": "struct.PacketDesc",
+                    "kind": "record"
+                  },
+                  "value_category": "lvalue",
+                  "var_id": 3
+                },
+                "bit_offset": 0,
+                "bit_width": 11,
+                "field_idx": 0,
+                "field_is_signed": false,
+                "field_name": "buf_id",
+                "is_arrow": false,
+                "is_bitfield": true,
+                "kind": "member",
+                "record_id": "struct.PacketDesc",
+                "ty": {
+                  "bits": 16,
+                  "is_char_like": false,
+                  "kind": "int",
+                  "signed": false
+                },
+                "value_category": "lvalue"
+              },
+              "op": "assign",
+              "rhs": {
+                "cast_kind": "lvalue_to_rvalue",
+                "cast_syntax": "implicit",
+                "is_implicit": true,
+                "kind": "cast",
+                "sub": {
+                  "is_param": true,
+                  "is_ref_binding": false,
+                  "kind": "var_ref",
+                  "param_idx": 0,
+                  "ty": {
+                    "bits": 16,
+                    "is_char_like": false,
+                    "kind": "int",
+                    "signed": false
+                  },
+                  "value_category": "lvalue",
+                  "var_id": 0
+                },
+                "ty": {
+                  "bits": 16,
+                  "is_char_like": false,
+                  "kind": "int",
+                  "signed": false
+                },
+                "value_category": "prvalue"
+              },
+              "ty": {
+                "bits": 16,
+                "is_char_like": false,
+                "kind": "int",
+                "signed": false
+              },
+              "value_category": "lvalue"
+            },
+            "kind": "expr_stmt"
+          },
+          {
+            "expr": {
+              "kind": "binary_op",
+              "lhs": {
+                "base": {
+                  "is_param": false,
+                  "is_ref_binding": false,
+                  "kind": "var_ref",
+                  "param_idx": null,
+                  "ty": {
+                    "id": "struct.PacketDesc",
+                    "kind": "record"
+                  },
+                  "value_category": "lvalue",
+                  "var_id": 3
+                },
+                "bit_offset": 16,
+                "bit_width": 14,
+                "field_idx": 2,
+                "field_is_signed": false,
+                "field_name": "len",
+                "is_arrow": false,
+                "is_bitfield": true,
+                "kind": "member",
+                "record_id": "struct.PacketDesc",
+                "ty": {
+                  "bits": 16,
+                  "is_char_like": false,
+                  "kind": "int",
+                  "signed": false
+                },
+                "value_category": "lvalue"
+              },
+              "op": "assign",
+              "rhs": {
+                "cast_kind": "lvalue_to_rvalue",
+                "cast_syntax": "implicit",
+                "is_implicit": true,
+                "kind": "cast",
+                "sub": {
+                  "is_param": true,
+                  "is_ref_binding": false,
+                  "kind": "var_ref",
+                  "param_idx": 1,
+                  "ty": {
+                    "bits": 16,
+                    "is_char_like": false,
+                    "kind": "int",
+                    "signed": false
+                  },
+                  "value_category": "lvalue",
+                  "var_id": 1
+                },
+                "ty": {
+                  "bits": 16,
+                  "is_char_like": false,
+                  "kind": "int",
+                  "signed": false
+                },
+                "value_category": "prvalue"
+              },
+              "ty": {
+                "bits": 16,
+                "is_char_like": false,
+                "kind": "int",
+                "signed": false
+              },
+              "value_category": "lvalue"
+            },
+            "kind": "expr_stmt"
+          },
+          {
+            "expr": {
+              "kind": "binary_op",
+              "lhs": {
+                "base": {
+                  "is_param": false,
+                  "is_ref_binding": false,
+                  "kind": "var_ref",
+                  "param_idx": null,
+                  "ty": {
+                    "id": "struct.PacketDesc",
+                    "kind": "record"
+                  },
+                  "value_category": "lvalue",
+                  "var_id": 3
+                },
+                "bit_offset": 30,
+                "bit_width": 1,
+                "field_idx": 3,
+                "field_is_signed": false,
+                "field_name": "gen",
+                "is_arrow": false,
+                "is_bitfield": true,
+                "kind": "member",
+                "record_id": "struct.PacketDesc",
+                "ty": {
+                  "bits": 16,
+                  "is_char_like": false,
+                  "kind": "int",
+                  "signed": false
+                },
+                "value_category": "lvalue"
+              },
+              "op": "assign",
+              "rhs": {
+                "cast_kind": "lvalue_to_rvalue",
+                "cast_syntax": "implicit",
+                "is_implicit": true,
+                "kind": "cast",
+                "sub": {
+                  "is_param": true,
+                  "is_ref_binding": false,
+                  "kind": "var_ref",
+                  "param_idx": 2,
+                  "ty": {
+                    "bits": 16,
+                    "is_char_like": false,
+                    "kind": "int",
+                    "signed": false
+                  },
+                  "value_category": "lvalue",
+                  "var_id": 2
+                },
+                "ty": {
+                  "bits": 16,
+                  "is_char_like": false,
+                  "kind": "int",
+                  "signed": false
+                },
+                "value_category": "prvalue"
+              },
+              "ty": {
+                "bits": 16,
+                "is_char_like": false,
+                "kind": "int",
+                "signed": false
+              },
+              "value_category": "lvalue"
+            },
+            "kind": "expr_stmt"
+          },
+          {
+            "expr": {
+              "from_ty": {
+                "id": "struct.PacketDesc",
+                "kind": "record"
+              },
+              "kind": "builtin_bit_cast",
+              "sub": {
+                "is_param": false,
+                "is_ref_binding": false,
+                "kind": "var_ref",
+                "param_idx": null,
+                "ty": {
+                  "id": "struct.PacketDesc",
+                  "kind": "record"
+                },
+                "value_category": "lvalue",
+                "var_id": 3
+              },
+              "ty": {
+                "bits": 64,
+                "is_char_like": false,
+                "kind": "int",
+                "signed": false
+              },
+              "value_category": "prvalue"
+            },
+            "kind": "return"
+          }
+        ]
+      },
+      "is_const_method": false,
+      "is_definition": true,
+      "is_extern_c": false,
+      "is_static_method": false,
+      "is_trivial": false,
+      "is_variadic": false,
+      "is_virtual": false,
+      "method_kind": "free",
+      "params": [
+        {
+          "dtor_symbol": null,
+          "name": "id",
+          "ty": {
+            "bits": 16,
+            "is_char_like": false,
+            "kind": "int",
+            "signed": false
+          }
+        },
+        {
+          "dtor_symbol": null,
+          "name": "len",
+          "ty": {
+            "bits": 16,
+            "is_char_like": false,
+            "kind": "int",
+            "signed": false
+          }
+        },
+        {
+          "dtor_symbol": null,
+          "name": "gen",
+          "ty": {
+            "bits": 16,
+            "is_char_like": false,
+            "kind": "int",
+            "signed": false
+          }
+        }
+      ],
+      "qualified_name": "pack_desc",
+      "return_ty": {
+        "bits": 64,
+        "is_char_like": false,
+        "kind": "int",
+        "signed": false
+      },
+      "symbol": "_Z9pack_descttt",
+      "template_args": null,
+      "this_record_id": null,
+      "unmangled_name": "pack_desc"
+    }
+  ],
+  "lang_policy": {
+    "char_is_signed": true,
+    "exceptions_enabled": false,
+    "fast_math": false,
+    "is_cplusplus": true,
+    "lang_standard": "c++20",
+    "pointer_width_bits": 64,
+    "signed_overflow": "iso_ub",
+    "strict_aliasing": true
+  },
+  "records": [
+    {
+      "align_bytes": 4,
+      "bases": [],
+      "dtor_symbol": null,
+      "fields": [
+        {
+          "bit_width": 11,
+          "name": "buf_id",
+          "offset_bits": 0,
+          "ty": {
+            "bits": 16,
+            "is_char_like": false,
+            "kind": "int",
+            "signed": false
+          }
+        },
+        {
+          "bit_width": 5,
+          "name": "rsvd",
+          "offset_bits": 11,
+          "ty": {
+            "bits": 16,
+            "is_char_like": false,
+            "kind": "int",
+            "signed": false
+          }
+        },
+        {
+          "bit_width": 14,
+          "name": "len",
+          "offset_bits": 16,
+          "ty": {
+            "bits": 16,
+            "is_char_like": false,
+            "kind": "int",
+            "signed": false
+          }
+        },
+        {
+          "bit_width": 1,
+          "name": "gen",
+          "offset_bits": 30,
+          "ty": {
+            "bits": 16,
+            "is_char_like": false,
+            "kind": "int",
+            "signed": false
+          }
+        },
+        {
+          "bit_width": 1,
+          "name": "eop",
+          "offset_bits": 31,
+          "ty": {
+            "bits": 16,
+            "is_char_like": false,
+            "kind": "int",
+            "signed": false
+          }
+        },
+        {
+          "bit_width": null,
+          "name": "hash",
+          "offset_bits": 32,
+          "ty": {
+            "bits": 32,
+            "is_char_like": false,
+            "kind": "int",
+            "signed": false
+          }
+        }
+      ],
+      "has_non_trivial_dtor": false,
+      "id": "struct.PacketDesc",
+      "is_cxx_record": true,
+      "is_polymorphic": false,
+      "is_trivially_copyable": true,
+      "is_union": false,
+      "name": "PacketDesc",
+      "size_bytes": 8
+    }
+  ],
+  "schema_version": 1,
+  "target_triple": "x86_64-unknown-linux-gnu",
+  "tu_main_file": "cxx_bitcast.cc"
+}

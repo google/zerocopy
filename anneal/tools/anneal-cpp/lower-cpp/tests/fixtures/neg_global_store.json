@@ -1,0 +1,81 @@
+{
+  "functions": [
+    {
+      "abi_witness": {
+        "cc": "c",
+        "param_passing": [],
+        "return_passing": {
+          "kind": "ignore"
+        }
+      },
+      "body_stmt": {
+        "kind": "compound",
+        "stmts": [
+          {
+            "expr": {
+              "kind": "binary_op",
+              "lhs": {
+                "has_external_linkage": true,
+                "kind": "global_ref",
+                "name": "neg_global_counter",
+                "symbol": "neg_global_counter",
+                "ty": {
+                  "bits": 32,
+                  "is_char_like": false,
+                  "kind": "int",
+                  "signed": true
+                },
+                "value_category": "lvalue"
+              },
+              "op": "assign",
+              "rhs": {
+                "bits": 32,
+                "kind": "int_lit",
+                "signed": true,
+                "ty": {
+                  "bits": 32,
+                  "is_char_like": false,
+                  "kind": "int",
+                  "signed": true
+                },
+                "value_category": "prvalue",
+                "value_str": "1"
+              },
+              "ty": {
+                "bits": 32,
+                "is_char_like": false,
+                "kind": "int",
+                "signed": true
+              },
+              "value_category": "prvalue"
+            },
+            "kind": "expr_stmt"
+          }
+        ]
+      },
+      "is_definition": true,
+      "is_extern_c": true,
+      "is_variadic": false,
+      "params": [],
+      "return_ty": {
+        "kind": "void"
+      },
+      "symbol": "neg_global_store",
+      "unmangled_name": "neg_global_store"
+    }
+  ],
+  "lang_policy": {
+    "char_is_signed": true,
+    "exceptions_enabled": false,
+    "fast_math": false,
+    "is_cplusplus": false,
+    "lang_standard": "c11",
+    "pointer_width_bits": 64,
+    "signed_overflow": "iso_ub",
+    "strict_aliasing": true
+  },
+  "records": [],
+  "schema_version": 1,
+  "target_triple": "x86_64-unknown-linux-gnu",
+  "tu_main_file": "neg_global_store.c"
+}

@@ -1,0 +1,417 @@
+{
+  "functions": [
+    {
+      "abi_witness": {
+        "cc": "c",
+        "param_passing": [
+          {
+            "bits": 32,
+            "kind": "direct_int"
+          }
+        ],
+        "return_passing": {
+          "bits": 32,
+          "kind": "direct_int"
+        }
+      },
+      "body_stmt": {
+        "kind": "compound",
+        "stmts": [
+          {
+            "dtor_symbol": null,
+            "init": {
+              "cast_kind": "lvalue_to_rvalue",
+              "cast_syntax": "implicit",
+              "is_implicit": true,
+              "kind": "cast",
+              "sub": {
+                "is_param": true,
+                "is_ref_binding": false,
+                "kind": "var_ref",
+                "param_idx": 0,
+                "ty": {
+                  "bits": 32,
+                  "is_char_like": false,
+                  "kind": "int",
+                  "signed": true
+                },
+                "value_category": "lvalue",
+                "var_id": 0
+              },
+              "ty": {
+                "bits": 32,
+                "is_char_like": false,
+                "kind": "int",
+                "signed": true
+              },
+              "value_category": "prvalue"
+            },
+            "is_nrvo": false,
+            "is_ref": false,
+            "kind": "decl_stmt",
+            "name": "y",
+            "ty": {
+              "bits": 32,
+              "is_char_like": false,
+              "kind": "int",
+              "signed": true
+            },
+            "var_id": 1
+          },
+          {
+            "expr": {
+              "args": [
+                {
+                  "is_param": false,
+                  "is_ref_binding": false,
+                  "kind": "var_ref",
+                  "param_idx": null,
+                  "ty": {
+                    "bits": 32,
+                    "is_char_like": false,
+                    "kind": "int",
+                    "signed": true
+                  },
+                  "value_category": "lvalue",
+                  "var_id": 1
+                }
+              ],
+              "callee_symbol": "_Z4bumpRi",
+              "is_indirect": false,
+              "is_virtual": false,
+              "kind": "call",
+              "param_is_ref": [
+                true
+              ],
+              "returns_ref": false,
+              "ty": {
+                "kind": "void"
+              },
+              "value_category": "prvalue"
+            },
+            "kind": "expr_stmt"
+          },
+          {
+            "dtor_symbol": null,
+            "init": {
+              "is_param": false,
+              "is_ref_binding": false,
+              "kind": "var_ref",
+              "param_idx": null,
+              "ty": {
+                "bits": 32,
+                "is_char_like": false,
+                "kind": "int",
+                "signed": true
+              },
+              "value_category": "lvalue",
+              "var_id": 1
+            },
+            "is_nrvo": false,
+            "is_ref": true,
+            "kind": "decl_stmt",
+            "name": "r",
+            "ty": {
+              "is_const": false,
+              "is_rvalue": false,
+              "kind": "ref",
+              "may_alias": false,
+              "pointee": {
+                "bits": 32,
+                "is_char_like": false,
+                "kind": "int",
+                "signed": true
+              }
+            },
+            "var_id": 2
+          },
+          {
+            "expr": {
+              "kind": "binary_op",
+              "lhs": {
+                "is_param": false,
+                "is_ref_binding": true,
+                "kind": "var_ref",
+                "param_idx": null,
+                "ty": {
+                  "bits": 32,
+                  "is_char_like": false,
+                  "kind": "int",
+                  "signed": true
+                },
+                "value_category": "lvalue",
+                "var_id": 2
+              },
+              "op": "assign",
+              "rhs": {
+                "kind": "binary_op",
+                "lhs": {
+                  "cast_kind": "lvalue_to_rvalue",
+                  "cast_syntax": "implicit",
+                  "is_implicit": true,
+                  "kind": "cast",
+                  "sub": {
+                    "is_param": false,
+                    "is_ref_binding": true,
+                    "kind": "var_ref",
+                    "param_idx": null,
+                    "ty": {
+                      "bits": 32,
+                      "is_char_like": false,
+                      "kind": "int",
+                      "signed": true
+                    },
+                    "value_category": "lvalue",
+                    "var_id": 2
+                  },
+                  "ty": {
+                    "bits": 32,
+                    "is_char_like": false,
+                    "kind": "int",
+                    "signed": true
+                  },
+                  "value_category": "prvalue"
+                },
+                "op": "mul",
+                "rhs": {
+                  "bits": 32,
+                  "kind": "int_lit",
+                  "signed": true,
+                  "ty": {
+                    "bits": 32,
+                    "is_char_like": false,
+                    "kind": "int",
+                    "signed": true
+                  },
+                  "value_category": "prvalue",
+                  "value_str": "2"
+                },
+                "ty": {
+                  "bits": 32,
+                  "is_char_like": false,
+                  "kind": "int",
+                  "signed": true
+                },
+                "value_category": "prvalue"
+              },
+              "ty": {
+                "bits": 32,
+                "is_char_like": false,
+                "kind": "int",
+                "signed": true
+              },
+              "value_category": "lvalue"
+            },
+            "kind": "expr_stmt"
+          },
+          {
+            "expr": {
+              "cast_kind": "lvalue_to_rvalue",
+              "cast_syntax": "implicit",
+              "is_implicit": true,
+              "kind": "cast",
+              "sub": {
+                "is_param": false,
+                "is_ref_binding": true,
+                "kind": "var_ref",
+                "param_idx": null,
+                "ty": {
+                  "bits": 32,
+                  "is_char_like": false,
+                  "kind": "int",
+                  "signed": true
+                },
+                "value_category": "lvalue",
+                "var_id": 2
+              },
+              "ty": {
+                "bits": 32,
+                "is_char_like": false,
+                "kind": "int",
+                "signed": true
+              },
+              "value_category": "prvalue"
+            },
+            "kind": "return"
+          }
+        ]
+      },
+      "is_const_method": false,
+      "is_definition": true,
+      "is_extern_c": false,
+      "is_static_method": false,
+      "is_trivial": false,
+      "is_variadic": false,
+      "is_virtual": false,
+      "method_kind": "free",
+      "params": [
+        {
+          "dtor_symbol": null,
+          "name": "v",
+          "ty": {
+            "bits": 32,
+            "is_char_like": false,
+            "kind": "int",
+            "signed": true
+          }
+        }
+      ],
+      "qualified_name": "use_ref",
+      "return_ty": {
+        "bits": 32,
+        "is_char_like": false,
+        "kind": "int",
+        "signed": true
+      },
+      "symbol": "_Z7use_refi",
+      "template_args": null,
+      "this_record_id": null,
+      "unmangled_name": "use_ref"
+    },
+    {
+      "abi_witness": {
+        "cc": "c",
+        "param_passing": [
+          {
+            "kind": "direct_ptr"
+          }
+        ],
+        "return_passing": {
+          "kind": "ignore"
+        }
+      },
+      "body_stmt": {
+        "kind": "compound",
+        "stmts": [
+          {
+            "expr": {
+              "kind": "binary_op",
+              "lhs": {
+                "is_param": true,
+                "is_ref_binding": true,
+                "kind": "var_ref",
+                "param_idx": 0,
+                "ty": {
+                  "bits": 32,
+                  "is_char_like": false,
+                  "kind": "int",
+                  "signed": true
+                },
+                "value_category": "lvalue",
+                "var_id": 0
+              },
+              "op": "assign",
+              "rhs": {
+                "kind": "binary_op",
+                "lhs": {
+                  "cast_kind": "lvalue_to_rvalue",
+                  "cast_syntax": "implicit",
+                  "is_implicit": true,
+                  "kind": "cast",
+                  "sub": {
+                    "is_param": true,
+                    "is_ref_binding": true,
+                    "kind": "var_ref",
+                    "param_idx": 0,
+                    "ty": {
+                      "bits": 32,
+                      "is_char_like": false,
+                      "kind": "int",
+                      "signed": true
+                    },
+                    "value_category": "lvalue",
+                    "var_id": 0
+                  },
+                  "ty": {
+                    "bits": 32,
+                    "is_char_like": false,
+                    "kind": "int",
+                    "signed": true
+                  },
+                  "value_category": "prvalue"
+                },
+                "op": "add",
+                "rhs": {
+                  "bits": 32,
+                  "kind": "int_lit",
+                  "signed": true,
+                  "ty": {
+                    "bits": 32,
+                    "is_char_like": false,
+                    "kind": "int",
+                    "signed": true
+                  },
+                  "value_category": "prvalue",
+                  "value_str": "1"
+                },
+                "ty": {
+                  "bits": 32,
+                  "is_char_like": false,
+                  "kind": "int",
+                  "signed": true
+                },
+                "value_category": "prvalue"
+              },
+              "ty": {
+                "bits": 32,
+                "is_char_like": false,
+                "kind": "int",
+                "signed": true
+              },
+              "value_category": "lvalue"
+            },
+            "kind": "expr_stmt"
+          }
+        ]
+      },
+      "is_const_method": false,
+      "is_definition": true,
+      "is_extern_c": false,
+      "is_static_method": false,
+      "is_trivial": false,
+      "is_variadic": false,
+      "is_virtual": false,
+      "method_kind": "free",
+      "params": [
+        {
+          "dtor_symbol": null,
+          "name": "x",
+          "ty": {
+            "is_const": false,
+            "is_rvalue": false,
+            "kind": "ref",
+            "may_alias": false,
+            "pointee": {
+              "bits": 32,
+              "is_char_like": false,
+              "kind": "int",
+              "signed": true
+            }
+          }
+        }
+      ],
+      "qualified_name": "bump",
+      "return_ty": {
+        "kind": "void"
+      },
+      "symbol": "_Z4bumpRi",
+      "template_args": null,
+      "this_record_id": null,
+      "unmangled_name": "bump"
+    }
+  ],
+  "lang_policy": {
+    "char_is_signed": true,
+    "exceptions_enabled": false,
+    "fast_math": false,
+    "is_cplusplus": true,
+    "lang_standard": "c++20",
+    "pointer_width_bits": 64,
+    "signed_overflow": "iso_ub",
+    "strict_aliasing": true
+  },
+  "records": [],
+  "schema_version": 1,
+  "target_triple": "x86_64-unknown-linux-gnu",
+  "tu_main_file": "cxx_ref.cc"
+}

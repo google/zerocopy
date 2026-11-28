@@ -1,0 +1,697 @@
+{
+  "functions": [
+    {
+      "abi_witness": {
+        "cc": "c",
+        "param_passing": [
+          {
+            "kind": "direct_ptr"
+          },
+          {
+            "kind": "direct_ptr"
+          }
+        ],
+        "return_passing": {
+          "bits": 32,
+          "kind": "direct_int"
+        }
+      },
+      "body_stmt": {
+        "kind": "compound",
+        "stmts": [
+          {
+            "expr": {
+              "kind": "binary_op",
+              "lhs": {
+                "base": {
+                  "cast_kind": "lvalue_to_rvalue",
+                  "is_implicit": true,
+                  "kind": "cast",
+                  "sub": {
+                    "is_param": true,
+                    "kind": "var_ref",
+                    "param_idx": 0,
+                    "ty": {
+                      "is_const": false,
+                      "is_restrict": false,
+                      "kind": "ptr",
+                      "may_alias": false,
+                      "pointee": {
+                        "id": "struct.pair",
+                        "kind": "record"
+                      }
+                    },
+                    "value_category": "lvalue",
+                    "var_id": 0
+                  },
+                  "ty": {
+                    "is_const": false,
+                    "is_restrict": false,
+                    "kind": "ptr",
+                    "may_alias": false,
+                    "pointee": {
+                      "id": "struct.pair",
+                      "kind": "record"
+                    }
+                  },
+                  "value_category": "prvalue"
+                },
+                "field_idx": 0,
+                "field_name": "lo",
+                "is_arrow": true,
+                "kind": "member",
+                "record_id": "struct.pair",
+                "ty": {
+                  "bits": 32,
+                  "is_char_like": false,
+                  "kind": "int",
+                  "signed": false
+                },
+                "value_category": "lvalue"
+              },
+              "op": "assign",
+              "rhs": {
+                "args": [
+                  {
+                    "cast_kind": "lvalue_to_rvalue",
+                    "is_implicit": true,
+                    "kind": "cast",
+                    "sub": {
+                      "base": {
+                        "cast_kind": "lvalue_to_rvalue",
+                        "is_implicit": true,
+                        "kind": "cast",
+                        "sub": {
+                          "is_param": true,
+                          "kind": "var_ref",
+                          "param_idx": 1,
+                          "ty": {
+                            "is_const": true,
+                            "is_restrict": false,
+                            "kind": "ptr",
+                            "may_alias": false,
+                            "pointee": {
+                              "id": "struct.pair",
+                              "kind": "record"
+                            }
+                          },
+                          "value_category": "lvalue",
+                          "var_id": 1
+                        },
+                        "ty": {
+                          "is_const": true,
+                          "is_restrict": false,
+                          "kind": "ptr",
+                          "may_alias": false,
+                          "pointee": {
+                            "id": "struct.pair",
+                            "kind": "record"
+                          }
+                        },
+                        "value_category": "prvalue"
+                      },
+                      "field_idx": 0,
+                      "field_name": "lo",
+                      "is_arrow": true,
+                      "kind": "member",
+                      "record_id": "struct.pair",
+                      "ty": {
+                        "bits": 32,
+                        "is_char_like": false,
+                        "kind": "int",
+                        "signed": false
+                      },
+                      "value_category": "lvalue"
+                    },
+                    "ty": {
+                      "bits": 32,
+                      "is_char_like": false,
+                      "kind": "int",
+                      "signed": false
+                    },
+                    "value_category": "prvalue"
+                  },
+                  {
+                    "cast_kind": "integral_cast",
+                    "is_implicit": false,
+                    "kind": "cast",
+                    "sub": {
+                      "cast_kind": "lvalue_to_rvalue",
+                      "is_implicit": true,
+                      "kind": "cast",
+                      "sub": {
+                        "base": {
+                          "cast_kind": "lvalue_to_rvalue",
+                          "is_implicit": true,
+                          "kind": "cast",
+                          "sub": {
+                            "is_param": true,
+                            "kind": "var_ref",
+                            "param_idx": 1,
+                            "ty": {
+                              "is_const": true,
+                              "is_restrict": false,
+                              "kind": "ptr",
+                              "may_alias": false,
+                              "pointee": {
+                                "id": "struct.pair",
+                                "kind": "record"
+                              }
+                            },
+                            "value_category": "lvalue",
+                            "var_id": 1
+                          },
+                          "ty": {
+                            "is_const": true,
+                            "is_restrict": false,
+                            "kind": "ptr",
+                            "may_alias": false,
+                            "pointee": {
+                              "id": "struct.pair",
+                              "kind": "record"
+                            }
+                          },
+                          "value_category": "prvalue"
+                        },
+                        "field_idx": 1,
+                        "field_name": "hi",
+                        "is_arrow": true,
+                        "kind": "member",
+                        "record_id": "struct.pair",
+                        "ty": {
+                          "bits": 16,
+                          "is_char_like": false,
+                          "kind": "int",
+                          "signed": false
+                        },
+                        "value_category": "lvalue"
+                      },
+                      "ty": {
+                        "bits": 16,
+                        "is_char_like": false,
+                        "kind": "int",
+                        "signed": false
+                      },
+                      "value_category": "prvalue"
+                    },
+                    "ty": {
+                      "bits": 32,
+                      "is_char_like": false,
+                      "kind": "int",
+                      "signed": false
+                    },
+                    "value_category": "prvalue"
+                  }
+                ],
+                "callee_symbol": "mix",
+                "is_indirect": false,
+                "kind": "call",
+                "ty": {
+                  "bits": 32,
+                  "is_char_like": false,
+                  "kind": "int",
+                  "signed": false
+                },
+                "value_category": "prvalue"
+              },
+              "ty": {
+                "bits": 32,
+                "is_char_like": false,
+                "kind": "int",
+                "signed": false
+              },
+              "value_category": "prvalue"
+            },
+            "kind": "expr_stmt"
+          },
+          {
+            "expr": {
+              "kind": "binary_op",
+              "lhs": {
+                "base": {
+                  "cast_kind": "lvalue_to_rvalue",
+                  "is_implicit": true,
+                  "kind": "cast",
+                  "sub": {
+                    "is_param": true,
+                    "kind": "var_ref",
+                    "param_idx": 0,
+                    "ty": {
+                      "is_const": false,
+                      "is_restrict": false,
+                      "kind": "ptr",
+                      "may_alias": false,
+                      "pointee": {
+                        "id": "struct.pair",
+                        "kind": "record"
+                      }
+                    },
+                    "value_category": "lvalue",
+                    "var_id": 0
+                  },
+                  "ty": {
+                    "is_const": false,
+                    "is_restrict": false,
+                    "kind": "ptr",
+                    "may_alias": false,
+                    "pointee": {
+                      "id": "struct.pair",
+                      "kind": "record"
+                    }
+                  },
+                  "value_category": "prvalue"
+                },
+                "field_idx": 1,
+                "field_name": "hi",
+                "is_arrow": true,
+                "kind": "member",
+                "record_id": "struct.pair",
+                "ty": {
+                  "bits": 16,
+                  "is_char_like": false,
+                  "kind": "int",
+                  "signed": false
+                },
+                "value_category": "lvalue"
+              },
+              "op": "assign",
+              "rhs": {
+                "cast_kind": "integral_cast",
+                "is_implicit": false,
+                "kind": "cast",
+                "sub": {
+                  "kind": "paren",
+                  "sub": {
+                    "kind": "binary_op",
+                    "lhs": {
+                      "cast_kind": "lvalue_to_rvalue",
+                      "is_implicit": true,
+                      "kind": "cast",
+                      "sub": {
+                        "base": {
+                          "cast_kind": "lvalue_to_rvalue",
+                          "is_implicit": true,
+                          "kind": "cast",
+                          "sub": {
+                            "is_param": true,
+                            "kind": "var_ref",
+                            "param_idx": 0,
+                            "ty": {
+                              "is_const": false,
+                              "is_restrict": false,
+                              "kind": "ptr",
+                              "may_alias": false,
+                              "pointee": {
+                                "id": "struct.pair",
+                                "kind": "record"
+                              }
+                            },
+                            "value_category": "lvalue",
+                            "var_id": 0
+                          },
+                          "ty": {
+                            "is_const": false,
+                            "is_restrict": false,
+                            "kind": "ptr",
+                            "may_alias": false,
+                            "pointee": {
+                              "id": "struct.pair",
+                              "kind": "record"
+                            }
+                          },
+                          "value_category": "prvalue"
+                        },
+                        "field_idx": 0,
+                        "field_name": "lo",
+                        "is_arrow": true,
+                        "kind": "member",
+                        "record_id": "struct.pair",
+                        "ty": {
+                          "bits": 32,
+                          "is_char_like": false,
+                          "kind": "int",
+                          "signed": false
+                        },
+                        "value_category": "lvalue"
+                      },
+                      "ty": {
+                        "bits": 32,
+                        "is_char_like": false,
+                        "kind": "int",
+                        "signed": false
+                      },
+                      "value_category": "prvalue"
+                    },
+                    "op": "shr",
+                    "rhs": {
+                      "bits": 32,
+                      "kind": "int_lit",
+                      "signed": true,
+                      "ty": {
+                        "bits": 32,
+                        "is_char_like": false,
+                        "kind": "int",
+                        "signed": true
+                      },
+                      "value_category": "prvalue",
+                      "value_str": "16"
+                    },
+                    "ty": {
+                      "bits": 32,
+                      "is_char_like": false,
+                      "kind": "int",
+                      "signed": false
+                    },
+                    "value_category": "prvalue"
+                  },
+                  "ty": {
+                    "bits": 32,
+                    "is_char_like": false,
+                    "kind": "int",
+                    "signed": false
+                  },
+                  "value_category": "prvalue"
+                },
+                "ty": {
+                  "bits": 16,
+                  "is_char_like": false,
+                  "kind": "int",
+                  "signed": false
+                },
+                "value_category": "prvalue"
+              },
+              "ty": {
+                "bits": 16,
+                "is_char_like": false,
+                "kind": "int",
+                "signed": false
+              },
+              "value_category": "prvalue"
+            },
+            "kind": "expr_stmt"
+          },
+          {
+            "expr": {
+              "cast_kind": "lvalue_to_rvalue",
+              "is_implicit": true,
+              "kind": "cast",
+              "sub": {
+                "base": {
+                  "cast_kind": "lvalue_to_rvalue",
+                  "is_implicit": true,
+                  "kind": "cast",
+                  "sub": {
+                    "is_param": true,
+                    "kind": "var_ref",
+                    "param_idx": 0,
+                    "ty": {
+                      "is_const": false,
+                      "is_restrict": false,
+                      "kind": "ptr",
+                      "may_alias": false,
+                      "pointee": {
+                        "id": "struct.pair",
+                        "kind": "record"
+                      }
+                    },
+                    "value_category": "lvalue",
+                    "var_id": 0
+                  },
+                  "ty": {
+                    "is_const": false,
+                    "is_restrict": false,
+                    "kind": "ptr",
+                    "may_alias": false,
+                    "pointee": {
+                      "id": "struct.pair",
+                      "kind": "record"
+                    }
+                  },
+                  "value_category": "prvalue"
+                },
+                "field_idx": 0,
+                "field_name": "lo",
+                "is_arrow": true,
+                "kind": "member",
+                "record_id": "struct.pair",
+                "ty": {
+                  "bits": 32,
+                  "is_char_like": false,
+                  "kind": "int",
+                  "signed": false
+                },
+                "value_category": "lvalue"
+              },
+              "ty": {
+                "bits": 32,
+                "is_char_like": false,
+                "kind": "int",
+                "signed": false
+              },
+              "value_category": "prvalue"
+            },
+            "kind": "return"
+          }
+        ]
+      },
+      "is_definition": true,
+      "is_extern_c": true,
+      "is_variadic": false,
+      "params": [
+        {
+          "name": "p",
+          "ty": {
+            "is_const": false,
+            "is_restrict": false,
+            "kind": "ptr",
+            "may_alias": false,
+            "pointee": {
+              "id": "struct.pair",
+              "kind": "record"
+            }
+          }
+        },
+        {
+          "name": "q",
+          "ty": {
+            "is_const": true,
+            "is_restrict": false,
+            "kind": "ptr",
+            "may_alias": false,
+            "pointee": {
+              "id": "struct.pair",
+              "kind": "record"
+            }
+          }
+        }
+      ],
+      "return_ty": {
+        "bits": 32,
+        "is_char_like": false,
+        "kind": "int",
+        "signed": false
+      },
+      "symbol": "pos_struct_ptr",
+      "unmangled_name": "pos_struct_ptr"
+    },
+    {
+      "abi_witness": {
+        "cc": "c",
+        "param_passing": [
+          {
+            "bits": 32,
+            "kind": "direct_int"
+          },
+          {
+            "bits": 32,
+            "kind": "direct_int"
+          }
+        ],
+        "return_passing": {
+          "bits": 32,
+          "kind": "direct_int"
+        }
+      },
+      "body_stmt": {
+        "kind": "compound",
+        "stmts": [
+          {
+            "expr": {
+              "kind": "binary_op",
+              "lhs": {
+                "kind": "paren",
+                "sub": {
+                  "kind": "binary_op",
+                  "lhs": {
+                    "cast_kind": "lvalue_to_rvalue",
+                    "is_implicit": true,
+                    "kind": "cast",
+                    "sub": {
+                      "is_param": true,
+                      "kind": "var_ref",
+                      "param_idx": 0,
+                      "ty": {
+                        "bits": 32,
+                        "is_char_like": false,
+                        "kind": "int",
+                        "signed": false
+                      },
+                      "value_category": "lvalue",
+                      "var_id": 0
+                    },
+                    "ty": {
+                      "bits": 32,
+                      "is_char_like": false,
+                      "kind": "int",
+                      "signed": false
+                    },
+                    "value_category": "prvalue"
+                  },
+                  "op": "shl",
+                  "rhs": {
+                    "bits": 32,
+                    "kind": "int_lit",
+                    "signed": true,
+                    "ty": {
+                      "bits": 32,
+                      "is_char_like": false,
+                      "kind": "int",
+                      "signed": true
+                    },
+                    "value_category": "prvalue",
+                    "value_str": "5"
+                  },
+                  "ty": {
+                    "bits": 32,
+                    "is_char_like": false,
+                    "kind": "int",
+                    "signed": false
+                  },
+                  "value_category": "prvalue"
+                },
+                "ty": {
+                  "bits": 32,
+                  "is_char_like": false,
+                  "kind": "int",
+                  "signed": false
+                },
+                "value_category": "prvalue"
+              },
+              "op": "bit_xor",
+              "rhs": {
+                "cast_kind": "lvalue_to_rvalue",
+                "is_implicit": true,
+                "kind": "cast",
+                "sub": {
+                  "is_param": true,
+                  "kind": "var_ref",
+                  "param_idx": 1,
+                  "ty": {
+                    "bits": 32,
+                    "is_char_like": false,
+                    "kind": "int",
+                    "signed": false
+                  },
+                  "value_category": "lvalue",
+                  "var_id": 1
+                },
+                "ty": {
+                  "bits": 32,
+                  "is_char_like": false,
+                  "kind": "int",
+                  "signed": false
+                },
+                "value_category": "prvalue"
+              },
+              "ty": {
+                "bits": 32,
+                "is_char_like": false,
+                "kind": "int",
+                "signed": false
+              },
+              "value_category": "prvalue"
+            },
+            "kind": "return"
+          }
+        ]
+      },
+      "is_definition": true,
+      "is_extern_c": false,
+      "is_variadic": false,
+      "params": [
+        {
+          "name": "a",
+          "ty": {
+            "bits": 32,
+            "is_char_like": false,
+            "kind": "int",
+            "signed": false
+          }
+        },
+        {
+          "name": "b",
+          "ty": {
+            "bits": 32,
+            "is_char_like": false,
+            "kind": "int",
+            "signed": false
+          }
+        }
+      ],
+      "return_ty": {
+        "bits": 32,
+        "is_char_like": false,
+        "kind": "int",
+        "signed": false
+      },
+      "symbol": "mix",
+      "unmangled_name": "mix"
+    }
+  ],
+  "lang_policy": {
+    "char_is_signed": true,
+    "exceptions_enabled": false,
+    "fast_math": false,
+    "is_cplusplus": false,
+    "lang_standard": "c11",
+    "pointer_width_bits": 64,
+    "signed_overflow": "iso_ub",
+    "strict_aliasing": true
+  },
+  "records": [
+    {
+      "align_bytes": 4,
+      "fields": [
+        {
+          "bit_width": null,
+          "name": "lo",
+          "offset_bits": 0,
+          "ty": {
+            "bits": 32,
+            "is_char_like": false,
+            "kind": "int",
+            "signed": false
+          }
+        },
+        {
+          "bit_width": null,
+          "name": "hi",
+          "offset_bits": 32,
+          "ty": {
+            "bits": 16,
+            "is_char_like": false,
+            "kind": "int",
+            "signed": false
+          }
+        }
+      ],
+      "id": "struct.pair",
+      "is_union": false,
+      "name": "pair",
+      "size_bytes": 8
+    }
+  ],
+  "schema_version": 1,
+  "target_triple": "x86_64-unknown-linux-gnu",
+  "tu_main_file": "pos_struct_ptr.c"
+}

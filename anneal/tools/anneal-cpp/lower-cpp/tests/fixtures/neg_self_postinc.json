@@ -1,0 +1,139 @@
+{
+  "functions": [
+    {
+      "abi_witness": {
+        "cc": "c",
+        "param_passing": [
+          {
+            "bits": 32,
+            "kind": "direct_int"
+          }
+        ],
+        "return_passing": {
+          "bits": 32,
+          "kind": "direct_int"
+        }
+      },
+      "body_stmt": {
+        "kind": "compound",
+        "stmts": [
+          {
+            "expr": {
+              "kind": "binary_op",
+              "lhs": {
+                "is_param": true,
+                "kind": "var_ref",
+                "param_idx": 0,
+                "ty": {
+                  "bits": 32,
+                  "is_char_like": false,
+                  "kind": "int",
+                  "signed": true
+                },
+                "value_category": "lvalue",
+                "var_id": 0
+              },
+              "op": "assign",
+              "rhs": {
+                "kind": "unary_op",
+                "op": "post_inc",
+                "sub": {
+                  "is_param": true,
+                  "kind": "var_ref",
+                  "param_idx": 0,
+                  "ty": {
+                    "bits": 32,
+                    "is_char_like": false,
+                    "kind": "int",
+                    "signed": true
+                  },
+                  "value_category": "lvalue",
+                  "var_id": 0
+                },
+                "ty": {
+                  "bits": 32,
+                  "is_char_like": false,
+                  "kind": "int",
+                  "signed": true
+                },
+                "value_category": "prvalue"
+              },
+              "ty": {
+                "bits": 32,
+                "is_char_like": false,
+                "kind": "int",
+                "signed": true
+              },
+              "value_category": "prvalue"
+            },
+            "kind": "expr_stmt"
+          },
+          {
+            "expr": {
+              "cast_kind": "lvalue_to_rvalue",
+              "is_implicit": true,
+              "kind": "cast",
+              "sub": {
+                "is_param": true,
+                "kind": "var_ref",
+                "param_idx": 0,
+                "ty": {
+                  "bits": 32,
+                  "is_char_like": false,
+                  "kind": "int",
+                  "signed": true
+                },
+                "value_category": "lvalue",
+                "var_id": 0
+              },
+              "ty": {
+                "bits": 32,
+                "is_char_like": false,
+                "kind": "int",
+                "signed": true
+              },
+              "value_category": "prvalue"
+            },
+            "kind": "return"
+          }
+        ]
+      },
+      "is_definition": true,
+      "is_extern_c": true,
+      "is_variadic": false,
+      "params": [
+        {
+          "name": "x",
+          "ty": {
+            "bits": 32,
+            "is_char_like": false,
+            "kind": "int",
+            "signed": true
+          }
+        }
+      ],
+      "return_ty": {
+        "bits": 32,
+        "is_char_like": false,
+        "kind": "int",
+        "signed": true
+      },
+      "symbol": "neg_self_postinc",
+      "unmangled_name": "neg_self_postinc"
+    }
+  ],
+  "lang_policy": {
+    "char_is_signed": true,
+    "exceptions_enabled": false,
+    "fast_math": false,
+    "is_cplusplus": false,
+    "lang_standard": "c11",
+    "pointer_width_bits": 64,
+    "signed_overflow": "iso_ub",
+    "strict_aliasing": true
+  },
+  "records": [],
+  "schema_version": 1,
+  "target_triple": "x86_64-unknown-linux-gnu",
+  "tu_main_file": "neg_self_postinc.c"
+}

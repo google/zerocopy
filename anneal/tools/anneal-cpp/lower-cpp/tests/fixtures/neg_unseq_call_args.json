@@ -1,0 +1,176 @@
+{
+  "functions": [
+    {
+      "abi_witness": {
+        "cc": "c",
+        "param_passing": [
+          {
+            "bits": 32,
+            "kind": "direct_int"
+          }
+        ],
+        "return_passing": {
+          "bits": 32,
+          "kind": "direct_int"
+        }
+      },
+      "body_stmt": {
+        "kind": "compound",
+        "stmts": [
+          {
+            "expr": {
+              "args": [
+                {
+                  "kind": "unary_op",
+                  "op": "pre_inc",
+                  "sub": {
+                    "is_param": true,
+                    "kind": "var_ref",
+                    "param_idx": 0,
+                    "ty": {
+                      "bits": 32,
+                      "is_char_like": false,
+                      "kind": "int",
+                      "signed": true
+                    },
+                    "value_category": "lvalue",
+                    "var_id": 0
+                  },
+                  "ty": {
+                    "bits": 32,
+                    "is_char_like": false,
+                    "kind": "int",
+                    "signed": true
+                  },
+                  "value_category": "prvalue"
+                },
+                {
+                  "kind": "unary_op",
+                  "op": "pre_inc",
+                  "sub": {
+                    "is_param": true,
+                    "kind": "var_ref",
+                    "param_idx": 0,
+                    "ty": {
+                      "bits": 32,
+                      "is_char_like": false,
+                      "kind": "int",
+                      "signed": true
+                    },
+                    "value_category": "lvalue",
+                    "var_id": 0
+                  },
+                  "ty": {
+                    "bits": 32,
+                    "is_char_like": false,
+                    "kind": "int",
+                    "signed": true
+                  },
+                  "value_category": "prvalue"
+                }
+              ],
+              "callee_symbol": "sink",
+              "is_indirect": false,
+              "kind": "call",
+              "ty": {
+                "bits": 32,
+                "is_char_like": false,
+                "kind": "int",
+                "signed": true
+              },
+              "value_category": "prvalue"
+            },
+            "kind": "return"
+          }
+        ]
+      },
+      "is_definition": true,
+      "is_extern_c": true,
+      "is_variadic": false,
+      "params": [
+        {
+          "name": "x",
+          "ty": {
+            "bits": 32,
+            "is_char_like": false,
+            "kind": "int",
+            "signed": true
+          }
+        }
+      ],
+      "return_ty": {
+        "bits": 32,
+        "is_char_like": false,
+        "kind": "int",
+        "signed": true
+      },
+      "symbol": "neg_unseq_call_args",
+      "unmangled_name": "neg_unseq_call_args"
+    },
+    {
+      "abi_witness": {
+        "cc": "c",
+        "param_passing": [
+          {
+            "bits": 32,
+            "kind": "direct_int"
+          },
+          {
+            "bits": 32,
+            "kind": "direct_int"
+          }
+        ],
+        "return_passing": {
+          "bits": 32,
+          "kind": "direct_int"
+        }
+      },
+      "body_stmt": null,
+      "is_definition": false,
+      "is_extern_c": true,
+      "is_variadic": false,
+      "params": [
+        {
+          "name": "a",
+          "ty": {
+            "bits": 32,
+            "is_char_like": false,
+            "kind": "int",
+            "signed": true
+          }
+        },
+        {
+          "name": "b",
+          "ty": {
+            "bits": 32,
+            "is_char_like": false,
+            "kind": "int",
+            "signed": true
+          }
+        }
+      ],
+      "return_ty": {
+        "bits": 32,
+        "is_char_like": false,
+        "kind": "int",
+        "signed": true
+      },
+      "symbol": "sink",
+      "unmangled_name": "sink"
+    }
+  ],
+  "lang_policy": {
+    "char_is_signed": true,
+    "exceptions_enabled": false,
+    "fast_math": false,
+    "is_cplusplus": false,
+    "lang_standard": "c11",
+    "pointer_width_bits": 64,
+    "signed_overflow": "iso_ub",
+    "strict_aliasing": true
+  },
+  "records": [],
+  "schema_version": 1,
+  "target_triple": "x86_64-unknown-linux-gnu",
+  "tu_main_file": "neg_unseq_call_args.c"
+}

@@ -210,6 +210,10 @@ cargo_locked = { workspace = "anneal/tools/anneal-spec/Cargo.toml" }
 mount = "/cargo-home"
 cargo_locked = { workspace = "anneal/tools/anneal-scaffold/Cargo.toml" }
 
+[caches.anneal-cpp-cargo-v1]
+mount = "/cargo-home"
+cargo_locked = { workspace = "anneal/tools/anneal-cpp/Cargo.toml" }
+
 [caches.anneal-cargo-v1]
 mount = "/cargo-home"
 cargo_locked = { workspace = "anneal/Cargo.toml" }
@@ -850,6 +854,23 @@ env = { CARGO_HOME = "/cargo-home" }
 command = ["./ci/scripts/run_anneal_scaffold_check.sh"]
 
 [[checks]]
+id = "tools-anneal-cpp"
+image = "zc-stable-msrv"
+runner = "ubuntu-24.04"
+pins = ["rust-toolchains"]
+caches = ["anneal-cpp-cargo-v1"]
+writable_dirs = ["anneal/tools/anneal-cpp/target"]
+inputs = [
+  { kind = "cargo_workspace", manifest_path = "anneal/tools/anneal-cpp/Cargo.toml" },
+  { kind = "glob", include = [
+    "anneal/tools/anneal-cpp/lower-cpp/tests/**",
+    "ci/scripts/run_anneal_cpp_check.sh",
+  ] },
+]
+env = { CARGO_HOME = "/cargo-home" }
+command = ["./ci/scripts/run_anneal_cpp_check.sh"]
+
+[[checks]]
 id = "tools-test"
 image = "zc-stable-msrv"
 runner = "ubuntu-24.04"
@@ -1012,6 +1033,7 @@ inputs = [
     ".github/release_notes.py",
     "ci/checks.toml",
     "ci/docker/anneal-tc.Dockerfile",
+    "ci/scripts/run_anneal_cpp_check.sh",
     "ci/scripts/run_anneal_scaffold_check.sh",
     "ci/scripts/run_anneal_spec_check.sh",
     "zerocopy/Cargo.toml",

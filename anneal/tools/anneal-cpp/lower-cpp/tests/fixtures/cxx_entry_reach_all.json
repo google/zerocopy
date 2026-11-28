@@ -1,0 +1,563 @@
+{
+  "functions": [
+    {
+      "abi_witness": {
+        "cc": "c",
+        "param_passing": [
+          {
+            "kind": "direct_ptr"
+          },
+          {
+            "bits": 32,
+            "kind": "direct_int"
+          }
+        ],
+        "return_passing": {
+          "kind": "ignore"
+        }
+      },
+      "body_stmt": {
+        "kind": "compound",
+        "stmts": []
+      },
+      "ctor_inits": [
+        {
+          "field_idx": 0,
+          "init": {
+            "cast_kind": "lvalue_to_rvalue",
+            "cast_syntax": "implicit",
+            "is_implicit": true,
+            "kind": "cast",
+            "sub": {
+              "is_param": true,
+              "is_ref_binding": false,
+              "kind": "var_ref",
+              "param_idx": 1,
+              "ty": {
+                "bits": 32,
+                "is_char_like": false,
+                "kind": "int",
+                "signed": true
+              },
+              "value_category": "lvalue",
+              "var_id": 1
+            },
+            "ty": {
+              "bits": 32,
+              "is_char_like": false,
+              "kind": "int",
+              "signed": true
+            },
+            "value_category": "prvalue"
+          },
+          "kind": "field",
+          "record_id": "struct.Box<int>"
+        }
+      ],
+      "is_const_method": false,
+      "is_definition": true,
+      "is_extern_c": false,
+      "is_static_method": false,
+      "is_trivial": false,
+      "is_variadic": false,
+      "is_virtual": false,
+      "method_kind": "ctor",
+      "params": [
+        {
+          "is_this": true,
+          "name": "this",
+          "ty": {
+            "is_const": false,
+            "is_restrict": false,
+            "kind": "ptr",
+            "may_alias": false,
+            "pointee": {
+              "id": "struct.Box<int>",
+              "kind": "record"
+            }
+          }
+        },
+        {
+          "dtor_symbol": null,
+          "name": "x",
+          "ty": {
+            "bits": 32,
+            "is_char_like": false,
+            "kind": "int",
+            "signed": true
+          }
+        }
+      ],
+      "qualified_name": "Box<int>::Box",
+      "return_ty": {
+        "kind": "void"
+      },
+      "symbol": "_ZN3BoxIiEC1Ei",
+      "template_args": null,
+      "this_record_id": "struct.Box<int>",
+      "unmangled_name": "Box"
+    },
+    {
+      "abi_witness": {
+        "cc": "c",
+        "param_passing": [
+          {
+            "bits": 32,
+            "kind": "direct_int"
+          }
+        ],
+        "return_passing": {
+          "kind": "ignore"
+        }
+      },
+      "body_stmt": {
+        "kind": "compound",
+        "stmts": [
+          {
+            "expr": {
+              "kind": "paren",
+              "sub": {
+                "cond": {
+                  "kind": "bool_lit",
+                  "ty": {
+                    "kind": "bool"
+                  },
+                  "value": false,
+                  "value_category": "prvalue"
+                },
+                "else_expr": {
+                  "kind": "implicit_value_init",
+                  "ty": {
+                    "kind": "void"
+                  },
+                  "value_category": "prvalue"
+                },
+                "kind": "conditional",
+                "then_expr": {
+                  "cast_kind": "to_void",
+                  "cast_syntax": "static",
+                  "is_implicit": false,
+                  "kind": "cast",
+                  "sub": {
+                    "is_param": true,
+                    "is_ref_binding": false,
+                    "kind": "var_ref",
+                    "param_idx": 0,
+                    "ty": {
+                      "bits": 32,
+                      "is_char_like": false,
+                      "kind": "int",
+                      "signed": true
+                    },
+                    "value_category": "lvalue",
+                    "var_id": 0
+                  },
+                  "ty": {
+                    "kind": "void"
+                  },
+                  "value_category": "prvalue"
+                },
+                "ty": {
+                  "kind": "void"
+                },
+                "value_category": "prvalue"
+              },
+              "ty": {
+                "kind": "void"
+              },
+              "value_category": "prvalue"
+            },
+            "kind": "expr_stmt"
+          },
+          {
+            "expr": {
+              "kind": "implicit_value_init",
+              "ty": {
+                "kind": "void"
+              },
+              "value_category": "prvalue"
+            },
+            "kind": "expr_stmt"
+          }
+        ]
+      },
+      "is_const_method": false,
+      "is_definition": true,
+      "is_extern_c": false,
+      "is_static_method": false,
+      "is_trivial": false,
+      "is_variadic": false,
+      "is_virtual": false,
+      "method_kind": "free",
+      "params": [
+        {
+          "dtor_symbol": null,
+          "name": "x",
+          "ty": {
+            "bits": 32,
+            "is_char_like": false,
+            "kind": "int",
+            "signed": true
+          }
+        }
+      ],
+      "qualified_name": "check",
+      "return_ty": {
+        "kind": "void"
+      },
+      "symbol": "_Z5checki",
+      "template_args": null,
+      "this_record_id": null,
+      "unmangled_name": "check"
+    },
+    {
+      "abi_witness": {
+        "cc": "c",
+        "param_passing": [
+          {
+            "bits": 32,
+            "kind": "direct_int"
+          }
+        ],
+        "return_passing": {
+          "bits": 32,
+          "kind": "direct_int"
+        }
+      },
+      "body_stmt": {
+        "kind": "compound",
+        "stmts": [
+          {
+            "desc": "WhileStmt: condition variable",
+            "kind": "unsupported_stmt"
+          },
+          {
+            "expr": {
+              "bits": 32,
+              "kind": "int_lit",
+              "signed": true,
+              "ty": {
+                "bits": 32,
+                "is_char_like": false,
+                "kind": "int",
+                "signed": true
+              },
+              "value_category": "prvalue",
+              "value_str": "0"
+            },
+            "kind": "return"
+          }
+        ]
+      },
+      "is_const_method": false,
+      "is_definition": true,
+      "is_extern_c": false,
+      "is_static_method": false,
+      "is_trivial": false,
+      "is_variadic": false,
+      "is_virtual": false,
+      "method_kind": "free",
+      "params": [
+        {
+          "dtor_symbol": null,
+          "name": "x",
+          "ty": {
+            "bits": 32,
+            "is_char_like": false,
+            "kind": "int",
+            "signed": true
+          }
+        }
+      ],
+      "qualified_name": "unreachable_sibling",
+      "return_ty": {
+        "bits": 32,
+        "is_char_like": false,
+        "kind": "int",
+        "signed": true
+      },
+      "symbol": "_Z19unreachable_siblingi",
+      "template_args": null,
+      "this_record_id": null,
+      "unmangled_name": "unreachable_sibling"
+    },
+    {
+      "abi_witness": {
+        "cc": "c",
+        "param_passing": [
+          {
+            "bits": 32,
+            "kind": "direct_int"
+          }
+        ],
+        "return_passing": {
+          "bits": 32,
+          "kind": "direct_int"
+        }
+      },
+      "body_stmt": {
+        "kind": "compound",
+        "stmts": [
+          {
+            "dtor_symbol": null,
+            "init": {
+              "args": [
+                {
+                  "cast_kind": "lvalue_to_rvalue",
+                  "cast_syntax": "implicit",
+                  "is_implicit": true,
+                  "kind": "cast",
+                  "sub": {
+                    "is_param": true,
+                    "is_ref_binding": false,
+                    "kind": "var_ref",
+                    "param_idx": 0,
+                    "ty": {
+                      "bits": 32,
+                      "is_char_like": false,
+                      "kind": "int",
+                      "signed": true
+                    },
+                    "value_category": "lvalue",
+                    "var_id": 0
+                  },
+                  "ty": {
+                    "bits": 32,
+                    "is_char_like": false,
+                    "kind": "int",
+                    "signed": true
+                  },
+                  "value_category": "prvalue"
+                }
+              ],
+              "construction_kind": "complete",
+              "ctor_symbol": "_ZN3BoxIiEC1Ei",
+              "is_array_construct": false,
+              "is_copy_or_move": false,
+              "is_default": false,
+              "is_elidable": false,
+              "is_trivial": false,
+              "kind": "construct",
+              "param_is_ref": [
+                false
+              ],
+              "record_id": "struct.Box<int>",
+              "ty": {
+                "id": "struct.Box<int>",
+                "kind": "record"
+              },
+              "value_category": "prvalue",
+              "zero_init": false
+            },
+            "is_nrvo": false,
+            "is_ref": false,
+            "kind": "decl_stmt",
+            "name": "b",
+            "ty": {
+              "id": "struct.Box<int>",
+              "kind": "record"
+            },
+            "var_id": 1
+          },
+          {
+            "expr": {
+              "args": [
+                {
+                  "cast_kind": "lvalue_to_rvalue",
+                  "cast_syntax": "implicit",
+                  "is_implicit": true,
+                  "kind": "cast",
+                  "sub": {
+                    "is_param": true,
+                    "is_ref_binding": false,
+                    "kind": "var_ref",
+                    "param_idx": 0,
+                    "ty": {
+                      "bits": 32,
+                      "is_char_like": false,
+                      "kind": "int",
+                      "signed": true
+                    },
+                    "value_category": "lvalue",
+                    "var_id": 0
+                  },
+                  "ty": {
+                    "bits": 32,
+                    "is_char_like": false,
+                    "kind": "int",
+                    "signed": true
+                  },
+                  "value_category": "prvalue"
+                }
+              ],
+              "callee_symbol": "_Z5checki",
+              "is_indirect": false,
+              "is_virtual": false,
+              "kind": "call",
+              "param_is_ref": [
+                false
+              ],
+              "returns_ref": false,
+              "ty": {
+                "kind": "void"
+              },
+              "value_category": "prvalue"
+            },
+            "kind": "expr_stmt"
+          },
+          {
+            "expr": {
+              "kind": "binary_op",
+              "lhs": {
+                "cast_kind": "lvalue_to_rvalue",
+                "cast_syntax": "implicit",
+                "is_implicit": true,
+                "kind": "cast",
+                "sub": {
+                  "base": {
+                    "is_param": false,
+                    "is_ref_binding": false,
+                    "kind": "var_ref",
+                    "param_idx": null,
+                    "ty": {
+                      "id": "struct.Box<int>",
+                      "kind": "record"
+                    },
+                    "value_category": "lvalue",
+                    "var_id": 1
+                  },
+                  "field_idx": 0,
+                  "field_name": "v",
+                  "is_arrow": false,
+                  "kind": "member",
+                  "record_id": "struct.Box<int>",
+                  "ty": {
+                    "bits": 32,
+                    "is_char_like": false,
+                    "kind": "int",
+                    "signed": true
+                  },
+                  "value_category": "lvalue"
+                },
+                "ty": {
+                  "bits": 32,
+                  "is_char_like": false,
+                  "kind": "int",
+                  "signed": true
+                },
+                "value_category": "prvalue"
+              },
+              "op": "add",
+              "rhs": {
+                "cast_kind": "integral_cast",
+                "cast_syntax": "static",
+                "is_implicit": false,
+                "kind": "cast",
+                "sub": {
+                  "bits": 32,
+                  "kind": "int_lit",
+                  "signed": true,
+                  "ty": {
+                    "bits": 32,
+                    "is_char_like": false,
+                    "kind": "int",
+                    "signed": true
+                  },
+                  "value_category": "prvalue",
+                  "value_str": "3"
+                },
+                "ty": {
+                  "bits": 32,
+                  "is_char_like": false,
+                  "kind": "int",
+                  "signed": true
+                },
+                "value_category": "prvalue"
+              },
+              "ty": {
+                "bits": 32,
+                "is_char_like": false,
+                "kind": "int",
+                "signed": true
+              },
+              "value_category": "prvalue"
+            },
+            "kind": "return"
+          }
+        ]
+      },
+      "is_const_method": false,
+      "is_definition": true,
+      "is_extern_c": false,
+      "is_static_method": false,
+      "is_trivial": false,
+      "is_variadic": false,
+      "is_virtual": false,
+      "method_kind": "free",
+      "params": [
+        {
+          "dtor_symbol": null,
+          "name": "x",
+          "ty": {
+            "bits": 32,
+            "is_char_like": false,
+            "kind": "int",
+            "signed": true
+          }
+        }
+      ],
+      "qualified_name": "entry_reach",
+      "return_ty": {
+        "bits": 32,
+        "is_char_like": false,
+        "kind": "int",
+        "signed": true
+      },
+      "symbol": "_Z11entry_reachi",
+      "template_args": null,
+      "this_record_id": null,
+      "unmangled_name": "entry_reach"
+    }
+  ],
+  "lang_policy": {
+    "char_is_signed": true,
+    "exceptions_enabled": false,
+    "fast_math": false,
+    "is_cplusplus": true,
+    "lang_standard": "c++20",
+    "pointer_width_bits": 64,
+    "signed_overflow": "iso_ub",
+    "strict_aliasing": true
+  },
+  "records": [
+    {
+      "align_bytes": 4,
+      "bases": [],
+      "dtor_symbol": null,
+      "fields": [
+        {
+          "bit_width": null,
+          "name": "v",
+          "offset_bits": 0,
+          "ty": {
+            "bits": 32,
+            "is_char_like": false,
+            "kind": "int",
+            "signed": true
+          }
+        }
+      ],
+      "has_non_trivial_dtor": false,
+      "id": "struct.Box<int>",
+      "is_cxx_record": true,
+      "is_polymorphic": false,
+      "is_trivially_copyable": true,
+      "is_union": false,
+      "name": "Box",
+      "size_bytes": 4
+    }
+  ],
+  "schema_version": 1,
+  "target_triple": "x86_64-unknown-linux-gnu",
+  "tu_main_file": "cxx_entry_reach.cc"
+}

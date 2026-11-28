@@ -21,6 +21,7 @@ SCRIPTS = REPO_ROOT / "ci" / "scripts"
 
 # Wall-clock limit in seconds for each check entrypoint.
 LIMITS = {
+    "run_anneal_cpp_check.sh": 1800,
     "run_anneal_mir_eval_check.sh": 1800,
     "run_anneal_scaffold_check.sh": 1800,
     "run_anneal_spec_check.sh": 1800,
