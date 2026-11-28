@@ -362,9 +362,12 @@ repository CI by `trusted/correspondence/` and pinned `vendor/lean-miri/` under
   $M_{\text{ref}}$) via $\tau_{\text{prog}}$. MIR Profile v2 captures instead
   state `Trusted.CrateTheoremV2` or `Trusted.UnitTheoremV2` over
   `Trusted.CrateV2`, which add caller memory to the query and use the
-  Profile v2 rules (`initStateV2`, `evalStepV2`). Pass 2 does not yet relate
-  those rules to $M_{\text{ref}}$, so receipts mark correspondence
-  inapplicable for them.
+  Profile v2 rules (`initStateV2`, `evalStepV2`). Pass 2 kernel-replays
+  unlocked domain-relativized Profile v2 correspondence over verified canary
+  and conservative-edge domains in
+  `correspondence/Anneal/MirCorrespondence/ProfileV2*` (without a universal
+  locked claim covering arbitrary Profile v2 captures), so receipts still mark
+  correspondence inapplicable for Profile v2 targets.
 
 Stage 2's theorem-stating boundary, $\tau_{\text{prog}}$, and $M_{\text{ref}}$
 are optimized for **clarity and direct correspondence to the Rust Reference and

@@ -197,12 +197,15 @@ fn check_provenance_and_toolchain(ok: &anneal_testkit::VerifySuccessReceipt) {
         assert!(digest.bytes().all(|b| b.is_ascii_hexdigit()), "{sha_field}");
     }
     assert_eq!(minirust["files"].as_object().unwrap().len(), 30);
-    assert_eq!(prov["correspondence_proofs"].as_object().unwrap().len(), 29);
+    assert_eq!(prov["correspondence_proofs"].as_object().unwrap().len(), 37);
     for proof_key in [
         "correspondence/Anneal/MiniRustProof.lean",
         "correspondence/Anneal/MirCorrespondence/InitAndSim.lean",
         "correspondence/Anneal/MirCorrespondence/LayoutAndAlign.lean",
         "correspondence/Anneal/MirCorrespondence/MiriMemoryBridge.lean",
+        "correspondence/Anneal/MirCorrespondence/ProfileV2RefMachine.lean",
+        "correspondence/Anneal/MirCorrespondence/ProfileV2Correspondence.lean",
+        "correspondence/Anneal/MirCorrespondence/ProfileV2C3AndBundles.lean",
         "correspondence/Anneal/MirCorrespondence/RefinementBundles.lean",
         "correspondence/Anneal/MirCorrespondenceProof.lean",
     ] {
@@ -217,7 +220,9 @@ fn check_provenance_and_toolchain(ok: &anneal_testkit::VerifySuccessReceipt) {
     ] {
         assert_eq!(prov["trusted_lean"][lean_key].as_str().unwrap().len(), 64);
     }
-    assert!(prov["note"].as_str().unwrap().contains("anneal-audit --require-correspondence"));
+    let note = prov["note"].as_str().unwrap();
+    assert!(note.contains("anneal-audit --require-correspondence"));
+    assert!(note.contains("unlocked Profile v2 claim definitions"));
 
     let rendered_py = std::process::Command::new("python3")
         .arg("-B")

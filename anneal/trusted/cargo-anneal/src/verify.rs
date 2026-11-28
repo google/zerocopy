@@ -4330,15 +4330,18 @@ fn run<Out: std::io::Write + Send, ErrOut: std::io::Write + Send>(
             ),
         })
     } else if profile_v2 {
-        // Pass 2 relates only the Profile v1 rules (`initState`/`evalStep`)
-        // to `lean-miri`; `Trusted.Correspondence` maps Profile v2-only
-        // constructors to fail-closed sentinels, so it certifies nothing
-        // about `initStateV2`/`evalStepV2`.
+        // Bundled Pass 2 correspondence certifies arbitrary targets under
+        // Profile v1 (`initState`/`evalStep`) only; repository Pass 2 replays
+        // unlocked finite Profile v2 canary domains over
+        // `initStateV2`/`evalStepV2` without a universal locked claim for
+        // arbitrary Profile v2 captures.
         json!({
             "applicable": false,
-            "reason": "bundled Pass 2 correspondence covers Profile v1 semantics \
-                       only; Profile v2 execution rules are not certified \
-                       against lean-miri",
+            "reason": "bundled Pass 2 locked correspondence certifies arbitrary \
+                       targets under Profile v1 only; repository Pass 2 \
+                       replays only unlocked finite Profile v2 canary \
+                       domains without a universal claim for arbitrary \
+                       Profile v2 captures",
         })
     } else {
         json!({

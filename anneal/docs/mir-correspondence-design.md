@@ -140,8 +140,14 @@ correspondence/Anneal/          Untrusted correspondence proof (Pass 2)
                                 LayoutAndAlign, MiriMemoryBridge, RetPlace,
                                 CopyReturnScalar, CopyReturnPair, MemRoundTrip,
                                 RvalueStep, StmtTermStep, InitAndSim, Canaries,
-                                RefinementBundles)
-  MirCorrespondenceProof.lean   Public re-exports of all 38 locked witnesses
+                                RefinementBundles, ProfileV2RefMachine,
+                                ProfileV2Correspondence, ProfileV2Witnesses,
+                                ProfileV2EdgeWitnesses, ProfileV2Canaries,
+                                ProfileV2PosCanaries, ProfileV2PosCanariesC1,
+                                ProfileV2C3AndBundles)
+  MirCorrespondenceProof.lean   Public re-exports of the 38 locked Pass-2
+                                witnesses plus unlocked, untrusted-origin
+                                Profile v2 domain/canary/regression evidence
 
 trusted/audit/                  anneal-audit CLI, auditor library, and inspector
   TrustedBoundary.lean          Syntactic preflight, namespace and
@@ -2700,6 +2706,123 @@ The Pass 2 canaries in `Anneal.MirCorrespondenceProof` check both models:
   `TerminatorKind.call` returns across caller stack frames, and pinned
   `core::num` `sysrootCall` (`uncheckedAdd`) agrees with `lean-miri` on both
   in-bounds addition and overflow UB (`65500u16 + 100u16`).
+
+### 5.5 Unlocked Profile v2 Refinement, Conservative Edges, and Canaries
+
+Beyond Profile v1's 38 locked claims, Pass 2 kernel-replays unlocked,
+untrusted-origin domain-relativized Profile v2 correspondence evidence
+(`mirProfileVersion = 2`, `evalStepV2`, and byte-level `CallerMemory`) across
+verified canary, conservative-edge, and regression domains inside eight
+correspondence modules (`37` files in `correspondence_proofs`, zero additions
+to `trusted/lean/` or `trusted/correspondence/`). Because
+`ProfileV2RefMachine`, all Profile v2 claim definitions, domain predicates,
+fixtures, and theorem types live in unlocked `correspondence/` rather than
+`trusted/correspondence/`—meaning neither `TrustedBoundary.lean`'s locked-claim
+check (`verifyCorrespondenceClaims`) nor its evaluator-independence check
+(`verifyRefEvaluatorIndependence`) audits them—these results instead rely on
+`CODEOWNERS`-gated per-PR human review of statement bodies and serve as
+CI-replayed research/regression evidence rather than universally certified
+correspondence, and per-crate Profile v2 verification receipts still mark
+`correspondence_provenance` inapplicable (consistent with
+[`docs/architecture.md`](architecture.md) and
+[`docs/trust-model.md`](trust-model.md)):
+
+- **`ProfileV2RefMachine`:** Instantiates
+  `Miri.Interpreter.ExecutionMachine.step` for Profile v2 (importing only
+  `Trusted.MirAst`, `Trusted.MirModel`, and
+  `Trusted.Correspondence.{Codec,State,Config}`, with zero dependence on
+  `Trusted.MirSemantics`, and total fail-closed catch-alls outside the
+  corresponded AST/type/value fragment) with `CallerMemory`
+  materialization/extraction (`refInitCallerMemoryV2`,
+  `refExtractCallerMemoryV2`, validating caller-only memory via
+  `validateCallerMem` before allocating `retPlace`, rejecting `0` or `≥ 2^64`
+  `AllocId`s, reserving fresh `retId`/`nextAllocId` past caller allocations,
+  caller byte provenances, and entry argument provenances, rejecting
+  `nextAllocId` wrap-around, non-`UInt64`-fitting layouts before
+  `Miri.ABI.LayoutData` construction, and partial or mismatched
+  pointer-provenance byte runs on entry while reading both whole 8-byte
+  pointers and surviving `byteFragments` on extraction), natural-aligned
+  layouts (`refLayoutDataForTyV2`, propagating `uninhabited`/`Variants.Empty`
+  across `[!; N]` (`N >= 1`) and uninhabited tuples, plus `opsemInhabited`),
+  `projectionMemoryOffset`, `discriminantLayout` (`u8` fallback for all
+  non-enum types during `ValidityVisitor` dispatch while enum tag hooks
+  dispatch on `refAsEnumTy?` under entry `refDiscriminantTypesValid`),
+  `ValidityVisitor.validatePlace` (`validationRecursive := true` with
+  `borrowTracker = none`), `CallMachine.cleanup` stack deallocation,
+  `refPanicLangItemV2` (reusing `refPanicLangItem`, mapping optional overflow
+  lang items to `PanicDivZero` iff `rp.overflowChecks = true`, and
+  `.termination (.abort ...)` -> `.returned (.aborted ...)` caller-memory
+  extraction for safe and `--overflow-checks` aborts), and
+  `ForeignItems.emulate` dispatch (`checkArgumentCompat := true` with explicit
+  hook checks in each handler) for `CoreCallOp` (`sliceLen`,
+  `sliceGetUncheckedRangeTo`/`RangeFrom`, `usizeUncheckedSub`, `ptrAdd` with
+  unsigned `UInt64` stride encoding via `Scalar.fromUInt`; `.sysrootCall` and
+  array/rodata/`constantIndex`/`unsize`/`intToLeBytes`/`arrayEq`/`Range`/
+  `Option`/`downcast`/`CoreContracts`/`panicAbort` lowerings produce sentinels
+  that reject to `.blocked`), defining `RefWellFormedV2`,
+  `RefBehaviorV2`, and `RefDivergesV2`. Query-boundary entry checks
+  (`initRefStateV2`) and exit caller confinement (`refReadReturnValV2`) sit in
+  the boundary adapter (`borrowTracker = none`), while eager `&T`/`&mut T`
+  pointee validation runs inside the `ExecutionMachine.operandHooks.dereference`
+  hook (`refDereferenceOpV2`), and in-body deref alignment, writes, borrows,
+  offsets, and stack cleanup execute via `ExecutionMachine.step`.
+- **`ProfileV2Correspondence`:** Defines unlocked, untrusted-origin safety
+  refinement (`SafetyRefinementV2On`, proved on canary/extended domains and
+  transferring `SatisfiesPostV2`, termination, `BodyVerifiedV2`,
+  `ProgramVerifiedV2`, `CrateTheoremV2`, and `UnitTheoremV2` when all
+  `entryProgForBody` queries lie in `D`; universal `SafetyRefinementV2Bundle`
+  stays uninstantiated for `encodeProg`) separately from exact two-way fault
+  equivalence (`BiFaultEquivV2On`; universal `BiFaultEquivV2Bundle encodeProg`
+  is false), and proves corresponded-fragment Profile v2 layout agreement
+  (`layoutOfTyV2_eq_refLayoutDataForTyV2_of_corresponded` over
+  `inCorrespondedLayoutTyV2` for byte sizes `< 2^64`, including
+  `[T; N]` arrays), `CallerMemory` validity, disjointness, and guarded
+  type/value admission agreements
+  (`refAccessSpans_eq_refAccessSpansV2_of_corresponded` under
+  `inCorrespondedTyV2`/`inCorrespondedValV2`/`tyLayoutsFitU64V2`, plus
+  unconditional soundness when `ProfileV2RefMachine` admits a type or value),
+  `Trusted.MirSemantics`-side `encodeValV2`/`decodeValV2` little-endian
+  round-trips, plain-init `CallerMemory` materialization/extraction, callee
+  stack framing lemmas against `Miri.Memory.Allocation`/`MemoryState`, and
+  fuel-bounded adequacy bridges (`execFaultProgV2`, `refCoreExecV2`).
+  End-to-end memory mutation and read-only rejection are proved inside `V2_C2`
+  and `V2_C5`.
+- **`ProfileV2Witnesses`:** Provides reusable symbolic stepping lemmas (not
+  tactics) for `Miri.Interpreter.ExecutionMachine.step`, `copyRuntimePlace`,
+  and `ValidityVisitor.validatePlace` (`Lean.Loop.forIn_eq_of_monadTail`).
+- **`ProfileV2EdgeWitnesses`:** Executes both `evalStepV2` and
+  `ExecutionMachine.step` (`ProfileV2RefMachine`) on three conservative edges
+  where $M_{\text{anneal}}$ faults conservatively while $M_{\text{ref}}$
+  succeeds: zero-offset `BinOp.offset(p, 0)` on an out-of-bounds provenance
+  pointer (`Edge 1`), null provenance-less ZST dereference `*(0 as *const ())`
+  (`Edge 2`), and `*const u32 as *mut u32` cast (`Edge 3`). Edge 1 directly
+  witnesses `profileV2_not_biFaultEquiv_universal` and
+  `profileV2_extendedDomain_not_biFaultEquiv`, together with four boundary
+  regression witnesses (`profileV2_allocIdOverflow_rejected`,
+  `profileV2_partialProvenance_and_fragments_spec`,
+  `profileV2_oversizedLayout_rejected`, and
+  `profileV2_uninhabitedAndLargePtrAdd_spec`).
+- **Seven Profile v2 lockstep canaries (`V2_C1`–`V2_C6`, counting
+  `V2_C4a`/`V2_C4b`), panic-abort, entry-isolation regressions, and domain
+  bundles:** `ProfileV2Canaries`, `ProfileV2PosCanaries`,
+  `ProfileV2PosCanariesC1`, and `ProfileV2C3AndBundles` establish unlocked
+  end-to-end agreement across `V2_C1` (`split_at`-style slice splitting),
+  `V2_C2` (`BinOp.offset` + caller memory write), `V2_C3` (self-moved thin
+  ZST `PtrMetadata`), `V2_C4a` (misaligned entry `&[u32]`, rejected in
+  `initRefStateV2` vs `initStateV2`), `V2_C4b` (misaligned `*const u32` deref
+  in `ExecutionMachine.step`), `V2_C5` (read-only caller memory store in
+  `ExecutionMachine.step`), `V2_C6` (stack-reference escape via
+  `refsStayInCallerMem` in `evalStepV2`, and `CallMachine.cleanup` stack
+  deallocation + `refReadReturnValV2` rejection in `ProfileV2RefMachine`),
+  `profileV2_panicAbort_preserves_callerMem` (post-mutation `CallerMemory`
+  preservation across safe and `--overflow-checks` aborts vs fail-closed
+  `.unsupported`/`.blocked` rejection), and
+  `profileV2_entryRefAndProvIsolation_spec` (entry dangling `&()`/`0`-len
+  `&[u8]` rejection before `retPlace` creation, raw/stack-escape store `.ub`
+  vs `ExecutionScalar` `.unsupported`/`.blocked` on missing-allocation
+  `BinOp.offset`, and caller/argument provenance freshness across `retId` and
+  `nextAllocId`), exposing the unlocked evidence exports through
+  `Anneal.MirCorrespondenceProof`.
 
 ---
 

@@ -2383,9 +2383,10 @@ class VerifyZerocopyTests(unittest.TestCase):
         v2_provenance = {
             "applicable": False,
             "reason": (
-                "bundled Pass 2 correspondence covers Profile v1 semantics "
-                "only; Profile v2 execution rules are not certified against "
-                "lean-miri"
+                "bundled Pass 2 locked correspondence certifies arbitrary "
+                "targets under Profile v1 only; repository Pass 2 replays "
+                "only unlocked finite Profile v2 canary domains without a "
+                "universal claim for arbitrary Profile v2 captures"
             ),
         }
         v2_root_fn = (
