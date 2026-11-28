@@ -276,6 +276,18 @@ guarded, as a divisor is, by a fact that bounds it: a comparison that puts it
 at most, or below, a constant, such as `x <= 128` or `x < 129` for `u8`,
 either way round and possibly negated.
 
+On `u8`, the ASCII classes `is_ascii`, `is_ascii_alphabetic`,
+`is_ascii_uppercase`, `is_ascii_lowercase`, `is_ascii_alphanumeric`,
+`is_ascii_digit`, `is_ascii_hexdigit`, `is_ascii_punctuation`,
+`is_ascii_graphic`, `is_ascii_whitespace`, and `is_ascii_control` are
+decidable `bool`s, and `to_ascii_uppercase` and `to_ascii_lowercase` are
+`u8`s. A class binds the byte once, as `(let «ascii» : Int := a; ..)`, and
+tests it against the byte ranges that Rust's `core` matches, such as
+`48 ≤ «ascii» ∧ «ascii» ≤ 57` for a digit. A conversion moves a letter of the
+other case by 32, which is the bit that `core` flips. Other integer types are
+rejected, as are the unstable `is_ascii_octdigit` and two-operand methods such
+as `eq_ignore_ascii_case`.
+
 Division and remainder lower to
 `Trusted.MirSemantics.intTdiv`/`intTmod` (Rust's truncating semantics, as in
 `Int.tdiv`/`Int.tmod`) and require the divisor to be a nonzero literal or

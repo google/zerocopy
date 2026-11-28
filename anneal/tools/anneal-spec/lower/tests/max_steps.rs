@@ -526,3 +526,13 @@ fn max_steps_at_bindings_carry_the_arm_facts() {
         "E_ANNEAL_UNGUARDED_SPEC_DIV",
     );
 }
+
+#[test]
+fn max_steps_counts_ascii_conversions_and_tests() {
+    let l = lower_one(&wrap(
+        "max_steps = if c.is_ascii_digit() { c.to_ascii_uppercase() } else { 1 }",
+        "fn f(c: u8)",
+    ))
+    .unwrap();
+    assert!(l.spec_lean.contains("«ascii» - (32 : Int)"), "{}", l.spec_lean);
+}

@@ -400,6 +400,54 @@ const SATURATE_BINDER: &str = "«saturating»";
 /// literals.
 const POWER_OF_TWO_BINDER: &str = "«power_of_two»";
 
+/// The Lean binder of the byte that a `u8` ASCII method tests or converts.
+/// As with [`SATURATE_BINDER`], the body that binds it mentions only it and
+/// literals.
+const ASCII_BINDER: &str = "«ascii»";
+
+/// `u8`, the receiver type of the ASCII methods.
+const U8: IntTy = IntTy { bits: 8, signed: false, pointer_sized: false };
+
+/// The bytes that `u8` ASCII class method `name` accepts, as inclusive
+/// ranges, exactly as Rust's `core` defines the method, or `None` if `name`
+/// is not such a method.
+fn ascii_class(name: &str) -> Option<&'static [(u8, u8)]> {
+    Some(match name {
+        "is_ascii" => &[(0, 127)],
+        "is_ascii_alphabetic" => &[(b'A', b'Z'), (b'a', b'z')],
+        "is_ascii_uppercase" => &[(b'A', b'Z')],
+        "is_ascii_lowercase" => &[(b'a', b'z')],
+        "is_ascii_alphanumeric" => &[(b'0', b'9'), (b'A', b'Z'), (b'a', b'z')],
+        "is_ascii_digit" => &[(b'0', b'9')],
+        "is_ascii_hexdigit" => &[(b'0', b'9'), (b'A', b'F'), (b'a', b'f')],
+        "is_ascii_punctuation" => &[(b'!', b'/'), (b':', b'@'), (b'[', b'`'), (b'{', b'~')],
+        "is_ascii_graphic" => &[(b'!', b'~')],
+        "is_ascii_whitespace" => {
+            &[(b'\t', b'\t'), (b'\n', b'\n'), (b'\x0C', b'\x0C'), (b'\r', b'\r'), (b' ', b' ')]
+        }
+        "is_ascii_control" => &[(b'\0', b'\x1F'), (b'\x7F', b'\x7F')],
+        _ => return None,
+    })
+}
+
+/// The proposition that [`ASCII_BINDER`] lies in one of `ranges`.
+fn ascii_test(ranges: &[(u8, u8)]) -> String {
+    let c = ASCII_BINDER;
+    let lit = |b: u8| int_lit(IntLit::new(false, u128::from(b)));
+    let tests: Vec<String> = ranges
+        .iter()
+        .map(|&(lo, hi)| {
+            if lo == hi {
+                format!("{c} = {}", lit(lo))
+            } else {
+                format!("{} ≤ {c} ∧ {c} ≤ {}", lit(lo), lit(hi))
+            }
+        })
+        .map(|t| if ranges.len() == 1 { t } else { format!("({t})") })
+        .collect();
+    tests.join(" ∨ ")
+}
+
 /// `exact`, the mathematical result of an operation on `t`, clamped to `t`'s
 /// range, as Rust's `saturating_*` methods compute it. `exact` is bound once
 /// so that nested saturating intrinsics do not duplicate their operands.
@@ -2293,6 +2341,37 @@ impl<'a> Env<'a> {
                     "(let {p} := {INT}.toNat {a}; 0 < {p} ∧ {p} &&& ({p} - 1) = 0)"
                 ))))
             }
+            // An ASCII class tests the byte, bound once, against the ranges
+            // that Rust's `core` matches; a case conversion moves a letter
+            // of the other case by `32`, the bit that Rust flips.
+            name if ascii_class(name).is_some()
+                || matches!(name, "to_ascii_uppercase" | "to_ascii_lowercase") =>
+            {
+                arity(0)?;
+                let (a, t) = self.int_operand(name, recv, facts)?;
+                if t != U8 {
+                    return Err(type_error(
+                        recv.span,
+                        format!("`{name}` needs a `u8`, found `{}`", t.rust_name()),
+                    )
+                    .help(format!("Rust defines `{name}` on `u8` but not on other integer types")));
+                }
+                let c = ASCII_BINDER;
+                let Some(ranges) = ascii_class(name) else {
+                    let (from, sign) = if name == "to_ascii_uppercase" {
+                        (ascii_class("is_ascii_lowercase"), "-")
+                    } else {
+                        (ascii_class("is_ascii_uppercase"), "+")
+                    };
+                    let shift = int_lit(IntLit::new(false, 32));
+                    let body = format!(
+                        "if {} then {c} {sign} {shift} else {c}",
+                        ascii_test(from.unwrap_or_default())
+                    );
+                    return Ok(Low::Int(apply_fun(&[c], INT, &body, &[a]), ty(U8)));
+                };
+                Ok(Low::Prop(Prop::pure(format!("(let {c} : {INT} := {a}; {})", ascii_test(ranges)))))
+            }
             // As in Rust, `a.is_multiple_of(0)` holds exactly when `a` is
             // `0`, which is `intTmod a 0 = 0`, since `intTmod a 0` is `a`.
             "is_multiple_of" => {
@@ -2621,7 +2700,8 @@ impl<'a> Env<'a> {
                  `cast_signed`, `cast_unsigned`, `unbounded_shl`, `unbounded_shr`, \
                  `midpoint`, `swap_bytes`, `reverse_bits`, `count_ones`, `count_zeros`, \
                  `leading_zeros`, `trailing_zeros`, `leading_ones`, `trailing_ones`, `ilog2`, \
-                 `next_power_of_two`, \
+                 `next_power_of_two`, the `u8` methods `is_ascii`, `is_ascii_alphabetic` and the \
+                 other ASCII classes, `to_ascii_uppercase`, and `to_ascii_lowercase`, \
                  `wrapping_div`, `wrapping_rem`, `wrapping_div_euclid`, \
                  `wrapping_rem_euclid`, `div_euclid`, `rem_euclid`, `abs_diff`, the mixed-signedness \
                  `wrapping_add_signed` and its kin, and the `wrapping_*`, `saturating_*`, and \

@@ -2985,6 +2985,146 @@ fn match_at_bindings_are_checked_strictly() {
     }
 }
 
+/// The bytes that the ASCII class test in `lean` accepts, read back from the
+/// `(lo : Int) ≤ «ascii» ∧ «ascii» ≤ (hi : Int)` and `«ascii» = (v : Int)`
+/// disjuncts of its `let «ascii» : Int := ..; ..`.
+fn ascii_ranges(lean: &str) -> Vec<(u8, u8)> {
+    let head = "(let «ascii» : Int := (specInt (specArg q 0)); ";
+    let start = lean.find(head).unwrap_or_else(|| panic!("no ASCII test in\n{lean}"));
+    let mut depth = 0;
+    let len = lean[start..]
+        .char_indices()
+        .find(|&(_, c)| {
+            depth += match c {
+                '(' => 1,
+                ')' => -1,
+                _ => 0,
+            };
+            depth == 0
+        })
+        .unwrap()
+        .0;
+    let body = &lean[start + head.len()..start + len];
+    body.split(" ∨ ")
+        .map(|test| {
+            let nums: Vec<u8> =
+                test.split('(').filter_map(|s| s.split_once(" : Int)")?.0.parse().ok()).collect();
+            match nums[..] {
+                [v] => (v, v),
+                [lo, hi] => (lo, hi),
+                _ => panic!("unexpected ASCII test {test}"),
+            }
+        })
+        .collect()
+}
+
+#[test]
+fn ascii_classes_match_core_on_every_byte() {
+    type ByteTest = fn(&u8) -> bool;
+    let core: [(&str, ByteTest); 11] = [
+        ("is_ascii", u8::is_ascii),
+        ("is_ascii_alphabetic", u8::is_ascii_alphabetic),
+        ("is_ascii_uppercase", u8::is_ascii_uppercase),
+        ("is_ascii_lowercase", u8::is_ascii_lowercase),
+        ("is_ascii_alphanumeric", u8::is_ascii_alphanumeric),
+        ("is_ascii_digit", u8::is_ascii_digit),
+        ("is_ascii_hexdigit", u8::is_ascii_hexdigit),
+        ("is_ascii_punctuation", u8::is_ascii_punctuation),
+        ("is_ascii_graphic", u8::is_ascii_graphic),
+        ("is_ascii_whitespace", u8::is_ascii_whitespace),
+        ("is_ascii_control", u8::is_ascii_control),
+    ];
+    for (name, matches) in core {
+        let clause = format!("requires(a.{name}())");
+        let lean = lower_one(&wrap(&clause, "fn f(a: u8)"))
+            .unwrap_or_else(|e| panic!("{clause}: {e:?}"))
+            .spec_lean;
+        let ranges = ascii_ranges(&lean);
+        for b in 0..=255u8 {
+            let lowered = ranges.iter().any(|&(lo, hi)| lo <= b && b <= hi);
+            assert_eq!(lowered, matches(&b), "{name}({b}) with {ranges:?}");
+        }
+    }
+}
+
+#[test]
+fn ascii_methods_lower_exactly() {
+    let lean = |clause: &str, sig: &str| {
+        lower_one(&wrap(clause, sig)).unwrap_or_else(|e| panic!("{clause}: {e:?}")).spec_lean
+    };
+    let has = |text: &str, want: &str| assert!(text.contains(want), "missing {want} in\n{text}");
+    // A class binds the byte once and tests it against each range.
+    has(
+        &lean("requires(a.is_ascii_hexdigit())", "fn f(a: u8)"),
+        "(let «ascii» : Int := (specInt (specArg q 0)); ((48 : Int) ≤ «ascii» ∧ «ascii» ≤ \
+         (57 : Int)) ∨ ((65 : Int) ≤ «ascii» ∧ «ascii» ≤ (70 : Int)) ∨ ((97 : Int) ≤ «ascii» ∧ \
+         «ascii» ≤ (102 : Int)))",
+    );
+    has(
+        &lean("requires(a.is_ascii())", "fn f(a: u8)"),
+        "(let «ascii» : Int := (specInt (specArg q 0)); (0 : Int) ≤ «ascii» ∧ «ascii» ≤ \
+         (127 : Int))",
+    );
+    has(
+        &lean("requires(a.is_ascii_whitespace())", "fn f(a: u8)"),
+        "(let «ascii» : Int := (specInt (specArg q 0)); («ascii» = (9 : Int)) ∨ («ascii» = \
+         (10 : Int)) ∨ («ascii» = (12 : Int)) ∨ («ascii» = (13 : Int)) ∨ («ascii» = (32 : Int)))",
+    );
+    // A case conversion moves a letter of the other case by 32.
+    has(
+        &lean("ensures(|r| r == a.to_ascii_uppercase())", "fn f(a: u8) -> u8"),
+        "((fun («ascii» : Int) => if (97 : Int) ≤ «ascii» ∧ «ascii» ≤ (122 : Int) then «ascii» - \
+         (32 : Int) else «ascii») (specInt (specArg q 0)))",
+    );
+    has(
+        &lean("ensures(|r| r == a.to_ascii_lowercase())", "fn f(a: u8) -> u8"),
+        "((fun («ascii» : Int) => if (65 : Int) ≤ «ascii» ∧ «ascii» ≤ (90 : Int) then «ascii» + \
+         (32 : Int) else «ascii») (specInt (specArg q 0)))",
+    );
+    // The receiver is evaluated once, whatever it is.
+    for clause in [
+        "requires(wrapping_add(a, 1u8).is_ascii_whitespace())",
+        "ensures(|r| r == wrapping_add(a, 1u8).to_ascii_lowercase())",
+    ] {
+        let text = lean(clause, "fn f(a: u8) -> u8");
+        assert_eq!(text.matches("specArg q 0").count(), 1, "{clause}:\n{text}");
+    }
+    // A class is a decidable `bool`, and a conversion is a `u8`.
+    for clause in [
+        "ensures(|r| r == if a.is_ascii_digit() { 1u8 } else { 0u8 })",
+        "ensures(|r| r.is_ascii_uppercase() == a.is_ascii_lowercase())",
+        "ensures(|r| r == a.to_ascii_uppercase().to_ascii_lowercase())",
+        "ensures(|r| math(r) == math(a.to_ascii_uppercase()) + 1)",
+        "ensures(|r| r == match a.to_ascii_lowercase() { 97..=122 => 1u8, _ => 0u8 })",
+        "ensures(|r| r == 65u8.to_ascii_lowercase())",
+    ] {
+        lean(clause, "fn f(a: u8) -> u8");
+    }
+}
+
+#[test]
+fn ascii_methods_are_checked_strictly() {
+    let sig = "fn f(a: u8, i: i8, w: u16, c: bool)";
+    for (clause, code) in [
+        ("requires(i.is_ascii())", "E_ANNEAL_SPEC_TYPE_MISMATCH"),
+        ("requires(w.is_ascii_digit())", "E_ANNEAL_SPEC_TYPE_MISMATCH"),
+        ("requires(w.to_ascii_uppercase() == w)", "E_ANNEAL_SPEC_TYPE_MISMATCH"),
+        ("requires(c.is_ascii_graphic())", "E_ANNEAL_SPEC_TYPE_MISMATCH"),
+        ("requires(math(a).is_ascii())", "E_ANNEAL_SPEC_TYPE_MISMATCH"),
+        ("requires(65.is_ascii_uppercase())", "E_ANNEAL_SPEC_TYPE_ANNOTATION_NEEDED"),
+        ("requires(a.is_ascii_control(1u8))", "E_ANNEAL_SPEC_ARITY"),
+        ("requires(a.to_ascii_lowercase(a) == a)", "E_ANNEAL_SPEC_ARITY"),
+        ("requires(a.to_ascii_lowercase() == 1u16)", "E_ANNEAL_SPEC_TYPE_MISMATCH"),
+        ("requires(a.is_ascii_octdigit())", "E_ANNEAL_SPEC_UNSUPPORTED_EXPR"),
+        ("requires(a.eq_ignore_ascii_case(a))", "E_ANNEAL_SPEC_UNSUPPORTED_EXPR"),
+        ("requires(a.is_ascii() == 1u8)", "E_ANNEAL_SPEC_TYPE_MISMATCH"),
+    ] {
+        expect_error(&wrap(clause, sig), code);
+    }
+    let r = expect_error(&wrap("requires(w.is_ascii_digit())", sig), "E_ANNEAL_SPEC_TYPE_MISMATCH");
+    assert!(r.contains("`is_ascii_digit` needs a `u8`, found `u16`"), "{r}");
+}
+
 #[test]
 fn match_range_patterns_lower_exactly() {
     let lean = |clause: &str, sig: &str| {
