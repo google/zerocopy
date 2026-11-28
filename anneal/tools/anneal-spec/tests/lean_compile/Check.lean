@@ -413,6 +413,29 @@ example : pure_zeros_u8 240 = 4 := by unfold pure_zeros_u8; decide
 example : pure_zeros_usize 1 = 63 := by unfold pure_zeros_usize; decide
 example : pure_zeros_u128 0 = 128 := by unfold pure_zeros_u128; decide
 
+-- Leading and trailing counts, checked against Rust.
+example : pure_lz_u8 0 = 8 := by unfold pure_lz_u8; decide
+example : pure_lz_u8 1 = 7 := by unfold pure_lz_u8; decide
+example : pure_lz_u8 255 = 0 := by unfold pure_lz_u8; decide
+example : pure_lz_i8 (-128) = 0 := by unfold pure_lz_i8; decide
+example : pure_lz_i8 (-1) = 0 := by unfold pure_lz_i8; decide
+example : pure_lz_i32 1 = 31 := by unfold pure_lz_i32; decide
+example : pure_lz_u128 1 = 127 := by unfold pure_lz_u128; decide
+example : pure_tz_u16 0 = 16 := by unfold pure_tz_u16; decide
+example : pure_tz_u8 8 = 3 := by unfold pure_tz_u8; decide
+example : pure_tz_i64 (-9223372036854775808) = 63 := by unfold pure_tz_i64; decide
+example : pure_tz_u128 0 = 128 := by unfold pure_tz_u128; decide
+example : pure_lo_i8 (-1) = 8 := by unfold pure_lo_i8; decide
+example : pure_lo_i8 (-128) = 1 := by unfold pure_lo_i8; decide
+example : pure_lo_u32 0 = 0 := by unfold pure_lo_u32; decide
+example : pure_lo_u8 240 = 4 := by unfold pure_lo_u8; decide
+example : pure_lo_i64 (-2) = 63 := by unfold pure_lo_i64; decide
+example : pure_to_i128 (-1) = 128 := by unfold pure_to_i128; decide
+example : pure_to_u8 7 = 3 := by unfold pure_to_u8; decide
+example : pure_to_u8 0 = 0 := by unfold pure_to_u8; decide
+example : pure_to_i8 127 = 7 := by unfold pure_to_i8; decide
+example : pure_to_usize 65535 = 16 := by unfold pure_to_usize; decide
+
 -- The masked shifts take the amount modulo the width.
 example : pure_wshl_is 1 17 2 := by unfold pure_wshl_is; decide
 example : pure_wshl_is 0x8001 1 2 := by unfold pure_wshl_is; decide
@@ -424,8 +447,8 @@ example : ¬ pure_wshr_is (-32768) 31 1 := by unfold pure_wshr_is; decide
 -- `+ n as u8 as u32 + a.max(b) as u32 + n.div_ceil(8)`
 -- `+ a.cast_signed().unsigned_abs() as u32 + b.saturating_add_signed(-1) as u32`
 -- `+ n.unbounded_shr(31) + n.div_euclid(16) + n.saturating_div(1024)`
--- `+ n.swap_bytes() + n.count_ones()`.
-example : fn7_max_steps { args := [u8Val 9, u8Val 2, u32Val 5] } = 83886125 := rfl
+-- `+ n.swap_bytes() + n.count_ones() + n.leading_zeros()`.
+example : fn7_max_steps { args := [u8Val 9, u8Val 2, u32Val 5] } = 83886154 := rfl
 example : fn7_max_steps { args := [u8Val 3, u8Val 250, u32Val 4294967295] } =
     9399436316 := rfl
 

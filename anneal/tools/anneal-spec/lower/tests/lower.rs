@@ -2498,6 +2498,81 @@ fn bit_reversal_and_population_counts_are_checked_strictly() {
 }
 
 #[test]
+fn leading_and_trailing_counts_lower_exactly() {
+    let x = "(specInt (specArg q 0))";
+    let emod = "Trusted.MirSemantics.intEmod";
+    let lean = |clause: &str, sig: &str| {
+        lower_one(&wrap(clause, sig)).unwrap_or_else(|e| panic!("{clause}: {e:?}")).spec_lean
+    };
+    let has = |text: &str, want: &str| assert!(text.contains(want), "missing {want} in\n{text}");
+    let stage = |body: &str, arg: &str| format!("((fun («x» : Nat) => {body}) {arg})");
+    let ones = |arg: &str| {
+        stage(
+            "(«x» + («x» >>> 4)) &&& 15",
+            &stage(
+                "(«x» &&& 51) + ((«x» >>> 2) &&& 51)",
+                &stage("«x» - ((«x» >>> 1) &&& 85)", arg),
+            ),
+        )
+    };
+    let bits8 = format!("(Int.toNat ({emod} {x} 256))");
+    // Leading zeros: copy the highest set bit down, then count the span.
+    let down = stage(
+        "«x» ||| («x» >>> 4)",
+        &stage("«x» ||| («x» >>> 2)", &stage("«x» ||| («x» >>> 1)", &bits8)),
+    );
+    has(
+        &lean("ensures(|r| r == a.leading_zeros())", "fn f(a: u8) -> u32"),
+        &format!("((specInt out.ret) = ((8 : Int) - (Int.ofNat ({} % 256))))", ones(&down)),
+    );
+    // Trailing zeros: copy the lowest set bit up within the width.
+    let up = stage(
+        "(«x» ||| («x» <<< 4)) % 256",
+        &stage("(«x» ||| («x» <<< 2)) % 256", &stage("(«x» ||| («x» <<< 1)) % 256", &bits8)),
+    );
+    has(
+        &lean("ensures(|r| r == a.trailing_zeros())", "fn f(a: i8) -> u32"),
+        &format!("((specInt out.ret) = ((8 : Int) - (Int.ofNat ({} % 256))))", ones(&up)),
+    );
+    // The ones counts first complement the bits.
+    let complement = stage("255 - «x»", &bits8);
+    has(
+        &lean("ensures(|r| r == a.leading_ones())", "fn f(a: i8) -> u32"),
+        &stage("«x» ||| («x» >>> 1)", &complement),
+    );
+    has(
+        &lean("ensures(|r| r == a.trailing_ones())", "fn f(a: u8) -> u32"),
+        &stage("(«x» ||| («x» <<< 1)) % 256", &complement),
+    );
+    let wide = lean("ensures(|r| r == a.trailing_ones())", "fn f(a: u128) -> u32");
+    has(&wide, "340282366920938463463374607431768211455 - «x»");
+    has(&wide, "(«x» ||| («x» <<< 64)) % 340282366920938463463374607431768211456");
+    has(&wide, "(128 : Int) - ");
+    lower_one(&wrap("ensures(|r| math(r) == math(a.leading_zeros() + 1))", "fn f(a: u16) -> u16"))
+        .unwrap();
+}
+
+#[test]
+fn leading_and_trailing_counts_are_checked_strictly() {
+    let sig = "fn f(u: u8, i: i64, c: bool)";
+    for (clause, code) in [
+        ("requires(u.leading_zeros() == u)", "E_ANNEAL_SPEC_TYPE_MISMATCH"),
+        ("requires(i.trailing_ones(1) == 0u32)", "E_ANNEAL_SPEC_ARITY"),
+        ("requires(5.leading_ones() == 0u32)", "E_ANNEAL_SPEC_TYPE_ANNOTATION_NEEDED"),
+        ("requires(c.trailing_zeros() == 0u32)", "E_ANNEAL_SPEC_TYPE_MISMATCH"),
+        ("requires(u.ilog2() == 0u32)", "E_ANNEAL_SPEC_UNSUPPORTED_EXPR"),
+    ] {
+        expect_error(&wrap(clause, sig), code);
+    }
+    // The counts are `u32` step counts, even of a signed operand.
+    lower_one(&wrap(
+        "max_steps = i.leading_zeros() + i.trailing_zeros() + u.leading_ones() + u.trailing_ones()",
+        sig,
+    ))
+    .unwrap();
+}
+
+#[test]
 fn saturating_negation_and_abs_diff_intrinsics_lower_exactly() {
     let x = "(specInt (specArg q 0))";
     let y = "(specInt (specArg q 1))";
