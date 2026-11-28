@@ -9,6 +9,7 @@
 prelude
 import Init.NotationExtra
 import GuardRefuteWf
+import PositiveSanity
 
 /-!
 # Negative Refutations for `Trusted.MirSemantics.Step` UB Guards
@@ -49,13 +50,6 @@ theorem refute_step_move_dead_local :
     ReachesResult progMoveDeadLocal queryEmpty (.fault .undefined) ∧
     ¬ WellFormed progMoveDeadLocal queryEmpty :=
   refutes_wf_of_execFault (fuel := 3) rfl
-
-/-- Program moving out of `_1 : u32` and then reading `_1` again without
-re-initialization. -/
-noncomputable def progUseAfterMove : Program :=
-  mkSingleBlockProg 1 [u32Ty, u32Ty]
-    [.assign ⟨0, []⟩ (.use (.move ⟨1, []⟩)),
-     .assign ⟨0, []⟩ (.use (.copy ⟨1, []⟩))]
 
 /-- Guard `step_move_deinit_immediate`: moving out of an immediate non-ZST
 local deinitializes it so a second read faults with `.undefined`. -/
@@ -167,10 +161,6 @@ theorem refute_step_write_dead_local :
     ¬ WellFormed progWriteDeadLocal queryEmpty :=
   refutes_wf_of_execFault (fuel := 3) rfl
 
-/-- Program returning immediately with an uninitialized `_0 : u32`. -/
-noncomputable def progReturnUninit : Program :=
-  mkSingleBlockProg 0 [u32Ty] [] .return_
-
 /-- Guard `step_return_uninit_or_dead`: `TerminatorKind.return_` with an
 uninitialized immediate `_0` faults with `.undefined`. -/
 theorem refute_step_return_uninit_or_dead :
@@ -200,11 +190,6 @@ theorem refute_step_unreachable_terminator :
     ReachesResult progUnreachable queryEmpty (.fault .undefined) ∧
     ¬ WellFormed progUnreachable queryEmpty :=
   refutes_wf_of_execFault (fuel := 1) rfl
-
-/-- Program whose local `_1` starts `.dead` because it has a `StorageLive`
-annotation in the body. -/
-noncomputable def progDeadLocalForForceAlloc : Program :=
-  mkSingleBlockProg 0 [.unit, u32Ty] [.storageLive 1] .return_
 
 /-- Guard `step_force_alloc_dead_local`: `forceAllocation` on a `.dead` local
 faults with `.undefined`. -/
@@ -237,27 +222,6 @@ theorem refute_step_v2_write_readonly :
      | _ => False) :=
   trivial
 
-/-- Profile v2 program taking a shared reference to stack parameter `_1 : u8`
-and attempting to return it. -/
-noncomputable def progDanglingStackRefV2 : Program := {
-  scope := .unit
-  pointerWidthBits := 64
-  mirProfileVersion := 2
-  bodies := [{
-    argumentCount := 1
-    locals := [.ref .shared (.int .i8 false), .int .i8 false]
-    basicBlocks := [{
-      statements := [
-        .assign { localId := 0, projection := [] }
-          (.ref .shared { localId := 1, projection := [] })
-      ]
-      terminator := .return_
-    }]
-    isUnsafe := false
-    identity := "guard_mutation::dangling_stack_ref_v2"
-  }]
-}
-
 /-- Guard `step_v2_return_dangling_stack_ref`: returning a reference to a
 callee-allocated stack local faults with `.undefined`. -/
 theorem refute_step_v2_return_dangling_stack_ref :
@@ -272,41 +236,6 @@ theorem refute_step_v2_return_dangling_stack_ref :
        | _ => False
      | .error _ => False) :=
   trivial
-
-/-- Anti-overreach canary for zero-size raw-pointer dereference stores and
-reads (`writePlaceV2` / `readPlaceV2`): `*mut ()` into a dead `.shared`
-allocation succeeds consistently with `Memory.lean`. -/
-theorem positive_step_v2_zst_raw_ptr_write_and_read :
-    (match writePlaceV2
-        [.unit, .rawPtr .mut .unit]
-        [.immediate (some .unit), .immediate (some (.ptr ⟨some 1, 0, .isize⟩))]
-        { allocations := [{
-            allocId := 1
-            alignLog2 := 0
-            mutability := .shared
-            bytes := [.init 0 none]
-            live := false
-          }], nextAllocId := 2 }
-        { localId := 1, projection := [.deref] }
-        .unit
-        .unit with
-     | .ok _ => True
-     | .error _ => False) ∧
-    (match readPlaceV2
-        [.unit, .rawPtr .mut .unit]
-        [.immediate (some .unit), .immediate (some (.ptr ⟨some 1, 0, .isize⟩))]
-        { allocations := [{
-            allocId := 1
-            alignLog2 := 0
-            mutability := .shared
-            bytes := [.init 0 none]
-            live := false
-          }], nextAllocId := 2 }
-        false
-        { localId := 1, projection := [.deref] } with
-     | .ok (.unit, some .unit, _, _) => True
-     | _ => False) :=
-  ⟨trivial, trivial⟩
 
 /-- Guard `step_v2_offset_dst_type`: `Offset` on a `*const u8` operand fails
 closed when the destination local has a different raw-pointer type
@@ -356,73 +285,6 @@ theorem refute_step_v2_ptr_cast_const_to_mut :
      | _ => False) :=
   ⟨trivial, trivial⟩
 
-/-- Anti-overreach canary for `step_v2_ptr_cast_const_to_mut`: `PtrToPtr`
-casts that do not add mutability (`*mut u32` to `*const u32`, `*mut u32` to
-`*mut u8`, `*const u32` to `*const u8`, and `*mut [u8]` to `*const [u8]`)
-still succeed. -/
-theorem positive_step_v2_ptr_cast_keeps_or_drops_mut :
-    (match evalPtrToPtrCastV2 (.rawPtr .mut (.int .i32 false))
-        (.ptr ⟨some 1, 0, .isize⟩) (.rawPtr .shared (.int .i32 false)) with
-     | .ok (.ptr ⟨some 1, 0, .isize⟩) => True
-     | _ => False) ∧
-    (match evalPtrToPtrCastV2 (.rawPtr .mut (.int .i32 false))
-        (.ptr ⟨some 1, 0, .isize⟩) (.rawPtr .mut (.int .i8 false)) with
-     | .ok (.ptr ⟨some 1, 0, .isize⟩) => True
-     | _ => False) ∧
-    (match evalPtrToPtrCastV2 (.rawPtr .shared (.int .i32 false))
-        (.ptr ⟨some 1, 0, .isize⟩) (.rawPtr .shared (.int .i8 false)) with
-     | .ok (.ptr ⟨some 1, 0, .isize⟩) => True
-     | _ => False) ∧
-    (match evalPtrToPtrCastV2 (.rawPtr .mut (.slice (.int .i8 false)))
-        (.slicePtr ⟨some 1, 0, .isize⟩ 4) (.rawPtr .shared (.slice (.int .i8 false))) with
-     | .ok (.slicePtr ⟨some 1, 0, .isize⟩ 4) => True
-     | _ => False) :=
-  ⟨trivial, trivial, trivial, trivial⟩
-
-/-- Admitted zero-sized single-variant fieldless enum (`enum One { A }`). -/
-noncomputable def zstOneEnumTy : EnumTy := {
-  id := 7
-  discrWidth := .isize
-  discrSigned := true
-  tagRepr := .zeroSized
-  discriminants := [0]
-}
-
-/-- Anti-overreach canary for provenance-free zero-size reference
-dereferences: reading and writing `*r` for `r : &mut One` holding an aligned,
-non-null address without provenance succeeds, consistently with
-`refValidInMem` admitting such references at entry. -/
-theorem positive_step_v2_zst_enum_no_provenance_deref :
-    (match readPlaceV2
-        [.unit, .ref .mut (.enum zstOneEnumTy)]
-        [.immediate (some .unit), .immediate (some (.ptr ⟨none, 1, .isize⟩))]
-        MemoryState.empty
-        false
-        { localId := 1, projection := [.deref] } with
-     | .ok (_, some (.enumVal _ 0), _, _) => True
-     | _ => False) ∧
-    (match writePlaceV2
-        [.unit, .ref .mut (.enum zstOneEnumTy)]
-        [.immediate (some .unit), .immediate (some (.ptr ⟨none, 1, .isize⟩))]
-        MemoryState.empty
-        { localId := 1, projection := [.deref] }
-        (.enum zstOneEnumTy)
-        (.enumVal zstOneEnumTy 0) with
-     | .ok _ => True
-     | .error _ => False) :=
-  ⟨trivial, trivial⟩
-
-/-- Read-only 2-byte allocation with id `1` holding initialized bytes, for
-the `get_unchecked` input-mutability refutations. -/
-noncomputable def sharedInit2Mem : MemoryState :=
-  { allocations := [{
-      allocId := 1
-      alignLog2 := 0
-      mutability := .shared
-      bytes := [.init 0 none, .init 0 none]
-      live := true
-    }], nextAllocId := 2 }
-
 /-- Guard `step_v2_get_unchecked_range_to_in_mut`: `get_unchecked(..1)` on a
 `&mut [u8]` input over a `.shared` allocation faults with `.undefined` even
 though the result is `&[u8]`, because the input is validated at its own
@@ -447,25 +309,6 @@ theorem refute_step_v2_get_unchecked_range_from_in_mut :
      | .error .undefined => True
      | _ => False) :=
   trivial
-
-/-- Anti-overreach canary: the same `get_unchecked` calls on a `&[u8]` input
-over the `.shared` allocation succeed. -/
-theorem positive_step_v2_get_unchecked_shared_input :
-    (match execCoreCallOp sharedInit2Mem .sliceGetUncheckedRangeTo
-        [(.ref .shared (.slice (.int .i8 false)),
-            .slicePtr ⟨some 1, 0, .isize⟩ 2),
-          (.rangeTo (.int .isize false), .rangeTo 1)]
-        (.ref .shared (.slice (.int .i8 false))) with
-     | .ok _ => True
-     | .error _ => False) ∧
-    (match execCoreCallOp sharedInit2Mem .sliceGetUncheckedRangeFrom
-        [(.ref .shared (.slice (.int .i8 false)),
-            .slicePtr ⟨some 1, 0, .isize⟩ 2),
-          (.rangeFrom (.int .isize false), .rangeFrom 1)]
-        (.ref .shared (.slice (.int .i8 false))) with
-     | .ok _ => True
-     | .error _ => False) :=
-  ⟨trivial, trivial⟩
 
 /-- Body with locals `_0 : ()` and `_1 : *mut ()`, whose only statement
 `*_1 = PtrMetadata(move _1)` moves out of the pointer it stores through. -/
@@ -521,40 +364,14 @@ theorem refute_step_v2_raw_borrow_mut_through_const :
      | _ => False) :=
   trivial
 
-/-- Anti-overreach canary: `&raw const *p` through the same `*const u8`
-still succeeds. -/
-theorem positive_step_v2_raw_borrow_const_through_const :
-    (match evalAddressOfRvalueV2
-        [.unit, .rawPtr .shared (.int .i8 false), .rawPtr .shared (.int .i8 false)]
-        [.immediate (some .unit), .immediate (some (.ptr ⟨some 1, 0, .isize⟩)),
-          .immediate none]
-        { allocations := [{
-            allocId := 1
-            alignLog2 := 0
-            mutability := .mut
-            bytes := [.init 0 none]
-            live := true
-          }], nextAllocId := 2 }
-        (.rawPtr .shared (.int .i8 false)) .shared
-        { localId := 1, projection := [.deref] } with
-     | .ok _ => True
-     | .error _ => False) :=
-  trivial
-
 /-! ## Partially moved overflow pairs (`LocalSlot.partialTuple`)
 
 Under `-Coverflow-checks=yes`, rustc lowers `x + 1` to
 `_t = AddWithOverflow(x, 1)`, `assert(!move (_t.1))`, and
 `_r = move (_t.0)`. Moving one field leaves the other readable; the
-moved field, and the tuple as a whole, must not be read again. -/
-
-/-- Overflow pair type `(u8, bool)`. -/
-noncomputable def overflowPairU8 : MirTy := .tuple [.int .i8 false, .bool]
-
-/-- Local slots after `move (_1.1)`: field 0 still holds `7_u8`. -/
-noncomputable def partialPairLocals : List LocalSlot :=
-  [.immediate (some .unit),
-    .partialTuple [some (.scalar ⟨.i8, false, BitVec.ofNat 128 7⟩), none]]
+moved field, and the tuple as a whole, must not be read again. The
+`overflowPairU8` and `partialPairLocals` helpers, shared with the positive
+canary, live in `PositiveSanity.lean`. -/
 
 /-- Guard `step_v2_partial_tuple_move_moved_field`: moving an already moved
 tuple field faults with `.undefined`. -/
@@ -589,66 +406,6 @@ theorem refute_step_v2_partial_tuple_whole_read :
      | _ => False) :=
   ⟨trivial, trivial⟩
 
-/-- Anti-overreach canary: moving field 1 and then field 0 out of an
-initialized overflow pair returns both values, leaves field 0 readable in
-between, and restores the uninitialized `.immediate none` slot once both
-fields are moved. -/
-theorem positive_step_v2_partial_tuple_moves :
-    readPlaceV2 [.unit, overflowPairU8]
-        [.immediate (some .unit),
-          .immediate (some (.tuple
-            [.scalar ⟨.i8, false, BitVec.ofNat 128 7⟩, .bool false]))]
-        MemoryState.empty true
-        { localId := 1, projection := [.field 1 .bool] } =
-      .ok (.bool, some (.bool false), partialPairLocals, MemoryState.empty) ∧
-    readPlaceV2 [.unit, overflowPairU8] partialPairLocals
-        MemoryState.empty false
-        { localId := 1, projection := [.field 0 (.int .i8 false)] } =
-      .ok (.int .i8 false, some (.scalar ⟨.i8, false, BitVec.ofNat 128 7⟩),
-        partialPairLocals, MemoryState.empty) ∧
-    readPlaceV2 [.unit, overflowPairU8] partialPairLocals
-        MemoryState.empty true
-        { localId := 1, projection := [.field 0 (.int .i8 false)] } =
-      .ok (.int .i8 false, some (.scalar ⟨.i8, false, BitVec.ofNat 128 7⟩),
-        [.immediate (some .unit), .immediate none], MemoryState.empty) :=
-  ⟨rfl, rfl, rfl⟩
-
-/-- `buggy_add_u8(x: u8) -> u8 { x + 1 }` as captured under
-`-Coverflow-checks=yes --panic abort` (hence the `.unreachable` unwind
-action). -/
-noncomputable def bodyOverflowAddV2 : Body := {
-  argumentCount := 1
-  locals := [.int .i8 false, .int .i8 false, .int .i8 false, overflowPairU8]
-  basicBlocks := [
-    { statements := [
-        .storageLive 2,
-        .assign ⟨2, []⟩ (.use (.copy ⟨1, []⟩)),
-        .assign ⟨3, []⟩ (.binaryOp .addWithOverflow (.copy ⟨2, []⟩)
-          (.constant ⟨.int .i8 false, .scalar (BitVec.ofNat 128 1)⟩))
-      ]
-      terminator := .assert (.move ⟨3, [.field 1 .bool]⟩) false
-        (.overflow .add) 1 .unreachable },
-    { statements := [
-        .assign ⟨0, []⟩ (.use (.move ⟨3, [.field 0 (.int .i8 false)]⟩)),
-        .storageDead 2
-      ]
-      terminator := .return_ }
-  ]
-  isUnsafe := false
-  identity := "guard_mutation::overflow_add_v2"
-}
-
-/-- Profile v2 program wrapping `bodyOverflowAddV2`, with overflow checks and
-the default `.unwind` panic strategy, under which a failed overflow assert
-faults rather than aborting. -/
-noncomputable def progOverflowAddV2 : Program := {
-  scope := .unit
-  pointerWidthBits := 64
-  mirProfileVersion := 2
-  bodies := [bodyOverflowAddV2]
-  overflowChecks := true
-}
-
 /-- `progOverflowAddV2` called with `x = 255`. -/
 noncomputable def queryOverflowAdd255 : Query :=
   { args := [.scalar ⟨.i8, false, BitVec.ofNat 128 255⟩] }
@@ -670,101 +427,6 @@ theorem refute_step_v2_assert_failure_faults :
         ⟨0, rfl, rfl⟩) ⟨0, rfl, rfl⟩) ⟨0, rfl, rfl⟩,
       ⟨0, rfl, rfl⟩⟩
   exact ⟨hReach, fun hWf => hWf.2 .unsupported hReach⟩
-
-/-! The run below is split into one declaration per state so that no single
-proof has to evaluate all seven steps of `progOverflowAddV2`. -/
-
-/-- `progOverflowAddV2` called with `x = 254`. -/
-noncomputable def queryOverflowAdd254 : Query :=
-  { args := [.scalar ⟨.i8, false, BitVec.ofNat 128 254⟩] }
-
-/-- Entry state of `progOverflowAddV2` on `queryOverflowAdd254`. -/
-noncomputable def overflowAdd254S0 : State :=
-  match initStateV2 progOverflowAddV2 queryOverflowAdd254 with
-  | .ok s => s
-  | .error _ => { frames := [], mem := MemoryState.empty }
-
-/-- Successor of `s` under `progOverflowAddV2` (or `s` itself when the step
-does not continue). -/
-noncomputable def overflowAdd254Next (s : State) : State :=
-  match evalStepV2 progOverflowAddV2 s with
-  | .step s' => s'
-  | _ => s
-
-noncomputable def overflowAdd254S1 : State :=
-  overflowAdd254Next overflowAdd254S0
-noncomputable def overflowAdd254S2 : State :=
-  overflowAdd254Next overflowAdd254S1
-noncomputable def overflowAdd254S3 : State :=
-  overflowAdd254Next overflowAdd254S2
-noncomputable def overflowAdd254S4 : State :=
-  overflowAdd254Next overflowAdd254S3
-noncomputable def overflowAdd254S5 : State :=
-  overflowAdd254Next overflowAdd254S4
-noncomputable def overflowAdd254S6 : State :=
-  overflowAdd254Next overflowAdd254S5
-
-/-- Terminal output of the final step from `overflowAdd254S6`. -/
-noncomputable def overflowAdd254Out : Out :=
-  match evalStepV2 progOverflowAddV2 overflowAdd254S6 with
-  | .done (.returned out) => out
-  | _ => ⟨.unit, ⟨[]⟩⟩
-
-theorem overflowAdd254_init :
-    initStateV2 progOverflowAddV2 queryOverflowAdd254 = .ok overflowAdd254S0 :=
-  rfl
-
-theorem overflowAdd254_step1 :
-    StepV2 progOverflowAddV2 overflowAdd254S0 (.step overflowAdd254S1) :=
-  ⟨0, rfl, rfl⟩
-
-theorem overflowAdd254_step2 :
-    StepV2 progOverflowAddV2 overflowAdd254S1 (.step overflowAdd254S2) :=
-  ⟨0, rfl, rfl⟩
-
-theorem overflowAdd254_step3 :
-    StepV2 progOverflowAddV2 overflowAdd254S2 (.step overflowAdd254S3) :=
-  ⟨0, rfl, rfl⟩
-
-theorem overflowAdd254_step4 :
-    StepV2 progOverflowAddV2 overflowAdd254S3 (.step overflowAdd254S4) :=
-  ⟨0, rfl, rfl⟩
-
-theorem overflowAdd254_step5 :
-    StepV2 progOverflowAddV2 overflowAdd254S4 (.step overflowAdd254S5) :=
-  ⟨0, rfl, rfl⟩
-
-theorem overflowAdd254_step6 :
-    StepV2 progOverflowAddV2 overflowAdd254S5 (.step overflowAdd254S6) :=
-  ⟨0, rfl, rfl⟩
-
-theorem overflowAdd254_done :
-    StepV2 progOverflowAddV2 overflowAdd254S6
-      (.done (.returned overflowAdd254Out)) :=
-  ⟨0, rfl, rfl⟩
-
-theorem overflowAdd254_ret :
-    overflowAdd254Out.ret = .scalar ⟨.i8, false, BitVec.ofNat 128 255⟩ :=
-  rfl
-
-/-- Anti-overreach canary: `progOverflowAddV2` with `x = 254` passes its
-overflow assert and returns `255`. -/
-theorem positive_step_v2_overflow_assert_passes :
-    ∃ out : Out,
-      ReachesResultV2 progOverflowAddV2
-        { args := [.scalar ⟨.i8, false, BitVec.ofNat 128 254⟩] }
-        (.done (.returned out)) ∧
-      out.ret = .scalar ⟨.i8, false, BitVec.ofNat 128 255⟩ := by
-  refine ⟨overflowAdd254Out, ?_, overflowAdd254_ret⟩
-  change ReachesResultV2 progOverflowAddV2 queryOverflowAdd254 _
-  unfold ReachesResultV2
-  rw [overflowAdd254_init]
-  exact ⟨_,
-    ReachesV2.tail (ReachesV2.tail (ReachesV2.tail (ReachesV2.tail
-      (ReachesV2.tail (ReachesV2.tail (ReachesV2.refl _)
-        overflowAdd254_step1) overflowAdd254_step2) overflowAdd254_step3)
-      overflowAdd254_step4) overflowAdd254_step5) overflowAdd254_step6,
-    overflowAdd254_done⟩
 
 /-- Two-frame program calling a `u32`-returning helper whose `_0` remains
 uninitialized on `.return_`. -/
@@ -1332,8 +994,9 @@ theorem refute_step_v2_read_indirect_proj_propagates_error :
 
 /-- Guard `step_v2_resolve_local_proj_validates_first`: assigning to an
 out-of-bounds projected immediate local faults `.fault .undefined` during
-destination resolution before evaluating an `.unsupported` rvalue, and
-`updateValAtProjV2` updates `RangeTo`/`RangeFrom` `.field 0`. -/
+destination resolution before evaluating an `.unsupported` rvalue. The positive
+`updateValAtProjV2` `RangeTo`/`RangeFrom` canaries live in
+`PositiveSanity.lean`. -/
 theorem refute_step_v2_resolve_local_proj_validates_first :
     let body : Body := {
       argumentCount := 0
@@ -1357,63 +1020,8 @@ theorem refute_step_v2_resolve_local_proj_validates_first :
     (match evalStatementV2 body frame emptyMemory
         { allocations := [] } stmt with
      | .fault .undefined => True
-     | _ => False) ∧
-    (match updateValAtProjV2
-        (.rangeTo (.int .isize false)) (.rangeTo 1)
-        [.field 0 (.int .isize false)] (.scalar ⟨.isize, false, 7⟩) with
-     | .ok (.rangeTo 7) => True
-     | _ => False) ∧
-    (match updateValAtProjV2
-        (.rangeFrom (.int .isize false)) (.rangeFrom 2)
-        [.field 0 (.int .isize false)] (.scalar ⟨.isize, false, 9⟩) with
-     | .ok (.rangeFrom 9) => True
      | _ => False) :=
-  ⟨trivial, trivial, trivial⟩
-
-/-- Profile v2 program under `--panic abort` writing `7 : u8` through `&mut u8`
-before failing a non-optional `.divByZero` assert. -/
-noncomputable def progMutBeforeAbortV2 : Program := {
-  scope := .unit
-  pointerWidthBits := 64
-  mirProfileVersion := 2
-  panicStrategy := .abort
-  hasLocalPanicHandler := false
-  bodies := [{
-    argumentCount := 1
-    locals := [.unit, .ref .mut u8Ty]
-    basicBlocks := [{
-      statements := [
-        .assign { localId := 1, projection := [.deref] }
-          (.use (.constant ⟨u8Ty, .scalar (BitVec.ofNat 128 7)⟩))
-      ]
-      terminator :=
-        .assert (.constant ⟨.bool, .scalar (BitVec.ofNat 128 0)⟩) true
-          .divByZero 0 .unreachable
-    }]
-    isUnsafe := false
-    identity := "guard_mutation::mut_before_abort_v2"
-  }]
-}
-
-private def cmBeforeAbort : CallerMemory := {
-  allocations := [{
-    allocId := 2
-    alignLog2 := 0
-    mutability := .mut
-    bytes := [.init 0 none]
-    live := true
-  }]
-}
-
-private def cmAfterAbort : CallerMemory := {
-  allocations := [{
-    allocId := 2
-    alignLog2 := 0
-    mutability := .mut
-    bytes := [.init 7 none]
-    live := true
-  }]
-}
+  trivial
 
 /-- Guard `step_v2_assert_abort_extract_caller_mem`: pre-abort `&mut` mutations
 must survive in `.aborted (extractCallerMemory callerMem mem1)`. -/
@@ -1450,21 +1058,6 @@ theorem refute_step_assert_checked_overflow_local_handler_unsupported :
       evalAssertFailure .overflowNeg .abort .unreachable
         queryEmpty.callerMem true true = .fault .unsupported :=
   ⟨rfl, rfl⟩
-
-/-- Anti-overreach canary for the two guards above: with `overflowChecks`, no
-crate-local `#[panic_handler]`, and `--panic abort`, a failed checked overflow
-assertion aborts with the caller memory, while under `--panic unwind` it still
-faults. -/
-theorem positive_step_assert_checked_overflow_aborts :
-    evalAssertFailure (.overflow .add) .abort .unreachable
-        queryEmpty.callerMem false true =
-      .done (.aborted queryEmpty.callerMem) ∧
-      evalAssertFailure .overflowNeg .abort .continue_
-        queryEmpty.callerMem false true =
-        .done (.aborted queryEmpty.callerMem) ∧
-      evalAssertFailure (.overflow .shl) .unwind .unreachable
-        queryEmpty.callerMem false true = .fault .unsupported :=
-  ⟨rfl, rfl, rfl⟩
 
 /-- Guard `step_assert_local_panic_handler_unsupported`: when a crate defines a
 crate-local `#[panic_handler]` (`hasLocalPanicHandler = true`), failing safe
@@ -1593,13 +1186,11 @@ theorem refute_step_v2_assert_non_bool_unsupported :
 /-- Guard `step_v2_assign_use_overlap_ub`: `StatementKind.assign` with
 `Rvalue.use` / `Rvalue.useRetag` faults `.fault .undefined` on overlapping
 non-zero-sized `BackendRepr::Memory` or padded places (`*p = *p` on `[u8; 4]`,
-local `a = a` on `[u8; 4]`, and `*p = *p` on padded `(u32, bool)`), while
-permitting zero-sized (`[u8; 0]`, `[u32; 0]`), `Scalar` (`u32`,
-`([u32; 0], u32)`), padding-free `ScalarPair` (`(u32, u32)`, `(u8, bool)`), and
-disjoint element (`a[0] = a[1]`) copies. -/
+local `a = a` on `[u8; 4]`, `*p = *p` on padded `(u32, bool)`, and `a[0] = a[0]`
+on `[[u8; 4]; 2]`). The positive anti-overreach canaries for ZST, unpadded
+`ScalarPair`, and disjoint element copies live in `PositiveSanity.lean`. -/
 theorem refute_step_v2_assign_use_overlap_ub :
     let arr4Ty : MirTy := .array u8Ty 4
-    let zstArrTy : MirTy := .array (.int .i32 false) 0
     let mem4 : MemoryState := {
       allocations := [{
         allocId := 2
@@ -1641,22 +1232,6 @@ theorem refute_step_v2_assign_use_overlap_ub :
       locals := [.immediate none,
         .immediate (some (.tuple [.scalar ⟨.i32, false, 9⟩, .bool true]))]
     }
-    let bodyNoPadPair : Body := {
-      argumentCount := 0
-      locals := [.unit, .tuple [u8Ty, .bool], .tuple [.int .i32 false, .int .i32 false],
-                 zstArrTy, .tuple [zstArrTy, .int .i32 false]]
-      basicBlocks := []
-    }
-    let frameNoPadPair : FrameState := {
-      defId := 0, blockIdx := 0, stmtIdx := 0
-      locals := [
-        .immediate none,
-        .immediate (some (.tuple [.scalar ⟨.i8, false, 9⟩, .bool true])),
-        .immediate (some (.tuple [.scalar ⟨.i32, false, 1⟩, .scalar ⟨.i32, false, 2⟩])),
-        .immediate (some (.array [])),
-        .immediate (some (.tuple [.array [], .scalar ⟨.i32, false, 7⟩]))
-      ]
-    }
     let bodyArrOfArr : Body := {
       argumentCount := 0
       locals := [.unit, .array arr4Ty 2]
@@ -1670,7 +1245,6 @@ theorem refute_step_v2_assign_use_overlap_ub :
       defId := 0, blockIdx := 0, stmtIdx := 0
       locals := [.immediate none, .immediate (some (.array [vArr4, vArr4]))]
     }
-    -- Negative (must fault `.undefined`):
     (match evalStatementV2 bodyPtrArr framePtrArr mem4 { allocations := [] }
         (.assign { localId := 1, projection := [.deref] }
           (.use (.copy { localId := 1, projection := [.deref] }))) with
@@ -1690,39 +1264,13 @@ theorem refute_step_v2_assign_use_overlap_ub :
         (.assign { localId := 1, projection := [.constantIndex 0 2 false] }
           (.use (.copy { localId := 1, projection := [.constantIndex 0 2 false] }))) with
      | .fault .undefined => True
-     | _ => False) ∧
-    -- Positive anti-overreach (must step cleanly):
-    (match evalStatementV2 bodyNoPadPair frameNoPadPair emptyMemory { allocations := [] }
-        (.assign { localId := 1, projection := [] }
-          (.use (.copy { localId := 1, projection := [] }))) with
-     | .step _ => True
-     | _ => False) ∧
-    (match evalStatementV2 bodyNoPadPair frameNoPadPair emptyMemory { allocations := [] }
-        (.assign { localId := 2, projection := [] }
-          (.use (.copy { localId := 2, projection := [] }))) with
-     | .step _ => True
-     | _ => False) ∧
-    (match evalStatementV2 bodyNoPadPair frameNoPadPair emptyMemory { allocations := [] }
-        (.assign { localId := 3, projection := [] }
-          (.use (.copy { localId := 3, projection := [] }))) with
-     | .step _ => True
-     | _ => False) ∧
-    (match evalStatementV2 bodyNoPadPair frameNoPadPair emptyMemory { allocations := [] }
-        (.assign { localId := 4, projection := [] }
-          (.use (.copy { localId := 4, projection := [] }))) with
-     | .step _ => True
-     | _ => False) ∧
-    (match evalStatementV2 bodyArrOfArr frameArrOfArr emptyMemory { allocations := [] }
-        (.assign { localId := 1, projection := [.constantIndex 0 2 false] }
-          (.use (.copy { localId := 1, projection := [.constantIndex 1 2 false] }))) with
-     | .step _ => True
      | _ => False) :=
-  ⟨trivial, trivial, trivial, trivial, trivial, trivial, trivial, trivial, trivial⟩
+  ⟨trivial, trivial, trivial, trivial⟩
 
 /-- Guard `step_v2_assign_aggregate_clobber_unsupported`: in-place `Aggregate`
 where an earlier field write (`_1.0`) aliases a later operand (`_1.0` in
-`_1 = (_1.1, _1.0)`) fails closed with `.fault .unsupported`, whereas
-non-clobbering scalar `_1 = (_1.0, _1.1)` steps cleanly. -/
+`_1 = (_1.1, _1.0)`) fails closed with `.fault .unsupported`. The non-clobbering
+scalar aggregate canary lives in `PositiveSanity.lean`. -/
 theorem refute_step_v2_assign_aggregate_clobber_unsupported :
     let u32Ty : MirTy := .int .i32 false
     let body : Body := {
@@ -1742,16 +1290,8 @@ theorem refute_step_v2_assign_aggregate_clobber_unsupported :
             .copy { localId := 1, projection := [.field 0 u32Ty] }
           ])) with
      | .fault .unsupported => True
-     | _ => False) ∧
-    (match evalStatementV2 body frame emptyMemory { allocations := [] }
-        (.assign { localId := 1, projection := [] }
-          (.aggregateTuple [
-            .copy { localId := 1, projection := [.field 0 u32Ty] },
-            .copy { localId := 1, projection := [.field 1 u32Ty] }
-          ])) with
-     | .step _ => True
      | _ => False) :=
-  ⟨trivial, trivial⟩
+  trivial
 
 /-- Shared locals for the `Range` aggregate hazard refutations: `_1` is the
 immediate `Range<usize>` `10..20` and `_2` an immediate `usize`. -/
@@ -1847,8 +1387,8 @@ theorem refute_step_v2_assign_aggregate_unresolved_operand_unsupported :
 earlier `Aggregate` field write overwrites the memory holding a pointer local
 `_2 : *const u32`, a later `copy (*_2)` operand fails closed with
 `.fault .unsupported` (for both array destinations and tuple destinations taking
-the conservative `baseSpan` path), whereas reading `*_2` at field 0 before `_2`
-is overwritten steps cleanly. -/
+the conservative `baseSpan` path). The positive read-before-overwrite canaries
+live in `PositiveSanity.lean`. -/
 theorem refute_step_v2_assign_aggregate_deref_ptr_clobber_unsupported :
     let u32Ty : MirTy := .int .i32 false
     let ptrU32Ty : MirTy := .rawPtr .shared u32Ty
@@ -1899,24 +1439,8 @@ theorem refute_step_v2_assign_aggregate_deref_ptr_clobber_unsupported :
           .copy { localId := 1, projection := [] }
         ] with
      | .error .unsupported => True
-     | _ => False) ∧
-    (match checkAggregateCopyHazardLoopV2 body.locals frame.locals mem
-        (.memRange 2 0 12) tup3Ty false 0 [] [u32Ty, u32Ty, u32Ty] [
-          .copy { localId := 2, projection := [.deref] },
-          .copy { localId := 1, projection := [] },
-          .copy { localId := 1, projection := [] }
-        ] with
-     | .ok () => True
-     | _ => False) ∧
-    (match evalStatementV2 body frame mem { allocations := [] }
-        (.assign { localId := 3, projection := [.deref] }
-          (.aggregateArray u32Ty [
-            .copy { localId := 2, projection := [.deref] },
-            .copy { localId := 1, projection := [] }
-          ])) with
-     | .step _ => True
      | _ => False) :=
-  ⟨trivial, trivial, trivial, trivial⟩
+  ⟨trivial, trivial⟩
 
 /-- Guard `step_v2_assign_aggregate_field_overlap_ub`: in-place `Aggregate`
 copying a `BackendRepr::Memory` field onto itself (`_1 = (_1.0, _1.1)` on
@@ -1948,8 +1472,8 @@ theorem refute_step_v2_assign_aggregate_field_overlap_ub :
 
 /-- Guard `step_v2_assign_repeat_overlap_ub`: in-place `Rvalue.repeat_`
 copying a `BackendRepr::Memory` element `a[0]` into `a = [a[0]; 2]` faults
-`.fault .undefined`, while `a = [a[1]; 2]` (disjoint from `a[0]`) steps
-cleanly. -/
+`.fault .undefined`. The disjoint `a = [a[1]; 2]` canary lives in
+`PositiveSanity.lean`. -/
 theorem refute_step_v2_assign_repeat_overlap_ub :
     let arr4Ty : MirTy := .array u8Ty 4
     let vArr4 : Val := .array [
@@ -1970,14 +1494,8 @@ theorem refute_step_v2_assign_repeat_overlap_ub :
           (.repeat_ (.copy { localId := 1, projection := [.constantIndex 0 2 false] })
             arr4Ty 2)) with
      | .fault .undefined => True
-     | _ => False) ∧
-    (match evalStatementV2 body frame emptyMemory { allocations := [] }
-        (.assign { localId := 1, projection := [] }
-          (.repeat_ (.copy { localId := 1, projection := [.constantIndex 1 2 false] })
-            arr4Ty 2)) with
-     | .step _ => True
      | _ => False) :=
-  ⟨trivial, trivial⟩
+  trivial
 
 /-- Guard `state_v2_init_uses_entry_memory_for_args`: end-to-end Profile v2
 `Program` execution where the caller passes a dangling raw pointer
@@ -2070,7 +1588,7 @@ theorem refute_core_contracts_slice_subslice_in_mut :
 /-- Guard `core_contracts_slice_split_at_in_mut`: `slice::split_at(1)` on a
 `&mut [u8]` input over a `.shared` allocation faults with `.undefined` even
 though `reqMut = .shared`, because `execSliceSplitAt` validates the input at
-`inMut`. -/
+`inMut`. The shared `&[u8]` canary lives in `PositiveSanity.lean`. -/
 theorem refute_core_contracts_slice_split_at_in_mut :
     (match execCoreContractOp sharedInit2Mem
         (.sliceSplitAt .shared (.int .i8 false))
@@ -2082,31 +1600,10 @@ theorem refute_core_contracts_slice_split_at_in_mut :
      | _ => False) :=
   trivial
 
-/-- Anti-overreach canary: the same `Index::index` and `split_at` calls on a
-`&[u8]` input over the `.shared` allocation succeed. -/
-theorem positive_core_contracts_slice_shared_input :
-    (match execCoreContractOp sharedInit2Mem
-        (.sliceIndexRange .shared (.int .i8 false))
-        [(.ref .shared (.slice (.int .i8 false)),
-            .slicePtr ⟨some 1, 0, .isize⟩ 2),
-          (.range (.int .isize false), .range 0 1)]
-        (.ref .shared (.slice (.int .i8 false))) with
-     | .ok _ => True
-     | .error _ => False) ∧
-    (match execCoreContractOp sharedInit2Mem
-        (.sliceSplitAt .shared (.int .i8 false))
-        [(.ref .shared (.slice (.int .i8 false)),
-            .slicePtr ⟨some 1, 0, .isize⟩ 2),
-          (.int .isize false, .scalar ⟨.isize, false, 1⟩)]
-        (.tuple [.ref .shared (.slice (.int .i8 false)),
-          .ref .shared (.slice (.int .i8 false))]) with
-     | .ok _ => True
-     | .error _ => False) :=
-  ⟨trivial, trivial⟩
-
 /-- Guard `core_contracts_i128_host_overflow`: 128-bit checked, saturating,
 and overflowing arithmetic detect mathematical overflow (`intHostOverflow`)
-before `BitVec 128` carrier truncation across unsigned and signed edges. -/
+before `BitVec 128` carrier truncation across unsigned and signed edges. The
+in-bounds 128-bit canary lives in `PositiveSanity.lean`. -/
 theorem refute_core_contracts_i128_host_overflow :
     let u128Ty : MirTy := .int .i128 false
     let i128Ty : MirTy := .int .i128 true
@@ -2161,33 +1658,11 @@ theorem refute_core_contracts_i128_host_overflow :
       .ok (.tuple [.scalar i128Min, .bool true], MemoryState.empty) :=
   ⟨rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl⟩
 
-/-- Anti-overreach canary: in-bounds 128-bit checked, saturating, and
-overflowing arithmetic succeed without false overflow. -/
-theorem positive_core_contracts_i128_in_bounds :
-    let u128Ty : MirTy := .int .i128 false
-    let u128MaxMinus1 : ScalarVal :=
-      ⟨.i128, false, BitVec.ofNat 128 340282366920938463463374607431768211454⟩
-    let u128Max : ScalarVal :=
-      ⟨.i128, false, BitVec.ofNat 128 340282366920938463463374607431768211455⟩
-    let u128One : ScalarVal := ⟨.i128, false, 1⟩
-    let u128Two : ScalarVal := ⟨.i128, false, 2⟩
-    let u128Three : ScalarVal := ⟨.i128, false, 3⟩
-    execCoreContractOp MemoryState.empty (.numCheckedAdd .i128 false)
-      [(u128Ty, .scalar u128One), (u128Ty, .scalar u128Two)]
-      (.option u128Ty) =
-      .ok (.optionVal (some (.scalar u128Three)), MemoryState.empty) ∧
-    execCoreContractOp MemoryState.empty (.numSaturatingAdd .i128 false)
-      [(u128Ty, .scalar u128MaxMinus1), (u128Ty, .scalar u128One)] u128Ty =
-      .ok (.scalar u128Max, MemoryState.empty) ∧
-    execCoreContractOp MemoryState.empty (.numOverflowingAdd .i128 false)
-      [(u128Ty, .scalar u128One), (u128Ty, .scalar u128Two)]
-      (.tuple [u128Ty, .bool]) =
-      .ok (.tuple [.scalar u128Three, .bool false], MemoryState.empty) :=
-  ⟨rfl, rfl, rfl⟩
-
 /-- Guard `bytes_v2_slice_uninhabited_elem`: `refValidInMem` rejects
 positive-length `&[!]` and `&mut [!]` slices (both provenance-free dangling
-pointers and provenance-backed allocations) with `.error .undefined`. -/
+pointers and provenance-backed allocations) with `.error .undefined`.
+The empty `&[!]` and inhabited ZST `&[()]` canaries live in
+`PositiveSanity.lean`. -/
 theorem refute_bytes_v2_slice_uninhabited_elem :
     let mutMem : MemoryState := {
       allocations := [{
@@ -2209,18 +1684,9 @@ theorem refute_bytes_v2_slice_uninhabited_elem :
       (.slicePtr ⟨some 2, 0, .isize⟩ 1) = .error .undefined :=
   ⟨rfl, rfl, rfl, rfl⟩
 
-/-- Anti-overreach canary: empty `&[] : &[!]` (`len = 0`) and positive-length
-inhabited ZST `&[()]` slices remain valid under `refValidInMem`. -/
-theorem positive_bytes_v2_slice_empty_never_and_zst_unit :
-    refValidInMem MemoryState.empty .shared (.slice .never)
-      (.slicePtr ⟨none, 1, .isize⟩ 0) = .ok () ∧
-    refValidInMem MemoryState.empty .shared (.slice .unit)
-      (.slicePtr ⟨none, 1, .isize⟩ 3) = .ok () :=
-  ⟨rfl, rfl⟩
-
 /-- Guard `core_contracts_option_unwrap_refs_valid`: `Option::unwrap` on
 `Some(&u8)` pointing into a dead allocation faults `.undefined` via
-`refsValidInMem`, while a live `Some(&u8)` succeeds. -/
+`refsValidInMem`. The live `Some(&u8)` canary lives in `PositiveSanity.lean`. -/
 theorem refute_core_contracts_option_unwrap_refs_valid :
     let refU8Ty : MirTy := .ref .shared (.int .i8 false)
     let deadMem : MemoryState := {
@@ -2233,27 +1699,14 @@ theorem refute_core_contracts_option_unwrap_refs_valid :
       }]
       nextAllocId := 3
     }
-    let liveMem : MemoryState := {
-      allocations := [{
-        allocId := 2
-        alignLog2 := 0
-        mutability := .shared
-        bytes := [.init 7 none]
-        live := true
-      }]
-      nextAllocId := 3
-    }
     execCoreContractOp deadMem (.optionUnwrap refU8Ty)
       [(.option refU8Ty, .optionVal (some (.ptr ⟨some 2, 0, .isize⟩)))]
-      refU8Ty = .error .undefined ∧
-    execCoreContractOp liveMem (.optionUnwrap refU8Ty)
-      [(.option refU8Ty, .optionVal (some (.ptr ⟨some 2, 0, .isize⟩)))]
-      refU8Ty = .ok (.ptr ⟨some 2, 0, .isize⟩, liveMem) :=
-  ⟨rfl, rfl⟩
+      refU8Ty = .error .undefined :=
+  rfl
 
 /-- Guard `step_v2_option_discriminant_dst_ty`: projected `Option` discriminant
-returns `0isize`/`1isize` for `isize` destination and rejects mismatched
-`dstTy` with `.unsupported`. -/
+rejects mismatched `dstTy` with `.unsupported`. The `isize` destination canary
+lives in `PositiveSanity.lean`. -/
 theorem refute_step_v2_option_discriminant_dst_ty :
     let optU8Ty : MirTy := .option (.int .i8 false)
     let tupTy : MirTy := .tuple [optU8Ty, .int .i8 false]
@@ -2263,12 +1716,8 @@ theorem refute_step_v2_option_discriminant_dst_ty :
     ]
     let place : Place := { localId := 0, projection := [.field 0 optU8Ty] }
     evalRvalueV2 [tupTy] locals MemoryState.empty (.int .i8 false)
-      (.discriminant place) = .error .unsupported ∧
-    evalRvalueV2 [tupTy] locals MemoryState.empty (.int .isize true)
-      (.discriminant place) =
-      .ok (.scalar ⟨.isize, true, BitVec.ofNat 128 1⟩, locals,
-        MemoryState.empty) :=
-  ⟨rfl, rfl⟩
+      (.discriminant place) = .error .unsupported :=
+  rfl
 
 /-- Guard `step_v2_core_panic_local_handler_unsupported`: diverging
 `core::panicking::*` calls stay `.fault .unsupported` when
@@ -2288,36 +1737,6 @@ theorem refute_step_v2_core_panic_unwind_unsupported :
     evalCorePanicAbort .unwind .unreachable queryEmpty.callerMem false =
       .fault .unsupported :=
   ⟨rfl, rfl⟩
-
-/-- Shared valid `&'static str` `"ok"` rodata operand for `.panicAbort`
-guard-mutation fixtures. -/
-def panicOkStrOperand : Operand :=
-  .constant ⟨.ref .shared .str, .rodataRef [.init 111, .init 107] 0 0 (some 2)⟩
-
-/-- Profile v2 program under `--panic abort` writing `7 : u8` through `&mut u8`
-before executing `.coreCall .panicAbort`. -/
-noncomputable def progMutBeforeCorePanicV2 : Program := {
-  scope := .unit
-  pointerWidthBits := 64
-  mirProfileVersion := 2
-  panicStrategy := .abort
-  hasLocalPanicHandler := false
-  bodies := [{
-    argumentCount := 1
-    locals := [.unit, .ref .mut u8Ty, .never]
-    basicBlocks := [{
-      statements := [
-        .assign { localId := 1, projection := [.deref] }
-          (.use (.constant ⟨u8Ty, .scalar (BitVec.ofNat 128 7)⟩))
-      ]
-      terminator :=
-        .coreCall .panicAbort [panicOkStrOperand]
-          { localId := 2, projection := [] } none .unreachable
-    }]
-    isUnsafe := false
-    identity := "guard_mutation::mut_before_core_panic_v2"
-  }]
-}
 
 /-- Guard `step_v2_core_panic_abort_extract_caller_mem`: pre-abort `&mut`
 mutations must survive in `.aborted (extractCallerMemory callerMem mem1)` when
@@ -2433,8 +1852,8 @@ theorem refute_step_v2_core_panic_abort_non_utf8_unsupported :
 
 /-- Guard `step_v2_ptr_metadata_str_dst_ty`:
 `evalRvalueV2` `.unaryOp .ptrMetadata` on `&str` requires `usize` destination
-type, returning `.ok` on `usize` and failing closed as `.error .unsupported` on
-non-`usize` destinations. -/
+type, failing closed as `.error .unsupported` on non-`usize` destinations. The
+`usize` destination canary lives in `PositiveSanity.lean`. -/
 theorem refute_step_v2_ptr_metadata_str_dst_ty :
     let localsTys : List MirTy := [.int .isize false, .ref .shared .str]
     let validStr : Val := .slicePtr ⟨some 2, 0, .isize⟩ 2
@@ -2449,13 +1868,10 @@ theorem refute_step_v2_ptr_metadata_str_dst_ty :
         live := true
       }]
     }
-    evalRvalueV2 localsTys locals mem (.int .isize false)
-      (.unaryOp .ptrMetadata (.copy { localId := 1, projection := [] })) =
-      .ok (.scalar ⟨.isize, false, BitVec.ofNat 128 2⟩, locals, mem) ∧
     evalRvalueV2 localsTys locals mem .bool
       (.unaryOp .ptrMetadata (.copy { localId := 1, projection := [] })) =
       .error .unsupported :=
-  ⟨rfl, rfl⟩
+  rfl
 
 /-- Guard `step_v2_ptr_metadata_str_ref_valid`:
 `evalRvalueV2` `.unaryOp .ptrMetadata` on `&str` validates `refValidInMem` on

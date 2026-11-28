@@ -11,6 +11,7 @@ import Init.NotationExtra
 import Trusted.MirAst
 import Trusted.MirModel
 import Trusted.MirSemantics.Memory
+import MemorySanity
 
 /-!
 # Negative Refutations for `Trusted.MirSemantics.Memory` UB Guards
@@ -35,16 +36,6 @@ namespace GuardMutation
 
 open Trusted.MirAst Trusted.MirSemantics
 
-/-- Live mutable 4-byte, 4-byte-aligned (`alignLog2 = 2`) allocation with id
-`1`. -/
-noncomputable def liveMut4Alloc : Allocation := {
-  allocId := 1
-  alignLog2 := 2
-  mutability := .mut
-  bytes := [.init 1 none, .init 2 none, .init 3 none, .init 4 none]
-  live := true
-}
-
 /-- Live mutable 8-byte, 4-byte-aligned (`alignLog2 = 2`) allocation with id
 `1`, used for offset-misalignment checks that stay in bounds. -/
 noncomputable def liveMut8Alloc : Allocation := {
@@ -64,18 +55,6 @@ noncomputable def liveMut4Align1Alloc : Allocation := {
   bytes := List.replicate 4 (.init 0 none)
   live := true
 }
-
-/-- Already deallocated (`live = false`) 4-byte allocation with id `1`. -/
-noncomputable def deadMut4Alloc : Allocation :=
-  { liveMut4Alloc with live := false }
-
-/-- Live immutable (`mutability = .shared`) 4-byte allocation with id `1`. -/
-noncomputable def shared4Alloc : Allocation :=
-  { liveMut4Alloc with mutability := .shared }
-
-/-- Helper constructing a `MemoryState` containing a single allocation. -/
-noncomputable def singleAllocMem (a : Allocation) : MemoryState :=
-  { nextAllocId := 2, allocations := [a] }
 
 /-- Four initialized bytes for `writeBytes` refutations. -/
 noncomputable def fourBytes : List AllocByte :=
@@ -287,20 +266,6 @@ theorem refute_mem_zst_missing_alloc :
       .error .undefined :=
   ⟨rfl, rfl⟩
 
-/-- Anti-overreach positive canaries matching `rustc` `get_place_alloc` /
-`get_place_alloc_mut` and `lean-miri` (`checkAndDerefPtr` size-0 skip +
-alignment-only check): aligned `size == 0` accesses succeed even when the
-allocation is deallocated (`live = false`), read-only (`.shared`), or the
-offset is out of bounds. -/
-theorem positive_zst_alignment_only_canaries :
-    readBytes (singleAllocMem deadMut4Alloc) ⟨1, 0⟩ 0 2 = .ok [] ∧
-    writeBytes (singleAllocMem shared4Alloc) ⟨1, 0⟩ 2 [] =
-      .ok (singleAllocMem shared4Alloc) ∧
-    readBytes (singleAllocMem liveMut4Alloc) ⟨1, 8⟩ 0 2 = .ok [] ∧
-    writeBytes (singleAllocMem liveMut4Alloc) ⟨1, 8⟩ 2 [] =
-      .ok (singleAllocMem liveMut4Alloc) :=
-  ⟨rfl, rfl, rfl, rfl⟩
-
 /-- Guard `mem_v2_entry_byte_prov_fresh`: `entryMemoryWithCaller` advances
 `nextAllocId` past provenance `AllocId`s stored inside caller allocation bytes
 (`some 5` inside `allocId = 2`), so callee stack allocation gets `allocId = 6`
@@ -320,17 +285,15 @@ theorem refute_mem_v2_entry_byte_prov_fresh :
 
 /-- Guard `mem_v2_entry_raw_ptr_arg_fresh`: `entryMemoryForArgsV2` advances
 `nextAllocId` past provenance `AllocId`s carried by raw-pointer arguments (even
-dangling `some 5` absent from `cm.allocations`), while reducing to
-`entryMemoryWithCaller` when no parameter has a raw-pointer type. -/
+dangling `some 5` absent from `cm.allocations`). The non-raw-pointer
+preservation canary lives in `MemorySanity.lean`. -/
 theorem refute_mem_v2_entry_raw_ptr_arg_fresh :
     let emptyCm : CallerMemory := { allocations := [] }
     (allocateStack
       (entryMemoryForArgsV2 emptyCm
         [.rawPtr .shared (.int .i8 false)]
-        [.ptr ⟨some 5, 0, .isize⟩]) ⟨1, 0⟩).2.allocId = 6 ∧
-    (entryMemoryForArgsV2 emptyCm [.int .i32 false]
-      [.scalar ⟨.i32, false, 0⟩]).nextAllocId = 2 :=
-  ⟨rfl, rfl⟩
+        [.ptr ⟨some 5, 0, .isize⟩]) ⟨1, 0⟩).2.allocId = 6 :=
+  rfl
 
 /-- Guard `mem_v2_entry_option_raw_ptr_ty`: `tyHasRawPtrV2` recurses through
 `Option`, so an `Option<*const i8>` parameter (bare or inside a tuple) makes
@@ -352,24 +315,19 @@ theorem refute_mem_v2_entry_option_raw_ptr_ty :
 
 /-- Guard `mem_v2_entry_option_raw_ptr_val`: `maxValPtrAllocId` looks inside
 `Some` payloads, so a dangling `some 5` pointer inside an `Option` argument
-is counted, while `None` contributes nothing. -/
+is counted. The `None` zero canary lives in `MemorySanity.lean`. -/
 theorem refute_mem_v2_entry_option_raw_ptr_val :
     maxValPtrAllocId (.optionVal (some (.ptr ⟨some 5, 0, .isize⟩))) = 5 ∧
     maxValPtrAllocId (.tuple [.scalar ⟨.i8, false, 0⟩,
-      .optionVal (some (.ptr ⟨some 5, 0, .isize⟩))]) = 5 ∧
-    maxValPtrAllocId (.optionVal none) = 0 :=
-  ⟨rfl, rfl, rfl⟩
+      .optionVal (some (.ptr ⟨some 5, 0, .isize⟩))]) = 5 :=
+  ⟨rfl, rfl⟩
 
 /-- Guard `mem_v2_slice_get_unchecked_elem_size`: `sliceGetUncheckedCheck`
 scales `startOff` by `elemSize` in `ptrAddInMem` (`2 * 4 = 8 > 4` on a 4-byte
-allocation faults `.error .undefined`, whereas `elemSize = 4` with
-`startOff = 1` on a 4-byte allocation succeeds at byte offset `4`). -/
+allocation faults `.error .undefined`). The in-bounds `elemSize = 4` canary
+lives in `MemorySanity.lean`. -/
 theorem refute_mem_v2_slice_get_unchecked_elem_size :
     sliceGetUncheckedCheck (singleAllocMem liveMut4Alloc)
-      ⟨some 1, 0, .isize⟩ 2 2 2 4 = .error .undefined ∧
-    sliceGetUncheckedCheck (singleAllocMem liveMut4Alloc)
-      ⟨some 1, 0, .isize⟩ 1 1 1 4 =
-      .ok (.slicePtr ⟨some 1, 4, .isize⟩ 0) :=
-  ⟨rfl, rfl⟩
-
+      ⟨some 1, 0, .isize⟩ 2 2 2 4 = .error .undefined :=
+  rfl
 end GuardMutation

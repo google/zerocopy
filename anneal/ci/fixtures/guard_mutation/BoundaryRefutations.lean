@@ -59,10 +59,8 @@ faulty body must still refute `BodyVerified` even when `safetyPre` is `False`.
 theorem refute_boundary_safe_fn_ignores_safety_pre :
     ¬ BodyVerified safeUnreachableProg 0 safeUnreachableBody (fun _ => False) :=
   fun hVer =>
-    have hWf : WellFormed (entryProgForBody safeUnreachableProg 0)
-        { args := [] } :=
-      hVer.2.2 [] rfl (fun hFalse => Bool.noConfusion hFalse)
-    hWf.2 .undefined (reachesResult_of_execFault (fuel := 1) rfl)
+    (hVer.2.2 [] rfl (fun hFalse => Bool.noConfusion hFalse)).2 .undefined
+      (reachesResult_of_execFault (fuel := 1) rfl)
 
 /-- Uninhabited (`MirTy.never`) parameter body with an out-of-bounds
 `StorageLive 9` annotation, which fails `BodyStaticAdmitted`. -/
@@ -577,39 +575,5 @@ theorem refute_boundary_v2_fake_ptr_metadata_forbids_terminator_use :
     ¬ BodyVerifiedV2 terminatorEscapeFakeMetaProgV2 0
       terminatorEscapeFakeMetaBodyV2 (fun _ => False) :=
   fun hVer => Bool.noConfusion hVer.2.1
-
-/-- Anti-overreach canary: a safe `&mut [u8]` body using a metadata-only
-`.fakeAddressOf` + `.ptrMetadata` temporary is admitted by
-`BodyStaticAdmittedV2` and has `bodyHasRawPtrLocalV2 = false`. -/
-noncomputable def validFakeMetaBodyV2 : Body := {
-  argumentCount := 1
-  locals := [
-    .int .isize false,
-    .ref .mut (.slice (.int .i8 false)),
-    .rawPtr .shared (.slice (.int .i8 false))
-  ]
-  basicBlocks := [{
-    statements := [
-      .assign ⟨2, []⟩ (.fakeAddressOf ⟨1, [.deref]⟩),
-      .assign ⟨0, []⟩ (.unaryOp .ptrMetadata (.move ⟨2, []⟩))
-    ]
-    terminator := .return_
-  }]
-  isUnsafe := false
-  identity := "guard_mutation::valid_fake_meta_v2"
-}
-
-/-- Profile v2 program wrapping `validFakeMetaBodyV2`. -/
-noncomputable def validFakeMetaProgV2 : Program := {
-  scope := .unit
-  pointerWidthBits := 64
-  mirProfileVersion := 2
-  bodies := [validFakeMetaBodyV2]
-}
-
-theorem positive_boundary_v2_admits_valid_fake_ptr_metadata :
-    BodyStaticAdmittedV2 validFakeMetaProgV2 validFakeMetaBodyV2 = true ∧
-      bodyHasRawPtrLocalV2 validFakeMetaBodyV2 = false :=
-  ⟨rfl, rfl⟩
 
 end GuardMutation

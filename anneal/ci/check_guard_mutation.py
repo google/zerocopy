@@ -180,6 +180,11 @@ FIXTURE_HELPERS_END_TO_END: tuple[str, ...] = (
 FIXTURE_HELPERS_BOUNDARY: tuple[str, ...] = (
     "GuardRefuteBase",
 )
+# Baseline-only exact-value fixtures compiled solely against the unmodified
+# semantics (never copied into or rebuilt against mutants).
+BASELINE_ONLY_MEMORY_FIXTURES: tuple[str, ...] = (
+    "MemoryBaselineExact",
+)
 
 # Error substrings that indicate a compiler crash, parse error, missing import,
 # or resource exhaustion rather than a genuine proof refutation failure. Any
@@ -1459,7 +1464,6 @@ MIR_SEMANTICS_GUARDS: tuple[MirSemanticsGuard, ...] = (
         replacement="          let entryMem := entryMemoryWithCaller q.callerMem",
         fixture_module="StepRefutations",
         theorem_name="refute_state_v2_init_uses_entry_memory_for_args",
-        needs_wf_helper=False,
     ),
     # ------------------------------------------------------------------
     # Trusted/MirSemantics/Boundary.lean (3 judgment soundness guards)
@@ -1893,7 +1897,6 @@ MIR_SEMANTICS_GUARDS: tuple[MirSemanticsGuard, ...] = (
         ),
         fixture_module="StepRefutations",
         theorem_name="refute_core_contracts_i128_host_overflow",
-        needs_wf_helper=False,
     ),
     MirSemanticsGuard(
         guard_id="enum_v2_overflow_pair_pointee",
@@ -2074,7 +2077,6 @@ MIR_SEMANTICS_GUARDS: tuple[MirSemanticsGuard, ...] = (
         ),
         fixture_module="StepRefutations",
         theorem_name="refute_step_v2_constant_index_min_len",
-        needs_wf_helper=False,
     ),
     MirSemanticsGuard(
         guard_id="step_v2_constant_index_oob",
@@ -2093,7 +2095,6 @@ MIR_SEMANTICS_GUARDS: tuple[MirSemanticsGuard, ...] = (
         ),
         fixture_module="StepRefutations",
         theorem_name="refute_step_v2_constant_index_oob",
-        needs_wf_helper=False,
     ),
     MirSemanticsGuard(
         guard_id="step_v2_read_deref_proj_raw_misaligned",
@@ -2110,7 +2111,6 @@ MIR_SEMANTICS_GUARDS: tuple[MirSemanticsGuard, ...] = (
         ),
         fixture_module="StepRefutations",
         theorem_name="refute_step_v2_read_deref_proj_raw_misaligned",
-        needs_wf_helper=False,
     ),
     MirSemanticsGuard(
         guard_id="step_v2_read_deref_proj_no_prov_misaligned",
@@ -2132,7 +2132,6 @@ MIR_SEMANTICS_GUARDS: tuple[MirSemanticsGuard, ...] = (
         ),
         fixture_module="StepRefutations",
         theorem_name="refute_step_v2_read_deref_proj_no_prov_misaligned",
-        needs_wf_helper=False,
     ),
     MirSemanticsGuard(
         guard_id="step_v2_unsize_shared_to_mut",
@@ -2156,7 +2155,6 @@ MIR_SEMANTICS_GUARDS: tuple[MirSemanticsGuard, ...] = (
         ),
         fixture_module="StepRefutations",
         theorem_name="refute_step_v2_unsize_shared_to_mut",
-        needs_wf_helper=False,
     ),
     MirSemanticsGuard(
         guard_id="step_v2_unsize_src_mut_valid",
@@ -2174,7 +2172,6 @@ MIR_SEMANTICS_GUARDS: tuple[MirSemanticsGuard, ...] = (
         ),
         fixture_module="StepRefutations",
         theorem_name="refute_step_v2_unsize_src_mut_valid",
-        needs_wf_helper=False,
     ),
     MirSemanticsGuard(
         guard_id="step_v2_unsize_raw_shared_to_mut",
@@ -2200,7 +2197,6 @@ MIR_SEMANTICS_GUARDS: tuple[MirSemanticsGuard, ...] = (
         ),
         fixture_module="StepRefutations",
         theorem_name="refute_step_v2_unsize_raw_shared_to_mut",
-        needs_wf_helper=False,
     ),
     MirSemanticsGuard(
         guard_id="step_v2_resolve_deref_proj_propagates_ub",
@@ -2222,7 +2218,6 @@ MIR_SEMANTICS_GUARDS: tuple[MirSemanticsGuard, ...] = (
         ),
         fixture_module="StepRefutations",
         theorem_name="refute_step_v2_resolve_deref_proj_propagates_ub",
-        needs_wf_helper=False,
     ),
     MirSemanticsGuard(
         guard_id="step_v2_read_indirect_proj_propagates_error",
@@ -2244,7 +2239,6 @@ MIR_SEMANTICS_GUARDS: tuple[MirSemanticsGuard, ...] = (
         ),
         fixture_module="StepRefutations",
         theorem_name="refute_step_v2_read_indirect_proj_propagates_error",
-        needs_wf_helper=False,
     ),
     MirSemanticsGuard(
         guard_id="step_v2_resolve_local_proj_validates_first",
@@ -2266,7 +2260,6 @@ MIR_SEMANTICS_GUARDS: tuple[MirSemanticsGuard, ...] = (
         ),
         fixture_module="StepRefutations",
         theorem_name="refute_step_v2_resolve_local_proj_validates_first",
-        needs_wf_helper=False,
     ),
     MirSemanticsGuard(
         guard_id="step_v2_rodata_bytes_data_ty_only",
@@ -2288,7 +2281,6 @@ MIR_SEMANTICS_GUARDS: tuple[MirSemanticsGuard, ...] = (
         ),
         fixture_module="StepRefutations",
         theorem_name="refute_step_v2_rodata_bytes_data_ty_only",
-        needs_wf_helper=False,
     ),
     MirSemanticsGuard(
         guard_id="step_v2_rodata_ref_mut",
@@ -2311,7 +2303,6 @@ MIR_SEMANTICS_GUARDS: tuple[MirSemanticsGuard, ...] = (
         ),
         fixture_module="StepRefutations",
         theorem_name="refute_step_v2_rodata_ref_mut",
-        needs_wf_helper=False,
     ),
     MirSemanticsGuard(
         guard_id="step_v2_rodata_slice_ref_mut",
@@ -2334,7 +2325,6 @@ MIR_SEMANTICS_GUARDS: tuple[MirSemanticsGuard, ...] = (
         ),
         fixture_module="StepRefutations",
         theorem_name="refute_step_v2_rodata_slice_ref_mut",
-        needs_wf_helper=False,
     ),
     MirSemanticsGuard(
         guard_id="step_v2_rodata_raw_ptr_mut",
@@ -2357,7 +2347,6 @@ MIR_SEMANTICS_GUARDS: tuple[MirSemanticsGuard, ...] = (
         ),
         fixture_module="StepRefutations",
         theorem_name="refute_step_v2_rodata_raw_ptr_mut",
-        needs_wf_helper=False,
     ),
     MirSemanticsGuard(
         guard_id="step_v2_rodata_raw_slice_mut",
@@ -2380,7 +2369,6 @@ MIR_SEMANTICS_GUARDS: tuple[MirSemanticsGuard, ...] = (
         ),
         fixture_module="StepRefutations",
         theorem_name="refute_step_v2_rodata_raw_slice_mut",
-        needs_wf_helper=False,
     ),
     MirSemanticsGuard(
         guard_id="step_v2_array_eq_dangling_ref",
@@ -2399,7 +2387,6 @@ MIR_SEMANTICS_GUARDS: tuple[MirSemanticsGuard, ...] = (
         ),
         fixture_module="StepRefutations",
         theorem_name="refute_step_v2_array_eq_dangling_ref",
-        needs_wf_helper=False,
     ),
     MirSemanticsGuard(
         guard_id="step_v2_return_rodata_unsupported",
@@ -2416,7 +2403,6 @@ MIR_SEMANTICS_GUARDS: tuple[MirSemanticsGuard, ...] = (
         ),
         fixture_module="StepRefutations",
         theorem_name="refute_step_v2_return_rodata_unsupported",
-        needs_wf_helper=False,
     ),
     MirSemanticsGuard(
         guard_id="bytes_v2_ptr_or_ref_alloc_ids_option",
@@ -2433,7 +2419,6 @@ MIR_SEMANTICS_GUARDS: tuple[MirSemanticsGuard, ...] = (
         replacement="    | .option _, .optionVal (some _) => []",
         fixture_module="StepRefutations",
         theorem_name="refute_step_v2_return_rodata_option_ptr",
-        needs_wf_helper=False,
     ),
     MirSemanticsGuard(
         guard_id="bytes_v2_slice_uninhabited_elem",
@@ -2453,7 +2438,6 @@ MIR_SEMANTICS_GUARDS: tuple[MirSemanticsGuard, ...] = (
         ),
         fixture_module="StepRefutations",
         theorem_name="refute_bytes_v2_slice_uninhabited_elem",
-        needs_wf_helper=False,
     ),
     MirSemanticsGuard(
         guard_id="step_v2_assert_abort_extract_caller_mem",
@@ -2641,7 +2625,6 @@ MIR_SEMANTICS_GUARDS: tuple[MirSemanticsGuard, ...] = (
         ),
         fixture_module="StepRefutations",
         theorem_name="refute_step_v2_assign_use_overlap_ub",
-        needs_wf_helper=False,
     ),
     MirSemanticsGuard(
         guard_id="step_v2_assign_aggregate_clobber_unsupported",
@@ -2661,7 +2644,6 @@ MIR_SEMANTICS_GUARDS: tuple[MirSemanticsGuard, ...] = (
         ),
         fixture_module="StepRefutations",
         theorem_name="refute_step_v2_assign_aggregate_clobber_unsupported",
-        needs_wf_helper=False,
     ),
     MirSemanticsGuard(
         guard_id="step_v2_assign_aggregate_range_clobber_unsupported",
@@ -2681,7 +2663,6 @@ MIR_SEMANTICS_GUARDS: tuple[MirSemanticsGuard, ...] = (
         ),
         fixture_module="StepRefutations",
         theorem_name="refute_step_v2_assign_aggregate_range_clobber_unsupported",
-        needs_wf_helper=False,
     ),
     MirSemanticsGuard(
         guard_id="step_v2_assign_range_field_span",
@@ -2699,7 +2680,6 @@ MIR_SEMANTICS_GUARDS: tuple[MirSemanticsGuard, ...] = (
         ),
         fixture_module="StepRefutations",
         theorem_name="refute_step_v2_assign_range_field_span",
-        needs_wf_helper=False,
     ),
     MirSemanticsGuard(
         guard_id="step_v2_assign_option_payload_span",
@@ -2719,7 +2699,6 @@ MIR_SEMANTICS_GUARDS: tuple[MirSemanticsGuard, ...] = (
         ),
         fixture_module="StepRefutations",
         theorem_name="refute_step_v2_assign_option_payload_span",
-        needs_wf_helper=False,
     ),
     MirSemanticsGuard(
         guard_id="step_v2_assign_aggregate_unresolved_operand_unsupported",
@@ -2739,7 +2718,6 @@ MIR_SEMANTICS_GUARDS: tuple[MirSemanticsGuard, ...] = (
         ),
         fixture_module="StepRefutations",
         theorem_name="refute_step_v2_assign_aggregate_unresolved_operand_unsupported",
-        needs_wf_helper=False,
     ),
     MirSemanticsGuard(
         guard_id="step_v2_assign_aggregate_deref_ptr_clobber_unsupported",
@@ -2760,7 +2738,6 @@ MIR_SEMANTICS_GUARDS: tuple[MirSemanticsGuard, ...] = (
         ),
         fixture_module="StepRefutations",
         theorem_name="refute_step_v2_assign_aggregate_deref_ptr_clobber_unsupported",
-        needs_wf_helper=False,
     ),
     MirSemanticsGuard(
         guard_id="step_v2_assign_aggregate_field_overlap_ub",
@@ -2780,7 +2757,6 @@ MIR_SEMANTICS_GUARDS: tuple[MirSemanticsGuard, ...] = (
         ),
         fixture_module="StepRefutations",
         theorem_name="refute_step_v2_assign_aggregate_field_overlap_ub",
-        needs_wf_helper=False,
     ),
     MirSemanticsGuard(
         guard_id="step_v2_assign_repeat_overlap_ub",
@@ -2802,7 +2778,6 @@ MIR_SEMANTICS_GUARDS: tuple[MirSemanticsGuard, ...] = (
         ),
         fixture_module="StepRefutations",
         theorem_name="refute_step_v2_assign_repeat_overlap_ub",
-        needs_wf_helper=False,
     ),
     MirSemanticsGuard(
         guard_id="step_v2_core_panic_local_handler_unsupported",
@@ -3923,7 +3898,6 @@ MIR_SEMANTICS_GUARDS: tuple[MirSemanticsGuard, ...] = (
         ),
         fixture_module="StepRefutations",
         theorem_name="refute_core_contracts_option_unwrap_refs_valid",
-        needs_wf_helper=False,
     ),
     MirSemanticsGuard(
         guard_id="step_v2_option_discriminant_dst_ty",
@@ -3949,7 +3923,6 @@ MIR_SEMANTICS_GUARDS: tuple[MirSemanticsGuard, ...] = (
         ),
         fixture_module="StepRefutations",
         theorem_name="refute_step_v2_option_discriminant_dst_ty",
-        needs_wf_helper=False,
     ),
     # ------------------------------------------------------------------
     # Profile v2 heap allocation (`Vec`/`Box`) guards (16 guards)
@@ -4646,6 +4619,211 @@ def apply_single_guard_mutation(
     return source_text.replace(anchor, replacement, 1)
 
 
+_LEAN_DECL_MODIFIER_PREFIX = (
+    r"(?:(?:private|protected|public|noncomputable|partial|unsafe)\s+)*"
+)
+_LEAN_DECL_KINDS = (
+    r"(?:theorem|lemma|example|def|abbrev|structure|"
+    r"inductive|instance|class|axiom|opaque|end)"
+)
+LEAN_DECL_TOKEN_RE = re.compile(
+    r"(?<![.\w'])\b"
+    + _LEAN_DECL_MODIFIER_PREFIX
+    + r"(theorem|lemma|example|def|abbrev|structure|inductive|instance|"
+    r"class|axiom|opaque|end)\b"
+    r"(?:\s+(?:(?:[\w']+|«[^»]+»)\.)*([\w']+|«[^»]+»))?"
+)
+
+
+def _strip_lean_segment(
+    text: str, start: int, *, stop_at_rbrace: bool
+) -> tuple[str, int]:
+    """Strip comments and mask literal string payloads in a Lean segment.
+
+    Preserves 1-based line numbers by keeping newlines inside stripped spans,
+    and preserves expressions inside Lean interpolated strings (`s!"{...}"`,
+    `m!"{...}"`, etc.) by recursively stripping each `{...}` interpolation.
+    """
+    out: list[str] = []
+    i = start
+    n = len(text)
+    block_depth = 0
+    brace_depth = 0
+    while i < n:
+        ch = text[i]
+        nxt = text[i + 1] if i + 1 < n else ""
+        if block_depth > 0:
+            if ch == "/" and nxt == "-":
+                block_depth += 1
+                i += 2
+            elif ch == "-" and nxt == "/":
+                block_depth -= 1
+                i += 2
+            else:
+                if ch == "\n":
+                    out.append("\n")
+                i += 1
+            continue
+        if stop_at_rbrace:
+            if ch == "{":
+                brace_depth += 1
+            elif ch == "}":
+                if brace_depth == 0:
+                    return "".join(out), i + 1
+                brace_depth -= 1
+        if ch == "«":
+            i += 1
+            inner_chars: list[str] = []
+            while i < n:
+                c = text[i]
+                i += 1
+                if c == "»":
+                    break
+                inner_chars.append(c)
+            inner = "".join(inner_chars)
+            newlines = "\n" * inner.count("\n")
+            if inner and all(c.isalnum() or c in "_'" for c in inner):
+                out.append(inner)
+            else:
+                out.append("«»" + newlines)
+            continue
+        if (
+            ch == "r"
+            and (
+                i == 0
+                or not (text[i - 1].isalnum() or text[i - 1] in "_'")
+            )
+            and i + 1 < n
+            and text[i + 1] in '#"'
+        ):
+            j = i + 1
+            while j < n and text[j] == "#":
+                j += 1
+            hashes = j - (i + 1)
+            if j < n and text[j] == '"':
+                out.append('""')
+                i = j + 1
+                closing = '"' + "#" * hashes
+                while i < n:
+                    if text.startswith(closing, i):
+                        i += len(closing)
+                        break
+                    if text[i] == "\n":
+                        out.append("\n")
+                    i += 1
+                continue
+        if ch == "/" and nxt == "-":
+            out.append(" ")
+            block_depth = 1
+            i += 2
+            continue
+        if ch == "-" and nxt == "-":
+            while i < n and text[i] != "\n":
+                i += 1
+            continue
+        if ch == '"':
+            is_interp = (
+                i >= 2
+                and text[i - 1] == "!"
+                and (text[i - 2].isalnum() or text[i - 2] in "_'")
+            )
+            out.append('""')
+            i += 1
+            while i < n:
+                c = text[i]
+                if c == "\\":
+                    if i + 1 < n and text[i + 1] == "\n":
+                        out.append("\n")
+                    i += 2
+                    continue
+                if is_interp and c == "{":
+                    if i + 1 < n and text[i + 1] == "{":
+                        i += 2
+                        continue
+                    out.append(" (")
+                    inner_expr, i = _strip_lean_segment(
+                        text, i + 1, stop_at_rbrace=True
+                    )
+                    out.append(inner_expr)
+                    out.append(") ")
+                    continue
+                if c == "\n":
+                    out.append("\n")
+                i += 1
+                if c == '"':
+                    break
+            continue
+        if ch == "'" and (
+            i == 0 or not (text[i - 1].isalnum() or text[i - 1] in "_'")
+        ):
+            j = i + 1
+            if j < n and text[j] == "\\":
+                j += 2
+            elif j < n and text[j] != "\n":
+                j += 1
+            if j < n and text[j] == "'":
+                out.append("''")
+                i = j + 1
+                continue
+        out.append(ch)
+        i += 1
+    return "".join(out), i
+
+
+def strip_lean_comments_and_strings(text: str) -> str:
+    """Strip Lean `--` and nested `/- ... -/` comments while masking strings.
+
+    Preserves 1-based line numbers by keeping newlines inside stripped spans,
+    replaces literal string/char payloads with empty literals so `"/-"` cannot
+    start a comment, and preserves `{...}` expressions inside interpolated
+    strings (`s!"..."`, `m!"..."`, etc.) so hidden proofs cannot evade audits.
+    """
+    return _strip_lean_segment(text, 0, stop_at_rbrace=False)[0]
+
+
+def _declaration_is_mid_line(cleaned: str, offset: int) -> bool:
+    """Return True if non-whitespace code precedes `offset` on its line."""
+    line_start = cleaned.rfind("\n", 0, offset) + 1
+    return bool(cleaned[line_start:offset].strip())
+
+
+def _find_theorem_line_span_in_cleaned(
+    cleaned: str,
+    matches: list[re.Match[str]],
+    theorem_name: str,
+) -> tuple[int, int]:
+    start_idx: int | None = None
+    start_line: int | None = None
+    for i, m in enumerate(matches):
+        kind = m.group(1)
+        name = (m.group(2) or "").strip("«»")
+        if kind in ("theorem", "lemma") and name == theorem_name:
+            start_idx = i
+            start_line = cleaned.count("\n", 0, m.start()) + 1
+            break
+    if start_idx is None or start_line is None:
+        raise ValueError(
+            f"theorem {theorem_name!r} not found in fixture source"
+        )
+    if _declaration_is_mid_line(cleaned, matches[start_idx].start()):
+        raise ValueError(
+            f"same-line declaration precedes {theorem_name!r} on line "
+            f"{start_line}"
+        )
+    if start_idx + 1 < len(matches):
+        next_match = matches[start_idx + 1]
+        next_line = cleaned.count("\n", 0, next_match.start()) + 1
+        if next_line == start_line or _declaration_is_mid_line(
+            cleaned, next_match.start()
+        ):
+            raise ValueError(
+                f"same-line declaration follows {theorem_name!r} on line "
+                f"{next_line}"
+            )
+        return (start_line, next_line - 1)
+    return (start_line, len(cleaned.splitlines()))
+
+
 def find_theorem_line_span(
     fixture_text: str,
     theorem_name: str,
@@ -4654,25 +4832,1812 @@ def find_theorem_line_span(
 
     Used to confirm that a Lean proof failure on a mutated semantics actually
     originated inside the guard's dedicated refutation theorem rather than in
-    an unrelated declaration or file header.
+    an unrelated declaration or file header. Uses the offset-based declaration
+    scanner (`LEAN_DECL_TOKEN_RE`) and fails closed if another declaration
+    shares any physical line with `theorem_name` (including mid-line
+    declarations on a multi-line theorem's final line).
     """
-    lines = fixture_text.splitlines()
-    decl_re = re.compile(
-        r"^(?:theorem|lemma|def|noncomputable\s+def|end)\b"
+    cleaned = strip_lean_comments_and_strings(fixture_text)
+    matches = list(LEAN_DECL_TOKEN_RE.finditer(cleaned))
+    return _find_theorem_line_span_in_cleaned(cleaned, matches, theorem_name)
+
+
+# Exact cataloged refutation assertions whose statement shape is pinned
+# verbatim (evaluation-order, allocation-ID freshness, precise span resolution,
+# and 128-bit mathematical overflow detection guards whose killed assertion is
+# not a `.fault`/`.error` equality). Pinning their normalized declaration text
+# prevents unrelated positive conjuncts or secondary canaries from piggybacking
+# on an exemption.
+PINNED_EXACT_REFUTATIONS: dict[str, str] = {
+    "refute_step_v2_assign_resolves_destination_first": (
+        "theorem refute_step_v2_assign_resolves_destination_first : "
+        "(match evalStatementV2 bodyStoreThroughMovedPtr "
+        "{ defId := 0, blockIdx := 0, stmtIdx := 0, "
+        "locals := [.immediate (some .unit), "
+        ".immediate (some (.ptr ⟨some 1, 0, .isize⟩))] } "
+        "{ allocations := [{ allocId := 1 alignLog2 := 0 "
+        "mutability := .mut bytes := [] live := true }], "
+        "nextAllocId := 2 } {} "
+        "(.assign ⟨1, [.deref]⟩ (.unaryOp .ptrMetadata (.move ⟨1, []⟩))) "
+        "with | .step _ => True | _ => False) := trivial"
+    ),
+    "refute_mem_v2_entry_byte_prov_fresh": (
+        "theorem refute_mem_v2_entry_byte_prov_fresh : "
+        "let cm : CallerMemory := { allocations := [{ "
+        "allocId := 2 alignLog2 := 0 mutability := .mut "
+        "bytes := [.init 0 (some 5)] live := true }] } "
+        "(allocateStack (entryMemoryWithCaller cm) ⟨1, 0⟩).2.allocId "
+        "= 6 := rfl"
+    ),
+    "refute_mem_v2_entry_raw_ptr_arg_fresh": (
+        "theorem refute_mem_v2_entry_raw_ptr_arg_fresh : "
+        "let emptyCm : CallerMemory := { allocations := [] } "
+        "(allocateStack (entryMemoryForArgsV2 emptyCm "
+        "[.rawPtr .shared (.int .i8 false)] "
+        "[.ptr ⟨some 5, 0, .isize⟩]) ⟨1, 0⟩).2.allocId = 6 := rfl"
+    ),
+    "refute_mem_v2_entry_option_raw_ptr_ty": (
+        "theorem refute_mem_v2_entry_option_raw_ptr_ty : "
+        "let emptyCm : CallerMemory := { allocations := [] } "
+        "(allocateStack (entryMemoryForArgsV2 emptyCm "
+        "[.option (.rawPtr .shared (.int .i8 false))] "
+        "[.optionVal (some (.ptr ⟨some 5, 0, .isize⟩))]) "
+        "⟨1, 0⟩).2.allocId = 6 ∧ "
+        "(allocateStack (entryMemoryForArgsV2 emptyCm "
+        "[.tuple [.int .i8 false, "
+        ".option (.rawPtr .shared (.int .i8 false))]] "
+        "[.tuple [.scalar ⟨.i8, false, 0⟩, "
+        ".optionVal (some (.ptr ⟨some 5, 0, .isize⟩))]]) "
+        "⟨1, 0⟩).2.allocId = 6 := ⟨rfl, rfl⟩"
+    ),
+    "refute_mem_v2_entry_option_raw_ptr_val": (
+        "theorem refute_mem_v2_entry_option_raw_ptr_val : "
+        "maxValPtrAllocId (.optionVal (some (.ptr ⟨some 5, 0, .isize⟩))) "
+        "= 5 ∧ maxValPtrAllocId (.tuple [.scalar ⟨.i8, false, 0⟩, "
+        ".optionVal (some (.ptr ⟨some 5, 0, .isize⟩))]) = 5 := ⟨rfl, rfl⟩"
+    ),
+    "refute_step_v2_assign_range_field_span": (
+        "theorem refute_step_v2_assign_range_field_span : "
+        "checkAssignCopyHazardV2 rangeHazLocals.1 rangeHazLocals.2 "
+        "emptyMemory (.local 1) (.range (.int .isize false)) "
+        "(.aggregateRange (.int .isize false) "
+        "(.copy { localId := 2, projection := [] }) "
+        "(.copy { localId := 1, projection := "
+        "[.field 1 (.int .isize false)] })) = .ok () := rfl"
+    ),
+    "refute_step_v2_assign_option_payload_span": (
+        "theorem refute_step_v2_assign_option_payload_span : "
+        "let u32Ty : MirTy := .int .i32 false "
+        "checkAssignCopyHazardV2 optHazLocals.1 optHazLocals.2 "
+        "emptyMemory (.local 3) (.tuple [u32Ty, u32Ty, .option u32Ty]) "
+        "(.aggregateTuple [ "
+        ".copy { localId := 1, projection := [.field 1 u32Ty] }, "
+        ".copy { localId := 3, projection := "
+        "[.field 2 (.option u32Ty), .downcast 1, .field 0 u32Ty] }, "
+        ".copy { localId := 2, projection := [] }]) = .ok () ∧ "
+        "checkAssignCopyHazardV2 optHazLocals.1 optHazLocals.2 "
+        "emptyMemory (.local 1) (.tuple [.option u32Ty, u32Ty]) "
+        "(.aggregateTuple [ "
+        ".copy { localId := 2, projection := [] }, "
+        ".copy { localId := 1, projection := "
+        "[.field 0 (.option u32Ty), .downcast 1, .field 0 u32Ty] }]) "
+        "= .error .unsupported := ⟨rfl, rfl⟩"
+    ),
+    "refute_core_contracts_i128_host_overflow": (
+        "theorem refute_core_contracts_i128_host_overflow : "
+        "let u128Ty : MirTy := .int .i128 false "
+        "let i128Ty : MirTy := .int .i128 true "
+        "let u128Max : ScalarVal := "
+        "⟨.i128, false, BitVec.ofNat 128 "
+        "340282366920938463463374607431768211455⟩ "
+        "let u128Zero : ScalarVal := ⟨.i128, false, 0⟩ "
+        "let u128One : ScalarVal := ⟨.i128, false, 1⟩ "
+        "let u128Two : ScalarVal := ⟨.i128, false, 2⟩ "
+        "let i128Max : ScalarVal := "
+        "⟨.i128, true, BitVec.ofNat 128 "
+        "170141183460469231731687303715884105727⟩ "
+        "let i128Min : ScalarVal := "
+        "⟨.i128, true, BitVec.ofNat 128 "
+        "170141183460469231731687303715884105728⟩ "
+        "let i128One : ScalarVal := ⟨.i128, true, 1⟩ "
+        "let i128NegOne : ScalarVal := "
+        "⟨.i128, true, BitVec.ofNat 128 "
+        "340282366920938463463374607431768211455⟩ "
+        "execCoreContractOp MemoryState.empty "
+        "(.numCheckedAdd .i128 false) "
+        "[(u128Ty, .scalar u128Max), (u128Ty, .scalar u128One)] "
+        "(.option u128Ty) = .ok (.optionVal none, MemoryState.empty) ∧ "
+        "execCoreContractOp MemoryState.empty "
+        "(.numCheckedSub .i128 false) "
+        "[(u128Ty, .scalar u128Zero), (u128Ty, .scalar u128One)] "
+        "(.option u128Ty) = .ok (.optionVal none, MemoryState.empty) ∧ "
+        "execCoreContractOp MemoryState.empty "
+        "(.numCheckedAdd .i128 true) "
+        "[(i128Ty, .scalar i128Max), (i128Ty, .scalar i128One)] "
+        "(.option i128Ty) = .ok (.optionVal none, MemoryState.empty) ∧ "
+        "execCoreContractOp MemoryState.empty "
+        "(.numCheckedMul .i128 false) "
+        "[(u128Ty, .scalar u128Max), (u128Ty, .scalar u128Two)] "
+        "(.option u128Ty) = .ok (.optionVal none, MemoryState.empty) ∧ "
+        "execCoreContractOp MemoryState.empty "
+        "(.numSaturatingAdd .i128 false) "
+        "[(u128Ty, .scalar u128Max), (u128Ty, .scalar u128One)] "
+        "u128Ty = .ok (.scalar u128Max, MemoryState.empty) ∧ "
+        "execCoreContractOp MemoryState.empty "
+        "(.numSaturatingAdd .i128 true) "
+        "[(i128Ty, .scalar i128Max), (i128Ty, .scalar i128One)] "
+        "i128Ty = .ok (.scalar i128Max, MemoryState.empty) ∧ "
+        "execCoreContractOp MemoryState.empty "
+        "(.numSaturatingAdd .i128 true) "
+        "[(i128Ty, .scalar i128Min), (i128Ty, .scalar i128NegOne)] "
+        "i128Ty = .ok (.scalar i128Min, MemoryState.empty) ∧ "
+        "execCoreContractOp MemoryState.empty "
+        "(.numOverflowingAdd .i128 false) "
+        "[(u128Ty, .scalar u128Max), (u128Ty, .scalar u128One)] "
+        "(.tuple [u128Ty, .bool]) = "
+        ".ok (.tuple [.scalar u128Zero, .bool true], MemoryState.empty) ∧ "
+        "execCoreContractOp MemoryState.empty "
+        "(.numOverflowingSub .i128 false) "
+        "[(u128Ty, .scalar u128Zero), (u128Ty, .scalar u128One)] "
+        "(.tuple [u128Ty, .bool]) = "
+        ".ok (.tuple [.scalar u128Max, .bool true], MemoryState.empty) ∧ "
+        "execCoreContractOp MemoryState.empty "
+        "(.numOverflowingAdd .i128 true) "
+        "[(i128Ty, .scalar i128Max), (i128Ty, .scalar i128One)] "
+        "(.tuple [i128Ty, .bool]) = "
+        ".ok (.tuple [.scalar i128Min, .bool true], MemoryState.empty) "
+        ":= ⟨rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl⟩"
+    ),
+    # Eight multi-step setup refutations whose `.ok`/`.step` setup prefixes are
+    # independently proved in `PositiveSanity.positive_pinned_setup_prefixes`,
+    # so over-rejecting mutants fail the sanity check rather than registering
+    # false kills. Unpinned refutations may never use `| .ok` / `| .step` arms.
+    "refute_bytes_uninit_memory_read": (
+        "theorem refute_bytes_uninit_memory_read : "
+        "(match initState progIndirectUninitRead queryEmpty with "
+        "| .ok s₀ => match evalStep progIndirectUninitRead 0 s₀ with "
+        "| .step s₁ => match forceAllocation progIndirectUninitRead s₁ 1 with "
+        "| .ok (s₂, _) => evalStep progIndirectUninitRead 0 s₂ = "
+        ".fault .undefined | .error _ => False | _ => False "
+        "| .error _ => False) := rfl"
+    ),
+    "refute_step_move_deinit_indirect": (
+        "theorem refute_step_move_deinit_indirect : "
+        "(match initState progUseAfterMove { args := [u32Val 7] } with "
+        "| .ok s₀ => match forceAllocation progUseAfterMove s₀ 1 with "
+        "| .ok (s₁, _) => match evalStep progUseAfterMove 0 s₁ with "
+        "| .step s₂ => evalStep progUseAfterMove 0 s₂ = .fault .undefined "
+        "| _ => False | .error _ => False | .error _ => False) := rfl"
+    ),
+    "refute_step_return_indirect_uninit": (
+        "theorem refute_step_return_indirect_uninit : "
+        "(match initState progReturnUninit queryEmpty with "
+        "| .ok s₀ => match forceAllocation progReturnUninit s₀ 0 with "
+        "| .ok (s₁, _) => evalStep progReturnUninit 0 s₁ = .fault .undefined "
+        "| .error _ => False | .error _ => False) := rfl"
+    ),
+    "refute_step_force_alloc_dead_local": (
+        "theorem refute_step_force_alloc_dead_local : "
+        "(match initState progDeadLocalForForceAlloc queryEmpty with "
+        "| .ok s₀ => match forceAllocation progDeadLocalForForceAlloc s₀ 1 "
+        "with | .error .undefined => True | _ => False "
+        "| .error _ => False) := trivial"
+    ),
+    "refute_step_v2_return_dangling_stack_ref": (
+        "theorem refute_step_v2_return_dangling_stack_ref : "
+        "(match initStateV2 progDanglingStackRefV2 "
+        "{ args := [.scalar ⟨.i8, false, BitVec.ofNat 128 42⟩] } with "
+        "| .ok s₀ => match evalStepV2 progDanglingStackRefV2 s₀ with "
+        "| .step s₁ => match evalStepV2 progDanglingStackRefV2 s₁ with "
+        "| .fault .undefined => True | _ => False | _ => False "
+        "| .error _ => False) := trivial"
+    ),
+    "refute_step_v2_assert_abort_extract_caller_mem": (
+        "theorem refute_step_v2_assert_abort_extract_caller_mem : "
+        "(match initStateV2 progMutBeforeAbortV2 "
+        "{ args := [.ptr ⟨some 2, 0, .isize⟩], callerMem := cmBeforeAbort } "
+        "with | .ok s₀ => match evalStepV2 progMutBeforeAbortV2 s₀ with "
+        "| .step s₁ => match evalStepV2 progMutBeforeAbortV2 s₁ with "
+        "| .done (.aborted cm') => cm' = cmAfterAbort | _ => False "
+        "| _ => False | .error _ => False) := rfl"
+    ),
+    "refute_state_v2_init_uses_entry_memory_for_args": (
+        "theorem refute_state_v2_init_uses_entry_memory_for_args : "
+        "let rawU8Const : MirTy := .rawPtr .shared u8Ty "
+        "let prog : Program := { scope := .unit pointerWidthBits := 64 "
+        "mirProfileVersion := 2 bodies := [{ argumentCount := 1 "
+        "locals := [u8Ty, rawU8Const, u8Ty, rawU8Const] basicBlocks := [{ "
+        "statements := [ .storageLive 2, "
+        ".assign { localId := 2, projection := [] } "
+        "(.use (.constant ⟨u8Ty, .scalar (BitVec.ofNat 128 42)⟩)), "
+        ".storageLive 3, .assign { localId := 3, projection := [] } "
+        "(.addressOf .shared { localId := 2, projection := [] }), "
+        ".assign { localId := 0, projection := [] } "
+        "(.use (.copy { localId := 1, projection := [.deref] })) ] "
+        "terminator := .return_ }] isUnsafe := true identity := \"\" }] } "
+        "(match initStateV2 prog "
+        "{ args := [.ptr ⟨some 2, 0, .isize⟩], "
+        "callerMem := { allocations := [] } } with "
+        "| .ok s0 => match evalStepV2 prog s0 with "
+        "| .step s1 => match evalStepV2 prog s1 with "
+        "| .step s2 => match evalStepV2 prog s2 with "
+        "| .step s3 => match evalStepV2 prog s3 with "
+        "| .step s4 => evalStepV2 prog s4 = .fault .undefined "
+        "| _ => False | _ => False | _ => False | _ => False "
+        "| .error _ => False) := rfl"
+    ),
+    "refute_step_v2_core_panic_abort_extract_caller_mem": (
+        "theorem refute_step_v2_core_panic_abort_extract_caller_mem : "
+        "(match initStateV2 progMutBeforeCorePanicV2 "
+        "{ args := [.ptr ⟨some 2, 0, .isize⟩], callerMem := cmBeforeAbort } "
+        "with | .ok s₀ => match evalStepV2 progMutBeforeCorePanicV2 s₀ with "
+        "| .step s₁ => match evalStepV2 progMutBeforeCorePanicV2 s₁ with "
+        "| .done (.aborted cm') => cm' = cmAfterAbort | _ => False "
+        "| _ => False | .error _ => False) := rfl"
+    ),
+    # Multi-step setup: the read through the stale pointer is reachable only
+    # after `evalBoxFromVec` succeeds, which
+    # `AllocSanity.alloc_sanity_index_and_realloc` requires of every mutant
+    # for these same arguments.
+    "refute_alloc_retire_heap_buffer": (
+        "theorem refute_alloc_retire_heap_buffer : "
+        "(match evalBoxFromVec acStaleMem acU8Ty acBufPtr 8 2 with "
+        "| .ok (_, m') => readBytes m' ⟨2, 0⟩ 2 0 "
+        "| .error _ => .ok []) = .error .undefined := rfl"
+    ),
+}
+
+# Only non-guard helper theorem permitted in a refutation fixture: a shared
+# fault-reachability lemma referenced by cataloged refutations.
+ALLOWED_REFUTATION_HELPER_THEOREMS: dict[str, frozenset[str]] = {
+    "BoundaryRefutations": frozenset({"reaches_fault_unreachable_v2"}),
+}
+
+_POS_CTOR_RE = re.compile(
+    r"(?:\.|(?<![\w'])(?:_root_\.)?"
+    r"(?:Except|StepOutcome|RunOutcome|Option|Sum"
+    r"|Trusted\.MirSemantics\.\w+)\.)"
+    r"(?:ok|step|returned|inr)\b"
+    r"|(?<![\w'.])(?:ok|step|returned|inr)\b"
+    r"|(?<![\w'])(?:_root_\.)?Option\.some\b"
+    r"|\.\bsome\b"
+    r"|(?<![:!<>])=\s*(?:\(\s*)*some\b"
+    r"|(?:^|[\n:∧,])\s*(?:\(\s*)*some\b"
+    r"|\bEq\s+(?:\(\s*)*some\b"
+    r"|\bEq\b[^\n:=]*\s+\(?\s*some\b"
+    r"|\|\s*(?:\(\s*)*some\b[^=>\n]*=>(?!\s*False\b)"
+)
+_OPEN_EXPORT_RE = re.compile(r"(?<![\w'])(open|export)\b([^\n]*)")
+_ALLOWED_OPEN_TARGETS = frozenset({"Trusted.MirAst", "Trusted.MirSemantics"})
+_DIRECT_SUCCESS_RE = re.compile(
+    r"\.(?:isOk|isSome|isRight)\b"
+    r"|\b(?:Except\.isOk|Option\.isSome|Sum\.isRight)\b"
+    r"|(?<![:!<>])=\s*(?:\(\s*)*(?:(?:_root_\.)?Bool\.)?true\b"
+    r"|(?:^|[\n:∧(])\s*(?:(?:_root_\.)?Bool\.)?true\s*(?:\)\s*)*=(?!=)"
+    r"|\bEq\s+(?:\(\s*)*(?:(?:_root_\.)?Bool\.)?true\b"
+    r"|\bEq\b[^\n:=]*\s+(?:(?:_root_\.)?Bool\.)?true\b"
+    r"|(?:≠|!=)\s*(?:\(\s*)*(?:(?:_root_\.)?Bool\.)?false\b"
+    r"|(?:(?:_root_\.)?Bool\.)?false\b[^=;|]*?(?:≠|!=)"
+    r"|(?:¬|\b(?:_root_\.)?Not\b)\s*\(?[^()=|]*?(?:=\s*(?:(?:_root_\.)?Bool\.)?false\b"
+    r"|(?:(?:_root_\.)?Bool\.)?false\b[^=|]*?=)"
+    r"|(?:≠|!=)\s*(?:\.(?:fault|error|aborted)|\.done\s*\(\s*\.aborted|\bnone\b)"
+    r"|(?:\.(?:fault|error|aborted)|\.done\s*\(\s*\.aborted)\b[^=;|]*?(?:≠|!=)"
+    r"|(?:¬|\b(?:_root_\.)?Not\b)\s*\(?[^()=|]*?(?:=\s*(?:\.(?:fault|error|aborted)|\.done\s*\(\s*\.aborted)"
+    r"|\.(?:fault|error|aborted)\b[^=|]*?=)"
+    r"|(?:\.(?:fault|error|aborted)|\.done\s*\(\s*\.aborted|\b(?:(?:_root_\.)?Bool\.)?false\b)"
+    r"[^|;]*?(?:→|->)\s*False\b"
+    r"|(?:\.|(?<![\w'.]))"
+    r"(?:rec|recOn|casesOn|brecOn|binductionOn|bindOn|ndrec|ndrecOn"
+    r"|drec|drecOn|below|ibelow|elim|toBool"
+    r"|isErr|isNone|isLeft|getD|map|bind)\b"
+    r"|(?<![\w'])(?:_root_\.)?"
+    r"(?:Except|StepOutcome|RunOutcome|Option|Sum"
+    r"|Trusted\.MirSemantics\.\w+)\.noConfusion(?:Type)?\b"
+    r"|(?<![\w'])(?:_root_\.)?(?:Decidable|Classical)\.\w+\b"
+    r"|(?<![.\w'])(?:_root_\.)?(?:Eq\.(?:subst|mp|mpr)|cast|ite|dite|cond|decide)\b"
+    r"|(?<![.\w'])\b(?:if|then|else)\b"
+    r"|(?<![!=<>])!(?!=)"
+    r"|(?<![\w'])(?:_root_\.)?(?:Bool\.not|Bool\.xor|BEq\.beq|bne)\b"
+    r"|=="
+    r"|(?<![\w'.])(?:(?:_root_\.)?Pure\.)?pure\b"
+    r"|(?<![\w'.])return\b"
+    r"|(?<![\w'])do\b"
+    r"|(?<![\w'])(?:_root_\.)?(?:Bind\.bind|Seq\.seq|Functor\.map)\b"
+)
+_LAMBDA_TRUE_RE = re.compile(r"(?:(?<![\w'])fun\b|λ)[^=\n]*=>\s*True\b")
+_NEG_BODY_VERIFIED_TRUE_RE = re.compile(
+    r"¬\s*(?:BodyVerified(?:V2)?\b[^:=(){}]*\(\s*fun\s+_\s*=>\s*True\s*\)"
+    r"|BodySatisfiesSafeContractV2\b[^:=(){}]*"
+    r"\{\s*postAbort\s*:=\s*fun\s+_\s+_\s*=>\s*True\s*\})"
+)
+_HASH_COMMAND_RE = re.compile(r"(?<![\w'])#([A-Za-z_]\w*)")
+_FORBIDDEN_META_CMD_RE = re.compile(
+    r"(?<![.\w'])\b("
+    r"run_cmd|run_tac|by_elab|initialize|builtin_initialize|elab|elab_rules|"
+    r"syntax|macro|macro_rules|declare_syntax_cat|notation|infix|infixl|"
+    r"infixr|prefix|postfix|attribute|set_option|deriving|section|"
+    r"variable|universe|mutual|local|scoped|register_simp_attr|"
+    r"init_quot"
+    r")\b"
+)
+_ALLOWED_PREAMBLE_LINE_RE = re.compile(
+    r"^(?:"
+    r"prelude"
+    r"|(?:public\s+)?import(?:\s+all)?\s+[A-Za-z_][A-Za-z0-9_'.]*"
+    r"|namespace\s+GuardMutation"
+    r"|open(?:\s+(?:Trusted\.MirAst|Trusted\.MirSemantics))+"
+    r")$"
+)
+_TRUE_ARM_RE = re.compile(
+    r"((?:\|\s*[^=|]+)+)=>\s*(?:True\b|(?:¬|\b(?:_root_\.)?Not\b)\s*False\b)"
+)
+_NEG_ARM_PAT_RE = re.compile(
+    r"^(?:"
+    r"\.(?:fault|error)(?:\s+(?:_|\.[A-Za-z_][A-Za-z0-9_']*))?"
+    r"|(?:_root_\.)?(?:Except\.error|StepOutcome\.fault|RunOutcome\.fault)"
+    r"(?:\s+(?:_|\.[A-Za-z_][A-Za-z0-9_']*))?"
+    r"|(?:_root_\.)?(?:Option\.none|Bool\.false)"
+    r"|none|false"
+    r")$"
+)
+_WILDCARD_NON_FALSE_ARM_RE = re.compile(
+    r"\|\s*(?:_|(?!(?:none|false)\b)[a-z][A-Za-z0-9_']*)\s*=>(?!\s*False\b)"
+)
+_POS_ARM_HEAD_RE = re.compile(
+    r"^(?:\.(?:ok|step|returned|done|aborted)\b"
+    r"|(?:_root_\.)?(?:Except\.ok|StepOutcome\.(?:step|done)"
+    r"|RunOutcome\.(?:returned|aborted))\b)"
+)
+_ALLOWED_HELPER_DATA_TYPES: frozenset[str] = frozenset({
+    "Program",
+    "Body",
+    "Allocation",
+    "AllocByte",
+    "List AllocByte",
+    "Query",
+    "CallerMemory",
+    "Memory",
+    "MemoryState",
+    "FrameState",
+    "State",
+    "MirType",
+    "MirTy",
+    "List MirTy",
+    "BasicBlock",
+    "Statement",
+    "StatementKind",
+    "TerminatorKind",
+    "Rvalue",
+    "Operand",
+    "Place",
+    "Scalar",
+    "ScalarVal",
+    "Val",
+    "LocalValue",
+    "List LocalSlot",
+    "List MirTy × List LocalSlot",
+    "Nat",
+    "Bool",
+    "String",
+    "PtrVal",
+    "List Allocation",
+    "UInt8",
+})
+_HELPER_PROOF_TOKEN_RE = re.compile(
+    r"(?<![\w'.])(?:by|by_elab|run_tac|have|show|suffices|assert|calc|let"
+    r"|match|WellFormed(?:V2)?|BodyVerified(?:V2)?"
+    r"|BodySatisfiesSafeContractV2)\b"
+)
+_NEG_RHS_RE = re.compile(
+    r"^(?:"
+    r"\.(?:fault|error)(?:\s+(?:\.[A-Za-z_][A-Za-z0-9_']*"
+    r"|\(\s*\.[A-Za-z_][A-Za-z0-9_']*(?:\s+[A-Za-z0-9_'.]+)*\s*\)"
+    r"|[A-Za-z0-9_'.]+))*"
+    r"|(?:_root_\.)?(?:Except\.error|StepOutcome\.fault"
+    r"|RunOutcome\.fault)"
+    r"\s+\.[A-Za-z_][A-Za-z0-9_']*"
+    r"|(?:_root_\.)?(?:Option\.none|Bool\.false)"
+    r"|none|false"
+    r")$"
+)
+_NESTED_TYPE_FORBIDDEN_RE = re.compile(
+    r"(?<![.\w'])\b(?:let|have|show|suffices|assert|calc|by|by_elab|run_tac)\b"
+)
+_NEG_PRED_HEAD_RE = re.compile(
+    r"^¬\s*(?:Trusted\.MirSemantics\.)?"
+    r"(?:WellFormed(?:V2)?|BodyVerified(?:V2)?"
+    r"|BodySatisfiesSafeContractV2)\b"
+)
+_REACHES_NEG_RE = re.compile(
+    r"^(?:Trusted\.MirSemantics\.)?ReachesResult(?:V2)?\b"
+    r"[\s\S]*\(\s*\.fault\b[^()]*\)\s*$"
+)
+_ATOMIC_PROOF_RE = re.compile(
+    r"^(?:rfl|trivial|refutes_wf_of_execFault\s+\(\s*fuel\s*:=\s*\d+\s*\)\s+rfl)$"
+)
+_BOUNDARY_ELIM_ALLOWED_IDENTS = frozenset({
+    "h",
+    "hFalse",
+    "fun",
+    "Bool",
+    "noConfusion",
+    "reachesResult_of_execFault",
+    "reaches_fault_unreachable_v2",
+    "refute_boundary_v2_wellformed_forbids_faults",
+    "ReachesV2",
+    "refl",
+    "queryEmpty",
+    "callerMem",
+    "fuel",
+    "rfl",
+    "trivial",
+    "undefined",
+    "aborted",
+    "_",
+})
+_REACH_BY_EXACT_ALLOWED_IDENTS = frozenset({
+    "ReachesV2",
+    "refl",
+    "tail",
+    "rfl",
+    "trivial",
+    "fun",
+    "hWf",
+    "undefined",
+    "unsupported",
+    "_",
+})
+_BY_CHANGE_STEP_RE = re.compile(
+    r"^change\s+∃\s+s\s*:\s*State\s*,\s*"
+    r"ReachesV2\s+[A-Za-z_][A-Za-z0-9_']*\s+_\s+s\s*∧\s*"
+    r"StepV2\s+[A-Za-z_][A-Za-z0-9_']*\s+s\s*"
+    r"\(\s*\.fault\s*\.(?:undefined|unsupported)\s*\)$"
+)
+_BY_HAVE_HEAD_RE = re.compile(
+    r"^have\s+([A-Za-z_][A-Za-z0-9_']*)\s*:\s*"
+    r"ReachesResultV2\s+[A-Za-z_][A-Za-z0-9_']*\s+"
+    r"[A-Za-z_][A-Za-z0-9_']*\s*"
+    r"\(\s*\.fault\s*\.(?:undefined|unsupported)\s*\)\s*:=\s*(.*)$"
+)
+
+
+def _strip_outer_parens(expr: str) -> str:
+    s = expr.strip()
+    while s.startswith("(") and s.endswith(")"):
+        depth = 0
+        closes_at_end = True
+        for i, ch in enumerate(s):
+            if ch in "([{⟨":
+                depth += 1
+            elif ch in ")]}⟩":
+                depth -= 1
+                if depth == 0 and i < len(s) - 1:
+                    closes_at_end = False
+                    break
+        if closes_at_end and depth == 0:
+            s = s[1:-1].strip()
+        else:
+            break
+    return s
+
+
+def _extract_theorem_type_and_proof(body: str) -> tuple[str, str] | None:
+    m_head = re.match(
+        rf"\s*{_LEAN_DECL_MODIFIER_PREFIX}"
+        r"(?:theorem|lemma)\s+[A-Za-z_][A-Za-z0-9_']*\s*:(?!=)",
+        body,
     )
-    target_re = re.compile(rf"^theorem\s+{re.escape(theorem_name)}\b")
-    start: int | None = None
-    for idx, line in enumerate(lines, start=1):
-        if start is None:
-            if target_re.match(line):
-                start = idx
-        elif decl_re.match(line):
-            return (start, idx - 1)
-    if start is None:
-        raise ValueError(
-            f"theorem {theorem_name!r} not found in fixture source"
+    if not m_head:
+        return None
+    colon_pos = m_head.end() - 1
+    n = len(body)
+    i = colon_pos + 1
+    depth = 0
+    pending_lets = 0
+    while i < n:
+        ch = body[i]
+        if ch in "([{⟨":
+            depth += 1
+            i += 1
+            continue
+        if ch in ")]}⟩" and depth > 0:
+            depth -= 1
+            i += 1
+            continue
+        if depth == 0:
+            if (
+                body.startswith("let", i)
+                and (
+                    i == 0
+                    or not (body[i - 1].isalnum() or body[i - 1] in "_'")
+                )
+                and (
+                    i + 3 >= n
+                    or not (body[i + 3].isalnum() or body[i + 3] in "_'")
+                )
+            ):
+                pending_lets += 1
+                i += 3
+                continue
+            if body.startswith(":=", i):
+                if pending_lets > 0:
+                    pending_lets -= 1
+                    i += 2
+                    continue
+                return body[colon_pos + 1 : i], body[i + 2 :]
+        i += 1
+    return None
+
+
+def _find_top_level_eq(expr: str) -> int:
+    depth = 0
+    i = 0
+    n = len(expr)
+    while i < n:
+        ch = expr[i]
+        if ch in "([{⟨":
+            depth += 1
+        elif ch in ")]}⟩" and depth > 0:
+            depth -= 1
+        elif depth == 0 and ch == "=":
+            prev_ch = expr[i - 1] if i > 0 else ""
+            next_ch = expr[i + 1] if i + 1 < n else ""
+            if prev_ch not in ":!<>=" and next_ch not in "=>":
+                return i
+        i += 1
+    return -1
+
+
+def _has_top_level_connective(expr: str) -> bool:
+    depth = 0
+    i = 0
+    n = len(expr)
+    while i < n:
+        ch = expr[i]
+        if ch in "([{⟨":
+            depth += 1
+            i += 1
+            continue
+        if ch in ")]}⟩" and depth > 0:
+            depth -= 1
+            i += 1
+            continue
+        if depth == 0:
+            if ch in "→↔∨∀∃≠":
+                return True
+            if expr.startswith(("->", "<->", "!="), i):
+                return True
+        i += 1
+    return False
+
+
+def _strip_and_validate_leading_lets(
+    expr: str,
+    *,
+    allowed_bare_idents: frozenset[str] = frozenset(),
+    pair_helpers: frozenset[str] = frozenset(),
+) -> tuple[str, frozenset[str]] | None:
+    s = expr
+    bound: set[str] = set()
+    while True:
+        m_let = re.match(r"([ \t]*\n)*([ \t]*)let\b", s)
+        if not m_let:
+            return s.strip(), frozenset(bound)
+        let_col = len(m_let.group(2))
+        i = m_let.end()
+        n = len(s)
+        depth = 0
+        colon_pos = -1
+        assign_pos = -1
+        end_pos = -1
+        while i < n:
+            ch = s[i]
+            if ch in "([{⟨":
+                depth += 1
+                i += 1
+                continue
+            if ch in ")]}⟩" and depth > 0:
+                depth -= 1
+                i += 1
+                continue
+            if depth == 0:
+                if assign_pos == -1:
+                    if s.startswith(":=", i):
+                        assign_pos = i
+                        i += 2
+                        continue
+                    if ch == ":" and colon_pos == -1:
+                        colon_pos = i
+                        i += 1
+                        continue
+                else:
+                    if ch == ";":
+                        end_pos = i + 1
+                        break
+                    if ch == "\n":
+                        j = i + 1
+                        while j < n and s[j] in " \t":
+                            j += 1
+                        if j < n and s[j] != "\n":
+                            next_col = j - (i + 1)
+                            if next_col <= let_col:
+                                end_pos = i + 1
+                                break
+            i += 1
+        if colon_pos == -1 or assign_pos == -1 or end_pos == -1:
+            return None
+        binder = s[m_let.end() : colon_pos].strip()
+        if not _is_valid_fresh_local_ident(binder):
+            return None
+        let_ty = " ".join(s[colon_pos + 1 : assign_pos].split())
+        if let_ty not in _ALLOWED_HELPER_DATA_TYPES:
+            return None
+        rhs_end = end_pos - 1 if s[end_pos - 1] == ";" else end_pos
+        rhs = s[assign_pos + 2 : rhs_end].strip()
+        if (
+            not rhs
+            or _HELPER_PROOF_TOKEN_RE.search(rhs)
+            or _has_forbidden_type_or_data_expr(
+                rhs,
+                pair_helpers=pair_helpers,
+                allowed_bare_idents=allowed_bare_idents | frozenset(bound),
+            )
+            or re.search(r"(?<!:):(?!=[=]?)", rhs)
+            or _find_top_level_eq(rhs) != -1
+            or _has_top_level_connective(rhs)
+        ):
+            return None
+        bound.add(binder)
+        s = s[end_pos:]
+
+
+def _split_top_level(expr: str, sep: str) -> list[str]:
+    parts: list[str] = []
+    depth = 0
+    start = 0
+    i = 0
+    n = len(expr)
+    k = len(sep)
+    while i < n:
+        ch = expr[i]
+        if ch in "([{⟨":
+            depth += 1
+            i += 1
+            continue
+        if ch in ")]}⟩" and depth > 0:
+            depth -= 1
+            i += 1
+            continue
+        if depth == 0 and expr.startswith(sep, i):
+            parts.append(expr[start:i].strip())
+            i += k
+            start = i
+            continue
+        i += 1
+    parts.append(expr[start:].strip())
+    return parts
+
+
+_FORBIDDEN_DATA_EXPR_RE = re.compile(
+    r"@"
+    r"|(?<![.\w'])\b(?:match|fun|if|then|else|let|have|show|suffices|assert"
+    r"|calc|by|by_elab|run_tac|rfl|trivial|decide|of_decide_eq_true|ite|dite"
+    r"|cast|absurd|congr|congrArg|congrFun|getElem)\b"
+    r"|(?<![.\w'])\bcond\b(?!\s*:=)"
+    r"|λ|=>"
+    r"|[)\]}⟩]\."
+    r"|(?<=[\w')\]}⟩])\["
+    r"|(?:\.|(?<![\w'.]))"
+    r"(?:rec|recOn|casesOn|brecOn|binductionOn|bindOn|ndrec|ndrecOn"
+    r"|drec|drecOn|below|ibelow|elim|noConfusion|noConfusionType|toBool"
+    r"|isErr|isNone|isLeft|getD|map|bind)\b"
+)
+_INERT_DATA_TOKEN_RE = re.compile(
+    r"\s+"
+    r"|:=|\"\"|''|[()\[\]{},⟨⟩]"
+    r"|-?(?:0x[0-9a-fA-F]+|[0-9]+)(?=$|[\s()\[\]{},⟨⟩])"
+    r"|\.[A-Za-z0-9_]+(?=$|[\s()\[\]{},⟨⟩])"
+    r"|[^\s()\[\]{},⟨⟩]+"
+)
+_BARE_IDENT_RE = re.compile(r"(?<![.\w'])[^\s()\[\]{},⟨⟩.,:=]+")
+_ALLOWED_QUALIFIED_DATA_TOKENS: frozenset[str] = frozenset({
+    "BitVec.ofNat",
+    "Int.ofNat",
+    "Int.negSucc",
+    "List.replicate",
+    "MemoryState.empty",
+    "Nat.pow",
+    "body.locals",
+    "frame.locals",
+    "queryEmpty.callerMem",
+})
+# Closed set of target `MirSemantics` operations permitted strictly as the
+# single flat outermost head of a refutation equality LHS or `match` scrutinee
+# (never nested inside data arguments, `let` bindings, or helpers).
+_ALLOWED_REFUTATION_HEAD_FNS: frozenset[str] = frozenset({
+    "boxPointeeValidInMem",
+    "boxValidInMem",
+    "checkAggregateCopyHazardLoopV2",
+    "checkAssignCopyHazardV2",
+    "constantIndexOffset",
+    "deallocateStack",
+    "encodeValV2",
+    "evalAddressOfRvalueV2",
+    "evalAssertFailure",
+    "evalCastKindV2",
+    "evalCorePanicAbort",
+    "evalFakeAddressOfRvalueV2",
+    "evalNonRootReturn",
+    "evalOperandToSlotV2",
+    "evalPtrOffsetV2",
+    "evalPtrToPtrCastV2",
+    "evalRodataRefConstV2",
+    "evalRvalueV2",
+    "evalStatementV2",
+    "evalStep",
+    "evalStepV2",
+    "evalTerminator",
+    "evalTerminatorV2",
+    "evalVecIndex",
+    "evalVecWithCapacity",
+    "execCoreCallOp",
+    "execCoreContractOp",
+    "forceAllocation",
+    "heapBufValidInMem",
+    "initState",
+    "initStateV2",
+    "isFakePtrMetadataLocalV2",
+    "isSupportedV2LocalTy",
+    "ownedHeapBufValidInMem",
+    "ptrAddInMem",
+    "readBytes",
+    "readPlaceV2",
+    "refValidInMem",
+    "resolvePlaceDestV2",
+    "sliceFromRawPartsCheck",
+    "sliceGetUncheckedCheck",
+    "sliceRefRawCheck",
+    "spansPairwiseDisjoint",
+    "validUtf8Bytes",
+    "vecGrowCap",
+    "vecValidInMem",
+    "writeBytes",
+    "writePlaceV2",
+    "writeUninit",
+    "zeroCapPtrValidInMem",
+})
+# Closed set of genuinely inert bare identifiers (pure AST/struct field names,
+# basic data constructors/types, and inert constants) permitted inside data
+# helpers, `let` RHSs, and arguments to target calls/predicates.
+_ALLOWED_INERT_DATA_IDENTS: frozenset[str] = frozenset({
+    "BitVec",
+    "EffectMaskV2",
+    "Int",
+    "List",
+    "MemoryState",
+    "MirTy",
+    "Nat",
+    "_",
+    "alignLog2",
+    "allocId",
+    "allocations",
+    "allowAbort",
+    "args",
+    "argumentCount",
+    "basicBlocks",
+    "blockIdx",
+    "bodies",
+    "bytes",
+    "callerMem",
+    "cleanup",
+    "cond",
+    "defId",
+    "discrSigned",
+    "discrWidth",
+    "discriminants",
+    "effects",
+    "emptyMemory",
+    "entryMemory",
+    "expected",
+    "false",
+    "hasLocalPanicHandler",
+    "i8Ty",
+    "i8Val",
+    "id",
+    "identity",
+    "isUnsafe",
+    "kind",
+    "len",
+    "live",
+    "localId",
+    "locals",
+    "mirProfileVersion",
+    "mkBinOpProg",
+    "mkConstRetProg",
+    "mkSingleBlockProg",
+    "msg",
+    "mutability",
+    "nextAllocId",
+    "none",
+    "offset",
+    "offsetBytes",
+    "overflowChecks",
+    "panicStrategy",
+    "pointee",
+    "pointerWidthBits",
+    "postAbort",
+    "profileV2TargetEndian",
+    "projection",
+    "ptr",
+    "queryEmpty",
+    "reprU8EnumTy",
+    "retDst",
+    "retDst?",
+    "retTarget",
+    "retTarget?",
+    "scalarNatVal",
+    "scope",
+    "signed",
+    "some",
+    "statements",
+    "stmtIdx",
+    "tagRepr",
+    "target",
+    "terminator",
+    "true",
+    "u32Ty",
+    "u32Val",
+    "u8Ty",
+    "unwind",
+    "width",
+    "with",
+})
+_CANONICAL_BODY_PRE_RE = re.compile(
+    r"\(\s*fun\s+_\s*=>\s*(?:True|False)\s*\)\s*$"
+)
+_CANONICAL_CONTRACT_POST_RE = re.compile(
+    r"\{\s*postAbort\s*:=\s*fun\s+_\s+_\s*=>\s*True\s*\}\s*$"
+)
+_NEG_BODY_OR_CONTRACT_HEAD_RE = re.compile(
+    r"^¬\s*(?:Trusted\.MirSemantics\.)?"
+    r"(?:BodyVerified(?:V2)?|BodySatisfiesSafeContractV2)\b"
+)
+
+
+# Built-in Lean keywords, prelude types/constructors, tactic/eliminator names,
+# and semantic predicates that local `let`/`def`/`abbrev`/`fun`/`have` binders
+# must never shadow inside closed refutation fixtures or pure-data helpers.
+_FORBIDDEN_LOCAL_BINDER_NAMES: frozenset[str] = (
+    frozenset({
+        "_",
+        "let",
+        "fun",
+        "have",
+        "show",
+        "suffices",
+        "assert",
+        "calc",
+        "by",
+        "by_elab",
+        "run_tac",
+        "match",
+        "with",
+        "where",
+        "if",
+        "then",
+        "else",
+        "do",
+        "return",
+        "def",
+        "abbrev",
+        "theorem",
+        "lemma",
+        "example",
+        "axiom",
+        "opaque",
+        "inductive",
+        "structure",
+        "class",
+        "instance",
+        "import",
+        "open",
+        "export",
+        "namespace",
+        "end",
+        "section",
+        "variable",
+        "universe",
+        "private",
+        "protected",
+        "noncomputable",
+        "partial",
+        "unsafe",
+        "mut",
+        "true",
+        "false",
+        "True",
+        "False",
+        "Bool",
+        "Prop",
+        "Sort",
+        "Type",
+        "Unit",
+        "Empty",
+        "Nat",
+        "Int",
+        "String",
+        "List",
+        "Option",
+        "Except",
+        "StepOutcome",
+        "RunOutcome",
+        "Sum",
+        "BitVec",
+        "UInt8",
+        "some",
+        "none",
+        "ok",
+        "error",
+        "fault",
+        "step",
+        "done",
+        "returned",
+        "aborted",
+        "inl",
+        "inr",
+        "And",
+        "Or",
+        "Not",
+        "Eq",
+        "HEq",
+        "Iff",
+        "BEq",
+        "Decidable",
+        "Classical",
+        "Pure",
+        "Bind",
+        "Seq",
+        "Functor",
+        "rfl",
+        "decide",
+        "sorry",
+        "admit",
+        "trivial",
+        "pure",
+        "bind",
+        "map",
+        "ite",
+        "dite",
+        "cond",
+        "cast",
+        "absurd",
+        "congr",
+        "congrArg",
+        "congrFun",
+        "getElem",
+        "beq",
+        "bne",
+        "not",
+        "xor",
+        "refl",
+        "tail",
+        "rec",
+        "recOn",
+        "casesOn",
+        "brecOn",
+        "binductionOn",
+        "bindOn",
+        "ndrec",
+        "ndrecOn",
+        "drec",
+        "drecOn",
+        "below",
+        "ibelow",
+        "elim",
+        "noConfusion",
+        "noConfusionType",
+        "toBool",
+        "isOk",
+        "isSome",
+        "isRight",
+        "isErr",
+        "isNone",
+        "isLeft",
+        "getD",
+        "ReachesV2",
+        "ReachesResultV2",
+        "StepV2",
+        "State",
+        "WellFormed",
+        "WellFormedV2",
+        "BodyVerified",
+        "BodyVerifiedV2",
+        "BodySatisfiesSafeContractV2",
+    })
+    | _ALLOWED_REFUTATION_HEAD_FNS
+)
+
+
+def _is_valid_fresh_local_ident(name: str) -> bool:
+    """Return True if `name` is an unquoted ASCII binder name that does not
+    shadow any built-in Lean constructor, keyword, or validator predicate."""
+    return (
+        bool(re.fullmatch(r"[A-Za-z_][A-Za-z0-9_']*", name))
+        and name not in _FORBIDDEN_LOCAL_BINDER_NAMES
+    )
+
+
+def _has_forbidden_type_or_data_expr(
+    expr: str,
+    *,
+    allow_canonical_post_lambda: bool = False,
+    pair_helpers: frozenset[str] = frozenset(),
+    allowed_bare_idents: frozenset[str] = frozenset(),
+) -> bool:
+    """Return True if a type argument, scrutinee arg, or data RHS uses
+    branching, eliminators, lambdas, proof terms, postfix/index projections,
+    or any token (ASCII, Unicode, quoted, or symbolic) outside the closed
+    inert-data allowlist."""
+    s = expr
+    if allow_canonical_post_lambda:
+        if re.match(
+            r"^¬\s*(?:Trusted\.MirSemantics\.)?BodyVerified(?:V2)?\b", s
+        ):
+            s = _CANONICAL_BODY_PRE_RE.sub("", s, count=1)
+        elif re.match(
+            r"^¬\s*(?:Trusted\.MirSemantics\.)?BodySatisfiesSafeContractV2\b", s
+        ):
+            s = _CANONICAL_CONTRACT_POST_RE.sub("", s, count=1)
+    s = re.sub(
+        r"\(\s*\{\}\s*:\s*EffectMaskV2\s*\)(?:\.allowAbort)?", "{}", s
+    )
+    if _FORBIDDEN_DATA_EXPR_RE.search(s):
+        return True
+    permitted_bare = _ALLOWED_INERT_DATA_IDENTS | allowed_bare_idents
+    pos = 0
+    n = len(s)
+    while pos < n:
+        m = _INERT_DATA_TOKEN_RE.match(s, pos)
+        if not m:
+            return True
+        tok = m.group(0)
+        pos = m.end()
+        if (
+            tok[0].isspace()
+            or tok in (":=", '""', "''", "-", "(", ")", "[", "]", "{", "}", ",", "⟨", "⟩")
+            or re.fullmatch(r"-?(?:0x[0-9a-fA-F]+|[0-9]+)", tok)
+            or re.fullmatch(r"\.[A-Za-z0-9_]+", tok)
+        ):
+            continue
+        if "." in tok:
+            if tok in _ALLOWED_QUALIFIED_DATA_TOKENS:
+                continue
+            if tok.endswith((".1", ".2")) and tok[:-2] in pair_helpers:
+                continue
+            return True
+        if tok not in permitted_bare:
+            return True
+    return False
+
+
+def _is_allowed_head_application(
+    expr: str,
+    *,
+    pair_helpers: frozenset[str],
+    allowed_bare_idents: frozenset[str],
+) -> bool:
+    """Check that `expr` is a single flat application of one allowlisted
+    target `MirSemantics` head function to strictly inert pure-data args."""
+    s = _strip_outer_parens(expr)
+    if re.fullmatch(r"\(\s*\{\}\s*:\s*EffectMaskV2\s*\)\.allowAbort", s):
+        return True
+    m_head = re.match(r"^([^\s()\[\]{},⟨⟩]+)(.*)$", s, re.S)
+    if not m_head:
+        return False
+    head, args = m_head.group(1), m_head.group(2)
+    if head not in _ALLOWED_REFUTATION_HEAD_FNS:
+        return False
+    return not _has_forbidden_type_or_data_expr(
+        args,
+        pair_helpers=pair_helpers,
+        allowed_bare_idents=allowed_bare_idents,
+    )
+
+
+def _is_allowed_refutation_type(
+    raw_type: str,
+    *,
+    pair_helpers: frozenset[str] = frozenset(),
+    allowed_bare_idents: frozenset[str] = frozenset(),
+) -> bool:
+    let_res = _strip_and_validate_leading_lets(
+        raw_type,
+        allowed_bare_idents=allowed_bare_idents,
+        pair_helpers=pair_helpers,
+    )
+    if let_res is None:
+        return False
+    stripped, let_binders = let_res
+    scoped_idents = allowed_bare_idents | let_binders
+    s = _strip_outer_parens(stripped)
+    if not s:
+        return False
+    conjuncts = _split_top_level(s, "∧")
+    if len(conjuncts) > 1:
+        return all(
+            _is_allowed_refutation_type(
+                c,
+                pair_helpers=pair_helpers,
+                allowed_bare_idents=scoped_idents,
+            )
+            for c in conjuncts
         )
-    return (start, len(lines))
+    s_no_empty_mask = re.sub(r"\(\s*\{\}\s*:\s*EffectMaskV2\s*\)", "{}", s)
+    if _NESTED_TYPE_FORBIDDEN_RE.search(s_no_empty_mask) or re.search(
+        r"(?<!:):(?!=[=]?)", s_no_empty_mask
+    ):
+        return False
+    if _has_top_level_connective(s):
+        return False
+    m_neg_pred = _NEG_PRED_HEAD_RE.match(s)
+    if m_neg_pred:
+        if _find_top_level_eq(s) != -1:
+            return False
+        pred_rest = s[m_neg_pred.end() :]
+        if _NEG_BODY_OR_CONTRACT_HEAD_RE.match(s):
+            if re.match(
+                r"^¬\s*(?:Trusted\.MirSemantics\.)?BodyVerified(?:V2)?\b", s
+            ):
+                pred_rest = _CANONICAL_BODY_PRE_RE.sub("", pred_rest, count=1)
+            else:
+                pred_rest = _CANONICAL_CONTRACT_POST_RE.sub(
+                    "", pred_rest, count=1
+                )
+        return not _has_forbidden_type_or_data_expr(
+            pred_rest,
+            pair_helpers=pair_helpers,
+            allowed_bare_idents=scoped_idents,
+        )
+    m_reach = _REACHES_NEG_RE.match(s)
+    if m_reach:
+        if _find_top_level_eq(s) != -1:
+            return False
+        reach_rest = re.sub(
+            r"^(?:Trusted\.MirSemantics\.)?ReachesResult(?:V2)?\b",
+            "",
+            s,
+            count=1,
+        )
+        return not _has_forbidden_type_or_data_expr(
+            reach_rest,
+            pair_helpers=pair_helpers,
+            allowed_bare_idents=scoped_idents,
+        )
+    if re.match(r"^match\b", s):
+        m_with = re.search(r"\bwith\b", s)
+        if not m_with:
+            return False
+        scrutinee = s[len("match") : m_with.start()]
+        if not _is_allowed_head_application(
+            scrutinee,
+            pair_helpers=pair_helpers,
+            allowed_bare_idents=scoped_idents,
+        ):
+            return False
+        arms_text = s[m_with.end() :].strip()
+        if not arms_text.startswith("|"):
+            return False
+        arms: list[str] = []
+        depth = 0
+        nested_matches = 0
+        arm_start: int | None = None
+        i = 0
+        n = len(arms_text)
+        while i < n:
+            ch = arms_text[i]
+            if ch in "([{⟨":
+                depth += 1
+                i += 1
+                continue
+            if ch in ")]}⟩" and depth > 0:
+                depth -= 1
+                i += 1
+                continue
+            if depth == 0:
+                if (
+                    arms_text.startswith("match", i)
+                    and (
+                        i == 0
+                        or not (
+                            arms_text[i - 1].isalnum()
+                            or arms_text[i - 1] in "_'"
+                        )
+                    )
+                    and (
+                        i + 5 >= n
+                        or not (
+                            arms_text[i + 5].isalnum()
+                            or arms_text[i + 5] in "_'"
+                        )
+                    )
+                ):
+                    nested_matches += 1
+                    i += 5
+                    continue
+                if ch == "|":
+                    if nested_matches == 0:
+                        if arm_start is not None:
+                            arms.append(arms_text[arm_start:i].strip())
+                        arm_start = i + 1
+            i += 1
+        if arm_start is not None:
+            arms.append(arms_text[arm_start:].strip())
+        if not arms:
+            return False
+        for arm in arms:
+            arrow = arm.find("=>")
+            if arrow == -1:
+                return False
+            pat = arm[:arrow].strip()
+            rhs = _strip_outer_parens(arm[arrow + 2 :].strip())
+            if rhs == "False":
+                continue
+            if rhs == "True":
+                alts = [
+                    " ".join(_strip_outer_parens(p).split())
+                    for p in pat.split("|")
+                    if p.strip()
+                ]
+                if not alts or any(
+                    _POS_ARM_HEAD_RE.match(a)
+                    or not _NEG_ARM_PAT_RE.fullmatch(a)
+                    for a in alts
+                ):
+                    return False
+                continue
+            return False
+        return True
+    eq_idx = _find_top_level_eq(s)
+    if eq_idx != -1:
+        lhs = s[:eq_idx].strip()
+        if not _is_allowed_head_application(
+            lhs,
+            pair_helpers=pair_helpers,
+            allowed_bare_idents=scoped_idents,
+        ):
+            return False
+        rhs = _strip_outer_parens(s[eq_idx + 1 :])
+        if _NEG_RHS_RE.fullmatch(" ".join(rhs.split())):
+            return True
+    return False
+
+
+def _is_closed_refutation_term(
+    term: str,
+    allowed_idents: frozenset[str],
+    *,
+    allow_assign_colon: bool = False,
+) -> bool:
+    if not term or "@" in term:
+        return False
+    if re.search(r"(?<!:):(?!=[=]?)", term):
+        return False
+    if not allow_assign_colon and ":=" in term:
+        return False
+    if re.search(r"(?<![:!<>])=(?![=>])", term):
+        return False
+    if any(
+        c not in " \t\n()[]⟨⟩,.:=>"
+        and not (c.isascii() and (c.isalnum() or c in "_'"))
+        for c in term
+    ):
+        return False
+    idents = re.findall(r"[A-Za-z_][A-Za-z0-9_']*", term)
+    return all(ident in allowed_idents for ident in idents)
+
+
+def _is_allowed_by_reach_script(script: str) -> bool:
+    norm = " ".join(script.split())
+    if not norm or "@" in norm:
+        return False
+    tactic_kw_re = re.compile(r"(?<![.\w'])\b(unfold|change|have|exact)\b")
+    starts: list[int] = []
+    depth = 0
+    i = 0
+    n = len(norm)
+    while i < n:
+        ch = norm[i]
+        if ch in "([{⟨":
+            depth += 1
+            i += 1
+            continue
+        if ch in ")]}⟩" and depth > 0:
+            depth -= 1
+            i += 1
+            continue
+        if depth == 0:
+            m_kw = tactic_kw_re.match(norm, i)
+            if m_kw:
+                starts.append(i)
+                i = m_kw.end()
+                continue
+        i += 1
+    if not starts or starts[0] != 0:
+        return False
+    clauses = [
+        norm[starts[k] : starts[k + 1] if k + 1 < len(starts) else n].strip()
+        for k in range(len(starts))
+    ]
+    bound_haves: set[str] = set()
+    saw_exact = False
+    idx = 0
+    while idx < len(clauses):
+        cl = clauses[idx]
+        if cl == "unfold ReachesResultV2":
+            idx += 1
+            continue
+        if _BY_CHANGE_STEP_RE.fullmatch(cl):
+            idx += 1
+            continue
+        m_have = _BY_HAVE_HEAD_RE.fullmatch(cl)
+        if m_have:
+            h_name, rhs = m_have.group(1), m_have.group(2).strip()
+            if not _is_valid_fresh_local_ident(h_name):
+                return False
+            if rhs == "by":
+                sub_end = idx + 1
+                while sub_end < len(clauses) and not clauses[
+                    sub_end
+                ].startswith("exact "):
+                    sub_end += 1
+                if sub_end >= len(clauses):
+                    return False
+                sub_script = " ".join(clauses[idx + 1 : sub_end + 1])
+                if not _is_allowed_by_reach_script(sub_script):
+                    return False
+                bound_haves.add(h_name)
+                idx = sub_end + 1
+                continue
+            if not _is_closed_refutation_term(
+                rhs, frozenset({"ReachesV2", "refl", "tail", "rfl", "_"})
+            ):
+                return False
+            bound_haves.add(h_name)
+            idx += 1
+            continue
+        if cl.startswith("exact "):
+            term = cl[len("exact ") :].strip()
+            if not _is_closed_refutation_term(
+                term, _REACH_BY_EXACT_ALLOWED_IDENTS | frozenset(bound_haves)
+            ):
+                return False
+            saw_exact = True
+            idx += 1
+            continue
+        return False
+    return saw_exact
+
+
+def _is_allowed_refutation_proof(proof: str) -> bool:
+    norm = " ".join(proof.split())
+    if not norm or "@" in norm:
+        return False
+    if _ATOMIC_PROOF_RE.fullmatch(norm):
+        return True
+    if norm.startswith("⟨") and norm.endswith("⟩"):
+        elems = _split_top_level(norm[1:-1], ",")
+        if elems and all(_ATOMIC_PROOF_RE.fullmatch(e) for e in elems):
+            return True
+    m_fun = re.fullmatch(
+        r"fun\s+([A-Za-z_][A-Za-z0-9_']*)\s*=>\s*(.+)", norm
+    )
+    if m_fun:
+        bound_var, body_expr = m_fun.group(1), m_fun.group(2)
+        if not _is_valid_fresh_local_ident(bound_var):
+            return False
+        return _is_closed_refutation_term(
+            body_expr,
+            _BOUNDARY_ELIM_ALLOWED_IDENTS | frozenset({bound_var}),
+            allow_assign_colon=True,
+        )
+    if norm.startswith("by "):
+        return _is_allowed_by_reach_script(norm[3:])
+    return False
+
+
+def _has_success_expectation(body: str) -> bool:
+    if _POS_CTOR_RE.search(body):
+        return True
+    if _DIRECT_SUCCESS_RE.search(body):
+        return True
+    if _LAMBDA_TRUE_RE.search(
+        _NEG_BODY_VERIFIED_TRUE_RE.sub("¬ BodyVerified <post>", body)
+    ):
+        return True
+    if _WILDCARD_NON_FALSE_ARM_RE.search(body):
+        return True
+    for arm in _TRUE_ARM_RE.finditer(body):
+        alts = [
+            " ".join(_strip_outer_parens(p).split())
+            for p in arm.group(1).split("|")
+            if p.strip()
+        ]
+        if any(
+            _POS_ARM_HEAD_RE.match(alt)
+            or not _NEG_ARM_PAT_RE.fullmatch(alt)
+            for alt in alts
+        ):
+            return True
+    return False
+
+
+def _is_allowed_data_helper(
+    body: str,
+    *,
+    allowed_bare_idents: frozenset[str] = frozenset(),
+    pair_helpers: frozenset[str] = frozenset(),
+    allow_data_params: bool = False,
+) -> bool:
+    m_head = re.match(
+        rf"\s*{_LEAN_DECL_MODIFIER_PREFIX}"
+        r"(?:def|abbrev)\s+([^\s:(]+)",
+        body,
+    )
+    if not m_head or not _is_valid_fresh_local_ident(m_head.group(1)):
+        return False
+    rest = body[m_head.end() :].lstrip()
+    param_names: set[str] = set()
+    if allow_data_params:
+        while rest.startswith("("):
+            m_param = re.match(
+                r"\(\s*([A-Za-z_][A-Za-z0-9_']*)\s*:\s*([^()]+?)\s*\)\s*",
+                rest,
+            )
+            if not m_param:
+                return False
+            p_name = m_param.group(1)
+            if not _is_valid_fresh_local_ident(p_name):
+                return False
+            p_ty = " ".join(m_param.group(2).split())
+            if p_ty not in _ALLOWED_HELPER_DATA_TYPES:
+                return False
+            param_names.add(p_name)
+            rest = rest[m_param.end() :]
+    if not rest.startswith(":") or rest.startswith(":="):
+        return False
+    rest = rest[1:]
+    m_end = re.search(r":=|\bwhere\b", rest)
+    if not m_end:
+        return False
+    ret_type = " ".join(rest[: m_end.start()].split())
+    if ret_type not in _ALLOWED_HELPER_DATA_TYPES:
+        return False
+    scoped = allowed_bare_idents | frozenset(param_names)
+    let_res = _strip_and_validate_leading_lets(
+        rest[m_end.end() :],
+        allowed_bare_idents=scoped,
+        pair_helpers=pair_helpers,
+    )
+    if let_res is None:
+        return False
+    rhs_after_lets, let_binders = let_res
+    if not rhs_after_lets:
+        return False
+    if _HELPER_PROOF_TOKEN_RE.search(rhs_after_lets):
+        return False
+    if _has_forbidden_type_or_data_expr(
+        rhs_after_lets,
+        pair_helpers=pair_helpers,
+        allowed_bare_idents=scoped | let_binders,
+    ):
+        return False
+    if re.search(r"(?<!:):(?!=[=]?)", rhs_after_lets):
+        return False
+    if _find_top_level_eq(rhs_after_lets) != -1:
+        return False
+    return True
+
+
+def _find_disallowed_directive_issues(cleaned: str) -> list[str]:
+    """Return disallowed Lean `#`/elaborator/open/export/namespace issues."""
+    issues: list[str] = []
+    for cmd in _HASH_COMMAND_RE.findall(cleaned):
+        issues.append(f"disallowed command #{cmd}")
+    for meta_cmd in _FORBIDDEN_META_CMD_RE.findall(cleaned):
+        issues.append(f"disallowed elaborator command {meta_cmd}")
+    for kw, rest in _OPEN_EXPORT_RE.findall(cleaned):
+        if kw == "export":
+            issues.append("disallowed export directive")
+            continue
+        targets = rest.split()
+        if not targets or any(t not in _ALLOWED_OPEN_TARGETS for t in targets):
+            issues.append(f"disallowed open directive: open {rest.strip()}")
+    for line in cleaned.splitlines():
+        stripped = " ".join(line.split())
+        if stripped.startswith("namespace ") and stripped != "namespace GuardMutation":
+            issues.append(f"disallowed namespace directive: {stripped}")
+    return issues
+
+
+def _collect_imported_module_info(
+    fixture_dir: Path, imported_mods: set[str]
+) -> tuple[frozenset[str], frozenset[str], list[str]]:
+    """Collect pure-data helper names (and pair helpers) from imported sanity
+    modules, rejecting any shadowing or disallowed declarations/directives."""
+    data_helpers: set[str] = set()
+    pair_helpers: set[str] = set()
+    issues: list[str] = []
+    for mod in sorted(imported_mods):
+        path = fixture_dir / f"{mod}.lean"
+        if not path.is_file():
+            continue
+        cleaned = strip_lean_comments_and_strings(path.read_text(encoding="utf-8"))
+        for d_issue in _find_disallowed_directive_issues(cleaned):
+            issues.append(f"imported module {mod}: {d_issue}")
+        matches = list(LEAN_DECL_TOKEN_RE.finditer(cleaned))
+        for idx, m in enumerate(matches):
+            kind = m.group(1)
+            raw_name = m.group(2) or ""
+            name = raw_name.strip("«»")
+            if kind == "end":
+                if name and name != "GuardMutation":
+                    issues.append(
+                        f"imported module {mod}: disallowed namespace end {name}"
+                    )
+                continue
+            leaf = name.rsplit(".", 1)[-1]
+            if not name or not _is_valid_fresh_local_ident(leaf):
+                issues.append(
+                    f"imported module {mod}: disallowed shadowing declaration {kind} {name or '<unnamed>'}"
+                )
+                continue
+            if kind not in ("def", "abbrev"):
+                continue
+            end = (
+                matches[idx + 1].start()
+                if idx + 1 < len(matches)
+                else len(cleaned)
+            )
+            body = cleaned[m.start() : end]
+            if _is_allowed_data_helper(
+                body,
+                allowed_bare_idents=frozenset(data_helpers),
+                pair_helpers=frozenset(pair_helpers),
+                allow_data_params=True,
+            ):
+                data_helpers.add(name)
+                if re.search(
+                    r":\s*List\s+MirTy\s*×\s*List\s+LocalSlot\s*(?::=|\bwhere\b)",
+                    body,
+                ):
+                    pair_helpers.add(name)
+    return frozenset(data_helpers), frozenset(pair_helpers), issues
+
+
+def _collect_imported_pure_data_helpers(
+    fixture_dir: Path, imported_mods: set[str]
+) -> tuple[frozenset[str], frozenset[str]]:
+    """Collect pure-data helper names (and pair helpers) from imported sanity
+    modules, accepting only helpers whose bodies pass `_is_allowed_data_helper`."""
+    data_helpers, pair_helpers, _ = _collect_imported_module_info(
+        fixture_dir, imported_mods
+    )
+    return data_helpers, pair_helpers
+
+
+def find_forbidden_positive_checks(
+    source: str,
+    *,
+    allowed_theorems: set[str],
+    helper_theorems: set[str] | frozenset[str] | None = None,
+    imported_data_helpers: frozenset[str] = frozenset(),
+    imported_pair_helpers: frozenset[str] = frozenset(),
+) -> list[str]:
+    """Audit a refutation fixture against the closed refutation-only grammar.
+
+    A refutation fixture is expected to fail to compile on its mutant, so any
+    positive canary or embedded positive branch inside it could fail on a
+    broken mutant and register as a false kill. Positive canaries belong only
+    in sanity modules, which every mutant must still compile.
+    """
+    cleaned = strip_lean_comments_and_strings(source)
+    helpers = helper_theorems or frozenset()
+    issues = _find_disallowed_directive_issues(cleaned)
+    matches = list(LEAN_DECL_TOKEN_RE.finditer(cleaned))
+    preamble = cleaned[: matches[0].start()] if matches else cleaned
+    if _has_success_expectation(preamble):
+        issues.append("embedded success expectation in preamble")
+    for raw_line in preamble.splitlines():
+        line = " ".join(raw_line.split())
+        if line and not _ALLOWED_PREAMBLE_LINE_RE.fullmatch(line):
+            issues.append(f"disallowed preamble statement: {line}")
+    local_data_helpers: set[str] = set(imported_data_helpers)
+    pair_helpers: set[str] = set(imported_pair_helpers)
+    seen_decl_lines: set[int] = set()
+    for idx, m in enumerate(matches):
+        kind = m.group(1)
+        name = (m.group(2) or "").strip("«»")
+        decl_line = cleaned.count("\n", 0, m.start()) + 1
+        if decl_line in seen_decl_lines or _declaration_is_mid_line(
+            cleaned, m.start()
+        ):
+            issues.append(f"multiple declarations on line {decl_line} ({name})")
+        seen_decl_lines.add(decl_line)
+        end = (
+            matches[idx + 1].start() if idx + 1 < len(matches) else len(cleaned)
+        )
+        body = cleaned[m.start() : end]
+        if kind in ("theorem", "lemma") and name.startswith("positive"):
+            issues.append(f"positive declaration {name}")
+        if kind == "end":
+            if _has_success_expectation(body) or not re.fullmatch(
+                r"\s*end(?:\s+[A-Za-z_][A-Za-z0-9_'.]*)?\s*", body
+            ):
+                issues.append(f"disallowed trailing content after end {name}")
+            continue
+        if kind not in ("theorem", "lemma", "example"):
+            if _has_success_expectation(body):
+                issues.append(
+                    f"embedded success expectation in {kind} {name}"
+                )
+            elif kind not in ("def", "abbrev") or not _is_allowed_data_helper(
+                body,
+                allowed_bare_idents=frozenset(local_data_helpers),
+                pair_helpers=frozenset(pair_helpers),
+            ):
+                issues.append(f"disallowed non-data helper {kind} {name}")
+            else:
+                local_data_helpers.add(name)
+                if re.search(
+                    r":\s*List\s+MirTy\s*×\s*List\s+LocalSlot\s*(?::=|\bwhere\b)",
+                    body,
+                ):
+                    pair_helpers.add(name)
+            continue
+        if kind == "example":
+            issues.append("uncataloged example")
+            continue
+        if name not in allowed_theorems and name not in helpers:
+            issues.append(f"uncataloged theorem {name}")
+        if name in PINNED_EXACT_REFUTATIONS:
+            norm_body = " ".join(body.split())
+            if norm_body == PINNED_EXACT_REFUTATIONS[name]:
+                continue
+            issues.append(
+                f"allowlisted {name} drifted from pinned refutation assertion"
+            )
+            continue
+        parsed_thm = _extract_theorem_type_and_proof(body)
+        structurally_valid = (
+            parsed_thm is not None
+            and _is_allowed_refutation_type(
+                parsed_thm[0],
+                pair_helpers=frozenset(pair_helpers),
+                allowed_bare_idents=frozenset(local_data_helpers),
+            )
+            and _is_allowed_refutation_proof(parsed_thm[1])
+        )
+        if not _has_success_expectation(body) and structurally_valid:
+            continue
+        issues.append(f"embedded success expectation in {name}")
+    return issues
+
+
+def collect_fixture_local_imports(
+    fixture_dir: Path,
+    root: str,
+    *,
+    overrides: dict[str, str] | None = None,
+) -> set[str]:
+    """Return fixture-local modules transitively imported by `root`."""
+    seen: set[str] = set()
+    stack = [root]
+    while stack:
+        cur = stack.pop()
+        if overrides is not None and cur in overrides:
+            raw = overrides[cur]
+        else:
+            raw = (fixture_dir / f"{cur}.lean").read_text(encoding="utf-8")
+        tokens = strip_lean_comments_and_strings(raw).split()
+        i = 0
+        while i < len(tokens):
+            if tokens[i] == "import":
+                j = i + 1
+                if j < len(tokens) and tokens[j] == "all":
+                    j += 1
+                if j < len(tokens):
+                    imp = tokens[j]
+                    is_fixture = (fixture_dir / f"{imp}.lean").is_file()
+                    if is_fixture and imp not in seen:
+                        seen.add(imp)
+                        stack.append(imp)
+                    i = j + 1
+                    continue
+            i += 1
+    return seen
+
+
+def allowed_fixture_local_imports(guard: MirSemanticsGuard) -> set[str]:
+    """Return fixture-local modules rebuilt against `guard`'s mutant."""
+    allowed = {guard.sanity_module}
+    if guard.sanity_module == "PositiveSanity":
+        allowed |= set(
+            FIXTURE_HELPERS_END_TO_END
+            if guard.needs_wf_helper
+            else FIXTURE_HELPERS_BOUNDARY
+        )
+    return allowed
+
+
+def validate_refutation_modules(anneal_root: Path) -> list[str]:
+    """Validate that refutation fixtures contain only refutations and rebuilt imports."""
+    errors: list[str] = []
+    fixture_dir = anneal_root / "ci/fixtures/guard_mutation"
+    sanity_mods = {g.sanity_module for g in MIR_SEMANTICS_GUARDS}
+    fixture_mods = {g.fixture_module for g in MIR_SEMANTICS_GUARDS}
+    overlap = sorted(sanity_mods & fixture_mods)
+    if overlap:
+        errors.append(
+            f"sanity and refutation modules must be disjoint, overlap={overlap}"
+        )
+
+    catalog_by_mod: dict[str, set[str]] = {}
+    for g in MIR_SEMANTICS_GUARDS:
+        catalog_by_mod.setdefault(g.fixture_module, set()).add(g.theorem_name)
+
+    for mod in sorted(fixture_mods):
+        path = fixture_dir / f"{mod}.lean"
+        if not path.is_file():
+            continue
+        imported_local = collect_fixture_local_imports(fixture_dir, mod)
+        imp_data, imp_pairs, imp_issues = _collect_imported_module_info(
+            fixture_dir, imported_local
+        )
+        for issue in imp_issues:
+            errors.append(f"refutation fixture {mod}: {issue}")
+        found = find_forbidden_positive_checks(
+            path.read_text(encoding="utf-8"),
+            allowed_theorems=catalog_by_mod[mod],
+            helper_theorems=ALLOWED_REFUTATION_HELPER_THEOREMS.get(
+                mod, frozenset()
+            ),
+            imported_data_helpers=imp_data,
+            imported_pair_helpers=imp_pairs,
+        )
+        for issue in found:
+            errors.append(
+                f"refutation fixture {mod}: {issue}; move any positive check "
+                f"into its sanity module"
+            )
+
+    for g in MIR_SEMANTICS_GUARDS:
+        allowed = allowed_fixture_local_imports(g)
+        fix_path = fixture_dir / f"{g.fixture_module}.lean"
+        if fix_path.is_file():
+            imported = collect_fixture_local_imports(
+                fixture_dir, g.fixture_module
+            )
+            extra = sorted(imported - allowed)
+            if extra:
+                errors.append(
+                    f"{g.guard_id}: fixture {g.fixture_module} imports "
+                    f"unrebuilt fixture-local module(s) {extra}; only "
+                    f"{sorted(allowed)} are rebuilt against its mutant"
+                )
+        san_path = fixture_dir / f"{g.sanity_module}.lean"
+        if san_path.is_file():
+            san_imported = collect_fixture_local_imports(
+                fixture_dir, g.sanity_module
+            )
+            san_allowed = allowed - {g.sanity_module}
+            extra_san = sorted(san_imported - san_allowed)
+            if extra_san:
+                errors.append(
+                    f"{g.guard_id}: sanity module {g.sanity_module} imports "
+                    f"unrebuilt fixture-local module(s) {extra_san}; only "
+                    f"{sorted(san_allowed)} are rebuilt before it"
+                )
+    return errors
 
 
 def classify_refutation_failure(
@@ -5474,6 +7439,7 @@ def _check_one_mir_guard(
                 if guard.needs_wf_helper
                 else FIXTURE_HELPERS_BOUNDARY
             )
+        excluded_seed_mods = rebuilt_mods | set(BASELINE_ONLY_MEMORY_FIXTURES)
         for src_art in base_olean_dir.rglob("*"):
             if not src_art.is_file():
                 continue
@@ -5490,7 +7456,7 @@ def _check_one_mir_guard(
                 if rel_str.endswith(ext):
                     rel_mod = rel_str[: -len(ext)]
                     break
-            if rel_mod is None or rel_mod in rebuilt_mods:
+            if rel_mod is None or rel_mod in excluded_seed_mods:
                 continue
             dst_art = mut_olean_dir / rel
             dst_art.parent.mkdir(parents=True, exist_ok=True)
@@ -5848,6 +7814,8 @@ def validate_catalog_invariants(anneal_root: Path) -> list[str]:
     seen_ids: set[str] = set()
     fixtures_dir = anneal_root / "ci/fixtures/guard_mutation"
 
+    target_text_cache: dict[Path, str] = {}
+    fixture_scan_cache: dict[Path, tuple[str, list[re.Match[str]]]] = {}
     for guard in MIR_SEMANTICS_GUARDS:
         if guard.guard_id in seen_ids:
             errors.append(f"duplicate guard_id: {guard.guard_id}")
@@ -5860,7 +7828,10 @@ def validate_catalog_invariants(anneal_root: Path) -> list[str]:
         if not target_path.is_file():
             errors.append(f"{guard.guard_id}: missing target_file {target_path}")
         else:
-            text = target_path.read_text(encoding="utf-8")
+            text = target_text_cache.get(target_path)
+            if text is None:
+                text = target_path.read_text(encoding="utf-8")
+                target_text_cache[target_path] = text
             try:
                 apply_single_guard_mutation(
                     text, guard.anchor, guard.replacement, guard_id=guard.guard_id
@@ -5873,9 +7844,16 @@ def validate_catalog_invariants(anneal_root: Path) -> list[str]:
                 f"{guard.guard_id}: missing fixture_module {fixture_path}"
             )
         else:
+            scanned = fixture_scan_cache.get(fixture_path)
+            if scanned is None:
+                cleaned = strip_lean_comments_and_strings(
+                    fixture_path.read_text(encoding="utf-8")
+                )
+                scanned = (cleaned, list(LEAN_DECL_TOKEN_RE.finditer(cleaned)))
+                fixture_scan_cache[fixture_path] = scanned
             try:
-                find_theorem_line_span(
-                    fixture_path.read_text(encoding="utf-8"), guard.theorem_name
+                _find_theorem_line_span_in_cleaned(
+                    scanned[0], scanned[1], guard.theorem_name
                 )
             except ValueError as exc:
                 errors.append(f"{guard.guard_id}: {exc}")
@@ -5910,6 +7888,8 @@ def validate_catalog_invariants(anneal_root: Path) -> list[str]:
                 )
             except ValueError as exc:
                 errors.append(str(exc))
+
+    errors.extend(validate_refutation_modules(anneal_root))
 
     return errors
 
@@ -6002,13 +7982,20 @@ def run_guard_mutation_suite(
                         f"{res.stdout}\n{res.stderr}"
                     )
 
-            # Verify baseline helpers, positive sanity checks, and every
-            # negative refutation module pass cleanly on unmodified TCB.
+            # Verify baseline helpers, positive sanity checks, baseline-only
+            # exact assertions, and every negative refutation module pass
+            # cleanly on unmodified TCB.
             needed_fixtures = sorted({g.fixture_module for g in mir_guards})
             needed_sanity = sorted({g.sanity_module for g in mir_guards})
+            baseline_only = (
+                list(BASELINE_ONLY_MEMORY_FIXTURES)
+                if "MemorySanity" in needed_sanity
+                else []
+            )
             baseline_fixture_mods: list[str] = [
                 *FIXTURE_HELPERS_END_TO_END,
                 *needed_sanity,
+                *baseline_only,
                 *needed_fixtures,
             ]
             for mod in baseline_fixture_mods:

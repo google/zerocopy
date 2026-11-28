@@ -9,6 +9,7 @@
 prelude
 import Init.NotationExtra
 import GuardRefuteWf
+import PositiveSanity
 
 /-!
 # Negative Refutations for `Trusted.MirSemantics.Bytes` Validity Guards
@@ -56,12 +57,6 @@ theorem refute_bytes_invalid_enum_tag :
     ¬ WellFormed (mkConstRetProg (.enum reprU8EnumTy) 1) queryEmpty :=
   refutes_wf_of_execFault (fuel := 1) rfl
 
-/-- Program `StorageLive(_1: u32); _0 = copy _1; return`, used to test indirect
-uninitialized-byte reads after `forceAllocation`. -/
-noncomputable def progIndirectUninitRead : Program :=
-  mkSingleBlockProg 0 [u32Ty, u32Ty]
-    [.storageLive 1, .assign ⟨0, []⟩ (.use (.copy ⟨1, []⟩))]
-
 /-- Guard `bytes_uninit_memory_read`: reading uninitialized bytes from an
 indirect stack allocation via `initBytes?` / `decodeVal` / `loadIndirect`
 faults with `.undefined`. -/
@@ -79,45 +74,39 @@ theorem refute_bytes_uninit_memory_read :
   rfl
 
 /-- Guard `bytes_utf8_two_byte_lead_min`: an overlong two-byte encoding (lead
-`0xC0` or `0xC1`) is rejected, while the shortest two-byte encodings `U+0080`
-and `U+07FF` are accepted. -/
+`0xC0` or `0xC1`) is rejected. Positive valid two-byte boundaries live in
+`PositiveSanity.lean`. -/
 theorem refute_bytes_utf8_two_byte_lead_min :
-    validUtf8Bytes [0xC1, 0xBF] = false ∧
-    validUtf8Bytes [0xC2, 0x80] = true ∧
-    validUtf8Bytes [0xDF, 0xBF] = true :=
-  ⟨rfl, rfl, rfl⟩
+    validUtf8Bytes [0xC1, 0xBF] = false :=
+  rfl
 
 /-- Guard `bytes_utf8_e0_overlong`: the overlong three-byte encoding of `U+07FF`
-(`E0 9F BF`) is rejected, while `U+0800` (`E0 A0 80`) is accepted. -/
+(`E0 9F BF`) is rejected. Positive valid `0xE0` boundary lives in
+`PositiveSanity.lean`. -/
 theorem refute_bytes_utf8_e0_overlong :
-    validUtf8Bytes [0xE0, 0x9F, 0xBF] = false ∧
-    validUtf8Bytes [0xE0, 0xA0, 0x80] = true :=
-  ⟨rfl, rfl⟩
+    validUtf8Bytes [0xE0, 0x9F, 0xBF] = false :=
+  rfl
 
 /-- Guard `bytes_utf8_ed_surrogate`: the UTF-16 surrogate `U+D800` (`ED A0 80`)
-is rejected, while its neighbors `U+D7FF` (`ED 9F BF`) and `U+E000` (`EE 80 80`)
-are accepted. -/
+is rejected. Positive valid neighbor boundaries live in
+`PositiveSanity.lean`. -/
 theorem refute_bytes_utf8_ed_surrogate :
-    validUtf8Bytes [0xED, 0xA0, 0x80] = false ∧
-    validUtf8Bytes [0xED, 0x9F, 0xBF] = true ∧
-    validUtf8Bytes [0xEE, 0x80, 0x80] = true :=
-  ⟨rfl, rfl, rfl⟩
+    validUtf8Bytes [0xED, 0xA0, 0x80] = false :=
+  rfl
 
 /-- Guard `bytes_utf8_f0_overlong`: the overlong four-byte encoding of `U+FFFF`
-(`F0 8F BF BF`) is rejected, while `U+10000` (`F0 90 80 80`) and `U+1F600`
-(`F0 9F 98 80`) are accepted. -/
+(`F0 8F BF BF`) is rejected. Positive valid four-byte boundaries live in
+`PositiveSanity.lean`. -/
 theorem refute_bytes_utf8_f0_overlong :
-    validUtf8Bytes [0xF0, 0x8F, 0xBF, 0xBF] = false ∧
-    validUtf8Bytes [0xF0, 0x90, 0x80, 0x80] = true ∧
-    validUtf8Bytes [0xF0, 0x9F, 0x98, 0x80] = true :=
-  ⟨rfl, rfl, rfl⟩
+    validUtf8Bytes [0xF0, 0x8F, 0xBF, 0xBF] = false :=
+  rfl
 
 /-- Guard `bytes_utf8_f4_max`: `U+110000` (`F4 90 80 80`), one past the largest
-code point, is rejected, while `U+10FFFF` (`F4 8F BF BF`) is accepted. -/
+code point, is rejected. Positive `U+10FFFF` boundary lives in
+`PositiveSanity.lean`. -/
 theorem refute_bytes_utf8_f4_max :
-    validUtf8Bytes [0xF4, 0x90, 0x80, 0x80] = false ∧
-    validUtf8Bytes [0xF4, 0x8F, 0xBF, 0xBF] = true :=
-  ⟨rfl, rfl⟩
+    validUtf8Bytes [0xF4, 0x90, 0x80, 0x80] = false :=
+  rfl
 
 /-- Guard `bytes_utf8_invalid_lead`: a lone continuation byte (`80`) and the
 never-valid leads `F5` and `FF` are rejected. -/
@@ -128,24 +117,23 @@ theorem refute_bytes_utf8_invalid_lead :
   ⟨rfl, rfl, rfl⟩
 
 /-- Guard `bytes_utf8_truncated`: a three-byte sequence cut short (`E2 82`) is
-rejected, while the complete `U+20AC` (`E2 82 AC`) is accepted. -/
+rejected. Positive complete `U+20AC` check lives in `PositiveSanity.lean`. -/
 theorem refute_bytes_utf8_truncated :
-    validUtf8Bytes [0xE2, 0x82] = false ∧
-    validUtf8Bytes [0xE2, 0x82, 0xAC] = true :=
-  ⟨rfl, rfl⟩
+    validUtf8Bytes [0xE2, 0x82] = false :=
+  rfl
 
 /-- Guard `bytes_utf8_continuation_hi`: a continuation byte above `0xBF`
-(`C2 C0`) is rejected. -/
+(`C2 C0`) is rejected. Positive `0xBF` boundary lives in
+`PositiveSanity.lean`. -/
 theorem refute_bytes_utf8_continuation_hi :
-    validUtf8Bytes [0xC2, 0xC0] = false ∧
-    validUtf8Bytes [0xC2, 0xBF] = true :=
-  ⟨rfl, rfl⟩
+    validUtf8Bytes [0xC2, 0xC0] = false :=
+  rfl
 
 /-- Guard `bytes_utf8_continuation_lo`: an ASCII byte in a continuation position
-(`C2 7F`) is rejected. -/
+(`C2 7F`) is rejected. Positive `0x80` boundary lives in
+`PositiveSanity.lean`. -/
 theorem refute_bytes_utf8_continuation_lo :
-    validUtf8Bytes [0xC2, 0x7F] = false ∧
-    validUtf8Bytes [0xC2, 0x80] = true :=
-  ⟨rfl, rfl⟩
+    validUtf8Bytes [0xC2, 0x7F] = false :=
+  rfl
 
 end GuardMutation

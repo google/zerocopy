@@ -18,9 +18,12 @@ import Trusted.MirSemantics.Memory
 Confirms that ordinary in-bounds, aligned, live, mutable stack allocation,
 write, read, and deallocation continue to succeed on every single-guard mutant
 of `Trusted/MirSemantics/Memory.lean`.
-It also holds the Profile v2 memory anti-overreach canaries (and the helpers
-`ProfileV2MemoryRefutations.lean` imports), so every `Memory` mutant must keep
-those valid operations working too.
+It also holds every `Memory` anti-overreach positive canary, including the
+Profile v2 ones, plus the helpers those canaries share with
+`MemoryRefutations.lean` and `ProfileV2MemoryRefutations.lean`, which import
+this module. Keeping positive canaries out of the refutation modules matters:
+a refutation module is expected to fail to compile on its mutant, so a
+positive canary inside it could break unnoticed.
 -/
 
 namespace GuardMutation
@@ -80,5 +83,66 @@ theorem positive_sanity_v2_memory :
     sliceFromRawPartsCheck MemoryState.empty false 4 2
       ⟨none, 4, .isize⟩ 0 = .ok (.slicePtr ⟨none, 4, .isize⟩ 0) :=
   ⟨rfl, rfl, rfl, rfl⟩
+
+/-- Live mutable 4-byte, 4-byte-aligned (`alignLog2 = 2`) allocation with id
+`1`. -/
+noncomputable def liveMut4Alloc : Allocation := {
+  allocId := 1
+  alignLog2 := 2
+  mutability := .mut
+  bytes := [.init 1 none, .init 2 none, .init 3 none, .init 4 none]
+  live := true
+}
+
+/-- Already deallocated (`live = false`) 4-byte allocation with id `1`. -/
+noncomputable def deadMut4Alloc : Allocation :=
+  { liveMut4Alloc with live := false }
+
+/-- Live immutable (`mutability = .shared`) 4-byte allocation with id `1`. -/
+noncomputable def shared4Alloc : Allocation :=
+  { liveMut4Alloc with mutability := .shared }
+
+/-- Helper constructing a `MemoryState` containing a single allocation. -/
+noncomputable def singleAllocMem (a : Allocation) : MemoryState :=
+  { nextAllocId := 2, allocations := [a] }
+
+/-- Anti-overreach positive canaries matching `rustc` `get_place_alloc` /
+`get_place_alloc_mut` and `lean-miri` (`checkAndDerefPtr` size-0 skip +
+alignment-only check): aligned `size == 0` accesses succeed even when the
+allocation is deallocated (`live = false`), read-only (`.shared`), or the
+offset is out of bounds. -/
+theorem positive_zst_alignment_only_canaries :
+    readBytes (singleAllocMem deadMut4Alloc) ⟨1, 0⟩ 0 2 = .ok [] ∧
+    writeBytes (singleAllocMem shared4Alloc) ⟨1, 0⟩ 2 [] =
+      .ok (singleAllocMem shared4Alloc) ∧
+    readBytes (singleAllocMem liveMut4Alloc) ⟨1, 8⟩ 0 2 = .ok [] ∧
+    writeBytes (singleAllocMem liveMut4Alloc) ⟨1, 8⟩ 2 [] =
+      .ok (singleAllocMem liveMut4Alloc) :=
+  ⟨rfl, rfl, rfl, rfl⟩
+
+/-- Anti-overreach canary for `mem_v2_entry_raw_ptr_arg_fresh`: when no
+parameter has a raw-pointer type, `entryMemoryForArgsV2` reduces to
+`entryMemoryWithCaller` without advancing `nextAllocId`. -/
+theorem positive_mem_v2_entry_non_raw_ptr_arg_unchanged :
+    let emptyCm : CallerMemory := { allocations := [] }
+    (entryMemoryForArgsV2 emptyCm [.int .i32 false]
+      [.scalar ⟨.i32, false, 0⟩]).nextAllocId = 2 :=
+  rfl
+
+/-- Anti-overreach canary for `mem_v2_slice_get_unchecked_elem_size`: an
+in-bounds zero-length `sliceGetUncheckedCheck` with `elemSize = 4` and
+`startOff = 1` on a 4-byte allocation succeeds. -/
+theorem positive_mem_v2_slice_get_unchecked_elem_size_in_bounds :
+    (match sliceGetUncheckedCheck (singleAllocMem liveMut4Alloc)
+        ⟨some 1, 0, .isize⟩ 1 1 1 4 with
+     | .ok _ => True
+     | .error _ => False) :=
+  trivial
+
+/-- Anti-overreach canary for `mem_v2_entry_option_raw_ptr_val`: `None`
+contributes `0` to `maxValPtrAllocId`. -/
+theorem positive_mem_v2_entry_option_none_zero :
+    maxValPtrAllocId (.optionVal none) = 0 :=
+  rfl
 
 end GuardMutation
