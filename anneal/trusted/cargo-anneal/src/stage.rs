@@ -13,7 +13,7 @@
 #[cfg(unix)]
 use std::os::unix::fs::{DirBuilderExt, PermissionsExt};
 use std::{
-    collections::{BTreeMap, BTreeSet, HashMap},
+    collections::{BTreeMap, BTreeSet},
     env,
     ffi::OsStr,
     fs, io,
@@ -99,7 +99,7 @@ fn init_primitives_cache() -> &'static Mutex<InitPrimitivesCacheMap> {
 }
 
 type SysrootConstsCacheKey = (PathBuf, String, String, Vec<String>, Vec<String>);
-type SysrootConstsMap = Arc<HashMap<String, String>>;
+type SysrootConstsMap = Arc<BTreeMap<String, String>>;
 type SysrootConstsCacheSlot = Arc<Mutex<Option<SysrootConstsMap>>>;
 type SysrootConstsCacheMap = BTreeMap<SysrootConstsCacheKey, SysrootConstsCacheSlot>;
 
@@ -4326,7 +4326,7 @@ impl Checker {
     /// `"sysroot-consts"` (`loadExts := false`, zero target `.olean`s loaded).
     pub(crate) fn collect_sysroot_consts_cached(
         &mut self,
-    ) -> Result<Arc<HashMap<String, String>>, Failure> {
+    ) -> Result<Arc<BTreeMap<String, String>>, Failure> {
         let (cache_key, req) = {
             let adm = self.admitted()?;
             let mut sorted_fnd: Vec<String> = adm.foundation_graph.keys().cloned().collect();
@@ -4380,7 +4380,7 @@ impl Checker {
             .ok_or_else(|| {
                 Failure::operational("sysroot-consts", "missing sysrootConsts inventory")
             })?;
-        let mut out = HashMap::new();
+        let mut out = BTreeMap::new();
         for entry in entries {
             let pair = entry.as_array().ok_or_else(|| {
                 Failure::operational("sysroot-consts", "malformed sysrootConsts entry")

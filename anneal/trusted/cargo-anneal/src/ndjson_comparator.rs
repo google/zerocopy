@@ -62,7 +62,7 @@
 //!    maps.
 
 use std::{
-    collections::{BTreeMap, BTreeSet, HashMap, HashSet, VecDeque},
+    collections::{BTreeMap, BTreeSet, VecDeque, btree_map::Entry},
     fs,
     io::{BufRead, BufReader},
     path::Path,
@@ -82,10 +82,20 @@ pub const MAX_NDJSON_BYTES: u64 = 256 * 1024 * 1024;
 /// Maximum number of lines accepted in a single NDJSON export stream.
 ///
 /// Together with [`MAX_NDJSON_BYTES`], this bounds the number of records a
-/// hostile `5b` export can make the parser intern. It does not bound memory
-/// tightly: each interned name also stores its full dotted rendering, so
-/// deeply nested names cost memory quadratic in their depth.
+/// hostile `5b` export can make the parser intern.
 pub const MAX_NDJSON_LINES: usize = 20_000_000;
+
+/// Maximum number of components in a `Name` accepted from an NDJSON export.
+///
+/// The arena stores names as parent-linked components and renders dotted
+/// strings on demand, so rendering and component walks cost time linear in
+/// depth. This cap, together with [`MAX_NAME_BYTES`], bounds that cost per
+/// name, far above any name `leanexport` emits for real declarations.
+pub const MAX_NAME_DEPTH: usize = 512;
+
+/// Maximum length in bytes of the dotted rendering of a `Name` accepted from
+/// an NDJSON export (see [`MAX_NAME_DEPTH`]).
+pub const MAX_NAME_BYTES: usize = 16 * 1024;
 
 /// Closed 3-element set of standard Lean 4 axioms permitted in untainted
 /// proofs.
@@ -235,14 +245,14 @@ pub struct CanonLevelId(u32);
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct CanonExprId(u32);
 
-#[derive(Debug, Clone, PartialEq, Eq, Hash)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 enum CanonName {
     Anonymous,
     Str(CanonNameId, String),
     Num(CanonNameId, u64),
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, Hash)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 enum CanonLevel {
     Zero,
     Succ(CanonLevelId),
@@ -271,7 +281,7 @@ pub enum BinderInfo {
 /// different cosmetic binder names for the exact same kernel subterm depending
 /// on export traversal order. All fields are still strictly validated during
 /// NDJSON parsing before interning.
-#[derive(Debug, Clone, PartialEq, Eq, Hash)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 enum CanonExpr {
     BVar(u64),
     Sort(CanonLevelId),
@@ -465,20 +475,31 @@ impl CanonConstInfo {
 /// never keys on rendered dot-joined strings, preventing component collisions
 /// (such as `Str(Anonymous, "Classical.choice")` vs `Classical.choice` or
 /// `Num(pre, 0)` vs `Str(pre, "0")`).
+///
+/// Every table is ordered (`BTreeMap`) rather than hashed, so interning cost
+/// and iteration order are deterministic for any input.
 #[derive(Debug)]
 pub struct CanonicalArena {
     names: Vec<CanonName>,
-    name_ids: HashMap<CanonName, CanonNameId>,
-    name_strings: Vec<String>,
+    name_ids: BTreeMap<CanonName, CanonNameId>,
+    name_shapes: Vec<NameShape>,
     levels: Vec<CanonLevel>,
-    level_ids: HashMap<CanonLevel, CanonLevelId>,
+    level_ids: BTreeMap<CanonLevel, CanonLevelId>,
     exprs: Vec<CanonExpr>,
-    expr_ids: HashMap<CanonExpr, CanonExprId>,
+    expr_ids: BTreeMap<CanonExpr, CanonExprId>,
     anonymous_name: CanonNameId,
     zero_level: CanonLevelId,
     nat_name: CanonNameId,
     string_name: CanonNameId,
     opt_param_name: CanonNameId,
+}
+
+/// Component count and dotted-rendering length of an interned name, tracked
+/// so that limits can be enforced without rendering the name. Both saturate.
+#[derive(Debug, Clone, Copy)]
+struct NameShape {
+    depth: u32,
+    rendered_len: u32,
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -493,12 +514,12 @@ impl CanonicalArena {
     pub fn new() -> Self {
         let mut arena = Self {
             names: Vec::with_capacity(4096),
-            name_ids: HashMap::with_capacity(4096),
-            name_strings: Vec::with_capacity(4096),
+            name_ids: BTreeMap::new(),
+            name_shapes: Vec::with_capacity(4096),
             levels: Vec::with_capacity(256),
-            level_ids: HashMap::with_capacity(256),
+            level_ids: BTreeMap::new(),
             exprs: Vec::with_capacity(16384),
-            expr_ids: HashMap::with_capacity(16384),
+            expr_ids: BTreeMap::new(),
             anonymous_name: CanonNameId(0),
             zero_level: CanonLevelId(0),
             nat_name: CanonNameId(0),
@@ -513,26 +534,49 @@ impl CanonicalArena {
         arena
     }
 
-    fn intern_name(&mut self, name: CanonName) -> CanonNameId {
-        if let Some(&id) = self.name_ids.get(&name) {
-            return id;
-        }
-        let rendered = match &name {
-            CanonName::Anonymous => String::new(),
-            CanonName::Str(pre, s) => {
-                let prefix = &self.name_strings[pre.0 as usize];
-                if prefix.is_empty() { s.clone() } else { format!("{prefix}.{s}") }
-            }
-            CanonName::Num(pre, n) => {
-                let prefix = &self.name_strings[pre.0 as usize];
-                if prefix.is_empty() { n.to_string() } else { format!("{prefix}.{n}") }
-            }
+    /// Compute the shape `name` has (or would have) once interned. A
+    /// component is joined with `.` unless its prefix renders as the empty
+    /// string, matching [`Self::name_str`].
+    fn shape_of(&self, name: &CanonName) -> NameShape {
+        let (pre, component_len) = match name {
+            CanonName::Anonymous => return NameShape { depth: 0, rendered_len: 0 },
+            CanonName::Str(pre, s) => (*pre, s.len()),
+            CanonName::Num(pre, n) => (*pre, n.checked_ilog10().unwrap_or(0) as usize + 1),
         };
-        let id = CanonNameId(self.names.len() as u32);
-        self.names.push(name.clone());
-        self.name_ids.insert(name, id);
-        self.name_strings.push(rendered);
-        id
+        let parent = self.name_shapes[pre.0 as usize];
+        let component_len = u32::try_from(component_len).unwrap_or(u32::MAX);
+        let rendered_len = if parent.rendered_len == 0 {
+            component_len
+        } else {
+            parent.rendered_len.saturating_add(1).saturating_add(component_len)
+        };
+        NameShape { depth: parent.depth.saturating_add(1), rendered_len }
+    }
+
+    fn intern_name(&mut self, name: CanonName) -> CanonNameId {
+        let shape = self.shape_of(&name);
+        match self.name_ids.entry(name) {
+            Entry::Occupied(entry) => *entry.get(),
+            Entry::Vacant(entry) => {
+                let id = CanonNameId(self.names.len() as u32);
+                self.names.push(entry.key().clone());
+                self.name_shapes.push(shape);
+                *entry.insert(id)
+            }
+        }
+    }
+
+    /// Intern a name read from an untrusted export, failing closed if it
+    /// exceeds [`MAX_NAME_DEPTH`] or [`MAX_NAME_BYTES`].
+    fn intern_bounded_name(&mut self, name: CanonName) -> Result<CanonNameId, String> {
+        let shape = self.shape_of(&name);
+        if shape.depth as usize > MAX_NAME_DEPTH {
+            return Err(format!("name exceeds maximum depth ({MAX_NAME_DEPTH} components)"));
+        }
+        if shape.rendered_len as usize > MAX_NAME_BYTES {
+            return Err(format!("name exceeds maximum length ({MAX_NAME_BYTES} bytes)"));
+        }
+        Ok(self.intern_name(name))
     }
 
     /// Intern a dotted ASCII Lean `Str`-component name such as
@@ -593,8 +637,21 @@ impl CanonicalArena {
     }
 
     /// Render a canonical name ID back to its dotted Lean spelling.
-    pub fn name_str(&self, id: CanonNameId) -> &str {
-        &self.name_strings[id.0 as usize]
+    ///
+    /// Names are rendered on demand rather than stored, so memory stays
+    /// linear in the export size however deeply names nest.
+    pub fn name_str(&self, id: CanonNameId) -> String {
+        let mut out = String::with_capacity(self.name_shapes[id.0 as usize].rendered_len as usize);
+        for part in self.name_parts(id) {
+            if !out.is_empty() {
+                out.push('.');
+            }
+            match part {
+                NamePart::Str(s) => out.push_str(s),
+                NamePart::Num(n) => out.push_str(&n.to_string()),
+            }
+        }
+        out
     }
 
     /// Encode a canonical name ID into the unambiguous `SpecPreflight`
@@ -858,23 +915,25 @@ impl CanonicalArena {
     }
 
     fn intern_level(&mut self, level: CanonLevel) -> CanonLevelId {
-        if let Some(&id) = self.level_ids.get(&level) {
-            return id;
+        match self.level_ids.entry(level) {
+            Entry::Occupied(entry) => *entry.get(),
+            Entry::Vacant(entry) => {
+                let id = CanonLevelId(self.levels.len() as u32);
+                self.levels.push(entry.key().clone());
+                *entry.insert(id)
+            }
         }
-        let id = CanonLevelId(self.levels.len() as u32);
-        self.levels.push(level.clone());
-        self.level_ids.insert(level, id);
-        id
     }
 
     fn intern_expr(&mut self, expr: CanonExpr) -> CanonExprId {
-        if let Some(&id) = self.expr_ids.get(&expr) {
-            return id;
+        match self.expr_ids.entry(expr) {
+            Entry::Occupied(entry) => *entry.get(),
+            Entry::Vacant(entry) => {
+                let id = CanonExprId(self.exprs.len() as u32);
+                self.exprs.push(entry.key().clone());
+                *entry.insert(id)
+            }
         }
-        let id = CanonExprId(self.exprs.len() as u32);
-        self.exprs.push(expr.clone());
-        self.expr_ids.insert(expr, id);
-        id
     }
 
     /// Collect all constant names referenced by `root_expr` using an iterative
@@ -1057,7 +1116,7 @@ pub struct InductiveBlock {
 #[derive(Debug)]
 pub struct ExportedEnv {
     pub meta: ExportMeta,
-    pub constants: HashMap<CanonNameId, CanonConstInfo>,
+    pub constants: BTreeMap<CanonNameId, CanonConstInfo>,
     /// Constants in export order.
     pub const_order: Vec<CanonNameId>,
     /// Every `"inductive"` record, in export order.
@@ -1066,18 +1125,19 @@ pub struct ExportedEnv {
 
 /// Parse one NDJSON export stream into `arena`, failing closed on malformed
 /// JSON, unsupported format versions, duplicate table bindings, dangling
-/// back-references, unknown object tags, or duplicate constant names.
+/// back-references, unknown object tags, duplicate constant names, or names
+/// exceeding [`MAX_NAME_DEPTH`] or [`MAX_NAME_BYTES`].
 pub fn parse_ndjson_reader<R: BufRead>(
     reader: R,
     arena: &mut CanonicalArena,
     label: &str,
 ) -> Result<ExportedEnv, Failure> {
-    let mut name_map: HashMap<u64, CanonNameId> = HashMap::with_capacity(4096);
+    let mut name_map = IndexTable::default();
     name_map.insert(0, arena.anonymous_name);
-    let mut level_map: HashMap<u64, CanonLevelId> = HashMap::with_capacity(256);
+    let mut level_map = IndexTable::default();
     level_map.insert(0, arena.zero_level);
-    let mut expr_map: HashMap<u64, CanonExprId> = HashMap::with_capacity(16384);
-    let mut constants: HashMap<CanonNameId, CanonConstInfo> = HashMap::with_capacity(1024);
+    let mut expr_map = IndexTable::default();
+    let mut constants: BTreeMap<CanonNameId, CanonConstInfo> = BTreeMap::new();
     let mut const_order: Vec<CanonNameId> = Vec::with_capacity(1024);
     let mut inductive_blocks: Vec<InductiveBlock> = Vec::new();
 
@@ -1353,44 +1413,98 @@ fn req_obj<'a>(
         .ok_or_else(|| Failure::policy(label, format!("{label}:{line_no}: expected object in {ctx}")))
 }
 
+/// Map from one export's table indices (`in`, `il`, `ie`) to interned IDs.
+///
+/// `leanexport` numbers each table's entries consecutively, so indices near
+/// the number of entries bound so far are stored in a dense vector, giving
+/// lookups that cost the same for every input. An index far past that bound
+/// goes to an ordered side table instead, so the dense vector never holds
+/// more than about twice as many slots as there are entries, whatever
+/// indices a hostile export uses.
+#[derive(Debug)]
+struct IndexTable<T> {
+    dense: Vec<Option<T>>,
+    sparse: BTreeMap<u64, T>,
+    len: usize,
+}
+
+impl<T> Default for IndexTable<T> {
+    fn default() -> Self {
+        Self { dense: Vec::new(), sparse: BTreeMap::new(), len: 0 }
+    }
+}
+
+impl<T: Copy> IndexTable<T> {
+    /// Slots the dense vector may hold beyond twice the number of entries.
+    const DENSE_SLACK: usize = 1024;
+
+    fn get(&self, idx: u64) -> Option<T> {
+        // An index bound before the dense vector grew past it lives in
+        // `sparse`, so an empty dense slot still falls through.
+        if let Some(Some(value)) = usize::try_from(idx).ok().and_then(|i| self.dense.get(i)) {
+            return Some(*value);
+        }
+        self.sparse.get(&idx).copied()
+    }
+
+    fn contains(&self, idx: u64) -> bool {
+        self.get(idx).is_some()
+    }
+
+    /// Bind `idx`, which the caller has checked is unbound.
+    fn insert(&mut self, idx: u64, value: T) {
+        debug_assert!(!self.contains(idx));
+        self.len += 1;
+        let dense_limit = self.len.saturating_mul(2).saturating_add(Self::DENSE_SLACK);
+        match usize::try_from(idx) {
+            Ok(i) if i < self.dense.len() => self.dense[i] = Some(value),
+            Ok(i) if i < dense_limit => {
+                self.dense.resize(i + 1, None);
+                self.dense[i] = Some(value);
+            }
+            _ => {
+                self.sparse.insert(idx, value);
+            }
+        }
+    }
+}
+
 fn lookup_name(
-    name_map: &HashMap<u64, CanonNameId>,
+    name_map: &IndexTable<CanonNameId>,
     idx: u64,
     label: &str,
     line_no: usize,
 ) -> Result<CanonNameId, Failure> {
     name_map
-        .get(&idx)
-        .copied()
+        .get(idx)
         .ok_or_else(|| Failure::policy(label, format!("{label}:{line_no}: missing name idx {idx}")))
 }
 
 fn lookup_level(
-    level_map: &HashMap<u64, CanonLevelId>,
+    level_map: &IndexTable<CanonLevelId>,
     idx: u64,
     label: &str,
     line_no: usize,
 ) -> Result<CanonLevelId, Failure> {
-    level_map.get(&idx).copied().ok_or_else(|| {
+    level_map.get(idx).ok_or_else(|| {
         Failure::policy(label, format!("{label}:{line_no}: missing level idx {idx}"))
     })
 }
 
 fn lookup_expr(
-    expr_map: &HashMap<u64, CanonExprId>,
+    expr_map: &IndexTable<CanonExprId>,
     idx: u64,
     label: &str,
     line_no: usize,
 ) -> Result<CanonExprId, Failure> {
     expr_map
-        .get(&idx)
-        .copied()
+        .get(idx)
         .ok_or_else(|| Failure::policy(label, format!("{label}:{line_no}: missing expr idx {idx}")))
 }
 
 fn lookup_name_list(
     arr: &[Value],
-    name_map: &HashMap<u64, CanonNameId>,
+    name_map: &IndexTable<CanonNameId>,
     label: &str,
     line_no: usize,
 ) -> Result<Vec<CanonNameId>, Failure> {
@@ -1415,7 +1529,7 @@ fn parse_binder_info(s: &str, label: &str, line_no: usize) -> Result<BinderInfo,
 }
 
 fn insert_const(
-    constants: &mut HashMap<CanonNameId, CanonConstInfo>,
+    constants: &mut BTreeMap<CanonNameId, CanonConstInfo>,
     const_order: &mut Vec<CanonNameId>,
     arena: &CanonicalArena,
     name: CanonNameId,
@@ -1438,10 +1552,10 @@ fn insert_const(
 fn parse_record(
     obj: &serde_json::Map<String, Value>,
     arena: &mut CanonicalArena,
-    name_map: &mut HashMap<u64, CanonNameId>,
-    level_map: &mut HashMap<u64, CanonLevelId>,
-    expr_map: &mut HashMap<u64, CanonExprId>,
-    constants: &mut HashMap<CanonNameId, CanonConstInfo>,
+    name_map: &mut IndexTable<CanonNameId>,
+    level_map: &mut IndexTable<CanonLevelId>,
+    expr_map: &mut IndexTable<CanonExprId>,
+    constants: &mut BTreeMap<CanonNameId, CanonConstInfo>,
     const_order: &mut Vec<CanonNameId>,
     inductive_blocks: &mut Vec<InductiveBlock>,
     label: &str,
@@ -1458,28 +1572,31 @@ fn parse_record(
         let idx = idx_val.as_u64().ok_or_else(|| {
             Failure::policy(label, format!("{label}:{line_no}: invalid `in` index"))
         })?;
-        if name_map.contains_key(&idx) {
+        if name_map.contains(idx) {
             return Err(Failure::policy(
                 label,
                 format!("{label}:{line_no}: name index {idx} bound twice"),
             ));
         }
-        let canon = if let Some(data) = obj.get("str") {
+        let name = if let Some(data) = obj.get("str") {
             let d = req_obj(data, "Name.str", label, line_no)?;
             let pre = lookup_name(name_map, req_u64(d, "pre", label, line_no)?, label, line_no)?;
             let s = req_str(d, "str", label, line_no)?.to_owned();
-            arena.intern_name(CanonName::Str(pre, s))
+            CanonName::Str(pre, s)
         } else if let Some(data) = obj.get("num") {
             let d = req_obj(data, "Name.num", label, line_no)?;
             let pre = lookup_name(name_map, req_u64(d, "pre", label, line_no)?, label, line_no)?;
             let i = req_u64(d, "i", label, line_no)?;
-            arena.intern_name(CanonName::Num(pre, i))
+            CanonName::Num(pre, i)
         } else {
             return Err(Failure::policy(
                 label,
                 format!("{label}:{line_no}: unknown name record variant"),
             ));
         };
+        let canon = arena
+            .intern_bounded_name(name)
+            .map_err(|e| Failure::policy(label, format!("{label}:{line_no}: {e}")))?;
         name_map.insert(idx, canon);
         return Ok(());
     }
@@ -1495,7 +1612,7 @@ fn parse_record(
         let idx = idx_val.as_u64().ok_or_else(|| {
             Failure::policy(label, format!("{label}:{line_no}: invalid `il` index"))
         })?;
-        if level_map.contains_key(&idx) {
+        if level_map.contains(idx) {
             return Err(Failure::policy(
                 label,
                 format!("{label}:{line_no}: level index {idx} bound twice"),
@@ -1588,7 +1705,7 @@ fn parse_record(
         let idx = idx_val.as_u64().ok_or_else(|| {
             Failure::policy(label, format!("{label}:{line_no}: invalid `ie` index"))
         })?;
-        if expr_map.contains_key(&idx) {
+        if expr_map.contains(idx) {
             return Err(Failure::policy(
                 label,
                 format!("{label}:{line_no}: expr index {idx} bound twice"),
@@ -2369,7 +2486,7 @@ impl TargetOriginRole {
 #[derive(Debug, Clone, Default)]
 pub struct TargetConstIndex {
     /// `encodeCanonName -> origin` for every target-module constant.
-    pub origins: HashMap<String, TargetConstOrigin>,
+    pub origins: BTreeMap<String, TargetConstOrigin>,
     /// Encoded names of constants that a target module marks with
     /// `@[implemented_by]`, `@[extern]`, or `@[csimp]`.
     pub compiler_overrides: BTreeSet<String>,
@@ -2396,11 +2513,11 @@ pub struct StructuralCompareRequest<'a> {
     pub forbidden_expected_modules: BTreeSet<String>,
     /// Authenticated sysroot `encodeCanonName -> module_name` inventory
     /// collected from `Init`/`Std` `.olean`s with zero target code loaded.
-    pub sysroot_const_to_module: &'a HashMap<String, String>,
+    pub sysroot_const_to_module: &'a BTreeMap<String, String>,
     /// Exact `encodeCanonName -> origin` index of every constant declared by a
     /// retained `Model`, `Capture`, `Specification`, or `Expected` module
     /// (`SpecPreflight` `"target-consts"`).
-    pub target_const_origins: &'a HashMap<String, TargetConstOrigin>,
+    pub target_const_origins: &'a BTreeMap<String, TargetConstOrigin>,
     /// Encoded names of target-module constants carrying compiler overrides
     /// (`@[implemented_by]`, `@[extern]`, `@[csimp]`); none may be reached.
     pub target_compiler_overrides: &'a BTreeSet<String>,
@@ -2523,7 +2640,7 @@ where
 pub fn plan_sysroot_pin_export(
     arena: &CanonicalArena,
     exports: &[&ExportedEnv],
-    sysroot_const_to_module: &HashMap<String, String>,
+    sysroot_const_to_module: &BTreeMap<String, String>,
 ) -> Result<ExportPlan, Failure> {
     let mut modules = BTreeSet::new();
     let mut roots = BTreeSet::new();
@@ -2554,7 +2671,7 @@ pub fn plan_sysroot_pin_export(
 pub fn plan_expected_export(
     arena: &mut CanonicalArena,
     proof_full: &ExportedEnv,
-    target_const_origins: &HashMap<String, TargetConstOrigin>,
+    target_const_origins: &BTreeMap<String, TargetConstOrigin>,
     trusted_modules: &[String],
     expected_declaration: &str,
 ) -> Result<ExportPlan, Failure> {
@@ -2617,7 +2734,7 @@ fn check_export_well_formed(
             Failure::policy("ndjson-comparator", msg)
         }
     };
-    let mut block_of: HashMap<CanonNameId, usize> = HashMap::new();
+    let mut block_of: BTreeMap<CanonNameId, usize> = BTreeMap::new();
     for (idx, block) in env.inductive_blocks.iter().enumerate() {
         for &cid in block.types.iter().chain(&block.ctors).chain(&block.recs) {
             block_of.insert(cid, idx);
@@ -2625,7 +2742,7 @@ fn check_export_well_formed(
         check_inductive_block(arena, env, block)
             .map_err(|msg| fail(format!("{label} has a malformed inductive record: {msg}")))?;
     }
-    let mut declared: HashSet<CanonNameId> = HashSet::with_capacity(env.const_order.len());
+    let mut declared: BTreeSet<CanonNameId> = BTreeSet::new();
     for &cid in &env.const_order {
         let block = block_of.get(&cid);
         for dep in arena.collect_required_deps(&env.constants[&cid]) {
@@ -2672,7 +2789,7 @@ fn check_inductive_block(
     env: &ExportedEnv,
     block: &InductiveBlock,
 ) -> Result<(), String> {
-    let name = |cid: CanonNameId| arena.name_str(cid).to_owned();
+    let name = |cid: CanonNameId| arena.name_str(cid);
     let Some(&first) = block.types.first() else {
         return Err("record declares no types".to_owned());
     };
@@ -3436,7 +3553,7 @@ pub fn verify_ndjson_structure(
                 ));
             }
             if proof_bfs.visited.contains(&cid) {
-                axioms.insert(arena.name_str(cid).to_owned());
+                axioms.insert(arena.name_str(cid));
             }
         }
         if proof_bfs.visited.contains(&cid) && cid != sorry_ax_id {
@@ -3455,7 +3572,7 @@ pub fn verify_ndjson_structure(
                         ),
                     ));
                 }
-                sorry_declarations.insert(arena.name_str(cid).to_owned());
+                sorry_declarations.insert(arena.name_str(cid));
             }
         }
     }
@@ -3533,7 +3650,7 @@ pub fn verify_ndjson_structure(
 
 struct BfsResult {
     visited: BTreeSet<CanonNameId>,
-    parent: HashMap<CanonNameId, CanonNameId>,
+    parent: BTreeMap<CanonNameId, CanonNameId>,
 }
 
 /// Breadth-first dependency cone of `roots` within `env`, failing closed if
@@ -3545,7 +3662,7 @@ fn bfs_cone(
     label: &str,
 ) -> Result<BfsResult, Failure> {
     let mut visited = BTreeSet::new();
-    let mut parent = HashMap::new();
+    let mut parent = BTreeMap::new();
     let mut queue = VecDeque::new();
     for &root in roots {
         if !env.constants.contains_key(&root) {
@@ -3590,14 +3707,14 @@ fn bfs_cone(
 /// (harvested from `ProofLib/TrustedClosure.lean`'s `findBlamePath`).
 fn format_blame_path(
     arena: &CanonicalArena,
-    parent: &HashMap<CanonNameId, CanonNameId>,
+    parent: &BTreeMap<CanonNameId, CanonNameId>,
     target: CanonNameId,
 ) -> String {
-    let mut chain = vec![arena.name_str(target).to_owned()];
+    let mut chain = vec![arena.name_str(target)];
     let mut cur = target;
     let mut guard = 0usize;
     while let Some(&p) = parent.get(&cur) {
-        chain.push(arena.name_str(p).to_owned());
+        chain.push(arena.name_str(p));
         cur = p;
         guard += 1;
         if guard > 256 {
@@ -3638,7 +3755,7 @@ fn build_closure_entries(
                 format!("missing origin for `{name}` in {label}"),
             ));
         };
-        entries.push(ClosureEntry { name: name.to_owned(), module });
+        entries.push(ClosureEntry { name, module });
     }
     entries.sort_by(|a, b| a.name.cmp(&b.name).then_with(|| a.module.cmp(&b.module)));
     entries.dedup();
@@ -3687,7 +3804,7 @@ mod tests {
         // Build `init_primitives_cone.ndjson` containing all 39 primitives.
         let mut init_lines = vec![meta.to_owned()];
         let mut next_in = 1u64;
-        let mut name_idx: HashMap<String, u64> = HashMap::new();
+        let mut name_idx: BTreeMap<String, u64> = BTreeMap::new();
         let mut ensure_name = |lines: &mut Vec<String>, dotted: &str| -> u64 {
             if let Some(&id) = name_idx.get(dotted) {
                 return id;
@@ -3829,8 +3946,8 @@ mod tests {
         (init_ndjson, expected_ndjson, proof_ndjson)
     }
 
-    fn default_sysroot_map() -> HashMap<String, String> {
-        let mut map = HashMap::new();
+    fn default_sysroot_map() -> BTreeMap<String, String> {
+        let mut map = BTreeMap::new();
         for prim in PINNED_INIT_PRIMITIVES {
             map.insert((*prim).to_owned(), "Init.Prelude".to_owned());
         }
@@ -3849,8 +3966,8 @@ mod tests {
         TargetConstOrigin { module: module.to_owned(), role, paired_unsafe_rec: false }
     }
 
-    fn default_origins() -> HashMap<String, TargetConstOrigin> {
-        HashMap::from([
+    fn default_origins() -> BTreeMap<String, TargetConstOrigin> {
+        BTreeMap::from([
             (
                 "Trusted.MirSemantics.UnitTheorem".to_owned(),
                 origin("Trusted.MirSemantics", TargetOriginRole::Model),
@@ -3867,8 +3984,8 @@ mod tests {
 
     fn default_req<'a>(
         allow_sorry: bool,
-        sysroot_const_to_module: &'a HashMap<String, String>,
-        target_const_origins: &'a HashMap<String, TargetConstOrigin>,
+        sysroot_const_to_module: &'a BTreeMap<String, String>,
+        target_const_origins: &'a BTreeMap<String, TargetConstOrigin>,
     ) -> StructuralCompareRequest<'a> {
         StructuralCompareRequest {
             theorem_name: "Proof.verify",
@@ -5083,6 +5200,142 @@ mod tests {
         assert_eq!(render_leanexport_name(&arena, leading_num), None);
     }
 
+    /// An export whose `depth` name records each extend the previous name by
+    /// one `component`.
+    fn nested_name_export(depth: usize, component: &str) -> String {
+        let meta = r#"{"meta":{"exporter":{"name":"lean4export","version":"3.1.0"},"format":{"version":"3.1.0"},"lean":{"githash":"0000000000000000000000000000000000000000","version":"4.35.0"}}}"#;
+        let mut out = format!("{meta}\n");
+        for k in 1..=depth {
+            out.push_str(&format!(
+                "{{\"in\":{k},\"str\":{{\"pre\":{},\"str\":\"{component}\"}}}}\n",
+                k - 1
+            ));
+        }
+        out
+    }
+
+    #[test]
+    fn renders_names_on_demand() {
+        let meta = nested_name_export(0, "");
+        let export = format!(
+            "{meta}{{\"in\":1,\"str\":{{\"pre\":0,\"str\":\"\"}}}}\n\
+             {{\"in\":2,\"str\":{{\"pre\":1,\"str\":\"x\"}}}}\n\
+             {{\"in\":3,\"num\":{{\"pre\":2,\"i\":7}}}}\n\
+             {{\"in\":4,\"num\":{{\"pre\":0,\"i\":0}}}}\n"
+        );
+        let mut arena = CanonicalArena::new();
+        parse_ndjson_reader(BufReader::new(export.as_bytes()), &mut arena, "proof").unwrap();
+        // A component after an empty rendering is not preceded by `.`.
+        let empty = arena.intern_name(CanonName::Str(arena.anonymous_name, String::new()));
+        let x = arena.intern_name(CanonName::Str(empty, "x".to_owned()));
+        let x7 = arena.intern_name(CanonName::Num(x, 7));
+        let zero = arena.intern_name(CanonName::Num(arena.anonymous_name, 0));
+        assert_eq!(arena.name_str(empty), "");
+        assert_eq!(arena.name_str(x), "x");
+        assert_eq!(arena.name_str(x7), "x.7");
+        assert_eq!(arena.name_str(zero), "0");
+        // An empty component after a non-empty prefix keeps its separator,
+        // and the tracked length matches every rendering.
+        let x_empty = arena.intern_name(CanonName::Str(x, String::new()));
+        let x_empty_y = arena.intern_name(CanonName::Str(x_empty, "y".to_owned()));
+        let big = arena.intern_name(CanonName::Num(x_empty_y, u64::MAX));
+        assert_eq!(arena.name_str(x_empty), "x.");
+        assert_eq!(arena.name_str(x_empty_y), "x..y");
+        assert_eq!(arena.name_str(big), format!("x..y.{}", u64::MAX));
+        for n in [9, 10, 99, 100] {
+            arena.intern_name(CanonName::Num(x, n));
+        }
+        for (id, shape) in arena.name_shapes.iter().enumerate() {
+            let rendered = arena.name_str(CanonNameId(id as u32));
+            assert_eq!(shape.rendered_len as usize, rendered.len(), "{rendered}");
+        }
+        let nat_add = arena.intern_dotted_name("Nat.add");
+        assert_eq!(arena.name_str(nat_add), "Nat.add");
+    }
+
+    #[test]
+    fn rejects_names_exceeding_depth_or_length_limits() {
+        let parse = |export: &str| {
+            let mut arena = CanonicalArena::new();
+            parse_ndjson_reader(BufReader::new(export.as_bytes()), &mut arena, "proof")
+                .map(|_| arena)
+        };
+
+        // A name exactly at the depth limit is accepted.
+        let arena = parse(&nested_name_export(MAX_NAME_DEPTH, "a")).unwrap();
+        let deepest = arena.names.len() - 1;
+        assert_eq!(
+            arena.name_str(CanonNameId(deepest as u32)),
+            vec!["a"; MAX_NAME_DEPTH].join(".")
+        );
+
+        // A long chain of nested names fails closed at the first record past
+        // the limit (line 1 is the metadata), without reading the rest. If
+        // every rendered prefix were stored, this stream alone would need
+        // about 10 GB.
+        let err = parse(&nested_name_export(100_000, "a")).unwrap_err();
+        assert_eq!(err.code, 1, "{err}");
+        let line = MAX_NAME_DEPTH + 2;
+        assert!(
+            err.message.contains(&format!("proof:{line}: name exceeds maximum depth")),
+            "{err}"
+        );
+
+        // Long components exceed the rendered-length limit before the depth
+        // limit.
+        let component = "b".repeat(64);
+        let first_over = (MAX_NAME_BYTES + 1) / (component.len() + 1) + 1;
+        assert!(first_over < MAX_NAME_DEPTH);
+        let err = parse(&nested_name_export(first_over + 10, &component)).unwrap_err();
+        assert_eq!(err.code, 1, "{err}");
+        let line = first_over + 1;
+        assert!(
+            err.message.contains(&format!("proof:{line}: name exceeds maximum length")),
+            "{err}"
+        );
+        assert!(parse(&nested_name_export(first_over - 1, &component)).is_ok());
+
+        // So does a single oversized component; one of exactly the limit is
+        // accepted.
+        let err = parse(&nested_name_export(1, &"c".repeat(MAX_NAME_BYTES + 1))).unwrap_err();
+        assert_eq!(err.code, 1, "{err}");
+        assert!(err.message.contains("proof:2: name exceeds maximum length"), "{err}");
+        assert!(parse(&nested_name_export(1, &"c".repeat(MAX_NAME_BYTES))).is_ok());
+    }
+
+    #[test]
+    fn index_table_bounds_dense_storage_and_keeps_sparse_bindings() {
+        let mut table = IndexTable::default();
+        // A far index stays out of the dense vector.
+        table.insert(u64::MAX, 1u32);
+        table.insert(5000, 2);
+        assert!(table.dense.len() <= 2 * 2 + IndexTable::<u32>::DENSE_SLACK);
+        // Growing the dense vector past an index bound sparsely keeps it.
+        for i in 0..6000 {
+            if i != 5000 {
+                table.insert(i, 3);
+            }
+        }
+        assert!(table.dense.len() > 5000);
+        assert_eq!(table.get(5000), Some(2));
+        assert_eq!(table.get(u64::MAX), Some(1));
+        assert_eq!(table.get(6000), None);
+        assert!(table.contains(5000) && !table.contains(6001));
+
+        // The parser still rejects a second binding of a sparsely stored
+        // index after the dense vector has grown past it.
+        let mut export = nested_name_export(0, "");
+        export.push_str("{\"in\":3000,\"str\":{\"pre\":0,\"str\":\"far\"}}\n");
+        for k in (1..=3001).filter(|&k| k != 3000) {
+            export.push_str(&format!("{{\"in\":{k},\"str\":{{\"pre\":0,\"str\":\"n{k}\"}}}}\n"));
+        }
+        export.push_str("{\"in\":3000,\"str\":{\"pre\":0,\"str\":\"again\"}}\n");
+        let mut arena = CanonicalArena::new();
+        let err = parse_ndjson_reader(BufReader::new(export.as_bytes()), &mut arena, "proof")
+            .unwrap_err();
+        assert!(err.message.contains("name index 3000 bound twice"), "{err}");
+    }
+
     #[test]
     fn plans_reexports_from_export_frontiers() {
         let (_init_s, expected_s, proof_s) = synthetic_ndjson_fixture();
@@ -5095,7 +5348,7 @@ mod tests {
 
         // Treat `Captured.program` and `Spec.specs` as sysroot-named: both are
         // referenced only from non-sysroot `Expected.claim`, so both are roots.
-        let sysroot = HashMap::from([
+        let sysroot = BTreeMap::from([
             ("Captured.program".to_owned(), "Init.A".to_owned()),
             ("Spec.specs".to_owned(), "Init.B".to_owned()),
         ]);
