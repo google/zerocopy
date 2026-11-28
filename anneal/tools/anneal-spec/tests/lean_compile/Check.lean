@@ -7,9 +7,9 @@
 -- those terms.
 
 -- Pins the meaning of the helpers that `spec.rs` lowers into `Spec.lean`:
--- Rust's truncating `/` and `%`, two's-complement wrapping, the values of
--- integer constants, and parameters that must not capture the generated names
--- they are named after.
+-- Rust's truncating `/` and `%`, two's-complement wrapping and saturation,
+-- negation, `abs_diff`, the values of integer constants, and parameters that
+-- must not capture the generated names they are named after.
 prelude
 import Spec
 
@@ -148,5 +148,53 @@ example : pure_match_flag_is False 0 :=
 -- `max_steps = match n { 0 => 1, m => m * 2 }`.
 example : fn6_max_steps { args := [u32Val 0, u8Val 0] } = 1 := rfl
 example : fn6_max_steps { args := [u32Val 5, u8Val 0] } = 10 := rfl
+
+-- Saturating arithmetic clamps the exact result to the type's range.
+example : pure_sadd_is 200 100 255 := by unfold pure_sadd_is; decide
+example : ¬ pure_sadd_is 200 100 44 := by unfold pure_sadd_is; decide
+example : pure_sadd_is 1 2 3 := by unfold pure_sadd_is; decide
+example : pure_ssub_is (-128) 1 (-128) := by unfold pure_ssub_is; decide
+example : pure_ssub_is 127 (-1) 127 := by unfold pure_ssub_is; decide
+example : pure_ssub_is 5 7 (-2) := by unfold pure_ssub_is; decide
+example : ¬ pure_ssub_is (-128) 1 127 := by unfold pure_ssub_is; decide
+example : pure_smul_is 300 300 32767 := by unfold pure_smul_is; decide
+example : pure_smul_is (-300) 300 (-32768) := by unfold pure_smul_is; decide
+example : pure_smul_is (-3) 4 (-12) := by unfold pure_smul_is; decide
+example : pure_sneg_is (-128) 127 := by unfold pure_sneg_is; decide
+example : pure_sneg_is 127 (-127) := by unfold pure_sneg_is; decide
+example : pure_sneg_is 0 0 := by unfold pure_sneg_is; decide
+example : ¬ pure_sneg_is (-128) (-128) := by unfold pure_sneg_is; decide
+
+-- Negation wraps, and overflows, only at the edge of the type's range: at
+-- every nonzero value of an unsigned type and at `MIN` of a signed one.
+example : pure_wneg_u_is 1 255 := by unfold pure_wneg_u_is; decide
+example : pure_wneg_u_is 0 0 := by unfold pure_wneg_u_is; decide
+example : pure_wneg_i_is (-128) (-128) := by unfold pure_wneg_i_is; decide
+example : pure_wneg_i_is 5 (-5) := by unfold pure_wneg_i_is; decide
+example : pure_neg_ok_u 0 := by unfold pure_neg_ok_u; decide
+example : ¬ pure_neg_ok_u 1 := by unfold pure_neg_ok_u; decide
+example : pure_neg_ok_i 127 := by unfold pure_neg_ok_i; decide
+example : pure_neg_ok_i (-127) := by unfold pure_neg_ok_i; decide
+example : ¬ pure_neg_ok_i (-128) := by unfold pure_neg_ok_i; decide
+
+-- `abs_diff` is exact even between the extremes of a signed type.
+example : pure_diff_i_is (-128) 127 255 := by unfold pure_diff_i_is; decide
+example : pure_diff_i_is 127 (-128) 255 := by unfold pure_diff_i_is; decide
+example : pure_diff_i_is 3 3 0 := by unfold pure_diff_i_is; decide
+example : ¬ pure_diff_i_is (-128) 127 1 := by unfold pure_diff_i_is; decide
+example : pure_diff_u_is 0 4294967295 4294967295 := by unfold pure_diff_u_is; decide
+example : pure_diff_u_is 9 2 7 := by unfold pure_diff_u_is; decide
+
+-- Had the binder of the inner saturating result captured the parameter
+-- `saturating`, these would differ.
+example : pure_sat_nested 3 = 7 := by unfold pure_sat_nested; decide
+example : pure_sat_nested 100 = 201 := by unfold pure_sat_nested; decide
+example : pure_sat_nested 200 = 255 := by unfold pure_sat_nested; decide
+
+-- `usat` (sorted eighth as `fn7`) lowers
+-- `max_steps = abs_diff(a, b) + saturating_add(n, 1u32)`.
+example : fn7_max_steps { args := [u8Val 9, u8Val 2, u32Val 5] } = 13 := rfl
+example : fn7_max_steps { args := [u8Val 3, u8Val 250, u32Val 4294967295] } =
+    4294967542 := rfl
 
 end Spec.Check

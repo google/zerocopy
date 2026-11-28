@@ -316,9 +316,16 @@ const INTRINSICS: &[&str] = &[
     "wrapping_add",
     "wrapping_sub",
     "wrapping_mul",
+    "wrapping_neg",
     "no_overflow_add",
     "no_overflow_sub",
     "no_overflow_mul",
+    "no_overflow_neg",
+    "saturating_add",
+    "saturating_sub",
+    "saturating_mul",
+    "saturating_neg",
+    "abs_diff",
 ];
 
 /// `2^bits` in decimal. `u128` cannot hold `2^128`, so that case is spelled
@@ -334,6 +341,25 @@ fn modulus(t: IntTy) -> String {
 /// `2^(bits - 1)`, the magnitude of a signed type's minimum.
 fn half_modulus(t: IntTy) -> u128 {
     1u128 << (t.bits - 1)
+}
+
+/// The Lean binder of a saturating intrinsic's exact result. The `let` body
+/// that binds it mentions only it and literals, so it captures no
+/// specification name; it need only not be a root of a name in [`GLOBALS`].
+const SATURATE_BINDER: &str = "«saturating»";
+
+/// `exact`, the mathematical result of an operation on `t`, clamped to `t`'s
+/// range, as Rust's `saturating_*` methods compute it. `exact` is bound once
+/// so that nested saturating intrinsics do not duplicate their operands.
+fn saturate(exact: &str, t: IntTy) -> String {
+    let (lo, hi) = t.range();
+    let lo = IntLit::new(lo < 0, lo.unsigned_abs()).to_lean();
+    let hi = IntLit::new(false, hi).to_lean();
+    let s = SATURATE_BINDER;
+    format!(
+        "(let {s} : {INT} := {exact}; \
+         if {s} < {lo} then {lo} else if {hi} < {s} then {hi} else {s})"
+    )
 }
 
 fn int_lit(v: IntLit) -> String {
@@ -1298,7 +1324,8 @@ impl<'a> Env<'a> {
         let intrinsic = INTRINSICS.contains(&name)
             || name == "old"
             || name.starts_with("wrapping_")
-            || name.starts_with("no_overflow_");
+            || name.starts_with("no_overflow_")
+            || name.starts_with("saturating_");
         if reserved_param_name(name) || CLAUSE_NAMES.contains(&name) || intrinsic {
             return Err(Diagnostic::new(
                 "E_ANNEAL_RESERVED_PARAM_NAME",
@@ -1696,46 +1723,73 @@ impl<'a> Env<'a> {
                 ))
             }
         };
-        if let Some(kind) =
-            name.strip_prefix("wrapping_").or_else(|| name.strip_prefix("no_overflow_"))
-        {
-            let sym = match kind {
-                "add" => "+",
-                "sub" => "-",
-                "mul" => "*",
+        let family = ["wrapping_", "no_overflow_", "saturating_"]
+            .into_iter()
+            .find_map(|f| name.strip_prefix(f).map(|op| (f, op)));
+        if let Some((family, op)) = family {
+            // These intrinsics take machine-typed operands even inside
+            // `math`, since their meaning depends on the type's width. `t` is
+            // the operands' type, and `exact` is the mathematical result of
+            // the operation.
+            let (t, exact) = match op {
+                "add" | "sub" | "mul" => {
+                    arity(2)?;
+                    let (a, b, t) = self.int_pair(name, args, span, facts)?;
+                    let sym = match op {
+                        "add" => "+",
+                        "sub" => "-",
+                        _ => "*",
+                    };
+                    (t, format!("{a} {sym} {b}"))
+                }
+                "neg" => {
+                    arity(1)?;
+                    let (a, t) = self.int_operand(name, &args[0], facts)?;
+                    if family == "saturating_" && !t.signed {
+                        return Err(type_error(
+                            span,
+                            format!(
+                                "`saturating_neg` needs a signed integer, found `{}`",
+                                t.rust_name()
+                            ),
+                        )
+                        .help("Rust defines `saturating_neg` only on signed integer types"));
+                    }
+                    (t, format!("{INT_NEG} {a}"))
+                }
                 _ => return Err(unknown_fn(name, span, self.helpers)),
             };
-            arity(2)?;
-            // Wrapping and overflow intrinsics take machine-typed operands even
-            // inside `math`, since their meaning depends on the type's width.
-            let (a, b) = self.lower_pair(&args[0], &args[1], false, facts)?;
-            let t = match (&a, &b) {
-                (Low::Int(_, Ty::Int(t)), Low::Int(_, Ty::Int(_))) => *t,
-                _ => {
-                    return Err(type_error(
-                        span,
-                        format!("`{name}` needs two operands of one fixed-width integer type"),
-                    ))
-                }
-            };
-            let (Low::Int(a, _), Low::Int(b, _)) = (a, b) else { unreachable!() };
-            let sum = format!("{a} {sym} {b}");
             let m = modulus(t);
             let h = half_modulus(t);
-            if name.starts_with("wrapping_") {
-                let term = if t.signed {
-                    format!("({INT_EMOD} ({sum} + {h}) {m} - {h})")
-                } else {
-                    format!("({INT_EMOD} ({sum}) {m})")
-                };
-                return Ok(Low::Int(term, if math { Ty::Math } else { Ty::Int(t) }));
-            }
-            let (lo, hi) = if t.signed {
-                (format!("({INT_NEG} {h})"), h.to_string())
-            } else {
-                (format!("(0 : {INT})"), m)
-            };
-            return Ok(Low::Prop(Prop::pure(format!("({lo} ≤ {sum} ∧ {sum} < {hi})"))));
+            let ty = if math { Ty::Math } else { Ty::Int(t) };
+            return Ok(match family {
+                "wrapping_" => Low::Int(
+                    if t.signed {
+                        format!("({INT_EMOD} ({exact} + {h}) {m} - {h})")
+                    } else {
+                        format!("({INT_EMOD} ({exact}) {m})")
+                    },
+                    ty,
+                ),
+                "no_overflow_" => {
+                    let (lo, hi) = if t.signed {
+                        (format!("({INT_NEG} {h})"), h.to_string())
+                    } else {
+                        (format!("(0 : {INT})"), m)
+                    };
+                    Low::Prop(Prop::pure(format!("({lo} ≤ {exact} ∧ {exact} < {hi})")))
+                }
+                _ => Low::Int(saturate(&exact, t), ty),
+            });
+        }
+        if name == "abs_diff" {
+            arity(2)?;
+            let (a, b, t) = self.int_pair(name, args, span, facts)?;
+            // `abs_diff` returns the unsigned type of the operands' width,
+            // whose range holds the distance between any two of their values.
+            let unsigned = IntTy { signed: false, ..t };
+            let term = format!("({INT}.ofNat ({INT}.natAbs ({a} - {b})))");
+            return Ok(Low::Int(term, if math { Ty::Math } else { Ty::Int(unsigned) }));
         }
         let Some(sig) = self.helpers.get(name) else {
             return Err(unknown_fn(name, span, self.helpers));
@@ -1781,6 +1835,50 @@ impl<'a> Env<'a> {
             Ty::Unit => Low::Unit(app),
             t => Low::Int(app, if math { Ty::Math } else { t }),
         })
+    }
+
+    /// Lowers the two operands of intrinsic `name`, which must have one
+    /// fixed-width integer type, returning their terms and that type.
+    fn int_pair(
+        &self,
+        name: &str,
+        args: &[Expr],
+        span: Span,
+        facts: &mut Vec<String>,
+    ) -> Result<(String, String, IntTy), Diagnostic> {
+        match self.lower_pair(&args[0], &args[1], false, facts)? {
+            (Low::Int(a, Ty::Int(t)), Low::Int(b, Ty::Int(_))) => Ok((a, b, t)),
+            _ => Err(type_error(
+                span,
+                format!("`{name}` needs two operands of one fixed-width integer type"),
+            )),
+        }
+    }
+
+    /// Lowers the operand of unary intrinsic `name`, which must have a
+    /// fixed-width integer type, returning its term and that type.
+    fn int_operand(
+        &self,
+        name: &str,
+        arg: &Expr,
+        facts: &mut Vec<String>,
+    ) -> Result<(String, IntTy), Diagnostic> {
+        match self.lower(arg, false, facts)? {
+            Low::Int(a, Ty::Int(t)) => Ok((a, t)),
+            low @ (Low::Lit(..) | Low::UntypedIf(..)) => Err(Diagnostic::new(
+                "E_ANNEAL_SPEC_TYPE_ANNOTATION_NEEDED",
+                arg.span,
+                format!(
+                    "the type of the operand of `{name}` cannot be inferred from {}",
+                    describe(&low)
+                ),
+            )
+            .help("add a suffix such as `5i8`")),
+            low => Err(type_error(
+                arg.span,
+                format!("`{name}` needs a fixed-width integer operand, found {}", describe(&low)),
+            )),
+        }
     }
 }
 

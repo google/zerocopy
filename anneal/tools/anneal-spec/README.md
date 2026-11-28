@@ -101,22 +101,32 @@ writes `Spec.lean` (namespace `Spec`) and `spec_span_map.json`.
 | `target = "path"` | Overrides the derived item path, in both attachment forms. Required on inherent `impl` methods. Only characters of a Rust item path are accepted. |
 | `claim = "C"` | Puts the item in verification claim `C`, which `--claim C` selects. `C` is 1 to 64 ASCII letters, digits, and `_`, starting with a letter, and not an Anneal module root, a reserved Lean name, or a name such as `panic` that specifications may not use. Without it, an item is alone in the claim derived from its path: `::` becomes `__`, `<T as Tr>` becomes `impl_Tr_for_T` (`impl_Tr_for_unit` for `()`), any other character becomes `_`, and a `c_` prefix is added if the result does not start with a letter. A derived claim may not coincide with another item's claim (`<usize as PointerMetadata>::from_elem_count` is in `impl_PointerMetadata_for_usize__from_elem_count`). |
 | `instantiate = [["u8"], ...]` | Generic instantiations to verify. Parsed and validated, but rejected by profile v1, which has no generics. |
-| `#[anneal::pure]` | A non-recursive, side-effect-free helper usable in clauses. Its name must be an ASCII identifier other than `math`, `old`, `wrapping_*`, or `no_overflow_*`, and its parameters may not be named `Int`, `True`, `False`, `Trusted`, `Spec`, `Specs`, or `_root_`. |
+| `#[anneal::pure]` | A non-recursive, side-effect-free helper usable in clauses. Its name must be an ASCII identifier other than `math`, `old`, `abs_diff`, `wrapping_*`, `no_overflow_*`, or `saturating_*`, and its parameters may not be named `Int`, `True`, `False`, `Trusted`, `Spec`, `Specs`, or `_root_`. |
 | `#[anneal::vacuous_ok(reason = "...")]` | Waives the check that the precondition admits some input. |
 
 Expressions: `true`/`false`, integer literals (with optional suffix), the
 integer constants `T::MIN`, `T::MAX`, and `T::BITS` for a fixed-width integer
 type `T`, parameters, the `ensures` binder, `!`, unary `-`, `&&`, `||`, `==>`
 (right-associative), `<==>`, comparisons, `+ - * / %`, helper calls,
-`math(e)`/`math { e }`, `wrapping_{add,sub,mul}`,
-`no_overflow_{add,sub,mul}`, `if c { a } else { b }` (with `else if`
-chains), `match s { pat => e, .. }`, and blocks `{ let x = e; .. value }`.
+`math(e)`/`math { e }`, `wrapping_{add,sub,mul,neg}`,
+`no_overflow_{add,sub,mul,neg}`, `saturating_{add,sub,mul,neg}`,
+`abs_diff`, `if c { a } else { b }` (with `else if` chains),
+`match s { pat => e, .. }`, and blocks `{ let x = e; .. value }`.
 Types: `bool`, `()`, and fixed-width integers.
 
 Every integer lowers to its mathematical `Int` value via `scalarAsInt`.
 Arithmetic on machine integers must say what it means: `math(a) + math(b)` is
-unbounded, `wrapping_add(a, b)` is modular, and `no_overflow_add(a, b)` states
-that the mathematical sum is in range. Division and remainder lower to
+unbounded, `wrapping_add(a, b)` is modular, `saturating_add(a, b)` clamps the
+sum to the type's range, and `no_overflow_add(a, b)` states that the
+mathematical sum is in range. The `_neg` forms negate one operand, and
+`saturating_neg` takes only a signed operand, as in Rust. `abs_diff(a, b)` is
+the distance between `a` and `b`, of the unsigned type of their width, as
+`i8::abs_diff` returns `u8`. These intrinsics take operands of one
+fixed-width integer type, even inside `math`, where their result is
+mathematical. A saturating result lowers to
+`(let «saturating» : Int := e; if «saturating» < lo then lo else ..)`, which
+binds the exact result `e` once, and `abs_diff` to
+`(Int.ofNat (Int.natAbs (a - b)))`. Division and remainder lower to
 `Trusted.MirSemantics.intTdiv`/`intTmod` (Rust's truncating semantics, as in
 `Int.tdiv`/`Int.tmod`) and require the divisor to be a nonzero literal or
 guarded by `d != 0` (or `d > 0`) earlier in a `&&` or `==>` chain, by the

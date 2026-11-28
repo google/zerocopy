@@ -162,6 +162,73 @@ anneal::external_spec! {
     )]
     fn tiered(n: u32, n8: u8) -> u32;
 
+    // Saturating arithmetic clamps the exact result to the type's range,
+    // negation wraps or overflows only at the type's edge, and `abs_diff` is
+    // the exact distance, in the unsigned type of the operands' width.
+    #[anneal::pure]
+    fn sadd_is(a: u8, b: u8, r: u8) -> bool {
+        saturating_add(a, b) == r
+    }
+
+    #[anneal::pure]
+    fn ssub_is(a: i8, b: i8, r: i8) -> bool {
+        saturating_sub(a, b) == r
+    }
+
+    #[anneal::pure]
+    fn smul_is(a: i16, b: i16, r: i16) -> bool {
+        saturating_mul(a, b) == r
+    }
+
+    #[anneal::pure]
+    fn sneg_is(a: i8, r: i8) -> bool {
+        saturating_neg(a) == r
+    }
+
+    #[anneal::pure]
+    fn wneg_u_is(a: u8, r: u8) -> bool {
+        wrapping_neg(a) == r
+    }
+
+    #[anneal::pure]
+    fn wneg_i_is(a: i8, r: i8) -> bool {
+        wrapping_neg(a) == r
+    }
+
+    #[anneal::pure]
+    fn neg_ok_u(a: u8) -> bool {
+        no_overflow_neg(a)
+    }
+
+    #[anneal::pure]
+    fn neg_ok_i(a: i8) -> bool {
+        no_overflow_neg(a)
+    }
+
+    #[anneal::pure]
+    fn diff_i_is(a: i8, b: i8, r: u8) -> bool {
+        abs_diff(a, b) == r
+    }
+
+    #[anneal::pure]
+    fn diff_u_is(a: u32, b: u32, r: u32) -> bool {
+        abs_diff(a, b) == r
+    }
+
+    // The parameter is named like the binder of a saturating result, which
+    // must not capture it.
+    #[anneal::pure]
+    fn sat_nested(saturating: u8) -> u8 {
+        saturating_add(saturating_add(saturating, 1u8), saturating)
+    }
+
+    #[anneal::spec(
+        requires(diff_u_is(n, n, 0u32) && sadd_is(a, 255u8, 255u8)),
+        max_steps = abs_diff(a, b) + saturating_add(n, 1u32),
+        ensures(|r| r == saturating_sub(n, 1u32)),
+    )]
+    fn usat(a: u8, b: u8, n: u32) -> u32;
+
     #[anneal::spec(
         requires(math(n) + 1 <= math(usize::MAX)),
         max_steps = u8::MAX + u32::BITS * 2 + n / u16::MAX,

@@ -1481,6 +1481,164 @@ fn wide_integer_intrinsics_use_exact_moduli() {
             .unwrap();
     let want = format!("+ {h}) 340282366920938463463374607431768211456 - {h})");
     assert!(s.spec_lean.contains(&want), "{}", s.spec_lean);
+    let t = lower_one(&wrap(
+        "ensures(|r| r == saturating_mul(a, b))",
+        "fn f(a: i128, b: i128) -> i128",
+    ))
+    .unwrap();
+    let want = format!(
+        "if «saturating» < (Int.neg {h}) then (Int.neg {h}) else if \
+         (170141183460469231731687303715884105727 : Int) < «saturating»"
+    );
+    assert!(t.spec_lean.contains(&want), "{}", t.spec_lean);
+    let u = lower_one(&wrap(
+        "ensures(|r| r == saturating_add(a, b))",
+        "fn f(a: u128, b: u128) -> u128",
+    ))
+    .unwrap();
+    assert!(
+        u.spec_lean.contains("if (340282366920938463463374607431768211455 : Int) < «saturating»"),
+        "{}",
+        u.spec_lean
+    );
+}
+
+#[test]
+fn saturating_negation_and_abs_diff_intrinsics_lower_exactly() {
+    let x = "(specInt (specArg q 0))";
+    let y = "(specInt (specArg q 1))";
+    let lean = |clause: &str, sig: &str| {
+        lower_one(&wrap(clause, sig)).unwrap_or_else(|e| panic!("{clause}: {e:?}")).spec_lean
+    };
+    let has = |text: &str, want: &str| assert!(text.contains(want), "missing {want} in\n{text}");
+    // Saturating arithmetic binds the exact result once and clamps it to the
+    // type's range.
+    has(
+        &lean("ensures(|r| r == saturating_add(a, b))", "fn f(a: u8, b: u8) -> u8"),
+        &format!(
+            "(let «saturating» : Int := {x} + {y}; if «saturating» < (0 : Int) then (0 : Int) \
+             else if (255 : Int) < «saturating» then (255 : Int) else «saturating»)"
+        ),
+    );
+    has(
+        &lean("ensures(|r| r == saturating_sub(a, b))", "fn f(a: i8, b: i8) -> i8"),
+        &format!(
+            "(let «saturating» : Int := {x} - {y}; if «saturating» < (Int.neg 128) then \
+             (Int.neg 128) else if (127 : Int) < «saturating» then (127 : Int) else «saturating»)"
+        ),
+    );
+    has(
+        &lean("ensures(|r| r == saturating_neg(a))", "fn f(a: i16) -> i16"),
+        &format!(
+            "(let «saturating» : Int := Int.neg {x}; if «saturating» < (Int.neg 32768) then \
+             (Int.neg 32768) else if (32767 : Int) < «saturating» then (32767 : Int) else \
+             «saturating»)"
+        ),
+    );
+    // Nesting binds each operand once rather than duplicating it.
+    let nested = lean(
+        "ensures(|r| r == saturating_add(saturating_mul(a, b), a))",
+        "fn f(a: u8, b: u8) -> u8",
+    );
+    assert_eq!(nested.matches("(specArg q 1)").count(), 1, "{nested}");
+    assert_eq!(nested.matches("(specArg q 0)").count(), 2, "{nested}");
+    // Negation wraps and overflows like `wrapping_sub(0, a)`.
+    has(
+        &lean("ensures(|r| r == wrapping_neg(a))", "fn f(a: u8) -> u8"),
+        &format!("(Trusted.MirSemantics.intEmod (Int.neg {x}) 256)"),
+    );
+    has(
+        &lean("ensures(|r| r == wrapping_neg(a))", "fn f(a: i8) -> i8"),
+        &format!("(Trusted.MirSemantics.intEmod (Int.neg {x} + 128) 256 - 128)"),
+    );
+    has(
+        &lean("requires(no_overflow_neg(a))", "fn f(a: u32)"),
+        &format!("((0 : Int) ≤ Int.neg {x} ∧ Int.neg {x} < 4294967296)"),
+    );
+    has(
+        &lean("requires(no_overflow_neg(a))", "fn f(a: i8)"),
+        &format!("((Int.neg 128) ≤ Int.neg {x} ∧ Int.neg {x} < 128)"),
+    );
+    // `abs_diff` is the exact distance, of the unsigned type of the
+    // operands' width.
+    has(
+        &lean("ensures(|r| r == abs_diff(a, b))", "fn f(a: i8, b: i8) -> u8"),
+        &format!("((specInt out.ret) = (Int.ofNat (Int.natAbs ({x} - {y}))))"),
+    );
+    lean("ensures(|r| r == abs_diff(a, b))", "fn f(a: isize, b: isize) -> usize");
+    lean("ensures(|r| r == abs_diff(a, 7))", "fn f(a: u64) -> u64");
+    let r = expect_error(
+        &wrap("ensures(|r| r == abs_diff(a, b))", "fn f(a: i8, b: i8) -> i8"),
+        "E_ANNEAL_SPEC_TYPE_MISMATCH",
+    );
+    assert!(r.contains("`i8` and `u8`"), "{r}");
+    // Inside `math`, the results are mathematical integers, but the
+    // operands keep their machine types.
+    lean("ensures(|r| math(r) == math(saturating_add(a, b)) + 1)", "fn f(a: u8, b: u8) -> u8");
+    lean(
+        "ensures(|r| math(r) == math(abs_diff(a, b) + wrapping_neg(a)))",
+        "fn f(a: i8, b: i8) -> u8",
+    );
+    lean("ensures(|r| r == if no_overflow_neg(a) { 1u8 } else { 0u8 })", "fn f(a: i8) -> u8");
+    lean("max_steps = abs_diff(a, b) + saturating_add(n, 1u32)", "fn f(a: i32, b: i32, n: u32)");
+    expect_error(
+        &wrap("max_steps = saturating_neg(a)", "fn f(a: i32)"),
+        "E_ANNEAL_SPEC_TYPE_MISMATCH",
+    );
+}
+
+#[test]
+fn new_arithmetic_intrinsics_are_checked_strictly() {
+    let sig = "fn f(a: u8, b: bool, c: u16, i: i8) -> u8";
+    for (clause, code) in [
+        ("requires(saturating_neg(a) == 0u8)", "E_ANNEAL_SPEC_TYPE_MISMATCH"),
+        ("requires(wrapping_neg(5) == 0u8)", "E_ANNEAL_SPEC_TYPE_ANNOTATION_NEEDED"),
+        (
+            "requires(wrapping_neg(if b { 1 } else { 2 }) == 0u8)",
+            "E_ANNEAL_SPEC_TYPE_ANNOTATION_NEEDED",
+        ),
+        ("requires(saturating_neg(math(i)) == 0)", "E_ANNEAL_SPEC_TYPE_MISMATCH"),
+        ("requires(no_overflow_neg(b))", "E_ANNEAL_SPEC_TYPE_MISMATCH"),
+        ("requires(wrapping_neg(a, a) == 0u8)", "E_ANNEAL_SPEC_ARITY"),
+        ("requires(saturating_add(a) == 0u8)", "E_ANNEAL_SPEC_ARITY"),
+        ("requires(abs_diff(a, a, a) == 0u8)", "E_ANNEAL_SPEC_ARITY"),
+        ("requires(saturating_add(a, c) == 0u8)", "E_ANNEAL_SPEC_TYPE_MISMATCH"),
+        ("requires(saturating_sub(math(a), a) == 0u8)", "E_ANNEAL_SPEC_TYPE_MISMATCH"),
+        ("requires(abs_diff(b, b) == 0u8)", "E_ANNEAL_SPEC_TYPE_MISMATCH"),
+        ("requires(abs_diff(a, math(a)) == 0u8)", "E_ANNEAL_SPEC_TYPE_MISMATCH"),
+        ("requires(abs_diff(1, 2) == 0u8)", "E_ANNEAL_SPEC_TYPE_ANNOTATION_NEEDED"),
+        ("requires(saturating_add(a, 256) == 0u8)", "E_ANNEAL_SPEC_LITERAL_RANGE"),
+        ("requires(saturating_div(a, a) == 0u8)", "E_ANNEAL_SPEC_UNKNOWN_FN"),
+        ("requires(wrapping_abs(i) == 0i8)", "E_ANNEAL_SPEC_UNKNOWN_FN"),
+        ("requires({ let abs_diff = a; abs_diff == 0u8 })", "E_ANNEAL_RESERVED_PARAM_NAME"),
+        ("requires({ let saturating_x = a; saturating_x == 0u8 })", "E_ANNEAL_RESERVED_PARAM_NAME"),
+        (
+            "requires(match a { saturating_x => saturating_x == 0u8 })",
+            "E_ANNEAL_RESERVED_PARAM_NAME",
+        ),
+    ] {
+        expect_error(&wrap(clause, sig), code);
+    }
+    let r = expect_error(
+        &wrap("requires(saturating_neg(a) == 0u8)", sig),
+        "E_ANNEAL_SPEC_TYPE_MISMATCH",
+    );
+    assert!(r.contains("`saturating_neg` needs a signed integer, found `u8`"), "{r}");
+    let r = expect_error(&wrap("requires(abs_dif(a, a) == 0u8)", sig), "E_ANNEAL_SPEC_UNKNOWN_FN");
+    assert!(r.contains("did you mean `abs_diff`?"), "{r}");
+    // A name that only starts like an intrinsic is an ordinary binding.
+    lower_one(&wrap("requires({ let saturating = a; saturating == 0u8 })", sig)).unwrap();
+    for helper in ["abs_diff", "saturating_add", "saturating_pow"] {
+        expect_error(
+            &format!(
+                "anneal::external_spec! {{
+                    #[anneal::pure] fn {helper}(a: u8, b: u8) -> u8 {{ a }}
+                    #[anneal::spec(ensures(|r| r == {helper}(x, x)))] fn f(x: u8) -> u8;
+                }}"
+            ),
+            "E_ANNEAL_RESERVED_HELPER_NAME",
+        );
+    }
 }
 
 #[test]
