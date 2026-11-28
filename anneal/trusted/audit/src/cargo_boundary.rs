@@ -525,6 +525,79 @@ fn validate_member_target(
     Ok(())
 }
 
+/// Require every component of the clean relative path `rel` under `checkout`
+/// to be a real directory. `what` names the path in diagnostics.
+///
+/// A regular `Cargo.toml` does not establish where its crate lives: a
+/// symlinked directory component would let `trusted/<crate>` resolve outside
+/// the checkout or into another zone while its lexical path still passes
+/// [`classify_member_zone`].
+fn require_real_directory(checkout: &Path, rel: &str, what: &str) -> Result<(), Failure> {
+    let phase = "cargo-boundary";
+    let mut dir = checkout.to_path_buf();
+    let mut prefix = String::new();
+    for component in rel.split('/') {
+        dir.push(component);
+        if !prefix.is_empty() {
+            prefix.push('/');
+        }
+        prefix.push_str(component);
+        match fs::symlink_metadata(&dir) {
+            Ok(meta) if meta.file_type().is_dir() => {}
+            Ok(_) => {
+                return Err(Failure::policy(
+                    phase,
+                    format!("{what} path component is not a real directory: {prefix}"),
+                ));
+            }
+            Err(e) if e.kind() == io::ErrorKind::NotFound => {
+                return Err(Failure::policy(phase, format!("missing {what} directory: {prefix}")));
+            }
+            Err(e) => {
+                return Err(Failure::operational(phase, format!("cannot inspect {prefix}: {e}")));
+            }
+        }
+    }
+    Ok(())
+}
+
+/// Reject any entry under the member directory `root` (labelled `label`)
+/// that is neither a real directory nor a regular file, including symlinks.
+///
+/// Cargo discovers targets under `src/`, `examples/`, `tests/`, and
+/// `benches/`, builds explicit target `path`s, and rustc reads module files
+/// beside any of them, all following symlinks. [`validate_member_target`]
+/// keeps explicit target paths relative and free of `..`, so checking the
+/// whole member tree keeps every file Cargo or rustc can reach by those
+/// routes physically inside the member directory. Paths written in source
+/// code, such as `#[path]` or `include!`, are not checked here.
+fn require_regular_tree(root: &Path, label: &str) -> Result<(), Failure> {
+    let phase = "cargo-boundary";
+    let mut stack = vec![(root.to_path_buf(), label.to_string())];
+    while let Some((dir, dir_label)) = stack.pop() {
+        let entries = fs::read_dir(&dir)
+            .map_err(|e| Failure::operational(phase, format!("cannot read {dir_label}: {e}")))?;
+        for entry in entries {
+            let entry = entry.map_err(|e| {
+                Failure::operational(phase, format!("cannot inspect {dir_label} entry: {e}"))
+            })?;
+            let entry_label = format!("{dir_label}/{}", entry.file_name().to_string_lossy());
+            let file_type = entry.file_type().map_err(|e| {
+                Failure::operational(phase, format!("cannot inspect {entry_label}: {e}"))
+            })?;
+            if file_type.is_dir() {
+                stack.push((entry.path(), entry_label));
+            } else if !file_type.is_file() {
+                return Err(Failure::policy(
+                    phase,
+                    format!("crate entry is not a regular file or directory: {entry_label}"),
+                ));
+            }
+        }
+    }
+    Ok(())
+}
+
 /// Three-zone monotonic trust lattice for Cargo workspace crates:
 /// `Trusted` (rank 0) < `Tests` (rank 1) < `Tools` (rank 2).
 ///
@@ -799,6 +872,7 @@ fn validate_member_crate(
     member_set: &BTreeSet<String>,
 ) -> Result<ValidatedCrate, Failure> {
     let phase = "cargo-boundary";
+    require_real_directory(checkout, member, "member")?;
     let member_toml_path = checkout.join(member).join("Cargo.toml");
     regular(&member_toml_path, phase)?;
     let member_text = fs::read_to_string(&member_toml_path).map_err(|e| {
@@ -876,6 +950,10 @@ fn validate_member_crate(
 
     for (section, target) in manifest.all_targets() {
         validate_member_target(member, src_zone, section, target)?;
+    }
+    // `scan_tools_tree` already rejects every symlink under `tools/`.
+    if src_zone != WorkspaceZone::Tools {
+        require_regular_tree(&checkout.join(member), member)?;
     }
 
     let member_parent = member_toml_path.parent().unwrap();
@@ -1121,6 +1199,7 @@ fn check_cargo_boundary_with_manifest_presence(checkout: &Path) -> Result<bool, 
     }
     for excl in &root_manifest.workspace.exclude {
         let excl_zone = classify_member_zone(excl)?;
+        require_real_directory(checkout, excl, "excluded crate")?;
         let excl_root = checkout.join(excl);
         let excl_toml_path = excl_root.join("Cargo.toml");
         regular(&excl_toml_path, phase)?;

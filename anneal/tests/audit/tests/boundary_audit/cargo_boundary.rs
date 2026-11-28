@@ -345,6 +345,101 @@ fn root_manifest_follows_updater_grammar_and_is_required_for_repository_audits()
     );
 }
 
+/// Verifies that `check_cargo_boundary` requires real directories for member
+/// and excluded-crate paths and only real directories and regular files
+/// inside each `trusted/` and `tests/` crate: symlinked member directories,
+/// symlinked crate path components, and symlinks anywhere in a crate tree
+/// (target roots, explicit target paths, module files beside them, and other
+/// directories) all fail closed (`code == 1`).
+#[test]
+fn rejects_symlinked_member_directories_and_crate_entries() {
+    let fix = TempFixture::new(None);
+    copy_cargo_workspace(&fix.root);
+    check_cargo_boundary(&fix.root).unwrap();
+    let outside = tempfile::tempdir_in(fix.root.parent().unwrap()).unwrap();
+    let expect_policy = |fix: &TempFixture, needle: &str| {
+        let err = check_cargo_boundary(&fix.root).unwrap_err();
+        assert_eq!(err.code, 1, "expected policy error: {err}");
+        assert!(err.message.contains(needle), "expected {needle:?}, got: {err}");
+    };
+
+    // 1. A member directory that is a symlink, even to an identical copy.
+    // `tests/itree_diff` has no path dependents, and a copy beside it keeps
+    // its `../testkit` dependency inside the checkout, so no path-dependency
+    // check sees that symlink.
+    for (member, copy) in [
+        ("trusted/rustc-capture", outside.path().join("rustc-capture")),
+        ("tests/itree_diff", fix.root.join("tests/itree_diff_real")),
+    ] {
+        let dir = fix.root.join(member);
+        fs::rename(&dir, &copy).unwrap();
+        symlink(&copy, &dir).unwrap();
+        expect_policy(&fix, &format!("member path component is not a real directory: {member}"));
+        fs::remove_file(&dir).unwrap();
+        fs::rename(&copy, &dir).unwrap();
+        check_cargo_boundary(&fix.root).unwrap();
+    }
+    let capture = fix.root.join("trusted/rustc-capture");
+
+    // 2. A symlinked parent component of an excluded crate.
+    let tools = fix.root.join("tools");
+    let tools_copy = outside.path().join("tools");
+    fs::rename(&tools, &tools_copy).unwrap();
+    symlink(&tools_copy, &tools).unwrap();
+    expect_policy(&fix, "excluded crate path component is not a real directory: tools");
+    fs::remove_file(&tools).unwrap();
+    fs::rename(&tools_copy, &tools).unwrap();
+    check_cargo_boundary(&fix.root).unwrap();
+
+    // 3. A symlink anywhere in a member crate, to a file or a directory
+    // outside the checkout (`scan_tools_tree` covers `tools/` crates).
+    // `aux/probe.rs` is an explicit target, `aux/evil.rs` is a module file
+    // beside it, and `extra/` is reachable only through `#[path]`.
+    let manifest = capture.join("Cargo.toml");
+    let original = fs::read_to_string(&manifest).unwrap();
+    fs::write(
+        &manifest,
+        format!("{original}\n[[bin]]\nname = \"probe\"\npath = \"aux/probe.rs\"\n"),
+    )
+    .unwrap();
+    fs::create_dir_all(capture.join("aux")).unwrap();
+    fs::create_dir_all(capture.join("extra")).unwrap();
+    fs::write(capture.join("aux/probe.rs"), b"fn main() {}\n").unwrap();
+    check_cargo_boundary(&fix.root).unwrap();
+    fs::write(outside.path().join("evil.rs"), b"fn main() {}\n").unwrap();
+    for rel in [
+        "trusted/rustc-capture/src/evil.rs",
+        "trusted/rustc-capture/benches",
+        "trusted/rustc-capture/aux/evil.rs",
+        "trusted/rustc-capture/extra/x.rs",
+        "trusted/rustc-capture/x.rs",
+        "tests/itree_diff/evil.rs",
+    ] {
+        symlink(outside.path().join("evil.rs"), fix.root.join(rel)).unwrap();
+        expect_policy(&fix, &format!("crate entry is not a regular file or directory: {rel}"));
+        fs::remove_file(fix.root.join(rel)).unwrap();
+        check_cargo_boundary(&fix.root).unwrap();
+    }
+    let probe = capture.join("aux/probe.rs");
+    fs::rename(&probe, outside.path().join("probe.rs")).unwrap();
+    symlink(outside.path().join("probe.rs"), &probe).unwrap();
+    expect_policy(
+        &fix,
+        "crate entry is not a regular file or directory: trusted/rustc-capture/aux/probe.rs",
+    );
+    fs::remove_file(&probe).unwrap();
+    fs::rename(outside.path().join("probe.rs"), &probe).unwrap();
+    fs::rename(capture.join("aux"), outside.path().join("aux")).unwrap();
+    symlink(outside.path().join("aux"), capture.join("aux")).unwrap();
+    expect_policy(
+        &fix,
+        "crate entry is not a regular file or directory: trusted/rustc-capture/aux",
+    );
+    fs::remove_file(capture.join("aux")).unwrap();
+    fs::rename(outside.path().join("aux"), capture.join("aux")).unwrap();
+    check_cargo_boundary(&fix.root).unwrap();
+}
+
 /// Exhaustively exercises all 12 positive and negative cases of the two-zone
 /// monotonic Cargo workspace lattice (`WorkspaceZone::Trusted = 0 <
 /// WorkspaceZone::Tests = 1`) inside a `anneal-testkit` `WorkspaceBuilder`.
