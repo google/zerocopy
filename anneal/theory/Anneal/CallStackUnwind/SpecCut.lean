@@ -533,10 +533,11 @@ private theorem writeBytes_ok_inversion (m m' : MemoryState) (place : MemPlace)
             true)
           m.allocations) := by
   dsimp only [writeBytes] at hWrite
+  revert hWrite
   cases hFind : findAllocation place.allocId m.allocations with
-  | none => rw [hFind] at hWrite; cases hWrite
+  | none => intro hWrite; cases hWrite
   | some a =>
-    rw [hFind] at hWrite
+    intro hWrite
     dsimp only at hWrite
     rw [natBeq_zero_false_of_blt_zero bs.length hPos,
       ite_bool_false rfl] at hWrite
@@ -549,17 +550,20 @@ private theorem writeBytes_ok_inversion (m m' : MemoryState) (place : MemPlace)
       have hG1 := borFalseElim hGuard
       have hG2 := borFalseElim hG1.1
       have hLive : a.live = true := by
+        revert hG2
         cases hl : a.live with
-        | true => rfl
-        | false => rw [hl] at hG2; exact False.elim (boolTrueNeFalse hG2.1)
+        | true => intro hG2; rfl
+        | false => intro hG2; exact False.elim (boolTrueNeFalse hG2.1)
       have hBounds : isInBounds a place.offset bs.length = true := by
+        revert hG2
         cases hb : isInBounds a place.offset bs.length with
-        | true => rfl
-        | false => rw [hb] at hG2; exact False.elim (boolTrueNeFalse hG2.2)
+        | true => intro hG2; rfl
+        | false => intro hG2; exact False.elim (boolTrueNeFalse hG2.2)
       have hAlign : isAligned a place.offset alignLog2 = true := by
+        revert hG1
         cases ha : isAligned a place.offset alignLog2 with
-        | true => rfl
-        | false => rw [ha] at hG1; exact False.elim (boolTrueNeFalse hG1.2)
+        | true => intro hG1; rfl
+        | false => intro hG1; exact False.elim (boolTrueNeFalse hG1.2)
       have hMutCase : a.mutability = .mut ∧
           m' = MemoryState.mk m.nextAllocId
             (replaceAllocation
@@ -617,15 +621,17 @@ private theorem byteSubLensGet_inversion_mir (L : ByteSubLens)
       isAligned a L.offset L.alignLog2 = true ∧
       bs = (a.bytes.drop L.offset).take L.size := by
   rw [byteSubLensGet_eq_mir] at hGet
+  revert hGet
   cases hPos : Nat.blt 0 L.size with
-  | false => rw [hPos] at hGet; cases hGet
+  | false => intro hGet; cases hGet
   | true =>
-    rw [hPos] at hGet
+    intro hGet
     dsimp only at hGet
+    revert hGet
     cases hFind : findAllocation L.allocId m.allocations with
-    | none => rw [hFind] at hGet; cases hGet
+    | none => intro hGet; cases hGet
     | some a =>
-      rw [hFind] at hGet
+      intro hGet
       dsimp only at hGet
       have hMutCase : a.mutability = .mut ∧
           (match readBytes m ⟨L.allocId, L.offset⟩ L.size L.alignLog2 with
@@ -663,17 +669,20 @@ private theorem byteSubLensGet_inversion_mir (L : ByteSubLens)
         have hG1 := borFalseElim hGuard
         have hG2 := borFalseElim hG1.1
         have hLive : a.live = true := by
+          revert hG2
           cases hl : a.live with
-          | true => rfl
-          | false => rw [hl] at hG2; exact False.elim (boolTrueNeFalse hG2.1)
+          | true => intro hG2; rfl
+          | false => intro hG2; exact False.elim (boolTrueNeFalse hG2.1)
         have hBounds : isInBounds a L.offset L.size = true := by
+          revert hG2
           cases hb : isInBounds a L.offset L.size with
-          | true => rfl
-          | false => rw [hb] at hG2; exact False.elim (boolTrueNeFalse hG2.2)
+          | true => intro hG2; rfl
+          | false => intro hG2; exact False.elim (boolTrueNeFalse hG2.2)
         have hAlign : isAligned a L.offset L.alignLog2 = true := by
+          revert hG1
           cases ha : isAligned a L.offset L.alignLog2 with
-          | true => rfl
-          | false => rw [ha] at hG1; exact False.elim (boolTrueNeFalse hG1.2)
+          | true => intro hG1; rfl
+          | false => intro hG1; exact False.elim (boolTrueNeFalse hG1.2)
         have hLen : bs.length = L.size := by
           rw [← hEq]
           exact listDrop_take_length_of_ble L.offset L.size a.bytes hBounds
@@ -694,10 +703,11 @@ private theorem byteSubLensPut_inversion_mir (L : ByteSubLens)
     | true =>
       rw [hPos, hLen] at hPut
       dsimp only [Bool.and] at hPut
+      revert hPut
       cases hW : writeBytes m ⟨L.allocId, L.offset⟩ L.alignLog2 bs with
-      | error _ => rw [hW] at hPut; cases hPut
+      | error _ => intro hPut; cases hPut
       | ok res =>
-        rw [hW] at hPut
+        intro hPut
         injection hPut with hM
         subst hM
         exact ⟨rfl, natEq_of_beq bs.length L.size hLen, rfl⟩
@@ -1370,31 +1380,36 @@ private theorem evalNonRootReturn_cont_never_done (p : Program)
   | error _ => cases h
   | ok retVal =>
     dsimp only at h
+    revert h
     cases hDst : callee.retDst? with
-    | none => rw [hDst] at h; cases h
+    | none => intro h; cases h
     | some dst =>
-      rw [hDst] at h; dsimp only at h
+      intro h; dsimp only at h
       cases hProj : !dst.projection.isEmpty with
       | true => rw [ite_bool_true hProj] at h; cases h
       | false =>
         rw [ite_bool_false hProj] at h
+        revert h
         cases hBody : activeFrameBody p caller with
-        | none => rw [hBody] at h; cases h
+        | none => intro h; cases h
         | some callerBody =>
-          rw [hBody] at h; dsimp only at h
+          intro h; dsimp only at h
+          revert h
           cases hTy : Trusted.MirSemantics.getElem?
               callerBody.locals dst.localId with
-          | none => rw [hTy] at h; cases h
+          | none => intro h; cases h
           | some dstTy =>
-            rw [hTy] at h; dsimp only at h
+            intro h; dsimp only at h
+            revert h
             cases hWr : writePlace caller.locals mem dst.localId dstTy retVal
                 with
-            | error _ => rw [hWr] at h; cases h
+            | error _ => intro h; cases h
             | ok wr =>
-              rw [hWr] at h; dsimp only at h
+              intro h; dsimp only at h
+              revert h
               cases hTg : callee.retTarget? with
-              | none => rw [hTg] at h; cases h
-              | some _ => rw [hTg] at h; cases h
+              | none => intro h; cases h
+              | some _ => intro h; cases h
 
 private theorem evalNonRootReturn_never_done (p : Program)
     (calleeBody : Body) (bb : BasicBlock) (callee caller : FrameState)
@@ -1451,20 +1466,17 @@ private theorem evalAssertFailure_done_cases (msg : AssertKind)
     rw [hFault] at hDone
     cases hDone
   | abort =>
-    unfold evalAssertFailure at hDone
+    -- Split first and let `cases hDone` reduce each concrete
+    -- `evalAssertFailure` application, rather than unfolding its whole body
+    -- into every case.
+    refine ⟨rfl, ?_⟩
     cases msg with
     | overflow op =>
-      cases op <;> cases lh <;> cases unwind <;> cases hDone <;> exact ⟨rfl, cm, rfl⟩
-    | boundsCheck =>
-      cases lh <;> cases unwind <;> cases hDone <;> exact ⟨rfl, cm, rfl⟩
-    | divByZero =>
-      cases lh <;> cases unwind <;> cases hDone <;> exact ⟨rfl, cm, rfl⟩
-    | remByZero =>
-      cases lh <;> cases unwind <;> cases hDone <;> exact ⟨rfl, cm, rfl⟩
-    | overflowNeg => cases hDone
-    | misalignedPtrDeref => cases hDone
-    | nullPtrDeref => cases hDone
-    | unsupported => cases hDone
+      cases op <;> cases lh <;> cases unwind <;> cases hDone <;> exact ⟨cm, rfl⟩
+    | boundsCheck | divByZero | remByZero =>
+      cases lh <;> cases unwind <;> cases hDone <;> exact ⟨cm, rfl⟩
+    | overflowNeg | misalignedPtrDeref | nullPtrDeref | unsupported =>
+      cases lh <;> cases hDone
 
 private theorem evalStep_single_done_cases (p : Program) (c : Choice)
     (s : State) (fr : FrameState) (hFrames : s.frames = [fr])
@@ -1480,20 +1492,23 @@ private theorem evalStep_single_done_cases (p : Program) (c : Choice)
     | nil =>
       rw [hFr] at hFrames hUnw; cases hFrames
       dsimp only at hUnw
+      revert hUnw
       cases hBody : activeFrameBody p fr with
-      | none => rw [hBody] at hUnw; cases hUnw
+      | none => intro hUnw; cases hUnw
       | some b =>
-        rw [hBody] at hUnw
+        intro hUnw
         dsimp only at hUnw
+        revert hUnw
         cases hBb : Trusted.MirSemantics.getElem? b.basicBlocks fr.blockIdx with
-        | none => rw [hBb] at hUnw; cases hUnw
+        | none => intro hUnw; cases hUnw
         | some bb =>
-          rw [hBb] at hUnw
+          intro hUnw
           dsimp only at hUnw
+          revert hUnw
           cases hStmt :
               Trusted.MirSemantics.getElem? bb.statements fr.stmtIdx with
           | some stmt =>
-            rw [hStmt] at hUnw
+            intro hUnw
             dsimp only at hUnw
             cases stmt with
             | nop => unfold evalStatement at hUnw; cases hUnw
@@ -1501,24 +1516,28 @@ private theorem evalStep_single_done_cases (p : Program) (c : Choice)
             | storageLive id =>
               unfold evalStatement at hUnw
               dsimp only at hUnw
+              revert hUnw
               cases hTy : Trusted.MirSemantics.getElem? b.locals id with
-              | none => rw [hTy] at hUnw; cases hUnw
+              | none => intro hUnw; cases hUnw
               | some _ =>
-                rw [hTy] at hUnw
+                intro hUnw
                 dsimp only at hUnw
+                revert hUnw
                 cases hLoc : Trusted.MirSemantics.getElem? fr.locals id with
-                | none => rw [hLoc] at hUnw; cases hUnw
+                | none => intro hUnw; cases hUnw
                 | some _ =>
-                  rw [hLoc] at hUnw
+                  intro hUnw
                   dsimp only at hUnw
+                  revert hUnw
                   cases hSet : Trusted.MirSemantics.setElem? fr.locals id _ with
-                  | none => rw [hSet] at hUnw; cases hUnw
+                  | none => intro hUnw; cases hUnw
                   | some _ =>
-                    rw [hSet] at hUnw
+                    intro hUnw
                     dsimp only at hUnw
+                    revert hUnw
                     cases hDe : deallocateLocal s.mem _ with
-                    | error _ => rw [hDe] at hUnw; cases hUnw
-                    | ok _ => rw [hDe] at hUnw; cases hUnw
+                    | error _ => intro hUnw; cases hUnw
+                    | ok _ => intro hUnw; cases hUnw
             | storageDead id =>
               unfold evalStatement at hUnw
               dsimp only at hUnw
@@ -1526,20 +1545,23 @@ private theorem evalStep_single_done_cases (p : Program) (c : Choice)
               | true => rw [ite_bool_true hZero] at hUnw; cases hUnw
               | false =>
                 rw [ite_bool_false hZero] at hUnw
+                revert hUnw
                 cases hLoc : Trusted.MirSemantics.getElem? fr.locals id with
-                | none => rw [hLoc] at hUnw; cases hUnw
+                | none => intro hUnw; cases hUnw
                 | some _ =>
-                  rw [hLoc] at hUnw
+                  intro hUnw
                   dsimp only at hUnw
+                  revert hUnw
                   cases hSet :
                       Trusted.MirSemantics.setElem? fr.locals id .dead with
-                  | none => rw [hSet] at hUnw; cases hUnw
+                  | none => intro hUnw; cases hUnw
                   | some _ =>
-                    rw [hSet] at hUnw
+                    intro hUnw
                     dsimp only at hUnw
+                    revert hUnw
                     cases hDe : deallocateLocal s.mem _ with
-                    | error _ => rw [hDe] at hUnw; cases hUnw
-                    | ok _ => rw [hDe] at hUnw; cases hUnw
+                    | error _ => intro hUnw; cases hUnw
+                    | ok _ => intro hUnw; cases hUnw
             | assign dst rv =>
               unfold evalStatement at hUnw
               dsimp only at hUnw
@@ -1547,48 +1569,60 @@ private theorem evalStep_single_done_cases (p : Program) (c : Choice)
               | true => rw [ite_bool_true hProj] at hUnw; cases hUnw
               | false =>
                 rw [ite_bool_false hProj] at hUnw
+                revert hUnw
                 cases hTy :
                     Trusted.MirSemantics.getElem? b.locals dst.localId with
-                | none => rw [hTy] at hUnw; cases hUnw
+                | none => intro hUnw; cases hUnw
                 | some _ =>
-                  rw [hTy] at hUnw
+                  intro hUnw
                   dsimp only at hUnw
+                  revert hUnw
                   cases hRv : evalRvalue b.locals fr.locals s.mem _ rv with
-                  | error _ => rw [hRv] at hUnw; cases hUnw
+                  | error _ => intro hUnw; cases hUnw
                   | ok _ =>
-                    rw [hRv] at hUnw
+                    intro hUnw
                     dsimp only at hUnw
+                    revert hUnw
                     cases hWr : writePlace _ _ dst.localId _ _ with
-                    | error _ => rw [hWr] at hUnw; cases hUnw
-                    | ok _ => rw [hWr] at hUnw; cases hUnw
+                    | error _ => intro hUnw; cases hUnw
+                    | ok _ => intro hUnw; cases hUnw
           | none =>
-            rw [hStmt] at hUnw
+            intro hUnw
             dsimp only at hUnw
             cases hIdx : Nat.beq fr.stmtIdx bb.statements.length with
             | false => rw [ite_bool_false hIdx] at hUnw; cases hUnw
             | true =>
               rw [ite_bool_true hIdx] at hUnw
+              revert hUnw
               cases hTerm : bb.terminator with
               | goto _ =>
-                unfold evalTerminator jumpToBlock at hUnw
+                intro hUnw; unfold evalTerminator jumpToBlock at hUnw
                 rw [hTerm] at hUnw
                 cases hUnw
               | unreachable =>
-                unfold evalTerminator at hUnw; rw [hTerm] at hUnw; cases hUnw
-              | unwindResume =>
-                unfold evalTerminator at hUnw; rw [hTerm] at hUnw; cases hUnw
-              | assert cond expected msg target unwind =>
+                intro hUnw
                 unfold evalTerminator at hUnw
                 rw [hTerm] at hUnw
+                cases hUnw
+              | unwindResume =>
+                intro hUnw
+                unfold evalTerminator at hUnw
+                rw [hTerm] at hUnw
+                cases hUnw
+              | assert cond expected msg target unwind =>
+                intro hUnw; unfold evalTerminator at hUnw
+                rw [hTerm] at hUnw
                 dsimp only [attachCallers] at hUnw
+                revert hUnw
                 cases hCond : evalPrimitiveOperand b.locals fr.locals s.mem cond with
-                | error _ => rw [hCond] at hUnw; cases hUnw
+                | error _ => intro hUnw; cases hUnw
                 | ok res =>
-                  rw [hCond] at hUnw
+                  intro hUnw
                   dsimp only at hUnw
+                  revert hUnw
                   cases hVal : res.1 with
                   | bool bVal =>
-                    rw [hVal] at hUnw
+                    intro hUnw
                     dsimp only at hUnw
                     cases hEq : (bVal == expected) with
                     | true =>
@@ -1602,48 +1636,56 @@ private theorem evalStep_single_done_cases (p : Program) (c : Choice)
                         p.hasLocalPanicHandler out hUnw)
                   | scalar _ | optionVal _ | range _ _
                   | boxPtr _ _ | vec _ _ _ =>
-                    rw [hVal] at hUnw; cases hUnw
-                  | ptr _ => rw [hVal] at hUnw; cases hUnw
-                  | char _ => rw [hVal] at hUnw; cases hUnw
-                  | ordering _ => rw [hVal] at hUnw; cases hUnw
-                  | unit => rw [hVal] at hUnw; cases hUnw
-                  | enumVal _ _ => rw [hVal] at hUnw; cases hUnw
-                  | tuple _ => rw [hVal] at hUnw; cases hUnw
-                  | bytes _ => rw [hVal] at hUnw; cases hUnw
-                  | array _ => rw [hVal] at hUnw; cases hUnw
-                  | slicePtr _ _ => rw [hVal] at hUnw; cases hUnw
-                  | rangeTo _ => rw [hVal] at hUnw; cases hUnw
-                  | rangeFrom _ => rw [hVal] at hUnw; cases hUnw
+                    intro hUnw; cases hUnw
+                  | ptr _ => intro hUnw; cases hUnw
+                  | char _ => intro hUnw; cases hUnw
+                  | ordering _ => intro hUnw; cases hUnw
+                  | unit => intro hUnw; cases hUnw
+                  | enumVal _ _ => intro hUnw; cases hUnw
+                  | tuple _ => intro hUnw; cases hUnw
+                  | bytes _ => intro hUnw; cases hUnw
+                  | array _ => intro hUnw; cases hUnw
+                  | slicePtr _ _ => intro hUnw; cases hUnw
+                  | rangeTo _ => intro hUnw; cases hUnw
+                  | rangeFrom _ => intro hUnw; cases hUnw
               | unsupported =>
-                unfold evalTerminator at hUnw; rw [hTerm] at hUnw; cases hUnw
-              | coreCall _ _ _ _ _ =>
-                unfold evalTerminator at hUnw; rw [hTerm] at hUnw; cases hUnw
-              | call callee args dst target unwind =>
+                intro hUnw
+                unfold evalTerminator at hUnw
                 rw [hTerm] at hUnw
+                cases hUnw
+              | coreCall _ _ _ _ _ =>
+                intro hUnw
+                unfold evalTerminator at hUnw
+                rw [hTerm] at hUnw
+                cases hUnw
+              | call callee args dst target unwind =>
+                intro hUnw
                 dsimp only at hUnw
+                revert hUnw
                 cases hCb : Trusted.MirSemantics.getElem? p.bodies callee with
-                | none => rw [hCb] at hUnw; cases hUnw
+                | none => intro hUnw; cases hUnw
                 | some cbody =>
-                  rw [hCb] at hUnw
+                  intro hUnw
                   exact False.elim (evalCallTerminator_never_done b bb fr [] s.mem
                     s.callerMem callee none cbody args dst target unwind out hUnw)
               | sysrootCall op args dst target unwind =>
-                rw [hTerm] at hUnw
+                intro hUnw
                 exact False.elim (evalCallTerminator_never_done b bb fr [] s.mem
                   s.callerMem 0 (some op) (sysrootNumBody op) args dst
                   target unwind out hUnw)
               | return_ =>
-                unfold evalTerminator at hUnw
+                intro hUnw; unfold evalTerminator at hUnw
                 rw [hTerm] at hUnw
                 dsimp only at hUnw
                 cases hCl : bb.cleanup with
                 | true => rw [ite_bool_true hCl] at hUnw; cases hUnw
                 | false =>
                   rw [ite_bool_false hCl] at hUnw
+                  revert hUnw
                   cases hLoc0 : Trusted.MirSemantics.getElem? fr.locals 0 with
-                  | none => rw [hLoc0] at hUnw; cases hUnw
+                  | none => intro hUnw; cases hUnw
                   | some sl0 =>
-                    rw [hLoc0] at hUnw
+                    intro hUnw
                     cases sl0 with
                     | dead | partialTuple _ => cases hUnw
                     | immediate ov =>
@@ -1653,136 +1695,157 @@ private theorem evalStep_single_done_cases (p : Program) (c : Choice)
                         cases hUnw
                         exact .inl ⟨⟨rv, s.callerMem⟩, rfl⟩
                     | indirect mp =>
+                      revert hUnw
                       cases hTy0 : Trusted.MirSemantics.getElem? b.locals 0 with
-                      | none => rw [hTy0] at hUnw; cases hUnw
+                      | none => intro hUnw; cases hUnw
                       | some t0 =>
-                        rw [hTy0] at hUnw
+                        intro hUnw
                         dsimp only at hUnw
+                        revert hUnw
                         cases hLoad : loadIndirect s.mem t0 mp with
-                        | error _ => rw [hLoad] at hUnw; cases hUnw
+                        | error _ => intro hUnw; cases hUnw
                         | ok ov =>
-                          rw [hLoad] at hUnw
+                          intro hUnw
                           cases ov with
                           | none => cases hUnw
                           | some rv =>
                             cases hUnw
                             exact .inl ⟨⟨rv, s.callerMem⟩, rfl⟩
               | switchInt discr tgts =>
-                unfold evalTerminator at hUnw
+                intro hUnw; unfold evalTerminator at hUnw
                 rw [hTerm] at hUnw
                 dsimp only at hUnw
+                revert hUnw
                 cases hDiscr :
                     evalPrimitiveOperand b.locals fr.locals s.mem discr with
-                | error _ => rw [hDiscr] at hUnw; cases hUnw
+                | error _ => intro hUnw; cases hUnw
                 | ok res =>
-                  rw [hDiscr] at hUnw
+                  intro hUnw
                   dsimp only at hUnw
+                  revert hUnw
                   cases hRes : res.1 with
                   | scalar sv =>
-                    rw [hRes] at hUnw; dsimp only at hUnw
+                    intro hUnw; dsimp only at hUnw
+                    revert hUnw
                     cases hTg : evalSwitchBranches sv.width sv.bits
                         tgts.otherwise tgts.branches with
-                    | error _ => rw [hTg] at hUnw; cases hUnw
+                    | error _ => intro hUnw; cases hUnw
                     | ok _ =>
-                      rw [hTg] at hUnw; unfold jumpToBlock at hUnw; cases hUnw
+                      intro hUnw; unfold jumpToBlock at hUnw; cases hUnw
                   | bool bVal =>
-                    rw [hRes] at hUnw; dsimp only at hUnw
+                    intro hUnw; dsimp only at hUnw
+                    revert hUnw
                     cases hTg : evalBoolSwitchBranches bVal tgts.otherwise
                         tgts.branches with
-                    | error _ => rw [hTg] at hUnw; cases hUnw
+                    | error _ => intro hUnw; cases hUnw
                     | ok _ =>
-                      rw [hTg] at hUnw; unfold jumpToBlock at hUnw; cases hUnw
+                      intro hUnw; unfold jumpToBlock at hUnw; cases hUnw
                   | char cVal =>
-                    rw [hRes] at hUnw; dsimp only at hUnw
+                    intro hUnw; dsimp only at hUnw
+                    revert hUnw
                     cases hTg : evalCharSwitchBranches cVal tgts.otherwise
                         tgts.branches with
-                    | error _ => rw [hTg] at hUnw; cases hUnw
+                    | error _ => intro hUnw; cases hUnw
                     | ok _ =>
-                      rw [hTg] at hUnw; unfold jumpToBlock at hUnw; cases hUnw
+                      intro hUnw; unfold jumpToBlock at hUnw; cases hUnw
                   | ptr _ =>
-                    rw [hRes] at hUnw; dsimp only at hUnw
+                    intro hUnw; dsimp only at hUnw
+                    revert hUnw
                     cases hBr : tgts.branches with
-                    | cons _ _ => rw [hBr] at hUnw; cases hUnw
+                    | cons _ _ => intro hUnw; cases hUnw
                     | nil =>
-                      rw [hBr] at hUnw; unfold jumpToBlock at hUnw; cases hUnw
+                      intro hUnw; unfold jumpToBlock at hUnw; cases hUnw
                   | ordering _ =>
-                    rw [hRes] at hUnw; dsimp only at hUnw
+                    intro hUnw; dsimp only at hUnw
+                    revert hUnw
                     cases hBr : tgts.branches with
-                    | cons _ _ => rw [hBr] at hUnw; cases hUnw
+                    | cons _ _ => intro hUnw; cases hUnw
                     | nil =>
-                      rw [hBr] at hUnw; unfold jumpToBlock at hUnw; cases hUnw
+                      intro hUnw; unfold jumpToBlock at hUnw; cases hUnw
                   | unit =>
-                    rw [hRes] at hUnw; dsimp only at hUnw
+                    intro hUnw; dsimp only at hUnw
+                    revert hUnw
                     cases hBr : tgts.branches with
-                    | cons _ _ => rw [hBr] at hUnw; cases hUnw
+                    | cons _ _ => intro hUnw; cases hUnw
                     | nil =>
-                      rw [hBr] at hUnw; unfold jumpToBlock at hUnw; cases hUnw
+                      intro hUnw; unfold jumpToBlock at hUnw; cases hUnw
                   | enumVal _ _ =>
-                    rw [hRes] at hUnw; dsimp only at hUnw
+                    intro hUnw; dsimp only at hUnw
+                    revert hUnw
                     cases hBr : tgts.branches with
-                    | cons _ _ => rw [hBr] at hUnw; cases hUnw
+                    | cons _ _ => intro hUnw; cases hUnw
                     | nil =>
-                      rw [hBr] at hUnw; unfold jumpToBlock at hUnw; cases hUnw
+                      intro hUnw; unfold jumpToBlock at hUnw; cases hUnw
                   | tuple _ =>
-                    rw [hRes] at hUnw; dsimp only at hUnw
+                    intro hUnw; dsimp only at hUnw
+                    revert hUnw
                     cases hBr : tgts.branches with
-                    | cons _ _ => rw [hBr] at hUnw; cases hUnw
+                    | cons _ _ => intro hUnw; cases hUnw
                     | nil =>
-                      rw [hBr] at hUnw; unfold jumpToBlock at hUnw; cases hUnw
+                      intro hUnw; unfold jumpToBlock at hUnw; cases hUnw
                   | bytes _ =>
-                    rw [hRes] at hUnw; dsimp only at hUnw
+                    intro hUnw; dsimp only at hUnw
+                    revert hUnw
                     cases hBr : tgts.branches with
-                    | cons _ _ => rw [hBr] at hUnw; cases hUnw
+                    | cons _ _ => intro hUnw; cases hUnw
                     | nil =>
-                      rw [hBr] at hUnw; unfold jumpToBlock at hUnw; cases hUnw
+                      intro hUnw; unfold jumpToBlock at hUnw; cases hUnw
                   | slicePtr _ _ =>
-                    rw [hRes] at hUnw; dsimp only at hUnw
+                    intro hUnw; dsimp only at hUnw
+                    revert hUnw
                     cases hBr : tgts.branches with
-                    | cons _ _ => rw [hBr] at hUnw; cases hUnw
+                    | cons _ _ => intro hUnw; cases hUnw
                     | nil =>
-                      rw [hBr] at hUnw; unfold jumpToBlock at hUnw; cases hUnw
+                      intro hUnw; unfold jumpToBlock at hUnw; cases hUnw
                   | rangeTo _ =>
-                    rw [hRes] at hUnw; dsimp only at hUnw
+                    intro hUnw; dsimp only at hUnw
+                    revert hUnw
                     cases hBr : tgts.branches with
-                    | cons _ _ => rw [hBr] at hUnw; cases hUnw
+                    | cons _ _ => intro hUnw; cases hUnw
                     | nil =>
-                      rw [hBr] at hUnw; unfold jumpToBlock at hUnw; cases hUnw
+                      intro hUnw; unfold jumpToBlock at hUnw; cases hUnw
                   | rangeFrom _ =>
-                    rw [hRes] at hUnw; dsimp only at hUnw
+                    intro hUnw; dsimp only at hUnw
+                    revert hUnw
                     cases hBr : tgts.branches with
-                    | cons _ _ => rw [hBr] at hUnw; cases hUnw
+                    | cons _ _ => intro hUnw; cases hUnw
                     | nil =>
-                      rw [hBr] at hUnw; unfold jumpToBlock at hUnw; cases hUnw
+                      intro hUnw; unfold jumpToBlock at hUnw; cases hUnw
                   | array _ =>
-                    rw [hRes] at hUnw; dsimp only at hUnw
+                    intro hUnw; dsimp only at hUnw
+                    revert hUnw
                     cases hBr : tgts.branches with
-                    | cons _ _ => rw [hBr] at hUnw; cases hUnw
+                    | cons _ _ => intro hUnw; cases hUnw
                     | nil =>
-                      rw [hBr] at hUnw; unfold jumpToBlock at hUnw; cases hUnw
+                      intro hUnw; unfold jumpToBlock at hUnw; cases hUnw
                   | range _ _ =>
-                    rw [hRes] at hUnw; dsimp only at hUnw
+                    intro hUnw; dsimp only at hUnw
+                    revert hUnw
                     cases hBr : tgts.branches with
-                    | cons _ _ => rw [hBr] at hUnw; cases hUnw
+                    | cons _ _ => intro hUnw; cases hUnw
                     | nil =>
-                      rw [hBr] at hUnw; unfold jumpToBlock at hUnw; cases hUnw
+                      intro hUnw; unfold jumpToBlock at hUnw; cases hUnw
                   | optionVal _ =>
-                    rw [hRes] at hUnw; dsimp only at hUnw
+                    intro hUnw; dsimp only at hUnw
+                    revert hUnw
                     cases hBr : tgts.branches with
-                    | cons _ _ => rw [hBr] at hUnw; cases hUnw
+                    | cons _ _ => intro hUnw; cases hUnw
                     | nil =>
-                      rw [hBr] at hUnw; unfold jumpToBlock at hUnw; cases hUnw
+                      intro hUnw; unfold jumpToBlock at hUnw; cases hUnw
                   | vec _ _ _ =>
-                    rw [hRes] at hUnw; dsimp only at hUnw
+                    intro hUnw; dsimp only at hUnw
+                    revert hUnw
                     cases hBr : tgts.branches with
-                    | cons _ _ => rw [hBr] at hUnw; cases hUnw
+                    | cons _ _ => intro hUnw; cases hUnw
                     | nil =>
-                      rw [hBr] at hUnw; unfold jumpToBlock at hUnw; cases hUnw
+                      intro hUnw; unfold jumpToBlock at hUnw; cases hUnw
                   | boxPtr _ _ =>
-                    rw [hRes] at hUnw; dsimp only at hUnw
+                    intro hUnw; dsimp only at hUnw
+                    revert hUnw
                     cases hBr : tgts.branches with
-                    | cons _ _ => rw [hBr] at hUnw; cases hUnw
+                    | cons _ _ => intro hUnw; cases hUnw
                     | nil =>
-                      rw [hBr] at hUnw; unfold jumpToBlock at hUnw; cases hUnw
+                      intro hUnw; unfold jumpToBlock at hUnw; cases hUnw
 
 private theorem evalStep_done_cases (p : Program) (c : Choice) (s : State)
     (out : TerminalOut) (hDone : evalStep p c s = .done out) :
@@ -1800,19 +1863,22 @@ private theorem evalStep_done_cases (p : Program) (c : Choice) (s : State)
       unfold evalStep at hDone
       rw [hFrames] at hDone
       dsimp only at hDone
+      revert hDone
       cases hBody : activeFrameBody p fr with
-      | none => rw [hBody] at hDone; cases hDone
+      | none => intro hDone; cases hDone
       | some body =>
-        rw [hBody] at hDone; dsimp only at hDone
+        intro hDone; dsimp only at hDone
+        revert hDone
         cases hBb : Trusted.MirSemantics.getElem? body.basicBlocks fr.blockIdx
             with
-        | none => rw [hBb] at hDone; cases hDone
+        | none => intro hDone; cases hDone
         | some bb =>
-          rw [hBb] at hDone; dsimp only at hDone
+          intro hDone; dsimp only at hDone
+          revert hDone
           cases hStmt : Trusted.MirSemantics.getElem? bb.statements fr.stmtIdx
               with
           | some stmt =>
-            rw [hStmt] at hDone; dsimp only at hDone
+            intro hDone; dsimp only at hDone
             have hSub := attachCallers_done_inv hDone
             have hSingle :
                 evalStep p c { s with frames := [fr] } = .done out := by
@@ -1823,34 +1889,36 @@ private theorem evalStep_done_cases (p : Program) (c : Choice) (s : State)
             exact evalStep_single_done_cases p c { s with frames := [fr] } fr
               rfl out hSingle
           | none =>
-            rw [hStmt] at hDone; dsimp only at hDone
+            intro hDone; dsimp only at hDone
             cases hLen : Nat.beq fr.stmtIdx bb.statements.length with
             | false => rw [ite_bool_false hLen] at hDone; cases hDone
             | true =>
               rw [ite_bool_true hLen] at hDone
+              revert hDone
               cases hTerm : bb.terminator with
               | call callee args dst target unwind =>
-                rw [hTerm] at hDone; dsimp only at hDone
+                intro hDone; dsimp only at hDone
+                revert hDone
                 cases hCallee : Trusted.MirSemantics.getElem? p.bodies callee
                     with
-                | none => rw [hCallee] at hDone; cases hDone
+                | none => intro hDone; cases hDone
                 | some calleeBody =>
-                  rw [hCallee] at hDone; dsimp only at hDone
+                  intro hDone; dsimp only at hDone
                   exact False.elim (evalCallTerminator_never_done body bb fr
                     (caller :: rest) s.mem s.callerMem callee none
                     calleeBody args dst target unwind out hDone)
               | sysrootCall op args dst target unwind =>
-                rw [hTerm] at hDone; dsimp only at hDone
+                intro hDone; dsimp only at hDone
                 exact False.elim (evalCallTerminator_never_done body bb fr
                   (caller :: rest) s.mem s.callerMem 0 (some op)
                   (sysrootNumBody op) args dst target unwind out hDone)
               | return_ =>
-                rw [hTerm] at hDone; dsimp only at hDone
+                intro hDone; dsimp only at hDone
                 exact False.elim (evalNonRootReturn_never_done p body bb fr
                   caller rest s.mem s.callerMem out hDone)
               | goto _ | switchInt _ _ | unreachable | assert _ _ _ _ _
               | unwindResume | coreCall _ _ _ _ _ | unsupported =>
-                rw [hTerm] at hDone; dsimp only at hDone
+                intro hDone; dsimp only at hDone
                 have hSub := attachCallers_done_inv hDone
                 have hSingle :
                     evalStep p c { s with frames := [fr] } = .done out := by
@@ -1920,72 +1988,85 @@ private theorem evalStatement_single_frame {body : Body} {fr : FrameState}
   | unsupported => unfold evalStatement at hStmt; cases hStmt
   | storageLive id =>
     unfold evalStatement at hStmt; dsimp only at hStmt
+    revert hStmt
     cases hTy : Trusted.MirSemantics.getElem? body.locals id with
-    | none => rw [hTy] at hStmt; cases hStmt
+    | none => intro hStmt; cases hStmt
     | some _ =>
-      rw [hTy] at hStmt; dsimp only at hStmt
+      intro hStmt; dsimp only at hStmt
+      revert hStmt
       cases hLoc : Trusted.MirSemantics.getElem? fr.locals id with
-      | none => rw [hLoc] at hStmt; cases hStmt
+      | none => intro hStmt; cases hStmt
       | some _ =>
-        rw [hLoc] at hStmt; dsimp only at hStmt
+        intro hStmt; dsimp only at hStmt
+        revert hStmt
         cases hSet : Trusted.MirSemantics.setElem? fr.locals id _ with
-        | none => rw [hSet] at hStmt; cases hStmt
+        | none => intro hStmt; cases hStmt
         | some _ =>
-          rw [hSet] at hStmt; dsimp only at hStmt
+          intro hStmt; dsimp only at hStmt
+          revert hStmt
           cases hDe : deallocateLocal mem _ with
-          | error _ => rw [hDe] at hStmt; cases hStmt
-          | ok _ => rw [hDe] at hStmt; cases hStmt; rfl
+          | error _ => intro hStmt; cases hStmt
+          | ok _ => intro hStmt; cases hStmt; rfl
   | storageDead id =>
     unfold evalStatement at hStmt; dsimp only at hStmt
     cases hZero : Nat.beq id 0 with
     | true => rw [ite_bool_true hZero] at hStmt; cases hStmt
     | false =>
       rw [ite_bool_false hZero] at hStmt
+      revert hStmt
       cases hLoc : Trusted.MirSemantics.getElem? fr.locals id with
-      | none => rw [hLoc] at hStmt; cases hStmt
+      | none => intro hStmt; cases hStmt
       | some _ =>
-        rw [hLoc] at hStmt; dsimp only at hStmt
+        intro hStmt; dsimp only at hStmt
+        revert hStmt
         cases hSet : Trusted.MirSemantics.setElem? fr.locals id .dead with
-        | none => rw [hSet] at hStmt; cases hStmt
+        | none => intro hStmt; cases hStmt
         | some _ =>
-          rw [hSet] at hStmt; dsimp only at hStmt
+          intro hStmt; dsimp only at hStmt
+          revert hStmt
           cases hDe : deallocateLocal mem _ with
-          | error _ => rw [hDe] at hStmt; cases hStmt
-          | ok _ => rw [hDe] at hStmt; cases hStmt; rfl
+          | error _ => intro hStmt; cases hStmt
+          | ok _ => intro hStmt; cases hStmt; rfl
   | assign dst rv =>
     unfold evalStatement at hStmt; dsimp only at hStmt
     cases hProj : !dst.projection.isEmpty with
     | true => rw [ite_bool_true hProj] at hStmt; cases hStmt
     | false =>
       rw [ite_bool_false hProj] at hStmt
+      revert hStmt
       cases hTy : Trusted.MirSemantics.getElem? body.locals dst.localId with
-      | none => rw [hTy] at hStmt; cases hStmt
+      | none => intro hStmt; cases hStmt
       | some _ =>
-        rw [hTy] at hStmt; dsimp only at hStmt
+        intro hStmt; dsimp only at hStmt
+        revert hStmt
         cases hRv : evalRvalue body.locals fr.locals mem _ rv with
-        | error _ => rw [hRv] at hStmt; cases hStmt
+        | error _ => intro hStmt; cases hStmt
         | ok _ =>
-          rw [hRv] at hStmt; dsimp only at hStmt
+          intro hStmt; dsimp only at hStmt
+          revert hStmt
           cases hWr : writePlace _ _ dst.localId _ _ with
-          | error _ => rw [hWr] at hStmt; cases hStmt
-          | ok _ => rw [hWr] at hStmt; cases hStmt; rfl
+          | error _ => intro hStmt; cases hStmt
+          | ok _ => intro hStmt; cases hStmt; rfl
 
 private theorem evalTerminator_single_frame {body : Body} {bb : BasicBlock}
     {fr : FrameState} {mem : MemoryState} {cm : CallerMemory} {st' : State}
     (hTerm : evalTerminator body bb fr mem cm = .step st') :
     st'.frames.length = 1 := by
   unfold evalTerminator at hTerm
+  revert hTerm
   cases hKind : bb.terminator with
-  | goto _ => rw [hKind] at hTerm; unfold jumpToBlock at hTerm; cases hTerm; rfl
+  | goto _ => intro hTerm; unfold jumpToBlock at hTerm; cases hTerm; rfl
   | assert cond expected msg target unwind =>
-    rw [hKind] at hTerm; dsimp only at hTerm
+    intro hTerm; dsimp only at hTerm
+    revert hTerm
     cases hCond : evalPrimitiveOperand body.locals fr.locals mem cond with
-    | error _ => rw [hCond] at hTerm; cases hTerm
+    | error _ => intro hTerm; cases hTerm
     | ok res =>
-      rw [hCond] at hTerm; dsimp only at hTerm
+      intro hTerm; dsimp only at hTerm
+      revert hTerm
       cases hVal : res.1 with
       | bool condB =>
-        rw [hVal] at hTerm; dsimp only at hTerm
+        intro hTerm; dsimp only at hTerm
         cases hEq : (condB == expected) with
         | true =>
           rw [ite_bool_true hEq] at hTerm
@@ -2001,70 +2082,81 @@ private theorem evalTerminator_single_frame {body : Body} {bb : BasicBlock}
       | scalar _ | ptr _ | char _ | ordering _ | unit | enumVal _ _ | tuple _
       | bytes _ | array _ | slicePtr _ _ | rangeTo _ | rangeFrom _
       | optionVal _ | range _ _ | boxPtr _ _ | vec _ _ _ =>
-        rw [hVal] at hTerm; cases hTerm
+        intro hTerm; cases hTerm
   | unreachable | unwindResume | call _ _ _ _ _
-  | sysrootCall _ _ _ _ _ | coreCall _ _ _ _ _ | unsupported => rw [hKind] at hTerm; cases hTerm
+  | sysrootCall _ _ _ _ _ | coreCall _ _ _ _ _ | unsupported =>
+    intro hTerm
+    cases hTerm
   | return_ =>
-    rw [hKind] at hTerm; dsimp only at hTerm
+    intro hTerm; dsimp only at hTerm
     cases hCl : bb.cleanup with
     | true => rw [ite_bool_true hCl] at hTerm; cases hTerm
     | false =>
       rw [ite_bool_false hCl] at hTerm
+      revert hTerm
       cases hLoc0 : Trusted.MirSemantics.getElem? fr.locals 0 with
-      | none => rw [hLoc0] at hTerm; cases hTerm
+      | none => intro hTerm; cases hTerm
       | some sl0 =>
-        rw [hLoc0] at hTerm
+        intro hTerm
         cases sl0 with
         | dead => cases hTerm
         | partialTuple _ => cases hTerm
         | immediate ov =>
           cases ov with | none => cases hTerm | some _ => cases hTerm
         | indirect mp =>
+          revert hTerm
           cases hTy0 : Trusted.MirSemantics.getElem? body.locals 0 with
-          | none => rw [hTy0] at hTerm; cases hTerm
+          | none => intro hTerm; cases hTerm
           | some _ =>
-            rw [hTy0] at hTerm; dsimp only at hTerm
+            intro hTerm; dsimp only at hTerm
+            revert hTerm
             cases hLd : loadIndirect mem _ mp with
-            | error _ => rw [hLd] at hTerm; cases hTerm
+            | error _ => intro hTerm; cases hTerm
             | ok ov =>
-              rw [hLd] at hTerm
+              intro hTerm
               cases ov with | none => cases hTerm | some _ => cases hTerm
   | switchInt discr tgts =>
-    rw [hKind] at hTerm; dsimp only at hTerm
+    intro hTerm; dsimp only at hTerm
+    revert hTerm
     cases hEv : evalPrimitiveOperand body.locals fr.locals mem discr with
-    | error _ => rw [hEv] at hTerm; cases hTerm
+    | error _ => intro hTerm; cases hTerm
     | ok res =>
-      rw [hEv] at hTerm; dsimp only at hTerm
+      intro hTerm; dsimp only at hTerm
+      revert hTerm
       cases hRes : res.1 with
       | scalar sv =>
-        rw [hRes] at hTerm; dsimp only at hTerm
+        intro hTerm; dsimp only at hTerm
+        revert hTerm
         cases hTg : evalSwitchBranches sv.width sv.bits tgts.otherwise
             tgts.branches with
-        | error _ => rw [hTg] at hTerm; cases hTerm
+        | error _ => intro hTerm; cases hTerm
         | ok _ =>
-          rw [hTg] at hTerm; unfold jumpToBlock at hTerm; cases hTerm; rfl
+          intro hTerm; unfold jumpToBlock at hTerm; cases hTerm; rfl
       | bool bVal =>
-        rw [hRes] at hTerm; dsimp only at hTerm
+        intro hTerm; dsimp only at hTerm
+        revert hTerm
         cases hTg : evalBoolSwitchBranches bVal tgts.otherwise
             tgts.branches with
-        | error _ => rw [hTg] at hTerm; cases hTerm
+        | error _ => intro hTerm; cases hTerm
         | ok _ =>
-          rw [hTg] at hTerm; unfold jumpToBlock at hTerm; cases hTerm; rfl
+          intro hTerm; unfold jumpToBlock at hTerm; cases hTerm; rfl
       | char cVal =>
-        rw [hRes] at hTerm; dsimp only at hTerm
+        intro hTerm; dsimp only at hTerm
+        revert hTerm
         cases hTg : evalCharSwitchBranches cVal tgts.otherwise
             tgts.branches with
-        | error _ => rw [hTg] at hTerm; cases hTerm
+        | error _ => intro hTerm; cases hTerm
         | ok _ =>
-          rw [hTg] at hTerm; unfold jumpToBlock at hTerm; cases hTerm; rfl
+          intro hTerm; unfold jumpToBlock at hTerm; cases hTerm; rfl
       | ptr _ | ordering _ | unit | enumVal _ _ | tuple _ | bytes _
       | slicePtr _ _ | rangeTo _ | rangeFrom _ | array _
       | range _ _ | optionVal _ | boxPtr _ _ | vec _ _ _ =>
-        rw [hRes] at hTerm; dsimp only at hTerm
+        intro hTerm; dsimp only at hTerm
+        revert hTerm
         cases hBr : tgts.branches with
-        | cons _ _ => rw [hBr] at hTerm; cases hTerm
+        | cons _ _ => intro hTerm; cases hTerm
         | nil =>
-          rw [hBr] at hTerm; unfold jumpToBlock at hTerm; cases hTerm; rfl
+          intro hTerm; unfold jumpToBlock at hTerm; cases hTerm; rfl
 
 private theorem sysrootNumBody_hasNoCall (op : SysrootNumOp) :
     (sysrootNumBody op).basicBlocks.any (fun b =>
@@ -2090,21 +2182,23 @@ private theorem evalStep_bodyProg_single_frame {body : Body} {s st' : State}
     | cons _ _ => rw [hFr] at hSingle; cases hSingle
     | nil =>
       rw [hFr] at hStep; dsimp only at hStep
+      revert hStep
       cases hBody : activeFrameBody (Anneal.MirWp.bodyProg body) fr with
-      | none => rw [hBody] at hStep; cases hStep
+      | none => intro hStep; cases hStep
       | some b =>
-        rw [hBody] at hStep; dsimp only at hStep
+        intro hStep; dsimp only at hStep
         have hBNoCall : b.basicBlocks.any (fun blk =>
             match blk.terminator with
             | .call _ _ _ _ _ | .sysrootCall _ _ _ _ _ => true
             | _ => false) = false := by
           unfold activeFrameBody at hBody
+          revert hBody
           cases hSys : fr.sysrootOp? with
           | some op =>
-            rw [hSys] at hBody; injection hBody with hBEq; rw [← hBEq]
+            intro hBody; injection hBody with hBEq; rw [← hBEq]
             exact sysrootNumBody_hasNoCall op
           | none =>
-            rw [hSys] at hBody
+            intro hBody
             cases hDef : fr.defId with
             | zero =>
               rw [hDef] at hBody; injection hBody with hBEq; rw [← hBEq]
@@ -2114,17 +2208,19 @@ private theorem evalStep_bodyProg_single_frame {body : Body} {s st' : State}
                   Trusted.MirSemantics.getElem?
                     (Anneal.MirWp.bodyProg body).bodies (n + 1) = none := rfl
               rw [hDef, hNone] at hBody; cases hBody
+        revert hStep
         cases hBb : Trusted.MirSemantics.getElem? b.basicBlocks fr.blockIdx with
-        | none => rw [hBb] at hStep; cases hStep
+        | none => intro hStep; cases hStep
         | some bb =>
-          rw [hBb] at hStep; dsimp only at hStep
+          intro hStep; dsimp only at hStep
+          revert hStep
           cases hStmt : Trusted.MirSemantics.getElem? bb.statements fr.stmtIdx
               with
           | some stmt =>
-            rw [hStmt] at hStep; dsimp only at hStep
+            intro hStep; dsimp only at hStep
             exact evalStatement_single_frame hStep
           | none =>
-            rw [hStmt] at hStep; dsimp only at hStep
+            intro hStep; dsimp only at hStep
             cases hIdx : Nat.beq fr.stmtIdx bb.statements.length with
             | false => rw [ite_bool_false hIdx] at hStep; cases hStep
             | true =>
@@ -2169,13 +2265,14 @@ theorem wpFrameOutcome_of_mirWpState (callerLens : ByteSubLens)
         | .done (.unwound _) => False
         | .done (.aborted _) => False
         | .fault _ => False := by
+      revert h0
       cases hSt : evalStep (Anneal.MirWp.bodyProg body) 0 s with
       | step st' =>
-        rw [hSt] at h0
+        intro h0
         exact ih st' post onDone hPost h0
           (evalStep_bodyProg_single_frame hSingle hNoCall hSt)
       | done out =>
-        rw [hSt] at h0
+        intro h0
         cases out with
         | returned retOut => exact hPost retOut.ret s.mem retOut.callerMem h0
         | unwound cm =>
@@ -2185,7 +2282,7 @@ theorem wpFrameOutcome_of_mirWpState (callerLens : ByteSubLens)
           exact False.elim
             (evalStep_bodyProg_never_aborted body 0 s cm hSt)
       | fault _ =>
-        rw [hSt] at h0
+        intro h0
         exact False.elim h0
     cases hFr : s.frames with
     | nil =>
@@ -2211,10 +2308,11 @@ theorem wpFrameOutcome_of_mirWpState (callerLens : ByteSubLens)
             unfold evalStep at hEval
             rw [hFr] at hEval
             dsimp only at hEval
+            revert hDef
             cases hDef0 : frame.defId with
-            | zero => rw [hDef0] at hDef; cases hDef
+            | zero => intro hDef; cases hDef
             | succ n =>
-              have hNone :
+              intro hDef; have hNone :
                   activeFrameBody (Anneal.MirWp.bodyProg body) frame =
                     none := by
                 unfold activeFrameBody
@@ -2265,17 +2363,18 @@ theorem wpFrameOutcome_of_mirWpState (callerLens : ByteSubLens)
                   exact getElem_self_length_none bb.statements
                 have hNoCallBb :=
                   basicBlocks_getElem_hasCall_false_cut hNoCall hBb
+                revert hNoCallBb
                 cases hTerm : bb.terminator with
                 | call _ _ _ _ _ =>
-                  rw [hTerm] at hNoCallBb; cases hNoCallBb
+                  intro hNoCallBb; cases hNoCallBb
                 | sysrootCall _ _ _ _ _ =>
-                  rw [hTerm] at hNoCallBb; cases hNoCallBb
-                | goto _ => exact hEval
-                | switchInt _ _ => exact hEval
-                | return_ => exact hEval
-                | unreachable => exact hEval
+                  intro hNoCallBb; cases hNoCallBb
+                | goto _ => intro hNoCallBb; exact hEval
+                | switchInt _ _ => intro hNoCallBb; exact hEval
+                | return_ => intro hNoCallBb; exact hEval
+                | unreachable => intro hNoCallBb; exact hEval
                 | assert cond expected msg target unwind =>
-                  unfold evalStep at hEval
+                  intro hNoCallBb; unfold evalStep at hEval
                   rw [hFr] at hEval; dsimp only at hEval
                   rw [hSomeB] at hEval; dsimp only at hEval
                   rw [hBb] at hEval; dsimp only at hEval
@@ -2285,16 +2384,18 @@ theorem wpFrameOutcome_of_mirWpState (callerLens : ByteSubLens)
                   unfold evalTerminator at hEval
                   rw [hTerm] at hEval
                   dsimp only at hEval
+                  revert hEval
                   cases hCond :
                       evalPrimitiveOperand body.locals frame.locals s.mem
                         cond with
-                  | error _ => rw [hCond] at hEval; exact False.elim hEval
+                  | error _ => intro hEval; exact False.elim hEval
                   | ok res =>
-                    rw [hCond] at hEval
+                    intro hEval
                     dsimp only at hEval
+                    revert hEval
                     cases hVal : res.1 with
                     | bool condB =>
-                      rw [hVal] at hEval
+                      intro hEval
                       dsimp only at hEval
                       cases hEq : (condB == expected) with
                       | true =>
@@ -2317,20 +2418,22 @@ theorem wpFrameOutcome_of_mirWpState (callerLens : ByteSubLens)
                             true
                         rw [hFault] at hEval
                         exact False.elim hEval
-                    | scalar _ | optionVal _ | range _ _ | boxPtr _ _ | vec _ _ _ => rw [hVal] at hEval; exact False.elim hEval
-                    | ptr _ => rw [hVal] at hEval; exact False.elim hEval
-                    | char _ => rw [hVal] at hEval; exact False.elim hEval
-                    | ordering _ => rw [hVal] at hEval; exact False.elim hEval
-                    | unit => rw [hVal] at hEval; exact False.elim hEval
-                    | enumVal _ _ => rw [hVal] at hEval; exact False.elim hEval
-                    | tuple _ => rw [hVal] at hEval; exact False.elim hEval
-                    | bytes _ => rw [hVal] at hEval; exact False.elim hEval
-                    | array _ => rw [hVal] at hEval; exact False.elim hEval
-                    | slicePtr _ _ => rw [hVal] at hEval; exact False.elim hEval
-                    | rangeTo _ => rw [hVal] at hEval; exact False.elim hEval
-                    | rangeFrom _ => rw [hVal] at hEval; exact False.elim hEval
+                    | scalar _ | optionVal _ | range _ _ | boxPtr _ _
+                    | vec _ _ _ =>
+                      intro hEval; exact False.elim hEval
+                    | ptr _ => intro hEval; exact False.elim hEval
+                    | char _ => intro hEval; exact False.elim hEval
+                    | ordering _ => intro hEval; exact False.elim hEval
+                    | unit => intro hEval; exact False.elim hEval
+                    | enumVal _ _ => intro hEval; exact False.elim hEval
+                    | tuple _ => intro hEval; exact False.elim hEval
+                    | bytes _ => intro hEval; exact False.elim hEval
+                    | array _ => intro hEval; exact False.elim hEval
+                    | slicePtr _ _ => intro hEval; exact False.elim hEval
+                    | rangeTo _ => intro hEval; exact False.elim hEval
+                    | rangeFrom _ => intro hEval; exact False.elim hEval
                 | unwindResume =>
-                  unfold evalStep at hEval
+                  intro hNoCallBb; unfold evalStep at hEval
                   rw [hFr] at hEval; dsimp only at hEval
                   rw [hSomeB] at hEval; dsimp only at hEval
                   rw [hBb] at hEval; dsimp only at hEval
@@ -2340,7 +2443,7 @@ theorem wpFrameOutcome_of_mirWpState (callerLens : ByteSubLens)
                   rw [hTerm] at hEval
                   exact False.elim hEval
                 | unsupported =>
-                  unfold evalStep at hEval
+                  intro hNoCallBb; unfold evalStep at hEval
                   rw [hFr] at hEval; dsimp only at hEval
                   rw [hSomeB] at hEval; dsimp only at hEval
                   rw [hBb] at hEval; dsimp only at hEval
@@ -2350,7 +2453,7 @@ theorem wpFrameOutcome_of_mirWpState (callerLens : ByteSubLens)
                   rw [hTerm] at hEval
                   exact False.elim hEval
                 | coreCall _ _ _ _ _ =>
-                  unfold evalStep at hEval
+                  intro hNoCallBb; unfold evalStep at hEval
                   rw [hFr] at hEval; dsimp only at hEval
                   rw [hSomeB] at hEval; dsimp only at hEval
                   rw [hBb] at hEval; dsimp only at hEval
@@ -2737,21 +2840,24 @@ private theorem evalStep_step_preserves_callerMem (b : Body) (fr : FrameState)
     st'.callerMem = cm := by
   unfold evalStep at hStep
   dsimp only at hStep
+  revert hStep
   cases hBody : activeFrameBody (Anneal.MirWp.bodyProg b) fr with
-  | none => rw [hBody] at hStep; cases hStep
+  | none => intro hStep; cases hStep
   | some body =>
-    rw [hBody] at hStep
+    intro hStep
     dsimp only at hStep
+    revert hStep
     cases hBb :
         Trusted.MirSemantics.getElem? body.basicBlocks fr.blockIdx with
-    | none => rw [hBb] at hStep; cases hStep
+    | none => intro hStep; cases hStep
     | some bb =>
-      rw [hBb] at hStep
+      intro hStep
       dsimp only at hStep
+      revert hStep
       cases hStmt :
           Trusted.MirSemantics.getElem? bb.statements fr.stmtIdx with
       | some stmt =>
-        rw [hStmt] at hStep
+        intro hStep
         dsimp only at hStep
         cases stmt with
         | nop => unfold evalStatement at hStep; cases hStep; rfl
@@ -2759,24 +2865,28 @@ private theorem evalStep_step_preserves_callerMem (b : Body) (fr : FrameState)
         | storageLive id =>
           unfold evalStatement at hStep
           dsimp only at hStep
+          revert hStep
           cases hTy : Trusted.MirSemantics.getElem? body.locals id with
-          | none => rw [hTy] at hStep; cases hStep
+          | none => intro hStep; cases hStep
           | some _ =>
-            rw [hTy] at hStep
+            intro hStep
             dsimp only at hStep
+            revert hStep
             cases hLoc : Trusted.MirSemantics.getElem? fr.locals id with
-            | none => rw [hLoc] at hStep; cases hStep
+            | none => intro hStep; cases hStep
             | some _ =>
-              rw [hLoc] at hStep
+              intro hStep
               dsimp only at hStep
+              revert hStep
               cases hSet : Trusted.MirSemantics.setElem? fr.locals id _ with
-              | none => rw [hSet] at hStep; cases hStep
+              | none => intro hStep; cases hStep
               | some _ =>
-                rw [hSet] at hStep
+                intro hStep
                 dsimp only at hStep
+                revert hStep
                 cases hDe : deallocateLocal mem _ with
-                | error _ => rw [hDe] at hStep; cases hStep
-                | ok _ => rw [hDe] at hStep; cases hStep; rfl
+                | error _ => intro hStep; cases hStep
+                | ok _ => intro hStep; cases hStep; rfl
         | storageDead id =>
           unfold evalStatement at hStep
           dsimp only at hStep
@@ -2784,20 +2894,23 @@ private theorem evalStep_step_preserves_callerMem (b : Body) (fr : FrameState)
           | true => rw [ite_bool_true hZero] at hStep; cases hStep
           | false =>
             rw [ite_bool_false hZero] at hStep
+            revert hStep
             cases hLoc : Trusted.MirSemantics.getElem? fr.locals id with
-            | none => rw [hLoc] at hStep; cases hStep
+            | none => intro hStep; cases hStep
             | some _ =>
-              rw [hLoc] at hStep
+              intro hStep
               dsimp only at hStep
+              revert hStep
               cases hSet :
                   Trusted.MirSemantics.setElem? fr.locals id .dead with
-              | none => rw [hSet] at hStep; cases hStep
+              | none => intro hStep; cases hStep
               | some _ =>
-                rw [hSet] at hStep
+                intro hStep
                 dsimp only at hStep
+                revert hStep
                 cases hDe : deallocateLocal mem _ with
-                | error _ => rw [hDe] at hStep; cases hStep
-                | ok _ => rw [hDe] at hStep; cases hStep; rfl
+                | error _ => intro hStep; cases hStep
+                | ok _ => intro hStep; cases hStep; rfl
         | assign dst rv =>
           unfold evalStatement at hStep
           dsimp only at hStep
@@ -2805,50 +2918,62 @@ private theorem evalStep_step_preserves_callerMem (b : Body) (fr : FrameState)
           | true => rw [ite_bool_true hProj] at hStep; cases hStep
           | false =>
             rw [ite_bool_false hProj] at hStep
+            revert hStep
             cases hTy :
                 Trusted.MirSemantics.getElem? body.locals dst.localId with
-            | none => rw [hTy] at hStep; cases hStep
+            | none => intro hStep; cases hStep
             | some _ =>
-              rw [hTy] at hStep
+              intro hStep
               dsimp only at hStep
+              revert hStep
               cases hRv : evalRvalue body.locals fr.locals mem _ rv with
-              | error _ => rw [hRv] at hStep; cases hStep
+              | error _ => intro hStep; cases hStep
               | ok _ =>
-                rw [hRv] at hStep
+                intro hStep
                 dsimp only at hStep
+                revert hStep
                 cases hWr : writePlace _ _ dst.localId _ _ with
-                | error _ => rw [hWr] at hStep; cases hStep
-                | ok _ => rw [hWr] at hStep; cases hStep; rfl
+                | error _ => intro hStep; cases hStep
+                | ok _ => intro hStep; cases hStep; rfl
       | none =>
-        rw [hStmt] at hStep
+        intro hStep
         dsimp only at hStep
         cases hIdx : Nat.beq fr.stmtIdx bb.statements.length with
         | false => rw [ite_bool_false hIdx] at hStep; cases hStep
         | true =>
           rw [ite_bool_true hIdx] at hStep
+          revert hStep
           cases hTerm : bb.terminator with
           | goto _ =>
-            unfold evalTerminator jumpToBlock at hStep
+            intro hStep; unfold evalTerminator jumpToBlock at hStep
             rw [hTerm] at hStep
             cases hStep
             rfl
           | unreachable =>
-            unfold evalTerminator at hStep; rw [hTerm] at hStep; cases hStep
-          | unwindResume =>
-            unfold evalTerminator at hStep; rw [hTerm] at hStep; cases hStep
-          | assert cond expected msg target unwind =>
+            intro hStep
             unfold evalTerminator at hStep
             rw [hTerm] at hStep
+            cases hStep
+          | unwindResume =>
+            intro hStep
+            unfold evalTerminator at hStep
+            rw [hTerm] at hStep
+            cases hStep
+          | assert cond expected msg target unwind =>
+            intro hStep; unfold evalTerminator at hStep
+            rw [hTerm] at hStep
             dsimp only [attachCallers] at hStep
+            revert hStep
             cases hCond :
                 evalPrimitiveOperand body.locals fr.locals mem cond with
-            | error _ => rw [hCond] at hStep; cases hStep
+            | error _ => intro hStep; cases hStep
             | ok res =>
-              rw [hCond] at hStep
+              intro hStep
               dsimp only at hStep
+              revert hStep
               cases hVal : res.1 with
               | bool condB =>
-                rw [hVal] at hStep
+                intro hStep
                 dsimp only at hStep
                 cases hEq : (condB == expected) with
                 | true =>
@@ -2863,50 +2988,60 @@ private theorem evalStep_step_preserves_callerMem (b : Body) (fr : FrameState)
                     evalAssertFailure_unwind_fault msg unwind cm true
                   rw [hFault] at hStep
                   cases hStep
-              | scalar _ | optionVal _ | range _ _ | boxPtr _ _ | vec _ _ _ => rw [hVal] at hStep; cases hStep
-              | ptr _ => rw [hVal] at hStep; cases hStep
-              | char _ => rw [hVal] at hStep; cases hStep
-              | ordering _ => rw [hVal] at hStep; cases hStep
-              | unit => rw [hVal] at hStep; cases hStep
-              | enumVal _ _ => rw [hVal] at hStep; cases hStep
-              | tuple _ => rw [hVal] at hStep; cases hStep
-              | bytes _ => rw [hVal] at hStep; cases hStep
-              | array _ => rw [hVal] at hStep; cases hStep
-              | slicePtr _ _ => rw [hVal] at hStep; cases hStep
-              | rangeTo _ => rw [hVal] at hStep; cases hStep
-              | rangeFrom _ => rw [hVal] at hStep; cases hStep
+              | scalar _ | optionVal _ | range _ _ | boxPtr _ _
+              | vec _ _ _ =>
+                intro hStep; cases hStep
+              | ptr _ => intro hStep; cases hStep
+              | char _ => intro hStep; cases hStep
+              | ordering _ => intro hStep; cases hStep
+              | unit => intro hStep; cases hStep
+              | enumVal _ _ => intro hStep; cases hStep
+              | tuple _ => intro hStep; cases hStep
+              | bytes _ => intro hStep; cases hStep
+              | array _ => intro hStep; cases hStep
+              | slicePtr _ _ => intro hStep; cases hStep
+              | rangeTo _ => intro hStep; cases hStep
+              | rangeFrom _ => intro hStep; cases hStep
           | unsupported =>
-            unfold evalTerminator at hStep; rw [hTerm] at hStep; cases hStep
-          | coreCall _ _ _ _ _ =>
-            unfold evalTerminator at hStep; rw [hTerm] at hStep; cases hStep
-          | call callee args dst target unwind =>
+            intro hStep
+            unfold evalTerminator at hStep
             rw [hTerm] at hStep
+            cases hStep
+          | coreCall _ _ _ _ _ =>
+            intro hStep
+            unfold evalTerminator at hStep
+            rw [hTerm] at hStep
+            cases hStep
+          | call callee args dst target unwind =>
+            intro hStep
             dsimp only at hStep
+            revert hStep
             cases hCb :
                 Trusted.MirSemantics.getElem? (Anneal.MirWp.bodyProg b).bodies
                   callee with
-            | none => rw [hCb] at hStep; cases hStep
+            | none => intro hStep; cases hStep
             | some cbody =>
-              rw [hCb] at hStep
+              intro hStep
               exact evalCallTerminator_step_preserves_callerMem body bb fr []
                 mem cm callee none cbody args dst target unwind st' hStep
           | sysrootCall op args dst target unwind =>
-            rw [hTerm] at hStep
+            intro hStep
             exact evalCallTerminator_step_preserves_callerMem body bb fr [] mem
               cm 0 (some op) (sysrootNumBody op) args dst target unwind st'
               hStep
           | return_ =>
-            unfold evalTerminator at hStep
+            intro hStep; unfold evalTerminator at hStep
             rw [hTerm] at hStep
             dsimp only at hStep
             cases hCl : bb.cleanup with
             | true => rw [ite_bool_true hCl] at hStep; cases hStep
             | false =>
               rw [ite_bool_false hCl] at hStep
+              revert hStep
               cases hLoc0 : Trusted.MirSemantics.getElem? fr.locals 0 with
-              | none => rw [hLoc0] at hStep; cases hStep
+              | none => intro hStep; cases hStep
               | some sl0 =>
-                rw [hLoc0] at hStep
+                intro hStep
                 cases sl0 with
                 | dead | partialTuple _ => cases hStep
                 | immediate ov =>
@@ -2914,150 +3049,171 @@ private theorem evalStep_step_preserves_callerMem (b : Body) (fr : FrameState)
                   | none => cases hStep
                   | some _ => cases hStep
                 | indirect mp =>
+                  revert hStep
                   cases hTy0 : Trusted.MirSemantics.getElem? body.locals 0 with
-                  | none => rw [hTy0] at hStep; cases hStep
+                  | none => intro hStep; cases hStep
                   | some _ =>
-                    rw [hTy0] at hStep
+                    intro hStep
                     dsimp only at hStep
+                    revert hStep
                     cases hLd : loadIndirect mem _ mp with
-                    | error _ => rw [hLd] at hStep; cases hStep
+                    | error _ => intro hStep; cases hStep
                     | ok ov =>
-                      rw [hLd] at hStep
+                      intro hStep
                       cases ov with
                       | none => cases hStep
                       | some _ => cases hStep
           | switchInt discr tgts =>
-            unfold evalTerminator at hStep
+            intro hStep; unfold evalTerminator at hStep
             rw [hTerm] at hStep
             dsimp only at hStep
+            revert hStep
             cases hEv :
                 evalPrimitiveOperand body.locals fr.locals mem discr with
-            | error _ => rw [hEv] at hStep; cases hStep
+            | error _ => intro hStep; cases hStep
             | ok res =>
-              rw [hEv] at hStep
+              intro hStep
               dsimp only at hStep
+              revert hStep
               cases hRes : res.1 with
               | scalar sv =>
-                rw [hRes] at hStep; dsimp only at hStep
+                intro hStep; dsimp only at hStep
+                revert hStep
                 cases hTg : evalSwitchBranches sv.width sv.bits
                     tgts.otherwise tgts.branches with
-                | error _ => rw [hTg] at hStep; cases hStep
+                | error _ => intro hStep; cases hStep
                 | ok _ =>
-                  rw [hTg] at hStep; unfold jumpToBlock at hStep
+                  intro hStep; unfold jumpToBlock at hStep
                   cases hStep; rfl
               | bool bVal =>
-                rw [hRes] at hStep; dsimp only at hStep
+                intro hStep; dsimp only at hStep
+                revert hStep
                 cases hTg : evalBoolSwitchBranches bVal tgts.otherwise
                     tgts.branches with
-                | error _ => rw [hTg] at hStep; cases hStep
+                | error _ => intro hStep; cases hStep
                 | ok _ =>
-                  rw [hTg] at hStep; unfold jumpToBlock at hStep
+                  intro hStep; unfold jumpToBlock at hStep
                   cases hStep; rfl
               | char cVal =>
-                rw [hRes] at hStep; dsimp only at hStep
+                intro hStep; dsimp only at hStep
+                revert hStep
                 cases hTg : evalCharSwitchBranches cVal tgts.otherwise
                     tgts.branches with
-                | error _ => rw [hTg] at hStep; cases hStep
+                | error _ => intro hStep; cases hStep
                 | ok _ =>
-                  rw [hTg] at hStep; unfold jumpToBlock at hStep
+                  intro hStep; unfold jumpToBlock at hStep
                   cases hStep; rfl
               | ptr _ =>
-                rw [hRes] at hStep; dsimp only at hStep
+                intro hStep; dsimp only at hStep
+                revert hStep
                 cases hBr : tgts.branches with
-                | cons _ _ => rw [hBr] at hStep; cases hStep
+                | cons _ _ => intro hStep; cases hStep
                 | nil =>
-                  rw [hBr] at hStep; unfold jumpToBlock at hStep
+                  intro hStep; unfold jumpToBlock at hStep
                   cases hStep; rfl
               | ordering _ =>
-                rw [hRes] at hStep; dsimp only at hStep
+                intro hStep; dsimp only at hStep
+                revert hStep
                 cases hBr : tgts.branches with
-                | cons _ _ => rw [hBr] at hStep; cases hStep
+                | cons _ _ => intro hStep; cases hStep
                 | nil =>
-                  rw [hBr] at hStep; unfold jumpToBlock at hStep
+                  intro hStep; unfold jumpToBlock at hStep
                   cases hStep; rfl
               | unit =>
-                rw [hRes] at hStep; dsimp only at hStep
+                intro hStep; dsimp only at hStep
+                revert hStep
                 cases hBr : tgts.branches with
-                | cons _ _ => rw [hBr] at hStep; cases hStep
+                | cons _ _ => intro hStep; cases hStep
                 | nil =>
-                  rw [hBr] at hStep; unfold jumpToBlock at hStep
+                  intro hStep; unfold jumpToBlock at hStep
                   cases hStep; rfl
               | enumVal _ _ =>
-                rw [hRes] at hStep; dsimp only at hStep
+                intro hStep; dsimp only at hStep
+                revert hStep
                 cases hBr : tgts.branches with
-                | cons _ _ => rw [hBr] at hStep; cases hStep
+                | cons _ _ => intro hStep; cases hStep
                 | nil =>
-                  rw [hBr] at hStep; unfold jumpToBlock at hStep
+                  intro hStep; unfold jumpToBlock at hStep
                   cases hStep; rfl
               | tuple _ =>
-                rw [hRes] at hStep; dsimp only at hStep
+                intro hStep; dsimp only at hStep
+                revert hStep
                 cases hBr : tgts.branches with
-                | cons _ _ => rw [hBr] at hStep; cases hStep
+                | cons _ _ => intro hStep; cases hStep
                 | nil =>
-                  rw [hBr] at hStep; unfold jumpToBlock at hStep
+                  intro hStep; unfold jumpToBlock at hStep
                   cases hStep; rfl
               | bytes _ =>
-                rw [hRes] at hStep; dsimp only at hStep
+                intro hStep; dsimp only at hStep
+                revert hStep
                 cases hBr : tgts.branches with
-                | cons _ _ => rw [hBr] at hStep; cases hStep
+                | cons _ _ => intro hStep; cases hStep
                 | nil =>
-                  rw [hBr] at hStep; unfold jumpToBlock at hStep
+                  intro hStep; unfold jumpToBlock at hStep
                   cases hStep; rfl
               | slicePtr _ _ =>
-                rw [hRes] at hStep; dsimp only at hStep
+                intro hStep; dsimp only at hStep
+                revert hStep
                 cases hBr : tgts.branches with
-                | cons _ _ => rw [hBr] at hStep; cases hStep
+                | cons _ _ => intro hStep; cases hStep
                 | nil =>
-                  rw [hBr] at hStep; unfold jumpToBlock at hStep
+                  intro hStep; unfold jumpToBlock at hStep
                   cases hStep; rfl
               | rangeTo _ =>
-                rw [hRes] at hStep; dsimp only at hStep
+                intro hStep; dsimp only at hStep
+                revert hStep
                 cases hBr : tgts.branches with
-                | cons _ _ => rw [hBr] at hStep; cases hStep
+                | cons _ _ => intro hStep; cases hStep
                 | nil =>
-                  rw [hBr] at hStep; unfold jumpToBlock at hStep
+                  intro hStep; unfold jumpToBlock at hStep
                   cases hStep; rfl
               | rangeFrom _ =>
-                rw [hRes] at hStep; dsimp only at hStep
+                intro hStep; dsimp only at hStep
+                revert hStep
                 cases hBr : tgts.branches with
-                | cons _ _ => rw [hBr] at hStep; cases hStep
+                | cons _ _ => intro hStep; cases hStep
                 | nil =>
-                  rw [hBr] at hStep; unfold jumpToBlock at hStep
+                  intro hStep; unfold jumpToBlock at hStep
                   cases hStep; rfl
               | array _ =>
-                rw [hRes] at hStep; dsimp only at hStep
+                intro hStep; dsimp only at hStep
+                revert hStep
                 cases hBr : tgts.branches with
-                | cons _ _ => rw [hBr] at hStep; cases hStep
+                | cons _ _ => intro hStep; cases hStep
                 | nil =>
-                  rw [hBr] at hStep; unfold jumpToBlock at hStep
+                  intro hStep; unfold jumpToBlock at hStep
                   cases hStep; rfl
               | range _ _ =>
-                rw [hRes] at hStep; dsimp only at hStep
+                intro hStep; dsimp only at hStep
+                revert hStep
                 cases hBr : tgts.branches with
-                | cons _ _ => rw [hBr] at hStep; cases hStep
+                | cons _ _ => intro hStep; cases hStep
                 | nil =>
-                  rw [hBr] at hStep; unfold jumpToBlock at hStep
+                  intro hStep; unfold jumpToBlock at hStep
                   cases hStep; rfl
               | optionVal _ =>
-                rw [hRes] at hStep; dsimp only at hStep
+                intro hStep; dsimp only at hStep
+                revert hStep
                 cases hBr : tgts.branches with
-                | cons _ _ => rw [hBr] at hStep; cases hStep
+                | cons _ _ => intro hStep; cases hStep
                 | nil =>
-                  rw [hBr] at hStep; unfold jumpToBlock at hStep
+                  intro hStep; unfold jumpToBlock at hStep
                   cases hStep; rfl
               | vec _ _ _ =>
-                rw [hRes] at hStep; dsimp only at hStep
+                intro hStep; dsimp only at hStep
+                revert hStep
                 cases hBr : tgts.branches with
-                | cons _ _ => rw [hBr] at hStep; cases hStep
+                | cons _ _ => intro hStep; cases hStep
                 | nil =>
-                  rw [hBr] at hStep; unfold jumpToBlock at hStep
+                  intro hStep; unfold jumpToBlock at hStep
                   cases hStep; rfl
               | boxPtr _ _ =>
-                rw [hRes] at hStep; dsimp only at hStep
+                intro hStep; dsimp only at hStep
+                revert hStep
                 cases hBr : tgts.branches with
-                | cons _ _ => rw [hBr] at hStep; cases hStep
+                | cons _ _ => intro hStep; cases hStep
                 | nil =>
-                  rw [hBr] at hStep; unfold jumpToBlock at hStep
+                  intro hStep; unfold jumpToBlock at hStep
                   cases hStep; rfl
 
 private def stackModeCm? : StackMode → Option CallerMemory
@@ -3237,10 +3393,11 @@ private theorem wpEvalStep_implies_stackExecutes
       StackReaches implOf
         (.running ⟨callerLens, callees, body, frame⟩ [] mem cm)
         (.terminated out) ∧ onDone out := by
+  revert hEval
   cases hStep : evalStep (Anneal.MirWp.bodyProg body) 0 ⟨[frame], cm, mem⟩ with
-  | fault _ => rw [hStep] at hEval; exact False.elim hEval
+  | fault _ => intro hEval; exact False.elim hEval
   | done out =>
-    rw [hStep] at hEval
+    intro hEval
     cases out with
     | unwound _ => exact False.elim hEval
     | aborted cm' =>
@@ -3249,7 +3406,7 @@ private theorem wpEvalStep_implies_stackExecutes
     | returned retOut =>
       refine ⟨.returned retOut.ret mem, .tail .refl (.ret_root hStep), hEval⟩
   | step st' =>
-    rw [hStep] at hEval
+    intro hEval
     dsimp only at hEval
     cases hFr : st'.frames with
     | nil =>
@@ -3353,30 +3510,32 @@ private theorem wpAssert_implies_stackExecutes
       StackReaches implOf
         (.running ⟨callerLens, callees, body, frame⟩ [] mem cm)
         (.terminated out) ∧ onDone out := by
+  revert hWp
   cases hOp : evalPrimitiveOperand body.locals frame.locals mem cond with
-  | error _ => rw [hOp] at hWp; exact False.elim hWp
+  | error _ => intro hWp; exact False.elim hWp
   | ok res =>
-    rw [hOp] at hWp
+    intro hWp
     dsimp only at hWp
+    revert hWp
     cases hRes : res.1 with
-    | scalar _ => rw [hRes] at hWp; exact False.elim hWp
-    | ptr _ => rw [hRes] at hWp; exact False.elim hWp
-    | char _ => rw [hRes] at hWp; exact False.elim hWp
-    | ordering _ => rw [hRes] at hWp; exact False.elim hWp
-    | unit => rw [hRes] at hWp; exact False.elim hWp
-    | enumVal _ _ => rw [hRes] at hWp; exact False.elim hWp
-    | tuple _ => rw [hRes] at hWp; exact False.elim hWp
-    | bytes _ => rw [hRes] at hWp; exact False.elim hWp
-    | slicePtr _ _ => rw [hRes] at hWp; exact False.elim hWp
-    | rangeTo _ => rw [hRes] at hWp; exact False.elim hWp
-    | rangeFrom _ => rw [hRes] at hWp; exact False.elim hWp
-    | array _ => rw [hRes] at hWp; exact False.elim hWp
-    | range _ _ => rw [hRes] at hWp; exact False.elim hWp
-    | optionVal _ => rw [hRes] at hWp; exact False.elim hWp
-    | vec _ _ _ => rw [hRes] at hWp; exact False.elim hWp
-    | boxPtr _ _ => rw [hRes] at hWp; exact False.elim hWp
+    | scalar _ => intro hWp; exact False.elim hWp
+    | ptr _ => intro hWp; exact False.elim hWp
+    | char _ => intro hWp; exact False.elim hWp
+    | ordering _ => intro hWp; exact False.elim hWp
+    | unit => intro hWp; exact False.elim hWp
+    | enumVal _ _ => intro hWp; exact False.elim hWp
+    | tuple _ => intro hWp; exact False.elim hWp
+    | bytes _ => intro hWp; exact False.elim hWp
+    | slicePtr _ _ => intro hWp; exact False.elim hWp
+    | rangeTo _ => intro hWp; exact False.elim hWp
+    | rangeFrom _ => intro hWp; exact False.elim hWp
+    | array _ => intro hWp; exact False.elim hWp
+    | range _ _ => intro hWp; exact False.elim hWp
+    | optionVal _ => intro hWp; exact False.elim hWp
+    | vec _ _ _ => intro hWp; exact False.elim hWp
+    | boxPtr _ _ => intro hWp; exact False.elim hWp
     | bool b =>
-      rw [hRes] at hWp
+      intro hWp
       dsimp only at hWp
       cases hMatch : b == expected with
       | true =>
@@ -3403,25 +3562,26 @@ private theorem wpAssert_implies_stackExecutes
         have hOpBool : evalPrimitiveOperand body.locals frame.locals mem cond =
             .ok (.bool (!expected), res.2.1, res.2.2) := by
           rw [hOp, ← hBNeg, ← hRes]
+        revert hWp
         cases hCont : evalCallExitStep body ⟨none, unwind⟩
             (.unwind res.2.2) with
-        | stepNormal _ _ _ => rw [hCont] at hWp; exact False.elim hWp
-        | fault _ => rw [hCont] at hWp; exact False.elim hWp
+        | stepNormal _ _ _ => intro hWp; exact False.elim hWp
+        | fault _ => intro hWp; exact False.elim hWp
         | exitUnwind memC =>
-          rw [hCont] at hWp
+          intro hWp
           exact ⟨.unwound memC,
             .tail (.tail .refl
               (.assert_unwind_exit hBb hIdxEq hTerm hOpBool hCont))
               .unwind_root,
             hWp⟩
         | exitTerminate memC =>
-          rw [hCont] at hWp
+          intro hWp
           exact ⟨.abortTerminate memC,
             .tail .refl
               (.assert_abort_terminate hBb hIdxEq hTerm hOpBool hCont),
             hWp⟩
         | stepCleanup cleanupBb memC =>
-          rw [hCont] at hWp
+          intro hWp
           cases ihFuel
               ⟨frame.defId, cleanupBb, 0, res.2.1, none, none, none⟩
               memC cm onDone hWp with
@@ -3464,18 +3624,20 @@ theorem wpFrameOutcome_implies_stackExecutes
       intro frame mem cm onDone hWp
       unfold wpFrameOutcome at hWp
       dsimp only at hWp
+      revert hWp
       cases hSys : frame.sysrootOp? with
       | some _ =>
-        rw [hSys] at hWp
+        intro hWp
         exact wpEvalStep_implies_stackExecutes ihFuel hWp
       | none =>
-        rw [hSys] at hWp
+        intro hWp
         dsimp only at hWp
+        revert hWp
         cases hBb :
             Trusted.MirSemantics.getElem? body.basicBlocks frame.blockIdx with
-        | none => rw [hBb] at hWp; exact False.elim hWp
+        | none => intro hWp; exact False.elim hWp
         | some bb =>
-          rw [hBb] at hWp
+          intro hWp
           dsimp only at hWp
           cases hIdx : Nat.beq frame.stmtIdx bb.statements.length with
           | false =>
@@ -3484,42 +3646,44 @@ theorem wpFrameOutcome_implies_stackExecutes
           | true =>
             rw [if_prop_true hIdx] at hWp
             have hIdxEq := natEq_of_beq frame.stmtIdx bb.statements.length hIdx
+            revert hWp
             cases hTerm : bb.terminator with
-            | unsupported => rw [hTerm] at hWp; exact False.elim hWp
-            | coreCall _ _ _ _ _ => rw [hTerm] at hWp; exact False.elim hWp
-            | sysrootCall _ _ _ _ _ => rw [hTerm] at hWp; exact False.elim hWp
+            | unsupported => intro hWp; exact False.elim hWp
+            | coreCall _ _ _ _ _ => intro hWp; exact False.elim hWp
+            | sysrootCall _ _ _ _ _ => intro hWp; exact False.elim hWp
             | call callee args dst onRet onUnwind =>
-              rw [hTerm] at hWp
+              intro hWp
               dsimp only at hWp
               cases hProj : (!dst.projection.isEmpty) with
               | true => rw [if_prop_true hProj] at hWp; exact False.elim hWp
               | false =>
                 rw [if_prop_false hProj] at hWp
+                revert hWp
                 cases hTy :
                     Trusted.MirSemantics.getElem? body.locals dst.localId with
-                | none => rw [hTy] at hWp; exact False.elim hWp
-                | some _ => rw [hTy] at hWp; exact False.elim hWp
+                | none => intro hWp; exact False.elim hWp
+                | some _ => intro hWp; exact False.elim hWp
             | unwindResume =>
-              rw [hTerm] at hWp
+              intro hWp
               exact ⟨.unwound mem,
                 .tail (.tail .refl (.unwind_resume hBb hIdxEq hTerm hWp.1))
                   .unwind_root,
                 hWp.2⟩
             | assert cond expected msg target unwind =>
-              rw [hTerm] at hWp
+              intro hWp
               dsimp only at hWp
               exact wpAssert_implies_stackExecutes hBb hIdxEq hTerm ihFuel hWp
             | goto _ =>
-              rw [hTerm] at hWp
+              intro hWp
               exact wpEvalStep_implies_stackExecutes ihFuel hWp
             | switchInt _ _ =>
-              rw [hTerm] at hWp
+              intro hWp
               exact wpEvalStep_implies_stackExecutes ihFuel hWp
             | return_ =>
-              rw [hTerm] at hWp
+              intro hWp
               exact wpEvalStep_implies_stackExecutes ihFuel hWp
             | unreachable =>
-              rw [hTerm] at hWp
+              intro hWp
               exact wpEvalStep_implies_stackExecutes ihFuel hWp
   | succ d ihNode =>
     intro callees hTree callerLens body fuel
@@ -3531,18 +3695,20 @@ theorem wpFrameOutcome_implies_stackExecutes
       intro frame mem cm onDone hWp
       unfold wpFrameOutcome at hWp
       dsimp only at hWp
+      revert hWp
       cases hSys : frame.sysrootOp? with
       | some _ =>
-        rw [hSys] at hWp
+        intro hWp
         exact wpEvalStep_implies_stackExecutes ihFuel hWp
       | none =>
-        rw [hSys] at hWp
+        intro hWp
         dsimp only at hWp
+        revert hWp
         cases hBb :
             Trusted.MirSemantics.getElem? body.basicBlocks frame.blockIdx with
-        | none => rw [hBb] at hWp; exact False.elim hWp
+        | none => intro hWp; exact False.elim hWp
         | some bb =>
-          rw [hBb] at hWp
+          intro hWp
           dsimp only at hWp
           cases hIdx : Nat.beq frame.stmtIdx bb.statements.length with
           | false =>
@@ -3590,16 +3756,18 @@ theorem wpFrameOutcome_implies_stackExecutes
               have hPFalse : (!dst.projection.isEmpty) = false := by
                 rw [hProj]; rfl
               rw [if_prop_false hPFalse] at hWp
+              revert hWp
               cases hTy :
                   Trusted.MirSemantics.getElem? body.locals dst.localId with
-              | none => rw [hTy] at hWp; exact False.elim hWp
+              | none => intro hWp; exact False.elim hWp
               | some dstTy =>
-                rw [hTy] at hWp
+                intro hWp
                 dsimp only at hWp
+                revert hWp
                 cases hLook : calleeLookup callees callee with
-                | none => rw [hLook] at hWp; exact False.elim hWp
+                | none => intro hWp; exact False.elim hWp
                 | some cSpec =>
-                  rw [hLook] at hWp
+                  intro hWp
                   dsimp only at hWp
                   have hLens := hWp.1
                   cases hWp.2 with
@@ -3660,32 +3828,34 @@ theorem wpFrameOutcome_implies_stackExecutes
                                   | returned rv memAfter =>
                                     have hBranch := hNorm hPostC.1 rv memAfter
                                       hPostC.2.1 hPostC.2.2
+                                    revert hBranch
                                     cases hCont :
                                         evalCallExitStep body ⟨onRet, onUnwind⟩
                                           (.normal rv memAfter) with
                                     | stepCleanup _ _ =>
-                                      rw [hCont] at hBranch
+                                      intro hBranch
                                       exact False.elim hBranch
                                     | exitUnwind _ =>
-                                      rw [hCont] at hBranch
+                                      intro hBranch
                                       exact False.elim hBranch
                                     | exitTerminate _ =>
-                                      rw [hCont] at hBranch
+                                      intro hBranch
                                       exact False.elim hBranch
                                     | fault _ =>
-                                      rw [hCont] at hBranch
+                                      intro hBranch
                                       exact False.elim hBranch
                                     | stepNormal retBb rvC memC =>
-                                      rw [hCont] at hBranch
+                                      intro hBranch
                                       dsimp only at hBranch
+                                      revert hBranch
                                       cases hWr :
                                           writePlace localsArgs memC dst.localId
                                             dstTy rvC with
                                       | error _ =>
-                                        rw [hWr] at hBranch
+                                        intro hBranch
                                         exact False.elim hBranch
                                       | ok wrRes =>
-                                        rw [hWr] at hBranch
+                                        intro hBranch
                                         dsimp only at hBranch
                                         have hWrEq :
                                             writePlace localsArgs memC
@@ -3723,17 +3893,18 @@ theorem wpFrameOutcome_implies_stackExecutes
                                           frame.defId, localsArgs, dst.localId,
                                           dstTy, onRet, onUnwind⟩])
                                         hReachC
+                                    revert hBranch
                                     cases hCont :
                                         evalCallExitStep body ⟨onRet, onUnwind⟩
                                           (.unwind memAfter) with
                                     | stepNormal _ _ _ =>
-                                      rw [hCont] at hBranch
+                                      intro hBranch
                                       exact False.elim hBranch
                                     | fault _ =>
-                                      rw [hCont] at hBranch
+                                      intro hBranch
                                       exact False.elim hBranch
                                     | exitUnwind memC =>
-                                      rw [hCont] at hBranch
+                                      intro hBranch
                                       refine ⟨.unwound memC, ?_, hBranch⟩
                                       exact .tail
                                         (.tail
@@ -3742,14 +3913,14 @@ theorem wpFrameOutcome_implies_stackExecutes
                                           (.unwind_pop_continue hCont))
                                         .unwind_root
                                     | exitTerminate memC =>
-                                      rw [hCont] at hBranch
+                                      intro hBranch
                                       refine ⟨.abortTerminate memC, ?_, hBranch⟩
                                       exact .tail
                                         (stackReaches_trans
                                           (.tail .refl hPush) hLiftUnw)
                                         (.unwind_pop_terminate hCont)
                                     | stepCleanup cleanupBb memC =>
-                                      rw [hCont] at hBranch
+                                      intro hBranch
                                       dsimp only at hBranch
                                       have hInner := ihFuel
                                         ⟨frame.defId, cleanupBb, 0, localsArgs,
