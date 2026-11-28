@@ -371,7 +371,9 @@ $W_t = (x_{t-W}, \dots, x_{t-1})$ (default $W = 25$ non-null commits, minimum
 
 `render_perf_dashboard.py` emits `dashboard/anneal/data.json` and
 `dashboard/anneal/index.html` using pure Python 3.10+ standard-library code with
-zero npm build steps and zero external runtime URLs:
+zero npm build steps and zero external runtime URLs. The page itself is the
+sibling template `render_perf_dashboard.html`, into whose single
+`__ANNEAL_INLINE_JSON__` slot the renderer substitutes the escaped data:
 
 1. **HTML5 `<script>` Breakout Neutralization:** When embedding `data.json`
    inside `<script id="anneal-perf-inline-data" type="application/json">`, all
