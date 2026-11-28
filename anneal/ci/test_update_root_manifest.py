@@ -78,6 +78,25 @@ class ManifestTests(unittest.TestCase):
                     manifest.update(self.root)
                 self.assertEqual(self.path.read_bytes(), original)
 
+    def test_entry_grammar_matches_the_auditor(self):
+        # `verify_root_manifest_sha256` in `trusted/audit` reads the same entry
+        # grammar: a lowercase digest, a text (two spaces) or binary (` *`)
+        # marker, and a canonical relative path, with no padding and no
+        # whitespace-only lines, which `sha256sum --check --strict` rejects.
+        for original in [b"A" * 64 + b"  Cargo.toml\n", self.entry("Cargo.toml", mode=b" \t"),
+                         b" " + self.entry("Cargo.toml"), self.entry("trusted//Cargo.toml"),
+                         self.entry("trusted/./Cargo.toml"), self.entry("trusted/"),
+                         self.entry("Cargo.toml") + b"  \n", self.entry("Cargo.toml") + b"\r",
+                         b"# note\r" + self.entry("Cargo.toml"),
+                         b"# \xff\n" + self.entry("Cargo.toml")]:
+            with self.subTest(original=original):
+                self.path.write_bytes(original)
+                with self.assertRaises(manifest.ManifestError):
+                    manifest.update(self.root)
+                self.assertEqual(self.path.read_bytes(), original)
+        self.path.write_bytes(self.entry("Cargo.toml", mode=b" *"))
+        self.assertTrue(manifest.update(self.root))
+
     def test_symlink_manifest_or_covered_file_rejected(self):
         (self.root / "alias.toml").symlink_to("Cargo.toml")
         self.path.write_bytes(self.entry("alias.toml"))
