@@ -2187,6 +2187,8 @@ theorem execCoreCallOp_sliceGetUncheckedRangeTo_ok {m : MemoryState}
       .ok (.slicePtr pOut lenOut) := by
   unfold execCoreCallOp
   dsimp only
+  have hW : (!IntWidth.beq .i8 .i8 || !(false == false)) = false := rfl
+  rw [ite_bool_false hW]
   rw [ite_bool_false hMut]
   rw [hRef]
   exact hGet
@@ -2220,6 +2222,8 @@ theorem execCoreCallOp_sliceGetUncheckedRangeFrom_ok {m : MemoryState}
       .ok (.slicePtr pOut lenOut) := by
   unfold execCoreCallOp
   dsimp only
+  have hW : (!IntWidth.beq .i8 .i8 || !(false == false)) = false := rfl
+  rw [ite_bool_false hW]
   rw [ite_bool_false hMut]
   rw [hRef]
   exact hGet

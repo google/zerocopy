@@ -3276,7 +3276,7 @@ MIR_SEMANTICS_GUARDS: tuple[MirSemanticsGuard, ...] = (
         needs_wf_helper=False,
     ),
     # ------------------------------------------------------------------
-    # Profile v2 memory, step, type-admission, and boundary guards (83 guards)
+    # Profile v2 memory, step, type-admission, and boundary guards (92 guards)
     # ------------------------------------------------------------------
     MirSemanticsGuard(
         guard_id="mem_v2_ptr_add_null_nonzero",
@@ -3572,14 +3572,16 @@ MIR_SEMANTICS_GUARDS: tuple[MirSemanticsGuard, ...] = (
             "at its own mutability"
         ),
         anchor=(
-            "        match refValidInMem m inMut (.slice (.int .i8 false)) (.slicePtr p len) with\n"
+            "        match refValidInMem m inMut (.slice (.int w s)) (.slicePtr p len) with\n"
             "        | .error k => .error k\n"
-            "        | .ok () => sliceGetUncheckedCheck m p len.toNat 0 endOff.toNat"
+            "        | .ok () =>\n"
+            "          sliceGetUncheckedCheck m p len.toNat 0 endOff.toNat w.byteSize"
         ),
         replacement=(
-            "        match refValidInMem m outMut (.slice (.int .i8 false)) (.slicePtr p len) with\n"
+            "        match refValidInMem m outMut (.slice (.int w s)) (.slicePtr p len) with\n"
             "        | .error k => .error k\n"
-            "        | .ok () => sliceGetUncheckedCheck m p len.toNat 0 endOff.toNat"
+            "        | .ok () =>\n"
+            "          sliceGetUncheckedCheck m p len.toNat 0 endOff.toNat w.byteSize"
         ),
         fixture_module="StepRefutations",
         theorem_name="refute_step_v2_get_unchecked_range_to_in_mut",
@@ -3593,17 +3595,219 @@ MIR_SEMANTICS_GUARDS: tuple[MirSemanticsGuard, ...] = (
             "at its own mutability"
         ),
         anchor=(
-            "        match refValidInMem m inMut (.slice (.int .i8 false)) (.slicePtr p len) with\n"
+            "        match refValidInMem m inMut (.slice (.int w s)) (.slicePtr p len) with\n"
             "        | .error k => .error k\n"
-            "        | .ok () => sliceGetUncheckedCheck m p len.toNat startOff.toNat len.toNat"
+            "        | .ok () =>\n"
+            "          sliceGetUncheckedCheck m p len.toNat startOff.toNat len.toNat\n"
+            "            w.byteSize"
         ),
         replacement=(
-            "        match refValidInMem m outMut (.slice (.int .i8 false)) (.slicePtr p len) with\n"
+            "        match refValidInMem m outMut (.slice (.int w s)) (.slicePtr p len) with\n"
             "        | .error k => .error k\n"
-            "        | .ok () => sliceGetUncheckedCheck m p len.toNat startOff.toNat len.toNat"
+            "        | .ok () =>\n"
+            "          sliceGetUncheckedCheck m p len.toNat startOff.toNat len.toNat\n"
+            "            w.byteSize"
         ),
         fixture_module="StepRefutations",
         theorem_name="refute_step_v2_get_unchecked_range_from_in_mut",
+    ),
+    MirSemanticsGuard(
+        guard_id="step_v2_get_unchecked_range_in_mut",
+        target_file="trusted/lean/Trusted/MirSemantics/Step.lean",
+        target_module="Trusted/MirSemantics/Step",
+        description=(
+            "execCoreCallOp validates the get_unchecked(start..end) input slice "
+            "at its own mutability"
+        ),
+        anchor=(
+            "        match refValidInMem m inMut (.slice (.int w s)) (.slicePtr p len) with\n"
+            "        | .error k => .error k\n"
+            "        | .ok () =>\n"
+            "          sliceGetUncheckedCheck m p len.toNat startOff.toNat endOff.toNat\n"
+            "            w.byteSize"
+        ),
+        replacement=(
+            "        match refValidInMem m outMut (.slice (.int w s)) (.slicePtr p len) with\n"
+            "        | .error k => .error k\n"
+            "        | .ok () =>\n"
+            "          sliceGetUncheckedCheck m p len.toNat startOff.toNat endOff.toNat\n"
+            "            w.byteSize"
+        ),
+        fixture_module="StepRefutations",
+        theorem_name="refute_step_v2_get_unchecked_range_in_mut",
+        needs_wf_helper=False,
+    ),
+    MirSemanticsGuard(
+        guard_id="step_v2_get_unchecked_range_from_elem_stride",
+        target_file="trusted/lean/Trusted/MirSemantics/Step.lean",
+        target_module="Trusted/MirSemantics/Step",
+        description=(
+            "execCoreCallOp scales get_unchecked(start..) pointer offset by "
+            "the slice element byte size"
+        ),
+        anchor=(
+            "          sliceGetUncheckedCheck m p len.toNat startOff.toNat len.toNat\n"
+            "            w.byteSize"
+        ),
+        replacement=(
+            "          sliceGetUncheckedCheck m p len.toNat startOff.toNat len.toNat\n"
+            "            1"
+        ),
+        fixture_module="StepRefutations",
+        theorem_name="refute_step_v2_get_unchecked_range_from_elem_stride",
+        needs_wf_helper=False,
+    ),
+    MirSemanticsGuard(
+        guard_id="step_v2_get_unchecked_range_elem_stride",
+        target_file="trusted/lean/Trusted/MirSemantics/Step.lean",
+        target_module="Trusted/MirSemantics/Step",
+        description=(
+            "execCoreCallOp scales get_unchecked(start..end) pointer offset by "
+            "the slice element byte size"
+        ),
+        anchor=(
+            "          sliceGetUncheckedCheck m p len.toNat startOff.toNat endOff.toNat\n"
+            "            w.byteSize"
+        ),
+        replacement=(
+            "          sliceGetUncheckedCheck m p len.toNat startOff.toNat endOff.toNat\n"
+            "            1"
+        ),
+        fixture_module="StepRefutations",
+        theorem_name="refute_step_v2_get_unchecked_range_elem_stride",
+        needs_wf_helper=False,
+    ),
+    MirSemanticsGuard(
+        guard_id="step_v2_mem_size_of_unsupported_local_ty",
+        target_file="trusted/lean/Trusted/MirSemantics/Step.lean",
+        target_module="Trusted/MirSemantics/Step",
+        description=(
+            "execCoreCallOp .memSizeOf enforces isSupportedV2LocalTy rather "
+            "than evaluating layoutOfTyV2 on unsupported local types"
+        ),
+        anchor=(
+            "  | .memSizeOf ty, [] =>\n"
+            "    if !MirTy.beq dstTy (.int .isize false) || isUnsizedTy ty ||\n"
+            "        !isSupportedV2LocalTy ty then"
+        ),
+        replacement=(
+            "  | .memSizeOf ty, [] =>\n"
+            "    if !MirTy.beq dstTy (.int .isize false) || isUnsizedTy ty ||\n"
+            "        false then"
+        ),
+        fixture_module="StepRefutations",
+        theorem_name="refute_step_v2_mem_size_of_unsupported_local_ty",
+        needs_wf_helper=False,
+    ),
+    MirSemanticsGuard(
+        guard_id="step_v2_mem_size_of_isize_max",
+        target_file="trusted/lean/Trusted/MirSemantics/Step.lean",
+        target_module="Trusted/MirSemantics/Step",
+        description=(
+            "execCoreCallOp .memSizeOf rejects layouts of isize::MAX + 1 bytes "
+            "or more instead of truncating them"
+        ),
+        anchor=(
+            "        if !Nat.blt lay.size isizeMaxBytes then\n"
+            "          .error .unsupported"
+        ),
+        replacement=(
+            "        if false then\n"
+            "          .error .unsupported"
+        ),
+        fixture_module="StepRefutations",
+        theorem_name="refute_step_v2_mem_size_of_isize_max",
+        needs_wf_helper=False,
+    ),
+    MirSemanticsGuard(
+        guard_id="step_v2_int_from_le_bytes_array_len",
+        target_file="trusted/lean/Trusted/MirSemantics/Step.lean",
+        target_module="Trusted/MirSemantics/Step",
+        description=(
+            "execCoreCallOp .intFromLeBytes requires the byte array length to "
+            "equal w.byteSize"
+        ),
+        anchor=(
+            "  | .intFromLeBytes w s, [(.array (.int .i8 false) len, .array vs)] =>\n"
+            "    if !Nat.beq len w.byteSize || !Nat.beq vs.length w.byteSize ||\n"
+            "        !MirTy.beq dstTy (.int w s) then"
+        ),
+        replacement=(
+            "  | .intFromLeBytes w s, [(.array (.int .i8 false) len, .array vs)] =>\n"
+            "    if false ||\n"
+            "        !MirTy.beq dstTy (.int w s) then"
+        ),
+        fixture_module="StepRefutations",
+        theorem_name="refute_step_v2_int_from_le_bytes_array_len",
+        needs_wf_helper=False,
+    ),
+    MirSemanticsGuard(
+        guard_id="step_v2_get_unchecked_index_in_mut",
+        target_file="trusted/lean/Trusted/MirSemantics/Step.lean",
+        target_module="Trusted/MirSemantics/Step",
+        description=(
+            "execCoreCallOp validates the get_unchecked(idx) input slice at "
+            "its own mutability"
+        ),
+        anchor=(
+            "        match refValidInMem m inMut (.slice elem) (.slicePtr p len) with\n"
+            "        | .error k => .error k\n"
+            "        | .ok () =>\n"
+            "          let idx := (truncateBits .isize idxSv.bits).toNat"
+        ),
+        replacement=(
+            "        match refValidInMem m outMut (.slice elem) (.slicePtr p len) with\n"
+            "        | .error k => .error k\n"
+            "        | .ok () =>\n"
+            "          let idx := (truncateBits .isize idxSv.bits).toNat"
+        ),
+        fixture_module="StepRefutations",
+        theorem_name="refute_step_v2_get_unchecked_index_in_mut",
+        needs_wf_helper=False,
+    ),
+    MirSemanticsGuard(
+        guard_id="step_v2_get_unchecked_index_oob",
+        target_file="trusted/lean/Trusted/MirSemantics/Step.lean",
+        target_module="Trusted/MirSemantics/Step",
+        description=(
+            "execCoreCallOp .sliceGetUncheckedIndex rejects idx >= len as "
+            ".undefined"
+        ),
+        anchor=(
+            "          let idx := (truncateBits .isize idxSv.bits).toNat\n"
+            "          if !Nat.blt idx len.toNat then\n"
+            "            .error .undefined"
+        ),
+        replacement=(
+            "          let idx := (truncateBits .isize idxSv.bits).toNat\n"
+            "          if false then\n"
+            "            .error .undefined"
+        ),
+        fixture_module="StepRefutations",
+        theorem_name="refute_step_v2_get_unchecked_index_oob",
+        needs_wf_helper=False,
+    ),
+    MirSemanticsGuard(
+        guard_id="step_v2_get_unchecked_index_elem_stride",
+        target_file="trusted/lean/Trusted/MirSemantics/Step.lean",
+        target_module="Trusted/MirSemantics/Step",
+        description=(
+            "execCoreCallOp .sliceGetUncheckedIndex advances the element "
+            "pointer by lay.size"
+        ),
+        anchor=(
+            "              match ptrAddInMem m lay.size p idx with\n"
+            "              | .error k => .error k\n"
+            "              | .ok p' => .ok (.ptr p')"
+        ),
+        replacement=(
+            "              match ptrAddInMem m 1 p idx with\n"
+            "              | .error k => .error k\n"
+            "              | .ok p' => .ok (.ptr p')"
+        ),
+        fixture_module="StepRefutations",
+        theorem_name="refute_step_v2_get_unchecked_index_elem_stride",
+        needs_wf_helper=False,
     ),
     MirSemanticsGuard(
         guard_id="core_contracts_slice_subslice_in_mut",
@@ -4934,7 +5138,7 @@ MIR_SEMANTICS_GUARDS: tuple[MirSemanticsGuard, ...] = (
     ),
     # ------------------------------------------------------------------
     # Additional Profile v2 silent-saturation, aliasing, negative-offset,
-    # slice/thin-ref validity, and provenance-free deref guards (24 guards)
+    # slice/thin-ref validity, and provenance-free deref guards (54 guards)
     # ------------------------------------------------------------------
     MirSemanticsGuard(
         guard_id="mem_v2_slice_get_unchecked_inverted",
@@ -5727,6 +5931,276 @@ MIR_SEMANTICS_GUARDS: tuple[MirSemanticsGuard, ...] = (
         ),
         fixture_module="StepRefutations",
         theorem_name="refute_step_v2_option_discriminant_dst_ty",
+        needs_wf_helper=False,
+    ),
+    MirSemanticsGuard(
+        guard_id="core_contracts_next_power_of_two_overflow_trap",
+        target_file="trusted/lean/Trusted/MirSemantics/CoreContracts.lean",
+        target_module="Trusted/MirSemantics/CoreContracts",
+        description=(
+            "execNextPowerOfTwo traps via corePanicTrap when self exceeds "
+            "2^(BITS - 1)"
+        ),
+        anchor=(
+            "  if Nat.blt (Nat.pow 2 (w.bitWidth - 1)) bits then\n"
+            "    .error corePanicTrap"
+        ),
+        replacement=(
+            "  if false then\n"
+            "    .error corePanicTrap"
+        ),
+        fixture_module="StepRefutations",
+        theorem_name="refute_core_contracts_next_power_of_two_overflow_trap",
+        needs_wf_helper=False,
+    ),
+    MirSemanticsGuard(
+        guard_id="core_contracts_next_multiple_of_div_zero_trap",
+        target_file="trusted/lean/Trusted/MirSemantics/CoreContracts.lean",
+        target_module="Trusted/MirSemantics/CoreContracts",
+        description="execNextMultipleOf traps via corePanicTrap when rhs is 0",
+        anchor=(
+            "  if Nat.beq r 0 then\n"
+            "    .error corePanicTrap"
+        ),
+        replacement=(
+            "  if false then\n"
+            "    .error corePanicTrap"
+        ),
+        fixture_module="StepRefutations",
+        theorem_name="refute_core_contracts_next_multiple_of_div_zero_trap",
+        needs_wf_helper=False,
+    ),
+    MirSemanticsGuard(
+        guard_id="core_contracts_next_multiple_of_overflow_trap",
+        target_file="trusted/lean/Trusted/MirSemantics/CoreContracts.lean",
+        target_module="Trusted/MirSemantics/CoreContracts",
+        description=(
+            "execNextMultipleOf traps via corePanicTrap when the rounded "
+            "result overflows w.bitWidth"
+        ),
+        anchor=(
+            "    if Nat.ble (Nat.pow 2 w.bitWidth) res then\n"
+            "      .error corePanicTrap"
+        ),
+        replacement=(
+            "    if false then\n"
+            "      .error corePanicTrap"
+        ),
+        fixture_module="StepRefutations",
+        theorem_name="refute_core_contracts_next_multiple_of_overflow_trap",
+        needs_wf_helper=False,
+    ),
+    MirSemanticsGuard(
+        guard_id="core_contracts_next_power_of_two_unsigned_only",
+        target_file="trusted/lean/Trusted/MirSemantics/CoreContracts.lean",
+        target_module="Trusted/MirSemantics/CoreContracts",
+        description=(
+            "execCoreContractOp rejects signed operands on .numNextPowerOfTwo "
+            "as .unsupported"
+        ),
+        anchor=(
+            "  | .numNextPowerOfTwo w s, [(.int lw ls, .scalar lSv)] =>\n"
+            "    if s || ls || !IntWidth.beq w lw || !MirTy.beq dstTy (.int w false) then"
+        ),
+        replacement=(
+            "  | .numNextPowerOfTwo w s, [(.int lw ls, .scalar lSv)] =>\n"
+            "    if false || !IntWidth.beq w lw || !MirTy.beq dstTy (.int w false) then"
+        ),
+        fixture_module="StepRefutations",
+        theorem_name="refute_core_contracts_next_power_of_two_unsigned_only",
+        needs_wf_helper=False,
+    ),
+    MirSemanticsGuard(
+        guard_id="core_contracts_next_multiple_of_unsigned_only",
+        target_file="trusted/lean/Trusted/MirSemantics/CoreContracts.lean",
+        target_module="Trusted/MirSemantics/CoreContracts",
+        description=(
+            "execCoreContractOp rejects signed operands on .numNextMultipleOf "
+            "as .unsupported"
+        ),
+        anchor=(
+            "  | .numNextMultipleOf w s,\n"
+            "      [(.int lw ls, .scalar lSv), (.int rw rs, .scalar rSv)] =>\n"
+            "    if s || ls || rs || !IntWidth.beq w lw || !IntWidth.beq w rw ||"
+        ),
+        replacement=(
+            "  | .numNextMultipleOf w s,\n"
+            "      [(.int lw ls, .scalar lSv), (.int rw rs, .scalar rSv)] =>\n"
+            "    if false || !IntWidth.beq w lw || !IntWidth.beq w rw ||"
+        ),
+        fixture_module="StepRefutations",
+        theorem_name="refute_core_contracts_next_multiple_of_unsigned_only",
+        needs_wf_helper=False,
+    ),
+    MirSemanticsGuard(
+        guard_id="core_contracts_cmp_min_tie_break",
+        target_file="trusted/lean/Trusted/MirSemantics/CoreContracts.lean",
+        target_module="Trusted/MirSemantics/CoreContracts",
+        description="Ord::min returns self (lSv) when both operands decode equal",
+        anchor="    else if decide (decodeScalar lSv ≤ decodeScalar rSv) then",
+        replacement="    else if decide (decodeScalar lSv < decodeScalar rSv) then",
+        fixture_module="StepRefutations",
+        theorem_name="refute_core_contracts_cmp_min_tie_break",
+        needs_wf_helper=False,
+    ),
+    MirSemanticsGuard(
+        guard_id="core_contracts_cmp_max_tie_break",
+        target_file="trusted/lean/Trusted/MirSemantics/CoreContracts.lean",
+        target_module="Trusted/MirSemantics/CoreContracts",
+        description="Ord::max returns other (rSv) when both operands decode equal",
+        anchor="    else if decide (decodeScalar rSv < decodeScalar lSv) then",
+        replacement="    else if decide (decodeScalar rSv ≤ decodeScalar lSv) then",
+        fixture_module="StepRefutations",
+        theorem_name="refute_core_contracts_cmp_max_tie_break",
+        needs_wf_helper=False,
+    ),
+    MirSemanticsGuard(
+        guard_id="core_contracts_div_ceil_div_zero_trap",
+        target_file="trusted/lean/Trusted/MirSemantics/CoreContracts.lean",
+        target_module="Trusted/MirSemantics/CoreContracts",
+        description="execCoreContractOp .numDivCeil traps via corePanicTrap when rhs = 0",
+        anchor=(
+            "      if Nat.beq r 0 then\n"
+            "        .error corePanicTrap\n"
+            "      else\n"
+            "        let d := Nat.div l r"
+        ),
+        replacement=(
+            "      if false then\n"
+            "        .error corePanicTrap\n"
+            "      else\n"
+            "        let d := Nat.div l r"
+        ),
+        fixture_module="StepRefutations",
+        theorem_name="refute_core_contracts_div_ceil_div_zero_trap",
+        needs_wf_helper=False,
+    ),
+    MirSemanticsGuard(
+        guard_id="core_contracts_div_ceil_unsigned_only",
+        target_file="trusted/lean/Trusted/MirSemantics/CoreContracts.lean",
+        target_module="Trusted/MirSemantics/CoreContracts",
+        description=(
+            "execCoreContractOp rejects signed operands on .numDivCeil as "
+            ".unsupported"
+        ),
+        anchor=(
+            "  | .numDivCeil w s,\n"
+            "      [(.int lw ls, .scalar lSv), (.int rw rs, .scalar rSv)] =>\n"
+            "    if s || ls || rs || !IntWidth.beq w lw || !IntWidth.beq w rw ||"
+        ),
+        replacement=(
+            "  | .numDivCeil w s,\n"
+            "      [(.int lw ls, .scalar lSv), (.int rw rs, .scalar rSv)] =>\n"
+            "    if false || !IntWidth.beq w lw || !IntWidth.beq w rw ||"
+        ),
+        fixture_module="StepRefutations",
+        theorem_name="refute_core_contracts_div_ceil_unsigned_only",
+        needs_wf_helper=False,
+    ),
+    MirSemanticsGuard(
+        guard_id="core_contracts_checked_shl_oob_none",
+        target_file="trusted/lean/Trusted/MirSemantics/CoreContracts.lean",
+        target_module="Trusted/MirSemantics/CoreContracts",
+        description=(
+            "execCoreContractOp .numCheckedShl returns None when rhs >= BITS"
+        ),
+        anchor=(
+            "      let amt := (truncateBits .i32 rSv.bits).toNat\n"
+            "      if !Nat.blt amt w.bitWidth then\n"
+            "        .ok (.optionVal none, m)"
+        ),
+        replacement=(
+            "      let amt := (truncateBits .i32 rSv.bits).toNat\n"
+            "      if false then\n"
+            "        .ok (.optionVal none, m)"
+        ),
+        fixture_module="StepRefutations",
+        theorem_name="refute_core_contracts_checked_shl_oob_none",
+        needs_wf_helper=False,
+    ),
+    MirSemanticsGuard(
+        guard_id="core_contracts_leading_zeros_bit_test",
+        target_file="trusted/lean/Trusted/MirSemantics/CoreContracts.lean",
+        target_module="Trusted/MirSemantics/CoreContracts",
+        description=(
+            "leadingZerosFrom stops at the most-significant set bit for u32 "
+            "and u64 leading_zeros"
+        ),
+        anchor="    if Nat.beq (Nat.land (Nat.shiftRight bits n) 1) 1 then 0",
+        replacement="    if false then 0",
+        fixture_module="StepRefutations",
+        theorem_name="refute_core_contracts_leading_zeros_u32_u64",
+        needs_wf_helper=False,
+    ),
+    MirSemanticsGuard(
+        guard_id="core_contracts_leading_zeros_width",
+        target_file="trusted/lean/Trusted/MirSemantics/CoreContracts.lean",
+        target_module="Trusted/MirSemantics/CoreContracts",
+        description=(
+            "numLeadingZeros scans w.bitWidth bits (64 for u64 vs 32 for u32)"
+        ),
+        anchor="      let count := leadingZerosFrom bits w.bitWidth",
+        replacement="      let count := leadingZerosFrom bits 32",
+        fixture_module="StepRefutations",
+        theorem_name="refute_core_contracts_leading_zeros_u32_u64",
+        needs_wf_helper=False,
+    ),
+    MirSemanticsGuard(
+        guard_id="core_contracts_count_ones_bit_count",
+        target_file="trusted/lean/Trusted/MirSemantics/CoreContracts.lean",
+        target_module="Trusted/MirSemantics/CoreContracts",
+        description="countOnesFrom accumulates each set bit across w.bitWidth",
+        anchor="  | n + 1 => Nat.land bits 1 + countOnesFrom (Nat.shiftRight bits 1) n",
+        replacement="  | n + 1 => countOnesFrom (Nat.shiftRight bits 1) n",
+        fixture_module="StepRefutations",
+        theorem_name="refute_core_contracts_count_ones",
+        needs_wf_helper=False,
+    ),
+    MirSemanticsGuard(
+        guard_id="core_contracts_trailing_zeros_bit_test",
+        target_file="trusted/lean/Trusted/MirSemantics/CoreContracts.lean",
+        target_module="Trusted/MirSemantics/CoreContracts",
+        description="trailingZerosFrom stops at the least-significant set bit",
+        anchor="    if Nat.beq (Nat.land bits 1) 1 then 0",
+        replacement="    if false then 0",
+        fixture_module="StepRefutations",
+        theorem_name="refute_core_contracts_trailing_zeros",
+        needs_wf_helper=False,
+    ),
+    MirSemanticsGuard(
+        guard_id="core_contracts_is_multiple_of_zero_rhs",
+        target_file="trusted/lean/Trusted/MirSemantics/CoreContracts.lean",
+        target_module="Trusted/MirSemantics/CoreContracts",
+        description=(
+            "numIsMultipleOf returns (self == 0) when rhs = 0 instead of "
+            "returning false unconditionally"
+        ),
+        anchor="      if Nat.beq r 0 then .ok (.bool (Nat.beq l 0), m)",
+        replacement="      if Nat.beq r 0 then .ok (.bool false, m)",
+        fixture_module="StepRefutations",
+        theorem_name="refute_core_contracts_is_multiple_of_zero_rhs",
+        needs_wf_helper=False,
+    ),
+    MirSemanticsGuard(
+        guard_id="core_contracts_is_multiple_of_unsigned_only",
+        target_file="trusted/lean/Trusted/MirSemantics/CoreContracts.lean",
+        target_module="Trusted/MirSemantics/CoreContracts",
+        description=(
+            "execCoreContractOp .numIsMultipleOf rejects signed integers as "
+            ".unsupported"
+        ),
+        anchor=(
+            "  | .numIsMultipleOf w s,\n"
+            "      [(.int lw ls, .scalar lSv), (.int rw rs, .scalar rSv)] =>\n"
+            "    if s || ls || rs || !IntWidth.beq w lw || !IntWidth.beq w rw ||"
+        ),
+        replacement=(
+            "  | .numIsMultipleOf w s,\n"
+            "      [(.int lw ls, .scalar lSv), (.int rw rs, .scalar rSv)] =>\n"
+            "    if false || !IntWidth.beq w lw || !IntWidth.beq w rw ||"
+        ),
+        fixture_module="StepRefutations",
+        theorem_name="refute_core_contracts_is_multiple_of_unsigned_only",
         needs_wf_helper=False,
     ),
     # ------------------------------------------------------------------

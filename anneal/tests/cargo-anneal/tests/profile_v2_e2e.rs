@@ -3508,3 +3508,415 @@ fn verifies_profile_v2_vec_and_box_contracts_and_rejects_missing_cap_bound() {
     run_request(dir.path(), "alloc-mixed-raw-ptr-rejected", &request)
         .expect_capture_refused(MIXED_REFS_AND_RAW_PTRS);
 }
+
+/// Profile v2 E2E test for core scalar and slice operations: `count_ones`,
+/// `trailing_zeros`, `checked_shl`, `overflowing_mul`, `from_le_bytes`,
+/// `mem::size_of`, `next_power_of_two`, `next_multiple_of`, `div_ceil`,
+/// `<[u16]>::get_unchecked(Range<usize>)`, and `<[u16]>::get_unchecked(usize)`,
+/// including trap/UB twins for `corePanicTrap` and out-of-bounds indexing.
+#[test]
+fn verifies_core_scalar_ops_and_trap_twins() {
+    let dir = TempDir::new().unwrap();
+
+    // 1. Concrete end-to-end verification of `count_ones`, `trailing_zeros`,
+    // `checked_shl`, `overflowing_mul`, `u16::from_le_bytes`, and
+    // `core::mem::size_of`.
+    let bundle_dir = dir.path().join("core_ops_bundle");
+    let bundle_rust = bundle_dir.join("rust");
+    let bundle_lean = bundle_dir.join("lean");
+    fs::create_dir_all(&bundle_rust).unwrap();
+    fs::create_dir_all(&bundle_lean).unwrap();
+    fs::write(
+        bundle_rust.join("lib.rs"),
+        "pub unsafe fn core_ops_bundle(x: u8, bs: [u8; 2]) -> (u32, u32, Option<u8>, (u8, bool), u16, usize) {\n\
+             (x.count_ones(), x.trailing_zeros(), x.checked_shl(2),\n\
+              x.overflowing_mul(16), u16::from_le_bytes(bs),\n\
+              core::mem::size_of::<Option<u64>>())\n\
+         }\n",
+    )
+    .unwrap();
+    fs::write(
+        bundle_lean.join("Spec.lean"),
+        "\
+prelude
+import Trusted.MirSemantics
+namespace Spec
+open Trusted.MirAst Trusted.MirSemantics
+def okQuery : Query :=
+  { args :=
+      [.scalar ⟨.i8, false, BitVec.ofNat 128 12⟩,
+       .array [.scalar ⟨.i8, false, BitVec.ofNat 128 0x34⟩,
+               .scalar ⟨.i8, false, BitVec.ofNat 128 0x12⟩]],
+    callerMem := ⟨[]⟩ }
+def okOut : TerminalOut :=
+  TerminalOut.returned
+    ⟨.tuple
+      [.scalar ⟨.i32, false, BitVec.ofNat 128 2⟩,
+       .scalar ⟨.i32, false, BitVec.ofNat 128 2⟩,
+       .optionVal (some (.scalar ⟨.i8, false, BitVec.ofNat 128 48⟩)),
+       .tuple [.scalar ⟨.i8, false, BitVec.ofNat 128 192⟩, .bool false],
+       .scalar ⟨.i16, false, BitVec.ofNat 128 0x1234⟩,
+       .scalar ⟨.isize, false, BitVec.ofNat 128 16⟩],
+     ⟨[]⟩⟩
+def safetyPre (_ : String) (q : Query) : Prop := q = okQuery
+def property (p : Program) : Prop :=
+  ∃ (defId : DefId) (body : Body),
+    Trusted.MirSemantics.getElem? p.bodies defId = some body ∧
+    body.identity = \"rust-path-v1::core_ops_bundle\" ∧
+    BehaviorV2 (entryProgForBody p defId) okQuery okOut
+def specs : SpecsV2 := ⟨safetyPre, property⟩
+end Spec
+",
+    )
+    .unwrap();
+    fs::write(
+        bundle_lean.join("Proof.lean"),
+        "\
+prelude
+import Spec
+import Expected
+import Anneal.MirWp
+namespace Proof
+open Trusted.MirAst Trusted.MirSemantics Anneal.MirWp
+theorem verify : Expected.claim := by
+  have hOk :=
+    spec_and_behaviorV2_of_exec_eq
+      (p := entryProgForBody Captured.program 0)
+      (q := Spec.okQuery)
+      (out := Spec.okOut)
+      (fuel := 40) rfl
+  refine ⟨rfl, rfl, rfl, rfl, rfl, rfl, ?_, ?_⟩
+  · intro defId body hBody
+    cases defId with
+    | zero =>
+      cases hBody
+      refine ⟨rfl, rfl, fun q _ hSafe => ?_⟩
+      have hEq : q = Spec.okQuery := hSafe rfl
+      cases hEq
+      exact hOk.1
+    | succ _ => cases hBody
+  · refine ⟨0, Captured.body_0, rfl, rfl, hOk.2.1⟩
+end Proof
+",
+    )
+    .unwrap();
+    let bundle_req = json!({
+        "schema_version": 1,
+        "compilation": {
+            "source_root": bundle_rust.to_str().unwrap(),
+            "crate_root": "lib.rs",
+            "crate_name": "core_ops_bundle",
+            "edition": "2024",
+            "target": "x86_64-unknown-linux-gnu",
+            "cfg": [],
+            "source_files": ["lib.rs"]
+        },
+        "scope": {"kind": "crate"},
+        "proof": {
+            "source_root": bundle_lean.to_str().unwrap(),
+            "specification": "Spec.specs",
+            "theorem": "Proof.verify",
+            "sources": [
+                {"module": "Spec", "path": "Spec.lean", "role": "specification"},
+                {"module": "Proof", "path": "Proof.lean", "role": "proof"}
+            ]
+        }
+    });
+    run_request(dir.path(), "core-ops-bundle-ok", &bundle_req).expect_ok("crate_verified");
+
+    // 2. Positive + trap/UB twins for `next_power_of_two`, `next_multiple_of`,
+    // and `<[u16]>::get_unchecked(Range<usize>)`.
+    const TWIN_PROOF: &str = "\
+prelude
+import Spec
+import Expected
+import Anneal.MirWp
+namespace Proof
+open Trusted.MirAst Trusted.MirSemantics Anneal.MirWp
+theorem verify : Expected.claim := by
+  have hOk :=
+    spec_and_behaviorV2_of_exec_eq
+      (p := entryProgForBody Captured.program 0)
+      (q := Spec.okQuery)
+      (out := Spec.okOut)
+      (fuel := 30) rfl
+  refine ⟨rfl, rfl, rfl, rfl, rfl, rfl, ?_, ?_⟩
+  · intro defId body hBody
+    cases defId with
+    | zero =>
+      cases hBody
+      refine ⟨rfl, rfl, fun q _ hSafe => ?_⟩
+      have hEq : q = Spec.okQuery := hSafe rfl
+      cases hEq
+      exact hOk.1
+    | succ _ => cases hBody
+  · refine ⟨0, Captured.body_0, rfl, rfl, ?_⟩
+    exact (spec_and_behaviorV2_of_exec_eq
+      (p := entryProgForBody Captured.program 0)
+      (q := Spec.testQuery)
+      (out := Spec.expectedOut)
+      (fuel := 30) rfl).2.1
+end Proof
+";
+    let run_twin = |subdir: &str,
+                    crate_name: &str,
+                    rust_src: &str,
+                    pos_name: &str,
+                    pos_spec: &str,
+                    neg_name: &str,
+                    neg_spec: &str| {
+        let sub_dir = dir.path().join(subdir);
+        let sub_rust = sub_dir.join("rust");
+        let sub_lean = sub_dir.join("lean");
+        fs::create_dir_all(&sub_rust).unwrap();
+        fs::create_dir_all(&sub_lean).unwrap();
+        fs::write(sub_rust.join("lib.rs"), rust_src).unwrap();
+        fs::write(sub_lean.join("Proof.lean"), TWIN_PROOF).unwrap();
+        let req = json!({
+            "schema_version": 1,
+            "compilation": {
+                "source_root": sub_rust.to_str().unwrap(),
+                "crate_root": "lib.rs",
+                "crate_name": crate_name,
+                "edition": "2024",
+                "target": "x86_64-unknown-linux-gnu",
+                "cfg": [],
+                "source_files": ["lib.rs"]
+            },
+            "scope": {"kind": "crate"},
+            "proof": {
+                "source_root": sub_lean.to_str().unwrap(),
+                "specification": "Spec.specs",
+                "theorem": "Proof.verify",
+                "sources": [
+                    {"module": "Spec", "path": "Spec.lean", "role": "specification"},
+                    {"module": "Proof", "path": "Proof.lean", "role": "proof"}
+                ]
+            }
+        });
+        fs::write(sub_lean.join("Spec.lean"), pos_spec).unwrap();
+        run_request(dir.path(), pos_name, &req).expect_ok("crate_verified");
+        fs::write(sub_lean.join("Spec.lean"), neg_spec).unwrap();
+        let neg = run_request(dir.path(), neg_name, &req);
+        neg.expect_proof_failed();
+        let detail = match &neg.receipt {
+            VerifyReceipt::Failed(failure) => failure.detail.as_str(),
+            VerifyReceipt::Verified(_) => "",
+        };
+        assert!(
+            detail.contains("Spec.testQuery")
+                && detail.contains("execProgV2")
+                && (detail.contains("Application type mismatch")
+                    || detail.contains("not definitionally equal")
+                    || detail.contains("Tactic `rfl` failed")),
+            "{neg_name} did not fail on `rfl` over Spec.testQuery:\n{:?}",
+            neg.receipt
+        );
+    };
+
+    const POW2_SPEC: &str = "\
+prelude
+import Trusted.MirSemantics
+namespace Spec
+open Trusted.MirAst Trusted.MirSemantics
+def okQuery : Query := { args := [.scalar ⟨.i8, false, BitVec.ofNat 128 128⟩], callerMem := ⟨[]⟩ }
+def okOut : TerminalOut := TerminalOut.returned ⟨.scalar ⟨.i8, false, BitVec.ofNat 128 128⟩, ⟨[]⟩⟩
+def testQuery : Query := __TEST_QUERY__
+def expectedOut : TerminalOut :=
+  TerminalOut.returned ⟨.scalar ⟨.i8, false, BitVec.ofNat 128 __OUT_VAL__⟩, ⟨[]⟩⟩
+def safetyPre (_ : String) (q : Query) : Prop := q = okQuery
+def property (p : Program) : Prop :=
+  ∃ (defId : DefId) (body : Body),
+    Trusted.MirSemantics.getElem? p.bodies defId = some body ∧
+    body.identity = \"rust-path-v1::pow2\" ∧
+    BehaviorV2 (entryProgForBody p defId) testQuery expectedOut
+def specs : SpecsV2 := ⟨safetyPre, property⟩
+end Spec
+";
+    run_twin(
+        "pow2_twin",
+        "core_ops_pow2_twin",
+        "pub unsafe fn pow2(x: u8) -> u8 {\n    x.next_power_of_two()\n}\n",
+        "core-ops-pow2-ok",
+        &POW2_SPEC
+            .replace("__TEST_QUERY__", "okQuery")
+            .replace("__OUT_VAL__", "128"),
+        "core-ops-pow2-trap",
+        &POW2_SPEC
+            .replace(
+                "__TEST_QUERY__",
+                "{ args := [.scalar ⟨.i8, false, BitVec.ofNat 128 129⟩], callerMem := ⟨[]⟩ }",
+            )
+            .replace("__OUT_VAL__", "0"),
+    );
+
+    const MULT_SPEC: &str = "\
+prelude
+import Trusted.MirSemantics
+namespace Spec
+open Trusted.MirAst Trusted.MirSemantics
+def okQuery : Query :=
+  { args := [.scalar ⟨.i8, false, BitVec.ofNat 128 13⟩,
+             .scalar ⟨.i8, false, BitVec.ofNat 128 4⟩], callerMem := ⟨[]⟩ }
+def okOut : TerminalOut := TerminalOut.returned ⟨.scalar ⟨.i8, false, BitVec.ofNat 128 16⟩, ⟨[]⟩⟩
+def testQuery : Query := __TEST_QUERY__
+def expectedOut : TerminalOut :=
+  TerminalOut.returned ⟨.scalar ⟨.i8, false, BitVec.ofNat 128 __OUT_VAL__⟩, ⟨[]⟩⟩
+def safetyPre (_ : String) (q : Query) : Prop := q = okQuery
+def property (p : Program) : Prop :=
+  ∃ (defId : DefId) (body : Body),
+    Trusted.MirSemantics.getElem? p.bodies defId = some body ∧
+    body.identity = \"rust-path-v1::mult\" ∧
+    BehaviorV2 (entryProgForBody p defId) testQuery expectedOut
+def specs : SpecsV2 := ⟨safetyPre, property⟩
+end Spec
+";
+    run_twin(
+        "mult_twin",
+        "core_ops_mult_twin",
+        "pub unsafe fn mult(x: u8, rhs: u8) -> u8 {\n    x.next_multiple_of(rhs)\n}\n",
+        "core-ops-mult-ok",
+        &MULT_SPEC
+            .replace("__TEST_QUERY__", "okQuery")
+            .replace("__OUT_VAL__", "16"),
+        "core-ops-mult-div0-trap",
+        &MULT_SPEC
+            .replace(
+                "__TEST_QUERY__",
+                "{ args := [.scalar ⟨.i8, false, BitVec.ofNat 128 13⟩, \
+                 .scalar ⟨.i8, false, BitVec.ofNat 128 0⟩], callerMem := ⟨[]⟩ }",
+            )
+            .replace("__OUT_VAL__", "0"),
+    );
+
+    const GET_U16_SPEC: &str = "\
+prelude
+import Trusted.MirSemantics
+namespace Spec
+open Trusted.MirAst Trusted.MirSemantics
+def okQuery : Query :=
+  { args :=
+      [.slicePtr ⟨some 2, 0, .isize⟩ 2,
+       .scalar ⟨.isize, false, BitVec.ofNat 128 1⟩,
+       .scalar ⟨.isize, false, BitVec.ofNat 128 2⟩],
+    callerMem :=
+      ⟨[{ allocId := 2, alignLog2 := 1, mutability := .shared,
+          bytes := [AllocByte.init 10 none, AllocByte.init 0 none,
+                    AllocByte.init 20 none, AllocByte.init 0 none],
+          live := true }]⟩ }
+def okOut : TerminalOut :=
+  TerminalOut.returned
+    ⟨.slicePtr ⟨some 2, 2, .isize⟩ 1, okQuery.callerMem⟩
+def testQuery : Query := __TEST_QUERY__
+def expectedOut : TerminalOut :=
+  TerminalOut.returned
+    ⟨.slicePtr ⟨some 2, 2, .isize⟩ 1, testQuery.callerMem⟩
+def safetyPre (_ : String) (q : Query) : Prop := q = okQuery
+def property (p : Program) : Prop :=
+  ∃ (defId : DefId) (body : Body),
+    Trusted.MirSemantics.getElem? p.bodies defId = some body ∧
+    body.identity = \"rust-path-v1::sub_u16\" ∧
+    BehaviorV2 (entryProgForBody p defId) testQuery expectedOut
+def specs : SpecsV2 := ⟨safetyPre, property⟩
+end Spec
+";
+    run_twin(
+        "get_u16_twin",
+        "core_ops_get_u16_twin",
+        "pub unsafe fn sub_u16<'a>(s: &'a [u16], a: usize, b: usize) -> &'a [u16] {\n\
+             unsafe { s.get_unchecked(a..b) }\n\
+         }\n",
+        "core-ops-get-u16-ok",
+        &GET_U16_SPEC.replace("__TEST_QUERY__", "okQuery"),
+        "core-ops-get-u16-oob",
+        &GET_U16_SPEC.replace(
+            "__TEST_QUERY__",
+            "{ args := [.slicePtr ⟨some 2, 0, .isize⟩ 2, \
+             .scalar ⟨.isize, false, BitVec.ofNat 128 1⟩, \
+             .scalar ⟨.isize, false, BitVec.ofNat 128 3⟩], callerMem := okQuery.callerMem }",
+        ),
+    );
+
+    const DIV_CEIL_SPEC: &str = "\
+prelude
+import Trusted.MirSemantics
+namespace Spec
+open Trusted.MirAst Trusted.MirSemantics
+def okQuery : Query :=
+  { args := [.scalar ⟨.i8, false, BitVec.ofNat 128 13⟩,
+             .scalar ⟨.i8, false, BitVec.ofNat 128 4⟩], callerMem := ⟨[]⟩ }
+def okOut : TerminalOut := TerminalOut.returned ⟨.scalar ⟨.i8, false, BitVec.ofNat 128 4⟩, ⟨[]⟩⟩
+def testQuery : Query := __TEST_QUERY__
+def expectedOut : TerminalOut :=
+  TerminalOut.returned ⟨.scalar ⟨.i8, false, BitVec.ofNat 128 __OUT_VAL__⟩, ⟨[]⟩⟩
+def safetyPre (_ : String) (q : Query) : Prop := q = okQuery
+def property (p : Program) : Prop :=
+  ∃ (defId : DefId) (body : Body),
+    Trusted.MirSemantics.getElem? p.bodies defId = some body ∧
+    body.identity = \"rust-path-v1::divc\" ∧
+    BehaviorV2 (entryProgForBody p defId) testQuery expectedOut
+def specs : SpecsV2 := ⟨safetyPre, property⟩
+end Spec
+";
+    run_twin(
+        "div_ceil_twin",
+        "core_ops_div_ceil_twin",
+        "pub unsafe fn divc(x: u8, rhs: u8) -> u8 {\n    x.div_ceil(rhs)\n}\n",
+        "core-ops-div-ceil-ok",
+        &DIV_CEIL_SPEC
+            .replace("__TEST_QUERY__", "okQuery")
+            .replace("__OUT_VAL__", "4"),
+        "core-ops-div-ceil-div0-trap",
+        &DIV_CEIL_SPEC
+            .replace(
+                "__TEST_QUERY__",
+                "{ args := [.scalar ⟨.i8, false, BitVec.ofNat 128 13⟩, \
+                 .scalar ⟨.i8, false, BitVec.ofNat 128 0⟩], callerMem := ⟨[]⟩ }",
+            )
+            .replace("__OUT_VAL__", "0"),
+    );
+
+    const GET_IDX_U16_SPEC: &str = "\
+prelude
+import Trusted.MirSemantics
+namespace Spec
+open Trusted.MirAst Trusted.MirSemantics
+def okQuery : Query :=
+  { args :=
+      [.slicePtr ⟨some 2, 0, .isize⟩ 2,
+       .scalar ⟨.isize, false, BitVec.ofNat 128 1⟩],
+    callerMem :=
+      ⟨[{ allocId := 2, alignLog2 := 1, mutability := .shared,
+          bytes := [AllocByte.init 10 none, AllocByte.init 0 none,
+                    AllocByte.init 20 none, AllocByte.init 0 none],
+          live := true }]⟩ }
+def okOut : TerminalOut :=
+  TerminalOut.returned ⟨.ptr ⟨some 2, 2, .isize⟩, okQuery.callerMem⟩
+def testQuery : Query := __TEST_QUERY__
+def expectedOut : TerminalOut :=
+  TerminalOut.returned ⟨.ptr ⟨some 2, 2, .isize⟩, testQuery.callerMem⟩
+def safetyPre (_ : String) (q : Query) : Prop := q = okQuery
+def property (p : Program) : Prop :=
+  ∃ (defId : DefId) (body : Body),
+    Trusted.MirSemantics.getElem? p.bodies defId = some body ∧
+    body.identity = \"rust-path-v1::elem_u16\" ∧
+    BehaviorV2 (entryProgForBody p defId) testQuery expectedOut
+def specs : SpecsV2 := ⟨safetyPre, property⟩
+end Spec
+";
+    run_twin(
+        "get_idx_u16_twin",
+        "core_ops_get_idx_u16_twin",
+        "pub unsafe fn elem_u16<'a>(s: &'a [u16], idx: usize) -> &'a u16 {\n\
+             unsafe { s.get_unchecked(idx) }\n\
+         }\n",
+        "core-ops-get-idx-u16-ok",
+        &GET_IDX_U16_SPEC.replace("__TEST_QUERY__", "okQuery"),
+        "core-ops-get-idx-u16-oob",
+        &GET_IDX_U16_SPEC.replace(
+            "__TEST_QUERY__",
+            "{ args := [.slicePtr ⟨some 2, 0, .isize⟩ 2, \
+             .scalar ⟨.isize, false, BitVec.ofNat 128 2⟩], callerMem := okQuery.callerMem }",
+        ),
+    );
+}

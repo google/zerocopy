@@ -7237,3 +7237,134 @@ fn profile_v2_refuses_local_alloc_vec_look_alike_in_crate_named_alloc() {
     assert!(failure.to_string().contains("unsupported type: alloc::vec::Vec<u8>"), "{failure}");
     fixture.assert_no_capture_artifacts();
 }
+
+#[test]
+fn captures_core_scalar_ops_and_slice_get_unchecked_int_slices() {
+    let src = b"\
+        pub fn core_scalar_and_layout(a: u64, b: i16, c: u16, d: u64, e: [u8; 2], f: [u8; 4], sh: u32) -> (u32, u32, u32, u32, u16, u64, u64, Option<u64>, Option<i16>, (u64, bool), (i64, bool), usize, usize, usize, u16, i32) {\n\
+            let o1 = a.count_ones();\n\
+            let o2 = b.count_ones();\n\
+            let z1 = a.trailing_zeros();\n\
+            let z2 = b.trailing_zeros();\n\
+            let p2 = c.next_power_of_two();\n\
+            let nm = d.next_multiple_of(8);\n\
+            let dc = d.div_ceil(8);\n\
+            let cs_u = a.checked_shl(sh);\n\
+            let cs_i = b.checked_shl(sh);\n\
+            let om_u = a.overflowing_mul(d);\n\
+            let sa = b as i64;\n\
+            let om_i = sa.overflowing_mul(3);\n\
+            let sz_opt = core::mem::size_of::<Option<u64>>();\n\
+            let sz_slice_ref = core::mem::size_of::<&[u16]>();\n\
+            let sz_arr = core::mem::size_of::<[u8; 4]>();\n\
+            let from_u = u16::from_le_bytes(e);\n\
+            let from_i = i32::from_le_bytes(f);\n\
+            (o1, o2, z1, z2, p2, nm, dc, cs_u, cs_i, om_u, om_i, sz_opt, sz_slice_ref, sz_arr, from_u, from_i)\n\
+        }\n\
+        pub unsafe fn core_slice_get_unchecked<'a>(s16: &'a [u16], s32: &'a [i32], idx: usize, start: usize, end: usize) -> (&'a [u16], &'a [u16], &'a [i32], &'a u16) {\n\
+            let p1 = unsafe { s16.get_unchecked(..end) };\n\
+            let p2 = unsafe { s16.get_unchecked(start..) };\n\
+            let p3 = unsafe { s32.get_unchecked(start..end) };\n\
+            let p4 = unsafe { s16.get_unchecked(idx) };\n\
+            (p1, p2, p3, p4)\n\
+        }\n";
+    let cap = Capture::new(src);
+    let out = cap
+        .command()
+        .args([
+            "--select=core_scalar_and_layout",
+            "--select=core_slice_get_unchecked",
+        ])
+        .output()
+        .unwrap();
+    assert!(
+        out.status.success(),
+        "core scalar ops capture failed:\n{}\n{}",
+        stdout(&out),
+        stderr(&out)
+    );
+    let manifest = cap.manifest();
+    assert_eq!(manifest["program"]["mir_profile_version"], 2, "{manifest}");
+    let lean_path = cap.output.join("Captured.lean");
+    let lean = std::fs::read_to_string(&lean_path).unwrap();
+    for needle in [
+        "CoreCallOp.sliceGetUncheckedRangeTo",
+        "CoreCallOp.sliceGetUncheckedRangeFrom",
+        "CoreCallOp.sliceGetUncheckedRange",
+        "CoreCallOp.sliceGetUncheckedIndex",
+        "CoreCallOp.numNextMultipleOf",
+        "CoreCallOp.numDivCeil",
+        "CoreCallOp.numCheckedShl",
+        "CoreCallOp.numCountOnes",
+        "CoreCallOp.numTrailingZeros",
+        "CoreCallOp.numNextPowerOfTwo",
+        "CoreCallOp.numOverflowingMul",
+        "CoreCallOp.memSizeOf",
+        "CoreCallOp.intFromLeBytes",
+    ] {
+        assert!(lean.contains(needle), "missing {needle} in:\n{lean}");
+    }
+    compile_captured_lean_if_trusted_sources_present(&lean_path);
+}
+
+#[test]
+fn refuses_unsupported_core_scalar_ops() {
+    for (name, source, expected_reason) in [
+        (
+            "size-of-tuple-missing-v2-layout",
+            "pub fn selected() -> usize { core::mem::size_of::<(u16, u64)>() }\n",
+            "lacks v2 layout",
+        ),
+        (
+            "size-of-range-missing-v2-layout",
+            "pub fn selected() -> usize { core::mem::size_of::<core::ops::Range<usize>>() }\n",
+            "lacks v2 layout",
+        ),
+        (
+            "size-of-array-of-option",
+            "pub fn selected() -> usize { core::mem::size_of::<[Option<u64>; 2]>() }\n",
+            "unsupported core::mem::size_of type",
+        ),
+        (
+            "get-unchecked-range-inclusive",
+            "pub unsafe fn selected<'a>(s: &'a [u16], start: usize, end: usize) -> &'a [u16] {\n\
+                 unsafe { s.get_unchecked(start..=end) }\n\
+             }\n",
+            "unsupported type: std::ops::RangeInclusive<usize>",
+        ),
+        (
+            "get-unchecked-mut-index",
+            "pub unsafe fn selected(s: &mut [u16], idx: usize) -> u16 { unsafe { *s.get_unchecked_mut(idx) } }\n",
+            "unsupported core/alloc call",
+        ),
+        (
+            "get-unchecked-enum-slice",
+            "#[repr(u8)] pub enum Tag { A = 0, B = 1 }\n\
+             pub unsafe fn selected<'a>(s: &'a [Tag], start: usize, end: usize) -> &'a [Tag] {\n\
+                 unsafe { s.get_unchecked(start..end) }\n\
+             }\n",
+            "invalid CoreCall SliceGetUncheckedRange",
+        ),
+        (
+            "get-unchecked-mut-range",
+            "pub unsafe fn selected<'a>(s: &'a mut [u16], start: usize, end: usize) -> &'a mut [u16] {\n\
+                 unsafe { s.get_unchecked_mut(start..end) }\n\
+             }\n",
+            "unsupported core/alloc call",
+        ),
+    ] {
+        let fixture = Capture::new(source.as_bytes());
+        let output = fixture.selected_command().output().unwrap();
+        assert_eq!(output.status.code(), Some(1), "{name}: {output:?}");
+        let failure = status(&output);
+        assert_eq!(failure["status"], "unsupported", "{name}: {failure}");
+        let reason = failure["unsupported"][0]["reason"]
+            .as_str()
+            .unwrap_or_default();
+        assert!(
+            reason.contains(expected_reason),
+            "{name}: expected `{expected_reason}` in reason `{reason}` ({failure})"
+        );
+        fixture.assert_no_capture_artifacts();
+    }
+}

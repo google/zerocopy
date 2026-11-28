@@ -123,7 +123,7 @@
     },
     {
       "path": "theory/Anneal/MirWp/V2Memory.lean",
-      "sha256": "ab143dbcffcce2f324490b50668ac10b623f16e26556a1e55adbd2adf68abddd"
+      "sha256": "56c6b9fe9535313870f5c1109abc875e785b9d66351e26e7767424799b54334f"
     },
     {
       "path": "theory/Anneal/MirWp/V2StepShield.lean",
