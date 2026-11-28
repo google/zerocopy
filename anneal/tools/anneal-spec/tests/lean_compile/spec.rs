@@ -760,6 +760,25 @@ anneal::external_spec! {
         if a <= 128 { a.next_power_of_two() } else { 0 }
     }
 
+    // `name @ pattern` bindings, which carry the arm's facts.
+    #[anneal::pure]
+    fn at_bind(a: u8) -> u32 {
+        match a {
+            0 => 0,
+            n @ (1 | 2) => n as u32,
+            n @ 3..=200 => n.ilog2(),
+            _ => 100,
+        }
+    }
+
+    #[anneal::pure]
+    fn at_npot(a: u16) -> u16 {
+        match a {
+            n @ 0..=32768 => n.next_power_of_two(),
+            _ => 0,
+        }
+    }
+
     #[anneal::pure]
     fn npot_u64(a: u64) -> u64 {
         match a {
@@ -796,6 +815,7 @@ anneal::external_spec! {
                 + n.leading_zeros()
                 + (if n > 0 { n.ilog2() } else { 0 })
                 + (if n <= 1000 { n.next_power_of_two() } else { 0 })
+                + (match n { j @ 1..=9 => j, _ => 0 })
                 + match n { 0..=9 => 1, _ => 2 }
         },
         ensures(|r| r == saturating_sub(n, 1u32)),

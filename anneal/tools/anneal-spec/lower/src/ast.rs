@@ -204,9 +204,10 @@ pub enum ExprKind {
 }
 
 /// One `match` arm: `pats => body`, where `pats` are the alternatives of an
-/// or-pattern.
+/// or-pattern, or `name @ pats => body`, where `at` holds `name` and its span.
 #[derive(Clone, Debug)]
 pub struct Arm {
+    pub at: Option<(String, Span)>,
     pub pats: Vec<Pat>,
     pub body: Expr,
     pub span: Span,

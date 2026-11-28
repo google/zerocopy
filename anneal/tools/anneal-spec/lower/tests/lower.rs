@@ -2847,6 +2847,145 @@ fn next_power_of_two_needs_room() {
 }
 
 #[test]
+fn match_at_bindings_lower_exactly() {
+    let lean = |clause: &str, sig: &str| {
+        lower_one(&wrap(clause, sig)).unwrap_or_else(|e| panic!("{clause}: {e:?}")).spec_lean
+    };
+    let has = |text: &str, want: &str| assert!(text.contains(want), "missing {want} in\n{text}");
+    // `n @ pat` tests the pattern, then binds the scrutinee as a name arm
+    // does.
+    has(
+        &lean("ensures(|r| r == match a { n @ 1..=9 => n, _ => 0u8 })", "fn f(a: u8) -> u8"),
+        "(let «match» : Int := (specInt (specArg q 0)); (if ((1 : Int) ≤ «match» ∧ «match» ≤ \
+         (9 : Int)) then (let «n» : Int := «match»; «n») else (0 : Int)))",
+    );
+    has(
+        &lean("ensures(|r| r == match a { n @ (2 | 4) => n, _ => 0u8 })", "fn f(a: u8) -> u8"),
+        "(if ((«match» = (2 : Int)) ∨ («match» = (4 : Int))) then (let «n» : Int := «match»; «n»)",
+    );
+    has(
+        &lean("ensures(|r| match c { t @ true => t, false => r == 0u8 })", "fn f(c: bool) -> u8"),
+        "((«match» → (let «t» : Prop := «match»; «t»)) ∧ (¬ «match» → ",
+    );
+    has(
+        &lean("max_steps = match n { k @ 1..=9 => k * 2, _ => 1 }", "fn f(n: u32)"),
+        "(if ((1 : Nat) ≤ «match» ∧ «match» ≤ (9 : Nat)) then (let «k» : Nat := «match»; («k» * \
+         (2 : Nat))) else (1 : Nat))",
+    );
+}
+
+#[test]
+fn match_at_bindings_carry_the_arm_facts() {
+    let sig = "fn f(a: u8, i: i8, c: bool) -> u32";
+    let ok = |clause: &str| {
+        lower_one(&wrap(clause, sig)).unwrap_or_else(|e| panic!("{clause}: {e:?}"));
+    };
+    // The name has the facts that the pattern and the earlier arms prove of
+    // the scrutinee: nonzero, positive, and bounded above.
+    for clause in [
+        "ensures(|r| r == match a { n @ 1..=u8::MAX => n.ilog2(), _ => 0u32 })",
+        "ensures(|r| r == match i { n @ 1..=i8::MAX => n.ilog2(), _ => 0u32 })",
+        "ensures(|r| r == match i { n @ (1 | 5..=9) => n.ilog2(), _ => 0u32 })",
+        "ensures(|r| r == match i { i8::MIN..=0 => 0u32, n @ 1..=100 => n.ilog2(), _ => 1u32 })",
+        "ensures(|r| r == match a { 0 => 0u32, n @ 1..=100 => n.ilog2(), _ => 1u32 })",
+        "ensures(|r| math(r) == match a { n @ 0..=128 => math(n.next_power_of_two()), _ => 0 })",
+        "ensures(|r| math(r) == match a { 129..=u8::MAX => 0, n @ 3..=9 => math(n.next_power_of_two()), _ => 1 })",
+        "ensures(|r| match a { n @ 1..=10 => math(r) == math(a / n), _ => r == 0u32 })",
+        "ensures(|r| match a { n @ (3 | 7) => math(r) == math(a % n), _ => r == 0u32 })",
+    ] {
+        ok(clause);
+    }
+    for (clause, code) in [
+        ("ensures(|r| r == match a { n @ 0..=5 => n.ilog2(), _ => 0u32 })", "E_ANNEAL_UNGUARDED_SPEC_LOG"),
+        ("ensures(|r| r == match i { n @ -1..=5 => n.ilog2(), _ => 0u32 })", "E_ANNEAL_UNGUARDED_SPEC_LOG"),
+        ("ensures(|r| r == match i { n @ (0 | 5) => n.ilog2(), _ => 0u32 })", "E_ANNEAL_UNGUARDED_SPEC_LOG"),
+        (
+            "ensures(|r| math(r) == match a { n @ 0..=129 => math(n.next_power_of_two()), _ => 0 })",
+            "E_ANNEAL_UNGUARDED_SPEC_OVERFLOW",
+        ),
+        (
+            "ensures(|r| match a { n @ 0..=10 => math(r) == math(a / n), _ => r == 0u32 })",
+            "E_ANNEAL_UNGUARDED_SPEC_DIV",
+        ),
+    ] {
+        expect_error(&wrap(clause, sig), code);
+    }
+}
+
+#[test]
+fn match_at_bindings_are_checked_strictly() {
+    let sig = "fn f(a: u8, i: i8, c: bool) -> u8";
+    for (clause, code) in [
+        (
+            "ensures(|r| r == match a { n @ 1 | 2 => n, _ => 0u8 })",
+            "E_ANNEAL_SPEC_UNSUPPORTED_EXPR",
+        ),
+        (
+            "ensures(|r| r == match a { 1 | n @ 2 => n, _ => 0u8 })",
+            "E_ANNEAL_SPEC_UNSUPPORTED_EXPR",
+        ),
+        (
+            "ensures(|r| r == match a { n @ m @ 1 => n, _ => 0u8 })",
+            "E_ANNEAL_SPEC_UNSUPPORTED_EXPR",
+        ),
+        (
+            "ensures(|r| r == match a { n @ (m @ 1) => n, _ => 0u8 })",
+            "E_ANNEAL_SPEC_UNSUPPORTED_EXPR",
+        ),
+        ("ensures(|r| r == match a { n @ _ => n })", "E_ANNEAL_SPEC_UNSUPPORTED_EXPR"),
+        ("ensures(|r| r == match a { n @ m => n })", "E_ANNEAL_SPEC_UNSUPPORTED_EXPR"),
+        (
+            "ensures(|r| r == match a { n @ (1 | _) => n, _ => 0u8 })",
+            "E_ANNEAL_SPEC_UNSUPPORTED_EXPR",
+        ),
+        ("ensures(|r| r == match a { _ @ 1 => 1u8, _ => 0u8 })", "E_ANNEAL_SPEC_UNSUPPORTED_EXPR"),
+        (
+            "ensures(|r| r == match a { ref n @ 1 => n, _ => 0u8 })",
+            "E_ANNEAL_SPEC_UNSUPPORTED_EXPR",
+        ),
+        ("ensures(|r| r == match a { n @ 1..5 => n, _ => 0u8 })", "E_ANNEAL_SPEC_UNSUPPORTED_EXPR"),
+        (
+            "ensures(|r| r == match a { n @ 1 if c => n, _ => 0u8 })",
+            "E_ANNEAL_SPEC_UNSUPPORTED_EXPR",
+        ),
+        ("ensures(|r| r == match a { n @ => n, _ => 0u8 })", "E_ANNEAL_SPEC_SYNTAX"),
+        ("ensures(|r| r == match a { n @ 1..=9 => 0u8, _ => 1u8 })", "E_ANNEAL_UNUSED_LET"),
+        ("ensures(|r| r == match a { i @ 1..=9 => r, _ => 0u8 })", "E_ANNEAL_SPEC_SHADOWING"),
+        (
+            "ensures(|r| r == match a { n @ 1u16..=9 => 1u8, _ => 0u8 })",
+            "E_ANNEAL_SPEC_TYPE_MISMATCH",
+        ),
+        (
+            "ensures(|r| r == match a { n @ 1..=9 => n, m @ 2..=3 => m, _ => 0u8 })",
+            "E_ANNEAL_UNREACHABLE_MATCH_ARM",
+        ),
+        ("ensures(|r| r == match a { n @ 0..=u8::MAX => n })", "E_ANNEAL_NON_EXHAUSTIVE_MATCH"),
+    ] {
+        expect_error(&wrap(clause, sig), code);
+    }
+    let r = expect_error(
+        &wrap("ensures(|r| r == match a { n @ 1 | 2 => n, _ => 0u8 })", sig),
+        "E_ANNEAL_SPEC_UNSUPPORTED_EXPR",
+    );
+    assert!(r.contains("write `n @ (a | b)`"), "{r}");
+    let r = expect_error(
+        &wrap("ensures(|r| r == match a { n @ _ => n })", sig),
+        "E_ANNEAL_SPEC_UNSUPPORTED_EXPR",
+    );
+    assert!(r.contains("write `n`"), "{r}");
+    for (clause, msg) in [
+        ("n @ m @ 1 => n,", "nested `@` bindings are not supported"),
+        ("1 | n @ 2 => n,", "must cover the whole pattern"),
+        ("n @ => n,", "expected a pattern after `@`"),
+        ("_ @ 1 => 1u8,", "unsupported pattern"),
+    ] {
+        let text = format!("ensures(|r| r == match a {{ {clause} _ => 0u8 }})");
+        let Err(r) = lower_one(&wrap(&text, sig)) else { panic!("{clause} lowered") };
+        assert!(r.iter().any(|(_, text)| text.contains(msg)), "{clause}: {r:?}");
+    }
+}
+
+#[test]
 fn match_range_patterns_lower_exactly() {
     let lean = |clause: &str, sig: &str| {
         lower_one(&wrap(clause, sig)).unwrap_or_else(|e| panic!("{clause}: {e:?}")).spec_lean
