@@ -427,6 +427,7 @@ authorized**.
   during a stack landing cascade when identities do change, defer pushing
   rebased upper branches until each reaches the bottom of the stack (or its base
   settles on `main`).
+- **Pin manifests:** Never hand-edit digests; run `ci/resolve_pin_conflicts.py`.
 - **Mandatory post-rebase checks:** After every rebase, run:
   1. `git range-diff <old-base>..<old-head> <new-base>..<new-head>` to verify
      whether patch diffs or upstream interfaces changed;
