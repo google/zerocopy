@@ -44,7 +44,7 @@ use rustc_span::source_map::{FileLoader, RealFileLoader};
 use rustc_span::{DUMMY_SP, FileName, Symbol, kw, sym};
 use rustc_target::spec::PanicStrategy as RustcPanicStrategy;
 
-use crate::{Args, Failure, extract, identity, ir, mono};
+use crate::{Args, Failure, extract, identity, ir, mono, tripwires};
 
 // RUSTC-WORKAROUND(#4365): fn-pointer query providers force a OnceLock hook.
 // rustc query providers are function pointers, so the hook cannot borrow a
@@ -848,6 +848,7 @@ fn admit_const_item(
     is_assoc: bool,
     is_type_const: bool,
     has_body: bool,
+    crate_facts: &tripwires::CrateFacts<'_>,
 ) -> extract::Result<()> {
     let kind_label = if is_assoc { "AssocConst" } else { "Const" };
     let context = format!(
@@ -881,6 +882,8 @@ fn admit_const_item(
     if ctfe_mir.tainted_by_errors.is_some() {
         return Err(format!("{context}: constant MIR tainted by compiler errors"));
     }
+    let def_path = tcx.def_path_str(def);
+    tripwires::check_mir_body(crate_facts, &def_path, ctfe_mir)?;
     let val = tcx
         .const_eval_poly(def.to_def_id())
         .map_err(|err| format!("{context}: constant failed CTFE: {err:?}"))?;
@@ -893,7 +896,12 @@ fn admit_const_item(
 /// and generic-dependent constants.
 /// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_hir_analysis/src/collect/generics_of.rs#L97-L104
 /// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_middle/src/mir/interpret/queries.rs#L15-L29
-fn admit_anon_const(tcx: TyCtxt<'_>, def: LocalDefId, has_body: bool) -> extract::Result<()> {
+fn admit_anon_const(
+    tcx: TyCtxt<'_>,
+    def: LocalDefId,
+    has_body: bool,
+    crate_facts: &tripwires::CrateFacts<'_>,
+) -> extract::Result<()> {
     let context = "whole-crate obligation is unsupported: AnonConst";
     if !has_body {
         return Err(format!("{context} (missing body)"));
@@ -917,6 +925,8 @@ fn admit_anon_const(tcx: TyCtxt<'_>, def: LocalDefId, has_body: bool) -> extract
     if ctfe_mir.tainted_by_errors.is_some() {
         return Err(format!("{context}: MIR tainted by compiler errors"));
     }
+    let def_path = tcx.def_path_str(def);
+    tripwires::check_mir_body(crate_facts, &def_path, ctfe_mir)?;
     for block in ctfe_mir.basic_blocks.iter() {
         let Some(term) = &block.terminator else {
             return Err(format!("{context}: missing terminator in CTFE MIR"));
@@ -942,7 +952,12 @@ fn admit_anon_const(tcx: TyCtxt<'_>, def: LocalDefId, has_body: bool) -> extract
     Ok(())
 }
 
-fn whole_crate_item(tcx: TyCtxt<'_>, def: LocalDefId, has_body: bool) -> extract::Result<()> {
+fn whole_crate_item(
+    tcx: TyCtxt<'_>,
+    def: LocalDefId,
+    has_body: bool,
+    crate_facts: &tripwires::CrateFacts<'_>,
+) -> extract::Result<()> {
     match tcx.def_kind(def) {
         DefKind::Fn | DefKind::AssocFn if has_body => Ok(()),
         DefKind::AssocFn => {
@@ -975,12 +990,12 @@ fn whole_crate_item(tcx: TyCtxt<'_>, def: LocalDefId, has_body: bool) -> extract
         DefKind::Trait => admit_safe_trait(tcx, def),
         DefKind::Impl { of_trait } => admit_safe_impl(tcx, def, of_trait),
         DefKind::Const { is_type_const } => {
-            admit_const_item(tcx, def, false, is_type_const, has_body)
+            admit_const_item(tcx, def, false, is_type_const, has_body, crate_facts)
         }
         DefKind::AssocConst { is_type_const } => {
-            admit_const_item(tcx, def, true, is_type_const, has_body)
+            admit_const_item(tcx, def, true, is_type_const, has_body, crate_facts)
         }
-        DefKind::AnonConst => admit_anon_const(tcx, def, has_body),
+        DefKind::AnonConst => admit_anon_const(tcx, def, has_body, crate_facts),
         // `instantiate_identity` "Makes the identity replacement
         // `T0 => T0, ..., TN => TN`", so a generic enum keeps its own
         // parameters and `extract::ty` refuses it. The enum's own type has no
@@ -1493,19 +1508,26 @@ fn check_operator_features(operator: &[String]) -> Result<(), String> {
     )
 }
 
-/// `#![feature(...)]` gates that `tcx.features()` reports for a normal crate.
+/// `#![feature(...)]` gates classified from `tcx.features()`.
 #[derive(Debug, Default, PartialEq, Eq)]
 pub(crate) struct ObservedFeatures {
-    /// Enabled unstable language and library features (sorted).
-    pub(crate) unstable: Vec<String>,
-    /// The subset of `unstable` that `rustc_feature` marks incomplete.
-    pub(crate) incomplete: Vec<String>,
-    /// Enabled language features that the pinned compiler has stabilized.
-    pub(crate) stabilized: Vec<String>,
+    /// All enabled gated unstable features (sorted), populated across both
+    /// normal and `--stdlib-crate` captures for Phase-0 tripwire predicates.
+    pub(crate) tripwire_unstable: Vec<String>,
+    /// Enabled unstable language and library features recorded in normal-crate
+    /// manifests (sorted; empty on `--stdlib-crate` captures).
+    pub(crate) manifest_unstable: Vec<String>,
+    /// The subset of `manifest_unstable` that `rustc_feature` marks incomplete
+    /// (empty on `--stdlib-crate` captures).
+    pub(crate) manifest_incomplete: Vec<String>,
+    /// Enabled language features that the pinned compiler has stabilized
+    /// (empty on `--stdlib-crate` captures).
+    pub(crate) manifest_stabilized: Vec<String>,
 }
 
 /// Verify that every feature recorded in `tcx.features()` is admitted by
-/// `policy`, and report what a normal crate enabled.
+/// `policy`, reporting all enabled gated unstable features for Phase-0
+/// tripwires and normal-crate manifest taint fields.
 ///
 /// `rustc_expand::config::features` populates `enabled_lang_features` (both
 /// unstable features and already-accepted `ACCEPTED_LANG_FEATURES` with
@@ -1520,10 +1542,16 @@ pub(crate) fn check_allowed_features(
     tcx: TyCtxt<'_>,
     policy: FeaturePolicy<'_>,
 ) -> Result<ObservedFeatures, String> {
+    check_allowed_features_table(tcx.features(), policy)
+}
+
+fn check_allowed_features_table(
+    features: &Features,
+    policy: FeaturePolicy<'_>,
+) -> Result<ObservedFeatures, String> {
     // RUSTC-WORKAROUND(#4362): `tcx.features()` is crate-global with no record
     // of which items a feature affected, so observations (and the receipt
     // taint they back) are crate-level rather than per selected unit.
-    let features = tcx.features();
     let mut gated: BTreeSet<Symbol> = BTreeSet::new();
     let mut stabilized: BTreeSet<String> = BTreeSet::new();
     for feat in features.enabled_lang_features() {
@@ -1551,19 +1579,25 @@ pub(crate) fn check_allowed_features(
         )?;
     }
     check_feature_allowlist(gated.iter().map(|name| name.as_str()), policy)?;
+    let unstable: Vec<String> = gated
+        .iter()
+        .map(|name| name.as_str().to_owned())
+        .collect::<BTreeSet<_>>()
+        .into_iter()
+        .collect();
     if !matches!(policy, FeaturePolicy::Normal(_)) {
-        return Ok(ObservedFeatures::default());
+        return Ok(ObservedFeatures { tripwire_unstable: unstable, ..ObservedFeatures::default() });
     }
-    let unstable: BTreeSet<String> = gated.iter().map(|name| name.as_str().to_owned()).collect();
     let incomplete: BTreeSet<String> = gated
         .iter()
         .filter(|&&name| features.incomplete(name))
         .map(|name| name.as_str().to_owned())
         .collect();
     Ok(ObservedFeatures {
-        unstable: unstable.into_iter().collect(),
-        incomplete: incomplete.into_iter().collect(),
-        stabilized: stabilized.into_iter().collect(),
+        tripwire_unstable: unstable.clone(),
+        manifest_unstable: unstable,
+        manifest_incomplete: incomplete.into_iter().collect(),
+        manifest_stabilized: stabilized.into_iter().collect(),
     })
 }
 
@@ -2444,6 +2478,17 @@ fn collect(
     // https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_codegen_ssa/src/mir/mod.rs#L350-L407
     let observed_features =
         check_allowed_features(tcx, feature_policy).map_err(Failure::unsupported)?;
+    let crate_facts = tripwires::CrateFacts {
+        crate_name: &args.crate_name,
+        crate_type: requested_crate_type,
+        panic: requested_panic,
+        overflow_checks: profile.overflow_checks,
+        observed_unstable_features: &observed_features.tripwire_unstable,
+        declared_env,
+    };
+    if let Err(reason) = tripwires::check_crate(&crate_facts) {
+        return Err(Failure::unsupported(reason));
+    }
 
     // `iter_local_def_id` finishes analysis and visits all definitions,
     // including definitions created during enumeration: "Recompute the number
@@ -2507,7 +2552,7 @@ fn collect(
             continue;
         }
         let admission = match scope {
-            ir::Scope::Crate => whole_crate_item(tcx, def, has_body),
+            ir::Scope::Crate => whole_crate_item(tcx, def, has_body, &crate_facts),
             ir::Scope::SelectedUnit { .. } if callable(kind) && has_body => Ok(()),
             ir::Scope::SelectedUnit { .. } => {
                 Err("selected roots must be callable definitions with bodies".into())
@@ -2563,6 +2608,7 @@ fn collect(
             path: String,
             is_root: bool,
             features: FeaturePolicy<'_>,
+            crate_facts: &tripwires::CrateFacts<'_>,
         ) -> Result<(), Failure> {
             let key = target.local_def_index.as_u32();
             let steal = tcx.mir_drops_elaborated_and_const_checked(target);
@@ -2575,7 +2621,12 @@ fn collect(
             } else if steal.is_stolen() {
                 Err("Runtime(PostCleanup) MIR was already stolen before capture".into())
             } else {
-                extract::extract_body(tcx, target, &steal.borrow(), features)
+                let body = steal.borrow();
+                if let Err(reason) = tripwires::check_mir_body(crate_facts, &path, &body) {
+                    Err(reason)
+                } else {
+                    extract::extract_body(tcx, target, &body, features)
+                }
             };
             match result {
                 Ok(extracted) => {
@@ -2611,7 +2662,14 @@ fn collect(
     let mut visited_callees: BTreeSet<u32> = BTreeSet::new();
     for def in selected_defs {
         visited_callees.insert(def.local_def_index.as_u32());
-        state.record_local_body(tcx, def, tcx.def_path_str(def), true, feature_policy)?;
+        state.record_local_body(
+            tcx,
+            def,
+            tcx.def_path_str(def),
+            true,
+            feature_policy,
+            &crate_facts,
+        )?;
     }
     if let ir::Scope::SelectedUnit { instantiations, .. } = scope {
         for inst in instantiations {
@@ -2628,6 +2686,10 @@ fn collect(
                         .contains(&key);
                     let extracted = if !observed {
                         Err("compiler did not provide Runtime(PostCleanup) MIR".into())
+                    } else if let Err(reason) =
+                        tripwires::check_mir_body(&crate_facts, &inst_path, &resolved.body)
+                    {
+                        Err(reason)
                     } else {
                         extract::extract_instantiated_body(tcx, &resolved, feature_policy)
                     };
@@ -2686,7 +2748,7 @@ fn collect(
             });
             continue;
         }
-        state.record_local_body(tcx, callee, path, false, feature_policy)?;
+        state.record_local_body(tcx, callee, path, false, feature_policy, &crate_facts)?;
     }
     if tcx.dcx().has_errors().is_some() {
         return Err(Failure::compiler("late compiler diagnostics prohibit capture"));
@@ -2859,9 +2921,9 @@ fn collect(
             declared_source_files,
             stdlib_crate,
             allowed_unstable_features: args.allow_unstable_feature.clone(),
-            observed_unstable_features: observed_features.unstable,
-            incomplete_observed_unstable_features: observed_features.incomplete,
-            stabilized_features_present: observed_features.stabilized,
+            observed_unstable_features: observed_features.manifest_unstable,
+            incomplete_observed_unstable_features: observed_features.manifest_incomplete,
+            stabilized_features_present: observed_features.manifest_stabilized,
         },
         source_files,
         census,
@@ -3998,5 +4060,115 @@ mod tests {
             let err = check_no_cfg_miri(cfgs).unwrap_err();
             assert!(err.contains("cfg(miri)"), "{err}");
         }
+    }
+
+    #[test]
+    fn stdlib_core_features_populate_tripwire_facts_without_manifest_taint() {
+        fn has_adt_const_params(facts: &tripwires::CrateFacts<'_>) -> bool {
+            facts.observed_unstable_features.iter().any(|feat| feat == "adt_const_params")
+        }
+
+        fn has_const_closures(facts: &tripwires::CrateFacts<'_>) -> bool {
+            facts.observed_unstable_features.iter().any(|feat| feat == "const_closures")
+        }
+
+        fn has_specialization(facts: &tripwires::CrateFacts<'_>) -> bool {
+            facts.observed_unstable_features.iter().any(|feat| feat == "specialization")
+        }
+
+        fn has_doc_alias(facts: &tripwires::CrateFacts<'_>) -> bool {
+            facts.observed_unstable_features.iter().any(|feat| feat == "doc_alias")
+        }
+
+        rustc_span::create_default_session_globals_then(|| {
+            // Under `--stdlib-crate core`, all enabled gated features populate
+            // `tripwire_unstable` (sorted) while manifest taint fields remain
+            // empty.
+            let stdlib_names = owned(&["no_core", "lang_items", "f16", "adt_const_params"]);
+            let (stdlib_probe, _) = enabled_probe(&stdlib_names);
+            let stdlib_observed = check_allowed_features_table(
+                &stdlib_probe,
+                FeaturePolicy::Stdlib(ir::StdlibCrate::Core),
+            )
+            .expect("pinned core features admitted");
+            assert_eq!(
+                stdlib_observed.tripwire_unstable,
+                owned(&["adt_const_params", "f16", "lang_items", "no_core"])
+            );
+            assert!(stdlib_observed.manifest_unstable.is_empty());
+            assert!(stdlib_observed.manifest_incomplete.is_empty());
+            assert!(stdlib_observed.manifest_stabilized.is_empty());
+
+            let empty_env = BTreeMap::new();
+            let stdlib_facts = tripwires::CrateFacts {
+                crate_name: "core",
+                crate_type: ir::CrateType::Lib,
+                panic: ir::PanicStrategy::Unwind,
+                overflow_checks: false,
+                observed_unstable_features: &stdlib_observed.tripwire_unstable,
+                declared_env: &empty_env,
+            };
+            let matching_rule = tripwires::Phase0Tripwire {
+                bug_id: "DIFF-STDLIB-0123456789ab",
+                issue: "https://github.com/google/zerocopy/issues/4415",
+                owner: "anneal-maintainers",
+                added_date: "2026-11-27",
+                scope: "Refuse adt_const_params across normal and stdlib captures",
+                rationale: "Regression check for stdlib CrateFacts unstable features",
+                regression_test: "anneal/tests/rustc-capture/tests/phase0_tripwires.rs::stdlib_core_crate_tripwire_observes_unstable_features_without_manifest_taint",
+                activation: tripwires::TripwireActivation::Always,
+                predicate: tripwires::TripwirePredicate::Crate(has_adt_const_params),
+            };
+            let err =
+                tripwires::evaluate_crate_tripwires(&stdlib_facts, &[matching_rule]).unwrap_err();
+            assert!(err.contains("[PHASE0_TRIPWIRE:DIFF-STDLIB-0123456789ab]"), "{err}");
+
+            let non_matching_rule = tripwires::Phase0Tripwire {
+                predicate: tripwires::TripwirePredicate::Crate(has_const_closures),
+                ..matching_rule
+            };
+            assert!(
+                tripwires::evaluate_crate_tripwires(&stdlib_facts, &[non_matching_rule]).is_ok()
+            );
+
+            // Under normal crates, `tripwire_unstable` mirrors
+            // `manifest_unstable` while stabilized language features stay out
+            // of both unstable lists.
+            let operator = owned(&["doc_cfg", "specialization"]);
+            let (mut normal_probe, _) = enabled_probe(&owned(&["specialization", "doc_cfg"]));
+            let doc_alias = ACCEPTED_LANG_FEATURES
+                .iter()
+                .find(|feat| feat.name.as_str() == "doc_alias")
+                .expect("doc_alias is an accepted lang feature");
+            normal_probe.set_enabled_lang_feature(EnabledLangFeature {
+                gate_name: doc_alias.name,
+                attr_sp: DUMMY_SP,
+                stable_since: Some(Symbol::intern(doc_alias.since)),
+            });
+            let normal_observed =
+                check_allowed_features_table(&normal_probe, FeaturePolicy::Normal(&operator))
+                    .expect("operator-allowed normal features admitted");
+            assert_eq!(normal_observed.tripwire_unstable, owned(&["doc_cfg", "specialization"]));
+            assert_eq!(normal_observed.manifest_unstable, owned(&["doc_cfg", "specialization"]));
+            assert_eq!(normal_observed.manifest_incomplete, owned(&["specialization"]));
+            assert_eq!(normal_observed.manifest_stabilized, owned(&["doc_alias"]));
+
+            let normal_facts = tripwires::CrateFacts {
+                crate_name: "demo",
+                observed_unstable_features: &normal_observed.tripwire_unstable,
+                ..stdlib_facts
+            };
+            let spec_rule = tripwires::Phase0Tripwire {
+                predicate: tripwires::TripwirePredicate::Crate(has_specialization),
+                ..matching_rule
+            };
+            assert!(tripwires::evaluate_crate_tripwires(&normal_facts, &[spec_rule]).is_err());
+
+            let stabilized_rule = tripwires::Phase0Tripwire {
+                predicate: tripwires::TripwirePredicate::Crate(has_doc_alias),
+                ..matching_rule
+            };
+            assert!(tripwires::evaluate_crate_tripwires(&normal_facts, &[stabilized_rule]).is_ok());
+        });
     }
 }

@@ -163,6 +163,14 @@ class OmnibusPackWiringTests(unittest.TestCase):
         installed_smoke = case_branch(self.script_text, "installed-smoke")
 
         self.assertIn("export ANNEAL_CI_STRICT=1", ci_tests_mode)
+        self.assertTrue(
+            any(
+                line.strip()
+                == '"$PY_BIN" -I -B ./ci/check_phase0_tripwires.py --mode tree'
+                for line in ci_tests_mode.splitlines()
+            ),
+            "ci-tests must invoke check_phase0_tripwires.py --mode tree cleanly",
+        )
         self.assertIn("--test cli --test inspect", clippy_mode)
         self.assertIn("--lib --target wasm32-unknown-unknown", clippy_mode)
 
@@ -275,6 +283,8 @@ class OmnibusPackWiringTests(unittest.TestCase):
             if inp.get("kind") == "glob"
             for pat in inp.get("include", [])
         ]
+        self.assertIn("anneal/**", ci_tests_globs)
+        self.assertEqual(ci_tests["command"], ["./ci/run_anneal_check.sh", "ci-tests"])
         self.assertIn("ci/checks.toml", ci_tests_globs)
         self.assertIn("ci/docker/anneal-tc.Dockerfile", ci_tests_globs)
 

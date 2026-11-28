@@ -352,6 +352,7 @@ case "$MODE" in
     fi
     "$PY_BIN" -I -B ./ci/check_minirust_pin.py \
       --repo-root . --check-lean --check-anchors
+    "$PY_BIN" -I -B ./ci/check_phase0_tripwires.py --mode tree
     "$PY_BIN" -I -B -m unittest discover -s ci -p 'test_*.py' -v
     ;;
 
