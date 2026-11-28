@@ -1131,6 +1131,8 @@ mod _casts {
         /// - If this is a prefix cast, `ptr` has the same address as `self`.
         /// - If this is a suffix cast, `remainder` has the same address as
         ///   `self`.
+        /// - If `U` is a slice DST and `meta` is `Some(meta)`, `ptr` has
+        ///   pointer metadata equal to `meta`
         #[inline(always)]
         pub fn try_cast_into<U, R>(
             self,
@@ -1202,6 +1204,9 @@ mod _casts {
         ///
         /// On success, the caller may assume that the returned pointer
         /// references the same byte range as `self`.
+        ///
+        ///  If `U` is a slice DST and `meta` is `Some(meta)`, the returned
+        ///  `Ptr` has pointer metadata equal to `meta`.
         #[allow(unused)]
         #[inline(always)]
         pub fn try_cast_into_no_leftover<U, R>(

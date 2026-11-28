@@ -735,43 +735,23 @@ where
     #[inline]
     pub fn from_bytes_with_elems(source: B, count: usize) -> Result<Ref<B, T>, CastError<B, T>> {
         static_assert_dst_is_not_zst!(T);
-        let expected_len = match T::size_for_metadata(count) {
-            Some(len) => len,
-            None => return Err(SizeError::new(source).into()),
-        };
-        if source.len() != expected_len {
-            return Err(SizeError::new(source).into());
-        }
+
         if let Err(e) = Ptr::from_ref(source.deref())
             .try_cast_into_no_leftover::<T, BecauseImmutable>(Some(count))
         {
             return Err(e.with_src(()).with_src(source));
         }
-        // SAFETY: `size_for_metadata(count)` returned `expected_len`, and the
-        // equality check established that this is `source.len()`. This is the
-        // dynamically-known byte size described by `size_of_val` [1]. By its
-        // safety postcondition, `try_cast_into_no_leftover(Some(count))` only
-        // succeeded after producing a `Ptr<T>` aligned as required for
-        // references [2], with that metadata over the same byte range as
-        // `source.deref()`. `ByteSlice` and its applicable subtraits guarantee
-        // that the stored `source` continues to dereference or convert to that
-        // address and length. These facts establish both preconditions of
-        // `new_unchecked`.
+        // SAFETY: By `try_cast_into_no_leftover(Some(count))`s safety
+        // postconditions the returned `Ptr<T>`:
+        // - is alligned as required for references to `T`.
+        // - has pointer metadata `count` and
+        // - addresses exactly the bytes of `source.deref()`, with no leftovers.
         //
-        // [1] Per https://doc.rust-lang.org/1.56.0/core/mem/fn.size_of_val.html:
-        //
-        //     Returns the size of the pointed-to value in bytes.
-        //
-        //     ... when `T` has no statically-known size ... `size_of_val` can
-        //     be used to get the dynamically-known size.
-        //
-        // [2] Per https://doc.rust-lang.org/1.56.0/core/mem/fn.align_of_val.html:
-        //
-        //     Returns the ABI-required minimum alignment of the type of the
-        //     value that `val` points to.
-        //
-        //     Every reference to a value of the type `T` must be a multiple of
-        //     this number.
+        // Hence the size of a `T` with `count` trailing elements, as described
+        // `size_of_val`, equals `source.len()`. `ByteSlice` and its applicable
+        // subtraits gurantee that `source` continues to dereference or convert
+        // to that address and length. These facts establish both preconditions
+        // of `new_unchecked`.
         Ok(unsafe { Ref::new_unchecked(source, count) })
     }
 }
