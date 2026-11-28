@@ -15,6 +15,7 @@ from .support import (
     json,
     _make_tar_gz,
     oracle,
+    oracle_evaluate,
     os,
     Path,
     _sample_pin,
@@ -120,7 +121,7 @@ sys.exit(2)
                 from unittest import mock
 
                 with mock.patch.object(
-                    oracle, "run_bounded", side_effect=_spy_run_bounded
+                    oracle_evaluate, "run_bounded", side_effect=_spy_run_bounded
                 ):
                     for mode, expected_flag in (
                         ("auto", None),

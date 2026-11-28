@@ -15,6 +15,7 @@ from .support import (
     CI_DIR,
     json,
     oracle,
+    oracle_tiers,
     os,
     Path,
     subprocess,
@@ -333,7 +334,7 @@ class CapturePdeathsigCases:
             interrupter = threading.Thread(target=_send_sigint, daemon=True)
             interrupter.start()
             with mock.patch.object(
-                oracle, "evaluate_mir_json_unit", side_effect=_wrapped_eval_mir
+                oracle_tiers, "evaluate_mir_json_unit", side_effect=_wrapped_eval_mir
             ):
                 with self.assertRaises(KeyboardInterrupt):
                     oracle.run_tier_b(

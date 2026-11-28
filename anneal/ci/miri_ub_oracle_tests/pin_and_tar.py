@@ -17,6 +17,7 @@ from .support import (
     json,
     _make_tar_gz,
     oracle,
+    oracle_archive,
     os,
     Path,
     re,
@@ -196,7 +197,7 @@ class SafeTarExtractionCases:
                 body = b"fn main() {}\n"
                 ti.size = len(body)
                 tf.addfile(ti, io.BytesIO(body))
-            with mock.patch.object(oracle, "MAX_DECOMPRESSED_TAR_BYTES", 8192):
+            with mock.patch.object(oracle_archive, "MAX_DECOMPRESSED_TAR_BYTES", 8192):
                 with self.assertRaisesRegex(
                     oracle.OracleError, "decompressed tar stream exceeds"
                 ):

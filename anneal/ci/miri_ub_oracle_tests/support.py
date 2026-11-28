@@ -26,6 +26,16 @@ import unittest
 
 import run_miri_ub_oracle as oracle
 
+# Tests that patch a module-level name patch it where the code under test reads
+# it, which is the `miri_ub_oracle_lib` module that defines or imports it.
+from miri_ub_oracle_lib import archive as oracle_archive
+from miri_ub_oracle_lib import bounded as oracle_bounded
+from miri_ub_oracle_lib import corpus as oracle_corpus
+from miri_ub_oracle_lib import evaluate as oracle_evaluate
+from miri_ub_oracle_lib import landlock as oracle_landlock
+from miri_ub_oracle_lib import pins as oracle_pins
+from miri_ub_oracle_lib import tiers as oracle_tiers
+
 
 CI_DIR = Path(__file__).resolve().parent.parent
 ANNEAL_DIR = CI_DIR.parent
