@@ -192,6 +192,20 @@ pub enum ExprKind {
     /// `if cond { then } else { otherwise }`, where an `else if` chain nests
     /// another `If` as `otherwise`. The `else` branch is required.
     If(Box<Expr>, Box<Expr>, Box<Expr>),
+    /// `let name [: ty] = init;` followed by `body`, the rest of its block.
+    /// A block `{ let a = x; let b = y; e }` nests as `Let(a, Let(b, e))`.
+    Let(Box<LetBinding>, Box<Expr>),
+}
+
+/// The binding of one `let` statement.
+#[derive(Clone, Debug)]
+pub struct LetBinding {
+    pub name: String,
+    /// The type annotation, if any.
+    pub ty: Option<Ty>,
+    pub init: Expr,
+    /// The span of the bound name.
+    pub name_span: Span,
 }
 
 #[derive(Clone, Debug)]

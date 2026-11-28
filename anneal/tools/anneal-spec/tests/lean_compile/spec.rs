@@ -100,6 +100,44 @@ anneal::external_spec! {
     )]
     fn piecewise(n: u32, flag: bool) -> u32;
 
+    // A `let` binding lowers to a Lean `let` with its value's type.
+    #[anneal::pure]
+    fn let_sum_is(a: i32, b: i32, r: i32) -> bool {
+        let s = math(a) + math(b);
+        let t: i32 = r;
+        math(t) == s
+    }
+
+    #[anneal::pure]
+    fn let_pick(x: u8) -> u8 {
+        let big = x > 9u8;
+        if big { let y: u8 = 9; y } else { x }
+    }
+
+    #[anneal::pure]
+    fn let_div_is(n: u32, d: u32, r: u32) -> bool {
+        let ok = d != 0u32;
+        if ok { math(r) == math(n / d) } else { r == 0u32 }
+    }
+
+    // Lean decides an `if` condition through a block's bindings.
+    #[anneal::pure]
+    fn let_guarded_pick(n: u8, d: u8) -> u8 {
+        if d != 0u8 { if ({ let p = n > 1u8 && math(n / d) > 0; p }) { 1u8 } else { 0u8 } } else { 2u8 }
+    }
+
+    #[anneal::pure]
+    fn let_math_cond_is(n: u8, r: u8) -> bool {
+        math(r) == math(if ({ let k = 1; n > 1u8 && k > 0 }) { 1 } else { 0 })
+    }
+
+    #[anneal::spec(
+        requires(let_sum_is(1i32, 2i32, 3i32) && let_div_is(n, 2u32, 1u32) && let_pick(b) == 9u8),
+        max_steps = { let base: u32 = 7; let twice = n * 2; if twice > base { twice } else { base } },
+        ensures(|r| { let m = math(n) + 1; math(r) == m }),
+    )]
+    fn stepped(n: u32, b: u8) -> u32;
+
     #[anneal::spec(
         requires(math(n) + 1 <= math(usize::MAX)),
         max_steps = u8::MAX + u32::BITS * 2 + n / u16::MAX,

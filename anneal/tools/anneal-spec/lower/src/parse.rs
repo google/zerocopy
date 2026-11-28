@@ -25,8 +25,8 @@ use syn::{
 
 use crate::{
     ast::{
-        BinOp, Clause, Effect, Expr, ExprKind, IntConst, IntTy, Param, PureFn, SpannedClause,
-        SpecFn, Ty, UnOp,
+        BinOp, Clause, Effect, Expr, ExprKind, IntConst, IntTy, LetBinding, Param, PureFn,
+        SpannedClause, SpecFn, Ty, UnOp,
     },
     diag::Diagnostic,
 };
@@ -223,11 +223,15 @@ impl ExprParser {
                     _ => unexpected(&tok),
                 });
             };
-            if matches!(lhs.kind, ExprKind::If(..)) {
+            if let Some(what) = match lhs.kind {
+                ExprKind::If(..) => Some("an `if` expression"),
+                ExprKind::Let(..) => Some("a block"),
+                _ => None,
+            } {
                 return Err(Diagnostic::new(
                     "E_ANNEAL_SPEC_SYNTAX",
                     *op_span,
-                    format!("an `if` expression must be parenthesized before `{op}`"),
+                    format!("{what} must be parenthesized before `{op}`"),
                 )
                 .help(format!(
                     "parenthesize the expression that ends with the `if`, as in \
@@ -299,12 +303,7 @@ impl ExprParser {
                 let e = ExprParser::new(inner, span).parse_all()?;
                 Ok(Expr { kind: ExprKind::Paren(Box::new(e)), span })
             }
-            Tok::Group(Delimiter::Brace, _, span) => Err(Diagnostic::new(
-                "E_ANNEAL_IMPURE_SPEC_EXPR",
-                span,
-                "block expressions are not allowed in a specification",
-            )
-            .help("only `math { ... }` and the branches of an `if` take a block")),
+            Tok::Group(Delimiter::Brace, inner, span) => parse_block(inner, span, true),
             other => Err(unexpected(&other)),
         }
     }
@@ -368,7 +367,7 @@ impl ExprParser {
             }
             Some(Tok::Group(Delimiter::Brace, inner, gspan)) if name == "math" => {
                 self.pos += 1;
-                let e = ExprParser::new(inner, gspan).parse_all()?;
+                let e = parse_block(inner, gspan, false)?;
                 Ok(Expr { kind: ExprKind::Math(Box::new(e)), span: join(span, gspan) })
             }
             _ => Ok(Expr { kind: ExprKind::Ident(name), span }),
@@ -417,13 +416,11 @@ impl ExprParser {
         Ok(Expr { kind: ExprKind::If(Box::new(cond), Box::new(then), Box::new(otherwise)), span })
     }
 
-    /// Parses one `{ expr }` branch of an `if`, which must hold exactly one
-    /// expression.
+    /// Parses one `{ .. }` branch of an `if`, a block that may hold `let`
+    /// statements before its expression.
     fn parse_branch(&mut self, after: Span, what: &str) -> Result<Expr, Diagnostic> {
         match self.next() {
-            Some(Tok::Group(Delimiter::Brace, inner, gspan)) => {
-                ExprParser::new(inner, gspan).parse_all()
-            }
+            Some(Tok::Group(Delimiter::Brace, inner, gspan)) => parse_block(inner, gspan, false),
             other => Err(Diagnostic::new(
                 "E_ANNEAL_SPEC_SYNTAX",
                 other.map_or(after, |t| t.span()),
@@ -487,6 +484,143 @@ impl ExprParser {
     }
 }
 
+/// Parses the contents of a block: zero or more `let name [: ty] = init;`
+/// statements followed by the block's value, an expression with no trailing
+/// `;`. Every block shares this form: an expression-position block (which
+/// must bind at least one name, since `{ e }` alone would only obscure `e`),
+/// an `if` branch, `math { .. }`, and a `#[anneal::pure]` helper body.
+fn parse_block(stream: TokenStream, span: Span, require_let: bool) -> Result<Expr, Diagnostic> {
+    let toks = tokenize(stream);
+    let mut stmts: Vec<&[Tok]> = toks.split(|t| t.is_op(";")).collect();
+    let tail = stmts.pop().expect("`split` yields at least one part");
+    if tail.is_empty() && !stmts.is_empty() {
+        return Err(Diagnostic::new(
+            "E_ANNEAL_SPEC_SYNTAX",
+            stmts.last().and_then(|s| s.last()).map_or(span, Tok::span),
+            "a block must end with an expression, not `;`",
+        )
+        .help("remove the final `;`: the block's value is its last expression"));
+    }
+    if require_let && stmts.is_empty() {
+        return Err(Diagnostic::new(
+            "E_ANNEAL_IMPURE_SPEC_EXPR",
+            span,
+            "block expressions are not allowed in a specification",
+        )
+        .help(
+            "a block must bind a name, as in `{ let x = e; x }`; only `math { ... }` and the \
+             branches of an `if` may hold a bare expression",
+        ));
+    }
+    let mut bindings = Vec::new();
+    for stmt in stmts {
+        bindings.push(parse_let(stmt, span)?);
+    }
+    let mut body =
+        ExprParser { toks: tail.to_vec(), pos: 0, end_span: span, in_cond: false }.parse_all()?;
+    for b in bindings.into_iter().rev() {
+        let span = join(b.name_span, body.span);
+        body = Expr { kind: ExprKind::Let(Box::new(b), Box::new(body)), span };
+    }
+    Ok(body)
+}
+
+/// Parses one `let name [: ty] = init` statement (without its `;`).
+fn parse_let(stmt: &[Tok], block_span: Span) -> Result<LetBinding, Diagnostic> {
+    let impure = |span: Span, msg: &str| Diagnostic::new("E_ANNEAL_IMPURE_SPEC_EXPR", span, msg);
+    let syntax = |span: Span, msg: String| Diagnostic::new("E_ANNEAL_SPEC_SYNTAX", span, msg);
+    let let_span = match stmt.first() {
+        Some(Tok::Ident(kw, s)) if kw == "let" => *s,
+        Some(t) => {
+            return Err(syntax(
+                t.span(),
+                "only `let` statements may come before the final expression of a block".into(),
+            ))
+        }
+        None => return Err(syntax(block_span, "expected a `let` statement before `;`".into())),
+    };
+    let (name, name_span) = match stmt.get(1) {
+        Some(Tok::Ident(n, s)) if n == "mut" => {
+            return Err(impure(
+                *s,
+                "`let mut` is not allowed: specification bindings are immutable",
+            ))
+        }
+        Some(Tok::Ident(n, s)) if n != "_" && !n.starts_with("r#") => (n.clone(), *s),
+        Some(t) => {
+            return Err(impure(t.span(), "a `let` statement may bind only a simple identifier")
+                .help("patterns, `_`, and raw identifiers are not supported"))
+        }
+        None => return Err(syntax(let_span, "expected a name after `let`".into())),
+    };
+    let mut rest = &stmt[2..];
+    let mut ty = None;
+    if rest.first().is_some_and(|t| t.is_op(":")) {
+        let (t, after) = match rest {
+            [_, Tok::Ident(t, s), after @ ..] => (parse_let_type(t, *s)?, after),
+            [_, Tok::Group(Delimiter::Parenthesis, inner, _), after @ ..] if inner.is_empty() => {
+                (Ty::Unit, after)
+            }
+            [_, t, ..] => {
+                return Err(Diagnostic::new(
+                    "E_ANNEAL_UNSUPPORTED_TYPE",
+                    t.span(),
+                    "a `let` type annotation must be `bool`, `()`, or a fixed-width integer type",
+                ))
+            }
+            [colon] => return Err(syntax(colon.span(), "expected a type after `:`".into())),
+            [] => unreachable!("`rest` starts with `:`"),
+        };
+        ty = Some(t);
+        rest = after;
+    }
+    let init = match rest {
+        [eq, init @ ..] if eq.is_op("=") => {
+            if init.is_empty() {
+                return Err(syntax(eq.span(), "expected an expression after `=`".into()));
+            }
+            init
+        }
+        [t @ Tok::Group(..), ..] => {
+            return Err(impure(t.span(), "a `let` statement may bind only a simple identifier")
+                .help("patterns, `_`, and raw identifiers are not supported"))
+        }
+        [t, ..] => return Err(syntax(t.span(), format!("expected `=` after `{name}`"))),
+        [] => {
+            return Err(syntax(name_span, format!("`let {name}` needs an initializer"))
+                .help("write `let x = e;`"))
+        }
+    };
+    // In an initializer, every `else` belongs to an `if` unless the
+    // statement is a `let ... else`.
+    let count = |kw: &str| init.iter().filter(|t| matches!(t, Tok::Ident(k, _) if k == kw)).count();
+    if count("else") > count("if") {
+        let s = init.iter().rev().find(|t| matches!(t, Tok::Ident(k, _) if k == "else"));
+        return Err(impure(
+            s.map_or(name_span, Tok::span),
+            "`let ... else` is not allowed in a specification",
+        ));
+    }
+    let init = ExprParser { toks: init.to_vec(), pos: 0, end_span: block_span, in_cond: false }
+        .parse_all()?;
+    Ok(LetBinding { name, ty, init, name_span })
+}
+
+/// Parses the type in `let x: T`: `bool` or a fixed-width integer type.
+fn parse_let_type(name: &str, span: Span) -> Result<Ty, Diagnostic> {
+    if name == "bool" {
+        return Ok(Ty::Bool);
+    }
+    int_ty(name).map(Ty::Int).ok_or_else(|| {
+        Diagnostic::new(
+            "E_ANNEAL_UNSUPPORTED_TYPE",
+            span,
+            format!("unsupported `let` type `{name}`"),
+        )
+        .help("a `let` type annotation must be `bool`, `()`, or a fixed-width integer type")
+    })
+}
+
 fn unexpected(t: &Tok) -> Diagnostic {
     let what = match t {
         Tok::Ident(s, _) | Tok::Op(s, _) => format!("`{s}`"),
@@ -543,7 +677,7 @@ fn parse_literal(lit: proc_macro2::Literal, span: Span) -> Result<Expr, Diagnost
     }
 }
 
-/// Parses an expression from a token stream (used for helper bodies).
+/// Parses an expression from a token stream.
 pub fn parse_expr(stream: TokenStream, span: Span) -> Result<Expr, Diagnostic> {
     ExprParser::new(stream, span).parse_all()
 }
@@ -1045,21 +1179,26 @@ fn pure_fn(sig: &syn::Signature, body: &syn::Block) -> Result<PureFn, Diagnostic
             "`#[anneal::pure]` helpers cannot be `unsafe`",
         ));
     }
-    let expr = match body.stmts.as_slice() {
-        [syn::Stmt::Expr(e, None)] => e,
-        _ => {
-            return Err(Diagnostic::new(
-                "E_ANNEAL_IMPURE_SPEC_EXPR",
-                body.span(),
-                "a `#[anneal::pure]` helper body must be a single expression",
-            ))
+    // The body is a block like any other: `let` statements, then its value.
+    let well_formed = match body.stmts.split_last() {
+        Some((syn::Stmt::Expr(_, None), lets)) => {
+            lets.iter().all(|s| matches!(s, syn::Stmt::Local(_)))
         }
+        _ => false,
     };
+    if !well_formed {
+        return Err(Diagnostic::new(
+            "E_ANNEAL_IMPURE_SPEC_EXPR",
+            body.span(),
+            "a `#[anneal::pure]` helper body must be `let` statements followed by an expression",
+        ));
+    }
+    let stmts: TokenStream = body.stmts.iter().map(ToTokens::to_token_stream).collect();
     Ok(PureFn {
         name: sig.ident.to_string(),
         params: params_of(sig, None)?,
         ret: ret_of(sig, None)?,
-        body: parse_expr(expr.to_token_stream(), body.span())?,
+        body: parse_block(stmts, body.span(), false)?,
         span: sig.span(),
         file: 0,
     })

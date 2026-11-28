@@ -109,8 +109,9 @@ integer constants `T::MIN`, `T::MAX`, and `T::BITS` for a fixed-width integer
 type `T`, parameters, the `ensures` binder, `!`, unary `-`, `&&`, `||`, `==>`
 (right-associative), `<==>`, comparisons, `+ - * / %`, helper calls,
 `math(e)`/`math { e }`, `wrapping_{add,sub,mul}`,
-`no_overflow_{add,sub,mul}`, and `if c { a } else { b }` (with `else if`
-chains). Types: `bool`, `()`, and fixed-width integers.
+`no_overflow_{add,sub,mul}`, `if c { a } else { b }` (with `else if`
+chains), and blocks `{ let x = e; .. value }`. Types: `bool`, `()`, and
+fixed-width integers.
 
 Every integer lowers to its mathematical `Int` value via `scalarAsInt`.
 Arithmetic on machine integers must say what it means: `math(a) + math(b)` is
@@ -137,6 +138,37 @@ it may test integers and `bool` arguments and return values, but may not call a
 propositions. A branch may divide by what the condition proves nonzero on its
 side, as in `if d == 0 { r == 0 } else { math(r) == math(n / d) }`.
 
+A block binds immutable names with `let` statements and has the value of its
+final expression. A block in expression position must bind at least one name;
+`if` branches, `math { .. }`, and helper bodies are blocks that may also be a
+bare expression. A `let` binds one identifier, optionally annotated as `bool`,
+`()`, or a fixed-width integer type. The lowering rejects `let mut`, patterns,
+`_`, `let ... else`, and a binding that the rest of its block never uses,
+which Lean would warn about. It also rejects a binding that shadows a
+parameter, the `ensures` binder, an enclosing binding, or a helper, and one
+named like an intrinsic or a name the generated Lean uses (the names reserved
+for helper parameters, plus `Nat`, `q`, `out`, and the `spec*` functions). As
+with an `if`, no binary operator may follow a block directly.
+
+A binding has the type of its value: `let s = math(a) + math(b);` is a
+mathematical integer, and `let x = a;` keeps `a`'s machine type. An untyped
+integer needs an annotation, as in `let k: u64 = 4;`, except inside `math`,
+where `let k = 4;` is mathematical. An annotation gives the binding that
+machine type even inside `math`, so its initializer is then a machine-typed
+expression. In `max_steps`, an integer binding is a `Nat` step count; a signed
+annotation is rejected, and an unsigned one must match a machine-typed value.
+A binding lowers to `(let «x» : T := e; body)`, where `T` is `Prop`, `Int`,
+`Nat`, or `Trusted.MirSemantics.Val`. A `bool` binding is decidable in the
+condition of an `if` that chooses a value exactly when its initializer is.
+
+Divisor guards pass through bindings. A name bound to a nonzero constant, or
+to a value already known to be nonzero, guards a divisor in the rest of its
+block, and a name bound to `0` counts as zero in a guard such as `d != z`. A
+`bool` binding guards what its initializer guards, so
+`let ok = d != 0; ok ==> math(n / d) == ..` passes. A guard that names a
+block's own binding, such as `{ let e = d; e != 0 }`, does not leave the
+block.
+
 An integer constant lowers to its value on the profile v1 target, where
 `usize` and `isize` are 64 bits wide: `usize::MAX` lowers to
 `(18446744073709551615 : Int)`. As in Rust, `T::MIN` and `T::MAX` have type
@@ -162,13 +194,14 @@ UTF-8 source and columns count Unicode scalar values.
 | `E_ANNEAL_EAGER_CLAUSE_JOIN` | `&` or `\|` between `bool`s |
 | `E_ANNEAL_AMBIGUOUS_NEGATION` | `!a == b` and `!a != b` |
 | `E_ANNEAL_CHAINED_COMPARISON` | `a < b < c` |
-| `E_ANNEAL_IMPURE_SPEC_EXPR` | assignments, blocks, `match`/`let`/loops, `unsafe` helpers |
+| `E_ANNEAL_IMPURE_SPEC_EXPR` | assignments, blocks that bind no name, `match`/loops, `let mut`, `let` patterns and `let ... else`, `unsafe` helpers |
+| `E_ANNEAL_UNUSED_LET` | a `let` binding that the rest of its block never uses |
 | `E_ANNEAL_UNDECIDABLE_SPEC_IF` | an `if` choosing an integer or `()` whose condition calls a `bool` helper, names a `bool` helper parameter, or compares `()` values |
 | `E_ANNEAL_OLD_IN_PRECONDITION` / `E_ANNEAL_UNSUPPORTED_OLD` | `old(...)` |
 | `E_ANNEAL_SAFETY_REQUIRES_ON_SAFE_FN` | `safety_requires` on a safe function |
 | `E_ANNEAL_SPEC_UNKNOWN_IDENT` / `E_ANNEAL_SPEC_UNKNOWN_FN` | unbound names (with a did-you-mean hint) |
 | `E_ANNEAL_SPEC_TYPE_MISMATCH` / `E_ANNEAL_SPEC_LITERAL_RANGE` / `E_ANNEAL_SPEC_TYPE_ANNOTATION_NEEDED` | ill-typed expressions |
-| `E_ANNEAL_SPEC_SHADOWING` | an `ensures` binder that shadows a parameter |
+| `E_ANNEAL_SPEC_SHADOWING` | an `ensures` binder that shadows a parameter, and a `let` binding that shadows a parameter, the `ensures` binder, an enclosing binding, or a helper |
 | `E_ANNEAL_PURE_RECURSION` | recursive helpers |
 | `E_ANNEAL_UNSUPPORTED_CLAUSE` / `E_ANNEAL_UNKNOWN_CLAUSE` / `E_ANNEAL_UNKNOWN_ATTRIBUTE` | clauses outside profile v1 |
 | `E_ANNEAL_UNSUPPORTED_TYPE` / `E_ANNEAL_SPEC_UNSUPPORTED_EXPR` / `E_ANNEAL_UNSUPPORTED_BITWISE` | types and expressions outside profile v1 |

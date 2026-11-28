@@ -101,4 +101,30 @@ private def u32Val (n : Nat) : Trusted.MirSemantics.Val :=
 example : fn4_max_steps { args := [u32Val 250, .bool true] } = 250 := rfl
 example : fn4_max_steps { args := [u32Val 7, .bool true] } = 100 := rfl
 
+-- A `let` binding takes its initializer's value in the rest of its block,
+-- including in helper bodies and `if` branches.
+example : pure_let_sum_is 2 3 5 := by unfold pure_let_sum_is; decide
+example : ¬ pure_let_sum_is 2 3 6 := by unfold pure_let_sum_is; decide
+example : pure_let_pick 20 = 9 := by unfold pure_let_pick; decide
+example : pure_let_pick 4 = 4 := by unfold pure_let_pick; decide
+example : pure_let_div_is 7 2 3 := by unfold pure_let_div_is; decide
+example : ¬ pure_let_div_is 7 2 4 := by unfold pure_let_div_is; decide
+example : pure_let_div_is 7 0 0 := by unfold pure_let_div_is; decide
+example : ¬ pure_let_div_is 7 0 1 := by unfold pure_let_div_is; decide
+
+example : pure_let_guarded_pick 6 2 = 1 := by unfold pure_let_guarded_pick; decide
+example : pure_let_guarded_pick 1 2 = 0 := by unfold pure_let_guarded_pick; decide
+example : pure_let_guarded_pick 6 0 = 2 := by unfold pure_let_guarded_pick; decide
+example : pure_let_math_cond_is 5 1 := by unfold pure_let_math_cond_is; decide
+example : pure_let_math_cond_is 0 0 := by unfold pure_let_math_cond_is; decide
+example : ¬ pure_let_math_cond_is 5 0 := by unfold pure_let_math_cond_is; decide
+
+-- `stepped` (sorted sixth as `fn5`) lowers `max_steps` with two `let`s:
+-- `max(2 * n, 7)`.
+private def u8Val (n : Nat) : Trusted.MirSemantics.Val :=
+  .scalar ⟨.i8, false, BitVec.ofNat 128 n⟩
+
+example : fn5_max_steps { args := [u32Val 10, u8Val 0] } = 20 := rfl
+example : fn5_max_steps { args := [u32Val 2, u8Val 0] } = 7 := rfl
+
 end Spec.Check

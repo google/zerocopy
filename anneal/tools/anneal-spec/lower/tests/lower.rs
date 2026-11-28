@@ -683,6 +683,292 @@ fn value_ifs_need_decidable_conditions() {
 }
 
 #[test]
+fn let_bindings_lower_to_lean_lets() {
+    let l = lower_one(&wrap(
+        "requires(align != 0u64), requires({ let rem = math(len) % math(align); rem == 0 })",
+        "fn f(len: u64, align: u64)",
+    ))
+    .unwrap();
+    assert!(
+        l.spec_lean.contains(
+            "(let «rem» : Int := (Trusted.MirSemantics.intTmod (specInt (specArg q 0)) \
+             (specInt (specArg q 1))); («rem» = (0 : Int)))"
+        ),
+        "{}",
+        l.spec_lean
+    );
+    // Bindings nest, and each takes the Lean type of its value.
+    let l = lower_one(&wrap(
+        "ensures(|ret| { let m = if a > b { a } else { b }; let big = m > 9u8; \
+         let u = (); let twice = math(m) * 2; big ==> ret == m && twice >= 0 && u == () })",
+        "fn f(a: u8, b: u8) -> u8",
+    ))
+    .unwrap();
+    for want in [
+        "(let «m» : Int := (if ((specInt (specArg q 0)) > (specInt (specArg q 1))) then \
+         (specInt (specArg q 0)) else (specInt (specArg q 1))); ",
+        "(let «big» : Prop := («m» > (9 : Int)); ",
+        "(let «u» : Trusted.MirSemantics.Val := Trusted.MirSemantics.Val.unit; ",
+        "(let «twice» : Int := («m» * (2 : Int)); ",
+    ] {
+        assert!(l.spec_lean.contains(want), "missing {want}:\n{}", l.spec_lean);
+    }
+    // `if` branches, `math { .. }`, and helper bodies are blocks too.
+    let l = lower_one(
+        "anneal::external_spec! {
+            #[anneal::pure]
+            fn clamp9(x: u8) -> u8 { let cap: u8 = 9; if x > cap { cap } else { x } }
+            #[anneal::spec(ensures(|ret| if a > 0u8 { let x: u8 = a; ret == x } \
+                                         else { math { let z = 0; z } == math(ret) }))]
+            fn f(a: u8) -> u8;
+        }",
+    )
+    .unwrap();
+    for want in [
+        "(let «cap» : Int := (9 : Int); (if («x» > «cap») then «cap» else «x»))",
+        "(let «x» : Int := (specInt (specArg q 0)); ((specInt out.ret) = «x»))",
+        "(let «z» : Int := (0 : Int); «z»)",
+    ] {
+        assert!(l.spec_lean.contains(want), "missing {want}:\n{}", l.spec_lean);
+    }
+    // In `max_steps`, an integer binding is a `Nat` step count, compared in
+    // conditions through `Int.ofNat`.
+    let l = lower_one(&wrap(
+        "max_steps = { let base: u32 = 10; let twice = n * 2; \
+         if twice > base { twice } else { base } }",
+        "fn f(n: u32)",
+    ))
+    .unwrap();
+    assert!(
+        l.spec_lean.contains(
+            "(let «base» : Nat := (10 : Nat); (let «twice» : Nat := ((specNat (specArg q 0)) * \
+             (2 : Nat)); (if ((Int.ofNat «twice») > (Int.ofNat «base»)) then «twice» else \
+             «base»)))"
+        ),
+        "{}",
+        l.spec_lean
+    );
+}
+
+#[test]
+fn let_bindings_are_typed_like_their_values() {
+    let sig = "fn f(a: u8, b: u8) -> u8";
+    for (clause, code) in [
+        ("ensures(|ret| { let k = 4; ret == k })", "E_ANNEAL_SPEC_TYPE_ANNOTATION_NEEDED"),
+        (
+            "ensures(|ret| { let k = if a > b { 1 } else { 2 }; ret == k })",
+            "E_ANNEAL_SPEC_TYPE_ANNOTATION_NEEDED",
+        ),
+        ("ensures(|ret| { let k: u8 = 256; ret == k })", "E_ANNEAL_SPEC_LITERAL_RANGE"),
+        ("ensures(|ret| { let x: u16 = a; ret == 0u8 })", "E_ANNEAL_SPEC_TYPE_MISMATCH"),
+        ("ensures(|ret| { let x: u8 = math(a); ret == x })", "E_ANNEAL_SPEC_TYPE_MISMATCH"),
+        ("ensures(|ret| { let p: bool = a; p })", "E_ANNEAL_SPEC_TYPE_MISMATCH"),
+        ("ensures(|ret| { let s = a + b; ret == s })", "E_ANNEAL_AMBIGUOUS_SPEC_ARITH"),
+        // A binding of a machine integer keeps its machine type.
+        ("ensures(|ret| { let x = a; x + 1u8 == ret })", "E_ANNEAL_AMBIGUOUS_SPEC_ARITH"),
+    ] {
+        expect_error(&wrap(clause, sig), code);
+    }
+    for clause in [
+        "ensures(|ret| { let k: u8 = 4; ret == k })",
+        "ensures(|ret| { let s = math(a) + math(b); math(ret) <= s })",
+        "ensures(|ret| { let x = a; math(x) + 1 == math(ret) })",
+        // Inside `math`, a binding is mathematical unless annotated, and an
+        // annotated one is a machine-typed value that `math` then lifts.
+        "ensures(|ret| math({ let s = a + b; s * 2 }) >= math(ret))",
+        "ensures(|ret| math({ let k = 4; let x: u8 = a; x * k }) >= 0)",
+    ] {
+        lower_one(&wrap(clause, sig)).unwrap_or_else(|e| panic!("{clause}: {e:?}"));
+    }
+    for (clause, code) in [
+        ("max_steps = { let s: i32 = 1; n }", "E_ANNEAL_SPEC_TYPE_MISMATCH"),
+        ("max_steps = { let x = n - 1; x }", "E_ANNEAL_SPEC_TYPE_MISMATCH"),
+        ("max_steps = { let x = n; -x }", "E_ANNEAL_SPEC_TYPE_MISMATCH"),
+        ("max_steps = { let big = n > 3; big }", "E_ANNEAL_SPEC_TYPE_MISMATCH"),
+        ("max_steps = { let k: u8 = n; k }", "E_ANNEAL_SPEC_TYPE_MISMATCH"),
+    ] {
+        expect_error(&wrap(clause, "fn f(n: u32)"), code);
+    }
+    for clause in [
+        "max_steps = { let big = n > 3; if big { n } else { 3 } }",
+        "max_steps = { let k: u32 = n; k }",
+        "max_steps = { let k: u64 = n * 2; k }",
+    ] {
+        lower_one(&wrap(clause, "fn f(n: u32)")).unwrap_or_else(|e| panic!("{clause}: {e:?}"));
+    }
+}
+
+#[test]
+fn let_bindings_cannot_shadow_or_capture_names() {
+    let sig = "fn f(a: u8, b: u8) -> u8";
+    for clause in [
+        "ensures(|ret| { let a: u8 = b; ret == a })",
+        "ensures(|ret| { let ret: u8 = b; ret == a })",
+        "ensures(|ret| { let x: u8 = a; ({ let x: u8 = b; x }) == x })",
+    ] {
+        expect_error(&wrap(clause, sig), "E_ANNEAL_SPEC_SHADOWING");
+    }
+    let r = expect_error(
+        "anneal::external_spec! {
+            #[anneal::pure] fn small(x: u8) -> bool { x < 10u8 }
+            #[anneal::spec(ensures(|ret| { let small: u8 = a; ret == small }))]
+            fn f(a: u8) -> u8;
+        }",
+        "E_ANNEAL_SPEC_SHADOWING",
+    );
+    assert!(r.contains("`#[anneal::pure]` helper"), "{r}");
+    // A binder named after a name that the generated Lean references would
+    // capture that reference.
+    for name in ["Int", "True", "Trusted", "Spec", "Nat", "q", "out", "specInt", "math", "old"] {
+        expect_error(
+            &wrap(&format!("ensures(|ret| {{ let {name}: u8 = a; ret == {name} }})"), sig),
+            "E_ANNEAL_RESERVED_PARAM_NAME",
+        );
+    }
+    // Sibling blocks may reuse a name.
+    lower_one(&wrap(
+        "ensures(|ret| ({ let x: u8 = a; x == a }) && ({ let x: u8 = b; x == b }))",
+        sig,
+    ))
+    .unwrap();
+}
+
+#[test]
+fn let_statements_are_parsed_strictly() {
+    let sig = "fn f(a: u8) -> u8";
+    for (clause, code) in [
+        ("ensures(|ret| { let x: u8 = a; })", "E_ANNEAL_SPEC_SYNTAX"),
+        ("ensures(|ret| { let x: u8 = a; ; ret == x })", "E_ANNEAL_SPEC_SYNTAX"),
+        ("ensures(|ret| { a == a; ret == a })", "E_ANNEAL_SPEC_SYNTAX"),
+        ("ensures(|ret| { let x: u8; ret == a })", "E_ANNEAL_SPEC_SYNTAX"),
+        ("ensures(|ret| { let mut x: u8 = a; ret == x })", "E_ANNEAL_IMPURE_SPEC_EXPR"),
+        ("ensures(|ret| { let (x, y) = (a, a); ret == x })", "E_ANNEAL_IMPURE_SPEC_EXPR"),
+        ("ensures(|ret| { let Some(x) = a; ret == x })", "E_ANNEAL_IMPURE_SPEC_EXPR"),
+        ("ensures(|ret| { let _ = a; ret == a })", "E_ANNEAL_IMPURE_SPEC_EXPR"),
+        ("ensures(|ret| { let x: u8 = a else { 0u8 }; ret == x })", "E_ANNEAL_IMPURE_SPEC_EXPR"),
+        ("ensures(|ret| { let x: f32 = a; ret == a })", "E_ANNEAL_UNSUPPORTED_TYPE"),
+        ("ensures(|ret| { let x: &u8 = a; ret == a })", "E_ANNEAL_UNSUPPORTED_TYPE"),
+        ("ensures(|ret| { ret == a })", "E_ANNEAL_IMPURE_SPEC_EXPR"),
+        ("ensures(|ret| { })", "E_ANNEAL_IMPURE_SPEC_EXPR"),
+    ] {
+        expect_error(&wrap(clause, sig), code);
+    }
+    // Lean warns about an unused binder.
+    let r = expect_error(
+        &wrap("ensures(|ret| { let x: u8 = a; let y: u8 = x; ret == x })", sig),
+        "E_ANNEAL_UNUSED_LET",
+    );
+    assert!(r.contains("`y` is never used"), "{r}");
+    // A binary operator after a block would apply to the whole block.
+    let r = expect_error(
+        &wrap("ensures(|ret| { let x: u8 = a; x } == ret)", sig),
+        "E_ANNEAL_SPEC_SYNTAX",
+    );
+    assert!(r.contains("a block must be parenthesized"), "{r}");
+    lower_one(&wrap("ensures(|ret| ({ let x: u8 = a; x }) == ret)", sig)).unwrap();
+    // An initializer may itself be an `if` with an `else`.
+    lower_one(&wrap(
+        "ensures(|ret| { let x = if a > 1u8 { a } else if a > 0u8 { 1u8 } else { 0u8 }; ret == x })",
+        sig,
+    ))
+    .unwrap();
+    // A helper body is a block: `let` statements, then one expression.
+    expect_error(
+        "anneal::external_spec! {
+            #[anneal::pure] fn g(x: u8) -> u8 { let y: u8 = x; y; }
+        }",
+        "E_ANNEAL_IMPURE_SPEC_EXPR",
+    );
+}
+
+#[test]
+fn let_bound_bools_keep_undecidable_conditions_rejected() {
+    let small = "#[anneal::pure] fn small(x: u8) -> bool { x < 10u8 }";
+    let spec = |ensures: &str| {
+        format!(
+            "anneal::external_spec! {{ {small}
+                #[anneal::spec(ensures(|r| {ensures}))]
+                fn f(a: u8) -> u8;
+            }}"
+        )
+    };
+    let r = expect_error(
+        &spec("{ let p = small(a); r == if p { 1u8 } else { 0u8 } }"),
+        "E_ANNEAL_UNDECIDABLE_SPEC_IF",
+    );
+    assert!(r.contains("`p` is bound to a `bool` that Lean cannot decide"), "{r}");
+    for ensures in [
+        "r == if ({ let p = small(a); p }) { 1u8 } else { 0u8 }",
+        "r == if ({ let u = (); u == u }) { 1u8 } else { 0u8 }",
+        "{ let p = small(a); let p2 = p && a > 1u8; r == if p2 { 1u8 } else { 0u8 } }",
+    ] {
+        expect_error(&spec(ensures), "E_ANNEAL_UNDECIDABLE_SPEC_IF");
+    }
+    // The check sees each block in the context it was lowered in: under a
+    // guard, and inside `math`.
+    let guarded = |cond: &str| {
+        format!(
+            "anneal::external_spec! {{ {small}
+                #[anneal::spec(ensures(|r| d != 0u8 ==> (r == if ({cond}) {{ 1u8 }} else {{ 0u8 }})))]
+                fn f(a: u8, n: u8, d: u8) -> u8;
+            }}"
+        )
+    };
+    expect_error(
+        &guarded("{ let p = small(a) && math(n / d) > 0; p }"),
+        "E_ANNEAL_UNDECIDABLE_SPEC_IF",
+    );
+    lower_one(&guarded("{ let p = a > 1u8 && math(n / d) > 0; p }")).unwrap();
+    for ensures in [
+        "math(r) == math(if ({ let k = 1; small(a) && k > 0 }) { 1 } else { 0 })",
+        "math(r) == math(if ({ let k = 1; () == () && k > 0 }) { 1 } else { 0 })",
+    ] {
+        expect_error(&spec(ensures), "E_ANNEAL_UNDECIDABLE_SPEC_IF");
+    }
+    lower_one(&spec("math(r) == math(if ({ let k = 1; a > 1u8 && k > 0 }) { 1 } else { 0 })"))
+        .unwrap();
+    lower_one(&spec("r == if (math({ let k = 1; k }) > 0) { 1u8 } else { 0u8 }")).unwrap();
+    for ensures in [
+        "{ let p = a > 5u8; r == if p { 1u8 } else { 0u8 } }",
+        "{ let p = small(a); if p { r == 1u8 } else { r == 0u8 } }",
+    ] {
+        lower_one(&spec(ensures)).unwrap_or_else(|e| panic!("{ensures}: {e:?}"));
+    }
+}
+
+#[test]
+fn let_bindings_carry_divisor_guards_soundly() {
+    let sig = "fn f(n: u8, d: u8) -> u8";
+    for clause in [
+        "ensures(|r| { let k: u8 = 4; math(r) == math(n / k) })",
+        "ensures(|r| { let z: u8 = 0; d != z ==> math(r) == math(n / d) })",
+        "ensures(|r| { let ok = d != 0u8; ok ==> math(r) == math(n / d) })",
+        "ensures(|r| { let zero = d == 0u8; if zero { r == 0u8 } else { math(r) == math(n % d) } })",
+        "ensures(|r| { let e = d; e != 0u8 ==> math(r) == math(n / e) })",
+        "requires({ let ok = d != 0u8; ok }), ensures(|r| math(r) == math(n / d))",
+        "requires(d != 0u8), ensures(|r| { let e = d; math(r) == math(n / e) })",
+    ] {
+        lower_one(&wrap(clause, sig)).unwrap_or_else(|e| panic!("{clause}: {e:?}"));
+    }
+    for clause in [
+        "ensures(|r| { let z: u8 = 0; math(r) == math(n / z) })",
+        "ensures(|r| { let e = d; e != 0u8 ==> math(r) == math(n / d) })",
+        "ensures(|r| { let ok = d == 0u8; ok ==> math(r) == math(n / d) })",
+        // A fact about a block's own binding does not leave the block, even
+        // to guard a later binding of the same name.
+        "requires({ let e = d; e != 0u8 }), ensures(|r| math(r) == math(n / d))",
+        "requires({ let e = d; e != 0u8 }), ensures(|r| { let e = n; math(r) == math(n / e) })",
+    ] {
+        expect_error(&wrap(clause, sig), "E_ANNEAL_UNGUARDED_SPEC_DIV");
+    }
+    lower_one(&wrap("max_steps = { let k: u32 = 2; n / k }", "fn f(n: u32)")).unwrap();
+    expect_error(
+        &wrap("max_steps = { let z: u32 = 0; n / z }", "fn f(n: u32)"),
+        "E_ANNEAL_UNGUARDED_SPEC_DIV",
+    );
+}
+
+#[test]
 fn duplicate_targets_are_rejected() {
     expect_error(
         "anneal::external_spec! { #[anneal::spec(total)] fn f(); #[anneal::spec(total)] fn f(); }",
