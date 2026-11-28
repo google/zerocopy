@@ -21,7 +21,8 @@ use proc_macro2::Span;
 
 use crate::{
     ast::{
-        BinOp, Clause, Effect, Expr, ExprKind, IntConst, IntTy, Param, PureFn, SpecFn, Ty, UnOp,
+        BinOp, Clause, Effect, Expr, ExprKind, IntConst, IntTy, LetBinding, Param, PureFn, SpecFn,
+        Ty, UnOp,
     },
     diag::Diagnostic,
 };
@@ -117,6 +118,7 @@ pub struct HelperSig {
     pub ret: Ty,
 }
 
+#[derive(Clone)]
 enum Binding {
     /// The `i`-th argument of the specified function.
     Arg(usize, Ty),
@@ -124,6 +126,26 @@ enum Binding {
     Ret(Ty),
     /// A `#[anneal::pure]` helper parameter.
     HelperParam(String, Ty),
+    /// A `let` binding: its Lean binder name and what it holds.
+    Local(String, LocalKind),
+}
+
+/// What a `let` binding holds, as its Lean binder sees it.
+#[derive(Clone)]
+enum LocalKind {
+    /// A `bool`, bound as a `Prop`. `decidable` is whether Lean can decide
+    /// it, which an `if` that chooses a value needs of its condition.
+    /// `when_true` and `when_false` are the nonzero facts that its
+    /// initializer establishes when it holds and when it fails.
+    Prop { decidable: bool, when_true: Vec<String>, when_false: Vec<String> },
+    /// An integer of type `ty` (a machine type or `Ty::Math`), bound as an
+    /// `Int`, with its value if its initializer is a constant.
+    Int { ty: Ty, value: Option<IntLit> },
+    /// A `()`, bound as a `Val`.
+    Unit,
+    /// A `max_steps` step count, bound as a `Nat`, with its value if its
+    /// initializer is a constant.
+    Nat { value: Option<IntLit> },
 }
 
 pub struct Env<'a> {
@@ -162,6 +184,10 @@ impl<'a> Env<'a> {
 pub fn lean_ident(name: &str) -> String {
     format!("«{name}»")
 }
+
+/// Unqualified names that lowered clause text references besides
+/// [`GLOBALS`]. A `let` binder named after one would capture it.
+const CLAUSE_NAMES: &[&str] = &["Nat", "q", "out", "specArg", "specBool", "specInt", "specNat"];
 
 // Every global the lowering references is qualified from one of a few root
 // names (`Int`, `True`, `False`, `Trusted`, and the output namespace's root,
@@ -294,7 +320,7 @@ fn suggest<'b>(name: &str, candidates: impl Iterator<Item = &'b String>) -> Opti
         .map(|(_, c)| c.clone())
 }
 
-impl Env<'_> {
+impl<'a> Env<'a> {
     fn ident(&self, name: &str, span: Span, math: bool) -> Result<Low, Diagnostic> {
         let Some(b) = self.names.get(name) else {
             let mut d = Diagnostic::new(
@@ -335,6 +361,25 @@ impl Env<'_> {
                     }),
                     Ty::Unit => Low::Unit(lean.clone()),
                     t => Low::Int(lean.clone(), lift(*t)),
+                });
+            }
+            Binding::Local(lean, kind) => {
+                return Ok(match kind {
+                    // A `bool` binding carries what its initializer
+                    // establishes, and is as decidable as it.
+                    LocalKind::Prop { decidable, when_true, when_false } => Low::Prop(Prop {
+                        term: lean.clone(),
+                        undecidable: (!decidable).then(|| {
+                            (span, format!("`{name}` is bound to a `bool` that Lean cannot decide"))
+                        }),
+                        on_true: when_true.clone(),
+                        on_false: when_false.clone(),
+                    }),
+                    LocalKind::Int { ty, .. } => Low::Int(lean.clone(), lift(*ty)),
+                    LocalKind::Unit => Low::Unit(lean.clone()),
+                    // A step count compared in a `max_steps` condition is a
+                    // non-negative mathematical integer.
+                    LocalKind::Nat { .. } => Low::Int(format!("({INT}.ofNat {lean})"), Ty::Math),
                 });
             }
         };
@@ -440,9 +485,28 @@ impl Env<'_> {
                             ),
                         ))
                     }
+                    Binding::Local(lean, LocalKind::Nat { .. }) => Ok(lean.clone()),
+                    Binding::Local(_, kind) => Err(type_error(
+                        e.span,
+                        format!(
+                            "`max_steps` expects a non-negative integer, found `{}`",
+                            match kind {
+                                LocalKind::Prop { .. } => "bool".to_string(),
+                                LocalKind::Unit => "()".to_string(),
+                                LocalKind::Int { ty, .. } => ty.describe(),
+                                LocalKind::Nat { .. } => unreachable!("handled above"),
+                            }
+                        ),
+                    )),
                 }
             }
             ExprKind::Paren(inner) | ExprKind::Math(inner) => self.lower_nat(inner, facts),
+            ExprKind::Let(b, body) => {
+                let (env, prefix, extra) = self.bind(b, body, false, true, facts)?;
+                let mut body_facts = facts.clone();
+                body_facts.extend(extra);
+                Ok(format!("({prefix}{})", env.lower_nat(body, &mut body_facts)?))
+            }
             ExprKind::If(c, t, f) => {
                 let cond = self.lower_prop_in(c, false, facts)?;
                 require_decidable(&cond)?;
@@ -484,13 +548,14 @@ impl Env<'_> {
                     let a = self.lower_nat(l, facts)?;
                     let b = self.lower_nat(r, facts)?;
                     if matches!(op, BinOp::Div | BinOp::Rem) {
-                        let guarded = is_nonzero_nat_lit(r) || {
-                            let mut scratch = Vec::new();
-                            matches!(
-                                self.lower(r, true, &mut scratch),
-                                Ok(Low::Int(t, _)) if facts.contains(&t)
-                            )
-                        };
+                        let guarded = self.const_value(r).is_some_and(|v| !v.neg && v.mag != 0)
+                            || {
+                                let mut scratch = Vec::new();
+                                matches!(
+                                    self.lower(r, true, &mut scratch),
+                                    Ok(Low::Int(t, _)) if facts.contains(&t)
+                                )
+                            };
                         if !guarded {
                             return Err(Diagnostic::new(
                                 "E_ANNEAL_UNGUARDED_SPEC_DIV",
@@ -640,7 +705,245 @@ impl Env<'_> {
             ExprKind::Binary(op, l, r) => self.binary(*op, l, r, e.span, math, facts),
             ExprKind::Call(name, args) => self.call(name, args, e.span, math, facts),
             ExprKind::If(c, t, f) => self.lower_if(c, t, f, math, facts),
+            ExprKind::Let(b, body) => {
+                let (env, prefix, extra) = self.bind(b, body, math, false, facts)?;
+                let mut body_facts = facts.clone();
+                body_facts.extend(extra);
+                Ok(match env.lower(body, math, &mut body_facts)? {
+                    // A fact that names the block's own binding does not
+                    // leave the block, where the binding is out of scope.
+                    Low::Prop(p) => {
+                        let lean = lean_ident(&b.name);
+                        let outside = |fs: Vec<String>| -> Vec<String> {
+                            fs.into_iter().filter(|f| !f.contains(&lean)).collect()
+                        };
+                        Low::Prop(Prop {
+                            term: format!("({prefix}{})", p.term),
+                            undecidable: p.undecidable,
+                            on_true: outside(p.on_true),
+                            on_false: outside(p.on_false),
+                        })
+                    }
+                    Low::Int(t, ty) => Low::Int(format!("({prefix}{t})"), ty),
+                    Low::Unit(u) => Low::Unit(format!("({prefix}{u})")),
+                    untyped @ (Low::Lit(..) | Low::UntypedIf(..)) => {
+                        let (t, leaves) = untyped_parts(untyped);
+                        Low::UntypedIf(format!("({prefix}{t})"), leaves)
+                    }
+                })
+            }
         }
+    }
+
+    /// This environment with `name` bound to `binding`.
+    fn with(&self, name: &str, binding: Binding) -> Env<'a> {
+        let mut names = self.names.clone();
+        names.insert(name.to_string(), binding);
+        Env { helpers: self.helpers, names, uses: self.uses, in_requires: self.in_requires }
+    }
+
+    /// This environment recording uses in `uses`, for lowering an
+    /// expression only to learn its type without affecting what the
+    /// generated Lean declares.
+    fn probe<'b>(&'b self, uses: &'b Uses) -> Env<'b> {
+        Env {
+            helpers: self.helpers,
+            names: self.names.clone(),
+            uses,
+            in_requires: self.in_requires,
+        }
+    }
+
+    /// The value of `e` if it is an integer literal or constant, or a `let`
+    /// binding of one.
+    fn const_value(&self, e: &Expr) -> Option<IntLit> {
+        match &e.kind {
+            ExprKind::Ident(name) => match self.names.get(name) {
+                Some(Binding::Local(
+                    _,
+                    LocalKind::Int { value, .. } | LocalKind::Nat { value },
+                )) => *value,
+                _ => None,
+            },
+            ExprKind::Paren(inner) | ExprKind::Math(inner) => self.const_value(inner),
+            _ => const_int_lit(e),
+        }
+    }
+
+    /// Checks and lowers `let` binding `b`, whose block continues with
+    /// `body`. Returns the environment of the rest of the block, the Lean
+    /// `let .. := ..; ` prefix that binds `b`, and the nonzero facts that the
+    /// binding adds there. In `max_steps` (`nat`), an integer binding is a
+    /// `Nat` step count.
+    fn bind(
+        &self,
+        b: &LetBinding,
+        body: &Expr,
+        math: bool,
+        nat: bool,
+        facts: &mut Vec<String>,
+    ) -> Result<(Env<'a>, String, Vec<String>), Diagnostic> {
+        let name = b.name.as_str();
+        let intrinsic = INTRINSICS.contains(&name)
+            || name == "old"
+            || name.starts_with("wrapping_")
+            || name.starts_with("no_overflow_");
+        if reserved_param_name(name) || CLAUSE_NAMES.contains(&name) || intrinsic {
+            return Err(Diagnostic::new(
+                "E_ANNEAL_RESERVED_PARAM_NAME",
+                b.name_span,
+                format!(
+                    "`{name}` cannot name a `let` binding: it is reserved by the generated Lean \
+                     or names an intrinsic"
+                ),
+            )
+            .help("rename the binding"));
+        }
+        let shadowed = match self.names.get(name) {
+            Some(Binding::Arg(..) | Binding::HelperParam(..)) => Some("a parameter"),
+            Some(Binding::Ret(_)) => Some("the `ensures` return binder"),
+            Some(Binding::Local(..)) => Some("an enclosing `let` binding"),
+            None if self.helpers.contains_key(name) => Some("a `#[anneal::pure]` helper"),
+            None => None,
+        };
+        if let Some(what) = shadowed {
+            return Err(Diagnostic::new(
+                "E_ANNEAL_SPEC_SHADOWING",
+                b.name_span,
+                format!("the `let` binding `{name}` shadows {what}"),
+            )
+            .help("choose a name that is not already in scope"));
+        }
+        let init = &b.init;
+        let lean = lean_ident(name);
+        let mismatch = |found: &Low, want: Ty| {
+            type_error(
+                init.span,
+                format!(
+                    "`{name}` is declared `{}`, but its initializer has {}",
+                    want.describe(),
+                    describe(found)
+                ),
+            )
+        };
+        // The kind of an unannotated `max_steps` binding: a `bool` or `()`
+        // as anywhere else, and otherwise a step count.
+        let nat_kind = |env: &Self| {
+            let scratch = Uses::default();
+            match env.probe(&scratch).lower(init, true, &mut facts.clone()) {
+                Ok(Low::Prop(_)) => Some(Ty::Bool),
+                Ok(Low::Unit(_)) => Some(Ty::Unit),
+                _ => None,
+            }
+        };
+        let ty = match b.ty {
+            Some(Ty::Int(t)) if nat && t.signed => {
+                return Err(type_error(
+                    b.name_span,
+                    format!(
+                        "`max_steps` requires non-negative integers, but `{name}` is declared \
+                         signed `{}`",
+                        t.rust_name()
+                    ),
+                ));
+            }
+            Some(ty) => Some(ty),
+            None if nat => nat_kind(self),
+            None => None,
+        };
+        let (term, kind, lean_ty) = match ty {
+            Some(Ty::Bool) => {
+                let p = self.lower_prop_in(init, math, facts)?;
+                let kind = prop_local(&p);
+                (p.term, kind, "Prop".to_string())
+            }
+            Some(Ty::Unit) => match self.lower(init, math, facts)? {
+                Low::Unit(u) => (u, LocalKind::Unit, VAL.to_string()),
+                other => return Err(mismatch(&other, Ty::Unit)),
+            },
+            Some(Ty::Int(t)) if nat => {
+                let value = self.const_value(init);
+                if let Some(v) = value {
+                    check_range(v, t, init.span)?;
+                }
+                // Step arithmetic is mathematical, but a machine-typed value
+                // must have the declared type.
+                let scratch = Uses::default();
+                if let Ok(found @ Low::Int(_, Ty::Int(found_t))) =
+                    self.probe(&scratch).lower(init, false, &mut facts.clone())
+                {
+                    if found_t != t {
+                        return Err(mismatch(&found, Ty::Int(t)));
+                    }
+                }
+                (self.lower_nat(init, facts)?, LocalKind::Nat { value }, "Nat".to_string())
+            }
+            None if nat => {
+                let value = self.const_value(init);
+                (self.lower_nat(init, facts)?, LocalKind::Nat { value }, "Nat".to_string())
+            }
+            // An annotated integer binding has that machine type, so its
+            // initializer is a machine-typed expression even inside `math`.
+            Some(Ty::Int(t)) => match settle(self.lower(init, false, facts)?, Ty::Int(t))? {
+                Low::Int(term, ty) if ty == Ty::Int(t) => {
+                    (term, LocalKind::Int { ty, value: self.const_value(init) }, INT.to_string())
+                }
+                other => return Err(mismatch(&other, Ty::Int(t))),
+            },
+            None => match self.lower(init, math, facts)? {
+                Low::Prop(p) => {
+                    let kind = prop_local(&p);
+                    (p.term, kind, "Prop".to_string())
+                }
+                Low::Unit(u) => (u, LocalKind::Unit, VAL.to_string()),
+                Low::Int(term, ty) => {
+                    (term, LocalKind::Int { ty, value: self.const_value(init) }, INT.to_string())
+                }
+                untyped @ (Low::Lit(..) | Low::UntypedIf(..)) if math => {
+                    let Low::Int(term, ty) = settle(untyped, Ty::Math)? else { unreachable!() };
+                    (term, LocalKind::Int { ty, value: self.const_value(init) }, INT.to_string())
+                }
+                Low::Lit(..) | Low::UntypedIf(..) => {
+                    return Err(Diagnostic::new(
+                        "E_ANNEAL_SPEC_TYPE_ANNOTATION_NEEDED",
+                        init.span,
+                        format!("the type of `{name}` cannot be inferred from an untyped integer"),
+                    )
+                    .help(format!(
+                        "annotate it, as in `let {name}: u64 = ..;`, or bind a `math(..)` value"
+                    )));
+                }
+            },
+            Some(Ty::Math | Ty::Never) => unreachable!("not a `let` annotation"),
+        };
+        // A name bound to a nonzero value may divide the rest of its block.
+        let mut extra = Vec::new();
+        if let LocalKind::Int { value, .. } | LocalKind::Nat { value } = &kind {
+            let scratch = Uses::default();
+            let nonzero = value.is_some_and(|v| v.mag != 0)
+                || matches!(
+                    self.probe(&scratch).lower(init, true, &mut facts.clone()),
+                    Ok(Low::Int(t, _)) if facts.contains(&t)
+                );
+            if nonzero {
+                extra.push(match kind {
+                    LocalKind::Nat { .. } => format!("({INT}.ofNat {lean})"),
+                    _ => lean.clone(),
+                });
+            }
+        }
+        // Lean warns about an unused binder, and an unused binding is likely
+        // a mistake.
+        if !mentions(body, name) {
+            return Err(Diagnostic::new(
+                "E_ANNEAL_UNUSED_LET",
+                b.name_span,
+                format!("the `let` binding `{name}` is never used"),
+            )
+            .help("remove the binding, or use its value in the rest of the block"));
+        }
+        let prefix = format!("let {lean} : {lean_ty} := {term}; ");
+        Ok((self.with(name, Binding::Local(lean, kind)), prefix, extra))
     }
 
     /// Lowers `if c { t } else { f }`. A `bool`-valued `if` lowers to
@@ -818,7 +1121,7 @@ impl Env<'_> {
                 let a = int_term(a, l.span, op)?;
                 let b = int_term(b, r.span, op)?;
                 if matches!(op, BinOp::Div | BinOp::Rem) {
-                    let nonzero_lit = const_int_lit(r).is_some_and(|v| v.mag != 0);
+                    let nonzero_lit = self.const_value(r).is_some_and(|v| v.mag != 0);
                     if !nonzero_lit && !facts.contains(&b) {
                         return Err(Diagnostic::new(
                             "E_ANNEAL_UNGUARDED_SPEC_DIV",
@@ -917,7 +1220,7 @@ impl Env<'_> {
             BinOp::Gt => ">",
             _ => "≥",
         };
-        let zero = |x: &Expr| const_int_lit(x).is_some_and(|v| v.mag == 0);
+        let zero = |x: &Expr| self.const_value(x).is_some_and(|v| v.mag == 0);
         match (a, b) {
             (Low::Prop(x), Low::Prop(y)) => match op {
                 BinOp::Eq | BinOp::Ne => Ok(Low::Prop(Prop {
@@ -1075,6 +1378,15 @@ impl Env<'_> {
     }
 }
 
+/// The `LocalKind` of a `bool` binding whose initializer lowered to `p`.
+fn prop_local(p: &Prop) -> LocalKind {
+    LocalKind::Prop {
+        decidable: p.undecidable.is_none(),
+        when_true: p.on_true.clone(),
+        when_false: p.on_false.clone(),
+    }
+}
+
 /// Rejects an `if` condition whose lowered proposition has no Lean
 /// `Decidable` instance (arbitrary `Prop` from `bool` helpers, or `()`
 /// equality).
@@ -1214,10 +1526,6 @@ fn const_int_lit(e: &Expr) -> Option<IntLit> {
         ExprKind::Paren(inner) | ExprKind::Math(inner) => const_int_lit(inner),
         _ => None,
     }
-}
-
-fn is_nonzero_nat_lit(e: &Expr) -> bool {
-    const_int_lit(e).is_some_and(|v| !v.neg && v.mag != 0)
 }
 
 /// The lowered pieces of one specified function.
@@ -1554,6 +1862,22 @@ pub fn lower_helper(
     }
 }
 
+/// Whether `e` refers to the variable `name`. Bindings may not shadow, so
+/// every `name` in `e` is that variable.
+fn mentions(e: &Expr, name: &str) -> bool {
+    match &e.kind {
+        ExprKind::Ident(n) => n == name,
+        ExprKind::Call(_, args) => args.iter().any(|a| mentions(a, name)),
+        ExprKind::Unary(_, x) | ExprKind::Math(x) | ExprKind::Old(x) | ExprKind::Paren(x) => {
+            mentions(x, name)
+        }
+        ExprKind::Binary(_, a, b) => mentions(a, name) || mentions(b, name),
+        ExprKind::If(c, t, f) => mentions(c, name) || mentions(t, name) || mentions(f, name),
+        ExprKind::Let(b, body) => mentions(&b.init, name) || mentions(body, name),
+        ExprKind::Bool(_) | ExprKind::Int(..) | ExprKind::IntConst(..) | ExprKind::Unit => false,
+    }
+}
+
 /// Helper names called (directly) by `e`.
 pub fn calls_in(e: &Expr, out: &mut Vec<String>) {
     match &e.kind {
@@ -1572,6 +1896,10 @@ pub fn calls_in(e: &Expr, out: &mut Vec<String>) {
             calls_in(c, out);
             calls_in(t, out);
             calls_in(f, out);
+        }
+        ExprKind::Let(b, body) => {
+            calls_in(&b.init, out);
+            calls_in(body, out);
         }
         _ => {}
     }
