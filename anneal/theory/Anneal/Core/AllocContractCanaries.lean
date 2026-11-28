@@ -320,15 +320,15 @@ theorem evalVecNew_vecWf {m : MemoryState} {isMut : Bool} {elem : MirTy}
       rw [hW1, hZeroToNat, hBle0, hLtBool, hToNat, hNz, hMod, hBeq0]
       cases Nat.beq lay.size 0 <;> rfl
 
-theorem evalVecWithCapacity_disjoint_and_frame {m m' : MemoryState}
+theorem evalVecWithCapacityOutcome_disjoint_and_frame {m m' : MemoryState}
     {elem : MirTy} {cap : UInt64} {val : Val}
     (hUpper : NextAllocUpper m) (hPos : 0 < m.nextAllocId)
-    (hCall : evalVecWithCapacity m elem cap = .ok (val, m')) :
+    (hCall : evalVecWithCapacityOutcome m elem cap = .ok val m') :
     AllocFramePreserved m m' [] ∧ NextAllocUpper m' ∧
       (∀ lay, layoutOfTyV2 elem = some lay → 0 < cap.toNat * lay.size →
         val = .vec ⟨some m.nextAllocId, 0, .isize⟩ cap 0 ∧
         AllocDisjoint m m.nextAllocId) := by
-  unfold evalVecWithCapacity at hCall
+  unfold evalVecWithCapacityOutcome at hCall
   cases hSup : isSupportedPointeeTy elem with
   | false => rw [hSup] at hCall; cases hCall
   | true =>
@@ -345,21 +345,18 @@ theorem evalVecWithCapacity_disjoint_and_frame {m m' : MemoryState}
         cases hZero : Nat.beq (cap.toNat * lay.size) 0 with
         | true =>
           rw [hZero] at hCall
-          injection hCall with hPair
-          have hm : m' = m := (congrArg Prod.snd hPair).symm
+          injection hCall with _ hm
           subst hm
           refine ⟨fun a ha _ => ha, hUpper, fun lay' hLay' hPosSz => ?_⟩
           injection hLay' with hLeq; subst hLeq
           exact False.elim (Nat.ne_of_gt hPosSz (Nat.eq_of_beq_eq_true hZero))
         | false =>
           rw [hZero] at hCall
-          injection hCall with hPair
+          injection hCall with hv' hm'
           have hv : val = .vec (allocHeapBuffer m (cap.toNat * lay.size)
-              lay.alignLog2).2 cap 0 :=
-            (congrArg Prod.fst hPair).symm
+              lay.alignLog2).2 cap 0 := hv'.symm
           have hm : m' = (allocHeapBuffer m (cap.toNat * lay.size)
-              lay.alignLog2).1 :=
-            (congrArg Prod.snd hPair).symm
+              lay.alignLog2).1 := hm'.symm
           let ⟨hPtr, hDisj, hUp'⟩ := allocHeapBuffer_disjoint hUpper hPos
             (cap.toNat * lay.size) lay.alignLog2
           have hFrame := allocHeapBuffer_frame hUpper
@@ -2017,12 +2014,12 @@ theorem m2_new_reserve_canary :
     let m : MemoryState :=
       { m0 with nextAllocId := 3, allocations := [vecHandle, bufAlloc] }
     let selfPtr : PtrVal := ⟨some 1, 0, .isize⟩
-    match evalVecReserve m u8Ty selfPtr 4 with
-    | .ok mRes =>
+    match evalVecReserveOutcome m u8Ty selfPtr 4 with
+    | .ok _ mRes =>
       match readVecFromRef mRes false u8Ty selfPtr with
       | .ok v => Nat.ble 5 v.cap.toNat = true ∧ v.len.toNat = 1
       | .error _ => False
-    | .error _ => False :=
+    | _ => False :=
   ⟨True.intro, rfl, rfl⟩
 
 /-- Negative Canary (self-aliasing `extend_from_slice`): extending a full
@@ -2048,8 +2045,8 @@ theorem vec_extend_from_own_buffer_grow_faults :
     let m : MemoryState :=
       { MemoryState.empty with
         nextAllocId := 3, allocations := [vecHandle, bufAlloc] }
-    evalVecExtendFromSlice m u8Ty ⟨some 1, 0, .isize⟩ ⟨some 2, 0, .isize⟩ 1 =
-      .error .undefined :=
+    evalVecExtendFromSliceOutcome m u8Ty ⟨some 1, 0, .isize⟩
+        ⟨some 2, 0, .isize⟩ 1 = .fault .undefined :=
   rfl
 
 /-- Self-aliasing `extend_from_slice` without growth (`cap = 4`, `len = 1`,
@@ -2076,12 +2073,12 @@ theorem vec_extend_from_own_buffer_overlap_canary :
     let m : MemoryState :=
       { MemoryState.empty with
         nextAllocId := 3, allocations := [vecHandle, bufAlloc] }
-    (match evalVecExtendFromSlice m u8Ty ⟨some 1, 0, .isize⟩
+    (match evalVecExtendFromSliceOutcome m u8Ty ⟨some 1, 0, .isize⟩
         ⟨some 2, 0, .isize⟩ 1 with
-     | .ok _ => true
-     | .error _ => false) = true ∧
-    evalVecExtendFromSlice m u8Ty ⟨some 1, 0, .isize⟩ ⟨some 2, 0, .isize⟩ 2 =
-      .error .undefined :=
+     | .ok _ _ => true
+     | _ => false) = true ∧
+    evalVecExtendFromSliceOutcome m u8Ty ⟨some 1, 0, .isize⟩
+        ⟨some 2, 0, .isize⟩ 2 = .fault .undefined :=
   ⟨rfl, rfl⟩
 
 /-- Owned `Vec` and `Box` values contribute the mutable span of their heap
@@ -2124,17 +2121,18 @@ theorem vec_resize_truncate_keeps_tail_bytes :
       { MemoryState.empty with
         nextAllocId := 3, allocations := [vecHandle, bufAlloc] }
     let selfPtr : PtrVal := ⟨some 1, 0, .isize⟩
-    match evalVecResize m u8Ty selfPtr 1 (u8Val 0) with
-    | .ok mRes =>
+    match evalVecResizeOutcome m u8Ty selfPtr 1 (u8Val 0) with
+    | .ok _ mRes =>
       readBytes mRes ⟨2, 1⟩ 1 0 = .ok [.init 6 none] ∧
       (match readVecFromRef mRes false u8Ty selfPtr with
        | .ok v => v.len.toNat = 1
        | .error _ => False)
-    | .error _ => False :=
+    | _ => False :=
   ⟨rfl, rfl⟩
 
 /-- Negative Canary 1: `Vec::index` out-of-bounds (`idx == len`) is a
-bounds-check panic, which faults with `.unsupported`. -/
+bounds-check panic, which faults with `.unsupported` under the default
+`--panic unwind`. -/
 def negVecIndexOobProg : Program :=
   let locals : List MirTy := [
     u8Ty, vecU8Ty, .ref .shared vecU8Ty, .ref .shared u8Ty
@@ -2160,7 +2158,7 @@ theorem neg_vec_index_oob_faults :
     rfl)
 
 /-- Negative Canary 2: `Vec::index_mut` out-of-bounds is a bounds-check panic,
-which faults with `.unsupported`. -/
+which faults with `.unsupported` under the default `--panic unwind`. -/
 def negVecIndexMutOobProg : Program :=
   let locals : List MirTy := [
     .unit, vecU8Ty, .ref .mut vecU8Ty, .ref .mut u8Ty
@@ -2191,7 +2189,7 @@ theorem neg_vec_index_mut_oob_faults :
 
 /-- Negative Canary 3: `Vec::<u64>::with_capacity(2^62)` capacity overflow
 (`2^62 * 8 > isize::MAX`) is a capacity-overflow panic, which faults with
-`.unsupported`. -/
+`.unsupported` under the default `--panic unwind`. -/
 def negVecWithCapOverflowProg : Program :=
   let locals : List MirTy := [.vec u64Ty]
   let bbs : List BasicBlock := [
@@ -2485,17 +2483,16 @@ exactly `minCap` when doubling the current capacity `2^61` does not exceed
 it. From a current capacity of `2^62 + 1`, the doubled capacity
 `2^63 + 2` exceeds `isize::MAX` bytes, so `vecGrowCap` fails rather than
 falling back to `minCap` (upstream `finish_grow`'s `layout_array` rejects the
-doubled capacity), and the growth faults with `.unsupported`, a
-capacity-overflow panic. -/
+doubled capacity), and `ensureVecCapacityOutcome` reports the growth as a
+capacity-overflow panic (`none`). -/
 theorem vec_grow_cap_doubling_overflow_canary :
     Nat.blt ((Nat.pow 2 62 + 2) * 1) isizeMaxBytes = true ∧
     vecGrowCap 1 (Nat.pow 2 61) (Nat.pow 2 62 + 2) =
       some (Nat.pow 2 62 + 2) ∧
     vecGrowCap 1 (Nat.pow 2 62 + 1) (Nat.pow 2 62 + 2) = none ∧
-    ensureVecCapacity MemoryState.empty { size := 1, alignLog2 := 0 }
+    ensureVecCapacityOutcome MemoryState.empty { size := 1, alignLog2 := 0 }
         ⟨u8Ty, ⟨some 1, 0, .isize⟩, UInt64.ofNat (Nat.pow 2 62 + 1),
-          UInt64.ofNat (Nat.pow 2 62 + 1)⟩ (Nat.pow 2 62 + 2) =
-      .error .unsupported :=
+          UInt64.ofNat (Nat.pow 2 62 + 1)⟩ (Nat.pow 2 62 + 2) = none :=
   ⟨rfl, rfl, rfl, rfl⟩
 
 /-- `Some(Box::new(..))`: a `Box` handle has the pointer's `Scalar` copy

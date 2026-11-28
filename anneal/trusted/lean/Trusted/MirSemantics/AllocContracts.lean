@@ -20,6 +20,7 @@ public import Trusted.MirSemantics.Enum
 public import Trusted.MirSemantics.Layout
 public import Trusted.MirSemantics.Memory
 public import Trusted.MirSemantics.Bytes
+public import Trusted.MirSemantics.CoreContracts
 
 @[expose] public section
 
@@ -54,9 +55,11 @@ obligations (`library/alloc/src/raw_vec/mod.rs:55-61`):
 
 (The fourth quoted line is wrapped here; upstream it is one line.)
 
-A capacity overflow is a panic, which Profile v2 does not model, so it faults
-with `.unsupported`, like a failed bounds-check `Assert`. Undefined behavior
-faults with `.undefined`.
+A capacity overflow, like an out-of-bounds `Vec` index, is a safe
+unconditional panic. The `*Outcome` evaluators report it as
+`CoreCallOutcome.panic`, which `evalTerminatorV2` terminates as `.aborted`
+under an eligible `--panic abort` and otherwise faults with `.unsupported`.
+Undefined behavior faults with `.undefined`.
 
 **Assumption: allocation never fails.** `allocHeapBuffer` always succeeds:
 the model assumes an unbounded heap and does not model the out-of-memory path,
@@ -208,21 +211,21 @@ noncomputable def repeatBytes (n : Nat) (bs : List AllocByte) :
   | k + 1 => bs ++ repeatBytes k bs
 
 /-- Ensure `v` has capacity at least `minCap`, growing to a fresh heap
-allocation and retiring any old non-empty allocation when needed. Growth faults
-with `.unsupported` (a capacity-overflow panic) when `vecGrowCap` fails.
+allocation and retiring any old non-empty allocation when needed. Returns
+`none`, a capacity-overflow panic, when `vecGrowCap` fails.
 Following Miri, a reallocation is a fresh allocation plus a copy, so pointers
 into the old buffer lose their provenance. -/
-noncomputable def ensureVecCapacity (m : MemoryState) (lay : LayoutData)
-    (v : VecModel) (minCap : Nat) :
-    Except FaultKind (MemoryState × VecModel) :=
+noncomputable def ensureVecCapacityOutcome (m : MemoryState)
+    (lay : LayoutData) (v : VecModel) (minCap : Nat) :
+    Option (Except FaultKind (MemoryState × VecModel)) :=
   if !Nat.ble v.len.toNat minCap then
-    .error .undefined
+    some (.error .undefined)
   else if Nat.ble minCap v.cap.toNat then
-    .ok (m, v)
+    some (.ok (m, v))
   else
     match vecGrowCap lay.size v.cap.toNat minCap with
-    | none => .error .unsupported
-    | some newCap =>
+    | none => none
+    | some newCap => some <|
       if Nat.beq lay.size 0 then
         .ok (m, { v with cap := UInt64.ofNat newCap })
       else
@@ -277,6 +280,13 @@ noncomputable def ptrAdvanceElem (m : MemoryState) (elemSize : Nat)
 /-- Convert `Nat` to canonical `usize` `ScalarVal`. -/
 noncomputable def usizeScalarVal (n : Nat) : Val :=
   .scalar ⟨.isize, false, truncateBits .isize (BitVec.ofNat 128 n)⟩
+
+/-- Lift the memory result of a unit-returning `Vec` mutator into
+`CoreCallOutcome`. -/
+noncomputable def unitOutcomeOfExcept :
+    Except FaultKind MemoryState → CoreCallOutcome
+  | .ok m => .ok .unit m
+  | .error k => .fault k
 
 /-! ## Reference Read/Write Helpers for `Vec` and `Box` -/
 
@@ -367,25 +377,24 @@ noncomputable def evalVecNew (elem : MirTy) : Except FaultKind Val :=
 > }"
 
 (The comment line is wrapped here.) The model allocates exactly `capacity`
-elements, as `try_allocate_in` does (it sets `cap` to `capacity`), and faults
-with `.unsupported` (a capacity-overflow panic) when
-`capacity * size > isize::MAX`. -/
-noncomputable def evalVecWithCapacity (m : MemoryState) (elem : MirTy)
-    (cap : UInt64) : Except FaultKind (Val × MemoryState) :=
+elements, as `try_allocate_in` does (it sets `cap` to `capacity`), and panics
+(capacity overflow) when `capacity * size > isize::MAX`. -/
+noncomputable def evalVecWithCapacityOutcome (m : MemoryState) (elem : MirTy)
+    (cap : UInt64) : CoreCallOutcome :=
   if !isSupportedPointeeTy elem then
-    .error .unsupported
+    .fault .unsupported
   else
     match layoutOfTyV2 elem with
-    | none => .error .unsupported
+    | none => .fault .unsupported
     | some lay =>
       let totalBytes := cap.toNat * lay.size
       if !Nat.blt totalBytes isizeMaxBytes then
-        .error .unsupported
+        .panic
       else if Nat.beq totalBytes 0 then
-        .ok (.vec (danglingAligned lay.alignLog2) cap 0, m)
+        .ok (.vec (danglingAligned lay.alignLog2) cap 0) m
       else
         let (m1, p) := allocHeapBuffer m totalBytes lay.alignLog2
-        .ok (.vec p cap 0, m1)
+        .ok (.vec p cap 0) m1
 
 /-- `alloc::vec::Vec::<T>::len(&self) -> usize`, a read of the `len` field
 (`library/alloc/src/vec/mod.rs:3060-3068`). -/
@@ -409,22 +418,23 @@ noncomputable def evalVecLen (m : MemoryState) (elem : MirTy)
 >     self.len = len + 1;"
 
 `grow_one` is `grow_amortized(cap, 1)` (`raw_vec/mod.rs:490-494`), modeled by
-`ensureVecCapacity` with `minCap = len + 1`. -/
-noncomputable def evalVecPush (m : MemoryState) (elem : MirTy)
-    (selfPtr : PtrVal) (value : Val) : Except FaultKind MemoryState :=
+`ensureVecCapacityOutcome` with `minCap = len + 1`. -/
+noncomputable def evalVecPushOutcome (m : MemoryState) (elem : MirTy)
+    (selfPtr : PtrVal) (value : Val) : CoreCallOutcome :=
   if !checkValV2 value elem then
-    .error .unsupported
+    .fault .unsupported
   else
     match readVecFromRef m true elem selfPtr, layoutOfTyV2 elem,
         encodeValV2 profileV2TargetEndian elem value with
-    | .error k, _, _ => .error k
-    | _, none, _ => .error .unsupported
-    | _, _, .error k => .error k
+    | .error k, _, _ => .fault k
+    | _, none, _ => .fault .unsupported
+    | _, _, .error k => .fault k
     | .ok v, some lay, .ok valBytes =>
       let newLen := v.len.toNat + 1
-      match ensureVecCapacity m lay v newLen with
-      | .error k => .error k
-      | .ok (m1, v1) =>
+      match ensureVecCapacityOutcome m lay v newLen with
+      | none => .panic
+      | some (.error k) => .fault k
+      | some (.ok (m1, v1)) =>
         let writeRes : Except FaultKind MemoryState :=
           if Nat.beq lay.size 0 then
             .ok m1
@@ -435,9 +445,10 @@ noncomputable def evalVecPush (m : MemoryState) (elem : MirTy)
               let off := v1.ptr.offsetBytes.toNat + v1.len.toNat * lay.size
               writeBytes m1 ⟨aid, off⟩ lay.alignLog2 valBytes
         match writeRes with
-        | .error k => .error k
+        | .error k => .fault k
         | .ok m2 =>
-          writeVecToRef m2 selfPtr { v1 with len := UInt64.ofNat newLen }
+          unitOutcomeOfExcept
+            (writeVecToRef m2 selfPtr { v1 with len := UInt64.ofNat newLen })
 
 /-- `alloc::vec::Vec::<T>::reserve(&mut self, additional: usize)`
 (`library/alloc/src/vec/mod.rs:1470-1472` and
@@ -450,21 +461,21 @@ noncomputable def evalVecPush (m : MemoryState) (elem : MirTy)
 > "additional > self.capacity(elem_layout.size()).wrapping_sub(len)"
 
 The model grows exactly when `len + additional > cap`; an overflowing
-`len + additional` is a capacity-overflow panic (`.unsupported`). -/
-noncomputable def evalVecReserve (m : MemoryState) (elem : MirTy)
-    (selfPtr : PtrVal) (additional : UInt64) :
-    Except FaultKind MemoryState :=
+`len + additional` is a capacity-overflow panic. -/
+noncomputable def evalVecReserveOutcome (m : MemoryState) (elem : MirTy)
+    (selfPtr : PtrVal) (additional : UInt64) : CoreCallOutcome :=
   match readVecFromRef m true elem selfPtr, layoutOfTyV2 elem with
-  | .error k, _ => .error k
-  | _, none => .error .unsupported
+  | .error k, _ => .fault k
+  | _, none => .fault .unsupported
   | .ok v, some lay =>
     let minCap := v.len.toNat + additional.toNat
     if !Nat.blt minCap (Nat.pow 2 64) then
-      .error .unsupported
+      .panic
     else
-      match ensureVecCapacity m lay v minCap with
-      | .error k => .error k
-      | .ok (m1, v1) => writeVecToRef m1 selfPtr v1
+      match ensureVecCapacityOutcome m lay v minCap with
+      | none => .panic
+      | some (.error k) => .fault k
+      | some (.ok (m1, v1)) => unitOutcomeOfExcept (writeVecToRef m1 selfPtr v1)
 
 /-- `alloc::vec::Vec::<T>::resize(&mut self, new_len: usize, value: T)`
 (`library/alloc/src/vec/mod.rs:3529-3537`):
@@ -479,24 +490,24 @@ noncomputable def evalVecReserve (m : MemoryState) (elem : MirTy)
 `truncate` sets `len` and runs `ptr::drop_in_place` on the tail, which is a
 no-op for the modeled scalar and unit element types, so the tail bytes keep
 their values, and it never deallocates. -/
-noncomputable def evalVecResize (m : MemoryState) (elem : MirTy)
-    (selfPtr : PtrVal) (newLen : UInt64) (value : Val) :
-    Except FaultKind MemoryState :=
+noncomputable def evalVecResizeOutcome (m : MemoryState) (elem : MirTy)
+    (selfPtr : PtrVal) (newLen : UInt64) (value : Val) : CoreCallOutcome :=
   if !checkValV2 value elem then
-    .error .unsupported
+    .fault .unsupported
   else
     match readVecFromRef m true elem selfPtr, layoutOfTyV2 elem,
         encodeValV2 profileV2TargetEndian elem value with
-    | .error k, _, _ => .error k
-    | _, none, _ => .error .unsupported
-    | _, _, .error k => .error k
+    | .error k, _, _ => .fault k
+    | _, none, _ => .fault .unsupported
+    | _, _, .error k => .fault k
     | .ok v, some lay, .ok valBytes =>
       if Nat.ble newLen.toNat v.len.toNat then
-        writeVecToRef m selfPtr { v with len := newLen }
+        unitOutcomeOfExcept (writeVecToRef m selfPtr { v with len := newLen })
       else
-        match ensureVecCapacity m lay v newLen.toNat with
-        | .error k => .error k
-        | .ok (m1, v1) =>
+        match ensureVecCapacityOutcome m lay v newLen.toNat with
+        | none => .panic
+        | some (.error k) => .fault k
+        | some (.ok (m1, v1)) =>
           let addCount := newLen.toNat - v1.len.toNat
           let fillRes : Except FaultKind MemoryState :=
             if Nat.beq lay.size 0 then
@@ -509,8 +520,10 @@ noncomputable def evalVecResize (m : MemoryState) (elem : MirTy)
                 writeBytes m1 ⟨aid, off⟩ lay.alignLog2
                   (repeatBytes addCount valBytes)
           match fillRes with
-          | .error k => .error k
-          | .ok m2 => writeVecToRef m2 selfPtr { v1 with len := newLen }
+          | .error k => .fault k
+          | .ok m2 =>
+            unitOutcomeOfExcept
+              (writeVecToRef m2 selfPtr { v1 with len := newLen })
 
 /-- `alloc::vec::Vec::<T>::extend_from_slice(&mut self, other: &[T])`, which
 for the modeled scalar element types reaches `append_elements`
@@ -530,23 +543,24 @@ retires a buffer that `other` points into, reading the source from the
 post-reserve memory faults with `.undefined` rather than copying stale
 bytes. The elided copy is `ptr::copy_nonoverlapping`, so a source that
 overlaps the destination range also faults with `.undefined`. -/
-noncomputable def evalVecExtendFromSlice (m : MemoryState) (elem : MirTy)
-    (selfPtr srcPtr : PtrVal) (srcLen : UInt64) :
-    Except FaultKind MemoryState :=
+noncomputable def evalVecExtendFromSliceOutcome (m : MemoryState)
+    (elem : MirTy) (selfPtr srcPtr : PtrVal) (srcLen : UInt64) :
+    CoreCallOutcome :=
   match readVecFromRef m true elem selfPtr,
       heapBufValidInMem m false elem srcPtr srcLen srcLen,
       layoutOfTyV2 elem with
-  | .error k, _, _ => .error k
-  | _, .error k, _ => .error k
-  | _, _, none => .error .unsupported
+  | .error k, _, _ => .fault k
+  | _, .error k, _ => .fault k
+  | _, _, none => .fault .unsupported
   | .ok v, .ok (), some lay =>
     let newLen := v.len.toNat + srcLen.toNat
     if !Nat.blt newLen (Nat.pow 2 64) then
-      .error .unsupported
+      .panic
     else
-      match ensureVecCapacity m lay v newLen with
-      | .error k => .error k
-      | .ok (m1, v1) =>
+      match ensureVecCapacityOutcome m lay v newLen with
+      | none => .panic
+      | some (.error k) => .fault k
+      | some (.ok (m1, v1)) =>
         let srcByteCount := srcLen.toNat * lay.size
         let srcBytesRes : Except FaultKind (List AllocByte) :=
           if Nat.beq srcByteCount 0 then
@@ -558,7 +572,7 @@ noncomputable def evalVecExtendFromSlice (m : MemoryState) (elem : MirTy)
               readBytes m1 ⟨srcAid, srcPtr.offsetBytes.toNat⟩ srcByteCount
                 lay.alignLog2
         match srcBytesRes with
-        | .error k => .error k
+        | .error k => .fault k
         | .ok srcBytes =>
           let writeRes : Except FaultKind MemoryState :=
             if Nat.beq srcByteCount 0 then
@@ -580,9 +594,10 @@ noncomputable def evalVecExtendFromSlice (m : MemoryState) (elem : MirTy)
                 else
                   writeBytes m1 ⟨dstAid, off⟩ lay.alignLog2 srcBytes
           match writeRes with
-          | .error k => .error k
+          | .error k => .fault k
           | .ok m2 =>
-            writeVecToRef m2 selfPtr { v1 with len := UInt64.ofNat newLen }
+            unitOutcomeOfExcept (writeVecToRef m2 selfPtr
+              { v1 with len := UInt64.ofNat newLen })
 
 /-- `<alloc::vec::Vec<T> as Index<usize>>::index` and `IndexMut::index_mut`
 (`library/alloc/src/vec/mod.rs:3866-3881`):
@@ -593,25 +608,23 @@ noncomputable def evalVecExtendFromSlice (m : MemoryState) (elem : MirTy)
 
 which indexes the `len`-element slice; for `I = usize` that is the built-in
 place `&(*slice)[self]` (`library/core/src/slice/index.rs:269-279`), guarded
-by a bounds-check `Assert`. An index `idx >= len` therefore panics, which
-faults with `.unsupported`. -/
-noncomputable def evalVecIndex (m : MemoryState) (reqMut : Mutability)
-    (elem : MirTy) (selfPtr : PtrVal) (idx : UInt64) :
-    Except FaultKind Val :=
+by a bounds-check `Assert`. An index `idx >= len` therefore panics. -/
+noncomputable def evalVecIndexOutcome (m : MemoryState) (reqMut : Mutability)
+    (elem : MirTy) (selfPtr : PtrVal) (idx : UInt64) : CoreCallOutcome :=
   let isMut := Mutability.beq reqMut .mut
   match readVecFromRef m isMut elem selfPtr, layoutOfTyV2 elem with
-  | .error k, _ => .error k
-  | _, none => .error .unsupported
+  | .error k, _ => .fault k
+  | _, none => .fault .unsupported
   | .ok v, some lay =>
     if !Nat.blt idx.toNat v.len.toNat then
-      .error .unsupported
+      .panic
     else
       match ptrAdvanceElem m lay.size v.ptr idx.toNat with
-      | .error k => .error k
+      | .error k => .fault k
       | .ok elemPtr =>
         match refValidInMem m reqMut elem (.ptr elemPtr) with
-        | .error k => .error k
-        | .ok () => .ok (.ptr elemPtr)
+        | .error k => .fault k
+        | .ok () => .ok (.ptr elemPtr) m
 
 /-- `<alloc::vec::Vec<T> as Deref>::deref` and `DerefMut::deref_mut`
 (`library/alloc/src/vec/mod.rs:3789-3805`), which return
@@ -801,11 +814,10 @@ noncomputable def evalBoxNew (m : MemoryState) (pointee : MirTy)
 
 /-! ## `CoreCallOp` Dispatch Entrypoint -/
 
-/-- Execute an allocation `CoreCallOp` in `m`, returning `none` when `op` is
-not an allocation contract operation (so `Step.lean` falls back to
-`execCoreCallOp`). -/
-noncomputable def execAllocCoreCall (m : MemoryState) (op : CoreCallOp)
-    (args : List (MirTy × Val)) (dstTy : MirTy) :
+/-- Execute an allocation `CoreCallOp` without a modeled panic path in `m`,
+returning `none` when `op` is not such an operation. -/
+noncomputable def execAllocCoreCallInfallible (m : MemoryState)
+    (op : CoreCallOp) (args : List (MirTy × Val)) (dstTy : MirTy) :
     Option (Except FaultKind (Val × MemoryState)) :=
   match op, args with
   | .vecNew elem, [] =>
@@ -816,12 +828,6 @@ noncomputable def execAllocCoreCall (m : MemoryState) (op : CoreCallOp)
         | .error k => .error k
         | .ok v => .ok (v, m))
   | .vecNew _, _ => some (.error .unsupported)
-  | .vecWithCapacity elem, [(.int .isize false, .scalar capSv)] =>
-    if !MirTy.beq dstTy (.vec elem) then
-      some (.error .unsupported)
-    else
-      some (evalVecWithCapacity m elem (UInt64.ofNat capSv.bits.toNat))
-  | .vecWithCapacity _, _ => some (.error .unsupported)
   | .vecLen, [(.ref _ (.vec elem), .ptr selfPtr)] =>
     if !MirTy.beq dstTy (.int .isize false) then
       some (.error .unsupported)
@@ -830,59 +836,6 @@ noncomputable def execAllocCoreCall (m : MemoryState) (op : CoreCallOp)
         | .error k => .error k
         | .ok v => .ok (v, m))
   | .vecLen, _ => some (.error .unsupported)
-  | .vecPush, [(.ref .mut (.vec elem), .ptr selfPtr), (valTy, val)] =>
-    if !MirTy.beq dstTy .unit || !MirTy.beq valTy elem then
-      some (.error .unsupported)
-    else
-      some (match evalVecPush m elem selfPtr val with
-        | .error k => .error k
-        | .ok m1 => .ok (.unit, m1))
-  | .vecPush, _ => some (.error .unsupported)
-  | .vecResize,
-      [(.ref .mut (.vec elem), .ptr selfPtr),
-       (.int .isize false, .scalar lenSv),
-       (valTy, val)] =>
-    if !MirTy.beq dstTy .unit || !MirTy.beq valTy elem then
-      some (.error .unsupported)
-    else
-      some (match evalVecResize m elem selfPtr
-          (UInt64.ofNat lenSv.bits.toNat) val with
-        | .error k => .error k
-        | .ok m1 => .ok (.unit, m1))
-  | .vecResize, _ => some (.error .unsupported)
-  | .vecExtendFromSlice,
-      [(.ref .mut (.vec elem), .ptr selfPtr),
-       (.ref _ (.slice sliceElem), .slicePtr srcPtr srcLen)] =>
-    if !MirTy.beq dstTy .unit || !MirTy.beq sliceElem elem then
-      some (.error .unsupported)
-    else
-      some (match evalVecExtendFromSlice m elem selfPtr srcPtr srcLen with
-        | .error k => .error k
-        | .ok m1 => .ok (.unit, m1))
-  | .vecExtendFromSlice, _ => some (.error .unsupported)
-  | .vecIndex,
-      [(.ref inMut (.vec elem), .ptr selfPtr),
-       (.int .isize false, .scalar idxSv)] =>
-    if !MirTy.beq dstTy (.ref .shared elem) then
-      some (.error .unsupported)
-    else
-      let _ := inMut
-      some (match evalVecIndex m .shared elem selfPtr
-          (UInt64.ofNat idxSv.bits.toNat) with
-        | .error k => .error k
-        | .ok v => .ok (v, m))
-  | .vecIndex, _ => some (.error .unsupported)
-  | .vecIndexMut,
-      [(.ref .mut (.vec elem), .ptr selfPtr),
-       (.int .isize false, .scalar idxSv)] =>
-    if !MirTy.beq dstTy (.ref .mut elem) then
-      some (.error .unsupported)
-    else
-      some (match evalVecIndex m .mut elem selfPtr
-          (UInt64.ofNat idxSv.bits.toNat) with
-        | .error k => .error k
-        | .ok v => .ok (v, m))
-  | .vecIndexMut, _ => some (.error .unsupported)
   | .vecDeref, [(.ref _ (.vec elem), .ptr selfPtr)] =>
     if !MirTy.beq dstTy (.ref .shared (.slice elem)) then
       some (.error .unsupported)
@@ -899,17 +852,6 @@ noncomputable def execAllocCoreCall (m : MemoryState) (op : CoreCallOp)
         | .error k => .error k
         | .ok v => .ok (v, m))
   | .vecDerefMut, _ => some (.error .unsupported)
-  | .vecReserve,
-      [(.ref .mut (.vec elem), .ptr selfPtr),
-       (.int .isize false, .scalar addSv)] =>
-    if !MirTy.beq dstTy .unit then
-      some (.error .unsupported)
-    else
-      some (match evalVecReserve m elem selfPtr
-          (UInt64.ofNat addSv.bits.toNat) with
-        | .error k => .error k
-        | .ok m1 => .ok (.unit, m1))
-  | .vecReserve, _ => some (.error .unsupported)
   | .boxFromVec, [(.vec elem, .vec ptr cap len)] =>
     if !MirTy.beq dstTy (.box (.slice elem)) then
       some (.error .unsupported)
@@ -945,6 +887,76 @@ noncomputable def execAllocCoreCall (m : MemoryState) (op : CoreCallOp)
       some (evalBoxNew m pointee val)
   | .boxNew _, _ => some (.error .unsupported)
   | _, _ => none
+
+/-- Execute an allocation `CoreCallOp` in `m`, returning `none` when `op` is
+not an allocation contract operation (so `Step.lean` falls back to
+`execCoreCallWithMemOutcome`). Safe unconditional panics (`Vec` index out of
+bounds and capacity overflow) return `some .panic`. -/
+noncomputable def execAllocCoreCallOutcome (m : MemoryState) (op : CoreCallOp)
+    (args : List (MirTy × Val)) (dstTy : MirTy) : Option CoreCallOutcome :=
+  match op, args with
+  | .vecWithCapacity elem, [(.int .isize false, .scalar capSv)] =>
+    if !MirTy.beq dstTy (.vec elem) then
+      some (.fault .unsupported)
+    else
+      some (evalVecWithCapacityOutcome m elem (UInt64.ofNat capSv.bits.toNat))
+  | .vecWithCapacity _, _ => some (.fault .unsupported)
+  | .vecPush, [(.ref .mut (.vec elem), .ptr selfPtr), (valTy, val)] =>
+    if !MirTy.beq dstTy .unit || !MirTy.beq valTy elem then
+      some (.fault .unsupported)
+    else
+      some (evalVecPushOutcome m elem selfPtr val)
+  | .vecPush, _ => some (.fault .unsupported)
+  | .vecResize,
+      [(.ref .mut (.vec elem), .ptr selfPtr),
+       (.int .isize false, .scalar lenSv),
+       (valTy, val)] =>
+    if !MirTy.beq dstTy .unit || !MirTy.beq valTy elem then
+      some (.fault .unsupported)
+    else
+      some (evalVecResizeOutcome m elem selfPtr
+        (UInt64.ofNat lenSv.bits.toNat) val)
+  | .vecResize, _ => some (.fault .unsupported)
+  | .vecExtendFromSlice,
+      [(.ref .mut (.vec elem), .ptr selfPtr),
+       (.ref _ (.slice sliceElem), .slicePtr srcPtr srcLen)] =>
+    if !MirTy.beq dstTy .unit || !MirTy.beq sliceElem elem then
+      some (.fault .unsupported)
+    else
+      some (evalVecExtendFromSliceOutcome m elem selfPtr srcPtr srcLen)
+  | .vecExtendFromSlice, _ => some (.fault .unsupported)
+  | .vecIndex,
+      [(.ref inMut (.vec elem), .ptr selfPtr),
+       (.int .isize false, .scalar idxSv)] =>
+    if !MirTy.beq dstTy (.ref .shared elem) then
+      some (.fault .unsupported)
+    else
+      let _ := inMut
+      some (evalVecIndexOutcome m .shared elem selfPtr
+        (UInt64.ofNat idxSv.bits.toNat))
+  | .vecIndex, _ => some (.fault .unsupported)
+  | .vecIndexMut,
+      [(.ref .mut (.vec elem), .ptr selfPtr),
+       (.int .isize false, .scalar idxSv)] =>
+    if !MirTy.beq dstTy (.ref .mut elem) then
+      some (.fault .unsupported)
+    else
+      some (evalVecIndexOutcome m .mut elem selfPtr
+        (UInt64.ofNat idxSv.bits.toNat))
+  | .vecIndexMut, _ => some (.fault .unsupported)
+  | .vecReserve,
+      [(.ref .mut (.vec elem), .ptr selfPtr),
+       (.int .isize false, .scalar addSv)] =>
+    if !MirTy.beq dstTy .unit then
+      some (.fault .unsupported)
+    else
+      some (evalVecReserveOutcome m elem selfPtr
+        (UInt64.ofNat addSv.bits.toNat))
+  | .vecReserve, _ => some (.fault .unsupported)
+  | _, _ =>
+    match execAllocCoreCallInfallible m op args dstTy with
+    | some res => some (CoreCallOutcome.ofExcept res)
+    | none => none
 
 end Trusted.MirSemantics
 

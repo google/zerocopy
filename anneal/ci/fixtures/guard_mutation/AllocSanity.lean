@@ -102,14 +102,15 @@ theorem alloc_sanity_capacity :
     vecGrowCap 0 0 5 = some 5 ∧
     vecGrowCap 1 (Nat.pow 2 61) (Nat.pow 2 62 + 2) =
       some (Nat.pow 2 62 + 2) ∧
-    (match evalVecWithCapacity MemoryState.empty acU8Ty 4 with
-     | .ok (.vec _ 4 0, _) => true
+    (match evalVecWithCapacityOutcome MemoryState.empty acU8Ty 4 with
+     | .ok (.vec _ 4 0) _ => true
      | _ => false) = true :=
   ⟨rfl, rfl, rfl, rfl⟩
 
 theorem alloc_sanity_index_and_realloc :
-    evalVecIndex (acMem [acVecHandle 2 1, acBuf [acB 7, acB 9]]) .shared
-        acU8Ty acVecPtr 0 = .ok (.ptr acBufPtr) ∧
+    evalVecIndexOutcome (acMem [acVecHandle 2 1, acBuf [acB 7, acB 9]])
+        .shared acU8Ty acVecPtr 0 =
+      .ok (.ptr acBufPtr) (acMem [acVecHandle 2 1, acBuf [acB 7, acB 9]]) ∧
     (match evalBoxFromVec acStaleMem acU8Ty acBufPtr 8 2 with
      | .ok (.boxPtr ⟨some 3, 0, .isize⟩ (some 2), m') =>
        match readBytes m' ⟨3, 0⟩ 2 0 with

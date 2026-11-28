@@ -74,16 +74,16 @@ theorem initLocalsLoop_body0 (ptrAid : Option AllocId) (ptrOff : UInt64) (len : 
      .dead, .dead, .dead, .dead, .dead, .dead, .dead, .dead, .dead, .dead] :=
   rfl
 
-theorem execCoreCallOpWithMem_nonAlloc {m : MemoryState} {op : CoreCallOp}
-    {args : List (MirTy × Val)} {dstTy : MirTy} {res : Val}
-    (hNon : execAllocCoreCall m op args dstTy = none)
-    (hRO : execCoreCallWithMem m op args dstTy =
+theorem execCoreCallOpWithMemOutcome_nonAlloc {m : MemoryState}
+    {op : CoreCallOp} {args : List (MirTy × Val)} {dstTy : MirTy} {res : Val}
+    (hNon : execAllocCoreCallOutcome m op args dstTy = none)
+    (hRO : execCoreCallWithMemOutcome m op args dstTy =
       match execCoreCallOp m op args dstTy with
-      | .ok v => .ok (v, m)
-      | .error k => .error k)
+      | .ok v => .ok v m
+      | .error k => .fault k)
     (hOp : execCoreCallOp m op args dstTy = .ok res) :
-    execCoreCallOpWithMem m op args dstTy = .ok (res, m) := by
-  unfold execCoreCallOpWithMem
+    execCoreCallOpWithMemOutcome m op args dstTy = .ok res m := by
+  unfold execCoreCallOpWithMemOutcome
   rw [hNon]
   dsimp only
   rw [hRO, hOp]
@@ -319,7 +319,7 @@ theorem split_at_shared_correct (q : Query)
         dsimp only
         rw [readPlaceV2_move_local (by rfl) (by rfl) (by rfl) (by rfl)]
         dsimp only
-        rw [execCoreCallOpWithMem_nonAlloc rfl rfl
+        rw [execCoreCallOpWithMemOutcome_nonAlloc rfl rfl
           (execCoreCallOp_sliceGetUncheckedRangeTo_shared_ok hRefValid0
             hGetTo)]
         dsimp only
@@ -365,7 +365,7 @@ theorem split_at_shared_correct (q : Query)
         dsimp only
         rw [readPlaceV2_move_local (by rfl) (by rfl) (by rfl) (by rfl)]
         dsimp only
-        rw [execCoreCallOpWithMem_nonAlloc rfl rfl
+        rw [execCoreCallOpWithMemOutcome_nonAlloc rfl rfl
           (execCoreCallOp_sliceGetUncheckedRangeFrom_shared_ok hRefValid0
             hGetFrom)]
         dsimp only

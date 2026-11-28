@@ -188,6 +188,7 @@ SEMANTICS_DOWNSTREAM: dict[str, tuple[str, ...]] = {
     ),
     "Trusted/MirSemantics/CoreContracts": (
         "Trusted/MirSemantics/CoreContracts",
+        "Trusted/MirSemantics/AllocContracts",
         "Trusted/MirSemantics/Step",
         "Trusted/MirSemantics/Boundary",
     ),
@@ -3814,18 +3815,19 @@ MIR_SEMANTICS_GUARDS: tuple[MirSemanticsGuard, ...] = (
         target_file="trusted/lean/Trusted/MirSemantics/CoreContracts.lean",
         target_module="Trusted/MirSemantics/CoreContracts",
         description=(
-            "execSliceSubslice validates the input slice reference at its own "
+            "execSliceSubsliceOutcome validates the input slice reference at its "
+            "own "
             "mutability"
         ),
         anchor=(
             "    match refValidInMem m inMut (.slice elem) (.slicePtr p len) with\n"
-            "    | .error k => .error k\n"
+            "    | .error k => .fault k\n"
             "    | .ok () =>\n"
             "      if !Nat.ble startOff endOff || !Nat.ble endOff len.toNat then"
         ),
         replacement=(
             "    match refValidInMem m reqMut (.slice elem) (.slicePtr p len) with\n"
-            "    | .error k => .error k\n"
+            "    | .error k => .fault k\n"
             "    | .ok () =>\n"
             "      if !Nat.ble startOff endOff || !Nat.ble endOff len.toNat then"
         ),
@@ -5138,7 +5140,7 @@ MIR_SEMANTICS_GUARDS: tuple[MirSemanticsGuard, ...] = (
     ),
     # ------------------------------------------------------------------
     # Additional Profile v2 silent-saturation, aliasing, negative-offset,
-    # slice/thin-ref validity, and provenance-free deref guards (61 guards)
+    # slice/thin-ref validity, and provenance-free deref guards (66 guards)
     # ------------------------------------------------------------------
     MirSemanticsGuard(
         guard_id="mem_v2_slice_get_unchecked_inverted",
@@ -5886,22 +5888,23 @@ MIR_SEMANTICS_GUARDS: tuple[MirSemanticsGuard, ...] = (
         target_file="trusted/lean/Trusted/MirSemantics/CoreContracts.lean",
         target_module="Trusted/MirSemantics/CoreContracts",
         description=(
-            "execCoreContractOp .optionUnwrap validates unwrapped Option<&T> "
+            "execCoreContractOpOutcome .optionUnwrap validates unwrapped "
+            "Option<&T> "
             "reference payloads via refsValidInMem"
         ),
         anchor=(
             "      | some v =>\n"
             "        if !refsValidInMem m inner v then\n"
-            "          .error .undefined\n"
+            "          .fault .undefined\n"
             "        else\n"
-            "          .ok (v, m)"
+            "          .ok v m"
         ),
         replacement=(
             "      | some v =>\n"
             "        if false then\n"
-            "          .error .undefined\n"
+            "          .fault .undefined\n"
             "        else\n"
-            "          .ok (v, m)"
+            "          .ok v m"
         ),
         fixture_module="StepRefutations",
         theorem_name="refute_core_contracts_option_unwrap_refs_valid",
@@ -6233,11 +6236,21 @@ MIR_SEMANTICS_GUARDS: tuple[MirSemanticsGuard, ...] = (
         ),
         anchor=(
             "  else if Mutability.beq inMut .shared && Mutability.beq reqMut .mut then\n"
-            "    .fault .undefined"
+            "    .fault .undefined\n"
+            "  else\n"
+            "    match refValidInMem m inMut (.slice elem) (.slicePtr p len) with\n"
+            "    | .error k => .fault k\n"
+            "    | .ok () =>\n"
+            "      if !Nat.ble mid len.toNat then"
         ),
         replacement=(
             "  else if false then\n"
-            "    .fault .undefined"
+            "    .fault .undefined\n"
+            "  else\n"
+            "    match refValidInMem m inMut (.slice elem) (.slicePtr p len) with\n"
+            "    | .error k => .fault k\n"
+            "    | .ok () =>\n"
+            "      if !Nat.ble mid len.toNat then"
         ),
         fixture_module="StepRefutations",
         theorem_name="refute_core_contracts_split_at_mut_no_shared_upgrade",
@@ -6276,19 +6289,19 @@ MIR_SEMANTICS_GUARDS: tuple[MirSemanticsGuard, ...] = (
         target_file="trusted/lean/Trusted/MirSemantics/CoreContracts.lean",
         target_module="Trusted/MirSemantics/CoreContracts",
         description=(
-            "execArraySubslice rejects array lengths >= 2^64 before "
+            "execArraySubsliceOutcome rejects array lengths >= 2^64 before "
             "converting len to UInt64"
         ),
         anchor=(
-            "noncomputable def execArraySubslice (m : MemoryState)\n"
+            "noncomputable def execArraySubsliceOutcome (m : MemoryState)\n"
             "    (reqMut inMut : Mutability) (elem : MirTy) (len : Nat) (p : PtrVal)\n"
-            "    (startOff endOff : Nat) : Except FaultKind (Val × MemoryState) :=\n"
+            "    (startOff endOff : Nat) : CoreCallOutcome :=\n"
             "  if !isSizedNoRefV2Ty elem || !Nat.blt len (Nat.pow 2 64) then"
         ),
         replacement=(
-            "noncomputable def execArraySubslice (m : MemoryState)\n"
+            "noncomputable def execArraySubsliceOutcome (m : MemoryState)\n"
             "    (reqMut inMut : Mutability) (elem : MirTy) (len : Nat) (p : PtrVal)\n"
-            "    (startOff endOff : Nat) : Except FaultKind (Val × MemoryState) :=\n"
+            "    (startOff endOff : Nat) : CoreCallOutcome :=\n"
             "  if !isSizedNoRefV2Ty elem then"
         ),
         fixture_module="StepRefutations",
@@ -6300,22 +6313,22 @@ MIR_SEMANTICS_GUARDS: tuple[MirSemanticsGuard, ...] = (
         target_file="trusted/lean/Trusted/MirSemantics/CoreContracts.lean",
         target_module="Trusted/MirSemantics/CoreContracts",
         description=(
-            "execArraySubslice rejects upgrading a shared &[T; N] reference "
+            "execArraySubsliceOutcome rejects upgrading a shared &[T; N] reference "
             "to &mut [T]"
         ),
         anchor=(
             "  if !isSizedNoRefV2Ty elem || !Nat.blt len (Nat.pow 2 64) then\n"
-            "    .error .unsupported\n"
+            "    .fault .unsupported\n"
             "  else if Mutability.beq inMut .shared && Mutability.beq reqMut .mut then\n"
-            "    .error .undefined\n"
+            "    .fault .undefined\n"
             "  else\n"
             "    match refValidInMem m inMut (.array elem len) (.ptr p) with"
         ),
         replacement=(
             "  if !isSizedNoRefV2Ty elem || !Nat.blt len (Nat.pow 2 64) then\n"
-            "    .error .unsupported\n"
+            "    .fault .unsupported\n"
             "  else if false then\n"
-            "    .error .undefined\n"
+            "    .fault .undefined\n"
             "  else\n"
             "    match refValidInMem m inMut (.array elem len) (.ptr p) with"
         ),
@@ -6328,29 +6341,129 @@ MIR_SEMANTICS_GUARDS: tuple[MirSemanticsGuard, ...] = (
         target_file="trusted/lean/Trusted/MirSemantics/CoreContracts.lean",
         target_module="Trusted/MirSemantics/CoreContracts",
         description=(
-            "execArraySubslice validates the full &[T; N] array extent via "
-            "refValidInMem before delegating to execSliceSubslice"
+            "execArraySubsliceOutcome validates the full &[T; N] array extent via "
+            "refValidInMem before delegating to execSliceSubsliceOutcome"
         ),
         anchor=(
             "    match refValidInMem m inMut (.array elem len) (.ptr p) with\n"
-            "    | .error k => .error k\n"
+            "    | .error k => .fault k\n"
             "    | .ok () =>\n"
-            "      execSliceSubslice m reqMut inMut elem p (UInt64.ofNat len) startOff\n"
-            "        endOff"
+            "      execSliceSubsliceOutcome m reqMut inMut elem p (UInt64.ofNat len)\n"
+            "        startOff endOff"
         ),
         replacement=(
             "    match Except.ok () with\n"
-            "    | .error k => .error k\n"
+            "    | .error k => .fault k\n"
             "    | .ok () =>\n"
-            "      execSliceSubslice m reqMut inMut elem p (UInt64.ofNat len) startOff\n"
-            "        endOff"
+            "      execSliceSubsliceOutcome m reqMut inMut elem p (UInt64.ofNat len)\n"
+            "        startOff endOff"
         ),
         fixture_module="StepRefutations",
         theorem_name="refute_core_contracts_array_subslice_ref_valid",
         needs_wf_helper=False,
     ),
+    MirSemanticsGuard(
+        guard_id="core_contracts_subslice_oob_panics",
+        target_file="trusted/lean/Trusted/MirSemantics/CoreContracts.lean",
+        target_module="Trusted/MirSemantics/CoreContracts",
+        description=(
+            "execSliceSubsliceOutcome reports an out-of-bounds range as a panic, "
+            "not a fault"
+        ),
+        anchor=(
+            "      if !Nat.ble startOff endOff || !Nat.ble endOff len.toNat then\n"
+            "        .panic"
+        ),
+        replacement=(
+            "      if !Nat.ble startOff endOff || !Nat.ble endOff len.toNat then\n"
+            "        .fault .unsupported"
+        ),
+        fixture_module="StepRefutations",
+        theorem_name="refute_core_contracts_subslice_oob_panics",
+        needs_wf_helper=False,
+    ),
+    MirSemanticsGuard(
+        guard_id="core_contracts_split_at_oob_panics",
+        target_file="trusted/lean/Trusted/MirSemantics/CoreContracts.lean",
+        target_module="Trusted/MirSemantics/CoreContracts",
+        description=(
+            "execSliceSplitAtOutcome reports mid > len as a panic, not a fault"
+        ),
+        anchor=(
+            "      if !Nat.ble mid len.toNat then\n"
+            "        .panic"
+        ),
+        replacement=(
+            "      if !Nat.ble mid len.toNat then\n"
+            "        .fault .unsupported"
+        ),
+        fixture_module="StepRefutations",
+        theorem_name="refute_core_contracts_split_at_oob_panics",
+        needs_wf_helper=False,
+    ),
+    MirSemanticsGuard(
+        guard_id="core_contracts_option_unwrap_none_panics",
+        target_file="trusted/lean/Trusted/MirSemantics/CoreContracts.lean",
+        target_module="Trusted/MirSemantics/CoreContracts",
+        description=(
+            "execCoreContractOpOutcome reports Option::unwrap on None as a panic, "
+            "not a fault"
+        ),
+        anchor=(
+            "      | none => .panic"
+        ),
+        replacement=(
+            "      | none => .fault .unsupported"
+        ),
+        fixture_module="StepRefutations",
+        theorem_name="refute_core_contracts_option_unwrap_none_panics",
+        needs_wf_helper=False,
+    ),
+    MirSemanticsGuard(
+        guard_id="step_v2_core_call_panic_dispatch",
+        target_file="trusted/lean/Trusted/MirSemantics/Step.lean",
+        target_module="Trusted/MirSemantics/Step",
+        description=(
+            "evalTerminatorV2 routes a returning core call panic through "
+            "evalCorePanicAbort, so it stays .unsupported under --panic unwind"
+        ),
+        anchor=(
+            "          | .panic =>\n"
+            "            evalCorePanicAbort panicStrategy unwind\n"
+            "              (extractCallerMemory callerMem mem1) hasLocalPanicHandler"
+        ),
+        replacement=(
+            "          | .panic =>\n"
+            "            .done (.aborted (extractCallerMemory callerMem mem1))"
+        ),
+        fixture_module="StepRefutations",
+        theorem_name="refute_step_v2_core_call_panic_dispatch",
+        needs_wf_helper=False,
+    ),
+    MirSemanticsGuard(
+        guard_id="step_v2_core_call_panic_caller_mem",
+        target_file="trusted/lean/Trusted/MirSemantics/Step.lean",
+        target_module="Trusted/MirSemantics/Step",
+        description=(
+            "evalTerminatorV2 reports post-call caller memory when a returning "
+            "core call panic aborts"
+        ),
+        anchor=(
+            "          | .panic =>\n"
+            "            evalCorePanicAbort panicStrategy unwind\n"
+            "              (extractCallerMemory callerMem mem1) hasLocalPanicHandler"
+        ),
+        replacement=(
+            "          | .panic =>\n"
+            "            evalCorePanicAbort panicStrategy unwind\n"
+            "              callerMem hasLocalPanicHandler"
+        ),
+        fixture_module="StepRefutations",
+        theorem_name="refute_step_v2_core_call_panic_caller_mem",
+        needs_wf_helper=False,
+    ),
     # ------------------------------------------------------------------
-    # Profile v2 heap allocation (`Vec`/`Box`) guards (16 guards)
+    # Profile v2 heap allocation (`Vec`/`Box`) guards (21 guards)
     # ------------------------------------------------------------------
     MirSemanticsGuard(
         guard_id="alloc_vec_valid_unsupported_elem",
@@ -6457,18 +6570,18 @@ MIR_SEMANTICS_GUARDS: tuple[MirSemanticsGuard, ...] = (
         target_file="trusted/lean/Trusted/MirSemantics/AllocContracts.lean",
         target_module="Trusted/MirSemantics/AllocContracts",
         description=(
-            "evalVecWithCapacity faults .unsupported (capacity-overflow "
-            "panic) when capacity * size exceeds isize::MAX"
+            "evalVecWithCapacityOutcome panics (capacity overflow) when "
+            "capacity * size exceeds isize::MAX"
         ),
         anchor=(
             "      let totalBytes := cap.toNat * lay.size\n"
             "      if !Nat.blt totalBytes isizeMaxBytes then\n"
-            "        .error .unsupported"
+            "        .panic"
         ),
         replacement=(
             "      let totalBytes := cap.toNat * lay.size\n"
             "      if false then\n"
-            "        .error .unsupported"
+            "        .panic"
         ),
         fixture_module="AllocRefutations",
         theorem_name="refute_alloc_vec_with_capacity_overflow",
@@ -6480,19 +6593,124 @@ MIR_SEMANTICS_GUARDS: tuple[MirSemanticsGuard, ...] = (
         target_file="trusted/lean/Trusted/MirSemantics/AllocContracts.lean",
         target_module="Trusted/MirSemantics/AllocContracts",
         description=(
-            "evalVecIndex faults .unsupported (bounds-check panic) when "
-            "idx >= len, even inside the capacity"
+            "evalVecIndexOutcome panics (bounds check) when idx >= len, even "
+            "inside the capacity"
         ),
         anchor=(
             "    if !Nat.blt idx.toNat v.len.toNat then\n"
-            "      .error .unsupported"
+            "      .panic"
         ),
         replacement=(
             "    if false then\n"
-            "      .error .unsupported"
+            "      .panic"
         ),
         fixture_module="AllocRefutations",
         theorem_name="refute_alloc_vec_index_oob",
+        sanity_module="AllocSanity",
+        needs_wf_helper=False,
+    ),
+    MirSemanticsGuard(
+        guard_id="alloc_vec_with_capacity_overflow_panics",
+        target_file="trusted/lean/Trusted/MirSemantics/AllocContracts.lean",
+        target_module="Trusted/MirSemantics/AllocContracts",
+        description=(
+            "evalVecWithCapacityOutcome reports a capacity overflow as a panic, "
+            "which aborts under --panic abort, not a fault"
+        ),
+        anchor=(
+            "      if !Nat.blt totalBytes isizeMaxBytes then\n"
+            "        .panic"
+        ),
+        replacement=(
+            "      if !Nat.blt totalBytes isizeMaxBytes then\n"
+            "        .fault .unsupported"
+        ),
+        fixture_module="AllocRefutations",
+        theorem_name="refute_alloc_vec_with_capacity_overflow_panics",
+        sanity_module="AllocSanity",
+        needs_wf_helper=False,
+    ),
+    MirSemanticsGuard(
+        guard_id="alloc_vec_index_oob_panics",
+        target_file="trusted/lean/Trusted/MirSemantics/AllocContracts.lean",
+        target_module="Trusted/MirSemantics/AllocContracts",
+        description=(
+            "evalVecIndexOutcome reports an out-of-bounds index as a panic, not "
+            "a fault"
+        ),
+        anchor=(
+            "    if !Nat.blt idx.toNat v.len.toNat then\n"
+            "      .panic"
+        ),
+        replacement=(
+            "    if !Nat.blt idx.toNat v.len.toNat then\n"
+            "      .fault .unsupported"
+        ),
+        fixture_module="AllocRefutations",
+        theorem_name="refute_alloc_vec_index_oob_panics",
+        sanity_module="AllocSanity",
+        needs_wf_helper=False,
+    ),
+    MirSemanticsGuard(
+        guard_id="alloc_vec_grow_capacity_overflow_panics",
+        target_file="trusted/lean/Trusted/MirSemantics/AllocContracts.lean",
+        target_module="Trusted/MirSemantics/AllocContracts",
+        description=(
+            "ensureVecCapacityOutcome reports a failed vecGrowCap as a panic "
+            "(none), not a fault"
+        ),
+        anchor=(
+            "    match vecGrowCap lay.size v.cap.toNat minCap with\n"
+            "    | none => none"
+        ),
+        replacement=(
+            "    match vecGrowCap lay.size v.cap.toNat minCap with\n"
+            "    | none => some (.error .unsupported)"
+        ),
+        fixture_module="AllocRefutations",
+        theorem_name="refute_alloc_vec_grow_capacity_overflow_panics",
+        sanity_module="AllocSanity",
+        needs_wf_helper=False,
+    ),
+    MirSemanticsGuard(
+        guard_id="alloc_vec_reserve_len_overflow_panics",
+        target_file="trusted/lean/Trusted/MirSemantics/AllocContracts.lean",
+        target_module="Trusted/MirSemantics/AllocContracts",
+        description=(
+            "evalVecReserveOutcome reports an overflowing len + additional as a "
+            "panic, not a fault"
+        ),
+        anchor=(
+            "    if !Nat.blt minCap (Nat.pow 2 64) then\n"
+            "      .panic"
+        ),
+        replacement=(
+            "    if !Nat.blt minCap (Nat.pow 2 64) then\n"
+            "      .fault .unsupported"
+        ),
+        fixture_module="AllocRefutations",
+        theorem_name="refute_alloc_vec_reserve_len_overflow_panics",
+        sanity_module="AllocSanity",
+        needs_wf_helper=False,
+    ),
+    MirSemanticsGuard(
+        guard_id="alloc_vec_extend_len_overflow_panics",
+        target_file="trusted/lean/Trusted/MirSemantics/AllocContracts.lean",
+        target_module="Trusted/MirSemantics/AllocContracts",
+        description=(
+            "evalVecExtendFromSliceOutcome reports an overflowing len + srcLen "
+            "as a panic, not a fault"
+        ),
+        anchor=(
+            "    if !Nat.blt newLen (Nat.pow 2 64) then\n"
+            "      .panic"
+        ),
+        replacement=(
+            "    if !Nat.blt newLen (Nat.pow 2 64) then\n"
+            "      .fault .unsupported"
+        ),
+        fixture_module="AllocRefutations",
+        theorem_name="refute_alloc_vec_extend_len_overflow_panics",
         sanity_module="AllocSanity",
         needs_wf_helper=False,
     ),

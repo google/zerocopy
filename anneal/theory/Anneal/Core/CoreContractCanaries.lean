@@ -133,11 +133,21 @@ private theorem writeBytes_preserves_other_allocations {m m' : MemoryState}
 
 /-! ## Structural & Safety Contracts for `CoreContracts` -/
 
-/-- `Option::unwrap` on `None` fails closed via `corePanicTrap`. -/
-theorem coreContract_optionUnwrap_none_traps (m : MemoryState) (inner : MirTy) :
-    execCoreContractOp m (.optionUnwrap inner)
-      [(.option inner, .optionVal none)] inner = .error corePanicTrap := by
-  unfold execCoreContractOp
+/-- Projecting a lifted `Except` result back through `toExcept` is the
+identity. -/
+theorem coreCallOutcome_toExcept_ofExcept
+    (e : Except FaultKind (Val × MemoryState)) :
+    (CoreCallOutcome.ofExcept e).toExcept = e := by
+  cases e with
+  | error k => rfl
+  | ok r => cases r; rfl
+
+/-- `Option::unwrap` on `None` panics. -/
+theorem coreContract_optionUnwrap_none_panics (m : MemoryState)
+    (inner : MirTy) :
+    execCoreContractOpOutcome m (.optionUnwrap inner)
+      [(.option inner, .optionVal none)] inner = .panic := by
+  unfold execCoreContractOpOutcome
   dsimp only
   rw [mirTy_beq_refl inner]
   rfl
@@ -150,7 +160,13 @@ theorem coreContract_sliceIsEmpty_ok {m : MemoryState} {elem : MirTy}
     execCoreContractOp m (.sliceIsEmpty elem)
       [(.ref reqMut (.slice elem), .slicePtr p len)] .bool =
       .ok (.bool (Nat.beq len.toNat 0), m) := by
-  unfold execCoreContractOp
+  have hE : execCoreContractOp m (.sliceIsEmpty elem)
+      [(.ref reqMut (.slice elem), .slicePtr p len)] .bool =
+      execCoreContractOpInfallible m (.sliceIsEmpty elem)
+        [(.ref reqMut (.slice elem), .slicePtr p len)] .bool :=
+    coreCallOutcome_toExcept_ofExcept _
+  rw [hE]
+  unfold execCoreContractOpInfallible
   dsimp only
   rw [mirTy_beq_refl elem, hNoRef]
   have hCond : (!true || !MirTy.beq .bool .bool || !true) = false := rfl
@@ -158,17 +174,17 @@ theorem coreContract_sliceIsEmpty_ok {m : MemoryState} {elem : MirTy}
       (if false = true then x else y) = y := fun _ _ => rfl
   rw [hCond, hIfFalse, hValid]
 
-/-- Any successful `execSliceSubslice` preserves `MemoryState` and `allocId`
-provenance and guarantees `startOff ≤ endOff ≤ len.toNat`. -/
-theorem execSliceSubslice_preserves_prov_and_bounds {m m' : MemoryState}
-    {reqMut inMut : Mutability} {elem : MirTy} {p p' : PtrVal}
-    {len len' : UInt64} {startOff endOff : Nat}
-    (hOk : execSliceSubslice m reqMut inMut elem p len startOff endOff =
-      .ok (.slicePtr p' len', m')) :
+/-- Any successful `execSliceSubsliceOutcome` preserves `MemoryState` and
+`allocId` provenance and guarantees `startOff ≤ endOff ≤ len.toNat`. -/
+theorem execSliceSubsliceOutcome_preserves_prov_and_bounds
+    {m m' : MemoryState} {reqMut inMut : Mutability} {elem : MirTy}
+    {p p' : PtrVal} {len len' : UInt64} {startOff endOff : Nat}
+    (hOk : execSliceSubsliceOutcome m reqMut inMut elem p len startOff endOff =
+      .ok (.slicePtr p' len') m') :
     m' = m ∧ p'.allocId = p.allocId ∧
     startOff ≤ endOff ∧ endOff ≤ len.toNat ∧
     len'.toNat = (UInt64.ofNat (endOff - startOff)).toNat := by
-  unfold execSliceSubslice at hOk
+  unfold execSliceSubsliceOutcome at hOk
   cases hNoRef : isSizedNoRefV2Ty elem with
   | false => rw [hNoRef] at hOk; cases hOk
   | true =>
@@ -197,10 +213,7 @@ theorem execSliceSubslice_preserves_prov_and_bounds {m m' : MemoryState}
             | error k => rw [hAdd] at hOk; cases hOk
             | ok pAdd =>
               rw [hAdd] at hOk
-              injection hOk with hPair
-              have hEqV : Val.slicePtr pAdd (UInt64.ofNat (endOff - startOff)) =
-                  Val.slicePtr p' len' := congrArg Prod.fst hPair
-              have hEqM : m = m' := congrArg Prod.snd hPair
+              injection hOk with hEqV hEqM
               injection hEqV with hPEq hLenEq
               have hProvEq : pAdd.allocId = p.allocId := by
                 unfold ptrAddInMem at hAdd
@@ -281,8 +294,8 @@ theorem execSliceSubslice_preserves_prov_and_bounds {m m' : MemoryState}
               · rw [← hPEq]; exact hProvEq
               · rw [← hLenEq]
 
-/-- Out-of-bounds range subslice fails closed with `corePanicTrap`. -/
-theorem execSliceSubslice_oob_traps {m : MemoryState}
+/-- An out-of-bounds range subslice panics. -/
+theorem execSliceSubsliceOutcome_oob_panics {m : MemoryState}
     {reqMut inMut : Mutability} {elem : MirTy} {p : PtrVal} {len : UInt64}
     {startOff endOff : Nat}
     (hNoRef : isSizedNoRefV2Ty elem = true)
@@ -290,9 +303,9 @@ theorem execSliceSubslice_oob_traps {m : MemoryState}
       (Mutability.beq inMut .shared && Mutability.beq reqMut .mut) = false)
     (hValid : refValidInMem m inMut (.slice elem) (.slicePtr p len) = .ok ())
     (hOob : (!Nat.ble startOff endOff || !Nat.ble endOff len.toNat) = true) :
-    execSliceSubslice m reqMut inMut elem p len startOff endOff =
-      .error corePanicTrap := by
-  unfold execSliceSubslice
+    execSliceSubsliceOutcome m reqMut inMut elem p len startOff endOff =
+      .panic := by
+  unfold execSliceSubsliceOutcome
   rw [hNoRef]
   rw [hMut]
   rw [hValid]
@@ -431,7 +444,8 @@ theorem canary_sliceIndexRange_ok :
        (.range canaryUsizeTy, .range 1 3)]
       (.ref .shared (.slice canaryU8Ty)) =
       .ok (.slicePtr ⟨some 2, 1, .isize⟩ 2, m) := by
-  unfold execCoreContractOp execSliceSubslice isSizedNoRefV2Ty
+  unfold execCoreContractOp execCoreContractOpOutcome
+    execCoreContractOpInfallible execSliceSubsliceOutcome isSizedNoRefV2Ty
     refValidInMem sliceFromRawPartsCheck sliceRefRawCheck findAllocation
     layoutOfTyV2 layoutOfTy intLayout ptrAddInMem
     isInBounds isAligned isSliceAllInit
@@ -447,7 +461,8 @@ theorem canary_sliceIndexRange_oob_traps :
        (.range canaryUsizeTy, .range 2 5)]
       (.ref .shared (.slice canaryU8Ty)) =
       .error corePanicTrap := by
-  unfold execCoreContractOp execSliceSubslice isSizedNoRefV2Ty
+  unfold execCoreContractOp execCoreContractOpOutcome
+    execCoreContractOpInfallible execSliceSubsliceOutcome isSizedNoRefV2Ty
     refValidInMem sliceFromRawPartsCheck sliceRefRawCheck findAllocation
     layoutOfTyV2 layoutOfTy intLayout
     isInBounds isAligned isSliceAllInit corePanicTrap
@@ -464,7 +479,8 @@ theorem canary_sliceSplitAt_ok :
        (canaryUsizeTy, canaryUsizeVal 2)]
       (.tuple [sliceRefTy, sliceRefTy]) =
       .ok (.tuple [.slicePtr p 2, .slicePtr ⟨some 2, 2, .isize⟩ 2], m) := by
-  unfold execCoreContractOp execSliceSplitAtCall execSliceSplitAtOutcome
+  unfold execCoreContractOp execCoreContractOpOutcome
+    execCoreContractOpInfallible execSliceSplitAtCall execSliceSplitAtOutcome
     isSizedNoRefV2Ty
     refValidInMem sliceFromRawPartsCheck sliceRefRawCheck findAllocation
     layoutOfTyV2 layoutOfTy intLayout ptrAddInMem
@@ -484,7 +500,8 @@ theorem canary_isMultipleOf_cases :
       [(canaryU64Ty, canaryU64Val 6), (canaryU64Ty, canaryU64Val 3)] .bool =
       .ok (.bool true, MemoryState.empty) := by
   refine ⟨?_, ?_, ?_⟩ <;> (
-    unfold execCoreContractOp canaryU64Val
+    unfold execCoreContractOp execCoreContractOpOutcome
+      execCoreContractOpInfallible canaryU64Val
     rfl)
 
 /-- Canary 5: `checked_add`, `saturating_add`, `wrapping_shl`, `leading_zeros`,
@@ -509,7 +526,8 @@ theorem canary_scalar_ops :
       (.tuple [canaryU8Ty, .bool]) =
       .ok (.tuple [canaryU8Val 255, .bool true], MemoryState.empty) := by
   refine ⟨?_, ?_, ?_, ?_, ?_⟩ <;> (
-    unfold execCoreContractOp execCheckedArith execOverflowingArith
+    unfold execCoreContractOp execCoreContractOpOutcome
+      execCoreContractOpInfallible execCheckedArith execOverflowingArith
       saturateScalar evalShiftOp leadingZerosFrom
       decodeScalar truncateScalar truncateBits canaryU8Val
     rfl)
@@ -570,7 +588,8 @@ theorem canary_memReplace_roundtrip :
       oldVal = canaryU8Val 42 ∧
       loadIndirectV2 m1 canaryU8Ty ⟨2, 0⟩ = .ok (some (canaryU8Val 99))
     | .error _ => False := by
-  unfold execCoreContractOp execMemReplace isSizedNoRefV2Ty refValidInMem
+  unfold execCoreContractOp execCoreContractOpOutcome
+    execCoreContractOpInfallible execMemReplace isSizedNoRefV2Ty refValidInMem
     checkValV2 checkVal Val.ty? refsValidInMem layoutOfTyV2 layoutOfTy
     intLayout findAllocation
     loadIndirectV2 storeIndirectV2 readBytes writeBytes encodeValV2
@@ -602,7 +621,8 @@ theorem canary_cmp_min_max_tie_break :
       (.int .i8 true) =
       .ok (.scalar rI8, MemoryState.empty) := by
   refine ⟨?_, ?_, ?_, ?_⟩ <;> (
-    unfold execCoreContractOp decodeScalar truncateBits
+    unfold execCoreContractOp execCoreContractOpOutcome
+      execCoreContractOpInfallible decodeScalar truncateBits
     rfl)
 
 /-- Canary 9: `isSizedNoRefV2Ty` and `isNicheFreeOptionPayloadV2` fail closed
@@ -1257,9 +1277,10 @@ theorem canary_split_at_mut_disjoint_union_and_panic_abort :
   ⟨rfl, rfl, rfl, rfl, rfl, rfl⟩
 
 /-- Canary 16: `<[T; N] as Index/IndexMut<Range<usize>>>` and
-`RangeFrom<usize>` delegate through `execArraySubslice`, validating thin array
-references, enforcing `len < 2^64` and mutability, scaling offsets by element
-size, and trapping OOB ranges via `corePanicTrap`. -/
+`RangeFrom<usize>` delegate through `execArraySubsliceOutcome`, validating
+thin array references, enforcing `len < 2^64` and mutability, scaling offsets
+by element size, and trapping OOB ranges via `corePanicTrap` at the
+`execCoreContractOp` level. -/
 theorem canary_array_index_range_and_range_from :
     let mMut : MemoryState := {
       nextAllocId := 3
@@ -1321,8 +1342,8 @@ theorem canary_array_index_range_and_range_from :
       [(.ref .shared (.array u16Ty 4), .ptr ⟨some 2, 0, .isize⟩),
        (rangeTy, .range 0 1)]
       (.ref .shared sliceU16Ty) = .error .undefined ∧
-    execArraySubslice mMut .shared .shared .unit (Nat.pow 2 64)
-      ⟨none, 1, .isize⟩ 0 0 = .error .unsupported :=
+    execArraySubsliceOutcome mMut .shared .shared .unit (Nat.pow 2 64)
+      ⟨none, 1, .isize⟩ 0 0 = .fault .unsupported :=
   ⟨rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl⟩
 
 end Anneal.Core

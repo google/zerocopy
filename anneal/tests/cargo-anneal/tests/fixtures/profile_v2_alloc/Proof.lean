@@ -1059,6 +1059,42 @@ private theorem evalStepV2_assign_ref_local {p : Program} {frame : FrameState}
   rw [MirTy.beq_iff.mpr rfl, hRef]
   rw [ite_bool_false (!true) rfl]; dsimp only; rw [hWp]; rfl
 
+/-- A `CoreCallOutcome` whose `Except` projection is `.ok (v, m)` is
+`.ok v m`. -/
+private theorem coreOutcome_eq_ok {o : CoreCallOutcome} {v : Val}
+    {m : MemoryState} (h : o.toExcept = .ok (v, m)) : o = .ok v m := by
+  cases o <;> unfold CoreCallOutcome.toExcept at h <;> cases h <;> rfl
+
+/-- `CoreCallOutcome.ofExcept` round-trips through `toExcept`. -/
+private theorem coreOutcome_toExcept_ofExcept
+    (e : Except FaultKind (Val × MemoryState)) :
+    (CoreCallOutcome.ofExcept e).toExcept = e := by
+  cases e with
+  | error k => rfl
+  | ok r => cases r; rfl
+
+/-- An allocation call without a modeled panic path returns the result of
+`execAllocCoreCallInfallible`. -/
+private theorem execCoreCallOpWithMem_eq_allocInfallible {m : MemoryState}
+    {op : CoreCallOp} {args : List (MirTy × Val)} {dstTy : MirTy}
+    {e : Except FaultKind (Val × MemoryState)}
+    (hO : execAllocCoreCallOutcome m op args dstTy =
+      match execAllocCoreCallInfallible m op args dstTy with
+      | some res => some (CoreCallOutcome.ofExcept res)
+      | none => none)
+    (h : execAllocCoreCallInfallible m op args dstTy = some e) :
+    execCoreCallOpWithMem m op args dstTy = e := by
+  unfold execCoreCallOpWithMem execCoreCallOpWithMemOutcome
+  rw [hO, h]; exact coreOutcome_toExcept_ofExcept e
+
+/-- An allocation call whose outcome is `.ok v m'` returns `.ok (v, m')`. -/
+private theorem execCoreCallOpWithMem_eq_allocOutcome {m m' : MemoryState}
+    {op : CoreCallOp} {args : List (MirTy × Val)} {dstTy : MirTy} {v : Val}
+    (h : execAllocCoreCallOutcome m op args dstTy = some (.ok v m')) :
+    execCoreCallOpWithMem m op args dstTy = .ok (v, m') := by
+  unfold execCoreCallOpWithMem execCoreCallOpWithMemOutcome
+  rw [h]; rfl
+
 private theorem evalStepV2_coreCall {p : Program} {frame : FrameState}
     {mem mem2 mem3 : MemoryState} {cm : CallerMemory} {body : Body}
     {bb : BasicBlock} {op : CoreCallOp} {args : List Operand} {dst : Place}
@@ -1086,20 +1122,10 @@ private theorem evalStepV2_coreCall {p : Program} {frame : FrameState}
   rw [evalStepV2_term rfl hB hBB hEnd]
   unfold evalTerminatorV2; rw [hTerm]; dsimp only
   rw [ite_bool_false (!dst.projection.isEmpty) (by rw [hNoProj]; rfl)]
+  have hCall' : execCoreCallOpWithMemOutcome mem op typedArgs dstTy =
+      .ok resVal mem2 := coreOutcome_eq_ok hCall
   rw [hTy]; dsimp only; rw [hArgs]; dsimp only
-  cases op
-  case sliceSplitAt reqMut elem =>
-    have hC : execSliceSplitAtCall mem reqMut elem typedArgs dstTy =
-        .ok resVal mem2 := by
-      unfold execCoreCallOpWithMem execAllocCoreCall execCoreCallWithMem
-        execCoreContractOp at hCall
-      dsimp only at hCall
-      cases h : execSliceSplitAtCall mem reqMut elem typedArgs dstTy with
-      | ok v m' => rw [h] at hCall; cases hCall; rfl
-      | panic => rw [h] at hCall; cases hCall
-      | fault k => rw [h] at hCall; cases hCall
-    dsimp only; rw [hC]; dsimp only; rw [hWp]; rfl
-  all_goals (dsimp only; rw [hCall]; dsimp only; rw [hWp]; rfl)
+  rw [hCall']; dsimp only; rw [hWp]; rfl
 
 private theorem evalStepV2_storageDead_indirect {p : Program}
     {frame : FrameState} {mem mem1 : MemoryState} {cm : CallerMemory}
@@ -1236,20 +1262,22 @@ private theorem evalVecPush_u8_inBounds {m m1 m2 : MemoryState}
        (.int .i8 false, val)]
       .unit = .ok (.unit, m2) := by
   have hZ0 : UInt64.toNat 0 = 0 := rfl
-  unfold execCoreCallOpWithMem execAllocCoreCall evalVecPush
-  dsimp only
+  refine execCoreCallOpWithMem_eq_allocOutcome ?_
+  unfold execAllocCoreCallOutcome evalVecPushOutcome
+  try dsimp only
   rw [ite_bool_false (!MirTy.unit.beq .unit ||
       !MirTy.beq (.int .i8 false) (.int .i8 false)) rfl]
-  dsimp only
+  try dsimp only
   rw [ite_bool_false (!checkValV2 val (.int .i8 false)) (by rw [hVal]; rfl)]
   rw [hRead, layoutOfTyV2_u8, hEnc]
-  dsimp only [ensureVecCapacity]
+  dsimp only [ensureVecCapacityOutcome]
   rw [ite_bool_false (!Nat.ble curLen.toNat (curLen.toNat + 1))
     (by rw [hLe1]; rfl)]
   rw [ite_bool_true (Nat.ble (curLen.toNat + 1) cap.toNat) hCap]
   dsimp only
   rw [ite_bool_false (Nat.beq 1 0) rfl]
   rw [hZ0, Nat.zero_add, Nat.mul_one, hWrBuf]; dsimp only; rw [hWrVec]
+  rfl
 
 private theorem evalVecPush_u8_fromEmpty {m m2 m3 : MemoryState}
     {vecAid : AllocId} {ptr0 : PtrVal} {val : Val}
@@ -1275,14 +1303,16 @@ private theorem evalVecPush_u8_fromEmpty {m m2 m3 : MemoryState}
   have hL0 : (UInt64.toNat 0) = 0 := rfl
   have hL1 : UInt64.ofNat (0 + 1) = (1 : UInt64) := rfl
   have hC8 : UInt64.ofNat 8 = (8 : UInt64) := rfl
-  unfold execCoreCallOpWithMem execAllocCoreCall evalVecPush
-  dsimp only
+  refine execCoreCallOpWithMem_eq_allocOutcome ?_
+  unfold execAllocCoreCallOutcome evalVecPushOutcome
+  try dsimp only
   rw [ite_bool_false (!MirTy.unit.beq .unit ||
       !MirTy.beq (.int .i8 false) (.int .i8 false)) rfl]
-  dsimp only
+  try dsimp only
   rw [ite_bool_false (!checkValV2 val (.int .i8 false)) (by rw [hVal]; rfl)]
   rw [hRead, layoutOfTyV2_u8, hEnc]
-  dsimp only [ensureVecCapacity, allocHeapBuffer, MemoryState.reserveAllocId]
+  dsimp only [ensureVecCapacityOutcome, allocHeapBuffer,
+    MemoryState.reserveAllocId]
   rw [hL0]
   rw [ite_bool_false (!Nat.ble 0 (0 + 1)) rfl]
   rw [ite_bool_false (Nat.ble (0 + 1) 0) rfl]
@@ -1296,6 +1326,7 @@ private theorem evalVecPush_u8_fromEmpty {m m2 m3 : MemoryState}
   rw [ite_bool_false (Nat.beq 1 0) rfl]
   rw [hL0, Nat.zero_mul, Nat.zero_add, hWrBuf]; dsimp only
   rw [hC8, hL1, hWrVec]
+  rfl
 
 private theorem truncateBits_isize_toNat_of_lt (x : Nat) (hLt64 : x < 2 ^ 64) :
     (UInt64.ofNat (truncateBits .isize (BitVec.ofNat 128 x)).toNat).toNat =
@@ -1343,21 +1374,23 @@ private theorem evalVecResize_u8_growInBounds {m m1 m2 : MemoryState}
     | ofBitVec bv =>
       exact congrArg UInt64.ofBitVec (BitVec.eq_of_toNat_eq
         (truncateBits_isize_toNat_of_lt bv.toNat bv.isLt))
-  unfold execCoreCallOpWithMem execAllocCoreCall evalVecResize
-  dsimp only
+  refine execCoreCallOpWithMem_eq_allocOutcome ?_
+  unfold execAllocCoreCallOutcome evalVecResizeOutcome
+  try dsimp only
   rw [ite_bool_false (!MirTy.unit.beq .unit ||
       !MirTy.beq (.int .i8 false) (.int .i8 false)) rfl]
-  dsimp only
+  try dsimp only
   rw [ite_bool_false (!checkValV2 val (.int .i8 false)) (by rw [hVal]; rfl)]
   rw [hRead, layoutOfTyV2_u8, hEnc]; dsimp only
   rw [hTrunc]
   rw [ite_bool_false (Nat.ble newLen.toNat curLen.toNat) hGrow]
-  dsimp only [ensureVecCapacity]
+  dsimp only [ensureVecCapacityOutcome]
   rw [ite_bool_false (!Nat.ble curLen.toNat newLen.toNat) (by rw [hLe]; rfl)]
   rw [ite_bool_true (Nat.ble newLen.toNat cap.toNat) hCap]
   dsimp only
   rw [ite_bool_false (Nat.beq 1 0) rfl]
   rw [hZ0, Nat.zero_add, Nat.mul_one, hWrBuf]; dsimp only; rw [hWrVec]
+  rfl
 
 private theorem evalVecDeref_shared_u8 {m : MemoryState}
     {reqMut : Mutability} {vecAid bufAid : AllocId} {cap len : UInt64}
@@ -1371,8 +1404,9 @@ private theorem evalVecDeref_shared_u8 {m : MemoryState}
           .ptr ⟨some vecAid, UInt64.ofNat 0, .isize⟩)]
       (.ref .shared (.slice (.int .i8 false))) =
       .ok (.slicePtr ⟨some bufAid, 0, .isize⟩ len, m) := by
-  unfold execCoreCallOpWithMem execAllocCoreCall evalVecDeref
-  dsimp only
+  refine execCoreCallOpWithMem_eq_allocInfallible rfl ?_
+  unfold execAllocCoreCallInfallible evalVecDeref
+  try dsimp only
   rw [ite_bool_false (!MirTy.beq (.ref .shared (.slice (.int .i8 false)))
       (.ref .shared (.slice (.int .i8 false)))) rfl]
   dsimp only [Mutability.beq]
@@ -1403,15 +1437,16 @@ private theorem evalVecExtendFromSlice_u8_inBounds {m m1 m2 : MemoryState}
           .slicePtr ⟨some srcAid, 0, .isize⟩ srcLen)]
       .unit = .ok (.unit, m2) := by
   have hZ0 : UInt64.toNat 0 = 0 := rfl
-  unfold execCoreCallOpWithMem execAllocCoreCall evalVecExtendFromSlice
-  dsimp only
+  refine execCoreCallOpWithMem_eq_allocOutcome ?_
+  unfold execAllocCoreCallOutcome evalVecExtendFromSliceOutcome
+  try dsimp only
   rw [ite_bool_false (!MirTy.unit.beq .unit ||
       !MirTy.beq (.int .i8 false) (.int .i8 false)) rfl]
-  dsimp only
+  try dsimp only
   rw [hRead, hSrcValid, layoutOfTyV2_u8]; dsimp only
   rw [ite_bool_false (!Nat.blt (curLen.toNat + srcLen.toNat) (Nat.pow 2 64))
     (by rw [hBound64]; rfl)]
-  dsimp only [ensureVecCapacity]
+  dsimp only [ensureVecCapacityOutcome]
   rw [ite_bool_false (!Nat.ble curLen.toNat (curLen.toNat + srcLen.toNat))
     (by rw [hLe]; rfl)]
   rw [ite_bool_true (Nat.ble (curLen.toNat + srcLen.toNat) cap.toNat) hCap]
@@ -1421,6 +1456,7 @@ private theorem evalVecExtendFromSlice_u8_inBounds {m m1 m2 : MemoryState}
   rw [ite_bool_false (Nat.beq (srcLen.toNat * 1) 0) hSrcNz]
   rw [ite_bool_false (Nat.beq srcAid dstAid && _ && _) (by rw [hNe]; rfl)]
   rw [Nat.mul_one, Nat.zero_add, hWrBuf]; dsimp only; rw [hWrVec]
+  rfl
 
 private theorem evalVecLen_u8 {m : MemoryState} {reqMut : Mutability}
     {vecAid : AllocId} {bufPtr : PtrVal} {cap len : UInt64}
@@ -1431,10 +1467,11 @@ private theorem evalVecLen_u8 {m : MemoryState} {reqMut : Mutability}
       [(.ref reqMut (.vec (.int .i8 false)),
           .ptr ⟨some vecAid, UInt64.ofNat 0, .isize⟩)]
       (.int .isize false) = .ok (usizeScalarVal len.toNat, m) := by
-  unfold execCoreCallOpWithMem execAllocCoreCall evalVecLen
-  dsimp only
+  refine execCoreCallOpWithMem_eq_allocInfallible rfl ?_
+  unfold execAllocCoreCallInfallible evalVecLen
+  try dsimp only
   rw [ite_bool_false (!MirTy.beq (.int .isize false) (.int .isize false)) rfl]
-  dsimp only; rw [hRead]
+  (try dsimp only); rw [hRead]
 
 private theorem evalVecIndex_u8 {m : MemoryState} {inMut reqMut : Mutability}
     {vecAid bufAid : AllocId} {bufAlloc : Allocation}
@@ -1472,11 +1509,12 @@ private theorem evalVecIndex_u8 {m : MemoryState} {inMut reqMut : Mutability}
   cases reqMut with
   | shared =>
     dsimp only [Mutability.beq] at hRead
-    unfold execCoreCallOpWithMem execAllocCoreCall evalVecIndex usizeScalarVal
-    dsimp only [Mutability.beq]
+    refine execCoreCallOpWithMem_eq_allocOutcome ?_
+    unfold execAllocCoreCallOutcome evalVecIndexOutcome usizeScalarVal
+    try dsimp only [Mutability.beq]
     rw [ite_bool_false (!MirTy.beq (.ref .shared (.int .i8 false))
         (.ref .shared (.int .i8 false))) rfl]
-    dsimp only; rw [hRead, layoutOfTyV2_u8]; dsimp only
+    (try dsimp only); rw [hRead, layoutOfTyV2_u8]; dsimp only
     rw [hTrunc]
     rw [ite_bool_false (!Nat.blt idx len.toNat) (by rw [hIdxLt]; rfl)]
     dsimp only [ptrAdvanceElem]
@@ -1491,11 +1529,12 @@ private theorem evalVecIndex_u8 {m : MemoryState} {inMut reqMut : Mutability}
     dsimp only; rw [hRef]
   | _ =>
     dsimp only [Mutability.beq] at hRead
-    unfold execCoreCallOpWithMem execAllocCoreCall evalVecIndex usizeScalarVal
-    dsimp only [Mutability.beq]
+    refine execCoreCallOpWithMem_eq_allocOutcome ?_
+    unfold execAllocCoreCallOutcome evalVecIndexOutcome usizeScalarVal
+    try dsimp only [Mutability.beq]
     rw [ite_bool_false (!MirTy.beq (.ref .mut (.int .i8 false))
         (.ref .mut (.int .i8 false))) rfl]
-    dsimp only; rw [hRead, layoutOfTyV2_u8]; dsimp only
+    (try dsimp only); rw [hRead, layoutOfTyV2_u8]; dsimp only
     rw [hTrunc]
     rw [ite_bool_false (!Nat.blt idx len.toNat) (by rw [hIdxLt]; rfl)]
     dsimp only [ptrAdvanceElem]
@@ -1527,11 +1566,12 @@ private theorem evalBoxFromVec_u8_realloc {m m1 m3 : MemoryState}
       (.box (.slice (.int .i8 false))) =
       .ok (.boxPtr ⟨some m1.nextAllocId, 0, .isize⟩ (some len), m3) := by
   have hZ0 : UInt64.toNat 0 = 0 := rfl
-  unfold execCoreCallOpWithMem execAllocCoreCall evalBoxFromVec vecValidInMem
-  dsimp only
+  refine execCoreCallOpWithMem_eq_allocInfallible rfl ?_
+  unfold execAllocCoreCallInfallible evalBoxFromVec vecValidInMem
+  try dsimp only
   rw [ite_bool_false (!MirTy.beq (.box (.slice (.int .i8 false)))
       (.box (.slice (.int .i8 false)))) rfl]
-  dsimp only
+  try dsimp only
   rw [ite_bool_false (!isSupportedPointeeTy (.int .i8 false)) rfl]
   rw [hBuf, layoutOfTyV2_u8]; dsimp only
   rw [ite_bool_false (Nat.beq 1 0 || Nat.beq cap.toNat len.toNat)
@@ -1561,11 +1601,12 @@ private theorem evalBoxClone_slice_u8 {m m2 : MemoryState} {reqMut : Mutability}
       (.box (.slice (.int .i8 false))) =
       .ok (.boxPtr ⟨some m.nextAllocId, 0, .isize⟩ (some len), m2) := by
   have hZ0 : UInt64.toNat 0 = 0 := rfl
-  unfold execCoreCallOpWithMem execAllocCoreCall evalBoxClone
-  dsimp only
+  refine execCoreCallOpWithMem_eq_allocInfallible rfl ?_
+  unfold execAllocCoreCallInfallible evalBoxClone
+  try dsimp only
   rw [ite_bool_false (!MirTy.beq (.box (.slice (.int .i8 false)))
       (.box (.slice (.int .i8 false)))) rfl]
-  dsimp only
+  try dsimp only
   rw [hReadBox]; dsimp only; rw [layoutOfTyV2_u8]; dsimp only
   rw [ite_bool_false (Nat.beq (len.toNat * 1) 0) hNz]
   rw [hZ0, hRead]
@@ -1584,11 +1625,12 @@ private theorem evalBoxNew_u64 {m m2 : MemoryState} {val : Val}
     execCoreCallOpWithMem m (.boxNew (.int .i64 false))
       [(.int .i64 false, val)] (.box (.int .i64 false)) =
       .ok (.boxPtr ⟨some m.nextAllocId, 0, .isize⟩ none, m2) := by
-  unfold execCoreCallOpWithMem execAllocCoreCall evalBoxNew
-  dsimp only
+  refine execCoreCallOpWithMem_eq_allocInfallible rfl ?_
+  unfold execAllocCoreCallInfallible evalBoxNew
+  try dsimp only
   rw [ite_bool_false (!MirTy.beq (.int .i64 false) (.int .i64 false) ||
       !MirTy.beq (.box (.int .i64 false)) (.box (.int .i64 false))) rfl]
-  dsimp only
+  try dsimp only
   rw [ite_bool_false
     (isUnsizedTy (.int .i64 false) ||
       !isSupportedPointeeTy (.int .i64 false) ||
@@ -3972,7 +4014,8 @@ private theorem m0_tr_1 (cm : CallerMemory) :
       (.vec (.int .i8 false)) =
       .ok (.vec ⟨some (nid + 0), 0, .isize⟩ 1 0,
         ⟨nid + 1, cm.allocations ++ [mBuf0_init nid]⟩) := by
-    unfold execCoreCallOpWithMem execAllocCoreCall evalVecWithCapacity
+    refine execCoreCallOpWithMem_eq_allocOutcome ?_
+    unfold execAllocCoreCallOutcome evalVecWithCapacityOutcome
     rfl
   exact evalStepV2_coreCall rfl rfl rfl rfl rfl rfl rfl hCall
     (writePlaceV2_imm_ok rfl rfl rfl)
@@ -4179,7 +4222,8 @@ private theorem m0_tr_6 (cm : CallerMemory) :
     ⟨nid + 2, cm.allocations ++ [mBuf0_1 nid, mVec1_1 nid]⟩
   have hCall : execCoreCallOpWithMem m0 (.vecNew (.int .i8 false)) []
       (.vec (.int .i8 false)) = .ok (.vec ⟨none, 1, .isize⟩ 0 0, m0) := by
-    unfold execCoreCallOpWithMem execAllocCoreCall evalVecNew
+    refine execCoreCallOpWithMem_eq_allocInfallible rfl ?_
+    unfold execAllocCoreCallInfallible evalVecNew
     rfl
   exact evalStepV2_coreCall rfl rfl rfl rfl rfl rfl rfl hCall
     (writePlaceV2_imm_ok rfl rfl rfl)
@@ -6435,11 +6479,12 @@ private theorem body2_ok (q : Query)
               (.vecWithCapacity (.int .i8 false))
               [(.int .isize false, .scalar capSv)]
               (.vec (.int .i8 false)) = .ok (resVec, m0) := by
-            unfold execCoreCallOpWithMem execAllocCoreCall evalVecWithCapacity
-            dsimp only
+            refine execCoreCallOpWithMem_eq_allocOutcome ?_
+            unfold execAllocCoreCallOutcome evalVecWithCapacityOutcome
+            try dsimp only
             rw [ite_bool_false (!MirTy.beq (.vec (.int .i8 false))
                 (.vec (.int .i8 false))) rfl]
-            dsimp only
+            try dsimp only
             rw [ite_bool_false (!isSupportedPointeeTy (.int .i8 false))
               rfl]
             rw [layoutOfTyV2_u8]; dsimp only
@@ -6506,11 +6551,12 @@ private theorem body2_ok (q : Query)
               (.vecWithCapacity (.int .i8 false))
               [(.int .isize false, .scalar capSv)]
               (.vec (.int .i8 false)) = .ok (resVec, m1) := by
-            unfold execCoreCallOpWithMem execAllocCoreCall evalVecWithCapacity
-            dsimp only
+            refine execCoreCallOpWithMem_eq_allocOutcome ?_
+            unfold execAllocCoreCallOutcome evalVecWithCapacityOutcome
+            try dsimp only
             rw [ite_bool_false (!MirTy.beq (.vec (.int .i8 false))
                 (.vec (.int .i8 false))) rfl]
-            dsimp only
+            try dsimp only
             rw [ite_bool_false (!isSupportedPointeeTy (.int .i8 false))
               rfl]
             rw [layoutOfTyV2_u8]; dsimp only
@@ -6640,11 +6686,13 @@ private theorem execCoreCallOpWithMem_sliceLen_u8 {m : MemoryState}
       .ok (.scalar
         ⟨.isize, false, truncateBits .isize (BitVec.ofNat 128 len.toNat)⟩,
         m) := by
-  unfold execCoreCallOpWithMem execAllocCoreCall; dsimp only
-  unfold execCoreCallWithMem; dsimp only
+  unfold execCoreCallOpWithMem execCoreCallOpWithMemOutcome
+    execAllocCoreCallOutcome execAllocCoreCallInfallible; dsimp only
+  unfold execCoreCallWithMemOutcome; dsimp only
   unfold execCoreCallOp; dsimp only
   rw [ite_bool_false (!MirTy.beq (.int .isize false) (.int .isize false)) rfl]
   rw [hRef]
+  rfl
 
 private theorem boxPointee_slice_u8_to_refValid {m : MemoryState}
     {p : PtrVal} {len : UInt64}
@@ -7828,20 +7876,22 @@ private theorem evalVecPush_inPlace {m m1 m2 : MemoryState} {p : PtrVal}
       [(.ref .mut (.vec (.int .i8 false)), .ptr p), (.int .i8 false, val)]
       .unit = .ok (.unit, m2) := by
   have hZ0 : UInt64.toNat 0 = 0 := rfl
-  unfold execCoreCallOpWithMem execAllocCoreCall evalVecPush
-  dsimp only
+  refine execCoreCallOpWithMem_eq_allocOutcome ?_
+  unfold execAllocCoreCallOutcome evalVecPushOutcome
+  try dsimp only
   rw [ite_bool_false (!MirTy.unit.beq .unit ||
       !MirTy.beq (.int .i8 false) (.int .i8 false)) rfl]
-  dsimp only
+  try dsimp only
   rw [ite_bool_false (!checkValV2 val (.int .i8 false)) (by rw [hVal]; rfl)]
   rw [hRead, layoutOfTyV2_u8, hEnc]
-  dsimp only [ensureVecCapacity]
+  dsimp only [ensureVecCapacityOutcome]
   rw [ite_bool_false (!Nat.ble curLen.toNat (curLen.toNat + 1))
     (by rw [nat_ble_self_succ]; rfl)]
   rw [ite_bool_true (Nat.ble (curLen.toNat + 1) cap.toNat) hCap]
   dsimp only
   rw [ite_bool_false (Nat.beq 1 0) rfl]
   rw [hZ0, Nat.zero_add, Nat.mul_one, hWrBuf]; dsimp only; rw [hWrVec]
+  rfl
 
 private theorem evalVecPush_growEmpty {m m3 m4 : MemoryState} {p : PtrVal}
     {ptr0 : PtrVal} {val : Val} {valBytes : List AllocByte}
@@ -7863,14 +7913,16 @@ private theorem evalVecPush_growEmpty {m m3 m4 : MemoryState} {p : PtrVal}
   have hL0 : (UInt64.toNat 0) = 0 := rfl
   have hL1 : UInt64.ofNat (0 + 1) = (1 : UInt64) := rfl
   have hC8 : UInt64.ofNat 8 = (8 : UInt64) := rfl
-  unfold execCoreCallOpWithMem execAllocCoreCall evalVecPush
-  dsimp only
+  refine execCoreCallOpWithMem_eq_allocOutcome ?_
+  unfold execAllocCoreCallOutcome evalVecPushOutcome
+  try dsimp only
   rw [ite_bool_false (!MirTy.unit.beq .unit ||
       !MirTy.beq (.int .i8 false) (.int .i8 false)) rfl]
-  dsimp only
+  try dsimp only
   rw [ite_bool_false (!checkValV2 val (.int .i8 false)) (by rw [hVal]; rfl)]
   rw [hRead, layoutOfTyV2_u8, hEnc]
-  dsimp only [ensureVecCapacity, allocHeapBuffer, MemoryState.reserveAllocId]
+  dsimp only [ensureVecCapacityOutcome, allocHeapBuffer,
+    MemoryState.reserveAllocId]
   rw [hL0]
   rw [ite_bool_false (!Nat.ble 0 (0 + 1)) rfl]
   rw [ite_bool_false (Nat.ble (0 + 1) 0) rfl]
@@ -7884,6 +7936,7 @@ private theorem evalVecPush_growEmpty {m m3 m4 : MemoryState} {p : PtrVal}
   rw [ite_bool_false (Nat.beq 1 0) rfl]
   rw [hL0, Nat.zero_mul, Nat.zero_add, hWrBuf]; dsimp only
   rw [hC8, hL1, hWrVec]
+  rfl
 
 private theorem evalVecPush_growCopy {m m1 m3 m4 m5 : MemoryState}
     {p : PtrVal} {bufAid : AllocId} {cap : UInt64} {newCap : Nat}
@@ -7912,14 +7965,15 @@ private theorem evalVecPush_growCopy {m m1 m3 m4 m5 : MemoryState}
   have hZ0 : UInt64.toNat 0 = 0 := rfl
   have hNz1 : Nat.beq (cap.toNat * 1) 0 = false := by
     rw [Nat.mul_one]; exact hCapNz
-  unfold execCoreCallOpWithMem execAllocCoreCall evalVecPush
-  dsimp only
+  refine execCoreCallOpWithMem_eq_allocOutcome ?_
+  unfold execAllocCoreCallOutcome evalVecPushOutcome
+  try dsimp only
   rw [ite_bool_false (!MirTy.unit.beq .unit ||
       !MirTy.beq (.int .i8 false) (.int .i8 false)) rfl]
-  dsimp only
+  try dsimp only
   rw [ite_bool_false (!checkValV2 val (.int .i8 false)) (by rw [hVal]; rfl)]
   rw [hRead, layoutOfTyV2_u8, hEnc]
-  dsimp only [ensureVecCapacity]
+  dsimp only [ensureVecCapacityOutcome]
   rw [ite_bool_false (!Nat.ble cap.toNat (cap.toNat + 1))
     (by rw [nat_ble_self_succ]; rfl)]
   rw [ite_bool_false (Nat.ble (cap.toNat + 1) cap.toNat)
@@ -7935,6 +7989,7 @@ private theorem evalVecPush_growCopy {m m1 m3 m4 m5 : MemoryState}
   rw [hWrOld]; dsimp only
   rw [ite_bool_false (Nat.beq 1 0) rfl]
   rw [hZ0, Nat.zero_add, Nat.mul_one, hWrBuf]; dsimp only; rw [hWrVec]
+  rfl
 
 /-! ## `push_one` (body 4): List, Arithmetic, and Inversion Lemmas -/
 
