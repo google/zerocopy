@@ -4291,94 +4291,108 @@ theorem mirTyBeqAt_sound (d : Nat) :
     intro a b h
     dsimp only [mirTyBeqAt, natFold, Nat.recCompiled] at h
     cases a with
-    | bool => cases b <;> first | rfl | nomatch h
-    | unit => cases b <;> first | rfl | nomatch h
-    | never => cases b <;> first | rfl | nomatch h
-    | char => cases b <;> first | rfl | nomatch h
-    | ordering => cases b <;> first | rfl | nomatch h
-    | str => cases b <;> first | rfl | nomatch h
-    | unsupported => cases b <;> first | rfl | nomatch h
+    | bool =>
+      cases b <;> first | rfl | exact False.elim (boolFalseNeTrue h)
+    | unit =>
+      cases b <;> first | rfl | exact False.elim (boolFalseNeTrue h)
+    | never =>
+      cases b <;> first | rfl | exact False.elim (boolFalseNeTrue h)
+    | char =>
+      cases b <;> first | rfl | exact False.elim (boolFalseNeTrue h)
+    | ordering =>
+      cases b <;> first | rfl | exact False.elim (boolFalseNeTrue h)
+    | str =>
+      cases b <;> first | rfl | exact False.elim (boolFalseNeTrue h)
+    | unsupported =>
+      cases b <;> first | rfl | exact False.elim (boolFalseNeTrue h)
     | int w1 s1 =>
       cases b with
       | int w2 s2 =>
         rw [mirIntWidthBeq_sound (boolAnd_left h), boolBeq_eq (boolAnd_right h)]
-      | _ => nomatch h
+      | _ => exact False.elim (boolFalseNeTrue h)
     | enum e1 =>
       cases b with
       | enum e2 => rw [mirEnumTyBeq_sound h]
-      | _ => nomatch h
+      | _ => exact False.elim (boolFalseNeTrue h)
     | tuple _ | array _ _ | ref _ _ | rawPtr _ _ | slice _ | vec _ | box _
     | rangeTo _
     | rangeFrom _
-    | range _ | option _ => nomatch h
+    | range _ | option _ => exact False.elim (boolFalseNeTrue h)
   | succ d ih =>
     intro a b h
     dsimp only [mirTyBeqAt, natFold, Nat.recCompiled] at h
     cases a with
-    | bool => cases b <;> first | rfl | nomatch h
-    | unit => cases b <;> first | rfl | nomatch h
-    | never => cases b <;> first | rfl | nomatch h
-    | char => cases b <;> first | rfl | nomatch h
-    | ordering => cases b <;> first | rfl | nomatch h
-    | str => cases b <;> first | rfl | nomatch h
-    | unsupported => cases b <;> first | rfl | nomatch h
+    | bool =>
+      cases b <;> first | rfl | exact False.elim (boolFalseNeTrue h)
+    | unit =>
+      cases b <;> first | rfl | exact False.elim (boolFalseNeTrue h)
+    | never =>
+      cases b <;> first | rfl | exact False.elim (boolFalseNeTrue h)
+    | char =>
+      cases b <;> first | rfl | exact False.elim (boolFalseNeTrue h)
+    | ordering =>
+      cases b <;> first | rfl | exact False.elim (boolFalseNeTrue h)
+    | str =>
+      cases b <;> first | rfl | exact False.elim (boolFalseNeTrue h)
+    | unsupported =>
+      cases b <;> first | rfl | exact False.elim (boolFalseNeTrue h)
     | int w1 s1 =>
       cases b with
       | int w2 s2 =>
         rw [mirIntWidthBeq_sound (boolAnd_left h), boolBeq_eq (boolAnd_right h)]
-      | _ => nomatch h
+      | _ => exact False.elim (boolFalseNeTrue h)
     | enum e1 =>
       cases b with
       | enum e2 => rw [mirEnumTyBeq_sound h]
-      | _ => nomatch h
+      | _ => exact False.elim (boolFalseNeTrue h)
     | tuple fs1 =>
       cases b with
       | tuple fs2 =>
         rw [mirTyListFoldr_sound (fun x y hxy => ih hxy) h]
-      | _ => nomatch h
+      | _ => exact False.elim (boolFalseNeTrue h)
     | ref m1 p1 =>
       cases b with
       | ref m2 p2 =>
         rw [mirMutabilityBeq_sound (boolAnd_left h), ih (boolAnd_right h)]
-      | _ => nomatch h
+      | _ => exact False.elim (boolFalseNeTrue h)
     | rawPtr m1 p1 =>
       cases b with
       | rawPtr m2 p2 =>
         rw [mirMutabilityBeq_sound (boolAnd_left h), ih (boolAnd_right h)]
-      | _ => nomatch h
+      | _ => exact False.elim (boolFalseNeTrue h)
     | slice p1 =>
       cases b with
       | slice p2 => rw [ih h]
-      | _ => nomatch h
+      | _ => exact False.elim (boolFalseNeTrue h)
     | array p1 n1 =>
       cases b with
       | array p2 n2 =>
         rw [natEq_of_beq n1 n2 (boolAnd_left h), ih (boolAnd_right h)]
-      | _ => nomatch h
+      | _ => exact False.elim (boolFalseNeTrue h)
     | vec p1 =>
       cases b with
       | vec p2 => rw [ih h]
-      | _ => nomatch h
+      | _ => exact False.elim (boolFalseNeTrue h)
     | box p1 =>
       cases b with
       | box p2 => rw [ih h]
-      | _ => nomatch h
+      | _ => exact False.elim (boolFalseNeTrue h)
     | rangeTo p1 =>
       cases b with
       | rangeTo p2 => rw [ih h]
-      | _ => nomatch h
+      | _ => exact False.elim (boolFalseNeTrue h)
     | rangeFrom p1 =>
       cases b with
       | rangeFrom p2 => rw [ih h]
-      | _ => nomatch h
+      | _ => exact False.elim (boolFalseNeTrue h)
     | range p1 =>
       cases b with
       | range p2 => rw [ih h]
-      | _ => nomatch h
+      | _ => exact False.elim (boolFalseNeTrue h)
     | option p1 =>
       cases b with
       | option p2 => rw [ih h]
-      | _ => nomatch h
+      | _ => exact False.elim (boolFalseNeTrue h)
 
 /-- Propositional soundness of `mirTyBeq`. -/
 theorem mirTyBeq_sound {a b : MirTy} (h : mirTyBeq a b = true) : a = b :=

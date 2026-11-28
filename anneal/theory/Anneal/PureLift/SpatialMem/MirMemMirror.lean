@@ -1040,6 +1040,7 @@ theorem execEncodeVal_eq (endian : TargetEndian) (ty : MirTy) (v : Val) :
   | false =>
     cases ty with
     | int w _ =>
+      dsimp only
       cases v with
       | scalar sv =>
         dsimp only
@@ -1048,8 +1049,10 @@ theorem execEncodeVal_eq (endian : TargetEndian) (ty : MirTy) (v : Val) :
       | array _ | slicePtr _ _ | rangeTo _ | rangeFrom _ | range _ _ | optionVal _ | vec _ _ _
       | boxPtr _ _ | bytes _ => rfl
     | bool =>
+      dsimp only
       cases v <;> rfl
     | char =>
+      dsimp only
       cases v with
       | char c =>
         dsimp only
@@ -1058,6 +1061,7 @@ theorem execEncodeVal_eq (endian : TargetEndian) (ty : MirTy) (v : Val) :
       | array _ | slicePtr _ _ | rangeTo _ | rangeFrom _ | range _ _ | optionVal _ | vec _ _ _
       | boxPtr _ _ | bytes _ => rfl
     | ordering =>
+      dsimp only
       cases v with
       | ordering ord =>
         dsimp only
@@ -1067,8 +1071,10 @@ theorem execEncodeVal_eq (endian : TargetEndian) (ty : MirTy) (v : Val) :
       | array _ | slicePtr _ _ | rangeTo _ | rangeFrom _ | range _ _ | optionVal _ | vec _ _ _
       | boxPtr _ _ | bytes _ => rfl
     | unit =>
+      dsimp only
       cases v <;> rfl
     | enum ety =>
+      dsimp only
       cases v with
       | enumVal ety2 variant =>
         cases hTag : ety.tagRepr with
@@ -1089,20 +1095,23 @@ theorem execEncodeVal_eq (endian : TargetEndian) (ty : MirTy) (v : Val) :
       | array _ | slicePtr _ _ | rangeTo _ | rangeFrom _ | range _ _ | optionVal _ | vec _ _ _
       | boxPtr _ _ | bytes _ => rfl
     | tuple fs =>
+      dsimp only
       cases fs with
-      | nil => cases v <;> rfl
+      | nil => dsimp only
       | cons t1 r =>
         cases t1 with
         | int w _ =>
           cases r with
-          | nil => cases v <;> rfl
+          | nil => dsimp only
           | cons t2 r' =>
             cases t2 with
             | bool =>
               cases r' with
               | nil =>
+                dsimp only
                 cases v with
                 | tuple vfs =>
+                  dsimp only
                   cases vfs with
                   | nil => rfl
                   | cons v1 vr =>
@@ -1122,31 +1131,35 @@ theorem execEncodeVal_eq (endian : TargetEndian) (ty : MirTy) (v : Val) :
                         | tuple _ | array _ | slicePtr _ _ | vec _ _ _ | boxPtr _ _ | rangeTo _
                         | rangeFrom _ | range _ _
                         | optionVal _ | bytes _ =>
+                          dsimp only
                           cases vr' <;> rfl
                     | ptr _ | bool _ | char _ | ordering _ | unit | enumVal _ _ | tuple _
                     | array _ | slicePtr _ _ | vec _ _ _ | boxPtr _ _ | rangeTo _ | rangeFrom _ | range _ _ | optionVal _
                     | bytes _ =>
+                      dsimp only
                       cases vr with
                       | nil => rfl
                       | cons _ vr' => cases vr' <;> rfl
                 | scalar _ | ptr _ | bool _ | char _ | ordering _ | unit | enumVal _ _
                 | array _ | slicePtr _ _ | vec _ _ _ | boxPtr _ _ | rangeTo _ | rangeFrom _ | range _ _ | optionVal _
                 | bytes _ => rfl
-              | cons _ _ => cases v <;> rfl
+              | cons _ _ => dsimp only
             | int _ _ | unit | never | char | ordering | enum _ | tuple _
             | ref _ _ | rawPtr _ _ | slice _ | str | vec _ | box _ | array _ _ | rangeTo _ | rangeFrom _
-            | range _ | option _ | unsupported => cases r' <;> cases v <;> rfl
+            | range _ | option _ | unsupported =>
+              dsimp only; cases r' <;> cases v <;> rfl
         | bool | unit | never | char | ordering | enum _ | tuple _
         | ref _ _ | rawPtr _ _ | slice _ | str | array _ _ | vec _ | box _ | rangeTo _ | rangeFrom _
         | range _ | option _
         | unsupported =>
+          dsimp only
           cases r with
-          | nil => cases v <;> rfl
+          | nil => dsimp only
           | cons _ r' => cases r' <;> cases v <;> rfl
     | never | ref _ _ | rawPtr _ _ | slice _ | str | array _ _ | vec _ | box _ | rangeTo _ | rangeFrom _
     | range _ | option _
     | unsupported =>
-      cases v <;> rfl
+      dsimp only
 
 private theorem execDecodeVal_layout_arm_eq (endian : TargetEndian) (ty : MirTy)
     (bytes : List AllocByte) :
