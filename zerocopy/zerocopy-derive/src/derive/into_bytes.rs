@@ -1,14 +1,17 @@
 // SPDX-License-Identifier: BSD-2-Clause OR Apache-2.0 OR MIT
 //
-use proc_macro2::{Span, TokenStream};
+use proc_macro2::{Span, TokenStream, TokenTree};
 use quote::quote;
-use syn::{parse_quote, Data, DataEnum, DataStruct, DataUnion, Error, Ident, Type, WherePredicate};
+use syn::{
+    parse_quote, Data, DataEnum, DataStruct, DataUnion, Error, GenericParam, Ident, Type,
+    WherePredicate,
+};
 
 use crate::{
     repr::{EnumRepr, StructUnionRepr},
     util::{
-        generate_tag_enum, Ctx, DataExt, FieldBounds, ImplBlockBuilder, PaddingCheck, Trait,
-        TraitBound,
+        generate_tag_enum, to_ident_str, Ctx, DataExt, FieldBounds, ImplBlockBuilder,
+        PaddingCheck, Trait, TraitBound,
     },
 };
 pub(crate) fn derive_into_bytes(ctx: &Ctx, _top_level: Trait) -> Result<TokenStream, Error> {
@@ -86,6 +89,60 @@ fn homogeneous_field_bounds(ctx: &Ctx, strct: &DataStruct) -> Option<Vec<WherePr
     })
 }
 
+/// Returns `true` if `ast`'s generic parameters, if any, are all `const`
+/// parameters that are safe to disregard when choosing a padding check for
+/// `fields`.
+///
+/// A `const` parameter which doesn't appear in any field type cannot affect
+/// the type's layout, so such parameters don't prevent us from proving the
+/// type has no padding. Beyond checking for the parameters' identifiers,
+/// this also rules out two indirect ways a field's type could still depend
+/// on one of them without spelling it:
+/// - `Self`: within this derive's generated impl, `Self` refers to the
+///   struct at the same generic arguments as the impl, so a field which
+///   mentions `Self` is generic over these `const` parameters even if it
+///   doesn't spell any of their identifiers.
+/// - A macro invocation: a field's true, expanded type is invisible to us
+///   here, so a macro invocation could expand to something which mentions
+///   one of these `const` parameters without our being able to detect it
+///   syntactically. We conservatively treat every macro invocation in a
+///   field's type as risky, whether or not it actually mentions one of
+///   these parameters.
+///
+/// This check is conservative in other ways too: it looks for any token
+/// which matches a parameter's identifier by name (accounting for raw
+/// identifiers, e.g. `r#N` and `N`, the same normalization `to_ident_str`
+/// applies elsewhere in this crate), regardless of scope. This means it may
+/// treat a `const` parameter as "used" even where it's actually shadowed
+/// (e.g., by a same-named `const` argument to another generic type nested in
+/// a field). Over-approximating usage in this way is always sound; it just
+/// causes us to fall back to a more restrictive (but still correct) check.
+fn unused_const_generics_only(
+    ast: &syn::DeriveInput,
+    fields: &[(&syn::Visibility, TokenStream, &Type)],
+) -> bool {
+    if ast.generics.params.iter().any(|param| !matches!(param, GenericParam::Const(_))) {
+        return false;
+    }
+
+    fn is_risky(tokens: TokenStream, const_param_idents: &[String]) -> bool {
+        tokens.into_iter().any(|tt| match tt {
+            TokenTree::Ident(i) => {
+                let s = to_ident_str(&i);
+                s == "Self" || const_param_idents.contains(&s)
+            }
+            TokenTree::Punct(p) => p.as_char() == '!',
+            TokenTree::Group(group) => is_risky(group.stream(), const_param_idents),
+            TokenTree::Literal(_) => false,
+        })
+    }
+
+    let const_param_idents: Vec<String> =
+        ast.generics.const_params().map(|param| to_ident_str(&param.ident)).collect();
+
+    !fields.iter().any(|(_, _, ty)| is_risky(quote!(#ty), &const_param_idents))
+}
+
 fn derive_into_bytes_struct(ctx: &Ctx, strct: &DataStruct) -> Result<TokenStream, Error> {
     let repr = StructUnionRepr::from_attrs(&ctx.ast.attrs)?;
 
@@ -95,6 +152,27 @@ fn derive_into_bytes_struct(ctx: &Ctx, strct: &DataStruct) -> Result<TokenStream
     let num_fields = strct.fields().len();
     let mut homogeneous_bounds =
         if is_c && !repr.is_align_gt_1() { homogeneous_field_bounds(ctx, strct) } else { None };
+    // `str` is the one case where we know for certain, from its syntax
+    // alone, that `repr_c_struct_has_padding!` can't handle a
+    // non-slice-syntax trailing field: unlike a syntactic `[T]`, which its
+    // `@field [$t:ty]` arm special-cases, any other field type (including
+    // `str`) falls to its `@field $t:ty` arm, which calls
+    // `DstLayout::for_unpadded_type::<$t>()` -- and that function requires
+    // `Sized`, which `str` doesn't satisfy.
+    //
+    // This doesn't cover every unsized type that could hide behind a
+    // non-slice-syntax field (e.g. a `type Bytes = [u8];` alias): those
+    // remain a known gap, matching the pre-existing limitation that the
+    // no-generics case below also only recognizes syntactic `[T]` slices via
+    // `is_syntactic_dst`. Getting this wrong produces a compile error, not
+    // unsoundness.
+    let last_field_is_str = strct
+        .fields()
+        .last()
+        .map(
+            |(_, _, ty)| matches!(ty, Type::Path(p) if p.qself.is_none() && p.path.is_ident("str")),
+        )
+        .unwrap_or(false);
 
     let (padding_check, require_unaligned_fields, explicit_field_bounds) = if is_transparent
         || is_packed_1
@@ -142,6 +220,28 @@ fn derive_into_bytes_struct(ctx: &Ctx, strct: &DataStruct) -> Result<TokenStream
         } else {
             (Some(PaddingCheck::Struct), false, None)
         }
+    } else if is_c && !last_field_is_str && unused_const_generics_only(&ctx.ast, &strct.fields()) {
+        // The struct has `const` generic parameters, but none of them appear
+        // in any field's type, so they can't affect the struct's layout.
+        //
+        // Unlike the no-generics case above, we can't use `PaddingCheck::
+        // Struct` (whose `struct_padding!` expansion computes `size_of::
+        // <Self>()`): `Self` here is generic (e.g. `Foo<{ N }>`), and using a
+        // generic `Self` type inside the anonymous `const` expression that
+        // provides the padding check's `PADDING_BYTES` argument is rejected
+        // by rustc ("generic `Self` types are currently not permitted in
+        // anonymous constants").
+        //
+        // `PaddingCheck::ReprCStruct`'s `repr_c_struct_has_padding!`
+        // expansion sidesteps this: it never mentions `$t` in its body, only
+        // the (concrete) field types and the `align`/`packed` literals. Its
+        // `Self` argument only appears as a standalone generic argument to
+        // `DynamicPaddingFree`, outside of the anonymous `const`, which is
+        // permitted.
+        //
+        // This requires `repr(C)`, which `repr_c_struct_has_padding!`
+        // requires of its input.
+        (Some(PaddingCheck::ReprCStruct), false, None)
     } else if let Some(bounds) = homogeneous_bounds.take() {
         // Let `a` be the alignment of `T` and `s` be its size. Rust guarantees
         // that `s` is a multiple of `a`. `T`, `[T; N]`, and `[T]` all have
