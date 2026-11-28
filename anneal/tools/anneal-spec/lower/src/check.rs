@@ -1843,7 +1843,9 @@ impl<'a> Env<'a> {
     /// of `recv` by a `u32` amount modulo the bit width. The sign tests,
     /// `signum`, and the `_abs` methods take a signed `recv`, and
     /// `cast_signed` and `cast_unsigned` reinterpret its bits as the
-    /// same-width type of the other signedness. An operation that
+    /// same-width type of the other signedness. The mixed-signedness
+    /// methods, such as `wrapping_add_signed`, take an operand of `recv`'s
+    /// width and the other signedness. An operation that
     /// needs an operand more than once applies a Lean `fun` to the operands,
     /// which evaluates each once and keeps every specification name out of
     /// the scope of its binders.
@@ -2069,6 +2071,48 @@ impl<'a> Env<'a> {
                 let target = IntTy { signed: to_signed, ..t };
                 Ok(Low::Int(wrap_into(&a, target), ty(target)))
             }
+            // Rust's mixed-signedness arithmetic adds or subtracts an
+            // operand of the receiver's width and the other signedness, and
+            // wraps or saturates the exact result into the receiver's type.
+            "wrapping_add_signed"
+            | "wrapping_sub_signed"
+            | "saturating_add_signed"
+            | "saturating_sub_signed"
+            | "wrapping_add_unsigned"
+            | "wrapping_sub_unsigned"
+            | "saturating_add_unsigned"
+            | "saturating_sub_unsigned" => {
+                arity(1)?;
+                let (a, t) = self.int_operand(name, recv, facts)?;
+                let operand_signed = !name.ends_with("_unsigned");
+                signedness(t, !operand_signed)?;
+                let u = IntTy { signed: operand_signed, ..t };
+                let b = match self.lower(&args[0], false, facts)? {
+                    Low::Int(b, Ty::Int(v)) if v == u => b,
+                    low @ (Low::Lit(..) | Low::UntypedIf(..)) => {
+                        let Low::Int(b, _) = settle(low, Ty::Int(u))? else { unreachable!() };
+                        b
+                    }
+                    low => {
+                        return Err(type_error(
+                            args[0].span,
+                            format!(
+                                "`{name}` takes a `{}`, found {}",
+                                u.rust_name(),
+                                describe(&low)
+                            ),
+                        ));
+                    }
+                };
+                let sym = if name.contains("_sub_") { "-" } else { "+" };
+                let exact = format!("{a} {sym} {b}");
+                let term = if name.starts_with("wrapping_") {
+                    wrap_into(&format!("({exact})"), t)
+                } else {
+                    saturate(&exact, t)
+                };
+                Ok(Low::Int(term, ty(t)))
+            }
             _ => Err(Diagnostic::new(
                 "E_ANNEAL_SPEC_UNSUPPORTED_EXPR",
                 span,
@@ -2078,8 +2122,9 @@ impl<'a> Env<'a> {
                 "the integer methods are `min`, `max`, `clamp`, `is_power_of_two`, \
                  `is_multiple_of`, `div_ceil`, `rotate_left`, `rotate_right`, `is_positive`, \
                  `is_negative`, `signum`, `unsigned_abs`, `saturating_abs`, `wrapping_abs`, \
-                 `cast_signed`, `cast_unsigned`, `abs_diff`, and the `wrapping_*`, \
-                 `saturating_*`, and `no_overflow_*` intrinsics",
+                 `cast_signed`, `cast_unsigned`, `abs_diff`, the mixed-signedness \
+                 `wrapping_add_signed` and its kin, and the `wrapping_*`, `saturating_*`, and \
+                 `no_overflow_*` intrinsics",
             )),
         }
     }
