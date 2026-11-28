@@ -287,6 +287,111 @@ fn sharding_cli_guards_reserved_modules_missing_shards_and_shard_plan() {
     assert_eq!(fs::read(&plan_path).unwrap(), plan_before);
 }
 
+/// Write a fake unpinned Lean toolchain, Rust capture tool, and sysroot under
+/// `root` for the `rustc`-mode crate `demo` (`lib.rs`, `Spec.lean`,
+/// `Proof.lean`). Lean answers admission queries, writes stub `.olean`s, and
+/// writes a 256-byte inspector `result.json`; `before_run` is shell run first
+/// on every other Lean invocation. Returns `(lean, capture, sysroot)`.
+#[cfg(unix)]
+fn write_fake_unpinned_toolchain(
+    root: &Path,
+    before_run: &str,
+) -> (std::path::PathBuf, std::path::PathBuf, std::path::PathBuf) {
+    use std::{fs, os::unix::fs::PermissionsExt};
+
+    fs::write(root.join("lib.rs"), b"pub fn id(x: u8) -> u8 { x }\n").unwrap();
+    fs::write(root.join("Spec.lean"), b"-- spec\n").unwrap();
+    fs::write(root.join("Proof.lean"), b"-- proof\n").unwrap();
+    let sysroot = root.join("rust-sysroot");
+    fs::create_dir_all(&sysroot).unwrap();
+
+    let lean_prefix = root.join("lean-prefix");
+    fs::create_dir_all(lean_prefix.join("bin")).unwrap();
+    fs::create_dir_all(lean_prefix.join("lib/lean")).unwrap();
+    fs::write(lean_prefix.join("lib/lean/Init.olean"), b"olean\x02init").unwrap();
+    let fake_lean = lean_prefix.join("bin/lean");
+    let lean_script = format!(
+        "#!/bin/sh\n\
+         set -eu\n\
+         if [ \"${{1:-}}\" = '--version' ]; then\n\
+           printf 'Lean (version 4.35.0)\\n'\n\
+           exit 0\n\
+         fi\n\
+         if [ \"${{1:-}}\" = '--print-prefix' ]; then\n\
+           printf '%s\\n' {prefix:?}\n\
+           exit 0\n\
+         fi\n\
+         {before_run}\n\
+         out_olean=''\n\
+         run_mode=0\n\
+         last=''\n\
+         while [ \"$#\" -gt 0 ]; do\n\
+           case \"$1\" in\n\
+             -o)\n\
+               shift\n\
+               out_olean=\"$1\"\n\
+               ;;\n\
+             --run)\n\
+               run_mode=1\n\
+               ;;\n\
+           esac\n\
+           last=\"$1\"\n\
+           shift\n\
+         done\n\
+         if [ -n \"$out_olean\" ]; then\n\
+           printf 'olean\\002inspector' > \"$out_olean\"\n\
+           exit 0\n\
+         fi\n\
+         if [ \"$run_mode\" -eq 1 ]; then\n\
+           dd if=/dev/zero bs=256 count=1 of=\"$last\" status=none\n\
+           exit 0\n\
+         fi\n\
+         exit 0\n",
+        prefix = lean_prefix.display(),
+    );
+    fs::write(&fake_lean, lean_script).unwrap();
+    fs::set_permissions(&fake_lean, fs::Permissions::from_mode(0o755)).unwrap();
+
+    let fake_capture = root.join("fake-capture");
+    let cap_script = "#!/bin/sh\n\
+        set -eu\n\
+        out_dir=''\n\
+        while [ \"$#\" -gt 0 ]; do\n\
+          if [ \"$1\" = '--out-dir' ]; then\n\
+            shift\n\
+            out_dir=\"$1\"\n\
+          fi\n\
+          shift\n\
+        done\n\
+        mkdir -p \"$out_dir\"\n\
+        cat > \"$out_dir/capture.json\" <<'JSON'\n\
+        {\n\
+          \"schema_version\": 5,\n\
+          \"compiler\": {\"commit\": \"f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1\"},\n\
+          \"configuration\": {\n\
+            \"crate_root\": \"lib.rs\",\n\
+            \"crate_name\": \"demo\",\n\
+            \"crate_type\": \"lib\",\n\
+            \"panic\": \"unwind\",\n\
+            \"overflow_checks\": false,\n\
+            \"target\": \"x86_64-unknown-linux-gnu\",\n\
+            \"edition\": \"2024\",\n\
+            \"cfg\": [],\n\
+            \"env\": {}\n\
+          },\n\
+          \"source_files\": [],\n\
+          \"census\": [],\n\
+          \"selected\": [],\n\
+          \"program\": {\"scope\": {\"kind\": \"selected_unit\", \"roots\": [\"id\"]}, \"bodies\": []}\n\
+        }\n\
+        JSON\n\
+        printf -- '-- captured\\n' > \"$out_dir/Captured.lean\"\n\
+        printf '{\"status\":\"captured\"}\\n'\n";
+    fs::write(&fake_capture, cap_script).unwrap();
+    fs::set_permissions(&fake_capture, fs::Permissions::from_mode(0o755)).unwrap();
+    (fake_lean, fake_capture, sysroot)
+}
+
 #[test]
 fn max_inspector_output_bytes_validates_bounds_and_propagates_to_verify() {
     let project = tempfile::tempdir().unwrap();
@@ -316,100 +421,11 @@ fn max_inspector_output_bytes_validates_bounds_and_propagates_to_verify() {
     // `--max-inspector-output-bytes 64`, Door 1 rejects `result.json` with the
     // size-cap error and `audit` hint; raising `--max-inspector-output-bytes`
     // to `4096` admits the 256-byte file past Door 1 into protocol parsing.
+    #[cfg(unix)]
     {
-        use std::{fs, os::unix::fs::PermissionsExt};
-
         let project = tempfile::tempdir().unwrap();
         let root = project.path();
-        fs::write(root.join("lib.rs"), b"pub fn id(x: u8) -> u8 { x }\n").unwrap();
-        fs::write(root.join("Spec.lean"), b"-- spec\n").unwrap();
-        fs::write(root.join("Proof.lean"), b"-- proof\n").unwrap();
-        let sysroot = root.join("rust-sysroot");
-        fs::create_dir_all(&sysroot).unwrap();
-
-        let lean_prefix = root.join("lean-prefix");
-        fs::create_dir_all(lean_prefix.join("bin")).unwrap();
-        fs::create_dir_all(lean_prefix.join("lib/lean")).unwrap();
-        fs::write(lean_prefix.join("lib/lean/Init.olean"), b"olean\x02init").unwrap();
-        let fake_lean = lean_prefix.join("bin/lean");
-        let lean_script = format!(
-            "#!/bin/sh\n\
-             set -eu\n\
-             if [ \"${{1:-}}\" = '--version' ]; then\n\
-               printf 'Lean (version 4.35.0)\\n'\n\
-               exit 0\n\
-             fi\n\
-             if [ \"${{1:-}}\" = '--print-prefix' ]; then\n\
-               printf '%s\\n' {prefix:?}\n\
-               exit 0\n\
-             fi\n\
-             out_olean=''\n\
-             run_mode=0\n\
-             last=''\n\
-             while [ \"$#\" -gt 0 ]; do\n\
-               case \"$1\" in\n\
-                 -o)\n\
-                   shift\n\
-                   out_olean=\"$1\"\n\
-                   ;;\n\
-                 --run)\n\
-                   run_mode=1\n\
-                   ;;\n\
-               esac\n\
-               last=\"$1\"\n\
-               shift\n\
-             done\n\
-             if [ -n \"$out_olean\" ]; then\n\
-               printf 'olean\\002inspector' > \"$out_olean\"\n\
-               exit 0\n\
-             fi\n\
-             if [ \"$run_mode\" -eq 1 ]; then\n\
-               dd if=/dev/zero bs=256 count=1 of=\"$last\" status=none\n\
-               exit 0\n\
-             fi\n\
-             exit 0\n",
-            prefix = lean_prefix.display(),
-        );
-        fs::write(&fake_lean, lean_script).unwrap();
-        fs::set_permissions(&fake_lean, fs::Permissions::from_mode(0o755)).unwrap();
-
-        let fake_capture = root.join("fake-capture");
-        let cap_script = "#!/bin/sh\n\
-            set -eu\n\
-            out_dir=''\n\
-            while [ \"$#\" -gt 0 ]; do\n\
-              if [ \"$1\" = '--out-dir' ]; then\n\
-                shift\n\
-                out_dir=\"$1\"\n\
-              fi\n\
-              shift\n\
-            done\n\
-            mkdir -p \"$out_dir\"\n\
-            cat > \"$out_dir/capture.json\" <<'JSON'\n\
-            {\n\
-              \"schema_version\": 5,\n\
-              \"compiler\": {\"commit\": \"f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1\"},\n\
-              \"configuration\": {\n\
-                \"crate_root\": \"lib.rs\",\n\
-                \"crate_name\": \"demo\",\n\
-                \"crate_type\": \"lib\",\n\
-                \"panic\": \"unwind\",\n\
-                \"overflow_checks\": false,\n\
-                \"target\": \"x86_64-unknown-linux-gnu\",\n\
-                \"edition\": \"2024\",\n\
-                \"cfg\": [],\n\
-                \"env\": {}\n\
-              },\n\
-              \"source_files\": [],\n\
-              \"census\": [],\n\
-              \"selected\": [],\n\
-              \"program\": {\"scope\": {\"kind\": \"selected_unit\", \"roots\": [\"id\"]}, \"bodies\": []}\n\
-            }\n\
-            JSON\n\
-            printf -- '-- captured\\n' > \"$out_dir/Captured.lean\"\n\
-            printf '{\"status\":\"captured\"}\\n'\n";
-        fs::write(&fake_capture, cap_script).unwrap();
-        fs::set_permissions(&fake_capture, fs::Permissions::from_mode(0o755)).unwrap();
+        let (fake_lean, fake_capture, sysroot) = write_fake_unpinned_toolchain(root, ":");
 
         let run_verify_with_cap = |cap_bytes: &str| -> serde_json::Value {
             let mut cmd = command(Route::Direct, root);
@@ -463,6 +479,114 @@ fn max_inspector_output_bytes_validates_bounds_and_propagates_to_verify() {
         );
         assert!(raised_receipt["hint"].is_null(), "{raised_receipt}");
     }
+}
+
+/// `--child-timeout-secs` bounds each Lean child: a fake Lean whose first
+/// non-admission invocation sleeps for 3 seconds is killed under a 1-second
+/// limit, with a hint naming the flag, but runs to the same later failure
+/// under the default or a raised limit.
+#[cfg(unix)]
+#[test]
+fn child_timeout_secs_bounds_lean_children() {
+    let project = tempfile::tempdir().unwrap();
+    let root = project.path();
+    let marker = root.join("slept");
+    for query_arg in ["--version", "--print-prefix"] {
+        let (adm_lean, adm_capture, adm_sysroot) = write_fake_unpinned_toolchain(root, ":");
+        let query_sleep_script = format!(
+            "#!/bin/sh\n\
+             set -eu\n\
+             if [ \"${{1:-}}\" = {query_arg:?} ]; then\n\
+               : > {m:?}\n\
+               sleep 4\n\
+             fi\n\
+             if [ \"${{1:-}}\" = '--version' ]; then\n\
+               printf 'Lean (version 4.35.0)\\n'\n\
+               exit 0\n\
+             fi\n\
+             if [ \"${{1:-}}\" = '--print-prefix' ]; then\n\
+               printf '%s\\n' {prefix:?}\n\
+               exit 0\n\
+             fi\n\
+             exit 0\n",
+            m = marker.display(),
+            prefix = root.join("lean-prefix").display(),
+        );
+        std::fs::write(&adm_lean, query_sleep_script).unwrap();
+        let _ = std::fs::remove_file(&marker);
+        let mut cmd = command(Route::Direct, root);
+        cmd.args(["verify", "--format", "json", "--no-cache", "--allow-unpinned-lean"])
+            .args(["--allow-unsandboxed-elaboration", "--child-timeout-secs", "1", "--capture"])
+            .arg(&adm_capture)
+            .arg("--sysroot")
+            .arg(&adm_sysroot)
+            .arg("--lean")
+            .arg(&adm_lean)
+            .args(["rustc", "lib.rs", "--crate-name", "demo", "--select", "id"])
+            .args(["--spec-file", "Spec=Spec.lean", "--proof-file", "Proof=Proof.lean"]);
+        let output = cmd.output().unwrap();
+        assert_eq!(output.status.code(), Some(2), "{query_arg}: {output:?}");
+        assert!(marker.exists(), "{query_arg}: fake Lean never ran");
+        let adm_timed_out: serde_json::Value = serde_json::from_slice(&output.stdout).unwrap();
+        assert_eq!(adm_timed_out["status"], "tool_failed", "{query_arg}: {adm_timed_out}");
+        let adm_detail = adm_timed_out["detail"].as_str().unwrap();
+        assert!(
+            adm_detail.contains("exceeded wall-clock timeout of 1s"),
+            "{query_arg}: {adm_timed_out}"
+        );
+        assert!(
+            adm_timed_out["hint"].as_str().unwrap().contains("--child-timeout-secs"),
+            "{query_arg}: {adm_timed_out}"
+        );
+    }
+
+    let (fake_lean, fake_capture, sysroot) = write_fake_unpinned_toolchain(
+        root,
+        &format!("if [ ! -e {m:?} ]; then : > {m:?}; sleep 3; fi", m = marker.display()),
+    );
+    let run_verify = |timeout: Option<&str>| -> serde_json::Value {
+        let _ = std::fs::remove_file(&marker);
+        let mut cmd = command(Route::Direct, root);
+        cmd.args(["verify", "--format", "json", "--no-cache", "--allow-unpinned-lean"])
+            .args(["--allow-unsandboxed-elaboration", "--capture"])
+            .arg(&fake_capture)
+            .arg("--sysroot")
+            .arg(&sysroot)
+            .arg("--lean")
+            .arg(&fake_lean);
+        if let Some(timeout) = timeout {
+            cmd.args(["--child-timeout-secs", timeout]);
+        }
+        cmd.args(["rustc", "lib.rs", "--crate-name", "demo", "--select", "id"]);
+        cmd.args(["--spec-file", "Spec=Spec.lean", "--proof-file", "Proof=Proof.lean"]);
+        let output = cmd.output().unwrap();
+        assert_eq!(output.status.code(), Some(2), "timeout={timeout:?}: {output:?}");
+        assert!(marker.exists(), "timeout={timeout:?}: fake Lean never ran");
+        serde_json::from_slice(&output.stdout).unwrap()
+    };
+
+    let timed_out = run_verify(Some("1"));
+    assert_eq!(timed_out["status"], "tool_failed", "{timed_out}");
+    let detail = timed_out["detail"].as_str().unwrap();
+    assert!(detail.contains("exceeded wall-clock timeout of 1s"), "{timed_out}");
+    assert!(timed_out["hint"].as_str().unwrap().contains("--child-timeout-secs"), "{timed_out}");
+
+    // The limit only bounds run time: every run carries the same taints.
+    let default = run_verify(None);
+    for (timeout, receipt) in [(None, &default), (Some("30"), &run_verify(Some("30")))] {
+        let detail = receipt["detail"].as_str().unwrap();
+        assert!(!detail.contains("wall-clock timeout"), "timeout={timeout:?}: {receipt}");
+        assert!(
+            detail.contains("unexpected inspector protocol response"),
+            "timeout={timeout:?}: {receipt}"
+        );
+        assert_eq!(receipt["taint_reasons"], timed_out["taint_reasons"], "{receipt}");
+    }
+    assert_eq!(
+        default["taint_reasons"],
+        serde_json::json!(["unpinned_lean", "unsandboxed_elaboration"]),
+        "{default}"
+    );
 }
 
 #[cfg(unix)]

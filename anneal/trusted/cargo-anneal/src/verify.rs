@@ -19,7 +19,7 @@ use std::{
     io::{ErrorKind as IoErrorKind, Write as _},
     path::{Component, Path, PathBuf},
     process::{Command, ExitCode},
-    time::Instant,
+    time::{Duration, Instant},
 };
 
 use clap::{
@@ -375,6 +375,17 @@ pub struct VerifyArgs {
         value_parser = parse_max_inspector_output_bytes_arg
     )]
     max_inspector_output_bytes: u64,
+    /// Wall-clock limit in seconds for each Lean child process
+    /// (`600` by default, up to `86400`). It only bounds run time and is not
+    /// recorded in the receipt.
+    #[arg(
+        long,
+        global = true,
+        default_value_t = crate::sandbox::DEFAULT_CHILD_TIMEOUT.as_secs(),
+        value_name = "SECS",
+        value_parser = clap::value_parser!(u64).range(1..=MAX_CHILD_TIMEOUT_SECS)
+    )]
+    child_timeout_secs: u64,
     /// Disable prebuilt and local disk `.olean` caching for bundled modules and
     /// `TrustedBoundary`.
     #[arg(long, global = true)]
@@ -678,6 +689,10 @@ fn parse_unstable_feature_arg(raw: &str) -> std::result::Result<String, String> 
     }
     Ok(raw.to_owned())
 }
+
+/// Upper bound for `--child-timeout-secs` (one day), so a mistyped value
+/// cannot leave a hung child running indefinitely.
+pub(crate) const MAX_CHILD_TIMEOUT_SECS: u64 = 24 * 60 * 60;
 
 /// Parse and validate `--max-inspector-output-bytes <BYTES>`.
 fn parse_max_inspector_output_bytes_arg(raw: &str) -> std::result::Result<u64, String> {
@@ -4248,6 +4263,7 @@ fn run<Out: std::io::Write + Send, ErrOut: std::io::Write + Send>(
     checker
         .set_max_inspector_result_bytes(Some(args.max_inspector_output_bytes))
         .map_err(|e| error("tool_failed", "audit", e.message))?;
+    checker.set_child_timeout(Duration::from_secs(args.child_timeout_secs));
     checker.set_use_olean_cache(!args.no_cache);
     checker.set_no_rebuild_bundled(args.no_rebuild_bundled);
     if let Some(cache_dir) =
@@ -7630,6 +7646,7 @@ mod tests {
             allow_unstable_feature: Vec::new(),
             lean_memory_mb: None,
             max_inspector_output_bytes: crate::sandbox::DEFAULT_MAX_INSPECTOR_RESULT_BYTES,
+            child_timeout_secs: crate::sandbox::DEFAULT_CHILD_TIMEOUT.as_secs(),
             no_cache: false,
             no_rebuild_bundled: false,
             olean_cache_dir: None,
@@ -7679,6 +7696,7 @@ mod tests {
                         lean_memory_mb: None,
                         max_inspector_output_bytes:
                             crate::sandbox::DEFAULT_MAX_INSPECTOR_RESULT_BYTES,
+                        child_timeout_secs: crate::sandbox::DEFAULT_CHILD_TIMEOUT.as_secs(),
                         no_cache: false,
                         no_rebuild_bundled: false,
                         olean_cache_dir: None,
@@ -8171,6 +8189,7 @@ mod tests {
             allow_unstable_feature: Vec::new(),
             lean_memory_mb: None,
             max_inspector_output_bytes: crate::sandbox::DEFAULT_MAX_INSPECTOR_RESULT_BYTES,
+            child_timeout_secs: crate::sandbox::DEFAULT_CHILD_TIMEOUT.as_secs(),
             no_cache: false,
             no_rebuild_bundled: false,
             olean_cache_dir: None,
@@ -8225,6 +8244,7 @@ mod tests {
                 allow_unstable_feature: Vec::new(),
                 lean_memory_mb: None,
                 max_inspector_output_bytes: crate::sandbox::DEFAULT_MAX_INSPECTOR_RESULT_BYTES,
+                child_timeout_secs: crate::sandbox::DEFAULT_CHILD_TIMEOUT.as_secs(),
                 no_cache: false,
                 no_rebuild_bundled: false,
                 olean_cache_dir: None,
@@ -8642,6 +8662,34 @@ mod tests {
         // Unset or empty: keep the per-user default.
         assert_eq!(effective_olean_cache_dir(None, None).unwrap(), None);
         assert_eq!(effective_olean_cache_dir(None, Some(OsStr::new(""))).unwrap(), None);
+    }
+
+    /// `--child-timeout-secs` defaults to the sandbox's 600-second limit and
+    /// accepts `1..=86400`; it never adds a taint.
+    #[test]
+    fn child_timeout_secs_defaults_and_bounds() {
+        let base = [OsStr::new("--request"), OsStr::new("request.json")];
+        let default = parse_verify_args(&base);
+        assert_eq!(default.child_timeout_secs, 600);
+        assert_eq!(
+            Duration::from_secs(default.child_timeout_secs),
+            crate::sandbox::DEFAULT_CHILD_TIMEOUT
+        );
+        for (raw, secs) in [("1", 1), ("1800", 1800), ("86400", MAX_CHILD_TIMEOUT_SECS)] {
+            let flag = [OsStr::new("--child-timeout-secs"), OsStr::new(raw)];
+            let args = parse_verify_args(&[&base[..], &flag].concat());
+            assert_eq!(args.child_timeout_secs, secs);
+            assert_eq!(active_taints(&args), active_taints(&default), "{raw}");
+        }
+        #[derive(clap::Parser)]
+        struct Wrapper {
+            #[command(flatten)]
+            verify: VerifyArgs,
+        }
+        for bad in ["0", "86401", "-1", "1.5", "abc", ""] {
+            let argv = ["verify", "--request", "request.json", "--child-timeout-secs", bad];
+            assert!(<Wrapper as clap::Parser>::try_parse_from(argv).is_err(), "{bad:?}");
+        }
     }
 
     fn parse_verify_args(argv: &[&OsStr]) -> VerifyArgs {
@@ -9597,6 +9645,7 @@ mod tests {
             overwrite_artifacts: false,
             lean_memory_mb: None,
             max_inspector_output_bytes: crate::sandbox::DEFAULT_MAX_INSPECTOR_RESULT_BYTES,
+            child_timeout_secs: crate::sandbox::DEFAULT_CHILD_TIMEOUT.as_secs(),
             allow_unsandboxed_elaboration: false,
             allow_sorry_in_proof: false,
             allow_unstable_feature: Vec::new(),
