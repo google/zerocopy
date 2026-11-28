@@ -166,6 +166,7 @@ anneal/
     │   ├── Cargo.toml
     │   ├── src/{lib,trace_observer,outcome,spec,rustc_runner,miri_runner,lean_trace_runner,mir_eval_adapter,corpus,fuzzer,shrink}.rs
     │   ├── src/corpus/{builders,sources}.rs
+    │   ├── src/outcome/{authority_and_ub,classify}.rs
     │   ├── src/bin/itree_diff.rs
     │   └── tests/itree_differential.rs
     ├── rustc-capture/                 # package = "anneal-rustc-capture-tests" (publish = false)
