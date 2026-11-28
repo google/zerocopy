@@ -337,6 +337,38 @@ example : pure_mid_i (-3) (-4) = -3 := by unfold pure_mid_i; decide
 example : pure_mid_i 3 4 = 3 := by unfold pure_mid_i; decide
 example : pure_mid_i (-128) 127 = 0 := by unfold pure_mid_i; decide
 
+-- Division methods, checked against Rust.
+example : pure_wdiv (-128) (-1) = -128 := by unfold pure_wdiv; decide
+example : pure_wrem (-128) (-1) = 0 := by unfold pure_wrem; decide
+example : pure_wdive (-128) (-1) = -128 := by unfold pure_wdive; decide
+example : pure_wreme (-128) (-1) = 0 := by unfold pure_wreme; decide
+example : pure_wdiv (-7) 2 = -3 := by unfold pure_wdiv; decide
+example : pure_wrem (-7) 2 = -1 := by unfold pure_wrem; decide
+example : pure_wdive (-7) 2 = -4 := by unfold pure_wdive; decide
+example : pure_wreme (-7) 2 = 1 := by unfold pure_wreme; decide
+example : pure_wdiv 7 (-2) = -3 := by unfold pure_wdiv; decide
+example : pure_wrem 7 (-2) = 1 := by unfold pure_wrem; decide
+example : pure_wdive 7 (-2) = -3 := by unfold pure_wdive; decide
+example : pure_wreme 7 (-2) = 1 := by unfold pure_wreme; decide
+example : pure_wdiv (-7) (-2) = 3 := by unfold pure_wdiv; decide
+example : pure_wrem (-7) (-2) = -1 := by unfold pure_wrem; decide
+example : pure_wdive (-7) (-2) = 4 := by unfold pure_wdive; decide
+example : pure_wreme (-7) (-2) = 1 := by unfold pure_wreme; decide
+example : pure_wdiv (-4) 3 = -1 := by unfold pure_wdiv; decide
+example : pure_wrem (-4) 3 = -1 := by unfold pure_wrem; decide
+example : pure_wdive (-4) 3 = -2 := by unfold pure_wdive; decide
+example : pure_wreme (-4) 3 = 2 := by unfold pure_wreme; decide
+example : pure_wdiv 5 0 = 0 := by unfold pure_wdiv; decide
+example : pure_wrem 5 0 = 0 := by unfold pure_wrem; decide
+example : pure_wdive 5 0 = 0 := by unfold pure_wdive; decide
+example : pure_wreme 5 0 = 0 := by unfold pure_wreme; decide
+example : pure_dive 7 2 = 3 := by unfold pure_dive; decide
+example : pure_reme 7 2 = 1 := by unfold pure_reme; decide
+example : pure_dive 255 16 = 15 := by unfold pure_dive; decide
+example : pure_reme 255 16 = 15 := by unfold pure_reme; decide
+example : pure_dive 0 9 = 0 := by unfold pure_dive; decide
+example : pure_reme 0 9 = 0 := by unfold pure_reme; decide
+
 -- The masked shifts take the amount modulo the width.
 example : pure_wshl_is 1 17 2 := by unfold pure_wshl_is; decide
 example : pure_wshl_is 0x8001 1 2 := by unfold pure_wshl_is; decide
@@ -347,9 +379,9 @@ example : ¬ pure_wshr_is (-32768) 31 1 := by unfold pure_wshr_is; decide
 -- `abs_diff(a, b) + saturating_add(n, 1u32) + (n & 15u32) + (n >> 30) + (n >> k)`
 -- `+ n as u8 as u32 + a.max(b) as u32 + n.div_ceil(8)`
 -- `+ a.cast_signed().unsigned_abs() as u32 + b.saturating_add_signed(-1) as u32`
--- `+ n.unbounded_shr(31)`.
+-- `+ n.unbounded_shr(31) + n.div_euclid(16)`.
 example : fn7_max_steps { args := [u8Val 9, u8Val 2, u32Val 5] } = 43 := rfl
 example : fn7_max_steps { args := [u8Val 3, u8Val 250, u32Val 4294967295] } =
-    4831839231 := rfl
+    5100274686 := rfl
 
 end Spec.Check

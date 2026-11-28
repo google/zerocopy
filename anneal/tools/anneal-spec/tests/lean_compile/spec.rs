@@ -459,6 +459,37 @@ anneal::external_spec! {
         a.midpoint(b)
     }
 
+    // Division methods, each guarded against a zero divisor.
+    #[anneal::pure]
+    fn wdiv(a: i8, b: i8) -> i8 {
+        if b == 0 { 0 } else { a.wrapping_div(b) }
+    }
+
+    #[anneal::pure]
+    fn wrem(a: i8, b: i8) -> i8 {
+        if b == 0 { 0 } else { a.wrapping_rem(b) }
+    }
+
+    #[anneal::pure]
+    fn wdive(a: i8, b: i8) -> i8 {
+        if b == 0 { 0 } else { a.wrapping_div_euclid(b) }
+    }
+
+    #[anneal::pure]
+    fn wreme(a: i8, b: i8) -> i8 {
+        if b == 0 { 0 } else { a.wrapping_rem_euclid(b) }
+    }
+
+    #[anneal::pure]
+    fn dive(a: u8, b: u8) -> u8 {
+        if b == 0 { 0 } else { a.div_euclid(b) }
+    }
+
+    #[anneal::pure]
+    fn reme(a: u8, b: u8) -> u8 {
+        if b == 0 { 0 } else { a.rem_euclid(b) }
+    }
+
     #[anneal::pure]
     fn wshl_is(a: u16, n: u32, r: u16) -> bool {
         wrapping_shl(a, n) == r
@@ -480,6 +511,7 @@ anneal::external_spec! {
                 + a.cast_signed().unsigned_abs() as u32
                 + b.saturating_add_signed(-1) as u32
                 + n.unbounded_shr(31)
+                + n.div_euclid(16)
         },
         ensures(|r| r == saturating_sub(n, 1u32)),
     )]

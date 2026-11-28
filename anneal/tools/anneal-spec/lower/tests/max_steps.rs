@@ -307,6 +307,25 @@ fn max_steps_counts_unbounded_shifts_and_midpoints_of_unsigned_values() {
 }
 
 #[test]
+fn max_steps_counts_guarded_unsigned_divisions() {
+    let l = lower_one(&wrap(
+        "requires(d != 0u32), max_steps = n.div_euclid(d) + n.wrapping_rem_euclid(d)",
+        "fn f(n: u32, d: u32)",
+    ))
+    .unwrap();
+    for want in [
+        "(Int.toNat (Trusted.MirSemantics.intTdiv (specInt (specArg q 0)) (specInt (specArg q 1))))",
+        "(Int.toNat (Trusted.MirSemantics.intEmod (specInt (specArg q 0)) (specInt (specArg q 1))))",
+    ] {
+        assert!(l.spec_lean.contains(want), "missing {want} in\n{}", l.spec_lean);
+    }
+    expect_error(
+        &wrap("max_steps = n.div_euclid(d)", "fn f(n: u32, d: u32)"),
+        "E_ANNEAL_UNGUARDED_SPEC_DIV",
+    );
+}
+
+#[test]
 fn max_steps_span_map_records_exact_clause_span() {
     let text = "anneal::external_spec! { #[anneal::spec(total, max_steps = 34 * n + 540)] fn f(n: usize); }";
     let l = lower_one(text).unwrap();
