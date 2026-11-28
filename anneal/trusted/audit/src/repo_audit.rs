@@ -58,7 +58,15 @@ pub enum InspectorRequest {
     /// source commands being inspected, authenticating optional staged
     /// `base_trusted_sources` (`"baseSources"`, such as Pass 1 `Trusted`
     /// modules during Pass 2 preflight) directly from disk.
-    Preflight { sources: Vec<(String, PathBuf)>, base_trusted_sources: Vec<(String, PathBuf)> },
+    /// `allow_local_semireducible` admits `TrustedBoundary`'s single scoped
+    /// `attribute [local semireducible] _root_.<c> in` exception in theory-role
+    /// sources; only Pass 1 sets it, so Pass 2 `correspondence/` sources never
+    /// get it.
+    Preflight {
+        sources: Vec<(String, PathBuf)>,
+        base_trusted_sources: Vec<(String, PathBuf)>,
+        allow_local_semireducible: bool,
+    },
     /// Parses Pass 2 `(module_name, staged_path)` pairs
     /// (`"correspondence-preflight"`) against the authenticated Pass 2 compile
     /// parser environment (`foundation`, Pass 1 `trusted`/`theory`, and pinned
@@ -430,7 +438,11 @@ impl Checker {
         match request {
             InspectorRequest::Headers { sources } => self.inner.inspect_headers(&sources),
             InspectorRequest::TargetAudit { request } => self.inner.inspect_target(&request),
-            InspectorRequest::Preflight { sources, base_trusted_sources } => {
+            InspectorRequest::Preflight {
+                sources,
+                base_trusted_sources,
+                allow_local_semireducible,
+            } => {
                 let req = {
                     let adm = self.inner.admitted()?;
                     let arts_arr: Vec<Json> = adm
@@ -453,6 +465,7 @@ impl Checker {
                         "axioms": &adm.axioms,
                         "baseSources": base_pairs,
                         "sources": src_pairs,
+                        "allowLocalSemireducible": allow_local_semireducible,
                     })
                 };
                 self.inner.invoke_inspector("preflight", &req)
@@ -616,6 +629,7 @@ impl Checker {
         inventory_err: &str,
         trusted_cycle_msg: &str,
         theory_cycle_msg: &str,
+        allow_local_semireducible: bool,
     ) -> Result<OrderedPreflight, Failure> {
         let sources: Vec<(String, PathBuf)> = trusted_map
             .iter()
@@ -625,7 +639,11 @@ impl Checker {
         let base_trusted_sources: Vec<(String, PathBuf)> =
             base_trusted_modules.iter().map(|(n, p)| (n.clone(), p.clone())).collect();
         let pf_res: PreflightResult = serde_json::from_value(
-            self.inspect(InspectorRequest::Preflight { sources, base_trusted_sources })?,
+            self.inspect(InspectorRequest::Preflight {
+                sources,
+                base_trusted_sources,
+                allow_local_semireducible,
+            })?,
         )
         .map_err(|_| Failure::operational("preflight", inventory_err))?;
 
@@ -756,6 +774,7 @@ impl Checker {
             "incomplete source-header inventory",
             "Trusted import cycle",
             "Theory import cycle",
+            true,
         )?;
 
         self.pass1_imports = preflight.imports.clone();
@@ -975,6 +994,7 @@ impl Checker {
             "incomplete correspondence header inventory",
             "Trusted correspondence import cycle",
             "Correspondence proof import cycle",
+            false,
         )?;
         self.last_correspondence_tiers = Some(preflight.module_tiers.clone());
 

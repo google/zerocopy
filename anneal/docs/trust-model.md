@@ -561,6 +561,14 @@ rejecting `candidate:<feature>`, `.repo .theory`, `.vendorMiri`,
   section` is forbidden mechanically and repository policy keeps `theory/` free
   of `noncomputable` definitions; unlike `theory/`, `correspondence/` modules
   may use `noncomputable def`).
+  The one admitted `local` attribute takes exactly the form
+  `attribute [local semireducible] _root_.Nat.bitwise in <theorem or def>`
+  (closed `localSemireducibleAllowlist`). Only Pass 1 `theory/` preflight sets
+  `allowLocalSemireducible`; Pass 2 and `trusted/` reject it. No Pass 1
+  `theory/` module may declare a constant whose name ends in `Nat.bitwise`.
+  Reducibility hints steer only the elaborator: Pass 1 replays every resulting
+  term through the kernel, which ignores them, and `local` attributes are not
+  exported.
 
 ### Pass 1: Core repository kernel replay (`"audit"` JSON IPC mode)
 

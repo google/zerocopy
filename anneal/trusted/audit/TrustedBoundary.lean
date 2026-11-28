@@ -814,6 +814,96 @@ bridges while keeping `Trusted` and all other imports closed. -/
 def allowedTheoryImportAllModules : List Name :=
   [`Init.Data.Nat.Bitwise.Basic]
 
+/-- Constants that a `theory/` declaration may make locally semireducible
+with `attribute [local semireducible] _root_.<c> in <decl>`
+(`matchLocalSemireducibleIn?`). The list is closed and holds resolved global
+names.
+
+`Nat.bitwise` is `@[irreducible]` in Lean's foundation. Its generated unfolding
+lemma (`Nat.bitwise.eq_def`) goes through `WellFounded.Nat.fix_eq`, which uses
+`funext` and therefore `Quot.sound`. An axiom-free proof of the unfolding can
+instead use `WellFounded.Nat.fix` with a pointwise congruence argument, but it
+has to see that `Nat.bitwise f n m` is definitionally
+`Nat.bitwise._unary f ⟨n, m⟩`, which the elaborator refuses for an
+irreducible constant. Lean accepts a reducibility override on an imported
+constant only as a `local` attribute.
+
+Why this exception cannot weaken any guarantee:
+- Reducibility is an elaborator hint. The kernel ignores it and checks every
+  declaration by full definitional unfolding, so a reducibility override can
+  make an elaboration succeed or fail but cannot make the kernel accept a term
+  it would otherwise reject.
+- A `local` attribute is not exported to the `.olean`: it applies only to the
+  single declaration after `in`, and nothing downstream sees it.
+- Pass 1 replays every compiled declaration through the kernel and checks its
+  axioms, independently of how it was elaborated.
+- Only `semireducible`, only `local`, and only one allowlisted constant are
+  admitted. Other attributes stay banned because they can change what a
+  *statement* means rather than only how it elaborates: `local instance`
+  changes which instance a statement's typeclass arguments resolve to, and
+  `local simp`, `scoped` attributes, or `local notation` change what later
+  syntax denotes. A reducibility change cannot alter the elaborated statement
+  of the declaration it is attached to without the kernel rechecking it.
+
+The constant must be spelled `_root_.<c>`, which resolves to exactly `<c>`
+whatever namespaces are open or current. As defense in depth, no `theory/`
+module may declare a constant whose name ends with an allowlisted name: the
+preflight checks declaration names, constructors, structure fields, and
+parent projections (`declaresLocalSemireducibleShadow`), and Pass 1 checks
+every compiled constant (`validateRepoConstant`). Even a successful
+shadowing trick would only make some other constant locally semireducible in
+one declaration, which by the argument above is harmless.
+
+Only Pass 1 enables the exception (`"allowLocalSemireducible"` on the
+`"preflight"` request), and only for theory-role sources, so `Trusted`
+modules and Pass 2 `correspondence/` sources never get it. -/
+def localSemireducibleAllowlist : List Name := [`Nat.bitwise]
+
+/-- Match the arguments `args` of a `Parser.Command.in` node against exactly
+`attribute [local semireducible] _root_.<c> in <decl>`, where `<c>` is in
+`localSemireducibleAllowlist` and `<decl>` is a `theorem` or `def` declaration
+with no `@[...]` attributes (other modifiers that the ordinary checks admit,
+such as a doc comment or `private`, are allowed). Returns `(c, decl)` on a
+match.
+
+Everything else is rejected by the ordinary checks: more than one attribute or
+identifier, any attribute other than `semireducible`, the `scoped` kind, an
+unqualified or relatively qualified identifier, a chained `in`, and every
+other declaration kind. -/
+def matchLocalSemireducibleIn? (args : Array Syntax) :
+    Option (Name × Syntax) := do
+  guard (args.size == 3)
+  let lhs := args[0]!
+  guard (lhs.isOfKind ``Parser.Command.attribute && lhs.getArgs.size == 5)
+  let items := lhs[2].getArgs
+  guard (items.size == 1)
+  let inst := items[0]!
+  guard (inst.isOfKind ``Parser.Term.attrInstance && inst.getArgs.size == 2)
+  let kind := inst[0]
+  guard (kind.isOfKind ``Parser.Term.attrKind && kind.getArgs.size == 1)
+  let kindOpt := kind[0]
+  guard (kindOpt.isOfKind nullKind && kindOpt.getArgs.size == 1 &&
+    kindOpt[0].isOfKind ``Parser.Term.local)
+  let attr := inst[1]
+  guard (attr.isOfKind ``Parser.Attr.simple && attr.getArgs.size == 2 &&
+    attr[0].isIdent && attr[0].getId == `semireducible &&
+    attr[1].isOfKind nullKind && attr[1].getArgs.isEmpty)
+  let ids := lhs[4].getArgs
+  guard (ids.size == 1 && ids[0]!.isIdent)
+  let raw := ids[0]!.getId
+  guard (!raw.hasMacroScopes && raw != rootNamespace &&
+    rootNamespace.isPrefixOf raw)
+  let c := raw.replacePrefix rootNamespace .anonymous
+  guard (localSemireducibleAllowlist.contains c)
+  let decl := args[2]!
+  guard (decl.isOfKind ``Parser.Command.declaration && decl.getArgs.size == 2)
+  guard ([``Parser.Command.theorem, ``Parser.Command.definition].contains
+    decl[1].getKind)
+  -- No `@[instance]`, `@[simp]`, or other attributes on the declaration.
+  guard (decl[0].isOfKind ``Parser.Command.declModifiers &&
+    decl[0].getArgs.size > 1 && decl[0][1].isNone)
+  return (c, decl)
+
 /-- Term, tactic, and macro syntax kinds carrying elaboration/compile-time
 I/O or debug side effects, rejected explicitly in both Pass-1 `"preflight"`
 and `"spec-preflight"`. -/
@@ -1053,7 +1143,7 @@ every identifier with `isValidSourceIdent`, and requires every non-`null`
 partial def inspectSyntax (allowedKinds : NameSet) (s : Syntax)
     (requirePrelude : Bool := true)
     (currNs : Name := .anonymous) (openDecls : List OpenDecl := [])
-    (checkPureRefs : Bool := true) :
+    (checkPureRefs : Bool := true) (allowLocalSemireducible : Bool := false) :
     IO Unit := do
   match s with
   | .missing => fail "unexpected missing syntax node"
@@ -1069,6 +1159,15 @@ partial def inspectSyntax (allowedKinds : NameSet) (s : Syntax)
       for cand in candidateOpenNamespaces currNs openDecls val do
         checkPureIdent cand
   | .node _ k args =>
+    -- The one admitted `local` attribute (see `localSemireducibleAllowlist`).
+    -- `allowLocalSemireducible` is set only for top-level commands of
+    -- `theory/` modules, and the recursive calls below never set it, so the
+    -- pattern cannot appear inside a chained `in` or a `mutual` block.
+    if allowLocalSemireducible && k == ``Parser.Command.in then
+      if let some (_, decl) := matchLocalSemireducibleIn? args then
+        inspectSyntax allowedKinds decl requirePrelude currNs openDecls
+          checkPureRefs
+        return
     if forbiddenPureTermKinds.contains k then
       fail s!"disallowed syntax {k}"
     unless k == nullKind || allowedKinds.contains k do
@@ -1214,6 +1313,61 @@ def declarationIdent? (stx : Syntax) : Option Name :=
   else
     some decl[1][0].getId
 
+/-- Whether `n` ends with a name in `localSemireducibleAllowlist`, as
+`Foo.Nat.bitwise` does. -/
+def endsWithLocalSemireducibleName (n : Name) : Bool :=
+  localSemireducibleAllowlist.any (·.components.isSuffixOf n.components)
+
+/-- Whether command `stx`, elaborated in namespace `currNs`, declares a
+constant whose full name ends with a name in `localSemireducibleAllowlist`,
+looking at declaration names, inductive constructors, and structure
+constructors, fields, and parent projections, and inside `in` and `mutual`
+commands. No `theory/`
+module may declare such a constant. -/
+partial def declaresLocalSemireducibleShadow (currNs : Name) (stx : Syntax) :
+    Bool :=
+  let k := stx.getKind
+  if k == ``Parser.Command.declaration then
+    match declarationIdent? stx with
+    | some id =>
+      let full := currNs ++ id.replacePrefix rootNamespace .anonymous
+      -- Every identifier inside the declaration that could name a
+      -- constructor or field becomes `full ++ <ident>`.
+      let inner := collectIdents stx[1]
+      endsWithLocalSemireducibleName full ||
+        endsWithLocalSemireducibleName id ||
+        inner.any fun i => endsWithLocalSemireducibleName (full ++ i)
+    | none => false
+  else if k == ``Parser.Command.in then
+    declaresLocalSemireducibleShadow currNs stx[2]
+  else if k == ``Parser.Command.mutual then
+    stx[1].getArgs.any (declaresLocalSemireducibleShadow currNs)
+  else false
+where
+  /-- Identifiers naming constructors (`ctor`, `structCtor`), structure
+  fields (the `struct*Binder` nodes), and parent projections (`structParent`,
+  as in `extends p : P`) anywhere inside `s`. -/
+  collectIdents (s : Syntax) : Array Name :=
+    let here :=
+      if [``Parser.Command.ctor, ``Parser.Command.structCtor,
+          ``Parser.Command.structSimpleBinder,
+          ``Parser.Command.structExplicitBinder,
+          ``Parser.Command.structImplicitBinder,
+          ``Parser.Command.structInstBinder,
+          ``Parser.Command.structParent].contains s.getKind then
+        directIdents s
+      else #[]
+    here ++ s.getArgs.foldl (fun acc c => acc ++ collectIdents c) #[]
+  /-- Identifiers among the immediate children of `s` and of their `null`
+  groups (where binder and constructor names live). -/
+  directIdents (s : Syntax) : Array Name :=
+    s.getArgs.foldl (init := #[]) fun acc c =>
+      if c.isIdent then acc.push c.getId
+      else if c.isOfKind nullKind then
+        acc ++ c.getArgs.filterMap fun d =>
+          if d.isIdent then some d.getId else none
+      else acc
+
 /-- Update lexical scope state `(parserEnv, scopes)` for a validated command
 `stx`, rejecting any `open`, `open ... in`, `mutual` preamble, `namespace`, or
 multi-component declaration whose entered namespace or candidate `open`
@@ -1313,7 +1467,8 @@ elaborating the inspected commands. -/
 partial def parseAndInspectCommands (ctx : Parser.InputContext)
     (scopedNamespaces scopedPrefixes : NameSet) (parserEnv : Environment)
     (scopes : List ParseScope) (moduleName : Name) (allowedKinds : NameSet)
-    (state : Parser.ModuleParserState) (messages : MessageLog) : IO Unit := do
+    (state : Parser.ModuleParserState) (messages : MessageLog)
+    (allowLocalSemireducible : Bool := false) : IO Unit := do
   let previous := state.pos
   let top := scopes.head!
   let pmctx : Parser.ParserModuleContext := {
@@ -1332,11 +1487,16 @@ partial def parseAndInspectCommands (ctx : Parser.InputContext)
     throw <| IO.userError "parser made no progress"
   unless allowedCommandKinds.contains stx.getKind do
     fail s!"unsupported command {stx.getKind}"
+  if allowLocalSemireducible &&
+      declaresLocalSemireducibleShadow top.currNamespace stx then
+    fail (s!"{moduleName} declares a constant whose name could shadow " ++
+      "one in `localSemireducibleAllowlist`")
   inspectSyntax allowedKinds stx true top.currNamespace top.openDecls
+    (allowLocalSemireducible := allowLocalSemireducible)
   let (nextEnv, nextScopes) ←
     applyCommandScope scopedNamespaces scopedPrefixes parserEnv scopes stx
   parseAndInspectCommands ctx scopedNamespaces scopedPrefixes nextEnv nextScopes
-    moduleName allowedKinds nextState nextMessages
+    moduleName allowedKinds nextState nextMessages allowLocalSemireducible
 
 /-- Parsed header and tier metadata produced by `inspectSource` for one
 repository `.lean` source file during `"preflight"` or
@@ -1392,10 +1552,13 @@ def checkPreflightTierImports (inspected : Array InspectedSource)
               s!"non-foundation module {imp.module}")
 
 /-- Parse and validate a single repository `.lean` source file during
-`"preflight"` or `"correspondence-preflight"`. -/
+`"preflight"` or `"correspondence-preflight"`. `allowLocalSemireducible` admits
+the `localSemireducibleAllowlist` exception for theory-role sources (never for
+`Trusted` modules). Only the Pass 1 `"preflight"` request sets it. -/
 def inspectSource (scopedNamespaces scopedPrefixes : NameSet)
     (parserEnv : Environment) (moduleName : Name)
-    (path : System.FilePath) : IO InspectedSource := do
+    (path : System.FilePath) (allowLocalSemireducible : Bool := false) :
+    IO InspectedSource := do
   let text ← IO.FS.readFile path
   let role ← extractSourceRole moduleName text
   let allowedKinds := role.allowedSyntaxKinds
@@ -1421,8 +1584,9 @@ def inspectSource (scopedNamespaces scopedPrefixes : NameSet)
       fail s!"disallowed sysroot import {imp.module} in {moduleName}"
   let rootScope : ParseScope :=
     { header := "", currNamespace := .anonymous, openDecls := [] }
+  let allowLocalSemireducible := allowLocalSemireducible && role == .theory
   parseAndInspectCommands ctx scopedNamespaces scopedPrefixes parserEnv
-    [rootScope] moduleName allowedKinds initial log
+    [rootScope] moduleName allowedKinds initial log allowLocalSemireducible
   return { moduleName, imports, isModule, role }
 
 /-- Validate target module import edges (`"headers"`, `"spec-preflight"`, and
@@ -2851,6 +3015,9 @@ def validateRepoConstant (env : Environment) (allMatchers : NameSet)
         !isRealizedOrCompilerHelper env allMatchers isFoundationConst ci) then
     fail (s!"repository module {m} cannot declare constant {ci.name} " ++
       s!"in reserved kernel namespace {userRoot}")
+  if !isTrusted && endsWithLocalSemireducibleName userName then
+    fail (s!"theory module {m} cannot declare constant {ci.name}, whose " ++
+      "name could shadow one in `localSemireducibleAllowlist`")
   if !isTrusted && (ci matches .opaqueInfo _) then
     fail s!"opaque declaration {ci.name} in {m} is not allowed outside Trusted"
   if ci.isAxiom then
@@ -7531,9 +7698,12 @@ def run (j : Json) : IO Json := do
       inspectPreflightBaseSources j scopedNamespaces scopedPrefixes env
         foundationSet
     let sources ← field (α := Array (String × String)) j "sources"
+    -- Set only by Pass 1 (see `localSemireducibleAllowlist`).
+    let allowLocalSemireducible ← field (α := Bool) j "allowLocalSemireducible"
     let inspected ←
       sources.mapM fun (n, p) =>
         inspectSource scopedNamespaces scopedPrefixes env n.toName p
+          (allowLocalSemireducible := allowLocalSemireducible)
     checkPreflightTierImports inspected foundationSet baseTiers reservedModules
     return Json.mkObj [
       ("headers", .arr (inspected.map InspectedSource.renderJson)),
