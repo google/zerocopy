@@ -88,10 +88,22 @@ impl Prop {
 }
 
 /// The fact that `term` is positive. A list of facts holds lowered integer
-/// terms, each known to be nonzero, and these strings, which no lowered
-/// integer term spells, so neither kind is mistaken for the other.
+/// terms, each known to be nonzero, and the strings of this function and
+/// [`bound_fact`], which no lowered integer term spells, so no kind is
+/// mistaken for another.
 fn positive_fact(term: &str) -> String {
     format!("0 < {term}")
+}
+
+/// The fact that `term` is at most `bound`.
+fn bound_fact(term: &str, bound: u128) -> String {
+    format!("{term} ≤ {bound}")
+}
+
+/// The least upper bound that `facts` give `term`, if they give any.
+fn known_bound(facts: &[String], term: &str) -> Option<u128> {
+    let prefix = format!("{term} ≤ ");
+    facts.iter().filter_map(|f| f.strip_prefix(&prefix)?.parse().ok()).min()
 }
 
 /// Adds to `facts` that `term` is positive, and so nonzero.
@@ -446,6 +458,16 @@ fn popcount_stages(bits: u32) -> Vec<String> {
     stages
 }
 
+/// The SWAR stages that copy the highest set bit of a `bits`-bit `Nat` into
+/// every lower bit, so that the ones of the result span from that bit down.
+fn copy_down_stages(bits: u32) -> Vec<String> {
+    [1, 2, 4, 8, 16, 32, 64]
+        .into_iter()
+        .filter(|g| *g < bits)
+        .map(|g| format!("«x» ||| («x» >>> {g})"))
+        .collect()
+}
+
 /// `x`, a Lean `Nat` term, passed through `stages`, each a function of
 /// `«x»` applied to the previous value, so that each stage evaluates its
 /// input once.
@@ -542,6 +564,27 @@ fn covers(seen: &[(IntLit, IntLit)], lo: IntLit, hi: IntLit) -> bool {
             None => return true,
         }
     }
+}
+
+/// The integer before `v`, if it has an `IntLit`.
+fn lit_pred(v: IntLit) -> Option<IntLit> {
+    if v.neg && v.mag != 0 {
+        v.mag.checked_add(1).map(|m| IntLit::new(true, m))
+    } else if v.mag == 0 {
+        Some(IntLit::new(true, 1))
+    } else {
+        Some(IntLit::new(false, v.mag - 1))
+    }
+}
+
+/// The greatest integer from `lo` to `hi` that no interval in `seen`
+/// contains, if any. It is `hi` or one less than the start of an interval.
+fn max_uncovered(seen: &[(IntLit, IntLit)], lo: IntLit, hi: IntLit) -> Option<IntLit> {
+    std::iter::once(hi)
+        .chain(seen.iter().filter_map(|&(a, _)| lit_pred(a)))
+        .filter(|&c| lit_le(lo, c) && lit_le(c, hi))
+        .filter(|&c| !seen.iter().any(|&(a, b)| lit_le(a, c) && lit_le(c, b)))
+        .max_by_key(|&c| int_order(c))
 }
 
 /// Whether `a <= b`.
@@ -1241,6 +1284,8 @@ impl<'a> Env<'a> {
             let mut taken = Vec::new();
             let mut not_taken_here = Vec::new();
             let (mut has_zero, mut all_nonzero, mut all_positive) = (false, true, true);
+            // An upper bound of every value that the arm's patterns match.
+            let mut arm_bound = Some(0u128);
             let mut binding = None;
             for p in &arm.pats {
                 match &p.kind {
@@ -1248,11 +1293,13 @@ impl<'a> Env<'a> {
                         catch_all = true;
                         all_nonzero = false;
                         all_positive = false;
+                        arm_bound = None;
                     }
                     PatKind::Bind(name) => {
                         catch_all = true;
                         all_nonzero = false;
                         all_positive = false;
+                        arm_bound = None;
                         binding = Some((name.as_str(), p.span));
                     }
                     PatKind::Bool(b) => {
@@ -1336,6 +1383,8 @@ impl<'a> Env<'a> {
                         has_zero |= matches_zero;
                         all_nonzero &= !matches_zero;
                         all_positive &= lit_le(IntLit::new(false, 1), lo_v);
+                        let hi_bound = if hi_v.neg { 0 } else { hi_v.mag };
+                        arm_bound = arm_bound.map(|b| b.max(hi_bound));
                     }
                 }
             }
@@ -1350,17 +1399,29 @@ impl<'a> Env<'a> {
             if let Some(t) = nonzero_fact.as_ref().filter(|_| all_positive && !conds.is_empty()) {
                 push_positive(&mut arm_facts, t);
             }
+            if let (Some(t), Some(b)) = (&nonzero_fact, arm_bound.filter(|_| !conds.is_empty())) {
+                arm_facts.push(bound_fact(t, b));
+            }
             not_taken.extend(not_taken_here);
             if has_zero {
                 not_taken.extend(nonzero_fact.clone());
             }
             // Once the patterns so far match every value of the scrutinee's
             // machine type up to `0`, the later arms see a positive one.
+            // Likewise, they bound the later arms' scrutinee by the greatest
+            // value of that type that they leave unmatched.
             if let (Some(t), Some(m)) = (&nonzero_fact, machine) {
-                let min = m.range().0;
-                let min = IntLit::new(min < 0, min.unsigned_abs());
+                let (min, max) = m.range();
+                let (min, max) =
+                    (IntLit::new(min < 0, min.unsigned_abs()), IntLit::new(false, max));
                 if covers(&seen, min, IntLit::new(false, 0)) {
                     push_positive(&mut not_taken, t);
+                }
+                if let Some(v) = max_uncovered(&seen, min, max).filter(|&v| !lit_le(max, v)) {
+                    let fact = bound_fact(t, if v.neg { 0 } else { v.mag });
+                    if !not_taken.contains(&fact) {
+                        not_taken.push(fact);
+                    }
                 }
             }
             let cond = match conds.len() {
@@ -1386,6 +1447,10 @@ impl<'a> Env<'a> {
                         ScrutKind::Nat => format!("({INT}.ofNat {lean})"),
                         _ => lean.clone(),
                     };
+                    if let Some(b) = nonzero_fact.as_ref().and_then(|t| known_bound(&arm_facts, t))
+                    {
+                        arm_facts.push(bound_fact(&as_int, b));
+                    }
                     if nonzero_fact.as_ref().is_some_and(|t| arm_facts.contains(&positive_fact(t)))
                     {
                         push_positive(&mut arm_facts, &as_int);
@@ -1593,6 +1658,9 @@ impl<'a> Env<'a> {
                 LocalKind::Nat { .. } => format!("({INT}.ofNat {lean})"),
                 _ => lean.clone(),
             };
+            if let Some(bound) = init_term.as_ref().and_then(|t| known_bound(facts, t)) {
+                extra.push(bound_fact(&name, bound));
+            }
             if positive {
                 push_positive(&mut extra, &name);
             } else if nonzero {
@@ -2054,6 +2122,31 @@ impl<'a> Env<'a> {
         .help(format!("guard it, e.g. `{guard} ==> x.{name}() == ...`")))
     }
 
+    /// Rejects `recv` (lowered to `term`, of unsigned type `t`) as the
+    /// receiver of method `name`, whose result overflows above
+    /// `2^(bits - 1)`, unless it is a constant no greater or `facts` bound it
+    /// by one.
+    fn require_power_of_two_room(
+        &self,
+        name: &str,
+        recv: &Expr,
+        term: &str,
+        t: IntTy,
+        facts: &[String],
+    ) -> Result<(), Diagnostic> {
+        let limit = 1u128 << (t.bits - 1);
+        let bound = self.const_value(recv).map(|v| v.mag).or_else(|| known_bound(facts, term));
+        if bound.is_some_and(|b| b <= limit) {
+            return Ok(());
+        }
+        Err(Diagnostic::new(
+            "E_ANNEAL_UNGUARDED_SPEC_OVERFLOW",
+            recv.span,
+            format!("the result of `{name}` may overflow `{}`", t.rust_name()),
+        )
+        .help(format!("guard it, e.g. `x <= {limit} ==> x.{name}() == ...`")))
+    }
+
     /// Lowers `arg`, the `u32` amount of method `name`, which as in Rust may
     /// be an untyped literal.
     fn u32_amount(
@@ -2408,14 +2501,16 @@ impl<'a> Env<'a> {
                     let max = IntTy { signed: false, ..t }.range().1;
                     stages.push(format!("{max} - «x»"));
                 }
-                let leading = !name.starts_with("trailing_");
-                stages.extend([1, 2, 4, 8, 16, 32, 64].into_iter().filter(|g| *g < bits).map(|g| {
-                    if leading {
-                        format!("«x» ||| («x» >>> {g})")
-                    } else {
-                        format!("(«x» ||| («x» <<< {g})) % {m}")
-                    }
-                }));
+                if name.starts_with("trailing_") {
+                    stages.extend(
+                        [1, 2, 4, 8, 16, 32, 64]
+                            .into_iter()
+                            .filter(|g| *g < bits)
+                            .map(|g| format!("(«x» ||| («x» <<< {g})) % {m}")),
+                    );
+                } else {
+                    stages.extend(copy_down_stages(bits));
+                }
                 stages.extend(popcount_stages(bits));
                 let span = format!("({INT}.ofNat ({} % 256))", nat_stages(x, &stages));
                 if name == "ilog2" {
@@ -2423,6 +2518,21 @@ impl<'a> Env<'a> {
                 }
                 let width = int_lit(IntLit::new(false, u128::from(bits)));
                 Ok(Low::Int(format!("({width} - {span})"), ty(U32)))
+            }
+            // The least power of two at or above `a` is `2^k`, for `k` the
+            // span of the ones of `a - 1` copied down, with `0 - 1` taken as
+            // `0` in `Nat` so that `0` and `1` both give `1`. Rust panics, or
+            // wraps to `0` in release builds, when that power overflows, so
+            // `a` must be known to be at most `2^(bits - 1)`.
+            "next_power_of_two" => {
+                arity(0)?;
+                let (a, t) = self.int_operand(name, recv, facts)?;
+                unsigned(t)?;
+                self.require_power_of_two_room(name, recv, &a, t, facts)?;
+                let mut stages = copy_down_stages(t.bits);
+                stages.extend(popcount_stages(t.bits));
+                let span = nat_stages(format!("({INT}.toNat {a} - 1)"), &stages);
+                Ok(Low::Int(format!("({INT}.ofNat (1 <<< ({span} % 256)))"), ty(t)))
             }
             // Unlike `<<` and `>>`, these shift by any `u32` amount: one
             // that is not below the width shifts every bit out, leaving `0`,
@@ -2511,6 +2621,7 @@ impl<'a> Env<'a> {
                  `cast_signed`, `cast_unsigned`, `unbounded_shl`, `unbounded_shr`, \
                  `midpoint`, `swap_bytes`, `reverse_bits`, `count_ones`, `count_zeros`, \
                  `leading_zeros`, `trailing_zeros`, `leading_ones`, `trailing_ones`, `ilog2`, \
+                 `next_power_of_two`, \
                  `wrapping_div`, `wrapping_rem`, `wrapping_div_euclid`, \
                  `wrapping_rem_euclid`, `div_euclid`, `rem_euclid`, `abs_diff`, the mixed-signedness \
                  `wrapping_add_signed` and its kin, and the `wrapping_*`, `saturating_*`, and \
@@ -2735,6 +2846,31 @@ impl<'a> Env<'a> {
                 };
                 if let Some((when, t)) = positive {
                     push_positive(if when { &mut on_true } else { &mut on_false }, t);
+                }
+                // It also bounds its other side above where it proves that
+                // side at most `c`, or below `c`, for a non-negative bound.
+                let bounded = match (self.const_value(l), self.const_value(r)) {
+                    (_, Some(c)) => match op {
+                        BinOp::Le | BinOp::Eq => Some((true, &x, c, 0)),
+                        BinOp::Lt => Some((true, &x, c, 1)),
+                        BinOp::Gt | BinOp::Ne => Some((false, &x, c, 0)),
+                        BinOp::Ge => Some((false, &x, c, 1)),
+                        _ => None,
+                    },
+                    (Some(c), None) => match op {
+                        BinOp::Ge | BinOp::Eq => Some((true, &y, c, 0)),
+                        BinOp::Gt => Some((true, &y, c, 1)),
+                        BinOp::Lt | BinOp::Ne => Some((false, &y, c, 0)),
+                        BinOp::Le => Some((false, &y, c, 1)),
+                        _ => None,
+                    },
+                    (None, None) => None,
+                };
+                if let Some((when, t, c, less)) = bounded {
+                    if let Some(bound) = c.mag.checked_sub(less).filter(|_| !c.neg) {
+                        let facts = if when { &mut on_true } else { &mut on_false };
+                        facts.push(bound_fact(t, bound));
+                    }
                 }
                 Ok(Low::Prop(Prop {
                     term: format!("({x} {sym} {y})"),

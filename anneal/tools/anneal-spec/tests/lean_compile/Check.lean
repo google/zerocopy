@@ -467,6 +467,22 @@ example : pure_log2_i8 64 = 6 := by unfold pure_log2_i8; decide
 example : pure_log2_i8 63 = 5 := by unfold pure_log2_i8; decide
 example : pure_log2_i8 (-128) = 0 := by unfold pure_log2_i8; decide
 
+-- `next_power_of_two` is the least power of two at or above its receiver.
+example : pure_npot_u8 0 = 1 := by unfold pure_npot_u8; decide
+example : pure_npot_u8 1 = 1 := by unfold pure_npot_u8; decide
+example : pure_npot_u8 2 = 2 := by unfold pure_npot_u8; decide
+example : pure_npot_u8 3 = 4 := by unfold pure_npot_u8; decide
+example : pure_npot_u8 5 = 8 := by unfold pure_npot_u8; decide
+example : pure_npot_u8 127 = 128 := by unfold pure_npot_u8; decide
+example : pure_npot_u8 128 = 128 := by unfold pure_npot_u8; decide
+example : pure_npot_u8 129 = 0 := by unfold pure_npot_u8; decide
+example : pure_npot_u64 1000 = 1024 := by unfold pure_npot_u64; decide
+example : pure_npot_u64 1099511627776 = 1099511627776 := by unfold pure_npot_u64; decide
+example : pure_npot_u64 1099511627777 = 2199023255552 := by unfold pure_npot_u64; decide
+example : pure_npot_u64 9223372036854775808 = 9223372036854775808 := by
+  unfold pure_npot_u64; decide
+example : pure_npot_u64 9223372036854775809 = 0 := by unfold pure_npot_u64; decide
+
 -- The masked shifts take the amount modulo the width.
 example : pure_wshl_is 1 17 2 := by unfold pure_wshl_is; decide
 example : pure_wshl_is 0x8001 1 2 := by unfold pure_wshl_is; decide
@@ -479,10 +495,12 @@ example : ¬ pure_wshr_is (-32768) 31 1 := by unfold pure_wshr_is; decide
 -- `+ a.cast_signed().unsigned_abs() as u32 + b.saturating_add_signed(-1) as u32`
 -- `+ n.unbounded_shr(31) + n.div_euclid(16) + n.saturating_div(1024)`
 -- `+ n.swap_bytes() + n.count_ones() + n.leading_zeros()`
--- `+ (if n > 0 { n.ilog2() } else { 0 }) + match n { 0..=9 => 1, _ => 2 }`.
-example : fn7_max_steps { args := [u8Val 9, u8Val 2, u32Val 5] } = 83886157 := rfl
+-- `+ (if n > 0 { n.ilog2() } else { 0 })`
+-- `+ (if n <= 1000 { n.next_power_of_two() } else { 0 })`
+-- `+ match n { 0..=9 => 1, _ => 2 }`.
+example : fn7_max_steps { args := [u8Val 9, u8Val 2, u32Val 5] } = 83886165 := rfl
 example : fn7_max_steps { args := [u8Val 3, u8Val 250, u32Val 4294967295] } =
     9399436349 := rfl
-example : fn7_max_steps { args := [u8Val 9, u8Val 2, u32Val 0] } = 60 := rfl
+example : fn7_max_steps { args := [u8Val 9, u8Val 2, u32Val 0] } = 61 := rfl
 
 end Spec.Check

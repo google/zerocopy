@@ -2712,6 +2712,141 @@ fn ilog2_needs_a_positive_receiver() {
 }
 
 #[test]
+fn next_power_of_two_lowers_exactly() {
+    let x = "(specInt (specArg q 0))";
+    let lean = |clause: &str, sig: &str| {
+        lower_one(&wrap(clause, sig)).unwrap_or_else(|e| panic!("{clause}: {e:?}")).spec_lean
+    };
+    let has = |text: &str, want: &str| assert!(text.contains(want), "missing {want} in\n{text}");
+    let stage = |body: &str, arg: &str| format!("((fun («x» : Nat) => {body}) {arg})");
+    let ones = |arg: &str| {
+        stage(
+            "(«x» + («x» >>> 4)) &&& 15",
+            &stage(
+                "(«x» &&& 51) + ((«x» >>> 2) &&& 51)",
+                &stage("«x» - ((«x» >>> 1) &&& 85)", arg),
+            ),
+        )
+    };
+    // Two to the span of `a - 1` copied down, in `Nat`, where `0 - 1` is `0`.
+    let down = stage(
+        "«x» ||| («x» >>> 4)",
+        &stage(
+            "«x» ||| («x» >>> 2)",
+            &stage("«x» ||| («x» >>> 1)", &format!("(Int.toNat {x} - 1)")),
+        ),
+    );
+    has(
+        &lean("requires(a <= 128u8), ensures(|r| r == a.next_power_of_two())", "fn f(a: u8) -> u8"),
+        &format!("((specInt out.ret) = (Int.ofNat (1 <<< ({} % 256))))", ones(&down)),
+    );
+    let wide = lean(
+        "requires(a <= 170141183460469231731687303715884105728u128), \
+         ensures(|r| r == a.next_power_of_two())",
+        "fn f(a: u128) -> u128",
+    );
+    has(&wide, "«x» ||| («x» >>> 64)");
+    has(&wide, "(Int.ofNat (1 <<< (");
+    // The result has the receiver's type, and constants in range need no
+    // guard.
+    for clause in [
+        "requires(a <= 1u16), ensures(|r| math(r) == math(a.next_power_of_two()) + 1)",
+        "ensures(|r| r == 32768u16.next_power_of_two())",
+        "ensures(|r| r == 0u16.next_power_of_two())",
+        "ensures(|r| r == u16::MIN.next_power_of_two())",
+    ] {
+        lower_one(&wrap(clause, "fn f(a: u16) -> u16"))
+            .unwrap_or_else(|e| panic!("{clause}: {e:?}"));
+    }
+}
+
+#[test]
+fn next_power_of_two_needs_room() {
+    let sig = "fn f(u: u8, w: u64, c: bool) -> u8";
+    let ok = |clause: &str| {
+        lower_one(&wrap(clause, sig)).unwrap_or_else(|e| panic!("{clause}: {e:?}"));
+    };
+    // A comparison bounds the receiver by `2^(bits - 1)` where it proves it at
+    // most, or below, a constant, either way round and possibly negated.
+    for guard in [
+        "u <= 128u8",
+        "128u8 >= u",
+        "u < 129u8",
+        "129u8 > u",
+        "u == 128u8",
+        "128u8 == u",
+        "u <= 5u8",
+        "!(u > 128u8)",
+        "!(128u8 < u)",
+        "!(u >= 129u8)",
+        "!(129u8 <= u)",
+        "!(u != 7u8)",
+        "u <= 200u8 && u <= 100u8",
+        "c && u <= 128u8",
+        "{ let ok = u <= 100u8; ok }",
+        "w <= 9223372036854775808u64 && u < 3u8",
+    ] {
+        ok(&format!("requires({guard}), ensures(|r| r == u.next_power_of_two())"));
+    }
+    ok("requires(w <= 9223372036854775808u64), ensures(|r| math(w.next_power_of_two()) >= 1)");
+    // The bound flows like a divisor guard: through implications, `if`
+    // branches, bindings, and `match` arms.
+    for clause in [
+        "ensures(|r| u <= 128u8 ==> r == u.next_power_of_two())",
+        "ensures(|r| r == if u > 128u8 { 0u8 } else { u.next_power_of_two() })",
+        "requires(u < 100u8), ensures(|r| { let j = u; r == j.next_power_of_two() })",
+        "ensures(|r| { let k: u8 = 100; r == k.next_power_of_two() })",
+        "ensures(|r| r == match u { 0..=128 => u.next_power_of_two(), _ => 0u8 })",
+        "ensures(|r| r == match u { 1 | 5..=64 => u.next_power_of_two(), _ => 0u8 })",
+        "ensures(|r| r == match u { 129..=u8::MAX => 0u8, _ => u.next_power_of_two() })",
+        "ensures(|r| r == match u { 200..=u8::MAX => 0u8, 129..=199 => 1u8, n => n.next_power_of_two() })",
+        "ensures(|r| r == match u { 129..=150 | 151..=u8::MAX => 0u8, _ => u.next_power_of_two() })",
+    ] {
+        ok(clause);
+    }
+    for clause in [
+        "ensures(|r| r == u.next_power_of_two())",
+        "requires(u <= 129u8), ensures(|r| r == u.next_power_of_two())",
+        "requires(u < 130u8), ensures(|r| r == u.next_power_of_two())",
+        "requires(u == 129u8), ensures(|r| r == u.next_power_of_two())",
+        "requires(u >= 128u8), ensures(|r| r == u.next_power_of_two())",
+        "requires(u > 128u8), ensures(|r| r == u.next_power_of_two())",
+        "requires(!(u > 129u8)), ensures(|r| r == u.next_power_of_two())",
+        "requires(!(u >= 130u8)), ensures(|r| r == u.next_power_of_two())",
+        "requires(!(u == 1u8)), ensures(|r| r == u.next_power_of_two())",
+        "requires(u <= 128u8 || c), ensures(|r| r == u.next_power_of_two())",
+        "requires(w <= 1u64), ensures(|r| r == u.next_power_of_two())",
+        "requires(w <= 9223372036854775809u64), ensures(|r| math(w.next_power_of_two()) >= 1)",
+        "ensures(|r| u <= 128u8 || r == u.next_power_of_two())",
+        "ensures(|r| r == if u > 128u8 { u.next_power_of_two() } else { 0u8 })",
+        "ensures(|r| r == match u { 0..=129 => u.next_power_of_two(), _ => 0u8 })",
+        "ensures(|r| r == match u { 130..=u8::MAX => 0u8, _ => u.next_power_of_two() })",
+        "ensures(|r| r == match u { 129..=254 => 0u8, n => n.next_power_of_two() })",
+        "ensures(|r| r == 129u8.next_power_of_two())",
+        "ensures(|r| r == u8::MAX.next_power_of_two())",
+        "ensures(|r| { let k: u8 = 200; r == k.next_power_of_two() })",
+        "requires({ let j = u; j <= 128u8 }), ensures(|r| r == u.next_power_of_two())",
+    ] {
+        expect_error(&wrap(clause, sig), "E_ANNEAL_UNGUARDED_SPEC_OVERFLOW");
+    }
+    let r = expect_error(
+        &wrap("requires(u < 130u8), ensures(|r| r == u.next_power_of_two())", sig),
+        "E_ANNEAL_UNGUARDED_SPEC_OVERFLOW",
+    );
+    assert!(r.contains("the result of `next_power_of_two` may overflow `u8`"), "{r}");
+    assert!(r.contains("`x <= 128 ==> x.next_power_of_two() == ...`"), "{r}");
+    for (clause, code) in [
+        ("requires(i <= 64i8 && i.next_power_of_two() == 64i8)", "E_ANNEAL_SPEC_TYPE_MISMATCH"),
+        ("requires(c.next_power_of_two() == 0u8)", "E_ANNEAL_SPEC_TYPE_MISMATCH"),
+        ("requires(5.next_power_of_two() == 8u8)", "E_ANNEAL_SPEC_TYPE_ANNOTATION_NEEDED"),
+        ("requires(u <= 1u8 && u.next_power_of_two(2) == 1u8)", "E_ANNEAL_SPEC_ARITY"),
+        ("requires(u <= 1u8 && u.next_power_of_two() == 1u32)", "E_ANNEAL_SPEC_TYPE_MISMATCH"),
+    ] {
+        expect_error(&wrap(clause, "fn f(u: u8, i: i8, c: bool)"), code);
+    }
+}
+
+#[test]
 fn match_range_patterns_lower_exactly() {
     let lean = |clause: &str, sig: &str| {
         lower_one(&wrap(clause, sig)).unwrap_or_else(|e| panic!("{clause}: {e:?}")).spec_lean
