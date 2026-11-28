@@ -15,6 +15,10 @@
 # `lean_run_tests.support` so that `unittest` runs the module fixture
 # around every class. Importing them here lets `unittest` discovery,
 # which loads only `test_*.py` files, find each test case exactly once.
+# Two classes also inherit tests from plain mixin classes in their own
+# modules (`signal_handling` and `launch_fallbacks_and_races`), which
+# keeps each module under 800 lines; `unittest` reports those tests
+# under the inheriting class.
 
 from pathlib import Path
 import sys
