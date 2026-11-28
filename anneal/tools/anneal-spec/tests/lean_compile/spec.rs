@@ -779,6 +779,33 @@ anneal::external_spec! {
         }
     }
 
+    // The `u8` ASCII classes, one bit each in `core`'s order, and the case
+    // conversions.
+    #[anneal::pure]
+    fn ascii_bits(a: u8) -> u16 {
+        (if a.is_ascii() { 1u16 } else { 0u16 })
+            | (if a.is_ascii_alphabetic() { 2u16 } else { 0u16 })
+            | (if a.is_ascii_uppercase() { 4u16 } else { 0u16 })
+            | (if a.is_ascii_lowercase() { 8u16 } else { 0u16 })
+            | (if a.is_ascii_alphanumeric() { 16u16 } else { 0u16 })
+            | (if a.is_ascii_digit() { 32u16 } else { 0u16 })
+            | (if a.is_ascii_hexdigit() { 64u16 } else { 0u16 })
+            | (if a.is_ascii_punctuation() { 128u16 } else { 0u16 })
+            | (if a.is_ascii_graphic() { 256u16 } else { 0u16 })
+            | (if a.is_ascii_whitespace() { 512u16 } else { 0u16 })
+            | (if a.is_ascii_control() { 1024u16 } else { 0u16 })
+    }
+
+    #[anneal::pure]
+    fn ascii_upper(a: u8) -> u8 {
+        a.to_ascii_uppercase()
+    }
+
+    #[anneal::pure]
+    fn ascii_lower(a: u8) -> u8 {
+        a.to_ascii_lowercase()
+    }
+
     #[anneal::pure]
     fn npot_u64(a: u64) -> u64 {
         match a {
@@ -813,6 +840,7 @@ anneal::external_spec! {
                 + n.swap_bytes()
                 + n.count_ones()
                 + n.leading_zeros()
+                + b.to_ascii_lowercase() as u32
                 + (if n > 0 { n.ilog2() } else { 0 })
                 + (if n <= 1000 { n.next_power_of_two() } else { 0 })
                 + (match n { j @ 1..=9 => j, _ => 0 })

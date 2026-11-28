@@ -494,6 +494,48 @@ example : pure_at_npot 1000 = 1024 := by unfold pure_at_npot; decide
 example : pure_at_npot 32768 = 32768 := by unfold pure_at_npot; decide
 example : pure_at_npot 32769 = 0 := by unfold pure_at_npot; decide
 
+-- The `u8` ASCII classes at the boundaries of every class (bit `i` is the
+-- `i`-th class in `ascii_bits`), and the case conversions around the letters.
+example : pure_ascii_bits 0 = 1025 := by unfold pure_ascii_bits; decide
+example : pure_ascii_bits 9 = 1537 := by unfold pure_ascii_bits; decide
+example : pure_ascii_bits 10 = 1537 := by unfold pure_ascii_bits; decide
+example : pure_ascii_bits 11 = 1025 := by unfold pure_ascii_bits; decide
+example : pure_ascii_bits 12 = 1537 := by unfold pure_ascii_bits; decide
+example : pure_ascii_bits 13 = 1537 := by unfold pure_ascii_bits; decide
+example : pure_ascii_bits 31 = 1025 := by unfold pure_ascii_bits; decide
+example : pure_ascii_bits 32 = 513 := by unfold pure_ascii_bits; decide
+example : pure_ascii_bits 33 = 385 := by unfold pure_ascii_bits; decide
+example : pure_ascii_bits 47 = 385 := by unfold pure_ascii_bits; decide
+example : pure_ascii_bits 48 = 369 := by unfold pure_ascii_bits; decide
+example : pure_ascii_bits 57 = 369 := by unfold pure_ascii_bits; decide
+example : pure_ascii_bits 58 = 385 := by unfold pure_ascii_bits; decide
+example : pure_ascii_bits 64 = 385 := by unfold pure_ascii_bits; decide
+example : pure_ascii_bits 65 = 343 := by unfold pure_ascii_bits; decide
+example : pure_ascii_bits 70 = 343 := by unfold pure_ascii_bits; decide
+example : pure_ascii_bits 71 = 279 := by unfold pure_ascii_bits; decide
+example : pure_ascii_bits 90 = 279 := by unfold pure_ascii_bits; decide
+example : pure_ascii_bits 91 = 385 := by unfold pure_ascii_bits; decide
+example : pure_ascii_bits 96 = 385 := by unfold pure_ascii_bits; decide
+example : pure_ascii_bits 97 = 347 := by unfold pure_ascii_bits; decide
+example : pure_ascii_bits 102 = 347 := by unfold pure_ascii_bits; decide
+example : pure_ascii_bits 103 = 283 := by unfold pure_ascii_bits; decide
+example : pure_ascii_bits 122 = 283 := by unfold pure_ascii_bits; decide
+example : pure_ascii_bits 123 = 385 := by unfold pure_ascii_bits; decide
+example : pure_ascii_bits 126 = 385 := by unfold pure_ascii_bits; decide
+example : pure_ascii_bits 127 = 1025 := by unfold pure_ascii_bits; decide
+example : pure_ascii_bits 128 = 0 := by unfold pure_ascii_bits; decide
+example : pure_ascii_bits 255 = 0 := by unfold pure_ascii_bits; decide
+example : pure_ascii_upper 65 = 65 := by unfold pure_ascii_upper; decide
+example : pure_ascii_upper 96 = 96 := by unfold pure_ascii_upper; decide
+example : pure_ascii_upper 97 = 65 := by unfold pure_ascii_upper; decide
+example : pure_ascii_upper 122 = 90 := by unfold pure_ascii_upper; decide
+example : pure_ascii_upper 123 = 123 := by unfold pure_ascii_upper; decide
+example : pure_ascii_lower 64 = 64 := by unfold pure_ascii_lower; decide
+example : pure_ascii_lower 65 = 97 := by unfold pure_ascii_lower; decide
+example : pure_ascii_lower 90 = 122 := by unfold pure_ascii_lower; decide
+example : pure_ascii_lower 91 = 91 := by unfold pure_ascii_lower; decide
+example : pure_ascii_lower 97 = 97 := by unfold pure_ascii_lower; decide
+
 -- The masked shifts take the amount modulo the width.
 example : pure_wshl_is 1 17 2 := by unfold pure_wshl_is; decide
 example : pure_wshl_is 0x8001 1 2 := by unfold pure_wshl_is; decide
@@ -506,12 +548,13 @@ example : ¬ pure_wshr_is (-32768) 31 1 := by unfold pure_wshr_is; decide
 -- `+ a.cast_signed().unsigned_abs() as u32 + b.saturating_add_signed(-1) as u32`
 -- `+ n.unbounded_shr(31) + n.div_euclid(16) + n.saturating_div(1024)`
 -- `+ n.swap_bytes() + n.count_ones() + n.leading_zeros()`
+-- `+ b.to_ascii_lowercase() as u32`
 -- `+ (if n > 0 { n.ilog2() } else { 0 })`
 -- `+ (if n <= 1000 { n.next_power_of_two() } else { 0 })`
 -- `+ (match n { j @ 1..=9 => j, _ => 0 }) + match n { 0..=9 => 1, _ => 2 }`.
-example : fn7_max_steps { args := [u8Val 9, u8Val 2, u32Val 5] } = 83886170 := rfl
+example : fn7_max_steps { args := [u8Val 9, u8Val 2, u32Val 5] } = 83886172 := rfl
 example : fn7_max_steps { args := [u8Val 3, u8Val 250, u32Val 4294967295] } =
-    9399436349 := rfl
-example : fn7_max_steps { args := [u8Val 9, u8Val 2, u32Val 0] } = 61 := rfl
+    9399436599 := rfl
+example : fn7_max_steps { args := [u8Val 9, u8Val 2, u32Val 0] } = 63 := rfl
 
 end Spec.Check
