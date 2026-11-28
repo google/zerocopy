@@ -44,7 +44,7 @@ Three complementary mechanisms are provided:
    evaluate an expensive guard `P`. Reverting `h` and refining the goal
    `(if P then T else F) → G` with one of these eliminators instead matches
    `@ite` structurally and leaves `P` unreduced. Each eliminator is a term-mode
-   `Decidable.casesOn` on the guard's `Decidable` instance.
+   `match` on the guard's `Decidable` instance.
 -/
 
 namespace Anneal.Firewall
@@ -127,7 +127,9 @@ theorem finish_cut {σ : Type u} {cutAt : Nat → σ → Prop}
 matches `@ite` structurally without putting `P` in weak head normal form. -/
 theorem ite_elim_imp {P : Prop} {inst : Decidable P} {T F G : Prop}
     (hT : P → T → G) (hF : ¬ P → F → G) : @ite Prop P inst T F → G :=
-  @Decidable.casesOn P (fun d => @ite Prop P d T F → G) inst hF hT
+  match inst with
+  | isFalse hNP => hF hNP
+  | isTrue hP => hT hP
 
 /-- Eliminate `@ite Prop P inst T F → G` through the `then` branch, given a
 proof of the guard `P`. -/
@@ -160,7 +162,9 @@ theorem ite_eq_elim_imp {α : Type u} {P : Prop} {inst : Decidable P}
     {t f r : α} {G : Prop}
     (hT : P → t = r → G) (hF : ¬ P → f = r → G) :
     @ite α P inst t f = r → G :=
-  @Decidable.casesOn P (fun d => @ite α P d t f = r → G) inst hF hT
+  match inst with
+  | isFalse hNP => hF hNP
+  | isTrue hP => hT hP
 
 /-- Eliminate `@ite α P inst t f = r → G` through the `then` branch, given a
 proof of the guard `P`. -/

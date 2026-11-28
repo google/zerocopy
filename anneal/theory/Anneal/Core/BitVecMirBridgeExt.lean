@@ -3672,7 +3672,7 @@ theorem evalBinOp_ne_eq (w : IntWidth) (s : Bool)
         decodeScalar (bvToScalar w s x))) = false
       rw [beq_self_eq_true]
       rfl
-    rw [hb, decide_eq_false (fun h => h rfl)]
+    rw [hb, decide_eq_false (p := x ≠ x) (fun h => h rfl)]
   | isFalse hNe =>
     have hBvNe : x ≠ y := fun h => hNe (congrArg BitVec.toNat h)
     have hDecNe : decodeScalar (bvToScalar w s x) ≠

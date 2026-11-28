@@ -1396,26 +1396,50 @@ theorem getPlaceAlloc_sized_of_access_v2' {P E K H X : Type}
         cases repr with
         | Scalar _ | ScalarPair | SimdVector | SimdScalableVector =>
           change (match (Miri.Memory.AllocationAccess.getPtrAlloc memory hooks
-              ⟨Miri.ABI.Size.ofBytes 8⟩ ptr sz ghost kind global
-              access).outcome with
-            | Except.error error => _
-            | Except.ok reference? => _) = _
-          dsimp only [Miri.Interpreter.getPlaceAlloc, refRuntimeLayoutV2,
-            pure, Pure.pure, Except.pure, bind, Bind.bind, Except.bind,
-            Except.mapError, Id.run]
+              ⟨Miri.ABI.Size.ofBytes 8⟩ ptr sz ghost kind global access).outcome with
+            | Except.error error =>
+              Miri.Interpreter.MemoryOperandResult.mk
+                (Miri.Memory.AllocationAccess.getPtrAlloc memory hooks
+                  ⟨Miri.ABI.Size.ofBytes 8⟩ ptr sz ghost kind global access).memory
+                (Miri.Memory.AllocationAccess.getPtrAlloc memory hooks
+                  ⟨Miri.ABI.Size.ofBytes 8⟩ ptr sz ghost kind global access).hooks
+                (Miri.Memory.AllocationAccess.getPtrAlloc memory hooks
+                  ⟨Miri.ABI.Size.ofBytes 8⟩ ptr sz ghost kind global access).touched
+                (Except.error (Miri.Interpreter.MemoryOperandError.pointerAccess error))
+            | Except.ok reference? =>
+              Miri.Interpreter.MemoryOperandResult.mk
+                (Miri.Memory.AllocationAccess.getPtrAlloc memory hooks
+                  ⟨Miri.ABI.Size.ofBytes 8⟩ ptr sz ghost kind global access).memory
+                (Miri.Memory.AllocationAccess.getPtrAlloc memory hooks
+                  ⟨Miri.ABI.Size.ofBytes 8⟩ ptr sz ghost kind global access).hooks
+                (Miri.Memory.AllocationAccess.getPtrAlloc memory hooks
+                  ⟨Miri.ABI.Size.ofBytes 8⟩ ptr sz ghost kind global access).touched
+                (Except.ok reference?)) = _
           rw [actual]
         | @Memory isSized =>
           cases isSized with
           | false => cases sized
           | true =>
             change (match (Miri.Memory.AllocationAccess.getPtrAlloc memory hooks
-                ⟨Miri.ABI.Size.ofBytes 8⟩ ptr sz ghost kind global
-                access).outcome with
-              | Except.error error => _
-              | Except.ok reference? => _) = _
-            dsimp only [Miri.Interpreter.getPlaceAlloc, refRuntimeLayoutV2,
-              pure, Pure.pure, Except.pure, bind, Bind.bind, Except.bind,
-              Except.mapError, Id.run]
+                ⟨Miri.ABI.Size.ofBytes 8⟩ ptr sz ghost kind global access).outcome with
+              | Except.error error =>
+                Miri.Interpreter.MemoryOperandResult.mk
+                  (Miri.Memory.AllocationAccess.getPtrAlloc memory hooks
+                    ⟨Miri.ABI.Size.ofBytes 8⟩ ptr sz ghost kind global access).memory
+                  (Miri.Memory.AllocationAccess.getPtrAlloc memory hooks
+                    ⟨Miri.ABI.Size.ofBytes 8⟩ ptr sz ghost kind global access).hooks
+                  (Miri.Memory.AllocationAccess.getPtrAlloc memory hooks
+                    ⟨Miri.ABI.Size.ofBytes 8⟩ ptr sz ghost kind global access).touched
+                  (Except.error (Miri.Interpreter.MemoryOperandError.pointerAccess error))
+              | Except.ok reference? =>
+                Miri.Interpreter.MemoryOperandResult.mk
+                  (Miri.Memory.AllocationAccess.getPtrAlloc memory hooks
+                    ⟨Miri.ABI.Size.ofBytes 8⟩ ptr sz ghost kind global access).memory
+                  (Miri.Memory.AllocationAccess.getPtrAlloc memory hooks
+                    ⟨Miri.ABI.Size.ofBytes 8⟩ ptr sz ghost kind global access).hooks
+                  (Miri.Memory.AllocationAccess.getPtrAlloc memory hooks
+                    ⟨Miri.ABI.Size.ofBytes 8⟩ ptr sz ghost kind global access).touched
+                  (Except.ok reference?)) = _
             rw [actual]
 
 /-- Mutable sized place access composed from a pointer access that may
@@ -1449,27 +1473,51 @@ theorem getPlaceAllocMut_sized_of_access_v2' {P E K H X : Type}
         dsimp only at sized actual
         cases repr with
         | Scalar _ | ScalarPair | SimdVector | SimdScalableVector =>
-          change (match (Miri.Memory.AllocationAccess.getPtrAllocMut memory
-              hooks ⟨Miri.ABI.Size.ofBytes 8⟩ ptr sz ghost kind global
-              access).outcome with
-            | Except.error error => _
-            | Except.ok reference? => _) = _
-          dsimp only [Miri.Interpreter.getPlaceAllocMut, refRuntimeLayoutV2,
-            pure, Pure.pure, Except.pure, bind, Bind.bind, Except.bind,
-            Except.mapError, Id.run]
+          change (match (Miri.Memory.AllocationAccess.getPtrAllocMut memory hooks
+              ⟨Miri.ABI.Size.ofBytes 8⟩ ptr sz ghost kind global access).outcome with
+            | Except.error error =>
+              Miri.Interpreter.MemoryOperandResult.mk
+                (Miri.Memory.AllocationAccess.getPtrAllocMut memory hooks
+                  ⟨Miri.ABI.Size.ofBytes 8⟩ ptr sz ghost kind global access).memory
+                (Miri.Memory.AllocationAccess.getPtrAllocMut memory hooks
+                  ⟨Miri.ABI.Size.ofBytes 8⟩ ptr sz ghost kind global access).hooks
+                (Miri.Memory.AllocationAccess.getPtrAllocMut memory hooks
+                  ⟨Miri.ABI.Size.ofBytes 8⟩ ptr sz ghost kind global access).touched
+                (Except.error (Miri.Interpreter.MemoryOperandError.pointerAccess error))
+            | Except.ok reference? =>
+              Miri.Interpreter.MemoryOperandResult.mk
+                (Miri.Memory.AllocationAccess.getPtrAllocMut memory hooks
+                  ⟨Miri.ABI.Size.ofBytes 8⟩ ptr sz ghost kind global access).memory
+                (Miri.Memory.AllocationAccess.getPtrAllocMut memory hooks
+                  ⟨Miri.ABI.Size.ofBytes 8⟩ ptr sz ghost kind global access).hooks
+                (Miri.Memory.AllocationAccess.getPtrAllocMut memory hooks
+                  ⟨Miri.ABI.Size.ofBytes 8⟩ ptr sz ghost kind global access).touched
+                (Except.ok reference?)) = _
           rw [actual]
         | @Memory isSized =>
           cases isSized with
           | false => cases sized
           | true =>
-            change (match (Miri.Memory.AllocationAccess.getPtrAllocMut memory
-                hooks ⟨Miri.ABI.Size.ofBytes 8⟩ ptr sz ghost kind global
-                access).outcome with
-              | Except.error error => _
-              | Except.ok reference? => _) = _
-            dsimp only [Miri.Interpreter.getPlaceAllocMut, refRuntimeLayoutV2,
-              pure, Pure.pure, Except.pure, bind, Bind.bind, Except.bind,
-              Except.mapError, Id.run]
+            change (match (Miri.Memory.AllocationAccess.getPtrAllocMut memory hooks
+                ⟨Miri.ABI.Size.ofBytes 8⟩ ptr sz ghost kind global access).outcome with
+              | Except.error error =>
+                Miri.Interpreter.MemoryOperandResult.mk
+                  (Miri.Memory.AllocationAccess.getPtrAllocMut memory hooks
+                    ⟨Miri.ABI.Size.ofBytes 8⟩ ptr sz ghost kind global access).memory
+                  (Miri.Memory.AllocationAccess.getPtrAllocMut memory hooks
+                    ⟨Miri.ABI.Size.ofBytes 8⟩ ptr sz ghost kind global access).hooks
+                  (Miri.Memory.AllocationAccess.getPtrAllocMut memory hooks
+                    ⟨Miri.ABI.Size.ofBytes 8⟩ ptr sz ghost kind global access).touched
+                  (Except.error (Miri.Interpreter.MemoryOperandError.pointerAccess error))
+              | Except.ok reference? =>
+                Miri.Interpreter.MemoryOperandResult.mk
+                  (Miri.Memory.AllocationAccess.getPtrAllocMut memory hooks
+                    ⟨Miri.ABI.Size.ofBytes 8⟩ ptr sz ghost kind global access).memory
+                  (Miri.Memory.AllocationAccess.getPtrAllocMut memory hooks
+                    ⟨Miri.ABI.Size.ofBytes 8⟩ ptr sz ghost kind global access).hooks
+                  (Miri.Memory.AllocationAccess.getPtrAllocMut memory hooks
+                    ⟨Miri.ABI.Size.ofBytes 8⟩ ptr sz ghost kind global access).touched
+                  (Except.ok reference?)) = _
             rw [actual]
 
 private theorem getPtrAllocMut_retPlace_8_v2 (types : List MirTy)
@@ -1684,13 +1732,8 @@ private theorem readImmediate_retPlace_8_cfg_v2 (types : List MirTy)
             after⟩,
           .ok (some ⟨retAllocIdV2,
             Miri.Memory.allocRange Miri.ABI.Size.ZERO (Miri.ABI.Size.ofBytes 8),
-            after⟩)⟩ :=
-    getPlaceAlloc_sized_of_access_v2' st.machine.memory st.machine.memory
-      ⟨st.machine, none⟩ mplace true none cfg.globalHooks
-      (Miri.Interpreter.PlaceMachine.accessHooks cfg) cfg.dynamicLayout
-      ⟨retAllocIdV2,
-        Miri.Memory.allocRange Miri.ABI.Size.ZERO (Miri.ABI.Size.ofBytes 8),
-        after⟩
+            after⟩)⟩ := by
+    exact getPlaceAlloc_sized_of_access_v2' _ _ _ mplace _ _ _ _ _ _
       h_uns h_aln h_act
   rw [h_lml]
   have h_raw_m :

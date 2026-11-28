@@ -1850,6 +1850,102 @@ theorem initBytes?Comp_eq (bytes : List AllocByte) :
           | .ok v => .ok (some v)
           | .error k => .error k
 
+private theorem bool_ite_true {α : Type} (a b : α) :
+    (if true = true then a else b) = a := rfl
+
+private theorem bool_ite_false {α : Type} (a b : α) :
+    (if false = true then a else b) = b := rfl
+
+private theorem decodeValComp_generic_body_eq (endian : TargetEndian) (ty : MirTy)
+    (bytes : List AllocByte) (layout : LayoutData) :
+    (if !Nat.beq bytes.length layout.size then Except.error FaultKind.unsupported
+      else if Nat.beq layout.size 0 then
+        match evalConstLitComp ty ConstLit.zeroSized with
+        | Except.ok v => Except.ok (some v)
+        | Except.error k => Except.error k
+      else
+        match initBytes?Comp bytes with
+        | none => Except.ok none
+        | some raw =>
+          match evalConstLitComp ty
+              (ConstLit.scalar (BitVec.ofNat 128 (decodeUIntComp endian raw))) with
+          | Except.ok v => Except.ok (some v)
+          | Except.error k => Except.error k) =
+    (if !Nat.beq bytes.length layout.size then Except.error FaultKind.unsupported
+      else if Nat.beq layout.size 0 then
+        match evalConstLit ty ConstLit.zeroSized with
+        | Except.ok v => Except.ok (some v)
+        | Except.error k => Except.error k
+      else
+        match initBytes? bytes with
+        | none => Except.ok none
+        | some raw =>
+          match evalConstLit ty
+              (ConstLit.scalar (BitVec.ofNat 128 (decodeUInt endian raw))) with
+          | Except.ok v => Except.ok (some v)
+          | Except.error k => Except.error k) := by
+  cases Nat.beq bytes.length layout.size with
+  | false =>
+    change (if true = true then Except.error FaultKind.unsupported else _) =
+      (if true = true then Except.error FaultKind.unsupported else _)
+    rw [bool_ite_true, bool_ite_true]
+  | true =>
+    change (if false = true then Except.error FaultKind.unsupported else _) =
+      (if false = true then Except.error FaultKind.unsupported else _)
+    rw [bool_ite_false, bool_ite_false]
+    cases Nat.beq layout.size 0 with
+    | true =>
+      rw [bool_ite_true, bool_ite_true, evalConstLitComp_eq]
+    | false =>
+      rw [bool_ite_false, bool_ite_false, initBytes?Comp_eq]
+      cases initBytes? bytes with
+      | none => rfl
+      | some raw =>
+        dsimp only
+        rw [decodeUIntComp_eq, evalConstLitComp_eq]
+
+private theorem decodeValComp_generic_eq (endian : TargetEndian) (ty : MirTy)
+    (bytes : List AllocByte)
+    (hC : decodeValComp endian ty bytes =
+      match layoutOfTyComp ty with
+      | none => .error .unsupported
+      | some layout =>
+        if !Nat.beq bytes.length layout.size then .error .unsupported
+        else if Nat.beq layout.size 0 then
+          match evalConstLitComp ty .zeroSized with
+          | .ok v => .ok (some v)
+          | .error k => .error k
+        else
+          match initBytes?Comp bytes with
+          | none => .ok none
+          | some raw =>
+            match evalConstLitComp ty
+                (.scalar (BitVec.ofNat 128 (decodeUIntComp endian raw))) with
+            | .ok v => .ok (some v)
+            | .error k => .error k)
+    (hS : decodeVal endian ty bytes =
+      match layoutOfTy ty with
+      | none => .error .unsupported
+      | some layout =>
+        if !Nat.beq bytes.length layout.size then .error .unsupported
+        else if Nat.beq layout.size 0 then
+          match evalConstLit ty .zeroSized with
+          | .ok v => .ok (some v)
+          | .error k => .error k
+        else
+          match initBytes? bytes with
+          | none => .ok none
+          | some raw =>
+            match evalConstLit ty
+                (.scalar (BitVec.ofNat 128 (decodeUInt endian raw))) with
+            | .ok v => .ok (some v)
+            | .error k => .error k) :
+    decodeValComp endian ty bytes = decodeVal endian ty bytes := by
+  rw [hC, hS, layoutOfTyComp_eq]
+  cases layoutOfTy ty with
+  | none => rfl
+  | some layout => exact decodeValComp_generic_body_eq endian ty bytes layout
+
 /-- Agreement between `decodeValComp` and `decodeVal`. -/
 theorem decodeValComp_eq (endian : TargetEndian) (ty : MirTy) (bytes : List AllocByte) :
     decodeValComp endian ty bytes = decodeVal endian ty bytes := by
@@ -1893,23 +1989,7 @@ theorem decodeValComp_eq (endian : TargetEndian) (ty : MirTy) (bytes : List Allo
       | slice _ | str | array _ _ | vec _ | box _ | rangeTo _ | rangeFrom _ | range _ | option _ | unsupported => rfl
   | bool | int _ _ | char | ordering | unit | enum _ | ref _ _ | rawPtr _ _
   | slice _ | str | array _ _ | vec _ | box _ | rangeTo _ | rangeFrom _ | range _ | option _ | unsupported =>
-    dsimp only [decodeValComp, decodeVal]
-    rw [layoutOfTyComp_eq]
-    cases layoutOfTy _ with
-    | none => rfl
-    | some layout =>
-      dsimp only
-      rw [evalConstLitComp_eq, initBytes?Comp_eq]
-      cases Nat.beq layout.size 0 with
-      | true =>
-        cases evalConstLit _ .zeroSized <;> rfl
-      | false =>
-        cases initBytes? bytes with
-        | none => rfl
-        | some raw =>
-          dsimp only
-          rw [decodeUIntComp_eq, evalConstLitComp_eq]
-          cases evalConstLit _ (.scalar (BitVec.ofNat 128 (decodeUInt endian raw))) <;> rfl
+    exact decodeValComp_generic_eq endian _ bytes rfl rfl
 
 /-- Computable mirror of `Trusted.MirSemantics.loadIndirect`. -/
 @[expose] def loadIndirectComp (mem : MemoryState) (ty : MirTy) (place : MemPlace) :

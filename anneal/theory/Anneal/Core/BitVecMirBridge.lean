@@ -1482,7 +1482,9 @@ theorem evalBinOp_add_eq_add (w : IntWidth) (s : Bool)
     (Bool.false_and _))).trans ?_
   let ⟨lossy, hTrunc⟩ := truncateScalar_val_eq w s
     (decodeScalar (bvToScalar w s x) + decodeScalar (bvToScalar w s y))
-  rw [hTrunc]
+  first
+  | rw [hTrunc]
+  | (dsimp only; rw [hTrunc])
   have hBits : truncateBits w (bvOfInt 128
         (decodeScalar (bvToScalar w s x) + decodeScalar (bvToScalar w s y))) =
       bvZeroExtend 128 (x + y) := by
@@ -1510,7 +1512,9 @@ theorem evalBinOp_sub_eq_sub (w : IntWidth) (s : Bool)
     (Bool.false_and _))).trans ?_
   let ⟨lossy, hTrunc⟩ := truncateScalar_val_eq w s
     (decodeScalar (bvToScalar w s x) - decodeScalar (bvToScalar w s y))
-  rw [hTrunc]
+  first
+  | rw [hTrunc]
+  | (dsimp only; rw [hTrunc])
   have hBits : truncateBits w (bvOfInt 128
         (decodeScalar (bvToScalar w s x) - decodeScalar (bvToScalar w s y))) =
       bvZeroExtend 128 (x - y) := by
@@ -1538,7 +1542,9 @@ theorem evalBinOp_mul_eq_mul (w : IntWidth) (s : Bool)
     (Bool.false_and _))).trans ?_
   let ⟨lossy, hTrunc⟩ := truncateScalar_val_eq w s
     (decodeScalar (bvToScalar w s x) * decodeScalar (bvToScalar w s y))
-  rw [hTrunc]
+  first
+  | rw [hTrunc]
+  | (dsimp only; rw [hTrunc])
   have hBits : truncateBits w (bvOfInt 128
         (decodeScalar (bvToScalar w s x) * decodeScalar (bvToScalar w s y))) =
       bvZeroExtend 128 (Anneal.BitVec.mul x y) := by
