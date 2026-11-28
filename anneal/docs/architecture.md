@@ -589,6 +589,7 @@ anneal/
     │   ├── Framework/StepWp.lean   # Generic step/checkpoint WP, cuts & loop rules
     │   ├── GaloisCodec.lean        # Galois byte-layout, zerocopy & transmute laws (+ GaloisCodec/)
     │   ├── Generic.lean            # Unbundled open-generic MIR, traits & erasure (+ Generic/)
+    │   ├── Hybrid.lean             # Checked producers: gates, fallbacks & ratchets (+ Hybrid/)
     │   ├── InitLemmas.lean         # Foundation Bool/BEq/List/Nat/Int/BitVec/UInt helpers
     │   ├── LeBytes.lean            # Parametric LE/BE byte serialization lemmas
     │   ├── LinearArith.lean        # Sparse Farkas & Chvatal-Gomory checker
