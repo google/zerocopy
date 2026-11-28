@@ -1093,18 +1093,20 @@ theorem evalBinOp_bitXor_eq (w : IntWidth) (s : Bool) (b₁ b₂ : BitVec 128)
       ite_bool_false (same_scalar_guard_false w s),
       truncateBits_of_toNat_lt h₁, truncateBits_of_toNat_lt h₂]
 
-/-- Width-parametric unsigned wrapping `.shl` closed form (eliminating the
-`zetaHave` / `let` trap in `evalShiftOp`). -/
-theorem evalBinOp_shl_unsigned_eq (w rw_ : IntWidth) {b₁ b₂ : BitVec 128}
-    (h₁ : b₁.toNat < intWidthModulus w) (h₂ : b₂.toNat < intWidthModulus rw_) :
-    evalBinOp .shl (.scalar ⟨w, false, b₁⟩) (.scalar ⟨rw_, false, b₂⟩) =
+/-- Width-parametric unsigned wrapping `.shl` closed form for any shift-amount
+operand that decodes to its own `toNat`, whatever its signedness (eliminating
+the `zetaHave` / `let` trap in `evalShiftOp`). -/
+theorem evalBinOp_shl_unsigned_of_decode_eq (w rw_ : IntWidth) (rs : Bool)
+    {b₁ b₂ : BitVec 128} (h₁ : b₁.toNat < intWidthModulus w)
+    (h₂ : decodeScalar ⟨rw_, rs, b₂⟩ = Int.ofNat b₂.toNat) :
+    evalBinOp .shl (.scalar ⟨w, false, b₁⟩) (.scalar ⟨rw_, rs, b₂⟩) =
       .ok (.scalar ⟨w, false,
         BitVec.ofNat 128
           (Nat.mod (Nat.shiftLeft b₁.toNat (Nat.mod b₂.toNat w.bitWidth))
             (intWidthModulus w))⟩) := by
   dsimp only [evalBinOp]
   rw [ite_bool_true (b := BinOp.shl.isShift) rfl,
-      decodeScalar_unsigned_of_lt h₁, decodeScalar_unsigned_of_lt h₂]
+      decodeScalar_unsigned_of_lt h₁, h₂]
   dsimp only [evalShiftOp, intShiftLeft]
   rw [intEmod_ofNat]
   change (match truncateScalar w false
@@ -1129,17 +1131,42 @@ theorem evalBinOp_shl_unsigned_eq (w rw_ : IntWidth) {b₁ b₂ : BitVec 128}
   change _ = Nat.mod _ (Nat.pow 2 128)
   rw [nat_mod_eq_of_lt hResLt]
 
-/-- Width-parametric unsigned wrapping `.shr` closed form (eliminating the
+/-- Width-parametric unsigned wrapping `.shl` closed form (eliminating the
 `zetaHave` / `let` trap in `evalShiftOp`). -/
-theorem evalBinOp_shr_unsigned_eq (w rw_ : IntWidth) {b₁ b₂ : BitVec 128}
+theorem evalBinOp_shl_unsigned_eq (w rw_ : IntWidth) {b₁ b₂ : BitVec 128}
     (h₁ : b₁.toNat < intWidthModulus w) (h₂ : b₂.toNat < intWidthModulus rw_) :
-    evalBinOp .shr (.scalar ⟨w, false, b₁⟩) (.scalar ⟨rw_, false, b₂⟩) =
+    evalBinOp .shl (.scalar ⟨w, false, b₁⟩) (.scalar ⟨rw_, false, b₂⟩) =
+      .ok (.scalar ⟨w, false,
+        BitVec.ofNat 128
+          (Nat.mod (Nat.shiftLeft b₁.toNat (Nat.mod b₂.toNat w.bitWidth))
+            (intWidthModulus w))⟩) :=
+  evalBinOp_shl_unsigned_of_decode_eq w rw_ false h₁ (decodeScalar_unsigned_of_lt h₂)
+
+/-- Width-parametric unsigned wrapping `.shl` closed form for a non-negative
+signed shift amount, such as the `i32` that an untyped Rust literal in
+`x << 4` defaults to. -/
+theorem evalBinOp_shl_unsigned_signed_rhs_eq (w rw_ : IntWidth) {b₁ b₂ : BitVec 128}
+    (h₁ : b₁.toNat < intWidthModulus w) (h₂ : b₂.toNat < intWidthHalfModulus rw_) :
+    evalBinOp .shl (.scalar ⟨w, false, b₁⟩) (.scalar ⟨rw_, true, b₂⟩) =
+      .ok (.scalar ⟨w, false,
+        BitVec.ofNat 128
+          (Nat.mod (Nat.shiftLeft b₁.toNat (Nat.mod b₂.toNat w.bitWidth))
+            (intWidthModulus w))⟩) :=
+  evalBinOp_shl_unsigned_of_decode_eq w rw_ true h₁ (decodeScalar_signed_of_lt_half h₂)
+
+/-- Width-parametric unsigned `.shr` closed form for any shift-amount operand
+that decodes to its own `toNat`, whatever its signedness (eliminating the
+`zetaHave` / `let` trap in `evalShiftOp`). -/
+theorem evalBinOp_shr_unsigned_of_decode_eq (w rw_ : IntWidth) (rs : Bool)
+    {b₁ b₂ : BitVec 128} (h₁ : b₁.toNat < intWidthModulus w)
+    (h₂ : decodeScalar ⟨rw_, rs, b₂⟩ = Int.ofNat b₂.toNat) :
+    evalBinOp .shr (.scalar ⟨w, false, b₁⟩) (.scalar ⟨rw_, rs, b₂⟩) =
       .ok (.scalar ⟨w, false,
         BitVec.ofNat 128
           (Nat.shiftRight b₁.toNat (Nat.mod b₂.toNat w.bitWidth))⟩) := by
   dsimp only [evalBinOp]
   rw [ite_bool_true (b := BinOp.shr.isShift) rfl,
-      decodeScalar_unsigned_of_lt h₁, decodeScalar_unsigned_of_lt h₂]
+      decodeScalar_unsigned_of_lt h₁, h₂]
   dsimp only [evalShiftOp, intShiftRight]
   rw [intEmod_ofNat]
   change (match truncateScalar w false
@@ -1163,6 +1190,27 @@ theorem evalBinOp_shr_unsigned_eq (w rw_ : IntWidth) {b₁ b₂ : BitVec 128}
   rw [nat_mod_eq_of_lt hLt]
   change _ = Nat.mod _ (Nat.pow 2 128)
   rw [nat_mod_eq_of_lt h128]
+
+/-- Width-parametric unsigned wrapping `.shr` closed form (eliminating the
+`zetaHave` / `let` trap in `evalShiftOp`). -/
+theorem evalBinOp_shr_unsigned_eq (w rw_ : IntWidth) {b₁ b₂ : BitVec 128}
+    (h₁ : b₁.toNat < intWidthModulus w) (h₂ : b₂.toNat < intWidthModulus rw_) :
+    evalBinOp .shr (.scalar ⟨w, false, b₁⟩) (.scalar ⟨rw_, false, b₂⟩) =
+      .ok (.scalar ⟨w, false,
+        BitVec.ofNat 128
+          (Nat.shiftRight b₁.toNat (Nat.mod b₂.toNat w.bitWidth))⟩) :=
+  evalBinOp_shr_unsigned_of_decode_eq w rw_ false h₁ (decodeScalar_unsigned_of_lt h₂)
+
+/-- Width-parametric unsigned `.shr` closed form for a non-negative signed
+shift amount, such as the `i32` that an untyped Rust literal in `b >> 4`
+defaults to. -/
+theorem evalBinOp_shr_unsigned_signed_rhs_eq (w rw_ : IntWidth) {b₁ b₂ : BitVec 128}
+    (h₁ : b₁.toNat < intWidthModulus w) (h₂ : b₂.toNat < intWidthHalfModulus rw_) :
+    evalBinOp .shr (.scalar ⟨w, false, b₁⟩) (.scalar ⟨rw_, true, b₂⟩) =
+      .ok (.scalar ⟨w, false,
+        BitVec.ofNat 128
+          (Nat.shiftRight b₁.toNat (Nat.mod b₂.toNat w.bitWidth))⟩) :=
+  evalBinOp_shr_unsigned_of_decode_eq w rw_ true h₁ (decodeScalar_signed_of_lt_half h₂)
 
 /-- Width-parametric unsigned wrapping `.add` closed form across all six widths
 (including `u128` and `usize`). -/

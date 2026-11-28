@@ -1564,6 +1564,19 @@ theorem canary_symbolic_u128_sub {b₁ b₂ : BitVec 128}
           (intWidthModulus .i128))⟩) :=
   evalBinOp_sub_unsigned_eq .i128 h₁ h₂
 
+/-- Symbolic `u8` shifts by an untyped Rust literal (`b >> 4`, `b << 4`),
+whose shift amount `rustc` types as `i32`, through
+`evalBinOp_{shr,shl}_unsigned_signed_rhs_eq`. -/
+theorem canary_symbolic_u8_shift_by_i32_literal {b : BitVec 128}
+    (h : b.toNat < intWidthModulus .i8) :
+    evalBinOp .shr (.scalar ⟨.i8, false, b⟩) (.scalar ⟨.i32, true, BitVec.ofNat 128 4⟩) =
+      .ok (.scalar ⟨.i8, false, BitVec.ofNat 128 (Nat.shiftRight b.toNat 4)⟩) ∧
+    evalBinOp .shl (.scalar ⟨.i8, false, b⟩) (.scalar ⟨.i32, true, BitVec.ofNat 128 4⟩) =
+      .ok (.scalar ⟨.i8, false,
+        BitVec.ofNat 128 (Nat.mod (Nat.shiftLeft b.toNat 4) (intWidthModulus .i8))⟩) :=
+  ⟨evalBinOp_shr_unsigned_signed_rhs_eq .i8 .i32 h (by decide),
+   evalBinOp_shl_unsigned_signed_rhs_eq .i8 .i32 h (by decide)⟩
+
 end Anneal.MirWp
 
 end
