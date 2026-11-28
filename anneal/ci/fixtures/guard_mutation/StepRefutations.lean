@@ -2150,8 +2150,8 @@ theorem refute_core_contracts_slice_subslice_in_mut :
 
 /-- Guard `core_contracts_slice_split_at_in_mut`: `slice::split_at(1)` on a
 `&mut [u8]` input over a `.shared` allocation faults with `.undefined` even
-though `reqMut = .shared`, because `execSliceSplitAt` validates the input at
-`inMut`. -/
+though `reqMut = .shared`, because `execSliceSplitAtOutcome` validates the
+input at `inMut`. -/
 theorem refute_core_contracts_slice_split_at_in_mut :
     (match execCoreContractOp sharedInit2Mem
         (.sliceSplitAt .shared (.int .i8 false))
@@ -3326,6 +3326,53 @@ theorem refute_core_contracts_is_multiple_of_unsigned_only :
       [(.int .i8 true, .scalar ⟨.i8, true, 4⟩),
        (.int .i8 true, .scalar ⟨.i8, true, 2⟩)] .bool =
       .error .unsupported :=
+  rfl
+
+private noncomputable def mutInit3Mem : MemoryState :=
+  { allocations := [{
+      allocId := 1, alignLog2 := 0, mutability := .mut,
+      bytes := [.init 10 none, .init 20 none, .init 30 none],
+      live := true
+    }], nextAllocId := 2 }
+
+/-- Guard `core_contracts_split_at_mut_bounds_panic`: `split_at_mut` with
+`mid > len` returns `.panic` (which aborts under `--panic abort`). -/
+theorem refute_core_contracts_split_at_mut_bounds_panic :
+    execSliceSplitAtOutcome mutInit3Mem .mut .mut (.int .i8 false)
+      ⟨some 1, 0, .isize⟩ 3 4 = .panic :=
+  rfl
+
+/-- Guard `core_contracts_split_at_mut_no_shared_upgrade`: `split_at_mut`
+forbids upgrading a `.shared` input slice reference to `.mut`. -/
+theorem refute_core_contracts_split_at_mut_no_shared_upgrade :
+    execSliceSplitAtOutcome mutInit3Mem .mut .shared (.int .i8 false)
+      ⟨some 1, 0, .isize⟩ 3 1 = .fault .undefined :=
+  rfl
+
+/-- Guard `core_contracts_split_at_mut_suffix_offset_disjoint`: `split_at_mut`
+advances the suffix pointer by `mid * size` so both returned `&mut` slices have
+disjoint spans. -/
+theorem refute_core_contracts_split_at_mut_suffix_offset_disjoint :
+    let pairTy : MirTy := .tuple [
+      .ref .mut (.slice (.int .i8 false)),
+      .ref .mut (.slice (.int .i8 false))
+    ]
+    match execSliceSplitAtOutcome mutInit3Mem .mut .mut (.int .i8 false)
+        ⟨some 1, 0, .isize⟩ 3 1 with
+    | .ok v _ => spansPairwiseDisjoint (refAccessSpans pairTy v) = true
+    | _ => False :=
+  rfl
+
+/-- Guard `core_contracts_split_at_mut_suffix_len_union`: `split_at_mut` sets
+the suffix slice length to `len - mid` so prefix and suffix partition the input
+span without exceeding allocation bounds. -/
+theorem refute_core_contracts_split_at_mut_suffix_len_union :
+    execSliceSplitAtOutcome mutInit3Mem .mut .mut (.int .i8 false)
+      ⟨some 1, 0, .isize⟩ 3 1 =
+      .ok (.tuple [
+        .slicePtr ⟨some 1, 0, .isize⟩ 1,
+        .slicePtr ⟨some 1, 1, .isize⟩ 2
+      ]) mutInit3Mem :=
   rfl
 
 end GuardMutation

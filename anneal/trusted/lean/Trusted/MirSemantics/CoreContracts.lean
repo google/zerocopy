@@ -44,13 +44,18 @@ aligned with pinned `rustc` (`f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1`):
 - `core::mem::replace`
 - `core::option::Option::{is_some, is_none, take, unwrap}`
 
-Safe panicking traps (out-of-bounds slice ranges, `split_at` past length, and
-`Option::unwrap` on `None`) fail closed via `corePanicTrap`.
+Safe panicking traps (out-of-bounds slice ranges and `Option::unwrap` on
+`None`) fail closed via `corePanicTrap`. `split_at` past length instead returns
+`CoreCallOutcome.panic` from `execSliceSplitAtCall`: `evalTerminatorV2` routes
+it through `evalCorePanicAbort` (`.aborted` under an eligible `--panic abort`),
+while the `Except`-returning `execCoreContractOp` maps it to `corePanicTrap`.
 -/
 
 /-- Fail-closed trap returned when a safe `core` precondition panics
-(distinct from `.undefined` memory UB; maps to `.unsupported` in this profile
-so future panic-abort integration can refine it directly).
+(distinct from `.undefined` memory UB; maps to `.unsupported` in this profile).
+`split_at` past length reaches it only through the `Except`-returning
+`execCoreContractOp`; `evalTerminatorV2` handles that panic via
+`execSliceSplitAtCall` and `evalCorePanicAbort` instead.
 
 Matches the panicking branches in `rust-lang/rust`
 `f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1`:
@@ -59,6 +64,15 @@ Matches the panicking branches in `rust-lang/rust`
 - `library/core/src/option.rs:2251-2253` (`unwrap_failed`:
   `panic("called `Option::unwrap()` on a `None` value")`) -/
 noncomputable def corePanicTrap : FaultKind := .unsupported
+
+/-- Outcome of evaluating a `CoreCallOp` with a modeled safe panic path
+(distinct from structural `.unsupported` and memory-UB `.undefined` faults),
+allowing `evalTerminatorV2` to map safe panics to `.done (.aborted ...)` under
+`--panic abort` while keeping structural faults fail-closed. -/
+inductive CoreCallOutcome where
+  | ok (val : Val) (mem : MemoryState)
+  | panic
+  | fault (k : FaultKind)
 
 /-- Count leading zero bits across the lowest `n` bit positions of `bits`,
 returning `w.bitWidth` when `bits = 0`. Mirrors `leading_zeros` in
@@ -284,8 +298,12 @@ noncomputable def execSliceSubslice (m : MemoryState)
           | .error k => .error k
           | .ok p' => .ok (.slicePtr p' (UInt64.ofNat (endOff - startOff)), m)
 
-/-- Execute `core::slice::split_at` or `split_at_mut`, checking `mid ≤ len` and
-returning `(prefix, suffix)` preserving provenance on both subslices, matching
+/-- Execute `core::slice::split_at` or `split_at_mut` returning a structured
+`CoreCallOutcome`: validates `elem`, forbids `&[T]` -> `&mut [T]` upgrades,
+validates the input slice in `m`, returns `.panic` when `mid > len`, and
+otherwise returns `(prefix, suffix)` where `prefix` covers `[p, p + mid*size)`
+and `suffix` covers `[p + mid*size, p + len*size)` (disjoint spans whose union
+equals the input span, preserving provenance on both subslices). Matches
 `library/core/src/slice/mod.rs:1953-1958,1987-1992,2154-2162` (`rust-lang/rust`
 `f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1`):
 
@@ -293,29 +311,50 @@ returning `(prefix, suffix)` preserving provenance on both subslices, matching
 >     Some(pair) => pair,
 >     None => panic!("mid > len"),
 > }" -/
-noncomputable def execSliceSplitAt (m : MemoryState) (reqMut inMut : Mutability)
-    (elem : MirTy) (p : PtrVal) (len : UInt64) (mid : Nat) :
-    Except FaultKind (Val × MemoryState) :=
+noncomputable def execSliceSplitAtOutcome (m : MemoryState)
+    (reqMut inMut : Mutability) (elem : MirTy) (p : PtrVal) (len : UInt64)
+    (mid : Nat) : CoreCallOutcome :=
   if !isSizedNoRefV2Ty elem then
-    .error .unsupported
+    .fault .unsupported
   else if Mutability.beq inMut .shared && Mutability.beq reqMut .mut then
-    .error .undefined
+    .fault .undefined
   else
     match refValidInMem m inMut (.slice elem) (.slicePtr p len) with
-    | .error k => .error k
+    | .error k => .fault k
     | .ok () =>
       if !Nat.ble mid len.toNat then
-        .error corePanicTrap
+        .panic
       else
         match layoutOfTyV2 elem with
-        | none => .error .unsupported
+        | none => .fault .unsupported
         | some lay =>
           match ptrAddInMem m lay.size p mid with
-          | .error k => .error k
+          | .error k => .fault k
           | .ok p' =>
             let prefixVal := Val.slicePtr p (UInt64.ofNat mid)
             let suffixVal := Val.slicePtr p' (UInt64.ofNat (len.toNat - mid))
-            .ok (.tuple [prefixVal, suffixVal], m)
+            .ok (.tuple [prefixVal, suffixVal]) m
+
+/-- Type-checked `CoreCallOp.sliceSplitAt` entry point returning
+`CoreCallOutcome` so `evalTerminatorV2` can distinguish safe `mid > len`
+panics from structural `.unsupported` and memory-UB `.undefined` faults. -/
+noncomputable def execSliceSplitAtCall (m : MemoryState) (reqMut : Mutability)
+    (elem : MirTy) (args : List (MirTy × Val)) (dstTy : MirTy) :
+    CoreCallOutcome :=
+  match args with
+  | [(.ref inMut (.slice inElem), .slicePtr p len),
+     (.int .isize false, .scalar midSv)] =>
+    match dstTy with
+    | .tuple [.ref outMut1 (.slice outE1), .ref outMut2 (.slice outE2)] =>
+      if !MirTy.beq elem inElem || !MirTy.beq elem outE1 ||
+          !MirTy.beq elem outE2 || !Mutability.beq reqMut outMut1 ||
+          !Mutability.beq reqMut outMut2 then
+        .fault .unsupported
+      else
+        let mid := (truncateBits .isize midSv.bits).toNat
+        execSliceSplitAtOutcome m reqMut inMut elem p len mid
+    | _ => .fault .unsupported
+  | _ => .fault .unsupported
 
 /-- Execute `core::mem::replace::<ty>(dst : &mut ty, src : ty) -> ty`,
 matching `library/core/src/mem/mod.rs:916,930-932` (`rust-lang/rust`
@@ -446,19 +485,11 @@ noncomputable def execCoreContractOp (m : MemoryState) (op : CoreCallOp)
       match refValidInMem m reqMut (.slice elem) (.slicePtr p len) with
       | .error k => .error k
       | .ok () => .ok (.bool (Nat.beq len.toNat 0), m)
-  | .sliceSplitAt reqMut elem,
-      [(.ref inMut (.slice inElem), .slicePtr p len),
-       (.int .isize false, .scalar midSv)] =>
-    match dstTy with
-    | .tuple [.ref outMut1 (.slice outE1), .ref outMut2 (.slice outE2)] =>
-      if !MirTy.beq elem inElem || !MirTy.beq elem outE1 ||
-          !MirTy.beq elem outE2 || !Mutability.beq reqMut outMut1 ||
-          !Mutability.beq reqMut outMut2 then
-        .error .unsupported
-      else
-        let mid := (truncateBits .isize midSv.bits).toNat
-        execSliceSplitAt m reqMut inMut elem p len mid
-    | _ => .error .unsupported
+  | .sliceSplitAt reqMut elem, args =>
+    match execSliceSplitAtCall m reqMut elem args dstTy with
+    | .ok v m' => .ok (v, m')
+    | .panic => .error corePanicTrap
+    | .fault k => .error k
   | .numIsMultipleOf w s,
       [(.int lw ls, .scalar lSv), (.int rw rs, .scalar rSv)] =>
     if s || ls || rs || !IntWidth.beq w lw || !IntWidth.beq w rw ||

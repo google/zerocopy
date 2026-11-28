@@ -1086,8 +1086,20 @@ private theorem evalStepV2_coreCall {p : Program} {frame : FrameState}
   rw [evalStepV2_term rfl hB hBB hEnd]
   unfold evalTerminatorV2; rw [hTerm]; dsimp only
   rw [ite_bool_false (!dst.projection.isEmpty) (by rw [hNoProj]; rfl)]
-  rw [hTy]; dsimp only; rw [hArgs]; dsimp only; rw [hCall]; dsimp only
-  rw [hWp]; rfl
+  rw [hTy]; dsimp only; rw [hArgs]; dsimp only
+  cases op
+  case sliceSplitAt reqMut elem =>
+    have hC : execSliceSplitAtCall mem reqMut elem typedArgs dstTy =
+        .ok resVal mem2 := by
+      unfold execCoreCallOpWithMem execAllocCoreCall execCoreCallWithMem
+        execCoreContractOp at hCall
+      dsimp only at hCall
+      cases h : execSliceSplitAtCall mem reqMut elem typedArgs dstTy with
+      | ok v m' => rw [h] at hCall; cases hCall; rfl
+      | panic => rw [h] at hCall; cases hCall
+      | fault k => rw [h] at hCall; cases hCall
+    dsimp only; rw [hC]; dsimp only; rw [hWp]; rfl
+  all_goals (dsimp only; rw [hCall]; dsimp only; rw [hWp]; rfl)
 
 private theorem evalStepV2_storageDead_indirect {p : Program}
     {frame : FrameState} {mem mem1 : MemoryState} {cm : CallerMemory}

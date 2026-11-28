@@ -670,7 +670,18 @@ private theorem evalStepV2_coreCall_ok {p : Program} {body : Body}
   rw [hTerm]; dsimp only
   rw [ite_bool_false (by rw [hEmp]; rfl)]
   rw [hDstTy]; dsimp only; rw [hArgs]; dsimp only
-  rw [hCall']; dsimp only; rw [hWr]; rfl
+  cases op
+  case sliceSplitAt reqMut elem =>
+    have hC : execSliceSplitAtCall mem1 reqMut elem typedArgs dstTy =
+        .ok resVal mem1' := by
+      unfold execCoreCallWithMem execCoreContractOp at hCall
+      dsimp only at hCall
+      cases h : execSliceSplitAtCall mem1 reqMut elem typedArgs dstTy with
+      | ok v m' => rw [h] at hCall; cases hCall; rfl
+      | panic => rw [h] at hCall; cases hCall
+      | fault k => rw [h] at hCall; cases hCall
+    dsimp only; rw [hC]; dsimp only; rw [hWr]; rfl
+  all_goals (dsimp only; rw [hCall']; dsimp only; rw [hWr]; rfl)
 
 private theorem evalTerminatorV2_return_any {body : Body} {bb : BasicBlock}
     {frame : FrameState} {mem : MemoryState} {callerMem : CallerMemory}

@@ -3837,18 +3837,18 @@ MIR_SEMANTICS_GUARDS: tuple[MirSemanticsGuard, ...] = (
         target_file="trusted/lean/Trusted/MirSemantics/CoreContracts.lean",
         target_module="Trusted/MirSemantics/CoreContracts",
         description=(
-            "execSliceSplitAt validates the input slice reference at its own "
-            "mutability"
+            "execSliceSplitAtOutcome validates the input slice reference at "
+            "its own mutability"
         ),
         anchor=(
             "    match refValidInMem m inMut (.slice elem) (.slicePtr p len) with\n"
-            "    | .error k => .error k\n"
+            "    | .error k => .fault k\n"
             "    | .ok () =>\n"
             "      if !Nat.ble mid len.toNat then"
         ),
         replacement=(
             "    match refValidInMem m reqMut (.slice elem) (.slicePtr p len) with\n"
-            "    | .error k => .error k\n"
+            "    | .error k => .fault k\n"
             "    | .ok () =>\n"
             "      if !Nat.ble mid len.toNat then"
         ),
@@ -5138,7 +5138,7 @@ MIR_SEMANTICS_GUARDS: tuple[MirSemanticsGuard, ...] = (
     ),
     # ------------------------------------------------------------------
     # Additional Profile v2 silent-saturation, aliasing, negative-offset,
-    # slice/thin-ref validity, and provenance-free deref guards (54 guards)
+    # slice/thin-ref validity, and provenance-free deref guards (58 guards)
     # ------------------------------------------------------------------
     MirSemanticsGuard(
         guard_id="mem_v2_slice_get_unchecked_inverted",
@@ -6201,6 +6201,74 @@ MIR_SEMANTICS_GUARDS: tuple[MirSemanticsGuard, ...] = (
         ),
         fixture_module="StepRefutations",
         theorem_name="refute_core_contracts_is_multiple_of_unsigned_only",
+        needs_wf_helper=False,
+    ),
+    MirSemanticsGuard(
+        guard_id="core_contracts_split_at_mut_bounds_panic",
+        target_file="trusted/lean/Trusted/MirSemantics/CoreContracts.lean",
+        target_module="Trusted/MirSemantics/CoreContracts",
+        description=(
+            "execSliceSplitAtOutcome returns .panic when mid > len instead of "
+            "constructing out-of-bounds subslices"
+        ),
+        anchor=(
+            "      if !Nat.ble mid len.toNat then\n"
+            "        .panic"
+        ),
+        replacement=(
+            "      if false then\n"
+            "        .panic"
+        ),
+        fixture_module="StepRefutations",
+        theorem_name="refute_core_contracts_split_at_mut_bounds_panic",
+        needs_wf_helper=False,
+    ),
+    MirSemanticsGuard(
+        guard_id="core_contracts_split_at_mut_no_shared_upgrade",
+        target_file="trusted/lean/Trusted/MirSemantics/CoreContracts.lean",
+        target_module="Trusted/MirSemantics/CoreContracts",
+        description=(
+            "execSliceSplitAtOutcome rejects upgrading a shared &[T] input "
+            "slice into (&mut [T], &mut [T])"
+        ),
+        anchor=(
+            "  else if Mutability.beq inMut .shared && Mutability.beq reqMut .mut then\n"
+            "    .fault .undefined"
+        ),
+        replacement=(
+            "  else if false then\n"
+            "    .fault .undefined"
+        ),
+        fixture_module="StepRefutations",
+        theorem_name="refute_core_contracts_split_at_mut_no_shared_upgrade",
+        needs_wf_helper=False,
+    ),
+    MirSemanticsGuard(
+        guard_id="core_contracts_split_at_mut_suffix_offset_disjoint",
+        target_file="trusted/lean/Trusted/MirSemantics/CoreContracts.lean",
+        target_module="Trusted/MirSemantics/CoreContracts",
+        description=(
+            "execSliceSplitAtOutcome advances the suffix pointer by mid "
+            "elements so the prefix and suffix &mut spans are disjoint"
+        ),
+        anchor="          match ptrAddInMem m lay.size p mid with",
+        replacement="          match ptrAddInMem m lay.size p 0 with",
+        fixture_module="StepRefutations",
+        theorem_name="refute_core_contracts_split_at_mut_suffix_offset_disjoint",
+        needs_wf_helper=False,
+    ),
+    MirSemanticsGuard(
+        guard_id="core_contracts_split_at_mut_suffix_len_union",
+        target_file="trusted/lean/Trusted/MirSemantics/CoreContracts.lean",
+        target_module="Trusted/MirSemantics/CoreContracts",
+        description=(
+            "execSliceSplitAtOutcome sets suffix length to len - mid so the "
+            "union of prefix and suffix equals the input span"
+        ),
+        anchor="            let suffixVal := Val.slicePtr p' (UInt64.ofNat (len.toNat - mid))",
+        replacement="            let suffixVal := Val.slicePtr p' len",
+        fixture_module="StepRefutations",
+        theorem_name="refute_core_contracts_split_at_mut_suffix_len_union",
         needs_wf_helper=False,
     ),
     # ------------------------------------------------------------------

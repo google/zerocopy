@@ -279,14 +279,14 @@ dedicated negative refutation fixtures outside `anneal/trusted/`):
    across all eleven guard-bearing `Trusted/MirSemantics/` modules
    (`CoreContracts.lean`, `AllocContracts.lean`, `Ops.lean`, `Enum.lean`,
    `Layout.lean`, `Memory.lean`, `Bytes.lean`, `State.lean`, `Step.lean`,
-   `Boundary.lean`, and `Contract.lean`, `367` guards; the twelfth file,
+   `Boundary.lean`, and `Contract.lean`, `371` guards; the twelfth file,
    `CanaryFixtures.lean`, is explicitly excluded as fixture/helper data
    verified directly by Pass 1 `Trusted.MirSemantics` canaries and Pass 2
    `Trusted.Correspondence`) alongside auditor header-import (`audit_headers`,
    `8` guards across `TrustedBoundary.lean` and `SpecPreflight.lean`) and
    boundary (`audit_boundary`, `12` `"spec-preflight"` and `"target-audit"`
-   guards) checks in `TrustedBoundary.lean` (`387` Lean guards in total), plus
-   `extract_guards` (`45` `rustc-capture` guards; `432` total cataloged
+   guards) checks in `TrustedBoundary.lean` (`391` Lean guards in total), plus
+   `extract_guards` (`45` `rustc-capture` guards; `436` total cataloged
    guards). Each catalog entry pins a unique source anchor and its exact
    guard-weakening mutation.
 2. **Isolated single-guard mutation:** Copies the relevant files into an
@@ -309,7 +309,7 @@ dedicated negative refutation fixtures outside `anneal/trusted/`):
 
 - **What it guarantees:** Every executed guard in the catalog is live and
   actively exercised by a negative refutation, negative auditor or capture
-  witness, negative unit test, or labeled diagnostic-precedence pin (`387` Lean
+  witness, negative unit test, or labeled diagnostic-precedence pin (`391` Lean
   guards enforced in GitHub Actions PR CI today; `45` `extract_guards` verified
   under pinned `rustc-dev` and pending `workspace-tests` workflow wiring).
 - **What it does not guarantee:** It cannot detect bugs in unmodeled Rust
