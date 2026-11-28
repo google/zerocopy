@@ -228,6 +228,21 @@ example : pure_cast_lt 1 2 = 1 := by unfold pure_cast_lt; decide
 example : pure_cast_lt 2 1 = 0 := by unfold pure_cast_lt; decide
 example : pure_cast_math 200 100 = 44 := by unfold pure_cast_math; decide
 
+-- Integer methods.
+example : pure_wadd_method 127 1 = -128 := by unfold pure_wadd_method; decide
+example : pure_min_max 1 2 = 3 := by unfold pure_min_max; decide
+example : pure_min_max 5 2 = 3 := by unfold pure_min_max; decide
+example : pure_min_max 7 9 = 7 := by unfold pure_min_max; decide
+example : pure_clamp_i (-100) = -5 := by unfold pure_clamp_i; decide
+example : pure_clamp_i 100 = 5 := by unfold pure_clamp_i; decide
+example : pure_clamp_i 3 = 3 := by unfold pure_clamp_i; decide
+example : ¬ pure_pow2 0 := by unfold pure_pow2; decide
+example : pure_pow2 1 := by unfold pure_pow2; decide
+example : pure_pow2 64 := by unfold pure_pow2; decide
+example : ¬ pure_pow2 96 := by unfold pure_pow2; decide
+example : pure_pow2 2147483648 := by unfold pure_pow2; decide
+example : ¬ pure_pow2 4294967295 := by unfold pure_pow2; decide
+
 -- The masked shifts take the amount modulo the width.
 example : pure_wshl_is 1 17 2 := by unfold pure_wshl_is; decide
 example : pure_wshl_is 0x8001 1 2 := by unfold pure_wshl_is; decide
@@ -236,9 +251,9 @@ example : ¬ pure_wshr_is (-32768) 31 1 := by unfold pure_wshr_is; decide
 
 -- `usat` (sorted eighth as `fn7`) binds `let k: u32 = 31;` in `max_steps =`
 -- `abs_diff(a, b) + saturating_add(n, 1u32) + (n & 15u32) + (n >> 30) + (n >> k)`
--- `+ n as u8 as u32`.
-example : fn7_max_steps { args := [u8Val 9, u8Val 2, u32Val 5] } = 23 := rfl
+-- `+ n as u8 as u32 + a.max(b) as u32`.
+example : fn7_max_steps { args := [u8Val 9, u8Val 2, u32Val 5] } = 32 := rfl
 example : fn7_max_steps { args := [u8Val 3, u8Val 250, u32Val 4294967295] } =
-    4294967816 := rfl
+    4294968066 := rfl
 
 end Spec.Check

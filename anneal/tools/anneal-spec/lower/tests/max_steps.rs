@@ -213,6 +213,23 @@ fn max_steps_counts_casts_to_unsigned_types() {
 }
 
 #[test]
+fn max_steps_counts_unsigned_integer_method_results() {
+    let l = lower_one(&wrap(
+        "max_steps = n.max(4u32) + n.clamp(1, 9) + k.abs_diff(0i8) as u32",
+        "fn f(n: u32, k: i8)",
+    ))
+    .unwrap();
+    for want in [
+        "(Int.toNat (Max.max (specInt (specArg q 0)) (4 : Int)))",
+        "(Int.toNat (Min.min (Max.max (specInt (specArg q 0)) (1 : Int)) (9 : Int)))",
+        "(Int.toNat (Int.ofNat (Int.natAbs ((specInt (specArg q 1)) - (0 : Int)))))",
+    ] {
+        assert!(l.spec_lean.contains(want), "missing {want} in\n{}", l.spec_lean);
+    }
+    expect_error(&wrap("max_steps = k.min(0i8)", "fn f(k: i8)"), "E_ANNEAL_SPEC_TYPE_MISMATCH");
+}
+
+#[test]
 fn max_steps_span_map_records_exact_clause_span() {
     let text = "anneal::external_spec! { #[anneal::spec(total, max_steps = 34 * n + 540)] fn f(n: usize); }";
     let l = lower_one(text).unwrap();

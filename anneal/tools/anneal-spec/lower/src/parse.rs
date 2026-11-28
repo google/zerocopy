@@ -240,6 +240,14 @@ impl ExprParser {
                     continue;
                 }
             }
+            if let Tok::Op(dot, dot_span) = &tok {
+                if dot == "." {
+                    // A method call binds tighter than every prefix and infix
+                    // operator, so it never ends an operand early.
+                    lhs = self.parse_method(lhs, *dot_span)?;
+                    continue;
+                }
+            }
             let Tok::Op(op, op_span) = &tok else { return Err(unexpected(&tok)) };
             if op == "," {
                 return Err(unexpected(&tok));
@@ -254,13 +262,6 @@ impl ExprParser {
                         )
                         .help("specifications are pure; compare with `==` instead")
                     }
-                    "." => Diagnostic::new(
-                        "E_ANNEAL_SPEC_UNSUPPORTED_EXPR",
-                        *op_span,
-                        "method calls and field accesses are not supported in profile v1 \
-                         specifications",
-                    )
-                    .help("use a `#[anneal::pure]` helper or a built-in intrinsic"),
                     _ => unexpected(&tok),
                 });
             };
@@ -576,6 +577,46 @@ impl ExprParser {
             }
         }
         Ok((t, span))
+    }
+
+    /// Parses the method call `.name(args)` after `receiver`, whose `.` is at
+    /// `dot_span`. Field accesses are rejected.
+    fn parse_method(&mut self, receiver: Expr, dot_span: Span) -> Result<Expr, Diagnostic> {
+        if let ExprKind::Cast(..) = receiver.kind {
+            return Err(Diagnostic::new(
+                "E_ANNEAL_SPEC_SYNTAX",
+                dot_span,
+                "a cast cannot be followed by a method call",
+            )
+            .help("parenthesize the cast, as in `(x as u8).min(y)`"));
+        }
+        reject_unparenthesized(&receiver, ".", dot_span)?;
+        self.pos += 1;
+        let field_access = |span: Span| {
+            Diagnostic::new(
+                "E_ANNEAL_SPEC_UNSUPPORTED_EXPR",
+                span,
+                "field accesses are not supported in profile v1 specifications",
+            )
+        };
+        let name = match self.next() {
+            Some(Tok::Ident(name, _)) => name,
+            Some(other) => return Err(field_access(join(dot_span, other.span()))),
+            None => {
+                return Err(Diagnostic::new(
+                    "E_ANNEAL_SPEC_SYNTAX",
+                    dot_span,
+                    "expected a method name after `.`",
+                ));
+            }
+        };
+        let Some(Tok::Group(Delimiter::Parenthesis, inner, gspan)) = self.peek().cloned() else {
+            return Err(field_access(dot_span));
+        };
+        self.pos += 1;
+        let args = parse_args(inner, gspan)?;
+        let span = join(receiver.span, gspan);
+        Ok(Expr { kind: ExprKind::Method(name, Box::new(receiver), args), span })
     }
 }
 

@@ -295,6 +295,28 @@ anneal::external_spec! {
         math(a + b) as u8
     }
 
+    // Integer methods: intrinsics with the receiver first, Lean's `min` and
+    // `max`, `clamp` to constant bounds, and `is_power_of_two`.
+    #[anneal::pure]
+    fn wadd_method(a: i8, b: i8) -> i8 {
+        a.wrapping_add(b)
+    }
+
+    #[anneal::pure]
+    fn min_max(a: u8, b: u8) -> u8 {
+        a.min(b).max(3)
+    }
+
+    #[anneal::pure]
+    fn clamp_i(a: i8) -> i8 {
+        a.clamp(-5, 5)
+    }
+
+    #[anneal::pure]
+    fn pow2(a: u32) -> bool {
+        a.is_power_of_two()
+    }
+
     #[anneal::pure]
     fn wshl_is(a: u16, n: u32, r: u16) -> bool {
         wrapping_shl(a, n) == r
@@ -311,6 +333,7 @@ anneal::external_spec! {
             let k: u32 = 31;
             abs_diff(a, b) + saturating_add(n, 1u32) + (n & 15u32) + (n >> 30) + (n >> k)
                 + n as u8 as u32
+                + a.max(b) as u32
         },
         ensures(|r| r == saturating_sub(n, 1u32)),
     )]

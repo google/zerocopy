@@ -184,6 +184,8 @@ pub enum ExprKind {
     Cast(Box<Expr>, IntTy),
     /// `name(args)`: a `#[anneal::pure]` helper or a built-in intrinsic.
     Call(String, Vec<Expr>),
+    /// `receiver.name(args)`: an integer method.
+    Method(String, Box<Expr>, Vec<Expr>),
     /// `math(e)` or `math { e }`.
     Math(Box<Expr>),
     /// `old(e)`; rejected by profile v1 lowering.

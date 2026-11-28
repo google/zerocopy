@@ -1727,6 +1727,149 @@ fn casts_are_parsed_and_checked_strictly() {
 }
 
 #[test]
+fn integer_methods_lower_exactly() {
+    let x = "(specInt (specArg q 0))";
+    let y = "(specInt (specArg q 1))";
+    let lean = |clause: &str, sig: &str| {
+        lower_one(&wrap(clause, sig)).unwrap_or_else(|e| panic!("{clause}: {e:?}")).spec_lean
+    };
+    let has = |text: &str, want: &str| assert!(text.contains(want), "missing {want} in\n{text}");
+    // The lowered `requires` clause.
+    let pre = |clause: &str, sig: &str| -> String {
+        let text = lean(clause, sig);
+        let mut lines = text.lines().skip_while(|l| !l.contains("fn0_pre "));
+        lines.nth(1).unwrap_or_else(|| panic!("no fn0_pre in\n{text}")).to_string()
+    };
+    // A method named like an intrinsic is that intrinsic applied to the
+    // receiver.
+    let sig = "fn f(a: i8, b: i8, n: u32)";
+    for (method, call) in [
+        ("a.wrapping_add(b) == 0i8", "wrapping_add(a, b) == 0i8"),
+        ("a.wrapping_sub(b) == 0i8", "wrapping_sub(a, b) == 0i8"),
+        ("a.wrapping_mul(b) == 0i8", "wrapping_mul(a, b) == 0i8"),
+        ("a.wrapping_neg() == 0i8", "wrapping_neg(a) == 0i8"),
+        ("a.wrapping_shl(n) == 0i8", "wrapping_shl(a, n) == 0i8"),
+        ("a.wrapping_shr(n) == 0i8", "wrapping_shr(a, n) == 0i8"),
+        ("a.saturating_add(b) == 0i8", "saturating_add(a, b) == 0i8"),
+        ("a.saturating_sub(b) == 0i8", "saturating_sub(a, b) == 0i8"),
+        ("a.saturating_mul(b) == 0i8", "saturating_mul(a, b) == 0i8"),
+        ("a.saturating_neg() == 0i8", "saturating_neg(a) == 0i8"),
+        ("a.no_overflow_add(b)", "no_overflow_add(a, b)"),
+        ("a.no_overflow_sub(b)", "no_overflow_sub(a, b)"),
+        ("a.no_overflow_mul(b)", "no_overflow_mul(a, b)"),
+        ("a.no_overflow_neg()", "no_overflow_neg(a)"),
+        ("a.abs_diff(b) == 0u8", "abs_diff(a, b) == 0u8"),
+    ] {
+        let (m, c) = (format!("requires({method})"), format!("requires({call})"));
+        assert_eq!(pre(&m, sig), pre(&c, sig), "{method}");
+    }
+    // `min` and `max` are Lean's, and chain left to right.
+    has(
+        &lean("ensures(|r| r == a.min(b).max(5))", "fn f(a: u8, b: u8) -> u8"),
+        &format!("((specInt out.ret) = (Max.max (Min.min {x} {y}) (5 : Int)))"),
+    );
+    has(
+        &lean("ensures(|r| r == 5.min(a))", "fn f(a: u8) -> u8"),
+        &format!("(Min.min (5 : Int) {x})"),
+    );
+    // Inside `math` the result is mathematical.
+    has(
+        &lean("ensures(|r| math(r) == math(a.max(b) + 1))", "fn f(a: u8, b: u8) -> u8"),
+        &format!("((specInt out.ret) = ((Max.max {x} {y}) + (1 : Int)))"),
+    );
+    // `clamp` takes constant bounds in order, which may be `let`-bound.
+    has(
+        &lean("ensures(|r| r == a.clamp(3, 10))", "fn f(a: u16) -> u16"),
+        &format!("(Min.min (Max.max {x} (3 : Int)) (10 : Int))"),
+    );
+    has(
+        &lean("ensures(|r| r == a.clamp(-5, -3))", "fn f(a: i8) -> i8"),
+        &format!("(Min.min (Max.max {x} (Int.neg 5)) (Int.neg 3))"),
+    );
+    lower_one(&wrap("requires(a.clamp(-5, -5) == a && a.clamp(-1, 0) == a)", "fn f(a: i8)"))
+        .unwrap();
+    has(
+        &lean(
+            "ensures(|r| { let lo: u16 = 3; r == a.clamp(lo, u16::MAX) })",
+            "fn f(a: u16) -> u16",
+        ),
+        &format!("(Min.min (Max.max {x} «lo») (65535 : Int))"),
+    );
+    // `is_power_of_two` is a decidable `bool`.
+    let p = "«power_of_two»";
+    has(
+        &lean("requires(a.is_power_of_two())", "fn f(a: u32)"),
+        &format!("(let {p} := Int.toNat {x}; 0 < {p} ∧ {p} &&& ({p} - 1) = 0)"),
+    );
+    lower_one(&wrap(
+        "ensures(|r| r == if a.is_power_of_two() { 1u8 } else { 0u8 })",
+        "fn f(a: usize) -> u8",
+    ))
+    .unwrap();
+    // A method call binds tighter than prefix `!`, casts, and binary
+    // operators.
+    has(
+        &lean("ensures(|r| r == !a.min(b))", "fn f(a: u8, b: u8) -> u8"),
+        &format!("((specInt out.ret) = ((255 : Int) - (Min.min {x} {y})))"),
+    );
+    has(
+        &lean("ensures(|r| r == a & b.max(a))", "fn f(a: u8, b: u8) -> u8"),
+        &format!("(Int.toNat (Max.max {y} {x}))"),
+    );
+    has(
+        &lean("ensures(|r| r == a.max(b) as u16)", "fn f(a: u8, b: u8) -> u16"),
+        &format!("((specInt out.ret) = (Max.max {x} {y}))"),
+    );
+    // A binding used only in a method call is used.
+    lower_one(&wrap("requires({ let k: u8 = b; a.min(k) == a })", "fn f(a: u8, b: u8)")).unwrap();
+}
+
+#[test]
+fn integer_methods_are_checked_strictly() {
+    let sig = "fn f(a: u8, b: u16, c: bool, i: i8, n: u32)";
+    for (clause, code) in [
+        ("requires(a.0 == 0u8)", "E_ANNEAL_SPEC_UNSUPPORTED_EXPR"),
+        ("requires(a.min == a)", "E_ANNEAL_SPEC_UNSUPPORTED_EXPR"),
+        ("requires(a.count_ones() == 0u32)", "E_ANNEAL_SPEC_UNSUPPORTED_EXPR"),
+        ("requires(a.math() == a)", "E_ANNEAL_SPEC_UNSUPPORTED_EXPR"),
+        ("requires(a as u16.min(b) == b)", "E_ANNEAL_SPEC_SYNTAX"),
+        ("requires(if c { a } else { a }.min(a) == a)", "E_ANNEAL_SPEC_SYNTAX"),
+        ("requires(a.min(a, a) == a)", "E_ANNEAL_SPEC_ARITY"),
+        ("requires(a.wrapping_neg(a) == a)", "E_ANNEAL_SPEC_ARITY"),
+        ("requires(a.wrapping_add() == a)", "E_ANNEAL_SPEC_ARITY"),
+        ("requires(a.is_power_of_two(1))", "E_ANNEAL_SPEC_ARITY"),
+        ("requires(a.clamp(1) == a)", "E_ANNEAL_SPEC_ARITY"),
+        ("requires(a.min(b) == a)", "E_ANNEAL_SPEC_TYPE_MISMATCH"),
+        ("requires(a.max(256) == a)", "E_ANNEAL_SPEC_LITERAL_RANGE"),
+        ("requires(c.min(c))", "E_ANNEAL_SPEC_TYPE_MISMATCH"),
+        ("requires(math(a).min(a) == 0)", "E_ANNEAL_SPEC_TYPE_MISMATCH"),
+        ("requires(a.clamp(0, b) == a)", "E_ANNEAL_SPEC_TYPE_MISMATCH"),
+        ("requires(a.clamp(0, a) == a)", "E_ANNEAL_AMBIGUOUS_SPEC_ARITH"),
+        ("requires(a.clamp(10, 3) == a)", "E_ANNEAL_SPEC_LITERAL_RANGE"),
+        ("requires(i.clamp(0, -1) == i)", "E_ANNEAL_SPEC_LITERAL_RANGE"),
+        ("requires(i.clamp(-3, -5) == i)", "E_ANNEAL_SPEC_LITERAL_RANGE"),
+        ("requires(a.clamp(0, 256) == a)", "E_ANNEAL_SPEC_LITERAL_RANGE"),
+        ("requires(i.is_power_of_two())", "E_ANNEAL_SPEC_TYPE_MISMATCH"),
+        ("requires(5.is_power_of_two())", "E_ANNEAL_SPEC_TYPE_ANNOTATION_NEEDED"),
+        ("requires(i.saturating_neg().is_power_of_two())", "E_ANNEAL_SPEC_TYPE_MISMATCH"),
+        ("requires({ let Min = a; Min == 0u8 })", "E_ANNEAL_RESERVED_PARAM_NAME"),
+        ("requires({ let Max = a; Max == 0u8 })", "E_ANNEAL_RESERVED_PARAM_NAME"),
+        ("max_steps = i.max(0i8)", "E_ANNEAL_SPEC_TYPE_MISMATCH"),
+        ("max_steps = a.is_power_of_two()", "E_ANNEAL_SPEC_TYPE_MISMATCH"),
+    ] {
+        expect_error(&wrap(clause, sig), code);
+    }
+    let r =
+        expect_error(&wrap("requires(a.clamp(0, a) == a)", sig), "E_ANNEAL_AMBIGUOUS_SPEC_ARITH");
+    assert!(r.contains("`x.max(lo).min(hi)`"), "{r}");
+    let r = expect_error(&wrap("requires(a as u16.min(b) == b)", sig), "E_ANNEAL_SPEC_SYNTAX");
+    assert!(r.contains("`(x as u8).min(y)`"), "{r}");
+    // Unsigned results are step counts.
+    lower_one(&wrap("max_steps = n.max(4u32) + n.clamp(1, 9) + a.abs_diff(3) as u32", sig))
+        .unwrap();
+}
+
+#[test]
 fn saturating_negation_and_abs_diff_intrinsics_lower_exactly() {
     let x = "(specInt (specArg q 0))";
     let y = "(specInt (specArg q 1))";

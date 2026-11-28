@@ -250,8 +250,8 @@ impl MatchPlan<'_, '_> {
 const CLAUSE_NAMES: &[&str] = &["Nat", "q", "out", "specArg", "specBool", "specInt", "specNat"];
 
 // Every global the lowering references is qualified from one of a few root
-// names (`Int`, `True`, `False`, `Trusted`, and the output namespace's root,
-// `Spec` or `Specs`). Helper parameters become
+// names (`Int`, `True`, `False`, `Trusted`, `Min`, `Max`, and the output
+// namespace's root, `Spec` or `Specs`). Helper parameters become
 // Lean binders, and a binder captures any unqualified reference with the same
 // name (`pure_g`) and any qualified reference whose first component it names
 // (a binder `Trusted` turns `Trusted.MirSemantics.intTdiv` into a field
@@ -282,6 +282,10 @@ const INT_EMOD: &str = "Trusted.MirSemantics.intEmod";
 /// Rust's `<<` on a mathematical integer, before truncation to a width.
 const INT_SHIFT_LEFT: &str = "Trusted.MirSemantics.intShiftLeft";
 /// Rust's arithmetic `>>` on a mathematical integer.
+/// Lean's `min` and `max`, which on `Int` are `if a ≤ b then a else b` and
+/// `if a ≤ b then b else a`.
+const MIN: &str = "Min.min";
+const MAX: &str = "Max.max";
 const INT_SHIFT_RIGHT: &str = "Trusted.MirSemantics.intShiftRight";
 /// The namespace `emit` defines everything in for `--format v1`.
 pub const SPEC_NAMESPACE: &str = "Spec";
@@ -301,6 +305,8 @@ const GLOBALS: &[&str] = &[
     INT_EMOD,
     INT_SHIFT_LEFT,
     INT_SHIFT_RIGHT,
+    MIN,
+    MAX,
     SPEC_NAMESPACE,
     SPECS_ROOT,
 ];
@@ -356,6 +362,11 @@ fn half_modulus(t: IntTy) -> u128 {
 /// specification name; it need only not be a root of a name in [`GLOBALS`].
 const SATURATE_BINDER: &str = "«saturating»";
 
+/// The Lean binder of the `Nat` value that `is_power_of_two` tests. As with
+/// [`SATURATE_BINDER`], the body that binds it mentions only it and
+/// literals.
+const POWER_OF_TWO_BINDER: &str = "«power_of_two»";
+
 /// `exact`, the mathematical result of an operation on `t`, clamped to `t`'s
 /// range, as Rust's `saturating_*` methods compute it. `exact` is bound once
 /// so that nested saturating intrinsics do not duplicate their operands.
@@ -382,6 +393,15 @@ const I32: IntTy = IntTy { bits: 32, signed: true, pointer_sized: false };
 fn fits(s: IntTy, t: IntTy) -> bool {
     let ((s_lo, s_hi), (t_lo, t_hi)) = (s.range(), t.range());
     t_lo <= s_lo && s_hi <= t_hi
+}
+
+/// Whether `a <= b`.
+fn lit_le(a: IntLit, b: IntLit) -> bool {
+    match (a.neg && a.mag != 0, b.neg && b.mag != 0) {
+        (false, false) => a.mag <= b.mag,
+        (true, true) => b.mag <= a.mag,
+        (a_neg, _) => a_neg,
+    }
 }
 
 /// The integer `a` reduced into `t`'s range modulo `2^bits`, as Rust's
@@ -703,6 +723,11 @@ impl<'a> Env<'a> {
                 let low = self.lower(e, false, facts)?;
                 self.machine_step_count(low, e.span, "`as`")
             }
+            // So is an unsigned result of an integer method.
+            ExprKind::Method(name, ..) => {
+                let low = self.lower(e, false, facts)?;
+                self.machine_step_count(low, e.span, &format!("`.{name}()`"))
+            }
             ExprKind::Binary(op, l, r) => match op {
                 BinOp::Add | BinOp::Mul | BinOp::Div | BinOp::Rem => {
                     let a = self.lower_nat(l, facts)?;
@@ -897,6 +922,9 @@ impl<'a> Env<'a> {
             ExprKind::Binary(op, l, r) => self.binary(*op, l, r, e.span, math, facts),
             ExprKind::Cast(inner, t) => self.cast(inner, *t, math, facts),
             ExprKind::Call(name, args) => self.call(name, args, e.span, math, facts),
+            ExprKind::Method(name, recv, args) => {
+                self.method(name, recv, args, e.span, math, facts)
+            }
             ExprKind::If(c, t, f) => self.lower_if(c, t, f, math, facts),
             ExprKind::Let(b, body) => {
                 let (env, prefix, extra) = self.bind(b, body, math, false, facts)?;
@@ -1790,6 +1818,117 @@ impl<'a> Env<'a> {
         };
         let term = shift_term(op, &a, &amount, t);
         Ok(Low::Int(term, if math { Ty::Math } else { Ty::Int(t) }))
+    }
+
+    /// Lowers the integer method call `recv.name(args)` at `span`. A method
+    /// named like an intrinsic is that intrinsic with `recv` as its first
+    /// operand. `min`, `max`, and `clamp` take operands of `recv`'s
+    /// fixed-width integer type, even inside `math`, where their result is
+    /// mathematical, and lower to Lean's `min` and `max`, which evaluate
+    /// each operand once. Rust panics when the bounds of `clamp` are out of
+    /// order, so they must be constants in order. `is_power_of_two` takes an
+    /// unsigned `recv`, as in Rust, and is a decidable `bool`.
+    fn method(
+        &self,
+        name: &str,
+        recv: &Expr,
+        args: &[Expr],
+        span: Span,
+        math: bool,
+        facts: &mut Vec<String>,
+    ) -> Result<Low, Diagnostic> {
+        let arity = |n: usize| {
+            if args.len() == n {
+                Ok(())
+            } else {
+                Err(Diagnostic::new(
+                    "E_ANNEAL_SPEC_ARITY",
+                    span,
+                    format!("`.{name}()` takes {n} argument(s), but {} were given", args.len()),
+                ))
+            }
+        };
+        let ty = |t: IntTy| if math { Ty::Math } else { Ty::Int(t) };
+        if name != "math" && INTRINSICS.contains(&name) {
+            arity(if name.ends_with("_neg") { 0 } else { 1 })?;
+            let operands: Vec<Expr> = std::iter::once(recv).chain(args).cloned().collect();
+            return self.call(name, &operands, span, math, facts);
+        }
+        match name {
+            "min" | "max" => {
+                arity(1)?;
+                let operands = [recv.clone(), args[0].clone()];
+                let (a, b, t) = self.int_pair(name, &operands, span, facts)?;
+                let f = if name == "min" { MIN } else { MAX };
+                Ok(Low::Int(format!("({f} {a} {b})"), ty(t)))
+            }
+            "clamp" => {
+                arity(2)?;
+                let (a, lo, t) =
+                    self.int_pair(name, &[recv.clone(), args[0].clone()], span, facts)?;
+                let hi = match self.lower(&args[1], false, facts)? {
+                    Low::Int(hi, Ty::Int(u)) if u == t => hi,
+                    low @ (Low::Lit(..) | Low::UntypedIf(..)) => {
+                        let Low::Int(hi, _) = settle(low, Ty::Int(t))? else { unreachable!() };
+                        hi
+                    }
+                    low => {
+                        return Err(type_error(
+                            args[1].span,
+                            format!("expected `{}`, found {}", t.rust_name(), describe(&low)),
+                        ));
+                    }
+                };
+                let (Some(l), Some(h)) = (self.const_value(&args[0]), self.const_value(&args[1]))
+                else {
+                    return Err(Diagnostic::new(
+                        "E_ANNEAL_AMBIGUOUS_SPEC_ARITH",
+                        span,
+                        "`clamp` with bounds that are not constants is ambiguous: Rust panics when \
+                         `min > max`",
+                    )
+                    .help(
+                        "clamp to constant bounds, or write `x.max(lo).min(hi)`, which equals \
+                         `x.clamp(lo, hi)` whenever `lo <= hi`",
+                    ));
+                };
+                if !lit_le(l, h) {
+                    return Err(Diagnostic::new(
+                        "E_ANNEAL_SPEC_LITERAL_RANGE",
+                        span,
+                        format!("`clamp` bounds `{l}` and `{h}` are out of order, so Rust panics"),
+                    ));
+                }
+                Ok(Low::Int(format!("({MIN} ({MAX} {a} {lo}) {hi})"), ty(t)))
+            }
+            "is_power_of_two" => {
+                arity(0)?;
+                let (a, t) = self.int_operand(name, recv, facts)?;
+                if t.signed {
+                    return Err(type_error(
+                        span,
+                        format!(
+                            "`is_power_of_two` needs an unsigned integer, found `{}`",
+                            t.rust_name()
+                        ),
+                    )
+                    .help("Rust defines `is_power_of_two` only on unsigned integer types"));
+                }
+                let p = POWER_OF_TWO_BINDER;
+                Ok(Low::Prop(Prop::pure(format!(
+                    "(let {p} := {INT}.toNat {a}; 0 < {p} ∧ {p} &&& ({p} - 1) = 0)"
+                ))))
+            }
+            _ => Err(Diagnostic::new(
+                "E_ANNEAL_SPEC_UNSUPPORTED_EXPR",
+                span,
+                format!("`.{name}()` is not a supported integer method"),
+            )
+            .help(
+                "the integer methods are `min`, `max`, `clamp`, `is_power_of_two`, `abs_diff`, \
+                 and the `wrapping_*`, `saturating_*`, and `no_overflow_*` intrinsics",
+            )),
+        }
     }
 
     /// Lowers `e as t`. Rust's integer casts keep the value of `e` when it
@@ -2709,6 +2848,9 @@ fn mentions(e: &Expr, name: &str) -> bool {
     match &e.kind {
         ExprKind::Ident(n) => n == name,
         ExprKind::Call(_, args) => args.iter().any(|a| mentions(a, name)),
+        ExprKind::Method(_, recv, args) => {
+            mentions(recv, name) || args.iter().any(|a| mentions(a, name))
+        }
         ExprKind::Unary(_, x)
         | ExprKind::Cast(x, _)
         | ExprKind::Math(x)
@@ -2729,6 +2871,10 @@ pub fn calls_in(e: &Expr, out: &mut Vec<String>) {
     match &e.kind {
         ExprKind::Call(n, args) => {
             out.push(n.clone());
+            args.iter().for_each(|a| calls_in(a, out));
+        }
+        ExprKind::Method(_, recv, args) => {
+            calls_in(recv, out);
             args.iter().for_each(|a| calls_in(a, out));
         }
         ExprKind::Unary(_, x)
