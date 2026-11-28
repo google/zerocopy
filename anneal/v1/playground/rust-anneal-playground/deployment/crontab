@@ -1,0 +1,12 @@
+AWS_ACCESS_KEY_ID=THE_KEY_ID
+AWS_SECRET_ACCESS_KEY=THE_SECRET
+MAILTO=admin@example.com
+
+# ┌───────────── minute (0 - 59)
+# │  ┌───────────── hour (0 - 23)
+# │  │  ┌───────────── day of month (1 - 31)
+# │  │  │  ┌───────────── month (1 - 12)
+# │  │  │  │  ┌───────────── day of week (0 - 6) (Sunday to Saturday; 7 is also Sunday on some systems)
+# │  │  │  │  │
+
+ 23  *  *  *  * /home/ec2-user/update.sh

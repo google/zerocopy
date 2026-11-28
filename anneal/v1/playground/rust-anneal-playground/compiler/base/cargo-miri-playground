@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+set -eu
+
+export MIRI_SYSROOT=~/.cache/miri
+export MIRIFLAGS="${MIRIFLAGS:-} -Zmiri-disable-isolation"
+exec cargo miri run

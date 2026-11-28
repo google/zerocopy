@@ -1,0 +1,35 @@
+#!/usr/bin/env bash
+
+set -eu
+
+# Rewrite our arguments to be `cargo build` instead of `cargo wasm`;
+# this assumes that the command will always be `cargo wasm ...`. We
+# capture the output directory in order to place the result file.
+shift # Ignore "wasm"
+args=()
+while (( "$#" )); do
+    if [[ "$1" == "--" ]] ; then
+        : # Ignore
+    elif [[ "$1" == "-o" ]] ; then
+        shift
+        output="$1"
+    else
+        args+=("$1")
+    fi
+
+    shift
+done
+
+# Perform our build
+# https://stackoverflow.com/a/7577209/155423
+cargo "build" "--target=wasm32-unknown-unknown" ${args[@]+"${args[@]}"}
+
+for wasm in $(find target/ -name '*wasm' -not -path '*/deps/*'); do
+    # Convert to textual format, demangling as we go
+    wasm-tools demangle "${wasm}" -t -o "${output}.wat"
+
+    # The streaming playground expects the file to be without the
+    # extension while the original playground expects it to be with
+    # the extension. Support both for now.
+    cp "${output}.wat" "${output}"
+done

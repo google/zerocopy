@@ -1,0 +1,101 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  padding-bottom: 1em;
+  height: 100vh;
+}
+
+.playground {
+  composes: -autoSize from './shared.module.css';
+
+  --minimum: 100px;
+  --gutter-dimension: 12px;
+  --final-editor-dimension: minmax(var(--minimum), 1fr);
+  --final-output-width: minmax(var(--minimum), var(--output-width, 1fr));
+
+  /* Ensure the output height leaves room for the editor and the
+   * gutter. Otherwise, the output can grow such that the (editor +
+   * gutter + output) height causes the whole container to grow.
+   */
+  --output-height-cap: min(
+    var(--output-height),
+    calc(100% - var(--minimum) - var(--gutter-dimension))
+  );
+  --final-output-height: minmax(var(--minimum), var(--output-height-cap, 1fr));
+
+  display: grid;
+  grid-template-areas: 'eee';
+  grid-template-columns: var(--final-editor-dimension);
+}
+
+.playground[data-orientation='horizontal'][data-output-mode='full'] {
+  grid-template-areas:
+    'eee'
+    'eog'
+    'ooo';
+  grid-template-rows:
+    var(--final-editor-dimension)
+    var(--gutter-dimension)
+    var(--final-output-height);
+}
+
+.playground[data-orientation='horizontal'][data-output-mode='slim'] {
+  grid-template-areas:
+    'eee'
+    'ooo';
+  grid-template-rows:
+    var(--final-editor-dimension)
+    auto;
+}
+
+.playground[data-orientation='vertical'][data-output-mode='full'] {
+  grid-template-areas: 'eee eog ooo';
+  grid-template-columns:
+    var(--final-editor-dimension)
+    var(--gutter-dimension)
+    var(--final-output-width);
+}
+
+.playground[data-orientation='vertical'][data-output-mode='slim'] {
+  grid-template-areas: 'eee ooo';
+  grid-template-columns:
+    var(--final-editor-dimension)
+    auto;
+}
+
+.editor {
+  grid-area: eee;
+  border: 4px solid var(--border-color);
+  border-radius: 4px;
+}
+
+.editorOutputGutter {
+  grid-area: eog;
+}
+
+.output {
+  composes: -autoSize from './shared.module.css';
+  grid-area: ooo;
+}
+
+.gutter {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.gutter[data-orientation='vertical'] {
+  cursor: col-resize;
+}
+
+.gutterHandle {
+  user-select: none;
+}
+
+.gutter[data-orientation='horizontal'] {
+  cursor: row-resize;
+
+  & .gutterHandle {
+    transform: rotate(90deg);
+  }
+}
