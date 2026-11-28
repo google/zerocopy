@@ -1261,6 +1261,15 @@
       "short_sha": "ed969d25ae1d"
     },
     {
+      "commit_index": 192,
+      "detail": "AMD EPYC 7763 64-Core Processor -> AMD EPYC 9V74 80-Core Processor",
+      "kind": "hardware_shift",
+      "metric": "environment.cpu_model",
+      "severity": "info",
+      "sha": "324c3973112f82fa19130499d230ad8ce4c84ae0",
+      "short_sha": "324c3973112f"
+    },
+    {
       "baseline": 4634472.0,
       "commit_index": 20,
       "kind": "deterministic_growth",
@@ -4752,24 +4761,24 @@
     },
     {
       "bound": "max_value",
-      "commit_index": 191,
+      "commit_index": 192,
       "kind": "budget_breach",
       "limit": 67108864.0,
       "metric": "artifact_size.bundled_olean.total_bytes",
       "severity": "error",
-      "sha": "ed969d25ae1d0e1dd2022e9c8cd4014a5364fb66",
-      "short_sha": "ed969d25ae1d",
+      "sha": "324c3973112f82fa19130499d230ad8ce4c84ae0",
+      "short_sha": "324c3973112f",
       "value": 119022792.0
     },
     {
       "bound": "max_value",
-      "commit_index": 191,
+      "commit_index": 192,
       "kind": "budget_breach",
       "limit": 12582912.0,
       "metric": "artifact_size.module.anneal_mirsymexec.olean_private_bytes",
       "severity": "error",
-      "sha": "ed969d25ae1d0e1dd2022e9c8cd4014a5364fb66",
-      "short_sha": "ed969d25ae1d",
+      "sha": "324c3973112f82fa19130499d230ad8ce4c84ae0",
+      "short_sha": "324c3973112f",
       "value": 12989592.0
     }
   ],
@@ -6501,9 +6510,18 @@
       "subject": "[anneal][ci] Split test_verify_anneal_spec_zerocopy into domain modules (#4543)",
       "timestamp": "2026-11-28T01:53:32Z",
       "ts": 1795830812
+    },
+    {
+      "cpu_model": "AMD EPYC 9V74 80-Core Processor",
+      "hw_changed": true,
+      "sha": "324c3973112f82fa19130499d230ad8ce4c84ae0",
+      "short": "324c3973112f",
+      "subject": "[anneal][ci] Split test_workflow_yaml into domain test modules (#4545)",
+      "timestamp": "2026-11-28T02:11:27Z",
+      "ts": 1795831887
     }
   ],
-  "generated_at": "2026-11-28T01:53:32Z",
+  "generated_at": "2026-11-28T02:11:27Z",
   "metrics": {
     "artifact_size.archive.omnibus_tar_zst_bytes": {
       "budget_max": 943718400.0,
@@ -10848,6 +10866,7 @@
       824410463,
       824410463,
       824410463,
+      825262104,
       825262104
     ],
     "artifact_size.bin.anneal_audit_bytes": [
@@ -11042,6 +11061,7 @@
       8647376,
       8647376,
       8650720,
+      8728912,
       8728912
     ],
     "artifact_size.bin.anneal_rustc_capture_bytes": [
@@ -11236,6 +11256,7 @@
       5492768,
       5492768,
       5492768,
+      5619744,
       5619744
     ],
     "artifact_size.bin.cargo_anneal_bytes": [
@@ -11430,6 +11451,7 @@
       13339032,
       13339032,
       13341904,
+      13419720,
       13419720
     ],
     "artifact_size.bundled_olean.private_bytes": [
@@ -11624,6 +11646,7 @@
       71500104,
       71500104,
       71500104,
+      75704608,
       75704608
     ],
     "artifact_size.bundled_olean.public_bytes": [
@@ -11818,6 +11841,7 @@
       40092320,
       40092320,
       40092320,
+      41424592,
       41424592
     ],
     "artifact_size.bundled_olean.server_bytes": [
@@ -12012,6 +12036,7 @@
       1850144,
       1850144,
       1850144,
+      1893592,
       1893592
     ],
     "artifact_size.bundled_olean.total_bytes": [
@@ -12206,6 +12231,7 @@
       113442568,
       113442568,
       113442568,
+      119022792,
       119022792
     ],
     "artifact_size.module.anneal_aipcc.olean_bytes": [
@@ -12281,6 +12307,7 @@
       null,
       null,
       null,
+      2064,
       2064,
       2064,
       2064,
@@ -12594,6 +12621,7 @@
       96,
       96,
       96,
+      96,
       96
     ],
     "artifact_size.module.anneal_aipcc.olean_server_bytes": [
@@ -12669,6 +12697,7 @@
       null,
       null,
       null,
+      96,
       96,
       96,
       96,
@@ -12982,6 +13011,7 @@
       82104,
       82104,
       82104,
+      82104,
       82104
     ],
     "artifact_size.module.anneal_aipcc_bitarith.olean_private_bytes": [
@@ -13057,6 +13087,7 @@
       null,
       null,
       null,
+      526048,
       526048,
       526048,
       526048,
@@ -13370,6 +13401,7 @@
       28576,
       28576,
       28576,
+      28576,
       28576
     ],
     "artifact_size.module.anneal_aipcc_mirbridge.olean_bytes": [
@@ -13564,6 +13596,7 @@
       644216,
       644216,
       644216,
+      648296,
       648296
     ],
     "artifact_size.module.anneal_aipcc_mirbridge.olean_private_bytes": [
@@ -13758,6 +13791,7 @@
       4133792,
       4133792,
       4133792,
+      4181824,
       4181824
     ],
     "artifact_size.module.anneal_aipcc_mirbridge.olean_server_bytes": [
@@ -13833,6 +13867,7 @@
       null,
       null,
       null,
+      59920,
       59920,
       59920,
       59920,
@@ -14146,6 +14181,7 @@
       282104,
       282104,
       282104,
+      283544,
       283544
     ],
     "artifact_size.module.anneal_aipcc_mirpcc.olean_private_bytes": [
@@ -14340,6 +14376,7 @@
       2111552,
       2111552,
       2111552,
+      2204200,
       2204200
     ],
     "artifact_size.module.anneal_aipcc_mirpcc.olean_server_bytes": [
@@ -14424,6 +14461,7 @@
       25224,
       25224,
       25224,
+      25232,
       25232,
       25232,
       25232,
@@ -14728,6 +14766,7 @@
       592960,
       592960,
       592960,
+      599704,
       599704
     ],
     "artifact_size.module.anneal_aipcc_mirtransfer.olean_private_bytes": [
@@ -14922,6 +14961,7 @@
       9654576,
       9654576,
       9654576,
+      10102888,
       10102888
     ],
     "artifact_size.module.anneal_aipcc_mirtransfer.olean_server_bytes": [
@@ -14997,6 +15037,7 @@
       null,
       null,
       null,
+      23416,
       23416,
       23416,
       23416,
@@ -15310,6 +15351,7 @@
       310120,
       310120,
       310120,
+      310120,
       310120
     ],
     "artifact_size.module.anneal_aipcc_reducedproduct.olean_private_bytes": [
@@ -15385,6 +15427,7 @@
       null,
       null,
       null,
+      1958552,
       1958552,
       1958552,
       1958552,
@@ -15698,6 +15741,7 @@
       49712,
       49712,
       49712,
+      49712,
       49712
     ],
     "artifact_size.module.anneal_aipcc_tnum.olean_bytes": [
@@ -15892,6 +15936,7 @@
       147760,
       147760,
       147760,
+      147760,
       147760
     ],
     "artifact_size.module.anneal_aipcc_tnum.olean_private_bytes": [
@@ -15967,6 +16012,7 @@
       null,
       null,
       null,
+      802312,
       802312,
       802312,
       802312,
@@ -16280,6 +16326,7 @@
       21152,
       21152,
       21152,
+      21152,
       21152
     ],
     "artifact_size.module.anneal_aipcc_wrappedinterval.olean_bytes": [
@@ -16355,6 +16402,7 @@
       null,
       null,
       null,
+      197264,
       197264,
       197264,
       197264,
@@ -16668,6 +16716,7 @@
       903416,
       903416,
       903416,
+      903416,
       903416
     ],
     "artifact_size.module.anneal_aipcc_wrappedinterval.olean_server_bytes": [
@@ -16862,9 +16911,11 @@
       19320,
       19320,
       19320,
+      19320,
       19320
     ],
     "artifact_size.module.anneal_bittrielrat.olean_bytes": [
+      430248,
       430248,
       430248,
       430248,
@@ -17250,9 +17301,11 @@
       880776,
       880776,
       880776,
+      880776,
       880776
     ],
     "artifact_size.module.anneal_bittrielrat.olean_server_bytes": [
+      37472,
       37472,
       37472,
       37472,
@@ -17638,6 +17691,7 @@
       152904,
       152904,
       152904,
+      152904,
       152904
     ],
     "artifact_size.module.anneal_bitvec.olean_private_bytes": [
@@ -17832,9 +17886,11 @@
       982496,
       982496,
       982496,
+      982496,
       982496
     ],
     "artifact_size.module.anneal_bitvec.olean_server_bytes": [
+      67568,
       67568,
       67568,
       67568,
@@ -18220,9 +18276,11 @@
       152248,
       152248,
       152248,
+      152248,
       152248
     ],
     "artifact_size.module.anneal_bitvecarith.olean_private_bytes": [
+      1525832,
       1525832,
       1525832,
       1525832,
@@ -18608,9 +18666,11 @@
       67112,
       67112,
       67112,
+      67112,
       67112
     ],
     "artifact_size.module.anneal_classicalem.olean_bytes": [
+      17192,
       17192,
       17192,
       17192,
@@ -18996,9 +19056,11 @@
       41032,
       41032,
       41032,
+      41032,
       41032
     ],
     "artifact_size.module.anneal_classicalem.olean_server_bytes": [
+      8688,
       8688,
       8688,
       8688,
@@ -19384,6 +19446,7 @@
       49760,
       49760,
       49760,
+      49760,
       49760
     ],
     "artifact_size.module.anneal_firewall.olean_private_bytes": [
@@ -19510,6 +19573,7 @@
       22192,
       22192,
       22192,
+      44288,
       44288,
       44288,
       44288,
@@ -19772,6 +19836,7 @@
       20592,
       20592,
       20592,
+      20592,
       20592
     ],
     "artifact_size.module.anneal_framework.olean_bytes": [
@@ -19917,6 +19982,7 @@
       133960,
       133960,
       133960,
+      137224,
       137224,
       137224,
       137224,
@@ -20160,6 +20226,7 @@
       538568,
       538568,
       538568,
+      538568,
       538568
     ],
     "artifact_size.module.anneal_framework.olean_server_bytes": [
@@ -20305,6 +20372,7 @@
       18400,
       18400,
       18400,
+      19664,
       19664,
       19664,
       19664,
@@ -20548,6 +20616,7 @@
       282320,
       282320,
       282320,
+      282320,
       282320
     ],
     "artifact_size.module.anneal_framework_stepwp.olean_private_bytes": [
@@ -20612,6 +20681,7 @@
       null,
       null,
       null,
+      1011928,
       1011928,
       1011928,
       1011928,
@@ -20936,6 +21006,7 @@
       46976,
       46976,
       46976,
+      46976,
       46976
     ],
     "artifact_size.module.anneal_initlemmas.olean_bytes": [
@@ -21055,6 +21126,7 @@
       161440,
       161440,
       161440,
+      195136,
       195136,
       195136,
       195136,
@@ -21324,6 +21396,7 @@
       539176,
       539176,
       539176,
+      539176,
       539176
     ],
     "artifact_size.module.anneal_initlemmas.olean_server_bytes": [
@@ -21518,9 +21591,11 @@
       47056,
       47056,
       47056,
+      47056,
       47056
     ],
     "artifact_size.module.anneal_lebytes.olean_bytes": [
+      64440,
       64440,
       64440,
       64440,
@@ -21906,9 +21981,11 @@
       279344,
       279344,
       279344,
+      279344,
       279344
     ],
     "artifact_size.module.anneal_lebytes.olean_server_bytes": [
+      25208,
       25208,
       25208,
       25208,
@@ -22294,9 +22371,11 @@
       592832,
       592832,
       592832,
+      592832,
       592832
     ],
     "artifact_size.module.anneal_lineararith.olean_private_bytes": [
+      1142840,
       1142840,
       1142840,
       1142840,
@@ -22682,9 +22761,11 @@
       59768,
       59768,
       59768,
+      59768,
       59768
     ],
     "artifact_size.module.anneal_listchunks.olean_bytes": [
+      59520,
       59520,
       59520,
       59520,
@@ -23070,9 +23151,11 @@
       406432,
       406432,
       406432,
+      406432,
       406432
     ],
     "artifact_size.module.anneal_listchunks.olean_server_bytes": [
+      21528,
       21528,
       21528,
       21528,
@@ -23458,6 +23541,7 @@
       163872,
       163872,
       163872,
+      163872,
       163872
     ],
     "artifact_size.module.anneal_loopinv.olean_private_bytes": [
@@ -23652,6 +23736,7 @@
       426592,
       426592,
       426592,
+      426592,
       426592
     ],
     "artifact_size.module.anneal_loopinv.olean_server_bytes": [
@@ -23716,6 +23801,7 @@
       48584,
       48584,
       48584,
+      44024,
       44024,
       44024,
       44024,
@@ -24040,6 +24126,7 @@
       1329464,
       1329464,
       1329464,
+      1374984,
       1374984
     ],
     "artifact_size.module.anneal_mirsymexec.olean_private_bytes": [
@@ -24234,6 +24321,7 @@
       12308208,
       12308208,
       12308208,
+      12989592,
       12989592
     ],
     "artifact_size.module.anneal_mirsymexec.olean_server_bytes": [
@@ -24384,6 +24472,7 @@
       68200,
       68200,
       68200,
+      79712,
       79712,
       79712,
       79712,
@@ -24622,6 +24711,7 @@
       232416,
       232416,
       232416,
+      234152,
       234152
     ],
     "artifact_size.module.anneal_mirsymexec_bits.olean_private_bytes": [
@@ -24816,6 +24906,7 @@
       1667096,
       1667096,
       1667096,
+      1703160,
       1703160
     ],
     "artifact_size.module.anneal_mirsymexec_bits.olean_server_bytes": [
@@ -24883,6 +24974,7 @@
       null,
       null,
       null,
+      14928,
       14928,
       14928,
       14928,
@@ -25204,6 +25296,7 @@
       396240,
       396240,
       396240,
+      396240,
       396240
     ],
     "artifact_size.module.anneal_mirsymexeccall.olean_private_bytes": [
@@ -25398,6 +25491,7 @@
       2966920,
       2966920,
       2966920,
+      2971856,
       2971856
     ],
     "artifact_size.module.anneal_mirsymexeccall.olean_server_bytes": [
@@ -25585,6 +25679,7 @@
       28816,
       28816,
       28816,
+      36104,
       36104,
       36104,
       36104,
@@ -25786,6 +25881,7 @@
       732008,
       732008,
       732008,
+      750808,
       750808
     ],
     "artifact_size.module.anneal_mirtotal_ops.olean_private_bytes": [
@@ -25980,6 +26076,7 @@
       2315072,
       2315072,
       2315072,
+      2394368,
       2394368
     ],
     "artifact_size.module.anneal_mirtotal_ops.olean_server_bytes": [
@@ -26125,6 +26222,7 @@
       64624,
       64624,
       64624,
+      65344,
       65344,
       65344,
       65344,
@@ -26368,6 +26466,7 @@
       886872,
       886872,
       886872,
+      935000,
       935000
     ],
     "artifact_size.module.anneal_mirtotal_stepcore.olean_private_bytes": [
@@ -26562,6 +26661,7 @@
       2965472,
       2965472,
       2965472,
+      3093264,
       3093264
     ],
     "artifact_size.module.anneal_mirtotal_stepcore.olean_server_bytes": [
@@ -26666,6 +26766,7 @@
       39632,
       39632,
       39632,
+      41168,
       41168,
       41168,
       41168,
@@ -26950,6 +27051,7 @@
       6032,
       6032,
       6032,
+      6032,
       6032
     ],
     "artifact_size.module.anneal_mirwp.olean_private_bytes": [
@@ -27054,6 +27156,7 @@
       824,
       824,
       824,
+      1096,
       1096,
       1096,
       1096,
@@ -27338,6 +27441,7 @@
       5360,
       5360,
       5360,
+      5360,
       5360
     ],
     "artifact_size.module.anneal_mirwp_canaries.olean_bytes": [
@@ -27362,6 +27466,7 @@
       17600,
       17600,
       17600,
+      null,
       null,
       null,
       null,
@@ -27726,6 +27831,7 @@
       null,
       null,
       null,
+      null,
       null
     ],
     "artifact_size.module.anneal_mirwp_canaries.olean_server_bytes": [
@@ -27750,6 +27856,7 @@
       12720,
       12720,
       12720,
+      null,
       null,
       null,
       null,
@@ -28114,6 +28221,7 @@
       70192,
       70192,
       70192,
+      70192,
       70192
     ],
     "artifact_size.module.anneal_mirwp_core.olean_private_bytes": [
@@ -28218,6 +28326,7 @@
       406520,
       406520,
       406520,
+      426264,
       426264,
       426264,
       426264,
@@ -28502,6 +28611,7 @@
       19712,
       19712,
       19712,
+      19712,
       19712
     ],
     "artifact_size.module.anneal_mirwp_execution.olean_bytes": [
@@ -28692,6 +28802,7 @@
       330344,
       330344,
       330344,
+      330408,
       330408,
       330408,
       330408,
@@ -28890,6 +29001,7 @@
       4471952,
       4471952,
       4471952,
+      4500056,
       4500056
     ],
     "artifact_size.module.anneal_mirwp_execution.olean_server_bytes": [
@@ -28994,6 +29106,7 @@
       36824,
       36824,
       36824,
+      41896,
       41896,
       41896,
       41896,
@@ -29278,6 +29391,7 @@
       74552,
       74552,
       74552,
+      74560,
       74560
     ],
     "artifact_size.module.anneal_mirwp_reflection.olean_private_bytes": [
@@ -29472,9 +29586,11 @@
       3257952,
       3257952,
       3257952,
+      3764024,
       3764024
     ],
     "artifact_size.module.anneal_mirwp_reflection.olean_server_bytes": [
+      16528,
       16528,
       16528,
       16528,
@@ -29860,6 +29976,7 @@
       116536,
       116536,
       116536,
+      116536,
       116536
     ],
     "artifact_size.module.anneal_mirwp_scalars.olean_private_bytes": [
@@ -30050,6 +30167,7 @@
       823728,
       823728,
       823728,
+      826624,
       826624,
       826624,
       826624,
@@ -30248,6 +30366,7 @@
       40968,
       40968,
       40968,
+      40968,
       40968
     ],
     "artifact_size.module.anneal_mirwp_v2memory.olean_bytes": [
@@ -30442,6 +30561,7 @@
       864328,
       864328,
       864328,
+      977392,
       977392
     ],
     "artifact_size.module.anneal_mirwp_v2memory.olean_private_bytes": [
@@ -30636,6 +30756,7 @@
       7034840,
       7034840,
       7034840,
+      9074272,
       9074272
     ],
     "artifact_size.module.anneal_mirwp_v2memory.olean_server_bytes": [
@@ -30830,6 +30951,7 @@
       39528,
       39528,
       39528,
+      41616,
       41616
     ],
     "artifact_size.module.anneal_mirwp_v2stepshield.olean_bytes": [
@@ -31024,6 +31146,7 @@
       96976,
       96976,
       96976,
+      108624,
       108624
     ],
     "artifact_size.module.anneal_mirwp_v2stepshield.olean_private_bytes": [
@@ -31218,6 +31341,7 @@
       170128,
       170128,
       170128,
+      228600,
       228600
     ],
     "artifact_size.module.anneal_mirwp_v2stepshield.olean_server_bytes": [
@@ -31412,6 +31536,7 @@
       11608,
       11608,
       11608,
+      13672,
       13672
     ],
     "artifact_size.module.anneal_natbitwise.olean_bytes": [
@@ -31537,6 +31662,7 @@
       21984,
       21984,
       21984,
+      46288,
       46288,
       46288,
       46288,
@@ -31800,6 +31926,7 @@
       564496,
       564496,
       564496,
+      564496,
       564496
     ],
     "artifact_size.module.anneal_natbitwise.olean_server_bytes": [
@@ -31994,9 +32121,11 @@
       26944,
       26944,
       26944,
+      26944,
       26944
     ],
     "artifact_size.module.anneal_ptree.olean_bytes": [
+      375200,
       375200,
       375200,
       375200,
@@ -32382,9 +32511,11 @@
       828976,
       828976,
       828976,
+      828976,
       828976
     ],
     "artifact_size.module.anneal_ptree.olean_server_bytes": [
+      40520,
       40520,
       40520,
       40520,
@@ -32770,6 +32901,7 @@
       273360,
       273360,
       273360,
+      273360,
       273360
     ],
     "artifact_size.module.anneal_purelift_bvlin.olean_private_bytes": [
@@ -32837,6 +32969,7 @@
       null,
       null,
       null,
+      705448,
       705448,
       705448,
       705448,
@@ -33158,6 +33291,7 @@
       41128,
       41128,
       41128,
+      41128,
       41128
     ],
     "artifact_size.module.anneal_scalar.olean_bytes": [
@@ -33218,6 +33352,7 @@
       null,
       null,
       null,
+      1992,
       1992,
       1992,
       1992,
@@ -33546,6 +33681,7 @@
       96,
       96,
       96,
+      96,
       96
     ],
     "artifact_size.module.anneal_scalar.olean_server_bytes": [
@@ -33606,6 +33742,7 @@
       null,
       null,
       null,
+      96,
       96,
       96,
       96,
@@ -33934,6 +34071,7 @@
       1536,
       1536,
       1536,
+      1536,
       1536
     ],
     "artifact_size.module.anneal_sccsharding.olean_private_bytes": [
@@ -34028,6 +34166,7 @@
       null,
       null,
       null,
+      96,
       96,
       96,
       96,
@@ -34322,6 +34461,7 @@
       96,
       96,
       96,
+      96,
       96
     ],
     "artifact_size.module.anneal_sccsharding_binchunktree.olean_bytes": [
@@ -34435,6 +34575,7 @@
       807528,
       807528,
       807528,
+      839096,
       839096,
       839096,
       839096,
@@ -34710,6 +34851,7 @@
       1577632,
       1577632,
       1577632,
+      1577632,
       1577632
     ],
     "artifact_size.module.anneal_sccsharding_binchunktree.olean_server_bytes": [
@@ -34904,6 +35046,7 @@
       31216,
       31216,
       31216,
+      31216,
       31216
     ],
     "artifact_size.module.anneal_sccsharding_interproccallmodel.olean_bytes": [
@@ -35008,6 +35151,7 @@
       189384,
       189384,
       189384,
+      189592,
       189592,
       189592,
       189592,
@@ -35292,6 +35436,7 @@
       339328,
       339328,
       339328,
+      339328,
       339328
     ],
     "artifact_size.module.anneal_sccsharding_interproccallmodel.olean_server_bytes": [
@@ -35486,9 +35631,11 @@
       8944,
       8944,
       8944,
+      8944,
       8944
     ],
     "artifact_size.module.anneal_spineforce.olean_bytes": [
+      71048,
       71048,
       71048,
       71048,
@@ -35874,9 +36021,11 @@
       101792,
       101792,
       101792,
+      101792,
       101792
     ],
     "artifact_size.module.anneal_spineforce.olean_server_bytes": [
+      17752,
       17752,
       17752,
       17752,
@@ -36262,6 +36411,7 @@
       1720,
       1720,
       1720,
+      1720,
       1720
     ],
     "artifact_size.module.anneal_wp.olean_private_bytes": [
@@ -36322,6 +36472,7 @@
       null,
       null,
       null,
+      96,
       96,
       96,
       96,
@@ -36650,9 +36801,11 @@
       96,
       96,
       96,
+      96,
       96
     ],
     "artifact_size.module.trusted.olean_bytes": [
+      1336,
       1336,
       1336,
       1336,
@@ -37038,9 +37191,11 @@
       96,
       96,
       96,
+      96,
       96
     ],
     "artifact_size.module.trusted.olean_server_bytes": [
+      992,
       992,
       992,
       992,
@@ -37426,6 +37581,7 @@
       753200,
       753200,
       753200,
+      753200,
       753200
     ],
     "artifact_size.module.trusted_framework.olean_private_bytes": [
@@ -37511,6 +37667,7 @@
       null,
       null,
       null,
+      184952,
       184952,
       184952,
       184952,
@@ -37814,6 +37971,7 @@
       28168,
       28168,
       28168,
+      28168,
       28168
     ],
     "artifact_size.module.trusted_framework_bridge.olean_bytes": [
@@ -38008,6 +38166,7 @@
       48208,
       48208,
       48208,
+      48208,
       48208
     ],
     "artifact_size.module.trusted_framework_bridge.olean_private_bytes": [
@@ -38093,6 +38252,7 @@
       null,
       null,
       null,
+      8752,
       8752,
       8752,
       8752,
@@ -38396,6 +38556,7 @@
       12616,
       12616,
       12616,
+      12616,
       12616
     ],
     "artifact_size.module.trusted_framework_instances.olean_bytes": [
@@ -38590,6 +38751,7 @@
       99512,
       99512,
       99512,
+      99512,
       99512
     ],
     "artifact_size.module.trusted_framework_instances.olean_private_bytes": [
@@ -38694,6 +38856,7 @@
       25152,
       25152,
       25152,
+      25528,
       25528,
       25528,
       25528,
@@ -38978,9 +39141,11 @@
       13928,
       13928,
       13928,
+      13928,
       13928
     ],
     "artifact_size.module.trusted_mirast.olean_bytes": [
+      1936,
       1936,
       1936,
       1936,
@@ -39366,11 +39531,13 @@
       96,
       96,
       96,
+      96,
       96
     ],
     "artifact_size.module.trusted_mirast.olean_server_bytes": [
       5088,
       5088,
+      5320,
       5320,
       5320,
       5320,
@@ -39754,6 +39921,7 @@
       136160,
       136160,
       136160,
+      136160,
       136160
     ],
     "artifact_size.module.trusted_mirast_body.olean_private_bytes": [
@@ -39858,6 +40026,7 @@
       33904,
       33904,
       33904,
+      40152,
       40152,
       40152,
       40152,
@@ -40142,6 +40311,7 @@
       14736,
       14736,
       14736,
+      14736,
       14736
     ],
     "artifact_size.module.trusted_mirast_places.olean_bytes": [
@@ -40306,6 +40476,7 @@
       201704,
       201704,
       201704,
+      211080,
       211080,
       211080,
       211080,
@@ -40530,6 +40701,7 @@
       57408,
       57408,
       57408,
+      57408,
       57408
     ],
     "artifact_size.module.trusted_mirast_places.olean_server_bytes": [
@@ -40694,6 +40866,7 @@
       11872,
       11872,
       11872,
+      12176,
       12176,
       12176,
       12176,
@@ -40918,6 +41091,7 @@
       474424,
       474424,
       474424,
+      479320,
       479320
     ],
     "artifact_size.module.trusted_mirast_rvalues.olean_private_bytes": [
@@ -41112,6 +41286,7 @@
       110032,
       110032,
       110032,
+      110800,
       110800
     ],
     "artifact_size.module.trusted_mirast_rvalues.olean_server_bytes": [
@@ -41306,9 +41481,11 @@
       23656,
       23656,
       23656,
+      23984,
       23984
     ],
     "artifact_size.module.trusted_mirast_statements.olean_bytes": [
+      65960,
       65960,
       65960,
       65960,
@@ -41694,9 +41871,11 @@
       16104,
       16104,
       16104,
+      16104,
       16104
     ],
     "artifact_size.module.trusted_mirast_statements.olean_server_bytes": [
+      5376,
       5376,
       5376,
       5376,
@@ -42082,6 +42261,7 @@
       589280,
       589280,
       589280,
+      734504,
       734504
     ],
     "artifact_size.module.trusted_mirast_terminators.olean_private_bytes": [
@@ -42276,6 +42456,7 @@
       176728,
       176728,
       176728,
+      196544,
       196544
     ],
     "artifact_size.module.trusted_mirast_terminators.olean_server_bytes": [
@@ -42470,6 +42651,7 @@
       25808,
       25808,
       25808,
+      29208,
       29208
     ],
     "artifact_size.module.trusted_mirast_types.olean_bytes": [
@@ -42664,6 +42846,7 @@
       599704,
       599704,
       599704,
+      661480,
       661480
     ],
     "artifact_size.module.trusted_mirast_types.olean_private_bytes": [
@@ -42858,6 +43041,7 @@
       83664,
       83664,
       83664,
+      90168,
       90168
     ],
     "artifact_size.module.trusted_mirast_types.olean_server_bytes": [
@@ -43052,6 +43236,7 @@
       26216,
       26216,
       26216,
+      26680,
       26680
     ],
     "artifact_size.module.trusted_mirmodel.olean_bytes": [
@@ -43246,6 +43431,7 @@
       572000,
       572000,
       572000,
+      601632,
       601632
     ],
     "artifact_size.module.trusted_mirmodel.olean_private_bytes": [
@@ -43440,6 +43626,7 @@
       144728,
       144728,
       144728,
+      156960,
       156960
     ],
     "artifact_size.module.trusted_mirmodel.olean_server_bytes": [
@@ -43634,6 +43821,7 @@
       24984,
       24984,
       24984,
+      25448,
       25448
     ],
     "artifact_size.module.trusted_mirsemantics.olean_bytes": [
@@ -43828,6 +44016,7 @@
       125536,
       125536,
       125536,
+      125648,
       125648
     ],
     "artifact_size.module.trusted_mirsemantics.olean_private_bytes": [
@@ -43941,6 +44130,7 @@
       1640,
       1640,
       1640,
+      1656,
       1656,
       1656,
       1656,
@@ -44216,6 +44406,7 @@
       37624,
       37624,
       37624,
+      37624,
       37624
     ],
     "artifact_size.module.trusted_mirsemantics_alloccontracts.olean_bytes": [
@@ -44410,6 +44601,7 @@
       null,
       null,
       null,
+      459976,
       459976
     ],
     "artifact_size.module.trusted_mirsemantics_alloccontracts.olean_private_bytes": [
@@ -44604,6 +44796,7 @@
       null,
       null,
       null,
+      13888,
       13888
     ],
     "artifact_size.module.trusted_mirsemantics_alloccontracts.olean_server_bytes": [
@@ -44798,6 +44991,7 @@
       null,
       null,
       null,
+      24024,
       24024
     ],
     "artifact_size.module.trusted_mirsemantics_boundary.olean_bytes": [
@@ -44992,6 +45186,7 @@
       416120,
       416120,
       416120,
+      420120,
       420120
     ],
     "artifact_size.module.trusted_mirsemantics_boundary.olean_private_bytes": [
@@ -45156,6 +45351,7 @@
       30072,
       30072,
       30072,
+      30056,
       30056,
       30056,
       30056,
@@ -45380,6 +45576,7 @@
       43264,
       43264,
       43264,
+      44184,
       44184
     ],
     "artifact_size.module.trusted_mirsemantics_bytes.olean_bytes": [
@@ -45574,6 +45771,7 @@
       707008,
       707008,
       707008,
+      845848,
       845848
     ],
     "artifact_size.module.trusted_mirsemantics_bytes.olean_private_bytes": [
@@ -45768,6 +45966,7 @@
       4112,
       4112,
       4112,
+      4448,
       4448
     ],
     "artifact_size.module.trusted_mirsemantics_bytes.olean_server_bytes": [
@@ -45962,6 +46161,7 @@
       34184,
       34184,
       34184,
+      39120,
       39120
     ],
     "artifact_size.module.trusted_mirsemantics_canaryfixtures.olean_bytes": [
@@ -46075,6 +46275,7 @@
       73600,
       73600,
       73600,
+      75712,
       75712,
       75712,
       75712,
@@ -46350,6 +46551,7 @@
       1848,
       1848,
       1848,
+      1848,
       1848
     ],
     "artifact_size.module.trusted_mirsemantics_canaryfixtures.olean_server_bytes": [
@@ -46463,6 +46665,7 @@
       24008,
       24008,
       24008,
+      24976,
       24976,
       24976,
       24976,
@@ -46738,6 +46941,7 @@
       131696,
       131696,
       131696,
+      131696,
       131696
     ],
     "artifact_size.module.trusted_mirsemantics_contract.olean_private_bytes": [
@@ -46851,6 +47055,7 @@
       null,
       null,
       null,
+      27904,
       27904,
       27904,
       27904,
@@ -47126,6 +47331,7 @@
       13928,
       13928,
       13928,
+      13928,
       13928
     ],
     "artifact_size.module.trusted_mirsemantics_corecontracts.olean_bytes": [
@@ -47320,6 +47526,7 @@
       455840,
       455840,
       455840,
+      472688,
       472688
     ],
     "artifact_size.module.trusted_mirsemantics_corecontracts.olean_private_bytes": [
@@ -47484,6 +47691,7 @@
       null,
       null,
       null,
+      1976,
       1976,
       1976,
       1976,
@@ -47708,6 +47916,7 @@
       11240,
       11240,
       11240,
+      11240,
       11240
     ],
     "artifact_size.module.trusted_mirsemantics_enum.olean_bytes": [
@@ -47902,6 +48111,7 @@
       816344,
       816344,
       816344,
+      904264,
       904264
     ],
     "artifact_size.module.trusted_mirsemantics_enum.olean_private_bytes": [
@@ -48096,6 +48306,7 @@
       29992,
       29992,
       29992,
+      30104,
       30104
     ],
     "artifact_size.module.trusted_mirsemantics_enum.olean_server_bytes": [
@@ -48290,6 +48501,7 @@
       34048,
       34048,
       34048,
+      35448,
       35448
     ],
     "artifact_size.module.trusted_mirsemantics_layout.olean_bytes": [
@@ -48484,6 +48696,7 @@
       191168,
       191168,
       191168,
+      200024,
       200024
     ],
     "artifact_size.module.trusted_mirsemantics_layout.olean_private_bytes": [
@@ -48648,6 +48861,7 @@
       8640,
       8640,
       8640,
+      8736,
       8736,
       8736,
       8736,
@@ -48872,6 +49086,7 @@
       14952,
       14952,
       14952,
+      15024,
       15024
     ],
     "artifact_size.module.trusted_mirsemantics_memory.olean_bytes": [
@@ -49066,6 +49281,7 @@
       178504,
       178504,
       178504,
+      183608,
       183608
     ],
     "artifact_size.module.trusted_mirsemantics_memory.olean_private_bytes": [
@@ -49230,6 +49446,7 @@
       5992,
       5992,
       5992,
+      6024,
       6024,
       6024,
       6024,
@@ -49454,6 +49671,7 @@
       27576,
       27576,
       27576,
+      27592,
       27592
     ],
     "artifact_size.module.trusted_mirsemantics_ops.olean_bytes": [
@@ -49648,9 +49866,11 @@
       262000,
       262000,
       262000,
+      269000,
       269000
     ],
     "artifact_size.module.trusted_mirsemantics_ops.olean_private_bytes": [
+      2080,
       2080,
       2080,
       2080,
@@ -50036,6 +50256,7 @@
       21008,
       21008,
       21008,
+      21008,
       21008
     ],
     "artifact_size.module.trusted_mirsemantics_state.olean_bytes": [
@@ -50230,6 +50451,7 @@
       344288,
       344288,
       344288,
+      347232,
       347232
     ],
     "artifact_size.module.trusted_mirsemantics_state.olean_private_bytes": [
@@ -50394,6 +50616,7 @@
       19896,
       19896,
       19896,
+      19960,
       19960,
       19960,
       19960,
@@ -50618,6 +50841,7 @@
       26368,
       26368,
       26368,
+      26368,
       26368
     ],
     "artifact_size.module.trusted_mirsemantics_step.olean_bytes": [
@@ -50812,6 +51036,7 @@
       1912080,
       1912080,
       1912080,
+      2020056,
       2020056
     ],
     "artifact_size.module.trusted_mirsemantics_step.olean_private_bytes": [
@@ -51006,6 +51231,7 @@
       78288,
       78288,
       78288,
+      78592,
       78592
     ],
     "artifact_size.module.trusted_mirsemantics_step.olean_server_bytes": [
@@ -51200,6 +51426,7 @@
       94272,
       94272,
       94272,
+      97544,
       97544
     ],
     "artifact_size.module.trustedboundary.olean_bytes": [
@@ -51372,6 +51599,7 @@
       19421248,
       19421248,
       19421248,
+      19431080,
       19431080,
       19431080,
       19431080,
@@ -51588,7 +51816,8 @@
       165236,
       165140,
       165248,
-      166612
+      166612,
+      166672
     ],
     "memory_rss.theory_anneal_aipcc_bitarith.cold_j1_maxrss_kib": [
       null,
@@ -51782,7 +52011,8 @@
       199412,
       199484,
       199312,
-      199560
+      199560,
+      199704
     ],
     "memory_rss.theory_anneal_aipcc_mirbridge.cold_j1_maxrss_kib": [
       null,
@@ -51976,7 +52206,8 @@
       408260,
       407884,
       408260,
-      412128
+      412128,
+      413736
     ],
     "memory_rss.theory_anneal_aipcc_mirpcc.cold_j1_maxrss_kib": [
       null,
@@ -52170,7 +52401,8 @@
       253092,
       253044,
       253124,
-      260092
+      260092,
+      260148
     ],
     "memory_rss.theory_anneal_aipcc_mirtransfer.cold_j1_maxrss_kib": [
       null,
@@ -52364,7 +52596,8 @@
       539560,
       539592,
       539312,
-      561648
+      561648,
+      561728
     ],
     "memory_rss.theory_anneal_aipcc_reducedproduct.cold_j1_maxrss_kib": [
       null,
@@ -52558,7 +52791,8 @@
       269984,
       269908,
       269928,
-      269956
+      269956,
+      267536
     ],
     "memory_rss.theory_anneal_aipcc_tnum.cold_j1_maxrss_kib": [
       null,
@@ -52752,7 +52986,8 @@
       214272,
       214232,
       214256,
-      214268
+      214268,
+      214516
     ],
     "memory_rss.theory_anneal_aipcc_wrappedinterval.cold_j1_maxrss_kib": [
       null,
@@ -52946,7 +53181,8 @@
       215236,
       215196,
       214996,
-      215052
+      215052,
+      215392
     ],
     "memory_rss.theory_anneal_bittrielrat.cold_j1_maxrss_kib": [
       208560,
@@ -53140,7 +53376,8 @@
       208216,
       208616,
       208280,
-      208660
+      208660,
+      208520
     ],
     "memory_rss.theory_anneal_bitvec.cold_j1_maxrss_kib": [
       224560,
@@ -53334,7 +53571,8 @@
       224768,
       224732,
       224764,
-      224508
+      224508,
+      225004
     ],
     "memory_rss.theory_anneal_bitvecarith.cold_j1_maxrss_kib": [
       255672,
@@ -53528,7 +53766,8 @@
       255972,
       255812,
       255640,
-      255596
+      255596,
+      256088
     ],
     "memory_rss.theory_anneal_classicalem.cold_j1_maxrss_kib": [
       160000,
@@ -53722,7 +53961,8 @@
       160040,
       159932,
       160044,
-      160192
+      160192,
+      160340
     ],
     "memory_rss.theory_anneal_firewall.cold_j1_maxrss_kib": [
       136428,
@@ -53916,7 +54156,8 @@
       142420,
       142132,
       142372,
-      142516
+      142516,
+      142664
     ],
     "memory_rss.theory_anneal_framework.cold_j1_maxrss_kib": [
       null,
@@ -54110,7 +54351,8 @@
       201424,
       201372,
       201344,
-      196296
+      196296,
+      196604
     ],
     "memory_rss.theory_anneal_framework_stepwp.cold_j1_maxrss_kib": [
       null,
@@ -54304,7 +54546,8 @@
       227340,
       227144,
       227216,
-      227780
+      227780,
+      227672
     ],
     "memory_rss.theory_anneal_initlemmas.cold_j1_maxrss_kib": [
       178328,
@@ -54498,7 +54741,8 @@
       201168,
       201488,
       201476,
-      201488
+      201488,
+      201496
     ],
     "memory_rss.theory_anneal_lebytes.cold_j1_maxrss_kib": [
       179148,
@@ -54692,7 +54936,8 @@
       179244,
       179064,
       179076,
-      179104
+      179104,
+      179244
     ],
     "memory_rss.theory_anneal_lineararith.cold_j1_maxrss_kib": [
       234296,
@@ -54886,7 +55131,8 @@
       234600,
       234720,
       236748,
-      234400
+      234400,
+      234976
     ],
     "memory_rss.theory_anneal_listchunks.cold_j1_maxrss_kib": [
       181496,
@@ -55080,7 +55326,8 @@
       181392,
       181292,
       181504,
-      181640
+      181640,
+      181624
     ],
     "memory_rss.theory_anneal_loopinv.cold_j1_maxrss_kib": [
       209560,
@@ -55274,7 +55521,8 @@
       202188,
       202252,
       202268,
-      203424
+      203424,
+      203612
     ],
     "memory_rss.theory_anneal_mirsymexec.cold_j1_maxrss_kib": [
       null,
@@ -55468,7 +55716,8 @@
       728616,
       728300,
       727536,
-      765536
+      765536,
+      765820
     ],
     "memory_rss.theory_anneal_mirsymexec_bits.cold_j1_maxrss_kib": [
       null,
@@ -55662,7 +55911,8 @@
       266316,
       269476,
       269520,
-      272852
+      272852,
+      264348
     ],
     "memory_rss.theory_anneal_mirsymexeccall.cold_j1_maxrss_kib": [
       null,
@@ -55856,7 +56106,8 @@
       281432,
       281276,
       278880,
-      283236
+      283236,
+      283368
     ],
     "memory_rss.theory_anneal_mirtotal_ops.cold_j1_maxrss_kib": [
       null,
@@ -56050,7 +56301,8 @@
       278836,
       278836,
       278648,
-      287036
+      287036,
+      287168
     ],
     "memory_rss.theory_anneal_mirtotal_stepcore.cold_j1_maxrss_kib": [
       null,
@@ -56244,7 +56496,8 @@
       305548,
       305280,
       311680,
-      310892
+      310892,
+      310968
     ],
     "memory_rss.theory_anneal_mirwp.cold_j1_maxrss_kib": [
       160256,
@@ -56438,7 +56691,8 @@
       164140,
       164188,
       164256,
-      165504
+      165504,
+      165656
     ],
     "memory_rss.theory_anneal_mirwp_canaries.cold_j1_maxrss_kib": [
       187148,
@@ -56462,6 +56716,7 @@
       189868,
       189864,
       191076,
+      null,
       null,
       null,
       null,
@@ -56826,7 +57081,8 @@
       192852,
       192672,
       192776,
-      193932
+      193932,
+      194016
     ],
     "memory_rss.theory_anneal_mirwp_execution.cold_j1_maxrss_kib": [
       531776,
@@ -57020,7 +57276,8 @@
       318976,
       318800,
       319132,
-      322172
+      322172,
+      322332
     ],
     "memory_rss.theory_anneal_mirwp_reflection.cold_j1_maxrss_kib": [
       554928,
@@ -57214,7 +57471,8 @@
       302988,
       302656,
       302428,
-      325392
+      325392,
+      325684
     ],
     "memory_rss.theory_anneal_mirwp_scalars.cold_j1_maxrss_kib": [
       178008,
@@ -57408,7 +57666,8 @@
       217608,
       217460,
       217488,
-      220912
+      220912,
+      221004
     ],
     "memory_rss.theory_anneal_mirwp_v2memory.cold_j1_maxrss_kib": [
       null,
@@ -57602,7 +57861,8 @@
       436796,
       436748,
       436756,
-      501300
+      501300,
+      500020
     ],
     "memory_rss.theory_anneal_mirwp_v2stepshield.cold_j1_maxrss_kib": [
       null,
@@ -57796,7 +58056,8 @@
       183364,
       183252,
       183432,
-      188080
+      188080,
+      188104
     ],
     "memory_rss.theory_anneal_natbitwise.cold_j1_maxrss_kib": [
       163388,
@@ -57990,7 +58251,8 @@
       195480,
       193420,
       195576,
-      195484
+      195484,
+      195708
     ],
     "memory_rss.theory_anneal_ptree.cold_j1_maxrss_kib": [
       209824,
@@ -58184,7 +58446,8 @@
       209956,
       209820,
       209856,
-      209596
+      209596,
+      210044
     ],
     "memory_rss.theory_anneal_purelift_bvlin.cold_j1_maxrss_kib": [
       null,
@@ -58378,7 +58641,8 @@
       210068,
       209424,
       209964,
-      211284
+      211284,
+      211328
     ],
     "memory_rss.theory_anneal_scalar.cold_j1_maxrss_kib": [
       null,
@@ -58572,7 +58836,8 @@
       152272,
       152168,
       152332,
-      152304
+      152304,
+      152564
     ],
     "memory_rss.theory_anneal_sccsharding.cold_j1_maxrss_kib": [
       null,
@@ -58766,7 +59031,8 @@
       164556,
       164480,
       164560,
-      165884
+      165884,
+      166000
     ],
     "memory_rss.theory_anneal_sccsharding_binchunktree.cold_j1_maxrss_kib": [
       null,
@@ -58960,7 +59226,8 @@
       246944,
       245020,
       246904,
-      245064
+      245064,
+      250200
     ],
     "memory_rss.theory_anneal_sccsharding_interproccallmodel.cold_j1_maxrss_kib": [
       null,
@@ -59154,7 +59421,8 @@
       192692,
       194900,
       192912,
-      196008
+      196008,
+      196004
     ],
     "memory_rss.theory_anneal_spineforce.cold_j1_maxrss_kib": [
       156732,
@@ -59348,7 +59616,8 @@
       156560,
       156512,
       156684,
-      156696
+      156696,
+      156664
     ],
     "memory_rss.theory_anneal_wp.cold_j1_maxrss_kib": [
       null,
@@ -59542,7 +59811,8 @@
       163644,
       163556,
       163720,
-      164912
+      164912,
+      165080
     ],
     "memory_rss.theory_elab.max_module_maxrss_kib": [
       984580,
@@ -59736,7 +60006,8 @@
       1299648,
       1299532,
       1299060,
-      1299800
+      1299800,
+      1299920
     ],
     "memory_rss.theory_trusted.cold_j1_maxrss_kib": [
       149664,
@@ -59930,7 +60201,8 @@
       149680,
       149644,
       149648,
-      149800
+      149800,
+      149984
     ],
     "memory_rss.theory_trusted_framework.cold_j1_maxrss_kib": [
       null,
@@ -60124,7 +60396,8 @@
       182320,
       182248,
       182392,
-      182320
+      182320,
+      182484
     ],
     "memory_rss.theory_trusted_framework_bridge.cold_j1_maxrss_kib": [
       null,
@@ -60318,7 +60591,8 @@
       172052,
       172100,
       172276,
-      173260
+      173260,
+      173520
     ],
     "memory_rss.theory_trusted_framework_instances.cold_j1_maxrss_kib": [
       null,
@@ -60512,7 +60786,8 @@
       177508,
       177408,
       177480,
-      178612
+      178612,
+      178720
     ],
     "memory_rss.theory_trusted_mirast.cold_j1_maxrss_kib": [
       151304,
@@ -60706,7 +60981,8 @@
       152324,
       152188,
       152320,
-      152536
+      152536,
+      152780
     ],
     "memory_rss.theory_trusted_mirast_body.cold_j1_maxrss_kib": [
       165128,
@@ -60900,7 +61176,8 @@
       169432,
       169180,
       169328,
-      169632
+      169632,
+      169760
     ],
     "memory_rss.theory_trusted_mirast_places.cold_j1_maxrss_kib": [
       164472,
@@ -61094,7 +61371,8 @@
       174556,
       174808,
       174616,
-      174852
+      174852,
+      174904
     ],
     "memory_rss.theory_trusted_mirast_rvalues.cold_j1_maxrss_kib": [
       168340,
@@ -61288,7 +61566,8 @@
       177228,
       176924,
       177208,
-      177308
+      177308,
+      177236
     ],
     "memory_rss.theory_trusted_mirast_statements.cold_j1_maxrss_kib": [
       162116,
@@ -61482,7 +61761,8 @@
       162648,
       162628,
       162696,
-      162756
+      162756,
+      162924
     ],
     "memory_rss.theory_trusted_mirast_terminators.cold_j1_maxrss_kib": [
       177016,
@@ -61676,7 +61956,8 @@
       174528,
       174456,
       174392,
-      175924
+      175924,
+      175856
     ],
     "memory_rss.theory_trusted_mirast_types.cold_j1_maxrss_kib": [
       175300,
@@ -61870,7 +62151,8 @@
       173676,
       173464,
       173564,
-      173868
+      173868,
+      173968
     ],
     "memory_rss.theory_trusted_mirmodel.cold_j1_maxrss_kib": [
       174868,
@@ -62064,7 +62346,8 @@
       182124,
       181996,
       182280,
-      184488
+      184488,
+      184616
     ],
     "memory_rss.theory_trusted_mirsemantics.cold_j1_maxrss_kib": [
       171672,
@@ -62258,7 +62541,8 @@
       177252,
       177188,
       177196,
-      178552
+      178552,
+      178484
     ],
     "memory_rss.theory_trusted_mirsemantics_alloccontracts.cold_j1_maxrss_kib": [
       null,
@@ -62452,7 +62736,8 @@
       null,
       null,
       null,
-      187504
+      187504,
+      187684
     ],
     "memory_rss.theory_trusted_mirsemantics_boundary.cold_j1_maxrss_kib": [
       169964,
@@ -62646,7 +62931,8 @@
       185188,
       185164,
       185280,
-      188420
+      188420,
+      188732
     ],
     "memory_rss.theory_trusted_mirsemantics_bytes.cold_j1_maxrss_kib": [
       167708,
@@ -62840,7 +63126,8 @@
       184612,
       184596,
       184680,
-      191188
+      191188,
+      191440
     ],
     "memory_rss.theory_trusted_mirsemantics_canaryfixtures.cold_j1_maxrss_kib": [
       169576,
@@ -63034,7 +63321,8 @@
       174752,
       174732,
       174836,
-      177812
+      177812,
+      177960
     ],
     "memory_rss.theory_trusted_mirsemantics_contract.cold_j1_maxrss_kib": [
       null,
@@ -63228,7 +63516,8 @@
       179056,
       178932,
       178996,
-      180188
+      180188,
+      180296
     ],
     "memory_rss.theory_trusted_mirsemantics_corecontracts.cold_j1_maxrss_kib": [
       null,
@@ -63422,7 +63711,8 @@
       181180,
       181092,
       181104,
-      181616
+      181616,
+      181696
     ],
     "memory_rss.theory_trusted_mirsemantics_enum.cold_j1_maxrss_kib": [
       165160,
@@ -63616,7 +63906,8 @@
       188248,
       188224,
       188352,
-      188728
+      188728,
+      188916
     ],
     "memory_rss.theory_trusted_mirsemantics_layout.cold_j1_maxrss_kib": [
       167448,
@@ -63810,7 +64101,8 @@
       171868,
       171708,
       171932,
-      172296
+      172296,
+      172300
     ],
     "memory_rss.theory_trusted_mirsemantics_memory.cold_j1_maxrss_kib": [
       169324,
@@ -64004,7 +64296,8 @@
       173188,
       173216,
       173476,
-      173804
+      173804,
+      173864
     ],
     "memory_rss.theory_trusted_mirsemantics_ops.cold_j1_maxrss_kib": [
       170784,
@@ -64198,7 +64491,8 @@
       171840,
       171748,
       171812,
-      172380
+      172380,
+      172204
     ],
     "memory_rss.theory_trusted_mirsemantics_state.cold_j1_maxrss_kib": [
       169544,
@@ -64392,7 +64686,8 @@
       180844,
       180716,
       180788,
-      181352
+      181352,
+      181384
     ],
     "memory_rss.theory_trusted_mirsemantics_step.cold_j1_maxrss_kib": [
       174976,
@@ -64586,7 +64881,8 @@
       252276,
       252308,
       252340,
-      255316
+      255316,
+      255372
     ],
     "memory_rss.theory_trustedboundary.cold_j1_maxrss_kib": [
       984580,
@@ -64780,7 +65076,8 @@
       1299648,
       1299532,
       1299060,
-      1299800
+      1299800,
+      1299920
     ],
     "memory_rss.verify_scalar.cold_no_cache_maxrss_kib": [
       984820,
@@ -64974,7 +65271,8 @@
       1297044,
       1298836,
       1299588,
-      1299768
+      1299768,
+      1300052
     ],
     "memory_rss.verify_scalar.cold_prebuilt_maxrss_kib": [
       882340,
@@ -65168,7 +65466,8 @@
       1062672,
       1098372,
       1062684,
-      1105092
+      1105092,
+      1069284
     ],
     "memory_rss.verify_scalar.warm_disk_maxrss_kib": [
       882248,
@@ -65362,7 +65661,8 @@
       1062860,
       1098276,
       1062748,
-      1105000
+      1105000,
+      1069176
     ],
     "memory_rss.zerocopy_01_usize_pointer_metadata.maxrss_kib": [
       841132,
@@ -65556,7 +65856,8 @@
       1062780,
       1087928,
       1057956,
-      1095560
+      1095560,
+      1062324
     ],
     "memory_rss.zerocopy_02_unit_pointer_metadata.maxrss_kib": [
       840328,
@@ -65750,7 +66051,8 @@
       1062952,
       1086008,
       1058736,
-      1093460
+      1093460,
+      1069368
     ],
     "memory_rss.zerocopy_03_macros_unsafe.maxrss_kib": [
       839096,
@@ -65944,7 +66246,8 @@
       1062952,
       1085752,
       1056536,
-      1093260
+      1093260,
+      1065116
     ],
     "memory_rss.zerocopy_04_substantive_and_frombytes_markers.maxrss_kib": [
       910916,
@@ -66138,7 +66441,8 @@
       1192828,
       1199016,
       1196060,
-      1200608
+      1200608,
+      1194724
     ],
     "memory_rss.zerocopy_05_layout_add_scaled_metadata.maxrss_kib": [
       null,
@@ -66332,7 +66636,8 @@
       1280724,
       1278544,
       1283956,
-      1286684
+      1286684,
+      1294628
     ],
     "memory_rss.zerocopy_05_sharded_tryfrombytes.maxrss_kib": [
       null,
@@ -66526,7 +66831,8 @@
       1112248,
       1111864,
       1111984,
-      1117136
+      1117136,
+      1117640
     ],
     "memory_rss.zerocopy_06_byte_slice_into_byte_slice.maxrss_kib": [
       null,
@@ -66720,7 +67026,8 @@
       1116924,
       1116540,
       1117052,
-      1121136
+      1121136,
+      1142612
     ],
     "memory_rss.zerocopy_08_byte_slice_split_at_unchecked.maxrss_kib": [
       null,
@@ -66914,7 +67221,8 @@
       1119016,
       1118084,
       1118764,
-      1144092
+      1144092,
+      1144904
     ],
     "memory_rss.zerocopy_10_byteorder_endian_wrappers.maxrss_kib": [
       null,
@@ -67108,7 +67416,8 @@
       1538140,
       1536660,
       1538292,
-      1539196
+      1539196,
+      1538996
     ],
     "memory_rss.zerocopy_11_primitive_bit_validity.maxrss_kib": [
       null,
@@ -67302,7 +67611,8 @@
       1235668,
       1235712,
       1235696,
-      1235136
+      1235136,
+      1237224
     ],
     "memory_rss.zerocopy_12_nonzero_niche_bit_validity.maxrss_kib": [
       null,
@@ -67496,7 +67806,8 @@
       1301596,
       1301504,
       1301556,
-      1302780
+      1302780,
+      1302884
     ],
     "memory_rss.zerocopy_13_float_str_and_atomic_bit_validity.maxrss_kib": [
       null,
@@ -67690,7 +68001,8 @@
       1237808,
       1237612,
       1237632,
-      1234936
+      1234936,
+      1238856
     ],
     "memory_rss.zerocopy_14_known_layout_and_dst_layout.maxrss_kib": [
       null,
@@ -67884,7 +68196,8 @@
       1187316,
       1187136,
       1187332,
-      1190044
+      1190044,
+      1190156
     ],
     "memory_rss.zerocopy_15_generic_wrapper_and_array_markers.maxrss_kib": [
       null,
@@ -68078,7 +68391,8 @@
       1398300,
       1400720,
       1400740,
-      1404360
+      1404360,
+      1402164
     ],
     "memory_rss.zerocopy_16_enum_impls_and_pointer_to_metadata.maxrss_kib": [
       null,
@@ -68272,7 +68586,8 @@
       1125956,
       1098560,
       1125804,
-      1151060
+      1151060,
+      1152144
     ],
     "memory_rss.zerocopy_17_slice_array_ref_tuple_instantiations.maxrss_kib": [
       null,
@@ -68466,7 +68781,8 @@
       1181928,
       1182056,
       1182300,
-      1206004
+      1206004,
+      1206288
     ],
     "theory_elab.anneal_aipcc.cold_j1_ms": [
       null,
@@ -68660,7 +68976,8 @@
       61.544,
       76.661,
       66.595,
-      71.873
+      71.873,
+      62.895
     ],
     "theory_elab.anneal_aipcc_bitarith.cold_j1_ms": [
       null,
@@ -68854,7 +69171,8 @@
       745.575,
       971.729,
       774.746,
-      951.617
+      951.617,
+      732.092
     ],
     "theory_elab.anneal_aipcc_mirbridge.cold_j1_ms": [
       null,
@@ -69048,7 +69366,8 @@
       4593.136,
       6086.31,
       4918.575,
-      6061.826
+      6061.826,
+      4602.081
     ],
     "theory_elab.anneal_aipcc_mirpcc.cold_j1_ms": [
       null,
@@ -69242,7 +69561,8 @@
       1482.947,
       1925.648,
       1531.037,
-      1993.312
+      1993.312,
+      1542.852
     ],
     "theory_elab.anneal_aipcc_mirtransfer.cold_j1_ms": [
       null,
@@ -69436,7 +69756,8 @@
       7259.413,
       9352.761,
       7923.855,
-      9570.779
+      9570.779,
+      7483.006
     ],
     "theory_elab.anneal_aipcc_reducedproduct.cold_j1_ms": [
       null,
@@ -69630,7 +69951,8 @@
       2027.16,
       2712.895,
       2221.47,
-      2661.767
+      2661.767,
+      2040.823
     ],
     "theory_elab.anneal_aipcc_tnum.cold_j1_ms": [
       null,
@@ -69824,7 +70146,8 @@
       896.531,
       1203.02,
       1009.091,
-      1190.672
+      1190.672,
+      902.016
     ],
     "theory_elab.anneal_aipcc_wrappedinterval.cold_j1_ms": [
       null,
@@ -70018,7 +70341,8 @@
       1011.452,
       1364.849,
       1096.134,
-      1330.884
+      1330.884,
+      1012.236
     ],
     "theory_elab.anneal_bittrielrat.cold_j1_ms": [
       1408.618,
@@ -70212,7 +70536,8 @@
       1058.312,
       1396.445,
       1119.451,
-      1378.733
+      1378.733,
+      1059.763
     ],
     "theory_elab.anneal_bitvec.cold_j1_ms": [
       1547.694,
@@ -70406,7 +70731,8 @@
       1174.368,
       1564.1,
       1246.13,
-      1539.836
+      1539.836,
+      1166.254
     ],
     "theory_elab.anneal_bitvecarith.cold_j1_ms": [
       2424.403,
@@ -70600,7 +70926,8 @@
       1812.096,
       2424.996,
       1910.155,
-      2388.389
+      2388.389,
+      1805.1
     ],
     "theory_elab.anneal_classicalem.cold_j1_ms": [
       124.081,
@@ -70794,7 +71121,8 @@
       98.95,
       123.716,
       103.086,
-      123.493
+      123.493,
+      99.453
     ],
     "theory_elab.anneal_firewall.cold_j1_ms": [
       102.216,
@@ -70988,7 +71316,8 @@
       126.628,
       165.162,
       129.876,
-      160.747
+      160.747,
+      126.099
     ],
     "theory_elab.anneal_framework.cold_j1_ms": [
       null,
@@ -71182,7 +71511,8 @@
       537.905,
       711.106,
       598.592,
-      703.688
+      703.688,
+      539.025
     ],
     "theory_elab.anneal_framework_stepwp.cold_j1_ms": [
       null,
@@ -71376,7 +71706,8 @@
       1110.557,
       1454.367,
       1191.935,
-      1436.535
+      1436.535,
+      1098.631
     ],
     "theory_elab.anneal_initlemmas.cold_j1_ms": [
       527.342,
@@ -71570,7 +71901,8 @@
       871.183,
       1160.142,
       890.584,
-      1165.627
+      1165.627,
+      872.943
     ],
     "theory_elab.anneal_lebytes.cold_j1_ms": [
       527.833,
@@ -71764,7 +72096,8 @@
       400.084,
       530.87,
       408.27,
-      531.807
+      531.807,
+      401.156
     ],
     "theory_elab.anneal_lineararith.cold_j1_ms": [
       2105.382,
@@ -71958,7 +72291,8 @@
       1594.433,
       2099.22,
       1677.482,
-      2060.067
+      2060.067,
+      1554.087
     ],
     "theory_elab.anneal_listchunks.cold_j1_ms": [
       572.438,
@@ -72152,7 +72486,8 @@
       434.409,
       569.869,
       465.564,
-      557.694
+      557.694,
+      432.38
     ],
     "theory_elab.anneal_loopinv.cold_j1_ms": [
       1248.976,
@@ -72346,7 +72681,8 @@
       717.976,
       961.411,
       751.976,
-      955.637
+      955.637,
+      720.223
     ],
     "theory_elab.anneal_mirsymexec.cold_j1_ms": [
       null,
@@ -72540,7 +72876,8 @@
       16886.335,
       22494.732,
       18604.794,
-      23882.16
+      23882.16,
+      17944.763
     ],
     "theory_elab.anneal_mirsymexec_bits.cold_j1_ms": [
       null,
@@ -72734,7 +73071,8 @@
       1517.272,
       1871.423,
       1677.55,
-      1860.687
+      1860.687,
+      1510.114
     ],
     "theory_elab.anneal_mirsymexeccall.cold_j1_ms": [
       null,
@@ -72928,7 +73266,8 @@
       2014.624,
       2651.311,
       2175.984,
-      2622.854
+      2622.854,
+      2008.943
     ],
     "theory_elab.anneal_mirtotal_ops.cold_j1_ms": [
       null,
@@ -73122,7 +73461,8 @@
       3295.996,
       4515.669,
       3469.456,
-      4536.483
+      4536.483,
+      3340.156
     ],
     "theory_elab.anneal_mirtotal_stepcore.cold_j1_ms": [
       null,
@@ -73316,7 +73656,8 @@
       3307.564,
       4390.689,
       3553.623,
-      4524.835
+      4524.835,
+      3436.345
     ],
     "theory_elab.anneal_mirwp.cold_j1_ms": [
       86.836,
@@ -73510,7 +73851,8 @@
       63.926,
       77.83,
       68.783,
-      76.636
+      76.636,
+      63.591
     ],
     "theory_elab.anneal_mirwp_canaries.cold_j1_ms": [
       2361.265,
@@ -73534,6 +73876,7 @@
       2424.916,
       2592.509,
       1846.972,
+      null,
       null,
       null,
       null,
@@ -73898,7 +74241,8 @@
       442.871,
       584.009,
       471.177,
-      566.356
+      566.356,
+      436.506
     ],
     "theory_elab.anneal_mirwp_execution.cold_j1_ms": [
       8369.126,
@@ -74092,7 +74436,8 @@
       2802.756,
       3726.377,
       3071.176,
-      3718.873
+      3718.873,
+      2818.115
     ],
     "theory_elab.anneal_mirwp_reflection.cold_j1_ms": [
       6300.533,
@@ -74286,7 +74631,8 @@
       1955.171,
       2563.363,
       2060.586,
-      2904.642
+      2904.642,
+      2239.081
     ],
     "theory_elab.anneal_mirwp_scalars.cold_j1_ms": [
       442.479,
@@ -74480,7 +74826,8 @@
       1225.948,
       1681.53,
       1320.686,
-      1612.871
+      1612.871,
+      1218.472
     ],
     "theory_elab.anneal_mirwp_v2memory.cold_j1_ms": [
       null,
@@ -74674,7 +75021,8 @@
       6366.44,
       8461.446,
       6711.208,
-      11462.66
+      11462.66,
+      8749.279
     ],
     "theory_elab.anneal_mirwp_v2stepshield.cold_j1_ms": [
       null,
@@ -74868,7 +75216,8 @@
       242.617,
       322.441,
       250.057,
-      389.676
+      389.676,
+      293.613
     ],
     "theory_elab.anneal_natbitwise.cold_j1_ms": [
       164.415,
@@ -75062,7 +75411,8 @@
       716.211,
       952.404,
       744.269,
-      931.481
+      931.481,
+      711.087
     ],
     "theory_elab.anneal_ptree.cold_j1_ms": [
       1433.929,
@@ -75256,7 +75606,8 @@
       1073.874,
       1439.204,
       1148.803,
-      1401.272
+      1401.272,
+      1069.019
     ],
     "theory_elab.anneal_purelift_bvlin.cold_j1_ms": [
       null,
@@ -75450,7 +75801,8 @@
       992.053,
       1349.048,
       1065.409,
-      1345.682
+      1345.682,
+      991.876
     ],
     "theory_elab.anneal_scalar.cold_j1_ms": [
       null,
@@ -75644,7 +75996,8 @@
       56.884,
       69.938,
       60.472,
-      71.902
+      71.902,
+      56.581
     ],
     "theory_elab.anneal_sccsharding.cold_j1_ms": [
       null,
@@ -75838,7 +76191,8 @@
       60.44,
       74.01,
       63.826,
-      71.289
+      71.289,
+      59.68
     ],
     "theory_elab.anneal_sccsharding_binchunktree.cold_j1_ms": [
       null,
@@ -76032,7 +76386,8 @@
       1677.433,
       2236.322,
       1795.847,
-      2189.761
+      2189.761,
+      1673.273
     ],
     "theory_elab.anneal_sccsharding_interproccallmodel.cold_j1_ms": [
       null,
@@ -76226,7 +76581,8 @@
       367.118,
       478.014,
       381.23,
-      472.721
+      472.721,
+      369.774
     ],
     "theory_elab.anneal_spineforce.cold_j1_ms": [
       260.701,
@@ -76420,7 +76776,8 @@
       202.636,
       267.168,
       213.903,
-      259.62
+      259.62,
+      204.573
     ],
     "theory_elab.anneal_wp.cold_j1_ms": [
       null,
@@ -76614,7 +76971,8 @@
       59.814,
       74.488,
       65.317,
-      73.829
+      73.829,
+      61.069
     ],
     "theory_elab.summary.critical_path_ms": [
       20128.73,
@@ -76808,7 +77166,8 @@
       34450.671,
       45824.439,
       37398.064,
-      47984.266
+      47984.266,
+      36310.08
     ],
     "theory_elab.summary.slowest_module_ms": [
       12630.479,
@@ -77002,7 +77361,8 @@
       16886.335,
       22494.732,
       18604.794,
-      23882.16
+      23882.16,
+      17944.763
     ],
     "theory_elab.summary.total_cpu_ms": [
       46649.526,
@@ -77196,7 +77556,8 @@
       92101.803,
       121933.296,
       99212.005,
-      127468.91
+      127468.91,
+      96771.532
     ],
     "theory_elab.trusted.cold_j1_ms": [
       67.244,
@@ -77390,7 +77751,8 @@
       55.838,
       68.381,
       58.99,
-      71.134
+      71.134,
+      57.934
     ],
     "theory_elab.trusted_framework.cold_j1_ms": [
       null,
@@ -77584,7 +77946,8 @@
       337.481,
       442.683,
       355.097,
-      439.271
+      439.271,
+      348.241
     ],
     "theory_elab.trusted_framework_bridge.cold_j1_ms": [
       null,
@@ -77778,7 +78141,8 @@
       92.087,
       114.279,
       96.972,
-      112.859
+      112.859,
+      91.705
     ],
     "theory_elab.trusted_framework_instances.cold_j1_ms": [
       null,
@@ -77972,7 +78336,8 @@
       111.309,
       138.736,
       124.266,
-      138.868
+      138.868,
+      112.918
     ],
     "theory_elab.trusted_mirast.cold_j1_ms": [
       68.174,
@@ -78166,7 +78531,8 @@
       57.574,
       70.525,
       61.506,
-      70.626
+      70.626,
+      56.897
     ],
     "theory_elab.trusted_mirast_body.cold_j1_ms": [
       109.557,
@@ -78360,7 +78726,8 @@
       106.903,
       135.334,
       112.249,
-      131.339
+      131.339,
+      107.937
     ],
     "theory_elab.trusted_mirast_places.cold_j1_ms": [
       134.379,
@@ -78554,7 +78921,8 @@
       139.435,
       176.779,
       146.227,
-      174.889
+      174.889,
+      139.914
     ],
     "theory_elab.trusted_mirast_rvalues.cold_j1_ms": [
       246.319,
@@ -78748,7 +79116,8 @@
       239.958,
       310.14,
       248.234,
-      309.365
+      309.365,
+      240.316
     ],
     "theory_elab.trusted_mirast_statements.cold_j1_ms": [
       99.123,
@@ -78942,7 +79311,8 @@
       80.51,
       99.237,
       86.819,
-      99.296
+      99.296,
+      79.455
     ],
     "theory_elab.trusted_mirast_terminators.cold_j1_ms": [
       179.873,
@@ -79136,7 +79506,8 @@
       310.958,
       414.769,
       327.777,
-      483.45
+      483.45,
+      370.889
     ],
     "theory_elab.trusted_mirast_types.cold_j1_ms": [
       263.486,
@@ -79330,7 +79701,8 @@
       268.028,
       354.652,
       282.78,
-      367.068
+      367.068,
+      286.854
     ],
     "theory_elab.trusted_mirmodel.cold_j1_ms": [
       309.378,
@@ -79524,7 +79896,8 @@
       295.147,
       377.011,
       312.809,
-      407.626
+      407.626,
+      304.544
     ],
     "theory_elab.trusted_mirsemantics.cold_j1_ms": [
       237.484,
@@ -79718,7 +80091,8 @@
       223.746,
       301.012,
       232.701,
-      294.639
+      294.639,
+      225.155
     ],
     "theory_elab.trusted_mirsemantics_alloccontracts.cold_j1_ms": [
       null,
@@ -79912,7 +80286,8 @@
       null,
       null,
       null,
-      557.306
+      557.306,
+      416.311
     ],
     "theory_elab.trusted_mirsemantics_boundary.cold_j1_ms": [
       143.388,
@@ -80106,7 +80481,8 @@
       240.493,
       315.755,
       256.294,
-      316.742
+      316.742,
+      244.053
     ],
     "theory_elab.trusted_mirsemantics_bytes.cold_j1_ms": [
       210.578,
@@ -80300,7 +80676,8 @@
       549.199,
       742.181,
       580.928,
-      890.702
+      890.702,
+      664.965
     ],
     "theory_elab.trusted_mirsemantics_canaryfixtures.cold_j1_ms": [
       260.577,
@@ -80494,7 +80871,8 @@
       204.428,
       271.989,
       213.523,
-      269.059
+      269.059,
+      204.829
     ],
     "theory_elab.trusted_mirsemantics_contract.cold_j1_ms": [
       null,
@@ -80688,7 +81066,8 @@
       116.778,
       144.927,
       127.549,
-      144.54
+      144.54,
+      118.581
     ],
     "theory_elab.trusted_mirsemantics_corecontracts.cold_j1_ms": [
       null,
@@ -80882,7 +81261,8 @@
       328.652,
       448.637,
       356.94,
-      450.344
+      450.344,
+      338.357
     ],
     "theory_elab.trusted_mirsemantics_enum.cold_j1_ms": [
       176.596,
@@ -81076,7 +81456,8 @@
       401.994,
       527.35,
       426.754,
-      552.944
+      552.944,
+      427.554
     ],
     "theory_elab.trusted_mirsemantics_layout.cold_j1_ms": [
       113.209,
@@ -81270,7 +81651,8 @@
       129.084,
       166.913,
       135.572,
-      171.146
+      171.146,
+      133.834
     ],
     "theory_elab.trusted_mirsemantics_memory.cold_j1_ms": [
       134.074,
@@ -81464,7 +81846,8 @@
       199.799,
       259.27,
       211.52,
-      262.64
+      262.64,
+      204.978
     ],
     "theory_elab.trusted_mirsemantics_ops.cold_j1_ms": [
       267.379,
@@ -81658,7 +82041,8 @@
       207.834,
       271.349,
       218.362,
-      270.162
+      270.162,
+      206.504
     ],
     "theory_elab.trusted_mirsemantics_state.cold_j1_ms": [
       163.633,
@@ -81852,7 +82236,8 @@
       264.4,
       351.314,
       277.155,
-      351.745
+      351.745,
+      264.941
     ],
     "theory_elab.trusted_mirsemantics_step.cold_j1_ms": [
       353.513,
@@ -82046,7 +82431,8 @@
       1848.244,
       2510.932,
       1947.079,
-      2545.336
+      2545.336,
+      1908.73
     ],
     "theory_elab.trustedboundary.cold_j1_ms": [
       12630.479,
@@ -82240,7 +82626,8 @@
       11949.282,
       15782.448,
       13005.142,
-      15774.541
+      15774.541,
+      11706.111
     ],
     "verify.scalar.cold_no_cache_capture_ms": [
       290.0,
@@ -82434,7 +82821,8 @@
       264.0,
       291.0,
       261.0,
-      294.0
+      294.0,
+      261.0
     ],
     "verify.scalar.cold_no_cache_proof_audit_ms": [
       41070.0,
@@ -82628,7 +83016,8 @@
       32830.0,
       42465.0,
       32642.0,
-      43428.0
+      43428.0,
+      33377.0
     ],
     "verify.scalar.cold_no_cache_total_ms": [
       41376.0,
@@ -82822,7 +83211,8 @@
       33116.0,
       42784.0,
       32924.0,
-      43748.0
+      43748.0,
+      33659.0
     ],
     "verify.scalar.cold_prebuilt_capture_ms": [
       290.0,
@@ -83016,7 +83406,8 @@
       263.0,
       294.0,
       262.0,
-      294.0
+      294.0,
+      263.0
     ],
     "verify.scalar.cold_prebuilt_proof_audit_ms": [
       8883.0,
@@ -83210,7 +83601,8 @@
       8002.0,
       9591.0,
       7990.0,
-      9824.0
+      9824.0,
+      8137.0
     ],
     "verify.scalar.cold_prebuilt_total_ms": [
       9189.0,
@@ -83404,7 +83796,8 @@
       8286.0,
       9908.0,
       8272.0,
-      10144.0
+      10144.0,
+      8420.0
     ],
     "verify.scalar.warm_disk_capture_ms": [
       290.0,
@@ -83598,7 +83991,8 @@
       263.0,
       292.0,
       262.0,
-      294.0
+      294.0,
+      262.0
     ],
     "verify.scalar.warm_disk_proof_audit_ms": [
       8862.0,
@@ -83792,7 +84186,8 @@
       7971.0,
       9592.0,
       7931.0,
-      9807.0
+      9807.0,
+      8079.0
     ],
     "verify.scalar.warm_disk_total_ms": [
       9168.0,
@@ -83986,7 +84381,8 @@
       8254.0,
       9908.0,
       8213.0,
-      10127.0
+      10127.0,
+      8362.0
     ],
     "zerocopy_proofs.01_usize_pointer_metadata.capture_ms": [
       3238.0,
@@ -84180,7 +84576,8 @@
       2591.0,
       3136.0,
       2817.0,
-      3169.0
+      3169.0,
+      2572.0
     ],
     "zerocopy_proofs.01_usize_pointer_metadata.proof_audit_ms": [
       10198.0,
@@ -84374,7 +84771,8 @@
       9393.0,
       11431.0,
       9831.0,
-      11625.0
+      11625.0,
+      9636.0
     ],
     "zerocopy_proofs.01_usize_pointer_metadata.total_ms": [
       13582.0,
@@ -84568,7 +84966,8 @@
       12118.0,
       14726.0,
       12781.0,
-      14945.0
+      14945.0,
+      12331.0
     ],
     "zerocopy_proofs.02_unit_pointer_metadata.capture_ms": [
       3243.0,
@@ -84762,7 +85161,8 @@
       2597.0,
       3158.0,
       2783.0,
-      3151.0
+      3151.0,
+      2597.0
     ],
     "zerocopy_proofs.02_unit_pointer_metadata.proof_audit_ms": [
       10198.0,
@@ -84956,7 +85356,8 @@
       9451.0,
       11512.0,
       9906.0,
-      11755.0
+      11755.0,
+      9683.0
     ],
     "zerocopy_proofs.02_unit_pointer_metadata.total_ms": [
       13583.0,
@@ -85150,7 +85551,8 @@
       12179.0,
       14829.0,
       12821.0,
-      15064.0
+      15064.0,
+      12414.0
     ],
     "zerocopy_proofs.03_macros_unsafe.capture_ms": [
       3178.0,
@@ -85344,7 +85746,8 @@
       2596.0,
       3170.0,
       2814.0,
-      3175.0
+      3175.0,
+      2559.0
     ],
     "zerocopy_proofs.03_macros_unsafe.proof_audit_ms": [
       9510.0,
@@ -85538,7 +85941,8 @@
       8790.0,
       10390.0,
       9029.0,
-      10734.0
+      10734.0,
+      8817.0
     ],
     "zerocopy_proofs.03_macros_unsafe.total_ms": [
       12830.0,
@@ -85732,7 +86136,8 @@
       11519.0,
       13722.0,
       11977.0,
-      14066.0
+      14066.0,
+      11510.0
     ],
     "zerocopy_proofs.04_substantive_and_frombytes_markers.capture_ms": [
       3213.0,
@@ -85926,7 +86331,8 @@
       2608.0,
       3210.0,
       2817.0,
-      3185.0
+      3185.0,
+      2569.0
     ],
     "zerocopy_proofs.04_substantive_and_frombytes_markers.proof_audit_ms": [
       13203.0,
@@ -86120,7 +86526,8 @@
       11721.0,
       14402.0,
       12384.0,
-      14573.0
+      14573.0,
+      11883.0
     ],
     "zerocopy_proofs.04_substantive_and_frombytes_markers.total_ms": [
       16557.0,
@@ -86314,7 +86721,8 @@
       14468.0,
       17769.0,
       15335.0,
-      17916.0
+      17916.0,
+      14584.0
     ],
     "zerocopy_proofs.05_layout_add_scaled_metadata.capture_ms": [
       null,
@@ -86508,7 +86916,8 @@
       2612.0,
       3194.0,
       2831.0,
-      3160.0
+      3160.0,
+      2582.0
     ],
     "zerocopy_proofs.05_layout_add_scaled_metadata.proof_audit_ms": [
       null,
@@ -86702,7 +87111,8 @@
       20031.0,
       24472.0,
       21123.0,
-      25546.0
+      25546.0,
+      20799.0
     ],
     "zerocopy_proofs.05_layout_add_scaled_metadata.total_ms": [
       null,
@@ -86896,7 +87306,8 @@
       22767.0,
       27813.0,
       24077.0,
-      28856.0
+      28856.0,
+      23503.0
     ],
     "zerocopy_proofs.05_sharded_tryfrombytes.capture_ms": [
       null,
@@ -87090,7 +87501,8 @@
       2597.0,
       3169.0,
       2876.0,
-      3176.0
+      3176.0,
+      2566.0
     ],
     "zerocopy_proofs.05_sharded_tryfrombytes.proof_audit_ms": [
       null,
@@ -87284,7 +87696,8 @@
       19232.0,
       23777.0,
       21008.0,
-      24260.0
+      24260.0,
+      19225.0
     ],
     "zerocopy_proofs.05_sharded_tryfrombytes.total_ms": [
       null,
@@ -87478,7 +87891,8 @@
       21953.0,
       27096.0,
       24011.0,
-      27588.0
+      27588.0,
+      21916.0
     ],
     "zerocopy_proofs.06_byte_slice_into_byte_slice.capture_ms": [
       null,
@@ -87672,7 +88086,8 @@
       2601.0,
       3160.0,
       2831.0,
-      3234.0
+      3234.0,
+      2553.0
     ],
     "zerocopy_proofs.06_byte_slice_into_byte_slice.proof_audit_ms": [
       null,
@@ -87866,7 +88281,8 @@
       11330.0,
       13841.0,
       11905.0,
-      16225.0
+      16225.0,
+      13226.0
     ],
     "zerocopy_proofs.06_byte_slice_into_byte_slice.total_ms": [
       null,
@@ -88060,7 +88476,8 @@
       14053.0,
       17150.0,
       14861.0,
-      19611.0
+      19611.0,
+      15905.0
     ],
     "zerocopy_proofs.08_byte_slice_split_at_unchecked.capture_ms": [
       null,
@@ -88254,7 +88671,8 @@
       2601.0,
       3142.0,
       2851.0,
-      3185.0
+      3185.0,
+      2591.0
     ],
     "zerocopy_proofs.08_byte_slice_split_at_unchecked.proof_audit_ms": [
       null,
@@ -88448,7 +88866,8 @@
       12949.0,
       15946.0,
       13103.0,
-      18167.0
+      18167.0,
+      14690.0
     ],
     "zerocopy_proofs.08_byte_slice_split_at_unchecked.total_ms": [
       null,
@@ -88642,7 +89061,8 @@
       15672.0,
       19235.0,
       16078.0,
-      21502.0
+      21502.0,
+      17409.0
     ],
     "zerocopy_proofs.10_byteorder_endian_wrappers.capture_ms": [
       null,
@@ -88836,7 +89256,8 @@
       3287.0,
       4060.0,
       3273.0,
-      4033.0
+      4033.0,
+      3261.0
     ],
     "zerocopy_proofs.10_byteorder_endian_wrappers.proof_audit_ms": [
       null,
@@ -89030,7 +89451,8 @@
       56702.0,
       74662.0,
       56500.0,
-      74844.0
+      74844.0,
+      57160.0
     ],
     "zerocopy_proofs.10_byteorder_endian_wrappers.total_ms": [
       null,
@@ -89224,7 +89646,8 @@
       60117.0,
       78877.0,
       59903.0,
-      79031.0
+      79031.0,
+      60550.0
     ],
     "zerocopy_proofs.11_primitive_bit_validity.capture_ms": [
       null,
@@ -89418,7 +89841,8 @@
       2597.0,
       3150.0,
       2600.0,
-      3172.0
+      3172.0,
+      2576.0
     ],
     "zerocopy_proofs.11_primitive_bit_validity.proof_audit_ms": [
       null,
@@ -89612,7 +90036,8 @@
       22760.0,
       29427.0,
       22516.0,
-      29942.0
+      29942.0,
+      23362.0
     ],
     "zerocopy_proofs.11_primitive_bit_validity.total_ms": [
       null,
@@ -89806,7 +90231,8 @@
       25481.0,
       32726.0,
       25240.0,
-      33265.0
+      33265.0,
+      26064.0
     ],
     "zerocopy_proofs.12_nonzero_niche_bit_validity.capture_ms": [
       null,
@@ -90000,7 +90426,8 @@
       2605.0,
       3183.0,
       2586.0,
-      3123.0
+      3123.0,
+      2567.0
     ],
     "zerocopy_proofs.12_nonzero_niche_bit_validity.proof_audit_ms": [
       null,
@@ -90194,7 +90621,8 @@
       29904.0,
       38681.0,
       29918.0,
-      38662.0
+      38662.0,
+      30014.0
     ],
     "zerocopy_proofs.12_nonzero_niche_bit_validity.total_ms": [
       null,
@@ -90388,7 +90816,8 @@
       32637.0,
       42014.0,
       32629.0,
-      41938.0
+      41938.0,
+      32709.0
     ],
     "zerocopy_proofs.13_float_str_and_atomic_bit_validity.capture_ms": [
       null,
@@ -90582,7 +91011,8 @@
       2614.0,
       3147.0,
       2599.0,
-      3139.0
+      3139.0,
+      2560.0
     ],
     "zerocopy_proofs.13_float_str_and_atomic_bit_validity.proof_audit_ms": [
       null,
@@ -90776,7 +91206,8 @@
       28245.0,
       36479.0,
       28057.0,
-      37090.0
+      37090.0,
+      28766.0
     ],
     "zerocopy_proofs.13_float_str_and_atomic_bit_validity.total_ms": [
       null,
@@ -90970,7 +91401,8 @@
       30985.0,
       39779.0,
       30780.0,
-      40382.0
+      40382.0,
+      31452.0
     ],
     "zerocopy_proofs.14_known_layout_and_dst_layout.capture_ms": [
       null,
@@ -91164,7 +91596,8 @@
       2776.0,
       3427.0,
       2775.0,
-      3358.0
+      3358.0,
+      2759.0
     ],
     "zerocopy_proofs.14_known_layout_and_dst_layout.proof_audit_ms": [
       null,
@@ -91358,7 +91791,8 @@
       24430.0,
       31422.0,
       24169.0,
-      31404.0
+      31404.0,
+      24531.0
     ],
     "zerocopy_proofs.14_known_layout_and_dst_layout.total_ms": [
       null,
@@ -91552,7 +91986,8 @@
       27331.0,
       35000.0,
       27070.0,
-      34914.0
+      34914.0,
+      27415.0
     ],
     "zerocopy_proofs.15_generic_wrapper_and_array_markers.capture_ms": [
       null,
@@ -91746,7 +92181,8 @@
       2940.0,
       3622.0,
       2924.0,
-      3587.0
+      3587.0,
+      2900.0
     ],
     "zerocopy_proofs.15_generic_wrapper_and_array_markers.proof_audit_ms": [
       null,
@@ -91940,7 +92376,8 @@
       32842.0,
       42461.0,
       32504.0,
-      42065.0
+      42065.0,
+      32913.0
     ],
     "zerocopy_proofs.15_generic_wrapper_and_array_markers.total_ms": [
       null,
@@ -92134,7 +92571,8 @@
       35907.0,
       46235.0,
       35555.0,
-      45804.0
+      45804.0,
+      35939.0
     ],
     "zerocopy_proofs.16_enum_impls_and_pointer_to_metadata.capture_ms": [
       null,
@@ -92328,7 +92766,8 @@
       2587.0,
       3147.0,
       2619.0,
-      3108.0
+      3108.0,
+      2561.0
     ],
     "zerocopy_proofs.16_enum_impls_and_pointer_to_metadata.proof_audit_ms": [
       null,
@@ -92522,7 +92961,8 @@
       19108.0,
       24066.0,
       18896.0,
-      25203.0
+      25203.0,
+      20154.0
     ],
     "zerocopy_proofs.16_enum_impls_and_pointer_to_metadata.total_ms": [
       null,
@@ -92716,7 +93156,8 @@
       21818.0,
       27364.0,
       21639.0,
-      28461.0
+      28461.0,
+      22841.0
     ],
     "zerocopy_proofs.17_slice_array_ref_tuple_instantiations.capture_ms": [
       null,
@@ -92910,7 +93351,8 @@
       2774.0,
       3295.0,
       2694.0,
-      3246.0
+      3246.0,
+      2701.0
     ],
     "zerocopy_proofs.17_slice_array_ref_tuple_instantiations.proof_audit_ms": [
       null,
@@ -93104,7 +93546,8 @@
       26282.0,
       33048.0,
       26008.0,
-      34266.0
+      34266.0,
+      27131.0
     ],
     "zerocopy_proofs.17_slice_array_ref_tuple_instantiations.total_ms": [
       null,
@@ -93298,7 +93741,8 @@
       29235.0,
       36494.0,
       28828.0,
-      37665.0
+      37665.0,
+      29959.0
     ],
     "zerocopy_proofs.suite.total_ms": [
       57552.963,
@@ -93492,7 +93936,8 @@
       404892.996,
       510518.592,
       409702.356,
-      520554.095
+      520554.095,
+      412466.912
     ],
     "zerocopy_proofs.suite.verified_units_count": [
       4,
@@ -93686,17 +94131,18 @@
       16,
       16,
       16,
+      16,
       16
     ]
   },
   "summaries": {
     "category_geomean_vs_baseline": {},
     "category_geomean_vs_prev": {
-      "artifact_size": 1.016717,
-      "memory_rss": 1.010348,
-      "theory_elab": 1.242722,
-      "verify": 1.214869,
-      "zerocopy_proofs": 1.231228
+      "artifact_size": 1.0,
+      "memory_rss": 0.998892,
+      "theory_elab": 0.774056,
+      "verify": 0.834237,
+      "zerocopy_proofs": 0.803298
     }
   }
 }
