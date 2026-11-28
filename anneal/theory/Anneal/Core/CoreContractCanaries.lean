@@ -1256,6 +1256,75 @@ theorem canary_split_at_mut_disjoint_union_and_panic_abort :
       ])) = true :=
   ⟨rfl, rfl, rfl, rfl, rfl, rfl⟩
 
+/-- Canary 16: `<[T; N] as Index/IndexMut<Range<usize>>>` and
+`RangeFrom<usize>` delegate through `execArraySubslice`, validating thin array
+references, enforcing `len < 2^64` and mutability, scaling offsets by element
+size, and trapping OOB ranges via `corePanicTrap`. -/
+theorem canary_array_index_range_and_range_from :
+    let mMut : MemoryState := {
+      nextAllocId := 3
+      allocations := [{
+        allocId := 2, alignLog2 := 1, mutability := .mut,
+        bytes := [.init 10 none, .init 0 none,
+                  .init 20 none, .init 0 none,
+                  .init 30 none, .init 0 none],
+        live := true
+      }]
+    }
+    let mRo : MemoryState := {
+      nextAllocId := 3
+      allocations := [{
+        allocId := 2, alignLog2 := 1, mutability := .shared,
+        bytes := [.init 10 none, .init 0 none,
+                  .init 20 none, .init 0 none,
+                  .init 30 none, .init 0 none],
+        live := true
+      }]
+    }
+    let u16Ty : MirTy := .int .i16 false
+    let arrU16Ty : MirTy := .array u16Ty 3
+    let sliceU16Ty : MirTy := .slice u16Ty
+    let rangeTy : MirTy := .range canaryUsizeTy
+    let rangeFromTy : MirTy := .rangeFrom canaryUsizeTy
+    execCoreContractOp mMut (.sliceIndexRange .mut u16Ty)
+      [(.ref .mut arrU16Ty, .ptr ⟨some 2, 0, .isize⟩),
+       (rangeTy, .range 1 3)]
+      (.ref .mut sliceU16Ty) =
+      .ok (.slicePtr ⟨some 2, 2, .isize⟩ 2, mMut) ∧
+    execCoreContractOp mRo (.sliceIndexRangeFrom .shared u16Ty)
+      [(.ref .shared arrU16Ty, .ptr ⟨some 2, 0, .isize⟩),
+       (rangeFromTy, .rangeFrom 2)]
+      (.ref .shared sliceU16Ty) =
+      .ok (.slicePtr ⟨some 2, 4, .isize⟩ 1, mRo) ∧
+    execCoreContractOp mMut (.sliceIndexRange .shared .unit)
+      [(.ref .shared (.array .unit 5), .ptr ⟨none, 1, .isize⟩),
+       (rangeTy, .range 1 4)]
+      (.ref .shared (.slice .unit)) =
+      .ok (.slicePtr ⟨none, 1, .isize⟩ 3, mMut) ∧
+    execCoreContractOp mRo (.sliceIndexRange .shared u16Ty)
+      [(.ref .shared arrU16Ty, .ptr ⟨some 2, 0, .isize⟩),
+       (rangeTy, .range 1 4)]
+      (.ref .shared sliceU16Ty) = .error corePanicTrap ∧
+    execCoreContractOp mRo (.sliceIndexRangeFrom .shared u16Ty)
+      [(.ref .shared arrU16Ty, .ptr ⟨some 2, 0, .isize⟩),
+       (rangeFromTy, .rangeFrom 4)]
+      (.ref .shared sliceU16Ty) = .error corePanicTrap ∧
+    execCoreContractOp mMut (.sliceIndexRange .mut u16Ty)
+      [(.ref .shared arrU16Ty, .ptr ⟨some 2, 0, .isize⟩),
+       (rangeTy, .range 0 2)]
+      (.ref .mut sliceU16Ty) = .error .undefined ∧
+    execCoreContractOp mRo (.sliceIndexRange .mut u16Ty)
+      [(.ref .mut arrU16Ty, .ptr ⟨some 2, 0, .isize⟩),
+       (rangeTy, .range 0 2)]
+      (.ref .mut sliceU16Ty) = .error .undefined ∧
+    execCoreContractOp mMut (.sliceIndexRange .shared u16Ty)
+      [(.ref .shared (.array u16Ty 4), .ptr ⟨some 2, 0, .isize⟩),
+       (rangeTy, .range 0 1)]
+      (.ref .shared sliceU16Ty) = .error .undefined ∧
+    execArraySubslice mMut .shared .shared .unit (Nat.pow 2 64)
+      ⟨none, 1, .isize⟩ 0 0 = .error .unsupported :=
+  ⟨rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl⟩
+
 end Anneal.Core
 
 end
