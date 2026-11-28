@@ -11,6 +11,7 @@ prelude
 public import Anneal.ElfAArch64.Decode
 public import Anneal.ElfAArch64.RelocAndElf
 public import Anneal.ElfAArch64.AbiAndStride
+public import Anneal.ElfAArch64.ProgramHdrsAndCt
 
 -- `Anneal.ElfAArch64.Canaries` is decoupled from this runtime umbrella and
 -- audited standalone by Pass-1 `anneal-audit`.

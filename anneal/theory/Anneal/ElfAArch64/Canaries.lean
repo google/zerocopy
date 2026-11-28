@@ -937,4 +937,369 @@ theorem canary_stride_and_plane_copy_guards :
       (Int.ofNat 48) (Int.ofNat 2) 24 16 canaryMaxPtrdiff = false :=
   ⟨rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl⟩
 
+/-! ## 12. Post-Link `ET_EXEC`/`ET_DYN` `PT_LOAD`, Zero-SVC & `FEAT_DIT` -/
+
+/-- Pad with `n` zero bytes via `@Nat.rec`. -/
+@[expose] def repZeroBytes (n : Nat) : List UInt8 :=
+  @Nat.rec (fun _ => List UInt8) [] (fun _ ih => (0 : UInt8) :: ih) n
+
+/-- Encode a 56-byte `Elf64_Phdr` entry with right-associated `++`. -/
+@[expose] def encPhdr (pTy pFlg pOff pVa pPa pFsz pMsz pAln : Nat) :
+    List UInt8 :=
+  encLeBytes 4 pTy ++ (encLeBytes 4 pFlg ++ (encLeBytes 8 pOff ++
+  (encLeBytes 8 pVa ++ (encLeBytes 8 pPa ++ (encLeBytes 8 pFsz ++
+  (encLeBytes 8 pMsz ++ encLeBytes 8 pAln))))))
+
+/-- Compact synthetic ELF64 `ET_EXEC`/`ET_DYN` image builder (`EM_AARCH64`)
+with 3 `PT_LOAD` segments (`RO` at `0x160`, `RX` at `0x168`, `RW` at
+`0x168 + code.length - rwFileOverlap`), `PT_GNU_STACK`, and optional
+`extraPhType`. -/
+@[expose] def mkSynImgElf64
+    (eTy baseVa entryOff : Nat)
+    (execFlags execAlign execVaDelta : Nat)
+    (stackFlags extraPhType : Nat)
+    (rwVaSameAsExec rwFileOverlap : Nat)
+    (code : List UInt8) : List UInt8 :=
+  let phNum : Nat := if Nat.beq extraPhType 0 then 4 else 5
+  let phBytesLen : Nat := phNum * ELF64_PHDR_SIZE
+  let execOff : Nat := 0x168
+  let execVa : Nat := baseVa + 0x10168 + execVaDelta
+  let rwOff : Nat := execOff + code.length - rwFileOverlap
+  let rwVa : Nat :=
+    if Nat.beq rwVaSameAsExec 1 then execVa
+    else baseVa + 0x20000 + rwOff
+  let hdr : List UInt8 :=
+    [0x7F, 0x45, 0x4C, 0x46, 2, 1, 1, 0,
+     0, 0, 0, 0, 0, 0, 0, 0] ++
+    (encLeBytes 2 eTy ++ (encLeBytes 2 EM_AARCH64 ++ (encLeBytes 4 1 ++
+    (encLeBytes 8 (baseVa + 0x10168 + entryOff) ++ (encLeBytes 8 64 ++
+    (encLeBytes 8 0 ++ (encLeBytes 4 0 ++ (encLeBytes 2 64 ++
+    (encLeBytes 2 56 ++ (encLeBytes 2 phNum ++ (encLeBytes 2 0 ++
+    (encLeBytes 2 0 ++ encLeBytes 2 0))))))))))))
+  let ph0 := encPhdr PT_LOAD PF_R 0x160 (baseVa + 0x160) (baseVa + 0x160)
+    8 8 PAGE_SIZE_64K
+  let ph1 := encPhdr PT_LOAD execFlags execOff execVa execVa
+    code.length code.length execAlign
+  let ph2 := encPhdr PT_LOAD (PF_R + PF_W) rwOff rwVa rwVa 4 32 PAGE_SIZE_64K
+  let ph3 := encPhdr PT_GNU_STACK stackFlags 0 0 0 0 0 16
+  let ph4 :=
+    if Nat.beq extraPhType 0 then []
+    else encPhdr extraPhType PF_R 0x160 (baseVa + 0x160) (baseVa + 0x160)
+      4 4 1
+  let roSeg := repZeroBytes 8
+  let rwSeg := repZeroBytes (4 - rwFileOverlap)
+  hdr ++ (ph0 ++ (ph1 ++ (ph2 ++ (ph3 ++ (ph4 ++
+    (repZeroBytes (0x160 - (64 + phBytesLen)) ++
+    (roSeg ++ (code ++ rwSeg))))))))
+
+/-- Clean `FEAT_DIT` AArch64 kernel (`24` bytes):
+`bti c; msr dit, #1; add x0, x1, x2; csel x0, x0, x1, ne; madd; ret`. -/
+@[expose] def cleanFeatDitKernelBytes : List UInt8 :=
+  [ 0x5F, 0x24, 0x03, 0xD5,
+    0x5F, 0x41, 0x03, 0xD5,
+    0x20, 0x00, 0x02, 0x8B,
+    0x00, 0x10, 0x81, 0x9A,
+    0x00, 0x0C, 0x02, 0x9B,
+    0xC0, 0x03, 0x5F, 0xD6 ]
+
+/-- Clean `CSEL`/`ADD` kernel WITHOUT leading `MSR DIT, #1` (`16` bytes). -/
+@[expose] def noDitPreambleKernelBytes : List UInt8 :=
+  [ 0x20, 0x00, 0x02, 0x8B,
+    0x00, 0x10, 0x81, 0x9A,
+    0xC0, 0x03, 0x5F, 0xD6 ]
+
+theorem canary_div_dit_svc_decode_and_reject :
+    -- `udiv` / `sdiv` (64-bit & 32-bit)
+    decodeWord featDitImageDecodeCfg [] 0 0x9AC20820 =
+      some (.div .x64 false (.gpr .x0) (.gpr .x1) (.gpr .x2)) ∧
+    decodeWord featDitImageDecodeCfg [] 0 0x9AC20C20 =
+      some (.div .x64 true (.gpr .x0) (.gpr .x1) (.gpr .x2)) ∧
+    decodeWord featDitImageDecodeCfg [] 0 0x1AC20820 =
+      some (.div .w32 false (.gpr .x0) (.gpr .x1) (.gpr .x2)) ∧
+    decodeWord featDitImageDecodeCfg [] 0 0x1AC20C20 =
+      some (.div .w32 true (.gpr .x0) (.gpr .x1) (.gpr .x2)) ∧
+    -- `MSR DIT, #1`, `MSR DIT, #0`, `SVC/HVC/SMC`, `BRK/HLT`
+    decodeWord featDitImageDecodeCfg [] 0 0xD503415F =
+      some (.msrDit true) ∧
+    decodeWord featDitImageDecodeCfg [] 0 0xD503405F =
+      some (.msrDit false) ∧
+    decodeWord featDitImageDecodeCfg [] 0 0xD4000001 =
+      some (.sysImm 1 0) ∧
+    decodeWord featDitImageDecodeCfg [] 0 0xD4000002 =
+      some (.sysImm 2 0) ∧
+    decodeWord featDitImageDecodeCfg [] 0 0xD4000003 =
+      some (.sysImm 3 0) ∧
+    decodeWord featDitImageDecodeCfg [] 0 0xD4200000 = some .trapOrSys ∧
+    -- Zero-SVC and `FEAT_DIT` rejections on decoded raw byte streams
+    checkStreamZeroSvc featDitImageDecodeCfg
+      [0x01, 0x00, 0x00, 0xD4, 0xC0, 0x03, 0x5F, 0xD6] = false ∧
+    checkStreamZeroSvc featDitImageDecodeCfg
+      [0x02, 0x00, 0x00, 0xD4, 0xC0, 0x03, 0x5F, 0xD6] = false ∧
+    checkStreamZeroSvcOrTrap featDitImageDecodeCfg
+      [0x00, 0x00, 0x20, 0xD4, 0xC0, 0x03, 0x5F, 0xD6] = false ∧
+    checkStreamFeatDitConstantTime false featDitImageDecodeCfg
+      [0x20, 0x08, 0xC2, 0x9A, 0xC0, 0x03, 0x5F, 0xD6] = false ∧
+    checkStreamFeatDitConstantTime false featDitImageDecodeCfg
+      [0x20, 0x0C, 0xC2, 0x9A, 0xC0, 0x03, 0x5F, 0xD6] = false ∧
+    checkStreamFeatDitConstantTime false featDitImageDecodeCfg
+      [0x84, 0xFC, 0x21, 0x4F, 0xC0, 0x03, 0x5F, 0xD6] = false ∧
+    checkStreamFeatDitConstantTime false featDitImageDecodeCfg
+      [0x5F, 0x41, 0x03, 0xD5, 0x5F, 0x40, 0x03, 0xD5,
+       0xC0, 0x03, 0x5F, 0xD6] = false ∧
+    -- Preamble mode rejects missing `MSR DIT, #1` and passes with it
+    checkStreamFeatDitConstantTime false featDitImageDecodeCfg
+      noDitPreambleKernelBytes = true ∧
+    checkStreamFeatDitConstantTime true featDitImageDecodeCfg
+      noDitPreambleKernelBytes = false ∧
+    checkStreamFeatDitConstantTime true featDitImageDecodeCfg
+      cleanFeatDitKernelBytes = true :=
+  ⟨rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl,
+   rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl⟩
+
+@[expose] def cleanEtExecImg : List UInt8 :=
+  mkSynImgElf64 ET_EXEC 0x400000 0 (PF_R + PF_X) PAGE_SIZE_64K 0
+    (PF_R + PF_W) 0 0 0 cleanFeatDitKernelBytes
+
+@[expose] def cleanEtDynImg : List UInt8 :=
+  mkSynImgElf64 ET_DYN 0 0 (PF_R + PF_X) PAGE_SIZE_64K 0
+    (PF_R + PF_W) 0 0 0 cleanFeatDitKernelBytes
+
+theorem canary_et_exec_and_et_dyn_positive :
+    (parseElf64ProgramHdrs? cleanEtExecImg).isSome = true ∧
+    (parseElf64ProgramHdrs? cleanEtDynImg).isSome = true ∧
+    (checkElf64ImageZeroSvcAndFeatDit true featDitImageDecodeCfg
+      cleanEtExecImg).isSome = true ∧
+    (checkElf64ImageZeroSvcAndFeatDit true featDitImageDecodeCfg
+      cleanEtDynImg).isSome = true :=
+  ⟨rfl, rfl, rfl, rfl⟩
+
+theorem canary_et_exec_negatives :
+    -- W+X `PT_LOAD` (`PF_R | PF_W | PF_X`) rejected
+    (parseElf64ProgramHdrs? (mkSynImgElf64 ET_EXEC 0x400000 0
+      (PF_R + PF_W + PF_X) PAGE_SIZE_64K 0 (PF_R + PF_W) 0 0 0
+      cleanFeatDitKernelBytes)).isNone = true ∧
+    -- Executable `PT_GNU_STACK` rejected
+    (parseElf64ProgramHdrs? (mkSynImgElf64 ET_EXEC 0x400000 0
+      (PF_R + PF_X) PAGE_SIZE_64K 0 (PF_R + PF_W + PF_X) 0 0 0
+      cleanFeatDitKernelBytes)).isNone = true ∧
+    -- `PT_INTERP` rejected
+    (parseElf64ProgramHdrs? (mkSynImgElf64 ET_EXEC 0x400000 0
+      (PF_R + PF_X) PAGE_SIZE_64K 0 (PF_R + PF_W) PT_INTERP 0 0
+      cleanFeatDitKernelBytes)).isNone = true ∧
+    -- `PT_DYNAMIC` rejected
+    (parseElf64ProgramHdrs? (mkSynImgElf64 ET_EXEC 0x400000 0
+      (PF_R + PF_X) PAGE_SIZE_64K 0 (PF_R + PF_W) PT_DYNAMIC 0 0
+      cleanFeatDitKernelBytes)).isNone = true ∧
+    -- Overlapping virtual addresses between `PT_LOAD`s rejected
+    (parseElf64ProgramHdrs? (mkSynImgElf64 ET_EXEC 0x400000 0
+      (PF_R + PF_X) PAGE_SIZE_64K 0 (PF_R + PF_W) 0 1 0
+      cleanFeatDitKernelBytes)).isNone = true ∧
+    -- Overlapping file offsets between `PT_LOAD`s rejected
+    (parseElf64ProgramHdrs? (mkSynImgElf64 ET_EXEC 0x400000 0
+      (PF_R + PF_X) PAGE_SIZE_64K 0 (PF_R + PF_W) 0 0 4
+      cleanFeatDitKernelBytes)).isNone = true ∧
+    -- Sub-page `p_align = 2048` and `p_align = 4096` rejected on AArch64
+    (parseElf64ProgramHdrs? (mkSynImgElf64 ET_EXEC 0x400000 0
+      (PF_R + PF_X) 2048 0 (PF_R + PF_W) 0 0 0
+      cleanFeatDitKernelBytes)).isNone = true ∧
+    (parseElf64ProgramHdrs? (mkSynImgElf64 ET_EXEC 0x400000 0
+      (PF_R + PF_X) PAGE_SIZE_4K 0 (PF_R + PF_W) 0 0 0
+      cleanFeatDitKernelBytes)).isNone = true ∧
+    -- `p_offset % p_align != p_vaddr % p_align` rejected
+    (parseElf64ProgramHdrs? (mkSynImgElf64 ET_EXEC 0x400000 0
+      (PF_R + PF_X) PAGE_SIZE_64K 4 (PF_R + PF_W) 0 0 0
+      cleanFeatDitKernelBytes)).isNone = true ∧
+    -- Unaligned `e_entry % 4 != 0` rejected
+    (parseElf64ProgramHdrs? (mkSynImgElf64 ET_EXEC 0x400000 2
+      (PF_R + PF_X) PAGE_SIZE_64K 0 (PF_R + PF_W) 0 0 0
+      cleanFeatDitKernelBytes)).isNone = true ∧
+    -- Valid ELF headers carrying `SVC #0` or `UDIV` pass phdrs, fail gate
+    (parseElf64ProgramHdrs? (mkSynImgElf64 ET_DYN 0 0
+      (PF_R + PF_X) PAGE_SIZE_64K 0 (PF_R + PF_W) 0 0 0
+      [0x01, 0x00, 0x00, 0xD4, 0xC0, 0x03, 0x5F, 0xD6])).isSome = true ∧
+    (checkElf64ImageZeroSvcAndFeatDit false featDitImageDecodeCfg
+      (mkSynImgElf64 ET_DYN 0 0 (PF_R + PF_X) PAGE_SIZE_64K 0 (PF_R + PF_W)
+        0 0 0 [0x01, 0x00, 0x00, 0xD4, 0xC0, 0x03, 0x5F, 0xD6])).isNone =
+      true ∧
+    (checkElf64ImageZeroSvcAndFeatDit false featDitImageDecodeCfg
+      (mkSynImgElf64 ET_DYN 0 0 (PF_R + PF_X) PAGE_SIZE_64K 0 (PF_R + PF_W)
+        0 0 0 [0x20, 0x08, 0xC2, 0x9A, 0xC0, 0x03, 0x5F, 0xD6])).isNone =
+      true :=
+  ⟨rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl⟩
+
+/-! ## 13. Gate-1 Regression & Control-Flow Confinement Canaries -/
+
+/-- Canonical AArch64 `FEAT_DIT` payload with `bti c; msr dit, #1; add; ret`
+(`16` bytes), used to verify `e_entry`-anchored preamble checks. -/
+@[expose] def ditPreambleTestBytes : List UInt8 :=
+  [ 0x1F, 0x24, 0x03, 0xD5  -- bti c
+  , 0x5F, 0x41, 0x03, 0xD5  -- msr DIT, #1
+  , 0x20, 0x00, 0x02, 0x8B  -- add x0, x1, x2
+  , 0xC0, 0x03, 0x5F, 0xD6  -- ret
+  ]
+
+/-- Negative & positive `e_entry`-anchored `FEAT_DIT` preamble canaries:
+`entryOff = 0` (`bti c; msr dit, #1; ...`) and `entryOff = 4` (`msr dit, #1`)
+pass, while `entryOff = 8` (skipping `msr dit, #1` straight to `add`) is
+rejected fail-closed when `requireDitPreamble = true`. -/
+theorem canary_dit_entry_anchored_preamble :
+    (checkElf64ImageZeroSvcAndFeatDit true featDitImageDecodeCfg
+      (mkSynImgElf64 ET_EXEC 0x400000 0 (PF_R + PF_X) PAGE_SIZE_64K 0
+        (PF_R + PF_W) 0 0 0 ditPreambleTestBytes)).isSome = true ∧
+    (checkElf64ImageZeroSvcAndFeatDit true featDitImageDecodeCfg
+      (mkSynImgElf64 ET_EXEC 0x400000 4 (PF_R + PF_X) PAGE_SIZE_64K 0
+        (PF_R + PF_W) 0 0 0 ditPreambleTestBytes)).isSome = true ∧
+    (checkElf64ImageZeroSvcAndFeatDit true featDitImageDecodeCfg
+      (mkSynImgElf64 ET_EXEC 0x400000 8 (PF_R + PF_X) PAGE_SIZE_64K 0
+        (PF_R + PF_W) 0 0 0 ditPreambleTestBytes)).isNone = true ∧
+    (checkElf64ImageZeroSvcAndFeatDit false featDitImageDecodeCfg
+      (mkSynImgElf64 ET_EXEC 0x400000 8 (PF_R + PF_X) PAGE_SIZE_64K 0
+        (PF_R + PF_W) 0 0 0 ditPreambleTestBytes)).isSome = true :=
+  ⟨rfl, rfl, rfl, rfl⟩
+
+/-- Negative & positive AArch64 CFG confinement canaries: out-of-payload
+`b #-256` passes `parseElf64ProgramHdrs?` and is rejected by the image gate
+alongside indirect `br x16`, non-`x30` `ret x16`, and non-terminated `nop`,
+while intra-payload `b #8; nop; ret` is accepted. -/
+theorem canary_a64_cfg_confinement :
+    (parseElf64ProgramHdrs?
+      (mkSynImgElf64 ET_EXEC 0x400000 0 (PF_R + PF_X) PAGE_SIZE_64K 0
+        (PF_R + PF_W) 0 0 0
+        [0xC0, 0xFF, 0xFF, 0x17, 0xC0, 0x03, 0x5F, 0xD6])).isSome = true ∧
+    (checkElf64ImageZeroSvcAndFeatDit false featDitImageDecodeCfg
+      (mkSynImgElf64 ET_EXEC 0x400000 0 (PF_R + PF_X) PAGE_SIZE_64K 0
+        (PF_R + PF_W) 0 0 0
+        [0xC0, 0xFF, 0xFF, 0x17, 0xC0, 0x03, 0x5F, 0xD6])).isNone = true ∧
+    (checkElf64ImageZeroSvcAndFeatDit false featDitImageDecodeCfg
+      (mkSynImgElf64 ET_EXEC 0x400000 0 (PF_R + PF_X) PAGE_SIZE_64K 0
+        (PF_R + PF_W) 0 0 0
+        [0x00, 0x02, 0x1F, 0xD6, 0xC0, 0x03, 0x5F, 0xD6])).isNone = true ∧
+    (checkElf64ImageZeroSvcAndFeatDit false featDitImageDecodeCfg
+      (mkSynImgElf64 ET_EXEC 0x400000 0 (PF_R + PF_X) PAGE_SIZE_64K 0
+        (PF_R + PF_W) 0 0 0
+        [0x00, 0x02, 0x5F, 0xD6, 0xC0, 0x03, 0x5F, 0xD6])).isNone = true ∧
+    (checkElf64ImageZeroSvcAndFeatDit false featDitImageDecodeCfg
+      (mkSynImgElf64 ET_EXEC 0x400000 0 (PF_R + PF_X) PAGE_SIZE_64K 0
+        (PF_R + PF_W) 0 0 0 [0x1F, 0x20, 0x03, 0xD5])).isNone = true ∧
+    (checkElf64ImageZeroSvcAndFeatDit false featDitImageDecodeCfg
+      (mkSynImgElf64 ET_EXEC 0x400000 0 (PF_R + PF_X) PAGE_SIZE_64K 0
+        (PF_R + PF_W) 0 0 0
+        [ 0x02, 0x00, 0x00, 0x14
+        , 0x1F, 0x20, 0x03, 0xD5
+        , 0xC0, 0x03, 0x5F, 0xD6
+        ])).isSome = true :=
+  ⟨rfl, rfl, rfl, rfl, rfl, rfl⟩
+
+/-- Two-`PT_LOAD` synthetic AArch64 image helper for testing `64 KiB`
+page-rounded disjointness and `PT_GNU_STACK` presence (`segA` at `off = 0x160`,
+`va = 0x400160`, `memsz = aMemsz`; `segB` at `off = 0x168`, `va = bVa`,
+`filesz = 4`, `memsz = 4`). -/
+@[expose] def mkAArch64PageShareImg (aMemsz bVa bFlags : Nat)
+    (withGnuStack : Bool := true) : List UInt8 :=
+  let phNum : Nat := if withGnuStack then 3 else 2
+  let hdr : List UInt8 :=
+    [0x7F, 0x45, 0x4C, 0x46, 2, 1, 1, 0,
+     0, 0, 0, 0, 0, 0, 0, 0] ++
+    (encLeBytes 2 ET_EXEC ++ (encLeBytes 2 EM_AARCH64 ++ (encLeBytes 4 1 ++
+    (encLeBytes 8 0x400160 ++ (encLeBytes 8 64 ++ (encLeBytes 8 0 ++
+    (encLeBytes 4 0 ++ (encLeBytes 2 64 ++ (encLeBytes 2 56 ++
+    (encLeBytes 2 phNum ++ (encLeBytes 2 0 ++ (encLeBytes 2 0 ++
+    encLeBytes 2 0))))))))))))
+  let ph0 := encPhdr PT_LOAD (PF_R + PF_X) 0x160 0x400160 0x400160
+    4 aMemsz PAGE_SIZE_64K
+  let ph1 := encPhdr PT_LOAD bFlags 0x168 bVa bVa 4 4 PAGE_SIZE_64K
+  let ph2 :=
+    if withGnuStack then encPhdr PT_GNU_STACK (PF_R + PF_W) 0 0 0 0 0 16
+    else []
+  let pad := repZeroBytes (0x160 - (64 + phNum * ELF64_PHDR_SIZE))
+  let codeA : List UInt8 := [0xC0, 0x03, 0x5F, 0xD6]
+  let gap := repZeroBytes 4
+  let codeB : List UInt8 := [0xC0, 0x03, 0x5F, 0xD6]
+  hdr ++ (ph0 ++ (ph1 ++ (ph2 ++ (pad ++ (codeA ++ (gap ++ codeB))))))
+
+/-- AArch64 `64 KiB` page-rounded `PT_LOAD` VA disjointness canaries (`P1-A`):
+1. Two byte-disjoint RX segments sharing `64K` page `0x400000` (`0x400160` and
+   `0x400168`) fail both `parseElf64ProgramHdrs?` and image verification.
+2. An RX + RW pair sharing `64K` page `0x400000` fails.
+3. A `.bss` tail (`memsz = 0x10000`) spilling onto `0x410000` shared with `segB`
+   at `0x410168` fails even when byte-disjoint (`0x410160 <= 0x410168`).
+4. Moving `segB` cleanly to `0x410168` (`memsz = 4` on `segA`) passes. -/
+theorem canary_a64_page_rounded_ptload_disjoint :
+    (parseElf64ProgramHdrs?
+      (mkAArch64PageShareImg 4 0x400168 (PF_R + PF_X))).isNone = true ∧
+    (checkElf64ImageZeroSvcAndFeatDit false featDitImageDecodeCfg
+      (mkAArch64PageShareImg 4 0x400168 (PF_R + PF_X))).isNone = true ∧
+    (parseElf64ProgramHdrs?
+      (mkAArch64PageShareImg 4 0x400168 (PF_R + PF_W))).isNone = true ∧
+    (parseElf64ProgramHdrs?
+      (mkAArch64PageShareImg 0x10000 0x410168 (PF_R + PF_W))).isNone = true ∧
+    (checkElf64ImageZeroSvcAndFeatDit false featDitImageDecodeCfg
+      (mkAArch64PageShareImg 4 0x410168 (PF_R + PF_X))).isSome = true ∧
+    (checkElf64ImageZeroSvcAndFeatDit false featDitImageDecodeCfg
+      (mkAArch64PageShareImg 4 0x410168 (PF_R + PF_W))).isSome = true :=
+  ⟨rfl, rfl, rfl, rfl, rfl, rfl⟩
+
+/-- AArch64 `x30`/`SP` provenance & `PT_GNU_STACK` regression canaries:
+1. `ADR x30, #8; RET; RET`, `LDR x30, [x0]; RET`, and `SUB sp, sp, #16; RET`
+   pass header parsing and are rejected by `checkElf64ImageZeroSvcAndFeatDit`.
+2. Intra-payload `BL #8; RET; RET` is accepted (with `BL` fallthrough in
+   `validVas`).
+3. Missing `PT_GNU_STACK`, duplicate `PT_GNU_STACK`, and `PT_GNU_STACK` with
+   `p_flags = 0` or `PF_W` are rejected by `parseElf64ProgramHdrs?`, while
+   `p_flags = PF_R` is accepted. -/
+theorem canary_a64_ret_provenance_and_gnu_stack :
+    (parseElf64ProgramHdrs?
+      (mkSynImgElf64 ET_EXEC 0x400000 0 (PF_R + PF_X) PAGE_SIZE_64K 0
+        (PF_R + PF_W) 0 0 0
+        [0x5E, 0x00, 0x00, 0x10, 0xC0, 0x03, 0x5F, 0xD6,
+         0xC0, 0x03, 0x5F, 0xD6])).isSome = true ∧
+    (checkElf64ImageZeroSvcAndFeatDit false featDitImageDecodeCfg
+      (mkSynImgElf64 ET_EXEC 0x400000 0 (PF_R + PF_X) PAGE_SIZE_64K 0
+        (PF_R + PF_W) 0 0 0
+        [0x5E, 0x00, 0x00, 0x10, 0xC0, 0x03, 0x5F, 0xD6,
+         0xC0, 0x03, 0x5F, 0xD6])).isNone = true ∧
+    (checkElf64ImageZeroSvcAndFeatDit false featDitImageDecodeCfg
+      (mkSynImgElf64 ET_EXEC 0x400000 0 (PF_R + PF_X) PAGE_SIZE_64K 0
+        (PF_R + PF_W) 0 0 0
+        [0x1E, 0x00, 0x40, 0xF9, 0xC0, 0x03, 0x5F, 0xD6])).isNone = true ∧
+    (checkElf64ImageZeroSvcAndFeatDit false featDitImageDecodeCfg
+      (mkSynImgElf64 ET_EXEC 0x400000 0 (PF_R + PF_X) PAGE_SIZE_64K 0
+        (PF_R + PF_W) 0 0 0
+        [0xFF, 0x43, 0x00, 0xD1, 0xC0, 0x03, 0x5F, 0xD6])).isNone = true ∧
+    (checkElf64ImageZeroSvcAndFeatDit false featDitImageDecodeCfg
+      (mkSynImgElf64 ET_EXEC 0x400000 0 (PF_R + PF_X) PAGE_SIZE_64K 0
+        (PF_R + PF_W) 0 0 0
+        [0x02, 0x00, 0x00, 0x94, 0xC0, 0x03, 0x5F, 0xD6,
+         0xC0, 0x03, 0x5F, 0xD6])).isSome = true ∧
+    (parseElf64ProgramHdrs?
+      (mkAArch64PageShareImg 4 0x410168 (PF_R + PF_W) false)).isNone = true ∧
+    (parseElf64ProgramHdrs?
+      (mkSynImgElf64 ET_EXEC 0x400000 0 (PF_R + PF_X) PAGE_SIZE_64K 0
+        (PF_R + PF_W) PT_GNU_STACK 0 0 cleanFeatDitKernelBytes)).isNone =
+      true ∧
+    (parseElf64ProgramHdrs?
+      (mkSynImgElf64 ET_EXEC 0x400000 0 (PF_R + PF_X) PAGE_SIZE_64K 0 0
+        0 0 0 cleanFeatDitKernelBytes)).isNone = true ∧
+    (parseElf64ProgramHdrs?
+      (mkSynImgElf64 ET_EXEC 0x400000 0 (PF_R + PF_X) PAGE_SIZE_64K 0 PF_W
+        0 0 0 cleanFeatDitKernelBytes)).isNone = true ∧
+    (parseElf64ProgramHdrs?
+      (mkSynImgElf64 ET_EXEC 0x400000 0 (PF_R + PF_X) PAGE_SIZE_64K 0 PF_R
+        0 0 0 cleanFeatDitKernelBytes)).isSome = true :=
+  ⟨rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl⟩
+
+/-- Allowlisted GNU segments are bounds-checked like `PT_NOTE`: a header whose
+file range `[8, 17)` ends past a 16-byte image is rejected, and the same
+header with an in-bounds range `[8, 16)` is accepted. -/
+theorem canary_gnu_segment_file_range_checked :
+    phdrEntryValid (repZeroBytes 16)
+      { idx := 0, pType := PT_GNU_PROPERTY, pFlags := PF_R, pOffset := 8,
+        pVaddr := 0, pPaddr := 0, pFilesz := 9, pMemsz := 9,
+        pAlign := 4 } = false ∧
+    phdrEntryValid (repZeroBytes 16)
+      { idx := 0, pType := PT_GNU_PROPERTY, pFlags := PF_R, pOffset := 8,
+        pVaddr := 0, pPaddr := 0, pFilesz := 8, pMemsz := 8,
+        pAlign := 4 } = true :=
+  ⟨rfl, rfl⟩
+
 end Anneal.ElfAArch64.Canaries
