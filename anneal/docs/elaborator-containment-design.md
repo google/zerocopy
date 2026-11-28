@@ -218,10 +218,10 @@ bwrap_pid` so `kill(-bwrap_pid, SIGKILL)` reaps the entire PID namespace),
 `close_range`, `PR_SET_PDEATHSIG`, and `setrlimit`, and invokes `bwrap` with:
 
 ```text
-bwrap --unshare-all --as-pid-1 --cap-drop ALL --die-with-parent --clearenv
-      --size 16777216 --tmpfs /
-      --size 65536 --tmpfs /dev
-      --dev-bind /dev/null /dev/null
+bwrap --unshare-all --unshare-user --disable-userns --as-pid-1 --cap-drop ALL
+      --die-with-parent --clearenv --size 16777216 --tmpfs /
+      --size 65536 --tmpfs /dev --dev-bind /dev/null /dev/null
+      --seccomp <bpf_fd>
       --ro-bind <ro_dev_dir>/zero /dev/zero
       --ro-bind <ro_dev_dir>/urandom /dev/urandom
       --proc /proc
@@ -235,16 +235,37 @@ bwrap --unshare-all --as-pid-1 --cap-drop ALL --die-with-parent --clearenv
 Using explicit 3-entry `--tmpfs /dev` mounts instead of `--dev /dev` shrinks the
 device surface (omitting `/dev/full`, `/dev/tty`, `/dev/ptmx`, `/dev/shm`) and
 avoids `bwrap` failures inside minimal outer containers that do not expose
-`/dev/full`. Because `bwrap --ro-bind` and `--remount-ro` set `MS_NODEV` (which
-blocks even `O_RDONLY` on character devices and breaks `libc++`'s
+`/dev/full`. Tier 1 always passes `--unshare-user --disable-userns` and never
+retries without it: when the host `bwrap` does not support the flag
+(bubblewrap older than 0.8.0) or the probe fails with it, `RequireBwrap` fails
+closed and `PreferBwrapOrLandlock` falls over to Tier 2. If Tier 2's
+preconditions also fail, no tier is available and `PreferBwrapOrLandlock` fails
+closed too, unless the user passes `--allow-unsandboxed-elaboration` and
+accepts a tainted receipt. This happens on any host with both bubblewrap older
+than 0.8.0 and Landlock ABI < 3 (kernels older than 6.2), for example Ubuntu
+22.04 on its stock 5.15 kernel with bubblewrap 0.6.1. On `x86_64` and
+`aarch64` the Tier 1 seccomp filter already denies `unshare`, `setns`,
+`clone3`, and non-thread `clone`, so there the flag is a second layer; its cost
+is that such hosts get Tier 2, with its shared mount and PID namespaces, or no
+tier at all, instead of Tier 1 without the flag. ExecSeal accepts that cost so
+that `linux_bwrap` in a receipt means the same thing on every host. On other
+architectures Tier 1 installs no seccomp filter, so the flag is the only
+barrier to nested user namespaces there, and the removed fallback would have
+run Tier 1 with no such barrier. An affected host gets Tier 1 back by upgrading
+bubblewrap to 0.8.0 or later, or Tier 2 by moving to kernel 6.2 or later, and
+running without containment stays an explicit choice recorded in the receipt.
+Because
+`bwrap --ro-bind` and `--remount-ro` set `MS_NODEV` (which blocks even
+`O_RDONLY` on character devices and breaks `libc++`'s
 `std::random_device("/dev/urandom")` at Lean startup) while `MS_RDONLY` without
 `MS_NODEV` leaves `0666` character devices writable, Tier 1 binds only
 `/dev/null` via `--dev-bind` and mounts per-invocation `0o400` regular files
-(64 KiB of NULs and 64 KiB read from host `/dev/urandom`) read-only at
-`/dev/zero` and `/dev/urandom`. Making `/usr/lib` `--ro-bind-try` also fixes
-NixOS hosts where `/usr/lib` does not exist. `sandbox.map_path(host) -> child`
-rewrites paths in `setup.json` and inspector `request.json` to `/toolchain` and
-`/work/{lib,in,out,tmp}`.
+(64 KiB of NULs and 64 KiB expanded from a single 32-byte host seed via
+domain-separated SHA-256) read-only at `/dev/zero` and `/dev/urandom`, avoiding
+exposure of raw host `/dev/urandom` stream bytes. Making `/usr/lib`
+`--ro-bind-try` also fixes NixOS hosts where `/usr/lib` does not exist.
+`sandbox.map_path(host) -> child` rewrites paths in `setup.json` and inspector
+`request.json` to `/toolchain` and `/work/{lib,in,out,tmp}`.
 
 #### Tier 2: `linux_landlock_seccomp` (fallback for restricted outer containers)
 
@@ -287,19 +308,35 @@ indices):
     and `REFER`. Including `REMOVE_FILE | MAKE_REG` on `runs/<n>/out` is
     empirically required because Lean writes `<Mod>.olean.tmp.<pid>` and
     atomically `rename()`s it to `<Mod>.olean`.
-- **Fail-closed dual-arch seccomp-BPF allowlist (`x86_64` and `aarch64`):**
+- **Fail-closed dual-arch seccomp-BPF allowlists (`x86_64` and `aarch64`):**
   Default action `SECCOMP_RET_ERRNO | EPERM`, constructed strictly from `libc`
-  syscall constants (zero magic numbers) with `ioctl` dropped completely:
-  - Allows `execve`, `getrusage` (required by Lean's `-M` memory limiter),
-    `getcpu`, arch-appropriate rename/rlimit syscalls (`rename` and `getrlimit`
-    on `x86_64`; `renameat` and `renameat2` on both), and standard thread,
-    memory, event-loop, and Landlock-confined file syscalls.
-  - Guards **6** syscalls with 64-bit argument checks: `clone3 -> ENOSYS`,
-    `clone` restricted strictly to `CLONE_THREAD` (preventing any child process
-    from escaping or outliving the thread group), `prlimit64` restricted to
-    read-only self (`arg0 == 0 && arg2 == 0`), `kill` and `tgkill` restricted to
-    `arg0 == child_pid`, and `fcntl` restricted to
-    `{F_GETFD, F_SETFD, F_GETFL, F_SETFL, F_DUPFD, F_DUPFD_CLOEXEC}`.
+  syscall constants (zero magic numbers) with `ioctl` dropped completely and
+  scoped across three `SeccompProfile` tiers (`Elaborator`, `ReadOnlyStream`,
+  and `PureKernel`):
+  - Every profile allows `execve`, `getrusage` (required by Lean's `-M` memory
+    limiter), `getcpu`, `getrlimit` on `x86_64`, and standard thread, memory,
+    time, and read-only descriptor syscalls.
+  - `Elaborator` and `ReadOnlyStream` also allow the event-loop and
+    directory-inspection syscalls (`pipe*`, `epoll*`, `eventfd*`, `*select`,
+    `readlink*`, `getcwd`, `getdents64`, `uname`).
+  - `Elaborator` additionally allows Landlock-confined file mutation:
+    unguarded `open`/`openat`, `pwrite64`, `ftruncate`, `mkdir*`, `unlink*`,
+    `fsync`, `fdatasync`, `umask`, and arch-appropriate rename syscalls
+    (`rename` on `x86_64`; `renameat` and `renameat2` on both).
+  - `ReadOnlyStream` (Lean metadata queries, `leanexport`, `con-leche`, and
+    `lean4lean`) allows none of those file-mutation syscalls and guards
+    `open`/`openat` flags strictly to read-only opens
+    (`O_ACCMODE == O_RDONLY`, rejecting `O_CREAT | O_TRUNC | O_APPEND`).
+  - `PureKernel` (`nanoda_bin`, `con-ron`) keeps the read-only
+    `open`/`openat` guard and allows neither the file-mutation syscalls, nor
+    the event-loop and directory-inspection syscalls, nor `fcntl`.
+  - All profiles guard **5** shared syscalls with 64-bit argument checks:
+    `clone3 -> ENOSYS`, `clone` restricted strictly to `CLONE_THREAD`
+    (preventing any child process from escaping or outliving the thread
+    group), `prlimit64` restricted to read-only self (`arg0 == 0 && arg2 == 0`),
+    and `kill` and `tgkill` restricted to `arg0 == child_pid`; `Elaborator` and
+    `ReadOnlyStream` additionally guard `fcntl` (`F_GETFD`, `F_SETFD`,
+    `F_GETFL`, `F_SETFL`, `F_DUPFD`, `F_DUPFD_CLOEXEC`).
   - Enforces mounted-root isolation in `PathMapper::map_path` identically to
     Tier 1: preserves host paths inside mounted roots (`sandbox.map_path(p) ==
     p`), canonicalizes symlinked toolchain paths into mounted roots, and rejects
