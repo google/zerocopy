@@ -164,11 +164,13 @@ anneal/
     │       └── {cli.rs, harness.rs, installed_smoke.rs, profile_v2_e2e.rs, sandbox_escape.rs, support_paths.rs, support_regressions.rs, support_signals.rs, fixtures/}
     ├── itree_diff/                    # package = "anneal-itree-diff" (publish = false)
     │   ├── Cargo.toml
-    │   ├── src/{lib,trace_observer,outcome,spec,rustc_runner,miri_runner,lean_trace_runner,mir_eval_adapter,corpus,fuzzer,shrink}.rs
+    │   ├── src/{lib,trace_observer,outcome,spec,rustc_runner,miri_runner}.rs
+    │   ├── src/{lean_trace_runner,mir_eval_adapter,corpus,fuzzer}.rs
     │   ├── src/corpus/{builders,sources}.rs
     │   ├── src/outcome/{authority_and_ub,classify}.rs
+    │   ├── src/{shrink,dedup,telemetry}.rs
     │   ├── src/bin/itree_diff.rs
-    │   └── tests/itree_differential.rs
+    │   └── tests/{itree_differential,shrink_dedup_telemetry}.rs
     ├── rustc-capture/                 # package = "anneal-rustc-capture-tests" (publish = false)
     │   ├── Cargo.toml
     │   ├── src/bin/anneal-rustc-capture-test-bin.rs
@@ -787,6 +789,42 @@ semantic seams:
      conservative twin skips (`SkippedConservative`) from verified metamorphic
      passes and pinning `ShrinkFailureSignature` across combined fixed-point
      `ddmin` + non-monotonic scalar candidate reduction.
+   - **6-Pass Shrinking, Deduplication, Seed Corpora, & Telemetry (`itree-diff`
+     CLI):** Resolves the workspace root via `--anneal-root <PATH>`,
+     `ANNEAL_ROOT`, working-directory ancestor lookup, or compile-time
+     `CARGO_MANIFEST_DIR` fallback, and loads optional `.json`, `.jsonl`, and
+     `.ndjson` (`FuzzProgram`) seed files from `--corpus-dir <PATH>`
+     (`ANNEAL_CORPUS_DIR`). Under `--shrink` (with optional `--witness-dir
+     <PATH>`), CLI divergences on `FuzzProgram` minimize through a two-tier
+     Miri-guarded fast-leg-first 6-pass shrinker (`ScheduleDdmin`, `StepDdmin`,
+     `CallAndCfgCollapse`, `TypeAndLayoutNarrow`,
+     `StrideAndDifferenceProxyScalarShrink`, and `CanonicalAlphaRename`), with
+     library-level `ShrinkableCase` shrinking (`shrink_case_with_budget`) also
+     enforcing PropEr-style handle def-use validation, into standalone
+     `program_<bundle_id>.mir.lean`, `repro_<bundle_id>.rs`, and
+     `witness_<bundle_id>.json` bundles
+     (`bundle_id = <skel_hash>_<content24>`, preserving `skel_hash` as the
+     constant-erased SCB sub-cluster key). Converged 1-minimal witnesses
+     deduplicate by minimized authority outcomes into `ITREE-<CAT>-<12hex>`
+     buckets via `BugRegistry` (supporting `K <= 8` retained skeletons and SCB
+     post-patch replay splitting in library calls such as
+     `BugRegistry::classify_post_patch_replay`). `--semantics-detail-out
+     <PATH>` writes one-line `anneal-itree-semantic-detail/v1` JSONL (distinct
+     from `anneal/ci/check_mir_differential.py`'s full-case
+     `anneal-semantic-detail/v1` schema), preserving the Stage 0 Alpha banner,
+     per-slice executed legs and `expectation_mismatch_count`, fail-closed
+     `build_freshness` gates (`TelemetryContext::discover` unconditionally fails
+     closed as `stale`/`UNVERIFIED` for standalone CLI builds rather than
+     trusting ambient compile-time `ANNEAL_BUILD_*` flags or filesystem mtimes,
+     so `"verified_at_head"` / `"PASS"` requires an explicit trusted-runner
+     provenance context), while
+     `--known-bugs-out <PATH>` writes `anneal-known-bug/v1`
+     NDJSON records (`.jsonl` / `.ndjson`) or an `anneal-known-bugs/v1` JSON
+     envelope (`.json`), preserving `alpha_notice`, `commit_sha`,
+     `build_freshness`, `build_exit_code`, and `provisional_count` across both
+     formats (including empty / all-provisional NDJSON runs), and supporting
+     `--repo`, `--branch`, and `--env-profile` metadata overrides with
+     credential-stripping remote-URL normalization.
 
 #### 4.3 `real_crates/`: Verbatim `zerocopy` Suite and External Smoke Pins
 

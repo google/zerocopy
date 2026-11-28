@@ -362,6 +362,10 @@ impl TerminalOutcome {
         )
     }
 
+    pub fn is_terminating_accepting(&self) -> bool {
+        matches!(self, Self::Returned { .. } | Self::Unwound { .. } | Self::Aborted { .. })
+    }
+
     pub fn kind_tag(&self) -> &'static str {
         match self {
             Self::Returned { .. } => "returned",

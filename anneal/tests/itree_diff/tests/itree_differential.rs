@@ -4424,7 +4424,14 @@ fn validate_run_plan_and_cli_reject_zero_fuzz_and_empty_selections() {
     assert!(
         validate_cli_run_plan(false, None, Some(2), false, true)
             .expect_err("`--witness-dir` without `--shrink` must fail")
-            .contains("--witness-dir requires both --fuzz <N> and --shrink")
+            .contains("--witness-dir requires both --shrink and a fuzz source")
+    );
+    assert!(
+        anneal_itree_diff::validate_cli_run_plan_with_corpus_dir(
+            false, true, None, None, false, true,
+        )
+        .expect_err("`--witness-dir` with `--corpus-dir` but without `--shrink` must fail")
+        .contains("--corpus-dir")
     );
     assert!(validate_cli_run_plan(false, None, Some(2), true, true).is_ok());
 
