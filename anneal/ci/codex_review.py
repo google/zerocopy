@@ -66,7 +66,7 @@ GATE2_OPTIONAL_KEYS = frozenset({
     "parent_tree", "commit_msg_sha256", "reviewed_at",
     "round", "risk_tier", "merge_base", "identity_key",
     "panel_seats", "prior_findings_status", "coverage",
-    "advisories",
+    "advisories", "review_mode", "delta_from",
 })
 GATE2_FINDING_KEYS = frozenset({
     "severity", "summary", "path", "line", "id",
@@ -76,6 +76,12 @@ GATE2_PANEL_SEAT_KEYS = frozenset({
     "seat", "family", "model_label", "role",
     "status", "verdict", "findings_count", "latency_sec",
 })
+GATE2_REVIEW_MODES = frozenset({"full", "delta"})
+# A delta review reads only the fix since the preceding full review, so it is
+# limited to non-TCB risk tiers and must seat both of these families.
+GATE2_DELTA_RISK_TIERS = frozenset({"tier0_docs", "tier1_code"})
+GATE2_DELTA_FAMILIES = frozenset({"claude", "gemini"})
+GATE2_PRIOR_FINDING_STATUSES = frozenset({"closed", "still_open", "unclear"})
 # Deletions remove evidence from the comments API. Record each deletion as an
 # immutable, uniquely named commit status on Anneal's initial commit. This
 # stable anchor survives branch moves without needing a database, a new ref,
@@ -170,10 +176,21 @@ def review_snapshot(comments, reviews=(), authorized_reviewers=None):
                     item.get("state"), item.get("commit_id"), item.get("body"),
                 ))
     gate2_items.sort(key=lambda row: (row[0], str(row[1])))
+    # A delta review depends on every legacy Codex summary on the PR, not
+    # only the latest one or those with findings, so while any Gate 2 item is
+    # present an edit to any summary forces a recheck.
+    all_summaries = ()
+    if gate2_items:
+        all_summaries = tuple(sorted(
+            ((c.get("id"), c.get("created_at"), c.get("body"))
+             for c in comments if authentic_summary(c)),
+            key=lambda row: str(row[0]),
+        ))
     return (
         summary_snapshot(comments),
         codex_findings_snapshot(comments),
         tuple(gate2_items),
+        all_summaries,
     )
 
 
@@ -381,7 +398,69 @@ def parse_gate2_payload(body, *, strict_identity_key=True):
     if reviewer_norm == "multi" and (
             completed_seat_families is None or not payload["panel_seats"]):
         raise ValueError("Multi reviewer_family requires non-empty panel_seats")
+    _validate_review_mode(payload)
     return payload, reviewer_norm, author_norm, completed_seat_families
+
+
+def _all_seats_finished(seats):
+    """Whether a validated `panel_seats` is non-empty and every seat finished.
+
+    A finished seat completed with a `clean` or `findings` verdict; a seat
+    that completed with an `incomplete` verdict did not finish its review.
+    """
+    return bool(seats) and all(
+        seat["status"] == "completed" and seat["verdict"] in ("clean", "findings")
+        for seat in seats
+    )
+
+
+def _validate_review_mode(payload):
+    """Validate the generic shape of `review_mode` and `delta_from`.
+
+    Only the shape is schema: a delta review that misses an eligibility
+    condition still parses, so its findings keep blocking like any other
+    review's. `_delta_review_problem` checks those conditions after parsing,
+    where they can only keep a passing delta review pending.
+    """
+    mode = payload.get("review_mode", "full")
+    if not isinstance(mode, str) or mode not in GATE2_REVIEW_MODES:
+        raise ValueError("Invalid Gate 2 review_mode")
+    if "delta_from" in payload:
+        if mode != "delta":
+            raise ValueError("Gate 2 delta_from requires review_mode delta")
+        delta_from = payload["delta_from"]
+        if not isinstance(delta_from, str) or not SHA1_RE.fullmatch(delta_from):
+            raise ValueError("Invalid Gate 2 delta_from")
+
+
+def _delta_payload_problem(payload, completed_seat_families):
+    """Why a parsed delta review's own fields rule it out, or None."""
+    delta_from = payload.get("delta_from")
+    if delta_from is None:
+        return "Delta Gate 2 review has no delta_from"
+    if delta_from == payload["head_sha"]:
+        return "Delta Gate 2 review delta_from must differ from head_sha"
+    if not _is_int_ge(payload.get("round"), 2):
+        return "Delta Gate 2 review requires round 2 or later"
+    if payload.get("risk_tier") not in GATE2_DELTA_RISK_TIERS:
+        return "Delta Gate 2 review requires a non-TCB risk_tier"
+    if (not _all_seats_finished(payload.get("panel_seats"))
+            or not GATE2_DELTA_FAMILIES <= set(completed_seat_families or ())):
+        return ("Delta Gate 2 review requires every panel seat completed, "
+                "including Claude and Gemini seats")
+    audited = payload.get("prior_findings_status")
+    if not isinstance(audited, list):
+        return "Delta Gate 2 review requires prior_findings_status"
+    ids = set()
+    for item in audited:
+        if (not isinstance(item, dict)
+                or set(item) != {"id", "status"}
+                or item["status"] not in GATE2_PRIOR_FINDING_STATUSES
+                or item["id"] in ids):
+            return ("Delta Gate 2 prior_findings_status needs one entry per id "
+                    "with a closed, still_open, or unclear status")
+        ids.add(item["id"])
+    return None
 
 
 def _gate2_item_timestamp(source, item):
@@ -806,7 +885,10 @@ def _carry_forward_result(head, comments, reviews, deleted_through, base_sha,
     except ValueError:
         return None
     a_head, a_base, a_tree = payload["head_sha"], payload["base_sha"], payload["tree_sha"]
+    # Only a full review carries forward; a delta review covers only the
+    # identity it was posted for.
     if (payload["verdict"] != "clean" or payload["findings"]
+            or payload.get("review_mode") == "delta"
             or a_head == head or a_base == base_sha
             or _carry_forward_blocked_by_history(
                 comments, reviews, authorized_reviewers, a_head, a_tree,
@@ -859,6 +941,8 @@ def _evaluate_gate2_item(source, item, head, base_sha, tree_sha, base_changed_at
             return Result("failure", "Ambiguous Gate 2 review marker"), None
         if "Unsupported" in msg:
             return Result("failure", "Unsupported Gate 2 review version"), None
+        if "delta" in msg.lower():
+            return Result("failure", "Malformed Gate 2 delta review payload"), None
         if "verdict" in msg.lower() or "findings" in msg.lower():
             return Result("failure", "Malformed or contradictory Gate 2 verdict or findings"), None
         return Result("failure", "Malformed Gate 2 review payload"), None
@@ -1139,7 +1223,118 @@ def review_gate2_result(head, comments, reviews=(), deleted_through=0,
         )
         if active_failure is not None:
             return active_failure
+    if (latest_res.state == "success"
+            and latest_payload.get("review_mode") == "delta"):
+        problem = _delta_review_problem(
+            all_items, comments, latest_item, latest_payload,
+            deleted_through, historical_trees, base_sha, base_changed_at,
+        )
+        if problem is not None:
+            return Result("pending", f"{problem}; request a full Gate 2 review"), latest_payload
     return latest_res, latest_payload
+
+
+def _delta_review_problem(entries, comments, delta_item, delta_payload,
+                          deleted_through, historical_trees, base_sha,
+                          base_changed_at):
+    """Why a passing delta review is not a complete review, or None.
+
+    `entries` are every authentic Gate 2 item on the PR, deleted comments
+    included, in `_gate2_item_sort_key` order. The anchor is the item
+    immediately before the delta review, so delta reviews never chain.
+    Findings from every earlier item, not only the anchor, must be audited.
+    `historical_trees` maps commits to their GitHub-verified trees and must
+    hold the anchor's head.
+    """
+    _, _, _, completed_seat_families = parse_gate2_payload(
+        delta_item.get("body") or "",
+    )
+    problem = _delta_payload_problem(delta_payload, completed_seat_families)
+    if problem is not None:
+        return problem
+    # A deleted Gate 2 item or Codex summary may have been the anchor, an
+    # intervening item, or an unaudited finding; the journal records only
+    # that a deletion happened, so the history cannot be reconstructed.
+    if deleted_through:
+        return "Delta Gate 2 review follows a deleted Gate 2 item or Codex summary"
+    # With no deletion recorded, every authentic item is eligible, so the
+    # delta review, the latest eligible item, is the latest of all and the
+    # anchor and audit checks below see every other item.
+    pos = next(i for i, (_, item) in enumerate(entries) if item is delta_item)
+    if pos == 0:
+        return "Delta Gate 2 review has no preceding full review"
+    source, item = entries[pos - 1]
+    # Only a PR review binds its payload to a commit (`commit_id`).
+    if source != "review":
+        return "Delta Gate 2 review must directly follow a full PR review"
+    try:
+        anchor, reviewer_norm, author_norm, _ = parse_gate2_payload(
+            item.get("body") or "",
+        )
+    except ValueError:
+        return "Delta Gate 2 review's preceding review is malformed"
+    if anchor.get("review_mode", "full") != "full":
+        return "Delta Gate 2 review must directly follow a full review"
+    if anchor["head_sha"] != delta_payload["delta_from"]:
+        return "Delta Gate 2 review delta_from is not the preceding review's head"
+    if anchor["base_sha"] != delta_payload["base_sha"]:
+        return "Delta Gate 2 review spans a base change"
+    # Like any review recorded against the current base, the anchor must
+    # postdate the last base change (see `_evaluate_gate2_item`). The delta
+    # review, on the same base, passed that check, so `base_changed_at` is
+    # valid, and the anchor sorts before it, so its timestamp is valid too.
+    if (anchor["base_sha"] == base_sha and base_changed_at is not None
+            and _gate2_item_timestamp(source, item) <= timestamp(base_changed_at)):
+        return "Delta Gate 2 review spans a base change"
+    if (item.get("state") != "COMMENTED"
+            or item.get("commit_id") != anchor["head_sha"]
+            or reviewer_norm == author_norm
+            or anchor["verdict"] not in ("clean", "findings")
+            or anchor.get("merge_base", anchor["base_sha"]) != anchor["base_sha"]):
+        return "Delta Gate 2 review's preceding review is not a complete cross-family review"
+    if (not _all_seats_finished(anchor.get("panel_seats"))
+            or not any(canonical_family(seat["family"], allow_human=False) != author_norm
+                       for seat in anchor["panel_seats"])
+            or (anchor.get("coverage") or {}).get("blocked", 0) != 0):
+        return "Delta Gate 2 review's preceding review is not a complete panel"
+    if anchor.get("risk_tier") not in GATE2_DELTA_RISK_TIERS:
+        return "Delta Gate 2 review's preceding review lacks a non-TCB risk_tier"
+    # The anchor's recorded tree decides which earlier findings are on it,
+    # so it must match the tree GitHub reports for the anchor's head.
+    if (not isinstance(historical_trees, dict)
+            or historical_trees.get(anchor["head_sha"]) != anchor["tree_sha"]):
+        return "Cannot verify the tree of the delta Gate 2 review's preceding review"
+    audited = {entry["id"] for entry in delta_payload["prior_findings_status"]}
+    # One audit entry must not stand for two findings that share an id.
+    seen = set()
+    for _, earlier in entries[:pos]:
+        try:
+            payload, _, _, _ = parse_gate2_payload(earlier.get("body") or "")
+        except ValueError:
+            return "Delta Gate 2 review follows a malformed Gate 2 item"
+        on_anchor = (payload["head_sha"] == anchor["head_sha"]
+                     or payload["tree_sha"] == anchor["tree_sha"])
+        for finding in payload["findings"]:
+            if on_anchor and finding["severity"] in ("P0", "P1"):
+                return "Delta Gate 2 review follows a P0 or P1 finding"
+            if (not _is_non_empty_str(finding.get("id"))
+                    or finding["id"] not in audited):
+                return "Delta Gate 2 review does not audit every earlier finding"
+            if finding["id"] in seen:
+                return "Delta Gate 2 review follows findings that share an id"
+            seen.add(finding["id"])
+    for comment in comments:
+        if not authentic_summary(comment):
+            continue
+        try:
+            review = _parse_codex_summary(comment.get("body") or "")
+        except ValueError:
+            review = {}
+        if (review.get("status") != "completed"
+                or review.get("has_any_findings") is not False
+                or review.get("has_unresolved_findings") is not False):
+            return "Delta Gate 2 review follows a legacy Codex summary that is not clean"
+    return None
 
 
 def _parse_codex_summary(body):
@@ -1891,6 +2086,24 @@ def reconcile(github, publish=False, requested_group=None):
                             continue
                         historical_identities[hist_key] = identities[hist_key]
 
+                # A delta review's anchor tree must be GitHub-verified (see
+                # `_delta_review_problem`); an unresolvable anchor commit only
+                # keeps the delta review pending.
+                for _, _, item_payload, _ in active_gate2_items:
+                    if (item_payload is None
+                            or item_payload.get("review_mode") != "delta"
+                            or "delta_from" not in item_payload):
+                        continue
+                    d_sha = item_payload["delta_from"]
+                    if d_sha not in tree_cache:
+                        try:
+                            tree_cache[d_sha] = github.commit_tree(d_sha)
+                        except RuntimeError as err:
+                            err_str = str(err)
+                            if "HTTP 404" in err_str or "HTTP 422" in err_str:
+                                continue
+                            raise
+                    historical_trees[d_sha] = tree_cache[d_sha]
                 for c_sha in dict.fromkeys(active_codex_finding_shas):
                     if c_sha in missing_codex_commits:
                         continue

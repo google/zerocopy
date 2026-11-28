@@ -26,6 +26,7 @@ from codex_review_tests.gate2_carry_forward_transport import (
     Gate2CarryForwardTransportTests,
 )
 from codex_review_tests.gate2_cross_family import Gate2CrossFamilyTests
+from codex_review_tests.gate2_delta import Gate2DeltaReviewTests
 from codex_review_tests.policy import PolicyTests
 from codex_review_tests.reconciliation import ReconciliationTests
 from codex_review_tests.transport import TransportTests
@@ -51,6 +52,7 @@ __all__ = [
     "Gate2CarryForwardTests",
     "Gate2CarryForwardTransportTests",
     "Gate2CrossFamilyTests",
+    "Gate2DeltaReviewTests",
     "HEAD",
     "OTHER_BASE",
     "OTHER_HEAD",

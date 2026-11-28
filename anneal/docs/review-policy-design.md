@@ -365,6 +365,17 @@ against its canonical owner and required outcome:
     change to the surface it concerns or carried as an agent-proposed,
     maintainer-accepted disposition (a later review's silence never resolves a
     finding, and in-scope trust or soundness defects are never deferred).
+14. **Conditional delta Gate 2 reviews:**
+    [`docs/codex-review.md`](codex-review.md#merge-gates) — lets a later
+    Gate 2 round read only the fix since the preceding review, with whole
+    touched definitions, when that preceding review was a complete full panel
+    on the same base with no P0 or P1 finding on its head or tree and the fix
+    is small (at most 400 lines and 30% of the PR), stays within the PR's
+    files, edits no Human review surface item, and leaves the PR outside the
+    TCB and review rules; both Claude and Gemini seats must finish, every
+    earlier finding on the PR must be audited, delta reviews never chain or
+    carry forward across a rebase, and any failed or unverifiable condition
+    means a full review.
 
 ## Empirical evaluation methodology
 

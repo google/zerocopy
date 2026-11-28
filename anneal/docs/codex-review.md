@@ -112,10 +112,78 @@ gate whenever the identity changes:
      blocking meaning, so a reviewer that follows only the Code Review Rules
      and reports `P3` issues as findings is still correct.
 
-     **Rebase-only carry-forward.** A clean `anneal-gate2-review:v1` review
-     also covers a later identity of a one-commit PR when the evaluator itself
-     confirms from GitHub data that the PR was only rebased onto a later base
-     since that review:
+     **Conditional delta reviews.** A Gate 2 review normally reads the PR's
+     whole change (`review_mode` absent or `"full"`). A later round may instead
+     post a *delta review* (`"review_mode": "delta"`), which reads only the fix:
+     every change to the PR's tree and commit messages since the head named by
+     its `delta_from` SHA, together with each whole function, Lean declaration,
+     or other definition that the fix touches, as of the new head. A delta
+     review is a complete Gate 2 review of its identity only when all of the
+     following hold; whenever one fails, or the reviewer cannot establish it,
+     the round must be a full review instead. A delta review that fails any of
+     them never passes the gate, but its findings still block like those of
+     any other Gate 2 review:
+     - **(a) Full-panel anchor:** no Gate 2 item or Codex summary on this PR
+       has been deleted, the delta review is the latest Gate 2 item on the PR,
+       and the Gate 2 item immediately before it is an `anneal-gate2-review:v1`
+       PR review, not an issue comment and not itself a delta review, submitted
+       on commit `delta_from` with the same `base_sha` as the delta review (so
+       the fix is never combined with a rebase or retarget). That anchor is a
+       `COMMENT` review whose `reviewer_family` differs from its
+       `author_family`, has verdict `"clean"` or `"findings"`, has no
+       `merge_base` other than its `base_sha`, has a non-empty `panel_seats[]`
+       in which every seat completed with a `"clean"` or `"findings"` verdict
+       (at least one of them cross-family), and reports no blocked `coverage`.
+       Its `tree_sha` is the tree that GitHub reports for commit `delta_from`.
+       Delta reviews therefore never chain, and the delta review's `round` is
+       at least 2.
+     - **(b) No high-severity findings:** no Gate 2 item recorded on the
+       anchor's head or tree reports a P0 or P1 finding.
+     - **(c) Small fix inside the PR:** the fix changes at most 400 lines,
+       edits only files that the PR already changed at `delta_from`, adds no
+       file to the PR, and edits no item on the Human review surface defined
+       in [`AGENTS.md`](../AGENTS.md#code-review-rules) (such as a stated spec
+       or a definition it depends on, a public API or theorem type, a waiver,
+       a trust tier, a dependency, editor or agent config, or a policy
+       relaxation).
+     - **(d) Both families:** every seat of the delta review's `panel_seats[]`
+       completed with a `"clean"` or `"findings"` verdict, including at least
+       one Claude-family seat and one Gemini-family seat.
+     - **(e) Outside the TCB and review rules:** neither the anchor's identity
+       nor the delta review's identity touches a Pass 2 path or trigger in
+       [`trust-review`](../skills/trust-review/SKILL.md) (including any path
+       under `trusted/`) or any review rule listed under **Rebase-only
+       carry-forward** below, and both reviews record this with a `risk_tier`
+       of `"tier0_docs"` or `"tier1_code"`.
+     - **(f) Bounded share of the PR:** the fix's changed lines are at most 30%
+       of the PR's changed lines, excluding generated files.
+     - **(g) Whole definitions in context:** the reviewers receive every whole
+       definition that the fix touches; if they do not fit the reviewer's
+       context budget, the round is a full review.
+     - **(h) Every earlier finding audited:** `prior_findings_status[]` holds
+       exactly one `{"id": ..., "status": ...}` object per id, each with
+       status `"closed"`, `"still_open"`, or `"unclear"`, and names every
+       `findings[]` entry of every earlier Gate 2 item on this PR, whatever
+       head it reviewed. A finding without an `id`, two earlier findings that
+       share an `id`, a malformed earlier Gate 2 item (including one with a
+       malformed or contradictory `identity_key`), or a legacy Codex summary
+       on the PR that is not a completed review without findings rules out a
+       delta round.
+
+     The evaluator checks (a), (b), (d), and (h) and the `round`, `risk_tier`,
+     and `delta_from` values above; the reviewer must establish (c), the path
+     rule in (e), (f), and (g) from the PR's commits and Review Receipt before
+     posting. Beyond the general payload schema, only a `review_mode` other
+     than `"full"` or `"delta"`, or a `delta_from` that is not a lowercase
+     40-hex SHA or appears outside delta mode, makes a payload malformed; every
+     other delta condition only keeps a delta review that would pass pending.
+     A delta review covers only the identity it names: the rebase-only
+     carry-forward below never applies to it.
+
+     **Rebase-only carry-forward.** A clean full (not delta)
+     `anneal-gate2-review:v1` review also covers a later identity of a
+     one-commit PR when the evaluator itself confirms from GitHub data that the
+     PR was only rebased onto a later base since that review:
      - the review is the latest Gate 2 item on the PR (deleted comments
        included, and never itself a deleted comment), names a different head
        and base than the current ones, and passes with the PR's whole review
@@ -368,10 +436,18 @@ commit whose GitHub tree matches `tree_sha` (including still-present comments
 with `id <= deleted_through`) continue blocking across rewrites; such a summary
 records no tree, so one on a historical commit GitHub cannot resolve (HTTP
 404 or 422) is treated like a finding on a different tree and does not
-block. `review_snapshot` tracks those
-active summaries alongside the latest summary, and freshness rules still reject
-a completed review when Codex edits an older summary or supplies only a prose
-receipt; deletion records are no longer updated automatically.
+block. `review_snapshot` tracks those active summaries alongside the latest
+summary (and every summary while the PR has any Gate 2 item, since a delta
+review depends on all of them), and freshness rules still reject a completed
+review when Codex edits an older summary or supplies only a prose receipt;
+deletion records are no longer updated automatically.
+A delta review that would pass instead stays pending, asking for a full
+review, unless its own fields, the PR's Gate 2 history, and the deletion
+journal satisfy conditions (a), (b), (d), and (h) of the delta review rules
+above, both reviews carry a non-TCB `risk_tier`, and GitHub confirms the
+anchor's tree. Condition (h)'s legacy Codex summary check is deliberately
+stricter than the precedence rule above: a summary that is not clean never
+vetoes a full Gate 2 review, but it does rule out a delta round.
 Treat diagnostic output as evidence and inspect actual Gate 2 reviews before
 making a manual merge decision.
 
