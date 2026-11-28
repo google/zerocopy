@@ -14,6 +14,8 @@ from __future__ import annotations
 from .support import (
     CI_DIR,
     oracle,
+    oracle_bounded,
+    oracle_landlock,
     os,
     Path,
     subprocess,
@@ -29,8 +31,12 @@ class PreexecConfinementCases:
     def test_no_preexec_fn_in_threaded_runner_and_confinement_wrapping(self):
         from unittest import mock
 
-        src = (CI_DIR / "run_miri_ub_oracle.py").read_text(encoding="utf-8")
-        self.assertNotIn("preexec_fn=", src)
+        for path in [
+            CI_DIR / "run_miri_ub_oracle.py",
+            *sorted((CI_DIR / "miri_ub_oracle_lib").glob("*.py")),
+        ]:
+            src = path.read_text(encoding="utf-8")
+            self.assertNotIn("preexec_fn=", src, path.name)
         args = oracle.build_arg_parser().parse_args(
             ["--tier-b", "--capture-bin", "/bin/true", "--eval-bin", "/bin/true"]
         )
@@ -67,7 +73,7 @@ class PreexecConfinementCases:
                 workers=1, max_memory_mb=1024, max_total_memory_mb=0
             )
         # Capture mode requires Landlock ABI >= 3 for truncate mediation.
-        with mock.patch.object(oracle, "_probe_landlock_abi", return_value=2):
+        with mock.patch.object(oracle_landlock, "_probe_landlock_abi", return_value=2):
             with self.assertRaises(oracle.OracleError):
                 oracle._wrap_with_confinement(
                     ["/bin/true"],
@@ -715,7 +721,7 @@ class PreexecConfinementCases:
         from unittest import mock
 
         with mock.patch.object(
-            oracle, "_count_pgid_processes", return_value=None
+            oracle_bounded, "_count_pgid_processes", return_value=None
         ):
             rc_fc, _, _, _ = oracle.run_bounded(
                 [sys.executable, "-I", "-B", "-c", "import time; time.sleep(5)"],

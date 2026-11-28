@@ -15,6 +15,8 @@ from .support import (
     hashlib,
     json,
     oracle,
+    oracle_corpus,
+    oracle_tiers,
     os,
     Path,
     _sample_pin,
@@ -52,7 +54,7 @@ class CaptureHardeningCases:
 
             snap = tmp_path / "snap"
             with mock.patch.object(
-                oracle, "_stream_regular_file_sha256", side_effect=_spy_stream
+                oracle_corpus, "_stream_regular_file_sha256", side_effect=_spy_stream
             ):
                 sha, rels = oracle._walk_corpus_tree(
                     corpus,
@@ -167,12 +169,12 @@ class CaptureHardeningCases:
             # before loading pins, snapshotting corpora, or running fixtures.
             with (
                 mock.patch.object(
-                    oracle,
+                    oracle_tiers,
                     "load_pin",
                     side_effect=AssertionError("load_pin called as UID 0"),
                 ),
                 mock.patch.object(
-                    oracle,
+                    oracle_tiers,
                     "load_tier_b_manifest",
                     side_effect=AssertionError("manifest loaded as UID 0"),
                 ),
@@ -345,12 +347,12 @@ class CaptureHardeningCases:
             }
 
         with (
-            unittest.mock.patch.object(oracle, "_require_confinement_support"),
+            unittest.mock.patch.object(oracle_tiers, "_require_confinement_support"),
             unittest.mock.patch.object(
-                oracle, "evaluate_rust_unit", side_effect=fake_eval_rust
+                oracle_tiers, "evaluate_rust_unit", side_effect=fake_eval_rust
             ),
             unittest.mock.patch.object(
-                oracle, "evaluate_mir_json_unit", side_effect=fake_eval_mir
+                oracle_tiers, "evaluate_mir_json_unit", side_effect=fake_eval_mir
             ),
         ):
             report = oracle.run_tier_b(

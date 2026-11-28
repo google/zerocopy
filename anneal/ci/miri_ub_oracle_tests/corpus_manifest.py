@@ -16,6 +16,7 @@ from .support import (
     json,
     _make_tar_gz,
     oracle,
+    oracle_pins,
     os,
     Path,
     tarfile,
@@ -65,7 +66,7 @@ class CorpusManifestCases:
             big_dir = td_path / "big_tb"
             big_dir.mkdir()
             (big_dir / "manifest.json").write_text("{" + " " * 128 + "}", encoding="utf-8")
-            with mock.patch.object(oracle, "MAX_PIN_BYTES", 64):
+            with mock.patch.object(oracle_pins, "MAX_PIN_BYTES", 64):
                 with self.assertRaisesRegex(oracle.OracleError, "max size"):
                     oracle.load_tier_b_manifest(big_dir)
 

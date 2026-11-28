@@ -15,6 +15,10 @@ from .support import (
     io,
     json,
     oracle,
+    oracle_archive,
+    oracle_bounded,
+    oracle_corpus,
+    oracle_pins,
     os,
     Path,
     sys,
@@ -72,7 +76,7 @@ class BoundedRunAndTierBCases:
                 return super().wait(*args, **kwargs)
 
         with (
-            mock.patch.object(oracle, "_kill_process_group", side_effect=tracked_kill),
+            mock.patch.object(oracle_bounded, "_kill_process_group", side_effect=tracked_kill),
             mock.patch.object(oracle.subprocess, "Popen", TrackedPopen),
         ):
             rc, _, _, _ = oracle.run_bounded(
@@ -106,7 +110,7 @@ class BoundedRunAndTierBCases:
             with self.assertRaisesRegex(oracle.OracleError, "regular file"):
                 oracle.load_pin(fifo_pin)
 
-            with mock.patch.object(oracle, "MAX_PIN_BYTES", 64):
+            with mock.patch.object(oracle_pins, "MAX_PIN_BYTES", 64):
                 with self.assertRaisesRegex(oracle.OracleError, "max size"):
                     oracle.load_pin(pin_file)
 
@@ -120,7 +124,7 @@ class BoundedRunAndTierBCases:
                     ti.size = len(data)
                     tf.addfile(ti, io.BytesIO(data))
             with (
-                mock.patch.object(oracle, "MAX_TAR_MEMBERS", 3),
+                mock.patch.object(oracle_archive, "MAX_TAR_MEMBERS", 3),
                 mock.patch.object(
                     tarfile.TarFile,
                     "getmembers",
@@ -200,14 +204,14 @@ class BoundedRunAndTierBCases:
             (big_root / "fail").mkdir(parents=True)
             (big_root / "fail" / "a.rs").write_bytes(b"a" * 64)
             (big_root / "fail" / "b.rs").write_bytes(b"b" * 64)
-            with mock.patch.object(oracle, "MAX_SINGLE_FILE_BYTES", 32):
+            with mock.patch.object(oracle_corpus, "MAX_SINGLE_FILE_BYTES", 32):
                 with self.assertRaisesRegex(
                     oracle.OracleError, "exceeds size limit"
                 ):
                     oracle.compute_corpus_manifest_sha256(big_root, ["tests/fail"])
             with (
-                mock.patch.object(oracle, "MAX_SINGLE_FILE_BYTES", 100),
-                mock.patch.object(oracle, "MAX_TOTAL_EXTRACTED_BYTES", 100),
+                mock.patch.object(oracle_corpus, "MAX_SINGLE_FILE_BYTES", 100),
+                mock.patch.object(oracle_corpus, "MAX_TOTAL_EXTRACTED_BYTES", 100),
             ):
                 with self.assertRaisesRegex(
                     oracle.OracleError, "exceeds total size limit"
