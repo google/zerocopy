@@ -656,7 +656,7 @@ fn parse_arms(stream: TokenStream, span: Span) -> Result<Vec<Arm>, Diagnostic> {
                 });
             }
         };
-        let pats = parse_pats(&toks[i..arrow], toks[arrow].span())?;
+        let (at, pats) = parse_arm_pattern(&toks[i..arrow], toks[arrow].span())?;
         i = arrow + 1;
         let block_body = match toks.get(i) {
             Some(Tok::Group(Delimiter::Brace, inner, g)) => Some((inner.clone(), *g)),
@@ -681,8 +681,8 @@ fn parse_arms(stream: TokenStream, span: Span) -> Result<Vec<Arm>, Diagnostic> {
             i += 1;
             after_block = false;
         }
-        let arm_span = join(pats[0].span, body.span);
-        arms.push(Arm { pats, body, span: arm_span });
+        let arm_span = join(at.as_ref().map_or(pats[0].span, |(_, s)| *s), body.span);
+        arms.push(Arm { at, pats, body, span: arm_span });
     }
     if arms.is_empty() {
         return Err(Diagnostic::new(
@@ -694,15 +694,80 @@ fn parse_arms(stream: TokenStream, span: Span) -> Result<Vec<Arm>, Diagnostic> {
     Ok(arms)
 }
 
+/// The diagnostic for an unsupported pattern.
+fn unsupported_pat(span: Span, msg: &str) -> Diagnostic {
+    Diagnostic::new("E_ANNEAL_SPEC_UNSUPPORTED_EXPR", span, msg).help(
+        "a pattern may be `_`, a name, `true`, `false`, an integer literal, an integer constant \
+         such as `u8::MAX`, an inclusive range of them such as `0..=9`, or several of the \
+         literals and ranges joined with `|`, and a name may bind any but `_` or a name, as in \
+         `n @ 1..=9` or `n @ (2 | 4)`",
+    )
+}
+
+/// An arm's `name @` binding, if it has one, and its alternatives.
+type ArmPattern = (Option<(String, Span)>, Vec<Pat>);
+
+/// Parses an arm's whole pattern: a pattern, or `name @ pattern`, where an
+/// or-pattern after `@` must be parenthesized, as Rust would otherwise
+/// read `n @ 1 | 2` as `(n @ 1) | 2`.
+fn parse_arm_pattern(toks: &[Tok], arrow: Span) -> Result<ArmPattern, Diagnostic> {
+    let [Tok::Ident(name, span), at, rest @ ..] = toks else {
+        return Ok((None, parse_pats(toks, arrow)?));
+    };
+    if !at.is_op("@") {
+        return Ok((None, parse_pats(toks, arrow)?));
+    }
+    if name == "_" || matches!(name.as_str(), "mut" | "ref" | "box") || name.starts_with("r#") {
+        return Err(unsupported_pat(*span, "unsupported pattern"));
+    }
+    let inner;
+    let sub = match rest {
+        [] => {
+            return Err(Diagnostic::new(
+                "E_ANNEAL_SPEC_SYNTAX",
+                at.span(),
+                "expected a pattern after `@`",
+            ));
+        }
+        [Tok::Group(Delimiter::Parenthesis, stream, _)] => {
+            inner = tokenize(stream.clone());
+            &inner[..]
+        }
+        _ => {
+            if let Some(bar) = rest.iter().find(|t| t.is_op("|")) {
+                return Err(unsupported_pat(
+                    bar.span(),
+                    &format!("parenthesize the alternatives that `{name} @` binds"),
+                )
+                .help(format!(
+                    "write `{name} @ (a | b)`, which binds `{name}` in every alternative"
+                )));
+            }
+            rest
+        }
+    };
+    if let Some(t) = sub.iter().find(|t| t.is_op("@")) {
+        return Err(unsupported_pat(t.span(), "nested `@` bindings are not supported"));
+    }
+    let pats = parse_pats(sub, arrow)?;
+    if let Some(p) = pats.iter().find(|p| matches!(p.kind, PatKind::Wild | PatKind::Bind(_))) {
+        return Err(unsupported_pat(
+            p.span,
+            &format!("`{name} @` must bind a pattern other than `_` or a name; write `{name}`"),
+        ));
+    }
+    Ok((Some((name.clone(), *span)), pats))
+}
+
 /// Parses an arm's pattern: one or more alternatives separated by `|`.
 fn parse_pats(toks: &[Tok], arrow: Span) -> Result<Vec<Pat>, Diagnostic> {
-    let unsupported = |span: Span, msg: &str| {
-        Diagnostic::new("E_ANNEAL_SPEC_UNSUPPORTED_EXPR", span, msg).help(
-            "a pattern may be `_`, a name, `true`, `false`, an integer literal, an integer \
-             constant such as `u8::MAX`, an inclusive range of them such as `0..=9`, or several \
-             of the literals and ranges joined with `|`",
-        )
-    };
+    let unsupported = unsupported_pat;
+    if let Some(t) = toks.iter().find(|t| t.is_op("@")) {
+        return Err(unsupported(
+            t.span(),
+            "a binding `name @ ..` must cover the whole pattern, as in `n @ (1 | 2)`",
+        ));
+    }
     if let Some(t) = toks.iter().find(|t| matches!(t, Tok::Ident(k, _) if k == "if")) {
         return Err(unsupported(t.span(), "`match` guards are not supported"));
     }

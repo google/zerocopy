@@ -1286,7 +1286,7 @@ impl<'a> Env<'a> {
             let (mut has_zero, mut all_nonzero, mut all_positive) = (false, true, true);
             // An upper bound of every value that the arm's patterns match.
             let mut arm_bound = Some(0u128);
-            let mut binding = None;
+            let mut binding = arm.at.as_ref().map(|(name, span)| (name.as_str(), *span));
             for p in &arm.pats {
                 match &p.kind {
                     PatKind::Wild => {

@@ -336,9 +336,14 @@ pattern matches. A pattern is `_`, a name, `true` or `false`, an integer
 literal (optionally negative or suffixed), an integer constant such as
 `u8::MAX`, or an inclusive range `lo..=hi` whose bounds are literals or
 constants, and literals and ranges may be joined with `|`. A name binds the
-scrutinee and follows the `let` rules. Guards, exclusive and half-open ranges,
-and tuple, struct, enum, slice, `ref`, and `mut` patterns are rejected. A
-`match` must be exhaustive: a `bool` match covers `true` and `false`, and an
+scrutinee and follows the `let` rules. So does `name` in `name @ pattern`,
+which binds the scrutinee in an arm that tests any other pattern, as in
+`n @ 1..=9`. An or-pattern after `@` must be parenthesized, as in
+`n @ (2 | 4)`, since Rust reads `n @ 2 | 4` as `(n @ 2) | 4`; `name @ _`,
+`name @ m`, nested `@`, and `@` inside an or-pattern are rejected. Guards,
+exclusive and half-open ranges, and tuple, struct, enum, slice, `ref`, and
+`mut` patterns are rejected.
+A `match` must be exhaustive: a `bool` match covers `true` and `false`, and an
 integer match ends with a `_` or name arm, even when its ranges cover every
 value of the scrutinee's type. A pattern that earlier patterns already cover,
 whether one value or the union of earlier ranges, is rejected, as are an empty
@@ -373,7 +378,9 @@ prove it positive in the later arms, so
 `match i { i8::MIN..=0 => 0, _ => i.ilog2() }` passes. An arm bounds the
 scrutinee by the greatest upper bound of its patterns, and the later arms by
 the greatest value of the machine type that the earlier arms leave unmatched,
-as `next_power_of_two` needs.
+as `next_power_of_two` needs. The name of a name arm or of a `name @` binding
+has the facts that its arm proves of the scrutinee, so
+`n @ 1..=10 => math(a / n)` and `n @ 1..=u8::MAX => n.ilog2()` pass.
 
 An integer constant lowers to its value on the profile v1 target, where
 `usize` and `isize` are 64 bits wide: `usize::MAX` lowers to

@@ -514,3 +514,15 @@ fn max_steps_counts_a_bounded_next_power_of_two() {
         "E_ANNEAL_UNGUARDED_SPEC_OVERFLOW",
     );
 }
+
+#[test]
+fn max_steps_at_bindings_carry_the_arm_facts() {
+    // A binding is a step count, which may divide where the arm proves it
+    // nonzero.
+    let sig = "fn f(n: u64)";
+    lower_one(&wrap("max_steps = match n { k @ 1..=64 => n / k, _ => 1 }", sig)).unwrap();
+    expect_error(
+        &wrap("max_steps = match n { k @ 0..=64 => n / k, _ => 1 }", sig),
+        "E_ANNEAL_UNGUARDED_SPEC_DIV",
+    );
+}

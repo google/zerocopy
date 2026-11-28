@@ -483,6 +483,17 @@ example : pure_npot_u64 9223372036854775808 = 9223372036854775808 := by
   unfold pure_npot_u64; decide
 example : pure_npot_u64 9223372036854775809 = 0 := by unfold pure_npot_u64; decide
 
+-- `name @ pattern` binds the scrutinee in arms that test it.
+example : pure_at_bind 0 = 0 := by unfold pure_at_bind; decide
+example : pure_at_bind 1 = 1 := by unfold pure_at_bind; decide
+example : pure_at_bind 2 = 2 := by unfold pure_at_bind; decide
+example : pure_at_bind 3 = 1 := by unfold pure_at_bind; decide
+example : pure_at_bind 200 = 7 := by unfold pure_at_bind; decide
+example : pure_at_bind 201 = 100 := by unfold pure_at_bind; decide
+example : pure_at_npot 1000 = 1024 := by unfold pure_at_npot; decide
+example : pure_at_npot 32768 = 32768 := by unfold pure_at_npot; decide
+example : pure_at_npot 32769 = 0 := by unfold pure_at_npot; decide
+
 -- The masked shifts take the amount modulo the width.
 example : pure_wshl_is 1 17 2 := by unfold pure_wshl_is; decide
 example : pure_wshl_is 0x8001 1 2 := by unfold pure_wshl_is; decide
@@ -497,8 +508,8 @@ example : ¬ pure_wshr_is (-32768) 31 1 := by unfold pure_wshr_is; decide
 -- `+ n.swap_bytes() + n.count_ones() + n.leading_zeros()`
 -- `+ (if n > 0 { n.ilog2() } else { 0 })`
 -- `+ (if n <= 1000 { n.next_power_of_two() } else { 0 })`
--- `+ match n { 0..=9 => 1, _ => 2 }`.
-example : fn7_max_steps { args := [u8Val 9, u8Val 2, u32Val 5] } = 83886165 := rfl
+-- `+ (match n { j @ 1..=9 => j, _ => 0 }) + match n { 0..=9 => 1, _ => 2 }`.
+example : fn7_max_steps { args := [u8Val 9, u8Val 2, u32Val 5] } = 83886170 := rfl
 example : fn7_max_steps { args := [u8Val 3, u8Val 250, u32Val 4294967295] } =
     9399436349 := rfl
 example : fn7_max_steps { args := [u8Val 9, u8Val 2, u32Val 0] } = 61 := rfl
