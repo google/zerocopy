@@ -40,10 +40,11 @@ reviews, and human approvals) remains valid for every later head of the same PR
 with that identity, however that head was produced, and for no other, subject to
 the Gate 5 rules for the Review Receipt comment's `Human review surface` block.
 The one exception is the evaluator-verified rebase-only carry-forward of a clean
-Gate 2 review described under Gate 2. Evidence never transfers between pull
-requests. In particular, when a lower stack PR is squash-merged and the PR above
-it is rebased onto that squash commit (whose tree equals the lower PR's reviewed
-head tree), the upper PR's identity—and its review evidence—is unchanged. The
+full Gate 2 review (and any Gate 1 closure check recorded on it) described under
+Gates 1 and 2. Evidence never transfers between pull requests. In particular,
+when a lower stack PR is squash-merged and the PR above it is rebased onto that
+squash commit (whose tree equals the lower PR's reviewed head tree), the upper
+PR's identity—and its review evidence—is unchanged. The
 identity omits author and committer metadata, and GitHub reports CI per commit
 SHA, so every new head still needs its own SHA-bound deterministic preflight
 (including the authorship and trailer checks in
@@ -60,6 +61,85 @@ gate whenever the identity changes:
    unresolved, and the PR author or acting agent has posted a Review Receipt
    comment naming a reviewed `head` SHA with the current identity that includes
    an accurate `Human review surface` block.
+
+   **Fix-only re-push.** After a Gate 2 review reports findings, a new identity
+   whose changes since the last identity on which local review converged are all
+   *fix-only* needs no separate local review round. A change is fix-only when it
+   - edits only files that the PR already changes at that converged identity,
+     and changes no Human review surface item defined in
+     [`AGENTS.md`](../AGENTS.md#code-review-rules) and no CI-executed surface
+     defined in
+     [`change-review`](../skills/change-review/SKILL.md#schedule-by-data-dependency),
+     which keep their local review;
+   - addresses one or more findings in `anneal-gate2-review:v1` reviews posted
+     on this PR (a pure rebase that addresses no finding uses `change-review`'s
+     clean-rebase row instead), with every changed hunk and any new or edited
+     commit message since that converged identity mapping to one of them, and
+     every finding that the identity addresses or reopens under **Fixed**
+     (Gate 2) is an `anneal-gate2-review:v1` finding carrying an `id` used by no
+     other finding on the PR (reopening a legacy Codex finding or a finding with
+     a missing or duplicate `id` makes the change not fix-only, so it needs
+     Gate 1 in full); and
+   - is otherwise at most a clean rebase as defined by the reuse rules in
+     [`change-review`](../skills/change-review/SKILL.md#key-every-result-to-its-inputs).
+
+   The Review Receipt comment names the `(target_base, merge_base, head)` tuple
+   of both the new identity and that converged identity, carries the
+   `Human review surface` block, maps the `id` of every addressed or reopened
+   finding to its fixing hunk or edit (in the changes since the converged
+   identity when newly addressed, or in the current PR state when reopened),
+   includes the new head's deterministic preflight receipt, names every model
+   family (or `human`) that authored a change since the converged identity (the
+   *fix families*), and says that it relies on this rule. The receipt never
+   confirms a fix by itself: Gate 1 holds for a fix-only identity only when at
+   least one *closure check* of that identity confirms every addressed or
+   reopened finding and no closure check or Gate 2 item for that identity
+   disqualifies it below. A closure check is an automated read-only pass,
+   separate from the unprimed cold Gate 2 pass (it is the separate warm check
+   that `change-review`'s fresh-context rule calls for), launched from a clean
+   `<target_base>` checkout or neutral directory by a model family distinct from
+   the PR's `author_family` and from every fix family. It receives the PR's
+   Gate 2 reviews, PR description, and Review Receipt, together with the
+   converged identity's `<base>..<head>` commit range and the new identity's
+   `<base>..<head>` commit range and `head` tree (plus
+   `<converged_base>..<new_base>` and `git range-diff` across a rebase); it
+   checks that the change is fix-only as defined above and that each fix holds
+   for every finding that the identity addresses or reopens under **Fixed**
+   (Gate 2). A closure check is never posted as a standalone
+   `anneal-gate2-review:v1` review; instead, it attaches an explicit verdict for
+   every addressed or reopened finding to the `prior_findings_status` of a
+   completed full (not delta) `anneal-gate2-review:v1` cold-pass review of that
+   identity (`review_mode` absent or `"full"`) run on an unfiltered host (never
+   a severity-filtered host or legacy Codex summary) with at least one completed
+   cold pass from a family distinct from the `author_family` and every fix
+   family, recording
+   `{"id":"<id>","status":"closed","basis":"verified","fix_only":true,"family":"<family>"}`
+   (with `<family>` distinct from the `author_family` and every fix family) when
+   both the change is fix-only and the fix holds. When either fails, that review
+   records `"fix_only":false` or a non-`closed` `status` (such as `"still_open"`
+   or `"unclear"`) in `prior_findings_status` for each addressed or reopened
+   finding with an `id` and reports `verdict: "findings"` with a `findings[]`
+   entry for each unconfirmed fix or fix-only failure (never
+   `verdict: "clean"`). A status inferred from a reviewer not raising a finding
+   again is not a closure check. Any closure check or Gate 2 item for that
+   identity (including
+   on any commit with that identity, or from an incomplete, errored, malformed,
+   parallel, or earlier run) that records `"fix_only":false`, records a
+   non-`closed` `status` for a finding that the identity addresses or reopens
+   under **Fixed**, or records a `"fix_only"` entry without `"status":"closed"`,
+   `"basis":"verified"`, `"fix_only":true`, and such a distinct `"family"`
+   permanently disqualifies that identity from this rule—no parallel or later
+   closure check of that identity can override it. When the evaluator's
+   rebase-only carry-forward applies to that cold-pass review and neither the
+   reviewed nor the current identity is disqualified above, both its cold pass
+   and its closure check cover the carried-forward identity too, except for any
+   finding concerning a surface outside the identity (such as the PR description
+   or Review Receipt comment) that changed after that review, which reopens
+   under **Fixed**. Without a qualifying closure check covering every addressed
+   or reopened finding, or when the identity is disqualified above, the identity
+   needs Gate 1 in full. Gate 1 remains mandatory in full for the PR's first
+   identity and for any identity that is not fix-only, over every change since
+   the last identity on which local review converged.
 2. **Gate 2 — Independent cross-family review and finding dispositions:** At
    least one complete automated Gate 2 review posted on this PR covers the
    current identity, and no Gate 2 review requested on this PR, for any
@@ -91,7 +171,7 @@ gate whenever the identity changes:
      (non-empty `findings`), or `"incomplete"`, and optional `parent_tree`,
      `commit_msg_sha256`, `reviewed_at`, `round`, `risk_tier`, `merge_base`,
      `identity_key`, `panel_seats[]`, `prior_findings_status[]`, and `coverage`
-     (plus per-finding `fingerprint`, `surface`, `consensus_count`,
+     (plus per-finding `id`, `fingerprint`, `surface`, `consensus_count`,
      `raised_by[]`, and `repro_status`) may carry one-commit identity or
      multi-seat diagnostic metadata. When `identity_key` uses a structured
      `one:` or `multi:` prefix (case-insensitive after trimming whitespace), it
@@ -100,10 +180,10 @@ gate whenever the identity changes:
      GitHub's commits API, which omits the raw commit object's trailing
      newlines) or `multi:<base_sha>:<head_sha>` and agree with `tree_sha`,
      `parent_tree`, `commit_msg_sha256`, `base_sha`, and `head_sha` fail-closed;
-     non-structured legacy keys are accepted only on exact `(head_sha, base_sha,
-     tree_sha)` and never transfer across heads. Gate 2 provides the cold
-     cross-family review and falsification pass after Gate 1's pre-push
-     convergence.
+     non-structured legacy keys are accepted only on exact
+     `(head_sha, base_sha, tree_sha)` and never transfer across heads. Gate 2
+     provides the cold cross-family review and falsification pass after Gate 1's
+     pre-push convergence.
 
      Optional `advisories[]` entries are `P3` notes in the finding shape. They
      never block, and are not findings for the resolution rule below; a
@@ -243,11 +323,15 @@ gate whenever the identity changes:
      surface), and Gate 1 confirms
      on the PR's current state that the fix is still present and still
      addresses the finding, mapping it to the fixing hunk or edit in the
-     Review Receipt. Any later edit to that surface reopens the finding until
-     Gate 1 confirms the fix again. A finding anchored to code or describing
-     the tree's behavior concerns the tree, and an ambiguous finding counts as
-     a tree finding. A finding about the tree or commit message that was
-     raised on the current identity cannot be fixed without a new identity.
+     Review Receipt. When the current identity satisfies Gate 1 via the
+     fix-only re-push rule, that rule's closure-check confirmation of the
+     finding takes the place of Gate 1's local confirmation; the Review Receipt
+     alone never confirms a fix. Any later edit to that surface reopens the
+     finding until Gate 1 confirms the fix again (by local review or under the
+     fix-only re-push rule). A finding anchored to code or describing the
+     tree's behavior concerns the tree, and an ambiguous finding counts as a
+     tree finding. A finding about the tree or commit message that was raised
+     on the current identity cannot be fixed without a new identity.
    - **Dispositioned:** the finding appears in a `Gate 2 finding dispositions`
      (or legacy `Codex finding dispositions`) list inside the Review Receipt
      comment's `Human review surface` block, with a proposed disposition and

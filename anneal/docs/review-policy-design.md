@@ -376,6 +376,25 @@ against its canonical owner and required outcome:
     earlier finding on the PR must be audited, delta reviews never chain or
     carry forward across a rebase, and any failed or unverifiable condition
     means a full review.
+15. **Fix-only re-push after Gate 2 findings:**
+    [`docs/codex-review.md`](codex-review.md#merge-gates) and
+    [`change-review`](../skills/change-review/SKILL.md#key-every-result-to-its-inputs)
+    — skips the separate local review round only for a push that edits files the
+    PR already changes, touches no Human review surface item or CI-executed
+    surface, and addresses and reopens under `Fixed` only
+    `anneal-gate2-review:v1` findings with PR-unique `id`s (falling back to full
+    Gate 1 if any lacks one). A warm closure check, kept separate from the
+    unprimed cold Gate 2 pass, inspects the converged and new commit ranges and
+    attaches an explicit `closed`, `"fix_only":true` verdict per addressed or
+    reopened finding to a completed unfiltered full (not delta)
+    `anneal-gate2-review:v1` cold-pass review (never a standalone closure-check
+    review); any negative or unverified closure check reports a blocking
+    `findings[]` entry and disqualifies that identity from skipping local
+    review, a finding simply not raised again is never confirmed, both that
+    closure check and at least one cold pass on that review use a model family
+    distinct from `author_family` and every fix family, a later edit to a
+    finding's surface reopens it as before, and local review stays mandatory for
+    the PR's first identity and any identity that is not fix-only.
 
 ## Empirical evaluation methodology
 
