@@ -1,0 +1,2004 @@
+{
+  "schema_version": 1,
+  "compilation": {
+    "source_root": "../../src",
+    "crate_root": "lib.rs",
+    "crate_name": "zerocopy",
+    "edition": "2021",
+    "target": "x86_64-unknown-linux-gnu",
+    "cfg": [
+      "no_zerocopy_allocator_api_1_100_0"
+    ],
+    "env": {
+      "CARGO_PKG_VERSION": "0.8.64"
+    },
+    "source_files": [
+      "byte_slice.rs",
+      "byteorder.rs",
+      "deprecated.rs",
+      "error.rs",
+      "impls.rs",
+      "layout.rs",
+      "lib.rs",
+      "macros.rs",
+      "pointer/inner.rs",
+      "pointer/invariant.rs",
+      "pointer/mod.rs",
+      "pointer/ptr.rs",
+      "pointer/transmute.rs",
+      "ref.rs",
+      "split_at.rs",
+      "util/macro_util.rs",
+      "util/macros.rs",
+      "util/mod.rs",
+      "wrappers.rs"
+    ]
+  },
+  "scope": {
+    "kind": "selected_unit",
+    "roots": [],
+    "instantiations": [
+      {
+        "path": "impls::tuples::_::<impl FromBytes for (A, B, C)>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u8",
+          "u16",
+          "u32"
+        ]
+      },
+      {
+        "path": "impls::tuples::_::<impl FromBytes for (A, B, C, D)>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u8",
+          "u16",
+          "u32",
+          "u64"
+        ]
+      },
+      {
+        "path": "impls::tuples::_::<impl FromBytes for (A, B, C, D, E)>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u8",
+          "u16",
+          "u32",
+          "u64",
+          "i8"
+        ]
+      },
+      {
+        "path": "impls::tuples::_::<impl FromBytes for (A, B, C, D, E, F)>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u8",
+          "u16",
+          "u32",
+          "u64",
+          "i8",
+          "i16"
+        ]
+      },
+      {
+        "path": "impls::tuples::_::<impl FromBytes for (A, B, C, D, E, F, G)>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u8",
+          "u16",
+          "u32",
+          "u64",
+          "i8",
+          "i16",
+          "i32"
+        ]
+      },
+      {
+        "path": "impls::tuples::_::<impl FromBytes for (A, B, C, D, E, F, G, H)>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u8",
+          "u16",
+          "u32",
+          "u64",
+          "i8",
+          "i16",
+          "i32",
+          "i64"
+        ]
+      },
+      {
+        "path": "impls::tuples::_::<impl FromBytes for (A, B, C, D, E, F, G, H, I)>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u8",
+          "u16",
+          "u32",
+          "u64",
+          "i8",
+          "i16",
+          "i32",
+          "i64",
+          "u128"
+        ]
+      },
+      {
+        "path": "impls::tuples::_::<impl FromBytes for (A, B, C, D, E, F, G, H, I, J)>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u8",
+          "u16",
+          "u32",
+          "u64",
+          "i8",
+          "i16",
+          "i32",
+          "i64",
+          "u128",
+          "i128"
+        ]
+      },
+      {
+        "path": "impls::tuples::_::<impl FromBytes for (A, B, C, D, E, F, G, H, I, J, K)>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u8",
+          "u16",
+          "u32",
+          "u64",
+          "i8",
+          "i16",
+          "i32",
+          "i64",
+          "u128",
+          "i128",
+          "usize"
+        ]
+      },
+      {
+        "path": "impls::tuples::_::<impl FromBytes for (A, B, C, D, E, F, G, H, I, J, K, L)>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u8",
+          "u16",
+          "u32",
+          "u64",
+          "i8",
+          "i16",
+          "i32",
+          "i64",
+          "u128",
+          "i128",
+          "usize",
+          "isize"
+        ]
+      },
+      {
+        "path": "impls::tuples::_::<impl FromBytes for (A, B, C, D, E, F, G, H, I, J, K, L, M)>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u8",
+          "u16",
+          "u32",
+          "u64",
+          "i8",
+          "i16",
+          "i32",
+          "i64",
+          "u128",
+          "i128",
+          "usize",
+          "isize",
+          "u8"
+        ]
+      },
+      {
+        "path": "impls::tuples::_::<impl FromBytes for (A, B, C, D, E, F, G, H, I, J, K, L, M, N)>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u8",
+          "u16",
+          "u32",
+          "u64",
+          "i8",
+          "i16",
+          "i32",
+          "i64",
+          "u128",
+          "i128",
+          "usize",
+          "isize",
+          "u8",
+          "u16"
+        ]
+      },
+      {
+        "path": "impls::tuples::_::<impl FromBytes for (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O)>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u8",
+          "u16",
+          "u32",
+          "u64",
+          "i8",
+          "i16",
+          "i32",
+          "i64",
+          "u128",
+          "i128",
+          "usize",
+          "isize",
+          "u8",
+          "u16",
+          "u32"
+        ]
+      },
+      {
+        "path": "impls::tuples::_::<impl FromBytes for (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P)>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u8",
+          "u16",
+          "u32",
+          "u64",
+          "i8",
+          "i16",
+          "i32",
+          "i64",
+          "u128",
+          "i128",
+          "usize",
+          "isize",
+          "u8",
+          "u16",
+          "u32",
+          "u64"
+        ]
+      },
+      {
+        "path": "impls::tuples::_::<impl FromBytes for (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q)>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u8",
+          "u16",
+          "u32",
+          "u64",
+          "i8",
+          "i16",
+          "i32",
+          "i64",
+          "u128",
+          "i128",
+          "usize",
+          "isize",
+          "u8",
+          "u16",
+          "u32",
+          "u64",
+          "i8"
+        ]
+      },
+      {
+        "path": "impls::tuples::_::<impl FromBytes for (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R)>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u8",
+          "u16",
+          "u32",
+          "u64",
+          "i8",
+          "i16",
+          "i32",
+          "i64",
+          "u128",
+          "i128",
+          "usize",
+          "isize",
+          "u8",
+          "u16",
+          "u32",
+          "u64",
+          "i8",
+          "i16"
+        ]
+      },
+      {
+        "path": "impls::tuples::_::<impl FromBytes for (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S)>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u8",
+          "u16",
+          "u32",
+          "u64",
+          "i8",
+          "i16",
+          "i32",
+          "i64",
+          "u128",
+          "i128",
+          "usize",
+          "isize",
+          "u8",
+          "u16",
+          "u32",
+          "u64",
+          "i8",
+          "i16",
+          "i32"
+        ]
+      },
+      {
+        "path": "impls::tuples::_::<impl FromBytes for (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T)>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u8",
+          "u16",
+          "u32",
+          "u64",
+          "i8",
+          "i16",
+          "i32",
+          "i64",
+          "u128",
+          "i128",
+          "usize",
+          "isize",
+          "u8",
+          "u16",
+          "u32",
+          "u64",
+          "i8",
+          "i16",
+          "i32",
+          "i64"
+        ]
+      },
+      {
+        "path": "impls::tuples::_::<impl FromBytes for (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U)>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u8",
+          "u16",
+          "u32",
+          "u64",
+          "i8",
+          "i16",
+          "i32",
+          "i64",
+          "u128",
+          "i128",
+          "usize",
+          "isize",
+          "u8",
+          "u16",
+          "u32",
+          "u64",
+          "i8",
+          "i16",
+          "i32",
+          "i64",
+          "u128"
+        ]
+      },
+      {
+        "path": "impls::tuples::_::<impl FromBytes for (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V)>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u8",
+          "u16",
+          "u32",
+          "u64",
+          "i8",
+          "i16",
+          "i32",
+          "i64",
+          "u128",
+          "i128",
+          "usize",
+          "isize",
+          "u8",
+          "u16",
+          "u32",
+          "u64",
+          "i8",
+          "i16",
+          "i32",
+          "i64",
+          "u128",
+          "i128"
+        ]
+      },
+      {
+        "path": "impls::tuples::_::<impl FromBytes for (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W)>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u8",
+          "u16",
+          "u32",
+          "u64",
+          "i8",
+          "i16",
+          "i32",
+          "i64",
+          "u128",
+          "i128",
+          "usize",
+          "isize",
+          "u8",
+          "u16",
+          "u32",
+          "u64",
+          "i8",
+          "i16",
+          "i32",
+          "i64",
+          "u128",
+          "i128",
+          "usize"
+        ]
+      },
+      {
+        "path": "impls::tuples::_::<impl FromBytes for (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X)>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u8",
+          "u16",
+          "u32",
+          "u64",
+          "i8",
+          "i16",
+          "i32",
+          "i64",
+          "u128",
+          "i128",
+          "usize",
+          "isize",
+          "u8",
+          "u16",
+          "u32",
+          "u64",
+          "i8",
+          "i16",
+          "i32",
+          "i64",
+          "u128",
+          "i128",
+          "usize",
+          "isize"
+        ]
+      },
+      {
+        "path": "impls::tuples::_::<impl FromBytes for (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y)>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u8",
+          "u16",
+          "u32",
+          "u64",
+          "i8",
+          "i16",
+          "i32",
+          "i64",
+          "u128",
+          "i128",
+          "usize",
+          "isize",
+          "u8",
+          "u16",
+          "u32",
+          "u64",
+          "i8",
+          "i16",
+          "i32",
+          "i64",
+          "u128",
+          "i128",
+          "usize",
+          "isize",
+          "u8"
+        ]
+      },
+      {
+        "path": "impls::tuples::_::<impl FromBytes for (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z)>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u8",
+          "u16",
+          "u32",
+          "u64",
+          "i8",
+          "i16",
+          "i32",
+          "i64",
+          "u128",
+          "i128",
+          "usize",
+          "isize",
+          "u8",
+          "u16",
+          "u32",
+          "u64",
+          "i8",
+          "i16",
+          "i32",
+          "i64",
+          "u128",
+          "i128",
+          "usize",
+          "isize",
+          "u8",
+          "u16"
+        ]
+      },
+      {
+        "path": "impls::tuples::_::<impl FromZeros for (A, B, C)>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u8",
+          "u16",
+          "u32"
+        ]
+      },
+      {
+        "path": "impls::tuples::_::<impl FromZeros for (A, B, C, D)>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u8",
+          "u16",
+          "u32",
+          "u64"
+        ]
+      },
+      {
+        "path": "impls::tuples::_::<impl FromZeros for (A, B, C, D, E)>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u8",
+          "u16",
+          "u32",
+          "u64",
+          "i8"
+        ]
+      },
+      {
+        "path": "impls::tuples::_::<impl FromZeros for (A, B, C, D, E, F)>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u8",
+          "u16",
+          "u32",
+          "u64",
+          "i8",
+          "i16"
+        ]
+      },
+      {
+        "path": "impls::tuples::_::<impl FromZeros for (A, B, C, D, E, F, G)>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u8",
+          "u16",
+          "u32",
+          "u64",
+          "i8",
+          "i16",
+          "i32"
+        ]
+      },
+      {
+        "path": "impls::tuples::_::<impl FromZeros for (A, B, C, D, E, F, G, H)>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u8",
+          "u16",
+          "u32",
+          "u64",
+          "i8",
+          "i16",
+          "i32",
+          "i64"
+        ]
+      },
+      {
+        "path": "impls::tuples::_::<impl FromZeros for (A, B, C, D, E, F, G, H, I)>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u8",
+          "u16",
+          "u32",
+          "u64",
+          "i8",
+          "i16",
+          "i32",
+          "i64",
+          "u128"
+        ]
+      },
+      {
+        "path": "impls::tuples::_::<impl FromZeros for (A, B, C, D, E, F, G, H, I, J)>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u8",
+          "u16",
+          "u32",
+          "u64",
+          "i8",
+          "i16",
+          "i32",
+          "i64",
+          "u128",
+          "i128"
+        ]
+      },
+      {
+        "path": "impls::tuples::_::<impl FromZeros for (A, B, C, D, E, F, G, H, I, J, K)>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u8",
+          "u16",
+          "u32",
+          "u64",
+          "i8",
+          "i16",
+          "i32",
+          "i64",
+          "u128",
+          "i128",
+          "usize"
+        ]
+      },
+      {
+        "path": "impls::tuples::_::<impl FromZeros for (A, B, C, D, E, F, G, H, I, J, K, L)>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u8",
+          "u16",
+          "u32",
+          "u64",
+          "i8",
+          "i16",
+          "i32",
+          "i64",
+          "u128",
+          "i128",
+          "usize",
+          "isize"
+        ]
+      },
+      {
+        "path": "impls::tuples::_::<impl FromZeros for (A, B, C, D, E, F, G, H, I, J, K, L, M)>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u8",
+          "u16",
+          "u32",
+          "u64",
+          "i8",
+          "i16",
+          "i32",
+          "i64",
+          "u128",
+          "i128",
+          "usize",
+          "isize",
+          "u8"
+        ]
+      },
+      {
+        "path": "impls::tuples::_::<impl FromZeros for (A, B, C, D, E, F, G, H, I, J, K, L, M, N)>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u8",
+          "u16",
+          "u32",
+          "u64",
+          "i8",
+          "i16",
+          "i32",
+          "i64",
+          "u128",
+          "i128",
+          "usize",
+          "isize",
+          "u8",
+          "u16"
+        ]
+      },
+      {
+        "path": "impls::tuples::_::<impl FromZeros for (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O)>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u8",
+          "u16",
+          "u32",
+          "u64",
+          "i8",
+          "i16",
+          "i32",
+          "i64",
+          "u128",
+          "i128",
+          "usize",
+          "isize",
+          "u8",
+          "u16",
+          "u32"
+        ]
+      },
+      {
+        "path": "impls::tuples::_::<impl FromZeros for (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P)>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u8",
+          "u16",
+          "u32",
+          "u64",
+          "i8",
+          "i16",
+          "i32",
+          "i64",
+          "u128",
+          "i128",
+          "usize",
+          "isize",
+          "u8",
+          "u16",
+          "u32",
+          "u64"
+        ]
+      },
+      {
+        "path": "impls::tuples::_::<impl FromZeros for (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q)>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u8",
+          "u16",
+          "u32",
+          "u64",
+          "i8",
+          "i16",
+          "i32",
+          "i64",
+          "u128",
+          "i128",
+          "usize",
+          "isize",
+          "u8",
+          "u16",
+          "u32",
+          "u64",
+          "i8"
+        ]
+      },
+      {
+        "path": "impls::tuples::_::<impl FromZeros for (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R)>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u8",
+          "u16",
+          "u32",
+          "u64",
+          "i8",
+          "i16",
+          "i32",
+          "i64",
+          "u128",
+          "i128",
+          "usize",
+          "isize",
+          "u8",
+          "u16",
+          "u32",
+          "u64",
+          "i8",
+          "i16"
+        ]
+      },
+      {
+        "path": "impls::tuples::_::<impl FromZeros for (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S)>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u8",
+          "u16",
+          "u32",
+          "u64",
+          "i8",
+          "i16",
+          "i32",
+          "i64",
+          "u128",
+          "i128",
+          "usize",
+          "isize",
+          "u8",
+          "u16",
+          "u32",
+          "u64",
+          "i8",
+          "i16",
+          "i32"
+        ]
+      },
+      {
+        "path": "impls::tuples::_::<impl FromZeros for (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T)>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u8",
+          "u16",
+          "u32",
+          "u64",
+          "i8",
+          "i16",
+          "i32",
+          "i64",
+          "u128",
+          "i128",
+          "usize",
+          "isize",
+          "u8",
+          "u16",
+          "u32",
+          "u64",
+          "i8",
+          "i16",
+          "i32",
+          "i64"
+        ]
+      },
+      {
+        "path": "impls::tuples::_::<impl FromZeros for (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U)>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u8",
+          "u16",
+          "u32",
+          "u64",
+          "i8",
+          "i16",
+          "i32",
+          "i64",
+          "u128",
+          "i128",
+          "usize",
+          "isize",
+          "u8",
+          "u16",
+          "u32",
+          "u64",
+          "i8",
+          "i16",
+          "i32",
+          "i64",
+          "u128"
+        ]
+      },
+      {
+        "path": "impls::tuples::_::<impl FromZeros for (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V)>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u8",
+          "u16",
+          "u32",
+          "u64",
+          "i8",
+          "i16",
+          "i32",
+          "i64",
+          "u128",
+          "i128",
+          "usize",
+          "isize",
+          "u8",
+          "u16",
+          "u32",
+          "u64",
+          "i8",
+          "i16",
+          "i32",
+          "i64",
+          "u128",
+          "i128"
+        ]
+      },
+      {
+        "path": "impls::tuples::_::<impl FromZeros for (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W)>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u8",
+          "u16",
+          "u32",
+          "u64",
+          "i8",
+          "i16",
+          "i32",
+          "i64",
+          "u128",
+          "i128",
+          "usize",
+          "isize",
+          "u8",
+          "u16",
+          "u32",
+          "u64",
+          "i8",
+          "i16",
+          "i32",
+          "i64",
+          "u128",
+          "i128",
+          "usize"
+        ]
+      },
+      {
+        "path": "impls::tuples::_::<impl FromZeros for (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X)>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u8",
+          "u16",
+          "u32",
+          "u64",
+          "i8",
+          "i16",
+          "i32",
+          "i64",
+          "u128",
+          "i128",
+          "usize",
+          "isize",
+          "u8",
+          "u16",
+          "u32",
+          "u64",
+          "i8",
+          "i16",
+          "i32",
+          "i64",
+          "u128",
+          "i128",
+          "usize",
+          "isize"
+        ]
+      },
+      {
+        "path": "impls::tuples::_::<impl FromZeros for (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y)>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u8",
+          "u16",
+          "u32",
+          "u64",
+          "i8",
+          "i16",
+          "i32",
+          "i64",
+          "u128",
+          "i128",
+          "usize",
+          "isize",
+          "u8",
+          "u16",
+          "u32",
+          "u64",
+          "i8",
+          "i16",
+          "i32",
+          "i64",
+          "u128",
+          "i128",
+          "usize",
+          "isize",
+          "u8"
+        ]
+      },
+      {
+        "path": "impls::tuples::_::<impl FromZeros for (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z)>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u8",
+          "u16",
+          "u32",
+          "u64",
+          "i8",
+          "i16",
+          "i32",
+          "i64",
+          "u128",
+          "i128",
+          "usize",
+          "isize",
+          "u8",
+          "u16",
+          "u32",
+          "u64",
+          "i8",
+          "i16",
+          "i32",
+          "i64",
+          "u128",
+          "i128",
+          "usize",
+          "isize",
+          "u8",
+          "u16"
+        ]
+      },
+      {
+        "path": "impls::tuples::_::<impl Immutable for (A, B, C)>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u8",
+          "u16",
+          "u32"
+        ]
+      },
+      {
+        "path": "impls::tuples::_::<impl Immutable for (A, B, C, D)>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u8",
+          "u16",
+          "u32",
+          "u64"
+        ]
+      },
+      {
+        "path": "impls::tuples::_::<impl Immutable for (A, B, C, D, E)>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u8",
+          "u16",
+          "u32",
+          "u64",
+          "i8"
+        ]
+      },
+      {
+        "path": "impls::tuples::_::<impl Immutable for (A, B, C, D, E, F)>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u8",
+          "u16",
+          "u32",
+          "u64",
+          "i8",
+          "i16"
+        ]
+      },
+      {
+        "path": "impls::tuples::_::<impl Immutable for (A, B, C, D, E, F, G)>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u8",
+          "u16",
+          "u32",
+          "u64",
+          "i8",
+          "i16",
+          "i32"
+        ]
+      },
+      {
+        "path": "impls::tuples::_::<impl Immutable for (A, B, C, D, E, F, G, H)>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u8",
+          "u16",
+          "u32",
+          "u64",
+          "i8",
+          "i16",
+          "i32",
+          "i64"
+        ]
+      },
+      {
+        "path": "impls::tuples::_::<impl Immutable for (A, B, C, D, E, F, G, H, I)>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u8",
+          "u16",
+          "u32",
+          "u64",
+          "i8",
+          "i16",
+          "i32",
+          "i64",
+          "u128"
+        ]
+      },
+      {
+        "path": "impls::tuples::_::<impl Immutable for (A, B, C, D, E, F, G, H, I, J)>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u8",
+          "u16",
+          "u32",
+          "u64",
+          "i8",
+          "i16",
+          "i32",
+          "i64",
+          "u128",
+          "i128"
+        ]
+      },
+      {
+        "path": "impls::tuples::_::<impl Immutable for (A, B, C, D, E, F, G, H, I, J, K)>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u8",
+          "u16",
+          "u32",
+          "u64",
+          "i8",
+          "i16",
+          "i32",
+          "i64",
+          "u128",
+          "i128",
+          "usize"
+        ]
+      },
+      {
+        "path": "impls::tuples::_::<impl Immutable for (A, B, C, D, E, F, G, H, I, J, K, L)>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u8",
+          "u16",
+          "u32",
+          "u64",
+          "i8",
+          "i16",
+          "i32",
+          "i64",
+          "u128",
+          "i128",
+          "usize",
+          "isize"
+        ]
+      },
+      {
+        "path": "impls::tuples::_::<impl Immutable for (A, B, C, D, E, F, G, H, I, J, K, L, M)>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u8",
+          "u16",
+          "u32",
+          "u64",
+          "i8",
+          "i16",
+          "i32",
+          "i64",
+          "u128",
+          "i128",
+          "usize",
+          "isize",
+          "u8"
+        ]
+      },
+      {
+        "path": "impls::tuples::_::<impl Immutable for (A, B, C, D, E, F, G, H, I, J, K, L, M, N)>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u8",
+          "u16",
+          "u32",
+          "u64",
+          "i8",
+          "i16",
+          "i32",
+          "i64",
+          "u128",
+          "i128",
+          "usize",
+          "isize",
+          "u8",
+          "u16"
+        ]
+      },
+      {
+        "path": "impls::tuples::_::<impl Immutable for (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O)>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u8",
+          "u16",
+          "u32",
+          "u64",
+          "i8",
+          "i16",
+          "i32",
+          "i64",
+          "u128",
+          "i128",
+          "usize",
+          "isize",
+          "u8",
+          "u16",
+          "u32"
+        ]
+      },
+      {
+        "path": "impls::tuples::_::<impl Immutable for (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P)>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u8",
+          "u16",
+          "u32",
+          "u64",
+          "i8",
+          "i16",
+          "i32",
+          "i64",
+          "u128",
+          "i128",
+          "usize",
+          "isize",
+          "u8",
+          "u16",
+          "u32",
+          "u64"
+        ]
+      },
+      {
+        "path": "impls::tuples::_::<impl Immutable for (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q)>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u8",
+          "u16",
+          "u32",
+          "u64",
+          "i8",
+          "i16",
+          "i32",
+          "i64",
+          "u128",
+          "i128",
+          "usize",
+          "isize",
+          "u8",
+          "u16",
+          "u32",
+          "u64",
+          "i8"
+        ]
+      },
+      {
+        "path": "impls::tuples::_::<impl Immutable for (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R)>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u8",
+          "u16",
+          "u32",
+          "u64",
+          "i8",
+          "i16",
+          "i32",
+          "i64",
+          "u128",
+          "i128",
+          "usize",
+          "isize",
+          "u8",
+          "u16",
+          "u32",
+          "u64",
+          "i8",
+          "i16"
+        ]
+      },
+      {
+        "path": "impls::tuples::_::<impl Immutable for (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S)>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u8",
+          "u16",
+          "u32",
+          "u64",
+          "i8",
+          "i16",
+          "i32",
+          "i64",
+          "u128",
+          "i128",
+          "usize",
+          "isize",
+          "u8",
+          "u16",
+          "u32",
+          "u64",
+          "i8",
+          "i16",
+          "i32"
+        ]
+      },
+      {
+        "path": "impls::tuples::_::<impl Immutable for (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T)>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u8",
+          "u16",
+          "u32",
+          "u64",
+          "i8",
+          "i16",
+          "i32",
+          "i64",
+          "u128",
+          "i128",
+          "usize",
+          "isize",
+          "u8",
+          "u16",
+          "u32",
+          "u64",
+          "i8",
+          "i16",
+          "i32",
+          "i64"
+        ]
+      },
+      {
+        "path": "impls::tuples::_::<impl Immutable for (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U)>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u8",
+          "u16",
+          "u32",
+          "u64",
+          "i8",
+          "i16",
+          "i32",
+          "i64",
+          "u128",
+          "i128",
+          "usize",
+          "isize",
+          "u8",
+          "u16",
+          "u32",
+          "u64",
+          "i8",
+          "i16",
+          "i32",
+          "i64",
+          "u128"
+        ]
+      },
+      {
+        "path": "impls::tuples::_::<impl Immutable for (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V)>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u8",
+          "u16",
+          "u32",
+          "u64",
+          "i8",
+          "i16",
+          "i32",
+          "i64",
+          "u128",
+          "i128",
+          "usize",
+          "isize",
+          "u8",
+          "u16",
+          "u32",
+          "u64",
+          "i8",
+          "i16",
+          "i32",
+          "i64",
+          "u128",
+          "i128"
+        ]
+      },
+      {
+        "path": "impls::tuples::_::<impl Immutable for (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W)>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u8",
+          "u16",
+          "u32",
+          "u64",
+          "i8",
+          "i16",
+          "i32",
+          "i64",
+          "u128",
+          "i128",
+          "usize",
+          "isize",
+          "u8",
+          "u16",
+          "u32",
+          "u64",
+          "i8",
+          "i16",
+          "i32",
+          "i64",
+          "u128",
+          "i128",
+          "usize"
+        ]
+      },
+      {
+        "path": "impls::tuples::_::<impl Immutable for (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X)>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u8",
+          "u16",
+          "u32",
+          "u64",
+          "i8",
+          "i16",
+          "i32",
+          "i64",
+          "u128",
+          "i128",
+          "usize",
+          "isize",
+          "u8",
+          "u16",
+          "u32",
+          "u64",
+          "i8",
+          "i16",
+          "i32",
+          "i64",
+          "u128",
+          "i128",
+          "usize",
+          "isize"
+        ]
+      },
+      {
+        "path": "impls::tuples::_::<impl Immutable for (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y)>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u8",
+          "u16",
+          "u32",
+          "u64",
+          "i8",
+          "i16",
+          "i32",
+          "i64",
+          "u128",
+          "i128",
+          "usize",
+          "isize",
+          "u8",
+          "u16",
+          "u32",
+          "u64",
+          "i8",
+          "i16",
+          "i32",
+          "i64",
+          "u128",
+          "i128",
+          "usize",
+          "isize",
+          "u8"
+        ]
+      },
+      {
+        "path": "impls::tuples::_::<impl Immutable for (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z)>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u8",
+          "u16",
+          "u32",
+          "u64",
+          "i8",
+          "i16",
+          "i32",
+          "i64",
+          "u128",
+          "i128",
+          "usize",
+          "isize",
+          "u8",
+          "u16",
+          "u32",
+          "u64",
+          "i8",
+          "i16",
+          "i32",
+          "i64",
+          "u128",
+          "i128",
+          "usize",
+          "isize",
+          "u8",
+          "u16"
+        ]
+      },
+      {
+        "path": "impls::tuples::_::<impl TryFromBytes for (A, B, C)>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u8",
+          "u16",
+          "u32"
+        ]
+      },
+      {
+        "path": "impls::tuples::_::<impl TryFromBytes for (A, B, C, D)>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u8",
+          "u16",
+          "u32",
+          "u64"
+        ]
+      },
+      {
+        "path": "impls::tuples::_::<impl TryFromBytes for (A, B, C, D, E)>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u8",
+          "u16",
+          "u32",
+          "u64",
+          "i8"
+        ]
+      },
+      {
+        "path": "impls::tuples::_::<impl TryFromBytes for (A, B, C, D, E, F)>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u8",
+          "u16",
+          "u32",
+          "u64",
+          "i8",
+          "i16"
+        ]
+      },
+      {
+        "path": "impls::tuples::_::<impl TryFromBytes for (A, B, C, D, E, F, G)>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u8",
+          "u16",
+          "u32",
+          "u64",
+          "i8",
+          "i16",
+          "i32"
+        ]
+      },
+      {
+        "path": "impls::tuples::_::<impl TryFromBytes for (A, B, C, D, E, F, G, H)>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u8",
+          "u16",
+          "u32",
+          "u64",
+          "i8",
+          "i16",
+          "i32",
+          "i64"
+        ]
+      },
+      {
+        "path": "impls::tuples::_::<impl TryFromBytes for (A, B, C, D, E, F, G, H, I)>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u8",
+          "u16",
+          "u32",
+          "u64",
+          "i8",
+          "i16",
+          "i32",
+          "i64",
+          "u128"
+        ]
+      },
+      {
+        "path": "impls::tuples::_::<impl TryFromBytes for (A, B, C, D, E, F, G, H, I, J)>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u8",
+          "u16",
+          "u32",
+          "u64",
+          "i8",
+          "i16",
+          "i32",
+          "i64",
+          "u128",
+          "i128"
+        ]
+      },
+      {
+        "path": "impls::tuples::_::<impl TryFromBytes for (A, B, C, D, E, F, G, H, I, J, K)>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u8",
+          "u16",
+          "u32",
+          "u64",
+          "i8",
+          "i16",
+          "i32",
+          "i64",
+          "u128",
+          "i128",
+          "usize"
+        ]
+      },
+      {
+        "path": "impls::tuples::_::<impl TryFromBytes for (A, B, C, D, E, F, G, H, I, J, K, L)>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u8",
+          "u16",
+          "u32",
+          "u64",
+          "i8",
+          "i16",
+          "i32",
+          "i64",
+          "u128",
+          "i128",
+          "usize",
+          "isize"
+        ]
+      },
+      {
+        "path": "impls::tuples::_::<impl TryFromBytes for (A, B, C, D, E, F, G, H, I, J, K, L, M)>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u8",
+          "u16",
+          "u32",
+          "u64",
+          "i8",
+          "i16",
+          "i32",
+          "i64",
+          "u128",
+          "i128",
+          "usize",
+          "isize",
+          "u8"
+        ]
+      },
+      {
+        "path": "impls::tuples::_::<impl TryFromBytes for (A, B, C, D, E, F, G, H, I, J, K, L, M, N)>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u8",
+          "u16",
+          "u32",
+          "u64",
+          "i8",
+          "i16",
+          "i32",
+          "i64",
+          "u128",
+          "i128",
+          "usize",
+          "isize",
+          "u8",
+          "u16"
+        ]
+      },
+      {
+        "path": "impls::tuples::_::<impl TryFromBytes for (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O)>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u8",
+          "u16",
+          "u32",
+          "u64",
+          "i8",
+          "i16",
+          "i32",
+          "i64",
+          "u128",
+          "i128",
+          "usize",
+          "isize",
+          "u8",
+          "u16",
+          "u32"
+        ]
+      },
+      {
+        "path": "impls::tuples::_::<impl TryFromBytes for (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P)>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u8",
+          "u16",
+          "u32",
+          "u64",
+          "i8",
+          "i16",
+          "i32",
+          "i64",
+          "u128",
+          "i128",
+          "usize",
+          "isize",
+          "u8",
+          "u16",
+          "u32",
+          "u64"
+        ]
+      },
+      {
+        "path": "impls::tuples::_::<impl TryFromBytes for (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q)>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u8",
+          "u16",
+          "u32",
+          "u64",
+          "i8",
+          "i16",
+          "i32",
+          "i64",
+          "u128",
+          "i128",
+          "usize",
+          "isize",
+          "u8",
+          "u16",
+          "u32",
+          "u64",
+          "i8"
+        ]
+      },
+      {
+        "path": "impls::tuples::_::<impl TryFromBytes for (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R)>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u8",
+          "u16",
+          "u32",
+          "u64",
+          "i8",
+          "i16",
+          "i32",
+          "i64",
+          "u128",
+          "i128",
+          "usize",
+          "isize",
+          "u8",
+          "u16",
+          "u32",
+          "u64",
+          "i8",
+          "i16"
+        ]
+      },
+      {
+        "path": "impls::tuples::_::<impl TryFromBytes for (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S)>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u8",
+          "u16",
+          "u32",
+          "u64",
+          "i8",
+          "i16",
+          "i32",
+          "i64",
+          "u128",
+          "i128",
+          "usize",
+          "isize",
+          "u8",
+          "u16",
+          "u32",
+          "u64",
+          "i8",
+          "i16",
+          "i32"
+        ]
+      },
+      {
+        "path": "impls::tuples::_::<impl TryFromBytes for (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T)>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u8",
+          "u16",
+          "u32",
+          "u64",
+          "i8",
+          "i16",
+          "i32",
+          "i64",
+          "u128",
+          "i128",
+          "usize",
+          "isize",
+          "u8",
+          "u16",
+          "u32",
+          "u64",
+          "i8",
+          "i16",
+          "i32",
+          "i64"
+        ]
+      },
+      {
+        "path": "impls::tuples::_::<impl TryFromBytes for (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U)>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u8",
+          "u16",
+          "u32",
+          "u64",
+          "i8",
+          "i16",
+          "i32",
+          "i64",
+          "u128",
+          "i128",
+          "usize",
+          "isize",
+          "u8",
+          "u16",
+          "u32",
+          "u64",
+          "i8",
+          "i16",
+          "i32",
+          "i64",
+          "u128"
+        ]
+      },
+      {
+        "path": "impls::tuples::_::<impl TryFromBytes for (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V)>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u8",
+          "u16",
+          "u32",
+          "u64",
+          "i8",
+          "i16",
+          "i32",
+          "i64",
+          "u128",
+          "i128",
+          "usize",
+          "isize",
+          "u8",
+          "u16",
+          "u32",
+          "u64",
+          "i8",
+          "i16",
+          "i32",
+          "i64",
+          "u128",
+          "i128"
+        ]
+      },
+      {
+        "path": "impls::tuples::_::<impl TryFromBytes for (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W)>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u8",
+          "u16",
+          "u32",
+          "u64",
+          "i8",
+          "i16",
+          "i32",
+          "i64",
+          "u128",
+          "i128",
+          "usize",
+          "isize",
+          "u8",
+          "u16",
+          "u32",
+          "u64",
+          "i8",
+          "i16",
+          "i32",
+          "i64",
+          "u128",
+          "i128",
+          "usize"
+        ]
+      },
+      {
+        "path": "impls::tuples::_::<impl TryFromBytes for (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X)>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u8",
+          "u16",
+          "u32",
+          "u64",
+          "i8",
+          "i16",
+          "i32",
+          "i64",
+          "u128",
+          "i128",
+          "usize",
+          "isize",
+          "u8",
+          "u16",
+          "u32",
+          "u64",
+          "i8",
+          "i16",
+          "i32",
+          "i64",
+          "u128",
+          "i128",
+          "usize",
+          "isize"
+        ]
+      },
+      {
+        "path": "impls::tuples::_::<impl TryFromBytes for (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y)>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u8",
+          "u16",
+          "u32",
+          "u64",
+          "i8",
+          "i16",
+          "i32",
+          "i64",
+          "u128",
+          "i128",
+          "usize",
+          "isize",
+          "u8",
+          "u16",
+          "u32",
+          "u64",
+          "i8",
+          "i16",
+          "i32",
+          "i64",
+          "u128",
+          "i128",
+          "usize",
+          "isize",
+          "u8"
+        ]
+      },
+      {
+        "path": "impls::tuples::_::<impl TryFromBytes for (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z)>::only_derive_is_allowed_to_implement_this_trait",
+        "args": [
+          "u8",
+          "u16",
+          "u32",
+          "u64",
+          "i8",
+          "i16",
+          "i32",
+          "i64",
+          "u128",
+          "i128",
+          "usize",
+          "isize",
+          "u8",
+          "u16",
+          "u32",
+          "u64",
+          "i8",
+          "i16",
+          "i32",
+          "i64",
+          "u128",
+          "i128",
+          "usize",
+          "isize",
+          "u8",
+          "u16"
+        ]
+      },
+      {
+        "path": "maximum_trailing_slice_len",
+        "args": [
+          "[((), u8)]"
+        ]
+      },
+      {
+        "path": "maximum_trailing_slice_len",
+        "args": [
+          "[(u16, u8)]"
+        ]
+      },
+      {
+        "path": "maximum_trailing_slice_len",
+        "args": [
+          "[(u32, u8, u16)]"
+        ]
+      },
+      {
+        "path": "maximum_trailing_slice_len",
+        "args": [
+          "[(u64, u8)]"
+        ]
+      },
+      {
+        "path": "maximum_trailing_slice_len",
+        "args": [
+          "[(u8, u16, u32)]"
+        ]
+      },
+      {
+        "path": "maximum_trailing_slice_len",
+        "args": [
+          "[(u8, u32)]"
+        ]
+      },
+      {
+        "path": "maximum_trailing_slice_len",
+        "args": [
+          "[(u8, u8, u8)]"
+        ]
+      },
+      {
+        "path": "maximum_trailing_slice_len",
+        "args": [
+          "[(u8,)]"
+        ]
+      },
+      {
+        "path": "maximum_trailing_slice_len",
+        "args": [
+          "[[u16; 3]]"
+        ]
+      },
+      {
+        "path": "maximum_trailing_slice_len",
+        "args": [
+          "[bool]"
+        ]
+      },
+      {
+        "path": "maximum_trailing_slice_len",
+        "args": [
+          "[char]"
+        ]
+      },
+      {
+        "path": "maximum_trailing_slice_len",
+        "args": [
+          "[i128]"
+        ]
+      }
+    ]
+  },
+  "proof": {
+    "source_root": ".",
+    "specification": "Spec.specs",
+    "theorem": "Proof.verify",
+    "sources": [
+      {
+        "module": "Spec",
+        "path": "Spec.lean",
+        "role": "specification"
+      },
+      {
+        "module": "Proof",
+        "path": "Proof.lean",
+        "role": "proof"
+      }
+    ]
+  }
+}
