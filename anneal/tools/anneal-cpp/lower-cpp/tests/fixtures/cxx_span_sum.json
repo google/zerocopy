@@ -1,0 +1,1060 @@
+{
+  "functions": [
+    {
+      "abi_witness": {
+        "cc": "c",
+        "param_passing": [
+          {
+            "kind": "direct_ptr"
+          },
+          {
+            "bits": 64,
+            "kind": "direct_int"
+          }
+        ],
+        "return_passing": {
+          "bits": 8,
+          "kind": "direct_int"
+        }
+      },
+      "body_stmt": {
+        "kind": "compound",
+        "stmts": [
+          {
+            "dtor_symbol": null,
+            "init": {
+              "args": [
+                {
+                  "cast_kind": "lvalue_to_rvalue",
+                  "cast_syntax": "implicit",
+                  "is_implicit": true,
+                  "kind": "cast",
+                  "sub": {
+                    "is_param": true,
+                    "is_ref_binding": false,
+                    "kind": "var_ref",
+                    "param_idx": 0,
+                    "ty": {
+                      "is_const": true,
+                      "is_restrict": false,
+                      "kind": "ptr",
+                      "may_alias": false,
+                      "pointee": {
+                        "bits": 8,
+                        "is_char_like": true,
+                        "kind": "int",
+                        "signed": false
+                      }
+                    },
+                    "value_category": "lvalue",
+                    "var_id": 0
+                  },
+                  "ty": {
+                    "is_const": true,
+                    "is_restrict": false,
+                    "kind": "ptr",
+                    "may_alias": false,
+                    "pointee": {
+                      "bits": 8,
+                      "is_char_like": true,
+                      "kind": "int",
+                      "signed": false
+                    }
+                  },
+                  "value_category": "prvalue"
+                },
+                {
+                  "cast_kind": "lvalue_to_rvalue",
+                  "cast_syntax": "implicit",
+                  "is_implicit": true,
+                  "kind": "cast",
+                  "sub": {
+                    "is_param": true,
+                    "is_ref_binding": false,
+                    "kind": "var_ref",
+                    "param_idx": 1,
+                    "ty": {
+                      "bits": 64,
+                      "is_char_like": false,
+                      "kind": "int",
+                      "signed": false
+                    },
+                    "value_category": "lvalue",
+                    "var_id": 1
+                  },
+                  "ty": {
+                    "bits": 64,
+                    "is_char_like": false,
+                    "kind": "int",
+                    "signed": false
+                  },
+                  "value_category": "prvalue"
+                }
+              ],
+              "construction_kind": "complete",
+              "ctor_symbol": "_ZN4SpanIKhEC1EPS0_m",
+              "is_array_construct": false,
+              "is_copy_or_move": false,
+              "is_default": false,
+              "is_elidable": false,
+              "is_trivial": false,
+              "kind": "construct",
+              "param_is_ref": [
+                false,
+                false
+              ],
+              "record_id": "struct.Span<const unsigned char>",
+              "ty": {
+                "id": "struct.Span<const unsigned char>",
+                "kind": "record"
+              },
+              "value_category": "prvalue",
+              "zero_init": false
+            },
+            "is_nrvo": false,
+            "is_ref": false,
+            "kind": "decl_stmt",
+            "name": "s",
+            "ty": {
+              "id": "struct.Span<const unsigned char>",
+              "kind": "record"
+            },
+            "var_id": 2
+          },
+          {
+            "dtor_symbol": null,
+            "init": {
+              "cast_kind": "integral_cast",
+              "cast_syntax": "implicit",
+              "is_implicit": true,
+              "kind": "cast",
+              "sub": {
+                "bits": 32,
+                "kind": "int_lit",
+                "signed": true,
+                "ty": {
+                  "bits": 32,
+                  "is_char_like": false,
+                  "kind": "int",
+                  "signed": true
+                },
+                "value_category": "prvalue",
+                "value_str": "0"
+              },
+              "ty": {
+                "bits": 8,
+                "is_char_like": true,
+                "kind": "int",
+                "signed": false
+              },
+              "value_category": "prvalue"
+            },
+            "is_nrvo": false,
+            "is_ref": false,
+            "kind": "decl_stmt",
+            "name": "acc",
+            "ty": {
+              "bits": 8,
+              "is_char_like": true,
+              "kind": "int",
+              "signed": false
+            },
+            "var_id": 3
+          },
+          {
+            "body": {
+              "expr": {
+                "kind": "binary_op",
+                "lhs": {
+                  "is_param": false,
+                  "is_ref_binding": false,
+                  "kind": "var_ref",
+                  "param_idx": null,
+                  "ty": {
+                    "bits": 8,
+                    "is_char_like": true,
+                    "kind": "int",
+                    "signed": false
+                  },
+                  "value_category": "lvalue",
+                  "var_id": 3
+                },
+                "op": "assign",
+                "rhs": {
+                  "cast_kind": "integral_cast",
+                  "cast_syntax": "implicit",
+                  "is_implicit": true,
+                  "kind": "cast",
+                  "sub": {
+                    "kind": "binary_op",
+                    "lhs": {
+                      "cast_kind": "integral_cast",
+                      "cast_syntax": "implicit",
+                      "is_implicit": true,
+                      "kind": "cast",
+                      "sub": {
+                        "cast_kind": "lvalue_to_rvalue",
+                        "cast_syntax": "implicit",
+                        "is_implicit": true,
+                        "kind": "cast",
+                        "sub": {
+                          "is_param": false,
+                          "is_ref_binding": false,
+                          "kind": "var_ref",
+                          "param_idx": null,
+                          "ty": {
+                            "bits": 8,
+                            "is_char_like": true,
+                            "kind": "int",
+                            "signed": false
+                          },
+                          "value_category": "lvalue",
+                          "var_id": 3
+                        },
+                        "ty": {
+                          "bits": 8,
+                          "is_char_like": true,
+                          "kind": "int",
+                          "signed": false
+                        },
+                        "value_category": "prvalue"
+                      },
+                      "ty": {
+                        "bits": 32,
+                        "is_char_like": false,
+                        "kind": "int",
+                        "signed": true
+                      },
+                      "value_category": "prvalue"
+                    },
+                    "op": "add",
+                    "rhs": {
+                      "cast_kind": "integral_cast",
+                      "cast_syntax": "implicit",
+                      "is_implicit": true,
+                      "kind": "cast",
+                      "sub": {
+                        "cast_kind": "lvalue_to_rvalue",
+                        "cast_syntax": "implicit",
+                        "is_implicit": true,
+                        "kind": "cast",
+                        "sub": {
+                          "args": [
+                            {
+                              "cast_kind": "lvalue_to_rvalue",
+                              "cast_syntax": "implicit",
+                              "is_implicit": true,
+                              "kind": "cast",
+                              "sub": {
+                                "is_param": false,
+                                "is_ref_binding": false,
+                                "kind": "var_ref",
+                                "param_idx": null,
+                                "ty": {
+                                  "bits": 64,
+                                  "is_char_like": false,
+                                  "kind": "int",
+                                  "signed": false
+                                },
+                                "value_category": "lvalue",
+                                "var_id": 4
+                              },
+                              "ty": {
+                                "bits": 64,
+                                "is_char_like": false,
+                                "kind": "int",
+                                "signed": false
+                              },
+                              "value_category": "prvalue"
+                            }
+                          ],
+                          "callee_symbol": "_ZNK4SpanIKhEixEm",
+                          "implicit_object": {
+                            "cast_kind": "noop",
+                            "cast_syntax": "implicit",
+                            "is_implicit": true,
+                            "kind": "cast",
+                            "sub": {
+                              "is_param": false,
+                              "is_ref_binding": false,
+                              "kind": "var_ref",
+                              "param_idx": null,
+                              "ty": {
+                                "id": "struct.Span<const unsigned char>",
+                                "kind": "record"
+                              },
+                              "value_category": "lvalue",
+                              "var_id": 2
+                            },
+                            "ty": {
+                              "id": "struct.Span<const unsigned char>",
+                              "kind": "record"
+                            },
+                            "value_category": "lvalue"
+                          },
+                          "implicit_object_is_ptr": false,
+                          "is_indirect": false,
+                          "is_virtual": false,
+                          "kind": "call",
+                          "param_is_ref": [
+                            false
+                          ],
+                          "returns_ref": true,
+                          "ty": {
+                            "bits": 8,
+                            "is_char_like": true,
+                            "kind": "int",
+                            "signed": false
+                          },
+                          "value_category": "lvalue"
+                        },
+                        "ty": {
+                          "bits": 8,
+                          "is_char_like": true,
+                          "kind": "int",
+                          "signed": false
+                        },
+                        "value_category": "prvalue"
+                      },
+                      "ty": {
+                        "bits": 32,
+                        "is_char_like": false,
+                        "kind": "int",
+                        "signed": true
+                      },
+                      "value_category": "prvalue"
+                    },
+                    "ty": {
+                      "bits": 32,
+                      "is_char_like": false,
+                      "kind": "int",
+                      "signed": true
+                    },
+                    "value_category": "prvalue"
+                  },
+                  "ty": {
+                    "bits": 8,
+                    "is_char_like": true,
+                    "kind": "int",
+                    "signed": false
+                  },
+                  "value_category": "prvalue"
+                },
+                "ty": {
+                  "bits": 8,
+                  "is_char_like": true,
+                  "kind": "int",
+                  "signed": false
+                },
+                "value_category": "lvalue"
+              },
+              "kind": "expr_stmt"
+            },
+            "cond": {
+              "kind": "binary_op",
+              "lhs": {
+                "cast_kind": "lvalue_to_rvalue",
+                "cast_syntax": "implicit",
+                "is_implicit": true,
+                "kind": "cast",
+                "sub": {
+                  "is_param": false,
+                  "is_ref_binding": false,
+                  "kind": "var_ref",
+                  "param_idx": null,
+                  "ty": {
+                    "bits": 64,
+                    "is_char_like": false,
+                    "kind": "int",
+                    "signed": false
+                  },
+                  "value_category": "lvalue",
+                  "var_id": 4
+                },
+                "ty": {
+                  "bits": 64,
+                  "is_char_like": false,
+                  "kind": "int",
+                  "signed": false
+                },
+                "value_category": "prvalue"
+              },
+              "op": "lt",
+              "rhs": {
+                "args": [],
+                "callee_symbol": "_ZNK4SpanIKhE4sizeEv",
+                "implicit_object": {
+                  "cast_kind": "noop",
+                  "cast_syntax": "implicit",
+                  "is_implicit": true,
+                  "kind": "cast",
+                  "sub": {
+                    "is_param": false,
+                    "is_ref_binding": false,
+                    "kind": "var_ref",
+                    "param_idx": null,
+                    "ty": {
+                      "id": "struct.Span<const unsigned char>",
+                      "kind": "record"
+                    },
+                    "value_category": "lvalue",
+                    "var_id": 2
+                  },
+                  "ty": {
+                    "id": "struct.Span<const unsigned char>",
+                    "kind": "record"
+                  },
+                  "value_category": "lvalue"
+                },
+                "implicit_object_is_ptr": false,
+                "is_indirect": false,
+                "is_virtual": false,
+                "kind": "call",
+                "param_is_ref": [],
+                "returns_ref": false,
+                "ty": {
+                  "bits": 64,
+                  "is_char_like": false,
+                  "kind": "int",
+                  "signed": false
+                },
+                "value_category": "prvalue"
+              },
+              "ty": {
+                "kind": "bool"
+              },
+              "value_category": "prvalue"
+            },
+            "inc": {
+              "kind": "unary_op",
+              "op": "pre_inc",
+              "sub": {
+                "is_param": false,
+                "is_ref_binding": false,
+                "kind": "var_ref",
+                "param_idx": null,
+                "ty": {
+                  "bits": 64,
+                  "is_char_like": false,
+                  "kind": "int",
+                  "signed": false
+                },
+                "value_category": "lvalue",
+                "var_id": 4
+              },
+              "ty": {
+                "bits": 64,
+                "is_char_like": false,
+                "kind": "int",
+                "signed": false
+              },
+              "value_category": "lvalue"
+            },
+            "init": {
+              "dtor_symbol": null,
+              "init": {
+                "cast_kind": "integral_cast",
+                "cast_syntax": "implicit",
+                "is_implicit": true,
+                "kind": "cast",
+                "sub": {
+                  "bits": 32,
+                  "kind": "int_lit",
+                  "signed": true,
+                  "ty": {
+                    "bits": 32,
+                    "is_char_like": false,
+                    "kind": "int",
+                    "signed": true
+                  },
+                  "value_category": "prvalue",
+                  "value_str": "0"
+                },
+                "ty": {
+                  "bits": 64,
+                  "is_char_like": false,
+                  "kind": "int",
+                  "signed": false
+                },
+                "value_category": "prvalue"
+              },
+              "is_nrvo": false,
+              "is_ref": false,
+              "kind": "decl_stmt",
+              "name": "i",
+              "ty": {
+                "bits": 64,
+                "is_char_like": false,
+                "kind": "int",
+                "signed": false
+              },
+              "var_id": 4
+            },
+            "kind": "for"
+          },
+          {
+            "expr": {
+              "cast_kind": "lvalue_to_rvalue",
+              "cast_syntax": "implicit",
+              "is_implicit": true,
+              "kind": "cast",
+              "sub": {
+                "is_param": false,
+                "is_ref_binding": false,
+                "kind": "var_ref",
+                "param_idx": null,
+                "ty": {
+                  "bits": 8,
+                  "is_char_like": true,
+                  "kind": "int",
+                  "signed": false
+                },
+                "value_category": "lvalue",
+                "var_id": 3
+              },
+              "ty": {
+                "bits": 8,
+                "is_char_like": true,
+                "kind": "int",
+                "signed": false
+              },
+              "value_category": "prvalue"
+            },
+            "kind": "return"
+          }
+        ]
+      },
+      "is_const_method": false,
+      "is_definition": true,
+      "is_extern_c": false,
+      "is_static_method": false,
+      "is_trivial": false,
+      "is_variadic": false,
+      "is_virtual": false,
+      "method_kind": "free",
+      "params": [
+        {
+          "dtor_symbol": null,
+          "name": "p",
+          "ty": {
+            "is_const": true,
+            "is_restrict": false,
+            "kind": "ptr",
+            "may_alias": false,
+            "pointee": {
+              "bits": 8,
+              "is_char_like": true,
+              "kind": "int",
+              "signed": false
+            }
+          }
+        },
+        {
+          "dtor_symbol": null,
+          "name": "n",
+          "ty": {
+            "bits": 64,
+            "is_char_like": false,
+            "kind": "int",
+            "signed": false
+          }
+        }
+      ],
+      "qualified_name": "span_sum",
+      "return_ty": {
+        "bits": 8,
+        "is_char_like": true,
+        "kind": "int",
+        "signed": false
+      },
+      "symbol": "_Z8span_sumPKhm",
+      "template_args": null,
+      "this_record_id": null,
+      "unmangled_name": "span_sum"
+    },
+    {
+      "abi_witness": {
+        "cc": "c",
+        "param_passing": [
+          {
+            "kind": "direct_ptr"
+          },
+          {
+            "kind": "direct_ptr"
+          },
+          {
+            "bits": 64,
+            "kind": "direct_int"
+          }
+        ],
+        "return_passing": {
+          "kind": "ignore"
+        }
+      },
+      "body_stmt": {
+        "kind": "compound",
+        "stmts": []
+      },
+      "ctor_inits": [
+        {
+          "field_idx": 0,
+          "init": {
+            "cast_kind": "lvalue_to_rvalue",
+            "cast_syntax": "implicit",
+            "is_implicit": true,
+            "kind": "cast",
+            "sub": {
+              "is_param": true,
+              "is_ref_binding": false,
+              "kind": "var_ref",
+              "param_idx": 1,
+              "ty": {
+                "is_const": true,
+                "is_restrict": false,
+                "kind": "ptr",
+                "may_alias": false,
+                "pointee": {
+                  "bits": 8,
+                  "is_char_like": true,
+                  "kind": "int",
+                  "signed": false
+                }
+              },
+              "value_category": "lvalue",
+              "var_id": 1
+            },
+            "ty": {
+              "is_const": true,
+              "is_restrict": false,
+              "kind": "ptr",
+              "may_alias": false,
+              "pointee": {
+                "bits": 8,
+                "is_char_like": true,
+                "kind": "int",
+                "signed": false
+              }
+            },
+            "value_category": "prvalue"
+          },
+          "kind": "field",
+          "record_id": "struct.Span<const unsigned char>"
+        },
+        {
+          "field_idx": 1,
+          "init": {
+            "cast_kind": "lvalue_to_rvalue",
+            "cast_syntax": "implicit",
+            "is_implicit": true,
+            "kind": "cast",
+            "sub": {
+              "is_param": true,
+              "is_ref_binding": false,
+              "kind": "var_ref",
+              "param_idx": 2,
+              "ty": {
+                "bits": 64,
+                "is_char_like": false,
+                "kind": "int",
+                "signed": false
+              },
+              "value_category": "lvalue",
+              "var_id": 2
+            },
+            "ty": {
+              "bits": 64,
+              "is_char_like": false,
+              "kind": "int",
+              "signed": false
+            },
+            "value_category": "prvalue"
+          },
+          "kind": "field",
+          "record_id": "struct.Span<const unsigned char>"
+        }
+      ],
+      "is_const_method": false,
+      "is_definition": true,
+      "is_extern_c": false,
+      "is_static_method": false,
+      "is_trivial": false,
+      "is_variadic": false,
+      "is_virtual": false,
+      "method_kind": "ctor",
+      "params": [
+        {
+          "is_this": true,
+          "name": "this",
+          "ty": {
+            "is_const": false,
+            "is_restrict": false,
+            "kind": "ptr",
+            "may_alias": false,
+            "pointee": {
+              "id": "struct.Span<const unsigned char>",
+              "kind": "record"
+            }
+          }
+        },
+        {
+          "dtor_symbol": null,
+          "name": "p",
+          "ty": {
+            "is_const": true,
+            "is_restrict": false,
+            "kind": "ptr",
+            "may_alias": false,
+            "pointee": {
+              "bits": 8,
+              "is_char_like": true,
+              "kind": "int",
+              "signed": false
+            }
+          }
+        },
+        {
+          "dtor_symbol": null,
+          "name": "n",
+          "ty": {
+            "bits": 64,
+            "is_char_like": false,
+            "kind": "int",
+            "signed": false
+          }
+        }
+      ],
+      "qualified_name": "Span<const unsigned char>::Span",
+      "return_ty": {
+        "kind": "void"
+      },
+      "symbol": "_ZN4SpanIKhEC1EPS0_m",
+      "template_args": null,
+      "this_record_id": "struct.Span<const unsigned char>",
+      "unmangled_name": "Span"
+    },
+    {
+      "abi_witness": {
+        "cc": "c",
+        "param_passing": [
+          {
+            "kind": "direct_ptr"
+          }
+        ],
+        "return_passing": {
+          "bits": 64,
+          "kind": "direct_int"
+        }
+      },
+      "body_stmt": {
+        "kind": "compound",
+        "stmts": [
+          {
+            "expr": {
+              "cast_kind": "lvalue_to_rvalue",
+              "cast_syntax": "implicit",
+              "is_implicit": true,
+              "kind": "cast",
+              "sub": {
+                "base": {
+                  "is_implicit": true,
+                  "kind": "cxx_this",
+                  "ty": {
+                    "is_const": true,
+                    "is_restrict": false,
+                    "kind": "ptr",
+                    "may_alias": false,
+                    "pointee": {
+                      "id": "struct.Span<const unsigned char>",
+                      "kind": "record"
+                    }
+                  },
+                  "value_category": "prvalue"
+                },
+                "field_idx": 1,
+                "field_name": "len_",
+                "is_arrow": true,
+                "kind": "member",
+                "record_id": "struct.Span<const unsigned char>",
+                "ty": {
+                  "bits": 64,
+                  "is_char_like": false,
+                  "kind": "int",
+                  "signed": false
+                },
+                "value_category": "lvalue"
+              },
+              "ty": {
+                "bits": 64,
+                "is_char_like": false,
+                "kind": "int",
+                "signed": false
+              },
+              "value_category": "prvalue"
+            },
+            "kind": "return"
+          }
+        ]
+      },
+      "is_const_method": true,
+      "is_definition": true,
+      "is_extern_c": false,
+      "is_static_method": false,
+      "is_trivial": false,
+      "is_variadic": false,
+      "is_virtual": false,
+      "method_kind": "method",
+      "params": [
+        {
+          "is_this": true,
+          "name": "this",
+          "ty": {
+            "is_const": true,
+            "is_restrict": false,
+            "kind": "ptr",
+            "may_alias": false,
+            "pointee": {
+              "id": "struct.Span<const unsigned char>",
+              "kind": "record"
+            }
+          }
+        }
+      ],
+      "qualified_name": "Span<const unsigned char>::size",
+      "return_ty": {
+        "bits": 64,
+        "is_char_like": false,
+        "kind": "int",
+        "signed": false
+      },
+      "symbol": "_ZNK4SpanIKhE4sizeEv",
+      "template_args": null,
+      "this_record_id": "struct.Span<const unsigned char>",
+      "unmangled_name": "size"
+    },
+    {
+      "abi_witness": {
+        "cc": "c",
+        "param_passing": [
+          {
+            "kind": "direct_ptr"
+          },
+          {
+            "bits": 64,
+            "kind": "direct_int"
+          }
+        ],
+        "return_passing": {
+          "kind": "direct_ptr"
+        }
+      },
+      "body_stmt": {
+        "kind": "compound",
+        "stmts": [
+          {
+            "expr": {
+              "base": {
+                "cast_kind": "lvalue_to_rvalue",
+                "cast_syntax": "implicit",
+                "is_implicit": true,
+                "kind": "cast",
+                "sub": {
+                  "base": {
+                    "is_implicit": true,
+                    "kind": "cxx_this",
+                    "ty": {
+                      "is_const": true,
+                      "is_restrict": false,
+                      "kind": "ptr",
+                      "may_alias": false,
+                      "pointee": {
+                        "id": "struct.Span<const unsigned char>",
+                        "kind": "record"
+                      }
+                    },
+                    "value_category": "prvalue"
+                  },
+                  "field_idx": 0,
+                  "field_name": "ptr_",
+                  "is_arrow": true,
+                  "kind": "member",
+                  "record_id": "struct.Span<const unsigned char>",
+                  "ty": {
+                    "is_const": true,
+                    "is_restrict": false,
+                    "kind": "ptr",
+                    "may_alias": false,
+                    "pointee": {
+                      "bits": 8,
+                      "is_char_like": true,
+                      "kind": "int",
+                      "signed": false
+                    }
+                  },
+                  "value_category": "lvalue"
+                },
+                "ty": {
+                  "is_const": true,
+                  "is_restrict": false,
+                  "kind": "ptr",
+                  "may_alias": false,
+                  "pointee": {
+                    "bits": 8,
+                    "is_char_like": true,
+                    "kind": "int",
+                    "signed": false
+                  }
+                },
+                "value_category": "prvalue"
+              },
+              "idx": {
+                "cast_kind": "lvalue_to_rvalue",
+                "cast_syntax": "implicit",
+                "is_implicit": true,
+                "kind": "cast",
+                "sub": {
+                  "is_param": true,
+                  "is_ref_binding": false,
+                  "kind": "var_ref",
+                  "param_idx": 1,
+                  "ty": {
+                    "bits": 64,
+                    "is_char_like": false,
+                    "kind": "int",
+                    "signed": false
+                  },
+                  "value_category": "lvalue",
+                  "var_id": 1
+                },
+                "ty": {
+                  "bits": 64,
+                  "is_char_like": false,
+                  "kind": "int",
+                  "signed": false
+                },
+                "value_category": "prvalue"
+              },
+              "kind": "array_subscript",
+              "ty": {
+                "bits": 8,
+                "is_char_like": true,
+                "kind": "int",
+                "signed": false
+              },
+              "value_category": "lvalue"
+            },
+            "kind": "return"
+          }
+        ]
+      },
+      "is_const_method": true,
+      "is_definition": true,
+      "is_extern_c": false,
+      "is_static_method": false,
+      "is_trivial": false,
+      "is_variadic": false,
+      "is_virtual": false,
+      "method_kind": "method",
+      "params": [
+        {
+          "is_this": true,
+          "name": "this",
+          "ty": {
+            "is_const": true,
+            "is_restrict": false,
+            "kind": "ptr",
+            "may_alias": false,
+            "pointee": {
+              "id": "struct.Span<const unsigned char>",
+              "kind": "record"
+            }
+          }
+        },
+        {
+          "dtor_symbol": null,
+          "name": "i",
+          "ty": {
+            "bits": 64,
+            "is_char_like": false,
+            "kind": "int",
+            "signed": false
+          }
+        }
+      ],
+      "qualified_name": "Span<const unsigned char>::operator[]",
+      "return_ty": {
+        "is_const": true,
+        "is_rvalue": false,
+        "kind": "ref",
+        "may_alias": false,
+        "pointee": {
+          "bits": 8,
+          "is_char_like": true,
+          "kind": "int",
+          "signed": false
+        }
+      },
+      "symbol": "_ZNK4SpanIKhEixEm",
+      "template_args": null,
+      "this_record_id": "struct.Span<const unsigned char>",
+      "unmangled_name": "operator[]"
+    }
+  ],
+  "lang_policy": {
+    "char_is_signed": true,
+    "exceptions_enabled": false,
+    "fast_math": false,
+    "is_cplusplus": true,
+    "lang_standard": "c++20",
+    "pointer_width_bits": 64,
+    "signed_overflow": "iso_ub",
+    "strict_aliasing": true
+  },
+  "records": [
+    {
+      "align_bytes": 8,
+      "bases": [],
+      "dtor_symbol": null,
+      "fields": [
+        {
+          "bit_width": null,
+          "name": "ptr_",
+          "offset_bits": 0,
+          "ty": {
+            "is_const": true,
+            "is_restrict": false,
+            "kind": "ptr",
+            "may_alias": false,
+            "pointee": {
+              "bits": 8,
+              "is_char_like": true,
+              "kind": "int",
+              "signed": false
+            }
+          }
+        },
+        {
+          "bit_width": null,
+          "name": "len_",
+          "offset_bits": 64,
+          "ty": {
+            "bits": 64,
+            "is_char_like": false,
+            "kind": "int",
+            "signed": false
+          }
+        }
+      ],
+      "has_non_trivial_dtor": false,
+      "id": "struct.Span<const unsigned char>",
+      "is_cxx_record": true,
+      "is_polymorphic": false,
+      "is_trivially_copyable": true,
+      "is_union": false,
+      "name": "Span",
+      "size_bytes": 16
+    }
+  ],
+  "schema_version": 1,
+  "target_triple": "x86_64-unknown-linux-gnu",
+  "tu_main_file": "cxx_span.cc"
+}

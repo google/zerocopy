@@ -68,6 +68,7 @@ class CargoHomeGuardTests(unittest.TestCase):
             if "/cargo-home" in path.read_text(encoding="utf-8")
         ]
         self.assertIn(SCRIPTS / "run_exocrate_test.sh", scripts)
+        self.assertIn(SCRIPTS / "run_anneal_cpp_check.sh", scripts)
         self.assertIn(SCRIPTS / "run_anneal_mir_eval_check.sh", scripts)
         self.assertIn(SCRIPTS / "run_anneal_scaffold_check.sh", scripts)
         self.assertIn(SCRIPTS / "run_anneal_spec_check.sh", scripts)

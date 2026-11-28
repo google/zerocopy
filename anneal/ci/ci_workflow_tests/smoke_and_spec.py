@@ -211,6 +211,42 @@ class SmokeAndSpecCases:
         ):
             self.assertIn(needle, script)
 
+    def test_tools_anneal_cpp_check_is_scoped_and_offline(self):
+        checks = {c["id"]: c for c in self.checks_cfg["checks"]}
+        check = checks["tools-anneal-cpp"]
+        self.assertEqual(
+            check["command"], ["./ci/scripts/run_anneal_cpp_check.sh"]
+        )
+        self.assertEqual(check["caches"], ["anneal-cpp-cargo-v1"])
+        self.assertEqual(
+            self.checks_cfg["caches"]["anneal-cpp-cargo-v1"]["cargo_locked"],
+            {"workspace": "anneal/tools/anneal-cpp/Cargo.toml"},
+        )
+        self.assertIn(
+            {
+                "kind": "cargo_workspace",
+                "manifest_path": "anneal/tools/anneal-cpp/Cargo.toml",
+            },
+            check["inputs"],
+        )
+        globs = [
+            glob for entry in check["inputs"] for glob in entry.get("include", [])
+        ]
+        self.assertIn("anneal/tools/anneal-cpp/lower-cpp/tests/**", globs)
+        ci_test_globs = [
+            glob
+            for entry in checks["anneal-ci-tests"]["inputs"]
+            for glob in entry.get("include", [])
+        ]
+        self.assertIn("ci/scripts/run_anneal_cpp_check.sh", ci_test_globs)
+        script = (REPO_ROOT / "ci/scripts/run_anneal_cpp_check.sh").read_text()
+        self.assertIn("export CARGO_NET_OFFLINE=true", script)
+        for needle in (
+            "clippy --locked --offline --workspace --all-targets",
+            "test --locked --offline --workspace",
+        ):
+            self.assertIn(needle, script)
+
     def test_tools_anneal_spec_freshness_skips_spec_sources_units(self):
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)

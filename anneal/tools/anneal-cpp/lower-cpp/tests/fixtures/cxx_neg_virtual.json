@@ -1,0 +1,189 @@
+{
+  "functions": [
+    {
+      "abi_witness": {
+        "cc": "c",
+        "param_passing": [
+          {
+            "kind": "direct_ptr"
+          }
+        ],
+        "return_passing": {
+          "bits": 32,
+          "kind": "direct_int"
+        }
+      },
+      "body_stmt": {
+        "kind": "compound",
+        "stmts": [
+          {
+            "expr": {
+              "args": [],
+              "callee_symbol": "_ZNK1B1fEv",
+              "implicit_object": {
+                "is_param": true,
+                "is_ref_binding": true,
+                "kind": "var_ref",
+                "param_idx": 0,
+                "ty": {
+                  "id": "struct.B",
+                  "kind": "record"
+                },
+                "value_category": "lvalue",
+                "var_id": 0
+              },
+              "implicit_object_is_ptr": false,
+              "is_indirect": false,
+              "is_virtual": true,
+              "kind": "call",
+              "param_is_ref": [],
+              "returns_ref": false,
+              "ty": {
+                "bits": 32,
+                "is_char_like": false,
+                "kind": "int",
+                "signed": true
+              },
+              "value_category": "prvalue"
+            },
+            "kind": "return"
+          }
+        ]
+      },
+      "is_const_method": false,
+      "is_definition": true,
+      "is_extern_c": false,
+      "is_static_method": false,
+      "is_trivial": false,
+      "is_variadic": false,
+      "is_virtual": false,
+      "method_kind": "free",
+      "params": [
+        {
+          "dtor_symbol": null,
+          "name": "b",
+          "ty": {
+            "is_const": true,
+            "is_rvalue": false,
+            "kind": "ref",
+            "may_alias": false,
+            "pointee": {
+              "id": "struct.B",
+              "kind": "record"
+            }
+          }
+        }
+      ],
+      "qualified_name": "call_virtual",
+      "return_ty": {
+        "bits": 32,
+        "is_char_like": false,
+        "kind": "int",
+        "signed": true
+      },
+      "symbol": "_Z12call_virtualRK1B",
+      "template_args": null,
+      "this_record_id": null,
+      "unmangled_name": "call_virtual"
+    },
+    {
+      "abi_witness": {
+        "cc": "c",
+        "param_passing": [
+          {
+            "kind": "direct_ptr"
+          }
+        ],
+        "return_passing": {
+          "bits": 32,
+          "kind": "direct_int"
+        }
+      },
+      "body_stmt": {
+        "kind": "compound",
+        "stmts": [
+          {
+            "expr": {
+              "bits": 32,
+              "kind": "int_lit",
+              "signed": true,
+              "ty": {
+                "bits": 32,
+                "is_char_like": false,
+                "kind": "int",
+                "signed": true
+              },
+              "value_category": "prvalue",
+              "value_str": "1"
+            },
+            "kind": "return"
+          }
+        ]
+      },
+      "is_const_method": true,
+      "is_definition": true,
+      "is_extern_c": false,
+      "is_static_method": false,
+      "is_trivial": false,
+      "is_variadic": false,
+      "is_virtual": true,
+      "method_kind": "method",
+      "params": [
+        {
+          "is_this": true,
+          "name": "this",
+          "ty": {
+            "is_const": true,
+            "is_restrict": false,
+            "kind": "ptr",
+            "may_alias": false,
+            "pointee": {
+              "id": "struct.B",
+              "kind": "record"
+            }
+          }
+        }
+      ],
+      "qualified_name": "B::f",
+      "return_ty": {
+        "bits": 32,
+        "is_char_like": false,
+        "kind": "int",
+        "signed": true
+      },
+      "symbol": "_ZNK1B1fEv",
+      "template_args": null,
+      "this_record_id": "struct.B",
+      "unmangled_name": "f"
+    }
+  ],
+  "lang_policy": {
+    "char_is_signed": true,
+    "exceptions_enabled": false,
+    "fast_math": false,
+    "is_cplusplus": true,
+    "lang_standard": "c++20",
+    "pointer_width_bits": 64,
+    "signed_overflow": "iso_ub",
+    "strict_aliasing": true
+  },
+  "records": [
+    {
+      "align_bytes": 8,
+      "bases": [],
+      "dtor_symbol": null,
+      "fields": [],
+      "has_non_trivial_dtor": false,
+      "id": "struct.B",
+      "is_cxx_record": true,
+      "is_polymorphic": true,
+      "is_trivially_copyable": false,
+      "is_union": false,
+      "name": "B",
+      "size_bytes": 8
+    }
+  ],
+  "schema_version": 1,
+  "target_triple": "x86_64-unknown-linux-gnu",
+  "tu_main_file": "cxx_neg_virtual.cc"
+}

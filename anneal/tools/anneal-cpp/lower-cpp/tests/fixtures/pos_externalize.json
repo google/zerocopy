@@ -1,0 +1,254 @@
+{
+  "functions": [
+    {
+      "abi_witness": {
+        "cc": "c",
+        "param_passing": [
+          {
+            "bits": 32,
+            "kind": "direct_int"
+          }
+        ],
+        "return_passing": {
+          "bits": 32,
+          "kind": "direct_int"
+        }
+      },
+      "body_stmt": {
+        "kind": "compound",
+        "stmts": [
+          {
+            "expr": {
+              "kind": "binary_op",
+              "lhs": {
+                "args": [
+                  {
+                    "args": [],
+                    "callee_symbol": "get_ctx",
+                    "is_indirect": false,
+                    "kind": "call",
+                    "ty": {
+                      "is_const": false,
+                      "is_restrict": false,
+                      "kind": "ptr",
+                      "may_alias": false,
+                      "pointee": {
+                        "id": "struct.ctx",
+                        "kind": "record"
+                      }
+                    },
+                    "value_category": "prvalue"
+                  },
+                  {
+                    "cast_kind": "lvalue_to_rvalue",
+                    "is_implicit": true,
+                    "kind": "cast",
+                    "sub": {
+                      "is_param": true,
+                      "kind": "var_ref",
+                      "param_idx": 0,
+                      "ty": {
+                        "bits": 32,
+                        "is_char_like": false,
+                        "kind": "int",
+                        "signed": true
+                      },
+                      "value_category": "lvalue",
+                      "var_id": 0
+                    },
+                    "ty": {
+                      "bits": 32,
+                      "is_char_like": false,
+                      "kind": "int",
+                      "signed": true
+                    },
+                    "value_category": "prvalue"
+                  }
+                ],
+                "callee_symbol": "use_ctx",
+                "is_indirect": false,
+                "kind": "call",
+                "ty": {
+                  "bits": 32,
+                  "is_char_like": false,
+                  "kind": "int",
+                  "signed": true
+                },
+                "value_category": "prvalue"
+              },
+              "op": "eq",
+              "rhs": {
+                "bits": 32,
+                "kind": "int_lit",
+                "signed": true,
+                "ty": {
+                  "bits": 32,
+                  "is_char_like": false,
+                  "kind": "int",
+                  "signed": true
+                },
+                "value_category": "prvalue",
+                "value_str": "0"
+              },
+              "ty": {
+                "bits": 32,
+                "is_char_like": false,
+                "kind": "int",
+                "signed": true
+              },
+              "value_category": "prvalue"
+            },
+            "kind": "return"
+          }
+        ]
+      },
+      "is_definition": true,
+      "is_extern_c": true,
+      "is_variadic": false,
+      "params": [
+        {
+          "name": "v",
+          "ty": {
+            "bits": 32,
+            "is_char_like": false,
+            "kind": "int",
+            "signed": true
+          }
+        }
+      ],
+      "return_ty": {
+        "bits": 32,
+        "is_char_like": false,
+        "kind": "int",
+        "signed": true
+      },
+      "symbol": "pos_externalize",
+      "unmangled_name": "pos_externalize"
+    },
+    {
+      "abi_witness": {
+        "cc": "c",
+        "param_passing": [
+          {
+            "kind": "direct_ptr"
+          },
+          {
+            "bits": 32,
+            "kind": "direct_int"
+          }
+        ],
+        "return_passing": {
+          "bits": 32,
+          "kind": "direct_int"
+        }
+      },
+      "body_stmt": null,
+      "is_definition": false,
+      "is_extern_c": true,
+      "is_variadic": false,
+      "params": [
+        {
+          "name": "c",
+          "ty": {
+            "is_const": false,
+            "is_restrict": false,
+            "kind": "ptr",
+            "may_alias": false,
+            "pointee": {
+              "id": "struct.ctx",
+              "kind": "record"
+            }
+          }
+        },
+        {
+          "name": "v",
+          "ty": {
+            "bits": 32,
+            "is_char_like": false,
+            "kind": "int",
+            "signed": true
+          }
+        }
+      ],
+      "return_ty": {
+        "bits": 32,
+        "is_char_like": false,
+        "kind": "int",
+        "signed": true
+      },
+      "symbol": "use_ctx",
+      "unmangled_name": "use_ctx"
+    },
+    {
+      "abi_witness": {
+        "cc": "c",
+        "param_passing": [],
+        "return_passing": {
+          "kind": "direct_ptr"
+        }
+      },
+      "body_stmt": null,
+      "is_definition": false,
+      "is_extern_c": true,
+      "is_externalized": true,
+      "is_variadic": false,
+      "params": [],
+      "return_ty": {
+        "is_const": false,
+        "is_restrict": false,
+        "kind": "ptr",
+        "may_alias": false,
+        "pointee": {
+          "id": "struct.ctx",
+          "kind": "record"
+        }
+      },
+      "symbol": "get_ctx",
+      "unmangled_name": "get_ctx"
+    }
+  ],
+  "lang_policy": {
+    "char_is_signed": true,
+    "exceptions_enabled": false,
+    "fast_math": false,
+    "is_cplusplus": false,
+    "lang_standard": "c11",
+    "pointer_width_bits": 64,
+    "signed_overflow": "iso_ub",
+    "strict_aliasing": true
+  },
+  "records": [
+    {
+      "align_bytes": 8,
+      "fields": [
+        {
+          "bit_width": null,
+          "name": "log",
+          "offset_bits": 0,
+          "ty": {
+            "desc": "int (*)(const char *, ...)",
+            "kind": "unsupported"
+          }
+        },
+        {
+          "bit_width": null,
+          "name": "level",
+          "offset_bits": 64,
+          "ty": {
+            "bits": 32,
+            "is_char_like": false,
+            "kind": "int",
+            "signed": true
+          }
+        }
+      ],
+      "id": "struct.ctx",
+      "is_union": false,
+      "name": "ctx",
+      "size_bytes": 16
+    }
+  ],
+  "schema_version": 1,
+  "target_triple": "x86_64-unknown-linux-gnu",
+  "tu_main_file": "pos_externalize.c"
+}

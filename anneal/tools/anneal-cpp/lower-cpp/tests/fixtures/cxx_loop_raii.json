@@ -1,0 +1,657 @@
+{
+  "functions": [
+    {
+      "abi_witness": {
+        "cc": "c",
+        "param_passing": [
+          {
+            "bits": 32,
+            "kind": "direct_int"
+          },
+          {
+            "kind": "direct_ptr"
+          }
+        ],
+        "return_passing": {
+          "bits": 32,
+          "kind": "direct_int"
+        }
+      },
+      "body_stmt": {
+        "kind": "compound",
+        "stmts": [
+          {
+            "body": {
+              "kind": "compound",
+              "stmts": [
+                {
+                  "dtor_symbol": "_ZN6Guard2D1Ev",
+                  "init": {
+                    "inits": [
+                      {
+                        "cast_kind": "lvalue_to_rvalue",
+                        "cast_syntax": "implicit",
+                        "is_implicit": true,
+                        "kind": "cast",
+                        "sub": {
+                          "is_param": true,
+                          "is_ref_binding": false,
+                          "kind": "var_ref",
+                          "param_idx": 1,
+                          "ty": {
+                            "is_const": false,
+                            "is_restrict": false,
+                            "kind": "ptr",
+                            "may_alias": false,
+                            "pointee": {
+                              "bits": 32,
+                              "is_char_like": false,
+                              "kind": "int",
+                              "signed": true
+                            }
+                          },
+                          "value_category": "lvalue",
+                          "var_id": 1
+                        },
+                        "ty": {
+                          "is_const": false,
+                          "is_restrict": false,
+                          "kind": "ptr",
+                          "may_alias": false,
+                          "pointee": {
+                            "bits": 32,
+                            "is_char_like": false,
+                            "kind": "int",
+                            "signed": true
+                          }
+                        },
+                        "value_category": "prvalue"
+                      }
+                    ],
+                    "kind": "init_list",
+                    "ty": {
+                      "id": "struct.Guard2",
+                      "kind": "record"
+                    },
+                    "value_category": "prvalue"
+                  },
+                  "is_nrvo": false,
+                  "is_ref": false,
+                  "kind": "decl_stmt",
+                  "name": "g",
+                  "ty": {
+                    "id": "struct.Guard2",
+                    "kind": "record"
+                  },
+                  "var_id": 3
+                },
+                {
+                  "cond": {
+                    "kind": "binary_op",
+                    "lhs": {
+                      "cast_kind": "lvalue_to_rvalue",
+                      "cast_syntax": "implicit",
+                      "is_implicit": true,
+                      "kind": "cast",
+                      "sub": {
+                        "is_param": false,
+                        "is_ref_binding": false,
+                        "kind": "var_ref",
+                        "param_idx": null,
+                        "ty": {
+                          "bits": 32,
+                          "is_char_like": false,
+                          "kind": "int",
+                          "signed": true
+                        },
+                        "value_category": "lvalue",
+                        "var_id": 2
+                      },
+                      "ty": {
+                        "bits": 32,
+                        "is_char_like": false,
+                        "kind": "int",
+                        "signed": true
+                      },
+                      "value_category": "prvalue"
+                    },
+                    "op": "eq",
+                    "rhs": {
+                      "bits": 32,
+                      "kind": "int_lit",
+                      "signed": true,
+                      "ty": {
+                        "bits": 32,
+                        "is_char_like": false,
+                        "kind": "int",
+                        "signed": true
+                      },
+                      "value_category": "prvalue",
+                      "value_str": "3"
+                    },
+                    "ty": {
+                      "kind": "bool"
+                    },
+                    "value_category": "prvalue"
+                  },
+                  "kind": "if",
+                  "then_branch": {
+                    "kind": "break"
+                  }
+                }
+              ]
+            },
+            "cond": {
+              "kind": "binary_op",
+              "lhs": {
+                "cast_kind": "lvalue_to_rvalue",
+                "cast_syntax": "implicit",
+                "is_implicit": true,
+                "kind": "cast",
+                "sub": {
+                  "is_param": false,
+                  "is_ref_binding": false,
+                  "kind": "var_ref",
+                  "param_idx": null,
+                  "ty": {
+                    "bits": 32,
+                    "is_char_like": false,
+                    "kind": "int",
+                    "signed": true
+                  },
+                  "value_category": "lvalue",
+                  "var_id": 2
+                },
+                "ty": {
+                  "bits": 32,
+                  "is_char_like": false,
+                  "kind": "int",
+                  "signed": true
+                },
+                "value_category": "prvalue"
+              },
+              "op": "lt",
+              "rhs": {
+                "cast_kind": "lvalue_to_rvalue",
+                "cast_syntax": "implicit",
+                "is_implicit": true,
+                "kind": "cast",
+                "sub": {
+                  "is_param": true,
+                  "is_ref_binding": false,
+                  "kind": "var_ref",
+                  "param_idx": 0,
+                  "ty": {
+                    "bits": 32,
+                    "is_char_like": false,
+                    "kind": "int",
+                    "signed": true
+                  },
+                  "value_category": "lvalue",
+                  "var_id": 0
+                },
+                "ty": {
+                  "bits": 32,
+                  "is_char_like": false,
+                  "kind": "int",
+                  "signed": true
+                },
+                "value_category": "prvalue"
+              },
+              "ty": {
+                "kind": "bool"
+              },
+              "value_category": "prvalue"
+            },
+            "inc": {
+              "kind": "unary_op",
+              "op": "pre_inc",
+              "sub": {
+                "is_param": false,
+                "is_ref_binding": false,
+                "kind": "var_ref",
+                "param_idx": null,
+                "ty": {
+                  "bits": 32,
+                  "is_char_like": false,
+                  "kind": "int",
+                  "signed": true
+                },
+                "value_category": "lvalue",
+                "var_id": 2
+              },
+              "ty": {
+                "bits": 32,
+                "is_char_like": false,
+                "kind": "int",
+                "signed": true
+              },
+              "value_category": "lvalue"
+            },
+            "init": {
+              "dtor_symbol": null,
+              "init": {
+                "bits": 32,
+                "kind": "int_lit",
+                "signed": true,
+                "ty": {
+                  "bits": 32,
+                  "is_char_like": false,
+                  "kind": "int",
+                  "signed": true
+                },
+                "value_category": "prvalue",
+                "value_str": "0"
+              },
+              "is_nrvo": false,
+              "is_ref": false,
+              "kind": "decl_stmt",
+              "name": "i",
+              "ty": {
+                "bits": 32,
+                "is_char_like": false,
+                "kind": "int",
+                "signed": true
+              },
+              "var_id": 2
+            },
+            "kind": "for"
+          },
+          {
+            "expr": {
+              "cast_kind": "lvalue_to_rvalue",
+              "cast_syntax": "implicit",
+              "is_implicit": true,
+              "kind": "cast",
+              "sub": {
+                "kind": "unary_op",
+                "op": "deref",
+                "sub": {
+                  "cast_kind": "lvalue_to_rvalue",
+                  "cast_syntax": "implicit",
+                  "is_implicit": true,
+                  "kind": "cast",
+                  "sub": {
+                    "is_param": true,
+                    "is_ref_binding": false,
+                    "kind": "var_ref",
+                    "param_idx": 1,
+                    "ty": {
+                      "is_const": false,
+                      "is_restrict": false,
+                      "kind": "ptr",
+                      "may_alias": false,
+                      "pointee": {
+                        "bits": 32,
+                        "is_char_like": false,
+                        "kind": "int",
+                        "signed": true
+                      }
+                    },
+                    "value_category": "lvalue",
+                    "var_id": 1
+                  },
+                  "ty": {
+                    "is_const": false,
+                    "is_restrict": false,
+                    "kind": "ptr",
+                    "may_alias": false,
+                    "pointee": {
+                      "bits": 32,
+                      "is_char_like": false,
+                      "kind": "int",
+                      "signed": true
+                    }
+                  },
+                  "value_category": "prvalue"
+                },
+                "ty": {
+                  "bits": 32,
+                  "is_char_like": false,
+                  "kind": "int",
+                  "signed": true
+                },
+                "value_category": "lvalue"
+              },
+              "ty": {
+                "bits": 32,
+                "is_char_like": false,
+                "kind": "int",
+                "signed": true
+              },
+              "value_category": "prvalue"
+            },
+            "kind": "return"
+          }
+        ]
+      },
+      "is_const_method": false,
+      "is_definition": true,
+      "is_extern_c": false,
+      "is_static_method": false,
+      "is_trivial": false,
+      "is_variadic": false,
+      "is_virtual": false,
+      "method_kind": "free",
+      "params": [
+        {
+          "dtor_symbol": null,
+          "name": "n",
+          "ty": {
+            "bits": 32,
+            "is_char_like": false,
+            "kind": "int",
+            "signed": true
+          }
+        },
+        {
+          "dtor_symbol": null,
+          "name": "c",
+          "ty": {
+            "is_const": false,
+            "is_restrict": false,
+            "kind": "ptr",
+            "may_alias": false,
+            "pointee": {
+              "bits": 32,
+              "is_char_like": false,
+              "kind": "int",
+              "signed": true
+            }
+          }
+        }
+      ],
+      "qualified_name": "loop_raii",
+      "return_ty": {
+        "bits": 32,
+        "is_char_like": false,
+        "kind": "int",
+        "signed": true
+      },
+      "symbol": "_Z9loop_raiiiPi",
+      "template_args": null,
+      "this_record_id": null,
+      "unmangled_name": "loop_raii"
+    },
+    {
+      "abi_witness": {
+        "cc": "c",
+        "param_passing": [
+          {
+            "kind": "direct_ptr"
+          }
+        ],
+        "return_passing": {
+          "kind": "ignore"
+        }
+      },
+      "base_dtors": [],
+      "body_stmt": {
+        "kind": "compound",
+        "stmts": [
+          {
+            "expr": {
+              "kind": "binary_op",
+              "lhs": {
+                "kind": "unary_op",
+                "op": "deref",
+                "sub": {
+                  "cast_kind": "lvalue_to_rvalue",
+                  "cast_syntax": "implicit",
+                  "is_implicit": true,
+                  "kind": "cast",
+                  "sub": {
+                    "base": {
+                      "is_implicit": true,
+                      "kind": "cxx_this",
+                      "ty": {
+                        "is_const": false,
+                        "is_restrict": false,
+                        "kind": "ptr",
+                        "may_alias": false,
+                        "pointee": {
+                          "id": "struct.Guard2",
+                          "kind": "record"
+                        }
+                      },
+                      "value_category": "prvalue"
+                    },
+                    "field_idx": 0,
+                    "field_name": "c",
+                    "is_arrow": true,
+                    "kind": "member",
+                    "record_id": "struct.Guard2",
+                    "ty": {
+                      "is_const": false,
+                      "is_restrict": false,
+                      "kind": "ptr",
+                      "may_alias": false,
+                      "pointee": {
+                        "bits": 32,
+                        "is_char_like": false,
+                        "kind": "int",
+                        "signed": true
+                      }
+                    },
+                    "value_category": "lvalue"
+                  },
+                  "ty": {
+                    "is_const": false,
+                    "is_restrict": false,
+                    "kind": "ptr",
+                    "may_alias": false,
+                    "pointee": {
+                      "bits": 32,
+                      "is_char_like": false,
+                      "kind": "int",
+                      "signed": true
+                    }
+                  },
+                  "value_category": "prvalue"
+                },
+                "ty": {
+                  "bits": 32,
+                  "is_char_like": false,
+                  "kind": "int",
+                  "signed": true
+                },
+                "value_category": "lvalue"
+              },
+              "op": "assign",
+              "rhs": {
+                "kind": "binary_op",
+                "lhs": {
+                  "cast_kind": "lvalue_to_rvalue",
+                  "cast_syntax": "implicit",
+                  "is_implicit": true,
+                  "kind": "cast",
+                  "sub": {
+                    "kind": "unary_op",
+                    "op": "deref",
+                    "sub": {
+                      "cast_kind": "lvalue_to_rvalue",
+                      "cast_syntax": "implicit",
+                      "is_implicit": true,
+                      "kind": "cast",
+                      "sub": {
+                        "base": {
+                          "is_implicit": true,
+                          "kind": "cxx_this",
+                          "ty": {
+                            "is_const": false,
+                            "is_restrict": false,
+                            "kind": "ptr",
+                            "may_alias": false,
+                            "pointee": {
+                              "id": "struct.Guard2",
+                              "kind": "record"
+                            }
+                          },
+                          "value_category": "prvalue"
+                        },
+                        "field_idx": 0,
+                        "field_name": "c",
+                        "is_arrow": true,
+                        "kind": "member",
+                        "record_id": "struct.Guard2",
+                        "ty": {
+                          "is_const": false,
+                          "is_restrict": false,
+                          "kind": "ptr",
+                          "may_alias": false,
+                          "pointee": {
+                            "bits": 32,
+                            "is_char_like": false,
+                            "kind": "int",
+                            "signed": true
+                          }
+                        },
+                        "value_category": "lvalue"
+                      },
+                      "ty": {
+                        "is_const": false,
+                        "is_restrict": false,
+                        "kind": "ptr",
+                        "may_alias": false,
+                        "pointee": {
+                          "bits": 32,
+                          "is_char_like": false,
+                          "kind": "int",
+                          "signed": true
+                        }
+                      },
+                      "value_category": "prvalue"
+                    },
+                    "ty": {
+                      "bits": 32,
+                      "is_char_like": false,
+                      "kind": "int",
+                      "signed": true
+                    },
+                    "value_category": "lvalue"
+                  },
+                  "ty": {
+                    "bits": 32,
+                    "is_char_like": false,
+                    "kind": "int",
+                    "signed": true
+                  },
+                  "value_category": "prvalue"
+                },
+                "op": "add",
+                "rhs": {
+                  "bits": 32,
+                  "kind": "int_lit",
+                  "signed": true,
+                  "ty": {
+                    "bits": 32,
+                    "is_char_like": false,
+                    "kind": "int",
+                    "signed": true
+                  },
+                  "value_category": "prvalue",
+                  "value_str": "1"
+                },
+                "ty": {
+                  "bits": 32,
+                  "is_char_like": false,
+                  "kind": "int",
+                  "signed": true
+                },
+                "value_category": "prvalue"
+              },
+              "ty": {
+                "bits": 32,
+                "is_char_like": false,
+                "kind": "int",
+                "signed": true
+              },
+              "value_category": "lvalue"
+            },
+            "kind": "expr_stmt"
+          }
+        ]
+      },
+      "is_const_method": false,
+      "is_definition": true,
+      "is_extern_c": false,
+      "is_static_method": false,
+      "is_trivial": false,
+      "is_variadic": false,
+      "is_virtual": false,
+      "member_dtors": [],
+      "method_kind": "dtor",
+      "params": [
+        {
+          "is_this": true,
+          "name": "this",
+          "ty": {
+            "is_const": false,
+            "is_restrict": false,
+            "kind": "ptr",
+            "may_alias": false,
+            "pointee": {
+              "id": "struct.Guard2",
+              "kind": "record"
+            }
+          }
+        }
+      ],
+      "qualified_name": "Guard2::~Guard2",
+      "return_ty": {
+        "kind": "void"
+      },
+      "symbol": "_ZN6Guard2D1Ev",
+      "template_args": null,
+      "this_record_id": "struct.Guard2",
+      "unmangled_name": "~Guard2"
+    }
+  ],
+  "lang_policy": {
+    "char_is_signed": true,
+    "exceptions_enabled": false,
+    "fast_math": false,
+    "is_cplusplus": true,
+    "lang_standard": "c++20",
+    "pointer_width_bits": 64,
+    "signed_overflow": "iso_ub",
+    "strict_aliasing": true
+  },
+  "records": [
+    {
+      "align_bytes": 8,
+      "bases": [],
+      "dtor_symbol": "_ZN6Guard2D1Ev",
+      "fields": [
+        {
+          "bit_width": null,
+          "name": "c",
+          "offset_bits": 0,
+          "ty": {
+            "is_const": false,
+            "is_restrict": false,
+            "kind": "ptr",
+            "may_alias": false,
+            "pointee": {
+              "bits": 32,
+              "is_char_like": false,
+              "kind": "int",
+              "signed": true
+            }
+          }
+        }
+      ],
+      "has_non_trivial_dtor": true,
+      "id": "struct.Guard2",
+      "is_cxx_record": true,
+      "is_polymorphic": false,
+      "is_trivially_copyable": false,
+      "is_union": false,
+      "name": "Guard2",
+      "size_bytes": 8
+    }
+  ],
+  "schema_version": 1,
+  "target_triple": "x86_64-unknown-linux-gnu",
+  "tu_main_file": "cxx_loop_raii.cc"
+}
