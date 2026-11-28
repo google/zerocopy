@@ -83,10 +83,9 @@ than line-coverage targets.
 
 - **No Ad-Hoc Line-Coverage Padding Before Monolith & Corpus Scaffolding:**
   Writing bespoke per-file unit/integration patches to inflate line coverage
-  while remaining monolithic test files (`typed_capture.rs`, `cli.rs`,
-  `itree_differential.rs`) and Wave-3 declarative corpora are still
-  converging is prohibited; targeted line- and branch-coverage expansion
-  is deferred to Wave 4.
+  while the remaining monolithic test files (tracked in `#4203`) and Wave-3
+  declarative corpora are still converging is prohibited; targeted line- and
+  branch-coverage expansion is deferred to Wave 4.
 - **No Test-Only Specification Languages:** The test suite tests Anneal's real
   specification and request surfaces; it does not grow or maintain an
   independent Rust doc-comment specification compiler outside `trusted/`.
@@ -116,7 +115,7 @@ anneal/
 ├── .config/
 │   └── nextest.toml                   # Process-per-test profiles, slow-timeouts, heavy-lean slots
 ├── ci/
-│   ├── check_guard_mutation.py        # Lean TCB + auditor single-guard mutation runner (224 guards)
+│   ├── check_guard_mutation.py        # Lean TCB + auditor single-guard mutation runner
 │   ├── check_minirust_pin.py          # MiniRust pin, Lean hygiene & SpecAnchor CI check (+ manual --check-axioms)
 │   ├── perf_tracking.py               # Telemetry collector, validator, & Tier A/B regression gate
 │   ├── perf_budgets.json              # Tier A time, RSS, 3-part .olean*, binary, & unit budgets
@@ -125,71 +124,43 @@ anneal/
 ├── trusted/                           # Zone::Trusted ( rank = 0 ) — Human-Audited TCB
 │   ├── root-manifest.sha256           # Pins Cargo.toml, Cargo.lock, flake.nix, flake.lock
 │   ├── audit/                         # package = "anneal-audit"
-│   │   ├── Cargo.toml
 │   │   ├── TrustedBoundary.lean       # Offline Pass-1/Pass-2 audit & v4.34.1 fallback
 │   │   ├── SpecPreflight.lean         # Target (#4109): runtime preflight + module index (v4.35.0+)
-│   │   ├── library-lock.json
-│   │   └── src/{lib,main,cli,cargo_boundary,miri_pin,repo_audit}.rs
+│   │   └── library-lock.json
 │   ├── cargo-anneal/                  # package = "cargo-anneal" (published CLI/lib)
 │   │   ├── Cargo.toml                 # Zero tests/ exclusion list; zero wait-timeout dev-dep
 │   │   ├── build.rs                   # Generates $OUT_DIR/{bundled_resources.rs,bundled_theory.json}
-│   │   ├── assets/scalar/             # Runtime assets for `cargo-anneal skill --example` (97L)
-│   │   ├── skills/cargo-anneal/
-│   │   └── src/{lib,main,bundle,cli,diagnostics,init,olean_cache,sandbox,setup,stage,target,theory_bundle,toolchain,trusted_bundle,verify}.rs
-│   │       # (target #4016 adds ndjson_comparator.rs)
+│   │   ├── assets/scalar/             # Runtime assets for `cargo-anneal skill --example`
+│   │   └── skills/cargo-anneal/
 │   ├── rustc-capture/                 # package = "anneal-rustc-capture" (#![feature(rustc_private)])
-│   │   ├── Cargo.toml
-│   │   └── src/{lib,main,capture,driver,extract,identity,ir,lean,mono,publication}.rs
-│   ├── lean/                              # Trusted.lean + Trusted/ MIR AST, model, & semantics (19 files)
-│   └── correspondence/                    # Trusted/Correspondence* Pass-2 simulation adapter (7 files)
+│   ├── lean/                              # Trusted.lean + Trusted/ MIR AST, model, & semantics
+│   └── correspondence/                    # Trusted/Correspondence* Pass-2 simulation adapter
 ├── theory/                            # Pass-1 untrusted proof libraries (Anneal.*, bundle-manifest.json)
 ├── correspondence/                    # Pass-2 untrusted simulation proofs (MirCorrespondence.*, MiniRust.*)
 └── tests/                             # Zone::Tests ( rank = 1 ) — Fenced Non-TCB Verification Suites
     ├── testkit/                       # package = "anneal-testkit" (publish = false, lib-only)
-    │   ├── Cargo.toml
-    │   └── src/{lib,toolchain,workspace,process,store_sim,corpora,assertions,digest,case_runner,audit_fixture,mir_wp_fixture}.rs
     ├── audit/                         # package = "anneal-audit-tests" (publish = false)
-    │   ├── Cargo.toml
-    │   ├── src/bin/anneal-audit-test-bin.rs
-    │   └── tests/{boundary_audit.rs, boundary_audit/, target_audit.rs, target_audit/, cli_environment.rs, common/, fixtures/}
-    │       # (`boundary_audit/` and `target_audit/` hold the domain submodules of
-    │       #  the `boundary_audit` and `target_audit` targets)
     ├── cargo-anneal/                  # package = "cargo-anneal-tests" (publish = false)
-    │   ├── Cargo.toml                 # Mirrors `setup = ["cargo-anneal/setup", "dep:exocrate"]`
-    │   ├── src/bin/cargo-anneal-test-bin.rs
-    │   └── tests/
-    │       ├── cli/{artifacts_and_overwrite,capture_request_binding,cargo_shortcut,help_and_bundled_resources,init_and_receipt_output,policy_taint_and_unstable_features,receipt_out,rustc_mode_and_env,setup_and_tool_discovery,sharding_and_limits}.rs
-    │       ├── sandbox_escape/{live_lean,prefix_and_seccomp}.rs
-    │       ├── suite/{main,anti_vacuity_and_e2e,capture_and_cargo_isolation,corpora_runner,helpers,host_and_stage_security,receipt_and_bindings,split_store_bwrap}.rs
-    │       └── {cli.rs, harness.rs, installed_smoke.rs, profile_v2_e2e.rs, sandbox_escape.rs, support_paths.rs, support_regressions.rs, support_signals.rs, fixtures/}
+    │   └── Cargo.toml                 # Mirrors `setup = ["cargo-anneal/setup", "dep:exocrate"]`
     ├── itree_diff/                    # package = "anneal-itree-diff" (publish = false)
-    │   ├── Cargo.toml
-    │   ├── src/{lib,trace_observer,outcome,spec,rustc_runner,miri_runner,lean_trace_runner,mir_eval_adapter,corpus,fuzzer,shrink}.rs
-    │   ├── src/corpus/{builders,sources}.rs
-    │   ├── src/outcome/{authority_and_ub,classify}.rs
-    │   ├── src/bin/itree_diff.rs
-    │   └── tests/itree_differential.rs
     ├── rustc-capture/                 # package = "anneal-rustc-capture-tests" (publish = false)
-    │   ├── Cargo.toml
-    │   ├── src/bin/anneal-rustc-capture-test-bin.rs
-    │   └── tests/
-    │       ├── pass_order_sentinel/{cfg_expansion_and_o1a_dual,feature_allowlist,mir_pass_seams}.rs
-    │       └── {typed_capture.rs, stdlib_capture.rs, compiler_session.rs, pass_order_sentinel.rs}
-    │       # (Wave 2B target: decompose typed_capture.rs into suite/main.rs)
     ├── differential/                  # package = "anneal-differential-tests" (publish = false)
-    │   ├── Cargo.toml
-    │   ├── src/bin/{anneal-diff.rs, anneal-diff-capture-test-bin.rs}
-    │   ├── src/{lib.rs, corpus.rs, miri_runner.rs, miri_runner/, lean_runner.rs, mir_eval_runner.rs, mutants.rs, verdict.rs}
-    │   └── tests/differential_oracle.rs
     └── corpora/                       # Declarative data-driven corpora consumed by test crates
         ├── adversarial/               # Landed: capture/; Target Wave 3: + guards.toml, spec_and_preflight/, mir_ub_refutations/, audit_and_ndjson/
         ├── scalar/                    # Landed (#4187): dependency.rs, unsupported.rs
         ├── scalar_specs/              # Landed (#4187): 19 declarative (lib.rs, Spec.lean, Proof.lean) suites
         ├── spin/                      # Landed (#4187): loop verification corpus fixture
         ├── unsafe_identity/           # Landed (#4187): unsafe contract corpus fixture
-        ├── differential/              # Landed Stage 1: profile_v1/manifest.toml (39 Miri <-> StepCore/MirWp cases); Target Wave 3: + multi-kernel NDJSON cases
+        ├── differential/              # Landed Stage 1 (#4263): profile_v1/manifest.toml (Miri <-> StepCore/MirWp cases); Target Wave 3: + multi-kernel NDJSON cases
         └── real_crates/               # Target Wave 3: declarative runner over zerocopy/proofs/ & external crates
 ```
+
+The tree fixes each crate's zone, package name, and publication status, plus
+the few files whose contracts this document specifies. Individual source
+files, test targets, and submodules change as suites are split, so the
+checked-in tree is authoritative for them. Each fenced test crate pairs a
+`src/bin/*-test-bin.rs` shim (§2.3) with integration targets under `tests/`
+that follow §3.4.
 
 Moving the integration suites out of `anneal/trusted/*/tests/` (`#4154`,
 `348147c22d`, corresponding to `50` files / `30,302` lines at `c351dd381a`)
@@ -506,15 +477,16 @@ host relies on four invariants enforced by `anneal-testkit::store_sim`:
    (`PermissionError`), leaking `/tmp` directories. `ReadOnlyTreeGuard::drop`
    walks registered store roots **top-down** (`follow_symlinks = false`) and
    applies `chmod(mode | 0o700)` to directories before `TempDir::drop` executes.
-2. **Disjoint `<root>/store/` vs. `<root>/work/` Layout:** `identity.rs:350-389`
-   (`is_allowed_pt_interp_dir`) rejects any `PT_INTERP` directory `D` for which
+2. **Disjoint `<root>/store/` vs. `<root>/work/` Layout:**
+   `is_allowed_pt_interp_dir` (`trusted/rustc-capture/src/identity.rs`)
+   rejects any `PT_INTERP` directory `D` for which
    `canon_home.starts_with(D)` or `canon_cwd.starts_with(D)`, and
-   `sandbox.rs:467-532` (`validate_toolchain_mount_dir`) rejects any
-   toolchain/mount directory `D` overlapping `canon_stage` or enclosing
-   `canon_home` or `canon_cwd`. Because `WorkspaceBuilder` places all simulated
-   packages under `<root>/store/<pkg>/lib` (`normal_count >= 2`) and sets child
-   `current_dir` to `<root>/work/`, `canon_cwd` and `D` are guaranteed disjoint
-   siblings.
+   `validate_toolchain_mount_dir` (`trusted/cargo-anneal/src/sandbox.rs`)
+   rejects any toolchain/mount directory `D` overlapping `canon_stage` or
+   enclosing `canon_home` or `canon_cwd`. Because `WorkspaceBuilder` places all
+   simulated packages under `<root>/store/<pkg>/lib` (`normal_count >= 2`) and
+   sets child `current_dir` to `<root>/work/`, `canon_cwd` and `D` are
+   guaranteed disjoint siblings.
 3. **Five-Cell ELF `DT_RUNPATH` / `DT_RPATH` / `PT_INTERP` Fixture Builder
    (`ElfStoreBuilder`):**
    - Materializes split C/toolchain runtime layouts under `<root>/store/`—for
@@ -537,14 +509,16 @@ host relies on four invariants enforced by `anneal-testkit::store_sim`:
      - **Explicit Loader Wrappers:** Launching
        `<store>/0001-glibc/lib/ld-linux-*.so.* --library-path ... <capture-bin>`
        where `/proc/self/exe` is the loader (`has_pt_interp == false`) while
-       `self_addr` maps the capture binary VMA (`identity.rs:635-681`).
+       `self_addr` maps the capture binary VMA; see
+       `resolve_runtime_pt_interp_dirs_with`
+       (`trusted/rustc-capture/src/identity.rs`).
    - Negative splice probes replace `librustc_driver-*.so` or `libLLVM*.so*`
      inodes (`st_dev, st_ino`) in either `lib/` or `lib/rustlib/<triple>/lib/`
      and assert `status == "tool_failed"` with zero emitted capture artifacts.
 4. **Namespace-Mounted `/nix/store` Harness for Cross-Package Lean `symlinkJoin`
    Trees:**
-   - In `cargo-anneal/src/sandbox.rs:588-600`,
-     `symlink_stays_within_dedicated_root` rejects cross-directory symlinks
+   - `symlink_stays_within_dedicated_root`
+     (`trusted/cargo-anneal/src/sandbox.rs`) rejects cross-directory symlinks
      inside `<prefix>/lib/lean` unless **both** `canon_root` and `canon_target`
      start with `/nix/store`.
    - To test Nix `symlinkJoin` Lean wrappers (`0002-lean-joined/lib/lean/`
@@ -561,22 +535,43 @@ host relies on four invariants enforced by `anneal-testkit::store_sim`:
 #### 3.4 Concrete Monolith Decomposition Plan and Single-Binary Cargo Discipline
 
 In Cargo, every top-level `tests/<name>.rs` file compiles and links a separate
-executable. Splitting `boundary_audit.rs` (`9,824`L) and `typed_capture.rs`
-(`2,840`L) into `25` top-level `tests/*.rs` files would force `25` separate
-links of `anneal-audit` and `librustc_driver`, adding gigabytes of
-`target/debug/deps/` bloat and tens of seconds of link latency. Instead, each
-fenced test crate groups domain submodules (<800 lines per file) under **one
-primary `tests/suite/main.rs` binary**, retaining separate binaries strictly
-where Cargo feature flags (`--no-default-features`) or `#[ignore]` smoke
-isolation require a distinct compilation unit:
+executable. Splitting `boundary_audit.rs` and `typed_capture.rs` (`9,824`L
+and `2,840`L at `c351dd381a`) into `25` top-level `tests/*.rs` files would
+force `25` separate links of `anneal-audit` and `librustc_driver`, adding
+gigabytes of `target/debug/deps/` bloat and tens of seconds of link latency.
+Instead, each fenced test crate groups domain submodules (<800 lines per file)
+under **one primary `tests/suite/main.rs` binary**, retaining separate binaries
+strictly where Cargo feature flags (`--no-default-features`) or `#[ignore]`
+smoke isolation require a distinct compilation unit. Every split follows these
+stable rules:
 
-| Suite & Pre-Split Monolith | Status on `main` | Crate & Binary Target | Domain Submodules (`<800`L target) | Shared `anneal-testkit` Primitives Used |
-| :--- | :--- | :--- | :--- | :--- |
-| `audit/tests/boundary_audit.rs` (`12,996`L before the split; `9,824`L at `c351dd381a`) | **Split (Wave 2B)** (`LeanAuditFixture`/`SharedOleanCache` & `MirWpFixtureSpec` wired; the target keeps its `boundary_audit` binary name, which `.config/nextest.toml` filters on; submodules span `505`–`1,397`L, and `forged_olean_replay.rs` holds a single `1,378`L test) | `anneal-audit-tests` `tests/boundary_audit.rs` root with `#[path]` submodules in `tests/boundary_audit/` | `cargo_boundary.rs`, `foundation_and_sysroot.rs`, `forged_olean_replay.rs`, `pass1_preflight.rs`, `pass1_tiers_and_theory.rs`, `pass1_universes_and_framework.rs`, `pass1_mir_wp_gates.rs`, `pass2_miri_pin.rs`, `pass2_miri_cache_and_sandbox.rs`, `pass2_correspondence_audit.rs`, `pass2_correspondence_non_backsliding.rs`, `pass2_module_isolation.rs`, `pass2_import_graph.rs`, `pass2_syntax_preflight.rs`, `bundle_parity_and_dag.rs`, `compiler_overrides.rs` | `LeanAuditFixture`, `SharedOleanCache`, `MirWpFixtureSpec`, `ReadOnlyTreeGuard`, forged-`.olean` script helper |
-| `audit/tests/target_audit.rs` (`6,494`L before the split; `2,332`L at `c351dd381a`) | **Split (Wave 2B)** (`LeanAuditFixture`/`SharedOleanCache` wired; the target keeps its `target_audit` binary name, which `.config/nextest.toml` filters on; submodules span `384`–`802`L) | `anneal-audit-tests` `tests/target_audit.rs` root with `#[path]` submodules in `tests/target_audit/` | `role_and_origin_gates.rs`, `axiom_metadata_and_failure_gates.rs`, `library_inventory.rs`, `module_headers.rs`, `spec_preflight_parse_tree.rs`, `spec_and_phase_gates.rs`, `companions_and_module_mode.rs`, `spec_effects_and_module_index.rs`, `forged_library_replay.rs`, `uninventoried_and_alternate_replay.rs`, `spec_vacuity.rs` | `LeanAuditFixture`, `SharedOleanCache` |
-| `cargo-anneal/tests/integration.rs` + `mvp_e2e.rs` (`4,315`L + `1,566`L at `c351dd381a`; deleted in `#4187`) | **Landed (Wave 2A, `#4187`)** (+ Wave-3 `ndjson_quorum_e2e.rs` once `#4016` lands) | `cargo-anneal-tests` `tests/suite/main.rs` | Landed submodules: `corpora_runner.rs` (`//@` engine driving `tests/corpora/{adversarial/capture,scalar,scalar_specs,spin,unsafe_identity}`), `receipt_and_bindings.rs`, `host_and_stage_security.rs`, `capture_and_cargo_isolation.rs`, `anti_vacuity_and_e2e.rs`, `split_store_bwrap.rs`, `helpers.rs`; Wave-3 addition: `ndjson_quorum_e2e.rs` (`5-init`/`5a`/`5b`/`5c` + 2-/4-kernel `ExecSeal` + 3-part `module` `expected_lib` linking) | `ToolchainEnv` (`WorkspaceBuild`), `StagedWorkspace::run_verify`, `corpora::DirectiveParser` (`1,388`L doc-comment synthesizer retired in `#4187` per `D2-A`), `store_sim::run_in_simulated_nix_store` |
-| `cargo-anneal/tests/{cli,harness,installed_smoke,profile_v2_e2e,sandbox_escape}.rs` + `support_{paths,regressions,signals}.rs` | **Migrated onto `anneal-testkit`** (`support/mod.rs` retired; `cli.rs` split into `cli/` domain submodules; `sandbox_escape.rs` split into `sandbox_escape/` domain submodules; `support_{paths,regressions,signals}` kept for runner regression coverage) | `cargo-anneal-tests` (`cli.rs`, `harness.rs`, `installed_smoke.rs`, `profile_v2_e2e.rs`, `sandbox_escape.rs`, `support_*.rs`) | `cli.rs` remains a separate binary so `--no-default-features --test cli` compiles with zero `exocrate` deps, with tests organized under `cli/{artifacts_and_overwrite,capture_request_binding,cargo_shortcut,help_and_bundled_resources,init_and_receipt_output,policy_taint_and_unstable_features,receipt_out,rustc_mode_and_env,setup_and_tool_discovery,sharding_and_limits}.rs`; `sandbox_escape.rs` runs on both `x86_64` and `sandbox-aarch64`, keeps in its root the three tests that `ci/run_anneal_check.sh` selects with `--exact`, and organizes the rest under `sandbox_escape/{live_lean,prefix_and_seccomp}.rs`; `profile_v2_e2e.rs` splits into `10` parallel `#[test]` cases sharing `SharedOleanCache`; `installed_smoke.rs` consumes `RunDirectory`/`CaseDirectory`/`MirWpFixtureSpec` directly | `ToolchainEnv`, `RunDirectory`/`CaseDirectory`, `ProcessSupervisor`, `SharedOleanCache`, `VerifyReceipt`, `MirWpFixtureSpec`, `ReadOnlyTreeGuard` |
-| `rustc-capture/tests/{typed_capture,stdlib_capture,compiler_session}.rs` (`typed_capture.rs`: `3,122`L on `main`) | **In Progress (Wave 2B)** (`common/mod.rs` retired; all 3 suites directly on `anneal-testkit`; `typed_capture` submodule split remaining) | `anneal-rustc-capture-tests` `tests/suite/main.rs` (`compiler_session.rs` & `stdlib_capture.rs` separate) | `cli_and_publication.rs` (mode flags, response-file refusal, atomic non-UTF8/symlink output guards), `namespace_and_env.rs` (`--source-file` allowlists, `include_str!`, `--env KEY=VALUE` `env_depinfo` binding), `mir_extraction.rs` (scalars, shifts, fieldless enums, `enum_id` `const _` scoping, `PlaceMention`, `required_consts` CTFE), `linux_residency.rs` (5-cell `DT_RUNPATH`/`DT_RPATH`, symlinked CAS sysroots, `libLLVM` splice rejection, `FORBIDDEN_LOADER_ENV_VARS`) | `ToolchainEnv`, `default_rust_sysroot`/`default_lean_path`, `StagedWorkspace::run_capture`, `ElfStoreBuilder` in `anneal-testkit` |
+1. **`<800`-line target:** Each test source file, including each domain
+   submodule and each child file holding a moved inline `mod tests`, targets
+   fewer than `800` lines.
+2. **One primary binary per crate:** Domain submodules hang off one primary
+   root, `tests/suite/main.rs` by default. The `boundary_audit` and
+   `target_audit` targets keep their binary names, which `.config/nextest.toml`
+   filters on, and load their submodules from `tests/boundary_audit/` and
+   `tests/target_audit/` via `#[path]`. A split target keeps in its root every
+   test that CI selects by exact name, as `sandbox_escape.rs` does for the
+   tests that `ci/run_anneal_check.sh` runs with `--exact`.
+3. **Separate-binary exceptions:** A distinct top-level target is kept only
+   for the feature-flag or `#[ignore]` isolation described above; for example,
+   `cli.rs` stays separate so `--no-default-features --test cli` compiles with
+   zero `exocrate` deps.
+4. **Shared scaffolding:** Split suites build on `anneal-testkit` primitives
+   (`ToolchainEnv`, `StagedWorkspace`, `LeanAuditFixture`/`SharedOleanCache`,
+   `MirWpFixtureSpec`, `ReadOnlyTreeGuard`, `ElfStoreBuilder`,
+   `store_sim::run_in_simulated_nix_store`, `corpora::DirectiveParser`) rather
+   than crate-local copies.
+
+Per-suite progress (which files still exceed the target and how each split
+lays out its submodules) is tracked in
+[`#4203`](https://github.com/google/zerocopy/issues/4203), not here. Pre-split
+baselines at `c351dd381a`: `boundary_audit.rs` `9,824`L, `target_audit.rs`
+`2,332`L, and `cargo-anneal`'s `integration.rs` + `mvp_e2e.rs` `4,315`L +
+`1,566`L (both deleted in `#4187` along with the `1,388`L doc-comment
+synthesizer, per `D2-A`).
 
 Process-level concurrency, per-test timeouts, and heavy-Lean slot throttling
 are configured in `anneal/.config/nextest.toml` (landed in `#4159`):
@@ -656,9 +651,9 @@ anneal/tests/corpora/adversarial/
    newly passing `known_bug(#N, ...)` to `//@ pass`, **never** flipping
    `//@ pass` $\to$ `fail` or `//@ fail(...)` $\to$ `pass`.
 2. **Unified Guard-Ablation Schema (`guards.toml`, Target Wave 3):**
-   Extends Anneal's `224` cataloged Lean guards (`204` `Trusted/MirSemantics/*`
-   + `8` header + `12` boundary guards in `ci/check_guard_mutation.py`, up from
-   `46` at `c351dd381a`) to cover **Rust TCB guards** across
+   Extends the Lean guards cataloged in `ci/check_guard_mutation.py`
+   (`Trusted/MirSemantics/*`, header, and boundary guards; `46` at
+   `c351dd381a`) to cover **Rust TCB guards** across
    `trusted/rustc-capture`, `trusted/audit`, and `trusted/cargo-anneal`:
 
    ```toml
@@ -697,7 +692,7 @@ semantic seams:
 1. **Seam A — Miri $\leftrightarrow$ `Trusted.MirSemantics` Multi-Leg
    Differential Oracle (`profile_v1/`):**
    `anneal-differential-tests` (`tests/differential/`) loads
-   `tests/corpora/differential/profile_v1/manifest.toml` (`39` Profile v1 cases)
+   `tests/corpora/differential/profile_v1/manifest.toml` (Profile v1 cases)
    and compares legs under matching flags (`-C opt-level=0 -C
    debug-assertions=no -C overflow-checks=no`, `--target
    x86_64-unknown-linux-gnu`):
@@ -796,9 +791,9 @@ testing unmodified production crates:
 1. **First-Customer Verbatim `zerocopy` (`zerocopy/proofs/` & Target
    `real_crates/zerocopy/`):**
    - Operates directly against the live repository's `zerocopy/src/` tree (`20`
-     files, `33,939` LOC) and `zerocopy/proofs/` specifications (`4` proof
-     units landed in `#4148` / `d3362d9a65`, excluded from
-     `zerocopy/Cargo.toml`'s published crate tarball and verified in CI by
+     files and `33,939` LOC at `c351dd381a`) and `zerocopy/proofs/`
+     specifications (`4` proof units landed in `#4148` / `d3362d9a65`, excluded
+     from `zerocopy/Cargo.toml`'s published crate tarball and verified in CI by
      `anneal/ci/verify_zerocopy.py`) using explicit `--env
      CARGO_PKG_VERSION=<ver>` bindings (`#4131`)—never copying snippets into
      standalone toy files.
@@ -806,7 +801,7 @@ testing unmodified production crates:
      `zerocopy_proofs.suite.verified_units_count >= 4` floor, Wave 3 adds a
      checked-in **Monotone Non-Backsliding Ratchet
      (`real_crates/zerocopy/ratchet.json`)** partitioned into disjoint item
-     classes so `2,203` trivial `only_derive_is_allowed_to_implement_this_trait`
+     classes so trivial `only_derive_is_allowed_to_implement_this_trait`
      sealing stubs cannot mask substantive or `unsafe` regressions:
 
      ```json
@@ -833,7 +828,7 @@ testing unmodified production crates:
    - Every Anneal capability PR unlocking new MIR constructs updates `floors`
      upward (`actual >= floor` enforced in CI) and prioritizes
      `zerocopy/src/{layout.rs,byteorder.rs,util/mod.rs,byte_slice.rs}` items
-     carrying existing `#[kani::proof*]` contracts (`63` contracts total: `55`
+     carrying existing `#[kani::proof*]` contracts (`63` at `c351dd381a`: `55`
      in `layout.rs`, `5` in `byteorder.rs`, `2` in `util/mod.rs`, `1` in
      `byte_slice.rs`).
 2. **Pinned External Multi-File Smoke Crates (`real_crates/external/`, Target
@@ -855,7 +850,8 @@ At `c351dd381a`, `theory/bundle-manifest.json` registered `18` bundled
 Lean modules (`66,307` lines across `19` `trusted/lean` + `54` `theory/` files,
 including `36` unbundled `theory/` modules totaling `43,393` lines and a
 `28`-module `19,704`-line critical path) that `installed_smoke`'s
-`lean_case` (`installed_smoke/lean_file.rs`) compiles cold under
+`lean_case` (`tests/cargo-anneal/tests/installed_smoke/lean_file.rs`)
+compiles cold under
 `lean -j1 -DElab.async=false -Ddebug.skipKernelTC=false`
 with a `120 s` per-child hard timeout. Furthermore, under Lean 4 `module`
 encapsulation (`#4139`, `6a0932de51`), bundled Pass-1 modules emit **three**
@@ -945,7 +941,7 @@ under `NestedBwrap` with `--network=none` and read-only `/nix` `overlayfs`):
 | CI Tier | Trigger & Isolation | Executed Suites & Gates | Wall-Clock Target | Caching Policy |
 | :--- | :--- | :--- | ---: | :--- |
 | **Tier 0: Static & Boundary Preflight** | Every PR, `merge_group`, & `push` (`Container --network=none`) | `root-manifest.sha256`, zero-symlink `trusted/`/`tests/` scan, `check_cargo_boundary` (2-zone lattice), `regenerate_bundle --check`, `check_todo.sh`, `check_pr_hygiene.py` (required, soft-blocking `PR hygiene` check in `anneal-pr-hygiene.yml`, outside `ci-core`), `check_skills.py`, Python `ci/test_*.py`, `--no-default-features` `cargo clippy` + `cli` offline tests | `< 90 s` | Content-addressed `cargo_locked` + `anneal-tc` image |
-| **Tier 1: PR Verification & Regression Gate** | PRs touching `anneal/**`, CI TCB, or `zerocopy/proofs/**` (`ci-core`: `NestedBwrap` + `ubuntu-24.04-arm` `sandbox-aarch64`) | Workspace unit + single-binary integration suites (`anneal-testkit`, `anneal-audit-tests`, `cargo-anneal-tests`, `anneal-itree-diff` in `DegradedNoMiri` parity mode when `bin/miri` is trimmed from the omnibus archive, `anneal-rustc-capture-tests`) run via `cargo nextest run --profile ci --workspace --locked` (`D3-A`, keeping `cargo test --workspace --locked` supported), `adversarial/` `must-reject` corpus, Lean TCB `check_guard_mutation.py` (`104` `MirSemantics` + `8` header + `12` boundary: `124` guards), path-filtered Rust TCB guard ablation on PR-modified `trusted/**/*.rs` files (`D4-A`), `anneal-audit --require-correspondence` (with verified `lean-miri` `.olean` cache), `perf_tracking.py check-budgets` against `anneal/ci/perf_budgets.json` (plus target Wave-3 `theory/axiom-footprint.json`), `installed_smoke` + `verify_zerocopy.py` (`zerocopy/proofs/` + target `ratchet.json`) + `starnix` | `< 12 min` critical path | `ci-core` attested `Claim::Cache` (`lean-miri` `.olean` + Cargo target) |
+| **Tier 1: PR Verification & Regression Gate** | PRs touching `anneal/**`, CI TCB, or `zerocopy/proofs/**` (`ci-core`: `NestedBwrap` + `ubuntu-24.04-arm` `sandbox-aarch64`) | Workspace unit + single-binary integration suites (`anneal-testkit`, `anneal-audit-tests`, `cargo-anneal-tests`, `anneal-itree-diff` in `DegradedNoMiri` parity mode when `bin/miri` is trimmed from the omnibus archive, `anneal-rustc-capture-tests`) run via `cargo nextest run --profile ci --workspace --locked` (`D3-A`, keeping `cargo test --workspace --locked` supported), `adversarial/` `must-reject` corpus, Lean TCB `check_guard_mutation.py` (`MirSemantics`, header, and boundary guards), path-filtered Rust TCB guard ablation on PR-modified `trusted/**/*.rs` files (`D4-A`), `anneal-audit --require-correspondence` (with verified `lean-miri` `.olean` cache), `perf_tracking.py check-budgets` against `anneal/ci/perf_budgets.json` (plus target Wave-3 `theory/axiom-footprint.json`), `installed_smoke` + `verify_zerocopy.py` (`zerocopy/proofs/` + target `ratchet.json`) + `starnix` | `< 12 min` critical path | `ci-core` attested `Claim::Cache` (`lean-miri` `.olean` + Cargo target) |
 | **Tier 2: Merge-Queue Assurance Gate** | `merge_group` (`NestedBwrap`) | **Pass-1 & Pass-2 `anneal-audit --require-correspondence`** (`miri-v1` restored only from an attested entry, rebuilt cold on key changes, verified against `UPSTREAM_PIN.json`, and kernel-replayed on every run), full Rust + Lean TCB guard-ablation matrix (`D4-A`), **4-kernel `--paranoid-quorum`** (`nanoda_bin` + `con-ron` + `con-leche` + `lean4lean --import` once `v4.35.0` lands), full `zerocopy/proofs/` (`real_crates/zerocopy`) verification | `< 18 min` | Cold on pin edits; attested `miri-v1`, SHA-256-verified against `UPSTREAM_PIN.json` (zero unverified `.olean` cache hits) |
 | **Tier 3: Continuous `main` Telemetry & Scheduled Deep Sweep** | `push` to `main` (`.github/workflows/anneal-perf.yml`), nightly cron, & pre-release qualification (`0.2.0-alpha.11+`) | Continuous `perf_tracking.py collect`/`analyze`/`check-budgets` + static dashboard publication on `benchmark-data` (`anneal-perf.yml`), full **all-guards Rust + Lean TCB ablation matrix** (recompiling all `rustc-capture`/`audit`/`cargo-anneal` single-guard mutants per `D4-A`), full 4-way **`differential/` Miri $\leftrightarrow$ `MirSemantics` boundary/fuzz sweep**, multi-version Lean (`v4.33.1`/`v4.34.1`/`v4.35.0`) matrix, and extended external crate smoke suite | `< 45 min` | Isolated ephemeral runners |
 
@@ -978,10 +974,10 @@ completes the declarative corpora.
 
 | Wave | Status on `main` | Scope & Concrete Deliverables | Sequencing & Acceptance Invariants |
 | :--- | :--- | :--- | :--- |
-| **Wave 0 (Foundation, Perf Pipeline, & `D1-A`)** | **Core & `D1-A` Landed; `#4016`/`#4109` & `ci-core` In Progress** | **Landed on `main`:** `#4078` (balanced Lean list literals), `#4131` (`enum_id` scoping & `--env`), `#4137` (`ci/check_skills.py`), `#4138` (`ANNEAL_RELEASE_LOCK`, superseded by commit-bound dispatch), `#4139` (`6a0932de51`, Lean 4 `module` 3-part `.olean*` + `4.33`–`4.35` compat), `#4142` (`7c7f821539`, cross-family Gate 2), `#4148` (`d3362d9a65`, `zerocopy/proofs/` + `verify_zerocopy.py`), `#4171`–`#4173`/`#4212` (`perf_tracking.py`, `perf_budgets.json`, static dashboard, and `anneal-perf.yml`), and **`D1-A`** (`*Canaries*.lean` decoupled from runtime umbrellas; monolithic `theory/Anneal.lean` retired in favor of demand-driven domain umbrellas `Anneal.Scalar`, `Anneal.Wp`, `Anneal.Simd`, and `Anneal.PureLift`, keeping `share/anneal/theory` matched 1-for-1 to `bundle-manifest.json`'s `20` modules).<br>**Remaining queue:** Land `#4016`/`#4109` (`SpecPreflight.lean` + `ndjson_comparator` `5a`/`5b`/`5c` + multi-kernel `ExecSeal`), and cutover cleanup (`#4125` relocates `docs/` if merged). | Zero `module` $\times$ `ndjson_comparator` regressions; `*Canaries*.lean` excluded from domain umbrellas and user bundles (`0` `*Canaries*` in `20` bundled modules) while `scan_lean_tree` discovers and audits every `.lean` module under `theory/` in repository Pass-1 `anneal-audit`. |
+| **Wave 0 (Foundation, Perf Pipeline, & `D1-A`)** | **Core & `D1-A` Landed; `#4016`/`#4109` & `ci-core` In Progress** | **Landed on `main`:** `#4078` (balanced Lean list literals), `#4131` (`enum_id` scoping & `--env`), `#4137` (`ci/check_skills.py`), `#4138` (`ANNEAL_RELEASE_LOCK`, superseded by commit-bound dispatch), `#4139` (`6a0932de51`, Lean 4 `module` 3-part `.olean*` + `4.33`–`4.35` compat), `#4142` (`7c7f821539`, cross-family Gate 2), `#4148` (`d3362d9a65`, `zerocopy/proofs/` + `verify_zerocopy.py`), `#4171`–`#4173`/`#4212` (`perf_tracking.py`, `perf_budgets.json`, static dashboard, and `anneal-perf.yml`), and **`D1-A`** (`*Canaries*.lean` decoupled from runtime umbrellas; monolithic `theory/Anneal.lean` retired in favor of demand-driven domain umbrellas `Anneal.Scalar`, `Anneal.Wp`, `Anneal.Simd`, and `Anneal.PureLift`, keeping `share/anneal/theory` matched 1-for-1 to `bundle-manifest.json`'s modules, `20` at `#4250`).<br>**Remaining queue:** Land `#4016`/`#4109` (`SpecPreflight.lean` + `ndjson_comparator` `5a`/`5b`/`5c` + multi-kernel `ExecSeal`), and cutover cleanup (`#4125` relocates `docs/` if merged). | Zero `module` $\times$ `ndjson_comparator` regressions; `*Canaries*.lean` excluded from domain umbrellas and user bundles (`0` `*Canaries*` among bundled modules) while `scan_lean_tree` discovers and audits every `.lean` module under `theory/` in repository Pass-1 `anneal-audit`. |
 | **Wave 1 (`#4015` Two-Zone Split & `anneal-testkit`)** | **Landed (`#4154`, `#4159`); Optional Active-Member & CI `nextest` Follow-Up** | **Landed on `main`:** `#4154` (`348147c22d`, closing `#4015`) moved `trusted/{audit,cargo-anneal,rustc-capture}/tests/` into fenced `tests/{audit,cargo-anneal,rustc-capture}/` crates (`publish = false`, `*-test-bin` shims, `trusted/cargo-anneal/assets/scalar/`, lockstep policy updates keeping `anneal/AGENTS.md` at `30,654 B` below `check_skills.py`'s `31,744 B` cap); `#4159` (`aa8d82c9bb`) added the `WorkspaceZone::Trusted(0) < WorkspaceZone::Tests(1)` monotonic lattice and `proc-macro` ban in `cargo_boundary.rs`, `tests/testkit` (`anneal-testkit`: `toolchain`, `workspace`, `process`, `store_sim`, `corpora`, `assertions`), and `anneal/.config/nextest.toml`.<br>**Remaining follow-up:** Optionally tighten `cargo_boundary.rs` active-member checks for all three `trusted/*` crates in `workspace.members` (rejecting `workspace.exclude`), and switch CI test steps to `cargo nextest run --profile ci` (`D3-A`) once `anneal-tc` / `flake.nix` bundles `cargo-nextest`. | `anneal/trusted/` reduced by `31,016` LOC at `#4154`; 2-zone boundary + `proc-macro` negative/positive tests active; `cargo test --workspace --locked` preserved alongside `nextest`. |
 | **Wave 2A (`cargo-anneal` Split & `D2-A`)** | **Landed (`#4187`, `a508ef1ba6`)** | Executed **`D2-A`**: retired and deleted `integration.rs`, `mvp_e2e.rs`, and the `1,388`-line `/// anneal:*` doc-comment synthesizer; migrated `19` scalar spec/proof suites into `tests/corpora/scalar_specs/`, `27` capture-refusal cases into `tests/corpora/adversarial/capture/`, and `scalar`/`spin`/`unsafe_identity` into `tests/corpora/`; split `cargo-anneal-tests` into `<800`L submodules under `tests/cargo-anneal/tests/suite/` (`main.rs` + 7 submodules, including `split_store_bwrap.rs` exercising `run_in_simulated_nix_store` alongside `#4159`'s 5-cell `ElfStoreBuilder`). | Doc-comment synthesizer deleted; `cargo-anneal` `suite/*` submodules modularized atop `anneal-testkit`; simulated `/nix/store` `symlinkJoin` tests passing without host Nix. |
-| **Wave 2B (Testkit Consolidation & Remaining Monolith Decomposition)** | **In Progress (Testkit Migration & Shim Retirement Landed; Submodule Split Remaining)** | **Landed:** expanded `anneal-testkit` (`digest`, `case_runner`, `audit_fixture`, `mir_wp_fixture`); migrated `harness.rs`, `sandbox_escape.rs`, `installed_smoke.rs`, `profile_v2_e2e.rs` (split into `10` parallel tests), `support_{paths,regressions,signals}.rs`, `compiler_session.rs`, `stdlib_capture.rs`, `typed_capture.rs`, `audit/tests/common/{mod,correspondence_dsl}.rs`, `boundary_audit.rs`, and `target_audit.rs` directly onto `anneal-testkit`; deleted `tests/cargo-anneal/tests/support/mod.rs` and `tests/rustc-capture/tests/common/mod.rs` shims.<br>Split `tests/audit/tests/boundary_audit.rs` and `tests/audit/tests/target_audit.rs` into domain submodules under `tests/audit/tests/boundary_audit/` and `tests/audit/tests/target_audit/`.<br>**Remaining:** break up `boundary_audit` tests longer than `800`L, and decompose `tests/rustc-capture/tests/typed_capture.rs`, `tests/cargo-anneal/tests/cli.rs`, and `tests/itree_diff/tests/itree_differential.rs` into `<800`L domain submodules under single-binary `tests/suite/main.rs` targets. | Pure `anneal/tests/` refactoring (`0` `anneal/trusted/` edits); zero test files `> 1,000` lines; zero duplicated `Tools::discover`, `MirWpSyntheticSpec`, or `TempFixture` helpers. |
+| **Wave 2B (Testkit Consolidation & Remaining Monolith Decomposition)** | **In Progress (Testkit Migration & Shim Retirement Landed; Submodule Split Remaining)** | **Landed:** expanded `anneal-testkit` (`digest`, `case_runner`, `audit_fixture`, `mir_wp_fixture`); migrated `harness.rs`, `sandbox_escape.rs`, `installed_smoke.rs`, `profile_v2_e2e.rs` (split into `10` parallel tests), `support_{paths,regressions,signals}.rs`, `compiler_session.rs`, `stdlib_capture.rs`, `typed_capture.rs`, `audit/tests/common/{mod,correspondence_dsl}.rs`, `boundary_audit.rs`, and `target_audit.rs` directly onto `anneal-testkit`; deleted `tests/cargo-anneal/tests/support/mod.rs` and `tests/rustc-capture/tests/common/mod.rs` shims.<br>**Remaining:** decompose every test file over `800`L into `<800`L domain submodules under single-binary targets per §3.4; per-suite progress is tracked in `#4203`. | Pure `anneal/tests/` refactoring (`0` `anneal/trusted/` edits); zero test files `> 1,000` lines; zero duplicated `Tools::discover`, `MirWpSyntheticSpec`, or `TempFixture` helpers. |
 | **Wave 3 (Expanded Corpora, Rust Guard Ablation, & Quorum/Axiom Gates)** | **Target** | Expand `tests/corpora/adversarial/` (`guards.toml` adding Rust TCB guards for `rustc-capture`, `cargo_boundary`, and `ndjson_comparator` with path-filtered Tier 1 + full Tier 2/3 ablation per `D4-A`, plus `spec_and_preflight/`, `mir_ub_refutations/`, `audit_and_ndjson/`), add `tests/corpora/differential/` (`Miri <-> MirSemantics` directional refinement + `v4.35.0+` 2-/4-kernel NDJSON quorum suites once `#4016` lands), add `tests/corpora/real_crates/` (`zerocopy/ratchet.json` item-class floors + `external/starnix/`), extend `perf_tracking.py` with quorum stage/RSS metrics, and enable `theory/axiom-footprint.json`. | `100%` Lean + Rust cataloged guard kill rate ($K_{\text{entry}} = 100\%$); monotone `zerocopy` item-class ratchet active; NDJSON quorum and `axiom-footprint.json` gates active. |
 | **Wave 4 (Targeted Coverage & Fuzz Expansion)** | **Target** | *Only after Waves 2B–3 are merged:* measure branch/guard coverage gaps in `trusted/` (`cargo-llvm-cov`, disabling `--remap-path-prefix` strictly inside isolated coverage runs so line tables resolve cleanly without affecting release or hermetic builds) and add declarative corpus entries or property tests solely for uncovered high-risk state transitions. | High-signal branch & guard coverage across `trusted/` with minimal declarative corpus additions (`10–30` lines per entry). |
 
@@ -1002,7 +998,7 @@ dominance:
 | **Workspace Containment** | **A2. Strict target-only dependency check `rel_str.starts_with("trusted/")`** across all workspace members. | **Comparatively Dominated by Two-Zone Monotonic Lattice (`zone(dst) <= zone(src)`):** While `rel_str.starts_with("trusted/")` blocks `trusted/ -> tests/`, it also rejects `tests/{audit,cargo-anneal,rustc-capture} -> tests/testkit`, forcing 4x harness duplication across test crates or pushing `testkit` back into `trusted/`. The 2-zone lattice (`0 <= 0`, `0 <= 1`, `1 <= 1`, forbidding `1 <= 0`) preserves identical `trusted/` isolation while admitting `anneal-testkit`. |
 | **CLI Binary Resolution** | **A3. Invoke `target/debug/cargo-anneal` by relative path from `tests/*` instead of `*-test-bin` shims.** | **Empirically Falsified (under feature flags):** Cargo does not rebuild sibling-crate binaries when running `cargo test -p cargo-anneal-tests --no-default-features --test cli`, allowing a stale default-feature binary in `target/debug/` to satisfy an offline test falsely. `#[doc(hidden)]` library CLI delegation + `*-test-bin` shims preserve exact active Cargo features via `CARGO_BIN_EXE_*` with zero binary name collisions. |
 | **Monolith Decomposition** | **A4. Split monoliths into `20–30` separate top-level `tests/*.rs` Cargo test targets.** | **Comparatively Dominated by Single-Binary Domain Submodules (`tests/suite/main.rs`) + `cargo-nextest`:** Cargo links a separate executable per top-level `tests/*.rs` file; linking `anneal-audit` and `rustc_private` drivers `25` times inflates compile/link latency and adds multi-GiB `target/` disk pressure on standard 14–32 GB CI runners. Submodules under `tests/suite/main.rs` achieve `<800`L file modularity with **one** link per crate, while `cargo-nextest` isolates every `#[test]` in its own OS process. |
-| **Hermetic Split-Store Testing** | **A5. Test split-output Nix `symlinkJoin` Lean trees (`0002-lean-joined -> 0001-lean-unwrapped`) and `0o555` stores directly in raw `/tmp` `TempDir`s.** | **Empirically Falsified (on Linux):** (1) `sandbox.rs:588-600` (`symlink_stays_within_dedicated_root`) rejects cross-package symlinks inside `lib/lean` unless both canonical paths start with `/nix/store`; (2) `identity.rs:381-387` rejects `PT_INTERP`/`DT_RUNPATH` dirs if `cwd` shares their ancestor root; (3) `TempDir::drop` fails with `EACCES` on `0o555` directories. `ReadOnlyTreeGuard` + sibling `store/`/`work/` + `bwrap --ro-bind <store> /nix/store` resolves all three deterministically without host Nix. |
+| **Hermetic Split-Store Testing** | **A5. Test split-output Nix `symlinkJoin` Lean trees (`0002-lean-joined -> 0001-lean-unwrapped`) and `0o555` stores directly in raw `/tmp` `TempDir`s.** | **Empirically Falsified (on Linux):** (1) `symlink_stays_within_dedicated_root` (`trusted/cargo-anneal/src/sandbox.rs`) rejects cross-package symlinks inside `lib/lean` unless both canonical paths start with `/nix/store`; (2) `is_allowed_pt_interp_dir` (`trusted/rustc-capture/src/identity.rs`) rejects `PT_INTERP`/`DT_RUNPATH` dirs if `cwd` shares their ancestor root; (3) `TempDir::drop` fails with `EACCES` on `0o555` directories. `ReadOnlyTreeGuard` + sibling `store/`/`work/` + `bwrap --ro-bind <store> /nix/store` resolves all three deterministically without host Nix. |
 | **Declarative Directives** | **A6. Adopt `dtolnay/trybuild` whole-`.stderr` byte snapshots or expand `integration.rs`'s `1,388`L `/// anneal:*` Rust doc-comment synthesizer.** | **Comparatively Dominated:** `trybuild` `.stderr` snapshots break on harmless nightly `rustc` diagnostic formatting shifts and lack `Capture`/`Preflight`/`Proof`/`Audit` stage typing; conversely, growing a bespoke `1,388`L Rust parser inside `integration.rs` tests test-only code rather than Anneal's real specification/request pipeline. Stage-typed `//@ fail(<stage>)` directives over native requests + real specs preserve polarity-locked precision with zero shadow compiler. |
 | **Multi-Kernel Proof Replay** | **A7. Wrap `lake comparator --paranoid` or `leanchecker --from-export` as the Lean `v4.35.0+` verdict gate** (earlier target sketch in [auditing-and-comparator.md](auditing-and-comparator.md#optional-paranoid-multi-kernel-ci-mode)). | **Empirically Falsified (on `leanprover/lean4` `v4.35.0`):** `Lean.Kernel.Environment.replay` (`src/lean/Lean/Replay.lean:77, 186`) iterates `NameSet` in `Name.quickCmp` hash order without recursing on implicit string-literal reduction constants (`String.ofList`), failing on every real Anneal `Captured.program` string literal; additionally, `lake comparator` hardcodes `"unpermitted_axiom_hard_error": false` in `nanoda_bin`. Running `nanoda_bin` (`"unpermitted_axiom_hard_error": true`), `con-ron --verified`, `con-leche`, and `lean4lean --import` directly under strict Rust config checks inside `ExecSeal` is faster (`<3.0 s`), stricter, and immune to `Replay.lean` ordering bugs while `leanchecker --from-export` remains deferred behind a non-gating probe. |
 
@@ -1027,8 +1023,8 @@ blast radii remain documented below for durable architectural rationale.
   modules totaling `43,393`L AND internal `*Canaries.lean` test suites totaling
   `~56 s` of single-core Lean elaboration CPU). Because `flake.nix` copies all
   of `theory/` into `share/anneal/theory` and `installed_smoke`'s `lean_case`
-  (`installed_smoke/lean_file.rs`) compiles the transitive closure of
-  `Anneal.lean` cold with `lean -j1`,
+  (`tests/cargo-anneal/tests/installed_smoke/lean_file.rs`) compiles the
+  transitive closure of `Anneal.lean` cold with `lean -j1`,
   `installed_smoke` pays for `3.58x` the bundled `theory/` LOC (`60,192 /
   16,799` lines; `3.95x` or `66,307 / 16,799` lines across the combined
   `trusted/lean/` + `theory/` closure) and drags `*Canaries.lean` into
@@ -1096,9 +1092,9 @@ blast radii remain documented below for durable architectural rationale.
   demand-driven domain umbrellas (`Anneal.Scalar`, `Anneal.Wp`, `Anneal.Simd`,
   and `Anneal.PureLift`), keeping `share/anneal/theory` (verified by
   `lean-file` to exclude `Anneal.lean` and `*Canaries*`) matched 1-for-1 to
-  `theory/bundle-manifest.json` (`20` bundled modules) while `scan_lean_tree`
-  (`require_umbrella = false` for `"Anneal"`) continues to discover and audit
-  every `.lean` module under `theory/`.
+  `theory/bundle-manifest.json` (`20` bundled modules at `#4250`) while
+  `scan_lean_tree` (`require_umbrella = false` for `"Anneal"`) continues to
+  discover and audit every `.lean` module under `theory/`.
 - **Blast Radius:** Touches `anneal/theory/**/Canaries*.lean` import/re-export
   edges across `Anneal.{MirWp,PureLift,Core,ByteRun,ByteSubLens}` and
   `Anneal.{CallStackUnwind,CnfOrd,F2Simd,MirTotal,OverflowCastJoin,RefFrame}`,
@@ -1120,7 +1116,7 @@ blast radii remain documented below for durable architectural rationale.
 #### Decision D2: Retiring Doc-Comment Synthesis (`D2-A`, `#4187`)
 
 - **Context (Source inspection at `c351dd381a`):**
-  `integration.rs:907-2294` (`1,388` lines) implemented a test-only Rust lexer
+  A `1,388`-line section of `integration.rs` implemented a test-only Rust lexer
   and Lean `Spec.lean`/`Proof.lean` synthesizer for `/// anneal:ensures(...)`
   doc comments across `6` fixture files (`42` initial scalar cases—`11` `pass`,
   `2` `fail(proof, ...)`, `2` `fail(spec)`, and `27` `fail(capture)` across
@@ -1182,9 +1178,9 @@ blast radii remain documented below for durable architectural rationale.
 
 #### Decision D4: CI Tiering for Rust TCB Guard Ablation (`D4-A`)
 
-- **Context:** Lean TCB guard mutation (`224` guards in
-  `check_guard_mutation.py`: `204` `MirSemantics` + `8` header + `12` boundary
-  guards) reuses precompiled `BASE_TRUSTED_MODULES` and `TrustedBoundary` /
+- **Context:** Lean TCB guard mutation (the `MirSemantics`, header, and
+  boundary guards cataloged in `check_guard_mutation.py`) reuses precompiled
+  `BASE_TRUSTED_MODULES` and `TrustedBoundary` /
   `SpecPreflight` `.olean`s inside `NestedBwrap` (already running in Tier 1 PR
   CI). By contrast, mutating `N` Rust TCB guards in
   `trusted/{rustc-capture,audit,cargo-anneal}` requires incremental
@@ -1294,7 +1290,7 @@ blast radii remain documented below for durable architectural rationale.
     Tier B rolling 25-commit `Median / MAD` analysis (`perf_tracking.py
     analyze`) tracks finer step regressions on `benchmark-data`; macOS Mach-O
     split-store simulation is out of scope because `anneal-rustc-capture`
-    restricts typed MIR residency verification to Linux
-    (`identity.rs:1438-1443`).
+    restricts typed MIR residency verification to Linux; see
+    `verify_driver_residency` (`trusted/rustc-capture/src/identity.rs`).
 
 [paranoid-ci]: auditing-and-comparator.md#optional-paranoid-multi-kernel-ci-mode
