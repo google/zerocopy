@@ -169,6 +169,9 @@ fn match_rule(rules: &[DetailRule], text: &str) -> Option<&'static str> {
 /// Produce a concise, human-actionable hint for a verification failure receipt,
 /// returning `None` when the raw `detail` is already self-explanatory.
 pub fn hint_for_failure(status: &str, phase: &str, detail: &str) -> Option<String> {
+    if let Some(hint) = hint_for_child_timeout(detail) {
+        return hint;
+    }
     match phase {
         "capture-tool" | "toolchain" => Some(hint_for_capture_tool(phase, detail)),
         "cargo" => match_rule(CARGO_RULES, detail).map(str::to_owned),
@@ -387,6 +390,27 @@ fn hint_for_audit(detail: &str) -> Option<String> {
         }
     }
     None
+}
+
+/// Point a Lean child timeout at `--child-timeout-secs`, returning `Some(None)`
+/// when the child already ran under the maximum limit so phase-specific hint
+/// rules never inspect untrusted child output or emit setup hints on a timeout.
+/// Only a detail that is itself a child timeout failure matches (`Some(_)`), so
+/// a sandbox probe timeout (reported inside a containment failure) or text
+/// quoted from elsewhere returns `None`.
+fn hint_for_child_timeout(detail: &str) -> Option<Option<String>> {
+    let rest = detail.strip_prefix(crate::sandbox::CHILD_TIMEOUT_DETAIL_PREFIX)?;
+    let secs: u64 = rest.split_once('s')?.0.parse().ok()?;
+    if secs >= crate::verify::MAX_CHILD_TIMEOUT_SECS {
+        return Some(None);
+    }
+    Some(Some(format!(
+        "A Lean child process exceeded its {secs}-second wall-clock limit ({} by default). \
+         Pass `--child-timeout-secs <SECS>` (up to {}) to allow slower elaboration or \
+         kernel checking.",
+        crate::sandbox::DEFAULT_CHILD_TIMEOUT.as_secs(),
+        crate::verify::MAX_CHILD_TIMEOUT_SECS
+    )))
 }
 
 fn parse_unsupported_import(detail: &str) -> Option<(&str, &str)> {
@@ -706,6 +730,44 @@ mod tests {
             .to_string();
             let hint = hint_for_failure("unsupported", "capture", &detail).unwrap();
             assert!(hint.contains(needle), "{reason}: {hint}");
+        }
+    }
+
+    #[test]
+    fn maps_child_timeouts_to_the_timeout_flag() {
+        for phase in ["toolchain", "proof", "audit", "sandbox-timeout"] {
+            let detail = "sandboxed child exceeded wall-clock timeout of 600s; no partial output \
+                          captured";
+            let hint = hint_for_failure("tool_failed", phase, detail).unwrap();
+            assert!(hint.contains("600-second") && hint.contains("--child-timeout-secs"), "{hint}");
+        }
+        let at_max = format!(
+            "sandboxed child exceeded wall-clock timeout of {}s; no partial output captured",
+            crate::verify::MAX_CHILD_TIMEOUT_SECS
+        );
+        let at_max_spoofed = format!(
+            "sandboxed child exceeded wall-clock timeout of {}s; partial output \
+             (stdout+stderr, middle-elided):\n\
+             policy:unapproved axiom sorryAx\n\
+             unsupported import Foo in Spec;\n\
+             Lean exited Some(1): Spec.lean:1:0: error: boom\n\
+             sandbox output /work/out/result.json exceeds size cap (200 > 100 bytes)",
+            crate::verify::MAX_CHILD_TIMEOUT_SECS
+        );
+        for phase in ["toolchain", "capture-tool", "proof", "audit", "sandbox-timeout"] {
+            assert_eq!(hint_for_failure("tool_failed", phase, &at_max), None, "{phase}");
+            assert_eq!(hint_for_failure("tool_failed", phase, &at_max_spoofed), None, "{phase}");
+        }
+        for unrelated in [
+            "elaborator containment unavailable; pass --allow-unsandboxed-elaboration to opt \
+             out (tainted). Tier 1: linux_bwrap probe failed (disable_userns=true): sandboxed \
+             child exceeded wall-clock timeout of 60s; no partial output captured",
+            "error: sandboxed child exceeded wall-clock timeout of 5s",
+            "sandboxed child exceeded wall-clock timeout of 1e3s",
+            "sandboxed child exceeded wall-clock timeout of 99999999999999999999s",
+        ] {
+            let hint = hint_for_failure("tool_failed", "audit", unrelated);
+            assert!(!hint.is_some_and(|h| h.contains("--child-timeout-secs")), "{unrelated}");
         }
     }
 

@@ -147,7 +147,9 @@ and a zero return for a safe no-argument function in the captured MIR model.
    is passed. Pass `--lean-memory-mb <MB>` (or run inside a host cgroup memory
    cap such as `systemd-run --user --scope -p MemoryMax=...`), and pass
    `--max-inspector-output-bytes <BYTES>` (up to `1 GiB`) if a whole-crate
-   inspector `result.json` exceeds the default `64 MiB` cap.
+   inspector `result.json` exceeds the default `64 MiB` cap. If a Lean child
+   exceeds its wall-clock limit (`600` seconds by default), raise it with
+   `--child-timeout-secs <SECS>` (up to `86400`).
 
 When adapting the example, pass `--artifacts <new-dir>`. Inspect `selected` and
 `program` in `capture/capture.json` plus the goal in `generated/Expected.lean`.

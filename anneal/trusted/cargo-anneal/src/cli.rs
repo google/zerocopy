@@ -389,6 +389,7 @@ mod tests {
                 assert!(output.contains("Usage:"), "{output}");
                 if suffix == ["verify", "--help"] {
                     assert!(output.contains("--max-inspector-output-bytes"), "{output}");
+                    assert!(output.contains("--child-timeout-secs"), "{output}");
                 }
                 if suffix == ["inspect", "--help"] {
                     assert!(output.contains("--max-receipt-bytes"), "{output}");
@@ -498,6 +499,9 @@ mod tests {
             &["verify", "--request", "request.json", "--max-inspector-output-bytes", "1073741825"],
             &["verify", "--request", "request.json", "--max-inspector-output-bytes", "-1"],
             &["verify", "--request", "request.json", "--max-inspector-output-bytes", "abc"],
+            &["verify", "--request", "request.json", "--child-timeout-secs", "0"],
+            &["verify", "--request", "request.json", "--child-timeout-secs", "86401"],
+            &["verify", "--request", "request.json", "--child-timeout-secs", "abc"],
             &["inspect", "receipt.json", "--max-receipt-bytes", "0"],
             &["inspect", "receipt.json", "--max-receipt-bytes", "1073741825"],
             &["inspect", "receipt.json", "--max-receipt-bytes", "-1"],

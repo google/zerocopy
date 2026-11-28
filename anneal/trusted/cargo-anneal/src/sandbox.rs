@@ -39,6 +39,11 @@ use crate::toolchain::Failure;
 /// Default wall-clock timeout for a single sandboxed Lean invocation.
 pub const DEFAULT_CHILD_TIMEOUT: Duration = Duration::from_secs(600);
 
+/// Leading text of a child timeout failure's detail, followed by the limit
+/// in whole seconds and `s`.
+pub(crate) const CHILD_TIMEOUT_DETAIL_PREFIX: &str =
+    "sandboxed child exceeded wall-clock timeout of ";
+
 /// Maximum bytes retained in memory from each child stdout or stderr stream
 /// (16 MiB); excess bytes are still drained and discarded to avoid pipe
 /// deadlocks without allowing a hostile child to OOM the host.
@@ -1790,6 +1795,43 @@ fn child_exited_unreaped(child_pid: u32) -> std::io::Result<bool> {
     }
 }
 
+/// Configure piped standard streams and process-group / parent-death hygiene
+/// on a direct (unsandboxed) Lean [`Command`] before `spawn` so
+/// [`wait_for_spawned_child_with_timeout`] can enforce `child_timeout` safely.
+pub(crate) fn configure_direct_lean_child(cmd: &mut Command, rlimit_fsize_bytes: u64) {
+    cmd.stdin(Stdio::null()).stdout(Stdio::piped()).stderr(Stdio::piped());
+    #[cfg(target_os = "linux")]
+    {
+        use std::os::unix::process::CommandExt;
+        let parent_pid = unsafe { libc::getpid() };
+        // SAFETY: `apply_process_hygiene` calls only async-signal-safe libc
+        // routines (`setpgid`, `prctl`, `getppid`, `close_range`/`fcntl`,
+        // `getrlimit`/`setrlimit`) before `exec`.
+        unsafe {
+            cmd.pre_exec(move || {
+                linux::apply_process_hygiene(parent_pid, false, rlimit_fsize_bytes)
+            });
+        }
+    }
+    #[cfg(all(unix, not(target_os = "linux")))]
+    {
+        let _ = rlimit_fsize_bytes;
+        use std::os::unix::process::CommandExt;
+        // SAFETY: `setpgid(0, 0)` is async-signal-safe and isolates the child
+        // process group for deterministic timeout reaping.
+        unsafe {
+            cmd.pre_exec(|| {
+                let _ = libc::setpgid(0, 0);
+                Ok(())
+            });
+        }
+    }
+    #[cfg(not(unix))]
+    {
+        let _ = rlimit_fsize_bytes;
+    }
+}
+
 /// Spawn `cmd`, drain stdout and stderr concurrently on dedicated threads so
 /// pipe buffers never deadlock, terminate the child process group upon leader
 /// exit or timeout before reaping `child`, and enforce the wall-clock deadline
@@ -1802,9 +1844,18 @@ fn spawn_and_wait_with_timeout(
     stdout_file: Option<(PathBuf, u64)>,
 ) -> Result<Output, Failure> {
     cmd.stdin(Stdio::null()).stdout(Stdio::piped()).stderr(Stdio::piped());
-    let mut child = cmd
+    let child = cmd
         .spawn()
         .map_err(|e| Failure::operational(label, format!("failed to spawn child: {e}")))?;
+    wait_for_spawned_child_with_timeout(child, timeout, label, stdout_file)
+}
+
+pub(crate) fn wait_for_spawned_child_with_timeout(
+    mut child: std::process::Child,
+    timeout: Duration,
+    label: &str,
+    stdout_file: Option<(PathBuf, u64)>,
+) -> Result<Output, Failure> {
     #[cfg(unix)]
     let child_pid = child.id();
     let stdout_pipe = child
@@ -2081,8 +2132,7 @@ fn timeout_failure(
     stdout: &Mutex<StreamCapture>,
     stderr: &Mutex<StreamCapture>,
 ) -> Failure {
-    let mut detail =
-        format!("sandboxed child exceeded wall-clock timeout of {}s", timeout.as_secs());
+    let mut detail = format!("{CHILD_TIMEOUT_DETAIL_PREFIX}{}s", timeout.as_secs());
     // Sanitize each stream before deciding whether it has anything to show,
     // so escape-only output neither adds an empty `[stderr]` header nor
     // hides the "no partial output" note.

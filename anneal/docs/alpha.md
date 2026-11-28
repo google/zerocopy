@@ -363,6 +363,9 @@ toolchain integration:
   `result.json` output size in bytes (`67108864` / `64 MiB` by default, up to
   `1073741824` / `1 GiB`; also raises child `RLIMIT_FSIZE` when set above
   `256 MiB`).
+- `--child-timeout-secs <SECS>`: sets the wall-clock limit for each
+  Lean child process (`600` by default, `1` to `86400`). It only bounds run
+  time: it is not recorded in the receipt and does not taint it.
 
 Parallel Lean compilation uses a bounded number of workers. By default it uses
 the smaller of the host's available parallelism and a built-in cap. Setting

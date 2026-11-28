@@ -40,9 +40,10 @@ use crate::olean_cache::{
 use crate::sandbox::{
     ActiveSandbox, DEFAULT_CHILD_TIMEOUT, DEFAULT_MAX_INSPECTOR_RESULT_BYTES, MountSpec,
     PathMapper, RLIMIT_FSIZE_BYTES, SandboxMode, SandboxPolicy, SandboxRuntime, SeccompProfile,
-    copy_readonly_file, create_dir_mode, make_tree_writable, set_mode, validate_and_promote_olean,
-    validate_and_promote_olean_set, validate_and_promote_olean_set_with_digests,
-    validate_inspector_result_with_cap, validate_max_inspector_result_bytes,
+    configure_direct_lean_child, copy_readonly_file, create_dir_mode, make_tree_writable, set_mode,
+    validate_and_promote_olean, validate_and_promote_olean_set,
+    validate_and_promote_olean_set_with_digests, validate_inspector_result_with_cap,
+    validate_max_inspector_result_bytes, wait_for_spawned_child_with_timeout,
 };
 use crate::target::{TargetRole, is_bundled_theory_module};
 use crate::toolchain::{
@@ -2525,33 +2526,27 @@ impl Checker {
         Ok(rt)
     }
 
-    /// Capture a Lean child in the stage with only the selected environment.
-    pub(crate) fn launch_lean(&self, arguments: &[String]) -> io::Result<Output> {
-        self.launch_lean_with_path(arguments, None)
-    }
-
-    /// Capture a Lean child in the stage with an optional hermetic `LEAN_PATH`
-    /// override pointing exclusively at staged `.olean` directories.
-    fn launch_lean_with_path(
+    /// Execute a direct (unsandboxed) Lean child in the stage with
+    /// `self.child_timeout` enforced across execution and pipe draining.
+    fn run_direct_lean_with_path(
         &self,
+        label: &str,
         arguments: &[String],
         lean_path: Option<&OsStr>,
-    ) -> io::Result<Output> {
+        rlimit_fsize_bytes: u64,
+    ) -> Result<Output, Failure> {
         let lean_bin =
             self.admitted.as_ref().map_or(self.lean.as_path(), |a| a.exec_lean.as_path());
-        let mut cmd = Command::new(lean_bin);
-        cmd.args(arguments).current_dir(&self.stage).env_clear().envs(&self.environment);
-        if let Some(lp) = lean_path {
-            cmd.env("LEAN_PATH", lp);
-        }
-        #[cfg(not(test))]
-        {
-            cmd.output()
-        }
-        #[cfg(test)]
-        {
-            run_with_etxtbsy_retry(|| cmd.output())
-        }
+        run_direct_lean_command(
+            lean_bin,
+            arguments,
+            &self.stage,
+            &self.environment,
+            lean_path,
+            self.child_timeout,
+            label,
+            rlimit_fsize_bytes,
+        )
     }
 
     /// Execute `self.lean` with `arguments` in the sanitized `self.environment`
@@ -2594,9 +2589,12 @@ impl Checker {
         ordinary_rejection: bool,
     ) -> Result<String, Failure> {
         let _ = self.next_counter();
-        let output = self
-            .launch_lean_with_path(arguments, lean_path)
-            .map_err(|e| Failure::new(2, label, format!("could not execute Lean: {e}")))?;
+        let output = self.run_direct_lean_with_path(
+            label,
+            arguments,
+            lean_path,
+            RLIMIT_FSIZE_BYTES,
+        )?;
         check_lean_output(label, output, ordinary_rejection)
     }
 
@@ -2873,6 +2871,7 @@ impl Checker {
                 environment,
                 admitted,
                 compiled_roles,
+                child_timeout,
                 olean_cache,
                 olean_ledger,
                 ..
@@ -2880,6 +2879,7 @@ impl Checker {
             let stage: &Path = stage;
             let environment: &BTreeMap<String, String> = environment;
             let compiled_roles: &BTreeMap<String, TargetRole> = compiled_roles;
+            let child_timeout = *child_timeout;
             let adm = admitted
                 .as_mut()
                 .expect("toolchain admission verified above");
@@ -2969,18 +2969,16 @@ impl Checker {
                     } => {
                         let module = &order[idx];
                         let label = format!("compile-{module}");
-                        let mut cmd = Command::new(&exec_lean);
-                        cmd.args(&compile_args)
-                            .current_dir(stage)
-                            .env_clear()
-                            .envs(environment);
-                        #[cfg(not(test))]
-                        let output = cmd.output();
-                        #[cfg(test)]
-                        let output = run_with_etxtbsy_retry(|| cmd.output());
-                        let output = output.map_err(|e| {
-                            Failure::new(2, &label, format!("could not execute Lean: {e}"))
-                        })?;
+                        let output = run_direct_lean_command(
+                            &exec_lean,
+                            &compile_args,
+                            stage,
+                            environment,
+                            None,
+                            child_timeout,
+                            &label,
+                            RLIMIT_FSIZE_BYTES,
+                        )?;
                         check_lean_output(&label, output, false)?;
                         let mod_arts = collect_compiled_artifacts(module, &output_path)?;
                         let mut parts_with_sha = Vec::with_capacity(mod_arts.olean_parts.len());
@@ -3724,9 +3722,12 @@ impl Checker {
                     out_olean.to_string_lossy().into_owned(),
                     inspector_host.to_string_lossy().into_owned(),
                 ];
-                let output = self.launch_lean(&args).map_err(|e| {
-                    Failure::new(2, compile_phase, format!("could not execute Lean: {e}"))
-                });
+                let output = self.run_direct_lean_with_path(
+                    compile_phase,
+                    &args,
+                    None,
+                    RLIMIT_FSIZE_BYTES,
+                );
                 let output = match output {
                     Ok(out) => out,
                     Err(err) => {
@@ -4107,9 +4108,14 @@ impl Checker {
         // `initHermeticSearchPath`, which resets `Lean.searchPathRef` from
         // `sysroot` (and explicit staged `searchPath` entries) without reading
         // `LEAN_PATH` before loading any foundation, repo, or vendor module.
-        let output = self
-            .launch_lean_with_path(&args, Some(OsStr::new("control")))
-            .map_err(|e| Failure::new(2, mode, format!("could not execute Lean: {e}")))?;
+        let rlimit_fsize =
+            RLIMIT_FSIZE_BYTES.max(self.max_inspector_result_bytes.saturating_add(1));
+        let output = self.run_direct_lean_with_path(
+            mode,
+            &args,
+            Some(OsStr::new("control")),
+            rlimit_fsize,
+        )?;
 
         check_lean_stderr_panic(mode, &output)?;
         if !output.status.success() {
@@ -5002,6 +5008,32 @@ fn retry_on_etxtbsy<T>(
     }
 }
 
+#[allow(clippy::too_many_arguments)]
+fn run_direct_lean_command(
+    lean_bin: &Path,
+    arguments: &[String],
+    stage: &Path,
+    environment: &BTreeMap<String, String>,
+    lean_path: Option<&OsStr>,
+    timeout: Duration,
+    label: &str,
+    rlimit_fsize_bytes: u64,
+) -> Result<Output, Failure> {
+    let mut cmd = Command::new(lean_bin);
+    cmd.args(arguments).current_dir(stage).env_clear().envs(environment);
+    if let Some(lp) = lean_path {
+        cmd.env("LEAN_PATH", lp);
+    }
+    configure_direct_lean_child(&mut cmd, rlimit_fsize_bytes);
+    #[cfg(not(test))]
+    let spawned = cmd.spawn();
+    #[cfg(test)]
+    let spawned = run_with_etxtbsy_retry(|| cmd.spawn());
+    let child =
+        spawned.map_err(|e| Failure::new(2, label, format!("could not execute Lean: {e}")))?;
+    wait_for_spawned_child_with_timeout(child, timeout, label, None)
+}
+
 #[cfg(test)]
 fn run_with_etxtbsy_retry<T>(op: impl FnMut() -> io::Result<T>) -> io::Result<T> {
     retry_on_etxtbsy(&ETXTBSY_RETRY_DELAYS_MS, op)
@@ -5033,6 +5065,13 @@ mod process_tests {
         let mut checker = Checker::new_with_env(checkout, Some(Path::new("/bin/sh")), []).unwrap();
         checker.set_sandbox_mode(SandboxMode::Unsandboxed);
         checker
+    }
+
+    /// Launch `checker`'s Lean binary through the production direct-child
+    /// launcher, so these tests exercise the same environment clearing,
+    /// process hygiene, and timeout handling as verification does.
+    fn launch(checker: &Checker, arguments: &[String]) -> Result<Output, Failure> {
+        checker.run_direct_lean_with_path("test-launch", arguments, None, RLIMIT_FSIZE_BYTES)
     }
 
     #[test]
@@ -5084,12 +5123,14 @@ mod process_tests {
     fn captures_successful_child_output() {
         let checkout = tempfile::tempdir().unwrap();
         let checker = shell_checker(checkout.path());
-        let output = checker
-            .launch_lean(&[
+        let output = launch(
+            &checker,
+            &[
                 "-c".to_string(),
                 "printf 'stdout\\000\\377'; printf 'stderr\\000\\376' >&2".to_string(),
-            ])
-            .unwrap();
+            ],
+        )
+        .unwrap();
 
         assert!(output.status.success());
         assert_eq!(output.stdout, b"stdout\0\xff");
@@ -5100,12 +5141,14 @@ mod process_tests {
     fn preserves_failed_child_status_and_raw_streams() {
         let checkout = tempfile::tempdir().unwrap();
         let checker = shell_checker(checkout.path());
-        let output = checker
-            .launch_lean(&[
+        let output = launch(
+            &checker,
+            &[
                 "-c".to_string(),
                 "printf 'stdout\\000\\377'; printf 'stderr\\000\\376' >&2; exit 37".to_string(),
-            ])
-            .unwrap();
+            ],
+        )
+        .unwrap();
 
         assert_eq!(output.status.code(), Some(37));
         assert_eq!(output.stdout, b"stdout\0\xff");
@@ -5113,14 +5156,22 @@ mod process_tests {
     }
 
     #[test]
-    fn returns_io_error_when_child_cannot_launch() {
+    fn reports_operational_failure_when_child_cannot_launch() {
         let checkout = tempfile::tempdir().unwrap();
         let missing = checkout.path().join("missing-lean");
         let checker = Checker::new_with_env(checkout.path(), Some(&missing), []).unwrap();
 
-        let error = checker.launch_lean(&[]).unwrap_err();
+        let error = launch(&checker, &[]).unwrap_err();
 
-        assert_eq!(error.kind(), io::ErrorKind::NotFound);
+        assert_eq!(error.code, 2);
+        assert_eq!(error.phase, "test-launch");
+        let not_found = io::Error::from_raw_os_error(libc::ENOENT).to_string();
+        assert!(
+            error.message.starts_with("could not execute Lean: ")
+                && error.message.contains(&not_found),
+            "unexpected launch failure: {}",
+            error.message
+        );
     }
 
     #[test]
@@ -5271,7 +5322,7 @@ mod process_tests {
 
         let run_policy = |label: &str, stream: &str, script: &str, allow_proof_limit: bool| {
             fs::write(checker.stage.join("diagnostic"), stream).unwrap();
-            let output = checker.launch_lean(&["-c".into(), script.into()]).unwrap();
+            let output = launch(&checker, &["-c".into(), script.into()]).unwrap();
             check_lean_output_with_policy(label, output, true, allow_proof_limit).unwrap_err()
         };
 
@@ -5347,8 +5398,9 @@ mod process_tests {
         let checkout = tempfile::tempdir().unwrap();
         let checker = shell_checker(checkout.path());
         fs::write(checker.stage.join("marker"), b"from-stage\n").unwrap();
-        let output = checker
-            .launch_lean(&[
+        let output = launch(
+            &checker,
+            &[
                 "-c".to_string(),
                 "IFS= read -r marker < marker; printf '%s\\000' \"$marker\" \"$@\"".to_string(),
                 "fixture".to_string(),
@@ -5356,8 +5408,9 @@ mod process_tests {
                 String::new(),
                 "$HOME;*".to_string(),
                 "line\nbreak".to_string(),
-            ])
-            .unwrap();
+            ],
+        )
+        .unwrap();
 
         assert!(output.status.success());
         assert_eq!(output.stdout, b"from-stage\0space separated\0\0$HOME;*\0line\nbreak\0");
@@ -5382,7 +5435,7 @@ mod process_tests {
             ],
         )
         .unwrap();
-        let output = checker.launch_lean(&[]).unwrap();
+        let output = launch(&checker, &[]).unwrap();
 
         assert!(output.status.success());
         let environment = String::from_utf8(output.stdout).unwrap();
@@ -6168,6 +6221,41 @@ mod process_tests {
             checker.sandbox_runtime.is_none(),
             "failed admission must not cache unverified sandbox_runtime"
         );
+    }
+
+    #[test]
+    fn unsandboxed_admission_bounds_version_and_prefix_queries() {
+        let dir = tempfile::tempdir().unwrap();
+        let anneal_root = Path::new(env!("CARGO_MANIFEST_DIR"))
+            .parent()
+            .unwrap()
+            .parent()
+            .unwrap();
+        for slow_arg in ["--version", "--print-prefix"] {
+            let fake_lean = dir.path().join(format!("lean-{}", &slow_arg[2..]));
+            let script = format!(
+                "#!/bin/sh\n\
+                 if [ \"${{1:-}}\" = {slow_arg:?} ]; then sleep 5; fi\n\
+                 if [ \"${{1:-}}\" = '--version' ]; then printf 'Lean (version 4.35.0)\\n'; exit 0; fi\n\
+                 printf '%s\\n' {prefix:?}\n",
+                prefix = dir.path().display(),
+            );
+            write_executable_script(&fake_lean, script);
+            let mut checker = Checker::new(anneal_root, Some(&fake_lean)).unwrap();
+            checker.set_sandbox_mode(SandboxMode::Unsandboxed);
+            checker.set_allow_unpinned_lean(true);
+            checker.set_child_timeout(Duration::from_millis(100));
+            let err = checker.tool_admission().expect_err(slow_arg);
+            assert_eq!(err.phase, "sandbox-timeout", "{slow_arg}: {err}");
+        }
+        let real_lean = crate::default_lean_path();
+        if real_lean.is_file() {
+            let mut pinned = Checker::new(anneal_root, Some(&real_lean)).unwrap();
+            pinned.set_sandbox_mode(SandboxMode::Unsandboxed);
+            pinned.set_child_timeout(Duration::from_nanos(1));
+            let err = pinned.tool_admission().expect_err("pinned 1ns unsandboxed admission");
+            assert_eq!(err.phase, "sandbox-timeout", "{err}");
+        }
     }
 
     #[test]
