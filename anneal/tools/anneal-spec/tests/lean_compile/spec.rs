@@ -427,6 +427,38 @@ anneal::external_spec! {
         a.saturating_sub_unsigned(b)
     }
 
+    // Unbounded shifts shift every bit out by an amount not below the
+    // width, and `midpoint` rounds toward zero.
+    #[anneal::pure]
+    fn ushl(a: u8, n: u32) -> u8 {
+        a.unbounded_shl(n)
+    }
+
+    #[anneal::pure]
+    fn ishl(a: i8, n: u32) -> i8 {
+        a.unbounded_shl(n)
+    }
+
+    #[anneal::pure]
+    fn ushr(a: u32, n: u32) -> u32 {
+        a.unbounded_shr(n)
+    }
+
+    #[anneal::pure]
+    fn ishr(a: i8, n: u32) -> i8 {
+        a.unbounded_shr(n)
+    }
+
+    #[anneal::pure]
+    fn mid_u(a: u8, b: u8) -> u8 {
+        a.midpoint(b)
+    }
+
+    #[anneal::pure]
+    fn mid_i(a: i8, b: i8) -> i8 {
+        a.midpoint(b)
+    }
+
     #[anneal::pure]
     fn wshl_is(a: u16, n: u32, r: u16) -> bool {
         wrapping_shl(a, n) == r
@@ -447,6 +479,7 @@ anneal::external_spec! {
                 + n.div_ceil(8)
                 + a.cast_signed().unsigned_abs() as u32
                 + b.saturating_add_signed(-1) as u32
+                + n.unbounded_shr(31)
         },
         ensures(|r| r == saturating_sub(n, 1u32)),
     )]

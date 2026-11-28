@@ -2153,6 +2153,80 @@ fn mixed_signedness_methods_are_checked_strictly() {
 }
 
 #[test]
+fn unbounded_shifts_and_midpoint_lower_exactly() {
+    let x = "(specInt (specArg q 0))";
+    let y = "(specInt (specArg q 1))";
+    let emod = "Trusted.MirSemantics.intEmod";
+    let lean = |clause: &str, sig: &str| {
+        lower_one(&wrap(clause, sig)).unwrap_or_else(|e| panic!("{clause}: {e:?}")).spec_lean
+    };
+    let has = |text: &str, want: &str| assert!(text.contains(want), "missing {want} in\n{text}");
+    // An amount below the width shifts as `<<` and `>>` do; a larger one
+    // shifts every bit out.
+    has(
+        &lean("ensures(|r| r == a.unbounded_shl(n))", "fn f(a: u8, n: u32) -> u8"),
+        &format!(
+            "((fun («x» «n» : Int) => if «n» < (8 : Int) then ({emod} \
+             (Trusted.MirSemantics.intShiftLeft «x» (Int.toNat «n»)) 256) else (0 : Int)) {x} {y})"
+        ),
+    );
+    has(
+        &lean("ensures(|r| r == a.unbounded_shl(n))", "fn f(a: i8, n: u32) -> i8"),
+        &format!(
+            "if «n» < (8 : Int) then ({emod} (Trusted.MirSemantics.intShiftLeft «x» (Int.toNat \
+             «n») + 128) 256 - 128) else (0 : Int)"
+        ),
+    );
+    has(
+        &lean("ensures(|r| r == a.unbounded_shr(n))", "fn f(a: u64, n: u32) -> u64"),
+        "if «n» < (64 : Int) then (Trusted.MirSemantics.intShiftRight «x» (Int.toNat «n»)) else \
+         (0 : Int)",
+    );
+    // A signed right shift fills with the sign bit.
+    has(
+        &lean("ensures(|r| r == a.unbounded_shr(9))", "fn f(a: i8) -> i8"),
+        &format!(
+            "((fun («x» «n» : Int) => if «n» < (8 : Int) then (Trusted.MirSemantics.intShiftRight \
+             «x» (Int.toNat «n»)) else if «x» < (0 : Int) then (Int.neg 1) else (0 : Int)) {x} \
+             (9 : Int))"
+        ),
+    );
+    // `midpoint` rounds toward zero.
+    has(
+        &lean("ensures(|r| r == a.midpoint(b))", "fn f(a: i32, b: i32) -> i32"),
+        &format!("((specInt out.ret) = (Trusted.MirSemantics.intTdiv ({x} + {y}) (2 : Int)))"),
+    );
+    lower_one(&wrap(
+        "ensures(|r| math(r) == math(a.midpoint(3) + a.unbounded_shl(1)))",
+        "fn f(a: u8) -> u8",
+    ))
+    .unwrap();
+}
+
+#[test]
+fn unbounded_shifts_and_midpoint_are_checked_strictly() {
+    let sig = "fn f(u: u8, w: u16, i: i8, n: u32)";
+    for (clause, code) in [
+        ("requires(u.unbounded_shl(u) == u)", "E_ANNEAL_SPEC_TYPE_MISMATCH"),
+        ("requires(u.unbounded_shr(-1) == u)", "E_ANNEAL_SPEC_LITERAL_RANGE"),
+        ("requires(u.unbounded_shl() == u)", "E_ANNEAL_SPEC_ARITY"),
+        ("requires(5.unbounded_shr(n) == u)", "E_ANNEAL_SPEC_TYPE_ANNOTATION_NEEDED"),
+        ("requires(u.midpoint(w) == u)", "E_ANNEAL_SPEC_TYPE_MISMATCH"),
+        ("requires(u.midpoint(i) == u)", "E_ANNEAL_SPEC_TYPE_MISMATCH"),
+        ("requires(u.midpoint(256) == u)", "E_ANNEAL_SPEC_LITERAL_RANGE"),
+        ("requires(u.midpoint() == u)", "E_ANNEAL_SPEC_ARITY"),
+        ("max_steps = i.unbounded_shr(n)", "E_ANNEAL_SPEC_TYPE_MISMATCH"),
+        ("max_steps = i.midpoint(0i8)", "E_ANNEAL_SPEC_TYPE_MISMATCH"),
+    ] {
+        expect_error(&wrap(clause, sig), code);
+    }
+    // Any `u32` amount is accepted.
+    lower_one(&wrap("requires(u.unbounded_shl(4294967295) == 0u8)", sig)).unwrap();
+    // Unsigned results are step counts.
+    lower_one(&wrap("max_steps = n.unbounded_shr(n) + w.midpoint(9) as u32", sig)).unwrap();
+}
+
+#[test]
 fn saturating_negation_and_abs_diff_intrinsics_lower_exactly() {
     let x = "(specInt (specArg q 0))";
     let y = "(specInt (specArg q 1))";

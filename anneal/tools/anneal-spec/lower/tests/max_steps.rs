@@ -289,6 +289,24 @@ fn max_steps_counts_mixed_signedness_sums_on_unsigned_receivers() {
 }
 
 #[test]
+fn max_steps_counts_unbounded_shifts_and_midpoints_of_unsigned_values() {
+    let l =
+        lower_one(&wrap("max_steps = n.unbounded_shr(4) + n.midpoint(m)", "fn f(n: u32, m: u32)"))
+            .unwrap();
+    for want in [
+        "(Int.toNat ((fun («x» «n» : Int) => if «n» < (32 : Int) then",
+        "(Int.toNat (Trusted.MirSemantics.intTdiv ((specInt (specArg q 0)) + (specInt (specArg q \
+         1))) (2 : Int)))",
+    ] {
+        assert!(l.spec_lean.contains(want), "missing {want} in\n{}", l.spec_lean);
+    }
+    expect_error(
+        &wrap("max_steps = k.unbounded_shl(1)", "fn f(k: i32)"),
+        "E_ANNEAL_SPEC_TYPE_MISMATCH",
+    );
+}
+
+#[test]
 fn max_steps_span_map_records_exact_clause_span() {
     let text = "anneal::external_spec! { #[anneal::spec(total, max_steps = 34 * n + 540)] fn f(n: usize); }";
     let l = lower_one(text).unwrap();

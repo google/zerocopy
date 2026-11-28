@@ -210,6 +210,14 @@ saturating intrinsics, reducing or clamping the exact sum or difference into the
 receiver's type, and an untyped literal operand takes the operand type, so
 `a.wrapping_add_signed(-1)` is accepted.
 
+`a.unbounded_shl(n)` and `a.unbounded_shr(n)` take a `u32` `n` of any size, as
+in Rust: below the bit width they shift as `<<` and `>>` do, and otherwise
+every bit is shifted out, leaving `0`, or `-1` for a negative `a` shifted
+right. They lower to a `fun` applied to `a` and `n` that chooses between the
+two cases with Lean's `if`. `a.midpoint(b)` takes operands of one type and
+lowers to `intTdiv (a + b) 2`: as in Rust, the average rounds toward zero, and
+it lies between the operands, so it is in their type.
+
 Division and remainder lower to
 `Trusted.MirSemantics.intTdiv`/`intTmod` (Rust's truncating semantics, as in
 `Int.tdiv`/`Int.tmod`) and require the divisor to be a nonzero literal or
