@@ -2357,9 +2357,12 @@ class Gate2CrossFamilyTests(unittest.TestCase):
             ("unhashable_finding_severity", {
                 "verdict": "findings",
                 "findings": [{"severity": {}, "summary": "note"}]}),
-            # Delta reviews are not part of the schema.
-            ("delta_mode", {"review_mode": "delta", "delta_from": OTHER_HEAD}),
-            ("full_mode_key", {"review_mode": "full"}),
+            # The only review modes are "full" and "delta", and delta_from
+            # needs delta mode (see Gate2DeltaReviewTests).
+            ("unknown_review_mode", {"review_mode": "partial"}),
+            ("delta_from_without_mode", {"delta_from": OTHER_HEAD}),
+            ("delta_from_with_full_mode",
+             {"review_mode": "full", "delta_from": OTHER_HEAD}),
         ):
             with self.subTest(malformed=label):
                 with self.assertRaises(ValueError):
