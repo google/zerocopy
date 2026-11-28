@@ -52,6 +52,8 @@ mod compiler_overrides;
 mod forged_olean_replay;
 #[path = "boundary_audit/foundation_and_sysroot.rs"]
 mod foundation_and_sysroot;
+#[path = "boundary_audit/pass1_cpp_semantics.rs"]
+mod pass1_cpp_semantics;
 #[path = "boundary_audit/pass1_mir_wp_gates.rs"]
 mod pass1_mir_wp_gates;
 #[path = "boundary_audit/pass1_preflight.rs"]
