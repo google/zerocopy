@@ -407,6 +407,20 @@ fn apply_fun(params: &[&str], ty: &str, body: &str, args: &[String]) -> String {
     format!("((fun ({} : {ty}) => {body}) {})", params.join(" "), args.join(" "))
 }
 
+/// The mask of `bits` bits that sets the low `group` bits of every
+/// `2 * group`-bit chunk, as SWAR stages use: `0x55..` for `group` 1.
+fn swar_mask(bits: u32, group: u32) -> String {
+    let chunk = (1u128 << group) - 1;
+    (0..bits / (2 * group)).fold(0u128, |m, i| m | chunk << (2 * group * i)).to_string()
+}
+
+/// `x`, a Lean `Nat` term, passed through `stages`, each a function of
+/// `«x»` applied to the previous value, so that each stage evaluates its
+/// input once.
+fn nat_stages(x: String, stages: &[String]) -> String {
+    stages.iter().fold(x, |acc, stage| apply_fun(&["«x»"], NAT, stage, &[acc]))
+}
+
 /// Whether `a <= b`.
 fn lit_le(a: IntLit, b: IntLit) -> bool {
     match (a.neg && a.mag != 0, b.neg && b.mag != 0) {
@@ -1892,8 +1906,9 @@ impl<'a> Env<'a> {
     /// methods, such as `wrapping_add_signed`, take an operand of `recv`'s
     /// width and the other signedness. `unbounded_shl` and `unbounded_shr`
     /// shift by any `u32` amount, and `midpoint` averages toward zero. The
-    /// division methods take a divisor guarded as for `/`, and `swap_bytes`
-    /// reverses the bytes of `recv`. An operation that
+    /// division methods take a divisor guarded as for `/`, `swap_bytes` and
+    /// `reverse_bits` reverse the bytes or bits of `recv`, and `count_ones`
+    /// and `count_zeros` count its bits as a `u32`. An operation that
     /// needs an operand more than once applies a Lean `fun` to the operands,
     /// which evaluates each once and keeps every specification name out of
     /// the scope of its binders.
@@ -2157,6 +2172,43 @@ impl<'a> Env<'a> {
                 let value = format!("({INT}.ofNat {swapped})");
                 Ok(Low::Int(if t.signed { wrap_into(&value, t) } else { value }, ty(t)))
             }
+            // Bit reversal and population counts act on the `Nat` bits of
+            // `a`, through SWAR stages that each evaluate their input once:
+            // a stage swaps, or sums, adjacent groups of 1, 2, 4, ... bits.
+            "reverse_bits" | "count_ones" | "count_zeros" => {
+                arity(0)?;
+                let (a, t) = self.int_operand(name, recv, facts)?;
+                let bits = t.bits;
+                let x = format!("({INT}.toNat ({INT_EMOD} {a} {}))", modulus(t));
+                let groups = [1, 2, 4, 8, 16, 32, 64].into_iter().filter(|g| *g < bits);
+                if name == "reverse_bits" {
+                    let stages: Vec<String> = groups
+                        .map(|g| {
+                            let m = swar_mask(bits, g);
+                            format!("((«x» >>> {g}) &&& {m}) ||| ((«x» &&& {m}) <<< {g})")
+                        })
+                        .collect();
+                    let value = format!("({INT}.ofNat {})", nat_stages(x, &stages));
+                    return Ok(Low::Int(if t.signed { wrap_into(&value, t) } else { value }, ty(t)));
+                }
+                // Count the ones in each 2-bit, 4-bit, and 8-bit group, then
+                // fold the byte counts into the low byte, which holds the
+                // total, at most 128.
+                let (m1, m2, m4) = (swar_mask(bits, 1), swar_mask(bits, 2), swar_mask(bits, 4));
+                let mut stages = vec![
+                    format!("«x» - ((«x» >>> 1) &&& {m1})"),
+                    format!("(«x» &&& {m2}) + ((«x» >>> 2) &&& {m2})"),
+                    format!("(«x» + («x» >>> 4)) &&& {m4}"),
+                ];
+                stages.extend(groups.filter(|g| *g >= 8).map(|g| format!("«x» + («x» >>> {g})")));
+                let ones = format!("({INT}.ofNat ({} % 256))", nat_stages(x, &stages));
+                let term = if name == "count_ones" {
+                    ones
+                } else {
+                    format!("({} - {ones})", int_lit(IntLit::new(false, u128::from(bits))))
+                };
+                Ok(Low::Int(term, ty(U32)))
+            }
             // Unlike `<<` and `>>`, these shift by any `u32` amount: one
             // that is not below the width shifts every bit out, leaving `0`,
             // or `-1` for a negative operand of a signed right shift.
@@ -2242,7 +2294,8 @@ impl<'a> Env<'a> {
                  `is_multiple_of`, `div_ceil`, `rotate_left`, `rotate_right`, `is_positive`, \
                  `is_negative`, `signum`, `unsigned_abs`, `saturating_abs`, `wrapping_abs`, \
                  `cast_signed`, `cast_unsigned`, `unbounded_shl`, `unbounded_shr`, \
-                 `midpoint`, `swap_bytes`, `wrapping_div`, `wrapping_rem`, `wrapping_div_euclid`, \
+                 `midpoint`, `swap_bytes`, `reverse_bits`, `count_ones`, `count_zeros`, \
+                 `wrapping_div`, `wrapping_rem`, `wrapping_div_euclid`, \
                  `wrapping_rem_euclid`, `div_euclid`, `rem_euclid`, `abs_diff`, the mixed-signedness \
                  `wrapping_add_signed` and its kin, and the `wrapping_*`, `saturating_*`, and \
                  `no_overflow_*` intrinsics",

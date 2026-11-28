@@ -1830,7 +1830,7 @@ fn integer_methods_are_checked_strictly() {
     for (clause, code) in [
         ("requires(a.0 == 0u8)", "E_ANNEAL_SPEC_UNSUPPORTED_EXPR"),
         ("requires(a.min == a)", "E_ANNEAL_SPEC_UNSUPPORTED_EXPR"),
-        ("requires(a.count_ones() == 0u32)", "E_ANNEAL_SPEC_UNSUPPORTED_EXPR"),
+        ("requires(a.to_string() == a)", "E_ANNEAL_SPEC_UNSUPPORTED_EXPR"),
         ("requires(a.math() == a)", "E_ANNEAL_SPEC_UNSUPPORTED_EXPR"),
         ("requires(a as u16.min(b) == b)", "E_ANNEAL_SPEC_SYNTAX"),
         ("requires(if c { a } else { a }.min(a) == a)", "E_ANNEAL_SPEC_SYNTAX"),
@@ -2414,12 +2414,87 @@ fn swap_bytes_lowers_exactly_and_is_checked_strictly() {
         ("requires(a.swap_bytes(1) == a)", "E_ANNEAL_SPEC_ARITY"),
         ("requires(5.swap_bytes() == a)", "E_ANNEAL_SPEC_TYPE_ANNOTATION_NEEDED"),
         ("requires(c.swap_bytes())", "E_ANNEAL_SPEC_TYPE_MISMATCH"),
-        ("requires(a.reverse_bits() == a)", "E_ANNEAL_SPEC_UNSUPPORTED_EXPR"),
+        ("requires(a.to_be_bytes() == a)", "E_ANNEAL_SPEC_UNSUPPORTED_EXPR"),
         ("max_steps = i.swap_bytes()", "E_ANNEAL_SPEC_TYPE_MISMATCH"),
     ] {
         expect_error(&wrap(clause, "fn f(a: u16, c: bool, i: i32)"), code);
     }
     lower_one(&wrap("max_steps = a.swap_bytes()", "fn f(a: u16)")).unwrap();
+}
+
+#[test]
+fn bit_reversal_and_population_counts_lower_exactly() {
+    let x = "(specInt (specArg q 0))";
+    let emod = "Trusted.MirSemantics.intEmod";
+    let lean = |clause: &str, sig: &str| {
+        lower_one(&wrap(clause, sig)).unwrap_or_else(|e| panic!("{clause}: {e:?}")).spec_lean
+    };
+    let has = |text: &str, want: &str| assert!(text.contains(want), "missing {want} in\n{text}");
+    let stage = |body: &str, arg: &str| format!("((fun («x» : Nat) => {body}) {arg})");
+    let bits8 = format!("(Int.toNat ({emod} {x} 256))");
+    // Bit reversal swaps adjacent 1-, 2-, and 4-bit groups of a `u8`.
+    let swap = |g: u32, m: u32, arg: &str| {
+        stage(&format!("((«x» >>> {g}) &&& {m}) ||| ((«x» &&& {m}) <<< {g})"), arg)
+    };
+    let reversed = swap(4, 15, &swap(2, 51, &swap(1, 85, &bits8)));
+    has(
+        &lean("ensures(|r| r == a.reverse_bits())", "fn f(a: u8) -> u8"),
+        &format!("((specInt out.ret) = (Int.ofNat {reversed}))"),
+    );
+    // Wider types add byte, word, ... swaps, and a signed result is
+    // sign-extended.
+    let u128_rev = lean("ensures(|r| r == a.reverse_bits())", "fn f(a: u128) -> u128");
+    has(
+        &u128_rev,
+        "((«x» >>> 64) &&& 18446744073709551615) ||| ((«x» &&& 18446744073709551615) <<< 64)",
+    );
+    has(
+        &lean("ensures(|r| r == a.reverse_bits())", "fn f(a: i32) -> i32"),
+        "+ 2147483648) 4294967296 - 2147483648)",
+    );
+    // `count_ones` sums 2-, 4-, and 8-bit groups and folds the bytes into
+    // the low one; `count_zeros` subtracts it from the width.
+    let ones = stage(
+        "(«x» + («x» >>> 4)) &&& 15",
+        &stage("(«x» &&& 51) + ((«x» >>> 2) &&& 51)", &stage("«x» - ((«x» >>> 1) &&& 85)", &bits8)),
+    );
+    has(
+        &lean("ensures(|r| r == a.count_ones())", "fn f(a: i8) -> u32"),
+        &format!("((specInt out.ret) = (Int.ofNat ({ones} % 256)))"),
+    );
+    has(
+        &lean("ensures(|r| r == a.count_zeros())", "fn f(a: u8) -> u32"),
+        &format!("((specInt out.ret) = ((8 : Int) - (Int.ofNat ({ones} % 256))))"),
+    );
+    let u64_ones = lean("ensures(|r| r == a.count_ones())", "fn f(a: u64) -> u32");
+    for g in [8, 16, 32] {
+        has(&u64_ones, &format!("(fun («x» : Nat) => «x» + («x» >>> {g}))"));
+    }
+    assert!(!u64_ones.contains("(«x» >>> 64)"), "{u64_ones}");
+    lower_one(&wrap(
+        "ensures(|r| math(r) == math(a.count_ones() + a.reverse_bits() as u32))",
+        "fn f(a: u8) -> u8",
+    ))
+    .unwrap();
+}
+
+#[test]
+fn bit_reversal_and_population_counts_are_checked_strictly() {
+    let sig = "fn f(u: u8, i: isize, c: bool)";
+    for (clause, code) in [
+        ("requires(u.count_ones() == u)", "E_ANNEAL_SPEC_TYPE_MISMATCH"),
+        ("requires(u.reverse_bits() == 1u16)", "E_ANNEAL_SPEC_TYPE_MISMATCH"),
+        ("requires(u.count_zeros(1) == 0u32)", "E_ANNEAL_SPEC_ARITY"),
+        ("requires(5.count_ones() == 2u32)", "E_ANNEAL_SPEC_TYPE_ANNOTATION_NEEDED"),
+        ("requires(c.count_ones() == 1u32)", "E_ANNEAL_SPEC_TYPE_MISMATCH"),
+        ("requires(u.to_string() == u)", "E_ANNEAL_SPEC_UNSUPPORTED_EXPR"),
+        ("max_steps = i.reverse_bits()", "E_ANNEAL_SPEC_TYPE_MISMATCH"),
+    ] {
+        expect_error(&wrap(clause, sig), code);
+    }
+    // The counts are `u32` step counts, even of a signed operand.
+    lower_one(&wrap("max_steps = i.count_ones() + i.count_zeros() + u.reverse_bits() as u32", sig))
+        .unwrap();
 }
 
 #[test]

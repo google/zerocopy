@@ -394,6 +394,25 @@ example : pure_swap_u64 72623859790382856 = 578437695752307201 := by unfold pure
 example : pure_swap_i128 1 = 1329227995784915872903807060280344576 := by unfold pure_swap_i128; decide
 example : pure_swap_u128 128 = 170141183460469231731687303715884105728 := by unfold pure_swap_u128; decide
 
+-- `reverse_bits`, `count_ones`, and `count_zeros`, checked against Rust.
+example : pure_rev_u8 1 = 128 := by unfold pure_rev_u8; decide
+example : pure_rev_i8 (-2) = 127 := by unfold pure_rev_i8; decide
+example : pure_rev_u16 1 = 32768 := by unfold pure_rev_u16; decide
+example : pure_rev_i32 1 = -2147483648 := by unfold pure_rev_i32; decide
+example : pure_rev_u32 305419896 = 510274632 := by unfold pure_rev_u32; decide
+example : pure_rev_u64 1 = 9223372036854775808 := by unfold pure_rev_u64; decide
+example : pure_rev_i128 1 = -170141183460469231731687303715884105728 := by unfold pure_rev_i128; decide
+example : pure_rev_u128 1 = 170141183460469231731687303715884105728 := by unfold pure_rev_u128; decide
+example : pure_ones_i8 (-1) = 8 := by unfold pure_ones_i8; decide
+example : pure_ones_u16 21845 = 8 := by unfold pure_ones_u16; decide
+example : pure_ones_i16 (-2) = 15 := by unfold pure_ones_i16; decide
+example : pure_ones_u32 305419896 = 13 := by unfold pure_ones_u32; decide
+example : pure_ones_i64 (-9223372036854775808) = 1 := by unfold pure_ones_i64; decide
+example : pure_ones_i128 (-1) = 128 := by unfold pure_ones_i128; decide
+example : pure_zeros_u8 240 = 4 := by unfold pure_zeros_u8; decide
+example : pure_zeros_usize 1 = 63 := by unfold pure_zeros_usize; decide
+example : pure_zeros_u128 0 = 128 := by unfold pure_zeros_u128; decide
+
 -- The masked shifts take the amount modulo the width.
 example : pure_wshl_is 1 17 2 := by unfold pure_wshl_is; decide
 example : pure_wshl_is 0x8001 1 2 := by unfold pure_wshl_is; decide
@@ -405,9 +424,9 @@ example : ¬ pure_wshr_is (-32768) 31 1 := by unfold pure_wshr_is; decide
 -- `+ n as u8 as u32 + a.max(b) as u32 + n.div_ceil(8)`
 -- `+ a.cast_signed().unsigned_abs() as u32 + b.saturating_add_signed(-1) as u32`
 -- `+ n.unbounded_shr(31) + n.div_euclid(16) + n.saturating_div(1024)`
--- `+ n.swap_bytes()`.
-example : fn7_max_steps { args := [u8Val 9, u8Val 2, u32Val 5] } = 83886123 := rfl
+-- `+ n.swap_bytes() + n.count_ones()`.
+example : fn7_max_steps { args := [u8Val 9, u8Val 2, u32Val 5] } = 83886125 := rfl
 example : fn7_max_steps { args := [u8Val 3, u8Val 250, u32Val 4294967295] } =
-    9399436284 := rfl
+    9399436316 := rfl
 
 end Spec.Check
