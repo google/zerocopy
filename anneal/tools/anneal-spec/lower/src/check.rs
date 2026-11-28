@@ -21,8 +21,8 @@ use proc_macro2::Span;
 
 use crate::{
     ast::{
-        BinOp, Clause, Effect, Expr, ExprKind, IntConst, IntTy, LetBinding, Param, PureFn, SpecFn,
-        Ty, UnOp,
+        Arm, BinOp, Clause, Effect, Expr, ExprKind, IntConst, IntTy, LetBinding, Param, PatKind,
+        PureFn, SpecFn, Ty, UnOp,
     },
     diag::Diagnostic,
 };
@@ -183,6 +183,66 @@ impl<'a> Env<'a> {
 /// name valid even when it collides with a Lean keyword.
 pub fn lean_ident(name: &str) -> String {
     format!("«{name}»")
+}
+
+/// The Lean binder of a `match` scrutinee. `match` is a Rust keyword, so no
+/// specification name can capture it or be captured by it.
+const MATCH_BINDER: &str = "«match»";
+
+/// What a `match` scrutinee is, as its Lean binder sees it.
+#[derive(Clone, Copy)]
+enum ScrutKind {
+    /// A `bool`, bound as a `Prop`.
+    Prop,
+    /// An integer of type `ty` (a machine type or `Ty::Math`), bound as an
+    /// `Int`.
+    Int(Ty),
+    /// A `max_steps` step count, bound as a `Nat`.
+    Nat,
+}
+
+/// One checked `match` arm.
+struct ArmPlan<'e, 'a> {
+    arm: &'e Arm,
+    /// The condition under which the arm is taken, if earlier arms are not;
+    /// `None` for a catch-all.
+    cond: Option<String>,
+    /// The environment and facts of the arm's body.
+    env: Env<'a>,
+    facts: Vec<String>,
+    /// The Lean `let` that binds the arm's pattern name, if any.
+    prefix: String,
+    /// The Lean name of the arm's pattern binding, if any.
+    binder: Option<String>,
+}
+
+/// A checked `match`.
+struct MatchPlan<'e, 'a> {
+    term: String,
+    kind: ScrutKind,
+    /// Why a `bool` scrutinee is undecidable, if it is.
+    undecidable: Option<(Span, String)>,
+    arms: Vec<ArmPlan<'e, 'a>>,
+    /// Whether any condition or pattern binding refers to the scrutinee.
+    binder_used: bool,
+}
+
+impl MatchPlan<'_, '_> {
+    /// The Lean `let` that binds the scrutinee, if anything uses it.
+    fn binder_prefix(&self) -> Option<String> {
+        let ty = match self.kind {
+            ScrutKind::Prop => "Prop",
+            ScrutKind::Int(_) => INT,
+            ScrutKind::Nat => "Nat",
+        };
+        self.binder_used.then(|| format!("let {MATCH_BINDER} : {ty} := {}; ", self.term))
+    }
+
+    /// Requires the scrutinee of a `match` whose arms choose a value to be
+    /// decidable, as an `if` condition must be.
+    fn require_decidable(&self) -> Result<(), Diagnostic> {
+        require_decidable_reason(self.undecidable.as_ref())
+    }
 }
 
 /// Unqualified names that lowered clause text references besides
@@ -507,6 +567,31 @@ impl<'a> Env<'a> {
                 body_facts.extend(extra);
                 Ok(format!("({prefix}{})", env.lower_nat(body, &mut body_facts)?))
             }
+            ExprKind::Match(s, arms) => {
+                let plan = self.plan_match(s, arms, e.span, false, true, facts)?;
+                let mut terms = Vec::new();
+                for arm in &plan.arms {
+                    let t = arm.env.lower_nat(&arm.arm.body, &mut arm.facts.clone())?;
+                    terms.push(if arm.prefix.is_empty() {
+                        t
+                    } else {
+                        format!("({}{t})", arm.prefix)
+                    });
+                }
+                if terms.len() > 1 {
+                    plan.require_decidable()?;
+                }
+                let mut acc = terms.pop().expect("a `match` has at least one arm");
+                for (i, t) in terms.into_iter().enumerate().rev() {
+                    let cond =
+                        plan.arms[i].cond.as_deref().expect("only the last arm is a catch-all");
+                    acc = format!("(if {cond} then {t} else {acc})");
+                }
+                Ok(match plan.binder_prefix() {
+                    Some(prefix) => format!("({prefix}{acc})"),
+                    None => acc,
+                })
+            }
             ExprKind::If(c, t, f) => {
                 let cond = self.lower_prop_in(c, false, facts)?;
                 require_decidable(&cond)?;
@@ -709,30 +794,319 @@ impl<'a> Env<'a> {
                 let (env, prefix, extra) = self.bind(b, body, math, false, facts)?;
                 let mut body_facts = facts.clone();
                 body_facts.extend(extra);
-                Ok(match env.lower(body, math, &mut body_facts)? {
-                    // A fact that names the block's own binding does not
-                    // leave the block, where the binding is out of scope.
-                    Low::Prop(p) => {
-                        let lean = lean_ident(&b.name);
-                        let outside = |fs: Vec<String>| -> Vec<String> {
-                            fs.into_iter().filter(|f| !f.contains(&lean)).collect()
-                        };
-                        Low::Prop(Prop {
-                            term: format!("({prefix}{})", p.term),
-                            undecidable: p.undecidable,
-                            on_true: outside(p.on_true),
-                            on_false: outside(p.on_false),
-                        })
-                    }
-                    Low::Int(t, ty) => Low::Int(format!("({prefix}{t})"), ty),
-                    Low::Unit(u) => Low::Unit(format!("({prefix}{u})")),
-                    untyped @ (Low::Lit(..) | Low::UntypedIf(..)) => {
-                        let (t, leaves) = untyped_parts(untyped);
-                        Low::UntypedIf(format!("({prefix}{t})"), leaves)
-                    }
+                let low = env.lower(body, math, &mut body_facts)?;
+                Ok(wrap_low(&prefix, &lean_ident(&b.name), low))
+            }
+            ExprKind::Match(s, arms) => {
+                let plan = self.plan_match(s, arms, e.span, math, false, facts)?;
+                let mut lows = Vec::new();
+                for arm in &plan.arms {
+                    let low = arm.env.lower(&arm.arm.body, math, &mut arm.facts.clone())?;
+                    lows.push(match &arm.binder {
+                        Some(lean) => wrap_low(&arm.prefix, lean, low),
+                        None => low,
+                    });
+                }
+                let mut acc = lows.pop().expect("a `match` has at least one arm");
+                for (i, low) in lows.into_iter().enumerate().rev() {
+                    let cond =
+                        plan.arms[i].cond.as_deref().expect("only the last arm is a catch-all");
+                    acc = self.combine_branches(
+                        cond,
+                        plan.undecidable.as_ref(),
+                        low,
+                        acc,
+                        plan.arms[i + 1].arm.body.span,
+                        math,
+                        "`match` arms",
+                    )?;
+                }
+                Ok(match plan.binder_prefix() {
+                    Some(prefix) => wrap_low(&prefix, MATCH_BINDER, acc),
+                    None => acc,
                 })
             }
         }
+    }
+
+    /// A copy of this environment.
+    fn scope(&self) -> Env<'a> {
+        Env {
+            helpers: self.helpers,
+            names: self.names.clone(),
+            uses: self.uses,
+            in_requires: self.in_requires,
+        }
+    }
+
+    /// Checks `match s { arms }` (at `span`) and plans its lowering: the
+    /// scrutinee's Lean term and kind, and for each arm the condition under
+    /// which it is taken, the environment and facts of its body, and the
+    /// binding of its pattern name. Each arm's facts are those that hold when
+    /// the earlier arms are not taken and it is. In `max_steps` (`nat`), an
+    /// integer scrutinee is a step count. Integer patterns are checked
+    /// against the scrutinee's machine type, if it has one, and against
+    /// their own suffixes.
+    fn plan_match<'e>(
+        &self,
+        s: &Expr,
+        arms: &'e [Arm],
+        span: Span,
+        math: bool,
+        nat: bool,
+        facts: &[String],
+    ) -> Result<MatchPlan<'e, 'a>, Diagnostic> {
+        let scratch = Uses::default();
+        let probe = self.probe(&scratch);
+        let no_unit = || type_error(s.span, "a `match` cannot examine a `()`");
+        // A `bool` scrutinee, which carries its decidability and the facts it
+        // establishes when it holds and when it fails.
+        let mut prop = None;
+        let (term, kind) = if nat {
+            match probe.lower(s, true, &mut facts.to_vec()) {
+                Ok(Low::Prop(_)) => {
+                    let p = self.lower_prop_in(s, false, &mut facts.to_vec())?;
+                    let term = p.term.clone();
+                    prop = Some(p);
+                    (term, ScrutKind::Prop)
+                }
+                Ok(Low::Unit(_)) => return Err(no_unit()),
+                _ => (self.lower_nat(s, &mut facts.to_vec())?, ScrutKind::Nat),
+            }
+        } else {
+            match self.lower(s, math, &mut facts.to_vec())? {
+                Low::Prop(p) => {
+                    let term = p.term.clone();
+                    prop = Some(p);
+                    (term, ScrutKind::Prop)
+                }
+                Low::Int(t, ty) => (t, ScrutKind::Int(ty)),
+                Low::Unit(_) => return Err(no_unit()),
+                untyped => {
+                    // An untyped scrutinee takes its type from a typed pattern.
+                    let typed = arms.iter().flat_map(|a| &a.pats).find_map(|p| match p.kind {
+                        PatKind::Int { suffix: Some(t), .. } => Some(Ty::Int(t)),
+                        PatKind::IntConst(t, c) => Some(Ty::Int(int_const(t, c).1)),
+                        _ => None,
+                    });
+                    let Some(ty) = typed.or(math.then_some(Ty::Math)) else {
+                        return Err(Diagnostic::new(
+                            "E_ANNEAL_SPEC_TYPE_ANNOTATION_NEEDED",
+                            s.span,
+                            "the type of this `match` scrutinee cannot be inferred",
+                        )
+                        .help("add a suffix such as `5usize`, or use `math(...)`"));
+                    };
+                    let Low::Int(t, ty) = settle(untyped, ty)? else { unreachable!() };
+                    (t, ScrutKind::Int(ty))
+                }
+            }
+        };
+        // The scrutinee's machine integer type, if it has one. A `max_steps`
+        // scrutinee is compared as in a `max_steps` `if` condition, where
+        // values keep their machine types, so it has the type it has there.
+        // A `math` scrutinee has none.
+        let machine = match kind {
+            ScrutKind::Int(Ty::Int(t)) => Some(t),
+            ScrutKind::Nat => match probe.lower(s, false, &mut facts.to_vec()) {
+                Ok(Low::Int(_, Ty::Int(t))) => Some(t),
+                _ => None,
+            },
+            ScrutKind::Prop | ScrutKind::Int(_) => None,
+        };
+        let describe_kind = match (kind, machine) {
+            (ScrutKind::Prop, _) => "bool".to_string(),
+            (ScrutKind::Int(ty), _) => ty.describe(),
+            (ScrutKind::Nat, Some(t)) => t.rust_name(),
+            (ScrutKind::Nat, None) => "step count".to_string(),
+        };
+        // The scrutinee's term in divisor facts, and its `bool` facts.
+        let nonzero_fact = match probe.lower(s, true, &mut facts.to_vec()) {
+            Ok(Low::Int(t, _)) => Some(t),
+            _ => None,
+        };
+        let (undecidable, when_true, when_false) = match prop {
+            Some(p) => (p.undecidable, p.on_true, p.on_false),
+            None => (None, Vec::new(), Vec::new()),
+        };
+        let unreachable_arm = |span: Span, msg: &str| {
+            Diagnostic::new("E_ANNEAL_UNREACHABLE_MATCH_ARM", span, msg)
+                .help("remove the pattern or arm that can never be reached")
+        };
+        let mut seen: Vec<IntLit> = Vec::new();
+        let mut seen_bools = [false; 2];
+        let mut catch_all = false;
+        let mut not_taken: Vec<String> = Vec::new();
+        let mut plans = Vec::new();
+        let mut binder_used = false;
+        for (i, arm) in arms.iter().enumerate() {
+            if catch_all || seen_bools == [true, true] {
+                return Err(unreachable_arm(arm.span, "earlier arms already match every value"));
+            }
+            let mut conds = Vec::new();
+            let mut taken = Vec::new();
+            let mut not_taken_here = Vec::new();
+            let (mut has_zero, mut all_nonzero) = (false, true);
+            let mut binding = None;
+            for p in &arm.pats {
+                match &p.kind {
+                    PatKind::Wild => {
+                        catch_all = true;
+                        all_nonzero = false;
+                    }
+                    PatKind::Bind(name) => {
+                        catch_all = true;
+                        all_nonzero = false;
+                        binding = Some((name.as_str(), p.span));
+                    }
+                    PatKind::Bool(b) => {
+                        if !matches!(kind, ScrutKind::Prop) {
+                            return Err(type_error(
+                                p.span,
+                                format!("a `bool` pattern cannot match `{describe_kind}`"),
+                            ));
+                        }
+                        if std::mem::replace(&mut seen_bools[usize::from(*b)], true) {
+                            return Err(unreachable_arm(
+                                p.span,
+                                &format!("`{b}` is already matched"),
+                            ));
+                        }
+                        conds.push(if *b {
+                            MATCH_BINDER.to_string()
+                        } else {
+                            format!("(¬ {MATCH_BINDER})")
+                        });
+                        let (yes, no) =
+                            if *b { (&when_true, &when_false) } else { (&when_false, &when_true) };
+                        taken.extend(yes.iter().cloned());
+                        not_taken_here.extend(no.iter().cloned());
+                    }
+                    PatKind::Int { .. } | PatKind::IntConst(..) => {
+                        let (v, pty) = match p.kind {
+                            PatKind::Int { neg, mag, suffix } => (IntLit::new(neg, mag), suffix),
+                            PatKind::IntConst(t, c) => {
+                                let (v, ty) = int_const(t, c);
+                                (v, Some(ty))
+                            }
+                            _ => unreachable!(),
+                        };
+                        let mismatch = |found: &str| {
+                            type_error(p.span, format!("{found} cannot match `{describe_kind}`"))
+                        };
+                        match kind {
+                            ScrutKind::Prop => {
+                                return Err(mismatch(
+                                    &pty.map_or("an integer pattern".into(), |t| {
+                                        format!("a `{}` pattern", t.rust_name())
+                                    }),
+                                ))
+                            }
+                            ScrutKind::Nat if v.neg || pty.is_some_and(|t| t.signed) => {
+                                return Err(type_error(
+                                    p.span,
+                                    "`max_steps` patterns must be non-negative and unsigned",
+                                ));
+                            }
+                            ScrutKind::Int(_) | ScrutKind::Nat => {
+                                if let Some(pt) = pty.filter(|pt| machine.is_some_and(|t| t != *pt))
+                                {
+                                    return Err(mismatch(&format!(
+                                        "a `{}` pattern",
+                                        pt.rust_name()
+                                    )));
+                                }
+                                // As with a suffixed literal in `math(..)`, a
+                                // suffixed pattern is in range for its suffix
+                                // even where the scrutinee has no machine type.
+                                if let Some(t) = machine.or(pty) {
+                                    check_range(v, t, p.span)?;
+                                }
+                            }
+                        }
+                        if seen.iter().any(|w| w.neg == v.neg && w.mag == v.mag) {
+                            return Err(unreachable_arm(
+                                p.span,
+                                &format!("`{v}` is already matched"),
+                            ));
+                        }
+                        seen.push(v);
+                        conds.push(match kind {
+                            ScrutKind::Nat => format!("({MATCH_BINDER} = ({} : Nat))", v.mag),
+                            _ => format!("({MATCH_BINDER} = {})", int_lit(v)),
+                        });
+                        has_zero |= v.mag == 0;
+                        all_nonzero &= v.mag != 0;
+                    }
+                }
+            }
+            // The arm is taken when the earlier arms are not and its pattern
+            // matches.
+            let mut arm_facts = facts.to_vec();
+            arm_facts.extend(not_taken.iter().cloned());
+            arm_facts.extend(taken);
+            if all_nonzero && !conds.is_empty() {
+                arm_facts.extend(nonzero_fact.clone());
+            }
+            not_taken.extend(not_taken_here);
+            if has_zero {
+                not_taken.extend(nonzero_fact.clone());
+            }
+            let cond = match conds.len() {
+                0 => None,
+                1 => conds.pop(),
+                _ => Some(format!("({})", conds.join(" ∨ "))),
+            };
+            binder_used |= cond.is_some() && i + 1 < arms.len();
+            let (env, prefix, binder) = match binding {
+                None => (self.scope(), String::new(), None),
+                Some((name, span)) => {
+                    self.check_binder(name, span, "pattern binding")?;
+                    if !mentions(&arm.body, name) {
+                        return Err(Diagnostic::new(
+                            "E_ANNEAL_UNUSED_LET",
+                            span,
+                            format!("the pattern binding `{name}` is never used"),
+                        )
+                        .help("write `_` instead"));
+                    }
+                    let lean = lean_ident(name);
+                    if nonzero_fact.as_ref().is_some_and(|t| arm_facts.contains(t)) {
+                        arm_facts.push(match kind {
+                            ScrutKind::Nat => format!("({INT}.ofNat {lean})"),
+                            _ => lean.clone(),
+                        });
+                    }
+                    let (local, ty) = match kind {
+                        ScrutKind::Prop => {
+                            let decidable = undecidable.is_none();
+                            let (when_true, when_false) = (when_true.clone(), when_false.clone());
+                            (LocalKind::Prop { decidable, when_true, when_false }, "Prop")
+                        }
+                        ScrutKind::Int(ty) => (LocalKind::Int { ty, value: None }, INT),
+                        ScrutKind::Nat => (LocalKind::Nat { value: None }, "Nat"),
+                    };
+                    binder_used = true;
+                    let prefix = format!("let {lean} : {ty} := {MATCH_BINDER}; ");
+                    (self.with(name, Binding::Local(lean.clone(), local)), prefix, Some(lean))
+                }
+            };
+            plans.push(ArmPlan { arm, cond, env, facts: arm_facts, prefix, binder });
+        }
+        if !catch_all && seen_bools != [true, true] {
+            let msg = match kind {
+                ScrutKind::Prop => {
+                    format!(
+                        "this `match` does not match `{}`",
+                        if seen_bools[1] { "false" } else { "true" }
+                    )
+                }
+                _ => "a `match` on an integer must end with a `_` or name arm".to_string(),
+            };
+            return Err(Diagnostic::new("E_ANNEAL_NON_EXHAUSTIVE_MATCH", span, msg)
+                .help("add a final `_ => ..` arm"));
+        }
+        Ok(MatchPlan { term, kind, undecidable, arms: plans, binder_used })
     }
 
     /// This environment with `name` bound to `binding`.
@@ -784,36 +1158,7 @@ impl<'a> Env<'a> {
         facts: &mut Vec<String>,
     ) -> Result<(Env<'a>, String, Vec<String>), Diagnostic> {
         let name = b.name.as_str();
-        let intrinsic = INTRINSICS.contains(&name)
-            || name == "old"
-            || name.starts_with("wrapping_")
-            || name.starts_with("no_overflow_");
-        if reserved_param_name(name) || CLAUSE_NAMES.contains(&name) || intrinsic {
-            return Err(Diagnostic::new(
-                "E_ANNEAL_RESERVED_PARAM_NAME",
-                b.name_span,
-                format!(
-                    "`{name}` cannot name a `let` binding: it is reserved by the generated Lean \
-                     or names an intrinsic"
-                ),
-            )
-            .help("rename the binding"));
-        }
-        let shadowed = match self.names.get(name) {
-            Some(Binding::Arg(..) | Binding::HelperParam(..)) => Some("a parameter"),
-            Some(Binding::Ret(_)) => Some("the `ensures` return binder"),
-            Some(Binding::Local(..)) => Some("an enclosing `let` binding"),
-            None if self.helpers.contains_key(name) => Some("a `#[anneal::pure]` helper"),
-            None => None,
-        };
-        if let Some(what) = shadowed {
-            return Err(Diagnostic::new(
-                "E_ANNEAL_SPEC_SHADOWING",
-                b.name_span,
-                format!("the `let` binding `{name}` shadows {what}"),
-            )
-            .help("choose a name that is not already in scope"));
-        }
+        self.check_binder(name, b.name_span, "`let` binding")?;
         let init = &b.init;
         let lean = lean_ident(name);
         let mismatch = |found: &Low, want: Ty| {
@@ -946,6 +1291,43 @@ impl<'a> Env<'a> {
         Ok((self.with(name, Binding::Local(lean, kind)), prefix, extra))
     }
 
+    /// Rejects a binder `name` (a `let` binding or a `match` pattern
+    /// binding, as `what` says) that is reserved or that shadows a name in
+    /// scope.
+    fn check_binder(&self, name: &str, span: Span, what: &str) -> Result<(), Diagnostic> {
+        let intrinsic = INTRINSICS.contains(&name)
+            || name == "old"
+            || name.starts_with("wrapping_")
+            || name.starts_with("no_overflow_");
+        if reserved_param_name(name) || CLAUSE_NAMES.contains(&name) || intrinsic {
+            return Err(Diagnostic::new(
+                "E_ANNEAL_RESERVED_PARAM_NAME",
+                span,
+                format!(
+                    "`{name}` cannot name a {what}: it is reserved by the generated Lean or \
+                     names an intrinsic"
+                ),
+            )
+            .help("rename the binding"));
+        }
+        let shadowed = match self.names.get(name) {
+            Some(Binding::Arg(..) | Binding::HelperParam(..)) => Some("a parameter"),
+            Some(Binding::Ret(_)) => Some("the `ensures` return binder"),
+            Some(Binding::Local(..)) => Some("an enclosing binding"),
+            None if self.helpers.contains_key(name) => Some("a `#[anneal::pure]` helper"),
+            None => None,
+        };
+        if let Some(shadowed) = shadowed {
+            return Err(Diagnostic::new(
+                "E_ANNEAL_SPEC_SHADOWING",
+                span,
+                format!("the {what} `{name}` shadows {shadowed}"),
+            )
+            .help("choose a name that is not already in scope"));
+        }
+        Ok(())
+    }
+
     /// Lowers `if c { t } else { f }`. A `bool`-valued `if` lowers to
     /// `((c → t) ∧ (¬ c → f))`, which needs no `Decidable` instance for `c`.
     /// An `if` that chooses an integer or `()` value lowers to Lean's
@@ -961,26 +1343,54 @@ impl<'a> Env<'a> {
         facts: &mut Vec<String>,
     ) -> Result<Low, Diagnostic> {
         let cond = self.lower_prop_in(c, math, facts)?;
-        let undecidable = cond.undecidable;
         let mut then_facts = facts.clone();
         then_facts.extend(cond.on_true);
         let mut else_facts = facts.clone();
         else_facts.extend(cond.on_false);
         let a = self.lower(t, math, &mut then_facts)?;
         let b = self.lower(f, math, &mut else_facts)?;
-        let cond_term = cond.term.as_str();
-        let ite = |x: &str, y: &str| format!("(if {cond_term} then {x} else {y})");
+        self.combine_branches(
+            &cond.term,
+            cond.undecidable.as_ref(),
+            a,
+            b,
+            f.span,
+            math,
+            "`if` and `else`",
+        )
+    }
+
+    /// Joins `a` and `b`, the values of the two sides of condition `cond`,
+    /// which is undecidable for the reason `undecidable`, if any. `bool`s
+    /// join as `((cond → a) ∧ (¬ cond → b))`, which needs no `Decidable`
+    /// instance but is decidable only if `cond`, `a`, and `b` are. Other
+    /// values must have one type, which an untyped integer takes from the
+    /// other side, and join as Lean's `if cond then a else b`, which needs
+    /// `cond` to be decidable. `b_span` and `what` (such as "`if` and
+    /// `else`") locate type errors.
+    #[allow(clippy::too_many_arguments)]
+    fn combine_branches(
+        &self,
+        cond: &str,
+        undecidable: Option<&(Span, String)>,
+        a: Low,
+        b: Low,
+        b_span: Span,
+        math: bool,
+        what: &str,
+    ) -> Result<Low, Diagnostic> {
+        let ite = |x: &str, y: &str| format!("(if {cond} then {x} else {y})");
         let (a, b) = match (a, b) {
             (Low::Prop(x), Low::Prop(y)) => {
                 return Ok(Low::Prop(Prop {
-                    term: format!("(({cond_term} → {}) ∧ (¬ {cond_term} → {}))", x.term, y.term),
-                    undecidable: undecidable.or(x.undecidable).or(y.undecidable),
+                    term: format!("(({cond} → {}) ∧ (¬ {cond} → {}))", x.term, y.term),
+                    undecidable: undecidable.cloned().or(x.undecidable).or(y.undecidable),
                     on_true: Vec::new(),
                     on_false: Vec::new(),
                 }));
             }
             (x, y) if is_untyped(&x) && is_untyped(&y) => {
-                require_decidable_reason(undecidable.as_ref())?;
+                require_decidable_reason(undecidable)?;
                 let (xt, mut leaves) = untyped_parts(x);
                 let (yt, more) = untyped_parts(y);
                 leaves.extend(more);
@@ -998,29 +1408,25 @@ impl<'a> Env<'a> {
             (Low::Int(x, tx), Low::Int(y, ty)) => {
                 if tx != ty {
                     return Err(type_error(
-                        f.span,
+                        b_span,
                         format!(
-                            "`if` and `else` have mismatched types `{}` and `{}`",
+                            "{what} have mismatched types `{}` and `{}`",
                             tx.describe(),
                             ty.describe()
                         ),
                     )
                     .help("give both branches one type, e.g. by wrapping both in `math(..)`"));
                 }
-                require_decidable_reason(undecidable.as_ref())?;
+                require_decidable_reason(undecidable)?;
                 Ok(Low::Int(ite(&x, &y), tx))
             }
             (Low::Unit(x), Low::Unit(y)) => {
-                require_decidable_reason(undecidable.as_ref())?;
+                require_decidable_reason(undecidable)?;
                 Ok(Low::Unit(ite(&x, &y)))
             }
             (a, b) => Err(type_error(
-                f.span,
-                format!(
-                    "`if` and `else` have incompatible types: {} and {}",
-                    describe(&a),
-                    describe(&b)
-                ),
+                b_span,
+                format!("{what} have incompatible types: {} and {}", describe(&a), describe(&b)),
             )),
         }
     }
@@ -1457,6 +1863,34 @@ fn describe(l: &Low) -> String {
     }
 }
 
+/// `low` with the Lean `let` prefix `prefix`, which binds `binder`,
+/// around it. A fact that names `binder` does not leave the `let`, where
+/// `binder` is out of scope.
+fn wrap_low(prefix: &str, binder: &str, low: Low) -> Low {
+    if prefix.is_empty() {
+        return low;
+    }
+    match low {
+        Low::Prop(p) => {
+            let outside = |fs: Vec<String>| -> Vec<String> {
+                fs.into_iter().filter(|f| !f.contains(binder)).collect()
+            };
+            Low::Prop(Prop {
+                term: format!("({prefix}{})", p.term),
+                undecidable: p.undecidable,
+                on_true: outside(p.on_true),
+                on_false: outside(p.on_false),
+            })
+        }
+        Low::Int(t, ty) => Low::Int(format!("({prefix}{t})"), ty),
+        Low::Unit(u) => Low::Unit(format!("({prefix}{u})")),
+        untyped @ (Low::Lit(..) | Low::UntypedIf(..)) => {
+            let (t, leaves) = untyped_parts(untyped);
+            Low::UntypedIf(format!("({prefix}{t})"), leaves)
+        }
+    }
+}
+
 fn is_untyped(l: &Low) -> bool {
     matches!(l, Low::Lit(..) | Low::UntypedIf(..))
 }
@@ -1874,6 +2308,9 @@ fn mentions(e: &Expr, name: &str) -> bool {
         ExprKind::Binary(_, a, b) => mentions(a, name) || mentions(b, name),
         ExprKind::If(c, t, f) => mentions(c, name) || mentions(t, name) || mentions(f, name),
         ExprKind::Let(b, body) => mentions(&b.init, name) || mentions(body, name),
+        ExprKind::Match(s, arms) => {
+            mentions(s, name) || arms.iter().any(|a| mentions(&a.body, name))
+        }
         ExprKind::Bool(_) | ExprKind::Int(..) | ExprKind::IntConst(..) | ExprKind::Unit => false,
     }
 }
@@ -1900,6 +2337,10 @@ pub fn calls_in(e: &Expr, out: &mut Vec<String>) {
         ExprKind::Let(b, body) => {
             calls_in(&b.init, out);
             calls_in(body, out);
+        }
+        ExprKind::Match(s, arms) => {
+            calls_in(s, out);
+            arms.iter().for_each(|a| calls_in(&a.body, out));
         }
         _ => {}
     }

@@ -127,4 +127,26 @@ private def u8Val (n : Nat) : Trusted.MirSemantics.Val :=
 example : fn5_max_steps { args := [u32Val 10, u8Val 0] } = 20 := rfl
 example : fn5_max_steps { args := [u32Val 2, u8Val 0] } = 7 := rfl
 
+-- A `match` takes the first arm whose pattern matches, through
+-- or-patterns, constants, and name bindings.
+example : pure_match_bucket 0 = 0 := by unfold pure_match_bucket; decide
+example : pure_match_bucket 2 = 1 := by unfold pure_match_bucket; decide
+example : pure_match_bucket 255 = 3 := by unfold pure_match_bucket; decide
+example : pure_match_bucket 7 = 2 := by unfold pure_match_bucket; decide
+example : pure_match_div_is 7 2 3 := by unfold pure_match_div_is; decide
+example : ¬ pure_match_div_is 7 2 4 := by unfold pure_match_div_is; decide
+example : pure_match_div_is 7 0 0 := by unfold pure_match_div_is; decide
+example : ¬ pure_match_div_is 7 0 1 := by unfold pure_match_div_is; decide
+
+-- A `bool` helper parameter is a `Prop`, so these are proved directly.
+example : pure_match_flag_is True 1 :=
+  ⟨fun _ => rfl, fun h => absurd True.intro h⟩
+example : pure_match_flag_is False 0 :=
+  ⟨fun h => absurd h id, fun _ => rfl⟩
+
+-- `tiered` (sorted seventh as `fn6`) lowers
+-- `max_steps = match n { 0 => 1, m => m * 2 }`.
+example : fn6_max_steps { args := [u32Val 0, u8Val 0] } = 1 := rfl
+example : fn6_max_steps { args := [u32Val 5, u8Val 0] } = 10 := rfl
+
 end Spec.Check

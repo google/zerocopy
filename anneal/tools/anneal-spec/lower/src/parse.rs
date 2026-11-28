@@ -25,8 +25,8 @@ use syn::{
 
 use crate::{
     ast::{
-        BinOp, Clause, Effect, Expr, ExprKind, IntConst, IntTy, LetBinding, Param, PureFn,
-        SpannedClause, SpecFn, Ty, UnOp,
+        Arm, BinOp, Clause, Effect, Expr, ExprKind, IntConst, IntTy, LetBinding, Param, Pat,
+        PatKind, PureFn, SpannedClause, SpecFn, Ty, UnOp,
     },
     diag::Diagnostic,
 };
@@ -226,6 +226,7 @@ impl ExprParser {
             if let Some(what) = match lhs.kind {
                 ExprKind::If(..) => Some("an `if` expression"),
                 ExprKind::Let(..) => Some("a block"),
+                ExprKind::Match(..) => Some("a `match` expression"),
                 _ => None,
             } {
                 return Err(Diagnostic::new(
@@ -314,7 +315,8 @@ impl ExprParser {
                 return Ok(Expr { kind: ExprKind::Bool(name == "true"), span });
             }
             "if" => return self.parse_if(span),
-            "let" | "match" | "loop" | "while" | "for" | "return" | "unsafe" | "async" | "move" => {
+            "match" => return self.parse_match(span),
+            "let" | "loop" | "while" | "for" | "return" | "unsafe" | "async" | "move" => {
                 return Err(Diagnostic::new(
                     "E_ANNEAL_IMPURE_SPEC_EXPR",
                     span,
@@ -416,6 +418,36 @@ impl ExprParser {
         Ok(Expr { kind: ExprKind::If(Box::new(cond), Box::new(then), Box::new(otherwise)), span })
     }
 
+    /// Parses the rest of `match scrutinee { pat => body, .. }` after the
+    /// `match` keyword. As with an `if` condition, the scrutinee ends at the
+    /// first `{`.
+    fn parse_match(&mut self, kw_span: Span) -> Result<Expr, Diagnostic> {
+        if let Some(Tok::Group(Delimiter::Brace, _, gspan)) = self.peek() {
+            return Err(Diagnostic::new(
+                "E_ANNEAL_SPEC_SYNTAX",
+                *gspan,
+                "expected a scrutinee after `match`",
+            ));
+        }
+        let outer = std::mem::replace(&mut self.in_cond, true);
+        let scrutinee = self.parse(0);
+        self.in_cond = outer;
+        let scrutinee = scrutinee?;
+        let (inner, gspan) = match self.next() {
+            Some(Tok::Group(Delimiter::Brace, inner, gspan)) => (inner, gspan),
+            other => {
+                return Err(Diagnostic::new(
+                    "E_ANNEAL_SPEC_SYNTAX",
+                    other.map_or(kw_span, |t| t.span()),
+                    "expected `{` after the `match` scrutinee",
+                ))
+            }
+        };
+        let arms = parse_arms(inner, gspan)?;
+        let span = join(kw_span, gspan);
+        Ok(Expr { kind: ExprKind::Match(Box::new(scrutinee), arms), span })
+    }
+
     /// Parses one `{ .. }` branch of an `if`, a block that may hold `let`
     /// statements before its expression.
     fn parse_branch(&mut self, after: Span, what: &str) -> Result<Expr, Diagnostic> {
@@ -481,6 +513,141 @@ impl ExprParser {
             .help(INT_CONST_HELP)),
             _ => Ok(Expr { kind: ExprKind::IntConst(t, c), span: full }),
         }
+    }
+}
+
+/// Parses the arms of a `match`: `pat => body` separated by commas. As in
+/// Rust, a body that starts with `{` is a block that ends at its `}` and
+/// needs no comma after it; other bodies, including `if` and `match`
+/// expressions, need one before the next arm.
+fn parse_arms(stream: TokenStream, span: Span) -> Result<Vec<Arm>, Diagnostic> {
+    let toks = tokenize(stream);
+    let syntax = |span: Span, msg: &str| Diagnostic::new("E_ANNEAL_SPEC_SYNTAX", span, msg);
+    let mut arms = Vec::new();
+    let mut i = 0;
+    // Whether the previous arm was a block with no comma after it.
+    let mut after_block = false;
+    while i < toks.len() {
+        let arrow = match toks[i..].iter().position(|t| t.is_op("=>") || t.is_op(",")) {
+            Some(p) if toks[i + p].is_op("=>") => i + p,
+            found => {
+                let at = found.map_or(toks[toks.len() - 1].span(), |p| toks[i + p].span());
+                let d = syntax(at, "expected `=>` after the pattern of a `match` arm");
+                return Err(if after_block {
+                    d.help(
+                        "a `{ .. }` arm body ends at its `}`, so nothing may follow it \
+                         but a comma or the next arm; move the rest of the body inside \
+                         the braces",
+                    )
+                } else {
+                    d
+                });
+            }
+        };
+        let pats = parse_pats(&toks[i..arrow], toks[arrow].span())?;
+        i = arrow + 1;
+        let block_body = match toks.get(i) {
+            Some(Tok::Group(Delimiter::Brace, inner, g)) => Some((inner.clone(), *g)),
+            _ => None,
+        };
+        after_block = block_body.is_some();
+        let body = if let Some((inner, g)) = block_body {
+            i += 1;
+            parse_block(inner, g, false)?
+        } else {
+            let end = toks[i..].iter().position(|t| t.is_op(",")).map_or(toks.len(), |p| i + p);
+            if end == i {
+                return Err(syntax(toks[arrow].span(), "expected an expression after `=>`"));
+            }
+            let body =
+                ExprParser { toks: toks[i..end].to_vec(), pos: 0, end_span: span, in_cond: false }
+                    .parse_all()?;
+            i = end;
+            body
+        };
+        if toks.get(i).is_some_and(|t| t.is_op(",")) {
+            i += 1;
+            after_block = false;
+        }
+        let arm_span = join(pats[0].span, body.span);
+        arms.push(Arm { pats, body, span: arm_span });
+    }
+    if arms.is_empty() {
+        return Err(Diagnostic::new(
+            "E_ANNEAL_NON_EXHAUSTIVE_MATCH",
+            span,
+            "a `match` must have at least one arm",
+        ));
+    }
+    Ok(arms)
+}
+
+/// Parses an arm's pattern: one or more alternatives separated by `|`.
+fn parse_pats(toks: &[Tok], arrow: Span) -> Result<Vec<Pat>, Diagnostic> {
+    let unsupported = |span: Span, msg: &str| {
+        Diagnostic::new("E_ANNEAL_SPEC_UNSUPPORTED_EXPR", span, msg).help(
+            "a pattern may be `_`, a name, `true`, `false`, an integer literal, or an integer \
+             constant such as `u8::MAX`, or several of the literals joined with `|`",
+        )
+    };
+    if let Some(t) = toks.iter().find(|t| matches!(t, Tok::Ident(k, _) if k == "if")) {
+        return Err(unsupported(t.span(), "`match` guards are not supported"));
+    }
+    if toks.is_empty() {
+        return Err(Diagnostic::new(
+            "E_ANNEAL_SPEC_SYNTAX",
+            arrow,
+            "expected a pattern before `=>`",
+        ));
+    }
+    let alts: Vec<&[Tok]> = toks.split(|t| t.is_op("|")).collect();
+    let mut pats = Vec::new();
+    for alt in &alts {
+        let span = match (alt.first(), alt.last()) {
+            (Some(a), Some(b)) => join(a.span(), b.span()),
+            _ => return Err(Diagnostic::new("E_ANNEAL_SPEC_SYNTAX", arrow, "empty pattern")),
+        };
+        let kind = match *alt {
+            [Tok::Ident(n, _)] if n == "_" => PatKind::Wild,
+            [Tok::Ident(n, _)] if n == "true" || n == "false" => PatKind::Bool(n == "true"),
+            [Tok::Ident(n, s)]
+                if matches!(n.as_str(), "mut" | "ref" | "box") || n.starts_with("r#") =>
+            {
+                return Err(unsupported(*s, "unsupported pattern"));
+            }
+            [Tok::Ident(n, _)] => PatKind::Bind(n.clone()),
+            [Tok::Lit(l, s)] => int_pat(l, *s, false, &unsupported)?,
+            [minus, Tok::Lit(l, s)] if minus.is_op("-") => int_pat(l, *s, true, &unsupported)?,
+            [Tok::Ident(t, _), colons, Tok::Ident(c, _)] if colons.is_op("::") => {
+                match (int_ty(t), IntConst::from_rust_name(c)) {
+                    (Some(t), Some(c)) => PatKind::IntConst(t, c),
+                    _ => return Err(unsupported(span, "unsupported pattern")),
+                }
+            }
+            _ => return Err(unsupported(span, "unsupported pattern")),
+        };
+        pats.push(Pat { kind, span });
+    }
+    if pats.len() > 1 {
+        if let Some(p) = pats.iter().find(|p| matches!(p.kind, PatKind::Wild | PatKind::Bind(_))) {
+            return Err(unsupported(
+                p.span,
+                "`_` and names cannot be alternatives of an or-pattern",
+            ));
+        }
+    }
+    Ok(pats)
+}
+
+fn int_pat(
+    lit: &proc_macro2::Literal,
+    span: Span,
+    neg: bool,
+    unsupported: &dyn Fn(Span, &str) -> Diagnostic,
+) -> Result<PatKind, Diagnostic> {
+    match parse_literal(lit.clone(), span)?.kind {
+        ExprKind::Int(mag, suffix) => Ok(PatKind::Int { neg, mag, suffix }),
+        _ => Err(unsupported(span, "unsupported pattern")),
     }
 }
 

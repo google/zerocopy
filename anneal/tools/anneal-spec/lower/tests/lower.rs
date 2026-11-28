@@ -428,7 +428,7 @@ fn trap_spellings_are_rejected() {
         ("requires(a < b < c)", "fn f(a: u8, b: u8, c: u8)", "E_ANNEAL_CHAINED_COMPARISON"),
         ("requires(a = b)", "fn f(a: u8, b: u8)", "E_ANNEAL_IMPURE_SPEC_EXPR"),
         ("requires({ a })", "fn f(a: bool)", "E_ANNEAL_IMPURE_SPEC_EXPR"),
-        ("requires(match a { _ => true })", "fn f(a: bool)", "E_ANNEAL_IMPURE_SPEC_EXPR"),
+        ("requires(while a { })", "fn f(a: bool)", "E_ANNEAL_IMPURE_SPEC_EXPR"),
         ("requires(old(a) == a)", "fn f(a: u8)", "E_ANNEAL_OLD_IN_PRECONDITION"),
         ("ensures(|r| r == old(a))", "fn f(a: u8) -> u8", "E_ANNEAL_UNSUPPORTED_OLD"),
         ("requires(lenght > 0usize)", "fn f(length: usize)", "E_ANNEAL_SPEC_UNKNOWN_IDENT"),
@@ -966,6 +966,292 @@ fn let_bindings_carry_divisor_guards_soundly() {
         &wrap("max_steps = { let z: u32 = 0; n / z }", "fn f(n: u32)"),
         "E_ANNEAL_UNGUARDED_SPEC_DIV",
     );
+}
+
+#[test]
+fn match_expressions_lower_by_result_type() {
+    // Integer arms choose a value with Lean's `if`; the scrutinee is bound
+    // once, and or-patterns and constants are disjunctions of equalities.
+    let l = lower_one(
+        "anneal::external_spec! {
+            #[anneal::pure]
+            fn bucket(x: u8) -> u8 { match x { 0 => 0, 1 | 2 => 1, u8::MAX => 3, _ => 2 } }
+            #[anneal::spec(ensures(|r| r == bucket(a)))]
+            fn f(a: u8) -> u8;
+        }",
+    )
+    .unwrap();
+    assert!(
+        l.spec_lean.contains(
+            "(let «match» : Int := «x»; (if («match» = (0 : Int)) then (0 : Int) else \
+             (if ((«match» = (1 : Int)) ∨ («match» = (2 : Int))) then (1 : Int) else \
+             (if («match» = (255 : Int)) then (3 : Int) else (2 : Int)))))"
+        ),
+        "{}",
+        l.spec_lean
+    );
+    // `bool` arms join as implications, and a name binds the scrutinee.
+    let l = lower_one(&wrap(
+        "ensures(|ret| match a { 0 => ret == 0u8, k => { let z: u8 = k; ret == z } })",
+        "fn f(a: u8) -> u8",
+    ))
+    .unwrap();
+    assert!(
+        l.spec_lean.contains(
+            "(let «match» : Int := (specInt (specArg q 0)); (((«match» = (0 : Int)) → \
+             ((specInt out.ret) = (0 : Int))) ∧ (¬ («match» = (0 : Int)) → \
+             (let «k» : Int := «match»; (let «z» : Int := «k»; ((specInt out.ret) = «z»))))))"
+        ),
+        "{}",
+        l.spec_lean
+    );
+    let l = lower_one(&wrap(
+        "ensures(|ret| ret == match a > b { true => a, false => b })",
+        "fn f(a: u8, b: u8) -> u8",
+    ))
+    .unwrap();
+    assert!(l.spec_lean.contains("(let «match» : Prop := "), "{}", l.spec_lean);
+    // Untyped literal arms take their type from context, which range-checks
+    // them.
+    lower_one(&wrap("ensures(|ret| ret == match a { 0 => 1, _ => 2 })", "fn f(a: u8) -> u8"))
+        .unwrap();
+    expect_error(
+        &wrap("ensures(|ret| ret == match a { 0 => 256, _ => 2 })", "fn f(a: u8) -> u8"),
+        "E_ANNEAL_SPEC_LITERAL_RANGE",
+    );
+    // A lone catch-all arm needs no scrutinee binding, which Lean would warn
+    // is unused.
+    let l = lower_one(&wrap("requires(match a { _ => true })", "fn f(a: u8)")).unwrap();
+    assert!(!l.spec_lean.contains("«match»"), "{}", l.spec_lean);
+    // In `max_steps`, an integer scrutinee and its bindings are step counts.
+    let l = lower_one(&wrap("max_steps = match n { 0 => 1, m => m * 2 }", "fn f(n: u32)")).unwrap();
+    assert!(
+        l.spec_lean.contains(
+            "(let «match» : Nat := (specNat (specArg q 0)); (if («match» = (0 : Nat)) then \
+             (1 : Nat) else (let «m» : Nat := «match»; («m» * (2 : Nat)))))"
+        ),
+        "{}",
+        l.spec_lean
+    );
+}
+
+#[test]
+fn match_patterns_are_checked_strictly() {
+    let sig = "fn f(a: u8, b: bool) -> u8";
+    for (clause, code) in [
+        (
+            "ensures(|r| match a { x if x > 1u8 => true, _ => false })",
+            "E_ANNEAL_SPEC_UNSUPPORTED_EXPR",
+        ),
+        ("ensures(|r| match a { (x, y) => true, _ => false })", "E_ANNEAL_SPEC_UNSUPPORTED_EXPR"),
+        ("ensures(|r| match a { 0..=5 => true, _ => false })", "E_ANNEAL_SPEC_UNSUPPORTED_EXPR"),
+        ("ensures(|r| match a { ref x => r == x })", "E_ANNEAL_SPEC_UNSUPPORTED_EXPR"),
+        ("ensures(|r| match a { mut x => r == x })", "E_ANNEAL_SPEC_UNSUPPORTED_EXPR"),
+        ("ensures(|r| match a { Some(x) => true, _ => false })", "E_ANNEAL_SPEC_UNSUPPORTED_EXPR"),
+        ("ensures(|r| match a { Foo::Bar => true, _ => false })", "E_ANNEAL_SPEC_UNSUPPORTED_EXPR"),
+        ("ensures(|r| match a { 0 | _ => true })", "E_ANNEAL_SPEC_UNSUPPORTED_EXPR"),
+        ("ensures(|r| match a { \"x\" => true, _ => false })", "E_ANNEAL_SPEC_UNSUPPORTED_EXPR"),
+        ("ensures(|r| match a { })", "E_ANNEAL_NON_EXHAUSTIVE_MATCH"),
+        ("ensures(|r| match b { true => true })", "E_ANNEAL_NON_EXHAUSTIVE_MATCH"),
+        ("ensures(|r| match a { 0 => true, 1 => false })", "E_ANNEAL_NON_EXHAUSTIVE_MATCH"),
+        ("ensures(|r| match a { _ => true, 0 => false })", "E_ANNEAL_UNREACHABLE_MATCH_ARM"),
+        ("ensures(|r| match a { 0 | 0 => true, _ => false })", "E_ANNEAL_UNREACHABLE_MATCH_ARM"),
+        (
+            "ensures(|r| match a { 0 => true, 0 => false, _ => true })",
+            "E_ANNEAL_UNREACHABLE_MATCH_ARM",
+        ),
+        (
+            "ensures(|r| match b { true => true, true => false, _ => true })",
+            "E_ANNEAL_UNREACHABLE_MATCH_ARM",
+        ),
+        (
+            "ensures(|r| match b { true => true, false => false, _ => true })",
+            "E_ANNEAL_UNREACHABLE_MATCH_ARM",
+        ),
+        ("ensures(|r| match a { true => true, _ => false })", "E_ANNEAL_SPEC_TYPE_MISMATCH"),
+        ("ensures(|r| match b { 0 => true, _ => false })", "E_ANNEAL_SPEC_TYPE_MISMATCH"),
+        ("ensures(|r| match a { 0u16 => true, _ => false })", "E_ANNEAL_SPEC_TYPE_MISMATCH"),
+        ("ensures(|r| match a { 256 => true, _ => false })", "E_ANNEAL_SPEC_LITERAL_RANGE"),
+        ("ensures(|r| match a { -1 => true, _ => false })", "E_ANNEAL_SPEC_LITERAL_RANGE"),
+        ("ensures(|r| match () { _ => true })", "E_ANNEAL_SPEC_TYPE_MISMATCH"),
+        ("ensures(|r| match a { 0 => 1u8, _ => true } == r)", "E_ANNEAL_SPEC_SYNTAX"),
+        ("ensures(|r| match a { 0 true, _ => false })", "E_ANNEAL_SPEC_SYNTAX"),
+        ("ensures(|r| match { _ => true })", "E_ANNEAL_SPEC_SYNTAX"),
+        ("ensures(|r| r == match a { 0 => 1u8, _ => true })", "E_ANNEAL_SPEC_TYPE_MISMATCH"),
+        // Pattern bindings follow the `let` rules.
+        ("ensures(|r| match a { b => r == a })", "E_ANNEAL_SPEC_SHADOWING"),
+        ("ensures(|r| match a { q => r == q })", "E_ANNEAL_RESERVED_PARAM_NAME"),
+        ("ensures(|r| match a { k => true })", "E_ANNEAL_UNUSED_LET"),
+    ] {
+        expect_error(&wrap(clause, sig), code);
+    }
+    let r = expect_error(
+        &wrap("ensures(|r| match a { x if x > 1u8 => true, _ => false })", sig),
+        "E_ANNEAL_SPEC_UNSUPPORTED_EXPR",
+    );
+    assert!(r.contains("`match` guards are not supported"), "{r}");
+    let r = expect_error(
+        &wrap("ensures(|r| match a { 0 => r == 0u8, _ => true } && b)", sig),
+        "E_ANNEAL_SPEC_SYNTAX",
+    );
+    assert!(r.contains("a `match` expression must be parenthesized"), "{r}");
+    lower_one(&wrap("ensures(|r| (match a { 0 => r == 0u8, _ => true }) && b)", sig)).unwrap();
+    for clause in [
+        "max_steps = match n { 0 => 1, _ => 2 }",
+        "max_steps = match m { -1 => 1, _ => 2 }",
+        "max_steps = match m { 0i32 => 1, _ => 2 }",
+    ] {
+        expect_error(&wrap(clause, "fn f(n: i32, m: u32)"), "E_ANNEAL_SPEC_TYPE_MISMATCH");
+    }
+    // A `max_steps` pattern is checked against the scrutinee's machine type,
+    // as in a `max_steps` `if` condition, and against its own suffix.
+    let sig = "fn f(m: u32)";
+    for (clause, code) in [
+        ("max_steps = match m { 3u8 => 1, _ => 2 }", "E_ANNEAL_SPEC_TYPE_MISMATCH"),
+        ("max_steps = match m { 300u8 => 1, _ => 2 }", "E_ANNEAL_SPEC_TYPE_MISMATCH"),
+        ("max_steps = match m { u8::MAX => 1, _ => 2 }", "E_ANNEAL_SPEC_TYPE_MISMATCH"),
+        ("max_steps = match m { 4294967296 => 1, _ => 2 }", "E_ANNEAL_SPEC_LITERAL_RANGE"),
+        (
+            "max_steps = { let k = m * 2; match k { 300u8 => 1, _ => 2 } }",
+            "E_ANNEAL_SPEC_LITERAL_RANGE",
+        ),
+        ("max_steps = match 5 { 300u8 => 1, _ => 2 }", "E_ANNEAL_SPEC_LITERAL_RANGE"),
+    ] {
+        expect_error(&wrap(clause, sig), code);
+    }
+    for clause in [
+        "max_steps = match m { 3u32 => 1, u32::MAX => 2, 4294967294 => 3, _ => 4 }",
+        // A step count with no machine type, such as a sum, product, or
+        // `let` binding of step counts, compares like `k == 3u8` does in a
+        // `max_steps` condition.
+        "max_steps = match m * 2 { 3u8 => 1, _ => 2 }",
+        "max_steps = { let k = m * 2; match k { 3u8 => 1, _ => 2 } }",
+        "max_steps = { let k = m * 2; if k == 3u8 { 1 } else { 2 } }",
+    ] {
+        lower_one(&wrap(clause, sig)).unwrap_or_else(|e| panic!("{clause}: {e:?}"));
+    }
+    // A suffixed pattern on a `math` scrutinee is in range for its suffix.
+    let sig = "fn f(a: u8) -> u8";
+    expect_error(
+        &wrap("ensures(|r| match math(a) { 300u8 => true, _ => false })", sig),
+        "E_ANNEAL_SPEC_LITERAL_RANGE",
+    );
+    lower_one(&wrap("ensures(|r| match math(a) { 3u16 => true, _ => r == a })", sig)).unwrap();
+}
+
+#[test]
+fn block_match_arms_need_no_comma() {
+    let sig = "fn f(a: u8, b: bool) -> u8";
+    let with = lower_one(&wrap(
+        "ensures(|r| match a { 0 => { r == 0u8 }, 1 => { let s = 1u8; r == s }, _ => b })",
+        sig,
+    ))
+    .unwrap();
+    let without = lower_one(&wrap(
+        "ensures(|r| match a { 0 => { r == 0u8 } 1 => { let s = 1u8; r == s } _ => b })",
+        sig,
+    ))
+    .unwrap();
+    assert_eq!(with.spec_lean, without.spec_lean);
+    let r = expect_error(
+        &wrap("ensures(|r| match a { 0 => { r == 0u8 } && b, _ => true })", sig),
+        "E_ANNEAL_SPEC_SYNTAX",
+    );
+    assert!(r.contains("arm body ends at its `}`"), "{r}");
+    lower_one(&wrap("ensures(|r| match a { 0 => { r == 0u8 && b } _ => true })", sig)).unwrap();
+    // Other bodies, including `if` and `match`, still need a comma.
+    for clause in [
+        "ensures(|r| match a { 0 => r == 0u8 _ => b })",
+        "ensures(|r| match a { 0 => if b { true } else { false } _ => b })",
+        "ensures(|r| match a { 0 => match b { _ => true } _ => b })",
+        "ensures(|r| match a { 0 => { r == 0u8 }, 1 true, _ => b })",
+    ] {
+        let r = expect_error(&wrap(clause, sig), "E_ANNEAL_SPEC_SYNTAX");
+        assert!(!r.contains("arm body ends at its `}`"), "{r}");
+    }
+}
+
+#[test]
+fn match_arms_may_divide_by_what_their_patterns_prove_nonzero() {
+    let sig = "fn f(n: u32, d: u32) -> u32";
+    for body in [
+        "match d { 0 => r == 0u32, _ => math(r) == math(n / d) }",
+        "match d { 1 => math(r) == math(n / d), 0 => r == 0u32, _ => r == 0u32 }",
+        "match d { 0 => r == 0u32, k => math(r) == math(n / k) }",
+        "match d { 0 | 1 => r == 0u32, _ => math(r) == math(n % d) }",
+        "match d { 1 | 2 => math(r) == math(n / d), _ => r == 0u32 }",
+        "match d != 0u32 { true => math(r) == math(n / d), false => r == 0u32 }",
+        "match d == 0u32 { true => r == 0u32, false => math(r) == math(n / d) }",
+    ] {
+        lower_one(&wrap(&format!("ensures(|r| {body})"), sig))
+            .unwrap_or_else(|e| panic!("{body}: {e:?}"));
+    }
+    for body in [
+        "match d { 0 => math(r) == math(n / d), _ => r == 0u32 }",
+        "match d { 1 => r == 0u32, k => math(r) == math(n / k) }",
+        "match d { 0 | 1 => math(r) == math(n / d), _ => r == 0u32 }",
+        "match d != 0u32 { true => r == 0u32, false => math(r) == math(n / d) }",
+    ] {
+        expect_error(&wrap(&format!("ensures(|r| {body})"), sig), "E_ANNEAL_UNGUARDED_SPEC_DIV");
+    }
+    lower_one(&wrap("max_steps = match d { 0 => 1, _ => n / d }", "fn f(n: u32, d: u32)")).unwrap();
+    expect_error(
+        &wrap("max_steps = match d { 0 => n / d, _ => 1 }", "fn f(n: u32, d: u32)"),
+        "E_ANNEAL_UNGUARDED_SPEC_DIV",
+    );
+    // A guard about a pattern binding does not leave its arm, so it cannot
+    // guard a later binding of the same name.
+    let sig = "fn f(n: u32, d: u32)";
+    lower_one(&wrap("requires((match d { _ => d != 0u32 }) && math(n / d) > 0)", sig)).unwrap();
+    expect_error(
+        &wrap(
+            "requires((match d { k => k != 0u32 }) && { let k: u32 = 0; math(n / k) == 0 })",
+            sig,
+        ),
+        "E_ANNEAL_UNGUARDED_SPEC_DIV",
+    );
+}
+
+#[test]
+fn value_matches_need_decidable_scrutinees() {
+    let small = "#[anneal::pure] fn small(x: u8) -> bool { x < 10u8 }";
+    let spec = |ensures: &str| {
+        format!(
+            "anneal::external_spec! {{ {small}
+                #[anneal::spec(ensures(|r| {ensures}))]
+                fn f(a: u8) -> u8;
+            }}"
+        )
+    };
+    for ensures in [
+        "r == match small(a) { true => 1u8, false => 0u8 }",
+        "match small(a) { p => r == if p { 1u8 } else { 0u8 } }",
+        "r == if (match small(a) { true => a > 1u8, false => true }) { 1u8 } else { 0u8 }",
+    ] {
+        expect_error(&spec(ensures), "E_ANNEAL_UNDECIDABLE_SPEC_IF");
+    }
+    for ensures in [
+        "match small(a) { true => r == 1u8, false => r == 0u8 }",
+        "r == match a { 0 => 1u8, _ => 0u8 }",
+        "r == match a > 3u8 { true => 1u8, false => 0u8 }",
+    ] {
+        lower_one(&spec(ensures)).unwrap_or_else(|e| panic!("{ensures}: {e:?}"));
+    }
+    // A `max_steps` match chooses a step count, so it needs a decidable
+    // `bool` scrutinee too.
+    let steps = |max_steps: &str| {
+        format!(
+            "anneal::external_spec! {{ {small}
+                #[anneal::spec(max_steps = {max_steps})]
+                fn f(a: u8);
+            }}"
+        )
+    };
+    expect_error(
+        &steps("match small(a) { true => 1, false => 2 }"),
+        "E_ANNEAL_UNDECIDABLE_SPEC_IF",
+    );
+    lower_one(&steps("match a > 3u8 { true => 1, false => 2 }")).unwrap();
 }
 
 #[test]
