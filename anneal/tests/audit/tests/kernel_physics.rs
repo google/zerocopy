@@ -43,21 +43,18 @@ use anneal_testkit::toolchain::{default_lean_path, lean_prefix};
 ///
 /// - `funext` in `prop_em` is inherent: Diaconescu's argument needs function
 ///   extensionality.
-/// - Lean's `Nat.bitwise.eq_def` is proved with `WellFounded.Nat.fix_eq`,
-///   which uses `funext`. `NatBitwise.unfold_eq` is the one place that
-///   unfolds `Nat.bitwise`.
-/// - `Int.instLawfulBEq` and `Nat.instLawfulBEq` reach `Quot.sound` through
-///   their `LawfulBEq` proofs; `of_decide_eq_true` avoids them.
+/// - `Nat.instLawfulBEq` reaches `Quot.sound` through its `LawfulBEq` proof;
+///   the canary exercises `list_beq_iff` at `Nat`. Elsewhere,
+///   `of_decide_eq_true` avoids it.
+///
+/// `Nat.bitwise`'s generated `eq_def` (proved with `WellFounded.Nat.fix_eq`,
+/// which uses `funext`) is not an entry point: `NatBitwise.unfold_eq` proves
+/// the unfolding without it.
 ///
 /// The observed set must equal this list exactly: a new pair is a regression,
 /// and a pair that disappears must be removed here so that it cannot return.
 const ALLOWED_QUOT_SOUND_ENTRIES: &[(&str, &str)] = &[
     ("funext", "Anneal.ClassicalEm.prop_em"),
-    (
-        "_private.Init.Data.Nat.Bitwise.Basic.0.Nat.bitwise.eq_def",
-        "_private.Anneal.NatBitwise.0.Nat.bitwise.eq_def",
-    ),
-    ("Int.instLawfulBEq", "Anneal.AiPcc.evalBinOp_sint_div_rem"),
     ("Nat.instLawfulBEq", "Anneal.InitLemmas.canary_list_beq_edge"),
 ];
 
