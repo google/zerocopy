@@ -897,6 +897,44 @@ theorem c2_step1 :
 noncomputable def c2L3 :=
   c2Locals .uninit (c2Ptr alloc2IdV2 4) .uninit (c2Int .i8 0xAA)
 
+/-- Step 2 destination: `_5` evaluates to its local place without changing the
+state. -/
+private theorem c2_step2_dest :
+    (Miri.Interpreter.ExecutionMachine.rvalueHooks
+        (Miri.Interpreter.ExecutionMachine.withValidation
+          (refExecutionConfigV2 c2Rp) refLimitsV2) refLimitsV2).evalPlace
+      0 ⟨5, Array.empty⟩ true (c2St 2 c2L2 (c2Mem c2Live1)) =
+      .ok (c2Local 5 c2L2 c2U8) (c2St 2 c2L2 (c2Mem c2Live1)) := rfl
+
+/-- Step 2 source: `move _4` reads `0xAA_u32` and leaves `_4` uninitialized. -/
+private theorem c2_step2_src :
+    (Miri.Interpreter.ExecutionMachine.rvalueHooks
+        (Miri.Interpreter.ExecutionMachine.withValidation
+          (refExecutionConfigV2 c2Rp) refLimitsV2) refLimitsV2).evalOperandAt
+      0 (Miri.Interpreter.OperandPath.rvalue "operand")
+      (toMiriOperandV2 c2Rp.types (RefOperand.move ⟨4, []⟩)) none
+      (c2St 2 c2L2 (c2Mem c2Live1)) =
+      .ok ⟨.immediate (c2Int .i32 0xAA), c2U32⟩
+        (c2St 2 (c2Locals .uninit (c2Ptr alloc2IdV2 4) .uninit .uninit)
+          (c2Mem c2Live1)) := rfl
+
+/-- Step 2 assignment, split at the destination and operand evaluations so
+that each definitional check stays small. -/
+private theorem c2_step2_run :
+    (Miri.Interpreter.ExecutionMachine.stepHooks
+      (refExecutionConfigV2 c2Rp) refLimitsV2).assign 0 ⟨5, Array.empty⟩
+      (toMiriRvalueV2 c2Rp.types
+        (.cast .intToInt (.move ⟨4, []⟩) (tyIdFor c2Rp.types u8Ty)))
+      (c2St 2 c2L2 (c2Mem c2Live1)) =
+      Miri.Interpreter.MachineHooks.run
+        (Miri.Interpreter.ValidityVisitor.validatePlace
+          (refValHooksV2 c2Rp.types) 0 16 (c2Local 5 c2L3 c2U8) true true)
+        (c2St 2 c2L3 (c2Mem c2Live1)) := by
+  dsimp only [Miri.Interpreter.ExecutionMachine.stepHooks,
+    Miri.Interpreter.evalRvalueIntoPlace, toMiriRvalueV2, bind, Bind.bind]
+  rw [mhRun_bind_ok c2_step2_dest, mhRun_bind_ok c2_step2_src]
+  rfl
+
 /-- Step 2: `_5 = move _4 as u8`. -/
 theorem c2_step2 :
     Miri.Interpreter.ExecutionMachine.step (refExecutionConfigV2 c2Rp)
@@ -905,7 +943,7 @@ theorem c2_step2 :
   let stW := c2St 2 c2L3 (c2Mem c2Live1)
   execStep_assign_val_v2 c2Rp _ stW stW (c2Frame 2 c2L2) (c2Frame 2 c2L3)
     0 2 c2Block (c2Stmt 2) _ _ (c2Local 5 c2L3 c2U8) _
-    rfl rfl rfl rfl rfl rfl rfl rfl rfl rfl rfl
+    rfl rfl rfl rfl rfl rfl c2_step2_run rfl rfl rfl rfl
 
 /-- Concrete mutable caller allocation `alloc3` of `V2_C2` (post-state). -/
 noncomputable def c2A3w : Miri.Memory.Allocation Miri.Memory.Provenance Unit :=
@@ -1198,6 +1236,47 @@ theorem c2_step3 :
 noncomputable def c2L5 :=
   c2Locals (c2Ptr alloc2IdV2 4) .uninit .uninit .uninit
 
+/-- Step 4 destination: `_0` evaluates to its local place without changing the
+state. -/
+private theorem c2_step4_dest :
+    (Miri.Interpreter.ExecutionMachine.rvalueHooks
+        (Miri.Interpreter.ExecutionMachine.withValidation
+          (refExecutionConfigV2 c2Rp) refLimitsV2) refLimitsV2).evalPlace
+      0 ⟨0, Array.empty⟩ true (c2St 4 c2L4 (c2Mem c2Live3)) =
+      .ok (c2Local 0 c2L4 c2PtrC) (c2St 4 c2L4 (c2Mem c2Live3)) := rfl
+
+/-- Step 4 source: `move _3` reads the pointer and leaves `_3` uninitialized. -/
+private theorem c2_step4_src :
+    (Miri.Interpreter.ExecutionMachine.rvalueHooks
+        (Miri.Interpreter.ExecutionMachine.withValidation
+          (refExecutionConfigV2 c2Rp) refLimitsV2) refLimitsV2).evalOperandAt
+      0 (Miri.Interpreter.OperandPath.rvalue "operand")
+      (toMiriOperandV2 c2Rp.types (RefOperand.move ⟨3, []⟩))
+      (some ((Miri.Interpreter.ExecutionMachine.rvalueHooks
+        (Miri.Interpreter.ExecutionMachine.withValidation
+          (refExecutionConfigV2 c2Rp) refLimitsV2) refLimitsV2).placeLayout
+        (c2Local 0 c2L4 c2PtrC)))
+      (c2St 4 c2L4 (c2Mem c2Live3)) =
+      .ok ⟨.immediate (c2Ptr alloc2IdV2 4), c2PtrC⟩
+        (c2St 4 (c2Locals .uninit .uninit .uninit .uninit)
+          (c2Mem c2Live3)) := rfl
+
+/-- Step 4 assignment, split at the destination and operand evaluations so
+that each definitional check stays small. -/
+private theorem c2_step4_run :
+    (Miri.Interpreter.ExecutionMachine.stepHooks
+      (refExecutionConfigV2 c2Rp) refLimitsV2).assign 0 ⟨0, Array.empty⟩
+      (toMiriRvalueV2 c2Rp.types (.use (.move ⟨3, []⟩)))
+      (c2St 4 c2L4 (c2Mem c2Live3)) =
+      Miri.Interpreter.MachineHooks.run
+        (Miri.Interpreter.ValidityVisitor.validatePlace
+          (refValHooksV2 c2Rp.types) 0 16 (c2Local 0 c2L5 c2PtrC) true true)
+        (c2St 4 c2L5 (c2Mem c2Live3)) := by
+  dsimp only [Miri.Interpreter.ExecutionMachine.stepHooks,
+    Miri.Interpreter.evalRvalueIntoPlace, toMiriRvalueV2, bind, Bind.bind]
+  rw [mhRun_bind_ok c2_step4_dest, mhRun_bind_ok c2_step4_src]
+  rfl
+
 /-- Step 4: `_0 = move _3`. -/
 theorem c2_step4 :
     Miri.Interpreter.ExecutionMachine.step (refExecutionConfigV2 c2Rp)
@@ -1206,7 +1285,7 @@ theorem c2_step4 :
   let stW := c2St 4 c2L5 (c2Mem c2Live3)
   execStep_assign_val_v2 c2Rp _ stW stW (c2Frame 4 c2L4) (c2Frame 4 c2L5)
     0 4 c2Block (c2Stmt 4) _ _ (c2Local 0 c2L5 c2PtrC) _
-    rfl rfl rfl rfl rfl rfl rfl rfl rfl rfl rfl
+    rfl rfl rfl rfl rfl rfl c2_step4_run rfl rfl rfl rfl
 
 /-- Writing the returned pointer into the return buffer succeeds. -/
 theorem c2_retWrite_isOk :

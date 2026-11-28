@@ -562,26 +562,52 @@ theorem getPlaceAlloc_misaligned_v2 {P E K H X : Type} [DecidableEq K]
         cases repr with
         | Scalar _ | ScalarPair | SimdVector | SimdScalableVector =>
           change (match (Miri.Memory.AllocationAccess.getPtrAlloc memory hooks
-              ⟨Miri.ABI.Size.ofBytes 8⟩ ptr sz ghost kind global
-              access).outcome with
-            | Except.error error => _
-            | Except.ok reference? => _) = _
-          dsimp only [Miri.Interpreter.getPlaceAlloc, refRuntimeLayoutV2,
-            pure, Pure.pure, Except.pure, bind, Bind.bind, Except.bind,
-            Except.mapError, Id.run]
+              ⟨Miri.ABI.Size.ofBytes 8⟩ ptr sz ghost kind global access).outcome with
+            | Except.error error =>
+              Miri.Interpreter.MemoryOperandResult.mk
+                (Miri.Memory.AllocationAccess.getPtrAlloc memory hooks
+                  ⟨Miri.ABI.Size.ofBytes 8⟩ ptr sz ghost kind global access).memory
+                (Miri.Memory.AllocationAccess.getPtrAlloc memory hooks
+                  ⟨Miri.ABI.Size.ofBytes 8⟩ ptr sz ghost kind global access).hooks
+                (Miri.Memory.AllocationAccess.getPtrAlloc memory hooks
+                  ⟨Miri.ABI.Size.ofBytes 8⟩ ptr sz ghost kind global access).touched
+                (Except.error (Miri.Interpreter.MemoryOperandError.pointerAccess error))
+            | Except.ok _ =>
+              Miri.Interpreter.MemoryOperandResult.mk
+                (Miri.Memory.AllocationAccess.getPtrAlloc memory hooks
+                  ⟨Miri.ABI.Size.ofBytes 8⟩ ptr sz ghost kind global access).memory
+                (Miri.Memory.AllocationAccess.getPtrAlloc memory hooks
+                  ⟨Miri.ABI.Size.ofBytes 8⟩ ptr sz ghost kind global access).hooks
+                (Miri.Memory.AllocationAccess.getPtrAlloc memory hooks
+                  ⟨Miri.ABI.Size.ofBytes 8⟩ ptr sz ghost kind global access).touched
+                (Except.error (Miri.Interpreter.MemoryOperandError.pointerAccess
+                  (.access (.alignmentCheckFailed bad))))) = _
           rw [actual]
         | @Memory isSized =>
           cases isSized with
           | false => cases sized
           | true =>
             change (match (Miri.Memory.AllocationAccess.getPtrAlloc memory hooks
-                ⟨Miri.ABI.Size.ofBytes 8⟩ ptr sz ghost kind global
-                access).outcome with
-              | Except.error error => _
-              | Except.ok reference? => _) = _
-            dsimp only [Miri.Interpreter.getPlaceAlloc, refRuntimeLayoutV2,
-              pure, Pure.pure, Except.pure, bind, Bind.bind, Except.bind,
-              Except.mapError, Id.run]
+                ⟨Miri.ABI.Size.ofBytes 8⟩ ptr sz ghost kind global access).outcome with
+              | Except.error error =>
+                Miri.Interpreter.MemoryOperandResult.mk
+                  (Miri.Memory.AllocationAccess.getPtrAlloc memory hooks
+                    ⟨Miri.ABI.Size.ofBytes 8⟩ ptr sz ghost kind global access).memory
+                  (Miri.Memory.AllocationAccess.getPtrAlloc memory hooks
+                    ⟨Miri.ABI.Size.ofBytes 8⟩ ptr sz ghost kind global access).hooks
+                  (Miri.Memory.AllocationAccess.getPtrAlloc memory hooks
+                    ⟨Miri.ABI.Size.ofBytes 8⟩ ptr sz ghost kind global access).touched
+                  (Except.error (Miri.Interpreter.MemoryOperandError.pointerAccess error))
+              | Except.ok _ =>
+                Miri.Interpreter.MemoryOperandResult.mk
+                  (Miri.Memory.AllocationAccess.getPtrAlloc memory hooks
+                    ⟨Miri.ABI.Size.ofBytes 8⟩ ptr sz ghost kind global access).memory
+                  (Miri.Memory.AllocationAccess.getPtrAlloc memory hooks
+                    ⟨Miri.ABI.Size.ofBytes 8⟩ ptr sz ghost kind global access).hooks
+                  (Miri.Memory.AllocationAccess.getPtrAlloc memory hooks
+                    ⟨Miri.ABI.Size.ofBytes 8⟩ ptr sz ghost kind global access).touched
+                  (Except.error (Miri.Interpreter.MemoryOperandError.pointerAccess
+                    (.access (.alignmentCheckFailed bad))))) = _
             rw [actual]
 
 noncomputable def alloc4IdV2 : Miri.Memory.AllocId := ⟨4, by decide⟩

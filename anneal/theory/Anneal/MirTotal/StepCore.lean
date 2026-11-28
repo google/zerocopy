@@ -660,6 +660,12 @@ theorem evalOrderingDiscriminantOfValComp_eq (optVal : Option Val)
     | _, _ => .error .unsupported
   | _ => .error .unsupported
 
+private theorem bool_ite_true {α : Type} (a b : α) :
+    (if true = true then a else b) = a := rfl
+
+private theorem bool_ite_false {α : Type} (a b : α) :
+    (if false = true then a else b) = b := rfl
+
 /-- Agreement between `evalRvalueBy` and `evalRvalue` when `tyEq` agrees with
 `MirTy.beq`. -/
 theorem evalRvalueBy_eq (tyEq : MirTy → MirTy → Bool)
@@ -751,8 +757,9 @@ theorem evalRvalueBy_eq (tyEq : MirTy → MirTy → Bool)
         | immediate optVal =>
           dsimp only
           cases (!place.projection.isEmpty) with
-          | true => rfl
+          | true => rw [bool_ite_true, bool_ite_true]
           | false =>
+            rw [bool_ite_false, bool_ite_false]
             cases srcTy <;>
               first
                 | rfl
@@ -761,8 +768,9 @@ theorem evalRvalueBy_eq (tyEq : MirTy → MirTy → Bool)
         | indirect mplace =>
           dsimp only
           cases (!place.projection.isEmpty) with
-          | true => rfl
+          | true => rw [bool_ite_true, bool_ite_true]
           | false =>
+            rw [bool_ite_false, bool_ite_false]
             cases srcTy with
             | enum ety =>
               dsimp only
@@ -2254,8 +2262,9 @@ theorem evalCallTerminatorBy_eq (tyEq : MirTy → MirTy → Bool)
       !castTypesValid calleeBody ||
       !assignTypesValid calleeBody ||
       !calleeBody.locals.all isSupportedScalarOrUnitTy) with
-  | true => rfl
+  | true => rw [bool_ite_true, bool_ite_true]
   | false =>
+    rw [bool_ite_false, bool_ite_false]
     dsimp only
     rw [evalCallArgsBy_eq tyEq hTyEq]
     cases evalCallArgs callerBody.locals caller.locals mem _ args _ with

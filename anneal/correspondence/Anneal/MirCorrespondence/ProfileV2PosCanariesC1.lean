@@ -1972,7 +1972,7 @@ theorem c1b_wr_pair_false (st : RefMiriState) (mem : RefMiriMem)
   have h_wr_f := writeImmediate_pair_of_access mem mem mem ⟨st.machine, none⟩
     ⟨c1Mp id, lay⟩ refRuntimeLayoutV2 none global access dynamic (c1PtrSc 2)
     (c1Usize 3) abiA abiB (Size.ofBytes 8) id a a a rfl rfl rfl trivial rfl
-    (by decide) (by decide) (by change 8 + 8 ≤ 16; decide) hf h_w0 h_cache
+    (by decide) (by decide) (by change 8 + 8 ≤ 16; decide) (by exact hf) h_w0 h_cache
     h_w1 h_cache
   exact ⟨hf, h_wr_f⟩
 
