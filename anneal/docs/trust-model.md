@@ -280,6 +280,39 @@ verification claim boundary without wrapping inner small-step execution rules:
   edge and defines no multi-edge or cyclic composition. Untrusted soundness
   lemmas and negative refutations (ABI and effect mismatches, and related
   values violating either contract) live in `Anneal.Framework.Link`.
+- **C11 and C++20 operational semantics (`Trusted.CppAst`,
+  `Trusted.CppSemantics`, `candidate:refinement`):** Define a basic-block CFG
+  for C11 and `-fno-exceptions` C++20 functions lowered from Clang ASTs into
+  single-side-effect normal form, and a deterministic small-step semantics
+  over it for little-endian LP64 targets. Pointers carry PNVI-ae-udi
+  provenance and the member or array subobject they were derived from, and
+  every dereference, member access, subscript, reference binding, and pointer
+  addition is checked for liveness, bounds (of the subobject, not just the
+  allocation), and alignment. The model also covers `-fwrapv`-selectable
+  signed overflow, bit-fields, `std::bit_cast` between padding-free types,
+  zero-initialization of any record (padding included), packed-record member
+  access, and `const` locals. Undefined behavior steps to `.fault .undefined`;
+  constructs the semantics does not model, and behavior on which C11 and
+  C++20 disagree (such as `&*p` one past the end, `NULL + 0`, or signed left
+  shifts into the sign bit), step to `.fault .unsupported`, never to a guessed
+  result. Admission rejects what the model cannot represent faithfully:
+  strict aliasing (integer types record only their width, so `long` and
+  `long long` are indistinguishable), `restrict`, `union` (C and C++ disagree
+  on reading an inactive member), call results stored through projections
+  (C11 leaves their evaluation unsequenced with the call), big-endian targets,
+  and record tables that differ from the one `CppProfileRung0` checks entry
+  values against. Copying a value of a type with padding, by value or through
+  an immediate local, is `.unsupported`; reading a pointer to a dead object,
+  directly or inside a copied aggregate, is `.undefined`, as is a partially
+  overlapping aggregate assignment.
+  `CppProfileRung0` instantiates `ExecutionModel` with
+  `OracleGrade.unbridged "cpp_rung0_c11"` (no reference-semantics
+  correspondence yet) and discloses the downstream Clang, LLVM, linker, and
+  timing stages as `.unverifiedDownstream` gaps. `CppEnvelopeTheorem` pins the
+  model inside `Trusted.*` and is the planned Pass-1 root from which every
+  `Trusted.Cpp*` declaration is reachable. Untrusted determinism, step-bridge,
+  and C-ABI linking lemmas live in `Anneal.CppEquiv` and
+  `Anneal.PureLift.CppBridge`.
 
 ### Staging TCB changes (`vetted` vs. `candidate:<feature>` modules)
 

@@ -547,6 +547,8 @@ anneal/
 │   │   ├── foundation-lock.json    # SHA-256 pins for lean binary & Init.*
 │   │   ├── Trusted.lean            # Root TCB prelude import
 │   │   └── Trusted/
+│   │       ├── CppAst.lean         # C11/C++20 lowered CFG syntax
+│   │       ├── CppSemantics.lean   # C11/C++20 model & root (+ CppSemantics/)
 │   │       ├── MirAst.lean         # Captured MIR AST umbrella (+ MirAst/)
 │   │       ├── MirModel.lean       # Shared pure boundary value/query types
 │   │       ├── MirSemantics.lean   # M_anneal & CrateTheorem (+ MirSemantics/)
@@ -586,6 +588,7 @@ anneal/
     │   ├── CnfOrd.lean             # Constructive < ω^ω CNF ordinals & worklists (+ CnfOrd/)
     │   ├── ConjunctiveWp.lean      # Anti-monotonic WLP, conjunctive WP & pow2 fuel (+ ConjunctiveWp/)
     │   ├── Core.lean               # BlockTree, SepPCM & StepStageCut (+ Core/)
+    │   ├── CppEquiv.lean           # C11 laws, BiTotalEquiv & C-ABI SimConv
     │   ├── F2Simd.lean             # F2-linear/bilinear & SIMD certificate evaluators (+ F2Simd/)
     │   ├── Firewall.lean           # WHNF, rewrite & goal-directed ite firewall combinators
     │   ├── Framework.lean          # Envelope laws & legacy bridges (+ Framework/)
@@ -609,7 +612,7 @@ anneal/
     │   ├── OverflowCastJoin.lean   # Stage-cut joins for overflowing arithmetic & casts (+ OverflowCastJoin/)
     │   ├── PTree.lean              # Canonical positive radix trie & framing
     │   ├── PureLift.lean           # Functional borrow-lifting calculus
-    │   ├── PureLift/
+    │   ├── PureLift/               # BvLin, CppBridge & MIR lifting steps
     │   ├── RefFrame.lean           # 4-way call-continuation &mut frames & ranged TB (+ RefFrame/)
     │   ├── SafeTwin.lean           # Relational SafeTwin equivalence & BiAlign simulation (+ SafeTwin/)
     │   ├── Scalar.lean             # Constructive scalar/bitvector umbrella
@@ -649,12 +652,22 @@ MIR-specific semantics:
   `Trusted/Framework.lean` alone, so a caller's `.assumedExternalCallee` gap
   can be erased by a verified callee from another execution model without
   importing either language's semantics.
+- **`Trusted/CppAst.lean`** and **`Trusted/CppSemantics.lean`** (with
+  `Trusted/CppSemantics/`, all `candidate:refinement`) define a C11 and C++20
+  `ExecutionModel` (`CppProfileRung0`) and its model-pinned root
+  `CppEnvelopeTheorem` over `Trusted/Framework.lean`, importing no MIR
+  modules, so a C or C++ callee can be verified and linked through
+  `Trusted/Framework/Link.lean` like a MIR one.
 - **`theory/Anneal/Framework.lean`** and
   **`theory/Anneal/Framework/StepWp.lean`** supply untrusted (`0`-TCB) envelope
   laws, compatibility equivalences, and generic step/loop weakest-precondition
   combinators; **`theory/Anneal/Framework/Link.lean`** proves gap erasure,
   postcondition transfer, stub realizability, and ABI/effect-mismatch
-  refutations for `Trusted/Framework/Link.lean`.
+  refutations for `Trusted/Framework/Link.lean`; and
+  **`theory/Anneal/CppEquiv.lean`** and
+  **`theory/Anneal/PureLift/CppBridge.lean`** prove C11 determinism and
+  termination laws, connect `Trusted.CppSemantics.evalStep` to the generic
+  step calculus, and supply per-statement symbolic-execution rules.
 
 ## Compiler integration and extraction lifecycle
 

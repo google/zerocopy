@@ -50,6 +50,10 @@
       "sha256": "8e8822f0a680590c229fdb36ca348c7df269eb7d1f4a4ba111bb7193d0d6a78f"
     },
     {
+      "path": "theory/Anneal/CppEquiv.lean",
+      "sha256": "83dabc83a1e87f21514d4878d09cc9d5c925c558651beedf1ad76cc7acf4eaac"
+    },
+    {
       "path": "theory/Anneal/Firewall.lean",
       "sha256": "57e7f5b9ff25fe9a28045643da947c761e8ba55a32d67004f4e62a831dc4bd58"
     },
@@ -144,6 +148,10 @@
     {
       "path": "theory/Anneal/PureLift/BvLin.lean",
       "sha256": "9fa01666dcb728c92f4c89ffaac7f723c9b24ab7129508c88682d90346461da7"
+    },
+    {
+      "path": "theory/Anneal/PureLift/CppBridge.lean",
+      "sha256": "ee2c03fc156285265f3bf8c54c01759888ae5aff651c76b91e369384f4685c9e"
     },
     {
       "path": "theory/Anneal/Scalar.lean",
