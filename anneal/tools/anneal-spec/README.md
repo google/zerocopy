@@ -238,6 +238,15 @@ reversal. A wider one is taken as its `Nat` bits (its remainder modulo
 and `|||` in a `fun` that evaluates `a` once, and a signed result is
 sign-extended, so `(-2i16).swap_bytes()` is `-257`.
 
+`a.reverse_bits()` reverses the bits of `a`, and `a.count_ones()` and
+`a.count_zeros()` count its one and zero bits, as a `u32`, on either
+signedness. Each takes the `Nat` bits of `a` through SWAR stages, Lean `fun`s
+each applied to the previous stage's value so that every stage evaluates its
+input once: reversal swaps adjacent groups of 1, 2, 4, ... bits with `>>>`,
+`<<<`, `&&&`, and `|||`, and counting sums the bits of 2-, 4-, and 8-bit groups
+and folds the byte counts into the low byte with `+`, so the count is that
+byte, `% 256`. A signed reversal is sign-extended.
+
 Division and remainder lower to
 `Trusted.MirSemantics.intTdiv`/`intTmod` (Rust's truncating semantics, as in
 `Int.tdiv`/`Int.tmod`) and require the divisor to be a nonzero literal or

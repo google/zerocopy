@@ -543,6 +543,93 @@ anneal::external_spec! {
         a.swap_bytes()
     }
 
+    // `reverse_bits` reverses the two's-complement bits, and the counts
+    // count them, as a `u32`.
+    #[anneal::pure]
+    fn rev_u8(a: u8) -> u8 {
+        a.reverse_bits()
+    }
+
+    #[anneal::pure]
+    fn rev_i8(a: i8) -> i8 {
+        a.reverse_bits()
+    }
+
+    #[anneal::pure]
+    fn rev_u16(a: u16) -> u16 {
+        a.reverse_bits()
+    }
+
+    #[anneal::pure]
+    fn rev_i32(a: i32) -> i32 {
+        a.reverse_bits()
+    }
+
+    #[anneal::pure]
+    fn rev_u32(a: u32) -> u32 {
+        a.reverse_bits()
+    }
+
+    #[anneal::pure]
+    fn rev_u64(a: u64) -> u64 {
+        a.reverse_bits()
+    }
+
+    #[anneal::pure]
+    fn rev_i128(a: i128) -> i128 {
+        a.reverse_bits()
+    }
+
+    #[anneal::pure]
+    fn rev_u128(a: u128) -> u128 {
+        a.reverse_bits()
+    }
+
+    #[anneal::pure]
+    fn ones_i8(a: i8) -> u32 {
+        a.count_ones()
+    }
+
+    #[anneal::pure]
+    fn ones_u16(a: u16) -> u32 {
+        a.count_ones()
+    }
+
+    #[anneal::pure]
+    fn ones_i16(a: i16) -> u32 {
+        a.count_ones()
+    }
+
+    #[anneal::pure]
+    fn ones_u32(a: u32) -> u32 {
+        a.count_ones()
+    }
+
+    #[anneal::pure]
+    fn ones_i64(a: i64) -> u32 {
+        a.count_ones()
+    }
+
+    #[anneal::pure]
+    fn ones_i128(a: i128) -> u32 {
+        a.count_ones()
+    }
+
+    #[anneal::pure]
+    fn zeros_u8(a: u8) -> u32 {
+        a.count_zeros()
+    }
+
+    #[anneal::pure]
+    fn zeros_usize(a: usize) -> u32 {
+        a.count_zeros()
+    }
+
+    #[anneal::pure]
+    fn zeros_u128(a: u128) -> u32 {
+        a.count_zeros()
+    }
+
     #[anneal::pure]
     fn wshl_is(a: u16, n: u32, r: u16) -> bool {
         wrapping_shl(a, n) == r
@@ -567,6 +654,7 @@ anneal::external_spec! {
                 + n.div_euclid(16)
                 + n.saturating_div(1024)
                 + n.swap_bytes()
+                + n.count_ones()
         },
         ensures(|r| r == saturating_sub(n, 1u32)),
     )]

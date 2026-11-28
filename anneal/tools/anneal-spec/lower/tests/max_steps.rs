@@ -349,6 +349,13 @@ fn max_steps_counts_swapped_unsigned_bytes() {
 }
 
 #[test]
+fn max_steps_counts_population_counts() {
+    let l = lower_one(&wrap("max_steps = k.count_ones()", "fn f(k: i32)")).unwrap();
+    let want = "(Int.toNat (Int.ofNat (((fun («x» : Nat) => «x» + («x» >>> 16))";
+    assert!(l.spec_lean.contains(want), "missing {want} in\n{}", l.spec_lean);
+}
+
+#[test]
 fn max_steps_span_map_records_exact_clause_span() {
     let text = "anneal::external_spec! { #[anneal::spec(total, max_steps = 34 * n + 540)] fn f(n: usize); }";
     let l = lower_one(text).unwrap();
