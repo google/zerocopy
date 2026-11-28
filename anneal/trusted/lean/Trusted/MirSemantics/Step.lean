@@ -782,8 +782,10 @@ noncomputable def evalAssertFailure (msg : AssertKind)
   | .overflow _ | .unsupported => .fault .unsupported
 
 /-- Shared abort-termination rule for diverging
-`core::panicking::{panic, panic_nounwind}` calls (`CoreCallOp.panicAbort`):
-terminates cleanly with `.aborted callerMem` iff `hasLocalPanicHandler = false`,
+`core::panicking::{panic, panic_nounwind}` calls (`CoreCallOp.panicAbort`) and
+for safe `core` contract panics (`slice::split_at` / `slice::split_at_mut`
+with `mid > len`, via `execSliceSplitAtCall`): terminates cleanly with
+`.aborted callerMem` iff `hasLocalPanicHandler = false`,
 `panicStrategy = .abort`, and `unwind ≠ .cleanup _`; otherwise fails closed as
 `.fault .unsupported`.
 
@@ -3860,6 +3862,10 @@ do optional overflow checks when `overflowChecks = true`; optional overflow
 checks without `overflowChecks`, crates with a crate-local `#[panic_handler]`,
 cleanup unwinds, and `--panic unwind` stay `.fault .unsupported`.
 
+A returning `.coreCall (.sliceSplitAt reqMut elem)` whose
+`execSliceSplitAtCall` reports `.panic` (`mid > len`) also delegates to
+`evalCorePanicAbort` carrying `extractCallerMemory callerMem mem1`.
+
 Diverging `.coreCall .panicAbort args dst none unwind` validates `dst`
 (`MirTy.never` with a live local slot in `frame.locals`), evaluates `args` via
 `evalArgOperandsV2` (`validatePanicAbortArgs`), and delegates to
@@ -3943,7 +3949,7 @@ noncomputable def evalTerminatorV2 (body : Body) (bb : BasicBlock)
             (extractCallerMemory callerMem mem1) hasLocalPanicHandler
             overflowChecks
       | _ => .fault .unsupported
-  | .coreCall op args dst (some target) _ =>
+  | .coreCall op args dst (some target) unwind =>
     if !dst.projection.isEmpty then
       .fault .unsupported
     else
@@ -3953,14 +3959,28 @@ noncomputable def evalTerminatorV2 (body : Body) (bb : BasicBlock)
         match evalArgOperandsV2 body.locals frame.locals mem args with
         | .error k => .fault k
         | .ok (typedArgs, locals1, mem1) =>
-          match execCoreCallOpWithMem mem1 op typedArgs dstTy with
-          | .error k => .fault k
-          | .ok (resVal, mem2) =>
-            match writePlaceV2 body.locals locals1 mem2 dst dstTy resVal with
+          match op with
+          | .sliceSplitAt reqMut elem =>
+            match execSliceSplitAtCall mem1 reqMut elem typedArgs dstTy with
+            | .ok resVal mem1' =>
+              match writePlaceV2 body.locals locals1 mem1' dst dstTy resVal with
+              | .error k => .fault k
+              | .ok (locals2, mem2) =>
+                jumpToBlock { frame with locals := locals2 } mem2 callerMem
+                  target
+            | .panic =>
+              evalCorePanicAbort panicStrategy unwind
+                (extractCallerMemory callerMem mem1) hasLocalPanicHandler
+            | .fault k => .fault k
+          | _ =>
+            match execCoreCallOpWithMem mem1 op typedArgs dstTy with
             | .error k => .fault k
-            | .ok (locals2, mem3) =>
-              jumpToBlock { frame with locals := locals2 } mem3 callerMem
-                target
+            | .ok (resVal, mem2) =>
+              match writePlaceV2 body.locals locals1 mem2 dst dstTy resVal with
+              | .error k => .fault k
+              | .ok (locals2, mem3) =>
+                jumpToBlock { frame with locals := locals2 } mem3 callerMem
+                  target
   | .coreCall .panicAbort args dst none unwind =>
     if !dst.projection.isEmpty then
       .fault .unsupported

@@ -464,7 +464,8 @@ theorem canary_sliceSplitAt_ok :
        (canaryUsizeTy, canaryUsizeVal 2)]
       (.tuple [sliceRefTy, sliceRefTy]) =
       .ok (.tuple [.slicePtr p 2, .slicePtr ⟨some 2, 2, .isize⟩ 2], m) := by
-  unfold execCoreContractOp execSliceSplitAt isSizedNoRefV2Ty
+  unfold execCoreContractOp execSliceSplitAtCall execSliceSplitAtOutcome
+    isSizedNoRefV2Ty
     refValidInMem sliceFromRawPartsCheck sliceRefRawCheck findAllocation
     layoutOfTyV2 layoutOfTy intLayout ptrAddInMem
     isInBounds isAligned isSliceAllInit canaryUsizeVal
@@ -729,9 +730,10 @@ theorem canary_i128_overflow_contracts :
 
 /-- Canary 12: `&[Option<u64>]` containing `None` (with `.uninit` inactive
 payload bytes matching `encodeValV2`) passes `refValidInMem`,
-`execSliceSubslice` (`&s[1..2]`), and `execSliceSplitAt` (`split_at(1)`), while
-uninitialized `None` tag bytes or uninitialized `Some` payload bytes fail closed
-with `.undefined`; and `isInhabitedV2Ty` / `refValidInMem` reject
+`execSliceSubslice` (`&s[1..2]`), and `execSliceSplitAtOutcome`
+(`split_at(1)`), while uninitialized `None` tag bytes or uninitialized `Some`
+payload bytes fail closed with `.undefined`; and `isInhabitedV2Ty` /
+`refValidInMem` reject
 positive-length slices of uninhabited types (`!`, `[!; 1]`, `((), !)`) while
 admitting empty `&[] : &[!]` and inhabited ZSTs (`()`, `[!; 0]`). -/
 theorem canary_slice_option_none_and_uninhabited :
@@ -995,6 +997,264 @@ theorem canary_core_scalar_ops :
       .ok (.optionVal none, MemoryState.empty) := by
   refine ⟨rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl,
     rfl, rfl, rfl, rfl, rfl, rfl, rfl⟩
+
+private theorem nat_ble_refl (n : Nat) : Nat.ble n n = true := by
+  induction n with
+  | zero => rfl
+  | succ k ih => exact ih
+
+private theorem uint64_ofNat_toNat_of_lt {n : Nat} (h : n < UInt64.size) :
+    (UInt64.ofNat n).toNat = n := by
+  have h1 : (UInt64.ofNat n).toNat = n % UInt64.size := by
+    rfl
+  rw [h1]
+  exact Nat.mod_eq_of_lt h
+
+/-- General contract theorem for `slice::split_at_mut`
+(`execSliceSplitAtOutcome` with `reqMut = .mut`): any successful split of a
+preserves memory, enforces `mid ≤ len`, returns two `&mut` slices with matching
+provenance `some aid` whose byte spans `[base, base + mid * size)` and
+`[base + mid * size, base + len * size)` are strictly disjoint, satisfy
+`spansPairwiseDisjoint`, and have union equal to the input span
+`[base, base + len * size)`. -/
+theorem execSliceSplitAtOutcome_mut_disjoint_and_union
+    {m m' : MemoryState} {inMut : Mutability} {elem : MirTy}
+    {p : PtrVal} {len : UInt64} {mid : Nat} {resVal : Val}
+    {lay : LayoutData} {aid : AllocId}
+    (hLay : layoutOfTyV2 elem = some lay)
+    (hProv : p.allocId = some aid)
+    (hAllocBound : ∀ a, findAllocation aid m.allocations = some a →
+      a.bytes.length < UInt64.size)
+    (hOk : execSliceSplitAtOutcome m .mut inMut elem p len mid =
+      .ok resVal m') :
+    m' = m ∧
+    mid ≤ len.toNat ∧
+    ∃ p' : PtrVal,
+      p'.allocId = some aid ∧
+      p'.offsetBytes.toNat = p.offsetBytes.toNat + mid * lay.size ∧
+      resVal = .tuple [
+        .slicePtr p (UInt64.ofNat mid),
+        .slicePtr p' (UInt64.ofNat (len.toNat - mid))
+      ] ∧
+      spansPairwiseDisjoint
+        (refAccessSpans
+          (.tuple [.ref .mut (.slice elem), .ref .mut (.slice elem)])
+          resVal) = true ∧
+      (∀ off : Nat,
+        ¬ ((p.offsetBytes.toNat ≤ off ∧
+            off < p.offsetBytes.toNat + mid * lay.size) ∧
+           (p'.offsetBytes.toNat ≤ off ∧
+            off < p'.offsetBytes.toNat + (len.toNat - mid) * lay.size))) ∧
+      (∀ off : Nat,
+        ((p.offsetBytes.toNat ≤ off ∧
+          off < p.offsetBytes.toNat + mid * lay.size) ∨
+         (p'.offsetBytes.toNat ≤ off ∧
+          off < p'.offsetBytes.toNat + (len.toNat - mid) * lay.size)) ↔
+        (p.offsetBytes.toNat ≤ off ∧
+          off < p.offsetBytes.toNat + len.toNat * lay.size)) := by
+  unfold execSliceSplitAtOutcome at hOk
+  cases hSized : !isSizedNoRefV2Ty elem with
+  | true => rw [hSized] at hOk; cases hOk
+  | false =>
+    rw [hSized] at hOk
+    dsimp only at hOk
+    cases hMut : (Mutability.beq inMut .shared && Mutability.beq .mut .mut) with
+    | true => rw [hMut] at hOk; cases hOk
+    | false =>
+      rw [hMut] at hOk
+      cases hRef : refValidInMem m inMut (.slice elem) (.slicePtr p len) with
+      | error k => rw [hRef] at hOk; cases hOk
+      | ok u =>
+        cases u
+        rw [hRef] at hOk
+        dsimp only at hOk
+        cases hBle : Nat.ble mid len.toNat with
+        | false =>
+          rw [hBle] at hOk
+          cases hOk
+        | true =>
+          rw [hBle] at hOk
+          rw [hLay] at hOk
+          dsimp only at hOk
+          cases hAdd : ptrAddInMem m lay.size p mid with
+          | error k => rw [hAdd] at hOk; cases hOk
+          | ok p' =>
+            rw [hAdd] at hOk
+            dsimp only at hOk
+            injection hOk with hRes hMem
+            have hMidLe : mid ≤ len.toNat := Nat.le_of_ble_eq_true hBle
+            have hMidLt : mid < UInt64.size :=
+              Nat.lt_of_le_of_lt hMidLe len.toBitVec.isLt
+            have hSubLt : len.toNat - mid < UInt64.size :=
+              Nat.lt_of_le_of_lt (Nat.sub_le len.toNat mid) len.toBitVec.isLt
+            unfold ptrAddInMem at hAdd
+            dsimp only at hAdd
+            cases hDelta : !Nat.blt (mid * lay.size) isizeMaxBytes with
+            | true => rw [hDelta] at hAdd; cases hAdd
+            | false =>
+              rw [hDelta, hProv] at hAdd
+              dsimp only [ite, instDecidableEqBool] at hAdd
+              cases hFind : findAllocation aid m.allocations with
+              | none => rw [hFind] at hAdd; cases hAdd
+              | some a =>
+                rw [hFind] at hAdd
+                dsimp only at hAdd
+                cases hLive : (!a.live ||
+                    !Nat.ble (p.offsetBytes.toNat + mid * lay.size)
+                      a.bytes.length) with
+                | true => rw [hLive] at hAdd; cases hAdd
+                | false =>
+                  rw [hLive] at hAdd
+                  injection hAdd with hP'
+                  have hOffBle :
+                      Nat.ble (p.offsetBytes.toNat + mid * lay.size)
+                        a.bytes.length = true := by
+                    cases h1 : a.live <;>
+                      cases h2 : Nat.ble (p.offsetBytes.toNat + mid * lay.size)
+                        a.bytes.length <;>
+                      simp_all
+                  have hOffLe :
+                      p.offsetBytes.toNat + mid * lay.size ≤ a.bytes.length :=
+                    Nat.le_of_ble_eq_true hOffBle
+                  have hOffLt :
+                      p.offsetBytes.toNat + mid * lay.size < UInt64.size :=
+                    Nat.lt_of_le_of_lt hOffLe (hAllocBound a hFind)
+                  have hP'Prov : p'.allocId = some aid := by
+                    rw [← hP']
+                  have hP'Off :
+                      p'.offsetBytes.toNat =
+                        p.offsetBytes.toNat + mid * lay.size := by
+                    rw [← hP']
+                    exact uint64_ofNat_toNat_of_lt hOffLt
+                  have hTotalLen :
+                      mid * lay.size + (len.toNat - mid) * lay.size =
+                        len.toNat * lay.size := by
+                    rw [← Nat.add_mul, Nat.add_sub_of_le hMidLe]
+                  have hEndEq :
+                      p'.offsetBytes.toNat + (len.toNat - mid) * lay.size =
+                        p.offsetBytes.toNat + len.toNat * lay.size := by
+                    rw [hP'Off, Nat.add_assoc, hTotalLen]
+                  have hDisjBool :
+                      spansPairwiseDisjoint
+                        (refAccessSpans
+                          (.tuple [.ref .mut (.slice elem),
+                            .ref .mut (.slice elem)])
+                          resVal) = true := by
+                    rw [← hRes]
+                    unfold refAccessSpans refAccessSpansList
+                    unfold refAccessSpans refAccessSpansList
+                    unfold refAccessSpans refAccessSpansList
+                    rw [hLay, hProv, hP'Prov]
+                    dsimp only [List.append]
+                    unfold spansPairwiseDisjoint spanDisjointWith spanDisjoint
+                    rw [uint64_ofNat_toNat_of_lt hMidLt, hP'Off]
+                    cases hN1 : Nat.beq (mid * lay.size) 0 with
+                    | true =>
+                      simp [hN1, spanDisjointWith, spansPairwiseDisjoint]
+                    | false =>
+                      cases hN2 :
+                          Nat.beq ((UInt64.ofNat (len.toNat - mid)).toNat *
+                            lay.size) 0 with
+                      | true =>
+                        simp [hN1, hN2, spanDisjointWith, spansPairwiseDisjoint]
+                      | false =>
+                        simp [hN1, hN2, nat_ble_refl, spanDisjointWith,
+                          spansPairwiseDisjoint]
+                  refine ⟨hMem.symm, hMidLe, p', hP'Prov, hP'Off, hRes.symm,
+                    hDisjBool, ?_, ?_⟩
+                  · intro off hBoth
+                    have hLt : off < p.offsetBytes.toNat + mid * lay.size :=
+                      hBoth.1.2
+                    have hGe : p.offsetBytes.toNat + mid * lay.size ≤ off := by
+                      rw [← hP'Off]; exact hBoth.2.1
+                    exact Nat.lt_irrefl off (Nat.lt_of_lt_of_le hLt hGe)
+                  · intro off
+                    constructor
+                    · intro hOr
+                      cases hOr with
+                      | inl hL =>
+                        have hMidMulLe :
+                            mid * lay.size ≤ len.toNat * lay.size :=
+                          Nat.mul_le_mul_right lay.size hMidLe
+                        exact ⟨hL.1, Nat.lt_of_lt_of_le hL.2
+                          (Nat.add_le_add_left hMidMulLe p.offsetBytes.toNat)⟩
+                      | inr hR =>
+                        have hBaseLe :
+                            p.offsetBytes.toNat ≤ p'.offsetBytes.toNat := by
+                          rw [hP'Off]
+                          exact Nat.le_add_right _ _
+                        rw [hEndEq] at hR
+                        exact ⟨Nat.le_trans hBaseLe hR.1, hR.2⟩
+                    · intro hIn
+                      cases Nat.lt_or_ge off
+                          (p.offsetBytes.toNat + mid * lay.size) with
+                      | inl hLt => exact Or.inl ⟨hIn.1, hLt⟩
+                      | inr hGe =>
+                        refine Or.inr ⟨?_, ?_⟩
+                        · rw [hP'Off]; exact hGe
+                        · rw [hEndEq]; exact hIn.2
+
+/-- Canary 15: `evalTerminatorV2` on `.coreCall (.sliceSplitAt .mut ...)`
+aborts with post-mutation caller memory on `mid > len` under `--panic abort`
+without a crate-local `#[panic_handler]`, stays `.fault .unsupported` under
+`--panic unwind`, crate-local `#[panic_handler]`, or `.cleanup` unwind, and
+produces disjoint `&mut` subslices whose union is the input span when
+`mid ≤ len`. -/
+theorem canary_split_at_mut_disjoint_union_and_panic_abort :
+    let mutSliceTy : MirTy := .ref .mut (.slice canaryU8Ty)
+    let retPairTy : MirTy := .tuple [mutSliceTy, mutSliceTy]
+    let splitBb (uw : UnwindAction) : BasicBlock := {
+      statements := []
+      terminator := .coreCall (.sliceSplitAt .mut canaryU8Ty)
+        [.copy { localId := 1 }, .copy { localId := 2 }]
+        { localId := 0 } (some 1) uw
+    }
+    let splitBody (uw : UnwindAction) : Body := {
+      argumentCount := 2
+      locals := [retPairTy, mutSliceTy, canaryUsizeTy]
+      basicBlocks := [splitBb uw, { statements := [], terminator := .return_ }]
+    }
+    let mMut : MemoryState := {
+      nextAllocId := 3
+      allocations := [{
+        allocId := 2, alignLog2 := 0, mutability := .mut,
+        bytes := [.init 10 none, .init 20 none, .init 30 none],
+        live := true
+      }]
+    }
+    let cmMut : CallerMemory := ⟨mMut.allocations⟩
+    let mkFrame (mid : Nat) : FrameState := {
+      defId := 0, blockIdx := 0, stmtIdx := 0
+      locals := [
+        .immediate none,
+        .immediate (some (.slicePtr ⟨some 2, 0, .isize⟩ 3)),
+        .immediate (some (canaryUsizeVal mid))
+      ]
+    }
+    evalTerminatorV2 (splitBody .unreachable) (splitBb .unreachable)
+      (mkFrame 4) mMut cmMut .abort false false =
+      .done (.aborted cmMut) ∧
+    evalTerminatorV2 (splitBody .unreachable) (splitBb .unreachable)
+      (mkFrame 4) mMut cmMut .unwind false false =
+      .fault .unsupported ∧
+    evalTerminatorV2 (splitBody .unreachable) (splitBb .unreachable)
+      (mkFrame 4) mMut cmMut .abort true false =
+      .fault .unsupported ∧
+    evalTerminatorV2 (splitBody (.cleanup 1)) (splitBb (.cleanup 1))
+      (mkFrame 4) mMut cmMut .abort false false =
+      .fault .unsupported ∧
+    execSliceSplitAtOutcome mMut .mut .mut canaryU8Ty
+      ⟨some 2, 0, .isize⟩ 3 1 =
+      .ok (.tuple [
+        .slicePtr ⟨some 2, 0, .isize⟩ 1,
+        .slicePtr ⟨some 2, 1, .isize⟩ 2
+      ]) mMut ∧
+    spansPairwiseDisjoint (refAccessSpans retPairTy
+      (.tuple [
+        .slicePtr ⟨some 2, 0, .isize⟩ 1,
+        .slicePtr ⟨some 2, 1, .isize⟩ 2
+      ])) = true :=
+  ⟨rfl, rfl, rfl, rfl, rfl, rfl⟩
 
 end Anneal.Core
 

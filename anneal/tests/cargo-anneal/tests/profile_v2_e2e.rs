@@ -3920,3 +3920,131 @@ end Spec
         ),
     );
 }
+
+#[test]
+fn verifies_split_at_mut_abort_and_disjoint() {
+    let dir = TempDir::new().unwrap();
+    let rust_dir = dir.path().join("split_mut_rust");
+    let lean_dir = dir.path().join("split_mut_lean");
+    fs::create_dir_all(&rust_dir).unwrap();
+    fs::create_dir_all(&lean_dir).unwrap();
+
+    fs::write(
+        rust_dir.join("lib.rs"),
+        "pub unsafe fn split_mut<'a>(s: &'a mut [u8], mid: usize) -> (&'a mut [u8], &'a mut [u8]) {\n\
+         \x20   s.split_at_mut(mid)\n\
+         }\n",
+    )
+    .unwrap();
+
+    const SPLIT_SPEC: &str = "\
+prelude
+import Trusted.MirSemantics
+namespace Spec
+open Trusted.MirAst Trusted.MirSemantics
+def mutMem : CallerMemory :=
+  ⟨[{ allocId := 2, alignLog2 := 0, mutability := .mut,
+      bytes := [AllocByte.init 10 none, AllocByte.init 20 none,
+                AllocByte.init 30 none],
+      live := true }]⟩
+def okQuery : Query :=
+  { args := [.slicePtr ⟨some 2, 0, .isize⟩ 3,
+             .scalar ⟨.isize, false, BitVec.ofNat 128 1⟩],
+    callerMem := mutMem }
+def oobQuery : Query :=
+  { args := [.slicePtr ⟨some 2, 0, .isize⟩ 3,
+             .scalar ⟨.isize, false, BitVec.ofNat 128 4⟩],
+    callerMem := mutMem }
+def okRet : Val :=
+  .tuple [.slicePtr ⟨some 2, 0, .isize⟩ 1, .slicePtr ⟨some 2, 1, .isize⟩ 2]
+def pairTy : MirTy :=
+  .tuple [.ref .mut (.slice (.int .i8 false)),
+          .ref .mut (.slice (.int .i8 false))]
+def okOut : TerminalOut := TerminalOut.returned ⟨okRet, mutMem⟩
+def oobOut : TerminalOut := TerminalOut.aborted mutMem
+def safetyPre (_ : String) (q : Query) : Prop := q = okQuery ∨ q = oobQuery
+def property (p : Program) : Prop :=
+  ∃ (defId : DefId) (body : Body),
+    Trusted.MirSemantics.getElem? p.bodies defId = some body ∧
+    body.identity = \"rust-path-v1::split_mut\" ∧
+    spansPairwiseDisjoint (refAccessSpans pairTy okRet) = true ∧
+    BehaviorV2 (entryProgForBody p defId) okQuery okOut ∧
+    BehaviorV2 (entryProgForBody p defId) oobQuery oobOut
+def specs : SpecsV2 := ⟨safetyPre, property⟩
+end Spec
+";
+
+    const SPLIT_PROOF: &str = "\
+prelude
+import Spec
+import Expected
+import Anneal.MirWp
+namespace Proof
+open Trusted.MirAst Trusted.MirSemantics Anneal.MirWp
+theorem verify : Expected.claim := by
+  have hOk :=
+    spec_and_behaviorV2_of_exec_eq
+      (p := entryProgForBody Captured.program 0)
+      (q := Spec.okQuery)
+      (out := Spec.okOut)
+      (fuel := 32) rfl
+  have hOob :=
+    spec_and_behaviorV2_of_exec_eq
+      (p := entryProgForBody Captured.program 0)
+      (q := Spec.oobQuery)
+      (out := Spec.oobOut)
+      (fuel := 32) rfl
+  refine ⟨rfl, rfl, rfl, rfl, rfl, rfl, ?_, ?_⟩
+  · intro defId body hBody
+    cases defId with
+    | zero =>
+      cases hBody
+      refine ⟨rfl, rfl, fun q _ hSafe => ?_⟩
+      cases hSafe rfl with
+      | inl hEq => subst hEq; exact hOk.1
+      | inr hEq => subst hEq; exact hOob.1
+    | succ _ => cases hBody
+  · refine ⟨0, Captured.body_0, rfl, rfl, rfl, hOk.2.1, hOob.2.1⟩
+end Proof
+";
+
+    fs::write(lean_dir.join("Spec.lean"), SPLIT_SPEC).unwrap();
+    fs::write(lean_dir.join("Proof.lean"), SPLIT_PROOF).unwrap();
+
+    let mk_req = |panic: &str| {
+        json!({
+            "schema_version": 1,
+            "compilation": {
+                "source_root": rust_dir.to_str().unwrap(),
+                "crate_root": "lib.rs",
+                "crate_name": "split_mut_abort",
+                "edition": "2021",
+                "target": "x86_64-unknown-linux-gnu",
+                "panic": panic,
+                "cfg": [],
+                "source_files": ["lib.rs"]
+            },
+            "scope": {"kind": "crate"},
+            "proof": {
+                "source_root": lean_dir.to_str().unwrap(),
+                "specification": "Spec.specs",
+                "theorem": "Proof.verify",
+                "sources": [
+                    {"module": "Spec", "path": "Spec.lean", "role": "specification"},
+                    {"module": "Proof", "path": "Proof.lean", "role": "proof"}
+                ]
+            }
+        })
+    };
+
+    // Positive: under `--panic abort`, `mid <= len` returns disjoint `&mut`
+    // subslices and `mid > len` terminates as `TerminalOut.aborted`.
+    run_request(dir.path(), "split-mut-abort-ok", &mk_req("abort"))
+        .expect_ok("crate_verified");
+
+    // Negative twin: under `--panic unwind`, `mid > len` stays
+    // `.fault .unsupported`, so claiming `TerminalOut.aborted` fails.
+    let neg_unwind =
+        run_request(dir.path(), "split-mut-unwind-fails", &mk_req("unwind"));
+    neg_unwind.expect_proof_failed();
+}
