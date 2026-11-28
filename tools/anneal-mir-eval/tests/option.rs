@@ -13,109 +13,20 @@
 
 #![forbid(unsafe_code)]
 
-use std::collections::BTreeSet;
+#[path = "option/support.rs"]
+mod support;
 
 use anneal_mir_eval::{
-    AllocByte, Allocation, Block, Body, CallerMemory, CaptureInput, ConstLit, CoreCallOp,
-    EvalConfig, FaultDetail, FaultKind, IntTy, IntWidth, MemoryState, Mutability, Operand, Outcome,
-    PanicStrategy, Place, ProbeConfig, Program, ProjectionElem, PtrVal, Query, RodataByte, Rvalue,
-    ScalarVal, Scope, Statement, TargetEndian, TerminalOut, Terminator, Ty, UbClass, UnwindAction,
-    Val, WitnessClass, eval_body_with_caller_mem, eval_body_with_config, has_escaping_rodata_ptr,
-    probe_body,
+    AllocByte, Allocation, Block, CallerMemory, CaptureInput, ConstLit, CoreCallOp, EvalConfig,
+    FaultKind, IntTy, IntWidth, MemoryState, Mutability, Operand, Outcome, Place, ProbeConfig,
+    ProjectionElem, PtrVal, Query, RodataByte, Rvalue, ScalarVal, Statement, TargetEndian,
+    TerminalOut, Terminator, Ty, UbClass, UnwindAction, Val, WitnessClass,
+    eval_body_with_caller_mem, eval_body_with_config, has_escaping_rodata_ptr, probe_body,
 };
-
-const U8_TY: Ty = Ty::Int(IntTy { width: IntWidth::I8, signed: false });
-const I8_TY: Ty = Ty::Int(IntTy { width: IntWidth::I8, signed: true });
-const USIZE_TY: Ty = Ty::Int(IntTy { width: IntWidth::Isize, signed: false });
-const ISIZE_TY: Ty = Ty::Int(IntTy { width: IntWidth::Isize, signed: true });
-
-fn opt(ty: Ty) -> Ty {
-    Ty::Option { elem: Box::new(ty) }
-}
-
-fn copy(local: u32) -> Operand {
-    Operand::Copy { local, projection: Vec::new() }
-}
-
-fn assign(local: u32, value: Rvalue) -> Statement {
-    Statement::Assign { local, projection: Vec::new(), value }
-}
-
-fn ret_block(statements: Vec<Statement>) -> Block {
-    Block { statements, terminator: Terminator::Ret, cleanup: false }
-}
-
-fn v2_program(arg_count: usize, local_tys: Vec<Ty>, blocks: Vec<Block>) -> Program {
-    let mut roots = BTreeSet::new();
-    roots.insert("test::entry".into());
-    Program {
-        scope: Scope::SelectedUnit { roots, instantiations: BTreeSet::new() },
-        bodies: vec![Body {
-            arg_count,
-            is_unsafe: false,
-            local_tys,
-            blocks,
-            identity: "test::entry".into(),
-        }],
-        entry_def_id: 0,
-        pointer_width_bits: 64,
-        mir_profile_version: 2,
-        overflow_checks: false,
-        panic: PanicStrategy::Unwind,
-        has_local_panic_handler: true,
-    }
-}
-
-fn run(prog: &Program, args: &[Val]) -> Outcome {
-    let cfg = EvalConfig::profile_v2(TargetEndian::Little);
-    eval_body_with_config(prog, 0, args, 256, &cfg).outcome
-}
-
-fn returned(outcome: Outcome) -> Val {
-    match outcome {
-        Outcome::Returned(TerminalOut::Returned { ret, .. }) => ret,
-        other => panic!("expected a normal return, got {other:?}"),
-    }
-}
-
-fn fault_detail(outcome: Outcome) -> FaultDetail {
-    match outcome {
-        Outcome::Fault(detail) => detail,
-        other => panic!("expected a fault, got {other:?}"),
-    }
-}
-
-fn fault_kind(outcome: Outcome) -> FaultKind {
-    fault_detail(outcome).kind
-}
-
-fn some(v: Val) -> Val {
-    Val::OptionVal(Some(Box::new(v)))
-}
-
-const NONE: Val = Val::OptionVal(None);
-
-/// `fn(a: T, b: T) -> Option<T> { a.<op>(b) }` as one `CoreCall` body.
-fn checked_prog(op: CoreCallOp, arg_ty: Ty, dst_ty: Ty) -> Program {
-    v2_program(
-        2,
-        vec![dst_ty, arg_ty.clone(), arg_ty],
-        vec![
-            Block {
-                statements: Vec::new(),
-                terminator: Terminator::CoreCall {
-                    op,
-                    args: vec![copy(1), copy(2)],
-                    dst: Place { local: 0, projection: Vec::new() },
-                    target: Some(1),
-                    unwind: UnwindAction::Continue,
-                },
-                cleanup: false,
-            },
-            ret_block(Vec::new()),
-        ],
-    )
-}
+use support::{
+    I8_TY, ISIZE_TY, NONE, U8_TY, USIZE_TY, assign, caller_mem_with_bytes, checked_prog, copy,
+    fault_detail, fault_kind, opt, payload_proj, ret_block, returned, run, some, v2_program,
+};
 
 #[test]
 fn checked_arithmetic_returns_none_exactly_on_overflow() {
@@ -185,13 +96,6 @@ fn option_discriminant_is_isize_variant_index() {
         )])],
     );
     assert_eq!(fault_kind(run(&bad_dst, &[NONE])), FaultKind::Unsupported);
-}
-
-fn payload_proj(fty: Ty) -> Vec<ProjectionElem> {
-    vec![
-        ProjectionElem::Downcast { variant_idx: 1 },
-        ProjectionElem::Field { field_idx: 0, ty: fty },
-    ]
 }
 
 /// `fn(x: Option<T>) -> T { (x as Some).0 }`.
@@ -493,18 +397,6 @@ fn captured_option_checked_split_matches_rust() {
             other => panic!("n = {n}: unexpected outcome {other:?}"),
         };
         assert_eq!(got, expected, "n = {n}");
-    }
-}
-
-fn caller_mem_with_bytes(n: usize) -> CallerMemory {
-    CallerMemory {
-        allocations: vec![Allocation {
-            alloc_id: 2,
-            align_log2: 0,
-            mutability: Mutability::Shared,
-            bytes: vec![AllocByte::Init { byte: 0, prov: None }; n],
-            live: true,
-        }],
     }
 }
 
