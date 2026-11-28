@@ -55,7 +55,7 @@ definition is kernel-reducible (`decide`/`rfl`); definitions are marked
    `symBvLinNe`, `symBvLinDiffConst`):** Bridges all 6 `IntWidth`s (signed and
    unsigned) into `Anneal.PureLift.BvLin`, collapsing modular equalities and
    disequalities statically during symbolic execution.
-4. **Single-Path (`symStep`, `symRun`, step-chunked `symRunSteps`) &
+4. **Single-Path (`symStep`, `symRun`, state-forcing `symRunSteps`) &
    Branched (`symStepBranched`, `symRunPaths`) Symbolic Execution + `MirWp`
    Adequacy:** Lifts symbolic runs by `rfl` / `decide` (without
    `decide +kernel`) into `Executes`, `RunsFrom`, `SafeFrom`, `ReturnsFrom`,
@@ -4023,26 +4023,133 @@ theorem symRun_bodyVerified {p : Program} {defId : DefId} {body : Body}
     BodyVerified p defId body (fun _ => True) :=
   symRun_bodyVerified_pre hBody hAdm hRun hCover h_nocall
 
-/-! ### Step-Chunked Single-Path Runs
+/-! ### Forcing Intermediate States
+
+`symStep` builds its successor lazily: struct updates (`{ s with ... }`),
+`Option.map` continuations, and `compSetElem?` results all keep pointing at
+the previous state. Neither the elaborator's `whnf` nor `isDefEq` shares work
+across those wrappers, so a read of a local at step `n` re-reduces the steps
+before it, and an `rfl` check of a `k`-step run grows exponentially in `k`.
+
+`forceSymState s k` case-splits `s` down to its slot constructors in
+continuation-passing style and passes `k` the rebuilt state, whose fields are
+then the reduced subterms rather than references into earlier states. Each
+`force*` function is extensionally the identity (`force*_eq`), so forcing
+changes only reduction cost, not meaning. -/
+
+/-- Rebuild `n` from its head constructor before passing it to `k`. -/
+@[expose] def forceNatHead {α : Type} (n : Nat) (k : Nat → α) : α :=
+  @Nat.casesOn (fun _ => α) n (k 0) (fun m => k (Nat.succ m))
+
+theorem forceNatHead_eq {α : Type} (n : Nat) (k : Nat → α) :
+    forceNatHead n k = k n := by
+  cases n <;> rfl
+
+/-- Rebuild `o` from its head constructor before passing it to `k`. -/
+@[expose] def forceOptionHead {β α : Type} (o : Option β)
+    (k : Option β → α) : α :=
+  match o with
+  | none => k none
+  | some x => k (some x)
+
+theorem forceOptionHead_eq {β α : Type} (o : Option β) (k : Option β → α) :
+    forceOptionHead o k = k o := by
+  cases o <;> rfl
+
+/-- Rebuild the spine of `xs`, forcing each element with `fe`, before passing
+it to `k`. -/
+@[expose] def forceListWith {β α : Type}
+    (fe : β → (β → List β → α) → List β → α) (xs : List β)
+    (k : List β → α) : α :=
+  List.foldr
+    (fun (x : β) (ih : (List β → α) → α) (k : List β → α) =>
+      ih fun tl => fe x (fun x' tl' => k (x' :: tl')) tl)
+    (fun k => k []) xs k
+
+theorem forceListWith_eq {β α : Type}
+    {fe : β → (β → List β → α) → List β → α}
+    (hfe : ∀ x c tl, fe x c tl = c x tl) :
+    ∀ (xs : List β) (k : List β → α), forceListWith fe xs k = k xs
+  | [], _ => rfl
+  | x :: xs, k => by
+    change forceListWith fe xs
+        (fun tl => fe x (fun x' tl' => k (x' :: tl')) tl) = k (x :: xs)
+    exact (forceListWith_eq hfe xs _).trans (hfe x _ xs)
+
+/-- Rebuild `v` from its head constructor. -/
+@[expose] def forceSymVal {α : Type} (v : SymVal) (k : SymVal → α) : α :=
+  match v with
+  | .conc c => k (.conc c)
+  | .scalar x => k (.scalar x)
+  | .bool b => k (.bool b)
+  | .pair a b => k (.pair a b)
+
+theorem forceSymVal_eq {α : Type} (v : SymVal) (k : SymVal → α) :
+    forceSymVal v k = k v := by
+  cases v <;> rfl
+
+/-- Rebuild a slot, including the head of its value, as a list element. -/
+@[expose] def forceSymSlot {α : Type} (sl : SymSlot)
+    (k : SymSlot → List SymSlot → α) (tl : List SymSlot) : α :=
+  match sl with
+  | .dead => k .dead tl
+  | .immediate none => k (.immediate none) tl
+  | .immediate (some v) => forceSymVal v fun v' => k (.immediate (some v')) tl
+
+theorem forceSymSlot_eq {α : Type} (sl : SymSlot)
+    (k : SymSlot → List SymSlot → α) (tl : List SymSlot) :
+    forceSymSlot sl k tl = k sl tl := by
+  cases sl with
+  | dead => rfl
+  | immediate o =>
+    cases o with
+    | none => rfl
+    | some v => exact forceSymVal_eq v (fun v' => k (.immediate (some v')) tl)
+
+/-- Rebuild a state's block, statement index, and slots. -/
+@[expose] def forceSymState {α : Type} (s : SymState) (k : SymState → α) : α :=
+  match s with
+  | ⟨b, i, ls⟩ =>
+    forceNatHead b fun b' => forceNatHead i fun i' =>
+      forceListWith forceSymSlot ls fun ls' => k ⟨b', i', ls'⟩
+
+theorem forceSymState_eq {α : Type} (s : SymState) (k : SymState → α) :
+    forceSymState s k = k s := by
+  cases s with
+  | mk b i ls =>
+    change forceNatHead b (fun b' => forceNatHead i fun i' =>
+      forceListWith forceSymSlot ls fun ls' => k ⟨b', i', ls'⟩) = _
+    exact (forceNatHead_eq b _).trans ((forceNatHead_eq i _).trans
+      (forceListWith_eq forceSymSlot_eq ls _))
+
+/-! ### Bounded Single-Path Runs
 
 Elaborating `symRun body fuel s = .ret out := rfl` reduces the whole run in
-one term, and that reduction does not share intermediate states: every later
-read of a local re-reduces the steps that produced it, so the cost grows much
-faster than the number of steps. `symRunSteps` stops after at most `k` steps
-and reports the state it reached, so a proof can check short `rfl` chunks
-against explicit checkpoint states and compose them with `symRunSteps_add`.
+one term without sharing intermediate states, so its cost grows exponentially
+in the number of steps. `symRunSteps` instead forces every intermediate state
+(`forceSymState`) through the discriminant of a `match`, so `whnf` reduces the
+run in one pass and a single `rfl` covers runs of dozens of steps under the
+default `maxHeartbeats` (`symExec_parityEven_oneShot_canary`). Because it
+stops after at most `k` steps and reports the state it reached, longer runs
+can still be checked in `rfl` chunks against explicit checkpoint states and
+composed with `symRunSteps_add`.
 -/
 
 /-- Run at most `k` single-path symbolic steps (`@Nat.rec`, `0`
 `._unsafe_rec`). Returns `.step s'` for the state reached after exactly `k`
-steps if the body has neither returned nor become stuck by then. -/
+steps if the body has neither returned nor become stuck by then. Each
+intermediate state is forced (`forceSymState`) in the discriminant of a
+`match` (see the section comment above). -/
 @[expose] noncomputable def symRunSteps (body : Body) (k : Nat) (s : SymState) :
     SymRes :=
   @Nat.rec (fun _ => SymState → SymRes)
     (fun st => .step st)
     (fun _ ih st =>
       match symStep body st with
-      | .step st' => ih st'
+      | .step st' =>
+        match forceSymState st' some with
+        | some st'' => ih st''
+        | none => .stuck
       | .ret v => .ret v
       | .stuck => .stuck)
     k s
@@ -4055,7 +4162,21 @@ theorem symRunSteps_succ (body : Body) (k : Nat) (s : SymState) :
       match symStep body s with
       | .step s' => symRunSteps body k s'
       | .ret v => .ret v
-      | .stuck => .stuck := rfl
+      | .stuck => .stuck := by
+  change (match symStep body s with
+    | .step s' =>
+      match forceSymState s' some with
+      | some s'' => symRunSteps body k s''
+      | none => .stuck
+    | .ret v => .ret v
+    | .stuck => .stuck) = _
+  cases symStep body s with
+  | step s' =>
+    exact congrArg (fun o => match o with
+      | some s'' => symRunSteps body k s''
+      | none => .stuck) (forceSymState_eq s' some)
+  | ret v => rfl
+  | stuck => rfl
 
 /-- Running `m + n` steps runs `m` steps, then `n` more from the reached state
 unless the first `m` steps already returned or became stuck. -/
@@ -5563,6 +5684,15 @@ theorem symExec_parityEven_canary :
       exact (symRunSteps_add _ 7 8 _).trans (by
         rw [parityEven_chunk3]
         exact parityEven_chunk4)))
+
+/-- Regression canary for state forcing in `symRunSteps`: the whole 29-step
+`parity_even` run checks in one `rfl` (`["propext"]` only) under the default
+`maxHeartbeats`, using about 5000 of them. Without forcing, a single `rfl` of
+the first 15 steps already exceeds the default budget. -/
+theorem symExec_parityEven_oneShot_canary :
+    symRunSteps canaryBodyParityEven 29
+        (symEntry canaryBodyParityEven [.scalar paritySymIn]) =
+      .ret (.bool paritySymOut) := rfl
 
 /-- Number of set bits among the low `fuel` bits of `n`. -/
 @[expose] noncomputable def natPopcount (fuel n : Nat) : Nat :=
