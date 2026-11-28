@@ -648,13 +648,17 @@ fn render_human(
                 format!("tainted ({})", sanitize_inline_string(&reasons.join(", ")))
             }
         };
+        // The census records every compiler definition, including bodyless
+        // ones such as modules, `use` declarations, and `extern crate` items,
+        // so `census_items` is not a count of bodies and must not be rendered
+        // as the denominator of a body ratio.
         let scope_str = match &env.profile.scope {
             ScopeAxis::WholeCrate { selected_bodies, census_items } => {
-                format!("crate ({selected_bodies}/{census_items} bodies)")
+                format!("crate ({selected_bodies} selected body(s), {census_items} census item(s))")
             }
             ScopeAxis::SelectedUnits { roots, instantiations, selected_bodies, census_items } => {
                 format!(
-                    "selected_unit ({roots} roots, {instantiations} inst, {selected_bodies}/{census_items} bodies)"
+                    "selected_unit ({roots} roots, {instantiations} inst, {selected_bodies} selected body(s), {census_items} census item(s))"
                 )
             }
             ScopeAxis::Failed { status } => format!("failed ({})", SanitizedInline(status)),
@@ -1412,6 +1416,54 @@ mod tests {
             &RenderOptions { format: InspectFormat::Markdown, ..RenderOptions::default() },
         );
         assert!(!md.contains("QUALIFIED ASSURANCE"), "{md}");
+    }
+
+    #[test]
+    fn scope_axis_does_not_render_census_items_as_bodies() {
+        // A one-function crate's census also records the crate root module,
+        // the implicit prelude `use`, and the implicit `extern crate std`.
+        // None of these has a body, so the scope axis must not render the
+        // census length as a body denominator (`1/4 bodies`).
+        let census = json!([
+            { "def_id": 0, "path": "scalar", "kind": "Mod",
+              "has_body": false, "selected": false, "required": false },
+            { "def_id": 1, "path": "scalar::{use#0}", "kind": "Use",
+              "has_body": false, "selected": false, "required": false },
+            { "def_id": 2, "path": "scalar::std", "kind": "ExternCrate",
+              "has_body": false, "selected": false, "required": false },
+            { "def_id": 3, "path": "scalar::zero", "kind": "Fn",
+              "has_body": true, "selected": true, "required": true }
+        ]);
+        let selected = json!([{ "def_id": 3, "path": "scalar::zero", "body_index": 0 }]);
+
+        let mut krate = sample_success_json();
+        krate["census"] = census.clone();
+        krate["selected"] = selected.clone();
+        let env = parse_and_validate_receipt(&serde_json::to_vec(&krate).unwrap()).unwrap();
+        assert!(env.invariant_violations.is_empty(), "{:?}", env.invariant_violations);
+        let human = render_inspection(&env, None, &[], &RenderOptions::default());
+        assert!(
+            human.contains("  2. scope:       crate (1 selected body(s), 4 census item(s))\n"),
+            "{human}"
+        );
+        assert!(!human.contains("1/4 bodies"), "{human}");
+
+        let mut unit = sample_success_json();
+        unit["status"] = json!("selected_unit_verified");
+        unit["scope"] = json!({ "kind": "selected_unit", "roots": ["scalar::zero"] });
+        unit["audit"]["canonicalRoot"] = json!("Trusted.MirSemantics.UnitTheorem");
+        unit["census"] = census;
+        unit["selected"] = selected;
+        let env = parse_and_validate_receipt(&serde_json::to_vec(&unit).unwrap()).unwrap();
+        assert!(env.invariant_violations.is_empty(), "{:?}", env.invariant_violations);
+        let human = render_inspection(&env, None, &[], &RenderOptions::default());
+        assert!(
+            human.contains(
+                "  2. scope:       selected_unit (1 roots, 0 inst, 1 selected body(s), 4 census item(s))\n"
+            ),
+            "{human}"
+        );
+        assert!(!human.contains("1/4 bodies"), "{human}");
     }
 
     #[test]
