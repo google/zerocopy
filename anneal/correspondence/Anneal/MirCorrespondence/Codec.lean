@@ -121,6 +121,31 @@ theorem EnumTy.eq_of_beq {a b : EnumTy}
               rw [Nat.eq_of_beq_eq_true h1, IntWidth.eq_of_beq h2, h_ds,
                 EnumTagRepr.eq_of_beq h4, eq_of_natListBeq h]
 
+theorem StructLayout.beq_refl (l : StructLayout) : StructLayout.beq l l = true := by
+  cases l with
+  | mk id sz al offs =>
+    change (((Nat.beq id id && Nat.beq sz sz) && Nat.beq al al) &&
+        natListBeq offs offs) = true
+    rw [Nat.beq_refl, Nat.beq_refl, Nat.beq_refl, natListBeq_refl]
+    rfl
+
+theorem StructLayout.eq_of_beq {a b : StructLayout}
+    (h : StructLayout.beq a b = true) : a = b := by
+  cases a with
+  | mk id₁ sz₁ al₁ offs₁ =>
+    cases b with
+    | mk id₂ sz₂ al₂ offs₂ =>
+      change (((Nat.beq id₁ id₂ && Nat.beq sz₁ sz₂) && Nat.beq al₁ al₂) &&
+          natListBeq offs₁ offs₂) = true at h
+      cases h1 : Nat.beq id₁ id₂ <;> rw [h1] at h
+      · cases h
+      · cases h2 : Nat.beq sz₁ sz₂ <;> rw [h2] at h
+        · cases h
+        · cases h3 : Nat.beq al₁ al₂ <;> rw [h3] at h
+          · cases h
+          · rw [Nat.eq_of_beq_eq_true h1, Nat.eq_of_beq_eq_true h2,
+              Nat.eq_of_beq_eq_true h3, eq_of_natListBeq h]
+
 mutual
   theorem MirTy.beq_refl (t : MirTy) : MirTy.beq t t = true := by
     cases t with
@@ -171,6 +196,10 @@ mutual
     | option e =>
       change MirTy.beq e e = true
       exact MirTy.beq_refl e
+    | struct_ l fs =>
+      change (StructLayout.beq l l && MirTy.beqList fs fs) = true
+      rw [StructLayout.beq_refl, MirTy.beqList_refl fs]
+      rfl
     | unsupported => rfl
 
   theorem MirTy.beqList_refl
@@ -278,6 +307,14 @@ mutual
       | box p₂ =>
         change MirTy.beq p₁ p₂ = true at h
         rw [MirTy.eq_of_beq h]
+      | _ => cases h
+    | struct_ l₁ fs₁ =>
+      cases b with
+      | struct_ l₂ fs₂ =>
+        change (StructLayout.beq l₁ l₂ && MirTy.beqList fs₁ fs₂) = true at h
+        cases h_l : StructLayout.beq l₁ l₂ <;> rw [h_l] at h
+        · cases h
+        · rw [StructLayout.eq_of_beq h_l, MirTy.eq_of_beqList h]
       | _ => cases h
     | unsupported => cases b <;> first | rfl | cases h
 
@@ -415,7 +452,7 @@ theorem encodeRvalue_binaryOp_iff_base : EncodeRvalueBinaryOpIffClaim := by
   | aggregateTuple _ | aggregateArray _ _
   | repeat_ _ _ _ | aggregateRangeTo _ _
   | aggregateRangeFrom _ _ | aggregateRange _ _ _ | aggregateOption _ _ _
-  | unsupported =>
+  | unsupported | aggregateStruct _ _ =>
     constructor
     · intro h; cases h
     · intro h
@@ -444,7 +481,7 @@ theorem encodeRvalue_unaryOp_iff_base : EncodeRvalueUnaryOpIffClaim := by
   | aggregateTuple _ | aggregateArray _ _
   | repeat_ _ _ _ | aggregateRangeTo _ _
   | aggregateRangeFrom _ _ | aggregateRange _ _ _ | aggregateOption _ _ _
-  | unsupported =>
+  | unsupported | aggregateStruct _ _ =>
     constructor
     · intro h; cases h
     · intro h
@@ -715,6 +752,12 @@ mutual
       exact ⟨SubTable.trans h_sub_fs
           (subTable_insertTy (.tuple fs) (collectTyList acc fs)),
         fun _ h_sub => getElem?_lookupTyId_of_subTable h_sub⟩
+    | struct_ l fs =>
+      dsimp only [collectTy]
+      let ⟨h_sub_fs, _⟩ := collectTyList_spec acc fs
+      exact ⟨SubTable.trans h_sub_fs
+          (subTable_insertTy (.struct_ l fs) (collectTyList acc fs)),
+        fun _ h_sub => getElem?_lookupTyId_of_subTable h_sub⟩
 
   theorem collectTyList_spec (acc : List MirTy) (tys : List MirTy) :
       SubTable acc (collectTyList acc tys) ∧
@@ -879,6 +922,7 @@ theorem collectProjElem_spec (acc : List MirTy) (e : ProjectionElem) :
   | deref => exact ⟨SubTable.refl acc, fun _ _ => rfl⟩
   | constantIndex _ _ _ => exact ⟨SubTable.refl acc, fun _ _ => rfl⟩
   | downcast _ => exact ⟨SubTable.refl acc, fun _ _ => rfl⟩
+  | index _ => exact ⟨SubTable.refl acc, fun _ _ => rfl⟩
   | unsupported => exact ⟨SubTable.refl acc, fun _ _ => rfl⟩
   | field idx ty =>
     let ⟨h_sub₁, h_dec₁⟩ := collectTy_spec acc ty
@@ -1050,6 +1094,15 @@ theorem collectRvalue_spec (acc : List MirTy) (rv : Rvalue) :
       rw [h_dec₂ ts h_s]
       dsimp only
       rw [h_dec₁ ts (SubTable.trans h_sub₂ h_s)]
+  | aggregateStruct structTy ops =>
+    let ⟨h_sub₁, h_dec₁⟩ := foldl_collect_mapOption_spec collectOperand
+      encodeOperand decodeOperand collectOperand_spec acc ops
+    let ⟨h_sub₂, h_dec₂⟩ :=
+      collectTy_spec (ops.foldl collectOperand acc) structTy
+    refine ⟨SubTable.trans h_sub₁ h_sub₂, fun ts h_s => ?_⟩
+    dsimp only [encodeRvalue, decodeRvalue]
+    rw [h_dec₂ ts h_s, h_dec₁ ts (SubTable.trans h_sub₂ h_s)]
+    rfl
   | unsupported => exact ⟨SubTable.refl acc, fun _ _ => rfl⟩
 
 theorem collectStmt_spec (acc : List MirTy) (s : StatementKind) :
@@ -1117,6 +1170,21 @@ theorem collectTerminator_spec (acc : List MirTy) (term : TerminatorKind) :
       fun ts h_s => ?_⟩
     dsimp only [encodeTerminator, decodeTerminator]
     rw [h_dec₁ ts (SubTable.trans h_sub₂ h_s), h_dec₂ ts h_s]
+    rfl
+  | callNe callee args dst t u =>
+    let ⟨h_sub₁, h_dec₁⟩ := foldl_collect_mapOption_spec collectOperand
+      encodeOperand decodeOperand collectOperand_spec acc args
+    let ⟨h_sub₂, h_dec₂⟩ :=
+      collectPlace_spec (args.foldl collectOperand acc) dst
+    refine ⟨SubTable.trans h_sub₁ h_sub₂, fun ts h_s => ?_⟩
+    dsimp only [encodeTerminator, decodeTerminator]
+    rw [h_dec₁ ts (SubTable.trans h_sub₂ h_s), h_dec₂ ts h_s]
+    rfl
+  | drop place t u =>
+    let ⟨h_sub, h_dec⟩ := collectPlace_spec acc place
+    refine ⟨h_sub, fun ts h_s => ?_⟩
+    dsimp only [encodeTerminator, decodeTerminator]
+    rw [h_dec ts h_s]
     rfl
 
 theorem collectBasicBlock_spec (acc : List MirTy) (bb : BasicBlock) :
@@ -1240,6 +1308,10 @@ mutual
       dsimp only [collectTy]
       exact typesAreCanonical_insertTy (.tuple fs) (collectTyList acc fs)
         (collectTyList_canonical acc fs h)
+    | struct_ l fs =>
+      dsimp only [collectTy]
+      exact typesAreCanonical_insertTy (.struct_ l fs) (collectTyList acc fs)
+        (collectTyList_canonical acc fs h)
 
   theorem collectTyList_canonical (acc : List MirTy) (tys : List MirTy)
       (h : typesAreCanonical acc = true) :
@@ -1258,7 +1330,7 @@ theorem collectProjElem_canonical (acc : List MirTy) (e : ProjectionElem)
     (h : typesAreCanonical acc = true) :
     typesAreCanonical (collectProjElem acc e) = true := by
   cases e with
-  | deref | constantIndex _ _ _ | downcast _ | unsupported => exact h
+  | deref | constantIndex _ _ _ | downcast _ | unsupported | index _ => exact h
   | field _ ty => exact collectTy_canonical acc ty h
 
 theorem collectPlace_canonical (acc : List MirTy) (p : Place)
@@ -1312,6 +1384,10 @@ theorem collectRvalue_canonical (acc : List MirTy) (rv : Rvalue)
     | some pOp =>
       exact collectTy_canonical (collectOperand acc pOp) ty
         (collectOperand_canonical acc pOp h)
+  | aggregateStruct ty ops =>
+    exact collectTy_canonical (ops.foldl collectOperand acc) ty
+      (foldl_preserve (fun ts => typesAreCanonical ts = true) collectOperand
+        collectOperand_canonical ops h)
   | unsupported => exact h
 
 theorem collectStmt_canonical (acc : List MirTy) (s : StatementKind)
@@ -1329,7 +1405,8 @@ theorem collectTerminator_canonical (acc : List MirTy) (term : TerminatorKind)
   cases term with
   | goto _ | return_ | unreachable | unwindResume | unsupported => exact h
   | switchInt d _ | assert d _ _ _ _ => exact collectOperand_canonical acc d h
-  | call _ args dst _ _ | coreCall _ args dst _ _ =>
+  | drop place _ _ => exact collectPlace_canonical acc place h
+  | call _ args dst _ _ | coreCall _ args dst _ _ | callNe _ args dst _ _ =>
     exact collectPlace_canonical (args.foldl collectOperand acc) dst
       (foldl_preserve (fun ts => typesAreCanonical ts = true) collectOperand
         collectOperand_canonical args h)

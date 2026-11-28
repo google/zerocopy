@@ -384,7 +384,7 @@ theorem evalInterprocStep_congr_on_cone {t₁ t₂ : BinChunkTree Body}
           cases hTerm : bb.terminator with
           | goto _ | switchInt _ _ | unreachable | unwindResume
           | assert _ _ _ _ _ | coreCall _ _ _ _ _ | sysrootCall _ _ _ _ _
-          | unsupported => rfl
+          | unsupported | callNe _ _ _ _ _ | drop _ _ _ => rfl
           | return_ =>
             cases bb.cleanup with
             | true => rfl

@@ -140,6 +140,40 @@ theorem EnumTy.beq_iff {e₁ e₂ : EnumTy} :
           EnumTagRepr.beq_iff.mpr rfl, natListBeq_iff.mpr rfl]
       rfl
 
+/-- Exact boolean-to-propositional equality law for `StructLayout.beq`. -/
+theorem StructLayout.beq_iff {l₁ l₂ : StructLayout} :
+    StructLayout.beq l₁ l₂ = true ↔ l₁ = l₂ := by
+  constructor
+  · intro h
+    cases l₁ with
+    | mk id₁ sz₁ al₁ offs₁ =>
+      cases l₂ with
+      | mk id₂ sz₂ al₂ offs₂ =>
+        unfold StructLayout.beq at h
+        dsimp only at h
+        cases h1 : Nat.beq id₁ id₂ with
+        | false => rw [h1] at h; cases h
+        | true =>
+          rw [h1] at h
+          cases h2 : Nat.beq sz₁ sz₂ with
+          | false => rw [h2] at h; cases h
+          | true =>
+            rw [h2] at h
+            cases h3 : Nat.beq al₁ al₂ with
+            | false => rw [h3] at h; cases h
+            | true =>
+              rw [h3] at h
+              rw [Nat.eq_of_beq_eq_true h1, Nat.eq_of_beq_eq_true h2,
+                  Nat.eq_of_beq_eq_true h3, natListBeq_iff.mp h]
+  · intro h
+    subst h
+    cases l₁ with
+    | mk id₁ sz₁ al₁ offs₁ =>
+      unfold StructLayout.beq
+      dsimp only
+      rw [Nat.beq_refl, Nat.beq_refl, Nat.beq_refl, natListBeq_iff.mpr rfl]
+      rfl
+
 mutual
   /-- Soundness direction of `MirTy.beq`. -/
   theorem mirTy_beq_sound :
@@ -156,9 +190,8 @@ mutual
           rw [hw] at h
           rw [IntWidth.beq_iff.mp hw, eq_of_beq h]
       | bool | unit | never | char | ordering | enum _ | tuple _ | ref _ _
-      | rawPtr _ _ | slice _ | str | array _ _ | vec _ | box _ | rangeTo _ | rangeFrom _
-      | range _ | option _
-      | unsupported => cases h
+      | rawPtr _ _ | slice _ | str | array _ _ | vec _ | box _ | rangeTo _
+      | rangeFrom _ | range _ | option _ | unsupported | struct_ _ _ => cases h
     | .unit => fun t₂ h => by
       cases t₂ <;> first | rfl | cases h
     | .never => fun t₂ h => by
@@ -173,18 +206,16 @@ mutual
         change EnumTy.beq ety₁ ety₂ = true at h
         rw [EnumTy.beq_iff.mp h]
       | bool | int _ _ | unit | never | char | ordering | tuple _ | ref _ _
-      | rawPtr _ _ | slice _ | str | array _ _ | vec _ | box _ | rangeTo _ | rangeFrom _
-      | range _ | option _
-      | unsupported => cases h
+      | rawPtr _ _ | slice _ | str | array _ _ | vec _ | box _ | rangeTo _
+      | rangeFrom _ | range _ | option _ | unsupported | struct_ _ _ => cases h
     | .tuple fs₁ => fun t₂ h => by
       cases t₂ with
       | tuple fs₂ =>
         change MirTy.beqList fs₁ fs₂ = true at h
         rw [mirTy_beqList_sound fs₁ fs₂ h]
       | bool | int _ _ | unit | never | char | ordering | enum _ | ref _ _
-      | rawPtr _ _ | slice _ | str | array _ _ | vec _ | box _ | rangeTo _ | rangeFrom _
-      | range _ | option _
-      | unsupported => cases h
+      | rawPtr _ _ | slice _ | str | array _ _ | vec _ | box _ | rangeTo _
+      | rangeFrom _ | range _ | option _ | unsupported | struct_ _ _ => cases h
     | .ref m₁ p₁ => fun t₂ h => by
       cases t₂ with
       | ref m₂ p₂ =>
@@ -195,9 +226,8 @@ mutual
           rw [hm] at h
           rw [Mutability.beq_iff.mp hm, mirTy_beq_sound p₁ p₂ h]
       | bool | int _ _ | unit | never | char | ordering | enum _ | tuple _
-      | rawPtr _ _ | slice _ | str | vec _ | box _
-      | array _ _ | rangeTo _ | rangeFrom _ | range _ | option _
-      | unsupported => cases h
+      | rawPtr _ _ | slice _ | str | vec _ | box _ | array _ _ | rangeTo _
+      | rangeFrom _ | range _ | option _ | unsupported | struct_ _ _ => cases h
     | .rawPtr m₁ p₁ => fun t₂ h => by
       cases t₂ with
       | rawPtr m₂ p₂ =>
@@ -208,17 +238,16 @@ mutual
           rw [hm] at h
           rw [Mutability.beq_iff.mp hm, mirTy_beq_sound p₁ p₂ h]
       | bool | int _ _ | unit | never | char | ordering | enum _ | tuple _
-      | ref _ _ | slice _ | str | vec _ | box _
-      | array _ _ | rangeTo _ | rangeFrom _ | range _ | option _
-      | unsupported => cases h
+      | ref _ _ | slice _ | str | vec _ | box _ | array _ _ | rangeTo _ | rangeFrom _
+      | range _ | option _ | unsupported | struct_ _ _ => cases h
     | .slice e₁ => fun t₂ h => by
       cases t₂ with
       | slice e₂ =>
         change MirTy.beq e₁ e₂ = true at h
         rw [mirTy_beq_sound e₁ e₂ h]
       | bool | int _ _ | unit | never | char | ordering | enum _ | tuple _
-      | ref _ _ | rawPtr _ _ | str | vec _ | box _
-      | rangeTo _ | rangeFrom _ | unsupported | array _ _ | option _ | range _ => cases h
+      | ref _ _ | rawPtr _ _ | str | vec _ | box _ | rangeTo _ | rangeFrom _
+      | unsupported | array _ _ | option _ | range _ | struct_ _ _ => cases h
     | .vec e₁ => fun t₂ h => by
       cases t₂ with
       | vec e₂ =>
@@ -227,7 +256,8 @@ mutual
       | bool | int _ _ | unit | never | char | ordering | enum _ | tuple _
       | ref _ _ | rawPtr _ _ | slice _ | box _
       | rangeTo _ | rangeFrom _ | unsupported | array _ _ | option _
-      | range _ | str => cases h
+      | range _ | str
+      | struct_ _ _ => cases h
     | .box p₁ => fun t₂ h => by
       cases t₂ with
       | box p₂ =>
@@ -236,7 +266,7 @@ mutual
       | bool | int _ _ | unit | never | char | ordering | enum _ | tuple _
       | ref _ _ | rawPtr _ _ | slice _ | vec _
       | array _ _ | rangeTo _ | rangeFrom _ | range _ | option _
-      | unsupported | str => cases h
+      | unsupported | str | struct_ _ _ => cases h
     | .str => fun t₂ h => by
       cases t₂ <;> first | rfl | cases h
     | .array e₁ n₁ => fun t₂ h => by
@@ -249,16 +279,16 @@ mutual
           rw [hn] at h
           rw [Nat.eq_of_beq_eq_true hn, mirTy_beq_sound e₁ e₂ h]
       | bool | int _ _ | unit | never | char | ordering | enum _ | tuple _
-      | ref _ _ | rawPtr _ _ | slice _ | str | rangeTo _ | rangeFrom _ | unsupported | option _ | range _ | box _ | vec _ => cases h
+      | ref _ _ | rawPtr _ _ | slice _ | str | rangeTo _ | rangeFrom _ | unsupported
+      | option _ | range _ | box _ | vec _ | struct_ _ _ => cases h
     | .rangeTo e₁ => fun t₂ h => by
       cases t₂ with
       | rangeTo e₂ =>
         change MirTy.beq e₁ e₂ = true at h
         rw [mirTy_beq_sound e₁ e₂ h]
       | bool | int _ _ | unit | never | char | ordering | enum _ | tuple _
-      | ref _ _ | rawPtr _ _ | slice _ | str | array _ _ | vec _ | box _
-      | rangeFrom _ | range _ | option _
-      | unsupported => cases h
+      | ref _ _ | rawPtr _ _ | slice _ | str | array _ _ | vec _ | box _ | rangeFrom _
+      | range _ | option _ | unsupported | struct_ _ _ => cases h
     | .rangeFrom e₁ => fun t₂ h => by
       cases t₂ with
       | rangeFrom e₂ =>
@@ -266,7 +296,7 @@ mutual
         rw [mirTy_beq_sound e₁ e₂ h]
       | bool | int _ _ | unit | never | char | ordering | enum _ | tuple _
       | ref _ _ | rawPtr _ _ | slice _ | str | array _ _ | rangeTo _ | range _ | option _
-      | unsupported | box _ | vec _ => cases h
+      | unsupported | box _ | vec _ | struct_ _ _ => cases h
     | .range e₁ => fun t₂ h => by
       cases t₂ with
       | range e₂ =>
@@ -275,7 +305,7 @@ mutual
       | bool | int _ _ | unit | never | char | ordering | enum _ | tuple _
       | ref _ _ | rawPtr _ _ | slice _ | vec _ | box _
       | rangeTo _ | rangeFrom _ | option _
-      | str | unsupported | array _ _ => cases h
+      | str | unsupported | array _ _ | struct_ _ _ => cases h
     | .option e₁ => fun t₂ h => by
       cases t₂ with
       | option e₂ =>
@@ -283,7 +313,19 @@ mutual
         rw [mirTy_beq_sound e₁ e₂ h]
       | bool | int _ _ | unit | never | char | ordering | enum _ | tuple _
       | ref _ _ | rawPtr _ _ | slice _ | rangeTo _ | rangeFrom _ | range _
-      | str | unsupported | array _ _ | box _ | vec _ => cases h
+      | str | unsupported | array _ _ | box _ | vec _ | struct_ _ _ => cases h
+    | .struct_ l₁ fs₁ => fun t₂ h => by
+      cases t₂ with
+      | struct_ l₂ fs₂ =>
+        change (StructLayout.beq l₁ l₂ && MirTy.beqList fs₁ fs₂) = true at h
+        cases hl : StructLayout.beq l₁ l₂ with
+        | false => rw [hl] at h; cases h
+        | true =>
+          rw [hl] at h
+          rw [StructLayout.beq_iff.mp hl, mirTy_beqList_sound fs₁ fs₂ h]
+      | bool | int _ _ | unit | never | char | ordering | enum _ | tuple _
+      | ref _ _ | rawPtr _ _ | slice _ | array _ _ | rangeTo _ | rangeFrom _
+      | range _ | option _ | box _ | vec _ | unsupported | str => cases h
     | .unsupported => fun t₂ h => by
       cases t₂ <;> first | rfl | cases h
 
@@ -341,6 +383,10 @@ mutual
     | .rangeFrom e => mirTy_beq_refl e
     | .range e => mirTy_beq_refl e
     | .option e => mirTy_beq_refl e
+    | .struct_ l fs => by
+      change (StructLayout.beq l l && MirTy.beqList fs fs) = true
+      rw [StructLayout.beq_iff.mpr rfl, mirTy_beqList_refl fs]
+      rfl
     | .unsupported => rfl
 
   /-- Reflexivity of `MirTy.beqList`. -/

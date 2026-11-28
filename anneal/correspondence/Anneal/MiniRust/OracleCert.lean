@@ -1396,7 +1396,7 @@ private theorem evalRvalue_mrWF (bodyLocals : List MirTy) (dstTy : MirTy)
   | useRetag _ | ref _ _ | addressOf _ _ | fakeAddressOf _
   | aggregateTuple _ | aggregateArray _ _ | repeat_ _ _ _
   | aggregateRange _ _ _ | aggregateRangeTo _ _ | aggregateRangeFrom _ _
-  | aggregateOption _ _ _ | unsupported => cases hadm
+  | aggregateOption _ _ _ | unsupported | aggregateStruct _ _ => cases hadm
 
 private theorem storageDeadFrame_mrWF (frame : StackFrame) (mem : MrMemory)
     (id : LocalName) (hid : id < frame.func.locals.length)
@@ -1929,7 +1929,8 @@ private theorem mrMachineWF_step (body : Body) (retMirTy : MirTy) (m : Machine)
                     dsimp only [translateBlock]
                     cases hterm : bb.terminator with
                     | unwindResume | assert _ _ _ _ _ | call _ _ _ _ _ | coreCall _ _ _ _ _
-                    | sysrootCall _ _ _ _ _ | unsupported =>
+                    | sysrootCall _ _ _ _ _ | unsupported | callNe _ _ _
+                    | drop _ _ _ =>
                       rw [hterm] at htermAdm; cases htermAdm
                     | unreachable => exact stepWF_of_ub rfl
                     | goto target =>

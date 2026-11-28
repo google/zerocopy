@@ -184,7 +184,7 @@ pub fn curated_corpus() -> Vec<TraceTestCase> {
         expected_ub: None,
         expected_conservative: Some(ExpectedConservativeSpec::new(
             ConservativeRefKind::Returned,
-            "unsupported type: PaddedHeader",
+            "initStateBy unsupported",
         )),
         disclosed_gap: None,
     });
@@ -214,7 +214,7 @@ pub fn curated_corpus() -> Vec<TraceTestCase> {
         expected_ub: None,
         expected_conservative: Some(ExpectedConservativeSpec::new(
             ConservativeRefKind::Returned,
-            "unsupported type: NestedPair",
+            "initStateBy unsupported",
         )),
         disclosed_gap: None,
     });
@@ -249,7 +249,7 @@ pub fn curated_corpus() -> Vec<TraceTestCase> {
         expected_ub: None,
         expected_conservative: Some(ExpectedConservativeSpec::new(
             ConservativeRefKind::Returned,
-            "unsupported type: MaybeU32",
+            "initStateBy unsupported",
         )),
         disclosed_gap: None,
     });
@@ -741,7 +741,7 @@ pub fn curated_corpus() -> Vec<TraceTestCase> {
         expected_ub: None,
         expected_conservative: Some(ExpectedConservativeSpec::new(
             ConservativeRefKind::Unwound,
-            "unsupported place projection `Index(",
+            "initStateBy unsupported",
         )),
         disclosed_gap: None,
     });

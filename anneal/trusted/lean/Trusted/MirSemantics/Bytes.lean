@@ -453,138 +453,178 @@ noncomputable def decodeFixedChunks (elemSize : Nat)
     | _, .ok none => .ok none
     | .ok (some v), .ok (some vs) => .ok (some (v :: vs))
 
-/-- Profile v2 byte encoder: encodes fixed-size arrays `[T; N]`, thin/wide
-pointers (preserving `allocId` provenance on the pointer bytes),
-`RangeTo`/`RangeFrom`, and supported `Option<T>`, delegating all Profile v1
-scalar, enum, and overflow-pair types to `encodeVal`.
-
-A wide slice pointer is laid out as the `(ptr, meta)` scalar pair that
-`layoutOfTyV2` documents: 8 data-pointer bytes, then 8 bytes of `usize`
-length, in `profileV2TargetEndian` order. The pointer bytes store the offset
-relative to the allocation and carry its `allocId` as provenance. That is the
-CTFE representation
-(`compiler/rustc_middle/src/mir/interpret/pointer.rs:166-169`,
-`rust-lang/rust` `f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1`):
-
-> "impl Provenance for CtfeProvenance {
->     // With the `CtfeProvenance` as provenance, the `offset` is interpreted
->     // *relative to the allocation*, so ptr-to-int casts are not possible
->     // (since we do not know the global physical offset).
->     const OFFSET_IS_ADDR: bool = false;"
-
-At runtime, rustc stores absolute addresses instead. Profile v2 never reads
-pointer bytes it wrote back at an integer type: pointees cannot themselves be
-pointers (`isSupportedV2LocalTy`), and length and range bytes carry no
-provenance.
-
-For addressable `Option<T>` (where both `isSizedNoRefV2Ty inner` and
-`isOptionPayloadSupportedV2 inner` hold, verified against `rustc`'s
-`layout_of` at capture time; `library/core/src/option.rs:597-606`,
-`rust-lang/rust` `f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1`):
-- `Option<bool>`: `bool` has `valid_range: WrappingRange { start: 0, end: 1 }`
-  (`compiler/rustc_ty_utils/src/layout.rs:388`); `Niche::reserve` takes
-  `move_end` (`is_bool` at `compiler/rustc_abi/src/lib.rs:2067-2068, 2084`),
-  setting tag `2` for `None`, `0` for `Some(false)`, and `1` for `Some(true)`.
-- `Option<()>`: `None` is declared before `Some`
-  (`library/core/src/option.rs:597-606`), so `TagEncoding::Direct` writes
-  1-byte `I8` tag `0` for `None` and `1` for `Some(())`
-  (`compiler/rustc_abi/src/layout.rs:844,897`).
-- Niche-free addressable `Option<inner>` (`.int _ _`): `TagEncoding::Direct`
-  writes `0` (`None`) or `1` (`Some`) in `tagBytes = 2^lay.alignLog2` tag
-  bytes (`compiler/rustc_abi/src/layout.rs:897,912`), followed by `.uninit`
-  payload bytes for `None` or the encoded payload for `Some`. Non-addressable
-  `Option<&T>` / `Option<*const/*mut T>` fail closed with `.unsupported`.
-
-An array whose element type has no `layoutOfTyV2` (such as `[Option<bool>; 2]`
-nested in another array, which `layoutOfArrayV2` does not lay out) also fails
-closed with `.unsupported`, matching `decodeValV2`, which needs the element
-layout to split the bytes. -/
-noncomputable def encodeValV2 (endian : TargetEndian) (ty : MirTy) (v : Val) :
-    Except FaultKind (List AllocByte) :=
-  if !checkValV2 v ty then
-    .error .unsupported
+/-- Overwrite `buf` with `bytes` starting at byte `off`, or `none` when the
+write would extend past the end of `buf`. -/
+noncomputable def overwriteBytesAt (buf : List AllocByte) (off : Nat)
+    (bytes : List AllocByte) : Option (List AllocByte) :=
+  if Nat.ble (off + bytes.length) buf.length then
+    some (buf.take off ++ bytes ++ buf.drop (off + bytes.length))
   else
-    match ty, v with
-    | .rawPtr _ pt, .ptr p | .ref _ pt, .ptr p =>
-      if isUnsizedTy pt then
-        .error .unsupported
-      else
+    none
+
+mutual
+  /-- Profile v2 byte encoder: encodes fixed-size arrays `[T; N]`, thin/wide
+  pointers (preserving `allocId` provenance on the pointer bytes),
+  `RangeTo`/`RangeFrom`, supported `Option<T>`, and structs, delegating all
+  Profile v1 scalar, enum, and overflow-pair types to `encodeVal`.
+
+  A wide slice pointer is laid out as the `(ptr, meta)` scalar pair that
+  `layoutOfTyV2` documents: 8 data-pointer bytes, then 8 bytes of `usize`
+  length, in `profileV2TargetEndian` order. The pointer bytes store the offset
+  relative to the allocation and carry its `allocId` as provenance. That is the
+  CTFE representation
+  (`compiler/rustc_middle/src/mir/interpret/pointer.rs:166-169`,
+  `rust-lang/rust` `f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1`):
+
+  > "impl Provenance for CtfeProvenance {
+  >     // With the `CtfeProvenance` as provenance, the `offset` is interpreted
+  >     // *relative to the allocation*, so ptr-to-int casts are not possible
+  >     // (since we do not know the global physical offset).
+  >     const OFFSET_IS_ADDR: bool = false;"
+
+  At runtime, rustc stores absolute addresses instead. Profile v2 never reads
+  pointer bytes it wrote back at an integer type: pointees cannot themselves be
+  pointers (`isSupportedV2LocalTy`), and length and range bytes carry no
+  provenance.
+
+  For addressable `Option<T>` (where both `isSizedNoRefV2Ty inner` and
+  `isOptionPayloadSupportedV2 inner` hold, verified against `rustc`'s
+  `layout_of` at capture time; `library/core/src/option.rs:597-606`,
+  `rust-lang/rust` `f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1`):
+  - `Option<bool>`: `bool` has `valid_range: WrappingRange { start: 0, end: 1 }`
+    (`compiler/rustc_ty_utils/src/layout.rs:388`); `Niche::reserve` takes
+    `move_end` (`is_bool` at `compiler/rustc_abi/src/lib.rs:2067-2068, 2084`),
+    setting tag `2` for `None`, `0` for `Some(false)`, and `1` for `Some(true)`.
+  - `Option<()>`: `None` is declared before `Some`
+    (`library/core/src/option.rs:597-606`), so `TagEncoding::Direct` writes
+    1-byte `I8` tag `0` for `None` and `1` for `Some(())`
+    (`compiler/rustc_abi/src/layout.rs:844,897`).
+  - Niche-free addressable `Option<inner>` (`.int _ _`):
+    `TagEncoding::Direct` writes `0` (`None`) or `1` (`Some`) in
+    `tagBytes = 2^lay.alignLog2` tag bytes
+    (`compiler/rustc_abi/src/layout.rs:897,912`), followed by `.uninit`
+    payload bytes for `None` or the encoded payload for `Some`.
+    Non-addressable `Option<&T>` / `Option<*const/*mut T>` fail closed with
+    `.unsupported`.
+
+  An array whose element type has no `layoutOfTyV2` (such as
+  `[Option<bool>; 2]` nested in another array, which `layoutOfArrayV2` does not
+  lay out) also fails closed with `.unsupported`, matching `decodeValV2`, which
+  needs the element layout to split the bytes.
+
+  A struct value is encoded into `l.size` uninitialized bytes with each field's
+  bytes written at its `l.fieldOffsets` offset, so the padding between and after
+  fields stays uninitialized (a plain `struct` has no enum tag in its gaps; see
+  `Trusted.MirAst.StructLayout`). -/
+  noncomputable def encodeValV2 (endian : TargetEndian) (ty : MirTy) (v : Val) :
+      Except FaultKind (List AllocByte) :=
+    if !checkValV2 v ty then
+      .error .unsupported
+    else
+      match ty, v with
+      | .rawPtr _ pt, .ptr p | .ref _ pt, .ptr p =>
+        if isUnsizedTy pt then
+          .error .unsupported
+        else
+          .ok ((encodeUInt endian 8 p.offsetBytes.toNat).map
+            (fun b => AllocByte.init b p.allocId))
+      | .rawPtr _ (.slice _), .slicePtr p len
+      | .ref _ (.slice _), .slicePtr p len
+      | .ref .shared .str, .slicePtr p len =>
         .ok ((encodeUInt endian 8 p.offsetBytes.toNat).map
-          (fun b => AllocByte.init b p.allocId))
-    | .rawPtr _ (.slice _), .slicePtr p len
-    | .ref _ (.slice _), .slicePtr p len
-    | .ref .shared .str, .slicePtr p len =>
-      .ok ((encodeUInt endian 8 p.offsetBytes.toNat).map
-          (fun b => AllocByte.init b p.allocId) ++
-        (encodeUInt endian 8 len.toNat).map
-          (fun b => AllocByte.init b none))
-    -- `Vec` and `Box` handles use a model-internal encoding. Rust leaves the
-    -- layout of `Vec` unspecified (`library/alloc/src/vec/mod.rs:312-314`,
-    -- `rust-lang/rust` `f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1`): "Most
-    -- fundamentally, `Vec` is and always will be a (pointer, capacity, length)
-    -- triplet. No more, no less. The order of these fields is completely
-    -- unspecified". The encoding is unobservable because Profile v2 admits
-    -- no raw pointer to a `Vec` or `Box` (`isSupportedV2LocalTy`), so only
-    -- the contracts in `AllocContracts` read and write these bytes.
-    | .vec _, .vec p cap len =>
-      .ok ((encodeUInt endian 8 p.offsetBytes.toNat).map
-          (fun b => AllocByte.init b p.allocId) ++
-        (encodeUInt endian 8 cap.toNat).map
-          (fun b => AllocByte.init b none) ++
-        (encodeUInt endian 8 len.toNat).map
-          (fun b => AllocByte.init b none))
-    | .box pt, .boxPtr p none =>
-      if isUnsizedTy pt then
-        .error .unsupported
-      else
+            (fun b => AllocByte.init b p.allocId) ++
+          (encodeUInt endian 8 len.toNat).map
+            (fun b => AllocByte.init b none))
+      -- `Vec` and `Box` handles use a model-internal encoding. Rust leaves the
+      -- layout of `Vec` unspecified (`library/alloc/src/vec/mod.rs:312-314`,
+      -- `rust-lang/rust` `f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1`): "Most
+      -- fundamentally, `Vec` is and always will be a (pointer, capacity,
+      -- length) triplet. No more, no less. The order of these fields is
+      -- completely unspecified". The encoding is unobservable because
+      -- Profile v2 admits no raw pointer to a `Vec` or `Box`
+      -- (`isSupportedV2LocalTy`), so only the contracts in `AllocContracts`
+      -- read and write these bytes.
+      | .vec _, .vec p cap len =>
         .ok ((encodeUInt endian 8 p.offsetBytes.toNat).map
-          (fun b => AllocByte.init b p.allocId))
-    | .box (.slice _), .boxPtr p (some len) =>
-      .ok ((encodeUInt endian 8 p.offsetBytes.toNat).map
-          (fun b => AllocByte.init b p.allocId) ++
-        (encodeUInt endian 8 len.toNat).map
-          (fun b => AllocByte.init b none))
-    | .rangeTo (.int .isize false), .rangeTo e =>
-      .ok ((encodeUInt endian 8 e.toNat).map (fun b => AllocByte.init b none))
-    | .rangeFrom (.int .isize false), .rangeFrom s =>
-      .ok ((encodeUInt endian 8 s.toNat).map (fun b => AllocByte.init b none))
-    | .array elem len, .array vs =>
-      if !(layoutOfTyV2 elem).isSome || !Nat.beq vs.length len then
-        .error .unsupported
-      else
-        encodeValListWith (encodeValV2 endian elem) vs
-    | .option .bool, .optionVal optV =>
-      match optV with
-      | none => .ok [AllocByte.init 2 none]
-      | some (.bool false) => .ok [AllocByte.init 0 none]
-      | some (.bool true) => .ok [AllocByte.init 1 none]
-      | _ => .error .unsupported
-    | .option .unit, .optionVal optV =>
-      match optV with
-      | none => .ok [AllocByte.init 0 none]
-      | some .unit => .ok [AllocByte.init 1 none]
-      | _ => .error .unsupported
-    | .option inner, .optionVal optV =>
-      if !isSizedNoRefV2Ty inner || !isOptionPayloadSupportedV2 inner then
-        .error .unsupported
-      else
-        match layoutOfTyV2 inner with
-        | none => .error .unsupported
-        | some lay =>
-          let tagBytes := Nat.pow 2 lay.alignLog2
-          match optV with
-          | none =>
-            .ok ((encodeUInt endian tagBytes 0).map
-                (fun b => AllocByte.init b none) ++
-              List.replicate lay.size .uninit)
-          | some innerV =>
-            match encodeValV2 endian inner innerV with
-            | .error k => .error k
-            | .ok payload =>
-              .ok ((encodeUInt endian tagBytes 1).map
+            (fun b => AllocByte.init b p.allocId) ++
+          (encodeUInt endian 8 cap.toNat).map
+            (fun b => AllocByte.init b none) ++
+          (encodeUInt endian 8 len.toNat).map
+            (fun b => AllocByte.init b none))
+      | .box pt, .boxPtr p none =>
+        if isUnsizedTy pt then
+          .error .unsupported
+        else
+          .ok ((encodeUInt endian 8 p.offsetBytes.toNat).map
+            (fun b => AllocByte.init b p.allocId))
+      | .box (.slice _), .boxPtr p (some len) =>
+        .ok ((encodeUInt endian 8 p.offsetBytes.toNat).map
+            (fun b => AllocByte.init b p.allocId) ++
+          (encodeUInt endian 8 len.toNat).map
+            (fun b => AllocByte.init b none))
+      | .rangeTo (.int .isize false), .rangeTo e =>
+        .ok ((encodeUInt endian 8 e.toNat).map (fun b => AllocByte.init b none))
+      | .rangeFrom (.int .isize false), .rangeFrom s =>
+        .ok ((encodeUInt endian 8 s.toNat).map (fun b => AllocByte.init b none))
+      | .array elem len, .array vs =>
+        if !(layoutOfTyV2 elem).isSome || !Nat.beq vs.length len then
+          .error .unsupported
+        else
+          encodeValListWith (encodeValV2 endian elem) vs
+      | .option .bool, .optionVal optV =>
+        match optV with
+        | none => .ok [AllocByte.init 2 none]
+        | some (.bool false) => .ok [AllocByte.init 0 none]
+        | some (.bool true) => .ok [AllocByte.init 1 none]
+        | _ => .error .unsupported
+      | .option .unit, .optionVal optV =>
+        match optV with
+        | none => .ok [AllocByte.init 0 none]
+        | some .unit => .ok [AllocByte.init 1 none]
+        | _ => .error .unsupported
+      | .option inner, .optionVal optV =>
+        if !isSizedNoRefV2Ty inner || !isOptionPayloadSupportedV2 inner then
+          .error .unsupported
+        else
+          match layoutOfTyV2 inner with
+          | none => .error .unsupported
+          | some lay =>
+            let tagBytes := Nat.pow 2 lay.alignLog2
+            match optV with
+            | none =>
+              .ok ((encodeUInt endian tagBytes 0).map
                   (fun b => AllocByte.init b none) ++
-                payload)
-    | _, _ => encodeVal endian ty v
+                List.replicate lay.size .uninit)
+            | some innerV =>
+              match encodeValV2 endian inner innerV with
+              | .error k => .error k
+              | .ok payload =>
+                .ok ((encodeUInt endian tagBytes 1).map
+                    (fun b => AllocByte.init b none) ++
+                  payload)
+      | .struct_ l fs, .tuple vs =>
+        match layoutOfTyV2 (.struct_ l fs) with
+        | none => .error .unsupported
+        | some _ =>
+          encodeStructFieldsV2 endian (List.replicate l.size .uninit)
+            l.fieldOffsets fs vs
+      | _, _ => encodeVal endian ty v
+
+  /-- Write the encodings of struct field values `vs` of types `tys` into
+  `buf` at offsets `offs`. -/
+  noncomputable def encodeStructFieldsV2 (endian : TargetEndian)
+      (buf : List AllocByte) :
+      List Nat → List MirTy → List Val → Except FaultKind (List AllocByte)
+    | [], [], [] => .ok buf
+    | off :: offs, ty :: tys, v :: vs =>
+      match encodeValV2 endian ty v with
+      | .error k => .error k
+      | .ok bs =>
+        match overwriteBytesAt buf off bs with
+        | none => .error .unsupported
+        | some buf' => encodeStructFieldsV2 endian buf' offs tys vs
+    | _, _, _ => .error .unsupported
+end
 
 /-- Helper for `decodeValV2` on `.rawPtr` and `.ref` types (thin/wide pointers
 and slices), factored out so `decodeValV2`'s equation lemma stays free of
@@ -615,155 +655,190 @@ noncomputable def decodePtrLikeV2 (endian : TargetEndian) (pt : MirTy)
         .ok (some (.ptr ⟨prov, UInt64.ofNat (decodeUInt endian pRaw), .isize⟩))
       | _, _ => .ok none
 
-/-- Profile v2 byte decoder: decodes fixed-size arrays `[T; N]`, thin/wide
-pointers (recovering uniform byte provenance), `RangeTo`/`RangeFrom`, and
-supported `Option<T>`, delegating all Profile v1 types to `decodeVal`.
+mutual
+  /-- Profile v2 byte decoder: decodes fixed-size arrays `[T; N]`, thin/wide
+  pointers (recovering uniform byte provenance), `RangeTo`/`RangeFrom`, and
+  supported `Option<T>`, and structs (reading each field at its
+  `l.fieldOffsets` offset and ignoring padding bytes), delegating all Profile
+  v1 types to `decodeVal`.
 
-This inverts `encodeValV2`. Any uninitialized byte in an active field yields
-`.ok none`, and the caller faults with `.undefined`: raw pointers and integers
-"must not be obtained from uninitialized memory" (`refsValidInMem` quotes the
-rule). If the 8 pointer bytes do not all carry the same `allocId`, the decoded
-pointer has no provenance and can be used only for zero-sized accesses. That
-choice is conservative. Length and range bytes ignore provenance, as integer
-loads do at runtime.
+  This inverts `encodeValV2`. Any uninitialized byte in an active field yields
+  `.ok none`, and the caller faults with `.undefined`: raw pointers and integers
+  "must not be obtained from uninitialized memory" (`refsValidInMem` quotes the
+  rule). If the 8 pointer bytes do not all carry the same `allocId`, the decoded
+  pointer has no provenance and can be used only for zero-sized accesses. That
+  choice is conservative. Length and range bytes ignore provenance, as integer
+  loads do at runtime.
 
-Invalid `Option<bool>`, `Option<()>`, or `TagEncoding::Direct` tags likewise
-return `.ok none` (which `loadIndirectV2` and `refValidInMem` reject as
-`.error .undefined`, matching `throw_ub!(InvalidTag)` in
-`compiler/rustc_const_eval/src/interpret/discriminant.rs:157`).
-`Option<&T>`, `Option<&[T]>`, and `Option<*const T>` have no byte layout
-(they stay immediate locals), so they fail closed here; `Option<bool>`
-accepts `0`, `1`, and niche tag `2`
-(`compiler/rustc_abi/src/lib.rs:2060-2068`), and `Option<()>` accepts direct
-`I8` tags `0` (`None`) and `1` (`Some(())`)
-(`compiler/rustc_abi/src/layout.rs:844,897`; all pinned at `rust-lang/rust`
-`f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1`). -/
-noncomputable def decodeValV2 (endian : TargetEndian) :
-    MirTy → List AllocByte → Except FaultKind (Option Val)
+  Invalid `Option<bool>`, `Option<()>`, or `TagEncoding::Direct` tags likewise
+  return `.ok none` (which `loadIndirectV2` and `refValidInMem` reject as
+  `.error .undefined`, matching `throw_ub!(InvalidTag)` in
+  `compiler/rustc_const_eval/src/interpret/discriminant.rs:157`).
+  `Option<&T>`, `Option<&[T]>`, and `Option<*const T>` have no byte layout
+  (they stay immediate locals), so they fail closed here; `Option<bool>`
+  accepts `0`, `1`, and niche tag `2`
+  (`compiler/rustc_abi/src/lib.rs:2060-2068`), and `Option<()>` accepts direct
+  `I8` tags `0` (`None`) and `1` (`Some(())`)
+  (`compiler/rustc_abi/src/layout.rs:844,897`; all pinned at `rust-lang/rust`
+  `f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1`). -/
+  noncomputable def decodeValV2 (endian : TargetEndian) :
+      MirTy → List AllocByte → Except FaultKind (Option Val)
   | .rawPtr _ .str, _ | .ref .mut .str, _ => .error .unsupported
-  | .rawPtr _ pt, bytes => decodePtrLikeV2 endian pt bytes
-  | .ref _ pt, bytes => decodePtrLikeV2 endian pt bytes
-  | .rangeTo (.int .isize false), bytes =>
-    if !Nat.beq bytes.length 8 then
-      .error .unsupported
-    else
-      match initBytes? bytes with
-      | none => .ok none
-      | some raw =>
-        .ok (some (.rangeTo (UInt64.ofNat (decodeUInt endian raw))))
-  | .rangeFrom (.int .isize false), bytes =>
-    if !Nat.beq bytes.length 8 then
-      .error .unsupported
-    else
-      match initBytes? bytes with
-      | none => .ok none
-      | some raw =>
-        .ok (some (.rangeFrom (UInt64.ofNat (decodeUInt endian raw))))
-  -- Inverse of the model-internal `Vec` encoding in `encodeValV2`, which no
-  -- program can observe (see the comment there).
-  | .vec _, bytes =>
-    if !Nat.beq bytes.length 24 then
-      .error .unsupported
-    else
-      let pBytes := bytes.take 8
-      let cBytes := (bytes.drop 8).take 8
-      let lBytes := bytes.drop 16
-      match initBytes? pBytes, readPtrProv? pBytes,
-          initBytes? cBytes, initBytes? lBytes with
-      | some pRaw, some prov, some cRaw, some lRaw =>
-        let p : PtrVal :=
-          ⟨prov, UInt64.ofNat (decodeUInt endian pRaw), .isize⟩
-        let cap := UInt64.ofNat (decodeUInt endian cRaw)
-        let len := UInt64.ofNat (decodeUInt endian lRaw)
-        .ok (some (.vec p cap len))
-      | _, _, _, _ => .ok none
-  | .box pt, bytes =>
-    if isUnsizedTy pt then
-      match pt with
-      | .slice _ =>
-        if !Nat.beq bytes.length 16 then
-          .error .unsupported
-        else
-          let pBytes := bytes.take 8
-          let lBytes := bytes.drop 8
-          match initBytes? pBytes, readPtrProv? pBytes, initBytes? lBytes with
-          | some pRaw, some prov, some lRaw =>
-            let p : PtrVal :=
-              ⟨prov, UInt64.ofNat (decodeUInt endian pRaw), .isize⟩
-            let len := UInt64.ofNat (decodeUInt endian lRaw)
-            .ok (some (.boxPtr p (some len)))
-          | _, _, _ => .ok none
-      | _ => .error .unsupported
-    else
+    | .rawPtr _ pt, bytes => decodePtrLikeV2 endian pt bytes
+    | .ref _ pt, bytes => decodePtrLikeV2 endian pt bytes
+    | .rangeTo (.int .isize false), bytes =>
       if !Nat.beq bytes.length 8 then
         .error .unsupported
       else
-        match initBytes? bytes, readPtrProv? bytes with
-        | some pRaw, some prov =>
-          let off := UInt64.ofNat (decodeUInt endian pRaw)
-          .ok (some (.boxPtr ⟨prov, off, .isize⟩ none))
-        | _, _ => .ok none
-  | .option .bool, bytes =>
-    if !Nat.beq bytes.length 1 then
-      .error .unsupported
-    else
-      match initBytes? bytes with
-      | none => .ok none
-      | some [b] =>
-        if Nat.beq b.toNat 0 then
-          .ok (some (.optionVal (some (.bool false))))
-        else if Nat.beq b.toNat 1 then
-          .ok (some (.optionVal (some (.bool true))))
-        else if Nat.beq b.toNat 2 then .ok (some (.optionVal none))
-        else .ok none
-      | some _ => .error .unsupported
-  | .option .unit, bytes =>
-    if !Nat.beq bytes.length 1 then
-      .error .unsupported
-    else
-      match initBytes? bytes with
-      | none => .ok none
-      | some [b] =>
-        if Nat.beq b.toNat 0 then .ok (some (.optionVal none))
-        else if Nat.beq b.toNat 1 then .ok (some (.optionVal (some .unit)))
-        else .ok none
-      | some _ => .error .unsupported
-  | .option inner, bytes =>
-    if !isSizedNoRefV2Ty inner || !isOptionPayloadSupportedV2 inner then
-      .error .unsupported
-    else
-      match layoutOfTyV2 inner with
-      | none => .error .unsupported
-      | some lay =>
-        let tagBytes := Nat.pow 2 lay.alignLog2
-        if !Nat.beq bytes.length (tagBytes + lay.size) then
-          .error .unsupported
-        else
-          match initBytes? (bytes.take tagBytes) with
-          | none => .ok none
-          | some tagRaw =>
-            let tag := decodeUInt endian tagRaw
-            if Nat.beq tag 0 then
-              .ok (some (.optionVal none))
-            else if Nat.beq tag 1 then
-              match decodeValV2 endian inner (bytes.drop tagBytes) with
-              | .ok (some innerV) => .ok (some (.optionVal (some innerV)))
-              | .ok none => .ok none
-              | .error k => .error k
-            else
-              .ok none
-  | .array elem len, bytes =>
-    match layoutOfTyV2 elem with
-    | none => .error .unsupported
-    | some elemLay =>
-      if !Nat.beq bytes.length (len * elemLay.size) then
+        match initBytes? bytes with
+        | none => .ok none
+        | some raw =>
+          .ok (some (.rangeTo (UInt64.ofNat (decodeUInt endian raw))))
+    | .rangeFrom (.int .isize false), bytes =>
+      if !Nat.beq bytes.length 8 then
         .error .unsupported
       else
-        match decodeFixedChunks elemLay.size (decodeValV2 endian elem) len bytes with
-        | .error k => .error k
-        | .ok none => .ok none
-        | .ok (some vs) => .ok (some (.array vs))
-  | ty, bytes => decodeVal endian ty bytes
+        match initBytes? bytes with
+        | none => .ok none
+        | some raw =>
+          .ok (some (.rangeFrom (UInt64.ofNat (decodeUInt endian raw))))
+    -- Inverse of the model-internal `Vec` encoding in `encodeValV2`, which no
+    -- program can observe (see the comment there).
+    | .vec _, bytes =>
+      if !Nat.beq bytes.length 24 then
+        .error .unsupported
+      else
+        let pBytes := bytes.take 8
+        let cBytes := (bytes.drop 8).take 8
+        let lBytes := bytes.drop 16
+        match initBytes? pBytes, readPtrProv? pBytes,
+            initBytes? cBytes, initBytes? lBytes with
+        | some pRaw, some prov, some cRaw, some lRaw =>
+          let p : PtrVal :=
+            ⟨prov, UInt64.ofNat (decodeUInt endian pRaw), .isize⟩
+          let cap := UInt64.ofNat (decodeUInt endian cRaw)
+          let len := UInt64.ofNat (decodeUInt endian lRaw)
+          .ok (some (.vec p cap len))
+        | _, _, _, _ => .ok none
+    | .box pt, bytes =>
+      if isUnsizedTy pt then
+        match pt with
+        | .slice _ =>
+          if !Nat.beq bytes.length 16 then
+            .error .unsupported
+          else
+            let pBytes := bytes.take 8
+            let lBytes := bytes.drop 8
+            match initBytes? pBytes, readPtrProv? pBytes, initBytes? lBytes with
+            | some pRaw, some prov, some lRaw =>
+              let p : PtrVal :=
+                ⟨prov, UInt64.ofNat (decodeUInt endian pRaw), .isize⟩
+              let len := UInt64.ofNat (decodeUInt endian lRaw)
+              .ok (some (.boxPtr p (some len)))
+            | _, _, _ => .ok none
+        | _ => .error .unsupported
+      else
+        if !Nat.beq bytes.length 8 then
+          .error .unsupported
+        else
+          match initBytes? bytes, readPtrProv? bytes with
+          | some pRaw, some prov =>
+            let off := UInt64.ofNat (decodeUInt endian pRaw)
+            .ok (some (.boxPtr ⟨prov, off, .isize⟩ none))
+          | _, _ => .ok none
+    | .option .bool, bytes =>
+      if !Nat.beq bytes.length 1 then
+        .error .unsupported
+      else
+        match initBytes? bytes with
+        | none => .ok none
+        | some [b] =>
+          if Nat.beq b.toNat 0 then
+            .ok (some (.optionVal (some (.bool false))))
+          else if Nat.beq b.toNat 1 then
+            .ok (some (.optionVal (some (.bool true))))
+          else if Nat.beq b.toNat 2 then .ok (some (.optionVal none))
+          else .ok none
+        | some _ => .error .unsupported
+    | .option .unit, bytes =>
+      if !Nat.beq bytes.length 1 then
+        .error .unsupported
+      else
+        match initBytes? bytes with
+        | none => .ok none
+        | some [b] =>
+          if Nat.beq b.toNat 0 then .ok (some (.optionVal none))
+          else if Nat.beq b.toNat 1 then .ok (some (.optionVal (some .unit)))
+          else .ok none
+        | some _ => .error .unsupported
+    | .option inner, bytes =>
+      if !isSizedNoRefV2Ty inner || !isOptionPayloadSupportedV2 inner then
+        .error .unsupported
+      else
+        match layoutOfTyV2 inner with
+        | none => .error .unsupported
+        | some lay =>
+          let tagBytes := Nat.pow 2 lay.alignLog2
+          if !Nat.beq bytes.length (tagBytes + lay.size) then
+            .error .unsupported
+          else
+            match initBytes? (bytes.take tagBytes) with
+            | none => .ok none
+            | some tagRaw =>
+              let tag := decodeUInt endian tagRaw
+              if Nat.beq tag 0 then
+                .ok (some (.optionVal none))
+              else if Nat.beq tag 1 then
+                match decodeValV2 endian inner (bytes.drop tagBytes) with
+                | .ok (some innerV) => .ok (some (.optionVal (some innerV)))
+                | .ok none => .ok none
+                | .error k => .error k
+              else
+                .ok none
+    | .array elem len, bytes =>
+      match layoutOfTyV2 elem with
+      | none => .error .unsupported
+      | some elemLay =>
+        if !Nat.beq bytes.length (len * elemLay.size) then
+          .error .unsupported
+        else
+          match decodeFixedChunks elemLay.size (decodeValV2 endian elem) len
+              bytes with
+          | .error k => .error k
+          | .ok none => .ok none
+          | .ok (some vs) => .ok (some (.array vs))
+    | .struct_ l fs, bytes =>
+      match layoutOfTyV2 (.struct_ l fs) with
+      | none => .error .unsupported
+      | some lay =>
+        if !Nat.beq bytes.length lay.size then
+          .error .unsupported
+        else
+          match decodeStructFieldsV2 endian bytes l.fieldOffsets fs with
+          | .error k => .error k
+          | .ok none => .ok none
+          | .ok (some vs) => .ok (some (.tuple vs))
+    | ty, bytes => decodeVal endian ty bytes
+
+  /-- Decode struct fields of types `tys` at offsets `offs` from the struct
+  bytes `bytes`. -/
+  noncomputable def decodeStructFieldsV2 (endian : TargetEndian)
+      (bytes : List AllocByte) :
+      List Nat → List MirTy → Except FaultKind (Option (List Val))
+    | [], [] => .ok (some [])
+    | off :: offs, ty :: tys =>
+      match layoutOfTyV2 ty with
+      | none => .error .unsupported
+      | some fl =>
+        match decodeValV2 endian ty ((bytes.drop off).take fl.size),
+            decodeStructFieldsV2 endian bytes offs tys with
+        | .error k, _ => .error k
+        | _, .error k => .error k
+        | .ok none, _ => .ok none
+        | _, .ok none => .ok none
+        | .ok (some v), .ok (some vs) => .ok (some (v :: vs))
+    | _, _ => .error .unsupported
+end
 
 /-- Profile v2 typed load from `place` in `mem`. -/
 noncomputable def loadIndirectV2 (mem : MemoryState) (ty : MirTy)
@@ -1205,6 +1280,7 @@ mutual
       | .error _ => false
     | .tuple ts, .tuple vs => refsValidInMemList m ts vs
     | .array elem _, .array vs => refsValidInMemArray m elem vs
+    | .struct_ _ ts, .tuple vs => refsValidInMemList m ts vs
     | _, _ => true
 
   noncomputable def refsValidInMemList (m : MemoryState) :
@@ -1247,6 +1323,7 @@ mutual
     | .option _, .optionVal none => []
     | .tuple ts, .tuple vs => refAccessSpansList ts vs
     | .array elem _, .array vs => refAccessSpansArray elem vs
+    | .struct_ _ ts, .tuple vs => refAccessSpansList ts vs
     | ty, v => ownedHandleAccessSpans ty v
 
   noncomputable def refAccessSpansList :
@@ -1277,6 +1354,7 @@ mutual
     | .option _, .optionVal none => []
     | .tuple ts, .tuple vs => refAllocIdsList ts vs
     | .array elem _, .array vs => refAllocIdsArray elem vs
+    | .struct_ _ ts, .tuple vs => refAllocIdsList ts vs
     | _, _ => []
 
   noncomputable def refAllocIdsList : List MirTy → List Val → List AllocId
@@ -1307,6 +1385,7 @@ mutual
     | .option inner, .optionVal (some innerV) => ptrOrRefAllocIds inner innerV
     | .tuple ts, .tuple vs => ptrOrRefAllocIdsList ts vs
     | .array elem _, .array vs => ptrOrRefAllocIdsArray elem vs
+    | .struct_ _ ts, .tuple vs => ptrOrRefAllocIdsList ts vs
     | _, _ => []
 
   noncomputable def ptrOrRefAllocIdsList : List MirTy → List Val → List AllocId

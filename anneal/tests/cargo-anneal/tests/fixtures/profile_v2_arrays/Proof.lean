@@ -536,9 +536,9 @@ theorem writePlaceDestV2_immediate_ok {locals locals' : List LocalSlot}
     writePlaceDestV2 locals mem (.local lid) ty val = .ok (locals', mem) := by
   unfold writePlaceDestV2
   rw [ite_bool_false (by rw [hCheck]; rfl)]
-  dsimp only
+  try dsimp only
   rw [hSlot]
-  dsimp only
+  try dsimp only
   rw [hSet]
 
 theorem writePlaceV2_immediate_ok {bodyLocals : List MirTy} {locals locals' : List LocalSlot}
@@ -548,7 +548,7 @@ theorem writePlaceV2_immediate_ok {bodyLocals : List MirTy} {locals locals' : Li
     (hSet : Trusted.MirSemantics.setElem? locals lid (.immediate (some val)) = some locals') :
     writePlaceV2 bodyLocals locals mem ⟨lid, []⟩ ty val = .ok (locals', mem) := by
   unfold writePlaceV2 resolvePlaceDestV2
-  dsimp only
+  try dsimp only
   exact writePlaceDestV2_immediate_ok hCheck hSlot hSet
 
 theorem readPlaceV2_copy_local {bodyLocals : List MirTy} {locals : List LocalSlot}
@@ -559,7 +559,7 @@ theorem readPlaceV2_copy_local {bodyLocals : List MirTy} {locals : List LocalSlo
     readPlaceV2 bodyLocals locals mem false ⟨lid, []⟩ = .ok (ty, optVal, locals, mem) := by
   unfold readPlaceV2
   rw [hTy, hSlot]
-  dsimp only
+  try dsimp only
   rw [hSup]
   change (if false = true then Except.error FaultKind.unsupported else _) = _
   rw [ite_bool_false rfl]
@@ -574,7 +574,7 @@ theorem readPlaceV2_move_local {bodyLocals : List MirTy} {locals locals' : List 
     readPlaceV2 bodyLocals locals mem true ⟨lid, []⟩ = .ok (ty, optVal, locals', mem) := by
   unfold readPlaceV2
   rw [hTy, hSlot]
-  dsimp only
+  try dsimp only
   rw [hSup]
   change (if false = true then Except.error FaultKind.unsupported else _) = _
   rw [ite_bool_false rfl]
@@ -600,9 +600,9 @@ theorem evalTerminatorV2_return_ok {body : Body} {bb : BasicBlock} {frame : Fram
         ⟨retVal, extractReturnMemoryV2 callerMem mem frame.locals⟩) := by
   unfold evalTerminatorV2
   rw [hTerm]
-  dsimp only
+  try dsimp only
   rw [ite_bool_false hCleanup, hRetTy, hRetSlot]
-  dsimp only
+  try dsimp only
   rw [ite_bool_false hNoRodata, ite_bool_false (by rw [hStay, hValid, hDisj]; rfl)]
 
 private theorem layoutOfTyV2_u8x4 :
@@ -837,11 +837,13 @@ private theorem pack_le_rev_correct (q : Query)
           apply execOutcomeStateV2_step (by rfl)
           -- bb0: assign 5 (use (copy 1))
           apply execOutcomeStateV2_step (by
-            dsimp only [evalStepV2, entryProgForBody, Captured.program, Captured.body_0,
-              List.append, Trusted.MirSemantics.getElem?, evalStatementV2, resolvePlaceDestV2, placeStaticTyV2,
+            dsimp only [evalStepV2, activeFrameBody, attachCallers, List.cons_append,
+                List.nil_append, entryProgForBody, Captured.program, Captured.body_0,
+              List.append, Trusted.MirSemantics.getElem?, evalStatementV2, resolvePlaceDestV2,
+              resolveIndexProjsV2, consResolvedProjV2, placeStaticTyV2,
               stepProjectedTyV2, placeProjectedTyV2, evalRvalueV2, evalOperandToSlotV2]
             rw [readPlaceV2_copy_local (by rfl) (by rfl) (by decide)]
-            dsimp only
+            try dsimp only
             rw [ite_bool_false]; rotate_left; decide
             dsimp only
             repeat (rw [ite_bool_false]; rotate_left; first | rfl | decide)
@@ -850,7 +852,8 @@ private theorem pack_le_rev_correct (q : Query)
           -- bb0 terminator: coreCall intToLeBytes .i16 false [move 5] -> 4 goto
           -- 1
           apply execOutcomeStateV2_step (by
-            dsimp only [evalStepV2, entryProgForBody, Captured.program, Captured.body_0,
+            dsimp only [evalStepV2, activeFrameBody, attachCallers, List.cons_append,
+                List.nil_append, entryProgForBody, Captured.program, Captured.body_0,
               List.append, Trusted.MirSemantics.getElem?]
             rw [ite_bool_true]; rotate_left; decide
             dsimp only [evalTerminatorV2, Trusted.MirSemantics.getElem?]
@@ -879,8 +882,10 @@ private theorem pack_le_rev_correct (q : Query)
           apply execOutcomeStateV2_step (by rfl)
           -- assign 2 (copy 4.[0])
           apply execOutcomeStateV2_step (by
-            dsimp only [evalStepV2, entryProgForBody, Captured.program, Captured.body_0,
-              List.append, Trusted.MirSemantics.getElem?, evalStatementV2, resolvePlaceDestV2, placeStaticTyV2,
+            dsimp only [evalStepV2, activeFrameBody, attachCallers, List.cons_append,
+                List.nil_append, entryProgForBody, Captured.program, Captured.body_0,
+              List.append, Trusted.MirSemantics.getElem?, evalStatementV2, resolvePlaceDestV2,
+              resolveIndexProjsV2, consResolvedProjV2, placeStaticTyV2,
               stepProjectedTyV2, placeProjectedTyV2, evalRvalueV2, evalOperandToSlotV2, readPlaceV2,
               projectValFieldV2, projectOneElemV2, constantIndexOffset]
             repeat (rw [ite_bool_false]; rotate_left; first | rfl | decide)
@@ -894,8 +899,10 @@ private theorem pack_le_rev_correct (q : Query)
           apply execOutcomeStateV2_step (by rfl)
           -- assign 3 (copy 4.[1])
           apply execOutcomeStateV2_step (by
-            dsimp only [evalStepV2, entryProgForBody, Captured.program, Captured.body_0,
-              List.append, Trusted.MirSemantics.getElem?, evalStatementV2, resolvePlaceDestV2, placeStaticTyV2,
+            dsimp only [evalStepV2, activeFrameBody, attachCallers, List.cons_append,
+                List.nil_append, entryProgForBody, Captured.program, Captured.body_0,
+              List.append, Trusted.MirSemantics.getElem?, evalStatementV2, resolvePlaceDestV2,
+              resolveIndexProjsV2, consResolvedProjV2, placeStaticTyV2,
               stepProjectedTyV2, placeProjectedTyV2, evalRvalueV2, evalOperandToSlotV2, readPlaceV2,
               projectValFieldV2, projectOneElemV2, constantIndexOffset]
             repeat (rw [ite_bool_false]; rotate_left; first | rfl | decide)
@@ -910,11 +917,13 @@ private theorem pack_le_rev_correct (q : Query)
           apply execOutcomeStateV2_step (by rfl)
           -- assign 6 (copy 3)
           apply execOutcomeStateV2_step (by
-            dsimp only [evalStepV2, entryProgForBody, Captured.program, Captured.body_0,
-              List.append, Trusted.MirSemantics.getElem?, evalStatementV2, resolvePlaceDestV2, placeStaticTyV2,
+            dsimp only [evalStepV2, activeFrameBody, attachCallers, List.cons_append,
+                List.nil_append, entryProgForBody, Captured.program, Captured.body_0,
+              List.append, Trusted.MirSemantics.getElem?, evalStatementV2, resolvePlaceDestV2,
+              resolveIndexProjsV2, consResolvedProjV2, placeStaticTyV2,
               stepProjectedTyV2, placeProjectedTyV2, evalRvalueV2, evalOperandToSlotV2]
             rw [readPlaceV2_copy_local (by rfl) (by rfl) (by decide)]
-            dsimp only
+            try dsimp only
             rw [ite_bool_false]; rotate_left; decide
             dsimp only
             repeat (rw [ite_bool_false]; rotate_left; first | rfl | decide)
@@ -924,11 +933,13 @@ private theorem pack_le_rev_correct (q : Query)
           apply execOutcomeStateV2_step (by rfl)
           -- assign 7 (copy 2)
           apply execOutcomeStateV2_step (by
-            dsimp only [evalStepV2, entryProgForBody, Captured.program, Captured.body_0,
-              List.append, Trusted.MirSemantics.getElem?, evalStatementV2, resolvePlaceDestV2, placeStaticTyV2,
+            dsimp only [evalStepV2, activeFrameBody, attachCallers, List.cons_append,
+                List.nil_append, entryProgForBody, Captured.program, Captured.body_0,
+              List.append, Trusted.MirSemantics.getElem?, evalStatementV2, resolvePlaceDestV2,
+              resolveIndexProjsV2, consResolvedProjV2, placeStaticTyV2,
               stepProjectedTyV2, placeProjectedTyV2, evalRvalueV2, evalOperandToSlotV2]
             rw [readPlaceV2_copy_local (by rfl) (by rfl) (by decide)]
-            dsimp only
+            try dsimp only
             rw [ite_bool_false]; rotate_left; decide
             dsimp only
             repeat (rw [ite_bool_false]; rotate_left; first | rfl | decide)
@@ -936,8 +947,10 @@ private theorem pack_le_rev_correct (q : Query)
             rw [writePlaceDestV2_immediate_ok hCheckLo (by rfl) (by rfl)]; rfl)
           -- assign 0 (aggregateArray .i8 [move 6, move 7])
           apply execOutcomeStateV2_step (by
-            dsimp only [evalStepV2, entryProgForBody, Captured.program, Captured.body_0,
-              List.append, Trusted.MirSemantics.getElem?, evalStatementV2, resolvePlaceDestV2, placeStaticTyV2,
+            dsimp only [evalStepV2, activeFrameBody, attachCallers, List.cons_append,
+                List.nil_append, entryProgForBody, Captured.program, Captured.body_0,
+              List.append, Trusted.MirSemantics.getElem?, evalStatementV2, resolvePlaceDestV2,
+              resolveIndexProjsV2, consResolvedProjV2, placeStaticTyV2,
               stepProjectedTyV2, placeProjectedTyV2, evalRvalueV2, evalArgOperandsV2, evalOperandToSlotV2]
             rw [ite_bool_false]; rotate_left; decide
             rw [readPlaceV2_move_local (by rfl) (by rfl) (by decide) (by rfl)]
@@ -970,7 +983,8 @@ private theorem pack_le_rev_correct (q : Query)
           apply execOutcomeStateV2_step (by rfl)
           -- return_
           apply execOutcomeStateV2_done (by
-            dsimp only [evalStepV2, entryProgForBody, Captured.program, Captured.body_0,
+            dsimp only [evalStepV2, activeFrameBody, attachCallers, List.cons_append,
+                List.nil_append, entryProgForBody, Captured.program, Captured.body_0,
               List.append, Trusted.MirSemantics.getElem?]
             rw [evalTerminatorV2_return_ok (by rfl) (by rfl) (by rfl) (by rfl)
               (by rfl) (by rfl) (by rfl) (by rfl)]
@@ -1039,7 +1053,7 @@ private theorem repeat_unsize_len_correct (q : Query)
           dsimp only [layoutOfTyV2_u8x4, layoutOfTyV2_u8x3, layoutOfTyV2_u8x2, layoutOfTyV2_u8, layoutOfTyV2_u16,
     layoutOfArrayV2, layoutOfTy, intLayout]
           rw [hFindStack]
-          dsimp only
+          try dsimp only
           rw [ite_bool_false]; rotate_left; rfl
           rw [ite_bool_false]; rotate_left; rfl
           rw [show (UInt64.ofNat 0).toNat = 0 from rfl]
@@ -1061,7 +1075,7 @@ private theorem repeat_unsize_len_correct (q : Query)
           dsimp only [intLayout, layoutOfTyV2_u8]
           rw [ite_bool_false]; rotate_left; rfl
           rw [hFindStack]
-          dsimp only
+          try dsimp only
           rw [ite_bool_false]; rotate_left; rfl
           rw [ite_bool_false]; rotate_left; rfl
           rw [ite_bool_false]; rotate_left; rfl
@@ -1089,11 +1103,13 @@ private theorem repeat_unsize_len_correct (q : Query)
           apply execOutcomeStateV2_step (by rfl)
           -- assign 3 (use (copy 1))
           apply execOutcomeStateV2_step (by
-            dsimp only [evalStepV2, entryProgForBody, Captured.program, Captured.body_1,
-              List.append, Trusted.MirSemantics.getElem?, evalStatementV2, resolvePlaceDestV2, placeStaticTyV2,
+            dsimp only [evalStepV2, activeFrameBody, attachCallers, List.cons_append,
+                List.nil_append, entryProgForBody, Captured.program, Captured.body_1,
+              List.append, Trusted.MirSemantics.getElem?, evalStatementV2, resolvePlaceDestV2,
+              resolveIndexProjsV2, consResolvedProjV2, placeStaticTyV2,
               stepProjectedTyV2, placeProjectedTyV2, evalRvalueV2, evalOperandToSlotV2]
             rw [readPlaceV2_copy_local (by rfl) (by rfl) (by decide)]
-            dsimp only
+            try dsimp only
             rw [ite_bool_false]; rotate_left; decide
             dsimp only
             repeat (rw [ite_bool_false]; rotate_left; first | rfl | decide)
@@ -1101,12 +1117,14 @@ private theorem repeat_unsize_len_correct (q : Query)
             rw [writePlaceDestV2_immediate_ok hV0 (by rfl) (by rfl)]; rfl)
           -- assign 2 (repeat_ (move 3) .i8 3)
           apply execOutcomeStateV2_step (by
-            dsimp only [evalStepV2, entryProgForBody, Captured.program, Captured.body_1,
-              List.append, Trusted.MirSemantics.getElem?, evalStatementV2, resolvePlaceDestV2, placeStaticTyV2,
+            dsimp only [evalStepV2, activeFrameBody, attachCallers, List.cons_append,
+                List.nil_append, entryProgForBody, Captured.program, Captured.body_1,
+              List.append, Trusted.MirSemantics.getElem?, evalStatementV2, resolvePlaceDestV2,
+              resolveIndexProjsV2, consResolvedProjV2, placeStaticTyV2,
               stepProjectedTyV2, placeProjectedTyV2, evalRvalueV2, evalOperandToSlotV2]
             rw [ite_bool_false]; rotate_left; decide
             rw [readPlaceV2_move_local (by rfl) (by rfl) (by decide) (by rfl)]
-            dsimp only
+            try dsimp only
             rw [ite_bool_false]; rotate_left; decide
             rw [ite_bool_false]; rotate_left; (rw [hV0]; rfl)
             dsimp only [List.replicate]
@@ -1124,8 +1142,10 @@ private theorem repeat_unsize_len_correct (q : Query)
           apply execOutcomeStateV2_step (by rfl)
           -- assign 6 (ref .shared 2): promotes local 2 to stackAlloc in memory!
           apply execOutcomeStateV2_step (by
-            dsimp only [evalStepV2, entryProgForBody, Captured.program, Captured.body_1,
-              List.append, Trusted.MirSemantics.getElem?, evalStatementV2, resolvePlaceDestV2, placeStaticTyV2,
+            dsimp only [evalStepV2, activeFrameBody, attachCallers, List.cons_append,
+                List.nil_append, entryProgForBody, Captured.program, Captured.body_1,
+              List.append, Trusted.MirSemantics.getElem?, evalStatementV2, resolvePlaceDestV2,
+              resolveIndexProjsV2, consResolvedProjV2, placeStaticTyV2,
               stepProjectedTyV2, placeProjectedTyV2, evalRvalueV2, evalRefRvalueV2,
               promoteLocalToMemory, layoutOfTyV2_u8x4, layoutOfTyV2_u8x3, layoutOfTyV2_u8x2, layoutOfTyV2_u8, layoutOfTyV2_u16,
               layoutOfArrayV2, layoutOfTy, intLayout, allocateStack,
@@ -1152,7 +1172,7 @@ private theorem repeat_unsize_len_correct (q : Query)
                 try (delta encodeValV2._f; dsimp only)
                 unfold encodeVal
                 rw [ite_bool_false (by rw [hCE2]; rfl)]
-                dsimp only
+                try dsimp only
                 rw [ite_bool_false (by rw [hCE]; rfl)]
                 dsimp only [encodeUInt, IntWidth.byteSize]
                 change Except.ok (List.map (fun b => AllocByte.init b none) [UInt8.ofNat (Nat.mod bits.toNat 256)]) = _
@@ -1213,7 +1233,7 @@ private theorem repeat_unsize_len_correct (q : Query)
                       allocations := q.callerMem.allocations ++ [stackAlloc] } := by
               unfold writeBytes
               rw [hFindRaw]
-              dsimp only
+              try dsimp only
               rw [ite_bool_false]; rotate_left; rfl
               dsimp only [uninitAlloc, isInBounds, isAligned]
               change (if false = true then (Except.error FaultKind.undefined : Except FaultKind MemoryState) else
@@ -1241,8 +1261,10 @@ private theorem repeat_unsize_len_correct (q : Query)
             try rfl)
           -- assign 5 (ref .shared (*6))
           apply execOutcomeStateV2_step (by
-            dsimp only [evalStepV2, entryProgForBody, Captured.program, Captured.body_1,
-              List.append, Trusted.MirSemantics.getElem?, evalStatementV2, resolvePlaceDestV2, placeStaticTyV2,
+            dsimp only [evalStepV2, activeFrameBody, attachCallers, List.cons_append,
+                List.nil_append, entryProgForBody, Captured.program, Captured.body_1,
+              List.append, Trusted.MirSemantics.getElem?, evalStatementV2, resolvePlaceDestV2,
+              resolveIndexProjsV2, consResolvedProjV2, placeStaticTyV2,
               stepProjectedTyV2, placeProjectedTyV2, evalRvalueV2, evalRefRvalueV2]
             rw [ite_bool_false]; rotate_left; decide
             rw [ite_bool_false]; rotate_left; decide
@@ -1254,16 +1276,18 @@ private theorem repeat_unsize_len_correct (q : Query)
             try rfl)
           -- assign 4 (cast .unsize (move 5))
           apply execOutcomeStateV2_step (by
-            dsimp only [evalStepV2, entryProgForBody, Captured.program, Captured.body_1,
-              List.append, Trusted.MirSemantics.getElem?, evalStatementV2, resolvePlaceDestV2, placeStaticTyV2,
+            dsimp only [evalStepV2, activeFrameBody, attachCallers, List.cons_append,
+                List.nil_append, entryProgForBody, Captured.program, Captured.body_1,
+              List.append, Trusted.MirSemantics.getElem?, evalStatementV2, resolvePlaceDestV2,
+              resolveIndexProjsV2, consResolvedProjV2, placeStaticTyV2,
               stepProjectedTyV2, placeProjectedTyV2, evalRvalueV2, evalOperandToSlotV2]
             rw [ite_bool_false]; rotate_left; decide
             rw [readPlaceV2_move_local (by rfl) (by rfl) (by decide) (by rfl)]
-            dsimp only
+            try dsimp only
             rw [ite_bool_false]; rotate_left; decide
             rw [ite_bool_false]; rotate_left; decide
             rw [hRefStackPtr]
-            dsimp only
+            try dsimp only
             rw [hRefStackSlice]
             dsimp only
             repeat (rw [ite_bool_false]; rotate_left; first | rfl | decide)
@@ -1276,8 +1300,10 @@ private theorem repeat_unsize_len_correct (q : Query)
           apply execOutcomeStateV2_step (by rfl)
           -- assign 7 (ref .shared (*4))
           apply execOutcomeStateV2_step (by
-            dsimp only [evalStepV2, entryProgForBody, Captured.program, Captured.body_1,
-              List.append, Trusted.MirSemantics.getElem?, evalStatementV2, resolvePlaceDestV2, placeStaticTyV2,
+            dsimp only [evalStepV2, activeFrameBody, attachCallers, List.cons_append,
+                List.nil_append, entryProgForBody, Captured.program, Captured.body_1,
+              List.append, Trusted.MirSemantics.getElem?, evalStatementV2, resolvePlaceDestV2,
+              resolveIndexProjsV2, consResolvedProjV2, placeStaticTyV2,
               stepProjectedTyV2, placeProjectedTyV2, evalRvalueV2, evalRefRvalueV2]
             rw [ite_bool_false]; rotate_left; decide
             rw [ite_bool_false]; rotate_left; decide
@@ -1289,7 +1315,8 @@ private theorem repeat_unsize_len_correct (q : Query)
             try rfl)
           -- coreCall .sliceLen [move 7] -> 0 goto 1
           apply execOutcomeStateV2_step (by
-            dsimp only [evalStepV2, entryProgForBody, Captured.program, Captured.body_1,
+            dsimp only [evalStepV2, activeFrameBody, attachCallers, List.cons_append,
+                List.nil_append, entryProgForBody, Captured.program, Captured.body_1,
               List.append, Trusted.MirSemantics.getElem?]
             rw [ite_bool_true]; rotate_left; decide
             dsimp only [evalTerminatorV2, Trusted.MirSemantics.getElem?]
@@ -1299,7 +1326,7 @@ private theorem repeat_unsize_len_correct (q : Query)
             dsimp only [evalArgOperandsV2, argValues, execCoreCallOpWithMem, execAllocCoreCall, execCoreCallWithMem, execCoreCallOp]
             rw [ite_bool_false]; rotate_left; decide
             rw [hRefStackSlice]
-            dsimp only
+            try dsimp only
             rw [writePlaceV2_immediate_ok (by decide) (by rfl) (by rfl)]
             try rfl)
           -- bb1: storageDead 7, storageDead 4
@@ -1307,14 +1334,16 @@ private theorem repeat_unsize_len_correct (q : Query)
           apply execOutcomeStateV2_step (by rfl)
           -- bb1: storageDead 2 (deallocates stackAlloc)
           apply execOutcomeStateV2_step (by
-            dsimp only [evalStepV2, entryProgForBody, Captured.program, Captured.body_1,
-              List.append, Trusted.MirSemantics.getElem?, evalStatementV2, deallocateLocal,
+            dsimp only [evalStepV2, activeFrameBody, attachCallers, List.cons_append,
+                List.nil_append, entryProgForBody, Captured.program, Captured.body_1,
+              List.append, Trusted.MirSemantics.getElem?, evalStatementV2, resolvePlaceDestV2, resolveIndexProjsV2, deallocateLocal,
               deallocateStack]
             rw [hFindStack]
             rfl)
           -- bb1: return_
           apply execOutcomeStateV2_done (by
-            dsimp only [evalStepV2, entryProgForBody, Captured.program, Captured.body_1,
+            dsimp only [evalStepV2, activeFrameBody, attachCallers, List.cons_append,
+                List.nil_append, entryProgForBody, Captured.program, Captured.body_1,
               List.append, Trusted.MirSemantics.getElem?]
             rw [evalTerminatorV2_return_ok (by rfl) (by rfl) (by rfl) (by rfl)
               (by rfl) (by rfl) (by rfl) (by rfl)]
@@ -1555,14 +1584,16 @@ private theorem tag_eq_tail_ba0
   rcases hBbCase with rfl | rfl
   · -- ba = 0, bb = 0
     apply execOutcomeStateV2_step (by
-      dsimp only [evalStepV2, entryProgForBody, Captured.program, Captured.body_2,
-        List.append, Trusted.MirSemantics.getElem?, evalStatementV2, resolvePlaceDestV2, placeStaticTyV2,
+      dsimp only [evalStepV2, activeFrameBody, attachCallers,
+        List.cons_append, List.nil_append, entryProgForBody, Captured.program, Captured.body_2,
+        List.append, Trusted.MirSemantics.getElem?, evalStatementV2, resolvePlaceDestV2,
+        resolveIndexProjsV2, consResolvedProjV2, placeStaticTyV2,
         stepProjectedTyV2, placeProjectedTyV2, evalRvalueV2, readPlaceV2]
       rw [ite_bool_true]; rotate_left; decide
       rw [ite_bool_false]; rotate_left; decide
       rw [ite_bool_false]; rotate_left; decide
       rw [hLay]
-      dsimp only
+      try dsimp only
       rw [hPaId]; dsimp only
       rw [ite_bool_false]; rotate_left; decide
       rw [hLoadA]; dsimp only
@@ -1570,12 +1601,15 @@ private theorem tag_eq_tail_ba0
       dsimp only [evalDiscriminantOfVal]
       rw [ite_bool_false]; rotate_left; decide
       rw [ite_bool_true]; rotate_left; decide
+      try (first | rw [ite_prop_true (by decide)] | rw [ite_prop_false (by decide)])
       dsimp only [Trusted.MirSemantics.getElem?]
       rw [writePlaceDestV2_immediate_ok (by decide) (by rfl) (by rfl)]; try rfl)
     apply execOutcomeStateV2_step (by rfl) -- bb0 term -> bb2
     apply execOutcomeStateV2_step (by
-      dsimp only [evalStepV2, entryProgForBody, Captured.program, Captured.body_2,
-        List.append, Trusted.MirSemantics.getElem?, evalStatementV2, resolvePlaceDestV2, placeStaticTyV2,
+      dsimp only [evalStepV2, activeFrameBody, attachCallers,
+        List.cons_append, List.nil_append, entryProgForBody, Captured.program, Captured.body_2,
+        List.append, Trusted.MirSemantics.getElem?, evalStatementV2, resolvePlaceDestV2,
+        resolveIndexProjsV2, consResolvedProjV2, placeStaticTyV2,
         stepProjectedTyV2, placeProjectedTyV2, evalRvalueV2, evalOperandToSlotV2, readPlaceV2,
         projectValFieldV2, projectOneElemV2]
       rw [ite_bool_false]; rotate_left; decide
@@ -1583,17 +1617,21 @@ private theorem tag_eq_tail_ba0
       dsimp only
       rw [ite_bool_false]; rotate_left; decide
       dsimp only
+      repeat (rw [ite_bool_false]; rotate_left; first | rfl | decide)
+      try dsimp only
       rw [writePlaceDestV2_immediate_ok hV1 (by rfl) (by rfl)]
       try rfl) -- bb2 stmt 0: 10 = copy 3.1
     apply execOutcomeStateV2_step (by
-      dsimp only [evalStepV2, entryProgForBody, Captured.program, Captured.body_2,
-        List.append, Trusted.MirSemantics.getElem?, evalStatementV2, resolvePlaceDestV2, placeStaticTyV2,
+      dsimp only [evalStepV2, activeFrameBody, attachCallers,
+        List.cons_append, List.nil_append, entryProgForBody, Captured.program, Captured.body_2,
+        List.append, Trusted.MirSemantics.getElem?, evalStatementV2, resolvePlaceDestV2,
+        resolveIndexProjsV2, consResolvedProjV2, placeStaticTyV2,
         stepProjectedTyV2, placeProjectedTyV2, evalRvalueV2, readPlaceV2]
       rw [ite_bool_true]; rotate_left; decide
       rw [ite_bool_false]; rotate_left; decide
       rw [ite_bool_false]; rotate_left; decide
       rw [hLay]
-      dsimp only
+      try dsimp only
       rw [hPbId]; dsimp only
       rw [ite_bool_false]; rotate_left; decide
       rw [hLoadB]; dsimp only
@@ -1601,7 +1639,7 @@ private theorem tag_eq_tail_ba0
       dsimp only [evalDiscriminantOfVal]
       rw [ite_bool_false]; rotate_left; decide
       rw [ite_bool_true]; rotate_left; decide
-      first | rw [ite_prop_true (by decide)] | rw [ite_prop_false (by decide)]
+      try (first | rw [ite_prop_true (by decide)] | rw [ite_prop_false (by decide)])
       dsimp only [Trusted.MirSemantics.getElem?]
       rw [writePlaceDestV2_immediate_ok (by decide) (by rfl) (by rfl)]; try rfl)
     apply execOutcomeStateV2_step (by rfl) -- bb2 term -> bb4
@@ -1609,7 +1647,8 @@ private theorem tag_eq_tail_ba0
     apply execOutcomeStateV2_step (by rfl) -- bb4 term -> bb5
     apply execOutcomeStateV2_step (by rfl) -- bb5 stmt 0: storageDead 3
     apply execOutcomeStateV2_done (by
-      dsimp only [evalStepV2, entryProgForBody, Captured.program, Captured.body_2,
+      dsimp only [evalStepV2, activeFrameBody, attachCallers,
+        List.cons_append, List.nil_append, entryProgForBody, Captured.program, Captured.body_2,
         List.append, Trusted.MirSemantics.getElem?]
       rw [evalTerminatorV2_return_ok (by rfl) (by rfl) (by rfl) (by rfl)
         (by rfl) (by rfl) (by rfl) (by rfl)]
@@ -1619,14 +1658,16 @@ private theorem tag_eq_tail_ba0
     rfl
   · -- ba = 0, bb = 1
     apply execOutcomeStateV2_step (by
-      dsimp only [evalStepV2, entryProgForBody, Captured.program, Captured.body_2,
-        List.append, Trusted.MirSemantics.getElem?, evalStatementV2, resolvePlaceDestV2, placeStaticTyV2,
+      dsimp only [evalStepV2, activeFrameBody, attachCallers,
+        List.cons_append, List.nil_append, entryProgForBody, Captured.program, Captured.body_2,
+        List.append, Trusted.MirSemantics.getElem?, evalStatementV2, resolvePlaceDestV2,
+        resolveIndexProjsV2, consResolvedProjV2, placeStaticTyV2,
         stepProjectedTyV2, placeProjectedTyV2, evalRvalueV2, readPlaceV2]
       rw [ite_bool_true]; rotate_left; decide
       rw [ite_bool_false]; rotate_left; decide
       rw [ite_bool_false]; rotate_left; decide
       rw [hLay]
-      dsimp only
+      try dsimp only
       rw [hPaId]; dsimp only
       rw [ite_bool_false]; rotate_left; decide
       rw [hLoadA]; dsimp only
@@ -1634,12 +1675,15 @@ private theorem tag_eq_tail_ba0
       dsimp only [evalDiscriminantOfVal]
       rw [ite_bool_false]; rotate_left; decide
       rw [ite_bool_true]; rotate_left; decide
+      try (first | rw [ite_prop_true (by decide)] | rw [ite_prop_false (by decide)])
       dsimp only [Trusted.MirSemantics.getElem?]
       rw [writePlaceDestV2_immediate_ok (by decide) (by rfl) (by rfl)]; try rfl)
     apply execOutcomeStateV2_step (by rfl)
     apply execOutcomeStateV2_step (by
-      dsimp only [evalStepV2, entryProgForBody, Captured.program, Captured.body_2,
-        List.append, Trusted.MirSemantics.getElem?, evalStatementV2, resolvePlaceDestV2, placeStaticTyV2,
+      dsimp only [evalStepV2, activeFrameBody, attachCallers,
+        List.cons_append, List.nil_append, entryProgForBody, Captured.program, Captured.body_2,
+        List.append, Trusted.MirSemantics.getElem?, evalStatementV2, resolvePlaceDestV2,
+        resolveIndexProjsV2, consResolvedProjV2, placeStaticTyV2,
         stepProjectedTyV2, placeProjectedTyV2, evalRvalueV2, evalOperandToSlotV2, readPlaceV2,
         projectValFieldV2, projectOneElemV2]
       rw [ite_bool_false]; rotate_left; decide
@@ -1647,17 +1691,21 @@ private theorem tag_eq_tail_ba0
       dsimp only
       rw [ite_bool_false]; rotate_left; decide
       dsimp only
+      repeat (rw [ite_bool_false]; rotate_left; first | rfl | decide)
+      try dsimp only
       rw [writePlaceDestV2_immediate_ok hV1 (by rfl) (by rfl)]
       try rfl)
     apply execOutcomeStateV2_step (by
-      dsimp only [evalStepV2, entryProgForBody, Captured.program, Captured.body_2,
-        List.append, Trusted.MirSemantics.getElem?, evalStatementV2, resolvePlaceDestV2, placeStaticTyV2,
+      dsimp only [evalStepV2, activeFrameBody, attachCallers,
+        List.cons_append, List.nil_append, entryProgForBody, Captured.program, Captured.body_2,
+        List.append, Trusted.MirSemantics.getElem?, evalStatementV2, resolvePlaceDestV2,
+        resolveIndexProjsV2, consResolvedProjV2, placeStaticTyV2,
         stepProjectedTyV2, placeProjectedTyV2, evalRvalueV2, readPlaceV2]
       rw [ite_bool_true]; rotate_left; decide
       rw [ite_bool_false]; rotate_left; decide
       rw [ite_bool_false]; rotate_left; decide
       rw [hLay]
-      dsimp only
+      try dsimp only
       rw [hPbId]; dsimp only
       rw [ite_bool_false]; rotate_left; decide
       rw [hLoadB]; dsimp only
@@ -1665,7 +1713,7 @@ private theorem tag_eq_tail_ba0
       dsimp only [evalDiscriminantOfVal]
       rw [ite_bool_false]; rotate_left; decide
       rw [ite_bool_true]; rotate_left; decide
-      first | rw [ite_prop_true (by decide)] | rw [ite_prop_false (by decide)]
+      try (first | rw [ite_prop_true (by decide)] | rw [ite_prop_false (by decide)])
       dsimp only [Trusted.MirSemantics.getElem?]
       rw [writePlaceDestV2_immediate_ok (by decide) (by rfl) (by rfl)]; try rfl)
     apply execOutcomeStateV2_step (by rfl)
@@ -1673,7 +1721,8 @@ private theorem tag_eq_tail_ba0
     apply execOutcomeStateV2_step (by rfl)
     apply execOutcomeStateV2_step (by rfl)
     apply execOutcomeStateV2_done (by
-      dsimp only [evalStepV2, entryProgForBody, Captured.program, Captured.body_2,
+      dsimp only [evalStepV2, activeFrameBody, attachCallers,
+        List.cons_append, List.nil_append, entryProgForBody, Captured.program, Captured.body_2,
         List.append, Trusted.MirSemantics.getElem?]
       rw [evalTerminatorV2_return_ok (by rfl) (by rfl) (by rfl) (by rfl)
         (by rfl) (by rfl) (by rfl) (by rfl)]
@@ -1707,14 +1756,16 @@ private theorem tag_eq_tail_ba1
   rcases hBbCase with rfl | rfl
   · -- ba = 1, bb = 0
     apply execOutcomeStateV2_step (by
-      dsimp only [evalStepV2, entryProgForBody, Captured.program, Captured.body_2,
-        List.append, Trusted.MirSemantics.getElem?, evalStatementV2, resolvePlaceDestV2, placeStaticTyV2,
+      dsimp only [evalStepV2, activeFrameBody, attachCallers,
+        List.cons_append, List.nil_append, entryProgForBody, Captured.program, Captured.body_2,
+        List.append, Trusted.MirSemantics.getElem?, evalStatementV2, resolvePlaceDestV2,
+        resolveIndexProjsV2, consResolvedProjV2, placeStaticTyV2,
         stepProjectedTyV2, placeProjectedTyV2, evalRvalueV2, readPlaceV2]
       rw [ite_bool_true]; rotate_left; decide
       rw [ite_bool_false]; rotate_left; decide
       rw [ite_bool_false]; rotate_left; decide
       rw [hLay]
-      dsimp only
+      try dsimp only
       rw [hPaId]; dsimp only
       rw [ite_bool_false]; rotate_left; decide
       rw [hLoadA]; dsimp only
@@ -1722,12 +1773,15 @@ private theorem tag_eq_tail_ba1
       dsimp only [evalDiscriminantOfVal]
       rw [ite_bool_false]; rotate_left; decide
       rw [ite_bool_true]; rotate_left; decide
+      try (first | rw [ite_prop_true (by decide)] | rw [ite_prop_false (by decide)])
       dsimp only [Trusted.MirSemantics.getElem?]
       rw [writePlaceDestV2_immediate_ok (by decide) (by rfl) (by rfl)]; try rfl)
     apply execOutcomeStateV2_step (by rfl)
     apply execOutcomeStateV2_step (by
-      dsimp only [evalStepV2, entryProgForBody, Captured.program, Captured.body_2,
-        List.append, Trusted.MirSemantics.getElem?, evalStatementV2, resolvePlaceDestV2, placeStaticTyV2,
+      dsimp only [evalStepV2, activeFrameBody, attachCallers,
+        List.cons_append, List.nil_append, entryProgForBody, Captured.program, Captured.body_2,
+        List.append, Trusted.MirSemantics.getElem?, evalStatementV2, resolvePlaceDestV2,
+        resolveIndexProjsV2, consResolvedProjV2, placeStaticTyV2,
         stepProjectedTyV2, placeProjectedTyV2, evalRvalueV2, evalOperandToSlotV2, readPlaceV2,
         projectValFieldV2, projectOneElemV2]
       rw [ite_bool_false]; rotate_left; decide
@@ -1735,17 +1789,21 @@ private theorem tag_eq_tail_ba1
       dsimp only
       rw [ite_bool_false]; rotate_left; decide
       dsimp only
+      repeat (rw [ite_bool_false]; rotate_left; first | rfl | decide)
+      try dsimp only
       rw [writePlaceDestV2_immediate_ok hV1 (by rfl) (by rfl)]
       try rfl)
     apply execOutcomeStateV2_step (by
-      dsimp only [evalStepV2, entryProgForBody, Captured.program, Captured.body_2,
-        List.append, Trusted.MirSemantics.getElem?, evalStatementV2, resolvePlaceDestV2, placeStaticTyV2,
+      dsimp only [evalStepV2, activeFrameBody, attachCallers,
+        List.cons_append, List.nil_append, entryProgForBody, Captured.program, Captured.body_2,
+        List.append, Trusted.MirSemantics.getElem?, evalStatementV2, resolvePlaceDestV2,
+        resolveIndexProjsV2, consResolvedProjV2, placeStaticTyV2,
         stepProjectedTyV2, placeProjectedTyV2, evalRvalueV2, readPlaceV2]
       rw [ite_bool_true]; rotate_left; decide
       rw [ite_bool_false]; rotate_left; decide
       rw [ite_bool_false]; rotate_left; decide
       rw [hLay]
-      dsimp only
+      try dsimp only
       rw [hPbId]; dsimp only
       rw [ite_bool_false]; rotate_left; decide
       rw [hLoadB]; dsimp only
@@ -1753,7 +1811,7 @@ private theorem tag_eq_tail_ba1
       dsimp only [evalDiscriminantOfVal]
       rw [ite_bool_false]; rotate_left; decide
       rw [ite_bool_true]; rotate_left; decide
-      first | rw [ite_prop_true (by decide)] | rw [ite_prop_false (by decide)]
+      try (first | rw [ite_prop_true (by decide)] | rw [ite_prop_false (by decide)])
       dsimp only [Trusted.MirSemantics.getElem?]
       rw [writePlaceDestV2_immediate_ok (by decide) (by rfl) (by rfl)]; try rfl)
     apply execOutcomeStateV2_step (by rfl)
@@ -1761,7 +1819,8 @@ private theorem tag_eq_tail_ba1
     apply execOutcomeStateV2_step (by rfl)
     apply execOutcomeStateV2_step (by rfl)
     apply execOutcomeStateV2_done (by
-      dsimp only [evalStepV2, entryProgForBody, Captured.program, Captured.body_2,
+      dsimp only [evalStepV2, activeFrameBody, attachCallers,
+        List.cons_append, List.nil_append, entryProgForBody, Captured.program, Captured.body_2,
         List.append, Trusted.MirSemantics.getElem?]
       rw [evalTerminatorV2_return_ok (by rfl) (by rfl) (by rfl) (by rfl)
         (by rfl) (by rfl) (by rfl) (by rfl)]
@@ -1771,14 +1830,16 @@ private theorem tag_eq_tail_ba1
     rfl
   · -- ba = 1, bb = 1
     apply execOutcomeStateV2_step (by
-      dsimp only [evalStepV2, entryProgForBody, Captured.program, Captured.body_2,
-        List.append, Trusted.MirSemantics.getElem?, evalStatementV2, resolvePlaceDestV2, placeStaticTyV2,
+      dsimp only [evalStepV2, activeFrameBody, attachCallers,
+        List.cons_append, List.nil_append, entryProgForBody, Captured.program, Captured.body_2,
+        List.append, Trusted.MirSemantics.getElem?, evalStatementV2, resolvePlaceDestV2,
+        resolveIndexProjsV2, consResolvedProjV2, placeStaticTyV2,
         stepProjectedTyV2, placeProjectedTyV2, evalRvalueV2, readPlaceV2]
       rw [ite_bool_true]; rotate_left; decide
       rw [ite_bool_false]; rotate_left; decide
       rw [ite_bool_false]; rotate_left; decide
       rw [hLay]
-      dsimp only
+      try dsimp only
       rw [hPaId]; dsimp only
       rw [ite_bool_false]; rotate_left; decide
       rw [hLoadA]; dsimp only
@@ -1786,12 +1847,15 @@ private theorem tag_eq_tail_ba1
       dsimp only [evalDiscriminantOfVal]
       rw [ite_bool_false]; rotate_left; decide
       rw [ite_bool_true]; rotate_left; decide
+      try (first | rw [ite_prop_true (by decide)] | rw [ite_prop_false (by decide)])
       dsimp only [Trusted.MirSemantics.getElem?]
       rw [writePlaceDestV2_immediate_ok (by decide) (by rfl) (by rfl)]; try rfl)
     apply execOutcomeStateV2_step (by rfl)
     apply execOutcomeStateV2_step (by
-      dsimp only [evalStepV2, entryProgForBody, Captured.program, Captured.body_2,
-        List.append, Trusted.MirSemantics.getElem?, evalStatementV2, resolvePlaceDestV2, placeStaticTyV2,
+      dsimp only [evalStepV2, activeFrameBody, attachCallers,
+        List.cons_append, List.nil_append, entryProgForBody, Captured.program, Captured.body_2,
+        List.append, Trusted.MirSemantics.getElem?, evalStatementV2, resolvePlaceDestV2,
+        resolveIndexProjsV2, consResolvedProjV2, placeStaticTyV2,
         stepProjectedTyV2, placeProjectedTyV2, evalRvalueV2, evalOperandToSlotV2, readPlaceV2,
         projectValFieldV2, projectOneElemV2]
       rw [ite_bool_false]; rotate_left; decide
@@ -1799,17 +1863,21 @@ private theorem tag_eq_tail_ba1
       dsimp only
       rw [ite_bool_false]; rotate_left; decide
       dsimp only
+      repeat (rw [ite_bool_false]; rotate_left; first | rfl | decide)
+      try dsimp only
       rw [writePlaceDestV2_immediate_ok hV1 (by rfl) (by rfl)]
       try rfl)
     apply execOutcomeStateV2_step (by
-      dsimp only [evalStepV2, entryProgForBody, Captured.program, Captured.body_2,
-        List.append, Trusted.MirSemantics.getElem?, evalStatementV2, resolvePlaceDestV2, placeStaticTyV2,
+      dsimp only [evalStepV2, activeFrameBody, attachCallers,
+        List.cons_append, List.nil_append, entryProgForBody, Captured.program, Captured.body_2,
+        List.append, Trusted.MirSemantics.getElem?, evalStatementV2, resolvePlaceDestV2,
+        resolveIndexProjsV2, consResolvedProjV2, placeStaticTyV2,
         stepProjectedTyV2, placeProjectedTyV2, evalRvalueV2, readPlaceV2]
       rw [ite_bool_true]; rotate_left; decide
       rw [ite_bool_false]; rotate_left; decide
       rw [ite_bool_false]; rotate_left; decide
       rw [hLay]
-      dsimp only
+      try dsimp only
       rw [hPbId]; dsimp only
       rw [ite_bool_false]; rotate_left; decide
       rw [hLoadB]; dsimp only
@@ -1817,7 +1885,7 @@ private theorem tag_eq_tail_ba1
       dsimp only [evalDiscriminantOfVal]
       rw [ite_bool_false]; rotate_left; decide
       rw [ite_bool_true]; rotate_left; decide
-      first | rw [ite_prop_true (by decide)] | rw [ite_prop_false (by decide)]
+      try (first | rw [ite_prop_true (by decide)] | rw [ite_prop_false (by decide)])
       dsimp only [Trusted.MirSemantics.getElem?]
       rw [writePlaceDestV2_immediate_ok (by decide) (by rfl) (by rfl)]; try rfl)
     apply execOutcomeStateV2_step (by rfl)
@@ -1825,7 +1893,8 @@ private theorem tag_eq_tail_ba1
     apply execOutcomeStateV2_step (by rfl)
     apply execOutcomeStateV2_step (by rfl)
     apply execOutcomeStateV2_done (by
-      dsimp only [evalStepV2, entryProgForBody, Captured.program, Captured.body_2,
+      dsimp only [evalStepV2, activeFrameBody, attachCallers,
+        List.cons_append, List.nil_append, entryProgForBody, Captured.program, Captured.body_2,
         List.append, Trusted.MirSemantics.getElem?]
       rw [evalTerminatorV2_return_ok (by rfl) (by rfl) (by rfl) (by rfl)
         (by rfl) (by rfl) (by rfl) (by rfl)]
@@ -1941,7 +2010,7 @@ private theorem tag_eq_correct (q : Query)
                   dsimp only [intLayout]
                   unfold readBytes
                   rw [hFindA]
-                  dsimp only
+                  try dsimp only
                   rw [ite_bool_false]; rotate_left; rfl
                   have hAlA : isAligned allocA pa.offsetBytes.toNat 0 = true := by
                     unfold isAligned
@@ -1960,7 +2029,7 @@ private theorem tag_eq_correct (q : Query)
                   dsimp only [intLayout]
                   unfold readBytes
                   rw [hFindB]
-                  dsimp only
+                  try dsimp only
                   rw [ite_bool_false]; rotate_left; rfl
                   have hAlB : isAligned allocB pb.offsetBytes.toNat 0 = true := by
                     unfold isAligned
@@ -1978,11 +2047,13 @@ private theorem tag_eq_correct (q : Query)
                   apply execOutcomeStateV2_step (by rfl)
                   -- bb0 stmt 2: assign 4 (useRetag (copy 1))
                   apply execOutcomeStateV2_step (by
-                    dsimp only [evalStepV2, entryProgForBody, Captured.program, Captured.body_2,
-                      List.append, Trusted.MirSemantics.getElem?, evalStatementV2, resolvePlaceDestV2, placeStaticTyV2,
+                    dsimp only [evalStepV2, activeFrameBody, attachCallers, List.cons_append,
+                        List.nil_append, entryProgForBody, Captured.program, Captured.body_2,
+                      List.append, Trusted.MirSemantics.getElem?, evalStatementV2, resolvePlaceDestV2,
+                      resolveIndexProjsV2, consResolvedProjV2, placeStaticTyV2,
                       stepProjectedTyV2, placeProjectedTyV2, evalRvalueV2, evalOperandToSlotV2]
                     rw [readPlaceV2_copy_local (by rfl) (by rfl) (by decide)]
-                    dsimp only
+                    try dsimp only
                     rw [ite_bool_false]; rotate_left; decide
                     have hRV : refsValidInMem (entryMemoryWithCaller q.callerMem)
                         (.ref .shared (.enum tagEnumTy)) (.ptr pa) = true := by
@@ -1997,11 +2068,13 @@ private theorem tag_eq_correct (q : Query)
                   apply execOutcomeStateV2_step (by rfl)
                   -- bb0 stmt 4: assign 5 (useRetag (copy 2))
                   apply execOutcomeStateV2_step (by
-                    dsimp only [evalStepV2, entryProgForBody, Captured.program, Captured.body_2,
-                      List.append, Trusted.MirSemantics.getElem?, evalStatementV2, resolvePlaceDestV2, placeStaticTyV2,
+                    dsimp only [evalStepV2, activeFrameBody, attachCallers, List.cons_append,
+                        List.nil_append, entryProgForBody, Captured.program, Captured.body_2,
+                      List.append, Trusted.MirSemantics.getElem?, evalStatementV2, resolvePlaceDestV2,
+                      resolveIndexProjsV2, consResolvedProjV2, placeStaticTyV2,
                       stepProjectedTyV2, placeProjectedTyV2, evalRvalueV2, evalOperandToSlotV2]
                     rw [readPlaceV2_copy_local (by rfl) (by rfl) (by decide)]
-                    dsimp only
+                    try dsimp only
                     rw [ite_bool_false]; rotate_left; decide
                     have hRV : refsValidInMem (entryMemoryWithCaller q.callerMem)
                         (.ref .shared (.enum tagEnumTy)) (.ptr pb) = true := by
@@ -2014,8 +2087,10 @@ private theorem tag_eq_correct (q : Query)
                     try rfl)
                   -- bb0 stmt 5: assign 3 (aggregateTuple [move 4, move 5])
                   apply execOutcomeStateV2_step (by
-                    dsimp only [evalStepV2, entryProgForBody, Captured.program, Captured.body_2,
-                      List.append, Trusted.MirSemantics.getElem?, evalStatementV2, resolvePlaceDestV2, placeStaticTyV2,
+                    dsimp only [evalStepV2, activeFrameBody, attachCallers, List.cons_append,
+                        List.nil_append, entryProgForBody, Captured.program, Captured.body_2,
+                      List.append, Trusted.MirSemantics.getElem?, evalStatementV2, resolvePlaceDestV2,
+                      resolveIndexProjsV2, consResolvedProjV2, placeStaticTyV2,
                       stepProjectedTyV2, placeProjectedTyV2, evalRvalueV2, evalArgOperandsV2, evalOperandToSlotV2]
                     rw [readPlaceV2_move_local (by rfl) (by rfl) (by decide) (by rfl)]
                     dsimp only [evalArgOperandsV2, evalOperandToSlotV2]
@@ -2040,8 +2115,10 @@ private theorem tag_eq_correct (q : Query)
                   apply execOutcomeStateV2_step (by rfl)
                   -- bb0 stmt 9: assign 9 (copy 3.0)
                   apply execOutcomeStateV2_step (by
-                    dsimp only [evalStepV2, entryProgForBody, Captured.program, Captured.body_2,
-                      List.append, Trusted.MirSemantics.getElem?, evalStatementV2, resolvePlaceDestV2, placeStaticTyV2,
+                    dsimp only [evalStepV2, activeFrameBody, attachCallers, List.cons_append,
+                        List.nil_append, entryProgForBody, Captured.program, Captured.body_2,
+                      List.append, Trusted.MirSemantics.getElem?, evalStatementV2, resolvePlaceDestV2,
+                      resolveIndexProjsV2, consResolvedProjV2, placeStaticTyV2,
                       stepProjectedTyV2, placeProjectedTyV2, evalRvalueV2, evalOperandToSlotV2, readPlaceV2,
                       projectValFieldV2, projectOneElemV2]
                     rw [ite_bool_false]; rotate_left; decide
@@ -2324,7 +2401,7 @@ private theorem matches_pattern_correct (q : Query)
             unfold Spec.readCallerFourInitBytes
             rw [hPaId]
             change findAllocation ida q.callerMem.allocations = some allocA at hFindA
-            dsimp only
+            try dsimp only
             rw [hFindA]; dsimp only; rw [hg0, hg1, hg2, hg3]
           let roAid := (entryMemoryWithCaller q.callerMem).nextAllocId
           have hRoGt : maxAllocId q.callerMem.allocations < roAid := by
@@ -2368,11 +2445,13 @@ private theorem matches_pattern_correct (q : Query)
             apply execOutcomeStateV2_step (by rfl)
             -- bb0 stmt 1: assign 2 (ref .shared (*1))
             apply execOutcomeStateV2_step (by
-              dsimp only [evalStepV2, entryProgForBody, Captured.program, Captured.body_3,
-                List.append, Trusted.MirSemantics.getElem?, evalStatementV2, resolvePlaceDestV2, placeStaticTyV2,
+              dsimp only [evalStepV2, activeFrameBody, attachCallers, List.cons_append,
+                  List.nil_append, entryProgForBody, Captured.program, Captured.body_3,
+                List.append, Trusted.MirSemantics.getElem?, evalStatementV2, resolvePlaceDestV2,
+                resolveIndexProjsV2, consResolvedProjV2, placeStaticTyV2,
                 stepProjectedTyV2, placeProjectedTyV2, evalRvalueV2, evalRefRvalueV2]
               rw [hRA]
-              dsimp only
+              try dsimp only
               rw [ite_bool_false]; rotate_left; decide
               rw [ite_bool_false]; rotate_left; decide
               dsimp only
@@ -2383,8 +2462,10 @@ private theorem matches_pattern_correct (q : Query)
             apply execOutcomeStateV2_step (by rfl)
             -- bb0 stmt 3: assign 5 (useRetag (rodataRef [1,2,3,4] 0 0 none))
             apply execOutcomeStateV2_step (by
-              dsimp only [evalStepV2, entryProgForBody, Captured.program, Captured.body_3,
-                List.append, Trusted.MirSemantics.getElem?, evalStatementV2, resolvePlaceDestV2, placeStaticTyV2,
+              dsimp only [evalStepV2, activeFrameBody, attachCallers, List.cons_append,
+                  List.nil_append, entryProgForBody, Captured.program, Captured.body_3,
+                List.append, Trusted.MirSemantics.getElem?, evalStatementV2, resolvePlaceDestV2,
+                resolveIndexProjsV2, consResolvedProjV2, placeStaticTyV2,
                 stepProjectedTyV2, placeProjectedTyV2, evalRvalueV2, evalOperandToSlotV2,
                 evalRodataRefConstV2, allocRodataMemory, MemoryState.reserveAllocId,
                 rodataByteToAllocByte, List.map]
@@ -2403,7 +2484,7 @@ private theorem matches_pattern_correct (q : Query)
                 rw [hFindRo]
                 rfl
               rw [hRefRoMem]
-              dsimp only
+              try dsimp only
               have hRoValid : refsValidInMem
                   { nextAllocId := roAid + 1, allocations := roAlloc :: q.callerMem.allocations }
                   (.ref .shared (.array (.int .i8 false) 4))
@@ -2418,8 +2499,10 @@ private theorem matches_pattern_correct (q : Query)
               try rfl)
             -- bb0 stmt 4: assign 3 (ref .shared (*5))
             apply execOutcomeStateV2_step (by
-              dsimp only [evalStepV2, entryProgForBody, Captured.program, Captured.body_3,
-                List.append, Trusted.MirSemantics.getElem?, evalStatementV2, resolvePlaceDestV2, placeStaticTyV2,
+              dsimp only [evalStepV2, activeFrameBody, attachCallers, List.cons_append,
+                  List.nil_append, entryProgForBody, Captured.program, Captured.body_3,
+                List.append, Trusted.MirSemantics.getElem?, evalStatementV2, resolvePlaceDestV2,
+                resolveIndexProjsV2, consResolvedProjV2, placeStaticTyV2,
                 stepProjectedTyV2, placeProjectedTyV2, evalRvalueV2, evalRefRvalueV2]
               have hFindRo : findAllocation roAid (roAlloc :: q.callerMem.allocations) = some roAlloc := by
                 change (if Nat.beq roAid roAid then some roAlloc else _) = some roAlloc
@@ -2442,7 +2525,8 @@ private theorem matches_pattern_correct (q : Query)
             -- bb0 terminator: coreCall .arrayEq (.int .i8 false) 4 [move 2,
             -- move 3] -> 0 goto 1
             apply execOutcomeStateV2_step (by
-              dsimp only [evalStepV2, entryProgForBody, Captured.program, Captured.body_3,
+              dsimp only [evalStepV2, activeFrameBody, attachCallers, List.cons_append,
+                  List.nil_append, entryProgForBody, Captured.program, Captured.body_3,
                 List.append, Trusted.MirSemantics.getElem?]
               rw [ite_bool_true]; rotate_left; decide
               dsimp only [evalTerminatorV2, Trusted.MirSemantics.getElem?]
@@ -2515,9 +2599,9 @@ private theorem matches_pattern_correct (q : Query)
                 rw [hFindRo]
                 rfl
               rw [hRefPa, hRefRo]
-              dsimp only
+              try dsimp only
               rw [hPaId]; dsimp only; rw [hLoadPa, hLoadRo]
-              dsimp only
+              try dsimp only
               have hEqList : valEqListWith (arrayValEqV2 (.int .i8 false))
                   [.scalar ⟨.i8, false, BitVec.ofNat 128 b0.toNat⟩,
                    .scalar ⟨.i8, false, BitVec.ofNat 128 b1.toNat⟩,
@@ -2541,7 +2625,7 @@ private theorem matches_pattern_correct (q : Query)
                 cases Nat.beq b0.toNat 1 <;> cases Nat.beq b1.toNat 2 <;>
                   cases Nat.beq b2.toNat 3 <;> cases Nat.beq b3.toNat 4 <;> rfl
               rw [hEqList]
-              dsimp only
+              try dsimp only
               rw [writePlaceV2_immediate_ok (by rfl) (by rfl) (by rfl)]
               rfl)
             -- bb1: storageDead 3, storageDead 2
@@ -2549,7 +2633,8 @@ private theorem matches_pattern_correct (q : Query)
             apply execOutcomeStateV2_step (by rfl)
             -- bb1: return_
             apply execOutcomeStateV2_done (by
-              dsimp only [evalStepV2, entryProgForBody, Captured.program, Captured.body_3,
+              dsimp only [evalStepV2, activeFrameBody, attachCallers, List.cons_append,
+                  List.nil_append, entryProgForBody, Captured.program, Captured.body_3,
                 List.append, Trusted.MirSemantics.getElem?]
               rw [evalTerminatorV2_return_ok (by rfl) (by rfl) (by rfl) (by rfl)
                 (by rfl) (by rfl) (by rfl) (by rfl)]

@@ -408,6 +408,32 @@ class VerifyZerocopyTests(unittest.TestCase):
             with self.assertRaisesRegex(RuntimeError, "does not resolve"):
                 verify_zerocopy.discover_units(proofs_dir, src_dir)
 
+    def test_discover_units_rejects_excluded_traits_in_scope(self):
+        for bad_scope, needle in (
+            (
+                {
+                    "kind": "selected_unit",
+                    "roots": ["util::macros::__unsafe"],
+                    "excluded_traits": ["core::fmt::Debug"],
+                },
+                "unexpected scope keys",
+            ),
+            (
+                {
+                    "kind": "crate",
+                    "excluded_traits": ["core::fmt::Debug"],
+                },
+                "selected_unit",
+            ),
+        ):
+            with self.subTest(scope=bad_scope), tempfile.TemporaryDirectory() as tmp:
+                proofs_dir, src_dir, unit = make_proof_tree(real_tmp_root(tmp))
+                req = json.loads((unit / "request.json").read_text(encoding="utf-8"))
+                req["scope"] = bad_scope
+                (unit / "request.json").write_text(json.dumps(req), encoding="utf-8")
+                with self.assertRaisesRegex(RuntimeError, needle):
+                    verify_zerocopy.discover_units(proofs_dir, src_dir)
+
     def test_discover_units_enforces_request_and_consistency(self):
         with tempfile.TemporaryDirectory() as tmp:
             root = real_tmp_root(tmp)
@@ -1115,6 +1141,27 @@ class VerifyZerocopyTests(unittest.TestCase):
                 "thm_swap",
                 make_receipt(audit={"theorem": "Proof.other"}),
                 "audit\\.theorem",
+            ),
+            (
+                "selected_unit_excluded_traits",
+                make_receipt(
+                    scope={
+                        "kind": "selected_unit",
+                        "roots": ["util::macros::__unsafe"],
+                        "excluded_traits": ["core::fmt::Debug"],
+                    }
+                ),
+                "scope mismatch",
+            ),
+            (
+                "crate_excluded_traits",
+                make_receipt(
+                    scope={
+                        "kind": "crate",
+                        "excluded_traits": ["core::fmt::Debug"],
+                    }
+                ),
+                "scope mismatch",
             ),
             ("deferred_null", make_receipt(deferred=None), "deferred=None"),
             (

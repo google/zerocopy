@@ -10,6 +10,8 @@ pub fn zero() -> u64 {
     helper()
 }
 
+// `saturating_mul` is refused under every MIR profile, so selecting `zero`
+// pulls in an unsupported dependency.
 fn helper() -> u64 {
-    0u64.saturating_add(0)
+    0u64.saturating_mul(0)
 }

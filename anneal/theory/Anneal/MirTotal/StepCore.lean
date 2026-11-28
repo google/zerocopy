@@ -60,50 +60,50 @@ exceeds `fuel`. -/
         | .bool => true
         | .int _ _ | .unit | .never | .char | .ordering | .enum _ | .tuple _
         | .ref _ _ | .rawPtr _ _ | .slice _ | .str | .array _ _ | .vec _ | .box _
-        | .rangeTo _ | .rangeFrom _
-        | .range _ | .option _ | .unsupported => false
+        | .rangeTo _ | .rangeFrom _ | .range _ | .option _ | .unsupported
+        | .struct_ _ _ => false
       | .int w1 s1 =>
         match b with
         | .int w2 s2 => intWidthBeqComp w1 w2 && boolBeqComp s1 s2
         | .bool | .unit | .never | .char | .ordering | .enum _ | .tuple _
         | .ref _ _ | .rawPtr _ _ | .slice _ | .str | .array _ _ | .vec _ | .box _
-        | .rangeTo _ | .rangeFrom _
-        | .range _ | .option _ | .unsupported => false
+        | .rangeTo _ | .rangeFrom _ | .range _ | .option _ | .unsupported
+        | .struct_ _ _ => false
       | .unit =>
         match b with
         | .unit => true
         | .bool | .int _ _ | .never | .char | .ordering | .enum _ | .tuple _
         | .ref _ _ | .rawPtr _ _ | .slice _ | .str | .array _ _ | .vec _ | .box _
-        | .rangeTo _ | .rangeFrom _
-        | .range _ | .option _ | .unsupported => false
+        | .rangeTo _ | .rangeFrom _ | .range _ | .option _ | .unsupported
+        | .struct_ _ _ => false
       | .never =>
         match b with
         | .never => true
         | .bool | .int _ _ | .unit | .char | .ordering | .enum _ | .tuple _
         | .ref _ _ | .rawPtr _ _ | .slice _ | .str | .array _ _ | .vec _ | .box _
-        | .rangeTo _ | .rangeFrom _
-        | .range _ | .option _ | .unsupported => false
+        | .rangeTo _ | .rangeFrom _ | .range _ | .option _ | .unsupported
+        | .struct_ _ _ => false
       | .char =>
         match b with
         | .char => true
         | .bool | .int _ _ | .unit | .never | .ordering | .enum _ | .tuple _
         | .ref _ _ | .rawPtr _ _ | .slice _ | .str | .array _ _ | .vec _ | .box _
-        | .rangeTo _ | .rangeFrom _
-        | .range _ | .option _ | .unsupported => false
+        | .rangeTo _ | .rangeFrom _ | .range _ | .option _ | .unsupported
+        | .struct_ _ _ => false
       | .ordering =>
         match b with
         | .ordering => true
         | .bool | .int _ _ | .unit | .never | .char | .enum _ | .tuple _
         | .ref _ _ | .rawPtr _ _ | .slice _ | .str | .array _ _ | .vec _ | .box _
-        | .rangeTo _ | .rangeFrom _
-        | .range _ | .option _ | .unsupported => false
+        | .rangeTo _ | .rangeFrom _ | .range _ | .option _ | .unsupported
+        | .struct_ _ _ => false
       | .enum e1 =>
         match b with
         | .enum e2 => enumTyBeqComp e1 e2
         | .bool | .int _ _ | .unit | .never | .char | .ordering | .tuple _
         | .ref _ _ | .rawPtr _ _ | .slice _ | .str | .array _ _ | .vec _ | .box _
-        | .rangeTo _ | .rangeFrom _
-        | .range _ | .option _ | .unsupported => false
+        | .rangeTo _ | .rangeFrom _ | .range _ | .option _ | .unsupported
+        | .struct_ _ _ => false
       | .tuple fs1 =>
         match b with
         | .tuple fs2 =>
@@ -116,87 +116,107 @@ exceeds `fuel`. -/
             fs1 fs2
         | .bool | .int _ _ | .unit | .never | .char | .ordering | .enum _
         | .ref _ _ | .rawPtr _ _ | .slice _ | .str | .array _ _ | .vec _ | .box _
-        | .rangeTo _ | .rangeFrom _
-        | .range _ | .option _ | .unsupported => false
+        | .rangeTo _ | .rangeFrom _ | .range _ | .option _ | .unsupported
+        | .struct_ _ _ => false
       | .ref m1 p1 =>
         match b with
         | .ref m2 p2 => mutabilityBeqComp m1 m2 && ih p1 p2
         | .bool | .int _ _ | .unit | .never | .char | .ordering | .enum _
         | .tuple _ | .rawPtr _ _ | .slice _ | .str | .array _ _ | .vec _ | .box _
-        | .rangeTo _ | .rangeFrom _
-        | .range _ | .option _ | .unsupported => false
+        | .rangeTo _ | .rangeFrom _ | .range _ | .option _ | .unsupported
+        | .struct_ _ _ => false
       | .rawPtr m1 p1 =>
         match b with
         | .rawPtr m2 p2 => mutabilityBeqComp m1 m2 && ih p1 p2
         | .bool | .int _ _ | .unit | .never | .char | .ordering | .enum _
         | .tuple _ | .ref _ _ | .slice _ | .str | .array _ _ | .vec _ | .box _
-        | .rangeTo _ | .rangeFrom _
-        | .range _ | .option _ | .unsupported => false
+        | .rangeTo _ | .rangeFrom _ | .range _ | .option _ | .unsupported
+        | .struct_ _ _ => false
       | .slice p1 =>
         match b with
         | .slice p2 => ih p1 p2
         | .bool | .int _ _ | .unit | .never | .char | .ordering | .enum _
         | .tuple _ | .ref _ _ | .rawPtr _ _ | .str | .array _ _ | .vec _ | .box _
         | .rangeTo _
-        | .rangeFrom _ | .unsupported | .option _ | .range _ => false
+        | .rangeFrom _ | .unsupported | .option _ | .range _
+        | .struct_ _ _ => false
       | .str =>
         match b with
         | .str => true
         | .bool | .int _ _ | .unit | .never | .char | .ordering | .enum _
         | .tuple _ | .ref _ _ | .rawPtr _ _ | .slice _ | .array _ _ | .rangeTo _
         | .vec _ | .box _
-        | .rangeFrom _ | .unsupported | .option _ | .range _ => false
+        | .rangeFrom _ | .unsupported | .option _ | .range _
+        | .struct_ _ _ => false
       | .vec p1 =>
         match b with
         | .vec p2 => ih p1 p2
         | .bool | .int _ _ | .unit | .never | .char | .ordering | .enum _
         | .tuple _ | .ref _ _ | .rawPtr _ _ | .slice _ | .str | .box _
-        | .rangeTo _ | .rangeFrom _ | .unsupported | .array _ _ | .option _ | .range _ => false
+        | .rangeTo _ | .rangeFrom _ | .unsupported | .array _ _ | .option _ | .range _
+        | .struct_ _ _ => false
       | .box p1 =>
         match b with
         | .box p2 => ih p1 p2
         | .bool | .int _ _ | .unit | .never | .char | .ordering | .enum _
         | .tuple _ | .ref _ _ | .rawPtr _ _ | .slice _ | .str | .vec _
-        | .rangeTo _ | .rangeFrom _ | .unsupported | .option _ | .range _ | .array _ _ => false
+        | .rangeTo _ | .rangeFrom _ | .unsupported | .option _ | .range _ | .array _ _
+        | .struct_ _ _ => false
       | .array p1 n1 =>
         match b with
         | .array p2 n2 => Nat.beq n1 n2 && ih p1 p2
         | .bool | .int _ _ | .unit | .never | .char | .ordering | .enum _
-        | .tuple _ | .ref _ _ | .rawPtr _ _ | .slice _ | .str | .rangeTo _ | .rangeFrom _
-        | .range _ | .option _ | .unsupported | .box _ | .vec _ => false
+        | .tuple _ | .ref _ _ | .rawPtr _ _ | .slice _ | .str | .rangeTo _
+        | .rangeFrom _ | .range _ | .option _ | .unsupported | .box _ | .vec _
+        | .struct_ _ _ => false
       | .rangeTo p1 =>
         match b with
         | .rangeTo p2 => ih p1 p2
         | .bool | .int _ _ | .unit | .never | .char | .ordering | .enum _
-        | .tuple _ | .ref _ _ | .rawPtr _ _ | .slice _ | .str | .array _ _ | .vec _ | .box _
-        | .rangeFrom _
-        | .range _ | .option _ | .unsupported => false
+        | .tuple _ | .ref _ _ | .rawPtr _ _ | .slice _ | .str | .array _ _ | .vec _
+        | .box _ | .rangeFrom _ | .range _ | .option _ | .unsupported
+        | .struct_ _ _ => false
       | .rangeFrom p1 =>
         match b with
         | .rangeFrom p2 => ih p1 p2
         | .bool | .int _ _ | .unit | .never | .char | .ordering | .enum _
         | .tuple _ | .ref _ _ | .rawPtr _ _ | .slice _ | .str | .array _ _ | .rangeTo _
-        | .range _ | .option _ | .unsupported | .box _ | .vec _ => false
+        | .range _ | .option _ | .unsupported | .box _ | .vec _ | .struct_ _ _ => false
       | .range p1 =>
         match b with
         | .range p2 => ih p1 p2
         | .bool | .int _ _ | .unit | .never | .char | .ordering | .enum _
         | .tuple _ | .ref _ _ | .rawPtr _ _ | .slice _ | .str | .vec _ | .box _
         | .rangeTo _
-        | .rangeFrom _ | .option _ | .unsupported | .array _ _ => false
+        | .rangeFrom _ | .option _ | .unsupported | .array _ _ | .struct_ _ _ => false
       | .option p1 =>
         match b with
         | .option p2 => ih p1 p2
         | .bool | .int _ _ | .unit | .never | .char | .ordering | .enum _
         | .tuple _ | .ref _ _ | .rawPtr _ _ | .slice _ | .str | .rangeTo _
-        | .rangeFrom _ | .range _ | .unsupported | .array _ _ | .box _ | .vec _ => false
+        | .rangeFrom _ | .range _ | .unsupported | .array _ _ | .box _ | .vec _ | .struct_ _ _ => false
+      | .struct_ l1 fs1 =>
+        match b with
+        | .struct_ l2 fs2 =>
+          structLayoutBeqComp l1 l2 &&
+            List.foldr
+              (fun (x : MirTy) (lih : List MirTy → Bool) (ys : List MirTy) =>
+                match ys with
+                | [] => false
+                | y :: tl => ih x y && lih tl)
+              (fun ys => match ys with | [] => true | _ :: _ => false)
+              fs1 fs2
+        | .bool | .int _ _ | .unit | .never | .char | .ordering | .enum _
+        | .tuple _ | .ref _ _ | .rawPtr _ _ | .slice _ | .str | .array _ _
+        | .rangeTo _ | .rangeFrom _
+        | .range _ | .option _ | .box _ | .vec _ | .unsupported => false
       | .unsupported =>
         match b with
         | .unsupported => true
         | .bool | .int _ _ | .unit | .never | .char | .ordering | .enum _
         | .tuple _ | .ref _ _ | .rawPtr _ _ | .slice _ | .str | .vec _ | .box _
-        | .array _ _ | .rangeTo _
-        | .rangeFrom _ | .range _ | .option _ => false)
+        | .array _ _ | .rangeTo _ | .rangeFrom _ | .range _ | .option _
+        | .struct_ _ _ => false)
     fuel
 
 /-! ## `tyEq`-Parameterized Value Encoding and Indirect Stores -/
@@ -333,13 +353,14 @@ theorem encodeValBy_eq (tyEq : MirTy → MirTy → Bool)
                 | optionVal _ | bool _ | char _ | ordering _ | unit | enumVal _ _
                 | array _ | bytes _ => rfl
             | int _ _ | char | ordering | unit | never | enum _ | tuple _
-            | ref _ _ | rawPtr _ _ | slice _ | str | array _ _ | vec _ | box _ | rangeTo _ | rangeFrom _
-            | range _ | option _ | unsupported => rfl
+            | ref _ _ | rawPtr _ _ | slice _ | str | array _ _ | vec _ | box _
+            | rangeTo _ | rangeFrom _ | range _ | option _ | unsupported
+            | struct_ _ _ => rfl
         | bool | char | ordering | unit | never | enum _ | tuple _
         | ref _ _ | rawPtr _ _ | slice _ | str | vec _ | box _ | array _ _ | rangeTo _ | rangeFrom _
-        | range _ | option _ | unsupported => rfl
+        | range _ | option _ | unsupported | struct_ _ _ => rfl
     | bool | unit | never | ref _ _ | rawPtr _ _ | slice _ | str | vec _ | box _ | array _ _ | rangeTo _
-    | rangeFrom _ | range _ | option _ | unsupported => cases v <;> rfl
+    | rangeFrom _ | range _ | option _ | unsupported | struct_ _ _ => cases v <;> rfl
 
 /-- Computable mirror of `Trusted.MirSemantics.storeIndirect` parameterized by
 `tyEq`. -/
@@ -777,11 +798,12 @@ theorem evalRvalueBy_eq (tyEq : MirTy → MirTy → Bool)
               | error _ => rfl
               | ok optVal => exact evalOrderingDiscriminantOfValComp_eq _ _ _
             | bool | int _ _ | char | unit | never | tuple _ | ref _ _ | rawPtr _ _
-            | slice _ | str | array _ _ | vec _ | box _ | rangeTo _ | rangeFrom _ | range _ | option _ | unsupported => rfl
+            | slice _ | str | array _ _ | vec _ | box _ | rangeTo _ | rangeFrom _
+            | range _ | option _ | unsupported | struct_ _ _ => rfl
   | useRetag _ | ref _ _ | addressOf _ _ | fakeAddressOf _ | aggregateTuple _
-  | aggregateArray _ _
-  | repeat_ _ _ _ | aggregateRangeTo _ | aggregateRangeFrom _ | aggregateRange _ _ _ | aggregateOption _ _ _
-  | unsupported => rfl
+  | aggregateArray _ _ | repeat_ _ _ _ | aggregateRangeTo _
+  | aggregateRangeFrom _ | aggregateRange _ _ _ | aggregateOption _ _ _
+  | unsupported | aggregateStruct _ _ => rfl
 
 /-- Computable mirror of `Trusted.MirSemantics.writePlace` parameterized by
 `tyEq`. -/
@@ -1158,7 +1180,7 @@ theorem evalAssertFailureComp_eq (msg : AssertKind)
             hasLocalPanicHandler
       | _ => .fault .unsupported
   | .unwindResume | .call _ _ _ _ _ | .coreCall _ _ _ _ _
-  | .sysrootCall _ _ _ _ _ | .unsupported =>
+  | .sysrootCall _ _ _ _ _ | .callNe _ _ _ _ _ | .drop _ _ _ | .unsupported =>
     .fault .unsupported
 
 /-- Agreement between `evalTerminatorComp` and `evalTerminator`. -/
@@ -1172,8 +1194,8 @@ theorem evalTerminatorComp_eq (body : Body) (bb : BasicBlock)
         hasLocalPanicHandler := by
   unfold evalTerminatorComp evalTerminator
   cases bb.terminator with
-  | goto _ | unreachable | unwindResume | call _ _ _ _ _
-  | coreCall _ _ _ _ _ | sysrootCall _ _ _ _ _ | unsupported => rfl
+  | goto _ | unreachable | unwindResume | call _ _ _ _ _ | coreCall _ _ _ _ _
+  | sysrootCall _ _ _ _ _ | unsupported | callNe _ _ _ _ _ | drop _ _ _ => rfl
   | assert cond expected msg target unwind =>
     dsimp only
     rw [evalPrimitiveOperandComp_eq]
@@ -1488,7 +1510,8 @@ theorem callsAdmittedBy_eq (tyEq : MirTy → MirTy → Bool)
   refine listAll_congr body.basicBlocks (fun bb => ?_)
   cases bb.terminator with
   | goto _ | switchInt _ _ | return_ | unreachable | unwindResume
-  | assert _ _ _ _ _ | coreCall _ _ _ _ _ | unsupported => rfl
+  | assert _ _ _ _ _ | coreCall _ _ _ _ _ | callNe _ _ _ _ _ | drop _ _ _
+  | unsupported => rfl
   | call callee args dst target unwind =>
     dsimp only
     rw [compGetElem?_eq]
@@ -1844,8 +1867,9 @@ theorem discriminantTypesValidBy_eq (tyEq : MirTy → MirTy → Bool)
     cases rv with
     | use _ | useRetag _ | binaryOp _ _ _ | unaryOp _ _ | cast _ _ _ | ref _ _
     | addressOf _ _ | fakeAddressOf _ | aggregateTuple _ | aggregateArray _ _
-    | repeat_ _ _ _
-    | aggregateRangeTo _ _ | aggregateRangeFrom _ _ | aggregateRange _ _ _ | aggregateOption _ _ _ | unsupported => rfl
+    | repeat_ _ _ _ | aggregateRangeTo _ _ | aggregateRangeFrom _ _
+    | aggregateRange _ _ _ | aggregateOption _ _ _ | unsupported
+    | aggregateStruct _ _ => rfl
     | discriminant src =>
       dsimp only
       cases (dst.projection.isEmpty && src.projection.isEmpty) with
@@ -1871,8 +1895,8 @@ theorem discriminantTypesValidBy_eq (tyEq : MirTy → MirTy → Bool)
             | none => rfl
             | some dstTy => exact hTyEq dstTy (.int .i8 true)
           | bool | int _ _ | char | unit | never | tuple _ | ref _ _ | rawPtr _ _
-          | slice _ | str | array _ _ | vec _ | box _ | rangeTo _ | rangeFrom _ | range _ | option _
-          | unsupported => rfl
+          | slice _ | str | array _ _ | vec _ | box _ | rangeTo _ | rangeFrom _
+          | range _ | option _ | unsupported | struct_ _ _ => rfl
 
 /-- Computable mirror of `Trusted.MirSemantics.castTypesValid` parameterized by
 `tyEq`. -/
@@ -1904,8 +1928,9 @@ theorem castTypesValidBy_eq (tyEq : MirTy → MirTy → Bool)
     cases rv with
     | use _ | useRetag _ | binaryOp _ _ _ | unaryOp _ _ | discriminant _ | ref _ _
     | addressOf _ _ | fakeAddressOf _ | aggregateTuple _ | aggregateArray _ _
-    | repeat_ _ _ _
-    | aggregateRangeTo _ _ | aggregateRangeFrom _ _ | aggregateRange _ _ _ | aggregateOption _ _ _ | unsupported => rfl
+    | repeat_ _ _ _ | aggregateRangeTo _ _ | aggregateRangeFrom _ _
+    | aggregateRange _ _ _ | aggregateOption _ _ _ | unsupported
+    | aggregateStruct _ _ => rfl
     | cast ck _ castTy =>
       cases ck with
       | ptrToPtr | intToPtr | unsize | boxAsRef | unsupported => rfl
@@ -2055,7 +2080,9 @@ theorem assignTypesValidBy_eq (tyEq : MirTy → MirTy → Bool)
         | discriminant _ | cast _ _ _ | ref _ _ | addressOf _ _
         | fakeAddressOf _
         | aggregateTuple _ | unsupported | useRetag _ | aggregateRangeTo _ _
-        | aggregateRangeFrom _ _ | aggregateArray _ _ | repeat_ _ _ _ | aggregateOption _ _ _ | aggregateRange _ _ _ => rfl
+        | aggregateRangeFrom _ _ | aggregateArray _ _ | repeat_ _ _ _
+        | aggregateOption _ _ _ | aggregateRange _ _ _
+        | aggregateStruct _ _ => rfl
         | use opnd => exact localOperandMatchesTyBy_eq tyEq hTyEq body.locals opnd dstTy
         | binaryOp op lhs rhs =>
           dsimp only
@@ -2111,7 +2138,7 @@ theorem assertConditionTypesValidBy_eq (tyEq : MirTy → MirTy → Bool)
     | constant c => exact hTyEq c.ty .bool
   | goto _ | switchInt _ _ | return_ | unreachable | unwindResume
   | call _ _ _ _ _ | coreCall _ _ _ _ _ | sysrootCall _ _ _ _ _
-  | unsupported => rfl
+  | callNe _ _ _ _ _ | drop _ _ _ | unsupported => rfl
 
 /-- Computable mirror of `Trusted.MirSemantics.checkArgsMatch` parameterized by
 `tyEq`. -/
@@ -2568,7 +2595,8 @@ theorem evalMirStepBy_eq (tyEq : MirTy → MirTy → Bool)
                 exact evalNonRootReturnBy_eq tyEq hTyEq p body bb frame caller
                   rest s.mem s.callerMem
             | goto _ | switchInt _ _ | unreachable | unwindResume
-            | assert _ _ _ _ _ | coreCall _ _ _ _ _ | unsupported =>
+            | assert _ _ _ _ _ | coreCall _ _ _ _ _ | callNe _ _ _ _ _
+            | drop _ _ _ | unsupported =>
               dsimp only
               rw [attachCallersComp_eq,
                 evalTerminatorComp_eq body bb frame s.mem s.callerMem

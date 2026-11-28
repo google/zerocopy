@@ -30,6 +30,8 @@
 //!    with them.
 //! 5. Heap allocation contracts (`Vec<u8>` and `Box<[u8]>` / `Box<u64>`) under
 //!    `CrateTheoremV2` with `--panic abort`.
+//! 6. A sharded crate capture (more bodies than `shard_min_bodies`) whose
+//!    body reorder must keep a `callNe` bound to `<Tag as PartialEq>::eq`.
 
 use std::{
     fs,
@@ -71,6 +73,15 @@ const CORE_CONTRACTS_PROOF: &str =
 const ALLOC_LIB: &str = include_str!("fixtures/profile_v2_alloc/lib.rs");
 const ALLOC_SPEC: &str = include_str!("fixtures/profile_v2_alloc/Spec.lean");
 const ALLOC_PROOF: &str = include_str!("fixtures/profile_v2_alloc/Proof.lean");
+const STRUCTS_LIB: &str = include_str!("fixtures/profile_v2_structs_index_drop/lib.rs");
+const STRUCTS_SPEC: &str = include_str!("fixtures/profile_v2_structs_index_drop/Spec.lean");
+const STRUCTS_PROOF: &str = include_str!("fixtures/profile_v2_structs_index_drop/Proof.lean");
+const DROP_LIB: &str = include_str!("fixtures/profile_v2_structs_index_drop/drop.rs");
+const DROP_SPEC: &str = include_str!("fixtures/profile_v2_structs_index_drop/DropSpec.lean");
+const DROP_PROOF: &str = include_str!("fixtures/profile_v2_structs_index_drop/DropProof.lean");
+const CALLNE_LIB: &str = include_str!("fixtures/profile_v2_callne_shard/lib.rs");
+const CALLNE_SPEC: &str = include_str!("fixtures/profile_v2_callne_shard/Spec.lean");
+const CALLNE_PROOF: &str = include_str!("fixtures/profile_v2_callne_shard/Proof.lean");
 
 const ZEROCOPY_SOURCE_FILES: &[&str] = &[
     "byte_slice.rs",
@@ -628,8 +639,7 @@ fn rejects_wrapping_add_proof_with_overflow_checks() {
 /// (`&[u8; 3] -> &[u8]`), `.rodata` array constants, projected
 /// `Rvalue::Discriminant` (`discriminant(*a)`), `int::to_le_bytes`, and
 /// `<[u8; 4] as PartialEq>::eq` under `UnitTheoremV2` (`["propext"]`, zero
-/// taint), plus four functional spec mismatch rejections and a capture-level
-/// rejection for dynamic array indexing.
+/// taint), plus four functional spec mismatch rejections.
 #[test]
 fn verifies_profile_v2_arrays_and_rejects_unsound_specs() {
     let dir = TempDir::new().unwrap();
@@ -718,29 +728,21 @@ fn verifies_profile_v2_arrays_and_rejects_unsound_specs() {
     fs::write(lean_dir.join("Spec.lean"), bad_pat).unwrap();
     run_request(dir.path(), "arrays-wrong-rodata-pattern", &request)
         .expect_proof_failed();
+}
 
-    // Negative 5 (capture): dynamic array indexing (`PlaceElem::Index`) is
-    // refused fail-closed at capture time.
-    fs::write(
-        rust_dir.join("lib.rs"),
-        "pub fn dyn_idx(a: &[u8; 4], i: usize) -> u8 { a[i] }\n",
-    )
-    .unwrap();
-    let bad_req = json!({
+fn structs_request(rust_dir: &Path, lean_dir: &Path, crate_name: &str, scope: Value) -> Value {
+    json!({
         "schema_version": 1,
         "compilation": {
             "source_root": rust_dir.to_str().unwrap(),
             "crate_root": "lib.rs",
-            "crate_name": "profile_v2_arrays",
+            "crate_name": crate_name,
             "edition": "2021",
             "target": "x86_64-unknown-linux-gnu",
             "cfg": [],
             "source_files": ["lib.rs"]
         },
-        "scope": {
-            "kind": "selected_unit",
-            "roots": ["dyn_idx"]
-        },
+        "scope": scope,
         "proof": {
             "source_root": lean_dir.to_str().unwrap(),
             "specification": "Spec.specs",
@@ -750,9 +752,130 @@ fn verifies_profile_v2_arrays_and_rejects_unsound_specs() {
                 {"module": "Proof", "path": "Proof.lean", "role": "proof"}
             ]
         }
-    });
-    run_request(dir.path(), "arrays-dyn-index-refused", &bad_req)
-        .expect_capture_refused("unsupported place projection `Index(");
+    })
+}
+
+/// Verifies concrete structs (`StructLayout` with `rustc`'s reordered field
+/// offsets, `Rvalue::Aggregate` construction, and field reads through
+/// references), chained dynamic `PlaceElem::Index` (`(*_1).0[_3]`), and
+/// multi-frame intra-crate calls through the provided `PartialEq::ne`
+/// (`<Digest as PartialEq>::ne` calling the derived `eq`, which calls
+/// `<[u8; 4] as PartialEq>::eq`) under `CrateTheoremV2` in `--scope crate`
+/// (which also admits the `Struct` items), and a no-drop-glue
+/// `TerminatorKind::Drop` in the monomorphized `first::<u8>` under
+/// `UnitTheoremV2`. Negative cases reject specs with the declaration-order
+/// field offset or an inverted `ne` result, and capture refuses a struct with
+/// a custom `Drop` impl and a generic struct.
+#[test]
+fn verifies_profile_v2_structs_index_calls_and_drop() {
+    let dir = TempDir::new().unwrap();
+    let rust_dir = dir.path().join("rust");
+    let lean_dir = dir.path().join("lean");
+    fs::create_dir_all(&rust_dir).unwrap();
+    fs::create_dir_all(&lean_dir).unwrap();
+
+    fs::write(rust_dir.join("lib.rs"), STRUCTS_LIB).unwrap();
+    fs::write(lean_dir.join("Spec.lean"), STRUCTS_SPEC).unwrap();
+    fs::write(lean_dir.join("Proof.lean"), STRUCTS_PROOF).unwrap();
+    let request =
+        structs_request(&rust_dir, &lean_dir, "profile_v2_structs", json!({"kind": "crate"}));
+
+    let ok = run_request(dir.path(), "structs-ok", &request);
+    ok.expect_ok("crate_verified");
+    let capture_json: Value = serde_json::from_slice(
+        &fs::read(dir.path().join("artifacts-structs-ok/capture/capture.json")).unwrap(),
+    )
+    .unwrap();
+    assert_eq!(capture_json["program"]["mir_profile_version"], 2, "{capture_json}");
+
+    // Negative 1: `Pair.tag` read at its declaration-order offset 0 instead
+    // of the offset 4 that `rustc` assigns after reordering the fields.
+    let bad_offset = STRUCTS_SPEC.replace("pv.offsetBytes.toNat + 4", "pv.offsetBytes.toNat + 0");
+    assert_ne!(bad_offset, STRUCTS_SPEC);
+    fs::write(lean_dir.join("Spec.lean"), bad_offset).unwrap();
+    run_request(dir.path(), "structs-declaration-order-offset", &request)
+        .expect_proof_failed();
+
+    // Negative 2: `digests_differ` claimed to return the `eq` result.
+    let bad_ne = STRUCTS_SPEC.replace("(!(arrayBytesEq a b))", "(arrayBytesEq a b)");
+    assert_ne!(bad_ne, STRUCTS_SPEC);
+    fs::write(lean_dir.join("Spec.lean"), bad_ne).unwrap();
+    run_request(dir.path(), "structs-inverted-ne", &request).expect_proof_failed();
+    fs::write(lean_dir.join("Spec.lean"), STRUCTS_SPEC).unwrap();
+
+    // Negative 3: a struct with a custom `Drop` impl is refused in crate
+    // scope.
+    fs::write(
+        rust_dir.join("lib.rs"),
+        "pub struct Guard(pub u8);\n\
+         impl Drop for Guard {\n    fn drop(&mut self) {}\n}\n",
+    )
+    .unwrap();
+    run_request(dir.path(), "structs-custom-drop-refused", &request)
+        .expect_capture_refused("Guard");
+
+    // Negative 4: a generic struct is refused in crate scope.
+    fs::write(rust_dir.join("lib.rs"), "pub struct Wrap<T>(pub T);\n").unwrap();
+    run_request(dir.path(), "structs-generic-refused", &request)
+        .expect_capture_refused("Wrap");
+
+    // Drop: the generic `first` keeps `drop(_2)`, which reaches the captured
+    // `first::<u8>` as a no-drop-glue `Drop`.
+    fs::write(rust_dir.join("lib.rs"), DROP_LIB).unwrap();
+    fs::write(lean_dir.join("Spec.lean"), DROP_SPEC).unwrap();
+    fs::write(lean_dir.join("Proof.lean"), DROP_PROOF).unwrap();
+    // Under `panic = "unwind"` the drop has a cleanup edge, which capture
+    // refuses, so this crate is compiled with `panic = "abort"`.
+    let mut drop_request = structs_request(
+        &rust_dir,
+        &lean_dir,
+        "profile_v2_drop",
+        json!({
+            "kind": "selected_unit",
+            "roots": [],
+            "instantiations": [{"path": "first", "args": ["u8"]}]
+        }),
+    );
+    drop_request["compilation"]["panic"] = json!("abort");
+    run_request(dir.path(), "drop-ok", &drop_request).expect_ok("selected_unit_verified");
+}
+
+/// Verifies `tag_ne` (`x != y`, a `callNe` into `<Tag as PartialEq>::eq`) under
+/// `CrateTheoremV2` in a crate whose 21 bodies exceed `shard_min_bodies`, so
+/// capture shards it and reorders the bodies. The reorder must remap
+/// `CallNe::eq_callee` as it remaps `Call::callee`. Otherwise `tag_ne` keeps
+/// its pre-reorder callee index, which after the reorder names
+/// `<Tag as AaaFake>::fake_eq` (always `false`), and `tag_ne(Tag::A, Tag::A)`
+/// evaluates to `true`. A spec claiming that `tag_ne` returns variant equality
+/// is rejected.
+#[test]
+fn verifies_sharded_call_ne_binds_partial_eq_eq() {
+    let dir = TempDir::new().unwrap();
+    let rust_dir = dir.path().join("rust");
+    let lean_dir = dir.path().join("lean");
+    fs::create_dir_all(&rust_dir).unwrap();
+    fs::create_dir_all(&lean_dir).unwrap();
+
+    fs::write(rust_dir.join("lib.rs"), CALLNE_LIB).unwrap();
+    fs::write(lean_dir.join("Spec.lean"), CALLNE_SPEC).unwrap();
+    fs::write(lean_dir.join("Proof.lean"), CALLNE_PROOF).unwrap();
+    let request =
+        structs_request(&rust_dir, &lean_dir, "profile_v2_callne_shard", json!({"kind": "crate"}));
+
+    let ok = run_request(dir.path(), "callne-ok", &request);
+    ok.expect_ok("crate_verified");
+    let shards: Value = serde_json::from_slice(
+        &fs::read(dir.path().join("artifacts-callne-ok/capture/capture_shards.json")).unwrap(),
+    )
+    .unwrap();
+    assert_eq!(shards["total_bodies"], 21, "{shards}");
+    assert!(shards["total_shards"].as_u64().is_some_and(|n| n > 1), "{shards}");
+
+    // Negative: `tag_ne` claimed to return variant equality.
+    let bad_eq = CALLNE_SPEC.replace("(!(Nat.beq x y))", "(Nat.beq x y)");
+    assert_ne!(bad_eq, CALLNE_SPEC);
+    fs::write(lean_dir.join("Spec.lean"), bad_eq).unwrap();
+    run_request(dir.path(), "callne-equality-claim", &request).expect_proof_failed();
 }
 
 /// Verifies safe `safe_div_ceil` and `write_then_div` under `--panic abort`
@@ -1734,7 +1857,7 @@ private theorem is_empty_mut_slice_exec (q : Query)
     apply execOutcomeStateV2_step (by rfl)
     -- bb0 stmt 1: _3 = &raw const (fake) (*_1)
     apply execOutcomeStateV2_step (by
-      dsimp only [evalStepV2, entryProgForBody, Captured.program, Captured.body_0,
+      dsimp only [evalStepV2, activeFrameBody, attachCallers, entryProgForBody, Captured.program, Captured.body_0,
         evalStatementV2, resolvePlaceDestV2, placeStaticTyV2,
         checkAssignCopyHazardV2, evalRvalueV2,
         evalFakeAddressOfRvalueV2, writePlaceDestV2, checkValV2,
@@ -1743,7 +1866,7 @@ private theorem is_empty_mut_slice_exec (q : Query)
       rfl)
     -- bb0 stmt 2: _4 = PtrMetadata(move _3)
     apply execOutcomeStateV2_step (by
-      dsimp only [evalStepV2, entryProgForBody, Captured.program, Captured.body_0,
+      dsimp only [evalStepV2, activeFrameBody, attachCallers, entryProgForBody, Captured.program, Captured.body_0,
         evalStatementV2, resolvePlaceDestV2, placeStaticTyV2,
         checkAssignCopyHazardV2, evalRvalueV2,
         evalOperandToSlotV2, Trusted.MirSemantics.getElem?]
@@ -1755,7 +1878,7 @@ private theorem is_empty_mut_slice_exec (q : Query)
       rw [writePlaceDestV2_immediate_ok hWfLen (by rfl) (by rfl)])
     -- bb0 stmt 3: _2 = Use(move _4)
     apply execOutcomeStateV2_step (by
-      dsimp only [evalStepV2, entryProgForBody, Captured.program, Captured.body_0,
+      dsimp only [evalStepV2, activeFrameBody, attachCallers, entryProgForBody, Captured.program, Captured.body_0,
         evalStatementV2, resolvePlaceDestV2, placeStaticTyV2,
         checkAssignCopyHazardV2, isMemoryCopyReprTyV2, copyReprOfTyV2,
         evalRvalueV2, evalOperandToSlotV2, Trusted.MirSemantics.getElem?]
@@ -1767,7 +1890,7 @@ private theorem is_empty_mut_slice_exec (q : Query)
       rfl)
     -- bb0 stmt 4: _5 = Use(const 0_usize)
     apply execOutcomeStateV2_step (by
-      dsimp only [evalStepV2, entryProgForBody, Captured.program, Captured.body_0,
+      dsimp only [evalStepV2, activeFrameBody, attachCallers, entryProgForBody, Captured.program, Captured.body_0,
         evalStatementV2, resolvePlaceDestV2, placeStaticTyV2,
         checkAssignCopyHazardV2, evalRvalueV2,
         evalOperandToSlotV2, evalConstLit, Trusted.MirSemantics.getElem?]
@@ -1779,7 +1902,7 @@ private theorem is_empty_mut_slice_exec (q : Query)
       rw [writePlaceDestV2_immediate_ok (by decide) (by rfl) (by rfl)])
     -- bb0 stmt 5: _6 = Eq(move _2, move _5)
     apply execOutcomeStateV2_step (by
-      dsimp only [evalStepV2, entryProgForBody, Captured.program, Captured.body_0,
+      dsimp only [evalStepV2, activeFrameBody, attachCallers, entryProgForBody, Captured.program, Captured.body_0,
         evalStatementV2, resolvePlaceDestV2, placeStaticTyV2,
         checkAssignCopyHazardV2, evalRvalueV2,
         evalPrimitiveOperandV2, evalOperandToSlotV2,
@@ -1805,7 +1928,7 @@ private theorem is_empty_mut_slice_exec (q : Query)
     cases hEmpty : Nat.beq len.toNat 0 with
     | false =>
       apply execOutcomeStateV2_step (by
-        dsimp only [evalStepV2, entryProgForBody, Captured.program, Captured.body_0,
+        dsimp only [evalStepV2, activeFrameBody, attachCallers, entryProgForBody, Captured.program, Captured.body_0,
           evalTerminatorV2, evalPrimitiveOperandV2, evalOperandToSlotV2,
           evalBoolSwitchBranches, jumpToBlock, List.length, Trusted.MirSemantics.getElem?]
         rw [ite_bool_true (rfl : Nat.beq 6 6 = true)]
@@ -1816,7 +1939,7 @@ private theorem is_empty_mut_slice_exec (q : Query)
         rw [hConst0]
         rfl)
       apply execOutcomeStateV2_step (by
-        dsimp only [evalStepV2, entryProgForBody, Captured.program, Captured.body_0,
+        dsimp only [evalStepV2, activeFrameBody, attachCallers, entryProgForBody, Captured.program, Captured.body_0,
           evalStatementV2, resolvePlaceDestV2, placeStaticTyV2,
           checkAssignCopyHazardV2, evalRvalueV2,
           evalOperandToSlotV2, Trusted.MirSemantics.getElem?]
@@ -1827,7 +1950,7 @@ private theorem is_empty_mut_slice_exec (q : Query)
         rw [writePlaceDestV2_immediate_ok (by rfl) (by rfl) (by rfl)])
       apply execOutcomeStateV2_step (by rfl)
       apply execOutcomeStateV2_done (by
-        dsimp only [evalStepV2, entryProgForBody, Captured.program, Captured.body_0,
+        dsimp only [evalStepV2, activeFrameBody, attachCallers, entryProgForBody, Captured.program, Captured.body_0,
           Trusted.MirSemantics.getElem?]
         rw [evalTerminatorV2_return_ok (by rfl) (by rfl) (by rfl) (by rfl)
           (by rfl) (by rfl) (by rfl),
@@ -1836,7 +1959,7 @@ private theorem is_empty_mut_slice_exec (q : Query)
       exact ⟨by rw [hEmpty], rfl⟩
     | true =>
       apply execOutcomeStateV2_step (by
-        dsimp only [evalStepV2, entryProgForBody, Captured.program, Captured.body_0,
+        dsimp only [evalStepV2, activeFrameBody, attachCallers, entryProgForBody, Captured.program, Captured.body_0,
           evalTerminatorV2, evalPrimitiveOperandV2, evalOperandToSlotV2,
           evalBoolSwitchBranches, jumpToBlock, List.length, Trusted.MirSemantics.getElem?]
         rw [ite_bool_true (rfl : Nat.beq 6 6 = true)]
@@ -1847,7 +1970,7 @@ private theorem is_empty_mut_slice_exec (q : Query)
         rw [hConst0]
         rfl)
       apply execOutcomeStateV2_step (by
-        dsimp only [evalStepV2, entryProgForBody, Captured.program, Captured.body_0,
+        dsimp only [evalStepV2, activeFrameBody, attachCallers, entryProgForBody, Captured.program, Captured.body_0,
           evalStatementV2, resolvePlaceDestV2, placeStaticTyV2,
           checkAssignCopyHazardV2, evalRvalueV2,
           evalOperandToSlotV2, Trusted.MirSemantics.getElem?]
@@ -1858,7 +1981,7 @@ private theorem is_empty_mut_slice_exec (q : Query)
         rw [writePlaceDestV2_immediate_ok (by rfl) (by rfl) (by rfl)])
       apply execOutcomeStateV2_step (by rfl)
       apply execOutcomeStateV2_done (by
-        dsimp only [evalStepV2, entryProgForBody, Captured.program, Captured.body_0,
+        dsimp only [evalStepV2, activeFrameBody, attachCallers, entryProgForBody, Captured.program, Captured.body_0,
           Trusted.MirSemantics.getElem?]
         rw [evalTerminatorV2_return_ok (by rfl) (by rfl) (by rfl) (by rfl)
           (by rfl) (by rfl) (by rfl),

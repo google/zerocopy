@@ -49,13 +49,23 @@ Constructor correspondence:
   `ProjectionElem::ConstantIndex { offset, min_length, from_end }` (Profile v2).
 - `.downcast variantIdx` corresponds to
   `ProjectionElem::Downcast(_, variantIdx)`.
-- `.unsupported` represents all other `ProjectionElem` variants (`Index`,
-  `Subslice`, `OpaqueCast`, `UnwrapUnsafeBinder`, and `PhantomDeref`). -/
+- `.index localId` corresponds to `ProjectionElem::Index(localId)` (Profile
+  v2), whose `usize` index is read from local `localId`
+  (`compiler/rustc_middle/src/mir/syntax.rs`, `rust-lang/rust`
+  `f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1`):
+
+  > "Index into a slice/array.
+  >
+  > Note that this does not also dereference, and so it does not exactly
+  > correspond to slice indexing in Rust."
+- `.unsupported` represents all other `ProjectionElem` variants
+  (`Subslice`, `OpaqueCast`, `UnwrapUnsafeBinder`, and `PhantomDeref`). -/
 inductive ProjectionElem where
   | deref
   | field (fieldIdx : FieldIdx) (ty : MirTy)
   | constantIndex (offset : Nat) (minLength : Nat) (fromEnd : Bool)
   | downcast (variantIdx : Nat)
+  | index (localId : LocalId)
   | unsupported
 
 /-- A MIR place (`rustc_middle::mir::Place` in

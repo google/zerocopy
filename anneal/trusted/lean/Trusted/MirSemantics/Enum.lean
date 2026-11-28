@@ -507,13 +507,22 @@ noncomputable def isIntLikeTy : MirTy → Bool
 /- Profile v2 static local and pointee type admission and runtime value checks.
 -/
 
-/-- Return `true` when `ty` is a fixed-size data type (scalars, units,
-admitted fieldless enums, and nested fixed-size arrays `[T; N]` thereof,
-excluding overflow pairs, references, and raw pointers) whose memory layout
-and byte representation are modeled in Profile v2. -/
-noncomputable def isSupportedV2DataTy : MirTy → Bool
-  | .array elem _ => isSupportedV2DataTy elem
-  | ty => !isOverflowPairTy ty && isSupportedScalarOrUnitTy ty
+mutual
+  /-- Return `true` when `ty` is a fixed-size data type (without nested
+  references or raw pointers) whose memory layout and byte representation are
+  modeled in Profile v2: Profile v1 scalar types other than overflow pairs,
+  admitted fieldless enums, fixed-size arrays, and structs whose fields are
+  all data types. (A struct must also have a valid layout, `layoutOfArrayV2`,
+  before any memory access at its type.) -/
+  noncomputable def isSupportedV2DataTy : MirTy → Bool
+    | .array elem _ => isSupportedV2DataTy elem
+    | .struct_ _ fs => isSupportedV2DataTyList fs
+    | ty => !isOverflowPairTy ty && isSupportedScalarOrUnitTy ty
+
+  noncomputable def isSupportedV2DataTyList : List MirTy → Bool
+    | [] => true
+    | t :: ts => isSupportedV2DataTy t && isSupportedV2DataTyList ts
+end
 
 /-- Return `true` when `ty` belongs to the Profile v2 structural `PartialEq`
 fragment (`bool`, integers, `char`, `()`, `Ordering`, and fixed-size arrays
@@ -577,13 +586,15 @@ via `univariant` (`compiler/rustc_ty_utils/src/layout.rs:571-575` and
 and `RangeTo` without `#[repr(C)]`, so their in-memory layout is also governed
 by `univariant`. `.option inner` additionally requires
 `isOptionPayloadSupportedV2 inner` so unmodeled nested options such as
-`&Option<Option<u8>>` fail closed. -/
+`&Option<Option<u8>>` fail closed. Structs also return `false` here: their
+layout comes from `rustc` (`Trusted.MirAst.StructLayout`), and
+`isSupportedV2PointeeTy` admits them through `isSupportedV2DataTy`. -/
 noncomputable def isSizedNoRefV2Ty : MirTy → Bool
   | .bool | .int _ _ | .char | .ordering | .unit | .never => true
   | .enum ety => enumAdmitted ety
   | .option inner => isSizedNoRefV2Ty inner && isOptionPayloadSupportedV2 inner
   | .tuple _ | .array _ _ | .vec _ | .box _ | .ref _ _ | .rawPtr _ _ | .slice _
-  | .unsupported | .str | .rangeTo _ | .rangeFrom _ | .range _ => false
+  | .unsupported | .str | .rangeTo _ | .rangeFrom _ | .range _ | .struct_ _ _ => false
 
 mutual
   /-- Return `true` when `ty` is structurally inhabited in Rust (has at least
@@ -595,7 +606,8 @@ mutual
   - `.array elem n`: `[T; 0]` is inhabited by `Val.array []` even when `T` is
     uninhabited (`[!; 0]`), whereas `[T; n + 1]` requires
     `isInhabitedV2Ty elem`;
-  - `.tuple fs`: inhabited iff every field type is inhabited;
+  - `.tuple fs` and `.struct_ _ fs`: inhabited iff every field type is
+    inhabited;
   - `.option _`: always inhabited by `None` (`Val.optionVal none`);
   - `.ref _ (.slice _)` and `.ref _ .str`: always inhabited by `&[]` and `""`
     (`len = 0`), whereas a thin reference `.ref _ pt` requires
@@ -610,6 +622,7 @@ mutual
     | .enum ety => enumAdmitted ety
     | .array elem n => Nat.beq n 0 || isInhabitedV2Ty elem
     | .tuple fs => isInhabitedV2TyList fs
+    | .struct_ _ fs => isInhabitedV2TyList fs
     | .option _ => true
     | .ref _ (.slice _) | .ref _ .str => true
     | .ref _ pt => isInhabitedV2Ty pt
@@ -691,6 +704,7 @@ mutual
     | .range (.int .isize false) => true
     | .option inner =>
       isSupportedV2LocalTy inner && isOptionPayloadSupportedV2 inner
+    | .struct_ l fs => isSupportedV2DataTy (.struct_ l fs)
     | _ => false
 
   noncomputable def isSupportedV2LocalTyList : List MirTy → Bool
@@ -708,7 +722,8 @@ mutual
   /-- Validate runtime value `v` against Profile v2 static type `ty`, matching
   Profile v1 `checkVal` on scalar/enum/unit types and adding thin pointers,
   wide slice pointers, shared `&str`, fixed-size arrays,
-  `Range`/`RangeTo`/`RangeFrom`, `Option`, and general tuples. -/
+  `Range`/`RangeTo`/`RangeFrom`, `Option`, general tuples, and structs (whose
+  values are `.tuple` lists of field values in source definition order). -/
   noncomputable def checkValV2 : Val → MirTy → Bool
     | .scalar sv, .int w s => checkVal (.scalar sv) (.int w s)
     | .bool b, .bool => checkVal (.bool b) .bool
@@ -732,6 +747,7 @@ mutual
     | .optionVal none, .option _ => true
     | .optionVal (some v), .option inner => checkValV2 v inner
     | .tuple vs, .tuple ts => checkValV2List vs ts
+    | .tuple vs, .struct_ _ fs => checkValV2List vs fs
     | _, _ => false
 
   noncomputable def checkValV2List : List Val → List MirTy → Bool

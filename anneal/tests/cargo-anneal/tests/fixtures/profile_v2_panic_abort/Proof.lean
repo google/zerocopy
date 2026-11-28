@@ -448,13 +448,13 @@ private theorem execOutcomeStateV2_of_reaches_post {p : Program}
     let ⟨_, _, hEval⟩ := hStep
     exact ih (execOutcomeStateV2_step hEval hExec)
 
-private theorem evalStepV2_mk (p : Program) (frame : FrameState) (mem : MemoryState)
-    (cm : CallerMemory) (stmt : StatementKind)
-    (hBody : Trusted.MirSemantics.getElem? p.bodies frame.defId = some Captured.body_0)
+private theorem evalStepV2_mk {B : Body} (p : Program) (frame : FrameState)
+    (mem : MemoryState) (cm : CallerMemory) (stmt : StatementKind)
+    (hBody : activeFrameBody p frame = some B)
     (bb : BasicBlock)
-    (hBb : Trusted.MirSemantics.getElem? Captured.body_0.basicBlocks frame.blockIdx = some bb)
+    (hBb : Trusted.MirSemantics.getElem? B.basicBlocks frame.blockIdx = some bb)
     (hStmt : Trusted.MirSemantics.getElem? bb.statements frame.stmtIdx = some stmt) :
-    evalStepV2 p ⟨[frame], cm, mem⟩ = evalStatementV2 Captured.body_0 frame mem cm stmt := by
+    evalStepV2 p ⟨[frame], cm, mem⟩ = evalStatementV2 B frame mem cm stmt := by
   unfold evalStepV2
   dsimp only
   rw [hBody]
@@ -462,15 +462,19 @@ private theorem evalStepV2_mk (p : Program) (frame : FrameState) (mem : MemorySt
   rw [hBb]
   dsimp only
   rw [hStmt]
+  try rfl
 
-private theorem evalStepV2_term (p : Program) (frame : FrameState) (mem : MemoryState)
-    (cm : CallerMemory) (bb : BasicBlock)
-    (hBody : Trusted.MirSemantics.getElem? p.bodies frame.defId = some Captured.body_0)
-    (hBb : Trusted.MirSemantics.getElem? Captured.body_0.basicBlocks frame.blockIdx = some bb)
+private theorem evalStepV2_term {B : Body} (p : Program) (frame : FrameState)
+    (mem : MemoryState) (cm : CallerMemory) (bb : BasicBlock)
+    (hBody : activeFrameBody p frame = some B)
+    (hBb : Trusted.MirSemantics.getElem? B.basicBlocks frame.blockIdx = some bb)
     (hEnd : Trusted.MirSemantics.getElem? bb.statements frame.stmtIdx = none)
-    (hLen : Nat.beq frame.stmtIdx bb.statements.length = true) :
+    (hLen : Nat.beq frame.stmtIdx bb.statements.length = true)
+    (hNC : (match bb.terminator with
+      | .call _ _ _ _ _ | .callNe _ _ _ _ _ => false
+      | _ => true) = true) :
     evalStepV2 p ⟨[frame], cm, mem⟩ =
-      evalTerminatorV2 Captured.body_0 bb frame mem cm p.panicStrategy
+      evalTerminatorV2 B bb frame mem cm p.panicStrategy
         p.hasLocalPanicHandler p.overflowChecks := by
   unfold evalStepV2
   dsimp only
@@ -479,6 +483,8 @@ private theorem evalStepV2_term (p : Program) (frame : FrameState) (mem : Memory
   rw [hBb]
   dsimp only
   rw [hEnd, ite_bool_true hLen]
+  cases hT : bb.terminator <;> rw [hT] at hNC <;>
+    first | rfl | (simp at hNC)
 
 private theorem evalConstLit_isize (n : Nat) (h : n < Nat.pow 2 64) :
     evalConstLit (.int .isize false) (.scalar (BitVec.ofNat 128 n)) =
@@ -824,7 +830,7 @@ private theorem evalStepV2_assert_abort_body0 (cm : CallerMemory) (mem : MemoryS
       if (condVal == expected) then
         .step ⟨[{ defId := 0, blockIdx := target, stmtIdx := 0, locals := locals1 }], cm, mem⟩
       else .done (.aborted (extractCallerMemory cm mem)) := by
-  rw [evalStepV2_term _ _ _ _ _ rfl hBb hEnd hLen]
+  rw [evalStepV2_term _ _ _ _ _ rfl hBb hEnd hLen (by rw [hTerm])]
   unfold evalTerminatorV2
   rw [hTerm]
   unfold evalPrimitiveOperandV2 evalOperandToSlotV2 readPlaceV2
@@ -867,7 +873,7 @@ private theorem evalStepV2_switchBool_0_4_3_body0 (cm : CallerMemory) (mem : Mem
         stmtIdx := 0,
         locals := locals1
       }], cm, mem⟩ := by
-  rw [evalStepV2_term _ _ _ _ _ rfl hBb hEnd hLen]
+  rw [evalStepV2_term _ _ _ _ _ rfl hBb hEnd hLen (by rw [hTerm])]
   unfold evalTerminatorV2
   rw [hTerm]
   unfold evalPrimitiveOperandV2 evalOperandToSlotV2 readPlaceV2
@@ -892,7 +898,7 @@ private theorem evalStepV2_goto_body0 (cm : CallerMemory) (mem : MemoryState)
         ⟨[{ defId := 0, blockIdx := bIdx, stmtIdx := bb.statements.length, locals := locals }],
           cm, mem⟩ =
       .step ⟨[{ defId := 0, blockIdx := target, stmtIdx := 0, locals := locals }], cm, mem⟩ := by
-  rw [evalStepV2_term _ _ _ _ _ rfl hBb hEnd hLen]
+  rw [evalStepV2_term _ _ _ _ _ rfl hBb hEnd hLen (by rw [hTerm])]
   unfold evalTerminatorV2
   rw [hTerm]
   rfl
@@ -912,7 +918,7 @@ private theorem evalStepV2_return_isize_body0 (cm : CallerMemory)
         ⟨[{ defId := 0, blockIdx := bIdx, stmtIdx := bb.statements.length, locals := locals }],
           cm, entryMemoryWithCaller cm⟩ =
       .done (.returned ⟨.scalar ⟨.isize, false, BitVec.ofNat 128 ret⟩, cm⟩) := by
-  rw [evalStepV2_term _ _ _ _ _ rfl hBb hEnd hLen]
+  rw [evalStepV2_term _ _ _ _ _ rfl hBb hEnd hLen (by rw [hTerm])]
   unfold evalTerminatorV2
   rw [hTerm, ite_bool_false hClean]
   dsimp only
@@ -1769,56 +1775,28 @@ private theorem evalStepV2_mk_body1 (frame : FrameState) (cm : CallerMemory)
     (hDef : frame.defId = 1)
     (hBb : Trusted.MirSemantics.getElem? Captured.body_1.basicBlocks frame.blockIdx = some bb)
     (hStmt : Trusted.MirSemantics.getElem? bb.statements frame.stmtIdx = some stmt)
-    (_hLe : Nat.beq frame.stmtIdx bb.statements.length = false) :
+    (_hLe : Nat.beq frame.stmtIdx bb.statements.length = false)
+    (hSys : frame.sysrootOp? = none) :
     evalStepV2 (entryProgForBody Captured.program 1) ⟨[frame], cm, mem⟩ =
-      evalStatementV2 Captured.body_1 frame mem cm stmt := by
-  unfold evalStepV2
-  dsimp only
-  rw [hDef]
-  dsimp only [entryProgForBody, Captured.program]
-  change (match Trusted.MirSemantics.getElem? Captured.body_1.basicBlocks frame.blockIdx with
-    | none => StepResult.fault .unsupported
-    | some bb =>
-      match Trusted.MirSemantics.getElem? bb.statements frame.stmtIdx with
-      | some stmt => evalStatementV2 Captured.body_1 frame mem cm stmt
-      | none =>
-        if Nat.beq frame.stmtIdx bb.statements.length then
-          evalTerminatorV2 Captured.body_1 bb frame mem cm
-            Captured.program.panicStrategy Captured.program.hasLocalPanicHandler
-        else StepResult.fault .unsupported) = _
-  rw [hBb]
-  dsimp only
-  rw [hStmt]
+      evalStatementV2 Captured.body_1 frame mem cm stmt :=
+  evalStepV2_mk _ frame mem cm stmt
+    (by unfold activeFrameBody; rw [hSys, hDef]; rfl) bb hBb hStmt
 
 private theorem evalStepV2_term_body1 (frame : FrameState) (cm : CallerMemory)
     (mem : MemoryState) (bb : BasicBlock)
     (hDef : frame.defId = 1)
     (hBb : Trusted.MirSemantics.getElem? Captured.body_1.basicBlocks frame.blockIdx = some bb)
     (hEnd : Trusted.MirSemantics.getElem? bb.statements frame.stmtIdx = none)
-    (hLen : Nat.beq frame.stmtIdx bb.statements.length = true) :
+    (hLen : Nat.beq frame.stmtIdx bb.statements.length = true)
+    (hSys : frame.sysrootOp? = none)
+    (hNC : (match bb.terminator with
+      | .call _ _ _ _ _ | .callNe _ _ _ _ _ => false
+      | _ => true) = true) :
     evalStepV2 (entryProgForBody Captured.program 1) ⟨[frame], cm, mem⟩ =
       evalTerminatorV2 Captured.body_1 bb frame mem cm
-        Captured.program.panicStrategy Captured.program.hasLocalPanicHandler := by
-  unfold evalStepV2
-  dsimp only
-  rw [hDef]
-  dsimp only [entryProgForBody, Captured.program]
-  change (match Trusted.MirSemantics.getElem? Captured.body_1.basicBlocks frame.blockIdx with
-    | none => StepResult.fault .unsupported
-    | some bb =>
-      match Trusted.MirSemantics.getElem? bb.statements frame.stmtIdx with
-      | some stmt => evalStatementV2 Captured.body_1 frame mem cm stmt
-      | none =>
-        if Nat.beq frame.stmtIdx bb.statements.length then
-          evalTerminatorV2 Captured.body_1 bb frame mem cm
-            Captured.program.panicStrategy Captured.program.hasLocalPanicHandler
-        else StepResult.fault .unsupported) = _
-  rw [hBb]
-  dsimp only
-  rw [hEnd]
-  dsimp only
-  rw [ite_bool_true hLen]
-  rfl
+        Captured.program.panicStrategy Captured.program.hasLocalPanicHandler :=
+  evalStepV2_term _ frame mem cm bb
+    (by unfold activeFrameBody; rw [hSys, hDef]; rfl) hBb hEnd hLen hNC
 
 private theorem checkValV2_ptr_mut_isize {v : Val}
     (h : checkValV2 v (.ref .mut (.int .isize false)) = true) :
@@ -2105,7 +2083,7 @@ private theorem body1_satisfies (q : Query)
       .step ⟨[⟨1, 0, 1, l1, none, none, none⟩], cm, mem0⟩ := rfl
   have h12 : evalStepV2 p1 ⟨[⟨1, 0, 1, l1, none, none, none⟩], cm, mem0⟩ =
       .step ⟨[⟨1, 0, 2, l2, none, none, none⟩], cm, mem0⟩ := by
-    rw [evalStepV2_mk_body1 _ cm mem0 _ _ rfl rfl rfl rfl]
+    rw [evalStepV2_mk_body1 _ cm mem0 _ _ rfl rfl rfl rfl rfl]
     unfold evalStatementV2 placeStaticTyV2 resolvePlaceDestV2 evalRvalueV2 evalOperandToSlotV2 readPlaceV2
     dsimp only [Captured.body_1, l1, Trusted.MirSemantics.getElem?]
     rw [ite_bool_false (rfl : (!isSupportedV2LocalTy (.int .isize false)) = false),
@@ -2147,7 +2125,7 @@ private theorem body1_satisfies (q : Query)
       .step ⟨[⟨1, 0, 3, l3, none, none, none⟩], cm, mem'⟩ := by
     have hDest : resolvePlaceDestV2 Captured.body_1.locals l2 mem0 ⟨1, [.deref]⟩
         (.int .isize false) = .ok (.deref (.int .isize false) ⟨8, 3⟩ pv) := rfl
-    rw [evalStepV2_mk_body1 _ cm mem0 _ _ rfl rfl rfl rfl]
+    rw [evalStepV2_mk_body1 _ cm mem0 _ _ rfl rfl rfl rfl rfl]
     unfold evalStatementV2 placeStaticTyV2
     dsimp only
     rw [show Trusted.MirSemantics.getElem? Captured.body_1.locals 1 =
@@ -2173,7 +2151,7 @@ private theorem body1_satisfies (q : Query)
       .step ⟨[⟨1, 0, 5, l5, none, none, none⟩], cm, mem'⟩ := rfl
   have h56 : evalStepV2 p1 ⟨[⟨1, 0, 5, l5, none, none, none⟩], cm, mem'⟩ =
       .step ⟨[⟨1, 0, 6, l6, none, none, none⟩], cm, mem'⟩ := by
-    rw [evalStepV2_mk_body1 _ cm mem' _ _ rfl rfl rfl rfl]
+    rw [evalStepV2_mk_body1 _ cm mem' _ _ rfl rfl rfl rfl rfl]
     unfold evalStatementV2 placeStaticTyV2 resolvePlaceDestV2 evalRvalueV2 evalOperandToSlotV2 readPlaceV2
     dsimp only [Captured.body_1, l5, Trusted.MirSemantics.getElem?]
     rw [ite_bool_false (rfl : (!isSupportedV2LocalTy (.int .isize false)) = false),
@@ -2188,7 +2166,7 @@ private theorem body1_satisfies (q : Query)
       .step ⟨[⟨1, 0, 7, l7, none, none, none⟩], cm, mem'⟩ := rfl
   have h78 : evalStepV2 p1 ⟨[⟨1, 0, 7, l7, none, none, none⟩], cm, mem'⟩ =
       .step ⟨[⟨1, 0, 8, l8, none, none, none⟩], cm, mem'⟩ := by
-    rw [evalStepV2_mk_body1 _ cm mem' _ _ rfl rfl rfl rfl]
+    rw [evalStepV2_mk_body1 _ cm mem' _ _ rfl rfl rfl rfl rfl]
     unfold evalStatementV2 placeStaticTyV2 resolvePlaceDestV2 evalRvalueV2 evalOperandToSlotV2 readPlaceV2
     dsimp only [Captured.body_1, l7, Trusted.MirSemantics.getElem?]
     rw [ite_bool_false (rfl : (!isSupportedV2LocalTy (.int .isize false)) = false),
@@ -2201,7 +2179,7 @@ private theorem body1_satisfies (q : Query)
     rfl
   have h89 : evalStepV2 p1 ⟨[⟨1, 0, 8, l8, none, none, none⟩], cm, mem'⟩ =
       .step ⟨[⟨1, 0, 9, l9, none, none, none⟩], cm, mem'⟩ := by
-    rw [evalStepV2_mk_body1 _ cm mem' _ _ rfl rfl rfl rfl]
+    rw [evalStepV2_mk_body1 _ cm mem' _ _ rfl rfl rfl rfl rfl]
     unfold evalStatementV2 placeStaticTyV2 resolvePlaceDestV2 evalRvalueV2 evalPrimitiveOperandV2 evalOperandToSlotV2 readPlaceV2
     dsimp only [Captured.body_1, l8, Trusted.MirSemantics.getElem?, setElem?]
     rw [ite_bool_false (rfl : (!isSupportedV2LocalTy (.int .isize false)) = false),
@@ -2228,7 +2206,7 @@ private theorem body1_satisfies (q : Query)
     rw [ite_prop_true hbZ] at hPostSpec
     have hTerm : evalStepV2 p1 ⟨[⟨1, 0, 9, l9, none, none, none⟩], cm, mem'⟩ =
         .done (.aborted (extractCallerMemory cm mem')) := by
-      rw [evalStepV2_term_body1 _ cm mem' _ rfl rfl rfl rfl]
+      rw [evalStepV2_term_body1 _ cm mem' _ rfl rfl rfl rfl rfl rfl]
       unfold evalTerminatorV2 evalPrimitiveOperandV2 evalOperandToSlotV2 readPlaceV2
       dsimp only [Captured.body_1, l9, Trusted.MirSemantics.getElem?, liveUninitSlot, setElem?]
       rw [ite_bool_false (rfl : (!isSupportedV2LocalTy .bool) = false), ite_prop_true rfl]
@@ -2265,7 +2243,7 @@ private theorem body1_satisfies (q : Query)
        .dead, .dead, .dead, .immediate none]
     have hTerm0 : evalStepV2 p1 ⟨[⟨1, 0, 9, l9, none, none, none⟩], cm, mem'⟩ =
         .step ⟨[⟨1, 1, 0, l_b1_0, none, none, none⟩], cm, mem'⟩ := by
-      rw [evalStepV2_term_body1 _ cm mem' _ rfl rfl rfl rfl]
+      rw [evalStepV2_term_body1 _ cm mem' _ rfl rfl rfl rfl rfl rfl]
       unfold evalTerminatorV2 evalPrimitiveOperandV2 evalOperandToSlotV2 readPlaceV2
       dsimp only [Captured.body_1, l9, Trusted.MirSemantics.getElem?, liveUninitSlot, setElem?]
       rw [ite_bool_false (rfl : (!isSupportedV2LocalTy .bool) = false), ite_prop_true rfl]
@@ -2276,7 +2254,7 @@ private theorem body1_satisfies (q : Query)
     have hWfDiv := checkValV2_isize_ofNat hDivLt
     have hB1_01 : evalStepV2 p1 ⟨[⟨1, 1, 0, l_b1_0, none, none, none⟩], cm, mem'⟩ =
         .step ⟨[⟨1, 1, 1, l_b1_1, none, none, none⟩], cm, mem'⟩ := by
-      rw [evalStepV2_mk_body1 _ cm mem' _ _ rfl rfl rfl rfl]
+      rw [evalStepV2_mk_body1 _ cm mem' _ _ rfl rfl rfl rfl rfl]
       unfold evalStatementV2 placeStaticTyV2 resolvePlaceDestV2 evalRvalueV2 evalPrimitiveOperandV2 evalOperandToSlotV2 readPlaceV2
       dsimp only [Captured.body_1, l_b1_0, Trusted.MirSemantics.getElem?, liveUninitSlot, setElem?]
       rw [ite_bool_false (rfl : (!isSupportedV2LocalTy (.int .isize false)) = false), ite_prop_true rfl]
@@ -2299,7 +2277,7 @@ private theorem body1_satisfies (q : Query)
     let retVal := Val.scalar ⟨.isize, false, BitVec.ofNat 128 (a / b)⟩
     have hB1_ret : evalStepV2 p1 ⟨[⟨1, 1, 3, l_b1_3, none, none, none⟩], cm, mem'⟩ =
         .done (.returned ⟨retVal, extractCallerMemory cm mem'⟩) := by
-      rw [evalStepV2_term_body1 _ cm mem' _ rfl rfl rfl rfl]
+      rw [evalStepV2_term_body1 _ cm mem' _ rfl rfl rfl rfl rfl rfl]
       unfold evalTerminatorV2
       dsimp only [Captured.body_1, l_b1_3, Trusted.MirSemantics.getElem?]
       have h0 : hasEscapingRodataPtr cm mem' (.int .isize false) retVal = false := rfl

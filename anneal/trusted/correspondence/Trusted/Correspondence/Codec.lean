@@ -36,6 +36,7 @@ inductive RefProjectionElem where
   | field (fieldIdx : FieldIdx) (ty : TyId)
   | constantIndex (offset : Nat) (minLength : Nat) (fromEnd : Bool)
   | downcast (variantIdx : Nat)
+  | index (localId : LocalId)
   | unsupported
 
 /-- Reference MIR place (`Miri.MIR.Place`). -/
@@ -73,6 +74,7 @@ inductive RefRvalue where
   | aggregateRange (elemTy : TyId) (startOp endOp : RefOperand)
   | aggregateOption (variantIdx : Nat) (innerTy : TyId)
       (payload : Option RefOperand)
+  | aggregateStruct (structTy : TyId) (fields : List RefOperand)
   | unsupported
 
 /-- Reference MIR statement (`Miri.MIR.StatementKind`). -/
@@ -98,6 +100,9 @@ inductive RefTerminatorKind where
       (target : Option BasicBlockId) (unwind : UnwindAction)
   | sysrootCall (op : SysrootNumOp) (args : List RefOperand) (dst : RefPlace)
       (target : Option BasicBlockId) (unwind : UnwindAction)
+  | callNe (eqCallee : DefId) (args : List RefOperand) (dst : RefPlace)
+      (target : Option BasicBlockId) (unwind : UnwindAction)
+  | drop (place : RefPlace) (target : BasicBlockId) (unwind : UnwindAction)
   | unsupported
 
 /-- Reference MIR basic block (`Miri.MIR.BasicBlock`). -/
@@ -182,9 +187,9 @@ noncomputable def typesAreCanonical : List MirTy → Bool
 
 mutual
   /-- Recursively intern all structural sub-types (`pointee` in `.ref`/`.rawPtr`
-  and `fields` in `.tuple`) in bottom-up topological order before interning the
-  enclosing `MirTy`, guaranteeing that pointee and field layouts are always
-  present in `(encodeProg p).types`. -/
+  and `fields` in `.tuple`/`.struct_`) in bottom-up topological order before
+  interning the enclosing `MirTy`, guaranteeing that pointee and field layouts
+  are always present in `(encodeProg p).types`. -/
   noncomputable def collectTy (acc : List MirTy) : MirTy → List MirTy
     | .bool => insertTy .bool acc
     | .int w s => insertTy (.int w s) acc
@@ -206,6 +211,7 @@ mutual
     | .range elem => insertTy (.range elem) (collectTy acc elem)
     | .option elem => insertTy (.option elem) (collectTy acc elem)
     | .tuple fs => insertTy (.tuple fs) (collectTyList acc fs)
+    | .struct_ l fs => insertTy (.struct_ l fs) (collectTyList acc fs)
 
   /-- Intern a list of `MirTy` descriptors left-to-right. -/
   noncomputable def collectTyList (acc : List MirTy) : List MirTy → List MirTy
@@ -238,7 +244,8 @@ noncomputable def mapOption {α β : Type} (f : α → Option β) :
 noncomputable def collectProjElem (acc : List MirTy) :
     ProjectionElem → List MirTy
   | .field _ ty => collectTy acc ty
-  | .deref | .constantIndex _ _ _ | .downcast _ | .unsupported => acc
+  | .deref | .constantIndex _ _ _ | .downcast _ | .index _ | .unsupported =>
+    acc
 
 /-- Intern all `MirTy` descriptors carried in `p.projection`. -/
 noncomputable def collectPlace (acc : List MirTy) (p : Place) : List MirTy :=
@@ -270,6 +277,8 @@ noncomputable def collectRvalue (acc : List MirTy) : Rvalue → List MirTy
     let acc1 :=
       match payload with | some op => collectOperand acc op | none => acc
     collectTy acc1 innerTy
+  | .aggregateStruct structTy ops =>
+    collectTy (ops.foldl collectOperand acc) structTy
   | .unsupported => acc
 
 /-- Intern all `MirTy` descriptors carried in a `StatementKind`. -/
@@ -282,12 +291,13 @@ noncomputable def collectTerminator (acc : List MirTy) :
     TerminatorKind → List MirTy
   | .switchInt d _ => collectOperand acc d
   | .assert c _ _ _ _ => collectOperand acc c
-  | .call _ args dst _ _ | .coreCall _ args dst _ _ =>
+  | .call _ args dst _ _ | .coreCall _ args dst _ _ | .callNe _ args dst _ _ =>
     collectPlace (args.foldl collectOperand acc) dst
   | .sysrootCall op args dst _ _ =>
     collectPlace
       (args.foldl collectOperand (collectTy acc (.int op.width op.signed)))
       dst
+  | .drop place _ _ => collectPlace acc place
   | .goto _ | .return_ | .unreachable | .unwindResume | .unsupported => acc
 
 /-- Intern all `MirTy` descriptors carried in a `BasicBlock`. -/
@@ -311,6 +321,7 @@ noncomputable def encodeProjElem (ts : List MirTy) :
   | .field idx ty => .field idx (lookupTyId ts ty)
   | .constantIndex off minLen fromEnd => .constantIndex off minLen fromEnd
   | .downcast v => .downcast v
+  | .index l => .index l
   | .unsupported => .unsupported
 
 /-- Encode a `Place` against type table `ts`. -/
@@ -349,6 +360,8 @@ noncomputable def encodeRvalue (ts : List MirTy) : Rvalue → RefRvalue
   | .aggregateOption v innerTy payload =>
     .aggregateOption v (lookupTyId ts innerTy)
       (optMap (encodeOperand ts) payload)
+  | .aggregateStruct structTy ops =>
+    .aggregateStruct (lookupTyId ts structTy) (ops.map (encodeOperand ts))
   | .unsupported => .unsupported
 
 /-- Encode a `StatementKind` against type table `ts`. -/
@@ -375,6 +388,9 @@ noncomputable def encodeTerminator (ts : List MirTy) :
     .coreCall op (args.map (encodeOperand ts)) (encodePlace ts dst) t u
   | .sysrootCall op args dst t u =>
     .sysrootCall op (args.map (encodeOperand ts)) (encodePlace ts dst) t u
+  | .callNe callee args dst t u =>
+    .callNe callee (args.map (encodeOperand ts)) (encodePlace ts dst) t u
+  | .drop place t u => .drop (encodePlace ts place) t u
   | .unsupported => .unsupported
 
 /-- Encode a `BasicBlock` against type table `ts`. -/
@@ -408,6 +424,7 @@ noncomputable def decodeProjElem (ts : List MirTy) :
   | .constantIndex off minLen fromEnd =>
     some (.constantIndex off minLen fromEnd)
   | .downcast v => some (.downcast v)
+  | .index l => some (.index l)
   | .unsupported => some .unsupported
 
 /-- Decode a `RefPlace` against type table `ts`. -/
@@ -461,6 +478,9 @@ noncomputable def decodeRvalue (ts : List MirTy) : RefRvalue → Option Rvalue
       optMap (fun op => Rvalue.aggregateOption v ty (some op))
         (decodeOperand ts pOp)
     | none, _ => none
+  | .aggregateStruct tyId ops =>
+    optMap2 Rvalue.aggregateStruct
+      (MirSemantics.getElem? ts tyId) (mapOption (decodeOperand ts) ops)
   | .unsupported => some .unsupported
 
 /-- Decode a `RefStatementKind` against type table `ts`. -/
@@ -493,6 +513,11 @@ noncomputable def decodeTerminator (ts : List MirTy) :
   | .sysrootCall op args dst t u =>
     optMap2 (fun args' dst' => .sysrootCall op args' dst' t u)
       (mapOption (decodeOperand ts) args) (decodePlace ts dst)
+  | .callNe callee args dst t u =>
+    optMap2 (fun args' dst' => .callNe callee args' dst' t u)
+      (mapOption (decodeOperand ts) args) (decodePlace ts dst)
+  | .drop place t u =>
+    optMap (fun place' => .drop place' t u) (decodePlace ts place)
   | .unsupported => some .unsupported
 
 /-- Decode a `RefBasicBlock` against type table `ts`. -/

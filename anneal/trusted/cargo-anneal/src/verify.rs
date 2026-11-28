@@ -196,6 +196,43 @@ impl PanicStrategy {
     }
 }
 
+/// Closed allowlist of formatting and diagnostic traits whose crate-local
+/// impls may be excluded from whole-crate capture once proven unreachable from
+/// all verified bodies.
+///
+/// Variant declaration order matches lexicographical canonical path order.
+#[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord, Serialize, Deserialize)]
+enum ExcludedTrait {
+    #[serde(rename = "core::error::Error")]
+    Error,
+    #[serde(rename = "core::fmt::Debug")]
+    Debug,
+    #[serde(rename = "core::fmt::Display")]
+    Display,
+}
+
+impl ExcludedTrait {
+    const fn as_str(self) -> &'static str {
+        match self {
+            Self::Error => "core::error::Error",
+            Self::Debug => "core::fmt::Debug",
+            Self::Display => "core::fmt::Display",
+        }
+    }
+}
+
+fn parse_excluded_trait_arg(raw: &str) -> std::result::Result<ExcludedTrait, String> {
+    match raw {
+        "core::error::Error" => Ok(ExcludedTrait::Error),
+        "core::fmt::Debug" => Ok(ExcludedTrait::Debug),
+        "core::fmt::Display" => Ok(ExcludedTrait::Display),
+        _ => Err(format!(
+            "trait `{raw}` is not in the closed --exclude-trait allowlist \
+             (allowed: core::error::Error, core::fmt::Debug, core::fmt::Display)"
+        )),
+    }
+}
+
 #[derive(Args)]
 #[command(subcommand_negates_reqs = true)]
 pub struct VerifyArgs {
@@ -209,6 +246,7 @@ pub struct VerifyArgs {
             "overflow_checks",
             "select",
             "instantiate",
+            "exclude_trait",
             "features",
             "all_features",
             "no_default_features",
@@ -243,6 +281,17 @@ pub struct VerifyArgs {
         value_parser = parse_instantiation_arg
     )]
     instantiate: Vec<Instantiation>,
+    /// Exclude local impls of an allowlisted diagnostic trait
+    /// (`core::error::Error`, `core::fmt::Debug`, `core::fmt::Display`) from
+    /// whole-crate capture once proven unreachable from verified bodies.
+    #[arg(
+        long,
+        requires = "manifest_path",
+        conflicts_with_all = ["request", "select", "instantiate"],
+        value_name = "TRAIT",
+        value_parser = parse_excluded_trait_arg
+    )]
+    exclude_trait: Vec<ExcludedTrait>,
     /// Space or comma separated list of Cargo features to activate.
     #[arg(
         long,
@@ -511,6 +560,16 @@ struct RustcArgs {
     /// (`{"path":"...","args":[...]}`).
     #[arg(long, value_name = "JSON", value_parser = parse_instantiation_arg)]
     instantiate: Vec<Instantiation>,
+    /// Exclude local impls of an allowlisted diagnostic trait
+    /// (`core::error::Error`, `core::fmt::Debug`, `core::fmt::Display`) from
+    /// whole-crate capture once proven unreachable from verified bodies.
+    #[arg(
+        long,
+        conflicts_with_all = ["select", "instantiate"],
+        value_name = "TRAIT",
+        value_parser = parse_excluded_trait_arg
+    )]
+    exclude_trait: Vec<ExcludedTrait>,
 }
 
 /// CLI arguments for `cargo anneal shard-plan`.
@@ -806,6 +865,7 @@ impl VerifyArgs {
                 || self.overflow_checks
                 || !self.select.is_empty()
                 || !self.instantiate.is_empty()
+                || !self.exclude_trait.is_empty()
                 || !self.features.is_empty()
                 || self.all_features
                 || self.no_default_features
@@ -813,9 +873,9 @@ impl VerifyArgs {
                 return Err(cmd.error(
                     ErrorKind::ArgumentConflict,
                     "--request, --manifest-path, --proof-dir, parent --panic, parent \
-                     --overflow-checks, parent --select, parent --instantiate, --features, \
-                     --all-features, and --no-default-features cannot be used with the `rustc` \
-                     subcommand",
+                     --overflow-checks, parent --select, parent --instantiate, parent \
+                     --exclude-trait, --features, --all-features, and --no-default-features \
+                     cannot be used with the `rustc` subcommand",
                 ));
             }
             if rustc.stdlib_crate.is_some() && !self.allow_unstable_feature.is_empty() {
@@ -1027,33 +1087,36 @@ enum Scope {
         #[serde(default, skip_serializing_if = "BTreeSet::is_empty")]
         instantiations: BTreeSet<Instantiation>,
     },
-    // Empty struct variant (not unit) so `deny_unknown_fields` rejects extra
-    // keys such as `roots` on `{"kind":"crate"}`.
-    Crate {},
+    // Struct variant so `deny_unknown_fields` rejects extra keys such as
+    // `roots` on `{"kind":"crate"}` while allowing optional `excluded_traits`.
+    Crate {
+        #[serde(default, skip_serializing_if = "BTreeSet::is_empty")]
+        excluded_traits: BTreeSet<ExcludedTrait>,
+    },
 }
 
 impl Scope {
     const fn root_theorem(&self, profile_version: u32) -> (&'static str, &'static str) {
         match (self, profile_version) {
-            (Self::Crate {}, 2) => ("CrateTheoremV2", "CrateV2"),
+            (Self::Crate { .. }, 2) => ("CrateTheoremV2", "CrateV2"),
             (Self::SelectedUnit { .. }, 2) => ("UnitTheoremV2", "CrateV2"),
-            (Self::Crate {}, _) => ("CrateTheorem", "Crate"),
+            (Self::Crate { .. }, _) => ("CrateTheorem", "Crate"),
             (Self::SelectedUnit { .. }, _) => ("UnitTheorem", "Crate"),
         }
     }
 
     const fn verified_status(&self, tainted: bool) -> &'static str {
         match (self, tainted) {
-            (Self::Crate {}, false) => "crate_verified",
+            (Self::Crate { .. }, false) => "crate_verified",
             (Self::SelectedUnit { .. }, false) => "selected_unit_verified",
-            (Self::Crate {}, true) => "tainted_crate_verified",
+            (Self::Crate { .. }, true) => "tainted_crate_verified",
             (Self::SelectedUnit { .. }, true) => "tainted_selected_unit_verified",
         }
     }
 
     const fn shard_label(&self) -> &'static str {
         match self {
-            Self::Crate {} => "crate",
+            Self::Crate { .. } => "crate",
             Self::SelectedUnit { .. } => "unit",
         }
     }
@@ -1921,6 +1984,7 @@ fn cargo_compilation(
     overflow_checks: bool,
     select: &[String],
     instantiate: &[Instantiation],
+    exclude_trait: &[ExcludedTrait],
     features: &[String],
     all_features: bool,
     no_default_features: bool,
@@ -2048,7 +2112,7 @@ fn cargo_compilation(
     }
     source_files.sort();
     let scope = if select.is_empty() && instantiate.is_empty() {
-        Scope::Crate {}
+        Scope::Crate { excluded_traits: exclude_trait.iter().copied().collect() }
     } else {
         Scope::SelectedUnit {
             roots: select.iter().cloned().collect(),
@@ -2090,6 +2154,7 @@ fn cargo_request(args: &VerifyArgs, manifest: &Path) -> Result<(Request, PathBuf
         args.overflow_checks,
         &args.select,
         &args.instantiate,
+        &args.exclude_trait,
         &args.features,
         args.all_features,
         args.no_default_features,
@@ -2342,7 +2407,7 @@ fn prepare_rustc_request(
     }
 
     let scope = if rustc.select.is_empty() && rustc.instantiate.is_empty() {
-        Scope::Crate {}
+        Scope::Crate { excluded_traits: rustc.exclude_trait.iter().copied().collect() }
     } else {
         Scope::SelectedUnit {
             roots: rustc.select.iter().cloned().collect(),
@@ -3551,8 +3616,11 @@ fn run_capture_process(
         command.arg("--sysroot").arg(sysroot);
     }
     match scope {
-        Scope::Crate {} => {
+        Scope::Crate { excluded_traits } => {
             command.args(["--scope", "crate"]);
+            for tr in excluded_traits {
+                command.arg("--exclude-trait").arg(tr.as_str());
+            }
         }
         Scope::SelectedUnit { roots, instantiations } => {
             if roots.is_empty() && instantiations.is_empty() {
@@ -4017,6 +4085,7 @@ fn run<Out: std::io::Write + Send, ErrOut: std::io::Write + Send>(
     let capture_tool_path = capture_outcome.capture_tool_path;
     let capture_ms = capture_outcome.capture_ms;
     let manifest = capture_outcome.manifest;
+    let excluded_items = validate_excluded_census(&manifest.census, &request.scope)?;
     let shards_outcome = capture_outcome.shards;
 
     let bundle = work.join("anneal");
@@ -4517,17 +4586,17 @@ fn run<Out: std::io::Write + Send, ErrOut: std::io::Write + Send>(
     } else {
         "experimental pointer-free MIR semantics"
     };
-    let mut assumptions: Vec<&str> = vec!["faithful pinned compiler capture"];
+    let mut assumptions: Vec<String> = vec!["faithful pinned compiler capture".to_owned()];
     // Without a candidate-tier module, the pointer-free semantics carries no
     // `experimental` assumption. Profile v2's entry-validity narrowing bounds
     // what results mean whatever the tier, so it is always recorded.
     if profile_v2 || experimental {
-        assumptions.push(semantics_assumption);
+        assumptions.push(semantics_assumption.to_owned());
     }
-    assumptions.push(&lean_assumption);
-    assumptions.push("intact compiler and verification environment");
+    assumptions.push(lean_assumption.clone());
+    assumptions.push("intact compiler and verification environment".to_owned());
     if !allowed_features.is_empty() {
-        assumptions.push(crate::core::inspect::schema::UNSTABLE_FEATURES_ASSUMPTION);
+        assumptions.push(crate::core::inspect::schema::UNSTABLE_FEATURES_ASSUMPTION.to_owned());
     }
     if request.compilation.panic == PanicStrategy::Abort
         && !manifest.program.has_local_panic_handler
@@ -4543,6 +4612,7 @@ fn run<Out: std::io::Write + Send, ErrOut: std::io::Write + Send>(
              may abort or diverge, and only caller-memory effects before the \
              panic are modeled; a build that elides the overflow checks wraps \
              instead of aborting"
+                .to_owned()
         } else {
             "--panic abort models failed non-optional safe assertions and admitted \
              core::panicking calls as .aborted, meaning control entered the panic \
@@ -4550,12 +4620,25 @@ fn run<Out: std::io::Write + Send, ErrOut: std::io::Write + Send>(
              (including downstream #![no_std] binary #[panic_handler]s) are \
              unverified and may abort or diverge, and only caller-memory effects \
              before the panic are modeled"
+                .to_owned()
         });
+    }
+    if let Scope::Crate { excluded_traits } = &request.scope
+        && !excluded_traits.is_empty()
+    {
+        let traits_list =
+            excluded_traits.iter().map(|t| t.as_str()).collect::<Vec<_>>().join(", ");
+        assumptions.push(format!(
+            "trait impls excluded via --exclude-trait ({traits_list}) are unverified and were \
+             proven unreachable from all verified bodies by rustc-capture; the whole-crate claim \
+             does not cover excluded trait impls or their nested definitions"
+        ));
     }
     if active_sandbox == ActiveSandbox::LinuxLandlockSeccomp {
         assumptions.push(
             "Tier 2 Landlock + seccomp containment shares host mount and PID namespaces \
-             (metadata/symlink existence probing remains visible to the elaborator)",
+             (metadata/symlink existence probing remains visible to the elaborator)"
+                .to_owned(),
         );
     }
     let mut deferred: Vec<&str> = Vec::new();
@@ -4650,6 +4733,12 @@ fn run<Out: std::io::Write + Send, ErrOut: std::io::Write + Send>(
             .as_object_mut()
             .unwrap()
             .insert("sorry_declarations".into(), Value::Array(sorry_decls));
+    }
+    if let Some(excluded_items) = excluded_items {
+        result
+            .as_object_mut()
+            .unwrap()
+            .insert("excluded_items".into(), Value::Array(excluded_items));
     }
     if !ndjson_route {
         let spec_warnings = extract_spec_warnings(&audit)
@@ -4926,6 +5015,63 @@ fn validate_sorry_declarations(
             ));
         }
         Ok(None)
+    }
+}
+
+/// Validate that `census` entries carrying `excluded_by` match the requested
+/// `scope` (only allowed under `Scope::Crate { excluded_traits }` with
+/// non-empty `excluded_traits`, and every excluded item must have
+/// `selected == false`). Returns `Ok(None)` when no traits are excluded so
+/// default Receipt v3 output stays byte-identical, or `Ok(Some(items))`
+/// listing every excluded `required == true` census entry for explicit
+/// Receipt v3 disclosure (omitting non-required entries such as
+/// `LifetimeParam`).
+fn validate_excluded_census(census: &Value, scope: &Scope) -> Result<Option<Vec<Value>>> {
+    let Some(items) = census.as_array() else {
+        return Err(error("tool_failed", "capture", "malformed capture census metadata"));
+    };
+    let allowed: BTreeSet<&str> = match scope {
+        Scope::Crate { excluded_traits } => excluded_traits.iter().map(|t| t.as_str()).collect(),
+        Scope::SelectedUnit { .. } => BTreeSet::new(),
+    };
+    let mut excluded_items = Vec::new();
+    for item in items {
+        let Some(obj) = item.as_object() else {
+            return Err(error("tool_failed", "capture", "malformed capture census entry"));
+        };
+        if let Some(excluded_val) = obj.get("excluded_by")
+            && !excluded_val.is_null()
+        {
+            let Some(tr) = excluded_val.as_str() else {
+                return Err(error(
+                    "tool_failed",
+                    "capture",
+                    "malformed capture census excluded_by field",
+                ));
+            };
+            if !allowed.contains(tr) {
+                return Err(error(
+                    "tool_failed",
+                    "capture",
+                    format!("capture excluded census item with unrequested trait `{tr}`"),
+                ));
+            }
+            if obj.get("selected").and_then(Value::as_bool) != Some(false) {
+                return Err(error(
+                    "tool_failed",
+                    "capture",
+                    "capture marked an excluded census item as selected",
+                ));
+            }
+            if obj.get("required").and_then(Value::as_bool) == Some(true) {
+                excluded_items.push(item.clone());
+            }
+        }
+    }
+    if allowed.is_empty() {
+        Ok(None)
+    } else {
+        Ok(Some(excluded_items))
     }
 }
 
@@ -5895,6 +6041,7 @@ fn run_shard_plan(args: &ShardPlanArgs, work: &Path) -> Result<ShardPlan> {
             args.overflow_checks,
             &args.select,
             &args.instantiate,
+            &[],
             &args.features,
             args.all_features,
             args.no_default_features,
@@ -7614,6 +7761,7 @@ mod tests {
             overflow_checks: false,
             select: Vec::new(),
             instantiate: Vec::new(),
+            exclude_trait: Vec::new(),
             features: Vec::new(),
             all_features: false,
             no_default_features: false,
@@ -7639,7 +7787,7 @@ mod tests {
             fast_check: false,
             command: None,
         };
-        let crate_scope = Scope::Crate {};
+        let crate_scope = Scope::Crate { excluded_traits: BTreeSet::new() };
         let unit_scope = Scope::SelectedUnit {
             roots: BTreeSet::from(["foo".to_owned()]),
             instantiations: BTreeSet::new(),
@@ -7666,6 +7814,7 @@ mod tests {
                         overflow_checks: false,
                         select: Vec::new(),
                         instantiate: Vec::new(),
+                        exclude_trait: Vec::new(),
                         features: Vec::new(),
                         all_features: false,
                         no_default_features: false,
@@ -8025,6 +8174,7 @@ mod tests {
             },
             select: Vec::new(),
             instantiate: Vec::new(),
+            exclude_trait: Vec::new(),
         };
         let mut originals = Vec::new();
         let prepared = prepare_rustc_request(&rustc, &work, &mut originals).unwrap();
@@ -8074,6 +8224,7 @@ mod tests {
                 theorem: DeclSpec { module: None, decl: "Proof.verify".to_owned() },
                 select: Vec::new(),
                 instantiate: Vec::new(),
+                exclude_trait: Vec::new(),
             }
         };
         assert_eq!(
@@ -8101,8 +8252,27 @@ mod tests {
 
     #[test]
     fn scope_deserialization_rejects_extra_fields_on_crate_and_selected_unit() {
-        assert_eq!(serde_json::from_str::<Scope>(r#"{"kind":"crate"}"#).unwrap(), Scope::Crate {});
-        assert_eq!(serde_json::to_string(&Scope::Crate {}).unwrap(), r#"{"kind":"crate"}"#);
+        let empty_crate = Scope::Crate { excluded_traits: BTreeSet::new() };
+        assert_eq!(serde_json::from_str::<Scope>(r#"{"kind":"crate"}"#).unwrap(), empty_crate);
+        assert_eq!(serde_json::to_string(&empty_crate).unwrap(), r#"{"kind":"crate"}"#);
+        let excluded_crate = Scope::Crate {
+            excluded_traits: BTreeSet::from([
+                ExcludedTrait::Error,
+                ExcludedTrait::Debug,
+                ExcludedTrait::Display,
+            ]),
+        };
+        assert_eq!(
+            serde_json::from_str::<Scope>(
+                r#"{"kind":"crate","excluded_traits":["core::fmt::Display","core::fmt::Debug","core::error::Error","core::fmt::Debug"]}"#
+            )
+            .unwrap(),
+            excluded_crate
+        );
+        assert_eq!(
+            serde_json::to_string(&excluded_crate).unwrap(),
+            r#"{"kind":"crate","excluded_traits":["core::error::Error","core::fmt::Debug","core::fmt::Display"]}"#
+        );
         assert_eq!(
             serde_json::from_str::<Scope>(r#"{"kind":"selected_unit","roots":["a","b","a"]}"#)
                 .unwrap(),
@@ -8128,9 +8298,12 @@ mod tests {
             r#"{"kind":"crate","roots":["a"]}"#,
             r#"{"kind":"crate","roots":null}"#,
             r#"{"kind":"crate","instantiations":[]}"#,
+            r#"{"kind":"crate","excluded_traits":["core::clone::Clone"]}"#,
+            r#"{"kind":"crate","excluded_traits":["core::ops::Drop"]}"#,
             r#"{"kind":"crate","extra":1}"#,
             r#"{"kind":"selected_unit"}"#,
             r#"{"kind":"selected_unit","roots":null}"#,
+            r#"{"kind":"selected_unit","roots":["a"],"excluded_traits":["core::fmt::Debug"]}"#,
             r#"{"kind":"selected_unit","roots":["a"],"extra":1}"#,
             r#"{"kind":"selected_unit","roots":[],"instantiations":[{"path":"foo","args":[],"extra":1}]}"#,
             r#"{"kind":"other"}"#,
@@ -8140,6 +8313,39 @@ mod tests {
                 "expected invalid scope JSON to fail: {invalid}"
             );
         }
+    }
+
+    #[test]
+    fn validate_excluded_census_enforces_scope_and_selected_false() {
+        let empty_crate = Scope::Crate { excluded_traits: BTreeSet::new() };
+        let debug_crate = Scope::Crate {
+            excluded_traits: BTreeSet::from([ExcludedTrait::Debug]),
+        };
+        let plain_census = json!([
+            {"def_id": 1, "path": "ok", "kind": "Fn", "has_body": true, "selected": true, "required": true}
+        ]);
+        assert!(validate_excluded_census(&plain_census, &empty_crate).unwrap().is_none());
+        assert_eq!(validate_excluded_census(&plain_census, &debug_crate).unwrap(), Some(vec![]));
+
+        let with_debug = json!([
+            {"def_id": 1, "path": "ok", "kind": "Fn", "has_body": true, "selected": true, "required": true},
+            {"def_id": 2, "path": "<E as core::fmt::Debug>::fmt", "kind": "AssocFn", "has_body": true, "selected": false, "required": true, "excluded_by": "core::fmt::Debug"},
+            {"def_id": 3, "path": "<E as core::fmt::Debug>::fmt::'_", "kind": "LifetimeParam", "has_body": false, "selected": false, "required": false, "excluded_by": "core::fmt::Debug"}
+        ]);
+        assert!(validate_excluded_census(&with_debug, &empty_crate).is_err());
+        let extracted = validate_excluded_census(&with_debug, &debug_crate).unwrap().unwrap();
+        assert_eq!(extracted.len(), 1);
+        assert_eq!(extracted[0]["path"], "<E as core::fmt::Debug>::fmt");
+
+        let unrequested = json!([
+            {"def_id": 2, "path": "<E as core::fmt::Display>::fmt", "kind": "AssocFn", "has_body": true, "selected": false, "required": true, "excluded_by": "core::fmt::Display"}
+        ]);
+        assert!(validate_excluded_census(&unrequested, &debug_crate).is_err());
+
+        let selected_excluded = json!([
+            {"def_id": 2, "path": "<E as core::fmt::Debug>::fmt", "kind": "AssocFn", "has_body": true, "selected": true, "required": true, "excluded_by": "core::fmt::Debug"}
+        ]);
+        assert!(validate_excluded_census(&selected_excluded, &debug_crate).is_err());
     }
 
     #[cfg(not(feature = "setup"))]
@@ -8155,6 +8361,7 @@ mod tests {
             overflow_checks: false,
             select: Vec::new(),
             instantiate: Vec::new(),
+            exclude_trait: Vec::new(),
             features: Vec::new(),
             all_features: false,
             no_default_features: false,
@@ -8212,6 +8419,7 @@ mod tests {
                 overflow_checks: false,
                 select: Vec::new(),
                 instantiate: Vec::new(),
+                exclude_trait: Vec::new(),
                 features: Vec::new(),
                 all_features: false,
                 no_default_features: false,
@@ -8293,6 +8501,7 @@ mod tests {
             theorem: DeclSpec { module: Some("Proof".to_owned()), decl: "Proof.verify".to_owned() },
             select: Vec::new(),
             instantiate: Vec::new(),
+            exclude_trait: Vec::new(),
         };
 
         let work1 = tempfile::tempdir().unwrap();
@@ -9580,6 +9789,7 @@ mod tests {
             overflow_checks: false,
             select: Vec::new(),
             instantiate: Vec::new(),
+            exclude_trait: Vec::new(),
             features: Vec::new(),
             all_features: false,
             no_default_features: false,

@@ -226,7 +226,8 @@ theorem auxTyOfCode_auxTyCode {ty : MirTy} {code : Nat}
   | int w s =>
     cases w <;> cases s <;> (injection h with hc; subst hc; rfl)
   | never | char | ordering | enum _ | tuple _ | ref _ _ | rawPtr _ _
-  | slice _ | str | array _ _ | vec _ | box _ | rangeTo _ | rangeFrom _ | range _ | option _ | unsupported => cases h
+  | slice _ | str | array _ _ | vec _ | box _ | rangeTo _ | rangeFrom _ | range _
+  | option _ | unsupported | struct_ _ _ => cases h
 
 theorem indexOfTy_some_getElem? {ts : List MirTy} {ty : MirTy} {idx : TyId}
     (h : indexOfTy ts ty = some idx) :
@@ -406,7 +407,8 @@ theorem refHasPadding_ok (types : List MirTy) (ty : MirTy) :
   cases ty with
   | int w s => cases w <;> cases s <;> exact ⟨_, rfl⟩
   | bool | unit | never | char | ordering | ref _ _ | rawPtr _ _
-  | slice _ | str | array _ _ | vec _ | box _ | rangeTo _ | rangeFrom _ | range _ | option _ | unsupported => exact ⟨_, rfl⟩
+  | slice _ | str | array _ _ | vec _ | box _ | rangeTo _ | rangeFrom _ | range _
+  | option _ | unsupported | struct_ _ _ => exact ⟨_, rfl⟩
   | enum ety =>
     dsimp only [refHasPadding, refLocalLayoutForTy, refLayoutDataForTy,
       refAsEnumTy?, refEnumLayoutData]
@@ -490,7 +492,8 @@ theorem slotMatchesTy_liveUninitSlot (ty : MirTy) :
   cases ty with
   | unit => rfl
   | bool | int _ _ | never | char | ordering | tuple _ | ref _ _ | rawPtr _ _
-  | slice _ | str | array _ _ | vec _ | box _ | rangeTo _ | rangeFrom _ | range _ | option _ | unsupported =>
+  | slice _ | str | array _ _ | vec _ | box _ | rangeTo _ | rangeFrom _ | range _
+  | option _ | unsupported | struct_ _ _ =>
     exact ⟨fun h => (by cases h), fun _ h => (by cases h)⟩
   | enum ety =>
     dsimp only [liveUninitSlot]
@@ -787,7 +790,8 @@ theorem evalConstLit_checkVal {ty : MirTy} {lit : ConstLit} {v : Val}
       injection h with hv; subst hv; rfl
     | scalar _ | rodataBytes _ | rodataRef _ _ _ _ => cases h
   | never | tuple _ | ref _ _ | rawPtr _ _ | slice _ | str | array _ _
-  | vec _ | box _ | rangeTo _ | rangeFrom _ | range _ | option _ | unsupported =>
+  | vec _ | box _ | rangeTo _ | rangeFrom _ | range _ | option _ | unsupported
+  | struct_ _ _ =>
     cases lit <;> cases h
   | int w s =>
     cases lit with
@@ -1303,8 +1307,8 @@ theorem evalRvalue_slotsMatchTys {bodyLocals : List MirTy}
             | _ => cases h
   | useRetag _ | ref _ _ | addressOf _ _ | fakeAddressOf _ | aggregateTuple _
   | aggregateArray _ _ | repeat_ _ _ _
-  | aggregateRangeTo _ _ | aggregateRangeFrom _ _
-  | aggregateRange _ _ _ | aggregateOption _ _ _ | unsupported => cases h
+  | aggregateRangeTo _ _ | aggregateRangeFrom _ _ | aggregateRange _ _ _
+  | aggregateOption _ _ _ | unsupported | aggregateStruct _ _ => cases h
 
 theorem writePlace_slotsMatchTys {bodyLocals : List MirTy}
     {locals locals' : List LocalSlot} {mem mem' : MemoryState}

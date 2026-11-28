@@ -2160,6 +2160,8 @@ def rvalueHasDeref : Rvalue → Bool
   | .binaryOp _ l r => operandHasDeref l || operandHasDeref r
   | .discriminant p | .ref _ p | .addressOf _ p | .fakeAddressOf p => placeHasDeref p
   | .aggregateTuple ops | .aggregateArray _ ops => ops.any operandHasDeref
+
+  | .aggregateStruct _ ops => ops.any operandHasDeref
   | .unsupported => false
 
 def operandReadyInFrame (bodyLocals : List MirTy) (locals : List LocalSlot)
@@ -2235,7 +2237,8 @@ def describeUndefinedStepFault (prog : Program) (frame : FrameState) (mem : Memo
               | .optionTake _ | .ptrAdd _ _ | .sliceLen | .arrayEq _ _
               | .vecWithCapacity _ | .vecLen | .vecPush | .vecResize | .vecExtendFromSlice
               | .vecIndex | .vecIndexMut | .vecDeref | .vecDerefMut | .vecReserve
-              | .boxFromVec | .boxDeref | .boxDerefMut | .boxClone | .boxNew _ =>
+              | .boxFromVec | .boxDeref | .boxDerefMut | .boxClone | .boxNew _
+              | .partialEqNe _ =>
                 "pointer or memory access undefined: Trusted.MirSemantics.FaultKind.undefined"
               | .numIsMultipleOf _ _ | .numCheckedAdd _ _ | .numCheckedMul _ _
               | .numCheckedSub _ _ | .numSaturatingAdd _ _ | .numWrappingShl _ _
@@ -2247,7 +2250,8 @@ def describeUndefinedStepFault (prog : Program) (frame : FrameState) (mem : Memo
                 "uninitialized or invalid value undefined: Trusted.MirSemantics.FaultKind.undefined"
             | .error _ =>
               "uninitialized or invalid value undefined: Trusted.MirSemantics.FaultKind.undefined"
-        | .call _ argOps dstPlace _ _ | .sysrootCall _ argOps dstPlace _ _ =>
+        | .call _ argOps dstPlace _ _ | .sysrootCall _ argOps dstPlace _ _
+        | .callNe _ argOps dstPlace _ _ =>
           match evalCallArgs body.locals argOps frame.locals mem with
           | .ok _ =>
             if isDeadSlotOpt (compGetElem? frame.locals dstPlace.localId) then
@@ -2255,6 +2259,11 @@ def describeUndefinedStepFault (prog : Program) (frame : FrameState) (mem : Memo
             else
               "uninitialized or invalid value undefined: Trusted.MirSemantics.FaultKind.undefined"
           | .error _ =>
+            "uninitialized or invalid value undefined: Trusted.MirSemantics.FaultKind.undefined"
+        | .drop place _ _ =>
+          if placeHasDeref place then
+            "pointer or memory access undefined: Trusted.MirSemantics.FaultKind.undefined"
+          else
             "uninitialized or invalid value undefined: Trusted.MirSemantics.FaultKind.undefined"
         | _ =>
           "uninitialized or invalid value undefined: Trusted.MirSemantics.FaultKind.undefined"
@@ -2321,6 +2330,7 @@ inductive StrictStepPreAction where
   | branch (fromBlk : Nat) (discr : String)
   | callEnter (callee : String) (args : List Val)
   | callReturn (callee : String) (ret : Val) (dstLocal? : Option Nat)
+  | unsupportedTerminator (reason : String)
 
 def inspectStrictPreAction (prog : Program) (extCallees : List String) (st : State) :
     StrictStepPreAction :=
@@ -2352,6 +2362,10 @@ def inspectStrictPreAction (prog : Program) (extCallees : List String) (st : Sta
                 match evalCallArgs body.locals argOps frame.locals st.mem with
                 | .ok (argVals, _, _) => .callEnter calleeName argVals
                 | .error _ => .none
+            -- Fail closed: `PartialEq::ne` runs the captured `eq` body and negates
+            -- its result, which the call-event/snapshot bookkeeping does not model.
+            | .callNe _ _ _ _ _ =>
+              .unsupportedTerminator "callNe unsupported in StrictVerbatim"
             | .return_ =>
               if callers.isEmpty then
                 .none
@@ -2422,6 +2436,9 @@ def strictLoop (prog : Program) (extCallees : List String) (origFuel : Nat)
     | .externalCall extName =>
       finishJson "fault_unsupported" "null"
         ("external callee unsupported in StrictVerbatim: " ++ extName)
+        origFuel bSlots sched localsOk allocsOk padOk viols eventsRev
+    | .unsupportedTerminator reason =>
+      finishJson "fault_unsupported" "null" reason
         origFuel bSlots sched localsOk allocsOk padOk viols eventsRev
     | preAct =>
       match evalMirStepBy tyEqDepth prog 0 st with
@@ -2510,7 +2527,7 @@ def strictLoop (prog : Program) (extCallees : List String) (origFuel : Nat)
           else
             strictLoop prog extCallees origFuel bSlots sched callStack fuel st'
               localsOk allocsOk padOk viols eventsRev
-        | .none | .externalCall _ =>
+        | .none | .externalCall _ | .unsupportedTerminator _ =>
           strictLoop prog extCallees origFuel bSlots sched callStack fuel st'
             localsOk allocsOk padOk viols eventsRev
 
@@ -2639,7 +2656,7 @@ partial def compositionalLoop (prog : Program) (extCallees : List String) (origF
           finishJson "fault_unsupported" "null" "stmtIdx out of bounds" origFuel bSlots sched localsOk allocsOk padOk viols eventsRev
         else
           match bb.terminator with
-          | .goto _ | .unreachable | .coreCall _ _ _ _ _ =>
+          | .goto _ | .unreachable | .coreCall _ _ _ _ _ | .drop _ _ _ =>
             match evalMirStepBy tyEqDepth prog 0 { frames := [top.frame], callerMem, mem } with
             | .step st' =>
               match st'.frames with
@@ -2997,6 +3014,12 @@ partial def compositionalLoop (prog : Program) (extCallees : List String) (origF
           | .unsupported =>
             finishJson "fault_unsupported" "null"
               "unsupported terminator: Trusted.MirSemantics.FaultKind.unsupported"
+              origFuel bSlots sched localsOk allocsOk padOk viols eventsRev
+          -- Fail closed: `PartialEq::ne` runs the captured `eq` body and negates
+          -- its result, which `PendingCall` return bookkeeping does not model.
+          | .callNe _ _ _ _ _ =>
+            finishJson "fault_unsupported" "null"
+              "callNe unsupported in CompositionalITree"
               origFuel bSlots sched localsOk allocsOk padOk viols eventsRev
 
 end

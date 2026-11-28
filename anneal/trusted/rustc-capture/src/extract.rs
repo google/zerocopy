@@ -15,11 +15,12 @@
 
 use std::collections::{BTreeMap, BTreeSet};
 use rustc_abi::{
-    BackendRepr, Endian, ExternAbi, FieldIdx, HasDataLayout, Integer, Primitive, Scalar, Size,
-    TagEncoding, VariantIdx, Variants,
+    BackendRepr, Endian, ExternAbi, FieldIdx, FieldsShape, HasDataLayout, Integer, Primitive,
+    Scalar, Size, TagEncoding, VariantIdx, Variants,
 };
 use rustc_ast::Mutability;
 use rustc_hir::attrs::{InlineAttr, OptimizeAttr};
+use rustc_hir::def::DefKind;
 use rustc_middle::middle::codegen_fn_attrs::{
     CodegenFnAttrFlags, CodegenFnAttrs, SanitizerFnAttrs,
 };
@@ -274,6 +275,17 @@ fn verify_addressable_option_layout<'tcx>(
 /// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_middle/src/ty/util.rs#L35-L39
 /// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_middle/src/mir/syntax.rs#L1433-L1443
 pub fn ty<'tcx>(tcx: TyCtxt<'tcx>, t: ty::Ty<'tcx>) -> Result<ir::Ty> {
+    ty_in(tcx, t, &mut Vec::new())
+}
+
+/// [`ty`] with the crate-local structs currently being translated in
+/// `visiting`. A struct can reach itself only through a pointer or an owning
+/// `Box`/`Vec` handle. [`struct_ty`] refuses reference and raw-pointer fields
+/// before recursing, and every other type constructor threads `visiting`, so
+/// re-entering a struct still in `visiting` (for example through
+/// `Option<Box<Self>>` or `Vec<Self>`) fails closed rather than recursing
+/// without bound.
+fn ty_in<'tcx>(tcx: TyCtxt<'tcx>, t: ty::Ty<'tcx>, visiting: &mut Vec<DefId>) -> Result<ir::Ty> {
     // Every admitted value must fit the owned scalar representation. Rejecting
     // a type is deliberate: replacing a pointer, payload, or unmodeled
     // aggregate with a machine word would assign semantics the proof model does
@@ -291,13 +303,13 @@ pub fn ty<'tcx>(tcx: TyCtxt<'tcx>, t: ty::Ty<'tcx>) -> Result<ir::Ty> {
         // https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_middle/src/mir/syntax.rs#L1626-L1642
         ty::Tuple(elements) if elements.len() == 2 => {
             if let (Ok(ir::Ty::Int(ity)), Ok(ir::Ty::Bool)) =
-                (ty(tcx, elements[0]), ty(tcx, elements[1]))
+                (ty_in(tcx, elements[0], visiting), ty_in(tcx, elements[1], visiting))
             {
                 Ok(ir::Ty::OverflowPair(ity))
             } else {
                 let mut fields = Vec::with_capacity(elements.len());
                 for elem in elements {
-                    let ft = ty(tcx, elem)?;
+                    let ft = ty_in(tcx, elem, visiting)?;
                     if !ft.is_sized() {
                         return Err(format!("unsized tuple element in {t:?} is unsupported"));
                     }
@@ -309,7 +321,7 @@ pub fn ty<'tcx>(tcx: TyCtxt<'tcx>, t: ty::Ty<'tcx>) -> Result<ir::Ty> {
         ty::Tuple(elements) => {
             let mut fields = Vec::with_capacity(elements.len());
             for elem in elements {
-                let ft = ty(tcx, elem)?;
+                let ft = ty_in(tcx, elem, visiting)?;
                 if !ft.is_sized() {
                     return Err(format!("unsized tuple element in {t:?} is unsupported"));
                 }
@@ -324,7 +336,7 @@ pub fn ty<'tcx>(tcx: TyCtxt<'tcx>, t: ty::Ty<'tcx>) -> Result<ir::Ty> {
             };
             Ok(ir::Ty::Ref {
                 mutability,
-                pointee: Box::new(ty(tcx, pointee)?),
+                pointee: Box::new(ty_in(tcx, pointee, visiting)?),
             })
         }
         ty::RawPtr(pointee, mutability) => {
@@ -334,11 +346,11 @@ pub fn ty<'tcx>(tcx: TyCtxt<'tcx>, t: ty::Ty<'tcx>) -> Result<ir::Ty> {
             };
             Ok(ir::Ty::RawPtr {
                 mutability,
-                pointee: Box::new(ty(tcx, pointee)?),
+                pointee: Box::new(ty_in(tcx, pointee, visiting)?),
             })
         }
         ty::Slice(elem) => {
-            let elem_ty = ty(tcx, elem)?;
+            let elem_ty = ty_in(tcx, elem, visiting)?;
             if !elem_ty.is_sized() {
                 return Err(format!("unsized slice element in {t:?} is unsupported"));
             }
@@ -347,7 +359,7 @@ pub fn ty<'tcx>(tcx: TyCtxt<'tcx>, t: ty::Ty<'tcx>) -> Result<ir::Ty> {
             })
         }
         ty::Array(elem, len) => {
-            let elem_ty = ty(tcx, elem)?;
+            let elem_ty = ty_in(tcx, elem, visiting)?;
             if !elem_ty.is_sized() {
                 return Err(format!("unsized array element in {t:?} is unsupported"));
             }
@@ -398,7 +410,7 @@ pub fn ty<'tcx>(tcx: TyCtxt<'tcx>, t: ty::Ty<'tcx>) -> Result<ir::Ty> {
                 return Err(format!("unsupported Box type argument: {t:?}"));
             };
             Ok(ir::Ty::Box {
-                pointee: Box::new(ty(tcx, pointee_ty)?),
+                pointee: Box::new(ty_in(tcx, pointee_ty, visiting)?),
             })
         }
         // `alloc::vec::Vec<T, A>` (`library/alloc/src/vec/mod.rs:438-441`, at
@@ -424,7 +436,7 @@ pub fn ty<'tcx>(tcx: TyCtxt<'tcx>, t: ty::Ty<'tcx>) -> Result<ir::Ty> {
             let Some(elem_ty) = args[0].as_type() else {
                 return Err(format!("unsupported Vec element type: {t:?}"));
             };
-            let elem = ty(tcx, elem_ty)?;
+            let elem = ty_in(tcx, elem_ty, visiting)?;
             if !elem.is_sized() {
                 return Err(format!("unsized Vec element in {t:?} is unsupported"));
             }
@@ -454,7 +466,7 @@ pub fn ty<'tcx>(tcx: TyCtxt<'tcx>, t: ty::Ty<'tcx>) -> Result<ir::Ty> {
             let Some(arg_ty) = args[0].as_type() else {
                 return Err(format!("unsupported core ADT argument: {t:?}"));
             };
-            let elem = ty(tcx, arg_ty)?;
+            let elem = ty_in(tcx, arg_ty, visiting)?;
             if elem
                 != ir::Ty::Int(IntTy {
                     width: IntWidth::Isize,
@@ -485,7 +497,7 @@ pub fn ty<'tcx>(tcx: TyCtxt<'tcx>, t: ty::Ty<'tcx>) -> Result<ir::Ty> {
             let Some(arg_ty) = args[0].as_type() else {
                 return Err(format!("unsupported core ADT argument: {t:?}"));
             };
-            let elem = ty(tcx, arg_ty)?;
+            let elem = ty_in(tcx, arg_ty, visiting)?;
             if !elem.is_sized() {
                 return Err(format!("unsized Option payload in {t:?} is unsupported"));
             }
@@ -545,15 +557,126 @@ pub fn ty<'tcx>(tcx: TyCtxt<'tcx>, t: ty::Ty<'tcx>) -> Result<ir::Ty> {
                 .map_err(|reason| format!("{reason}: {t:?}"))?;
             Ok(ir::Ty::Enum(ety))
         }
+        // Non-generic (`args.is_empty()`) structs "defined in the crate
+        // currently being compiled" (`is_local()`) map to
+        // `Trusted.MirAst.MirTy.struct_`, keyed by `struct_id` like enums.
+        // https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_span/src/def_id.rs#L291-L295
+        ty::Adt(adt, args) if adt.did().is_local() && adt.is_struct() && args.is_empty() => {
+            if visiting.contains(&adt.did()) {
+                return Err(format!("recursive struct types are unsupported: {t:?}"));
+            }
+            visiting.push(adt.did());
+            let result = struct_ty(tcx, t, adt, visiting);
+            visiting.pop();
+            result
+        }
         _ => Err(format!("unsupported type: {t:?}")),
     }
 }
 
+/// Translate a crate-local non-generic struct type, taking its size,
+/// alignment, and per-field offsets from `rustc`'s layout rather than from
+/// declaration order: `FieldsShape::Arbitrary` stores "Offsets for the first
+/// byte of each field, ordered to match the source definition order. This
+/// vector does not go in increasing order."
+/// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_abi/src/lib.rs#L1663-L1667
+///
+/// Admission refuses structs whose values carry behavior or invariants the
+/// model lacks: a `Drop` impl, unsafe fields, interior mutability (`!Freeze`),
+/// `packed`, `simd`, or `scalable` representations, uninhabited layouts, and
+/// any field outside the reference- and pointer-free Profile v2 data fragment
+/// (checked by [`ir::StructTy::try_new`]). Each field's model layout must
+/// agree with `rustc`'s layout of the field type.
+fn struct_ty<'tcx>(
+    tcx: TyCtxt<'tcx>,
+    t: ty::Ty<'tcx>,
+    adt: ty::AdtDef<'tcx>,
+    visiting: &mut Vec<DefId>,
+) -> Result<ir::Ty> {
+    let typing_env = TypingEnv::fully_monomorphized();
+    if adt.has_dtor(tcx) {
+        return Err(format!("structs with a Drop impl are unsupported: {t:?}"));
+    }
+    if t.has_unsafe_fields() || !t.is_freeze(tcx, typing_env) {
+        return Err(format!("interior-mutable or unsafe-field structs are unsupported: {t:?}"));
+    }
+    let repr = adt.repr();
+    if repr.packed() || repr.simd() || repr.scalable() {
+        return Err(format!(
+            "packed, simd, or scalable struct representations are unsupported: {t:?}"
+        ));
+    }
+    let layout = tcx
+        .layout_of(typing_env.as_query_input(t))
+        .map_err(|err| format!("failed to compute struct layout for {t:?}: {err}"))?;
+    if layout.is_uninhabited() {
+        return Err(format!("uninhabited structs are unsupported: {t:?}"));
+    }
+    if !matches!(layout.variants, Variants::Single { index } if index.as_usize() == 0) {
+        return Err(format!("unexpected struct variant layout: {t:?}"));
+    }
+    let FieldsShape::Arbitrary { offsets, .. } = &layout.fields else {
+        return Err(format!("unexpected struct field layout: {t:?}"));
+    };
+    let variant = adt.non_enum_variant();
+    if offsets.len() != variant.fields.len() {
+        return Err(format!("struct layout field count disagrees with {t:?}"));
+    }
+    let mut fields = Vec::with_capacity(offsets.len());
+    let mut field_offsets = Vec::with_capacity(offsets.len());
+    for (index, field) in variant.fields.iter_enumerated() {
+        let field_raw = tcx
+            .try_normalize_erasing_regions(typing_env, field.ty(tcx, ty::List::empty()))
+            .map_err(|_| format!("unnormalizable field {index:?} in {t:?}"))?;
+        // `walk` visits "`self` and any types reachable from `self`" but
+        // "does not descend into the fields of structs", so this refuses a
+        // reference or raw pointer anywhere in the field's own type (for
+        // example `(*const Node, u8)`) before translating it. Nested structs
+        // repeat the check, so no pointer cycle reaches `ty_in`.
+        // https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_middle/src/ty/sty.rs#L2136-L2146
+        if field_raw.walk().any(|arg| {
+            arg.as_type()
+                .is_some_and(|inner| matches!(inner.kind(), ty::Ref(..) | ty::RawPtr(..)))
+        }) {
+            return Err(format!(
+                "struct field {index:?} of type {field_raw:?} contains a reference or raw \
+                 pointer, which is outside the Profile v2 data fragment: {t:?}"
+            ));
+        }
+        let field_ty = ty_in(tcx, field_raw, visiting)?;
+        let (field_size, field_align_log2) = field_ty
+            .v2_layout()
+            .ok_or_else(|| format!("struct field {index:?} in {t:?} lacks layout"))?;
+        let field_layout = tcx
+            .layout_of(typing_env.as_query_input(field_raw))
+            .map_err(|err| format!("failed to compute layout for {field_raw:?}: {err}"))?;
+        if field_layout.size.bytes() != field_size as u64
+            || field_layout.align.abi.bytes().trailing_zeros() != field_align_log2
+        {
+            return Err(format!(
+                "struct field {index:?} model layout disagrees with rustc in {t:?}"
+            ));
+        }
+        let offset = usize::try_from(offsets[index].bytes())
+            .map_err(|_| format!("struct field offset overflows usize in {t:?}"))?;
+        fields.push(field_ty);
+        field_offsets.push(offset);
+    }
+    let size = usize::try_from(layout.size.bytes())
+        .map_err(|_| format!("struct size overflows usize in {t:?}"))?;
+    let align_log2 = layout.align.abi.bytes().trailing_zeros();
+    let sty =
+        ir::StructTy::try_new(struct_id(tcx, adt.did()), size, align_log2, field_offsets, fields)
+            .map_err(|reason| format!("{reason}: {t:?}"))?;
+    Ok(ir::Ty::Struct(sty))
+}
+
 /// `Place` has a local plus projections. This adapter preserves the compiler
-/// local index without renumbering and translates `Deref` and `Field`
-/// projections 1:1, refusing every other `ProjectionElem`. Which projection
-/// sequences are admitted where (at most one leading `Deref`, `Field` only
-/// on tuples, overflow pairs, and ranges) is checked by `ir::Body::try_new`.
+/// local index without renumbering and translates `Deref`, `Field`,
+/// `ConstantIndex`, and `Index` projections 1:1, refusing every other
+/// `ProjectionElem`. Which projection sequences are admitted where (at most
+/// one leading `Deref`, `Field` only on tuples, structs, overflow pairs, and
+/// ranges) is checked by `ir::Body::try_new`.
 /// `Field(FieldIdx, T)` records "A field (e.g., `f` in `_1.f`)" with its
 /// type `T`, which `ir::Body::try_new` checks against the projected type.
 /// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_middle/src/mir/syntax.rs#L1182-L1201
@@ -589,6 +712,14 @@ fn place<'tcx>(tcx: TyCtxt<'tcx>, place: &mir::Place<'tcx>) -> Result<ir::Place>
                 projection.push(ir::PlaceElem::Downcast {
                     variant_idx: variant.as_usize(),
                 });
+            }
+            // `Index(V)` is an "Index into a slice/array"; for `x[i]` on a
+            // reference, "The `x[i]` is turned into a `Deref` followed by an
+            // `Index`". `ir::Body::try_new` checks that `V` is a `usize` local
+            // and that the indexed place is an array or dereferenced slice.
+            // https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_middle/src/mir/syntax.rs#L1203-L1216
+            mir::ProjectionElem::Index(local) => {
+                projection.push(ir::PlaceElem::Index { local: local.as_u32() })
             }
             other => {
                 return Err(format!(
@@ -780,7 +911,25 @@ fn operand<'tcx>(
                     return Err("the never type has no scalar constants".into());
                 }
                 ir::Ty::Array { .. } => {
-                    let lit = decode_rodata_array_lit(tcx, typing_env, const_val, raw_ty, &t)?;
+                    let lit = decode_rodata_bytes_lit(tcx, typing_env, const_val, raw_ty, &t)?;
+                    ir::validate_constant(&t, &lit)?;
+                    return Ok(ir::Operand::Constant { ty: t, lit });
+                }
+                // As for `()`, a zero-sized struct constant must be the
+                // compiler's `ZeroSized` value ("Only for ZSTs."); every other
+                // struct constant becomes its provenance-free byte image.
+                // https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_middle/src/mir/consts.rs#L38-L39
+                ir::Ty::Struct(sty) => {
+                    let lit = if sty.layout().size() == 0 {
+                        if !matches!(const_val, mir::ConstValue::ZeroSized) {
+                            return Err("zero-sized struct constant lacks the compiler ZeroSized \
+                                 representation"
+                                .into());
+                        }
+                        ConstLit::ZeroSized
+                    } else {
+                        decode_rodata_bytes_lit(tcx, typing_env, const_val, raw_ty, &t)?
+                    };
                     ir::validate_constant(&t, &lit)?;
                     return Ok(ir::Operand::Constant { ty: t, lit });
                 }
@@ -880,7 +1029,10 @@ fn read_rodata_bytes_from_alloc<Prov: Provenance>(
     Ok((bytes, align_log2))
 }
 
-fn decode_rodata_array_lit<'tcx>(
+/// Decode a by-value array or non-zero-sized struct constant into its byte
+/// image, cross-checking the model layout size against `rustc`'s layout and
+/// refusing provenance (see [`read_rodata_bytes_from_alloc`]).
+fn decode_rodata_bytes_lit<'tcx>(
     tcx: TyCtxt<'tcx>,
     typing_env: TypingEnv<'tcx>,
     value: mir::ConstValue,
@@ -888,13 +1040,13 @@ fn decode_rodata_array_lit<'tcx>(
     ty_ir: &ir::Ty,
 ) -> Result<ConstLit> {
     let Some((expected_size, _)) = ty_ir.v2_layout() else {
-        return Err(format!("array constant type {ty_ir:?} lacks layout"));
+        return Err(format!("constant type {ty_ir:?} lacks layout"));
     };
     let layout = tcx
         .layout_of(typing_env.as_query_input(raw_ty))
-        .map_err(|err| format!("failed to compute layout for array constant {raw_ty:?}: {err}"))?;
+        .map_err(|err| format!("failed to compute layout for constant {raw_ty:?}: {err}"))?;
     if layout.is_unsized() || layout.size.bytes() as usize != expected_size {
-        return Err("array constant size disagrees with its layout".into());
+        return Err("constant size disagrees with its layout".into());
     }
     match value {
         mir::ConstValue::ZeroSized if expected_size == 0 => Ok(ConstLit::RodataBytes {
@@ -905,7 +1057,7 @@ fn decode_rodata_array_lit<'tcx>(
                 return Err("non-little-endian array constants are unsupported".into());
             }
             if si.size().bytes() as usize != expected_size {
-                return Err("scalar array constant width disagrees with its type".into());
+                return Err("scalar constant width disagrees with its type".into());
             }
             let le = si.to_bits_unchecked().to_le_bytes();
             let bytes = le[..expected_size]
@@ -916,13 +1068,13 @@ fn decode_rodata_array_lit<'tcx>(
         }
         mir::ConstValue::Indirect { alloc_id, offset } => {
             let GlobalAlloc::Memory(const_alloc) = tcx.global_alloc(alloc_id) else {
-                return Err("non-memory global allocations are unsupported in array constants".into());
+                return Err("non-memory global allocations are unsupported in by-value constants".into());
             };
             let (bytes, _) =
                 read_rodata_bytes_from_alloc(&tcx, const_alloc.inner(), offset, expected_size)?;
             Ok(ConstLit::RodataBytes { bytes })
         }
-        other => Err(format!("unsupported array constant representation: {other:?}")),
+        other => Err(format!("unsupported by-value constant representation: {other:?}")),
     }
 }
 
@@ -1332,6 +1484,30 @@ fn rvalue<'tcx>(
                 }
                 ir::Rvalue::AggregateTuple { fields }
             }
+            // For `AggregateKind::Adt`, "The second field is the variant
+            // index. It's equal to 0 for struct and union expressions. The
+            // last field is the active field number and is present only for
+            // union expressions". A crate-local struct aggregate therefore has
+            // variant `0` and no active field, and its operands are indexed
+            // by `FieldIdx`. The user type annotation index is a borrowck-only
+            // annotation: `CleanupPostBorrowck` runs
+            // `body.user_type_annotations.raw.clear();`.
+            // https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_middle/src/mir/syntax.rs#L1550-L1556
+            // https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_mir_transform/src/cleanup_post_borrowck.rs#L81
+            mir::AggregateKind::Adt(adt_did, variant, substs, _user_ty, active_field)
+                if adt_did.is_local() && tcx.adt_def(*adt_did).is_struct() =>
+            {
+                if variant.as_usize() != 0 || active_field.is_some() {
+                    return Err(format!("unsupported struct aggregate: {value:?}"));
+                }
+                let struct_raw = ty::Ty::new_adt(tcx, tcx.adt_def(*adt_did), substs);
+                let struct_ir = ty(tcx, struct_raw)?;
+                let mut fields = Vec::with_capacity(ops.len());
+                for op in ops.iter() {
+                    fields.push(operand(tcx, typing_env, op)?);
+                }
+                ir::Rvalue::AggregateStruct { ty: struct_ir, fields }
+            }
             mir::AggregateKind::Adt(adt_did, variant, substs, _, None) if substs.len() == 1 => {
                 let Some(arg_ty) = substs[0].as_type() else {
                     return Err(format!("unsupported ADT aggregate: {value:?}"));
@@ -1489,7 +1665,7 @@ fn check_call_source(call_source: mir::CallSource) -> Result<()> {
 /// `Sized` itself) yields `None`.
 /// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_hir/src/lang_items.rs#L155
 /// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_hir/src/lang_items.rs#L20-L29
-fn sysroot_core_crate(tcx: TyCtxt<'_>) -> Option<rustc_span::def_id::CrateNum> {
+pub(crate) fn sysroot_core_crate(tcx: TyCtxt<'_>) -> Option<rustc_span::def_id::CrateNum> {
     let sized = tcx.lang_items().get(rustc_hir::LangItem::Sized)?;
     if sized.is_local() || tcx.crate_name(sized.krate) != rustc_span::sym::core {
         return None;
@@ -1779,7 +1955,8 @@ fn promote_box_as_ref(
                     && operand_only_shared_deref_reads(right, lid)
             }
             ir::Rvalue::AggregateTuple { fields }
-            | ir::Rvalue::AggregateArray { elems: fields, .. } => {
+            | ir::Rvalue::AggregateArray { elems: fields, .. }
+            | ir::Rvalue::AggregateStruct { fields, .. } => {
                 fields.iter().all(|f| operand_only_shared_deref_reads(f, lid))
             }
             ir::Rvalue::Repeat { operand, .. } => operand_only_shared_deref_reads(operand, lid),
@@ -1844,7 +2021,8 @@ fn promote_box_as_ref(
                 }
             }
             let term_ok = match terminator {
-                RawTerminator::LocalCall { args, dst, .. } => {
+                RawTerminator::LocalCall { args, dst, .. }
+                | RawTerminator::LocalCallNe { args, dst, .. } => {
                     *dst != lid && args.iter().all(|a| operand_only_shared_deref_reads(a, lid))
                 }
                 RawTerminator::Resolved(terminator) => match terminator {
@@ -1859,9 +2037,11 @@ fn promote_box_as_ref(
                             && args.iter().all(|a| operand_only_shared_deref_reads(a, lid))
                     }
                     ir::Terminator::Call { args, dst, .. }
+                    | ir::Terminator::CallNe { args, dst, .. }
                     | ir::Terminator::SysrootCall { args, dst, .. } => {
                         *dst != lid && args.iter().all(|a| operand_only_shared_deref_reads(a, lid))
                     }
+                    ir::Terminator::Drop { place, .. } => place.local != lid,
                     ir::Terminator::Goto { .. }
                     | ir::Terminator::Ret
                     | ir::Terminator::Unreachable
@@ -2033,26 +2213,36 @@ fn parse_core_num_impl_method(path: &str) -> Option<(IntTy, &str)> {
 /// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/library/core/src/cmp.rs#L1034-L1078
 /// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/library/core/src/mem/mod.rs#L916-L932
 /// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/library/core/src/option.rs#L632-L1903
+///
+/// Disjointness invariant for `--exclude-trait`: every admitted `core_call_op`
+/// must remain free of trait dispatch into crate-local excluded impls; adding
+/// any new `core`/`alloc` op whose bounds or body can invoke a trait method
+/// must be checked against `ExclusionIndex::check_fn_ty` (which also rejects
+/// non-local `FnDef`s whose elaborated `predicates_of` mention an excluded
+/// trait or supertrait).
 fn core_call_op<'tcx>(
     tcx: TyCtxt<'tcx>,
     typing_env: TypingEnv<'tcx>,
     def_id: DefId,
     fn_args: ty::GenericArgsRef<'tcx>,
 ) -> Result<ir::CoreCallOp> {
-    // `Index`/`IndexMut` on slices and `PartialEq` on arrays are classified
-    // below by their trait method and generic arguments. Resolving them would
-    // yield `core` impl paths that the closed table does not list.
-    let trait_level = matches!(
-        core_or_alloc_def_path(tcx, def_id).as_deref(),
-        Some(
-            "core::ops::index::Index::index"
-                | "core::ops::index::IndexMut::index_mut"
-                | "core::cmp::PartialEq::eq"
-        )
-    ) && fn_args
-        .first()
-        .and_then(|a| a.as_type())
-        .is_some_and(|t| matches!(t.kind(), ty::Slice(_) | ty::Array(..)));
+    // `Index`/`IndexMut` on slices, `PartialEq::eq` on arrays, and every
+    // `PartialEq::ne` are classified below by their trait method and generic
+    // arguments. Resolving them would yield `core` impl paths that the closed
+    // table does not list.
+    let trait_level = core_or_alloc_def_path(tcx, def_id).as_deref()
+        == Some("core::cmp::PartialEq::ne")
+        || matches!(
+            core_or_alloc_def_path(tcx, def_id).as_deref(),
+            Some(
+                "core::ops::index::Index::index"
+                    | "core::ops::index::IndexMut::index_mut"
+                    | "core::cmp::PartialEq::eq"
+            )
+        ) && fn_args
+            .first()
+            .and_then(|a| a.as_type())
+            .is_some_and(|t| matches!(t.kind(), ty::Slice(_) | ty::Array(..)));
     let (def_id, fn_args) = if !trait_level
         && tcx.trait_of_assoc(def_id).is_some()
         && core_or_alloc_def_path(tcx, def_id).is_some()
@@ -2380,6 +2570,22 @@ fn core_call_op<'tcx>(
                 pointee: ty(tcx, pt_ty)?,
             })
         }
+        // `ne` with `Self == Rhs` on the structural primitive/array
+        // fragment executes core's `!self.eq(other)` over that fragment.
+        "core::cmp::PartialEq::ne" => {
+            let self_raw = fn_args
+                .first()
+                .and_then(|a| a.as_type())
+                .ok_or_else(|| format!("missing Self type argument in {path}"))?;
+            let rhs_raw = fn_args.get(1).and_then(|a| a.as_type()).unwrap_or(self_raw);
+            let self_ty = ty(tcx, self_raw)?;
+            let rhs_ty = ty(tcx, rhs_raw)?;
+            if self_ty == rhs_ty && self_ty.is_array_eq_elem_supported() {
+                Ok(ir::CoreCallOp::PartialEqNe { ty: self_ty })
+            } else {
+                Err(format!("unsupported PartialEq::ne types ({self_ty:?}, {rhs_ty:?})"))
+            }
+        }
         _ => Err(format!("unsupported core/alloc call `{path}`")),
     }
 }
@@ -2613,6 +2819,15 @@ pub(crate) enum RawTerminator {
         target: Option<u32>,
         unwind: ir::UnwindAction,
     },
+    /// The provided `PartialEq::ne`, executed as a call to the crate-local
+    /// `eq` item `eq_callee` ([`default_partial_eq_ne`]).
+    LocalCallNe {
+        eq_callee: LocalDefId,
+        args: Vec<ir::Operand>,
+        dst: u32,
+        target: Option<u32>,
+        unwind: ir::UnwindAction,
+    },
 }
 
 #[derive(Clone, Debug)]
@@ -2651,6 +2866,25 @@ impl ExtractedBody {
                         })?;
                         ir::Terminator::Call {
                             callee: body_index,
+                            args,
+                            dst,
+                            target,
+                            unwind,
+                        }
+                    }
+                    RawTerminator::LocalCallNe {
+                        eq_callee,
+                        args,
+                        dst,
+                        target,
+                        unwind,
+                    } => {
+                        let key = eq_callee.local_def_index.as_u32();
+                        let body_index = *body_indices.get(&key).ok_or_else(|| {
+                            format!("resolved body index missing for local callee {eq_callee:?}")
+                        })?;
+                        ir::Terminator::CallNe {
+                            eq_callee: body_index,
                             args,
                             dst,
                             target,
@@ -3099,24 +3333,29 @@ fn check_alloc_global_arg<'tcx>(
 /// `.fault .unsupported` in `Trusted.MirSemantics` if reachable while
 /// permitting verified functions whose diverging guard branches are proved
 /// unreachable.
-/// Returning calls (`target: Some(_)`) without cleanup unwinds admit three
-/// callee classes: intra-crate direct calls ([`RawTerminator::LocalCall`],
-/// Profile v1), the closed [`ir::CoreCallOp`] table (Profile v2), and audited
-/// `core::num` sysroot calls ([`verify_sysroot_num_call`], Profile v1). A
-/// sysroot `core` callee in the `CoreCallOp` table always lowers to
-/// `CoreCall`. Indirect calls, other generic or external callees, `Drop`,
-/// unwinds, assembly, and other terminators stay refused at capture time.
-/// `TerminatorKind::Call` runs [`check_call_source`] first so
-/// `CallSource::Use` fails closed even for diverging calls.
+/// Returning calls (`target: Some(_)`) without cleanup unwinds admit four
+/// callee classes: intra-crate calls ([`RawTerminator::LocalCall`], direct or
+/// dispatched to a crate-local impl by [`local_trait_impl_callee`]),
+/// the provided `PartialEq::ne` on crate-local types
+/// ([`default_partial_eq_ne`], [`RawTerminator::LocalCallNe`], Profile v2),
+/// the closed [`ir::CoreCallOp`] table (Profile v2), and audited `core::num`
+/// sysroot calls ([`verify_sysroot_num_call`], Profile v1). A sysroot `core`
+/// callee in the `CoreCallOp` table always lowers to `CoreCall`. `Drop` is
+/// admitted only for types without drop glue (Profile v2). Indirect calls,
+/// other generic or external callees, unwinds, assembly, and other
+/// terminators stay refused at capture time. `TerminatorKind::Call` runs
+/// [`check_call_source`] first so `CallSource::Use` fails closed even for
+/// diverging calls.
 ///
-/// Profile v2-only `Assert`s and all `CoreCall`s (both returning ops and
-/// diverging `PanicAbort`) select Profile v2; `capture::collect` refuses both
-/// Profile v2 and `Assert`-bearing Profile v1 bodies under `--stdlib-crate`,
-/// where language items such as the `panic_*` family would otherwise shape
-/// captured behavior. Admitting `Drop` or other returning calls also widens
-/// what `capture.rs` must check under `--stdlib-crate` and what metadata-only
-/// emission must evaluate (callee `required_consts`); update
-/// `check_stdlib_capability` and the emission note in `capture::run` first.
+/// Profile v2-only `Assert`s, `Drop`, the provided `ne`, and all `CoreCall`s
+/// (both returning ops and diverging `PanicAbort`) select Profile v2;
+/// `capture::collect` refuses both Profile v2 and `Assert`-bearing Profile v1
+/// bodies under `--stdlib-crate`, where language items such as the `panic_*`
+/// family would otherwise shape captured behavior. Admitting other returning
+/// calls also widens what `capture.rs` must check under `--stdlib-crate` and
+/// what metadata-only emission must evaluate (callee `required_consts`);
+/// update `check_stdlib_capability` and the emission note in `capture::run`
+/// first.
 /// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_middle/src/mir/syntax.rs#L692-L740
 /// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_middle/src/mir/syntax.rs#L800-L821
 fn terminator<'tcx>(
@@ -3125,6 +3364,7 @@ fn terminator<'tcx>(
     body: &mir::Body<'tcx>,
     term: &mir::TerminatorKind<'tcx>,
 ) -> Result<RawTerminator> {
+    let local_decls = &body.local_decls;
     Ok(match term {
         mir::TerminatorKind::Goto { target } => RawTerminator::Resolved(ir::Terminator::Goto {
             block: target.as_u32(),
@@ -3231,7 +3471,27 @@ fn terminator<'tcx>(
                 .iter()
                 .map(|spanned| operand(tcx, typing_env, &spanned.node))
                 .collect::<Result<Vec<_>>>()?;
-            if let Some(path) = core_or_alloc_def_path(tcx, callee_did) {
+            if let Some(callee) =
+                local_trait_impl_callee(tcx, typing_env, callee_did, generic_args)?
+            {
+                RawTerminator::LocalCall {
+                    callee,
+                    args,
+                    dst: local(destination)?,
+                    target: Some(target_bb.as_u32()),
+                    unwind: unwind_action(*unwind, "call")?,
+                }
+            } else if let Some(eq_callee) =
+                default_partial_eq_ne(tcx, typing_env, callee_did, generic_args)?
+            {
+                RawTerminator::LocalCallNe {
+                    eq_callee,
+                    args,
+                    dst: local(destination)?,
+                    target: Some(target_bb.as_u32()),
+                    unwind: unwind_action(*unwind, "call")?,
+                }
+            } else if let Some(path) = core_or_alloc_def_path(tcx, callee_did) {
                 // `core_or_alloc_def_path` pins the callee to the authenticated
                 // sysroot `core` or `alloc`, so neither a crate-local
                 // `mod core` nor a local crate built with `--crate-name core`
@@ -3300,8 +3560,161 @@ fn terminator<'tcx>(
                 }
             }
         }
+        mir::TerminatorKind::Drop {
+            place: dropped,
+            target,
+            unwind,
+            replace: _,
+            drop,
+            async_fut,
+        } => {
+            // `drop` and `async_fut` exist only "for async drop".
+            // https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_middle/src/mir/syntax.rs#L784-L787
+            if drop.is_some() || async_fut.is_some() {
+                return Err("async drop terminators are unsupported".into());
+            }
+            let unwind_ir = unwind_action(*unwind, "drop")?;
+            // If `needs_drop` "returns `false`, then `ty` definitely has no
+            // destructor (i.e., no drop glue)", so the terminator only
+            // continues to `target`. Refuse every type that may have drop
+            // glue, including custom `Drop` impls, and cross-check that drop
+            // glue resolution for the concrete type is the empty
+            // `DropGlue(_, None)` shim.
+            // https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_middle/src/ty/util.rs#L1288-L1290
+            let dropped_ty = dropped.ty(local_decls, tcx).ty;
+            if dropped_ty.has_non_region_param()
+                || dropped_ty.needs_drop(tcx, typing_env)
+                || !matches!(
+                    ty::Instance::resolve_drop_glue(tcx, dropped_ty).def,
+                    ty::InstanceKind::DropGlue(_, None)
+                )
+            {
+                return Err(format!(
+                    "Drop of {dropped_ty:?}, which may have drop glue, is unsupported"
+                ));
+            }
+            RawTerminator::Resolved(ir::Terminator::Drop {
+                place: place(tcx, dropped)?,
+                target: target.as_u32(),
+                unwind: unwind_ir,
+            })
+        }
         other => return Err(format!("unsupported terminator: {other:?}")),
     })
+}
+
+/// Resolve a trait method call that dispatches to a crate-local impl item,
+/// such as `<Pair as PartialEq>::eq` for `a == b`, or return `None` when the
+/// call does not resolve to a different crate-local item.
+///
+/// `Instance::try_resolve` "is used to find the precise code that will run
+/// for a trait method invocation, if known". The resolved item must satisfy
+/// the same restrictions as a direct intra-crate
+/// [`RawTerminator::LocalCall`] callee (a non-generic method without
+/// `#[track_caller]`), so its captured uninstantiated body is exactly the
+/// code the call executes.
+/// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_middle/src/ty/instance.rs#L471-L476
+fn local_trait_impl_callee<'tcx>(
+    tcx: TyCtxt<'tcx>,
+    typing_env: TypingEnv<'tcx>,
+    def_id: DefId,
+    fn_args: ty::GenericArgsRef<'tcx>,
+) -> Result<Option<LocalDefId>> {
+    let resolved = match ty::Instance::try_resolve(tcx, typing_env, def_id, fn_args) {
+        Ok(Some(ty::Instance { def: ty::InstanceKind::Item(resolved), .. }))
+            if resolved != def_id =>
+        {
+            resolved
+        }
+        _ => return Ok(None),
+    };
+    let Some(local) = resolved.as_local() else {
+        return Ok(None);
+    };
+    let path = item_identity(tcx, resolved);
+    if !matches!(tcx.def_kind(resolved), DefKind::AssocFn)
+        || tcx.generics_of(resolved).count() != 0
+    {
+        return Err(format!(
+            "calls to generic or monomorphized functions (`{path}`) are unsupported"
+        ));
+    }
+    if tcx.codegen_fn_attrs(resolved).flags.contains(CodegenFnAttrFlags::TRACK_CALLER) {
+        return Err(format!(
+            "intra-crate calls to #[track_caller] function `{path}` are unsupported"
+        ));
+    }
+    Ok(Some(local))
+}
+
+/// Recognize `core::cmp::PartialEq::ne` on a crate-local admitted enum or
+/// struct whose `PartialEq` impl does not override `ne`, returning that
+/// impl's `eq` item.
+///
+/// The provided method's body is `!self.eq(other)`, so the call executes the
+/// impl's `eq` and negates the result; `Trusted.MirAst.TerminatorKind.callNe`
+/// models exactly that. `Instance::try_resolve` "is used to find the precise
+/// code that will run for a trait method invocation, if known"; both `ne`
+/// (to its provided body) and `eq` (to a crate-local function item) must
+/// resolve, and `eq` must satisfy the same restrictions as an intra-crate
+/// [`RawTerminator::LocalCall`] callee: no generics and no
+/// `#[track_caller]`. A call that resolves to an overriding crate-local `ne`
+/// is captured as an ordinary call by [`local_trait_impl_callee`] instead.
+/// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/library/core/src/cmp.rs#L257-L265
+/// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_middle/src/ty/instance.rs#L471-L476
+fn default_partial_eq_ne<'tcx>(
+    tcx: TyCtxt<'tcx>,
+    typing_env: TypingEnv<'tcx>,
+    def_id: DefId,
+    fn_args: ty::GenericArgsRef<'tcx>,
+) -> Result<Option<LocalDefId>> {
+    if core_def_path(tcx, def_id).as_deref() != Some("core::cmp::PartialEq::ne") {
+        return Ok(None);
+    }
+    let (Some(self_raw), Some(rhs_raw)) =
+        (fn_args.first().and_then(|a| a.as_type()), fn_args.get(1).and_then(|a| a.as_type()))
+    else {
+        return Ok(None);
+    };
+    let ty::Adt(adt, _) = *self_raw.kind() else {
+        return Ok(None);
+    };
+    if !adt.did().is_local() {
+        return Ok(None);
+    }
+    if self_raw != rhs_raw || !matches!(ty(tcx, self_raw)?, ir::Ty::Enum(_) | ir::Ty::Struct(_)) {
+        return Err(format!("PartialEq::ne between {self_raw:?} and {rhs_raw:?} is unsupported"));
+    }
+    // The call must execute the provided `ne` itself, not an override.
+    if !matches!(
+        ty::Instance::try_resolve(tcx, typing_env, def_id, fn_args),
+        Ok(Some(ty::Instance { def: ty::InstanceKind::Item(resolved), .. })) if resolved == def_id
+    ) {
+        return Err(format!("PartialEq::ne on {self_raw:?} does not resolve to its default body"));
+    }
+    let eq_did = tcx
+        .associated_item_def_ids(tcx.parent(def_id))
+        .iter()
+        .copied()
+        .find(|did| tcx.item_name(*did) == rustc_span::sym::eq)
+        .filter(|did| core_def_path(tcx, *did).as_deref() == Some("core::cmp::PartialEq::eq"))
+        .ok_or("core::cmp::PartialEq::eq is missing")?;
+    let resolved = match ty::Instance::try_resolve(tcx, typing_env, eq_did, fn_args) {
+        Ok(Some(ty::Instance { def: ty::InstanceKind::Item(resolved), .. })) => resolved,
+        _ => return Err(format!("PartialEq::eq on {self_raw:?} does not resolve to an item")),
+    };
+    let Some(local) = resolved.as_local() else {
+        return Err(format!("PartialEq::eq on {self_raw:?} is not a crate-local function"));
+    };
+    if !matches!(tcx.def_kind(resolved), DefKind::AssocFn)
+        || tcx.generics_of(resolved).count() != 0
+    {
+        return Err(format!("PartialEq::eq on {self_raw:?} is generic or not a method"));
+    }
+    if tcx.codegen_fn_attrs(resolved).flags.contains(CodegenFnAttrFlags::TRACK_CALLER) {
+        return Err(format!("PartialEq::eq on {self_raw:?} is #[track_caller]"));
+    }
+    Ok(Some(local))
 }
 
 /// Bind an item to an owned, versioned source identity for this compiler.
@@ -3548,6 +3961,15 @@ pub fn enum_id(tcx: TyCtxt<'_>, def: DefId) -> u32 {
     u32::from_be_bytes([digest[0], digest[1], digest[2], digest[3]])
 }
 
+/// Key a crate-local struct for `Trusted.MirAst.StructLayout.id`, exactly as
+/// [`enum_id`] keys enums but with the `anneal:struct:v1:` prefix. The same
+/// caveats apply, and `capture.rs` likewise refuses any admitted or captured
+/// struct key that two local struct definitions share.
+pub fn struct_id(tcx: TyCtxt<'_>, def: DefId) -> u32 {
+    let digest = Sha256::digest(format!("anneal:struct:v1:{}", item_identity(tcx, def)));
+    u32::from_be_bytes([digest[0], digest[1], digest[2], digest[3]])
+}
+
 /// The only codegen flags admitted: hints that change neither the captured
 /// body nor its entry contract.
 ///
@@ -3563,7 +3985,8 @@ pub fn enum_id(tcx: TyCtxt<'_>, def: DefId) -> u32 {
 /// (returning `&'static Location<'_>`), which is outside the closed
 /// [`ir::CoreCallOp`] table and the audited `core::num` sysroot table, so no
 /// captured body can observe it. Passing it on to a `#[track_caller]` callee
-/// is refused for intra-crate callees and skipped on `UbChecks == 0` sysroot
+/// is refused for intra-crate callees (including the `eq` that the provided
+/// `PartialEq::ne` calls) and skipped on `UbChecks == 0` sysroot
 /// paths. Otherwise the location only reaches panic payloads (of a failed
 /// `Assert` or of the `#[track_caller]` `core` functions in the `CoreCallOp`
 /// table), never a captured local.
@@ -4019,7 +4442,10 @@ fn body_inner<'tcx>(
             let term = block.terminator.as_ref().ok_or("missing terminator")?;
             let terminator = terminator(tcx, typing_env, body, &term.kind)
                 .map_err(|error| format!("{id:?} terminator: {error}"))?;
-            if let RawTerminator::LocalCall { callee, .. } = &terminator
+            if let RawTerminator::LocalCall { callee, .. }
+            | RawTerminator::LocalCallNe {
+                eq_callee: callee, ..
+            } = &terminator
                 && seen_callees.insert(callee.local_def_index.as_u32())
             {
                 local_callees.push(*callee);
@@ -4190,7 +4616,7 @@ mod tests {
             "rust-path-v1::entry".into(),
         )
         .unwrap();
-        assert!(ir::Program::try_new(ir::Scope::Crate, vec![]).is_err());
+        assert!(ir::Program::try_new(ir::Scope::Crate { excluded_traits: BTreeSet::new() }, vec![]).is_err());
         assert!(
             ir::Program::try_new(
                 ir::Scope::SelectedUnit {
@@ -4202,7 +4628,7 @@ mod tests {
             .is_err()
         );
         let duplicate =
-            ir::Program::try_new(ir::Scope::Crate, vec![valid.clone(), valid]).unwrap_err();
+            ir::Program::try_new(ir::Scope::Crate { excluded_traits: BTreeSet::new() }, vec![valid.clone(), valid]).unwrap_err();
         assert!(duplicate.contains("ambiguous captured function identity"));
     }
 

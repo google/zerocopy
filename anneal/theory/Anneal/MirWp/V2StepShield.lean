@@ -109,27 +109,36 @@ theorem evalStepV2_stmt {p : Program} {body : Body} {bb : BasicBlock}
     evalStepV2 p (stateV2 (frameV2 defId b i locals) cm m) =
       evalStatementV2 body (frameV2 defId b i locals) m cm stmt := by
   unfold evalStepV2
-  dsimp only
+  dsimp only [activeFrameBody]
   rw [hBody]
   dsimp only
   rw [hBB]
   dsimp only
   rw [hStmt]
+  rfl
+
+/-- Whether `t` is an intra-crate call (`.call` or `.callNe`), which
+`evalStepV2` executes by pushing a callee frame (`evalCallV2`) rather than
+through `evalTerminatorV2`. -/
+@[expose] def isCallTerminatorV2 : TerminatorKind → Bool
+  | .call _ _ _ _ _ | .callNe _ _ _ _ _ => true
+  | _ => false
 
 /-- A single-frame state positioned just past the last statement of a block
-steps by the block's terminator. -/
+whose terminator is not a call steps by the block's terminator. -/
 theorem evalStepV2_term {p : Program} {body : Body} {bb : BasicBlock}
     {defId : DefId} {b i : Nat} {locals : List LocalSlot}
     {cm : CallerMemory} {m : MemoryState}
     (hBody : Trusted.MirSemantics.getElem? p.bodies defId = some body)
     (hBB : Trusted.MirSemantics.getElem? body.basicBlocks b = some bb)
     (hStmt : Trusted.MirSemantics.getElem? bb.statements i = none)
-    (hEnd : Nat.beq i bb.statements.length = true) :
+    (hEnd : Nat.beq i bb.statements.length = true)
+    (hNotCall : isCallTerminatorV2 bb.terminator = false := by rfl) :
     evalStepV2 p (stateV2 (frameV2 defId b i locals) cm m) =
       evalTerminatorV2 body bb (frameV2 defId b i locals) m cm p.panicStrategy
         p.hasLocalPanicHandler p.overflowChecks := by
   unfold evalStepV2
-  dsimp only
+  dsimp only [activeFrameBody]
   rw [hBody]
   dsimp only
   rw [hBB]
@@ -137,7 +146,11 @@ theorem evalStepV2_term {p : Program} {body : Body} {bb : BasicBlock}
   rw [hStmt]
   dsimp only
   rw [hEnd]
-  rfl
+  revert hNotCall
+  cases bb.terminator with
+  | call _ _ _ _ _ => intro hNotCall; cases hNotCall
+  | callNe _ _ _ _ _ => intro hNotCall; cases hNotCall
+  | _ => intro _; rfl
 
 /-- An `assign` to an unprojected local, split into the evaluation of its
 rvalue, the store of the result, and the copy-overlap hazard check. -/
@@ -310,7 +323,8 @@ theorem evalStepV2_goto {p : Program} {body : Body} {bb : BasicBlock}
     (hTerm : bb.terminator = .goto target) :
     evalStepV2 p (stateV2 (frameV2 defId b i l) cm m) =
       .step (stateV2 (frameV2 defId target 0 l) cm m) :=
-  (evalStepV2_term hBody hBB hStmt hEnd).trans (evalTerminatorV2_goto hTerm)
+  (evalStepV2_term hBody hBB hStmt hEnd (by rw [hTerm]; rfl)).trans
+    (evalTerminatorV2_goto hTerm)
 
 /-! ## Return memory -/
 
@@ -379,7 +393,7 @@ theorem evalStepV2_return_ok {p : Program} {body : Body} {bb : BasicBlock}
     (hNoRaw : tyHasRawPtrV2 retTy = false := by rfl) :
     evalStepV2 p (stateV2 (frameV2 defId b i l) cm m) =
       .done (.returned ⟨retVal, extractReturnMemoryV2 cm m l⟩) :=
-  (evalStepV2_term hBody hBB hStmt hEnd).trans
+  (evalStepV2_term hBody hBB hStmt hEnd (by rw [hTerm]; rfl)).trans
     (evalTerminatorV2_return_ok hTerm hCleanup hRetTy hRetSlot hStay hValid
       hDisj hNoRaw)
 

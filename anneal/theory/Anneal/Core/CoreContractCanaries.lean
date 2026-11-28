@@ -892,6 +892,26 @@ theorem canary_range_field_assign_and_indirect_downcast_move_refused :
       .error .unsupported :=
   ⟨rfl, rfl, rfl, rfl⟩
 
+/-- Canary 15: a projected field assignment `p.0 = x` to an immediate struct
+local updates that field via `writePlaceV2` (`validatePlaceProjV2` +
+`updateValAtProjV2`), and a mistyped or out-of-bounds field fails closed. -/
+theorem canary_immediate_struct_field_assign :
+    let lay : StructLayout := { id := 0, size := 8, alignLog2 := 2, fieldOffsets := [0, 4] }
+    let pairTy : MirTy := .struct_ lay [canaryU8Ty, canaryU32Ty]
+    let u32v : Val := .scalar ⟨.i32, false, BitVec.ofNat 128 9⟩
+    let locals0 : List LocalSlot := [.immediate (some (.tuple [canaryU8Val 1, u32v]))]
+    let locals1 : List LocalSlot := [.immediate (some (.tuple [canaryU8Val 7, u32v]))]
+    let p0 : Place := { localId := 0, projection := [.field 0 canaryU8Ty] }
+    let pBadTy : Place := { localId := 0, projection := [.field 0 canaryU32Ty] }
+    let pBadIdx : Place := { localId := 0, projection := [.field 2 canaryU8Ty] }
+    writePlaceV2 [pairTy] locals0 MemoryState.empty p0 canaryU8Ty
+      (canaryU8Val 7) = .ok (locals1, MemoryState.empty) ∧
+    writePlaceV2 [pairTy] locals0 MemoryState.empty pBadTy canaryU32Ty
+      u32v = .error .unsupported ∧
+    writePlaceV2 [pairTy] locals0 MemoryState.empty pBadIdx canaryU8Ty
+      (canaryU8Val 7) = .error .unsupported :=
+  ⟨rfl, rfl, rfl⟩
+
 end Anneal.Core
 
 end

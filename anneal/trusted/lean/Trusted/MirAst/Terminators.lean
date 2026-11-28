@@ -158,6 +158,9 @@ Every other external `Call` remains `.unsupported`.
   `.memReplace`, `.optionIsSome`, `.optionIsNone`, `.optionTake`, and
   `.optionUnwrap` model the corresponding `core` slice, scalar, `cmp`, `mem`,
   and `Option` operations (`Trusted.MirSemantics.CoreContracts`).
+- `.partialEqNe ty` is the provided `core::cmp::PartialEq::ne` method
+  (`!self.eq(other)`, quoted at `TerminatorKind.callNe`) on `T = ty`, a
+  primitive type or a fixed array thereof, whose `eq` is structural.
 - `.panicAbort` is a diverging call (`target = none`) to
   `core::panicking::{panic, panic_nounwind}` taking its evaluated shared
   `&'static str` operand (`args = [expr]`,
@@ -199,7 +202,6 @@ inductive CoreCallOp where
   | intToLeBytes (width : IntWidth) (signed : Bool)
   | arrayEq (elem : MirTy) (len : Nat)
   | panicAbort
-
   | vecNew (elem : MirTy)
   | vecWithCapacity (elem : MirTy)
   | vecLen
@@ -216,6 +218,7 @@ inductive CoreCallOp where
   | boxDerefMut
   | boxClone
   | boxNew (pointee : MirTy)
+  | partialEqNe (ty : MirTy)
 
 /-- Closed set of `core::num` primitive arithmetic operations supported via
 pinned sysroot-body lowering (verified at capture time against `core`'s
@@ -279,16 +282,34 @@ Constructor correspondence:
 - `.unwindResume` corresponds to `TerminatorKind::UnwindResume`.
 - `.assert cond expected msg target unwind` corresponds to
   `TerminatorKind::Assert { cond, expected, msg, target, unwind }`.
-- `.call callee args dst target unwind` corresponds to direct intra-crate
-  `FnDef` `TerminatorKind::Call`.
+- `.call callee args dst target unwind` corresponds to a direct intra-crate
+  `FnDef` `TerminatorKind::Call` whose callee is the captured body
+  `Program.bodies[callee]`, executed in a new frame.
 - `.coreCall op args dst target unwind` corresponds to a direct `FnDef`
   `TerminatorKind::Call` whose callee is the sysroot `core` function that
   `op` names (Profile v2).
 - `.sysrootCall op args dst target unwind` corresponds to a pinned `core::num`
   `FnDef` `TerminatorKind::Call` verified against `core`'s `tcx.instance_mir`
   (Profile v1).
+- `.callNe eqCallee args dst target unwind` corresponds to a direct `FnDef`
+  `TerminatorKind::Call` of the provided `core::cmp::PartialEq::ne` method,
+  executed as a call to the captured `PartialEq::eq` body
+  `Program.bodies[eqCallee]` whose result is negated (Profile v2;
+  `library/core/src/cmp.rs`, `rust-lang/rust`
+  `f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1`):
+
+  > "fn ne(&self, other: &Rhs) -> bool {
+  >     !self.eq(other)
+  > }"
+- `.drop place target unwind` corresponds to
+  `TerminatorKind::Drop { place, target, unwind, .. }` on a place whose type
+  has no drop glue (Profile v2; `compiler/rustc_middle/src/mir/syntax.rs`,
+  `rust-lang/rust` `f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1`):
+
+  > "After drop elaboration: `Drop` terminators are a complete nop for types
+  > that have no drop glue."
 - `.unsupported` represents all other `TerminatorKind` variants
-  (`UnwindTerminate`, `Drop`, indirect or unverified external `Call`,
+  (`UnwindTerminate`, other `Drop`s, indirect or unverified external `Call`,
   `TailCall`, `Yield`, `CoroutineDrop`, `FalseEdge`, `FalseUnwind`, and
   `InlineAsm`). -/
 inductive TerminatorKind where
@@ -305,6 +326,9 @@ inductive TerminatorKind where
       (target : Option BasicBlockId) (unwind : UnwindAction)
   | sysrootCall (op : SysrootNumOp) (args : List Operand) (dst : Place)
       (target : Option BasicBlockId) (unwind : UnwindAction)
+  | callNe (eqCallee : DefId) (args : List Operand) (dst : Place)
+      (target : Option BasicBlockId) (unwind : UnwindAction)
+  | drop (place : Place) (target : BasicBlockId) (unwind : UnwindAction)
   | unsupported
 
 end Trusted.MirAst

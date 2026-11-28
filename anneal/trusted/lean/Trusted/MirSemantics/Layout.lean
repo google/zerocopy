@@ -188,24 +188,87 @@ noncomputable abbrev layoutOfPtrOrRangeV2 : MirTy → Option LayoutData
   | .rangeTo (.int .isize false) | .rangeFrom (.int .isize false) => some ⟨8, 3⟩
   | _ => none
 
-/-- Recursive helper for `layoutOfTyV2` on array element types `[T; N]`. -/
-noncomputable def layoutOfArrayV2 : MirTy → Option LayoutData
-  | .array elem len =>
-    match layoutOfArrayV2 elem with
-    | none => none
-    | some elemLay => some ⟨len * elemLay.size, elemLay.alignLog2⟩
-  | ty =>
-    match layoutOfTy ty with
-    | some l => some l
-    | none => layoutOfPtrOrRangeV2 ty
+/-- Exclusive upper bound on the size of a Profile v2 struct layout on 64-bit
+targets, matching `TargetDataLayout::obj_size_bound`
+(`compiler/rustc_abi/src/lib.rs`, `rust-lang/rust`
+`f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1`):
+
+> "/// Returns **exclusive** upper bound on object size in bytes.
+> ...
+> pub fn obj_size_bound(&self) -> u64 {
+>     match self.pointer_size().bits() {
+>         ...
+>         64 => 1 << 61," -/
+noncomputable def structSizeBound : Nat := Nat.pow 2 61
+
+/-- Return `true` when the byte spans `(offset, size)` in `spans` are pairwise
+disjoint, ignoring zero-sized spans. -/
+noncomputable def natSpanDisjointWith (a : Nat × Nat) :
+    List (Nat × Nat) → Bool
+  | [] => true
+  | b :: rest =>
+    (Nat.beq a.2 0 || Nat.beq b.2 0 || Nat.ble (a.1 + a.2) b.1 ||
+      Nat.ble (b.1 + b.2) a.1) && natSpanDisjointWith a rest
+
+/-- Pairwise disjointness of all non-zero-sized byte spans in a list. -/
+noncomputable def natSpansPairwiseDisjoint : List (Nat × Nat) → Bool
+  | [] => true
+  | a :: rest => natSpanDisjointWith a rest && natSpansPairwiseDisjoint rest
+
+mutual
+  /-- Recursive helper for `layoutOfTyV2` on array element types `[T; N]` and
+  struct types. A struct `.struct_ l fields` has layout `⟨l.size, l.alignLog2⟩`
+  only when `structFieldSpansV2` accepts every field and the field spans are
+  pairwise disjoint (`rustc_abi`'s `FieldsShape::Arbitrary`: "Fields are
+  guaranteed to not overlap"), and the size is a multiple of the alignment below
+  `structSizeBound`; any other struct has no layout, so every memory access at
+  its type fails closed with `.unsupported`. -/
+  noncomputable def layoutOfArrayV2 : MirTy → Option LayoutData
+    | .array elem len =>
+      match layoutOfArrayV2 elem with
+      | none => none
+      | some elemLay => some ⟨len * elemLay.size, elemLay.alignLog2⟩
+    | .struct_ l fields =>
+      match structFieldSpansV2 l.size l.alignLog2 l.fieldOffsets fields with
+      | none => none
+      | some spans =>
+        if Nat.blt l.size structSizeBound &&
+            Nat.beq (Nat.mod l.size (Nat.pow 2 l.alignLog2)) 0 &&
+            natSpansPairwiseDisjoint spans then
+          some ⟨l.size, l.alignLog2⟩
+        else
+          none
+    | ty =>
+      match layoutOfTy ty with
+      | some l => some l
+      | none => layoutOfPtrOrRangeV2 ty
+
+  /-- Byte spans `(offset, size)` of struct fields with types `fields` at
+  `offsets` inside a struct of `size` bytes and alignment `2^alignLog2`, or
+  `none` when the lists differ in length or some field has no layout, is
+  misaligned, is more aligned than the struct, or extends past `size`. -/
+  noncomputable def structFieldSpansV2 (size alignLog2 : Nat) :
+      List Nat → List MirTy → Option (List (Nat × Nat))
+    | [], [] => some []
+    | off :: offs, ty :: tys =>
+      match layoutOfArrayV2 ty, structFieldSpansV2 size alignLog2 offs tys with
+      | some lay, some rest =>
+        if Nat.ble (off + lay.size) size && Nat.ble lay.alignLog2 alignLog2 &&
+            Nat.beq (Nat.mod off (Nat.pow 2 lay.alignLog2)) 0 then
+          some ((off, lay.size) :: rest)
+        else
+          none
+      | _, _ => none
+    | _, _ => none
+end
 
 /-- Layout of a Profile v2 local or pointee type (`layoutOfTy` extended with
-fixed-size arrays `[T; N]`, 64-bit thin pointers and `Box<T>` `⟨8, 3⟩`, 64-bit
-wide slice pointers and `Box<[T]>` `⟨16, 3⟩`, the model-internal `Vec<T>`
-handle `⟨24, 3⟩`, `RangeTo<usize>` / `RangeFrom<usize>` `⟨8, 3⟩`, and supported
-`Option<T>`). Returns `none` for unsized `.slice` directly,
-`Range<usize>`, general tuples other than Profile v1 overflow pairs, and
-unsupported aggregates.
+fixed-size arrays `[T; N]`, valid structs (`layoutOfArrayV2`), 64-bit thin
+pointers and `Box<T>` `⟨8, 3⟩`, 64-bit wide slice pointers and `Box<[T]>`
+`⟨16, 3⟩`, the model-internal `Vec<T>` handle `⟨24, 3⟩`, `RangeTo<usize>` /
+`RangeFrom<usize>` `⟨8, 3⟩`, and supported `Option<T>`). Returns `none` for
+unsized `.slice` directly, `Range<usize>`, general tuples other than Profile v1
+overflow pairs, and unsupported aggregates.
 
 Array layout matches the Rust Reference (`src/type-layout.md`,
 `rust-lang/reference` `a286e1ecb8ce193d50056e4bb042eea9b23876ef`):
@@ -310,6 +373,7 @@ noncomputable def layoutOfTyV2 (ty : MirTy) : Option LayoutData :=
           | some lay =>
             let tagBytes := Nat.pow 2 lay.alignLog2
             some ⟨tagBytes + lay.size, lay.alignLog2⟩
+    | .struct_ _ _ => layoutOfArrayV2 ty
     | _ => layoutOfPtrOrRangeV2 ty
 
 end Trusted.MirSemantics

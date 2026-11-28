@@ -258,12 +258,13 @@ fn seam_6_macro_expansion_path_and_shadowing() {
           pub fn selected(x: u8) -> u16 { x.0 }\n",
     );
     let struct_out = struct_shadow.selected_command().output().expect("capture struct u8");
-    assert_refused(
-        "struct shadowing primitive u8",
-        &struct_shadow,
-        &struct_out,
-        "unsupported",
-        "unsupported type",
+    assert!(struct_out.status.success(), "{struct_out:?}");
+    let struct_lean = struct_shadow.lean_source();
+    assert!(
+        struct_lean.contains("Trusted.MirAst.MirTy.struct_")
+            && struct_lean.contains("Trusted.MirAst.IntWidth.i16")
+            && !struct_lean.contains("Trusted.MirAst.IntWidth.i8"),
+        "expected shadowing `struct u8(u16)` to capture as a struct of u16, not as u8:\n{struct_lean}"
     );
 
     let enum_shadow = Capture::new(

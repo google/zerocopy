@@ -864,14 +864,15 @@ theorem evalBoxClone_disjoint_and_frame {m m' : MemoryState} {pt : MirTy}
         | slice elem => exact False.elim (hNotSlice elem rfl)
         | bool | int _ _ | unit | never | char | ordering | enum _ | tuple _
         | ref _ _ | rawPtr _ _ | vec _ | box _ | rangeTo _ | rangeFrom _
-        | unsupported | array _ _ | option _ | range _ | str => cases hCall
+        | unsupported | array _ _ | option _ | range _ | str | struct_ _ _ =>
+          cases hCall
       | none =>
         rw [hPt, hLen] at hCall
         cases pt with
         | slice elem => exact False.elim (hNotSlice elem rfl)
         | bool | int _ _ | unit | never | char | ordering | enum _ | tuple _
         | ref _ _ | rawPtr _ _ | vec _ | box _ | rangeTo _ | rangeFrom _
-        | array _ _ | option _ | range _ | str
+        | array _ _ | option _ | range _ | str | struct_ _ _
         | unsupported =>
           dsimp only at hCall
           cases hUn : isUnsizedTy _ with
@@ -912,6 +913,8 @@ theorem evalBoxClone_disjoint_and_frame {m m' : MemoryState} {pt : MirTy}
         exact .inr ⟨.rangeFrom e, (fun _ h => by cases h), rfl⟩
       | unsupported =>
         exact .inr ⟨.unsupported, (fun _ h => by cases h), rfl⟩
+      | struct_ l fs =>
+        exact .inr ⟨.struct_ l fs, (fun _ h => by cases h), rfl⟩
     cases hPtCases with
     | inl hS =>
       cases hS with

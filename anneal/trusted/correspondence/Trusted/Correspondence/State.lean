@@ -836,7 +836,8 @@ noncomputable def toMiriRvalue (types : List MirTy) :
   | .aggregateTuple _
   | .aggregateArray _ _ | .repeat_ _ _ _
   | .aggregateRangeTo _ _ | .aggregateRangeFrom _ _
-  | .aggregateRange _ _ _ | .aggregateOption _ _ _ | .unsupported =>
+  | .aggregateRange _ _ _ | .aggregateOption _ _ _ | .aggregateStruct _ _
+  | .unsupported =>
     .CopyForDeref ⟨0, Array.empty⟩
 
 /-- Map `RefStatementKind` to `Miri.MIR.Statement`. `.unsupported` lowers to
@@ -1002,9 +1003,9 @@ noncomputable def toMiriAssertKind (types : List MirTy) :
 `Miri.MIR.TerminatorKind.Assert` with `toMiriAssertKind` and
 `toMiriUnwindAction`; `.call` and `.sysrootCall` lower to
 `Miri.MIR.TerminatorKind.Call`; remaining Profile v1 unmodeled terminators
-(`.unwindResume`, `.coreCall`, and `.unsupported`) map to `.CoroutineDrop`,
-which `ControlFlow.evalTerminator` rejects fail-closed with `.invalidProgram`
-(`.blocked`). -/
+(`.unwindResume`, `.coreCall`, `.callNe`, `.drop`, and `.unsupported`) map to
+`.CoroutineDrop`, which `ControlFlow.evalTerminator` rejects fail-closed with
+`.invalidProgram` (`.blocked`). -/
 noncomputable def toMiriTerminator (types : List MirTy) :
     RefTerminatorKind → Miri.MIR.Terminator
   | .goto target =>
@@ -1037,7 +1038,8 @@ noncomputable def toMiriTerminator (types : List MirTy) :
     { sourceInfo := ⟨⟨0⟩, 0⟩
       kind := .Assert (toMiriOperand types cond) expected
         (toMiriAssertKind types msg) target (toMiriUnwindAction unwind) }
-  | .unwindResume | .coreCall _ _ _ _ _ | .unsupported =>
+  | .unwindResume | .coreCall _ _ _ _ _ | .callNe _ _ _ _ _ | .drop _ _ _
+  | .unsupported =>
     { sourceInfo := ⟨⟨0⟩, 0⟩, kind := .CoroutineDrop }
 
 /-- Lower a `RefBasicBlock` to a `Miri.MIR.BasicBlock`. -/

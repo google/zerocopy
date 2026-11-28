@@ -940,7 +940,8 @@ private theorem divUsize_abort_of_zero {ps : PanicStrategy} {q : Query}
     unfold evalStepV2Choice evalStepV2 evalTerminatorV2 evalPrimitiveOperandV2
       evalOperandToSlotV2 readPlaceV2
     simp [divUsizeProgV2, divUsizeBodyV2, Trusted.MirSemantics.getElem?,
-      isSupportedV2LocalTy, isPrimitiveReadableTy, evalAssertFailure]
+      isSupportedV2LocalTy, isPrimitiveReadableTy, evalAssertFailure,
+      activeFrameBody, attachCallers]
     cases ps
     · rfl
     · dsimp only
@@ -1047,6 +1048,7 @@ theorem canary_safe_contract_v2_div_usize :
             evalOperandToSlotV2 readPlaceV2
           simp [divUsizeProgV2, divUsizeBodyV2, Trusted.MirSemantics.getElem?,
             isSupportedV2LocalTy, isPrimitiveReadableTy, evalAssertFailure,
+            activeFrameBody, attachCallers,
             extractCallerMemory_entry q.callerMem hCM]
         have hExec : execProgV2 (divUsizeProgV2 .abort) 2 q
             (fun o => o = .aborted q.callerMem) := by
@@ -1094,7 +1096,8 @@ theorem canary_safe_contract_v2_div_usize :
         unfold evalStepV2 evalTerminatorV2 evalPrimitiveOperandV2
           evalOperandToSlotV2 readPlaceV2
         simp [divUsizeProgV2, divUsizeBodyV2, Trusted.MirSemantics.getElem?,
-          isSupportedV2LocalTy, isPrimitiveReadableTy, jumpToBlock]
+          isSupportedV2LocalTy, isPrimitiveReadableTy, jumpToBlock,
+          activeFrameBody, attachCallers]
       have hS3 := divUsize_step_bb1_div .abort a b q.callerMem haEq hbEq hDivOp hOutWf
       have hS4 : evalStepV2 (divUsizeProgV2 .abort)
           ⟨[⟨0, 1, 1,

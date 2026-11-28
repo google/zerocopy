@@ -1104,3 +1104,139 @@ fn capture_sha256_is_invariant_across_distinct_staging_directories() {
     assert!(!raw_json.contains(tmp_a.to_str().unwrap()), "staging TMPDIR leaked into capture.json");
     assert!(!raw_json.contains(tmp_b.to_str().unwrap()), "staging TMPDIR leaked into capture.json");
 }
+
+#[test]
+fn exclude_trait_verifies_crate_and_discloses_excluded_items_and_assumption() {
+    let staged = new_workspace("anneal-exclude-trait-").stage().unwrap();
+    let work = staged.work_dir();
+    let rust = work.join("rust");
+    let lean = work.join("lean");
+    fs::create_dir(&rust).unwrap();
+    fs::create_dir(&lean).unwrap();
+    let lib_rs = rust.join("lib.rs");
+    fs::write(
+        &lib_rs,
+        "#[derive(Debug)]\n\
+         pub enum Code { Ok, Err }\n\
+         impl core::fmt::Display for Code {\n\
+             fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {\n\
+                 match self {\n\
+                     Code::Ok => f.write_str(\"ok\"),\n\
+                     Code::Err => f.write_str(\"err\"),\n\
+                 }\n\
+             }\n\
+         }\n\
+         impl core::error::Error for Code {}\n\
+         pub fn zero() -> u64 { 0 }\n",
+    )
+    .unwrap();
+    let spec_lean = lean.join("Spec.lean");
+    let proof_lean = lean.join("Proof.lean");
+    fs::write(&spec_lean, SCALAR_SPEC).unwrap();
+    fs::write(&proof_lean, SCALAR_PROOF).unwrap();
+
+    // 1. `--request` with `scope.excluded_traits` verifies the crate and
+    //    discloses excluded census items + explicit assumption string.
+    let req = json!({
+        "schema_version": 1,
+        "compilation": {
+            "source_root": &rust,
+            "crate_root": "lib.rs",
+            "crate_name": "scalar",
+            "edition": "2024",
+            "target": "x86_64-unknown-linux-gnu",
+            "cfg": [],
+            "source_files": ["lib.rs"]
+        },
+        "scope": {
+            "kind": "crate",
+            "excluded_traits": [
+                "core::fmt::Display",
+                "core::fmt::Debug",
+                "core::error::Error"
+            ]
+        },
+        "proof": {
+            "source_root": &lean,
+            "sources": [
+                {"module": "Spec", "path": "Spec.lean", "role": "specification"},
+                {"module": "Proof", "path": "Proof.lean", "role": "proof"}
+            ]
+        }
+    });
+    let req_path = write_json_file(&work.join("req.json"), &req);
+    let run = run_verify_strs(&staged, &["--request", req_path.to_str().unwrap()]);
+    let ok = expect_verified(&run, "crate_verified", true);
+    assert_eq!(
+        ok.scope,
+        json!({
+            "kind": "crate",
+            "excluded_traits": [
+                "core::error::Error",
+                "core::fmt::Debug",
+                "core::fmt::Display"
+            ]
+        })
+    );
+    let excluded = ok.excluded_items.as_ref().expect("excluded_items present");
+    assert!(excluded.len() >= 4, "expected excluded impls + fmt methods: {excluded:?}");
+    for item in excluded {
+        assert_eq!(item["selected"], false, "excluded item must have selected=false: {item}");
+        assert_eq!(item["required"], true, "excluded item must have required=true: {item}");
+        assert!(item["excluded_by"].is_string(), "missing excluded_by: {item}");
+    }
+    for tr in ["core::error::Error", "core::fmt::Debug", "core::fmt::Display"] {
+        assert!(
+            excluded.iter().any(|item| item["excluded_by"] == tr),
+            "missing excluded_items entry for {tr}: {excluded:?}"
+        );
+    }
+    let assumption = ok
+        .assumptions
+        .iter()
+        .find(|a| a.contains("unverified") && a.contains("unreachable"))
+        .unwrap_or_else(|| panic!("missing exclusion assumption in {:?}", ok.assumptions));
+    for tr in ["core::error::Error", "core::fmt::Debug", "core::fmt::Display"] {
+        assert!(assumption.contains(tr), "assumption lacks {tr}: {assumption}");
+    }
+
+    // 2. `verify rustc` with repeatable `--exclude-trait` produces matching
+    //    scope, `excluded_items`, and assumption disclosure.
+    let spec_arg = format!("Spec={}", spec_lean.display());
+    let proof_arg = format!("Proof={}", proof_lean.display());
+    let rustc_run = run_verify_strs(
+        &staged,
+        &[
+            "rustc",
+            lib_rs.to_str().unwrap(),
+            "--crate-name",
+            "scalar",
+            "--exclude-trait",
+            "core::fmt::Debug",
+            "--exclude-trait",
+            "core::fmt::Display",
+            "--exclude-trait",
+            "core::error::Error",
+            "--spec-file",
+            &spec_arg,
+            "--proof-file",
+            &proof_arg,
+        ],
+    );
+    let rustc_ok = expect_verified(&rustc_run, "crate_verified", true);
+    assert_eq!(rustc_ok.scope, ok.scope);
+    assert_eq!(rustc_ok.excluded_items, ok.excluded_items);
+    assert!(rustc_ok.assumptions.iter().any(|a| a == assumption));
+
+    // 3. Verified body referencing an excluded impl fails closed at capture.
+    fs::write(
+        &lib_rs,
+        "#[derive(Debug)]\n\
+         pub enum Code { Ok }\n\
+         pub const C: u64 = { let _ = <Code as core::fmt::Debug>::fmt; 0 };\n\
+         pub fn zero() -> u64 { C }\n",
+    )
+    .unwrap();
+    let ref_run = run_verify_strs(&staged, &["--request", req_path.to_str().unwrap()]);
+    expect_failed(&ref_run, 1, "unsupported", Some("capture"), "excluded");
+}

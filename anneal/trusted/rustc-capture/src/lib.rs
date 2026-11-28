@@ -135,6 +135,11 @@ pub struct Args {
     // Require admission of every required item in the compiler census.
     #[arg(long, value_parser = ["crate"])]
     scope: Option<String>,
+    /// Exclude local impls of an allowlisted diagnostic trait
+    /// (`core::error::Error`, `core::fmt::Debug`, `core::fmt::Display`) from
+    /// `--scope crate` capture once proven unreachable from verified bodies.
+    #[arg(long, action = clap::ArgAction::Append, value_name = "TRAIT")]
+    exclude_trait: Vec<String>,
     #[arg(long, action = clap::ArgAction::Append)]
     cfg: Vec<String>,
     /// Declare a compile-time environment variable (`KEY=VALUE`) for `env!`
@@ -253,7 +258,19 @@ fn parse_env_binding(raw: &str) -> Result<(String, String), String> {
 impl Args {
     pub(crate) fn resolved_scope(&self) -> Result<ir::Scope, Failure> {
         if self.scope.is_some() {
-            return Ok(ir::Scope::Crate);
+            let mut excluded_traits = BTreeSet::new();
+            for raw in &self.exclude_trait {
+                let trait_kind =
+                    ir::ExcludedTrait::parse_canonical(raw).map_err(Failure::unsupported)?;
+                excluded_traits.insert(trait_kind);
+            }
+            return Ok(ir::Scope::Crate { excluded_traits });
+        }
+        if !self.exclude_trait.is_empty() {
+            return Err(Failure::unsupported(
+                "--exclude-trait is valid only with --scope crate; \
+                 cannot be combined with --select or --instantiate",
+            ));
         }
         let roots: BTreeSet<String> = self.select.iter().cloned().collect();
         let instantiations: BTreeSet<ir::Instantiation> =
@@ -927,5 +944,78 @@ mod tests {
         let same = manifest_path(root, Some(root)).unwrap_err();
         assert_eq!(same.status, "unsupported");
         assert!(same.diagnostics[0].contains("must be a file inside --source-root"), "{same:?}");
+    }
+
+    #[test]
+    fn resolved_scope_validates_exclude_trait_allowlist_and_crate_scope() {
+        let base = [
+            "anneal-rustc-capture capture",
+            "--crate-root=lib.rs",
+            "--crate-name=demo",
+            "--target=x86_64-unknown-linux-gnu",
+            "--out-dir=out",
+            "--source-file=lib.rs",
+        ];
+
+        // Default crate scope keeps `excluded_traits` empty.
+        let args = Args::try_parse_from(base.into_iter().chain(["--scope=crate"])).unwrap();
+        assert_eq!(
+            args.resolved_scope().unwrap(),
+            ir::Scope::Crate { excluded_traits: BTreeSet::new() }
+        );
+
+        // Repeatable `--exclude-trait` deduplicates and sorts canonically.
+        let args = Args::try_parse_from(base.into_iter().chain([
+            "--scope=crate",
+            "--exclude-trait=core::fmt::Display",
+            "--exclude-trait=core::fmt::Debug",
+            "--exclude-trait=core::error::Error",
+            "--exclude-trait=core::fmt::Debug",
+        ]))
+        .unwrap();
+        assert_eq!(
+            args.resolved_scope().unwrap(),
+            ir::Scope::Crate {
+                excluded_traits: BTreeSet::from([
+                    ir::ExcludedTrait::Error,
+                    ir::ExcludedTrait::Debug,
+                    ir::ExcludedTrait::Display,
+                ]),
+            }
+        );
+
+        // Non-allowlisted traits fail closed.
+        for bad in ["core::ops::Drop", "core::clone::Clone", "std::fmt::Debug", "Debug"] {
+            let args = Args::try_parse_from(
+                base.into_iter()
+                    .chain(["--scope=crate", "--exclude-trait", bad]),
+            )
+            .unwrap();
+            let err = args.resolved_scope().unwrap_err();
+            assert_eq!(err.status, "unsupported");
+            assert!(
+                err.diagnostics[0].contains("not in the closed --exclude-trait allowlist"),
+                "{bad}: {err:?}"
+            );
+        }
+
+        // Combining `--exclude-trait` with `--select` or `--instantiate` fails
+        // closed.
+        for sel in [
+            "--select=f",
+            "--instantiate={\"path\":\"f\",\"args\":[\"u64\"]}",
+        ] {
+            let args = Args::try_parse_from(
+                base.into_iter()
+                    .chain([sel, "--exclude-trait=core::fmt::Debug"]),
+            )
+            .unwrap();
+            let err = args.resolved_scope().unwrap_err();
+            assert_eq!(err.status, "unsupported");
+            assert!(
+                err.diagnostics[0].contains("--exclude-trait is valid only with --scope crate"),
+                "{sel}: {err:?}"
+            );
+        }
     }
 }

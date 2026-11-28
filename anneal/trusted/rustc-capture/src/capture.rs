@@ -11,7 +11,7 @@
 //! these checks do not defend against a compromised execution environment.
 
 use std::{
-    collections::{BTreeMap, BTreeSet, HashSet, VecDeque},
+    collections::{BTreeMap, BTreeSet, HashMap, HashSet, VecDeque},
     io,
     path::{Path, PathBuf},
     sync::{Arc, Mutex, OnceLock},
@@ -29,17 +29,21 @@ use rustc_feature::{
 use rustc_hir as hir;
 use rustc_hir::LangItem;
 use rustc_hir::attrs::{AttributeKind, InlineAttr};
-use rustc_hir::def::{DefKind, Res};
+use rustc_hir::def::{CtorKind, CtorOf, DefKind, Res};
 use rustc_hir::intravisit;
 use rustc_interface::interface;
+use rustc_middle::middle::codegen_fn_attrs::CodegenFnAttrFlags;
 use rustc_middle::mir;
-use rustc_middle::mir::interpret::{AllocRange, GlobalAlloc};
+use rustc_middle::mir::interpret::{AllocId, AllocRange, GlobalAlloc, Scalar};
+use rustc_middle::mir::visit::Visitor as MirVisitor;
+use rustc_middle::traits::ImplSource;
+use rustc_middle::ty::adjustment::PointerCoercion;
 use rustc_middle::ty::trait_def::{ImplRestrictionKind, TraitSpecializationKind};
-use rustc_middle::ty::{self, TyCtxt, TypeVisitableExt, TypingEnv};
+use rustc_middle::ty::{self, TyCtxt, TypeVisitableExt, TypingEnv, VtblEntry};
 use rustc_middle::util::Providers;
 use rustc_session::EarlyDiagCtxt;
 use rustc_session::config::{CrateType, OptLevel, Options};
-use rustc_span::def_id::{LOCAL_CRATE, LocalDefId};
+use rustc_span::def_id::{DefId, LOCAL_CRATE, LocalDefId};
 use rustc_span::source_map::{FileLoader, RealFileLoader};
 use rustc_span::{DUMMY_SP, FileName, Symbol, kw, sym};
 use rustc_target::spec::PanicStrategy as RustcPanicStrategy;
@@ -411,9 +415,13 @@ fn required(tcx: TyCtxt<'_>, def: LocalDefId, kind: DefKind, has_body: bool) -> 
 //   https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_span/src/hygiene.rs#L920-L938
 //   https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_middle/src/lint.rs#L440-L475
 //   https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_lint/src/builtin.rs#L192-L230
-// - `Struct` (pending struct capture/verification), `InlineConst`, `Static`,
-//   `Union`, `ForeignMod`, `ForeignTy`, `GlobalAsm`, and bodyless free `Fn`
-//   items remain explicit refusals in whole-crate scope.
+// - `Struct` owners whose type `extract::ty` admits (non-generic crate-local
+//   structs without `Drop`, unsafe fields, interior mutability, unmodeled
+//   representations, or fields outside the Profile v2 data fragment), and
+//   their function-like constructors, are admitted with no fabricated body.
+// - `InlineConst`, `Static`, `Union`, `ForeignMod`, `ForeignTy`,
+//   `GlobalAsm`, and bodyless free `Fn` items remain explicit refusals in
+//   whole-crate scope.
 // - Callables with bodies are only candidates here: `collect` publishes one
 //   only if `extract::body` translates it, refusing intrinsics, generics,
 //   unsupported entry conditions, and unmodeled codegen attributes.
@@ -842,12 +850,797 @@ fn check_const_hir_safety(
     Ok(())
 }
 
+/// Resolved `--exclude-trait` state for `--scope crate` capture.
+///
+/// Holds both the resolved sysroot `core` trait `DefId`s and the full local
+/// exclusion set (every admitted `Impl { of_trait: true }` for an excluded
+/// trait plus every local definition nested beneath one via the parent chain).
+#[derive(Default)]
+struct ExclusionIndex {
+    excluded_traits: HashMap<DefId, ir::ExcludedTrait>,
+    excluded_defs: HashMap<LocalDefId, ir::ExcludedTrait>,
+}
+
+/// Resolve each allowlisted `--exclude-trait` entry to its `DefId` in the
+/// authenticated sysroot `core` crate via `tcx.diagnostic_items(core_krate)`
+/// ("Returns the diagnostic items defined in a crate.") rather than by string-
+/// matching paths.
+///
+/// The three allowlisted traits carry pinned `#[rustc_diagnostic_item]`
+/// attributes in sysroot `core` (intervening attributes elided):
+/// - `#[rustc_diagnostic_item = "Debug"]` ... `pub trait Debug: PointeeSized`
+/// - `#[rustc_diagnostic_item = "Display"]` ...
+///   `pub trait Display: PointeeSized`
+/// - `#[rustc_diagnostic_item = "Error"]` ...
+///   `pub trait Error: Debug + Display`
+///
+/// Pinning the lookup to `extract::sysroot_core_crate(tcx)` (the external
+/// sysroot `core` defining `LangItem::Sized`) ensures no local crate or
+/// shadowed module can spoof a diagnostic item.
+/// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/library/core/src/fmt/mod.rs#L1051-L1053
+/// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/library/core/src/fmt/mod.rs#L1185-L1187
+/// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/library/core/src/error.rs#L56-L59
+/// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_middle/src/queries.rs#L2222-L2227
+/// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_hir/src/diagnostic_items.rs#L8-L13
+fn resolve_excluded_traits(
+    tcx: TyCtxt<'_>,
+    requested: &BTreeSet<ir::ExcludedTrait>,
+) -> Result<HashMap<DefId, ir::ExcludedTrait>, Failure> {
+    if requested.is_empty() {
+        return Ok(HashMap::new());
+    }
+    let Some(core_krate) = extract::sysroot_core_crate(tcx) else {
+        return Err(Failure::unsupported(
+            "--exclude-trait requires the authenticated sysroot `core` crate",
+        ));
+    };
+    let diag_items = tcx.diagnostic_items(core_krate);
+    let mut resolved = HashMap::new();
+    for &tr in requested {
+        let diag_sym = match tr {
+            ir::ExcludedTrait::Debug => sym::Debug,
+            ir::ExcludedTrait::Display => sym::Display,
+            ir::ExcludedTrait::Error => Symbol::intern("Error"),
+        };
+        let Some(&trait_did) = diag_items.name_to_id.get(&diag_sym) else {
+            return Err(Failure::unsupported(format!(
+                "excluded trait `{}` diagnostic item `{}` not found in sysroot core",
+                tr.as_str(),
+                diag_sym
+            )));
+        };
+        if trait_did.is_local()
+            || trait_did.krate != core_krate
+            || tcx.def_kind(trait_did) != DefKind::Trait
+        {
+            return Err(Failure::unsupported(format!(
+                "excluded trait `{}` resolved to unexpected definition `{}`",
+                tr.as_str(),
+                tcx.def_path_str(trait_did)
+            )));
+        }
+        resolved.insert(trait_did, tr);
+    }
+    Ok(resolved)
+}
+
+/// Walk the local `DefId` parent chain via `tcx.opt_local_parent`
+/// ("self.opt_parent(id.to_def_id()).map(DefId::expect_local)") to classify
+/// every definition nested inside an excluded trait impl: assoc fns/consts/tys,
+/// closures, and anon/inline consts in their bodies.
+///
+/// Short-circuits to `None` as soon as any ancestor on the path up to (but not
+/// including) the excluded impl satisfies [`is_unexcludable_nested_def`], so
+/// methods or items nested inside a coherence-global inner `impl` (or `static`,
+/// `extern`, or exported macro) can never inherit exclusion from an enclosing
+/// excluded trait impl.
+/// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_middle/src/ty/mod.rs#L365-L367
+fn find_excluded_ancestor(
+    tcx: TyCtxt<'_>,
+    def: LocalDefId,
+    excluded_impls: &HashMap<LocalDefId, ir::ExcludedTrait>,
+) -> Option<ir::ExcludedTrait> {
+    let mut cur = Some(def);
+    while let Some(id) = cur {
+        if let Some(&tr) = excluded_impls.get(&id) {
+            return Some(tr);
+        }
+        if is_unexcludable_nested_def(tcx, id, tcx.def_kind(id)) {
+            return None;
+        }
+        cur = tcx.opt_local_parent(id);
+    }
+    None
+}
+
+/// Reject crate-wide or link-time escape hatches nested inside an excluded
+/// trait impl (`global_asm!`, `extern` blocks, nested `impl` blocks, `static`
+/// items, exported macros, or
+/// `#[no_mangle]`/`#[export_name]`/`#[link_section]`/`#[linkage]`), keeping
+/// them and all of their descendants in the required census instead of silently
+/// excluding them.
+fn is_unexcludable_nested_def(tcx: TyCtxt<'_>, def: LocalDefId, kind: DefKind) -> bool {
+    match kind {
+        DefKind::GlobalAsm
+        | DefKind::ForeignMod
+        | DefKind::ForeignTy
+        | DefKind::Impl { .. }
+        | DefKind::Static { .. } => true,
+        DefKind::Macro(..) => {
+            tcx.effective_visibilities(()).is_exported(def) || tcx.visibility(def).is_public()
+        }
+        DefKind::Fn | DefKind::AssocFn => {
+            let attrs = tcx.codegen_fn_attrs(def);
+            attrs.symbol_name.is_some()
+                || attrs.link_section.is_some()
+                || attrs.linkage.is_some()
+                || attrs.import_linkage.is_some()
+                || !attrs.foreign_item_symbol_aliases.is_empty()
+                || attrs.flags.contains(CodegenFnAttrFlags::NO_MANGLE)
+        }
+        _ => false,
+    }
+}
+
+/// Build the full exclusion index for `--scope crate`.
+///
+/// Every candidate `Impl { of_trait: true }` whose trait matches an excluded
+/// diagnostic item must still pass [`admit_safe_impl`]; unsafe, negative,
+/// default, or const impls and impls with unmodeled attributes stay outside the
+/// exclusion set so whole-crate admission refuses them.
+fn build_exclusion_index(
+    tcx: TyCtxt<'_>,
+    requested: &BTreeSet<ir::ExcludedTrait>,
+) -> Result<ExclusionIndex, Failure> {
+    if requested.is_empty() {
+        return Ok(ExclusionIndex::default());
+    }
+    let excluded_traits = resolve_excluded_traits(tcx, requested)?;
+    let mut excluded_impls = HashMap::new();
+    for def in tcx.iter_local_def_id() {
+        if tcx.def_kind(def) != (DefKind::Impl { of_trait: true }) {
+            continue;
+        }
+        let trait_did =
+            tcx.impl_trait_header(def).trait_ref.instantiate_identity().skip_norm_wip().def_id;
+        if let Some(&tr) = excluded_traits.get(&trait_did)
+            && admit_safe_impl(tcx, def, true).is_ok()
+        {
+            excluded_impls.insert(def, tr);
+        }
+    }
+    let mut excluded_defs = HashMap::new();
+    for def in tcx.iter_local_def_id() {
+        if let Some(tr) = find_excluded_ancestor(tcx, def, &excluded_impls) {
+            excluded_defs.insert(def, tr);
+        }
+    }
+    Ok(ExclusionIndex { excluded_traits, excluded_defs })
+}
+
+impl ExclusionIndex {
+    fn is_empty(&self) -> bool {
+        self.excluded_traits.is_empty()
+    }
+
+    fn excluded_for_local(&self, def: LocalDefId) -> Option<ir::ExcludedTrait> {
+        self.excluded_defs.get(&def).copied()
+    }
+
+    fn check_def_id(
+        &self,
+        tcx: TyCtxt<'_>,
+        def_id: DefId,
+        context: &str,
+    ) -> extract::Result<()> {
+        if let Some(local) = def_id.as_local()
+            && let Some(&tr) = self.excluded_defs.get(&local)
+        {
+            return Err(format!(
+                "{context} references excluded item `{}` (excluded by `{}`)",
+                tcx.def_path_str(def_id),
+                tr.as_str()
+            ));
+        }
+        if let Some(&tr) = self.excluded_traits.get(&def_id) {
+            return Err(format!(
+                "{context} references excluded trait `{}`",
+                tr.as_str()
+            ));
+        }
+        Ok(())
+    }
+
+    /// Check whether a trait `principal_did` is itself excluded or has an
+    /// excluded supertrait, using `rustc_trait_selection::traits::supertraits`
+    /// ("elaborate(cx, [trait_ref.upcast(cx)]).filter_only_self()
+    /// .filter_to_traits()").
+    /// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_type_ir/src/elaborate.rs#L346-L351
+    fn check_trait_or_supertraits<'tcx>(
+        &self,
+        tcx: TyCtxt<'tcx>,
+        principal_did: DefId,
+        context: &str,
+    ) -> extract::Result<()> {
+        if let Some(&tr) = self.excluded_traits.get(&principal_did) {
+            return Err(format!(
+                "{context} references `dyn {}` (excluded trait)",
+                tr.as_str()
+            ));
+        }
+        for super_ref in rustc_trait_selection::traits::supertraits(
+            tcx,
+            ty::Binder::dummy(ty::TraitRef::identity(tcx, principal_did)),
+        ) {
+            let super_did = super_ref.def_id();
+            if let Some(&tr) = self.excluded_traits.get(&super_did) {
+                return Err(format!(
+                    "{context} references `dyn {}`, whose supertrait `{}` is excluded",
+                    tcx.def_path_str(principal_did),
+                    tr.as_str()
+                ));
+            }
+        }
+        Ok(())
+    }
+
+    /// Check a `ty::FnDef` or `ty::Closure` type against the exclusion set.
+    ///
+    /// Resolves monomorphic trait/function items with `Instance::try_resolve`
+    /// (`"Ok(Some(instance))"` or `Ok(None)`/`Err(ErrorGuaranteed)`), inspects
+    /// `tcx.trait_of_assoc` ("If the given DefId is an associated item of a
+    /// trait, returns the DefId of the trait; otherwise, returns None."),
+    /// checks `tcx.codegen_select_candidate` so default methods inherited by an
+    /// empty excluded trait impl (such as `core::error::Error::source`) fail
+    /// closed when `Self` selects a local excluded impl, and for non-local
+    /// `FnDef`s elaborates `tcx.predicates_of(def_id).instantiate(tcx, args)`
+    /// via `rustc_trait_selection::traits::elaborate` so external callees with
+    /// excluded-trait bounds (or supertrait bounds, e.g. `Result::unwrap`) fail
+    /// closed before reaching excluded impls.
+    /// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_middle/src/ty/instance.rs#L489-L505
+    /// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_middle/src/ty/mod.rs#L1962-L1969
+    /// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_middle/src/queries.rs#L423-L425
+    /// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_middle/src/queries.rs#L1580-L1585
+    /// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_type_ir/src/elaborate.rs#L84-L87
+    fn check_fn_ty<'tcx>(
+        &self,
+        tcx: TyCtxt<'tcx>,
+        typing_env: TypingEnv<'tcx>,
+        fn_ty: ty::Ty<'tcx>,
+        context: &str,
+    ) -> extract::Result<()> {
+        match *fn_ty.kind() {
+            ty::FnDef(def_id, args) => {
+                self.check_def_id(tcx, def_id, context)?;
+                let excluded_assoc_trait = tcx
+                    .trait_of_assoc(def_id)
+                    .and_then(|trait_did| self.excluded_traits.get(&trait_did).map(|&tr| (trait_did, tr)));
+                let is_concrete = !fn_ty.has_non_region_param()
+                    && !fn_ty.has_non_region_infer()
+                    && !fn_ty.references_error();
+                if is_concrete {
+                    match ty::Instance::try_resolve(tcx, typing_env, def_id, args) {
+                        Ok(Some(instance)) => {
+                            self.check_def_id(tcx, instance.def_id(), context)?;
+                        }
+                        Ok(None) | Err(_) => {
+                            if let Some((_, tr)) = excluded_assoc_trait {
+                                return Err(format!(
+                                    "{context} references unresolvable item `{}` of excluded trait `{}`",
+                                    tcx.def_path_str(def_id),
+                                    tr.as_str()
+                                ));
+                            }
+                        }
+                    }
+                    if let Some((trait_did, _)) = excluded_assoc_trait {
+                        let trait_ref = ty::TraitRef::from_assoc(tcx, trait_did, args);
+                        match tcx.codegen_select_candidate(typing_env.as_query_input(trait_ref)) {
+                            Ok(ImplSource::UserDefined(data)) => {
+                                self.check_def_id(tcx, data.impl_def_id, context)?;
+                            }
+                            Ok(_) => {}
+                            Err(_) => {
+                                return Err(format!(
+                                    "{context} failed to select impl for excluded trait item `{}`",
+                                    tcx.def_path_str(def_id)
+                                ));
+                            }
+                        }
+                    }
+                } else if let Some((_, tr)) = excluded_assoc_trait {
+                    return Err(format!(
+                        "{context} references polymorphic item `{}` of excluded trait `{}`",
+                        tcx.def_path_str(def_id),
+                        tr.as_str()
+                    ));
+                }
+                if !def_id.is_local() {
+                    let instantiated = tcx.predicates_of(def_id).instantiate(tcx, args);
+                    let clauses = instantiated
+                        .predicates
+                        .into_iter()
+                        .map(|pred| pred.skip_norm_wip());
+                    for clause in rustc_trait_selection::traits::elaborate(tcx, clauses) {
+                        if let ty::ClauseKind::Trait(trait_pred) = clause.kind().skip_binder() {
+                            self.check_trait_or_supertraits(
+                                tcx,
+                                trait_pred.def_id(),
+                                &format!(
+                                    "{context} (non-local callee `{}` trait bound)",
+                                    tcx.def_path_str(def_id)
+                                ),
+                            )?;
+                        }
+                    }
+                }
+                Ok(())
+            }
+            ty::Closure(def_id, _) => self.check_def_id(tcx, def_id, context),
+            _ => Ok(()),
+        }
+    }
+
+    /// Check all types nested in `ty` (via `ty.walk()`) for direct references
+    /// to excluded `FnDef`s, `Closure`s, local ADTs nested in excluded impls,
+    /// or `dyn <ExcludedTrait>` trait objects.
+    fn check_ty_mentions<'tcx>(
+        &self,
+        tcx: TyCtxt<'tcx>,
+        typing_env: TypingEnv<'tcx>,
+        ty: ty::Ty<'tcx>,
+        context: &str,
+    ) -> extract::Result<()> {
+        for arg in ty.walk() {
+            let Some(nested) = arg.as_type() else {
+                continue;
+            };
+            match *nested.kind() {
+                ty::FnDef(..) | ty::Closure(..) => {
+                    self.check_fn_ty(tcx, typing_env, nested, context)?;
+                }
+                ty::Adt(adt, _) => {
+                    self.check_def_id(tcx, adt.did(), context)?;
+                }
+                ty::Dynamic(preds, ..) => {
+                    if let Some(principal_did) = preds.principal_def_id() {
+                        self.check_trait_or_supertraits(tcx, principal_did, context)?;
+                    }
+                }
+                _ => {}
+            }
+        }
+        Ok(())
+    }
+
+    /// Check a `PointerCoercion::Unsize` coercion (`source_ty -> target_ty`)
+    /// for any `dyn` target naming an excluded trait (or a subtrait of one),
+    /// and for any vtable method entry (`VtblEntry::Method(instance)`) in
+    /// `tcx.vtable_entries` that resolves into `excluded_defs`.
+    ///
+    /// Upstream `vtable_entries` returns `&'tcx [VtblEntry<'tcx>]` covering
+    /// "all methods of the trait, including those of its supertraits".
+    /// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_middle/src/queries.rs#L1559-L1562
+    /// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_middle/src/ty/vtable.rs#L13-L25
+    /// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_monomorphize/src/collector.rs#L1220-L1245
+    fn check_unsize_cast<'tcx>(
+        &self,
+        tcx: TyCtxt<'tcx>,
+        typing_env: TypingEnv<'tcx>,
+        source_ty: ty::Ty<'tcx>,
+        target_ty: ty::Ty<'tcx>,
+        context: &str,
+    ) -> extract::Result<()> {
+        self.check_ty_mentions(tcx, typing_env, source_ty, context)?;
+        self.check_ty_mentions(tcx, typing_env, target_ty, context)?;
+        if source_ty.has_non_region_param()
+            || target_ty.has_non_region_param()
+            || source_ty.has_non_region_infer()
+            || target_ty.has_non_region_infer()
+            || source_ty.references_error()
+            || target_ty.references_error()
+        {
+            return Ok(());
+        }
+        let (src_tail, dst_tail) = match (source_ty.kind(), target_ty.kind()) {
+            (
+                &ty::Ref(_, src_pt, _),
+                &ty::Ref(_, dst_pt, _) | &ty::RawPtr(dst_pt, _),
+            )
+            | (&ty::RawPtr(src_pt, _), &ty::RawPtr(dst_pt, _)) => {
+                tcx.struct_lockstep_tails_for_codegen(src_pt, dst_pt, typing_env)
+            }
+            _ => (source_ty, target_ty),
+        };
+        if let ty::Dynamic(preds, ..) = *dst_tail.kind()
+            && !src_tail.is_trait()
+            && let Some(principal) = preds.principal()
+        {
+            self.check_trait_or_supertraits(tcx, principal.def_id(), context)?;
+            let trait_ref =
+                tcx.instantiate_bound_regions_with_erased(principal.with_self_ty(tcx, src_tail));
+            for entry in tcx.vtable_entries(trait_ref) {
+                if let VtblEntry::Method(instance) = *entry {
+                    self.check_def_id(tcx, instance.def_id(), context)?;
+                }
+            }
+        }
+        Ok(())
+    }
+
+    fn check_drop_ty<'tcx>(
+        &self,
+        tcx: TyCtxt<'tcx>,
+        typing_env: TypingEnv<'tcx>,
+        drop_ty: ty::Ty<'tcx>,
+        context: &str,
+    ) -> extract::Result<()> {
+        self.check_ty_mentions(tcx, typing_env, drop_ty, context)?;
+        for arg in drop_ty.walk() {
+            if let Some(nested) = arg.as_type()
+                && let ty::Adt(adt, _) = *nested.kind()
+                && let Some(dtor) = adt.destructor(tcx)
+            {
+                self.check_def_id(tcx, dtor.did, context)?;
+            }
+        }
+        Ok(())
+    }
+
+    fn check_const_alloc<'tcx>(
+        &self,
+        tcx: TyCtxt<'tcx>,
+        alloc_id: AllocId,
+        seen: &mut BTreeSet<AllocId>,
+        context: &str,
+    ) -> extract::Result<()> {
+        if !seen.insert(alloc_id) {
+            return Ok(());
+        }
+        match tcx.global_alloc(alloc_id) {
+            GlobalAlloc::Static(def_id) => self.check_def_id(tcx, def_id, context),
+            GlobalAlloc::Function { instance, .. } => {
+                self.check_def_id(tcx, instance.def_id(), context)
+            }
+            GlobalAlloc::VTable(vtable_ty, dyn_ty) => {
+                if let Some(principal_did) = dyn_ty.principal_def_id() {
+                    self.check_trait_or_supertraits(tcx, principal_did, context)?;
+                }
+                if let Some(principal) = dyn_ty.principal() {
+                    let trait_ref = tcx.instantiate_bound_regions_with_erased(
+                        principal.with_self_ty(tcx, vtable_ty),
+                    );
+                    for entry in tcx.vtable_entries(trait_ref) {
+                        if let VtblEntry::Method(instance) = *entry {
+                            self.check_def_id(tcx, instance.def_id(), context)?;
+                        }
+                    }
+                }
+                Ok(())
+            }
+            GlobalAlloc::Memory(alloc) => {
+                for &prov in alloc.inner().provenance().ptrs().values() {
+                    self.check_const_alloc(tcx, prov.alloc_id(), seen, context)?;
+                }
+                Ok(())
+            }
+            GlobalAlloc::TypeId { .. } => Ok(()),
+        }
+    }
+
+    /// Check a MIR constant operand, including any promoted MIR body referenced
+    /// by `Const::Unevaluated { promoted: Some(p), .. }` via `tcx.promoted_mir`
+    /// ("This function returns all promoteds in the specified body.").
+    /// `promoted_mir` steals only `tcx.mir_promoted(def).1`, never the main
+    /// `Runtime(PostCleanup)` body.
+    /// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_middle/src/queries.rs#L741-L750
+    /// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_mir_transform/src/lib.rs#L821-L838
+    fn check_mir_const<'tcx>(
+        &self,
+        tcx: TyCtxt<'tcx>,
+        typing_env: TypingEnv<'tcx>,
+        constant: mir::Const<'tcx>,
+        seen_promoted: &mut HashSet<(DefId, mir::Promoted)>,
+        context: &str,
+    ) -> extract::Result<()> {
+        self.check_ty_mentions(tcx, typing_env, constant.ty(), context)?;
+        match constant {
+            mir::Const::Unevaluated(uv, _) => {
+                self.check_def_id(tcx, uv.def, context)?;
+                if let Some(promoted) = uv.promoted
+                    && seen_promoted.insert((uv.def, promoted))
+                {
+                    let promoteds = tcx.promoted_mir(uv.def);
+                    let Some(promoted_body) = promoteds.get(promoted) else {
+                        return Err(format!(
+                            "{context} references missing promoted `{promoted:?}` in `{}`",
+                            tcx.def_path_str(uv.def)
+                        ));
+                    };
+                    self.check_body_disjoint_inner(
+                        tcx,
+                        typing_env,
+                        promoted_body,
+                        seen_promoted,
+                    )
+                    .map_err(|reason| {
+                        format!(
+                            "{context} (promoted `{promoted:?}` of `{}`): {reason}",
+                            tcx.def_path_str(uv.def)
+                        )
+                    })?;
+                }
+            }
+            mir::Const::Val(val, _) => {
+                let mut seen = BTreeSet::new();
+                match val {
+                    mir::ConstValue::Scalar(Scalar::Ptr(ptr, _)) => {
+                        self.check_const_alloc(tcx, ptr.provenance.alloc_id(), &mut seen, context)?;
+                    }
+                    mir::ConstValue::Indirect { alloc_id, .. }
+                    | mir::ConstValue::Slice { alloc_id, .. } => {
+                        self.check_const_alloc(tcx, alloc_id, &mut seen, context)?;
+                    }
+                    mir::ConstValue::ZeroSized | mir::ConstValue::Scalar(Scalar::Int(_)) => {}
+                }
+            }
+            mir::Const::Ty(..) => {}
+        }
+        Ok(())
+    }
+
+    /// Inspect a `Runtime(PostCleanup)` or CTFE MIR body for any reference to
+    /// an excluded trait or excluded local definition (direct calls, fn-item
+    /// constants, `ReifyFnPointer`/`ClosureFnPointer`/`Unsize` coercions,
+    /// `required_consts`, promoted bodies, local/constant types, and global
+    /// allocations).
+    fn check_body_disjoint<'tcx>(
+        &self,
+        tcx: TyCtxt<'tcx>,
+        typing_env: TypingEnv<'tcx>,
+        body: &mir::Body<'tcx>,
+    ) -> extract::Result<()> {
+        if self.excluded_traits.is_empty() {
+            return Ok(());
+        }
+        let mut seen_promoted = HashSet::new();
+        self.check_body_disjoint_inner(tcx, typing_env, body, &mut seen_promoted)
+    }
+
+    fn check_body_disjoint_inner<'tcx>(
+        &self,
+        tcx: TyCtxt<'tcx>,
+        typing_env: TypingEnv<'tcx>,
+        body: &mir::Body<'tcx>,
+        seen_promoted: &mut HashSet<(DefId, mir::Promoted)>,
+    ) -> extract::Result<()> {
+        for decl in body.local_decls.iter() {
+            self.check_ty_mentions(tcx, typing_env, decl.ty, "MIR local declaration")?;
+        }
+        if let Some(req_consts) = body.required_consts.as_deref() {
+            for const_op in req_consts {
+                self.check_mir_const(
+                    tcx,
+                    typing_env,
+                    const_op.const_,
+                    seen_promoted,
+                    "MIR required_consts",
+                )?;
+            }
+        }
+        struct DisjointVisitor<'a, 'tcx> {
+            index: &'a ExclusionIndex,
+            tcx: TyCtxt<'tcx>,
+            typing_env: TypingEnv<'tcx>,
+            body: &'a mir::Body<'tcx>,
+            seen_promoted: &'a mut HashSet<(DefId, mir::Promoted)>,
+            violation: Option<String>,
+        }
+        impl<'tcx> DisjointVisitor<'_, 'tcx> {
+            fn record(&mut self, res: extract::Result<()>) {
+                if self.violation.is_none()
+                    && let Err(msg) = res
+                {
+                    self.violation = Some(msg);
+                }
+            }
+        }
+        impl<'tcx> MirVisitor<'tcx> for DisjointVisitor<'_, 'tcx> {
+            fn visit_terminator(
+                &mut self,
+                terminator: &mir::Terminator<'tcx>,
+                location: mir::Location,
+            ) {
+                if self.violation.is_some() {
+                    return;
+                }
+                match &terminator.kind {
+                    mir::TerminatorKind::Call { func, .. }
+                    | mir::TerminatorKind::TailCall { func, .. } => {
+                        let fn_ty = func.ty(self.body, self.tcx);
+                        let res = self.index.check_fn_ty(
+                            self.tcx,
+                            self.typing_env,
+                            fn_ty,
+                            "direct call",
+                        );
+                        self.record(res);
+                    }
+                    mir::TerminatorKind::Drop { place, .. } => {
+                        let drop_ty = place.ty(self.body, self.tcx).ty;
+                        let res = self.index.check_drop_ty(
+                            self.tcx,
+                            self.typing_env,
+                            drop_ty,
+                            "drop terminator",
+                        );
+                        self.record(res);
+                    }
+                    mir::TerminatorKind::InlineAsm { operands, .. } => {
+                        for op in operands {
+                            if let mir::InlineAsmOperand::SymFn { value } = op {
+                                let res = self.index.check_fn_ty(
+                                    self.tcx,
+                                    self.typing_env,
+                                    value.const_.ty(),
+                                    "inline asm sym fn",
+                                );
+                                self.record(res);
+                            }
+                        }
+                    }
+                    _ => {}
+                }
+                self.super_terminator(terminator, location);
+            }
+
+            fn visit_rvalue(&mut self, rvalue: &mir::Rvalue<'tcx>, location: mir::Location) {
+                if self.violation.is_some() {
+                    return;
+                }
+                match rvalue {
+                    mir::Rvalue::Cast(
+                        mir::CastKind::PointerCoercion(PointerCoercion::Unsize, _),
+                        operand,
+                        target_ty,
+                    ) => {
+                        let source_ty = operand.ty(self.body, self.tcx);
+                        let res = self.index.check_unsize_cast(
+                            self.tcx,
+                            self.typing_env,
+                            source_ty,
+                            *target_ty,
+                            "Unsize coercion",
+                        );
+                        self.record(res);
+                    }
+                    mir::Rvalue::Cast(
+                        mir::CastKind::PointerCoercion(PointerCoercion::ReifyFnPointer(_), _),
+                        operand,
+                        _,
+                    ) => {
+                        let fn_ty = operand.ty(self.body, self.tcx);
+                        let res = self.index.check_fn_ty(
+                            self.tcx,
+                            self.typing_env,
+                            fn_ty,
+                            "reify-to-fn-ptr cast",
+                        );
+                        self.record(res);
+                    }
+                    mir::Rvalue::Cast(
+                        mir::CastKind::PointerCoercion(PointerCoercion::ClosureFnPointer(_), _),
+                        operand,
+                        _,
+                    ) => {
+                        let closure_ty = operand.ty(self.body, self.tcx);
+                        let res = self.index.check_fn_ty(
+                            self.tcx,
+                            self.typing_env,
+                            closure_ty,
+                            "closure-to-fn-ptr cast",
+                        );
+                        self.record(res);
+                    }
+                    _ => {}
+                }
+                self.super_rvalue(rvalue, location);
+            }
+
+            fn visit_const_operand(
+                &mut self,
+                constant: &mir::ConstOperand<'tcx>,
+                location: mir::Location,
+            ) {
+                if self.violation.is_some() {
+                    return;
+                }
+                let res = self.index.check_mir_const(
+                    self.tcx,
+                    self.typing_env,
+                    constant.const_,
+                    self.seen_promoted,
+                    "MIR constant",
+                );
+                self.record(res);
+                self.super_const_operand(constant, location);
+            }
+        }
+        let mut visitor = DisjointVisitor {
+            index: self,
+            tcx,
+            typing_env,
+            body,
+            seen_promoted,
+            violation: None,
+        };
+        visitor.visit_body(body);
+        if let Some(msg) = visitor.violation {
+            return Err(msg);
+        }
+        Ok(())
+    }
+
+    /// Inspect `tcx.optimized_mir(def).mentioned_items` after all
+    /// `Runtime(PostCleanup)` bodies have been extracted so `optimized_mir`
+    /// never steals a body prematurely.
+    ///
+    /// `rustc_mir_transform::mentioned_items::MentionedItems` runs inside
+    /// `inner_optimized_mir` ("Before doing anything, remember which items are
+    /// being mentioned so that the set of items visited does not depend on the
+    /// optimization level") and populates `Body::mentioned_items` with
+    /// `MentionedItem::{Fn, Drop, UnsizeCast, Closure}`. Keep the match
+    /// exhaustive and fail closed if `mentioned_items` is `None`.
+    /// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_middle/src/mir/mod.rs#L189-L202
+    /// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_middle/src/mir/mod.rs#L273-L285
+    /// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_mir_transform/src/lib.rs#L802-L805
+    /// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_mir_transform/src/mentioned_items.rs#L35-L120
+    fn check_mentioned_items<'tcx>(
+        &self,
+        tcx: TyCtxt<'tcx>,
+        def: LocalDefId,
+        typing_env: TypingEnv<'tcx>,
+    ) -> extract::Result<()> {
+        if self.excluded_traits.is_empty() {
+            return Ok(());
+        }
+        let opt_body = tcx.optimized_mir(def.to_def_id());
+        let Some(mentioned) = opt_body.mentioned_items.as_deref() else {
+            return Err("MIR mentioned_items unavailable for exclusion disjointness check".into());
+        };
+        for item in mentioned {
+            match item.node {
+                mir::MentionedItem::Fn(fn_ty) => {
+                    self.check_fn_ty(tcx, typing_env, fn_ty, "MIR mentioned_items::Fn")?;
+                }
+                mir::MentionedItem::Drop(drop_ty) => {
+                    self.check_drop_ty(tcx, typing_env, drop_ty, "MIR mentioned_items::Drop")?;
+                }
+                mir::MentionedItem::UnsizeCast { source_ty, target_ty } => {
+                    self.check_unsize_cast(
+                        tcx,
+                        typing_env,
+                        source_ty,
+                        target_ty,
+                        "MIR mentioned_items::UnsizeCast",
+                    )?;
+                }
+                mir::MentionedItem::Closure(closure_ty) => {
+                    self.check_fn_ty(tcx, typing_env, closure_ty, "MIR mentioned_items::Closure")?;
+                }
+            }
+        }
+        Ok(())
+    }
+}
+
 fn admit_const_item(
     tcx: TyCtxt<'_>,
     def: LocalDefId,
     is_assoc: bool,
     is_type_const: bool,
     has_body: bool,
+    exclusion_index: &ExclusionIndex,
 ) -> extract::Result<()> {
     let kind_label = if is_assoc { "AssocConst" } else { "Const" };
     let context = format!(
@@ -881,6 +1674,9 @@ fn admit_const_item(
     if ctfe_mir.tainted_by_errors.is_some() {
         return Err(format!("{context}: constant MIR tainted by compiler errors"));
     }
+    exclusion_index
+        .check_body_disjoint(tcx, TypingEnv::fully_monomorphized(), ctfe_mir)
+        .map_err(|reason| format!("{context}: {reason}"))?;
     let val = tcx
         .const_eval_poly(def.to_def_id())
         .map_err(|err| format!("{context}: constant failed CTFE: {err:?}"))?;
@@ -893,7 +1689,12 @@ fn admit_const_item(
 /// and generic-dependent constants.
 /// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_hir_analysis/src/collect/generics_of.rs#L97-L104
 /// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_middle/src/mir/interpret/queries.rs#L15-L29
-fn admit_anon_const(tcx: TyCtxt<'_>, def: LocalDefId, has_body: bool) -> extract::Result<()> {
+fn admit_anon_const(
+    tcx: TyCtxt<'_>,
+    def: LocalDefId,
+    has_body: bool,
+    exclusion_index: &ExclusionIndex,
+) -> extract::Result<()> {
     let context = "whole-crate obligation is unsupported: AnonConst";
     if !has_body {
         return Err(format!("{context} (missing body)"));
@@ -917,6 +1718,9 @@ fn admit_anon_const(tcx: TyCtxt<'_>, def: LocalDefId, has_body: bool) -> extract
     if ctfe_mir.tainted_by_errors.is_some() {
         return Err(format!("{context}: MIR tainted by compiler errors"));
     }
+    exclusion_index
+        .check_body_disjoint(tcx, TypingEnv::fully_monomorphized(), ctfe_mir)
+        .map_err(|reason| format!("{context}: {reason}"))?;
     for block in ctfe_mir.basic_blocks.iter() {
         let Some(term) = &block.terminator else {
             return Err(format!("{context}: missing terminator in CTFE MIR"));
@@ -942,7 +1746,12 @@ fn admit_anon_const(tcx: TyCtxt<'_>, def: LocalDefId, has_body: bool) -> extract
     Ok(())
 }
 
-fn whole_crate_item(tcx: TyCtxt<'_>, def: LocalDefId, has_body: bool) -> extract::Result<()> {
+fn whole_crate_item(
+    tcx: TyCtxt<'_>,
+    def: LocalDefId,
+    has_body: bool,
+    exclusion_index: &ExclusionIndex,
+) -> extract::Result<()> {
     match tcx.def_kind(def) {
         DefKind::Fn | DefKind::AssocFn if has_body => Ok(()),
         DefKind::AssocFn => {
@@ -975,12 +1784,12 @@ fn whole_crate_item(tcx: TyCtxt<'_>, def: LocalDefId, has_body: bool) -> extract
         DefKind::Trait => admit_safe_trait(tcx, def),
         DefKind::Impl { of_trait } => admit_safe_impl(tcx, def, of_trait),
         DefKind::Const { is_type_const } => {
-            admit_const_item(tcx, def, false, is_type_const, has_body)
+            admit_const_item(tcx, def, false, is_type_const, has_body, exclusion_index)
         }
         DefKind::AssocConst { is_type_const } => {
-            admit_const_item(tcx, def, true, is_type_const, has_body)
+            admit_const_item(tcx, def, true, is_type_const, has_body, exclusion_index)
         }
-        DefKind::AnonConst => admit_anon_const(tcx, def, has_body),
+        DefKind::AnonConst => admit_anon_const(tcx, def, has_body, exclusion_index),
         // `instantiate_identity` "Makes the identity replacement
         // `T0 => T0, ..., TN => TN`", so a generic enum keeps its own
         // parameters and `extract::ty` refuses it. The enum's own type has no
@@ -988,6 +1797,30 @@ fn whole_crate_item(tcx: TyCtxt<'_>, def: LocalDefId, has_body: bool) -> extract
         // https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_type_ir/src/binder.rs#L665-L673
         DefKind::Enum => {
             extract::ty(tcx, tcx.type_of(def).instantiate_identity().skip_norm_wip()).map(|_| ())
+        }
+        // As for `Enum`, `instantiate_identity` keeps a generic struct's own
+        // parameters, so `extract::ty` refuses it, as it refuses structs
+        // with `Drop`, unsafe or interior-mutable fields, unmodeled
+        // representations, and unsupported (including recursive) fields.
+        DefKind::Struct => {
+            check_non_callable_attrs(
+                tcx,
+                def,
+                ExtraAttr::Repr,
+                "whole-crate obligation is unsupported: Struct",
+            )?;
+            extract::ty(tcx, tcx.type_of(def).instantiate_identity().skip_norm_wip()).map(|_| ())
+        }
+        // `Ctor` "Refers to the struct or enum variant's constructor"; a
+        // function-like struct constructor builds exactly the struct's
+        // aggregate, so it is admitted with its struct.
+        // https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_hir/src/def.rs#L99-L205
+        DefKind::Ctor(CtorOf::Struct, CtorKind::Fn) => {
+            let parent = tcx.local_parent(def);
+            if tcx.def_kind(parent) != DefKind::Struct {
+                return Err("whole-crate obligation is unsupported: Ctor".into());
+            }
+            whole_crate_item(tcx, parent, false, exclusion_index)
         }
         other => Err(format!("whole-crate obligation is unsupported: {other:?}")),
     }
@@ -2080,22 +2913,24 @@ fn check_env_depinfo<'a>(
     Ok(())
 }
 
-/// Verify that every emitted or whole-crate-admitted `EnumTy.id` maps to a
-/// unique local enum definition in the compiled crate.
-fn check_admitted_enum_collisions(
+/// Verify that every emitted or whole-crate-admitted nominal `kind` id
+/// (`EnumTy.id` or `StructLayout.id`) maps to a unique local definition of
+/// that kind in the compiled crate.
+fn check_admitted_nominal_collisions(
     tcx: TyCtxt<'_>,
-    all_local_enums: &BTreeMap<u32, Vec<LocalDefId>>,
-    admitted_enum_ids: &BTreeSet<u32>,
+    kind: &str,
+    all_local_defs: &BTreeMap<u32, Vec<LocalDefId>>,
+    admitted_ids: &BTreeSet<u32>,
 ) -> Result<(), Failure> {
-    for &id in admitted_enum_ids {
-        let Some(defs) = all_local_enums.get(&id) else {
+    for &id in admitted_ids {
+        let Some(defs) = all_local_defs.get(&id) else {
             return Err(Failure::tool(format!(
-                "captured enum id {id} has no matching local enum definition"
+                "captured {kind} id {id} has no matching local {kind} definition"
             )));
         };
         if defs.len() > 1 {
             return Err(Failure::unsupported(format!(
-                "enum identity collision: {} and {} share id {id}",
+                "{kind} identity collision: {} and {} share id {id}",
                 tcx.def_path_str(defs[0]),
                 tcx.def_path_str(defs[1]),
             )));
@@ -2453,6 +3288,10 @@ fn collect(
     // selected bodies.
     // https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_middle/src/ty/context.rs#L1353-L1371
     // https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_middle/src/hir/map.rs
+    let exclusion_index = match scope {
+        ir::Scope::Crate { excluded_traits } => build_exclusion_index(tcx, excluded_traits)?,
+        ir::Scope::SelectedUnit { .. } => ExclusionIndex::default(),
+    };
     let body_owners: BTreeSet<_> =
         tcx.hir_body_owners().map(|def| def.local_def_index.as_u32()).collect();
     let mut found = BTreeSet::new();
@@ -2467,8 +3306,11 @@ fn collect(
     // enters `ir::Program` without letting unreferenced colliding enums (such
     // as macro-expanded `const _: () = { enum ... }` blocks) abort unrelated
     // selected-unit captures.
+    // Struct keys from `extract::struct_id` follow the same discipline.
     let mut enum_ids: BTreeMap<u32, Vec<LocalDefId>> = BTreeMap::new();
     let mut admitted_enum_ids = BTreeSet::new();
+    let mut struct_ids: BTreeMap<u32, Vec<LocalDefId>> = BTreeMap::new();
+    let mut admitted_struct_ids = BTreeSet::new();
     for def in tcx.iter_local_def_id() {
         let path = tcx.def_path_str(def);
         let kind = tcx.def_kind(def);
@@ -2479,14 +3321,23 @@ fn collect(
         } else {
             None
         };
+        let struct_key = if matches!(kind, DefKind::Struct) {
+            let id = extract::struct_id(tcx, def.to_def_id());
+            struct_ids.entry(id).or_default().push(def);
+            Some(id)
+        } else {
+            None
+        };
         let has_body = body_owners.contains(&def.local_def_index.as_u32());
         let is_required = required(tcx, def, kind, has_body);
+        let excluded_by = exclusion_index.excluded_for_local(def);
         // Selected-unit claims cover only the requested callable bodies. Keep
         // every other item visible in the census without pretending to verify
         // it. Whole-crate mode instead requires admission of every required
-        // item, so an unsupported owner cannot disappear with its body.
+        // item outside the `--exclude-trait` exclusion set, so an unsupported
+        // owner cannot disappear with its body.
         let selected = match scope {
-            ir::Scope::Crate => is_required,
+            ir::Scope::Crate { .. } => is_required && excluded_by.is_none(),
             ir::Scope::SelectedUnit { roots, .. } => {
                 let matched = roots.contains(&path);
                 if matched {
@@ -2502,12 +3353,13 @@ fn collect(
             has_body,
             selected,
             required: is_required,
+            excluded_by,
         });
         if !selected {
             continue;
         }
         let admission = match scope {
-            ir::Scope::Crate => whole_crate_item(tcx, def, has_body),
+            ir::Scope::Crate { .. } => whole_crate_item(tcx, def, has_body, &exclusion_index),
             ir::Scope::SelectedUnit { .. } if callable(kind) && has_body => Ok(()),
             ir::Scope::SelectedUnit { .. } => {
                 Err("selected roots must be callable definitions with bodies".into())
@@ -2518,6 +3370,9 @@ fn collect(
             Ok(()) => {
                 if let Some(id) = enum_key {
                     admitted_enum_ids.insert(id);
+                }
+                if let Some(id) = struct_key {
+                    admitted_struct_ids.insert(id);
                 }
             }
             Err(reason) => unsupported.push(ir::Unsupported {
@@ -2563,6 +3418,7 @@ fn collect(
             path: String,
             is_root: bool,
             features: FeaturePolicy<'_>,
+            exclusion_index: &ExclusionIndex,
         ) -> Result<(), Failure> {
             let key = target.local_def_index.as_u32();
             let steal = tcx.mir_drops_elaborated_and_const_checked(target);
@@ -2575,7 +3431,16 @@ fn collect(
             } else if steal.is_stolen() {
                 Err("Runtime(PostCleanup) MIR was already stolen before capture".into())
             } else {
-                extract::extract_body(tcx, target, &steal.borrow(), features)
+                let body_ref = steal.borrow();
+                if let Err(reason) = exclusion_index.check_body_disjoint(
+                    tcx,
+                    TypingEnv::fully_monomorphized(),
+                    &body_ref,
+                ) {
+                    Err(reason)
+                } else {
+                    extract::extract_body(tcx, target, &body_ref, features)
+                }
             };
             match result {
                 Ok(extracted) => {
@@ -2611,7 +3476,14 @@ fn collect(
     let mut visited_callees: BTreeSet<u32> = BTreeSet::new();
     for def in selected_defs {
         visited_callees.insert(def.local_def_index.as_u32());
-        state.record_local_body(tcx, def, tcx.def_path_str(def), true, feature_policy)?;
+        state.record_local_body(
+            tcx,
+            def,
+            tcx.def_path_str(def),
+            true,
+            feature_policy,
+            &exclusion_index,
+        )?;
     }
     if let ir::Scope::SelectedUnit { instantiations, .. } = scope {
         for inst in instantiations {
@@ -2676,6 +3548,17 @@ fn collect(
         }
         let kind = tcx.def_kind(callee);
         let path = tcx.def_path_str(callee);
+        if let Some(tr) = exclusion_index.excluded_for_local(callee) {
+            state.unsupported.push(ir::Unsupported {
+                def_id: key,
+                path,
+                reason: format!(
+                    "callee-queue hit on excluded item (excluded by `{}`)",
+                    tr.as_str()
+                ),
+            });
+            continue;
+        }
         if !callable(kind) || !body_owners.contains(&key) {
             state.unsupported.push(ir::Unsupported {
                 def_id: key,
@@ -2686,7 +3569,22 @@ fn collect(
             });
             continue;
         }
-        state.record_local_body(tcx, callee, path, false, feature_policy)?;
+        state.record_local_body(tcx, callee, path, false, feature_policy, &exclusion_index)?;
+    }
+    if !exclusion_index.is_empty() {
+        for (def, path, _) in &state.raw_bodies {
+            if let Err(reason) = exclusion_index.check_mentioned_items(
+                tcx,
+                *def,
+                TypingEnv::fully_monomorphized(),
+            ) {
+                state.unsupported.push(ir::Unsupported {
+                    def_id: def.local_def_index.as_u32(),
+                    path: path.clone(),
+                    reason,
+                });
+            }
+        }
     }
     if tcx.dcx().has_errors().is_some() {
         return Err(Failure::compiler("late compiler diagnostics prohibit capture"));
@@ -2719,8 +3617,10 @@ fn collect(
     }
     for body in &bodies {
         body.collect_enum_ids(&mut admitted_enum_ids);
+        body.collect_struct_ids(&mut admitted_struct_ids);
     }
-    check_admitted_enum_collisions(tcx, &enum_ids, &admitted_enum_ids)?;
+    check_admitted_nominal_collisions(tcx, "enum", &enum_ids, &admitted_enum_ids)?;
+    check_admitted_nominal_collisions(tcx, "struct", &struct_ids, &admitted_struct_ids)?;
     // Defense in depth: confirm `rustc`'s logical environment still matches the
     // explicit `--env` map installed in `Callbacks::config`.
     if tcx.sess.opts.logical_env.len() != declared_env.len()

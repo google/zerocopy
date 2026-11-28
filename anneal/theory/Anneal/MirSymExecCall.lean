@@ -192,6 +192,8 @@ theorem evalTerminator_meta (m : FrameMeta) (body : Body) (bb : BasicBlock)
   | call _ _ _ _ _ => rfl
   | coreCall _ _ _ _ _ => rfl
   | sysrootCall _ _ _ _ _ => rfl
+  | callNe _ _ _ _ _ => rfl
+  | drop _ _ _ => rfl
   | unsupported => rfl
 
 /-! ## Symbolic call stacks -/
@@ -463,7 +465,8 @@ caller's destination, and resume the caller at the return block. -/
               | .ret _ => .stuck
               | .stuck => .stuck
             | .assert _ _ _ _ _ | .unreachable | .unwindResume
-            | .coreCall _ _ _ _ _ | .unsupported => .stuck
+            | .coreCall _ _ _ _ _ | .callNe _ _ _ _ _ | .drop _ _ _
+            | .unsupported => .stuck
           else .stuck
 
 /-! ## Soundness -/
@@ -1168,6 +1171,8 @@ theorem symProgStep_sound {p : Program} {s s' : SymProg}
             | unreachable => rw [hT] at h; cases h
             | unwindResume => rw [hT] at h; cases h
             | coreCall _ _ _ _ _ => rw [hT] at h; cases h
+            | callNe _ _ _ _ _ => rw [hT] at h; cases h
+            | drop _ _ _ => rw [hT] at h; cases h
             | unsupported => rw [hT] at h; cases h
 
 theorem symCall_ne_ret {callerBody : Body} {bb : BasicBlock} {f : SymFrame}
@@ -1345,6 +1350,8 @@ theorem symProgStep_ret {p : Program} {s : SymProg} {v : SymVal}
             | unreachable => rw [hT] at h; cases h
             | unwindResume => rw [hT] at h; cases h
             | coreCall _ _ _ _ _ => rw [hT] at h; cases h
+            | callNe _ _ _ _ _ => rw [hT] at h; cases h
+            | drop _ _ _ => rw [hT] at h; cases h
             | unsupported => rw [hT] at h; cases h
 
 /-! ## Forcing intermediate states

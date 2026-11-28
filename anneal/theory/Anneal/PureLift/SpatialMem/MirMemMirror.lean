@@ -494,14 +494,17 @@ abbrev execIsAligned (a : Allocation) (offset alignLog2 : Nat) : Bool :=
         match t2 with
         | .bool => some (execOverflowPairLayout w)
         | .int _ _ | .unit | .never | .char | .ordering | .enum _ | .tuple _
-        | .ref _ _ | .rawPtr _ _ | .slice _ | .str | .vec _ | .box _ | .array _ _ | .rangeTo _
-        | .rangeFrom _ | .range _ | .option _ | .unsupported => none
+        | .ref _ _ | .rawPtr _ _ | .slice _ | .str | .vec _ | .box _ | .array _ _
+        | .rangeTo _ | .rangeFrom _ | .range _ | .option _ | .unsupported
+        | .struct_ _ _ => none
       | .bool | .unit | .never | .char | .ordering | .enum _ | .tuple _
-      | .ref _ _ | .rawPtr _ _ | .slice _ | .str | .vec _ | .box _ | .array _ _ | .rangeTo _
-      | .rangeFrom _ | .range _ | .option _ | .unsupported => none
+      | .ref _ _ | .rawPtr _ _ | .slice _ | .str | .vec _ | .box _ | .array _ _
+      | .rangeTo _ | .rangeFrom _ | .range _ | .option _ | .unsupported
+      | .struct_ _ _ => none
     | [] | [_] | _ :: _ :: _ :: _ => none
-  | .ref _ _ | .rawPtr _ _ | .slice _ | .str | .array _ _ | .vec _ | .box _ | .rangeTo _ | .rangeFrom _
-  | .range _ | .option _ | .unsupported => none
+  | .ref _ _ | .rawPtr _ _ | .slice _ | .str | .array _ _ | .vec _ | .box _
+  | .rangeTo _ | .rangeFrom _ | .range _ | .option _ | .unsupported
+  | .struct_ _ _ => none
 
 /-- Computable mirror of `Trusted.MirSemantics.leBytesOfNat`. -/
 @[expose] def execLeBytesOfNat (n value : Nat) : List UInt8 :=
@@ -636,14 +639,17 @@ abbrev execIsAligned (a : Allocation) (offset alignLog2 : Nat) : Bool :=
             | .optionVal _ | .bytes _ =>
               .error .unsupported
           | .int _ _ | .unit | .never | .char | .ordering | .enum _ | .tuple _
-          | .ref _ _ | .rawPtr _ _ | .slice _ | .str | .vec _ | .box _ | .array _ _ | .rangeTo _
-          | .rangeFrom _ | .range _ | .option _ | .unsupported => .error .unsupported
+          | .ref _ _ | .rawPtr _ _ | .slice _ | .str | .vec _ | .box _ | .array _ _
+          | .rangeTo _ | .rangeFrom _ | .range _ | .option _ | .unsupported
+          | .struct_ _ _ => .error .unsupported
         | .bool | .unit | .never | .char | .ordering | .enum _ | .tuple _
-        | .ref _ _ | .rawPtr _ _ | .slice _ | .str | .vec _ | .box _ | .array _ _ | .rangeTo _
-        | .rangeFrom _ | .range _ | .option _ | .unsupported => .error .unsupported
+        | .ref _ _ | .rawPtr _ _ | .slice _ | .str | .vec _ | .box _ | .array _ _
+        | .rangeTo _ | .rangeFrom _ | .range _ | .option _ | .unsupported
+        | .struct_ _ _ => .error .unsupported
       | [] | [_] | _ :: _ :: _ :: _ => .error .unsupported
-    | .never | .ref _ _ | .rawPtr _ _ | .slice _ | .str | .vec _ | .box _ | .array _ _ | .rangeTo _
-    | .rangeFrom _ | .range _ | .option _ | .unsupported => .error .unsupported
+    | .never | .ref _ _ | .rawPtr _ _ | .slice _ | .str | .vec _ | .box _ | .array _ _
+    | .rangeTo _ | .rangeFrom _ | .range _ | .option _ | .unsupported
+    | .struct_ _ _ => .error .unsupported
 
 /-- Non-overflow-pair layout arm of `execDecodeVal`. -/
 @[expose] def execDecodeValFallback (endian : TargetEndian) (ty : MirTy)
@@ -696,17 +702,20 @@ abbrev execIsAligned (a : Allocation) (offset alignLog2 : Nat) : Bool :=
                   | .error k => .error k
                   | .ok boolVal => .ok (some (.tuple [intVal, boolVal]))
         | .int _ _ | .unit | .never | .char | .ordering | .enum _ | .tuple _
-        | .ref _ _ | .rawPtr _ _ | .slice _ | .str | .vec _ | .box _ | .array _ _ | .rangeTo _
-        | .rangeFrom _ | .range _ | .option _ | .unsupported =>
+        | .ref _ _ | .rawPtr _ _ | .slice _ | .str | .vec _ | .box _ | .array _ _
+        | .rangeTo _ | .rangeFrom _ | .range _ | .option _ | .unsupported
+        | .struct_ _ _ =>
           execDecodeValFallback endian ty bytes
       | .bool | .unit | .never | .char | .ordering | .enum _ | .tuple _
-      | .ref _ _ | .rawPtr _ _ | .slice _ | .str | .vec _ | .box _ | .array _ _ | .rangeTo _
-      | .rangeFrom _ | .range _ | .option _ | .unsupported =>
+      | .ref _ _ | .rawPtr _ _ | .slice _ | .str | .vec _ | .box _ | .array _ _
+      | .rangeTo _ | .rangeFrom _ | .range _ | .option _ | .unsupported
+      | .struct_ _ _ =>
         execDecodeValFallback endian ty bytes
     | [] | [_] | _ :: _ :: _ :: _ => execDecodeValFallback endian ty bytes
   | .bool | .int _ _ | .unit | .char | .ordering | .enum _
-  | .ref _ _ | .rawPtr _ _ | .slice _ | .str | .vec _ | .box _ | .array _ _ | .rangeTo _
-  | .rangeFrom _ | .range _ | .option _ | .unsupported =>
+  | .ref _ _ | .rawPtr _ _ | .slice _ | .str | .vec _ | .box _ | .array _ _
+  | .rangeTo _ | .rangeFrom _ | .range _ | .option _ | .unsupported
+  | .struct_ _ _ =>
     execDecodeValFallback endian ty bytes
 
 /-- Computable mirror of `Trusted.MirSemantics.loadIndirect`. -/
@@ -941,7 +950,8 @@ theorem execOverflowPairLayout_eq (w : IntWidth) :
 theorem execLayoutOfTy_eq (ty : MirTy) : execLayoutOfTy ty = layoutOfTy ty := by
   cases ty with
   | bool | unit | never | char | ordering | ref _ _ | rawPtr _ _ | slice _
-  | str | array _ _ | vec _ | box _ | rangeTo _ | rangeFrom _ | range _ | option _ | unsupported => rfl
+  | str | array _ _ | vec _ | box _ | rangeTo _ | rangeFrom _ | range _ | option _
+  | unsupported | struct_ _ _ => rfl
   | int w _ =>
     dsimp only [execLayoutOfTy, layoutOfTy]
     rw [execIntLayout_eq w]
@@ -971,11 +981,12 @@ theorem execLayoutOfTy_eq (ty : MirTy) : execLayoutOfTy ty = layoutOfTy ty := by
             | nil => exact congrArg some (execOverflowPairLayout_eq w)
             | cons _ _ => rfl
           | int _ _ | unit | never | char | ordering | enum _ | tuple _
-          | ref _ _ | rawPtr _ _ | slice _ | str | vec _ | box _ | array _ _ | rangeTo _ | rangeFrom _
-          | range _ | option _ | unsupported => cases r' <;> rfl
+          | ref _ _ | rawPtr _ _ | slice _ | str | vec _ | box _ | array _ _
+          | rangeTo _ | rangeFrom _ | range _ | option _ | unsupported
+          | struct_ _ _ => cases r' <;> rfl
       | bool | unit | never | char | ordering | enum _ | tuple _
-      | ref _ _ | rawPtr _ _ | slice _ | str | array _ _ | vec _ | box _ | rangeTo _ | rangeFrom _
-      | range _ | option _
+      | ref _ _ | rawPtr _ _ | slice _ | str | array _ _ | vec _ | box _ | rangeTo _
+      | rangeFrom _ | range _ | option _ | struct_ _ _
       | unsupported =>
         cases r with
         | nil => rfl
@@ -1145,19 +1156,20 @@ theorem execEncodeVal_eq (endian : TargetEndian) (ty : MirTy) (v : Val) :
                 | bytes _ => rfl
               | cons _ _ => dsimp only
             | int _ _ | unit | never | char | ordering | enum _ | tuple _
-            | ref _ _ | rawPtr _ _ | slice _ | str | vec _ | box _ | array _ _ | rangeTo _ | rangeFrom _
-            | range _ | option _ | unsupported =>
+            | ref _ _ | rawPtr _ _ | slice _ | str | vec _ | box _ | array _ _
+            | rangeTo _ | rangeFrom _ | range _ | option _ | unsupported
+            | struct_ _ _ =>
               dsimp only; cases r' <;> cases v <;> rfl
         | bool | unit | never | char | ordering | enum _ | tuple _
-        | ref _ _ | rawPtr _ _ | slice _ | str | array _ _ | vec _ | box _ | rangeTo _ | rangeFrom _
-        | range _ | option _
+        | ref _ _ | rawPtr _ _ | slice _ | str | array _ _ | vec _ | box _ | rangeTo _
+        | rangeFrom _ | range _ | option _ | struct_ _ _
         | unsupported =>
           dsimp only
           cases r with
           | nil => dsimp only
           | cons _ r' => cases r' <;> cases v <;> rfl
-    | never | ref _ _ | rawPtr _ _ | slice _ | str | array _ _ | vec _ | box _ | rangeTo _ | rangeFrom _
-    | range _ | option _
+    | never | ref _ _ | rawPtr _ _ | slice _ | str | array _ _ | vec _ | box _
+    | rangeTo _ | rangeFrom _ | range _ | option _ | struct_ _ _
     | unsupported =>
       dsimp only
 
@@ -1206,8 +1218,9 @@ theorem execDecodeVal_eq (endian : TargetEndian) (ty : MirTy) (bytes : List Allo
     execDecodeVal endian ty bytes = decodeVal endian ty bytes := by
   cases ty with
   | never => rfl
-  | bool | int _ _ | unit | char | ordering | enum _ | ref _ _ | rawPtr _ _ | slice _ | vec _ | box _
-  | str | array _ _ | rangeTo _ | rangeFrom _ | range _ | option _ | unsupported =>
+  | bool | int _ _ | unit | char | ordering | enum _ | ref _ _ | rawPtr _ _
+  | slice _ | vec _ | box _ | str | array _ _ | rangeTo _ | rangeFrom _ | range _
+  | option _ | unsupported | struct_ _ _ =>
     dsimp only [execDecodeVal, decodeVal]
     apply execDecodeVal_layout_arm_eq
   | tuple fs =>
@@ -1256,8 +1269,8 @@ theorem execDecodeVal_eq (endian : TargetEndian) (ty : MirTy) (bytes : List Allo
               dsimp only [execDecodeVal, decodeVal]
               apply execDecodeVal_layout_arm_eq
           | int _ _ | unit | never | char | ordering | enum _ | tuple _
-          | ref _ _ | rawPtr _ _ | slice _ | str | array _ _ | vec _ | box _ | rangeTo _ | rangeFrom _
-          | range _ | option _
+          | ref _ _ | rawPtr _ _ | slice _ | str | array _ _ | vec _ | box _
+          | rangeTo _ | rangeFrom _ | range _ | option _ | struct_ _ _
           | unsupported =>
             cases r' with
             | nil =>
@@ -1267,8 +1280,8 @@ theorem execDecodeVal_eq (endian : TargetEndian) (ty : MirTy) (bytes : List Allo
               dsimp only [execDecodeVal, decodeVal]
               apply execDecodeVal_layout_arm_eq
       | bool | unit | never | char | ordering | enum _ | tuple _
-      | ref _ _ | rawPtr _ _ | slice _ | str | array _ _ | vec _ | box _ | rangeTo _ | rangeFrom _
-      | range _ | option _
+      | ref _ _ | rawPtr _ _ | slice _ | str | array _ _ | vec _ | box _ | rangeTo _
+      | rangeFrom _ | range _ | option _ | struct_ _ _
       | unsupported =>
         cases r with
         | nil =>

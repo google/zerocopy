@@ -523,9 +523,11 @@ theorem checkMirCert_sound {body : Body} {entryEnv : MirAbsEnv}
   | .assert _ _ _ target unwind =>
     target :: (match unwind with | .cleanup b => [b] | _ => [])
   | .call _ _ _ target unwind | .coreCall _ _ _ target unwind
-  | .sysrootCall _ _ _ target unwind =>
+  | .sysrootCall _ _ _ target unwind | .callNe _ _ _ target unwind =>
     (match target with | some t => [t] | none => []) ++
       (match unwind with | .cleanup b => [b] | _ => [])
+  | .drop _ target unwind =>
+    target :: (match unwind with | .cleanup b => [b] | _ => [])
   | .return_ | .unreachable | .unwindResume | .unsupported => []
 
 /-- Validates that `cutpoints` has pairwise-distinct in-range block keys and
@@ -709,7 +711,7 @@ private theorem argTopAbsSlot?_noRelGuard {ty : MirTy} {slot : MirAbsSlot}
   | unit => injection h with hEq; subst hEq; rfl
   | char | rawPtr _ _ | ref _ _ | tuple _ | enum _ | ordering
   | slice _ | str | rangeTo _ | rangeFrom _ | array _ _ | never | unsupported
-  | option _ | range _ | vec _ | box _ =>
+  | option _ | range _ | vec _ | box _ | struct_ _ _ =>
     nomatch h
 
 private theorem intWidth_eq_of_beq {w1 w2 : IntWidth}
@@ -859,7 +861,7 @@ private theorem argTopAbsSlot?_sound {ty : MirTy} {slot : MirAbsSlot}
       nomatch hChk
   | char | rawPtr _ _ | ref _ _ | tuple _ | enum _ | ordering
   | slice _ | str | rangeTo _ | rangeFrom _ | array _ _ | never | unsupported
-  | option _ | range _ | vec _ | box _ =>
+  | option _ | range _ | vec _ | box _ | struct_ _ _ =>
     nomatch hSlot
 
 /-- Builds the abstract entry environment matching `initLocalsLoop` from index
@@ -911,7 +913,7 @@ private theorem liveUninitAbsSlot?_sound {ty : MirTy} {slot : MirAbsSlot}
     exact ⟨rfl, rfl⟩
   | char | rawPtr _ _ | ref _ _ | tuple _ | enum _ | ordering
   | slice _ | str | rangeTo _ | rangeFrom _ | array _ _ | never | unsupported
-  | option _ | range _ | vec _ | box _ =>
+  | option _ | range _ | vec _ | box _ | struct_ _ _ =>
     nomatch h
 
 private theorem checkArgsMatch_get {args : List Val} {paramTys : List MirTy} :

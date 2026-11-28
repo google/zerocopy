@@ -1236,9 +1236,9 @@ fn selected_unit_captures_explicit_fieldless_enum_discriminants_and_refuses_adt_
     assert!(lean.contains("EnumTagRepr.zeroSized"), "{lean}");
     assert!(lean.contains("[42]"), "{lean}");
 
-    // Aggregates other than `()` (`AggregateKind::Adt`), including direct
-    // fieldless enum construction, payload-enum unit variants, 0-field
-    // structs, and non-local enums, must all fail closed.
+    // Enum `AggregateKind::Adt` aggregates, including direct fieldless enum
+    // construction, payload-enum unit variants, and non-local enums, must all
+    // fail closed.
     let refused_cases: &[(&str, &[u8], &[&str], &str)] = &[
         (
             "direct_narrow_signed_aggregate",
@@ -1261,13 +1261,6 @@ fn selected_unit_captures_explicit_fieldless_enum_discriminants_and_refuses_adt_
               pub fn f() -> Payload { Payload::None }\n",
             &["--select=f"],
             "enum payloads are unsupported",
-        ),
-        (
-            "unit_struct",
-            b"pub struct UnitStruct;\n\
-              pub fn f() -> UnitStruct { UnitStruct }\n",
-            &["--select=f"],
-            "unsupported type",
         ),
         (
             "ordering_adt_aggregate",
@@ -2565,6 +2558,10 @@ fn unmodeled_projections_tuples_casts_and_operators_fail_closed() {
             "checked_add_option_call",
             b"pub fn selected(a: u32, b: u32) -> Option<u32> { a.checked_add(b) }\n",
         ),
+        (
+            "slice_index_projection",
+            b"pub fn selected(s: &[u8], i: usize) -> u8 { s[i] }\n",
+        ),
     ];
     for (name, source) in v2_admitted_cases {
         let fixture = Capture::new(source);
@@ -2582,11 +2579,6 @@ fn unmodeled_projections_tuples_casts_and_operators_fail_closed() {
     assert!(v1_div.lean_source().contains("TerminatorKind.assert"));
 
     let refused_cases: &[(&str, &[u8], &str)] = &[
-        (
-            "slice_index_projection",
-            b"pub fn selected(s: &[u8], i: usize) -> u8 { s[i] }\n",
-            "unsupported place projection",
-        ),
         (
             "checked_div_option_call",
             b"pub fn selected(a: u32, b: u32) -> Option<u32> { a.checked_div(b) }\n",
@@ -2816,13 +2808,6 @@ fn unsupported_calls_fail_closed() {
             "#[track_caller]",
         ),
         (
-            "tuple_struct_ctor_callee",
-            b"pub struct Wrap(pub u16);\n\
-              pub fn make(x: u16) -> Wrap { Wrap(x) }\n\
-              pub fn selected(x: u16) -> u16 { make(x).0 }\n",
-            "unsupported",
-        ),
-        (
             "transitive_unsupported_helper",
             b"fn bad_helper(a: f32) -> f32 { a }\n\
               pub fn selected(a: u32) -> u32 { let _ = bad_helper(1.0); a }\n",
@@ -2907,10 +2892,21 @@ fn profile_v1_calls_and_profile_v2_core_calls_stay_disjoint() {
     assert_eq!(v1_div_call.manifest()["program"]["mir_profile_version"], 1);
 
     // Lowering `assert!` to `CoreCallOp.panicAbort` under `--panic=abort` makes
-    // `helper` a Profile v2 body, and Profile v2 refuses intra-crate calls.
-    let mixed = Capture::new(
+    // `helper` a Profile v2 body. Intra-crate calls are admitted in both
+    // profiles, so the whole program is captured as Profile v2.
+    let v2_call = Capture::new(
         b"fn helper(a: u32, b: u32) -> u32 { assert!(b != 0); a / b }\n\
           pub fn selected(a: u32, b: u32) -> u32 { helper(a, b) }\n",
+    );
+    let output = v2_call.selected_command().arg("--panic=abort").output().unwrap();
+    assert!(output.status.success(), "{output:?}");
+    assert_eq!(v2_call.manifest()["program"]["mir_profile_version"], 2);
+    assert!(v2_call.lean_source().contains("Trusted.MirAst.TerminatorKind.call\n"));
+
+    // Profile v2 still refuses the Profile v1 `core::num` sysroot path.
+    let mixed = Capture::new(
+        b"fn helper(a: u32, b: u32) -> u32 { assert!(b != 0); a / b }\n\
+          pub fn selected(a: u32, b: u32) -> u32 { helper(a, b).wrapping_add(1) }\n",
     );
     let output = mixed.selected_command().arg("--panic=abort").output().unwrap();
     assert_eq!(output.status.code(), Some(1), "{output:?}");
@@ -2972,14 +2968,15 @@ fn profile_v1_call_refusal_names_the_profile_v2_trigger() {
     let cases: [Case<'_>; 2] = [
         (
             // `--overflow-checks` gives `helper` an optional `Add` overflow
-            // `Assert`, which refuses `caller`'s intra-crate call.
+            // `Assert`, which selects Profile v2. Profile v2 admits `caller`'s
+            // intra-crate call but refuses its `wrapping_add` sysroot call.
             "overflow_checks",
             b"pub fn helper(x: u32) -> u32 { x + 1 }\n\
-              pub fn caller(x: u32) -> u32 { helper(x) }\n",
+              pub fn caller(x: u32) -> u32 { helper(x).wrapping_add(1) }\n",
             &["--overflow-checks"],
             &[
                 "rust-path-v1::caller makes a Profile v1 call in a Profile v2 program",
-                "terminator: call to rust-path-v1::helper)",
+                "terminator: `core::num` call SysrootNumOp { kind: WrappingAdd,",
                 "Profile v2 was selected by rust-path-v1::helper (",
                 "terminator: `Assert` (Overflow { op: Add })",
             ],
@@ -4932,8 +4929,8 @@ fn whole_crate_admits_safe_traits_impls_consts_and_refuses_unsafe_or_extern_obli
         "{drv_manifest}"
     );
 
-    // Pure `Struct`-typed `Const` (`Hash([0; 32])`) and its `AnonConst` length
-    // are admitted, leaving only the `Struct` definition itself unsupported.
+    // A pure `Struct`-typed `Const` (`Hash([0; 32])`), its `AnonConst`
+    // length, and the admitted `Struct` definition itself all capture.
     let struct_const_crate = b"\
         pub const HASH_SIZE: usize = 32;\n\
         pub struct Hash(pub [u8; HASH_SIZE]);\n\
@@ -4941,19 +4938,39 @@ fn whole_crate_admits_safe_traits_impls_consts_and_refuses_unsafe_or_extern_obli
         pub fn ok() -> u8 { 0 }\n";
     let sc_fixture = Capture::new(struct_const_crate);
     let sc_out = sc_fixture.command().arg("--scope=crate").output().unwrap();
-    assert_eq!(sc_out.status.code(), Some(1), "{sc_out:?}");
-    let sc_failure = status(&sc_out);
-    let sc_unsup = sc_failure["unsupported"].as_array().unwrap();
-    assert_eq!(sc_unsup.len(), 1, "expected only Struct refusal, got {sc_failure}");
-    assert_eq!(sc_unsup[0]["path"], "Hash", "{sc_failure}");
     assert!(
-        sc_unsup[0]["reason"]
-            .as_str()
-            .unwrap()
-            .contains("whole-crate obligation is unsupported: Struct"),
-        "{sc_failure}"
+        sc_out.status.success(),
+        "expected struct const crate to capture:\n{}\n{}",
+        stdout(&sc_out),
+        stderr(&sc_out)
     );
-    sc_fixture.assert_no_capture_artifacts();
+
+    // Generic, `Drop`, and unmodeled-field structs stay refused.
+    for (name, source, path) in [
+        ("generic_struct", "pub struct W<T>(pub T);\npub fn ok() -> u8 { 0 }\n", "W"),
+        (
+            "recursive_struct",
+            "pub struct L { pub next: Option<&'static L> }\npub fn ok() -> u8 { 0 }\n",
+            "L",
+        ),
+        (
+            "drop_struct",
+            "pub struct G(pub u8);\nimpl Drop for G { fn drop(&mut self) {} }\n\
+             pub fn ok() -> u8 { 0 }\n",
+            "G",
+        ),
+    ] {
+        let fixture = Capture::new(source.as_bytes());
+        let output = fixture.command().arg("--scope=crate").output().unwrap();
+        assert_eq!(output.status.code(), Some(1), "{name}: {output:?}");
+        let failure = status(&output);
+        assert_eq!(failure["status"], "unsupported", "{name}: {failure}");
+        assert!(
+            failure["unsupported"].as_array().unwrap().iter().any(|item| item["path"] == path),
+            "{name}: expected {path} refusal, got {failure}"
+        );
+        fixture.assert_no_capture_artifacts();
+    }
 
     // Negative cases: each unmodeled or unsafe non-callable obligation must
     // fail closed under `--scope=crate`.
@@ -6372,26 +6389,28 @@ pub fn two_mut_slice_pats(a: &mut [u8], b: &mut [u32], v: u32) -> u32 {
     }
 
     // Safe `&mut [u8]` indexing (`buf[0] = v`, issue #4426) synthesizes a
-    // `FakeForPtrMetadata` temporary for its bounds check. It must no longer
-    // fail with the misleading mixed-locals error; it now advances past
-    // `FakeForPtrMetadata` to the remaining `Index` projection refusal.
+    // `FakeForPtrMetadata` temporary for its bounds check. It must not fail
+    // with the misleading mixed-locals error, and now that Profile v2
+    // supports `Index` projections, it captures and typechecks.
     let idx_fix = Capture::new(
         b"#![no_std]\n#![forbid(unsafe_code)]\npub fn set_first(buf: &mut [u8], v: u8) {\n    buf[0] = v;\n}\n",
     );
     let idx_out = idx_fix.command().arg("--scope=crate").output().unwrap();
-    assert_eq!(idx_out.status.code(), Some(1), "set_first: {idx_out:?}");
-    let idx_failure = status(&idx_out);
-    assert_eq!(idx_failure["status"], "unsupported", "set_first: {idx_failure}");
-    let idx_msg = idx_failure.to_string();
     assert!(
-        !idx_msg.contains("body mixes reference and raw-pointer locals"),
-        "set_first must not hit mixed-locals refusal: {idx_msg}"
+        idx_out.status.success(),
+        "set_first: expected capture to succeed:\n{}\n{}",
+        stdout(&idx_out),
+        stderr(&idx_out)
     );
+    let idx_manifest = idx_fix.manifest();
+    assert_eq!(idx_manifest["program"]["mir_profile_version"], 2);
+    let idx_manifest_str = idx_manifest.to_string();
     assert!(
-        idx_msg.contains("unsupported place projection") && idx_msg.contains("Index"),
-        "set_first should reach Index projection refusal: {idx_msg}"
+        idx_manifest_str.contains("\"fake_address_of\"")
+            && idx_manifest_str.contains("\"kind\":\"index\""),
+        "set_first: expected FakeAddressOf and Index in capture.json, got {idx_manifest_str}"
     );
-    idx_fix.assert_no_capture_artifacts();
+    compile_captured_lean_if_trusted_sources_present(&idx_fix.output.join("Captured.lean"));
 }
 
 #[test]
@@ -7236,4 +7255,911 @@ fn profile_v2_refuses_local_alloc_vec_look_alike_in_crate_named_alloc() {
     assert_eq!(failure["status"], "unsupported", "{failure}");
     assert!(failure.to_string().contains("unsupported type: alloc::vec::Vec<u8>"), "{failure}");
     fixture.assert_no_capture_artifacts();
+}
+
+fn body_terminator_kinds(manifest: &Value, identity: &str) -> Vec<String> {
+    let body = manifest["program"]["bodies"]
+        .as_array()
+        .unwrap()
+        .iter()
+        .find(|body| body["identity"] == identity)
+        .unwrap_or_else(|| panic!("missing body {identity} in {manifest}"));
+    body["blocks"]
+        .as_array()
+        .unwrap()
+        .iter()
+        .map(|block| block["terminator"]["kind"].as_str().unwrap().to_owned())
+        .collect()
+}
+
+#[test]
+fn profile_v2_captures_structs_index_projections_and_intra_crate_calls() {
+    let src = b"\
+        #[derive(Clone, Copy, PartialEq)]\n\
+        pub struct Pair { pub a: u8, pub b: u32 }\n\
+        pub struct Unit;\n\
+        pub struct Nested { pub pair: Pair, pub tag: u16, pub bytes: [u8; 3] }\n\
+        pub struct Overrides(pub u8);\n\
+        impl PartialEq for Overrides {\n\
+            fn eq(&self, other: &Self) -> bool { self.0 == other.0 }\n\
+            fn ne(&self, other: &Self) -> bool { self.0 != other.0 }\n\
+        }\n\
+        pub const ORIGIN: Pair = Pair { a: 1, b: 2 };\n\
+        fn helper(x: u32) -> u32 { x ^ 1 }\n\
+        pub fn make_pair(a: u8, b: u32) -> Pair { Pair { a, b: helper(b) } }\n\
+        pub fn nest(pair: Pair) -> Nested { Nested { pair, tag: 7, bytes: [1, 2, 3] } }\n\
+        pub fn get_b(p: Pair) -> u32 { p.b }\n\
+        pub fn origin_b() -> u32 { ORIGIN.b }\n\
+        pub const UNIT: Unit = Unit;\n\
+        pub fn unit() -> Unit { Unit }\n\
+        pub fn unit_const() -> Unit { UNIT }\n\
+        pub fn index(arr: [u8; 4], i: usize) -> u8 { arr[i] }\n\
+        pub fn index_pairs(arr: &[Pair; 2], i: usize) -> u8 { arr[i].a }\n\
+        pub fn index_slice(s: &[u8], i: usize) -> u8 { s[i] }\n\
+        pub fn differ(x: &Pair, y: &Pair) -> bool { *x != *y }\n\
+        pub fn overridden(x: &Overrides, y: &Overrides) -> bool { *x != *y }\n\
+        pub fn array_ne(a: &[u8; 4], b: &[u8; 4]) -> bool { *a != *b }\n";
+    let cap = Capture::new(src);
+    let out = cap.command().arg("--scope=crate").output().unwrap();
+    assert!(
+        out.status.success(),
+        "struct/index/call crate capture should succeed:\n{}\n{}",
+        stdout(&out),
+        stderr(&out)
+    );
+    let manifest = cap.manifest();
+    assert_eq!(manifest["program"]["mir_profile_version"], 2, "{manifest}");
+    let lean = std::fs::read_to_string(cap.output.join("Captured.lean")).unwrap();
+    for needle in [
+        "Trusted.MirAst.MirTy.struct_ (Trusted.MirAst.StructLayout.mk ",
+        "Trusted.MirAst.Rvalue.aggregateStruct",
+        "Trusted.MirAst.ProjectionElem.index",
+        "Trusted.MirAst.TerminatorKind.call\n",
+        "Trusted.MirAst.TerminatorKind.callNe\n",
+        "Trusted.MirAst.CoreCallOp.partialEqNe",
+        "Trusted.MirAst.ConstLit.rodataBytes",
+        "Trusted.MirAst.ConstLit.zeroSized",
+    ] {
+        assert!(lean.contains(needle), "missing {needle}:\n{lean}");
+    }
+    assert!(body_terminator_kinds(&manifest, "rust-path-v1::make_pair").contains(&"call".into()));
+    assert!(body_terminator_kinds(&manifest, "rust-path-v1::differ").contains(&"call_ne".into()));
+    let overridden = body_terminator_kinds(&manifest, "rust-path-v1::overridden");
+    assert!(overridden.contains(&"call".into()), "{overridden:?}");
+    assert!(!overridden.contains(&"call_ne".into()), "{overridden:?}");
+    assert!(
+        body_terminator_kinds(&manifest, "rust-path-v1::array_ne").contains(&"core_call".into())
+    );
+    // Every call names the captured body it executes.
+    let bodies = manifest["program"]["bodies"].as_array().unwrap();
+    let helper_index =
+        bodies.iter().position(|body| body["identity"] == "rust-path-v1::helper").unwrap();
+    let make_pair =
+        bodies.iter().find(|body| body["identity"] == "rust-path-v1::make_pair").unwrap();
+    assert!(
+        make_pair["blocks"].as_array().unwrap().iter().any(|block| {
+            block["terminator"]["kind"] == "call" && block["terminator"]["callee"] == helper_index
+        }),
+        "{make_pair}"
+    );
+}
+
+/// Sharding (more than `shard_min_bodies = 20` bodies) reorders
+/// `program.bodies`, and `CallNe::eq_callee` must follow its `eq` body. Here 18
+/// `fake_caller_*` helpers push the crate to 21 bodies, and the reorder moves
+/// `<Tag as AaaFake>::fake_eq`, which has the same signature as `Tag::eq` but
+/// returns `false`, into the slot `Tag::eq` had before. A stale `eq_callee`
+/// therefore still type-checks and would make `Tag::A != Tag::A` evaluate to
+/// `true`.
+#[test]
+fn profile_v2_sharded_capture_keeps_call_ne_bound_to_partial_eq_eq() {
+    let mut src = String::from(
+        "pub enum Tag { A, B }\n\
+         impl PartialEq for Tag {\n\
+         \x20   fn eq(&self, other: &Self) -> bool {\n\
+         \x20       match (self, other) { (Tag::A, Tag::A) | (Tag::B, Tag::B) => true, _ => false }\n\
+         \x20   }\n\
+         }\n\
+         pub trait AaaFake { fn fake_eq(&self, other: &Self) -> bool; }\n\
+         impl AaaFake for Tag { fn fake_eq(&self, _: &Self) -> bool { false } }\n\
+         pub fn tag_ne(x: Tag, y: Tag) -> bool { x != y }\n",
+    );
+    for i in 0..18 {
+        let _ = writeln!(
+            src,
+            "pub fn fake_caller_{i:02}(x: &Tag, y: &Tag) -> bool {{ \
+             <Tag as AaaFake>::fake_eq(x, y) }}"
+        );
+    }
+    let cap = Capture::new(src.as_bytes());
+    let out = cap.command().arg("--scope=crate").output().unwrap();
+    assert!(
+        out.status.success(),
+        "sharded witness capture should succeed:\n{}\n{}",
+        stdout(&out),
+        stderr(&out)
+    );
+    let shards: Value = serde_json::from_slice(
+        &std::fs::read(cap.output.join("capture_shards.json")).expect("sharded capture"),
+    )
+    .unwrap();
+    assert_eq!(shards["total_bodies"], 21, "{shards}");
+    let manifest = cap.manifest();
+    let bodies = manifest["program"]["bodies"].as_array().unwrap();
+    assert_eq!(bodies.len(), 21, "{manifest}");
+    let index_of = |identity: &str| {
+        bodies
+            .iter()
+            .position(|b| b["identity"] == identity)
+            .unwrap_or_else(|| panic!("missing body {identity} in {manifest}"))
+    };
+    let eq_index = index_of("rust-path-v1::<Tag as core::cmp::PartialEq>::eq");
+    let fake_eq_index = index_of("rust-path-v1::<Tag as AaaFake>::fake_eq");
+    let call_targets = |identity: &str, kind: &str, field: &str| -> Vec<u64> {
+        bodies[index_of(identity)]["blocks"]
+            .as_array()
+            .unwrap()
+            .iter()
+            .filter(|block| block["terminator"]["kind"] == kind)
+            .map(|block| block["terminator"][field].as_u64().unwrap())
+            .collect()
+    };
+    assert_eq!(
+        call_targets("rust-path-v1::tag_ne", "call_ne", "eq_callee"),
+        [eq_index as u64],
+        "{manifest}"
+    );
+    for i in 0..18 {
+        assert_eq!(
+            call_targets(&format!("rust-path-v1::fake_caller_{i:02}"), "call", "callee"),
+            [fake_eq_index as u64],
+            "{manifest}"
+        );
+    }
+}
+
+#[test]
+fn profile_v2_captures_no_drop_glue_drop_terminators_in_instantiations() {
+    let src = b"pub fn consume<T>(_x: T) {}\n";
+    // Under `panic=abort` the generic body's drop has no cleanup unwind.
+    let cap = Capture::new(src);
+    let out = cap
+        .command()
+        .arg("--panic=abort")
+        .arg("--instantiate")
+        .arg(r#"{"path":"consume","args":["u8"]}"#)
+        .output()
+        .unwrap();
+    assert!(
+        out.status.success(),
+        "no-drop-glue Drop capture should succeed:\n{}\n{}",
+        stdout(&out),
+        stderr(&out)
+    );
+    let lean = std::fs::read_to_string(cap.output.join("Captured.lean")).unwrap();
+    assert!(lean.contains("Trusted.MirAst.TerminatorKind.drop"), "{lean}");
+    // The drop's real unwind action is emitted rather than a constant.
+    assert!(
+        lean.contains("1 Trusted.MirAst.UnwindAction.unreachable)"),
+        "{lean}"
+    );
+    assert!(!lean.contains("Trusted.MirAst.UnwindAction.continue_"), "{lean}");
+
+    // A body that drops a value with a custom `Drop` impl is refused.
+    let bad = Capture::new(
+        b"pub struct Guard(pub u8);\n\
+          impl Drop for Guard { fn drop(&mut self) {} }\n\
+          pub fn selected(g: Guard) -> u8 { g.0 }\n",
+    );
+    let out = bad.selected_command().arg("--panic=abort").output().unwrap();
+    assert_eq!(out.status.code(), Some(1), "{out:?}");
+    let failure = status(&out);
+    assert_eq!(failure["status"], "unsupported", "{failure}");
+    assert!(failure.to_string().contains("structs with a Drop impl"), "{failure}");
+    bad.assert_no_capture_artifacts();
+}
+
+#[test]
+fn profile_v2_refuses_unsupported_structs_and_calls() {
+    for (name, source, expected) in [
+        (
+            "drop-struct",
+            "pub struct G(pub u8);\nimpl Drop for G { fn drop(&mut self) {} }\n\
+             pub fn selected(g: &G) -> u8 { g.0 }\n",
+            "structs with a Drop impl are unsupported",
+        ),
+        (
+            "generic-struct",
+            "pub struct W<T>(pub T);\npub fn selected(w: W<u8>) -> u8 { w.0 }\n",
+            "unsupported type",
+        ),
+        (
+            "lifetime-struct",
+            "pub struct R<'a>(pub &'a u8);\npub fn selected(r: R<'_>) -> u8 { *r.0 }\n",
+            "unsupported type",
+        ),
+        (
+            "packed-struct",
+            "#[repr(packed)] pub struct P { pub a: u8, pub b: u32 }\n\
+             pub fn selected(p: P) -> u8 { p.a }\n",
+            "packed",
+        ),
+        (
+            "raw-pointer-field",
+            "pub struct P(pub *const u8);\npub fn selected(p: P) -> usize { p.0 as usize }\n",
+            "outside the Profile v2 data fragment",
+        ),
+        (
+            "generic-callee",
+            "fn id<T>(x: T) -> T { x }\npub fn selected(x: u8) -> u8 { id(x) }\n",
+            "calls to generic or monomorphized functions",
+        ),
+    ] {
+        let fixture = Capture::new(source.as_bytes());
+        let output = fixture.selected_command().output().unwrap();
+        assert_eq!(output.status.code(), Some(1), "{name}: {output:?}");
+        let failure = status(&output);
+        assert_eq!(failure["status"], "unsupported", "{name}: {failure}");
+        assert!(
+            failure.to_string().contains(expected),
+            "{name}: expected {expected:?}, got {failure}"
+        );
+        fixture.assert_no_capture_artifacts();
+    }
+}
+
+#[test]
+fn profile_v2_refuses_recursive_structs_without_overflow() {
+    // Structs that reach themselves through a pointer must fail closed under
+    // both `--select` and `--scope=crate` instead of recursing without bound.
+    let sources: [(&str, &[u8]); 4] = [
+        (
+            "self-raw-pointer",
+            b"pub struct Node { pub next: *const Node, pub v: u8 }\n\
+              pub fn selected(n: &Node) -> u8 { n.v }\n",
+        ),
+        (
+            "self-static-ref",
+            b"pub struct Node { pub next: &'static Node, pub v: u8 }\n\
+              pub fn selected(n: &Node) -> u8 { n.v }\n",
+        ),
+        (
+            "self-pointer-in-tuple",
+            b"pub struct Node { pub link: (*const Node, u8) }\n\
+              pub fn selected(n: &Node) -> u8 { n.link.1 }\n",
+        ),
+        (
+            "mutual-raw-pointer",
+            b"pub struct A { pub b: *const B, pub v: u8 }\n\
+              pub struct B { pub a: *const A }\n\
+              pub fn selected(a: &A) -> u8 { a.v }\n",
+        ),
+    ];
+    for (name, source) in sources {
+        let selected = Capture::new(source);
+        let output = selected.selected_command().output().unwrap();
+        assert_eq!(output.status.code(), Some(1), "{name}: {output:?}");
+        let failure = status(&output);
+        assert_eq!(failure["status"], "unsupported", "{name}: {failure}");
+        assert!(
+            failure.to_string().contains("outside the Profile v2 data fragment"),
+            "{name}: {failure}"
+        );
+        selected.assert_no_capture_artifacts();
+
+        let crate_scope = Capture::new(source);
+        let output = crate_scope.command().arg("--scope=crate").output().unwrap();
+        assert_eq!(output.status.code(), Some(1), "{name} (crate): {output:?}");
+        let failure = status(&output);
+        assert_eq!(failure["status"], "unsupported", "{name} (crate): {failure}");
+        crate_scope.assert_no_capture_artifacts();
+    }
+
+    // Owning `Box`/`Vec` handles do not trip the pointer-field refusal, so
+    // recursion through them must hit the re-entry check instead.
+    let heap_sources: [(&str, &[u8]); 3] = [
+        (
+            "self-box",
+            b"pub struct List { pub next: Box<List>, pub v: u8 }\n\
+              pub fn selected(l: &List) -> u8 { l.v }\n",
+        ),
+        (
+            "self-option-box",
+            b"pub struct Node { pub next: Option<Box<Node>>, pub v: u8 }\n\
+              pub fn selected(n: &Node) -> u8 { n.v }\n",
+        ),
+        (
+            "self-vec",
+            b"pub struct Tree { pub children: Vec<Tree>, pub v: u8 }\n\
+              pub fn selected(t: &Tree) -> u8 { t.v }\n",
+        ),
+    ];
+    for (name, source) in heap_sources {
+        let selected = Capture::new(source);
+        let output = selected.selected_command().output().unwrap();
+        assert_eq!(output.status.code(), Some(1), "{name}: {output:?}");
+        let failure = status(&output);
+        assert_eq!(failure["status"], "unsupported", "{name}: {failure}");
+        assert!(
+            failure.to_string().contains("recursive struct types are unsupported"),
+            "{name}: {failure}"
+        );
+        selected.assert_no_capture_artifacts();
+
+        let crate_scope = Capture::new(source);
+        let output = crate_scope.command().arg("--scope=crate").output().unwrap();
+        assert_eq!(output.status.code(), Some(1), "{name} (crate): {output:?}");
+        let failure = status(&output);
+        assert_eq!(failure["status"], "unsupported", "{name} (crate): {failure}");
+        crate_scope.assert_no_capture_artifacts();
+    }
+}
+
+#[test]
+fn profile_v2_captures_struct_index_and_drop_e2e_fixture_crates() {
+    let lib = b"\
+        #[derive(PartialEq)]\n\
+        pub struct Digest(pub [u8; 4]);\n\
+        pub struct Pair {\n\
+            pub tag: u8,\n\
+            pub value: u32,\n\
+        }\n\
+        pub fn make_pair(tag: u8, value: u32) -> Pair {\n\
+            Pair { tag, value }\n\
+        }\n\
+        pub fn pair_tag(p: &Pair) -> u8 {\n\
+            p.tag\n\
+        }\n\
+        pub fn digest_byte(d: &Digest, i: u8) -> u8 {\n\
+            d.0[(i & 3) as usize]\n\
+        }\n\
+        pub fn digests_differ(a: &Digest, b: &Digest) -> bool {\n\
+            *a != *b\n\
+        }\n";
+    let cap = Capture::new(lib);
+    let out = cap.command().arg("--scope=crate").output().unwrap();
+    assert!(
+        out.status.success(),
+        "struct/index fixture crate should capture:\n{}\n{}",
+        stdout(&out),
+        stderr(&out)
+    );
+    let manifest = cap.manifest();
+    assert!(
+        body_terminator_kinds(&manifest, "rust-path-v1::digests_differ")
+            .contains(&"call_ne".into())
+    );
+    let lean = std::fs::read_to_string(cap.output.join("Captured.lean")).unwrap();
+    assert!(lean.contains("Trusted.MirAst.ProjectionElem.index"), "{lean}");
+    assert!(lean.contains("Trusted.MirAst.CoreCallOp.arrayEq"), "{lean}");
+
+    // Under `panic=unwind`, `drop(_2)` keeps an unwind edge to a cleanup
+    // `resume` block, and cleanup blocks stay refused.
+    let drop_src = b"pub fn first<T>(x: T, _y: T) -> T {\n    x\n}\n";
+    let unwind = Capture::new(drop_src);
+    let out = unwind
+        .command()
+        .arg("--instantiate")
+        .arg(r#"{"path":"first","args":["u8"]}"#)
+        .output()
+        .unwrap();
+    assert_eq!(out.status.code(), Some(1), "{out:?}");
+    assert!(status(&out).to_string().contains("cleanup block"), "{out:?}");
+    unwind.assert_no_capture_artifacts();
+    let drop = Capture::new(drop_src);
+    let out = drop
+        .command()
+        .arg("--panic=abort")
+        .arg("--instantiate")
+        .arg(r#"{"path":"first","args":["u8"]}"#)
+        .output()
+        .unwrap();
+    assert!(
+        out.status.success(),
+        "drop fixture instantiation should capture:\n{}\n{}",
+        stdout(&out),
+        stderr(&out)
+    );
+    let lean = std::fs::read_to_string(drop.output.join("Captured.lean")).unwrap();
+    assert!(lean.contains("Trusted.MirAst.TerminatorKind.drop"), "{lean}");
+}
+
+#[test]
+fn exclude_trait_captures_unreferenced_impls_and_nested_defs_in_crate_scope() {
+    let source = b"\
+        #[derive(Debug)]\n\
+        pub enum Code { Ok, Err }\n\
+        impl core::fmt::Display for Code {\n\
+            fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {\n\
+                const PAD: usize = 1;\n\
+                let tag = || const { PAD + 1 };\n\
+                let _ = tag();\n\
+                match self {\n\
+                    Code::Ok => f.write_str(\"ok\"),\n\
+                    Code::Err => f.write_str(\"err\"),\n\
+                }\n\
+            }\n\
+        }\n\
+        impl core::error::Error for Code {}\n\
+        pub fn zero() -> u64 { 0 }\n";
+    let fixture = Capture::new(source);
+    let output = fixture
+        .command()
+        .args([
+            "--scope=crate",
+            "--exclude-trait=core::fmt::Display",
+            "--exclude-trait=core::fmt::Debug",
+            "--exclude-trait=core::error::Error",
+        ])
+        .output()
+        .expect("capture crate with excluded traits");
+    assert!(
+        output.status.success(),
+        "expected capture success:\n{}\n{}",
+        stdout(&output),
+        stderr(&output)
+    );
+    let manifest = fixture.manifest();
+    assert_eq!(
+        manifest["program"]["scope"],
+        serde_json::json!({
+            "kind": "crate",
+            "excluded_traits": [
+                "core::error::Error",
+                "core::fmt::Debug",
+                "core::fmt::Display",
+            ]
+        })
+    );
+    let bodies = manifest["program"]["bodies"].as_array().unwrap();
+    assert_eq!(bodies.len(), 1, "{manifest}");
+    assert_eq!(manifest["selected"][0]["path"], "zero");
+
+    let census = manifest["census"].as_array().unwrap();
+    let excluded: Vec<&Value> = census
+        .iter()
+        .filter(|item| item.get("excluded_by").is_some())
+        .collect();
+    assert!(
+        excluded.len() >= 6,
+        "expected derived Debug, Display + fmt + nested const/closure/inline-const, and Error impls in census: {excluded:?}"
+    );
+    for item in &excluded {
+        assert_eq!(item["selected"], false, "excluded item must not be selected: {item}");
+    }
+    assert!(
+        excluded.iter().any(|i| i["excluded_by"] == "core::fmt::Debug"),
+        "missing Debug exclusion: {excluded:?}"
+    );
+    assert!(
+        excluded.iter().any(|i| i["excluded_by"] == "core::fmt::Display"
+            && i["path"].as_str().unwrap().contains("fmt")),
+        "missing Display::fmt exclusion: {excluded:?}"
+    );
+    assert!(
+        excluded.iter().any(|i| i["excluded_by"] == "core::fmt::Display"
+            && i["kind"] == "Closure"),
+        "missing nested closure exclusion: {excluded:?}"
+    );
+    assert!(
+        excluded.iter().any(|i| i["excluded_by"] == "core::fmt::Display"
+            && (i["kind"] == "InlineConst"
+                || i["kind"].as_str().is_some_and(|k| k.starts_with("Const")))),
+        "missing nested const exclusion: {excluded:?}"
+    );
+    assert!(
+        excluded.iter().any(|i| i["excluded_by"] == "core::error::Error"),
+        "missing Error exclusion: {excluded:?}"
+    );
+
+    // Without `--exclude-trait`, crate scope omits `excluded_traits` and
+    // `excluded_by`.
+    let plain = Capture::new(b"pub fn zero() -> u64 { 0 }\n");
+    let plain_out = plain.command().arg("--scope=crate").output().unwrap();
+    assert!(plain_out.status.success(), "{plain_out:?}");
+    let plain_manifest = plain.manifest();
+    assert_eq!(plain_manifest["program"]["scope"], serde_json::json!({"kind": "crate"}));
+    for item in plain_manifest["census"].as_array().unwrap() {
+        assert!(item.get("excluded_by").is_none(), "unexpected excluded_by: {item}");
+    }
+}
+
+#[test]
+fn exclude_trait_refuses_direct_transitive_and_default_method_references() {
+    // Direct call to `<E as Display>::fmt`.
+    let direct = Capture::new(
+        b"pub enum E { A }\n\
+          impl core::fmt::Display for E {\n\
+              fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {\n\
+                  f.write_str(\"a\")\n\
+              }\n\
+          }\n\
+          pub fn calls_display(e: &E, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {\n\
+              <E as core::fmt::Display>::fmt(e, f)\n\
+          }\n",
+    );
+    let out = direct
+        .command()
+        .args(["--scope=crate", "--exclude-trait=core::fmt::Display"])
+        .output()
+        .unwrap();
+    assert_refused("direct Display::fmt call", &direct, &out, "excluded");
+    assert!(status(&out).to_string().contains("core::fmt::Display"), "{out:?}");
+
+    // Transitive call through an unexported helper.
+    let transitive = Capture::new(
+        b"pub enum E { A }\n\
+          impl core::fmt::Display for E {\n\
+              fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {\n\
+                  f.write_str(\"a\")\n\
+              }\n\
+          }\n\
+          fn helper(e: &E, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {\n\
+              <E as core::fmt::Display>::fmt(e, f)\n\
+          }\n\
+          pub fn entry(e: &E, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {\n\
+              helper(e, f)\n\
+          }\n",
+    );
+    let out = transitive
+        .command()
+        .args(["--scope=crate", "--exclude-trait=core::fmt::Display"])
+        .output()
+        .unwrap();
+    assert_refused("transitive Display::fmt call", &transitive, &out, "excluded");
+
+    // Inherited default method `<E as core::error::Error>::source` on an empty
+    // impl.
+    let inherited = Capture::new(
+        b"#[derive(Debug)]\n\
+          pub enum E { A }\n\
+          impl core::fmt::Display for E {\n\
+              fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {\n\
+                  f.write_str(\"a\")\n\
+              }\n\
+          }\n\
+          impl core::error::Error for E {}\n\
+          pub fn check_source(e: &E) -> bool {\n\
+              <E as core::error::Error>::source(e).is_none()\n\
+          }\n",
+    );
+    let out = inherited
+        .command()
+        .args([
+            "--scope=crate",
+            "--exclude-trait=core::fmt::Debug",
+            "--exclude-trait=core::fmt::Display",
+            "--exclude-trait=core::error::Error",
+        ])
+        .output()
+        .unwrap();
+    assert_refused("inherited Error::source call", &inherited, &out, "excluded");
+    assert!(status(&out).to_string().contains("core::error::Error"), "{out:?}");
+}
+
+#[test]
+fn exclude_trait_refuses_fn_ptr_const_and_dyn_unsize_references() {
+    // Fn-ptr reification of `<E as Debug>::fmt`.
+    let fn_ptr = Capture::new(
+        b"#[derive(Debug)]\n\
+          pub enum E { A }\n\
+          pub fn take_ptr() -> fn(&E, &mut core::fmt::Formatter<'_>) -> core::fmt::Result {\n\
+              <E as core::fmt::Debug>::fmt\n\
+          }\n",
+    );
+    let out = fn_ptr
+        .command()
+        .args(["--scope=crate", "--exclude-trait=core::fmt::Debug"])
+        .output()
+        .unwrap();
+    assert_refused("fn-ptr reification", &fn_ptr, &out, "excluded");
+
+    // Fn-item reference inside a verified const item (CTFE MIR).
+    let const_ref = Capture::new(
+        b"#[derive(Debug)]\n\
+          pub enum E { A }\n\
+          pub const C: u64 = { let _ = <E as core::fmt::Debug>::fmt; 42 };\n\
+          pub fn zero() -> u64 { C }\n",
+    );
+    let out = const_ref
+        .command()
+        .args(["--scope=crate", "--exclude-trait=core::fmt::Debug"])
+        .output()
+        .unwrap();
+    assert_refused("const fn-item reference", &const_ref, &out, "excluded");
+
+    // Unsize coercion to `&dyn core::fmt::Debug`.
+    let dyn_ref = Capture::new(
+        b"#[derive(Debug)]\n\
+          pub enum E { A }\n\
+          pub fn as_dyn(e: &E) -> &dyn core::fmt::Debug {\n\
+              e\n\
+          }\n",
+    );
+    let out = dyn_ref
+        .command()
+        .args(["--scope=crate", "--exclude-trait=core::fmt::Debug"])
+        .output()
+        .unwrap();
+    assert_refused("dyn Debug unsize coercion", &dyn_ref, &out, "excluded");
+
+    // Unsize coercion to a subtrait `&dyn SubDebug` whose supertrait is
+    // `Debug`.
+    let supertrait_dyn = Capture::new(
+        b"#[derive(Debug)]\n\
+          pub enum E { A }\n\
+          pub trait SubDebug: core::fmt::Debug {}\n\
+          impl SubDebug for E {}\n\
+          pub fn as_sub(e: &E) -> &dyn SubDebug {\n\
+              e\n\
+          }\n",
+    );
+    let out = supertrait_dyn
+        .command()
+        .args(["--scope=crate", "--exclude-trait=core::fmt::Debug"])
+        .output()
+        .unwrap();
+    assert_refused("dyn SubDebug supertrait unsize", &supertrait_dyn, &out, "excluded");
+}
+
+#[test]
+fn exclude_trait_refuses_non_allowlisted_select_spoof_and_unsafe_nested_items() {
+    // Non-allowlisted traits are refused.
+    for bad_trait in ["core::clone::Clone", "core::ops::Drop"] {
+        let fixture = Capture::new(b"pub fn zero() -> u64 { 0 }\n");
+        let out = fixture
+            .command()
+            .args(["--scope=crate", "--exclude-trait", bad_trait])
+            .output()
+            .unwrap();
+        assert_refused(bad_trait, &fixture, &out, "not in the closed --exclude-trait allowlist");
+    }
+
+    // `--select` and `--instantiate` with `--exclude-trait` are refused.
+    let sel_fixture = Capture::new(b"pub fn selected() -> u64 { 0 }\n");
+    let out = sel_fixture
+        .selected_command()
+        .arg("--exclude-trait=core::fmt::Debug")
+        .output()
+        .unwrap();
+    assert_refused("--select + --exclude-trait", &sel_fixture, &out, "--scope crate");
+
+    let inst_fixture = Capture::new(b"pub fn poly<T>(x: T) -> T { x }\n");
+    let out = inst_fixture
+        .command()
+        .args([
+            "--instantiate={\"path\":\"poly\",\"args\":[\"u64\"]}",
+            "--exclude-trait=core::fmt::Debug",
+        ])
+        .output()
+        .unwrap();
+    assert_refused("--instantiate + --exclude-trait", &inst_fixture, &out, "--scope crate");
+
+    // Local look-alike `core::fmt::Debug` trait is NOT matched by diagnostic
+    // item.
+    let spoof = Capture::new(
+        b"pub mod core {\n\
+              pub mod fmt {\n\
+                  pub trait Debug { fn bad(&self) -> f64; }\n\
+              }\n\
+          }\n\
+          pub enum S { A }\n\
+          impl crate::core::fmt::Debug for S {\n\
+              fn bad(&self) -> f64 { 1.0 }\n\
+          }\n\
+          pub fn zero() -> u64 { 0 }\n",
+    );
+    let out = spoof
+        .command()
+        .args(["--scope=crate", "--exclude-trait=core::fmt::Debug"])
+        .output()
+        .unwrap();
+    assert_refused("local Debug trait spoof", &spoof, &out, "unsupported type: f64");
+
+    // Crate-wide escape hatches nested inside an excluded impl stay refused.
+    let smuggled_export = Capture::new(
+        b"pub enum S { A }\n\
+          impl core::fmt::Display for S {\n\
+              fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {\n\
+                  #[unsafe(no_mangle)]\n\
+                  pub fn smuggled() -> u64 { 0 }\n\
+                  f.write_str(\"s\")\n\
+              }\n\
+          }\n\
+          pub fn zero() -> u64 { 0 }\n",
+    );
+    let out = smuggled_export
+        .command()
+        .args(["--scope=crate", "--exclude-trait=core::fmt::Display"])
+        .output()
+        .unwrap();
+    assert_refused("smuggled no_mangle inside excluded impl", &smuggled_export, &out, "smuggled");
+    assert!(status(&out).to_string().contains("NO_MANGLE"), "{out:?}");
+
+    // Nested `static` (including `#[used] static`) inside an excluded impl
+    // stays required and fails closed.
+    let nested_static = Capture::new(
+        b"pub enum S { A }\n\
+          impl core::fmt::Display for S {\n\
+              fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {\n\
+                  #[used]\n\
+                  static KEEP: u64 = 1;\n\
+                  let _ = KEEP;\n\
+                  f.write_str(\"s\")\n\
+              }\n\
+          }\n\
+          pub fn zero() -> u64 { 0 }\n",
+    );
+    let out = nested_static
+        .command()
+        .args(["--scope=crate", "--exclude-trait=core::fmt::Display"])
+        .output()
+        .unwrap();
+    assert_refused("nested #[used] static inside excluded impl", &nested_static, &out, "KEEP");
+    assert!(status(&out).to_string().contains("Static"), "{out:?}");
+
+    // Negative trait impl of an excluded trait stays refused by
+    // `admit_safe_impl`. `negative_impls` must be explicitly allowed so the
+    // capture gets past the feature allowlist and reaches that refusal.
+    let neg_impl = Capture::new(
+        b"#![feature(negative_impls)]\n\
+          pub enum S { A }\n\
+          impl !core::fmt::Display for S {}\n\
+          pub fn zero() -> u64 { 0 }\n",
+    );
+    let out = neg_impl
+        .command()
+        .args([
+            "--scope=crate",
+            "--exclude-trait=core::fmt::Display",
+            "--allow-unstable-feature=negative_impls",
+        ])
+        .output()
+        .unwrap();
+    assert_refused("negative excluded trait impl", &neg_impl, &out, "negative polarity");
+    // Without the opt-in, the feature allowlist refuses the crate first.
+    let out = neg_impl
+        .command()
+        .args(["--scope=crate", "--exclude-trait=core::fmt::Display"])
+        .output()
+        .unwrap();
+    assert_refused(
+        "negative excluded trait impl without opt-in",
+        &neg_impl,
+        &out,
+        "#![feature(negative_impls)] is unsupported",
+    );
+}
+
+#[test]
+fn exclude_trait_refuses_descendants_of_nested_impls_for_their_own_reason() {
+    // Nested trait impl inside `<S as Display>::fmt`: its method must remain
+    // required and fail for its own reason (not silently excluded).
+    let nested_trait_impl = Capture::new(
+        b"pub enum S { A }\n\
+          pub trait Api { fn m(&self) -> u64; }\n\
+          impl core::fmt::Display for S {\n\
+              fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {\n\
+                  impl Api for u64 {\n\
+                      fn m(&self) -> u64 {\n\
+                          unsafe { *(*self as usize as *const u64) }\n\
+                      }\n\
+                  }\n\
+                  f.write_str(\"s\")\n\
+              }\n\
+          }\n\
+          pub fn zero() -> u64 { 0 }\n",
+    );
+    let out = nested_trait_impl
+        .command()
+        .args(["--scope=crate", "--exclude-trait=core::fmt::Display"])
+        .output()
+        .unwrap();
+    assert_refused(
+        "nested trait impl inside Display",
+        &nested_trait_impl,
+        &out,
+        "mixes reference and raw-pointer locals",
+    );
+    assert!(!status(&out).to_string().contains("excluded"), "{out:?}");
+
+    // Nested inherent impl inside `<S as Debug>::fmt`: its method must remain
+    // required and fail for its own reason.
+    let nested_inherent = Capture::new(
+        b"pub enum S { A }\n\
+          pub enum T { B }\n\
+          impl core::fmt::Debug for S {\n\
+              fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {\n\
+                  impl T {\n\
+                      pub fn evil(&self) -> u64 {\n\
+                          unsafe { *(8usize as *const u64) }\n\
+                      }\n\
+                  }\n\
+                  f.write_str(\"s\")\n\
+              }\n\
+          }\n\
+          pub fn zero() -> u64 { 0 }\n",
+    );
+    let out = nested_inherent
+        .command()
+        .args(["--scope=crate", "--exclude-trait=core::fmt::Debug"])
+        .output()
+        .unwrap();
+    assert_refused(
+        "nested inherent impl inside Debug",
+        &nested_inherent,
+        &out,
+        "mixes reference and raw-pointer locals",
+    );
+    assert!(!status(&out).to_string().contains("excluded"), "{out:?}");
+
+    // Nested `Drop` impl inside `<S as Debug>::fmt`: its `drop` method must
+    // remain required and fail for its own reason.
+    let nested_drop = Capture::new(
+        b"pub enum S { A }\n\
+          pub enum K { C }\n\
+          impl core::fmt::Debug for S {\n\
+              fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {\n\
+                  impl Drop for K {\n\
+                      fn drop(&mut self) {\n\
+                          unsafe { *(8usize as *mut u64) = 0; }\n\
+                      }\n\
+                  }\n\
+                  f.write_str(\"s\")\n\
+              }\n\
+          }\n\
+          pub fn zero() -> u64 { 0 }\n",
+    );
+    let out = nested_drop
+        .command()
+        .args(["--scope=crate", "--exclude-trait=core::fmt::Debug"])
+        .output()
+        .unwrap();
+    assert_refused(
+        "nested Drop impl inside Debug",
+        &nested_drop,
+        &out,
+        "mixes reference and raw-pointer locals",
+    );
+    assert!(!status(&out).to_string().contains("excluded"), "{out:?}");
+}
+
+#[test]
+fn exclude_trait_refuses_nonlocal_callee_predicates_and_promoted_mir() {
+    // Non-local `FnDef` (`Result::unwrap`) whose elaborated predicates require
+    // `E: core::fmt::Debug` fails closed with the trait-bound diagnostic.
+    let nonlocal_pred = Capture::new(
+        b"#[derive(Debug)]\n\
+          pub enum E { A }\n\
+          pub const C: u64 = { let _ = core::result::Result::<u64, E>::unwrap; 42 };\n\
+          pub fn zero() -> u64 { C }\n",
+    );
+    let out = nonlocal_pred
+        .command()
+        .args(["--scope=crate", "--exclude-trait=core::fmt::Debug"])
+        .output()
+        .unwrap();
+    assert_refused("non-local Result::unwrap Debug bound", &nonlocal_pred, &out, "trait bound");
+    assert!(status(&out).to_string().contains("core::fmt::Debug"), "{out:?}");
+
+    // Promoted constant body referencing an excluded impl item fails closed
+    // via `tcx.promoted_mir`.
+    let promoted_const = Capture::new(
+        b"#[derive(Debug)]\n\
+          pub enum E { A }\n\
+          pub const C: u64 = {\n\
+              let _r: &'static fn(&E, &mut core::fmt::Formatter<'_>) -> core::fmt::Result =\n\
+                  &(<E as core::fmt::Debug>::fmt\n\
+                      as fn(&E, &mut core::fmt::Formatter<'_>) -> core::fmt::Result);\n\
+              42\n\
+          };\n\
+          pub fn zero() -> u64 { C }\n",
+    );
+    let out = promoted_const
+        .command()
+        .args(["--scope=crate", "--exclude-trait=core::fmt::Debug"])
+        .output()
+        .unwrap();
+    assert_refused("promoted MIR excluded item", &promoted_const, &out, "promoted");
+    assert!(status(&out).to_string().contains("excluded"), "{out:?}");
 }

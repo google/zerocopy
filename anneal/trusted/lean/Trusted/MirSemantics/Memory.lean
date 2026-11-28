@@ -365,7 +365,7 @@ noncomputable def maxAllocAndProvId (allocs : List Allocation) : AllocId :=
 
 mutual
   /-- Return `true` when `ty` is a raw pointer or an option, range, tuple,
-  fixed-size array, `Vec`, or `Box` containing one. Kept exhaustive over
+  struct, fixed-size array, `Vec`, or `Box` containing one. Kept exhaustive over
   `MirTy` so adding new aggregate/container constructors forces updating
   raw-pointer freshness tracking. -/
   noncomputable def tyHasRawPtrV2 : MirTy → Bool
@@ -373,6 +373,7 @@ mutual
     | .array elem _ => tyHasRawPtrV2 elem
     | .option e | .rangeTo e | .rangeFrom e | .range e => tyHasRawPtrV2 e
     | .tuple fs => tyListHasRawPtrV2 fs
+    | .struct_ _ fs => tyListHasRawPtrV2 fs
     | .vec elem => tyHasRawPtrV2 elem
     | .box pointee => tyHasRawPtrV2 pointee
     | .bool | .int _ _ | .unit | .never | .char | .str | .ordering | .enum _

@@ -258,6 +258,14 @@ Constructor correspondence:
   `core::option::Option::<innerTy>::None` (`variantIdx = 0`, `payload = none`)
   or `core::option::Option::<innerTy>::Some(x)` (`variantIdx = 1`,
   `payload = some x`) (Profile v2).
+- `.aggregateStruct structTy fields` corresponds to
+  `Rvalue::Aggregate(AggregateKind::Adt(def, 0, [], None, None), fields)` on a
+  concrete struct of type `structTy = .struct_ ..`, with `fields` in source
+  definition order (Profile v2; `compiler/rustc_middle/src/mir/syntax.rs`,
+  `rust-lang/rust` `f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1`):
+
+  > "/// The second field is the variant index. It's equal to 0 for struct
+  > /// and union expressions."
 - `.useRetag op` corresponds to a retagging `Use(op, WithRetag::Yes)` of a
   type that is not retag-free.
 - `.unsupported` represents all other `Rvalue` variants (`ThreadLocalRef`,
@@ -285,6 +293,7 @@ inductive Rvalue where
   | aggregateRange (elemTy : MirTy) (startOp endOp : Operand)
   | aggregateOption (variantIdx : Nat) (innerTy : MirTy)
       (payload : Option Operand)
+  | aggregateStruct (structTy : MirTy) (fields : List Operand)
   | unsupported
 
 end Trusted.MirAst
