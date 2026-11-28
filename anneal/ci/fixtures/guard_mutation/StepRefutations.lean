@@ -3375,26 +3375,29 @@ theorem refute_core_contracts_split_at_mut_suffix_len_union :
       ]) mutInit3Mem :=
   rfl
 
-/-- Guard `core_contracts_array_subslice_len_u64_bound`: `execArraySubslice`
-rejects synthetic array lengths `>= 2^64` as `.unsupported` before entering
-`refValidInMem` (which would fault `.undefined` on a null pointer). -/
+/-- Guard `core_contracts_array_subslice_len_u64_bound`:
+`execArraySubsliceOutcome` rejects synthetic array lengths `>= 2^64` as
+`.unsupported` before entering `refValidInMem` (which would fault `.undefined`
+on a null pointer). -/
 theorem refute_core_contracts_array_subslice_len_u64_bound :
-    execArraySubslice mutInit3Mem .shared .shared .unit (Nat.pow 2 64)
-      ⟨none, 0, .isize⟩ 0 0 = .error .unsupported :=
+    execArraySubsliceOutcome mutInit3Mem .shared .shared .unit (Nat.pow 2 64)
+      ⟨none, 0, .isize⟩ 0 0 = .fault .unsupported :=
   rfl
 
 /-- Guard `core_contracts_array_subslice_no_shared_upgrade`:
-`execArraySubslice` rejects `&[T; N]` -> `&mut [T]` upgrades as `.undefined`
-before array-pointee admission checks. -/
+`execArraySubsliceOutcome` rejects `&[T; N]` -> `&mut [T]` upgrades as
+`.undefined` before array-pointee admission checks. -/
 theorem refute_core_contracts_array_subslice_no_shared_upgrade :
-    execArraySubslice mutInit3Mem .mut .shared (.option (.int .i64 false)) 1
-      ⟨some 1, 0, .isize⟩ 0 1 = .error .undefined :=
+    execArraySubsliceOutcome mutInit3Mem .mut .shared
+      (.option (.int .i64 false)) 1 ⟨some 1, 0, .isize⟩ 0 1 =
+      .fault .undefined :=
   rfl
 
-/-- Guard `core_contracts_array_subslice_ref_valid`: `execArraySubslice`
+/-- Guard `core_contracts_array_subslice_ref_valid`: `execArraySubsliceOutcome`
 validates `&[T; N]` via `refValidInMem` before delegating to
-`execSliceSubslice`, rejecting unmodeled `[Option<u64>; 1]` array pointees as
-`.unsupported` even when `&[Option<u64>]` slice validation would succeed. -/
+`execSliceSubsliceOutcome`, rejecting unmodeled `[Option<u64>; 1]` array
+pointees as `.unsupported` even when `&[Option<u64>]` slice validation would
+succeed. -/
 theorem refute_core_contracts_array_subslice_ref_valid :
     let optNoneArrMem : MemoryState := {
       allocations := [{
@@ -3403,8 +3406,93 @@ theorem refute_core_contracts_array_subslice_ref_valid :
         live := true
       }], nextAllocId := 2
     }
-    execArraySubslice optNoneArrMem .shared .shared (.option (.int .i64 false))
-      1 ⟨some 1, 0, .isize⟩ 0 1 = .error .unsupported :=
+    execArraySubsliceOutcome optNoneArrMem .shared .shared
+      (.option (.int .i64 false)) 1 ⟨some 1, 0, .isize⟩ 0 1 =
+      .fault .unsupported :=
+  rfl
+
+/-- Guard `core_contracts_subslice_oob_panics`: `&s[1..4]` on a 3-element
+`&mut [u8]` panics rather than faulting. -/
+theorem refute_core_contracts_subslice_oob_panics :
+    execSliceSubsliceOutcome mutInit3Mem .mut .mut (.int .i8 false)
+      ⟨some 1, 0, .isize⟩ 3 1 4 = .panic :=
+  rfl
+
+/-- Guard `core_contracts_split_at_oob_panics`: `split_at(4)` on a 3-element
+`&[u8]` panics (`mid > len`) rather than faulting. -/
+theorem refute_core_contracts_split_at_oob_panics :
+    (match execSliceSplitAtOutcome mutInit3Mem .shared .shared (.int .i8 false)
+        ⟨some 1, 0, .isize⟩ 3 4 with
+     | .fault _ => false
+     | _ => true) = true :=
+  rfl
+
+/-- Guard `core_contracts_option_unwrap_none_panics`: `Option::<u8>::unwrap`
+on `None` panics rather than faulting. -/
+theorem refute_core_contracts_option_unwrap_none_panics :
+    (match execCoreContractOpOutcome MemoryState.empty
+        (.optionUnwrap (.int .i8 false))
+        [(.option (.int .i8 false), .optionVal none)] (.int .i8 false) with
+     | .panic => true
+     | _ => false) = true :=
+  rfl
+
+/-- A returning `Option::<u8>::unwrap` call on local `_1`. -/
+noncomputable def unwrapNoneBody : Body := {
+  argumentCount := 0
+  locals := [.int .i8 false, .option (.int .i8 false)]
+  basicBlocks := [{
+    statements := []
+    terminator :=
+      .coreCall (.optionUnwrap (.int .i8 false))
+        [.copy { localId := 1, projection := [] }]
+        { localId := 0, projection := [] } (some 0) .continue_
+  }]
+}
+
+/-- The frame of `unwrapNoneBody` with `_1 = None`. -/
+noncomputable def unwrapNoneFrame : FrameState := {
+  defId := 0
+  blockIdx := 0
+  stmtIdx := 0
+  locals := [.immediate none, .immediate (some (.optionVal none))]
+}
+
+/-- Guard `step_v2_core_call_panic_dispatch`: a returning `core` call that
+panics (`Option::unwrap` on `None`) aborts under `--panic abort` without a
+local panic handler, but stays `.fault .unsupported` under `--panic unwind`. -/
+theorem refute_step_v2_core_call_panic_dispatch :
+    (match unwrapNoneBody.basicBlocks with
+     | [bb] =>
+       (match evalTerminatorV2 unwrapNoneBody bb unwrapNoneFrame
+           MemoryState.empty ⟨[]⟩ .abort false with
+        | .done (.aborted _) => true
+        | _ => false) &&
+       (match evalTerminatorV2 unwrapNoneBody bb unwrapNoneFrame
+           MemoryState.empty ⟨[]⟩ .unwind false with
+        | .fault .unsupported => true
+        | _ => false)
+     | _ => false) = true :=
+  rfl
+
+/-- Guard `step_v2_core_call_panic_caller_mem`: an aborting `core` call panic
+reports caller memory as it is at the call
+(`extractCallerMemory callerMem mem1`), not the entry snapshot. Here caller
+allocation `1` holds `9` in memory but `7` in the snapshot. -/
+theorem refute_step_v2_core_call_panic_caller_mem :
+    (match unwrapNoneBody.basicBlocks with
+     | [bb] =>
+       match evalTerminatorV2 unwrapNoneBody bb unwrapNoneFrame
+           { nextAllocId := 2
+             allocations :=
+               [{ allocId := 1, alignLog2 := 0, mutability := .mut,
+                  bytes := [.init 9 none], live := true }] }
+           ⟨[{ allocId := 1, alignLog2 := 0, mutability := .mut,
+               bytes := [.init 7 none], live := true }]⟩ .abort false with
+       | .done (.aborted cm') =>
+         cm'.allocations.map (·.bytes) = [[.init 9 none]]
+       | _ => False
+     | _ => False) :=
   rfl
 
 end GuardMutation

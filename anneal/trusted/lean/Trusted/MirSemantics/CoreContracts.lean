@@ -44,18 +44,19 @@ aligned with pinned `rustc` (`f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1`):
 - `core::mem::replace`
 - `core::option::Option::{is_some, is_none, take, unwrap}`
 
-Safe panicking traps (out-of-bounds slice ranges and `Option::unwrap` on
-`None`) fail closed via `corePanicTrap`. `split_at` past length instead returns
-`CoreCallOutcome.panic` from `execSliceSplitAtCall`: `evalTerminatorV2` routes
-it through `evalCorePanicAbort` (`.aborted` under an eligible `--panic abort`),
-while the `Except`-returning `execCoreContractOp` maps it to `corePanicTrap`.
+Safe panicking traps (out-of-bounds slice and array ranges, `split_at` past
+length, and `Option::unwrap` on `None`) return `CoreCallOutcome.panic` from
+`execCoreContractOpOutcome`. `evalTerminatorV2` routes `.panic` through
+`evalCorePanicAbort` (`.aborted` under an eligible `--panic abort`), while
+`CoreCallOutcome.toExcept` maps it to `corePanicTrap` for `Except`-returning
+callers such as `execCoreContractOp`.
 -/
 
 /-- Fail-closed trap returned when a safe `core` precondition panics
 (distinct from `.undefined` memory UB; maps to `.unsupported` in this profile).
-`split_at` past length reaches it only through the `Except`-returning
-`execCoreContractOp`; `evalTerminatorV2` handles that panic via
-`execSliceSplitAtCall` and `evalCorePanicAbort` instead.
+The slice-range, `split_at`, and `Option::unwrap` panics reach it only through
+`CoreCallOutcome.toExcept`; `evalTerminatorV2` dispatches their
+`CoreCallOutcome.panic` via `evalCorePanicAbort` instead.
 
 Matches the panicking branches in `rust-lang/rust`
 `f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1`:
@@ -73,6 +74,21 @@ inductive CoreCallOutcome where
   | ok (val : Val) (mem : MemoryState)
   | panic
   | fault (k : FaultKind)
+
+/-- Project `CoreCallOutcome` to `Except FaultKind (Val × MemoryState)`,
+mapping `.panic` to `corePanicTrap`. -/
+noncomputable def CoreCallOutcome.toExcept :
+    CoreCallOutcome → Except FaultKind (Val × MemoryState)
+  | .ok v m => .ok (v, m)
+  | .panic => .error corePanicTrap
+  | .fault k => .error k
+
+/-- Lift a contract result that has no modeled panic path into
+`CoreCallOutcome`, mapping every error to `.fault`. -/
+noncomputable def CoreCallOutcome.ofExcept :
+    Except FaultKind (Val × MemoryState) → CoreCallOutcome
+  | .ok (v, m) => .ok v m
+  | .error k => .fault k
 
 /-- Count leading zero bits across the lowest `n` bit positions of `bits`,
 returning `w.bitWidth` when `bits = 0`. Mirrors `leading_zeros` in
@@ -269,7 +285,8 @@ noncomputable def execOverflowingArith (op : BinOp) (w : IntWidth) (s : Bool)
 
 /-- Execute `core::ops::Index<Range<usize>>` or `Index<RangeFrom<usize>>` on
 `&[elem]` / `&mut [elem]` (`index_mut` shares the same bounds and panic
-behavior), matching `library/core/src/slice/index.rs:435-458,567-588`
+behavior), returning `CoreCallOutcome` so out-of-bounds ranges return `.panic`
+rather than `.fault`, matching `library/core/src/slice/index.rs:435-458,567-588`
 (`rust-lang/rust` `f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1`):
 
 > "if let Some(new_len) = usize::checked_sub(self.end, self.start)
@@ -277,48 +294,55 @@ behavior), matching `library/core/src/slice/index.rs:435-458,567-588`
 > "if self.start > slice.len() {
 >     slice_index_fail(self.start, slice.len(), slice.len())
 > }" -/
+noncomputable def execSliceSubsliceOutcome (m : MemoryState)
+    (reqMut inMut : Mutability) (elem : MirTy) (p : PtrVal) (len : UInt64)
+    (startOff endOff : Nat) : CoreCallOutcome :=
+  if !isSizedNoRefV2Ty elem then
+    .fault .unsupported
+  else if Mutability.beq inMut .shared && Mutability.beq reqMut .mut then
+    .fault .undefined
+  else
+    match refValidInMem m inMut (.slice elem) (.slicePtr p len) with
+    | .error k => .fault k
+    | .ok () =>
+      if !Nat.ble startOff endOff || !Nat.ble endOff len.toNat then
+        .panic
+      else
+        match layoutOfTyV2 elem with
+        | none => .fault .unsupported
+        | some lay =>
+          match ptrAddInMem m lay.size p startOff with
+          | .error k => .fault k
+          | .ok p' => .ok (.slicePtr p' (UInt64.ofNat (endOff - startOff))) m
+
+/-- `Except`-projected wrapper over `execSliceSubsliceOutcome`. -/
 noncomputable def execSliceSubslice (m : MemoryState)
     (reqMut inMut : Mutability) (elem : MirTy) (p : PtrVal) (len : UInt64)
     (startOff endOff : Nat) : Except FaultKind (Val × MemoryState) :=
-  if !isSizedNoRefV2Ty elem then
-    .error .unsupported
-  else if Mutability.beq inMut .shared && Mutability.beq reqMut .mut then
-    .error .undefined
-  else
-    match refValidInMem m inMut (.slice elem) (.slicePtr p len) with
-    | .error k => .error k
-    | .ok () =>
-      if !Nat.ble startOff endOff || !Nat.ble endOff len.toNat then
-        .error corePanicTrap
-      else
-        match layoutOfTyV2 elem with
-        | none => .error .unsupported
-        | some lay =>
-          match ptrAddInMem m lay.size p startOff with
-          | .error k => .error k
-          | .ok p' => .ok (.slicePtr p' (UInt64.ofNat (endOff - startOff)), m)
+  (execSliceSubsliceOutcome m reqMut inMut elem p len startOff endOff).toExcept
 
 /-- Execute `core::ops::Index<Range<usize>>` or `Index<RangeFrom<usize>>` on
 `&[elem; len]` / `&mut [elem; len]` (`index_mut` shares the same bounds and
-panic behavior), matching `library/core/src/array/mod.rs:383-405`
-(`rust-lang/rust` `f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1`):
+panic behavior), returning `CoreCallOutcome` so out-of-bounds ranges return
+`.panic`, matching `library/core/src/array/mod.rs:383-405` (`rust-lang/rust`
+`f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1`):
 
 > "fn index(&self, index: I) -> &Self::Output {
 >     Index::index(self as &[T], index)
 > }" -/
-noncomputable def execArraySubslice (m : MemoryState)
+noncomputable def execArraySubsliceOutcome (m : MemoryState)
     (reqMut inMut : Mutability) (elem : MirTy) (len : Nat) (p : PtrVal)
-    (startOff endOff : Nat) : Except FaultKind (Val × MemoryState) :=
+    (startOff endOff : Nat) : CoreCallOutcome :=
   if !isSizedNoRefV2Ty elem || !Nat.blt len (Nat.pow 2 64) then
-    .error .unsupported
+    .fault .unsupported
   else if Mutability.beq inMut .shared && Mutability.beq reqMut .mut then
-    .error .undefined
+    .fault .undefined
   else
     match refValidInMem m inMut (.array elem len) (.ptr p) with
-    | .error k => .error k
+    | .error k => .fault k
     | .ok () =>
-      execSliceSubslice m reqMut inMut elem p (UInt64.ofNat len) startOff
-        endOff
+      execSliceSubsliceOutcome m reqMut inMut elem p (UInt64.ofNat len)
+        startOff endOff
 
 /-- Execute `core::slice::split_at` or `split_at_mut` returning a structured
 `CoreCallOutcome`: validates `elem`, forbids `&[T]` -> `&mut [T]` upgrades,
@@ -471,56 +495,14 @@ Upstream implementations for non-helper arms:
   `matches!(*self, Some(_))` and `!self.is_some()`
 - `Option::take` (`library/core/src/option.rs:1900-1903`):
   `mem::replace(self, None)`
-- `Option::unwrap` (`library/core/src/option.rs:1010-1015,2251-2253`):
-  `match self { Some(val) => val, None => unwrap_failed() }` -/
-noncomputable def execCoreContractOp (m : MemoryState) (op : CoreCallOp)
-    (args : List (MirTy × Val)) (dstTy : MirTy) :
+
+This covers the operations without a modeled panic path;
+`execCoreContractOpOutcome` dispatches the slice-range, `split_at`, and
+`Option::unwrap` operations, which can panic. -/
+noncomputable def execCoreContractOpInfallible (m : MemoryState)
+    (op : CoreCallOp) (args : List (MirTy × Val)) (dstTy : MirTy) :
     Except FaultKind (Val × MemoryState) :=
   match op, args with
-  | .sliceIndexRange reqMut elem,
-      [(.ref inMut (.slice inElem), .slicePtr p len),
-       (.range (.int .isize false), .range startOff endOff)] =>
-    match dstTy with
-    | .ref outMut (.slice outElem) =>
-      if !MirTy.beq elem inElem || !MirTy.beq elem outElem ||
-          !Mutability.beq reqMut outMut then
-        .error .unsupported
-      else
-        execSliceSubslice m reqMut inMut elem p len startOff.toNat endOff.toNat
-    | _ => .error .unsupported
-  | .sliceIndexRange reqMut elem,
-      [(.ref inMut (.array inElem len), .ptr p),
-       (.range (.int .isize false), .range startOff endOff)] =>
-    match dstTy with
-    | .ref outMut (.slice outElem) =>
-      if !MirTy.beq elem inElem || !MirTy.beq elem outElem ||
-          !Mutability.beq reqMut outMut then
-        .error .unsupported
-      else
-        execArraySubslice m reqMut inMut elem len p startOff.toNat endOff.toNat
-    | _ => .error .unsupported
-  | .sliceIndexRangeFrom reqMut elem,
-      [(.ref inMut (.slice inElem), .slicePtr p len),
-       (.rangeFrom (.int .isize false), .rangeFrom startOff)] =>
-    match dstTy with
-    | .ref outMut (.slice outElem) =>
-      if !MirTy.beq elem inElem || !MirTy.beq elem outElem ||
-          !Mutability.beq reqMut outMut then
-        .error .unsupported
-      else
-        execSliceSubslice m reqMut inMut elem p len startOff.toNat len.toNat
-    | _ => .error .unsupported
-  | .sliceIndexRangeFrom reqMut elem,
-      [(.ref inMut (.array inElem len), .ptr p),
-       (.rangeFrom (.int .isize false), .rangeFrom startOff)] =>
-    match dstTy with
-    | .ref outMut (.slice outElem) =>
-      if !MirTy.beq elem inElem || !MirTy.beq elem outElem ||
-          !Mutability.beq reqMut outMut then
-        .error .unsupported
-      else
-        execArraySubslice m reqMut inMut elem len p startOff.toNat len
-    | _ => .error .unsupported
   | .sliceIsEmpty elem, [(.ref reqMut (.slice inElem), .slicePtr p len)] =>
     if !MirTy.beq elem inElem || !MirTy.beq dstTy .bool ||
         !isSizedNoRefV2Ty elem then
@@ -529,11 +511,6 @@ noncomputable def execCoreContractOp (m : MemoryState) (op : CoreCallOp)
       match refValidInMem m reqMut (.slice elem) (.slicePtr p len) with
       | .error k => .error k
       | .ok () => .ok (.bool (Nat.beq len.toNat 0), m)
-  | .sliceSplitAt reqMut elem, args =>
-    match execSliceSplitAtCall m reqMut elem args dstTy with
-    | .ok v m' => .ok (v, m')
-    | .panic => .error corePanicTrap
-    | .fault k => .error k
   | .numIsMultipleOf w s,
       [(.int lw ls, .scalar lSv), (.int rw rs, .scalar rSv)] =>
     if s || ls || rs || !IntWidth.beq w lw || !IntWidth.beq w rw ||
@@ -724,18 +701,92 @@ noncomputable def execCoreContractOp (m : MemoryState) (op : CoreCallOp)
       .error .unsupported
     else
       execMemReplace m (.option inner) p (.optionVal none)
+  | _, _ => .error .unsupported
+
+/-- Execute a `CoreContracts` operation returning `CoreCallOutcome`, so the
+safe unconditional panics of `sliceIndexRange`, `sliceIndexRangeFrom`,
+`sliceSplitAt`, and `optionUnwrap` on `None` return `.panic`, while structural
+and UB errors return `.fault`. Every other operation lifts
+`execCoreContractOpInfallible` via `CoreCallOutcome.ofExcept`.
+
+`Option::unwrap` follows `library/core/src/option.rs:1010-1015,2251-2253`
+(`rust-lang/rust` `f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1`):
+`match self { Some(val) => val, None => unwrap_failed() }` -/
+noncomputable def execCoreContractOpOutcome (m : MemoryState) (op : CoreCallOp)
+    (args : List (MirTy × Val)) (dstTy : MirTy) : CoreCallOutcome :=
+  match op, args with
+  | .sliceIndexRange reqMut elem,
+      [(.ref inMut (.slice inElem), .slicePtr p len),
+       (.range (.int .isize false), .range startOff endOff)] =>
+    match dstTy with
+    | .ref outMut (.slice outElem) =>
+      if !MirTy.beq elem inElem || !MirTy.beq elem outElem ||
+          !Mutability.beq reqMut outMut then
+        .fault .unsupported
+      else
+        execSliceSubsliceOutcome m reqMut inMut elem p len startOff.toNat
+          endOff.toNat
+    | _ => .fault .unsupported
+  | .sliceIndexRange reqMut elem,
+      [(.ref inMut (.array inElem len), .ptr p),
+       (.range (.int .isize false), .range startOff endOff)] =>
+    match dstTy with
+    | .ref outMut (.slice outElem) =>
+      if !MirTy.beq elem inElem || !MirTy.beq elem outElem ||
+          !Mutability.beq reqMut outMut then
+        .fault .unsupported
+      else
+        execArraySubsliceOutcome m reqMut inMut elem len p startOff.toNat
+          endOff.toNat
+    | _ => .fault .unsupported
+  | .sliceIndexRangeFrom reqMut elem,
+      [(.ref inMut (.slice inElem), .slicePtr p len),
+       (.rangeFrom (.int .isize false), .rangeFrom startOff)] =>
+    match dstTy with
+    | .ref outMut (.slice outElem) =>
+      if !MirTy.beq elem inElem || !MirTy.beq elem outElem ||
+          !Mutability.beq reqMut outMut then
+        .fault .unsupported
+      else
+        execSliceSubsliceOutcome m reqMut inMut elem p len startOff.toNat
+          len.toNat
+    | _ => .fault .unsupported
+  | .sliceIndexRangeFrom reqMut elem,
+      [(.ref inMut (.array inElem len), .ptr p),
+       (.rangeFrom (.int .isize false), .rangeFrom startOff)] =>
+    match dstTy with
+    | .ref outMut (.slice outElem) =>
+      if !MirTy.beq elem inElem || !MirTy.beq elem outElem ||
+          !Mutability.beq reqMut outMut then
+        .fault .unsupported
+      else
+        execArraySubsliceOutcome m reqMut inMut elem len p startOff.toNat len
+    | _ => .fault .unsupported
+  | .sliceSplitAt reqMut elem, args =>
+    execSliceSplitAtCall m reqMut elem args dstTy
   | .optionUnwrap inner, [(.option inInner, .optionVal optV)] =>
     if !MirTy.beq inner inInner || !MirTy.beq inner dstTy then
-      .error .unsupported
+      .fault .unsupported
     else
       match optV with
       | some v =>
         if !refsValidInMem m inner v then
-          .error .undefined
+          .fault .undefined
         else
-          .ok (v, m)
-      | none => .error corePanicTrap
-  | _, _ => .error .unsupported
+          .ok v m
+      | none => .panic
+  | .sliceIndexRange _ _, _ | .sliceIndexRangeFrom _ _, _
+  | .optionUnwrap _, _ =>
+    .fault .unsupported
+  | _, _ =>
+    CoreCallOutcome.ofExcept (execCoreContractOpInfallible m op args dstTy)
+
+/-- `Except`-projected wrapper over `execCoreContractOpOutcome`, mapping
+`.panic` to `corePanicTrap`. -/
+noncomputable def execCoreContractOp (m : MemoryState) (op : CoreCallOp)
+    (args : List (MirTy × Val)) (dstTy : MirTy) :
+    Except FaultKind (Val × MemoryState) :=
+  (execCoreContractOpOutcome m op args dstTy).toExcept
 
 end Trusted.MirSemantics
 

@@ -19,9 +19,10 @@ import AllocSanity
 Negative refutations for the `Vec`/`Box` guards of Profile v2:
 - `Trusted/MirSemantics/AllocContracts.lean`: the `isSupportedPointeeTy` gate
   of `vecValidInMem` and `boxValidInMem`, the capacity-overflow panics of
-  `vecGrowCap` and `evalVecWithCapacity`, the `evalVecIndex` bounds-check
-  panic, and `retireHeapBuffer`, which kills the provenance of a reallocated
-  buffer.
+  `vecGrowCap`, `ensureVecCapacityOutcome`, `evalVecWithCapacityOutcome`,
+  `evalVecReserveOutcome`, and `evalVecExtendFromSliceOutcome`, the
+  `evalVecIndexOutcome` bounds-check panic, and `retireHeapBuffer`, which
+  kills the provenance of a reallocated buffer.
 - `Trusted/MirSemantics/Bytes.lean`: the heap-buffer validity checks
   `zeroCapPtrValidInMem`, `heapBufValidInMem`, `ownedHeapBufValidInMem`, and
   `boxPointeeValidInMem`.
@@ -71,21 +72,73 @@ theorem refute_alloc_vec_grow_cap_doubled_overflow :
 
 /-- Guard `alloc_vec_with_capacity_overflow`:
 `Vec::<u64>::with_capacity(2^62)` needs `2^65` bytes, more than `isize::MAX`,
-so it faults with `.unsupported` (a capacity-overflow panic) instead of
-allocating. -/
+so it panics (capacity overflow) instead of allocating. -/
 theorem refute_alloc_vec_with_capacity_overflow :
-    (match evalVecWithCapacity MemoryState.empty (.int .i64 false)
+    (match evalVecWithCapacityOutcome MemoryState.empty (.int .i64 false)
         (UInt64.ofNat (Nat.pow 2 62)) with
-     | .error .unsupported => true
+     | .panic => true
      | _ => false) = true :=
   rfl
 
+/-- Guard `alloc_vec_with_capacity_overflow_panics`: the same capacity
+overflow is a panic, which aborts under `--panic abort`, not a fault. -/
+theorem refute_alloc_vec_with_capacity_overflow_panics :
+    (match evalVecWithCapacityOutcome MemoryState.empty (.int .i64 false)
+        (UInt64.ofNat (Nat.pow 2 62)) with
+     | .fault _ => false
+     | _ => true) = true :=
+  rfl
+
 /-- Guard `alloc_vec_index_oob`: indexing a `Vec<u8>` with `len = 1` at index
-`1` panics (`.unsupported`), even though capacity slot `1` holds an
-initialized byte. -/
+`1` panics, even though capacity slot `1` holds an initialized byte. -/
 theorem refute_alloc_vec_index_oob :
-    evalVecIndex (acMem [acVecHandle 2 1, acBuf [acB 7, acB 9]]) .shared
-        acU8Ty acVecPtr 1 = .error .unsupported :=
+    (match evalVecIndexOutcome (acMem [acVecHandle 2 1, acBuf [acB 7, acB 9]])
+        .shared acU8Ty acVecPtr 1 with
+     | .panic => true
+     | _ => false) = true :=
+  rfl
+
+/-- Guard `alloc_vec_index_oob_panics`: the same out-of-bounds index is a
+panic, not a fault. -/
+theorem refute_alloc_vec_index_oob_panics :
+    (match evalVecIndexOutcome (acMem [acVecHandle 2 1, acBuf [acB 7, acB 9]])
+        .shared acU8Ty acVecPtr 1 with
+     | .fault _ => false
+     | _ => true) = true :=
+  rfl
+
+/-- Guard `alloc_vec_grow_capacity_overflow_panics`: growing a `Vec<u8>` from
+capacity `2^62 + 1` to `2^62 + 2` overflows the doubled capacity, which
+`ensureVecCapacityOutcome` reports as a panic (`none`), not a fault. -/
+theorem refute_alloc_vec_grow_capacity_overflow_panics :
+    (ensureVecCapacityOutcome MemoryState.empty { size := 1, alignLog2 := 0 }
+        ⟨acU8Ty, acBufPtr, UInt64.ofNat (Nat.pow 2 62 + 1),
+          UInt64.ofNat (Nat.pow 2 62 + 1)⟩ (Nat.pow 2 62 + 2)).isNone =
+      true :=
+  rfl
+
+/-- Guard `alloc_vec_reserve_len_overflow_panics`: reserving `2^64 - 1` more
+elements on a `Vec<u8>` with `len = 1` overflows `len + additional`, which is a
+capacity-overflow panic, not a fault. -/
+theorem refute_alloc_vec_reserve_len_overflow_panics :
+    (match evalVecReserveOutcome (acMem [acVecHandle 2 1, acBuf [acB 7, acB 9]])
+        acU8Ty acVecPtr (UInt64.ofNat (Nat.pow 2 64 - 1)) with
+     | .panic => true
+     | _ => false) = true :=
+  rfl
+
+/-- Guard `alloc_vec_extend_len_overflow_panics`: extending a `Vec<()>` with
+`len = 1` by a `2^64 - 1`-element zero-sized slice overflows `len + srcLen`,
+which is a capacity-overflow panic, not a fault. -/
+theorem refute_alloc_vec_extend_len_overflow_panics :
+    (match evalVecExtendFromSliceOutcome
+        (acMem [{ acVecHandle 0 1 with
+          bytes := (acB 1 :: List.replicate 7 (acB 0)) ++
+            (acB 1 :: List.replicate 7 (acB 0)) ++
+            (acB 1 :: List.replicate 7 (acB 0)) }])
+        .unit acVecPtr ⟨none, 1, .isize⟩ (UInt64.ofNat (Nat.pow 2 64 - 1)) with
+     | .panic => true
+     | _ => false) = true :=
   rfl
 
 /-- Guard `alloc_retire_heap_buffer`: `Box<[u8]>::from` on a `Vec<u8>` with

@@ -3464,48 +3464,21 @@ theorem evalTerminatorV2_return_enforces_callerMem_validity_and_disjoint_spans
             cases res with | mk locals1 mem1 =>
             rw [h_args] at h_t
             dsimp only at h_t
-            have h_non_split :
-                (match execCoreCallOpWithMem mem1 op typedArgs dstTy with
-                 | .error k => MirSemantics.StepResult.fault k
-                 | .ok (resVal, mem1') =>
-                   match writePlaceV2 body.locals locals1 mem1' dst
-                       dstTy resVal with
-                   | .error k => .fault k
-                   | .ok (locals2, mem2) =>
-                     jumpToBlock { frame with locals := locals2 } mem2
-                       callerMem target) ≠
-                .done (.returned rv) := by
-              intro h_eq
-              cases h_op : execCoreCallOpWithMem mem1 op typedArgs dstTy with
-              | error k => rw [h_op] at h_eq; dsimp only at h_eq; cases h_eq
-              | ok resPair =>
-                cases resPair with | mk resVal mem1' =>
-                rw [h_op] at h_eq; dsimp only at h_eq
-                cases h_wp :
-                    writePlaceV2 body.locals locals1 mem1' dst dstTy resVal with
-                | error k => rw [h_wp] at h_eq; dsimp only at h_eq; cases h_eq
-                | ok res2 =>
-                  cases res2 with | mk locals2 mem2 =>
-                  rw [h_wp] at h_eq; cases h_eq
-            cases op with
-            | sliceSplitAt reqMut elem =>
-              dsimp only at h_t
-              cases h_sp :
-                  execSliceSplitAtCall mem1 reqMut elem typedArgs dstTy with
-              | ok resVal mem1' =>
-                rw [h_sp] at h_t; dsimp only at h_t
-                cases h_wp :
-                    writePlaceV2 body.locals locals1 mem1' dst dstTy resVal with
-                | error k => rw [h_wp] at h_t; dsimp only at h_t; cases h_t
-                | ok res2 =>
-                  cases res2 with | mk locals2 mem2 =>
-                  rw [h_wp] at h_t; cases h_t
-              | panic =>
-                rw [h_sp] at h_t
-                dsimp only [evalCorePanicAbort] at h_t
-                cases h_t
-              | fault k => rw [h_sp] at h_t; cases h_t
-            | _ => exact False.elim (h_non_split h_t)
+            cases h_op :
+                execCoreCallOpWithMemOutcome mem1 op typedArgs dstTy with
+            | fault k => rw [h_op] at h_t; dsimp only at h_t; cases h_t
+            | panic =>
+              rw [h_op] at h_t
+              dsimp only [evalCorePanicAbort] at h_t
+              cases h_t
+            | ok resVal mem2 =>
+              rw [h_op] at h_t; dsimp only at h_t
+              cases h_wp :
+                  writePlaceV2 body.locals locals1 mem2 dst dstTy resVal with
+              | error k => rw [h_wp] at h_t; dsimp only at h_t; cases h_t
+              | ok res2 =>
+                cases res2 with | mk locals2 mem3 =>
+                rw [h_wp] at h_t; cases h_t
   | unwindResume | call _ _ _ _ _ | sysrootCall _ _ _ _ _ | unsupported =>
     rw [h_term] at h_t; cases h_t
   | return_ =>

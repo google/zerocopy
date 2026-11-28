@@ -857,7 +857,10 @@ private theorem pack_le_rev_correct (q : Query)
             rw [ite_bool_false]; rotate_left; decide
             dsimp only [evalArgOperandsV2, evalOperandToSlotV2]
             rw [readPlaceV2_move_local (by rfl) (by rfl) (by decide) (by rfl)]
-            dsimp only [evalArgOperandsV2, argValues, execCoreCallOpWithMem, execAllocCoreCall, execCoreCallWithMem, execCoreCallOp, leBytesOfNat]
+            dsimp only [evalArgOperandsV2, argValues,
+              execCoreCallOpWithMemOutcome, execAllocCoreCallOutcome,
+              execAllocCoreCallInfallible, execCoreCallWithMemOutcome,
+              execCoreCallOp, leBytesOfNat]
             rw [ite_bool_false]; rotate_left; (dsimp only [IntWidth.byteSize]; rw [hWf]; decide)
             dsimp only [IntWidth.byteSize, List.map]
             have hLe2 : List.map (fun b : UInt8 => Val.scalar ⟨.i8, false, BitVec.ofNat 128 b.toNat⟩)
@@ -1296,7 +1299,10 @@ private theorem repeat_unsize_len_correct (q : Query)
             rw [ite_bool_false]; rotate_left; decide
             dsimp only [evalArgOperandsV2, evalOperandToSlotV2]
             rw [readPlaceV2_move_local (by rfl) (by rfl) (by decide) (by rfl)]
-            dsimp only [evalArgOperandsV2, argValues, execCoreCallOpWithMem, execAllocCoreCall, execCoreCallWithMem, execCoreCallOp]
+            dsimp only [evalArgOperandsV2, argValues,
+              execCoreCallOpWithMemOutcome, execAllocCoreCallOutcome,
+              execAllocCoreCallInfallible, execCoreCallWithMemOutcome,
+              execCoreCallOp]
             rw [ite_bool_false]; rotate_left; decide
             rw [hRefStackSlice]
             dsimp only
@@ -2451,7 +2457,9 @@ private theorem matches_pattern_correct (q : Query)
               rw [readPlaceV2_move_local (by rfl) (by rfl) (by decide) (by rfl)]
               dsimp only [evalArgOperandsV2, evalOperandToSlotV2]
               rw [readPlaceV2_move_local (by rfl) (by rfl) (by decide) (by rfl)]
-              dsimp only [argValues, execCoreCallOpWithMem, execAllocCoreCall, execCoreCallWithMem, execCoreCallOp]
+              dsimp only [argValues, execCoreCallOpWithMemOutcome,
+                execAllocCoreCallOutcome, execAllocCoreCallInfallible,
+                execCoreCallWithMemOutcome, execCoreCallOp]
               rw [ite_bool_false]; rotate_left; decide
               have hFindRo : findAllocation roAid (roAlloc :: q.callerMem.allocations) = some roAlloc := by
                 change (if Nat.beq roAid roAid then some roAlloc else _) = some roAlloc

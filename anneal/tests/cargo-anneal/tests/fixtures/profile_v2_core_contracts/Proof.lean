@@ -637,6 +637,25 @@ private theorem evalStepV2_goto_ok {p : Program} {body : Body}
   unfold evalTerminatorV2
   rw [hTerm]; rfl
 
+/-- A `CoreCallOutcome` whose `Except` projection is `.ok (v, m)` is
+`.ok v m`. -/
+private theorem coreOutcome_eq_ok {o : CoreCallOutcome} {v : Val}
+    {m : MemoryState} (h : o.toExcept = .ok (v, m)) : o = .ok v m := by
+  cases o <;> unfold CoreCallOutcome.toExcept at h <;> cases h <;> rfl
+
+/-- An `.ok v m` outcome projects to `.ok (v, m)`. -/
+private theorem coreOutcome_toExcept_of_eq {o : CoreCallOutcome} {v : Val}
+    {m : MemoryState} (h : o = .ok v m) : o.toExcept = .ok (v, m) := by
+  rw [h]; rfl
+
+/-- `CoreCallOutcome.ofExcept` round-trips through `toExcept`. -/
+private theorem coreOutcome_toExcept_ofExcept
+    (e : Except FaultKind (Val × MemoryState)) :
+    (CoreCallOutcome.ofExcept e).toExcept = e := by
+  cases e with
+  | error k => rfl
+  | ok r => cases r; rfl
+
 private theorem evalStepV2_coreCall_ok {p : Program} {body : Body}
     {bb : BasicBlock} {frame : FrameState} {mem mem1 mem1' mem2 : MemoryState}
     {cm : CallerMemory} {op : CoreCallOp} {args : List Operand} {dst : Place}
@@ -656,12 +675,14 @@ private theorem evalStepV2_coreCall_ok {p : Program} {body : Body}
     (hCall : execCoreCallWithMem mem1 op typedArgs dstTy = .ok (resVal, mem1'))
     (hWr : writePlaceV2 body.locals locals1 mem1' dst dstTy resVal =
       .ok (locals2, mem2))
-    (hNon : execAllocCoreCall mem1 op typedArgs dstTy = none := by rfl) :
+    (hNon : execAllocCoreCallOutcome mem1 op typedArgs dstTy = none :=
+      by rfl) :
     evalStepV2 p ⟨[frame], cm, mem⟩ =
       .step ⟨[⟨frame.defId, target, 0, locals2, frame.sysrootOp?, frame.retDst?, frame.retTarget?⟩], cm, mem2⟩ := by
-  have hCall' : execCoreCallOpWithMem mem1 op typedArgs dstTy =
-      .ok (resVal, mem1') := by
-    unfold execCoreCallOpWithMem; rw [hNon]; exact hCall
+  have hCall' : execCoreCallOpWithMemOutcome mem1 op typedArgs dstTy =
+      .ok resVal mem1' := by
+    unfold execCoreCallOpWithMemOutcome; rw [hNon]
+    exact coreOutcome_eq_ok hCall
   unfold evalStepV2
   dsimp only
   rw [hB]; dsimp only; rw [hBB]; dsimp only; rw [hNone]; dsimp only
@@ -670,18 +691,7 @@ private theorem evalStepV2_coreCall_ok {p : Program} {body : Body}
   rw [hTerm]; dsimp only
   rw [ite_bool_false (by rw [hEmp]; rfl)]
   rw [hDstTy]; dsimp only; rw [hArgs]; dsimp only
-  cases op
-  case sliceSplitAt reqMut elem =>
-    have hC : execSliceSplitAtCall mem1 reqMut elem typedArgs dstTy =
-        .ok resVal mem1' := by
-      unfold execCoreCallWithMem execCoreContractOp at hCall
-      dsimp only at hCall
-      cases h : execSliceSplitAtCall mem1 reqMut elem typedArgs dstTy with
-      | ok v m' => rw [h] at hCall; cases hCall; rfl
-      | panic => rw [h] at hCall; cases hCall
-      | fault k => rw [h] at hCall; cases hCall
-    dsimp only; rw [hC]; dsimp only; rw [hWr]; rfl
-  all_goals (dsimp only; rw [hCall']; dsimp only; rw [hWr]; rfl)
+  rw [hCall']; dsimp only; rw [hWr]; rfl
 
 private theorem evalTerminatorV2_return_any {body : Body} {bb : BasicBlock}
     {frame : FrameState} {mem : MemoryState} {callerMem : CallerMemory}
@@ -1432,9 +1442,10 @@ private theorem execCoreCall_sliceIndexRange_u8_ok {m : MemoryState}
           .range (UInt64.ofNat a) (UInt64.ofNat b))]
         (.ref .shared (.slice (.int .i8 false))) =
       .ok (.slicePtr pOut (UInt64.ofNat (b - a)), m) := by
-  dsimp only [execCoreCallWithMem, execCoreContractOp]
+  apply coreOutcome_toExcept_of_eq
+  dsimp only [execCoreCallWithMemOutcome, execCoreContractOpOutcome]
   rw [ite_bool_false (by decide)]
-  unfold execSliceSubslice
+  unfold execSliceSubsliceOutcome
   rw [ite_bool_false (b := !isSizedNoRefV2Ty (.int .i8 false)) (by decide)]
   rw [ite_bool_false (by decide)]
   rw [hRef]; dsimp only
@@ -1751,7 +1762,8 @@ private theorem execCoreCall_optionUnwrap_u64_ok {m : MemoryState} {v : Val} :
     execCoreCallWithMem m (.optionUnwrap (.int .i64 false))
       [(.option (.int .i64 false), .optionVal (some v))] (.int .i64 false) =
       .ok (v, m) := by
-  unfold execCoreCallWithMem execCoreContractOp
+  unfold execCoreCallWithMem execCoreCallWithMemOutcome
+    execCoreContractOpOutcome
   dsimp only
   cases v <;> rfl
 
@@ -1954,9 +1966,11 @@ private theorem execCoreCall_checkedAdd_u64_ok {m : MemoryState}
       .ok (.optionVal (if truncSum != rawSum then none
         else some (.scalar ⟨.i64, false, truncSum⟩)), m) := by
   dsimp only
-  unfold execCoreCallWithMem
+  unfold execCoreCallWithMem execCoreCallWithMemOutcome
+      execCoreContractOpOutcome
   dsimp only
-  unfold execCoreContractOp execCheckedArith
+  rw [coreOutcome_toExcept_ofExcept]
+  unfold execCoreContractOpInfallible execCheckedArith
   dsimp only
   have hGuard : (!IntWidth.beq .i64 .i64 || !IntWidth.beq .i64 .i64 ||
       !(false == false) || !(false == false) ||
@@ -1987,9 +2001,11 @@ private theorem execCoreCall_saturatingAdd_u64_ok {m : MemoryState}
       (.int .i64 false) =
       .ok (.scalar resSv, m) := by
   dsimp only
-  unfold execCoreCallWithMem
+  unfold execCoreCallWithMem execCoreCallWithMemOutcome
+      execCoreContractOpOutcome
   dsimp only
-  unfold execCoreContractOp
+  rw [coreOutcome_toExcept_ofExcept]
+  unfold execCoreContractOpInfallible
   dsimp only
   have hGuard : (!IntWidth.beq .i64 .i64 || !IntWidth.beq .i64 .i64 ||
       !(false == false) || !(false == false) ||
@@ -2015,8 +2031,10 @@ private theorem execCoreCall_cmpMin_u64_ok {m : MemoryState}
       [(.int .i64 false, .scalar sumSv), (.int .i64 false, .scalar bSv)]
       (.int .i64 false) = .ok (.scalar minSv, m) := by
   dsimp only
-  unfold execCoreCallWithMem; dsimp only
-  unfold execCoreContractOp; dsimp only
+  unfold execCoreCallWithMem execCoreCallWithMemOutcome
+      execCoreContractOpOutcome; dsimp only
+  rw [coreOutcome_toExcept_ofExcept]
+  unfold execCoreContractOpInfallible; dsimp only
   cases sumSv; cases bSv
   dsimp only at hSW hSS hBW hBS
   subst hSW; subst hSS; subst hBW; subst hBS
@@ -2033,8 +2051,10 @@ private theorem execCoreCall_wrappingShl_u64_ok {m : MemoryState}
        (.int .i32 false, .scalar ⟨.i32, false, sBits⟩)]
       (.int .i64 false) =
       .ok (.scalar ⟨.i64, false, truncateBits .i64 (bvOfInt 128 res)⟩, m) := by
-  unfold execCoreCallWithMem; dsimp only
-  unfold execCoreContractOp; dsimp only
+  unfold execCoreCallWithMem execCoreCallWithMemOutcome
+      execCoreContractOpOutcome; dsimp only
+  rw [coreOutcome_toExcept_ofExcept]
+  unfold execCoreContractOpInfallible; dsimp only
   rw [ite_bool_false (by decide)]
   unfold evalShiftOp truncateScalar
   dsimp only
@@ -2050,7 +2070,10 @@ private theorem execCoreCall_leadingZeros_u64_ok {m : MemoryState}
       [(.int .i64 false, .scalar ⟨.i64, false, xBits⟩)]
       (.int .i32 false) =
       .ok (.scalar ⟨.i32, false, lzBits⟩, m) := by
-  unfold execCoreCallWithMem execCoreContractOp
+  unfold execCoreCallWithMem execCoreCallWithMemOutcome
+    execCoreContractOpOutcome
+  dsimp only; rw [coreOutcome_toExcept_ofExcept]
+  unfold execCoreContractOpInfallible
   rfl
 
 private theorem checkArgsMatchV2_u64_u64_u32_inv {args : List Val}
@@ -2949,8 +2972,10 @@ private theorem slice_and_replace_correct (q : Query)
         have hIsEmptyCall : execCoreCallWithMem m (.sliceIsEmpty (.int .i8 false))
             [(.ref .shared (.slice (.int .i8 false)), .slicePtr sPtr sLen)]
             .bool = .ok (.bool (Nat.beq sLen.toNat 0), m) := by
-          unfold execCoreCallWithMem; dsimp only
-          unfold execCoreContractOp; dsimp only
+          unfold execCoreCallWithMem execCoreCallWithMemOutcome
+              execCoreContractOpOutcome; dsimp only
+          rw [coreOutcome_toExcept_ofExcept]
+          unfold execCoreContractOpInfallible; dsimp only
           rw [ite_bool_false (by decide)]
           rw [hSliceValid]
         apply execOutcomeStateV2_step (evalStepV2_coreCall_ok rfl rfl rfl rfl rfl
@@ -2977,8 +3002,10 @@ private theorem slice_and_replace_correct (q : Query)
             [(.ref .mut (.int .i64 false), .ptr dPtr),
              (.int .i64 false, .scalar ⟨.i64, false, nBits⟩)]
             (.int .i64 false) = .ok (.scalar ⟨.i64, false, oldBits⟩, m1) := by
-          unfold execCoreCallWithMem; dsimp only
-          unfold execCoreContractOp
+          unfold execCoreCallWithMem execCoreCallWithMemOutcome
+              execCoreContractOpOutcome; dsimp only
+          rw [coreOutcome_toExcept_ofExcept]
+          unfold execCoreContractOpInfallible
           exact hReplace
         apply execOutcomeStateV2_step (evalStepV2_coreCall_ok rfl rfl rfl rfl rfl
           rfl rfl
@@ -3283,8 +3310,10 @@ private theorem take_option_correct (q : Query)
                 execCoreCallWithMem m (.optionIsSome (.int .i64 false))
                   [(.ref .shared (.option (.int .i64 false)), .ptr optPtr)]
                   .bool = .ok (.bool optVal.isSome, m) := by
-              unfold execCoreCallWithMem; dsimp only
-              unfold execCoreContractOp
+              unfold execCoreCallWithMem execCoreCallWithMemOutcome
+                  execCoreContractOpOutcome; dsimp only
+              rw [coreOutcome_toExcept_ofExcept]
+              unfold execCoreContractOpInfallible
               dsimp only [MirTy.beq, IntWidth.beq]
               rw [hLoadOpt]; rfl
             apply execOutcomeStateV2_step (evalStepV2_coreCall_ok rfl rfl rfl rfl
@@ -3306,8 +3335,10 @@ private theorem take_option_correct (q : Query)
                   [(.ref .mut (.option (.int .i64 false)), .ptr optPtr)]
                   (.option (.int .i64 false)) =
                   .ok (.optionVal optVal, m1) := by
-              unfold execCoreCallWithMem; dsimp only
-              unfold execCoreContractOp
+              unfold execCoreCallWithMem execCoreCallWithMemOutcome
+                  execCoreContractOpOutcome; dsimp only
+              rw [coreOutcome_toExcept_ofExcept]
+              unfold execCoreContractOpInfallible
               exact hReplace
             apply execOutcomeStateV2_step (evalStepV2_coreCall_ok rfl rfl rfl rfl
               rfl rfl rfl

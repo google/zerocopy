@@ -4215,3 +4215,176 @@ end Proof
         "expected OOB rfl failure on Spec.testTailQuery in execProgV2, got:\n{detail}"
     );
 }
+
+/// Safe unconditional `core`/`alloc` contract panics terminate as
+/// `TerminalOut.aborted` under `--panic abort` and stay `.fault .unsupported`
+/// under `--panic unwind`, for both `&s[a..b]` (`sliceIndexRange`) and `v[i]`
+/// on `&Vec<u8>` (`vecIndex`). Each crate proves an in-bounds return and an
+/// out-of-bounds abort; the same proof must fail under `--panic unwind`.
+#[test]
+fn verifies_slice_and_vec_index_panic_twins() {
+    const PROOF: &str = r#"prelude
+import Spec
+import Expected
+import Anneal.MirWp
+namespace Proof
+open Trusted.MirAst Trusted.MirSemantics Anneal.MirWp
+theorem verify : Expected.claim := by
+  have hOk :=
+    spec_and_behaviorV2_of_exec_eq
+      (p := entryProgForBody Captured.program 0)
+      (q := Spec.okQuery)
+      (out := Spec.okOut)
+      (fuel := 32) rfl
+  have hOob :=
+    spec_and_behaviorV2_of_exec_eq
+      (p := entryProgForBody Captured.program 0)
+      (q := Spec.oobQuery)
+      (out := Spec.oobOut)
+      (fuel := 32) rfl
+  refine ⟨rfl, rfl, rfl, rfl, rfl, rfl, ?_, ?_⟩
+  · intro defId body hBody
+    cases defId with
+    | zero =>
+      cases hBody
+      refine ⟨rfl, rfl, fun q _ hSafe => ?_⟩
+      cases hSafe rfl with
+      | inl hEq => subst hEq; exact hOk.1
+      | inr hEq => subst hEq; exact hOob.1
+    | succ _ => cases hBody
+  · refine ⟨0, Captured.body_0, rfl, rfl, hOk.2.1, hOob.2.1⟩
+end Proof
+"#;
+    const SUB_LIB: &str = r#"pub unsafe fn sub<'a>(s: &'a [u8], a: usize, b: usize) -> &'a [u8] {
+    &s[a..b]
+}
+"#;
+    const SUB_SPEC: &str = r#"prelude
+import Trusted.MirSemantics
+namespace Spec
+open Trusted.MirAst Trusted.MirSemantics
+def mem : CallerMemory :=
+  ⟨[{ allocId := 2, alignLog2 := 0, mutability := .shared,
+      bytes := [AllocByte.init 10 none, AllocByte.init 20 none,
+                AllocByte.init 30 none],
+      live := true }]⟩
+def usize (n : Nat) : Val := .scalar ⟨.isize, false, BitVec.ofNat 128 n⟩
+def okQuery : Query :=
+  { args := [.slicePtr ⟨some 2, 0, .isize⟩ 3, usize 1, usize 3],
+    callerMem := mem }
+def oobQuery : Query :=
+  { args := [.slicePtr ⟨some 2, 0, .isize⟩ 3, usize 2, usize 4],
+    callerMem := mem }
+def okOut : TerminalOut :=
+  TerminalOut.returned ⟨.slicePtr ⟨some 2, 1, .isize⟩ 2, mem⟩
+def oobOut : TerminalOut := TerminalOut.aborted mem
+def safetyPre (_ : String) (q : Query) : Prop := q = okQuery ∨ q = oobQuery
+def property (p : Program) : Prop :=
+  ∃ (defId : DefId) (body : Body),
+    Trusted.MirSemantics.getElem? p.bodies defId = some body ∧
+    body.identity = "rust-path-v1::sub" ∧
+    BehaviorV2 (entryProgForBody p defId) okQuery okOut ∧
+    BehaviorV2 (entryProgForBody p defId) oobQuery oobOut
+def specs : SpecsV2 := ⟨safetyPre, property⟩
+end Spec
+"#;
+    const VIDX_LIB: &str = r#"pub unsafe fn vidx(v: &Vec<u8>, i: usize) -> u8 {
+    v[i]
+}
+"#;
+    // The `Vec<u8>` handle in allocation `2` is the buffer pointer (into
+    // allocation `3`), then `cap = 2`, then `len = 2`, as little-endian
+    // `usize` words.
+    const VIDX_SPEC: &str = r#"prelude
+import Trusted.MirSemantics
+namespace Spec
+open Trusted.MirAst Trusted.MirSemantics
+def word (b : Nat) : List AllocByte :=
+  AllocByte.init (UInt8.ofNat b) none ::
+    List.replicate 7 (AllocByte.init 0 none)
+def mem : CallerMemory :=
+  ⟨[{ allocId := 2, alignLog2 := 3, mutability := .shared,
+      bytes := List.replicate 8 (AllocByte.init 0 (some 3)) ++ word 2 ++
+        word 2,
+      live := true },
+    { allocId := 3, alignLog2 := 0, mutability := .mut,
+      bytes := [AllocByte.init 7 none, AllocByte.init 9 none],
+      live := true }]⟩
+def usize (n : Nat) : Val := .scalar ⟨.isize, false, BitVec.ofNat 128 n⟩
+def okQuery : Query :=
+  { args := [.ptr ⟨some 2, 0, .isize⟩, usize 1], callerMem := mem }
+def oobQuery : Query :=
+  { args := [.ptr ⟨some 2, 0, .isize⟩, usize 2], callerMem := mem }
+def okOut : TerminalOut :=
+  TerminalOut.returned ⟨.scalar ⟨.i8, false, BitVec.ofNat 128 9⟩, mem⟩
+def oobOut : TerminalOut := TerminalOut.aborted mem
+def safetyPre (_ : String) (q : Query) : Prop := q = okQuery ∨ q = oobQuery
+def property (p : Program) : Prop :=
+  ∃ (defId : DefId) (body : Body),
+    Trusted.MirSemantics.getElem? p.bodies defId = some body ∧
+    body.identity = "rust-path-v1::vidx" ∧
+    BehaviorV2 (entryProgForBody p defId) okQuery okOut ∧
+    BehaviorV2 (entryProgForBody p defId) oobQuery oobOut
+def specs : SpecsV2 := ⟨safetyPre, property⟩
+end Spec
+"#;
+    let cases = [
+        ("panic_twin_sub", SUB_LIB, SUB_SPEC),
+        ("panic_twin_vidx", VIDX_LIB, VIDX_SPEC),
+    ];
+    for (crate_name, lib, spec) in cases {
+        let dir = TempDir::new().unwrap();
+        let rust_dir = dir.path().join("rust");
+        let lean_dir = dir.path().join("lean");
+        fs::create_dir_all(&rust_dir).unwrap();
+        fs::create_dir_all(&lean_dir).unwrap();
+        fs::write(rust_dir.join("lib.rs"), lib).unwrap();
+        fs::write(lean_dir.join("Spec.lean"), spec).unwrap();
+        fs::write(lean_dir.join("Proof.lean"), PROOF).unwrap();
+        let mk_req = |panic: &str| {
+            json!({
+                "schema_version": 1,
+                "compilation": {
+                    "source_root": rust_dir.to_str().unwrap(),
+                    "crate_root": "lib.rs",
+                    "crate_name": crate_name,
+                    "edition": "2021",
+                    "target": "x86_64-unknown-linux-gnu",
+                    "panic": panic,
+                    "cfg": [],
+                    "source_files": ["lib.rs"]
+                },
+                "scope": {"kind": "crate"},
+                "proof": {
+                    "source_root": lean_dir.to_str().unwrap(),
+                    "specification": "Spec.specs",
+                    "theorem": "Proof.verify",
+                    "sources": [
+                        {"module": "Spec", "path": "Spec.lean", "role": "specification"},
+                        {"module": "Proof", "path": "Proof.lean", "role": "proof"}
+                    ]
+                }
+            })
+        };
+        // Positive: under `--panic abort`, the in-bounds query returns and the
+        // out-of-bounds query terminates as `TerminalOut.aborted`.
+        run_request(dir.path(), &format!("{crate_name}-abort-ok"), &mk_req("abort"))
+            .expect_ok("crate_verified");
+        // Negative twin: under `--panic unwind`, the out-of-bounds panic stays
+        // `.fault .unsupported`, so claiming `TerminalOut.aborted` fails.
+        let unwind = run_request(
+            dir.path(),
+            &format!("{crate_name}-unwind-fails"),
+            &mk_req("unwind"),
+        );
+        unwind.expect_proof_failed();
+        let unwind_detail = match &unwind.receipt {
+            VerifyReceipt::Failed(failure) => failure.detail.as_str(),
+            VerifyReceipt::Verified(_) => "",
+        };
+        assert!(
+            unwind_detail.contains("oobQuery"),
+            "{crate_name}: expected the unwind failure on oobQuery, got:\n{unwind_detail}"
+        );
+    }
+}
