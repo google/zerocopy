@@ -1966,6 +1966,99 @@ fn division_multiple_and_rotation_methods_are_checked_strictly() {
 }
 
 #[test]
+fn sign_abs_and_bit_cast_methods_lower_exactly() {
+    let x = "(specInt (specArg q 0))";
+    let emod = "Trusted.MirSemantics.intEmod";
+    let lean = |clause: &str, sig: &str| {
+        lower_one(&wrap(clause, sig)).unwrap_or_else(|e| panic!("{clause}: {e:?}")).spec_lean
+    };
+    let has = |text: &str, want: &str| assert!(text.contains(want), "missing {want} in\n{text}");
+    // The sign tests are decidable comparisons with zero.
+    let tests = lean("requires(a.is_positive() || a.is_negative())", "fn f(a: i32)");
+    has(&tests, &format!("(((0 : Int) < {x}) ∨ ({x} < (0 : Int)))"));
+    lower_one(&wrap(
+        "ensures(|r| r == if a.is_negative() { 1u8 } else { 0u8 })",
+        "fn f(a: i64) -> u8",
+    ))
+    .unwrap();
+    // `signum` evaluates its operand once.
+    has(
+        &lean("ensures(|r| r == a.signum())", "fn f(a: i8) -> i8"),
+        &format!(
+            "((specInt out.ret) = ((fun («x» : Int) => if (0 : Int) < «x» then (1 : Int) else if \
+             «x» < (0 : Int) then (Int.neg 1) else (0 : Int)) {x}))"
+        ),
+    );
+    // `unsigned_abs` has the unsigned type of its operand's width, where the
+    // magnitude of `MIN` fits.
+    let abs = format!("(Int.ofNat (Int.natAbs {x}))");
+    has(
+        &lean("ensures(|r| r == a.unsigned_abs())", "fn f(a: i16) -> u16"),
+        &format!("((specInt out.ret) = {abs})"),
+    );
+    lower_one(&wrap("ensures(|r| r == a.unsigned_abs())", "fn f(a: isize) -> usize")).unwrap();
+    // `saturating_abs` clamps the magnitude of `MIN` to `MAX`, and
+    // `wrapping_abs` wraps it back to `MIN`.
+    has(
+        &lean("ensures(|r| r == a.saturating_abs())", "fn f(a: i8) -> i8"),
+        &format!("((specInt out.ret) = (Min.min {abs} (127 : Int)))"),
+    );
+    has(
+        &lean("ensures(|r| r == a.wrapping_abs())", "fn f(a: i8) -> i8"),
+        &format!("((specInt out.ret) = ({emod} ({abs} + 128) 256 - 128))"),
+    );
+    // The bit casts are `as` to the same-width type of the other signedness.
+    has(
+        &lean("ensures(|r| r == a.cast_signed())", "fn f(a: u32) -> i32"),
+        &format!("((specInt out.ret) = ({emod} ({x} + 2147483648) 4294967296 - 2147483648))"),
+    );
+    has(
+        &lean("ensures(|r| r == a.cast_unsigned())", "fn f(a: i64) -> u64"),
+        &format!("((specInt out.ret) = ({emod} {x} 18446744073709551616))"),
+    );
+    // Inside `math` the integer results are mathematical.
+    lower_one(&wrap(
+        "ensures(|r| math(r) == math(a.signum() + a.wrapping_abs()))",
+        "fn f(a: i8) -> i8",
+    ))
+    .unwrap();
+}
+
+#[test]
+fn sign_abs_and_bit_cast_methods_are_checked_strictly() {
+    let sig = "fn f(u: u8, i: i8)";
+    for (clause, code) in [
+        ("requires(u.is_positive())", "E_ANNEAL_SPEC_TYPE_MISMATCH"),
+        ("requires(u.is_negative())", "E_ANNEAL_SPEC_TYPE_MISMATCH"),
+        ("requires(u.signum() == u)", "E_ANNEAL_SPEC_TYPE_MISMATCH"),
+        ("requires(u.unsigned_abs() == u)", "E_ANNEAL_SPEC_TYPE_MISMATCH"),
+        ("requires(u.saturating_abs() == u)", "E_ANNEAL_SPEC_TYPE_MISMATCH"),
+        ("requires(u.wrapping_abs() == u)", "E_ANNEAL_SPEC_TYPE_MISMATCH"),
+        ("requires(i.cast_signed() == i)", "E_ANNEAL_SPEC_TYPE_MISMATCH"),
+        ("requires(u.cast_unsigned() == u)", "E_ANNEAL_SPEC_TYPE_MISMATCH"),
+        ("requires(i.unsigned_abs() == i)", "E_ANNEAL_SPEC_TYPE_MISMATCH"),
+        ("requires(i.cast_unsigned() == i)", "E_ANNEAL_SPEC_TYPE_MISMATCH"),
+        ("requires(u.cast_signed() == u)", "E_ANNEAL_SPEC_TYPE_MISMATCH"),
+        ("requires(5.signum() == i)", "E_ANNEAL_SPEC_TYPE_ANNOTATION_NEEDED"),
+        ("requires(i.signum(1) == i)", "E_ANNEAL_SPEC_ARITY"),
+        ("requires(i.is_positive(i))", "E_ANNEAL_SPEC_ARITY"),
+        ("requires(i.abs() == i)", "E_ANNEAL_SPEC_UNSUPPORTED_EXPR"),
+        ("max_steps = i.signum()", "E_ANNEAL_SPEC_TYPE_MISMATCH"),
+        ("max_steps = i.is_negative()", "E_ANNEAL_SPEC_TYPE_MISMATCH"),
+    ] {
+        expect_error(&wrap(clause, sig), code);
+    }
+    let r = expect_error(&wrap("requires(u.signum() == u)", sig), "E_ANNEAL_SPEC_TYPE_MISMATCH");
+    assert!(r.contains("only on signed integer types"), "{r}");
+    // Unsigned results are step counts.
+    lower_one(&wrap(
+        "max_steps = i.unsigned_abs() + i.cast_unsigned() + u.cast_signed().cast_unsigned()",
+        sig,
+    ))
+    .unwrap();
+}
+
+#[test]
 fn saturating_negation_and_abs_diff_intrinsics_lower_exactly() {
     let x = "(specInt (specArg q 0))";
     let y = "(specInt (specArg q 1))";

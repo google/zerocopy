@@ -344,6 +344,47 @@ anneal::external_spec! {
         a.rotate_left(63)
     }
 
+    // Sign tests, `signum`, magnitudes, and same-width bit casts.
+    #[anneal::pure]
+    fn sig(a: i8) -> i8 {
+        a.signum()
+    }
+
+    #[anneal::pure]
+    fn nonzero(a: i16) -> bool {
+        a.is_positive() || a.is_negative()
+    }
+
+    #[anneal::pure]
+    fn negative(a: i16) -> bool {
+        a.is_negative()
+    }
+
+    #[anneal::pure]
+    fn uabs(a: i8) -> u8 {
+        a.unsigned_abs()
+    }
+
+    #[anneal::pure]
+    fn sabs(a: i8) -> i8 {
+        a.saturating_abs()
+    }
+
+    #[anneal::pure]
+    fn wabs(a: i8) -> i8 {
+        a.wrapping_abs()
+    }
+
+    #[anneal::pure]
+    fn to_signed(a: u8) -> i8 {
+        a.cast_signed()
+    }
+
+    #[anneal::pure]
+    fn to_unsigned(a: i8) -> u8 {
+        a.cast_unsigned()
+    }
+
     #[anneal::pure]
     fn wshl_is(a: u16, n: u32, r: u16) -> bool {
         wrapping_shl(a, n) == r
@@ -362,6 +403,7 @@ anneal::external_spec! {
                 + n as u8 as u32
                 + a.max(b) as u32
                 + n.div_ceil(8)
+                + a.cast_signed().unsigned_abs() as u32
         },
         ensures(|r| r == saturating_sub(n, 1u32)),
     )]

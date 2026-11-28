@@ -265,6 +265,29 @@ example : pure_rotr_i 2 1 = 1 := by unfold pure_rotr_i; decide
 example : pure_rotl64 1 = 9223372036854775808 := by unfold pure_rotl64; decide
 example : pure_rotl64 2 = 1 := by unfold pure_rotl64; decide
 
+-- Sign tests, `signum`, magnitudes, and same-width bit casts.
+example : pure_sig (-5) = -1 := by unfold pure_sig; decide
+example : pure_sig 0 = 0 := by unfold pure_sig; decide
+example : pure_sig 7 = 1 := by unfold pure_sig; decide
+example : ¬ pure_nonzero 0 := by unfold pure_nonzero; decide
+example : pure_nonzero (-1) := by unfold pure_nonzero; decide
+example : pure_nonzero 1 := by unfold pure_nonzero; decide
+example : pure_negative (-1) := by unfold pure_negative; decide
+example : ¬ pure_negative 0 := by unfold pure_negative; decide
+example : pure_uabs (-128) = 128 := by unfold pure_uabs; decide
+example : pure_uabs (-5) = 5 := by unfold pure_uabs; decide
+example : pure_uabs 7 = 7 := by unfold pure_uabs; decide
+example : pure_sabs (-128) = 127 := by unfold pure_sabs; decide
+example : pure_sabs (-5) = 5 := by unfold pure_sabs; decide
+example : pure_wabs (-128) = -128 := by unfold pure_wabs; decide
+example : pure_wabs (-5) = 5 := by unfold pure_wabs; decide
+example : pure_to_signed 255 = -1 := by unfold pure_to_signed; decide
+example : pure_to_signed 127 = 127 := by unfold pure_to_signed; decide
+example : pure_to_signed 128 = -128 := by unfold pure_to_signed; decide
+example : pure_to_unsigned (-1) = 255 := by unfold pure_to_unsigned; decide
+example : pure_to_unsigned (-128) = 128 := by unfold pure_to_unsigned; decide
+example : pure_to_unsigned 5 = 5 := by unfold pure_to_unsigned; decide
+
 -- The masked shifts take the amount modulo the width.
 example : pure_wshl_is 1 17 2 := by unfold pure_wshl_is; decide
 example : pure_wshl_is 0x8001 1 2 := by unfold pure_wshl_is; decide
@@ -273,9 +296,10 @@ example : ¬ pure_wshr_is (-32768) 31 1 := by unfold pure_wshr_is; decide
 
 -- `usat` (sorted eighth as `fn7`) binds `let k: u32 = 31;` in `max_steps =`
 -- `abs_diff(a, b) + saturating_add(n, 1u32) + (n & 15u32) + (n >> 30) + (n >> k)`
--- `+ n as u8 as u32 + a.max(b) as u32 + n.div_ceil(8)`.
-example : fn7_max_steps { args := [u8Val 9, u8Val 2, u32Val 5] } = 33 := rfl
+-- `+ n as u8 as u32 + a.max(b) as u32 + n.div_ceil(8)`
+-- `+ a.cast_signed().unsigned_abs() as u32`.
+example : fn7_max_steps { args := [u8Val 9, u8Val 2, u32Val 5] } = 42 := rfl
 example : fn7_max_steps { args := [u8Val 3, u8Val 250, u32Val 4294967295] } =
-    4831838978 := rfl
+    4831838981 := rfl
 
 end Spec.Check

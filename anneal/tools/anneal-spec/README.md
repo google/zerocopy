@@ -188,6 +188,18 @@ needs an operand twice lowers to a Lean `fun` applied to the operands, as in
 `((fun («n» «d» : Int) => ..) a b)`, so each operand is evaluated once and no
 specification name is in the scope of the binders.
 
+Signed integers also have `a.is_positive()` and `a.is_negative()`, which
+lower to the decidable `0 < a` and `a < 0`, and `a.signum()`, which is `1`,
+`0`, or `-1` through a `fun` that evaluates `a` once. `a.unsigned_abs()` is
+the magnitude `Int.ofNat (Int.natAbs a)`, of the unsigned type of `a`'s width,
+which holds the magnitude of `MIN`. `a.saturating_abs()` clamps that
+magnitude to `MAX` with `Min.min`, and `a.wrapping_abs()` reduces it into
+`a`'s range, so that the magnitude of `MIN` wraps back to `MIN`.
+`a.cast_signed()` on an unsigned integer and `a.cast_unsigned()` on a signed
+one reinterpret its bits as the same-width type of the other signedness,
+exactly as `as` does. Each of these methods is rejected on an integer of the
+other signedness, as Rust defines it only on one.
+
 Division and remainder lower to
 `Trusted.MirSemantics.intTdiv`/`intTmod` (Rust's truncating semantics, as in
 `Int.tdiv`/`Int.tmod`) and require the divisor to be a nonzero literal or

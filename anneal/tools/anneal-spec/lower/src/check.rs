@@ -1840,7 +1840,10 @@ impl<'a> Env<'a> {
     /// unsigned `recv`, as in Rust, and is a decidable `bool`, as is
     /// `is_multiple_of`. `div_ceil` takes unsigned operands and a divisor
     /// guarded as for `/`. `rotate_left` and `rotate_right` rotate the bits
-    /// of `recv` by a `u32` amount modulo the bit width. An operation that
+    /// of `recv` by a `u32` amount modulo the bit width. The sign tests,
+    /// `signum`, and the `_abs` methods take a signed `recv`, and
+    /// `cast_signed` and `cast_unsigned` reinterpret its bits as the
+    /// same-width type of the other signedness. An operation that
     /// needs an operand more than once applies a Lean `fun` to the operands,
     /// which evaluates each once and keeps every specification name out of
     /// the scope of its binders.
@@ -1865,18 +1868,25 @@ impl<'a> Env<'a> {
             }
         };
         let ty = |t: IntTy| if math { Ty::Math } else { Ty::Int(t) };
-        // Rust defines some methods only on unsigned integer types.
-        let unsigned = |t: IntTy| {
-            if t.signed {
-                Err(type_error(
-                    span,
-                    format!("`{name}` needs an unsigned integer, found `{}`", t.rust_name()),
-                )
-                .help(format!("Rust defines `{name}` only on unsigned integer types")))
-            } else {
-                Ok(())
+        // Rust defines some methods only on unsigned, or only on signed,
+        // integer types.
+        let signedness = |t: IntTy, signed: bool| {
+            if t.signed == signed {
+                return Ok(());
             }
+            let kind = if signed { "signed" } else { "unsigned" };
+            Err(type_error(
+                span,
+                format!(
+                    "`{name}` needs {} {kind} integer, found `{}`",
+                    if signed { "a" } else { "an" },
+                    t.rust_name()
+                ),
+            )
+            .help(format!("Rust defines `{name}` only on {kind} integer types")))
         };
+        let unsigned = |t: IntTy| signedness(t, false);
+        let signed = |t: IntTy| signedness(t, true);
         if name != "math" && INTRINSICS.contains(&name) {
             arity(if name.ends_with("_neg") { 0 } else { 1 })?;
             let operands: Vec<Expr> = std::iter::once(recv).chain(args).cloned().collect();
@@ -2005,6 +2015,60 @@ impl<'a> Env<'a> {
                 let value = format!("({INT}.ofNat {rotated})");
                 Ok(Low::Int(if t.signed { wrap_into(&value, t) } else { value }, ty(t)))
             }
+            "is_positive" | "is_negative" => {
+                arity(0)?;
+                let (a, t) = self.int_operand(name, recv, facts)?;
+                signed(t)?;
+                let zero = int_lit(IntLit::new(false, 0));
+                Ok(Low::Prop(Prop::pure(if name == "is_positive" {
+                    format!("({zero} < {a})")
+                } else {
+                    format!("({a} < {zero})")
+                })))
+            }
+            "signum" => {
+                arity(0)?;
+                let (a, t) = self.int_operand(name, recv, facts)?;
+                signed(t)?;
+                let [one, zero, minus_one] = [(false, 1), (false, 0), (true, 1)]
+                    .map(|(neg, mag)| int_lit(IntLit::new(neg, mag)));
+                let term = apply_fun(
+                    &["«x»"],
+                    INT,
+                    &format!(
+                        "if {zero} < «x» then {one} else if «x» < {zero} then {minus_one} else {zero}"
+                    ),
+                    &[a],
+                );
+                Ok(Low::Int(term, ty(t)))
+            }
+            // The magnitude of a signed `a` fits in the unsigned type of its
+            // width, and in `a`'s own type except at `MIN`.
+            "unsigned_abs" | "saturating_abs" | "wrapping_abs" => {
+                arity(0)?;
+                let (a, t) = self.int_operand(name, recv, facts)?;
+                signed(t)?;
+                let abs = format!("({INT}.ofNat ({INT}.natAbs {a}))");
+                let (term, result) = match name {
+                    "unsigned_abs" => (abs, IntTy { signed: false, ..t }),
+                    "saturating_abs" => {
+                        let max = int_lit(IntLit::new(false, t.range().1));
+                        (format!("({MIN} {abs} {max})"), t)
+                    }
+                    _ => (wrap_into(&abs, t), t),
+                };
+                Ok(Low::Int(term, ty(result)))
+            }
+            // A same-width bit cast, which is `a as T` for the type of the
+            // other signedness.
+            "cast_signed" | "cast_unsigned" => {
+                arity(0)?;
+                let (a, t) = self.int_operand(name, recv, facts)?;
+                let to_signed = name == "cast_signed";
+                signedness(t, !to_signed)?;
+                let target = IntTy { signed: to_signed, ..t };
+                Ok(Low::Int(wrap_into(&a, target), ty(target)))
+            }
             _ => Err(Diagnostic::new(
                 "E_ANNEAL_SPEC_UNSUPPORTED_EXPR",
                 span,
@@ -2012,8 +2076,10 @@ impl<'a> Env<'a> {
             )
             .help(
                 "the integer methods are `min`, `max`, `clamp`, `is_power_of_two`, \
-                 `is_multiple_of`, `div_ceil`, `rotate_left`, `rotate_right`, `abs_diff`, and \
-                 the `wrapping_*`, `saturating_*`, and `no_overflow_*` intrinsics",
+                 `is_multiple_of`, `div_ceil`, `rotate_left`, `rotate_right`, `is_positive`, \
+                 `is_negative`, `signum`, `unsigned_abs`, `saturating_abs`, `wrapping_abs`, \
+                 `cast_signed`, `cast_unsigned`, `abs_diff`, and the `wrapping_*`, \
+                 `saturating_*`, and `no_overflow_*` intrinsics",
             )),
         }
     }
