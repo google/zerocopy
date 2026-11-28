@@ -11,24 +11,25 @@
 module
 prelude
 public import Trusted.MirSemantics
+public import Trusted.Framework.Bridge
 
 @[expose] public section
 
 namespace Specs.«zerocopy».«zc05_layout_add_scaled_metadata»
 
-open Trusted.MirAst Trusted.MirSemantics
+open Trusted.MirAst Trusted.MirSemantics Trusted.Framework
 
 /-- Mathematical value of an integer `Val` (`0` for any other value, which a
 well-typed argument or return value never is). -/
 noncomputable def specInt : Val → Int
-  | .scalar s => scalarAsInt s
+  | .scalar _s__anneal => scalarAsInt _s__anneal
   | _ => 0
 
 /-- The `i`-th entry argument (`()` when absent, which `ValidEntryArgs` rules
 out). -/
-noncomputable def specArg (q : Query) (i : Nat) : Val :=
-  match Trusted.MirSemantics.getElem? q.args i with
-  | some v => v
+noncomputable def specArg (_q__anneal : Query) (_i__anneal : Nat) : Val :=
+  match Trusted.MirSemantics.getElem? _q__anneal.args _i__anneal with
+  | some _v__anneal => _v__anneal
   | none => .unit
 
 /--
@@ -36,28 +37,39 @@ noncomputable def specArg (q : Query) (i : Nat) : Val :=
 def fn0_id : String :=
   "rust-path-v1::layout::add_scaled_metadata"
 
+/-- MIR signature of `layout::add_scaled_metadata`. -/
+def fn0_sig : MirSignature :=
+  { isUnsafe := true, abi := .rust, params := [.int .isize false, .int .isize false, .int .isize false], ret := .int .isize false }
+
 /-- Caller safety obligation of `layout::add_scaled_metadata`. -/
-noncomputable def fn0_safety (q : Query) : Prop :=
-  (((specInt (specArg q 0)) + ((specInt (specArg q 1)) * (specInt (specArg q 2)))) ≤ (18446744073709551615 : Int))
+noncomputable def fn0_safety (_q__anneal : Query) : Prop :=
+  (((specInt (specArg _q__anneal 0)) + ((specInt (specArg _q__anneal 1)) * (specInt (specArg _q__anneal 2)))) ≤ (18446744073709551615 : Int))
 
 /-- Behavioral precondition of `layout::add_scaled_metadata`. -/
-noncomputable def fn0_pre (q : Query) : Prop :=
-  (((specInt (specArg q 0)) + ((specInt (specArg q 1)) * (specInt (specArg q 2)))) ≤ (18446744073709551615 : Int))
+noncomputable def fn0_pre (_q__anneal : Query) : Prop :=
+  (((specInt (specArg _q__anneal 0)) + ((specInt (specArg _q__anneal 1)) * (specInt (specArg _q__anneal 2)))) ≤ (18446744073709551615 : Int))
 
 /-- Normal-return postcondition of `layout::add_scaled_metadata`. -/
-noncomputable def fn0_post (q : Query) (out : Out) : Prop :=
-  ((specInt out.ret) = ((specInt (specArg q 0)) + ((specInt (specArg q 1)) * (specInt (specArg q 2)))))
+noncomputable def fn0_post (_q__anneal : Query) (_ret__anneal : Val)
+    (_mem__anneal : CallerMemory) : Prop :=
+  ((specInt _ret__anneal) = ((specInt (specArg _q__anneal 0)) + ((specInt (specArg _q__anneal 1)) * (specInt (specArg _q__anneal 2)))))
 
-noncomputable def fn0_contract : FnContract := {
+noncomputable def fn0_contract :
+    Trusted.Framework.FnContract Query Val CallerMemory := {
   safetyPre := fn0_safety
   behaviorPre := fn0_pre
   postReturn := fn0_post
-  effects := { terminates := true, noUnwind := true }
+  effects := { terminates := true, noUnwind := true, noAbort := true }
 }
 
-noncomputable def specs : Specs := ContractSpecs [
-  { identity := fn0_id, contract := fn0_contract, signature := some { isUnsafe := true, params := [.int .isize false, .int .isize false, .int .isize false], ret := .int .isize false } }
-]
+noncomputable def specs : MirEnvelopeSpec := {
+  entries := [
+    { identity := fn0_id, sig := fn0_sig, contract := fn0_contract }
+  ]
+  claimShapes := [.forallSafety, .termination]
+  gaps := .selectedUnitScope :: defaultMirDownstreamGaps
+  laws := []
+}
 
 end Specs.«zerocopy».«zc05_layout_add_scaled_metadata»
 

@@ -36,9 +36,27 @@ UNIT_THEOREM_V1 = "Trusted.MirSemantics.UnitTheorem"
 # does not relate to `lean-miri`. Their receipts must mark correspondence
 # provenance inapplicable and disclose the Profile v2 semantics assumptions.
 UNIT_THEOREM_V2 = "Trusted.MirSemantics.UnitTheoremV2"
+UNIT_ENVELOPE_THEOREM_V1 = "Trusted.Framework.UnitMirEnvelopeTheoremV1"
+UNIT_ENVELOPE_THEOREM_V2 = "Trusted.Framework.UnitMirEnvelopeTheoremV2"
 PROFILE_CANONICAL_ROOTS = {
     1: UNIT_THEOREM_V1,
     2: UNIT_THEOREM_V2,
+}
+PROFILE_V1_ROOTS = frozenset({
+    UNIT_THEOREM_V1,
+    UNIT_ENVELOPE_THEOREM_V1,
+})
+PROFILE_V2_ROOTS = frozenset({
+    UNIT_THEOREM_V2,
+    UNIT_ENVELOPE_THEOREM_V2,
+})
+ENVELOPE_ROOTS = frozenset({
+    UNIT_ENVELOPE_THEOREM_V1,
+    UNIT_ENVELOPE_THEOREM_V2,
+})
+PROFILE_ALLOWED_ROOTS = {
+    1: PROFILE_V1_ROOTS,
+    2: PROFILE_V2_ROOTS,
 }
 PROFILE_V1_ASSUMPTION = "experimental pointer-free MIR semantics"
 PROFILE_V2_ASSUMPTION_PREFIX = "experimental Profile v2 MIR semantics"
@@ -98,6 +116,7 @@ VALID_PROOF_KEYS = frozenset({
     "specification",
     "theorem",
     "sources",
+    "spec_closure",
 })
 VALID_PROOF_SOURCE_KEYS = frozenset({"module", "path", "role"})
 VALID_CRATE_TYPES = frozenset({"lib", "bin"})
@@ -113,6 +132,7 @@ GENERATED_SPEC_PATTERN = re.compile(
 )
 GENERATED_SPEC_DIR = "Specs"
 SPEC_SOURCES_FILE = "spec_sources.json"
+SPEC_CLOSURE_FILE = "spec-closure.golden"
 _SHA256_HEX_RE = re.compile(r"\A[0-9a-f]{64}\Z")
 PROVENANCE_V1_KEYS = frozenset({
     "schema_version",
@@ -385,8 +405,8 @@ def expected_unit_profile(unit_dir, request):
     pattern = re.compile(
         r"\b(?:def|abbrev)\s+"
         + re.escape(decl_name)
-        + r"\s*:\s*(?:(?:_root_\.)?Trusted\.(?:MirSemantics\.)?)?"
-        + r"(SpecsV2|Specs)\b"
+        + r"\s*:\s*(?:(?:_root_\.)?Trusted\.(?:(?:MirSemantics|Framework)\.)?)?"
+        + r"(SpecsV2|Specs|MirEnvelopeSpec)\b"
     )
     found_profiles = set()
     for spec_path in candidates:
@@ -399,7 +419,16 @@ def expected_unit_profile(unit_dir, request):
             ) from exc
         cleaned = _strip_lean_comments_and_strings(raw_spec)
         for match in pattern.finditer(cleaned):
-            found_profiles.add(2 if match.group(1) == "SpecsV2" else 1)
+            kind = match.group(1)
+            if kind == "SpecsV2":
+                found_profiles.add(2)
+            elif kind == "Specs":
+                found_profiles.add(1)
+            else:
+                has_v2_gap = (
+                    re.search(r"\.unbridgedSemantics\b", cleaned) is not None
+                )
+                found_profiles.add(2 if has_v2_gap else 1)
     if len(found_profiles) != 1:
         names = [p.name for p in candidates]
         raise RuntimeError(
@@ -1475,6 +1504,25 @@ def _validate_request_unit(
                 "generated specification source"
             )
         declared_files.add(SPEC_SOURCES_FILE)
+    spec_closure_sha256 = None
+    if "spec_closure" in proof:
+        if proof["spec_closure"] != SPEC_CLOSURE_FILE:
+            raise RuntimeError(
+                f"{entry_name}: proof.spec_closure must be "
+                f"{SPEC_CLOSURE_FILE!r}, got {proof['spec_closure']!r}"
+            )
+        if SPEC_CLOSURE_FILE not in unit_files or not (
+            entry / SPEC_CLOSURE_FILE
+        ).is_file():
+            raise RuntimeError(
+                f"{entry_name}: missing declared {SPEC_CLOSURE_FILE}"
+            )
+        declared_files.add(SPEC_CLOSURE_FILE)
+        spec_closure_sha256 = anneal_ci_lib.sha256_raw_file(
+            entry / SPEC_CLOSURE_FILE,
+            reject_symlink=True,
+            missing_label=entry_name,
+        ).hex()
     unexpected = set(unit_files) - declared_files
     if unexpected:
         raise RuntimeError(
@@ -1521,6 +1569,8 @@ def _validate_request_unit(
     )
     unit_expected = {
         "profile": actual_profile,
+        "envelope": spec_closure_sha256 is not None,
+        "spec_closure_sha256": spec_closure_sha256,
         "allowed_axioms": sorted(ALLOWED_AXIOMS),
         "compilation": actual_comp,
         "scope": request["scope"],
@@ -2584,6 +2634,8 @@ def validate_parsed_receipt(
     expected_axioms=None,
     expected_source_hashes=None,
     lowered_inst_paths=None,
+    expected_envelope=None,
+    expected_spec_closure_sha256=None,
 ):
     """Fail closed unless a parsed `cargo-anneal verify` receipt is clean."""
     try:
@@ -2807,20 +2859,46 @@ def validate_parsed_receipt(
         if (
             expected_profile is not None
             and not isinstance(expected_profile, bool)
-            and expected_profile in PROFILE_CANONICAL_ROOTS
+            and expected_profile in PROFILE_ALLOWED_ROOTS
         ):
-            expected_root = PROFILE_CANONICAL_ROOTS[expected_profile]
-            if root != expected_root:
+            allowed_roots = PROFILE_ALLOWED_ROOTS[expected_profile]
+            if root not in allowed_roots:
+                expected_root = PROFILE_CANONICAL_ROOTS[expected_profile]
                 failures.append(
                     f"canonicalRoot={root!r} does not match Profile "
                     f"v{expected_profile} ({expected_root!r})"
                 )
-        elif root not in (UNIT_THEOREM_V1, UNIT_THEOREM_V2):
+        elif root not in (PROFILE_V1_ROOTS | PROFILE_V2_ROOTS):
             failures.append(f"canonicalRoot={root!r}")
 
-        if root == UNIT_THEOREM_V2:
+        if expected_envelope is True and root not in ENVELOPE_ROOTS:
+            failures.append(
+                f"expected envelope canonicalRoot for spec_closure unit, got {root!r}"
+            )
+        elif expected_envelope is False and root in ENVELOPE_ROOTS:
+            failures.append(
+                f"unexpected envelope canonicalRoot {root!r} without spec_closure"
+            )
+
+        if root in ENVELOPE_ROOTS:
+            sc_sha = receipt.get("spec_closure_sha256")
+            if not _is_sha256_hex(sc_sha):
+                failures.append(f"invalid spec_closure_sha256={sc_sha!r}")
+            elif (
+                expected_spec_closure_sha256 is not None
+                and sc_sha != expected_spec_closure_sha256
+            ):
+                failures.append(
+                    f"spec_closure_sha256={sc_sha!r} != {expected_spec_closure_sha256!r}"
+                )
+        elif "spec_closure_sha256" in receipt:
+            failures.append(
+                f"unexpected spec_closure_sha256 on non-envelope root {root!r}"
+            )
+
+        if root in PROFILE_V2_ROOTS:
             _validate_profile_v2_disclosures(receipt, failures)
-        elif root == UNIT_THEOREM_V1:
+        elif root in PROFILE_V1_ROOTS:
             _validate_profile_v1_disclosures(receipt, failures)
         if audit.get("subject") != "Captured.program":
             failures.append(f"audit.subject={audit.get('subject')!r}")
@@ -2878,6 +2956,8 @@ def validate_receipt(
     expected_axioms=None,
     expected_source_hashes=None,
     lowered_inst_paths=None,
+    expected_envelope=None,
+    expected_spec_closure_sha256=None,
 ):
     """Fail closed unless `cargo-anneal verify` emitted a clean receipt."""
     try:
@@ -2905,6 +2985,8 @@ def validate_receipt(
         expected_axioms=expected_axioms,
         expected_source_hashes=expected_source_hashes,
         lowered_inst_paths=lowered_inst_paths,
+        expected_envelope=expected_envelope,
+        expected_spec_closure_sha256=expected_spec_closure_sha256,
     )
 
 
@@ -2982,6 +3064,8 @@ def validate_unit_receipt(
         expected_axioms=unit_expected["allowed_axioms"],
         expected_source_hashes=unit_expected.get("source_hashes"),
         lowered_inst_paths=lowered,
+        expected_envelope=unit_expected.get("envelope"),
+        expected_spec_closure_sha256=unit_expected.get("spec_closure_sha256"),
     )
 
 

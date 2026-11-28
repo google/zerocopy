@@ -8,7 +8,10 @@
 
 use std::{fs, path::Path, process::Command};
 
-use anneal_spec_lower::{lower, lower_with, module_path, Format, Lowered, Options, Source};
+use anneal_spec_lower::{
+    closure::parse_capture_json, lower, lower_with, module_path, Format, Lowered, Options, Scope,
+    Source,
+};
 
 fn src(label: &str, text: &str) -> Source {
     Source { label: label.into(), text: text.into(), module: Vec::new() }
@@ -67,8 +70,19 @@ fn max_steps_zerocopy_unit_matches_checked_in_golden_and_cli_check() {
     let l = lower_with(&sources, &opts).unwrap_or_else(|e| panic!("{}", e[0].render(&sources)));
     let golden = fs::read_to_string(unit.join(format!("Specs/zerocopy/{claim}.lean"))).unwrap();
     assert_eq!(l.spec_lean, golden);
-    assert!(golden.contains("entrySatisfiesStepBound p fn0_id"), "{golden}");
-    assert!(golden.contains("entrySatisfiesStepBound p fn1_id"), "{golden}");
+    assert_eq!(l.spec_closure, fs::read_to_string(unit.join("spec-closure.golden")).unwrap());
+    assert!(
+        golden.contains(
+            "entrySatisfiesStepBoundV1 _p__anneal fn0_id fn0_sig fn0_contract fn0_max_steps"
+        ),
+        "{golden}"
+    );
+    assert!(
+        golden.contains(
+            "entrySatisfiesStepBoundV1 _p__anneal fn1_id fn1_sig fn1_contract fn1_max_steps"
+        ),
+        "{golden}"
+    );
 
     let bin = env!("CARGO_BIN_EXE_anneal-spec-lower");
     let status = Command::new(bin)
@@ -118,18 +132,24 @@ fn max_steps_emits_tactic_free_nat_rec_and_honest_caveat() {
         "fn scan(len: usize) -> usize",
     ))
     .unwrap();
-    assert!(l.spec_lean.contains("private noncomputable def reachesDoneWithin"), "{}", l.spec_lean);
+    assert!(l.spec_lean.contains("noncomputable def reachesDoneWithin"), "{}", l.spec_lean);
     assert!(l.spec_lean.contains("@Nat.rec (fun _ => State → Prop)"), "{}", l.spec_lean);
     assert!(l.spec_lean.contains("not physical wall-clock time"), "{}", l.spec_lean);
     assert!(!l.spec_lean.contains(":= by"), "unexpected tactic block in:\n{}", l.spec_lean);
     assert!(
         l.spec_lean.contains(
-            "noncomputable def fn0_max_steps (q : Query) : Nat :=\n  (((34 : Nat) * (specNat (specArg q 0))) + (540 : Nat))"
+            "noncomputable def fn0_max_steps (_q__anneal : Query) : Nat :=\n  (((34 : Nat) * (specNat (specArg _q__anneal 0))) + (540 : Nat))"
         ),
         "{}",
         l.spec_lean
     );
-    assert!(l.spec_lean.contains("entrySatisfiesStepBound p fn0_id"), "{}", l.spec_lean);
+    assert!(
+        l.spec_lean.contains(
+            "entrySatisfiesStepBoundV1 _p__anneal fn0_id fn0_sig fn0_contract fn0_max_steps"
+        ),
+        "{}",
+        l.spec_lean
+    );
 
     // `math(...)` wrapper inside `max_steps` lowers identically to the bare
     // mathematical expression.
@@ -147,14 +167,17 @@ fn constant_max_steps_uses_wildcard_query_binder() {
     // `Spec.lean`.
     let l = lower_one(&wrap("max_steps = 10", "fn constant_work()")).unwrap();
     assert!(
-        l.spec_lean.contains("noncomputable def fn0_max_steps (_q : Query) : Nat :=\n  (10 : Nat)"),
+        l.spec_lean.contains(
+            "noncomputable def fn0_max_steps (_q__anneal : Query) : Nat :=\n  (10 : Nat)"
+        ),
         "{}",
         l.spec_lean
     );
     assert!(!l.spec_lean.contains("def specNat"), "{}", l.spec_lean);
     assert!(!l.spec_lean.contains("def specArg"), "{}", l.spec_lean);
     assert!(
-        l.spec_lean.contains("effects := { terminates := true, noUnwind := true }"),
+        l.spec_lean
+            .contains("effects := { terminates := true, noUnwind := true, noAbort := true }"),
         "{}",
         l.spec_lean
     );
@@ -174,13 +197,19 @@ fn max_steps_supports_guarded_div_mod_helpers_and_may_panic() {
     )
     .unwrap();
     assert!(
-        l.spec_lean.contains("(Nat.div (specNat (specArg q 0)) (specNat (specArg q 1)))"),
+        l.spec_lean.contains(
+            "(Nat.div (specNat (specArg _q__anneal 0)) (specNat (specArg _q__anneal 1)))"
+        ),
         "{}",
         l.spec_lean
     );
-    assert!(l.spec_lean.contains("(Nat.mod (specNat (specArg q 0)) (2 : Nat))"), "{}", l.spec_lean);
     assert!(
-        l.spec_lean.contains("(Int.toNat (Spec.pure_extra (specInt (specArg q 2))))"),
+        l.spec_lean.contains("(Nat.mod (specNat (specArg _q__anneal 0)) (2 : Nat))"),
+        "{}",
+        l.spec_lean
+    );
+    assert!(
+        l.spec_lean.contains("(Int.toNat (Spec.pure_extra (specInt (specArg _q__anneal 2))))"),
         "{}",
         l.spec_lean
     );
@@ -189,7 +218,9 @@ fn max_steps_supports_guarded_div_mod_helpers_and_may_panic() {
     // `.aborted` remains False).
     let panic_sink = lower_one(&wrap("may_panic, max_steps = 16", "fn fail_fast() -> !")).unwrap();
     assert!(
-        panic_sink.spec_lean.contains("effects := { terminates := true, noUnwind := false }"),
+        panic_sink
+            .spec_lean
+            .contains("effects := { terminates := true, noUnwind := false, noAbort := true }"),
         "{}",
         panic_sink.spec_lean
     );
@@ -296,4 +327,58 @@ fn max_steps_rejects_invalid_and_negative_forms_fail_closed() {
         expect_error(&wrap("max_steps = ret", "fn f() -> usize"), "E_ANNEAL_SPEC_UNKNOWN_IDENT");
     assert!(ret_msg.contains("ensures"), "{ret_msg}");
     expect_error(&wrap("max_steps = 256u8", "fn f()"), "E_ANNEAL_SPEC_LITERAL_RANGE");
+}
+
+#[test]
+fn profile_v2_capture_emits_entry_satisfies_step_bound_v2() {
+    let text =
+        "anneal::external_spec! { #[anneal::spec(max_steps = n + 4)] fn step_v2(n: usize); }";
+    let cap_json = serde_json::json!({
+        "program": {
+            "scope": "unit",
+            "mir_profile_version": 2,
+            "bodies": [{
+                "identity": "rust-path-v1::step_v2",
+                "is_unsafe": false,
+                "arg_count": 1,
+                "local_tys": [
+                    {"kind": "int", "width": "isize", "signed": false},
+                    {"kind": "int", "width": "isize", "signed": false}
+                ]
+            }]
+        }
+    })
+    .to_string();
+    let cap = parse_capture_json(&cap_json).unwrap();
+    let sources = [src("spec.rs", text)];
+    let l = match lower_with(
+        &sources,
+        &Options { scope: Scope::Unit, capture: Some(cap.clone()), ..Options::default() },
+    ) {
+        Ok(l) => l,
+        Err(errs) => panic!("expected Ok, got {}", errs[0].diag.code),
+    };
+    assert!(l.spec_lean.contains("def reachesDoneWithinV2"), "{}", l.spec_lean);
+    assert!(l.spec_lean.contains("StepV2 _p__anneal"), "{}", l.spec_lean);
+    assert!(l.spec_lean.contains("def entrySatisfiesStepBoundV2"), "{}", l.spec_lean);
+    assert!(l.spec_lean.contains("ValidEntryArgsV2 _body__anneal _q__anneal"), "{}", l.spec_lean);
+    assert!(l.spec_lean.contains("initStateV2"), "{}", l.spec_lean);
+    assert!(
+        l.spec_lean.contains(
+            "entrySatisfiesStepBoundV2 _p__anneal fn0_id fn0_sig fn0_contract fn0_max_steps"
+        ),
+        "{}",
+        l.spec_lean
+    );
+    assert!(!l.spec_lean.contains("entrySatisfiesStepBoundV1"), "{}", l.spec_lean);
+
+    // Conflicting `Options::scope` and `capture.scope` fails closed in library
+    // calls too.
+    let Err(conflict) = lower_with(
+        &sources,
+        &Options { scope: Scope::Crate, capture: Some(cap), ..Options::default() },
+    ) else {
+        panic!("scope mismatch must fail");
+    };
+    assert_eq!(conflict[0].diag.code, "E_ANNEAL_INVALID_OPTIONS");
 }

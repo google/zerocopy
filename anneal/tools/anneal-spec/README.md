@@ -10,13 +10,15 @@ those terms. -->
 
 This workspace lets Rust authors state Anneal function contracts in Rust syntax
 and lowers them to a declarative `Spec.lean` built on
-`Trusted.MirSemantics.Contract` (`FnContract`, `ContractSignature`,
-`ContractSpecs`), emitting explicit `isUnsafe`, parameter `MirTy`, and return
-`MirTy` signatures for every `ContractEntry`.
+`Trusted.Framework.Bridge` (`FnContract`, `MirSignature`, `MirVerifiedEntry`,
+`MirEnvelopeSpec`) paired with a deterministic `spec-closure.golden` summary,
+emitting explicit `isUnsafe`, ABI, parameter `MirTy`, and return `MirTy`
+signatures for every `MirVerifiedEntry`.
 
 - `lower/` (`anneal-spec-lower`): the parser, checker, and emitter, plus a CLI
-  that writes or checks `Spec.lean` and `spec_span_map.json`, or span-free
-  per-claim Lean modules.
+  that writes or checks `Spec.lean`, `spec_span_map.json`, and
+  `spec-closure.golden`, or span-free per-claim Lean modules paired with
+  `spec-closure.golden`.
 - `macros/` (`anneal-spec`, imported as `anneal`): inert attributes that only
   check clause syntax, for crates that choose to depend on them.
 

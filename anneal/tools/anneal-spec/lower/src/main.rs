@@ -14,11 +14,15 @@ use std::{
     process::ExitCode,
 };
 
-use anneal_spec_lower::{list_targets, lower_with, module_path, Format, Options, Source};
+use anneal_spec_lower::{
+    closure::parse_capture_json, list_targets, lower_with, module_path, Format, Options, Scope,
+    Source,
+};
 
 const USAGE: &str = "\
 usage: anneal-spec-lower [--src-root DIR] [SELECTION] [--format v1|v2-module]
-                         [--crate-slug S] (--out-dir DIR | --check DIR) FILE...
+                         [--crate-slug S] [--scope unit|crate]
+                         [--capture-json FILE] (--out-dir DIR | --check DIR) FILE...
        anneal-spec-lower [--src-root DIR] --list-targets FILE...
 
 Lowers the `anneal::spec` items and `anneal::external_spec!` blocks in FILE...
@@ -34,13 +38,20 @@ to one specification unit. Every item in FILE... is checked, selected or not.
   --claim C         Lower only the items in claim C: those with
                     `claim = \"C\"`, or the one item whose derived singleton
                     claim is C. With --target, every target must be in C.
-  --format v1       (Default.) Write Spec.lean (namespace `Spec`) and
-                    spec_span_map.json.
+  --format v1       (Default.) Write Spec.lean (namespace `Spec`),
+                    spec_span_map.json, and spec-closure.golden.
   --format v2-module
-                    Write only Specs/S/C.lean (namespace `Specs.S.C`), a
-                    Lean module that records no Rust source positions.
-                    Needs --crate-slug S and --claim C.
+                    Write Specs/S/C.lean (namespace `Specs.S.C`), a Lean
+                    module that records no Rust source positions, plus
+                    spec-closure.golden. Needs --crate-slug S and --claim C.
   --crate-slug S    The crate component of the v2-module namespace.
+  --scope unit|crate
+                    Verification scope recorded in `MirEnvelopeSpec.gaps`
+                    (defaults to `unit`).
+  --capture-json FILE
+                    Synthesize default UB-freedom entries for unannotated safe
+                    callees in FILE and fail closed on unannotated `unsafe`
+                    callees.
   --out-dir DIR     Write the output files under DIR.
   --check DIR       Exit 1 unless the output files under DIR already match
                     the lowering byte for byte.
@@ -75,6 +86,8 @@ fn run() -> Result<ExitCode, String> {
     let mut mode = None;
     let mut opts = Options::default();
     let mut format_given = false;
+    let mut scope_given = false;
+    let mut capture_json_path: Option<PathBuf> = None;
     let mut files = Vec::new();
     while let Some(a) = args.next() {
         let mut value =
@@ -96,6 +109,17 @@ fn run() -> Result<ExitCode, String> {
             "--target" => opts.targets.push(value("--target")?),
             "--claim" => opts.claim = Some(value("--claim")?),
             "--crate-slug" => opts.crate_slug = Some(value("--crate-slug")?),
+            "--scope" => {
+                scope_given = true;
+                opts.scope = match value("--scope")?.as_str() {
+                    "unit" => Scope::Unit,
+                    "crate" => Scope::Crate,
+                    s => return Err(format!("unknown scope `{s}`\n\n{USAGE}")),
+                };
+            }
+            "--capture-json" => {
+                capture_json_path = Some(value("--capture-json")?.into());
+            }
             "--format" => {
                 format_given = true;
                 opts.format = match value("--format")?.as_str() {
@@ -115,9 +139,25 @@ fn run() -> Result<ExitCode, String> {
         && (!opts.targets.is_empty()
             || opts.claim.is_some()
             || opts.crate_slug.is_some()
-            || format_given)
+            || format_given
+            || scope_given
+            || capture_json_path.is_some())
     {
         return Err(format!("--list-targets takes no selection or format options\n\n{USAGE}"));
+    }
+    if let Some(cap_path) = &capture_json_path {
+        let cap_text = fs::read_to_string(cap_path)
+            .map_err(|e| format!("cannot read {}: {e}", cap_path.display()))?;
+        let parsed = parse_capture_json(&cap_text)
+            .map_err(|e| format!("invalid {}: {e}", cap_path.display()))?;
+        if scope_given && parsed.scope != opts.scope {
+            return Err(format!(
+                "--scope {:?} conflicts with capture JSON scope {:?}",
+                opts.scope, parsed.scope
+            ));
+        }
+        opts.scope = parsed.scope;
+        opts.capture = Some(parsed);
     }
     opts.validate().map_err(|e| format!("{e}\n\n{USAGE}"))?;
     if files.is_empty() {

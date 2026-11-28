@@ -70,4 +70,8 @@ example : ¬ pure_consts_are 18446744073709551615 (-9223372036854775808) (-128)
 -- `255 + 32 * 2 + 131070 / 65535 = 255 + 64 + 2 = 321`.
 example : fn1_max_steps { args := [u64Usize 131070] } = 321 := rfl
 
+-- `Spec.specs` lowers to a `MirEnvelopeSpec` over all 5 items in `spec.rs`.
+example : specs.entries.length = 5 := rfl
+example : specs.claimShapes = [.forallSafety, .termination] := rfl
+
 end Spec.Check

@@ -55,6 +55,7 @@
         "path": "Proof.lean",
         "role": "proof"
       }
-    ]
+    ],
+    "spec_closure": "spec-closure.golden"
   }
 }

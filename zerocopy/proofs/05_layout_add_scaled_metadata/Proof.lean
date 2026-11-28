@@ -7,9 +7,12 @@
 -- those terms.
 
 prelude
+import Init.NotationExtra
+import Init.Data.List.Basic
 import Expected
 import Anneal.MirWp
 import Anneal.MirSymExecCall
+import Anneal.Framework
 
 /-!
 `add_scaled_metadata` calls the `core::num` methods `unchecked_mul` and
@@ -24,8 +27,11 @@ contract obligation needs the caller's safety bound
 
 namespace Proof
 
-open Trusted.MirAst Trusted.MirSemantics Anneal.MirWp Anneal.MirTotal
-open Anneal.MirSymExec Anneal.MirSymExecCall
+open Specs.zerocopy.zc05_layout_add_scaled_metadata
+  (fn0_id fn0_sig fn0_safety fn0_post fn0_contract specs)
+open Trusted.MirAst Trusted.MirSemantics Trusted.Framework
+open Anneal.MirWp Anneal.MirTotal Anneal.MirSymExec Anneal.MirSymExecCall
+open Anneal.Framework
 
 private abbrev isz : MirTy := .int .isize false
 
@@ -319,7 +325,7 @@ private theorem pow64_eq_succ :
 /-- The caller's safety bound, read back over `Nat`. -/
 private theorem bound_of_safety {b m k : Nat} (hb : b < Nat.pow 2 64)
     (hm : m < Nat.pow 2 64) (hk : k < Nat.pow 2 64)
-    (h : Specs.zerocopy.zc05_layout_add_scaled_metadata.fn0_safety { args := [scal b, scal m, scal k] }) :
+    (h : fn0_safety { args := [scal b, scal m, scal k] }) :
     b + m * k < Nat.pow 2 64 := by
   change decodeScalar ⟨.isize, false, BitVec.ofNat 128 b⟩ +
       decodeScalar ⟨.isize, false, BitVec.ofNat 128 m⟩ *
@@ -332,8 +338,8 @@ private theorem bound_of_safety {b m k : Nat} (hb : b < Nat.pow 2 64)
 private theorem post_ok {b m k : Nat} (hb : b < Nat.pow 2 64)
     (hm : m < Nat.pow 2 64) (hk : k < Nat.pow 2 64)
     (hB : b + m * k < Nat.pow 2 64) :
-    Specs.zerocopy.zc05_layout_add_scaled_metadata.fn0_post { args := [scal b, scal m, scal k] }
-      ⟨scal (b + m * k), ⟨[]⟩⟩ := by
+    fn0_post { args := [scal b, scal m, scal k] }
+      (scal (b + m * k)) ⟨[]⟩ := by
   change decodeScalar ⟨.isize, false, BitVec.ofNat 128 (b + m * k)⟩ =
     decodeScalar ⟨.isize, false, BitVec.ofNat 128 b⟩ +
       decodeScalar ⟨.isize, false, BitVec.ofNat 128 m⟩ *
@@ -341,7 +347,7 @@ private theorem post_ok {b m k : Nat} (hb : b < Nat.pow 2 64)
   rw [decode_scal hB, decode_scal hb, decode_scal hm, decode_scal hk,
     int_affine]
 
-/-! ## Lifting the run to the contract obligations -/
+/-! ## Lifting the run to the envelope entry -/
 
 /-- Everything the boundary needs about one in-contract call: it is
 well-formed, returns exactly `scal (b + m * k)`, and does not diverge. -/
@@ -363,54 +369,9 @@ private theorem outcome {b m k : Nat} (hb : b < Nat.pow 2 64)
   rw [hArgs, hOut] at hRes
   exact hRes
 
-/-- The per-argument obligations of `BodyContractSatisfied`, discharged from
-an exact outcome whose unique return satisfies `postReturn`. -/
-private theorem obligations_of_outcome {args : List Val} {ret : Val}
-    {c : FnContract} {isUnsafe : Bool}
-    (h : WellFormed P { args := args } ∧ ¬ Diverges P { args := args } ∧
-      ∀ post : TerminalOut → Prop, post (.returned ⟨ret, ⟨[]⟩⟩) →
-        SatisfiesPost P { args := args } post)
-    (h_post : c.postReturn { args := args } ⟨ret, ⟨[]⟩⟩) :
-    (c.effectiveSafetyPre isUnsafe { args := args } →
-      WellFormed P { args := args }) ∧
-    (c.effectiveBehaviorPre isUnsafe { args := args } →
-      (∀ out : TerminalOut, Behavior P { args := args } out →
-        match out with
-        | .returned retOut => c.postReturn { args := args } retOut
-        | .unwound uwMem =>
-          c.effects.noUnwind = false ∧ c.postUnwind { args := args } uwMem
-        | .aborted _ => False) ∧
-      (c.effects.terminates = true → ¬ Diverges P { args := args })) := by
-  refine ⟨fun _ => h.1, fun _ => ⟨fun out hOut => ?_, fun _ => h.2.1⟩⟩
-  have hEq := (h.2.2 (fun o => o = .returned ⟨ret, ⟨[]⟩⟩) rfl).2 out hOut
-  subst hEq
-  exact h_post
-
-private theorem body0_verified :
-    BodyVerified Captured.program 0 Captured.body_0
-      (Specs.zerocopy.zc05_layout_add_scaled_metadata.specs.safety Captured.body_0.identity) := by
-  refine ⟨rfl, body0_adm, fun args valid hSafe => ?_⟩
-  let ⟨b, m, k, hb, hm, hk, hArgs⟩ := args_inv valid
-  subst hArgs
-  exact (outcome hb hm hk (bound_of_safety hb hm hk (hSafe rfl))).1
-
-private theorem body0_contract :
-    BodyContractSatisfied Captured.program 0 Captured.body_0
-      Specs.zerocopy.zc05_layout_add_scaled_metadata.fn0_contract := by
-  refine ⟨rfl, body0_adm, fun args valid => ?_⟩
-  let ⟨b, m, k, hb, hm, hk, hArgs⟩ := args_inv valid
-  subst hArgs
-  have hOb := fun hS : Specs.zerocopy.zc05_layout_add_scaled_metadata.fn0_safety { args := [scal b, scal m, scal k] } =>
-    let hB := bound_of_safety hb hm hk hS
-    let h := outcome hb hm hk hB
-    obligations_of_outcome (c := Specs.zerocopy.zc05_layout_add_scaled_metadata.fn0_contract)
-      (isUnsafe := Captured.body_0.isUnsafe) ⟨h.1, h.2.2⟩ (post_ok hb hm hk hB)
-  exact ⟨fun hSafe => (hOb (hSafe rfl)).1 hSafe,
-    fun hBeh => (hOb (hBeh.1 rfl)).2 hBeh⟩
-
 /-- `base = metadata = multiple = 0` satisfies the safety bound. -/
 private theorem safety_zero :
-    Specs.zerocopy.zc05_layout_add_scaled_metadata.fn0_safety { args := [scal 0, scal 0, scal 0] } := by
+    fn0_safety { args := [scal 0, scal 0, scal 0] } := by
   change decodeScalar ⟨.isize, false, BitVec.ofNat 128 0⟩ +
       decodeScalar ⟨.isize, false, BitVec.ofNat 128 0⟩ *
         decodeScalar ⟨.isize, false, BitVec.ofNat 128 0⟩ ≤
@@ -418,22 +379,91 @@ private theorem safety_zero :
   rw [decode_scal (intWidth_modulus_pos .isize)]
   exact Int.NonNeg.mk _
 
-private theorem body0_inhabited :
-    ContractPreInhabited Captured.body_0 Specs.zerocopy.zc05_layout_add_scaled_metadata.fn0_contract :=
-  let h0 := check_scal (intWidth_modulus_pos .isize)
-  ⟨[scal 0, scal 0, scal 0], valid_args h0 h0 h0, fun _ => safety_zero,
-    safety_zero⟩
+private theorem body0_entry :
+    BodySatisfiesEntry MirProfileV1 Captured.program 0 specs.gaps
+      Captured.body_0
+      { identity := fn0_id, sig := fn0_sig,
+        contract := fn0_contract } := by
+  refine ⟨rfl, rfl, rfl, absurd_mem_nil, ?_, ?_, ?_⟩
+  · intro q hDom hSafe
+    cases q with
+    | mk args callerMem =>
+      let ⟨valid, hMem⟩ := hDom
+      dsimp at valid hMem
+      subst hMem
+      let ⟨b, m, k, hb, hm, hk, hArgs⟩ := args_inv valid
+      subst hArgs
+      exact (outcome hb hm hk (bound_of_safety hb hm hk (hSafe rfl))).1
+  · intro q hDom hBeh
+    cases q with
+    | mk args callerMem =>
+      let ⟨valid, hMem⟩ := hDom
+      dsimp at valid hMem
+      subst hMem
+      let ⟨b, m, k, hb, hm, hk, hArgs⟩ := args_inv valid
+      subst hArgs
+      have hB := bound_of_safety hb hm hk (hBeh.1 rfl)
+      have hOut := outcome hb hm hk hB
+      refine ⟨fun _ => hOut.2.2.1, ?_, ?_, ?_⟩
+      · intro r m' ⟨out, hBehOut, hMap⟩
+        have hEq := (hOut.2.2.2 _ rfl).2 out hBehOut
+        subst hEq
+        injection hMap with hR hM
+        subst hR hM
+        exact ⟨⟨check_scal hB, rfl⟩, post_ok hb hm hk hB⟩
+      · intro m' ⟨out, hBehOut, hMap⟩
+        have hEq := (hOut.2.2.2 _ rfl).2 out hBehOut
+        subst hEq
+        cases hMap
+      · intro m' ⟨out, hBehOut, hMap⟩
+        have hEq := (hOut.2.2.2 _ rfl).2 out hBehOut
+        subst hEq
+        cases hMap
+  · have h0 := check_scal (intWidth_modulus_pos .isize)
+    exact Or.inl ⟨rfl, Or.inl ⟨{ args := [scal 0, scal 0, scal 0] },
+      ⟨valid_args h0 h0 h0, rfl⟩, ⟨fun _ => safety_zero, safety_zero⟩⟩⟩
 
 theorem verify : Expected.claim := by
-  refine ⟨rfl, rfl, rfl, rfl, rfl, rfl, ?_, ?_⟩
-  · have hAll : BodiesVerified Captured.program Specs.zerocopy.zc05_layout_add_scaled_metadata.specs 0
-        Captured.program.bodies :=
-      ⟨body0_verified, True.intro⟩
-    intro defId body found
-    have hSub := bodiesVerified_getElem hAll defId body found
-    rw [Nat.zero_add] at hSub
-    exact hSub
-  · exact ⟨rfl, ⟨0, Captured.body_0, rfl, rfl, rfl, body0_contract,
-      fun _ => body0_inhabited⟩, trivial⟩
+  dsimp only [Expected.claim, UnitMirEnvelopeTheoremV1, MirEnvelopeHolds,
+    EnvelopeTheorem, mkEnvelope, AllSpecLaws, NoDupStrings, List.map,
+    List.append, specs]
+  refine ⟨rfl, (fun _ => List.Mem.head _),
+    ⟨⟨nonEmpty_profile_id, rfl, ?_, rfl, (fun _ => List.Mem.head _),
+        nonEmpty_oracle_id, ?_, (fun _ h => List.Mem.tail _ h)⟩,
+      ?_, ?_, ?_, (fun _ h => by cases h),
+      (fun _ h => by cases h), ?_⟩,
+    True.intro, True.intro⟩
+  · intro defId b hGet
+    cases defId with
+    | zero =>
+      injection hGet with hEq
+      subst hEq
+      exact body0_adm
+    | succ _ =>
+      dsimp [Captured.program, Trusted.MirSemantics.getElem?] at hGet
+      cases hGet
+  · intro cs hMem
+    cases hMem with
+    | head => exact ⟨rfl, absurd_mem_nil⟩
+    | tail _ h2 =>
+      cases h2 with
+      | head => exact ⟨rfl, absurd_mem_nil⟩
+      | tail _ hNil => cases hNil
+  · intro _ _
+    exact ⟨List.Mem.head _, fun _ => List.Mem.tail _ (List.Mem.head _)⟩
+  · exact ⟨ne_string_of_len_beq_false rfl, absurd_mem_nil, True.intro⟩
+  · intro e hMem
+    cases hMem with
+    | head => exact ⟨0, Captured.body_0, rfl, body0_entry⟩
+    | tail _ hNil => cases hNil
+  · intro defId b hGet
+    cases defId with
+    | zero =>
+      injection hGet with hEq
+      subst hEq
+      exact List.Mem.head _
+    | succ _ =>
+      dsimp [Captured.program, Trusted.MirSemantics.getElem?] at hGet
+      cases hGet
 
 end Proof
