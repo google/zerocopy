@@ -196,6 +196,23 @@ fn max_steps_supports_guarded_div_mod_helpers_and_may_panic() {
 }
 
 #[test]
+fn max_steps_counts_casts_to_unsigned_types() {
+    let l = lower_one(&wrap(
+        "max_steps = n as u64 + (k as u8 as usize) + c as u32",
+        "fn f(n: u32, k: i16, c: bool)",
+    ))
+    .unwrap();
+    for want in [
+        "(Int.toNat (specInt (specArg q 0)))",
+        "(Int.toNat (Trusted.MirSemantics.intEmod (specInt (specArg q 1)) 256))",
+        "(Int.toNat (if (specBool (specArg q 2) = true) then (1 : Int) else (0 : Int)))",
+    ] {
+        assert!(l.spec_lean.contains(want), "missing {want} in\n{}", l.spec_lean);
+    }
+    expect_error(&wrap("max_steps = k as i64", "fn f(k: u8)"), "E_ANNEAL_SPEC_TYPE_MISMATCH");
+}
+
+#[test]
 fn max_steps_span_map_records_exact_clause_span() {
     let text = "anneal::external_spec! { #[anneal::spec(total, max_steps = 34 * n + 540)] fn f(n: usize); }";
     let l = lower_one(text).unwrap();

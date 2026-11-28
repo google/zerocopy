@@ -108,7 +108,8 @@ Expressions: `true`/`false`, integer literals (with optional suffix), the
 integer constants `T::MIN`, `T::MAX`, and `T::BITS` for a fixed-width integer
 type `T`, parameters, the `ensures` binder, `!`, unary `-`, `&&`, `||`, `==>`
 (right-associative), `<==>`, comparisons, `+ - * / %`, `& | ^ << >>` and `!`
-on integers, helper calls, `math(e)`/`math { e }`,
+on integers, `e as T` casts to fixed-width integer types, helper calls,
+`math(e)`/`math { e }`,
 `wrapping_{add,sub,mul,neg,shl,shr}`,
 `no_overflow_{add,sub,mul,neg}`, `saturating_{add,sub,mul,neg}`,
 `abs_diff`, `if c { a } else { b }` (with `else if` chains),
@@ -143,6 +144,22 @@ types). Rust panics on, or masks, a larger or non-constant amount, so those
 are rejected; `wrapping_shl(a, n)` and `wrapping_shr(a, n)` take a `u32` `n`
 modulo the bit width, as in Rust. In `max_steps`, these operators may supply
 unsigned step counts.
+
+`e as T` casts an integer or a `bool` to the fixed-width integer type `T`, with
+Rust's precedence: tighter than every binary operator, looser than prefix `!`
+and `-`, and left-associative, so `x as u16 as i8` casts twice. As in Rust,
+`<` or `<<` directly after the type is rejected, since Rust reads it as the
+start of generic arguments; parenthesize the cast instead. The result is the
+value of `e` when it fits in `T`, and otherwise that value reduced into `T`'s
+range modulo `2^bits`, through `Trusted.MirSemantics.intEmod`. Like the
+bitwise operators, `e` keeps its machine type inside `math`, where the result
+is mathematical; a mathematical `e`, as in `math(a + b) as u8`, is reduced
+like any other value. An unsuffixed literal has Rust's default type, `i32`, so
+`-1 as u8` is `255` and `3000000000 as u32` is rejected. A `bool` casts to
+`1` or `0` through Lean's `if`, so it must be decidable, as the condition of
+an `if` that chooses an integer must be. Any other target, including `bool`
+and `()`, is rejected. In `max_steps`, a cast to an unsigned type is a step
+count.
 
 Division and remainder lower to
 `Trusted.MirSemantics.intTdiv`/`intTmod` (Rust's truncating semantics, as in
@@ -255,7 +272,7 @@ UTF-8 source and columns count Unicode scalar values.
 | `E_ANNEAL_UNUSED_LET` | a `let` binding that the rest of its block never uses, or a pattern binding that its arm never uses |
 | `E_ANNEAL_NON_EXHAUSTIVE_MATCH` | an empty `match`, a `bool` `match` without both `true` and `false`, or an integer `match` without a final `_` or name arm |
 | `E_ANNEAL_UNREACHABLE_MATCH_ARM` | a `match` pattern or arm that earlier patterns already cover |
-| `E_ANNEAL_UNDECIDABLE_SPEC_IF` | an `if` choosing an integer or `()` whose condition calls a `bool` helper, names a `bool` helper parameter, or compares `()` values |
+| `E_ANNEAL_UNDECIDABLE_SPEC_IF` | an `if` choosing an integer or `()`, or a `bool` cast with `as`, whose condition or operand calls a `bool` helper, names a `bool` helper parameter, or compares `()` values |
 | `E_ANNEAL_OLD_IN_PRECONDITION` / `E_ANNEAL_UNSUPPORTED_OLD` | `old(...)` |
 | `E_ANNEAL_SAFETY_REQUIRES_ON_SAFE_FN` | `safety_requires` on a safe function |
 | `E_ANNEAL_SPEC_UNKNOWN_IDENT` / `E_ANNEAL_SPEC_UNKNOWN_FN` | unbound names (with a did-you-mean hint) |

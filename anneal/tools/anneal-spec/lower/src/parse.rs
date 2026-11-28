@@ -153,7 +153,35 @@ fn binding_power(op: BinOp) -> (u8, u8) {
     }
 }
 
-const PREFIX_BP: u8 = 23;
+/// The left binding power of `as`, which as in Rust binds tighter than every
+/// binary operator and looser than prefix `!` and `-`, so `-x as u8 * y` is
+/// `((-x) as u8) * y`. Its right side is a type, so it has no right power,
+/// and a chain `x as u16 as i8` is left-associative.
+const CAST_BP: u8 = 23;
+
+const PREFIX_BP: u8 = 25;
+
+/// Rejects operator `op` (at `op_span`) directly after `lhs` if `lhs` ends
+/// with a block, which must be parenthesized first.
+fn reject_unparenthesized(lhs: &Expr, op: &str, op_span: Span) -> Result<(), Diagnostic> {
+    let Some(what) = (match lhs.kind {
+        ExprKind::If(..) => Some("an `if` expression"),
+        ExprKind::Let(..) => Some("a block"),
+        ExprKind::Match(..) => Some("a `match` expression"),
+        _ => None,
+    }) else {
+        return Ok(());
+    };
+    Err(Diagnostic::new(
+        "E_ANNEAL_SPEC_SYNTAX",
+        op_span,
+        format!("{what} must be parenthesized before `{op}`"),
+    )
+    .help(format!(
+        "parenthesize the expression that ends with the `if`, as in \
+         `(if c {{ a }} else {{ b }}) {op} ...` or `(x == if c {{ a }} else {{ b }}) {op} ...`"
+    )))
+}
 
 const INT_CONST_HELP: &str =
     "the only paths a specification may name are the integer constants `T::MIN`, `T::MAX`, \
@@ -199,6 +227,19 @@ impl ExprParser {
             if self.in_cond && matches!(tok, Tok::Group(Delimiter::Brace, ..)) {
                 break;
             }
+            if let Tok::Ident(kw, as_span) = &tok {
+                if kw == "as" {
+                    if CAST_BP < min_bp {
+                        break;
+                    }
+                    reject_unparenthesized(&lhs, "as", *as_span)?;
+                    self.pos += 1;
+                    let (t, end) = self.parse_cast_target(*as_span)?;
+                    let span = join(lhs.span, end);
+                    lhs = Expr { kind: ExprKind::Cast(Box::new(lhs), t), span };
+                    continue;
+                }
+            }
             let Tok::Op(op, op_span) = &tok else { return Err(unexpected(&tok)) };
             if op == "," {
                 return Err(unexpected(&tok));
@@ -223,22 +264,7 @@ impl ExprParser {
                     _ => unexpected(&tok),
                 });
             };
-            if let Some(what) = match lhs.kind {
-                ExprKind::If(..) => Some("an `if` expression"),
-                ExprKind::Let(..) => Some("a block"),
-                ExprKind::Match(..) => Some("a `match` expression"),
-                _ => None,
-            } {
-                return Err(Diagnostic::new(
-                    "E_ANNEAL_SPEC_SYNTAX",
-                    *op_span,
-                    format!("{what} must be parenthesized before `{op}`"),
-                )
-                .help(format!(
-                    "parenthesize the expression that ends with the `if`, as in \
-                     `(if c {{ a }} else {{ b }}) {op} ...` or `(x == if c {{ a }} else {{ b }}) {op} ...`"
-                )));
-            }
+            reject_unparenthesized(&lhs, op, *op_span)?;
             let (l_bp, r_bp) = binding_power(bin);
             if l_bp < min_bp {
                 break;
@@ -514,6 +540,51 @@ impl ExprParser {
             _ => Ok(Expr { kind: ExprKind::IntConst(t, c), span: full }),
         }
     }
+
+    /// Parses the type after `as` (at `as_span`), which must be a
+    /// fixed-width integer type. Returns it and its span.
+    fn parse_cast_target(&mut self, as_span: Span) -> Result<(IntTy, Span), Diagnostic> {
+        let (name, span) = match self.next() {
+            Some(Tok::Ident(name, span)) => (name, span),
+            Some(other) => return Err(unsupported_cast_target(other.span())),
+            None => {
+                return Err(Diagnostic::new(
+                    "E_ANNEAL_SPEC_SYNTAX",
+                    as_span,
+                    "expected a type after `as`",
+                ));
+            }
+        };
+        let Some(t) = int_ty(&name) else {
+            return Err(if name == "bool" {
+                Diagnostic::new("E_ANNEAL_SPEC_TYPE_MISMATCH", span, "cannot cast to `bool`")
+                    .help("compare instead, as in `x != 0`")
+            } else {
+                unsupported_cast_target(span)
+            });
+        };
+        // As in Rust, `<` or `<<` after the type would open its generic
+        // arguments rather than compare or shift.
+        if let Some(Tok::Op(op, op_span)) = self.peek() {
+            if op == "<" || op == "<<" {
+                return Err(Diagnostic::new(
+                    "E_ANNEAL_SPEC_SYNTAX",
+                    *op_span,
+                    format!("`{op}` after a cast is read as generic arguments of `{name}`"),
+                )
+                .help(format!("parenthesize the cast, as in `(x as {name}) {op} y`")));
+            }
+        }
+        Ok((t, span))
+    }
+}
+
+fn unsupported_cast_target(span: Span) -> Diagnostic {
+    Diagnostic::new(
+        "E_ANNEAL_UNSUPPORTED_TYPE",
+        span,
+        "a specification may cast only to a fixed-width integer type such as `u32`",
+    )
 }
 
 /// Parses the arms of a `match`: `pat => body` separated by commas. As in

@@ -258,6 +258,43 @@ anneal::external_spec! {
         (a >> k) << m
     }
 
+    // `as` keeps a value that fits in the target type and otherwise
+    // reduces it modulo `2^bits`; a decidable `bool` casts to `1` or `0`.
+    #[anneal::pure]
+    fn cast_u8(a: i32) -> u8 {
+        a as u8
+    }
+
+    #[anneal::pure]
+    fn cast_i8(a: u16) -> i8 {
+        a as i8
+    }
+
+    #[anneal::pure]
+    fn cast_u32(a: i8) -> u32 {
+        a as u32
+    }
+
+    #[anneal::pure]
+    fn cast_chain(a: i16) -> u32 {
+        a as u8 as u32
+    }
+
+    #[anneal::pure]
+    fn cast_widen(a: i8) -> i64 {
+        a as i64
+    }
+
+    #[anneal::pure]
+    fn cast_lt(a: u8, b: u8) -> u8 {
+        (a < b) as u8
+    }
+
+    #[anneal::pure]
+    fn cast_math(a: u8, b: u8) -> u8 {
+        math(a + b) as u8
+    }
+
     #[anneal::pure]
     fn wshl_is(a: u16, n: u32, r: u16) -> bool {
         wrapping_shl(a, n) == r
@@ -273,6 +310,7 @@ anneal::external_spec! {
         max_steps = {
             let k: u32 = 31;
             abs_diff(a, b) + saturating_add(n, 1u32) + (n & 15u32) + (n >> 30) + (n >> k)
+                + n as u8 as u32
         },
         ensures(|r| r == saturating_sub(n, 1u32)),
     )]

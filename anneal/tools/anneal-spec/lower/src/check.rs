@@ -374,6 +374,28 @@ fn saturate(exact: &str, t: IntTy) -> String {
 /// `wrapping_shr`.
 const U32: IntTy = IntTy { bits: 32, signed: false, pointer_sized: false };
 
+/// `i32`, Rust's default type for an integer literal, which an unsuffixed
+/// literal cast with `as` has.
+const I32: IntTy = IntTy { bits: 32, signed: true, pointer_sized: false };
+
+/// Whether every value of `s` is a value of `t`.
+fn fits(s: IntTy, t: IntTy) -> bool {
+    let ((s_lo, s_hi), (t_lo, t_hi)) = (s.range(), t.range());
+    t_lo <= s_lo && s_hi <= t_hi
+}
+
+/// The integer `a` reduced into `t`'s range modulo `2^bits`, as Rust's
+/// `as` and wrapping arithmetic compute it.
+fn wrap_into(a: &str, t: IntTy) -> String {
+    let m = modulus(t);
+    if t.signed {
+        let h = half_modulus(t);
+        format!("({INT_EMOD} ({a} + {h}) {m} - {h})")
+    } else {
+        format!("({INT_EMOD} {a} {m})")
+    }
+}
+
 /// `a` shifted by `amount` (a Lean `Nat` term below the bit width of `t`)
 /// as Rust's `<<` or `>>` on `t` computes it. A left shift drops the bits
 /// shifted past the width, and a right shift is arithmetic on a signed `t`.
@@ -676,6 +698,11 @@ impl<'a> Env<'a> {
                 let low = self.lower(e, false, facts)?;
                 self.machine_step_count(low, e.span, "`!`")
             }
+            // A cast to an unsigned type is a step count.
+            ExprKind::Cast(..) => {
+                let low = self.lower(e, false, facts)?;
+                self.machine_step_count(low, e.span, "`as`")
+            }
             ExprKind::Binary(op, l, r) => match op {
                 BinOp::Add | BinOp::Mul | BinOp::Div | BinOp::Rem => {
                     let a = self.lower_nat(l, facts)?;
@@ -868,6 +895,7 @@ impl<'a> Env<'a> {
                 }
             }
             ExprKind::Binary(op, l, r) => self.binary(*op, l, r, e.span, math, facts),
+            ExprKind::Cast(inner, t) => self.cast(inner, *t, math, facts),
             ExprKind::Call(name, args) => self.call(name, args, e.span, math, facts),
             ExprKind::If(c, t, f) => self.lower_if(c, t, f, math, facts),
             ExprKind::Let(b, body) => {
@@ -1764,6 +1792,60 @@ impl<'a> Env<'a> {
         Ok(Low::Int(term, if math { Ty::Math } else { Ty::Int(t) }))
     }
 
+    /// Lowers `e as t`. Rust's integer casts keep the value of `e` when it
+    /// fits in `t` and otherwise reduce it into `t`'s range modulo `2^bits`,
+    /// so the result depends only on that value; `e` may therefore also be
+    /// mathematical, as in `math(a + b) as u8`. As with the bitwise
+    /// operators, `e` keeps its machine type even inside `math`, where the
+    /// result is mathematical. A `bool` casts to `1` or `0` through an `if`,
+    /// so it must be decidable, and an untyped integer has Rust's default
+    /// type, `i32`.
+    fn cast(
+        &self,
+        inner: &Expr,
+        t: IntTy,
+        math: bool,
+        facts: &mut Vec<String>,
+    ) -> Result<Low, Diagnostic> {
+        let term = match self.lower(inner, false, facts)? {
+            Low::Prop(p) => {
+                if let Some((span, why)) = p.undecidable {
+                    return Err(Diagnostic::new(
+                        "E_ANNEAL_UNDECIDABLE_SPEC_IF",
+                        span,
+                        format!(
+                            "casting a `bool` to an integer needs a decidable `bool`, but {why}"
+                        ),
+                    )
+                    .help(
+                        "cast a `bool` that tests integers or `bool` arguments and return values",
+                    ));
+                }
+                let (one, zero) = (IntLit::new(false, 1), IntLit::new(false, 0));
+                format!("(if {} then {} else {})", p.term, int_lit(one), int_lit(zero))
+            }
+            Low::Int(a, Ty::Int(s)) if fits(s, t) => a,
+            Low::Int(a, _) => wrap_into(&a, t),
+            Low::Lit(v, span) => {
+                check_range(v, I32, span)?;
+                if v.in_range(t) {
+                    int_lit(v)
+                } else {
+                    wrap_into(&int_lit(v), t)
+                }
+            }
+            untyped @ Low::UntypedIf(..) => match settle(untyped, Ty::Int(I32))? {
+                Low::Int(a, _) if fits(I32, t) => a,
+                Low::Int(a, _) => wrap_into(&a, t),
+                _ => unreachable!("`settle` gives an untyped `if` a type"),
+            },
+            Low::Unit(_) => {
+                return Err(type_error(inner.span, "cannot cast `()` to an integer"));
+            }
+        };
+        Ok(Low::Int(term, if math { Ty::Math } else { Ty::Int(t) }))
+    }
+
     /// The `max_steps` step count of `low`, the value of `what` (an
     /// operator or call) in a step count, which must be an unsigned machine
     /// integer.
@@ -2627,9 +2709,11 @@ fn mentions(e: &Expr, name: &str) -> bool {
     match &e.kind {
         ExprKind::Ident(n) => n == name,
         ExprKind::Call(_, args) => args.iter().any(|a| mentions(a, name)),
-        ExprKind::Unary(_, x) | ExprKind::Math(x) | ExprKind::Old(x) | ExprKind::Paren(x) => {
-            mentions(x, name)
-        }
+        ExprKind::Unary(_, x)
+        | ExprKind::Cast(x, _)
+        | ExprKind::Math(x)
+        | ExprKind::Old(x)
+        | ExprKind::Paren(x) => mentions(x, name),
         ExprKind::Binary(_, a, b) => mentions(a, name) || mentions(b, name),
         ExprKind::If(c, t, f) => mentions(c, name) || mentions(t, name) || mentions(f, name),
         ExprKind::Let(b, body) => mentions(&b.init, name) || mentions(body, name),
@@ -2647,9 +2731,11 @@ pub fn calls_in(e: &Expr, out: &mut Vec<String>) {
             out.push(n.clone());
             args.iter().for_each(|a| calls_in(a, out));
         }
-        ExprKind::Unary(_, x) | ExprKind::Math(x) | ExprKind::Old(x) | ExprKind::Paren(x) => {
-            calls_in(x, out)
-        }
+        ExprKind::Unary(_, x)
+        | ExprKind::Cast(x, _)
+        | ExprKind::Math(x)
+        | ExprKind::Old(x)
+        | ExprKind::Paren(x) => calls_in(x, out),
         ExprKind::Binary(_, a, b) => {
             calls_in(a, out);
             calls_in(b, out);

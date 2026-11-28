@@ -1617,6 +1617,116 @@ fn bitwise_operators_and_shifts_are_checked_strictly() {
 }
 
 #[test]
+fn casts_lower_exactly() {
+    let x = "(specInt (specArg q 0))";
+    let y = "(specInt (specArg q 1))";
+    let emod = "Trusted.MirSemantics.intEmod";
+    let lean = |clause: &str, sig: &str| {
+        lower_one(&wrap(clause, sig)).unwrap_or_else(|e| panic!("{clause}: {e:?}")).spec_lean
+    };
+    let has = |text: &str, want: &str| assert!(text.contains(want), "missing {want} in\n{text}");
+    // A cast keeps every value of a type that fits in the target.
+    for (a, t) in [("u8", "u16"), ("u8", "i16"), ("i8", "i64"), ("u32", "usize"), ("u64", "u64")] {
+        let text = lean(
+            "ensures(|r| r == a as T)".replace('T', t).as_str(),
+            &format!("fn f(a: {a}) -> {t}"),
+        );
+        has(&text, &format!("((specInt out.ret) = {x})"));
+        assert!(!text.contains(emod), "{a} as {t} wrapped:\n{text}");
+    }
+    // Otherwise it reduces modulo `2^bits` into the target's range.
+    has(&lean("ensures(|r| r == a as u8)", "fn f(a: u16) -> u8"), &format!("({emod} {x} 256)"));
+    has(
+        &lean("ensures(|r| r == a as u32)", "fn f(a: i8) -> u32"),
+        &format!("({emod} {x} 4294967296)"),
+    );
+    has(
+        &lean("ensures(|r| r == a as i8)", "fn f(a: u8) -> i8"),
+        &format!("({emod} ({x} + 128) 256 - 128)"),
+    );
+    has(
+        &lean("ensures(|r| r == a as i128)", "fn f(a: u128) -> i128"),
+        &format!(
+            "({emod} ({x} + 170141183460469231731687303715884105728) \
+             340282366920938463463374607431768211456 - 170141183460469231731687303715884105728)"
+        ),
+    );
+    // Chains apply left to right.
+    has(
+        &lean("ensures(|r| r == a as u16 as i8)", "fn f(a: u32) -> i8"),
+        &format!("({emod} (({emod} {x} 65536) + 128) 256 - 128)"),
+    );
+    // A decidable `bool` is `1` or `0`.
+    has(
+        &lean("ensures(|r| r == c as u8)", "fn f(c: bool) -> u8"),
+        "(if (specBool (specArg q 0) = true) then (1 : Int) else (0 : Int))",
+    );
+    // An unsuffixed literal is an `i32`, kept if it fits in the target.
+    has(&lean("ensures(|r| r == 5 as u8)", "fn f() -> u8"), "((specInt out.ret) = (5 : Int))");
+    has(&lean("ensures(|r| r == -1 as u8)", "fn f() -> u8"), &format!("({emod} (Int.neg 1) 256)"));
+    has(
+        &lean("ensures(|r| r == (if c { 1 } else { 300 }) as u8)", "fn f(c: bool) -> u8"),
+        &format!(
+            "({emod} (if (specBool (specArg q 0) = true) then (1 : Int) else (300 : Int)) 256)"
+        ),
+    );
+    // Inside `math` the result is mathematical, and a mathematical operand
+    // is reduced like any other.
+    has(
+        &lean("ensures(|r| math(r) == math(a as u16 + 1))", "fn f(a: u8) -> u8"),
+        &format!("((specInt out.ret) = ({x} + (1 : Int)))"),
+    );
+    has(
+        &lean("ensures(|r| r == math(a + b) as u8)", "fn f(a: u8, b: u8) -> u8"),
+        &format!("({emod} ({x} + {y}) 256)"),
+    );
+    // `as` binds tighter than binary operators and looser than prefix `!`.
+    has(
+        &lean("ensures(|r| r == !a as u16)", "fn f(a: u8) -> u16"),
+        &format!("((specInt out.ret) = ((255 : Int) - {x}))"),
+    );
+    has(
+        &lean("ensures(|r| r == a & b as u8)", "fn f(a: u8, b: u16) -> u8"),
+        &format!("((Int.toNat {x}) &&& (Int.toNat ({emod} {y} 256)))"),
+    );
+    lower_one(&wrap("requires(a as u16 <= b)", "fn f(a: u8, b: u16)")).unwrap();
+    // A binding used only in a cast is used.
+    lower_one(&wrap("requires({ let k: u16 = b; k as u8 == a })", "fn f(a: u8, b: u16)")).unwrap();
+}
+
+#[test]
+fn casts_are_parsed_and_checked_strictly() {
+    let sig = "fn f(a: u8, b: u16, c: bool, n: u32)";
+    for (clause, code) in [
+        ("requires(a as bool)", "E_ANNEAL_SPEC_TYPE_MISMATCH"),
+        ("requires(a as f32 == 0u8)", "E_ANNEAL_UNSUPPORTED_TYPE"),
+        ("requires(a as () == ())", "E_ANNEAL_UNSUPPORTED_TYPE"),
+        ("requires(a as core::primitive::u8 == 0u8)", "E_ANNEAL_UNSUPPORTED_TYPE"),
+        ("requires(a as)", "E_ANNEAL_SPEC_SYNTAX"),
+        ("requires(a as u16 < b)", "E_ANNEAL_SPEC_SYNTAX"),
+        ("requires(a as u16 << 1 == b)", "E_ANNEAL_SPEC_SYNTAX"),
+        ("requires(if c { 1 } else { 2 } as u8 == a)", "E_ANNEAL_SPEC_SYNTAX"),
+        ("requires(a as u8 == b)", "E_ANNEAL_SPEC_TYPE_MISMATCH"),
+        ("requires(() as u8 == a)", "E_ANNEAL_SPEC_TYPE_MISMATCH"),
+        ("requires(3000000000 as u32 == n)", "E_ANNEAL_SPEC_LITERAL_RANGE"),
+        ("requires((() == ()) as u8 == a)", "E_ANNEAL_UNDECIDABLE_SPEC_IF"),
+        ("requires(-a as u16 == b)", "E_ANNEAL_AMBIGUOUS_SPEC_ARITH"),
+    ] {
+        expect_error(&wrap(clause, sig), code);
+    }
+    let r = expect_error(&wrap("requires(a as u16 < b)", sig), "E_ANNEAL_SPEC_SYNTAX");
+    assert!(r.contains("`(x as u16) < y`"), "{r}");
+    let r =
+        expect_error(&wrap("requires((() == ()) as u8 == a)", sig), "E_ANNEAL_UNDECIDABLE_SPEC_IF");
+    assert!(r.contains("casting a `bool` to an integer"), "{r}");
+    // A cast in a step count must be unsigned.
+    expect_error(&wrap("max_steps = n as i64", sig), "E_ANNEAL_SPEC_TYPE_MISMATCH");
+    // An unsuffixed literal must fit in `i32`, as in Rust.
+    lower_one(&wrap("requires(-2147483648 as u32 == n)", sig)).unwrap();
+    expect_error(&wrap("requires(2147483648 as u32 == n)", sig), "E_ANNEAL_SPEC_LITERAL_RANGE");
+}
+
+#[test]
 fn saturating_negation_and_abs_diff_intrinsics_lower_exactly() {
     let x = "(specInt (specArg q 0))";
     let y = "(specInt (specArg q 1))";
