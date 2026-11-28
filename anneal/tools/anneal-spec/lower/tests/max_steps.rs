@@ -252,6 +252,25 @@ fn max_steps_counts_guarded_div_ceil_and_rotations() {
 }
 
 #[test]
+fn max_steps_counts_unsigned_abs_and_bit_casts() {
+    let l = lower_one(&wrap(
+        "max_steps = k.unsigned_abs() as usize + k.cast_unsigned() as usize",
+        "fn f(k: i64)",
+    ))
+    .unwrap();
+    for want in [
+        "(Int.toNat (Int.ofNat (Int.natAbs (specInt (specArg q 0)))))",
+        "(Int.toNat (Trusted.MirSemantics.intEmod (specInt (specArg q 0)) 18446744073709551616))",
+    ] {
+        assert!(l.spec_lean.contains(want), "missing {want} in\n{}", l.spec_lean);
+    }
+    expect_error(
+        &wrap("max_steps = k.wrapping_abs()", "fn f(k: i64)"),
+        "E_ANNEAL_SPEC_TYPE_MISMATCH",
+    );
+}
+
+#[test]
 fn max_steps_span_map_records_exact_clause_span() {
     let text = "anneal::external_spec! { #[anneal::spec(total, max_steps = 34 * n + 540)] fn f(n: usize); }";
     let l = lower_one(text).unwrap();
