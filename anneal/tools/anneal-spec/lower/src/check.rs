@@ -1892,7 +1892,8 @@ impl<'a> Env<'a> {
     /// methods, such as `wrapping_add_signed`, take an operand of `recv`'s
     /// width and the other signedness. `unbounded_shl` and `unbounded_shr`
     /// shift by any `u32` amount, and `midpoint` averages toward zero. The
-    /// division methods take a divisor guarded as for `/`. An operation that
+    /// division methods take a divisor guarded as for `/`, and `swap_bytes`
+    /// reverses the bytes of `recv`. An operation that
     /// needs an operand more than once applies a Lean `fun` to the operands,
     /// which evaluates each once and keeps every specification name out of
     /// the scope of its binders.
@@ -2133,6 +2134,29 @@ impl<'a> Env<'a> {
                 };
                 Ok(Low::Int(term, ty(t)))
             }
+            // The bytes of `a` in reverse order. A one-byte integer is its
+            // own reversal; a wider one is taken as its `Nat` bits, each byte
+            // is moved to the mirrored position, and a signed result is
+            // sign-extended.
+            "swap_bytes" => {
+                arity(0)?;
+                let (a, t) = self.int_operand(name, recv, facts)?;
+                if t.bits == 8 {
+                    return Ok(Low::Int(a, ty(t)));
+                }
+                let bytes = t.bits / 8;
+                let lanes: Vec<String> = (0..bytes)
+                    .map(|k| format!("(((«x» >>> {}) % 256) <<< {})", 8 * k, 8 * (bytes - 1 - k)))
+                    .collect();
+                let swapped = apply_fun(
+                    &["«x»"],
+                    NAT,
+                    &lanes.join(" ||| "),
+                    &[format!("({INT}.toNat ({INT_EMOD} {a} {}))", modulus(t))],
+                );
+                let value = format!("({INT}.ofNat {swapped})");
+                Ok(Low::Int(if t.signed { wrap_into(&value, t) } else { value }, ty(t)))
+            }
             // Unlike `<<` and `>>`, these shift by any `u32` amount: one
             // that is not below the width shifts every bit out, leaving `0`,
             // or `-1` for a negative operand of a signed right shift.
@@ -2218,7 +2242,7 @@ impl<'a> Env<'a> {
                  `is_multiple_of`, `div_ceil`, `rotate_left`, `rotate_right`, `is_positive`, \
                  `is_negative`, `signum`, `unsigned_abs`, `saturating_abs`, `wrapping_abs`, \
                  `cast_signed`, `cast_unsigned`, `unbounded_shl`, `unbounded_shr`, \
-                 `midpoint`, `wrapping_div`, `wrapping_rem`, `wrapping_div_euclid`, \
+                 `midpoint`, `swap_bytes`, `wrapping_div`, `wrapping_rem`, `wrapping_div_euclid`, \
                  `wrapping_rem_euclid`, `div_euclid`, `rem_euclid`, `abs_diff`, the mixed-signedness \
                  `wrapping_add_signed` and its kin, and the `wrapping_*`, `saturating_*`, and \
                  `no_overflow_*` intrinsics",

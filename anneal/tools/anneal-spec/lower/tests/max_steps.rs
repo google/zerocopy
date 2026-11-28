@@ -341,6 +341,14 @@ fn max_steps_counts_guarded_unsigned_saturating_division() {
 }
 
 #[test]
+fn max_steps_counts_swapped_unsigned_bytes() {
+    let l = lower_one(&wrap("max_steps = n.swap_bytes()", "fn f(n: u16)")).unwrap();
+    let want = "(Int.toNat (Int.ofNat ((fun («x» : Nat) => (((«x» >>> 0) % 256) <<< 8) ||| (((«x» >>> 8) % \
+                256) <<< 0)) (Int.toNat (Trusted.MirSemantics.intEmod (specInt (specArg q 0)) 65536)))))";
+    assert!(l.spec_lean.contains(want), "missing {want} in\n{}", l.spec_lean);
+}
+
+#[test]
 fn max_steps_span_map_records_exact_clause_span() {
     let text = "anneal::external_spec! { #[anneal::spec(total, max_steps = 34 * n + 540)] fn f(n: usize); }";
     let l = lower_one(text).unwrap();

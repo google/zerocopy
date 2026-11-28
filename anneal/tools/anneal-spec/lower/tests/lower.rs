@@ -2375,6 +2375,54 @@ fn saturating_and_no_overflow_division_are_checked_strictly() {
 }
 
 #[test]
+fn swap_bytes_lowers_exactly_and_is_checked_strictly() {
+    let x = "(specInt (specArg q 0))";
+    let emod = "Trusted.MirSemantics.intEmod";
+    let lean = |clause: &str, sig: &str| {
+        lower_one(&wrap(clause, sig)).unwrap_or_else(|e| panic!("{clause}: {e:?}")).spec_lean
+    };
+    let has = |text: &str, want: &str| assert!(text.contains(want), "missing {want} in\n{text}");
+    // A one-byte integer is its own reversal.
+    has(
+        &lean("ensures(|r| r == a.swap_bytes())", "fn f(a: i8) -> i8"),
+        &format!("((specInt out.ret) = {x})"),
+    );
+    // A wider one moves each byte of its bits to the mirrored position.
+    has(
+        &lean("ensures(|r| r == a.swap_bytes())", "fn f(a: u16) -> u16"),
+        &format!(
+            "((specInt out.ret) = (Int.ofNat ((fun («x» : Nat) => (((«x» >>> 0) % 256) <<< 8) ||| \
+             (((«x» >>> 8) % 256) <<< 0)) (Int.toNat ({emod} {x} 65536)))))"
+        ),
+    );
+    let lanes = |bytes: u32| -> String {
+        (0..bytes)
+            .map(|k| format!("(((«x» >>> {}) % 256) <<< {})", 8 * k, 8 * (bytes - 1 - k)))
+            .collect::<Vec<_>>()
+            .join(" ||| ")
+    };
+    has(&lean("ensures(|r| r == a.swap_bytes())", "fn f(a: u64) -> u64"), &lanes(8));
+    has(&lean("ensures(|r| r == a.swap_bytes())", "fn f(a: u128) -> u128"), &lanes(16));
+    // A signed result is sign-extended.
+    has(
+        &lean("ensures(|r| r == a.swap_bytes())", "fn f(a: i32) -> i32"),
+        "+ 2147483648) 4294967296 - 2147483648)",
+    );
+    lower_one(&wrap("ensures(|r| math(r) == math(a.swap_bytes() + 1))", "fn f(a: u32) -> u32"))
+        .unwrap();
+    for (clause, code) in [
+        ("requires(a.swap_bytes(1) == a)", "E_ANNEAL_SPEC_ARITY"),
+        ("requires(5.swap_bytes() == a)", "E_ANNEAL_SPEC_TYPE_ANNOTATION_NEEDED"),
+        ("requires(c.swap_bytes())", "E_ANNEAL_SPEC_TYPE_MISMATCH"),
+        ("requires(a.reverse_bits() == a)", "E_ANNEAL_SPEC_UNSUPPORTED_EXPR"),
+        ("max_steps = i.swap_bytes()", "E_ANNEAL_SPEC_TYPE_MISMATCH"),
+    ] {
+        expect_error(&wrap(clause, "fn f(a: u16, c: bool, i: i32)"), code);
+    }
+    lower_one(&wrap("max_steps = a.swap_bytes()", "fn f(a: u16)")).unwrap();
+}
+
+#[test]
 fn saturating_negation_and_abs_diff_intrinsics_lower_exactly() {
     let x = "(specInt (specArg q 0))";
     let y = "(specInt (specArg q 1))";

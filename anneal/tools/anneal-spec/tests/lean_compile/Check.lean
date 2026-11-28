@@ -381,6 +381,19 @@ example : pure_nodiv (-128) 1 := by unfold pure_nodiv; decide
 example : pure_nodiv 127 (-1) := by unfold pure_nodiv; decide
 example : pure_nodiv 5 0 := by unfold pure_nodiv; decide
 
+-- `swap_bytes`, checked against Rust.
+example : pure_swap_i8 (-5) = -5 := by unfold pure_swap_i8; decide
+example : pure_swap_u16 4660 = 13330 := by unfold pure_swap_u16; decide
+example : pure_swap_u16 255 = 65280 := by unfold pure_swap_u16; decide
+example : pure_swap_i16 (-2) = -257 := by unfold pure_swap_i16; decide
+example : pure_swap_i32 305419896 = 2018915346 := by unfold pure_swap_i32; decide
+example : pure_swap_i32 (-1) = -1 := by unfold pure_swap_i32; decide
+example : pure_swap_i32 128 = -2147483648 := by unfold pure_swap_i32; decide
+example : pure_swap_u64 1 = 72057594037927936 := by unfold pure_swap_u64; decide
+example : pure_swap_u64 72623859790382856 = 578437695752307201 := by unfold pure_swap_u64; decide
+example : pure_swap_i128 1 = 1329227995784915872903807060280344576 := by unfold pure_swap_i128; decide
+example : pure_swap_u128 128 = 170141183460469231731687303715884105728 := by unfold pure_swap_u128; decide
+
 -- The masked shifts take the amount modulo the width.
 example : pure_wshl_is 1 17 2 := by unfold pure_wshl_is; decide
 example : pure_wshl_is 0x8001 1 2 := by unfold pure_wshl_is; decide
@@ -391,9 +404,10 @@ example : ¬ pure_wshr_is (-32768) 31 1 := by unfold pure_wshr_is; decide
 -- `abs_diff(a, b) + saturating_add(n, 1u32) + (n & 15u32) + (n >> 30) + (n >> k)`
 -- `+ n as u8 as u32 + a.max(b) as u32 + n.div_ceil(8)`
 -- `+ a.cast_signed().unsigned_abs() as u32 + b.saturating_add_signed(-1) as u32`
--- `+ n.unbounded_shr(31) + n.div_euclid(16) + n.saturating_div(1024)`.
-example : fn7_max_steps { args := [u8Val 9, u8Val 2, u32Val 5] } = 43 := rfl
+-- `+ n.unbounded_shr(31) + n.div_euclid(16) + n.saturating_div(1024)`
+-- `+ n.swap_bytes()`.
+example : fn7_max_steps { args := [u8Val 9, u8Val 2, u32Val 5] } = 83886123 := rfl
 example : fn7_max_steps { args := [u8Val 3, u8Val 250, u32Val 4294967295] } =
-    5104468989 := rfl
+    9399436284 := rfl
 
 end Spec.Check
