@@ -1870,6 +1870,102 @@ fn integer_methods_are_checked_strictly() {
 }
 
 #[test]
+fn division_multiple_and_rotation_methods_lower_exactly() {
+    let x = "(specInt (specArg q 0))";
+    let y = "(specInt (specArg q 1))";
+    let emod = "Trusted.MirSemantics.intEmod";
+    let lean = |clause: &str, sig: &str| {
+        lower_one(&wrap(clause, sig)).unwrap_or_else(|e| panic!("{clause}: {e:?}")).spec_lean
+    };
+    let has = |text: &str, want: &str| assert!(text.contains(want), "missing {want} in\n{text}");
+    // `div_ceil` rounds the quotient up, evaluating each operand once.
+    let div_ceil = "(fun («n» «d» : Int) => Trusted.MirSemantics.intTdiv («n» + «d» - 1) «d»)";
+    has(
+        &lean(
+            "requires(d != 0u32), ensures(|r| r == a.div_ceil(d))",
+            "fn f(a: u32, d: u32) -> u32",
+        ),
+        &format!("((specInt out.ret) = ({div_ceil} {x} {y}))"),
+    );
+    has(
+        &lean("ensures(|r| d != 0 ==> r == a.div_ceil(d))", "fn f(a: u32, d: u32) -> u32"),
+        &format!("({div_ceil} {x} {y})"),
+    );
+    has(
+        &lean("ensures(|r| math(r) == math(a.div_ceil(4) + 1))", "fn f(a: u8) -> u8"),
+        &format!("((specInt out.ret) = (({div_ceil} {x} (4 : Int)) + (1 : Int)))"),
+    );
+    // `is_multiple_of` needs no guard: `intTmod a 0` is `a`.
+    has(
+        &lean("requires(a.is_multiple_of(b))", "fn f(a: usize, b: usize)"),
+        &format!("(Trusted.MirSemantics.intTmod {x} {y} = 0)"),
+    );
+    // Rotations act on the `Nat` bits, and a signed result is sign-extended.
+    let rotl = |bits: u32, m: &str| {
+        format!("(fun («x» «k» : Nat) => («x» <<< «k» ||| «x» >>> ({bits} - «k»)) % {m})")
+    };
+    let rotr = |bits: u32, m: &str| {
+        format!("(fun («x» «k» : Nat) => («x» >>> «k» ||| «x» <<< ({bits} - «k»)) % {m})")
+    };
+    let u8_rotl = lean("ensures(|r| r == a.rotate_left(n))", "fn f(a: u8, n: u32) -> u8");
+    has(
+        &u8_rotl,
+        &format!(
+            "((specInt out.ret) = (Int.ofNat ({} (Int.toNat ({emod} {x} 256)) (Int.toNat ({emod} \
+             {y} 8)))))",
+            rotl(8, "256")
+        ),
+    );
+    let i16_rotr = lean("ensures(|r| r == a.rotate_right(3))", "fn f(a: i16) -> i16");
+    has(
+        &i16_rotr,
+        &format!(
+            "({emod} ((Int.ofNat ({} (Int.toNat ({emod} {x} 65536)) (Int.toNat ({emod} (3 : Int) \
+             16)))) + 32768) 65536 - 32768)",
+            rotr(16, "65536")
+        ),
+    );
+    has(
+        &lean("ensures(|r| r == a.rotate_left(1))", "fn f(a: u128) -> u128"),
+        &rotl(128, "340282366920938463463374607431768211456"),
+    );
+}
+
+#[test]
+fn division_multiple_and_rotation_methods_are_checked_strictly() {
+    let sig = "fn f(a: u8, b: u16, i: i8, n: u32)";
+    for (clause, code) in [
+        ("requires(a.div_ceil(a) == a)", "E_ANNEAL_UNGUARDED_SPEC_DIV"),
+        ("requires(a.div_ceil(0) == a)", "E_ANNEAL_UNGUARDED_SPEC_DIV"),
+        ("requires(i.div_ceil(2i8) == i)", "E_ANNEAL_SPEC_TYPE_MISMATCH"),
+        ("requires(a.div_ceil(b) == a)", "E_ANNEAL_SPEC_TYPE_MISMATCH"),
+        ("requires(a.div_ceil() == a)", "E_ANNEAL_SPEC_ARITY"),
+        ("requires(i.is_multiple_of(2i8))", "E_ANNEAL_SPEC_TYPE_MISMATCH"),
+        ("requires(a.is_multiple_of(b))", "E_ANNEAL_SPEC_TYPE_MISMATCH"),
+        ("requires(a.is_multiple_of(1, 2))", "E_ANNEAL_SPEC_ARITY"),
+        ("requires(a.rotate_left(a) == a)", "E_ANNEAL_SPEC_TYPE_MISMATCH"),
+        ("requires(a.rotate_left(-1) == a)", "E_ANNEAL_SPEC_LITERAL_RANGE"),
+        ("requires(a.rotate_right() == a)", "E_ANNEAL_SPEC_ARITY"),
+        ("requires(5.rotate_left(n) == a)", "E_ANNEAL_SPEC_TYPE_ANNOTATION_NEEDED"),
+        ("max_steps = a.is_multiple_of(2)", "E_ANNEAL_SPEC_TYPE_MISMATCH"),
+        ("max_steps = i.rotate_left(1)", "E_ANNEAL_SPEC_TYPE_MISMATCH"),
+    ] {
+        expect_error(&wrap(clause, sig), code);
+    }
+    let r =
+        expect_error(&wrap("requires(i.div_ceil(2i8) == i)", sig), "E_ANNEAL_SPEC_TYPE_MISMATCH");
+    assert!(r.contains("only on unsigned integer types"), "{r}");
+    // Rust's `is_multiple_of(0)` holds of `0`, so no guard is needed.
+    lower_one(&wrap("requires(a.is_multiple_of(0) && n.rotate_left(33) == n)", sig)).unwrap();
+    // `fun` binders are typed `Nat`, so a helper parameter cannot be named
+    // `Nat`.
+    expect_error(
+        "anneal::external_spec! { #[anneal::pure] fn h(Nat: u8) -> u8 { Nat } }",
+        "E_ANNEAL_RESERVED_PARAM_NAME",
+    );
+}
+
+#[test]
 fn saturating_negation_and_abs_diff_intrinsics_lower_exactly() {
     let x = "(specInt (specArg q 0))";
     let y = "(specInt (specArg q 1))";

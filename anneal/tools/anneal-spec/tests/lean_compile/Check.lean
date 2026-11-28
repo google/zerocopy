@@ -243,6 +243,28 @@ example : ¬ pure_pow2 96 := by unfold pure_pow2; decide
 example : pure_pow2 2147483648 := by unfold pure_pow2; decide
 example : ¬ pure_pow2 4294967295 := by unfold pure_pow2; decide
 
+-- `div_ceil`, `is_multiple_of`, and rotations.
+example : pure_dceil 7 2 = 4 := by unfold pure_dceil; decide
+example : pure_dceil 8 2 = 4 := by unfold pure_dceil; decide
+example : pure_dceil 0 3 = 0 := by unfold pure_dceil; decide
+example : pure_dceil 255 1 = 255 := by unfold pure_dceil; decide
+example : pure_dceil 255 255 = 1 := by unfold pure_dceil; decide
+example : pure_dceil 1 0 = 0 := by unfold pure_dceil; decide
+example : pure_multiple 6 3 := by unfold pure_multiple; decide
+example : ¬ pure_multiple 7 3 := by unfold pure_multiple; decide
+example : pure_multiple 0 0 := by unfold pure_multiple; decide
+example : ¬ pure_multiple 5 0 := by unfold pure_multiple; decide
+example : pure_rotl 129 1 = 3 := by unfold pure_rotl; decide
+example : pure_rotl 129 9 = 3 := by unfold pure_rotl; decide
+example : pure_rotl 129 0 = 129 := by unfold pure_rotl; decide
+example : pure_rotl 1 7 = 128 := by unfold pure_rotl; decide
+example : pure_rotr_i 1 1 = -128 := by unfold pure_rotr_i; decide
+example : pure_rotr_i (-128) 7 = 1 := by unfold pure_rotr_i; decide
+example : pure_rotr_i (-1) 3 = -1 := by unfold pure_rotr_i; decide
+example : pure_rotr_i 2 1 = 1 := by unfold pure_rotr_i; decide
+example : pure_rotl64 1 = 9223372036854775808 := by unfold pure_rotl64; decide
+example : pure_rotl64 2 = 1 := by unfold pure_rotl64; decide
+
 -- The masked shifts take the amount modulo the width.
 example : pure_wshl_is 1 17 2 := by unfold pure_wshl_is; decide
 example : pure_wshl_is 0x8001 1 2 := by unfold pure_wshl_is; decide
@@ -251,9 +273,9 @@ example : ¬ pure_wshr_is (-32768) 31 1 := by unfold pure_wshr_is; decide
 
 -- `usat` (sorted eighth as `fn7`) binds `let k: u32 = 31;` in `max_steps =`
 -- `abs_diff(a, b) + saturating_add(n, 1u32) + (n & 15u32) + (n >> 30) + (n >> k)`
--- `+ n as u8 as u32 + a.max(b) as u32`.
-example : fn7_max_steps { args := [u8Val 9, u8Val 2, u32Val 5] } = 32 := rfl
+-- `+ n as u8 as u32 + a.max(b) as u32 + n.div_ceil(8)`.
+example : fn7_max_steps { args := [u8Val 9, u8Val 2, u32Val 5] } = 33 := rfl
 example : fn7_max_steps { args := [u8Val 3, u8Val 250, u32Val 4294967295] } =
-    4294968066 := rfl
+    4831838978 := rfl
 
 end Spec.Check

@@ -101,7 +101,7 @@ writes `Spec.lean` (namespace `Spec`) and `spec_span_map.json`.
 | `target = "path"` | Overrides the derived item path, in both attachment forms. Required on inherent `impl` methods. Only characters of a Rust item path are accepted. |
 | `claim = "C"` | Puts the item in verification claim `C`, which `--claim C` selects. `C` is 1 to 64 ASCII letters, digits, and `_`, starting with a letter, and not an Anneal module root, a reserved Lean name, or a name such as `panic` that specifications may not use. Without it, an item is alone in the claim derived from its path: `::` becomes `__`, `<T as Tr>` becomes `impl_Tr_for_T` (`impl_Tr_for_unit` for `()`), any other character becomes `_`, and a `c_` prefix is added if the result does not start with a letter. A derived claim may not coincide with another item's claim (`<usize as PointerMetadata>::from_elem_count` is in `impl_PointerMetadata_for_usize__from_elem_count`). |
 | `instantiate = [["u8"], ...]` | Generic instantiations to verify. Parsed and validated, but rejected by profile v1, which has no generics. |
-| `#[anneal::pure]` | A non-recursive, side-effect-free helper usable in clauses. Its name must be an ASCII identifier other than `math`, `old`, `abs_diff`, `wrapping_*`, `no_overflow_*`, or `saturating_*`, and its parameters may not be named `Int`, `True`, `False`, `Trusted`, `Min`, `Max`, `Spec`, `Specs`, or `_root_`. |
+| `#[anneal::pure]` | A non-recursive, side-effect-free helper usable in clauses. Its name must be an ASCII identifier other than `math`, `old`, `abs_diff`, `wrapping_*`, `no_overflow_*`, or `saturating_*`, and its parameters may not be named `Int`, `Nat`, `True`, `False`, `Trusted`, `Min`, `Max`, `Spec`, `Specs`, or `_root_`. |
 | `#[anneal::vacuous_ok(reason = "...")]` | Waives the check that the precondition admits some input. |
 
 Expressions: `true`/`false`, integer literals (with optional suffix), the
@@ -176,6 +176,18 @@ their integer results are mathematical, and in `max_steps` an unsigned result is
 a step count. Field accesses and other methods are rejected, as is a method call
 directly after a cast, which Rust also rejects.
 
+Four more methods follow Rust's definitions. `a.div_ceil(b)` takes unsigned
+operands, as in Rust, and a divisor guarded as for `/`, and lowers to
+`intTdiv (a + b - 1) b`. `a.is_multiple_of(b)` takes unsigned operands and
+lowers to the decidable `intTmod a b = 0`, which needs no guard: as in Rust,
+`a.is_multiple_of(0)` holds exactly when `a` is `0`, and `intTmod a 0` is `a`.
+`a.rotate_left(n)` and `a.rotate_right(n)` take a `u32` `n` modulo the bit
+width, rotate the `Nat` bits of `a` (its remainder modulo `2^bits`) with
+`<<<`, `>>>`, and `|||`, and sign-extend a signed result. An operation that
+needs an operand twice lowers to a Lean `fun` applied to the operands, as in
+`((fun («n» «d» : Int) => ..) a b)`, so each operand is evaluated once and no
+specification name is in the scope of the binders.
+
 Division and remainder lower to
 `Trusted.MirSemantics.intTdiv`/`intTmod` (Rust's truncating semantics, as in
 `Int.tdiv`/`Int.tmod`) and require the divisor to be a nonzero literal or
@@ -207,8 +219,8 @@ bare expression. A `let` binds one identifier, optionally annotated as `bool`,
 which Lean would warn about. It also rejects a binding that shadows a
 parameter, the `ensures` binder, an enclosing binding, or a helper, and one
 named like an intrinsic or a name the generated Lean uses (the names reserved
-for helper parameters, plus `Nat`, `q`, `out`, and the `spec*` functions). As
-with an `if`, no binary operator may follow a block directly.
+for helper parameters, plus `q`, `out`, and the `spec*` functions). As with an
+`if`, no binary operator may follow a block directly.
 
 A binding has the type of its value: `let s = math(a) + math(b);` is a
 mathematical integer, and `let x = a;` keeps `a`'s machine type. An untyped
@@ -311,8 +323,8 @@ UTF-8 source and columns count Unicode scalar values.
 contains no Rust line numbers, so reformatting the Rust source leaves it
 byte-identical. `cargo-anneal` compiles it with `autoImplicit` disabled.
 It imports only `Trusted.MirSemantics` on top of `prelude`, and every global
-name it references is qualified from `Int`, `True`, `False`, `Trusted`, `Min`,
-`Max`, or its own namespace (`Spec.pure_h` or `Specs.S.C.pure_h`,
+name it references is qualified from `Int`, `Nat`, `True`, `False`, `Trusted`,
+`Min`, `Max`, or its own namespace (`Spec.pure_h` or `Specs.S.C.pure_h`,
 `Trusted.MirSemantics.intTdiv`). Helper parameters become Lean binders, so
 those names (and `Specs`) are reserved for them.
 `spec_span_map.json` maps each generated declaration's Lean line range to the

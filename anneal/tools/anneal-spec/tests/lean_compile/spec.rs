@@ -317,6 +317,33 @@ anneal::external_spec! {
         a.is_power_of_two()
     }
 
+    // `div_ceil` rounds up, `is_multiple_of(0)` holds of `0`, and rotations
+    // wrap the bits around, sign-extending a signed result.
+    #[anneal::pure]
+    fn dceil(a: u8, b: u8) -> u8 {
+        if b == 0 { 0 } else { a.div_ceil(b) }
+    }
+
+    #[anneal::pure]
+    fn multiple(a: u16, b: u16) -> bool {
+        a.is_multiple_of(b)
+    }
+
+    #[anneal::pure]
+    fn rotl(a: u8, n: u32) -> u8 {
+        a.rotate_left(n)
+    }
+
+    #[anneal::pure]
+    fn rotr_i(a: i8, n: u32) -> i8 {
+        a.rotate_right(n)
+    }
+
+    #[anneal::pure]
+    fn rotl64(a: u64) -> u64 {
+        a.rotate_left(63)
+    }
+
     #[anneal::pure]
     fn wshl_is(a: u16, n: u32, r: u16) -> bool {
         wrapping_shl(a, n) == r
@@ -334,6 +361,7 @@ anneal::external_spec! {
             abs_diff(a, b) + saturating_add(n, 1u32) + (n & 15u32) + (n >> 30) + (n >> k)
                 + n as u8 as u32
                 + a.max(b) as u32
+                + n.div_ceil(8)
         },
         ensures(|r| r == saturating_sub(n, 1u32)),
     )]

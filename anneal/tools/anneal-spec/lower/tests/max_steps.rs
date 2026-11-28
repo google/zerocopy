@@ -230,6 +230,28 @@ fn max_steps_counts_unsigned_integer_method_results() {
 }
 
 #[test]
+fn max_steps_counts_guarded_div_ceil_and_rotations() {
+    let l = lower_one(&wrap(
+        "requires(d > 0usize), max_steps = n.div_ceil(d) + n.rotate_right(1)",
+        "fn f(n: usize, d: usize)",
+    ))
+    .unwrap();
+    assert!(
+        l.spec_lean.contains(
+            "(Int.toNat ((fun («n» «d» : Int) => Trusted.MirSemantics.intTdiv («n» + «d» - 1) \
+             «d») (specInt (specArg q 0)) (specInt (specArg q 1))))"
+        ),
+        "{}",
+        l.spec_lean
+    );
+    assert!(l.spec_lean.contains("(Int.toNat (Int.ofNat ((fun («x» «k» : Nat)"), "{}", l.spec_lean);
+    expect_error(
+        &wrap("max_steps = n.div_ceil(d)", "fn f(n: usize, d: usize)"),
+        "E_ANNEAL_UNGUARDED_SPEC_DIV",
+    );
+}
+
+#[test]
 fn max_steps_span_map_records_exact_clause_span() {
     let text = "anneal::external_spec! { #[anneal::spec(total, max_steps = 34 * n + 540)] fn f(n: usize); }";
     let l = lower_one(text).unwrap();
