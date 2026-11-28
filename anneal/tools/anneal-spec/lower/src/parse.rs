@@ -25,8 +25,8 @@ use syn::{
 
 use crate::{
     ast::{
-        BinOp, Clause, Effect, Expr, ExprKind, IntTy, Param, PureFn, SpannedClause, SpecFn, Ty,
-        UnOp,
+        BinOp, Clause, Effect, Expr, ExprKind, IntConst, IntTy, Param, PureFn, SpannedClause,
+        SpecFn, Ty, UnOp,
     },
     diag::Diagnostic,
 };
@@ -154,6 +154,10 @@ fn binding_power(op: BinOp) -> (u8, u8) {
 }
 
 const PREFIX_BP: u8 = 23;
+
+const INT_CONST_HELP: &str =
+    "the only paths a specification may name are the integer constants `T::MIN`, `T::MAX`, \
+     and `T::BITS`, where `T` is a fixed-width integer type such as `usize`";
 
 struct ExprParser {
     toks: Vec<Tok>,
@@ -303,11 +307,15 @@ impl ExprParser {
             _ => {}
         }
         if self.peek().is_some_and(|t| t.is_op("::")) {
+            if let Some(t) = int_ty(&name) {
+                return self.parse_int_const(t, span);
+            }
             return Err(Diagnostic::new(
                 "E_ANNEAL_SPEC_UNSUPPORTED_EXPR",
                 span,
                 "paths are not supported in profile v1 specifications",
-            ));
+            )
+            .help(INT_CONST_HELP));
         }
         match self.peek().cloned() {
             Some(Tok::Group(Delimiter::Parenthesis, inner, gspan)) => {
@@ -337,6 +345,60 @@ impl ExprParser {
                 Ok(Expr { kind: ExprKind::Math(Box::new(e)), span: join(span, gspan) })
             }
             _ => Ok(Expr { kind: ExprKind::Ident(name), span }),
+        }
+    }
+
+    /// Parses the rest of `T::MIN`, `T::MAX`, or `T::BITS` after the integer
+    /// type name `T`. Any other path, a longer path, or a call is rejected,
+    /// so a specification names only constants whose values the lowering
+    /// knows.
+    fn parse_int_const(&mut self, t: IntTy, span: Span) -> Result<Expr, Diagnostic> {
+        let colons = self.next().expect("caller peeked `::`");
+        let (name, end) = match self.next() {
+            Some(Tok::Ident(name, end)) => (name, end),
+            Some(other) => {
+                return Err(Diagnostic::new(
+                    "E_ANNEAL_SPEC_UNSUPPORTED_EXPR",
+                    join(span, other.span()),
+                    "paths are not supported in profile v1 specifications",
+                )
+                .help(INT_CONST_HELP));
+            }
+            None => {
+                return Err(Diagnostic::new(
+                    "E_ANNEAL_SPEC_SYNTAX",
+                    join(span, colons.span()),
+                    "expected a constant name after `::`",
+                )
+                .help(INT_CONST_HELP));
+            }
+        };
+        let full = join(span, end);
+        let Some(c) = IntConst::from_rust_name(&name) else {
+            return Err(Diagnostic::new(
+                "E_ANNEAL_SPEC_UNSUPPORTED_EXPR",
+                full,
+                format!(
+                    "`{}::{name}` is not supported in profile v1 specifications",
+                    t.rust_name()
+                ),
+            )
+            .help(INT_CONST_HELP));
+        };
+        match self.peek() {
+            Some(tok) if tok.is_op("::") => Err(Diagnostic::new(
+                "E_ANNEAL_SPEC_UNSUPPORTED_EXPR",
+                join(full, tok.span()),
+                "paths are not supported in profile v1 specifications",
+            )
+            .help(INT_CONST_HELP)),
+            Some(Tok::Group(Delimiter::Parenthesis, _, gspan)) => Err(Diagnostic::new(
+                "E_ANNEAL_SPEC_UNSUPPORTED_EXPR",
+                join(full, *gspan),
+                format!("`{}::{name}` is a constant, not a function", t.rust_name()),
+            )
+            .help(INT_CONST_HELP)),
+            _ => Ok(Expr { kind: ExprKind::IntConst(t, c), span: full }),
         }
     }
 }
@@ -403,16 +465,21 @@ pub fn parse_expr(stream: TokenStream, span: Span) -> Result<Expr, Diagnostic> {
 }
 
 pub fn int_ty(name: &str) -> Option<IntTy> {
-    let (signed, rest) = match name.as_bytes().first()? {
-        b'u' => (false, &name[1..]),
-        b'i' => (true, &name[1..]),
-        _ => return None,
-    };
-    if rest == "size" {
-        return Some(IntTy { bits: 64, signed, pointer_sized: true });
+    match name {
+        "u8" => Some(IntTy { bits: 8, signed: false, pointer_sized: false }),
+        "u16" => Some(IntTy { bits: 16, signed: false, pointer_sized: false }),
+        "u32" => Some(IntTy { bits: 32, signed: false, pointer_sized: false }),
+        "u64" => Some(IntTy { bits: 64, signed: false, pointer_sized: false }),
+        "u128" => Some(IntTy { bits: 128, signed: false, pointer_sized: false }),
+        "usize" => Some(IntTy { bits: 64, signed: false, pointer_sized: true }),
+        "i8" => Some(IntTy { bits: 8, signed: true, pointer_sized: false }),
+        "i16" => Some(IntTy { bits: 16, signed: true, pointer_sized: false }),
+        "i32" => Some(IntTy { bits: 32, signed: true, pointer_sized: false }),
+        "i64" => Some(IntTy { bits: 64, signed: true, pointer_sized: false }),
+        "i128" => Some(IntTy { bits: 128, signed: true, pointer_sized: false }),
+        "isize" => Some(IntTy { bits: 64, signed: true, pointer_sized: true }),
+        _ => None,
     }
-    let bits: u32 = rest.parse().ok()?;
-    matches!(bits, 8 | 16 | 32 | 64 | 128).then_some(IntTy { bits, signed, pointer_sized: false })
 }
 
 /// Parses the arguments of one `anneal::spec(...)` attribute.

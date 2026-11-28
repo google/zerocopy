@@ -138,11 +138,44 @@ pub enum UnOp {
     Neg,
 }
 
+/// An integer associated constant that a specification may name.
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub enum IntConst {
+    /// `T::MIN`, of type `T`.
+    Min,
+    /// `T::MAX`, of type `T`.
+    Max,
+    /// `T::BITS`, of type `u32`.
+    Bits,
+}
+
+impl IntConst {
+    pub fn rust_name(self) -> &'static str {
+        match self {
+            IntConst::Min => "MIN",
+            IntConst::Max => "MAX",
+            IntConst::Bits => "BITS",
+        }
+    }
+
+    pub fn from_rust_name(name: &str) -> Option<Self> {
+        match name {
+            "MIN" => Some(IntConst::Min),
+            "MAX" => Some(IntConst::Max),
+            "BITS" => Some(IntConst::Bits),
+            _ => None,
+        }
+    }
+}
+
 #[derive(Clone, Debug)]
 pub enum ExprKind {
     Bool(bool),
     /// An integer literal and its optional type suffix (`5u8`).
     Int(u128, Option<IntTy>),
+    /// An integer associated constant such as `usize::MAX`, whose value is
+    /// fixed by the profile v1 target (64-bit `usize` and `isize`).
+    IntConst(IntTy, IntConst),
     Unit,
     Ident(String),
     Unary(UnOp, Box<Expr>),

@@ -558,6 +558,116 @@ fn generated_doc_comments_wrap_without_splitting_code_spans() {
 }
 
 #[test]
+fn integer_constants_lower_to_target_values() {
+    let l = lower_one(&wrap(
+        "requires(math(a) + math(b) <= math(usize::MAX) && c != isize::MIN && d > i8::MIN), \
+         ensures(|r| r == u32::BITS && usize::BITS == 64u32 && u128::MAX != u128::MIN)",
+        "fn f(a: usize, b: usize, c: isize, d: i8) -> u32",
+    ))
+    .unwrap();
+    for want in [
+        "(18446744073709551615 : Int)",
+        "(Int.neg 9223372036854775808)",
+        "(Int.neg 128)",
+        "(32 : Int)",
+        "(64 : Int)",
+        "(340282366920938463463374607431768211455 : Int)",
+        "(0 : Int)",
+    ] {
+        assert!(l.spec_lean.contains(want), "missing {want}:\n{}", l.spec_lean);
+    }
+    // `T::MIN` and `T::MAX` have type `T`, and `T::BITS` has type `u32`.
+    let r = expect_error(
+        &wrap("ensures(|r| r == usize::BITS)", "fn f() -> usize"),
+        "E_ANNEAL_SPEC_TYPE_MISMATCH",
+    );
+    assert!(r.contains("u32"), "{r}");
+    expect_error(&wrap("requires(a <= u8::MAX)", "fn f(a: u16)"), "E_ANNEAL_SPEC_TYPE_MISMATCH");
+    // Machine-integer arithmetic on a constant must still say what it means.
+    expect_error(
+        &wrap("requires(a <= usize::MAX - 1)", "fn f(a: usize)"),
+        "E_ANNEAL_AMBIGUOUS_SPEC_ARITH",
+    );
+    expect_error(&wrap("requires(-i8::MIN > 0i8)", "fn f()"), "E_ANNEAL_AMBIGUOUS_SPEC_ARITH");
+    lower_one(&wrap("requires(math(-i8::MIN) == 128)", "fn f()")).unwrap();
+}
+
+#[test]
+fn integer_constants_in_step_bounds_and_divisors() {
+    let l = lower_one(&wrap(
+        "max_steps = u8::MAX + u32::BITS * n + n / u16::MAX + u64::MIN",
+        "fn f(n: usize)",
+    ))
+    .unwrap();
+    for want in ["(255 : Nat)", "(32 : Nat)", "(65535 : Nat)", "(0 : Nat)"] {
+        assert!(l.spec_lean.contains(want), "missing {want}:\n{}", l.spec_lean);
+    }
+    let r = expect_error(&wrap("max_steps = i32::MAX", "fn f()"), "E_ANNEAL_SPEC_TYPE_MISMATCH");
+    assert!(r.contains("signed `i32::MAX`"), "{r}");
+    // A nonzero constant guards a divisor like a nonzero literal; `u8::MIN`,
+    // which is zero, does not, but comparing a divisor against a zero constant
+    // (`d != u8::MIN`, `d > usize::MIN`, `u8::MIN < d`) proves `d != 0` just
+    // like comparing against `0` (while `i8::MIN` is -128, not zero).
+    lower_one(&wrap("ensures(|r| math(r) == math(a / u8::MAX))", "fn f(a: u8) -> u8")).unwrap();
+    lower_one(&wrap(
+        "requires(d != u8::MIN), ensures(|r| math(r) == math(a / d))",
+        "fn f(a: u8, d: u8) -> u8",
+    ))
+    .unwrap();
+    lower_one(&wrap(
+        "requires(d > usize::MIN), ensures(|r| math(r) == math(a / d))",
+        "fn f(a: usize, d: usize) -> usize",
+    ))
+    .unwrap();
+    lower_one(&wrap(
+        "requires(u8::MIN < d), ensures(|r| math(r) == math(a / d))",
+        "fn f(a: u8, d: u8) -> u8",
+    ))
+    .unwrap();
+    expect_error(
+        &wrap(
+            "requires(d != i8::MIN), ensures(|r| math(r) == math(a / d))",
+            "fn f(a: i8, d: i8) -> i8",
+        ),
+        "E_ANNEAL_UNGUARDED_SPEC_DIV",
+    );
+    expect_error(
+        &wrap(
+            "requires(d > i8::MIN), ensures(|r| math(r) == math(a / d))",
+            "fn f(a: i8, d: i8) -> i8",
+        ),
+        "E_ANNEAL_UNGUARDED_SPEC_DIV",
+    );
+    expect_error(
+        &wrap("ensures(|r| math(r) == math(a / u8::MIN))", "fn f(a: u8) -> u8"),
+        "E_ANNEAL_UNGUARDED_SPEC_DIV",
+    );
+    expect_error(&wrap("max_steps = n / u32::MIN", "fn f(n: u32)"), "E_ANNEAL_UNGUARDED_SPEC_DIV");
+}
+
+#[test]
+fn only_integer_constants_may_be_named() {
+    for (clause, code) in [
+        ("requires(a <= usize::max_value)", "E_ANNEAL_SPEC_UNSUPPORTED_EXPR"),
+        ("requires(a <= usize::MAX::X)", "E_ANNEAL_SPEC_UNSUPPORTED_EXPR"),
+        ("requires(a <= usize::MAX())", "E_ANNEAL_SPEC_UNSUPPORTED_EXPR"),
+        ("requires(a <= core::usize::MAX)", "E_ANNEAL_SPEC_UNSUPPORTED_EXPR"),
+        ("requires(a <= Self::MAX)", "E_ANNEAL_SPEC_UNSUPPORTED_EXPR"),
+        ("requires(a <= f32::MAX)", "E_ANNEAL_SPEC_UNSUPPORTED_EXPR"),
+        ("requires(a <= u08::MAX)", "E_ANNEAL_SPEC_UNSUPPORTED_EXPR"),
+        ("requires(a <= i032::MIN)", "E_ANNEAL_SPEC_UNSUPPORTED_EXPR"),
+        ("requires(a <= u008::BITS)", "E_ANNEAL_SPEC_UNSUPPORTED_EXPR"),
+        ("requires(a <= usize::)", "E_ANNEAL_SPEC_SYNTAX"),
+    ] {
+        let r = expect_error(&wrap(clause, "fn f(a: usize)"), code);
+        if code == "E_ANNEAL_SPEC_UNSUPPORTED_EXPR" {
+            assert!(r.contains("`T::MIN`, `T::MAX`"), "{clause}: {r}");
+        }
+    }
+    expect_error(&wrap("requires(a == 0)", "fn f(a: u08)"), "E_ANNEAL_UNSUPPORTED_TYPE");
+}
+
+#[test]
 fn wide_integer_intrinsics_use_exact_moduli() {
     let w = lower_one(&wrap("ensures(|r| r == wrapping_add(a, 1u128))", "fn f(a: u128) -> u128"))
         .unwrap();

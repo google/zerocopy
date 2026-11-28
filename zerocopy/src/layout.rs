@@ -1868,7 +1868,7 @@ impl DstLayout {
 #[cfg_attr(anneal, anneal::spec(
     claim = "zc05_layout_add_scaled_metadata",
     total,
-    requires(math(base) + math(metadata) * math(multiple) <= 18446744073709551615),
+    requires(math(base) + math(metadata) * math(multiple) <= math(usize::MAX)),
     ensures(|ret| math(ret) == math(base) + math(metadata) * math(multiple)),
 ))]
 unsafe fn add_scaled_metadata(base: usize, metadata: usize, multiple: usize) -> usize {

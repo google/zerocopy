@@ -41,7 +41,13 @@ unsafe fn div(n: u32, d: u32) -> u32 {
     n / d
 }
 
-#[anneal::spec(terminates, no_panic, max_steps = 34 * len + 540, ensures(|r| r == len))]
+#[anneal::spec(
+    requires(len < usize::MAX),
+    terminates,
+    no_panic,
+    max_steps = 34 * len + 540,
+    ensures(|r| r == len),
+)]
 fn bounded_id(len: usize) -> usize {
     len
 }

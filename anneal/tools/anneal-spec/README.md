@@ -104,8 +104,9 @@ writes `Spec.lean` (namespace `Spec`) and `spec_span_map.json`.
 | `#[anneal::pure]` | A non-recursive, side-effect-free helper usable in clauses. Its name must be an ASCII identifier other than `math`, `old`, `wrapping_*`, or `no_overflow_*`, and its parameters may not be named `Int`, `True`, `False`, `Trusted`, `Spec`, `Specs`, or `_root_`. |
 | `#[anneal::vacuous_ok(reason = "...")]` | Waives the check that the precondition admits some input. |
 
-Expressions: `true`/`false`, integer literals (with optional suffix),
-parameters, the `ensures` binder, `!`, unary `-`, `&&`, `||`, `==>`
+Expressions: `true`/`false`, integer literals (with optional suffix), the
+integer constants `T::MIN`, `T::MAX`, and `T::BITS` for a fixed-width integer
+type `T`, parameters, the `ensures` binder, `!`, unary `-`, `&&`, `||`, `==>`
 (right-associative), `<==>`, comparisons, `+ - * / %`, helper calls,
 `math(e)`/`math { e }`, `wrapping_{add,sub,mul}`, and
 `no_overflow_{add,sub,mul}`. Types: `bool`, `()`, and fixed-width integers.
@@ -121,6 +122,15 @@ be a nonzero literal or guarded by `d != 0` (or `d > 0`) earlier in a `&&` or
 count outside `safety_requires`, since it is not part of the behavioral
 precondition of a body that is not `unsafe`. Integer literals above
 `u128::MAX` are not supported.
+
+An integer constant lowers to its value on the profile v1 target, where
+`usize` and `isize` are 64 bits wide: `usize::MAX` lowers to
+`(18446744073709551615 : Int)`. As in Rust, `T::MIN` and `T::MAX` have type
+`T` and `T::BITS` has type `u32`, so arithmetic on them needs `math` like any
+other machine integer, as in `math(a) + math(b) <= math(usize::MAX)`. A
+nonzero constant guards a divisor as a nonzero literal does. No other path is
+accepted: not other constants, not methods such as `usize::max_value()`, and
+not longer paths such as `core::usize::MAX`.
 
 The following parse but are rejected by the profile v1 lowering:
 `old`, `cases`, `modifies`, `ensures_err`, `ensures_unwind`, `after_expiry`,
