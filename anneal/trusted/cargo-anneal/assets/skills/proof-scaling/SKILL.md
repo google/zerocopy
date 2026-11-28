@@ -23,12 +23,16 @@ Before decomposing a proof, verify the toolchain actually captures the target:
    If `unsupported` or `compiler_failed` appears, stop and report the exact
    unsupported Rust construct rather than refactoring blindly.
 2. Respect host memory budgets: prefer interactive Lean 4 LSP queries (your
-   editor or host `lake serve` LSP client) over repeated cold `lake env lean`
-   runs, and do not launch parallel unbounded `lean` builds. In a
-   `google/zerocopy` checkout, wrap CLI `lean` / `lake` / `cargo` invocations
-   in `anneal/ci/anneal-lean-run`; outside a
-   `google/zerocopy` checkout, pass `--lean-memory-mb <MB>` to `cargo anneal`
-   or wrap CLI `lake` / `lean` builds in an OS cgroup memory cap. On delegated
+   editor, host `lake serve`, or, in a `google/zerocopy` checkout,
+   `anneal/ci/anneal-lsp` described in `anneal/docs/anneal-lsp.md` for
+   zero-`lakefile` `request.json` units and in-memory `try` tactic checks
+   with no `.lean` edits; once clean, verify the final receipt with
+   `cargo anneal verify`) over repeated cold `lake env lean` runs, and do not
+   launch parallel unbounded `lean` builds. In a `google/zerocopy` checkout,
+   wrap CLI `lean` / `lake` / `cargo` invocations in
+   `anneal/ci/anneal-lean-run`; outside a `google/zerocopy` checkout, pass
+   `--lean-memory-mb <MB>` to `cargo anneal` or wrap CLI `lake` / `lean` builds
+   in an OS cgroup memory cap. On delegated
    `systemd --user` Linux hosts, `ci/anneal-lean-run` reconciles
    `anneal-workloads.slice` in the user manager's `UnitPath` (`MemoryMax`,
    `MemoryHigh` at 94%, `MemorySwapMax=0`, `ManagedOOMMemoryPressure=kill` at
