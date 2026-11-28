@@ -159,21 +159,44 @@ theorem behavior_of_execDone {p : Program} {fuel : Nat} {q : Query}
 /-- `u32` type descriptor (`IntWidth.i32`, unsigned). -/
 noncomputable def u32Ty : MirTy := .int .i32 false
 
+/-- `i32` type descriptor (`IntWidth.i32`, signed). -/
+noncomputable def i32Ty : MirTy := .int .i32 true
+
 /-- `u8` type descriptor (`IntWidth.i8`, unsigned). -/
 noncomputable def u8Ty : MirTy := .int .i8 false
 
 /-- `i8` type descriptor (`IntWidth.i8`, signed). -/
 noncomputable def i8Ty : MirTy := .int .i8 true
 
+/-- `u128` type descriptor (`IntWidth.i128`, unsigned). -/
+noncomputable def u128Ty : MirTy := .int .i128 false
+
+/-- `i128` type descriptor (`IntWidth.i128`, signed). -/
+noncomputable def i128Ty : MirTy := .int .i128 true
+
 /-- Construct a scalar `Val` of width `w` and signedness `s` from `bits`. -/
 noncomputable def scalarNatVal (w : IntWidth) (s : Bool) (bits : Nat) : Val :=
   .scalar ⟨w, s, BitVec.ofNat 128 bits⟩
 
+/-- Construct a `u8` scalar `Val`. -/
+noncomputable def u8Val (n : Nat) : Val := scalarNatVal .i8 false n
+
 /-- Construct a `u32` scalar `Val`. -/
 noncomputable def u32Val (n : Nat) : Val := scalarNatVal .i32 false n
 
+/-- Construct an `i32` scalar `Val` from its raw 32-bit two's-complement bits.
+-/
+noncomputable def i32Val (bits : Nat) : Val := scalarNatVal .i32 true bits
+
 /-- Construct an `i8` scalar `Val` from its raw 8-bit two's-complement bits. -/
 noncomputable def i8Val (bits : Nat) : Val := scalarNatVal .i8 true bits
+
+/-- Construct a `u128` scalar `Val`. -/
+noncomputable def u128Val (n : Nat) : Val := scalarNatVal .i128 false n
+
+/-- Construct an `i128` scalar `Val` from its raw 128-bit two's-complement
+bits. -/
+noncomputable def i128Val (bits : Nat) : Val := scalarNatVal .i128 true bits
 
 /-- Empty 0-argument query. -/
 noncomputable def queryEmpty : Query := { args := [] }

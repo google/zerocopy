@@ -275,37 +275,48 @@ To catch silent guard erosion automatically in CI, Anneal's defense-in-depth
 methodology introduces **`anneal/ci/check_guard_mutation.py`** (alongside
 dedicated negative refutation fixtures outside `anneal/trusted/`):
 
-1. **Explicit guard catalog:** Enumerates individual UB guards across
-   `Trusted/MirSemantics/` (`Ops.lean`, `Enum.lean`, `Bytes.lean`,
-   `Memory.lean`, `Step.lean`, `State.lean`, and `Boundary.lean`, `104` guards)
-   alongside auditor header-import (`audit_headers`, `8` guards across
-   `TrustedBoundary.lean` and `SpecPreflight.lean`) and boundary
-   (`audit_boundary`, `12` `"spec-preflight"` and `"target-audit"` guards in
-   `TrustedBoundary.lean`; `124` total guards). Each catalog entry pins a
-   unique source anchor and its exact guard-weakening mutation.
+1. **Explicit guard catalog:** Enumerates individual UB and admission guards
+   across all eleven guard-bearing `Trusted/MirSemantics/` modules
+   (`CoreContracts.lean`, `AllocContracts.lean`, `Ops.lean`, `Enum.lean`,
+   `Layout.lean`, `Memory.lean`, `Bytes.lean`, `State.lean`, `Step.lean`,
+   `Boundary.lean`, and `Contract.lean`, `342` guards; the twelfth file,
+   `CanaryFixtures.lean`, is explicitly excluded as fixture/helper data
+   verified directly by Pass 1 `Trusted.MirSemantics` canaries and Pass 2
+   `Trusted.Correspondence`) alongside auditor header-import (`audit_headers`,
+   `8` guards across `TrustedBoundary.lean` and `SpecPreflight.lean`) and
+   boundary (`audit_boundary`, `12` `"spec-preflight"` and `"target-audit"`
+   guards) checks in `TrustedBoundary.lean` (`362` Lean guards in total), plus
+   `extract_guards` (`45` `rustc-capture` guards; `407` total cataloged
+   guards). Each catalog entry pins a unique source anchor and its exact
+   guard-weakening mutation.
 2. **Isolated single-guard mutation:** Copies the relevant files into an
    isolated temporary directory (never modifying the working tree), applies one
    guard-removal mutation at a time, and recompiles only the minimal downstream
-   `.olean` closure on top of precompiled base artifacts.
+   `.olean` closure or isolated `rustc-capture` artifact on top of precompiled
+   base artifacts.
 3. **Anti-crash-masquerading gate:** Before checking negative fixtures, the
-   runner confirms that the mutated semantics and a positive sanity suite still
-   compile cleanly. A syntax error, type error, or unexpected runtime crash
-   therefore cannot masquerade as a mutant kill.
+   runner confirms that the mutated target and a positive sanity suite still
+   compile and pass cleanly. A syntax error, type error, or unexpected runtime
+   crash therefore cannot masquerade as a mutant kill.
 4. **100% kill-rate requirement:** Each semantics mutant must cause a localized
    proof failure in its dedicated negative refutation theorem (proving that the
    mutated semantics stopped rejecting the corresponding UB pattern); each
-   auditor mutant must cleanly flip a negative auditor fixture from reject to
-   accept.
+   auditor or `rustc-capture` mutant must cleanly flip a negative witness from
+   reject to accept, break its targeted negative unit test, or trigger a labeled
+   diagnostic-precedence check.
 
 ### Scope and limits of guard-mutation CI
 
-- **What it guarantees:** Every guard listed in the catalog is live,
-  non-redundant, and actively exercised by a negative refutation or negative
-  auditor test.
+- **What it guarantees:** Every executed guard in the catalog is live and
+  actively exercised by a negative refutation, negative auditor or capture
+  witness, negative unit test, or labeled diagnostic-precedence pin (`362` Lean
+  guards enforced in GitHub Actions PR CI today; `45` `extract_guards` verified
+  under pinned `rustc-dev` and pending `workspace-tests` workflow wiring).
 - **What it does not guarantee:** It cannot detect bugs in unmodeled Rust
   semantics, missing guards that were never written, newly added guards not yet
-  registered in the catalog, or Rust-side `anneal-rustc-capture` checks (which
-  are tested separately by dedicated capture regression suites).
+  registered in the catalog, Rust-side `anneal-rustc-capture` checks outside the
+  `45` cataloged `extract_guards`, or regressions in `extract_guards` on
+  `--lean-only` CI jobs until `workspace-tests` workflow execution lands.
 
 ## 3. Non-adversarial `audit-spec` sanity checks
 

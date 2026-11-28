@@ -11,13 +11,12 @@ import Init.NotationExtra
 import GuardRefuteWf
 
 /-!
-# Negative Refutations for `Trusted.MirSemantics.Step` UB Guards
+# Negative Refutations for `Trusted.MirSemantics.Step` Guards
 
-Covers every `.undefined` branch and move-deinitialization guard in
-`Trusted/MirSemantics/Step.lean`: dead-local copy/move/discriminant/write/
-forceAllocation, use-after-move on immediate and indirect locals, uninitialized
-primitive/use/cast/discriminant/return reads, `TerminatorKind.unreachable`,
-and `TerminatorKind.assert` guards.
+Covers every `.undefined` branch, move-deinitialization guard, projection
+guard, static type-check guard, storage-lifecycle guard, switch-case guard,
+`TerminatorKind.assert` guard, cleanup-return guard, and fail-closed unmodeled
+statement/terminator guard in `Trusted/MirSemantics/Step.lean`.
 -/
 
 namespace GuardMutation
@@ -2493,5 +2492,514 @@ theorem refute_step_v2_core_panic_abort_dead_dst_unsupported :
       frame MemoryState.empty { allocations := [] } .abort false =
       .fault .unsupported :=
   rfl
+
+/-- Program copying from a projected place `_1.0`. -/
+noncomputable def progCopyProjected : Program :=
+  mkSingleBlockProg 1 [u32Ty, u32Ty]
+    [.assign ⟨0, []⟩ (.use (.copy ⟨1, [.field 0 u32Ty]⟩))]
+
+/-- Guard `step_copy_imm_reject_projection`: `Operand.copy` on an immediate
+local with a non-empty projection faults with `.unsupported`. -/
+theorem refute_step_copy_imm_reject_projection :
+    ReachesResult progCopyProjected { args := [u32Val 7] }
+      (.fault .unsupported) ∧
+    ¬ WellFormed progCopyProjected { args := [u32Val 7] } :=
+  refutes_wf_of_execFault (fuel := 1) rfl
+
+/-- Guard `step_copy_indirect_reject_projection`: `Operand.copy` on an
+`.indirect` local with a non-empty projection faults with `.unsupported`. -/
+theorem refute_step_copy_indirect_reject_projection :
+    (match initState progCopyProjected { args := [u32Val 7] } with
+     | .ok s₀ =>
+       match forceAllocation progCopyProjected s₀ 1 with
+       | .ok (s₁, _) =>
+         evalStep progCopyProjected 0 s₁ = .fault .unsupported
+       | .error _ => False
+     | .error _ => False) :=
+  rfl
+
+/-- Program copying `_1 : bool` into `_0 : u32` (type mismatch), used to test
+that `evalOperandToSlot`'s static `tyOk` check precedes indirect byte decoding.
+-/
+noncomputable def progCopyBoolToU32 : Program :=
+  mkSingleBlockProg 1 [u32Ty, .bool]
+    [.assign ⟨0, []⟩ (.use (.copy ⟨1, []⟩))]
+
+/-- Guard `step_copy_indirect_tyok_before_load`: copying an `.indirect` `bool`
+local whose memory holds invalid byte `2` into a `u32` destination faults
+`.unsupported` (static type check) rather than `.undefined` (byte decode). -/
+theorem refute_step_copy_indirect_tyok_before_load :
+    (match initState progCopyBoolToU32 { args := [.bool false] } with
+     | .ok s₀ =>
+       match forceAllocation progCopyBoolToU32 s₀ 1 with
+       | .ok (s₁, mplace) =>
+         match writeBytes s₁.mem mplace 0 [.init 2 none] with
+         | .ok memBad =>
+           evalStep progCopyBoolToU32 0 { s₁ with mem := memBad } =
+             .fault .unsupported
+         | .error _ => False
+       | .error _ => False
+     | .error _ => False) :=
+  rfl
+
+/-- Program moving from a projected place `_1.0`. -/
+noncomputable def progMoveProjected : Program :=
+  mkSingleBlockProg 1 [u32Ty, u32Ty]
+    [.assign ⟨0, []⟩ (.use (.move ⟨1, [.field 0 u32Ty]⟩))]
+
+/-- Guard `step_move_imm_reject_projection`: `Operand.move` on an immediate
+local with a non-empty projection faults with `.unsupported`. -/
+theorem refute_step_move_imm_reject_projection :
+    ReachesResult progMoveProjected { args := [u32Val 7] }
+      (.fault .unsupported) ∧
+    ¬ WellFormed progMoveProjected { args := [u32Val 7] } :=
+  refutes_wf_of_execFault (fuel := 1) rfl
+
+/-- Guard `step_move_indirect_reject_projection`: `Operand.move` on an
+`.indirect` local with a non-empty projection faults with `.unsupported`. -/
+theorem refute_step_move_indirect_reject_projection :
+    (match initState progMoveProjected { args := [u32Val 7] } with
+     | .ok s₀ =>
+       match forceAllocation progMoveProjected s₀ 1 with
+       | .ok (s₁, _) =>
+         evalStep progMoveProjected 0 s₁ = .fault .unsupported
+       | .error _ => False
+     | .error _ => False) :=
+  rfl
+
+/-- Program moving `_1 : bool` into `_0 : u32` (type mismatch). -/
+noncomputable def progMoveBoolToU32 : Program :=
+  mkSingleBlockProg 1 [u32Ty, .bool]
+    [.assign ⟨0, []⟩ (.use (.move ⟨1, []⟩))]
+
+/-- Guard `step_move_indirect_tyok_before_load`: moving an `.indirect` `bool`
+local whose memory holds invalid byte `2` into a `u32` destination faults
+`.unsupported` (static type check) rather than `.undefined` (byte decode). -/
+theorem refute_step_move_indirect_tyok_before_load :
+    (match initState progMoveBoolToU32 { args := [.bool false] } with
+     | .ok s₀ =>
+       match forceAllocation progMoveBoolToU32 s₀ 1 with
+       | .ok (s₁, mplace) =>
+         match writeBytes s₁.mem mplace 0 [.init 2 none] with
+         | .ok memBad =>
+           evalStep progMoveBoolToU32 0 { s₁ with mem := memBad } =
+             .fault .unsupported
+         | .error _ => False
+       | .error _ => False
+     | .error _ => False) :=
+  rfl
+
+/-- Program executing `switchInt` on a non-primitive-readable `.ordering`
+local with an empty branch table (jumping to `bb1` return if not rejected). -/
+noncomputable def progSwitchOrderingEmpty : Program where
+  scope := .unit
+  pointerWidthBits := 64
+  mirProfileVersion := 1
+  bodies := [{
+    argumentCount := 1
+    locals := [.unit, .ordering]
+    basicBlocks := [
+      { statements := []
+        terminator := .switchInt (.copy ⟨1, []⟩) ⟨[], 1⟩ },
+      { statements := []
+        terminator := .return_ }
+    ]
+  }]
+
+/-- Guard `step_prim_operand_requires_primitive_ty`: `evalPrimitiveOperand`
+rejects non-primitive-readable `.ordering` in `switchInt` with `.unsupported`.
+-/
+theorem refute_step_prim_operand_requires_primitive_ty :
+    ReachesResult progSwitchOrderingEmpty { args := [.ordering .equal] }
+      (.fault .unsupported) ∧
+    ¬ WellFormed progSwitchOrderingEmpty { args := [.ordering .equal] } :=
+  refutes_wf_of_execFault (fuel := 1) rfl
+
+/-- Program copying an uninitialized `u8` local `_1` into `_0 : u32`. -/
+noncomputable def progUseUninitTypeMismatch : Program :=
+  mkSingleBlockProg 0 [u32Ty, u8Ty]
+    [.storageLive 1, .assign ⟨0, []⟩ (.use (.copy ⟨1, []⟩))]
+
+/-- Guard `step_use_type_mismatch`: `evalRvalue .use` rejects mismatched
+source/destination types (`u8` into `u32`) with `.unsupported` before
+uninitialized `.undefined`. -/
+theorem refute_step_use_type_mismatch :
+    ReachesResult progUseUninitTypeMismatch queryEmpty (.fault .unsupported) ∧
+    ¬ WellFormed progUseUninitTypeMismatch queryEmpty :=
+  refutes_wf_of_execFault (fuel := 2) rfl
+
+/-- Program casting an uninitialized `.ordering` local `_1` to `u8` via
+`CastKind.intToInt`. -/
+noncomputable def progCastNonIntLikeSrc : Program :=
+  mkSingleBlockProg 0 [u8Ty, .ordering]
+    [.storageLive 1, .assign ⟨0, []⟩ (.cast .intToInt (.copy ⟨1, []⟩) u8Ty)]
+
+/-- Guard `step_cast_requires_intlike_src`: `evalRvalue (.cast .intToInt)`
+rejects non-integer-like `.ordering` source with `.unsupported` before
+uninitialized `.undefined`. -/
+theorem refute_step_cast_requires_intlike_src :
+    ReachesResult progCastNonIntLikeSrc queryEmpty (.fault .unsupported) ∧
+    ¬ WellFormed progCastNonIntLikeSrc queryEmpty :=
+  refutes_wf_of_execFault (fuel := 2) rfl
+
+/-- Program reading `Rvalue.discriminant` on a projected enum place `_1.0`. -/
+noncomputable def progDiscrProjected : Program :=
+  mkSingleBlockProg 1 [u8Ty, .enum reprU8EnumTy]
+    [.assign ⟨0, []⟩ (.discriminant ⟨1, [.field 0 u8Ty]⟩)]
+
+/-- Guard `step_discriminant_imm_reject_projection`: `evalRvalue .discriminant`
+rejects a projected immediate place with `.unsupported`. -/
+theorem refute_step_discriminant_imm_reject_projection :
+    ReachesResult progDiscrProjected { args := [.enumVal reprU8EnumTy 0] }
+      (.fault .unsupported) ∧
+    ¬ WellFormed progDiscrProjected { args := [.enumVal reprU8EnumTy 0] } :=
+  refutes_wf_of_execFault (fuel := 1) rfl
+
+/-- Guard `step_discriminant_indirect_reject_projection`:
+`evalRvalue .discriminant` rejects a projected `.indirect` place with
+`.unsupported`. -/
+theorem refute_step_discriminant_indirect_reject_projection :
+    (match initState progDiscrProjected { args := [.enumVal reprU8EnumTy 0] } with
+     | .ok s₀ =>
+       match forceAllocation progDiscrProjected s₀ 1 with
+       | .ok (s₁, _) =>
+         evalStep progDiscrProjected 0 s₁ = .fault .unsupported
+       | .error _ => False
+     | .error _ => False) :=
+  rfl
+
+/-- Program assigning the `.bool` result of `BinOp.eq` into a `u8` destination
+`_0`. -/
+noncomputable def progWritePlaceTypeMismatch : Program :=
+  mkSingleBlockProg 2 [u8Ty, u32Ty, u32Ty]
+    [.assign ⟨0, []⟩ (.binaryOp .eq (.copy ⟨1, []⟩) (.copy ⟨2, []⟩))]
+
+/-- Guard `step_write_place_check_val`: `writePlace` rejects writing a `.bool`
+value into a `u8` destination with `.unsupported`. -/
+theorem refute_step_write_place_check_val :
+    ReachesResult progWritePlaceTypeMismatch { args := [u32Val 1, u32Val 1] }
+      (.fault .unsupported) ∧
+    ¬ WellFormed progWritePlaceTypeMismatch { args := [u32Val 1, u32Val 1] } :=
+  refutes_wf_of_execFault (fuel := 1) rfl
+
+/-- Program executing `StorageDead 1` on a `u32` parameter `_1`. -/
+noncomputable def progStorageDeadArg : Program :=
+  mkSingleBlockProg 1 [.unit, u32Ty] [.storageDead 1] .return_
+
+/-- Guard `step_deallocate_local_indirect`: `deallocateLocal` deallocates the
+stack allocation of an `.indirect` local on `StorageDead`, so reading its old
+`MemPlace` faults with `.undefined`. -/
+theorem refute_step_deallocate_local_indirect :
+    (match initState progStorageDeadArg { args := [u32Val 7] } with
+     | .ok s₀ =>
+       match forceAllocation progStorageDeadArg s₀ 1 with
+       | .ok (s₁, mplace) =>
+         match evalStep progStorageDeadArg 0 s₁ with
+         | .step s₂ =>
+           readBytes s₂.mem mplace 4 2 = .error .undefined
+         | _ => False
+       | .error _ => False
+     | .error _ => False) :=
+  rfl
+
+/-- Program re-executing `StorageLive 1` on an already-initialized `u32`
+parameter `_1` and then reading `_1`. -/
+noncomputable def progStorageLiveReinit : Program :=
+  mkSingleBlockProg 1 [u32Ty, u32Ty]
+    [.storageLive 1, .assign ⟨0, []⟩ (.use (.copy ⟨1, []⟩))]
+
+/-- Guard `step_storage_live_reinits_local`: `StorageLive` resets an
+already-live non-ZST local to uninitialized so reading it faults `.undefined`.
+-/
+theorem refute_step_storage_live_reinits_local :
+    ReachesResult progStorageLiveReinit { args := [u32Val 7] }
+      (.fault .undefined) ∧
+    ¬ WellFormed progStorageLiveReinit { args := [u32Val 7] } :=
+  refutes_wf_of_execFault (fuel := 2) rfl
+
+/-- Program executing `StorageDead 0; StorageLive 0; _0 = 7u8; return` on the
+return place `_0` (accepted if `StorageDead 0` is not refused). -/
+noncomputable def progStorageDeadRet : Program :=
+  mkSingleBlockProg 0 [u8Ty]
+    [.storageDead 0, .storageLive 0,
+     .assign ⟨0, []⟩ (.use (.constant ⟨u8Ty, .scalar (BitVec.ofNat 128 7)⟩))]
+    .return_
+
+/-- Guard `step_storage_dead_return_place`: `StorageDead 0` faults with
+`.unsupported` even when followed by `StorageLive 0` and initialization. -/
+theorem refute_step_storage_dead_return_place :
+    ReachesResult progStorageDeadRet queryEmpty (.fault .unsupported) ∧
+    ¬ WellFormed progStorageDeadRet queryEmpty :=
+  refutes_wf_of_execFault (fuel := 1) rfl
+
+/-- Program writing to a projected destination place `_0.0`. -/
+noncomputable def progAssignDstProjected : Program :=
+  mkSingleBlockProg 1 [u32Ty, u32Ty]
+    [.assign ⟨0, [.field 0 u32Ty]⟩ (.use (.copy ⟨1, []⟩))]
+
+/-- Guard `step_assign_reject_dst_projection`: `evalStatement .assign` rejects
+a non-empty destination projection with `.unsupported`. -/
+theorem refute_step_assign_reject_dst_projection :
+    ReachesResult progAssignDstProjected { args := [u32Val 7] }
+      (.fault .unsupported) ∧
+    ¬ WellFormed progAssignDstProjected { args := [u32Val 7] } :=
+  refutes_wf_of_execFault (fuel := 1) rfl
+
+/-- Program executing `StatementKind.unsupported`. -/
+noncomputable def progUnsupportedStmt : Program :=
+  mkSingleBlockProg 0 [.unit] [.unsupported] .return_
+
+/-- Guard `step_statement_unsupported_faults`: `StatementKind.unsupported`
+faults with `.unsupported`. -/
+theorem refute_step_statement_unsupported_faults :
+    ReachesResult progUnsupportedStmt queryEmpty (.fault .unsupported) ∧
+    ¬ WellFormed progUnsupportedStmt queryEmpty :=
+  refutes_wf_of_execFault (fuel := 1) rfl
+
+/-- Program executing `switchInt` on `u8` with an overflowing case `256`. -/
+noncomputable def progSwitchIntOverflow : Program where
+  scope := .unit
+  pointerWidthBits := 64
+  mirProfileVersion := 1
+  bodies := [{
+    argumentCount := 1
+    locals := [.unit, u8Ty]
+    basicBlocks := [
+      { statements := []
+        terminator := .switchInt (.copy ⟨1, []⟩)
+          ⟨[(BitVec.ofNat 128 256, 1)], 1⟩ },
+      { statements := []
+        terminator := .return_ }
+    ]
+  }]
+
+/-- Guard `step_switch_int_case_overflow`: `evalSwitchBranches` rejects a `u8`
+case value `256` overflowing 8 bits with `.unsupported`. -/
+theorem refute_step_switch_int_case_overflow :
+    ReachesResult progSwitchIntOverflow { args := [u8Val 0] }
+      (.fault .unsupported) ∧
+    ¬ WellFormed progSwitchIntOverflow { args := [u8Val 0] } :=
+  refutes_wf_of_execFault (fuel := 1) rfl
+
+/-- Program executing `switchInt` on `bool` with invalid case `2`. -/
+noncomputable def progSwitchBoolInvalidCase : Program where
+  scope := .unit
+  pointerWidthBits := 64
+  mirProfileVersion := 1
+  bodies := [{
+    argumentCount := 1
+    locals := [.unit, .bool]
+    basicBlocks := [
+      { statements := []
+        terminator := .switchInt (.copy ⟨1, []⟩)
+          ⟨[(BitVec.ofNat 128 2, 1)], 1⟩ },
+      { statements := []
+        terminator := .return_ }
+    ]
+  }]
+
+/-- Guard `step_switch_bool_invalid_case`: `evalBoolSwitchBranches` propagates
+invalid bool case `2` as `.fault .undefined` rather than falling through. -/
+theorem refute_step_switch_bool_invalid_case :
+    ReachesResult progSwitchBoolInvalidCase { args := [.bool false] }
+      (.fault .undefined) ∧
+    ¬ WellFormed progSwitchBoolInvalidCase { args := [.bool false] } :=
+  refutes_wf_of_execFault (fuel := 1) rfl
+
+/-- Program executing `switchInt` on `char` with surrogate case `0xD800`. -/
+noncomputable def progSwitchCharInvalidCase : Program where
+  scope := .unit
+  pointerWidthBits := 64
+  mirProfileVersion := 1
+  bodies := [{
+    argumentCount := 1
+    locals := [.unit, .char]
+    basicBlocks := [
+      { statements := []
+        terminator := .switchInt (.copy ⟨1, []⟩)
+          ⟨[(BitVec.ofNat 128 0xd800, 1)], 1⟩ },
+      { statements := []
+        terminator := .return_ }
+    ]
+  }]
+
+/-- Guard `step_switch_char_invalid_case`: `evalCharSwitchBranches` propagates
+surrogate char case `0xD800` as `.fault .undefined` rather than falling
+through. -/
+theorem refute_step_switch_char_invalid_case :
+    ReachesResult progSwitchCharInvalidCase { args := [.char 'a'] }
+      (.fault .undefined) ∧
+    ¬ WellFormed progSwitchCharInvalidCase { args := [.char 'a'] } :=
+  refutes_wf_of_execFault (fuel := 1) rfl
+
+/-- Program whose `bb0` is a cleanup unwind block (`cleanup := true`) with a
+`TerminatorKind.return_` terminator. -/
+noncomputable def progReturnInCleanupBlock : Program where
+  scope := .unit
+  pointerWidthBits := 64
+  mirProfileVersion := 1
+  bodies := [{
+    argumentCount := 0
+    locals := [.unit]
+    basicBlocks := [{ statements := [], terminator := .return_, cleanup := true }]
+  }]
+
+/-- Guard `step_return_in_cleanup_block`: returning from a `cleanup := true`
+basic block faults with `.unsupported`. -/
+theorem refute_step_return_in_cleanup_block :
+    ReachesResult progReturnInCleanupBlock queryEmpty (.fault .unsupported) ∧
+    ¬ WellFormed progReturnInCleanupBlock queryEmpty :=
+  refutes_wf_of_execFault (fuel := 1) rfl
+
+/-- Program executing `switchInt` on an overflow pair `(u32, bool)` with a
+non-empty branch list. -/
+noncomputable def progSwitchOverflowPairBranches : Program where
+  scope := .unit
+  pointerWidthBits := 64
+  mirProfileVersion := 1
+  bodies := [{
+    argumentCount := 1
+    locals := [.unit, .tuple [u32Ty, .bool]]
+    basicBlocks := [
+      { statements := []
+        terminator := .switchInt (.copy ⟨1, []⟩)
+          ⟨[(BitVec.ofNat 128 0, 1)], 1⟩ },
+      { statements := []
+        terminator := .return_ }
+    ]
+  }]
+
+/-- Guard `step_switch_overflow_pair_nonempty_branches`: `switchInt` on an
+overflow pair with non-empty branches faults with `.unsupported`. -/
+theorem refute_step_switch_overflow_pair_nonempty_branches :
+    ReachesResult progSwitchOverflowPairBranches
+      { args := [.tuple [u32Val 0, .bool false]] } (.fault .unsupported) ∧
+    ¬ WellFormed progSwitchOverflowPairBranches
+      { args := [.tuple [u32Val 0, .bool false]] } :=
+  refutes_wf_of_execFault (fuel := 1) rfl
+
+/-- Guard `step_unsupported_terminators_fault`: `.unwindResume`, `.coreCall`,
+`.call`, and `.unsupported` terminators all fault with `.unsupported`. -/
+theorem refute_step_unsupported_terminators_fault :
+    (ReachesResult (mkSingleBlockProg 0 [.unit] [] .unwindResume) queryEmpty
+      (.fault .unsupported) ∧
+     ¬ WellFormed (mkSingleBlockProg 0 [.unit] [] .unwindResume) queryEmpty) ∧
+    (ReachesResult
+      (mkSingleBlockProg 0 [.unit] []
+        (.coreCall .sliceLen [] ⟨0, []⟩ none .continue_))
+      queryEmpty (.fault .unsupported) ∧
+     ¬ WellFormed
+      (mkSingleBlockProg 0 [.unit] []
+        (.coreCall .sliceLen [] ⟨0, []⟩ none .continue_))
+      queryEmpty) ∧
+    (ReachesResult
+      (mkSingleBlockProg 0 [.unit] [] (.call 0 [] ⟨0, []⟩ none .continue_))
+      queryEmpty (.fault .unsupported) ∧
+     ¬ WellFormed
+      (mkSingleBlockProg 0 [.unit] [] (.call 0 [] ⟨0, []⟩ none .continue_))
+      queryEmpty) ∧
+    (ReachesResult (mkSingleBlockProg 0 [.unit] [] .unsupported) queryEmpty
+      (.fault .unsupported) ∧
+     ¬ WellFormed (mkSingleBlockProg 0 [.unit] [] .unsupported) queryEmpty) :=
+  ⟨refutes_wf_of_execFault (fuel := 1) rfl,
+   refutes_wf_of_execFault (fuel := 1) rfl,
+   refutes_wf_of_execFault (fuel := 1) rfl,
+   refutes_wf_of_execFault (fuel := 1) rfl⟩
+
+/-- Program whose `bb0` jumps to an out-of-bounds basic block index `99`. -/
+noncomputable def progGotoOobBlock : Program :=
+  mkSingleBlockProg 0 [.unit] [] (.goto 99)
+
+/-- Guard `step_oob_block_idx_faults`: `evalStep` faults with `.unsupported`
+when `frame.blockIdx` is out of bounds. -/
+theorem refute_step_oob_block_idx_faults :
+    ReachesResult progGotoOobBlock queryEmpty (.fault .unsupported) ∧
+    ¬ WellFormed progGotoOobBlock queryEmpty :=
+  refutes_wf_of_execFault (fuel := 2) rfl
+
+/-- Program reading an out-of-bounds local `_7` via `Operand.copy`. -/
+noncomputable def progOperandCopyOob : Program :=
+  mkSingleBlockProg 0 [.unit] [.assign ⟨0, []⟩ (.use (.copy ⟨7, []⟩))]
+
+/-- Guard `step_operand_copy_oob_local`: `evalOperandToSlot` `.copy` catch-all
+rejects an out-of-bounds local index with `.unsupported`. -/
+theorem refute_step_operand_copy_oob_local :
+    ReachesResult progOperandCopyOob queryEmpty (.fault .unsupported) ∧
+    ¬ WellFormed progOperandCopyOob queryEmpty :=
+  refutes_wf_of_execFault (fuel := 1) rfl
+
+/-- Program reading an out-of-bounds local `_7` via `Operand.move`. -/
+noncomputable def progOperandMoveOob : Program :=
+  mkSingleBlockProg 0 [.unit] [.assign ⟨0, []⟩ (.use (.move ⟨7, []⟩))]
+
+/-- Guard `step_operand_move_oob_local`: `evalOperandToSlot` `.move` catch-all
+rejects an out-of-bounds local index with `.unsupported`. -/
+theorem refute_step_operand_move_oob_local :
+    ReachesResult progOperandMoveOob queryEmpty (.fault .unsupported) ∧
+    ¬ WellFormed progOperandMoveOob queryEmpty :=
+  refutes_wf_of_execFault (fuel := 1) rfl
+
+/-- Program computing `Rvalue.discriminant` on a non-enum `u32` local `_1`. -/
+noncomputable def progDiscrNonEnumSrc : Program :=
+  mkSingleBlockProg 1 [u8Ty, u32Ty] [.assign ⟨0, []⟩ (.discriminant ⟨1, []⟩)]
+
+/-- Guard `step_discriminant_non_enum_src`: `evalRvalue .discriminant` rejects
+non-enum, non-`Ordering` source locals (`u32`) with `.unsupported`. -/
+theorem refute_step_discriminant_non_enum_src :
+    ReachesResult progDiscrNonEnumSrc { args := [u32Val 5] }
+      (.fault .unsupported) ∧
+    ¬ WellFormed progDiscrNonEnumSrc { args := [u32Val 5] } :=
+  refutes_wf_of_execFault (fuel := 1) rfl
+
+/-- Guard `step_rvalue_catchall_unsupported`: `evalRvalue` catch-all rejects
+unmodeled `.ref`, `.addressOf`, `.cast .unsupported`, and `.unsupported`
+rvalues with `.unsupported`. -/
+theorem refute_step_rvalue_catchall_unsupported :
+    (ReachesResult
+      (mkSingleBlockProg 0 [.unit] [.assign ⟨0, []⟩ (.ref .shared ⟨0, []⟩)])
+      queryEmpty (.fault .unsupported) ∧
+     ¬ WellFormed
+      (mkSingleBlockProg 0 [.unit] [.assign ⟨0, []⟩ (.ref .shared ⟨0, []⟩)])
+      queryEmpty) ∧
+    (ReachesResult
+      (mkSingleBlockProg 0 [.unit] [.assign ⟨0, []⟩ (.addressOf .mut ⟨0, []⟩)])
+      queryEmpty (.fault .unsupported) ∧
+     ¬ WellFormed
+      (mkSingleBlockProg 0 [.unit] [.assign ⟨0, []⟩ (.addressOf .mut ⟨0, []⟩)])
+      queryEmpty) ∧
+    (ReachesResult
+      (mkSingleBlockProg 0 [.unit]
+        [.assign ⟨0, []⟩
+          (.cast .unsupported
+            (.constant ⟨u8Ty, .scalar (BitVec.ofNat 128 1)⟩) .unit)])
+      queryEmpty (.fault .unsupported) ∧
+     ¬ WellFormed
+      (mkSingleBlockProg 0 [.unit]
+        [.assign ⟨0, []⟩
+          (.cast .unsupported
+            (.constant ⟨u8Ty, .scalar (BitVec.ofNat 128 1)⟩) .unit)])
+      queryEmpty) ∧
+    (ReachesResult
+      (mkSingleBlockProg 0 [.unit] [.assign ⟨0, []⟩ .unsupported])
+      queryEmpty (.fault .unsupported) ∧
+     ¬ WellFormed
+      (mkSingleBlockProg 0 [.unit] [.assign ⟨0, []⟩ .unsupported])
+      queryEmpty) :=
+  ⟨refutes_wf_of_execFault (fuel := 1) rfl,
+   refutes_wf_of_execFault (fuel := 1) rfl,
+   refutes_wf_of_execFault (fuel := 1) rfl,
+   refutes_wf_of_execFault (fuel := 1) rfl⟩
+
+/-- Program assigning to an out-of-bounds destination local `_9`. -/
+noncomputable def progAssignOobDst : Program :=
+  mkSingleBlockProg 0 [.unit]
+    [.assign ⟨9, []⟩ (.use (.constant ⟨u8Ty, .scalar (BitVec.ofNat 128 1)⟩))]
+
+/-- Guard `step_assign_oob_dst`: `evalStatement .assign` rejects an
+out-of-bounds `dst.localId` (`none`) with `.unsupported`. -/
+theorem refute_step_assign_oob_dst :
+    ReachesResult progAssignOobDst queryEmpty (.fault .unsupported) ∧
+    ¬ WellFormed progAssignOobDst queryEmpty :=
+  refutes_wf_of_execFault (fuel := 1) rfl
 
 end GuardMutation
