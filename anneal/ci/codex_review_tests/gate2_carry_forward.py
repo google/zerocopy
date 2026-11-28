@@ -9,8 +9,11 @@
 """`codex_review` tests for Gate 2 carry-forward decisions."""
 
 from .support import (
+    _carry_forward_blocked_by_history,
     BASE,
     base_drift_allows_carry_forward,
+    BOT_ID,
+    BOT_LOGIN,
     diff_file_modes,
     FakeGitHub,
     gate2_comment,
@@ -307,20 +310,115 @@ class Gate2CarryForwardTests(unittest.TestCase):
         self.assertEqual(self._result(lambda *a: None, reviews=[findings, anchor]).state,
                          "pending")
 
-    def test_codex_summaries_block(self):
+    def test_codex_summaries_do_not_poison_authentic_gate2_carry_forward(self):
         verify = self._anchor_ik
+        connector_error = {
+            "id": 10,
+            "created_at": "2026-11-08T10:00:00Z",
+            "user": {"id": BOT_ID, "login": BOT_LOGIN, "type": "Bot"},
+            "body": (
+                "<!-- codex-pull-request-review-summary -->\n"
+                "To use Codex here, create a Codex account and connect to github."
+            ),
+        }
+        malformed_state = {
+            "id": 10,
+            "created_at": "2026-11-08T10:00:00Z",
+            "user": {"id": BOT_ID, "login": BOT_LOGIN, "type": "Bot"},
+            "body": (
+                "<!-- codex-pull-request-review-summary -->\n"
+                "<!-- codex-review-state:v1 [] -->\nSomething went wrong."
+            ),
+        }
         for label, summ in (
             ("findings_on_anchor", summary(head=HEAD, has_any_findings=True)),
+            ("findings_on_prior_head", summary(head=OTHER_HEAD, has_any_findings=True)),
             ("in_progress_on_new_head", summary(head=self.NEW_HEAD, status="in_progress")),
             ("findings_on_new_head", summary(head=self.NEW_HEAD, has_any_findings=True)),
+            ("failed_status", summary(head=HEAD, status="failed", has_any_findings=True)),
+            ("connector_error", connector_error),
+            ("malformed_state", malformed_state),
+            ("clean", summary(head=OTHER_HEAD)),
         ):
-            with self.subTest(label):
-                self.assertNotEqual(
-                    self._result(verify, reviews=[gate2_review()], comments=[summ]).state,
-                    "success")
-        clean = summary(head=OTHER_HEAD)
-        self.assertEqual(
-            self._result(verify, reviews=[gate2_review()], comments=[clean]).state, "success")
+            with self.subTest(gate2_present=label):
+                res = self._result(verify, reviews=[gate2_review()], comments=[summ])
+                self.assertEqual(res.state, "success")
+                self.assertIn("carried forward", res.reason)
+                self.assertFalse(
+                    _carry_forward_blocked_by_history(
+                        [summ], [gate2_review()], None, HEAD, TREE,
+                    )
+                )
+
+        # Without authentic, well-formed cross-family Gate 2 history, legacy
+        # Codex findings and connector errors continue blocking fail-closed.
+        bad_codex_cases = (
+            ("findings", summary(head=OTHER_HEAD, has_any_findings=True)),
+            ("in_progress", summary(head=HEAD, status="in_progress")),
+            ("connector_error", connector_error),
+            ("malformed_state", malformed_state),
+        )
+        non_qualifying_gate2 = (
+            ("no_gate2", [], [], 0),
+            ("unauthenticated_gate2", [], [gate2_review(author_association="NONE")], 0),
+            ("malformed_gate2_version", [], [{
+                **gate2_review(),
+                "body": gate2_review()["body"].replace("review:v1", "review:v2"),
+            }], 0),
+            ("malformed_gate2_ik", [], [gate2_review(identity_key="one:bad")], 0),
+            ("same_family_gate2", [], [gate2_review(
+                head_sha=OTHER_HEAD, tree_sha=OTHER_TREE,
+                reviewer_family="claude", author_family="claude",
+            )], 0),
+            ("approved_gate2", [], [gate2_review(
+                head_sha=OTHER_HEAD, tree_sha=OTHER_TREE, state="APPROVED",
+            )], 0),
+            ("dismissed_gate2", [], [gate2_review(
+                head_sha=OTHER_HEAD, tree_sha=OTHER_TREE, state="DISMISSED",
+            )], 0),
+            ("multi_incomplete_same_family_seats", [], [gate2_review(
+                head_sha=OTHER_HEAD, tree_sha=OTHER_TREE,
+                reviewer_family="multi", author_family="claude",
+                verdict="incomplete", findings=[],
+                panel_seats=[{
+                    "seat": "s1", "family": "claude",
+                    "status": "completed", "verdict": "incomplete",
+                }],
+            )], 0),
+            ("multi_incomplete_zero_completed_seats", [], [gate2_review(
+                head_sha=OTHER_HEAD, tree_sha=OTHER_TREE,
+                reviewer_family="multi", author_family="claude",
+                verdict="incomplete", findings=[],
+                panel_seats=[{
+                    "seat": "s1", "family": "gemini",
+                    "status": "failed", "verdict": "incomplete",
+                }],
+            )], 0),
+            ("tombstoned_clean_gate2_comment", [gate2_comment(
+                comment_id=30, head_sha=OTHER_HEAD, tree_sha=OTHER_TREE,
+            )], [], 30),
+        )
+        for c_label, bad_summ in bad_codex_cases:
+            for g_label, g_cmts, g_revs, deleted_through in non_qualifying_gate2:
+                with self.subTest(codex=c_label, gate2=g_label):
+                    self.assertTrue(
+                        _carry_forward_blocked_by_history(
+                            [bad_summ] + g_cmts, g_revs, None, HEAD, TREE,
+                            deleted_through=deleted_through,
+                        )
+                    )
+                    self.assertNotEqual(
+                        self._result(
+                            verify, reviews=g_revs, comments=[bad_summ] + g_cmts,
+                            deleted_through=deleted_through,
+                        ).state,
+                        "success",
+                    )
+        self.assertFalse(
+            _carry_forward_blocked_by_history(
+                [summary(head=OTHER_HEAD)], [], None, HEAD, TREE,
+            )
+        )
 
     def test_reconcile_uses_github_verifier(self):
         new_head, new_tree = "1" * 40, "3" * 40

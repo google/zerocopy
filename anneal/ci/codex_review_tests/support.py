@@ -19,6 +19,7 @@ from unittest.mock import patch
 from urllib.error import HTTPError
 
 from codex_review import (
+    _carry_forward_blocked_by_history,
     BOT_ID, BOT_LOGIN, CONTEXT, PUBLISHER_LOGIN, GitHub, Result, combine_results,
     STATE_ANCHOR, base_drift_allows_carry_forward, diff_file_modes,
     parse_gate2_payload, rebase_only_patch_equivalent, reconcile,
