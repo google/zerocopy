@@ -256,6 +256,30 @@ verification claim boundary without wrapping inner small-step execution rules:
   `TrustedBoundary.lean` auditing must accept only those model-pinned roots so
   neither `Specification` nor `Proof` modules can supply a synthetic
   `ExecutionModel` or `VerificationEnvelope`.
+- **Cross-language stub discharge (`Trusted.Framework.Link`,
+  `candidate:refinement`):** Defines a language-agnostic linking judgment over
+  `Trusted.Framework` alone (no `Trusted.MirSemantics` import). `SimConv`
+  relates a caller stub profile to a verified callee profile through ABI
+  compatibility, a `Frame` witness, and query, return, unwind, and abort
+  relations, any of which may be one-to-many (for example, unspecified padding
+  bytes or run-time addresses). `StubDischargedByVerifiedCallee` requires
+  matching symbol identities, `abiCompat = true`, effect-mask monotonicity
+  (`EffectMask.le`), and demonic transfer: every valid caller query relates to
+  at least one callee query, every related callee query satisfies the callee's
+  safety and behavioral preconditions, and every callee outcome the callee
+  contract permits relates to at least one caller outcome, every one of which
+  satisfies the stub contract. `CrossLangLinkedTheorem` combines two
+  `EnvelopeTheorem`s with a discharge witness and erases only
+  `.assumedExternalCallee stub.identity` from the caller's gap ledger, carrying
+  every callee gap forward and rejecting callees that themselves stub or
+  disclose the same symbol. An unfaithful `SimConv` (for example, one relating
+  each caller query only to a single convenient callee query) would discharge
+  stubs the real callee does not implement, so a future Pass-1 linking root
+  must pin `SimConv` and both execution models inside `Trusted.*`, just as
+  `EnvelopeTheorem` roots pin `ExecutionModel`. The judgment covers one stub
+  edge and defines no multi-edge or cyclic composition. Untrusted soundness
+  lemmas and negative refutations (ABI and effect mismatches, and related
+  values violating either contract) live in `Anneal.Framework.Link`.
 
 ### Staging TCB changes (`vetted` vs. `candidate:<feature>` modules)
 
