@@ -630,6 +630,87 @@ anneal::external_spec! {
         a.count_zeros()
     }
 
+    // Leading and trailing zeros and ones, as a `u32`.
+    #[anneal::pure]
+    fn lz_u8(a: u8) -> u32 {
+        a.leading_zeros()
+    }
+
+    #[anneal::pure]
+    fn lz_i8(a: i8) -> u32 {
+        a.leading_zeros()
+    }
+
+    #[anneal::pure]
+    fn lz_i32(a: i32) -> u32 {
+        a.leading_zeros()
+    }
+
+    #[anneal::pure]
+    fn lz_u128(a: u128) -> u32 {
+        a.leading_zeros()
+    }
+
+    #[anneal::pure]
+    fn tz_u16(a: u16) -> u32 {
+        a.trailing_zeros()
+    }
+
+    #[anneal::pure]
+    fn tz_u8(a: u8) -> u32 {
+        a.trailing_zeros()
+    }
+
+    #[anneal::pure]
+    fn tz_i64(a: i64) -> u32 {
+        a.trailing_zeros()
+    }
+
+    #[anneal::pure]
+    fn tz_u128(a: u128) -> u32 {
+        a.trailing_zeros()
+    }
+
+    #[anneal::pure]
+    fn lo_i8(a: i8) -> u32 {
+        a.leading_ones()
+    }
+
+    #[anneal::pure]
+    fn lo_u32(a: u32) -> u32 {
+        a.leading_ones()
+    }
+
+    #[anneal::pure]
+    fn lo_u8(a: u8) -> u32 {
+        a.leading_ones()
+    }
+
+    #[anneal::pure]
+    fn lo_i64(a: i64) -> u32 {
+        a.leading_ones()
+    }
+
+    #[anneal::pure]
+    fn to_i128(a: i128) -> u32 {
+        a.trailing_ones()
+    }
+
+    #[anneal::pure]
+    fn to_u8(a: u8) -> u32 {
+        a.trailing_ones()
+    }
+
+    #[anneal::pure]
+    fn to_i8(a: i8) -> u32 {
+        a.trailing_ones()
+    }
+
+    #[anneal::pure]
+    fn to_usize(a: usize) -> u32 {
+        a.trailing_ones()
+    }
+
     #[anneal::pure]
     fn wshl_is(a: u16, n: u32, r: u16) -> bool {
         wrapping_shl(a, n) == r
@@ -655,6 +736,7 @@ anneal::external_spec! {
                 + n.saturating_div(1024)
                 + n.swap_bytes()
                 + n.count_ones()
+                + n.leading_zeros()
         },
         ensures(|r| r == saturating_sub(n, 1u32)),
     )]

@@ -414,6 +414,22 @@ fn swar_mask(bits: u32, group: u32) -> String {
     (0..bits / (2 * group)).fold(0u128, |m, i| m | chunk << (2 * group * i)).to_string()
 }
 
+/// The SWAR stages that count the ones of a `bits`-bit `Nat`: they sum the
+/// bits of each 2-, 4-, and 8-bit group, then fold the byte counts into the
+/// low byte, which then holds the count, at most 128, as `% 256` extracts.
+fn popcount_stages(bits: u32) -> Vec<String> {
+    let (m1, m2, m4) = (swar_mask(bits, 1), swar_mask(bits, 2), swar_mask(bits, 4));
+    let mut stages = vec![
+        format!("«x» - ((«x» >>> 1) &&& {m1})"),
+        format!("(«x» &&& {m2}) + ((«x» >>> 2) &&& {m2})"),
+        format!("(«x» + («x» >>> 4)) &&& {m4}"),
+    ];
+    stages.extend(
+        [8, 16, 32, 64].into_iter().filter(|g| *g < bits).map(|g| format!("«x» + («x» >>> {g})")),
+    );
+    stages
+}
+
 /// `x`, a Lean `Nat` term, passed through `stages`, each a function of
 /// `«x»` applied to the previous value, so that each stage evaluates its
 /// input once.
@@ -1907,8 +1923,9 @@ impl<'a> Env<'a> {
     /// width and the other signedness. `unbounded_shl` and `unbounded_shr`
     /// shift by any `u32` amount, and `midpoint` averages toward zero. The
     /// division methods take a divisor guarded as for `/`, `swap_bytes` and
-    /// `reverse_bits` reverse the bytes or bits of `recv`, and `count_ones`
-    /// and `count_zeros` count its bits as a `u32`. An operation that
+    /// `reverse_bits` reverse the bytes or bits of `recv`, and `count_ones`,
+    /// `count_zeros`, and the leading and trailing counts count its bits as
+    /// a `u32`. An operation that
     /// needs an operand more than once applies a Lean `fun` to the operands,
     /// which evaluates each once and keeps every specification name out of
     /// the scope of its binders.
@@ -2191,23 +2208,41 @@ impl<'a> Env<'a> {
                     let value = format!("({INT}.ofNat {})", nat_stages(x, &stages));
                     return Ok(Low::Int(if t.signed { wrap_into(&value, t) } else { value }, ty(t)));
                 }
-                // Count the ones in each 2-bit, 4-bit, and 8-bit group, then
-                // fold the byte counts into the low byte, which holds the
-                // total, at most 128.
-                let (m1, m2, m4) = (swar_mask(bits, 1), swar_mask(bits, 2), swar_mask(bits, 4));
-                let mut stages = vec![
-                    format!("«x» - ((«x» >>> 1) &&& {m1})"),
-                    format!("(«x» &&& {m2}) + ((«x» >>> 2) &&& {m2})"),
-                    format!("(«x» + («x» >>> 4)) &&& {m4}"),
-                ];
-                stages.extend(groups.filter(|g| *g >= 8).map(|g| format!("«x» + («x» >>> {g})")));
-                let ones = format!("({INT}.ofNat ({} % 256))", nat_stages(x, &stages));
+                let ones = format!("({INT}.ofNat ({} % 256))", nat_stages(x, &popcount_stages(bits)));
                 let term = if name == "count_ones" {
                     ones
                 } else {
                     format!("({} - {ones})", int_lit(IntLit::new(false, u128::from(bits))))
                 };
                 Ok(Low::Int(term, ty(U32)))
+            }
+            // The leading or trailing zeros of `a` are the bits outside the
+            // span from its highest, or lowest, set bit, so they are the width
+            // minus the ones of `a` with that bit copied all the way down, or
+            // up. The leading or trailing ones of `a` are the leading or
+            // trailing zeros of its complement.
+            "leading_zeros" | "trailing_zeros" | "leading_ones" | "trailing_ones" => {
+                arity(0)?;
+                let (a, t) = self.int_operand(name, recv, facts)?;
+                let (bits, m) = (t.bits, modulus(t));
+                let x = format!("({INT}.toNat ({INT_EMOD} {a} {m}))");
+                let mut stages = Vec::new();
+                if name.ends_with("_ones") {
+                    let max = IntTy { signed: false, ..t }.range().1;
+                    stages.push(format!("{max} - «x»"));
+                }
+                let leading = name.starts_with("leading_");
+                stages.extend([1, 2, 4, 8, 16, 32, 64].into_iter().filter(|g| *g < bits).map(|g| {
+                    if leading {
+                        format!("«x» ||| («x» >>> {g})")
+                    } else {
+                        format!("(«x» ||| («x» <<< {g})) % {m}")
+                    }
+                }));
+                stages.extend(popcount_stages(bits));
+                let span = format!("({INT}.ofNat ({} % 256))", nat_stages(x, &stages));
+                let width = int_lit(IntLit::new(false, u128::from(bits)));
+                Ok(Low::Int(format!("({width} - {span})"), ty(U32)))
             }
             // Unlike `<<` and `>>`, these shift by any `u32` amount: one
             // that is not below the width shifts every bit out, leaving `0`,
@@ -2295,6 +2330,7 @@ impl<'a> Env<'a> {
                  `is_negative`, `signum`, `unsigned_abs`, `saturating_abs`, `wrapping_abs`, \
                  `cast_signed`, `cast_unsigned`, `unbounded_shl`, `unbounded_shr`, \
                  `midpoint`, `swap_bytes`, `reverse_bits`, `count_ones`, `count_zeros`, \
+                 `leading_zeros`, `trailing_zeros`, `leading_ones`, `trailing_ones`, \
                  `wrapping_div`, `wrapping_rem`, `wrapping_div_euclid`, \
                  `wrapping_rem_euclid`, `div_euclid`, `rem_euclid`, `abs_diff`, the mixed-signedness \
                  `wrapping_add_signed` and its kin, and the `wrapping_*`, `saturating_*`, and \

@@ -356,6 +356,18 @@ fn max_steps_counts_population_counts() {
 }
 
 #[test]
+fn max_steps_counts_leading_and_trailing_zeros() {
+    let l = lower_one(&wrap("max_steps = k.leading_zeros() + k.trailing_zeros()", "fn f(k: u16)"))
+        .unwrap();
+    for want in [
+        "(Int.toNat ((16 : Int) - (Int.ofNat",
+        "(fun («x» : Nat) => («x» ||| («x» <<< 8)) % 65536)",
+    ] {
+        assert!(l.spec_lean.contains(want), "missing {want} in\n{}", l.spec_lean);
+    }
+}
+
+#[test]
 fn max_steps_span_map_records_exact_clause_span() {
     let text = "anneal::external_spec! { #[anneal::spec(total, max_steps = 34 * n + 540)] fn f(n: usize); }";
     let l = lower_one(text).unwrap();

@@ -247,6 +247,14 @@ input once: reversal swaps adjacent groups of 1, 2, 4, ... bits with `>>>`,
 and folds the byte counts into the low byte with `+`, so the count is that
 byte, `% 256`. A signed reversal is sign-extended.
 
+`a.leading_zeros()`, `a.trailing_zeros()`, `a.leading_ones()`, and
+`a.trailing_ones()` also count bits as a `u32` on either signedness. The
+leading or trailing zeros are the bits outside the span from the highest, or
+lowest, set bit, so further SWAR stages copy that bit all the way down with
+`|||` and `>>>`, or up with `|||`, `<<<`, and `% 2^bits`, and the result is
+the width minus the ones of the copy. The ones counts first complement the
+bits, as `(2^bits - 1) - x`.
+
 Division and remainder lower to
 `Trusted.MirSemantics.intTdiv`/`intTmod` (Rust's truncating semantics, as in
 `Int.tdiv`/`Int.tmod`) and require the divisor to be a nonzero literal or
