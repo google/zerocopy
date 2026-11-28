@@ -61,6 +61,7 @@ pub fn copy_cargo_workspace(root: &Path) {
         "tests/differential/Cargo.toml",
         "tools/anneal-spec/Cargo.toml",
         "tools/anneal-spec/Cargo.lock",
+        "tools/anneal-spec/obligations/Cargo.toml",
         "tools/anneal-spec/lower/Cargo.toml",
         "tools/anneal-spec/macros/Cargo.toml",
         "tools/anneal-scaffold/Cargo.toml",

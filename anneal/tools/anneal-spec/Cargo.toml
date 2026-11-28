@@ -7,5 +7,5 @@
 # those terms.
 
 [workspace]
-members = ["lower", "macros"]
+members = ["lower", "macros", "obligations"]
 resolver = "2"
