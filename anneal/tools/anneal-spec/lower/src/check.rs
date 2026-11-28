@@ -71,8 +71,8 @@ impl std::fmt::Display for IntLit {
 }
 
 /// A lowered `bool` expression (which lowers to a Lean `Prop`), paired with
-/// its decidability status for value-choosing `if` and the nonzero facts it
-/// establishes in true/false branches.
+/// its decidability status for value-choosing `if` and the nonzero and
+/// positive facts it establishes in true/false branches.
 #[derive(Clone, Debug)]
 struct Prop {
     term: String,
@@ -84,6 +84,22 @@ struct Prop {
 impl Prop {
     fn pure(term: impl Into<String>) -> Self {
         Self { term: term.into(), undecidable: None, on_true: Vec::new(), on_false: Vec::new() }
+    }
+}
+
+/// The fact that `term` is positive. A list of facts holds lowered integer
+/// terms, each known to be nonzero, and these strings, which no lowered
+/// integer term spells, so neither kind is mistaken for the other.
+fn positive_fact(term: &str) -> String {
+    format!("0 < {term}")
+}
+
+/// Adds to `facts` that `term` is positive, and so nonzero.
+fn push_positive(facts: &mut Vec<String>, term: &str) {
+    for fact in [term.to_string(), positive_fact(term)] {
+        if !facts.contains(&fact) {
+            facts.push(fact);
+        }
     }
 }
 
@@ -1224,17 +1240,19 @@ impl<'a> Env<'a> {
             let mut conds = Vec::new();
             let mut taken = Vec::new();
             let mut not_taken_here = Vec::new();
-            let (mut has_zero, mut all_nonzero) = (false, true);
+            let (mut has_zero, mut all_nonzero, mut all_positive) = (false, true, true);
             let mut binding = None;
             for p in &arm.pats {
                 match &p.kind {
                     PatKind::Wild => {
                         catch_all = true;
                         all_nonzero = false;
+                        all_positive = false;
                     }
                     PatKind::Bind(name) => {
                         catch_all = true;
                         all_nonzero = false;
+                        all_positive = false;
                         binding = Some((name.as_str(), p.span));
                     }
                     PatKind::Bool(b) => {
@@ -1317,6 +1335,7 @@ impl<'a> Env<'a> {
                         let matches_zero = lit_le(lo_v, zero) && lit_le(zero, hi_v);
                         has_zero |= matches_zero;
                         all_nonzero &= !matches_zero;
+                        all_positive &= lit_le(IntLit::new(false, 1), lo_v);
                     }
                 }
             }
@@ -1328,9 +1347,21 @@ impl<'a> Env<'a> {
             if all_nonzero && !conds.is_empty() {
                 arm_facts.extend(nonzero_fact.clone());
             }
+            if let Some(t) = nonzero_fact.as_ref().filter(|_| all_positive && !conds.is_empty()) {
+                push_positive(&mut arm_facts, t);
+            }
             not_taken.extend(not_taken_here);
             if has_zero {
                 not_taken.extend(nonzero_fact.clone());
+            }
+            // Once the patterns so far match every value of the scrutinee's
+            // machine type up to `0`, the later arms see a positive one.
+            if let (Some(t), Some(m)) = (&nonzero_fact, machine) {
+                let min = m.range().0;
+                let min = IntLit::new(min < 0, min.unsigned_abs());
+                if covers(&seen, min, IntLit::new(false, 0)) {
+                    push_positive(&mut not_taken, t);
+                }
             }
             let cond = match conds.len() {
                 0 => None,
@@ -1351,11 +1382,15 @@ impl<'a> Env<'a> {
                         .help("write `_` instead"));
                     }
                     let lean = lean_ident(name);
-                    if nonzero_fact.as_ref().is_some_and(|t| arm_facts.contains(t)) {
-                        arm_facts.push(match kind {
-                            ScrutKind::Nat => format!("({INT}.ofNat {lean})"),
-                            _ => lean.clone(),
-                        });
+                    let as_int = match kind {
+                        ScrutKind::Nat => format!("({INT}.ofNat {lean})"),
+                        _ => lean.clone(),
+                    };
+                    if nonzero_fact.as_ref().is_some_and(|t| arm_facts.contains(&positive_fact(t)))
+                    {
+                        push_positive(&mut arm_facts, &as_int);
+                    } else if nonzero_fact.as_ref().is_some_and(|t| arm_facts.contains(t)) {
+                        arm_facts.push(as_int);
                     }
                     let (local, ty) = match kind {
                         ScrutKind::Prop => {
@@ -1541,20 +1576,27 @@ impl<'a> Env<'a> {
             },
             Some(Ty::Math | Ty::Never) => unreachable!("not a `let` annotation"),
         };
-        // A name bound to a nonzero value may divide the rest of its block.
+        // A name bound to a nonzero value may divide the rest of its block,
+        // and one bound to a positive value may also take its logarithm.
         let mut extra = Vec::new();
         if let LocalKind::Int { value, .. } | LocalKind::Nat { value } = &kind {
             let scratch = Uses::default();
+            let init_term = match self.probe(&scratch).lower(init, true, &mut facts.clone()) {
+                Ok(Low::Int(t, _)) => Some(t),
+                _ => None,
+            };
             let nonzero = value.is_some_and(|v| v.mag != 0)
-                || matches!(
-                    self.probe(&scratch).lower(init, true, &mut facts.clone()),
-                    Ok(Low::Int(t, _)) if facts.contains(&t)
-                );
-            if nonzero {
-                extra.push(match kind {
-                    LocalKind::Nat { .. } => format!("({INT}.ofNat {lean})"),
-                    _ => lean.clone(),
-                });
+                || init_term.as_ref().is_some_and(|t| facts.contains(t));
+            let positive = value.is_some_and(|v| !v.neg && v.mag != 0)
+                || init_term.as_ref().is_some_and(|t| facts.contains(&positive_fact(t)));
+            let name = match kind {
+                LocalKind::Nat { .. } => format!("({INT}.ofNat {lean})"),
+                _ => lean.clone(),
+            };
+            if positive {
+                push_positive(&mut extra, &name);
+            } else if nonzero {
+                extra.push(name);
             }
         }
         // Lean warns about an unused binder, and an unused binding is likely
@@ -1986,6 +2028,32 @@ impl<'a> Env<'a> {
         .help(format!("guard it, e.g. `d != 0 ==> a.{name}(d) == ...`")))
     }
 
+    /// Rejects `recv` (lowered to `term`, of type `t`) as the receiver of
+    /// method `name`, which panics unless it is positive, unless it is a
+    /// positive constant or `facts` says it is positive. An unsigned receiver
+    /// is positive exactly when it is nonzero.
+    fn require_positive_receiver(
+        &self,
+        name: &str,
+        recv: &Expr,
+        term: &str,
+        t: IntTy,
+        facts: &[String],
+    ) -> Result<(), Diagnostic> {
+        let positive_lit = self.const_value(recv).is_some_and(|v| !v.neg && v.mag != 0);
+        let fact = positive_fact(term);
+        if positive_lit || facts.iter().any(|f| *f == fact || (!t.signed && f == term)) {
+            return Ok(());
+        }
+        let guard = if t.signed { "x > 0" } else { "x != 0" };
+        Err(Diagnostic::new(
+            "E_ANNEAL_UNGUARDED_SPEC_LOG",
+            recv.span,
+            format!("the receiver of `{name}` may not be positive"),
+        )
+        .help(format!("guard it, e.g. `{guard} ==> x.{name}() == ...`")))
+    }
+
     /// Lowers `arg`, the `u32` amount of method `name`, which as in Rust may
     /// be an untyped literal.
     fn u32_amount(
@@ -2184,11 +2252,13 @@ impl<'a> Env<'a> {
                 let (a, t) = self.int_operand(name, recv, facts)?;
                 signed(t)?;
                 let zero = int_lit(IntLit::new(false, 0));
-                Ok(Low::Prop(Prop::pure(if name == "is_positive" {
-                    format!("({zero} < {a})")
+                Ok(Low::Prop(if name == "is_positive" {
+                    let mut p = Prop::pure(format!("({zero} < {a})"));
+                    push_positive(&mut p.on_true, &a);
+                    p
                 } else {
-                    format!("({a} < {zero})")
-                })))
+                    Prop::pure(format!("({a} < {zero})"))
+                }))
             }
             "signum" => {
                 arity(0)?;
@@ -2322,10 +2392,15 @@ impl<'a> Env<'a> {
             // span from its highest, or lowest, set bit, so they are the width
             // minus the ones of `a` with that bit copied all the way down, or
             // up. The leading or trailing ones of `a` are the leading or
-            // trailing zeros of its complement.
-            "leading_zeros" | "trailing_zeros" | "leading_ones" | "trailing_ones" => {
+            // trailing zeros of its complement. The base-2 logarithm of
+            // positive `a`, rounded down, is the position of its highest set
+            // bit: one less than the span below that bit.
+            "leading_zeros" | "trailing_zeros" | "leading_ones" | "trailing_ones" | "ilog2" => {
                 arity(0)?;
                 let (a, t) = self.int_operand(name, recv, facts)?;
+                if name == "ilog2" {
+                    self.require_positive_receiver(name, recv, &a, t, facts)?;
+                }
                 let (bits, m) = (t.bits, modulus(t));
                 let x = format!("({INT}.toNat ({INT_EMOD} {a} {m}))");
                 let mut stages = Vec::new();
@@ -2333,7 +2408,7 @@ impl<'a> Env<'a> {
                     let max = IntTy { signed: false, ..t }.range().1;
                     stages.push(format!("{max} - «x»"));
                 }
-                let leading = name.starts_with("leading_");
+                let leading = !name.starts_with("trailing_");
                 stages.extend([1, 2, 4, 8, 16, 32, 64].into_iter().filter(|g| *g < bits).map(|g| {
                     if leading {
                         format!("«x» ||| («x» >>> {g})")
@@ -2343,6 +2418,9 @@ impl<'a> Env<'a> {
                 }));
                 stages.extend(popcount_stages(bits));
                 let span = format!("({INT}.ofNat ({} % 256))", nat_stages(x, &stages));
+                if name == "ilog2" {
+                    return Ok(Low::Int(format!("({span} - {})", int_lit(IntLit::new(false, 1))), ty(U32)));
+                }
                 let width = int_lit(IntLit::new(false, u128::from(bits)));
                 Ok(Low::Int(format!("({width} - {span})"), ty(U32)))
             }
@@ -2432,7 +2510,7 @@ impl<'a> Env<'a> {
                  `is_negative`, `signum`, `unsigned_abs`, `saturating_abs`, `wrapping_abs`, \
                  `cast_signed`, `cast_unsigned`, `unbounded_shl`, `unbounded_shr`, \
                  `midpoint`, `swap_bytes`, `reverse_bits`, `count_ones`, `count_zeros`, \
-                 `leading_zeros`, `trailing_zeros`, `leading_ones`, `trailing_ones`, \
+                 `leading_zeros`, `trailing_zeros`, `leading_ones`, `trailing_ones`, `ilog2`, \
                  `wrapping_div`, `wrapping_rem`, `wrapping_div_euclid`, \
                  `wrapping_rem_euclid`, `div_euclid`, `rem_euclid`, `abs_diff`, the mixed-signedness \
                  `wrapping_add_signed` and its kin, and the `wrapping_*`, `saturating_*`, and \
@@ -2631,6 +2709,32 @@ impl<'a> Env<'a> {
                     BinOp::Le if zero(r) => on_false.push(x.clone()),
                     BinOp::Ge if zero(l) => on_false.push(y.clone()),
                     _ => {}
+                }
+                // A comparison with a constant `c` proves its other side
+                // positive where it proves that side above `c`, for `c >= 0`,
+                // or at least `c`, for `c >= 1`. The constant may be on the
+                // left, where the comparison reads the other way round.
+                let above = |c: IntLit| !c.neg || c.mag == 0;
+                let at_least = |c: IntLit| !c.neg && c.mag != 0;
+                let positive = match (self.const_value(l), self.const_value(r)) {
+                    (_, Some(c)) => match op {
+                        BinOp::Gt if above(c) => Some((true, &x)),
+                        BinOp::Ge | BinOp::Eq if at_least(c) => Some((true, &x)),
+                        BinOp::Le if above(c) => Some((false, &x)),
+                        BinOp::Lt | BinOp::Ne if at_least(c) => Some((false, &x)),
+                        _ => None,
+                    },
+                    (Some(c), None) => match op {
+                        BinOp::Lt if above(c) => Some((true, &y)),
+                        BinOp::Le | BinOp::Eq if at_least(c) => Some((true, &y)),
+                        BinOp::Ge if above(c) => Some((false, &y)),
+                        BinOp::Gt | BinOp::Ne if at_least(c) => Some((false, &y)),
+                        _ => None,
+                    },
+                    (None, None) => None,
+                };
+                if let Some((when, t)) = positive {
+                    push_positive(if when { &mut on_true } else { &mut on_false }, t);
                 }
                 Ok(Low::Prop(Prop {
                     term: format!("({x} {sym} {y})"),
