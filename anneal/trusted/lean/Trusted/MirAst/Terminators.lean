@@ -129,21 +129,25 @@ these constructors only when the callee is the sysroot `core` function below.
 Every other external `Call` remains `.unsupported`.
 
 - `.sliceLen` is `core::slice::<impl [T]>::len` (`execCoreCallOp`).
-- `.sliceGetUncheckedRangeTo` and `.sliceGetUncheckedRangeFrom` are
-  `core::slice::<impl [T]>::get_unchecked` with index type
-  `core::ops::RangeTo<usize>` and `core::ops::RangeFrom<usize>`
-  (`sliceGetUncheckedCheck`). `get_unchecked_mut` is not captured.
+- `.sliceGetUncheckedRangeTo`, `.sliceGetUncheckedRangeFrom`,
+  `.sliceGetUncheckedRange`, and `.sliceGetUncheckedIndex` are
+  `core::slice::<impl [T]>::get_unchecked` with `core::ops::RangeTo<usize>`,
+  `RangeFrom<usize>`, `Range<usize>` (over integer slices), and `usize` index
+  (over sized ref-free elements). `get_unchecked_mut` is not captured.
 - `.ptrAdd mutability pointee` is `core::ptr::const_ptr::<impl *const T>::add`
   (`.shared`) or `core::ptr::mut_ptr::<impl *mut T>::add` (`.mut`) with
   `T = pointee` (`ptrAddInMem`).
 - `.usizeUncheckedSub` is `core::num::<impl usize>::unchecked_sub`.
-- `.intToLeBytes width signed` is
-  `core::num::<impl int>::to_le_bytes`
+- `.intToLeBytes width signed` and `.intFromLeBytes width signed` are
+  `core::num::<impl int>::to_le_bytes` and `from_le_bytes`
   (`library/core/src/num/{uint_macros,int_macros}.rs`, `rust-lang/rust`
   `f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1`):
 
   > "Returns the memory representation of this integer as a byte array in
   > little-endian byte order."
+- `.memSizeOf ty` is `core::mem::size_of::<T>()` for sized Profile v2 types
+  (`library/core/src/mem/mod.rs:373-375`, `rust-lang/rust`
+  `f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1`).
 - `.arrayEq elem len` is structural `<[T; N] as PartialEq>::eq`
   (`library/core/src/array/equality.rs`, `rust-lang/rust`
   `f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1`):
@@ -152,9 +156,11 @@ Every other external `Call` remains `.unsupported`.
   > elements, so when the elements are `BytewiseEq`, we can compare the entire
   > array at once."
 - `.sliceIndexRange`, `.sliceIndexRangeFrom`, `.sliceIsEmpty`, `.sliceSplitAt`,
-  `.numIsMultipleOf`, `.numCheckedAdd`, `.numCheckedMul`, `.numCheckedSub`,
-  `.numSaturatingAdd`, `.numWrappingShl`, `.numWrappingShr`, `.numLeadingZeros`,
-  `.numOverflowingAdd`, `.numOverflowingSub`, `.cmpMin`, `.cmpMax`,
+  `.numIsMultipleOf`, `.numNextMultipleOf`, `.numDivCeil`, `.numCheckedAdd`,
+  `.numCheckedMul`, `.numCheckedSub`, `.numCheckedShl`, `.numSaturatingAdd`,
+  `.numWrappingShl`, `.numWrappingShr`, `.numLeadingZeros`, `.numCountOnes`,
+  `.numTrailingZeros`, `.numNextPowerOfTwo`, `.numOverflowingAdd`,
+  `.numOverflowingSub`, `.numOverflowingMul`, `.cmpMin`, `.cmpMax`,
   `.memReplace`, `.optionIsSome`, `.optionIsNone`, `.optionTake`, and
   `.optionUnwrap` model the corresponding `core` slice, scalar, `cmp`, `mem`,
   and `Option` operations (`Trusted.MirSemantics.CoreContracts`).
@@ -173,23 +179,33 @@ inductive CoreCallOp where
   | sliceLen
   | sliceGetUncheckedRangeTo
   | sliceGetUncheckedRangeFrom
+  | sliceGetUncheckedRange
+  | sliceGetUncheckedIndex
   | sliceIndexRange (mutability : Mutability) (elem : MirTy)
   | sliceIndexRangeFrom (mutability : Mutability) (elem : MirTy)
   | sliceIsEmpty (elem : MirTy)
   | sliceSplitAt (mutability : Mutability) (elem : MirTy)
   | numIsMultipleOf (width : IntWidth) (signed : Bool)
+  | numNextMultipleOf (width : IntWidth) (signed : Bool)
+  | numDivCeil (width : IntWidth) (signed : Bool)
   | numCheckedAdd (width : IntWidth) (signed : Bool)
   | numCheckedMul (width : IntWidth) (signed : Bool)
   | numCheckedSub (width : IntWidth) (signed : Bool)
+  | numCheckedShl (width : IntWidth) (signed : Bool)
   | numSaturatingAdd (width : IntWidth) (signed : Bool)
   | numWrappingShl (width : IntWidth) (signed : Bool)
   | numWrappingShr (width : IntWidth) (signed : Bool)
   | numLeadingZeros (width : IntWidth) (signed : Bool)
+  | numCountOnes (width : IntWidth) (signed : Bool)
+  | numTrailingZeros (width : IntWidth) (signed : Bool)
+  | numNextPowerOfTwo (width : IntWidth) (signed : Bool)
   | numOverflowingAdd (width : IntWidth) (signed : Bool)
   | numOverflowingSub (width : IntWidth) (signed : Bool)
+  | numOverflowingMul (width : IntWidth) (signed : Bool)
   | cmpMin (width : IntWidth) (signed : Bool)
   | cmpMax (width : IntWidth) (signed : Bool)
   | memReplace (ty : MirTy)
+  | memSizeOf (ty : MirTy)
   | optionIsSome (inner : MirTy)
   | optionIsNone (inner : MirTy)
   | optionTake (inner : MirTy)
@@ -197,6 +213,7 @@ inductive CoreCallOp where
   | ptrAdd (mutability : Mutability) (pointee : MirTy)
   | usizeUncheckedSub
   | intToLeBytes (width : IntWidth) (signed : Bool)
+  | intFromLeBytes (width : IntWidth) (signed : Bool)
   | arrayEq (elem : MirTy) (len : Nat)
   | panicAbort
 

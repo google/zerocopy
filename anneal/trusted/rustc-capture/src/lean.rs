@@ -504,6 +504,12 @@ fn core_call_op(op: &CoreCallOp, indent: usize) -> String {
         CoreCallOp::SliceGetUncheckedRangeFrom => {
             "Trusted.MirAst.CoreCallOp.sliceGetUncheckedRangeFrom".into()
         }
+        CoreCallOp::SliceGetUncheckedRange => {
+            "Trusted.MirAst.CoreCallOp.sliceGetUncheckedRange".into()
+        }
+        CoreCallOp::SliceGetUncheckedIndex => {
+            "Trusted.MirAst.CoreCallOp.sliceGetUncheckedIndex".into()
+        }
         CoreCallOp::PtrAdd {
             mutability,
             pointee,
@@ -535,6 +541,16 @@ fn core_call_op(op: &CoreCallOp, indent: usize) -> String {
             ity.width.lean_name(),
             ity.signed
         ),
+        CoreCallOp::NumNextMultipleOf(ity) => format!(
+            "(Trusted.MirAst.CoreCallOp.numNextMultipleOf Trusted.MirAst.IntWidth.{} {})",
+            ity.width.lean_name(),
+            ity.signed
+        ),
+        CoreCallOp::NumDivCeil(ity) => format!(
+            "(Trusted.MirAst.CoreCallOp.numDivCeil Trusted.MirAst.IntWidth.{} {})",
+            ity.width.lean_name(),
+            ity.signed
+        ),
         CoreCallOp::NumCheckedAdd(ity) => format!(
             "(Trusted.MirAst.CoreCallOp.numCheckedAdd Trusted.MirAst.IntWidth.{} {})",
             ity.width.lean_name(),
@@ -547,6 +563,11 @@ fn core_call_op(op: &CoreCallOp, indent: usize) -> String {
         ),
         CoreCallOp::NumCheckedSub(ity) => format!(
             "(Trusted.MirAst.CoreCallOp.numCheckedSub Trusted.MirAst.IntWidth.{} {})",
+            ity.width.lean_name(),
+            ity.signed
+        ),
+        CoreCallOp::NumCheckedShl(ity) => format!(
+            "(Trusted.MirAst.CoreCallOp.numCheckedShl Trusted.MirAst.IntWidth.{} {})",
             ity.width.lean_name(),
             ity.signed
         ),
@@ -570,6 +591,21 @@ fn core_call_op(op: &CoreCallOp, indent: usize) -> String {
             ity.width.lean_name(),
             ity.signed
         ),
+        CoreCallOp::NumCountOnes(ity) => format!(
+            "(Trusted.MirAst.CoreCallOp.numCountOnes Trusted.MirAst.IntWidth.{} {})",
+            ity.width.lean_name(),
+            ity.signed
+        ),
+        CoreCallOp::NumTrailingZeros(ity) => format!(
+            "(Trusted.MirAst.CoreCallOp.numTrailingZeros Trusted.MirAst.IntWidth.{} {})",
+            ity.width.lean_name(),
+            ity.signed
+        ),
+        CoreCallOp::NumNextPowerOfTwo(ity) => format!(
+            "(Trusted.MirAst.CoreCallOp.numNextPowerOfTwo Trusted.MirAst.IntWidth.{} {})",
+            ity.width.lean_name(),
+            ity.signed
+        ),
         CoreCallOp::NumOverflowingAdd(ity) => format!(
             "(Trusted.MirAst.CoreCallOp.numOverflowingAdd Trusted.MirAst.IntWidth.{} {})",
             ity.width.lean_name(),
@@ -577,6 +613,11 @@ fn core_call_op(op: &CoreCallOp, indent: usize) -> String {
         ),
         CoreCallOp::NumOverflowingSub(ity) => format!(
             "(Trusted.MirAst.CoreCallOp.numOverflowingSub Trusted.MirAst.IntWidth.{} {})",
+            ity.width.lean_name(),
+            ity.signed
+        ),
+        CoreCallOp::NumOverflowingMul(ity) => format!(
+            "(Trusted.MirAst.CoreCallOp.numOverflowingMul Trusted.MirAst.IntWidth.{} {})",
             ity.width.lean_name(),
             ity.signed
         ),
@@ -593,6 +634,9 @@ fn core_call_op(op: &CoreCallOp, indent: usize) -> String {
         CoreCallOp::MemReplace { ty } => {
             format!("(Trusted.MirAst.CoreCallOp.memReplace {})", ty_at(ty, indent))
         }
+        CoreCallOp::MemSizeOf { ty } => {
+            format!("(Trusted.MirAst.CoreCallOp.memSizeOf {})", ty_at(ty, indent))
+        }
         CoreCallOp::OptionIsSome { inner } => {
             format!("(Trusted.MirAst.CoreCallOp.optionIsSome {})", ty_at(inner, indent))
         }
@@ -608,6 +652,11 @@ fn core_call_op(op: &CoreCallOp, indent: usize) -> String {
         CoreCallOp::UsizeUncheckedSub => "Trusted.MirAst.CoreCallOp.usizeUncheckedSub".into(),
         CoreCallOp::IntToLeBytes { int_ty } => format!(
             "(Trusted.MirAst.CoreCallOp.intToLeBytes Trusted.MirAst.IntWidth.{} {})",
+            int_ty.width.lean_name(),
+            int_ty.signed
+        ),
+        CoreCallOp::IntFromLeBytes { int_ty } => format!(
+            "(Trusted.MirAst.CoreCallOp.intFromLeBytes Trusted.MirAst.IntWidth.{} {})",
             int_ty.width.lean_name(),
             int_ty.signed
         ),

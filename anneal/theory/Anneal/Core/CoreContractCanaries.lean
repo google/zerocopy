@@ -407,15 +407,19 @@ theorem execCheckedArith_add_iff {w : IntWidth} {s : Bool}
 @[expose] def canaryU64Val (n : Nat) : Val :=
   .scalar ⟨.i64, false, BitVec.ofNat 128 n⟩
 
-@[expose] def mkCanarySliceMem (bytes : List UInt8) : MemoryState :=
+@[expose] def mkCanarySliceMemAligned (alignLog2 : Nat) (bytes : List UInt8) :
+    MemoryState :=
   let alloc : Allocation := {
     allocId := 2
-    alignLog2 := 0
+    alignLog2 := alignLog2
     mutability := .mut
     bytes := bytes.map (fun b => AllocByte.init b none)
     live := true
   }
   { nextAllocId := 3, allocations := [alloc] }
+
+@[expose] def mkCanarySliceMem (bytes : List UInt8) : MemoryState :=
+  mkCanarySliceMemAligned 0 bytes
 
 /-- Canary 1: `<[u8] as Index<Range<usize>>>::index` succeeds on `&s[1..3]`
 with provenance preserved and pointer offset advanced by 1. -/
@@ -891,6 +895,106 @@ theorem canary_range_field_assign_and_indirect_downcast_move_refused :
       (.move movePlace) =
       .error .unsupported :=
   ⟨rfl, rfl, rfl, rfl⟩
+
+/-- Canary 14: core scalar and slice operations (`count_ones`, `trailing_zeros`,
+`next_power_of_two`, `next_multiple_of`, `overflowing_mul`, `mem::size_of`,
+`from_le_bytes`, and `[u16]::get_unchecked` with `Range`/`RangeTo`/`RangeFrom`)
+match pinned `core` semantics, fail closed on `next_power_of_two` overflow and
+`next_multiple_of` divisor zero or overflow, and preserve 128-bit overflow
+detection across `checked_add`, `saturating_add`, and `overflowing_mul`. -/
+theorem canary_core_scalar_ops :
+    let u128Ty := MirTy.int .i128 false
+    let u128Max := ScalarVal.mk .i128 false
+      (BitVec.ofNat 128 340282366920938463463374607431768211455)
+    let u128One := ScalarVal.mk .i128 false (BitVec.ofNat 128 1)
+    let u128Two64 := ScalarVal.mk .i128 false
+      (BitVec.ofNat 128 18446744073709551616)
+    let u16SliceMem := mkCanarySliceMemAligned 1 [10, 0, 20, 0, 30, 0]
+    let u16Ty := MirTy.int .i16 false
+    let u16SliceTy := MirTy.slice u16Ty
+    execCoreCallWithMem MemoryState.empty (.numCountOnes .i8 true)
+      [(.int .i8 true, .scalar ⟨.i8, true, BitVec.ofNat 128 0xff⟩)]
+      canaryU32Ty =
+      .ok (.scalar ⟨.i32, false, BitVec.ofNat 128 8⟩, MemoryState.empty) ∧
+    execCoreCallWithMem MemoryState.empty (.numTrailingZeros .i16 false)
+      [(u16Ty, .scalar ⟨.i16, false, BitVec.ofNat 128 0⟩)]
+      canaryU32Ty =
+      .ok (.scalar ⟨.i32, false, BitVec.ofNat 128 16⟩, MemoryState.empty) ∧
+    execCoreCallWithMem MemoryState.empty (.numNextPowerOfTwo .i8 false)
+      [(canaryU8Ty, canaryU8Val 0)] canaryU8Ty =
+      .ok (canaryU8Val 1, MemoryState.empty) ∧
+    execCoreCallWithMem MemoryState.empty (.numNextPowerOfTwo .i8 false)
+      [(canaryU8Ty, canaryU8Val 128)] canaryU8Ty =
+      .ok (canaryU8Val 128, MemoryState.empty) ∧
+    execCoreCallWithMem MemoryState.empty (.numNextPowerOfTwo .i8 false)
+      [(canaryU8Ty, canaryU8Val 129)] canaryU8Ty = .error corePanicTrap ∧
+    execCoreCallWithMem MemoryState.empty (.numNextMultipleOf .i64 false)
+      [(canaryU64Ty, canaryU64Val 23), (canaryU64Ty, canaryU64Val 8)]
+      canaryU64Ty =
+      .ok (canaryU64Val 24, MemoryState.empty) ∧
+    execCoreCallWithMem MemoryState.empty (.numNextMultipleOf .i8 false)
+      [(canaryU8Ty, canaryU8Val 0), (canaryU8Ty, canaryU8Val 0)] canaryU8Ty =
+      .error corePanicTrap ∧
+    execCoreCallWithMem MemoryState.empty (.numNextMultipleOf .i8 false)
+      [(canaryU8Ty, canaryU8Val 255), (canaryU8Ty, canaryU8Val 2)] canaryU8Ty =
+      .error corePanicTrap ∧
+    execCoreCallWithMem MemoryState.empty (.numOverflowingMul .i128 false)
+      [(u128Ty, .scalar u128Two64), (u128Ty, .scalar u128Two64)]
+      (.tuple [u128Ty, .bool]) =
+      .ok (.tuple [.scalar ⟨.i128, false, 0⟩, .bool true],
+        MemoryState.empty) ∧
+    execCoreCallWithMem MemoryState.empty (.numCheckedAdd .i128 false)
+      [(u128Ty, .scalar u128Max), (u128Ty, .scalar u128One)]
+      (.option u128Ty) =
+      .ok (.optionVal none, MemoryState.empty) ∧
+    execCoreCallWithMem MemoryState.empty (.numSaturatingAdd .i128 false)
+      [(u128Ty, .scalar u128Max), (u128Ty, .scalar u128One)]
+      u128Ty =
+      .ok (.scalar u128Max, MemoryState.empty) ∧
+    execCoreCallWithMem MemoryState.empty
+      (.memSizeOf (.option canaryU64Ty)) [] canaryUsizeTy =
+      .ok (canaryUsizeVal 16, MemoryState.empty) ∧
+    execCoreCallWithMem MemoryState.empty
+      (.memSizeOf (.ref .shared (.slice canaryU8Ty))) [] canaryUsizeTy =
+      .ok (canaryUsizeVal 16, MemoryState.empty) ∧
+    execCoreCallWithMem MemoryState.empty (.intFromLeBytes .i16 false)
+      [(.array canaryU8Ty 2, .array [canaryU8Val 0x34, canaryU8Val 0x12])]
+      u16Ty =
+      .ok (.scalar ⟨.i16, false, BitVec.ofNat 128 0x1234⟩,
+        MemoryState.empty) ∧
+    execCoreCallWithMem u16SliceMem .sliceGetUncheckedRange
+      [(.ref .shared u16SliceTy, .slicePtr ⟨some 2, 0, .isize⟩ 3),
+       (.range canaryUsizeTy, .range 1 3)]
+      (.ref .shared u16SliceTy) =
+      .ok (.slicePtr ⟨some 2, 2, .isize⟩ 2, u16SliceMem) ∧
+    execCoreCallWithMem u16SliceMem .sliceGetUncheckedIndex
+      [(.ref .shared u16SliceTy, .slicePtr ⟨some 2, 0, .isize⟩ 3),
+       (canaryUsizeTy, canaryUsizeVal 2)]
+      (.ref .shared u16Ty) =
+      .ok (.ptr ⟨some 2, 4, .isize⟩, u16SliceMem) ∧
+    execCoreCallWithMem MemoryState.empty (.numDivCeil .i64 false)
+      [(canaryU64Ty, canaryU64Val 13), (canaryU64Ty, canaryU64Val 4)]
+      canaryU64Ty =
+      .ok (canaryU64Val 4, MemoryState.empty) ∧
+    execCoreCallWithMem MemoryState.empty (.numDivCeil .i8 false)
+      [(canaryU8Ty, canaryU8Val 5), (canaryU8Ty, canaryU8Val 0)] canaryU8Ty =
+      .error corePanicTrap ∧
+    execCoreCallWithMem MemoryState.empty (.numCheckedShl .i8 false)
+      [(canaryU8Ty, canaryU8Val 1), (canaryU32Ty, .scalar ⟨.i32, false, 7⟩)]
+      (.option canaryU8Ty) =
+      .ok (.optionVal (some (canaryU8Val 128)), MemoryState.empty) ∧
+    execCoreCallWithMem MemoryState.empty (.numCheckedShl .i8 true)
+      [(.int .i8 true, .scalar ⟨.i8, true, BitVec.ofNat 128 0xff⟩),
+       (canaryU32Ty, .scalar ⟨.i32, false, 1⟩)]
+      (.option (.int .i8 true)) =
+      .ok (.optionVal (some (.scalar ⟨.i8, true, BitVec.ofNat 128 0xfe⟩)),
+        MemoryState.empty) ∧
+    execCoreCallWithMem MemoryState.empty (.numCheckedShl .i8 false)
+      [(canaryU8Ty, canaryU8Val 1), (canaryU32Ty, .scalar ⟨.i32, false, 8⟩)]
+      (.option canaryU8Ty) =
+      .ok (.optionVal none, MemoryState.empty) := by
+  refine ⟨rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl,
+    rfl, rfl, rfl, rfl, rfl, rfl, rfl⟩
 
 end Anneal.Core
 

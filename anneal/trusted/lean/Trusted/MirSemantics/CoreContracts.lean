@@ -35,9 +35,10 @@ open Trusted.MirAst
 Operational semantics for modeled `core` operations (`CoreCallOp` additions)
 aligned with pinned `rustc` (`f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1`):
 - `core::ops::Index` / `IndexMut` for `Range<usize>` and `RangeFrom<usize>`
-- `core::num` scalar methods (`is_multiple_of`, `checked_{add,mul,sub}`,
-  `saturating_add`, `wrapping_{shl,shr}`, `leading_zeros`,
-  `overflowing_{add,sub}`)
+- `core::num` scalar methods (`is_multiple_of`, `next_multiple_of`, `div_ceil`,
+  `checked_{add,mul,sub,shl}`, `saturating_add`, `wrapping_{shl,shr}`,
+  `leading_zeros`, `count_ones`, `trailing_zeros`, `next_power_of_two`,
+  `overflowing_{add,sub,mul}`)
 - `core::cmp::{min, max}`
 - `core::slice::{is_empty, split_at, split_at_mut}`
 - `core::mem::replace`
@@ -73,6 +74,81 @@ noncomputable def leadingZerosFrom (bits : Nat) : Nat → Nat
   | n + 1 =>
     if Nat.beq (Nat.land (Nat.shiftRight bits n) 1) 1 then 0
     else 1 + leadingZerosFrom bits n
+
+/-- Count `1` bits across the lowest `n` bit positions of `bits`. Mirrors
+`count_ones` in `library/core/src/num/uint_macros.rs:84-86` and
+`library/core/src/num/int_macros.rs:76` (`rust-lang/rust`
+`f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1`):
+
+> "pub const fn count_ones(self) -> u32 {
+>     return intrinsics::ctpop(self);
+> }" -/
+noncomputable def countOnesFrom (bits : Nat) : Nat → Nat
+  | 0 => 0
+  | n + 1 => Nat.land bits 1 + countOnesFrom (Nat.shiftRight bits 1) n
+
+/-- Count trailing zero bits across the lowest `n` bit positions of `bits`,
+returning `n` when all `n` low bits are `0`. Mirrors `trailing_zeros` in
+`library/core/src/num/uint_macros.rs:177-179` and
+`library/core/src/num/int_macros.rs:130-132` (`rust-lang/rust`
+`f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1`):
+
+> "pub const fn trailing_zeros(self) -> u32 {
+>     return intrinsics::cttz(self);
+> }" -/
+noncomputable def trailingZerosFrom (bits : Nat) : Nat → Nat
+  | 0 => 0
+  | n + 1 =>
+    if Nat.beq (Nat.land bits 1) 1 then 0
+    else 1 + trailingZerosFrom (Nat.shiftRight bits 1) n
+
+/-- Compute `self.next_power_of_two()` on unsigned `w`-bit `bits`, failing
+closed via `corePanicTrap` when `bits > 2^(w.bitWidth - 1)` (where `core`
+overflows `one_less_than_next_power_of_two() + 1` and panics under
+`#[rustc_inherit_overflow_checks]` or wraps to `0` in release). Mirrors
+`library/core/src/num/uint_macros.rs:3873-3906` (`rust-lang/rust`
+`f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1`):
+
+> "pub const fn next_power_of_two(self) -> Self {
+>     self.one_less_than_next_power_of_two() + 1
+> }" -/
+noncomputable def execNextPowerOfTwo (w : IntWidth) (bits : Nat) :
+    Except FaultKind ScalarVal :=
+  if Nat.blt (Nat.pow 2 (w.bitWidth - 1)) bits then
+    .error corePanicTrap
+  else
+    let res :=
+      if Nat.ble bits 1 then 1
+      else
+        let z := leadingZerosFrom (bits - 1) w.bitWidth
+        let oneLess := Nat.shiftRight (Nat.pow 2 w.bitWidth - 1) z
+        oneLess + 1
+    .ok ⟨w, false, truncateBits w (BitVec.ofNat 128 res)⟩
+
+/-- Compute `self.next_multiple_of(rhs)` on unsigned `w`-bit values, failing
+closed via `corePanicTrap` when `rhs = 0` (`self % 0` panics) or when
+`self + (rhs - r)` overflows `2^w.bitWidth` under
+`#[rustc_inherit_overflow_checks]`. Mirrors
+`library/core/src/num/uint_macros.rs:3789-3794` (`rust-lang/rust`
+`f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1`):
+
+> "pub const fn next_multiple_of(self, rhs: Self) -> Self {
+>     match self % rhs {
+>         0 => self,
+>         r => self + (rhs - r)
+>     }
+> }" -/
+noncomputable def execNextMultipleOf (w : IntWidth) (l r : Nat) :
+    Except FaultKind ScalarVal :=
+  if Nat.beq r 0 then
+    .error corePanicTrap
+  else
+    let rem := Nat.mod l r
+    let res := if Nat.beq rem 0 then l else l + (r - rem)
+    if Nat.ble (Nat.pow 2 w.bitWidth) res then
+      .error corePanicTrap
+    else
+      .ok ⟨w, false, truncateBits w (BitVec.ofNat 128 res)⟩
 
 /-- Signed maximum representable integer at width `w` (`2^(w - 1) - 1`). -/
 noncomputable def signedMaxInt (w : IntWidth) : Int :=
@@ -149,13 +225,13 @@ noncomputable def execCheckedArith (op : BinOp) (w : IntWidth) (s : Bool)
       if ovf then .ok (.optionVal none, m)
       else .ok (.optionVal (some (.scalar resSv)), m)
 
-/-- Execute an overflowing integer arithmetic contract (`overflowing_{add,sub}`)
-returning `(T, bool)`, matching
-`library/core/src/num/uint_macros.rs:2955-2958,3054-3057` and
-`library/core/src/num/int_macros.rs:2563-2566,2669-2672` (`rust-lang/rust`
-`f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1`):
+/-- Execute an overflowing integer arithmetic contract
+(`overflowing_{add,sub,mul}`) returning `(T, bool)`, matching
+`library/core/src/num/uint_macros.rs:2955-2958,3054-3057,3177-3180` and
+`library/core/src/num/int_macros.rs:2563-2566,2669-2672,2775-2778`
+(`rust-lang/rust` `f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1`):
 
-> "let (a, b) = intrinsics::add_with_overflow(self as $ActualT,
+> "let (a, b) = intrinsics::mul_with_overflow(self as $ActualT,
 >     rhs as $ActualT);
 > (a as Self, b)" -/
 noncomputable def execOverflowingArith (op : BinOp) (w : IntWidth) (s : Bool)
@@ -167,13 +243,15 @@ noncomputable def execOverflowingArith (op : BinOp) (w : IntWidth) (s : Bool)
     match op with
     | .add => some (l + r)
     | .sub => some (l - r)
+    | .mul => some (l * r)
     | _ => none
   match mathVal with
   | none => .error .unsupported
   | some v =>
     match truncateScalarWithHostOverflow w s v with
     | .error k => .error k
-    | .ok (resSv, ovf) => .ok (.tuple [.scalar resSv, .bool ovf], m)
+    | .ok (resSv, ovf) =>
+      .ok (.tuple [.scalar resSv, .bool ovf], m)
 
 /-- Execute `core::ops::Index<Range<usize>>` or `Index<RangeFrom<usize>>` on
 `&[elem]` / `&mut [elem]` (`index_mut` shares the same bounds and panic
@@ -315,6 +393,12 @@ Upstream implementations for non-helper arms:
   `self.len() == 0`
 - `<uint>::is_multiple_of` (`library/core/src/num/uint_macros.rs:3840-3845`):
   `match rhs { 0 => self == 0, _ => self % rhs == 0 }`
+- `<uint>::div_ceil` (`library/core/src/num/uint_macros.rs:3755-3763`):
+  `if rhs == 0` panics (`corePanicTrap`); otherwise
+  `let d := l / r; if l % r > 0 then d + 1 else d`
+- `checked_shl` (`library/core/src/num/uint_macros.rs:1975-1983`,
+  `int_macros.rs:1412-1420`):
+  `if rhs < Self::BITS then Some(self.unchecked_shl(rhs)) else None`
 - `wrapping_{shl,shr}` (`library/core/src/num/uint_macros.rs:2836,2880` and
   `int_macros.rs:2400,2437`): `self.unchecked_shl(rhs & (Self::BITS - 1))`
   (equivalent to `rhs % BITS` for power-of-2 integer widths)
@@ -385,6 +469,31 @@ noncomputable def execCoreContractOp (m : MemoryState) (op : CoreCallOp)
       let r := (truncateBits w rSv.bits).toNat
       if Nat.beq r 0 then .ok (.bool (Nat.beq l 0), m)
       else .ok (.bool (Nat.beq (Nat.mod l r) 0), m)
+  | .numNextMultipleOf w s,
+      [(.int lw ls, .scalar lSv), (.int rw rs, .scalar rSv)] =>
+    if s || ls || rs || !IntWidth.beq w lw || !IntWidth.beq w rw ||
+        !MirTy.beq dstTy (.int w false) then
+      .error .unsupported
+    else
+      let l := (truncateBits w lSv.bits).toNat
+      let r := (truncateBits w rSv.bits).toNat
+      match execNextMultipleOf w l r with
+      | .error k => .error k
+      | .ok sv => .ok (.scalar sv, m)
+  | .numDivCeil w s,
+      [(.int lw ls, .scalar lSv), (.int rw rs, .scalar rSv)] =>
+    if s || ls || rs || !IntWidth.beq w lw || !IntWidth.beq w rw ||
+        !MirTy.beq dstTy (.int w false) then
+      .error .unsupported
+    else
+      let l := (truncateBits w lSv.bits).toNat
+      let r := (truncateBits w rSv.bits).toNat
+      if Nat.beq r 0 then
+        .error corePanicTrap
+      else
+        let d := Nat.div l r
+        let res := if Nat.blt 0 (Nat.mod l r) then d + 1 else d
+        .ok (.scalar ⟨w, false, truncateBits w (BitVec.ofNat 128 res)⟩, m)
   | .numCheckedAdd w s,
       [(.int lw ls, .scalar lSv), (.int rw rs, .scalar rSv)] =>
     if !IntWidth.beq w lw || !IntWidth.beq w rw || !(s == ls) || !(s == rs) ||
@@ -406,6 +515,19 @@ noncomputable def execCoreContractOp (m : MemoryState) (op : CoreCallOp)
       .error .unsupported
     else
       execCheckedArith .sub w s lSv rSv m
+  | .numCheckedShl w s,
+      [(.int lw ls, .scalar lSv), (.int .i32 false, .scalar rSv)] =>
+    if !IntWidth.beq w lw || !(s == ls) ||
+        !MirTy.beq dstTy (.option (.int w s)) then
+      .error .unsupported
+    else
+      let amt := (truncateBits .i32 rSv.bits).toNat
+      if !Nat.blt amt w.bitWidth then
+        .ok (.optionVal none, m)
+      else
+        match evalShiftOp .shl w s (decodeScalar lSv) (Int.ofNat amt) with
+        | .error k => .error k
+        | .ok res => .ok (.optionVal (some res), m)
   | .numSaturatingAdd w s,
       [(.int lw ls, .scalar lSv), (.int rw rs, .scalar rSv)] =>
     if !IntWidth.beq w lw || !IntWidth.beq w rw || !(s == ls) || !(s == rs) ||
@@ -441,6 +563,29 @@ noncomputable def execCoreContractOp (m : MemoryState) (op : CoreCallOp)
       let bits := (truncateBits w lSv.bits).toNat
       let count := leadingZerosFrom bits w.bitWidth
       .ok (.scalar ⟨.i32, false, truncateBits .i32 (BitVec.ofNat 128 count)⟩, m)
+  | .numCountOnes w s, [(.int lw ls, .scalar lSv)] =>
+    if !IntWidth.beq w lw || !(s == ls) ||
+        !MirTy.beq dstTy (.int .i32 false) then
+      .error .unsupported
+    else
+      let bits := (truncateBits w lSv.bits).toNat
+      let count := countOnesFrom bits w.bitWidth
+      .ok (.scalar ⟨.i32, false, truncateBits .i32 (BitVec.ofNat 128 count)⟩, m)
+  | .numTrailingZeros w s, [(.int lw ls, .scalar lSv)] =>
+    if !IntWidth.beq w lw || !(s == ls) ||
+        !MirTy.beq dstTy (.int .i32 false) then
+      .error .unsupported
+    else
+      let bits := (truncateBits w lSv.bits).toNat
+      let count := trailingZerosFrom bits w.bitWidth
+      .ok (.scalar ⟨.i32, false, truncateBits .i32 (BitVec.ofNat 128 count)⟩, m)
+  | .numNextPowerOfTwo w s, [(.int lw ls, .scalar lSv)] =>
+    if s || ls || !IntWidth.beq w lw || !MirTy.beq dstTy (.int w false) then
+      .error .unsupported
+    else
+      match execNextPowerOfTwo w (truncateBits w lSv.bits).toNat with
+      | .error k => .error k
+      | .ok sv => .ok (.scalar sv, m)
   | .numOverflowingAdd w s,
       [(.int lw ls, .scalar lSv), (.int rw rs, .scalar rSv)] =>
     if !IntWidth.beq w lw || !IntWidth.beq w rw || !(s == ls) || !(s == rs) ||
@@ -455,6 +600,13 @@ noncomputable def execCoreContractOp (m : MemoryState) (op : CoreCallOp)
       .error .unsupported
     else
       execOverflowingArith .sub w s lSv rSv m
+  | .numOverflowingMul w s,
+      [(.int lw ls, .scalar lSv), (.int rw rs, .scalar rSv)] =>
+    if !IntWidth.beq w lw || !IntWidth.beq w rw || !(s == ls) || !(s == rs) ||
+        !MirTy.beq dstTy (.tuple [.int w s, .bool]) then
+      .error .unsupported
+    else
+      execOverflowingArith .mul w s lSv rSv m
   | .cmpMin w s,
       [(.int lw ls, .scalar lSv), (.int rw rs, .scalar rSv)] =>
     if !IntWidth.beq w lw || !IntWidth.beq w rw || !(s == ls) || !(s == rs) ||

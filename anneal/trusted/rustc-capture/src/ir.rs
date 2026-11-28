@@ -1469,6 +1469,8 @@ pub enum CoreCallOp {
     SliceLen,
     SliceGetUncheckedRangeTo,
     SliceGetUncheckedRangeFrom,
+    SliceGetUncheckedRange,
+    SliceGetUncheckedIndex,
     SliceIndexRange {
         mutability: Mutability,
         elem: Ty,
@@ -1485,18 +1487,28 @@ pub enum CoreCallOp {
         elem: Ty,
     },
     NumIsMultipleOf(IntTy),
+    NumNextMultipleOf(IntTy),
+    NumDivCeil(IntTy),
     NumCheckedAdd(IntTy),
     NumCheckedMul(IntTy),
     NumCheckedSub(IntTy),
+    NumCheckedShl(IntTy),
     NumSaturatingAdd(IntTy),
     NumWrappingShl(IntTy),
     NumWrappingShr(IntTy),
     NumLeadingZeros(IntTy),
+    NumCountOnes(IntTy),
+    NumTrailingZeros(IntTy),
+    NumNextPowerOfTwo(IntTy),
     NumOverflowingAdd(IntTy),
     NumOverflowingSub(IntTy),
+    NumOverflowingMul(IntTy),
     CmpMin(IntTy),
     CmpMax(IntTy),
     MemReplace {
+        ty: Ty,
+    },
+    MemSizeOf {
         ty: Ty,
     },
     OptionIsSome {
@@ -1517,6 +1529,7 @@ pub enum CoreCallOp {
     },
     UsizeUncheckedSub,
     IntToLeBytes { int_ty: IntTy },
+    IntFromLeBytes { int_ty: IntTy },
     ArrayEq { elem: Ty, len: usize },
     VecNew { elem: Ty },
     VecWithCapacity { elem: Ty },
@@ -1642,7 +1655,7 @@ impl Terminator {
                     | CoreCallOp::ArrayEq { elem, .. }
                     | CoreCallOp::VecNew { elem }
                     | CoreCallOp::VecWithCapacity { elem } => 1 + elem.ast_nodes(),
-                    CoreCallOp::MemReplace { ty } => 1 + ty.ast_nodes(),
+                    CoreCallOp::MemReplace { ty } | CoreCallOp::MemSizeOf { ty } => 1 + ty.ast_nodes(),
                     CoreCallOp::OptionIsSome { inner }
                     | CoreCallOp::OptionIsNone { inner }
                     | CoreCallOp::OptionTake { inner }
@@ -1650,20 +1663,30 @@ impl Terminator {
                     CoreCallOp::SliceLen
                     | CoreCallOp::SliceGetUncheckedRangeTo
                     | CoreCallOp::SliceGetUncheckedRangeFrom
+                    | CoreCallOp::SliceGetUncheckedRange
+                    | CoreCallOp::SliceGetUncheckedIndex
                     | CoreCallOp::NumIsMultipleOf(_)
+                    | CoreCallOp::NumNextMultipleOf(_)
+                    | CoreCallOp::NumDivCeil(_)
                     | CoreCallOp::NumCheckedAdd(_)
                     | CoreCallOp::NumCheckedMul(_)
                     | CoreCallOp::NumCheckedSub(_)
+                    | CoreCallOp::NumCheckedShl(_)
                     | CoreCallOp::NumSaturatingAdd(_)
                     | CoreCallOp::NumWrappingShl(_)
                     | CoreCallOp::NumWrappingShr(_)
                     | CoreCallOp::NumLeadingZeros(_)
+                    | CoreCallOp::NumCountOnes(_)
+                    | CoreCallOp::NumTrailingZeros(_)
+                    | CoreCallOp::NumNextPowerOfTwo(_)
                     | CoreCallOp::NumOverflowingAdd(_)
                     | CoreCallOp::NumOverflowingSub(_)
+                    | CoreCallOp::NumOverflowingMul(_)
                     | CoreCallOp::CmpMin(_)
                     | CoreCallOp::CmpMax(_)
                     | CoreCallOp::UsizeUncheckedSub
                     | CoreCallOp::IntToLeBytes { .. }
+                    | CoreCallOp::IntFromLeBytes { .. }
                     | CoreCallOp::PanicAbort
                     | CoreCallOp::VecLen
                     | CoreCallOp::VecPush
@@ -2978,9 +3001,8 @@ impl Body {
                         signed: false,
                     });
                     // `get_unchecked(&self, index: I) -> &I::Output` takes and
-                    // returns shared slices, so the `get_unchecked` arms admit
-                    // only `&[u8] -> &[u8]`; a `&mut [u8]` receiver reaches the
-                    // call through a shared reborrow.
+                    // returns shared integer slices; a `&mut [Int]` receiver
+                    // reaches the call through a shared reborrow.
                     match (op, arg_tys.as_slice()) {
                         (
                             CoreCallOp::SliceLen,
@@ -2994,7 +3016,7 @@ impl Body {
                                 pointee,
                             }, Ty::RangeTo { elem: idx_ty }],
                         ) if **idx_ty == usize_ty
-                            && matches!(&**pointee, Ty::Slice { elem: e } if **e == Ty::Int(IntTy { width: IntWidth::I8, signed: false }))
+                            && matches!(&**pointee, Ty::Slice { elem: e } if matches!(&**e, Ty::Int(_)))
                             && *in_mut == Mutability::Shared
                             && matches!(&dst_ty, Ty::Ref { mutability: Mutability::Shared, pointee: dst_pt } if dst_pt == pointee) => {}
                         (
@@ -3004,9 +3026,37 @@ impl Body {
                                 pointee,
                             }, Ty::RangeFrom { elem: idx_ty }],
                         ) if **idx_ty == usize_ty
-                            && matches!(&**pointee, Ty::Slice { elem: e } if **e == Ty::Int(IntTy { width: IntWidth::I8, signed: false }))
+                            && matches!(&**pointee, Ty::Slice { elem: e } if matches!(&**e, Ty::Int(_)))
                             && *in_mut == Mutability::Shared
                             && matches!(&dst_ty, Ty::Ref { mutability: Mutability::Shared, pointee: dst_pt } if dst_pt == pointee) => {}
+                        (
+                            CoreCallOp::SliceGetUncheckedRange,
+                            [Ty::Ref {
+                                mutability: in_mut,
+                                pointee,
+                            }, Ty::Range { elem: idx_ty }],
+                        ) if **idx_ty == usize_ty
+                            && matches!(&**pointee, Ty::Slice { elem: e } if matches!(&**e, Ty::Int(_)))
+                            && *in_mut == Mutability::Shared
+                            && matches!(&dst_ty, Ty::Ref { mutability: Mutability::Shared, pointee: dst_pt } if dst_pt == pointee) => {}
+                        (
+                            CoreCallOp::SliceGetUncheckedIndex,
+                            [Ty::Ref {
+                                mutability: in_mut,
+                                pointee,
+                            }, idx_ty],
+                        ) if *idx_ty == usize_ty
+                            && matches!(&**pointee, Ty::Slice { elem: e } if e.is_sized_no_ref())
+                            && *in_mut == Mutability::Shared
+                            && matches!(
+                                &**pointee,
+                                Ty::Slice { elem: e }
+                                    if dst_ty
+                                        == Ty::Ref {
+                                            mutability: Mutability::Shared,
+                                            pointee: e.clone(),
+                                        }
+                            ) => {}
                         (
                             CoreCallOp::PtrAdd {
                                 mutability,
@@ -3037,6 +3087,16 @@ impl Body {
                                         })),
                                         len: (int_ty.width.bits() / 8) as usize,
                                     } => {}
+                        (CoreCallOp::IntFromLeBytes { int_ty }, [arg_ty])
+                            if *arg_ty
+                                == Ty::Array {
+                                    elem: Box::new(Ty::Int(IntTy {
+                                        width: IntWidth::I8,
+                                        signed: false,
+                                    })),
+                                    len: (int_ty.width.bits() / 8) as usize,
+                                }
+                                && dst_ty == Ty::Int(*int_ty) => {}
                         (
                             CoreCallOp::ArrayEq { elem, len },
                             [
@@ -3128,11 +3188,20 @@ impl Body {
                                         },
                                     ],
                                 } => {}
-                        (CoreCallOp::NumIsMultipleOf(ity), [l_ty, r_ty])
-                            if !ity.signed
-                                && *l_ty == Ty::Int(*ity)
-                                && *r_ty == Ty::Int(*ity)
-                                && dst_ty == Ty::Bool => {}
+                        (
+                            CoreCallOp::NumIsMultipleOf(ity)
+                            | CoreCallOp::NumNextMultipleOf(ity)
+                            | CoreCallOp::NumDivCeil(ity),
+                            [l_ty, r_ty],
+                        ) if !ity.signed
+                            && *l_ty == Ty::Int(*ity)
+                            && *r_ty == Ty::Int(*ity)
+                            && dst_ty
+                                == if matches!(op, CoreCallOp::NumIsMultipleOf(_)) {
+                                    Ty::Bool
+                                } else {
+                                    Ty::Int(*ity)
+                                } => {}
                         (
                             CoreCallOp::NumCheckedAdd(ity)
                             | CoreCallOp::NumCheckedMul(ity)
@@ -3144,6 +3213,17 @@ impl Body {
                                 == Ty::Option {
                                     elem: Box::new(Ty::Int(*ity)),
                                 } => {}
+                        (CoreCallOp::NumCheckedShl(ity), [l_ty, r_ty])
+                            if *l_ty == Ty::Int(*ity)
+                                && *r_ty
+                                    == Ty::Int(IntTy {
+                                        width: IntWidth::I32,
+                                        signed: false,
+                                    })
+                                && dst_ty
+                                    == Ty::Option {
+                                        elem: Box::new(Ty::Int(*ity)),
+                                    } => {}
                         (CoreCallOp::NumSaturatingAdd(ity), [l_ty, r_ty])
                             if *l_ty == Ty::Int(*ity)
                             && *r_ty == Ty::Int(*ity)
@@ -3158,15 +3238,25 @@ impl Body {
                                     signed: false,
                                 })
                             && dst_ty == Ty::Int(*ity) => {}
-                        (CoreCallOp::NumLeadingZeros(ity), [l_ty])
-                            if *l_ty == Ty::Int(*ity)
-                                && dst_ty
-                                    == Ty::Int(IntTy {
-                                        width: IntWidth::I32,
-                                        signed: false,
-                                    }) => {}
                         (
-                            CoreCallOp::NumOverflowingAdd(ity) | CoreCallOp::NumOverflowingSub(ity),
+                            CoreCallOp::NumLeadingZeros(ity)
+                            | CoreCallOp::NumCountOnes(ity)
+                            | CoreCallOp::NumTrailingZeros(ity),
+                            [l_ty],
+                        ) if *l_ty == Ty::Int(*ity)
+                            && dst_ty
+                                == Ty::Int(IntTy {
+                                    width: IntWidth::I32,
+                                    signed: false,
+                                }) => {}
+                        (CoreCallOp::NumNextPowerOfTwo(ity), [l_ty])
+                            if !ity.signed
+                                && *l_ty == Ty::Int(*ity)
+                                && dst_ty == Ty::Int(*ity) => {}
+                        (
+                            CoreCallOp::NumOverflowingAdd(ity)
+                            | CoreCallOp::NumOverflowingSub(ity)
+                            | CoreCallOp::NumOverflowingMul(ity),
                             [l_ty, r_ty],
                         ) if *l_ty == Ty::Int(*ity)
                             && *r_ty == Ty::Int(*ity)
@@ -3187,6 +3277,11 @@ impl Body {
                             && **pointee == *ty
                             && *src_ty == *ty
                             && dst_ty == *ty => {}
+                        (CoreCallOp::MemSizeOf { ty }, [])
+                            if ty.is_sized()
+                                && ty.is_supported_v2_local()
+                                && ty.v2_layout().is_some()
+                                && dst_ty == usize_ty => {}
                         (
                             CoreCallOp::OptionIsSome { inner } | CoreCallOp::OptionIsNone { inner },
                             [Ty::Ref { pointee, .. }],
@@ -3716,6 +3811,7 @@ impl Body {
                     match op {
                         CoreCallOp::PtrAdd { pointee, .. }
                         | CoreCallOp::MemReplace { ty: pointee }
+                        | CoreCallOp::MemSizeOf { ty: pointee }
                         | CoreCallOp::BoxNew { pointee } => {
                             pointee.collect_enum_ids(out);
                         }
@@ -5072,6 +5168,45 @@ mod tests {
         let mut ids = BTreeSet::new();
         body.collect_enum_ids(&mut ids);
         assert_eq!(ids, BTreeSet::from([101, 202]));
+
+        // `size_of::<E>()` lowers to a `CoreCall` with no local or constant
+        // of type `E`, so the `MemSizeOf` type operand must register `E`'s id.
+        let enum_c = EnumTy::try_new(303, isize_discr, EnumTagRepr::ZeroSized, vec![0]).unwrap();
+        let usize_ty = Ty::Int(IntTy {
+            width: IntWidth::Isize,
+            signed: false,
+        });
+        let size_of_body = Body::try_new(
+            0,
+            false,
+            vec![usize_ty],
+            vec![
+                Block {
+                    statements: vec![],
+                    terminator: Terminator::CoreCall {
+                        op: CoreCallOp::MemSizeOf {
+                            ty: Ty::Enum(enum_c),
+                        },
+                        args: vec![],
+                        dst: Place {
+                            local: 0,
+                            projection: vec![],
+                        },
+                        target: Some(1),
+                        unwind: UnwindAction::Continue,
+                    },
+                },
+                Block {
+                    statements: vec![],
+                    terminator: Terminator::Ret,
+                },
+            ],
+            "rust-path-v1::size_of_enum_ids_body".into(),
+        )
+        .unwrap();
+        let mut size_of_ids = BTreeSet::new();
+        size_of_body.collect_enum_ids(&mut size_of_ids);
+        assert_eq!(size_of_ids, BTreeSet::from([303]));
 
         let unsupported_term = Body::try_new(
             0,

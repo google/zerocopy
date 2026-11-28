@@ -3451,6 +3451,18 @@ noncomputable def arrayValEqV2 : MirTy → Val → Val → Except FaultKind Bool
     valEqListWith (arrayValEqV2 elem) xs ys
   | _, _, _ => .error .unsupported
 
+/-- Extract `u8` scalar byte values from a captured `[u8; N]` value. -/
+noncomputable def byteArrayVals? : List Val → Option (List UInt8)
+  | [] => some []
+  | .scalar sv :: rest =>
+    if IntWidth.beq sv.width .i8 && !sv.signed && sv.wf then
+      match byteArrayVals? rest with
+      | some bs => some (UInt8.ofNat sv.bits.toNat :: bs)
+      | none => none
+    else
+      none
+  | _ => none
+
 /-- Execute a closed-world `CoreCallOp` primitive in Profile v2 against memory
 `m`. Every argument and result is checked against the callee's `core`
 signature, and any mismatch is `.unsupported`.
@@ -3460,11 +3472,15 @@ signature, and any mismatch is `.unsupported`.
   `f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1`). Lean also re-validates the
   `&[uN]` argument, which is conservative: a reference passed to a function
   is considered live.
-- `.sliceGetUncheckedRangeTo`/`RangeFrom`: see `sliceGetUncheckedCheck`.
-  The input slice reference is validated at its own mutability `inMut`.
-  Capture produces these only for `get_unchecked(&self)` on `[u8]`, as
-  `&[u8] -> &[u8]`, so the `&[u8] -> &mut [u8]` arm (`.undefined`) is
-  unreachable.
+- `.sliceGetUncheckedRangeTo`/`RangeFrom`/`Range`: see
+  `sliceGetUncheckedCheck`. The input integer-slice reference is
+  validated at its own mutability `inMut`. Capture produces these only for
+  `get_unchecked(&self)` on `[Int]`, as `&[Int] -> &[Int]`, so the
+  `&[Int] -> &mut [Int]` arm (`.undefined`) is unreachable.
+- `.sliceGetUncheckedIndex`: `<[T]>::get_unchecked(idx: usize) -> &T` for
+  sized ref-free elements (`library/core/src/slice/index.rs:237-255`,
+  `rust-lang/rust` `f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1`), UB when
+  `idx >= len`.
 - `.ptrAdd`: see `ptrAddInMem`.
 - `.usizeUncheckedSub`: UB exactly when `rhs > lhs`, which is the
   precondition of `usize::unchecked_sub`
@@ -3478,6 +3494,22 @@ signature, and any mismatch is `.unsupported`.
   >         rhs: $SelfT = rhs,
   >     ) => !lhs.overflowing_sub(rhs).1,
   > );"
+- `.intFromLeBytes`: reconstructs an integer from `[u8; size_of::<Self>()]`
+  via `natOfLeBytes`, matching
+  `library/core/src/num/{uint_macros.rs:4083-4085,int_macros.rs:3885-3887}`
+  (same pin):
+
+  > "pub const fn from_le_bytes(bytes: [u8; size_of::<Self>()]) -> Self {
+  >     Self::from_le(Self::from_ne_bytes(bytes))
+  > }"
+- `.memSizeOf`: returns `lay.size` from `layoutOfTyV2 ty` for sized Profile v2
+  types, matching `library/core/src/mem/mod.rs:373-375` (same pin). A size of
+  `isize::MAX + 1` bytes or more, which `rustc`'s layout computation rejects,
+  fails closed with `.unsupported` instead of truncating:
+
+  > "pub const fn size_of<T>() -> usize {
+  >     <T as SizedTypeProperties>::SIZE
+  > }"
 
 A failed `core` precondition faults with `.undefined` instead of panicking,
 so no call unwinds (see `UnwindAction`). -/
@@ -3493,28 +3525,75 @@ noncomputable def execCoreCallOp (m : MemoryState) (op : CoreCallOp)
       | .ok () =>
         .ok (.scalar ⟨.isize, false, truncateBits .isize (BitVec.ofNat 128 len.toNat)⟩)
   | .sliceGetUncheckedRangeTo,
-      [(.ref inMut (.slice (.int .i8 false)), .slicePtr p len),
+      [(.ref inMut (.slice (.int w s)), .slicePtr p len),
        (.rangeTo (.int .isize false), .rangeTo endOff)] =>
     match dstTy with
-    | .ref outMut (.slice (.int .i8 false)) =>
-      if Mutability.beq inMut .shared && Mutability.beq outMut .mut then
+    | .ref outMut (.slice (.int outW outS)) =>
+      if !IntWidth.beq w outW || !(s == outS) then
+        .error .unsupported
+      else if Mutability.beq inMut .shared && Mutability.beq outMut .mut then
         .error .undefined
       else
-        match refValidInMem m inMut (.slice (.int .i8 false)) (.slicePtr p len) with
+        match refValidInMem m inMut (.slice (.int w s)) (.slicePtr p len) with
         | .error k => .error k
-        | .ok () => sliceGetUncheckedCheck m p len.toNat 0 endOff.toNat
+        | .ok () =>
+          sliceGetUncheckedCheck m p len.toNat 0 endOff.toNat w.byteSize
     | _ => .error .unsupported
   | .sliceGetUncheckedRangeFrom,
-      [(.ref inMut (.slice (.int .i8 false)), .slicePtr p len),
+      [(.ref inMut (.slice (.int w s)), .slicePtr p len),
        (.rangeFrom (.int .isize false), .rangeFrom startOff)] =>
     match dstTy with
-    | .ref outMut (.slice (.int .i8 false)) =>
-      if Mutability.beq inMut .shared && Mutability.beq outMut .mut then
+    | .ref outMut (.slice (.int outW outS)) =>
+      if !IntWidth.beq w outW || !(s == outS) then
+        .error .unsupported
+      else if Mutability.beq inMut .shared && Mutability.beq outMut .mut then
         .error .undefined
       else
-        match refValidInMem m inMut (.slice (.int .i8 false)) (.slicePtr p len) with
+        match refValidInMem m inMut (.slice (.int w s)) (.slicePtr p len) with
         | .error k => .error k
-        | .ok () => sliceGetUncheckedCheck m p len.toNat startOff.toNat len.toNat
+        | .ok () =>
+          sliceGetUncheckedCheck m p len.toNat startOff.toNat len.toNat
+            w.byteSize
+    | _ => .error .unsupported
+  | .sliceGetUncheckedRange,
+      [(.ref inMut (.slice (.int w s)), .slicePtr p len),
+       (.range (.int .isize false), .range startOff endOff)] =>
+    match dstTy with
+    | .ref outMut (.slice (.int outW outS)) =>
+      if !IntWidth.beq w outW || !(s == outS) then
+        .error .unsupported
+      else if Mutability.beq inMut .shared && Mutability.beq outMut .mut then
+        .error .undefined
+      else
+        match refValidInMem m inMut (.slice (.int w s)) (.slicePtr p len) with
+        | .error k => .error k
+        | .ok () =>
+          sliceGetUncheckedCheck m p len.toNat startOff.toNat endOff.toNat
+            w.byteSize
+    | _ => .error .unsupported
+  | .sliceGetUncheckedIndex,
+      [(.ref inMut (.slice elem), .slicePtr p len),
+       (.int .isize false, .scalar idxSv)] =>
+    match dstTy with
+    | .ref outMut outElem =>
+      if !isSizedNoRefV2Ty elem || !MirTy.beq elem outElem then
+        .error .unsupported
+      else if Mutability.beq inMut .shared && Mutability.beq outMut .mut then
+        .error .undefined
+      else
+        match refValidInMem m inMut (.slice elem) (.slicePtr p len) with
+        | .error k => .error k
+        | .ok () =>
+          let idx := (truncateBits .isize idxSv.bits).toNat
+          if !Nat.blt idx len.toNat then
+            .error .undefined
+          else
+            match layoutOfTyV2 elem with
+            | none => .error .unsupported
+            | some lay =>
+              match ptrAddInMem m lay.size p idx with
+              | .error k => .error k
+              | .ok p' => .ok (.ptr p')
     | _ => .error .unsupported
   | .ptrAdd reqMut pointee,
       [(.rawPtr argMut argPt, .ptr p), (.int .isize false, .scalar countSv)] =>
@@ -3545,6 +3624,29 @@ noncomputable def execCoreCallOp (m : MemoryState) (op : CoreCallOp)
     else
       let bytes := leBytesOfNat w.byteSize sv.bits.toNat
       .ok (.array (bytes.map (fun b => .scalar ⟨.i8, false, BitVec.ofNat 128 b.toNat⟩)))
+  | .intFromLeBytes w s, [(.array (.int .i8 false) len, .array vs)] =>
+    if !Nat.beq len w.byteSize || !Nat.beq vs.length w.byteSize ||
+        !MirTy.beq dstTy (.int w s) then
+      .error .unsupported
+    else
+      match byteArrayVals? vs with
+      | none => .error .unsupported
+      | some bs =>
+        let raw := natOfLeBytes bs
+        .ok (.scalar ⟨w, s, truncateBits w (BitVec.ofNat 128 raw)⟩)
+  | .memSizeOf ty, [] =>
+    if !MirTy.beq dstTy (.int .isize false) || isUnsizedTy ty ||
+        !isSupportedV2LocalTy ty then
+      .error .unsupported
+    else
+      match layoutOfTyV2 ty with
+      | none => .error .unsupported
+      | some lay =>
+        if !Nat.blt lay.size isizeMaxBytes then
+          .error .unsupported
+        else
+          .ok (.scalar ⟨.isize, false,
+            truncateBits .isize (BitVec.ofNat 128 lay.size)⟩)
   | .arrayEq elem len,
       [(.ref m1 (.array e1 n1), .ptr p1), (.ref m2 (.array e2 n2), .ptr p2)] =>
     if !MirTy.beq dstTy .bool || !MirTy.beq elem e1 || !MirTy.beq elem e2 ||
@@ -3580,28 +3682,34 @@ noncomputable def execCoreCallOp (m : MemoryState) (op : CoreCallOp)
 
 /-- Execute any `CoreCallOp` in Profile v2, threading updated `MemoryState`
 for memory-mutating core contracts (`CoreContracts`) while delegating
-existing slice/raw-pointer primitives to `execCoreCallOp`. The diverging
-`.panicAbort` never returns, so a returning call fails closed with
-`.unsupported` (`evalTerminatorV2` handles its `target = none` form). -/
+slice, raw-pointer, integer byte-conversion, equality, and `size_of`
+primitives to `execCoreCallOp`. The diverging `.panicAbort` never returns, so
+a returning call fails closed with `.unsupported` (`evalTerminatorV2` handles
+its `target = none` form). Exhaustive matching over `CoreCallOp` ensures new
+constructors cannot silently fall through to the wrong executor. -/
 noncomputable def execCoreCallWithMem (m : MemoryState) (op : CoreCallOp)
     (args : List (MirTy × Val)) (dstTy : MirTy) :
     Except FaultKind (Val × MemoryState) :=
   match op with
   | .sliceLen | .sliceGetUncheckedRangeTo | .sliceGetUncheckedRangeFrom
-  | .ptrAdd _ _ | .usizeUncheckedSub | .intToLeBytes _ _ | .arrayEq _ _ =>
+  | .sliceGetUncheckedRange | .sliceGetUncheckedIndex | .ptrAdd _ _
+  | .usizeUncheckedSub | .intToLeBytes _ _ | .intFromLeBytes _ _ | .memSizeOf _
+  | .arrayEq _ _ =>
     match execCoreCallOp m op args dstTy with
     | .ok v => .ok (v, m)
     | .error k => .error k
   | .sliceIndexRange _ _ | .sliceIndexRangeFrom _ _ | .sliceIsEmpty _
-  | .sliceSplitAt _ _ | .numIsMultipleOf _ _ | .numCheckedAdd _ _
-  | .numCheckedMul _ _ | .numCheckedSub _ _ | .numSaturatingAdd _ _
+  | .sliceSplitAt _ _ | .numIsMultipleOf _ _ | .numNextMultipleOf _ _
+  | .numDivCeil _ _ | .numCheckedAdd _ _ | .numCheckedMul _ _
+  | .numCheckedSub _ _ | .numCheckedShl _ _ | .numSaturatingAdd _ _
   | .numWrappingShl _ _ | .numWrappingShr _ _ | .numLeadingZeros _ _
-  | .numOverflowingAdd _ _ | .numOverflowingSub _ _ | .cmpMin _ _
-  | .cmpMax _ _ | .memReplace _ | .optionIsSome _ | .optionIsNone _
-  | .optionTake _ | .optionUnwrap _ | .vecNew _ | .vecWithCapacity _
-  | .vecLen | .vecPush | .vecResize | .vecExtendFromSlice | .vecIndex
-  | .vecIndexMut | .vecDeref | .vecDerefMut | .vecReserve | .boxFromVec
-  | .boxDeref | .boxDerefMut | .boxClone | .boxNew _ =>
+  | .numCountOnes _ _ | .numTrailingZeros _ _ | .numNextPowerOfTwo _ _
+  | .numOverflowingAdd _ _ | .numOverflowingSub _ _ | .numOverflowingMul _ _
+  | .cmpMin _ _ | .cmpMax _ _ | .memReplace _ | .optionIsSome _
+  | .optionIsNone _ | .optionTake _ | .optionUnwrap _ | .vecNew _
+  | .vecWithCapacity _ | .vecLen | .vecPush | .vecResize | .vecExtendFromSlice
+  | .vecIndex | .vecIndexMut | .vecDeref | .vecDerefMut | .vecReserve
+  | .boxFromVec | .boxDeref | .boxDerefMut | .boxClone | .boxNew _ =>
     execCoreContractOp m op args dstTy
   | .panicAbort => .error .unsupported
 

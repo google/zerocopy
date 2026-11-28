@@ -447,8 +447,83 @@ theorem refute_step_v2_get_unchecked_range_from_in_mut :
      | _ => False) :=
   trivial
 
-/-- Anti-overreach canary: the same `get_unchecked` calls on a `&[u8]` input
-over the `.shared` allocation succeed. -/
+/-- Guard `step_v2_get_unchecked_range_in_mut`: `get_unchecked(0..1)` on a
+`&mut [u8]` input over a `.shared` allocation faults with `.undefined` even
+though the result is `&[u8]`. -/
+theorem refute_step_v2_get_unchecked_range_in_mut :
+    (match execCoreCallOp sharedInit2Mem .sliceGetUncheckedRange
+        [(.ref .mut (.slice (.int .i8 false)), .slicePtr ⟨some 1, 0, .isize⟩ 2),
+          (.range (.int .isize false), .range 0 1)]
+        (.ref .shared (.slice (.int .i8 false))) with
+     | .error .undefined => True
+     | _ => False) :=
+  trivial
+
+/-- Read-only 4-byte allocation holding 2 initialized `u16` elements for the
+`get_unchecked` element-stride refutations. -/
+noncomputable def sharedInitU16x2Mem : MemoryState :=
+  { allocations := [{
+      allocId := 1
+      alignLog2 := 1
+      mutability := .shared
+      bytes := [.init 1 none, .init 0 none, .init 2 none, .init 0 none]
+      live := true
+    }], nextAllocId := 2 }
+
+/-- Guard `step_v2_get_unchecked_range_from_elem_stride`: `get_unchecked(1..)`
+on `&[u16]` advances the slice pointer by `w.byteSize = 2` bytes per element. -/
+theorem refute_step_v2_get_unchecked_range_from_elem_stride :
+    execCoreCallOp sharedInitU16x2Mem .sliceGetUncheckedRangeFrom
+      [(.ref .shared (.slice (.int .i16 false)),
+        .slicePtr ⟨some 1, 0, .isize⟩ 2),
+       (.rangeFrom (.int .isize false), .rangeFrom 1)]
+      (.ref .shared (.slice (.int .i16 false))) =
+      .ok (.slicePtr ⟨some 1, 2, .isize⟩ 1) :=
+  rfl
+
+/-- Guard `step_v2_get_unchecked_range_elem_stride`: `get_unchecked(1..2)`
+on `&[u16]` advances the slice pointer by `w.byteSize = 2` bytes per element. -/
+theorem refute_step_v2_get_unchecked_range_elem_stride :
+    execCoreCallOp sharedInitU16x2Mem .sliceGetUncheckedRange
+      [(.ref .shared (.slice (.int .i16 false)),
+        .slicePtr ⟨some 1, 0, .isize⟩ 2),
+       (.range (.int .isize false), .range 1 2)]
+      (.ref .shared (.slice (.int .i16 false))) =
+      .ok (.slicePtr ⟨some 1, 2, .isize⟩ 1) :=
+  rfl
+
+/-- Guard `step_v2_mem_size_of_unsupported_local_ty`: `core::mem::size_of`
+rejects `[&u8; 2]` (not `isSupportedV2LocalTy`) as `.unsupported` even though
+`layoutOfArrayV2` has pointer layout support. -/
+theorem refute_step_v2_mem_size_of_unsupported_local_ty :
+    execCoreCallOp MemoryState.empty
+      (.memSizeOf (.array (.ref .shared (.int .i8 false)) 2)) []
+      (.int .isize false) = .error .unsupported :=
+  rfl
+
+/-- Guard `step_v2_mem_size_of_isize_max`: `core::mem::size_of` on
+`[u8; 2^63]` (whose `layoutOfTyV2` size is `isize::MAX + 1`) fails closed with
+`.unsupported` instead of truncating to an `isize`-wide `usize`, while
+`[u8; 4]` still reports `4`. -/
+theorem refute_step_v2_mem_size_of_isize_max :
+    execCoreCallOp MemoryState.empty
+      (.memSizeOf (.array (.int .i8 false) (Nat.pow 2 63))) []
+      (.int .isize false) = .error .unsupported ∧
+    execCoreCallOp MemoryState.empty
+      (.memSizeOf (.array (.int .i8 false) 4)) []
+      (.int .isize false) = .ok (.scalar ⟨.isize, false, 4⟩) :=
+  ⟨rfl, rfl⟩
+
+/-- Guard `step_v2_int_from_le_bytes_array_len`: `intFromLeBytes` rejects a
+byte array whose length disagrees with `w.byteSize` as `.unsupported`. -/
+theorem refute_step_v2_int_from_le_bytes_array_len :
+    execCoreCallOp MemoryState.empty (.intFromLeBytes .i16 false)
+      [(.array (.int .i8 false) 1, .array [.scalar ⟨.i8, false, 0x34⟩])]
+      (.int .i16 false) = .error .unsupported :=
+  rfl
+
+/-- Anti-overreach canary: the same `get_unchecked` calls (`RangeTo`,
+`RangeFrom`, and `Range`) on a `&[u8]` input over `.shared` succeed. -/
 theorem positive_step_v2_get_unchecked_shared_input :
     (match execCoreCallOp sharedInit2Mem .sliceGetUncheckedRangeTo
         [(.ref .shared (.slice (.int .i8 false)),
@@ -463,8 +538,15 @@ theorem positive_step_v2_get_unchecked_shared_input :
           (.rangeFrom (.int .isize false), .rangeFrom 1)]
         (.ref .shared (.slice (.int .i8 false))) with
      | .ok _ => True
+     | .error _ => False) ∧
+    (match execCoreCallOp sharedInit2Mem .sliceGetUncheckedRange
+        [(.ref .shared (.slice (.int .i8 false)),
+            .slicePtr ⟨some 1, 0, .isize⟩ 2),
+          (.range (.int .isize false), .range 0 1)]
+        (.ref .shared (.slice (.int .i8 false))) with
+     | .ok _ => True
      | .error _ => False) :=
-  ⟨trivial, trivial⟩
+  ⟨trivial, trivial, trivial⟩
 
 /-- Body with locals `_0 : ()` and `_1 : *mut ()`, whose only statement
 `*_1 = PtrMetadata(move _1)` moves out of the pointer it stores through. -/
@@ -2121,6 +2203,8 @@ theorem refute_core_contracts_i128_host_overflow :
     let i128One : ScalarVal := ⟨.i128, true, 1⟩
     let i128NegOne : ScalarVal :=
       ⟨.i128, true, BitVec.ofNat 128 340282366920938463463374607431768211455⟩
+    let u128Two64 : ScalarVal :=
+      ⟨.i128, false, BitVec.ofNat 128 18446744073709551616⟩
     execCoreContractOp MemoryState.empty (.numCheckedAdd .i128 false)
       [(u128Ty, .scalar u128Max), (u128Ty, .scalar u128One)]
       (.option u128Ty) =
@@ -2157,8 +2241,12 @@ theorem refute_core_contracts_i128_host_overflow :
     execCoreContractOp MemoryState.empty (.numOverflowingAdd .i128 true)
       [(i128Ty, .scalar i128Max), (i128Ty, .scalar i128One)]
       (.tuple [i128Ty, .bool]) =
-      .ok (.tuple [.scalar i128Min, .bool true], MemoryState.empty) :=
-  ⟨rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl⟩
+      .ok (.tuple [.scalar i128Min, .bool true], MemoryState.empty) ∧
+    execCoreContractOp MemoryState.empty (.numOverflowingMul .i128 false)
+      [(u128Ty, .scalar u128Two64), (u128Ty, .scalar u128Two64)]
+      (.tuple [u128Ty, .bool]) =
+      .ok (.tuple [.scalar u128Zero, .bool true], MemoryState.empty) :=
+  ⟨rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl⟩
 
 /-- Anti-overreach canary: in-bounds 128-bit checked, saturating, and
 overflowing arithmetic succeed without false overflow. -/
@@ -3001,5 +3089,243 @@ theorem refute_step_assign_oob_dst :
     ReachesResult progAssignOobDst queryEmpty (.fault .unsupported) ∧
     ¬ WellFormed progAssignOobDst queryEmpty :=
   refutes_wf_of_execFault (fuel := 1) rfl
+
+/-- Guard `core_contracts_next_power_of_two_overflow_trap`: `next_power_of_two`
+fails closed via `corePanicTrap` when `self > 2^(BITS - 1)`. -/
+theorem refute_core_contracts_next_power_of_two_overflow_trap :
+    execNextPowerOfTwo .i8 129 = .error corePanicTrap :=
+  rfl
+
+/-- Guard `core_contracts_next_multiple_of_div_zero_trap`: `next_multiple_of`
+fails closed via `corePanicTrap` when `rhs = 0`. -/
+theorem refute_core_contracts_next_multiple_of_div_zero_trap :
+    execNextMultipleOf .i8 0 0 = .error corePanicTrap :=
+  rfl
+
+/-- Guard `core_contracts_next_multiple_of_overflow_trap`: `next_multiple_of`
+fails closed via `corePanicTrap` when the rounded result exceeds `2^BITS - 1`.
+-/
+theorem refute_core_contracts_next_multiple_of_overflow_trap :
+    execNextMultipleOf .i8 255 2 = .error corePanicTrap :=
+  rfl
+
+/-- Guard `core_contracts_next_power_of_two_unsigned_only`: signed
+`numNextPowerOfTwo` calls fail closed as `.unsupported`. -/
+theorem refute_core_contracts_next_power_of_two_unsigned_only :
+    execCoreContractOp MemoryState.empty (.numNextPowerOfTwo .i8 true)
+      [(.int .i8 true, .scalar ⟨.i8, true, 4⟩)] (.int .i8 false) =
+      .error .unsupported :=
+  rfl
+
+/-- Guard `core_contracts_next_multiple_of_unsigned_only`: signed
+`numNextMultipleOf` calls fail closed as `.unsupported`. -/
+theorem refute_core_contracts_next_multiple_of_unsigned_only :
+    execCoreContractOp MemoryState.empty (.numNextMultipleOf .i8 true)
+      [(.int .i8 true, .scalar ⟨.i8, true, 4⟩),
+       (.int .i8 true, .scalar ⟨.i8, true, 2⟩)] (.int .i8 false) =
+      .error .unsupported :=
+  rfl
+
+/-- Guard `core_contracts_cmp_min_tie_break`: `Ord::min` returns the first
+argument (`self`) when `self` and `other` compare equal. -/
+theorem refute_core_contracts_cmp_min_tie_break :
+    let lU8 : ScalarVal := ⟨.i8, false, BitVec.ofNat 128 5⟩
+    let rU8 : ScalarVal := ⟨.i8, false, BitVec.ofNat 128 261⟩
+    execCoreContractOp MemoryState.empty (.cmpMin .i8 false)
+      [(.int .i8 false, .scalar lU8), (.int .i8 false, .scalar rU8)]
+      (.int .i8 false) =
+      .ok (.scalar lU8, MemoryState.empty) :=
+  rfl
+
+/-- Guard `core_contracts_cmp_max_tie_break`: `Ord::max` returns the second
+argument (`other`) when `self` and `other` compare equal. -/
+theorem refute_core_contracts_cmp_max_tie_break :
+    let lU8 : ScalarVal := ⟨.i8, false, BitVec.ofNat 128 5⟩
+    let rU8 : ScalarVal := ⟨.i8, false, BitVec.ofNat 128 261⟩
+    execCoreContractOp MemoryState.empty (.cmpMax .i8 false)
+      [(.int .i8 false, .scalar lU8), (.int .i8 false, .scalar rU8)]
+      (.int .i8 false) =
+      .ok (.scalar rU8, MemoryState.empty) :=
+  rfl
+
+/-- Anti-overreach canaries for core scalar and slice ops: in-bounds
+`next_power_of_two`, `next_multiple_of`, `div_ceil`, `checked_shl`,
+`count_ones`, `trailing_zeros`, `overflowing_mul`, `mem::size_of`,
+`intFromLeBytes`, and `get_unchecked(idx: usize)` continue to succeed. -/
+theorem positive_core_scalar_ops_canaries :
+    execNextPowerOfTwo .i8 128 = .ok ⟨.i8, false, 128⟩ ∧
+    execNextMultipleOf .i8 13 4 = .ok ⟨.i8, false, 16⟩ ∧
+    execCoreContractOp MemoryState.empty (.numDivCeil .i8 false)
+      [(.int .i8 false, .scalar ⟨.i8, false, 13⟩),
+       (.int .i8 false, .scalar ⟨.i8, false, 4⟩)] (.int .i8 false) =
+      .ok (.scalar ⟨.i8, false, 4⟩, MemoryState.empty) ∧
+    execCoreContractOp MemoryState.empty (.numCheckedShl .i8 false)
+      [(.int .i8 false, .scalar ⟨.i8, false, 1⟩),
+       (.int .i32 false, .scalar ⟨.i32, false, 7⟩)]
+      (.option (.int .i8 false)) =
+      .ok (.optionVal (some (.scalar ⟨.i8, false, 128⟩)), MemoryState.empty) ∧
+    execCoreContractOp MemoryState.empty (.numCountOnes .i8 true)
+      [(.int .i8 true, .scalar ⟨.i8, true, BitVec.ofNat 128 0xff⟩)]
+      (.int .i32 false) =
+      .ok (.scalar ⟨.i32, false, 8⟩, MemoryState.empty) ∧
+    execCoreContractOp MemoryState.empty (.numTrailingZeros .i8 false)
+      [(.int .i8 false, .scalar ⟨.i8, false, 8⟩)] (.int .i32 false) =
+      .ok (.scalar ⟨.i32, false, 3⟩, MemoryState.empty) ∧
+    execCoreContractOp MemoryState.empty (.numOverflowingMul .i8 false)
+      [(.int .i8 false, .scalar ⟨.i8, false, 12⟩),
+       (.int .i8 false, .scalar ⟨.i8, false, 10⟩)]
+      (.tuple [.int .i8 false, .bool]) =
+      .ok (.tuple [.scalar ⟨.i8, false, 120⟩, .bool false], MemoryState.empty) ∧
+    execCoreCallOp MemoryState.empty
+      (.memSizeOf (.option (.int .i64 false))) [] (.int .isize false) =
+      .ok (.scalar ⟨.isize, false, 16⟩) ∧
+    execCoreCallOp MemoryState.empty (.intFromLeBytes .i16 false)
+      [(.array (.int .i8 false) 2,
+        .array [.scalar ⟨.i8, false, 0x34⟩, .scalar ⟨.i8, false, 0x12⟩])]
+      (.int .i16 false) =
+      .ok (.scalar ⟨.i16, false, 0x1234⟩) ∧
+    execCoreCallOp sharedInitU16x2Mem .sliceGetUncheckedIndex
+      [(.ref .shared (.slice (.int .i16 false)),
+        .slicePtr ⟨some 1, 0, .isize⟩ 2),
+       (.int .isize false, .scalar ⟨.isize, false, 1⟩)]
+      (.ref .shared (.int .i16 false)) =
+      .ok (.ptr ⟨some 1, 2, .isize⟩) :=
+  ⟨rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl⟩
+
+/-- Guard `step_v2_get_unchecked_index_in_mut`: `get_unchecked(idx)` on a
+`&mut [u8]` input over a `.shared` allocation faults with `.undefined` even
+when returning `&u8`. -/
+theorem refute_step_v2_get_unchecked_index_in_mut :
+    execCoreCallOp sharedInit2Mem .sliceGetUncheckedIndex
+      [(.ref .mut (.slice (.int .i8 false)),
+        .slicePtr ⟨some 1, 0, .isize⟩ 2),
+       (.int .isize false, .scalar ⟨.isize, false, 0⟩)]
+      (.ref .shared (.int .i8 false)) = .error .undefined :=
+  rfl
+
+/-- Guard `step_v2_get_unchecked_index_oob`: `get_unchecked(idx)` faults with
+`.undefined` when `idx >= len`. -/
+theorem refute_step_v2_get_unchecked_index_oob :
+    execCoreCallOp sharedInit2Mem .sliceGetUncheckedIndex
+      [(.ref .shared (.slice (.int .i8 false)),
+        .slicePtr ⟨some 1, 0, .isize⟩ 2),
+       (.int .isize false, .scalar ⟨.isize, false, 2⟩)]
+      (.ref .shared (.int .i8 false)) = .error .undefined :=
+  rfl
+
+/-- Guard `step_v2_get_unchecked_index_elem_stride`: `get_unchecked(1)` on
+`&[u16]` advances the element pointer by `lay.size = 2`. -/
+theorem refute_step_v2_get_unchecked_index_elem_stride :
+    execCoreCallOp sharedInitU16x2Mem .sliceGetUncheckedIndex
+      [(.ref .shared (.slice (.int .i16 false)),
+        .slicePtr ⟨some 1, 0, .isize⟩ 2),
+       (.int .isize false, .scalar ⟨.isize, false, 1⟩)]
+      (.ref .shared (.int .i16 false)) =
+      .ok (.ptr ⟨some 1, 2, .isize⟩) :=
+  rfl
+
+/-- Guard `core_contracts_div_ceil_div_zero_trap`: `div_ceil` fails closed via
+`corePanicTrap` when `rhs = 0`. -/
+theorem refute_core_contracts_div_ceil_div_zero_trap :
+    execCoreContractOp MemoryState.empty (.numDivCeil .i8 false)
+      [(.int .i8 false, .scalar ⟨.i8, false, 5⟩),
+       (.int .i8 false, .scalar ⟨.i8, false, 0⟩)] (.int .i8 false) =
+      .error corePanicTrap :=
+  rfl
+
+/-- Guard `core_contracts_div_ceil_unsigned_only`: signed `numDivCeil` calls
+fail closed as `.unsupported`. -/
+theorem refute_core_contracts_div_ceil_unsigned_only :
+    execCoreContractOp MemoryState.empty (.numDivCeil .i8 true)
+      [(.int .i8 true, .scalar ⟨.i8, true, 5⟩),
+       (.int .i8 true, .scalar ⟨.i8, true, 2⟩)] (.int .i8 false) =
+      .error .unsupported :=
+  rfl
+
+/-- Guard `core_contracts_checked_shl_oob_none`: `checked_shl` returns `None`
+when the shift amount reaches or exceeds `BITS`. -/
+theorem refute_core_contracts_checked_shl_oob_none :
+    execCoreContractOp MemoryState.empty (.numCheckedShl .i8 false)
+      [(.int .i8 false, .scalar ⟨.i8, false, 1⟩),
+       (.int .i32 false, .scalar ⟨.i32, false, 8⟩)]
+      (.option (.int .i8 false)) =
+      .ok (.optionVal none, MemoryState.empty) :=
+  rfl
+
+/-- Guards `core_contracts_leading_zeros_bit_test` and
+`core_contracts_leading_zeros_width`: dedicated `u32::leading_zeros` and
+`u64::leading_zeros` checks across zero, low-bit, and MSB-set inputs. -/
+theorem refute_core_contracts_leading_zeros_u32_u64 :
+    let u32Ty : MirTy := .int .i32 false
+    let u64Ty : MirTy := .int .i64 false
+    execCoreContractOp MemoryState.empty (.numLeadingZeros .i32 false)
+      [(u32Ty, .scalar ⟨.i32, false, 0⟩)] u32Ty =
+      .ok (.scalar ⟨.i32, false, 32⟩, MemoryState.empty) ∧
+    execCoreContractOp MemoryState.empty (.numLeadingZeros .i32 false)
+      [(u32Ty, .scalar ⟨.i32, false, 1⟩)] u32Ty =
+      .ok (.scalar ⟨.i32, false, 31⟩, MemoryState.empty) ∧
+    execCoreContractOp MemoryState.empty (.numLeadingZeros .i32 false)
+      [(u32Ty, .scalar ⟨.i32, false, BitVec.ofNat 128 0x80000000⟩)] u32Ty =
+      .ok (.scalar ⟨.i32, false, 0⟩, MemoryState.empty) ∧
+    execCoreContractOp MemoryState.empty (.numLeadingZeros .i64 false)
+      [(u64Ty, .scalar ⟨.i64, false, 0⟩)] u32Ty =
+      .ok (.scalar ⟨.i32, false, 64⟩, MemoryState.empty) ∧
+    execCoreContractOp MemoryState.empty (.numLeadingZeros .i64 false)
+      [(u64Ty, .scalar ⟨.i64, false, 1⟩)] u32Ty =
+      .ok (.scalar ⟨.i32, false, 63⟩, MemoryState.empty) ∧
+    execCoreContractOp MemoryState.empty (.numLeadingZeros .i64 false)
+      [(u64Ty, .scalar ⟨.i64, false, BitVec.ofNat 128 0x8000000000000000⟩)]
+      u32Ty =
+      .ok (.scalar ⟨.i32, false, 0⟩, MemoryState.empty) :=
+  ⟨rfl, rfl, rfl, rfl, rfl, rfl⟩
+
+/-- Guard `core_contracts_count_ones_bit_count`: `count_ones` sums set bits
+across `u32` and signed `i8` operands. -/
+theorem refute_core_contracts_count_ones :
+    let u32Ty : MirTy := .int .i32 false
+    execCoreContractOp MemoryState.empty (.numCountOnes .i32 false)
+      [(u32Ty, .scalar ⟨.i32, false, BitVec.ofNat 128 0x0f0f0f0f⟩)] u32Ty =
+      .ok (.scalar ⟨.i32, false, 16⟩, MemoryState.empty) ∧
+    execCoreContractOp MemoryState.empty (.numCountOnes .i8 true)
+      [(.int .i8 true, .scalar ⟨.i8, true, BitVec.ofNat 128 0xff⟩)] u32Ty =
+      .ok (.scalar ⟨.i32, false, 8⟩, MemoryState.empty) :=
+  ⟨rfl, rfl⟩
+
+/-- Guard `core_contracts_trailing_zeros_bit_test`: `trailing_zeros` stops at
+the least-significant set bit for `u32` and `u64` and returns `BITS` for `0`. -/
+theorem refute_core_contracts_trailing_zeros :
+    let u32Ty : MirTy := .int .i32 false
+    let u64Ty : MirTy := .int .i64 false
+    execCoreContractOp MemoryState.empty (.numTrailingZeros .i32 false)
+      [(u32Ty, .scalar ⟨.i32, false, 0⟩)] u32Ty =
+      .ok (.scalar ⟨.i32, false, 32⟩, MemoryState.empty) ∧
+    execCoreContractOp MemoryState.empty (.numTrailingZeros .i32 false)
+      [(u32Ty, .scalar ⟨.i32, false, 8⟩)] u32Ty =
+      .ok (.scalar ⟨.i32, false, 3⟩, MemoryState.empty) ∧
+    execCoreContractOp MemoryState.empty (.numTrailingZeros .i64 false)
+      [(u64Ty, .scalar ⟨.i64, false, BitVec.ofNat 128 0x100000000⟩)] u32Ty =
+      .ok (.scalar ⟨.i32, false, 32⟩, MemoryState.empty) :=
+  ⟨rfl, rfl, rfl⟩
+
+/-- Guard `core_contracts_is_multiple_of_zero_rhs`: `0.is_multiple_of(0)` is
+`true` while `5.is_multiple_of(0)` is `false`. -/
+theorem refute_core_contracts_is_multiple_of_zero_rhs :
+    let u64Ty : MirTy := .int .i64 false
+    execCoreContractOp MemoryState.empty (.numIsMultipleOf .i64 false)
+      [(u64Ty, .scalar ⟨.i64, false, 0⟩), (u64Ty, .scalar ⟨.i64, false, 0⟩)]
+      .bool = .ok (.bool true, MemoryState.empty) ∧
+    execCoreContractOp MemoryState.empty (.numIsMultipleOf .i64 false)
+      [(u64Ty, .scalar ⟨.i64, false, 5⟩), (u64Ty, .scalar ⟨.i64, false, 0⟩)]
+      .bool = .ok (.bool false, MemoryState.empty) :=
+  ⟨rfl, rfl⟩
+
+/-- Guard `core_contracts_is_multiple_of_unsigned_only`: signed
+`numIsMultipleOf` fails closed as `.unsupported`. -/
+theorem refute_core_contracts_is_multiple_of_unsigned_only :
+    execCoreContractOp MemoryState.empty (.numIsMultipleOf .i8 true)
+      [(.int .i8 true, .scalar ⟨.i8, true, 4⟩),
+       (.int .i8 true, .scalar ⟨.i8, true, 2⟩)] .bool =
+      .error .unsupported :=
+  rfl
 
 end GuardMutation

@@ -2230,6 +2230,7 @@ def describeUndefinedStepFault (prog : Program) (frame : FrameState) (mem : Memo
               | .usizeUncheckedSub =>
                 "unchecked arithmetic overflow: Trusted.MirSemantics.FaultKind.undefined"
               | .sliceGetUncheckedRangeTo | .sliceGetUncheckedRangeFrom
+              | .sliceGetUncheckedRange | .sliceGetUncheckedIndex
               | .sliceIndexRange _ _ | .sliceIndexRangeFrom _ _
               | .sliceIsEmpty _ | .sliceSplitAt _ _ | .memReplace _
               | .optionTake _ | .ptrAdd _ _ | .sliceLen | .arrayEq _ _
@@ -2237,13 +2238,16 @@ def describeUndefinedStepFault (prog : Program) (frame : FrameState) (mem : Memo
               | .vecIndex | .vecIndexMut | .vecDeref | .vecDerefMut | .vecReserve
               | .boxFromVec | .boxDeref | .boxDerefMut | .boxClone | .boxNew _ =>
                 "pointer or memory access undefined: Trusted.MirSemantics.FaultKind.undefined"
-              | .numIsMultipleOf _ _ | .numCheckedAdd _ _ | .numCheckedMul _ _
-              | .numCheckedSub _ _ | .numSaturatingAdd _ _ | .numWrappingShl _ _
-              | .numWrappingShr _ _ | .numLeadingZeros _ _
-              | .numOverflowingAdd _ _ | .numOverflowingSub _ _
-              | .cmpMin _ _ | .cmpMax _ _ | .optionIsSome _
+              | .numIsMultipleOf _ _ | .numNextMultipleOf _ _ | .numDivCeil _ _
+              | .numCheckedAdd _ _ | .numCheckedMul _ _
+              | .numCheckedSub _ _ | .numCheckedShl _ _ | .numSaturatingAdd _ _
+              | .numWrappingShl _ _ | .numWrappingShr _ _ | .numLeadingZeros _ _
+              | .numCountOnes _ _ | .numTrailingZeros _ _
+              | .numNextPowerOfTwo _ _ | .numOverflowingAdd _ _
+              | .numOverflowingSub _ _ | .numOverflowingMul _ _
+              | .cmpMin _ _ | .cmpMax _ _ | .memSizeOf _ | .optionIsSome _
               | .optionIsNone _ | .optionUnwrap _ | .intToLeBytes _ _
-              | .panicAbort | .vecNew _ =>
+              | .intFromLeBytes _ _ | .panicAbort | .vecNew _ =>
                 "uninitialized or invalid value undefined: Trusted.MirSemantics.FaultKind.undefined"
             | .error _ =>
               "uninitialized or invalid value undefined: Trusted.MirSemantics.FaultKind.undefined"

@@ -2762,6 +2762,9 @@ theorem execCoreCallOp_sliceGetUncheckedRangeTo_spec
           cases s with
           | false =>
             dsimp only at h_op
+            have hW : (!IntWidth.beq .i8 .i8 || !(false == false)) = false :=
+              rfl
+            rw [hW, if_neg Bool.false_ne_true] at h_op
             cases h_esc : (Mutability.beq inMut .shared &&
                 Mutability.beq outMut .mut) with
             | true => rw [h_esc] at h_op; cases h_op
@@ -2823,6 +2826,9 @@ theorem execCoreCallOp_sliceGetUncheckedRangeFrom_spec
           cases s with
           | false =>
             dsimp only at h_op
+            have hW : (!IntWidth.beq .i8 .i8 || !(false == false)) = false :=
+              rfl
+            rw [hW, if_neg Bool.false_ne_true] at h_op
             cases h_esc : (Mutability.beq inMut .shared &&
                 Mutability.beq outMut .mut) with
             | true => rw [h_esc] at h_op; cases h_op

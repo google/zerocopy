@@ -2004,18 +2004,21 @@ fn parse_core_num_impl_method(path: &str) -> Option<(IntTy, &str)> {
 /// - `<[T]>::{len, is_empty, split_at, split_at_mut}` and
 ///   `core::ops::index::{Index::index, IndexMut::index_mut}` on `[T]` for
 ///   `Range<usize>` and `RangeFrom<usize>`;
-/// - `<[T]>::get_unchecked::<I>`: `pub const unsafe fn get_unchecked<I>(&self,
-///   index: I) -> &I::Output`, admitted only for `I = RangeTo<usize>` or
-///   `RangeFrom<usize>` (`SliceIndex<[T]> for ops::RangeTo<usize>` /
-///   `ops::RangeFrom<usize>`), whose "Safety" contract is that "Calling
-///   this method with an out-of-bounds index is *[undefined behavior]*";
+/// - `<[T]>::get_unchecked::<I>`
+///   (`get_unchecked<I>(&self, index: I) -> &I::Output`), admitted for
+///   `I = Range<usize>`, `RangeTo<usize>`, `RangeFrom<usize>` (over integer
+///   slices `[Int]`), or `usize` (over sized ref-free elements,
+///   `SliceIndex<[T]>` in `library/core/src/slice/index.rs`);
+///   `get_unchecked_mut` is not captured;
 /// - `<*const T>::add` and `<*mut T>::add`: `pub const unsafe fn add(self,
 ///   count: usize) -> Self where T: Sized`;
 /// - `core::num` inherent integer methods `unchecked_sub` (`usize` only),
-///   `is_multiple_of` (unsigned), `checked_{add, mul, sub}`,
-///   `saturating_add`, `wrapping_{shl, shr}`, `leading_zeros`,
-///   `overflowing_{add, sub}`, and `to_le_bytes`;
+///   `is_multiple_of` / `next_multiple_of` / `div_ceil` / `next_power_of_two`
+///   (unsigned), `checked_{add, mul, sub, shl}`, `saturating_add`,
+///   `wrapping_{shl, shr}`, `leading_zeros`, `count_ones`, `trailing_zeros`,
+///   `overflowing_{add, sub, mul}`, `to_le_bytes`, and `from_le_bytes`;
 /// - `core::cmp::{min, max}` on integers, `core::mem::replace`,
+///   `core::mem::size_of` (types with a modeled Profile v2 layout),
 ///   `core::option::Option::<T>::{is_some, is_none, take, unwrap}`, and
 ///   structural `<[T; N] as core::cmp::PartialEq>::eq`.
 ///
@@ -2023,15 +2026,16 @@ fn parse_core_num_impl_method(path: &str) -> Option<(IntTy, &str)> {
 /// below, whose contracts are stated in `Trusted.MirSemantics.AllocContracts`.
 ///
 /// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/library/core/src/slice/mod.rs#L101-L138
-/// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/library/core/src/slice/mod.rs#L606-L647
+/// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/library/core/src/slice/mod.rs#L639-L660
 /// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/library/core/src/slice/mod.rs#L1953-L1992
-/// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/library/core/src/slice/index.rs#L435-L588
+/// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/library/core/src/slice/index.rs#L237-L616
 /// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/library/core/src/ops/index.rs#L73-L179
 /// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/library/core/src/ptr/const_ptr.rs#L811-L832
 /// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/library/core/src/ptr/mut_ptr.rs#L909-L930
-/// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/library/core/src/num/uint_macros.rs#L896-L1138
+/// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/library/core/src/num/uint_macros.rs#L84-L4085
+/// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/library/core/src/num/int_macros.rs#L76-L3887
 /// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/library/core/src/cmp.rs#L1034-L1078
-/// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/library/core/src/mem/mod.rs#L916-L932
+/// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/library/core/src/mem/mod.rs#L373-L932
 /// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/library/core/src/option.rs#L632-L1903
 fn core_call_op<'tcx>(
     tcx: TyCtxt<'tcx>,
@@ -2079,17 +2083,25 @@ fn core_call_op<'tcx>(
     if let Some((ity, method)) = parse_core_num_impl_method(path.as_str()) {
         return match method {
             "is_multiple_of" if !ity.signed => Ok(ir::CoreCallOp::NumIsMultipleOf(ity)),
+            "next_multiple_of" if !ity.signed => Ok(ir::CoreCallOp::NumNextMultipleOf(ity)),
+            "div_ceil" if !ity.signed => Ok(ir::CoreCallOp::NumDivCeil(ity)),
             "checked_add" => Ok(ir::CoreCallOp::NumCheckedAdd(ity)),
             "checked_mul" => Ok(ir::CoreCallOp::NumCheckedMul(ity)),
             "checked_sub" => Ok(ir::CoreCallOp::NumCheckedSub(ity)),
+            "checked_shl" => Ok(ir::CoreCallOp::NumCheckedShl(ity)),
             "saturating_add" => Ok(ir::CoreCallOp::NumSaturatingAdd(ity)),
             "wrapping_shl" => Ok(ir::CoreCallOp::NumWrappingShl(ity)),
             "wrapping_shr" => Ok(ir::CoreCallOp::NumWrappingShr(ity)),
             "leading_zeros" => Ok(ir::CoreCallOp::NumLeadingZeros(ity)),
+            "count_ones" => Ok(ir::CoreCallOp::NumCountOnes(ity)),
+            "trailing_zeros" => Ok(ir::CoreCallOp::NumTrailingZeros(ity)),
+            "next_power_of_two" if !ity.signed => Ok(ir::CoreCallOp::NumNextPowerOfTwo(ity)),
             "overflowing_add" => Ok(ir::CoreCallOp::NumOverflowingAdd(ity)),
             "overflowing_sub" => Ok(ir::CoreCallOp::NumOverflowingSub(ity)),
+            "overflowing_mul" => Ok(ir::CoreCallOp::NumOverflowingMul(ity)),
             "unchecked_sub" if ity == usize_int => Ok(ir::CoreCallOp::UsizeUncheckedSub),
             "to_le_bytes" => Ok(ir::CoreCallOp::IntToLeBytes { int_ty: ity }),
+            "from_le_bytes" => Ok(ir::CoreCallOp::IntFromLeBytes { int_ty: ity }),
             _ => Err(format!("unsupported core call `{path}`")),
         };
     }
@@ -2106,6 +2118,12 @@ fn core_call_op<'tcx>(
                 }
                 ir::Ty::RangeFrom { elem: e } if *e == usize_ty => {
                     Ok(ir::CoreCallOp::SliceGetUncheckedRangeFrom)
+                }
+                ir::Ty::Range { elem: e } if *e == usize_ty => {
+                    Ok(ir::CoreCallOp::SliceGetUncheckedRange)
+                }
+                ir::Ty::Int(ity) if ity == usize_int => {
+                    Ok(ir::CoreCallOp::SliceGetUncheckedIndex)
                 }
                 other => Err(format!(
                     "unsupported get_unchecked index type {other:?}"
@@ -2197,6 +2215,33 @@ fn core_call_op<'tcx>(
             Ok(ir::CoreCallOp::MemReplace {
                 ty: ty(tcx, arg_ty)?,
             })
+        }
+        "core::mem::size_of" => {
+            let arg_ty = fn_args
+                .first()
+                .and_then(|a| a.as_type())
+                .ok_or_else(|| format!("missing type argument in {path}"))?;
+            let ty_ir = ty(tcx, arg_ty)?;
+            if !ty_ir.is_sized() || !ty_ir.is_supported_v2_local() {
+                return Err(format!("unsupported {path} type {ty_ir:?}"));
+            }
+            let Some((expected_size, _)) = ty_ir.v2_layout() else {
+                return Err(format!(
+                    "unsupported {path} type {ty_ir:?} lacks v2 layout"
+                ));
+            };
+            let layout = tcx
+                .layout_of(typing_env.as_query_input(arg_ty))
+                .map_err(|err| format!("failed to compute layout for {arg_ty:?}: {err}"))?;
+            if layout.is_unsized() || layout.size.bytes() as usize != expected_size {
+                return Err(format!(
+                    "{path} layout (unsized={}, size={}) disagrees with \
+                     modeled size {expected_size} for {ty_ir:?}",
+                    layout.is_unsized(),
+                    layout.size.bytes(),
+                ));
+            }
+            Ok(ir::CoreCallOp::MemSizeOf { ty: ty_ir })
         }
         "core::option::Option::<T>::is_some" => {
             let inner_ty = fn_args
