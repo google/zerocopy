@@ -1830,6 +1830,28 @@ impl<'a> Env<'a> {
         Ok(Low::Int(term, if math { Ty::Math } else { Ty::Int(t) }))
     }
 
+    /// Rejects `arg` (lowered to `term`) as the divisor of method `name`
+    /// unless it is a nonzero constant or `facts` says it is nonzero, as for
+    /// `/`.
+    fn require_nonzero_divisor(
+        &self,
+        name: &str,
+        arg: &Expr,
+        term: &str,
+        facts: &[String],
+    ) -> Result<(), Diagnostic> {
+        let nonzero_lit = self.const_value(arg).is_some_and(|v| v.mag != 0);
+        if nonzero_lit || facts.iter().any(|f| f == term) {
+            return Ok(());
+        }
+        Err(Diagnostic::new(
+            "E_ANNEAL_UNGUARDED_SPEC_DIV",
+            arg.span,
+            format!("the divisor of `{name}` may be zero"),
+        )
+        .help(format!("guard it, e.g. `d != 0 ==> a.{name}(d) == ...`")))
+    }
+
     /// Lowers `arg`, the `u32` amount of method `name`, which as in Rust may
     /// be an untyped literal.
     fn u32_amount(
@@ -1867,8 +1889,8 @@ impl<'a> Env<'a> {
     /// same-width type of the other signedness. The mixed-signedness
     /// methods, such as `wrapping_add_signed`, take an operand of `recv`'s
     /// width and the other signedness. `unbounded_shl` and `unbounded_shr`
-    /// shift by any `u32` amount, and `midpoint` averages toward zero. An
-    /// operation that
+    /// shift by any `u32` amount, and `midpoint` averages toward zero. The
+    /// division methods take a divisor guarded as for `/`. An operation that
     /// needs an operand more than once applies a Lean `fun` to the operands,
     /// which evaluates each once and keeps every specification name out of
     /// the scope of its binders.
@@ -1987,15 +2009,7 @@ impl<'a> Env<'a> {
                 let (a, b, t) =
                     self.int_pair(name, &[recv.clone(), args[0].clone()], span, facts)?;
                 unsigned(t)?;
-                let nonzero_lit = self.const_value(&args[0]).is_some_and(|v| v.mag != 0);
-                if !nonzero_lit && !facts.contains(&b) {
-                    return Err(Diagnostic::new(
-                        "E_ANNEAL_UNGUARDED_SPEC_DIV",
-                        args[0].span,
-                        "the divisor of `div_ceil` may be zero",
-                    )
-                    .help("guard it, e.g. `d != 0 ==> a.div_ceil(d) == ...`"));
-                }
+                self.require_nonzero_divisor(name, &args[0], &b, facts)?;
                 // The quotient of non-negative `n` by positive `d`, rounded
                 // up, which fits in `t`.
                 let term = apply_fun(
@@ -2082,6 +2096,40 @@ impl<'a> Env<'a> {
                 let target = IntTy { signed: to_signed, ..t };
                 Ok(Low::Int(wrap_into(&a, target), ty(target)))
             }
+            // Division and remainder, truncating or Euclidean. Rust panics
+            // on a zero divisor, so the divisor must be guarded as for `/`.
+            // The `wrapping_` forms wrap the one quotient that overflows,
+            // `MIN / -1`, back to `MIN`; the others exist only on unsigned
+            // types, where no quotient overflows. No remainder overflows.
+            "wrapping_div" | "wrapping_rem" | "wrapping_div_euclid" | "wrapping_rem_euclid"
+            | "div_euclid" | "rem_euclid" => {
+                arity(1)?;
+                let (a, b, t) = self.int_pair(name, &[recv.clone(), args[0].clone()], span, facts)?;
+                if !name.starts_with("wrapping_") {
+                    unsigned(t)?;
+                }
+                self.require_nonzero_divisor(name, &args[0], &b, facts)?;
+                let euclid = name.ends_with("_euclid");
+                let term = if name.contains("rem") {
+                    format!("({} {a} {b})", if euclid { INT_EMOD } else { INT_TMOD })
+                } else {
+                    // A Euclidean quotient differs from the truncated one only
+                    // for a negative dividend, where the Euclidean remainder
+                    // `intEmod` makes `n - r` an exact multiple of `d`.
+                    let quotient = if euclid && t.signed {
+                        apply_fun(
+                            &["«n»", "«d»"],
+                            INT,
+                            &format!("{INT_TDIV} («n» - {INT_EMOD} «n» «d») «d»"),
+                            &[a, b],
+                        )
+                    } else {
+                        format!("({INT_TDIV} {a} {b})")
+                    };
+                    if t.signed { wrap_into(&quotient, t) } else { quotient }
+                };
+                Ok(Low::Int(term, ty(t)))
+            }
             // Unlike `<<` and `>>`, these shift by any `u32` amount: one
             // that is not below the width shifts every bit out, leaving `0`,
             // or `-1` for a negative operand of a signed right shift.
@@ -2167,7 +2215,8 @@ impl<'a> Env<'a> {
                  `is_multiple_of`, `div_ceil`, `rotate_left`, `rotate_right`, `is_positive`, \
                  `is_negative`, `signum`, `unsigned_abs`, `saturating_abs`, `wrapping_abs`, \
                  `cast_signed`, `cast_unsigned`, `unbounded_shl`, `unbounded_shr`, \
-                 `midpoint`, `abs_diff`, the mixed-signedness \
+                 `midpoint`, `wrapping_div`, `wrapping_rem`, `wrapping_div_euclid`, \
+                 `wrapping_rem_euclid`, `div_euclid`, `rem_euclid`, `abs_diff`, the mixed-signedness \
                  `wrapping_add_signed` and its kin, and the `wrapping_*`, `saturating_*`, and \
                  `no_overflow_*` intrinsics",
             )),

@@ -2227,6 +2227,80 @@ fn unbounded_shifts_and_midpoint_are_checked_strictly() {
 }
 
 #[test]
+fn division_methods_lower_exactly() {
+    let x = "(specInt (specArg q 0))";
+    let y = "(specInt (specArg q 1))";
+    let emod = "Trusted.MirSemantics.intEmod";
+    let tdiv = "Trusted.MirSemantics.intTdiv";
+    let tmod = "Trusted.MirSemantics.intTmod";
+    let lean = |clause: &str, sig: &str| {
+        lower_one(&wrap(clause, sig)).unwrap_or_else(|e| panic!("{clause}: {e:?}")).spec_lean
+    };
+    let has = |text: &str, want: &str| assert!(text.contains(want), "missing {want} in\n{text}");
+    let i8_sig = "fn f(a: i8, b: i8) -> i8";
+    let guarded = |method: &str| format!("ensures(|r| b != 0 ==> r == a.{method}(b))");
+    // A signed quotient wraps `MIN / -1` back to `MIN`; remainders never
+    // overflow.
+    has(
+        &lean(&guarded("wrapping_div"), i8_sig),
+        &format!("({emod} (({tdiv} {x} {y}) + 128) 256 - 128)"),
+    );
+    has(&lean(&guarded("wrapping_rem"), i8_sig), &format!("(specInt out.ret) = ({tmod} {x} {y})"));
+    // The Euclidean quotient subtracts the Euclidean remainder first.
+    let ediv = format!("((fun («n» «d» : Int) => {tdiv} («n» - {emod} «n» «d») «d») {x} {y})");
+    has(
+        &lean(&guarded("wrapping_div_euclid"), i8_sig),
+        &format!("({emod} ({ediv} + 128) 256 - 128)"),
+    );
+    has(
+        &lean(&guarded("wrapping_rem_euclid"), i8_sig),
+        &format!("(specInt out.ret) = ({emod} {x} {y})"),
+    );
+    // On unsigned operands no quotient overflows, and the Euclidean
+    // quotient is the truncated one.
+    let u8_sig = "fn f(a: u8, b: u8) -> u8";
+    for method in ["wrapping_div", "wrapping_div_euclid", "div_euclid"] {
+        has(&lean(&guarded(method), u8_sig), &format!("(specInt out.ret) = ({tdiv} {x} {y}))"));
+    }
+    has(&lean(&guarded("rem_euclid"), u8_sig), &format!("(specInt out.ret) = ({emod} {x} {y}))"));
+    // A nonzero literal divisor needs no guard, and neither does one that
+    // `requires` proves nonzero.
+    lower_one(&wrap("ensures(|r| r == a.wrapping_div(-1))", i8_sig)).unwrap();
+    lower_one(&wrap("requires(b != 0), ensures(|r| r == a.rem_euclid(b))", u8_sig)).unwrap();
+    lower_one(&wrap("ensures(|r| math(r) == math(a.wrapping_rem_euclid(3) + 1))", i8_sig)).unwrap();
+}
+
+#[test]
+fn division_methods_are_checked_strictly() {
+    let sig = "fn f(u: u8, w: u16, i: i8, n: u32)";
+    for (clause, code) in [
+        ("requires(i.wrapping_div(i) == i)", "E_ANNEAL_UNGUARDED_SPEC_DIV"),
+        ("requires(u.wrapping_rem(0) == u)", "E_ANNEAL_UNGUARDED_SPEC_DIV"),
+        ("requires(i.wrapping_div_euclid(i) == i)", "E_ANNEAL_UNGUARDED_SPEC_DIV"),
+        ("requires(i.wrapping_rem_euclid(i) == i)", "E_ANNEAL_UNGUARDED_SPEC_DIV"),
+        ("requires(u.div_euclid(u) == u)", "E_ANNEAL_UNGUARDED_SPEC_DIV"),
+        ("requires(u.rem_euclid(u) == u)", "E_ANNEAL_UNGUARDED_SPEC_DIV"),
+        ("requires(i.div_euclid(2i8) == i)", "E_ANNEAL_SPEC_TYPE_MISMATCH"),
+        ("requires(i.rem_euclid(2i8) == i)", "E_ANNEAL_SPEC_TYPE_MISMATCH"),
+        ("requires(u.wrapping_div(w) == u)", "E_ANNEAL_SPEC_TYPE_MISMATCH"),
+        ("requires(u.wrapping_rem() == u)", "E_ANNEAL_SPEC_ARITY"),
+        ("requires(5.rem_euclid(3) == u)", "E_ANNEAL_SPEC_TYPE_ANNOTATION_NEEDED"),
+        ("requires(u.checked_div(2) == u)", "E_ANNEAL_SPEC_UNSUPPORTED_EXPR"),
+        ("max_steps = i.wrapping_div(2i8)", "E_ANNEAL_SPEC_TYPE_MISMATCH"),
+    ] {
+        expect_error(&wrap(clause, sig), code);
+    }
+    let r =
+        expect_error(&wrap("requires(i.div_euclid(2i8) == i)", sig), "E_ANNEAL_SPEC_TYPE_MISMATCH");
+    assert!(r.contains("only on unsigned integer types"), "{r}");
+    let r =
+        expect_error(&wrap("requires(i.wrapping_div(i) == i)", sig), "E_ANNEAL_UNGUARDED_SPEC_DIV");
+    assert!(r.contains("`d != 0 ==> a.wrapping_div(d) == ...`"), "{r}");
+    // Unsigned results are step counts.
+    lower_one(&wrap("max_steps = n.div_euclid(4) + n.wrapping_rem(3)", sig)).unwrap();
+}
+
+#[test]
 fn saturating_negation_and_abs_diff_intrinsics_lower_exactly() {
     let x = "(specInt (specArg q 0))";
     let y = "(specInt (specArg q 1))";

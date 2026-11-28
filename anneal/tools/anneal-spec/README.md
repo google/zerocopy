@@ -218,6 +218,17 @@ two cases with Lean's `if`. `a.midpoint(b)` takes operands of one type and
 lowers to `intTdiv (a + b) 2`: as in Rust, the average rounds toward zero, and
 it lies between the operands, so it is in their type.
 
+The division methods take operands of one type and a divisor guarded as for
+`/`, since Rust panics on a zero divisor. `a.wrapping_div(b)` and
+`a.wrapping_rem(b)` truncate as `/` and `%` do, and `a.wrapping_div_euclid(b)`
+and `a.wrapping_rem_euclid(b)` compute the Euclidean quotient and remainder,
+whose remainder `intEmod a b` is never negative; the Euclidean quotient lowers
+to `intTdiv (a - intEmod a b) b` through a `fun` that evaluates `a` and `b`
+once. The `wrapping_` quotients reduce into the operands' type, so `MIN / -1`
+wraps to `MIN`, the one quotient that overflows. `a.div_euclid(b)` and
+`a.rem_euclid(b)` take unsigned operands, since on signed ones Rust panics on
+`MIN / -1`; there they equal the truncating forms.
+
 Division and remainder lower to
 `Trusted.MirSemantics.intTdiv`/`intTmod` (Rust's truncating semantics, as in
 `Int.tdiv`/`Int.tmod`) and require the divisor to be a nonzero literal or
