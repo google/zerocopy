@@ -115,18 +115,22 @@ verifier backed by independent stock Lean `v4.35.0+` kernels.
 
 - **`"target-consts"` (module index):** `SpecPreflight` imports the admitted
   sysroot plus the compiled `Model`, `Capture`, `Specification`, and
-  `Expected` `.olean`s (never a `Proof` `.olean`; `loadExts := false`, no
-  initializers) and reports each module's exact constant inventory from
-  each module's `ModuleData`. Before importing, every target `.olean` passes
-  the same pre-import header, companion, and `isModule` validation as the
-  legacy `"target-audit"`. It rejects any `unsafe` target constant and any
-  non-realized constant that another loaded module also declares, and reports
-  the targets' `@[implemented_by]`/`@[extern]`/`@[csimp]` subjects, none of
-  which may be reached. Compiler-generated constants (anonymous and
-  `deriving` instances, structure constructors/projections, `where`/`let rec`
-  auxiliaries, matchers, `private` declarations) are thereby attributed to
-  their defining module. Unlike the legacy `"target-audit"`, the comparator
-  route does not inspect compiler-override attributes on `Proof`
+  `Expected` `.olean`s (never a `Proof` `.olean`; `loadExts := false`,
+  `importAll := true`, no initializers), validates `"targetRoles"` against
+  `"targets"`, and reports each module's exact constant inventory from each
+  module's `ModuleData`. Before and after importing, every target `.olean*`
+  part passes the same pre-import header, companion `imports`/inventory/
+  `isValidCompanionConstant` payload-and-erasure consistency, and `isModule`
+  validation as `"target-audit"`. It rejects any `unsafe` target constant and
+  any non-realized constant that another loaded module also declares, scans
+  every `.olean*` and `.ir*` part and repeated `ModuleData.entries` pair to
+  report `@[implemented_by]`/`@[extern]`/`@[csimp]` subjects (none of which
+  may be reached) and enforce `Lean.aliasExtension` role, namespace, safety,
+  axiom, `opaque`, and compiler-override rules. Compiler-generated constants
+  (anonymous and `deriving` instances, structure constructors/projections,
+  `where`/`let rec` auxiliaries, matchers, `private` declarations) are thereby
+  attributed to their defining module. Unlike the legacy `"target-audit"`, the
+  comparator route does not inspect compiler-override attributes on `Proof`
   declarations (their `.olean`s never load outside the sandboxed exporter;
   such attributes cannot change kernel reduction), and receipts list that and
   the anti-vacuity lint under `deferred`.
@@ -184,12 +188,15 @@ verifier backed by independent stock Lean `v4.35.0+` kernels.
      must have one of those two origins; canonical inputs must come from their
      designated roles, and the canonical root must be `CrateTheorem` or
      `UnitTheorem` (applied to `Crate.mk`) or their Profile v2 counterparts
-     (applied to `CrateV2.mk`). Proof-origin constants may not use
-     `KERNEL_ACCELERATED_NAMES`, `RESERVED_KERNEL_ROOTS`, or the `Trusted`
-     root (except generated equation/splitter helpers of a pinned parent).
-     Strips elaboration-only `optParam` wrappers for statement-origin checks
-     and applies the direct and transitive specification bans to every
-     constant the `Specification` modules declare.
+     (applied to `CrateV2.mk`). Non-sysroot constants may not use
+     `KERNEL_ACCELERATED_NAMES`, `RESERVED_KERNEL_ROOTS` (scoping `Captured`
+     to `Capture`, `Expected` to `Expected`, and reserving `SpecPreflight` and
+     `TrustedBoundary` across all target roles), or the `Trusted` root outside
+     `Model` (except generated equation/splitter helpers of a pinned parent).
+     Strips elaboration-only `optParam` wrappers for statement-origin checks,
+     rejects `autoParam` on `Specification` declarations, and applies the
+     direct and transitive specification bans to every constant the
+     `Specification` modules declare.
   3. **Exact theorem, opacity, and axiom checks:** Verifies that `Proof.verify`
      is a theorem with empty universe parameters whose type matches
      `Expected.claim`, that its transitive cone and export contain zero
@@ -283,12 +290,12 @@ dedicated negative refutation fixtures outside `anneal/trusted/`):
    `CanaryFixtures.lean`, is explicitly excluded as fixture/helper data
    verified directly by Pass 1 `Trusted.MirSemantics` canaries and Pass 2
    `Trusted.Correspondence`) alongside auditor header-import (`audit_headers`,
-   `8` guards across `TrustedBoundary.lean` and `SpecPreflight.lean`) and
-   boundary (`audit_boundary`, `12` `"spec-preflight"` and `"target-audit"`
-   guards) checks in `TrustedBoundary.lean` (`362` Lean guards in total), plus
-   `extract_guards` (`45` `rustc-capture` guards; `407` total cataloged
-   guards). Each catalog entry pins a unique source anchor and its exact
-   guard-weakening mutation.
+   `12` guards across `TrustedBoundary.lean` and `SpecPreflight.lean`) and
+   boundary (`audit_boundary`, `57` `"spec-preflight"`, `"target-audit"`, and
+   Pass-1 `"audit"` guards) checks in `TrustedBoundary.lean` (`411` Lean guards
+   in total), plus `extract_guards` (`45` `rustc-capture` guards; `456` total
+   cataloged guards). Each catalog entry pins a unique source anchor and its
+   exact guard-weakening mutation.
 2. **Isolated single-guard mutation:** Copies the relevant files into an
    isolated temporary directory (never modifying the working tree), applies one
    guard-removal mutation at a time, and recompiles only the minimal downstream

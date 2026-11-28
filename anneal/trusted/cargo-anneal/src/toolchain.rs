@@ -731,6 +731,22 @@ pub(crate) fn validate_pinned_library_graph(
     validate_sysroot_graph_with(graph, true)
 }
 
+/// Return `true` when `module` exposes unsafe/system-level `Lean.*`, `Lake.*`,
+/// umbrella `Std`/`Std.Internal`, `Std.Internal.UV.*`, `Std.Async.*`, or
+/// `Std.Http.*` libraries.
+pub(crate) fn is_forbidden_transitive_library(module: &str) -> bool {
+    let root = module.split('.').next().unwrap_or("");
+    matches!(root, "Lean" | "Lake")
+        || module == "Std"
+        || module == "Std.Internal"
+        || module == "Std.Internal.UV"
+        || module.starts_with("Std.Internal.UV.")
+        || module == "Std.Async"
+        || module.starts_with("Std.Async.")
+        || module == "Std.Http"
+        || module.starts_with("Std.Http.")
+}
+
 fn validate_sysroot_graph_with(
     graph: &BTreeMap<String, Vec<ImportEdge>>,
     require_submodules_only: bool,
@@ -754,6 +770,12 @@ fn validate_sysroot_graph_with(
                 format!("disallowed sysroot module {module}: {allowed_desc}"),
             ));
         }
+        if is_forbidden_transitive_library(module) {
+            return Err(Failure::policy(
+                "sysroot",
+                format!("disallowed sysroot import {module}"),
+            ));
+        }
         for edge in edges {
             if !is_ok(&edge.module) {
                 return Err(Failure::policy(
@@ -762,6 +784,12 @@ fn validate_sysroot_graph_with(
                         "disallowed sysroot import {} in {module}: {allowed_desc}",
                         edge.module
                     ),
+                ));
+            }
+            if is_forbidden_transitive_library(&edge.module) {
+                return Err(Failure::policy(
+                    "sysroot",
+                    format!("disallowed sysroot import {} in {module}", edge.module),
                 ));
             }
             if !graph.contains_key(&edge.module) {
@@ -2994,6 +3022,49 @@ mod unpinned_sysroot_tests {
         let err = compute_unpinned_foundation_closure(&std_in_core).unwrap_err();
         assert_eq!(err.code, 1);
         assert!(err.message.contains("exceeded Init.*"), "{err}");
+
+        // Forbidden transitive sysroot libraries (`Std`, `Std.Internal`,
+        // `Std.Internal.UV.*`, `Std.Async.*`, `Std.Http.*`) are rejected in
+        // both direct graph nodes and transitive edges.
+        assert!(!is_forbidden_transitive_library("Std.Data.HashMap"));
+        for forbidden_lib in [
+            "Std",
+            "Std.Internal",
+            "Std.Internal.UV",
+            "Std.Internal.UV.Loop",
+            "Std.Async",
+            "Std.Async.DNS",
+            "Std.Http",
+            "Std.Http.Client",
+        ] {
+            assert!(is_forbidden_transitive_library(forbidden_lib), "{forbidden_lib}");
+            let mut direct_graph = six_module_graph();
+            direct_graph.insert(forbidden_lib.to_string(), vec![edge("Init.Core")]);
+            let err_unpinned = compute_unpinned_foundation_closure(&direct_graph).unwrap_err();
+            assert_eq!(err_unpinned.code, 1, "unpinned {forbidden_lib}: {err_unpinned}");
+            assert!(
+                err_unpinned.message.contains("disallowed sysroot import"),
+                "unpinned {forbidden_lib}: {err_unpinned}"
+            );
+            let err_pinned = validate_pinned_library_graph(&direct_graph).unwrap_err();
+            assert_eq!(err_pinned.code, 1, "pinned {forbidden_lib}: {err_pinned}");
+            assert!(
+                err_pinned.message.contains("disallowed sysroot import")
+                    || err_pinned.message.contains("only Init.* and Std.*"),
+                "pinned {forbidden_lib}: {err_pinned}"
+            );
+
+            let mut edge_graph = six_module_graph();
+            edge_graph.insert("Std.SafeWrap".to_string(), vec![edge(forbidden_lib)]);
+            edge_graph.insert(forbidden_lib.to_string(), vec![edge("Init.Core")]);
+            let err_edge = validate_pinned_library_graph(&edge_graph).unwrap_err();
+            assert_eq!(err_edge.code, 1, "pinned edge {forbidden_lib}: {err_edge}");
+            assert!(
+                err_edge.message.contains("disallowed sysroot import")
+                    || err_edge.message.contains("only Init.* and Std.*"),
+                "pinned edge {forbidden_lib}: {err_edge}"
+            );
+        }
     }
 
     #[cfg(unix)]

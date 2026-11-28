@@ -548,6 +548,166 @@ fn spec_preflight_parse_tree_round_trip_and_negative_guards() {
             "def Internal.UV.evil : Nat := 0\n",
             "Internal.UV",
         ),
+        (
+            "term-default-or-of-nonempty",
+            "def Spec.badDefault : Nat := default_or_ofNonempty% unsafe\n",
+            "Lean.Parser.Term.defaultOrOfNonempty",
+        ),
+        (
+            "term-value-of",
+            "def Spec.valHelper : Nat := 0\ndef Spec.badVal : Nat := value_of% Spec.valHelper\n",
+            "Lean.Parser.Term.valueOf",
+        ),
+        (
+            "term-let-mvar",
+            "def Spec.badLetMVar : Nat := let_mvar% ?m := 0; 0\n",
+            "Lean.Parser.Term.letMVar",
+        ),
+        (
+            "term-wait-if-type-mvar",
+            "def Spec.badWaitTy : Nat := wait_if_type_mvar% ?m; 0\n",
+            "Lean.Parser.Term.waitIfTypeMVar",
+        ),
+        (
+            "term-wait-if-type-contains-mvar",
+            "def Spec.badWaitTyC : Nat := wait_if_type_contains_mvar% ?m; 0\n",
+            "Lean.Parser.Term.waitIfTypeContainsMVar",
+        ),
+        (
+            "term-wait-if-contains-mvar",
+            "def Spec.badWaitC : Nat := wait_if_contains_mvar% ?m; 0\n",
+            "Lean.Parser.Term.waitIfContainsMVar",
+        ),
+        (
+            "term-wait-for-expected-type",
+            "def Spec.badWaitExp : Nat := wait_for_expected_type% 0\n",
+            "Lean.Parser.Term.waitForExpectedType",
+        ),
+        (
+            "term-clear",
+            "def Spec.badClear (x : Nat) : Nat := clear% x; 0\n",
+            "Lean.Parser.Term.clear",
+        ),
+        (
+            "term-no-error-if-unused",
+            "def Spec.badUnused : Nat := no_error_if_unused% 0\n",
+            "Lean.Parser.Term.noErrorIfUnused",
+        ),
+        (
+            "term-type-of",
+            "def Spec.badTypeOf : Type := type_of% 0\n",
+            "Lean.Parser.Term.typeOf",
+        ),
+        (
+            "term-ensure-type-of",
+            "def Spec.badEnsureTy : Nat := ensure_type_of% 0 \"msg\" 0\n",
+            "Lean.Parser.Term.ensureTypeOf",
+        ),
+        (
+            "term-ensure-expected-type",
+            "def Spec.badEnsureExp : Nat := ensure_expected_type% \"msg\" 0\n",
+            "Lean.Parser.Term.ensureExpectedType",
+        ),
+        (
+            "term-no-implicit-lambda",
+            "def Spec.badNoImp : Nat → Nat := no_implicit_lambda% (fun x => x)\n",
+            "Lean.Parser.Term.noImplicitLambda",
+        ),
+        (
+            "term-struct-inst-default",
+            "def Spec.badStructDef : Nat := struct_inst_default%\n",
+            "Lean.Parser.Term.structInstDefault",
+        ),
+        (
+            "term-for-in-macro",
+            "def Spec.badForIn : Nat := for_in% [1] 0 (fun _ s => pure (.yield s))\n",
+            "Lean.Parser.Term.forInMacro",
+        ),
+        (
+            "term-for-in-macro-prime",
+            "def Spec.badForInP : Nat := for_in'% [1] 0 (fun _ _ s => pure (.yield s))\n",
+            "Lean.Parser.Term.forInMacro'",
+        ),
+        (
+            "open-only-uv",
+            "open Std.Internal (UV.Loop.alive)\n",
+            "disallowed open item Std.Internal.UV.Loop.alive",
+        ),
+        (
+            "open-renaming-uv",
+            "open Std.Internal renaming UV.Loop.alive -> uvAlive\n",
+            "disallowed open item Std.Internal.UV.Loop.alive",
+        ),
+        (
+            "open-renaming-chained-uv",
+            "open Std renaming Internal -> IntNs\nopen IntNs (UV.Loop.alive)\n",
+            "disallowed open item Std.Internal.UV.Loop.alive",
+        ),
+        (
+            "open-renaming-alias-expected",
+            "open Model renaming extFn -> Expected.claim\n",
+            "cannot open renaming alias reserved namespace Expected",
+        ),
+        (
+            "open-renaming-alias-trusted",
+            "open Model renaming extFn -> Trusted.MirSemantics.UnitTheorem\n",
+            "cannot open renaming alias reserved namespace Trusted",
+        ),
+        (
+            "open-renaming-alias-opt-param",
+            "open Model renaming extFn -> optParam\n",
+            "disallowed open renaming alias optParam",
+        ),
+        (
+            "open-renaming-alias-lean",
+            "open Model renaming extFn -> Lean.Parser.fake\n",
+            "cannot open renaming alias forbidden namespace Lean",
+        ),
+        (
+            "export-uv",
+            "export Std.Internal (UV.Loop.alive)\n",
+            "disallowed export item Std.Internal.UV.Loop.alive",
+        ),
+        (
+            "export-alias-expected",
+            "export Model (Expected.claim)\n",
+            "cannot export alias reserved namespace Expected",
+        ),
+        (
+            "export-alias-io",
+            "export Model (IO.println)\n",
+            "cannot export alias forbidden namespace IO",
+        ),
+        (
+            "export-alias-opt-param",
+            "export Model (optParam)\n",
+            "disallowed export alias optParam",
+        ),
+        (
+            "open-std-async",
+            "open Std (Async)\n",
+            "disallowed open item Std.Async",
+        ),
+        (
+            "ns-expected",
+            "namespace Expected\ndef bad : Nat := 0\nend Expected\n",
+            "cannot enter reserved namespace Expected",
+        ),
+        (
+            "ns-captured",
+            "namespace Captured\ndef bad : Nat := 0\nend Captured\n",
+            "cannot enter reserved namespace Captured",
+        ),
+        (
+            "ns-spec-preflight",
+            "namespace SpecPreflight\ndef bad : Nat := 0\nend SpecPreflight\n",
+            "cannot enter reserved namespace SpecPreflight",
+        ),
+        (
+            "ns-trusted-boundary",
+            "namespace TrustedBoundary\ndef bad : Nat := 0\nend TrustedBoundary\n",
+            "cannot enter reserved namespace TrustedBoundary",
+        ),
     ];
 
     // 1. Live parse-tree round-trip probe + exhaustive check of all negative
@@ -754,6 +914,24 @@ fn spec_preflight_parse_tree_round_trip_and_negative_guards() {
         "ident-list-head-bang",
         "ident-option-get-bang",
         "do-while",
+        "term-default-or-of-nonempty",
+        "term-value-of",
+        "open-only-uv",
+        "open-renaming-uv",
+        "export-uv",
+        "export-alias-expected",
+        "export-alias-io",
+        "export-alias-opt-param",
+        "open-renaming-chained-uv",
+        "open-renaming-alias-expected",
+        "open-renaming-alias-trusted",
+        "open-renaming-alias-opt-param",
+        "open-renaming-alias-lean",
+        "open-std-async",
+        "ns-expected",
+        "ns-captured",
+        "ns-spec-preflight",
+        "ns-trusted-boundary",
     ];
     for (idx, (label, snippet, expected)) in vectors
         .iter()

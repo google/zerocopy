@@ -1823,11 +1823,19 @@ impl Checker {
             foundation.sort_unstable();
             let libraries: Vec<&str> = adm.library_modules.iter().map(String::as_str).collect();
             let mut targets = Vec::with_capacity(module_roles.len());
-            for m in module_roles.keys() {
+            let mut target_roles = Vec::with_capacity(module_roles.len());
+            for (m, role) in module_roles {
                 let flag = is_module.get(m).copied().ok_or_else(|| {
                     Failure::operational(phase, format!("missing isModule expectation for {m}"))
                 })?;
+                let role_str = match role {
+                    TargetOriginRole::Model => "model",
+                    TargetOriginRole::Capture => "capture",
+                    TargetOriginRole::Specification => "specification",
+                    TargetOriginRole::Expected => "expected",
+                };
                 targets.push(json!([m, flag]));
+                target_roles.push(json!([m, role_str]));
             }
             json!({
                 "mode": phase,
@@ -1837,6 +1845,7 @@ impl Checker {
                 "libraries": libraries,
                 "graph": graph,
                 "targets": targets,
+                "targetRoles": target_roles,
             })
         };
         let resp = self.invoke_inspector(phase, &req)?;

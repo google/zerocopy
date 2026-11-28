@@ -575,6 +575,710 @@ fn spec_preflight_module_index_reports_target_compiler_overrides() {
     assert_eq!(overrides, expected);
 }
 
+/// `SpecPreflight` `"target-consts"` enforces `Lean.aliasExtension` export
+/// rules across target roles, admitting allowlisted `.foundation` exports
+/// (`System.Platform.getNumBits`, `Nat.add`) while rejecting unapproved
+/// axioms, `unsafe` exports, `Trusted`-root aliases, and reserved-root
+/// aliases.
+#[test]
+fn spec_preflight_module_index_enforces_alias_exports_and_admits_foundation_exports() {
+    let proof =
+        "import Expected\ntheorem Proof.verify : Expected.claim := And.intro rfl BitVec.and_self\n";
+
+    // Positive control: allowlisted `.foundation` exports (including
+    // `Quot.sound` from `Init.Prelude`) in `Spec` pass.
+    let mut ok_f = Fixture::new(proof);
+    ok_f.set(
+        "Spec",
+        TargetRole::Specification,
+        "prelude\nimport Model\nnamespace MySpec\n\
+         export System.Platform (getNumBits)\nexport Nat (add)\nexport Quot (sound)\nend MySpec\n\
+         def Spec.specs (p : BitVec 8) : Prop := BitVec.and p p = p\n",
+    );
+    let (roles, is_module) = with_spec_preflight(&ok_f);
+    let mut checker = cargo_anneal::Checker::new(&ok_f.root, None).unwrap();
+    checker.set_allow_unpinned_lean(true);
+    checker.run_target(&ok_f.request).unwrap();
+    checker.inspect_target_consts(&roles, &is_module).unwrap();
+
+    // Negative case: `Spec` exporting an unapproved axiom declared in `Model`.
+    let mut ax_f = Fixture::new(proof);
+    ax_f.set(
+        "Model",
+        TargetRole::Model,
+        "prelude\nimport Init.Data.BitVec.Basic\n\
+         namespace BadAx\naxiom unapprovedAx : Prop\nend BadAx\n\
+         namespace Trusted.MirSemantics\nstructure Crate where\n  program : BitVec 8\n  \
+         specs : BitVec 8 → Prop\ndef UnitTheorem (c : Crate) : Prop := \
+         c.program.toNat = 7 ∧ c.specs c.program\n",
+    );
+    ax_f.set(
+        "Spec",
+        TargetRole::Specification,
+        "prelude\nimport Model\nexport BadAx (unapprovedAx)\n\
+         def Spec.specs (p : BitVec 8) : Prop := BitVec.and p p = p\n",
+    );
+    let (ax_roles, ax_is_module) = with_spec_preflight(&ax_f);
+    let mut ax_checker = cargo_anneal::Checker::new(&ax_f.root, None).unwrap();
+    ax_checker.set_allow_unpinned_lean(true);
+    let _ = ax_checker.run_target(&ax_f.request);
+    let ax_err = ax_checker.inspect_target_consts(&ax_roles, &ax_is_module).unwrap_err();
+    assert_eq!(ax_err.code, 1, "Spec unapprovedAx: {ax_err}");
+    assert!(
+        ax_err.message.contains("references unapproved axiom BadAx.unapprovedAx"),
+        "Spec unapprovedAx: {ax_err}"
+    );
+
+    // Negative matrix across `Specification` and `Capture` alias exports.
+    for (mod_name, role, src, expected_msg) in [
+        (
+            "Spec",
+            TargetRole::Specification,
+            "prelude\nimport Init.Data.Array.Basic\nimport Model\n\
+             namespace MySpec\nexport Array (modifyMUnsafe)\nend MySpec\n\
+             def Spec.specs (p : BitVec 8) : Prop := BitVec.and p p = p\n",
+            "references unsafe declaration Array.modifyMUnsafe",
+        ),
+        (
+            "Captured",
+            TargetRole::Capture,
+            "prelude\nimport Model\nnamespace Trusted\nexport Nat (add)\nend Trusted\n\
+             def Captured.program : BitVec 8 := BitVec.ofNat 8 7\n",
+            "cannot export alias Trusted.add in Trusted namespace",
+        ),
+        (
+            "Captured",
+            TargetRole::Capture,
+            "prelude\nimport Model\nnamespace Expected\nexport Nat (add)\nend Expected\n\
+             def Captured.program : BitVec 8 := BitVec.ofNat 8 7\n",
+            "cannot export alias Expected.add in reserved kernel namespace Expected",
+        ),
+    ] {
+        let mut f = Fixture::new(proof);
+        f.set(mod_name, role, src);
+        let (roles, is_module) = with_spec_preflight(&f);
+        let mut checker = cargo_anneal::Checker::new(&f.root, None).unwrap();
+        checker.set_allow_unpinned_lean(true);
+        let _ = checker.run_target(&f.request);
+        let err = checker.inspect_target_consts(&roles, &is_module).unwrap_err();
+        assert_eq!(err.code, 1, "{mod_name}: {err}");
+        assert!(err.message.contains(expected_msg), "{mod_name}: {err}");
+    }
+}
+
+/// Both `SpecPreflight` `"target-consts"` and pinned `TrustedBoundary`
+/// `"target-audit"` inspect Lean 4 `module`-mode targets across all `.olean`,
+/// `.olean.server`, and `.olean.private` parts and across repeated
+/// `(extName, entries)` pairs in `ModuleData.entries`:
+/// - inventories `private` declarations and reports both public (deduplicated)
+///   and `private` compiler overrides while admitting allowlisted `.foundation`
+///   exports;
+/// - catches `Lean.aliasExtension` exports and `@[extern]` overrides placed
+///   only in `.olean` (part 0), only in `.olean.server` (part 1), or in an
+///   earlier duplicate `ModuleData.entries` pair shadowed by a trailing `#[]`;
+/// - rejects forged `unsafe`, duplicate, or uninventoried companion-part
+///   constants and companion `isModule` flag mismatches on both routes.
+#[test]
+fn spec_preflight_module_index_scans_all_module_parts_and_duplicate_entries() {
+    let mut f = Fixture::new(
+        "module\nprelude\npublic import Expected\n\
+         import Init.Data.BitVec.Lemmas\n\
+         private theorem helper_ok : BitVec.and (BitVec.ofNat 8 7) (BitVec.ofNat 8 7) = BitVec.ofNat 8 7 := by exact BitVec.and_self\n\
+         public theorem Proof.verify : Expected.claim := And.intro rfl helper_ok\n",
+    );
+    f.set(
+        "Model",
+        TargetRole::Model,
+        "module\nprelude\npublic import Init.Data.BitVec.Basic\n\
+         @[expose] public section\n\
+         namespace BadAx\naxiom unapprovedAx : Prop\nend BadAx\n\
+         def Model.extFn (n : Nat) : Nat := n\n\
+         namespace Trusted.MirSemantics\n\
+         structure Crate where\n  program : BitVec 8\n  specs : BitVec 8 → Prop\n\
+         def UnitTheorem (c : Crate) : Prop := c.program.toNat = 7 ∧ c.specs c.program\n\
+         end Trusted.MirSemantics\nend\n",
+    );
+    f.set(
+        "Captured",
+        TargetRole::Capture,
+        "module\nprelude\npublic import Model\n\
+         private def Captured.privImpl (n : Nat) : Nat := n\n\
+         @[implemented_by Captured.privImpl] private def Captured.privBy (n : Nat) : Nat := n\n\
+         @[extern \"anneal_priv_ext\"] private def Captured.privExt (n : Nat) : Nat := n\n\
+         public section\n\
+         def Captured.recHelper : Nat → Nat\n  | 0 => 0\n  | k + 1 => Captured.recHelper k\n\
+         end\n\
+         @[expose] public section\n\
+         @[extern \"anneal_pub_ext\"] def Captured.pubExt (n : Nat) : Nat := n\n\
+         def Captured.part0Target (n : Nat) : Nat := n\n\
+         def Captured.dupTarget (n : Nat) : Nat := n\n\
+         def Captured.program : BitVec 8 := BitVec.ofNat 8 7\nend\n",
+    );
+    f.set(
+        "Spec",
+        TargetRole::Specification,
+        "module\nprelude\npublic import Model\n\
+         private def Spec.privHelper (n : Nat) : Nat := n\n\
+         public section\n\
+         def Spec.recHelper : Nat → Nat\n  | 0 => 0\n  | k + 1 => Spec.recHelper k\n\
+         end\n\
+         @[expose] public section\n\
+         namespace MySpec\n\
+         export System.Platform (getNumBits)\n\
+         export Nat (add)\n\
+         export Quot (sound)\n\
+         end MySpec\n\
+         def Spec.specs (p : BitVec 8) : Prop := BitVec.and p p = p\nend\n",
+    );
+    f.set(
+        "Expected",
+        TargetRole::Expected,
+        "module\nprelude\npublic import Model\npublic import Captured\npublic import Spec\n\
+         @[expose] public section\n\
+         def Expected.claim : Prop :=\n\
+           Trusted.MirSemantics.UnitTheorem (Trusted.MirSemantics.Crate.mk Captured.program Spec.specs)\n\
+         end\n",
+    );
+
+    let (roles, mut is_module) = with_spec_preflight(&f);
+    for v in is_module.values_mut() {
+        *v = true;
+    }
+    let mut checker = cargo_anneal::Checker::new(&f.root, None).unwrap();
+    checker.set_allow_unpinned_lean(true);
+    checker.run_target(&f.request).unwrap();
+
+    for name in ["Model", "Captured", "Spec", "Expected", "Proof"] {
+        let arts = &checker.admitted().unwrap().artifacts[name];
+        assert_eq!(arts.olean_parts.len(), 3, "expected 3 parts for {name}: {:?}", arts.olean_parts);
+    }
+
+    // 1. Positive control: private constants, non-`@[expose]` recursive public
+    //    definitions (`Spec.recHelper._unsafe_rec` and
+    //    `Captured.recHelper._unsafe_rec`, which erase to
+    //    `.axiomInfo { isUnsafe := true }` in `.olean` / `.olean.server` while
+    //    remaining `.defnInfo { safety := .partial }` in `.olean.private`),
+    //    public/private overrides, and allowlisted `.foundation` exports in
+    //    3-part `module`-mode targets.
+    let (origins, overrides) = checker.inspect_target_consts(&roles, &is_module).unwrap();
+    assert!(
+        origins.keys().any(|k| k.ends_with("Spec.privHelper")),
+        "missing private Spec constant in module-mode inventory: {origins:?}"
+    );
+    assert_eq!(
+        origins.get("Spec.recHelper._unsafe_rec").map(|(m, p)| (m.as_str(), *p)),
+        Some(("Spec", true)),
+        "expected paired Spec.recHelper._unsafe_rec in module-mode inventory: {origins:?}"
+    );
+    assert_eq!(
+        origins.get("Captured.recHelper._unsafe_rec").map(|(m, p)| (m.as_str(), *p)),
+        Some(("Captured", true)),
+        "expected paired Captured.recHelper._unsafe_rec in module-mode inventory: {origins:?}"
+    );
+    assert!(overrides.contains("Captured.pubExt"), "missing public override: {overrides:?}");
+    assert!(
+        overrides.iter().any(|k| k.ends_with("Captured.privExt")),
+        "missing private @[extern] override: {overrides:?}"
+    );
+    assert!(
+        overrides.iter().any(|k| k.ends_with("Captured.privBy")),
+        "missing private @[implemented_by] override: {overrides:?}"
+    );
+
+    let part_paths = |stage: &Path, stem: &str| -> [PathBuf; 3] {
+        [
+            stage.join(format!("lib/{stem}.olean")),
+            stage.join(format!("lib/{stem}.olean.server")),
+            stage.join(format!("lib/{stem}.olean.private")),
+        ]
+    };
+    let stage = checker.stage().to_path_buf();
+    let backup_parts = |stem: &str| -> [Vec<u8>; 3] {
+        let [p0, p1, p2] = part_paths(&stage, stem);
+        [fs::read(p0).unwrap(), fs::read(p1).unwrap(), fs::read(p2).unwrap()]
+    };
+    let restore_parts = |stem: &str, saved: &[Vec<u8>; 3]| {
+        let [p0, p1, p2] = part_paths(&stage, stem);
+        fs::write(p0, &saved[0]).unwrap();
+        fs::write(p1, &saved[1]).unwrap();
+        fs::write(p2, &saved[2]).unwrap();
+    };
+    let rewrite_parts =
+        |checker: &mut cargo_anneal::Checker, label: &str, stem: &str, lean_body: &str| {
+            let [p0, p1, p2] = part_paths(&stage, stem);
+            let [t0, t1, t2] = [
+                stage.join(format!("lib/{stem}.tmp.olean")),
+                stage.join(format!("lib/{stem}.tmp.olean.server")),
+                stage.join(format!("lib/{stem}.tmp.olean.private")),
+            ];
+            let script = stage.join(format!("Forge_{label}.lean"));
+            let src = format!(
+                "import Lean\n\
+                 open Lean in\n\
+                 def main : IO Unit := do\n  \
+                   let parts ← readModuleDataParts #[System.FilePath.mk {:?}, \
+                     System.FilePath.mk {:?}, System.FilePath.mk {:?}]\n  \
+                   let #[(d0, _), (d1, _), (d2, _)] := parts\n    \
+                     | throw <| IO.userError \"expected 3 parts\"\n  \
+                   {lean_body}\n  \
+                   saveModuleDataParts `{stem} #[\n    \
+                     (System.FilePath.mk {:?}, d0'),\n    \
+                     (System.FilePath.mk {:?}, d1'),\n    \
+                     (System.FilePath.mk {:?}, d2')]\n",
+                p0.to_string_lossy(),
+                p1.to_string_lossy(),
+                p2.to_string_lossy(),
+                t0.to_string_lossy(),
+                t1.to_string_lossy(),
+                t2.to_string_lossy(),
+            );
+            fs::write(&script, src).unwrap();
+            checker
+                .process(
+                    label,
+                    &[
+                        "-j1".into(),
+                        "-M4096".into(),
+                        "--run".into(),
+                        script.to_string_lossy().into(),
+                    ],
+                )
+                .unwrap();
+            fs::rename(&t0, &p0).unwrap();
+            fs::rename(&t1, &p1).unwrap();
+            fs::rename(&t2, &p2).unwrap();
+        };
+
+    let spec_orig = backup_parts("Spec");
+    let cap_orig = backup_parts("Captured");
+    let model_orig = backup_parts("Model");
+
+    // 2. Alias placed only in `.olean` (part 0) of `Spec`, with `.olean.server`
+    //    and `.olean.private` clean.
+    rewrite_parts(
+        &mut checker,
+        "spec_part0_alias",
+        "Spec",
+        "let e : Array EnvExtensionEntry := unsafe unsafeCast \
+           (#[(`MySpec.unapprovedAx, `BadAx.unapprovedAx)] : Array (Name × Name))\n  \
+         let d0' := { d0 with entries := d0.entries.push (Lean.aliasExtension.name, e) }\n  \
+         let d1' := d1\n  \
+         let d2' := d2",
+    );
+    let err = checker.inspect_target_consts(&roles, &is_module).unwrap_err();
+    assert_eq!(err.code, 1, "spec part0 alias: {err}");
+    assert!(
+        err.message.contains("references unapproved axiom BadAx.unapprovedAx"),
+        "spec part0 alias: {err}"
+    );
+    let ta_err = checker.inspect_target(&f.request).unwrap_err();
+    assert_eq!((ta_err.code, ta_err.phase.as_str()), (1, "target-audit"), "ta part0 alias: {ta_err}");
+    assert!(
+        ta_err.message.contains("references unapproved axiom BadAx.unapprovedAx"),
+        "ta part0 alias: {ta_err}"
+    );
+    restore_parts("Spec", &spec_orig);
+
+    // 3. Alias placed only in `.olean.server` (part 1) of `Captured`, with
+    //    `.olean` and `.olean.private` clean.
+    rewrite_parts(
+        &mut checker,
+        "cap_part1_alias",
+        "Captured",
+        "let e : Array EnvExtensionEntry := unsafe unsafeCast \
+           (#[(`Trusted.add, `Nat.add)] : Array (Name × Name))\n  \
+         let d0' := d0\n  \
+         let d1' := { d1 with entries := d1.entries.push (Lean.aliasExtension.name, e) }\n  \
+         let d2' := d2",
+    );
+    let err = checker.inspect_target_consts(&roles, &is_module).unwrap_err();
+    assert_eq!(err.code, 1, "cap part1 alias: {err}");
+    assert!(
+        err.message.contains("cannot export alias Trusted.add in Trusted namespace"),
+        "cap part1 alias: {err}"
+    );
+    restore_parts("Captured", &cap_orig);
+
+    // 4. `@[extern]` override placed only in `.olean` (part 0) of `Captured`.
+    rewrite_parts(
+        &mut checker,
+        "cap_part0_extern",
+        "Captured",
+        "let ext : ExternAttrData := { entries := [.standard `all \"anneal_part0\"] }\n  \
+         let e : Array EnvExtensionEntry := unsafe unsafeCast \
+           (#[(`Captured.part0Target, ext)] : Array (Name × ExternAttrData))\n  \
+         let d0' := { d0 with entries := d0.entries.push (externAttr.ext.name, e) }\n  \
+         let d1' := d1\n  \
+         let d2' := d2",
+    );
+    let (_, part0_overrides) = checker.inspect_target_consts(&roles, &is_module).unwrap();
+    assert!(
+        part0_overrides.contains("Captured.part0Target"),
+        "missing part-0 @[extern] override: {part0_overrides:?}"
+    );
+    restore_parts("Captured", &cap_orig);
+
+    // 5a. Duplicate `Lean.aliasExtension` entries in `.olean.private`: earlier
+    //     unapproved axiom entry shadowed by a trailing empty `#[]` pair.
+    rewrite_parts(
+        &mut checker,
+        "spec_dup_alias",
+        "Spec",
+        "let e : Array EnvExtensionEntry := unsafe unsafeCast \
+           (#[(`MySpec.dupAx, `BadAx.unapprovedAx)] : Array (Name × Name))\n  \
+         let ents := (d2.entries.push (Lean.aliasExtension.name, e)).push \
+           (Lean.aliasExtension.name, #[])\n  \
+         let d0' := d0\n  \
+         let d1' := d1\n  \
+         let d2' := { d2 with entries := ents }",
+    );
+    let err = checker.inspect_target_consts(&roles, &is_module).unwrap_err();
+    assert_eq!(err.code, 1, "spec dup alias: {err}");
+    assert!(
+        err.message.contains("references unapproved axiom BadAx.unapprovedAx"),
+        "spec dup alias: {err}"
+    );
+    restore_parts("Spec", &spec_orig);
+
+    // 5b. Duplicate `externAttr` entries in `.olean.private` of `Captured`
+    //     shadowed by a trailing empty `#[]` pair.
+    rewrite_parts(
+        &mut checker,
+        "cap_dup_extern",
+        "Captured",
+        "let ext : ExternAttrData := { entries := [.standard `all \"anneal_dup\"] }\n  \
+         let e : Array EnvExtensionEntry := unsafe unsafeCast \
+           (#[(`Captured.dupTarget, ext)] : Array (Name × ExternAttrData))\n  \
+         let ents := (d2.entries.push (externAttr.ext.name, e)).push \
+           (externAttr.ext.name, #[])\n  \
+         let d0' := d0\n  \
+         let d1' := d1\n  \
+         let d2' := { d2 with entries := ents }",
+    );
+    let (_, dup_overrides) = checker.inspect_target_consts(&roles, &is_module).unwrap();
+    assert!(
+        dup_overrides.contains("Captured.dupTarget"),
+        "missing earlier duplicate @[extern] override: {dup_overrides:?}"
+    );
+    restore_parts("Captured", &cap_orig);
+
+    // 5c. Specification alias targeting a `Model` declaration whose `@[extern]`
+    //     lives in `.olean` (part 0) behind a trailing duplicate empty pair.
+    rewrite_parts(
+        &mut checker,
+        "model_part0_dup_extern",
+        "Model",
+        "let ext : ExternAttrData := { entries := [.standard `all \"anneal_model_ext\"] }\n  \
+         let e : Array EnvExtensionEntry := unsafe unsafeCast \
+           (#[(`Model.extFn, ext)] : Array (Name × ExternAttrData))\n  \
+         let ents := (d0.entries.push (externAttr.ext.name, e)).push \
+           (externAttr.ext.name, #[])\n  \
+         let d0' := { d0 with entries := ents }\n  \
+         let d1' := d1\n  \
+         let d2' := d2",
+    );
+    rewrite_parts(
+        &mut checker,
+        "spec_part0_model_ext_alias",
+        "Spec",
+        "let e : Array EnvExtensionEntry := unsafe unsafeCast \
+           (#[(`MySpec.extFn, `Model.extFn)] : Array (Name × Name))\n  \
+         let d0' := { d0 with entries := d0.entries.push (Lean.aliasExtension.name, e) }\n  \
+         let d1' := d1\n  \
+         let d2' := d2",
+    );
+    let err = checker.inspect_target_consts(&roles, &is_module).unwrap_err();
+    assert_eq!(err.code, 1, "spec alias to part0 dup extern: {err}");
+    assert!(
+        err.message.contains("references compiler override declaration Model.extFn"),
+        "spec alias to part0 dup extern: {err}"
+    );
+    restore_parts("Spec", &spec_orig);
+    restore_parts("Model", &model_orig);
+
+    // 6a. Extra constant injected only into `.olean` (part 0) of `Spec`,
+    //     absent from `.olean.private`, rejected by both `"target-consts"` and
+    //     pinned `"target-audit"`.
+    rewrite_parts(
+        &mut checker,
+        "spec_part0_extra_const",
+        "Spec",
+        "let extra : ConstantInfo := .defnInfo { name := `Spec.ghost, levelParams := [], \
+           type := .const `Nat [], value := .lit (.natVal 0), hints := .abbrev, \
+           safety := .safe, all := [`Spec.ghost] }\n  \
+         let cn := d0.constNames.push `Spec.ghost\n  \
+         let cs := d0.constants.push extra\n  \
+         let d0' := { d0 with constNames := cn, constants := cs }\n  \
+         let d1' := d1\n  \
+         let d2' := d2",
+    );
+    let err = checker.inspect_target_consts(&roles, &is_module).unwrap_err();
+    assert_eq!(err.code, 1, "spec part0 extra const: {err}");
+    assert!(
+        err.message.contains("target companion constant Spec.ghost missing from private inventory"),
+        "spec part0 extra const: {err}"
+    );
+    let ta_err = checker.inspect_target(&f.request).unwrap_err();
+    assert_eq!(
+        (ta_err.code, ta_err.phase.as_str()),
+        (1, "target-audit"),
+        "ta part0 extra const: {ta_err}"
+    );
+    assert!(
+        ta_err.message.contains("target companion constant Spec.ghost missing from private inventory"),
+        "ta part0 extra const: {ta_err}"
+    );
+    restore_parts("Spec", &spec_orig);
+
+    // 6b. `unsafe` constant injected only into `.olean` (part 0) of `Spec`,
+    //     rejected by both `"target-consts"` and pinned `"target-audit"`.
+    rewrite_parts(
+        &mut checker,
+        "spec_part0_unsafe_const",
+        "Spec",
+        "let bad : ConstantInfo := .defnInfo { name := `Spec.evilPart0, levelParams := [], \
+           type := .const `Nat [], value := .lit (.natVal 0), hints := .abbrev, \
+           safety := .unsafe, all := [`Spec.evilPart0] }\n  \
+         let cn := d0.constNames.push `Spec.evilPart0\n  \
+         let cs := d0.constants.push bad\n  \
+         let d0' := { d0 with constNames := cn, constants := cs }\n  \
+         let d1' := d1\n  \
+         let d2' := d2",
+    );
+    let err = checker.inspect_target_consts(&roles, &is_module).unwrap_err();
+    assert_eq!(err.code, 1, "spec part0 unsafe const: {err}");
+    assert!(
+        err.message.contains("declares unsafe constant Spec.evilPart0"),
+        "spec part0 unsafe const: {err}"
+    );
+    let ta_err = checker.inspect_target(&f.request).unwrap_err();
+    assert_eq!(
+        (ta_err.code, ta_err.phase.as_str()),
+        (1, "target-audit"),
+        "ta part0 unsafe const: {ta_err}"
+    );
+    assert!(
+        ta_err.message.contains("declares unsafe constant Spec.evilPart0"),
+        "ta part0 unsafe const: {ta_err}"
+    );
+    restore_parts("Spec", &spec_orig);
+
+    // 6b-2. Forged `.axiomInfo { isUnsafe := true }` in `.olean` (part 0) for
+    //       a safe non-`partial` `.defnInfo` (`Spec.specs`) in `.olean.private`
+    //       is still rejected as unsafe by both `"target-consts"` and pinned
+    //       `"target-audit"`.
+    rewrite_parts(
+        &mut checker,
+        "spec_part0_unsafe_axiom_for_safe_def",
+        "Spec",
+        "let cs := d0.constants.map fun ci =>\n  \
+           if ci.name == `Spec.specs then\n    \
+             .axiomInfo { name := ci.name, levelParams := ci.levelParams, type := ci.type, isUnsafe := true }\n  \
+           else ci\n  \
+         let d0' := { d0 with constants := cs }\n  \
+         let d1' := d1\n  \
+         let d2' := d2",
+    );
+    let err = checker.inspect_target_consts(&roles, &is_module).unwrap_err();
+    assert_eq!(err.code, 1, "spec part0 unsafe axiom for safe def: {err}");
+    assert!(
+        err.message.contains("declares unsafe constant Spec.specs"),
+        "spec part0 unsafe axiom for safe def: {err}"
+    );
+    let ta_err = checker.inspect_target(&f.request).unwrap_err();
+    assert_eq!(
+        (ta_err.code, ta_err.phase.as_str()),
+        (1, "target-audit"),
+        "ta part0 unsafe axiom for safe def: {ta_err}"
+    );
+    assert!(
+        ta_err.message.contains("declares unsafe constant Spec.specs"),
+        "ta part0 unsafe axiom for safe def: {ta_err}"
+    );
+    restore_parts("Spec", &spec_orig);
+
+    // 6c. Mismatched `constNames` in `.olean` (part 0) of `Spec`, rejected by
+    //     both `"target-consts"` and pinned `"target-audit"`.
+    rewrite_parts(
+        &mut checker,
+        "spec_part0_bad_const_names",
+        "Spec",
+        "let cn := d0.constNames.push `Spec.bogusKey\n  \
+         let d0' := { d0 with constNames := cn }\n  \
+         let d1' := d1\n  \
+         let d2' := d2",
+    );
+    let err = checker.inspect_target_consts(&roles, &is_module).unwrap_err();
+    assert_eq!(err.code, 1, "spec part0 bad constNames: {err}");
+    assert!(
+        err.message.contains("invalid target inventory Spec"),
+        "spec part0 bad constNames: {err}"
+    );
+    let ta_err = checker.inspect_target(&f.request).unwrap_err();
+    assert_eq!(
+        (ta_err.code, ta_err.phase.as_str()),
+        (1, "target-audit"),
+        "ta part0 bad constNames: {ta_err}"
+    );
+    assert!(
+        ta_err.message.contains("invalid target inventory Spec"),
+        "ta part0 bad constNames: {ta_err}"
+    );
+    restore_parts("Spec", &spec_orig);
+
+    // 7. Companion `.olean.server` `isModule = false` mismatch.
+    rewrite_parts(
+        &mut checker,
+        "spec_part1_is_module_mismatch",
+        "Spec",
+        "let d0' := d0\n  \
+         let d1' := { d1 with isModule := false }\n  \
+         let d2' := d2",
+    );
+    let err = checker.inspect_target_consts(&roles, &is_module).unwrap_err();
+    assert_eq!(err.code, 1, "spec part1 isModule mismatch: {err}");
+    assert!(
+        err.message.contains("mismatched olean companion isModule flag in Spec"),
+        "spec part1 isModule mismatch: {err}"
+    );
+    let ta_err = checker.inspect_target(&f.request).unwrap_err();
+    assert_eq!(
+        (ta_err.code, ta_err.phase.as_str()),
+        (1, "target-audit"),
+        "ta part1 isModule mismatch: {ta_err}"
+    );
+    assert!(
+        ta_err.message.contains("mismatched olean companion isModule flag in Spec"),
+        "ta part1 isModule mismatch: {ta_err}"
+    );
+    restore_parts("Spec", &spec_orig);
+
+    // 8. Companion `.olean` constant payload mismatch (`Spec.specs` body
+    //    mutated in part 0 while `.olean.private` stays intact), companion
+    //    `imports` mismatch, `_root_`-prefixed alias keys, `Specification`
+    //    forbidden alias names (`optParam`, `Anneal.bad`), and alias role-edge
+    //    violation (`Spec` -> `Captured.program`) — all rejected on both
+    //    `"target-consts"` and pinned `"target-audit"`.
+    rewrite_parts(
+        &mut checker,
+        "spec_part0_const_payload_mismatch",
+        "Spec",
+        "let cs := d0.constants.map fun ci =>\n    \
+           if ci.name == `Spec.specs then\n      \
+             match ci with\n      \
+             | .defnInfo dv => .defnInfo { dv with value := .const `Nat.zero [] }\n      \
+             | other => other\n    \
+           else ci\n  \
+         let d0' := { d0 with constants := cs }\n  \
+         let d1' := d1\n  \
+         let d2' := d2",
+    );
+    let err = checker.inspect_target_consts(&roles, &is_module).unwrap_err();
+    assert_eq!(err.code, 1, "spec part0 payload mismatch: {err}");
+    assert!(
+        err.message.contains("mismatched target companion constant Spec.specs in Spec"),
+        "spec part0 payload mismatch: {err}"
+    );
+    let ta_err = checker.inspect_target(&f.request).unwrap_err();
+    assert_eq!(
+        (ta_err.code, ta_err.phase.as_str()),
+        (1, "target-audit"),
+        "ta part0 payload mismatch: {ta_err}"
+    );
+    assert!(
+        ta_err.message.contains("mismatched target companion constant Spec.specs in Spec"),
+        "ta part0 payload mismatch: {ta_err}"
+    );
+    restore_parts("Spec", &spec_orig);
+
+    rewrite_parts(
+        &mut checker,
+        "spec_part0_imports_mismatch",
+        "Spec",
+        "let d0' := { d0 with imports := #[] }\n  \
+         let d1' := d1\n  \
+         let d2' := d2",
+    );
+    let err = checker.inspect_target_consts(&roles, &is_module).unwrap_err();
+    assert_eq!(err.code, 1, "spec part0 imports mismatch: {err}");
+    assert!(
+        err.message.contains("mismatched target companion imports in Spec"),
+        "spec part0 imports mismatch: {err}"
+    );
+    let ta_err = checker.inspect_target(&f.request).unwrap_err();
+    assert_eq!(
+        (ta_err.code, ta_err.phase.as_str()),
+        (1, "target-audit"),
+        "ta part0 imports mismatch: {ta_err}"
+    );
+    assert!(
+        ta_err.message.contains("mismatched target companion imports in Spec"),
+        "ta part0 imports mismatch: {ta_err}"
+    );
+    restore_parts("Spec", &spec_orig);
+
+    for (label, stem, alias_pair, expected_sub) in [
+        (
+            "cap_root_prefixed_trusted_alias",
+            "Captured",
+            "(`_root_.Trusted.spoof, `Nat.add)",
+            "cannot export alias _root_.Trusted.spoof in Trusted namespace",
+        ),
+        (
+            "spec_root_prefixed_expected_alias",
+            "Spec",
+            "(`_root_.Expected.claim, `Nat.add)",
+            "cannot export alias _root_.Expected.claim in reserved kernel namespace Expected",
+        ),
+        (
+            "spec_alias_opt_param",
+            "Spec",
+            "(`optParam, `Nat.add)",
+            "specification module Spec cannot export alias optParam",
+        ),
+        (
+            "spec_alias_anneal_root",
+            "Spec",
+            "(`Anneal.spoof, `Nat.add)",
+            "specification module Spec cannot export alias Anneal.spoof",
+        ),
+        (
+            "spec_alias_role_edge_capture",
+            "Spec",
+            "(`MySpec.capRef, `Captured.program)",
+            "authority violation",
+        ),
+    ] {
+        rewrite_parts(
+            &mut checker,
+            label,
+            stem,
+            &format!(
+                "let e : Array EnvExtensionEntry := unsafe unsafeCast \
+                   (#[{alias_pair}] : Array (Name × Name))\n  \
+                 let d0' := {{ d0 with entries := d0.entries.push (Lean.aliasExtension.name, e) }}\n  \
+                 let d1' := d1\n  \
+                 let d2' := d2"
+            ),
+        );
+        let err = checker.inspect_target_consts(&roles, &is_module).unwrap_err();
+        assert_eq!(err.code, 1, "tc {label}: {err}");
+        assert!(err.message.contains(expected_sub), "tc {label}: {err}");
+        let ta_err = checker.inspect_target(&f.request).unwrap_err();
+        assert_eq!(
+            (ta_err.code, ta_err.phase.as_str()),
+            (1, "target-audit"),
+            "ta {label}: {ta_err}"
+        );
+        assert!(ta_err.message.contains(expected_sub), "ta {label}: {ta_err}");
+        if stem == "Captured" {
+            restore_parts("Captured", &cap_orig);
+        } else {
+            restore_parts("Spec", &spec_orig);
+        }
+    }
+}
+
 /// `SpecPreflight.isPairedUnsafeRec` classifies a `partial` `p._unsafe_rec`
 /// auxiliary as paired only when `p` is a safe total `.defnInfo` in the same
 /// module and both `type` and `levelParams` match (`sameUnsafeRecHeader`), so

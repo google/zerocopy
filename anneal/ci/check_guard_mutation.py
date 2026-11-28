@@ -6809,6 +6809,22 @@ AUDIT_HEADER_GUARDS: tuple[AuditHeaderGuard, ...] = (
         negative_source="import Std.Internal.UV\n",
     ),
     AuditHeaderGuard(
+        guard_id="audit_header_reject_std_async_import",
+        target_file="trusted/audit/TrustedBoundary.lean",
+        description="isForbiddenPureImport rejects `import Std.Async.DNS` in target headers",
+        anchor="    m == `Std.Async || (`Std.Async).isPrefixOf m ||",
+        replacement="    false ||",
+        negative_source="import Std.Async.DNS\n",
+    ),
+    AuditHeaderGuard(
+        guard_id="audit_header_reject_init_meta_import",
+        target_file="trusted/audit/TrustedBoundary.lean",
+        description="isForbiddenPureImport rejects `import Init.Meta.Defs` in target headers",
+        anchor="    m == `Init.Meta || (`Init.Meta).isPrefixOf m ||",
+        replacement="    false ||",
+        negative_source="import Init.Meta.Defs\n",
+    ),
+    AuditHeaderGuard(
         guard_id="spec_preflight_reject_lean_import",
         target_file="trusted/audit/SpecPreflight.lean",
         description="SpecPreflight isForbiddenPureImport rejects `import Lean` in target headers",
@@ -6852,6 +6868,22 @@ AUDIT_HEADER_GUARDS: tuple[AuditHeaderGuard, ...] = (
         replacement="    false",
         negative_source="import Std.Internal.UV\n",
     ),
+    AuditHeaderGuard(
+        guard_id="spec_preflight_reject_std_async_import",
+        target_file="trusted/audit/SpecPreflight.lean",
+        description="SpecPreflight isForbiddenPureImport rejects `import Std.Async.DNS` in target headers",
+        anchor="    m == `Std.Async || (`Std.Async).isPrefixOf m ||",
+        replacement="    false ||",
+        negative_source="import Std.Async.DNS\n",
+    ),
+    AuditHeaderGuard(
+        guard_id="spec_preflight_reject_init_meta_import",
+        target_file="trusted/audit/SpecPreflight.lean",
+        description="SpecPreflight isForbiddenPureImport rejects `import Init.Meta.Defs` in target headers",
+        anchor="    m == `Init.Meta || (`Init.Meta).isPrefixOf m ||",
+        replacement="    false ||",
+        negative_source="import Init.Meta.Defs\n",
+    ),
 )
 
 
@@ -6861,6 +6893,16 @@ VALID_SPEC_BOUNDARY_FIXTURE_IDS: frozenset[str] = frozenset(
         "spec_bang_ident",
         "spec_dbg_trace",
         "spec_uv_open",
+        "spec_default_or_ofNonempty",
+        "spec_value_of",
+        "spec_uv_open_only",
+        "spec_uv_open_renaming",
+        "spec_uv_export",
+        "spec_reserved_expected_ns",
+        "spec_reserved_tb_ns",
+        "spec_transitive_std_async",
+        "spec_export_reserved_alias",
+        "spec_open_renaming_reserved_alias",
     }
 )
 
@@ -6874,6 +6916,46 @@ VALID_TARGET_BOUNDARY_FIXTURE_IDS: frozenset[str] = frozenset(
         "target_dup_library",
         "target_unsafe_rec_type_mismatch",
         "target_foundation_propext_hijack",
+        "target_transitive_std_async",
+        "target_reserved_captured_in_spec",
+        "target_reserved_tb_in_spec",
+        "target_spec_alias_opaque",
+        "target_spec_alias_extern",
+        "target_spec_alias_impl_by",
+        "target_spec_alias_unsafe",
+        "target_spec_alias_partial",
+        "target_spec_alias_axiom",
+        "target_spec_autoparam_ref",
+        "target_spec_alias_forbidden",
+        "target_cap_alias_trusted_root",
+        "target_cap_alias_reserved_root",
+        "target_companion_extra_const",
+        "target_companion_imports_mismatch",
+        "target_companion_const_mismatch",
+        "target_root_prefixed_alias",
+        "target_spec_bad_alias_name",
+        "target_alias_role_edge",
+    }
+)
+
+VALID_AUDIT_BOUNDARY_FIXTURE_IDS: frozenset[str] = frozenset(
+    {
+        "audit_non_auto_syntax",
+        "audit_obf_auto_syntax",
+        "audit_bad_tactic_auto_syntax",
+        "audit_preresolved_auto_syntax",
+        "audit_private_preresolved_auto_syntax",
+        "audit_private_mod_preresolved_auto_syntax",
+        "audit_multi_root_preresolved_auto_syntax",
+        "audit_lean_root_const",
+        "audit_disallowed_autoparam_tactic",
+        "audit_export_trusted_alias",
+        "audit_export_reserved_alias",
+        "audit_export_forbidden_alias",
+        "audit_export_role_edge",
+        "audit_export_meta_target",
+        "audit_export_opaque_target",
+        "audit_export_unsafe_target",
     }
 )
 
@@ -7069,6 +7151,614 @@ AUDIT_BOUNDARY_GUARDS: tuple[AuditBoundaryGuard, ...] = (
         ),
         replacement="        let _ := (stored, ci)",
         fixture_id="target_foundation_propext_hijack",
+    ),
+    AuditBoundaryGuard(
+        guard_id="spec_preflight_reject_default_or_ofNonempty",
+        target_file="trusted/audit/TrustedBoundary.lean",
+        mode="spec-preflight",
+        description="forbiddenSpecTermKinds rejects `default_or_ofNonempty% unsafe`",
+        anchor=(
+            "  `Lean.Parser.Term.throwNamedErrorAtMacro,\n"
+            "  `Lean.Parser.Term.defaultOrOfNonempty,"
+        ),
+        replacement="  `Lean.Parser.Term.throwNamedErrorAtMacro,",
+        fixture_id="spec_default_or_ofNonempty",
+    ),
+    AuditBoundaryGuard(
+        guard_id="spec_preflight_reject_value_of",
+        target_file="trusted/audit/TrustedBoundary.lean",
+        mode="spec-preflight",
+        description="forbiddenSpecTermKinds rejects `value_of%`",
+        anchor=(
+            "  `Lean.Parser.Term.defaultOrOfNonempty,\n"
+            "  `Lean.Parser.Term.valueOf,"
+        ),
+        replacement="  `Lean.Parser.Term.defaultOrOfNonempty,",
+        fixture_id="spec_value_of",
+    ),
+    AuditBoundaryGuard(
+        guard_id="spec_preflight_reject_open_only_uv",
+        target_file="trusted/audit/TrustedBoundary.lean",
+        mode="spec-preflight",
+        description="validateSpecOpenDecl openOnly checks dotted `Std.Internal (UV.Loop.alive)`",
+        anchor=(
+            "      for itemId in itemIds do\n"
+            '        checkSpecQualifiedItem "open" ns itemId\n'
+            "        ods := OpenDecl.explicit itemId (ns ++ itemId) :: ods"
+        ),
+        replacement=(
+            "      for itemId in itemIds do\n"
+            "        ods := OpenDecl.explicit itemId (ns ++ itemId) :: ods"
+        ),
+        fixture_id="spec_uv_open_only",
+    ),
+    AuditBoundaryGuard(
+        guard_id="spec_preflight_reject_open_renaming_uv",
+        target_file="trusted/audit/TrustedBoundary.lean",
+        mode="spec-preflight",
+        description="validateSpecOpenDecl openRenaming checks `UV.Loop.alive -> uvAlive`",
+        anchor=(
+            "      for (fromId, toId) in pairs do\n"
+            '        checkSpecQualifiedItem "open" ns fromId\n'
+            "        if parserEnv.isNamespace ns then\n"
+            "          ods := OpenDecl.explicit toId (ns ++ fromId) :: ods\n"
+            "          added := true\n"
+            "    if !added then\n"
+            "      let stripped := nsId.replacePrefix rootNamespace .anonymous\n"
+            "      if pairs.isEmpty then\n"
+            '        rejectForbiddenSpecNamespace "open" stripped\n'
+            "      for (fromId, toId) in pairs do\n"
+            '        checkSpecQualifiedItem "open" stripped fromId\n'
+            "        ods := OpenDecl.explicit toId (stripped ++ fromId) :: ods"
+        ),
+        replacement=(
+            "      for (fromId, toId) in pairs do\n"
+            "        if parserEnv.isNamespace ns then\n"
+            "          ods := OpenDecl.explicit toId (ns ++ fromId) :: ods\n"
+            "          added := true\n"
+            "    if !added then\n"
+            "      let stripped := nsId.replacePrefix rootNamespace .anonymous\n"
+            "      if pairs.isEmpty then\n"
+            '        rejectForbiddenSpecNamespace "open" stripped\n'
+            "      for (fromId, toId) in pairs do\n"
+            "        ods := OpenDecl.explicit toId (stripped ++ fromId) :: ods"
+        ),
+        fixture_id="spec_uv_open_renaming",
+    ),
+    AuditBoundaryGuard(
+        guard_id="spec_preflight_reject_export_uv",
+        target_file="trusted/audit/TrustedBoundary.lean",
+        mode="spec-preflight",
+        description="validateSpecExport checks `export Std.Internal (UV.Loop.alive)`",
+        anchor=(
+            "    for itemId in itemIds do\n"
+            '      checkSpecQualifiedItem "export" ns itemId'
+        ),
+        replacement="    for _ in itemIds do\n      pure ()",
+        fixture_id="spec_uv_export",
+    ),
+    AuditBoundaryGuard(
+        guard_id="spec_preflight_reject_reserved_expected_ns",
+        target_file="trusted/audit/TrustedBoundary.lean",
+        mode="spec-preflight",
+        description="forbiddenSpecDeclRootNamespaces reserves `Expected` and `Captured`",
+        anchor="    `Trusted, `Anneal, `Proof, `Expected, `Captured,",
+        replacement="    `Trusted, `Anneal, `Proof, `Captured,",
+        fixture_id="spec_reserved_expected_ns",
+    ),
+    AuditBoundaryGuard(
+        guard_id="spec_preflight_reject_reserved_tb_ns",
+        target_file="trusted/audit/TrustedBoundary.lean",
+        mode="spec-preflight",
+        description="forbiddenSpecDeclRootNamespaces reserves `SpecPreflight` and `TrustedBoundary`",
+        anchor="    `SpecPreflight, `TrustedBoundary, `Init, `Std,",
+        replacement="    `Init, `Std,",
+        fixture_id="spec_reserved_tb_ns",
+    ),
+    AuditBoundaryGuard(
+        guard_id="spec_preflight_reject_transitive_std_async",
+        target_file="trusted/audit/TrustedBoundary.lean",
+        mode="spec-preflight",
+        description="preflightSpecs rejects transitive `Std.Async.*` library admission",
+        anchor=(
+            "  for lib in libraries do\n"
+            "    if isForbiddenTransitiveLibrary lib then\n"
+            '      fail s!"disallowed transitive sysroot import {lib} in specification"'
+        ),
+        replacement="  for _ in libraries do\n    pure ()",
+        fixture_id="spec_transitive_std_async",
+    ),
+    AuditBoundaryGuard(
+        guard_id="target_audit_reject_transitive_std_async",
+        target_file="trusted/audit/TrustedBoundary.lean",
+        mode="target-audit",
+        description="targetAudit rejects transitive `Std.Async.*` library admission",
+        anchor=(
+            "  for lib in libraries do\n"
+            "    if isForbiddenTransitiveLibrary lib then\n"
+            '      fail s!"disallowed transitive sysroot import {lib} in target"'
+        ),
+        replacement="  for _ in libraries do\n    pure ()",
+        fixture_id="target_transitive_std_async",
+    ),
+    AuditBoundaryGuard(
+        guard_id="target_audit_reject_reserved_captured_in_spec",
+        target_file="trusted/audit/TrustedBoundary.lean",
+        mode="target-audit",
+        description="isReservedTargetRootForbidden rejects `Captured.*` outside capture role",
+        anchor=(
+            "    if userRoot == `Captured then\n"
+            "      targetRole != .capture &&\n"
+            "        !isRealizedOrCompilerHelper env allMatchers isCaptureConst ci\n"
+            "          allowUnimportedProofSparse"
+        ),
+        replacement="    if userRoot == `Captured then\n      false",
+        fixture_id="target_reserved_captured_in_spec",
+    ),
+    AuditBoundaryGuard(
+        guard_id="target_audit_reject_reserved_tb_in_spec",
+        target_file="trusted/audit/TrustedBoundary.lean",
+        mode="target-audit",
+        description="reservedKernelRoots blocks `SpecPreflight` and `TrustedBoundary` in compiled target oleans",
+        anchor=(
+            "   `Nonempty, `Ordering, `Rat, `Except, `EStateM, `StateM,\n"
+            "   `Expected, `Captured, `SpecPreflight, `TrustedBoundary]"
+        ),
+        replacement=(
+            "   `Nonempty, `Ordering, `Rat, `Except, `EStateM, `StateM,\n"
+            "   `Expected, `Captured]"
+        ),
+        fixture_id="target_reserved_tb_in_spec",
+    ),
+    AuditBoundaryGuard(
+        guard_id="target_audit_reject_spec_alias_opaque",
+        target_file="trusted/audit/TrustedBoundary.lean",
+        mode="target-audit",
+        description="targetAudit aliasExtension scan rejects exported `opaque` alias in Spec",
+        anchor=(
+            "              if targetCi matches .opaqueInfo _ &&\n"
+            "                  !(targetOriginRole == .foundation &&\n"
+            "                    allowedSystemPlatformDecls.contains targetName) then"
+        ),
+        replacement="              if false then",
+        fixture_id="target_spec_alias_opaque",
+    ),
+    AuditBoundaryGuard(
+        guard_id="target_audit_reject_spec_alias_extern",
+        target_file="trusted/audit/TrustedBoundary.lean",
+        mode="target-audit",
+        description="targetAudit aliasExtension scan rejects exported `@[extern]` alias in Spec",
+        anchor=(
+            "                if targetOv.externDecls.contains targetName ||\n"
+            "                    targetOv.implementedBy.contains targetName then"
+        ),
+        replacement=(
+            "                if false ||\n"
+            "                    targetOv.implementedBy.contains targetName then"
+        ),
+        fixture_id="target_spec_alias_extern",
+    ),
+    AuditBoundaryGuard(
+        guard_id="target_audit_reject_spec_alias_impl_by",
+        target_file="trusted/audit/TrustedBoundary.lean",
+        mode="target-audit",
+        description="targetAudit aliasExtension scan rejects exported `@[implemented_by]` alias in Spec",
+        anchor=(
+            "                if targetOv.externDecls.contains targetName ||\n"
+            "                    targetOv.implementedBy.contains targetName then"
+        ),
+        replacement=(
+            "                if targetOv.externDecls.contains targetName ||\n"
+            "                    false then"
+        ),
+        fixture_id="target_spec_alias_impl_by",
+    ),
+    AuditBoundaryGuard(
+        guard_id="target_audit_reject_spec_alias_unsafe",
+        target_file="trusted/audit/TrustedBoundary.lean",
+        mode="target-audit",
+        description="targetAudit aliasExtension scan rejects exported `unsafe` declaration",
+        anchor="            if targetCi.isUnsafe then",
+        replacement="            if false then",
+        fixture_id="target_spec_alias_unsafe",
+    ),
+    AuditBoundaryGuard(
+        guard_id="target_audit_reject_spec_alias_partial",
+        target_file="trusted/audit/TrustedBoundary.lean",
+        mode="target-audit",
+        description="targetAudit aliasExtension scan rejects exported `partial` declaration in Spec",
+        anchor="              if targetCi.isPartial then",
+        replacement="              if false then",
+        fixture_id="target_spec_alias_partial",
+    ),
+    AuditBoundaryGuard(
+        guard_id="target_audit_reject_spec_alias_axiom",
+        target_file="trusted/audit/TrustedBoundary.lean",
+        mode="target-audit",
+        description="targetAudit aliasExtension scan rejects exported unapproved axiom in Spec",
+        anchor=(
+            "              if targetCi matches .axiomInfo _ &&\n"
+            "                  !axiomPolicy.contains\n"
+            "                    (targetName.toString, targetOrig.toString) then"
+        ),
+        replacement="              if false then",
+        fixture_id="target_spec_alias_axiom",
+    ),
+    AuditBoundaryGuard(
+        guard_id="target_audit_reject_spec_autoparam_ref",
+        target_file="trusted/audit/TrustedBoundary.lean",
+        mode="target-audit",
+        description="targetAudit Phase 1 rejects direct `autoParam` references in Spec",
+        anchor=(
+            "        if isLeanSyntaxConst dep || isPanicSpecConst dep || "
+            "dep == ``autoParam then"
+        ),
+        replacement=(
+            "        if isLeanSyntaxConst dep || isPanicSpecConst dep then"
+        ),
+        fixture_id="target_spec_autoparam_ref",
+    ),
+    AuditBoundaryGuard(
+        guard_id="target_audit_reject_spec_alias_forbidden",
+        target_file="trusted/audit/TrustedBoundary.lean",
+        mode="target-audit",
+        description="targetAudit aliasExtension scan rejects exported panic/disallowed alias in Spec",
+        anchor=(
+            "              if isForbiddenSpecTransitiveConst targetName ||\n"
+            "                  isLeanSyntaxConst targetName ||\n"
+            "                  isPanicSpecConst targetName ||\n"
+            "                  targetName == ``autoParam then"
+        ),
+        replacement=(
+            "              if isForbiddenSpecTransitiveConst targetName ||\n"
+            "                  isLeanSyntaxConst targetName ||\n"
+            "                  false ||\n"
+            "                  targetName == ``autoParam then"
+        ),
+        fixture_id="target_spec_alias_forbidden",
+    ),
+    AuditBoundaryGuard(
+        guard_id="target_audit_reject_cap_alias_trusted_root",
+        target_file="trusted/audit/TrustedBoundary.lean",
+        mode="target-audit",
+        description="targetAudit aliasExtension scan rejects `Trusted`-root alias outside Model",
+        anchor=(
+            "            if targetRole != TargetRole.model && aliasRoot == `Trusted then\n"
+            '              fail (s!"non-model target module {m.module} cannot export " ++\n'
+            '                s!"alias {aliasName} in Trusted namespace")'
+        ),
+        replacement=(
+            "            if false then\n"
+            '              fail (s!"non-model target module {m.module} cannot export " ++\n'
+            '                s!"alias {aliasName} in Trusted namespace")'
+        ),
+        fixture_id="target_cap_alias_trusted_root",
+    ),
+    AuditBoundaryGuard(
+        guard_id="target_audit_reject_cap_alias_reserved_root",
+        target_file="trusted/audit/TrustedBoundary.lean",
+        mode="target-audit",
+        description="targetAudit aliasExtension scan rejects reserved-root alias outside owning role",
+        anchor=(
+            "            if badAliasReserved then\n"
+            '              fail (s!"target module {m.module} cannot export alias " ++\n'
+            '                s!"{aliasName} in reserved kernel namespace {aliasRoot}")'
+        ),
+        replacement=(
+            "            if false then\n"
+            '              fail (s!"target module {m.module} cannot export alias " ++\n'
+            '                s!"{aliasName} in reserved kernel namespace {aliasRoot}")'
+        ),
+        fixture_id="target_cap_alias_reserved_root",
+    ),
+    AuditBoundaryGuard(
+        guard_id="audit_repo_reject_non_auto_syntax",
+        target_file="trusted/audit/TrustedBoundary.lean",
+        mode="audit",
+        description="validateRepoAutoParamAndMeta rejects non-`_auto_<N>` `Lean.Syntax` constants",
+        anchor=(
+            "        unless isAutoParamAuxName ci.name do\n"
+            '          fail s!"disallowed Lean.Syntax declaration {ci.name} in {m.module}"'
+        ),
+        replacement="        let _ := ci.name",
+        fixture_id="audit_non_auto_syntax",
+    ),
+    AuditBoundaryGuard(
+        guard_id="audit_repo_reject_non_literal_auto_syntax",
+        target_file="trusted/audit/TrustedBoundary.lean",
+        mode="audit",
+        description="validateRepoAutoParamAndMeta rejects obfuscated non-literal `_auto_<N>` bodies",
+        anchor=(
+            "        let some stx := decodePureAutoSyntax? val\n"
+            '          | fail (s!"disallowed non-literal autoParam tactic {ci.name} in " ++\n'
+            '              s!"{m.module}")\n'
+            "        inspectSyntax allowedTheorySyntaxKinds stx (requirePrelude := false)\n"
+            "          (currNs := effMod) (openDecls := []) (checkPureRefs := true)\n"
+            "        inspectDecodedAutoPreresolved stx"
+        ),
+        replacement="        let _ := (val, effMod)",
+        fixture_id="audit_obf_auto_syntax",
+    ),
+    AuditBoundaryGuard(
+        guard_id="audit_repo_reject_bad_tactic_auto_syntax",
+        target_file="trusted/audit/TrustedBoundary.lean",
+        mode="audit",
+        description="validateRepoAutoParamAndMeta runs inspectSyntax on decoded `_auto_<N>` tactics",
+        anchor=(
+            "        inspectSyntax allowedTheorySyntaxKinds stx (requirePrelude := false)\n"
+            "          (currNs := effMod) (openDecls := []) (checkPureRefs := true)\n"
+            "        inspectDecodedAutoPreresolved stx"
+        ),
+        replacement="        let _ := (stx, effMod)",
+        fixture_id="audit_bad_tactic_auto_syntax",
+    ),
+    AuditBoundaryGuard(
+        guard_id="audit_repo_reject_preresolved_auto_syntax",
+        target_file="trusted/audit/TrustedBoundary.lean",
+        mode="audit",
+        description="validateRepoAutoParamAndMeta runs inspectDecodedAutoPreresolved on `_auto_<N>` tactics",
+        anchor="        inspectDecodedAutoPreresolved stx",
+        replacement="        pure ()",
+        fixture_id="audit_preresolved_auto_syntax",
+    ),
+    AuditBoundaryGuard(
+        guard_id="audit_repo_reject_private_preresolved_auto_syntax",
+        target_file="trusted/audit/TrustedBoundary.lean",
+        mode="audit",
+        description="inspectDecodedAutoPreresolved normalizes private-mangled names before namespace checks",
+        anchor="        let u := stripLeadingRootPrefix (privateToUserName c0)",
+        replacement="        let u := stripLeadingRootPrefix c0",
+        fixture_id="audit_private_preresolved_auto_syntax",
+    ),
+    AuditBoundaryGuard(
+        guard_id="audit_repo_reject_private_mod_preresolved_auto_syntax",
+        target_file="trusted/audit/TrustedBoundary.lean",
+        mode="audit",
+        description="inspectDecodedAutoPreresolved rejects private-mangled names from forbidden modules",
+        anchor="        if hasEmbeddedRootOrScope || privModForbidden ||",
+        replacement="        if hasEmbeddedRootOrScope ||",
+        fixture_id="audit_private_mod_preresolved_auto_syntax",
+    ),
+    AuditBoundaryGuard(
+        guard_id="audit_repo_reject_multi_root_preresolved_auto_syntax",
+        target_file="trusted/audit/TrustedBoundary.lean",
+        mode="audit",
+        description="inspectDecodedAutoPreresolved strips arbitrary leading `_root_` prefixes and rejects embedded `_root_`",
+        anchor=(
+            "        let c0 := stripLeadingRootPrefix cand\n"
+            "        let hasEmbeddedRootOrScope :=\n"
+            "          c0.isAnonymous || c0.hasMacroScopes ||\n"
+            "            c0.components.any (· == rootNamespace)"
+        ),
+        replacement=(
+            "        let c0 := cand.replacePrefix rootNamespace .anonymous\n"
+            "        let hasEmbeddedRootOrScope := c0.isAnonymous || c0.hasMacroScopes"
+        ),
+        fixture_id="audit_multi_root_preresolved_auto_syntax",
+    ),
+    AuditBoundaryGuard(
+        guard_id="audit_repo_reject_lean_root_const",
+        target_file="trusted/audit/TrustedBoundary.lean",
+        mode="audit",
+        description="isForbiddenRepoMetaConst rejects root `Lean.*` constants via banLeanRoot := true",
+        anchor=(
+            "      u == `Init.Meta || (`Init.Meta).isPrefixOf u ||\n"
+            "      isForbiddenPureNamespace u (banLeanRoot := true)"
+        ),
+        replacement=(
+            "      u == `Init.Meta || (`Init.Meta).isPrefixOf u ||\n"
+            "      isForbiddenPureNamespace u (banLeanRoot := false)"
+        ),
+        fixture_id="audit_lean_root_const",
+    ),
+    AuditBoundaryGuard(
+        guard_id="audit_repo_reject_disallowed_autoparam_tactic",
+        target_file="trusted/audit/TrustedBoundary.lean",
+        mode="audit",
+        description="checkRepoExprAutoAndMeta rejects autoParam applications referencing unvalidated tactics",
+        anchor=(
+            "      unless validatedAutos.contains tacName ||\n"
+            "          (isAutoParamAuxName tacName && isFoundationAuto tacName) do"
+        ),
+        replacement="      if false then",
+        fixture_id="audit_disallowed_autoparam_tactic",
+    ),
+    AuditBoundaryGuard(
+        guard_id="spec_preflight_reject_export_reserved_alias",
+        target_file="trusted/audit/TrustedBoundary.lean",
+        mode="spec-preflight",
+        description="validateSpecExport rejects `export` creating aliases in reserved/forbidden namespaces",
+        anchor=(
+            "  for itemId in itemIds do\n"
+            '    validateSpecAliasTarget "export" (currNs ++ itemId)'
+        ),
+        replacement="  let _ := (currNs, itemIds)",
+        fixture_id="spec_export_reserved_alias",
+    ),
+    AuditBoundaryGuard(
+        guard_id="spec_preflight_reject_open_renaming_reserved_alias",
+        target_file="trusted/audit/TrustedBoundary.lean",
+        mode="spec-preflight",
+        description="validateSpecOpenDecl openRenaming rejects reserved/forbidden `toId` aliases",
+        anchor='      validateSpecAliasTarget "open renaming" toId',
+        replacement="      let _ := toId",
+        fixture_id="spec_open_renaming_reserved_alias",
+    ),
+    AuditBoundaryGuard(
+        guard_id="audit_repo_reject_trusted_alias",
+        target_file="trusted/audit/TrustedBoundary.lean",
+        mode="audit",
+        description="validateRepoAliases rejects `Trusted.*` aliases exported by non-Trusted modules",
+        anchor=(
+            "      if !isTrusted && aliasRoot == `Trusted then\n"
+            '        fail (s!"non-Trusted module {m} cannot export alias {aliasName} " ++\n'
+            '          "in Trusted namespace")'
+        ),
+        replacement="      if false then\n        pure ()",
+        fixture_id="audit_export_trusted_alias",
+    ),
+    AuditBoundaryGuard(
+        guard_id="audit_repo_reject_reserved_alias",
+        target_file="trusted/audit/TrustedBoundary.lean",
+        mode="audit",
+        description="validateRepoAliases rejects reserved-kernel-root aliases",
+        anchor=(
+            "      if kernelAcceleratedNames.contains aliasUser ||\n"
+            "          reservedKernelRoots.contains aliasRoot then\n"
+            '        fail (s!"repository module {m} cannot export alias {aliasName} " ++\n'
+            '          s!"in reserved kernel namespace {aliasRoot}")'
+        ),
+        replacement="      if false then\n        pure ()",
+        fixture_id="audit_export_reserved_alias",
+    ),
+    AuditBoundaryGuard(
+        guard_id="audit_repo_reject_forbidden_alias",
+        target_file="trusted/audit/TrustedBoundary.lean",
+        mode="audit",
+        description="validateRepoAliases rejects forbidden pure identifier/namespace aliases",
+        anchor=(
+            "      if forbiddenPureIdentifiers.contains aliasUser ||\n"
+            "          aliasUser == `autoParam || aliasUser == `optParam ||\n"
+            "          isForbiddenPureNamespace aliasUser (banLeanRoot := true) then\n"
+            '        fail s!"disallowed export alias {aliasName} in {m}"'
+        ),
+        replacement="      if false then\n        pure ()",
+        fixture_id="audit_export_forbidden_alias",
+    ),
+    AuditBoundaryGuard(
+        guard_id="audit_repo_reject_alias_role_edge",
+        target_file="trusted/audit/TrustedBoundary.lean",
+        mode="audit",
+        description="validateRepoAliases enforces role-edge authority on exported targets",
+        anchor=(
+            "      if let some msg :=\n"
+            "          edgeViolation? aliasName modRole targetName targetOrig targetRole then\n"
+            "        fail msg"
+        ),
+        replacement="      let _ := (modRole, targetOrig, targetRole)",
+        fixture_id="audit_export_role_edge",
+    ),
+    AuditBoundaryGuard(
+        guard_id="audit_repo_reject_alias_meta_target",
+        target_file="trusted/audit/TrustedBoundary.lean",
+        mode="audit",
+        description="validateRepoAliases rejects forbidden metaprogramming/effectful targets",
+        anchor=(
+            "      if isForbiddenRepoMetaConst env targetName then\n"
+            '        fail s!"disallowed export target {targetName} in {m}"'
+        ),
+        replacement="      if false then\n        pure ()",
+        fixture_id="audit_export_meta_target",
+    ),
+    AuditBoundaryGuard(
+        guard_id="audit_repo_reject_alias_opaque_target",
+        target_file="trusted/audit/TrustedBoundary.lean",
+        mode="audit",
+        description="validateRepoAliases rejects `opaque` export targets outside Trusted",
+        anchor=(
+            "      if !isTrusted && (targetCi matches .opaqueInfo _) then\n"
+            '        fail (s!"opaque export target {targetName} in {m} is not allowed " ++\n'
+            '          "outside Trusted")'
+        ),
+        replacement="      if false then\n        pure ()",
+        fixture_id="audit_export_opaque_target",
+    ),
+    AuditBoundaryGuard(
+        guard_id="audit_repo_reject_alias_unsafe_target",
+        target_file="trusted/audit/TrustedBoundary.lean",
+        mode="audit",
+        description="validateRepoAliases rejects unsafe/partial/unapproved-axiom export targets",
+        anchor=(
+            "      if targetCi.isUnsafe || targetCi.isPartial ||\n"
+            "          (targetCi.isAxiom && !approvedAxiom) then\n"
+            '        fail (s!"disallowed unsafe/partial/axiom export target {targetName} " ++\n'
+            '          s!"in {m}")'
+        ),
+        replacement="      let _ := approvedAxiom",
+        fixture_id="audit_export_unsafe_target",
+    ),
+    AuditBoundaryGuard(
+        guard_id="target_audit_reject_companion_extra_const",
+        target_file="trusted/audit/TrustedBoundary.lean",
+        mode="target-audit",
+        description="targetAudit rejects companion `.olean` constants absent from `.olean.private`",
+        anchor=(
+            "            unless privConsts.contains ci.name do\n"
+            '              fail (s!"target companion constant {ci.name} missing from " ++\n'
+            '                s!"private inventory of {m.module}")'
+        ),
+        replacement="            if false then\n              pure ()",
+        fixture_id="target_companion_extra_const",
+    ),
+    AuditBoundaryGuard(
+        guard_id="target_audit_reject_companion_imports_mismatch",
+        target_file="trusted/audit/TrustedBoundary.lean",
+        mode="target-audit",
+        description="targetAudit rejects companion `.olean` parts whose imports differ from `.olean.private`",
+        anchor=(
+            "          unless partData.imports == privData.imports do\n"
+            '            fail s!"mismatched target companion imports in {m.module}"'
+        ),
+        replacement="          let _ := privData.imports",
+        fixture_id="target_companion_imports_mismatch",
+    ),
+    AuditBoundaryGuard(
+        guard_id="target_audit_reject_companion_const_mismatch",
+        target_file="trusted/audit/TrustedBoundary.lean",
+        mode="target-audit",
+        description="targetAudit rejects companion `.olean` constants inconsistent with `.olean.private`",
+        anchor=(
+            "            if let some privCi := privConsts.get? ci.name then\n"
+            "              unless isValidCompanionConstant privData.isModule privCi ci do\n"
+            '                fail (s!"mismatched target companion constant {ci.name} " ++\n'
+            '                  s!"in {m.module}")'
+        ),
+        replacement="            let _ := privData.isModule",
+        fixture_id="target_companion_const_mismatch",
+    ),
+    AuditBoundaryGuard(
+        guard_id="target_audit_reject_root_prefixed_alias",
+        target_file="trusted/audit/TrustedBoundary.lean",
+        mode="target-audit",
+        description="targetAudit normalizes `_root_`-prefixed alias keys before root checks",
+        anchor=(
+            "            let aliasUser :=\n"
+            "              stripLeadingRootPrefix\n"
+            "                (privateToUserName (stripLeadingRootPrefix aliasName))\n"
+            "            if aliasUser.isAnonymous || aliasUser.hasMacroScopes ||\n"
+            "                isPrivateName aliasUser ||\n"
+            "                aliasUser.components.any (· == rootNamespace) then\n"
+            '              fail s!"invalid export alias {aliasName} in {m.module}"'
+        ),
+        replacement="            let aliasUser := privateToUserName aliasName",
+        fixture_id="target_root_prefixed_alias",
+    ),
+    AuditBoundaryGuard(
+        guard_id="target_audit_reject_spec_bad_alias_name",
+        target_file="trusted/audit/TrustedBoundary.lean",
+        mode="target-audit",
+        description="targetAudit rejects specification export aliases violating isForbiddenSpecAliasUser",
+        anchor=(
+            "            if targetRole == TargetRole.specification &&\n"
+            "                isForbiddenSpecAliasUser aliasUser then\n"
+            '              fail (s!"specification module {m.module} cannot export alias " ++\n'
+            '                s!"{aliasName}")'
+        ),
+        replacement="            if false then\n              pure ()",
+        fixture_id="target_spec_bad_alias_name",
+    ),
+    AuditBoundaryGuard(
+        guard_id="target_audit_reject_alias_role_edge",
+        target_file="trusted/audit/TrustedBoundary.lean",
+        mode="target-audit",
+        description="targetAudit enforces role-edge authority on exported target aliases",
+        anchor=(
+            "            if let some msg := TargetOrigin.edgeViolation? aliasName\n"
+            "                (.source targetRole) targetName targetOriginRole then\n"
+            "              fail msg"
+        ),
+        replacement="            let _ := targetOriginRole",
+        fixture_id="target_alias_role_edge",
     ),
 )
 
@@ -8362,7 +9052,11 @@ def _build_boundary_fixtures(
     sysroot: str,
     fixtures_root: Path,
     timeout_sec: int,
-) -> tuple[dict[str, dict[str, object]], dict[str, dict[str, object]]]:
+) -> tuple[
+    dict[str, dict[str, object]],
+    dict[str, dict[str, object]],
+    dict[str, dict[str, object]],
+]:
     """Compile minimal baseline and negative boundary fixtures once."""
     foundation_mods, foundation_arts = _load_foundation_artifacts(
         anneal_root, sysroot
@@ -8408,6 +9102,52 @@ def _build_boundary_fixtures(
             "prelude\nimport Model\ndef Spec.specs (p : Nat) : Prop := p = p\n"
             "open Std.Internal.UV\n"
         ),
+        "spec_default_or_ofNonempty": (
+            "prelude\nimport Model\n"
+            "def Spec.specs (p : Nat) : Prop := (default_or_ofNonempty% unsafe : Nat) = p\n"
+        ),
+        "spec_value_of": (
+            "prelude\nimport Model\n"
+            "def Spec.helper : Nat := 0\n"
+            "def Spec.specs (p : Nat) : Prop := value_of% Spec.helper = p\n"
+        ),
+        "spec_uv_open_only": (
+            "prelude\nimport Model\n"
+            "open Std.Internal (UV.Loop.alive)\n"
+            "def Spec.specs (p : Nat) : Prop := p = p\n"
+        ),
+        "spec_uv_open_renaming": (
+            "prelude\nimport Model\n"
+            "open Std.Internal renaming UV.Loop.alive -> uvAlive\n"
+            "def Spec.specs (p : Nat) : Prop := p = p\n"
+        ),
+        "spec_uv_export": (
+            "prelude\nimport Model\n"
+            "export Std.Internal (UV.Loop.alive)\n"
+            "def Spec.specs (p : Nat) : Prop := p = p\n"
+        ),
+        "spec_reserved_expected_ns": (
+            "prelude\nimport Model\n"
+            "namespace Expected\ndef bad : Nat := 0\nend Expected\n"
+            "def Spec.specs (p : Nat) : Prop := p = p\n"
+        ),
+        "spec_reserved_tb_ns": (
+            "prelude\nimport Model\n"
+            "namespace TrustedBoundary\ndef bad : Nat := 0\nend TrustedBoundary\n"
+            "def Spec.specs (p : Nat) : Prop := p = p\n"
+        ),
+        "spec_export_reserved_alias": (
+            "prelude\nimport Model\n"
+            "namespace Safe.Expected\ndef claim : Prop := True\nend Safe.Expected\n"
+            "export Safe (Expected.claim)\n"
+            "def Spec.specs (p : Nat) : Prop := p = p\n"
+        ),
+        "spec_open_renaming_reserved_alias": (
+            "prelude\nimport Model\n"
+            "namespace Safe\ndef fakePred : Prop := True\nend Safe\n"
+            "open Safe renaming fakePred -> Expected.claim\n"
+            "def Spec.specs (p : Nat) : Prop := p = p\n"
+        ),
     }
     spec_reqs: dict[str, dict[str, object]] = {}
     for name, src in spec_srcs.items():
@@ -8436,17 +9176,18 @@ def _build_boundary_fixtures(
         *,
         deps_olean_dirs: list[Path] | None = None,
     ) -> tuple[Path, Path]:
+        rel = mod.replace(".", "/")
         mod_src_root = src_dir / bucket
         mod_olean_root = olean_dir / bucket
-        s_path = mod_src_root / f"{mod}.lean"
-        o_path = mod_olean_root / f"{mod}.olean"
+        s_path = mod_src_root / f"{rel}.lean"
+        o_path = mod_olean_root / f"{rel}.olean"
         s_path.parent.mkdir(parents=True, exist_ok=True)
         o_path.parent.mkdir(parents=True, exist_ok=True)
         s_path.write_text(code, encoding="utf-8")
         c_res = _compile_module(
             lean_bin,
             mod_src_root,
-            mod,
+            rel,
             mod_olean_root,
             lean_path=[*(deps_olean_dirs or []), mod_olean_root],
             timeout_sec=timeout_sec,
@@ -8521,20 +9262,25 @@ def _build_boundary_fixtures(
         allow_sorry: bool = False,
         graph_override: dict[str, object] | None = None,
         libraries: list[str] | None = None,
+        arts_override: dict[str, list[list[str]]] | None = None,
+        is_module_mods: set[str] | None = None,
     ) -> dict[str, object]:
         case_dir = fixtures_root / f"case_{case_id}"
         case_dir.mkdir()
         arts_all = dict(foundation_arts)
         for m, p in mod_oleans.items():
             arts_all[m] = [[str(p)], []]
+        if arts_override:
+            arts_all.update(arts_override)
         export_arts = dict(arts_all)
         export_arts["Proof"] = [[str(proof_o)], []]
+        is_mod = is_module_mods or set()
         modules_meta = [
-            {"module": "Model", "role": "model", "isModule": False},
-            {"module": "Captured", "role": "capture", "isModule": False},
-            {"module": "Spec", "role": "specification", "isModule": False},
-            {"module": "Expected", "role": "expected", "isModule": False},
-            {"module": "Proof", "role": "proof", "isModule": False},
+            {"module": "Model", "role": "model", "isModule": "Model" in is_mod},
+            {"module": "Captured", "role": "capture", "isModule": "Captured" in is_mod},
+            {"module": "Spec", "role": "specification", "isModule": "Spec" in is_mod},
+            {"module": "Expected", "role": "expected", "isModule": "Expected" in is_mod},
+            {"module": "Proof", "role": "proof", "isModule": "Proof" in is_mod},
         ]
         target_meta: dict[str, object] = {
             "modules": modules_meta,
@@ -8794,6 +9540,122 @@ def _build_boundary_fixtures(
         libraries=["DupLib"],
     )
 
+    # Case: target_companion_extra_const (3-part `Spec` with `Spec.ghost` only
+    # in part 0)
+    comp_p0 = fixtures_root / "SpecComp.olean"
+    comp_p1 = fixtures_root / "SpecComp.olean.server"
+    comp_p2 = fixtures_root / "SpecComp.olean.private"
+    run_lean_forge(
+        "companion_extra_const",
+        "import Lean.Environment\n"
+        "open Lean in\n"
+        "def main : IO Unit := do\n"
+        f"  let (baseData, _) ← readModuleData (System.FilePath.mk {json.dumps(str(spec_olean))})\n"
+        "  let ghost : ConstantInfo := .defnInfo {\n"
+        "    name := `Spec.ghost, levelParams := [], type := .const `Nat [],\n"
+        "    value := .lit (.natVal 0), hints := .abbrev, safety := .safe,\n"
+        "    all := [`Spec.ghost] }\n"
+        "  let d2 := { baseData with isModule := true }\n"
+        "  let d1 := d2\n"
+        "  let cn := d2.constNames.push `Spec.ghost\n"
+        "  let cs := d2.constants.push ghost\n"
+        "  let d0 := { d2 with constNames := cn, constants := cs }\n"
+        "  saveModuleDataParts `Spec #[\n"
+        f"    (System.FilePath.mk {json.dumps(str(comp_p0))}, d0),\n"
+        f"    (System.FilePath.mk {json.dumps(str(comp_p1))}, d1),\n"
+        f"    (System.FilePath.mk {json.dumps(str(comp_p2))}, d2)]\n",
+    )
+    target_reqs["target_companion_extra_const"] = make_ta_case(
+        "companion_extra_const",
+        mod_oleans={
+            "Model": model_olean,
+            "Captured": cap_olean,
+            "Spec": comp_p0,
+            "Expected": exp_olean,
+        },
+        proof_o=proof_ok_olean,
+        arts_override={"Spec": [[str(comp_p0), str(comp_p1), str(comp_p2)], []]},
+        is_module_mods={"Spec"},
+    )
+
+    # Case: target_companion_imports_mismatch (3-part `Spec` with empty imports
+    # in part 0)
+    comp_imp_p0 = fixtures_root / "SpecCompImp.olean"
+    comp_imp_p1 = fixtures_root / "SpecCompImp.olean.server"
+    comp_imp_p2 = fixtures_root / "SpecCompImp.olean.private"
+    run_lean_forge(
+        "companion_imports_mismatch",
+        "import Lean.Environment\n"
+        "open Lean in\n"
+        "def main : IO Unit := do\n"
+        f"  let (baseData, _) ← readModuleData (System.FilePath.mk {json.dumps(str(spec_olean))})\n"
+        "  let d2 := { baseData with isModule := true }\n"
+        "  let d1 := d2\n"
+        "  let d0 := { d2 with imports := #[] }\n"
+        "  saveModuleDataParts `Spec #[\n"
+        f"    (System.FilePath.mk {json.dumps(str(comp_imp_p0))}, d0),\n"
+        f"    (System.FilePath.mk {json.dumps(str(comp_imp_p1))}, d1),\n"
+        f"    (System.FilePath.mk {json.dumps(str(comp_imp_p2))}, d2)]\n",
+    )
+    target_reqs["target_companion_imports_mismatch"] = make_ta_case(
+        "companion_imports_mismatch",
+        mod_oleans={
+            "Model": model_olean,
+            "Captured": cap_olean,
+            "Spec": comp_imp_p0,
+            "Expected": exp_olean,
+        },
+        proof_o=proof_ok_olean,
+        arts_override={
+            "Spec": [[str(comp_imp_p0), str(comp_imp_p1), str(comp_imp_p2)], []]
+        },
+        is_module_mods={"Spec"},
+    )
+
+    # Case: target_companion_const_mismatch (3-part `Spec` with altered
+    # `Spec.specs` body in part 0)
+    comp_body_p0 = fixtures_root / "SpecCompBody.olean"
+    comp_body_p1 = fixtures_root / "SpecCompBody.olean.server"
+    comp_body_p2 = fixtures_root / "SpecCompBody.olean.private"
+    run_lean_forge(
+        "companion_const_mismatch",
+        "import Lean.Environment\n"
+        "open Lean in\n"
+        "def main : IO Unit := do\n"
+        f"  let (baseData, _) ← readModuleData (System.FilePath.mk {json.dumps(str(spec_olean))})\n"
+        "  let d2 := { baseData with isModule := true }\n"
+        "  let d1 := d2\n"
+        "  let cs := d2.constants.map fun ci =>\n"
+        "    if ci.name == `Spec.specs then\n"
+        "      match ci with\n"
+        "      | .defnInfo dv =>\n"
+        "        .defnInfo { dv with value := .lam `p (.const `Nat []) (.const `True []) .default }\n"
+        "      | other => other\n"
+        "    else ci\n"
+        "  let d0 := { d2 with constants := cs }\n"
+        "  saveModuleDataParts `Spec #[\n"
+        f"    (System.FilePath.mk {json.dumps(str(comp_body_p0))}, d0),\n"
+        f"    (System.FilePath.mk {json.dumps(str(comp_body_p1))}, d1),\n"
+        f"    (System.FilePath.mk {json.dumps(str(comp_body_p2))}, d2)]\n",
+    )
+    target_reqs["target_companion_const_mismatch"] = make_ta_case(
+        "companion_const_mismatch",
+        mod_oleans={
+            "Model": model_olean,
+            "Captured": cap_olean,
+            "Spec": comp_body_p0,
+            "Expected": exp_olean,
+        },
+        proof_o=proof_ok_olean,
+        arts_override={
+            "Spec": [
+                [str(comp_body_p0), str(comp_body_p1), str(comp_body_p2)],
+                [],
+            ]
+        },
+        is_module_mods={"Spec"},
+    )
+
     # Case: target_unsafe_rec_type_mismatch (`Spec.foo._unsafe_rec` : Bool)
     bad_rec_spec_o = fixtures_root / "SpecBadUnsafeRec.olean"
     shutil.copy2(spec_olean, bad_rec_spec_o)
@@ -8865,6 +9727,634 @@ def _build_boundary_fixtures(
         proof_o=proof_ok_olean,
     )
 
+    # Case: spec_transitive_std_async & target_transitive_std_async
+    # (`Std.Async.Fake` library).
+    async_fake_o, async_fake_odir = compile_target_mod(
+        "Std.Async.Fake",
+        "prelude\nimport Init.Core\ndef Std.Async.Fake.x : Nat := 0\n",
+        "async_fake",
+    )
+    async_edge = [{"module": "Std.Async.Fake", "isExported": True, "importAll": False, "isMeta": False}]
+    spec_async_graph = dict(found_graph)
+    spec_async_graph["Std.Async.Fake"] = core_edge
+    spec_async_arts = dict(foundation_arts)
+    spec_async_arts["Std.Async.Fake"] = [[str(async_fake_o)], []]
+    spec_reqs["spec_transitive_std_async"] = {
+        "mode": "spec-preflight",
+        "sysroot": sysroot,
+        "foundation": foundation_mods,
+        "libraries": ["Std.Async.Fake"],
+        "artifacts": list(spec_async_arts.items()),
+        "graph": spec_async_graph,
+        "sources": [["Spec", str(fixtures_root / "spec_sanity.lean")]],
+    }
+
+    safe_wrap_o, safe_wrap_odir = compile_target_mod(
+        "SafeWrap",
+        "prelude\nimport Init.Core\nimport Std.Async.Fake\n"
+        "def SafeWrap.y : Nat := 0\n",
+        "ta_async_wrap",
+        deps_olean_dirs=[async_fake_odir],
+    )
+    safe_wrap_edge = [{"module": "SafeWrap", "isExported": True, "importAll": False, "isMeta": False}]
+    spec_ta_async_o, _ = compile_target_mod(
+        "Spec",
+        "prelude\nimport Model\nimport SafeWrap\n"
+        "def Spec.specs (p : Nat) : Prop := p = 7\n",
+        "ta_async",
+        deps_olean_dirs=[base_odir, safe_wrap_odir, async_fake_odir],
+    )
+    exp_ta_async_o, exp_ta_async_dir = compile_target_mod(
+        "Expected",
+        exp_ok_src,
+        "ta_async",
+        deps_olean_dirs=[base_odir, spec_ta_async_o.parent, safe_wrap_odir, async_fake_odir],
+    )
+    proof_ta_async_o, _ = compile_target_mod(
+        "Proof",
+        "prelude\nimport Expected\n"
+        "theorem Proof.verify : Expected.claim := And.intro rfl rfl\n",
+        "ta_async",
+        deps_olean_dirs=[
+            exp_ta_async_dir,
+            base_odir,
+            spec_ta_async_o.parent,
+            safe_wrap_odir,
+            async_fake_odir,
+        ],
+    )
+    ta_async_graph = dict(base_graph)
+    ta_async_graph["Std.Async.Fake"] = core_edge
+    ta_async_graph["SafeWrap"] = core_edge + async_edge
+    ta_async_graph["Spec"] = model_edge + safe_wrap_edge
+    target_reqs["target_transitive_std_async"] = make_ta_case(
+        "transitive_std_async",
+        mod_oleans={
+            "Model": model_olean,
+            "Captured": cap_olean,
+            "Spec": spec_ta_async_o,
+            "Expected": exp_ta_async_o,
+            "SafeWrap": safe_wrap_o,
+            "Std.Async.Fake": async_fake_o,
+        },
+        proof_o=proof_ta_async_o,
+        graph_override=ta_async_graph,
+        libraries=["SafeWrap", "Std.Async.Fake"],
+    )
+
+    # Case: target_reserved_captured_in_spec (`Spec` declares
+    # `Captured.badDecl`).
+    spec_cap_o, _ = compile_target_mod(
+        "Spec",
+        "prelude\nimport Model\n"
+        "def Captured.badDecl : Nat := 0\n"
+        "def Spec.specs (p : Nat) : Prop := p = 7\n",
+        "reserved_captured_in_spec",
+        deps_olean_dirs=[base_odir],
+    )
+    target_reqs["target_reserved_captured_in_spec"] = make_ta_case(
+        "reserved_captured_in_spec",
+        mod_oleans={
+            "Model": model_olean,
+            "Captured": cap_olean,
+            "Spec": spec_cap_o,
+            "Expected": exp_olean,
+        },
+        proof_o=proof_ok_olean,
+    )
+
+    # Case: target_reserved_tb_in_spec (`Spec` declares
+    # `TrustedBoundary.badDecl`).
+    spec_tb_o, _ = compile_target_mod(
+        "Spec",
+        "prelude\nimport Model\n"
+        "def TrustedBoundary.badDecl : Nat := 0\n"
+        "def Spec.specs (p : Nat) : Prop := p = 7\n",
+        "reserved_tb_in_spec",
+        deps_olean_dirs=[base_odir],
+    )
+    target_reqs["target_reserved_tb_in_spec"] = make_ta_case(
+        "reserved_tb_in_spec",
+        mod_oleans={
+            "Model": model_olean,
+            "Captured": cap_olean,
+            "Spec": spec_tb_o,
+            "Expected": exp_olean,
+        },
+        proof_o=proof_ok_olean,
+    )
+
+    # Case: target_spec_alias_opaque (`Spec` exports `Model.extOpq` via
+    # `aliasExtension`).
+    model_opq_o, model_opq_odir = compile_target_mod(
+        "Model",
+        model_src + "namespace Model\nopaque extOpq : Nat\nend Model\n",
+        "spec_alias_opaque",
+    )
+    cap_opq_o, _ = compile_target_mod(
+        "Captured",
+        "prelude\nimport Model\ndef Captured.program : Nat := 7\n",
+        "spec_alias_opaque",
+        deps_olean_dirs=[model_opq_odir],
+    )
+    spec_opq_o, _ = compile_target_mod(
+        "Spec",
+        "prelude\nimport Model\nexport Model (extOpq)\ndef Spec.specs (p : Nat) : Prop := p = 7\n",
+        "spec_alias_opaque",
+        deps_olean_dirs=[model_opq_odir],
+    )
+    exp_opq_o, _ = compile_target_mod(
+        "Expected",
+        exp_ok_src,
+        "spec_alias_opaque",
+        deps_olean_dirs=[model_opq_odir],
+    )
+    proof_opq_o, _ = compile_target_mod(
+        "Proof",
+        "prelude\nimport Expected\ntheorem Proof.verify : Expected.claim := And.intro rfl rfl\n",
+        "spec_alias_opaque",
+        deps_olean_dirs=[model_opq_odir],
+    )
+    target_reqs["target_spec_alias_opaque"] = make_ta_case(
+        "spec_alias_opaque",
+        mod_oleans={
+            "Model": model_opq_o,
+            "Captured": cap_opq_o,
+            "Spec": spec_opq_o,
+            "Expected": exp_opq_o,
+        },
+        proof_o=proof_opq_o,
+    )
+
+    # Cases for remaining `targetAudit` `aliasExtension` branches (`extern`,
+    # `implemented_by`, forbidden target, `Trusted`-root, reserved-root).
+    ov_lib_o, ov_lib_odir = compile_target_mod(
+        "Std.TestOverrideLib",
+        "prelude\nimport Init.Core\n"
+        "namespace Std.TestOverrideLib\n"
+        '@[extern "anneal_test_ext"] def extFn : Nat := 0\n'
+        "def implTarget : Nat := 1\n"
+        "@[implemented_by implTarget] def implFn : Nat := 0\n"
+        "unsafe def unsafeFn : Nat := 0\n"
+        "partial def partialFn (n : Nat) : Nat := partialFn n\n"
+        "axiom unapprovedAx : Prop\n"
+        "def autoHelper (_h : 0 = 0 := by rfl) : Nat := 0\n"
+        "def bangHelper! : Nat := 0\n"
+        "def optParam : Nat := 0\n"
+        "def okDef : Nat := 0\n"
+        "end Std.TestOverrideLib\n",
+        "alias_ov_lib",
+    )
+    ov_lib_edge = [
+        {
+            "module": "Std.TestOverrideLib",
+            "isExported": True,
+            "importAll": False,
+            "isMeta": False,
+        }
+    ]
+    spec_ov_graph = dict(base_graph)
+    spec_ov_graph["Std.TestOverrideLib"] = core_edge
+    spec_ov_graph["Spec"] = model_edge + ov_lib_edge
+    for alias_case, spec_export_line in [
+        ("target_spec_alias_extern", "export Std.TestOverrideLib (extFn)\n"),
+        ("target_spec_alias_impl_by", "export Std.TestOverrideLib (implFn)\n"),
+        ("target_spec_alias_unsafe", "export Std.TestOverrideLib (unsafeFn)\n"),
+        (
+            "target_spec_alias_axiom",
+            "export Std.TestOverrideLib (unapprovedAx)\n",
+        ),
+        (
+            "target_spec_autoparam_ref",
+            "def Spec.useAuto := @Std.TestOverrideLib.autoHelper\n",
+        ),
+        (
+            "target_spec_bad_alias_name",
+            "export Std.TestOverrideLib (optParam)\n",
+        ),
+    ]:
+        spec_al_o, spec_al_odir = compile_target_mod(
+            "Spec",
+            "prelude\nimport Model\nimport Std.TestOverrideLib\n"
+            + spec_export_line
+            + "def Spec.specs (p : Nat) : Prop := p = 7\n",
+            alias_case,
+            deps_olean_dirs=[base_odir, ov_lib_odir],
+        )
+        exp_al_o, exp_al_odir = compile_target_mod(
+            "Expected",
+            exp_ok_src,
+            alias_case,
+            deps_olean_dirs=[base_odir, spec_al_odir, ov_lib_odir],
+        )
+        proof_al_o, _ = compile_target_mod(
+            "Proof",
+            "prelude\nimport Expected\n"
+            "theorem Proof.verify : Expected.claim := And.intro rfl rfl\n",
+            alias_case,
+            deps_olean_dirs=[exp_al_odir, base_odir, spec_al_odir, ov_lib_odir],
+        )
+        target_reqs[alias_case] = make_ta_case(
+            alias_case,
+            mod_oleans={
+                "Model": model_olean,
+                "Captured": cap_olean,
+                "Spec": spec_al_o,
+                "Expected": exp_al_o,
+                "Std.TestOverrideLib": ov_lib_o,
+            },
+            proof_o=proof_al_o,
+            graph_override=spec_ov_graph,
+            libraries=["Std.TestOverrideLib"],
+        )
+
+    # Inject clean `MySpec.*` alias names targeting `partialFn._unsafe_rec` and
+    # `bangHelper!` so `isForbiddenSpecAliasUser` does not mask the dedicated
+    # `isPartialDecl` and `isForbiddenSpecTransitiveConst` target guards.
+    spec_ov_clean_o, spec_ov_clean_odir = compile_target_mod(
+        "Spec",
+        "prelude\nimport Model\nimport Std.TestOverrideLib\n"
+        "def Spec.specs (p : Nat) : Prop := p = 7\n",
+        "target_spec_ov_clean",
+        deps_olean_dirs=[base_odir, ov_lib_odir],
+    )
+    exp_ov_clean_o, exp_ov_clean_odir = compile_target_mod(
+        "Expected",
+        exp_ok_src,
+        "target_spec_ov_clean",
+        deps_olean_dirs=[base_odir, spec_ov_clean_odir, ov_lib_odir],
+    )
+    proof_ov_clean_o, _ = compile_target_mod(
+        "Proof",
+        "prelude\nimport Expected\n"
+        "theorem Proof.verify : Expected.claim := And.intro rfl rfl\n",
+        "target_spec_ov_clean",
+        deps_olean_dirs=[
+            exp_ov_clean_odir,
+            base_odir,
+            spec_ov_clean_odir,
+            ov_lib_odir,
+        ],
+    )
+    for alias_case, alias_pair in [
+        (
+            "target_spec_alias_partial",
+            "(`MySpec.cleanPartial, `Std.TestOverrideLib.partialFn._unsafe_rec)",
+        ),
+        (
+            "target_spec_alias_forbidden",
+            "(`MySpec.cleanForbidden, `Std.TestOverrideLib.bangHelper!)",
+        ),
+    ]:
+        forged_spec_o = fixtures_root / f"{alias_case}.Spec.olean"
+        shutil.copy2(spec_ov_clean_o, forged_spec_o)
+        run_lean_forge(
+            alias_case,
+            "import Lean\n"
+            "open Lean in\n"
+            "def main : IO Unit := do\n"
+            f"  let p := System.FilePath.mk {json.dumps(str(forged_spec_o))}\n"
+            "  let (data, _) ← readModuleData p\n"
+            "  let e : Array EnvExtensionEntry := unsafe unsafeCast\n"
+            f"    (#[{alias_pair}] : Array (Name × Name))\n"
+            "  let ents := data.entries.push (Lean.aliasExtension.name, e)\n"
+            "  saveModuleData p `Spec { data with entries := ents }\n",
+        )
+        target_reqs[alias_case] = make_ta_case(
+            alias_case,
+            mod_oleans={
+                "Model": model_olean,
+                "Captured": cap_olean,
+                "Spec": forged_spec_o,
+                "Expected": exp_ov_clean_o,
+                "Std.TestOverrideLib": ov_lib_o,
+            },
+            proof_o=proof_ov_clean_o,
+            graph_override=spec_ov_graph,
+            libraries=["Std.TestOverrideLib"],
+        )
+
+    # Put `Trusted`-root and reserved-root alias exports in `Captured` so
+    # `.specification`'s `forbiddenSpecDeclRootNamespaces` check does not mask
+    # the dedicated `aliasRoot == Trusted` / `badAliasReserved` guards.
+    cap_ov_graph = dict(base_graph)
+    cap_ov_graph["Std.TestOverrideLib"] = core_edge
+    cap_ov_graph["Captured"] = model_edge + ov_lib_edge
+    for alias_case, cap_export_block in [
+        (
+            "target_cap_alias_trusted_root",
+            "namespace Trusted\nexport Std.TestOverrideLib (okDef)\n"
+            "end Trusted\n",
+        ),
+        (
+            "target_cap_alias_reserved_root",
+            "namespace Expected\nexport Std.TestOverrideLib (okDef)\n"
+            "end Expected\n",
+        ),
+    ]:
+        cap_al_o, cap_al_odir = compile_target_mod(
+            "Captured",
+            "prelude\nimport Model\nimport Std.TestOverrideLib\n"
+            + cap_export_block
+            + "def Captured.program : Nat := 7\n",
+            alias_case,
+            deps_olean_dirs=[base_odir, ov_lib_odir],
+        )
+        exp_al_o, exp_al_odir = compile_target_mod(
+            "Expected",
+            exp_ok_src,
+            alias_case,
+            deps_olean_dirs=[base_odir, cap_al_odir, ov_lib_odir],
+        )
+        proof_al_o, _ = compile_target_mod(
+            "Proof",
+            "prelude\nimport Expected\n"
+            "theorem Proof.verify : Expected.claim := And.intro rfl rfl\n",
+            alias_case,
+            deps_olean_dirs=[exp_al_odir, base_odir, cap_al_odir, ov_lib_odir],
+        )
+        target_reqs[alias_case] = make_ta_case(
+            alias_case,
+            mod_oleans={
+                "Model": model_olean,
+                "Captured": cap_al_o,
+                "Spec": spec_olean,
+                "Expected": exp_al_o,
+                "Std.TestOverrideLib": ov_lib_o,
+            },
+            proof_o=proof_al_o,
+            graph_override=cap_ov_graph,
+            libraries=["Std.TestOverrideLib"],
+        )
+
+    # Case: target_root_prefixed_alias (`Captured` with `_root_.Trusted.spoof`
+    # in `aliasExtension`)
+    cap_root_alias_o = fixtures_root / "CapturedRootAlias.olean"
+    shutil.copy2(cap_olean, cap_root_alias_o)
+    run_lean_forge(
+        "target_root_prefixed_alias",
+        "import Lean\n"
+        "open Lean in\n"
+        "def main : IO Unit := do\n"
+        f"  let p := System.FilePath.mk {json.dumps(str(cap_root_alias_o))}\n"
+        "  let (data, _) ← readModuleData p\n"
+        "  let e : Array EnvExtensionEntry := unsafe unsafeCast\n"
+        "    (#[(`_root_.Trusted.spoof, `Nat.zero)] : Array (Name × Name))\n"
+        "  let ents := data.entries.push (Lean.aliasExtension.name, e)\n"
+        "  saveModuleData p `Captured { data with entries := ents }\n",
+    )
+    target_reqs["target_root_prefixed_alias"] = make_ta_case(
+        "root_prefixed_alias",
+        mod_oleans={
+            "Model": model_olean,
+            "Captured": cap_root_alias_o,
+            "Spec": spec_olean,
+            "Expected": exp_olean,
+        },
+        proof_o=proof_ok_olean,
+    )
+
+    # Case: target_alias_role_edge (`Spec` with `aliasExtension` referencing
+    # `Captured.program`)
+    spec_role_edge_o = fixtures_root / "SpecAliasRoleEdge.olean"
+    shutil.copy2(spec_olean, spec_role_edge_o)
+    run_lean_forge(
+        "target_alias_role_edge",
+        "import Lean\n"
+        "open Lean in\n"
+        "def main : IO Unit := do\n"
+        f"  let p := System.FilePath.mk {json.dumps(str(spec_role_edge_o))}\n"
+        "  let (data, _) ← readModuleData p\n"
+        "  let e : Array EnvExtensionEntry := unsafe unsafeCast\n"
+        "    (#[(`MySpec.capRef, `Captured.program)] : Array (Name × Name))\n"
+        "  let ents := data.entries.push (Lean.aliasExtension.name, e)\n"
+        "  saveModuleData p `Spec { data with entries := ents }\n",
+    )
+    target_reqs["target_alias_role_edge"] = make_ta_case(
+        "alias_role_edge",
+        mod_oleans={
+            "Model": model_olean,
+            "Captured": cap_olean,
+            "Spec": spec_role_edge_o,
+            "Expected": exp_olean,
+        },
+        proof_o=proof_ok_olean,
+    )
+
+    # Pass-1 `"audit"` fixtures (`audit_sanity` + compiled `.olean`
+    # `autoParam`/Syntax/alias negative cases).
+    trusted_audit_o, trusted_audit_odir = compile_target_mod(
+        "Trusted",
+        "prelude\nimport Init.Core\ndef Trusted.ok : Prop := True\n"
+        "opaque Trusted.opq : Nat := 0\n",
+        "audit_base",
+    )
+    theory_good_o, _ = compile_target_mod(
+        "Anneal.Good",
+        "prelude\nimport Init.Core\nimport Trusted\n"
+        "def Anneal.Good.ok (_h : 0 = 0 := by rfl) : Nat := 0\n",
+        "audit_base",
+        deps_olean_dirs=[trusted_audit_odir],
+    )
+    trusted_edge = [{"module": "Trusted", "isExported": True, "importAll": False, "isMeta": False}]
+
+    def make_audit_case(
+        theory_mod: str,
+        theory_o: Path,
+        *,
+        trusted_o: Path | None = None,
+    ) -> dict[str, object]:
+        arts_a = dict(foundation_arts)
+        arts_a["Trusted"] = [[str(trusted_o or trusted_audit_o)], []]
+        arts_a[theory_mod] = [[str(theory_o)], []]
+        g_a = dict(found_graph)
+        g_a["Trusted"] = core_edge
+        g_a[theory_mod] = core_edge + trusted_edge
+        return {
+            "mode": "audit",
+            "sysroot": sysroot,
+            "foundation": foundation_mods,
+            "trusted": ["Trusted"],
+            "theory": [theory_mod],
+            "moduleTiers": [["Trusted", "vetted"]],
+            "requireMirWp": False,
+            "artifacts": list(arts_a.items()),
+            "graph": g_a,
+            "axioms": [
+                ["Classical.choice", "Init.Prelude"],
+                ["Quot.sound", "Init.Prelude"],
+                ["propext", "Init.Core"],
+            ],
+        }
+
+    bad_non_auto_o, _ = compile_target_mod(
+        "Anneal.BadNonAuto",
+        'prelude\nimport Init.Core\nimport Trusted\ndef Anneal.BadNonAuto.s : Lean.Syntax := Lean.mkAtom "x"\n',
+        "audit_bad_non_auto",
+        deps_olean_dirs=[trusted_audit_odir],
+    )
+    bad_obf_auto_o, _ = compile_target_mod(
+        "Anneal.BadObfAuto",
+        "prelude\nimport Init.Core\nimport Trusted\n"
+        'def Anneal.BadObfAuto.f._auto_1 : Lean.Syntax := let a := Lean.mkAtom "x"; a\n'
+        "def Anneal.BadObfAuto.f (_h : autoParam (0 = 0) Anneal.BadObfAuto.f._auto_1) : Nat := 0\n",
+        "audit_bad_obf_auto",
+        deps_olean_dirs=[trusted_audit_odir],
+    )
+    bad_lit_auto_o, _ = compile_target_mod(
+        "Anneal.BadLitAuto",
+        "prelude\nimport Init.Core\nimport Trusted\n"
+        "def Anneal.BadLitAuto.f (_h : 0 = 0 := by set_option maxHeartbeats 1 in exact rfl) : Nat := 0\n",
+        "audit_bad_lit_auto",
+        deps_olean_dirs=[trusted_audit_odir],
+    )
+    bad_pre_auto_o, _ = compile_target_mod(
+        "Anneal.BadPreAuto",
+        "prelude\nimport Init.Core\nimport Trusted\n"
+        "def Anneal.BadPreAuto.f._auto_1 : Lean.Syntax :=\n"
+        '  Lean.Syntax.ident Lean.SourceInfo.none (String.toRawSubstring "x")\n'
+        '    (Lean.Name.mkStr1 "x")\n'
+        '    (List.cons (Lean.Syntax.Preresolved.decl (Lean.Name.mkStr2 "IO" "println") List.nil) List.nil)\n'
+        "def Anneal.BadPreAuto.f (_h : autoParam (0 = 0) Anneal.BadPreAuto.f._auto_1) : Nat := 0\n",
+        "audit_bad_pre_auto",
+        deps_olean_dirs=[trusted_audit_odir],
+    )
+    bad_priv_pre_auto_o, _ = compile_target_mod(
+        "Anneal.BadPrivPreAuto",
+        "prelude\nimport Init.Core\nimport Trusted\n"
+        "def Anneal.BadPrivPreAuto.f._auto_1 : Lean.Syntax :=\n"
+        '  Lean.Syntax.ident Lean.SourceInfo.none (String.toRawSubstring "x")\n'
+        '    (Lean.Name.mkStr1 "x")\n'
+        '    (List.cons (Lean.Syntax.Preresolved.decl (Lean.Name.str (Lean.Name.str (Lean.Name.num (Lean.Name.mkStr3 "_private" "Init" "Core") 0) "IO") "println") List.nil) List.nil)\n'
+        "def Anneal.BadPrivPreAuto.f (_h : autoParam (0 = 0) Anneal.BadPrivPreAuto.f._auto_1) : Nat := 0\n",
+        "audit_bad_priv_pre_auto",
+        deps_olean_dirs=[trusted_audit_odir],
+    )
+    bad_priv_mod_pre_auto_o, _ = compile_target_mod(
+        "Anneal.BadPrivModPreAuto",
+        "prelude\nimport Init.Core\nimport Trusted\n"
+        "def Anneal.BadPrivModPreAuto.f._auto_1 : Lean.Syntax :=\n"
+        '  Lean.Syntax.ident Lean.SourceInfo.none (String.toRawSubstring "x")\n'
+        '    (Lean.Name.mkStr1 "x")\n'
+        '    (List.cons (Lean.Syntax.Preresolved.decl (Lean.Name.str (Lean.Name.num (Lean.Name.mkStr4 "_private" "Init" "System" "IO") 0) "secret") List.nil) List.nil)\n'
+        "def Anneal.BadPrivModPreAuto.f (_h : autoParam (0 = 0) Anneal.BadPrivModPreAuto.f._auto_1) : Nat := 0\n",
+        "audit_bad_priv_mod_pre_auto",
+        deps_olean_dirs=[trusted_audit_odir],
+    )
+    bad_multi_root_pre_auto_o, _ = compile_target_mod(
+        "Anneal.BadMultiRootPreAuto",
+        "prelude\nimport Init.Core\nimport Trusted\n"
+        "def Anneal.BadMultiRootPreAuto.f._auto_1 : Lean.Syntax :=\n"
+        '  Lean.Syntax.ident Lean.SourceInfo.none (String.toRawSubstring "x")\n'
+        '    (Lean.Name.mkStr1 "x")\n'
+        '    (List.cons (Lean.Syntax.Preresolved.decl (Lean.Name.str (Lean.Name.num (Lean.Name.mkStr6 "_root_" "_root_" "_private" "Init" "System" "IO") 0) "secret") List.nil) List.nil)\n'
+        "def Anneal.BadMultiRootPreAuto.f (_h : autoParam (0 = 0) Anneal.BadMultiRootPreAuto.f._auto_1) : Nat := 0\n",
+        "audit_bad_multi_root_pre_auto",
+        deps_olean_dirs=[trusted_audit_odir],
+    )
+    bad_export_trusted_o, _ = compile_target_mod(
+        "Anneal.BadExportTrusted",
+        "prelude\nimport Init.Core\nimport Trusted\n"
+        "namespace Anneal.Foo.Trusted\ndef fake : Nat := 0\nend Anneal.Foo.Trusted\n"
+        "export Anneal.Foo (Trusted.fake)\n",
+        "audit_bad_export_trusted",
+        deps_olean_dirs=[trusted_audit_odir],
+    )
+    bad_export_reserved_o, _ = compile_target_mod(
+        "Anneal.BadExportReserved",
+        "prelude\nimport Init.Core\nimport Trusted\n"
+        "namespace Anneal.Foo.Expected\ndef claim : Prop := True\n"
+        "end Anneal.Foo.Expected\n"
+        "export Anneal.Foo (Expected.claim)\n",
+        "audit_bad_export_reserved",
+        deps_olean_dirs=[trusted_audit_odir],
+    )
+    bad_export_forbidden_o, _ = compile_target_mod(
+        "Anneal.BadExportForbidden",
+        "prelude\nimport Init.Core\nimport Trusted\n"
+        "namespace Anneal.Foo\ndef optParam : Nat := 0\nend Anneal.Foo\n"
+        "export Anneal.Foo (optParam)\n",
+        "audit_bad_export_forbidden",
+        deps_olean_dirs=[trusted_audit_odir],
+    )
+    bad_export_meta_o, _ = compile_target_mod(
+        "Anneal.BadExportMeta",
+        "prelude\nimport Init.Core\nimport Trusted\n"
+        "namespace Anneal.BadExportMeta\nexport Lean (ParserDescr)\n"
+        "end Anneal.BadExportMeta\n",
+        "audit_bad_export_meta",
+        deps_olean_dirs=[trusted_audit_odir],
+    )
+    bad_export_opaque_o, _ = compile_target_mod(
+        "Anneal.BadExportOpaque",
+        "prelude\nimport Init.Core\nimport Trusted\n"
+        "namespace Anneal.BadExportOpaque\nexport Trusted (opq)\n"
+        "end Anneal.BadExportOpaque\n",
+        "audit_bad_export_opaque",
+        deps_olean_dirs=[trusted_audit_odir],
+    )
+    trusted_role_edge_o = fixtures_root / "TrustedRoleEdge.olean"
+    shutil.copy2(trusted_audit_o, trusted_role_edge_o)
+    run_lean_forge(
+        "audit_export_role_edge",
+        "import Lean\n"
+        "open Lean in\n"
+        "def main : IO Unit := do\n"
+        f"  let p := System.FilePath.mk {json.dumps(str(trusted_role_edge_o))}\n"
+        "  let (data, _) ← readModuleData p\n"
+        "  let e : Array EnvExtensionEntry := unsafe unsafeCast\n"
+        "    (#[(`Trusted.badEdge, `Anneal.Good.ok)] : Array (Name × Name))\n"
+        "  let ents := data.entries.push (Lean.aliasExtension.name, e)\n"
+        "  saveModuleData p `Trusted { data with entries := ents }\n",
+    )
+    trusted_unsafe_alias_o = fixtures_root / "TrustedUnsafeAlias.olean"
+    shutil.copy2(trusted_audit_o, trusted_unsafe_alias_o)
+    run_lean_forge(
+        "audit_export_unsafe_target",
+        "import Lean\n"
+        "open Lean in\n"
+        "def main : IO Unit := do\n"
+        f"  let p := System.FilePath.mk {json.dumps(str(trusted_unsafe_alias_o))}\n"
+        "  let (data, _) ← readModuleData p\n"
+        "  let e : Array EnvExtensionEntry := unsafe unsafeCast\n"
+        "    (#[(`Trusted.badUnsafe, `unsafeCast)] : Array (Name × Name))\n"
+        "  let ents := data.entries.push (Lean.aliasExtension.name, e)\n"
+        "  saveModuleData p `Trusted { data with entries := ents }\n",
+    )
+    bad_lean_root_o, _ = compile_target_mod(
+        "Anneal.BadLeanRoot",
+        "prelude\nimport Init.Core\nimport Trusted\n"
+        "def Anneal.BadLeanRoot.pd : Type := Lean.ParserDescr\n",
+        "audit_bad_lean_root",
+        deps_olean_dirs=[trusted_audit_odir],
+    )
+    bad_auto_tac_o, _ = compile_target_mod(
+        "Anneal.BadAutoTac",
+        "prelude\nimport Init.Core\nimport Trusted\n"
+        "def Anneal.BadAutoTac.f (_h : autoParam (0 = 0) Lean.Syntax.missing) : Nat := 0\n",
+        "audit_bad_auto_tac",
+        deps_olean_dirs=[trusted_audit_odir],
+    )
+    audit_reqs: dict[str, dict[str, object]] = {
+        "audit_sanity": make_audit_case("Anneal.Good", theory_good_o),
+        "audit_non_auto_syntax": make_audit_case("Anneal.BadNonAuto", bad_non_auto_o),
+        "audit_obf_auto_syntax": make_audit_case("Anneal.BadObfAuto", bad_obf_auto_o),
+        "audit_bad_tactic_auto_syntax": make_audit_case("Anneal.BadLitAuto", bad_lit_auto_o),
+        "audit_preresolved_auto_syntax": make_audit_case("Anneal.BadPreAuto", bad_pre_auto_o),
+        "audit_private_preresolved_auto_syntax": make_audit_case("Anneal.BadPrivPreAuto", bad_priv_pre_auto_o),
+        "audit_private_mod_preresolved_auto_syntax": make_audit_case("Anneal.BadPrivModPreAuto", bad_priv_mod_pre_auto_o),
+        "audit_multi_root_preresolved_auto_syntax": make_audit_case("Anneal.BadMultiRootPreAuto", bad_multi_root_pre_auto_o),
+        "audit_lean_root_const": make_audit_case("Anneal.BadLeanRoot", bad_lean_root_o),
+        "audit_disallowed_autoparam_tactic": make_audit_case("Anneal.BadAutoTac", bad_auto_tac_o),
+        "audit_export_trusted_alias": make_audit_case("Anneal.BadExportTrusted", bad_export_trusted_o),
+        "audit_export_reserved_alias": make_audit_case("Anneal.BadExportReserved", bad_export_reserved_o),
+        "audit_export_forbidden_alias": make_audit_case("Anneal.BadExportForbidden", bad_export_forbidden_o),
+        "audit_export_role_edge": make_audit_case("Anneal.Good", theory_good_o, trusted_o=trusted_role_edge_o),
+        "audit_export_meta_target": make_audit_case("Anneal.BadExportMeta", bad_export_meta_o),
+        "audit_export_opaque_target": make_audit_case("Anneal.BadExportOpaque", bad_export_opaque_o),
+        "audit_export_unsafe_target": make_audit_case("Anneal.Good", theory_good_o, trusted_o=trusted_unsafe_alias_o),
+    }
+
     built_spec_ids = set(spec_reqs.keys()) - {"spec_sanity"}
     if built_spec_ids != VALID_SPEC_BOUNDARY_FIXTURE_IDS:
         raise RuntimeError(
@@ -8877,8 +10367,14 @@ def _build_boundary_fixtures(
             "target boundary fixture keys drifted from static allowlist: "
             f"{sorted(built_target_ids)} != {sorted(VALID_TARGET_BOUNDARY_FIXTURE_IDS)}"
         )
+    built_audit_ids = set(audit_reqs.keys()) - {"audit_sanity"}
+    if built_audit_ids != VALID_AUDIT_BOUNDARY_FIXTURE_IDS:
+        raise RuntimeError(
+            "audit boundary fixture keys drifted from static allowlist: "
+            f"{sorted(built_audit_ids)} != {sorted(VALID_AUDIT_BOUNDARY_FIXTURE_IDS)}"
+        )
 
-    return spec_reqs, target_reqs
+    return spec_reqs, target_reqs, audit_reqs
 
 
 def _check_one_mir_guard(
@@ -11273,6 +12769,12 @@ def validate_catalog_invariants(
                         f"{guard.guard_id}: unknown target-audit fixture_id "
                         f"{guard.fixture_id!r}"
                     )
+            elif guard.mode == "audit":
+                if guard.fixture_id not in VALID_AUDIT_BOUNDARY_FIXTURE_IDS:
+                    errors.append(
+                        f"{guard.guard_id}: unknown audit fixture_id "
+                        f"{guard.fixture_id!r}"
+                    )
             else:
                 errors.append(f"{guard.guard_id}: invalid mode {guard.mode!r}")
         target_path = anneal_root / guard.target_file
@@ -11592,6 +13094,7 @@ def run_guard_mutation_suite(
 
             spec_reqs: dict[str, dict[str, object]] = {}
             target_reqs: dict[str, dict[str, object]] = {}
+            audit_reqs: dict[str, dict[str, object]] = {}
             if boundary_guards:
                 if "TrustedBoundary" not in compiled_mods:
                     comp = _compile_module(
@@ -11610,7 +13113,7 @@ def run_guard_mutation_suite(
                     compiled_mods.add("TrustedBoundary")
                 fixtures_root = base_path / "boundary_fixtures"
                 fixtures_root.mkdir()
-                spec_reqs, target_reqs = _build_boundary_fixtures(
+                spec_reqs, target_reqs, audit_reqs = _build_boundary_fixtures(
                     anneal_root=anneal_root,
                     lean_bin=lean_bin,
                     tb_olean_dir=tb_olean_dir,
@@ -11621,6 +13124,7 @@ def run_guard_mutation_suite(
                 for sanity_name, sanity_req in (
                     ("spec_sanity", spec_reqs["spec_sanity"]),
                     ("target_sanity", target_reqs["target_sanity"]),
+                    ("audit_sanity", audit_reqs["audit_sanity"]),
                 ):
                     s_dir = base_path / f"base_{sanity_name}"
                     s_dir.mkdir()
@@ -11646,6 +13150,8 @@ def run_guard_mutation_suite(
                         spec_reqs
                         if guard.mode == "spec-preflight"
                         else target_reqs
+                        if guard.mode == "target-audit"
+                        else audit_reqs
                     )
                     neg_req = req_map[guard.fixture_id]
                     b_dir = base_path / f"base_{guard.guard_id}"
@@ -11704,11 +13210,15 @@ def run_guard_mutation_suite(
                                 spec_reqs["spec_sanity"]
                                 if guard.mode == "spec-preflight"
                                 else target_reqs["target_sanity"]
+                                if guard.mode == "target-audit"
+                                else audit_reqs["audit_sanity"]
                             ),
                             negative_req=(
                                 spec_reqs[guard.fixture_id]
                                 if guard.mode == "spec-preflight"
                                 else target_reqs[guard.fixture_id]
+                                if guard.mode == "target-audit"
+                                else audit_reqs[guard.fixture_id]
                             ),
                             timeout_sec=timeout_sec,
                         ): guard

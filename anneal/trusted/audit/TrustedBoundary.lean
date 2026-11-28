@@ -596,7 +596,8 @@ def importEnv (j : Json) (roots : Array Name)
     (extensions := false) : IO Environment := do
   let arts ← artifacts j
   if extensions then unsafe enableInitializersExecution
-  let env ← importModules (roots.map fun n => { module := n }) {}
+  let env ← importModules
+    (roots.map fun n => { module := n, importAll := true }) {}
     (trustLevel := 0) (plugins := #[]) (loadExts := extensions)
     (level := .private) (arts := arts)
   finalizeImportedEnv env
@@ -939,31 +940,87 @@ specifications). -/
 def forbiddenPureRootNamespaces : List Name := [
   `Lake, `IO, `BaseIO, `EIO, `EST, `ST, `Task, `System]
 
-/-- Sub-namespaces exposing filesystem, system, UV event-loop, or dynamic
-library loading primitives beneath otherwise-admitted roots (`Init`, `Std`,
-`Lean`). -/
+/-- Sub-namespaces exposing filesystem, system, UV event-loop, dynamic
+library loading, or metaprogramming/syntax construction primitives beneath
+otherwise-admitted roots (`Init`, `Std`, `Lean`). -/
 def forbiddenSysUvPrefixes : List Name := [
-  `Init.System, `Std.Internal.UV, `Internal.UV,
+  `Init.System, `Std.Internal.UV, `Internal.UV, `Std.Async, `Std.Http,
   `Lean.LoadDynlib, `Lean.loadDynlib, `Lean.loadPlugin, `Lean.Dynlib,
-  `Dynlib]
+  `Dynlib,
+  `Lean.Syntax, `Lean.TSyntax, `Lean.TSyntaxArray, `Lean.SourceInfo,
+  `Lean.SyntaxNodeKind, `Lean.mkAtom, `Lean.mkIdent, `Lean.mkNode,
+  `Lean.mkCIdent, `Lean.mkCIdentFrom, `Lean.mkNullNode,
+  `Lean.Name, `Lean.NameMap, `Lean.NameSet,
+  `Lean.Macro, `Lean.Elab, `Lean.Meta, `Lean.Core, `Lean.Parser,
+  `Lean.Environment, `Lean.Compiler, `Lean.Internal,
+  `Lean.ConstantInfo, `Lean.Expr, `Lean.Level, `Lean.Exception, `Lean.Eval,
+  `Lean.MonadEnv, `Lean.EnvExtension, `Lean.SimplePersistentEnvExtension,
+  `Lean.PersistentEnvExtension, `Lean.ScopedEnvExtension,
+  `Lean.AttributeImpl, `Lean.registerBuiltinAttribute]
+
+/-- Strip all leading `_root_` prefixes from `n`. -/
+partial def stripLeadingRootPrefix (n : Name) : Name :=
+  if n == rootNamespace then .anonymous
+  else if rootNamespace.isPrefixOf n then
+    stripLeadingRootPrefix (n.replacePrefix rootNamespace .anonymous)
+  else n
 
 /-- Return `true` when `n` (ignoring `_root_`) matches or is nested beneath a
 forbidden I/O, `Init.System.*`, `Std.Internal.UV.*`, `Lean.LoadDynlib`, or
 effectful root namespace. -/
 def isForbiddenPureNamespace (n : Name) (banLeanRoot : Bool := false) : Bool :=
-  let u := n.replacePrefix rootNamespace .anonymous
+  let u := stripLeadingRootPrefix n
   let r := u.getRoot
   forbiddenPureRootNamespaces.contains r ||
     (banLeanRoot && r == `Lean) ||
     forbiddenSysUvPrefixes.any fun pre => u == pre || pre.isPrefixOf u
 
 /-- Return `true` when imported module `m` belongs to `Lean.*`, `Lake.*`,
-`Init.System.*`, or `Std.Internal.UV.*`. -/
+`Init.System.*`, `Init.Meta.*`, `Std`, `Std.Internal`, `Std.Async.*`,
+`Std.Http.*`, or `Std.Internal.UV.*`. -/
 def isForbiddenPureImport (m : Name) : Bool :=
   let r := m.getRoot
   r == `Lean || r == `Lake ||
     m == `Init.System || (`Init.System).isPrefixOf m ||
-    m == `Std.Internal.UV || (`Std.Internal.UV).isPrefixOf m
+    m == `Std.Internal.UV || (`Std.Internal.UV).isPrefixOf m ||
+    m == `Init.Meta || (`Init.Meta).isPrefixOf m ||
+    m == `Std || m == `Std.Internal ||
+    m == `Std.Async || (`Std.Async).isPrefixOf m ||
+    m == `Std.Http || (`Std.Http).isPrefixOf m
+
+/-- Return `true` when a transitive sysroot library module `m` exposes `Lean.*`,
+`Lake.*`, `Std` umbrella, `Std.Internal` umbrella, `Std.Internal.UV.*`,
+`Std.Async.*`, or `Std.Http.*`. (`Init.System.*` and `Init.Meta.*` are excluded
+from this transitive check because `Init.Data.*` and `Std.Data.*` reach them via
+pure helpers, whereas `isForbiddenPureImport` blocks direct imports.) -/
+def isForbiddenTransitiveLibrary (m : Name) : Bool :=
+  !(m == `Init.System || (`Init.System).isPrefixOf m ||
+    m == `Init.Meta || (`Init.Meta).isPrefixOf m) &&
+    isForbiddenPureImport m
+
+/-- Top-level namespaces reserved for the Lean kernel and standard library.
+Non-sysroot modules cannot declare definitions or arbitrary theorems under
+these roots because Lean's C++ kernel accelerates primitives such as `Nat.gcd`,
+`Nat.land`, `Nat.lor`, `Nat.xor`, `Nat.shiftLeft`, `Nat.shiftRight`, and
+`String.ofList` by name; shadowing an unimported kernel-accelerated name can
+prove `False` with zero axioms or trigger ill-typed kernel WHNF reduction. -/
+def reservedKernelRoots : List Name :=
+  [`Nat, `String, `Char, `Bool, `Int, `Int8, `Int16, `Int32, `Int64, `ISize,
+   `UInt8, `UInt16, `UInt32, `UInt64, `USize, `BitVec, `Float, `Float32,
+   `ByteArray, `Subarray, `Array, `List, `Option, `Sum, `Prod, `Fin, `Subtype,
+   `Eq, `HEq, `Quot, `Classical, `Lean, `Init, `Std, `Lake, `LeanExport,
+   `LeanIR, `System, `IO, `Task, `Thunk, `Unit, `PUnit, `Empty, `PEmpty, `True,
+   `False, `And, `Or, `Not, `Iff, `Exists, `Sigma, `PSigma, `Decidable,
+   `Nonempty, `Ordering, `Rat, `Except, `EStateM, `StateM,
+   `Expected, `Captured, `SpecPreflight, `TrustedBoundary]
+
+/-- Kernel-accelerated constant names in Lean's C++ reducer (`reduce_nat` and
+`reduce_string`). Even a `theorem` with one of these names triggers kernel WHNF
+reduction, so non-sysroot modules may never declare them in any form. -/
+def kernelAcceleratedNames : List Name :=
+  [`Nat.zero, `Nat.succ, `Nat.add, `Nat.sub, `Nat.mul, `Nat.pow, `Nat.gcd,
+   `Nat.mod, `Nat.div, `Nat.beq, `Nat.ble, `Nat.land, `Nat.lor, `Nat.xor,
+   `Nat.shiftLeft, `Nat.shiftRight, `String.ofList]
 
 /-- Return `true` if `id` is a valid user-written identifier with non-empty
 string components, no macro scopes, and no `_root_` namespace escape. -/
@@ -1086,12 +1143,15 @@ def inspectNodeKind (k : SyntaxNodeKind) (args : Array Syntax)
     unless allowedAttributeNames.contains attrName do
       fail s!"unsupported attribute removal {attrName}"
 
-/-- Enumerate every namespace that `Lean.ResolveName.resolveNamespace` could
-resolve `id` to under *any* sub-environment of `parserEnv` given lexical
-namespace `currNs` and conservative `openDecls`:
+/-- Enumerate every namespace or qualified target that `id` could resolve to
+under *any* sub-environment of `parserEnv` given lexical namespace `currNs` and
+conservative `openDecls`:
 - every non-empty prefix `p` of `currNs` with `id` appended (`p ++ id`),
-- the root candidate `id.replacePrefix rootNamespace .anonymous`, and
-- every `ns ++ id` for each `OpenDecl.simple ns _` in `openDecls`.
+- the root candidate `id.replacePrefix rootNamespace .anonymous`,
+- every `ns ++ id` for each `OpenDecl.simple ns _` in `openDecls`, and
+- every alias expansion `target` (or `target ++ suffix`) for each
+  `OpenDecl.explicit aliasId target` in `openDecls` (conservatively tracking
+  `export` and `open renaming` aliases alongside open namespaces).
 
 Checking every candidate—instead of stopping at the innermost existing
 namespace in the union `parserEnv` as `resolveNamespaceUsingScope?` does—closes
@@ -1105,18 +1165,21 @@ def candidateOpenNamespaces (currNs : Name) (openDecls : List OpenDecl)
     | _ => []
   let openCandidates := openDecls.filterMap fun
     | OpenDecl.simple ns _ => some (ns ++ id)
-    | _ => none
+    | OpenDecl.explicit aliasId target =>
+      if id == aliasId then some target
+      else if aliasId.isPrefixOf id then
+        some (target ++ id.replacePrefix aliasId .anonymous)
+      else none
   (scopeCandidates currNs ++ openCandidates).eraseDups
 
 /-- Extend `openDecls` conservatively across an admitted `Parser.Command.open`
-(`openSimple`) node so `Parser.Command.in` and `Parser.Command.mutual` inspect
-their scoped commands under the opened namespaces without elaborating or running
-parser callbacks. -/
+(`openSimple`) or `Parser.Command.export` node so `Parser.Command.in` and
+`Parser.Command.mutual` inspect their scoped commands under the opened
+namespaces and exported aliases without elaborating or running parser
+callbacks. -/
 def extendOpenDeclsForOpenCmd (currNs : Name) (openDecls : List OpenDecl)
     (openStx : Syntax) : List OpenDecl :=
-  if !openStx.isOfKind ``Parser.Command.open then
-    openDecls
-  else
+  if openStx.isOfKind ``Parser.Command.open then
     let openDecl := openStx[1]
     if !openDecl.isOfKind ``Parser.Command.openSimple then
       openDecls
@@ -1133,6 +1196,101 @@ def extendOpenDeclsForOpenCmd (currNs : Name) (openDecls : List OpenDecl)
         let stripped := id.replacePrefix rootNamespace .anonymous
         if hasOpenDecl stripped then ods'
         else OpenDecl.simple stripped [] :: ods'
+  else if openStx.isOfKind ``Parser.Command.export &&
+      openStx.getArgs.size == 5 then
+    let nsId := openStx[1].getId
+    let itemIds := openStx[3].getArgs.map Syntax.getId
+    (candidateOpenNamespaces currNs openDecls nsId).foldl
+      (init := openDecls) fun acc ns =>
+        itemIds.foldl (init := acc) fun ods itemId =>
+          OpenDecl.explicit itemId (ns ++ itemId) :: ods
+  else
+    openDecls
+
+/-- Validate `export ns (id1 ...)` in repository preflight (`"preflight"` and
+`"correspondence-preflight"`), rejecting forbidden namespaces, resolved
+qualified items `ns ++ itemId`, and forbidden/reserved created alias names
+`currNs ++ itemId` under `banLeanRoot := true`. -/
+def validateRepoExport (currNs : Name) (openDecls : List OpenDecl)
+    (args : Array Syntax) (isTrusted : Bool := false) : IO Unit := do
+  unless args.size == 5 do
+    fail "unsupported export shape"
+  let nsId := args[1]!.getId
+  unless isValidSourceIdent nsId do
+    fail s!"invalid export namespace {nsId}"
+  let itemIds := args[3]!.getArgs.map Syntax.getId
+  if itemIds.isEmpty then
+    fail "empty export item list"
+  for itemId in itemIds do
+    unless isValidSourceIdent itemId do
+      fail s!"invalid export item {itemId}"
+    if forbiddenPureIdentifiers.contains itemId || itemId == `autoParam ||
+        itemId == `optParam then
+      fail s!"disallowed export item {itemId}"
+  for ns in candidateOpenNamespaces currNs openDecls nsId do
+    if isForbiddenPureNamespace ns (banLeanRoot := true) then
+      fail s!"cannot export from forbidden namespace {ns}"
+    for itemId in itemIds do
+      let full := ns ++ itemId
+      if forbiddenPureIdentifiers.contains full || full == `autoParam ||
+          full == `optParam ||
+          isForbiddenPureNamespace full (banLeanRoot := true) then
+        fail s!"disallowed export item {full}"
+  for itemId in itemIds do
+    let aliasName := (currNs ++ itemId).replacePrefix rootNamespace .anonymous
+    let aliasRoot := aliasName.getRoot
+    if !isTrusted && aliasRoot == `Trusted then
+      fail (s!"non-Trusted module cannot export alias {aliasName} in " ++
+        "Trusted namespace")
+    if kernelAcceleratedNames.contains aliasName ||
+        reservedKernelRoots.contains aliasRoot then
+      fail (s!"cannot export alias {aliasName} in reserved kernel " ++
+        s!"namespace {aliasRoot}")
+    if forbiddenPureIdentifiers.contains aliasName ||
+        aliasName == `autoParam || aliasName == `optParam ||
+        isForbiddenPureNamespace aliasName (banLeanRoot := true) then
+      fail s!"disallowed export alias {aliasName}"
+
+/-- Exact pure `Init.*` `while`-loop and domain-theory constants
+(`Init.Control.Do` and `Init.Internal.Order.{Basic,While}`) that non-`Trusted`
+repository proofs (`theory/` and `correspondence/`) may name in surface command
+syntax; compiled `.olean` audit independently verifies `isAllowedRepoLeanHelper`
+(`Init.*` origin, non-`unsafe`, non-`opaque`, non-`autoParam`, pure type). -/
+def allowedRepoSurfaceLeanDecls : List Name := [
+  `Lean.Loop,
+  `Lean.Loop.mk,
+  `Lean.Loop.forIn_eq_of_monadTail,
+  `Lean.Order.MonadTail,
+  `Lean.Order.instCCPOPi,
+  `Lean.Order.FlatOrder.instCCPO,
+  `Lean.Order.FlatOrder.rel.refl]
+
+/-- Reject `val` if `cand` matches `forbiddenPureIdentifiers`, `autoParam`,
+`optParam`, or `isForbiddenPureNamespace (banLeanRoot := true)` (outside
+`allowedRepoSurfaceLeanDecls` when `allowRepoSurfaceLean` is `true`). -/
+def checkPureIdentRef (val cand : Name)
+    (allowRepoSurfaceLean : Bool := false) : IO Unit := do
+  let u := stripLeadingRootPrefix cand
+  if forbiddenPureIdentifiers.contains u || u == `autoParam ||
+      u == `optParam ||
+      (isForbiddenPureNamespace u (banLeanRoot := true) &&
+        !(allowRepoSurfaceLean && allowedRepoSurfaceLeanDecls.contains u)) then
+    fail s!"disallowed reference {val}"
+
+/-- Apply `checkPureIdentRef` across every identifier node in `s` (used by
+`applyCommandScope` on `open` and `namespace` arguments after
+`rejectScopedNamespace` runs so scoped-extension diagnostics stay first). -/
+partial def checkSyntaxPureRefs (currNs : Name) (openDecls : List OpenDecl)
+    (s : Syntax) : IO Unit := do
+  match s with
+  | .ident _ _ val _ =>
+    checkPureIdentRef val val
+    for cand in candidateOpenNamespaces currNs openDecls val do
+      checkPureIdentRef val cand
+  | .node _ _ args =>
+    for child in args do
+      checkSyntaxPureRefs currNs openDecls child
+  | _ => pure ()
 
 /-- Recursively validate syntax tree `s` in a single top-down pass against the
 closed `allowedKinds` allowlist during `"preflight"` (with `requirePrelude :=
@@ -1143,7 +1301,8 @@ every identifier with `isValidSourceIdent`, and requires every non-`null`
 partial def inspectSyntax (allowedKinds : NameSet) (s : Syntax)
     (requirePrelude : Bool := true)
     (currNs : Name := .anonymous) (openDecls : List OpenDecl := [])
-    (checkPureRefs : Bool := true) (allowLocalSemireducible : Bool := false) :
+    (checkPureRefs : Bool := true) (isTrusted : Bool := false)
+    (allowLocalSemireducible : Bool := false) :
     IO Unit := do
   match s with
   | .missing => fail "unexpected missing syntax node"
@@ -1152,12 +1311,10 @@ partial def inspectSyntax (allowedKinds : NameSet) (s : Syntax)
     unless isValidSourceIdent val do
       fail s!"invalid identifier {val}"
     if checkPureRefs then
-      let checkPureIdent (cand : Name) : IO Unit := do
-        if forbiddenPureIdentifiers.contains cand || isForbiddenPureNamespace cand then
-          fail s!"disallowed reference {val}"
-      checkPureIdent val
+      let allowLean := requirePrelude && !isTrusted
+      checkPureIdentRef val val allowLean
       for cand in candidateOpenNamespaces currNs openDecls val do
-        checkPureIdent cand
+        checkPureIdentRef val cand allowLean
   | .node _ k args =>
     -- The one admitted `local` attribute (see `localSemireducibleAllowlist`).
     -- `allowLocalSemireducible` is set only for top-level commands of
@@ -1166,7 +1323,7 @@ partial def inspectSyntax (allowedKinds : NameSet) (s : Syntax)
     if allowLocalSemireducible && k == ``Parser.Command.in then
       if let some (_, decl) := matchLocalSemireducibleIn? args then
         inspectSyntax allowedKinds decl requirePrelude currNs openDecls
-          checkPureRefs
+          checkPureRefs isTrusted
         return
     if forbiddenPureTermKinds.contains k then
       fail s!"disallowed syntax {k}"
@@ -1175,26 +1332,38 @@ partial def inspectSyntax (allowedKinds : NameSet) (s : Syntax)
     inspectNodeKind k args requirePrelude
     if k == ``Parser.Command.in && checkPureRefs then
       inspectSyntax allowedKinds args[0]! requirePrelude currNs openDecls
-        checkPureRefs
+        checkPureRefs isTrusted
       inspectSyntax allowedKinds args[1]! requirePrelude currNs openDecls
-        checkPureRefs
+        checkPureRefs isTrusted
       let nextOpen := extendOpenDeclsForOpenCmd currNs openDecls args[0]!
       inspectSyntax allowedKinds args[2]! requirePrelude currNs nextOpen
-        checkPureRefs
+        checkPureRefs isTrusted
     else if k == ``Parser.Command.mutual && checkPureRefs then
       inspectSyntax allowedKinds args[0]! requirePrelude currNs openDecls
-        checkPureRefs
+        checkPureRefs isTrusted
       let mut mutOpen := openDecls
       for child in args[1]!.getArgs do
         inspectSyntax allowedKinds child requirePrelude currNs mutOpen
-          checkPureRefs
+          checkPureRefs isTrusted
         mutOpen := extendOpenDeclsForOpenCmd currNs mutOpen child
       inspectSyntax allowedKinds args[2]! requirePrelude currNs openDecls
-        checkPureRefs
+        checkPureRefs isTrusted
+    else if (k == ``Parser.Command.open || k == ``Parser.Command.namespace) &&
+        requirePrelude then
+      -- `applyCommandScope` validates `open` and `namespace` targets via
+      -- `rejectScopedNamespace` first, then enforces `checkSyntaxPureRefs`.
+      for child in args do
+        inspectSyntax allowedKinds child requirePrelude currNs openDecls false
+          isTrusted
+    else if k == ``Parser.Command.export && checkPureRefs then
+      validateRepoExport currNs openDecls args isTrusted
+      for child in args do
+        inspectSyntax allowedKinds child requirePrelude currNs openDecls
+          checkPureRefs isTrusted
     else
       for child in args do
         inspectSyntax allowedKinds child requirePrelude currNs openDecls
-          checkPureRefs
+          checkPureRefs isTrusted
 
 /-- Collect every namespace that registers at least one scoped entry in any
 registered `ScopedEnvExtension` of `env` (including
@@ -1252,7 +1421,7 @@ def rejectScopedNamespace (scopedNamespaces : NameSet) (how : String)
     (ns : Name) : IO Unit := do
   if scopedNamespaces.contains ns then
     fail s!"cannot {how} namespace {ns} with scoped syntax or extensions"
-  if isForbiddenPureNamespace ns then
+  if isForbiddenPureNamespace ns (banLeanRoot := true) then
     fail s!"cannot {how} forbidden namespace {ns}"
 
 /-- Push each component of `header` as a lexical `namespace` or `section` scope
@@ -1377,7 +1546,11 @@ partial def applyCommandScope (scopedNamespaces scopedPrefixes : NameSet)
     IO (Environment × List ParseScope) := do
   let k := stx.getKind
   if k == ``Parser.Command.namespace then
-    pushParseScopes scopedNamespaces true stx[1].getId parserEnv scopes
+    let top := scopes.head!
+    let (nextEnv, nextScopes) ←
+      pushParseScopes scopedNamespaces true stx[1].getId parserEnv scopes
+    checkSyntaxPureRefs top.currNamespace top.openDecls stx[1]
+    return (nextEnv, nextScopes)
   else if k == ``Parser.Command.section then
     if stx[2].isNone then
       let top := scopes.head!
@@ -1432,7 +1605,20 @@ partial def applyCommandScope (scopedNamespaces scopedPrefixes : NameSet)
         rejectScopedNamespace scopedNamespaces "open" stripped
         if !hasOpenDecl openDecls stripped then
           openDecls := OpenDecl.simple stripped [] :: openDecls
+    checkSyntaxPureRefs top.currNamespace top.openDecls stx[1]
     return (parserEnv, { top with openDecls := openDecls } :: scopes.tail!)
+  else if k == ``Parser.Command.export then
+    let top := scopes.head!
+    let nsId := stx[1].getId
+    let itemIds := stx[3].getArgs.map Syntax.getId
+    for itemId in itemIds do
+      let _ ← checkDeclNamespacePrefixes scopedNamespaces top.currNamespace
+        itemId parserEnv
+    let mut ods := top.openDecls
+    for ns in candidateOpenNamespaces top.currNamespace top.openDecls nsId do
+      for itemId in itemIds do
+        ods := OpenDecl.explicit itemId (ns ++ itemId) :: ods
+    return (parserEnv, { top with openDecls := ods } :: scopes.tail!)
   else if k == ``Parser.Command.in then
     let top := scopes.head!
     let tmpEnv := Parser.parserExtension.pushScope parserEnv
@@ -1468,6 +1654,7 @@ partial def parseAndInspectCommands (ctx : Parser.InputContext)
     (scopedNamespaces scopedPrefixes : NameSet) (parserEnv : Environment)
     (scopes : List ParseScope) (moduleName : Name) (allowedKinds : NameSet)
     (state : Parser.ModuleParserState) (messages : MessageLog)
+    (isTrusted : Bool := false)
     (allowLocalSemireducible : Bool := false) : IO Unit := do
   let previous := state.pos
   let top := scopes.head!
@@ -1491,12 +1678,13 @@ partial def parseAndInspectCommands (ctx : Parser.InputContext)
       declaresLocalSemireducibleShadow top.currNamespace stx then
     fail (s!"{moduleName} declares a constant whose name could shadow " ++
       "one in `localSemireducibleAllowlist`")
-  inspectSyntax allowedKinds stx true top.currNamespace top.openDecls
-    (allowLocalSemireducible := allowLocalSemireducible)
+  inspectSyntax allowedKinds stx true top.currNamespace top.openDecls true
+    isTrusted (allowLocalSemireducible := allowLocalSemireducible)
   let (nextEnv, nextScopes) ←
     applyCommandScope scopedNamespaces scopedPrefixes parserEnv scopes stx
   parseAndInspectCommands ctx scopedNamespaces scopedPrefixes nextEnv nextScopes
-    moduleName allowedKinds nextState nextMessages allowLocalSemireducible
+    moduleName allowedKinds nextState nextMessages isTrusted
+    allowLocalSemireducible
 
 /-- Parsed header and tier metadata produced by `inspectSource` for one
 repository `.lean` source file during `"preflight"` or
@@ -1586,7 +1774,8 @@ def inspectSource (scopedNamespaces scopedPrefixes : NameSet)
     { header := "", currNamespace := .anonymous, openDecls := [] }
   let allowLocalSemireducible := allowLocalSemireducible && role == .theory
   parseAndInspectCommands ctx scopedNamespaces scopedPrefixes parserEnv
-    [rootScope] moduleName allowedKinds initial log allowLocalSemireducible
+    [rootScope] moduleName allowedKinds initial log (role matches .trusted _)
+    allowLocalSemireducible
   return { moduleName, imports, isModule, role }
 
 /-- Validate target module import edges (`"headers"`, `"spec-preflight"`, and
@@ -1735,7 +1924,8 @@ etc.) in terms, but may never open `namespace <Root>` or declare constants
 beneath them. -/
 def forbiddenSpecDeclRootNamespaces : List Name :=
   forbiddenSpecRootNamespaces ++ [
-    `Trusted, `Anneal, `Proof, `Init, `Std,
+    `Trusted, `Anneal, `Proof, `Expected, `Captured,
+    `SpecPreflight, `TrustedBoundary, `Init, `Std,
     `Nat, `String, `Char, `Bool, `Int, `Int8, `Int16, `Int32, `Int64, `ISize,
     `UInt8, `UInt16, `UInt32, `UInt64, `USize, `BitVec, `Float, `Float32,
     `ByteArray, `Subarray, `Array, `List, `Option, `Sum, `Prod, `Fin, `Subtype,
@@ -1759,7 +1949,7 @@ syntactic tactic inspection; `panic*` constants carry runtime panic side
 effects; and `forbiddenPureIdentifiers` covers debug, dynamic-library, and
 `includeStr` externs). -/
 def forbiddenSpecIdentifiers : List Name :=
-  [`autoParam, `panic, `panicCore, `panicWithPos, `panicWithPosWithDecl] ++
+  [`autoParam, `optParam, `panic, `panicCore, `panicWithPos, `panicWithPosWithDecl] ++
     forbiddenPureIdentifiers
 
 /-- Simple attributes permitted inside `@[...]` in target specifications. -/
@@ -1890,7 +2080,23 @@ def forbiddenSpecTermKinds : NameSet := .ofList [
   `Lean.Parser.Term.logNamedWarningMacro,
   `Lean.Parser.Term.logNamedWarningAtMacro,
   `Lean.Parser.Term.throwNamedErrorMacro,
-  `Lean.Parser.Term.throwNamedErrorAtMacro]
+  `Lean.Parser.Term.throwNamedErrorAtMacro,
+  `Lean.Parser.Term.defaultOrOfNonempty,
+  `Lean.Parser.Term.valueOf,
+  `Lean.Parser.Term.letMVar,
+  `Lean.Parser.Term.waitIfTypeMVar,
+  `Lean.Parser.Term.waitIfTypeContainsMVar,
+  `Lean.Parser.Term.waitIfContainsMVar,
+  `Lean.Parser.Term.waitForExpectedType,
+  `Lean.Parser.Term.clear,
+  `Lean.Parser.Term.noErrorIfUnused,
+  `Lean.Parser.Term.typeOf,
+  `Lean.Parser.Term.ensureTypeOf,
+  `Lean.Parser.Term.ensureExpectedType,
+  `Lean.Parser.Term.noImplicitLambda,
+  `Lean.Parser.Term.structInstDefault,
+  `Lean.Parser.Term.forInMacro,
+  `Lean.Parser.Term.forInMacro']
 
 /-- Return `true` when `k` is a syntax quotation node (`*.quot`/`*.quotSeq`). -/
 def isQuotationKind (k : SyntaxNodeKind) : Bool :=
@@ -2091,9 +2297,42 @@ pure roots, `Lean`, and `forbiddenSysUvPrefixes` sub-scopes such as
 `forbiddenSpecDeclRootNamespaces`. Both checks strip a leading `_root_`. -/
 def rejectForbiddenSpecDeclNamespace (how : String) (ns : Name) : IO Unit := do
   rejectForbiddenSpecNamespace how ns
-  let u := ns.replacePrefix rootNamespace .anonymous
+  let u := stripLeadingRootPrefix ns
   if forbiddenSpecDeclRootNamespaces.contains u.getRoot then
     fail s!"cannot {how} reserved namespace {ns} in specification"
+
+/-- Validate one resolved `(ns, itemId)` reference introduced by `openOnly`,
+`openRenaming`, or `export` inside a specification (`full := ns ++ itemId`). -/
+def checkSpecQualifiedItem (how : String) (ns itemId : Name) : IO Unit := do
+  if ns == `System.Platform then
+    let full := ns ++ itemId
+    unless allowedSystemPlatformDecls.contains full do
+      fail s!"disallowed {how} item {full} in specification"
+  else
+    rejectForbiddenSpecNamespace how ns
+    let full := ns ++ itemId
+    if hasUnsafeRecComponent full || hasBangComponent full ||
+        hasForbiddenSpecIdentComponent full ||
+        forbiddenSpecIdentifiers.contains full ||
+        isForbiddenPureNamespace full (banLeanRoot := true) then
+      unless allowedSystemPlatformDecls.contains full do
+        fail s!"disallowed {how} item {full} in specification"
+
+/-- Validate an alias identifier `rawAlias` created by `export`
+(`currNs ++ itemId`) or `open ... renaming fromId -> toId` (`toId`) in a
+specification against `rejectForbiddenSpecDeclNamespace` (on every prefix)
+and `forbiddenSpecIdentifiers`. -/
+def validateSpecAliasTarget (how : String) (rawAlias : Name) : IO Unit := do
+  let rec checkPrefixes : Name → IO Unit
+    | .anonymous => pure ()
+    | n@(.str p _) => do
+      checkPrefixes p
+      rejectForbiddenSpecDeclNamespace s!"{how} alias" n
+    | n => rejectForbiddenSpecDeclNamespace s!"{how} alias" n
+  let aliasName := stripLeadingRootPrefix rawAlias
+  checkPrefixes aliasName
+  if forbiddenSpecIdentifiers.contains aliasName then
+    fail s!"disallowed {how} alias {aliasName} in specification"
 
 /-- Validate an `open` declaration node (`openSimple`, `openOnly`, `openHiding`,
 `openRenaming`, `openScoped`) against `forbiddenSpecRootNamespaces`, allowing
@@ -2142,41 +2381,22 @@ def validateSpecOpenDecl (currNs : Name) (openDecls : List OpenDecl)
     let candidates := candidateOpenNamespaces currNs openDecls nsId
     let mut ods := openDecls
     for ns in candidates do
-      if ns == `System.Platform then
-        if itemIds.isEmpty then
-          fail "cannot open System.Platform without explicit allowed items"
-        for itemId in itemIds do
-          let full := ns ++ itemId
-          unless allowedSystemPlatformDecls.contains full do
-            fail s!"disallowed open item {full} in specification"
-          ods := OpenDecl.explicit itemId full :: ods
-      else
+      if ns == `System.Platform && itemIds.isEmpty then
+        fail "cannot open System.Platform without explicit allowed items"
+      else if itemIds.isEmpty then
         rejectForbiddenSpecNamespace "open" ns
-        for itemId in itemIds do
-          ods := OpenDecl.explicit itemId (ns ++ itemId) :: ods
+      for itemId in itemIds do
+        checkSpecQualifiedItem "open" ns itemId
+        ods := OpenDecl.explicit itemId (ns ++ itemId) :: ods
     return (parserEnv, ods)
-  else if k == ``Parser.Command.openHiding ||
-      k == ``Parser.Command.openRenaming then
+  else if k == ``Parser.Command.openHiding then
     let nsId := openDecl[0].getId
     unless isValidSourceIdent nsId && !hasUnsafeRecComponent nsId do
       fail s!"invalid open namespace {nsId} in specification"
-    if k == ``Parser.Command.openHiding then
-      for idStx in openDecl[2].getArgs do
-        let hid := idStx.getId
-        unless isValidSourceIdent hid && !hasUnsafeRecComponent hid do
-          fail s!"invalid open hiding identifier {hid} in specification"
-    else
-      for itemStx in openDecl[2].getArgs do
-        let fromId := itemStx[0].getId
-        let toId := itemStx[2].getId
-        unless isValidSourceIdent fromId && !hasUnsafeRecComponent fromId &&
-            !hasBangComponent fromId &&
-            !hasForbiddenSpecIdentComponent fromId &&
-            isValidSourceIdent toId && !hasUnsafeRecComponent toId &&
-            !hasBangComponent toId &&
-            !hasForbiddenSpecIdentComponent toId do
-          fail (s!"invalid open renaming item {fromId} -> {toId} " ++
-            "in specification")
+    for idStx in openDecl[2].getArgs do
+      let hid := idStx.getId
+      unless isValidSourceIdent hid && !hasUnsafeRecComponent hid do
+        fail s!"invalid open hiding identifier {hid} in specification"
     let candidates := candidateOpenNamespaces currNs openDecls nsId
     let mut env := parserEnv
     let mut ods := openDecls
@@ -2185,14 +2405,50 @@ def validateSpecOpenDecl (currNs : Name) (openDecls : List OpenDecl)
       rejectForbiddenSpecNamespace "open" ns
       if env.isNamespace ns then
         ods := addSimple ods ns
-        if k == ``Parser.Command.openHiding then
-          env := Parser.parserExtension.activateScoped env ns
+        env := Parser.parserExtension.activateScoped env ns
         added := true
     if !added then
       let stripped := nsId.replacePrefix rootNamespace .anonymous
       rejectForbiddenSpecNamespace "open" stripped
       ods := addSimple ods stripped
     return (env, ods)
+  else if k == ``Parser.Command.openRenaming then
+    let nsId := openDecl[0].getId
+    unless isValidSourceIdent nsId && !hasUnsafeRecComponent nsId do
+      fail s!"invalid open namespace {nsId} in specification"
+    let mut pairs : Array (Name × Name) := #[]
+    for itemStx in openDecl[2].getArgs do
+      let fromId := itemStx[0].getId
+      let toId := itemStx[2].getId
+      unless isValidSourceIdent fromId && !hasUnsafeRecComponent fromId &&
+          !hasBangComponent fromId &&
+          !hasForbiddenSpecIdentComponent fromId &&
+          isValidSourceIdent toId && !hasUnsafeRecComponent toId &&
+          !hasBangComponent toId &&
+          !hasForbiddenSpecIdentComponent toId do
+        fail (s!"invalid open renaming item {fromId} -> {toId} " ++
+          "in specification")
+      validateSpecAliasTarget "open renaming" toId
+      pairs := pairs.push (fromId, toId)
+    let candidates := candidateOpenNamespaces currNs openDecls nsId
+    let mut ods := openDecls
+    let mut added := false
+    for ns in candidates do
+      if pairs.isEmpty then
+        rejectForbiddenSpecNamespace "open" ns
+      for (fromId, toId) in pairs do
+        checkSpecQualifiedItem "open" ns fromId
+        if parserEnv.isNamespace ns then
+          ods := OpenDecl.explicit toId (ns ++ fromId) :: ods
+          added := true
+    if !added then
+      let stripped := nsId.replacePrefix rootNamespace .anonymous
+      if pairs.isEmpty then
+        rejectForbiddenSpecNamespace "open" stripped
+      for (fromId, toId) in pairs do
+        checkSpecQualifiedItem "open" stripped fromId
+        ods := OpenDecl.explicit toId (stripped ++ fromId) :: ods
+    return (parserEnv, ods)
   else if k == ``Parser.Command.openScoped then
     let mut env := parserEnv
     for idStx in openDecl[1].getArgs do
@@ -2224,15 +2480,25 @@ def validateSpecExport (currNs : Name) (openDecls : List OpenDecl)
         !hasForbiddenSpecIdentComponent itemId do
       fail s!"invalid export item {itemId} in specification"
   for ns in candidateOpenNamespaces currNs openDecls nsId do
-    if ns == `System.Platform then
-      if itemIds.isEmpty then
-        fail "cannot export System.Platform without explicit allowed items"
-      for itemId in itemIds do
-        let full := ns ++ itemId
-        unless allowedSystemPlatformDecls.contains full do
-          fail s!"disallowed export item {full} in specification"
-    else
+    if ns == `System.Platform && itemIds.isEmpty then
+      fail "cannot export System.Platform without explicit allowed items"
+    else if itemIds.isEmpty then
       rejectForbiddenSpecNamespace "export" ns
+    for itemId in itemIds do
+      checkSpecQualifiedItem "export" ns itemId
+  for itemId in itemIds do
+    validateSpecAliasTarget "export" (currNs ++ itemId)
+
+/-- Return `true` when normalized compiled alias name `aliasUser`
+(`stripLeadingRootPrefix (privateToUserName aliasName)`) violates
+`TargetRole::Specification` namespace or identifier restrictions. -/
+def isForbiddenSpecAliasUser (aliasUser : Name) : Bool :=
+  forbiddenSpecDeclRootNamespaces.contains aliasUser.getRoot ||
+    isForbiddenPureNamespace aliasUser (banLeanRoot := true) ||
+    forbiddenSpecIdentifiers.contains aliasUser ||
+    hasForbiddenSpecIdentComponent aliasUser ||
+    hasBangComponent aliasUser ||
+    hasUnsafeRecComponent aliasUser
 
 /-- Push `namespace`/`section` scopes for `"spec-preflight"`, rejecting every
 namespace refused by `rejectForbiddenSpecDeclNamespace` and activating scoped
@@ -2381,6 +2647,12 @@ partial def inspectSpecSyntax (commandLikeKinds tacticLikeKinds : NameSet)
             let (nc, nt) ← collectSpecParserSets mutEnv
             mutCmds := nc
             mutTacs := nt
+        else if child.isOfKind ``Parser.Command.export then
+          let nsId := child[1].getId
+          let itemIds := child[3].getArgs.map Syntax.getId
+          for ns in candidateOpenNamespaces currNs mutOpen nsId do
+            for itemId in itemIds do
+              mutOpen := OpenDecl.explicit itemId (ns ++ itemId) :: mutOpen
     else if k == ``Parser.Command.in then
       unless args.size == 3 do
         fail "unsupported command-wrapper shape in specification"
@@ -2493,6 +2765,15 @@ partial def applySpecScope (parserEnv : Environment)
     let (nextEnv, nextOpen) ←
       validateSpecOpenDecl top.currNamespace top.openDecls parserEnv stx[1]
     return (nextEnv, { top with openDecls := nextOpen } :: scopes.tail!)
+  else if k == ``Parser.Command.export then
+    let top := scopes.head!
+    let nsId := stx[1].getId
+    let itemIds := stx[3].getArgs.map Syntax.getId
+    let mut ods := top.openDecls
+    for ns in candidateOpenNamespaces top.currNamespace top.openDecls nsId do
+      for itemId in itemIds do
+        ods := OpenDecl.explicit itemId (ns ++ itemId) :: ods
+    return (parserEnv, { top with openDecls := ods } :: scopes.tail!)
   else if k == ``Parser.Command.in then
     let top := scopes.head!
     let tmpEnv := Parser.parserExtension.pushScope parserEnv
@@ -2560,6 +2841,9 @@ partial def parseAndInspectSpecCommands (ctx : Parser.InputContext)
 parser environment (`loadExts := true`, zero target `.olean`s loaded). -/
 def preflightSpecs (j : Json) (foundation : Array Name) : IO Json := do
   let libraries ← names j "libraries"
+  for lib in libraries do
+    if isForbiddenTransitiveLibrary lib then
+      fail s!"disallowed transitive sysroot import {lib} in specification"
   let sources ← field (α := Array (String × String)) j "sources"
   let env ← importEnv j (foundation ++ libraries) true
   validateGraph j env
@@ -2755,29 +3039,6 @@ def ensureReplayableConstant (unsafeLabel : String) (ctxSuffix : String)
   if ci.hasValue true && (ci.value? true).isNone then
     fail s!"missing stored body {ci.name}"
 
-/-- Top-level namespaces reserved for the Lean kernel and standard library.
-Non-sysroot modules cannot declare definitions or arbitrary theorems under
-these roots because Lean's C++ kernel accelerates primitives such as `Nat.gcd`,
-`Nat.land`, `Nat.lor`, `Nat.xor`, `Nat.shiftLeft`, `Nat.shiftRight`, and
-`String.ofList` by name; shadowing an unimported kernel-accelerated name can
-prove `False` with zero axioms or trigger ill-typed kernel WHNF reduction. -/
-def reservedKernelRoots : List Name :=
-  [`Nat, `String, `Char, `Bool, `Int, `Int8, `Int16, `Int32, `Int64, `ISize,
-   `UInt8, `UInt16, `UInt32, `UInt64, `USize, `BitVec, `Float, `Float32,
-   `ByteArray, `Subarray, `Array, `List, `Option, `Sum, `Prod, `Fin, `Subtype,
-   `Eq, `HEq, `Quot, `Classical, `Lean, `Init, `Std, `Lake, `LeanExport,
-   `LeanIR, `System, `IO, `Task, `Thunk, `Unit, `PUnit, `Empty, `PEmpty, `True,
-   `False, `And, `Or, `Not, `Iff, `Exists, `Sigma, `PSigma, `Decidable,
-   `Nonempty, `Ordering, `Rat, `Except, `EStateM, `StateM]
-
-/-- Kernel-accelerated constant names in Lean's C++ reducer (`reduce_nat` and
-`reduce_string`). Even a `theorem` with one of these names triggers kernel WHNF
-reduction, so non-sysroot modules may never declare them in any form. -/
-def kernelAcceleratedNames : List Name :=
-  [`Nat.zero, `Nat.succ, `Nat.add, `Nat.sub, `Nat.mul, `Nat.pow, `Nat.gcd,
-   `Nat.mod, `Nat.div, `Nat.beq, `Nat.ble, `Nat.land, `Nat.lor, `Nat.xor,
-   `Nat.shiftLeft, `Nat.shiftRight, `String.ofList]
-
 /-- Return `true` when `n` has at least two name components (not a bare root
 like `Nat` or `String`). -/
 def hasCompoundName : Name → Bool
@@ -2848,6 +3109,29 @@ def sameConstantShape (a b : ConstantInfo) : Bool :=
       | _, _ => false
     | _, _ => true
 
+/-- Verify that a companion `.olean` / `.olean.server` constant `compCi` matches
+its `.olean.private` counterpart `privCi`: either full structural equality of a
+non-`unsafe` constant (`!compCi.isUnsafe && sameConstantShape privCi compCi`)
+or, under `isMod = true`, Lean's module-system body erasure of a non-`unsafe`
+`.thmInfo` / `.defnInfo` / `.opaqueInfo` to `.axiomInfo ax` with identical
+`name`, `levelParams`, and `type` and `ax.isUnsafe == privCi.isPartial`
+(`Lean/AddDecl.lean:113-127`, which maps `DefinitionSafety.partial`—such as a
+non-`@[expose]` recursive definition's `<f>._unsafe_rec` auxiliary—to
+`AxiomVal.isUnsafe = true`). -/
+def isValidCompanionConstant (isMod : Bool) (privCi compCi : ConstantInfo) :
+    Bool :=
+  !privCi.isUnsafe && (
+    (!compCi.isUnsafe && sameConstantShape privCi compCi) ||
+    (isMod && match privCi, compCi with
+      | .thmInfo _, .axiomInfo ax
+      | .defnInfo _, .axiomInfo ax
+      | .opaqueInfo _, .axiomInfo ax =>
+        ax.isUnsafe == privCi.isPartial &&
+          compCi.name == privCi.name &&
+          compCi.levelParams == privCi.levelParams &&
+          compCi.type == privCi.type
+      | _, _ => false))
+
 /-- Verify one module's serialized `.olean` `constNames`/`constants` pairs:
 exact list equality and zero intra-module duplicate constant names (key parity
 and non-anonymity are enforced at import by `verifyCheckedEnvKeys`). -/
@@ -2896,12 +3180,376 @@ def collectAllMatchers (env : Environment) : NameSet := Id.run do
   return matchers
 
 /-- Return `true` when `s` is non-empty and consists strictly of `pfx`
-followed by one or more ASCII decimal digits (used for `_sparseCasesOn_<N>`
-inside unimported `TargetRole::Proof` modules). -/
+followed by one or more ASCII decimal digits (`_auto_<N>`,
+`_sparseCasesOn_<N>`). -/
 def isDigitsAfterPrefix (pfx s : String) : Bool :=
   match s.dropPrefix? pfx with
   | some rest => !rest.isEmpty && rest.all Char.isDigit
   | none => false
+
+/-- Return `true` when `s` is `_auto_` followed by one or more `_`-separated
+non-empty ASCII decimal digit segments (`_auto_<N>`, `_auto_<N>_<M>` from
+`mkChild`). -/
+def isAutoDigitsSuffix (s : String) : Bool :=
+  match s.dropPrefix? "_auto_" with
+  | some rest =>
+    let parts := rest.copy.splitOn "_"
+    !parts.isEmpty && parts.all fun seg => !seg.isEmpty && seg.all Char.isDigit
+  | none => false
+
+/-- Return `true` when `n` (ignoring `_private.<mod>.<idx>.`) ends with
+Lean's `declareTacticSyntax` auxiliary suffix `_auto_<N>(_M)*` or
+structure-field default-tactic suffix `_autoParam`. -/
+def isAutoParamAuxName (n : Name) : Bool :=
+  match privateToUserName n with
+  | .str _ "_autoParam" => true
+  | .str _ seg => isAutoDigitsSuffix seg
+  | _ => false
+
+/-- Namespaces and exact declarations under `Lean.*` that host pure `Init.*`
+compiler-generated proof, logic, arithmetic, or `while`-loop unfolding helpers
+(never metaprogramming, I/O, or compiler APIs). -/
+def isAllowedRepoLeanHelperName (u : Name) : Bool :=
+  u.getRoot == `Lean &&
+    ([`Lean.injEq_helper, `Lean.Arrow, `Lean.arrow_congr,
+      `Lean.arrow_congr_left, `Lean.arrow_congr_right, `Lean.arrow_true,
+      `Lean.arrow_true_congr, `Lean.true_arrow, `Lean.true_arrow_congr,
+      `Lean.true_arrow_congr_left, `Lean.true_arrow_congr_right,
+      `Lean.false_arrow, `Lean.false_arrow_congr,
+      `Lean.instForInLoopUnitOfMonad, `Lean.instGetElemRArrayNatTrue].contains u ||
+      [`Lean.Loop, `Lean.Order, `Lean.Grind, `Lean.Omega,
+        `Lean.RArray, `Lean.Data.AC, `Lean.Sym].any fun pre =>
+        u == pre || pre.isPrefixOf u)
+
+/-- Return `true` when `n` is an `Init.*`-declared, non-`unsafe`, non-`opaque`
+pure helper in `isAllowedRepoLeanHelperName` whose type references neither
+effectful roots nor any `Lean.*` constant outside `isAllowedRepoLeanHelperName`
+(excluding parser descriptors, unexpanders, macro rules, `._autoParam` helpers,
+and `IO` order instances). -/
+def isAllowedRepoLeanHelper (env : Environment) (n : Name) : Bool :=
+  let u := stripLeadingRootPrefix (privateToUserName (stripLeadingRootPrefix n))
+  if !isAllowedRepoLeanHelperName u || isAutoParamAuxName n then
+    false
+  else
+    let fromInit := match env.getModuleIdxFor? n with
+      | some idx =>
+        match env.header.moduleNames[idx.toNat]? with
+        | some mod => mod.getRoot == `Init
+        | none => false
+      | none => false
+    if !fromInit then
+      false
+    else
+      match env.find? n with
+      | some ci =>
+        !ci.isUnsafe && !(ci matches .opaqueInfo _) &&
+          !(collectExprConsts [ci.type]).any fun c =>
+            let cu := stripLeadingRootPrefix (privateToUserName (stripLeadingRootPrefix c))
+            forbiddenPureRootNamespaces.contains cu.getRoot ||
+              (cu.getRoot == `Lean && !isAllowedRepoLeanHelperName cu)
+      | none => false
+
+/-- Return `true` when `n` references any `Lean.*` declaration (other than
+`isAllowedRepoLeanHelper`), `Init.System.*`, `Init.Meta.*`, `Std.Internal.UV.*`,
+`Std.Async.*`, `Std.Http.*`, `Dynlib`, effectful root namespaces, `autoParam`,
+or `forbiddenPureIdentifiers` (matching repository preflight's
+`banLeanRoot := true`). -/
+def isForbiddenRepoMetaConst (env : Environment) (n : Name) : Bool :=
+  if isAllowedRepoLeanHelper env n then
+    false
+  else
+    let u := stripLeadingRootPrefix (privateToUserName (stripLeadingRootPrefix n))
+    forbiddenPureIdentifiers.contains u || u == `autoParam ||
+      u == `Init.Meta || (`Init.Meta).isPrefixOf u ||
+      isForbiddenPureNamespace u (banLeanRoot := true)
+
+private def mkStrArity? : Name → Option Nat
+  | ``Lean.Name.mkStr1 => some 1
+  | ``Lean.Name.mkStr2 => some 2
+  | ``Lean.Name.mkStr3 => some 3
+  | ``Lean.Name.mkStr4 => some 4
+  | ``Lean.Name.mkStr5 => some 5
+  | ``Lean.Name.mkStr6 => some 6
+  | ``Lean.Name.mkStr7 => some 7
+  | ``Lean.Name.mkStr8 => some 8
+  | _ => none
+
+/-- Decode a pure `Nat` literal encoded either as a raw `.lit (.natVal n)` or as
+the `OfNat.ofNat.{0} Nat (nat_lit n) (instOfNatNat (nat_lit n))` term emitted by
+`Lean.mkNatLit` / `ToExpr Nat`. -/
+private def decodePureAutoNat? : Expr → Option Nat
+  | .lit (.natVal n) => some n
+  | .app (.app (.app (.const ``OfNat.ofNat [.zero]) (.const ``Nat []))
+      (.lit (.natVal n)))
+      (.app (.const ``instOfNatNat []) (.lit (.natVal m))) =>
+    if n == m then some n else none
+  | _ => none
+
+/-- Decode only pure literal `Name` constructor trees emitted by
+`ToExpr Name`. -/
+private partial def decodePureAutoName? (e : Expr) : Option Name := do
+  match e with
+  | .const ``Lean.Name.anonymous [] => return .anonymous
+  | .app (.app (.const ``Lean.Name.str []) p) (.lit (.strVal s)) =>
+    return .str (← decodePureAutoName? p) s
+  | .app (.app (.const ``Lean.Name.num []) p) nE =>
+    return .num (← decodePureAutoName? p) (← decodePureAutoNat? nE)
+  | _ =>
+    let .const fn [] := e.getAppFn | none
+    let arity ← mkStrArity? fn
+    let args := e.getAppArgs
+    guard (args.size == arity)
+    let mut acc : Name := .anonymous
+    for a in args do
+      let .lit (.strVal s) := a | none
+      acc := .str acc s
+    return acc
+
+private partial def decodePureStringList? (e : Expr) : Option (List String) := do
+  match e with
+  | .app (.const ``List.nil [.zero]) (.const ``String []) => return []
+  | .app (.app (.app (.const ``List.cons [.zero]) (.const ``String []))
+      (.lit (.strVal s))) tl =>
+    return s :: (← decodePureStringList? tl)
+  | _ => none
+
+private partial def decodePurePreresolvedList? (e : Expr) :
+    Option (List Syntax.Preresolved) := do
+  match e with
+  | .app (.const ``List.nil [.zero]) (.const ``Lean.Syntax.Preresolved []) =>
+    return []
+  | .app (.app (.app (.const ``List.cons [.zero])
+      (.const ``Lean.Syntax.Preresolved [])) hd) tl =>
+    let item ← match hd with
+      | .app (.const ``Lean.Syntax.Preresolved.namespace []) nsE =>
+        some (Syntax.Preresolved.namespace (← decodePureAutoName? nsE))
+      | .app (.app (.const ``Lean.Syntax.Preresolved.decl []) dE) lsE =>
+        some (Syntax.Preresolved.decl (← decodePureAutoName? dE)
+          (← decodePureStringList? lsE))
+      | _ => none
+    return item :: (← decodePurePreresolvedList? tl)
+  | _ => none
+
+mutual
+private partial def decodePureSyntaxArray? (e : Expr) :
+    Option (Array Syntax) := do
+  match e with
+  | .app (.const ``Array.empty [.zero]) (.const ``Lean.Syntax []) =>
+    return #[]
+  | .app (.app (.app (.const ``Array.push [.zero]) (.const ``Lean.Syntax [])) arrE)
+      elemE =>
+    let arr ← decodePureSyntaxArray? arrE
+    let elem ← decodePureAutoSyntax? elemE
+    return arr.push elem
+  | _ => none
+
+/-- Decode only pure literal `Syntax` constructor trees emitted by
+`Lean.Elab.Term.quoteAutoTactic` (`Syntax.node`, `Syntax.ident`, `mkAtom`,
+`SourceInfo.none`, `Array.empty`, `Array.push`, literal `Name`/`String`). -/
+private partial def decodePureAutoSyntax? (e : Expr) : Option Syntax := do
+  match e with
+  | .app (.const ``Lean.mkAtom []) (.lit (.strVal val)) =>
+    return Lean.mkAtom val
+  | .app (.app (.app (.app (.const ``Lean.Syntax.ident [])
+      (.const ``Lean.SourceInfo.none []))
+      (.app (.const ``String.toRawSubstring []) (.lit (.strVal raw))))
+      valE) prereE =>
+    let val ← decodePureAutoName? valE
+    let prere ← decodePurePreresolvedList? prereE
+    return .ident .none (String.toRawSubstring raw) val prere
+  | .app (.app (.app (.const ``Lean.Syntax.node [])
+      (.const ``Lean.SourceInfo.none [])) kindE) argsE =>
+    let k ← decodePureAutoName? kindE
+    let args ← decodePureSyntaxArray? argsE
+    return .node .none k args
+  | _ => none
+end
+
+/-- Extract the shallowest `_private.<Mod>.0` module name from `n`, returning
+`none` if `n` does not begin with a well-formed `_private.<Mod>.0` prefix. -/
+private def shallowPrivateModule? (n : Name) : Option Name :=
+  let rec go : Name → Option Name
+    | .anonymous => none
+    | .num p 0 =>
+      match go p with
+      | some m => some m
+      | none =>
+        if p.getRoot == privateHeader && p != privateHeader then
+          some (p.replacePrefix privateHeader .anonymous)
+        else
+          none
+    | .num p _ => go p
+    | .str p _ => go p
+  go n
+
+private partial def inspectDecodedAutoPreresolved (stx : Syntax) : IO Unit := do
+  match stx with
+  | .ident _ _ val preresolved =>
+    for pr in preresolved do
+      let targets := match pr with
+        | .namespace ns => [ns]
+        | .decl d _ => [d]
+      for cand in targets do
+        let c0 := stripLeadingRootPrefix cand
+        let hasEmbeddedRootOrScope :=
+          c0.isAnonymous || c0.hasMacroScopes ||
+            c0.components.any (· == rootNamespace)
+        let privModForbidden :=
+          if isPrivateName c0 then
+            match shallowPrivateModule? c0, privatePrefix? c0 with
+            | some mod, some (.num _ 0) =>
+              let inner := stripLeadingRootPrefix (privateToUserName c0)
+              isPrivateName inner || inner.getRoot == privateHeader ||
+                isForbiddenPureImport mod ||
+                isForbiddenPureNamespace mod (banLeanRoot := true)
+            | _, _ => true
+          else
+            c0.getRoot == privateHeader
+        let u := stripLeadingRootPrefix (privateToUserName c0)
+        if hasEmbeddedRootOrScope || privModForbidden ||
+            forbiddenPureIdentifiers.contains u ||
+            u == `autoParam || u == `optParam ||
+            isForbiddenPureNamespace u (banLeanRoot := true) then
+          fail s!"disallowed reference {val}"
+  | .node _ _ args =>
+    for a in args do
+      inspectDecodedAutoPreresolved a
+  | _ => pure ()
+
+/-- Verify that an expression `rootExpr` inside non-`_auto_` constant `cName`
+uses `autoParam` strictly in complete 2-argument `(autoParam dom tac)` form
+where `tac` is an authenticated `_auto_<N>` / `_autoParam` constant from
+`theory/`/`correspondence/` or `.foundation`, and contains zero unguarded
+references to `autoParam`, `_auto_<N>`, `Lean.Syntax*`, `Lean.Name*`,
+`Lean.Elab*`, `Lean.Macro*`, or `Init.System*`. -/
+private partial def checkRepoExprAutoAndMeta (env : Environment)
+    (validatedAutos : NameSet) (isFoundationAuto : Name → Bool)
+    (modName cName : Name) (rootExpr : Expr) : IO Unit := do
+  let used := rootExpr.getUsedConstants
+  let hasAuto := used.any fun n =>
+    n == ``autoParam || validatedAutos.contains n ||
+      (isAutoParamAuxName n && isFoundationAuto n)
+  if !hasAuto then
+    for n in used do
+      if isForbiddenRepoMetaConst env n then
+        fail (s!"disallowed reference {n} in compiled declaration " ++
+          s!"{cName} ({modName})")
+    if let some (.proj s _ _) := rootExpr.find? (fun
+        | .proj s _ _ => isForbiddenRepoMetaConst env s
+        | _ => false) then
+      fail (s!"disallowed reference {s} in compiled declaration " ++
+        s!"{cName} ({modName})")
+    return ()
+  let mut seen : Std.HashSet Expr := {}
+  let mut stack : List Expr := [rootExpr]
+  while !stack.isEmpty do
+    let e :: rest := stack | break
+    stack := rest
+    if seen.contains e then
+      continue
+    seen := seen.insert e
+    match e with
+    | .app (.app (.const ``autoParam [_]) dom) (.const tacName []) =>
+      unless validatedAutos.contains tacName ||
+          (isAutoParamAuxName tacName && isFoundationAuto tacName) do
+        fail s!"disallowed autoParam tactic {tacName} in {cName} ({modName})"
+      stack := dom :: stack
+    | .const n _ =>
+      if n == ``autoParam then
+        fail s!"malformed autoParam application in {cName} ({modName})"
+      if validatedAutos.contains n ||
+          (isAutoParamAuxName n && isFoundationAuto n) then
+        fail (s!"disallowed direct reference to autoParam tactic {n} in " ++
+          s!"{cName} ({modName})")
+      if isForbiddenRepoMetaConst env n then
+        fail s!"disallowed reference {n} in compiled declaration {cName} ({modName})"
+    | .app a b | .forallE _ a b _ | .lam _ a b _ =>
+      stack := a :: b :: stack
+    | .letE _ t v b _ =>
+      stack := t :: v :: b :: stack
+    | .mdata _ b =>
+      stack := b :: stack
+    | .proj s _ b =>
+      if isForbiddenRepoMetaConst env s then
+        fail s!"disallowed reference {s} in compiled declaration {cName} ({modName})"
+      stack := b :: stack
+    | .bvar _ | .fvar _ | .mvar _ | .sort _ | .lit _ => pure ()
+
+private partial def hasRepoAutoSyntaxType (e : Expr) : Bool :=
+  if !e.getUsedConstants.any (fun n =>
+      let u := stripLeadingRootPrefix (privateToUserName (stripLeadingRootPrefix n))
+      u == `Lean.Syntax || (`Lean.Syntax).isPrefixOf u ||
+        u == `Lean.TSyntax || (`Lean.TSyntax).isPrefixOf u) then
+    false
+  else
+    let rec go : Expr → Bool
+      | .app (.app (.const ``autoParam [_]) dom) _ => go dom
+      | .const n _ =>
+        let u := stripLeadingRootPrefix (privateToUserName (stripLeadingRootPrefix n))
+        u == `Lean.Syntax || (`Lean.Syntax).isPrefixOf u ||
+          u == `Lean.TSyntax || (`Lean.TSyntax).isPrefixOf u
+      | .app a b | .forallE _ a b _ | .lam _ a b _ => go a || go b
+      | .letE _ t v b _ => go t || go v || go b
+      | .mdata _ b | .proj _ _ b => go b
+      | _ => false
+    go e
+
+/-- Authenticate every `Lean.Syntax` / `_auto_<N>` constant and every
+`autoParam` / `Lean.Syntax` / metaprogramming reference across compiled
+`.repo` `.olean` modules in Pass 1 (`audit`) and Pass 2 (`collectCorrEnv`). -/
+def validateRepoAutoParamAndMeta (env : Environment) (roles : Std.HashMap Name ρ)
+    (isRepoRole isTheoryRole isFoundationRole : ρ → Bool) : IO Unit := do
+  let isFoundationAuto (n : Name) : Bool :=
+    match env.getModuleIdxFor? n with
+    | some idx =>
+      match env.header.moduleNames[idx.toNat]? with
+      | some mod => (roles.get? mod).any isFoundationRole
+      | none => false
+    | none => false
+  let mut validatedAutos : NameSet := {}
+  for m in env.header.modules, data in env.header.moduleData do
+    let some modRole := roles.get? m.module | continue
+    unless isRepoRole modRole do
+      continue
+    for ci in data.constants do
+      let (orig, origRole) ← constProvenance env roles ci.name
+      let effMod := if orig == m.module then m.module else orig
+      let effRole := if orig == m.module then modRole else origRole
+      if hasRepoAutoSyntaxType ci.type then
+        unless isAutoParamAuxName ci.name do
+          fail s!"disallowed Lean.Syntax declaration {ci.name} in {m.module}"
+        unless isTheoryRole effRole do
+          fail (s!"disallowed autoParam helper {ci.name} outside theory " ++
+            s!"module {m.module}")
+        unless (ci matches .defnInfo _) && isCEnv ci &&
+            ci.levelParams.isEmpty &&
+            ci.type == .const ``Lean.Syntax [] do
+          fail s!"disallowed autoParam tactic shape {ci.name} in {m.module}"
+        let some val := ci.value? true
+          | fail s!"missing body for autoParam tactic {ci.name} in {m.module}"
+        let some stx := decodePureAutoSyntax? val
+          | fail (s!"disallowed non-literal autoParam tactic {ci.name} in " ++
+              s!"{m.module}")
+        inspectSyntax allowedTheorySyntaxKinds stx (requirePrelude := false)
+          (currNs := effMod) (openDecls := []) (checkPureRefs := true)
+        inspectDecodedAutoPreresolved stx
+        validatedAutos := validatedAutos.insert ci.name
+  for m in env.header.modules, data in env.header.moduleData do
+    let some modRole := roles.get? m.module | continue
+    unless isRepoRole modRole do
+      continue
+    for ci in data.constants do
+      if validatedAutos.contains ci.name then
+        continue
+      checkRepoExprAutoAndMeta env validatedAutos isFoundationAuto m.module
+        ci.name ci.type
+      if let some val := ci.value? (allowOpaque := true) then
+        checkRepoExprAutoAndMeta env validatedAutos isFoundationAuto m.module
+          ci.name val
+      if let .recInfo rv := ci then
+        for rule in rv.rules do
+          checkRepoExprAutoAndMeta env validatedAutos isFoundationAuto
+            m.module ci.name rule.rhs
 
 /-- Return `true` when `(n, userN)` (with `userN := privateToUserName n`) is
 either an imported compound declaration satisfying `isOrigin`, or an admissible
@@ -3412,16 +4060,23 @@ companion with another flag was not written with its primary. `.ir.sig` is
 written as `default` and filled in later by `leanir`, so the check skips
 `.ir*` parts.
 https://github.com/leanprover/lean4/blob/5045d0056413266e57c625dcd7c365b10e377c52/src/Lean/Environment.lean#L1901-L1917 -/
-def collectModuleCompilerOverrides (arts : NameMap ImportArtifacts) (m : Name)
-    (init : ProofCompilerOverrides := {}) : IO ProofCompilerOverrides := do
+def collectModuleCompilerOverridesAndParts (arts : NameMap ImportArtifacts)
+    (m : Name) (init : ProofCompilerOverrides := {}) :
+    IO (ProofCompilerOverrides × Array (ModuleData × CompactedRegion) ×
+      Array (ModuleData × CompactedRegion)) := do
   let (olean, ir) ← readImportedModuleParts arts m
   let some (primary, _) := olean[0]?
     | throw <| IO.userError s!"missing primary olean artifact for {m}"
   for (part, _) in olean do
     unless part.isModule == primary.isModule do
       fail s!"mismatched olean companion isModule flag in {m}"
-  return (olean ++ ir).foldl
+  let ov := (olean ++ ir).foldl
     (fun acc (data, _) => collectPartCompilerOverrides data m acc) init
+  return (ov, olean, ir)
+
+def collectModuleCompilerOverrides (arts : NameMap ImportArtifacts) (m : Name)
+    (init : ProofCompilerOverrides := {}) : IO ProofCompilerOverrides := do
+  return (← collectModuleCompilerOverridesAndParts arts m init).1
 
 /-- Reject forbidden compiler override and codegen-hook entries in `ov`. When
 `includeDeclAttrs` is `true` (repository Pass 1/Pass 2 audits),
@@ -3454,6 +4109,54 @@ def checkModuleCompilerOverrides (arts : NameMap ImportArtifacts) (m : Name)
     (includeDeclAttrs : Bool) : IO Unit := do
   rejectForbiddenCompilerOverrides (← collectModuleCompilerOverrides arts m)
     s!" in {m}" includeDeclAttrs
+
+/-- Validate `Lean.aliasExtension` entries across all serialized `.olean*` and
+`.ir*` parts of repository module `m` (`srcRole`) in Pass 1 and Pass 2. -/
+def validateRepoAliases (env : Environment)
+    (parts : Array (ModuleData × CompactedRegion))
+    (roles : Std.HashMap Name ρ)
+    (edgeViolation? : Name → ρ → Name → Name → ρ → Option String)
+    (m : Name) (srcRole : SourceRole) (modRole : ρ) : IO Unit := do
+  let isTrusted := srcRole matches .trusted _
+  for (partData, _) in parts do
+    for (aliasName, targetName) in
+        partExtEntries Lean.aliasExtension partData do
+      let aliasUser :=
+        stripLeadingRootPrefix (privateToUserName (stripLeadingRootPrefix aliasName))
+      if aliasUser.isAnonymous || aliasUser.hasMacroScopes ||
+          isPrivateName aliasUser ||
+          aliasUser.components.any (· == rootNamespace) then
+        fail s!"invalid export alias {aliasName} in {m}"
+      let aliasRoot := aliasUser.getRoot
+      if !isTrusted && aliasRoot == `Trusted then
+        fail (s!"non-Trusted module {m} cannot export alias {aliasName} " ++
+          "in Trusted namespace")
+      if kernelAcceleratedNames.contains aliasUser ||
+          reservedKernelRoots.contains aliasRoot then
+        fail (s!"repository module {m} cannot export alias {aliasName} " ++
+          s!"in reserved kernel namespace {aliasRoot}")
+      if forbiddenPureIdentifiers.contains aliasUser ||
+          aliasUser == `autoParam || aliasUser == `optParam ||
+          isForbiddenPureNamespace aliasUser (banLeanRoot := true) then
+        fail s!"disallowed export alias {aliasName} in {m}"
+      let (targetOrig, targetRole) ← constProvenance env roles targetName
+      if let some msg :=
+          edgeViolation? aliasName modRole targetName targetOrig targetRole then
+        fail msg
+      let targetCi ← lookupConst env targetName "exported target"
+      if isForbiddenRepoMetaConst env targetName then
+        fail s!"disallowed export target {targetName} in {m}"
+      if !isTrusted && (targetCi matches .opaqueInfo _) then
+        fail (s!"opaque export target {targetName} in {m} is not allowed " ++
+          "outside Trusted")
+      let approvedAxiom :=
+        (targetName == ``propext && targetOrig == `Init.Core) ||
+        ((targetName == ``Classical.choice || targetName == ``Quot.sound) &&
+          targetOrig == `Init.Prelude)
+      if targetCi.isUnsafe || targetCi.isPartial ||
+          (targetCi.isAxiom && !approvedAxiom) then
+        fail (s!"disallowed unsafe/partial/axiom export target {targetName} " ++
+          s!"in {m}")
 
 /-! ## Explicit raw-`UInt64` cached-metadata validation -/
 
@@ -4186,8 +4889,15 @@ def audit (j : Json) (env : Environment) (foundation : Array Name)
   checkDeclarationEdges env roles locals RepoOrigin.edgeViolation?
   let arts ← artifacts j
   for m in env.header.modules do
-    if roles.get? m.module matches some (.repo _) then
-      checkModuleCompilerOverrides arts m.module true
+    if let some (modRole@(.repo srcRole)) := roles.get? m.module then
+      let (ov, oleanParts, irParts) ←
+        collectModuleCompilerOverridesAndParts arts m.module
+      rejectForbiddenCompilerOverrides ov s!" in {m.module}" true
+      validateRepoAliases env (oleanParts ++ irParts) roles
+        RepoOrigin.edgeViolation? m.module srcRole modRole
+  validateRepoAutoParamAndMeta env roles
+    (fun r => r matches .repo _) (fun r => r == .repo .theory)
+    (fun r => r == .foundation)
   let requireMirWp := (j.getObjValAs? Bool "requireMirWp").toOption.getD true
   verifyMirWpCoreTheorems env roles locals requireMirWp
   let inventory ← locals.foldM (init := #[]) fun acc cName ci => do
@@ -5124,8 +5834,15 @@ def collectCorrEnv (j : Json)
     if pairedUnsafeRecs.contains dep then
       fail s!"paired _unsafe_rec helper {dep} cannot be referenced logically"
   for m in env.header.modules do
-    if roles.get? m.module matches some (.repo _) then
-      checkModuleCompilerOverrides {} m.module true
+    if let some (modRole@(.repo srcRole)) := roles.get? m.module then
+      let (ov, oleanParts, irParts) ←
+        collectModuleCompilerOverridesAndParts {} m.module
+      rejectForbiddenCompilerOverrides ov s!" in {m.module}" true
+      validateRepoAliases env (oleanParts ++ irParts) roles
+        CorrOrigin.edgeViolation? m.module srcRole modRole
+  validateRepoAutoParamAndMeta env roles
+    (fun r => r matches .repo _) (fun r => r == .repo .theory)
+    (fun r => r == .foundation)
   let sysrootBaseMods := env.header.modules.filterMap fun m =>
     match roles.get? m.module with
     | some .foundation | some .sysrootFoundation => some m.module
@@ -5288,7 +6005,7 @@ def auditCorrespondence (j : Json) (sysrootStr : String)
 /-- Return `true` when `n` (ignoring private prefixes) names `Lean.Syntax` or a
 declaration beneath `Lean.Syntax`. -/
 def isLeanSyntaxConst (n : Name) : Bool :=
-  let u := (privateToUserName n).replacePrefix rootNamespace .anonymous
+  let u := stripLeadingRootPrefix (privateToUserName (stripLeadingRootPrefix n))
   u == `Lean.Syntax || (`Lean.Syntax).isPrefixOf u
 
 /-- Return `true` when `n` (ignoring private prefixes) names one of Lean's
@@ -5303,7 +6020,7 @@ helpers reached by `deriving Repr` legitimately reference `panicWithPosWithDecl`
 internally, whereas authored specification code must never invoke panic
 primitives or panicking `!` helpers. -/
 def isPanicSpecConst (n : Name) : Bool :=
-  let u := (privateToUserName n).replacePrefix rootNamespace .anonymous
+  let u := stripLeadingRootPrefix (privateToUserName (stripLeadingRootPrefix n))
   [`panic, `panicCore, `panicWithPos, `panicWithPosWithDecl,
     `outOfBounds, `String.Pos.sliceOrPanic,
     `String.Slice.Pos.sliceOrPanic].contains u ||
@@ -5314,7 +6031,7 @@ across all declarations reachable from any `TargetRole::Specification` module.
 Preserves `System.Platform.{numBits, getNumBits, numBits_eq}` (and their
 compiler-private proof auxiliaries). -/
 def isForbiddenSpecTransitiveConst (n : Name) : Bool :=
-  let u := (privateToUserName n).replacePrefix rootNamespace .anonymous
+  let u := stripLeadingRootPrefix (privateToUserName (stripLeadingRootPrefix n))
   let r := u.getRoot
   if [`IO, `BaseIO, `EIO, `EST, `ST, `Task].contains r then
     true
@@ -5323,7 +6040,7 @@ def isForbiddenSpecTransitiveConst (n : Name) : Bool :=
       `Lean.Loop, `repeatM,
       `Lean.LoadDynlib, `Lean.loadDynlib, `Lean.loadPlugin, `Lean.Dynlib,
       `Lean.getGithash, `Lean.version,
-      `Init.System, `Std.Internal.UV, `Dynlib].any
+      `Init.System, `Std.Internal.UV, `Std.Async, `Std.Http, `Dynlib].any
         (fun pre => u == pre || pre.isPrefixOf u) then
     true
   else if r == `System then
@@ -5401,7 +6118,7 @@ def runTargetClosurePhase
       if ci matches .opaqueInfo _ then
         fail s!"opaque declaration {n} is not allowed in specification"
       for dep in deps do
-        if isLeanSyntaxConst dep || isPanicSpecConst dep then
+        if isLeanSyntaxConst dep || isPanicSpecConst dep || dep == ``autoParam then
           fail s!"specification declaration {n} cannot reference {dep}"
     for dep in deps do
       let (depMod, depRole) ← provenance dep
@@ -7068,6 +7785,9 @@ raw-`UInt64` cached-metadata validation and fresh kernel replay onto
 def targetAudit (j : Json) (foundation : Array Name) : IO Json := do
   let target ← field (α := Json) j "target"
   let libraries ← names j "libraries"
+  for lib in libraries do
+    if isForbiddenTransitiveLibrary lib then
+      fail s!"disallowed transitive sysroot import {lib} in target"
   let modules ← field (α := Array Json) target "modules"
   let allowSorryInProof ← match target.getObjVal? "allowSorryInProof" with
     | .error _ => pure false
@@ -7147,10 +7867,32 @@ def targetAudit (j : Json) (foundation : Array Name) : IO Json := do
     (fun r => r matches .foundation | .library)
   let isModelConst := constHasRole env roles
     (fun r => r matches .source .model)
+  let isCaptureConst := constHasRole env roles
+    (fun r => r matches .source .capture)
+  let isExpectedConst := constHasRole env roles
+    (fun r => r matches .source .expected)
+  let isReservedTargetRootForbidden (targetRole : TargetRole)
+      (ci : ConstantInfo) (allowUnimportedProofSparse : Bool := false) : Bool :=
+    let userRoot :=
+      (stripLeadingRootPrefix (privateToUserName (stripLeadingRootPrefix ci.name))).getRoot
+    if userRoot == `Captured then
+      targetRole != .capture &&
+        !isRealizedOrCompilerHelper env allMatchers isCaptureConst ci
+          allowUnimportedProofSparse
+    else if userRoot == `Expected then
+      targetRole != .expected &&
+        !isRealizedOrCompilerHelper env allMatchers isExpectedConst ci
+          allowUnimportedProofSparse
+    else
+      reservedKernelRoots.contains userRoot &&
+        !isRealizedOrCompilerHelper env allMatchers isSysrootConst ci
+          allowUnimportedProofSparse
   -- Cross-check non-proof source inventory and the environment's actual stored
   -- values, then incorporate reconstructed proof declarations while rejecting
   -- any shadowing or duplicate names.
   let mut sourceInventory : NameSet := {}
+  let mut sourceModData :
+      Std.HashMap Name (ModuleData × Std.HashMap Name ConstantInfo) := {}
   let mut libraryInventories : Std.HashMap Name NameSet := {}
   let mut libraryExports : Std.HashMap Name (Array ConstantInfo) := {}
   let mut specAllConsts : List Name := []
@@ -7223,14 +7965,17 @@ def targetAudit (j : Json) (foundation : Array Name) : IO Json := do
       verifyModuleHeaderInventory m.module data "target inventory"
         "target declaration"
       let modConsts : NameSet := .ofList data.constNames.toList
+      let modConstsMap := data.constants.foldl
+        (init := ({} : Std.HashMap Name ConstantInfo))
+        fun acc ci => acc.insert ci.name ci
+      sourceModData := sourceModData.insert m.module (data, modConstsMap)
       for ci in data.constants do
         let userRoot := (privateToUserName ci.name).getRoot
         if targetRole != .model && userRoot == `Trusted &&
             !isRealizedOrCompilerHelper env allMatchers isModelConst ci then
           fail (s!"non-model target module {m.module} cannot declare " ++
             s!"constant {ci.name} in Trusted namespace")
-        if reservedKernelRoots.contains userRoot &&
-            !isRealizedOrCompilerHelper env allMatchers isSysrootConst ci then
+        if isReservedTargetRootForbidden targetRole ci then
           fail (s!"target module {m.module} cannot declare constant " ++
             s!"{ci.name} in reserved kernel namespace {userRoot}")
         let actualOrig ← origin env ci.name
@@ -7299,9 +8044,8 @@ def targetAudit (j : Json) (foundation : Array Name) : IO Json := do
             (allowUnimportedProofSparse := true) then
         fail (s!"non-model target module {pm.moduleName} cannot declare " ++
           s!"constant {ci.name} in Trusted namespace")
-      if reservedKernelRoots.contains userRoot &&
-          !isRealizedOrCompilerHelper env allMatchers isSysrootConst ci
-            (allowUnimportedProofSparse := true) then
+      if isReservedTargetRootForbidden .proof ci
+          (allowUnimportedProofSparse := true) then
         fail (s!"target module {pm.moduleName} cannot declare constant " ++
           s!"{ci.name} in reserved kernel namespace {userRoot}")
       if let some stored := env.checked.get.find? ci.name then
@@ -7464,7 +8208,8 @@ def targetAudit (j : Json) (foundation : Array Name) : IO Json := do
               TargetOrigin.edgeViolation? cand.name candOrigin dep depRole then
             fail msg
           if candOrigin == .source .specification then
-            if isLeanSyntaxConst dep || isPanicSpecConst dep then
+            if isLeanSyntaxConst dep || isPanicSpecConst dep ||
+                dep == ``autoParam then
               fail (s!"specification declaration {cand.name} cannot " ++
                 s!"reference {dep}")
             specAltDeps := dep :: specAltDeps
@@ -7545,9 +8290,8 @@ def targetAudit (j : Json) (foundation : Array Name) : IO Json := do
               (allowUnimportedProofSparse := (proofConsts.get? n).isSome) then
           fail (s!"non-model target dependency {n} cannot live in " ++
             "Trusted namespace")
-        if reservedKernelRoots.contains userRoot &&
-            !isRealizedOrCompilerHelper env allMatchers isSysrootConst ci
-              (allowUnimportedProofSparse := (proofConsts.get? n).isSome) then
+        if isReservedTargetRootForbidden targetRole ci
+            (allowUnimportedProofSparse := (proofConsts.get? n).isSome) then
           fail (s!"target dependency {n} cannot live in reserved kernel " ++
             s!"namespace {userRoot}")
         unless sourceInventory.contains n do
@@ -7614,14 +8358,102 @@ def targetAudit (j : Json) (foundation : Array Name) : IO Json := do
   -- https://github.com/leanprover/lean4/blob/5045d0056413266e57c625dcd7c365b10e377c52/src/Lean/Attributes.lean#L263-L281
   -- https://github.com/leanprover/lean4/blob/5045d0056413266e57c625dcd7c365b10e377c52/src/Lean/Attributes.lean#L306-L321
   let mut sourceOverrides := proofExport.overrides
+  let mut targetOverridesCache : Std.HashMap Name ProofCompilerOverrides := {}
   for m in env.header.modules do
     unless roles.get? m.module matches some .foundation | some .library do
-      let ov ← collectModuleCompilerOverrides arts m.module
+      let (ov, oleanParts, irParts) ←
+        collectModuleCompilerOverridesAndParts arts m.module
       rejectForbiddenCompilerOverrides ov s!" in {m.module}" false
       sourceOverrides := { sourceOverrides with
         implementedBy := sourceOverrides.implementedBy ++ ov.implementedBy
         externDecls := sourceOverrides.externDecls ++ ov.externDecls
         csimp := sourceOverrides.csimp ++ ov.csimp }
+      if let some (.source targetRole) := roles.get? m.module then
+        let some (privData, privConsts) := sourceModData.get? m.module
+          | throw <| IO.userError s!"missing source module data for {m.module}"
+        for (partData, _) in oleanParts do
+          unless partData.imports == privData.imports do
+            fail s!"mismatched target companion imports in {m.module}"
+          verifyModuleHeaderInventory m.module partData "target inventory"
+            "target declaration"
+          for ci in partData.constants do
+            if ci.isUnsafe &&
+                !(privConsts.get? ci.name).any
+                  (isValidCompanionConstant privData.isModule · ci) then
+              fail (s!"target module {m.module} declares unsafe constant " ++
+                s!"{ci.name}")
+            unless privConsts.contains ci.name do
+              fail (s!"target companion constant {ci.name} missing from " ++
+                s!"private inventory of {m.module}")
+            if let some privCi := privConsts.get? ci.name then
+              unless isValidCompanionConstant privData.isModule privCi ci do
+                fail (s!"mismatched target companion constant {ci.name} " ++
+                  s!"in {m.module}")
+        for (partData, _) in oleanParts ++ irParts do
+          for (aliasName, targetName) in
+              partExtEntries Lean.aliasExtension partData do
+            let aliasUser :=
+              stripLeadingRootPrefix
+                (privateToUserName (stripLeadingRootPrefix aliasName))
+            if aliasUser.isAnonymous || aliasUser.hasMacroScopes ||
+                isPrivateName aliasUser ||
+                aliasUser.components.any (· == rootNamespace) then
+              fail s!"invalid export alias {aliasName} in {m.module}"
+            let aliasRoot := aliasUser.getRoot
+            if targetRole != TargetRole.model && aliasRoot == `Trusted then
+              fail (s!"non-model target module {m.module} cannot export " ++
+                s!"alias {aliasName} in Trusted namespace")
+            let badAliasReserved :=
+              if aliasRoot == `Captured then targetRole != TargetRole.capture
+              else if aliasRoot == `Expected then targetRole != TargetRole.expected
+              else reservedKernelRoots.contains aliasRoot
+            if badAliasReserved then
+              fail (s!"target module {m.module} cannot export alias " ++
+                s!"{aliasName} in reserved kernel namespace {aliasRoot}")
+            if targetRole == TargetRole.specification &&
+                isForbiddenSpecAliasUser aliasUser then
+              fail (s!"specification module {m.module} cannot export alias " ++
+                s!"{aliasName}")
+            let (targetOrig, targetOriginRole) ← provenance targetName
+            let targetCi ← lookup targetName
+            if let some msg := TargetOrigin.edgeViolation? aliasName
+                (.source targetRole) targetName targetOriginRole then
+              fail msg
+            if targetCi.isUnsafe then
+              fail (s!"target export {aliasName} in {m.module} " ++
+                s!"references unsafe declaration {targetName}")
+            if targetRole == TargetRole.specification then
+              if isForbiddenSpecTransitiveConst targetName ||
+                  isLeanSyntaxConst targetName ||
+                  isPanicSpecConst targetName ||
+                  targetName == ``autoParam then
+                fail (s!"specification export {aliasName} in {m.module} " ++
+                  s!"references disallowed declaration {targetName}")
+              if targetCi.isPartial then
+                fail (s!"specification export {aliasName} in {m.module} " ++
+                  s!"references partial declaration {targetName}")
+              if targetCi matches .axiomInfo _ &&
+                  !axiomPolicy.contains
+                    (targetName.toString, targetOrig.toString) then
+                fail (s!"specification export {aliasName} in {m.module} " ++
+                  s!"references unapproved axiom {targetName}")
+              if targetCi matches .opaqueInfo _ &&
+                  !(targetOriginRole == .foundation &&
+                    allowedSystemPlatformDecls.contains targetName) then
+                fail (s!"specification export {aliasName} in {m.module} " ++
+                  s!"references opaque declaration {targetName}")
+              if targetOriginRole != .foundation then
+                let targetOv ← match targetOverridesCache.get? targetOrig with
+                  | some cached => pure cached
+                  | none =>
+                    let loaded ← collectModuleCompilerOverrides arts targetOrig
+                    targetOverridesCache :=
+                      targetOverridesCache.insert targetOrig loaded
+                    pure loaded
+                if targetOv.externDecls.contains targetName ||
+                    targetOv.implementedBy.contains targetName then
+                  fail (s!"specification export {aliasName} in {m.module} " ++
+                    s!"references compiler override declaration {targetName}")
   rejectForbiddenCompilerOverrides proofExport.overrides "" false
   for n in reached do
     if sourceOverrides.implementedBy.contains n ||
