@@ -14,7 +14,7 @@
 //! witness with [`WitnessClass`] (`replayable_miri_ub` vs
 //! `model_only_unreplayed`).
 
-use alloc::{format, string::String, vec, vec::Vec};
+use alloc::{boxed::Box, format, string::String, vec, vec::Vec};
 use core::fmt;
 
 use serde::{Deserialize, Serialize};
@@ -295,6 +295,9 @@ fn remap_val_allocs(val: &Val, delta: u64) -> Val {
             len: *len,
         },
         Val::Tuple(vs) => Val::Tuple(vs.iter().map(|v| remap_val_allocs(v, delta)).collect()),
+        Val::OptionVal(Some(inner)) => {
+            Val::OptionVal(Some(Box::new(remap_val_allocs(inner, delta))))
+        }
         other => other.clone(),
     }
 }
@@ -795,6 +798,18 @@ fn boundary_candidates_for_ty(
             }
             Some(tuples)
         }
+        Ty::Option { elem } if enable_profile_v2 && is_supported_v2_local_ty(ty) => {
+            let inner_cands = boundary_candidates_for_ty(elem, true, endian)?;
+            let mut out = Vec::with_capacity(1 + inner_cands.len());
+            out.push(ArgCandidate::pure(Val::OptionVal(None)));
+            for cand in inner_cands {
+                out.push(ArgCandidate {
+                    val: Val::OptionVal(Some(Box::new(cand.val))),
+                    allocs: cand.allocs,
+                });
+            }
+            Some(out)
+        }
         _ => None,
     }
 }
@@ -807,6 +822,9 @@ fn shift_val_allocs_down(val: &Val, delta: u64) -> Val {
             len: *len,
         },
         Val::Tuple(vs) => Val::Tuple(vs.iter().map(|v| shift_val_allocs_down(v, delta)).collect()),
+        Val::OptionVal(Some(inner)) => {
+            Val::OptionVal(Some(Box::new(shift_val_allocs_down(inner, delta))))
+        }
         other => other.clone(),
     }
 }
@@ -929,6 +947,20 @@ fn random_candidate_for_ty(
                 })
                 .collect();
             Some(ArgCandidate { val: Val::Tuple(norm_vals), allocs: norm_allocs })
+        }
+        Ty::Option { elem } if enable_profile_v2 && is_supported_v2_local_ty(ty) => {
+            if (rng.next_u64() & 3) == 0 {
+                return Some(ArgCandidate::pure(Val::OptionVal(None)));
+            }
+            let pool = boundary_candidates_for_ty(elem, true, endian)?;
+            if pool.is_empty() {
+                return Some(ArgCandidate::pure(Val::OptionVal(None)));
+            }
+            let inner = random_candidate_for_ty(elem, &pool, rng, true, endian)?;
+            Some(ArgCandidate {
+                val: Val::OptionVal(Some(Box::new(inner.val))),
+                allocs: inner.allocs,
+            })
         }
         _ => None,
     }

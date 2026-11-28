@@ -1,0 +1,2669 @@
+{
+  "schema_version": 5,
+  "compiler": {
+    "commit": "f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1",
+    "version": "1.98.0-nightly (f8a08b688 2026-05-30)",
+    "sysroot": "/sysroot/nightly-2026-05-31",
+    "rustc_sha256": "34dfb2ba46cb0a87e7059f484cdfc1d2928df449144acdbc57c8811be9aa41d1",
+    "driver": {
+      "linkage": "dynamic_dso",
+      "driver_sha256": "1f3ac5968782c12fbf9df6701ed5915242abb8455044e5dac8ab2a68fd155547",
+      "dso_digests": {
+        "libLLVM.so.22.1-rust-1.98.0-nightly": "10b13617cc45091d9707991b67fda2993cbaece5c55165a9d055d0403233d481",
+        "libgcc_s.so.1": "ae044ece9877d38a4a4bcee7b9c15eed9b50d0dad24d41617eec8fff8bbd262d",
+        "librustc_driver-5d5a3c5207375ffc.so": "1f3ac5968782c12fbf9df6701ed5915242abb8455044e5dac8ab2a68fd155547",
+        "libz.so.1": "f972aad101dba8a8f5d9842cd53b834d58a1d3269b8f3390a8c23ee97ce5102d"
+      }
+    }
+  },
+  "configuration": {
+    "crate_root": "lib.rs",
+    "crate_name": "hybrid_pilot",
+    "crate_type": "lib",
+    "panic": "unwind",
+    "edition": "2021",
+    "target": "x86_64-unknown-linux-gnu",
+    "cfg": [],
+    "env": {},
+    "opt_level": 0,
+    "debug_assertions": false,
+    "overflow_checks": false,
+    "mir_preserve_ub": true,
+    "pointer_bits": 64,
+    "endian": "little",
+    "declared_source_files": [
+      "lib.rs"
+    ]
+  },
+  "source_files": [
+    {
+      "path": "lib.rs",
+      "sha256": "34c2e3f580f69a9cee6e5d8712bb5e15c633e8f6e7f4dac71443a790185e873d",
+      "read_kind": "text"
+    }
+  ],
+  "census": [
+    {
+      "def_id": 0,
+      "path": "",
+      "kind": "Mod",
+      "has_body": false,
+      "selected": false,
+      "required": false
+    },
+    {
+      "def_id": 1,
+      "path": "core",
+      "kind": "ExternCrate",
+      "has_body": false,
+      "selected": false,
+      "required": false
+    },
+    {
+      "def_id": 2,
+      "path": "{use#0}",
+      "kind": "Use",
+      "has_body": false,
+      "selected": false,
+      "required": false
+    },
+    {
+      "def_id": 3,
+      "path": "split_dst_prefix",
+      "kind": "Fn",
+      "has_body": true,
+      "selected": true,
+      "required": true
+    },
+    {
+      "def_id": 4,
+      "path": "split_dst_prefix::'_",
+      "kind": "LifetimeParam",
+      "has_body": false,
+      "selected": false,
+      "required": false
+    }
+  ],
+  "selected": [
+    {
+      "def_id": 3,
+      "path": "split_dst_prefix",
+      "body_index": 0
+    }
+  ],
+  "unsupported": [],
+  "program": {
+    "scope": {
+      "kind": "selected_unit",
+      "roots": [
+        "split_dst_prefix"
+      ]
+    },
+    "overflow_checks": false,
+    "panic": "unwind",
+    "has_local_panic_handler": false,
+    "mir_profile_version": 2,
+    "bodies": [
+      {
+        "arg_count": 1,
+        "is_unsafe": false,
+        "local_tys": [
+          {
+            "kind": "option",
+            "elem": {
+              "kind": "ref",
+              "mutability": "shared",
+              "pointee": {
+                "elem": {
+                  "kind": "int",
+                  "signed": false,
+                  "width": "i8"
+                },
+                "kind": "slice"
+              }
+            }
+          },
+          {
+            "kind": "ref",
+            "mutability": "shared",
+            "pointee": {
+              "elem": {
+                "kind": "int",
+                "signed": false,
+                "width": "i8"
+              },
+              "kind": "slice"
+            }
+          },
+          {
+            "kind": "int",
+            "width": "isize",
+            "signed": false
+          },
+          {
+            "kind": "ref",
+            "mutability": "shared",
+            "pointee": {
+              "elem": {
+                "kind": "int",
+                "signed": false,
+                "width": "i8"
+              },
+              "kind": "slice"
+            }
+          },
+          {
+            "kind": "unit"
+          },
+          {
+            "kind": "bool"
+          },
+          {
+            "kind": "int",
+            "width": "isize",
+            "signed": false
+          },
+          {
+            "kind": "never"
+          },
+          {
+            "kind": "int",
+            "width": "isize",
+            "signed": false
+          },
+          {
+            "kind": "int",
+            "width": "isize",
+            "signed": false
+          },
+          {
+            "kind": "int",
+            "width": "isize",
+            "signed": false
+          },
+          {
+            "kind": "int",
+            "width": "isize",
+            "signed": false
+          },
+          {
+            "kind": "int",
+            "width": "isize",
+            "signed": false
+          },
+          {
+            "kind": "int",
+            "width": "isize",
+            "signed": false
+          },
+          {
+            "kind": "bool"
+          },
+          {
+            "kind": "int",
+            "width": "isize",
+            "signed": false
+          },
+          {
+            "kind": "option",
+            "elem": {
+              "kind": "int",
+              "signed": false,
+              "width": "isize"
+            }
+          },
+          {
+            "kind": "int",
+            "width": "isize",
+            "signed": false
+          },
+          {
+            "kind": "int",
+            "width": "isize",
+            "signed": true
+          },
+          {
+            "kind": "int",
+            "width": "isize",
+            "signed": false
+          },
+          {
+            "kind": "never"
+          },
+          {
+            "kind": "int",
+            "width": "isize",
+            "signed": false
+          },
+          {
+            "kind": "int",
+            "width": "isize",
+            "signed": false
+          },
+          {
+            "kind": "bool"
+          },
+          {
+            "kind": "int",
+            "width": "isize",
+            "signed": false
+          },
+          {
+            "kind": "bool"
+          },
+          {
+            "kind": "int",
+            "width": "isize",
+            "signed": false
+          },
+          {
+            "kind": "int",
+            "width": "isize",
+            "signed": false
+          },
+          {
+            "kind": "int",
+            "width": "isize",
+            "signed": false
+          },
+          {
+            "kind": "option",
+            "elem": {
+              "kind": "int",
+              "signed": false,
+              "width": "isize"
+            }
+          },
+          {
+            "kind": "int",
+            "width": "isize",
+            "signed": false
+          },
+          {
+            "kind": "int",
+            "width": "isize",
+            "signed": false
+          },
+          {
+            "kind": "int",
+            "width": "isize",
+            "signed": true
+          },
+          {
+            "kind": "int",
+            "width": "isize",
+            "signed": false
+          },
+          {
+            "kind": "option",
+            "elem": {
+              "kind": "int",
+              "signed": false,
+              "width": "isize"
+            }
+          },
+          {
+            "kind": "int",
+            "width": "isize",
+            "signed": false
+          },
+          {
+            "kind": "int",
+            "width": "isize",
+            "signed": true
+          },
+          {
+            "kind": "int",
+            "width": "isize",
+            "signed": false
+          },
+          {
+            "kind": "never"
+          },
+          {
+            "kind": "never"
+          },
+          {
+            "kind": "unit"
+          },
+          {
+            "kind": "bool"
+          },
+          {
+            "kind": "int",
+            "width": "isize",
+            "signed": false
+          },
+          {
+            "kind": "int",
+            "width": "isize",
+            "signed": false
+          },
+          {
+            "kind": "never"
+          },
+          {
+            "kind": "int",
+            "width": "isize",
+            "signed": false
+          },
+          {
+            "kind": "int",
+            "width": "isize",
+            "signed": false
+          },
+          {
+            "kind": "int",
+            "width": "isize",
+            "signed": false
+          },
+          {
+            "kind": "int",
+            "width": "isize",
+            "signed": false
+          },
+          {
+            "kind": "bool"
+          },
+          {
+            "kind": "int",
+            "width": "isize",
+            "signed": false
+          },
+          {
+            "kind": "bool"
+          },
+          {
+            "kind": "int",
+            "width": "isize",
+            "signed": false
+          },
+          {
+            "kind": "int",
+            "width": "isize",
+            "signed": false
+          },
+          {
+            "kind": "int",
+            "width": "isize",
+            "signed": false
+          },
+          {
+            "kind": "int",
+            "width": "isize",
+            "signed": false
+          },
+          {
+            "kind": "int",
+            "width": "isize",
+            "signed": false
+          },
+          {
+            "kind": "int",
+            "width": "isize",
+            "signed": false
+          },
+          {
+            "kind": "unit"
+          },
+          {
+            "kind": "bool"
+          },
+          {
+            "kind": "int",
+            "width": "isize",
+            "signed": false
+          },
+          {
+            "kind": "int",
+            "width": "isize",
+            "signed": false
+          },
+          {
+            "kind": "never"
+          },
+          {
+            "kind": "ref",
+            "mutability": "shared",
+            "pointee": {
+              "elem": {
+                "kind": "int",
+                "signed": false,
+                "width": "i8"
+              },
+              "kind": "slice"
+            }
+          },
+          {
+            "kind": "ref",
+            "mutability": "shared",
+            "pointee": {
+              "elem": {
+                "kind": "int",
+                "signed": false,
+                "width": "i8"
+              },
+              "kind": "slice"
+            }
+          },
+          {
+            "kind": "ref",
+            "mutability": "shared",
+            "pointee": {
+              "elem": {
+                "kind": "int",
+                "signed": false,
+                "width": "i8"
+              },
+              "kind": "slice"
+            }
+          },
+          {
+            "kind": "range_to",
+            "elem": {
+              "kind": "int",
+              "signed": false,
+              "width": "isize"
+            }
+          },
+          {
+            "kind": "int",
+            "width": "isize",
+            "signed": false
+          }
+        ],
+        "blocks": [
+          {
+            "statements": [
+              {
+                "kind": "storage_live",
+                "local": 2
+              },
+              {
+                "kind": "storage_live",
+                "local": 3
+              },
+              {
+                "kind": "assign",
+                "local": 3,
+                "value": {
+                  "kind": "ref",
+                  "mutability": "shared",
+                  "place": {
+                    "local": 1,
+                    "projection": [
+                      {
+                        "kind": "deref"
+                      }
+                    ]
+                  }
+                }
+              }
+            ],
+            "terminator": {
+              "kind": "core_call",
+              "op": {
+                "kind": "slice_len"
+              },
+              "args": [
+                {
+                  "kind": "move",
+                  "local": 3
+                }
+              ],
+              "dst": {
+                "local": 2,
+                "projection": []
+              },
+              "target": 1,
+              "unwind": "continue"
+            }
+          },
+          {
+            "statements": [
+              {
+                "kind": "storage_dead",
+                "local": 3
+              },
+              {
+                "kind": "storage_live",
+                "local": 4
+              },
+              {
+                "kind": "storage_live",
+                "local": 5
+              },
+              {
+                "kind": "storage_live",
+                "local": 6
+              },
+              {
+                "kind": "assign",
+                "local": 6,
+                "value": {
+                  "kind": "use",
+                  "operand": {
+                    "kind": "copy",
+                    "local": 2
+                  },
+                  "with_retag": true
+                }
+              },
+              {
+                "kind": "assign",
+                "local": 5,
+                "value": {
+                  "kind": "binary",
+                  "op": "lt",
+                  "left": {
+                    "kind": "move",
+                    "local": 6
+                  },
+                  "right": {
+                    "kind": "constant",
+                    "ty": {
+                      "kind": "int",
+                      "width": "isize",
+                      "signed": false
+                    },
+                    "lit": {
+                      "kind": "scalar",
+                      "bits": "4"
+                    }
+                  }
+                }
+              }
+            ],
+            "terminator": {
+              "kind": "switch_int",
+              "operand": {
+                "kind": "move",
+                "local": 5
+              },
+              "targets": [
+                [
+                  "0",
+                  3
+                ]
+              ],
+              "otherwise": 2
+            }
+          },
+          {
+            "statements": [
+              {
+                "kind": "storage_dead",
+                "local": 6
+              },
+              {
+                "kind": "assign",
+                "local": 0,
+                "value": {
+                  "kind": "aggregate_option",
+                  "variant_idx": 0,
+                  "inner_ty": {
+                    "kind": "ref",
+                    "mutability": "shared",
+                    "pointee": {
+                      "elem": {
+                        "kind": "int",
+                        "signed": false,
+                        "width": "i8"
+                      },
+                      "kind": "slice"
+                    }
+                  },
+                  "payload": null
+                }
+              },
+              {
+                "kind": "storage_dead",
+                "local": 5
+              },
+              {
+                "kind": "storage_dead",
+                "local": 4
+              }
+            ],
+            "terminator": {
+              "kind": "goto",
+              "block": 31
+            }
+          },
+          {
+            "statements": [
+              {
+                "kind": "storage_dead",
+                "local": 6
+              },
+              {
+                "kind": "assign",
+                "local": 4,
+                "value": {
+                  "kind": "use",
+                  "operand": {
+                    "kind": "constant",
+                    "ty": {
+                      "kind": "unit"
+                    },
+                    "lit": {
+                      "kind": "zero_sized"
+                    }
+                  },
+                  "with_retag": true
+                }
+              },
+              {
+                "kind": "storage_dead",
+                "local": 5
+              },
+              {
+                "kind": "storage_dead",
+                "local": 4
+              },
+              {
+                "kind": "storage_live",
+                "local": 8
+              },
+              {
+                "kind": "storage_live",
+                "local": 9
+              },
+              {
+                "kind": "assign",
+                "local": 9,
+                "value": {
+                  "kind": "use",
+                  "operand": {
+                    "kind": "copy",
+                    "local": 2
+                  },
+                  "with_retag": true
+                }
+              },
+              {
+                "kind": "assign",
+                "local": 8,
+                "value": {
+                  "kind": "binary",
+                  "op": "sub",
+                  "left": {
+                    "kind": "move",
+                    "local": 9
+                  },
+                  "right": {
+                    "kind": "constant",
+                    "ty": {
+                      "kind": "int",
+                      "width": "isize",
+                      "signed": false
+                    },
+                    "lit": {
+                      "kind": "scalar",
+                      "bits": "4"
+                    }
+                  }
+                }
+              },
+              {
+                "kind": "storage_dead",
+                "local": 9
+              },
+              {
+                "kind": "storage_live",
+                "local": 10
+              },
+              {
+                "kind": "storage_live",
+                "local": 11
+              },
+              {
+                "kind": "storage_live",
+                "local": 12
+              },
+              {
+                "kind": "assign",
+                "local": 12,
+                "value": {
+                  "kind": "use",
+                  "operand": {
+                    "kind": "copy",
+                    "local": 8
+                  },
+                  "with_retag": true
+                }
+              },
+              {
+                "kind": "storage_live",
+                "local": 13
+              },
+              {
+                "kind": "assign",
+                "local": 13,
+                "value": {
+                  "kind": "unary",
+                  "op": "not",
+                  "operand": {
+                    "kind": "constant",
+                    "ty": {
+                      "kind": "int",
+                      "width": "isize",
+                      "signed": false
+                    },
+                    "lit": {
+                      "kind": "scalar",
+                      "bits": "3"
+                    }
+                  }
+                }
+              },
+              {
+                "kind": "assign",
+                "local": 11,
+                "value": {
+                  "kind": "binary",
+                  "op": "bit_and",
+                  "left": {
+                    "kind": "move",
+                    "local": 12
+                  },
+                  "right": {
+                    "kind": "move",
+                    "local": 13
+                  }
+                }
+              },
+              {
+                "kind": "storage_dead",
+                "local": 13
+              },
+              {
+                "kind": "storage_dead",
+                "local": 12
+              },
+              {
+                "kind": "assign",
+                "local": 14,
+                "value": {
+                  "kind": "binary",
+                  "op": "eq",
+                  "left": {
+                    "kind": "constant",
+                    "ty": {
+                      "kind": "int",
+                      "width": "isize",
+                      "signed": false
+                    },
+                    "lit": {
+                      "kind": "scalar",
+                      "bits": "6"
+                    }
+                  },
+                  "right": {
+                    "kind": "constant",
+                    "ty": {
+                      "kind": "int",
+                      "width": "isize",
+                      "signed": false
+                    },
+                    "lit": {
+                      "kind": "scalar",
+                      "bits": "0"
+                    }
+                  }
+                }
+              }
+            ],
+            "terminator": {
+              "kind": "assert",
+              "cond": {
+                "kind": "move",
+                "local": 14
+              },
+              "expected": false,
+              "msg": {
+                "kind": "div_by_zero"
+              },
+              "target": 4,
+              "unwind": "continue"
+            }
+          },
+          {
+            "statements": [
+              {
+                "kind": "assign",
+                "local": 10,
+                "value": {
+                  "kind": "binary",
+                  "op": "div",
+                  "left": {
+                    "kind": "move",
+                    "local": 11
+                  },
+                  "right": {
+                    "kind": "constant",
+                    "ty": {
+                      "kind": "int",
+                      "width": "isize",
+                      "signed": false
+                    },
+                    "lit": {
+                      "kind": "scalar",
+                      "bits": "6"
+                    }
+                  }
+                }
+              },
+              {
+                "kind": "storage_dead",
+                "local": 11
+              },
+              {
+                "kind": "storage_live",
+                "local": 15
+              },
+              {
+                "kind": "storage_live",
+                "local": 16
+              },
+              {
+                "kind": "storage_live",
+                "local": 17
+              },
+              {
+                "kind": "assign",
+                "local": 17,
+                "value": {
+                  "kind": "use",
+                  "operand": {
+                    "kind": "copy",
+                    "local": 10
+                  },
+                  "with_retag": true
+                }
+              }
+            ],
+            "terminator": {
+              "kind": "core_call",
+              "op": {
+                "kind": "num_checked_mul",
+                "width": "isize",
+                "signed": false
+              },
+              "args": [
+                {
+                  "kind": "move",
+                  "local": 17
+                },
+                {
+                  "kind": "constant",
+                  "ty": {
+                    "kind": "int",
+                    "width": "isize",
+                    "signed": false
+                  },
+                  "lit": {
+                    "kind": "scalar",
+                    "bits": "6"
+                  }
+                }
+              ],
+              "dst": {
+                "local": 16,
+                "projection": []
+              },
+              "target": 5,
+              "unwind": "continue"
+            }
+          },
+          {
+            "statements": [
+              {
+                "kind": "storage_dead",
+                "local": 17
+              },
+              {
+                "kind": "place_mention",
+                "local": 16
+              },
+              {
+                "kind": "assign",
+                "local": 18,
+                "value": {
+                  "kind": "discriminant",
+                  "place": {
+                    "local": 16,
+                    "projection": []
+                  }
+                }
+              }
+            ],
+            "terminator": {
+              "kind": "switch_int",
+              "operand": {
+                "kind": "move",
+                "local": 18
+              },
+              "targets": [
+                [
+                  "0",
+                  7
+                ],
+                [
+                  "1",
+                  8
+                ]
+              ],
+              "otherwise": 6
+            }
+          },
+          {
+            "statements": [],
+            "terminator": {
+              "kind": "unreachable"
+            }
+          },
+          {
+            "statements": [
+              {
+                "kind": "assign",
+                "local": 0,
+                "value": {
+                  "kind": "aggregate_option",
+                  "variant_idx": 0,
+                  "inner_ty": {
+                    "kind": "ref",
+                    "mutability": "shared",
+                    "pointee": {
+                      "elem": {
+                        "kind": "int",
+                        "signed": false,
+                        "width": "i8"
+                      },
+                      "kind": "slice"
+                    }
+                  },
+                  "payload": null
+                }
+              },
+              {
+                "kind": "storage_dead",
+                "local": 16
+              }
+            ],
+            "terminator": {
+              "kind": "goto",
+              "block": 30
+            }
+          },
+          {
+            "statements": [
+              {
+                "kind": "storage_live",
+                "local": 19
+              },
+              {
+                "kind": "assign",
+                "local": 19,
+                "value": {
+                  "kind": "use",
+                  "operand": {
+                    "kind": "copy_place",
+                    "place": {
+                      "local": 16,
+                      "projection": [
+                        {
+                          "kind": "downcast",
+                          "variant_idx": 1
+                        },
+                        {
+                          "kind": "field",
+                          "index": 0,
+                          "ty": {
+                            "kind": "int",
+                            "width": "isize",
+                            "signed": false
+                          }
+                        }
+                      ]
+                    }
+                  },
+                  "with_retag": true
+                }
+              },
+              {
+                "kind": "assign",
+                "local": 15,
+                "value": {
+                  "kind": "use",
+                  "operand": {
+                    "kind": "copy",
+                    "local": 19
+                  },
+                  "with_retag": true
+                }
+              },
+              {
+                "kind": "storage_dead",
+                "local": 19
+              },
+              {
+                "kind": "storage_dead",
+                "local": 16
+              },
+              {
+                "kind": "storage_live",
+                "local": 21
+              },
+              {
+                "kind": "storage_live",
+                "local": 22
+              },
+              {
+                "kind": "assign",
+                "local": 22,
+                "value": {
+                  "kind": "use",
+                  "operand": {
+                    "kind": "copy",
+                    "local": 15
+                  },
+                  "with_retag": true
+                }
+              },
+              {
+                "kind": "assign",
+                "local": 23,
+                "value": {
+                  "kind": "binary",
+                  "op": "eq",
+                  "left": {
+                    "kind": "constant",
+                    "ty": {
+                      "kind": "int",
+                      "width": "isize",
+                      "signed": false
+                    },
+                    "lit": {
+                      "kind": "scalar",
+                      "bits": "4"
+                    }
+                  },
+                  "right": {
+                    "kind": "constant",
+                    "ty": {
+                      "kind": "int",
+                      "width": "isize",
+                      "signed": false
+                    },
+                    "lit": {
+                      "kind": "scalar",
+                      "bits": "0"
+                    }
+                  }
+                }
+              }
+            ],
+            "terminator": {
+              "kind": "assert",
+              "cond": {
+                "kind": "move",
+                "local": 23
+              },
+              "expected": false,
+              "msg": {
+                "kind": "rem_by_zero"
+              },
+              "target": 9,
+              "unwind": "continue"
+            }
+          },
+          {
+            "statements": [
+              {
+                "kind": "assign",
+                "local": 21,
+                "value": {
+                  "kind": "binary",
+                  "op": "rem",
+                  "left": {
+                    "kind": "move",
+                    "local": 22
+                  },
+                  "right": {
+                    "kind": "constant",
+                    "ty": {
+                      "kind": "int",
+                      "width": "isize",
+                      "signed": false
+                    },
+                    "lit": {
+                      "kind": "scalar",
+                      "bits": "4"
+                    }
+                  }
+                }
+              },
+              {
+                "kind": "storage_dead",
+                "local": 22
+              },
+              {
+                "kind": "storage_live",
+                "local": 24
+              },
+              {
+                "kind": "storage_live",
+                "local": 25
+              },
+              {
+                "kind": "storage_live",
+                "local": 26
+              },
+              {
+                "kind": "assign",
+                "local": 26,
+                "value": {
+                  "kind": "use",
+                  "operand": {
+                    "kind": "copy",
+                    "local": 21
+                  },
+                  "with_retag": true
+                }
+              },
+              {
+                "kind": "assign",
+                "local": 25,
+                "value": {
+                  "kind": "binary",
+                  "op": "eq",
+                  "left": {
+                    "kind": "move",
+                    "local": 26
+                  },
+                  "right": {
+                    "kind": "constant",
+                    "ty": {
+                      "kind": "int",
+                      "width": "isize",
+                      "signed": false
+                    },
+                    "lit": {
+                      "kind": "scalar",
+                      "bits": "0"
+                    }
+                  }
+                }
+              }
+            ],
+            "terminator": {
+              "kind": "switch_int",
+              "operand": {
+                "kind": "move",
+                "local": 25
+              },
+              "targets": [
+                [
+                  "0",
+                  11
+                ]
+              ],
+              "otherwise": 10
+            }
+          },
+          {
+            "statements": [
+              {
+                "kind": "storage_dead",
+                "local": 26
+              },
+              {
+                "kind": "assign",
+                "local": 24,
+                "value": {
+                  "kind": "use",
+                  "operand": {
+                    "kind": "constant",
+                    "ty": {
+                      "kind": "int",
+                      "width": "isize",
+                      "signed": false
+                    },
+                    "lit": {
+                      "kind": "scalar",
+                      "bits": "0"
+                    }
+                  },
+                  "with_retag": true
+                }
+              }
+            ],
+            "terminator": {
+              "kind": "goto",
+              "block": 12
+            }
+          },
+          {
+            "statements": [
+              {
+                "kind": "storage_dead",
+                "local": 26
+              },
+              {
+                "kind": "storage_live",
+                "local": 27
+              },
+              {
+                "kind": "assign",
+                "local": 27,
+                "value": {
+                  "kind": "use",
+                  "operand": {
+                    "kind": "copy",
+                    "local": 21
+                  },
+                  "with_retag": true
+                }
+              },
+              {
+                "kind": "assign",
+                "local": 24,
+                "value": {
+                  "kind": "binary",
+                  "op": "sub",
+                  "left": {
+                    "kind": "constant",
+                    "ty": {
+                      "kind": "int",
+                      "width": "isize",
+                      "signed": false
+                    },
+                    "lit": {
+                      "kind": "scalar",
+                      "bits": "4"
+                    }
+                  },
+                  "right": {
+                    "kind": "move",
+                    "local": 27
+                  }
+                }
+              },
+              {
+                "kind": "storage_dead",
+                "local": 27
+              }
+            ],
+            "terminator": {
+              "kind": "goto",
+              "block": 12
+            }
+          },
+          {
+            "statements": [
+              {
+                "kind": "storage_dead",
+                "local": 25
+              },
+              {
+                "kind": "storage_live",
+                "local": 28
+              },
+              {
+                "kind": "storage_live",
+                "local": 29
+              },
+              {
+                "kind": "storage_live",
+                "local": 30
+              },
+              {
+                "kind": "assign",
+                "local": 30,
+                "value": {
+                  "kind": "use",
+                  "operand": {
+                    "kind": "copy",
+                    "local": 15
+                  },
+                  "with_retag": true
+                }
+              },
+              {
+                "kind": "storage_live",
+                "local": 31
+              },
+              {
+                "kind": "assign",
+                "local": 31,
+                "value": {
+                  "kind": "use",
+                  "operand": {
+                    "kind": "copy",
+                    "local": 24
+                  },
+                  "with_retag": true
+                }
+              }
+            ],
+            "terminator": {
+              "kind": "core_call",
+              "op": {
+                "kind": "num_checked_add",
+                "width": "isize",
+                "signed": false
+              },
+              "args": [
+                {
+                  "kind": "move",
+                  "local": 30
+                },
+                {
+                  "kind": "move",
+                  "local": 31
+                }
+              ],
+              "dst": {
+                "local": 29,
+                "projection": []
+              },
+              "target": 13,
+              "unwind": "continue"
+            }
+          },
+          {
+            "statements": [
+              {
+                "kind": "storage_dead",
+                "local": 31
+              },
+              {
+                "kind": "storage_dead",
+                "local": 30
+              },
+              {
+                "kind": "place_mention",
+                "local": 29
+              },
+              {
+                "kind": "assign",
+                "local": 32,
+                "value": {
+                  "kind": "discriminant",
+                  "place": {
+                    "local": 29,
+                    "projection": []
+                  }
+                }
+              }
+            ],
+            "terminator": {
+              "kind": "switch_int",
+              "operand": {
+                "kind": "move",
+                "local": 32
+              },
+              "targets": [
+                [
+                  "0",
+                  14
+                ],
+                [
+                  "1",
+                  15
+                ]
+              ],
+              "otherwise": 6
+            }
+          },
+          {
+            "statements": [
+              {
+                "kind": "assign",
+                "local": 0,
+                "value": {
+                  "kind": "aggregate_option",
+                  "variant_idx": 0,
+                  "inner_ty": {
+                    "kind": "ref",
+                    "mutability": "shared",
+                    "pointee": {
+                      "elem": {
+                        "kind": "int",
+                        "signed": false,
+                        "width": "i8"
+                      },
+                      "kind": "slice"
+                    }
+                  },
+                  "payload": null
+                }
+              }
+            ],
+            "terminator": {
+              "kind": "goto",
+              "block": 28
+            }
+          },
+          {
+            "statements": [
+              {
+                "kind": "storage_live",
+                "local": 33
+              },
+              {
+                "kind": "assign",
+                "local": 33,
+                "value": {
+                  "kind": "use",
+                  "operand": {
+                    "kind": "copy_place",
+                    "place": {
+                      "local": 29,
+                      "projection": [
+                        {
+                          "kind": "downcast",
+                          "variant_idx": 1
+                        },
+                        {
+                          "kind": "field",
+                          "index": 0,
+                          "ty": {
+                            "kind": "int",
+                            "width": "isize",
+                            "signed": false
+                          }
+                        }
+                      ]
+                    }
+                  },
+                  "with_retag": true
+                }
+              },
+              {
+                "kind": "storage_live",
+                "local": 34
+              },
+              {
+                "kind": "storage_live",
+                "local": 35
+              },
+              {
+                "kind": "assign",
+                "local": 35,
+                "value": {
+                  "kind": "use",
+                  "operand": {
+                    "kind": "copy",
+                    "local": 33
+                  },
+                  "with_retag": true
+                }
+              }
+            ],
+            "terminator": {
+              "kind": "core_call",
+              "op": {
+                "kind": "num_checked_add",
+                "width": "isize",
+                "signed": false
+              },
+              "args": [
+                {
+                  "kind": "move",
+                  "local": 35
+                },
+                {
+                  "kind": "constant",
+                  "ty": {
+                    "kind": "int",
+                    "width": "isize",
+                    "signed": false
+                  },
+                  "lit": {
+                    "kind": "scalar",
+                    "bits": "4"
+                  }
+                }
+              ],
+              "dst": {
+                "local": 34,
+                "projection": []
+              },
+              "target": 16,
+              "unwind": "continue"
+            }
+          },
+          {
+            "statements": [
+              {
+                "kind": "storage_dead",
+                "local": 35
+              },
+              {
+                "kind": "place_mention",
+                "local": 34
+              },
+              {
+                "kind": "assign",
+                "local": 36,
+                "value": {
+                  "kind": "discriminant",
+                  "place": {
+                    "local": 34,
+                    "projection": []
+                  }
+                }
+              }
+            ],
+            "terminator": {
+              "kind": "switch_int",
+              "operand": {
+                "kind": "move",
+                "local": 36
+              },
+              "targets": [
+                [
+                  "0",
+                  17
+                ],
+                [
+                  "1",
+                  18
+                ]
+              ],
+              "otherwise": 6
+            }
+          },
+          {
+            "statements": [
+              {
+                "kind": "assign",
+                "local": 0,
+                "value": {
+                  "kind": "aggregate_option",
+                  "variant_idx": 0,
+                  "inner_ty": {
+                    "kind": "ref",
+                    "mutability": "shared",
+                    "pointee": {
+                      "elem": {
+                        "kind": "int",
+                        "signed": false,
+                        "width": "i8"
+                      },
+                      "kind": "slice"
+                    }
+                  },
+                  "payload": null
+                }
+              },
+              {
+                "kind": "storage_dead",
+                "local": 34
+              },
+              {
+                "kind": "storage_dead",
+                "local": 33
+              }
+            ],
+            "terminator": {
+              "kind": "goto",
+              "block": 28
+            }
+          },
+          {
+            "statements": [
+              {
+                "kind": "storage_live",
+                "local": 37
+              },
+              {
+                "kind": "assign",
+                "local": 37,
+                "value": {
+                  "kind": "use",
+                  "operand": {
+                    "kind": "copy_place",
+                    "place": {
+                      "local": 34,
+                      "projection": [
+                        {
+                          "kind": "downcast",
+                          "variant_idx": 1
+                        },
+                        {
+                          "kind": "field",
+                          "index": 0,
+                          "ty": {
+                            "kind": "int",
+                            "width": "isize",
+                            "signed": false
+                          }
+                        }
+                      ]
+                    }
+                  },
+                  "with_retag": true
+                }
+              },
+              {
+                "kind": "assign",
+                "local": 28,
+                "value": {
+                  "kind": "use",
+                  "operand": {
+                    "kind": "copy",
+                    "local": 37
+                  },
+                  "with_retag": true
+                }
+              },
+              {
+                "kind": "storage_dead",
+                "local": 37
+              },
+              {
+                "kind": "storage_dead",
+                "local": 34
+              },
+              {
+                "kind": "storage_dead",
+                "local": 33
+              },
+              {
+                "kind": "storage_dead",
+                "local": 29
+              },
+              {
+                "kind": "storage_live",
+                "local": 40
+              },
+              {
+                "kind": "storage_live",
+                "local": 41
+              },
+              {
+                "kind": "storage_live",
+                "local": 42
+              },
+              {
+                "kind": "assign",
+                "local": 42,
+                "value": {
+                  "kind": "use",
+                  "operand": {
+                    "kind": "copy",
+                    "local": 28
+                  },
+                  "with_retag": true
+                }
+              },
+              {
+                "kind": "storage_live",
+                "local": 43
+              },
+              {
+                "kind": "assign",
+                "local": 43,
+                "value": {
+                  "kind": "use",
+                  "operand": {
+                    "kind": "copy",
+                    "local": 2
+                  },
+                  "with_retag": true
+                }
+              },
+              {
+                "kind": "assign",
+                "local": 41,
+                "value": {
+                  "kind": "binary",
+                  "op": "gt",
+                  "left": {
+                    "kind": "move",
+                    "local": 42
+                  },
+                  "right": {
+                    "kind": "move",
+                    "local": 43
+                  }
+                }
+              }
+            ],
+            "terminator": {
+              "kind": "switch_int",
+              "operand": {
+                "kind": "move",
+                "local": 41
+              },
+              "targets": [
+                [
+                  "0",
+                  20
+                ]
+              ],
+              "otherwise": 19
+            }
+          },
+          {
+            "statements": [
+              {
+                "kind": "storage_dead",
+                "local": 43
+              },
+              {
+                "kind": "storage_dead",
+                "local": 42
+              },
+              {
+                "kind": "assign",
+                "local": 0,
+                "value": {
+                  "kind": "aggregate_option",
+                  "variant_idx": 0,
+                  "inner_ty": {
+                    "kind": "ref",
+                    "mutability": "shared",
+                    "pointee": {
+                      "elem": {
+                        "kind": "int",
+                        "signed": false,
+                        "width": "i8"
+                      },
+                      "kind": "slice"
+                    }
+                  },
+                  "payload": null
+                }
+              },
+              {
+                "kind": "storage_dead",
+                "local": 41
+              },
+              {
+                "kind": "storage_dead",
+                "local": 40
+              }
+            ],
+            "terminator": {
+              "kind": "goto",
+              "block": 29
+            }
+          },
+          {
+            "statements": [
+              {
+                "kind": "storage_dead",
+                "local": 43
+              },
+              {
+                "kind": "storage_dead",
+                "local": 42
+              },
+              {
+                "kind": "assign",
+                "local": 40,
+                "value": {
+                  "kind": "use",
+                  "operand": {
+                    "kind": "constant",
+                    "ty": {
+                      "kind": "unit"
+                    },
+                    "lit": {
+                      "kind": "zero_sized"
+                    }
+                  },
+                  "with_retag": true
+                }
+              },
+              {
+                "kind": "storage_dead",
+                "local": 41
+              },
+              {
+                "kind": "storage_dead",
+                "local": 40
+              },
+              {
+                "kind": "storage_live",
+                "local": 45
+              },
+              {
+                "kind": "storage_live",
+                "local": 46
+              },
+              {
+                "kind": "assign",
+                "local": 46,
+                "value": {
+                  "kind": "use",
+                  "operand": {
+                    "kind": "copy",
+                    "local": 15
+                  },
+                  "with_retag": true
+                }
+              },
+              {
+                "kind": "assign",
+                "local": 45,
+                "value": {
+                  "kind": "binary",
+                  "op": "add",
+                  "left": {
+                    "kind": "move",
+                    "local": 46
+                  },
+                  "right": {
+                    "kind": "constant",
+                    "ty": {
+                      "kind": "int",
+                      "width": "isize",
+                      "signed": false
+                    },
+                    "lit": {
+                      "kind": "scalar",
+                      "bits": "6"
+                    }
+                  }
+                }
+              },
+              {
+                "kind": "storage_dead",
+                "local": 46
+              },
+              {
+                "kind": "storage_live",
+                "local": 47
+              },
+              {
+                "kind": "storage_live",
+                "local": 48
+              },
+              {
+                "kind": "assign",
+                "local": 48,
+                "value": {
+                  "kind": "use",
+                  "operand": {
+                    "kind": "copy",
+                    "local": 45
+                  },
+                  "with_retag": true
+                }
+              },
+              {
+                "kind": "assign",
+                "local": 49,
+                "value": {
+                  "kind": "binary",
+                  "op": "eq",
+                  "left": {
+                    "kind": "constant",
+                    "ty": {
+                      "kind": "int",
+                      "width": "isize",
+                      "signed": false
+                    },
+                    "lit": {
+                      "kind": "scalar",
+                      "bits": "4"
+                    }
+                  },
+                  "right": {
+                    "kind": "constant",
+                    "ty": {
+                      "kind": "int",
+                      "width": "isize",
+                      "signed": false
+                    },
+                    "lit": {
+                      "kind": "scalar",
+                      "bits": "0"
+                    }
+                  }
+                }
+              }
+            ],
+            "terminator": {
+              "kind": "assert",
+              "cond": {
+                "kind": "move",
+                "local": 49
+              },
+              "expected": false,
+              "msg": {
+                "kind": "rem_by_zero"
+              },
+              "target": 21,
+              "unwind": "continue"
+            }
+          },
+          {
+            "statements": [
+              {
+                "kind": "assign",
+                "local": 47,
+                "value": {
+                  "kind": "binary",
+                  "op": "rem",
+                  "left": {
+                    "kind": "move",
+                    "local": 48
+                  },
+                  "right": {
+                    "kind": "constant",
+                    "ty": {
+                      "kind": "int",
+                      "width": "isize",
+                      "signed": false
+                    },
+                    "lit": {
+                      "kind": "scalar",
+                      "bits": "4"
+                    }
+                  }
+                }
+              },
+              {
+                "kind": "storage_dead",
+                "local": 48
+              },
+              {
+                "kind": "storage_live",
+                "local": 50
+              },
+              {
+                "kind": "storage_live",
+                "local": 51
+              },
+              {
+                "kind": "storage_live",
+                "local": 52
+              },
+              {
+                "kind": "assign",
+                "local": 52,
+                "value": {
+                  "kind": "use",
+                  "operand": {
+                    "kind": "copy",
+                    "local": 47
+                  },
+                  "with_retag": true
+                }
+              },
+              {
+                "kind": "assign",
+                "local": 51,
+                "value": {
+                  "kind": "binary",
+                  "op": "eq",
+                  "left": {
+                    "kind": "move",
+                    "local": 52
+                  },
+                  "right": {
+                    "kind": "constant",
+                    "ty": {
+                      "kind": "int",
+                      "width": "isize",
+                      "signed": false
+                    },
+                    "lit": {
+                      "kind": "scalar",
+                      "bits": "0"
+                    }
+                  }
+                }
+              }
+            ],
+            "terminator": {
+              "kind": "switch_int",
+              "operand": {
+                "kind": "move",
+                "local": 51
+              },
+              "targets": [
+                [
+                  "0",
+                  23
+                ]
+              ],
+              "otherwise": 22
+            }
+          },
+          {
+            "statements": [
+              {
+                "kind": "storage_dead",
+                "local": 52
+              },
+              {
+                "kind": "assign",
+                "local": 50,
+                "value": {
+                  "kind": "use",
+                  "operand": {
+                    "kind": "constant",
+                    "ty": {
+                      "kind": "int",
+                      "width": "isize",
+                      "signed": false
+                    },
+                    "lit": {
+                      "kind": "scalar",
+                      "bits": "0"
+                    }
+                  },
+                  "with_retag": true
+                }
+              }
+            ],
+            "terminator": {
+              "kind": "goto",
+              "block": 24
+            }
+          },
+          {
+            "statements": [
+              {
+                "kind": "storage_dead",
+                "local": 52
+              },
+              {
+                "kind": "storage_live",
+                "local": 53
+              },
+              {
+                "kind": "assign",
+                "local": 53,
+                "value": {
+                  "kind": "use",
+                  "operand": {
+                    "kind": "copy",
+                    "local": 47
+                  },
+                  "with_retag": true
+                }
+              },
+              {
+                "kind": "assign",
+                "local": 50,
+                "value": {
+                  "kind": "binary",
+                  "op": "sub",
+                  "left": {
+                    "kind": "constant",
+                    "ty": {
+                      "kind": "int",
+                      "width": "isize",
+                      "signed": false
+                    },
+                    "lit": {
+                      "kind": "scalar",
+                      "bits": "4"
+                    }
+                  },
+                  "right": {
+                    "kind": "move",
+                    "local": 53
+                  }
+                }
+              },
+              {
+                "kind": "storage_dead",
+                "local": 53
+              }
+            ],
+            "terminator": {
+              "kind": "goto",
+              "block": 24
+            }
+          },
+          {
+            "statements": [
+              {
+                "kind": "storage_dead",
+                "local": 51
+              },
+              {
+                "kind": "storage_live",
+                "local": 54
+              },
+              {
+                "kind": "storage_live",
+                "local": 55
+              },
+              {
+                "kind": "storage_live",
+                "local": 56
+              },
+              {
+                "kind": "assign",
+                "local": 56,
+                "value": {
+                  "kind": "use",
+                  "operand": {
+                    "kind": "copy",
+                    "local": 45
+                  },
+                  "with_retag": true
+                }
+              },
+              {
+                "kind": "storage_live",
+                "local": 57
+              },
+              {
+                "kind": "assign",
+                "local": 57,
+                "value": {
+                  "kind": "use",
+                  "operand": {
+                    "kind": "copy",
+                    "local": 50
+                  },
+                  "with_retag": true
+                }
+              },
+              {
+                "kind": "assign",
+                "local": 55,
+                "value": {
+                  "kind": "binary",
+                  "op": "add",
+                  "left": {
+                    "kind": "move",
+                    "local": 56
+                  },
+                  "right": {
+                    "kind": "move",
+                    "local": 57
+                  }
+                }
+              },
+              {
+                "kind": "storage_dead",
+                "local": 57
+              },
+              {
+                "kind": "storage_dead",
+                "local": 56
+              },
+              {
+                "kind": "assign",
+                "local": 54,
+                "value": {
+                  "kind": "binary",
+                  "op": "add",
+                  "left": {
+                    "kind": "move",
+                    "local": 55
+                  },
+                  "right": {
+                    "kind": "constant",
+                    "ty": {
+                      "kind": "int",
+                      "width": "isize",
+                      "signed": false
+                    },
+                    "lit": {
+                      "kind": "scalar",
+                      "bits": "4"
+                    }
+                  }
+                }
+              },
+              {
+                "kind": "storage_dead",
+                "local": 55
+              },
+              {
+                "kind": "storage_live",
+                "local": 58
+              },
+              {
+                "kind": "storage_live",
+                "local": 59
+              },
+              {
+                "kind": "storage_live",
+                "local": 60
+              },
+              {
+                "kind": "assign",
+                "local": 60,
+                "value": {
+                  "kind": "use",
+                  "operand": {
+                    "kind": "copy",
+                    "local": 54
+                  },
+                  "with_retag": true
+                }
+              },
+              {
+                "kind": "storage_live",
+                "local": 61
+              },
+              {
+                "kind": "assign",
+                "local": 61,
+                "value": {
+                  "kind": "use",
+                  "operand": {
+                    "kind": "copy",
+                    "local": 2
+                  },
+                  "with_retag": true
+                }
+              },
+              {
+                "kind": "assign",
+                "local": 59,
+                "value": {
+                  "kind": "binary",
+                  "op": "le",
+                  "left": {
+                    "kind": "move",
+                    "local": 60
+                  },
+                  "right": {
+                    "kind": "move",
+                    "local": 61
+                  }
+                }
+              }
+            ],
+            "terminator": {
+              "kind": "switch_int",
+              "operand": {
+                "kind": "move",
+                "local": 59
+              },
+              "targets": [
+                [
+                  "0",
+                  26
+                ]
+              ],
+              "otherwise": 25
+            }
+          },
+          {
+            "statements": [
+              {
+                "kind": "storage_dead",
+                "local": 61
+              },
+              {
+                "kind": "storage_dead",
+                "local": 60
+              },
+              {
+                "kind": "assign",
+                "local": 0,
+                "value": {
+                  "kind": "aggregate_option",
+                  "variant_idx": 0,
+                  "inner_ty": {
+                    "kind": "ref",
+                    "mutability": "shared",
+                    "pointee": {
+                      "elem": {
+                        "kind": "int",
+                        "signed": false,
+                        "width": "i8"
+                      },
+                      "kind": "slice"
+                    }
+                  },
+                  "payload": null
+                }
+              },
+              {
+                "kind": "storage_dead",
+                "local": 59
+              },
+              {
+                "kind": "storage_dead",
+                "local": 58
+              },
+              {
+                "kind": "storage_dead",
+                "local": 54
+              },
+              {
+                "kind": "storage_dead",
+                "local": 50
+              },
+              {
+                "kind": "storage_dead",
+                "local": 47
+              },
+              {
+                "kind": "storage_dead",
+                "local": 45
+              }
+            ],
+            "terminator": {
+              "kind": "goto",
+              "block": 29
+            }
+          },
+          {
+            "statements": [
+              {
+                "kind": "storage_dead",
+                "local": 61
+              },
+              {
+                "kind": "storage_dead",
+                "local": 60
+              },
+              {
+                "kind": "assign",
+                "local": 58,
+                "value": {
+                  "kind": "use",
+                  "operand": {
+                    "kind": "constant",
+                    "ty": {
+                      "kind": "unit"
+                    },
+                    "lit": {
+                      "kind": "zero_sized"
+                    }
+                  },
+                  "with_retag": true
+                }
+              },
+              {
+                "kind": "storage_dead",
+                "local": 59
+              },
+              {
+                "kind": "storage_dead",
+                "local": 58
+              },
+              {
+                "kind": "storage_live",
+                "local": 63
+              },
+              {
+                "kind": "storage_live",
+                "local": 64
+              },
+              {
+                "kind": "storage_live",
+                "local": 65
+              },
+              {
+                "kind": "assign",
+                "local": 65,
+                "value": {
+                  "kind": "ref",
+                  "mutability": "shared",
+                  "place": {
+                    "local": 1,
+                    "projection": [
+                      {
+                        "kind": "deref"
+                      }
+                    ]
+                  }
+                }
+              },
+              {
+                "kind": "storage_live",
+                "local": 66
+              },
+              {
+                "kind": "storage_live",
+                "local": 67
+              },
+              {
+                "kind": "assign",
+                "local": 67,
+                "value": {
+                  "kind": "use",
+                  "operand": {
+                    "kind": "copy",
+                    "local": 28
+                  },
+                  "with_retag": true
+                }
+              },
+              {
+                "kind": "assign",
+                "local": 66,
+                "value": {
+                  "kind": "aggregate_range_to",
+                  "elem_ty": {
+                    "kind": "int",
+                    "width": "isize",
+                    "signed": false
+                  },
+                  "end": {
+                    "kind": "move",
+                    "local": 67
+                  }
+                }
+              },
+              {
+                "kind": "storage_dead",
+                "local": 67
+              }
+            ],
+            "terminator": {
+              "kind": "core_call",
+              "op": {
+                "kind": "slice_get_unchecked_range_to"
+              },
+              "args": [
+                {
+                  "kind": "move",
+                  "local": 65
+                },
+                {
+                  "kind": "move",
+                  "local": 66
+                }
+              ],
+              "dst": {
+                "local": 64,
+                "projection": []
+              },
+              "target": 27,
+              "unwind": "continue"
+            }
+          },
+          {
+            "statements": [
+              {
+                "kind": "assign",
+                "local": 63,
+                "value": {
+                  "kind": "ref",
+                  "mutability": "shared",
+                  "place": {
+                    "local": 64,
+                    "projection": [
+                      {
+                        "kind": "deref"
+                      }
+                    ]
+                  }
+                }
+              },
+              {
+                "kind": "storage_dead",
+                "local": 66
+              },
+              {
+                "kind": "storage_dead",
+                "local": 65
+              },
+              {
+                "kind": "assign",
+                "local": 0,
+                "value": {
+                  "kind": "aggregate_option",
+                  "variant_idx": 1,
+                  "inner_ty": {
+                    "kind": "ref",
+                    "mutability": "shared",
+                    "pointee": {
+                      "elem": {
+                        "kind": "int",
+                        "signed": false,
+                        "width": "i8"
+                      },
+                      "kind": "slice"
+                    }
+                  },
+                  "payload": {
+                    "kind": "move",
+                    "local": 63
+                  }
+                }
+              },
+              {
+                "kind": "storage_dead",
+                "local": 63
+              },
+              {
+                "kind": "storage_dead",
+                "local": 54
+              },
+              {
+                "kind": "storage_dead",
+                "local": 50
+              },
+              {
+                "kind": "storage_dead",
+                "local": 47
+              },
+              {
+                "kind": "storage_dead",
+                "local": 45
+              },
+              {
+                "kind": "storage_dead",
+                "local": 28
+              },
+              {
+                "kind": "storage_dead",
+                "local": 24
+              },
+              {
+                "kind": "storage_dead",
+                "local": 21
+              },
+              {
+                "kind": "storage_dead",
+                "local": 15
+              },
+              {
+                "kind": "storage_dead",
+                "local": 10
+              },
+              {
+                "kind": "storage_dead",
+                "local": 8
+              },
+              {
+                "kind": "storage_dead",
+                "local": 2
+              },
+              {
+                "kind": "storage_dead",
+                "local": 64
+              }
+            ],
+            "terminator": {
+              "kind": "goto",
+              "block": 32
+            }
+          },
+          {
+            "statements": [
+              {
+                "kind": "storage_dead",
+                "local": 29
+              }
+            ],
+            "terminator": {
+              "kind": "goto",
+              "block": 29
+            }
+          },
+          {
+            "statements": [
+              {
+                "kind": "storage_dead",
+                "local": 28
+              },
+              {
+                "kind": "storage_dead",
+                "local": 24
+              },
+              {
+                "kind": "storage_dead",
+                "local": 21
+              }
+            ],
+            "terminator": {
+              "kind": "goto",
+              "block": 30
+            }
+          },
+          {
+            "statements": [
+              {
+                "kind": "storage_dead",
+                "local": 15
+              },
+              {
+                "kind": "storage_dead",
+                "local": 10
+              },
+              {
+                "kind": "storage_dead",
+                "local": 8
+              }
+            ],
+            "terminator": {
+              "kind": "goto",
+              "block": 31
+            }
+          },
+          {
+            "statements": [
+              {
+                "kind": "storage_dead",
+                "local": 2
+              }
+            ],
+            "terminator": {
+              "kind": "goto",
+              "block": 32
+            }
+          },
+          {
+            "statements": [],
+            "terminator": {
+              "kind": "ret"
+            }
+          }
+        ],
+        "identity": "rust-path-v1::split_dst_prefix"
+      }
+    ]
+  }
+}

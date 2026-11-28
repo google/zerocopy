@@ -182,6 +182,8 @@ fn max_val_ptr_alloc_id(v: &Val) -> u64 {
     match v {
         Val::Ptr(p) | Val::SlicePtr { ptr: p, .. } => p.alloc_id.unwrap_or(0),
         Val::Tuple(vs) => vs.iter().map(max_val_ptr_alloc_id).max().unwrap_or(0),
+        Val::OptionVal(Some(inner)) => max_val_ptr_alloc_id(inner),
+        Val::OptionVal(None) => 0,
         Val::Bytes(bs) => bs
             .iter()
             .filter_map(|b| match b {
@@ -1289,6 +1291,9 @@ pub fn refs_valid_in_mem(
         (Ty::Tuple { fields }, Val::Tuple(vals)) => {
             refs_valid_in_mem_list(mem, endian, fields, vals)
         }
+        (Ty::Option { elem }, Val::OptionVal(Some(inner))) => {
+            refs_valid_in_mem(mem, endian, elem, inner)
+        }
         _ => Ok(()),
     }
 }
@@ -1379,6 +1384,9 @@ fn collect_ref_access_spans(ty: &Ty, val: &Val, out: &mut Vec<RefAccessSpan>) {
                 collect_ref_access_spans(t, v, out);
             }
         }
+        (Ty::Option { elem }, Val::OptionVal(Some(inner))) => {
+            collect_ref_access_spans(elem, inner, out);
+        }
         _ => {}
     }
 }
@@ -1426,6 +1434,9 @@ fn collect_ptr_or_ref_alloc_ids(ty: &Ty, val: &Val, out: &mut Vec<u64>) {
             for (t, v) in fields.iter().zip(vals.iter()) {
                 collect_ptr_or_ref_alloc_ids(t, v, out);
             }
+        }
+        (Ty::Option { elem }, Val::OptionVal(Some(inner))) => {
+            collect_ptr_or_ref_alloc_ids(elem, inner, out);
         }
         _ => {}
     }
@@ -1479,6 +1490,9 @@ pub fn refs_stay_in_caller_mem(cm: &CallerMemory, ty: &Ty, val: &Val) -> Result<
                 refs_stay_in_caller_mem(cm, t, v)?;
             }
             Ok(())
+        }
+        (Ty::Option { elem }, Val::OptionVal(Some(inner))) => {
+            refs_stay_in_caller_mem(cm, elem, inner)
         }
         _ => Ok(()),
     }

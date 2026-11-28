@@ -74,6 +74,8 @@ fn format_ty(ty: &Ty) -> String {
         Ty::Str => "str".into(),
         Ty::RangeTo { elem } => format!("RangeTo<{}>", format_ty(elem)),
         Ty::RangeFrom { elem } => format!("RangeFrom<{}>", format_ty(elem)),
+        Ty::Range { elem } => format!("Range<{}>", format_ty(elem)),
+        Ty::Option { elem } => format!("Option<{}>", format_ty(elem)),
         Ty::Array { elem, len } => format!("[{}; {len}]", format_ty(elem)),
         Ty::Unsupported => "<unsupported>".into(),
     }
@@ -112,6 +114,8 @@ fn format_val(val: &Val) -> String {
         }
         Val::RangeTo(end) => format!("..{end}"),
         Val::RangeFrom(start) => format!("{start}.."),
+        Val::OptionVal(None) => "None".into(),
+        Val::OptionVal(Some(inner)) => format!("Some({})", format_val(inner)),
         Val::Bytes(bs) => format!("[{} bytes]", bs.len()),
     }
 }

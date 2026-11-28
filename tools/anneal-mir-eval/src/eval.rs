@@ -297,7 +297,11 @@ fn rvalue_mentions_local_v2(rv: &Rvalue, lid: u32) -> bool {
         | Rvalue::AggregateRangeFrom { start: operand, .. } => {
             operand_mentions_local_v2(operand, lid)
         }
-        Rvalue::Binary { left, right, .. } => {
+        Rvalue::AggregateOption { payload, .. } => {
+            payload.as_ref().is_some_and(|op| operand_mentions_local_v2(op, lid))
+        }
+        Rvalue::Binary { left, right, .. }
+        | Rvalue::AggregateRange { start: left, end: right, .. } => {
             operand_mentions_local_v2(left, lid) || operand_mentions_local_v2(right, lid)
         }
         Rvalue::Discriminant { place }
@@ -2090,6 +2094,10 @@ fn discriminant_types_valid(body: &Body) -> bool {
                 Ty::Ordering => {
                     dst_ty.structural_eq(&Ty::Int(IntTy { width: IntWidth::I8, signed: true }))
                 }
+                // `discriminantTypesValidV2`.
+                Ty::Option { .. } => {
+                    dst_ty.structural_eq(&Ty::Int(IntTy { width: IntWidth::Isize, signed: true }))
+                }
                 _ => true,
             }
         })
@@ -3074,11 +3082,16 @@ fn copy_repr_of_ty_v2(ty: &Ty) -> CopyReprV2 {
                 TupleCopyPayloadV2::Memory => CopyReprV2::MemoryCopy,
             }
         }
+        Ty::Range { elem } if elem.is_usize() => CopyReprV2::ScalarPair { elem_align_log2: 3 },
+        // `Option<T>` stays `MemoryCopy` (the strictest class), matching
+        // `copyReprOfTyV2`: a `None` payload is uninit.
         Ty::OverflowPair(_)
+        | Ty::Option { .. }
         | Ty::Slice { .. }
         | Ty::Str
         | Ty::RangeTo { .. }
         | Ty::RangeFrom { .. }
+        | Ty::Range { .. }
         | Ty::Unsupported => CopyReprV2::MemoryCopy,
     }
 }
@@ -3227,6 +3240,8 @@ fn overlap_abi_repr_v2(ty: &Ty) -> OverlapAbiReprV2 {
         | Ty::Str
         | Ty::RangeTo { .. }
         | Ty::RangeFrom { .. }
+        | Ty::Range { .. }
+        | Ty::Option { .. }
         | Ty::Unsupported => OverlapAbiReprV2::Unknown,
     }
 }
@@ -3288,7 +3303,24 @@ fn copy_spans_overlap_v2(a: &CopyPlaceSpanV2, b: &CopyPlaceSpanV2) -> bool {
 fn normalize_imm_proj_path_v2(base_ty: &Ty, projs: &[ProjectionElem]) -> Option<Vec<u32>> {
     let mut cur_ty = base_ty.clone();
     let mut steps = Vec::with_capacity(projs.len());
-    for elem in projs {
+    let mut iter = projs.iter();
+    while let Some(elem) = iter.next() {
+        // The `Some` payload is the only sub-place of an immediate `Option`,
+        // so it is normalized as field `0` (`normalizeImmProjPathV2`).
+        if let ProjectionElem::Downcast { variant_idx } = elem {
+            let Ty::Option { elem: inner } = &cur_ty else {
+                return None;
+            };
+            let Some(ProjectionElem::Field { field_idx: 0, ty: f_ty }) = iter.next() else {
+                return None;
+            };
+            if *variant_idx != 1 || !inner.structural_eq(f_ty) {
+                return None;
+            }
+            steps.push(0);
+            cur_ty = (**inner).clone();
+            continue;
+        }
         let ProjectionElem::Field { field_idx, ty: f_ty } = elem else {
             return None;
         };
@@ -3609,6 +3641,17 @@ fn check_assign_copy_hazard_v2(
             }
             Ok(())
         }
+        // A single payload field: no earlier field write can clobber it
+        // (`checkAssignCopyHazardV2`'s `.aggregateOption` arm).
+        Rvalue::AggregateOption { inner_ty, .. } => {
+            if is_memory_copy_repr_ty_v2(inner_ty) {
+                Err(FaultDetail::unsupported(
+                    "AggregateOption with a memory-copy payload is unsupported",
+                ))
+            } else {
+                Ok(())
+            }
+        }
         Rvalue::Binary { .. }
         | Rvalue::Unary { .. }
         | Rvalue::Cast { .. }
@@ -3617,6 +3660,7 @@ fn check_assign_copy_hazard_v2(
         | Rvalue::Repeat { .. }
         | Rvalue::AggregateRangeTo { .. }
         | Rvalue::AggregateRangeFrom { .. }
+        | Rvalue::AggregateRange { .. }
         | Rvalue::Aggregate { .. }
         | Rvalue::Ref { .. }
         | Rvalue::AddressOf { .. }
@@ -3741,7 +3785,42 @@ fn project_val_field_v2(
 ) -> Result<(Ty, Val), FaultDetail> {
     let mut cur_ty = base_ty.clone();
     let mut cur_val = val.clone();
-    for elem in projection {
+    let mut iter = projection.iter();
+    while let Some(elem) = iter.next() {
+        // `projectValFieldV2`'s `.downcast 1 :: .field 0 fTy :: rest` arm: the
+        // `Some` payload of an immediate `Option`.
+        if let ProjectionElem::Downcast { variant_idx } = elem {
+            let Some(ProjectionElem::Field { field_idx: 0, ty: f_ty }) = iter.next() else {
+                return Err(FaultDetail::unsupported(
+                    "Downcast must be followed by field 0 of the Option payload",
+                ));
+            };
+            let (1, Ty::Option { elem: inner }, Val::OptionVal(opt)) =
+                (*variant_idx, &cur_ty, &cur_val)
+            else {
+                return Err(FaultDetail::unsupported(
+                    "Downcast projection requires variant 1 of an Option value",
+                ));
+            };
+            if !inner.structural_eq(f_ty) {
+                return Err(FaultDetail::unsupported("Option payload projection type mismatch"));
+            }
+            let Some(payload) = opt else {
+                let class = if **inner == Ty::Unit {
+                    UbClass::ZstOptionNonePayloadRead
+                } else {
+                    UbClass::InactiveOptionPayloadRead
+                };
+                return Err(FaultDetail::undefined_classified(
+                    class,
+                    "Option payload projection on None",
+                ));
+            };
+            let next_val = (**payload).clone();
+            cur_ty = (**inner).clone();
+            cur_val = next_val;
+            continue;
+        }
         let ProjectionElem::Field { field_idx, ty: f_ty } = elem else {
             return Err(FaultDetail::unsupported("unsupported nested projection element"));
         };
@@ -4058,6 +4137,28 @@ fn read_place_v2(
                         }
                         Ok((elem_ty.clone(), ReadSlotVal::Init(elem_val)))
                     }
+                }
+            }
+        }
+        // `readPlaceV2`'s `.downcast _ :: _` arm: copies only, through an
+        // immediate value (`Option` locals never enter memory here because
+        // this evaluator assigns them no layout).
+        [ProjectionElem::Downcast { .. }, ..] => {
+            if is_move {
+                return Err(FaultDetail::unsupported("Move through Downcast projection"));
+            }
+            match slot {
+                LocalSlot::Dead => unreachable!("checked above"),
+                LocalSlot::Immediate { val: None } => Err(FaultDetail::undefined_classified(
+                    moved.as_view().uninit_local(local),
+                    "Downcast copy from uninitialized local",
+                )),
+                LocalSlot::Immediate { val: Some(v) } => {
+                    let (fty, fv) = project_val_field_v2(base_ty, &v, projection)?;
+                    Ok((fty, ReadSlotVal::Init(fv)))
+                }
+                LocalSlot::PartialTuple { .. } | LocalSlot::Indirect { .. } => {
+                    Err(FaultDetail::unsupported("Downcast projection requires an immediate local"))
                 }
             }
         }
@@ -4822,8 +4923,38 @@ fn eval_rvalue_v2(
                 _ => Err(FaultDetail::unsupported("AggregateRangeFrom start must be usize")),
             }
         }
+        Rvalue::AggregateOption { variant_idx, inner_ty, payload } => {
+            let expected = Ty::Option { elem: Box::new(inner_ty.clone()) };
+            if !dst_ty.structural_eq(&expected) {
+                return Err(FaultDetail::unsupported(
+                    "AggregateOption requires Option<inner_ty> destination",
+                ));
+            }
+            match (variant_idx, payload) {
+                (0, None) => Ok(Val::OptionVal(None)),
+                (1, Some(op)) => {
+                    let (p_ty, slot_val) =
+                        eval_operand_to_slot_v2(body_locals, locals, moved, mem, op, endian)?;
+                    let ReadSlotVal::Init(p_val) = slot_val else {
+                        let ReadSlotVal::Uninit(class) = slot_val else { unreachable!() };
+                        return Err(FaultDetail::undefined_classified(
+                            class,
+                            "AggregateOption reading uninitialized payload",
+                        ));
+                    };
+                    if !p_ty.structural_eq(inner_ty) || !check_val(&p_val, inner_ty, true) {
+                        return Err(FaultDetail::unsupported(
+                            "AggregateOption payload disagrees with inner_ty",
+                        ));
+                    }
+                    Ok(Val::OptionVal(Some(Box::new(p_val))))
+                }
+                _ => Err(FaultDetail::unsupported("invalid AggregateOption variant/payload")),
+            }
+        }
         Rvalue::Cast { cast_kind: CastKind::Unsize | CastKind::Unsupported, .. }
         | Rvalue::Aggregate { .. }
+        | Rvalue::AggregateRange { .. }
         | Rvalue::AggregateArray { .. }
         | Rvalue::Repeat { .. }
         | Rvalue::Unsupported => Err(FaultDetail::unsupported("unmodeled Profile v2 MIR rvalue")),
@@ -4955,6 +5086,48 @@ fn exec_core_call_op(
                 Ok(Val::usize_val(l - r))
             }
         }
+        (
+            CoreCallOp::NumCheckedAdd(ity)
+            | CoreCallOp::NumCheckedSub(ity)
+            | CoreCallOp::NumCheckedMul(ity),
+            [(Ty::Int(l_ity), l_val @ Val::Scalar(_)), (Ty::Int(r_ity), r_val @ Val::Scalar(_))],
+        ) => {
+            let expected = Ty::Option { elem: Box::new(Ty::Int(*ity)) };
+            if l_ity != ity || r_ity != ity || !dst_ty.structural_eq(&expected) {
+                return Err(FaultDetail::unsupported(
+                    "checked arithmetic argument or destination type mismatch",
+                ));
+            }
+            // `execCheckedArith`: the overflowing result decides `None`.
+            let op = match op {
+                CoreCallOp::NumCheckedAdd(_) => BinOp::AddWithOverflow,
+                CoreCallOp::NumCheckedSub(_) => BinOp::SubWithOverflow,
+                _ => BinOp::MulWithOverflow,
+            };
+            match eval_bin_op(op, l_val, r_val)? {
+                Val::Tuple(pair) => match pair.as_slice() {
+                    [_, Val::Bool(true)] => Ok(Val::OptionVal(None)),
+                    [res @ Val::Scalar(_), Val::Bool(false)] => {
+                        Ok(Val::OptionVal(Some(Box::new(res.clone()))))
+                    }
+                    _ => Err(FaultDetail::unsupported("malformed overflow pair")),
+                },
+                _ => Err(FaultDetail::unsupported("malformed overflow pair")),
+            }
+        }
+        (CoreCallOp::OptionUnwrap { inner }, [(Ty::Option { elem }, Val::OptionVal(opt))]) => {
+            if !inner.structural_eq(elem) || !inner.structural_eq(dst_ty) {
+                return Err(FaultDetail::unsupported("Option::unwrap type mismatch"));
+            }
+            match opt {
+                Some(v) => {
+                    refs_valid_in_mem(mem, endian, inner, v)?;
+                    Ok((**v).clone())
+                }
+                // `corePanicTrap` is `.unsupported`: panics are not modeled.
+                None => Err(FaultDetail::unsupported("Option::unwrap on None panics")),
+            }
+        }
         _ => Err(FaultDetail::unsupported("invalid CoreCallOp arguments or signature")),
     }
 }
@@ -5022,6 +5195,24 @@ fn eval_discriminant_rvalue(
     match src_ty {
         Ty::Enum(ety) => eval_discriminant_of_val(ety, opt_val.as_ref(), class),
         Ty::Ordering => eval_ordering_discriminant_of_val(opt_val.as_ref(), class),
+        Ty::Option { .. } if enable_profile_v2 => {
+            if !_dst_ty.structural_eq(&Ty::Int(IntTy { width: IntWidth::Isize, signed: true })) {
+                return Err(FaultDetail::unsupported("Option discriminant must be isize"));
+            }
+            match opt_val {
+                Some(Val::OptionVal(None)) => {
+                    Ok(Val::Scalar(ScalarVal::new(IntWidth::Isize, true, 0)))
+                }
+                Some(Val::OptionVal(Some(_))) => {
+                    Ok(Val::Scalar(ScalarVal::new(IntWidth::Isize, true, 1)))
+                }
+                None => Err(FaultDetail::undefined_classified(
+                    class,
+                    "Discriminant read on uninitialized Option",
+                )),
+                Some(_) => Err(FaultDetail::unsupported("mismatched Option value in Discriminant")),
+            }
+        }
         _ => Err(FaultDetail::unsupported(
             "Discriminant rvalue requires fieldless enum or Ordering local",
         )),

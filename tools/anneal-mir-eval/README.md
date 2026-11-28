@@ -46,11 +46,24 @@ CI ergonomics:
      `Outcome::Aborted` under `-Cpanic=abort` without a crate-local
      `#[panic_handler]` on a non-cleanup unwind action, and is `Unsupported`
      otherwise.
+   - `Option<T>` locals (`T` one of `()`, `bool`, a reference, an integer,
+     or a raw pointer, per `isOptionPayloadSupportedV2`) match
+     `Rvalue::AggregateOption`, `Discriminant` (an `isize` variant index),
+     the `.downcast 1` then `.field 0` payload copy (`Undefined` on `None`),
+     and the `NumChecked{Add,Sub,Mul}` and `OptionUnwrap` core calls
+     (`Unsupported` on `None`, as `corePanicTrap`). `Option` values stay
+     immediate: the evaluator gives them no memory layout, so taking a
+     reference to one, and `OptionIsSome`/`OptionIsNone`/`OptionTake` through
+     a reference, fail closed with `Unsupported`.
    - Captured constructs that the evaluator does not model yet (array
-     aggregates and repeats, `ConstantIndex` projections, `Unsize` casts,
-     read-only data constants other than `&str`, and the `IntToLeBytes` and
-     `ArrayEq` core calls)
-     still parse, and evaluating them fails closed with `Unsupported`.
+     aggregates and repeats, `Range` values and `AggregateRange`,
+     `ConstantIndex` projections, `Unsize` casts, read-only data constants
+     other than `&str`, and the `IntToLeBytes`, `ArrayEq`, `SliceIndexRange`,
+     `SliceIndexRangeFrom`, `SliceIsEmpty`, `SliceSplitAt`, `NumIsMultipleOf`,
+     `NumSaturatingAdd`, `NumWrappingShl`, `NumWrappingShr`,
+     `NumLeadingZeros`, `NumOverflowing{Add,Sub}`, `Cmp{Min,Max}`,
+     `MemReplace`, `OptionIsSome`, `OptionIsNone`, and `OptionTake` core
+     calls) still parse, and evaluating them fails closed with `Unsupported`.
    - Every `Undefined` counterexample is explicitly classified as either
      `replayable_miri_ub` (concrete Rust/Miri UB) or `model_only_unreplayed`
      (documented conservative `Trusted.MirSemantics` over-approximation or
@@ -83,12 +96,15 @@ cargo run --manifest-path tools/anneal-mir-eval/Cargo.toml -- \
   [--endian big|little] [--strict-v1 | --profile-v2] [--include-unsafe]
 ```
 
-For non-byte-slice references, raw pointers, or explicit caller memory (where
-`--arg` is unsupported), pass `--query <query.json>` (control the step budget on
-the CLI via `--fuel <n>`). The file deserializes `Query` (`args`: tagged `Val`
-array; optional `caller_mem`: `CallerMemory` with `allocations` whose `bytes`
-entries are `{ "kind": "init", "byte": <u8>, "prov": <u64|null> }` or
-`{ "kind": "uninit" }`; thin pointers use `"kind": "ptr"`):
+For `Option<T>` parameters, non-byte-slice references, raw pointers, or
+explicit caller memory (where `--arg` is unsupported), pass `--query
+<query.json>` (control the step budget on the CLI via `--fuel <n>`). The file
+deserializes `Query` (`args`: tagged `Val` array; optional `caller_mem`:
+`CallerMemory` with `allocations` whose `bytes` entries are
+`{ "kind": "init", "byte": <u8>, "prov": <u64|null> }` or
+`{ "kind": "uninit" }`; thin pointers use `"kind": "ptr"`, and `Option<T>`
+values use `"kind": "option_val"` with `"value": null` for `None` or the tagged
+payload `Val` for `Some`):
 
 ```json
 {
@@ -103,6 +119,17 @@ entries are `{ "kind": "init", "byte": <u8>, "prov": <u64|null> }` or
     {
       "kind": "scalar",
       "value": { "width": "isize", "signed": false, "bits": "1" }
+    },
+    {
+      "kind": "option_val",
+      "value": null
+    },
+    {
+      "kind": "option_val",
+      "value": {
+        "kind": "ptr",
+        "value": { "alloc_id": 2, "offset_bytes": 0, "width": "isize" }
+      }
     }
   ],
   "caller_mem": {
