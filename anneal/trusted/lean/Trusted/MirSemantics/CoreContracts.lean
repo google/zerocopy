@@ -298,6 +298,28 @@ noncomputable def execSliceSubslice (m : MemoryState)
           | .error k => .error k
           | .ok p' => .ok (.slicePtr p' (UInt64.ofNat (endOff - startOff)), m)
 
+/-- Execute `core::ops::Index<Range<usize>>` or `Index<RangeFrom<usize>>` on
+`&[elem; len]` / `&mut [elem; len]` (`index_mut` shares the same bounds and
+panic behavior), matching `library/core/src/array/mod.rs:383-405`
+(`rust-lang/rust` `f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1`):
+
+> "fn index(&self, index: I) -> &Self::Output {
+>     Index::index(self as &[T], index)
+> }" -/
+noncomputable def execArraySubslice (m : MemoryState)
+    (reqMut inMut : Mutability) (elem : MirTy) (len : Nat) (p : PtrVal)
+    (startOff endOff : Nat) : Except FaultKind (Val × MemoryState) :=
+  if !isSizedNoRefV2Ty elem || !Nat.blt len (Nat.pow 2 64) then
+    .error .unsupported
+  else if Mutability.beq inMut .shared && Mutability.beq reqMut .mut then
+    .error .undefined
+  else
+    match refValidInMem m inMut (.array elem len) (.ptr p) with
+    | .error k => .error k
+    | .ok () =>
+      execSliceSubslice m reqMut inMut elem p (UInt64.ofNat len) startOff
+        endOff
+
 /-- Execute `core::slice::split_at` or `split_at_mut` returning a structured
 `CoreCallOutcome`: validates `elem`, forbids `&[T]` -> `&mut [T]` upgrades,
 validates the input slice in `m`, returns `.panic` when `mid > len`, and
@@ -466,6 +488,17 @@ noncomputable def execCoreContractOp (m : MemoryState) (op : CoreCallOp)
       else
         execSliceSubslice m reqMut inMut elem p len startOff.toNat endOff.toNat
     | _ => .error .unsupported
+  | .sliceIndexRange reqMut elem,
+      [(.ref inMut (.array inElem len), .ptr p),
+       (.range (.int .isize false), .range startOff endOff)] =>
+    match dstTy with
+    | .ref outMut (.slice outElem) =>
+      if !MirTy.beq elem inElem || !MirTy.beq elem outElem ||
+          !Mutability.beq reqMut outMut then
+        .error .unsupported
+      else
+        execArraySubslice m reqMut inMut elem len p startOff.toNat endOff.toNat
+    | _ => .error .unsupported
   | .sliceIndexRangeFrom reqMut elem,
       [(.ref inMut (.slice inElem), .slicePtr p len),
        (.rangeFrom (.int .isize false), .rangeFrom startOff)] =>
@@ -476,6 +509,17 @@ noncomputable def execCoreContractOp (m : MemoryState) (op : CoreCallOp)
         .error .unsupported
       else
         execSliceSubslice m reqMut inMut elem p len startOff.toNat len.toNat
+    | _ => .error .unsupported
+  | .sliceIndexRangeFrom reqMut elem,
+      [(.ref inMut (.array inElem len), .ptr p),
+       (.rangeFrom (.int .isize false), .rangeFrom startOff)] =>
+    match dstTy with
+    | .ref outMut (.slice outElem) =>
+      if !MirTy.beq elem inElem || !MirTy.beq elem outElem ||
+          !Mutability.beq reqMut outMut then
+        .error .unsupported
+      else
+        execArraySubslice m reqMut inMut elem len p startOff.toNat len
     | _ => .error .unsupported
   | .sliceIsEmpty elem, [(.ref reqMut (.slice inElem), .slicePtr p len)] =>
     if !MirTy.beq elem inElem || !MirTy.beq dstTy .bool ||

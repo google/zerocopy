@@ -4048,3 +4048,170 @@ end Proof
         run_request(dir.path(), "split-mut-unwind-fails", &mk_req("unwind"));
     neg_unwind.expect_proof_failed();
 }
+
+#[test]
+fn verifies_array_index_range_and_range_from_twins() {
+    let dir = TempDir::new().unwrap();
+    let rust_dir = dir.path().join("arr_idx_rust");
+    let lean_dir = dir.path().join("arr_idx_lean");
+    fs::create_dir_all(&rust_dir).unwrap();
+    fs::create_dir_all(&lean_dir).unwrap();
+
+    fs::write(
+        rust_dir.join("lib.rs"),
+        "pub unsafe fn arr_sub_mut<'a>(a: &'a mut [u8; 4], s: usize, e: usize) -> &'a mut [u8] {\n\
+             &mut a[s..e]\n\
+         }\n\
+         pub unsafe fn arr_tail<'a>(a: &'a [u8; 4], s: usize) -> &'a [u8] {\n\
+             &a[s..]\n\
+         }\n",
+    )
+    .unwrap();
+
+    const ARR_IDX_SPEC: &str = "\
+prelude
+import Trusted.MirSemantics
+namespace Spec
+open Trusted.MirAst Trusted.MirSemantics
+def mutMem : CallerMemory :=
+  ⟨[{ allocId := 2, alignLog2 := 0, mutability := .mut,
+      bytes := [AllocByte.init 10 none, AllocByte.init 20 none,
+                AllocByte.init 30 none, AllocByte.init 40 none],
+      live := true }]⟩
+def subOkQuery : Query :=
+  { args := [.ptr ⟨some 2, 0, .isize⟩,
+             .scalar ⟨.isize, false, BitVec.ofNat 128 1⟩,
+             .scalar ⟨.isize, false, BitVec.ofNat 128 3⟩],
+    callerMem := mutMem }
+def subOkOut : TerminalOut :=
+  TerminalOut.returned ⟨.slicePtr ⟨some 2, 1, .isize⟩ 2, mutMem⟩
+def tailOkQuery : Query :=
+  { args := [.ptr ⟨some 2, 0, .isize⟩,
+             .scalar ⟨.isize, false, BitVec.ofNat 128 2⟩],
+    callerMem := mutMem }
+def tailOkOut : TerminalOut :=
+  TerminalOut.returned ⟨.slicePtr ⟨some 2, 2, .isize⟩ 2, mutMem⟩
+def testTailQuery : Query := __TAIL_QUERY__
+def safetyPre (ident : String) (q : Query) : Prop :=
+  if ident == \"rust-path-v1::arr_sub_mut\" then q = subOkQuery
+  else q = tailOkQuery
+def property (p : Program) : Prop :=
+  (∃ (defId : DefId) (body : Body),
+    Trusted.MirSemantics.getElem? p.bodies defId = some body ∧
+    body.identity = \"rust-path-v1::arr_sub_mut\" ∧
+    BehaviorV2 (entryProgForBody p defId) subOkQuery subOkOut) ∧
+  (∃ (defId : DefId) (body : Body),
+    Trusted.MirSemantics.getElem? p.bodies defId = some body ∧
+    body.identity = \"rust-path-v1::arr_tail\" ∧
+    BehaviorV2 (entryProgForBody p defId) testTailQuery tailOkOut)
+def specs : SpecsV2 := ⟨safetyPre, property⟩
+end Spec
+";
+
+    const ARR_IDX_PROOF: &str = "\
+prelude
+import Spec
+import Expected
+import Anneal.MirWp
+namespace Proof
+open Trusted.MirAst Trusted.MirSemantics Anneal.MirWp
+theorem verify : Expected.claim := by
+  have hSub :=
+    spec_and_behaviorV2_of_exec_eq
+      (p := entryProgForBody Captured.program 0)
+      (q := Spec.subOkQuery)
+      (out := Spec.subOkOut)
+      (fuel := 32) rfl
+  have hTail :=
+    spec_and_behaviorV2_of_exec_eq
+      (p := entryProgForBody Captured.program 1)
+      (q := Spec.tailOkQuery)
+      (out := Spec.tailOkOut)
+      (fuel := 32) rfl
+  refine ⟨rfl, rfl, rfl, rfl, rfl, rfl, ?_, ?_⟩
+  · intro defId body hBody
+    cases defId with
+    | zero =>
+      cases hBody
+      refine ⟨rfl, rfl, fun q _ hSafe => ?_⟩
+      have hEq : q = Spec.subOkQuery := hSafe rfl
+      subst hEq
+      exact hSub.1
+    | succ n =>
+      cases n with
+      | zero =>
+        cases hBody
+        refine ⟨rfl, rfl, fun q _ hSafe => ?_⟩
+        have hEq : q = Spec.tailOkQuery := hSafe rfl
+        subst hEq
+        exact hTail.1
+      | succ _ => cases hBody
+  · refine ⟨⟨0, Captured.body_0, rfl, rfl, hSub.2.1⟩,
+            ⟨1, Captured.body_1, rfl, rfl,
+              (spec_and_behaviorV2_of_exec_eq
+                (p := entryProgForBody Captured.program 1)
+                (q := Spec.testTailQuery)
+                (out := Spec.tailOkOut)
+                (fuel := 32) rfl).2.1⟩⟩
+end Proof
+";
+
+    let mk_req = |spec_path: &Path| {
+        json!({
+            "schema_version": 1,
+            "compilation": {
+                "source_root": rust_dir.to_str().unwrap(),
+                "crate_root": "lib.rs",
+                "crate_name": "arr_idx_twin",
+                "edition": "2021",
+                "target": "x86_64-unknown-linux-gnu",
+                "cfg": [],
+                "source_files": ["lib.rs"]
+            },
+            "scope": {"kind": "crate"},
+            "proof": {
+                "source_root": lean_dir.to_str().unwrap(),
+                "specification": "Spec.specs",
+                "theorem": "Proof.verify",
+                "sources": [
+                    {"module": "Spec", "path": spec_path.file_name().unwrap().to_str().unwrap(), "role": "specification"},
+                    {"module": "Proof", "path": "Proof.lean", "role": "proof"}
+                ]
+            }
+        })
+    };
+
+    fs::write(lean_dir.join("Proof.lean"), ARR_IDX_PROOF).unwrap();
+
+    // Positive: `&mut a[1..3]` and `&a[2..]` verify end-to-end.
+    let ok_spec = lean_dir.join("SpecOk.lean");
+    fs::write(&ok_spec, ARR_IDX_SPEC.replace("__TAIL_QUERY__", "tailOkQuery")).unwrap();
+    run_request(dir.path(), "arr-idx-ok", &mk_req(&ok_spec)).expect_ok("crate_verified");
+
+    // Negative twin: OOB `&a[5..]` traps via `corePanicTrap`, so claiming
+    // `tailOkOut` fails closed.
+    let oob_spec = lean_dir.join("SpecOob.lean");
+    fs::write(
+        &oob_spec,
+        ARR_IDX_SPEC.replace(
+            "__TAIL_QUERY__",
+            "{ args := [.ptr ⟨some 2, 0, .isize⟩, \
+             .scalar ⟨.isize, false, BitVec.ofNat 128 5⟩], callerMem := mutMem }",
+        ),
+    )
+    .unwrap();
+    let neg = run_request(dir.path(), "arr-idx-oob-fails", &mk_req(&oob_spec));
+    neg.expect_proof_failed();
+    let detail = match &neg.receipt {
+        VerifyReceipt::Failed(failure) => failure.detail.as_str(),
+        VerifyReceipt::Verified(_) => "",
+    };
+    assert!(
+        detail.contains("Spec.testTailQuery")
+            && detail.contains("execProgV2")
+            && (detail.contains("Application type mismatch")
+                || detail.contains("not definitionally equal")
+                || detail.contains("Type mismatch")),
+        "expected OOB rfl failure on Spec.testTailQuery in execProgV2, got:\n{detail}"
+    );
+}

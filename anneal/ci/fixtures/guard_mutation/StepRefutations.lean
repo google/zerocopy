@@ -3375,4 +3375,36 @@ theorem refute_core_contracts_split_at_mut_suffix_len_union :
       ]) mutInit3Mem :=
   rfl
 
+/-- Guard `core_contracts_array_subslice_len_u64_bound`: `execArraySubslice`
+rejects synthetic array lengths `>= 2^64` as `.unsupported` before entering
+`refValidInMem` (which would fault `.undefined` on a null pointer). -/
+theorem refute_core_contracts_array_subslice_len_u64_bound :
+    execArraySubslice mutInit3Mem .shared .shared .unit (Nat.pow 2 64)
+      ⟨none, 0, .isize⟩ 0 0 = .error .unsupported :=
+  rfl
+
+/-- Guard `core_contracts_array_subslice_no_shared_upgrade`:
+`execArraySubslice` rejects `&[T; N]` -> `&mut [T]` upgrades as `.undefined`
+before array-pointee admission checks. -/
+theorem refute_core_contracts_array_subslice_no_shared_upgrade :
+    execArraySubslice mutInit3Mem .mut .shared (.option (.int .i64 false)) 1
+      ⟨some 1, 0, .isize⟩ 0 1 = .error .undefined :=
+  rfl
+
+/-- Guard `core_contracts_array_subslice_ref_valid`: `execArraySubslice`
+validates `&[T; N]` via `refValidInMem` before delegating to
+`execSliceSubslice`, rejecting unmodeled `[Option<u64>; 1]` array pointees as
+`.unsupported` even when `&[Option<u64>]` slice validation would succeed. -/
+theorem refute_core_contracts_array_subslice_ref_valid :
+    let optNoneArrMem : MemoryState := {
+      allocations := [{
+        allocId := 1, alignLog2 := 3, mutability := .shared,
+        bytes := List.replicate 16 (AllocByte.init 0 none),
+        live := true
+      }], nextAllocId := 2
+    }
+    execArraySubslice optNoneArrMem .shared .shared (.option (.int .i64 false))
+      1 ⟨some 1, 0, .isize⟩ 0 1 = .error .unsupported :=
+  rfl
+
 end GuardMutation

@@ -2002,8 +2002,8 @@ fn parse_core_num_impl_method(path: &str) -> Option<(IntTy, &str)> {
 /// and `Trusted.MirSemantics` states the operational semantics:
 ///
 /// - `<[T]>::{len, is_empty, split_at, split_at_mut}` and
-///   `core::ops::index::{Index::index, IndexMut::index_mut}` on `[T]` for
-///   `Range<usize>` and `RangeFrom<usize>`;
+///   `core::ops::index::{Index::index, IndexMut::index_mut}` on `[T]` and
+///   `[T; N]` for `Range<usize>` and `RangeFrom<usize>`;
 /// - `<[T]>::get_unchecked::<I>`
 ///   (`get_unchecked<I>(&self, index: I) -> &I::Output`), admitted for
 ///   `I = Range<usize>`, `RangeTo<usize>`, `RangeFrom<usize>` (over integer
@@ -2029,6 +2029,7 @@ fn parse_core_num_impl_method(path: &str) -> Option<(IntTy, &str)> {
 /// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/library/core/src/slice/mod.rs#L639-L660
 /// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/library/core/src/slice/mod.rs#L1953-L1992
 /// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/library/core/src/slice/index.rs#L237-L616
+/// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/library/core/src/array/mod.rs#L383-L405
 /// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/library/core/src/ops/index.rs#L73-L179
 /// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/library/core/src/ptr/const_ptr.rs#L811-L832
 /// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/library/core/src/ptr/mut_ptr.rs#L909-L930
@@ -2174,20 +2175,21 @@ fn core_call_op<'tcx>(
                 .and_then(|a| a.as_type())
                 .ok_or_else(|| format!("missing Idx type argument in {path}"))?;
             match (ty(tcx, self_ty)?, ty(tcx, idx_ty)?) {
-                (ir::Ty::Slice { elem }, ir::Ty::Range { elem: idx_e }) if *idx_e == usize_ty => {
+                (ir::Ty::Slice { elem } | ir::Ty::Array { elem, .. }, ir::Ty::Range { elem: idx_e })
+                    if *idx_e == usize_ty =>
+                {
                     Ok(ir::CoreCallOp::SliceIndexRange {
                         mutability,
                         elem: *elem,
                     })
                 }
-                (ir::Ty::Slice { elem }, ir::Ty::RangeFrom { elem: idx_e })
-                    if *idx_e == usize_ty =>
-                {
-                    Ok(ir::CoreCallOp::SliceIndexRangeFrom {
-                        mutability,
-                        elem: *elem,
-                    })
-                }
+                (
+                    ir::Ty::Slice { elem } | ir::Ty::Array { elem, .. },
+                    ir::Ty::RangeFrom { elem: idx_e },
+                ) if *idx_e == usize_ty => Ok(ir::CoreCallOp::SliceIndexRangeFrom {
+                    mutability,
+                    elem: *elem,
+                }),
                 (s_ty, i_ty) => Err(format!(
                     "unsupported {path} receiver/index types ({s_ty:?}, {i_ty:?})"
                 )),

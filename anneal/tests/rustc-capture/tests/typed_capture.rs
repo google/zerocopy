@@ -7368,3 +7368,60 @@ fn refuses_unsupported_core_scalar_ops() {
         fixture.assert_no_capture_artifacts();
     }
 }
+
+#[test]
+fn captures_array_index_range_and_range_from_in_profile_v2() {
+    let source = b"\
+        pub fn sub_shared<'a>(a: &'a [u8; 8], s: usize, e: usize) -> &'a [u8] {\n\
+            &a[s..e]\n\
+        }\n\
+        pub fn sub_mut<'a>(a: &'a mut [u16; 4], s: usize, e: usize) -> &'a mut [u16] {\n\
+            &mut a[s..e]\n\
+        }\n\
+        pub fn from_shared<'a>(a: &'a [u8; 8], s: usize) -> &'a [u8] {\n\
+            &a[s..]\n\
+        }\n\
+        pub fn from_mut<'a>(a: &'a mut [u8; 8], s: usize) -> &'a [u8] {\n\
+            &mut a[s..]\n\
+        }\n\
+        pub fn zero_prefix_len(n: usize) -> usize {\n\
+            let zeros = [0u8; 8];\n\
+            zeros[0..n].len()\n\
+        }\n";
+    let fixture = Capture::new(source);
+    let output = fixture.command().arg("--scope=crate").output().unwrap();
+    assert_eq!(output.status.code(), Some(0), "{output:?}");
+    let json = fixture.manifest();
+    assert_eq!(json["program"]["mir_profile_version"], 2, "{json}");
+    let lean_path = fixture.output.join("Captured.lean");
+    let lean = std::fs::read_to_string(&lean_path).unwrap();
+    assert!(
+        lean.contains("CoreCallOp.sliceIndexRange Trusted.MirAst.Mutability.shared"),
+        "{lean}"
+    );
+    assert!(
+        lean.contains("CoreCallOp.sliceIndexRange Trusted.MirAst.Mutability.mut"),
+        "{lean}"
+    );
+    assert!(
+        lean.contains("CoreCallOp.sliceIndexRangeFrom Trusted.MirAst.Mutability.shared"),
+        "{lean}"
+    );
+    assert!(
+        lean.contains("CoreCallOp.sliceIndexRangeFrom Trusted.MirAst.Mutability.mut"),
+        "{lean}"
+    );
+    compile_captured_lean_if_trusted_sources_present(&lean_path);
+
+    // Negative: RangeTo indexing on arrays stays fail-closed.
+    let neg_src = b"\
+        pub fn selected<'a>(a: &'a [u8; 8], e: usize) -> &'a [u8] {\n\
+            &a[..e]\n\
+        }\n";
+    let neg_fixture = Capture::new(neg_src);
+    let neg_out = neg_fixture.selected_command().output().unwrap();
+    assert_eq!(neg_out.status.code(), Some(1), "{neg_out:?}");
+    let failure = status(&neg_out);
+    assert_eq!(failure["status"], "unsupported", "{failure}");
+    neg_fixture.assert_no_capture_artifacts();
+}

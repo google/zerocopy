@@ -5138,7 +5138,7 @@ MIR_SEMANTICS_GUARDS: tuple[MirSemanticsGuard, ...] = (
     ),
     # ------------------------------------------------------------------
     # Additional Profile v2 silent-saturation, aliasing, negative-offset,
-    # slice/thin-ref validity, and provenance-free deref guards (58 guards)
+    # slice/thin-ref validity, and provenance-free deref guards (61 guards)
     # ------------------------------------------------------------------
     MirSemanticsGuard(
         guard_id="mem_v2_slice_get_unchecked_inverted",
@@ -6269,6 +6269,84 @@ MIR_SEMANTICS_GUARDS: tuple[MirSemanticsGuard, ...] = (
         replacement="            let suffixVal := Val.slicePtr p' len",
         fixture_module="StepRefutations",
         theorem_name="refute_core_contracts_split_at_mut_suffix_len_union",
+        needs_wf_helper=False,
+    ),
+    MirSemanticsGuard(
+        guard_id="core_contracts_array_subslice_len_u64_bound",
+        target_file="trusted/lean/Trusted/MirSemantics/CoreContracts.lean",
+        target_module="Trusted/MirSemantics/CoreContracts",
+        description=(
+            "execArraySubslice rejects array lengths >= 2^64 before "
+            "converting len to UInt64"
+        ),
+        anchor=(
+            "noncomputable def execArraySubslice (m : MemoryState)\n"
+            "    (reqMut inMut : Mutability) (elem : MirTy) (len : Nat) (p : PtrVal)\n"
+            "    (startOff endOff : Nat) : Except FaultKind (Val × MemoryState) :=\n"
+            "  if !isSizedNoRefV2Ty elem || !Nat.blt len (Nat.pow 2 64) then"
+        ),
+        replacement=(
+            "noncomputable def execArraySubslice (m : MemoryState)\n"
+            "    (reqMut inMut : Mutability) (elem : MirTy) (len : Nat) (p : PtrVal)\n"
+            "    (startOff endOff : Nat) : Except FaultKind (Val × MemoryState) :=\n"
+            "  if !isSizedNoRefV2Ty elem then"
+        ),
+        fixture_module="StepRefutations",
+        theorem_name="refute_core_contracts_array_subslice_len_u64_bound",
+        needs_wf_helper=False,
+    ),
+    MirSemanticsGuard(
+        guard_id="core_contracts_array_subslice_no_shared_upgrade",
+        target_file="trusted/lean/Trusted/MirSemantics/CoreContracts.lean",
+        target_module="Trusted/MirSemantics/CoreContracts",
+        description=(
+            "execArraySubslice rejects upgrading a shared &[T; N] reference "
+            "to &mut [T]"
+        ),
+        anchor=(
+            "  if !isSizedNoRefV2Ty elem || !Nat.blt len (Nat.pow 2 64) then\n"
+            "    .error .unsupported\n"
+            "  else if Mutability.beq inMut .shared && Mutability.beq reqMut .mut then\n"
+            "    .error .undefined\n"
+            "  else\n"
+            "    match refValidInMem m inMut (.array elem len) (.ptr p) with"
+        ),
+        replacement=(
+            "  if !isSizedNoRefV2Ty elem || !Nat.blt len (Nat.pow 2 64) then\n"
+            "    .error .unsupported\n"
+            "  else if false then\n"
+            "    .error .undefined\n"
+            "  else\n"
+            "    match refValidInMem m inMut (.array elem len) (.ptr p) with"
+        ),
+        fixture_module="StepRefutations",
+        theorem_name="refute_core_contracts_array_subslice_no_shared_upgrade",
+        needs_wf_helper=False,
+    ),
+    MirSemanticsGuard(
+        guard_id="core_contracts_array_subslice_ref_valid",
+        target_file="trusted/lean/Trusted/MirSemantics/CoreContracts.lean",
+        target_module="Trusted/MirSemantics/CoreContracts",
+        description=(
+            "execArraySubslice validates the full &[T; N] array extent via "
+            "refValidInMem before delegating to execSliceSubslice"
+        ),
+        anchor=(
+            "    match refValidInMem m inMut (.array elem len) (.ptr p) with\n"
+            "    | .error k => .error k\n"
+            "    | .ok () =>\n"
+            "      execSliceSubslice m reqMut inMut elem p (UInt64.ofNat len) startOff\n"
+            "        endOff"
+        ),
+        replacement=(
+            "    match Except.ok () with\n"
+            "    | .error k => .error k\n"
+            "    | .ok () =>\n"
+            "      execSliceSubslice m reqMut inMut elem p (UInt64.ofNat len) startOff\n"
+            "        endOff"
+        ),
+        fixture_module="StepRefutations",
+        theorem_name="refute_core_contracts_array_subslice_ref_valid",
         needs_wf_helper=False,
     ),
     # ------------------------------------------------------------------

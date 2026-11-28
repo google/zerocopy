@@ -3129,7 +3129,16 @@ impl Body {
                             }, Ty::Range { elem: idx_ty }],
                         ) if **idx_ty == usize_ty
                             && elem.is_sized_no_ref()
-                            && matches!(&**pointee, Ty::Slice { elem: e } if **e == *elem)
+                            && (matches!(&**pointee, Ty::Slice { elem: e } if **e == *elem)
+                                || matches!(
+                                    &**pointee,
+                                    Ty::Array { elem: e, .. }
+                                        if **e == *elem
+                                            && pointee.is_supported_v2_pointee()
+                                            && pointee
+                                                .v2_layout()
+                                                .is_some_and(|(sz, _)| sz <= isize::MAX as usize)
+                                ))
                             && *in_mut == *mutability
                             && dst_ty
                                 == Ty::Ref {
@@ -3146,7 +3155,16 @@ impl Body {
                             }, Ty::RangeFrom { elem: idx_ty }],
                         ) if **idx_ty == usize_ty
                             && elem.is_sized_no_ref()
-                            && matches!(&**pointee, Ty::Slice { elem: e } if **e == *elem)
+                            && (matches!(&**pointee, Ty::Slice { elem: e } if **e == *elem)
+                                || matches!(
+                                    &**pointee,
+                                    Ty::Array { elem: e, .. }
+                                        if **e == *elem
+                                            && pointee.is_supported_v2_pointee()
+                                            && pointee
+                                                .v2_layout()
+                                                .is_some_and(|(sz, _)| sz <= isize::MAX as usize)
+                                ))
                             && *in_mut == *mutability
                             && dst_ty
                                 == Ty::Ref {
@@ -9245,5 +9263,189 @@ mod tests {
             .profile_v2_trigger()
             .expect("projected operand selects Profile v2");
         assert!(trigger.starts_with("bb0[0]: unary `Not` of "), "{trigger}");
+    }
+
+    #[test]
+    fn array_index_range_and_range_from_validators_cover_ok_and_malformed_ir() {
+        let usize_ty = Ty::Int(IntTy {
+            width: IntWidth::Isize,
+            signed: false,
+        });
+        let u8_ty = Ty::Int(IntTy {
+            width: IntWidth::I8,
+            signed: false,
+        });
+        let u16_ty = Ty::Int(IntTy {
+            width: IntWidth::I16,
+            signed: false,
+        });
+        let range_usize = Ty::Range {
+            elem: Box::new(usize_ty.clone()),
+        };
+        let range_from_usize = Ty::RangeFrom {
+            elem: Box::new(usize_ty.clone()),
+        };
+
+        let mk_body = |op: CoreCallOp, in_ty: Ty, idx_ty: Ty, dst_ty: Ty| {
+            Body::try_new(
+                2,
+                false,
+                vec![dst_ty, in_ty, idx_ty],
+                vec![
+                    Block {
+                        statements: vec![],
+                        terminator: Terminator::CoreCall {
+                            op,
+                            args: vec![Operand::Move { local: 1 }, Operand::Move { local: 2 }],
+                            dst: Place {
+                                local: 0,
+                                projection: vec![],
+                            },
+                            target: Some(1),
+                            unwind: UnwindAction::Continue,
+                        },
+                    },
+                    Block {
+                        statements: vec![],
+                        terminator: Terminator::Ret,
+                    },
+                ],
+                "rust-path-v1::arr_idx_test".into(),
+            )
+        };
+
+        for mutability in [Mutability::Shared, Mutability::Mut] {
+            let arr_ref = Ty::Ref {
+                mutability,
+                pointee: Box::new(Ty::Array {
+                    elem: Box::new(u8_ty.clone()),
+                    len: 8,
+                }),
+            };
+            let slice_ref = Ty::Ref {
+                mutability,
+                pointee: Box::new(Ty::Slice {
+                    elem: Box::new(u8_ty.clone()),
+                }),
+            };
+            assert!(mk_body(
+                CoreCallOp::SliceIndexRange {
+                    mutability,
+                    elem: u8_ty.clone(),
+                },
+                arr_ref.clone(),
+                range_usize.clone(),
+                slice_ref.clone(),
+            )
+            .is_ok());
+            assert!(mk_body(
+                CoreCallOp::SliceIndexRangeFrom {
+                    mutability,
+                    elem: u8_ty.clone(),
+                },
+                arr_ref,
+                range_from_usize.clone(),
+                slice_ref,
+            )
+            .is_ok());
+        }
+
+        // Negative: shared array ref cannot satisfy IndexMut op.
+        assert!(mk_body(
+            CoreCallOp::SliceIndexRange {
+                mutability: Mutability::Mut,
+                elem: u8_ty.clone(),
+            },
+            Ty::Ref {
+                mutability: Mutability::Shared,
+                pointee: Box::new(Ty::Array {
+                    elem: Box::new(u8_ty.clone()),
+                    len: 8,
+                }),
+            },
+            range_usize.clone(),
+            Ty::Ref {
+                mutability: Mutability::Mut,
+                pointee: Box::new(Ty::Slice {
+                    elem: Box::new(u8_ty.clone()),
+                }),
+            },
+        )
+        .is_err());
+
+        // Negative: mismatched element type between array and op.
+        assert!(mk_body(
+            CoreCallOp::SliceIndexRange {
+                mutability: Mutability::Shared,
+                elem: u8_ty.clone(),
+            },
+            Ty::Ref {
+                mutability: Mutability::Shared,
+                pointee: Box::new(Ty::Array {
+                    elem: Box::new(u16_ty.clone()),
+                    len: 4,
+                }),
+            },
+            range_usize.clone(),
+            Ty::Ref {
+                mutability: Mutability::Shared,
+                pointee: Box::new(Ty::Slice {
+                    elem: Box::new(u8_ty.clone()),
+                }),
+            },
+        )
+        .is_err());
+
+        // Negative: overflowing array layout (> isize::MAX bytes) fails closed.
+        assert!(mk_body(
+            CoreCallOp::SliceIndexRangeFrom {
+                mutability: Mutability::Shared,
+                elem: u16_ty.clone(),
+            },
+            Ty::Ref {
+                mutability: Mutability::Shared,
+                pointee: Box::new(Ty::Array {
+                    elem: Box::new(u16_ty.clone()),
+                    len: (isize::MAX as usize) / 2 + 1,
+                }),
+            },
+            range_from_usize.clone(),
+            Ty::Ref {
+                mutability: Mutability::Shared,
+                pointee: Box::new(Ty::Slice {
+                    elem: Box::new(u16_ty),
+                }),
+            },
+        )
+        .is_err());
+
+        // Negative: Option<u64> array is not yet an admitted array pointee.
+        let opt_u64 = Ty::Option {
+            elem: Box::new(Ty::Int(IntTy {
+                width: IntWidth::I64,
+                signed: false,
+            })),
+        };
+        assert!(mk_body(
+            CoreCallOp::SliceIndexRange {
+                mutability: Mutability::Shared,
+                elem: opt_u64.clone(),
+            },
+            Ty::Ref {
+                mutability: Mutability::Shared,
+                pointee: Box::new(Ty::Array {
+                    elem: Box::new(opt_u64.clone()),
+                    len: 2,
+                }),
+            },
+            range_usize,
+            Ty::Ref {
+                mutability: Mutability::Shared,
+                pointee: Box::new(Ty::Slice {
+                    elem: Box::new(opt_u64),
+                }),
+            },
+        )
+        .is_err());
     }
 }
