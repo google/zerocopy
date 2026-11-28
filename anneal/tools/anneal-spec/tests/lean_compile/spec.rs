@@ -753,6 +753,21 @@ anneal::external_spec! {
         }
     }
 
+    // `next_power_of_two` on receivers that a condition or the earlier arms
+    // bound by `2^(bits - 1)`.
+    #[anneal::pure]
+    fn npot_u8(a: u8) -> u8 {
+        if a <= 128 { a.next_power_of_two() } else { 0 }
+    }
+
+    #[anneal::pure]
+    fn npot_u64(a: u64) -> u64 {
+        match a {
+            9223372036854775809..=u64::MAX => 0,
+            n => n.next_power_of_two(),
+        }
+    }
+
     #[anneal::pure]
     fn wshl_is(a: u16, n: u32, r: u16) -> bool {
         wrapping_shl(a, n) == r
@@ -780,6 +795,7 @@ anneal::external_spec! {
                 + n.count_ones()
                 + n.leading_zeros()
                 + (if n > 0 { n.ilog2() } else { 0 })
+                + (if n <= 1000 { n.next_power_of_two() } else { 0 })
                 + match n { 0..=9 => 1, _ => 2 }
         },
         ensures(|r| r == saturating_sub(n, 1u32)),

@@ -499,3 +499,18 @@ fn max_steps_counts_a_guarded_ilog2() {
         expect_error(&wrap(clause, sig), "E_ANNEAL_UNGUARDED_SPEC_LOG");
     }
 }
+
+#[test]
+fn max_steps_counts_a_bounded_next_power_of_two() {
+    let sig = "fn f(n: u64)";
+    for clause in [
+        "max_steps = if n <= 1024 { n.next_power_of_two() } else { 0 }",
+        "max_steps = match n { 0..=64 => n.next_power_of_two(), _ => 1 }",
+    ] {
+        lower_one(&wrap(clause, sig)).unwrap_or_else(|e| panic!("{clause}: {e:?}"));
+    }
+    expect_error(
+        &wrap("max_steps = n.next_power_of_two()", sig),
+        "E_ANNEAL_UNGUARDED_SPEC_OVERFLOW",
+    );
+}
