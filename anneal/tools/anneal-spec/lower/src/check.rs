@@ -279,6 +279,10 @@ const INT_TDIV: &str = "Trusted.MirSemantics.intTdiv";
 const INT_TMOD: &str = "Trusted.MirSemantics.intTmod";
 /// Euclidean remainder (`Int.emod`), for wrapping arithmetic.
 const INT_EMOD: &str = "Trusted.MirSemantics.intEmod";
+/// Rust's `<<` on a mathematical integer, before truncation to a width.
+const INT_SHIFT_LEFT: &str = "Trusted.MirSemantics.intShiftLeft";
+/// Rust's arithmetic `>>` on a mathematical integer.
+const INT_SHIFT_RIGHT: &str = "Trusted.MirSemantics.intShiftRight";
 /// The namespace `emit` defines everything in for `--format v1`.
 pub const SPEC_NAMESPACE: &str = "Spec";
 /// The root of the `Specs.<crate>.<claim>` namespaces of `--format v2-module`.
@@ -295,6 +299,8 @@ const GLOBALS: &[&str] = &[
     INT_TDIV,
     INT_TMOD,
     INT_EMOD,
+    INT_SHIFT_LEFT,
+    INT_SHIFT_RIGHT,
     SPEC_NAMESPACE,
     SPECS_ROOT,
 ];
@@ -317,6 +323,8 @@ const INTRINSICS: &[&str] = &[
     "wrapping_sub",
     "wrapping_mul",
     "wrapping_neg",
+    "wrapping_shl",
+    "wrapping_shr",
     "no_overflow_add",
     "no_overflow_sub",
     "no_overflow_mul",
@@ -362,6 +370,26 @@ fn saturate(exact: &str, t: IntTy) -> String {
     )
 }
 
+/// `u32`, the type of the amount of Rust's `wrapping_shl` and
+/// `wrapping_shr`.
+const U32: IntTy = IntTy { bits: 32, signed: false, pointer_sized: false };
+
+/// `a` shifted by `amount` (a Lean `Nat` term below the bit width of `t`)
+/// as Rust's `<<` or `>>` on `t` computes it. A left shift drops the bits
+/// shifted past the width, and a right shift is arithmetic on a signed `t`.
+fn shift_term(op: BinOp, a: &str, amount: &str, t: IntTy) -> String {
+    if matches!(op, BinOp::Shr) {
+        return format!("({INT_SHIFT_RIGHT} {a} {amount})");
+    }
+    let m = modulus(t);
+    if t.signed {
+        let h = half_modulus(t);
+        format!("({INT_EMOD} ({INT_SHIFT_LEFT} {a} {amount} + {h}) {m} - {h})")
+    } else {
+        format!("({INT_EMOD} ({INT_SHIFT_LEFT} {a} {amount}) {m})")
+    }
+}
+
 fn int_lit(v: IntLit) -> String {
     v.to_lean()
 }
@@ -374,10 +402,7 @@ fn int_const(t: IntTy, c: IntConst) -> (IntLit, IntTy) {
     match c {
         IntConst::Min => (IntLit::new(lo < 0, lo.unsigned_abs()), t),
         IntConst::Max => (IntLit::new(false, hi), t),
-        IntConst::Bits => (
-            IntLit::new(false, u128::from(t.bits)),
-            IntTy { bits: 32, signed: false, pointer_sized: false },
-        ),
+        IntConst::Bits => (IntLit::new(false, u128::from(t.bits)), U32),
     }
 }
 
@@ -648,11 +673,8 @@ impl<'a> Env<'a> {
                 "unary `-` is not allowed in `max_steps`: step bounds must be non-negative",
             )),
             ExprKind::Unary(UnOp::Not, _) => {
-                let _ = self.lower(e, false, facts)?;
-                Err(type_error(
-                    e.span,
-                    "expected a non-negative integer for `max_steps`, found `bool`",
-                ))
+                let low = self.lower(e, false, facts)?;
+                self.machine_step_count(low, e.span, "`!`")
             }
             ExprKind::Binary(op, l, r) => match op {
                 BinOp::Add | BinOp::Mul | BinOp::Div | BinOp::Rem => {
@@ -693,9 +715,11 @@ impl<'a> Env<'a> {
                     )
                     .help("rewrite the bound using `+`, `*`, `/`, and `%` over non-negative terms"))
                 }
+                // Bitwise operators and shifts act on machine integers, so a
+                // step count may use their unsigned results.
                 BinOp::BitAnd | BinOp::BitOr | BinOp::BitXor | BinOp::Shl | BinOp::Shr => {
-                    let _ = self.binary(*op, l, r, e.span, true, facts)?;
-                    unreachable!("bitwise operators are rejected above")
+                    let low = self.binary(*op, l, r, e.span, false, facts)?;
+                    self.machine_step_count(low, e.span, &format!("`{}`", op.rust()))
                 }
                 _ => {
                     let _ = self.binary(*op, l, r, e.span, false, facts)?;
@@ -776,11 +800,41 @@ impl<'a> Env<'a> {
                     on_true: p.on_false,
                     on_false: p.on_true,
                 })),
+                // `!x` on an integer flips its bits: `-x - 1` in two's
+                // complement, which for an unsigned `x` is `MAX - x`.
+                Low::Int(a, Ty::Int(t)) => {
+                    let term = if t.signed {
+                        format!("({INT_NEG} {a} - 1)")
+                    } else {
+                        format!("({} - {a})", IntLit::new(false, t.range().1).to_lean())
+                    };
+                    Ok(Low::Int(term, Ty::Int(t)))
+                }
+                Low::Int(_, _) => Err(type_error(
+                    inner.span,
+                    "`!` on an integer inside `math` is ambiguous: its result depends on the \
+                     operand's width",
+                )
+                .help(
+                    "give it a machine type first, as in `let n: u8 = !a;`, or apply `!` \
+                     outside `math`",
+                )),
+                other @ (Low::Lit(..) | Low::UntypedIf(..)) => Err(Diagnostic::new(
+                    "E_ANNEAL_SPEC_TYPE_ANNOTATION_NEEDED",
+                    inner.span,
+                    format!(
+                        "the type of the operand of `!` cannot be inferred from {}",
+                        describe(&other)
+                    ),
+                )
+                .help("add a suffix such as `5u8`")),
                 other => Err(type_error(
                     inner.span,
-                    format!("`!` expects `bool`, found {}", describe(&other)),
-                )
-                .help("bitwise negation of integers is not supported in profile v1")),
+                    format!(
+                        "`!` expects `bool` or a fixed-width integer, found {}",
+                        describe(&other)
+                    ),
+                )),
             },
             ExprKind::Unary(UnOp::Neg, inner) => {
                 if let ExprKind::Int(mag, Some(t)) = inner.kind {
@@ -1510,7 +1564,10 @@ impl<'a> Env<'a> {
                 self.compare(op, l, r, a, b, span)
             }
             BinOp::BitAnd | BinOp::BitOr | BinOp::BitXor => {
-                let a = self.lower(l, math, facts)?;
+                // Like the wrapping intrinsics, bitwise operators take
+                // machine-typed operands even inside `math`, since their
+                // meaning depends on the type's width.
+                let a = self.lower(l, false, facts)?;
                 if matches!(a, Low::Prop(_)) {
                     let d = match op {
                         BinOp::BitAnd => Diagnostic::new(
@@ -1536,9 +1593,43 @@ impl<'a> Env<'a> {
                     };
                     return Err(d);
                 }
-                Err(unsupported_bitwise(op, span))
+                let b = self.lower(r, false, facts)?;
+                let (a, b, t) = match Self::unify_pair(a, b, l, r, false)? {
+                    (Low::Int(a, Ty::Int(t)), Low::Int(b, Ty::Int(_))) => (a, b, t),
+                    _ => {
+                        return Err(type_error(
+                            span,
+                            format!(
+                                "`{}` needs two operands of one fixed-width integer type",
+                                op.rust()
+                            ),
+                        ));
+                    }
+                };
+                let sym = match op {
+                    BinOp::BitAnd => "&&&",
+                    BinOp::BitOr => "|||",
+                    _ => "^^^",
+                };
+                let ty = if math { Ty::Math } else { Ty::Int(t) };
+                // The operation acts on the two's-complement bits, which are
+                // an unsigned value's own and a signed value's remainder
+                // modulo `2^bits`.
+                let term = if t.signed {
+                    let m = modulus(t);
+                    let h = half_modulus(t);
+                    let bits = |x: &str| format!("({INT}.toNat ({INT_EMOD} {x} {m}))");
+                    format!(
+                        "({INT_EMOD} ({INT}.ofNat ({} {sym} {}) + {h}) {m} - {h})",
+                        bits(&a),
+                        bits(&b)
+                    )
+                } else {
+                    format!("({INT}.ofNat (({INT}.toNat {a}) {sym} ({INT}.toNat {b})))")
+                };
+                Ok(Low::Int(term, ty))
             }
-            BinOp::Shl | BinOp::Shr => Err(unsupported_bitwise(op, span)),
+            BinOp::Shl | BinOp::Shr => self.shift(op, l, r, math, facts),
             _ => {
                 let (a, b) = self.lower_pair(l, r, math, facts)?;
                 // Arithmetic is unambiguous only when no operand is a machine
@@ -1590,6 +1681,113 @@ impl<'a> Env<'a> {
         }
     }
 
+    /// Lowers `l << r` or `l >> r`. As with the other bitwise operators,
+    /// `l` is machine-typed even inside `math`. Rust panics on, or masks,
+    /// an amount that is not below the bit width of `l`, so `r` must be a
+    /// constant that is. Its type, as in Rust, may be any integer type.
+    fn shift(
+        &self,
+        op: BinOp,
+        l: &Expr,
+        r: &Expr,
+        math: bool,
+        facts: &mut Vec<String>,
+    ) -> Result<Low, Diagnostic> {
+        let sym = op.rust();
+        let (a, t) = match self.lower(l, false, facts)? {
+            Low::Int(a, Ty::Int(t)) => (a, t),
+            low @ (Low::Lit(..) | Low::UntypedIf(..)) => {
+                return Err(Diagnostic::new(
+                    "E_ANNEAL_SPEC_TYPE_ANNOTATION_NEEDED",
+                    l.span,
+                    format!(
+                        "the type of the left operand of `{sym}` cannot be inferred from {}",
+                        describe(&low)
+                    ),
+                )
+                .help("add a suffix such as `1u32`"));
+            }
+            low => {
+                return Err(type_error(
+                    l.span,
+                    format!(
+                        "`{sym}` needs a fixed-width integer to shift, found {}",
+                        describe(&low)
+                    ),
+                ));
+            }
+        };
+        let amount = match self.lower(r, false, facts)? {
+            Low::Int(term, _) => Some(term),
+            Low::Lit(..) | Low::UntypedIf(..) => None,
+            low => {
+                return Err(type_error(
+                    r.span,
+                    format!("a shift amount must be an integer, found {}", describe(&low)),
+                ));
+            }
+        };
+        let Some(k) = self.const_value(r) else {
+            return Err(Diagnostic::new(
+                "E_ANNEAL_AMBIGUOUS_SPEC_ARITH",
+                r.span,
+                format!(
+                    "`{sym}` by an amount that is not a constant is ambiguous: Rust panics on, or \
+                     masks, an amount that is not below the bit width"
+                ),
+            )
+            .help(format!(
+                "shift by a constant, or write `wrapping_{}(a, n)` for the masked shift",
+                if matches!(op, BinOp::Shl) { "shl" } else { "shr" }
+            )));
+        };
+        if k.neg || k.mag >= u128::from(t.bits) {
+            return Err(Diagnostic::new(
+                "E_ANNEAL_SPEC_LITERAL_RANGE",
+                r.span,
+                format!(
+                    "shift amount `{k}` is out of range for `{}`, which shifts by less than {}",
+                    t.rust_name(),
+                    t.bits
+                ),
+            ));
+        }
+        // A literal amount is written as the number. Any other constant
+        // amount, such as a `let`-bound one, is written as its lowered term,
+        // so the Lean term uses the binding the specification names; its
+        // value is `k`, which the check above keeps in range.
+        let amount = match (const_int_lit(r), amount) {
+            (None, Some(term)) => format!("({INT}.toNat {term})"),
+            _ => k.mag.to_string(),
+        };
+        let term = shift_term(op, &a, &amount, t);
+        Ok(Low::Int(term, if math { Ty::Math } else { Ty::Int(t) }))
+    }
+
+    /// The `max_steps` step count of `low`, the value of `what` (an
+    /// operator or call) in a step count, which must be an unsigned machine
+    /// integer.
+    fn machine_step_count(&self, low: Low, span: Span, what: &str) -> Result<String, Diagnostic> {
+        match low {
+            Low::Int(term, Ty::Int(t)) if !t.signed => Ok(format!("({INT}.toNat {term})")),
+            Low::Int(_, Ty::Int(t)) => Err(type_error(
+                span,
+                format!(
+                    "`max_steps` requires a non-negative integer, but this {what} has signed \
+                     type `{}`",
+                    t.rust_name()
+                ),
+            )),
+            other => Err(type_error(
+                span,
+                format!(
+                    "expected a non-negative integer for `max_steps`, found {}",
+                    describe(&other)
+                ),
+            )),
+        }
+    }
+
     /// Lowers two operands whose types must agree, letting an untyped
     /// literal take its type from the other side.
     fn lower_pair(
@@ -1601,6 +1799,19 @@ impl<'a> Env<'a> {
     ) -> Result<(Low, Low), Diagnostic> {
         let a = self.lower(l, math, facts)?;
         let b = self.lower(r, math, facts)?;
+        Self::unify_pair(a, b, l, r, math)
+    }
+
+    /// Unifies `a` and `b`, the lowered operands `l` and `r` of an operator
+    /// whose operand types must agree, letting an untyped literal take its
+    /// type from the other side.
+    fn unify_pair(
+        a: Low,
+        b: Low,
+        l: &Expr,
+        r: &Expr,
+        math: bool,
+    ) -> Result<(Low, Low), Diagnostic> {
         let (a, b) = match (a, b) {
             (x, Low::Int(t, ty)) if is_untyped(&x) => (settle(x, ty)?, Low::Int(t, ty)),
             (Low::Int(t, ty), y) if is_untyped(&y) => (Low::Int(t, ty), settle(y, ty)?),
@@ -1726,6 +1937,28 @@ impl<'a> Env<'a> {
         let family = ["wrapping_", "no_overflow_", "saturating_"]
             .into_iter()
             .find_map(|f| name.strip_prefix(f).map(|op| (f, op)));
+        if let Some((family @ "wrapping_", op @ ("shl" | "shr"))) = family {
+            arity(2)?;
+            let (a, t) = self.int_operand(name, &args[0], facts)?;
+            // As in Rust, the amount is a `u32`, taken modulo the bit width.
+            let n = match self.lower(&args[1], false, facts)? {
+                Low::Int(n, Ty::Int(u)) if u == U32 => n,
+                low @ Low::Lit(..) => {
+                    let Low::Int(n, _) = settle(low, Ty::Int(U32))? else { unreachable!() };
+                    n
+                }
+                low => {
+                    return Err(type_error(
+                        args[1].span,
+                        format!("`{family}{op}` shifts by a `u32`, found {}", describe(&low)),
+                    ));
+                }
+            };
+            let amount = format!("({INT}.toNat ({INT_EMOD} {n} {}))", t.bits);
+            let bin = if op == "shl" { BinOp::Shl } else { BinOp::Shr };
+            let term = shift_term(bin, &a, &amount, t);
+            return Ok(Low::Int(term, if math { Ty::Math } else { Ty::Int(t) }));
+        }
         if let Some((family, op)) = family {
             // These intrinsics take machine-typed operands even inside
             // `math`, since their meaning depends on the type's width. `t` is
@@ -1943,14 +2176,6 @@ fn ambiguous_arith(span: Span, op: &str, ty: Ty) -> Diagnostic {
     )
 }
 
-fn unsupported_bitwise(op: BinOp, span: Span) -> Diagnostic {
-    Diagnostic::new(
-        "E_ANNEAL_UNSUPPORTED_BITWISE",
-        span,
-        format!("integer `{}` is not supported by the profile v1 lowering", op.rust()),
-    )
-}
-
 fn describe(l: &Low) -> String {
     match l {
         Low::Prop(_) => "`bool`".into(),
@@ -2050,12 +2275,14 @@ fn int_term(l: Low, span: Span, op: BinOp) -> Result<String, Diagnostic> {
 }
 
 /// Returns the constant integer value of `e` when `e` is a literal or
-/// associated integer constant (possibly parenthesized or wrapped in `math`).
+/// associated integer constant (possibly negated, parenthesized, or wrapped
+/// in `math`).
 fn const_int_lit(e: &Expr) -> Option<IntLit> {
     match &e.kind {
         ExprKind::Int(v, _) => Some(IntLit::new(false, *v)),
         ExprKind::IntConst(t, c) => Some(int_const(*t, *c).0),
         ExprKind::Paren(inner) | ExprKind::Math(inner) => const_int_lit(inner),
+        ExprKind::Unary(UnOp::Neg, inner) => const_int_lit(inner).map(IntLit::negate),
         _ => None,
     }
 }

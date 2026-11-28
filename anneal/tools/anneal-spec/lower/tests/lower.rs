@@ -436,7 +436,6 @@ fn trap_spellings_are_rejected() {
         ("requires(a == b)", "fn f(a: u8, b: u16)", "E_ANNEAL_SPEC_TYPE_MISMATCH"),
         ("requires(a == 256)", "fn f(a: u8)", "E_ANNEAL_SPEC_LITERAL_RANGE"),
         ("requires(a.len() > 0)", "fn f(a: u8)", "E_ANNEAL_SPEC_UNSUPPORTED_EXPR"),
-        ("requires(a & 1u8 == 0u8)", "fn f(a: u8)", "E_ANNEAL_UNSUPPORTED_BITWISE"),
         ("modifies(none)", "fn f()", "E_ANNEAL_UNSUPPORTED_CLAUSE"),
         ("requirs(true)", "fn f()", "E_ANNEAL_UNKNOWN_CLAUSE"),
         ("ensures(|a| a == a)", "fn f(a: u8) -> u8", "E_ANNEAL_SPEC_SHADOWING"),
@@ -1501,6 +1500,120 @@ fn wide_integer_intrinsics_use_exact_moduli() {
         "{}",
         u.spec_lean
     );
+}
+
+#[test]
+fn bitwise_operators_and_shifts_lower_exactly() {
+    let x = "(specInt (specArg q 0))";
+    let y = "(specInt (specArg q 1))";
+    let lean = |clause: &str, sig: &str| {
+        lower_one(&wrap(clause, sig)).unwrap_or_else(|e| panic!("{clause}: {e:?}")).spec_lean
+    };
+    let has = |text: &str, want: &str| assert!(text.contains(want), "missing {want} in\n{text}");
+    // Unsigned operands are their own bits.
+    has(
+        &lean("ensures(|r| r == a & b)", "fn f(a: u8, b: u8) -> u8"),
+        &format!("(Int.ofNat ((Int.toNat {x}) &&& (Int.toNat {y})))"),
+    );
+    has(
+        &lean("ensures(|r| r == a | b)", "fn f(a: u16, b: u16) -> u16"),
+        &format!("(Int.ofNat ((Int.toNat {x}) ||| (Int.toNat {y})))"),
+    );
+    // Signed operands act through their two's-complement bits.
+    has(
+        &lean("ensures(|r| r == a ^ b)", "fn f(a: i8, b: i8) -> i8"),
+        &format!(
+            "(Trusted.MirSemantics.intEmod (Int.ofNat ((Int.toNat (Trusted.MirSemantics.intEmod \
+             {x} 256)) ^^^ (Int.toNat (Trusted.MirSemantics.intEmod {y} 256))) + 128) 256 - 128)"
+        ),
+    );
+    has(&lean("ensures(|r| r == !a)", "fn f(a: u8) -> u8"), &format!("((255 : Int) - {x})"));
+    has(&lean("ensures(|r| r == !a)", "fn f(a: i32) -> i32"), &format!("(Int.neg {x} - 1)"));
+    // Shifts by a constant amount below the width.
+    has(
+        &lean("ensures(|r| r == a << 3)", "fn f(a: u8) -> u8"),
+        &format!("(Trusted.MirSemantics.intEmod (Trusted.MirSemantics.intShiftLeft {x} 3) 256)"),
+    );
+    has(
+        &lean("ensures(|r| r == a << 7u32)", "fn f(a: i8) -> i8"),
+        &format!(
+            "(Trusted.MirSemantics.intEmod (Trusted.MirSemantics.intShiftLeft {x} 7 + 128) 256 \
+             - 128)"
+        ),
+    );
+    // A `let`-bound amount is written as its binding.
+    has(
+        &lean("ensures(|r| { let k: u8 = 2; r == a >> k })", "fn f(a: i64) -> i64"),
+        &format!("(Trusted.MirSemantics.intShiftRight {x} (Int.toNat «k»))"),
+    );
+    // The masked shifts take any `u32` amount.
+    has(
+        &lean("ensures(|r| r == wrapping_shl(a, n))", "fn f(a: u16, n: u32) -> u16"),
+        &format!(
+            "(Trusted.MirSemantics.intEmod (Trusted.MirSemantics.intShiftLeft {x} (Int.toNat \
+             (Trusted.MirSemantics.intEmod {y} 16))) 65536)"
+        ),
+    );
+    has(
+        &lean("ensures(|r| r == wrapping_shr(a, 9))", "fn f(a: i8) -> i8"),
+        &format!(
+            "(Trusted.MirSemantics.intShiftRight {x} (Int.toNat (Trusted.MirSemantics.intEmod \
+             (9 : Int) 8)))"
+        ),
+    );
+    // Rust's precedence: shifts bind tighter than `&`, which binds tighter
+    // than `^`, `|`, and comparisons.
+    lean("requires(a & 1u8 << 2 == 4u8)", "fn f(a: u8)");
+    lean("requires(a | b ^ a & b == a | b)", "fn f(a: u8, b: u8)");
+    // Inside `math`, operands keep their machine types and results are
+    // mathematical.
+    lean("ensures(|r| math(r) == math(a & b) + math(a << 1))", "fn f(a: u8, b: u8) -> u8");
+    lean("ensures(|r| { let n: u8 = !a; math(r) == math(n) + 1 })", "fn f(a: u8) -> u8");
+    lean("ensures(|r| r == if a & 1u8 == 0u8 { 1u8 } else { 0u8 })", "fn f(a: u8) -> u8");
+    lean("max_steps = (n & 255u32) + (n >> 4) + !m", "fn f(n: u32, m: u8)");
+    for (clause, code) in [
+        ("max_steps = a & b", "E_ANNEAL_SPEC_TYPE_MISMATCH"),
+        ("max_steps = !a", "E_ANNEAL_SPEC_TYPE_MISMATCH"),
+    ] {
+        expect_error(&wrap(clause, "fn f(a: i8, b: i8)"), code);
+    }
+}
+
+#[test]
+fn bitwise_operators_and_shifts_are_checked_strictly() {
+    let sig = "fn f(a: u8, b: u16, c: bool, i: i8, n: u32) -> u8";
+    for (clause, code) in [
+        ("requires(a & b == 0u8)", "E_ANNEAL_SPEC_TYPE_MISMATCH"),
+        ("requires(a & math(a) == 0u8)", "E_ANNEAL_SPEC_TYPE_MISMATCH"),
+        ("requires(1 & 3 == 1u8)", "E_ANNEAL_SPEC_TYPE_ANNOTATION_NEEDED"),
+        ("requires(a | 256 == 0u8)", "E_ANNEAL_SPEC_LITERAL_RANGE"),
+        ("requires(c & c)", "E_ANNEAL_EAGER_CLAUSE_JOIN"),
+        ("requires(c ^ c)", "E_ANNEAL_SPEC_UNSUPPORTED_EXPR"),
+        ("requires(math(!a) == 0)", "E_ANNEAL_SPEC_TYPE_MISMATCH"),
+        ("requires((!5) == 0u8)", "E_ANNEAL_SPEC_TYPE_ANNOTATION_NEEDED"),
+        ("requires((!()) == ())", "E_ANNEAL_SPEC_TYPE_MISMATCH"),
+        ("requires(a << n == 0u8)", "E_ANNEAL_AMBIGUOUS_SPEC_ARITH"),
+        ("requires(a >> 8 == 0u8)", "E_ANNEAL_SPEC_LITERAL_RANGE"),
+        ("requires(i << -1 == 0i8)", "E_ANNEAL_SPEC_LITERAL_RANGE"),
+        ("requires(1 << 3 == 8u8)", "E_ANNEAL_SPEC_TYPE_ANNOTATION_NEEDED"),
+        ("requires(c << 1 == c)", "E_ANNEAL_SPEC_TYPE_MISMATCH"),
+        ("requires(a << c == 0u8)", "E_ANNEAL_SPEC_TYPE_MISMATCH"),
+        ("requires(math(a) << 1 == 0)", "E_ANNEAL_SPEC_TYPE_MISMATCH"),
+        ("requires(wrapping_shl(a, a) == 0u8)", "E_ANNEAL_SPEC_TYPE_MISMATCH"),
+        ("requires(wrapping_shl(a) == 0u8)", "E_ANNEAL_SPEC_ARITY"),
+        ("requires(wrapping_shr(5, n) == 0u8)", "E_ANNEAL_SPEC_TYPE_ANNOTATION_NEEDED"),
+        ("requires(saturating_shl(a, n) == 0u8)", "E_ANNEAL_SPEC_UNKNOWN_FN"),
+    ] {
+        expect_error(&wrap(clause, sig), code);
+    }
+    let r = expect_error(&wrap("requires(a << n == 0u8)", sig), "E_ANNEAL_AMBIGUOUS_SPEC_ARITH");
+    assert!(r.contains("`wrapping_shl(a, n)`"), "{r}");
+    let r = expect_error(&wrap("requires(math(!a) == 0)", sig), "E_ANNEAL_SPEC_TYPE_MISMATCH");
+    assert!(r.contains("depends on the operand's width"), "{r}");
+    let r = expect_error(&wrap("requires(a >> 8 == 0u8)", sig), "E_ANNEAL_SPEC_LITERAL_RANGE");
+    assert!(r.contains("shifts by less than 8"), "{r}");
+    // The largest in-range amount is accepted, of any integer type.
+    lower_one(&wrap("requires(a >> 7u64 == 0u8 && i << 7i8 == 0i8)", sig)).unwrap();
 }
 
 #[test]

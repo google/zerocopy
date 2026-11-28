@@ -222,9 +222,58 @@ anneal::external_spec! {
         saturating_add(saturating_add(saturating, 1u8), saturating)
     }
 
+    // Bitwise operators act on the two's-complement bits of their machine
+    // operands, and shifts by a constant drop the bits shifted past the
+    // width (`<<`) or shift arithmetically (`>>` on a signed type).
+    #[anneal::pure]
+    fn bits_u_is(a: u8, b: u8, and: u8, or: u8, xor: u8, not: u8) -> bool {
+        a & b == and && a | b == or && a ^ b == xor && (!a) == not
+    }
+
+    #[anneal::pure]
+    fn bits_i_is(a: i8, b: i8, and: i8, or: i8, xor: i8, not: i8) -> bool {
+        a & b == and && a | b == or && a ^ b == xor && (!a) == not
+    }
+
+    #[anneal::pure]
+    fn shifts_u(a: u8) -> u8 {
+        (a << 3) | (a >> 5)
+    }
+
+    #[anneal::pure]
+    fn shifts_i(a: i8) -> i8 {
+        (a << 1) ^ (a >> 7)
+    }
+
+    #[anneal::pure]
+    fn shl_i(a: i8) -> i8 {
+        a << 1
+    }
+
+    // A `let`-bound amount is a constant too.
+    #[anneal::pure]
+    fn shifts_let(a: i16) -> i16 {
+        let k: u8 = 3;
+        let m: u32 = 4;
+        (a >> k) << m
+    }
+
+    #[anneal::pure]
+    fn wshl_is(a: u16, n: u32, r: u16) -> bool {
+        wrapping_shl(a, n) == r
+    }
+
+    #[anneal::pure]
+    fn wshr_is(a: i16, n: u32, r: i16) -> bool {
+        wrapping_shr(a, n) == r
+    }
+
     #[anneal::spec(
         requires(diff_u_is(n, n, 0u32) && sadd_is(a, 255u8, 255u8)),
-        max_steps = abs_diff(a, b) + saturating_add(n, 1u32),
+        max_steps = {
+            let k: u32 = 31;
+            abs_diff(a, b) + saturating_add(n, 1u32) + (n & 15u32) + (n >> 30) + (n >> k)
+        },
         ensures(|r| r == saturating_sub(n, 1u32)),
     )]
     fn usat(a: u8, b: u8, n: u32) -> u32;

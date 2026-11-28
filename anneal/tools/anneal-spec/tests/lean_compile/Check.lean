@@ -191,10 +191,36 @@ example : pure_sat_nested 3 = 7 := by unfold pure_sat_nested; decide
 example : pure_sat_nested 100 = 201 := by unfold pure_sat_nested; decide
 example : pure_sat_nested 200 = 255 := by unfold pure_sat_nested; decide
 
--- `usat` (sorted eighth as `fn7`) lowers
--- `max_steps = abs_diff(a, b) + saturating_add(n, 1u32)`.
-example : fn7_max_steps { args := [u8Val 9, u8Val 2, u32Val 5] } = 13 := rfl
+-- Bitwise operators act on two's-complement bits.
+example : pure_bits_u_is 0xF0 0x3C 0x30 0xFC 0xCC 0x0F := by unfold pure_bits_u_is; decide
+example : ¬ pure_bits_u_is 0xF0 0x3C 0x30 0xFC 0xCC 0xF0 := by unfold pure_bits_u_is; decide
+example : pure_bits_i_is (-8) 3 0 (-5) (-5) 7 := by unfold pure_bits_i_is; decide
+example : pure_bits_i_is (-128) (-1) (-128) (-1) 127 127 := by unfold pure_bits_i_is; decide
+example : ¬ pure_bits_i_is (-8) 3 0 (-5) (-5) (-7) := by unfold pure_bits_i_is; decide
+
+-- `<<` drops the bits shifted past the width, and `>>` is logical on
+-- unsigned and arithmetic on signed types.
+example : pure_shifts_u 0b10110001 = 0b10001101 := by unfold pure_shifts_u; decide
+example : pure_shifts_i 64 = -128 := by unfold pure_shifts_i; decide
+example : pure_shifts_i (-128) = -1 := by unfold pure_shifts_i; decide
+example : pure_shifts_i (-3) = 5 := by unfold pure_shifts_i; decide
+example : pure_shl_i 64 = -128 := by unfold pure_shl_i; decide
+example : pure_shl_i (-128) = 0 := by unfold pure_shl_i; decide
+example : pure_shl_i (-3) = -6 := by unfold pure_shl_i; decide
+example : pure_shifts_let 1000 = 2000 := by unfold pure_shifts_let; decide
+example : pure_shifts_let (-1000) = -2000 := by unfold pure_shifts_let; decide
+example : pure_shifts_let 0x7FF8 = -16 := by unfold pure_shifts_let; decide
+
+-- The masked shifts take the amount modulo the width.
+example : pure_wshl_is 1 17 2 := by unfold pure_wshl_is; decide
+example : pure_wshl_is 0x8001 1 2 := by unfold pure_wshl_is; decide
+example : pure_wshr_is (-32768) 31 (-1) := by unfold pure_wshr_is; decide
+example : ¬ pure_wshr_is (-32768) 31 1 := by unfold pure_wshr_is; decide
+
+-- `usat` (sorted eighth as `fn7`) binds `let k: u32 = 31;` in `max_steps =`
+-- `abs_diff(a, b) + saturating_add(n, 1u32) + (n & 15u32) + (n >> 30) + (n >> k)`.
+example : fn7_max_steps { args := [u8Val 9, u8Val 2, u32Val 5] } = 18 := rfl
 example : fn7_max_steps { args := [u8Val 3, u8Val 250, u32Val 4294967295] } =
-    4294967542 := rfl
+    4294967561 := rfl
 
 end Spec.Check
