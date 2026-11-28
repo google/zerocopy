@@ -177,7 +177,7 @@ anneal/
     ├── differential/                  # package = "anneal-differential-tests" (publish = false)
     │   ├── Cargo.toml
     │   ├── src/bin/{anneal-diff.rs, anneal-diff-capture-test-bin.rs}
-    │   ├── src/{lib.rs, corpus.rs, miri_runner.rs, lean_runner.rs, mir_eval_runner.rs, mutants.rs, verdict.rs}
+    │   ├── src/{lib.rs, corpus.rs, miri_runner.rs, miri_runner/, lean_runner.rs, mir_eval_runner.rs, mutants.rs, verdict.rs}
     │   └── tests/differential_oracle.rs
     └── corpora/                       # Declarative data-driven corpora consumed by test crates
         ├── adversarial/               # Landed: capture/; Target Wave 3: + guards.toml, spec_and_preflight/, mir_ub_refutations/, audit_and_ndjson/
