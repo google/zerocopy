@@ -169,6 +169,48 @@ class SmokeAndSpecCases:
             # checked in under `zerocopy/proofs`.
             self.assertIn("zerocopy/proofs/**", globs, check_id)
 
+    def test_tools_anneal_scaffold_check_is_scoped_and_offline(self):
+        checks = {c["id"]: c for c in self.checks_cfg["checks"]}
+        check = checks["tools-anneal-scaffold"]
+        self.assertEqual(
+            check["command"], ["./ci/scripts/run_anneal_scaffold_check.sh"]
+        )
+        self.assertEqual(check["caches"], ["anneal-scaffold-cargo-v1"])
+        self.assertEqual(
+            self.checks_cfg["caches"]["anneal-scaffold-cargo-v1"]["cargo_locked"],
+            {"workspace": "anneal/tools/anneal-scaffold/Cargo.toml"},
+        )
+        self.assertIn(
+            {
+                "kind": "cargo_workspace",
+                "manifest_path": "anneal/tools/anneal-scaffold/Cargo.toml",
+            },
+            check["inputs"],
+        )
+        globs = [
+            glob for entry in check["inputs"] for glob in entry.get("include", [])
+        ]
+        # The unit tests read these trusted sources to catch drift.
+        for path in (
+            "anneal/trusted/rustc-capture/src/ir.rs",
+            "anneal/trusted/rustc-capture/src/lean.rs",
+            "anneal/trusted/cargo-anneal/src/verify.rs",
+        ):
+            self.assertIn(path, globs)
+        ci_test_globs = [
+            glob
+            for entry in checks["anneal-ci-tests"]["inputs"]
+            for glob in entry.get("include", [])
+        ]
+        self.assertIn("ci/scripts/run_anneal_scaffold_check.sh", ci_test_globs)
+        script = (REPO_ROOT / "ci/scripts/run_anneal_scaffold_check.sh").read_text()
+        self.assertIn("export CARGO_NET_OFFLINE=true", script)
+        for needle in (
+            "clippy --locked --offline --workspace --all-targets",
+            "test --locked --offline --workspace",
+        ):
+            self.assertIn(needle, script)
+
     def test_tools_anneal_spec_freshness_skips_spec_sources_units(self):
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)

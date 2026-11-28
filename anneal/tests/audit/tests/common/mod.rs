@@ -63,6 +63,9 @@ pub fn copy_cargo_workspace(root: &Path) {
         "tools/anneal-spec/Cargo.lock",
         "tools/anneal-spec/lower/Cargo.toml",
         "tools/anneal-spec/macros/Cargo.toml",
+        "tools/anneal-scaffold/Cargo.toml",
+        "tools/anneal-scaffold/Cargo.lock",
+        "tools/anneal-scaffold/scaffold/Cargo.toml",
     ] {
         let dest = root.join(rel);
         if let Some(parent) = dest.parent() {
