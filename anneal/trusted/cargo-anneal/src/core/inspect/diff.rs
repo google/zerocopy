@@ -499,6 +499,17 @@ pub fn diff_receipts(
             );
         }
 
+        if b.spec_closure_sha256 != h.spec_closure_sha256 {
+            push(
+                &mut changes,
+                DiffTier::TierA,
+                "spec_closure_sha256",
+                b.spec_closure_sha256.as_deref().unwrap_or("<none>").to_owned(),
+                h.spec_closure_sha256.as_deref().unwrap_or("<none>").to_owned(),
+                "specification closure golden digest changed",
+            );
+        }
+
         let b_locked: BTreeSet<&str> = b.sha256_locked.iter().map(String::as_str).collect();
         let h_locked: BTreeSet<&str> = h.sha256_locked.iter().map(String::as_str).collect();
         if b_locked != h_locked {
@@ -2733,6 +2744,27 @@ mod tests {
         );
         assert!(
             diff.changes.iter().any(|c| c.field == "shards" && c.tier == DiffTier::TierC),
+            "{:?}",
+            diff.changes
+        );
+    }
+
+    #[test]
+    fn diff_classifies_spec_closure_sha256_change_as_tier_a() {
+        use crate::core::inspect::schema::tests::sample_envelope_v2_json;
+
+        let base_json = sample_envelope_v2_json();
+        let mut head_json = sample_envelope_v2_json();
+        head_json["spec_closure_sha256"] = json!("e".repeat(64));
+
+        let base = parse_and_validate_receipt(&serde_json::to_vec(&base_json).unwrap()).unwrap();
+        let head = parse_and_validate_receipt(&serde_json::to_vec(&head_json).unwrap()).unwrap();
+        let diff = diff_receipts(&base, &head, false);
+        assert!(diff.has_regressions, "{:?}", diff.changes);
+        assert!(
+            diff.changes
+                .iter()
+                .any(|c| c.field == "spec_closure_sha256" && c.tier == DiffTier::TierA),
             "{:?}",
             diff.changes
         );

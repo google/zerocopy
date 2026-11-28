@@ -23,10 +23,12 @@ pub use render::{
     ColorChoice, InspectFormat, InspectSection, RenderOptions, render_diff, render_inspection,
 };
 pub use schema::{
-    FailureReceipt, HorizonRecord, InspectParseError, ModelSystemRelation, ParsedReceipt,
-    PolicyRequirements, ProvenanceQualifiers, ReceiptEnvelope, ReceiptShardEntry,
-    ReceiptShardsManifest, SpecWarningEntry, SuccessReceipt, TcbShimEntry,
-    parse_and_validate_receipt, parse_and_validate_receipt_with_max_bytes,
+    FailureReceipt, HorizonRecord, ImportedSpecModuleRef, InspectParseError, ModelSystemRelation,
+    ParsedReceipt, PolicyRequirements, ProvenanceQualifiers, ReceiptEnvelope, ReceiptShardEntry,
+    ReceiptShardsManifest, SpecClosureGolden, SpecEntrySummary, SpecEnvelopeSummary, SpecLawHead,
+    SpecModuleGolden, SpecUserDecl, SpecWarningEntry, SuccessReceipt, TcbShimEntry,
+    VALID_SPEC_USER_DECL_KINDS, parse_and_validate_receipt,
+    parse_and_validate_receipt_with_max_bytes,
 };
 pub use strict_json::{
     DEFAULT_MAX_RECEIPT_JSON_BYTES, MAX_CONFIGURABLE_RECEIPT_JSON_BYTES, MAX_JSON_DEPTH,

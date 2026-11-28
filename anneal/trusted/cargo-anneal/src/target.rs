@@ -25,6 +25,10 @@ use serde::{Deserialize, Serialize};
 use serde_json::json;
 
 use crate::{
+    core::inspect::schema::{
+        SpecEnvelopeSummary, SpecUserDecl, canonical_root_is_envelope,
+        validate_spec_envelope_metadata,
+    },
     ndjson_comparator::{
         CanonicalArena, NdjsonAuditVerdict, NdjsonTimingMs, PINNED_INIT_PRIMITIVES, SkippedKernel,
         StructuralCompareRequest, TargetConstIndex, TargetConstOrigin, TargetOriginRole,
@@ -451,6 +455,10 @@ struct TargetAuditReport {
     specification_closure: Vec<TargetClosureEntry>,
     #[serde(default)]
     spec_warnings: Vec<TargetSpecWarning>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    specification_user_decls: Option<Vec<SpecUserDecl>>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    specification_envelope: Option<SpecEnvelopeSummary>,
 }
 
 /// Validate every invariant of a deserialized [`TargetAuditReport`] against
@@ -608,6 +616,27 @@ fn validate_target_audit_report(
                 "target-audit reported malformed specWarnings entry with empty body label",
             ));
         }
+    }
+    let is_envelope = canonical_root_is_envelope(&report.canonical_root);
+    if is_envelope {
+        if report.specification_user_decls.is_none() || report.specification_envelope.is_none() {
+            return Err(Failure::operational(
+                "target-audit",
+                "target-audit envelope root report omitted specificationUserDecls or \
+                 specificationEnvelope",
+            ));
+        }
+    } else if report.specification_user_decls.is_some() || report.specification_envelope.is_some() {
+        return Err(Failure::operational(
+            "target-audit",
+            "target-audit legacy root report unexpectedly carried envelope metadata",
+        ));
+    }
+    if let Some(decls) = &report.specification_user_decls
+        && let Some(env_sum) = &report.specification_envelope
+    {
+        validate_spec_envelope_metadata(decls, env_sum)
+            .map_err(|msg| Failure::operational("target-audit", format!("target-audit {msg}")))?;
     }
     Ok(())
 }
@@ -982,6 +1011,14 @@ impl Checker {
         self.reset_stage()?;
         on_progress(TargetProgress::Toolchain);
         self.tool_admission()?;
+        if canonical_root_is_envelope(&request.canonical_root)
+            && self.admitted()?.ndjson_tools.is_some()
+        {
+            return Err(Failure::policy(
+                "ndjson-comparator",
+                "envelope canonical roots are not yet supported on the NDJSON comparator route",
+            ));
+        }
         for digest in [
             &request.bindings.request_sha256,
             &request.bindings.capture_sha256,
@@ -5890,6 +5927,141 @@ mod tests {
                 "expected spec_warnings rejection for {label}"
             );
         }
+    }
+
+    #[test]
+    fn target_audit_report_validates_envelope_metadata_fail_closed() {
+        use crate::core::inspect::schema::{
+            SpecEntrySummary, SpecEnvelopeSummary, SpecLawHead, SpecUserDecl,
+        };
+
+        let valid_graph: BTreeMap<String, Vec<ImportEdge>> =
+            BTreeMap::from([("Init.Prelude".to_string(), Vec::new())]);
+        let request = TargetAuditRequest {
+            modules: Vec::new(),
+            theorem_module: "Proof".to_string(),
+            theorem_name: "Proof.verify".to_string(),
+            expected_module: "Expected".to_string(),
+            expected_declaration: "Expected.claim".to_string(),
+            canonical_root: "Trusted.Framework.CrateMirEnvelopeTheoremV2".to_string(),
+            subject_declaration: "Captured.program".to_string(),
+            specification_declaration: "Spec.specs".to_string(),
+            allow_sorry_in_proof: false,
+            bindings: TargetBindings {
+                request_sha256: "0".repeat(64),
+                capture_sha256: "0".repeat(64),
+                model_manifest_sha256: "0".repeat(64),
+                specification_manifest_sha256: "0".repeat(64),
+            },
+        };
+        let valid_json = json!({
+            "theorem": "Proof.verify",
+            "canonicalRoot": "Trusted.Framework.CrateMirEnvelopeTheoremV2",
+            "subject": "Captured.program",
+            "specification": "Spec.specs",
+            "graph": { "Init.Prelude": [] },
+            "expected": "Expected.claim",
+            "axioms": ["propext"],
+            "sorryDeclarations": [],
+            "replay": true,
+            "exactType": true,
+            "replayedDeclarations": 12,
+            "checkedAlternateProofs": 0,
+            "subjectClosure": [{"name": "Captured.program", "module": "Captured"}],
+            "modelClosure": [{"name": "Trusted.Framework.CrateMirEnvelopeTheoremV2", "module": "Trusted.Framework.Bridge"}],
+            "specificationClosure": [{"name": "Spec.specs", "module": "Spec"}],
+            "specificationUserDecls": [
+                {"module": "Spec", "name": "Spec.inv", "kind": "def"},
+                {"module": "Spec", "name": "Spec.law", "kind": "theorem"}
+            ],
+            "specificationEnvelope": {
+                "entries": [{
+                    "identity": "demo::f",
+                    "is_unsafe": false,
+                    "terminates": true,
+                    "no_unwind": true,
+                    "no_abort": true,
+                    "require_inhabited": false
+                }],
+                "stubs": [],
+                "refutations": [],
+                "claim_shapes": ["spec"],
+                "gaps": [],
+                "law_heads": [{"head": "Spec.law", "target_const": "Spec.inv"}],
+                "has_step_bounds": false
+            }
+        });
+        let valid: TargetAuditReport = serde_json::from_value(valid_json.clone()).unwrap();
+        validate_target_audit_report(&valid, &request, &valid_graph).unwrap();
+
+        // Missing envelope metadata on envelope roots must fail closed.
+        let mut missing_decls = valid.clone();
+        missing_decls.specification_user_decls = None;
+        assert!(validate_target_audit_report(&missing_decls, &request, &valid_graph).is_err());
+
+        let mut missing_env = valid.clone();
+        missing_env.specification_envelope = None;
+        assert!(validate_target_audit_report(&missing_env, &request, &valid_graph).is_err());
+
+        // Malformed user decl kind fails closed.
+        let mut bad_kind = valid.clone();
+        bad_kind.specification_user_decls = Some(vec![SpecUserDecl {
+            module: "Spec".to_string(),
+            name: "Spec.inv".to_string(),
+            kind: "axiom".to_string(),
+        }]);
+        assert!(validate_target_audit_report(&bad_kind, &request, &valid_graph).is_err());
+
+        // Duplicate or unsorted user decls fail closed.
+        let mut dup_decls = valid.clone();
+        dup_decls.specification_user_decls = Some(vec![
+            SpecUserDecl {
+                module: "Spec".to_string(),
+                name: "Spec.law".to_string(),
+                kind: "theorem".to_string(),
+            },
+            SpecUserDecl {
+                module: "Spec".to_string(),
+                name: "Spec.inv".to_string(),
+                kind: "def".to_string(),
+            },
+        ]);
+        assert!(validate_target_audit_report(&dup_decls, &request, &valid_graph).is_err());
+
+        // Empty or invalid law head / entry identity fails closed.
+        let mut bad_env = valid.clone();
+        bad_env.specification_envelope = Some(SpecEnvelopeSummary {
+            entries: vec![SpecEntrySummary {
+                identity: String::new(),
+                is_unsafe: false,
+                terminates: true,
+                no_unwind: true,
+                no_abort: true,
+                require_inhabited: false,
+            }],
+            stubs: Vec::new(),
+            refutations: Vec::new(),
+            claim_shapes: vec!["spec".to_string()],
+            gaps: Vec::new(),
+            law_heads: vec![SpecLawHead {
+                head: "Spec.law".to_string(),
+                target_const: "Spec.inv".to_string(),
+            }],
+            has_step_bounds: false,
+        });
+        assert!(validate_target_audit_report(&bad_env, &request, &valid_graph).is_err());
+
+        // Envelope metadata must be absent on non-envelope roots.
+        let mut legacy_req = request.clone();
+        legacy_req.canonical_root = "Trusted.MirSemantics.CrateTheoremV2".to_string();
+        let mut legacy_rep = valid.clone();
+        legacy_rep.canonical_root = legacy_req.canonical_root.clone();
+        legacy_rep.model_closure[0].name = legacy_req.canonical_root.clone();
+        legacy_rep.model_closure[0].module = "Trusted.MirSemantics".to_string();
+        assert!(validate_target_audit_report(&legacy_rep, &legacy_req, &valid_graph).is_err());
+        legacy_rep.specification_user_decls = None;
+        legacy_rep.specification_envelope = None;
+        validate_target_audit_report(&legacy_rep, &legacy_req, &valid_graph).unwrap();
     }
 
     #[test]

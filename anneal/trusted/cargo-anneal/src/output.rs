@@ -972,6 +972,18 @@ fn taint_flag_hint(reason: &str) -> &'static str {
     }
 }
 
+fn is_profile_v2_receipt(receipt: &Value) -> bool {
+    matches!(
+        receipt["audit"]["canonicalRoot"].as_str(),
+        Some(
+            "Trusted.MirSemantics.CrateTheoremV2"
+                | "Trusted.MirSemantics.UnitTheoremV2"
+                | "Trusted.Framework.CrateMirEnvelopeTheoremV2"
+                | "Trusted.Framework.UnitMirEnvelopeTheoremV2"
+        )
+    )
+}
+
 /// Options controlling human card rendering on `stdout`.
 #[derive(Clone, Copy, Debug)]
 pub struct CardRenderOptions<'a> {
@@ -1007,10 +1019,7 @@ pub fn render_success_card(receipt: &Value, opts: CardRenderOptions<'_>) -> Stri
         raw_assumptions.iter().map(|a| SanitizedInline::new(a)).collect();
 
     let experimental = receipt["experimental"].as_bool().unwrap_or(false);
-    let is_profile_v2 = matches!(
-        receipt["audit"]["canonicalRoot"].as_str(),
-        Some("Trusted.MirSemantics.CrateTheoremV2" | "Trusted.MirSemantics.UnitTheoremV2")
-    );
+    let is_profile_v2 = is_profile_v2_receipt(receipt);
     let has_experimental_assumption =
         raw_assumptions.iter().any(|a| a.starts_with("experimental "));
     let exp_suffix = if badge == AssuranceBadge::Tainted {
@@ -2275,5 +2284,29 @@ mod tests {
         let partial_card = render_success_card(&partial_crate, plain_opts);
         assert!(partial_card.contains("1/2 required crate bodies"), "{partial_card}");
         assert!(!partial_card.contains("[OK]"), "{partial_card}");
+    }
+
+    #[test]
+    fn is_profile_v2_recognizes_envelope_v2_canonical_roots() {
+        for root in [
+            "Trusted.MirSemantics.CrateTheoremV2",
+            "Trusted.MirSemantics.UnitTheoremV2",
+            "Trusted.Framework.CrateMirEnvelopeTheoremV2",
+            "Trusted.Framework.UnitMirEnvelopeTheoremV2",
+        ] {
+            let mut rec = sample_success_receipt(json!({"kind": "crate"}), json!([]), json!([]));
+            rec["audit"]["canonicalRoot"] = json!(root);
+            assert!(is_profile_v2_receipt(&rec), "expected is_profile_v2=true for {root}");
+        }
+        for root in [
+            "Trusted.MirSemantics.CrateTheorem",
+            "Trusted.MirSemantics.UnitTheorem",
+            "Trusted.Framework.CrateMirEnvelopeTheoremV1",
+            "Trusted.Framework.UnitMirEnvelopeTheoremV1",
+        ] {
+            let mut rec = sample_success_receipt(json!({"kind": "crate"}), json!([]), json!([]));
+            rec["audit"]["canonicalRoot"] = json!(root);
+            assert!(!is_profile_v2_receipt(&rec), "expected is_profile_v2=false for {root}");
+        }
     }
 }
