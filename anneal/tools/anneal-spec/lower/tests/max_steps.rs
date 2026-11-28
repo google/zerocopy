@@ -368,6 +368,21 @@ fn max_steps_counts_leading_and_trailing_zeros() {
 }
 
 #[test]
+fn max_steps_matches_step_counts_against_ranges() {
+    let l = lower_one(&wrap(
+        "max_steps = match n { 0..=9 => 1, 10..=99 => n, _ => 100 }",
+        "fn f(n: usize)",
+    ))
+    .unwrap();
+    for want in [
+        "((0 : Nat) ≤ «match» ∧ «match» ≤ (9 : Nat))",
+        "((10 : Nat) ≤ «match» ∧ «match» ≤ (99 : Nat))",
+    ] {
+        assert!(l.spec_lean.contains(want), "missing {want} in\n{}", l.spec_lean);
+    }
+}
+
+#[test]
 fn max_steps_span_map_records_exact_clause_span() {
     let text = "anneal::external_spec! { #[anneal::spec(total, max_steps = 34 * n + 540)] fn f(n: usize); }";
     let l = lower_one(text).unwrap();

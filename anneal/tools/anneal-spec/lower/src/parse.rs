@@ -34,8 +34,8 @@ use crate::{
 /// Multi-character operators, longest first so matching is maximal munch.
 const OPERATORS: &[&str] = &[
     "<==>", "==>", "<<=", ">>=", "==", "!=", "<=", ">=", "&&", "||", "<<", ">>", "+=", "-=", "*=",
-    "/=", "%=", "^=", "&=", "|=", "::", "->", "=>", "..", "<", ">", "=", "!", "&", "|", "^", "+",
-    "-", "*", "/", "%", ".", ",", ";", ":", "?", "#", "@", "$", "~",
+    "/=", "%=", "^=", "&=", "|=", "::", "->", "=>", "..=", "..", "<", ">", "=", "!", "&", "|", "^",
+    "+", "-", "*", "/", "%", ".", ",", ";", ":", "?", "#", "@", "$", "~",
 ];
 
 #[derive(Clone, Debug)]
@@ -698,8 +698,9 @@ fn parse_arms(stream: TokenStream, span: Span) -> Result<Vec<Arm>, Diagnostic> {
 fn parse_pats(toks: &[Tok], arrow: Span) -> Result<Vec<Pat>, Diagnostic> {
     let unsupported = |span: Span, msg: &str| {
         Diagnostic::new("E_ANNEAL_SPEC_UNSUPPORTED_EXPR", span, msg).help(
-            "a pattern may be `_`, a name, `true`, `false`, an integer literal, or an integer \
-             constant such as `u8::MAX`, or several of the literals joined with `|`",
+            "a pattern may be `_`, a name, `true`, `false`, an integer literal, an integer \
+             constant such as `u8::MAX`, an inclusive range of them such as `0..=9`, or several \
+             of the literals and ranges joined with `|`",
         )
     };
     if let Some(t) = toks.iter().find(|t| matches!(t, Tok::Ident(k, _) if k == "if")) {
@@ -719,6 +720,32 @@ fn parse_pats(toks: &[Tok], arrow: Span) -> Result<Vec<Pat>, Diagnostic> {
             (Some(a), Some(b)) => join(a.span(), b.span()),
             _ => return Err(Diagnostic::new("E_ANNEAL_SPEC_SYNTAX", arrow, "empty pattern")),
         };
+        if let Some(at) = alt.iter().position(|t| t.is_op("..=") || t.is_op("..")) {
+            let (lo, hi) = (&alt[..at], &alt[at + 1..]);
+            if !alt[at].is_op("..=") || lo.is_empty() || hi.is_empty() {
+                return Err(unsupported(
+                    span,
+                    "only inclusive range patterns `lo..=hi`, with both bounds, are supported",
+                ));
+            }
+            let bound = |toks: &[Tok]| -> Result<Pat, Diagnostic> {
+                let span = join(toks[0].span(), toks[toks.len() - 1].span());
+                match int_pat_toks(toks, &unsupported)? {
+                    Some(kind) => Ok(Pat { kind, span }),
+                    None => Err(unsupported(
+                        span,
+                        "a range bound must be an integer literal or an integer constant",
+                    )),
+                }
+            };
+            let kind = PatKind::Range(Box::new(bound(lo)?), Box::new(bound(hi)?));
+            pats.push(Pat { kind, span });
+            continue;
+        }
+        if let Some(kind) = int_pat_toks(alt, &unsupported)? {
+            pats.push(Pat { kind, span });
+            continue;
+        }
         let kind = match *alt {
             [Tok::Ident(n, _)] if n == "_" => PatKind::Wild,
             [Tok::Ident(n, _)] if n == "true" || n == "false" => PatKind::Bool(n == "true"),
@@ -728,14 +755,6 @@ fn parse_pats(toks: &[Tok], arrow: Span) -> Result<Vec<Pat>, Diagnostic> {
                 return Err(unsupported(*s, "unsupported pattern"));
             }
             [Tok::Ident(n, _)] => PatKind::Bind(n.clone()),
-            [Tok::Lit(l, s)] => int_pat(l, *s, false, &unsupported)?,
-            [minus, Tok::Lit(l, s)] if minus.is_op("-") => int_pat(l, *s, true, &unsupported)?,
-            [Tok::Ident(t, _), colons, Tok::Ident(c, _)] if colons.is_op("::") => {
-                match (int_ty(t), IntConst::from_rust_name(c)) {
-                    (Some(t), Some(c)) => PatKind::IntConst(t, c),
-                    _ => return Err(unsupported(span, "unsupported pattern")),
-                }
-            }
             _ => return Err(unsupported(span, "unsupported pattern")),
         };
         pats.push(Pat { kind, span });
@@ -749,6 +768,28 @@ fn parse_pats(toks: &[Tok], arrow: Span) -> Result<Vec<Pat>, Diagnostic> {
         }
     }
     Ok(pats)
+}
+
+/// The integer pattern that `toks` spell, if they spell one: an integer
+/// literal, possibly negated, or an integer constant such as `u8::MAX`.
+fn int_pat_toks(
+    toks: &[Tok],
+    unsupported: &dyn Fn(Span, &str) -> Diagnostic,
+) -> Result<Option<PatKind>, Diagnostic> {
+    Ok(Some(match toks {
+        [Tok::Lit(l, s)] => int_pat(l, *s, false, unsupported)?,
+        [minus, Tok::Lit(l, s)] if minus.is_op("-") => int_pat(l, *s, true, unsupported)?,
+        [Tok::Ident(t, _), colons, Tok::Ident(c, _)] if colons.is_op("::") => {
+            match (int_ty(t), IntConst::from_rust_name(c)) {
+                (Some(t), Some(c)) => PatKind::IntConst(t, c),
+                _ => {
+                    let span = join(toks[0].span(), toks[2].span());
+                    return Err(unsupported(span, "unsupported pattern"));
+                }
+            }
+        }
+        _ => return Ok(None),
+    }))
 }
 
 fn int_pat(

@@ -436,6 +436,18 @@ example : pure_to_u8 0 = 0 := by unfold pure_to_u8; decide
 example : pure_to_i8 127 = 7 := by unfold pure_to_i8; decide
 example : pure_to_usize 65535 = 16 := by unfold pure_to_usize; decide
 
+-- Inclusive range patterns.
+example : pure_classify (-128) = 0 := by unfold pure_classify; decide
+example : pure_classify (-1) = 0 := by unfold pure_classify; decide
+example : pure_classify 0 = 1 := by unfold pure_classify; decide
+example : pure_classify 5 = 2 := by unfold pure_classify; decide
+example : pure_classify 25 = 2 := by unfold pure_classify; decide
+example : pure_classify 15 = 3 := by unfold pure_classify; decide
+example : pure_classify 127 = 3 := by unfold pure_classify; decide
+example : pure_clamp_byte 7 = 7 := by unfold pure_clamp_byte; decide
+example : pure_clamp_byte 255 = 255 := by unfold pure_clamp_byte; decide
+example : pure_clamp_byte 300 = 255 := by unfold pure_clamp_byte; decide
+
 -- The masked shifts take the amount modulo the width.
 example : pure_wshl_is 1 17 2 := by unfold pure_wshl_is; decide
 example : pure_wshl_is 0x8001 1 2 := by unfold pure_wshl_is; decide
@@ -447,9 +459,10 @@ example : ¬ pure_wshr_is (-32768) 31 1 := by unfold pure_wshr_is; decide
 -- `+ n as u8 as u32 + a.max(b) as u32 + n.div_ceil(8)`
 -- `+ a.cast_signed().unsigned_abs() as u32 + b.saturating_add_signed(-1) as u32`
 -- `+ n.unbounded_shr(31) + n.div_euclid(16) + n.saturating_div(1024)`
--- `+ n.swap_bytes() + n.count_ones() + n.leading_zeros()`.
-example : fn7_max_steps { args := [u8Val 9, u8Val 2, u32Val 5] } = 83886154 := rfl
+-- `+ n.swap_bytes() + n.count_ones() + n.leading_zeros()`
+-- `+ match n { 0..=9 => 1, _ => 2 }`.
+example : fn7_max_steps { args := [u8Val 9, u8Val 2, u32Val 5] } = 83886155 := rfl
 example : fn7_max_steps { args := [u8Val 3, u8Val 250, u32Val 4294967295] } =
-    9399436316 := rfl
+    9399436318 := rfl
 
 end Spec.Check

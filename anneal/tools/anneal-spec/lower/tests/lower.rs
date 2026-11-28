@@ -1043,7 +1043,7 @@ fn match_patterns_are_checked_strictly() {
             "E_ANNEAL_SPEC_UNSUPPORTED_EXPR",
         ),
         ("ensures(|r| match a { (x, y) => true, _ => false })", "E_ANNEAL_SPEC_UNSUPPORTED_EXPR"),
-        ("ensures(|r| match a { 0..=5 => true, _ => false })", "E_ANNEAL_SPEC_UNSUPPORTED_EXPR"),
+        ("ensures(|r| match a { 0..5 => true, _ => false })", "E_ANNEAL_SPEC_UNSUPPORTED_EXPR"),
         ("ensures(|r| match a { ref x => r == x })", "E_ANNEAL_SPEC_UNSUPPORTED_EXPR"),
         ("ensures(|r| match a { mut x => r == x })", "E_ANNEAL_SPEC_UNSUPPORTED_EXPR"),
         ("ensures(|r| match a { Some(x) => true, _ => false })", "E_ANNEAL_SPEC_UNSUPPORTED_EXPR"),
@@ -2570,6 +2570,117 @@ fn leading_and_trailing_counts_are_checked_strictly() {
         sig,
     ))
     .unwrap();
+}
+
+#[test]
+fn match_range_patterns_lower_exactly() {
+    let lean = |clause: &str, sig: &str| {
+        lower_one(&wrap(clause, sig)).unwrap_or_else(|e| panic!("{clause}: {e:?}")).spec_lean
+    };
+    let has = |text: &str, want: &str| assert!(text.contains(want), "missing {want} in\n{text}");
+    let m = "«match»";
+    let range = |lo: &str, hi: &str| format!("({lo} ≤ {m} ∧ {m} ≤ {hi})");
+    // A range matches its bounds and everything between them, alone or in
+    // an or-pattern.
+    let text = lean(
+        "ensures(|r| match a { 0..=9 => r == 1u8, 10..=19 | 30..=39 => r == 2u8, _ => r == 3u8 })",
+        "fn f(a: u8) -> u8",
+    );
+    has(&text, &range("(0 : Int)", "(9 : Int)"));
+    has(
+        &text,
+        &format!("({} ∨ {})", range("(10 : Int)", "(19 : Int)"), range("(30 : Int)", "(39 : Int)")),
+    );
+    // Bounds may be negative or integer constants, and a one-value range is
+    // an equality.
+    let text = lean(
+        "ensures(|r| match a { i8::MIN..=-10 => r == 0u8, -9..=-1 => r == 1u8, i8::MAX..=127 => r == 2u8, _ => r == 3u8 })",
+        "fn f(a: i8) -> u8",
+    );
+    has(&text, &range("(Int.neg 128)", "(Int.neg 10)"));
+    has(&text, &range("(Int.neg 9)", "(Int.neg 1)"));
+    has(&text, &format!("({m} = (127 : Int))"));
+    // Ranges may overlap earlier patterns in part.
+    lower_one(&wrap(
+        "ensures(|r| match a { 0..=5 => r == 1u8, 3..=7 | 9 => r == 2u8, _ => r == 3u8 })",
+        "fn f(a: u8) -> u8",
+    ))
+    .unwrap();
+    // A suffixed bound types an untyped scrutinee, and a 128-bit range keeps
+    // its exact bounds.
+    lower_one(&wrap("ensures(|r| r == match 5 { 0u16..=9 => 1u8, _ => 2u8 })", "fn f() -> u8"))
+        .unwrap();
+    has(
+        &lean("requires(match a { 0..=u128::MAX => true, _ => false })", "fn f(a: u128)"),
+        &range("(0 : Int)", "(340282366920938463463374607431768211455 : Int)"),
+    );
+    // A range that excludes zero proves the scrutinee nonzero in its arm, and
+    // one that includes zero proves it nonzero in the later arms.
+    lower_one(&wrap(
+        "ensures(|r| match d { 1..=255 => math(r) == math(n / d), _ => r == 0u8 })",
+        "fn f(n: u8, d: u8) -> u8",
+    ))
+    .unwrap();
+    lower_one(&wrap(
+        "ensures(|r| match d { 0..=0 => r == 0u8, _ => math(r) == math(n / d) })",
+        "fn f(n: u8, d: u8) -> u8",
+    ))
+    .unwrap();
+    lower_one(&wrap(
+        "ensures(|r| match d { -5..=-1 => math(r) == math(n / d), -4..=5 => r == 0i8, _ => math(r) == math(n / d) })",
+        "fn f(n: i8, d: i8) -> i8",
+    ))
+    .unwrap();
+    expect_error(
+        &wrap(
+            "ensures(|r| match d { -5..=5 => math(r) == math(n / d), _ => r == 0i8 })",
+            "fn f(n: i8, d: i8) -> i8",
+        ),
+        "E_ANNEAL_UNGUARDED_SPEC_DIV",
+    );
+}
+
+#[test]
+fn match_range_patterns_are_checked_strictly() {
+    let sig = "fn f(a: u8, b: bool, i: i8, w: u128, n: u32) -> u8";
+    for (clause, code) in [
+        ("ensures(|r| match b { 0..=1 => true, _ => false })", "E_ANNEAL_SPEC_TYPE_MISMATCH"),
+        ("ensures(|r| match a { 0u16..=5 => true, _ => false })", "E_ANNEAL_SPEC_TYPE_MISMATCH"),
+        ("ensures(|r| match math(a) { 0u8..=5u16 => true, _ => false })", "E_ANNEAL_SPEC_TYPE_MISMATCH"),
+        ("ensures(|r| match a { 0..=256 => true, _ => false })", "E_ANNEAL_SPEC_LITERAL_RANGE"),
+        ("ensures(|r| match i { -129..=0 => true, _ => false })", "E_ANNEAL_SPEC_LITERAL_RANGE"),
+        ("ensures(|r| match a { 5..=3 => true, _ => false })", "E_ANNEAL_UNREACHABLE_MATCH_ARM"),
+        ("ensures(|r| match a { 0..=5 => true, 2..=4 => false, _ => true })", "E_ANNEAL_UNREACHABLE_MATCH_ARM"),
+        ("ensures(|r| match a { 0..=3 | 4..=7 => true, 5 => false, _ => true })", "E_ANNEAL_UNREACHABLE_MATCH_ARM"),
+        ("ensures(|r| match a { 0..=3 => true, 4..=7 => false, 2..=6 => true, _ => true })", "E_ANNEAL_UNREACHABLE_MATCH_ARM"),
+        ("ensures(|r| match i { -10..=-1 => true, -5 => false, _ => true })", "E_ANNEAL_UNREACHABLE_MATCH_ARM"),
+        ("ensures(|r| match i { i8::MIN..=-1 => true, 0..=i8::MAX => false, 5 => true, _ => true })", "E_ANNEAL_UNREACHABLE_MATCH_ARM"),
+        ("ensures(|r| match w { 0..=5 => true, 6..=u128::MAX => false, u128::MAX => true, _ => true })", "E_ANNEAL_UNREACHABLE_MATCH_ARM"),
+        ("ensures(|r| match a { 0..=255 => true })", "E_ANNEAL_NON_EXHAUSTIVE_MATCH"),
+        ("ensures(|r| match a { 0..5 => true, _ => false })", "E_ANNEAL_SPEC_UNSUPPORTED_EXPR"),
+        ("ensures(|r| match a { 0.. => true, _ => false })", "E_ANNEAL_SPEC_UNSUPPORTED_EXPR"),
+        ("ensures(|r| match a { ..=5 => true, _ => false })", "E_ANNEAL_SPEC_UNSUPPORTED_EXPR"),
+        ("ensures(|r| match a { 0..=n => true, _ => false })", "E_ANNEAL_SPEC_UNSUPPORTED_EXPR"),
+        ("ensures(|r| match a { 0..=5 if b => true, _ => false })", "E_ANNEAL_SPEC_UNSUPPORTED_EXPR"),
+        ("max_steps = match i { -1..=3 => 1, _ => 2 }", "E_ANNEAL_SPEC_TYPE_MISMATCH"),
+    ] {
+        expect_error(&wrap(clause, sig), code);
+    }
+    let r = expect_error(
+        &wrap("ensures(|r| match a { 0..=5 => true, 2..=4 => false, _ => true })", sig),
+        "E_ANNEAL_UNREACHABLE_MATCH_ARM",
+    );
+    assert!(r.contains("`2..=4` is already matched"), "{r}");
+    let r = expect_error(
+        &wrap("ensures(|r| match a { 5..=3 => true, _ => false })", sig),
+        "E_ANNEAL_UNREACHABLE_MATCH_ARM",
+    );
+    assert!(r.contains("`5..=3` is empty"), "{r}");
+    let r = expect_error(
+        &wrap("ensures(|r| match a { 0..5 => true, _ => false })", sig),
+        "E_ANNEAL_SPEC_UNSUPPORTED_EXPR",
+    );
+    assert!(r.contains("only inclusive range patterns `lo..=hi`"), "{r}");
 }
 
 #[test]
