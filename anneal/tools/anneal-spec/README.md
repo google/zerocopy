@@ -232,6 +232,12 @@ wraps to `MIN`, the one quotient that overflows. `a.div_euclid(b)` and
 `a.rem_euclid(b)` take unsigned operands, since on signed ones Rust panics on
 `MIN / -1`; there they equal the truncating forms.
 
+`a.swap_bytes()` reverses the bytes of `a`. A one-byte integer is its own
+reversal. A wider one is taken as its `Nat` bits (its remainder modulo
+`2^bits`), each byte is moved to the mirrored position with `>>>`, `%`, `<<<`,
+and `|||` in a `fun` that evaluates `a` once, and a signed result is
+sign-extended, so `(-2i16).swap_bytes()` is `-257`.
+
 Division and remainder lower to
 `Trusted.MirSemantics.intTdiv`/`intTmod` (Rust's truncating semantics, as in
 `Int.tdiv`/`Int.tmod`) and require the divisor to be a nonzero literal or

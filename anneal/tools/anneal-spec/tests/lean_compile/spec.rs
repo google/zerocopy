@@ -507,6 +507,42 @@ anneal::external_spec! {
         if b == 0 { true } else { no_overflow_div(a, b) }
     }
 
+    // `swap_bytes` reverses the bytes of the two's-complement bits.
+    #[anneal::pure]
+    fn swap_i8(a: i8) -> i8 {
+        a.swap_bytes()
+    }
+
+    #[anneal::pure]
+    fn swap_u16(a: u16) -> u16 {
+        a.swap_bytes()
+    }
+
+    #[anneal::pure]
+    fn swap_i16(a: i16) -> i16 {
+        a.swap_bytes()
+    }
+
+    #[anneal::pure]
+    fn swap_i32(a: i32) -> i32 {
+        a.swap_bytes()
+    }
+
+    #[anneal::pure]
+    fn swap_u64(a: u64) -> u64 {
+        a.swap_bytes()
+    }
+
+    #[anneal::pure]
+    fn swap_i128(a: i128) -> i128 {
+        a.swap_bytes()
+    }
+
+    #[anneal::pure]
+    fn swap_u128(a: u128) -> u128 {
+        a.swap_bytes()
+    }
+
     #[anneal::pure]
     fn wshl_is(a: u16, n: u32, r: u16) -> bool {
         wrapping_shl(a, n) == r
@@ -530,6 +566,7 @@ anneal::external_spec! {
                 + n.unbounded_shr(31)
                 + n.div_euclid(16)
                 + n.saturating_div(1024)
+                + n.swap_bytes()
         },
         ensures(|r| r == saturating_sub(n, 1u32)),
     )]
