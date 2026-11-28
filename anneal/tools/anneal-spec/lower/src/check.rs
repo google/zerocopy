@@ -338,10 +338,12 @@ const INTRINSICS: &[&str] = &[
     "no_overflow_sub",
     "no_overflow_mul",
     "no_overflow_neg",
+    "no_overflow_div",
     "saturating_add",
     "saturating_sub",
     "saturating_mul",
     "saturating_neg",
+    "saturating_div",
     "abs_diff",
 ];
 
@@ -2099,8 +2101,9 @@ impl<'a> Env<'a> {
             // Division and remainder, truncating or Euclidean. Rust panics
             // on a zero divisor, so the divisor must be guarded as for `/`.
             // The `wrapping_` forms wrap the one quotient that overflows,
-            // `MIN / -1`, back to `MIN`; the others exist only on unsigned
-            // types, where no quotient overflows. No remainder overflows.
+            // `MIN / -1`, back to `MIN`; the others are accepted only on
+            // unsigned types, where no quotient overflows. No remainder
+            // overflows.
             "wrapping_div" | "wrapping_rem" | "wrapping_div_euclid" | "wrapping_rem_euclid"
             | "div_euclid" | "rem_euclid" => {
                 arity(1)?;
@@ -2488,6 +2491,15 @@ impl<'a> Env<'a> {
                     };
                     (t, format!("{a} {sym} {b}"))
                 }
+                // Rust panics on a zero divisor, so it must be guarded as
+                // for `/`. Only `MIN / -1` overflows. `wrapping_div` is a
+                // method only.
+                "div" if family != "wrapping_" => {
+                    arity(2)?;
+                    let (a, b, t) = self.int_pair(name, args, span, facts)?;
+                    self.require_nonzero_divisor(name, &args[1], &b, facts)?;
+                    (t, format!("{INT_TDIV} {a} {b}"))
+                }
                 "neg" => {
                     arity(1)?;
                     let (a, t) = self.int_operand(name, &args[0], facts)?;
@@ -2525,6 +2537,8 @@ impl<'a> Env<'a> {
                     };
                     Low::Prop(Prop::pure(format!("({lo} ≤ {exact} ∧ {exact} < {hi})")))
                 }
+                // An unsigned quotient never overflows.
+                _ if op == "div" && !t.signed => Low::Int(format!("({exact})"), ty),
                 _ => Low::Int(saturate(&exact, t), ty),
             });
         }

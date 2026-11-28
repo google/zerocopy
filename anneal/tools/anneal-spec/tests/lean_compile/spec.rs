@@ -490,6 +490,23 @@ anneal::external_spec! {
         if b == 0 { 0 } else { a.rem_euclid(b) }
     }
 
+    // `saturating_div` saturates only `MIN / -1`, which is also the only
+    // quotient that `no_overflow_div` rules out.
+    #[anneal::pure]
+    fn sdiv(a: i8, b: i8) -> i8 {
+        if b == 0 { 0 } else { a.saturating_div(b) }
+    }
+
+    #[anneal::pure]
+    fn sdiv_u(a: u8, b: u8) -> u8 {
+        if b == 0 { 0 } else { saturating_div(a, b) }
+    }
+
+    #[anneal::pure]
+    fn nodiv(a: i8, b: i8) -> bool {
+        if b == 0 { true } else { no_overflow_div(a, b) }
+    }
+
     #[anneal::pure]
     fn wshl_is(a: u16, n: u32, r: u16) -> bool {
         wrapping_shl(a, n) == r
@@ -512,6 +529,7 @@ anneal::external_spec! {
                 + b.saturating_add_signed(-1) as u32
                 + n.unbounded_shr(31)
                 + n.div_euclid(16)
+                + n.saturating_div(1024)
         },
         ensures(|r| r == saturating_sub(n, 1u32)),
     )]

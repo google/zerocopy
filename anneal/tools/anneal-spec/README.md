@@ -111,7 +111,7 @@ type `T`, parameters, the `ensures` binder, `!`, unary `-`, `&&`, `||`, `==>`
 on integers, `e as T` casts to fixed-width integer types, the integer methods
 below, helper calls, `math(e)`/`math { e }`,
 `wrapping_{add,sub,mul,neg,shl,shr}`,
-`no_overflow_{add,sub,mul,neg}`, `saturating_{add,sub,mul,neg}`,
+`no_overflow_{add,sub,mul,neg,div}`, `saturating_{add,sub,mul,neg,div}`,
 `abs_diff`, `if c { a } else { b }` (with `else if` chains),
 `match s { pat => e, .. }`, and blocks `{ let x = e; .. value }`.
 Types: `bool`, `()`, and fixed-width integers.
@@ -121,7 +121,10 @@ Arithmetic on machine integers must say what it means: `math(a) + math(b)` is
 unbounded, `wrapping_add(a, b)` is modular, `saturating_add(a, b)` clamps the
 sum to the type's range, and `no_overflow_add(a, b)` states that the
 mathematical sum is in range. The `_neg` forms negate one operand, and
-`saturating_neg` takes only a signed operand, as in Rust. `abs_diff(a, b)` is
+`saturating_neg` takes only a signed operand, as in Rust. The `_div` forms
+take the truncated quotient `intTdiv a b` and need a divisor guarded as for
+`/`; only `MIN / -1` overflows, so `saturating_div` gives `MAX` there and is
+plain `intTdiv a b` on unsigned operands. `abs_diff(a, b)` is
 the distance between `a` and `b`, of the unsigned type of their width, as
 `i8::abs_diff` returns `u8`. These intrinsics take operands of one
 fixed-width integer type, even inside `math`, where their result is
