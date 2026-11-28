@@ -31,6 +31,7 @@ import argparse
 from collections.abc import Callable, Mapping, Sequence
 from dataclasses import dataclass
 import json
+import math
 import os
 from pathlib import Path
 import re
@@ -50,6 +51,9 @@ PR_BATCH_SIZE = 50
 COMMIT_BATCH_SIZE = 50
 SEARCH_BATCH_SIZE = 20
 MAX_GRAPHQL_INT = 2_147_483_647
+DEFAULT_GRAPHQL_TIMEOUT_SECONDS = 60.0
+DEFAULT_GIT_TIMEOUT_SECONDS = 120.0
+DEFAULT_GIT_FAST_TIMEOUT_SECONDS = 30.0
 RETRY_BACKOFF_SECONDS = (2.0, 5.0)
 
 _PRE_ID = r"(?:0|[1-9][0-9]*|[0-9]*[A-Za-z-][0-9A-Za-z-]*)"
@@ -280,15 +284,66 @@ def validate_tag_name(tag: str, *, flag_name: str) -> str:
     return tag
 
 
+def _validate_timeout(timeout: float) -> float:
+    """Validate that a subprocess timeout is a positive finite number."""
+    if (
+        isinstance(timeout, bool)
+        or not math.isfinite(timeout)
+        or timeout <= 0
+    ):
+        raise ValueError(
+            f"timeout must be a positive finite number of seconds: {timeout!r}"
+        )
+    return timeout
+
+
+def _format_timeout_stderr(exc: subprocess.TimeoutExpired) -> str:
+    """Format decoded `TimeoutExpired.stderr` as a `: ...` suffix."""
+    raw_err = exc.stderr
+    if isinstance(raw_err, bytes):
+        stderr = raw_err.decode("utf-8", errors="replace").strip()
+    else:
+        stderr = (raw_err or "").strip()
+    return f": {stderr}" if stderr else ""
+
+
+def _invoke_git(
+    args: Sequence[str],
+    *,
+    repo_root: Path | None = None,
+    cwd: Path | None = None,
+    timeout: float,
+) -> subprocess.CompletedProcess[str]:
+    """Run a local `git` command with a bounded timeout and fail on expiry."""
+    _validate_timeout(timeout)
+    cmd = ["git"]
+    if repo_root is not None:
+        cmd.extend(["-C", str(repo_root)])
+    cmd.extend(args)
+    try:
+        return subprocess.run(
+            cmd,
+            cwd=str(cwd) if cwd is not None else None,
+            text=True,
+            capture_output=True,
+            check=False,
+            timeout=timeout,
+        )
+    except subprocess.TimeoutExpired as exc:
+        detail = _format_timeout_stderr(exc)
+        raise RuntimeError(
+            f"git {' '.join(args)} timed out after {timeout}s{detail}"
+        ) from exc
+
+
 def _run_git(
-    repo_root: Path, args: Sequence[str], *, check: bool = True
+    repo_root: Path,
+    args: Sequence[str],
+    *,
+    check: bool = True,
+    timeout: float = DEFAULT_GIT_TIMEOUT_SECONDS,
 ) -> str:
-    proc = subprocess.run(
-        ["git", "-C", str(repo_root), *args],
-        text=True,
-        capture_output=True,
-        check=False,
-    )
+    proc = _invoke_git(args, repo_root=repo_root, timeout=timeout)
     if check and proc.returncode != 0:
         detail = proc.stderr.strip() or proc.stdout.strip()
         raise RuntimeError(
@@ -297,12 +352,16 @@ def _run_git(
     return proc.stdout
 
 
-def _try_git_rev_parse_commit(repo_root: Path, rev: str) -> str | None:
-    proc = subprocess.run(
-        ["git", "-C", str(repo_root), "rev-parse", "--verify", "--quiet", rev],
-        text=True,
-        capture_output=True,
-        check=False,
+def _try_git_rev_parse_commit(
+    repo_root: Path,
+    rev: str,
+    *,
+    timeout: float = DEFAULT_GIT_FAST_TIMEOUT_SECONDS,
+) -> str | None:
+    proc = _invoke_git(
+        ["rev-parse", "--verify", "--quiet", rev],
+        repo_root=repo_root,
+        timeout=timeout,
     )
     if proc.returncode != 0:
         return None
@@ -310,14 +369,16 @@ def _try_git_rev_parse_commit(repo_root: Path, rev: str) -> str | None:
     return sha if _HEX_SHA_RE.match(sha) else None
 
 
-def find_repo_root(cwd: Path | None = None) -> Path:
+def find_repo_root(
+    cwd: Path | None = None,
+    *,
+    timeout: float = DEFAULT_GIT_FAST_TIMEOUT_SECONDS,
+) -> Path:
     """Return the enclosing git repository root."""
-    proc = subprocess.run(
-        ["git", "rev-parse", "--show-toplevel"],
-        cwd=str(cwd) if cwd is not None else None,
-        text=True,
-        capture_output=True,
-        check=False,
+    proc = _invoke_git(
+        ["rev-parse", "--show-toplevel"],
+        cwd=cwd,
+        timeout=timeout,
     )
     if proc.returncode != 0 or not proc.stdout.strip():
         detail = proc.stderr.strip() or "not inside a git repository"
@@ -333,11 +394,17 @@ def ensure_not_shallow(repo_root: Path, target_sha: str) -> None:
     fail when a shallow graft lies within `target_sha`'s ancestry, or when the
     shallow boundary cannot be read.
     """
-    out = _run_git(repo_root, ["rev-parse", "--is-shallow-repository"]).strip()
+    out = _run_git(
+        repo_root,
+        ["rev-parse", "--is-shallow-repository"],
+        timeout=DEFAULT_GIT_FAST_TIMEOUT_SECONDS,
+    ).strip()
     if out != "true":
         return
     raw_path = _run_git(
-        repo_root, ["rev-parse", "--git-path", "shallow"]
+        repo_root,
+        ["rev-parse", "--git-path", "shallow"],
+        timeout=DEFAULT_GIT_FAST_TIMEOUT_SECONDS,
     ).strip()
     shallow_path = Path(raw_path)
     if not shallow_path.is_absolute():
@@ -357,7 +424,13 @@ def ensure_not_shallow(repo_root: Path, target_sha: str) -> None:
             "Shallow git repository detected with malformed shallow boundary "
             "(`fetch-depth: 0` is required)"
         )
-    ancestors = set(_run_git(repo_root, ["rev-list", target_sha]).splitlines())
+    ancestors = set(
+        _run_git(
+            repo_root,
+            ["rev-list", target_sha],
+            timeout=DEFAULT_GIT_TIMEOUT_SECONDS,
+        ).splitlines()
+    )
     if shallow_shas & ancestors:
         raise RuntimeError(
             "Shallow git repository detected on target commit history "
@@ -390,22 +463,18 @@ def resolve_target_sha(
 
 
 def validate_paths_exist(
-    repo_root: Path, target_sha: str, paths: Sequence[str]
+    repo_root: Path,
+    target_sha: str,
+    paths: Sequence[str],
+    *,
+    timeout: float = DEFAULT_GIT_FAST_TIMEOUT_SECONDS,
 ) -> None:
     """Fail closed if any requested `--path` is absent at `target_sha`."""
     for path in paths:
-        proc = subprocess.run(
-            [
-                "git",
-                "-C",
-                str(repo_root),
-                "cat-file",
-                "-e",
-                f"{target_sha}:{path}",
-            ],
-            text=True,
-            capture_output=True,
-            check=False,
+        proc = _invoke_git(
+            ["cat-file", "-e", f"{target_sha}:{path}"],
+            repo_root=repo_root,
+            timeout=timeout,
         )
         if proc.returncode != 0:
             raise RuntimeError(
@@ -423,7 +492,11 @@ def resolve_repo_slug(
     env_repo = os.environ.get("GITHUB_REPOSITORY", "").strip()
     if env_repo:
         return validate_repo_slug(env_repo)
-    origin_url = _run_git(repo_root, ["remote", "get-url", "origin"]).strip()
+    origin_url = _run_git(
+        repo_root,
+        ["remote", "get-url", "origin"],
+        timeout=DEFAULT_GIT_FAST_TIMEOUT_SECONDS,
+    ).strip()
     return parse_github_remote_url(origin_url)
 
 
@@ -583,10 +656,12 @@ class GitHubGraphQL:
         owner: str,
         repo: str,
         *,
+        timeout: float = DEFAULT_GRAPHQL_TIMEOUT_SECONDS,
         sleep_fn: Callable[[float], None] = time.sleep,
     ) -> None:
         self.owner = owner
         self.repo = repo
+        self.timeout = _validate_timeout(timeout)
         self._slug_lower = f"{owner}/{repo}".lower()
         self._sleep = sleep_fn
 
@@ -601,13 +676,24 @@ class GitHubGraphQL:
         attempts = len(RETRY_BACKOFF_SECONDS) + 1
         last_error: RuntimeError | None = None
         for attempt in range(attempts):
-            proc = subprocess.run(
-                ["gh", "api", "graphql", "--input", "-"],
-                input=payload,
-                text=True,
-                capture_output=True,
-                check=False,
-            )
+            try:
+                proc = subprocess.run(
+                    ["gh", "api", "graphql", "--input", "-"],
+                    input=payload,
+                    text=True,
+                    capture_output=True,
+                    check=False,
+                    timeout=self.timeout,
+                )
+            except subprocess.TimeoutExpired as exc:
+                detail = _format_timeout_stderr(exc)
+                last_error = RuntimeError(
+                    f"gh api graphql timed out after {self.timeout}s{detail}"
+                )
+                if attempt < len(RETRY_BACKOFF_SECONDS):
+                    self._sleep(RETRY_BACKOFF_SECONDS[attempt])
+                    continue
+                raise last_error from exc
             data, retryable, err = self._parse_response(
                 proc, allowed_not_found_aliases
             )

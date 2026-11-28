@@ -519,6 +519,179 @@ class TestGitHistoryAndTagDiscovery(unittest.TestCase):
             )
             self.assertEqual(notes, f"**Full Changelog**: {expected_url}\n")
 
+    def test_git_helpers_pass_timeouts_and_handle_timeout_expired(
+        self,
+    ) -> None:
+        for bad_timeout in (0, -1.0, True, float("nan"), float("inf")):
+            with self.subTest(bad_timeout=bad_timeout):
+                with self.assertRaisesRegex(
+                    ValueError, "positive finite number"
+                ):
+                    rn.find_repo_root(timeout=bad_timeout)
+
+        sha1 = "1" * 40
+        sha2 = "2" * 40
+        with tempfile.TemporaryDirectory() as td:
+            repo = Path(td) / "repo"
+            repo.mkdir()
+            shallow_file = repo / ".git" / "shallow"
+            shallow_file.parent.mkdir(parents=True)
+            shallow_file.write_text(f"{'f' * 40}\n", encoding="utf-8")
+
+            root_res = _completed(stdout=f"{repo}\n")
+            with mock.patch.object(
+                subprocess, "run", return_value=root_res
+            ) as run_mock:
+                self.assertEqual(rn.find_repo_root(repo), repo)
+            self.assertEqual(
+                run_mock.call_args.kwargs["timeout"],
+                rn.DEFAULT_GIT_FAST_TIMEOUT_SECONDS,
+            )
+
+            rev_res = _completed(stdout=f"{sha1}\n")
+            with mock.patch.object(
+                subprocess, "run", return_value=rev_res
+            ) as run_mock:
+                self.assertEqual(
+                    rn._try_git_rev_parse_commit(repo, "HEAD"), sha1
+                )
+            self.assertEqual(
+                run_mock.call_args.kwargs["timeout"],
+                rn.DEFAULT_GIT_FAST_TIMEOUT_SECONDS,
+            )
+
+            with mock.patch.object(
+                subprocess, "run", return_value=_completed()
+            ) as run_mock:
+                rn.validate_paths_exist(repo, sha1, ("zerocopy/lib.rs",))
+            self.assertEqual(
+                run_mock.call_args.kwargs["timeout"],
+                rn.DEFAULT_GIT_FAST_TIMEOUT_SECONDS,
+            )
+
+            origin_res = _completed(
+                stdout="https://github.com/google/zerocopy.git\n"
+            )
+            with (
+                mock.patch.dict(
+                    os.environ, {"GITHUB_REPOSITORY": ""}, clear=False
+                ),
+                mock.patch.object(
+                    subprocess, "run", return_value=origin_res
+                ) as run_mock,
+            ):
+                self.assertEqual(
+                    rn.resolve_repo_slug(repo, None), ("google", "zerocopy")
+                )
+            self.assertEqual(
+                run_mock.call_args.kwargs["timeout"],
+                rn.DEFAULT_GIT_FAST_TIMEOUT_SECONDS,
+            )
+
+            shallow_seq = [
+                _completed(stdout="true\n"),
+                _completed(stdout=f"{shallow_file}\n"),
+                _completed(stdout=f"{sha1}\n"),
+            ]
+            with mock.patch.object(
+                subprocess, "run", side_effect=shallow_seq
+            ) as run_mock:
+                rn.ensure_not_shallow(repo, sha1)
+            self.assertEqual(
+                [c.kwargs["timeout"] for c in run_mock.call_args_list],
+                [
+                    rn.DEFAULT_GIT_FAST_TIMEOUT_SECONDS,
+                    rn.DEFAULT_GIT_FAST_TIMEOUT_SECONDS,
+                    rn.DEFAULT_GIT_TIMEOUT_SECONDS,
+                ],
+            )
+
+            with mock.patch.object(
+                subprocess, "run", return_value=_completed(stdout="")
+            ) as run_mock:
+                self.assertEqual(
+                    rn.list_scoped_commits(repo, sha2, sha1, ("zerocopy",)), ()
+                )
+            self.assertEqual(
+                run_mock.call_args.kwargs["timeout"],
+                rn.DEFAULT_GIT_TIMEOUT_SECONDS,
+            )
+
+            tag_seq = [
+                _completed(stdout=f"{sha1}\tcommit\tv0.9.0\n"),
+                _completed(stdout=f"{sha2}\n{sha1}\n"),
+            ]
+            with mock.patch.object(
+                subprocess, "run", side_effect=tag_seq
+            ) as run_mock:
+                _, sv = rn.parse_tag("v1.0.0")
+                self.assertEqual(
+                    rn.find_previous_tag(repo, sha2, "v", sv), ("v0.9.0", sha1)
+                )
+            self.assertEqual(
+                [c.kwargs["timeout"] for c in run_mock.call_args_list],
+                [
+                    rn.DEFAULT_GIT_TIMEOUT_SECONDS,
+                    rn.DEFAULT_GIT_TIMEOUT_SECONDS,
+                ],
+            )
+
+            log_timeout = subprocess.TimeoutExpired(
+                cmd=["git", "log"], timeout=120.0, stderr="hung"
+            )
+            with mock.patch.object(
+                subprocess, "run", side_effect=log_timeout
+            ):
+                with self.assertRaisesRegex(
+                    RuntimeError, r"git log timed out after 120\.0s: hung"
+                ):
+                    rn._run_git(repo, ["log"])
+
+            rev_timeout = subprocess.TimeoutExpired(
+                cmd=["git", "rev-parse"], timeout=30.0, stderr=b"still stuck"
+            )
+            with mock.patch.object(
+                subprocess, "run", side_effect=rev_timeout
+            ) as run_mock:
+                with self.assertRaisesRegex(
+                    RuntimeError, r"timed out after 30\.0s: still stuck"
+                ):
+                    rn.resolve_target_sha(repo, "v1.0.0", None)
+            self.assertEqual(run_mock.call_count, 1)
+
+            root_timeout = subprocess.TimeoutExpired(
+                cmd=["git", "rev-parse", "--show-toplevel"], timeout=30.0
+            )
+            with mock.patch.object(
+                subprocess, "run", side_effect=root_timeout
+            ):
+                with self.assertRaisesRegex(
+                    RuntimeError,
+                    r"git rev-parse --show-toplevel timed out after 30\.0s$",
+                ):
+                    rn.find_repo_root()
+
+            cat_timeout = subprocess.TimeoutExpired(
+                cmd=["git", "cat-file"], timeout=30.0
+            )
+            with mock.patch.object(subprocess, "run", side_effect=cat_timeout):
+                with self.assertRaisesRegex(
+                    RuntimeError, r"timed out after 30\.0s$"
+                ):
+                    rn.validate_paths_exist(repo, sha1, ("zerocopy/lib.rs",))
+
+            stderr_buf = io.StringIO()
+            with (
+                mock.patch.object(
+                    subprocess, "run", side_effect=root_timeout
+                ),
+                mock.patch.object(rn.sys, "stderr", stderr_buf),
+            ):
+                code = rn.main(["--tag", "v1.0.0", "--path", "zerocopy"])
+            self.assertEqual(code, 1)
+            self.assertIn("error:", stderr_buf.getvalue())
+            self.assertIn("timed out", stderr_buf.getvalue())
+
 
 class TestGraphQLAndRendering(unittest.TestCase):
     def test_pass_4a_4b_exclusions_bots_and_new_contributors(self) -> None:
@@ -909,6 +1082,91 @@ class TestGraphQLAndRendering(unittest.TestCase):
             code = rn.main(["--tag", "bad-tag", "--path", "zerocopy"])
         self.assertEqual(code, 1)
         self.assertIn("error:", stderr_buf.getvalue())
+
+    def test_graphql_timeout_validation_and_retries(self) -> None:
+        for bad_timeout in (0, -1.0, True, float("nan"), float("inf")):
+            with self.subTest(bad_timeout=bad_timeout):
+                with self.assertRaisesRegex(
+                    ValueError, "positive finite number"
+                ):
+                    rn.GitHubGraphQL("google", "zerocopy", timeout=bad_timeout)
+
+        sleeps: list[float] = []
+        default_client = rn.GitHubGraphQL(
+            "google", "zerocopy", sleep_fn=sleeps.append
+        )
+        ok_proc = _completed(stdout=json.dumps({"data": {"ok": True}}))
+        with mock.patch.object(
+            subprocess, "run", return_value=ok_proc
+        ) as run_mock:
+            self.assertEqual(
+                default_client.query("query { ok }", {}), {"ok": True}
+            )
+        self.assertEqual(
+            run_mock.call_args.kwargs["timeout"],
+            rn.DEFAULT_GRAPHQL_TIMEOUT_SECONDS,
+        )
+        self.assertEqual(sleeps, [])
+
+        sleeps.clear()
+        client = rn.GitHubGraphQL(
+            "google", "zerocopy", timeout=15.0, sleep_fn=sleeps.append
+        )
+        retry_seq = [
+            subprocess.TimeoutExpired(
+                cmd=["gh", "api", "graphql"], timeout=15.0, stderr="slow"
+            ),
+            _completed(stdout="", stderr="HTTP 502 Bad Gateway", returncode=1),
+            ok_proc,
+        ]
+        with mock.patch.object(
+            subprocess, "run", side_effect=retry_seq
+        ) as run_mock:
+            self.assertEqual(client.query("query { ok }", {}), {"ok": True})
+        self.assertEqual(run_mock.call_count, 3)
+        self.assertTrue(
+            all(
+                c.kwargs["timeout"] == 15.0 for c in run_mock.call_args_list
+            )
+        )
+        self.assertEqual(sleeps, list(rn.RETRY_BACKOFF_SECONDS))
+
+        sleeps.clear()
+        timeout_exc = subprocess.TimeoutExpired(
+            cmd=["gh", "api", "graphql"],
+            timeout=15.0,
+            stderr=b"still hung",
+        )
+        with mock.patch.object(
+            subprocess, "run", side_effect=timeout_exc
+        ) as run_mock:
+            with self.assertRaisesRegex(
+                RuntimeError,
+                r"gh api graphql timed out after 15\.0s: still hung",
+            ):
+                client.query("query { ok }", {})
+        self.assertEqual(
+            run_mock.call_count, len(rn.RETRY_BACKOFF_SECONDS) + 1
+        )
+        self.assertEqual(sleeps, list(rn.RETRY_BACKOFF_SECONDS))
+
+        sleeps.clear()
+        perm_after_timeout = [
+            timeout_exc,
+            _completed(
+                stdout=json.dumps(
+                    {"errors": [{"type": "FORBIDDEN", "message": "denied"}]}
+                ),
+                returncode=1,
+            ),
+        ]
+        with mock.patch.object(
+            subprocess, "run", side_effect=perm_after_timeout
+        ) as run_mock:
+            with self.assertRaisesRegex(RuntimeError, "GraphQL errors"):
+                client.query("query { ok }", {})
+        self.assertEqual(run_mock.call_count, 2)
+        self.assertEqual(sleeps, [rn.RETRY_BACKOFF_SECONDS[0]])
 
 
 if __name__ == "__main__":
